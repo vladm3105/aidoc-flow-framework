@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T2                                      |
 | Depends on | P1-T1 audit, D-0005 (index templates), D-0006 (v0.1.0) |
-| Status     | PLANNED — 2026-05-18T18:15:00Z             |
+| Status     | DONE — 2026-05-18T19:05:00Z                |
 | Feeds      | P1-T3 (registry), P1-T5 (conformance)      |
 
 ## Objective
@@ -107,6 +107,23 @@ conformance suite (P1-T5); `framework/VERSION` (P1-T6).
 | R3 | Internal links break after move | grep for `ucx_flow_v3` / old relative paths |
 | R4 | Over-stripping removes agnostic content | only the 4 identified engine-specific patterns are removed; everything else copied verbatim |
 | R5 | Index `.md` frontmatter goes stale | keep frontmatter; mark `document_type` as the index *template* |
+
+## Implementation (2026-05-18T19:05:00Z)
+
+24 files created under `framework/layers/`. All verification checks pass:
+YAML parses, no `hermes|mcp|sdd_*|ucx_` tokens, no `ucx_flow_v3` refs, no
+`SDD v3.x` version strings, 24 files. Spot-checked: BRD template validation
+block neutralized, BRD README diff = engine sections only, index templates
+well-formed.
+
+Notable executor judgment calls (all sound, kept):
+- Fixed two pre-existing YAML defects copied from legacy (`ADR-TEMPLATE.yaml`
+  stray-indented `implementation_assessment:`; `SPEC-TEMPLATE.yaml`
+  mis-indented `document_control:`) — indentation-only, in the `framework/`
+  copies; `legacy/` untouched.
+- Dropped stale `v3.2` changelog comment lines, a `tmp/` migration-scratch
+  path ref, and `b-local` internal path; genericized vendor names and AI
+  model identifiers (`Gemini`/`Codex`) in the IPLAN template / ADR index.
 
 ## Review log
 

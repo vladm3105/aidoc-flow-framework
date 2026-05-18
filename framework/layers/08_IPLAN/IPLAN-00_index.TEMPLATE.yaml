@@ -1,0 +1,170 @@
+# IPLAN-00_index.TEMPLATE.yaml — Implementation Plan Registry (template)
+# SDD Layer 8 — Execution tracking for all permanent IPLANs
+#
+# Index template. Copy this file to IPLAN-00_index.yaml in a project.
+# Dynamic registry — updated every time an IPLAN is created, versioned,
+# moved between statuses, deferred, or completed.
+#
+# For rules governing this directory (naming, status semantics, update triggers),
+# see 08_IPLAN/README.md — the authoritative rule source.
+
+metadata:
+  schema_version: "1.0"
+  document_type: "iplan-registry"
+  layer: 8
+  total_plans: 0  # Updated as plans are added/removed from registry
+  last_updated: "YYYY-MM-DD"
+
+# =============================================================================
+# Plan Registry
+# =============================================================================
+# Every permanent IPLAN appears exactly once. Rows with status: "BACKLOG"
+# and no file_path are future work (not yet drafted).
+registry:
+  plans: []
+
+  # Template entry:
+  # - id: "IPLAN-NN"
+  #   title: "[Component Implementation]"
+  #   source_spec: "@spec: SPEC-NN"
+  #   scope: "[One-line scope boundary]"
+  #   status: "Draft"       # BACKLOG | Draft | In Progress | Completed | ABANDONED
+  #   status_date: "YYYY-MM-DD"
+  #   complexity: 3         # 1=1-file, 5=architectural
+  #   session_count: 0
+  #   sessions_completed: 0
+  #   files_declared: 0
+  #   files_done: 0
+  #   skipped: []           # Items intentionally deferred
+  #   skip_reasons: {}
+  #   depends_on: []        # Other IPLAN-NN IDs that must complete first
+  #   blocks: []            # Other IPLAN-NN IDs blocked by this one
+  #   parallel_with: []     # Other IPLAN-NN IDs safe to run in parallel
+  #   file_path: "IPLAN-NN_[slug].yaml"
+
+# =============================================================================
+# Backlog
+# =============================================================================
+# Future IPLANs that have been identified but not yet drafted.
+# Promote to registry.plans when the TDD reaches IPLAN-Ready >=90/100.
+backlog: []
+
+  # Template entry:
+  # - id: "IPLAN-NN"       # Reserve next sequential number
+  #   title: "[Future component]"
+  #   source_spec: "SPEC-NN (not yet created)"
+  #   notes: "[Why this is in backlog]"
+
+# =============================================================================
+# Execution Path
+# =============================================================================
+# Topological ordering of IPLANs based on SPEC dependencies.
+# Each tier must complete before the next tier starts.
+# Within a tier, plans may run in parallel.
+execution_path:
+  _guidance: |
+    Derived from SPEC dependency graph:
+      1. Inventory all TDD files with IPLAN-Ready >=90/100
+      2. Extract internal dependencies from each SPEC's interfaces section
+      3. Build dependency graph (topological sort)
+      4. Group independent SPECs into parallel tiers
+      5. Assign IPLAN-NN to each SPEC in tier order
+
+    This determines the creation order of IPLAN documents themselves.
+
+  tiers: []
+
+  # Template entry:
+  # - tier: 1
+  #   label: "Foundation"
+  #   status: "COMPLETE"     # NOT_STARTED | IN_PROGRESS | COMPLETE
+  #   plans: ["IPLAN-01"]
+  # - tier: 2
+  #   label: "Core Services"
+  #   status: "IN_PROGRESS"
+  #   plans: ["IPLAN-02", "IPLAN-03"]  # Parallel-safe within tier
+  # - tier: 3
+  #   label: "Integration"
+  #   status: "NOT_STARTED"
+  #   plans: ["IPLAN-04"]
+
+# =============================================================================
+# Cross-Plan Obligations
+# =============================================================================
+# Shared conventions that apply to every IPLAN.
+# Updated when cross-plan patterns emerge during implementation.
+cross_plan_obligations:
+  _guidance: |
+    Active project-wide conventions for all IPLANs.
+    Each obligation: { description, owner (IPLAN that introduced it), adopted_date }
+
+  obligations: []
+
+  # Template entry:
+  # - id: "CPO-001"
+  #   description: "[Convention — e.g., All data stores use a shared executor Protocol pattern]"
+  #   introduced_by: "IPLAN-02"
+  #   adopted_date: "YYYY-MM-DD"
+
+# =============================================================================
+# Skipped / Deferred Items
+# =============================================================================
+# Cross-plan tracking of items intentionally deferred across all IPLANs.
+# Each entry cites the IPLAN, the item, the reason, and when to revisit.
+deferred_items:
+  _guidance: |
+    Items deferred during implementation. Not bugs — intentional scope decisions.
+    Key: deferral_id (unique), owning IPLAN, description, reason, revisit_trigger.
+
+  items: []
+
+  # Template entry:
+  # - id: "DEFER-001"
+  #   owner: "IPLAN-03"
+  #   item: "[What was deferred]"
+  #   reason: "[Why deferred — e.g., blocks on external dependency]"
+  #   revisit_trigger: "[When to revisit — e.g., After PLAN-025 Phase 1]"
+
+# =============================================================================
+# Status History
+# =============================================================================
+# Per-plan status transitions for audit trail.
+# Updated on every status change.
+status_history: []
+
+  # Template entry:
+  # - plan_id: "IPLAN-NN"
+  #   transitions:
+  #     - from: "BACKLOG"
+  #       to: "Draft"
+  #       date: "YYYY-MM-DD"
+  #       reason: "TDD-NN reached IPLAN-Ready >=90/100"
+  #     - from: "Draft"
+  #       to: "In Progress"
+  #       date: "YYYY-MM-DD"
+  #       reason: "Session 1 started"
+
+# =============================================================================
+# Registry Update Triggers
+# =============================================================================
+update_triggers:
+  _guidance: "When to update this registry. Mirrors the project's plan-tracker update triggers."
+
+  on_plan_created:
+    - "Add entry to registry.plans"
+    - "Increment metadata.total_plans"
+    - "Update execution_path.tiers if ordering changes"
+  on_status_change:
+    - "Update plan status + status_date in registry.plans"
+    - "Append to status_history"
+  on_plan_completed:
+    - "Set status: Completed with date"
+    - "Update metadata.total_plans (count completed vs active)"
+  on_plan_abandoned:
+    - "Set status: ABANDONED with date"
+    - "File preserved — never deleted"
+    - "Plan number never reused"
+  on_item_deferred:
+    - "Add to deferred_items + plan's own skipped[] list"
+  on_cross_plan_obligation_added:
+    - "Append to cross_plan_obligations.obligations"

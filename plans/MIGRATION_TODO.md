@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-18T17:45:00Z                       |
+| Last updated     | 2026-05-18T19:05:00Z                       |
 
 ---
 
@@ -25,7 +25,8 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 - [x] P1-T0 — Legacy isolation: move pre-migration content into `legacy/`; disable legacy CI.
 - [x] P1-T1 — Audit `legacy/ucx_flow_v3/` — list engine-agnostic vs. engine-specific content. → `plans/P1-AUDIT-ucx_flow_v3.md`
-- [ ] P1-T2 — Extract the 8 SDD layers into `framework/layers/`.
+- [x] P1-T2 — Extract the 8 SDD layers into `framework/layers/` (templates,
+  READMEs, index templates — 24 files). → `plans/P1-T2-PLAN.md`
 - [ ] P1-T3 — Extract `LAYER_REGISTRY.yaml` into `framework/registry/`.
 - [ ] P1-T4 — Extract governance + CHG overlay into `framework/governance/`.
 - [ ] P1-T5 — Define the shared conformance suite under `tests/conformance/`.

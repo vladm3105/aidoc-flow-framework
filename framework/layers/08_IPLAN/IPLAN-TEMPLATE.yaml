@@ -1,0 +1,163 @@
+# IPLAN-TEMPLATE.yaml — Implementation Plan (Permanent)
+# SDD Layer 8 — Mandatory execution bridge from SPEC to source code
+# One IPLAN per SPEC component.
+#
+# Permanent vs Temporary:
+#   Permanent IPLAN (this template): bridges SPEC to code for features/contracts.
+#   Temporary IPLAN (tmp/): bugfixes, corrections — no SPEC upstream.
+#   Registry: IPLAN-00_index.yaml tracks all permanent plans.
+#
+# IPLAN is the Layer 8 execution bridge from SPEC/TDD to code.
+
+metadata:
+  schema_version: "1.0"
+  document_type: "iplan-document"
+  layer: 8
+  total_sections: 6
+  last_updated: "2026-04-29"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+
+  c4_level:
+    _guidance: |
+      IPLAN is NOT a C4 level. It is the execution bridge between TDD
+      and Code. C4-L4 (Code) diagrams belong to the source code layer,
+      not to IPLAN documents.
+    value: none
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  _guidance: "One IPLAN per TDD component. Created when TDD reaches IPLAN-Ready >=90/100."
+  iplan_id: "IPLAN-NN"
+  source_spec: "@spec: SPEC-NN"
+  status: Draft  # Draft | In Progress | Completed
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author]"
+  complexity: 3  # 1=1 file, 5=architectural changes
+  estimated_files: 0
+  session_count: 0  # Incremented per session
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  _guidance: |
+    Declared file creation order. Tests first (TDD principle).
+    Each file tracked with status marker for session handoff.
+    One IPLAN per SPEC component — all files belong to the same component.
+  files:
+    - path: "tests/unit/test_[module].py"
+      order: 1
+      status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+      session: null
+      verified: false
+    - path: "src/[module]/[component].py"
+      order: 2
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "tests/integration/test_[module].py"
+      order: 3
+      status: NOT_STARTED
+      session: null
+      verified: false
+
+# =============================================================================
+# Section 3: Execution Commands
+# =============================================================================
+execution_commands:
+  _guidance: |
+    Runnable bash commands. The actual bridge from specification to code.
+    Three categories matching the implementation workflow.
+  setup:
+    - "python -m venv .venv && source .venv/bin/activate"
+    - "pip install -r requirements.txt"
+    - "mkdir -p src/[module] tests/unit tests/integration"
+  implementation:
+    - "# Create test file first (TDD): tests/unit/test_[module].py"
+    - "# Create implementation: src/[module]/[component].py"
+  validation:
+    - "python -m pytest tests/ -v --cov=src/[module] --cov-report=term-missing"
+    - "python -m mypy src/[module] --strict"
+    - "python -m ruff check src/[module]"
+
+# =============================================================================
+# Section 4: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  _guidance: |
+    Optional. Required when 3+ files depend on shared interfaces.
+    Contract types: Protocol Interface, Exception Hierarchy, State Machine,
+    Data Model, DI Interface.
+    State "No implementation contracts" if not applicable.
+  _antipatterns:
+    - "FAIL: contracts present but file count <3 — unnecessary overhead"
+    - "FAIL: contracts missing but file manifest has 5+ files — guaranteed integration failures"
+  provided:
+    contracts: []
+  consumed:
+    dependencies: []
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  _guidance: |
+    Critical for stateless executor calls. Each AI agent session is
+    independent — no memory across invocations. This section is the bridge.
+
+    Session startup protocol:
+      1. Read this session_handoff — identify last session's state
+      2. Check file_manifest — find next NOT_STARTED or PARTIAL file
+      3. Read partial_work description if resuming a PARTIAL step
+      4. Continue from that point — do NOT regenerate completed work
+
+    Handoff markers:
+      NOT_STARTED — file not yet begun
+      IN_PROGRESS — session actively working on this file
+      DONE — file complete and verified (tests pass)
+      PARTIAL — session ended mid-file (resume from partial_work)
+  sessions:
+    - date: "YYYY-MM-DD"
+      agent: "[AI agent / session identifier]"
+      files_touched:
+        - path: "src/[module]/[file].py"
+          action: created  # created | modified
+          status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+      partial_work: "[Exactly what's incomplete if session ended mid-step]"
+      blockers: "[Any blockers preventing next session]"
+      next_session_directive: "[What the next session should do first — cite file + step]"
+      validation_results:
+        tests_passing: false  # true | false | null
+        coverage: null  # percentage or null
+        lint_clean: false
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  upstream:
+    spec_references:
+      - "@spec: SPEC-NN"
+    tdd_references:
+      - "@tdd: TDD-NN"
+  downstream:
+    code_paths:
+      - "@code: src/[module]/"
+    test_paths:
+      - "@tests: tests/"
+  code_inventory:
+    _guidance: |
+      Audit trail: every file created/modified during implementation.
+      Verified = tests pass + lint clean. Populated by each session.
+    files:
+      - path: "src/[module]/[file].py"
+        status: created  # created | modified
+        session: 1
+        verified: false  # true after tests pass + lint clean

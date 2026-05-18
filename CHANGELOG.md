@@ -37,6 +37,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - Plan-review gate (D-0007): plans require a `## Review log` of ≥2 passes;
   `plans/PLAN-TEMPLATE.md` added; non-blocking `PreToolUse(git commit)` hook
   warns when a staged plan file falls short.
+- `framework/layers/` (P1-T2) — the 8 engine-agnostic SDD layer specs
+  extracted from `legacy/ucx_flow_v3/`: per layer a `*-TEMPLATE.yaml`, a
+  `README.md`, and a `*-00_index.TEMPLATE.*` index template (24 files). All
+  Hermes/MCP- and Claude-Code-specific content removed; legacy `SDD v3.2`
+  version strings neutralized.
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`
