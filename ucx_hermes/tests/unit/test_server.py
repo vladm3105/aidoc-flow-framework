@@ -110,6 +110,8 @@ class TestExecutorRegistry:
         assert "api/claude-sonnet" in names
         assert "api/gemini-pro" in names
         assert "api/openrouter" in names
+        assert "api/deepseek-v4-pro" in names
+        assert "api/ollama-qwen-coder" in names
 
     def test_builtin_api_stubs_registered(self):
         executors = list_executors()
@@ -122,7 +124,9 @@ class TestExecutorRegistry:
         config = get_executor("api/gpt-4o")
         assert config.name == "api/gpt-4o"
         assert config.executor_type == ExecutorType.API
-        assert config.model == "gpt-4o"
+        assert config.model == "openai/openai-gpt-4o"
+        assert config.api_base == "http://localhost:4001/v1"
+        assert config.api_key_env == "LITELLM_MASTER_KEY"
 
     def test_get_unknown_executor_raises(self):
         with pytest.raises(KeyError, match="Unknown executor"):
@@ -159,13 +163,14 @@ class TestExecutorRegistry:
         config = get_executor("api/gpt-4o")
         assert config.executor_type == ExecutorType.API
         assert config.status == "active"
-        assert config.model == "gpt-4o"
+        assert config.model == "openai/openai-gpt-4o"
 
     def test_openrouter_executor_registered(self):
         config = get_executor("api/openrouter")
         assert config.executor_type == ExecutorType.API
-        assert config.model == "openrouter/auto"
-        assert config.api_key_env == "OPENROUTER_API_KEY"
+        assert config.model == "openai/openrouter-claude-3.5-sonnet"
+        assert config.api_base == "http://localhost:4001/v1"
+        assert config.api_key_env == "LITELLM_MASTER_KEY"
 
     def test_openrouter_executor_is_active(self):
         config = get_executor("api/openrouter")

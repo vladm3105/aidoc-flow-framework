@@ -17,10 +17,13 @@ This contract covers indexed mode.
 
 ### 3.1 Python and import path
 
-- Python: `3.11` or `3.12`.
+- Python: `3.12.13`.
 - Export framework root on `PYTHONPATH`.
+- Use framework bootstrap script to create/update shared virtual environment.
 
 ```bash
+cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh --with-kb --require-python-version 3.12.13
 export PYTHONPATH=/opt/data/ucx_framework
 ```
 
@@ -100,7 +103,7 @@ Expected:
 Start MCP server from framework root:
 
 ```bash
-python -m ucx_kb.mcp.server
+/opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
 ```
 
 Required MCP tools contract:
@@ -115,9 +118,9 @@ If process exits on import/startup, treat as contract failure and resolve enviro
 Run in this order from framework root:
 
 ```bash
-PYTHONPATH=/opt/data/ucx_framework python -m pytest -q ucx_kb
-PYTHONPATH=/opt/data/ucx_framework python -m ucx_kb.mcp.server
-PYTHONPATH=/opt/data/ucx_framework python ucx_kb/scripts/pilot_validate.py
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -m pytest -q ucx_kb
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python ucx_kb/scripts/pilot_validate.py
 ```
 
 Pass criteria:
@@ -141,13 +144,13 @@ For each downstream project:
 3. Run one ingestion command on project corpus:
 
 ```bash
-PYTHONPATH=/opt/data/ucx_framework python ucx_kb/orchestrator.py /path/to/project/docs --pattern "*.yaml"
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python ucx_kb/orchestrator.py /path/to/project/docs --pattern "*.yaml"
 ```
 
 4. Validate retrieval:
 
 ```bash
-PYTHONPATH=/opt/data/ucx_framework python ucx_kb/scripts/pilot_validate.py --out ucx_kb/tmp/pilot_validation.json
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python ucx_kb/scripts/pilot_validate.py --out ucx_kb/tmp/pilot_validation.json
 ```
 
 ## 9. Known Framework Gap (Must Fix Before Release Tag)

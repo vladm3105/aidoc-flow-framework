@@ -36,6 +36,8 @@ support.
 Planning-first rule:
 
 - Before any layer document creation, Hermes completes planning-first artifacts (layer roadmap, planning index, changelog plan), runs a gap review pass, fixes or explicitly defers gaps, creates required plan artifacts (document-layer IPLAN and/or permanent development plan), and records approval.
+- Before BRD `sdd_create_build`, Hermes confirms runtime startup gate: `sdd-lifecycle` is running, and in KB-enabled mode `project-knowledge` is running with `kb_status`/`kb_graph_status` success.
+- Environment bootstrap and required framework tool availability are mandatory before any document creation stage starts.
 - No document/test/code implementation starts without approved plans.
 
 Use API executors for LLM stages (`sdd_review`, `sdd_remediate`).
@@ -118,6 +120,7 @@ Hermes: Block lifecycle creation until planning approval exists
 ### Stage 1: Scaffold
 
 ```
+Hermes: Confirm runtime startup gate before BRD creation (`sdd-lifecycle`, optional `project-knowledge`)
 Hermes: Call sdd_init for project /opt/data/b-local/b-local-telegram-ui
 UCX: Creates UCX/ directory with templates, personas, schemas
 Hermes: Confirm scaffold created, show persona mappings

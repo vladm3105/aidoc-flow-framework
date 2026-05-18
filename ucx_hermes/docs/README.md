@@ -313,16 +313,32 @@ Use this checklist to make UCX ready for the first project runtime:
 2. Create layer roadmap, planning index, and layer changelog plan artifacts.
 3. Review planning artifacts for gaps and resolve or defer with explicit rationale.
 4. Create and approve per-document IPLAN artifacts (human reviewer or independent LLM-as-judge session).
-5. Register MCP server `sdd-lifecycle` in Hermes config.
-6. Start Hermes session and enable `ucx-sdd-bridge`.
-7. Run `sdd_init` for the project root.
-8. Run `sdd_preflight` with `context=any`.
-9. Confirm persona mappings with `sdd_personas_show`.
-10. Confirm environment keys with `sdd_env_show`.
+5. Create shared runtime virtual environment at `/opt/data/ucx_framework/.venv`.
+6. Install runtime dependencies for `ucx_hermes` (`[api]` extra required for LLM stages).
+7. Install optional `ucx_kb` runtime dependencies when `project-knowledge` MCP is enabled.
+8. Register MCP server `sdd-lifecycle` in Hermes config.
+9. Start Hermes session and enable `ucx-sdd-bridge`.
+10. Start `ucx_hermes` MCP runtime (`sdd-lifecycle`) and verify tool handshake.
+11. Start `ucx_kb` MCP runtime (`project-knowledge`) when KB mode is enabled and verify `kb_status`/`kb_graph_status`.
+12. Run `sdd_init` for the project root.
+13. Run `sdd_preflight` with `context=any`.
+14. Confirm persona mappings with `sdd_personas_show`.
+15. Confirm environment keys with `sdd_env_show`.
+16. Create BRD only after startup and readiness checks pass.
 
 Command examples:
 
 ```text
+cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh
+
+# Optional when KB MCP server is enabled:
+scripts/bootstrap_ucx_venv.sh --with-kb
+
+# Runtime startup gate before BRD creation:
+/opt/data/ucx_framework/.venv/bin/python -m mcp_server.server
+/opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
+
 sdd_init project=/absolute/path/to/project
 sdd_preflight project=/absolute/path/to/project context=any
 sdd_personas_show project=/absolute/path/to/project
@@ -348,9 +364,18 @@ Preflight pass criteria (`sdd_preflight context=any`):
 
 Minimum checks before first lifecycle run:
 
+- `/opt/data/ucx_framework/.venv/bin/python` exists and reports Python `>=3.12`.
+- `mcp_server` import check passes in the shared virtual environment.
+- `sdd-lifecycle` MCP runtime is running and reachable from Hermes.
+- `project-knowledge` MCP runtime is running and `kb_status` plus `kb_graph_status` return without contract errors (KB mode).
 - `UCX/` scaffold exists for the target project.
 - `persona_mappings.yaml` exists and persona mapping health check does not report missing persona files.
 - Required executor environment keys are present for the configured provider path.
+
+BRD creation gate:
+
+- Do not start `sdd_create_build` for BRD until planning-first artifacts are approved, runtime startup checks pass, and `sdd_preflight` returns `ready` or approved `degraded`.
+- Environment bootstrap and all required framework tools must be available before any document creation stage starts.
 
 ## 9. Plans and Reports
 

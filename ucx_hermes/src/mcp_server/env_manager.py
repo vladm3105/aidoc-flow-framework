@@ -132,7 +132,13 @@ def show_project_env(project_root: Path) -> dict[str, Any]:
     safe_keys = [k for k in all_keys if k not in BLOCKED_ENV_VARS]
 
     # API executor readiness: check if expected API key vars are present
-    api_key_vars = {"OPENAI_API_KEY", "ANTHROPIC_API_KEY", "GEMINI_API_KEY", "OPENROUTER_API_KEY"}
+    api_key_vars = {
+        "LITELLM_MASTER_KEY",
+        "OPENAI_API_KEY",
+        "ANTHROPIC_API_KEY",
+        "GEMINI_API_KEY",
+        "OPENROUTER_API_KEY",
+    }
     api_keys_present = sorted(api_key_vars & set(safe_keys))
     ucx_overrides = {k: "(set)" for k in safe_keys if k.startswith("UCX_EXECUTOR_")}
 

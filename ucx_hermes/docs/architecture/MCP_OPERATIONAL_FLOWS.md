@@ -12,7 +12,7 @@
 ## 1. Flow Set
 
 - planning-first governance flow: analyze sources -> roadmap -> planning-index and changelog plan -> gap review and closure -> per-document IPLAN -> plan approval
-- project initialization flow: `init` -> `create-build`
+- project initialization flow: `venv-bootstrap` -> `runtime-start` -> `init` -> `create-build`
 - document lifecycle flow (5 stages): `create` -> `validate` -> `review` -> `remediate` -> `remediate --fix`
 - pull-request governance flow (up to 2 rounds): `validate` -> `review` -> `remediate` -> post-remediation `validate` -> Hermes final blocker-gap check
 - review prompt flow: `review-build` and `review`
@@ -86,7 +86,39 @@ Hard gate:
 
 This flow runs once per project to create the project-specific UCX scaffold that all subsequent document lifecycle commands depend on.
 
-### Stage A — Scaffold (`init`)
+### Stage A.0 — Runtime Environment Bootstrap (`venv-bootstrap`)
+
+Required bootstrap commands:
+
+```bash
+cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh
+```
+
+Optional when `project-knowledge` MCP server is enabled:
+
+```bash
+cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh --with-kb
+```
+
+Validation checks:
+
+```bash
+/opt/data/ucx_framework/.venv/bin/python --version
+/opt/data/ucx_framework/.venv/bin/python -c "import mcp_server; print('ucx_hermes ok')"
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -c "import ucx_kb; print('ucx_kb ok')"
+```
+
+Rules:
+
+- Shared virtual environment path is fixed at `/opt/data/ucx_framework/.venv` for all framework MCP runtimes.
+- `ucx_hermes[api]` install is required before any LLM-enabled review/remediation stage.
+- KB import validation is required only when KB MCP tools are part of the project runtime.
+
+---
+
+### Stage A.1 — Scaffold (`init`)
 
 **Command**: `init`
 
@@ -117,6 +149,31 @@ This flow runs once per project to create the project-specific UCX scaffold that
 - `--update-mappings` without `--update` is invalid and fails command validation.
 - Content-identical files are skipped (no unnecessary writes).
 - Result reports `created_paths`, `skipped_paths`, `updated_paths`, `protected_paths`.
+
+---
+
+### Stage A.1.5 — Runtime Startup Gate (`runtime-start`)
+
+Start required MCP runtimes before BRD creation:
+
+```bash
+# UCX lifecycle runtime
+/opt/data/ucx_framework/.venv/bin/python -m mcp_server.server
+
+# UCX KB runtime (required only in KB-enabled projects)
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
+```
+
+Readiness checks before first BRD prompt build:
+
+- Hermes MCP client can connect to `sdd-lifecycle`.
+- `sdd_preflight` passes with status `ready` or approved `degraded`.
+- KB-enabled projects: `kb_status` and `kb_graph_status` return without contract errors.
+
+Hard gate:
+
+- Do not run `sdd_create_build` for BRD until runtime-start checks pass.
+- Environment bootstrap and all required framework tools must be available before any document creation stage starts.
 
 ---
 
@@ -202,6 +259,12 @@ Environment variables from `.env` are auto-loaded when executors run. Merge orde
 ### Initialization Flow Summary
 
 ```
+venv-bootstrap
+  └─ creates /opt/data/ucx_framework/.venv and installs runtime dependencies
+        ↓
+runtime-start
+  └─ starts sdd-lifecycle (and project-knowledge when enabled) and verifies readiness
+        ↓
 init
   └─ writes UCX/ scaffold (personas, persona_mappings.yaml, templates, schemas, prompts)
         ↓
@@ -214,7 +277,7 @@ create
   └─ writes TYPE-NN_{slug}.md  ← stage 1 of document lifecycle
 ```
 
-The `init` command must be run before any `create-build` or `create` command. It is safe to re-run; it will skip files that already exist.
+The `venv-bootstrap` stage must complete before `runtime-start` and `init`. The `runtime-start` gate must pass before BRD `create-build`. The `init` command must run before any `create-build` or `create` command. `init` is safe to re-run; it will skip files that already exist.
 
 ---
 

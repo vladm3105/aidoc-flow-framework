@@ -23,14 +23,14 @@ Required tools:
 
 - Docker Engine
 - Docker Compose (v2)
-- Python 3.11+
+- Python 3.12.13
 
 Recommended checks:
 
 ```bash
 docker --version
 docker compose version
-python --version
+python3.12 --version
 ```
 
 ## 3) Environment Configuration
@@ -97,20 +97,15 @@ Run from framework root:
 
 ```bash
 cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh --with-kb --require-python-version 3.12.13
 export PYTHONPATH=/opt/data/ucx_framework
-```
-
-Optional dependency install (if needed in your environment):
-
-```bash
-pip install -U psycopg neo4j fastapi uvicorn python-dotenv pyyaml requests tenacity ratelimit mcp
 ```
 
 ## 7) Start MCP Server
 
 ```bash
 cd /opt/data/ucx_framework
-python -m ucx_kb.mcp.server
+/opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
 ```
 
 Exposed tool contracts:
@@ -124,7 +119,7 @@ Exposed tool contracts:
 
 ```bash
 cd /opt/data/ucx_framework
-python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
 ```
 
 ### Backfill legacy corpus
@@ -132,13 +127,13 @@ python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
 Dry run:
 
 ```bash
-python ucx_kb/scripts/backfill_legacy.py --source /path/to/legacy --dry-run
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/scripts/backfill_legacy.py --source /path/to/legacy --dry-run
 ```
 
 Execute:
 
 ```bash
-python ucx_kb/scripts/backfill_legacy.py --source /path/to/legacy --pattern "*.yaml"
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/scripts/backfill_legacy.py --source /path/to/legacy --pattern "*.yaml"
 ```
 
 ## 9) Validation and Health
@@ -147,15 +142,15 @@ Pilot validation report:
 
 ```bash
 cd /opt/data/ucx_framework
-python ucx_kb/scripts/pilot_validate.py
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/scripts/pilot_validate.py
 ```
 
 Tooling checks:
 
 ```bash
-python ucx_kb/rag_tools/health_monitor.py -v
-python ucx_kb/rag_tools/query_router.py "what requirements exist" --analyze-only
-python ucx_kb/rag_tools/batch_indexer.py --source ucx_kb --dry-run --service both
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/rag_tools/health_monitor.py -v
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/rag_tools/query_router.py "what requirements exist" --analyze-only
+/opt/data/ucx_framework/.venv/bin/python ucx_kb/rag_tools/batch_indexer.py --source ucx_kb --dry-run --service both
 ```
 
 ## 10) Failure Modes
@@ -164,6 +159,7 @@ python ucx_kb/rag_tools/batch_indexer.py --source ucx_kb --dry-run --service bot
 |---|---|---|
 | `connection refused` to PostgreSQL | DB container not running or port conflict | Check `docker compose ... ps` and `PG_PORT` |
 | Neo4j auth failure | `NEO4J_PASS` mismatch | Align `.env` with running container credentials |
+| `Python 3.12.13 is required` | Runtime interpreter is not 3.12.13 | Recreate environment with `scripts/bootstrap_ucx_venv.sh --with-kb --require-python-version 3.12.13` |
 | `ModuleNotFoundError: ucx_kb` | `PYTHONPATH` not set to framework root | `export PYTHONPATH=/opt/data/ucx_framework` |
 | RAG schema missing | PostgreSQL initialized without schema mount | Recreate container volume or run schema init manually |
 | No graph context results | Graph has no committed entities | Run extraction via orchestrator/backfill |
@@ -172,6 +168,7 @@ python ucx_kb/rag_tools/batch_indexer.py --source ucx_kb --dry-run --service bot
 
 - [ ] Copy `.env.example` to `.env`
 - [ ] Start `docker-compose.db.yml`
+- [ ] Bootstrap shared `.venv` with Python 3.12.13 (`scripts/bootstrap_ucx_venv.sh --with-kb --require-python-version 3.12.13`)
 - [ ] Export `PYTHONPATH`
 - [ ] Start `ucx_kb.mcp.server`
 - [ ] Run folder ingestion

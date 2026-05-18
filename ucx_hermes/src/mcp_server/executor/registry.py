@@ -14,6 +14,9 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+LITELLM_PROXY_API_BASE = "http://localhost:4001/v1"
+LITELLM_PROXY_API_KEY_ENV = "LITELLM_MASTER_KEY"
+
 
 class ExecutorType(str, Enum):
     API = "api"
@@ -37,20 +40,49 @@ class ExecutorConfig:
 
 BUILTIN_API_EXECUTORS: dict[str, dict] = {
     "api/gpt-4o": {
-        "model": "gpt-4o",
-        "api_key_env": "OPENAI_API_KEY",
+        "model": "openai/openai-gpt-4o",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
     },
     "api/claude-sonnet": {
-        "model": "claude-sonnet-4-20250514",
-        "api_key_env": "ANTHROPIC_API_KEY",
+        "model": "openai/openrouter-claude-3.5-sonnet",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
     },
     "api/gemini-pro": {
-        "model": "gemini/gemini-2.5-pro",
-        "api_key_env": "GEMINI_API_KEY",
+        "model": "openai/gemini-gemini-2.0-flash",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
     },
     "api/openrouter": {
-        "model": "openrouter/auto",
-        "api_key_env": "OPENROUTER_API_KEY",
+        "model": "openai/openrouter-claude-3.5-sonnet",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
+    },
+    "api/deepseek-v4-pro": {
+        "model": "openai/deepseek-deepseek-v4-pro",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
+    },
+    "api/ollama-qwen-coder": {
+        "model": "openai/ollama-qwen3-coder-next:cloud",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
+    },
+    "api/ollama-qwen": {
+        "model": "openai/ollama-qwen3.6:27b",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
+    },
+    "api/ollama-gemma": {
+        "model": "openai/ollama-gemma4:26b",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
+    },
+    "api/ollama-kimi": {
+        "model": "openai/ollama-kimi-k2.6:cloud",
+        "api_base": LITELLM_PROXY_API_BASE,
+        "api_key_env": LITELLM_PROXY_API_KEY_ENV,
     },
 }
 

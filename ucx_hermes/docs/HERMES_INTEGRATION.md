@@ -58,18 +58,39 @@ Document Artifacts (ucx_flow_v3/)
 
 ### 1. Hermes MCP Config
 
-In `~/.hermes/.mcp.json`:
+Hermes should route model traffic through the local LiteLLM proxy rather than
+calling Ollama directly. In `~/.hermes/config.yaml`, use:
 
-```json
-{
-  "mcpServers": {
-    "sdd-lifecycle": {
-      "command": "/opt/data/ucx_framework/.venv/bin/python",
-      "args": ["-m", "mcp_server.server"],
-      "cwd": "/opt/data/ucx_framework/ucx_hermes/src"
-    }
-  }
-}
+```yaml
+model:
+  api_key: ""
+  base_url: http://127.0.0.1:4001/v1
+  default: deepseek-deepseek-v4-pro
+  provider: litellm
+
+providers:
+  litellm:
+    api: http://127.0.0.1:4001/v1
+    key_env: LITELLM_MASTER_KEY
+    default_model: deepseek-deepseek-v4-pro
+    name: LiteLLM
+```
+
+Set `LITELLM_MASTER_KEY` in `~/.hermes/.env`. Ollama-hosted models remain
+available through their LiteLLM model aliases.
+
+In `~/.hermes/config.yaml`, the MCP server entry should include:
+
+```yaml
+mcp_servers:
+  sdd-lifecycle:
+    command: /opt/data/ucx_framework/.venv/bin/python
+    args:
+      - -m
+      - mcp_server.server
+    cwd: /opt/data/ucx_framework/ucx_hermes/src
+    env:
+      PYTHONPATH: /opt/data/ucx_framework/ucx_hermes/src
 ```
 
 ### 2. Hermes Skills
@@ -119,19 +140,36 @@ Skill activation matrix:
 For each project using UCX:
 
 ```bash
-# 1) Start Hermes session
+# 1) Create shared framework virtual environment (required once per machine)
+cd /opt/data/ucx_framework
+scripts/bootstrap_ucx_venv.sh
+
+# Optional when project-knowledge MCP is enabled:
+scripts/bootstrap_ucx_venv.sh --with-kb
+
+# 2) Validate runtime imports
+/opt/data/ucx_framework/.venv/bin/python -c "import mcp_server; print('ucx_hermes ok')"
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -c "import ucx_kb; print('ucx_kb ok')"
+
+# 3) Start MCP runtimes before BRD lifecycle work
+/opt/data/ucx_framework/.venv/bin/python -m mcp_server.server
+
+# Required when KB mode is enabled:
+PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
+
+# 4) Start Hermes session
 hermes chat
 
-# 2) Enable UCX bridge skill in the Hermes session
+# 5) Enable UCX bridge skill in the Hermes session
 /skill ucx-sdd-bridge
 
-# 3) Initialize project-scoped UCX assets (required once per project)
+# 6) Initialize project-scoped UCX assets (required once per project)
 sdd_init project=/absolute/path/to/project
 
-# 4) Verify runtime readiness for this project
+# 7) Verify runtime readiness for this project
 sdd_preflight project=/absolute/path/to/project context=any
 
-# 5) (Optional) inspect project persona mappings and environment keys
+# 8) (Optional) inspect project persona mappings and environment keys
 sdd_personas_show project=/absolute/path/to/project
 sdd_env_show project=/absolute/path/to/project
 ```
@@ -152,9 +190,18 @@ Preflight pass criteria (`sdd_preflight context=any`):
 
 Minimum checks before first lifecycle run:
 
+- `/opt/data/ucx_framework/.venv/bin/python` exists and reports Python `>=3.12`.
+- `mcp_server` import check passes in the shared virtual environment.
+- `sdd-lifecycle` runtime is started before BRD prompt build.
+- KB-enabled projects: `project-knowledge` runtime is started before BRD prompt build.
 - `UCX/` scaffold exists for the target project.
 - `persona_mappings.yaml` exists and persona mapping health check does not report missing persona files.
 - Required executor environment keys are present for the configured provider path.
+
+BRD start gate:
+
+- Do not run BRD `sdd_create_build` until `sdd-lifecycle` startup is confirmed, and in KB mode `kb_status` plus `kb_graph_status` return successfully.
+- Environment bootstrap and required framework tool availability are mandatory before any document creation stage starts.
 
 ### 4. KB Preflight and Degraded Mode
 
@@ -379,8 +426,8 @@ Merge: blocked until human review resolves escalation or subsequent round passes
 | Pattern | Risk | Safe Alternative |
 |---------|------|------------------|
 | `sdd_validate ... executor=claude` | Unsupported parameter/path | `sdd_validate` |
-| `sdd_review ... executor=claude` | Unknown executor (CLI not supported) | Use API executor (`api/openrouter` or project API override) |
-| `sdd_remediate ... executor=claude fix=true` | Unknown executor (CLI not supported) | Use API executor (`api/claude-sonnet` or project API override) |
+| `sdd_review ... executor=claude` | Unknown executor (CLI not supported) | Use LiteLLM-backed API executor (`api/openrouter`, `api/deepseek-v4-pro`, or project API override) |
+| `sdd_remediate ... executor=claude fix=true` | Unknown executor (CLI not supported) | Use LiteLLM-backed API executor (`api/claude-sonnet`, `api/deepseek-v4-pro`, or project API override) |
 | `sdd_run_lifecycle ... executor=claude` | Unknown executor in review/remediate stages | Use API executor names for LLM stages |
 | Auto-applying remediation without gate policy | May introduce unresolved blocker gaps | Apply round gates and escalate on Round 2 failure |
 
@@ -431,7 +478,8 @@ Next action: review
 ### Unknown executor error for `claude`/`codex`
 
 **Expected behavior.** The runtime does not support CLI executors.
-Use API executor names such as `api/openrouter`, `api/claude-sonnet`,
+Use LiteLLM-backed API executor names such as `api/openrouter`,
+`api/claude-sonnet`, `api/deepseek-v4-pro`, `api/ollama-qwen-coder`,
 or project API overrides from `UCX/executors.json`.
 
 ### Validation report shows errors I already fixed
