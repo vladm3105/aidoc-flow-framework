@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T5                                      |
 | Depends on | P1-T2/T3/T4 (`framework/` populated)       |
-| Status     | PLANNED — 2026-05-18T20:50:00Z             |
+| Status     | DONE — 2026-05-18T21:25:00Z                |
 | Feeds      | Phase 4 (platform conformance), P1-T6      |
 
 ## Objective
@@ -108,6 +108,29 @@ documented contract, not pretend stubs.
 | R2 | Hygiene patterns mis-flag agnostic `sdd_layer` (P1-T3 G1 repeat) | verb-specific `sdd_(validate\|create\|…)` pattern; `sdd_layer` not matched |
 | R3 | Hygiene scan flags the test files themselves (they contain the token literals) | scan scope is `framework/` only, never `tests/` |
 | R4 | Suite finds a real `framework/` defect on first run | treat as a finding — fix `framework/`, never weaken the test |
+
+## Implementation (2026-05-18T21:25:00Z)
+
+Created `tests/conformance/` — `_spec.py` helper, 4 test modules
+(`test_registry`, `test_layers`, `test_governance`, `test_spec_hygiene`),
+`requirements.txt`, `README.md`. **22 tests, all green** via
+`python3 -m unittest discover -s tests/conformance`. Decision D-0008 recorded
+(stdlib `unittest`, no `pytest`; flat package-less layout — the planned
+`__init__.py` was dropped for clean discovery).
+
+Two findings during implementation:
+
+- **F1 — registry `derived_from` provenance (plan gap).** The plan's review
+  did not catch that `LAYER_REGISTRY.yaml` intentionally keeps
+  `derived_from: "SDD v3.2"` as a provenance field. A blanket `SDD v3` ban
+  would false-positive on it (the P1-T3 G1 class of bug). The hygiene test's
+  `SDD v3` check carves out lines containing `derived_from`; documented in
+  `test_spec_hygiene.py`.
+- **F2 — non-conformant `framework/README.md`.** The suite (working as
+  intended) flagged the placeholder `framework/README.md` for naming a
+  specific engine and `legacy ucx_` paths. Resolved by writing the full
+  engine-agnostic `framework/README.md` now (user decision) — pulled forward
+  from P1-T7, which is reduced to the 4 methodology docs.
 
 ## Review log
 

@@ -52,6 +52,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   index template, 7 gates, 2 companion templates), 18 files. Engine-specific
   skill references and `MCP` mentions neutralized; CHG extracted spec-only
   (not enforced until post-Phase 5).
+- `tests/conformance/` (P1-T5) — the shared conformance suite: 22 stdlib
+  `unittest` tests covering registry self-consistency, layer templates,
+  governance files, and spec hygiene (no engine tokens in `framework/`), plus
+  the documented platform-conformance contract for Phase 4. No `pytest`
+  dependency (D-0008).
+- `framework/README.md` — the engine-agnostic spec overview (8-layer flow, C4
+  alignment, layout, conformance, versioning), replacing the scaffolding
+  placeholder.
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`

@@ -10,6 +10,21 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0008 — Conformance suite is stdlib-only (`unittest`)
+
+- **Date:** 2026-05-18T21:20:00Z
+- **Decision:** Build `tests/conformance/` on the Python 3.11 standard library
+  (`unittest`) plus `PyYAML`. No `pytest` dependency.
+- **Why:** The conformance suite is the shared, engine-agnostic contract; it
+  must be runnable by any platform with zero install friction. `pytest` is not
+  installed in the environment, and `python -m unittest discover` runs the
+  suite anywhere. `unittest.TestCase` classes remain `pytest`-discoverable for
+  platforms that prefer that runner.
+- **Notes:** Discovery uses a flat package-less layout (`tests/conformance/`
+  with no `__init__.py`) so test modules can `import _spec` directly under
+  `unittest discover`. The plan listed an `__init__.py`; it was dropped during
+  implementation for clean discovery.
+
 ## D-0007 — Plan review is a two-pass, recorded gate
 
 - **Date:** 2026-05-18T18:45:00Z

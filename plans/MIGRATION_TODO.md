@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-18T20:30:00Z                       |
+| Last updated     | 2026-05-18T21:25:00Z                       |
 
 ---
 
@@ -30,11 +30,13 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P1-T3 — Extract `LAYER_REGISTRY.yaml` into `framework/registry/`. → `plans/P1-T3-PLAN.md`
 - [x] P1-T4 — Extract governance + CHG overlay into `framework/governance/`
   (18 files). → `plans/P1-T4-PLAN.md`
-- [ ] P1-T5 — Define the shared conformance suite under `tests/conformance/`.
+- [x] P1-T5 — Define the shared conformance suite under `tests/conformance/`
+  (22 tests, framework self-consistency). → `plans/P1-T5-PLAN.md`
 - [ ] P1-T6 — Create `framework/VERSION`; tag first spec release.
 - [ ] P1-T7 — Framework root assembly: extract the 4 methodology docs
   (`SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`,
-  `TESTING_STRATEGY_TDD`) and the framework `README.md` into `framework/`.
+  `TESTING_STRATEGY_TDD`) into `framework/`. (Framework `README.md` done early
+  in P1-T5.)
 
 ## Phase 2 — Platform A: Hermes Re-homing → `v0.3.0`
 
