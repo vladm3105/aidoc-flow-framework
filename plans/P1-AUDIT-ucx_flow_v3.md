@@ -86,14 +86,14 @@ CHG *spec* is engine-agnostic and is extracted now so `framework/` is complete.
 4. `DIAGRAM_STANDARDS.md` cross-refs to `.claude/skills/mermaid-gen` /
    `charts-flow` — Claude-Code-specific. → strip; the Mermaid rule stays.
 
-## Open questions for P1-T2..T4
+## Open questions for P1-T2..T4 — RESOLVED
 
-- **Index files:** the `*-00_index` *format* is reusable — should `framework/`
-  ship an index *template* even though instance index files are dropped?
-- **`framework/` version:** legacy is "SDD v3.2"; the spec versions
-  independently from here (`framework/VERSION`, P1-T6) — pick the first number.
-- **CHG placement:** confirm `framework/governance/chg/` as the home; CHG stays
-  spec-only (no enforcement) until post-Phase 5.
+- **Index files:** ship per-layer index templates in `framework/` — resolved
+  by D-0005.
+- **`framework/` version:** start at `0.1.0` with `derived_from: "SDD v3.2"` —
+  resolved by D-0006.
+- **CHG placement:** `framework/governance/chg/`, spec-only (no enforcement)
+  until post-Phase 5.
 
 ## Recommended target layout (input to P1-T2..T4)
 

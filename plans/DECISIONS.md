@@ -8,6 +8,28 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+---
+
+## D-0006 — First `framework/` spec version is `0.1.0`
+
+- **Date:** 2026-05-18T18:00:00Z
+- **Decision:** The extracted `framework/` spec starts its independent version
+  stream at `0.1.0`, carrying a `derived_from: "SDD v3.2"` metadata field.
+  `1.0.0` is reserved for when both platforms pass the shared conformance suite.
+- **Why:** The content is mature, but as a freshly re-packaged engine-agnostic
+  artifact it is not yet conformance-proven and no platform is wired to it.
+  `0.x` is the honest signal; the lineage field preserves provenance.
+
+## D-0005 — `framework/` ships per-layer index templates
+
+- **Date:** 2026-05-18T18:00:00Z
+- **Decision:** Each `framework/layers/` directory ships a
+  `{TYPE}-00_index.TEMPLATE.{md,yaml}` skeleton. Legacy `*-00_index.*` instance
+  files are dropped (project data, not spec).
+- **Why:** The index/registry *format* is a conformance concern — both
+  platforms must produce and validate index files identically. Pinning the
+  format in the spec prevents platform divergence.
+
 ## D-0004 — Compaction/continuity automation via hooks
 
 - **Date:** 2026-05-18T17:27:00Z

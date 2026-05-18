@@ -39,9 +39,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Open questions
 
-- Ship an index *template* in `framework/` even though instance index files
-  are dropped? (see audit)
-- First `framework/VERSION` number (legacy is "SDD v3.2").
+- None outstanding. (D-0005: ship per-layer index templates; D-0006:
+  `framework/` version starts at `0.1.0`.)
 
 ## Log
 
