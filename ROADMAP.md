@@ -66,9 +66,13 @@ The *project-level* version below tracks migration milestones only.
 - Legacy trees archived.
 - Tag `v1.0.0`; platforms tag their own first stable releases.
 
-## Post-Migration
+## Post-Migration — Tracked TODOs
 
 Change management (the gated CHG process) is **deliberately deferred** during
-migration. It is re-introduced after Phase 5 — as the process governing
-changes to the `framework/` spec, and as a capability both platforms ship.
-See `docs/PROJECT.md` § Change Management.
+migration. It is re-introduced after Phase 5. See `docs/PROJECT.md` §
+Change Management for the full policy.
+
+| TODO | Decision (recorded) | Revisit |
+|------|---------------------|---------|
+| **CHG-D1 — CHG implementation model** | CHG is implemented as **skills + CI/CD**, not a monolith. Skills handle authoring and the automatable gate checks (schema, upstream tags, traceability, gate report + `GATE_APPROVAL_FORM`). CI/CD enforces the gate as a required status check; the human sign-off half is enforced by GitHub branch protection / required reviewers — a skill must never self-approve. Implemented twice against the same `framework/` spec: skills + CI workflow in the Claude Code plugin, server-side in Hermes. | Post-Phase 5 |
+| **CHG-D2 — CHG as a `framework/` decision** | Record CHG-D1 as a formal decision in `framework/governance/` when CHG returns, since both platforms implement it from the shared spec. | Post-Phase 5 |

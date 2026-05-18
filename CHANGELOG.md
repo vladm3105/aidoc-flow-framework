@@ -19,6 +19,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   - `platforms/hermes/` and `platforms/claude-code-plugin/` directories.
   - `framework/` directory placeholder for the shared engine-agnostic spec.
 
+- CHG implementation decision recorded as tracked TODO (ROADMAP CHG-D1/D2,
+  `docs/PROJECT.md` § CHG implementation model): CHG to be built as
+  skills + CI/CD post-Phase 5.
+
 ### Notes
 - Forked from `ucx_framework` v0.20.4 (`main`).
 - The gated CHG change-management process is intentionally not applied during

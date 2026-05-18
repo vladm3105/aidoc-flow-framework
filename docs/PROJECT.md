@@ -82,3 +82,22 @@ Post-migration, the gated CHG process returns in two roles:
 
 Per-platform internal development continues under ordinary SemVer + changelog
 + PR review — the gated process is not applied to a platform's own commits.
+
+### CHG implementation model (TODO — tracked as ROADMAP CHG-D1)
+
+> Not built during migration. Recorded here to revisit post-Phase 5.
+
+CHG is implemented as **skills + CI/CD**, split by responsibility:
+
+- **Skills** — authoring (CHG document, impact assessment, cascading layer
+  edits) and the *automatable* gate checks (schema validity, upstream tags,
+  traceability, `GATE_APPROVAL_FORM` preparation, pass/fail gate report).
+- **CI/CD** — runs the gate-validator skill on every PR as a required status
+  check; blocks merge on failure.
+- **Repo settings** — the *human* gate (e.g. C3 board sign-off) is enforced by
+  GitHub branch protection / required reviewers. A skill prepares and verifies
+  the approval form but is never the authority that grants approval.
+
+Implemented twice against the same `framework/` spec — skills + CI workflow in
+the Claude Code plugin, server-side in Hermes — validated by the shared
+conformance suite.
