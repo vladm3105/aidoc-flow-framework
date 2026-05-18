@@ -40,6 +40,9 @@ project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
   then `v1.0.0` at cutover).
 - **Cutover:** at Phase 5 the new project replaces `main`. Until then `main`
   remains the legacy `ucx_framework`.
+- **`main` is protected (locked / read-only) for the duration of the
+  migration.** No changes land on `main` until the Phase 5 cutover; all
+  migration work happens on `claude/multi-platform-migration-AamWB`.
 - Platforms tag their own releases independently once scaffolded.
 
 ## 4. Milestones
