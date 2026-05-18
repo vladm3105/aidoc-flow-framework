@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-18T00:00:00Z                       |
+| Last updated  | 2026-05-18T17:27:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — Framework Spec Extraction        |
 | Next task     | P1-T1 — audit `legacy/ucx_flow_v3/`        |
@@ -22,6 +22,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   disabled legacy CI; rewrote root `README.md`; repointed `.mcp.json`.
 - 2026-05-18 — Added `plans/` workspace (`README.md`, `MIGRATION_TODO.md`).
 - 2026-05-18 — Added root `CLAUDE.md` project memory + development workflow.
+- 2026-05-18 — Added `plans/DECISIONS.md` decision log; wired `PreCompact`
+  (snapshot) and `SessionStart` (handoff reload) hooks under `.claude/`.
 
 ## Next steps
 
@@ -36,4 +38,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Log
 
-- 2026-05-18 — Handoff record created.
+- 2026-05-18T00:00:00Z — Handoff record created.
+- 2026-05-18T17:27:00Z — Added decision log + continuity hooks.

@@ -23,6 +23,15 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   `docs/PROJECT.md` § CHG implementation model): CHG to be built as
   skills + CI/CD post-Phase 5.
 
+- `CLAUDE.md` — auto-loaded project memory: development workflow
+  (plan → review → harden → implement → verify → land), definition of done,
+  and session-handoff practice.
+- `plans/` workspace — `README.md`, `MIGRATION_TODO.md` (live task tracker),
+  `HANDOFF.md` (session continuity), `DECISIONS.md` (decision log).
+- `.claude/` automation hooks: `PreCompact` (auto-commit + push a WIP
+  snapshot before compaction) and `SessionStart` (inject `plans/HANDOFF.md`
+  into context), with scripts under `.claude/hooks/`.
+
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`
   (frozen) — `ucx_flow_v3`, `ucx_hermes`, `mcp_ucx`, `ai_dev_ssd_flow_v2`,

@@ -41,8 +41,15 @@ Every change follows this flow:
 4. **Implement.** Execute the plan. Update the plan file with progress and
    state/status as you go — stamp every update with an ISO 8601 timestamp
    (`YYYY-MM-DDThh:mm:ssZ`).
-5. **Land.** On every commit/push, update `CHANGELOG.md` and `ROADMAP.md` as
-   needed, and tick `plans/MIGRATION_TODO.md`.
+5. **Verify.** Run the applicable validators / conformance checks. Nothing is
+   "done" until they pass.
+6. **Land.** One logical change per commit, with a conventional prefix
+   (`docs:`, `refactor:`, `chore:`, `fix:`, `feat:`). On every commit/push,
+   update `CHANGELOG.md` and `ROADMAP.md` as needed, and tick
+   `plans/MIGRATION_TODO.md`.
+
+Record every non-obvious choice in `plans/DECISIONS.md` (ISO-stamped) so the
+rationale survives across sessions.
 
 Hooks may be added to automate the mechanical parts (timestamping, syncing the
 tracker / changelog / roadmap). Keep judgment-based steps (planning, review)
@@ -72,6 +79,8 @@ applicable validators/conformance checks pass. Only then tick `[x]` in
   (check `[x]` only when committed + pushed).
 - `plans/README.md` — migration workspace conventions.
 - `plans/HANDOFF.md` — session continuity: progress, achievements, next steps.
+- `plans/DECISIONS.md` — log of non-obvious decisions and their rationale.
+- `.claude/hooks/` — automation: pre-compact snapshot, session-start handoff.
 - `docs/PROJECT.md` — versioning, branching, conformance, change management.
 - `docs/REPO_STRUCTURE.md` — target layout + `legacy/` → target mapping.
 

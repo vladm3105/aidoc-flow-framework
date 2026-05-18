@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-18                                 |
+| Last updated     | 2026-05-18T17:27:00Z                       |
 
 ---
 
@@ -17,6 +17,8 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P0-T2 — Author `ROADMAP.md`, `CHANGELOG.md`, `docs/PROJECT.md`, `docs/REPO_STRUCTURE.md`.
 - [x] P0-T3 — Establish `platforms/` directories.
 - [x] P0-T4 — Create `plans/` workspace.
+- [x] P0-T6 — Add `CLAUDE.md` project memory, development workflow, and
+  continuity automation (`PreCompact` / `SessionStart` hooks).
 - [ ] P0-T5 — Tag planning baseline `v0.1.0`.
 
 ## Phase 1 — Framework Spec Extraction → `v0.2.0`
