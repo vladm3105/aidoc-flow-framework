@@ -42,6 +42,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   `README.md`, and a `*-00_index.TEMPLATE.*` index template (24 files). All
   Hermes/MCP- and Claude-Code-specific content removed; legacy `SDD v3.2`
   version strings neutralized.
+- `framework/registry/` (P1-T3) — `LAYER_REGISTRY.yaml`, the authoritative
+  machine-readable layer model (layer order, traceability graph, C4 mapping,
+  ID patterns), plus a `README.md`. Standalone version field and legacy
+  changelog dropped; layer `folder` paths repointed under `layers/`.
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`

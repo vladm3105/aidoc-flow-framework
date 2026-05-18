@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-18T19:05:00Z                       |
+| Last updated  | 2026-05-18T19:40:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — Framework Spec Extraction        |
-| Next task     | P1-T3 — extract `LAYER_REGISTRY.yaml` into `framework/registry/` |
+| Next task     | P1-T4 — extract governance docs + CHG overlay into `framework/governance/` |
 
 ## Progress
 
@@ -19,6 +19,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `plans/P1-AUDIT-ucx_flow_v3.md`.
 - P1-T2 (layer extraction) — complete; `framework/layers/` holds 24 files;
   see `plans/P1-T2-PLAN.md`.
+- P1-T3 (registry extraction) — complete; `framework/registry/` holds
+  `LAYER_REGISTRY.yaml` + `README.md`; see `plans/P1-T3-PLAN.md`.
 
 ## Achievements
 
@@ -32,16 +34,17 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   rule, `plans/PLAN-TEMPLATE.md`, `PreToolUse(git commit)` warning hook.
 - 2026-05-18 — Extracted the 8 SDD layers into `framework/layers/`
   (templates, READMEs, index templates — engine-neutral).
+- 2026-05-18 — Extracted `LAYER_REGISTRY.yaml` into `framework/registry/`
+  as the authoritative machine-readable layer model.
 
 ## Next steps
 
-1. P1-T3 — extract `LAYER_REGISTRY.yaml` into `framework/registry/`
-   (neutralize any engine refs; check against the new `framework/layers/`).
-2. P1-T4 — extract governance docs + CHG overlay into `framework/governance/`
+1. P1-T4 — extract governance docs + CHG overlay into `framework/governance/`
    (G8: add an index-template naming entry to `ID_NAMING_STANDARDS.md`).
-3. P1-T5 — define the shared conformance suite under `tests/conformance/`.
-4. P1-T6 — create `framework/VERSION` (`0.1.0`, per D-0006).
-5. P0-T5 — tag the `v0.1.0` planning baseline.
+2. P1-T5 — define the shared conformance suite under `tests/conformance/`
+   (P1-T3 G5: include the deferred deep registry semantic checks).
+3. P1-T6 — create `framework/VERSION` (`0.1.0`, per D-0006).
+4. P0-T5 — tag the `v0.1.0` planning baseline.
 
 ## Open questions
 
@@ -54,3 +57,4 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-18T17:45:00Z — Completed P1-T1 audit of `legacy/ucx_flow_v3/`.
 - 2026-05-18T18:45:00Z — Added two-pass plan-review gate (D-0007).
 - 2026-05-18T19:05:00Z — Completed P1-T2 layer extraction.
+- 2026-05-18T19:40:00Z — Completed P1-T3 registry extraction.

@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T3                                      |
 | Depends on | P1-T2 (`framework/layers/`), D-0006 (v0.1.0) |
-| Status     | PLANNED — 2026-05-18T19:20:00Z             |
+| Status     | DONE — 2026-05-18T19:40:00Z                |
 | Feeds      | P1-T5 (conformance suite), P1-T6 (`framework/VERSION`) |
 
 ## Objective
@@ -75,6 +75,20 @@ READMEs, and the conformance suite defer to it; paths are framework-root-relativ
 | R1 | A broad `sdd_[a-z]` engine grep mis-flags the agnostic `sdd_layer` field | verification uses the precise engine-tool name pattern instead |
 | R2 | `folder:` path convention ambiguous (relative to registry vs framework root) | chose framework-root-relative; documented in-file; path cross-check confirms it resolves |
 | R3 | Dropping the `version` field may surprise a future validator | none expects it yet; P1-T5 is designed against this registry; `framework/VERSION` is canonical |
+
+## Implementation (2026-05-18T19:40:00Z)
+
+`framework/registry/LAYER_REGISTRY.yaml` + `README.md` created. Verification:
+YAML parses; no `hermes|ucx_|mcp` tokens; no engine tool names; all 8
+`folder`+`template` paths resolve to real `framework/layers/` files;
+`total_layers` == 8.
+
+One finding at the Verify step: the plan's stale-version grep
+(`sdd v3|version: 3.x`) also matched the **intended** `derived_from: "SDD
+v3.2"` field that rule T3 mandates — the verification pattern contradicted
+the plan's own transformation. Same false-positive class as G1. Resolved by
+the refined check `… | grep -v derived_from` → clean; content was always
+correct. The two review passes missed this; the Verify step caught it.
 
 ## Review log
 
