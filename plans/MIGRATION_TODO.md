@@ -6,8 +6,8 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 | Field           | Value                                      |
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
-| Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-19T13:50:00Z                       |
+| Current phase    | Phase 2 — Platform A: Hermes re-homing     |
+| Last updated     | 2026-05-19T14:25:00Z                       |
 
 ---
 
@@ -42,10 +42,26 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 ## Phase 2 — Platform A: Hermes Re-homing → `v0.3.0`
 
-- [ ] P2-T1 — Copy `legacy/ucx_hermes/` + `legacy/mcp_ucx/` into `platforms/hermes/`.
-- [ ] P2-T2 — Repoint Hermes at `framework/`; declare `framework_spec_version`.
-- [ ] P2-T3 — Update `.mcp.json` to the new Hermes path.
-- [ ] P2-T4 — Hermes passes the conformance suite.
+- [x] P2-T0 — Phase 2 audit & task breakdown. Resolved that `mcp_ucx` is a
+  deprecated predecessor (out of scope); Phase 2 input is the 280 files of
+  `legacy/ucx_hermes/`. → `plans/P2-T0-PLAN.md` · `plans/P2-AUDIT-hermes.md`
+- [ ] P2-T1 — Design: resolve open questions (module name,
+  `framework_spec_version` mechanism, templates overlap, script entry,
+  target layout). → `plans/P2-T1-DESIGN.md`
+- [ ] P2-T2 — Port-verbatim: `examples/`, `prompts/`,
+  `skills/{layer_aliases,personas,persona_mappings.yaml}` into
+  `platforms/hermes/` as-is.
+- [ ] P2-T3 — Port-with-repoint: copy `pyproject.toml`, `src/`, `tests/`,
+  `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`,
+  `templates/`; rewire all `ucx_flow` references (4 code-level files + the
+  prose-level set in audit §3b); update `.mcp.json` to the new Hermes path.
+- [ ] P2-T4 — Declare `framework_spec_version` per the P2-T1 mechanism
+  (e.g. `platforms/hermes/FRAMEWORK_SPEC_VERSION` matching `framework/VERSION`).
+- [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test
+  suite passes against the repointed paths.
+- [ ] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]`; ROADMAP marked;
+  milestone tag `v0.3.0`; platform tag `hermes/v0.1.0` (per
+  `docs/TAGGING.md`).
 
 ## Phase 3 — Platform B: Claude Code Plugin → `v0.4.0`
 

@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T0                                |
 | Depends on | Phase 1 complete (`v0.2.0`, `framework/v0.1.0`) |
-| Status     | PLANNED — 2026-05-19T13:55:00Z       |
+| Status     | DONE — 2026-05-19T14:15:00Z          |
 | Feeds      | P2-T1 … P2-Tn (Hermes re-homing tasks defined here) |
 
 ## Objective
@@ -107,23 +107,55 @@ P2-T0 is **paper only**; no code or files move.
 | R4 | `framework_spec_version` declaration mechanism not yet defined in the registry | The conformance suite enforces it (D-0009, P1-T6); if the *mechanism* is undefined, surface as an open question in the audit and resolve in P2-T1 design, not in P2-T0. |
 | R5 | Provisional P2-Tx list locks in shape that the audit then contradicts | The list is labelled *provisional* and explicitly replaced after step 5; the audit, not this plan, is the source of truth. |
 
-## Provisional task breakdown (replaced after audit)
+## Task breakdown (audit-confirmed)
 
-These are candidate downstream tasks shown for shape only — they **will**
-change after step 7 of the audit. Do not treat as committed.
+Replaces the provisional list. Source of truth is `plans/P2-AUDIT-hermes.md`;
+the `ucx_hermes` ↔ `mcp_ucx` question is resolved (predecessor/successor;
+`mcp_ucx` out of scope, see audit §2). Phase 2 input is the 280 files of
+`legacy/ucx_hermes/`.
 
-- **P2-T1** — Resolve `ucx_hermes` ↔ `mcp_ucx` and define the final
-  `platforms/hermes/` layout (one tree or two sub-packages?).
-- **P2-T2** — Port-verbatim content: copy directories that don't reference
-  the framework into their target paths.
-- **P2-T3** — Port-with-repoint: copy directories that reference the
-  framework, rewiring all coupling sites to `framework/`.
-- **P2-T4** — Declare `framework_spec_version` in the platform manifest
-  (mechanism per P2-T1 design).
-- **P2-T5** — Make Hermes pass the conformance suite (`tests/conformance/`)
-  — fix any platform-side gaps surfaced by the audit.
-- **P2-T6** — Phase 2 close: changelog `[0.3.0]`, milestone tag `v0.3.0`,
-  platform tag `hermes/v0.1.0`. Tag policy per `docs/TAGGING.md`.
+- **P2-T1 — Design.** Resolve the five open questions in audit §6:
+  Python module name (avoid `mcp_server` collision); `framework_spec_version`
+  declaration mechanism (recommendation: `platforms/hermes/VERSION` +
+  `platforms/hermes/FRAMEWORK_SPEC_VERSION`); `templates/` overlap with
+  `framework/layers/*-TEMPLATE.md`; distribution script entry name; document
+  the target `platforms/hermes/` layout. Output: a short design doc
+  (`plans/P2-T1-DESIGN.md`) plus updated D-0013 if any choice is non-obvious.
+- **P2-T2 — Port-verbatim.** Copy the no-coupling content into
+  `platforms/hermes/` as-is: `examples/`, `prompts/`, `skills/layer_aliases/`,
+  `skills/personas/`, and `skills/persona_mappings.yaml`. No content edits.
+- **P2-T3 — Port-with-repoint.** Copy `pyproject.toml`, `src/`, `tests/`,
+  `docs/` (excluding `docs/migration/`, dropped), `skills/README.md`,
+  `skills/hermes/`, and `templates/` into `platforms/hermes/`. Apply the
+  design from P2-T1 (rename module if chosen) and rewire **both** classes
+  of framework coupling from audit §3: the 4 code-level files (§3a) **and**
+  the prose-level set (§3b: 5 skills markdown files + `templates/README.md`
+  + the 8 `*-TEMPLATE.yaml` comment headers). Verify gate: a fresh
+  `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero.
+- **P2-T4 — Declare `framework_spec_version`.** Add
+  `platforms/hermes/VERSION` (the platform's own SemVer per `docs/TAGGING.md`)
+  and the `FRAMEWORK_SPEC_VERSION` declaration per P2-T1's chosen mechanism;
+  it must match `framework/VERSION`.
+- **P2-T5 — Verify.** Run `tests/conformance/` — all 25 tests still green
+  (no `framework/` change means this should be automatic). Run Hermes' own
+  test suite (`platforms/hermes/tests/`) against the repointed paths.
+- **P2-T6 — Phase 2 close.** Cut `CHANGELOG.md [0.3.0]`; mark Phase 2
+  complete in `ROADMAP.md`; create milestone tag `v0.3.0` and platform tag
+  `hermes/v0.1.0` (annotated, per `docs/TAGGING.md`). Tag publication may
+  require the same local-clone workaround as P1-T8.
+
+## Implementation note (2026-05-19T14:15:00Z)
+
+Executed. Recon found `mcp_ucx` and `ucx_hermes` are not siblings but
+predecessor/successor (confirmed by the in-tree migration doc), which
+collapsed the highest-risk unknown R1 and shrank Phase 2 input from 535 to
+280 files. The user directive "use ucx_hermes" aligned with that finding.
+The audit (`plans/P2-AUDIT-hermes.md`) classifies every top-level path,
+identifies four framework-coupling sites for rewiring (`src/mcp_server/`
+under `skills/`, `validation/`, `utils/`, `creation/`), and pins the
+conformance gap honestly: the current 25-test suite asserts only on
+`framework/`, so Phase 2's suite gate is "don't break it"; platform-level
+tests are a Phase 4 concern. No code or files were moved by P2-T0.
 
 ## Review log
 

@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T13:50:00Z                       |
+| Last updated  | 2026-05-19T14:25:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 1 complete — Phase 2 next            |
-| Next task     | Phase 2 — Platform A: Hermes re-homing     |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0 done) |
+| Next task     | P2-T1 — Hermes design (audit-confirmed)    |
 
 ## Progress
 
@@ -39,6 +39,11 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `framework/v0.1.0`, `v0.2.0`) published to the remote (pushed from a local
   clone after the in-container tag push was blocked by the git proxy). See
   `plans/P1-T8-PLAN.md`. **Phase 1 complete.**
+- P2-T0 (Phase 2 audit & task breakdown) — **complete.** Paper-only audit
+  resolved that `mcp_ucx` is the deprecated predecessor of `ucx_hermes` and
+  is out of Phase 2 scope; Phase 2 input is 280 files. Mapped 4 code-level +
+  prose-level framework-coupling sites; defined the audit-confirmed P2-T1…T6
+  breakdown. See `plans/P2-T0-PLAN.md` / `plans/P2-AUDIT-hermes.md`.
 
 ## Achievements
 
@@ -69,6 +74,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19 — Defined the framework's purpose: the IPLAN is the terminal
   product; code/deploy out of scope; v1 = software/devops; domain profiles
   post-v1.0 (D-0012, `ROADMAP.md`).
+- 2026-05-19 — Completed P2-T0 (Phase 2 audit & task breakdown):
+  `legacy/mcp_ucx/` confirmed out of scope; Phase 2 input is 280 files;
+  coupling sites mapped; P2-T1…T6 defined.
 
 ## Next steps
 
@@ -105,3 +113,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   value; library/composition/freshness as post-v1.0 destination).
 - 2026-05-19T13:50:00Z — Release tags `v0.1.0`, `framework/v0.1.0`, `v0.2.0`
   published from a local clone; Phase 1 closed; P0-T5 and P1-T8 done.
+- 2026-05-19T14:25:00Z — Completed P2-T0 audit; mcp_ucx out of scope; P2-T1…T6
+  defined and queued in `MIGRATION_TODO.md`.
