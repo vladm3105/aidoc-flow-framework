@@ -75,9 +75,16 @@ git push origin v0.1.0 framework/v0.1.0 v0.2.0
 ## Implementation (2026-05-19T11:25:00Z)
 
 Created `docs/TAGGING.md` (release + bookmark categories, commands, rules);
-slimmed `docs/PROJECT.md` §3 to a summary + link; recorded D-0011. P1-T8 tags
-applied = `v0.1.0`, `framework/v0.1.0`, `v0.2.0` pushed to the remote. No
-deviations from plan.
+slimmed `docs/PROJECT.md` §3 to a summary + link; recorded D-0011.
+
+**Blocker — tag push rejected (HTTP 403).** Applying the P1-T8 tags failed:
+`git push origin v0.1.0 framework/v0.1.0 v0.2.0` returns HTTP 403, as does
+each tag individually. The remote execution environment's git proxy permits
+pushes only to the working branch and rejects `refs/tags/*`. A 403 is an
+authorization rejection, not a network error — not retryable here. The three
+tags exist and are correct **locally**; publishing them needs either an
+environment whose network policy allows tag pushes, or a push from a local
+clone. P1-T8 and P0-T5 remain open on this.
 
 ## Review log
 

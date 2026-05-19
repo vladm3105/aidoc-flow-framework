@@ -3,7 +3,7 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | Phase 1 complete (`v0.2.0`) — Phase 2 next                    |
+| Status           | Phase 1 work complete — release tags pending push; Phase 2 next |
 | Working branch   | `claude/multi-platform-migration-AamWB`                      |
 | Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
 | Cutover target   | v1.0.0 — new project replaces `main`                         |
@@ -37,7 +37,7 @@ The *project-level* version below tracks migration milestones only.
 - Working branch created; planning baseline tagged.
 - `ROADMAP.md`, `CHANGELOG.md`, `docs/PROJECT.md`, `docs/REPO_STRUCTURE.md`.
 - `platforms/` directories established.
-- Status: **complete** (`v0.1.0`).
+- Status: **complete** — `v0.1.0` tag created; push pending (see P0-T5).
 
 ### Phase 1 — Framework Spec Extraction  → `v0.2.0`
 - **Step 0 — Legacy isolation (done):** all pre-migration content moved into
@@ -46,8 +46,9 @@ The *project-level* version below tracks migration milestones only.
   registry, governance, CHG overlay).
 - Define the shared conformance test suite under `tests/conformance/`.
 - Tag `framework/VERSION` at its first independent release.
-- Status: **complete** (`v0.2.0`) — `framework/` fully assembled, 25-test
-  conformance suite green, framework spec tagged `framework/v0.1.0`.
+- Status: **work complete** — `framework/` fully assembled, 25-test
+  conformance suite green. Release tags `v0.2.0` and `framework/v0.1.0`
+  created locally; push blocked in-environment (HTTP 403), pending (P1-T8).
 
 ### Phase 2 — Platform A: Hermes Re-homing  → `v0.3.0`
 - Copy `legacy/ucx_hermes/` + `legacy/mcp_ucx/` into `platforms/hermes/`.

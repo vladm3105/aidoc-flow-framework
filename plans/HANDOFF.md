@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T10:45:00Z                       |
+| Last updated  | 2026-05-19T11:35:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 1 complete — Phase 2 next            |
-| Next task     | Phase 2 — Platform A: Hermes re-homing      |
+| Current phase | Phase 1 — closing (release-tag push blocked) |
+| Next task     | P1-T8 — publish release tags (BLOCKED, HTTP 403); then Phase 2 |
 
 ## Progress
 
@@ -34,9 +34,12 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
   into `framework/`; suite at 25 tests; see `plans/P1-T7-PLAN.md`.
   **`framework/` is now fully assembled.**
-- P1-T8 (Phase 1 close) — complete; changelog cut into `[0.1.0]` / `[0.2.0]`,
-  ROADMAP marked, tags `v0.1.0` + `framework/v0.1.0` + `v0.2.0` pushed; see
-  `plans/P1-T8-PLAN.md`. **Phase 1 complete.**
+- P1-T8 (Phase 1 close) — **partially done / BLOCKED.** Changelog cut into
+  `[0.1.0]` / `[0.2.0]`, ROADMAP marked, and the three annotated tags
+  (`v0.1.0`, `framework/v0.1.0`, `v0.2.0`) created **locally**. The tag push
+  fails with HTTP 403 — the environment's git proxy rejects `refs/tags/*`.
+  P1-T8 cannot close until the tags are published. See `plans/P1-T8-PLAN.md`
+  (Finding F2).
 
 ## Achievements
 
@@ -60,18 +63,26 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   convention (D-0009); conformance suite at 24 tests.
 - 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
   `framework/` fully assembled; conformance suite at 25 tests.
-- 2026-05-19 — Closed Phase 1: changelog cut, tags `v0.1.0`,
-  `framework/v0.1.0`, `v0.2.0`.
+- 2026-05-19 — Phase 1 close: changelog cut + ROADMAP marked; release tags
+  `v0.1.0`, `framework/v0.1.0`, `v0.2.0` created locally (push blocked, 403).
+- 2026-05-19 — Added `docs/TAGGING.md` tagging policy (release + bookmark
+  tags, D-0011).
 
 ## Next steps
 
-1. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
+1. Publish the release tags (P1-T8 / P0-T5) — blocked here by the HTTP 403
+   on tag pushes; needs a tag-push-capable environment or a local push.
+2. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
    `legacy/mcp_ucx/` into `platforms/hermes/`; repoint at `framework/`;
    declare `framework_spec_version`; pass the conformance suite.
 
 ## Open questions
 
-- None outstanding.
+- **Release tags are unpublished.** `v0.1.0`, `framework/v0.1.0`, and
+  `v0.2.0` exist locally but the environment rejects tag pushes (HTTP 403 on
+  `refs/tags/*`). They must be published from an environment whose network
+  policy permits tag pushes, or from a local clone. Until then P1-T8 and
+  P0-T5 stay open.
 
 ## Log
 
@@ -87,5 +98,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.
 - 2026-05-19T10:00:00Z — Completed P1-T7 root assembly; `framework/` fully
   assembled.
-- 2026-05-19T10:45:00Z — Completed P1-T8; Phase 1 closed and tagged
-  (`v0.2.0`, `framework/v0.1.0`).
+- 2026-05-19T10:45:00Z — P1-T8 Phase 1 close commit; release tags created
+  locally.
+- 2026-05-19T11:35:00Z — Tag push blocked (HTTP 403, `refs/tags/*`); added
+  `docs/TAGGING.md`; corrected records — P1-T8/P0-T5 reopened.

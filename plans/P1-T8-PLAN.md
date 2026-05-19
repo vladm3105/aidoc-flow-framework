@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T8                                      |
 | Depends on | P1-T1…T7 complete; `framework/` assembled  |
-| Status     | DONE — 2026-05-19T10:45:00Z                |
+| Status     | BLOCKED — 2026-05-19T11:35:00Z (tag push) |
 | Closes     | Phase 1; also completes P0-T5              |
 
 ## Objective
@@ -85,6 +85,16 @@ so it bundled Phase 0 *and* Phase 1 content. Cutting it all to `[0.2.0]` would
 mislabel the Phase 0 planning baseline. Resolved by splitting into `[0.1.0]`
 (Phase 0 — planning & scaffolding) and `[0.2.0]` (Phase 1 — framework spec
 extraction), partitioned per the `docs/PROJECT.md` §4 milestone table.
+
+**Finding F2 — tag push blocked (HTTP 403). TASK NOT COMPLETE.** Steps 1–4
+are done: suite verified green, the Phase 1 close commit landed and was
+pushed, and all three annotated tags were created locally. Step 5 (push the
+tags) fails — `git push origin <tag>` returns HTTP 403 for every tag. The
+remote execution environment's git proxy allows pushes only to the working
+branch and rejects `refs/tags/*`; a 403 is an authorization rejection, not a
+retryable network error. The tags are created and correct locally; P1-T8
+cannot close until they are published from an environment whose network
+policy permits tag pushes (or from a local clone).
 
 ## Review log
 
