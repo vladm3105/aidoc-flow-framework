@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T09:20:00Z                       |
+| Last updated  | 2026-05-19T10:00:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — Framework Spec Extraction        |
-| Next task     | P1-T7 — framework root assembly: the 4 methodology docs |
+| Next task     | P1-T8 — Phase 1 close: tag `framework/v0.1.0` + `v0.2.0` |
 
 ## Progress
 
@@ -31,6 +31,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   at `0.1.0`, tag namespaces in `docs/PROJECT.md` §3, suite at 24 tests; see
   `plans/P1-T6-PLAN.md`. The `framework/v0.1.0` git tag is deferred to Phase 1
   close (D-0009, tracked as P1-T8).
+- P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
+  into `framework/`; suite at 25 tests; see `plans/P1-T7-PLAN.md`.
+  **`framework/` is now fully assembled.**
 
 ## Achievements
 
@@ -52,15 +55,15 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   22 tests) and wrote the engine-agnostic `framework/README.md`.
 - 2026-05-19 — Created `framework/VERSION` (`0.1.0`) and the tag-namespace
   convention (D-0009); conformance suite at 24 tests.
+- 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
+  `framework/` fully assembled; conformance suite at 25 tests.
 
 ## Next steps
 
-1. P1-T7 — framework root assembly: the 4 methodology docs
-   (`SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`,
-   `TESTING_STRATEGY_TDD`). The framework `README.md` is already done (P1-T5).
-2. P1-T8 — Phase 1 close: tag `framework/v0.1.0` + `v0.2.0` (needs P1-T7 done
-   and explicit confirmation before pushing tags).
-3. P0-T5 — tag the `v0.1.0` planning baseline.
+1. P1-T8 — Phase 1 close: tag `framework/v0.1.0` + the `v0.2.0` project
+   milestone (needs explicit confirmation before pushing tags).
+2. P0-T5 — tag the `v0.1.0` planning baseline.
+3. Phase 2 — begin Platform A (Hermes) re-homing.
 
 ## Open questions
 
@@ -78,3 +81,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-18T21:25:00Z — Completed P1-T5 conformance suite; wrote
   `framework/README.md`.
 - 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.
+- 2026-05-19T10:00:00Z — Completed P1-T7 root assembly; `framework/` fully
+  assembled.

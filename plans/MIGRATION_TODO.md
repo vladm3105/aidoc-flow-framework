@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-19T09:20:00Z                       |
+| Last updated     | 2026-05-19T10:00:00Z                       |
 
 ---
 
@@ -34,10 +34,9 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   (22 tests, framework self-consistency). → `plans/P1-T5-PLAN.md`
 - [x] P1-T6 — Create `framework/VERSION` (`0.1.0`) + the tag-namespace
   convention (`docs/PROJECT.md` §3, D-0009). → `plans/P1-T6-PLAN.md`
-- [ ] P1-T7 — Framework root assembly: extract the 4 methodology docs
+- [x] P1-T7 — Framework root assembly: the 4 methodology docs
   (`SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`,
-  `TESTING_STRATEGY_TDD`) into `framework/`. (Framework `README.md` done early
-  in P1-T5.)
+  `TESTING_STRATEGY_TDD`) extracted into `framework/`. → `plans/P1-T7-PLAN.md`
 - [ ] P1-T8 — Phase 1 close: tag `framework/v0.1.0` (first spec release) and
   the `v0.2.0` project milestone. Requires P1-T7 complete and explicit
   confirmation before pushing tags.

@@ -65,6 +65,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `docs/PROJECT.md` §3 — tag-namespace convention: project milestones
   `vX.Y.Z`, framework spec `framework/vX.Y.Z`, platforms `<platform>/vX.Y.Z`
   (D-0009).
+- `framework/` root methodology docs (P1-T7) — `SPEC_DRIVEN_DEVELOPMENT_GUIDE`,
+  `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`, `TESTING_STRATEGY_TDD`, extracted
+  engine-neutral (version strings neutralized, links repointed, legacy
+  version-lineage content dropped per D-0010). `framework/` is now fully
+  assembled. `tests/conformance/test_root.py` covers the root file set.
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`

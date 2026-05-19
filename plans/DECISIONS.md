@@ -10,6 +10,21 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0010 — Framework docs drop legacy version-lineage content
+
+- **Date:** 2026-05-19T10:00:00Z
+- **Decision:** When extracting docs into `framework/`, drop content that only
+  documents the legacy SDD version lineage — the `## v3.2 Changes from v3.0`
+  sections (P1-T7, in the guide and the testing-strategy doc) and the
+  `CHG_MIGRATION_PLAN.md` (v2→v3) reference in `QUICK_REFERENCE.md`.
+- **Why:** `framework/` is a fresh `0.1.0` version stream (D-0006); it does not
+  continue the legacy `v3.x` numbering, so "changes from v3.0" history is both
+  inaccurate framing and carries `v3.x` tokens the conformance hygiene check
+  bans. The current layer order/rationale those sections explained is already
+  stated as present-tense fact elsewhere in each doc.
+- **Notes:** Removal is limited to version-lineage framing; all genuinely
+  engine-agnostic methodology content is copied verbatim.
+
 ## D-0009 — Namespaced version tags; framework tag at Phase 1 close
 
 - **Date:** 2026-05-19T09:15:00Z
