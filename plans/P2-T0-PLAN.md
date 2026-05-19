@@ -189,3 +189,21 @@ tests are a Phase 4 concern. No code or files were moved by P2-T0.
 - **G8.** "Paper only" gate is explicit in scope, verify, and R3 — three
   layers of guard. Sufficient.
 - No new blockers. Ready to implement on approval.
+
+### Pass 3 — 2026-05-19T14:30:00Z (retrospective)
+
+Added after implementation, to record what the verify step caught that the
+pre-implementation reviews didn't. Status stays DONE.
+
+- **G9.** Pass 2 cleared the plan without explicitly auditing the
+  framework-coupling list for *completeness*. The initial draft of audit
+  §3 enumerated 4 code-level sites; the verify-time fresh `grep` found
+  prose-level sites in `skills/hermes/*` and `templates/*` that the draft
+  had missed. The audit was corrected (§3a code-level / §3b prose-level
+  split) and P2-T3's description updated accordingly. The gap existed
+  because the reviews asked "is the plan well-structured?" but not "is the
+  *content list* it produces likely to be exhaustive?" Future audit-style
+  plans (e.g. P3-T0 if Phase 3 needs one): include an explicit
+  list-completeness pass — "for every enumeration the plan claims to
+  produce, what classes of items might the first draft omit?" — alongside
+  the structural review.
