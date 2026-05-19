@@ -10,6 +10,23 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0009 — Namespaced version tags; framework tag at Phase 1 close
+
+- **Date:** 2026-05-19T09:15:00Z
+- **Decision:** Each SemVer stream tags in its own namespace — project
+  milestones `vX.Y.Z`, framework spec `framework/vX.Y.Z`, platforms
+  `<platform>/vX.Y.Z`. `VERSION` files hold the bare SemVer; the tag adds the
+  `v` and namespace. The `framework/v0.1.0` tag is created at Phase 1 close
+  (after P1-T7), not at P1-T6 — so it marks a fully assembled spec — alongside
+  the `v0.2.0` project milestone.
+- **Why:** `docs/PROJECT.md` defined only bare milestone tags; the independent
+  framework/platform streams need distinct, collision-free tag names.
+  Slash-namespaced refs let `git tag -l 'framework/*'` filter one stream.
+  Tagging an incomplete spec would burn a version on a partial assembly.
+- **Notes:** Convention recorded in `docs/PROJECT.md` §3 (extended, not a new
+  doc). P1-T6 delivers `framework/VERSION` + the convention; the deferred tag
+  is tracked as the Phase 1 close task (P1-T8).
+
 ## D-0008 — Conformance suite is stdlib-only (`unittest`)
 
 - **Date:** 2026-05-18T21:20:00Z

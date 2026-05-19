@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-18T21:25:00Z                       |
+| Last updated  | 2026-05-19T09:20:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — Framework Spec Extraction        |
-| Next task     | P1-T6 — create `framework/VERSION`; tag first spec release |
+| Next task     | P1-T7 — framework root assembly: the 4 methodology docs |
 
 ## Progress
 
@@ -27,6 +27,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   helper + 4 test modules (22 tests, all green); see `plans/P1-T5-PLAN.md`.
   The engine-agnostic `framework/README.md` was written here (pulled forward
   from P1-T7).
+- P1-T6 (`framework/VERSION` + tag convention) — complete; `framework/VERSION`
+  at `0.1.0`, tag namespaces in `docs/PROJECT.md` §3, suite at 24 tests; see
+  `plans/P1-T6-PLAN.md`. The `framework/v0.1.0` git tag is deferred to Phase 1
+  close (D-0009, tracked as P1-T8).
 
 ## Achievements
 
@@ -46,13 +50,16 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `framework/governance/` (18 files, engine-neutral; CHG spec-only).
 - 2026-05-18 — Built the shared conformance suite (`tests/conformance/`,
   22 tests) and wrote the engine-agnostic `framework/README.md`.
+- 2026-05-19 — Created `framework/VERSION` (`0.1.0`) and the tag-namespace
+  convention (D-0009); conformance suite at 24 tests.
 
 ## Next steps
 
-1. P1-T6 — create `framework/VERSION` (`0.1.0`, per D-0006).
-2. P1-T7 — framework root assembly: the 4 methodology docs
+1. P1-T7 — framework root assembly: the 4 methodology docs
    (`SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`,
    `TESTING_STRATEGY_TDD`). The framework `README.md` is already done (P1-T5).
+2. P1-T8 — Phase 1 close: tag `framework/v0.1.0` + `v0.2.0` (needs P1-T7 done
+   and explicit confirmation before pushing tags).
 3. P0-T5 — tag the `v0.1.0` planning baseline.
 
 ## Open questions
@@ -70,3 +77,4 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-18T20:30:00Z — Completed P1-T4 governance + CHG extraction.
 - 2026-05-18T21:25:00Z — Completed P1-T5 conformance suite; wrote
   `framework/README.md`.
+- 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.

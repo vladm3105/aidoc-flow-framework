@@ -60,6 +60,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - `framework/README.md` — the engine-agnostic spec overview (8-layer flow, C4
   alignment, layout, conformance, versioning), replacing the scaffolding
   placeholder.
+- `framework/VERSION` (P1-T6) — the framework spec's independent version
+  stream, at `0.1.0`. `tests/conformance/test_version.py` covers it.
+- `docs/PROJECT.md` §3 — tag-namespace convention: project milestones
+  `vX.Y.Z`, framework spec `framework/vX.Y.Z`, platforms `<platform>/vX.Y.Z`
+  (D-0009).
 
 ### Changed
 - **Legacy isolation:** all pre-migration content moved into `legacy/`

@@ -36,6 +36,7 @@ prefer that runner.
 | `test_registry.py` | registry structure; 8 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; cumulative `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
 | `test_layers.py` | each layer folder has template + README + index template; templates parse; `metadata.layer` matches the registry; `metadata.document_type` present |
 | `test_governance.py` | the 18 governance + CHG files are present (and only those); `CHG-TEMPLATE.yaml` parses |
+| `test_version.py` | `framework/VERSION` is present and a bare `X.Y.Z` SemVer string |
 | `test_spec_hygiene.py` | no engine tokens (`hermes`, `ucx_`, `.claude/`, `mcp`, `mermaid-gen`, `charts-flow`, engine SDD verbs) and no stale version strings under `framework/` |
 
 `_spec.py` is the shared helper (locates `framework/`, loads the registry); it

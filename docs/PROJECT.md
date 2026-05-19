@@ -45,6 +45,25 @@ project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
   migration work happens on `claude/multi-platform-migration-AamWB`.
 - Platforms tag their own releases independently once scaffolded.
 
+### Tag namespaces
+
+Each version stream (§2) tags independently, in its own namespace:
+
+| Stream | Tag form | Example | Version source |
+|--------|----------|---------|----------------|
+| Project milestone | `vX.Y.Z` | `v0.2.0` | `ROADMAP.md` milestone table |
+| Framework spec | `framework/vX.Y.Z` | `framework/v0.1.0` | `framework/VERSION` |
+| Platform release | `<platform>/vX.Y.Z` | `hermes/v0.3.0` | `platforms/<name>/VERSION` |
+
+`VERSION` files hold the bare SemVer (e.g. `0.1.0`); the tag adds the `v`
+prefix and the stream namespace. Slash-namespaced refs let
+`git tag -l 'framework/*'` filter a single stream and keep stream tags
+visually distinct from project milestones.
+
+The framework spec's first release tag (`framework/v0.1.0`) is created when
+Phase 1 completes — i.e. once `framework/` is fully assembled — alongside the
+`v0.2.0` project milestone tag.
+
 ## 4. Milestones
 
 | Milestone | Phase | Tag | Definition of Done |
