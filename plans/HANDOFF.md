@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T12:45:00Z                       |
+| Last updated  | 2026-05-19T13:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — closing (release-tag push blocked) |
 | Next task     | P1-T8 — publish release tags (BLOCKED, HTTP 403); then Phase 2 |
@@ -107,3 +107,6 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `docs/TAGGING.md`; corrected records — P1-T8/P0-T5 reopened.
 - 2026-05-19T12:45:00Z — Recorded framework purpose + domain-profile
   direction (D-0012); project name set to `aidoc-flow`.
+- 2026-05-19T13:10:00Z — Added D-0012 refinements R1 (IPLAN planned/executed
+  states; criticality-scaled audit) and R2 (curated corpus as the unit of
+  value; library/composition/freshness as post-v1.0 destination).

@@ -43,6 +43,29 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
   architectural goal (a generic flow engine + per-domain profiles), sketched
   in `ROADMAP.md` as post-v1.0.
 
+### Refinements
+
+- **R1 — 2026-05-19T13:10:00Z — the IPLAN has a *planned* and an *executed*
+  state.** The IPLAN is one artifact in two states: *planned* (YAML
+  instructions with confirmations pending) and *executed* (each confirmation
+  satisfied with evidence — what ran, results, actual vs expected). The
+  *executed* IPLAN is the auditable trail behind a result; in practice humans
+  scrutinise the result, not the forward plan, and often accept the planned
+  IPLAN blindly. **Criticality scales audit depth:** low-criticality work
+  (e.g. a throwaway MVP cloud deploy) — the IPLAN is internal quality control,
+  nobody audits; high-criticality work — the executed IPLAN's evidence *is*
+  the deliverable. Audit depth is a dial set by criticality, not all-or-nothing.
+
+- **R2 — 2026-05-19T13:10:00Z — the unit of value is the curated corpus, not a
+  single IPLAN.** A single IPLAN is reproducible and low-value. A curated,
+  maintained library of *proven* IPLANs is codified, executable institutional
+  knowledge — the customer's IP. An IPLAN earns library membership by being
+  executed and audited (R1). The library — plus **composition** (IPLAN
+  templates vs instances; IPLANs composing IPLANs) and **freshness**
+  (re-validation, versioning, staleness flags) — is the post-v1.0 strategic
+  destination: the framework as a system of record for an organisation's
+  executable process knowledge. Sketched in `ROADMAP.md`.
+
 ## D-0011 — Bookmark tags alongside release tags
 
 - **Date:** 2026-05-19T11:20:00Z

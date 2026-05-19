@@ -21,6 +21,10 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 - Recorded the framework's purpose — the IPLAN as the terminal product;
   code/deploy out of scope; v1 scope is software/devops (D-0012).
+- Refined D-0012: the IPLAN has a planned and an executed state with
+  criticality-scaled audit depth (R1); the curated corpus of proven IPLANs —
+  with composition and freshness — is the unit of value and the post-v1.0
+  strategic destination (R2).
 
 ## [0.2.0] — 2026-05-19
 

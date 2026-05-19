@@ -105,3 +105,25 @@ mechanism — additively, without reworking the core:
 
 This makes "an IPLAN for any purpose" an architectural property of the engine
 while keeping every release's scope honest. Revisit after the v1.0.0 cutover.
+
+### The IPLAN library — the corpus is the asset
+
+A single IPLAN is reproducible and low-value. The strategic asset is a
+**curated, maintained library of proven IPLANs** — codified, executable
+institutional knowledge (D-0012, refinement R2). Post-v1.0, build the library
+as a first-class capability:
+
+- **Planned vs executed state** — an IPLAN is *planned* (confirmations
+  pending) or *executed* (confirmations satisfied with evidence). The executed
+  IPLAN is the auditable trail; audit depth scales with the work's criticality
+  (D-0012, R1).
+- **Proven-entry gate** — an IPLAN earns library membership only once executed
+  and audited.
+- **Composition** — distinguish an IPLAN *template* (the proven pattern) from
+  an *instance* (a parameterised run); allow IPLANs to compose other IPLANs.
+- **Freshness** — each library IPLAN records when it was last proven and
+  against which versions; conformance flags stale entries for re-validation.
+
+This is the post-v1.0 strategic destination — the framework as a system of
+record for an organisation's executable process knowledge. Revisit after the
+v1.0.0 cutover.
