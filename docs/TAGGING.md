@@ -98,7 +98,6 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `v0.2.0` | Phase 1 close | Framework Spec Extraction milestone |
 | `framework/v0.1.0` | Phase 1 close | Framework spec — first independent release |
 
-> All three are created and annotated **locally** but not yet on the remote —
-> the current execution environment rejects tag pushes (HTTP 403 on
-> `refs/tags/*`). They must be published from a tag-push-capable environment.
-> Tracked as P1-T8 / P0-T5.
+> All three are published on the remote (pushed from a local clone, after the
+> in-container git proxy refused tag pushes with HTTP 403). Verifiable via
+> `git ls-remote --tags origin`.

@@ -4,7 +4,7 @@
 |------------|--------------------------------------------|
 | Task       | P1-T8                                      |
 | Depends on | P1-T1…T7 complete; `framework/` assembled  |
-| Status     | BLOCKED — 2026-05-19T11:35:00Z (tag push) |
+| Status     | DONE — 2026-05-19T13:50:00Z              |
 | Closes     | Phase 1; also completes P0-T5              |
 
 ## Objective
@@ -86,15 +86,17 @@ mislabel the Phase 0 planning baseline. Resolved by splitting into `[0.1.0]`
 (Phase 0 — planning & scaffolding) and `[0.2.0]` (Phase 1 — framework spec
 extraction), partitioned per the `docs/PROJECT.md` §4 milestone table.
 
-**Finding F2 — tag push blocked (HTTP 403). TASK NOT COMPLETE.** Steps 1–4
-are done: suite verified green, the Phase 1 close commit landed and was
-pushed, and all three annotated tags were created locally. Step 5 (push the
-tags) fails — `git push origin <tag>` returns HTTP 403 for every tag. The
-remote execution environment's git proxy allows pushes only to the working
-branch and rejects `refs/tags/*`; a 403 is an authorization rejection, not a
-retryable network error. The tags are created and correct locally; P1-T8
-cannot close until they are published from an environment whose network
-policy permits tag pushes (or from a local clone).
+**Finding F2 — tag push blocked in-environment; resolved by local-clone push.**
+Steps 1–4 were completed inside the managed container: suite verified green,
+the Phase 1 close commit landed and was pushed, and all three annotated tags
+were created locally. Step 5 (the tag push) failed with HTTP 403 — the
+remote execution environment's git proxy permits pushes only to the working
+branch and rejects `refs/tags/*` (a 403 is an authorization rejection, not a
+retryable network error). The tags were subsequently published by
+re-creating them on the same target commits in a local clone with normal
+GitHub credentials and pushing from there. Remote now carries `v0.1.0` →
+`d986694…`, `framework/v0.1.0` → `7a6bb53…`, and `v0.2.0` → `7a6bb53…`,
+matching the local annotated tags. P1-T8 closed 2026-05-19T13:50:00Z.
 
 ## Review log
 

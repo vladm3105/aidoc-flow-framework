@@ -29,8 +29,8 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ## [0.2.0] — 2026-05-19
 
 Phase 1 — Framework Spec Extraction. `framework/` is fully assembled and
-guarded by a 25-test conformance suite. Framework spec versioned
-`framework/v0.1.0` (release tag created; push pending — see `plans/P1-T8-PLAN.md`).
+guarded by a 25-test conformance suite. Framework spec released as
+`framework/v0.1.0`.
 
 ### Added
 - Plan-review gate (D-0007): plans require a `## Review log` of ≥2 passes;

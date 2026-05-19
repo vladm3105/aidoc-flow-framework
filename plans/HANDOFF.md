@@ -6,14 +6,14 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T13:10:00Z                       |
+| Last updated  | 2026-05-19T13:50:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 1 — closing (release-tag push blocked) |
-| Next task     | P1-T8 — publish release tags (BLOCKED, HTTP 403); then Phase 2 |
+| Current phase | Phase 1 complete — Phase 2 next            |
+| Next task     | Phase 2 — Platform A: Hermes re-homing     |
 
 ## Progress
 
-- Phase 0 (Planning & Scaffolding) — complete except the `v0.1.0` tag (P0-T5).
+- Phase 0 (Planning & Scaffolding) — complete.
 - Phase 1 Step 0 (P1-T0, legacy isolation) — complete.
 - P1-T1 (audit of `legacy/ucx_flow_v3/`) — complete; see
   `plans/P1-AUDIT-ucx_flow_v3.md`.
@@ -34,12 +34,11 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
   into `framework/`; suite at 25 tests; see `plans/P1-T7-PLAN.md`.
   **`framework/` is now fully assembled.**
-- P1-T8 (Phase 1 close) — **partially done / BLOCKED.** Changelog cut into
-  `[0.1.0]` / `[0.2.0]`, ROADMAP marked, and the three annotated tags
-  (`v0.1.0`, `framework/v0.1.0`, `v0.2.0`) created **locally**. The tag push
-  fails with HTTP 403 — the environment's git proxy rejects `refs/tags/*`.
-  P1-T8 cannot close until the tags are published. See `plans/P1-T8-PLAN.md`
-  (Finding F2).
+- P1-T8 (Phase 1 close) — **complete.** Changelog cut into `[0.1.0]` /
+  `[0.2.0]`, ROADMAP marked, and the three annotated tags (`v0.1.0`,
+  `framework/v0.1.0`, `v0.2.0`) published to the remote (pushed from a local
+  clone after the in-container tag push was blocked by the git proxy). See
+  `plans/P1-T8-PLAN.md`. **Phase 1 complete.**
 
 ## Achievements
 
@@ -63,8 +62,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   convention (D-0009); conformance suite at 24 tests.
 - 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
   `framework/` fully assembled; conformance suite at 25 tests.
-- 2026-05-19 — Phase 1 close: changelog cut + ROADMAP marked; release tags
-  `v0.1.0`, `framework/v0.1.0`, `v0.2.0` created locally (push blocked, 403).
+- 2026-05-19 — Closed Phase 1: changelog cut + ROADMAP marked; release tags
+  `v0.1.0`, `framework/v0.1.0`, `v0.2.0` published to the remote.
 - 2026-05-19 — Added `docs/TAGGING.md` tagging policy (release + bookmark
   tags, D-0011).
 - 2026-05-19 — Defined the framework's purpose: the IPLAN is the terminal
@@ -73,19 +72,13 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Next steps
 
-1. Publish the release tags (P1-T8 / P0-T5) — blocked here by the HTTP 403
-   on tag pushes; needs a tag-push-capable environment or a local push.
-2. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
+1. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
    `legacy/mcp_ucx/` into `platforms/hermes/`; repoint at `framework/`;
    declare `framework_spec_version`; pass the conformance suite.
 
 ## Open questions
 
-- **Release tags are unpublished.** `v0.1.0`, `framework/v0.1.0`, and
-  `v0.2.0` exist locally but the environment rejects tag pushes (HTTP 403 on
-  `refs/tags/*`). They must be published from an environment whose network
-  policy permits tag pushes, or from a local clone. Until then P1-T8 and
-  P0-T5 stay open.
+- None outstanding.
 
 ## Log
 
@@ -110,3 +103,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19T13:10:00Z — Added D-0012 refinements R1 (IPLAN planned/executed
   states; criticality-scaled audit) and R2 (curated corpus as the unit of
   value; library/composition/freshness as post-v1.0 destination).
+- 2026-05-19T13:50:00Z — Release tags `v0.1.0`, `framework/v0.1.0`, `v0.2.0`
+  published from a local clone; Phase 1 closed; P0-T5 and P1-T8 done.
