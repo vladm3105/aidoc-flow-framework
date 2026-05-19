@@ -10,6 +10,39 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0012 — Framework purpose: the IPLAN is the product; v1 scope is software/devops
+
+- **Date:** 2026-05-19T12:45:00Z
+- **Decision:**
+  - aidoc-flow's purpose is to transform business intent into a
+    fully-traceable, gate-approved **IPLAN** — the framework's *terminal
+    artifact*. Source-code generation and deployment are **out of scope**:
+    they are downstream, agent-agnostic steps performed by any capable AI
+    agent, not by the framework.
+  - The **IPLAN is the product**: a machine-readable, auditable handoff
+    contract bundling reasoning (BRD/PRD), states (EARS), behavior (BDD),
+    infrastructure decisions (ADR), testing procedures (TDD/TSPEC), and
+    specifications — self-contained enough that any agent can execute it
+    without further clarification.
+  - **v1 scope is software + devops domains only.** The current SDD layers
+    (EARS, BDD, ADR, TDD) are software-native. Non-technical task domains are
+    deferred to a post-v1.0 **domain-profile** mechanism (see `ROADMAP.md`,
+    "Post-v1.0 — Planned Capabilities").
+  - Promise framing is **"rigorous, auditable, gap-surfacing"** — *not*
+    "bullet-proof". The framework enforces structure and blocks on unresolved
+    open questions, but cannot manufacture requirements a human never supplied.
+- **Why:** Code generation and deployment are commoditized across AI agents;
+  the scarce, defensible value is auditable reasoning with end-to-end
+  traceability. Terminating scope at the IPLAN keeps the name `aidoc-flow`
+  accurate — the framework *is* the document flow. Limiting v1 to
+  software/devops keeps the existing layers fit-for-purpose; chasing
+  universality early would dilute the framework into being vague at everything.
+- **Notes:** The conformance suite gains a job — verifying IPLAN
+  *agent-readiness* (no TBDs, full upstream traceability, bundled test specs,
+  explicit stack/runtime constraints). Domain generalization is an
+  architectural goal (a generic flow engine + per-domain profiles), sketched
+  in `ROADMAP.md` as post-v1.0.
+
 ## D-0011 — Bookmark tags alongside release tags
 
 - **Date:** 2026-05-19T11:20:00Z

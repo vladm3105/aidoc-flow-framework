@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T11:35:00Z                       |
+| Last updated  | 2026-05-19T12:45:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 1 — closing (release-tag push blocked) |
 | Next task     | P1-T8 — publish release tags (BLOCKED, HTTP 403); then Phase 2 |
@@ -67,6 +67,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `v0.1.0`, `framework/v0.1.0`, `v0.2.0` created locally (push blocked, 403).
 - 2026-05-19 — Added `docs/TAGGING.md` tagging policy (release + bookmark
   tags, D-0011).
+- 2026-05-19 — Defined the framework's purpose: the IPLAN is the terminal
+  product; code/deploy out of scope; v1 = software/devops; domain profiles
+  post-v1.0 (D-0012, `ROADMAP.md`).
 
 ## Next steps
 
@@ -102,3 +105,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   locally.
 - 2026-05-19T11:35:00Z — Tag push blocked (HTTP 403, `refs/tags/*`); added
   `docs/TAGGING.md`; corrected records — P1-T8/P0-T5 reopened.
+- 2026-05-19T12:45:00Z — Recorded framework purpose + domain-profile
+  direction (D-0012); project name set to `aidoc-flow`.

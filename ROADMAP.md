@@ -81,3 +81,27 @@ Change Management for the full policy.
 |------|---------------------|---------|
 | **CHG-D1 — CHG implementation model** | CHG is implemented as **skills + CI/CD**, not a monolith. Skills handle authoring and the automatable gate checks (schema, upstream tags, traceability, gate report + `GATE_APPROVAL_FORM`). CI/CD enforces the gate as a required status check; the human sign-off half is enforced by GitHub branch protection / required reviewers — a skill must never self-approve. Implemented twice against the same `framework/` spec: skills + CI workflow in the Claude Code plugin, server-side in Hermes. | Post-Phase 5 |
 | **CHG-D2 — CHG as a `framework/` decision** | Record CHG-D1 as a formal decision in `framework/governance/` when CHG returns, since both platforms implement it from the shared spec. | Post-Phase 5 |
+
+## Post-v1.0 — Planned Capabilities
+
+### Domain profiles — generalizing the IPLAN beyond software
+
+The framework's purpose is to produce a fully-traceable, gate-approved
+**IPLAN** as its terminal artifact (D-0012). v1 scopes this to **software +
+devops** — the current SDD layers (EARS, BDD, ADR, TDD) are software-native
+and stay that way for v1.
+
+Post-v1.0, generalize the IPLAN to other task domains via a **domain-profile**
+mechanism — additively, without reworking the core:
+
+- **Core (domain-neutral):** the flow engine, the gate model, traceability,
+  the IPLAN schema, and conformance. Already domain-independent.
+- **A profile:** declares which layers apply for a domain and their schemas.
+  - `profile: software` — ships in v1 (the current layer set).
+  - `profile: devops` — v1 (devops-flavored layers and thresholds).
+  - `profile: <non-technical>` — post-v1.0, additive: e.g. operational
+    runbooks, compliance/audit planning, research plans. Each new profile is
+    new layer definitions, not a change to the core.
+
+This makes "an IPLAN for any purpose" an architectural property of the engine
+while keeping every release's scope honest. Revisit after the v1.0.0 cutover.

@@ -15,6 +15,12 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   `framework/vX.Y.Z`, `<platform>/vX.Y.Z`) and `mark/<slug>` bookmark tags,
   with create / push / find commands (D-0011). `docs/PROJECT.md` §3 slimmed
   to a summary that links it.
+- `ROADMAP.md` "Post-v1.0 — Planned Capabilities" — the domain-profile
+  mechanism for generalizing the IPLAN beyond software (D-0012).
+
+### Changed
+- Recorded the framework's purpose — the IPLAN as the terminal product;
+  code/deploy out of scope; v1 scope is software/devops (D-0012).
 
 ## [0.2.0] — 2026-05-19
 
