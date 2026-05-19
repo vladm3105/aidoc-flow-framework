@@ -10,6 +10,21 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0011 — Bookmark tags alongside release tags
+
+- **Date:** 2026-05-19T11:20:00Z
+- **Decision:** Git tags serve two roles. **Release tags** (`vX.Y.Z`,
+  `framework/vX.Y.Z`, `<platform>/vX.Y.Z`) are annotated, immutable, and
+  permanent. **Bookmark tags** (`mark/<slug>`) are annotated, mutable, and
+  disposable — they mark notable non-release commits (baselines, known-good
+  states, audit points) for easy retrieval via `git tag -l 'mark/*'`. The full
+  policy lives in `docs/TAGGING.md`; `docs/PROJECT.md` §3 links it.
+- **Why:** Tags are a cheap, searchable way to mark history. Restricting them
+  to releases wastes that. A separate, clearly non-SemVer namespace keeps
+  bookmarks from being mistaken for versions.
+- **Notes:** `docs/TAGGING.md` is the single authority; the tag-namespace
+  table was moved there from `docs/PROJECT.md` §3 to avoid two copies drifting.
+
 ## D-0010 — Framework docs drop legacy version-lineage content
 
 - **Date:** 2026-05-19T10:00:00Z

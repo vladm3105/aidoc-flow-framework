@@ -10,6 +10,12 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+- `docs/TAGGING.md` — the full git-tag policy: release tags (`vX.Y.Z`,
+  `framework/vX.Y.Z`, `<platform>/vX.Y.Z`) and `mark/<slug>` bookmark tags,
+  with create / push / find commands (D-0011). `docs/PROJECT.md` §3 slimmed
+  to a summary that links it.
+
 ## [0.2.0] — 2026-05-19
 
 Phase 1 — Framework Spec Extraction. `framework/` is fully assembled and
