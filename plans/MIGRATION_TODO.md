@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 1 — Framework Spec Extraction        |
-| Last updated     | 2026-05-19T10:00:00Z                       |
+| Last updated     | 2026-05-19T10:45:00Z                       |
 
 ---
 
@@ -19,7 +19,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P0-T4 — Create `plans/` workspace.
 - [x] P0-T6 — Add `CLAUDE.md` project memory, development workflow, and
   continuity automation (`PreCompact` / `SessionStart` hooks).
-- [ ] P0-T5 — Tag planning baseline `v0.1.0`.
+- [x] P0-T5 — Tag planning baseline `v0.1.0` (pushed at Phase 1 close, P1-T8).
 
 ## Phase 1 — Framework Spec Extraction → `v0.2.0`
 
@@ -37,9 +37,8 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P1-T7 — Framework root assembly: the 4 methodology docs
   (`SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`, `AI_ASSISTANT_RULES`,
   `TESTING_STRATEGY_TDD`) extracted into `framework/`. → `plans/P1-T7-PLAN.md`
-- [ ] P1-T8 — Phase 1 close: tag `framework/v0.1.0` (first spec release) and
-  the `v0.2.0` project milestone. Requires P1-T7 complete and explicit
-  confirmation before pushing tags.
+- [x] P1-T8 — Phase 1 close: changelog cut, milestone tags `framework/v0.1.0`
+  + `v0.2.0`, `v0.1.0` pushed. → `plans/P1-T8-PLAN.md`
 
 ## Phase 2 — Platform A: Hermes Re-homing → `v0.3.0`
 

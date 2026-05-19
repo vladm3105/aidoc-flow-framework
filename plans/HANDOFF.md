@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T10:00:00Z                       |
+| Last updated  | 2026-05-19T10:45:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 1 — Framework Spec Extraction        |
-| Next task     | P1-T8 — Phase 1 close: tag `framework/v0.1.0` + `v0.2.0` |
+| Current phase | Phase 1 complete — Phase 2 next            |
+| Next task     | Phase 2 — Platform A: Hermes re-homing      |
 
 ## Progress
 
@@ -34,6 +34,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
   into `framework/`; suite at 25 tests; see `plans/P1-T7-PLAN.md`.
   **`framework/` is now fully assembled.**
+- P1-T8 (Phase 1 close) — complete; changelog cut into `[0.1.0]` / `[0.2.0]`,
+  ROADMAP marked, tags `v0.1.0` + `framework/v0.1.0` + `v0.2.0` pushed; see
+  `plans/P1-T8-PLAN.md`. **Phase 1 complete.**
 
 ## Achievements
 
@@ -57,13 +60,14 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   convention (D-0009); conformance suite at 24 tests.
 - 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
   `framework/` fully assembled; conformance suite at 25 tests.
+- 2026-05-19 — Closed Phase 1: changelog cut, tags `v0.1.0`,
+  `framework/v0.1.0`, `v0.2.0`.
 
 ## Next steps
 
-1. P1-T8 — Phase 1 close: tag `framework/v0.1.0` + the `v0.2.0` project
-   milestone (needs explicit confirmation before pushing tags).
-2. P0-T5 — tag the `v0.1.0` planning baseline.
-3. Phase 2 — begin Platform A (Hermes) re-homing.
+1. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
+   `legacy/mcp_ucx/` into `platforms/hermes/`; repoint at `framework/`;
+   declare `framework_spec_version`; pass the conformance suite.
 
 ## Open questions
 
@@ -83,3 +87,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.
 - 2026-05-19T10:00:00Z — Completed P1-T7 root assembly; `framework/` fully
   assembled.
+- 2026-05-19T10:45:00Z — Completed P1-T8; Phase 1 closed and tagged
+  (`v0.2.0`, `framework/v0.1.0`).
