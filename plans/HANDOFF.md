@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T17:25:00Z                       |
+| Last updated  | 2026-05-20T18:35:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Phase 2 formally closed** (`v0.3.0`, `hermes/v0.1.0` published) — Phase 3 next |
-| Next task     | Phase 3 — Platform B: Claude Code plugin (→ `v0.4.0`) |
+| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0 done) |
+| Next task     | P3-T1 — design (resolve the 6 open questions from P3-T0 audit: manifest schema, non-doc-skill scope, save-plan in/out, root-files scope, plugin name, copy strategy) |
 
 ## Progress
 
@@ -156,15 +156,32 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   all 5 tags; `v0.3.0` and `hermes/v0.1.0` both dereference to the
   close commit `20c061d`. **Phase 2 is formally closed.** Next: Phase 3
   (Platform B — Claude Code plugin).
+- 2026-05-20T18:35:00Z — Completed P3-T0 (Phase 3 audit + task
+  breakdown). `plans/P3-AUDIT-claude-code-plugin.md` inventories
+  `.claude/` (191 files), resolves the **copy-with-divergence**
+  relationship (root stays in dev-time service until Phase 5), maps
+  framework coupling to a single uniform rewire (`ai_dev_flow` →
+  `framework` across 30 files), and classifies every top-level path.
+  Phase 3 shape is 5 sub-tasks (T1–T5) — simpler than P2's 9 because
+  coupling is small, no predecessor noise (no `mcp_ucx`-style tree),
+  and the artifact is declarative (no Python package or test suite).
+  6 open questions for P3-T1 design; see `plans/P3-T0-PLAN.md` for
+  the full breakdown.
 
 ## Next steps
 
-1. **Phase 3 — Platform B: Claude Code plugin** (→ `v0.4.0`). Scaffold
-   `.claude-plugin/plugin.json`; port the `doc-*` skill set, commands,
-   and agents into the plugin; remove all Hermes/MCP dependency
-   (Claude is the engine); plugin passes the same conformance suite.
-   See `ROADMAP.md` Phase 3 for the high-level outline. Begins with a
-   P3-T0 audit + task breakdown analogous to P2-T0.
+1. **P3-T1 — Design.** Resolve the 6 open questions surfaced by the
+   P3-T0 audit (`plans/P3-AUDIT-claude-code-plugin.md` §6): plugin
+   manifest schema; the 6 borderline non-doc skills (`code-review`,
+   `refactor-flow`, `test-automation`, `security-audit`,
+   `contract-tester`, `analytics-flow`, `devops-flow`, `ai-pr-review`);
+   `save-plan` command in/out; the 22 root files under
+   `.claude/skills/`; plugin name in the manifest; copy strategy;
+   optional plugin lifecycle hooks. Output:
+   `plans/P3-T1-DESIGN.md` per the P2-T1 pattern.
+2. Then P3-T2 (port content with `ai_dev_flow → framework` rewire),
+   P3-T3 (plugin scaffold + manifest + VERSION files), P3-T4 (verify),
+   P3-T5 (Phase 3 close → `v0.4.0`, `claude-code-plugin/v0.1.0`).
 
 ## Open questions
 

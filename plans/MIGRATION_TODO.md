@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T17:25:00Z                       |
+| Last updated     | 2026-05-20T18:35:00Z                       |
 
 ---
 
@@ -106,11 +106,36 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 ## Phase 3 — Platform B: Claude Code Plugin → `v0.4.0`
 
-- [ ] P3-T1 — Scaffold `.claude-plugin/plugin.json`.
-- [ ] P3-T2 — Port the `doc-*` skill set into the plugin.
-- [ ] P3-T3 — Port commands and agents into the plugin.
-- [ ] P3-T4 — Remove all Hermes/MCP dependency from the plugin path.
-- [ ] P3-T5 — Plugin passes the conformance suite.
+- [x] P3-T0 — Phase 3 audit + task breakdown: inventoried `.claude/`
+  (191 files; 149 skills = 129 `doc-*` + 20 non-doc; 1 agent;
+  1 command; 3 dropped hooks). Coupling sweep: zero
+  `ucx_flow|UCX_FLOW|ucx_hermes`; 30 files carry `ai_dev_flow`
+  placeholder paths to rewire to `framework/`; 2 illustration paths
+  preserved per G13. Relationship resolved: **copy-with-divergence**
+  (root `.claude/` stays in dev-time service until Phase 5 cutover).
+  Phase 3 shape: 5 sub-tasks (T1 design → T2 port → T3 scaffold →
+  T4 verify → T5 close). 6 open questions for P3-T1 design.
+  See `plans/P3-T0-PLAN.md` + `plans/P3-AUDIT-claude-code-plugin.md`.
+  DONE 2026-05-20T18:35:00Z.
+- [ ] P3-T1 — Design: resolve the 6 open questions from the audit
+  (manifest schema, non-doc-skill scope, save-plan command in/out,
+  22-root-file scope, plugin name, copy strategy, optional hooks).
+  Output: `plans/P3-T1-DESIGN.md` per the P2-T1 pattern.
+- [ ] P3-T2 — Port content: copy in-scope skills/agents/commands
+  from `.claude/` to `platforms/claude-code-plugin/`; apply the
+  `ai_dev_flow → framework` rewire (30 files + sub-path follow-ups
+  for `governance/`, `layers/<NN>_<X>/`); preserve illustration
+  paths per G13.
+- [ ] P3-T3 — Plugin scaffold: create `.claude-plugin/plugin.json`,
+  `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching
+  `framework/VERSION`), `CHANGELOG.md`; expand `README.md`.
+- [ ] P3-T4 — Verify: conformance 25/25; coupling sweep on
+  `platforms/claude-code-plugin/` returns zero (or matches the
+  P3-T2 illustration whitelist); manifest validates against
+  Claude Code's schema; per-skill content equivalence vs root.
+- [ ] P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]`; ROADMAP
+  marked; annotated tags `v0.4.0` and `claude-code-plugin/v0.1.0`
+  (anticipate P1-T8 / P2-T6 tag-push 403; local-clone workaround).
 
 ## Phase 4 — Conformance & Independence → `v0.5.0`
 
