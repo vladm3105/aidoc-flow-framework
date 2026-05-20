@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T02:15:00Z                       |
+| Last updated  | 2026-05-21T03:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1, P4-T2, P4-T3 done — workflows staged pending user relocation) |
-| Next task     | (a) **User action** — `git mv plans/workflows-pending/*.yml .github/workflows/` from a local clone (in-container can't push workflow files; see `plans/P4-T3-PLAN.md` for exact commands); (b) P4-T4 — retrofits + parity report |
+| Current phase | Phase 4 — Conformance & Independence (P4-T0/T1/T2/T3/T4 done) |
+| Next task     | (a) **User action — relocate workflows** from `plans/workflows-pending/` to `.github/workflows/` in a local clone (still pending; see `plans/P4-T3-PLAN.md` for exact commands); (b) P4-T5 — verify + close (`CHANGELOG.md [0.5.0]`, ROADMAP, tag `v0.5.0`) |
 
 ## Progress
 
@@ -285,50 +285,51 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   **Implementation-time discovery — fifth in-container
   restriction:** the GitHub App credentials lack the `workflows`
   permission, so the in-container push of `.github/workflows/*.yml`
-  is rejected with "refusing to allow a GitHub App to create or
-  update workflow ... without `workflows` permission". Same root
-  cause as the three `refs/tags/*` 403s. Workflow files staged at
-  `plans/workflows-pending/` for the user to `git mv` into
-  `.github/workflows/` from a local clone — exact commands in
-  `plans/P4-T3-PLAN.md` Implementation note. Lesson: in-container
-  push restriction set is now `refs/tags/*` (3x) + workflow files
-  (1x); future plans touching either should bake the local-clone
-  workaround in upfront. `docs/TAGGING.md` documents the tag-push
-  case; workflow case should be documented similarly (P4-T5
-  housekeeping).
+  is rejected. Workflow files staged at `plans/workflows-pending/`
+  for the user to `git mv` into `.github/workflows/` from a local
+  clone — exact commands in `plans/P4-T3-PLAN.md` Implementation
+  note. (`docs/TAGGING.md` was extended in P4-T4 to document this
+  restriction symmetrically with the tag-push restriction.)
+- 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
+  report). Six artifacts landed:
+  - `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
+    project `[0.3.0]` scoped content.
+  - `platforms/claude-code-plugin/CHANGELOG.md` — plugin `[0.1.0]`
+    mirroring project `[0.4.0]` scoped content.
+  - `platforms/hermes/README.md` — expanded from 27-line
+    placeholder to **113 lines** (mirrors P3-T3 plugin README
+    structure: what's inside, install, MCP tool list, framework
+    spec conformance section, platform info table, relationship-
+    to-plugin section).
+  - `LICENSE` at repo root — MIT, copyright `vladm3105` (matches
+    plugin manifest `"license": "MIT"`).
+  - `docs/PARITY.md` — 5-section capability comparison (matrix /
+    operations / extras / known parity gap / choosing between).
+    Honest about the **legacy-vs-new layer model gap**: plugin
+    lacks `doc-tdd` + `doc-iplan`; has `doc-sys` / `doc-req` /
+    `doc-ctr` / `doc-tspec` / `doc-tasks` from the legacy
+    11-layer model. Hermes covers all 8 new-model layers via
+    its generic `sdd_*` tools. Resolution deferred post-v1.0
+    per P3-T1 §Deferred R2.
+  - `docs/TAGGING.md` extended with an "In-container push
+    restrictions" section documenting the tag + workflow
+    restrictions symmetrically (per P4-T3 G15 recommendation).
+  All 9 verify gates green; conformance still 31/31.
 
 ## Next steps
 
-1. **User action — relocate workflow files from a local clone.**
-   In-container push couldn't land `.github/workflows/*.yml`
-   directly (GitHub App lacks `workflows` permission). Run from
-   your local clone:
-   ```sh
-   git fetch origin claude/multi-platform-migration-AamWB
-   git checkout claude/multi-platform-migration-AamWB && git pull --ff-only
-   mkdir -p .github/workflows
-   git mv plans/workflows-pending/conformance.yml .github/workflows/conformance.yml
-   git mv plans/workflows-pending/hermes.yml      .github/workflows/hermes.yml
-   git mv plans/workflows-pending/plugin.yml      .github/workflows/plugin.yml
-   rmdir plans/workflows-pending
-   git commit -m "ci: install P4-T3 workflows at .github/workflows/"
-   git push origin claude/multi-platform-migration-AamWB
-   ```
-2. **P4-T4 — Retrofits + parity report.** Per P4-T1 design:
-   - `platforms/hermes/CHANGELOG.md` (Hermes `[0.1.0]` mirroring
-     project `[0.3.0]` scoped content).
-   - `platforms/claude-code-plugin/CHANGELOG.md` (plugin `[0.1.0]`
-     mirroring project `[0.4.0]` scoped content).
-   - `platforms/hermes/README.md` expanded (~80 lines, full mirror
-     of P3-T3 plugin README structure).
-   - `LICENSE` at repo root — MIT, copyright `vladm3105`.
-   - `docs/PARITY.md` — parity report (8 layers × workflow
-     operations matrix; platform-specific extras section).
-3. **P4-T5 — Verify + close** (combined): `CHANGELOG.md [0.5.0]`;
-   ROADMAP marked; tag `v0.5.0` (fourth tag-push 403 anticipated;
-   local-clone workaround baked in). P4-T5 should also add a
-   workflow-push-restriction note to `docs/TAGGING.md` or a new
-   `docs/CI.md` for symmetry with the tag-push documentation.
+1. **User action — relocate workflow files from a local clone**
+   (still pending from P4-T3). The workflow contents at
+   `plans/workflows-pending/` need to move into `.github/workflows/`
+   via a local-clone push. Exact commands in
+   `plans/P4-T3-PLAN.md` Implementation note. Can be done before
+   or after P4-T5.
+2. **P4-T5 — Verify + close** (combined): re-run all Phase 4
+   gates against current state; cut `CHANGELOG.md [0.5.0]`; mark
+   Phase 4 complete in `ROADMAP.md`; create annotated tag `v0.5.0`
+   (anticipate fourth tag-push 403 — local-clone workaround). No
+   per-platform tags this phase (Hermes/plugin platforms didn't
+   release a new version; only the project milestone bumps).
 
 ## Open questions
 

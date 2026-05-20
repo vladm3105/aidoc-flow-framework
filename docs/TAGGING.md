@@ -111,3 +111,18 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > See `plans/P2-T6-PLAN.md` §Approach.5 and `plans/P3-T5-PLAN.md`
 > §Approach.5 for the exact local-clone commands.
 > Verify any tag's publication via `git ls-remote --tags origin`.
+
+## In-container push restrictions
+
+The remote-execution-environment GitHub App credentials are scoped
+narrower than a normal user push, so two operation classes must be
+performed from a local clone with normal credentials:
+
+| Operation class | Symptom in-container | Workaround |
+|-----------------|----------------------|------------|
+| `refs/tags/*` pushes | `HTTP 403` on `git push origin <tag>` | Re-create the annotated tag locally on the same target commit; `git push origin <tag>` from the local clone. Occurrences: P1-T8, P2-T6, P3-T5. See `docs/TAGGING.md` (this file) and the per-phase close-task plans. |
+| `.github/workflows/**` file additions / edits | `refusing to allow a GitHub App to create or update workflow ... without 'workflows' permission` on the branch push | Stage workflow files at a non-`.github/workflows/` path (e.g. `plans/workflows-pending/`); `git mv` them into `.github/workflows/` from a local clone and push. Occurrence: P4-T3. See `plans/P4-T3-PLAN.md` §Implementation note for exact commands. |
+
+Future plans touching either class should bake the local-clone
+workaround in upfront so the user can act on the workaround without
+waiting for the failure.

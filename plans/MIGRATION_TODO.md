@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T02:15:00Z                       |
+| Last updated     | 2026-05-21T03:10:00Z                       |
 
 ---
 
@@ -234,8 +234,19 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   `git mv` into `.github/workflows/` from a local clone (see
   `plans/P4-T3-PLAN.md` Implementation note for exact commands).
   DONE 2026-05-21T02:15:00Z (pending workflow file relocation by user).
-- [ ] P4-T4 — Retrofits + parity report: Hermes + plugin CHANGELOG;
-  expanded Hermes README; repo-root LICENSE; `docs/PARITY.md`.
+- [x] P4-T4 — Retrofits + parity report: 6 artifacts landed —
+  `platforms/hermes/CHANGELOG.md` + `platforms/claude-code-plugin/CHANGELOG.md`
+  (each a per-platform `[0.1.0]` mirroring the corresponding
+  project release scoped to that platform, per P4-T1 Q4 minimal-
+  honest posture); `platforms/hermes/README.md` expanded 27 → 113
+  lines (full mirror of P3-T3 plugin README structure per Q5);
+  repo-root `LICENSE` (MIT, copyright `vladm3105` per Q6, matches
+  plugin manifest placeholder); `docs/PARITY.md` (5-section
+  capability comparison with known-parity-gap call-out on the
+  legacy-vs-new layer model); `docs/TAGGING.md` extended with an
+  "In-container push restrictions" section documenting the tags
+  + workflows restriction symmetrically. All 9 verify gates green;
+  conformance still 31/31. DONE 2026-05-21T03:10:00Z.
 - [ ] P4-T5 — Phase 4 verify + close: `CHANGELOG.md [0.5.0]`;
   ROADMAP marked; tag `v0.5.0` (anticipate P1-T8 / P2-T6 / P3-T5
   tag-push 403 — fourth occurrence; local-clone workaround).
