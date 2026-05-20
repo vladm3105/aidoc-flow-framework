@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T6                                |
 | Depends on | P2-T0…T9 (all done), P2-T5 verify green |
-| Status     | DONE (pending tag publication) — 2026-05-20T17:10:00Z |
+| Status     | DONE — 2026-05-20T17:25:00Z          |
 | Feeds      | Phase 3 (Platform B — Claude Code plugin) |
 
 ## Objective
@@ -377,3 +377,24 @@ After the push, the in-container session can confirm via
 `git ls-remote --tags origin` that both tags landed on the remote.
 At that point Phase 2 is **formally** closed and `Status` ticks to
 DONE (without the "pending tag publication" qualifier).
+
+## Tag publication confirmed (2026-05-20T17:25:00Z)
+
+User ran the local-clone workaround. `git ls-remote --tags origin`
+returns 5 tags total:
+
+```
+243e2da…  refs/tags/framework/v0.1.0       (annotated, P1 close)
+7a6bb53…  refs/tags/framework/v0.1.0^{}    -> framework/ at v0.1.0
+43b7628…  refs/tags/hermes/v0.1.0          (annotated, P2 close)
+20c061d…  refs/tags/hermes/v0.1.0^{}       -> P2-T6 close commit
+82ab9fe…  refs/tags/v0.1.0                 (annotated, P0)
+d986694…  refs/tags/v0.1.0^{}              -> P0 baseline
+9b362f7…  refs/tags/v0.2.0                 (annotated, P1 close)
+7a6bb53…  refs/tags/v0.2.0^{}              -> P1 close commit
+5efb651…  refs/tags/v0.3.0                 (annotated, P2 close)
+20c061d…  refs/tags/v0.3.0^{}              -> P2-T6 close commit
+```
+
+Both Phase 2 tags dereference to the close commit (`20c061d…`).
+Status ticks to DONE — Phase 2 formally closed.

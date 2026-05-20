@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T17:10:00Z                       |
+| Last updated     | 2026-05-20T17:25:00Z                       |
 
 ---
 
@@ -95,10 +95,9 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   Added / Changed / Removed); `ROADMAP.md` line 6 + Phase 2 section
   marked complete; `docs/TAGGING.md` table appended. Annotated tags
   `v0.3.0` (milestone) and `hermes/v0.1.0` (platform) created locally
-  on close commit `20c061d`. In-container tag push 403'd as expected
-  (P1-T8 pattern); local-clone push commands documented in
-  `plans/P2-T6-PLAN.md` Implementation note. **Phase 2 structurally
-  closed; awaiting tag publication.** DONE 2026-05-20T17:10:00Z.
+  on close commit `20c061d` and **published on the remote via the
+  local-clone workaround** (P1-T8 pattern). All 5 tags now on origin.
+  **Phase 2 formally closed.** DONE 2026-05-20T17:25:00Z.
 - [x] P2-T7 — Port `hermes_agent_skills/spec-driven-development/` from
   `origin/main` to `platforms/hermes/agent-skills/spec-driven-development/`
   (sdd-orchestrator + sdd-review-personas). 181 files (was 187; 6 D-0013-

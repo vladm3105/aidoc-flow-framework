@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T17:10:00Z                       |
+| Last updated  | 2026-05-20T17:25:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Phase 2 complete** (`v0.3.0`, `hermes/v0.1.0`) — Phase 3 next, pending tag publication via local-clone workaround |
-| Next task     | (a) **User action** — publish `v0.3.0` + `hermes/v0.1.0` from a local clone per `plans/P2-T6-PLAN.md` Implementation note; (b) Phase 3 — Platform B: Claude Code plugin |
+| Current phase | **Phase 2 formally closed** (`v0.3.0`, `hermes/v0.1.0` published) — Phase 3 next |
+| Next task     | Phase 3 — Platform B: Claude Code plugin (→ `v0.4.0`) |
 
 ## Progress
 
@@ -151,21 +151,20 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   publication requires the user to run the local-clone workaround
   documented in `plans/P2-T6-PLAN.md` Implementation note. **Phase 2
   is structurally closed.**
+- 2026-05-20T17:25:00Z — User published the two Phase 2 tags via the
+  local-clone workaround. `git ls-remote --tags origin` now returns
+  all 5 tags; `v0.3.0` and `hermes/v0.1.0` both dereference to the
+  close commit `20c061d`. **Phase 2 is formally closed.** Next: Phase 3
+  (Platform B — Claude Code plugin).
 
 ## Next steps
 
-1. **User action — publish Phase 2 tags from a local clone.** The
-   in-container session created `v0.3.0` and `hermes/v0.1.0` locally
-   on close commit `20c061d`; the tag push 403'd as expected
-   (P1-T8 pattern). Run the commands in `plans/P2-T6-PLAN.md`
-   Implementation note from a local clone with normal GitHub
-   credentials. After the push, `git ls-remote --tags origin`
-   should show 5 tags total.
-2. **Phase 3 — Platform B: Claude Code plugin** (→ `v0.4.0`). Scaffold
+1. **Phase 3 — Platform B: Claude Code plugin** (→ `v0.4.0`). Scaffold
    `.claude-plugin/plugin.json`; port the `doc-*` skill set, commands,
    and agents into the plugin; remove all Hermes/MCP dependency
    (Claude is the engine); plugin passes the same conformance suite.
-   See `ROADMAP.md` Phase 3 for the high-level outline.
+   See `ROADMAP.md` Phase 3 for the high-level outline. Begins with a
+   P3-T0 audit + task breakdown analogous to P2-T0.
 
 ## Open questions
 
