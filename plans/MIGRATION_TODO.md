@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T01:20:00Z                       |
+| Last updated     | 2026-05-21T02:15:00Z                       |
 
 ---
 
@@ -221,9 +221,19 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   `_spec.py` extended additively with platform helpers. Suite:
   **25 → 31 tests**, all green on first run after fixing one
   implementation-time silent-Edit failure. DONE 2026-05-21T01:20:00Z.
-- [ ] P4-T3 — CI workflows: `.github/workflows/{conformance,hermes,
-  plugin}.yml`. Greenfield; no port from `legacy/github-workflows-
-  disabled/`.
+- [x] P4-T3 — CI workflows authored (greenfield, ubuntu-latest,
+  Python 3.12 via setup-python@v5, concurrency cancel-in-progress,
+  minimal `contents: read`): `conformance.yml` (31-test suite on
+  every push/PR), `hermes.yml` (pytest on platforms/hermes/** or
+  framework/**), `plugin.yml` (manifest valid + coupling sweep +
+  structural sanity on platforms/claude-code-plugin/**). All 8
+  verify gates green (YAML valid; local smoke OK). **In-container
+  push rejected** ("refusing to allow GitHub App to create workflow
+  without workflows permission" — fifth in-container restriction).
+  Workflows staged at `plans/workflows-pending/` for user to
+  `git mv` into `.github/workflows/` from a local clone (see
+  `plans/P4-T3-PLAN.md` Implementation note for exact commands).
+  DONE 2026-05-21T02:15:00Z (pending workflow file relocation by user).
 - [ ] P4-T4 — Retrofits + parity report: Hermes + plugin CHANGELOG;
   expanded Hermes README; repo-root LICENSE; `docs/PARITY.md`.
 - [ ] P4-T5 — Phase 4 verify + close: `CHANGELOG.md [0.5.0]`;

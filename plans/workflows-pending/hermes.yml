@@ -1,0 +1,44 @@
+name: Hermes platform
+
+on:
+  push:
+    paths:
+      - 'platforms/hermes/**'
+      - 'framework/**'
+      - '.github/workflows/hermes.yml'
+  pull_request:
+    paths:
+      - 'platforms/hermes/**'
+      - 'framework/**'
+      - '.github/workflows/hermes.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Hermes pytest
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Hermes dependencies
+        working-directory: platforms/hermes
+        run: |
+          pip install -e .
+          pip install pytest
+
+      - name: Run Hermes test suite
+        working-directory: platforms/hermes
+        env:
+          PYTHONPATH: src
+        run: python -m pytest tests/ -v

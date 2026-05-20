@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T01:20:00Z                       |
+| Last updated  | 2026-05-21T02:15:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1, P4-T2 done) |
-| Next task     | P4-T3 — CI workflows: `.github/workflows/{conformance,hermes,plugin}.yml` on `ubuntu-latest` with Python 3.12 (per P4-T1 Q3); greenfield, no carry-over from legacy |
+| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1, P4-T2, P4-T3 done — workflows staged pending user relocation) |
+| Next task     | (a) **User action** — `git mv plans/workflows-pending/*.yml .github/workflows/` from a local clone (in-container can't push workflow files; see `plans/P4-T3-PLAN.md` for exact commands); (b) P4-T4 — retrofits + parity report |
 
 ## Progress
 
@@ -276,23 +276,59 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   in suite output; re-Read + re-Edit landed cleanly. Lesson: silent
   Edit failures are real; treat unexpected ImportErrors after
   "successful" Edits as suspect.
+- 2026-05-21T02:15:00Z — Completed P4-T3 (CI workflows authored).
+  Three greenfield workflows (`conformance.yml`, `hermes.yml`,
+  `plugin.yml`) — all `ubuntu-latest`, Python 3.12 via
+  setup-python@v5, concurrency cancel-in-progress, minimal
+  `contents: read`. No carry-over from legacy. All 8 verify gates
+  green; local smoke confirms commands work.
+  **Implementation-time discovery — fifth in-container
+  restriction:** the GitHub App credentials lack the `workflows`
+  permission, so the in-container push of `.github/workflows/*.yml`
+  is rejected with "refusing to allow a GitHub App to create or
+  update workflow ... without `workflows` permission". Same root
+  cause as the three `refs/tags/*` 403s. Workflow files staged at
+  `plans/workflows-pending/` for the user to `git mv` into
+  `.github/workflows/` from a local clone — exact commands in
+  `plans/P4-T3-PLAN.md` Implementation note. Lesson: in-container
+  push restriction set is now `refs/tags/*` (3x) + workflow files
+  (1x); future plans touching either should bake the local-clone
+  workaround in upfront. `docs/TAGGING.md` documents the tag-push
+  case; workflow case should be documented similarly (P4-T5
+  housekeeping).
 
 ## Next steps
 
-1. **P4-T3 — CI workflows.** Greenfield `.github/workflows/`:
-   - `conformance.yml` — runs the 31-test conformance suite on
-     push/PR to any branch.
-   - `hermes.yml` — runs Hermes' 447-test pytest suite (Python
-     3.12 venv) on push/PR touching `platforms/hermes/`.
-   - `plugin.yml` — smoke-checks the plugin: manifest valid
-     (`python -m json.tool`) and coupling sweep (zero
-     `ucx_flow|UCX_FLOW|ucx_hermes` hits) on push/PR touching
-     `platforms/claude-code-plugin/`.
-   - All workflows: `runs-on: ubuntu-latest`; Python via
-     `actions/setup-python@v5`; no carry-over from
-     `legacy/github-workflows-disabled/`.
-2. Then P4-T4 (retrofits + parity report), P4-T5 (verify + close →
-   `v0.5.0`).
+1. **User action — relocate workflow files from a local clone.**
+   In-container push couldn't land `.github/workflows/*.yml`
+   directly (GitHub App lacks `workflows` permission). Run from
+   your local clone:
+   ```sh
+   git fetch origin claude/multi-platform-migration-AamWB
+   git checkout claude/multi-platform-migration-AamWB && git pull --ff-only
+   mkdir -p .github/workflows
+   git mv plans/workflows-pending/conformance.yml .github/workflows/conformance.yml
+   git mv plans/workflows-pending/hermes.yml      .github/workflows/hermes.yml
+   git mv plans/workflows-pending/plugin.yml      .github/workflows/plugin.yml
+   rmdir plans/workflows-pending
+   git commit -m "ci: install P4-T3 workflows at .github/workflows/"
+   git push origin claude/multi-platform-migration-AamWB
+   ```
+2. **P4-T4 — Retrofits + parity report.** Per P4-T1 design:
+   - `platforms/hermes/CHANGELOG.md` (Hermes `[0.1.0]` mirroring
+     project `[0.3.0]` scoped content).
+   - `platforms/claude-code-plugin/CHANGELOG.md` (plugin `[0.1.0]`
+     mirroring project `[0.4.0]` scoped content).
+   - `platforms/hermes/README.md` expanded (~80 lines, full mirror
+     of P3-T3 plugin README structure).
+   - `LICENSE` at repo root — MIT, copyright `vladm3105`.
+   - `docs/PARITY.md` — parity report (8 layers × workflow
+     operations matrix; platform-specific extras section).
+3. **P4-T5 — Verify + close** (combined): `CHANGELOG.md [0.5.0]`;
+   ROADMAP marked; tag `v0.5.0` (fourth tag-push 403 anticipated;
+   local-clone workaround baked in). P4-T5 should also add a
+   workflow-push-restriction note to `docs/TAGGING.md` or a new
+   `docs/CI.md` for symmetry with the tag-push documentation.
 
 ## Open questions
 
