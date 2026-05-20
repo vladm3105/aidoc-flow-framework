@@ -10,6 +10,93 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-05-20
+
+Phase 3 — Platform B: Claude Code plugin. `platforms/claude-code-plugin/`
+ships the 142-skill SDD engine as a native Claude Code plugin (no MCP
+backend), consumes `framework/` at `v0.1.0`, and is released as
+`claude-code-plugin/v0.1.0`. The plugin uses Claude Code's
+auto-discovery from `skills/`, `agents/`, `commands/` at plugin root —
+no explicit registration in the manifest.
+
+### Added
+- `platforms/claude-code-plugin/` — the Claude Code plugin platform.
+  171 net files (post-cleanup): 142 skill directories (129 `doc-*`
+  + 13 SDD-adjacent non-doc), 19 skill-root files (quickrefs +
+  set-overview READMEs + `REVIEW_DOCUMENT_STANDARDS.md`), 1 agent
+  (`requirements-analyst`), 1 command (`save-plan`), plus 4 new
+  top-level files (manifest + 2 VERSION files + populated README).
+- `platforms/claude-code-plugin/.claude-plugin/plugin.json` —
+  minimal 7-field manifest (`name`, `description`, `version`,
+  `license`, `repository`, `homepage`, `keywords`). Plugin name
+  `aidoc-flow`; slash-prefix `/aidoc-flow:doc-...`. Author block
+  omitted (the in-container `git config user.name` returns the
+  session's identity, not the repo owner; the `repository` URL
+  handles ownership signaling — matches Hermes pyproject precedent).
+- `platforms/claude-code-plugin/VERSION` (`0.1.0`, 6 bytes) and
+  `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` (`0.1.0`,
+  byte-identical to `framework/VERSION`) — declares the plugin's
+  own SemVer + framework-spec conformance per D-0009 / P2-T1 Q2.
+- `platforms/claude-code-plugin/README.md` — populated user-facing
+  doc (82 lines, from 27-line Phase 0 placeholder): inventory table,
+  install pointer, slash-prefix use examples, framework spec
+  conformance with VERSION cat output, platform info table,
+  Hermes-platform relationship section.
+- `plans/P3-T0-PLAN.md` + `plans/P3-AUDIT-claude-code-plugin.md` —
+  Phase 3 audit (191-file `.claude/` inventory; copy-with-divergence
+  relationship resolved) and task breakdown.
+- Per-task plans `plans/P3-T1..T5-PLAN.md`, each with the two-pass
+  review log mandated by D-0007.
+- `plans/P3-T1-DESIGN.md` — 7 plugin design decisions resolved
+  before any content moved (manifest schema verified via the
+  `claude-code-guide` agent — Claude Code auto-discovers,
+  no explicit registration block; plugin name `aidoc-flow`; copy
+  strategy is the 3-stage `cp -r` + `rm -rf` recipe; no lifecycle
+  hooks in `v0.1.0`).
+- `plans/P3-T4-VERIFY.md` — formal Phase 3 verify record covering
+  22 gates (conformance 25/25, plugin structure, coupling sweep,
+  manifest validity, integration checks).
+
+### Changed
+- Rewrote all `ai_dev_flow` placeholder paths in the ported skill
+  content to point at `framework/` — 211 line hits across 30 files
+  cleared via word-boundary regex sed (P2-T7 G12). Class B (5 layer
+  dirs → `framework/layers/0X_TYPE/`) and Class C
+  (`ID_NAMING_STANDARDS.md` → `framework/governance/`) sub-path
+  corrections applied. 2 illustration `/opt/data/...` paths
+  preserved per the P2-T7 G13 historical-vs-current rule.
+- `project-mngt/SKILL.md` — the one current-behavior
+  `/opt/data/ucx_framework/...` reference rewired to repo-relative
+  `framework/governance/ID_NAMING_STANDARDS.md`.
+
+### Removed
+- 7 non-SDD-adjacent skill directories excluded from the plugin
+  port: `code-review`, `refactor-flow`, `analytics-flow`,
+  `devops-flow`, `ai-pr-review`, `google-adk`, `n8n` (P3-T1 Q2 —
+  general-purpose, not coupled to any SDD artifact). Source
+  `.claude/skills/` retains them; they remain available in dev-time
+  use until Phase 5 cutover.
+- 3 `.claude/skills/` root files excluded from the plugin port:
+  `README.md` (referenced an obsolete multi-project symlink pattern
+  and the legacy `ucx_framework/.claude/skills/` canonical path),
+  `google-adk_quickref.md`, `n8n_quickref.md` (parent skills out).
+- **47 broken symlinks** the source `.claude/skills/` carried via
+  `cp -r` into the plugin — self-referencing pointers at
+  `/opt/data/docs_flow_framework/.claude/skills/<name>`, leftovers
+  from the old multi-project symlink consumption pattern. Removed
+  in-flight during P3-T4 verify (G18 finding) via `xargs git rm`
+  on the 47 symlink entries.
+
+### Carried known issue (deferred)
+- The ~150 Class D stale `framework/<X>` references in the ported
+  skills point at concepts not in the current 8-layer framework
+  (`framework/scripts/`, legacy 11-layer numbering,
+  legacy alpha-named dirs, legacy top-level guides). Resolution is
+  a per-skill content-migration task outside Phase 3 scope (P3-T1
+  §Deferred R2). The plugin works as a Claude Code artifact
+  regardless — the references are documentation hygiene, not
+  runtime correctness.
+
 ## [0.3.0] — 2026-05-20
 
 Phase 2 — Platform A: Hermes Re-homing. `platforms/hermes/` is fully

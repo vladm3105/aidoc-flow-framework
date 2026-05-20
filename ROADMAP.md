@@ -3,7 +3,7 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | Phase 2 complete (`v0.3.0`) — Phase 3 next                    |
+| Status           | Phase 3 complete (`v0.4.0`) — Phase 4 next                    |
 | Working branch   | `claude/multi-platform-migration-AamWB`                      |
 | Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
 | Cutover target   | v1.0.0 — new project replaces `main`                         |
@@ -60,6 +60,7 @@ The *project-level* version below tracks migration milestones only.
 - Port the `doc-*` skill set, commands, and agents into the plugin.
 - Remove all Hermes/MCP dependency — Claude is the engine.
 - Plugin passes the same conformance suite.
+- Status: **complete** (`v0.4.0`, `claude-code-plugin/v0.1.0`).
 
 ### Phase 4 — Conformance & Independence  → `v0.5.0`
 - Both platforms green on the shared conformance suite.
