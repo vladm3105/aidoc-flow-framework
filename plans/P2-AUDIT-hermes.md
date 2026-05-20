@@ -53,6 +53,12 @@ deprecated)** in the migration doc.
 
 `README.md` only (1 file, 722 bytes — scaffolded).
 
+### `legacy/` — root-level files (added 2026-05-20T09:25:00Z — see §5b)
+
+Seven files at `legacy/` root, three of them Hermes-relevant. Initial Pass
+1/2 scoped the audit to the two named subdirectories and missed these.
+Classified in §5b.
+
 ## 2. Relationship — `ucx_hermes` ↔ `mcp_ucx` (R1 resolved)
 
 **`mcp_ucx` is the deprecated predecessor; `ucx_hermes` is the canonical
@@ -115,6 +121,12 @@ would be inaccurate after the port. Rewire in the same P2-T3 pass.
 **Verify gate for P2-T3:** a fresh `grep -rE 'ucx_flow|UCX_FLOW'
 platforms/hermes/` after the port returns **zero**.
 
+**Note (post-D-0013):** `templates/` is dropped entirely; the platform
+consumes `framework/layers/`. The `templates/`-prefixed entries above
+remain listed for audit completeness but are not rewired in P2-T3 because
+those files are not copied. P2-T3's effective prose-level rewire covers
+the 5 `skills/` markdown files and the new §5b files.
+
 ## 4. Conformance gap
 
 The current 25-test suite at `tests/conformance/` asserts only on
@@ -164,11 +176,39 @@ suite-pass gate is the existing 25 tests continuing to pass.
 | `skills/hermes/` | 5 skills | **port-with-repoint** | Hermes-specific skills (`ucx-github-deploy-governance`, `ucx-github-governance`, `ucx-kb-context`, `ucx-kb-maintenance`, `ucx-sdd-bridge`); prose refs in 4 of 5 (§3b). |
 | `skills/layer_aliases/` | — | **port-verbatim** | Alias map; no `ucx_flow` references detected. |
 | `skills/personas/` + `persona_mappings.yaml` | — | **port-verbatim** | Persona definitions; no `ucx_flow` references detected. |
-| `templates/` | ~10 YAML + archive/ | **port-with-repoint + defer (overlap)** | Two concerns: (a) prose refs in `templates/README.md` + each `*-TEMPLATE.yaml` comment header (§3b) — rewired in P2-T3 unconditionally; (b) overlap with `framework/layers/*-TEMPLATE.md` — design question deferred to P2-T1. |
+| `templates/` | ~10 YAML + archive/ | **drop (D-0013)** | Resolved in P2-T1 Q3: framework already ships engine-agnostic `*-TEMPLATE.yaml` for all 8 layers (`framework/layers/<NN>_<X>/`). Platforms consume from there. Platform's `templates/` dropped entirely. |
 
 **Coverage:** `mcp_ucx/` (255, dropped wholesale) + ucx_hermes top-level
 paths above = all 535 files accounted for; classified `port-verbatim` |
 `port-with-repoint` | `drop` | `defer` per the plan's verify clause.
+**See §5b for the legacy-root-level-files correction added 2026-05-20.**
+
+### 5b. Legacy root-level files (audit-scope gap correction, 2026-05-20T09:25:00Z)
+
+Pass 1/2 of P2-T0 scoped the audit to the two named subdirectories
+(`legacy/ucx_hermes/`, `legacy/mcp_ucx/`). It did not consider files at
+`legacy/` root. Seven exist; three are Hermes-relevant and were missed
+until the user surfaced `HERMES_UCX_RUNTIME_ENVIRONMENT.md`. Classification:
+
+| File | Class | Target / Disposition |
+|------|-------|---------------------|
+| `legacy/HERMES_UCX_RUNTIME_ENVIRONMENT.md` | **port-with-repoint** | `platforms/hermes/docs/architecture/RUNTIME_ENVIRONMENT.md` (15 hits across `ucx_flow_v3`, `ucx_hermes`, etc. — prose-level coupling). |
+| `legacy/MULTI_PROJECT_QUICK_REFERENCE.md` | **port-with-repoint** | `platforms/hermes/docs/` (exact subpath decided by P2-T3 implementation). Cross-platform setup ref; kept under Hermes docs per the user's design call. |
+| `legacy/MULTI_PROJECT_SETUP_GUIDE.md` | **port-with-repoint** | `platforms/hermes/docs/` (same as above). |
+| `legacy/pyproject.toml` | **drop** | Legacy top-level workspace project file; new repo has per-platform `pyproject.toml`s, no top-level one. |
+| `legacy/pytest.ini` | **drop** | Legacy top-level pytest config; each platform carries its own. |
+| `legacy/requirements-test.txt` | **drop** | Legacy top-level test deps; each platform carries its own. |
+| `legacy/README.md` | **out of scope** | Stays in `legacy/`; explicitly marks the dir as frozen. |
+
+**Effect on P2-T3 scope:** add the three port-with-repoint root-level files
+(`HERMES_UCX_RUNTIME_ENVIRONMENT.md`, `MULTI_PROJECT_QUICK_REFERENCE.md`,
+`MULTI_PROJECT_SETUP_GUIDE.md`) to the copy + prose-rewire set. Exact
+target subpaths within `platforms/hermes/docs/` decided by P2-T3 by content
+fit (architecture/ vs docs/ root vs policies/).
+
+**Effect on file accounting:** Phase 2 input is now 280 (ucx_hermes) +
+3 (legacy root) = **283 files** to port. The 4 drop / out-of-scope
+root-level files are recorded but require no action.
 
 ## 6. Open questions (for P2-T1 design)
 
@@ -211,8 +251,9 @@ paths above = all 535 files accounted for; classified `port-verbatim` |
 
 ## 7. Verify (against the plan's gate)
 
-- All 535 files classified: 255 (mcp_ucx, drop wholesale) + ucx_hermes
-  per-dir matrix covers every top-level path of `legacy/ucx_hermes/`.
+- All 535 + 7 = 542 files classified across the audited scope: 255
+  (mcp_ucx, drop wholesale) + ucx_hermes per-dir matrix (every top-level
+  path) + 7 legacy-root files (§5b, added post-implementation).
 - `ucx_hermes ↔ mcp_ucx` relationship named: **renamed/superseded**
   (predecessor frozen).
 - Framework-coupling list complete — 4 code-level files (§3a) + the
@@ -225,3 +266,7 @@ paths above = all 535 files accounted for; classified `port-verbatim` |
   runs green during this audit — confirming the audit moved no files.
 - No code or files moved by this audit (`git status` shows only `plans/`
   and `docs/`-style edits).
+- **§5b correction (2026-05-20):** legacy root-level files audited;
+  3 Hermes-relevant files added to P2-T3 scope; 4 root-level files
+  classified drop / out-of-scope. P2-T0-PLAN Pass 4 retrospective records
+  the scope-completeness lesson.

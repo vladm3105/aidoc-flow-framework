@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T09:10:00Z                       |
+| Last updated  | 2026-05-20T09:25:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2 done) |
 | Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
@@ -138,3 +138,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   templates-single-source-of-truth rule.
 - 2026-05-20T09:10:00Z — Completed P2-T2 port-verbatim copy (64 files,
   all verify gates green).
+- 2026-05-20T09:25:00Z — P2-T0 audit scope-completeness correction (§5b):
+  3 legacy-root Hermes files added to P2-T3 scope (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
+  `MULTI_PROJECT_QUICK_REFERENCE.md`, `MULTI_PROJECT_SETUP_GUIDE.md`);
+  4 others classified drop / out-of-scope; Pass 4 retro recorded.

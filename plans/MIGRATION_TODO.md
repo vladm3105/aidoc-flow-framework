@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T09:10:00Z                       |
+| Last updated     | 2026-05-20T09:25:00Z                       |
 
 ---
 
@@ -55,8 +55,13 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   gates green. → `plans/P2-T2-PLAN.md`
 - [ ] P2-T3 — Port-with-repoint: copy `pyproject.toml`, `src/`, `tests/`,
   `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`,
-  `templates/`; rewire all `ucx_flow` references (4 code-level files + the
-  prose-level set in audit §3b); update `.mcp.json` to the new Hermes path.
+  and the 3 legacy-root files from audit §5b
+  (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
+  `MULTI_PROJECT_QUICK_REFERENCE.md`,
+  `MULTI_PROJECT_SETUP_GUIDE.md`) → `platforms/hermes/docs/`. Do **not**
+  copy `templates/` (dropped per D-0013). Rewire all `ucx_flow` references
+  (4 code-level + prose-level in `skills/` + the §5b files). Update
+  `.mcp.json` to the new Hermes path.
 - [ ] P2-T4 — Declare `framework_spec_version` per the P2-T1 mechanism
   (e.g. `platforms/hermes/FRAMEWORK_SPEC_VERSION` matching `framework/VERSION`).
 - [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test

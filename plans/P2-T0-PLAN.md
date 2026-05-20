@@ -125,12 +125,20 @@ the `ucx_hermes` ↔ `mcp_ucx` question is resolved (predecessor/successor;
   `platforms/hermes/` as-is: `examples/`, `prompts/`, `skills/layer_aliases/`,
   `skills/personas/`, and `skills/persona_mappings.yaml`. No content edits.
 - **P2-T3 — Port-with-repoint.** Copy `pyproject.toml`, `src/`, `tests/`,
-  `docs/` (excluding `docs/migration/`, dropped), `skills/README.md`,
-  `skills/hermes/`, and `templates/` into `platforms/hermes/`. Apply the
-  design from P2-T1 (rename module if chosen) and rewire **both** classes
-  of framework coupling from audit §3: the 4 code-level files (§3a) **and**
-  the prose-level set (§3b: 5 skills markdown files + `templates/README.md`
-  + the 8 `*-TEMPLATE.yaml` comment headers). Verify gate: a fresh
+  and `docs/` (excluding `docs/migration/`, dropped) into
+  `platforms/hermes/`. Copy `skills/README.md` and `skills/hermes/` into
+  `platforms/hermes/skills/`. Copy the three legacy-root-level files from
+  audit §5b
+  (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
+  `MULTI_PROJECT_QUICK_REFERENCE.md`,
+  `MULTI_PROJECT_SETUP_GUIDE.md`) into `platforms/hermes/docs/` (exact
+  subpath by content fit). **Do not copy `templates/`** — dropped per
+  D-0013. Apply the design from P2-T1 (rename module if chosen) and rewire
+  **both** classes of framework coupling from audit §3: the 4 code-level
+  files (§3a) **and** the prose-level set (§3b: 5 `skills/` markdown
+  files; the `templates/` rows of §3b are moot post-D-0013) plus the
+  prose coupling in the three §5b files. Update `.mcp.json` to point at
+  the new Hermes path. Verify gate: a fresh
   `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero.
 - **P2-T4 — Declare `framework_spec_version`.** Add
   `platforms/hermes/VERSION` (the platform's own SemVer per `docs/TAGGING.md`)
@@ -207,3 +215,28 @@ pre-implementation reviews didn't. Status stays DONE.
   list-completeness pass — "for every enumeration the plan claims to
   produce, what classes of items might the first draft omit?" — alongside
   the structural review.
+
+### Pass 4 — 2026-05-20T09:25:00Z (retrospective)
+
+Added after P2-T2 verbatim copy and a user-flagged review of legacy
+root-level coverage. Status stays DONE on P2-T0 itself; the audit gains
+§5b, and P2-T3's scope extends accordingly.
+
+- **G10.** A *second* audit gap surfaced — this time at the **scope**
+  level, not the enumeration-within-scope level (G9). The plan scoped the
+  audit to the two named subdirectories (`legacy/ucx_hermes/`,
+  `legacy/mcp_ucx/`) and never asked whether `legacy/` root files might be
+  Hermes-relevant. Three were
+  (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
+  `MULTI_PROJECT_QUICK_REFERENCE.md`,
+  `MULTI_PROJECT_SETUP_GUIDE.md`); the user surfaced the first by name,
+  and a directory listing surfaced the other two. Four root-level files
+  classified `drop`/`out of scope`. The audit was corrected with §5b.
+- **Lesson for future audit-style plans:** the review must also ask **"is
+  the *scope* of the audit complete?"** — not only "is the enumeration
+  within scope likely exhaustive?" (G9). Concretely, for any migration
+  audit: enumerate every file at the root of the source tree
+  (`find <source> -maxdepth 1 -type f`) and classify each, even when the
+  scope is described in terms of named subdirectories. The scope question
+  is upstream of the enumeration question; G9 catches the latter, G10
+  catches the former.
