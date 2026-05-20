@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-19T14:55:00Z                       |
+| Last updated     | 2026-05-20T09:10:00Z                       |
 
 ---
 
@@ -49,9 +49,10 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   (D-0013), `mcp_server` import kept with `hermes-server` distribution,
   two plain-text VERSION files, `hermes-mcp` script, mirror-legacy layout.
   → `plans/P2-T1-DESIGN.md`
-- [ ] P2-T2 — Port-verbatim: `examples/`, `prompts/`,
-  `skills/{layer_aliases,personas,persona_mappings.yaml}` into
-  `platforms/hermes/` as-is.
+- [x] P2-T2 — Port-verbatim: 64 files copied byte-identical into
+  `platforms/hermes/` (`examples/`, `prompts/`, `skills/layer_aliases/`,
+  `skills/personas/`, `skills/persona_mappings.yaml`). All seven verify
+  gates green. → `plans/P2-T2-PLAN.md`
 - [ ] P2-T3 — Port-with-repoint: copy `pyproject.toml`, `src/`, `tests/`,
   `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`,
   `templates/`; rewire all `ucx_flow` references (4 code-level files + the

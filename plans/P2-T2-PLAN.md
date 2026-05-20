@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T2                                |
 | Depends on | P2-T0 audit, P2-T1 design (D-0013)   |
-| Status     | PLANNED — 2026-05-20T09:00:00Z       |
+| Status     | DONE — 2026-05-20T09:10:00Z          |
 | Feeds      | P2-T3 (port-with-repoint)            |
 
 ## Objective
@@ -148,3 +148,13 @@ For each source path:
   `ucx_hermes` mention while copying. The verify clause makes the rewrite
   paths explicitly off-limits.
 - **G9.** No new blockers. Ready to implement on approval.
+
+## Implementation note (2026-05-20T09:10:00Z)
+
+Executed. All five paths copied (64 files) and all seven verify gates
+green on the first pass: `diff -r` byte-identical on every path; fresh
+grep for `ucx_flow|UCX_FLOW` on the copied targets returns zero; file
+counts 64/64; all seven expected-absent paths (`templates/`, `src/`,
+`tests/`, `docs/`, `skills/hermes/`, `skills/README.md`, `pyproject.toml`)
+remain absent; conformance suite 25/25; list-completeness 1:1 with audit
+§5. No content was rewritten in P2-T2 — scope held.

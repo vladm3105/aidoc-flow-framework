@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T14:55:00Z                       |
+| Last updated  | 2026-05-20T09:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1 done) |
-| Next task     | P2-T2 — port-verbatim Hermes content        |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2 done) |
+| Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
 
 ## Progress
 
@@ -51,6 +51,13 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   **drop platform `templates/` — consume `framework/layers/`** (Q3, D-0013);
   `hermes-mcp` script entry (Q4); mirror legacy layout minus dropped
   paths (Q5). D-0013 logs the templates-source-of-truth decision.
+- P2-T2 (port-verbatim) — **complete.** 64 files copied byte-identical
+  from `legacy/ucx_hermes/` to `platforms/hermes/`: `examples/` (1),
+  `prompts/` (46), `skills/layer_aliases/` (1), `skills/personas/` (15),
+  `skills/persona_mappings.yaml` (1). All seven verify gates green —
+  `diff -r` identical on every path, no `ucx_flow` references in the
+  copied targets, expected-absent paths still absent, conformance suite
+  25/25. → `plans/P2-T2-PLAN.md`.
 
 ## Achievements
 
@@ -87,6 +94,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19 — Completed P2-T1 (Hermes design): five design choices
   resolved; D-0013 records the templates-single-source-of-truth rule
   (platforms consume `framework/layers/`, never duplicate).
+- 2026-05-20 — Completed P2-T2 (port-verbatim): 64 files copied
+  byte-identical into `platforms/hermes/`; verify gates all green.
 
 ## Next steps
 
@@ -127,3 +136,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   defined and queued in `MIGRATION_TODO.md`.
 - 2026-05-19T14:55:00Z — Completed P2-T1 design; D-0013 records the
   templates-single-source-of-truth rule.
+- 2026-05-20T09:10:00Z — Completed P2-T2 port-verbatim copy (64 files,
+  all verify gates green).
