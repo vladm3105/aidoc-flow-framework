@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T21:10:00Z                       |
+| Last updated     | 2026-05-20T21:55:00Z                       |
 
 ---
 
@@ -157,10 +157,16 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   **No `CHANGELOG.md`** — followed Hermes precedent (Finding 2);
   symmetric retrofit deferred. All 11 verify gates green.
   DONE 2026-05-20T21:10:00Z.
-- [ ] P3-T4 — Verify: conformance 25/25; coupling sweep on
-  `platforms/claude-code-plugin/` returns zero (or matches the
-  P3-T2 illustration whitelist); manifest validates against
-  Claude Code's schema; per-skill content equivalence vs root.
+- [x] P3-T4 — Phase 3 verify: ran 22 consolidated gates across
+  conformance (25/25), structure, content + coupling (zero Hermes
+  refs, zero `ai_dev_flow`, sub-path corrections landed, G13
+  illustration paths preserved), manifest validity + name + versions,
+  integration checks (file inventory, content equivalence,
+  auto-discovery sanity, source-unchanged, Hermes unaffected). Mid-
+  flight cleanup removed **47 broken symlinks** the source `.claude/`
+  carried (G18 finding); post-cleanup plugin file count is 171 =
+  git = disk. **All gates green.** Verify record at
+  `plans/P3-T4-VERIFY.md`. DONE 2026-05-20T21:55:00Z.
 - [ ] P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]`; ROADMAP
   marked; annotated tags `v0.4.0` and `claude-code-plugin/v0.1.0`
   (anticipate P1-T8 / P2-T6 tag-push 403; local-clone workaround).

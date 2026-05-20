@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T21:10:00Z                       |
+| Last updated  | 2026-05-20T21:55:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1, P3-T2, P3-T3 done) |
-| Next task     | P3-T4 — verify (consolidated Phase 3 gate, mirrors P2-T5 shape) |
+| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0/T1/T2/T3/T4 done — structurally complete, awaiting close) |
+| Next task     | P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]`, ROADMAP, tags `v0.4.0` + `claude-code-plugin/v0.1.0` (anticipate P1-T8 / P2-T6 tag-push 403 workaround) |
 
 ## Progress
 
@@ -201,18 +201,26 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   signaling); **Finding 2** (no platform `CHANGELOG.md` — following
   Hermes precedent for symmetry; retrofit deferred). All 11 verify
   gates green; conformance 25/25 unaffected.
+- 2026-05-20T21:55:00Z — Completed P3-T4 (Phase 3 verify). 22 gates
+  ran across conformance, structure, content + coupling sweep,
+  manifest validity, and integration-level checks. Mid-flight cleanup
+  surfaced and removed **47 broken symlinks** the source `.claude/`
+  carried (self-referencing pointers at `/opt/data/docs_flow_framework/
+  .claude/skills/<name>` — leftovers from the old multi-project
+  symlink consumption pattern). Post-cleanup file count is 171 =
+  git = disk; audit math reconciles cleanly. All 22 gates green.
+  Verify record at `plans/P3-T4-VERIFY.md`. Lesson for future port
+  plans: add `find -type l` to the audit recon to surface symlinks
+  upfront (P3-T0 + P2-T0/T2 audits missed this).
 
 ## Next steps
 
-1. **P3-T4** — Verify: consolidated Phase 3 gate (mirrors P2-T5
-   shape). Conformance 25/25, file inventory, coupling sweep on
-   `platforms/claude-code-plugin/`, VERSION-files match, manifest
-   valid + name correct, structural completeness. Write
-   `plans/P3-T4-VERIFY.md` per the P2-T5 record pattern.
-2. **P3-T5** — Phase 3 close: `CHANGELOG.md [0.4.0]`, ROADMAP,
-   annotated tags `v0.4.0` + `claude-code-plugin/v0.1.0`. Anticipate
-   in-container tag-push 403 (P1-T8 / P2-T6 pattern); bake the
-   local-clone workaround commands into the plan.
+1. **P3-T5** — Phase 3 close: cut `CHANGELOG.md [0.4.0]` entry;
+   mark Phase 3 complete in `ROADMAP.md`; create annotated tags
+   `v0.4.0` (milestone) and `claude-code-plugin/v0.1.0` (platform).
+   Anticipate the in-container `refs/tags/*` 403 from P1-T8 / P2-T6;
+   bake the local-clone workaround commands into the plan from the
+   outset.
 
 ## Open questions
 
