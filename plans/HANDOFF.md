@@ -204,20 +204,15 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Next steps
 
-1. **P3-T2** — Port content: copy the 142 in-scope skills + 19 root
-   files + agents/ + commands/ from `.claude/` to
-   `platforms/claude-code-plugin/`; apply the 3-stage `cp -r` recipe
-   from `plans/P3-T1-DESIGN.md` Q6; rewire the 30-file `ai_dev_flow →
-   framework` coupling with sub-path follow-ups for `governance/`
-   and `layers/<NN>_<X>/`; preserve 2 illustration `/opt/data` paths
-   per G13. Verify gates: 142 skill dirs, 19 root files, 1 agent,
-   1 command, zero coupling hits on current-behavior content.
-2. **P3-T3** — Plugin scaffold: `.claude-plugin/plugin.json` (minimal
-   manifest per Q1; author block from `git config user.name`),
-   `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching
-   `framework/VERSION`), `CHANGELOG.md`, expanded `README.md`.
-3. **P3-T4** — Verify.
-4. **P3-T5** — Phase 3 close (`v0.4.0`, `claude-code-plugin/v0.1.0`).
+1. **P3-T4** — Verify: consolidated Phase 3 gate (mirrors P2-T5
+   shape). Conformance 25/25, file inventory, coupling sweep on
+   `platforms/claude-code-plugin/`, VERSION-files match, manifest
+   valid + name correct, structural completeness. Write
+   `plans/P3-T4-VERIFY.md` per the P2-T5 record pattern.
+2. **P3-T5** — Phase 3 close: `CHANGELOG.md [0.4.0]`, ROADMAP,
+   annotated tags `v0.4.0` + `claude-code-plugin/v0.1.0`. Anticipate
+   in-container tag-push 403 (P1-T8 / P2-T6 pattern); bake the
+   local-clone workaround commands into the plan.
 
 ## Open questions
 
