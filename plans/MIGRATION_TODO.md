@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T15:30:00Z                       |
+| Last updated     | 2026-05-20T16:20:00Z                       |
 
 ---
 
@@ -85,10 +85,12 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   test suite 397/447 → **447/447**; conformance 25/25. Pass 3 retro
   records G16 (parents-count audit lesson) + G17 (cross-module path-
   computer audit lesson). DONE 2026-05-20T15:30:00Z.
-- [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test
-  suite passes against repointed paths; comprehensive
-  `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero;
-  `VERSION` + `FRAMEWORK_SPEC_VERSION` match `framework/VERSION`.
+- [x] P2-T5 — Phase 2 verify: ran 14 consolidated gates across
+  conformance (25/25), Hermes own suite (447/447), coupling sweep
+  (0 in current-behavior; whitelist matches exactly 11 historical),
+  structure / VERSION files / smoke test / file inventory. **All gates
+  green.** Verify record at `plans/P2-T5-VERIFY.md`. Phase 2
+  structurally complete. DONE 2026-05-20T16:20:00Z.
 - [ ] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]`; ROADMAP marked;
   milestone tag `v0.3.0`; platform tag `hermes/v0.1.0` (per
   `docs/TAGGING.md`). Anticipate same HTTP 403 on tag pushes (P1-T8

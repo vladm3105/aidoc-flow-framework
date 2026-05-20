@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T15:30:00Z                       |
+| Last updated  | 2026-05-20T16:20:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8/T9 done) |
-| Next task     | P2-T5 — verify (Hermes test suite now 447/447; conformance 25/25; ready for final close gate) |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8/T9/T5 done — structurally complete, awaiting close) |
+| Next task     | P2-T6 — Phase 2 close: CHANGELOG `[0.3.0]`, ROADMAP, tags `v0.3.0` + `hermes/v0.1.0` (anticipate P1-T8 tag-push 403 workaround) |
 
 ## Progress
 
@@ -132,14 +132,21 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   lesson) + G17 (cross-module path-computer audit lesson). The 50
   P2-T3-deferred failures are all closed; D-0013 conformance for
   the MCP server complete.
+- 2026-05-20 — Completed P2-T5 (Phase 2 verify): ran 14 consolidated
+  gates — conformance 25/25, Hermes 447/447, zero coupling in
+  current-behavior content, docs whitelist exact-match (11 files),
+  VERSION files match `framework/VERSION`, smoke test scaffolds 71
+  files end-to-end. Audit math reconciled (440 = 439 + 1 P0-scaffolded
+  README). Verify record landed at `plans/P2-T5-VERIFY.md`. Phase 2
+  is structurally complete; P2-T6 may cut the changelog and tags.
 
 ## Next steps
 
-1. P2-T5 — verify (final gate before close): re-confirm conformance 25/25
-   + Hermes' own suite 447/447 + zero coupling sweep + VERSION/
-   FRAMEWORK_SPEC_VERSION match. All gates green pre-emptively from
-   P2-T9 — P2-T5 is mostly a checklist confirmation.
-2. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
+1. P2-T6 — Phase 2 close: cut `CHANGELOG.md [0.3.0]` entry; mark Phase 2
+   complete in `ROADMAP.md`; create annotated milestone tag `v0.3.0`
+   and platform tag `hermes/v0.1.0` per `docs/TAGGING.md`.
+   **Anticipate the P1-T8 tag-push 403 in-container** — bake the
+   local-clone push command into the P2-T6 plan from the outset.
 
 ## Open questions
 
