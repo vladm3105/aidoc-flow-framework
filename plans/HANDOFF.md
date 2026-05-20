@@ -6,9 +6,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T09:25:00Z                       |
+| Last updated  | 2026-05-20T10:15:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2 done) |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7 done) |
 | Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
 
 ## Progress
@@ -96,6 +96,12 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   (platforms consume `framework/layers/`, never duplicate).
 - 2026-05-20 — Completed P2-T2 (port-verbatim): 64 files copied
   byte-identical into `platforms/hermes/`; verify gates all green.
+- 2026-05-20 — Completed P2-T7 (port `hermes_agent_skills/` from main):
+  181 files (was 187; 6 D-0013-obsolete sync files deleted) at
+  `platforms/hermes/agent-skills/spec-driven-development/`; zero
+  `ucx_flow|UCX_FLOW` hits; audit §5b updated; two plan deviations
+  documented as Pass 3 retro (G11 deletion vs deprecation, G13 `/opt/data`
+  verify softening).
 
 ## Next steps
 
@@ -142,3 +148,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   3 legacy-root Hermes files added to P2-T3 scope (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
   `MULTI_PROJECT_QUICK_REFERENCE.md`, `MULTI_PROJECT_SETUP_GUIDE.md`);
   4 others classified drop / out-of-scope; Pass 4 retro recorded.
+- 2026-05-20T10:15:00Z — Completed P2-T7: ported `hermes_agent_skills/`
+  (181 files) into `platforms/hermes/agent-skills/`; §5b updated so the
+  3 root-docs files are sourced via P2-T7, not double-ported via P2-T3;
+  P2-T7 Pass 3 retro records implementation-time deviations.

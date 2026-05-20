@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T09:25:00Z                       |
+| Last updated     | 2026-05-20T10:15:00Z                       |
 
 ---
 
@@ -54,13 +54,10 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   `skills/personas/`, `skills/persona_mappings.yaml`). All seven verify
   gates green. → `plans/P2-T2-PLAN.md`
 - [ ] P2-T3 — Port-with-repoint: copy `pyproject.toml`, `src/`, `tests/`,
-  `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`,
-  and the 3 legacy-root files from audit §5b
-  (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
-  `MULTI_PROJECT_QUICK_REFERENCE.md`,
-  `MULTI_PROJECT_SETUP_GUIDE.md`) → `platforms/hermes/docs/`. Do **not**
-  copy `templates/` (dropped per D-0013). Rewire all `ucx_flow` references
-  (4 code-level + prose-level in `skills/` + the §5b files). Update
+  `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`.
+  The 3 legacy-root files are **ported via P2-T7** — not duplicated here.
+  Do **not** copy `templates/` (dropped per D-0013). Rewire all
+  `ucx_flow` references (4 code-level + prose-level in `skills/`). Update
   `.mcp.json` to the new Hermes path.
 - [ ] P2-T4 — Declare `framework_spec_version` per the P2-T1 mechanism
   (e.g. `platforms/hermes/FRAMEWORK_SPEC_VERSION` matching `framework/VERSION`).
@@ -69,6 +66,11 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [ ] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]`; ROADMAP marked;
   milestone tag `v0.3.0`; platform tag `hermes/v0.1.0` (per
   `docs/TAGGING.md`).
+- [x] P2-T7 — Port `hermes_agent_skills/spec-driven-development/` from
+  `origin/main` to `platforms/hermes/agent-skills/spec-driven-development/`
+  (sdd-orchestrator + sdd-review-personas). 181 files (was 187; 6 D-0013-
+  obsolete sync files deleted). Zero `ucx_flow|UCX_FLOW` hits. Audit §5b
+  updated; conformance 25/25. → `plans/P2-T7-PLAN.md`
 
 ## Phase 3 — Platform B: Claude Code Plugin → `v0.4.0`
 

@@ -1,0 +1,53 @@
+# SDD v3 Project Configuration
+# Copy to project root and customize.
+
+sdd_version: "3.2"
+sdd_depth: "standard"  # lite | standard | full
+
+# v3 chain registry aliases
+layer_aliases:
+  brd: 1
+  prd: 2
+  ears: 3
+  bdd: 4
+  adr: 5
+  spec: 6
+  tdd: 7
+  iplan: 8
+
+required_artifacts:
+  lite:
+    - brd
+    - prd
+    - iplan
+  standard:
+    - brd
+    - prd
+    - ears
+    - adr
+    - spec
+    - tdd
+    - iplan
+  full:
+    - brd
+    - prd
+    - ears
+    - bdd
+    - adr
+    - spec
+    - tdd
+    - iplan
+
+change_management:
+  chg_enabled: true
+  required_gates_full:
+    - GATE-01
+    - GATE-03
+    - GATE-06
+    - GATE-08
+    - GATE-CODE
+
+testing:
+  unit_min_coverage: 80
+  integration_min_coverage: 60
+  require_bdd_in_full: true

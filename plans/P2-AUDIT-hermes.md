@@ -192,9 +192,9 @@ until the user surfaced `HERMES_UCX_RUNTIME_ENVIRONMENT.md`. Classification:
 
 | File | Class | Target / Disposition |
 |------|-------|---------------------|
-| `legacy/HERMES_UCX_RUNTIME_ENVIRONMENT.md` | **port-with-repoint** | `platforms/hermes/docs/architecture/RUNTIME_ENVIRONMENT.md` (15 hits across `ucx_flow_v3`, `ucx_hermes`, etc. — prose-level coupling). |
-| `legacy/MULTI_PROJECT_QUICK_REFERENCE.md` | **port-with-repoint** | `platforms/hermes/docs/` (exact subpath decided by P2-T3 implementation). Cross-platform setup ref; kept under Hermes docs per the user's design call. |
-| `legacy/MULTI_PROJECT_SETUP_GUIDE.md` | **port-with-repoint** | `platforms/hermes/docs/` (same as above). |
+| `legacy/HERMES_UCX_RUNTIME_ENVIRONMENT.md` | **ported via P2-T7** | The user-added skill package on main carries a byte-identical copy at `hermes_agent_skills/spec-driven-development/sdd-orchestrator/root-docs/`. P2-T7 lands it at `platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/root-docs/RUNTIME_ENVIRONMENT_OR_LIKE.md`. P2-T3 does **not** double-port from `legacy/`. |
+| `legacy/MULTI_PROJECT_QUICK_REFERENCE.md` | **ported via P2-T7** | Same — byte-identical copy ported via P2-T7. |
+| `legacy/MULTI_PROJECT_SETUP_GUIDE.md` | **ported via P2-T7** | Same — byte-identical copy ported via P2-T7. |
 | `legacy/pyproject.toml` | **drop** | Legacy top-level workspace project file; new repo has per-platform `pyproject.toml`s, no top-level one. |
 | `legacy/pytest.ini` | **drop** | Legacy top-level pytest config; each platform carries its own. |
 | `legacy/requirements-test.txt` | **drop** | Legacy top-level test deps; each platform carries its own. |

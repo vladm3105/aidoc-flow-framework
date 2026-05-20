@@ -127,18 +127,15 @@ the `ucx_hermes` ↔ `mcp_ucx` question is resolved (predecessor/successor;
 - **P2-T3 — Port-with-repoint.** Copy `pyproject.toml`, `src/`, `tests/`,
   and `docs/` (excluding `docs/migration/`, dropped) into
   `platforms/hermes/`. Copy `skills/README.md` and `skills/hermes/` into
-  `platforms/hermes/skills/`. Copy the three legacy-root-level files from
-  audit §5b
-  (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
-  `MULTI_PROJECT_QUICK_REFERENCE.md`,
-  `MULTI_PROJECT_SETUP_GUIDE.md`) into `platforms/hermes/docs/` (exact
-  subpath by content fit). **Do not copy `templates/`** — dropped per
-  D-0013. Apply the design from P2-T1 (rename module if chosen) and rewire
-  **both** classes of framework coupling from audit §3: the 4 code-level
-  files (§3a) **and** the prose-level set (§3b: 5 `skills/` markdown
-  files; the `templates/` rows of §3b are moot post-D-0013) plus the
-  prose coupling in the three §5b files. Update `.mcp.json` to point at
-  the new Hermes path. Verify gate: a fresh
+  `platforms/hermes/skills/`. The three legacy-root-level files from §5b
+  are **ported via P2-T7** (the `hermes_agent_skills` package on main
+  carries byte-identical copies); P2-T3 does **not** double-port them.
+  **Do not copy `templates/`** — dropped per D-0013. Apply the design
+  from P2-T1 (rename module if chosen) and rewire **both** classes of
+  framework coupling from audit §3: the 4 code-level files (§3a) **and**
+  the prose-level set (§3b: 5 `skills/` markdown files; the `templates/`
+  rows of §3b are moot post-D-0013). Update `.mcp.json` to point at the
+  new Hermes path. Verify gate: a fresh
   `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero.
 - **P2-T4 — Declare `framework_spec_version`.** Add
   `platforms/hermes/VERSION` (the platform's own SemVer per `docs/TAGGING.md`)
