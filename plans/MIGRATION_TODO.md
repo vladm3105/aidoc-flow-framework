@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-19T14:25:00Z                       |
+| Last updated     | 2026-05-19T14:55:00Z                       |
 
 ---
 
@@ -45,9 +45,10 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P2-T0 — Phase 2 audit & task breakdown. Resolved that `mcp_ucx` is a
   deprecated predecessor (out of scope); Phase 2 input is the 280 files of
   `legacy/ucx_hermes/`. → `plans/P2-T0-PLAN.md` · `plans/P2-AUDIT-hermes.md`
-- [ ] P2-T1 — Design: resolve open questions (module name,
-  `framework_spec_version` mechanism, templates overlap, script entry,
-  target layout). → `plans/P2-T1-DESIGN.md`
+- [x] P2-T1 — Design: five choices resolved; templates-single-source-of-truth
+  (D-0013), `mcp_server` import kept with `hermes-server` distribution,
+  two plain-text VERSION files, `hermes-mcp` script, mirror-legacy layout.
+  → `plans/P2-T1-DESIGN.md`
 - [ ] P2-T2 — Port-verbatim: `examples/`, `prompts/`,
   `skills/{layer_aliases,personas,persona_mappings.yaml}` into
   `platforms/hermes/` as-is.

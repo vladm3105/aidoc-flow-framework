@@ -10,6 +10,29 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0013 — Framework templates are the single source of truth; platforms consume, not duplicate
+
+- **Date:** 2026-05-19T14:50:00Z
+- **Decision:** The 8 layer document templates
+  (`<X>-TEMPLATE.yaml` for BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN) live
+  exclusively in `framework/layers/<NN>_<X>/`. Platforms do **not** ship
+  their own copies. Hermes' legacy `templates/` directory is dropped at the
+  port (P2-T1 Q3); the platform's runtime template-loader reads from
+  `framework/layers/`. Any platform-specific runtime data the legacy
+  templates carried (e.g. `server: ucx_hermes`, `tool: sdd_validate`) moves
+  to platform-side config — never into the engine-agnostic templates.
+- **Why:** The framework is engine-agnostic by D-0006 and the conformance
+  spec-hygiene tests. Embedding engine names in shared templates violates
+  that contract. The legacy duplicate had already drifted from the framework
+  by exactly that engine-named block (audit §3b), proving the maintenance
+  burden of dual ownership. Single source of truth + clear runtime/document
+  separation. Generalises: future platforms (Claude Code plugin and beyond)
+  follow the same rule.
+- **Notes:** Resolves the audit's §3b prose-coupling in `templates/*.yaml`
+  automatically — those files are not copied to `platforms/hermes/`. The
+  lone `BRD-MD-TEMPLATE.md` (no framework equivalent) is investigated at
+  P2-T3 and ported-or-dropped based on call-site usage.
+
 ## D-0012 — Framework purpose: the IPLAN is the product; v1 scope is software/devops
 
 - **Date:** 2026-05-19T12:45:00Z

@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T1                                |
 | Depends on | P2-T0 (`plans/P2-AUDIT-hermes.md`)   |
-| Status     | PLANNED — 2026-05-19T14:35:00Z       |
+| Status     | DONE — 2026-05-19T14:50:00Z          |
 | Feeds      | P2-T2 (verbatim copy), P2-T3 (repoint copy), P2-T4 (spec-version declaration) |
 
 ## Objective
@@ -152,3 +152,18 @@ a paragraph each.
 - **G9.** Decision-log step (R5) — re-confirmed step 4 makes
   `DECISIONS.md` updates a normal part of the task, not an afterthought.
 - No new blockers. Ready to implement on approval.
+
+## Implementation note (2026-05-19T14:50:00Z)
+
+Executed. Q1's input-gathering eliminated its premise — `platforms/claude-code-plugin/`
+is JS+Markdown with no Python package, so the import-collision risk Q1 was
+designed around doesn't exist; the answer collapsed to minimal-churn
+(distribution rename only). Q3's input-gathering produced the substantive
+finding of the task: the framework already ships engine-agnostic
+`<X>-TEMPLATE.yaml` for all 8 layers, and the Hermes copies have already
+drifted by exactly the engine-named block. **D-0013** captures the
+resulting "single source of truth" decision; the audit's §3b prose-coupling
+in `templates/*.yaml` evaporates because those files aren't copied at all.
+Q2/Q4/Q5 resolved short-form per the audit recommendations. No
+cross-question conflicts. Design committed to `plans/P2-T1-DESIGN.md`. No
+code or files moved.

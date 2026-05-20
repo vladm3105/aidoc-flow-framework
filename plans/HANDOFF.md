@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-19T14:25:00Z                       |
+| Last updated  | 2026-05-19T14:55:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0 done) |
-| Next task     | P2-T1 — Hermes design (audit-confirmed)    |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1 done) |
+| Next task     | P2-T2 — port-verbatim Hermes content        |
 
 ## Progress
 
@@ -44,6 +44,13 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   is out of Phase 2 scope; Phase 2 input is 280 files. Mapped 4 code-level +
   prose-level framework-coupling sites; defined the audit-confirmed P2-T1…T6
   breakdown. See `plans/P2-T0-PLAN.md` / `plans/P2-AUDIT-hermes.md`.
+- P2-T1 (Hermes design) — **complete.** Five design choices resolved
+  (`plans/P2-T1-DESIGN.md`): keep `mcp_server` import path with
+  `hermes-server` distribution (Q1 — Platform B is JS/MD, no Python
+  collision); two plain-text VERSION files for spec declaration (Q2);
+  **drop platform `templates/` — consume `framework/layers/`** (Q3, D-0013);
+  `hermes-mcp` script entry (Q4); mirror legacy layout minus dropped
+  paths (Q5). D-0013 logs the templates-source-of-truth decision.
 
 ## Achievements
 
@@ -77,6 +84,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 - 2026-05-19 — Completed P2-T0 (Phase 2 audit & task breakdown):
   `legacy/mcp_ucx/` confirmed out of scope; Phase 2 input is 280 files;
   coupling sites mapped; P2-T1…T6 defined.
+- 2026-05-19 — Completed P2-T1 (Hermes design): five design choices
+  resolved; D-0013 records the templates-single-source-of-truth rule
+  (platforms consume `framework/layers/`, never duplicate).
 
 ## Next steps
 
@@ -115,3 +125,5 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   published from a local clone; Phase 1 closed; P0-T5 and P1-T8 done.
 - 2026-05-19T14:25:00Z — Completed P2-T0 audit; mcp_ucx out of scope; P2-T1…T6
   defined and queued in `MIGRATION_TODO.md`.
+- 2026-05-19T14:55:00Z — Completed P2-T1 design; D-0013 records the
+  templates-single-source-of-truth rule.
