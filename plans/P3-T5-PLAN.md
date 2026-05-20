@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P3-T5                                |
 | Depends on | P3-T0…T4 done; P3-T4 verify green    |
-| Status     | DONE (pending tag publication) — 2026-05-20T22:40:00Z |
+| Status     | DONE — 2026-05-20T22:55:00Z          |
 | Feeds      | Phase 4 — Conformance & Independence |
 
 ## Objective
@@ -365,3 +365,22 @@ git push origin v0.4.0 claude-code-plugin/v0.1.0
 After the push, `git ls-remote --tags origin` should report 7 tags.
 At that point Phase 3 is **formally** closed and the project moves
 into Phase 4 (Conformance & Independence).
+
+## Tag publication confirmed (2026-05-20T22:55:00Z)
+
+User ran the local-clone workaround. `git ls-remote --tags origin`
+returns 7 tags total:
+
+```
+8c84b9f…  refs/tags/claude-code-plugin/v0.1.0  (annotated, P3 close)
+243e2da…  refs/tags/framework/v0.1.0           (annotated, P1 close)
+43b7628…  refs/tags/hermes/v0.1.0              (annotated, P2 close)
+82ab9fe…  refs/tags/v0.1.0                     (annotated, P0)
+9b362f7…  refs/tags/v0.2.0                     (annotated, P1 close)
+5efb651…  refs/tags/v0.3.0                     (annotated, P2 close)
+72a3690…  refs/tags/v0.4.0                     (annotated, P3 close)
+```
+
+Both Phase 3 tags dereference to the close commit (`087f7d5`).
+Status ticks to DONE — Phase 3 formally closed. Project moves into
+Phase 4.
