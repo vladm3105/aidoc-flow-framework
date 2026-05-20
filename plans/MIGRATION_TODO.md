@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T21:55:00Z                       |
+| Last updated     | 2026-05-20T22:40:00Z                       |
 
 ---
 
@@ -167,9 +167,16 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   carried (G18 finding); post-cleanup plugin file count is 171 =
   git = disk. **All gates green.** Verify record at
   `plans/P3-T4-VERIFY.md`. DONE 2026-05-20T21:55:00Z.
-- [ ] P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]`; ROADMAP
-  marked; annotated tags `v0.4.0` and `claude-code-plugin/v0.1.0`
-  (anticipate P1-T8 / P2-T6 tag-push 403; local-clone workaround).
+- [x] P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]` (Phase 3 cycle
+  — Added / Changed / Removed; carried known-issue note for ~150
+  Class D stale refs); `ROADMAP.md` line 6 + Phase 3 section marked
+  complete; `docs/TAGGING.md` table appended (7 rows). Annotated
+  tags `v0.4.0` (milestone) and `claude-code-plugin/v0.1.0` (platform)
+  created locally on close commit `087f7d5`. In-container tag push
+  403'd as expected (third occurrence — P1-T8, P2-T6, P3-T5);
+  local-clone push commands documented in `plans/P3-T5-PLAN.md`
+  Implementation note. **Phase 3 structurally closed; awaiting tag
+  publication.** DONE 2026-05-20T22:40:00Z.
 
 ## Phase 4 — Conformance & Independence → `v0.5.0`
 

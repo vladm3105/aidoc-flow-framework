@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T21:55:00Z                       |
+| Last updated  | 2026-05-20T22:40:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0/T1/T2/T3/T4 done — structurally complete, awaiting close) |
-| Next task     | P3-T5 — Phase 3 close: `CHANGELOG.md [0.4.0]`, ROADMAP, tags `v0.4.0` + `claude-code-plugin/v0.1.0` (anticipate P1-T8 / P2-T6 tag-push 403 workaround) |
+| Current phase | **Phase 3 complete** (`v0.4.0`, `claude-code-plugin/v0.1.0`) — Phase 4 next, pending tag publication via local-clone workaround |
+| Next task     | (a) **User action** — publish `v0.4.0` + `claude-code-plugin/v0.1.0` from a local clone per `plans/P3-T5-PLAN.md` Implementation note; (b) Phase 4 — Conformance & Independence |
 
 ## Progress
 
@@ -212,15 +212,35 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   Verify record at `plans/P3-T4-VERIFY.md`. Lesson for future port
   plans: add `find -type l` to the audit recon to surface symlinks
   upfront (P3-T0 + P2-T0/T2 audits missed this).
+- 2026-05-20T22:40:00Z — Completed P3-T5 (Phase 3 close).
+  `CHANGELOG.md` cut to `[0.4.0] — 2026-05-20` (full Phase 3 cycle
+  — Added / Changed / Removed, plus a carried-known-issue note for
+  the ~150 Class D stale refs); `ROADMAP.md` status `Phase 3 complete
+  (v0.4.0) — Phase 4 next`; Phase 3 section ends with `Status:
+  complete (v0.4.0, claude-code-plugin/v0.1.0)`; `docs/TAGGING.md`
+  table appended (7 rows total). Close commit `087f7d5` pushed to the
+  working branch. Annotated tags `v0.4.0` + `claude-code-plugin/v0.1.0`
+  created locally on `087f7d5`; tag push 403'd as expected (third
+  occurrence of the in-container 403 — P1-T8, P2-T6, P3-T5). Tag
+  publication requires the user to run the local-clone workaround
+  documented in `plans/P3-T5-PLAN.md` Implementation note. **Phase 3
+  is structurally closed.**
 
 ## Next steps
 
-1. **P3-T5** — Phase 3 close: cut `CHANGELOG.md [0.4.0]` entry;
-   mark Phase 3 complete in `ROADMAP.md`; create annotated tags
-   `v0.4.0` (milestone) and `claude-code-plugin/v0.1.0` (platform).
-   Anticipate the in-container `refs/tags/*` 403 from P1-T8 / P2-T6;
-   bake the local-clone workaround commands into the plan from the
-   outset.
+1. **User action — publish the two Phase 3 tags from a local clone.**
+   The in-container session created `v0.4.0` and
+   `claude-code-plugin/v0.1.0` locally on close commit `087f7d5`;
+   the tag push 403'd as expected. Run the commands in
+   `plans/P3-T5-PLAN.md` Implementation note from a local clone with
+   normal GitHub credentials. After the push, `git ls-remote --tags
+   origin` should report 7 tags.
+2. **Phase 4 — Conformance & Independence** (→ `v0.5.0`). Both
+   platforms green on the shared conformance suite; per-platform
+   `CHANGELOG.md` and CI (the deferred retrofits from P3-T3 + P2-T3
+   land here); parity report for feature gaps between platforms.
+   See `ROADMAP.md` Phase 4. Begins with a P4-T0 audit + task
+   breakdown analogous to P2-T0 / P3-T0.
 
 ## Open questions
 

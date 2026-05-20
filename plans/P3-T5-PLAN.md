@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P3-T5                                |
 | Depends on | P3-T0…T4 done; P3-T4 verify green    |
-| Status     | PLANNED — 2026-05-20T22:10:00Z       |
+| Status     | DONE (pending tag publication) — 2026-05-20T22:40:00Z |
 | Feeds      | Phase 4 — Conformance & Independence |
 
 ## Objective
@@ -301,3 +301,67 @@ After the push, the in-container session verifies via
   workaround commands for the user.
 - **G13. No new findings.** Plan is internally consistent and the
   verify gates are observable. Ready to present on approval.
+
+## Implementation note (2026-05-20T22:40:00Z)
+
+Executed. Close commit `087f7d5` shipped on the working branch; both
+annotated tags created locally at the same target.
+
+**Verify gates (V1–V9, all green):**
+
+- V1. CHANGELOG sectioning: `[Unreleased]`, `[0.4.0] — 2026-05-20`,
+  `[0.3.0] — 2026-05-20`, `[0.2.0] — 2026-05-19`, `[0.1.0] —
+  2026-05-18` — chronological; fresh empty `[Unreleased]` above
+  `[0.4.0]`.
+- V2. ROADMAP status: `Phase 3 complete (v0.4.0) — Phase 4 next`;
+  Phase 3 section ends with `Status: complete (v0.4.0,
+  claude-code-plugin/v0.1.0)`.
+- V3. TAGGING current-tags table: 7 rows total (the 5 prior + 2 new).
+- V4. Local tag inventory: `claude-code-plugin/v0.1.0`,
+  `framework/v0.1.0`, `hermes/v0.1.0`, `v0.1.0`, `v0.2.0`, `v0.3.0`,
+  `v0.4.0` — 7 tags as expected.
+- V5. Annotated tag dereferences: `v0.4.0^{commit}` and
+  `claude-code-plugin/v0.1.0^{commit}` both resolve to `087f7d5…` =
+  `HEAD`.
+- V6. Branch push: remote advanced to `087f7d5…`.
+- V7. No code changes in the close commit: empty diff against
+  `platforms/` and `framework/`.
+- V8. Conformance suite: 25 / 25 (sanity re-run).
+- V9. Remote tag publication: as expected, `git ls-remote --tags
+  origin` returns only the 5 prior tags. The 2 new tags require the
+  local-clone workaround.
+
+**Expected failure recorded (Step 6 of the sequence):**
+
+```
+$ git push origin v0.4.0 claude-code-plugin/v0.1.0
+error: RPC failed; HTTP 403 curl 22 The requested URL returned error: 403
+send-pack: unexpected disconnect while reading sideband packet
+fatal: the remote end hung up unexpectedly
+Everything up-to-date
+```
+
+In-container git proxy 403'd on `refs/tags/*` — third occurrence
+(P1-T8, P2-T6, P3-T5). Not a regression.
+
+**Action required by user — publish the two Phase 3 tags from a
+local clone:**
+
+```sh
+git fetch origin claude/multi-platform-migration-AamWB
+git checkout claude/multi-platform-migration-AamWB
+git pull --ff-only
+# Confirm HEAD includes 087f7d522b9fd02aa6ee47be073285d6c940beb9
+# (the close commit, or a later commit if the tracker-update commit landed too)
+
+git tag -a v0.4.0 087f7d522b9fd02aa6ee47be073285d6c940beb9 \
+  -m "Phase 3 — Platform B: Claude Code plugin complete"
+git tag -a claude-code-plugin/v0.1.0 087f7d522b9fd02aa6ee47be073285d6c940beb9 \
+  -m "Claude Code plugin — first independent release; consumes framework/v0.1.0"
+
+git push origin v0.4.0 claude-code-plugin/v0.1.0
+```
+
+After the push, `git ls-remote --tags origin` should report 7 tags.
+At that point Phase 3 is **formally** closed and the project moves
+into Phase 4 (Conformance & Independence).
