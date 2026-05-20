@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T00:35:00Z                       |
+| Last updated  | 2026-05-21T01:20:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1 done) |
-| Next task     | P4-T2 — platform conformance tests (new sub-package `tests/conformance/platforms/`; PC1 declaration + PC4 engine isolation; suite 25 → 28-30 tests) |
+| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1, P4-T2 done) |
+| Next task     | P4-T3 — CI workflows: `.github/workflows/{conformance,hermes,plugin}.yml` on `ubuntu-latest` with Python 3.12 (per P4-T1 Q3); greenfield, no carry-over from legacy |
 
 ## Progress
 
@@ -264,18 +264,35 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   README: full mirror of P3-T3 plugin README. LICENSE: MIT (matches
   plugin manifest placeholder); copyright `vladm3105`. Q7
   confirmed no framework tag bump.
+- 2026-05-21T01:20:00Z — Completed P4-T2 (platform conformance
+  tests). New sub-package `tests/conformance/platforms/` with 6
+  test methods across 2 modules: `test_version_declaration.py`
+  (4 tests — PC1) + `test_engine_isolation.py` (2 tests — PC4
+  with case-insensitive forbidden-token scan, scoped to runtime-
+  significant directories per P4-T1 Q2). `_spec.py` extended
+  additively. **Conformance suite: 25 → 31 tests, all green.**
+  One implementation-time correction: initial `_spec.py` Edit
+  failed silently (file not Read first) — caught by the ImportError
+  in suite output; re-Read + re-Edit landed cleanly. Lesson: silent
+  Edit failures are real; treat unexpected ImportErrors after
+  "successful" Edits as suspect.
 
 ## Next steps
 
-1. **P4-T2 — Platform conformance tests.** Implement the design from
-   P4-T1: new `tests/conformance/platforms/` sub-package; PC1
-   (`FRAMEWORK_SPEC_VERSION` declaration per platform — file exists,
-   bare SemVer, matches `framework/VERSION`); PC4 (engine isolation
-   — forbidden-token check scoped to runtime-significant directories);
-   structural completeness (every `platforms/<name>/` has both
-   `VERSION` and `FRAMEWORK_SPEC_VERSION`). Suite grows 25 → 28-30.
-2. Then P4-T3 (CI workflows), P4-T4 (retrofits + parity report),
-   P4-T5 (verify + close → `v0.5.0`).
+1. **P4-T3 — CI workflows.** Greenfield `.github/workflows/`:
+   - `conformance.yml` — runs the 31-test conformance suite on
+     push/PR to any branch.
+   - `hermes.yml` — runs Hermes' 447-test pytest suite (Python
+     3.12 venv) on push/PR touching `platforms/hermes/`.
+   - `plugin.yml` — smoke-checks the plugin: manifest valid
+     (`python -m json.tool`) and coupling sweep (zero
+     `ucx_flow|UCX_FLOW|ucx_hermes` hits) on push/PR touching
+     `platforms/claude-code-plugin/`.
+   - All workflows: `runs-on: ubuntu-latest`; Python via
+     `actions/setup-python@v5`; no carry-over from
+     `legacy/github-workflows-disabled/`.
+2. Then P4-T4 (retrofits + parity report), P4-T5 (verify + close →
+   `v0.5.0`).
 
 ## Open questions
 

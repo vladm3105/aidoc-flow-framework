@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T00:35:00Z                       |
+| Last updated     | 2026-05-21T01:20:00Z                       |
 
 ---
 
@@ -209,9 +209,18 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   **MIT** (matches plugin manifest placeholder); copyright holder
   `vladm3105` (matches GitHub repo owner). Q7 confirmed no
   framework tag bump (spec unchanged). DONE 2026-05-21T00:35:00Z.
-- [ ] P4-T2 — Platform conformance tests: implement PC1
-  (`FRAMEWORK_SPEC_VERSION` declaration) + PC4 (engine isolation)
-  + structural completeness. Conformance suite grows 25 → 28-30.
+- [x] P4-T2 — Platform conformance tests: new sub-package
+  `tests/conformance/platforms/` with `__init__.py`,
+  `test_version_declaration.py` (4 tests: PC1 declaration —
+  VERSION file exists, FRAMEWORK_SPEC_VERSION file exists, both are
+  bare SemVer, declared version matches `framework/VERSION`), and
+  `test_engine_isolation.py` (2 tests: PC4 — Hermes runtime
+  surface no plugin-engine tokens, plugin runtime surface no
+  Hermes-engine tokens; case-insensitive forbidden-token scan
+  scoped to runtime-significant directories per P4-T1 Q2).
+  `_spec.py` extended additively with platform helpers. Suite:
+  **25 → 31 tests**, all green on first run after fixing one
+  implementation-time silent-Edit failure. DONE 2026-05-21T01:20:00Z.
 - [ ] P4-T3 — CI workflows: `.github/workflows/{conformance,hermes,
   plugin}.yml`. Greenfield; no port from `legacy/github-workflows-
   disabled/`.

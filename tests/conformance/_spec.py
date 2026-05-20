@@ -33,3 +33,24 @@ def registry_layers() -> list[dict]:
 def framework_files() -> list[Path]:
     """Return every file under ``framework/`` (sorted, for stable output)."""
     return sorted(p for p in FRAMEWORK.rglob("*") if p.is_file())
+
+
+PLATFORMS_ROOT = REPO_ROOT / "platforms"
+
+
+def platform_dirs() -> list[Path]:
+    """Return every direct subdirectory of ``platforms/`` (sorted)."""
+    return sorted(p for p in PLATFORMS_ROOT.iterdir() if p.is_dir())
+
+
+def platform_version_file(platform: Path) -> Path:
+    return platform / "VERSION"
+
+
+def platform_framework_spec_version_file(platform: Path) -> Path:
+    return platform / "FRAMEWORK_SPEC_VERSION"
+
+
+def framework_version() -> str:
+    """Return the bare-SemVer string from ``framework/VERSION``."""
+    return (FRAMEWORK / "VERSION").read_text(encoding="utf-8").strip()
