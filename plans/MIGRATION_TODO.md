@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T20:20:00Z                       |
+| Last updated     | 2026-05-20T21:10:00Z                       |
 
 ---
 
@@ -145,9 +145,18 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   line hits across 30 stale segments; top item `framework/scripts/`
   with 60 refs; resolution deferred to a content-migration task per
   P3-T1 §Deferred R2). DONE 2026-05-20T20:20:00Z.
-- [ ] P3-T3 — Plugin scaffold: create `.claude-plugin/plugin.json`,
-  `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching
-  `framework/VERSION`), `CHANGELOG.md`; expand `README.md`.
+- [x] P3-T3 — Plugin scaffold: `.claude-plugin/plugin.json` (minimal
+  manifest — 7 fields: `name`, `description`, `version`, `license`,
+  `repository`, `homepage`, `keywords`; **author block omitted**
+  because in-container `git config user.name` returned `Claude`, not
+  the repo owner — recorded as Finding 1 / G10 lesson). `VERSION`
+  (`0.1.0`, 6 bytes) + `FRAMEWORK_SPEC_VERSION` (`0.1.0`, identical
+  to `framework/VERSION`). `README.md` expanded from 27-line
+  placeholder to 82-line user-facing doc (skills table, install,
+  use, spec conformance, info table, Hermes-relationship section).
+  **No `CHANGELOG.md`** — followed Hermes precedent (Finding 2);
+  symmetric retrofit deferred. All 11 verify gates green.
+  DONE 2026-05-20T21:10:00Z.
 - [ ] P3-T4 — Verify: conformance 25/25; coupling sweep on
   `platforms/claude-code-plugin/` returns zero (or matches the
   P3-T2 illustration whitelist); manifest validates against

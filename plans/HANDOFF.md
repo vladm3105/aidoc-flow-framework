@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T20:20:00Z                       |
+| Last updated  | 2026-05-20T21:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1, P3-T2 done) |
-| Next task     | P3-T3 — plugin scaffold: `.claude-plugin/plugin.json` (minimal manifest per P3-T1 Q1), `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching `framework/VERSION`), `CHANGELOG.md`, expanded `README.md` |
+| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1, P3-T2, P3-T3 done) |
+| Next task     | P3-T4 — verify (consolidated Phase 3 gate, mirrors P2-T5 shape) |
 
 ## Progress
 
@@ -191,6 +191,16 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   ~150 line hits across 30 stale segments; top item
   `framework/scripts/` with 60 refs; resolution deferred to a
   content-migration task per P3-T1 §Deferred R2).
+- 2026-05-20T21:10:00Z — Completed P3-T3 (plugin scaffold).
+  `.claude-plugin/plugin.json` (7 fields, minimal manifest);
+  `VERSION` + `FRAMEWORK_SPEC_VERSION` both `0.1.0`; `README.md`
+  expanded from 27-line placeholder to 82-line user-facing doc.
+  Two implementation findings recorded: **Finding 1** (omit author
+  block — in-container `git config user.name` returns `Claude`, not
+  the repo owner; manifest's `repository` URL handles ownership
+  signaling); **Finding 2** (no platform `CHANGELOG.md` — following
+  Hermes precedent for symmetry; retrofit deferred). All 11 verify
+  gates green; conformance 25/25 unaffected.
 
 ## Next steps
 
