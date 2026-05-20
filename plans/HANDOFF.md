@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T23:45:00Z                       |
+| Last updated  | 2026-05-21T00:35:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 4 — Conformance & Independence (P4-T0 done) |
-| Next task     | P4-T1 — design (resolve the 6 open questions from P4-T0 audit: test placement, PC4 allow-list, CI runner, CHANGELOG retrofit posture, Hermes README structure, LICENSE choice) |
+| Current phase | Phase 4 — Conformance & Independence (P4-T0, P4-T1 done) |
+| Next task     | P4-T2 — platform conformance tests (new sub-package `tests/conformance/platforms/`; PC1 declaration + PC4 engine isolation; suite 25 → 28-30 tests) |
 
 ## Progress
 
@@ -243,21 +243,39 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   sub-tasks (T1 design → T2 conformance tests → T3 CI → T4
   retrofits+parity → T5 verify+close). 6 open questions for P4-T1.
   See `plans/P4-T0-PLAN.md` for the full breakdown.
+- 2026-05-20 — Added `docs/STARTUP_HANDOFF.md` — distills business /
+  startup ideas from the architectural decisions of the multi-platform
+  migration: IPLAN-as-product, IPLAN corpus (D-0012 R2), engine-
+  agnostic spec, domain profiles (post-v1.0), CHG governance-as-code
+  (CHG-D1), ephemeral-session workflow tooling, migration as case
+  study. Does not affect the migration's technical scope; ideas
+  surfaced organically and are filed for a future strategy session.
+- 2026-05-21T00:35:00Z — Completed P4-T1 (design, paper-only).
+  6 questions resolved in `plans/P4-T1-DESIGN.md`. New conformance
+  sub-package `tests/conformance/platforms/` with two modules
+  (`test_version_declaration.py` + `test_engine_isolation.py`);
+  suite grows 25 → 28-30. PC4 scope: runtime-significant
+  directories only (`src/`, `pyproject.toml`, `.claude-plugin/`,
+  `commands/`, `agents/`); documentary references in
+  READMEs/docs/skills allowed. CI runner: `ubuntu-latest`;
+  Python 3.12 via `actions/setup-python@v5`. CHANGELOG retrofit:
+  minimal-honest (each platform's `[0.1.0]` mirrors the
+  corresponding project release scoped to that platform). Hermes
+  README: full mirror of P3-T3 plugin README. LICENSE: MIT (matches
+  plugin manifest placeholder); copyright `vladm3105`. Q7
+  confirmed no framework tag bump.
 
 ## Next steps
 
-1. **P4-T1 — Design.** Resolve the 6 open questions surfaced by the
-   P4-T0 audit (`plans/P4-AUDIT-conformance.md` §6): test-module
-   placement (`tests/conformance/platforms/` subdir vs flat); PC4
-   per-platform engine-isolation allow-list; CI runner
-   (`ubuntu-latest`); CHANGELOG retrofit posture (minimal-honest:
-   each platform's `[0.1.0]` mirrors the corresponding project-level
-   release scoped to that platform); Hermes README structure
-   (full mirror of P3-T3 plugin README); LICENSE choice (confirm
-   MIT or pick alternative). Output: `plans/P4-T1-DESIGN.md` per
-   the P2-T1 / P3-T1 pattern.
-2. Then P4-T2 (conformance tests), P4-T3 (CI), P4-T4 (retrofits +
-   parity report), P4-T5 (verify + close → `v0.5.0`).
+1. **P4-T2 — Platform conformance tests.** Implement the design from
+   P4-T1: new `tests/conformance/platforms/` sub-package; PC1
+   (`FRAMEWORK_SPEC_VERSION` declaration per platform — file exists,
+   bare SemVer, matches `framework/VERSION`); PC4 (engine isolation
+   — forbidden-token check scoped to runtime-significant directories);
+   structural completeness (every `platforms/<name>/` has both
+   `VERSION` and `FRAMEWORK_SPEC_VERSION`). Suite grows 25 → 28-30.
+2. Then P4-T3 (CI workflows), P4-T4 (retrofits + parity report),
+   P4-T5 (verify + close → `v0.5.0`).
 
 ## Open questions
 

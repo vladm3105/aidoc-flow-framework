@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T23:45:00Z                       |
+| Last updated     | 2026-05-21T00:35:00Z                       |
 
 ---
 
@@ -193,9 +193,22 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   retrofits+parity → T5 verify+close). 6 open questions. See
   `plans/P4-T0-PLAN.md` + `plans/P4-AUDIT-conformance.md`.
   DONE 2026-05-20T23:45:00Z.
-- [ ] P4-T1 — Design: resolve the 6 open questions (test placement,
-  PC4 allow-list, CI runner, CHANGELOG retrofit posture, Hermes
-  README structure, LICENSE choice).
+- [x] P4-T1 — Design (paper-only): 6 questions resolved in
+  `plans/P4-T1-DESIGN.md`. Test-module placement: new sub-package
+  `tests/conformance/platforms/` (`test_version_declaration.py`
+  + `test_engine_isolation.py`); suite grows 25 → 28-30. PC4
+  scope: **runtime-significant directories** (`src/`,
+  `pyproject.toml`, `.claude-plugin/`, `commands/`, `agents/`);
+  prose / READMEs / `skills/<X>/SKILL.md` documentary references
+  allowed. Forbidden-token tables specified bidirectionally
+  (case-insensitive). CI runner: `ubuntu-latest`; Python 3.12 via
+  `actions/setup-python@v5`; no carry-over from legacy. CHANGELOG
+  retrofit: **minimal-honest** (each platform's `[0.1.0]` mirrors
+  the corresponding project release scoped to that platform).
+  Hermes README: **full mirror** of P3-T3 plugin README. LICENSE:
+  **MIT** (matches plugin manifest placeholder); copyright holder
+  `vladm3105` (matches GitHub repo owner). Q7 confirmed no
+  framework tag bump (spec unchanged). DONE 2026-05-21T00:35:00Z.
 - [ ] P4-T2 — Platform conformance tests: implement PC1
   (`FRAMEWORK_SPEC_VERSION` declaration) + PC4 (engine isolation)
   + structural completeness. Conformance suite grows 25 → 28-30.
