@@ -10,14 +10,14 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 | Layer | Artifact | Folder | Template |
 |-------|----------|--------|----------|
-| 1 | BRD — Business Requirements Document | 01_BRD/ | templates/01_BRD-TEMPLATE.yaml |
-| 2 | PRD — Product Requirements Document | 02_PRD/ | templates/02_PRD-TEMPLATE.yaml |
-| 3 | EARS — Easy Approach to Requirements Syntax | 03_EARS/ | templates/03_EARS-TEMPLATE.yaml |
-| 4 | BDD — Behavior-Driven Development | 04_BDD/ | templates/04_BDD-TEMPLATE.yaml |
-| 5 | ADR — Architecture Decision Record | 05_ADR/ | templates/05_ADR-TEMPLATE.yaml |
-| 6 | SPEC — Technical Specification | 06_SPEC/ | templates/06_SPEC-TEMPLATE.yaml |
-| 7 | TDD — Test-Driven Development Guide | 07_TDD/ | templates/07_TDD-TEMPLATE.yaml |
-| 8 | IPLAN — Implementation Plan | 08_IPLAN/ | templates/08_IPLAN-TEMPLATE.yaml |
+| 1 | BRD — Business Requirements Document | 01_BRD/ | framework/layers/01_BRD/BRD-TEMPLATE.yaml |
+| 2 | PRD — Product Requirements Document | 02_PRD/ | framework/layers/02_PRD/PRD-TEMPLATE.yaml |
+| 3 | EARS — Easy Approach to Requirements Syntax | 03_EARS/ | framework/layers/03_EARS/EARS-TEMPLATE.yaml |
+| 4 | BDD — Behavior-Driven Development | 04_BDD/ | framework/layers/04_BDD/BDD-TEMPLATE.yaml |
+| 5 | ADR — Architecture Decision Record | 05_ADR/ | framework/layers/05_ADR/ADR-TEMPLATE.yaml |
+| 6 | SPEC — Technical Specification | 06_SPEC/ | framework/layers/06_SPEC/SPEC-TEMPLATE.yaml |
+| 7 | TDD — Test-Driven Development Guide | 07_TDD/ | framework/layers/07_TDD/TDD-TEMPLATE.yaml |
+| 8 | IPLAN — Implementation Plan | 08_IPLAN/ | framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml |
 
 ## Document & Element ID Formats
 

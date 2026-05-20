@@ -680,27 +680,27 @@ See `references/ucx-remediate-content-limitations.md` for the full reproduction 
 ## Templates & Layer Assets (v3.2)
 
 All templates are unified YAML files available as linked files in this skill:
-- `templates/01_BRD-TEMPLATE.yaml`
-- `templates/02_PRD-TEMPLATE.yaml`
-- `templates/03_EARS-TEMPLATE.yaml`
-- `templates/04_BDD-TEMPLATE.yaml`
-- `templates/05_ADR-TEMPLATE.yaml`
-- `templates/06_SPEC-TEMPLATE.yaml`
-- `templates/07_TDD-TEMPLATE.yaml`
-- `templates/08_IPLAN-TEMPLATE.yaml`
+- `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+- `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+- `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+- `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+- `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
 
-Load the appropriate template with `skill_view(name='sdd-orchestrator', file_path='templates/NN_TYPE-TEMPLATE.yaml')` before beginning creation or review.
+Load the appropriate template from `framework/layers/<NN>_<TYPE>/<TYPE>-TEMPLATE.yaml` in the repository (e.g. `framework/layers/01_BRD/BRD-TEMPLATE.yaml`). Use the standard file-read mechanism — `skill_view` does **not** apply since templates live outside the skill (D-0013).
 
 | Layer | Template | Upstream Tags |
 |-------|----------|---------------|
-| L1 BRD | `templates/01_BRD-TEMPLATE.yaml` | — |
-| L2 PRD | `templates/02_PRD-TEMPLATE.yaml` | @brd |
-| L3 EARS | `templates/03_EARS-TEMPLATE.yaml` | @brd @prd |
-| L4 BDD | `templates/04_BDD-TEMPLATE.yaml` | @brd @prd @ears |
-| L5 ADR | `templates/05_ADR-TEMPLATE.yaml` | @brd @prd @ears @bdd |
-| L6 SPEC | `templates/06_SPEC-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr |
-| L7 TDD | `templates/07_TDD-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr @spec |
-| L8 IPLAN | `templates/08_IPLAN-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr @spec @tdd |
+| L1 BRD | `framework/layers/01_BRD/BRD-TEMPLATE.yaml` | — |
+| L2 PRD | `framework/layers/02_PRD/PRD-TEMPLATE.yaml` | @brd |
+| L3 EARS | `framework/layers/03_EARS/EARS-TEMPLATE.yaml` | @brd @prd |
+| L4 BDD | `framework/layers/04_BDD/BDD-TEMPLATE.yaml` | @brd @prd @ears |
+| L5 ADR | `framework/layers/05_ADR/ADR-TEMPLATE.yaml` | @brd @prd @ears @bdd |
+| L6 SPEC | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr |
+| L7 TDD | `framework/layers/07_TDD/TDD-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr @spec |
+| L8 IPLAN | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` | @brd @prd @ears @bdd @adr @spec @tdd |
 
 **All documents use `.yaml` format.** Markdown is for indexes and reference docs only.
 **No subtypes** — SPEC and TDD use unified templates (no CSPEC/DSPEC/UXSPEC/RISKSPEC/PROCSPEC; no UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).

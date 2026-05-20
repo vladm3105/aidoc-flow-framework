@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T12:50:00Z                       |
+| Last updated     | 2026-05-20T13:55:00Z                       |
 
 ---
 
@@ -64,10 +64,16 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   "Code-level + tests"; new §3c documentation cluster added.
   Conformance 25/25; Hermes tests 397/447 (50 D-0013 scaffold-gap
   failures deferred to P2-T9). DONE 2026-05-20T12:50:00Z.
-- [ ] P2-T8 — Drop `agent-skills/spec-driven-development/sdd-orchestrator/templates/`
-  (8 layer YAMLs that duplicate `framework/layers/<NN>_<X>/`) and rewire
-  the skill to read from `framework/layers/` per D-0013. Full D-0013
-  conformance for the skill package.
+- [x] P2-T8 — Dropped 8 layer YAMLs at `agent-skills/.../sdd-orchestrator/templates/`
+  (skill drift: engine hardcodes like `server: ucx_hermes`, `SDD v3` labels);
+  rewired 25 references (17 in `SKILL.md`, 8 in `sdd-workflow-quickstart.md`)
+  from skill-relative `templates/0N_TYPE-TEMPLATE.yaml` to framework-relative
+  `framework/layers/0N_TYPE/TYPE-TEMPLATE.yaml`; rewrote `SKILL.md:692`'s
+  `skill_view` API example to a direct-read instruction (templates now live
+  outside the skill). Content-equivalence check confirmed all deltas were
+  engine-hardcode-removal + phrasing; no substantive content lost.
+  Conformance 25/25; D-0013 conformance for skill package complete.
+  DONE 2026-05-20T13:55:00Z.
 - [ ] P2-T9 — Rewire MCP server scaffold runtime to consume
   `framework/layers/<NN>_<X>/` instead of `platforms/hermes/templates/`
   (which D-0013 removed). Surfaced by P2-T3 implementation: 50/447 Hermes

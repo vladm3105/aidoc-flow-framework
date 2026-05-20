@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T12:50:00Z                       |
+| Last updated  | 2026-05-20T13:55:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3 done) |
-| Next task     | P2-T8 — drop skill's templates duplication; rewire skill to `framework/layers/` (D-0013 conformance) |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8 done) |
+| Next task     | P2-T9 — rewire MCP scaffold runtime (`CANONICAL_SCAFFOLD_MAPPINGS`) to `framework/layers/` |
 
 ## Progress
 
@@ -110,18 +110,25 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   refreshed; .mcp.json repointed. Conformance 25/25; Hermes' own
   suite 397/447 (50 failures from D-0013 scaffold-runtime gap →
   deferred to new P2-T9 task).
+- 2026-05-20 — Completed P2-T8 (drop skill's templates duplication):
+  deleted 8 drifted layer YAMLs at `agent-skills/.../sdd-orchestrator/
+  templates/`; rewired 25 references in `SKILL.md` +
+  `sdd-workflow-quickstart.md` to `framework/layers/0N_TYPE/
+  TYPE-TEMPLATE.yaml`; rewrote line-692 `skill_view` example to a
+  direct-read instruction. Content-equivalence check confirmed deltas
+  were engine-hardcode + phrasing — no substantive content lost.
+  D-0013 conformance for the skill package complete. Pass 3 retro
+  records G17 (verify gate V6 was too coarse — corrected to scope
+  the grep to `skill_view.*templates/`).
 
 ## Next steps
 
-1. P2-T8 — drop skill's templates duplication (`platforms/hermes/agent-skills/
-   .../sdd-orchestrator/templates/`) and rewire skill to `framework/layers/`
-   per D-0013. Symmetric with P2-T9 (scaffold runtime); merge candidate.
-2. P2-T9 — rewire MCP server's `CANONICAL_SCAFFOLD_MAPPINGS` to consume
+1. P2-T9 — rewire MCP server's `CANONICAL_SCAFFOLD_MAPPINGS` to consume
    `framework/layers/<NN>_<X>/` (closes the D-0013 gap surfaced by P2-T3;
    unblocks the 50 deferred Hermes test failures).
-3. P2-T5 — verify (now includes a re-run of Hermes' suite expected fully
-   green post-P2-T8/T9).
-4. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
+2. P2-T5 — verify (now includes a re-run of Hermes' suite expected fully
+   green post-P2-T9).
+3. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
 
 ## Open questions
 
