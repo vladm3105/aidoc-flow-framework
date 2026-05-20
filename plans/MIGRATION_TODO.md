@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T22:55:00Z                       |
+| Last updated     | 2026-05-20T23:45:00Z                       |
 
 ---
 
@@ -179,9 +179,34 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 ## Phase 4 — Conformance & Independence → `v0.5.0`
 
-- [ ] P4-T1 — Both platforms green on the shared conformance suite.
-- [ ] P4-T2 — Per-platform `CHANGELOG.md` and CI.
-- [ ] P4-T3 — Parity report: feature gaps between platforms.
+- [x] P4-T0 — Phase 4 audit + task breakdown: assessed platform-
+  conformance contract (4 bullets — PC1+PC4 statically testable
+  today, PC2+PC3 deferred to runtime exercise); CI gap (no
+  `.github/workflows/`; 3 greenfield workflows planned);
+  CHANGELOG/README/LICENSE gaps (both platforms lack CHANGELOG,
+  Hermes README still placeholder, no repo-root LICENSE); parity
+  report scope (layers × operations matrix). Rolled up 9 deferred
+  items from P1/P2/P3 — **5 in-scope** (per-platform CHANGELOG ×2,
+  LICENSE, Hermes README, conformance-suite extension), **4
+  deferred** (content-design / already-done). Phase 4 shape: 5
+  sub-tasks (T1 design → T2 conformance tests → T3 CI → T4
+  retrofits+parity → T5 verify+close). 6 open questions. See
+  `plans/P4-T0-PLAN.md` + `plans/P4-AUDIT-conformance.md`.
+  DONE 2026-05-20T23:45:00Z.
+- [ ] P4-T1 — Design: resolve the 6 open questions (test placement,
+  PC4 allow-list, CI runner, CHANGELOG retrofit posture, Hermes
+  README structure, LICENSE choice).
+- [ ] P4-T2 — Platform conformance tests: implement PC1
+  (`FRAMEWORK_SPEC_VERSION` declaration) + PC4 (engine isolation)
+  + structural completeness. Conformance suite grows 25 → 28-30.
+- [ ] P4-T3 — CI workflows: `.github/workflows/{conformance,hermes,
+  plugin}.yml`. Greenfield; no port from `legacy/github-workflows-
+  disabled/`.
+- [ ] P4-T4 — Retrofits + parity report: Hermes + plugin CHANGELOG;
+  expanded Hermes README; repo-root LICENSE; `docs/PARITY.md`.
+- [ ] P4-T5 — Phase 4 verify + close: `CHANGELOG.md [0.5.0]`;
+  ROADMAP marked; tag `v0.5.0` (anticipate P1-T8 / P2-T6 / P3-T5
+  tag-push 403 — fourth occurrence; local-clone workaround).
 
 ## Phase 5 — Cutover → `v1.0.0`
 

@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T22:55:00Z                       |
+| Last updated  | 2026-05-20T23:45:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Phase 3 formally closed** (`v0.4.0`, `claude-code-plugin/v0.1.0` published) — Phase 4 next |
-| Next task     | Phase 4 — Conformance & Independence (→ `v0.5.0`); begins with P4-T0 audit + task breakdown |
+| Current phase | Phase 4 — Conformance & Independence (P4-T0 done) |
+| Next task     | P4-T1 — design (resolve the 6 open questions from P4-T0 audit: test placement, PC4 allow-list, CI runner, CHANGELOG retrofit posture, Hermes README structure, LICENSE choice) |
 
 ## Progress
 
@@ -230,15 +230,34 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   all 7 tags; `v0.4.0` and `claude-code-plugin/v0.1.0` both
   dereference to the close commit `087f7d5`. **Phase 3 is formally
   closed.** Next: Phase 4 (Conformance & Independence).
+- 2026-05-20T23:45:00Z — Completed P4-T0 (Phase 4 audit + task
+  breakdown). `plans/P4-AUDIT-conformance.md` assesses the platform-
+  conformance contract (4 bullets: PC1+PC4 statically testable
+  today, PC2+PC3 deferred to runtime exercise), the CI gap (no
+  `.github/workflows/`; 3 greenfield workflows planned —
+  conformance, Hermes, plugin), and the CHANGELOG/README/LICENSE
+  gaps (both platforms lack `CHANGELOG.md`, Hermes README still
+  Phase-0 placeholder, no repo-root `LICENSE`). 9 deferred items
+  from P1/P2/P3 rolled up: 5 in-scope for Phase 4, 4 deferred
+  further (content-design / already-done). Phase 4 shape is 5
+  sub-tasks (T1 design → T2 conformance tests → T3 CI → T4
+  retrofits+parity → T5 verify+close). 6 open questions for P4-T1.
+  See `plans/P4-T0-PLAN.md` for the full breakdown.
 
 ## Next steps
 
-1. **Phase 4 — Conformance & Independence** (→ `v0.5.0`). Both
-   platforms green on the shared conformance suite (already true);
-   per-platform `CHANGELOG.md` and CI (the deferred retrofits from
-   P2-T3 + P3-T3 land here); parity report for feature gaps between
-   the two platforms. See `ROADMAP.md` Phase 4. Begins with a
-   P4-T0 audit + task breakdown analogous to P2-T0 / P3-T0.
+1. **P4-T1 — Design.** Resolve the 6 open questions surfaced by the
+   P4-T0 audit (`plans/P4-AUDIT-conformance.md` §6): test-module
+   placement (`tests/conformance/platforms/` subdir vs flat); PC4
+   per-platform engine-isolation allow-list; CI runner
+   (`ubuntu-latest`); CHANGELOG retrofit posture (minimal-honest:
+   each platform's `[0.1.0]` mirrors the corresponding project-level
+   release scoped to that platform); Hermes README structure
+   (full mirror of P3-T3 plugin README); LICENSE choice (confirm
+   MIT or pick alternative). Output: `plans/P4-T1-DESIGN.md` per
+   the P2-T1 / P3-T1 pattern.
+2. Then P4-T2 (conformance tests), P4-T3 (CI), P4-T4 (retrofits +
+   parity report), P4-T5 (verify + close → `v0.5.0`).
 
 ## Open questions
 
