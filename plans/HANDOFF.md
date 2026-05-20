@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T10:15:00Z                       |
+| Last updated  | 2026-05-20T10:45:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7 done) |
 | Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
@@ -152,3 +152,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   (181 files) into `platforms/hermes/agent-skills/`; §5b updated so the
   3 root-docs files are sourced via P2-T7, not double-ported via P2-T3;
   P2-T7 Pass 3 retro records implementation-time deviations.
+- 2026-05-20T10:45:00Z — Remaining-tasks review: P2-T4 (spec-version
+  declaration) folded into P2-T3; added P2-T8 (drop skill's template
+  duplication, rewire to `framework/layers/`) to close D-0013 fully for
+  the skill package. New order: T3 → T8 → T5 → T6.

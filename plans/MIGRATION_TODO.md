@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T10:15:00Z                       |
+| Last updated     | 2026-05-20T10:45:00Z                       |
 
 ---
 
@@ -57,15 +57,24 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`.
   The 3 legacy-root files are **ported via P2-T7** — not duplicated here.
   Do **not** copy `templates/` (dropped per D-0013). Rewire all
-  `ucx_flow` references (4 code-level + prose-level in `skills/`). Update
-  `.mcp.json` to the new Hermes path.
-- [ ] P2-T4 — Declare `framework_spec_version` per the P2-T1 mechanism
-  (e.g. `platforms/hermes/FRAMEWORK_SPEC_VERSION` matching `framework/VERSION`).
+  `ucx_flow` references (4 code-level + prose-level in `skills/`).
+  Update `.mcp.json` to the new Hermes path. **Includes (formerly P2-T4):**
+  add `platforms/hermes/VERSION` (`0.1.0`) and
+  `platforms/hermes/FRAMEWORK_SPEC_VERSION` (matching `framework/VERSION`).
+  Apply P2-T1 Q1 (`hermes-server` distribution name) and Q4 (`hermes-mcp`
+  script entry) in `pyproject.toml`.
+- [ ] P2-T8 — Drop `agent-skills/spec-driven-development/sdd-orchestrator/templates/`
+  (8 layer YAMLs that duplicate `framework/layers/<NN>_<X>/`) and rewire
+  the skill to read from `framework/layers/` per D-0013. Full D-0013
+  conformance for the skill package.
 - [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test
-  suite passes against the repointed paths.
+  suite passes against repointed paths; comprehensive
+  `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero;
+  `VERSION` + `FRAMEWORK_SPEC_VERSION` match `framework/VERSION`.
 - [ ] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]`; ROADMAP marked;
   milestone tag `v0.3.0`; platform tag `hermes/v0.1.0` (per
-  `docs/TAGGING.md`).
+  `docs/TAGGING.md`). Anticipate same HTTP 403 on tag pushes (P1-T8
+  pattern); bake local-clone push commands into the plan.
 - [x] P2-T7 — Port `hermes_agent_skills/spec-driven-development/` from
   `origin/main` to `platforms/hermes/agent-skills/spec-driven-development/`
   (sdd-orchestrator + sdd-review-personas). 181 files (was 187; 6 D-0013-

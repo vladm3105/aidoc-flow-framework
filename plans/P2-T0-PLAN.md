@@ -124,30 +124,46 @@ the `ucx_hermes` ↔ `mcp_ucx` question is resolved (predecessor/successor;
 - **P2-T2 — Port-verbatim.** Copy the no-coupling content into
   `platforms/hermes/` as-is: `examples/`, `prompts/`, `skills/layer_aliases/`,
   `skills/personas/`, and `skills/persona_mappings.yaml`. No content edits.
-- **P2-T3 — Port-with-repoint.** Copy `pyproject.toml`, `src/`, `tests/`,
-  and `docs/` (excluding `docs/migration/`, dropped) into
-  `platforms/hermes/`. Copy `skills/README.md` and `skills/hermes/` into
-  `platforms/hermes/skills/`. The three legacy-root-level files from §5b
-  are **ported via P2-T7** (the `hermes_agent_skills` package on main
-  carries byte-identical copies); P2-T3 does **not** double-port them.
-  **Do not copy `templates/`** — dropped per D-0013. Apply the design
-  from P2-T1 (rename module if chosen) and rewire **both** classes of
-  framework coupling from audit §3: the 4 code-level files (§3a) **and**
-  the prose-level set (§3b: 5 `skills/` markdown files; the `templates/`
-  rows of §3b are moot post-D-0013). Update `.mcp.json` to point at the
-  new Hermes path. Verify gate: a fresh
-  `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero.
-- **P2-T4 — Declare `framework_spec_version`.** Add
-  `platforms/hermes/VERSION` (the platform's own SemVer per `docs/TAGGING.md`)
-  and the `FRAMEWORK_SPEC_VERSION` declaration per P2-T1's chosen mechanism;
-  it must match `framework/VERSION`.
+- **P2-T3 — Port-with-repoint (now incorporates P2-T4 spec-version declaration).**
+  Copy `pyproject.toml`, `src/`, `tests/`, and `docs/` (excluding
+  `docs/migration/`, dropped) into `platforms/hermes/`. Copy
+  `skills/README.md` and `skills/hermes/` into `platforms/hermes/skills/`.
+  The three legacy-root-level files from §5b are **ported via P2-T7** (the
+  `hermes_agent_skills` package on main carries byte-identical copies);
+  P2-T3 does **not** double-port them. **Do not copy `templates/`** —
+  dropped per D-0013. Apply the design from P2-T1 (Q1 `hermes-server`
+  distribution + keep `mcp_server` import; Q4 `hermes-mcp` script entry)
+  in the `pyproject.toml` edit. Rewire **both** classes of framework
+  coupling from audit §3: the 4 code-level files (§3a) with targeted edits
+  **and** the prose-level set (§3b: 5 `skills/` markdown files; the
+  `templates/` rows of §3b are moot post-D-0013) via word-boundary regex
+  sed (G12 lesson). **Also add `platforms/hermes/VERSION` (`0.1.0`) and
+  `platforms/hermes/FRAMEWORK_SPEC_VERSION` (matching `framework/VERSION` =
+  `0.1.0`)** — formerly P2-T4, folded in here. Update `.mcp.json` to point
+  at the new Hermes path. Verify gate (G13 lesson): a fresh
+  `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero;
+  `/opt/data` illustration paths in tutorials remain.
+- ~~**P2-T4** — folded into P2-T3 (2026-05-20T10:45:00Z).~~
 - **P2-T5 — Verify.** Run `tests/conformance/` — all 25 tests still green
-  (no `framework/` change means this should be automatic). Run Hermes' own
-  test suite (`platforms/hermes/tests/`) against the repointed paths.
+  (no `framework/` change). Run Hermes' own test suite
+  (`platforms/hermes/tests/`) against the repointed paths.
+  Cross-platform sweep: `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/`
+  returns zero; `VERSION` and `FRAMEWORK_SPEC_VERSION` files exist and
+  match `framework/VERSION`.
 - **P2-T6 — Phase 2 close.** Cut `CHANGELOG.md [0.3.0]`; mark Phase 2
   complete in `ROADMAP.md`; create milestone tag `v0.3.0` and platform tag
-  `hermes/v0.1.0` (annotated, per `docs/TAGGING.md`). Tag publication may
-  require the same local-clone workaround as P1-T8.
+  `hermes/v0.1.0` (annotated, per `docs/TAGGING.md`). Tag publication
+  expected to need the same local-clone workaround as P1-T8 (in-container
+  git proxy still 403s on `refs/tags/*`).
+- **P2-T8 — Drop skill's template duplication (D-0013 conformance).**
+  Remove the 8 layer YAMLs at
+  `platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/templates/0N_TYPE-TEMPLATE.yaml`
+  and rewire the skill's runtime / documentation references to read from
+  `framework/layers/<NN>_<X>/<X>-TEMPLATE.yaml` per D-0013. Verify gate:
+  `find platforms/hermes/agent-skills/.../sdd-orchestrator/templates/`
+  returns nothing (or directory is gone); a sample skill invocation
+  (manual or test) resolves a template from `framework/layers/`.
+  Added 2026-05-20T10:45:00Z (follow-up flag from P2-T7).
 
 ## Implementation note (2026-05-19T14:15:00Z)
 
