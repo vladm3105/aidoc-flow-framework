@@ -6,7 +6,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T10:45:00Z                       |
+| Last updated  | 2026-05-20T11:50:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7 done) |
 | Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
@@ -156,3 +156,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   declaration) folded into P2-T3; added P2-T8 (drop skill's template
   duplication, rewire to `framework/layers/`) to close D-0013 fully for
   the skill package. New order: T3 → T8 → T5 → T6.
+- 2026-05-20T11:50:00Z — Drafted `plans/P2-T3-PLAN.md` (two review passes
+  done). Plan recon surfaced an audit gap: 3 test files + 17 docs files
+  carry `ucx_flow_v3` references that §3a/§3b missed. P2-T3 absorbs the
+  scope (§3a-extension for tests; new §3c for docs, classified historical
+  vs current-behavior per the P2-T7 G13 lesson) and lands the audit-doc
+  correction inside its own step sequence. Awaiting approval to implement.
