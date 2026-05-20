@@ -10,6 +10,96 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.5.0] — 2026-05-21
+
+Phase 4 — Conformance & Independence. Platform-conformance tests
+(PC1 + PC4) added to the shared suite; greenfield CI workflows
+authored; per-platform CHANGELOG retrofits; expanded Hermes README;
+repo-root LICENSE; parity report.
+
+### Added
+- `tests/conformance/platforms/` sub-package with PC1 (version
+  declaration: VERSION + FRAMEWORK_SPEC_VERSION files exist, are
+  bare SemVer, match `framework/VERSION`) and PC4 (engine isolation:
+  forbidden-token scan scoped to runtime-significant directories
+  per platform) test modules. Suite grows **25 → 31 tests**.
+- Three greenfield GitHub Actions workflows authored, staged at
+  `plans/workflows-pending/` pending user `git mv` to
+  `.github/workflows/` (in-container GitHub App lacks `workflows`
+  permission — see `docs/TAGGING.md` "In-container push
+  restrictions"):
+  - `conformance.yml` — runs the 31-test conformance suite on
+    every push/PR.
+  - `hermes.yml` — runs Hermes' pytest suite (Python 3.12 via
+    `actions/setup-python@v5`) on push/PR touching
+    `platforms/hermes/**` or `framework/**`.
+  - `plugin.yml` — smoke-checks the plugin: manifest valid +
+    coupling sweep + structural sanity on push/PR touching
+    `platforms/claude-code-plugin/**`.
+  All `ubuntu-latest`; concurrency cancel-in-progress; minimal
+  `contents: read` permissions. No carry-over from
+  `legacy/github-workflows-disabled/` (28 workflows, all
+  self-hosted-coupled).
+- `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
+  project `[0.3.0]` scoped content. Cross-references project-level
+  CHANGELOG and `plans/P2-T*-PLAN.md` for the full audit trail.
+- `platforms/claude-code-plugin/CHANGELOG.md` — plugin `[0.1.0]`
+  mirroring project `[0.4.0]` scoped content, with a "Known
+  limitations" section flagging the legacy-vs-new SDD layer model
+  gap.
+- `LICENSE` at repo root — MIT, copyright `vladm3105` (matches
+  plugin manifest's `"license": "MIT"` placeholder).
+- `docs/PARITY.md` — 5-section capability comparison between
+  Hermes and the Claude Code plugin: capability matrix (8 SDD
+  layers × 2 platforms); workflow operations; platform-specific
+  extras; known parity gap (plugin reflects the legacy 11-layer
+  model; lacks `doc-tdd` + `doc-iplan`); user-facing
+  "choosing between" decision table.
+- `docs/STARTUP_HANDOFF.md` — distills business / startup ideas
+  from the migration session (IPLAN-as-product, corpus, domain
+  profiles, CHG governance-as-code, etc.) for a future strategy
+  session. Separate from the technical migration scope.
+- Per-task plans `plans/P4-T0..T5-PLAN.md`, the design doc
+  `plans/P4-T1-DESIGN.md`, the audit `plans/P4-AUDIT-conformance.md`,
+  and the verify record `plans/P4-T5-VERIFY.md`.
+
+### Changed
+- `tests/conformance/_spec.py` — extended **additively** with
+  platform helpers (`PLATFORMS_ROOT`, `platform_dirs`,
+  `platform_version_file`, `platform_framework_spec_version_file`,
+  `framework_version`). Existing helpers + imports untouched.
+- `platforms/hermes/README.md` — expanded from 27-line Phase-0
+  placeholder to 113-line user-facing doc. Full mirror of P3-T3's
+  populated plugin README structure: inventory table, install +
+  `.mcp.json` snippet, MCP tool list, framework spec conformance
+  section, platform info table, relationship-to-plugin section.
+- `docs/TAGGING.md` — appended "In-container push restrictions"
+  section documenting the two operation classes that need the
+  local-clone workaround (`refs/tags/*` — 4 occurrences after
+  P4-T5; `.github/workflows/**` — 1 occurrence). Symmetric with
+  the existing tag-push reference.
+
+### Known carried issues (deferred)
+- **CI workflow files** at `plans/workflows-pending/` — user
+  `git mv`'s them into `.github/workflows/` from a local clone.
+  Phase 4 closed without that user action; the relocation is a
+  transit detail, not a content gap.
+- **Plugin legacy-vs-new SDD layer model gap** (P3-T1 §Deferred
+  R2 / `docs/PARITY.md` "Known parity gap"). Plugin lacks
+  `doc-tdd` + `doc-iplan`; has `doc-sys` / `doc-req` / `doc-ctr` /
+  `doc-tspec` / `doc-tasks` from the legacy 11-layer model.
+  Hermes covers all 8 new-model layers via its generic `sdd_*`
+  tools. Resolution is a per-skill content-migration task tracked
+  as post-v1.0 cleanup.
+- **`platforms/hermes/src/mcp_server/executor/api_runner.py:115`**
+  carries a stale install instruction
+  (`pip install 'ucx_hermes[api]'`); current distribution is
+  `hermes-server` (P2-T1 Q1). 1-line fix; deferred to Phase 5
+  housekeeping or a `hermes/v0.1.1` patch.
+- **~150 Class D stale `framework/<X>` references** in plugin
+  skill content (P3-T2 G18) — same root cause as the layer model
+  gap; resolution post-v1.0.
+
 ## [0.4.0] — 2026-05-20
 
 Phase 3 — Platform B: Claude Code plugin. `platforms/claude-code-plugin/`

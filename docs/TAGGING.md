@@ -101,16 +101,19 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `hermes/v0.1.0` | Phase 2 close | Hermes platform — first independent release |
 | `v0.4.0` | Phase 3 close | Platform B: Claude Code plugin milestone |
 | `claude-code-plugin/v0.1.0` | Phase 3 close | Claude Code plugin — first independent release |
+| `v0.5.0` | Phase 4 close | Conformance & Independence milestone |
 
 > Phase 1 tags (`v0.1.0`, `v0.2.0`, `framework/v0.1.0`) are published
-> on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`) and Phase 3
-> tags (`v0.4.0`, `claude-code-plugin/v0.1.0`) are created locally on
-> the in-container session at the respective close commits and need
-> the same local-clone workaround established at P1-T8 — the
-> in-container git proxy continues to refuse tag pushes with HTTP 403.
-> See `plans/P2-T6-PLAN.md` §Approach.5 and `plans/P3-T5-PLAN.md`
-> §Approach.5 for the exact local-clone commands.
-> Verify any tag's publication via `git ls-remote --tags origin`.
+> on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`), Phase 3
+> tags (`v0.4.0`, `claude-code-plugin/v0.1.0`), and Phase 4 tag
+> (`v0.5.0`) are created locally on the in-container session at the
+> respective close commits and need the local-clone workaround
+> established at P1-T8 — the in-container git proxy continues to
+> refuse tag pushes with HTTP 403. See `plans/P2-T6-PLAN.md`
+> §Approach.5, `plans/P3-T5-PLAN.md` §Approach.5, and
+> `plans/P4-T5-PLAN.md` §Approach.6 for the exact local-clone
+> commands. Verify any tag's publication via
+> `git ls-remote --tags origin`.
 
 ## In-container push restrictions
 

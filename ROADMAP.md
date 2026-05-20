@@ -3,7 +3,7 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | Phase 3 complete (`v0.4.0`) — Phase 4 next                    |
+| Status           | Phase 4 complete (`v0.5.0`) — Phase 5 next                    |
 | Working branch   | `claude/multi-platform-migration-AamWB`                      |
 | Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
 | Cutover target   | v1.0.0 — new project replaces `main`                         |
@@ -66,6 +66,7 @@ The *project-level* version below tracks migration milestones only.
 - Both platforms green on the shared conformance suite.
 - Independent per-platform `CHANGELOG.md` and CI.
 - Parity report: feature gaps between platforms documented.
+- Status: **complete** (`v0.5.0`).
 
 ### Phase 5 — Cutover  → `v1.0.0`
 - New project replaces `main`.
