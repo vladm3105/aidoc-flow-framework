@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T16:20:00Z                       |
+| Last updated  | 2026-05-20T17:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8/T9/T5 done — structurally complete, awaiting close) |
-| Next task     | P2-T6 — Phase 2 close: CHANGELOG `[0.3.0]`, ROADMAP, tags `v0.3.0` + `hermes/v0.1.0` (anticipate P1-T8 tag-push 403 workaround) |
+| Current phase | **Phase 2 complete** (`v0.3.0`, `hermes/v0.1.0`) — Phase 3 next, pending tag publication via local-clone workaround |
+| Next task     | (a) **User action** — publish `v0.3.0` + `hermes/v0.1.0` from a local clone per `plans/P2-T6-PLAN.md` Implementation note; (b) Phase 3 — Platform B: Claude Code plugin |
 
 ## Progress
 
@@ -139,14 +139,33 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   files end-to-end. Audit math reconciled (440 = 439 + 1 P0-scaffolded
   README). Verify record landed at `plans/P2-T5-VERIFY.md`. Phase 2
   is structurally complete; P2-T6 may cut the changelog and tags.
+- 2026-05-20 — Completed P2-T6 (Phase 2 close): `CHANGELOG.md` cut to
+  `[0.3.0] — 2026-05-20` (full Phase 2 cycle: Added / Changed /
+  Removed, folding the 4 pre-existing `[Unreleased]` items);
+  `ROADMAP.md` status `Phase 2 complete (v0.3.0) — Phase 3 next`;
+  Phase 2 section ends with `Status: complete (v0.3.0,
+  hermes/v0.1.0)`; `docs/TAGGING.md` table appended with the 2 new
+  tag rows. Close commit `20c061d` pushed to the working branch.
+  Annotated tags `v0.3.0` + `hermes/v0.1.0` created locally on
+  `20c061d`; tag push 403'd as expected (P1-T8 pattern). Tag
+  publication requires the user to run the local-clone workaround
+  documented in `plans/P2-T6-PLAN.md` Implementation note. **Phase 2
+  is structurally closed.**
 
 ## Next steps
 
-1. P2-T6 — Phase 2 close: cut `CHANGELOG.md [0.3.0]` entry; mark Phase 2
-   complete in `ROADMAP.md`; create annotated milestone tag `v0.3.0`
-   and platform tag `hermes/v0.1.0` per `docs/TAGGING.md`.
-   **Anticipate the P1-T8 tag-push 403 in-container** — bake the
-   local-clone push command into the P2-T6 plan from the outset.
+1. **User action — publish Phase 2 tags from a local clone.** The
+   in-container session created `v0.3.0` and `hermes/v0.1.0` locally
+   on close commit `20c061d`; the tag push 403'd as expected
+   (P1-T8 pattern). Run the commands in `plans/P2-T6-PLAN.md`
+   Implementation note from a local clone with normal GitHub
+   credentials. After the push, `git ls-remote --tags origin`
+   should show 5 tags total.
+2. **Phase 3 — Platform B: Claude Code plugin** (→ `v0.4.0`). Scaffold
+   `.claude-plugin/plugin.json`; port the `doc-*` skill set, commands,
+   and agents into the plugin; remove all Hermes/MCP dependency
+   (Claude is the engine); plugin passes the same conformance suite.
+   See `ROADMAP.md` Phase 3 for the high-level outline.
 
 ## Open questions
 

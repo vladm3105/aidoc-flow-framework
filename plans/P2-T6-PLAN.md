@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T6                                |
 | Depends on | P2-T0…T9 (all done), P2-T5 verify green |
-| Status     | PLANNED — 2026-05-20T16:35:00Z       |
+| Status     | DONE (pending tag publication) — 2026-05-20T17:10:00Z |
 | Feeds      | Phase 3 (Platform B — Claude Code plugin) |
 
 ## Objective
@@ -313,3 +313,67 @@ tags landed on the remote.
   `framework/v0.X.Y` tag is needed. Out-clause covers this.
 - **G14. No new findings.** Plan is internally consistent and the
   verify gates are observable. Ready to present on approval.
+
+## Implementation note (2026-05-20T17:10:00Z)
+
+Executed. Close commit `20c061d` shipped on the working branch; the
+two annotated tags were created locally at the same target.
+
+**Verify gates (V1–V9, all green):**
+
+- V1. CHANGELOG sectioning: `[Unreleased]`, `[0.3.0] — 2026-05-20`,
+  `[0.2.0] — 2026-05-19`, `[0.1.0] — 2026-05-18` — chronological,
+  fresh empty `[Unreleased]` above `[0.3.0]`.
+- V2. ROADMAP status: `Phase 2 complete (v0.3.0) — Phase 3 next`;
+  Phase 2 section ends with `Status: complete (v0.3.0,
+  hermes/v0.1.0)`.
+- V3. TAGGING current-tags table: 5 rows total (the 3 P1-T8 tags plus
+  `v0.3.0` and `hermes/v0.1.0`).
+- V4. Local tag inventory: `framework/v0.1.0`, `hermes/v0.1.0`,
+  `v0.1.0`, `v0.2.0`, `v0.3.0` — 5 tags as expected.
+- V5. Annotated tag dereference: both `v0.3.0^{commit}` and
+  `hermes/v0.1.0^{commit}` resolve to `20c061d…` = `HEAD`.
+- V6. Branch push: remote
+  `refs/heads/claude/multi-platform-migration-AamWB` advanced to
+  `20c061d…`.
+- V7. No code changes in the close commit:
+  `git diff --stat HEAD~ HEAD -- platforms/ framework/` empty.
+- V8. Conformance suite: 25 / 25 (sanity re-run, 0.22s).
+- V9. Remote tag publication: as expected, `git ls-remote --tags
+  origin` returns only the 3 P1-T8 tags. The 2 new tags require the
+  local-clone workaround.
+
+**Expected failure recorded (Step 6 of the sequence):**
+
+```
+$ git push origin v0.3.0 hermes/v0.1.0
+error: RPC failed; HTTP 403 curl 22 The requested URL returned error: 403
+send-pack: unexpected disconnect while reading sideband packet
+fatal: the remote end hung up unexpectedly
+Everything up-to-date
+```
+
+In-container git proxy 403'd on `refs/tags/*` — same as P1-T8. Not a
+regression.
+
+**Action required by user — publish the two Phase 2 tags from a local
+clone:**
+
+```sh
+git fetch origin claude/multi-platform-migration-AamWB
+git checkout claude/multi-platform-migration-AamWB
+git pull --ff-only
+# Confirm HEAD is 20c061d9499540e6695e744743e71dc154d7676e
+
+git tag -a v0.3.0 20c061d9499540e6695e744743e71dc154d7676e \
+  -m "Phase 2 — Platform A: Hermes Re-homing complete"
+git tag -a hermes/v0.1.0 20c061d9499540e6695e744743e71dc154d7676e \
+  -m "Hermes — first independent release; consumes framework/v0.1.0"
+
+git push origin v0.3.0 hermes/v0.1.0
+```
+
+After the push, the in-container session can confirm via
+`git ls-remote --tags origin` that both tags landed on the remote.
+At that point Phase 2 is **formally** closed and `Status` ticks to
+DONE (without the "pending tag publication" qualifier).

@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T16:20:00Z                       |
+| Last updated     | 2026-05-20T17:10:00Z                       |
 
 ---
 
@@ -91,10 +91,14 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   structure / VERSION files / smoke test / file inventory. **All gates
   green.** Verify record at `plans/P2-T5-VERIFY.md`. Phase 2
   structurally complete. DONE 2026-05-20T16:20:00Z.
-- [ ] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]`; ROADMAP marked;
-  milestone tag `v0.3.0`; platform tag `hermes/v0.1.0` (per
-  `docs/TAGGING.md`). Anticipate same HTTP 403 on tag pushes (P1-T8
-  pattern); bake local-clone push commands into the plan.
+- [x] P2-T6 — Phase 2 close: `CHANGELOG.md [0.3.0]` (Phase 2 cycle —
+  Added / Changed / Removed); `ROADMAP.md` line 6 + Phase 2 section
+  marked complete; `docs/TAGGING.md` table appended. Annotated tags
+  `v0.3.0` (milestone) and `hermes/v0.1.0` (platform) created locally
+  on close commit `20c061d`. In-container tag push 403'd as expected
+  (P1-T8 pattern); local-clone push commands documented in
+  `plans/P2-T6-PLAN.md` Implementation note. **Phase 2 structurally
+  closed; awaiting tag publication.** DONE 2026-05-20T17:10:00Z.
 - [x] P2-T7 — Port `hermes_agent_skills/spec-driven-development/` from
   `origin/main` to `platforms/hermes/agent-skills/spec-driven-development/`
   (sdd-orchestrator + sdd-review-personas). 181 files (was 187; 6 D-0013-
