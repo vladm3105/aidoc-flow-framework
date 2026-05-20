@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T18:35:00Z                       |
+| Last updated     | 2026-05-20T19:10:00Z                       |
 
 ---
 
@@ -117,10 +117,19 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   T4 verify → T5 close). 6 open questions for P3-T1 design.
   See `plans/P3-T0-PLAN.md` + `plans/P3-AUDIT-claude-code-plugin.md`.
   DONE 2026-05-20T18:35:00Z.
-- [ ] P3-T1 — Design: resolve the 6 open questions from the audit
-  (manifest schema, non-doc-skill scope, save-plan command in/out,
-  22-root-file scope, plugin name, copy strategy, optional hooks).
-  Output: `plans/P3-T1-DESIGN.md` per the P2-T1 pattern.
+- [x] P3-T1 — Design (paper-only): 7 questions resolved in
+  `plans/P3-T1-DESIGN.md`. Plugin manifest = minimal (auto-discovery
+  handles skills/agents/commands; verified via claude-code-guide
+  agent). Non-doc skill scope: 13 IN (10 clearly + 3 borderline:
+  `test-automation`, `security-audit`, `contract-tester`); 7 OUT
+  (2 clearly + 5 borderline general-purpose). `save-plan` command:
+  IN (generic plan-save utility, not migration-specific). 22 root
+  files under `.claude/skills/`: 19 IN, 3 OUT (`README.md` plus
+  `google-adk`/`n8n` quickrefs). Plugin name: **`aidoc-flow`**.
+  Copy strategy: `cp -r` per top-level path + explicit `rm -rf` of
+  OUT entries (3-stage recipe). No lifecycle hooks in v0.1.0.
+  **Plugin skill total: 142.** Pass 2 caught a Pass 1 counting error
+  (corrected from 144 to 142). DONE 2026-05-20T19:10:00Z.
 - [ ] P3-T2 — Port content: copy in-scope skills/agents/commands
   from `.claude/` to `platforms/claude-code-plugin/`; apply the
   `ai_dev_flow → framework` rewire (30 files + sub-path follow-ups

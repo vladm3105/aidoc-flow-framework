@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T18:35:00Z                       |
+| Last updated  | 2026-05-20T19:10:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0 done) |
-| Next task     | P3-T1 — design (resolve the 6 open questions from P3-T0 audit: manifest schema, non-doc-skill scope, save-plan in/out, root-files scope, plugin name, copy strategy) |
+| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1 done) |
+| Next task     | P3-T2 — port content: copy 142 in-scope skills + 19 root files + agents/ + commands/ from `.claude/` to `platforms/claude-code-plugin/`; apply the `ai_dev_flow → framework` rewire across the 30-file coupling set |
 
 ## Progress
 
@@ -167,21 +167,34 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   and the artifact is declarative (no Python package or test suite).
   6 open questions for P3-T1 design; see `plans/P3-T0-PLAN.md` for
   the full breakdown.
+- 2026-05-20T19:10:00Z — Completed P3-T1 (design, paper-only).
+  7 questions resolved in `plans/P3-T1-DESIGN.md`. Manifest is
+  minimal (auto-discovery handles registration; confirmed via
+  claude-code-guide agent — no published `$schema` URL,
+  `name`/`description`/`version`/`author` are the recommended core
+  fields). Plugin skill set finalised: **142 skills** (129 doc-* +
+  13 non-doc); plugin name `aidoc-flow`; copy strategy a 3-stage
+  `cp -r` + `rm -rf` recipe; no lifecycle hooks in v0.1.0.
+  Pass 2 caught a Pass 1 skill-count miscount (144 → 142) and
+  softened the manifest author block (populated from
+  `git config user.name` at P3-T3, not hardcoded).
 
 ## Next steps
 
-1. **P3-T1 — Design.** Resolve the 6 open questions surfaced by the
-   P3-T0 audit (`plans/P3-AUDIT-claude-code-plugin.md` §6): plugin
-   manifest schema; the 6 borderline non-doc skills (`code-review`,
-   `refactor-flow`, `test-automation`, `security-audit`,
-   `contract-tester`, `analytics-flow`, `devops-flow`, `ai-pr-review`);
-   `save-plan` command in/out; the 22 root files under
-   `.claude/skills/`; plugin name in the manifest; copy strategy;
-   optional plugin lifecycle hooks. Output:
-   `plans/P3-T1-DESIGN.md` per the P2-T1 pattern.
-2. Then P3-T2 (port content with `ai_dev_flow → framework` rewire),
-   P3-T3 (plugin scaffold + manifest + VERSION files), P3-T4 (verify),
-   P3-T5 (Phase 3 close → `v0.4.0`, `claude-code-plugin/v0.1.0`).
+1. **P3-T2** — Port content: copy the 142 in-scope skills + 19 root
+   files + agents/ + commands/ from `.claude/` to
+   `platforms/claude-code-plugin/`; apply the 3-stage `cp -r` recipe
+   from `plans/P3-T1-DESIGN.md` Q6; rewire the 30-file `ai_dev_flow →
+   framework` coupling with sub-path follow-ups for `governance/`
+   and `layers/<NN>_<X>/`; preserve 2 illustration `/opt/data` paths
+   per G13. Verify gates: 142 skill dirs, 19 root files, 1 agent,
+   1 command, zero coupling hits on current-behavior content.
+2. **P3-T3** — Plugin scaffold: `.claude-plugin/plugin.json` (minimal
+   manifest per Q1; author block from `git config user.name`),
+   `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching
+   `framework/VERSION`), `CHANGELOG.md`, expanded `README.md`.
+3. **P3-T4** — Verify.
+4. **P3-T5** — Phase 3 close (`v0.4.0`, `claude-code-plugin/v0.1.0`).
 
 ## Open questions
 
