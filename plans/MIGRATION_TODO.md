@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T19:10:00Z                       |
+| Last updated     | 2026-05-20T20:20:00Z                       |
 
 ---
 
@@ -130,11 +130,21 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   OUT entries (3-stage recipe). No lifecycle hooks in v0.1.0.
   **Plugin skill total: 142.** Pass 2 caught a Pass 1 counting error
   (corrected from 144 to 142). DONE 2026-05-20T19:10:00Z.
-- [ ] P3-T2 — Port content: copy in-scope skills/agents/commands
-  from `.claude/` to `platforms/claude-code-plugin/`; apply the
-  `ai_dev_flow → framework` rewire (30 files + sub-path follow-ups
-  for `governance/`, `layers/<NN>_<X>/`); preserve illustration
-  paths per G13.
+- [x] P3-T2 — Port content: 3-stage `cp -r` recipe copied 142 skills
+  + 19 root files + 1 agent + 1 command from `.claude/` to
+  `platforms/claude-code-plugin/` (162 total + 6 nested skill files =
+  168 total). 7 OUT skill dirs + 3 OUT root files dropped. Basic sed
+  cleared 211 line hits of `ai_dev_flow` across 30 source files.
+  Class B sub-path correction (5 layer dirs → `framework/layers/`)
+  landed 6 refs across 3 files. Class C (ID_NAMING_STANDARDS) landed
+  13 refs in `framework/governance/`. `/opt/data/ucx_framework`
+  targeted edit cleared 1 ref. G13 illustration paths preserved.
+  All 11 verify gates green; conformance 25/25 unaffected. Pass 3
+  retro records G17 (sed delimiter collision — corrected mid-flight
+  from `|` to `#`) and G18 (Class D stale-reference set sized: ~150
+  line hits across 30 stale segments; top item `framework/scripts/`
+  with 60 refs; resolution deferred to a content-migration task per
+  P3-T1 §Deferred R2). DONE 2026-05-20T20:20:00Z.
 - [ ] P3-T3 — Plugin scaffold: create `.claude-plugin/plugin.json`,
   `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching
   `framework/VERSION`), `CHANGELOG.md`; expand `README.md`.

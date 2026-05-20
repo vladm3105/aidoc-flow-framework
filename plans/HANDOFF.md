@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T19:10:00Z                       |
+| Last updated  | 2026-05-20T20:20:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1 done) |
-| Next task     | P3-T2 — port content: copy 142 in-scope skills + 19 root files + agents/ + commands/ from `.claude/` to `platforms/claude-code-plugin/`; apply the `ai_dev_flow → framework` rewire across the 30-file coupling set |
+| Current phase | Phase 3 — Platform B: Claude Code plugin (P3-T0, P3-T1, P3-T2 done) |
+| Next task     | P3-T3 — plugin scaffold: `.claude-plugin/plugin.json` (minimal manifest per P3-T1 Q1), `VERSION` (`0.1.0`), `FRAMEWORK_SPEC_VERSION` (matching `framework/VERSION`), `CHANGELOG.md`, expanded `README.md` |
 
 ## Progress
 
@@ -178,6 +178,19 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   Pass 2 caught a Pass 1 skill-count miscount (144 → 142) and
   softened the manifest author block (populated from
   `git config user.name` at P3-T3, not hardcoded).
+- 2026-05-20T20:20:00Z — Completed P3-T2 (port content). 3-stage
+  `cp -r` + `rm -rf` recipe landed 142 skills + 19 root files + 1
+  agent + 1 command at `platforms/claude-code-plugin/` (168 total
+  files). Basic sed cleared 211 line hits of `ai_dev_flow` across
+  30 source files; Class B (5 layer dirs) + Class C
+  (ID_NAMING_STANDARDS) + project-mngt `/opt/data` rewrite applied.
+  G13 illustration paths preserved. All 11 verify gates green;
+  conformance unchanged at 25/25. Pass 3 retro records G17 (sed
+  delimiter collision — `|` clash with regex alternation, corrected
+  to `#` mid-flight) and G18 (Class D stale-reference set sized:
+  ~150 line hits across 30 stale segments; top item
+  `framework/scripts/` with 60 refs; resolution deferred to a
+  content-migration task per P3-T1 §Deferred R2).
 
 ## Next steps
 

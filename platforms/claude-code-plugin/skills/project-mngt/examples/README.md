@@ -1,0 +1,143 @@
+# Project Management Skill Examples
+
+This directory contains reference examples showing how to apply the project-mgnt skill to real projects.
+
+## Software Platform Example
+
+The software platform example demonstrates the complete MVP/MMP/MMR planning methodology applied to a multi-service software platform.
+
+### Context
+
+**Project**: Multi-service data processing platform
+**Requirements**: 11 BRD documents with 317 total requirements
+- BRD-000: Implementation Plan (metadata)
+- BRD-001: Foundation & Overview (15 FR, 8 QA)
+- BRD-002: Core Processing Logic (18 FR, 12 QA)
+- BRD-003: Data Analysis & Ingestion (20 FR, 10 QA)
+- BRD-004: Validation & Controls (26 FR, 15 QA)
+- BRD-005: Resource Management (23 FR, 12 QA)
+- BRD-007: Technical Infrastructure (26 FR, 10 QA)
+- BRD-008: Processing Pipelines (27 FR, 9 QA)
+- BRD-009: External Service Integration (26 FR, 25 QA) - **CRITICAL PREREQUISITE**
+- BRD-010: Foundational Monitoring (8 FR, 4 QA)
+- BRD-011: Comprehensive Observability (18 FR, 9 QA)
+
+**Team**: 5-6 FTE (2 backend, 1 frontend, 1 QA, 1 DevOps, 1 PM)
+**Constraints**: Must validate in staging before production deployment
+**Timeline**: Target 27 weeks total
+
+### Analysis Results
+
+**Atomic Groups Identified**: 13 groups across 3 stages
+
+**Stage Assignment**:
+- **MVP** (4 groups, 8 weeks): Staging environment validation
+  - Priority 1: External Service Integration (BRD-009) - 4 weeks
+  - Priority 2: Basic Monitoring (BRD-010 partial) - 1 week (parallel with P1)
+  - Priority 3: Core Processor (BRD-007 subset) - 2 weeks
+  - Priority 4: Simple State Machine (BRD-002 simplified) - 1 week
+
+- **MMP** (4 groups, 10 weeks): Single pipeline production
+  - Priority 5: Validation Framework (BRD-004) - 3 weeks
+  - Priority 6: ML Classification (BRD-003 partial) - 3 weeks (parallel with P5)
+  - Priority 7: Data Selection + Enforcement (BRD-003 + BRD-004) - 2 weeks
+  - Priority 8: Primary Pipeline (BRD-008 primary only) - 2 weeks
+
+- **MMR** (5 groups, 9 weeks): Multi-pipeline + advanced features
+  - MMR-1 (4 weeks): Additional Pipelines
+    - Priority 9: Secondary Pipelines (BRD-008) - 2 weeks
+    - Priority 10: Resource Management & Recovery (BRD-005) - 2 weeks
+  - MMR-2 (3 weeks): Advanced Observability
+    - Priority 11: Load Balancing (BRD-004 balancing) - 1 week
+    - Priority 12: Comprehensive Dashboards (BRD-011) - 2 weeks
+  - MMR-3 (2 weeks): Advanced Features
+    - Priority 13: Performance Optimization (BRD-005 optimization) - 2 weeks
+
+### Key Decisions
+
+**MVP Scope Rationale**:
+- Minimal: Only service connection, basic monitoring, core processing, simple workflow
+- Goal: Validate staging environment works end-to-end
+- Deferred: Validation enforcement, ML models, multiple pipelines (all MMP+)
+- Critical Path: BRD-009 (External Integration) blocks everything
+
+**MMP Scope Rationale**:
+- Validation-complete: Full validation and enforcement before production
+- Single pipeline: Primary pipeline only (most common, well-understood)
+- Production-ready: All quality gates, automated testing, monitoring
+
+**MMR Progression**:
+- MMR-1: Expand pipeline types for diversification
+- MMR-2: Enhanced observability for scale management
+- MMR-3: Optimization features for performance improvement
+
+**Parallelization Strategy**:
+- MVP: Groups 1-2 parallel (integration + monitoring, different subsystems)
+- MMP: Groups 5-6 parallel (validation + ML models, different teams)
+- MMR-1: Groups 9-10 parallel (independent pipelines)
+- MMR-2: Groups 11-12 parallel (balancing + dashboards, different focus)
+
+### Version History
+
+**Version 1.0** (Initial Plan):
+- Created from 11 BRD documents
+- 13 atomic groups defined
+- All groups marked PLANNED
+- Timeline: 27 weeks from project start
+- File: `platform_v1.md` (example placeholder)
+
+**Version 2.0** (Updated after BRD-004 changes):
+- Context: MVP completed (4 weeks), MMP Group 5 in progress
+- BRD Change: BRD-004 added 5 new validation requirements (REQ-041 to REQ-045)
+- Impact:
+  - Groups 1-4 (MVP): COMPLETED, preserved unchanged
+  - Group 5 (Validation): IN_PROGRESS, absorbed REQ-041, REQ-042
+  - Groups 6-8: PLANNED, unchanged
+  - NEW Group 14: Created in MMR-3 for REQ-043, REQ-044, REQ-045
+- Timeline Impact: +2 weeks for new Group 14
+- File: `platform_v2.md` (example placeholder)
+
+### Lessons from This Example
+
+1. **Critical Path Identification**: BRD-009 was correctly identified as blocking prerequisite
+2. **MVP Minimalism**: Resisted temptation to include validation enforcement in MVP
+3. **Stage-Appropriate Quality**: MVP focused on validation, MMP on production-readiness
+4. **Preserving Progress**: Version 2.0 kept MVP work immutable despite BRD changes
+5. **Flexible MMR**: New requirements fit into MMR-3 without disrupting MMP timeline
+
+### How to Use This Example
+
+1. **Study the analysis**: See how 11 BRDs were grouped into 13 atomic units
+2. **Understand the rationale**: Note why certain features went to MVP vs MMP vs MMR
+3. **Learn from parallelization**: Observe which groups could run simultaneously
+4. **Review the update process**: See how v2.0 preserved completed work
+5. **Adapt to your project**: Apply same methodology to your requirements
+
+### Creating Your Own Plan
+
+To create a plan for your project:
+
+```
+"Use the project-mgnt skill to create an implementation plan for [your project].
+
+Inputs:
+- Requirement documents: [your BRD/PRD files]
+- Project context: [your domain, team size, constraints]
+- Timeline constraint: [if any]
+
+Create PLAN-XXX_[your_project_name].md"
+```
+
+The skill will analyze your requirements and create a customized plan following the same methodology demonstrated in this software platform example.
+
+---
+
+## Other Examples (Future)
+
+This directory can be expanded with examples from other domains:
+- Web application (e-commerce site)
+- API service (REST API development)
+- Infrastructure project (cloud migration)
+- ML/AI system (recommendation engine)
+
+Each example would demonstrate domain-specific adaptations of the core methodology.

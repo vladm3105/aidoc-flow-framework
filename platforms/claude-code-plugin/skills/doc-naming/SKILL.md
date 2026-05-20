@@ -1,0 +1,690 @@
+---
+name: doc-naming
+description: Enforces unified ID naming standards and threshold naming rules for all SDD documentation artifacts
+tags:
+  - sdd-workflow
+  - shared-architecture
+  - quality-assurance
+  - required-both-approaches
+custom_fields:
+  layer: null
+  artifact_type: null
+  architecture_approaches: [ai-agent-based, traditional-8layer]
+  priority: shared
+  development_status: active
+  skill_category: quality-assurance
+  upstream_artifacts: []
+  downstream_artifacts: []
+  version: "1.7"
+---
+
+# doc-naming Skill
+
+Enforces unified ID naming standards and threshold naming rules for all SDD documentation artifacts.
+
+---
+
+## 1. Purpose & Scope
+
+### When to Invoke
+
+Invoke this skill BEFORE creating or editing any SDD documentation artifact. Use it to:
+- Verify element ID format compliance
+- Check for removed/legacy patterns
+- Validate threshold tag syntax
+- Ensure document ID format correctness
+
+### Coverage
+
+This skill covers all 11 SDD documentation artifact types (Layers 1-11):
+
+| Layer | Document Type | Description |
+|-------|---------------|-------------|
+| 1 | BRD | Business Requirements Document |
+| 2 | PRD | Product Requirements Document |
+| 3 | EARS | Easy Approach to Requirements Syntax |
+| 4 | BDD | Behavior-Driven Development |
+| 5 | ADR | Architecture Decision Record |
+| 6 | SYS | System Requirements |
+| 7 | REQ | Atomic Requirements |
+| 8 | CTR | Data Contracts |
+| 9 | SPEC | Technical Specifications |
+| 10 | TSPEC | Test Specifications (UTEST, ITEST, STEST, FTEST) |
+| 11 | TASKS | AI Task Breakdown |
+
+**Note**: Layers 12-14 (CODE, TESTS, VALIDATION) are execution layers, not documentation artifacts.
+
+---
+
+## 2. Reserved ID Exemption (TYPE-00_*)
+
+### Scope
+
+Documents with reserved ID `000` are FULLY EXEMPT from standard validation.
+
+### Pattern
+
+`{DOC_TYPE}-00_{slug}.{ext}`
+
+### Document Types
+
+- Index documents (e.g., `BRD-00_index.md`, `REQ-00_index.md`)
+- Traceability matrix templates (e.g., `SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+- Glossaries, registries, checklists
+
+### Rationale
+
+Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+
+### Validation Behavior
+
+Skip all element ID and traceability checks when filename matches `{TYPE}-00_*` pattern.
+
+---
+
+## 3. Document ID Format (TYPE-NN)
+
+### Pattern
+
+```
+TYPE-NN
+```
+
+- **TYPE**: Uppercase document type acronym (BRD, PRD, EARS, etc.)
+- **Separator**: Single dash `-`
+- **NN**: 2+ digit sequential number with leading zeros
+
+### Validation Regex
+
+```regex
+^[A-Z]{2,8}-[0-9]{2,}$
+```
+
+### Examples
+
+| Document ID | Valid | Reason |
+|-------------|-------|--------|
+| `BRD-01` | ✅ | Correct format |
+| `PRD-02` | ✅ | Correct format |
+| `ADR-001` | ✅ | 3-digit ID allowed |
+| `TASKS-12` | ✅ | Correct format |
+| `brd-01` | ❌ | Lowercase not allowed |
+| `PRD_02` | ❌ | Underscore not allowed |
+| `BRD-1` | ❌ | Single digit not allowed |
+| `BRD01` | ❌ | Missing dash separator |
+
+### Filename Convention
+
+```
+TYPE-NN_descriptive_slug.md
+```
+
+Example: `BRD-01_ib_stock_options_mcp_server.md`
+
+### REF Document Pattern
+
+Reference documents use a modified pattern within parent TYPE directories:
+
+| Component | Pattern | Example |
+|-----------|---------|---------|
+| H1 ID | `{TYPE}-REF-NN` | `# BRD-REF-01: Project Overview` |
+| Filename | `{TYPE}-REF-NN_{slug}.md` | `BRD-REF-01_project_overview.md` |
+| Location | Within parent TYPE directory | `docs/BRD/BRD-REF-01_project_overview.md` |
+
+**Notes**:
+- REF documents are supplementary and do not participate in formal traceability chain
+- Similar exemption treatment as `{TYPE}-000` index documents
+- Numbering is independent per parent TYPE (BRD-REF-01, ADR-REF-01 are separate sequences)
+
+---
+
+## 4. Element ID Format (TYPE.NN.xxxx)
+
+### Pattern
+
+```
+{DOC_TYPE}.{DOC_NUM}.{HASH}
+```
+
+| Segment | Description | Format |
+|---------|-------------|--------|
+| DOC_TYPE | Document type acronym | 2-8 uppercase letters |
+| DOC_NUM | Document number | 2+ digits |
+| HASH | Element hash | 4+ alphanumeric chars |
+
+### Validation Regex
+
+```regex
+^[A-Z]{2,8}\.[0-9]{2,}\.[a-z0-9]{4,}$
+```
+
+### Examples
+
+| Element ID | Valid | Breakdown |
+|------------|-------|-----------|
+| `BRD.02.0601` | ✅ | BRD doc 02, Acceptance Criteria (06), item 01 |
+| `PRD.01.0903` | ✅ | PRD doc 01, User Story (09), item 03 |
+| `ADR.05.1001` | ✅ | ADR doc 05, Decision (10), item 01 |
+| `SPEC.03.1602` | ✅ | SPEC doc 03, Interface (16), item 02 |
+| `AC-001` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
+| `FR-01` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
+| `BRD-02-0601` | ❌ | Wrong separator (use dots) |
+| `brd.02.0601` | ❌ | Lowercase not allowed |
+
+### Heading Format
+
+Element IDs appear as markdown headings:
+
+```markdown
+### BRD.02.0601: User Authentication Acceptance Criteria
+#### PRD.01.0903: User Login Story
+```
+
+---
+
+## 5. Element Type Codes Table
+
+Active element type codes with document type applicability:
+
+| Code | Element Type | Applicable Document Types |
+|------|--------------|---------------------------|
+| 01 | Functional Requirement | BRD, PRD, SYS, REQ |
+| 02 | Quality Attribute | BRD, PRD, SYS |
+| 03 | Constraint | BRD, PRD |
+| 04 | Assumption | BRD, PRD |
+| 05 | Dependency | BRD, PRD, REQ |
+| 06 | Acceptance Criteria | BRD, PRD, REQ |
+| 07 | Risk | BRD, PRD |
+| 08 | Metric | BRD, PRD |
+| 09 | User Story | PRD, BRD |
+| 10 | Decision | ADR, BRD |
+| 11 | Use Case | PRD, SYS |
+| 12 | Alternative | ADR |
+| 13 | Consequence | ADR |
+| 14 | Test Scenario | BDD |
+| 15 | Step | BDD, SPEC |
+| 16 | Interface | SPEC, CTR |
+| 17 | Data Model | SPEC, CTR |
+| 18 | Task | TASKS |
+| 20 | Contract Clause | CTR |
+| 21 | Validation Rule | SPEC |
+| 22 | Feature Item | BRD, PRD |
+| 23 | Business Objective | BRD |
+| 24 | Stakeholder Need | BRD, PRD |
+| 25 | EARS Statement | EARS |
+| 26 | System Requirement | SYS |
+| 27 | Atomic Requirement | REQ |
+| 28 | Specification Element | SPEC |
+| 30 | Task Item | TASKS |
+| 32 | Architecture Topic | BRD |
+| 33 | Benefit Statement | BRD |
+| 40 | Unit Test Case | TSPEC (UTEST) |
+| 41 | Integration Test Case | TSPEC (ITEST) |
+| 42 | Smoke Test Case | TSPEC (STEST) |
+| 43 | Functional Test Case | TSPEC (FTEST) |
+
+### Quick Lookup by Document Type
+
+| Document | Common Element Codes |
+|----------|---------------------|
+| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33 |
+| PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
+| EARS | 25 |
+| BDD | 14, 15 |
+| ADR | 10, 12, 13 |
+| SYS | 01, 02, 11, 26 |
+| REQ | 01, 05, 06, 27 |
+| CTR | 16, 17, 20 |
+| SPEC | 15, 16, 17, 21, 28 |
+| TSPEC | 40 (UTEST), 41 (ITEST), 42 (STEST), 43 (FTEST) |
+| TASKS | 18, 30 |
+
+---
+
+## 6. Removed/Legacy Patterns
+
+These patterns are DEPRECATED. Do NOT use them in new documents.
+
+| Removed Pattern | Migration Path | Applies To |
+|-----------------|----------------|------------|
+| `AC-XXX` | `TYPE.NN.xxxx` | BRD, PRD, REQ |
+| `FR-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS, REQ |
+| `BC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `BA-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `QA-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS |
+| `BO-XXX` | `TYPE.NN.xxxx` | BRD |
+| `RISK-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `METRIC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `Feature F-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
+| `Event-XXX` | `TYPE.NN.xxxx` | EARS |
+| `State-XXX` | `TYPE.NN.xxxx` | EARS |
+| `TASK-XXX` | `TYPE.NN.xxxx` | TASKS |
+| `T-XXX` | `TYPE.NN.xxxx` | TASKS |
+| `IF-XXX` | `TYPE.NN.xxxx` | CTR |
+| `DM-XXX` | `TYPE.NN.xxxx` | CTR |
+| `CC-XXX` | `TYPE.NN.xxxx` | CTR |
+| `DEC-XXX` | `TYPE.NN.xxxx` | ADR |
+| `ALT-XXX` | `TYPE.NN.xxxx` | ADR |
+| `CON-XXX` | `TYPE.NN.xxxx` | ADR |
+
+### Migration Examples
+
+| Legacy | Unified Format |
+|--------|----------------|
+| `### AC-001: Login Validation` | `### BRD.02.0601: Login Validation` |
+| `#### FR-01: User Auth` | `#### PRD.01.0101: User Auth` |
+| `### Event-001: KYC Submission` | `### EARS.06.2501: KYC Submission` |
+| `### TASK-01: Setup` | `### TASKS.02.1801: Setup` |
+| `### DEC-01: Use PostgreSQL` | `### ADR.05.1001: Use PostgreSQL` |
+| `### ALT-01: MongoDB Option` | `### ADR.05.1201: MongoDB Option` |
+
+---
+
+## 7. Threshold Tag Format
+
+### Tag Pattern
+
+```
+@threshold: {DOC_TYPE}.{DOC_NUM}.{threshold_key}
+```
+
+### Key Format
+
+```
+{category}.{subcategory}.{attribute}[.{qualifier}]
+```
+
+### Valid Categories
+
+| Category | Description | Example Keys |
+|----------|-------------|--------------|
+| perf | Performance metrics | `perf.latency.p99` |
+| timeout | Timeout values | `timeout.api.request` |
+| rate | Rate limits | `rate.api.requests_per_second` |
+| retry | Retry policies | `retry.max_attempts` |
+| circuit | Circuit breaker | `circuit.failure_threshold` |
+| alert | Alerting thresholds | `alert.error_rate.critical` |
+| cache | Cache settings | `cache.ttl.session` |
+| pool | Connection pools | `pool.max_connections` |
+| queue | Queue settings | `queue.max_size` |
+| batch | Batch processing | `batch.size.max` |
+
+### Examples
+
+| Threshold Tag | Valid | Breakdown |
+|---------------|-------|-----------|
+| `@threshold: PRD.035.timeout.partner.bridge` | ✅ | PRD doc 035, timeout category |
+| `@threshold: BRD.02.perf.latency.p99` | ✅ | BRD doc 02, performance category |
+| `@threshold: ADR.05.circuit.failure_threshold` | ✅ | ADR doc 05, circuit breaker |
+| `@threshold: timeout.partner.bridge` | ❌ | Missing doc reference |
+| `@threshold: PRD-035.timeout` | ❌ | Wrong separator (dash vs dot) |
+
+### Source Documents for Thresholds
+
+| Doc Type | Threshold Scope |
+|----------|-----------------|
+| BRD | Business-level thresholds (SLAs, business rules) |
+| PRD | Product-level thresholds (user experience, product metrics) |
+| ADR | Technical thresholds (architecture decisions, system limits) |
+
+---
+
+## 8. ISO 8601 Datetime Format Standard
+
+### Purpose
+
+All date and time fields in SDD documentation MUST use ISO 8601 datetime format for:
+- Accurate upstream drift detection (same-day change tracking)
+- Consistent timestamp comparison across tools
+- Timezone-aware change tracking
+- File system mtime compatibility
+
+### Format Specification
+
+**Required Format**: `YYYY-MM-DDTHH:MM:SS` (ISO 8601 with time)
+
+| Component | Format | Example |
+|-----------|--------|---------|
+| Date | `YYYY-MM-DD` | `2026-02-10` |
+| Separator | `T` | `T` |
+| Time | `HH:MM:SS` | `14:30:00` |
+| Timezone (optional) | `Z` or `±HH:MM` | `Z` (UTC) or `+05:00` |
+
+### Full Format Options
+
+| Format | Example | Use Case |
+|--------|---------|----------|
+| **Local time** | `2026-02-10T14:30:00` | Default for most documents |
+| **UTC** | `2026-02-10T14:30:00Z` | Cross-timezone systems |
+| **With offset** | `2026-02-10T14:30:00+05:00` | Explicit timezone |
+
+### YAML Frontmatter Fields
+
+All datetime fields in YAML frontmatter use ISO 8601:
+
+```yaml
+---
+title: "BRD-01: Example Document"
+custom_fields:
+  created_date: "2026-02-10T09:15:00"
+  last_updated: "2026-02-10T14:30:00"
+  review_date: "2026-02-10T16:45:00"
+  fix_date: "2026-02-10T17:00:00"
+  approval_date: "2026-02-11T10:00:00"
+---
+```
+
+### Affected Fields
+
+| Field | Description | Location |
+|-------|-------------|----------|
+| `last_updated` | Document last modification time | YAML frontmatter |
+| `created_date` | Document creation time | YAML frontmatter |
+| `fix_date` | Fix report creation time | Fix reports |
+| `review_date` | Review execution time | Review reports |
+| `approval_date` | Document approval time | Document control |
+| `decision_date` | ADR decision time | ADR documents |
+| `release_date` | Release/deployment time | CTR, SPEC |
+
+### Migration from Date-Only Format
+
+**Deprecated** (date-only):
+```yaml
+last_updated: "2026-02-10"
+```
+
+**Required** (ISO 8601 datetime):
+```yaml
+last_updated: "2026-02-10T14:30:00"
+```
+
+### Validation Regex
+
+```regex
+^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(Z|[+-]\d{2}:\d{2})?$
+```
+
+### Placeholder Format
+
+For templates, use `YYYY-MM-DDTHH:MM:SS` as placeholder:
+
+```yaml
+# Template placeholder (to be replaced during generation)
+last_updated: "YYYY-MM-DDTHH:MM:SS"
+
+# After generation
+last_updated: "2026-02-10T14:30:00"
+```
+
+### Drift Detection Benefit
+
+ISO 8601 datetime enables same-day drift detection:
+
+| BRD Modified | PRD Created | Date-Only Detection | Datetime Detection |
+|--------------|-------------|---------------------|-------------------|
+| 2026-02-10T10:00:00 | 2026-02-10T08:00:00 | ❌ Same day, no drift | ✅ Drift detected (BRD newer) |
+| 2026-02-10T08:00:00 | 2026-02-10T10:00:00 | ❌ Same day, no drift | ✅ No drift (PRD is newer) |
+
+### Auto-Generation
+
+When generating documents, use current timestamp:
+
+```python
+from datetime import datetime
+
+# Generate ISO 8601 timestamp
+timestamp = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+# Result: "2026-02-10T14:30:00"
+
+# With UTC
+timestamp_utc = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+# Result: "2026-02-10T09:30:00Z"
+```
+
+---
+
+## 9. Validation Examples by Document Type
+
+### BRD Examples
+
+```markdown
+### BRD.02.0101: User Authentication Requirement
+### BRD.02.0601: Login Acceptance Criteria
+### BRD.02.2301: Revenue Growth Objective
+### BRD.02.0901: User Onboarding Story
+### BRD.02.1001: Database Selection Decision
+### BRD.02.3201: Infrastructure Architecture Topic
+### BRD.02.3202: Data Architecture Topic
+### BRD.02.3301: Cost Reduction Benefit
+### BRD.02.3302: Efficiency Improvement Benefit
+@threshold: BRD.02.perf.response_time.max
+```
+
+### PRD Examples
+
+```markdown
+### PRD.01.0901: User Login Story
+### PRD.01.2201: Dashboard Feature
+### PRD.01.0601: Feature Acceptance Criteria
+@threshold: PRD.01.timeout.session.idle
+```
+
+### EARS Examples
+
+```markdown
+#### EARS.06.2501: KYC Submission Event
+#### EARS.06.2502: Pending Status State
+```
+
+### ADR Examples
+
+```markdown
+### ADR.05.1001: Use PostgreSQL Decision
+### ADR.05.1201: MongoDB Alternative
+### ADR.05.1301: Migration Consequence
+@threshold: ADR.05.circuit.failure_threshold
+```
+
+### SPEC Examples
+
+```markdown
+### SPEC.03.1601: REST API Interface
+### SPEC.03.1701: User Data Model
+### SPEC.03.2101: Email Validation Rule
+```
+
+### CTR Examples
+
+```markdown
+### CTR.02.1601: Partner API Interface
+### CTR.02.1701: Order Data Model
+### CTR.02.2001: Rate Limit Clause
+```
+
+### TSPEC Examples
+
+```markdown
+### TSPEC.01.4001: User Authentication Unit Test
+### TSPEC.01.4101: API Integration Test
+### TSPEC.01.4201: Login Flow Smoke Test
+### TSPEC.01.4301: Order Processing Functional Test
+```
+
+### TASKS Examples
+
+```markdown
+### TASKS.02.1801: Setup Development Environment
+### TASKS.02.3001: Configure CI Pipeline
+```
+
+---
+
+## 10. Pre-Flight Checklist
+
+Run this checklist BEFORE creating any SDD document:
+
+### Document Setup
+
+- [ ] Document ID follows `TYPE-NN` format
+- [ ] Filename follows `TYPE-NN_descriptive_slug.md` pattern
+- [ ] YAML frontmatter includes correct `artifact_type` and `layer`
+- [ ] Not a reserved ID document (TYPE-00_*) requiring exemption
+
+### Element IDs
+
+- [ ] All element IDs use 3-segment dot notation: `TYPE.NN.xxxx`
+- [ ] Element hash is 4+ alphanumeric characters (see Section 5)
+- [ ] Element hashes are unique within the document
+- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, etc.) are used
+
+### Threshold Tags
+
+- [ ] All `@threshold:` tags include document reference: `TYPE.NN.key`
+- [ ] Threshold keys follow category.subcategory.attribute format
+- [ ] Categories are from the approved list (perf, timeout, rate, etc.)
+
+### Cross-References
+
+- [ ] Traceability tags use correct prefixes (@brd:, @prd:, @adr:, etc.)
+- [ ] Referenced document IDs exist
+- [ ] Element ID references are complete (all 4 segments)
+
+---
+
+## 11. Error Recovery
+
+### Detecting Legacy Patterns
+
+Use grep to find legacy patterns:
+
+```bash
+# Find all legacy patterns in a file (COMPREHENSIVE - run ALL commands)
+
+# 1. Simple legacy patterns (e.g., FR-001, AC-002)
+grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)-[0-9]+" file.md
+
+# 2. Compound/domain-prefixed patterns (e.g., FR-CICD-001, NFR-PERF-002)
+#    CRITICAL: These patterns have additional components between prefix and number
+grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.md
+
+# 3. Other legacy patterns
+grep -E "(Event|State|TASK|Phase|IP|IF|DM|CC)-[0-9]+" file.md
+grep -E "(DEC|ALT|CON)-[0-9]+" file.md
+grep -E "Feature F-[0-9]+" file.md
+grep -E "T-[0-9]+" file.md
+
+# 4. Combined single-command detection (recommended for automation)
+grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
+```
+
+**Pattern Explanation**:
+
+| Pattern Component | Matches | Example |
+|-------------------|---------|---------|
+| `(FR\|AC\|...)` | Legacy prefix | `FR`, `AC`, `NFR` |
+| `(-[A-Za-z0-9]+)*` | Optional domain components | `-CICD`, `-AUTH-V2` |
+| `-[0-9]+` | Numeric ID | `-001`, `-42` |
+
+**Examples Caught**:
+
+| Legacy Pattern | Detected By | Migration Target |
+|----------------|-------------|------------------|
+| `FR-001` | Simple pattern | `BRD.NN.01.01` |
+| `FR-CICD-001` | Compound pattern | `BRD.NN.01.01` |
+| `NFR-PERF-002` | Compound pattern | `BRD.NN.02.02` |
+| `AC-AUTH-V2-003` | Compound pattern | `BRD.NN.06.03` |
+
+### Migration Procedure
+
+1. **Identify the document type and number** from the filename
+   - Example: `BRD-02_requirements.md` → DOC_TYPE=BRD, DOC_NUM=02
+
+2. **Look up the element type code** from Section 5
+   - Example: `AC-XXX` → Acceptance Criteria → Code 06
+   - Example: `DEC-XXX` → Decision → Code 10
+
+3. **Construct the unified ID**
+   - Pattern: `{DOC_TYPE}.{DOC_NUM}.{HASH}`
+   - Example: `AC-001` in BRD-02 → `BRD.02.0601`
+   - Example: `DEC-01` in ADR-05 → `ADR.05.1001`
+
+4. **Replace all occurrences**
+   ```bash
+   # Example sed replacement
+   sed -i 's/### AC-001:/### BRD.02.0601:/g' file.md
+   sed -i 's/### DEC-01:/### ADR.05.1001:/g' file.md
+   ```
+
+5. **Validate the result**
+   ```bash
+   # Verify no legacy patterns remain (COMPREHENSIVE check)
+   # Must return empty for all commands
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR|DEC|ALT|CON)-[0-9]+" file.md
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.md
+   ```
+
+### Common Migration Errors
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| Wrong element code | Using FR code (01) for Acceptance Criteria | Use code 06 for AC |
+| Missing document number | `BRD..06.01` | Include document number: `BRD.02.0601` |
+| Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.0601` |
+| Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.0601` |
+
+---
+
+## 12. Source References
+
+### Primary Sources
+
+| Document | Location | Content |
+|----------|----------|---------|
+| ID Naming Standards | `framework/governance/ID_NAMING_STANDARDS.md` | Document IDs, Element IDs, 31 type codes |
+| Threshold Naming Rules | `framework/THRESHOLD_NAMING_RULES.md` | Threshold tags, key formats, categories |
+
+### Validation Rules Files
+
+Each document type has validation rules with Element ID compliance checks:
+
+| Document Type | Validation Rules File |
+|---------------|----------------------|
+| BRD | `framework/layers/01_BRD/BRD_VALIDATION_RULES.md` |
+| PRD | `framework/layers/02_PRD/PRD_VALIDATION_RULES.md` |
+| EARS | `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` |
+| BDD | `framework/layers/04_BDD/BDD_VALIDATION_RULES.md` |
+| ADR | `framework/layers/05_ADR/ADR_VALIDATION_RULES.md` |
+| SYS | `framework/06_SYS/SYS_VALIDATION_RULES.md` |
+| REQ | `framework/07_REQ/REQ_VALIDATION_RULES.md` |
+| CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml` |
+| SPEC | `framework/09_SPEC/SPEC_VALIDATION_RULES.md` |
+| TSPEC | `framework/10_TSPEC/TSPEC_VALIDATION_RULES.md` |
+| TASKS | `framework/11_TASKS/TASKS_VALIDATION_RULES.md` |
+
+### Related Skills
+
+| Skill | Purpose |
+|-------|---------|
+| doc-validator | Automated validation of SDD documents |
+| doc-flow | SDD workflow orchestration |
+| trace-check | Traceability validation |
+
+---
+
+### Diagram Standards
+
+All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
+See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+
+## Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.7 | 2026-02-27 | **Compound legacy pattern detection**: Enhanced Section 11 grep patterns to catch compound/domain-prefixed legacy IDs (e.g., `FR-CICD-001`, `NFR-PERF-002`); Added regex `(-[A-Za-z0-9]+)*` to match optional domain components; Added pattern explanation table and examples; Updated validation step to run comprehensive checks |
+| 1.6 | 2026-02-10 | Added Section 8: ISO 8601 Datetime Format Standard - all date fields now require `YYYY-MM-DDTHH:MM:SS` format for precise drift detection; Deprecated date-only format |
+| 1.5 | 2026-02-10 | Added element code 33 (Benefit Statement) for BRD Section 2.5; Updated BRD Quick Lookup to include code 33; Added BRD examples for code 33 |
+| 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |
+| 1.3 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
+| 1.2 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
+| 1.1 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
+| 1.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |
