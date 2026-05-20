@@ -10,6 +10,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-05-20
+
+Phase 2 — Platform A: Hermes Re-homing. `platforms/hermes/` is fully
+assembled, consumes `framework/` at `v0.1.0`, and ships its own first
+release as `hermes/v0.1.0`. The MCP server's scaffold + validation
+runtime now reads layer templates from `framework/layers/<NN>_<X>/`
+per D-0013, closing the platform-template duplication.
+
 ### Added
 - `docs/TAGGING.md` — the full git-tag policy: release tags (`vX.Y.Z`,
   `framework/vX.Y.Z`, `<platform>/vX.Y.Z`) and `mark/<slug>` bookmark tags,
@@ -17,6 +25,34 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   to a summary that links it.
 - `ROADMAP.md` "Post-v1.0 — Planned Capabilities" — the domain-profile
   mechanism for generalizing the IPLAN beyond software (D-0012).
+- `platforms/hermes/` — the Hermes MCP server platform. 437 net files
+  ported and rewired across four sub-tasks: 64 verbatim (P2-T2 —
+  `examples/`, `prompts/`, `skills/layer_aliases/`, `skills/personas/`,
+  `skills/persona_mappings.yaml`); 200 port-with-repoint (P2-T3 —
+  `pyproject.toml`, `src/`, `tests/`, `docs/` less `migration/`,
+  `skills/README.md`, `skills/hermes/`); 181 agent-skills from `main`
+  (P2-T7 — `agent-skills/spec-driven-development/{sdd-orchestrator,
+  sdd-review-personas}/`); minus 8 dropped (P2-T8 — drifted layer
+  templates that D-0013 obsoleted).
+- `platforms/hermes/VERSION` (`0.1.0`) and
+  `platforms/hermes/FRAMEWORK_SPEC_VERSION` (`0.1.0`, matching
+  `framework/VERSION`) — declares Hermes' own SemVer + the framework
+  spec version it conforms to (D-0009 mechanism, P2-T1 Q2).
+- `platforms/hermes/pyproject.toml` keys: `name = "hermes-server"`
+  (P2-T1 Q1) at `version = "0.1.0"`; `[project.scripts]
+  hermes-mcp = "mcp_server.server:main_sync"` (P2-T1 Q4). Distribution
+  name distinguishes the project; the `mcp_server` import path is
+  preserved (no Platform B Python collision; P2-T1 Q1 rationale).
+- `plans/P2-T0-PLAN.md` + `plans/P2-AUDIT-hermes.md` — the Phase 2
+  audit (280-file Hermes tree classified port-verbatim / port-with-
+  repoint / drop) and the per-task breakdown (T0..T9).
+- Per-task plans `plans/P2-T1..T9-PLAN.md`, each with the two-pass
+  review log mandated by D-0007.
+- `plans/P2-T5-VERIFY.md` — the formal Phase 2 verify record covering
+  14 gates (conformance 25/25, Hermes own suite 447/447, coupling
+  sweep, version files, smoke test, structure, file inventory).
+- `plans/DECISIONS.md` D-0013 — single-source-of-truth for layer
+  templates: platforms consume `framework/layers/`, never duplicate.
 
 ### Changed
 - Recorded the framework's purpose — the IPLAN as the terminal product;
@@ -25,6 +61,54 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   criticality-scaled audit depth (R1); the curated corpus of proven IPLANs —
   with composition and freshness — is the unit of value and the post-v1.0
   strategic destination (R2).
+- Rewrote all `ucx_flow_v3` runtime coupling to point at `framework/`:
+  18 files in the edit set (4 code + 3 tests + 5 skills + 6 architecture/
+  spec docs), with sub-path repoints to `framework/registry/` and
+  `framework/layers/<NN>_<X>/` (P2-T3). 11 historical-context docs
+  (CHANGELOGs, ROADMAP retrospective, completed PLAN-* checklists)
+  preserved verbatim per the G13 lesson — rewriting them would falsify
+  history.
+- Rewired the MCP server's scaffold runtime to consume the framework's
+  per-layer layout (P2-T9). Five spots across three files closed the
+  D-0013 architectural gap that P2-T3 first surfaced: removed the
+  `templates/` row from `CANONICAL_SCAFFOLD_MAPPINGS`, rewrote
+  `_default_ssd_root` to return `framework/layers`, corrected
+  `_default_repo_root` parents count (`[4]→[5]` — layout shifted in
+  P2-T3), and rewrote `validation/runner.py:_resolve_canonical_template_root`
+  as a 3-stage precedence chain (project framework override → scaffold
+  output → canonical). Hermes' own test suite went 397/447 → **447/447**.
+- Rewrote the skill's template-loading prose (P2-T8): 25 references in
+  `agent-skills/.../sdd-orchestrator/SKILL.md` +
+  `references/sdd-workflow-quickstart.md` rewired from skill-relative
+  `templates/0N_TYPE-TEMPLATE.yaml` to framework-relative
+  `framework/layers/0N_TYPE/TYPE-TEMPLATE.yaml`; the `skill_view` API
+  example was rewritten as a direct-read instruction since templates
+  now live outside the skill.
+- `.mcp.json` cwd repointed from `legacy/ucx_hermes/src` to
+  `platforms/hermes/src` (P2-T3).
+- `plans/P2-AUDIT-hermes.md` refreshed with §3a extension (3 test
+  files added to the code-level coupling list) and §3c (new section —
+  "Documentation cluster — historical vs current") to record audit
+  gaps discovered during P2-T3 planning.
+
+### Removed
+- The 8 drifted layer template YAMLs at `platforms/hermes/agent-skills/
+  spec-driven-development/sdd-orchestrator/templates/` (P2-T8). They
+  carried engine hardcodes (`server: ucx_hermes`, `tool: sdd_validate`,
+  `SDD v3` labels, vendor-named agent placeholders) that D-0013
+  excluded from documents. The framework `framework/layers/<NN>_<X>/
+  <X>-TEMPLATE.yaml` set is the single source of truth.
+- 6 D-0013-obsolete sync files from the agent-skills package (P2-T7):
+  `sync-ucx-templates.sh`, `sync.py`, `.sync-backlog.json`,
+  `template-sync-procedure.md`, `template-v3-alignment-checklist.md`,
+  `ucx-framework-quirks.md`. There is no longer anything to sync —
+  Hermes consumes `framework/layers/` directly.
+- The `templates/` row from `CANONICAL_SCAFFOLD_MAPPINGS` (P2-T9) and
+  the no-op `exists()` branch in `_default_ssd_root` — both dead code
+  after D-0013.
+- `legacy/ucx_hermes/docs/migration/MIGRATION_FROM_MCP_UCX.md` from the
+  port set (P2-T3) — `mcp_ucx/` is the deprecated predecessor, archived
+  in `legacy/` and slated for full removal at Phase 5 cutover.
 
 ## [0.2.0] — 2026-05-19
 

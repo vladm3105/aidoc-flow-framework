@@ -97,7 +97,13 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `v0.1.0` | Phase 0 baseline | Planning & scaffolding milestone |
 | `v0.2.0` | Phase 1 close | Framework Spec Extraction milestone |
 | `framework/v0.1.0` | Phase 1 close | Framework spec — first independent release |
+| `v0.3.0` | Phase 2 close | Platform A: Hermes Re-homing milestone |
+| `hermes/v0.1.0` | Phase 2 close | Hermes platform — first independent release |
 
-> All three are published on the remote (pushed from a local clone, after the
-> in-container git proxy refused tag pushes with HTTP 403). Verifiable via
-> `git ls-remote --tags origin`.
+> Phase 1 tags (`v0.1.0`, `v0.2.0`, `framework/v0.1.0`) are published
+> on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`) are created
+> locally on the in-container session at the P2-T6 close commit and
+> need the same local-clone workaround used at P1-T8 — the in-container
+> git proxy continues to refuse tag pushes with HTTP 403. See
+> `plans/P2-T6-PLAN.md` §Approach.5 for the exact local-clone commands.
+> Verify any tag's publication via `git ls-remote --tags origin`.

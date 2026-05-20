@@ -3,7 +3,7 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | Phase 1 complete (`v0.2.0`) — Phase 2 next                    |
+| Status           | Phase 2 complete (`v0.3.0`) — Phase 3 next                    |
 | Working branch   | `claude/multi-platform-migration-AamWB`                      |
 | Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
 | Cutover target   | v1.0.0 — new project replaces `main`                         |
@@ -53,6 +53,7 @@ The *project-level* version below tracks migration milestones only.
 - Copy `legacy/ucx_hermes/` + `legacy/mcp_ucx/` into `platforms/hermes/`.
 - Point Hermes at `framework/`; declare `framework_spec_version`.
 - Hermes passes the conformance suite.
+- Status: **complete** (`v0.3.0`, `hermes/v0.1.0`).
 
 ### Phase 3 — Platform B: Claude Code Plugin  → `v0.4.0`
 - Scaffold `.claude-plugin/plugin.json`.
