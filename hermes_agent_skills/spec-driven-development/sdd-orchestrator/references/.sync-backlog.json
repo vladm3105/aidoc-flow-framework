@@ -1,0 +1,1659 @@
+[
+  {
+    "timestamp": "2026-05-06T17:10:39.032653+00:00",
+    "ucx_root": "/opt/data/ucx_framework/ucx_flow_v3",
+    "git_commit": "ea6577136e56aa66830ee8b941d03a78e9db244c",
+    "git_status": "clean",
+    "files": [
+      {
+        "category": "template",
+        "src": "01_BRD/BRD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/01_BRD-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "0f97d5e08ad37f3b",
+        "dst_hash": "468e7adcb4a73fde",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "02_PRD/PRD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/02_PRD-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "05af7cf09d59c88f",
+        "dst_hash": "a076b5f162b52469",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "03_EARS/EARS-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/03_EARS-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "4189cf2ba0c40495",
+        "dst_hash": "43588e85d47c467d",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "04_BDD/BDD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/04_BDD-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "01d16fdd8722456a",
+        "dst_hash": "2349c43ef545b0cb",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "05_ADR/ADR-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/05_ADR-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "1703ad1602ac4fab",
+        "dst_hash": "662973775e1972bd",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "06_SPEC/SPEC-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/06_SPEC-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "d3b5932f28f15069",
+        "dst_hash": "26e3a2853bc58abe",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "07_TDD/TDD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/07_TDD-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "65474e5632dfa4d6",
+        "dst_hash": "a9bff810186960c7",
+        "copied": true
+      },
+      {
+        "category": "template",
+        "src": "08_IPLAN/IPLAN-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/08_IPLAN-TEMPLATE.yaml",
+        "status": "MODIFIED",
+        "src_hash": "107ffcb5ff6213be",
+        "dst_hash": "be3e5031a70b0ed2",
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "README.md",
+        "dst": "sdd-orchestrator/references/ucx-readme.md",
+        "status": "NEW",
+        "src_hash": "7d4e73dc1ff86be2",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "AI_ASSISTANT_RULES.md",
+        "dst": "sdd-orchestrator/references/ai-assistant-rules.md",
+        "status": "NEW",
+        "src_hash": "02691c09d8264300",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "DOC_GOVERNANCE_CORE.md",
+        "dst": "sdd-orchestrator/references/doc-governance-core.md",
+        "status": "NEW",
+        "src_hash": "81fe373803b5f329",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "QUICK_REFERENCE.md",
+        "dst": "sdd-orchestrator/references/quick-reference.md",
+        "status": "NEW",
+        "src_hash": "a424d2c6fbaf70c9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "ID_NAMING_STANDARDS.md",
+        "dst": "sdd-orchestrator/references/id-naming-standards.md",
+        "status": "NEW",
+        "src_hash": "24da0958d48b1bce",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "THRESHOLD_NAMING_RULES.md",
+        "dst": "sdd-orchestrator/references/threshold-naming-rules.md",
+        "status": "NEW",
+        "src_hash": "0c4e4fea4ae65c2e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "TRACEABILITY.md",
+        "dst": "sdd-orchestrator/references/traceability.md",
+        "status": "NEW",
+        "src_hash": "60f0379389e44ad4",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "DIAGRAM_STANDARDS.md",
+        "dst": "sdd-orchestrator/references/diagram-standards.md",
+        "status": "NEW",
+        "src_hash": "50fa67930b02ce42",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "SPEC_DRIVEN_DEVELOPMENT_GUIDE.md",
+        "dst": "sdd-orchestrator/references/sdd-guide.md",
+        "status": "NEW",
+        "src_hash": "ed07915ce5930cf6",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "TESTING_STRATEGY_TDD.md",
+        "dst": "sdd-orchestrator/references/testing-strategy-tdd.md",
+        "status": "NEW",
+        "src_hash": "287b08df0716530a",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "LAYER_REGISTRY.yaml",
+        "dst": "sdd-orchestrator/references/layer-registry.yaml",
+        "status": "NEW",
+        "src_hash": "f2de0e366e737eb3",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "src": "data_consistency_report.json",
+        "dst": "sdd-orchestrator/references/data-consistency-report.json",
+        "status": "NEW",
+        "src_hash": "3b4c1ae5ca483fb9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/framework-location-and-quirks.md",
+        "status": "ORPHANED"
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/yaml-quoting-rules.md",
+        "status": "ORPHANED"
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/sdd-workflow-quickstart.md",
+        "status": "ORPHANED"
+      }
+    ],
+    "validation": {
+      "yaml": [
+        {
+          "file": "sdd-orchestrator/templates/01_BRD-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/02_PRD-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/03_EARS-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/04_BDD-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/05_ADR-TEMPLATE.yaml",
+          "ok": false,
+          "error": "while parsing a block mapping\n  in \"<unicode string>\", line 20, column 1:\n    id: ADR-NN\n    ^\nexpected <block end>, but found '<block mapping start>'\n  in \"<unicode string>\", line 308, column 2:\n     implementation_assessment:\n     ^"
+        },
+        {
+          "file": "sdd-orchestrator/templates/06_SPEC-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/07_TDD-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/templates/08_IPLAN-TEMPLATE.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/references/layer-registry.yaml",
+          "ok": true,
+          "error": null
+        }
+      ],
+      "content": [
+        {
+          "file": "sdd-orchestrator/templates/01_BRD-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": [
+            "      @depends: BRD-NN \u2014 hard prerequisite BRD(s)",
+            "      @discoverability: BRD-NN (rationale) \u2014 related BRDs for AI search"
+          ]
+        },
+        {
+          "file": "sdd-orchestrator/templates/02_PRD-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": []
+        },
+        {
+          "file": "sdd-orchestrator/templates/03_EARS-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": [
+            "      @threshold: PRD.NN.perf.api.p95",
+            "      @brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx | @threshold: PRD.NN.perf.key"
+          ]
+        },
+        {
+          "file": "sdd-orchestrator/templates/04_BDD-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": [
+            "      @brd:BRD.NN.07.xxxx",
+            "      @prd:PRD.NN.09.xxxx",
+            "      @ears:EARS.NN.03.xxxx",
+            "    @brd:BRD.01.07.a7f3",
+            "    @prd:PRD.01.09.b3f2",
+            "    @ears:EARS.01.03.c4d8",
+            "      @brd:BRD.NN.07.xxxx",
+            "      @prd:PRD.NN.09.xxxx",
+            "      @ears:EARS.NN.03.xxxx"
+          ]
+        },
+        {
+          "file": "sdd-orchestrator/templates/05_ADR-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": []
+        },
+        {
+          "file": "sdd-orchestrator/templates/06_SPEC-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": []
+        },
+        {
+          "file": "sdd-orchestrator/templates/07_TDD-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": []
+        },
+        {
+          "file": "sdd-orchestrator/templates/08_IPLAN-TEMPLATE.yaml",
+          "legacy_ids": [],
+          "unquoted_tags": []
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2026-05-06T17:15:24.142939+00:00",
+    "ucx_root": "/opt/data/ucx_framework",
+    "git_commit": "ea6577136e56aa66830ee8b941d03a78e9db244c",
+    "git_status": "clean",
+    "files": [
+      {
+        "category": "template",
+        "src": "01_BRD/BRD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/01_BRD-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "0f97d5e08ad37f3b",
+        "dst_hash": "0f97d5e08ad37f3b"
+      },
+      {
+        "category": "template",
+        "src": "02_PRD/PRD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/02_PRD-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "05af7cf09d59c88f",
+        "dst_hash": "05af7cf09d59c88f"
+      },
+      {
+        "category": "template",
+        "src": "03_EARS/EARS-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/03_EARS-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "4189cf2ba0c40495",
+        "dst_hash": "4189cf2ba0c40495"
+      },
+      {
+        "category": "template",
+        "src": "04_BDD/BDD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/04_BDD-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "01d16fdd8722456a",
+        "dst_hash": "01d16fdd8722456a"
+      },
+      {
+        "category": "template",
+        "src": "05_ADR/ADR-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/05_ADR-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "1703ad1602ac4fab",
+        "dst_hash": "1703ad1602ac4fab"
+      },
+      {
+        "category": "template",
+        "src": "06_SPEC/SPEC-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/06_SPEC-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "d3b5932f28f15069",
+        "dst_hash": "d3b5932f28f15069"
+      },
+      {
+        "category": "template",
+        "src": "07_TDD/TDD-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/07_TDD-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "65474e5632dfa4d6",
+        "dst_hash": "65474e5632dfa4d6"
+      },
+      {
+        "category": "template",
+        "src": "08_IPLAN/IPLAN-TEMPLATE.yaml",
+        "dst": "sdd-orchestrator/templates/08_IPLAN-TEMPLATE.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "107ffcb5ff6213be",
+        "dst_hash": "107ffcb5ff6213be"
+      },
+      {
+        "category": "reference",
+        "src": "README.md",
+        "dst": "sdd-orchestrator/references/ucx-readme.md",
+        "status": "UNCHANGED",
+        "src_hash": "7d4e73dc1ff86be2",
+        "dst_hash": "7d4e73dc1ff86be2"
+      },
+      {
+        "category": "reference",
+        "src": "AI_ASSISTANT_RULES.md",
+        "dst": "sdd-orchestrator/references/ai-assistant-rules.md",
+        "status": "UNCHANGED",
+        "src_hash": "02691c09d8264300",
+        "dst_hash": "02691c09d8264300"
+      },
+      {
+        "category": "reference",
+        "src": "DOC_GOVERNANCE_CORE.md",
+        "dst": "sdd-orchestrator/references/doc-governance-core.md",
+        "status": "UNCHANGED",
+        "src_hash": "81fe373803b5f329",
+        "dst_hash": "81fe373803b5f329"
+      },
+      {
+        "category": "reference",
+        "src": "QUICK_REFERENCE.md",
+        "dst": "sdd-orchestrator/references/quick-reference.md",
+        "status": "UNCHANGED",
+        "src_hash": "a424d2c6fbaf70c9",
+        "dst_hash": "a424d2c6fbaf70c9"
+      },
+      {
+        "category": "reference",
+        "src": "ID_NAMING_STANDARDS.md",
+        "dst": "sdd-orchestrator/references/id-naming-standards.md",
+        "status": "UNCHANGED",
+        "src_hash": "24da0958d48b1bce",
+        "dst_hash": "24da0958d48b1bce"
+      },
+      {
+        "category": "reference",
+        "src": "THRESHOLD_NAMING_RULES.md",
+        "dst": "sdd-orchestrator/references/threshold-naming-rules.md",
+        "status": "UNCHANGED",
+        "src_hash": "0c4e4fea4ae65c2e",
+        "dst_hash": "0c4e4fea4ae65c2e"
+      },
+      {
+        "category": "reference",
+        "src": "TRACEABILITY.md",
+        "dst": "sdd-orchestrator/references/traceability.md",
+        "status": "UNCHANGED",
+        "src_hash": "60f0379389e44ad4",
+        "dst_hash": "60f0379389e44ad4"
+      },
+      {
+        "category": "reference",
+        "src": "DIAGRAM_STANDARDS.md",
+        "dst": "sdd-orchestrator/references/diagram-standards.md",
+        "status": "UNCHANGED",
+        "src_hash": "50fa67930b02ce42",
+        "dst_hash": "50fa67930b02ce42"
+      },
+      {
+        "category": "reference",
+        "src": "SPEC_DRIVEN_DEVELOPMENT_GUIDE.md",
+        "dst": "sdd-orchestrator/references/sdd-guide.md",
+        "status": "UNCHANGED",
+        "src_hash": "ed07915ce5930cf6",
+        "dst_hash": "ed07915ce5930cf6"
+      },
+      {
+        "category": "reference",
+        "src": "TESTING_STRATEGY_TDD.md",
+        "dst": "sdd-orchestrator/references/testing-strategy-tdd.md",
+        "status": "UNCHANGED",
+        "src_hash": "287b08df0716530a",
+        "dst_hash": "287b08df0716530a"
+      },
+      {
+        "category": "reference",
+        "src": "LAYER_REGISTRY.yaml",
+        "dst": "sdd-orchestrator/references/layer-registry.yaml",
+        "status": "UNCHANGED",
+        "src_hash": "f2de0e366e737eb3",
+        "dst_hash": "f2de0e366e737eb3"
+      },
+      {
+        "category": "reference",
+        "src": "data_consistency_report.json",
+        "dst": "sdd-orchestrator/references/data-consistency-report.json",
+        "status": "UNCHANGED",
+        "src_hash": "3b4c1ae5ca483fb9",
+        "dst_hash": "3b4c1ae5ca483fb9"
+      },
+      {
+        "category": "root-doc",
+        "src": "README.md",
+        "dst": "sdd-orchestrator/root-docs/README.md",
+        "status": "NEW",
+        "src_hash": "9557d87faff7374f",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "root-doc",
+        "src": "HERMES_UCX_RUNTIME_ENVIRONMENT.md",
+        "dst": "sdd-orchestrator/root-docs/HERMES_UCX_RUNTIME_ENVIRONMENT.md",
+        "status": "NEW",
+        "src_hash": "9a4ddb3f9e2bbb7f",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "root-doc",
+        "src": "MULTI_PROJECT_QUICK_REFERENCE.md",
+        "dst": "sdd-orchestrator/root-docs/MULTI_PROJECT_QUICK_REFERENCE.md",
+        "status": "NEW",
+        "src_hash": "00a315653d75bdcb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "root-doc",
+        "src": "MULTI_PROJECT_SETUP_GUIDE.md",
+        "dst": "sdd-orchestrator/root-docs/MULTI_PROJECT_SETUP_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "d73d0f4aecde85f6",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/REPO_STRUCTURE_DECISION_MATRIX.md",
+        "dst": "sdd-orchestrator/governance/REPO_STRUCTURE_DECISION_MATRIX.md",
+        "status": "NEW",
+        "src_hash": "6939d9f3cc4d30d3",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/RELEASE_PROCESS.md",
+        "dst": "sdd-orchestrator/governance/RELEASE_PROCESS.md",
+        "status": "NEW",
+        "src_hash": "fff24dd58de32b41",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/CHG_GOVERNANCE_BRIDGE.md",
+        "dst": "sdd-orchestrator/governance/CHG_GOVERNANCE_BRIDGE.md",
+        "status": "NEW",
+        "src_hash": "e824f46e2b59fe50",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/README.md",
+        "dst": "sdd-orchestrator/governance/README.md",
+        "status": "NEW",
+        "src_hash": "0a4bd3e031efbbb9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/BRANCHING_STRATEGY.md",
+        "dst": "sdd-orchestrator/governance/BRANCHING_STRATEGY.md",
+        "status": "NEW",
+        "src_hash": "d74651d4f21f9f1c",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_AGENT_CAPACITY_PLANNING.md",
+        "dst": "sdd-orchestrator/governance/AI_AGENT_CAPACITY_PLANNING.md",
+        "status": "NEW",
+        "src_hash": "b092c500c44cf3e3",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/DEFINITION_OF_DONE.md",
+        "dst": "sdd-orchestrator/governance/DEFINITION_OF_DONE.md",
+        "status": "NEW",
+        "src_hash": "8f6f0a016efb0713",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_AGENT_MEMORY.md",
+        "dst": "sdd-orchestrator/governance/AI_AGENT_MEMORY.md",
+        "status": "NEW",
+        "src_hash": "eef39ad57d18a9dd",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/REPOSITORY_STRATEGY.md",
+        "dst": "sdd-orchestrator/governance/REPOSITORY_STRATEGY.md",
+        "status": "NEW",
+        "src_hash": "70424c8a3da53dbb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/SDD_DEPTH_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/SDD_DEPTH_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "6d66e850e474c6ef",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/ROLES_AND_TOOLS.md",
+        "dst": "sdd-orchestrator/governance/ROLES_AND_TOOLS.md",
+        "status": "NEW",
+        "src_hash": "5b8c8e565cc573b8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/TSPEC_BDD_QA_BRIDGE.md",
+        "dst": "sdd-orchestrator/governance/TSPEC_BDD_QA_BRIDGE.md",
+        "status": "NEW",
+        "src_hash": "d26b1a101c7a6520",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/TROUBLESHOOTING.md",
+        "dst": "sdd-orchestrator/governance/TROUBLESHOOTING.md",
+        "status": "NEW",
+        "src_hash": "a150c8fe8f1f4b3d",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_TIME_ESTIMATION.md",
+        "dst": "sdd-orchestrator/governance/AI_TIME_ESTIMATION.md",
+        "status": "NEW",
+        "src_hash": "0a5970c1649bc171",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/DEVELOPMENT_WORKFLOW_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/DEVELOPMENT_WORKFLOW_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "2efd3c6f05a263f2",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/GOVERNANCE_RULES.md",
+        "dst": "sdd-orchestrator/governance/GOVERNANCE_RULES.md",
+        "status": "NEW",
+        "src_hash": "26be4550a73d37cc",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/HOME_REPO.md",
+        "dst": "sdd-orchestrator/governance/HOME_REPO.md",
+        "status": "NEW",
+        "src_hash": "3b832c5ad03b3758",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_ISSUE_LIFECYCLE.md",
+        "dst": "sdd-orchestrator/governance/AI_ISSUE_LIFECYCLE.md",
+        "status": "NEW",
+        "src_hash": "e0d5d2d29edfc2b0",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/TASKS_IPLAN_BRIDGE.md",
+        "dst": "sdd-orchestrator/governance/TASKS_IPLAN_BRIDGE.md",
+        "status": "NEW",
+        "src_hash": "b0d55f9d4e9da8fb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/SECURITY_CHECKLIST.md",
+        "dst": "sdd-orchestrator/governance/SECURITY_CHECKLIST.md",
+        "status": "NEW",
+        "src_hash": "d86a07e05ecc191e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/setup/PRECOMMIT_HOOK_LIBRARY_CONSUMER_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/setup/PRECOMMIT_HOOK_LIBRARY_CONSUMER_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "9bc075d4357c9bed",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/setup/SETUP_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/setup/SETUP_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "878b9738039db1b8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/setup/CLOUD_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/setup/CLOUD_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "6c9c4fb594deb65e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/setup/CONFIG.md",
+        "dst": "sdd-orchestrator/governance/setup/CONFIG.md",
+        "status": "NEW",
+        "src_hash": "cdb6aa025a1b8aab",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/docker-compose.test.yml",
+        "dst": "sdd-orchestrator/governance/templates/docker-compose.test.yml",
+        "status": "NEW",
+        "src_hash": "e1eecb3072980056",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/README.md",
+        "dst": "sdd-orchestrator/governance/templates/README.md",
+        "status": "NEW",
+        "src_hash": "a0032cbf99ab20f7",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/IPLAN-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/IPLAN-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "f3044d846a9187ad",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/README_AIAGENT.md",
+        "dst": "sdd-orchestrator/governance/templates/README_AIAGENT.md",
+        "status": "NEW",
+        "src_hash": "3a4823cdb59e3af3",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/plans-README.md",
+        "dst": "sdd-orchestrator/governance/templates/plans-README.md",
+        "status": "NEW",
+        "src_hash": "8240a85ffc51b5d0",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/AWS-DEPLOYMENT.md",
+        "dst": "sdd-orchestrator/governance/templates/AWS-DEPLOYMENT.md",
+        "status": "NEW",
+        "src_hash": "48fe72c3d1a73e3e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/pre-commit-config.framework-library.yaml",
+        "dst": "sdd-orchestrator/governance/templates/pre-commit-config.framework-library.yaml",
+        "status": "NEW",
+        "src_hash": "7e95e758ad497f58",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/DEVELOPER_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/templates/DEVELOPER_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "3de803135699dafb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/SECURITY_CHECKLIST-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/SECURITY_CHECKLIST-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "a4426e3d194376f0",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/CLAUDE.md",
+        "dst": "sdd-orchestrator/governance/templates/CLAUDE.md",
+        "status": "NEW",
+        "src_hash": "349bf2857a3ed768",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/ROADMAP-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/ROADMAP-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "e3be380bb4afd552",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/GCP-DEPLOYMENT.md",
+        "dst": "sdd-orchestrator/governance/templates/GCP-DEPLOYMENT.md",
+        "status": "NEW",
+        "src_hash": "8e853de9fccd3840",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/sdd_config.yaml",
+        "dst": "sdd-orchestrator/governance/templates/sdd_config.yaml",
+        "status": "NEW",
+        "src_hash": "db2f6b74e48b0569",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "1215b21a3afba574",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/TROUBLESHOOTING-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/TROUBLESHOOTING-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "17614dda87d8a4bb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/MEMORY.md",
+        "dst": "sdd-orchestrator/governance/templates/MEMORY.md",
+        "status": "NEW",
+        "src_hash": "f2bfeb33f997e4aa",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/PROJECT_PLAN-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/templates/PROJECT_PLAN-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "4ecb67b55e1da798",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/CONTRIBUTING.md",
+        "dst": "sdd-orchestrator/governance/templates/CONTRIBUTING.md",
+        "status": "NEW",
+        "src_hash": "90d164f67b724902",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/PROJECT_DEFINITION.md",
+        "dst": "sdd-orchestrator/governance/templates/PROJECT_DEFINITION.md",
+        "status": "NEW",
+        "src_hash": "bedd3d9bb94a50b9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/HANDOFF.md",
+        "dst": "sdd-orchestrator/governance/templates/HANDOFF.md",
+        "status": "NEW",
+        "src_hash": "186a057a6c22b52c",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/AZURE-DEPLOYMENT.md",
+        "dst": "sdd-orchestrator/governance/templates/AZURE-DEPLOYMENT.md",
+        "status": "NEW",
+        "src_hash": "998a126c56731801",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/.mcp.json",
+        "dst": "sdd-orchestrator/governance/templates/.mcp.json",
+        "status": "NEW",
+        "src_hash": "c4e7807ea7761618",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/README.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/README.md",
+        "status": "NEW",
+        "src_hash": "43eff2d048d56861",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/02-test-standards.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/02-test-standards.md",
+        "status": "NEW",
+        "src_hash": "4346b51627878eb3",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/07-e2e-testing-guide.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/07-e2e-testing-guide.md",
+        "status": "NEW",
+        "src_hash": "c1bed66f1269b7a8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/GCP_SECRETS_SETUP.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/GCP_SECRETS_SETUP.md",
+        "status": "NEW",
+        "src_hash": "d180c9987b2a343e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/05-environment-spec.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/05-environment-spec.md",
+        "status": "NEW",
+        "src_hash": "9f7baad0500ad5eb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/01-testing-strategy.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/01-testing-strategy.md",
+        "status": "NEW",
+        "src_hash": "7d640cc679d27204",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/06-security-testing.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/06-security-testing.md",
+        "status": "NEW",
+        "src_hash": "334b89961952c37a",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/04-deployment-strategy.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/04-deployment-strategy.md",
+        "status": "NEW",
+        "src_hash": "16ea0710f0a58c20",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/templates/qa/03-ci-pipeline-spec.md",
+        "dst": "sdd-orchestrator/governance/templates/qa/03-ci-pipeline-spec.md",
+        "status": "NEW",
+        "src_hash": "f95343b4a422050c",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/MANUAL_REVIEW_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/MANUAL_REVIEW_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "4e9b2373e49facd8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/REVIEW_INSTRUCTIONS.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/REVIEW_INSTRUCTIONS.md",
+        "status": "NEW",
+        "src_hash": "6e491fa6bd7bc9f0",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md",
+        "status": "NEW",
+        "src_hash": "5e839014eb756e65",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/README.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/README.md",
+        "status": "NEW",
+        "src_hash": "32dde961f0a18f79",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/CLOUD_SETUP.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/CLOUD_SETUP.md",
+        "status": "NEW",
+        "src_hash": "cf0b746cb9878b2e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/ONBOARDING.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/ONBOARDING.md",
+        "status": "NEW",
+        "src_hash": "0589e6b27c8a16b8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/LOCAL_SETUP.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/LOCAL_SETUP.md",
+        "status": "NEW",
+        "src_hash": "df1022c680251c86",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/IMPLEMENT_INSTRUCTIONS.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/IMPLEMENT_INSTRUCTIONS.md",
+        "status": "NEW",
+        "src_hash": "86258d57f3612d30",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/AI_PR_Review/FIX_INSTRUCTIONS.md",
+        "dst": "sdd-orchestrator/governance/AI_PR_Review/FIX_INSTRUCTIONS.md",
+        "status": "NEW",
+        "src_hash": "490cf7eccd38e36b",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/WORKFLOW_INTEGRATION.md",
+        "dst": "sdd-orchestrator/governance/github/WORKFLOW_INTEGRATION.md",
+        "status": "NEW",
+        "src_hash": "8b6016145eb03a0b",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/LABEL_REGISTRY.yaml",
+        "dst": "sdd-orchestrator/governance/github/LABEL_REGISTRY.yaml",
+        "status": "NEW",
+        "src_hash": "596d8fab8f77e509",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/GITHUB_TOOLS_SETUP.md",
+        "dst": "sdd-orchestrator/governance/github/GITHUB_TOOLS_SETUP.md",
+        "status": "NEW",
+        "src_hash": "e84b7f1d9e8ca48e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/GITHUB_PROJECT_SETUP_AI_FIRST.md",
+        "dst": "sdd-orchestrator/governance/github/GITHUB_PROJECT_SETUP_AI_FIRST.md",
+        "status": "NEW",
+        "src_hash": "e28a21eff417bf7f",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/GITHUB_WORKFLOWS.md",
+        "dst": "sdd-orchestrator/governance/github/GITHUB_WORKFLOWS.md",
+        "status": "NEW",
+        "src_hash": "a9ba4261436db303",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/github/GITHUB_PROJECT_SETUP.md",
+        "dst": "sdd-orchestrator/governance/github/GITHUB_PROJECT_SETUP.md",
+        "status": "NEW",
+        "src_hash": "b55933de8660624f",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/plans/README.md",
+        "dst": "sdd-orchestrator/governance/plans/README.md",
+        "status": "NEW",
+        "src_hash": "17ee5f8d557b65f5",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/plans/IPLAN-TEMPLATE.md",
+        "dst": "sdd-orchestrator/governance/plans/IPLAN-TEMPLATE.md",
+        "status": "NEW",
+        "src_hash": "f3044d846a9187ad",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/memory/GLOBAL_LEARNINGS.md",
+        "dst": "sdd-orchestrator/governance/memory/GLOBAL_LEARNINGS.md",
+        "status": "NEW",
+        "src_hash": "67e3175a5f27449d",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/setup-ai-pr-review-labels.sh",
+        "dst": "sdd-orchestrator/governance/scripts/setup-ai-pr-review-labels.sh",
+        "status": "NEW",
+        "src_hash": "e2e2da0ec7f39d44",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/apply_doc_path_aliases.py",
+        "dst": "sdd-orchestrator/governance/scripts/apply_doc_path_aliases.py",
+        "status": "NEW",
+        "src_hash": "077f52d54246adc2",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/setup-all-labels.sh",
+        "dst": "sdd-orchestrator/governance/scripts/setup-all-labels.sh",
+        "status": "NEW",
+        "src_hash": "55e84152d9079978",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/setup_project_hybrid.sh",
+        "dst": "sdd-orchestrator/governance/scripts/setup_project_hybrid.sh",
+        "status": "NEW",
+        "src_hash": "20f1f1342b725b6e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/ghes-runner/GHES_RUNNER_GUIDE.md",
+        "dst": "sdd-orchestrator/governance/scripts/ghes-runner/GHES_RUNNER_GUIDE.md",
+        "status": "NEW",
+        "src_hash": "06bcf0e68e757bc8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/ghes-runner/setup-local-runner.sh",
+        "dst": "sdd-orchestrator/governance/scripts/ghes-runner/setup-local-runner.sh",
+        "status": "NEW",
+        "src_hash": "ad8d9ef6ae05bdca",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/ghes-runner/docker-compose.yml",
+        "dst": "sdd-orchestrator/governance/scripts/ghes-runner/docker-compose.yml",
+        "status": "NEW",
+        "src_hash": "50b43353bd948555",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/ghes-runner/start.sh",
+        "dst": "sdd-orchestrator/governance/scripts/ghes-runner/start.sh",
+        "status": "NEW",
+        "src_hash": "f23902e3124bd587",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_conflicts.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_conflicts.py",
+        "status": "NEW",
+        "src_hash": "2b839febd89b07d9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/validate_governance.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/validate_governance.py",
+        "status": "NEW",
+        "src_hash": "c2bae4c45515fa76",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/update_phase_tracking.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/update_phase_tracking.py",
+        "status": "NEW",
+        "src_hash": "bf716325bb8a6f5e",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/create_bug_issues.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/create_bug_issues.py",
+        "status": "NEW",
+        "src_hash": "3b733ffa0dacb473",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_staging_ready.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_staging_ready.py",
+        "status": "NEW",
+        "src_hash": "7e01121d912ac1ca",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/sync_tasks_from_issues.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/sync_tasks_from_issues.py",
+        "status": "NEW",
+        "src_hash": "fb7565a20f0e84f7",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/update_prod_tracking.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/update_prod_tracking.py",
+        "status": "NEW",
+        "src_hash": "9e071943c0b003f9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/generate_deployment_plan.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/generate_deployment_plan.py",
+        "status": "NEW",
+        "src_hash": "d91d8fccc23a9ebb",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/handle_issue_reopen.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/handle_issue_reopen.py",
+        "status": "NEW",
+        "src_hash": "9800c9c7779ddbd8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/verify_phase_prerequisites.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/verify_phase_prerequisites.py",
+        "status": "NEW",
+        "src_hash": "3c23e2c8c6de6424",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/smoke_test.sh",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/smoke_test.sh",
+        "status": "NEW",
+        "src_hash": "6b1106d6dc407f05",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_phase_completion.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_phase_completion.py",
+        "status": "NEW",
+        "src_hash": "642c15bab3fe4a66",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/validate_project_setup.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/validate_project_setup.py",
+        "status": "NEW",
+        "src_hash": "fe6f344e68a6d215",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/create_test_failure_issues.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/create_test_failure_issues.py",
+        "status": "NEW",
+        "src_hash": "c42f3687355988ba",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/execute_qa_tests.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/execute_qa_tests.py",
+        "status": "NEW",
+        "src_hash": "74624c7577c8a2b7",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/verify_prod_readiness.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/verify_prod_readiness.py",
+        "status": "NEW",
+        "src_hash": "4a516f0df1603743",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/verify_acceptance_criteria.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/verify_acceptance_criteria.py",
+        "status": "NEW",
+        "src_hash": "595595b029738e0b",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/generate_phase_summary.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/generate_phase_summary.py",
+        "status": "NEW",
+        "src_hash": "0a7e1dfcc67368f8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/update_staging_tracking.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/update_staging_tracking.py",
+        "status": "NEW",
+        "src_hash": "86ac605d27b55448",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_iteration_limit.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_iteration_limit.py",
+        "status": "NEW",
+        "src_hash": "141a2983063781fa",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/extract_test_plan.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/extract_test_plan.py",
+        "status": "NEW",
+        "src_hash": "a918348f5f364b88",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_qa_required.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_qa_required.py",
+        "status": "NEW",
+        "src_hash": "c1c4c9c29cefc2ff",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/generate_iplan_from_issue.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/generate_iplan_from_issue.py",
+        "status": "NEW",
+        "src_hash": "adf10632eb1586c9",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/workflows/check_error_rate.py",
+        "dst": "sdd-orchestrator/governance/scripts/workflows/check_error_rate.py",
+        "status": "NEW",
+        "src_hash": "e54f53fbed044a09",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/README.md",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/README.md",
+        "status": "NEW",
+        "src_hash": "368a6252c9f28b95",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/setup_github_environments.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/setup_github_environments.sh",
+        "status": "NEW",
+        "src_hash": "e197d6084481111c",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/validate_configuration.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/validate_configuration.sh",
+        "status": "NEW",
+        "src_hash": "70e8790e7b17f120",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/aws/setup-ecr.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/aws/setup-ecr.sh",
+        "status": "NEW",
+        "src_hash": "459215915c77836c",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/aws/README.md",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/aws/README.md",
+        "status": "NEW",
+        "src_hash": "3b4b46358dfa1888",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/aws/setup-iam-oidc.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/aws/setup-iam-oidc.sh",
+        "status": "NEW",
+        "src_hash": "9e302278bdc49e5f",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/setup-wif.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/setup-wif.sh",
+        "status": "NEW",
+        "src_hash": "eb3e8d416c570d7b",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/README.md",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/README.md",
+        "status": "NEW",
+        "src_hash": "3e24c0aab60a3c69",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/setup_artifact_registry.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/setup_artifact_registry.sh",
+        "status": "NEW",
+        "src_hash": "4a47dbadf3068302",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/setup-environments.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/setup-environments.sh",
+        "status": "NEW",
+        "src_hash": "747d3d6b2f545085",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/setup-projects.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/setup-projects.sh",
+        "status": "NEW",
+        "src_hash": "1ef83b6104184774",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/setup-ai-review-gcp.sh",
+        "status": "NEW",
+        "src_hash": "364d7b3f0a524696",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/gcp/configure_revision_retention.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/gcp/configure_revision_retention.sh",
+        "status": "NEW",
+        "src_hash": "9687fdf825d7daa8",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/azure/README.md",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/azure/README.md",
+        "status": "NEW",
+        "src_hash": "38581baca7363287",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/azure/setup-managed-identity.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/azure/setup-managed-identity.sh",
+        "status": "NEW",
+        "src_hash": "63b22daeba0b7685",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/project_setup/cloud/azure/setup-acr.sh",
+        "dst": "sdd-orchestrator/governance/scripts/project_setup/cloud/azure/setup-acr.sh",
+        "status": "NEW",
+        "src_hash": "d34f0496d0737b14",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "governance",
+        "src": "governance/scripts/cicd/phase-deployments.json",
+        "dst": "sdd-orchestrator/governance/scripts/cicd/phase-deployments.json",
+        "status": "NEW",
+        "src_hash": "bc96319ac2c5e32d",
+        "dst_hash": null,
+        "copied": true
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/framework-location-and-quirks.md",
+        "status": "ORPHANED"
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/yaml-quoting-rules.md",
+        "status": "ORPHANED"
+      },
+      {
+        "category": "reference",
+        "dst": "sdd-orchestrator/references/sdd-workflow-quickstart.md",
+        "status": "ORPHANED"
+      }
+    ],
+    "validation": {
+      "yaml": [
+        {
+          "file": "sdd-orchestrator/governance/templates/docker-compose.test.yml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/governance/templates/pre-commit-config.framework-library.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/governance/templates/sdd_config.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/governance/github/LABEL_REGISTRY.yaml",
+          "ok": true,
+          "error": null
+        },
+        {
+          "file": "sdd-orchestrator/governance/scripts/ghes-runner/docker-compose.yml",
+          "ok": true,
+          "error": null
+        }
+      ],
+      "content": []
+    }
+  }
+]

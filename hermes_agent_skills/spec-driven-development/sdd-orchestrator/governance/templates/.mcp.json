@@ -1,0 +1,49 @@
+{
+  "mcpServers": {
+
+    "github-{PROJECT_PREFIX}": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "GITHUB_PERSONAL_ACCESS_TOKEN={GITHUB_PAT}",
+        "ghcr.io/github/github-mcp-server",
+        "--gh-host", "https://{GITHUB_HOST}",
+        "stdio"
+      ]
+    },
+
+    "filesystem-tt-{PROJECT_PREFIX}": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "{LOCAL_PROJECT_PATH}/{REPO_NAME}"]
+    },
+
+    "memory-tt-{PROJECT_PREFIX}": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+
+    "sequential-thinking-tt-{PROJECT_PREFIX}": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+
+    "context7-tt-{PROJECT_PREFIX}": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp"]
+    },
+
+    "playwright-tt-{PROJECT_PREFIX}": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp"]
+    },
+
+    "project-knowledge-tt-{PROJECT_PREFIX}": {
+      "command": "python",
+      "args": ["-m", "ucx_kb.mcp.server"],
+      "cwd": "{UCX_FRAMEWORK_PATH}",
+      "env": {
+        "PYTHONPATH": "{UCX_FRAMEWORK_PATH}"
+      }
+    }
+  }
+}
