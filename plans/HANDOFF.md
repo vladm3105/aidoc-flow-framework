@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T13:55:00Z                       |
+| Last updated  | 2026-05-20T15:30:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8 done) |
-| Next task     | P2-T9 — rewire MCP scaffold runtime (`CANONICAL_SCAFFOLD_MAPPINGS`) to `framework/layers/` |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3/T8/T9 done) |
+| Next task     | P2-T5 — verify (Hermes test suite now 447/447; conformance 25/25; ready for final close gate) |
 
 ## Progress
 
@@ -120,15 +120,26 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   D-0013 conformance for the skill package complete. Pass 3 retro
   records G17 (verify gate V6 was too coarse — corrected to scope
   the grep to `skill_view.*templates/`).
+- 2026-05-20 — Completed P2-T9 (rewire MCP scaffold + validation
+  runtime to `framework/layers/`): removed the `templates/` row from
+  `CANONICAL_SCAFFOLD_MAPPINGS`; rewrote `_default_ssd_root` to
+  `framework/layers`; fixed `_default_repo_root` parents count
+  (`[4]→[5]` — layout shifted in P2-T3); rewrote
+  `validation/runner.py:_resolve_canonical_template_root` as a
+  3-stage precedence chain (override → scaffold output → canonical);
+  cleaned up test fixtures. **Hermes test suite 397/447 → 447/447;
+  conformance 25/25.** Pass 3 retro records G16 (parents-count audit
+  lesson) + G17 (cross-module path-computer audit lesson). The 50
+  P2-T3-deferred failures are all closed; D-0013 conformance for
+  the MCP server complete.
 
 ## Next steps
 
-1. P2-T9 — rewire MCP server's `CANONICAL_SCAFFOLD_MAPPINGS` to consume
-   `framework/layers/<NN>_<X>/` (closes the D-0013 gap surfaced by P2-T3;
-   unblocks the 50 deferred Hermes test failures).
-2. P2-T5 — verify (now includes a re-run of Hermes' suite expected fully
-   green post-P2-T9).
-3. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
+1. P2-T5 — verify (final gate before close): re-confirm conformance 25/25
+   + Hermes' own suite 447/447 + zero coupling sweep + VERSION/
+   FRAMEWORK_SPEC_VERSION match. All gates green pre-emptively from
+   P2-T9 — P2-T5 is mostly a checklist confirmation.
+2. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
 
 ## Open questions
 

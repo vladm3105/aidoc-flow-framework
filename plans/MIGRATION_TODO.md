@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T13:55:00Z                       |
+| Last updated     | 2026-05-20T15:30:00Z                       |
 
 ---
 
@@ -74,15 +74,17 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   engine-hardcode-removal + phrasing; no substantive content lost.
   Conformance 25/25; D-0013 conformance for skill package complete.
   DONE 2026-05-20T13:55:00Z.
-- [ ] P2-T9 — Rewire MCP server scaffold runtime to consume
-  `framework/layers/<NN>_<X>/` instead of `platforms/hermes/templates/`
-  (which D-0013 removed). Surfaced by P2-T3 implementation: 50/447 Hermes
-  tests fail because `src/mcp_server/skills/scaffold.py:CANONICAL_SCAFFOLD_MAPPINGS`
-  still points at a flat `templates/` dir. Was deferred from P2-T1 Q3
-  downstream-implications. Scope: edit `CANONICAL_SCAFFOLD_MAPPINGS`
-  (and any related loader logic) + update affected test fixtures;
-  verify Hermes test suite passes at the boundary; conformance suite
-  stays 25/25.
+- [x] P2-T9 — Rewired MCP scaffold + validation runtime to consume
+  `framework/layers/<NN>_<X>/`. Five edits across 3 files: removed the
+  `templates/` row from `CANONICAL_SCAFFOLD_MAPPINGS`; rewrote
+  `_default_ssd_root` to return `framework/layers`; fixed
+  `_default_repo_root` parents count (`[4]→[5]`, layout shifted post-
+  P2-T3); rewrote `validation/runner.py:_resolve_canonical_template_root`
+  as a 3-stage precedence chain (project-framework-override → scaffold
+  output → canonical); updated `test_scaffold_init.py` fixtures. Hermes
+  test suite 397/447 → **447/447**; conformance 25/25. Pass 3 retro
+  records G16 (parents-count audit lesson) + G17 (cross-module path-
+  computer audit lesson). DONE 2026-05-20T15:30:00Z.
 - [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test
   suite passes against repointed paths; comprehensive
   `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero;

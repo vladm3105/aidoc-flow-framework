@@ -18,7 +18,6 @@ def _create_canonical_scaffold(root: Path) -> None:
     (root / "prompts/templates/creation").mkdir(parents=True, exist_ok=True)
     (root / "prompts/templates/review").mkdir(parents=True, exist_ok=True)
     (root / "prompts/templates/remediation").mkdir(parents=True, exist_ok=True)
-    (root / "templates").mkdir(parents=True, exist_ok=True)
 
     (root / "skills/personas/architect.md").write_text("architect persona", encoding="utf-8")
     (root / "skills/persona_mappings.yaml").write_text('version: "1.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n', encoding="utf-8")
@@ -26,7 +25,6 @@ def _create_canonical_scaffold(root: Path) -> None:
     (root / "prompts/templates/creation/base.md").write_text("create", encoding="utf-8")
     (root / "prompts/templates/review/base.md").write_text("review", encoding="utf-8")
     (root / "prompts/templates/remediation/base.md").write_text("remediate", encoding="utf-8")
-    (root / "templates/BRD-MVP-TEMPLATE.md").write_text("brd template", encoding="utf-8")
 
 
 def _create_authoritative_ssd(root: Path) -> None:
@@ -51,7 +49,6 @@ def test_scaffold_project_ucx_creates_expected_files(tmp_path: Path) -> None:
     assert (project_root / "UCX/skills/persona_mappings.yaml").exists()
     assert (project_root / "UCX/skills/layer_aliases/default.yaml").exists()
     assert (project_root / "UCX/prompts/templates/review/base.md").exists()
-    assert (project_root / "UCX/templates/BRD-MVP-TEMPLATE.md").exists()
     assert (project_root / "UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.yaml").exists()
     assert (project_root / "UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").exists()
 

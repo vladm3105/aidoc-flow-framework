@@ -153,12 +153,15 @@ def _parse_frontmatter(content: str) -> dict[str, object]:
 
 
 def _resolve_canonical_template_root(project_root: Path) -> Path:
-    project_local = project_root / "framework"
-    if project_local.exists():
-        return project_local
+    project_framework_override = project_root / "framework"
+    if project_framework_override.exists():
+        return project_framework_override
 
-    framework_root = Path(__file__).resolve().parents[4]
-    return framework_root / "framework"
+    project_scaffold_output = project_root / "UCX" / "templates" / "layers"
+    if project_scaffold_output.exists():
+        return project_scaffold_output
+
+    return Path(__file__).resolve().parents[5] / "framework" / "layers"
 
 
 def _load_layer_yaml_template(*, project_root: Path, layer: str) -> tuple[dict[str, object], str | None]:

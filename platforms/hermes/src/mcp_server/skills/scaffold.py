@@ -13,7 +13,6 @@ CANONICAL_SCAFFOLD_MAPPINGS: tuple[tuple[Path, Path], ...] = (
     (Path("prompts/templates/creation"), Path("UCX/prompts/templates/creation")),
     (Path("prompts/templates/review"), Path("UCX/prompts/templates/review")),
     (Path("prompts/templates/remediation"), Path("UCX/prompts/templates/remediation")),
-    (Path("templates"), Path("UCX/templates")),
 )
 
 # Files that are project-owned after initial scaffold.
@@ -62,20 +61,18 @@ class InitScaffoldResult:
 
 
 def _default_canonical_root() -> Path:
-    # Resolve repository root from mcp/src/mcp_server/skills/scaffold.py
+    # Platform root: <repo>/platforms/hermes/ — from
+    # platforms/hermes/src/mcp_server/skills/scaffold.py via parents[3].
     return Path(__file__).resolve().parents[3]
 
 
 def _default_repo_root() -> Path:
-    return Path(__file__).resolve().parents[4]
+    # Repo root: <repo>/ — one level above the platform root.
+    return Path(__file__).resolve().parents[5]
 
 
 def _default_ssd_root() -> Path:
-    repo_root = _default_repo_root()
-    v3_root = repo_root / "framework"
-    if v3_root.exists():
-        return v3_root
-    return repo_root / "framework"
+    return _default_repo_root() / "framework" / "layers"
 
 
 def _is_content_identical(source: Path, target: Path) -> bool:
