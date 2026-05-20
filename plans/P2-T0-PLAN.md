@@ -164,6 +164,19 @@ the `ucx_hermes` ↔ `mcp_ucx` question is resolved (predecessor/successor;
   returns nothing (or directory is gone); a sample skill invocation
   (manual or test) resolves a template from `framework/layers/`.
   Added 2026-05-20T10:45:00Z (follow-up flag from P2-T7).
+- **P2-T9 — Rewire MCP scaffold runtime to `framework/layers/`.** P2-T3
+  surfaced 50 Hermes test failures all tracing to one root cause:
+  `src/mcp_server/skills/scaffold.py:CANONICAL_SCAFFOLD_MAPPINGS` still
+  points at `platforms/hermes/templates/`, which D-0013 dropped. Was
+  deferred from P2-T1 Q3 downstream-implications ("the platform's
+  template loader currently expects a flat `templates/` directory; under
+  Q3 it must read from per-layer dirs in `framework/layers/`"). Scope:
+  edit `CANONICAL_SCAFFOLD_MAPPINGS` (and any related loader logic) to
+  consume `framework/layers/<NN>_<X>/<X>-TEMPLATE.yaml`; update affected
+  test fixtures; verify Hermes test suite passes at the boundary.
+  Symmetry with P2-T8 (which does the same thing for the skill package);
+  the two could be merged if the implementation overlap is significant.
+  Added 2026-05-20T12:50:00Z (G18 finding from P2-T3 implementation).
 
 ## Implementation note (2026-05-19T14:15:00Z)
 

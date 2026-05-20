@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P2-T3                                |
 | Depends on | P2-T0 audit, P2-T1 design (Q1, Q4, D-0013), P2-T2 (verbatim copy done), P2-T7 (agent-skills already ported, §5b updated) |
-| Status     | PLANNED — 2026-05-20T11:20:00Z       |
+| Status     | DONE — 2026-05-20T12:50:00Z          |
 | Feeds      | P2-T8 (templates-in-skill drop), P2-T5 (verify), P2-T6 (close) |
 
 ## Objective
@@ -404,3 +404,74 @@ After all edits land, update `plans/P2-AUDIT-hermes.md`:
   symmetric with the edit rules (no edit rule lacks a verify; no
   verify checks an output no edit rule produces). Ready to present
   on approval.
+
+### Pass 3 — 2026-05-20T12:50:00Z (retrospective)
+
+Recording one implementation-time plan contradiction and the user
+decision that resolved it. Status: DONE.
+
+- **G18. Plan contradiction: "no logic edits" vs P2-T1 Q3 downstream.**
+  Implementation completed the port mechanics cleanly (all 13 V1-V13
+  verify gates green; conformance 25/25). The optional V10 (Hermes' own
+  test suite) surfaced 50 / 447 failures, **all** tracing to one root
+  cause: `src/mcp_server/skills/scaffold.py:CANONICAL_SCAFFOLD_MAPPINGS`
+  still references `platforms/hermes/templates/` for the
+  scaffold-from-canonical operation, but D-0013 dropped that directory.
+  This is precisely the P2-T1 Q3 downstream that the design doc flagged:
+
+  > "the platform's template loader currently expects a flat `templates/`
+  > directory; under Q3 it must read from per-layer dirs in
+  > `framework/layers/`. The extension itself is **P2-T3 code work**,
+  > not a P2-T1 design question — but flagged here so P2-T3 doesn't
+  > treat it as a surprise."
+
+  The P2-T3 plan above wrote "**Out:** Behavior changes: no logic edits,
+  no refactors. Edits are limited to the path-map and the two pyproject
+  keys." Those two statements directly contradicted each other. Pass 1
+  / Pass 2 should have caught it (G11 lesson from P2-T7: "Don't write
+  both [conflicting things] without reconciling them").
+
+  Resolution: surfaced via `AskUserQuestion`; user chose **defer to a
+  new P2-T9 task**. P2-T3 ships the port mechanics; P2-T9 will rewire
+  the scaffold runtime to `framework/layers/<NN>_<X>/`. The 50 failing
+  tests are documented as expected fallout of the D-0013 architectural
+  gap, not regressions caused by the port itself.
+
+- **Lesson for future port plans:** when a prior design doc enumerates
+  downstream code work, the plan that consumes that design must either
+  (a) include that work in scope, or (b) explicitly defer it to a named
+  follow-up task with rationale. A blanket "no logic edits" out-scope
+  clause is too coarse when the design has already flagged required
+  logic edits — review passes need to cross-check `Out:` clauses
+  against upstream design `Downstream implications:` sections.
+
+## Implementation note (2026-05-20T12:50:00Z)
+
+Executed. Port mechanics clean on the first pass:
+
+- **Counts:** 200 ported + 2 VERSION files = 202; all 7 source paths
+  copied; `templates/` and `docs/migration/` absent at target.
+- **pyproject.toml:** 3 keys edited (`name`, `version`, script entry);
+  zero legacy markers remain.
+- **Coupling:** `grep -rE 'ucx_flow|UCX_FLOW'` on current-behavior
+  content (`src/`, `tests/`, `skills/`, `pyproject.toml`) returns
+  **zero**. Docs whitelist matches **exactly** the 11 expected
+  historical files (set membership check passed).
+- **Sub-paths:** `framework/registry/LAYER_REGISTRY.yaml` (×2),
+  `framework/layers/01_BRD/` (×1) all correctly landed by the 3
+  follow-up Edit calls (note: plan said "4 follow-up edits" — recon
+  actually showed 3; the 4th was a planning-time miscount, not an
+  edit gap).
+- **VERSION files:** both `0.1.0`; `FRAMEWORK_SPEC_VERSION` diff'd
+  identical to `framework/VERSION`.
+- **`.mcp.json`:** `cwd` repointed to `platforms/hermes/src`; legacy
+  refs zero. Python interpreter path kept (G13 illustrative).
+- **Audit refresh:** §3a renamed to "Code-level + tests" with the 3
+  test files appended; new §3c "Documentation cluster" added with the
+  6-current / 11-historical classification.
+- **Conformance suite:** 25/25 (all subtests pass; 0.46s).
+- **Hermes' own suite (V10):** 397 / 447 pass. 50 failures — all
+  D-0013 scaffold contract gap (G18 above). Deferred to P2-T9.
+- **Scope-completeness recheck:** `legacy/ucx_hermes/` in-scope paths
+  still have hits in exactly 29 files (matches pre-port snapshot at
+  `/tmp/p2t3-pregrep.txt`) — no scope leak.

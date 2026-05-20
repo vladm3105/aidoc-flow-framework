@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-20T10:45:00Z                       |
+| Last updated     | 2026-05-20T12:50:00Z                       |
 
 ---
 
@@ -53,20 +53,30 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   `platforms/hermes/` (`examples/`, `prompts/`, `skills/layer_aliases/`,
   `skills/personas/`, `skills/persona_mappings.yaml`). All seven verify
   gates green. → `plans/P2-T2-PLAN.md`
-- [ ] P2-T3 — Port-with-repoint: copy `pyproject.toml`, `src/`, `tests/`,
-  `docs/` (drop `docs/migration/`), `skills/README.md`, `skills/hermes/`.
-  The 3 legacy-root files are **ported via P2-T7** — not duplicated here.
-  Do **not** copy `templates/` (dropped per D-0013). Rewire all
-  `ucx_flow` references (4 code-level + prose-level in `skills/`).
-  Update `.mcp.json` to the new Hermes path. **Includes (formerly P2-T4):**
-  add `platforms/hermes/VERSION` (`0.1.0`) and
-  `platforms/hermes/FRAMEWORK_SPEC_VERSION` (matching `framework/VERSION`).
-  Apply P2-T1 Q1 (`hermes-server` distribution name) and Q4 (`hermes-mcp`
-  script entry) in `pyproject.toml`.
+- [x] P2-T3 — Port-with-repoint: copied `pyproject.toml`, `src/` (63),
+  `tests/` (47), `docs/` less `migration/` (80), `skills/README.md`,
+  `skills/hermes/` (8); 200 files ported + 2 VERSION files. Path-map
+  applied across 18 edit-list files (4 code + 3 test + 5 skills +
+  6 current-behavior docs); 11 historical docs preserved verbatim
+  per G13. `pyproject.toml` carries `hermes-server` / `0.1.0` /
+  `hermes-mcp` per P2-T1 Q1+Q4. `VERSION` + `FRAMEWORK_SPEC_VERSION`
+  both `0.1.0`. `.mcp.json` cwd repointed. Audit §3a renamed
+  "Code-level + tests"; new §3c documentation cluster added.
+  Conformance 25/25; Hermes tests 397/447 (50 D-0013 scaffold-gap
+  failures deferred to P2-T9). DONE 2026-05-20T12:50:00Z.
 - [ ] P2-T8 — Drop `agent-skills/spec-driven-development/sdd-orchestrator/templates/`
   (8 layer YAMLs that duplicate `framework/layers/<NN>_<X>/`) and rewire
   the skill to read from `framework/layers/` per D-0013. Full D-0013
   conformance for the skill package.
+- [ ] P2-T9 — Rewire MCP server scaffold runtime to consume
+  `framework/layers/<NN>_<X>/` instead of `platforms/hermes/templates/`
+  (which D-0013 removed). Surfaced by P2-T3 implementation: 50/447 Hermes
+  tests fail because `src/mcp_server/skills/scaffold.py:CANONICAL_SCAFFOLD_MAPPINGS`
+  still points at a flat `templates/` dir. Was deferred from P2-T1 Q3
+  downstream-implications. Scope: edit `CANONICAL_SCAFFOLD_MAPPINGS`
+  (and any related loader logic) + update affected test fixtures;
+  verify Hermes test suite passes at the boundary; conformance suite
+  stays 25/25.
 - [ ] P2-T5 — Verify: `tests/conformance/` still 25/25; Hermes' own test
   suite passes against repointed paths; comprehensive
   `grep -rE 'ucx_flow|UCX_FLOW' platforms/hermes/` returns zero;

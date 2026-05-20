@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-20T11:50:00Z                       |
+| Last updated  | 2026-05-20T12:50:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7 done) |
-| Next task     | P2-T3 — port-with-repoint (code + docs + repoint coupling sites) |
+| Current phase | Phase 2 — Platform A: Hermes re-homing (P2-T0/T1/T2/T7/T3 done) |
+| Next task     | P2-T8 — drop skill's templates duplication; rewire skill to `framework/layers/` (D-0013 conformance) |
 
 ## Progress
 
@@ -102,12 +102,26 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   `ucx_flow|UCX_FLOW` hits; audit §5b updated; two plan deviations
   documented as Pass 3 retro (G11 deletion vs deprecation, G13 `/opt/data`
   verify softening).
+- 2026-05-20 — Completed P2-T3 (port-with-repoint): 200 files +
+  VERSION/FRAMEWORK_SPEC_VERSION ported; pyproject migrated to
+  `hermes-server` / `0.1.0` / `hermes-mcp` (P2-T1 Q1+Q4); path-map
+  rewrote all current-behavior `ucx_flow_v3` references in 18 files;
+  11 historical docs preserved verbatim per G13; audit §3a/§3c
+  refreshed; .mcp.json repointed. Conformance 25/25; Hermes' own
+  suite 397/447 (50 failures from D-0013 scaffold-runtime gap →
+  deferred to new P2-T9 task).
 
 ## Next steps
 
-1. Phase 2 — Platform A (Hermes) re-homing: copy `legacy/ucx_hermes/` +
-   `legacy/mcp_ucx/` into `platforms/hermes/`; repoint at `framework/`;
-   declare `framework_spec_version`; pass the conformance suite.
+1. P2-T8 — drop skill's templates duplication (`platforms/hermes/agent-skills/
+   .../sdd-orchestrator/templates/`) and rewire skill to `framework/layers/`
+   per D-0013. Symmetric with P2-T9 (scaffold runtime); merge candidate.
+2. P2-T9 — rewire MCP server's `CANONICAL_SCAFFOLD_MAPPINGS` to consume
+   `framework/layers/<NN>_<X>/` (closes the D-0013 gap surfaced by P2-T3;
+   unblocks the 50 deferred Hermes test failures).
+3. P2-T5 — verify (now includes a re-run of Hermes' suite expected fully
+   green post-P2-T8/T9).
+4. P2-T6 — Phase 2 close (CHANGELOG `[0.3.0]`, tags `v0.3.0`, `hermes/v0.1.0`).
 
 ## Open questions
 
@@ -162,3 +176,13 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   scope (§3a-extension for tests; new §3c for docs, classified historical
   vs current-behavior per the P2-T7 G13 lesson) and lands the audit-doc
   correction inside its own step sequence. Awaiting approval to implement.
+- 2026-05-20T12:50:00Z — Completed P2-T3 port-with-repoint: 200 files
+  ported + 2 VERSION files; path-map applied across 18 edit-list files;
+  11 historical docs preserved verbatim; pyproject + .mcp.json updated;
+  audit §3a renamed and new §3c added. Conformance 25/25; Hermes tests
+  397/447. Pass 3 retrospective records G18: plan's "no logic edits"
+  Out-clause contradicted P2-T1 Q3 downstream which had pre-flagged
+  required logic work. **Added P2-T9** to queue: rewire MCP scaffold
+  runtime (`CANONICAL_SCAFFOLD_MAPPINGS`) to consume `framework/layers/`
+  instead of the dropped `platforms/hermes/templates/`. Symmetric with
+  P2-T8's skill-package rewire — could be merged.

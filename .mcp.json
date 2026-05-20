@@ -3,7 +3,7 @@
     "sdd-lifecycle": {
       "command": "/opt/data/ucx_framework/.venv/bin/python",
       "args": ["-m", "mcp_server.server"],
-      "cwd": "/opt/data/ucx_framework/legacy/ucx_hermes/src"
+      "cwd": "/opt/data/ucx_framework/platforms/hermes/src"
     }
   }
 }

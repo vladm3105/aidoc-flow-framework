@@ -91,9 +91,15 @@ Two classes — **both must be rewired in P2-T3**. The verify re-grep on the
 initial audit caught prose-level coupling that an earlier pass missed; the
 list below is the corrected, complete set.
 
-### 3a. Code-level (4 files, 6 lines — mandatory runtime rewire)
+### 3a. Code-level + tests (7 files, 16 lines — mandatory runtime rewire)
 
-Path constants used by the running MCP server. Wrong values break behaviour.
+Path constants used by the running MCP server, plus the test files that
+assert against them. Wrong values break behaviour (or break the test
+suite). **Updated 2026-05-20T12:30:00Z (P2-T3 Pass 5 retrospective):**
+the original §3a enumerated only the 4 production files; recon during
+P2-T3 planning surfaced 3 test files whose `ucx_flow_v3` references
+mirror the §3a constants and must be rewired in the same pass — folded
+in below as the "tests" rows.
 
 | File | Lines | Current reference | Target |
 |------|-------|-------------------|--------|
@@ -101,6 +107,9 @@ Path constants used by the running MCP server. Wrong values break behaviour.
 | `src/mcp_server/validation/runner.py` | 156, 161 | `project_root / "ucx_flow_v3"`, `framework_root / "ucx_flow_v3"` | `framework/` |
 | `src/mcp_server/utils/template_naming.py` | 17 | docstring: `ucx_flow_v3/01_BRD/` | docstring → `framework/layers/01_BRD/` |
 | `src/mcp_server/creation/profile_contracts.py` | 68 | `registry_source: str = "ucx_flow_v3/LAYER_REGISTRY.yaml"` | `framework/registry/LAYER_REGISTRY.yaml` |
+| `tests/unit/test_scaffold_init.py` | 41, 61, 79, 110, 132, 161 | `tmp_path / "ucx_flow_v3"` (×6) | `tmp_path / "framework"` |
+| `tests/unit/test_validation_runner.py` | (2 hits) | path constants mirroring `runner.py` | `framework/` |
+| `tests/integration/test_creation_profile_contracts_integration.py` | 66 | `"ucx_flow_v3/LAYER_REGISTRY.yaml"` | `"framework/registry/LAYER_REGISTRY.yaml"` |
 
 ### 3b. Prose-level (skills + templates — documentation accuracy)
 
@@ -119,13 +128,55 @@ would be inaccurate after the port. Rewire in the same P2-T3 pass.
 | `templates/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}-TEMPLATE.yaml` | comment header (`# v3 changes from ucx_flow_v3:`) — present on each layer template |
 
 **Verify gate for P2-T3:** a fresh `grep -rE 'ucx_flow|UCX_FLOW'
-platforms/hermes/` after the port returns **zero**.
+platforms/hermes/` after the port returns zero **on current-behavior
+content**; historical-context docs are preserved verbatim and form a
+whitelist (see §3c).
 
 **Note (post-D-0013):** `templates/` is dropped entirely; the platform
 consumes `framework/layers/`. The `templates/`-prefixed entries above
 remain listed for audit completeness but are not rewired in P2-T3 because
 those files are not copied. P2-T3's effective prose-level rewire covers
 the 5 `skills/` markdown files and the new §5b files.
+
+### 3c. Documentation cluster — historical vs current (added 2026-05-20T12:30:00Z)
+
+P2-T0's original audit did not grep `legacy/ucx_hermes/docs/`. Recon
+during P2-T3 planning surfaced **17 docs files** carrying `ucx_flow_v3`
+references (~131 hits). Applying the P2-T7 G13 lesson (rewrite current-
+behavior framework references; preserve historical / illustrative refs
+because rewriting them would falsify history):
+
+**Current-behavior — rewrite in P2-T3 (6 files):**
+
+| File | Reason |
+|------|--------|
+| `docs/HERMES_INTEGRATION.md` | Describes the platform's current document-artifact roots and runtime flow. |
+| `docs/architecture/MCP_OPERATIONAL_FLOWS.md` | Current architecture doc. |
+| `docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md` | Current architecture doc. |
+| `docs/architecture/MCP_RUNTIME_ARCHITECTURE.md` | Current architecture doc. |
+| `docs/architecture/MCP_PERSONA_DESIGN_GUIDE.md` | Current architecture doc. |
+| `docs/specs/SPEC-003_mcp_creation_validation_profile_contracts.md` | Current spec. |
+
+**Historical — preserve verbatim (11 files, whitelist):**
+
+| File | Reason |
+|------|--------|
+| `docs/CHANGELOG/CHANGELOG_v1.11.0.md` | Version history. |
+| `docs/CHANGELOG/CHANGELOG_v1.16.0.md` | Version history. |
+| `docs/CHANGELOG/CHANGELOG_v2.0.0.md` | Version history. |
+| `docs/ROADMAP.md` | Retrospective `v1.22.0` block (lines 587–601). |
+| `docs/plans/PLAN-014_checklist.md` | Completed migration plan. |
+| `docs/plans/PLAN-014_3segment_element_id_migration.md` | Completed migration plan. |
+| `docs/plans/PLAN-016_checklist.md` | Completed plan. |
+| `docs/plans/PLAN-016_cross_section_validation.md` | Completed plan. |
+| `docs/plans/PLAN-018_yaml_parity_and_api_consistency.md` | Completed plan. |
+| `docs/plans/PLAN-021_sdd_reporting_naming_standard.md` | Completed plan. |
+| `docs/plans/PLAN-026_persona_management_tools.md` | Completed plan. |
+
+P2-T3's verify gate is calibrated against the historical whitelist by
+**exact set membership**, not by a count tolerance — catches both
+whitelist-bleed (a historical file got rewritten) and scope-leak (a new
+file gained hits).
 
 ## 4. Conformance gap
 
