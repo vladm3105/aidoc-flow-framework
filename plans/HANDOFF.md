@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T03:10:00Z                       |
+| Last updated  | 2026-05-21T04:15:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 4 — Conformance & Independence (P4-T0/T1/T2/T3/T4 done) |
-| Next task     | (a) **User action — relocate workflows** from `plans/workflows-pending/` to `.github/workflows/` in a local clone (still pending; see `plans/P4-T3-PLAN.md` for exact commands); (b) P4-T5 — verify + close (`CHANGELOG.md [0.5.0]`, ROADMAP, tag `v0.5.0`) |
+| Current phase | **Phase 4 complete** (`v0.5.0`) — Phase 5 next, pending (a) tag publication + (b) workflow relocation, both via local-clone workaround |
+| Next task     | (a) **User action — publish `v0.5.0`** from a local clone; (b) **User action — relocate workflows** if not done; (c) Phase 5 — Cutover (legacy/ removal, root `.claude/` removal, `v1.0.0`) |
 
 ## Progress
 
@@ -290,6 +290,17 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   clone — exact commands in `plans/P4-T3-PLAN.md` Implementation
   note. (`docs/TAGGING.md` was extended in P4-T4 to document this
   restriction symmetrically with the tag-push restriction.)
+- 2026-05-21T04:15:00Z — Completed P4-T5 (Phase 4 verify + close,
+  combined per P4-T0 design). 13 gates ran green; one carried-
+  known-issue surfaced (`api_runner.py:115` stale install
+  instruction `pip install 'ucx_hermes[api]'`; correct is
+  `hermes-server[api]` — 1-line fix deferred to Phase 5
+  housekeeping per R5 scope). Close commit `954d8da` shipped;
+  `CHANGELOG.md [0.5.0]` cut; ROADMAP marked; `docs/TAGGING.md`
+  table grew to 8 rows. Annotated tag `v0.5.0` created locally;
+  in-container tag push 403'd as expected (4th occurrence —
+  P1-T8, P2-T6, P3-T5, P4-T5). Verify record at
+  `plans/P4-T5-VERIFY.md`. **Phase 4 structurally closed.**
 - 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
   report). Six artifacts landed:
   - `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
@@ -318,18 +329,30 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Next steps
 
-1. **User action — relocate workflow files from a local clone**
-   (still pending from P4-T3). The workflow contents at
-   `plans/workflows-pending/` need to move into `.github/workflows/`
-   via a local-clone push. Exact commands in
-   `plans/P4-T3-PLAN.md` Implementation note. Can be done before
-   or after P4-T5.
-2. **P4-T5 — Verify + close** (combined): re-run all Phase 4
-   gates against current state; cut `CHANGELOG.md [0.5.0]`; mark
-   Phase 4 complete in `ROADMAP.md`; create annotated tag `v0.5.0`
-   (anticipate fourth tag-push 403 — local-clone workaround). No
-   per-platform tags this phase (Hermes/plugin platforms didn't
-   release a new version; only the project milestone bumps).
+1. **User action — publish `v0.5.0` from a local clone.** The
+   in-container session created `v0.5.0` locally on close commit
+   `954d8da`; the tag push 403'd as expected (fourth occurrence
+   of the in-container `refs/tags/*` restriction). Exact commands
+   in `plans/P4-T5-PLAN.md` Implementation note.
+2. **User action — relocate workflow files** (if not already
+   done; carry-over from P4-T3). `git mv plans/workflows-pending/*.yml
+   .github/workflows/` from the same local clone. Commands in
+   `plans/P4-T3-PLAN.md` Implementation note. Independent of
+   action #1; either order works.
+3. **Phase 5 — Cutover** (→ `v1.0.0`). Final phase per
+   `ROADMAP.md`:
+   - Remove `legacy/` (the frozen pre-migration trees).
+   - Remove root `.claude/` (the dev-time skill loader; superseded
+     by `platforms/claude-code-plugin/`).
+   - Address the Phase 4 carried known issues (api_runner.py:115
+     stale install string; per-skill content migration for plugin
+     legacy-vs-new layer model; ~150 stale `framework/<X>` refs).
+   - Cut `CHANGELOG.md [1.0.0]`; mark Phase 5 complete in
+     ROADMAP; tag `v1.0.0` + per-platform stable releases
+     (`hermes/v1.0.0` + `claude-code-plugin/v1.0.0`).
+   - New project replaces `main`.
+   Begins with a P5-T0 audit + task breakdown analogous to
+   P2-T0 / P3-T0 / P4-T0.
 
 ## Open questions
 

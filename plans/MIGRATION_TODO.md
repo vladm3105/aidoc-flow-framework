@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T03:10:00Z                       |
+| Last updated     | 2026-05-21T04:15:00Z                       |
 
 ---
 
@@ -247,9 +247,21 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   "In-container push restrictions" section documenting the tags
   + workflows restriction symmetrically. All 9 verify gates green;
   conformance still 31/31. DONE 2026-05-21T03:10:00Z.
-- [ ] P4-T5 — Phase 4 verify + close: `CHANGELOG.md [0.5.0]`;
-  ROADMAP marked; tag `v0.5.0` (anticipate P1-T8 / P2-T6 / P3-T5
-  tag-push 403 — fourth occurrence; local-clone workaround).
+- [x] P4-T5 — Phase 4 verify + close (combined): 13 verify gates
+  ran green (conformance 31/31, deliverables present, cross-platform
+  sanity, scope discipline). Carried-known-issue surfaced:
+  `api_runner.py:115` has stale install instruction
+  (`pip install 'ucx_hermes[api]'`; correct is
+  `hermes-server[api]`) — 1-line fix deferred to Phase 5
+  housekeeping or `hermes/v0.1.1` patch per R5 scope. Close
+  commit `954d8da` shipped; `CHANGELOG.md [0.5.0]` cut covering
+  the full Phase 4 cycle (Added / Changed / Known carried issues);
+  ROADMAP Phase 4 marked complete; `docs/TAGGING.md` table grew
+  to 8 rows. Annotated tag `v0.5.0` created locally on the close
+  commit; in-container tag push 403'd as expected (4th occurrence
+  — P1-T8, P2-T6, P3-T5, P4-T5). Verify record at
+  `plans/P4-T5-VERIFY.md`. **Phase 4 structurally closed;
+  awaiting tag publication.** DONE 2026-05-21T04:15:00Z.
 
 ## Phase 5 — Cutover → `v1.0.0`
 
