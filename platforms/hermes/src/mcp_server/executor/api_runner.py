@@ -112,7 +112,7 @@ async def run_api_executor(
             stdout="",
             stderr=(
                 f"API executor '{config.name}' requires litellm. "
-                "Install with: pip install 'ucx_hermes[api]' or pip install litellm"
+                "Install with: pip install 'hermes-server[api]' or pip install litellm"
             ),
             exit_code=-7,
             executor_name=config.name,
