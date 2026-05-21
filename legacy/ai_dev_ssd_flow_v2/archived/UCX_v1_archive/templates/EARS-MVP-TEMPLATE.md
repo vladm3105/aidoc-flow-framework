@@ -1,1 +1,0 @@
-../../mcp/templates/EARS-MVP-TEMPLATE.md

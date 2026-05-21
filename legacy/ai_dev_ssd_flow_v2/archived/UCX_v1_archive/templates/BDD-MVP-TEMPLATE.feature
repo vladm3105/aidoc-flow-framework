@@ -1,1 +1,0 @@
-../../mcp/templates/BDD-MVP-TEMPLATE.feature

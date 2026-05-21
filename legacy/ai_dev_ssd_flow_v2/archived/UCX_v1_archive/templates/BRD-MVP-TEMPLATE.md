@@ -1,1 +1,0 @@
-../../mcp/templates/BRD-MVP-TEMPLATE.md

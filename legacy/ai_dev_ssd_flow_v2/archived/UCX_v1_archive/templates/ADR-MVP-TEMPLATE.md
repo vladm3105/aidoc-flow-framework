@@ -1,1 +1,0 @@
-../../mcp/templates/ADR-MVP-TEMPLATE.md

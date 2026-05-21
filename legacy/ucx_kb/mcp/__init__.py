@@ -1,1 +1,0 @@
-"""UCX Knowledge MCP module."""

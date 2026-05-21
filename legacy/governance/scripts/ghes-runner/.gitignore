@@ -1,8 +1,0 @@
-# Runner installation directory (created by setup-local-runner.sh)
-runner-local/
-
-# Runner logs
-*.log
-
-# Sensitive files
-*.token

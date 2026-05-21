@@ -1,1 +1,0 @@
-../../mcp/templates/SYS-MVP-TEMPLATE.md

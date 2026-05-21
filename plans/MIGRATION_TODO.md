@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T06:30:00Z                       |
+| Last updated     | 2026-05-21T07:20:00Z                       |
 
 ---
 
@@ -292,10 +292,15 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   **Q5 plans/: keep in-tree** (audit trail). **Q6 CLAUDE.md: rewrite**
   to post-migration memory (root file; survives the `.claude/`
   removal). DONE 2026-05-21T06:30:00Z.
-- [ ] P5-T2 — Remove `legacy/` (**restored**, D-0014 archive-then-clean):
-  `git rm -r legacy/`. Destructive — confirmation gate at execution;
-  precondition (archive branch `legacy-ucx-v3.2-read-only` exists +
-  protected) **met**. Verify no runtime dependency; conformance 31/31.
+- [x] P5-T2 — Removed in-tree `legacy/` (`git rm -r legacy/`; 2276
+  tracked files, 645k line-deletions) after explicit user
+  confirmation. Lossless — content preserved in the protected
+  `legacy-ucx-v3.2-read-only` branch + git history. All 7 verify
+  gates green (conformance 31/31; Hermes 447/447; zero runtime
+  `legacy/` refs; scope = only `legacy/` deletions; archive intact;
+  plugin smoke ok). 11 git-ignored `legacy/tmp/` scratch files
+  linger on disk locally but won't propagate to the new `main`.
+  DONE 2026-05-21T07:20:00Z.
 - [ ] P5-T3 — Remove root `.claude/` (**restored**, D-0014): `git rm -r
   .claude/`. Destructive + session-affecting — confirmation gate;
   sequenced LATE (disables this session's hooks). Migration-era

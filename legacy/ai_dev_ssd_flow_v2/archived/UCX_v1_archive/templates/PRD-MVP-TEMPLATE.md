@@ -1,1 +1,0 @@
-../../mcp/templates/PRD-MVP-TEMPLATE.md

@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P5-T2                                |
 | Depends on | P5-T0 audit, P5-T1 design, D-0014; archive branch `legacy-ucx-v3.2-read-only` (protected) |
-| Status     | PLANNED — 2026-05-21T06:45:00Z       |
+| Status     | DONE — 2026-05-21T07:20:00Z          |
 | Feeds      | P5-T4 (docs), P5-T5 (verify), P5-T6 (cutover) |
 
 ## Objective
@@ -158,3 +158,34 @@ Single scoped command. Removes only `legacy/`.
 - **G11. No new findings.** Plan is internally consistent; the
   confirmation gate is explicit. Ready to run the pre-flight, then
   request go-ahead.
+
+## Implementation note (2026-05-21T07:20:00Z)
+
+Executed after explicit user confirmation. `git rm -r legacy/`
+removed **2276 tracked files** (645,145 line-deletions). All verify
+gates green:
+
+- **V1.** `git ls-files legacy/` == 0 (git-clean removal). The
+  `legacy/` directory **lingers on disk** only because of **11
+  git-ignored `legacy/tmp/` scratch files** (format-review reports +
+  update scripts the pre-migration project never tracked). These are
+  gitignored → not in the repo, not in history, not in the archive
+  branch → **won't propagate to the new `main`** (a fresh clone has
+  no `legacy/`). Left in place on disk (container-local cruft;
+  harmless; not unilaterally `rm -rf`'d given the user's
+  preserve-legacy caution — though they exist nowhere in git).
+- **V2.** Conformance suite 31/31.
+- **V3.** Hermes suite **447/447** (venv was available).
+- **V4.** Zero `legacy/` references in the surviving runtime tree
+  (`framework/`, `tests/`, `platforms/*/src`+manifest, `.mcp.json`).
+- **V5.** Archive branch `legacy-ucx-v3.2-read-only` intact on the
+  remote at `491e8db` (the removal was working-branch-only).
+- **V6.** Scope clean — the staged diff is **only** `legacy/`
+  deletions (2276 files); no other path touched.
+- **V7.** Plugin smoke unaffected (142 skill dirs; manifest valid).
+
+The legacy content remains fully recoverable from the protected
+`legacy-ucx-v3.2-read-only` branch + git history. Documentary
+`legacy/` references in `README.md`, `docs/REPO_STRUCTURE.md`,
+`CLAUDE.md` are reconciled in P5-T4; those in CHANGELOGs / ROADMAP /
+STARTUP_HANDOFF / the plugin stale-ref stay as historical prose.

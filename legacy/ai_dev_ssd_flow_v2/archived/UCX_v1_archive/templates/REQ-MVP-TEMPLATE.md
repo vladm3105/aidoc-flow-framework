@@ -1,1 +1,0 @@
-../../mcp/templates/REQ-MVP-TEMPLATE.md

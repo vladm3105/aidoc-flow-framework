@@ -1,1 +1,0 @@
-"""UCX SDD Scoring Tests."""

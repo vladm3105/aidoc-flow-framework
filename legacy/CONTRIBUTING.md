@@ -1,1 +1,0 @@
-governance/templates/CONTRIBUTING.md

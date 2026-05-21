@@ -1,4 +1,0 @@
-httpx
-websockets
-pandas
-python-dateutil
