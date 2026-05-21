@@ -6,6 +6,16 @@
 | Produced by| P5-T0                                |
 | Date       | 2026-05-21T05:10:00Z                 |
 
+> **Revised 2026-05-21T05:50:00Z (D-0014).** The user directed that
+> `legacy/` and root `.claude/` be **retained in-tree**; the pristine
+> pre-migration project is preserved as the protected branch
+> `legacy-ucx-v3.2-read-only`. **The two destructive removals analysed
+> below (§1, §3, §5) are CANCELLED.** Their analysis is kept for
+> context (it confirmed the removals *would* have been safe), but
+> Phase 5 ships no in-tree deletions. The cutover reduces to docs
+> finalization + close + the user-authorized `main` replacement.
+> See D-0014 and the revised breakdown in `plans/P5-T0-PLAN.md`.
+
 ## Summary
 
 Cutover ships `v1.0.0` and makes the new project replace `main`.

@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T05:35:00Z                       |
+| Last updated     | 2026-05-21T05:50:00Z                       |
 
 ---
 
@@ -280,15 +280,20 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   destructive tasks carry confirmation gates. 6 open questions for
   P5-T1. See `plans/P5-T0-PLAN.md` + `plans/P5-AUDIT-cutover.md`.
   DONE 2026-05-21T05:35:00Z.
-- [ ] P5-T1 — Design: resolve 6 open questions (main-replacement
-  mechanism; framework v1.0.0 tag or stay 0.1.0; plugin gap
-  v1.0.0-blocker or post-v1.0; CLAUDE.md rewrite vs remove; plans/
-  disposition; per-platform stable tags). Output `plans/P5-T1-DESIGN.md`.
-- [ ] P5-T2 — Remove `legacy/` (destructive — confirmation gate).
-- [ ] P5-T3 — Remove root `.claude/` + finalize `CLAUDE.md`
-  (destructive + session-affecting — confirmation gate; sequenced late).
+- [ ] P5-T1 — Design: resolve the remaining open questions
+  (main-replacement mechanism; framework v1.0.0 tag or stay 0.1.0;
+  plugin gap v1.0.0-blocker or post-v1.0; per-platform stable tags;
+  plans/ disposition). CLAUDE.md is retained + rewritten (not
+  removed) per D-0014. Output `plans/P5-T1-DESIGN.md`.
+- [x] ~~P5-T2 — Remove `legacy/`~~ — **CANCELLED (D-0014).** `legacy/`
+  retained in-tree; pre-migration project archived as the protected
+  `legacy-ucx-v3.2-read-only` branch.
+- [x] ~~P5-T3 — Remove root `.claude/`~~ — **CANCELLED (D-0014).**
+  Root `.claude/` retained in-tree (dogfoods the repo's own Claude
+  Code setup). The CLAUDE.md post-migration rewrite folds into P5-T4.
 - [ ] P5-T4 — Finalize project docs (README, REPO_STRUCTURE, PROJECT,
-  ROADMAP).
+  ROADMAP, CLAUDE.md) — incl. reconciling the "legacy removed at
+  cutover" language to D-0014's retain + archive-branch model.
 - [ ] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
 - [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
   + platform stables (user local-clone); **`main` replacement

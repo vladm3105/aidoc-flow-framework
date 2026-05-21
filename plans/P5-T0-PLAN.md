@@ -178,46 +178,59 @@ P5-T0 is **paper only**; nothing is removed and `main` is untouched.
 - **G12. No new findings on structure / verify / risks.** Plan
   is internally consistent and paper-only. Ready to present.
 
-## Phase 5 task breakdown (resolved here, executed P5-T1..P5-T6)
+## Phase 5 task breakdown (revised 2026-05-21T05:50:00Z per D-0014)
 
-Cutover gets **6 sub-tasks** — more than P3/P4 because the
-destructive removals and the user-authorized main-replacement each
-warrant isolation + confirmation gates.
+**Revision:** the user directed that `legacy/` and root `.claude/`
+be **retained in-tree** (D-0014); the pristine pre-migration project
+is preserved as the protected branch `legacy-ucx-v3.2-read-only`.
+This **drops the two destructive tasks** (former P5-T2 remove
+`legacy/`, former P5-T3 remove root `.claude/`). Cutover becomes a
+no-deletion phase — the only consequential act left is the
+user-authorized `main` replacement.
 
-- **P5-T1 — Design.** Resolve the open questions (audit §6):
-  main-replacement mechanism (merge vs fast-forward vs squash);
-  whether the plugin layer-model gap blocks `v1.0.0`; whether
-  `framework/` tags `v1.0.0` or stays `0.1.0`; CLAUDE.md
-  post-migration rewrite vs removal; plans/ disposition (keep /
-  archive / trim); root `.claude/` removal approach. Output:
+Task IDs preserved (P5-T2 / P5-T3 marked cancelled, like P2-T4 was
+folded) so cross-references stay stable.
+
+- **P5-T1 — Design.** Resolve the remaining open questions (audit
+  §6, minus the now-resolved removal questions): `main`-replacement
+  mechanism (merge vs fast-forward vs reset); whether the plugin
+  layer-model gap blocks `v1.0.0` (audit recommends post-v1.0);
+  whether `framework/` tags `v1.0.0` or stays `0.1.0`; per-platform
+  stable tags at cutover; `plans/` disposition. (`CLAUDE.md` is
+  **retained + rewritten**, not removed — root `.claude/` stays per
+  D-0014; the rewrite folds into P5-T4.) Output:
   `plans/P5-T1-DESIGN.md`.
-- **P5-T2 — Remove `legacy/`.** `git rm -r legacy/` (28M, 2275
-  files). **Destructive — confirmation gate.** Verify: no
-  surviving-tree runtime reference to `legacy/`; conformance
-  31/31; Hermes suite unaffected.
-- **P5-T3 — Remove root `.claude/` + finalize `CLAUDE.md`.**
-  Remove the dev-time loader (skills, agents, commands, hooks,
-  settings) — superseded by `platforms/claude-code-plugin/`.
-  Rewrite or remove `CLAUDE.md` per P5-T1. **Destructive +
-  session-affecting — confirmation gate; sequenced late.**
-- **P5-T4 — Finalize project docs.** `README.md` (platform
-  matrix, drop migration-in-progress language);
-  `docs/REPO_STRUCTURE.md` (PLANNED → current/as-built);
-  `docs/PROJECT.md` (cutover-complete note); `ROADMAP.md`
-  (Phase 5 marked, post-v1.0 section foregrounded).
+- ~~**P5-T2** — Remove `legacy/`.~~ **Cancelled (D-0014).** `legacy/`
+  is retained in-tree; the pre-migration project is archived as the
+  `legacy-ucx-v3.2-read-only` branch.
+- ~~**P5-T3** — Remove root `.claude/`.~~ **Cancelled (D-0014).**
+  Root `.claude/` is retained in-tree (dogfoods the repo's own
+  Claude Code setup). The `CLAUDE.md` post-migration rewrite (still
+  needed) folds into P5-T4.
+- **P5-T4 — Finalize project docs.** `README.md` (platform matrix;
+  drop migration-in-progress language; `legacy/` stays in the
+  architecture diagram, annotated as retained-history);
+  `docs/REPO_STRUCTURE.md` (PLANNED → as-built; **reconcile the
+  legacy-removal language** to D-0014); `docs/PROJECT.md` (cutover
+  note + legacy-retention reconciliation); `ROADMAP.md` (Phase 5
+  marked; "legacy archived" → "legacy retained + archive branch");
+  `CLAUDE.md` (migration-in-progress → post-migration project
+  memory, retaining the in-tree-`legacy/`-is-frozen rule).
 - **P5-T5 — Verify.** Final consolidated gate: conformance 31/31;
   Hermes 447/447; plugin smoke; both platforms' VERSION files;
-  removal targets absent; no dangling references; doc
-  finalization complete. Verify record at `plans/P5-T5-VERIFY.md`.
+  archive branch reachable (`legacy-ucx-v3.2-read-only` on remote);
+  docs reconciled (no stale "legacy removed at cutover" language);
+  doc finalization complete. Verify record at
+  `plans/P5-T5-VERIFY.md`.
 - **P5-T6 — Close + cutover.** Cut `CHANGELOG.md [1.0.0]`; mark
   Phase 5 complete + cutover in `ROADMAP.md`; create annotated
-  tags `v1.0.0` + `hermes/v1.0.0` + `claude-code-plugin/v1.0.0`
-  (+ `framework/v1.0.0` per P5-T1). **The `main` replacement is
-  a user-authorized act** — P5-T6 prepares the branch and hands
-  the user the exact merge/push commands; the in-container
-  session does not push to `main`.
+  tags per P5-T1's tag-scope decision. **The `main` replacement is
+  a user-authorized act** — P5-T6 prepares the branch and hands the
+  user the exact merge/push commands; the in-container session does
+  not push to `main`.
 
 Two operations are **never** done in-container: the `main`
 replacement (forbidden by the lock; user-authorized) and all tag
 pushes (5th `refs/tags/*` 403; user local-clone). Both are baked
-into P5-T6's plan as user actions.
+into P5-T6's plan as user actions. **No destructive in-tree
+removals remain in Phase 5 (D-0014).**

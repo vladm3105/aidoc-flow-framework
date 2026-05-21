@@ -10,6 +10,35 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0014 — Retain `legacy/` + root `.claude/` in-tree; archive the pre-migration project as a protected branch
+
+- **Date:** 2026-05-21T05:50:00Z
+- **Decision:** At the Phase 5 cutover the project does **not** delete
+  `legacy/` or root `.claude/` from the working branch (→ new `main`).
+  Both are retained in-tree. The pristine pre-migration `ucx_framework`
+  project (at its original root layout) is preserved separately as the
+  **protected, read-only branch `legacy-ucx-v3.2-read-only`** (created off
+  `main` at commit `491e8db`, byte-identical to it).
+- **Why:** User directive ("do not remove legacy files"; "keep legacy root
+  `.claude/` too"). A protected branch is a more discoverable and
+  enforceably-immutable archive than relying on git history after a
+  deletion, and keeping the dev-time root `.claude/` in-tree lets the
+  repository keep dogfooding its own Claude Code setup. Deleting nothing
+  also removes the only destructive operations Phase 5 had, lowering
+  cutover risk.
+- **Overrides:** the prior cutover policy ("`legacy/` is removed at/after
+  the Phase 5 cutover" — `docs/REPO_STRUCTURE.md`; "legacy archived" —
+  `docs/PROJECT.md` §4 / `ROADMAP.md` Phase 5; "`legacy/` is removed at the
+  Phase 5 cutover" — `CLAUDE.md`). These are reconciled to "legacy
+  retained in-tree; pre-migration project preserved as the
+  `legacy-ucx-v3.2-read-only` branch" in P5-T4.
+- **Consequence:** Phase 5 drops its two destructive tasks (P5-T2 remove
+  `legacy/`, P5-T3 remove root `.claude/`); cutover becomes design → docs
+  finalization → verify → close. The migration plan docs that cite
+  `legacy/...` paths remain valid (the dir stays in-tree). The
+  `CLAUDE.md` "Legacy is frozen / copy-don't-move" rules still hold for
+  the in-tree `legacy/` (it remains read-only history).
+
 ## D-0013 — Framework templates are the single source of truth; platforms consume, not duplicate
 
 - **Date:** 2026-05-19T14:50:00Z

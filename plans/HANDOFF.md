@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T05:35:00Z                       |
+| Last updated  | 2026-05-21T05:50:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 5 — Cutover (P5-T0 audit done) |
-| Next task     | P5-T1 — design (6 open questions: main-replacement mechanism, framework v1.0.0 tag, plugin-gap blocker?, CLAUDE.md rewrite/remove, plans/ disposition, per-platform stable tags). Destructive removals (P5-T2 legacy/, P5-T3 root .claude/) and the user-authorized `main` replacement (P5-T6) lie ahead — each gated. Workflow relocation still pending (user). |
+| Current phase | Phase 5 — Cutover (P5-T0 done; **D-0014 revised scope — no destructive removals**) |
+| Next task     | P5-T1 — design (remaining open questions: main-replacement mechanism, framework v1.0.0 tag, plugin-gap blocker?, per-platform stable tags, plans/ disposition). **P5-T2/T3 cancelled (D-0014): `legacy/` + root `.claude/` retained in-tree; pre-migration project archived as protected branch `legacy-ucx-v3.2-read-only`.** Only consequential cutover act left = user-authorized `main` replacement (P5-T6). Workflow relocation still pending (user). |
 
 ## Progress
 
@@ -363,18 +363,23 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Next steps
 
-1. **P5-T1 — Design.** Resolve the 6 open questions from the P5-T0
-   audit (`plans/P5-AUDIT-cutover.md` §6): `main`-replacement
-   mechanism; whether `framework/` tags `v1.0.0` or stays `0.1.0`;
-   whether the plugin layer-model gap blocks `v1.0.0` (audit
-   recommends post-v1.0); `CLAUDE.md` rewrite vs remove; `plans/`
-   disposition (keep/archive/trim); per-platform stable tags at
-   cutover. Output: `plans/P5-T1-DESIGN.md`.
-2. Then P5-T2 (remove `legacy/` — **destructive, gated**), P5-T4
-   (finalize docs), P5-T3 (remove root `.claude/` + rewrite
-   `CLAUDE.md` — **destructive + session-affecting, gated, late**),
-   P5-T5 (verify), P5-T6 (close + cutover → `v1.0.0`; `main`
-   replacement is **user-authorized**, tags via user local-clone).
+1. **P5-T1 — Design.** Resolve the remaining open questions from the
+   P5-T0 audit §6 (the removal questions are settled by D-0014):
+   `main`-replacement mechanism; whether `framework/` tags `v1.0.0`
+   or stays `0.1.0`; whether the plugin layer-model gap blocks
+   `v1.0.0` (audit recommends post-v1.0); per-platform stable tags
+   at cutover; `plans/` disposition. (`CLAUDE.md` is retained +
+   rewritten per D-0014, not removed.) Output:
+   `plans/P5-T1-DESIGN.md`.
+2. Then P5-T4 (finalize docs incl. CLAUDE.md rewrite + the
+   legacy-retention reconciliation), P5-T5 (verify), P5-T6 (close +
+   cutover → `v1.0.0`; `main` replacement is **user-authorized**,
+   tags via user local-clone). **P5-T2 / P5-T3 cancelled (D-0014) —
+   no destructive removals.**
+
+**Archive branch (done):** `legacy-ucx-v3.2-read-only` created off
+`main` (`491e8db`), protected/read-only — preserves the pristine
+pre-migration `ucx_framework` project.
 
 **Independent pending user actions** (carry-overs, do anytime):
 - Relocate workflows: `git mv plans/workflows-pending/*.yml
