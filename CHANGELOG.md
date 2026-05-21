@@ -10,6 +10,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+- `platforms/hermes/src/mcp_server/executor/api_runner.py` — the
+  litellm-missing error told users to `pip install 'ucx_hermes[api]'`;
+  corrected to `pip install 'hermes-server[api]'` to match the
+  distribution rename in P2-T1 Q1. Resolves the carried known issue
+  surfaced at P4-T5 verify. (Hermes platform change; would land as
+  `hermes/v0.1.1` if the platform cuts a patch release.)
+
 ## [0.5.0] — 2026-05-21
 
 Phase 4 — Conformance & Independence. Platform-conformance tests

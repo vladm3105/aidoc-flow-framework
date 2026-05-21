@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T04:30:00Z                       |
+| Last updated  | 2026-05-21T04:45:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
 | Current phase | **Phase 4 formally closed** (`v0.5.0` published; 8 tags on remote) — Phase 5 (Cutover) next |
-| Next task     | Phase 5 — Cutover (→ `v1.0.0`): remove `legacy/` + root `.claude/`; address P4 carried known issues; begins with P5-T0 audit. (Workflow relocation from P4-T3 still pending, independent.) |
+| Next task     | (a) **User action — relocate workflows** (in-container can't push `.github/workflows/`); (b) Phase 5 — Cutover (→ `v1.0.0`), begins with P5-T0 audit. The `api_runner.py:115` carried issue is **fixed** (commit `23ae664`). |
 
 ## Progress
 
@@ -308,6 +308,19 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   close commit `954d8da`. **Phase 4 formally closed.** Project
   moves into Phase 5 (Cutover). Workflow relocation from P4-T3
   remains an independent pending user action.
+- 2026-05-21T04:45:00Z — Closed one of the two pending items:
+  fixed `api_runner.py:115` stale install string
+  (`ucx_hermes[api]` → `hermes-server[api]`; commit `23ae664`);
+  Hermes suite 447/447, conformance 31/31; recorded in CHANGELOG
+  `[Unreleased] Fixed`. The **workflow relocation remains
+  user-only** — the in-container GitHub App lacks the `workflows`
+  permission, so `.github/workflows/**` pushes are rejected; the
+  files stay staged at `plans/workflows-pending/` until the user
+  `git mv`'s them from a local clone (commands in
+  `plans/P4-T3-PLAN.md`). The larger carried issues (plugin
+  legacy-vs-new layer model; ~150 stale `framework/<X>` refs)
+  are post-v1.0 content migrations, not quick completions —
+  scoped into Phase 5 / post-v1.0.
 - 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
   report). Six artifacts landed:
   - `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
