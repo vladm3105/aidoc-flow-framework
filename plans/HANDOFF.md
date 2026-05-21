@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T04:15:00Z                       |
+| Last updated  | 2026-05-21T04:30:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Phase 4 complete** (`v0.5.0`) — Phase 5 next, pending (a) tag publication + (b) workflow relocation, both via local-clone workaround |
-| Next task     | (a) **User action — publish `v0.5.0`** from a local clone; (b) **User action — relocate workflows** if not done; (c) Phase 5 — Cutover (legacy/ removal, root `.claude/` removal, `v1.0.0`) |
+| Current phase | **Phase 4 formally closed** (`v0.5.0` published; 8 tags on remote) — Phase 5 (Cutover) next |
+| Next task     | Phase 5 — Cutover (→ `v1.0.0`): remove `legacy/` + root `.claude/`; address P4 carried known issues; begins with P5-T0 audit. (Workflow relocation from P4-T3 still pending, independent.) |
 
 ## Progress
 
@@ -301,6 +301,13 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   in-container tag push 403'd as expected (4th occurrence —
   P1-T8, P2-T6, P3-T5, P4-T5). Verify record at
   `plans/P4-T5-VERIFY.md`. **Phase 4 structurally closed.**
+- 2026-05-21T04:30:00Z — User published `v0.5.0` from a local
+  clone (initial push didn't land; the local tag existed and
+  `git push origin v0.5.0` transmitted it). `git ls-remote --tags
+  origin` now returns 8 tags; `v0.5.0^{}` dereferences to the
+  close commit `954d8da`. **Phase 4 formally closed.** Project
+  moves into Phase 5 (Cutover). Workflow relocation from P4-T3
+  remains an independent pending user action.
 - 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
   report). Six artifacts landed:
   - `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring

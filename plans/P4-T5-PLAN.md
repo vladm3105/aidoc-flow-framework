@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P4-T5                                |
 | Depends on | P4-T0…T4 done                        |
-| Status     | DONE (pending tag publication) — 2026-05-21T04:15:00Z |
+| Status     | DONE — 2026-05-21T04:30:00Z          |
 | Feeds      | Phase 5 — Cutover                    |
 
 ## Objective
@@ -425,3 +425,25 @@ git push origin claude/multi-platform-migration-AamWB
 ```
 
 Both user actions are independent and can run in any order.
+
+## Tag publication confirmed (2026-05-21T04:30:00Z)
+
+User published `v0.5.0` from a local clone (after an initial push
+that didn't land — the local tag existed but `git push origin
+v0.5.0` was needed to transmit it). `git ls-remote --tags origin`
+now returns **8 tags**; `v0.5.0^{}` dereferences to the P4-T5 close
+commit `954d8da`. **Phase 4 formally closed.**
+
+```
+d939d8d…  refs/tags/v0.5.0       (annotated, P4 close)
+954d8da…  refs/tags/v0.5.0^{}    -> P4-T5 close commit
+```
+
+Full tag landscape (8 tags):
+`v0.1.0` (P0), `v0.2.0` + `framework/v0.1.0` (P1), `v0.3.0` +
+`hermes/v0.1.0` (P2), `v0.4.0` + `claude-code-plugin/v0.1.0` (P3),
+`v0.5.0` (P4).
+
+Status ticks to DONE — the project moves into Phase 5 (Cutover).
+The workflow-relocation user action (carry-over from P4-T3) remains
+independent and can happen anytime before Phase 5 close.

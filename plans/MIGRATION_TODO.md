@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T04:15:00Z                       |
+| Last updated     | 2026-05-21T04:30:00Z                       |
 
 ---
 
@@ -260,8 +260,9 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   to 8 rows. Annotated tag `v0.5.0` created locally on the close
   commit; in-container tag push 403'd as expected (4th occurrence
   — P1-T8, P2-T6, P3-T5, P4-T5). Verify record at
-  `plans/P4-T5-VERIFY.md`. **Phase 4 structurally closed;
-  awaiting tag publication.** DONE 2026-05-21T04:15:00Z.
+  `plans/P4-T5-VERIFY.md`. **Phase 4 formally closed** —
+  `v0.5.0` published on the remote (8 tags total; `v0.5.0^{}` →
+  `954d8da`). DONE 2026-05-21T04:30:00Z.
 
 ## Phase 5 — Cutover → `v1.0.0`
 
