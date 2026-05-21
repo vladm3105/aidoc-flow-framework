@@ -1,97 +1,86 @@
 # CLAUDE.md — Project Memory
 
-Persistent context for the **multi-platform migration** of the AI Doc Flow
-Framework. Auto-loaded every session. Keep it short and current.
+Persistent context for the **AI Doc Flow Framework**. Auto-loaded every
+session. Keep it short and current.
 
 ## What this project is
 
-Delivering the document-flow framework as **one engine-agnostic specification
+The document-flow framework, delivered as **one engine-agnostic specification
 (`framework/`) with two independent platforms**:
 
 - **Platform A — Hermes AI** — MCP-server engine (`platforms/hermes/`).
 - **Platform B — Claude Code plugin** — native Claude Code engine, no MCP
   (`platforms/claude-code-plugin/`).
 
-The platforms share the `framework/` spec and nothing else.
+The platforms share the `framework/` spec and nothing else. Both pass the same
+shared conformance suite (`tests/conformance/`). The `framework/` spec defines
+the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
-## Current state
+## Durable conventions
 
-- **Working branch:** `claude/multi-platform-migration-AamWB` — all work goes
-  here. `main` is locked; never push to it without explicit permission.
-- **Phase:** Phase 1 — Framework Spec Extraction (Phase 0 complete; Phase 1
-  Step 0 legacy isolation complete).
-- The repo is mid-restructure — root holds the new project; the frozen
-  pre-migration project lives under `legacy/`.
+- **The framework spec is the contract.** Engine-agnostic; carries no platform
+  names or runtime code. Each platform declares the spec version it conforms to
+  in `platforms/<name>/FRAMEWORK_SPEC_VERSION`, which must match
+  `framework/VERSION`.
+- **Conformance must stay green.** `tests/conformance/` is the runnable
+  contract; never weaken a check to make it pass — fix the spec or the
+  platform.
+- **Single source of truth for templates (D-0013).** Platforms consume
+  `framework/layers/<NN>_<X>/`; they never ship their own copies.
+- **Tagging:** `docs/TAGGING.md` — release tags `vX.Y.Z` (project),
+  `framework/vX.Y.Z`, `<platform>/vX.Y.Z`; `mark/<slug>` bookmarks. `VERSION`
+  files hold bare SemVer; the tag adds the `v` + namespace.
+- **Versioning streams are independent** (`docs/PROJECT.md` §2): project,
+  framework spec, and each platform version separately.
 
-## Rules
+## Development workflow (guidance)
 
-- **Legacy is frozen.** `legacy/` is read-only history. **Copy** content out of
-  it and adapt — never move or edit files in place. `legacy/` is removed at the
-  Phase 5 cutover.
-- **Never push to `main`.** Only the working branch above.
-- Legacy CI is disabled (parked in `legacy/github-workflows-disabled/`).
+Recommended flow for non-trivial changes — plan → review → implement →
+verify → land:
 
-## Development workflow
+1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
+   code.
+2. **Review (≥2 passes)** — record findings in the plan's `## Review log`;
+   harden until a pass finds nothing.
+3. **Implement**, updating the plan with ISO-stamped progress.
+4. **Verify** — run the conformance suite + the platform's own tests; nothing
+   is "done" until they pass.
+5. **Land** — one logical change per commit, conventional prefix (`docs:`,
+   `feat:`, `fix:`, `refactor:`, `chore:`); update `CHANGELOG.md` / `ROADMAP.md`
+   as needed.
 
-Every change follows this flow:
-
-1. **Plan.** Write the plan into `plans/` before touching code — start from
-   `plans/PLAN-TEMPLATE.md`.
-2. **Review — pass 1.** Re-read the plan for gaps, missing cases, and likely
-   bugs. Record findings as a timestamped entry in the plan's `## Review log`.
-3. **Harden, then review again.** Fix every issue found, then do a *second*
-   review pass and record it as another `## Review log` entry (findings, or an
-   explicit "no new findings"). Repeat until a pass finds nothing. A plan is
-   **not ready** to present, hand off, or implement until its `## Review log`
-   shows **at least two** ISO-stamped passes — never present a plan or call
-   `ExitPlanMode` before then.
-4. **Implement.** Execute the plan. Update the plan file with progress and
-   state/status as you go — stamp every update with an ISO 8601 timestamp
-   (`YYYY-MM-DDThh:mm:ssZ`).
-5. **Verify.** Run the applicable validators / conformance checks. Nothing is
-   "done" until they pass.
-6. **Land.** One logical change per commit, with a conventional prefix
-   (`docs:`, `refactor:`, `chore:`, `fix:`, `feat:`). On every commit/push,
-   update `CHANGELOG.md` and `ROADMAP.md` as needed, and tick
-   `plans/MIGRATION_TODO.md`.
-
-Record every non-obvious choice in `plans/DECISIONS.md` (ISO-stamped) so the
-rationale survives across sessions.
-
-Hooks may be added to automate the mechanical parts (timestamping, syncing the
-tracker / changelog / roadmap). Keep judgment-based steps (planning, review)
-manual.
+Record non-obvious choices in `plans/DECISIONS.md` (ISO-stamped).
 
 ## Session handoff
 
 Sessions run in ephemeral containers — preserve continuity in the repo:
 
-- Maintain `plans/HANDOFF.md` — current progress, achievements, next steps,
-  open questions. Refresh it at meaningful milestones.
-- **Before any context compaction**, write/refresh the handoff record and
-  update `CHANGELOG.md` so no progress is lost.
+- Maintain `plans/HANDOFF.md` — progress, achievements, next steps, open
+  questions; refresh at milestones and before any context compaction.
 - Start each session by reading `plans/HANDOFF.md`.
-
-## Definition of done
-
-A task is done only when: code/docs changed, **committed and pushed**, plan
-status updated with an ISO timestamp, `CHANGELOG.md` / `ROADMAP.md` synced, and
-applicable validators/conformance checks pass. Only then tick `[x]` in
-`plans/MIGRATION_TODO.md`.
+- **Only committed + pushed work survives.** Commit messages must not contain
+  model identifiers.
 
 ## Where things are
 
-- `ROADMAP.md` — stable phased plan (Phase 0 → cutover v1.0.0).
-- `plans/MIGRATION_TODO.md` — **live task tracker**; update it as work lands
-  (check `[x]` only when committed + pushed).
-- `plans/README.md` — migration workspace conventions.
-- `plans/HANDOFF.md` — session continuity: progress, achievements, next steps.
-- `plans/DECISIONS.md` — log of non-obvious decisions and their rationale.
-- `.claude/hooks/` — automation: pre-compact snapshot, session-start handoff.
+- `framework/` — the engine-agnostic SDD specification (layers, registry,
+  governance). `framework/README.md` is the spec overview.
+- `platforms/hermes/` — Platform A (MCP server).
+- `platforms/claude-code-plugin/` — Platform B (Claude Code plugin).
+- `tests/conformance/` — the shared conformance suite (framework + platform
+  checks).
+- `ROADMAP.md` — phased delivery plan (Phase 0 → cutover `v1.0.0`).
+- `CHANGELOG.md` — project-level changelog.
 - `docs/PROJECT.md` — versioning, branching, conformance, change management.
-- `docs/REPO_STRUCTURE.md` — target layout + `legacy/` → target mapping.
+- `docs/REPO_STRUCTURE.md` — repository layout (as-built).
+- `docs/TAGGING.md` — git-tag policy. `docs/PARITY.md` — platform comparison.
+- `plans/` — the migration record (per-task plans, audits, verify records,
+  `DECISIONS.md`, `HANDOFF.md`, `MIGRATION_TODO.md`).
 
-## Environment
+## Pre-migration history
 
-Ephemeral cloud container, re-cloned each session. **Only committed + pushed
-work survives.** Commit messages must not contain model identifiers.
+This project was migrated from the pre-migration `ucx_framework` (v0.20.4).
+The pristine pre-migration project is preserved on the protected, read-only
+branch **`legacy-ucx-v3.2-read-only`**. Change management (the gated CHG
+process) returns post-cutover to govern `framework/` spec changes — see
+`docs/PROJECT.md` §6.

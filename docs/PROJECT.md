@@ -38,12 +38,15 @@ project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
   work lands here.
 - **Milestone tags:** each completed phase is tagged (`v0.1.0` … `v0.5.0`,
   then `v1.0.0` at cutover).
-- **Cutover:** at Phase 5 the new project replaces `main`. Until then `main`
-  remains the legacy `ucx_framework`.
-- **`main` is protected (locked / read-only) for the duration of the
-  migration.** No changes land on `main` until the Phase 5 cutover; all
-  migration work happens on `claude/multi-platform-migration-AamWB`.
-- Platforms tag their own releases independently once scaffolded.
+- **Cutover:** at Phase 5 the new project replaces `main`. The pre-migration
+  `main` (the legacy `ucx_framework`) is preserved beforehand on the
+  protected, read-only branch **`legacy-ucx-v3.2-read-only`**, so the
+  replacement is lossless.
+- **`main` was protected (locked / read-only) for the duration of the
+  migration** — all migration work happened on
+  `claude/multi-platform-migration-AamWB`; `main` is replaced (force-updated
+  to the migration branch) only at the Phase 5 cutover.
+- Platforms tag their own releases independently.
 
 ### Tag namespaces
 
@@ -65,7 +68,7 @@ tags, never move a release tag, disposable bookmarks).
 | Hermes re-homed | 2 | `v0.3.0` | Hermes under `platforms/`; passes conformance |
 | Plugin built | 3 | `v0.4.0` | Plugin built, Hermes-free; passes conformance |
 | Independence | 4 | `v0.5.0` | Both platforms green; independent changelogs + CI |
-| Cutover | 5 | `v1.0.0` | New project replaces `main`; legacy archived |
+| Cutover | 5 | `v1.0.0` | New project replaces `main`; legacy archived as the `legacy-ucx-v3.2-read-only` branch |
 
 ## 5. Conformance Model
 

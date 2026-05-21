@@ -1,8 +1,9 @@
 # Repository Structure — AI Doc Flow Framework (Multi-Platform)
 
-> Status: PLANNED target structure. Created 2026-05-18.
-> This is the layout the repository converges to at cutover (Phase 5),
-> when the new project replaces `main`.
+> Status: **as-built (post-migration).** Created 2026-05-18; the repository
+> converged to this layout through Phases 1–5. The `legacy/` tree has been
+> removed (preserved as the protected `legacy-ucx-v3.2-read-only` branch);
+> the new project replaces `main` at the Phase 5 cutover (`v1.0.0`).
 
 ## Principles
 
@@ -54,11 +55,14 @@ aidoc-flow-framework/
     └── conformance/                 Shared suite both platforms must pass
 ```
 
-## Legacy → Target Mapping
+## Legacy → Target Mapping (historical record)
 
-The pre-migration project is now frozen under `legacy/` (see `legacy/README.md`).
+This table records **where the pre-migration content went** during
+Phases 1–3. The `legacy/` tree it refers to has since been removed from the
+working tree (Phase 5 / P5-T2) and preserved intact on the protected
+`legacy-ucx-v3.2-read-only` branch.
 
-| Legacy (under `legacy/`)                         | Target location                         |
+| Legacy (was under `legacy/`)                     | Target location                         |
 |--------------------------------------------------|------------------------------------------|
 | `legacy/ucx_flow_v3/01_BRD … 08_IPLAN/`          | `framework/layers/`                      |
 | `legacy/ucx_flow_v3/LAYER_REGISTRY.yaml`         | `framework/registry/`                    |
@@ -69,8 +73,11 @@ The pre-migration project is now frozen under `legacy/` (see `legacy/README.md`)
 | `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
 | `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |
 
-> Content is **copied** out of `legacy/` and adapted during Phases 1–3; the
-> legacy copy stays untouched. `legacy/` is removed at/after the Phase 5 cutover.
-> `.claude/` stays at repo root (active skills) and is ported into the plugin
-> in Phase 3.
+> Content was **copied** out of `legacy/` and adapted during Phases 1–3 (the
+> legacy copy stayed untouched throughout). At the Phase 5 cutover the
+> `legacy/` tree was **removed** from the working tree (P5-T2) and the pristine
+> pre-migration project is preserved on the protected, read-only branch
+> **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was ported
+> into the Claude Code plugin in Phase 3; the root loader is removed at cutover
+> (the plugin is the distribution).
 

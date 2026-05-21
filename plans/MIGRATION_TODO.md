@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T07:20:00Z                       |
+| Last updated     | 2026-05-21T08:05:00Z                       |
 
 ---
 
@@ -306,9 +306,16 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   sequenced LATE (disables this session's hooks). Migration-era
   `.claude/` survives in git history; archive holds pre-migration
   `.claude/`. CLAUDE.md (root file) survives + is rewritten in P5-T4.
-- [ ] P5-T4 — Finalize project docs (README, REPO_STRUCTURE, PROJECT,
-  ROADMAP, CLAUDE.md) — incl. reconciling the legacy-removal language
-  to name the `legacy-ucx-v3.2-read-only` archive branch.
+- [x] P5-T4 — Finalized project docs: README (dropped migration
+  framing + `legacy/` from the diagram; platform matrix → release
+  tags; added archive-branch + PARITY/TAGGING pointers);
+  REPO_STRUCTURE (PLANNED → as-built; legacy mapping reframed as
+  history; footer names the archive branch); PROJECT (§3 + §4
+  cutover reconciled to the archive branch); CLAUDE.md (rewritten to
+  post-migration project memory — dropped migration-era rules, kept
+  durable conventions + workflow-as-guidance + archive pointer).
+  ROADMAP Phase-5 marking deferred to P5-T6. All 7 verify gates
+  green; conformance 31/31; doc-only. DONE 2026-05-21T08:05:00Z.
 - [ ] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
 - [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
   + platform stables (user local-clone); **`main` replacement
