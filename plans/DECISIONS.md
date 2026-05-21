@@ -10,34 +10,50 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
-## D-0014 — Retain `legacy/` + root `.claude/` in-tree; archive the pre-migration project as a protected branch
+## D-0014 — Archive the pre-migration project as a protected branch, then remove `legacy/` + root `.claude/` from the working branch at cutover
 
-- **Date:** 2026-05-21T05:50:00Z
-- **Decision:** At the Phase 5 cutover the project does **not** delete
-  `legacy/` or root `.claude/` from the working branch (→ new `main`).
-  Both are retained in-tree. The pristine pre-migration `ucx_framework`
-  project (at its original root layout) is preserved separately as the
-  **protected, read-only branch `legacy-ucx-v3.2-read-only`** (created off
-  `main` at commit `491e8db`, byte-identical to it).
-- **Why:** User directive ("do not remove legacy files"; "keep legacy root
-  `.claude/` too"). A protected branch is a more discoverable and
-  enforceably-immutable archive than relying on git history after a
-  deletion, and keeping the dev-time root `.claude/` in-tree lets the
-  repository keep dogfooding its own Claude Code setup. Deleting nothing
-  also removes the only destructive operations Phase 5 had, lowering
-  cutover risk.
-- **Overrides:** the prior cutover policy ("`legacy/` is removed at/after
-  the Phase 5 cutover" — `docs/REPO_STRUCTURE.md`; "legacy archived" —
-  `docs/PROJECT.md` §4 / `ROADMAP.md` Phase 5; "`legacy/` is removed at the
-  Phase 5 cutover" — `CLAUDE.md`). These are reconciled to "legacy
-  retained in-tree; pre-migration project preserved as the
-  `legacy-ucx-v3.2-read-only` branch" in P5-T4.
-- **Consequence:** Phase 5 drops its two destructive tasks (P5-T2 remove
-  `legacy/`, P5-T3 remove root `.claude/`); cutover becomes design → docs
-  finalization → verify → close. The migration plan docs that cite
-  `legacy/...` paths remain valid (the dir stays in-tree). The
-  `CLAUDE.md` "Legacy is frozen / copy-don't-move" rules still hold for
-  the in-tree `legacy/` (it remains read-only history).
+- **Date:** 2026-05-21T05:50:00Z (revised same day — see Note)
+- **Decision:** Preserve the pristine pre-migration `ucx_framework`
+  project (original root layout) as the **protected, read-only branch
+  `legacy-ucx-v3.2-read-only`** (created off `main` at commit `491e8db`,
+  byte-identical; branch protection enabled). **Then**, at the Phase 5
+  cutover, remove `legacy/` and root `.claude/` from the working branch
+  (→ new `main`) so the shipped project is clean. The archive branch +
+  git history are the durable record.
+- **Why:** User directive — preserve everything ("do not remove legacy
+  files"; ensure root `.claude/` is captured too), **then** clean up the
+  working branch ("keeping legacy files in [a] separated archived branch
+  for future reference then clean up current branch"). A protected branch
+  is a more discoverable, enforceably-immutable archive than relying on
+  post-deletion git history; with it in place the working-branch removals
+  lose nothing substantive.
+- **Safety (verified before restoring the removals):** the archive branch
+  contains all 7 legacy trees (`ucx_flow_v3`, `ucx_hermes`, `mcp_ucx`,
+  `ai_dev_ssd_flow_v2`, `ucx_kb`, `ucx_knowledge`, `hermes_agent_skills`)
+  and root `.claude/`. **Caveat:** the archive holds the *pre-migration*
+  `.claude/` (236 files, no hooks); the working branch's *migration-era*
+  `.claude/` (240 files, incl. the 3 migration hooks) survives removal
+  only in the working branch's git history — acceptable, as those hooks
+  are obsolete migration scaffolding and the skills were productized into
+  `platforms/claude-code-plugin/`.
+- **Aligns with** the original cutover policy ("`legacy/` removed /
+  archived at the Phase 5 cutover" — `docs/REPO_STRUCTURE.md`,
+  `docs/PROJECT.md` §4, `ROADMAP.md` Phase 5, `CLAUDE.md`) — now realised
+  via the archive branch rather than history-only deletion. P5-T4
+  reconciles those docs to name the `legacy-ucx-v3.2-read-only` branch as
+  the archive.
+- **Consequence:** Phase 5 keeps its two removal tasks **restored**
+  (P5-T2 remove `legacy/`, P5-T3 remove root `.claude/`), each gated on
+  the archive branch existing (it does) + explicit confirmation at
+  execution; root `.claude/` removal is sequenced **late** (it disables
+  the session's own hooks). `CLAUDE.md` is **rewritten** to post-migration
+  memory in P5-T4 (it's a root file, not under `.claude/`, so it survives
+  the `.claude/` removal).
+- **Note (revision):** an interim reading of the user's directives
+  (recorded briefly the same day) had this as "retain `legacy/` + root
+  `.claude/` in-tree, no removals." Once the protected archive branch was
+  created and confirmed, the user restored the original archive-then-clean
+  intent; this entry reflects the final decision.
 
 ## D-0013 — Framework templates are the single source of truth; platforms consume, not duplicate
 

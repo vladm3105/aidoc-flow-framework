@@ -178,59 +178,65 @@ P5-T0 is **paper only**; nothing is removed and `main` is untouched.
 - **G12. No new findings on structure / verify / risks.** Plan
   is internally consistent and paper-only. Ready to present.
 
-## Phase 5 task breakdown (revised 2026-05-21T05:50:00Z per D-0014)
+## Phase 5 task breakdown (revised 2026-05-21T05:55:00Z per D-0014, final)
 
-**Revision:** the user directed that `legacy/` and root `.claude/`
-be **retained in-tree** (D-0014); the pristine pre-migration project
-is preserved as the protected branch `legacy-ucx-v3.2-read-only`.
-This **drops the two destructive tasks** (former P5-T2 remove
-`legacy/`, former P5-T3 remove root `.claude/`). Cutover becomes a
-no-deletion phase — the only consequential act left is the
-user-authorized `main` replacement.
-
-Task IDs preserved (P5-T2 / P5-T3 marked cancelled, like P2-T4 was
-folded) so cross-references stay stable.
+**Revision history:** the user first said "do not remove legacy
+files," then settled on the **archive-then-clean** model: preserve
+the pristine pre-migration project as the protected branch
+`legacy-ucx-v3.2-read-only` (done), **then** remove `legacy/` + root
+`.claude/` from the working branch. The two removal tasks (P5-T2,
+P5-T3) are therefore **restored** — now safe because the archive
+branch holds everything substantive (verified). Each removal is
+gated on the archive existing (it does) + explicit confirmation at
+execution.
 
 - **P5-T1 — Design.** Resolve the remaining open questions (audit
-  §6, minus the now-resolved removal questions): `main`-replacement
+  §6, minus the resolved removal scope): `main`-replacement
   mechanism (merge vs fast-forward vs reset); whether the plugin
   layer-model gap blocks `v1.0.0` (audit recommends post-v1.0);
   whether `framework/` tags `v1.0.0` or stays `0.1.0`; per-platform
-  stable tags at cutover; `plans/` disposition. (`CLAUDE.md` is
-  **retained + rewritten**, not removed — root `.claude/` stays per
-  D-0014; the rewrite folds into P5-T4.) Output:
+  stable tags at cutover; `plans/` disposition. Output:
   `plans/P5-T1-DESIGN.md`.
-- ~~**P5-T2** — Remove `legacy/`.~~ **Cancelled (D-0014).** `legacy/`
-  is retained in-tree; the pre-migration project is archived as the
-  `legacy-ucx-v3.2-read-only` branch.
-- ~~**P5-T3** — Remove root `.claude/`.~~ **Cancelled (D-0014).**
-  Root `.claude/` is retained in-tree (dogfoods the repo's own
-  Claude Code setup). The `CLAUDE.md` post-migration rewrite (still
-  needed) folds into P5-T4.
+- **P5-T2 — Remove `legacy/`** (restored). `git rm -r legacy/`
+  (~2276 files). **Destructive — confirmation gate; precondition:
+  archive branch `legacy-ucx-v3.2-read-only` exists on the remote
+  (✓).** Verify: no surviving-tree runtime reference to `legacy/`
+  (P5-T0 §1 confirmed framework/ + tests/ + .mcp.json clean; the
+  few hits are documentary / known-stale-refs); conformance 31/31;
+  Hermes suite unaffected.
+- **P5-T3 — Remove root `.claude/`** (restored). `git rm -r .claude/`
+  (skills, agents, commands, the 3 migration hooks, settings) —
+  superseded by `platforms/claude-code-plugin/`. **Destructive +
+  session-affecting — confirmation gate; sequenced LATE** (it
+  disables this session's own hooks; commit+push immediately after).
+  The migration-era `.claude/` survives in working-branch git
+  history (the archive holds the pre-migration `.claude/`).
 - **P5-T4 — Finalize project docs.** `README.md` (platform matrix;
-  drop migration-in-progress language; `legacy/` stays in the
-  architecture diagram, annotated as retained-history);
-  `docs/REPO_STRUCTURE.md` (PLANNED → as-built; **reconcile the
-  legacy-removal language** to D-0014); `docs/PROJECT.md` (cutover
-  note + legacy-retention reconciliation); `ROADMAP.md` (Phase 5
-  marked; "legacy archived" → "legacy retained + archive branch");
-  `CLAUDE.md` (migration-in-progress → post-migration project
-  memory, retaining the in-tree-`legacy/`-is-frozen rule).
+  drop migration-in-progress language; drop `legacy/` from the
+  architecture diagram — it's removed from the tree, pointer to the
+  archive branch instead); `docs/REPO_STRUCTURE.md` (PLANNED →
+  as-built; legacy-removal realised via the archive branch);
+  `docs/PROJECT.md` (cutover note naming the archive branch);
+  `ROADMAP.md` (Phase 5 marked; "legacy archived" → archived as the
+  `legacy-ucx-v3.2-read-only` branch); `CLAUDE.md` (rewrite
+  migration-in-progress → post-migration project memory; `CLAUDE.md`
+  is a **root file**, not under `.claude/`, so it survives P5-T3).
 - **P5-T5 — Verify.** Final consolidated gate: conformance 31/31;
   Hermes 447/447; plugin smoke; both platforms' VERSION files;
-  archive branch reachable (`legacy-ucx-v3.2-read-only` on remote);
-  docs reconciled (no stale "legacy removed at cutover" language);
-  doc finalization complete. Verify record at
-  `plans/P5-T5-VERIFY.md`.
+  removal targets absent from the working branch; archive branch
+  reachable on remote; no dangling runtime references; doc
+  finalization complete. Verify record at `plans/P5-T5-VERIFY.md`.
 - **P5-T6 — Close + cutover.** Cut `CHANGELOG.md [1.0.0]`; mark
-  Phase 5 complete + cutover in `ROADMAP.md`; create annotated
-  tags per P5-T1's tag-scope decision. **The `main` replacement is
-  a user-authorized act** — P5-T6 prepares the branch and hands the
+  Phase 5 complete + cutover in `ROADMAP.md`; create annotated tags
+  per P5-T1's tag-scope decision. **The `main` replacement is a
+  user-authorized act** — P5-T6 prepares the branch and hands the
   user the exact merge/push commands; the in-container session does
   not push to `main`.
 
 Two operations are **never** done in-container: the `main`
 replacement (forbidden by the lock; user-authorized) and all tag
 pushes (5th `refs/tags/*` 403; user local-clone). Both are baked
-into P5-T6's plan as user actions. **No destructive in-tree
-removals remain in Phase 5 (D-0014).**
+into P5-T6's plan as user actions. The two destructive removals
+(P5-T2, P5-T3) **are** in-container but each carries an explicit
+confirmation gate at execution and depends on the archive branch
+(✓ created + protected).

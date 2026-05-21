@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T05:50:00Z                       |
+| Last updated     | 2026-05-21T05:55:00Z                       |
 
 ---
 
@@ -285,15 +285,18 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   plugin gap v1.0.0-blocker or post-v1.0; per-platform stable tags;
   plans/ disposition). CLAUDE.md is retained + rewritten (not
   removed) per D-0014. Output `plans/P5-T1-DESIGN.md`.
-- [x] ~~P5-T2 — Remove `legacy/`~~ — **CANCELLED (D-0014).** `legacy/`
-  retained in-tree; pre-migration project archived as the protected
-  `legacy-ucx-v3.2-read-only` branch.
-- [x] ~~P5-T3 — Remove root `.claude/`~~ — **CANCELLED (D-0014).**
-  Root `.claude/` retained in-tree (dogfoods the repo's own Claude
-  Code setup). The CLAUDE.md post-migration rewrite folds into P5-T4.
+- [ ] P5-T2 — Remove `legacy/` (**restored**, D-0014 archive-then-clean):
+  `git rm -r legacy/`. Destructive — confirmation gate at execution;
+  precondition (archive branch `legacy-ucx-v3.2-read-only` exists +
+  protected) **met**. Verify no runtime dependency; conformance 31/31.
+- [ ] P5-T3 — Remove root `.claude/` (**restored**, D-0014): `git rm -r
+  .claude/`. Destructive + session-affecting — confirmation gate;
+  sequenced LATE (disables this session's hooks). Migration-era
+  `.claude/` survives in git history; archive holds pre-migration
+  `.claude/`. CLAUDE.md (root file) survives + is rewritten in P5-T4.
 - [ ] P5-T4 — Finalize project docs (README, REPO_STRUCTURE, PROJECT,
-  ROADMAP, CLAUDE.md) — incl. reconciling the "legacy removed at
-  cutover" language to D-0014's retain + archive-branch model.
+  ROADMAP, CLAUDE.md) — incl. reconciling the legacy-removal language
+  to name the `legacy-ucx-v3.2-read-only` archive branch.
 - [ ] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
 - [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
   + platform stables (user local-clone); **`main` replacement

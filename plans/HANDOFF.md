@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T05:50:00Z                       |
+| Last updated  | 2026-05-21T05:55:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 5 — Cutover (P5-T0 done; **D-0014 revised scope — no destructive removals**) |
-| Next task     | P5-T1 — design (remaining open questions: main-replacement mechanism, framework v1.0.0 tag, plugin-gap blocker?, per-platform stable tags, plans/ disposition). **P5-T2/T3 cancelled (D-0014): `legacy/` + root `.claude/` retained in-tree; pre-migration project archived as protected branch `legacy-ucx-v3.2-read-only`.** Only consequential cutover act left = user-authorized `main` replacement (P5-T6). Workflow relocation still pending (user). |
+| Current phase | Phase 5 — Cutover (P5-T0 done; D-0014 final — **archive-then-clean**) |
+| Next task     | P5-T1 — design (main-replacement mechanism, framework v1.0.0 tag, plugin-gap blocker?, per-platform stable tags, plans/ disposition). **P5-T2/T3 RESTORED (D-0014 final):** pre-migration project archived as the protected branch `legacy-ucx-v3.2-read-only` (done) → then remove `legacy/` (P5-T2) + root `.claude/` (P5-T3) from the working branch, each gated + confirmed at execution. `main` replacement (P5-T6) is user-authorized. Workflow relocation still pending (user). |
 
 ## Progress
 
@@ -371,15 +371,21 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
    at cutover; `plans/` disposition. (`CLAUDE.md` is retained +
    rewritten per D-0014, not removed.) Output:
    `plans/P5-T1-DESIGN.md`.
-2. Then P5-T4 (finalize docs incl. CLAUDE.md rewrite + the
-   legacy-retention reconciliation), P5-T5 (verify), P5-T6 (close +
-   cutover → `v1.0.0`; `main` replacement is **user-authorized**,
-   tags via user local-clone). **P5-T2 / P5-T3 cancelled (D-0014) —
-   no destructive removals.**
+2. Then P5-T2 (remove `legacy/` — **destructive, gated, archive
+   precondition met**), P5-T4 (finalize docs incl. CLAUDE.md
+   rewrite + legacy-removal→archive-branch reconciliation), P5-T3
+   (remove root `.claude/` — **destructive + session-affecting,
+   gated, LATE**), P5-T5 (verify), P5-T6 (close + cutover →
+   `v1.0.0`; `main` replacement is **user-authorized**, tags via
+   user local-clone).
 
-**Archive branch (done):** `legacy-ucx-v3.2-read-only` created off
-`main` (`491e8db`), protected/read-only — preserves the pristine
-pre-migration `ucx_framework` project.
+**Archive branch (done + protected):** `legacy-ucx-v3.2-read-only`
+created off `main` (`491e8db`), read-only — preserves the pristine
+pre-migration `ucx_framework` project. This is the precondition that
+makes the P5-T2/T3 working-branch removals safe (verified: all 7
+legacy trees + root `.claude/` present in the archive; caveat — the
+archive's `.claude/` is the pre-migration one, the migration-era
+hooks survive only in working-branch git history).
 
 **Independent pending user actions** (carry-overs, do anytime):
 - Relocate workflows: `git mv plans/workflows-pending/*.yml

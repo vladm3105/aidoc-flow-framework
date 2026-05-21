@@ -6,15 +6,18 @@
 | Produced by| P5-T0                                |
 | Date       | 2026-05-21T05:10:00Z                 |
 
-> **Revised 2026-05-21T05:50:00Z (D-0014).** The user directed that
-> `legacy/` and root `.claude/` be **retained in-tree**; the pristine
-> pre-migration project is preserved as the protected branch
-> `legacy-ucx-v3.2-read-only`. **The two destructive removals analysed
-> below (§1, §3, §5) are CANCELLED.** Their analysis is kept for
-> context (it confirmed the removals *would* have been safe), but
-> Phase 5 ships no in-tree deletions. The cutover reduces to docs
-> finalization + close + the user-authorized `main` replacement.
-> See D-0014 and the revised breakdown in `plans/P5-T0-PLAN.md`.
+> **Revised 2026-05-21T05:55:00Z (D-0014, final).** The cutover follows
+> an **archive-then-clean** model: the pristine pre-migration project is
+> preserved as the protected branch `legacy-ucx-v3.2-read-only` (created
+> off `main` at `491e8db`; **done + protected**), and **then** `legacy/`
+> + root `.claude/` are removed from the working branch. The removal
+> analysis below (§1, §3, §5) is therefore **active** — and its
+> conclusion ("no runtime dependency; removals safe") now also rests on
+> the archive branch holding everything substantive (verified: all 7
+> legacy trees + root `.claude/` present). Caveat: the archive holds the
+> *pre-migration* `.claude/`; the working branch's *migration-era*
+> `.claude/` (3 hooks) survives removal only in git history. See D-0014
+> and the restored breakdown in `plans/P5-T0-PLAN.md`.
 
 ## Summary
 
