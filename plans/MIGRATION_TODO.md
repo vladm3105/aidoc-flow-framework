@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T05:55:00Z                       |
+| Last updated     | 2026-05-21T06:30:00Z                       |
 
 ---
 
@@ -280,11 +280,18 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   destructive tasks carry confirmation gates. 6 open questions for
   P5-T1. See `plans/P5-T0-PLAN.md` + `plans/P5-AUDIT-cutover.md`.
   DONE 2026-05-21T05:35:00Z.
-- [ ] P5-T1 — Design: resolve the remaining open questions
-  (main-replacement mechanism; framework v1.0.0 tag or stay 0.1.0;
-  plugin gap v1.0.0-blocker or post-v1.0; per-platform stable tags;
-  plans/ disposition). CLAUDE.md is retained + rewritten (not
-  removed) per D-0014. Output `plans/P5-T1-DESIGN.md`.
+- [x] P5-T1 — Design (paper-only): 6 decisions in `plans/P5-T1-DESIGN.md`.
+  **Q1 main-replacement: force-replace** (histories diverged — FF
+  impossible; old main is the protected archive branch, so lossless;
+  user-authorized). **Q2 framework: stays `0.1.0`** (no spec change;
+  earns 1.0.0 later under post-cutover CHG). **Q3 plugin gap: not a
+  blocker** — ship v1.0.0 with the documented gap. **Q4 tags: project
+  `v1.0.0` only**; components independent (optional `hermes/v0.1.1`
+  for the api_runner fix; plugin stays `0.1.0`; framework `0.1.0`) —
+  flagged as the most-likely-override (vs a unified-1.0 launch).
+  **Q5 plans/: keep in-tree** (audit trail). **Q6 CLAUDE.md: rewrite**
+  to post-migration memory (root file; survives the `.claude/`
+  removal). DONE 2026-05-21T06:30:00Z.
 - [ ] P5-T2 — Remove `legacy/` (**restored**, D-0014 archive-then-clean):
   `git rm -r legacy/`. Destructive — confirmation gate at execution;
   precondition (archive branch `legacy-ucx-v3.2-read-only` exists +
