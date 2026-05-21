@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T04:45:00Z                       |
+| Last updated  | 2026-05-21T05:35:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Phase 4 formally closed** (`v0.5.0` published; 8 tags on remote) — Phase 5 (Cutover) next |
-| Next task     | (a) **User action — relocate workflows** (in-container can't push `.github/workflows/`); (b) Phase 5 — Cutover (→ `v1.0.0`), begins with P5-T0 audit. The `api_runner.py:115` carried issue is **fixed** (commit `23ae664`). |
+| Current phase | Phase 5 — Cutover (P5-T0 audit done) |
+| Next task     | P5-T1 — design (6 open questions: main-replacement mechanism, framework v1.0.0 tag, plugin-gap blocker?, CLAUDE.md rewrite/remove, plans/ disposition, per-platform stable tags). Destructive removals (P5-T2 legacy/, P5-T3 root .claude/) and the user-authorized `main` replacement (P5-T6) lie ahead — each gated. Workflow relocation still pending (user). |
 
 ## Progress
 
@@ -308,6 +308,20 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   close commit `954d8da`. **Phase 4 formally closed.** Project
   moves into Phase 5 (Cutover). Workflow relocation from P4-T3
   remains an independent pending user action.
+- 2026-05-21T05:35:00Z — Completed P5-T0 (cutover audit + task
+  breakdown). `plans/P5-AUDIT-cutover.md` inventories the two
+  destructive removal targets (`legacy/` 28M/2275 files; root
+  `.claude/` loader) and confirms **no runtime dependency** from
+  the surviving tree on either. Classifies every cutover operation
+  by reversibility × authority — the `main` replacement and all
+  tag pushes are **user-only** (main is locked per docs/PROJECT.md
+  §3; tags hit the 5th refs/tags/* 403). Recommends shipping
+  `v1.0.0` with the documented plugin layer-model gap (content
+  migration → post-v1.0). 6-task breakdown with confirmation gates
+  on the destructive removals; root `.claude/` removal sequenced
+  late (it disables the session's own hooks). 6 open questions for
+  P5-T1. **The destructive steps and the main replacement will each
+  be surfaced for explicit confirmation when reached.**
 - 2026-05-21T04:45:00Z — Closed one of the two pending items:
   fixed `api_runner.py:115` stale install string
   (`ucx_hermes[api]` → `hermes-server[api]`; commit `23ae664`);
@@ -349,30 +363,23 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Next steps
 
-1. **User action — publish `v0.5.0` from a local clone.** The
-   in-container session created `v0.5.0` locally on close commit
-   `954d8da`; the tag push 403'd as expected (fourth occurrence
-   of the in-container `refs/tags/*` restriction). Exact commands
-   in `plans/P4-T5-PLAN.md` Implementation note.
-2. **User action — relocate workflow files** (if not already
-   done; carry-over from P4-T3). `git mv plans/workflows-pending/*.yml
-   .github/workflows/` from the same local clone. Commands in
-   `plans/P4-T3-PLAN.md` Implementation note. Independent of
-   action #1; either order works.
-3. **Phase 5 — Cutover** (→ `v1.0.0`). Final phase per
-   `ROADMAP.md`:
-   - Remove `legacy/` (the frozen pre-migration trees).
-   - Remove root `.claude/` (the dev-time skill loader; superseded
-     by `platforms/claude-code-plugin/`).
-   - Address the Phase 4 carried known issues (api_runner.py:115
-     stale install string; per-skill content migration for plugin
-     legacy-vs-new layer model; ~150 stale `framework/<X>` refs).
-   - Cut `CHANGELOG.md [1.0.0]`; mark Phase 5 complete in
-     ROADMAP; tag `v1.0.0` + per-platform stable releases
-     (`hermes/v1.0.0` + `claude-code-plugin/v1.0.0`).
-   - New project replaces `main`.
-   Begins with a P5-T0 audit + task breakdown analogous to
-   P2-T0 / P3-T0 / P4-T0.
+1. **P5-T1 — Design.** Resolve the 6 open questions from the P5-T0
+   audit (`plans/P5-AUDIT-cutover.md` §6): `main`-replacement
+   mechanism; whether `framework/` tags `v1.0.0` or stays `0.1.0`;
+   whether the plugin layer-model gap blocks `v1.0.0` (audit
+   recommends post-v1.0); `CLAUDE.md` rewrite vs remove; `plans/`
+   disposition (keep/archive/trim); per-platform stable tags at
+   cutover. Output: `plans/P5-T1-DESIGN.md`.
+2. Then P5-T2 (remove `legacy/` — **destructive, gated**), P5-T4
+   (finalize docs), P5-T3 (remove root `.claude/` + rewrite
+   `CLAUDE.md` — **destructive + session-affecting, gated, late**),
+   P5-T5 (verify), P5-T6 (close + cutover → `v1.0.0`; `main`
+   replacement is **user-authorized**, tags via user local-clone).
+
+**Independent pending user actions** (carry-overs, do anytime):
+- Relocate workflows: `git mv plans/workflows-pending/*.yml
+  .github/workflows/` from a local clone (P4-T3; in-container
+  can't push `.github/workflows/`).
 
 ## Open questions
 

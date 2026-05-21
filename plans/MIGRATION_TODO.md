@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T04:45:00Z                       |
+| Last updated     | 2026-05-21T05:35:00Z                       |
 
 ---
 
@@ -266,9 +266,33 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 ## Phase 5 — Cutover → `v1.0.0`
 
-- [ ] P5-T1 — New project replaces `main`.
-- [ ] P5-T2 — Remove `legacy/` (or archive per final decision).
-- [ ] P5-T3 — Tag `v1.0.0`; platforms tag first stable releases.
+- [x] P5-T0 — Cutover audit + task breakdown: inventoried the two
+  destructive removal targets (`legacy/` 28M/2275 files; root
+  `.claude/` dev-time loader) and confirmed **no runtime dependency**
+  from the surviving tree on either (framework/ + tests/ + .mcp.json
+  clean; the few hits are documentary or already-known stale refs).
+  Classified every cutover operation by reversibility × authority —
+  `main` replacement + all tag pushes are **user-only**. Carried-
+  issue disposition: ship `v1.0.0` with the documented plugin
+  layer-model gap (post-v1.0 content fix); `api_runner.py` already
+  fixed. 6-task breakdown (T1 design → T2 remove legacy → T4
+  finalize docs → T3 remove .claude/ → T5 verify → T6 close+cutover);
+  destructive tasks carry confirmation gates. 6 open questions for
+  P5-T1. See `plans/P5-T0-PLAN.md` + `plans/P5-AUDIT-cutover.md`.
+  DONE 2026-05-21T05:35:00Z.
+- [ ] P5-T1 — Design: resolve 6 open questions (main-replacement
+  mechanism; framework v1.0.0 tag or stay 0.1.0; plugin gap
+  v1.0.0-blocker or post-v1.0; CLAUDE.md rewrite vs remove; plans/
+  disposition; per-platform stable tags). Output `plans/P5-T1-DESIGN.md`.
+- [ ] P5-T2 — Remove `legacy/` (destructive — confirmation gate).
+- [ ] P5-T3 — Remove root `.claude/` + finalize `CLAUDE.md`
+  (destructive + session-affecting — confirmation gate; sequenced late).
+- [ ] P5-T4 — Finalize project docs (README, REPO_STRUCTURE, PROJECT,
+  ROADMAP).
+- [ ] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
+- [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
+  + platform stables (user local-clone); **`main` replacement
+  (user-authorized)**.
 
 ---
 
