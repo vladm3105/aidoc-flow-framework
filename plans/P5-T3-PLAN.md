@@ -4,7 +4,7 @@
 |------------|--------------------------------------|
 | Task       | P5-T3                                |
 | Depends on | P5-T1 design, P5-T2 (legacy/ removed), P5-T4 (docs finalized), D-0014 |
-| Status     | PLANNED — 2026-05-21T08:20:00Z       |
+| Status     | DONE — 2026-05-21T08:55:00Z          |
 | Feeds      | P5-T5 (verify), P5-T6 (cutover)      |
 
 ## Objective
@@ -201,3 +201,41 @@ and push without delay so a post-removal compaction can't lose work.
 - **G11. No new findings.** Plan internally consistent; confirmation
   gate + hook-preservation choice explicit. Ready to run pre-flight,
   then request go-ahead.
+
+## Implementation note (2026-05-21T08:55:00Z)
+
+Executed after explicit user confirmation. User chose **option A
+(straight removal; hooks → git-history-only)** and **Go**.
+`git rm -r .claude/` removed **240 tracked files** (80,676
+line-deletions). All verify gates green:
+
+- **V1.** `git ls-files .claude/` == 0. The `.claude/` dir lingers
+  on disk holding only the **gitignored `settings.local.json`**
+  (won't propagate to the new `main`), same pattern as `legacy/tmp/`
+  at P5-T2.
+- **V2.** Conformance suite 31/31 (the `\.claude/` forbidden-token
+  pattern in `test_spec_hygiene.py` scans `framework/`, unaffected
+  by the root-`.claude/` removal).
+- **V3.** Plugin smoke unaffected — 142 skill dirs; manifest valid.
+- **V4.** No runtime root-`.claude/` dependency (the 2
+  `tests/conformance/` hits are the forbidden-token pattern + its
+  doc, not path reads).
+- **V5.** Archive branch `legacy-ucx-v3.2-read-only` intact at
+  `491e8db` (removal was working-branch-only).
+- **V6.** Scope clean — staged diff is **only** `.claude/` deletions
+  (240 files); the plugin's `platforms/claude-code-plugin/.claude-plugin/`
+  is **not** in the diff.
+- **V8.** Committed + pushed **immediately** (no pre-compact-snapshot
+  hook post-removal).
+
+**Session impact (expected):** the root `.claude/` removal disabled
+this session's loaded project skills + the 3 migration hooks
+(visible in the reduced available-skills list afterward). The
+remaining Phase 5 work (P5-T5 verify, P5-T6 close) is git / doc /
+conformance — no `.claude/` dependency. The 3 hooks remain
+recoverable from working-branch git history (option A).
+
+Content preserved three ways: the productized skills/agents/commands
+in `platforms/claude-code-plugin/`; the pre-migration `.claude/` in
+the `legacy-ucx-v3.2-read-only` archive branch; the migration-era
+`.claude/` (incl. hooks + settings) in working-branch git history.

@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T08:05:00Z                       |
+| Last updated     | 2026-05-21T08:55:00Z                       |
 
 ---
 
@@ -301,11 +301,17 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   plugin smoke ok). 11 git-ignored `legacy/tmp/` scratch files
   linger on disk locally but won't propagate to the new `main`.
   DONE 2026-05-21T07:20:00Z.
-- [ ] P5-T3 — Remove root `.claude/` (**restored**, D-0014): `git rm -r
-  .claude/`. Destructive + session-affecting — confirmation gate;
-  sequenced LATE (disables this session's hooks). Migration-era
-  `.claude/` survives in git history; archive holds pre-migration
-  `.claude/`. CLAUDE.md (root file) survives + is rewritten in P5-T4.
+- [x] P5-T3 — Removed dev-time root `.claude/` loader (`git rm -r
+  .claude/`; 240 tracked files, 80,676 line-deletions) after explicit
+  user confirmation (option A: straight removal, hooks →
+  git-history-only). Lossless — skills/agents/commands productized in
+  the plugin; pre-migration `.claude/` in the archive branch;
+  migration-era `.claude/` (+ hooks) in git history. All gates green
+  (conformance 31/31; plugin smoke ok; scope = only `.claude/`;
+  plugin `.claude-plugin/` untouched; archive intact). Gitignored
+  `settings.local.json` lingers on disk but won't propagate.
+  Committed + pushed immediately (no snapshot hook post-removal).
+  DONE 2026-05-21T08:55:00Z.
 - [x] P5-T4 — Finalized project docs: README (dropped migration
   framing + `legacy/` from the diagram; platform matrix → release
   tags; added archive-branch + PARITY/TAGGING pointers);

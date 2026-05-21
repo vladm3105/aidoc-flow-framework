@@ -6,10 +6,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T08:05:00Z                       |
+| Last updated  | 2026-05-21T08:55:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 5 — Cutover (P5-T0/T1/T2/T4 done — `legacy/` removed; docs finalized) |
-| Next task     | P5-T3 — remove root `.claude/` (`git rm -r .claude/`; **destructive + session-affecting — confirm at execution; LATE** — disables this session's own hooks). Then P5-T5 verify, P5-T6 close+cutover. `main` replacement = user force-replace (P5-T6). Workflow relocation still pending (user). |
+| Current phase | Phase 5 — Cutover (P5-T0/T1/T2/T4/T3 done — `legacy/` + root `.claude/` removed; docs finalized) |
+| Next task     | P5-T5 — verify (final consolidated gate; `plans/P5-T5-VERIFY.md`). Then P5-T6 close + cutover (`CHANGELOG.md [1.0.0]`, ROADMAP, tag `v1.0.0`; **user force-replaces `main`**). Workflow relocation still pending (user). |
 
 ## Progress
 
