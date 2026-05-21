@@ -7,7 +7,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
 | Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T08:55:00Z                       |
+| Last updated     | 2026-05-21T09:10:00Z                       |
 
 ---
 
@@ -322,7 +322,17 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   durable conventions + workflow-as-guidance + archive pointer).
   ROADMAP Phase-5 marking deferred to P5-T6. All 7 verify gates
   green; conformance 31/31; doc-only. DONE 2026-05-21T08:05:00Z.
-- [ ] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
+- [x] P5-T5 — Verify (consolidated final gate; `plans/P5-T5-VERIFY.md`).
+  **PASS — 17/17 gates green.** Both removals landed (0 tracked
+  `legacy/`, 0 tracked `.claude/`; only git-ignored leftovers on
+  disk, won't propagate); conformance 31/31; archive branch intact
+  at `491e8db`; FRAMEWORK_SPEC_VERSION 3× `0.1.0`; plugin smoke ok
+  (142 skills, valid manifest); zero `framework/` changes all phase;
+  no dangling runtime refs to either removed dir (1 `legacy/` match
+  is the prose "legacy/source", not a path); docs finalized; shipped
+  top-level tree clean (no `legacy/`, no `.claude/`); working tree
+  clean; branch synced. Net −1 carried issue (api_runner fix
+  resolved). DONE 2026-05-21T09:10:00Z.
 - [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
   + platform stables (user local-clone); **`main` replacement
   (user-authorized)**.
