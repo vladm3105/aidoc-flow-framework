@@ -3,7 +3,7 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | Phase 4 complete (`v0.5.0`) — Phase 5 next                    |
+| Status           | **Migration complete** — Phase 5 done (`v1.0.0`); new project ready to replace `main` |
 | Working branch   | `claude/multi-platform-migration-AamWB`                      |
 | Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
 | Cutover target   | v1.0.0 — new project replaces `main`                         |
@@ -72,6 +72,14 @@ The *project-level* version below tracks migration milestones only.
 - New project replaces `main`.
 - Legacy trees archived.
 - Tag `v1.0.0`; platforms tag their own first stable releases.
+- Status: **complete** (`v1.0.0`). In-tree `legacy/` + dev-time root
+  `.claude/` removed (archived on `legacy-ucx-v3.2-read-only`); docs
+  finalized; final verify PASS 17/17 (`plans/P5-T5-VERIFY.md`).
+  Tag scope (P5-T1 Q4): project `v1.0.0` only; `framework/` stays
+  `0.1.0`; plugin stays `0.1.0`; optional `hermes/v0.1.1` for the
+  api_runner fix. The `main` force-replace + tag pushes are
+  user-authorized local-clone actions (see `plans/MIGRATION_TODO.md`
+  P5-T6).
 
 ## Post-Migration — Tracked TODOs
 

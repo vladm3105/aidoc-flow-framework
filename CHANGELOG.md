@@ -10,13 +10,68 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-05-21
+
+**Phase 5 — Cutover.** The multi-platform project replaces `main`.
+The migration from the pre-migration `ucx_framework` (v0.20.4) is
+complete: one engine-agnostic specification (`framework/`) plus two
+independent platforms (Hermes MCP server, Claude Code plugin), both
+green on the shared conformance suite. The pristine pre-migration
+project is preserved on the protected, read-only archive branch
+`legacy-ucx-v3.2-read-only`.
+
+> Version scope (P5-T1 Q4): `v1.0.0` is the **project-milestone**
+> tag for the cutover — *not* a claim that every component is
+> 1.0-stable. `framework/` stays `0.1.0` (no spec change; earns
+> `1.0.0` later under the returning CHG governance). The plugin
+> stays `0.1.0` (documented layer-model gap, see below). The Hermes
+> api_runner fix below ships as the optional `hermes/v0.1.1` patch.
+
+### Removed
+- In-tree `legacy/` directory (2276 tracked files, ~645k lines) —
+  the pre-migration `ucx_framework` working copy. **Lossless:** the
+  full content is preserved byte-for-byte on the protected
+  `legacy-ucx-v3.2-read-only` branch (`491e8db`) and in git history.
+  (P5-T2)
+- Dev-time root `.claude/` loader (240 tracked files) — the
+  migration-era Claude Code skills/agents/commands/hooks used to run
+  the migration itself. The shipped Claude Code delivery is now the
+  **plugin** (`platforms/claude-code-plugin/`), not a root loader.
+  **Lossless:** skills/agents/commands are productized in the
+  plugin; the pre-migration `.claude/` is on the archive branch; the
+  migration-era `.claude/` (incl. the 3 hooks) remains in git
+  history. (P5-T3)
+
 ### Fixed
 - `platforms/hermes/src/mcp_server/executor/api_runner.py` — the
   litellm-missing error told users to `pip install 'ucx_hermes[api]'`;
   corrected to `pip install 'hermes-server[api]'` to match the
   distribution rename in P2-T1 Q1. Resolves the carried known issue
-  surfaced at P4-T5 verify. (Hermes platform change; would land as
-  `hermes/v0.1.1` if the platform cuts a patch release.)
+  surfaced at P4-T5 verify. Ships as the optional `hermes/v0.1.1`
+  patch (see `platforms/hermes/CHANGELOG.md`).
+
+### Changed
+- Project docs finalized for the as-built, post-migration state
+  (P5-T4): `README.md` (dropped migration framing + `legacy/` from
+  the structure diagram; platform matrix → release tags; added
+  archive-branch + PARITY/TAGGING pointers); `docs/REPO_STRUCTURE.md`
+  (PLANNED → as-built; legacy mapping reframed as history);
+  `docs/PROJECT.md` (§3/§4 cutover reconciled to the archive
+  branch); `CLAUDE.md` (rewritten from migration-in-progress memory
+  to slim post-migration project memory; root file, survived the
+  `.claude/` removal).
+
+### Known carried issues (post-v1.0)
+- **Plugin SDD layer-model gap** — the plugin reflects the legacy
+  11-layer model and lacks `doc-tdd` + `doc-iplan` (`docs/PARITY.md`
+  "Known parity gap"). Content depth, not a correctness issue;
+  per-skill content migration tracked as post-v1.0 work. This is why
+  the plugin honestly stays `0.1.0`.
+- **~150 Class D stale `framework/<X>` references** in plugin skill
+  content (P3-T2 G18) — same root cause as the layer-model gap.
+- **CI workflows** at `plans/workflows-pending/` await user `git mv`
+  into `.github/workflows/` from a local clone (in-container GitHub
+  App lacks `workflows` permission).
 
 ## [0.5.0] — 2026-05-21
 

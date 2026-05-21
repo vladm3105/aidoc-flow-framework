@@ -1,15 +1,23 @@
 # Session Handoff
 
+> **✅ MIGRATION COMPLETE (2026-05-21).** All five phases done; the
+> Phase 5 cutover is closed at project `v1.0.0` (in-container half).
+> The working branch holds the finished multi-platform project. The
+> only remaining steps are **user-side local-clone actions** — tag
+> pushes + the `main` force-replace + CI-workflow relocation
+> (commands in `plans/MIGRATION_TODO.md` P5-T6). Pre-migration
+> history is on the protected `legacy-ucx-v3.2-read-only` branch.
+
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
 Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T09:10:00Z                       |
+| Last updated  | 2026-05-21T09:25:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Phase 5 — Cutover (P5-T0/T1/T2/T3/T4/T5 done — removals landed, docs finalized, **final verify PASS 17/17**) |
-| Next task     | P5-T6 — close + cutover: author `CHANGELOG [1.0.0]` + ROADMAP Phase-5 marking (in-container); then **user-local-clone** actions — tags `v1.0.0` (+ optional `hermes/v0.1.1`) and the **`main` force-replace** (lift protection → `git push --force origin claude/multi-platform-migration-AamWB:main` → re-enable). Workflow relocation still pending (user). |
+| Current phase | **Migration complete** — Phase 5 cutover closed (`v1.0.0`, in-container half) |
+| Next task     | **User-side only** (in-container is blocked from `refs/tags/*` + never pushes `main`): push tags `v1.0.0` (+ optional `hermes/v0.1.1`); **force-replace `main`** (lift protection → `git push --force origin claude/multi-platform-migration-AamWB:main` → re-enable); relocate `plans/workflows-pending/*.yml` → `.github/workflows/`. Exact commands in `plans/MIGRATION_TODO.md` P5-T6. |
 
 ## Progress
 

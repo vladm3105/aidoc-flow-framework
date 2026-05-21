@@ -1,13 +1,20 @@
 # Migration TODO — Multi-Platform Restructure
 
+> **✅ MIGRATION COMPLETE (2026-05-21).** All phases done through the
+> Phase 5 cutover (project `v1.0.0`). This tracker is now a historical
+> record of how the multi-platform project was built. The only
+> remaining action is user-side: the `main` force-replace + tag
+> pushes (P5-T6 below) and the CI-workflow relocation. Pre-migration
+> history lives on the protected `legacy-ucx-v3.2-read-only` branch.
+
 Live task tracker for the migration. Phases mirror `ROADMAP.md`.
 Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed).
 
 | Field           | Value                                      |
 |------------------|--------------------------------------------|
 | Working branch   | `claude/multi-platform-migration-AamWB`    |
-| Current phase    | Phase 2 — Platform A: Hermes re-homing     |
-| Last updated     | 2026-05-21T09:10:00Z                       |
+| Current phase    | **Migration complete** — Phase 5 cutover done (`v1.0.0`) |
+| Last updated     | 2026-05-21T09:25:00Z                       |
 
 ---
 
@@ -333,9 +340,39 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   top-level tree clean (no `legacy/`, no `.claude/`); working tree
   clean; branch synced. Net −1 carried issue (api_runner fix
   resolved). DONE 2026-05-21T09:10:00Z.
-- [ ] P5-T6 — Close + cutover: `CHANGELOG.md [1.0.0]`; tags `v1.0.0`
-  + platform stables (user local-clone); **`main` replacement
-  (user-authorized)**.
+- [x] P5-T6 — Close (in-container half done 2026-05-21T09:25:00Z):
+  `CHANGELOG.md [1.0.0]` cutover entry authored (Removed `legacy/` +
+  `.claude/`; Fixed api_runner; Changed docs; carried issues);
+  Hermes `CHANGELOG.md [0.1.1]` for the api_runner fix; ROADMAP
+  Phase-5 marked complete (`v1.0.0`) + status line; trackers closed
+  with migration-complete banners. Conformance re-confirmed 31/31.
+  Tag scope per P5-T1 Q4 (user-confirmed): project `v1.0.0` only,
+  `framework/` `0.1.0`, plugin `0.1.0`, optional `hermes/v0.1.1`.
+  **Remaining = user-side local-clone actions** (in-container is
+  blocked from `refs/tags/*` and never pushes `main`):
+
+  ```sh
+  # from a fresh local clone, after the working branch is pushed:
+  git fetch origin
+  git checkout claude/multi-platform-migration-AamWB
+
+  # tags (project milestone + optional Hermes patch):
+  git tag -a v1.0.0       -m "v1.0.0 — multi-platform cutover"
+  git tag -a hermes/v0.1.1 -m "hermes/v0.1.1 — api_runner install-string fix"
+  git push origin v1.0.0 hermes/v0.1.1
+
+  # main force-replace (lossless — old main is the archive branch):
+  #   1. temporarily lift branch protection on main
+  #   2.
+  git push --force origin claude/multi-platform-migration-AamWB:main
+  #   3. re-enable branch protection on main
+
+  # CI workflows (P4-T3 carry-over), ideally before tagging so CI
+  # runs on the cutover commit:
+  git mv plans/workflows-pending/*.yml .github/workflows/
+  git commit -m "ci: relocate workflows into .github/workflows/"
+  git push
+  ```
 
 ---
 

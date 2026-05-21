@@ -14,6 +14,19 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.1.1] — 2026-05-21
+
+Patch — corrects a stale install instruction. Conforms to framework
+spec `v0.1.0` (unchanged). Coincides with the project `v1.0.0`
+cutover but versions independently (`docs/PROJECT.md` §3).
+
+### Fixed
+- `src/mcp_server/executor/api_runner.py` — the litellm-missing
+  error string told users to `pip install 'ucx_hermes[api]'`;
+  corrected to `pip install 'hermes-server[api]'`, matching the
+  distribution name set in P2-T1 Q1. Surfaced at P4-T5 verify,
+  fixed in P5.
+
 ## [0.1.0] — 2026-05-20
 
 First independent release of the Hermes MCP server platform on the
