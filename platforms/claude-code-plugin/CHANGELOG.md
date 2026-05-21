@@ -14,6 +14,21 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+- AI Team specialist agent roster — 8 new subagents under `agents/`
+  (`pm-orchestrator`, `solutions-architect`, `test-architect`,
+  `software-engineer`, `devops-release-engineer`, `code-reviewer`,
+  `security-engineer`, `traceability-auditor`), joining the existing
+  `requirements-analyst`, plus an `agents/README.md` roster overview.
+  Mirrors the SDD lifecycle (spec lane → execution lane → read-only
+  quality gates) with model tiers and human-in-the-loop approval.
+  Imported from the `aidoc-flow-business` design and adapted to the
+  plugin: engine-coupling references removed so the agents stay
+  engine-isolated (PC4), skill references corrected to skills the
+  plugin actually ships, and layer numbering reconciled to the
+  canonical 8-layer model (legacy SYS/REQ/CTR/TSPEC labelled as
+  legacy auxiliaries). Conformance suite stays green (31/31).
+
 ## [0.1.0] — 2026-05-20
 
 First independent release of the Claude Code plugin platform on the
