@@ -10,6 +10,41 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0016 — Post-migration gap audit: fix plugin-surface residue + harden the gate (not bare-token/prose patterns)
+
+- **Date:** 2026-05-22T03:10:00Z
+- **Context:** A post-completion review (cross-checked against the v3.2 source
+  on `legacy-ucx-v3.2-read-only`) confirmed the **framework** 8-layer model
+  correctly absorbs the deprecated SYS/REQ/CTR layers (SYS→SPEC C4-Component,
+  CTR→SPEC interfaces, REQ→EARS atomic-testable). But `plm_lint`'s blind spots
+  (it scanned only `skills/`, and its element-code pattern needs a trailing
+  `.digit`) let deprecated-layer residue survive in the **plugin surface**:
+  `agents/requirements-analyst.md` still modeled REQ as a live layer
+  (`BRD→PRD→EARS→REQ→SPEC`, `docs/REQ/`, `REQ-NNN`, 3-segment IDs);
+  `skills/trace-check/examples/example_validation_report.md` traced to
+  `SYS-002`/`REQ-001`; `doc-validator` linked a non-existent
+  `../doc-brd-validator/`.
+- **Decision / actions:**
+  1. **Fixed** all three: requirements-analyst's lane now terminates at EARS
+     (atomic-testable requirements = EARS, per v3.2 REQ→EARS mapping), 4-segment
+     IDs, `docs/03_EARS/`; the trace-check example rewritten to 8-layer
+     traceability + 2-digit doc refs; the doc-validator BRD row points at the
+     existing `../doc-brd-audit/` (doc-brd ships no validator).
+  2. **Hardened `plm_lint`:** scan scope extended to `agents/` + `commands/`
+     (always enforced); added `legacy-doc-ref` (dash refs `SYS-002`…),
+     `legacy-layer-dir` (`06_SYS`/`10_TSPEC`…), and a **context-aware**
+     `legacy-3seg-id` pattern (skips lines marked ❌/legacy/→/reject so
+     validators' "wrong-format" teaching examples don't false-fail). Already
+     wired into conformance via `test_plm_lint.py` (suite stays 32).
+- **Deliberately NOT added:** bare-token (`SYS`/`REQ`/`TSPEC`) and N-layer prose
+  (`12-layer`) patterns — these occur legitimately in Version-History changelog
+  rows across migrated skills; flagging them would force per-file exceptions or
+  false failures. The 3-seg line-context heuristic is the safe middle ground.
+- **`project-mngt` kept as-is:** it uses domain-generic `REQ-NN` requirement IDs
+  (a general MVP/MMP/MMR methodology skill, not SDD-layer-specific); excepted
+  from `legacy-doc-ref` in the checker. `doc-naming` is excepted from
+  `legacy-3seg-id` (it is the ID-format teaching authority).
+
 ## D-0015 — Plugin SPEC-/test-subtype skill families: migrate & keep as helpers (PLM-B4/B5)
 
 - **Date:** 2026-05-22T01:30:00Z

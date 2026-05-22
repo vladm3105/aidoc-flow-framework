@@ -185,3 +185,34 @@ Run after every batch; nothing is "done" until both pass:
 - Element-code regex matched `TSPEC.01.4001`, `SYS.01.2601`, `REQ.01.2701` but
   **not** the valid new `BRD.01.07.a7f3` / `SPEC-01` — confirmed.
 - No new findings. Plan ready to implement.
+
+---
+
+## Post-migration gap audit — 2026-05-22 (after B7)
+
+A skeptical review (cross-checked against the v3.2 source on
+`legacy-ucx-v3.2-read-only`) confirmed the **framework** 8-layer model
+correctly absorbs the deprecated SYS/REQ/CTR layers (SYS→SPEC C4-Component;
+CTR→SPEC interfaces §3; REQ→EARS atomic-testable requirements). It also found
+that the per-batch gate had **blind spots** — it scanned only `skills/`, and
+its patterns missed dash-form refs (`SYS-002`/`REQ-001`), legacy `docs/NN_X`
+dir tokens, and 3-segment IDs on valid prefixes — which let deprecated-layer
+residue survive in the plugin surface.
+
+**Fixed (see D-0016):**
+
+- `agents/requirements-analyst.md` — modeled REQ as a live layer
+  (`BRD→PRD→EARS→REQ→SPEC`, `docs/REQ/`, `REQ-NNN`, 3-segment IDs). Rewritten so
+  the requirements lane terminates at **EARS**; 4-segment IDs; `docs/03_EARS/`.
+- `skills/trace-check/examples/example_validation_report.md` — traced to
+  deprecated `SYS-002`/`REQ-001`; rewritten to 8-layer traceability + 2-digit
+  doc refs.
+- `skills/doc-validator/SKILL.md` — broken `../doc-brd-validator/` → existing
+  `../doc-brd-audit/` (doc-brd ships no validator).
+
+**Gate hardened:** `plm_lint` now also scans `agents/` + `commands/` and adds
+`legacy-doc-ref`, `legacy-layer-dir`, and a context-aware `legacy-3seg-id`
+pattern (still enforced in conformance via `test_plm_lint.py`; suite 32). Bare-
+token / `12-layer`-prose patterns intentionally omitted (they recur in
+legitimate Version-History rows). `project-mngt` (generic REQ-NN) left as-is per
+user decision; excepted in the checker.

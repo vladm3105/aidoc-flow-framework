@@ -14,15 +14,16 @@ _spec.loader.exec_module(plm_lint)
 
 
 class PluginLayerModelConformanceTests(unittest.TestCase):
-    def test_plugin_skills_have_no_legacy_12layer_fingerprints(self):
+    def test_plugin_has_no_legacy_12layer_fingerprints(self):
         if not plm_lint.SKILLS.exists():
             self.skipTest("claude-code-plugin skills absent")
         hits, _ = plm_lint.scan(enforce_all=True)
         self.assertEqual(
             hits, [],
-            "legacy 12-layer fingerprints remain in plugin skills:\n  "
+            "legacy 12-layer fingerprints remain in the plugin "
+            "(skills/agents/commands):\n  "
             + "\n  ".join(
-                f"skills/{rel}:{line}: [{label}] {frag!r}"
-                for rel, line, label, frag in hits
+                f"{disp}:{line}: [{label}] {frag!r}"
+                for disp, line, label, frag in hits
             ),
         )

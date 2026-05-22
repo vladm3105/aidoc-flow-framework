@@ -18,8 +18,15 @@
 > B7 promoted the gate to conformance + deleted the PARITY gap + CHANGELOG
 > close-out. Both platforms now implement the 8-layer model. `plm_lint --all`
 > is clean and enforced by conformance (`tests/conformance/platforms/test_plm_lint.py`;
-> suite **32/32**). Records: `plans/PLM-PLAN.md`, `DECISIONS.md` D-0015. SPEC-/
-> test-subtype families kept as L6/L7 specialization helpers (D-0015).
+> suite **32/32**). Records: `plans/PLM-PLAN.md`, `DECISIONS.md` D-0015.
+>
+> **Post-migration gap audit (2026-05-22, D-0016):** verified the framework
+> correctly absorbs SYS/REQ/CTR (SYS→SPEC, CTR→SPEC, REQ→EARS) against the v3.2
+> source; fixed deprecated-layer residue the gate had missed in the plugin
+> surface — `agents/requirements-analyst.md` (REQ→EARS), the trace-check example,
+> and a broken `doc-validator` ref — and hardened `plm_lint` (now scans
+> `agents/`+`commands/`; adds dash-ref / layer-dir / context-aware 3-segment
+> patterns). project-mngt keeps generic REQ-NN (excepted).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.

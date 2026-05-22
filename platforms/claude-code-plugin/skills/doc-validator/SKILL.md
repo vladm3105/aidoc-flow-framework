@@ -46,7 +46,7 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 **Dedicated Layer Validators** (single-document structure/metadata/content — use the sibling `../doc-{type}-validator/` skills, with the layer `README.md` as authority):
 | Layer | Artifact | Single-Document Validator | Layer Authority |
 |-------|----------|---------------------------|-----------------|
-| 1 | BRD | `../doc-brd-validator/` | `framework/layers/01_BRD/README.md` |
+| 1 | BRD | `../doc-brd-audit/` (BRD has no standalone validator) | `framework/layers/01_BRD/README.md` |
 | 2 | PRD | `../doc-prd-validator/` | `framework/layers/02_PRD/README.md` |
 | 3 | EARS | `../doc-ears-validator/` | `framework/layers/03_EARS/README.md` |
 | 4 | BDD | `../doc-bdd-validator/` | `framework/layers/04_BDD/README.md` |
