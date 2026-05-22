@@ -15,10 +15,10 @@ metadata:
     development_status: active
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD, EARS]
-    downstream_artifacts: [ADR, SYS, REQ]
-    version: "2.3"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+    downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
+    version: "2.4"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 ---
 
 # doc-bdd-autopilot
@@ -31,7 +31,7 @@ Automated **BDD (Behavior-Driven Development)** generation pipeline that process
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
 
-**Downstream Artifacts**: ADR (Layer 5), SYS (Layer 6), REQ (Layer 7)
+**Downstream Artifacts**: ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
@@ -75,7 +75,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (BDD.NN.14.SS, BDD.NN.15.SS), scenario/step codes | All Phases |
+| `doc-naming` | Element ID format (BDD.NN.SS.xxxx 4-segment, hash-based scenario IDs) | All Phases |
 | `doc-ears-validator` | Validate EARS BDD-Ready score | Phase 2: EARS Readiness |
 | `doc-bdd` | BDD creation rules, Gherkin syntax, section-based structure | Phase 3: BDD Generation |
 | `quality-advisor` | Real-time quality feedback during BDD generation | Phase 3: BDD Generation |
@@ -98,20 +98,20 @@ This autopilot orchestrates the following skills:
 
 When generating BDD document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-   - Field: N/A (Gherkin files use header comments)
+1. **Read** `document_type` from template:
+   - Source: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+   - Field: `metadata.document_type` (value: `bdd-document`)
 
 2. **Set** `document_type` in generated document:
-   - BDD uses Gherkin `.feature` format without YAML frontmatter
-   - Add header comment: `# document_type: bdd-document`
-   - Schema validates via BDD_MVP_SCHEMA.yaml
+   - When emitting Gherkin `.feature` files, add header comment: `# document_type: bdd-document`
+   - When emitting the `.yaml` document, set `metadata.document_type: bdd-document`
+   - Conformance tooling validates the document type
 
 3. **Validation**: Generated documents MUST indicate `document_type: bdd-document`
-   - Templates have header comment `# document_type: template`
-   - Instances have header comment `# document_type: bdd-document`
+   - Templates carry `document_type: bdd-document` in `metadata`
+   - Instances inherit and set the same value
 
-**Error Handling**: If header comment is missing from template, add `# document_type: bdd-document`.
+**Error Handling**: If the document type is missing from the generated artifact, add `document_type: bdd-document`.
 
 ---
 
@@ -299,7 +299,7 @@ ls -la docs/03_EARS/
 Validate that source EARS meet BDD-Ready requirements before generation.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-ears-validator` skill.
-> See: `.claude/skills/doc-ears-validator/SKILL.md` for complete EARS validation rules.
+> See: `../doc-ears-validator/SKILL.md` for complete EARS validation rules.
 
 **BDD-Ready Scoring Criteria (100%)**:
 
@@ -322,24 +322,26 @@ Validate that source EARS meet BDD-Ready requirements before generation.
 | Missing edge case specifications | Flag for manual review |
 | Incomplete quality attributes | Add template quality attributes |
 
-**Validation Command** (internal):
+**Readiness check (declarative)**: The plugin skill *is* the validator — there is
+no external script. Confirm BDD-readiness against the EARS source by applying the
+scoring criteria above and the `doc-ears-validator` checks:
 
-```bash
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd_ready.py \
-  --ears docs/03_EARS/EARS-01_{slug}/ \
-  --min-score 90 \
-  --auto-fix
-```
+- All EARS statements use valid WHEN-THE-SHALL / IF-THEN-SHALL syntax and are atomic.
+- Quantifiable constraints reference threshold keys (no hardcoded magic numbers).
+- Edge cases and quality attributes are specified.
+- BDD-Ready Score >= 90% before generation proceeds.
+
+Authority: `framework/layers/04_BDD/README.md` and `framework/governance/`.
 
 ### Phase 3: BDD Generation
 
 Generate BDD scenarios from validated EARS with real-time quality feedback.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-bdd` skill.
-> See: `.claude/skills/doc-bdd/SKILL.md` for complete BDD creation guidance.
+> See: `../doc-bdd/SKILL.md` for complete BDD creation guidance.
 >
 > **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
-> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
+> See: `../quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -376,7 +378,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
    | Last Updated | Current date (YYYY-MM-DD) |
    | Status | Draft |
    | Priority | From EARS priority |
-   | Source Document | @ears: EARS.NN.25.SS (single value) |
+   | Source Document | @ears: EARS.NN.03.xxxx (single value) |
    | ADR-Ready Score | Calculated after generation |
 
 5. **Generate Feature Files by Section**:
@@ -392,9 +394,9 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
    @section: NN.SS
    @parent_doc: BDD-NN
    @index: BDD-NN.0_index.md
-   @brd:BRD.NN.01.SS
-   @prd:PRD.NN.07.SS
-   @ears:EARS.NN.25.SS
+   @brd:BRD.NN.07.xxxx
+   @prd:PRD.NN.09.xxxx
+   @ears:EARS.NN.03.xxxx
 
    Feature: BDD-NN.SS: [Feature Name]
      As a [role]
@@ -405,7 +407,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
        Given the system timezone is "America/New_York"
        And the current time is "09:30:00" in "America/New_York"
 
-     @primary @functional @scenario-id:BDD.NN.14.01
+     @primary @functional @scenario-id:BDD.NN.03.xxxx
      Scenario: Successful [action description]
        Given [precondition from EARS WHEN clause]
        When [action from EARS trigger]
@@ -415,7 +417,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Error Condition Scenarios** (@negative):
    ```gherkin
-   @negative @error_handling @scenario-id:BDD.NN.14.10
+   @negative @error_handling @scenario-id:BDD.NN.03.xxxx
    Scenario: [Error condition] results in [expected behavior]
      Given [error precondition from EARS IF clause]
      When [action that triggers error]
@@ -425,7 +427,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Edge Case Scenarios** (@edge_case, @boundary):
    ```gherkin
-   @edge_case @boundary @scenario-id:BDD.NN.14.20
+   @edge_case @boundary @scenario-id:BDD.NN.03.xxxx
    Scenario: [Boundary condition] at [limit value]
      Given [boundary precondition]
      When [action at boundary]
@@ -434,7 +436,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Data-Driven Scenarios** (@data_driven):
    ```gherkin
-   @data_driven @scenario-id:BDD.NN.14.30
+   @data_driven @scenario-id:BDD.NN.03.xxxx
    Scenario Outline: [Parameterized test description]
      Given [context with <variable>]
      When [action with <variable>]
@@ -447,7 +449,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Quality Attribute Scenarios** (@quality_attribute):
    ```gherkin
-   @quality_attribute @performance @scenario-id:BDD.NN.14.40
+   @quality_attribute @performance @scenario-id:BDD.NN.03.xxxx
    Scenario: API response meets performance threshold
      Given system is under normal load
      When user submits request
@@ -457,7 +459,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Integration Scenarios** (@integration):
    ```gherkin
-   @integration @external_system @scenario-id:BDD.NN.14.50
+   @integration @external_system @scenario-id:BDD.NN.03.xxxx
    Scenario: External system integration succeeds
      Given external service is available
      When system initiates integration call
@@ -466,7 +468,7 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 
    **Failure Recovery Scenarios** (@failure_recovery):
    ```gherkin
-   @failure_recovery @circuit_breaker @scenario-id:BDD.NN.14.60
+   @failure_recovery @circuit_breaker @scenario-id:BDD.NN.03.xxxx
    Scenario: System recovers from transient failure
      Given external service experiences transient failure
      When retry mechanism activates
@@ -478,16 +480,16 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
    - Monitor Gherkin syntax compliance as scenarios are generated
    - Detect anti-patterns (missing Given/When/Then, hardcoded values)
    - Validate @threshold tag format and references
-   - Check element ID format compliance (BDD.NN.14.SS, BDD.NN.15.SS)
+   - Check element ID format compliance (BDD.NN.SS.xxxx 4-segment, hash-based)
    - Flag issues early to reduce post-generation rework
 
 8. **Add Cumulative Traceability Tags**:
 
    **Required Tags per Feature** (Gherkin-native, NOT in comments):
    ```gherkin
-   @brd:BRD.NN.01.SS
-   @prd:PRD.NN.07.SS
-   @ears:EARS.NN.25.SS
+   @brd:BRD.NN.07.xxxx
+   @prd:PRD.NN.09.xxxx
+   @ears:EARS.NN.03.xxxx
    Feature: BDD-NN.SS: Feature Name
    ```
 
@@ -527,13 +529,11 @@ Generate BDD scenarios from validated EARS with real-time quality feedback.
 After BDD generation, validate structure and ADR-Ready score.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-bdd-validator` skill.
-> See: `.claude/skills/doc-bdd-validator/SKILL.md` for complete validation rules.
+> See: `../doc-bdd-validator/SKILL.md` for complete validation rules.
 
-**Validation Command**:
-
-```bash
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/ --verbose
-```
+**Validation (declarative)**: There is no external validation script — the plugin
+skill *is* the validator. Apply the checks below against the generated suite, using
+`framework/layers/04_BDD/README.md` and `framework/governance/` as authority.
 
 **Validation Checks**:
 
@@ -542,7 +542,7 @@ python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/
 | Section Structure | Index file exists, valid patterns | CHECK 9.1-9.7 |
 | Document Control | All required fields in index | BDD-E001 to BDD-E009 |
 | Gherkin Syntax | Valid Given-When-Then structure | BDD-E010, BDD-E011 |
-| Element ID Format | BDD.NN.14.SS (scenarios), BDD.NN.15.SS (steps) | BDD-E008 |
+| Element ID Format | BDD.NN.SS.xxxx (4-segment, hash-based scenario IDs) | BDD-E008 |
 | Tags Placement | Gherkin-native, not in comments | BDD-E041 |
 | Cumulative Tags | @brd, @prd, @ears present | BDD-W002 |
 | ADR-Ready Score | >= 90% | BDD-W003 |
@@ -560,7 +560,7 @@ python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-NN_{slug}/
 | Issue | Auto-Fix Action |
 |-------|-----------------|
 | Missing Given-When-Then | Add template step structure |
-| Invalid element ID format | Convert to BDD.NN.14.SS format |
+| Invalid element ID format | Convert to BDD.NN.SS.xxxx (4-segment) format |
 | Tags in comments | Move to Gherkin-native position |
 | Missing @threshold tags | Add placeholder tags |
 | Hardcoded numeric values | Replace with @threshold references |
@@ -653,7 +653,7 @@ If review score < 90%, invoke `doc-bdd-fixer`.
 |----------|---------------|
 | Missing Files | Create index, redirect stubs |
 | Broken Links | Update paths, create targets |
-| Element IDs | Convert legacy patterns to BDD.NN.14.SS/BDD.NN.15.SS |
+| Element IDs | Convert legacy patterns to BDD.NN.SS.xxxx (4-segment, hash-based) |
 | Tags | Move comment tags to Gherkin-native, add missing tags |
 | Thresholds | Replace hardcoded values with @threshold references |
 | v2.0 Compliance | Add @scenario-type, @priority, WITHIN constraints |
@@ -735,12 +735,10 @@ After passing the fix cycle:
 
 2. **Traceability Matrix Update**:
 
-   ```bash
-   # Update BDD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
-     --bdd docs/04_BDD/BDD-NN_{slug}/ \
-     --matrix docs/04_BDD/BDD-00_TRACEABILITY_MATRIX.md
-   ```
+   Update `docs/04_BDD/BDD-00_TRACEABILITY_MATRIX.md` directly — confirm every BDD
+   scenario links back to its EARS/PRD/BRD elements and forward to the SPEC
+   sections recorded in each scenario's `spec_trace`. The skill maintains the
+   matrix; there is no external script.
 
 ---
 
@@ -953,9 +951,9 @@ Scenario: Authentication completes within performance threshold
 @section: NN.SS
 @parent_doc: BDD-NN
 @index: BDD-NN.0_index.md
-@brd:BRD.NN.01.SS
-@prd:PRD.NN.07.SS
-@ears:EARS.NN.25.SS
+@brd:BRD.NN.07.xxxx
+@prd:PRD.NN.09.xxxx
+@ears:EARS.NN.03.xxxx
 
 Feature: BDD-NN.SS: [Feature Name]
   As a [role]
@@ -966,28 +964,28 @@ Feature: BDD-NN.SS: [Feature Name]
     Given the system timezone is "America/New_York"
     And the current time is "09:30:00" in "America/New_York"
 
-  @scenario-type:success @p0-critical @scenario-id:BDD.NN.14.01
+  @scenario-type:success @p0-critical @scenario-id:BDD.NN.03.xxxx
   Scenario: [Primary success path description]
     Given [precondition from EARS WHEN clause]
     When [action from EARS trigger]
     Then the system SHALL [outcome from EARS SHALL clause]
     And the response SHALL be returned WITHIN @threshold:PRD.NN.perf.api.p95_latency
 
-  @scenario-type:error @p1-high @scenario-id:BDD.NN.14.10
+  @scenario-type:error @p1-high @scenario-id:BDD.NN.03.xxxx
   Scenario: [Error condition] results in [expected behavior]
     Given [error precondition from EARS IF clause]
     When [action that triggers error]
     Then the system SHALL NOT [prevented behavior]
     And error code "[ERROR_CODE]" SHALL be returned WITHIN @threshold:PRD.NN.timeout.error.response
 
-  @scenario-type:recovery @p1-high @scenario-id:BDD.NN.14.20
+  @scenario-type:recovery @p1-high @scenario-id:BDD.NN.03.xxxx
   Scenario: System recovers from [failure type]
     Given [failure condition]
     When [recovery trigger]
     Then the system SHALL recover WITHIN @threshold:PRD.NN.recovery.max_time
     And circuit breaker state SHALL transition to "half-open"
 
-  @scenario-type:parameterized @p2-medium @scenario-id:BDD.NN.14.30
+  @scenario-type:parameterized @p2-medium @scenario-id:BDD.NN.03.xxxx
   Scenario Outline: [Parameterized test description]
     Given [context with <variable>]
     When [action with <variable>]
@@ -998,7 +996,7 @@ Feature: BDD-NN.SS: [Feature Name]
       | value1   | result1  |
       | value2   | result2  |
 
-  @scenario-type:optional @p2-medium @scenario-id:BDD.NN.14.40
+  @scenario-type:optional @p2-medium @scenario-id:BDD.NN.03.xxxx
   Scenario: [Alternative path with optional parameter]
     Given [optional context]
     When [alternative action]
@@ -1024,12 +1022,8 @@ Feature: BDD-NN.SS: [Feature Name]
 Generate BDD from one EARS document.
 
 ```bash
-# Example: Generate BDD from EARS-01
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --ears docs/03_EARS/EARS-01_f1_iam/ \
-  --output docs/04_BDD/ \
-  --id 01 \
-  --slug f1_iam_scenarios
+# Example: Generate BDD from EARS-01 (outputs to docs/04_BDD/BDD-01_f1_iam_scenarios/)
+/doc-bdd-autopilot EARS-01
 ```
 
 ### Batch Mode
@@ -1038,10 +1032,10 @@ Generate BDD from multiple EARS in sequence.
 
 ```bash
 # Example: Generate BDD from all EARS
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --batch config/bdd_batch.yaml \
-  --output docs/04_BDD/
+/doc-bdd-autopilot all --auto
 ```
+
+Batch ordering and priorities may be supplied via `config/bdd_batch.yaml`:
 
 **Batch Configuration** (`config/bdd_batch.yaml`):
 
@@ -1072,9 +1066,7 @@ execution:
 Preview execution plan without generating files.
 
 ```bash
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --ears docs/03_EARS/EARS-01_f1_iam/ \
-  --dry-run
+/doc-bdd-autopilot EARS-01 --dry-run
 ```
 
 ### Review Mode (v2.1)
@@ -1086,15 +1078,10 @@ Validate existing BDD documents and generate a quality report without modificati
 **Command**:
 ```bash
 # Review single BDD suite
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/BDD-01_f1_iam/ \
-  --mode review
+/doc-bdd-autopilot BDD-01 --mode review
 
 # Review all BDD suites
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/ \
-  --mode review \
-  --output-report tmp/bdd_review_report.md
+/doc-bdd-autopilot all --mode review --output-report tmp/bdd_review_report.md
 ```
 
 **Review Process**:
@@ -1195,27 +1182,16 @@ Auto-repair existing BDD documents while preserving manual content.
 **Command**:
 ```bash
 # Fix single BDD suite
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/BDD-01_f1_iam/ \
-  --mode fix
+/doc-bdd-autopilot BDD-01 --mode fix
 
 # Fix with backup
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/BDD-01_f1_iam/ \
-  --mode fix \
-  --backup
+/doc-bdd-autopilot BDD-01 --mode fix --backup
 
 # Fix specific issue types only
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/BDD-01_f1_iam/ \
-  --mode fix \
-  --fix-types "tags,thresholds,syntax"
+/doc-bdd-autopilot BDD-01 --mode fix --fix-types "tags,thresholds,syntax"
 
 # Dry-run fix (preview changes)
-python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-  --bdd docs/04_BDD/BDD-01_f1_iam/ \
-  --mode fix \
-  --dry-run
+/doc-bdd-autopilot BDD-01 --mode fix --dry-run
 ```
 
 **Fix Process**:
@@ -1292,9 +1268,9 @@ flowchart TD
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Missing @scenario-type | BDD-01.1:L45 | Added @scenario-type:success |
-| 2 | Hardcoded timeout | BDD-01.2:L78 | Replaced with @threshold:PRD.01.timeout.api.max |
-| 3 | Tags in comments | BDD-01.3:L12 | Moved to Gherkin-native position |
+| 1 | Missing @scenario-type | BDD-01.1 line 45 | Added @scenario-type:success |
+| 2 | Hardcoded timeout | BDD-01.2 line 78 | Replaced with @threshold:PRD.01.timeout.api.max |
+| 3 | Tags in comments | BDD-01.3 line 12 | Moved to Gherkin-native position |
 | ... | ... | ... | ... |
 
 ## Files Modified
@@ -1601,9 +1577,8 @@ fi
 
 # Example: Trigger ADR autopilot for validated BDD
 if [ "$BDD_VALIDATED" = "true" ]; then
-  python ai_dev_ssd_flow/05_ADR/scripts/adr_autopilot.py \
-    --bdd "$BDD_PATH" \
-    --output docs/05_ADR/
+  # Hand off to the doc-adr-autopilot skill for the validated BDD
+  echo "BDD validated → run /doc-adr-autopilot for $BDD_PATH"
 fi
 ```
 
@@ -1626,10 +1601,8 @@ jobs:
 
       - name: Run BDD Autopilot
         run: |
-          python ai_dev_ssd_flow/04_BDD/scripts/bdd_autopilot.py \
-            --ears docs/03_EARS/ \
-            --output docs/04_BDD/ \
-            --validate
+          # Invoke the doc-bdd-autopilot skill via the Claude Code plugin
+          claude-code run /doc-bdd-autopilot all --auto --validate
 
       - name: Upload Validation Report
         uses: actions/upload-artifact@v4
@@ -1682,7 +1655,7 @@ After autopilot completion:
 - [ ] All 8 scenario categories represented
 - [ ] No .feature file exceeds 800 lines
 - [ ] No Feature block exceeds 12 scenarios
-- [ ] Element IDs use BDD.NN.14.SS (scenarios), BDD.NN.15.SS (steps) format
+- [ ] Element IDs use BDD.NN.SS.xxxx (4-segment, hash-based scenario IDs) format
 - [ ] Index file (BDD-NN.0_index.md) exists with section file map
 - [ ] Redirect stub exists at docs/04_BDD/ root
 
@@ -1720,27 +1693,26 @@ After autopilot completion:
 
 ### Skills (Delegated)
 
-- **BDD Skill**: `.claude/skills/doc-bdd/SKILL.md` - BDD creation rules and Gherkin syntax
-- **BDD Validator Skill**: `.claude/skills/doc-bdd-validator/SKILL.md` - Validation rules and error codes
-- **EARS Validator Skill**: `.claude/skills/doc-ears-validator/SKILL.md` - EARS BDD-Ready validation
-- **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md` - Real-time quality feedback
-- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md` - Element ID format
+- **BDD Skill**: `../doc-bdd/SKILL.md` - BDD creation rules and Gherkin syntax
+- **BDD Validator Skill**: `../doc-bdd-validator/SKILL.md` - Validation rules and error codes
+- **EARS Validator Skill**: `../doc-ears-validator/SKILL.md` - EARS BDD-Ready validation
+- **Quality Advisor Skill**: `../quality-advisor/SKILL.md` - Real-time quality feedback
+- **Naming Standards Skill**: `../doc-naming/SKILL.md` - Element ID format
 
 ### Templates and Rules
 
-- **BDD Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **BDD Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **BDD Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **BDD Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+- **BDD Template / Creation Rules**: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+- **Index Template**: `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
+- **BDD README**: `framework/layers/04_BDD/README.md`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **BDD Validation Rules**: `framework/layers/04_BDD/README.md` and `framework/governance/`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_ssd_flow/AI_ASSISTANT_PLAYBOOK.md`
-- **MVP Autopilot**: `ai_dev_ssd_flow/MVP_AUTOPILOT.md`
-- **EARS Autopilot Skill**: `.claude/skills/doc-ears-autopilot/SKILL.md`
-- **ADR Autopilot Skill**: `.claude/skills/doc-adr-autopilot/SKILL.md`
+- **BDD README**: `framework/layers/04_BDD/README.md`
+- **Framework Overview**: `framework/README.md`
+- **EARS Autopilot Skill**: `../doc-ears-autopilot/SKILL.md`
+- **ADR Autopilot Skill**: `../doc-adr-autopilot/SKILL.md`
 
 ---
 
@@ -1748,7 +1720,7 @@ After autopilot completion:
 
 **IMPORTANT**: Review reports generated by this autopilot are formal project documents.
 
-See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
+See: `../REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
 ### Quick Reference
 
@@ -1774,7 +1746,8 @@ docs/04_BDD/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.3 | 2026-02-27 | Migrated frontmatter to `metadata`; switched command examples to `ai_dev_ssd_flow`; aligned output/report contracts to prefer `BDD-NN.A_audit_report_vNNN.md` with legacy `BDD-NN.R_review_report_vNNN.md` compatibility |
+| 2.4 | 2026-05-22 | **8-layer migration** (PLM-B3): downstream chain → ADR/SPEC/TDD/IPLAN (dropped SYS/REQ); element IDs → 4-segment `BDD.NN.SS.xxxx` (removed legacy type-codes 14/15); paths → `framework/layers/04_BDD/` + `framework/governance/`; removed nonexistent validation-script invocations in favor of declarative checklists; skill cross-refs → plugin-relative `../doc-X/`; command examples → `/doc-bdd-autopilot` slash form |
+| 2.3 | 2026-02-27 | Migrated frontmatter to `metadata`; updated command examples; aligned output/report contracts to prefer `BDD-NN.A_audit_report_vNNN.md` with legacy `BDD-NN.R_review_report_vNNN.md` compatibility |
 | 2.2 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (BDD-NN) triggers review mode; Upstream-type input (EARS-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.1 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-bdd-reviewer` and `doc-bdd-fixer`; Added `doc-bdd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
 | 2.0 | 2026-02-09 | Added scenario type classification with 5 categories (@scenario-type:success/optional/recovery/parameterized/error); Added priority tagging (@p0-critical/@p1-high/@p2-medium/@p3-low); Added SHALL+WITHIN language support for timing constraints; Added enhanced threshold reference format (@threshold:PRD.NN.category.field); Added 5-category coverage matrix with priority distribution; Added visual score indicators; Added validation rules BDD-E050 to BDD-E055 for new features; Updated ADR-Ready Report with v2.0 compliance section; Added Review Mode for validating existing BDD documents; Added Fix Mode for auto-repairing BDD documents |

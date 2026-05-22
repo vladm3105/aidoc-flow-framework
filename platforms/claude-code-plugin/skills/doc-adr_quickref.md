@@ -12,7 +12,7 @@ skill: "doc-adr"
 
 # Common requests
 - "Create ADR for database technology selection"
-- "Document architecture decision from BRD-001"
+- "Document architecture decision from BRD-01"
 - "Generate Layer 5 architecture decision record"
 ```
 
@@ -34,7 +34,7 @@ docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md
 
 | # | Section | Purpose |
 |---|---------|---------|
-| 1 | Document Control | Metadata with SYS-Ready Score |
+| 1 | Document Control | Metadata with SPEC-Ready Score |
 | 2 | Context | Problem Statement, Technical Context |
 | 3 | Decision | Chosen Solution, Key Components, Approach |
 | 4 | Alternatives Considered | Options with pros/cons |
@@ -48,15 +48,20 @@ docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md
 
 ## Key Considerations
 
-- **Always check ADR-000** (Technology Stack) before proposing new technology
+- **Always check ADR-00** (Technology Stack) before proposing new technology
 - **Platform ADRs first** - Create foundation decisions before feature-specific ones
 - **4 lifecycle states**: Proposed → Accepted → Deprecated/Superseded
 
 ## Upstream/Downstream
 
 ```
-BRD, PRD, EARS, BDD → ADR → SYS, REQ
+BRD, PRD, EARS, BDD → ADR → SPEC, TDD, IPLAN
 ```
+
+## Element IDs
+
+- Document ref: `ADR-NN` (e.g. `ADR-01`)
+- Element ref: `ADR.NN.SS.xxxx` (4-segment, 4-char hex hash)
 
 ## Quick Validation
 
@@ -65,17 +70,16 @@ BRD, PRD, EARS, BDD → ADR → SYS, REQ
 - [ ] Decision clearly stated
 - [ ] Consequences analyzed (positive, negative, risks)
 - [ ] Alternatives documented with rejection rationale
-- [ ] Technology Stack (ADR-000) referenced if applicable
+- [ ] Technology Stack (ADR-00) referenced if applicable
 - [ ] Cumulative tags: @brd, @prd, @ears, @bdd (4 tags)
 
 ## Template Location
 
 ```
-framework/layers/05_ADR/ADR-MVP-TEMPLATE.md
+framework/layers/05_ADR/ADR-TEMPLATE.yaml
 ```
 
 ## Related Skills
 
 - `doc-bdd` - BDD test scenarios (upstream)
-- `doc-sys` - System requirements (downstream)
-- `doc-req` - Atomic requirements (downstream)
+- `doc-spec` - Component specifications (downstream)

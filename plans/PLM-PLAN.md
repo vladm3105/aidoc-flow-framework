@@ -37,12 +37,13 @@ parity gap.
 - Hermes (already on the 8-layer model since P2-T9).
 - The `framework/` spec itself (it is the contract; unchanged).
 - Net-new skill capability beyond the layer remap.
-- **OPEN — subtype families** (`doc-cspec/dspec/uxspec/riskspec/procspec` for
-  SPEC; `doc-utest/itest/stest/ftest/ptest/sectest` for tests). The 8-layer
-  framework defines SPEC and TDD each as a **single template, no subtypes**.
-  These plugin families therefore have no framework backing. Their fate
-  (retire / fold into `doc-spec`+`doc-tdd` as documented variants / keep as
-  declared plugin-only extras) is a **user decision required before batch B4/B5**.
+
+**Subtype families — RESOLVED (D-0015, 2026-05-22):** the SPEC-subtype
+(`doc-cspec/dspec/uxspec/riskspec/procspec`) and test-subtype
+(`doc-utest/itest/stest/ftest/ptest/sectest`) families are **kept as
+plugin-only authoring helpers** under SPEC (L6) / TDD (L7) and **migrated**
+like every other family (not retired, not folded). B4 migrates `doc-spec` +
+the 5 SPEC-subtypes; B5 migrates the 6 test-subtypes.
 
 ## Approach
 
@@ -108,9 +109,9 @@ blanket find/replace. Edit only where the token denotes a *legacy layer*.
 | **B0** | This plan + rewrite spec + the `plm_lint` legacy-fingerprint checker | `plans/PLM-PLAN.md`, `tests/conformance/platforms/plm_lint.py` | ✅ DONE 2026-05-22 |
 | **B1** | Roster: renamed `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*` (12 bodies fully rewritten to `07_TDD`/`08_IPLAN`); retired `doc-sys*`/`doc-req*`/`doc-ctr*` (142→125 skills); migrated orchestrators `doc-flow`+`SHARED_CONTENT`, `skill-recommender`, `project-init` to the 8-layer flow; realigned the 9-agent roster; interim `docs/PARITY.md`. Verified: `plm_lint` scope `{doc-tdd,doc-iplan,doc-flow,skill-recommender,project-init}` clean; conformance 31/31; 125 skills; frontmatter parses + `name==dir`. `MIGRATED` remaining: 108 files. | 14 rewritten + 17 removed + 5 orchestrators/agents | ✅ DONE 2026-05-22 |
 | **B2** | Body rewrite: `doc-brd`, `doc-prd`, `doc-ears` families (21 files; layer numbers 1-3 unchanged, but element IDs 3→4-segment, paths→`framework/layers/`, downstream chains + cumulative-tag tables → 8 layers, dead validation-scripts removed). Verified: `plm_lint` scope clean (91 files remain); conformance 31/31; 125 skills; name==dir. | 3 families / 21 files | ✅ DONE 2026-05-22 |
-| **B3** | Body rewrite: `doc-bdd`, `doc-adr` families | 2 families | — |
-| **B4** | Body rewrite: `doc-spec` family **(+ SPEC-subtype decision)** | 1 + OPEN | blocked on OPEN |
-| **B5** | Test-subtype decision + rewrite (`doc-*test`) | OPEN | blocked on OPEN |
+| **B3** | Body rewrite: `doc-bdd` (L4), `doc-adr` (L5) families + `adr-roadmap` (15 files). ADR uses dual refs (doc `ADR-NN` + element `ADR.NN.SS.xxxx`). Verified: `plm_lint` scope clean (81 remain); conformance 31/31; 125 skills; name==dir. | 2 families + adr-roadmap / 15 files | ✅ DONE 2026-05-22 |
+| **B4** | Body rewrite: `doc-spec` family + the 5 SPEC-subtype families (`doc-cspec/dspec/uxspec/riskspec/procspec`), per D-0015 (keep as L6 helpers) | doc-spec + 5 subtypes | — |
+| **B5** | Body rewrite: the 6 test-subtype families (`doc-utest/itest/stest/ftest/ptest/sectest`), per D-0015 (keep as L7 helpers) | 6 subtypes | — |
 | **B6** | Helpers/orchestrators: `doc-review`, `doc-ref`, `doc-validator`, `quality-advisor`, remaining `*_quickref.md`, `REVIEW_DOCUMENT_STANDARDS.md`, etc. | residual | — |
 | **B7** | Promote `plm_lint` into the conformance suite; delete the PARITY gap section; CHANGELOG/ROADMAP/TODO close-out | docs + tests | — |
 
@@ -156,7 +157,7 @@ Run after every batch; nothing is "done" until both pass:
 | R1 | Blanket token replace corrupts legitimate prose/IDs (`requirements`, traceability) | Spec rule (5): edit only layer-denoting tokens; checker patterns are context-anchored; per-batch human review of the diff |
 | R2 | Conformance does not police skills (out of scope), so regressions slip in | B0 adds `plm_lint`; B7 promotes it into the suite to lock the model in |
 | R3 | Renames lose git history / break cross-refs | use `git mv`; grep-sweep cross-refs in the same batch as the rename |
-| R4 | Subtype families have no framework home → ambiguous target | OPEN flagged; user decides before B4/B5; batches sequenced so subtypes are last |
+| R4 | Subtype families have no framework home → ambiguous target | RESOLVED (D-0015): kept as plugin-only L6/L7 helpers, migrated in B4/B5 — each subtype references (not redefines) its parent layer's single template |
 | R5 | Multi-session work lost to ephemeral container | plan + checker committed in B0; `HANDOFF.md` updated each batch; per-batch push |
 | R6 | Retiring SYS/REQ/CTR **deletes their authoring guidance** (the new model has no such layer) — per the user's "retire" decision, no skill content is preserved | If any SYS/REQ/CTR *authoring* guidance should survive inside the ADR/SPEC/EARS skills, that is added scope — flag to the user before B1 deletes the families |
 

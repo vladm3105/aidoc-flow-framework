@@ -12,14 +12,15 @@
 > plugin's skills are authored against the legacy **12-layer** model;
 > this migrates the whole corpus to the framework's **8-layer** model.
 > Plan + shared rewrite spec: `plans/PLM-PLAN.md`. Gate:
-> `tests/conformance/platforms/plm_lint.py`. **B0 + B1 + B2 done.** B1:
-> renamed tspec→tdd & tasks→iplan (12 bodies), retired sys/req/ctr
-> (142→125 skills), migrated doc-flow/skill-recommender/project-init + the
-> 9-agent roster. B2: rewrote doc-brd/doc-prd/doc-ears families (21 files;
-> IDs→4-segment, 8-layer chains). Verified clean each batch (plm_lint scope;
-> conformance 31/31; name==dir). **91 files remain** (B3–B6). **Next: B3**
-> (rewrite doc-bdd, doc-adr bodies). **OPEN decision** before B4/B5: fate of
-> the SPEC-/test-subtype families (no single-template backing in 8-layer).
+> `tests/conformance/platforms/plm_lint.py`. **B0–B3 done.** B1: renamed
+> tspec→tdd & tasks→iplan (12 bodies), retired sys/req/ctr (142→125 skills),
+> migrated doc-flow/skill-recommender/project-init + 9-agent roster. B2:
+> doc-brd/doc-prd/doc-ears (21 files). B3: doc-bdd/doc-adr + adr-roadmap (15
+> files). Verified clean each batch (plm_lint scope; conformance 31/31;
+> name==dir). **81 files remain** (B4–B6). **Next: B4** (doc-spec + the 5
+> SPEC-subtype families). Subtype fate RESOLVED — **D-0015**: migrate & keep
+> SPEC-/test-subtypes as L6/L7 helpers (B4 = SPEC + cspec/dspec/uxspec/
+> riskspec/procspec; B5 = utest/itest/stest/ftest/ptest/sectest).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
@@ -29,8 +30,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-22T00:48:53Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0+B1+B2 done (125 skills; 91 files remain) |
-| Next task     | **PLM-B3** — rewrite the `doc-bdd`, `doc-adr` family bodies to the 8-layer model per the `plans/PLM-PLAN.md` rewrite spec; then add those families to `plm_lint` `MIGRATED` and verify. See the batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
+| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0–B3 done (125 skills; 81 files remain) |
+| Next task     | **PLM-B4** — rewrite `doc-spec` + the 5 SPEC-subtype families (`doc-cspec/dspec/uxspec/riskspec/procspec`) to the 8-layer model (per D-0015, kept as L6 helpers); then add to `plm_lint` `MIGRATED` and verify. See the batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
 
 ## Progress
 

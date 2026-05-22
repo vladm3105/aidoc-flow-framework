@@ -20,7 +20,7 @@ metadata:
     downstream_artifacts: [Audit Report, Fix Cycle]
     version: "1.0"
     last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 
 ---
 

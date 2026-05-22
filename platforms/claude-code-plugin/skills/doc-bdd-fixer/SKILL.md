@@ -19,7 +19,7 @@ metadata:
     downstream_artifacts: [Fixed BDD, Fix Report]
     version: "2.2"
     last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 ---
 
 # doc-bdd-fixer
@@ -359,46 +359,50 @@ def fix_link_path(bdd_location: str, target_path: str) -> str:
 
 ### Phase 3: Fix Element IDs
 
-Converts invalid element IDs to correct format.
+Converts invalid element IDs to the framework 4-segment standard.
+
+**Target format** (per `framework/governance/ID_NAMING_STANDARDS.md`):
+
+```text
+BDD.{doc_id}.{section_id}.{hash}
+```
+
+- `doc_id` — two-digit document number (e.g., `01`)
+- `section_id` — two-digit section number (e.g., `03`)
+- `hash` — 4-character hex content hash (SHA-256, first 4 chars)
+- Example: `BDD.01.03.d7a2`
+
+Document-level references use the dash form `BDD-NN` (e.g., `BDD-01`).
 
 **Conversion Rules**:
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `BDD.NN.01.SS` | Code 01 invalid for BDD | `BDD.NN.35.SS` (Feature Spec) |
-| `BDD.NN.25.SS` | Code 25 invalid for BDD | `BDD.NN.36.SS` (Scenario Spec) |
-| `BDD.NN.22.SS` | Code 22 invalid for BDD | `BDD.NN.37.SS` (Step Definition) |
-| `FEAT-XXX` | Legacy pattern | `BDD.NN.35.SS` |
-| `SCEN-XXX` | Legacy pattern | `BDD.NN.36.SS` |
-| `STEP-XXX` | Legacy pattern | `BDD.NN.37.SS` |
+| `BDD.NN.SS` | Legacy 3-segment (no hash) | `BDD.NN.SS.xxxx` (append 4-hex content hash) |
+| `BDD.NN.<code>.SS` | Legacy numeric type-code form | `BDD.NN.SS.xxxx` (drop type-code, hash on content) |
+| `FEAT-XXX` | Legacy pattern | `BDD.NN.SS.xxxx` |
+| `SCEN-XXX` | Legacy pattern | `BDD.NN.SS.xxxx` |
+| `STEP-XXX` | Legacy pattern | `BDD.NN.SS.xxxx` |
 
-**Type Code Mapping** (BDD-specific valid codes: 35, 36, 37):
-
-| Invalid Code | Valid Code | Element Type |
-|--------------|------------|--------------|
-| 01 | 35 | Feature Specification |
-| 02 | 36 | Scenario Specification |
-| 03 | 37 | Step Definition |
-| 05 | 36 | Scenario Specification |
-| 06 | 37 | Step Definition |
-| 22 | 35 | Feature Specification |
-| 25 | 36 | Scenario Specification |
-| 26 | 37 | Step Definition |
+> The 8-layer model has **no numeric type-code segment**. Scenario, step, and
+> feature elements are distinguished by their `section_id` and content, not by a
+> code. Recompute the trailing segment as a 4-char hex hash of the element's
+> content rather than a sequential counter.
 
 **Regex Patterns**:
 
 ```python
-# Find element IDs with invalid type codes for BDD
-invalid_bdd_type_01 = r'BDD\.(\d{2})\.01\.(\d{2})'
-replacement_01 = r'BDD.\1.35.\2'
+# Legacy 3-segment id (BDD.NN.SS) -> append a content hash as the 4th segment
+legacy_3seg = r'\bBDD\.(\d{2})\.(\d{2})\b(?!\.)'
+def to_4seg(m, content):
+    return f"BDD.{m.group(1)}.{m.group(2)}.{sha256(content)[:4]}"
 
-invalid_bdd_type_25 = r'BDD\.(\d{2})\.25\.(\d{2})'
-replacement_25 = r'BDD.\1.36.\2'
+# Legacy numeric type-code form (BDD.NN.<code>.SS) -> 4-segment doc.section.hash
+legacy_typecode = r'\bBDD\.(\d{2})\.\d{2}\.(\d{2})\b'
+def from_typecode(m, content):
+    return f"BDD.{m.group(1)}.{m.group(2)}.{sha256(content)[:4]}"
 
-invalid_bdd_type_22 = r'BDD\.(\d{2})\.22\.(\d{2})'
-replacement_22 = r'BDD.\1.37.\2'
-
-# Find legacy patterns
+# Find legacy heading patterns
 legacy_feat = r'###\s+FEAT-(\d+):'
 legacy_scen = r'###\s+SCEN-(\d+):'
 legacy_step = r'###\s+STEP-(\d+):'
@@ -466,7 +470,7 @@ Ensures traceability and cross-references are correct.
 
 ```markdown
 <!-- Traceability to EARS -->
-@trace: EARS-01.25.01 -> BDD-01.35.01
+@trace: EARS.01.03.5e2a -> BDD.01.03.8f4c
 
 <!-- Reference to upstream -->
 @ref: [EARS-01 Section 3](../03_EARS/EARS-01.md#3-functional-requirements)
@@ -475,7 +479,7 @@ Ensures traceability and cross-references are correct.
 **Tag Traceability in Feature Files**:
 
 ```gherkin
-@trace:EARS-01.25.01 @feature:BDD-01.35.01
+@ears:EARS.01.03.5e2a @bdd:BDD.01.03.8f4c
 Feature: User Authentication
 ```
 
@@ -591,7 +595,7 @@ Where:
 
 ```gherkin
 # Auto-merged from EARS-01 drift (2026-02-10)
-@BDD-01-SC-13 @auto-merged @trace:EARS-01.25.12
+@BDD-01-SC-13 @auto-merged @ears:EARS.01.03.4f1c
 Scenario: User receives notification on password expiry
   Given a user with password expiring in 7 days
   When the daily notification job runs
@@ -607,7 +611,7 @@ Scenario: User receives notification on password expiry
 
 | Added Scenarios | Tag | Source |
 |-----------------|-----|--------|
-| User receives notification on password expiry | @BDD-01-SC-13 | EARS-01.25.12 |
+| User receives notification on password expiry | @BDD-01-SC-13 | EARS.01.03.4f1c |
 ```
 
 ---
@@ -635,15 +639,15 @@ Scenario: User receives notification on password expiry
 
 | Scenario | Tag | Feature File | Source |
 |----------|-----|--------------|--------|
-| User receives notification on password expiry | @BDD-01-SC-13 | auth.feature | EARS-01.25.12 |
-| Admin can force password reset | @BDD-01-SC-14 | auth.feature | EARS-01.25.13 |
-| Session timeout configurable per role | @BDD-01-SC-15 | session.feature | EARS-02.25.05 |
+| User receives notification on password expiry | @BDD-01-SC-13 | auth.feature | EARS.01.03.4f1c |
+| Admin can force password reset | @BDD-01-SC-14 | auth.feature | EARS.01.03.b920 |
+| Session timeout configurable per role | @BDD-01-SC-15 | session.feature | EARS.02.05.7c3e |
 
 #### Scenarios Marked for Review
 
 | Scenario | Tag | Reason | Source Change |
 |----------|-----|--------|---------------|
-| User authenticates with valid credentials | @BDD-01-SC-01 | Source requirement modified | EARS-01.25.01 v2 |
+| User authenticates with valid credentials | @BDD-01-SC-01 | Source requirement modified | EARS.01.03.5e2a v2 |
 
 #### Upstream Changes Summary
 
@@ -656,10 +660,10 @@ Scenario: User receives notification on password expiry
 **Review Marker for Modified Source**:
 
 ```gherkin
-# REVIEW: Source requirement EARS-01.25.01 modified on 2026-02-10
+# REVIEW: Source requirement EARS.01.03.5e2a modified on 2026-02-10
 # Original: "User must authenticate with username and password"
 # Updated: "User must authenticate with username and password or SSO"
-@BDD-01-SC-01 @needs-review @trace:EARS-01.25.01
+@BDD-01-SC-01 @needs-review @ears:EARS.01.03.5e2a
 Scenario: User authenticates with valid credentials
   # ... existing steps ...
 ```
@@ -990,7 +994,7 @@ custom_fields:
 |---|------------|-------|-------------|------|
 | 1 | REV-L001 | Broken glossary link | Created BDD-00_GLOSSARY.md | BDD-01.3_scenarios.md |
 | 2 | REV-L004 | Broken EARS reference | Updated path to ../03_EARS/EARS-01.md | BDD-01.1_core.md |
-| 3 | REV-N004 | Element type 01 invalid | Converted to type 35 | BDD-01.1_core.md |
+| 3 | REV-N004 | Legacy element ID (no hash) | Converted to `BDD.01.01.8f4c` (4-segment) | BDD-01.1_core.md |
 | 4 | REV-L005 | Broken feature file link | Created auth_placeholder.feature | BDD-01.2_features.md |
 
 ## Feature File Fixes

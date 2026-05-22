@@ -17,9 +17,9 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [ADR]
     downstream_artifacts: []
-    version: "1.6"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    version: "1.7"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 ---
 
 # doc-adr-reviewer
@@ -32,7 +32,7 @@ Comprehensive **content review and quality assurance** for Architecture Decision
 
 **Upstream**: ADR (from `doc-adr-autopilot` or `doc-adr`)
 
-**Downstream**: None (final QA gate before SYS generation)
+**Downstream**: None (final QA gate before SPEC generation)
 
 ---
 
@@ -42,7 +42,7 @@ Use `doc-adr-reviewer` when:
 
 - **After ADR Generation**: Run immediately after `doc-adr-autopilot` completes
 - **Manual ADR Edits**: After making manual changes to ADR
-- **Pre-SYS Check**: Before running `doc-sys-autopilot`
+- **Pre-SPEC Check**: Before running `doc-spec-autopilot`
 - **Periodic Review**: Regular quality checks on existing ADRs
 - **Architecture Reviews**: During formal architecture review sessions
 
@@ -57,12 +57,12 @@ Use `doc-adr-reviewer` when:
 
 | Aspect | `doc-adr-validator` | `doc-adr-reviewer` |
 |--------|---------------------|-------------------|
-| **Focus** | Schema compliance, SYS-Ready score | Content quality, decision rationale |
+| **Focus** | Schema compliance, SPEC-Ready score | Content quality, decision rationale |
 | **Checks** | Required sections, format | Consequence coverage, alternative evaluation |
 | **Auto-Fix** | Structural issues only | Content issues (links, formatting) |
-| **Output** | SYS-Ready score (numeric) | Review score + issue list |
+| **Output** | SPEC-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
-| **Blocking** | SYS-Ready < threshold blocks | Review score < threshold flags |
+| **Blocking** | SPEC-Ready < threshold blocks | Review score < threshold flags |
 
 ---
 
@@ -178,7 +178,7 @@ Validates ADR addresses BRD Section 7.2 topics.
 
 ### 2a. Diagram Contract Compliance
 
-Validates ADR diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+Validates ADR diagram contract requirements defined by `framework/governance/DIAGRAM_STANDARDS.md`.
 
 **Scope**:
 - Required ADR tags: `@diagram: c4-l3` and `@diagram: sequence-*`
@@ -277,16 +277,19 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `ADR.NN.xxxx` format
-- Element type codes valid for ADR (13, 14, 15, 16)
+- Element IDs use the 4-segment `ADR.NN.SS.xxxx` format (`SS` = section, `xxxx` = 4-char hex hash)
+- Document-level references use the dash form `ADR-NN` (and `SPEC-NN` / `IPLAN-NN` for downstream)
+- No numeric type-code segment (legacy `ADR.NN.13.SS` etc.) — element kind is conveyed by its section, not the ID
+- No legacy patterns (`DEC-XXX`, `ALT-XXX`, `CON-XXX`, legacy 3-segment `ADR.NN.xxxx`, or `ADR-NNN` document IDs)
 - ADR numbering sequential
+- See `framework/governance/ID_NAMING_STANDARDS.md` and `framework/layers/05_ADR/README.md`
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-N001 | Error | Invalid element ID format |
-| REV-N002 | Error | Element type code not valid for ADR |
+| REV-N001 | Error | Invalid element ID format (not 4-segment `ADR.NN.SS.xxxx`) |
+| REV-N002 | Error | Legacy numeric type-code segment or legacy pattern present (`DEC-XXX`/`ALT-XXX`/`CON-XXX`/3-segment) |
 | REV-N003 | Warning | ADR numbering gap detected |
 
 ---
@@ -576,7 +579,7 @@ flowchart LR
 | `doc-adr-fixer` | Applies fixes based on review findings |
 | `doc-adr` | ADR creation rules |
 | `doc-bdd-reviewer` | Upstream QA |
-| `doc-sys-autopilot` | Downstream consumer |
+| `doc-spec-autopilot` | Downstream consumer |
 
 ---
 
@@ -584,6 +587,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.7 | 2026-05-22 | Migrated to the framework 8-layer model: Check #7 now enforces the 4-segment `ADR.NN.SS.xxxx` element-ID standard with `ADR-NN` document refs (rejects legacy `DEC/ALT/CON-XXX`, numeric type codes, 3-segment, and `ADR-NNN`); diagram-contract source repointed to `framework/governance/DIAGRAM_STANDARDS.md`; downstream consumer SPEC (`doc-spec-autopilot`); SPEC-Ready terminology |
 | 1.6 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected nested-folder report paths to `docs/05_ADR`; documented audit-wrapper contract with preferred `ADR-NN.A_audit_report_vNNN.md` output and legacy reviewer compatibility |
 | 1.5 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance (BLOCKING) - validates ADR follows mandatory nested folder rule; Added REV-STR001-003 error codes; Structure check blocks other checks if failed |

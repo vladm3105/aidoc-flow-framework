@@ -14,10 +14,10 @@ metadata:
     development_status: active
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS]
-    downstream_artifacts: [ADR, SYS, REQ]
-    version: "1.1"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+    downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
+    version: "1.2"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 ---
 
 # doc-bdd
@@ -30,7 +30,9 @@ Create **BDD (Behavior-Driven Development)** test scenarios - Layer 4 artifact i
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
 
-**Downstream**: ADR (Layer 5), SYS (Layer 6), REQ (Layer 7)
+**Downstream**: ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
+
+> BDD acceptance scenarios are the source of truth that TDD (Layer 7) maps to concrete test cases.
 
 ## Prerequisites
 
@@ -50,11 +52,10 @@ Create **BDD (Behavior-Driven Development)** test scenarios - Layer 4 artifact i
 
 Before creating BDD, read:
 
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD, PRD, EARS**: Read artifacts that drive these test scenarios
-3. **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-4. **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-5. **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+3. **Template**: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+4. **Creation & Validation Rules**: `framework/layers/04_BDD/README.md` and `framework/governance/`
 
 ## When to Use This Skill
 
@@ -122,9 +123,9 @@ docs/04_BDD/
 @section: 2.14
 @parent_doc: BDD-02
 @index: BDD-02.md
-@brd:BRD.02.0103
-@prd:PRD.02.0702
-@ears:EARS.02.1401
+@brd:BRD.02.07.a7f3
+@prd:PRD.02.09.1dbc
+@ears:EARS.02.03.5e2a
 
 Feature: BDD-02.14: Query Result Filtering
   As a data analyst
@@ -149,14 +150,14 @@ Feature: BDD-02.14: Query Result Filtering
 
 ```gherkin
 # INVALID (frameworks cannot parse comment-based tags):
-# @brd: BRD.01.0101
-# @prd: PRD.01.0101
+# @brd: BRD.01.07.a7f3
+# @prd: PRD.01.09.1dbc
 Feature: My Feature
 
 # VALID (Gherkin-native tags before Feature):
-@brd:BRD.01.0101
-@prd:PRD.01.0101
-@ears:EARS.01.2401
+@brd:BRD.01.07.a7f3
+@prd:PRD.01.09.1dbc
+@ears:EARS.01.03.5e2a
 Feature: My Feature
 ```
 
@@ -173,17 +174,23 @@ And the system timezone is "America/New_York"
 
 ## Unified Element ID Format (MANDATORY)
 
-**Pattern**: `BDD.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
+**Pattern**: `BDD.{doc_id}.{section_id}.{hash}` (4 segments, dot-separated)
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Test Scenario | 14 | BDD.02.1401 |
-| Step | 15 | BDD.02.1501 |
+- `doc_id` — two-digit document number (e.g., `02`)
+- `section_id` — two-digit section number (e.g., `03`)
+- `hash` — 4-character hex content hash (SHA256, first 4 chars)
+
+| Element | Example |
+|---------|---------|
+| Test Scenario | `BDD.02.03.8f4c` |
+| Step | `BDD.02.03.d7a2` |
+
+See `framework/governance/ID_NAMING_STANDARDS.md` for the authoritative format.
 
 > **REMOVED PATTERNS** - Do NOT use:
-> - `SCENARIO-XXX`, `TS-XXX` → Use `BDD.NN.14.SS`
-> - `STEP-XXX` → Use `BDD.NN.15.SS`
-> - `TC-XXX` → Use `BDD.NN.14.SS`
+> - Legacy 3-segment `BDD.NN.xxxx` or numeric type codes → Use 4-segment `BDD.NN.SS.xxxx`
+> - `SCENARIO-XXX`, `TS-XXX`, `TC-XXX` → Use `BDD.NN.SS.xxxx`
+> - `STEP-XXX` → Use `BDD.NN.SS.xxxx`
 
 ## ADR-Ready Scoring System
 
@@ -262,9 +269,9 @@ Scenario: API responds within performance threshold
 
 **Format** (Gherkin-native tags before Feature):
 ```gherkin
-@brd:BRD.01.0103
-@prd:PRD.01.0702
-@ears:EARS.01.2401
+@brd:BRD.01.07.a7f3
+@prd:PRD.01.09.1dbc
+@ears:EARS.01.03.5e2a
 Feature: Feature Name
 ```
 
@@ -272,8 +279,8 @@ Feature: Feature Name
 
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
-| Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - document references |
-| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ | Hierarchical artifacts - element references |
+| Dash | TYPE-NN | SPEC, IPLAN | Document-level references (e.g., SPEC-01, IPLAN-01) |
+| Dot | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, ADR, TDD | Hierarchical element references |
 
 ## Scenario Types
 
@@ -344,9 +351,9 @@ All `.feature` files MUST include section metadata tags:
 @section: NN.SS              # Section number (e.g., 2.1, 2.14)
 @parent_doc: BDD-NN          # Parent BDD suite (e.g., BDD-02)
 @index: BDD-NN.0_index.md    # Index file reference
-@brd:BRD.NN.EE.SS            # Upstream BRD element
-@prd:PRD.NN.EE.SS            # Upstream PRD element
-@ears:EARS.NN.SS.RR          # Upstream EARS requirement
+@brd:BRD.NN.SS.xxxx          # Upstream BRD element
+@prd:PRD.NN.SS.xxxx          # Upstream PRD element
+@ears:EARS.NN.SS.xxxx        # Upstream EARS requirement
 ```
 
 **For subsections, add**:
@@ -405,8 +412,8 @@ Background:
 ## Traceability Matrix
 | BDD Section | Upstream Source | Description |
 |-------------|----------------|-------------|
-| BDD-02.1 | EARS.02.01-05 | Ingest requirements |
-| BDD-02.2 | EARS.02.06-12 | Query requirements |
+| BDD-02.1 | EARS-02 (Ingest reqs) | Ingest requirements |
+| BDD-02.2 | EARS-02 (Query reqs) | Query requirements |
 ```
 
 ## Creation Process
@@ -432,7 +439,7 @@ mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
 ### Step 4: Create Index File
 
 ```bash
-cp ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.md
+cp framework/layers/04_BDD/BDD-00_index.TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.md
 ```
 
 ### Step 5: Design Section Split
@@ -444,7 +451,7 @@ cp ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md docs/04_BDD/BDD-02_knowledge
 ### Step 6: Create Section Files
 
 ```bash
-cp ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
+cp framework/layers/04_BDD/BDD-TEMPLATE.yaml docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
 ```
 
 ### Step 7: Add Section Metadata Tags
@@ -481,9 +488,10 @@ Add minimal content with `@redirect` tag and 0 scenarios.
 
 ### Step 12: Validate BDD Suite
 
-```bash
-python3 scripts/validate_bdd_suite.py --root BDD
-```
+Work through the **Manual Checklist** in the Validation section below. This
+skill *is* the validator — apply every check declaratively against the suite,
+then cross-check against `framework/layers/04_BDD/README.md` and
+`framework/governance/`.
 
 ### Step 13: Commit Changes
 
@@ -560,16 +568,19 @@ Commit suite folder and redirect stub together.
 
 **CRITICAL**: Execute validation loop IMMEDIATELY after document creation.
 
-### Automatic Validation Loop
+### Validation Loop
 
 ```
 LOOP:
-  1. Run: python scripts/validate_bdd_suite.py --root BDD
-  2. IF errors fixed: GOTO LOOP (re-validate)
-  3. IF warnings fixed: GOTO LOOP (re-validate)
+  1. Apply the Manual Checklist (above) to every .feature file in the suite.
+  2. IF errors fixed: GOTO LOOP (re-check)
+  3. IF warnings fixed: GOTO LOOP (re-check)
   4. IF unfixable issues: Log for manual review
   5. IF clean: Mark VALIDATED, proceed
 ```
+
+Authoritative checks live in `framework/layers/04_BDD/README.md` and
+`framework/governance/`.
 
 ### Quality Gate
 
@@ -604,14 +615,12 @@ The ADR will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Index Template**: `ai_dev_ssd_flow/04_BDD/BDD-SECTION-0-TEMPLATE.md`
-- **Aggregator Template**: `ai_dev_ssd_flow/04_BDD/BDD-AGGREGATOR-TEMPLATE.feature`
-- **Schema**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature`
-- **Validation Rules**: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
+- **Template**: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+- **Index Template**: `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
+- **Creation & Validation Rules**: `framework/layers/04_BDD/README.md`
+- **Governance**: `framework/governance/`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+- **ID Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ## Quick Reference
 
@@ -621,7 +630,7 @@ The ADR will:
 | **Layer** | 4 |
 | **Tags Required** | @brd, @prd, @ears (3 tags) |
 | **ADR-Ready Score** | ≥90% required for "Approved" status |
-| **Element ID Format** | `BDD.NN.14.SS` (scenarios), `BDD.NN.15.SS` (steps) |
+| **Element ID Format** | `BDD.NN.SS.xxxx` (4-segment, scenarios and steps) |
 | **File Structure** | Nested suite folder: `docs/04_BDD/BDD-NN_{slug}/` |
 | **Max File Size** | 800 lines (soft: 600) |
 | **Max Scenarios** | 12 per Feature block |
@@ -635,5 +644,6 @@ The ADR will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.1 | 2026-02-27 | Migrated frontmatter to `metadata`; corrected framework reference path to `ai_dev_ssd_flow` | System |
+| 1.2 | 2026-05-22 | Migrated to 8-layer model: downstream chain ADR/SPEC/TDD/IPLAN; 4-segment element IDs; `framework/layers/` paths; removed dead validation-script refs | System |
+| 1.1 | 2026-02-27 | Migrated frontmatter to `metadata` | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

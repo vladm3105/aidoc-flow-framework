@@ -14,10 +14,10 @@ metadata:
     development_status: active
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD]
-    downstream_artifacts: [SYS, REQ, Code]
-    version: "1.3"
-    last_updated: "2026-03-06"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    downstream_artifacts: [SPEC, TDD, IPLAN]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 ---
 
 # doc-adr
@@ -30,7 +30,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4)
 
-**Downstream Artifacts**: SYS (Layer 6), REQ (Layer 7), Code (Execution Layer)
+**Downstream Artifacts**: SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -51,13 +51,12 @@ Create **Architecture Decision Records (ADR)** - Layer 5 artifact in the SDD wor
 
 Before creating ADR, read:
 
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
 2. **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md` (approved technologies)
 3. **Upstream BRD, PRD**: Read Architecture Decision Requirements sections
-4. **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-5. **Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
-7. **Quality Gate Validation**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_QUALITY_GATE_VALIDATION.md`
+4. **Template**: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+5. **ADR README**: `framework/layers/05_ADR/README.md`
+6. **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ## When to Use This Skill
 
@@ -77,9 +76,9 @@ Use `doc-adr` when:
 
 ### Reserved ID Exemption (ADR-00_*)
 
-**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+**Scope**: Documents with reserved ID `00` are FULLY EXEMPT from validation.
 
-**Pattern**: `ADR-00_*.md`
+**Pattern**: `ADR-00_*`
 
 **Document Types**: Index, Traceability matrix, Glossaries, Registries, Checklists
 
@@ -89,11 +88,11 @@ Use `doc-adr` when:
 
 ### 1. ADR Structure (11 Sections Total)
 
-**MVP Template**: See `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md` for complete structure.
+**MVP Template**: See `framework/layers/05_ADR/ADR-TEMPLATE.yaml` for complete structure.
 
 | # | Section | Purpose |
 |---|---------|---------|
-| 1 | Document Control | Metadata with SYS-Ready Score |
+| 1 | Document Control | Metadata with SPEC-Ready Score |
 | 2 | Context | Problem Statement, Technical Context |
 | 3 | Decision | Chosen Solution, Key Components, Approach |
 | 4 | Alternatives Considered | Options with pros/cons |
@@ -122,23 +121,23 @@ Use `doc-adr` when:
 - Context changed
 - Not deleted (historical record)
 
-**Superseded by ADR-XXX**: Replaced by newer decision
+**Superseded by ADR-NN**: Replaced by newer decision
 - Links to replacing ADR
 - Explains why replaced
 - Maintains audit trail
 
-### 3. SYS-Ready Scoring System
+### 3. SPEC-Ready Scoring System
 
-**Purpose**: Measures ADR maturity and readiness for progression to System Requirements (SYS) phase.
+**Purpose**: Measures ADR maturity and readiness for progression to the SPEC (Layer 6) phase.
 
 **Format in Document Control**:
 ```markdown
-| **SYS-Ready Score** | ✅ 95% (Target: ≥90%) |
+| **SPEC-Ready Score** | ✅ 95% (Target: ≥90%) |
 ```
 
-**Status and SYS-Ready Score Mapping**:
+**Status and SPEC-Ready Score Mapping**:
 
-| SYS-Ready Score | Required Status |
+| SPEC-Ready Score | Required Status |
 |-----------------|-----------------|
 | ≥90% | Accepted |
 | 70-89% | Proposed |
@@ -150,24 +149,28 @@ Use `doc-adr` when:
 - **Implementation Readiness (20%)**: Complexity assessment, dependencies, rollback strategies
 - **Verification Approach (15%)**: Testing strategy, success metrics, operational readiness
 
-**Quality Gate**: Score <90% blocks SYS artifact creation.
+**Quality Gate**: Score <90% blocks SPEC artifact creation.
 
 ### 4. Element ID Format (MANDATORY)
 
-**Pattern**: `ADR.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
+ADR uses **two reference forms** per `framework/governance/ID_NAMING_STANDARDS.md`:
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Decision | 10 | ADR.02.1001 |
-| Alternative | 12 | ADR.02.1201 |
-| Consequence | 13 | ADR.02.1301 |
+- **Document-level (dash) ref**: `ADR-NN` — points to a whole ADR document (e.g. `ADR-01`).
+- **Element ref (dot)**: `ADR.{doc_id}.{section_id}.{hash}` (4 segments) — points to an
+  element inside a document. `doc_id` and `section_id` are two-digit; `hash` is a
+  4-character hex content hash.
+
+```text
+Document: ADR-02
+Element:  ADR.02.03.e5b1
+```
 
 **REMOVED PATTERNS** - Do NOT use legacy formats:
-- ❌ `DEC-XXX` → Use `ADR.NN.10.SS`
-- ❌ `ALT-XXX` → Use `ADR.NN.12.SS`
-- ❌ `CON-XXX` → Use `ADR.NN.13.SS`
+- ❌ `DEC-XXX` / `ALT-XXX` / `CON-XXX` → Use 4-segment `ADR.NN.SS.xxxx`
+- ❌ 3-segment `ADR.NN.xxxx` or numeric type-code tables → Use `ADR.NN.SS.xxxx`
+- ❌ 3-digit document IDs `ADR-NNN` → Use two-digit-and-expand `ADR-NN`
 
-**Reference**: [ID_NAMING_STANDARDS.md](../../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md)
+**Reference**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ### 5. Threshold Management
 
@@ -200,14 +203,15 @@ caching:
 
 ## Tag Format Convention (By Design)
 
-| Notation | Format        | Artifacts                               | Purpose                                                             |
-|----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Notation | Format         | Artifacts                          | Purpose                                                          |
+|----------|----------------|------------------------------------|------------------------------------------------------------------|
+| Dash     | TYPE-NN        | SPEC, IPLAN                        | Document-level references to files/documents                     |
+| Dual     | ADR-NN / ADR.NN.SS.xxxx | ADR                       | ADR uses BOTH: dash `ADR-NN` for documents, dot for elements     |
+| Dot      | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, ADR, TDD     | Hierarchical references to elements inside documents             |
 
 **Key Distinction**:
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.0130` → Points to element 01.30 inside document `BRD-017.md`
+- `@adr: ADR-01` → Points to the document `ADR-01_risk_limit_enforcement.yaml`
+- `@brd: BRD.01.07.a7f3` → Points to element in section 07 inside document `BRD-01`
 
 ## Cumulative Tagging Requirements
 
@@ -222,17 +226,17 @@ caching:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 5):
 
-@brd: BRD.01.0130
-@prd: PRD.01.0702
-@ears: EARS.01.2501
-@bdd: BDD.01.1401
+@brd: BRD.01.08.0a13
+@prd: PRD.01.14.0702
+@ears: EARS.01.03.5e2a
+@bdd: BDD.01.03.8f4c
 ```
 
 **Upstream Sources**:
-- [BRD-01](../BRD/BRD-01_platform.md#BRD-01) - Architecture Decision Requirements
-- [PRD-01](../PRD/PRD-01_integration.md#PRD-01) - Product requirements
-- [EARS-01](../EARS/EARS-01_risk.md#EARS-01) - Formal requirements (EARS type code: 25)
-- [BDD-01](../BDD/BDD-01_limits/) - Test scenarios (BDD scenario type code: 14)
+- [BRD-01](../../../../framework/layers/01_BRD/README.md) - Architecture Decision Requirements
+- [PRD-01](../../../../framework/layers/02_PRD/README.md) - Product requirements
+- [EARS-01](../../../../framework/layers/03_EARS/README.md) - Formal requirements
+- [BDD-01](../../../../framework/layers/04_BDD/README.md) - Test scenarios
 
 ## Upstream/Downstream Artifacts
 
@@ -243,12 +247,12 @@ caching:
 - **BDD** (Layer 4) - Test scenarios validating decision
 
 **Downstream Artifacts**:
-- **SYS** (Layer 6) - System requirements implementing decision
-- **REQ** (Layer 7) - Atomic requirements following decision
-- **Code** (Execution Layer) - Implementation per decision
+- **SPEC** (Layer 6) - Component specifications implementing the decision
+- **TDD** (Layer 7) - Test case definitions validating SPEC contracts
+- **IPLAN** (Layer 8) - Execution plan bridging TDD to Code
 
 **Upstream-Only Traceability Policy**:
-> The ADR traceability matrix tracks ADRs and their **upstream sources** (BRD, PRD, EARS, BDD) only. Downstream documents (SYS, REQ, SPEC) track their own upstream references to ADRs—the ADR matrix does NOT maintain downstream links.
+> The ADR traceability matrix tracks ADRs and their **upstream sources** (BRD, PRD, EARS, BDD) only. Downstream documents (SPEC, TDD, IPLAN) track their own upstream references to ADRs—the ADR matrix does NOT maintain downstream links.
 
 **Same-Type Document Relationships** (conditional):
 - `@related-adr: ADR-NN` - ADRs sharing architectural context
@@ -262,7 +266,7 @@ caching:
 - `@depends: ADR-NN` — Hard prerequisite; this ADR cannot proceed without the referenced ADR
 - `@discoverability: ADR-NN (short rationale)` — Related document for AI search and ranking (informational)
 
-**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `ADR-01`, `ADR-02`).
+**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `framework/governance/ID_NAMING_STANDARDS.md` (e.g., `ADR-01`, `ADR-02`).
 
 **Placement**: Add tags to the Traceability section or inline with decision descriptions.
 
@@ -295,7 +299,7 @@ Check `docs/05_ADR/` for next available ID number (e.g., ADR-01, ADR-33).
 - ❌ Incorrect: ADR-001, ADR-033 (extra leading zero not required)
 
 **Special IDs**:
-- **ADR-000**: Reserved for Technology Stack reference
+- **ADR-00**: Reserved for Technology Stack reference and registry/index documents
 - **ADR-01 onwards**: Regular decision records
 
 ### Step 4: Create ADR Folder and Files
@@ -307,11 +311,11 @@ Check `docs/05_ADR/` for next available ID number (e.g., ADR-01, ADR-33).
 
 **Example (Section-Based Pattern - DEFAULT)**:
 ```
-docs/05_ADR/ADR-033_database_selection/
-├── ADR-033.0_database_selection_index.md
-├── ADR-033.1_context.md
-├── ADR-033.2_decision.md
-└── ADR-033.3_consequences.md
+docs/05_ADR/ADR-33_database_selection/
+├── ADR-33.0_database_selection_index.md
+├── ADR-33.1_context.md
+├── ADR-33.2_decision.md
+└── ADR-33.3_consequences.md
 ```
 
 **Monolithic Option** (for small documents ≤25KB): `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md` (still in nested folder)
@@ -321,7 +325,7 @@ docs/05_ADR/ADR-033_database_selection/
 Complete all required metadata fields and initialize Document Revision History table.
 
 **Required Fields** (7 mandatory):
-- Project Name, Document Version, Date, Document Owner, Prepared By, Status, SYS-Ready Score
+- Project Name, Document Version, Date, Document Owner, Prepared By, Status, SPEC-Ready Score
 
 ### Step 6: Document Context (Section 4)
 
@@ -342,7 +346,7 @@ Complete all required metadata fields and initialize Document Revision History t
 **Decision Section**: Clear, concise statement:
 - What are we choosing to do?
 - How will it be implemented?
-- Reference technology stack (ADR-000) if applicable
+- Reference technology stack (ADR-00) if applicable
 
 ### Step 8: Analyze Consequences (Section 7)
 
@@ -371,7 +375,7 @@ Complete all required metadata fields and initialize Document Revision History t
 **Related Decisions Section**:
 - Supersedes: Which ADR this replaces
 - Related to: Connected ADRs
-- Influences: Which SYS/REQ depend on this
+- Influences: Which SPEC components depend on this
 
 ### Step 12: Add Cumulative Tags (Section 16.6)
 
@@ -381,7 +385,7 @@ Include @brd, @prd, @ears, @bdd tags (Layers 1-4).
 
 **MANDATORY**: Update `docs/05_ADR/ADR-00_TRACEABILITY_MATRIX.md`
 - Add ADR entry with **upstream sources only** (BRD, PRD, EARS, BDD)
-- Do NOT add downstream links (SYS, REQ track their own references to ADRs)
+- Do NOT add downstream links (SPEC, TDD, IPLAN track their own references to ADRs)
 
 ### Step 14: Commit Changes
 
@@ -389,106 +393,71 @@ Commit ADR and traceability matrix.
 
 ## Validation
 
+The framework is spec-only — there are no validation scripts to run. This skill
+*is* the validator: apply the declarative checklist below, using
+`framework/layers/05_ADR/README.md` and `framework/governance/` as authority.
+
 ### Validation Checks (8 Total)
 
 | Check | Type | Description |
 |-------|------|-------------|
 | CHECK 1 | Error | Required Document Control Fields (7 fields) |
 | CHECK 2 | Error | ADR Structure Completeness (required sections) |
-| CHECK 3 | Error | SYS-Ready Score Validation (format, threshold) |
+| CHECK 3 | Error | SPEC-Ready Score Validation (format, threshold) |
 | CHECK 4 | Error | Upstream Traceability Tags (@brd, @prd, @ears, @bdd) |
 | CHECK 5 | Warning | Decision Quality Assessment |
 | CHECK 6 | Warning | Architecture Documentation (Mermaid diagrams) |
 | CHECK 7 | Warning | Implementation Readiness |
-| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (4-segment `ADR.NN.SS.xxxx`; document refs `ADR-NN`) |
 
 ### Validation Tiers
 
-| Tier | Type | Exit Code | Action |
-|------|------|-----------|--------|
-| Tier 1 | Error | 1 | Must fix before commit |
-| Tier 2 | Warning | 0 | Recommended to fix |
-| Tier 3 | Info | 0 | No action required |
-
-### Pre-Commit Hooks
-
-ADR validation is **automatically enforced** via pre-commit hooks:
-
-```yaml
-- id: adr-core-validator
-  name: Validate ADR core checks (validator, framework library)
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_core_validator_hook.sh
-  stages: [pre-commit]
-
-- id: adr-quality-gate
-  name: Validate ADR quality gates
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_quality_gate_hook.sh
-  stages: [pre-commit]
-
-- id: adr-sys-ready-score
-  name: Validate ADR SYS-Ready score (≥90%)
-  entry: bash ai_dev_ssd_flow/05_ADR/scripts/adr_sys_ready_score_hook.sh
-  stages: [pre-commit]
-```
-
-**Manual execution** (for testing without committing):
-```bash
-pre-commit run adr-core-validator --all-files
-pre-commit run adr-quality-gate --all-files
-pre-commit run adr-sys-ready-score --all-files
-```
+| Tier | Type | Action |
+|------|------|--------|
+| Tier 1 | Error | Must fix before commit |
+| Tier 2 | Warning | Recommended to fix |
+| Tier 3 | Info | No action required |
 
 **Quality Gates Enforced**:
 - ✅ ADR structure compliance (11 sections MVP)
-- ✅ SYS-Ready score ≥90% for Accepted status
+- ✅ SPEC-Ready score ≥90% for Accepted status
 - ✅ Metadata and tags (adr, layer-5-artifact)
 - ✅ Upstream traceability (@brd, @prd, @ears, @bdd)
-- ✅ Element ID format (ADR.NN.xxxx)
+- ✅ Element ID format (`ADR.NN.SS.xxxx`; document refs `ADR-NN`)
 - ✅ No placeholder text in approved documents
 - ✅ Architecture diagrams (Mermaid required)
 - ✅ Decision quality and alternatives analysis
-
-### Automated Validation
-
-```bash
-# Per-document validation (Phase 1)
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/05_ADR/ADR-NN_slug.md --auto-fix
-
-# Layer validation (Phase 2) - run when all ADR documents complete
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer ADR --auto-fix
-
-# Cumulative tagging validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact ADR-NN --expected-layers brd,prd,ears,bdd --strict
-```
 
 ### Manual Checklist
 
 - [ ] Document Control section at top with 7 required fields
 - [ ] Status field completed (Proposed/Accepted/Deprecated/Superseded)
-- [ ] SYS-Ready Score with ✅ emoji and percentage
+- [ ] SPEC-Ready Score with ✅ emoji and percentage
 - [ ] Context explains problem and constraints
 - [ ] Decision clearly stated
 - [ ] Consequences analyzed (positive, negative, risks)
 - [ ] Alternatives considered and documented with rejection rationale
 - [ ] Verification approach defined
 - [ ] Relations to other ADRs documented
-- [ ] Technology Stack (ADR-000) referenced if applicable
+- [ ] Technology Stack (ADR-00) referenced if applicable
 - [ ] Cumulative tags: @brd, @prd, @ears, @bdd included
-- [ ] Element IDs use unified format (ADR.NN.xxxx)
-- [ ] No legacy patterns (DEC-XXX, ALT-XXX, CON-XXX)
+- [ ] Element IDs use 4-segment format (`ADR.NN.SS.xxxx`); document refs use `ADR-NN`
+- [ ] No legacy patterns (DEC-XXX, ALT-XXX, CON-XXX, 3-segment IDs, `ADR-NNN`)
 - [ ] Traceability matrix updated
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
-**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
+**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation.
+The framework is spec-only — there are no scripts to run; this skill applies the
+checks declaratively. Do NOT proceed to next document until validation passes.
 
-### Automatic Validation Loop
+### Validation Loop
 
 ```
 LOOP:
-  1. Run: python ai_dev_ssd_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
-  2. IF errors fixed: GOTO LOOP (re-validate)
-  3. IF warnings fixed: GOTO LOOP (re-validate)
+  1. Apply the Validation Checklist checks (above) to the document
+  2. IF errors found and auto-fixable: fix → GOTO LOOP (re-validate)
+  3. IF warnings auto-fixable: fix → GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
   5. IF clean: Mark VALIDATED, proceed
 ```
@@ -504,8 +473,8 @@ LOOP:
 | Issue | Fix Action |
 |-------|------------|
 | Missing @brd/@prd/@ears/@bdd tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
-| Legacy element ID (DEC-XXX, ALT-XXX, CON-XXX) | Convert to ADR.NN.xxxx format |
+| Invalid tag format | Correct to `ADR.NN.SS.xxxx` (4-segment) or `ADR-NN` document form |
+| Legacy element ID (DEC-XXX, ALT-XXX, CON-XXX, 3-segment) | Convert to `ADR.NN.SS.xxxx` format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -522,24 +491,24 @@ LOOP:
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to SYS creation until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to SPEC creation until validation passes with 0 errors.
 
 ## Common Pitfalls
 
 1. **No alternatives**: Must document why other options rejected
-2. **Missing technology stack check**: Always check ADR-000 first
+2. **Missing technology stack check**: Always check ADR-00 first
 3. **Vague consequences**: Be specific about impacts
 4. **No verification**: Must define how to validate decision
 5. **Missing cumulative tags**: Layer 5 must include Layers 1-4 tags
-6. **Legacy element IDs**: Use ADR.NN.xxxx not DEC-XXX/ALT-XXX/CON-XXX
-7. **Wrong SYS-Ready Score format**: Must include ✅ emoji and percentage
+6. **Legacy element IDs**: Use 4-segment `ADR.NN.SS.xxxx` not DEC-XXX/ALT-XXX/CON-XXX or 3-segment forms
+7. **Wrong SPEC-Ready Score format**: Must include ✅ emoji and percentage
 
 ---
 
 ## ADR-REF Reference Documents
 
 For supplementary documentation related to ADR artifacts:
-- **Format**: `ADR-REF-NNN_{slug}.md`
+- **Format**: `ADR-REF-NN_{slug}.md`
 - **Skill**: Use `doc-ref` skill
 - **Validation**: Reduced (4 checks only)
 - **Examples**: Technology stack summaries, architecture overviews
@@ -553,7 +522,7 @@ For supplementary documentation related to ADR artifacts:
 - H1 ID match with filename (required)
 
 **Exempted** (NO SCORES):
-- SYS-Ready Score: NOT APPLICABLE
+- SPEC-Ready Score: NOT APPLICABLE
 - Cumulative tags: NOT REQUIRED
 - CHECK 5-7: Decision quality, architecture, implementation (exempt)
 - All quality gates and downstream readiness metrics: EXEMPT
@@ -566,27 +535,28 @@ For supplementary documentation related to ADR artifacts:
 
 After creating ADR, use:
 
-**`doc-sys`** - Create System Requirements (Layer 6)
+**`doc-spec`** - Create Component Specifications (Layer 6)
 
-The SYS will:
-- Implement ADR architectural decisions
+The SPEC will:
+- Implement ADR architectural decisions at the component level
 - Include `@brd`, `@prd`, `@ears`, `@bdd`, `@adr` tags (cumulative)
-- Define functional requirements and quality attributes
-- Translate ADR decisions into technical requirements
+- Define component interfaces, data models, and behavior contracts
+- Translate ADR decisions into component-level design
 
 ## Related Resources
 
-- **Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md` (primary authority)
-- **Schema**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml` (machine-readable validation)
+- **Template**: `framework/layers/05_ADR/ADR-TEMPLATE.yaml` (primary authority)
+- **ADR README**: `framework/layers/05_ADR/README.md`
+- **ADR Index template**: `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
-- **ADR Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-- **ADR Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
-- **ADR README**: `ai_dev_ssd_flow/05_ADR/README.md`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+- **doc-bdd skill**: `../doc-bdd/SKILL.md` (upstream BDD scenarios)
+- **doc-spec skill**: `../doc-spec/SKILL.md` (downstream component specifications)
 
 **Section Templates** (DEFAULT for all ADR documents):
 - **Structure**: `docs/05_ADR/ADR-NN/ADR-NN.S_slug.md` (nested folder per document)
-- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- Reference: `framework/governance/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
 - **Note**: Monolithic format allowed for small documents (≤25KB), but MUST still be in nested folder
 
 ## Quick Reference
@@ -599,17 +569,17 @@ The SYS will:
 
 **Format**: 11-section MVP structure
 
-**SYS-Ready Score**: ≥90% required for "Accepted" status
+**SPEC-Ready Score**: ≥90% required for "Accepted" status
 
-**Element ID Format**: ADR.NN.xxxx (Decision=10, Alternative=12, Consequence=13)
+**Element ID Format**: document `ADR-NN`; element `ADR.NN.SS.xxxx` (4-segment, 4-hex hash)
 
 **File Size**: 800 lines target, 1200 max
 
 **Lifecycle States**: Proposed → Accepted → Deprecated/Superseded
 
-**Critical**: Always check ADR-000 Technology Stack first
+**Critical**: Always check ADR-00 Technology Stack first
 
-**Next**: doc-sys
+**Next**: doc-spec
 
 ---
 
@@ -617,7 +587,8 @@ The SYS will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Element IDs are now 4-segment `ADR.NN.SS.xxxx` plus document-level `ADR-NN` (dual ref per ID_NAMING_STANDARDS); removed legacy numeric element-type-code table and 3-digit `ADR-NNN`. Downstream chain rebuilt to SPEC (L6), TDD (L7), IPLAN (L8) — no SYS/REQ/CTR. Paths point at `framework/layers/05_ADR/`; SYS-Ready score renamed SPEC-Ready; validation is now this skill's declarative checklist (framework is spec-only, no scripts). | System |
 | 1.3 | 2026-03-06 | Added cross-linking tags documentation, quality gate validation reference, and pre-commit hooks section | System |
-| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized ADR references to `ai_dev_ssd_flow/05_ADR` MVP artifacts and existing validation scripts | System |
-| 1.1 | 2026-02-26 | Updated to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) | System |
+| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized ADR references to MVP artifacts | System |
+| 1.1 | 2026-02-26 | Updated to 11-section MVP structure (aligned with ADR-TEMPLATE v1.1) | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

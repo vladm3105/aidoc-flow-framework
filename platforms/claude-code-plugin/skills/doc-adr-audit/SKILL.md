@@ -18,9 +18,9 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [ADR]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    version: "1.1"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 
 ---
 
@@ -62,7 +62,7 @@ Use this wrapper to avoid user confusion between validator and reviewer while pr
 Use `doc-adr-audit` when:
 - You want one command for ADR quality checks
 - You need a combined report for `doc-adr-fixer`
-- You are running QA before SYS generation
+- You are running QA before SPEC generation
 
 Do NOT use when:
 - ADR does not exist (use `doc-adr` / `doc-adr-autopilot` generation first)
@@ -164,6 +164,7 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-05-22 | Migrated to the framework 8-layer model: ADR downstream gate is now SPEC (Layer 6), not SYS; tracks `ADR-TEMPLATE` schema version |
 | 1.0 | 2026-02-27 | Initial ADR audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
 
 ## Implementation Plan Consistency (IPLAN-004)

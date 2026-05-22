@@ -15,23 +15,23 @@ metadata:
     development_status: active
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD]
-    downstream_artifacts: [SYS, REQ]
-    version: "2.6"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    downstream_artifacts: [SPEC, TDD, IPLAN]
+    version: "2.7"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 ---
 
 # doc-adr-autopilot
 
 ## Purpose
 
-Automated **Architecture Decision Record (ADR)** generation pipeline that processes BRD Section 7.2 Architecture Decision Requirements to generate comprehensive ADRs with Context-Decision-Consequences format, validation, and traceability.
+Automated **Architecture Decision Record (ADR)** generation pipeline that processes BRD Architecture Decision Requirements to generate comprehensive ADRs with Context-Decision-Consequences format, validation, and traceability.
 
 **Layer**: 5 (Architecture Decision Records)
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4)
 
-**Downstream Artifacts**: SYS (Layer 6), REQ (Layer 7)
+**Downstream Artifacts**: SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
@@ -40,29 +40,12 @@ Automated **Architecture Decision Record (ADR)** generation pipeline that proces
 - Supported modes:
   - `--ref <path>`
   - `--prompt "<text>"`
-  - `--iplan <path|IPLAN-NNN>`
+  - `--iplan <path|IPLAN-NN>`
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
   1. Use explicit file path when it exists
-  2. Resolve `plans/IPLAN-NNN*.md`
-  3. Resolve `governance/plans/IPLAN-NNN*.md`
-  4. If multiple matches exist, fail with disambiguation request
-- Merge conflict rule:
-  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
-
----
-
-## Input Contract (IPLAN-004 Standard)
-
-- Supported modes:
-  - `--ref <path>`
-  - `--prompt "<text>"`
-  - `--iplan <path|IPLAN-NNN>`
-- Precedence: `--iplan > --ref > --prompt`
-- IPLAN resolution order:
-  1. Use explicit file path when it exists
-  2. Resolve `plans/IPLAN-NNN*.md`
-  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  2. Resolve `plans/IPLAN-NN*.md`
+  3. Resolve `governance/plans/IPLAN-NN*.md`
   4. If multiple matches exist, fail with disambiguation request
 - Merge conflict rule:
   - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
@@ -75,10 +58,10 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (ADR.NN.xxxx), threshold tags, legacy pattern detection | All Phases |
-| `doc-adr` | ADR creation rules, 11-section MVP structure, lifecycle states | Phase 3: ADR Generation |
+| `doc-naming` | Element ID format (ADR.NN.SS.xxxx), threshold tags, legacy pattern detection | All Phases |
+| `doc-adr` | ADR creation rules, 10-section MVP structure, lifecycle states | Phase 3: ADR Generation |
 | `quality-advisor` | Real-time quality feedback during ADR generation | Phase 3: ADR Generation |
-| `doc-adr-validator` | Validate ADR structure, content, SYS-Ready score | Phase 4: ADR Validation |
+| `doc-adr-validator` | Validate ADR structure, content, SPEC-Ready score | Phase 4: ADR Validation |
 | `doc-adr-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
 | `doc-adr-fixer` | Apply fixes from audit/review report, create missing files | Phase 5: Fix |
 
@@ -97,8 +80,8 @@ This autopilot orchestrates the following skills:
 When generating ADR document instances, the autopilot MUST:
 
 1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "adr-document"`
+   - Source: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "adr-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
    ```yaml
@@ -222,7 +205,7 @@ flowchart TD
     end
 
     subgraph Phase2["Phase 2: ADR Topic Identification"]
-        E --> F[Map BRD.NN.32.XX to ADR-NN]
+        E --> F[Map BRD ADR-topic elements to ADR-NN]
         F --> G{All 7 Categories Present?}
         G -->|No| H[Flag Missing Categories]
         H --> I[Generate Placeholder Topics]
@@ -247,7 +230,7 @@ flowchart TD
 
     subgraph Phase4["Phase 4: ADR Validation"]
         V --> W[Run doc-adr-validator]
-        W --> X{SYS-Ready >= 90?}
+        W --> X{SPEC-Ready >= 90?}
         X -->|No| Y[Auto-Fix ADR Issues]
         Y --> Z[Re-validate ADR]
         Z --> X
@@ -296,21 +279,21 @@ Analyze BRD Section 7.2 to extract Architecture Decision Requirements.
 # Locate BRD Section 7.2
 find docs/01_BRD/ -name "*.md" -exec grep -l "7.2.*Architecture Decision Requirements" {} \;
 
-# Check for ADR topics in BRD
-grep -E "BRD\.[0-9]+\.32\.[0-9]+" docs/01_BRD/BRD-NN_*.md
+# Check for ADR topics in BRD (4-segment element IDs)
+grep -E "BRD\.[0-9]+\.[0-9]+\.[0-9a-f]+" docs/01_BRD/BRD-NN_*.md
 ```
 
 **Required BRD Section 7.2 Structure**:
 
 | Subsection | Element ID Pattern | Content |
 |------------|-------------------|---------|
-| 7.2.1 Infrastructure | BRD.NN.32.01 | Cloud, compute, networking decisions |
-| 7.2.2 Data Architecture | BRD.NN.32.02 | Database, storage, data flow decisions |
-| 7.2.3 Integration | BRD.NN.32.03 | API, messaging, integration patterns |
-| 7.2.4 Security | BRD.NN.32.04 | Authentication, authorization, encryption |
-| 7.2.5 Observability | BRD.NN.32.05 | Logging, monitoring, tracing |
-| 7.2.6 AI/ML | BRD.NN.32.06 | ML models, inference, training |
-| 7.2.7 Technology Selection | BRD.NN.32.07 | Framework, language, tool choices |
+| 7.2.1 Infrastructure | BRD.NN.SS.xxxx | Cloud, compute, networking decisions |
+| 7.2.2 Data Architecture | BRD.NN.SS.xxxx | Database, storage, data flow decisions |
+| 7.2.3 Integration | BRD.NN.SS.xxxx | API, messaging, integration patterns |
+| 7.2.4 Security | BRD.NN.SS.xxxx | Authentication, authorization, encryption |
+| 7.2.5 Observability | BRD.NN.SS.xxxx | Logging, monitoring, tracing |
+| 7.2.6 AI/ML | BRD.NN.SS.xxxx | ML models, inference, training |
+| 7.2.7 Technology Selection | BRD.NN.SS.xxxx | Framework, language, tool choices |
 
 **Output**: ADR topic catalog with business drivers, constraints, and status.
 
@@ -354,19 +337,23 @@ docs/05_ADR/
 Map BRD Section 7.2 topics to ADR documents.
 
 > **Skill Delegation**: Element ID validation follows rules in `doc-naming` skill.
-> See: `.claude/skills/doc-naming/SKILL.md` for element type codes.
+> See: `../doc-naming/SKILL.md` for the 4-segment element ID standard.
 
 **BRD to ADR Mapping**:
 
-| BRD Element ID | ADR Document | Topic Category | ADR Element Prefix |
-|----------------|--------------|----------------|-------------------|
-| BRD.NN.32.01 | ADR-01 | Infrastructure | ADR.01.10.xx |
-| BRD.NN.32.02 | ADR-02 | Data Architecture | ADR.02.10.xx |
-| BRD.NN.32.03 | ADR-03 | Integration | ADR.03.10.xx |
-| BRD.NN.32.04 | ADR-04 | Security | ADR.04.10.xx |
-| BRD.NN.32.05 | ADR-05 | Observability | ADR.05.10.xx |
-| BRD.NN.32.06 | ADR-06 | AI/ML | ADR.06.10.xx |
-| BRD.NN.32.07 | ADR-07 | Technology Selection | ADR.07.10.xx |
+ADR element IDs use the 4-segment standard `ADR.NN.SS.xxxx` (`NN` = ADR document
+number, `SS` = section number, `xxxx` = 4-char hex content hash). The decision
+element lives in the Decision section (Section 3); see `framework/governance/ID_NAMING_STANDARDS.md`.
+
+| BRD Element ID | ADR Document | Topic Category | ADR Decision Element |
+|----------------|--------------|----------------|----------------------|
+| BRD.NN.SS.xxxx | ADR-01 | Infrastructure | ADR.01.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-02 | Data Architecture | ADR.02.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-03 | Integration | ADR.03.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-04 | Security | ADR.04.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-05 | Observability | ADR.05.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-06 | AI/ML | ADR.06.03.xxxx |
+| BRD.NN.SS.xxxx | ADR-07 | Technology Selection | ADR.07.03.xxxx |
 
 **Topic Status Values** (from BRD Section 7.2):
 
@@ -407,10 +394,10 @@ def prioritize_topics(topics: list) -> list:
 Generate ADR documents with Context-Decision-Consequences format.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-adr` skill.
-> See: `.claude/skills/doc-adr/SKILL.md` for complete ADR creation guidance.
+> See: `../doc-adr/SKILL.md` for complete ADR creation guidance.
 >
 > **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
-> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
+> See: `../quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -423,8 +410,9 @@ Generate ADR documents with Context-Decision-Consequences format.
    ```
 
 2. **Load ADR Template**:
-  - Primary: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-  - Validation schema: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
+  - Primary: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+  - Index template: `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
+  - Authoritative rules: `framework/layers/05_ADR/README.md` and `framework/governance/`
 
 3. **Generate Document Control Section**:
 
@@ -437,13 +425,13 @@ Generate ADR documents with Context-Decision-Consequences format.
    | Document Owner | From BRD stakeholder analysis |
    | Prepared By | AI Assistant |
    | Status | Proposed (or Accepted if Selected) |
-   | SYS-Ready Score | Calculated after generation |
+   | SPEC-Ready Score | Calculated after generation |
 
 4. **Generate Context Section (Section 4)**:
 
    **Section 4.1 Problem Statement** (from BRD):
-   - Business Driver (BRD.NN.32.XX Business Driver field)
-   - Business Constraints (BRD.NN.32.XX Constraints field)
+   - Business Driver (BRD.NN.SS.xxxx Business Driver field)
+   - Business Constraints (BRD.NN.SS.xxxx Constraints field)
    - Technical Options Evaluated (from PRD Section 18)
    - Evaluation Criteria (from PRD Section 18)
 
@@ -504,7 +492,7 @@ Generate ADR documents with Context-Decision-Consequences format.
 8. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
-   - Validate element ID format compliance (ADR.NN.xxxx)
+   - Validate element ID format compliance (ADR.NN.SS.xxxx)
    - Check for placeholder text ([TBD], TODO, XXX)
    - Verify Mermaid diagram presence (required for ADR)
    - Flag issues early to reduce post-generation rework
@@ -583,12 +571,12 @@ Generate ADR documents with Context-Decision-Consequences format.
 
 10. **Add Cumulative Tags (Section 16)**:
 
-    **Layer 5 Required Tags**:
+    **Layer 5 Required Tags** (4-segment element IDs):
     ```markdown
-    @brd: BRD.NN.32.XX
-    @prd: PRD.NN.18.XX
-    @ears: EARS.NN.25.XX
-    @bdd: BDD.NN.14.XX
+    @brd: BRD.NN.08.xxxx
+    @prd: PRD.NN.14.xxxx
+    @ears: EARS.NN.03.xxxx
+    @bdd: BDD.NN.03.xxxx
     ```
 
 11. **File Output** (ALWAYS use nested folder):
@@ -600,24 +588,30 @@ Generate ADR documents with Context-Decision-Consequences format.
 
 **Element ID Format** (per `doc-naming` skill):
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Decision | 10 | ADR.02.1001 |
-| Alternative | 12 | ADR.02.1201 |
-| Consequence | 13 | ADR.02.1301 |
+ADR uses the 4-segment standard `ADR.NN.SS.xxxx` — there are no numeric
+type-codes. The section number (`SS`) identifies the element kind by where it
+lives: decisions in the Decision section, alternatives in Alternatives,
+consequences in Consequences. See `framework/governance/ID_NAMING_STANDARDS.md`.
+
+| Element Type | Section | Example |
+|--------------|---------|---------|
+| Decision | Decision (Section 3) | ADR.02.03.1a4f |
+| Alternative | Alternatives (Section 4) | ADR.02.04.9c2e |
+| Consequence | Consequences (Section 5) | ADR.02.05.3d7b |
 
 ### Phase 4: ADR Validation
 
-After ADR generation, validate structure and SYS-Ready score.
+After ADR generation, validate structure and SPEC-Ready score.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-adr-validator` skill.
-> See: `.claude/skills/doc-adr-validator/SKILL.md` for complete validation rules.
+> See: `../doc-adr-validator/SKILL.md` for complete validation rules.
 
-**Validation Command**:
+**Validation Approach**:
 
-```bash
-python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.md --verbose
-```
+This skill *is* the validator — there is no external validation script. Run the
+declarative checklist below against the generated ADR. Authoritative rules live
+in `framework/layers/05_ADR/README.md` and the governance standards in
+`framework/governance/` (ID and tag formats).
 
 **Validation Checks** (8 Total):
 
@@ -625,21 +619,22 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.
 |-------|------|-------------|
 | CHECK 1 | Error | Required Document Control Fields (7 fields) |
 | CHECK 2 | Error | ADR Structure Completeness (required sections) |
-| CHECK 3 | Error | SYS-Ready Score Validation (format, threshold) |
+| CHECK 3 | Error | SPEC-Ready Score Validation (format, threshold) |
 | CHECK 4 | Error | Upstream Traceability Tags (@brd, @prd, @ears, @bdd) |
 | CHECK 5 | Warning | Decision Quality Assessment |
 | CHECK 6 | Warning | Architecture Documentation (Mermaid diagrams) |
 | CHECK 7 | Warning | Implementation Readiness |
-| CHECK 8 | Error | Element ID Format Compliance (unified 3-segment) |
+| CHECK 8 | Error | Element ID Format Compliance (4-segment ADR.NN.SS.xxxx) |
 
-**SYS-Ready Scoring Criteria (100%)**:
+**SPEC-Ready Scoring Criteria (100%)**:
 
 | Category | Weight | Criteria |
 |----------|--------|----------|
 | Decision Completeness | 30% | Context/Decision/Consequences/Alternatives documented |
-| Architecture Clarity | 35% | Mermaid diagrams (REQUIRED), component responsibilities |
-| Implementation Readiness | 20% | Complexity assessment, dependencies, rollback strategies |
-| Verification Approach | 15% | Testing strategy, success metrics, operational readiness |
+| Architecture Clarity | 25% | Mermaid diagrams (REQUIRED), integration points defined |
+| Consequence Analysis | 20% | Positive outcomes, trade-offs, costs documented |
+| Traceability | 15% | Upstream BRD/PRD/EARS/BDD tags complete |
+| Verification | 10% | Success criteria defined, BDD cross-refs present |
 
 **Minimum Score**: 90%
 
@@ -647,11 +642,11 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-NN_{slug}.
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
-| Invalid element ID format | Convert to ADR.NN.xxxx format |
+| Invalid element ID format | Convert to ADR.NN.SS.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
-| Legacy patterns (DEC-XXX, ALT-XXX, CON-XXX) | Convert to unified format |
-| Missing SYS-Ready Score | Calculate and insert |
+| Legacy patterns (DEC-XXX, ALT-XXX, CON-XXX) | Convert to ADR.NN.SS.xxxx |
+| Missing SPEC-Ready Score | Calculate and insert |
 | Missing Mermaid diagram | Insert template diagram |
 
 **Validation Loop**:
@@ -661,7 +656,7 @@ LOOP (max 3 iterations):
   1. Run doc-adr-validator
   2. IF errors found: Apply auto-fixes
   3. IF warnings found: Review and address if critical
-  4. IF SYS-Ready Score < 90%: Enhance sections
+  4. IF SPEC-Ready Score < 90%: Enhance sections
   5. IF clean: Mark VALIDATED, proceed
   6. IF max iterations: Log issues, flag for manual review
 ```
@@ -714,7 +709,7 @@ If review score < 90%, invoke `doc-adr-fixer`.
 |----------|---------------|
 | Missing Files | Create glossary, reference docs |
 | Broken Links | Update paths, create targets |
-| Element IDs | Convert legacy patterns (DEC-XXX, ALT-XXX, CON-XXX), fix invalid type codes |
+| Element IDs | Convert legacy patterns (DEC-XXX, ALT-XXX, CON-XXX) to ADR.NN.SS.xxxx |
 | Content | Replace template placeholders, update dates |
 | References | Update traceability tags |
 | Diagrams | Add missing Mermaid diagrams |
@@ -757,7 +752,7 @@ After passing the fix cycle:
 
 1. **All ADRs Complete**:
    - All 7 mandatory topic categories addressed
-   - Each ADR has SYS-Ready score >= 90%
+   - Each ADR has SPEC-Ready score >= 90%
    - No placeholder text remaining
 
 2. **Cross-ADR Consistency**:
@@ -766,24 +761,23 @@ After passing the fix cycle:
    - Dependencies between ADRs documented
 
 3. **Traceability Matrix Update**:
-   ```bash
-   # Update ADR-00_TRACEABILITY_MATRIX.md
-  python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
-     --type ADR \
-     --matrix docs/05_ADR/ADR-00_TRACEABILITY_MATRIX.md
-   ```
+   - Update `docs/05_ADR/ADR-00_index.md` (or the project traceability matrix)
+     with each ADR's upstream sources (BRD, PRD, EARS, BDD).
+   - The autopilot edits the matrix in place — there is no external script;
+     follow the index template at `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
 
-4. **SYS-Ready Report**:
+4. **SPEC-Ready Report**:
    ```
-   SYS-Ready Score Breakdown
-   =========================
-   Decision Completeness:      30/30 (Context/Decision/Consequences)
-   Architecture Clarity:       33/35 (Mermaid diagrams present)
-   Implementation Readiness:   19/20 (Complexity assessment)
-   Verification Approach:      14/15 (Testing strategy)
+   SPEC-Ready Score Breakdown
+   ==========================
+   Decision Completeness:      30/30 (Context/Decision/Consequences/Alternatives)
+   Architecture Clarity:       24/25 (Mermaid diagrams present)
+   Consequence Analysis:       19/20 (trade-offs, costs documented)
+   Traceability:               15/15 (upstream tags complete)
+   Verification:               10/10 (success criteria, BDD cross-refs)
    ----------------------------
-   Total SYS-Ready Score:      96/100 (Target: >= 90)
-   Status: READY FOR SYS GENERATION
+   Total SPEC-Ready Score:     98/100 (Target: >= 90)
+   Status: READY FOR SPEC GENERATION
    ```
 
 5. **Summary Report Generation**:
@@ -797,7 +791,7 @@ After passing the fix cycle:
      Proposed: 2
      N/A: 0
 
-   SYS-Ready Scores:
+   SPEC-Ready Scores:
      ADR-01 (Infrastructure):     95%
      ADR-02 (Data Architecture):  92%
      ADR-03 (Integration):        94%
@@ -806,11 +800,11 @@ After passing the fix cycle:
      ADR-06 (AI/ML):              90%
      ADR-07 (Technology):         93%
 
-   Average SYS-Ready Score: 93%
+   Average SPEC-Ready Score: 93%
 
    Next Steps:
      1. Review Proposed ADRs for stakeholder approval
-     2. Run doc-sys-autopilot to generate SYS from ADRs
+     2. Run doc-spec-autopilot to generate SPEC from ADRs
    ```
 
 ---
@@ -823,13 +817,13 @@ Generate one ADR from a specific BRD topic.
 
 ```bash
 # Example: Generate ADR-01 from Infrastructure topic
-/doc-adr-autopilot BRD.01.3201
+/doc-adr-autopilot BRD.01.07.a7f3
 
 # Output:
-# Analyzing BRD.01.3201 (Infrastructure)...
+# Analyzing BRD.01.07.a7f3 (Infrastructure)...
 # Status: Selected
 # Generating ADR-01_infrastructure.md...
-# SYS-Ready Score: 94%
+# SPEC-Ready Score: 94%
 # Complete.
 ```
 
@@ -844,13 +838,13 @@ Generate all ADRs from BRD Section 7.2.
 # Output:
 # Scanning BRD-01 Section 7.2...
 # Found 7 ADR topics:
-#   BRD.01.3201 (Infrastructure) - Selected
-#   BRD.01.3202 (Data Architecture) - Selected
-#   BRD.01.3203 (Integration) - Selected
-#   BRD.01.3204 (Security) - Selected
-#   BRD.01.3205 (Observability) - Pending
-#   BRD.01.3206 (AI/ML) - Pending
-#   BRD.01.3207 (Technology) - Selected
+#   BRD.01.07.a7f3 (Infrastructure) - Selected
+#   BRD.01.07.b210 (Data Architecture) - Selected
+#   BRD.01.07.c3d8 (Integration) - Selected
+#   BRD.01.07.d491 (Security) - Selected
+#   BRD.01.07.e5a2 (Observability) - Pending
+#   BRD.01.07.f6b3 (AI/ML) - Pending
+#   BRD.01.07.0c14 (Technology) - Selected
 #
 # Generating ADRs...
 # [================>          ] 5/7 Complete
@@ -902,7 +896,7 @@ Validate existing ADR documents and generate a quality report without modificati
 flowchart TD
     A[Input: Existing ADR] --> B[Load ADR Documents]
     B --> C[Run Validation Checks]
-    C --> D[Calculate SYS-Ready Score]
+    C --> D[Calculate SPEC-Ready Score]
     D --> E[Check v2.0 Compliance]
     E --> F[Validate Structure]
     F --> G[Identify Issues]
@@ -921,7 +915,7 @@ flowchart TD
 # ADR Review Report: ADR-01_infrastructure
 
 ## Summary
-- **SYS-Ready Score**: 87% 🟡
+- **SPEC-Ready Score**: 87% 🟡
 - **Total Issues**: 11
 - **Auto-Fixable**: 7
 - **Manual Review**: 4
@@ -957,8 +951,8 @@ flowchart TD
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Missing visual indicator | Document Control | Add ✅/🟡/❌ to SYS-Ready Score |
-| 2 | Legacy element ID | Section 5:L45 | Convert DEC-001 to ADR.01.1001 |
+| 1 | Missing visual indicator | Document Control | Add ✅/🟡/❌ to SPEC-Ready Score |
+| 2 | Legacy element ID | Section 3:L45 | Convert DEC-001 to ADR.01.03.1a4f |
 | 3 | Missing traceability tag | Section 17 | Add @bdd tag |
 | ... | ... | ... | ... |
 
@@ -983,11 +977,11 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # Document control, required sections
-    - element_id_compliance     # ADR.NN.xxxx format
+    - element_id_compliance     # ADR.NN.SS.xxxx format
     - mermaid_diagrams          # Architecture flow presence
     - v2_compliance             # New v2.0 sections
     - cumulative_tags           # 4 upstream tags
-    - score_calculation         # SYS-Ready score
+    - score_calculation         # SPEC-Ready score
     - folder_structure          # Nested vs flat
   output:
     format: markdown           # markdown, json, html
@@ -1059,18 +1053,18 @@ flowchart TD
 
 | Category | Issue | Auto-Fix Action | Preserves Content |
 |----------|-------|-----------------|-------------------|
-| **Element IDs** | Legacy DEC-XXX format | Convert to ADR.NN.10.SS | ✅ |
-| **Element IDs** | Legacy ALT-XXX format | Convert to ADR.NN.12.SS | ✅ |
-| **Element IDs** | Legacy CON-XXX format | Convert to ADR.NN.13.SS | ✅ |
+| **Element IDs** | Legacy DEC-XXX format | Convert to ADR.NN.SS.xxxx (Decision section) | ✅ |
+| **Element IDs** | Legacy ALT-XXX format | Convert to ADR.NN.SS.xxxx (Alternatives section) | ✅ |
+| **Element IDs** | Legacy CON-XXX format | Convert to ADR.NN.SS.xxxx (Consequences section) | ✅ |
 | **Structure** | Missing Document Control fields | Add from template | ✅ |
 | **Structure** | Missing traceability section | Insert from template | ✅ |
-| **Structure** | Missing SYS-Ready Score | Calculate and insert | ✅ |
+| **Structure** | Missing SPEC-Ready Score | Calculate and insert | ✅ |
 | **v2.0 Sections** | Missing visual indicator | Add ✅/🟡/❌ based on score | ✅ |
 | **v2.0 Sections** | Missing Risk Thresholds | Add template table | ✅ |
 | **v2.0 Sections** | Missing MVP Scope | Add Section 7 template | ✅ |
 | **v2.0 Sections** | Missing CB Recovery | Add template if CB mentioned | ✅ |
 | **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
-| **Traceability** | Non-hierarchical format | Convert to BRD.NN.xxxx format | ✅ |
+| **Traceability** | Non-hierarchical format | Convert to BRD.NN.SS.xxxx format | ✅ |
 | **Diagrams** | Missing Mermaid | Insert template diagram | ✅ |
 
 **Content Preservation Rules**:
@@ -1088,17 +1082,17 @@ flowchart TD
 # ADR Fix Report: ADR-01_infrastructure
 
 ## Summary
-- **Before SYS-Ready Score**: 87% 🟡
-- **After SYS-Ready Score**: 94% ✅
+- **Before SPEC-Ready Score**: 87% 🟡
+- **After SPEC-Ready Score**: 94% ✅
 - **Issues Fixed**: 7
 - **Issues Remaining**: 4 (manual review required)
 
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 5:L45 | Converted DEC-001 → ADR.01.1001 |
+| 1 | Legacy element ID | Section 3:L45 | Converted DEC-001 → ADR.01.03.1a4f |
 | 2 | Missing visual indicator | Document Control | Added ✅ 94% (Target: ≥90%) |
-| 3 | Missing @bdd tag | Section 17 | Added @bdd: BDD.01.1401 |
+| 3 | Missing @bdd tag | Section 9 | Added @bdd: BDD.01.03.8f4c |
 | 4 | Missing Risk Thresholds | Section 11 | Added template table |
 | ... | ... | ... | ... |
 
@@ -1162,9 +1156,9 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    DEC_XXX_to_ADR_NN_10_SS: true   # DEC-001 → ADR.01.1001
-    ALT_XXX_to_ADR_NN_12_SS: true   # ALT-001 → ADR.01.1201
-    CON_XXX_to_ADR_NN_13_SS: true   # CON-001 → ADR.01.1301
+    DEC_XXX_to_ADR_4seg: true   # DEC-001 → ADR.01.03.1a4f (Decision section)
+    ALT_XXX_to_ADR_4seg: true   # ALT-001 → ADR.01.04.9c2e (Alternatives section)
+    CON_XXX_to_ADR_4seg: true   # CON-001 → ADR.01.05.3d7b (Consequences section)
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1204,7 +1198,7 @@ fix_mode:
 | Report | Purpose | Location |
 |--------|---------|----------|
 | adr_validation_report.json | Validation results | `tmp/` |
-| sys_ready_scores.json | SYS-Ready breakdown | `tmp/` |
+| spec_ready_scores.json | SPEC-Ready breakdown | `tmp/` |
 | adr_autopilot_log.md | Execution log | `tmp/` |
 
 ---
@@ -1218,7 +1212,7 @@ fix_mode:
 | BRD Section 7.2 Missing | Abort with message | No Architecture Decision Requirements found |
 | Topic Status Invalid | Flag for manual review | Status not Selected/Pending/N/A |
 | Validation Failure | Auto-fix, retry | Missing required section |
-| SYS-Ready Below 90% | Enhance sections, retry | Score at 85% |
+| SPEC-Ready Below 90% | Enhance sections, retry | Score at 85% |
 | Max Retries Exceeded | Flag for manual review | Persistent validation errors |
 
 ### Recovery Actions
@@ -1234,7 +1228,7 @@ def handle_error(error_type: str, context: dict) -> Action:
             if context["retry_count"] < 3:
                 return Action.AUTO_FIX_RETRY
             return Action.FLAG_MANUAL_REVIEW
-        case "SYS_READY_LOW":
+        case "SPEC_READY_LOW":
             return Action.ENHANCE_SECTIONS
         case _:
             return Action.FLAG_MANUAL_REVIEW
@@ -1252,7 +1246,7 @@ adr_autopilot:
   version: "1.0"
 
   scoring:
-    sys_ready_min: 90
+    spec_ready_min: 90
     strict_mode: false
 
   execution:
@@ -1282,7 +1276,7 @@ adr_autopilot:
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `--min-sys-ready` | 90 | Minimum SYS-Ready score |
+| `--min-spec-ready` | 90 | Minimum SPEC-Ready score |
 | `--no-auto-fix` | false | Disable auto-fix (manual only) |
 | `--continue-on-error` | false | Continue if one topic fails |
 | `--dry-run` | false | Preview execution plan only |
@@ -1321,7 +1315,7 @@ Chunk 3: [ADR-07]                  → Process → Summary → Complete
 ```text
 Chunk N/M Complete:
 ├── Generated: ADR-01, ADR-02, ADR-03
-├── SYS-Ready Scores: 94%, 92%, 91%
+├── SPEC-Ready Scores: 94%, 92%, 91%
 ├── Status: All validated
 └── Next: Continue with Chunk N+1? [Y/n]
 ```
@@ -1360,7 +1354,7 @@ grep -q "7.2.*Architecture Decision Requirements" docs/01_BRD/BRD-*.md || {
 
 # Example: Trigger SYS autopilot for validated ADRs
 if [ "$ALL_ADRS_VALIDATED" = "true" ]; then
-  echo "Invoke downstream workflow: /doc-sys-autopilot ADR-ALL"
+  echo "Invoke downstream workflow: /doc-spec-autopilot ADR-ALL"
 fi
 ```
 
@@ -1403,7 +1397,7 @@ jobs:
 | Phase 1 | BRD Gate | BRD Section 7.2 exists with ADR topics |
 | Phase 2 | Topic Gate | All 7 categories identified |
 | Phase 3 | Generation Gate | All sections generated per topic |
-| Phase 4 | Validation Gate | SYS-Ready Score >= 90% |
+| Phase 4 | Validation Gate | SPEC-Ready Score >= 90% |
 | Phase 5 | Review Gate | No blocking issues remaining |
 
 ### Blocking vs Non-Blocking
@@ -1412,7 +1406,7 @@ jobs:
 |------------|----------|--------|
 | Missing Context section | Yes | Must fix before proceeding |
 | Missing Decision section | Yes | Must fix before proceeding |
-| SYS-Ready Score < 90% | Yes | Must enhance sections |
+| SPEC-Ready Score < 90% | Yes | Must enhance sections |
 | Invalid element ID format | Yes | Must convert to unified format |
 | Missing Mermaid diagram | Yes | Must add architecture flow |
 | Missing optional section | No | Log warning, continue |
@@ -1422,16 +1416,16 @@ jobs:
 
 ## Related Resources
 
-- **ADR Creation Skill**: `.claude/skills/doc-adr/SKILL.md`
-- **ADR Validator Skill**: `.claude/skills/doc-adr-validator/SKILL.md`
-- **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
-- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **ADR Template**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-- **ADR Creation Rules**: `ai_dev_ssd_flow/05_ADR/ADR-MVP-TEMPLATE.md`
-- **ADR Validation Rules**: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
+- **ADR Creation Skill**: `../doc-adr/SKILL.md`
+- **ADR Validator Skill**: `../doc-adr-validator/SKILL.md`
+- **Quality Advisor Skill**: `../quality-advisor/SKILL.md`
+- **Naming Standards Skill**: `../doc-naming/SKILL.md`
+- **ADR Template**: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+- **ADR Index Template**: `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
+- **ADR Creation & Validation Rules**: `framework/layers/05_ADR/README.md` and `framework/governance/`
 - **Technology Stack**: `docs/05_ADR/ADR-00_technology_stack.md`
-- **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
-- **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
+- **BRD Autopilot Skill**: `../doc-brd-autopilot/SKILL.md`
+- **PRD Autopilot Skill**: `../doc-prd-autopilot/SKILL.md`
 
 ---
 
@@ -1439,7 +1433,7 @@ jobs:
 
 | Input | Output | Key Metric |
 |-------|--------|------------|
-| BRD Section 7.2 | ADR-01 to ADR-07 | SYS-Ready >= 90% |
+| BRD Section 7.2 | ADR-01 to ADR-07 | SPEC-Ready >= 90% |
 
 **Usage**:
 ```
@@ -1452,7 +1446,7 @@ jobs:
 /doc-adr-autopilot BRD-01 --all-topics
 
 # Generate single ADR from specific topic
-/doc-adr-autopilot BRD.01.3201
+/doc-adr-autopilot BRD.01.07.a7f3
 
 # Preview only
 /doc-adr-autopilot BRD-01 --dry-run
@@ -1465,13 +1459,13 @@ jobs:
 
 | BRD Element | ADR | Topic |
 |-------------|-----|-------|
-| BRD.NN.32.01 | ADR-01 | Infrastructure |
-| BRD.NN.32.02 | ADR-02 | Data Architecture |
-| BRD.NN.32.03 | ADR-03 | Integration |
-| BRD.NN.32.04 | ADR-04 | Security |
-| BRD.NN.32.05 | ADR-05 | Observability |
-| BRD.NN.32.06 | ADR-06 | AI/ML |
-| BRD.NN.32.07 | ADR-07 | Technology Selection |
+| BRD.NN.SS.xxxx | ADR-01 | Infrastructure |
+| BRD.NN.SS.xxxx | ADR-02 | Data Architecture |
+| BRD.NN.SS.xxxx | ADR-03 | Integration |
+| BRD.NN.SS.xxxx | ADR-04 | Security |
+| BRD.NN.SS.xxxx | ADR-05 | Observability |
+| BRD.NN.SS.xxxx | ADR-06 | AI/ML |
+| BRD.NN.SS.xxxx | ADR-07 | Technology Selection |
 
 ---
 
@@ -1484,19 +1478,19 @@ jobs:
 | Risk Thresholds | Quantified parameter table in Section 11 | ADR-E032 |
 | Circuit Breaker | Recovery table if CB mentioned | ADR-E033 |
 | MVP Scope | Section 7.1/7.2 present | ADR-E034 |
-| Traceability Format | Hierarchical dot notation (@brd:BRD.NN.xxxx) | ADR-E035 |
+| Traceability Format | Hierarchical dot notation (@brd: BRD.NN.SS.xxxx) | ADR-E035 |
 | Index File | ADR-NN.00_index.md for nested folders | ADR-E036 |
 
 ---
 
-## SYS-Ready Score Display (v2.0)
+## SPEC-Ready Score Display (v2.0)
 
 **Visual Status Indicators**:
 
 ```markdown
-| **SYS-Ready Score** | ✅ 92% (Target: ≥90%) |  # Passing
-| **SYS-Ready Score** | 🟡 87% (Target: ≥90%) |  # Near threshold
-| **SYS-Ready Score** | ❌ 75% (Target: ≥90%) |  # Failing
+| **SPEC-Ready Score** | ✅ 92% (Target: ≥90%) |  # Passing
+| **SPEC-Ready Score** | 🟡 87% (Target: ≥90%) |  # Near threshold
+| **SPEC-Ready Score** | ❌ 75% (Target: ≥90%) |  # Failing
 ```
 
 ---
@@ -1505,7 +1499,7 @@ jobs:
 
 **IMPORTANT**: Review reports generated by this autopilot are formal project documents.
 
-See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
+See: `../REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
 ### Quick Reference
 
@@ -1531,11 +1525,12 @@ docs/05_ADR/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.6 | 2026-02-27 | Migrated frontmatter to `metadata`; removed non-existent script/template references; normalized ADR MVP paths to `ai_dev_ssd_flow`; aligned output/report contracts to prefer `ADR-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility |
-| 2.5 | 2026-02-26 | Updated skill dependency reference from 17-section to 11-section MVP structure (aligned with ADR-MVP-TEMPLATE.md v1.1) |
+| 2.7 | 2026-05-22 | Migrated to the 8-layer model: downstream chain SPEC/TDD/IPLAN (was SYS/REQ); SPEC-Ready score (was SYS-Ready); 4-segment element IDs (ADR.NN.SS.xxxx, dropped numeric type-codes); `framework/layers/05_ADR/` template/README paths; sibling skill links (`../doc-X/`); removed dead validation-script references |
+| 2.6 | 2026-02-27 | Migrated frontmatter to `metadata`; removed non-existent script/template references; normalized ADR template path references; aligned output/report contracts to prefer `ADR-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility |
+| 2.5 | 2026-02-26 | Updated skill dependency reference to the MVP structure (aligned with ADR template v1.1) |
 | 2.4 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (ADR-NN) triggers review mode; Multiple upstream-type inputs (BDD/EARS/PRD/BRD-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-adr-reviewer` and `doc-adr-fixer`; Added `doc-adr-fixer` skill dependency; Phase 5 now includes flowchart, iteration control, and quality checks sections (5.1-5.5) |
 | 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references |
 | 2.1 | 2026-02-09 | Added Review Mode for validating existing ADR documents without modification; Added Fix Mode for auto-repairing ADR documents while preserving manual content; Added fix categories (element_ids, structure, v2_sections, traceability, visual_indicators); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with score breakdown impact; Added element ID migration support (DEC_XXX, ALT_XXX, CON_XXX to unified format) |
-| 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Next Cycle Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SYS-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
+| 2.0 | 2026-02-09 | Added Phase 1.5: Folder Structure Analysis with nested folder support; Added Section 7: MVP/Next Cycle Scope; Added Section 11: Risk Thresholds with quantified parameters; Added Section 14: Circuit Breaker Recovery; Added visual SPEC-Ready score indicators (✅/🟡/❌); Added validation rules ADR-E030 to ADR-E036; Added hierarchical traceability format |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-adr, doc-adr-validator, quality-advisor skills; Added BRD Section 7.2 to ADR mapping; Context-Decision-Consequences generation |

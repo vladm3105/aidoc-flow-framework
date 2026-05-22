@@ -51,7 +51,7 @@ Feature: User Authentication
 ## Upstream/Downstream
 
 ```text
-BRD, PRD, EARS → BDD → ADR, SYS
+BRD, PRD, EARS → BDD → ADR, SPEC, TDD, IPLAN
 ```
 
 ## Quick Validation
@@ -65,12 +65,12 @@ BRD, PRD, EARS → BDD → ADR, SYS
 ## Template Location
 
 ```text
-ai_dev_ssd_flow/04_BDD/BDD-MVP-TEMPLATE.feature
+framework/layers/04_BDD/BDD-TEMPLATE.yaml
 ```
 
 ## Related Skills
 
 - `doc-ears` - Formal requirements (upstream)
 - `doc-adr` - Architecture decisions (downstream)
-- `doc-sys` - System requirements (downstream)
+- `doc-spec` - Component specifications (downstream)
 - `test-automation` - Execute BDD tests

@@ -15,9 +15,9 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [ADR]
     downstream_artifacts: []
-    version: "1.3"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    version: "1.4"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 ---
 
 # doc-adr-validator
@@ -30,7 +30,8 @@ Invoke when user requests validation of ADR documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_ssd_flow/05_ADR/ADR_MVP_SCHEMA.yaml`
+Template (single source of truth): `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+Standards: `framework/governance/ID_NAMING_STANDARDS.md`, `framework/layers/05_ADR/README.md`
 Layer: 5
 Artifact Type: ADR
 
@@ -116,7 +117,7 @@ Forbidden tag patterns:
 
 | # | Section | Required | Purpose |
 |---|---------|----------|---------|
-| 1 | Document Control | MANDATORY | Metadata with SYS-Ready Score |
+| 1 | Document Control | MANDATORY | Metadata with SPEC-Ready Score |
 | 2 | Context | MANDATORY | Problem Statement, Technical Context |
 | 3 | Decision | MANDATORY | Chosen Solution, Key Components, Approach |
 | 4 | Alternatives Considered | MANDATORY | Options with pros/cons |
@@ -139,7 +140,7 @@ Forbidden tag patterns:
 - Status
 
 **File Naming:**
-Pattern: `ADR-NNN_descriptive_name.md`
+Pattern: `ADR-NN_descriptive_name.md`
 
 ### 3. Content Validation
 
@@ -172,18 +173,23 @@ Pattern: `ADR-NNN_descriptive_name.md`
 - Minimum threshold: 90%
 - Components: Problem statement, context, decision clarity, consequences, architecture diagram, implementation assessment, traceability
 
+**Element-ID Naming Compliance:**
+- Element IDs MUST use the 4-segment `ADR.NN.SS.xxxx` format (`NN` = doc number, `SS` = section, `xxxx` = 4-char hex hash) per `framework/governance/ID_NAMING_STANDARDS.md`.
+- Document-level references MUST use the dash form `ADR-NN` (and `SPEC-NN` / `IPLAN-NN` for downstream artifacts).
+- REJECT legacy forms: 3-segment `ADR.NN.xxxx`, numeric type-code segments (e.g. `ADR.NN.13.SS`), `DEC-XXX` / `ALT-XXX` / `CON-XXX`, and `ADR-NNN` (extra leading zero).
+
 ### 4. Traceability Validation
 
-**Layer 5 Cumulative Tags:**
-- @brd: BRD.NN.01.SS (required)
-- @prd: PRD.NN.07.SS (required)
-- @ears: EARS.NN.24.SS (required)
-- @bdd: BDD.NN.13.SS (required)
+**Layer 5 Cumulative Tags** (4-segment element IDs `TYPE.NN.SS.xxxx`, `SS` = section, `xxxx` = 4-char hex hash):
+- @brd: BRD.NN.SS.xxxx (required)
+- @prd: PRD.NN.SS.xxxx (required)
+- @ears: EARS.NN.SS.xxxx (required)
+- @bdd: BDD.NN.SS.xxxx (required)
 
 **Downstream Expected:**
-- SYS requirements
-- REQ documents
-- SPEC documents
+- SPEC (Layer 6) — component specifications
+- TDD (Layer 7) — test case definitions
+- IPLAN (Layer 8) — execution plan
 
 **Same-Type References:**
 - @related-adr: ADR-NN
@@ -208,28 +214,30 @@ Pattern: `ADR-NNN_descriptive_name.md`
 | ADR-E012 | error | Decision missing Chosen Solution subsection |
 | ADR-E013 | error | Consequences missing outcomes |
 | ADR-E014 | warning | File name does not match format |
+| ADR-E015 | error | Invalid element ID format (not 4-segment `ADR.NN.SS.xxxx`) |
+| ADR-E016 | error | Legacy element ID / numeric type code / `ADR-NNN` document ID detected |
 | ADR-W001 | warning | Missing Architecture Flow Mermaid diagram |
 | ADR-W002 | warning | Context missing Constraints subsection |
 | ADR-W003 | warning | Missing upstream tags (@prd, @ears, @bdd) |
 | ADR-W004 | warning | Implementation Assessment missing Complexity |
-| ADR-W005 | warning | SYS-Ready Score below 90% |
+| ADR-W005 | warning | SPEC-Ready Score below 90% |
 | ADR-W006 | warning | Requirements Satisfied table missing |
 | ADR-I001 | info | Consider adding Alternatives Considered |
 | ADR-I002 | info | Consider adding Security Considerations |
 | ADR-I003 | info | Consider adding Rollback Plan |
 
-## Validation Commands
+## How Validation Runs
 
-```bash
-# Validate single ADR document
-python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ADR-001_example.md
+The framework ships no runtime scripts — **this skill is the validator**. There
+is no external `validate_adr.py` to call. Apply the Validation Checklist and
+Validation Workflow below directly against the target document(s), checking each
+against `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+`framework/governance/ID_NAMING_STANDARDS.md`, and
+`framework/layers/05_ADR/README.md`:
 
-# Validate all ADR documents
-python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/
-
-# Check with verbose output
-python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ --verbose
-```
+- Single ADR document: apply the checklist to `docs/05_ADR/ADR-NN_{slug}/ADR-NN_{slug}.md`.
+- All ADR documents: apply the checklist across every document under `docs/05_ADR/`.
+- Emit the Output Format report (below), listing errors/warnings/info by severity.
 
 ## Validation Workflow
 
@@ -243,9 +251,10 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ --verbose
 8. Check Consequences subsections
 9. Verify Mermaid diagram presence
 10. Validate upstream references
-11. Calculate SYS-Ready Score
-12. Verify file naming convention
-13. Generate validation report
+11. Validate element-ID naming compliance (4-segment `ADR.NN.SS.xxxx`; `ADR-NN` document refs)
+12. Calculate SPEC-Ready Score
+13. Verify file naming convention
+14. Generate validation report
 
 ## Integration
 
@@ -258,7 +267,7 @@ python ai_dev_ssd_flow/05_ADR/scripts/validate_adr.py docs/05_ADR/ --verbose
 ```
 ADR Validation Report
 =====================
-Document: ADR-001_example.md
+Document: ADR-01_example.md
 Status: PASS/FAIL
 
 Structure:
@@ -280,7 +289,8 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.3 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized schema/command references to `ai_dev_ssd_flow/05_ADR`; updated valid structure example for preferred `ADR-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility | System |
+| 1.4 | 2026-05-22 | Migrated to the framework 8-layer model: schema/standards references repointed to `framework/layers/05_ADR/` + `framework/governance/`; removed runtime `validate_adr.py` calls (the skill is the validator); cumulative tags + downstream rebuilt to 4-segment IDs / SPEC,TDD,IPLAN; added element-ID naming-compliance check (ADR-E015/E016) enforcing `ADR.NN.SS.xxxx` and `ADR-NN`, rejecting legacy forms; `ADR-NN` file naming; SPEC-Ready terminology | System |
+| 1.3 | 2026-02-27 | Migrated frontmatter to `metadata`; normalized schema/command references to the legacy ADR flow path; updated valid structure example for preferred `ADR-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility | System |
 | 1.2 | 2026-02-26 | Updated structure validation to 11-section MVP template (aligned with ADR-MVP-TEMPLATE.md v1.1) |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); ADR must be in `docs/05_ADR/ADR-NN_{slug}/` folders; Added error codes ADR-E020, ADR-E021, ADR-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |

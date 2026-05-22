@@ -13,11 +13,11 @@ metadata:
     priority: shared
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BDD]
-    downstream_artifacts: []
-    version: "1.2"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS]
+    downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
+    version: "1.3"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 ---
 
 # doc-bdd-validator
@@ -30,7 +30,8 @@ Invoke when user requests validation of BDD documents or after creating/modifyin
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_ssd_flow/04_BDD/BDD_MVP_SCHEMA.yaml`
+Template (single source of truth): `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+Standards: `framework/governance/ID_NAMING_STANDARDS.md`, `framework/layers/04_BDD/README.md`
 Layer: 4
 Artifact Type: BDD
 
@@ -175,17 +176,22 @@ Scenario Outline: [Description]
 - Minimum threshold: 90%
 - Components: Scenario coverage, step clarity, data completeness, traceability
 
-### 4. Traceability Validation
+### 4. Element ID and Traceability Validation
+
+**Element ID Format (MANDATORY):**
+- 4-segment `BDD.NN.SS.xxxx` (`NN` = doc number, `SS` = section, `xxxx` = 4-char hex hash)
+- REJECT legacy 3-segment `BDD.NN.xxxx` and legacy numeric type-code IDs (`BDD.NN.14.SS`, `BDD.NN.15.SS`) — scenario vs. step is conveyed by its section, not by an ID type code
+- REJECT legacy patterns (SC-NNN, TC-NNN, TS-NNN)
+- See `framework/governance/ID_NAMING_STANDARDS.md`
 
 **Layer 4 Cumulative Tags:**
-- @brd: BRD.NN.01.SS (required)
-- @prd: PRD.NN.07.SS (required)
-- @ears: EARS.NN.24.SS (required)
+- @brd: BRD.NN.SS.xxxx (required)
+- @prd: PRD.NN.SS.xxxx (required)
+- @ears: EARS.NN.SS.xxxx (required)
 
 **Downstream Expected:**
 - ADR documents
-- SYS requirements
-- Test implementations
+- SPEC, TDD, IPLAN (added only once those artifacts exist)
 
 **Same-Type References:**
 - @related-bdd: BDD-NN
@@ -207,6 +213,8 @@ Scenario Outline: [Description]
 | BDD-E010 | error | Invalid Gherkin syntax |
 | BDD-E011 | error | Scenario missing Given-When-Then |
 | BDD-E012 | error | Missing Traceability (Section 8) |
+| BDD-E014 | error | Invalid element ID (not 4-segment `BDD.NN.SS.xxxx`) |
+| BDD-E015 | error | Legacy element ID detected (3-segment or numeric type-code) |
 | BDD-E013 | warning | File name does not match format |
 | BDD-W001 | warning | Scenario missing Then step |
 | BDD-W002 | warning | Missing upstream tags (@brd, @prd, @ears) |
@@ -216,21 +224,19 @@ Scenario Outline: [Description]
 | BDD-I001 | info | Consider adding Background steps |
 | BDD-I002 | info | Consider adding negative scenarios |
 
-## Validation Commands
+## How Validation Runs
 
-```bash
-# Validate single BDD document
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/BDD-001_example.md
+The framework ships no runtime scripts — **this skill is the validator**. There
+is no external `validate_bdd.py` to call. Apply the Validation Checklist and
+Validation Workflow below directly against the target document(s), checking each
+against `framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
+`framework/governance/ID_NAMING_STANDARDS.md`, and
+`framework/layers/04_BDD/README.md`:
 
-# Validate all BDD documents
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/
-
-# Validate .feature files
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py tests/bdd/features/
-
-# Check with verbose output
-python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/ --verbose
-```
+- Single BDD suite: apply the checklist to `docs/04_BDD/BDD-NN_{slug}/`.
+- All BDD documents: apply the checklist across every suite under `docs/04_BDD/`.
+- `.feature` files: apply the Gherkin and element-ID checks to each feature file.
+- Emit the Output Format report (below), listing errors/warnings/info by severity.
 
 ## Validation Workflow
 
@@ -243,9 +249,10 @@ python ai_dev_ssd_flow/04_BDD/scripts/validate_bdd.py docs/04_BDD/ --verbose
 7. Verify Given-When-Then structure
 8. Validate Scenario Outline Examples
 9. Validate upstream references
-10. Calculate ADR-Ready Score
-11. Verify file naming convention
-12. Generate validation report
+10. Verify element IDs use the 4-segment `BDD.NN.SS.xxxx` form (reject legacy 3-segment / numeric type-code IDs)
+11. Calculate ADR-Ready Score
+12. Verify file naming convention
+13. Generate validation report
 
 ## Gherkin Pattern Detection
 
@@ -297,7 +304,8 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; updated valid structure example for preferred `BDD-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility; corrected validator command paths to `ai_dev_ssd_flow/04_BDD/scripts` | System |
+| 1.3 | 2026-05-22 | Migrated to framework 8-layer model: enforces 4-segment element IDs `BDD.NN.SS.xxxx` and rejects legacy 3-segment / numeric type-code IDs (BDD-E014/E015); downstream SPEC/TDD/IPLAN (dropped SYS); `framework/layers/04_BDD/` template + governance references; removed runtime `validate_bdd.py` calls — the skill is the validator (declarative checklist) | System |
+| 1.2 | 2026-02-27 | Migrated frontmatter to `metadata`; updated valid structure example for preferred `BDD-NN.A_audit_report_vNNN.md` with legacy reviewer compatibility; corrected validator command paths (later removed in 1.3) | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); BDD must be in `docs/04_BDD/BDD-NN_{slug}/` folders; Added error codes BDD-E020, BDD-E021, BDD-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
 

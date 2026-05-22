@@ -6,14 +6,14 @@ tags:
   - sdd-workflow
   - shared-architecture
 custom_fields:
-  layer: null
-  artifact_type: null
+  layer: 5
+  artifact_type: ADR
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
   skill_category: utility
   upstream_artifacts: [ADR]
-  downstream_artifacts: [TASKS, Code]
+  downstream_artifacts: [SPEC, IPLAN, Code]
 ---
 
 # adr-roadmap
@@ -49,7 +49,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 - Single ADR with straightforward implementation (direct implementation)
 - ADRs are informational only with no implementation needed
 - Planning from requirements (BRD/PRD) not ADRs → use `project-mngt` skill instead
-- Need to generate documentation artifacts (SYS/REQ/SPEC) → use `doc-flow` skill instead
+- Need to generate documentation artifacts (SPEC/TDD) → use `doc-flow` skill instead
 - Only need architecture diagrams → use `charts-flow` skill instead
 
 ---
@@ -291,7 +291,7 @@ Phase by ADR category:
 ### Objectives
 ### Duration
 ### ADRs to Implement
-  #### ADR-XXX: Title
+  #### ADR-NN: Title
   - Complexity: N/5
   - Effort: X hours
   - Scope: What to implement
@@ -341,8 +341,8 @@ Phase by ADR category:
 ## Traceability
 - ADR to Phase mapping table
 - Phase to Timeline mapping
-- Upstream sources (BRD, PRD)
-- Downstream artifacts (SYS, REQ, SPEC)
+- Upstream sources (BRD, PRD, EARS, BDD)
+- Downstream artifacts (SPEC, TDD, IPLAN)
 ```
 
 **Document Formatting**:
@@ -369,7 +369,7 @@ Phase by ADR category:
 
 **Phasing Strategy**:
 1. **Front-load infrastructure**: Cloud, database, auth decisions first
-2. **Establish baseline**: Technology stack (ADR-000) in Phase 1
+2. **Establish baseline**: Technology stack (ADR-00) in Phase 1
 3. **Enable parallelization**: Independent modules early
 4. **Defer optimization**: Performance tuning to later phases
 
@@ -574,14 +574,14 @@ Generate roadmap in {project_root}/docs/ADR/ADR-00_IMPLEMENTATION-ROADMAP.md
 
 **Skill Actions**:
 1. Read 27 ADRs from `{project_root}/docs/ADR/`
-2. Extract complexity: ADR-02 (4/5), ADR-003 (2/5), etc.
-3. Parse dependencies: ADR-006 depends on ADR-003
+2. Extract complexity: ADR-02 (4/5), ADR-03 (2/5), etc.
+3. Parse dependencies: ADR-06 depends on ADR-03
 4. Create 5 phases:
-   - Phase 1: POC (ADR-000, 001, 002, 003 partial)
-   - Phase 2: MVP (ADR-006, 010, 012, 004, 013, 020, 007, 023)
-   - Phase 3: Production (ADR-014, 011, 016, 017, 018, 019, 026)
-   - Phase 4: Scale (ADR-009, 008, 005, 021, 025)
-   - Phase 5: Advanced (ADR-015, 022, 024)
+   - Phase 1: POC (ADR-00, 01, 02, 03 partial)
+   - Phase 2: MVP (ADR-06, 10, 12, 04, 13, 20, 07, 23)
+   - Phase 3: Production (ADR-14, 11, 16, 17, 18, 19, 26)
+   - Phase 4: Scale (ADR-09, 08, 05, 21, 25)
+   - Phase 5: Advanced (ADR-15, 22, 24)
 5. Calculate timelines:
    - POC: 2-3 weeks (80 hours / 3 FTE = 2.7 weeks)
    - MVP: 4-6 weeks
@@ -613,14 +613,14 @@ Generate roadmap in {example_project_a}/architecture/decisions/ADR-00_IMPLEMENTA
 2. Identify migration ADRs:
    - ADR-01: Service decomposition strategy
    - ADR-02: API gateway selection
-   - ADR-003: Service mesh (Istio)
-   - ADR-004: Database-per-service pattern
+   - ADR-03: Service mesh (Istio)
+   - ADR-04: Database-per-service pattern
    - etc.
 3. Phase by service boundaries (iterative):
-   - Iteration 1: User service (ADR-01, 002, 004)
-   - Iteration 2: Product service (ADR-005, 006)
-   - Iteration 3: Order service (ADR-007, 008)
-   - Iteration 4: Payment service (ADR-009, 010)
+   - Iteration 1: User service (ADR-01, 02, 04)
+   - Iteration 2: Product service (ADR-05, 06)
+   - Iteration 3: Order service (ADR-07, 08)
+   - Iteration 4: Payment service (ADR-09, 10)
 4. Add migration-specific sections:
    - Dual-run strategy per iteration
    - Rollback procedures
@@ -854,16 +854,16 @@ Roadmap document must satisfy:
 ### AI Dev Flow Framework
 - [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Specification-driven development methodology
 - [ID_NAMING_STANDARDS.md]({project_root}/framework/governance/ID_NAMING_STANDARDS.md) - Document ID conventions
-- [AI_TOOL_OPTIMIZATION_GUIDE.md]({project_root}/framework/AI_TOOL_OPTIMIZATION_GUIDE.md) - Token limits and optimization
+- [Governance](../../../../framework/governance/) - Traceability, naming, and validation standards
 
 ### Related Skills
 - [project-mngt](../project-mngt/) - Use for requirement-based planning (BRD/PRD → MVP)
-- [doc-flow](../doc-flow/) - Use for generating SYS/REQ/SPEC documents from ADRs
+- [doc-flow](../doc-flow/) - Use for generating SPEC/TDD documents from ADRs
 - [charts-flow](../charts-flow/) - Use for enhanced Mermaid diagram generation
 
 ### ADR Documentation
-- [ADR-TEMPLATE.md]({project_root}/framework/ADR/ADR-TEMPLATE.md) - ADR template structure
-- [README.md]({project_root}/framework/ADR/README.md) - ADR documentation guide
+- [ADR-TEMPLATE.yaml]({project_root}/framework/layers/05_ADR/ADR-TEMPLATE.yaml) - ADR template structure
+- [README.md]({project_root}/framework/layers/05_ADR/README.md) - ADR documentation guide
 
 ---
 
@@ -876,7 +876,7 @@ Roadmap document must satisfy:
 - Need product roadmap vs. implementation roadmap
 
 ### Use `doc-flow` Skill Instead When:
-- Generating SYS/REQ/SPEC documents from ADRs
+- Generating SPEC/TDD documents from ADRs
 - Creating detailed specification artifacts
 - Not focused on implementation phasing or timeline
 - Need traceability matrix generation

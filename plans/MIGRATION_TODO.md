@@ -404,7 +404,13 @@ to the suite at B7).
   IDs 3→4-segment, `framework/layers/` paths, downstream chains + cumulative-tag
   tables → 8 layers, dead validation-scripts removed. Verified: `plm_lint` B1+B2
   scope clean (91 files remain); conformance 31/31; 125 skills; name==dir. DONE 2026-05-22.
-- [ ] PLM-B3 — Body rewrite: `doc-bdd`, `doc-adr`.
+- [x] PLM-B3 — Body rewrite: `doc-bdd` (L4), `doc-adr` (L5) + `adr-roadmap` (15
+  files): 4-segment IDs (ADR dual doc `ADR-NN` + element `ADR.NN.SS.xxxx`),
+  `framework/layers/` paths, 8-layer downstream/tag chains, dead scripts removed.
+  Verified: `plm_lint` scope clean (81 remain); conformance 31/31; 125 skills;
+  name==dir. DONE 2026-05-22.
+  - Subtype decision recorded as **D-0015** (migrate & keep SPEC-/test-subtypes
+    as L6/L7 helpers) — unblocks B4/B5.
 - [ ] PLM-B4 — Body rewrite: `doc-spec` (+ **OPEN** SPEC-subtype decision).
 - [ ] PLM-B5 — **OPEN** test-subtype decision + rewrite (`doc-*test`).
 - [ ] PLM-B6 — Helpers/orchestrators + residual quickrefs/READMEs.

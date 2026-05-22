@@ -10,7 +10,29 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
-## D-0014 — Archive the pre-migration project as a protected branch, then remove `legacy/` + root `.claude/` from the working branch at cutover
+## D-0015 — Plugin SPEC-/test-subtype skill families: migrate & keep as helpers (PLM-B4/B5)
+
+- **Date:** 2026-05-22T01:30:00Z
+- **Decision:** The plugin's SPEC-subtype families
+  (`doc-cspec/dspec/uxspec/riskspec/procspec`) and test-subtype families
+  (`doc-utest/itest/stest/ftest/ptest/sectest`) are **kept as plugin-only
+  authoring helpers** under SPEC (Layer 6) and TDD (Layer 7) respectively,
+  and their bodies are **migrated to the 8-layer model** (paths, IDs,
+  chains) like every other family — they are NOT retired and NOT folded
+  into `doc-spec`/`doc-tdd`.
+- **Why:** The framework defines SPEC and TDD as single unified templates
+  with no subtypes, but the *plugin* is free to ship finer-grained
+  authoring skills as a value-add (its per-operation granularity is a
+  documented Plugin advantage in `docs/PARITY.md`). Retiring them would be
+  a real capability loss; folding them into two skills would lose the
+  per-subtype slash-commands users rely on. Keeping them as helpers under
+  the canonical layers preserves capability while staying spec-conformant
+  (they reference, not redefine, the L6/L7 contracts).
+- **Consequence:** PLM-B4 migrates `doc-spec` + the 5 SPEC-subtype
+  families; PLM-B5 migrates the 6 test-subtype families. Each subtype skill
+  must position itself as a specialization of its parent layer (SPEC L6 /
+  TDD L7) and reference the single framework template, not a legacy subtype
+  template or element-code.
 
 - **Date:** 2026-05-21T05:50:00Z (revised same day — see Note)
 - **Decision:** Preserve the pristine pre-migration `ucx_framework`

@@ -17,9 +17,9 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [ADR, Audit Report, Review Report, BDD, BRD]
     downstream_artifacts: [Fixed ADR, Fix Report]
-    version: "2.3"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ADR-MVP-TEMPLATE schema_version"
+    version: "2.4"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks ADR-TEMPLATE schema_version"
 ---
 
 # doc-adr-fixer
@@ -303,55 +303,60 @@ def fix_link_path(adr_location: str, target_path: str) -> str:
 |--------|--------|--------------|
 | ADR | BDD | `../04_BDD/BDD-NN.feature` |
 | ADR | BRD | `../01_BRD/BRD-NN.md` |
-| ADR | SYS | `../06_SYS/SYS-NN.md` |
+| ADR | SPEC | `../06_SPEC/SPEC-NN.md` |
 
 ---
 
 ### Phase 3: Fix Element IDs
 
-Converts invalid element IDs to correct format.
+Converts invalid element IDs to the 4-segment standard.
+
+**Element ID Standard**: `ADR.{doc_id}.{section_id}.{hash}` (4 segments) where
+`doc_id` is the two-digit ADR document number, `section_id` is the two-digit
+section number, and `hash` is the first 4 hex characters of
+`SHA256("{doc_id}:{section_id}:{title}:{description}")`. There are no numeric
+type codes — element kind (context vs. decision vs. alternative vs. consequence)
+is conveyed by the section it lives in, not by the ID. Document-level references
+use the dash form `ADR-NN`. See `framework/governance/ID_NAMING_STANDARDS.md`
+and `framework/layers/05_ADR/README.md`.
 
 **Conversion Rules**:
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `ADR.NN.01.SS` | Code 01 invalid for ADR | `ADR.NN.13.SS` (Decision Context) |
-| `DEC-XXX` | Legacy pattern | `ADR.NN.14.SS` |
-| `OPT-XXX` | Legacy pattern | `ADR.NN.15.SS` |
-| `CON-XXX` | Legacy pattern | `ADR.NN.16.SS` |
+| `ADR.NN.SSSS` | Legacy 3-segment format | `ADR.NN.SS.xxxx` (recompute hash) |
+| `ADR.NN.13.SS` / `ADR.NN.14.SS` / `ADR.NN.15.SS` / `ADR.NN.16.SS` | Legacy numeric type-code segment | `ADR.NN.SS.xxxx` (drop type code, recompute hash) |
+| `DEC-XXX` | Legacy pattern | `ADR.NN.SS.xxxx` |
+| `OPT-XXX` | Legacy pattern | `ADR.NN.SS.xxxx` |
+| `CON-XXX` | Legacy pattern | `ADR.NN.SS.xxxx` |
 
-**Type Code Mapping** (ADR-specific valid codes: 13, 14, 15, 16):
+**Hash Recomputation**:
 
-| Code | Element Type | Description |
-|------|--------------|-------------|
-| 13 | Decision Context | Background and problem statement |
-| 14 | Decision Statement | The actual decision made |
-| 15 | Option Considered | Alternative options evaluated |
-| 16 | Consequence | Implications of the decision |
+```python
+import hashlib
 
-**Invalid Code Conversions**:
-
-| Invalid Code | Valid Code | Element Type |
-|--------------|------------|--------------|
-| 01 | 13 | Decision Context (was Functional Requirement) |
-| 05 | 14 | Decision Statement (was Use Case) |
-| 06 | 16 | Consequence (was Acceptance Criteria) |
+def adr_element_hash(doc_id: str, section_id: str, title: str, description: str) -> str:
+    """First 4 hex chars of SHA256('{doc_id}:{section_id}:{title}:{description}')."""
+    payload = f"{doc_id}:{section_id}:{title}:{description}"
+    return hashlib.sha256(payload.encode()).hexdigest()[:4]
+```
 
 **Regex Patterns**:
 
 ```python
-# Find element IDs with invalid type codes for ADR
-invalid_adr_type_01 = r'ADR\.(\d{2})\.01\.(\d{2})'
-replacement_01 = r'ADR.\1.13.\2'
+# Find legacy 3-segment IDs (no section + hash) and numeric type-code IDs
+legacy_3seg = r'ADR\.(\d{2})\.(\d{2,4})\b'                  # ADR.NN.SSSS -> recompute
+legacy_typecode = r'ADR\.(\d{2})\.(?:13|14|15|16)\.(\d{2})' # drop type code, recompute hash
 
-invalid_adr_type_05 = r'ADR\.(\d{2})\.05\.(\d{2})'
-replacement_05 = r'ADR.\1.14.\2'
-
-# Find legacy patterns
+# Find legacy named patterns
 legacy_dec = r'###\s+DEC-(\d+):'
 legacy_opt = r'###\s+OPT-(\d+):'
 legacy_con = r'###\s+CON-(\d+):'
 ```
+
+When converting, the fixer reads each element's section and title/description to
+recompute the 4-char hash; it never invents a hash or reuses a legacy sequence
+number as the final segment.
 
 ---
 
@@ -402,8 +407,8 @@ Ensures traceability and cross-references are correct.
 |-------|------------|
 | Missing `@ref:` for created files | Add reference tag |
 | Incorrect cross-ADR path | Update to correct relative path |
-| Missing BDD traceability | Add `@trace: BDD-NN.SS` tag |
-| Missing BRD alignment | Add `@trace: BRD-NN.SS` tag |
+| Missing BDD traceability | Add `@bdd: BDD.NN.SS.xxxx` tag |
+| Missing BRD alignment | Add `@brd: BRD.NN.SS.xxxx` tag |
 
 **Traceability Matrix Update**:
 
@@ -412,8 +417,8 @@ Ensures traceability and cross-references are correct.
 
 | ADR Element | Traces To | Type |
 |-------------|-----------|------|
-| ADR.01.1401 | BDD.01.0903 | Behavior Implementation |
-| ADR.01.1301 | BRD.01.2205 | Business Context |
+| ADR.01.03.e5b1 | BDD.01.03.8f4c | Behavior Implementation |
+| ADR.01.02.a1d2 | BRD.01.07.a7f3 | Business Context |
 ```
 
 ---
@@ -460,12 +465,14 @@ Fix: Set `drift_detected: true`, add to manual review
 |-----------|-------|----------|--------------|
 | Upstream | 4 | BDD | Provides behavior specifications that drive decisions |
 | Current | 5 | ADR | Architecture Decision Records |
-| Downstream | 6 | SYS | System design implementing decisions |
+| Downstream | 6 | SPEC | Component design implementing decisions |
 
-**ADR ID Pattern**: `ADR-NN-SS` where:
-- `NN` = Module number (01-99)
-- `SS` = Sequence number within module (01-99)
-- Example: `ADR-01-15` = Module 01, Decision 15
+**ADR ID Patterns**:
+- **Document-level (dash)**: `ADR-NN` references the whole ADR document (e.g.,
+  `ADR-01`). Each ADR addresses ONE decision.
+- **Element-level (dot)**: `ADR.NN.SS.xxxx` references a decision element inside
+  document `NN`, where `SS` is the two-digit section number and `xxxx` is the
+  4-char content hash (e.g., `ADR.01.03.e5b1`).
 
 ---
 
@@ -552,12 +559,12 @@ def calculate_drift_percentage(current_hash: str, upstream_hash: str,
 
 | Change Type | Description | ADR Impact |
 |-------------|-------------|------------|
-| Added | Scenario: Error handling for timeout | Decision ADR-01-03 context updated |
-| Modified | Scenario: Authentication flow steps | Decision ADR-01-01 rationale refreshed |
+| Added | Scenario: Error handling for timeout | Decision element ADR.01.03.e5b1 context updated |
+| Modified | Scenario: Authentication flow steps | Decision element ADR.01.01.b2c4 rationale refreshed |
 | Removed | None | N/A |
 
-**Decisions Flagged for Review**:
-- ADR-01-03 [REVIEW-SUGGESTED]: New error handling scenario may affect retry strategy
+**Decision Elements Flagged for Review**:
+- ADR.01.03.e5b1 [REVIEW-SUGGESTED]: New error handling scenario may affect retry strategy
 ```
 
 ---
@@ -580,9 +587,9 @@ def calculate_drift_percentage(current_hash: str, upstream_hash: str,
 Decisions are NEVER deleted. Instead, they are marked as superseded:
 
 ```markdown
-### ADR-01-05: Authentication Token Strategy [SUPERSEDED]
+### ADR.01.05.7a3d: Authentication Token Strategy [SUPERSEDED]
 
-> **Superseded by**: ADR-01-15 (v2.0.0)
+> **Superseded by**: ADR.01.15.c901 (v2.0.0)
 > **Superseded date**: 2026-02-10
 > **Reason**: Upstream BDD restructured authentication flow
 
@@ -608,24 +615,24 @@ Decisions are NEVER deleted. Instead, they are marked as superseded:
   },
   "superseded_decisions": [
     {
-      "id": "ADR-01-05",
+      "id": "ADR.01.05.7a3d",
       "title": "Authentication Token Strategy",
-      "superseded_by": "ADR-01-15",
+      "superseded_by": "ADR.01.15.c901",
       "reason": "Upstream BDD restructured authentication flow"
     },
     {
-      "id": "ADR-01-07",
+      "id": "ADR.01.07.4f2e",
       "title": "Session Management Approach",
-      "superseded_by": "ADR-01-16",
+      "superseded_by": "ADR.01.16.d810",
       "reason": "New session requirements in BDD"
     }
   ],
   "preserved_decisions": [
     {
-      "id": "ADR-01-01",
+      "id": "ADR.01.01.b2c4",
       "title": "Database Selection",
       "status": "unchanged",
-      "carried_forward_as": "ADR-01-01"
+      "carried_forward_as": "ADR.01.01.b2c4"
     }
   ],
   "archive_location": "docs/05_ADR/archive/ADR-01_v1.1.0/"
@@ -654,8 +661,8 @@ Decisions are NEVER deleted. Instead, they are marked as superseded:
     }
   },
   "downstream_tracking": {
-    "SYS": {
-      "document": "../../06_SYS/SYS-01.md",
+    "SPEC": {
+      "document": "../../06_SPEC/SPEC-01.md",
       "notified_version": "1.1.0",
       "notification_date": "2026-02-10T16:00:00"
     }
@@ -668,8 +675,8 @@ Decisions are NEVER deleted. Instead, they are marked as superseded:
       "upstream_document": "BDD-01.feature",
       "version_before": "1.0.1",
       "version_after": "1.1.0",
-      "decisions_updated": ["ADR-01-01", "ADR-01-03"],
-      "decisions_flagged": ["ADR-01-03"],
+      "decisions_updated": ["ADR.01.01.b2c4", "ADR.01.03.e5b1"],
+      "decisions_flagged": ["ADR.01.03.e5b1"],
       "auto_merged": true
     },
     {
@@ -679,7 +686,7 @@ Decisions are NEVER deleted. Instead, they are marked as superseded:
       "upstream_document": "BDD-01.feature",
       "version_before": "1.0.0",
       "version_after": "1.0.1",
-      "decisions_updated": ["ADR-01-02"],
+      "decisions_updated": ["ADR.01.02.a1d2"],
       "decisions_flagged": [],
       "auto_merged": true
     }
@@ -726,7 +733,7 @@ flowchart TD
     G2 --> G3[Mark decisions SUPERSEDED]
     G3 --> G4[Increment major version]
     G4 --> G5[Trigger regeneration]
-    G5 --> G6[Notify downstream SYS]
+    G5 --> G6[Notify downstream SPEC]
     G6 --> H[Human Review Required]
 ```
 
@@ -734,13 +741,13 @@ flowchart TD
 
 #### Downstream Notification
 
-When ADR changes (any tier), notify downstream SYS documents:
+When ADR changes (any tier), notify downstream SPEC documents:
 
 ```markdown
-<!-- Downstream notification added to SYS-01.md -->
+<!-- Downstream notification added to SPEC-01.md -->
 <!-- ADR-DRIFT-NOTIFICATION: ADR-01 updated to v1.1.0 (2026-02-10) -->
 <!-- Tier 2 merge: 8.7% upstream change from BDD-01.feature -->
-<!-- Decisions potentially affecting this SYS: ADR-01-01, ADR-01-03 -->
+<!-- Decision elements potentially affecting this SPEC: ADR.01.01.b2c4, ADR.01.03.e5b1 -->
 <!-- Review recommended for: Section 4 (Authentication Design) -->
 ```
 
@@ -753,7 +760,7 @@ When ADR changes (any tier), notify downstream SYS documents:
 | `--auto-merge` | true | Enable tiered auto-merge system |
 | `--merge-tier-override` | none | Force specific tier (1, 2, or 3) |
 | `--skip-archive` | false | Skip archiving for Tier 3 (not recommended) |
-| `--notify-downstream` | true | Send notifications to SYS documents |
+| `--notify-downstream` | true | Send notifications to SPEC documents |
 | `--generate-changelog` | true | Generate changelog for Tier 2+ |
 | `--preserve-superseded` | true | Keep superseded decisions (required) |
 
@@ -964,7 +971,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.3 | 2026-02-27 | Migrated frontmatter to `metadata`; added compatibility for `ADR-NN.A_audit_report_vNNN.md` (preferred) with legacy `ADR-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties); corrected nested-folder report path examples to `docs/05_ADR` |
+| 2.4 | 2026-05-22 | Migrated to the framework 8-layer model: replaced the legacy numeric type-code (13/14/15/16) and `ADR-NN-SS` decision-id schemes with the 4-segment `ADR.NN.SS.xxxx` hash standard and document-level `ADR-NN` refs; remapped downstream from SYS (L6) to SPEC (L6) in cross-layer links, drift cache, and notifications; pointed validation to `framework/governance/` and `framework/layers/05_ADR/README.md` |
 | 2.2 | 2026-02-26 | Aligned with ADR-MVP-TEMPLATE.md v1.1 (11-section MVP structure) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Three-tier thresholds (Tier 1 <5%, Tier 2 5-15%, Tier 3 >15%); No deletion policy - superseded decisions preserved; Archive manifest for Tier 3; Enhanced drift cache with merge history; Auto-generated ADR IDs (ADR-NN-SS pattern); Downstream SYS notification; Change percentage calculation |

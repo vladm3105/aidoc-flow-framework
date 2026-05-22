@@ -34,6 +34,8 @@ MIGRATED: set[str] = {
     "doc-tdd", "doc-iplan", "doc-flow", "skill-recommender", "project-init",
     # PLM-B2
     "doc-brd", "doc-prd", "doc-ears",
+    # PLM-B3
+    "doc-bdd", "doc-adr", "adr-roadmap",
 }
 
 # Calibrated legacy fingerprints (see PLM-PLAN.md §Verification, dry-run Pass 2).

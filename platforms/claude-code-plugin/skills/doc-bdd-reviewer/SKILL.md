@@ -15,11 +15,11 @@ metadata:
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BDD]
-    downstream_artifacts: []
-    version: "1.5"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS]
+    downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
+    version: "1.6"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks BDD-TEMPLATE schema_version"
 ---
 
 # doc-bdd-reviewer
@@ -265,17 +265,18 @@ Identifies incomplete content requiring replacement.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `BDD.NN.xxxx` format
-- Element type codes valid for BDD (35, 36, 37)
-- No legacy patterns (SC-NNN, TC-NNN)
+- Element IDs use the 4-segment `BDD.NN.SS.xxxx` format (`SS` = section, `xxxx` = 4-char hex hash)
+- No numeric type-code segment (legacy `BDD.NN.14.SS` / `BDD.NN.15.SS`) — scenario vs. step is conveyed by its section, not by an ID type code
+- No legacy patterns (SC-NNN, TC-NNN, TS-NNN, legacy 3-segment `BDD.NN.xxxx`)
+- See `framework/governance/ID_NAMING_STANDARDS.md` and `framework/layers/04_BDD/README.md`
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-N001 | Error | Invalid element ID format |
-| REV-N002 | Error | Element type code not valid for BDD |
-| REV-N003 | Error | Legacy pattern detected |
+| REV-N001 | Error | Invalid element ID format (not 4-segment `BDD.NN.SS.xxxx`) |
+| REV-N002 | Error | Legacy numeric type-code or 3-segment ID detected |
+| REV-N003 | Error | Legacy pattern detected (SC-NNN, TC-NNN, TS-NNN) |
 
 ---
 
@@ -312,7 +313,7 @@ Detects when upstream source documents have been modified after the BDD was crea
           "content_hash": "sha256:def456...",
           "version": "1.2",
           "mtime": "2026-02-09T12:00:00Z",
-          "sections_referenced": ["REQ-F1-001", "REQ-F1-002"]
+          "sections_referenced": ["EARS.01.03.5e2a", "EARS.01.03.9b1f"]
         }
       },
       "last_review": "2026-02-10T16:30:00Z",
@@ -523,6 +524,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-05-22 | Migrated to framework 8-layer model: Check #7 Naming Compliance now enforces the 4-segment `BDD.NN.SS.xxxx` form and rejects legacy 3-segment / numeric type-code IDs (35/36/37); downstream chain ADR/SPEC/TDD/IPLAN; tracks `BDD-TEMPLATE` |
 | 1.5 | 2026-02-27 | Migrated frontmatter to `metadata`; documented audit-wrapper contract with preferred `BDD-NN.A_audit_report_vNNN.md` output and legacy reviewer report compatibility | 
 | 1.4 | 2026-02-11 | Added Check #0: Structure Compliance as BLOCKING check - validates BDD follows mandatory nested folder rule; REV-STR001-STR003 error codes; Updated workflow diagram with structure validation gate |
 | 1.3 | 2026-02-10 | Mandatory drift cache implementation - cache at `docs/04_BDD/.drift_cache.json`; Three-phase detection algorithm (Load Cache, Detect Drift, Update Cache); SHA-256 hash calculation; REV-D006 error code (Cache created); Report output with cache status; `cache_enabled: true` mandatory |
