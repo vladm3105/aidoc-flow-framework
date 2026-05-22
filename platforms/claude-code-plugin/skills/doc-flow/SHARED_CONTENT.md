@@ -1,6 +1,6 @@
 # Shared Content for Doc-Flow Skills
 
-This document contains standards and guidelines shared across all document artifact skills (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks).
+This document contains standards and guidelines shared across all document artifact skills (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-spec, doc-tdd, doc-iplan).
 
 **Import Reference**: All artifact-specific skills MUST reference this document for ID standards, traceability format, cumulative tagging hierarchy, and quality gates.
 
@@ -12,33 +12,31 @@ This document contains standards and guidelines shared across all document artif
 
 ### Universal Numbering Pattern (All Document Types)
 
-- **Primary Number (NNN)**: 3-4 digit sequential number for atomic logical document (001-999, then 1000-9999 when needed)
-- **Sub-Document Number (YY)**: 2-3 digit sequential number within atomic document [OPTIONAL] (01-99, then 100-999 when needed)
-- **Format**: `TYPE-NNN` or `TYPE-NNN-YY` (e.g., `REQ-001`, `BRD-009-02`, `ADR-1000`)
+- **Primary Number (NNN)**: 2+ digit sequential number for an atomic logical document (01-99, then 100-999 when needed)
+- **Sub-Document Number (YY)**: 2-3 digit sequential number within an atomic document [OPTIONAL] (01-99, then 100-999 when needed)
+- **Format**: `TYPE-NNN` or `TYPE-NNN-YY` (e.g., `EARS-001`, `BRD-009-02`, `ADR-100`)
 - **Zero-Padding**: Always pad to minimum digit count (001, 01) until exceeding range
 - **Uniqueness Rule**: Each NNN number is unique and can be used EITHER as:
-  - Atomic document: `TYPE-NNN_{slug}.md` (e.g., `BRD-001_foundation.md`)
-  - Multi-document group: `TYPE-NNN-01_{slug}.md`, `TYPE-NNN-02_{slug}.md`, etc.
-  - ❌ INVALID: Cannot have both `BRD-009_{slug}.md` AND `BRD-009-01_{slug}.md` (NNN=009 collision)
-  - ✅ VALID: Can have `BRD-009-01_{slug}.md` AND `BRD-009-02_{slug}.md` (same NNN, different YY)
+  - Atomic document: `TYPE-NNN_{slug}.yaml` (e.g., `BRD-001_foundation.yaml`)
+  - Multi-document group: `TYPE-NNN-01_{slug}.yaml`, `TYPE-NNN-02_{slug}.yaml`, etc.
+  - ❌ INVALID: Cannot have both `BRD-009_{slug}.yaml` AND `BRD-009-01_{slug}.yaml` (NNN=009 collision)
+  - ✅ VALID: Can have `BRD-009-01_{slug}.yaml` AND `BRD-009-02_{slug}.yaml` (same NNN, different YY)
 
 ### File Naming Patterns
 
-- BRD: `BRD/BRD-NNN_{slug}.md` or `BRD-NNN-YY_{slug}.md` (Business Requirements Documents) - **Location: docs/BRD/**
-- PRD: `PRD/PRD-NNN_{slug}.md` or `PRD-NNN-YY_{slug}.md` (Product Requirements) - **Location: docs/PRD/**
-- EARS: `EARS/EARS-NNN_{slug}.md` or `EARS-NNN-YY_{slug}.md` (Formal Requirements) - **Location: docs/EARS/**
-- BDD: `BDD/BDD-NNN_{slug}.feature` or `BDD-NNN-YY_{slug}.feature` (Behavior-Driven Tests) - **Location: docs/BDD/**
-- ADR: `ADR/ADR-NNN_{slug}.md` or `ADR-NNN-YY_{slug}.md` (Architecture Decisions) - **Location: docs/ADR/**
-- SYS: `SYS/SYS-NNN_{slug}.md` or `SYS-NNN-YY_{slug}.md` (System Requirements) - **Location: docs/SYS/**
-- REQ: `REQ/REQ-{domain}-{subdomain}-NNN_{slug}.md` or `REQ-NNN-YY_{slug}.md` (Atomic Requirements - flat structure, domain in filename) - **Location: docs/REQ/**
-- IMPL: `IMPL/IMPL-NNN_{slug}.md` or `IMPL-NNN-YY_{slug}.md` (Implementation Plans) - **Location: docs/IMPL/**
-- CTR: `CTR/CTR-NNN_{slug}.md` + `CTR-NNN_{slug}.yaml` or `CTR-NNN-YY_{slug}.{md,yaml}` (API Contracts - dual-file format) - **Location: docs/CTR/**
-- SPEC: `SPEC/SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml` (Technical Specifications) - **Location: docs/SPEC/**
-- TASKS: `TASKS/TASKS-NNN_{slug}.md` or `TASKS-NNN-YY_{slug}.md` (Code Generation Plans) - **Location: docs/TASKS/**
+- BRD: `BRD-NNN_{slug}.yaml` or `BRD-NNN-YY_{slug}.yaml` (Business Requirements Documents) - **Location: docs/01_BRD/**
+- PRD: `PRD-NNN_{slug}.yaml` or `PRD-NNN-YY_{slug}.yaml` (Product Requirements) - **Location: docs/02_PRD/**
+- EARS: `EARS-NNN_{slug}.yaml` or `EARS-NNN-YY_{slug}.yaml` (Formal Requirements) - **Location: docs/03_EARS/**
+- BDD: `BDD-NNN_{slug}.yaml` or `BDD-NNN-YY_{slug}.yaml` (Behavior-Driven Tests) - **Location: docs/04_BDD/**
+- ADR: `ADR-NNN_{slug}.yaml` or `ADR-NNN-YY_{slug}.yaml` (Architecture Decisions) - **Location: docs/05_ADR/**
+- SPEC: `SPEC-NNN_{slug}.yaml` or `SPEC-NNN-YY_{slug}.yaml` (Technical Specifications) - **Location: docs/06_SPEC/**
+- TDD: `TDD-NNN_{slug}.yaml` or `TDD-NNN-YY_{slug}.yaml` (Test-Driven Development guides) - **Location: docs/07_TDD/**
+- IPLAN: `IPLAN-NNN_{slug}.yaml` or `IPLAN-NNN-YY_{slug}.yaml` (Implementation Plans) - **Location: docs/08_IPLAN/**
 
 ### ID Format Rules
 
-- H1 headers contain full document IDs: `# REQ-003: Position Limit Enforcement` or `# BRD-009-01: Prerequisites`
+- Document IDs follow `TYPE-NN` (e.g., `BRD-09`, `SPEC-01`, `IPLAN-01`)
+- Element IDs follow the 4-segment `TYPE.NN.SS.xxxx` form (e.g., `BRD.01.07.a7f3`)
 - SPEC YAML uses `id:` field with lowercase_snake_case: `position_limit_service`
 - Categories encoded in folder paths, not ID prefixes
 - Sub-numbering (-YY) used ONLY when single logical document requires multiple related files with sequential reading order
@@ -46,22 +44,22 @@ This document contains standards and guidelines shared across all document artif
 
 ### Document ID Independence
 
-**⚠️ CRITICAL - ID INDEPENDENCE**: Document IDs are independent across artifact types. BRD-009 does NOT need to correspond to PRD-009.
+**⚠️ CRITICAL - ID INDEPENDENCE**: Document IDs are independent across artifact types. BRD-09 does NOT need to correspond to PRD-09.
 
 **Why IDs Don't Match**:
 - IDs are assigned sequentially within each artifact type based on creation order
 - Documents are created as needed, not in lockstep across all types
-- Example: BRD-009 covers "Broker Integration" but PRD-009 might cover "Cash-Secured Put Workflow" (completely unrelated)
-- The corresponding PRD for broker integration might be PRD-016 or any other number
+- Example: BRD-09 covers "Broker Integration" but PRD-09 might cover "Cash-Secured Put Workflow" (completely unrelated)
+- The corresponding PRD for broker integration might be PRD-16 or any other number
 
 **Always Use Index Files for Discovery**: To find documents by topic/content:
-- Index files use ID `000` in their identifier (e.g., PRD-000, REQ-000, ADR-000)
+- Index files use ID `00` in their identifier (e.g., PRD-00, EARS-00, ADR-00)
 - Index filenames include "index" in the name
 - Index files contain descriptions and summaries of all documents of that artifact type
 - Organized by domain, category, or functional area
 
 **Best Practice for AI Assistants**:
-1. When searching for related documents, **find and read the index file first** (ID: 000, name contains "index")
+1. When searching for related documents, **find and read the index file first** (ID: 00, name contains "index")
 2. Search index descriptions for keywords related to your topic
 3. Do NOT assume document IDs match across artifact types
 4. Use traceability tags within documents to find explicitly linked artifacts
@@ -71,7 +69,7 @@ This document contains standards and guidelines shared across all document artif
 
 ## 2. Traceability Section Format
 
-**Authoritative Reference**: `framework/TRACEABILITY.md`
+**Authoritative Reference**: `framework/governance/TRACEABILITY.md`
 
 ### Traceability Rules (REQUIRED vs OPTIONAL)
 
@@ -92,7 +90,7 @@ Every document must include a `## Traceability` section (typically Section 7):
 **Standard fields:**
 - **Upstream Sources (REQUIRED except BRD)**: Prior artifacts this document derives from
 - **Downstream Artifacts (OPTIONAL)**: Artifacts that depend on this document - only add if they already exist
-- **Anchors/IDs**: Primary anchor(s) in this file (e.g., `# REQ-003`)
+- **Anchors/IDs**: Primary anchor(s) in this file (e.g., `# EARS-03`)
 - **Code Path(s)**: Where related implementation resides
 
 **Traceability Template:**
@@ -106,116 +104,95 @@ Every document must include a `## Traceability` section (typically Section 7):
 
 ### Cross-Reference Link Format (Mandatory)
 
-- Use markdown links with standardized paths: `[ADR-033](../ADR/ADR-033_risk_architecture.md#ADR-033)`
-- Include anchors: `#ADR-033`, `#BDD-003`, `#CTR-001`
+- Use markdown links with standardized paths: `[ADR-033](../05_ADR/ADR-033_risk_architecture.yaml#ADR-033)`
+- Include anchors: `#ADR-033`, `#BDD-003`, `#SPEC-001`
 - Use relative paths from current file location
 - Examples:
-  - From docs/BRD/: `[ADR-033](../ADR/ADR-033_risk_architecture.md#ADR-033)`
-  - From docs/SPEC/: `[CTR-001](../CTR/CTR-001_api_contract.md#CTR-001)`
+  - From docs/01_BRD/: `[ADR-033](../05_ADR/ADR-033_risk_architecture.yaml#ADR-033)`
+  - From docs/06_SPEC/: `[ADR-001](../05_ADR/ADR-001_architecture.yaml#ADR-001)`
 
 ---
 
 ## 3. Cumulative Tagging Hierarchy
 
-**Authoritative Reference**: `framework/TRACEABILITY.md#cumulative-tagging-hierarchy`
+**Authoritative Reference**: `framework/governance/TRACEABILITY.md`
 
 ### Principle
 
 Each artifact layer must include traceability tags from ALL upstream artifact layers, creating a complete audit trail from business requirements through production code.
 
-### Cumulative Tagging Table (15 Layers)
+### Cumulative Tagging Table (8 Layers)
 
 | Layer | Artifact Type | Required Tags | Tag Count | Format | Notes |
 |-------|---------------|---------------|-----------|--------|-------|
 | 0 | **Strategy** | None | 0 | External | Business owner documents, no formal artifact |
-| 1 | **BRD** | None | 0 | Markdown | Top level, no upstream dependencies |
-| 2 | **PRD** | `@brd` | 1 | Markdown | References parent BRD |
-| 3 | **EARS** | `@brd`, `@prd` | 2 | Markdown | Cumulative: BRD + PRD |
-| 4 | **BDD** | `@brd`, `@prd`, `@ears` | 3+ | Gherkin Tags | Cumulative: BRD through EARS |
-| 5 | **ADR** | `@brd` through `@bdd` | 4 | Markdown | Cumulative: BRD through BDD |
-| 6 | **SYS** | `@brd` through `@adr` | 5 | Markdown | Cumulative: BRD through ADR |
-| 7 | **REQ** | `@brd` through `@sys` | 6 | Markdown | Cumulative: BRD through SYS |
-| 8 | **IMPL** | `@brd` through `@req` | 7 | Markdown | Optional layer |
-| 9 | **CTR** | `@brd` through `@impl` | 8 | Markdown + YAML | Optional layer |
-| 10 | **SPEC** | `@brd` through `@req` + optional | 7-9 | YAML (`cumulative_tags`) | YAML cumulative_tags section |
-| 11 | **TASKS** | `@brd` through `@spec` | 8-10 | Markdown | Cumulative: BRD through SPEC |
-| 12 | **Code** | `@brd` through `@tasks` | 9-11 | Docstrings | Python/source code |
-| 13 | **Tests** | `@brd` through `@code` | 10-12 | Docstrings | Test suites |
-| 14 | **Validation** | All upstream | 10-14 | Various | Validation results |
-
-### Optional Layers Impact on Tag Counts
-
-| Development Path | IMPL? | CTR? | SPEC Tags | TASKS Tags | Code Tags |
-|------------------|-------|------|-----------|------------|-----------|
-| Direct path | No | No | 7 | 8 | 9 |
-| With IMPL only | Yes | No | 8 | 9 | 10 |
-| With CTR only | No | Yes | 8 | 9 | 10 |
-| With IMPL + CTR | Yes | Yes | 9 | 10 | 11 |
-
-**Note**: IMPL (Layer 8) and CTR (Layer 9) are optional layers. Include their tags only if you created those artifacts.
+| 1 | **BRD** | None | 0 | YAML | Top level, no upstream dependencies |
+| 2 | **PRD** | `@brd` | 1 | YAML | References parent BRD |
+| 3 | **EARS** | `@brd`, `@prd` | 2 | YAML | Cumulative: BRD + PRD |
+| 4 | **BDD** | `@brd`, `@prd`, `@ears` | 3 | YAML | Cumulative: BRD through EARS |
+| 5 | **ADR** | `@brd` through `@bdd` | 4 | YAML | Cumulative: BRD through BDD |
+| 6 | **SPEC** | `@brd` through `@adr` | 5 | YAML (`cumulative_tags`) | Cumulative: BRD through ADR |
+| 7 | **TDD** | `@brd` through `@spec` | 6 | YAML | Cumulative: BRD through SPEC |
+| 8 | **IPLAN** | `@brd` through `@tdd` | 7 | YAML | Cumulative: BRD through TDD |
+| — | **Code** | `@brd` through `@iplan` | 8 | Docstrings | Source code (output target) |
 
 ### Tag Count Clarification
 
 **CRITICAL RULE**: Tag Count = Number of UPSTREAM layers (artifacts do NOT tag themselves)
 
-**Calculation Formula**: For Layer N with no optional layers, Tag Count = N - 1
+**Calculation Formula**: For Layer N, Tag Count = N - 1
 
 **Examples**:
 - **Layer 2 (PRD)**: 1 upstream tag (@brd)
-- **Layer 7 (REQ)**: 6 upstream tags (@brd, @prd, @ears, @bdd, @adr, @sys)
-- **Layer 12 (Code)**: 9-11 upstream tags (varies with optional IMPL, CTR)
+- **Layer 6 (SPEC)**: 5 upstream tags (@brd, @prd, @ears, @bdd, @adr)
+- **Layer 8 (IPLAN)**: 7 upstream tags (@brd, @prd, @ears, @bdd, @adr, @spec, @tdd)
 
 **Validation Method**:
 1. Count `@artifact:` lines in Traceability section
-2. Should equal Layer Number minus 1 for mandatory layers
-3. Add +1 for each optional layer (IMPL, CTR) if included
+2. Should equal Layer Number minus 1
 
 ### Tag Format
 
 ```markdown
-@brd: BRD.09.0115, BRD.09.01901
-@prd: PRD.16.0703
-@ears: EARS.12.2402, EARS.12.2401
-@bdd: BDD.15.1301
+@brd: BRD.09.01.0115, BRD.09.01.1901
+@prd: PRD.16.07.0703
+@ears: EARS.12.24.2402, EARS.12.24.2401
+@bdd: BDD.15.13.1301
 @adr: ADR-033
-@sys: SYS.12.2501, SYS.12.2502
-@req: REQ.45.2601
-@impl: IMPL.03.2802  # Optional - include only if exists
-@ctr: CTR-005  # Optional - include only if exists
 @spec: SPEC-018
-@tasks: TASKS.15.2901
+@tdd: TDD.15.04.2901
+@iplan: IPLAN-01
 ```
 
 ### Feature-Level Traceability Tags
 
-Internal feature IDs within documents use simple sequential numbering:
+Internal feature IDs within documents use simple sequential numbering, while cross-references use the 4-segment element ID:
 
 | Context | Format | Example | Cross-Reference |
 |---------|--------|---------|-----------------|
-| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.22.0715` |
-| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.01.0130` |
-| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.06.2403` |
-| SYS Requirements | `NNN` | `001`, `015` | `@sys: SYS.08.2501` |
+| PRD Features | `NNN` | `001`, `015`, `042` | `@prd: PRD.22.07.0715` |
+| BRD Objectives | `NNN` | `030`, `006` | `@brd: BRD.01.01.0130` |
+| EARS Statements | `NNN` | `003`, `007` | `@ears: EARS.06.24.2403` |
+| TDD Test Cases | `NNN` | `001`, `004` | `@tdd: TDD.01.04.a3c1` |
 
 **Global Uniqueness**: Document ID + Feature ID creates globally unique references.
 
 ### Format Rules
 
-- Format: Use unified 3-segment `TYPE.NN.xxxx` format (e.g., `BRD.01.0130`)
+- Element IDs: Use the 4-segment `TYPE.NN.SS.xxxx` format (e.g., `BRD.01.01.0130`), where `xxxx` is a 4-char hex content hash
+- Document-level (dash) refs: `SPEC-NN`, `ADR-NN`, `IPLAN-NN`
 - Multiple refs: Comma-separated list within same tag line
-- Optional layers: Include `@impl` and `@ctr` tags only if those artifacts exist in chain
 - SPEC format: Use YAML `cumulative_tags:` mapping instead of markdown comments
-- BDD format: Use Gherkin `@` tags at feature/scenario level
+- BDD format: Tags carried in the BDD YAML scenario metadata
 
 ### Validation Rules
 
 1. **No gaps**: Each layer must include ALL upstream tags from previous layers
-2. **Format compliance**: Tags must follow `@artifact-type: TYPE.NN.xxxx` pattern (3-segment format)
+2. **Format compliance**: Element tags follow `@artifact-type: TYPE.NN.SS.xxxx`; document-level tags follow `@artifact-type: TYPE-NN`
 3. **Valid references**: All tagged document IDs must exist and be reachable
-4. **Optional layers**: `@impl` and `@ctr` included only if they exist in chain
-5. **SPEC exception**: SPEC uses YAML format, not markdown tags
+4. **SPEC/IPLAN exception**: SPEC and IPLAN use YAML format, not markdown tags
 
-### SPEC YAML Format Example (7-9 tags)
+### SPEC YAML Format Example (5 tags)
 
 ```yaml
 # SPEC-018: Order Placement Service Specification
@@ -224,17 +201,13 @@ spec_id: SPEC-018
 title: "Order Placement Service Technical Specification"
 version: "1.0.0"
 
-# Cumulative Tagging Hierarchy (Layer 10)
+# Cumulative Tagging Hierarchy (Layer 6)
 cumulative_tags:
-  brd: "BRD.09.0115, BRD.09.01906"
-  prd: "PRD.16.0703"
-  ears: "EARS.12.2402, EARS.12.2401"
-  bdd: "BDD.15.1301"
+  brd: "BRD.09.01.0115, BRD.09.01.1906"
+  prd: "PRD.16.07.0703"
+  ears: "EARS.12.24.2402, EARS.12.24.2401"
+  bdd: "BDD.15.13.1301"
   adr: "ADR-033"
-  sys: "SYS.12.25901, SYS.12.25921"
-  req: "REQ.45.2601, REQ.45.2602"
-  impl: "IMPL.03.2802"  # Optional
-  ctr: "CTR-005"  # Optional
 ```
 
 ### Benefits of Cumulative Tagging
@@ -242,7 +215,7 @@ cumulative_tags:
 - **Complete Audit Trail**: Every artifact traces back to original business requirements
 - **Impact Analysis**: Instantly identify all downstream artifacts affected by upstream changes
 - **Regulatory Compliance**: SEC, FINRA, FDA, ISO audit requirements satisfied automatically
-- **Automated Validation**: Scripts enforce tagging compliance in CI/CD pipeline
+- **Automated Validation**: Skills enforce tagging compliance during review
 - **Change Management**: Know exactly what breaks when requirements change
 - **Coverage Metrics**: Measure traceability completeness across entire codebase
 
@@ -250,89 +223,53 @@ cumulative_tags:
 
 ## 4. Quality Gates & Validation
 
-### Quality Gates Automation
+### Quality Gates
 
-**Authoritative Reference**: `framework/TRACEABILITY_VALIDATION.md`
+**Authoritative Reference**: `framework/governance/DOC_GOVERNANCE_CORE.md`
 
 Each artifact layer requires ≥90% ready score before progressing to next layer.
+The framework is spec-only and ships no runtime scripts — the artifact skill
+itself runs the declarative validation checklist.
 
 ### Creation and Validation Rules References
 
 Before creating ANY artifact, consult:
 
-1. **Creation Rules**: `framework/{TYPE}/{TYPE}_CREATION_RULES.md` - Authoritative creation guidance
-2. **Validation Rules**: `framework/{TYPE}/{TYPE}_VALIDATION_RULES.md` - Quality validation requirements
-3. **Template**: `framework/{TYPE}/{TYPE}-TEMPLATE.{ext}` - Starting structure
+1. **Layer README**: `framework/layers/<NN>_<X>/README.md` - Authoritative creation and validation guidance for that layer
+2. **Template**: `framework/layers/<NN>_<X>/{TYPE}-TEMPLATE.yaml` - Starting structure
+3. **Governance**: `framework/governance/` - ID, traceability, and quality-gate standards shared by all layers
 
-**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SYS, REQ, SPEC, IMPL, CTR, TASKS
+**Available for artifact types**: BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN
 
-**Note**: All artifact types have creation/validation rules files in their respective `framework/{TYPE}/` directories. Consult `{TYPE}_CREATION_RULES.md` and `{TYPE}_VALIDATION_RULES.md` for authoritative guidance.
+**Note**: Each layer's `README.md` carries the creation rules and validation
+requirements for that artifact type. The corresponding `doc-<type>-validator`
+skill runs the declarative checklist.
 
-### Validation Script Status
+### Validation Approach
 
-**Available Scripts**:
-- BRD: `./framework/scripts/validate_brd_template.sh` ✓
-- REQ: `./framework/scripts/validate_req_template.sh` ✓
-- CTR: `./framework/scripts/validate_ctr.sh` ✓
-- IMPL: `./framework/scripts/validate_impl.sh` ✓
-- TASKS: `./framework/scripts/validate_tasks.sh` ✓
+The plugin skill **is** the validator. There are no external validation
+scripts. To validate an artifact:
 
-**Under Development**:
-- PRD: `./framework/scripts/validate_prd.sh` (planned)
-- EARS: `./framework/scripts/validate_ears.sh` (planned)
-- BDD: `./framework/scripts/validate_bdd.sh` (planned)
-- ADR: `./framework/scripts/validate_adr.sh` (planned)
-- SYS: `./framework/scripts/validate_sys.sh` (planned)
-- SPEC: `./framework/scripts/validate_spec.sh` (planned)
-
-**Note**: If validation script not available, use template and SHARED_CONTENT.md for manual validation.
+1. Run the matching `doc-<type>-validator` skill (e.g. `doc-brd-validator`,
+   `doc-spec-validator`, `doc-iplan-validator`).
+2. The validator applies the layer's declarative checklist (from
+   `framework/layers/<NN>_<X>/README.md`) and the shared governance standards.
+3. For cross-document and traceability checks, use `doc-validator` and
+   `trace-check`.
 
 ### Pre-Commit Checklist
 
 - [ ] Document Control section completed with all required metadata (project name, version, date, owner, preparer, status)
 - [ ] Document Revision History table initialized with at least initial version entry
-- [ ] IDs comply with `ID_NAMING_STANDARDS.md` (NNN or NNN-YY format, H1 anchors, zero-padding)
+- [ ] IDs comply with `ID_NAMING_STANDARDS.md` (TYPE-NN doc IDs, TYPE.NN.SS.xxxx element IDs, zero-padding)
 - [ ] No ID collisions: each NNN number used only once (either atomic TYPE-NNN OR multi-doc TYPE-NNN-YY group, never both)
 - [ ] All cross-references use markdown links with valid paths and anchors
 - [ ] Cumulative tagging complete for artifact layer (no missing upstream tags)
 - [ ] Traceability section includes upstream sources and downstream artifacts
 - [ ] Quality attributes defined (where applicable)
-- [ ] Validation scripts pass
+- [ ] Validation checklist passes (run the `doc-<type>-validator` skill)
 - [ ] No broken links or missing anchors
 - [ ] File size under 50,000 tokens (Claude Code standard) or 100,000 tokens (absolute maximum)
-
-### Validation Commands
-
-**Quality Gates Validation:**
-```bash
-# Validate artifact meets layer transition requirements
-./scripts/validate_quality_gates.sh docs/REQ/risk/lim/REQ-003.md
-
-# Artifact-specific validation
-./framework/scripts/validate_brd_template.sh docs/BRD/BRD-001.md
-./framework/scripts/validate_req_template.sh docs/REQ/api/ib/REQ-002.md
-
-# Link integrity validation
-./framework/scripts/validate_links.py --path docs/ --check-anchors
-```
-
-**Tag-Based Traceability Validation:**
-```bash
-# Extract all tags from codebase
-python framework/scripts/extract_tags.py --source src/ docs/ tests/ --output docs/generated/tags.json
-
-# Validate tags against documents
-python framework/scripts/validate_tags_against_docs.py --tags docs/generated/tags.json --strict
-
-# Validate cumulative tagging hierarchy
-python framework/scripts/validate_tags_against_docs.py --source src/ docs/ tests/ --docs docs/ --validate-cumulative --strict
-
-# Generate bidirectional matrices
-python framework/scripts/generate_traceability_matrices.py --tags docs/generated/tags.json --output docs/generated/matrices/
-
-# Complete workflow (extract → validate → generate)
-python framework/scripts/generate_traceability_matrices.py --auto
-```
 
 ### Traceability Matrix Update Workflow
 
@@ -363,14 +300,14 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 
 2. UPDATE downstream artifact
    └─ Add upstream traceability tags:
-      @brd: BRD.01.0115
+      @brd: BRD.01.01.0115
 
 3. UPDATE upstream artifact (CRITICAL - often missed)
    └─ Add downstream reference in Traceability section:
-      - Downstream Artifacts: [PRD-01](../PRD/PRD-01_feature.md#PRD-01)
+      - Downstream Artifacts: [PRD-01](../02_PRD/PRD-01_feature.yaml#PRD-01)
 
 4. VALIDATE both documents
-   └─ Run validation scripts on both upstream and downstream
+   └─ Run the doc-<type>-validator checklist on both upstream and downstream
 
 5. COMMIT together
    └─ Single commit with descriptive message referencing both artifacts
@@ -384,16 +321,15 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 | EARS | PRD (and BRD) | `Downstream Artifacts: EARS-NNN` |
 | BDD | EARS (and PRD, BRD) | `Downstream Artifacts: BDD-NNN` |
 | ADR | BDD (and upstream) | `Downstream Artifacts: ADR-NNN` |
-| SYS | ADR (and upstream) | `Downstream Artifacts: SYS-NNN` |
-| REQ | SYS (and upstream) | `Downstream Artifacts: REQ-NNN` |
-| SPEC | REQ (and upstream) | `Downstream Artifacts: SPEC-NNN` |
-| TASKS | SPEC (and upstream) | `Downstream Artifacts: TASKS-NNN` |
+| SPEC | ADR (and upstream) | `Downstream Artifacts: SPEC-NNN` |
+| TDD | SPEC (and upstream) | `Downstream Artifacts: TDD-NNN` |
+| IPLAN | TDD (and upstream) | `Downstream Artifacts: IPLAN-NNN` |
 
 **Practical Guidance**:
 
 1. **Minimum Requirement**: Update immediate upstream document (PRD → update originating BRD)
 2. **Recommended**: Update all referenced upstream documents in traceability chain
-3. **Tooling**: Use `./scripts/update_traceability.py --artifact PRD-01 --update-upstream` (when available)
+3. **Tooling**: Run `doc-validator` to detect and auto-fix missing bidirectional links
 4. **Manual Process**: Open each upstream document, locate Traceability section, add downstream link
 
 **Example - Creating PRD-01 from BRD-01**:
@@ -401,14 +337,14 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 ```markdown
 # In PRD-01 (new downstream artifact):
 ## Traceability
-- Upstream Sources: [BRD-01](../BRD/BRD-01_platform.md#BRD-01)
+- Upstream Sources: [BRD-01](../01_BRD/BRD-01_platform.yaml#BRD-01)
 - Downstream Artifacts: (none yet)
-@brd: BRD.01.0115
+@brd: BRD.01.01.0115
 
 # In BRD-01 (update existing upstream artifact):
 ## Traceability
 - Upstream Sources: (none - BRD is Layer 1)
-- Downstream Artifacts: [PRD-01](../PRD/PRD-01_feature.md#PRD-01)  ← ADD THIS
+- Downstream Artifacts: [PRD-01](../02_PRD/PRD-01_feature.yaml#PRD-01)  ← ADD THIS
 ```
 
 **Why This Matters**:
@@ -427,7 +363,7 @@ When creating a downstream artifact, you MUST update the upstream document's tra
 **CRITICAL RULE**: EVERY time you create or update a document of ANY artifact type, you MUST:
 
 1. **Check for existing traceability matrix**: Look for `[TYPE]-00_TRACEABILITY_MATRIX.md`
-2. **Create if missing**: Use template from `framework/[TYPE]/[TYPE]-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+2. **Create if missing**: Use the matrix structure documented in `framework/layers/<NN>_<X>/README.md`
 3. **Update if exists**: Add new document entry with:
    - Document ID and title
    - Upstream sources (documents that drove this artifact)
@@ -447,17 +383,17 @@ Each traceability matrix tracks:
 
 - **Section 2: Complete Inventory**: All documents of this type with status
 - **Section 3: Upstream Traceability**: Which documents drove creation (BRD → PRD → EARS, etc.)
-- **Section 4: Downstream Traceability**: Which documents/code derive from this (PRD → EARS → BDD → REQ)
+- **Section 4: Downstream Traceability**: Which documents/code derive from this (PRD → EARS → BDD → ADR)
 - **Section 5: Cross-Dependencies**: Relationships between documents of same type
 - **Section 8: Implementation Status**: Completion percentage and validation status
 
 ### Why This Matters
 
-- **Impact Analysis**: When BRD-001 changes, matrix shows affected PRDs, EARS, BDD, REQ, SPEC, Code
+- **Impact Analysis**: When BRD-001 changes, matrix shows affected PRDs, EARS, BDD, SPEC, TDD, IPLAN, Code
 - **Coverage Validation**: Ensures no orphaned requirements (100% traceability)
 - **Regulatory Compliance**: Audit trails required for SEC, FINRA, FDA, ISO compliance
 - **Change Management**: Know exactly what breaks when upstream requirements change
-- **Quality Assurance**: Automated validation prevents missing links
+- **Quality Assurance**: Declarative validation prevents missing links
 
 ---
 
@@ -517,7 +453,7 @@ Must include a table with at least the initial version entry:
 
 ## 8. Diagram Standards
 
-**Central Authority**: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`
+**Central Authority**: `framework/governance/DIAGRAM_STANDARDS.md`
 
 All diagrams, charts, workflows, and visual representations in SDD artifacts MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
 
@@ -549,10 +485,10 @@ Each artifact-specific skill (doc-brd, doc-prd, etc.) should include:
 ## Prerequisites
 
 Before creating this artifact, read:
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md` (this document)
-2. **Template**: `framework/{TYPE}/{TYPE}-TEMPLATE.{ext}`
-3. **Creation Rules**: `framework/{TYPE}/{TYPE}_CREATION_RULES.md`
-4. **Validation Rules**: `framework/{TYPE}/{TYPE}_VALIDATION_RULES.md`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md` (this document)
+2. **Template**: `framework/layers/<NN>_<X>/{TYPE}-TEMPLATE.yaml`
+3. **Layer README**: `framework/layers/<NN>_<X>/README.md` (creation + validation rules)
+4. **Governance**: `framework/governance/` (ID, traceability, quality gates)
 ```
 
 ---

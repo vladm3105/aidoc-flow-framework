@@ -12,11 +12,14 @@
 > plugin's skills are authored against the legacy **12-layer** model;
 > this migrates the whole corpus to the framework's **8-layer** model.
 > Plan + shared rewrite spec: `plans/PLM-PLAN.md`. Gate:
-> `tests/conformance/platforms/plm_lint.py`. **B0 done** (plan + checker;
-> baseline 146 files / 2319 hits). **Next: B1** (rename tspec→tdd,
-> tasks→iplan; retire sys/req/ctr; fix cross-refs; interim PARITY). **OPEN
-> decision** before B4/B5: fate of the SPEC- and test-subtype families
-> (no framework backing in the 8-layer model).
+> `tests/conformance/platforms/plm_lint.py`. **B0 + B1 done.** B1: renamed
+> tspec→tdd & tasks→iplan (12 bodies rewritten), retired sys/req/ctr
+> (142→125 skills), migrated doc-flow/skill-recommender/project-init + the
+> 9-agent roster; interim PARITY. Verified clean (plm_lint B1 scope;
+> conformance 31/31; name==dir). **108 files remain** (B2–B6). **Next: B2**
+> (rewrite doc-brd, doc-prd, doc-ears bodies). **OPEN decision** before
+> B4/B5: fate of the SPEC-/test-subtype families (no single-template
+> backing in the 8-layer model).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
@@ -26,8 +29,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-22T00:48:53Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0 done |
-| Next task     | **PLM-B1** — rename `doc-tspec*`→`doc-tdd*` + `doc-tasks*`→`doc-iplan*` (rewrite the 12 bodies), retire `doc-sys*`/`doc-req*`/`doc-ctr*`, fix orchestrator cross-refs, interim `docs/PARITY.md`. See `plans/PLM-PLAN.md` batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
+| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0+B1 done (125 skills; 108 files remain) |
+| Next task     | **PLM-B2** — rewrite the `doc-brd`, `doc-prd`, `doc-ears` family bodies to the 8-layer model per the `plans/PLM-PLAN.md` rewrite spec; then add those families to `plm_lint` `MIGRATED` and verify. See the batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
 
 ## Progress
 

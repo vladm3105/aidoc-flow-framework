@@ -29,7 +29,10 @@ OP_SUFFIX = re.compile(r"-(audit|autopilot|fixer|reviewer|validator)$")
 
 # Families migrated to the 8-layer model so far. Extend this each batch; the
 # checker enforces a zero-fingerprint rule over exactly these families.
-MIGRATED: set[str] = set()
+MIGRATED: set[str] = {
+    # PLM-B1
+    "doc-tdd", "doc-iplan", "doc-flow", "skill-recommender", "project-init",
+}
 
 # Calibrated legacy fingerprints (see PLM-PLAN.md §Verification, dry-run Pass 2).
 FINGERPRINTS = {

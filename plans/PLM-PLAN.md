@@ -105,8 +105,8 @@ blanket find/replace. Edit only where the token denotes a *legacy layer*.
 
 | Batch | Content | Families / files | Status |
 |---|---|---|---|
-| **B0** | This plan + rewrite spec + the `plm_lint` legacy-fingerprint checker | `plans/PLM-PLAN.md`, `tests/conformance/platforms/plm_lint.py` | — |
-| **B1** | Roster: rename `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*` (full body rewrite of those 12 skills); retire `doc-sys*`/`doc-req*`/`doc-ctr*`; fix orchestrator cross-refs (`doc-flow`, `skill-recommender`, `project-init`, `doc-naming`, READMEs, `agents/`); interim `docs/PARITY.md` — flip capability-matrix rows 7/8 (TDD/IPLAN no longer "gap") and rescope the gap section to "remaining families still legacy-numbered (see `plans/PLM-PLAN.md`)". May land in sub-commits (rename+retire+crossref; then the 12 body rewrites). | ~12 rewritten + 18 removed + ~16 cross-ref | — |
+| **B0** | This plan + rewrite spec + the `plm_lint` legacy-fingerprint checker | `plans/PLM-PLAN.md`, `tests/conformance/platforms/plm_lint.py` | ✅ DONE 2026-05-22 |
+| **B1** | Roster: renamed `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*` (12 bodies fully rewritten to `07_TDD`/`08_IPLAN`); retired `doc-sys*`/`doc-req*`/`doc-ctr*` (142→125 skills); migrated orchestrators `doc-flow`+`SHARED_CONTENT`, `skill-recommender`, `project-init` to the 8-layer flow; realigned the 9-agent roster; interim `docs/PARITY.md`. Verified: `plm_lint` scope `{doc-tdd,doc-iplan,doc-flow,skill-recommender,project-init}` clean; conformance 31/31; 125 skills; frontmatter parses + `name==dir`. `MIGRATED` remaining: 108 files. | 14 rewritten + 17 removed + 5 orchestrators/agents | ✅ DONE 2026-05-22 |
 | **B2** | Body rewrite: `doc-brd`, `doc-prd`, `doc-ears` families | 3 families | — |
 | **B3** | Body rewrite: `doc-bdd`, `doc-adr` families | 2 families | — |
 | **B4** | Body rewrite: `doc-spec` family **(+ SPEC-subtype decision)** | 1 + OPEN | blocked on OPEN |

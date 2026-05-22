@@ -394,9 +394,12 @@ to the suite at B7).
 - [x] PLM-B0 — Plan (≥2 review passes, verification dry-run-calibrated) + the
   `plm_lint` legacy-fingerprint checker. Baseline: 146 files / 2319 hits.
   Conformance 31/31 (checker is non-`test_`, ignored by discovery until B7).
-- [ ] PLM-B1 — Roster: rename `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*`
-  (full body rewrite of those 12); retire `doc-sys*`/`doc-req*`/`doc-ctr*`; fix
-  orchestrator cross-refs; interim PARITY update.
+- [x] PLM-B1 — Renamed `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*` (12
+  bodies rewritten to `07_TDD`/`08_IPLAN`); retired `doc-sys*`/`doc-req*`/`doc-ctr*`
+  (142→125 skills); migrated `doc-flow`+`SHARED_CONTENT`, `skill-recommender`,
+  `project-init` + the 9-agent roster to the 8-layer flow; interim PARITY.
+  Verified: `plm_lint` B1 scope clean; conformance 31/31; 125 skills; frontmatter
+  parses + `name==dir`. 108 files remain (B2–B6). DONE 2026-05-22.
 - [ ] PLM-B2 — Body rewrite: `doc-brd`, `doc-prd`, `doc-ears`.
 - [ ] PLM-B3 — Body rewrite: `doc-bdd`, `doc-adr`.
 - [ ] PLM-B4 — Body rewrite: `doc-spec` (+ **OPEN** SPEC-subtype decision).

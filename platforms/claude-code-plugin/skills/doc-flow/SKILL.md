@@ -15,7 +15,7 @@ custom_fields:
   development_status: active
   skill_category: core-workflow
   upstream_artifacts: []
-  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, REF]
+  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, REF]
 ---
 
 # doc-flow (Orchestrator)
@@ -25,11 +25,11 @@ custom_fields:
 This skill serves as the **orchestrator** for the AI-Driven Specification-Driven Development (SDD) workflow. It provides:
 
 1. **Skill Selection Guidance**: Helps determine which artifact-specific skill to use
-2. **Workflow Overview**: Complete 15-layer SDD architecture
+2. **Workflow Overview**: Complete 8-layer SDD architecture
 3. **General SDD Principles**: Specification-driven methodology fundamentals
 4. **Integration Guidance**: How skills work together
 
-**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-ref, doc-naming).
+**For Artifact Creation**: Use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-spec, doc-tdd, doc-iplan, doc-ref, doc-naming).
 
 **Authoritative Reference**: [framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -56,14 +56,10 @@ Answer these questions to find the right skill:
 - **Have PRD, need formal requirements** → Use `doc-ears` skill
 - **Have EARS, need test scenarios** → Use `doc-bdd` skill
 - **Have BDD, need architecture decisions** → Use `doc-adr` skill
-- **Have ADR, need system requirements** → Use `doc-sys` skill
-- **Have SYS, need atomic requirements** → Use `doc-req` skill
-- **Have REQ, need implementation planning** → Use `doc-impl` skill (if complex) or skip to `doc-spec`
-- **Have REQ/IMPL, need API contracts** → Use `doc-ctr` skill (if interface requirement)
-- **Have REQ/CTR, need technical specifications** → Use `doc-spec` skill
-- **Have SPEC, need task breakdown** → Use `doc-tasks` skill
-- **Have TASKS, need implementation contracts** → Add Section 8 to TASKS (see `doc-tasks` skill)
-- **Have TASKS, ready to code** → Implement code per TASKS
+- **Have ADR, need technical specifications** → Use `doc-spec` skill
+- **Have SPEC, need test case definitions** → Use `doc-tdd` skill
+- **Have TDD, need an implementation plan** → Use `doc-iplan` skill
+- **Have IPLAN, ready to code** → Implement code per IPLAN
 - **Need supplementary documentation (overview, glossary, guides)** → Use `doc-ref` skill
 
 **Q2: What are you trying to do?**
@@ -73,19 +69,15 @@ Answer these questions to find the right skill:
 - **Write formal WHEN-THE-SHALL-WITHIN requirements** → `doc-ears`
 - **Create Gherkin test scenarios** → `doc-bdd`
 - **Document architecture decisions** → `doc-adr`
-- **Define system requirements** → `doc-sys`
-- **Define atomic requirements** → `doc-req`
-- **Plan project implementation (WHO/WHEN/WHAT)** → `doc-impl`
-- **Define API contracts** → `doc-ctr`
-- **Write technical specifications** → `doc-spec`
-- **Break down into AI tasks** → `doc-tasks`
-- **Define implementation contracts for parallel dev** → Add Section 8 to TASKS (see `doc-tasks` skill)
+- **Write technical specifications (interfaces, data models, behavior contracts)** → `doc-spec`
+- **Define test cases and quality thresholds** → `doc-tdd`
+- **Plan the executable implementation (file manifest, commands, handoff)** → `doc-iplan`
 - **Create supplementary documentation (project overview, glossary, guides)** → `doc-ref`
 - **General guidance or unsure** → Stay with `doc-flow` (this skill)
 
 ---
 
-## Complete SDD Workflow (15 Layers)
+## Complete SDD Workflow (8 Layers)
 
 **Authoritative Reference**: [framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -104,23 +96,13 @@ BDD (Layer 4) → doc-bdd skill
   ↓
 ADR (Layer 5) → doc-adr skill
   ↓
-SYS (Layer 6) → doc-sys skill
+SPEC (Layer 6) → doc-spec skill
   ↓
-REQ (Layer 7) → doc-req skill
+TDD (Layer 7) → doc-tdd skill
   ↓
-IMPL (Layer 8) [OPTIONAL] → doc-impl skill
+IPLAN (Layer 8) → doc-iplan skill
   ↓
-CTR (Layer 9) [OPTIONAL - IF INTERFACE] → doc-ctr skill
-  ↓
-SPEC (Layer 10) → doc-spec skill
-  ↓
-TASKS (Layer 11) → doc-tasks skill
-  ↓
-Code (Layer 12)
-  ↓
-Tests (Layer 13)
-  ↓
-Validation (Layer 14)
+Code
 ```
 
 ### Layer Descriptions
@@ -133,28 +115,12 @@ Validation (Layer 14)
 | 3 | **EARS** | Formal requirements (WHEN-THE-SHALL) | `doc-ears` |
 | 4 | **BDD** | Gherkin test scenarios | `doc-bdd` |
 | 5 | **ADR** | Architecture decisions | `doc-adr` |
-| 6 | **SYS** | System requirements | `doc-sys` |
-| 7 | **REQ** | Atomic requirements | `doc-req` |
-| 8 | **IMPL** | Implementation plans (WHO/WHEN) [OPTIONAL] | `doc-impl` |
-| 9 | **CTR** | API contracts [OPTIONAL - IF INTERFACE] | `doc-ctr` |
-| 10 | **SPEC** | Technical specifications (HOW) | `doc-spec` |
-| 11 | **TASKS** | Task breakdown for implementation | `doc-tasks` |
-| 11+ | **ICON** | Implementation Contracts (Section 8 of TASKS) | `doc-tasks` |
-| 12 | **Code** | Python implementation | Implementation |
-| 13 | **Tests** | Test suites | Implementation |
-| 14 | **Validation** | BDD + contract + traceability | Validation |
+| 6 | **SPEC** | Technical specifications (interfaces, data models, behavior contracts) | `doc-spec` |
+| 7 | **TDD** | Test case definitions, BDD-to-test mapping, quality thresholds | `doc-tdd` |
+| 8 | **IPLAN** | Implementation plan (file manifest, commands, handoff, audit trail) | `doc-iplan` |
+| — | **Code** | Source implementation (output target) | Implementation |
 
-### Optional Layers Decision Logic
-
-**When to Create IMPL (Layer 8)**:
-- **Create IMPL When**: Duration ≥2 weeks, teams ≥3, components ≥5, critical budget/timeline, external dependencies
-- **Skip IMPL When**: Single component, duration <2 weeks, single developer, low risk
-- **Reference**: [framework/WHEN_TO_CREATE_IMPL.md]({project_root}/framework/WHEN_TO_CREATE_IMPL.md)
-
-**When to Create CTR (Layer 9)**:
-- **Create CTR When**: Public APIs, event schemas, data models, version compatibility requirements, interface between components
-- **Skip CTR When**: Internal logic only, no external interface, no serialization
-- **Reference**: [framework/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl]({project_root}/framework/WHEN_TO_CREATE_IMPL.md#when-to-create-ctr-after-impl)
+**Note**: SPEC behavior contracts (interfaces, data models) live inside the SPEC layer (Layer 6); system-architecture concerns are captured by ADR (Layer 5) and SPEC (Layer 6); atomic/formal requirements live in EARS (Layer 3). There are no separate system, requirement, or contract document layers.
 
 ---
 
@@ -222,17 +188,17 @@ strategy/ (WHAT - Product Owner Voice)
 #### 📚 `docs/` - PROJECT DOCUMENTATION
 **Implementation Documentation**: Requirements, architecture, specifications
 
-- `docs/BRD/` - Business Requirements Documents
-  - **Nested folder structure**: `docs/BRD/BRD-NN/BRD-NN.S_slug.md`
-- `docs/PRD/` - Product Requirements Documents
-  - **Nested folder structure**: `docs/PRD/PRD-NN/PRD-NN.S_slug.md`
-- `docs/ADR/` - Architecture Decision Records (HOW)
-  - **Nested folder structure**: `docs/ADR/ADR-NN/ADR-NN.S_slug.md`
-- `docs/BDD/` - BDD acceptance tests (Behavior-Driven Development)
-- `docs/CTR/` - API Contracts (dual-file format: .md + .yaml)
-- `docs/IMPL/` - Implementation Plans (Project Management: WHO/WHEN)
-- `docs/SPEC/` - YAML technical specifications
-- `docs/TASKS/` - Code Generation Plans (AI-structured implementation tasks)
+- `docs/01_BRD/` - Business Requirements Documents
+  - **Nested folder structure**: `docs/01_BRD/BRD-NN/BRD-NN.S_slug.md`
+- `docs/02_PRD/` - Product Requirements Documents
+  - **Nested folder structure**: `docs/02_PRD/PRD-NN/PRD-NN.S_slug.md`
+- `docs/03_EARS/` - Formal requirements (WHEN-THE-SHALL-WITHIN)
+- `docs/04_BDD/` - BDD acceptance tests (Behavior-Driven Development)
+- `docs/05_ADR/` - Architecture Decision Records (HOW)
+  - **Nested folder structure**: `docs/05_ADR/ADR-NN/ADR-NN.S_slug.md`
+- `docs/06_SPEC/` - YAML technical specifications
+- `docs/07_TDD/` - Test case definitions and quality thresholds
+- `docs/08_IPLAN/` - Implementation plans (executable file manifest)
 
 **Note**: BRD, PRD, ADR use section-based nested folders by default. Other types use flat structure.
 
@@ -242,9 +208,9 @@ strategy/ (WHAT - Product Owner Voice)
 **Development Standard and Templates**: The single source of truth for SDD workflow
 
 - **Status**: Authoritative development standard for this project
-- **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SYS → REQ → IMPL → CTR → SPEC → TASKS → Code)
-- **Templates**: `{TYPE}-TEMPLATE.{ext}` for each artifact type (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS, REF)
-- **Indices**: `{TYPE}-00_index.{ext}` listing all documents of each type
+- **Contents**: Complete SDD workflow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code)
+- **Templates**: `{TYPE}-TEMPLATE.yaml` for each artifact type (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN)
+- **Indices**: `{TYPE}-00_index.{md,yaml}` listing all documents of each type
 - **READMEs**: Detailed usage guides and best practices for each artifact type
 - **Standards**: ID naming, traceability format, cross-referencing rules
 - **Examples**: Reference implementations with full traceability chains
@@ -280,13 +246,13 @@ strategy/ (WHAT - Product Owner Voice)
 - **Regulatory Compliance**: Industry-specific audit requirements (ISO, SOC2, etc.)
 - **Change Management**: Track all changes through artifact chain
 - **Coverage Metrics**: Measure implementation completeness
-- **Quality Assurance**: Automated validation prevents gaps
+- **Quality Assurance**: Declarative validation prevents gaps
 
 **Implementation**:
 - Cumulative tagging hierarchy (see SHARED_CONTENT.md)
 - Traceability section in every document
 - Bidirectional traceability matrices
-- Automated validation scripts
+- The artifact skill's own validation checklist (see `framework/governance/`)
 
 ### 5. Upstream Artifact Policy (CRITICAL)
 
@@ -316,7 +282,7 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 3. **Advise** - Recommend creating upstream artifacts first through proper channels
 4. **Skip** - Move on to functionality that has complete upstream chain
 
-**Reference**: [framework/TRACEABILITY.md]({project_root}/framework/TRACEABILITY.md) - Section "Step 3: Decision Rules"
+**Reference**: [framework/governance/TRACEABILITY.md]({project_root}/framework/governance/TRACEABILITY.md)
 
 ---
 
@@ -327,37 +293,37 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 **`project-init`** - Initialize new project structure
 - Use BEFORE doc-flow for greenfield projects
 - Creates folder structure, domain setup, baseline files
-- Reference: `.claude/skills/project-init/SKILL.md`
+- Reference: `../project-init/SKILL.md`
 
 **`trace-check`** - Validate traceability after artifact creation
 - Use AFTER doc-flow to verify bidirectional links
 - Validates cumulative tagging, ID formats, link resolution
 - Detects orphaned artifacts and traceability gaps
-- Reference: `.claude/skills/trace-check/SKILL.md`
+- Reference: `../trace-check/SKILL.md`
 
 **`doc-naming`** - Unified ID naming standards enforcement
 - Use for ID format validation across all artifact types
-- Validates 3-segment element IDs (TYPE.NN.xxxx)
+- Validates 4-segment element IDs (TYPE.NN.SS.xxxx)
 - Enforces variable-length DOC_NUM (2+ digits)
-- Reference: `.claude/skills/doc-naming/SKILL.md`
+- Reference: `../doc-naming/SKILL.md`
 
 **`doc-validator`** - Cross-document validation orchestrator
 - Validates traceability across all layers
 - Detects gaps, broken links, and format violations
 - Runs auto-fix actions for common issues
-- Reference: `.claude/skills/doc-validator/SKILL.md`
+- Reference: `../doc-validator/SKILL.md`
 
 ### Planning & Architecture
 
 **`adr-roadmap`** - Generate implementation roadmaps from ADRs
 - Use AFTER creating ADR artifacts
 - Creates timeline, risk assessment, dependency mapping
-- Reference: `.claude/skills/adr-roadmap/SKILL.md`
+- Reference: `../adr-roadmap/SKILL.md`
 
 **`project-mngt`** - MVP/MMP/MMR planning
 - Use for strategic release planning
-- Integrates with IMPL artifacts
-- Reference: `.claude/skills/project-mngt/SKILL.md`
+- Integrates with IPLAN artifacts
+- Reference: `../project-mngt/SKILL.md`
 
 ### Typical Workflow Integration
 
@@ -368,14 +334,11 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 4. doc-ears        → Create EARS
 5. doc-bdd         → Create BDD
 6. doc-adr         → Create ADR
-7. doc-sys         → Create SYS
-8. doc-req         → Create REQ
-9. doc-impl        → Create IMPL (if complex)
-10. doc-ctr        → Create CTR (if interface)
-11. doc-spec       → Create SPEC
-12. doc-tasks      → Create TASKS
-13. Implementation → Execute based on TASKS
-14. trace-check    → Validate traceability
+7. doc-spec        → Create SPEC
+8. doc-tdd         → Create TDD
+9. doc-iplan       → Create IPLAN
+10. Implementation → Execute based on IPLAN
+11. trace-check    → Validate traceability
 ```
 
 ---
@@ -384,7 +347,7 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 
 **CRITICAL**: All artifact-specific skills share common standards defined in:
 
-**`.claude/skills/doc-flow/SHARED_CONTENT.md`**
+**`../doc-flow/SHARED_CONTENT.md`**
 
 This document contains:
 1. Document ID Naming Standards
@@ -395,13 +358,13 @@ This document contains:
 6. Documentation Standards
 7. Document Control Section Requirements
 
-**All artifact skills (doc-brd through doc-tasks, plus doc-ref, doc-naming) import these shared standards.**
+**All artifact skills (doc-brd through doc-iplan, plus doc-ref, doc-naming) import these shared standards.**
 
 ### Diagram Standards (Global Requirement)
 
 **All diagrams MUST use Mermaid syntax.** Text-based diagrams (ASCII art, box drawings) are prohibited.
 
-- **Authority Document**: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`
+- **Authority Document**: `framework/governance/DIAGRAM_STANDARDS.md`
 - **Syntax Generation**: `mermaid-gen` skill
 - **File Management**: `charts-flow` skill (SVG conversion, embedding)
 
@@ -411,51 +374,44 @@ This document contains:
 
 ## Validation Overview
 
-### Automated Validation Tools
+The framework is spec-only — it ships no runtime validation scripts. Each
+artifact skill **is** the validator: it carries a declarative validation
+checklist and defers to the governance standards and the layer's own README.
 
-**Quality Gates Validation:**
-```bash
-# Validate artifact meets layer transition requirements (≥90%)
-./scripts/validate_quality_gates.sh docs/REQ/risk/lim/REQ-03.md
+### Validation Authorities
 
-# Artifact-specific validation
-./framework/scripts/validate_brd_template.sh docs/BRD/BRD-01.md
-./framework/scripts/validate_req_template.sh docs/REQ/api/ib/REQ-02.md
+| Concern | Authority |
+|---------|-----------|
+| ID & naming format | `framework/governance/ID_NAMING_STANDARDS.md` |
+| Traceability & cumulative tags | `framework/governance/TRACEABILITY.md` |
+| Per-layer creation/validation rules | `framework/layers/<NN>_<X>/README.md` |
+| Quality gates (≥90% ready score) | the artifact skill's own checklist (see SHARED_CONTENT.md §4) |
 
-# Link integrity validation
-./framework/scripts/validate_links.py --path docs/ --check-anchors
-```
-
-**Tag-Based Traceability Validation:**
-```bash
-# Complete workflow (extract → validate → generate)
-python framework/scripts/generate_traceability_matrices.py --auto
-
-# Individual steps
-python framework/scripts/extract_tags.py --source src/ docs/ tests/
-python framework/scripts/validate_tags_against_docs.py --strict
-python framework/scripts/generate_traceability_matrices.py --output docs/generated/matrices/
-```
+**Per-artifact validation skills**: each family ships a `doc-<type>-validator`
+skill (e.g. `doc-brd-validator`, `doc-spec-validator`, `doc-iplan-validator`)
+that runs the declarative checklist for that artifact type.
 
 ---
 
 ## Cross-Document Validation (MANDATORY)
 
-**CRITICAL**: After creating each artifact, execute cross-document validation before proceeding to the next layer.
+**CRITICAL**: After creating each artifact, run the artifact skill's
+declarative cross-document validation checklist before proceeding to the next
+layer. Validation is performed by the skills themselves, not external scripts.
 
 ### Validation Phases
 
-| Phase | Trigger | Command |
-|-------|---------|---------|
-| Phase 1 | Per-document | `python scripts/validate_cross_document.py --document {doc_path} --auto-fix` |
-| Phase 2 | Per-layer complete | `python scripts/validate_cross_document.py --layer {LAYER} --auto-fix` |
-| Phase 3 | Final (all layers) | `python scripts/validate_cross_document.py --full --auto-fix` |
+| Phase | Trigger | Performed by |
+|-------|---------|--------------|
+| Phase 1 | Per-document | `doc-<type>-validator` skill on the new document |
+| Phase 2 | Per-layer complete | `doc-validator` across the completed layer |
+| Phase 3 | Final (all layers) | `doc-validator` + `trace-check` across the full chain |
 
 ### Automatic Validation Loop
 
 ```
 LOOP:
-  1. Run: python scripts/validate_cross_document.py --document {doc_path} --auto-fix
+  1. Run the doc-<type>-validator checklist on {doc_path}
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
@@ -471,19 +427,16 @@ LOOP:
 | 3 | EARS | @brd, @prd | 2 |
 | 4 | BDD | @brd, @prd, @ears | 3 |
 | 5 | ADR | @brd, @prd, @ears, @bdd | 4 |
-| 6 | SYS | @brd, @prd, @ears, @bdd, @adr | 5 |
-| 7 | REQ | @brd, @prd, @ears, @bdd, @adr, @sys | 6 |
-| 8 | IMPL | @brd, @prd, @ears, @bdd, @adr, @sys, @req | 7 |
-| 9 | CTR | @brd through @req (+ optional @impl) | 7-8 |
-| 10 | SPEC | @brd through @req (+ optional @impl, @ctr) | 7-9 |
-| 11 | TASKS | @brd through @spec (+ optional @impl, @ctr) | 8-10 |
+| 6 | SPEC | @brd, @prd, @ears, @bdd, @adr | 5 |
+| 7 | TDD | @brd, @prd, @ears, @bdd, @adr, @spec | 6 |
+| 8 | IPLAN | @brd, @prd, @ears, @bdd, @adr, @spec, @tdd | 7 |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
 | Issue | Fix Action |
 |-------|------------|
 | Missing cumulative tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.SS.xxxx (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -514,37 +467,30 @@ LOOP:
 
 **Primary References - Authoritative Development Standard:**
 
-- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 15-layer workflow
-- **Workflow Diagram**: [index.md]({project_root}/framework/index.md#traceability-flow) - Complete Mermaid diagram
+- **Main Guide**: [SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - Complete 8-layer workflow
+- **Quick Reference**: [QUICK_REFERENCE.md]({project_root}/framework/QUICK_REFERENCE.md) - At-a-glance workflow summary
+- **Layer Registry**: [LAYER_REGISTRY.yaml]({project_root}/framework/registry/LAYER_REGISTRY.yaml) - Authoritative layer list + upstream/downstream chains
 - **ID Standards**: [ID_NAMING_STANDARDS.md]({project_root}/framework/governance/ID_NAMING_STANDARDS.md) - File naming, ID format rules
-- **Traceability**: [TRACEABILITY.md]({project_root}/framework/TRACEABILITY.md) - Cross-reference format, link standards
-- **Quality Gates**: [TRACEABILITY_VALIDATION.md]({project_root}/framework/TRACEABILITY_VALIDATION.md) - Automated quality gates system
-- **Platform BRD Guide**: [PLATFORM_VS_FEATURE_BRD.md]({project_root}/framework/PLATFORM_VS_FEATURE_BRD.md) - Platform vs Feature BRD decision guide
-- **When to Create IMPL**: [WHEN_TO_CREATE_IMPL.md]({project_root}/framework/WHEN_TO_CREATE_IMPL.md) - IMPL vs direct REQ→SPEC decision guide
+- **Traceability**: [TRACEABILITY.md]({project_root}/framework/governance/TRACEABILITY.md) - Cross-reference format, link standards
+- **Governance Core**: [DOC_GOVERNANCE_CORE.md]({project_root}/framework/governance/DOC_GOVERNANCE_CORE.md) - Quality gates and governance rules
 - **README**: [README.md]({project_root}/framework/README.md) - Getting started guide
 
 ### Templates Location
 
-**All templates located in `framework/{artifact_type}/`:**
+**All templates located in `framework/layers/<NN>_<X>/`:**
 
-- **BRD** (`BRD/`): 3 templates available (comprehensive, simplified, domain-specific)
-- **PRD** (`PRD/`): `PRD-TEMPLATE.md`
-- **EARS** (`EARS/`): `EARS-TEMPLATE.md`
-- **BDD** (`BDD/`): `BDD-TEMPLATE.feature`
-- **ADR** (`ADR/`): `ADR-TEMPLATE.md`, Technology Stack reference (ADR-000)
-- **SYS** (`SYS/`): `SYS-TEMPLATE.md`
-- **REQ** (`REQ/`): `REQ-TEMPLATE.md` (v3.0 with 12 sections)
-- **IMPL** (`IMPL/`): `IMPL-TEMPLATE.md`
-- **CTR** (`CTR/`): `CTR-TEMPLATE.md` + `CTR-TEMPLATE.yaml` (dual-file)
-- **SPEC** (`10_SPEC/`): `SPEC-TEMPLATE.yaml`
-- **TASKS** (`TASKS/`): `TASKS-TEMPLATE.md` (includes Section 8 for Implementation Contracts)
-- **REF** (root): `REF-TEMPLATE.md` (Reference Documents)
+- **BRD** (`layers/01_BRD/`): `BRD-TEMPLATE.yaml`
+- **PRD** (`layers/02_PRD/`): `PRD-TEMPLATE.yaml`
+- **EARS** (`layers/03_EARS/`): `EARS-TEMPLATE.yaml`
+- **BDD** (`layers/04_BDD/`): `BDD-TEMPLATE.yaml`
+- **ADR** (`layers/05_ADR/`): `ADR-TEMPLATE.yaml`
+- **SPEC** (`layers/06_SPEC/`): `SPEC-TEMPLATE.yaml`
+- **TDD** (`layers/07_TDD/`): `TDD-TEMPLATE.yaml`
+- **IPLAN** (`layers/08_IPLAN/`): `IPLAN-TEMPLATE.yaml`
 
-**Each artifact type directory also contains:**
-- Index file: `{TYPE}-00_index.{ext}`
-- README.md: Usage guide and best practices
-- Creation Rules: `{TYPE}_CREATION_RULES.md`
-- Validation Rules: `{TYPE}_VALIDATION_RULES.md`
+**Each layer directory also contains:**
+- Index file: `{TYPE}-00_index.{md,yaml}`
+- README.md: Usage guide, creation rules, and validation requirements
 
 ---
 
@@ -559,14 +505,10 @@ LOOP:
 | PRD | Formal requirements | `doc-ears` |
 | EARS | Test scenarios | `doc-bdd` |
 | BDD | Architecture decisions | `doc-adr` |
-| ADR | System requirements | `doc-sys` |
-| SYS | Atomic requirements | `doc-req` |
-| REQ (complex) | Implementation plan | `doc-impl` |
-| REQ (simple) | Technical specs | `doc-spec` |
-| REQ/IMPL (interface) | API contracts | `doc-ctr` |
-| REQ/CTR | Technical specs | `doc-spec` |
-| SPEC | Task breakdown | `doc-tasks` |
-| TASKS | Code | Implement! |
+| ADR | Technical specifications | `doc-spec` |
+| SPEC | Test case definitions | `doc-tdd` |
+| TDD | Implementation plan | `doc-iplan` |
+| IPLAN | Code | Implement! |
 | Any stage | Supplementary documentation | `doc-ref` |
 
 ### Development ROI
@@ -591,8 +533,8 @@ LOOP:
 - Do you have EARS formal requirements? [If no → **SKIP** this functionality]
 - Do you have BDD test scenarios? [If no → **SKIP** this functionality]
 - Do you have ADR architecture decisions? [If no → **SKIP** this functionality]
-- Do you have SYS system requirements? [If no → **SKIP** this functionality]
-- Do you have REQ atomic requirements? [If no → **SKIP** this functionality]
+- Do you have a SPEC technical specification? [If no → **SKIP** this functionality]
+- Do you have a TDD test-case definition? [If no → **SKIP** this functionality]
 
 **⚠️ CRITICAL: Upstream Artifact Policy**:
 If ANY required upstream artifact is missing, **do NOT create it** and **do NOT implement the downstream functionality**. The SDD workflow enforces strict document hierarchy - functionality without proper business/product justification should not exist.
@@ -602,7 +544,7 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 ---
 
-**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-sys, doc-req, doc-impl, doc-ctr, doc-spec, doc-tasks, doc-ref, doc-naming).**
+**For detailed artifact creation guidance, use the specific artifact skill (doc-brd, doc-prd, doc-ears, doc-bdd, doc-adr, doc-spec, doc-tdd, doc-iplan, doc-ref, doc-naming).**
 
 ---
 
@@ -610,8 +552,9 @@ Based on your current progress, I'll recommend the appropriate skill to use next
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.0 | 2026-05-22T00:00:00 | Migrated to the 8-layer SDD model (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code); retired the three intermediate legacy layers and the two optional legacy layers, folding their concerns into ADR, SPEC, and EARS; renamed the test-spec layer to TDD and the task-breakdown layer to IPLAN; repointed paths to framework/layers and framework/governance |
 | 1.4 | 2026-02-10T15:00:00 | Updated version history dates to ISO 8601 format |
 | 1.3 | 2026-01-17T00:00:00 | Updated to 15-layer architecture (Layers 0-14) |
 | 1.2 | 2025-12-29T00:00:00 | Fixed workflow sequence; Added doc-naming and doc-validator to Integration section |
-| 1.1 | 2025-11-30T00:00:00 | Added REF documents, ICON section |
+| 1.1 | 2025-11-30T00:00:00 | Added REF documents |
 | 1.0 | 2025-11-01T00:00:00 | Initial skill creation |

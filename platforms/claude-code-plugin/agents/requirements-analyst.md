@@ -216,13 +216,12 @@ docs/REQ/
 
 **Tag Verification**:
 ```bash
-# Required cumulative tags for REQ (legacy requirements layer) - Upstream is REQUIRED
-@brd: BRD.NN.EE.SS          # Layer 1 (dot notation, e.g., BRD.01.110d)
-@prd: PRD.NN.EE.SS          # Layer 2 (dot notation, e.g., PRD.01.5d9d)
-@ears: EARS.NN.EE.SS        # Layer 3 (dot notation, e.g., EARS.01.3209)
-@bdd: BDD.NN.EE.SS          # Layer 4 (dot notation, e.g., BDD.01.c284)
-@adr: ADR-NNN               # Layer 5 (dash notation)
-@sys: SYS.NN.EE.SS          # legacy SYS layer (dot notation, e.g., SYS.01.731c)
+# Cumulative upstream tags (dot/dash notation) - Upstream is REQUIRED
+@brd: BRD.NN.SS.xxxx        # Layer 1 (dot notation, e.g., BRD.01.07.110d)
+@prd: PRD.NN.SS.xxxx        # Layer 2 (dot notation, e.g., PRD.01.09.5d9d)
+@ears: EARS.NN.SS.xxxx      # Layer 3 (dot notation, e.g., EARS.01.03.3209)
+@bdd: BDD.NN.SS.xxxx        # Layer 4 (dot notation, e.g., BDD.01.03.c284)
+@adr: ADR-NN                # Layer 5 (dash notation)
 ```
 
 **Link Check**:

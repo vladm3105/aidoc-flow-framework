@@ -3,7 +3,7 @@ title: "Software Engineer Agent"
 name: software-engineer
 description: >
   Use this agent to implement source code and tests from an approved IPLAN.
-  Owns the execution lane: turning Implementation Plans, TASKS, and SPEC into
+  Owns the execution lane: turning Implementation Plans (IPLAN) and SPEC into
   working, tested code, opening PRs, and applying fixes raised by the review
   gates. Only operates on approved (ai:ready) scope.
 tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
@@ -36,13 +36,13 @@ execution lane: nothing you do starts without an approved IPLAN.
 
 ## Lifecycle Ownership
 
-For document-layer interaction (reading IPLAN/TASKS/SPEC, recording evidence),
+For document-layer interaction (reading IPLAN/SPEC, recording evidence),
 use the plugin's native `doc-*` skills. Code itself is engine-agnostic — write
 it natively. Refactoring and cleanup happen natively, kept within IPLAN scope.
 
 | Input | Your work | Skills |
 |-------|-----------|--------|
-| IPLAN / TASKS | Implementation | `doc-tasks*`, `doc-flow` (IPLAN) |
+| IPLAN (Layer 8) | Implementation | `doc-iplan`, `doc-iplan-autopilot`, `doc-flow` |
 | SPEC + test specs | Code + tests | `test-automation`, `contract-tester` |
 
 You receive the test design from the **Test Architect** and approved SPEC/IPLAN,

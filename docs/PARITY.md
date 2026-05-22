@@ -5,9 +5,10 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of `v0.4.0` / `hermes/v0.1.0` /
-> `claude-code-plugin/v0.1.0` (2026-05-20). Updates land when a
-> platform ships a structurally different capability, not per-PR.
+> Status: as of `v1.0.0` / `hermes/v0.1.1` /
+> `claude-code-plugin/v0.1.0` (2026-05-22; plugin layer-model
+> migration PLM-B1 landed). Updates land when a platform ships a
+> structurally different capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
@@ -23,8 +24,8 @@ framework specification at [`../framework/`](../framework/).
 | 4 | BDD | `sdd_*` tools (generic) | `doc-bdd` + 5 variants |
 | 5 | ADR | `sdd_*` tools (generic) | `doc-adr` + 5 variants |
 | 6 | SPEC | `sdd_*` tools (generic) | `doc-spec` + 5 variants |
-| 7 | **TDD** | `sdd_*` tools (generic) | **— gap.** Plugin reflects the legacy `tspec` model; no `doc-tdd` skill yet. See [Known parity gap](#known-parity-gap--sdd-layer-model). |
-| 8 | **IPLAN** | `sdd_*` tools (generic) | **— gap.** Plugin has `doc-tasks` from the legacy 11-layer model; no `doc-iplan` skill yet. |
+| 7 | **TDD** | `sdd_*` tools (generic) | `doc-tdd` + `-audit` + `-autopilot` + `-fixer` + `-reviewer` + `-validator` |
+| 8 | **IPLAN** | `sdd_*` tools (generic) | `doc-iplan` + 5 variants |
 
 ## Workflow operations
 
@@ -48,21 +49,22 @@ specifies):
 
 **Plugin — per-layer skills** (each layer has its own skill bundle):
 
-| Operation | Plugin skills (across 22 layer + helper families) |
+| Operation | Plugin skills (across 19 layer + subtype families) |
 |-----------|-----------------------------------------------:|
-| Bare skill (authoring rules) | 22 |
-| `-audit` | 21 |
-| `-autopilot` | 22 |
-| `-fixer` | 22 |
-| `-reviewer` | 21 |
-| `-validator` | 21 |
+| Bare skill (authoring rules) | 14 |
+| `-audit` | 19 |
+| `-autopilot` | 19 |
+| `-fixer` | 19 |
+| `-reviewer` | 18 |
+| `-validator` | 18 |
 
-The 22 plugin skill families cover the 6-of-8 SDD layers above plus
-SPEC-subtype skills (`doc-cspec`, `doc-dspec`, `doc-uxspec`,
-`doc-riskspec`, `doc-procspec`), TSPEC-subtype skills (`doc-utest`,
+The 19 plugin layer/subtype families cover **all 8** SDD layers above
+plus SPEC-subtype skills (`doc-cspec`, `doc-dspec`, `doc-uxspec`,
+`doc-riskspec`, `doc-procspec`) and test-subtype skills (`doc-utest`,
 `doc-itest`, `doc-stest`, `doc-ftest`, `doc-ptest`, `doc-sectest`),
 plus orchestrators (`doc-flow`, `doc-naming`, `doc-validator`,
-`doc-review`, `doc-ref`).
+`doc-review`, `doc-ref`). (Plugin skill count 142 → 125 after PLM-B1
+retired the legacy SYS/REQ/CTR families.)
 
 ## Platform-specific extras
 
@@ -104,33 +106,42 @@ plus orchestrators (`doc-flow`, `doc-naming`, `doc-validator`,
   validator) as a separate skill invocation; Hermes' generic tools
   dispatch based on inputs.
 
-## Known parity gap — SDD layer model
+## Known parity gap — SDD layer model (migration in progress)
 
-The plugin's skill set was originally authored against an **older
-11-layer model** (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC,
-TSPEC, TASKS) — not the framework's current **8-layer model** (BRD,
-PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN). Specifically:
+The plugin's skill set was originally authored against the **legacy
+12-layer model** (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC,
+TSPEC, TASKS, Code) — not the framework's current **8-layer model**
+(BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN). The mismatch is
+pervasive — legacy layer numbers, element-code scheme, upstream
+chains, `ai_dev_ssd_flow/` paths, and dead validation-script
+references run through most skill bodies. Hermes was rewritten to the
+8-layer model during P2-T9; the plugin is being migrated under task
+**PLM** (`plans/PLM-PLAN.md`), staged and conformance-gated by
+`tests/conformance/platforms/plm_lint.py`.
 
-- **Plugin lacks** `doc-tdd` and `doc-iplan` skills (the new model's
-  layers 7 and 8).
-- **Plugin has** `doc-sys`, `doc-req`, `doc-ctr`, `doc-tspec`,
-  `doc-tasks` — legacy-model artifacts that map ambiguously to the
-  new model (`tspec` ≈ `tdd`? `tasks` ≈ `iplan`?).
-- **~150 documentary references** in plugin skill bodies point at
-  paths under `framework/<X>` for legacy-model concepts (e.g.
-  `framework/scripts/`, `framework/11_TASKS/`, `framework/ADR/`)
-  that don't exist in the current 8-layer framework layout.
+**Done (PLM-B1):**
 
-Hermes was rewritten to the 8-layer model during P2-T9 (closed the
-D-0013 architectural gap for its scaffold and validation runtime).
-The plugin still reflects the legacy model in skill names,
-frontmatter metadata, and the documentary references above.
+- **Layers 7 & 8 now exist** — `doc-tspec*` → `doc-tdd*` and
+  `doc-tasks*` → `doc-iplan*`, fully rewritten to the framework's
+  `07_TDD` / `08_IPLAN` contracts (TDD is a single unified template,
+  no subtypes; IPLAN carries the file-manifest / session-handoff
+  model).
+- **Legacy layers retired** — `doc-sys`, `doc-req`, `doc-ctr` removed
+  (no home in the 8-layer model; their concerns fold into EARS / ADR
+  / SPEC). Plugin skill count 142 → 125.
+- **Orchestrators + agents realigned** — `doc-flow`,
+  `skill-recommender`, `project-init`, and the agent roster now route
+  the 8-layer flow only.
 
-**Resolution** is a per-skill content-migration task tracked as a
-**post-v1.0 cleanup** (P3-T1 §Deferred R2). The skills work as
-Claude Code artifacts — the references are documentation hygiene
-rather than runtime correctness — but the layer-model mismatch is
-real and surfaced here so users can plan around it.
+**Remaining (PLM-B2…B7):** the other layer families (`doc-brd`,
+`doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`), the SPEC-
+and test-subtype families, and the residual helpers still carry
+legacy-model bodies (~108 skill files). Tracked per-batch in
+`plans/MIGRATION_TODO.md`; the gap section is removed once
+`plm_lint --all` is clean (PLM-B7). **Open decision** before B4/B5:
+the fate of the SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`)
+and test-subtype (`doc-utest/itest/stest/ftest/ptest/sectest`)
+families, which have no single-template backing in the 8-layer model.
 
 ## Choosing between Hermes and the plugin
 
@@ -140,8 +151,8 @@ real and surfaced here so users can plan around it.
 | Native Claude Code experience with slash-commands | **Plugin** |
 | Per-operation skill granularity in your workflow | **Plugin** |
 | Server-side validation as an HTTP / stdio service | **Hermes** |
-| Today's 8-layer SDD model coverage end-to-end (incl. TDD + IPLAN) | **Hermes** |
-| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers + SPEC subtypes + TSPEC subtypes) |
+| Fully 8-layer-clean SDD coverage end-to-end today | **Hermes** (plugin mid-migration — PLM; layers 7–8 + orchestrators done) |
+| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers + SPEC subtypes + test subtypes) |
 | Internal pytest-style validation of the platform itself | **Hermes** (447 tests) |
 | Documentation-first artifacts via skill bodies | **Plugin** (declarative SKILL.md per operation) |
 

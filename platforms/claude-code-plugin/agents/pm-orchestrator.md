@@ -48,8 +48,8 @@ You can spawn the eight specialist agents. Match work to role:
 
 | Need | Delegate to |
 |------|-------------|
-| BRD → PRD → EARS → REQ authoring | `requirements-analyst` |
-| BDD / ADR / SYS / SPEC + C4 diagrams | `solutions-architect` |
+| BRD → PRD → EARS authoring | `requirements-analyst` |
+| BDD / ADR / SPEC + C4 diagrams | `solutions-architect` |
 | TDD + test specs (UTEST…SECTEST) | `test-architect` |
 | Implement code/tests from IPLAN | `software-engineer` |
 | Code/PR review (read-only gate) | `code-reviewer` |

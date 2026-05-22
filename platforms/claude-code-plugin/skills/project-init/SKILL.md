@@ -14,6 +14,7 @@ custom_fields:
   skill_category: utility
   upstream_artifacts: []
   downstream_artifacts: [BRD]
+  framework_spec_version: 8-layer
 ---
 
 # project-init
@@ -47,12 +48,12 @@ After completing project initialization, AI Assistant **MUST** inform user:
 Next: Use the `doc-flow` skill to begin workflow execution:
 - Create BRD (Business Requirements)
 - Create PRD (Product Requirements)
-- Follow 15-layer architecture (Layers 0-14) with 11 artifact directories (BRD through TASKS): BRD → PRD → EARS → BDD → ADR → SYS → REQ → [IMPL] → [CTR] → SPEC → TASKS → Code → Tests → Validation
+- Follow the 8-layer SDD flow (Layers 1-8) with 8 artifact directories (BRD through IPLAN): BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ```
 
 ---
 
-## Initialization Workflow (8 Steps)
+## Initialization Workflow (7 Steps)
 
 ### Step 0: Read Execution Rules
 
@@ -64,13 +65,12 @@ Next: Use the `doc-flow` skill to begin workflow execution:
 1. Domain Selection FIRST
 2. Create Folders BEFORE Documents
 3. Apply Domain Configuration
-4. Run Contract Questionnaire
-5. Initialize Index Files
-6. Validate Setup
-7. Token Optimization
-8. Tool-Specific Guidance
+4. Initialize Index Files
+5. Validate Setup
+6. Token Optimization
+7. Tool-Specific Guidance
 
-**Action**: AI Assistant reads this file to understand all 15 rules
+**Action**: AI Assistant reads this file to understand the core execution rules
 
 ---
 
@@ -151,24 +151,18 @@ cd {project_root}
 **Commands to Execute**:
 
 ```bash
-# Core 11 artifact directories (BRD through TASKS)
-mkdir -p docs/BRD
-mkdir -p docs/PRD
-mkdir -p docs/EARS
-mkdir -p docs/BDD
-mkdir -p docs/ADR
-mkdir -p docs/SYS
-mkdir -p docs/REQ
-mkdir -p docs/IMPL
-mkdir -p docs/CTR
-mkdir -p docs/SPEC
-mkdir -p docs/TASKS
+# Core 8 artifact directories (BRD through IPLAN) — numbered per the 8-layer SDD flow
+mkdir -p docs/01_BRD
+mkdir -p docs/02_PRD
+mkdir -p docs/03_EARS
+mkdir -p docs/04_BDD
+mkdir -p docs/05_ADR
+mkdir -p docs/06_SPEC
+mkdir -p docs/07_TDD
+mkdir -p docs/08_IPLAN
 
-# NOTE: REQ and CTR subdirectories are created on-demand by doc-req and doc-ctr skills
-# when documents are generated. This ensures folders match actual project needs.
-
-# Scripts directory
-mkdir -p scripts
+# Temporary plans for bugfixes/corrections live under IPLAN
+mkdir -p docs/08_IPLAN/tmp
 
 # Work plans directory (for /save-plan command output)
 mkdir -p plans
@@ -176,7 +170,7 @@ mkdir -p plans
 
 **Validation**:
 ```bash
-ls -la docs/  # Verify 11 artifact directories created
+ls -la docs/  # Verify 8 artifact directories created
 ls -la plans/  # Verify plans directory
 ```
 
@@ -236,62 +230,19 @@ ls -la plans/  # Verify plans directory
 # Create framework directory for framework templates
 mkdir -p framework
 
-# Copy all templates (if framework templates exist)
-cp -r {framework_root}/framework/* framework/
-
-# Copy validation scripts
-cp {framework_root}/framework/scripts/*.py scripts/
+# Copy the layer templates (if framework templates exist)
+cp -r {framework_root}/framework/layers framework/
 ```
 
 **Directory Purpose**:
-- `framework/` = Framework templates (BRD-TEMPLATE.md, examples/, etc.)
-- `docs/` = Project documentation (BRD-01.md, PRD-01.md, etc.)
+- `framework/` = Framework spec and layer templates (`layers/01_BRD/BRD-TEMPLATE.yaml`, etc.)
+- `docs/` = Project documentation (`01_BRD/BRD-01.yaml`, `02_PRD/PRD-01.yaml`, etc.)
 
-**Note**: This step is optional. Templates can also be referenced directly from framework location.
-
----
-
-### Step 5: Contract Decision (REQUIRED)
-
-**File**: [CONTRACT_DECISION_QUESTIONNAIRE.md]({project_root}/framework/CONTRACT_DECISION_QUESTIONNAIRE.md)
-
-**Purpose**: Determine if CTR (Contracts) layer should be included in workflow
-
-**AI Assistant Action**: Present questionnaire to user
-
-```
-═══════════════════════════════════════════════════════════
-              CONTRACT DECISION QUESTIONNAIRE
-═══════════════════════════════════════════════════════════
-
-Does this project require API contracts or interface definitions?
-
-Select all that apply:
-
-1. ☐ REST/GraphQL APIs (External HTTP endpoints)
-2. ☐ Event Schemas (Pub/Sub, message queues, webhooks)
-3. ☐ Data Contracts (Shared database schemas, data models between services)
-4. ☐ RPC/gRPC Interfaces (Service-to-service communication)
-5. ☐ WebSocket APIs (Real-time bidirectional communication)
-6. ☐ File Format Specifications (CSV, JSON, XML exchange formats)
-7. ☐ None - Internal logic only
-8. ☐ Unsure - Need guidance
-
-Enter selections (comma-separated, e.g., "1,2" or single "7"):
-```
-
-**Decision Matrix**:
-| Selection | Include CTR? | Workflow |
-|-----------|--------------|----------|
-| 1-6 | **YES** | REQ → IMPL → **CTR** → SPEC → TASKS |
-| 7 | **NO** | REQ → IMPL → SPEC → TASKS |
-| 8 | Ask follow-up questions | See CONTRACT_DECISION_QUESTIONNAIRE.md |
-
-**Output**: Workflow determined (with or without CTR layer)
+**Note**: This step is optional. Templates can also be referenced directly from the framework location. The framework is spec-only — validation is performed by the doc-* skills against the declarative checks in `framework/governance/` and each layer `README.md`, not by runtime scripts.
 
 ---
 
-### Step 6: Index File Initialization + Document Control
+### Step 5: Index File Initialization + Document Control
 
 **Purpose**: Create index files for each document type
 
@@ -306,18 +257,15 @@ When creating documents from templates, users must complete the Document Control
 
 **Commands**:
 ```bash
-# Create index files
-touch docs/BRD/BRD-00_index.md
-touch docs/prd/PRD-00_index.md
-touch docs/ears/EARS-00_index.md
-touch docs/BDD/BDD-00_index.md
-touch docs/adrs/ADR-00_index.md
-touch docs/sys/SYS-00_index.md
-touch docs/REQ/REQ-00_index.md
-touch docs/IMPL/IMPL-00_index.md
-touch docs/CTR/CTR-00_index.md
-touch docs/specs/SPEC-00_index.yaml
-touch docs/TASKS/TASKS-00_index.md
+# Create index files (Layers 1-7 use .md indices; IPLAN uses .yaml)
+touch docs/01_BRD/BRD-00_index.md
+touch docs/02_PRD/PRD-00_index.md
+touch docs/03_EARS/EARS-00_index.md
+touch docs/04_BDD/BDD-00_index.md
+touch docs/05_ADR/ADR-00_index.md
+touch docs/06_SPEC/SPEC-00_index.md
+touch docs/07_TDD/TDD-00_index.md
+touch docs/08_IPLAN/IPLAN-00_index.yaml
 ```
 
 **Index File Purpose**:
@@ -327,7 +275,7 @@ touch docs/TASKS/TASKS-00_index.md
 
 ---
 
-### Step 7: Validation
+### Step 6: Validation
 
 **Purpose**: Verify setup complete and correct
 
@@ -339,26 +287,25 @@ ls -laR docs/
 # Verify index files exist
 ls docs/*/index.* || ls docs/*/*_index.*
 
-# Expected: 11 artifact directories (BRD through TASKS) + domain subdirectories
-# Expected: 11 index files
+# Expected: 8 artifact directories (BRD through IPLAN) + domain subdirectories
+# Expected: 8 index files
 ```
 
 **Success Criteria**:
-- ✅ All 11 artifact directories exist (BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS)
+- ✅ All 8 artifact directories exist (01_BRD, 02_PRD, 03_EARS, 04_BDD, 05_ADR, 06_SPEC, 07_TDD, 08_IPLAN)
 - ✅ Domain-specific subdirectories exist (risk/, trading/, tenant/, etc.)
 - ✅ All index files created
 - ✅ All templates include Document Control sections
-- ✅ Validation scripts present (if copied)
 - ✅ plans directory exists (for /save-plan command)
 
 **Error Handling**:
 - If folders missing: Re-run Step 2
-- If index files missing: Re-run Step 6
+- If index files missing: Re-run Step 5
 - If domain subdirs missing: Check Step 1 domain selection
 
 ---
 
-### Step 8: Project Ready - Hand-off to doc-flow
+### Step 7: Project Ready - Hand-off to doc-flow
 
 **AI Assistant Confirmation Message**:
 
@@ -368,15 +315,13 @@ ls docs/*/index.* || ls docs/*/*_index.*
 ═══════════════════════════════════════════════════════════
 
 ✓ Domain: [Financial Services / Software/SaaS / etc.]
-✓ Folders: Created (11 artifact directories + domain subdirectories)
+✓ Folders: Created (8 artifact directories + domain subdirectories)
 ✓ Domain Config: Applied ([PLACEHOLDERS] → [domain terms])
-✓ Contracts: [Included / Skipped] (CTR layer [active / inactive])
-✓ Index Files: Initialized (11 files)
+✓ Index Files: Initialized (8 files)
 ✓ Validation: Passed
 
 Workflow Configuration:
-[With CTR]:    REQ → IMPL → CTR → SPEC → TASKS → Code
-[Without CTR]: REQ → IMPL → SPEC → TASKS → Code
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ═══════════════════════════════════════════════════════════
                       NEXT STEPS
@@ -386,16 +331,15 @@ Workflow Configuration:
 
 Next: Use the `doc-flow` skill to begin workflow execution
 
-Week 1 Tasks (see PROJECT_KICKOFF_TASKS.md):
-- Day 1: Create BRD (Business Requirements)
-- Day 2: Create PRD + EARS (Product Requirements)
-- Day 3: Create BDD + ADR (Tests + Architecture)
-- Day 4: Create SYS + REQ (System Specs + Requirements)
-- Day 5: Create IMPL + CTR (Implementation Plan + Contracts)
-- Day 6: Create SPEC (Technical Specifications)
-- Day 7: Create TASKS + Validation
+Suggested first tasks:
+- Create BRD (Business Requirements)
+- Create PRD + EARS (Product Requirements)
+- Create BDD + ADR (Acceptance Scenarios + Architecture)
+- Create SPEC (Technical Specification)
+- Create TDD (Test Definitions)
+- Create IPLAN (Implementation Plan)
 
-Invoke: doc-flow skill to start Day 1
+Invoke: doc-flow skill to start with BRD
 
 ═══════════════════════════════════════════════════════════
 ```
@@ -408,13 +352,11 @@ All guidance files located in: `{project_root}/framework/`
 
 ### Core Guidance Files
 
-1. **[AI_ASSISTANT_RULES.md]({project_root}/framework/AI_ASSISTANT_RULES.md)** - 15 execution rules
+1. **[AI_ASSISTANT_RULES.md]({project_root}/framework/AI_ASSISTANT_RULES.md)** - Core execution rules
 2. **[DOMAIN_SELECTION_QUESTIONNAIRE.md]({project_root}/framework/DOMAIN_SELECTION_QUESTIONNAIRE.md)** - Domain selection
-3. **[CONTRACT_DECISION_QUESTIONNAIRE.md]({project_root}/framework/CONTRACT_DECISION_QUESTIONNAIRE.md)** - Contract decision
-4. **[PROJECT_SETUP_GUIDE.md]({project_root}/framework/PROJECT_SETUP_GUIDE.md)** - Master setup guide
-5. **[PROJECT_KICKOFF_TASKS.md]({project_root}/framework/PROJECT_KICKOFF_TASKS.md)** - Week 1 tasks
-6. **[TRACEABILITY_SETUP.md]({project_root}/framework/TRACEABILITY_SETUP.md)** - Validation automation
-7. **[QUICK_REFERENCE.md]({project_root}/framework/QUICK_REFERENCE.md)** - Quick reference card
+3. **[SPEC_DRIVEN_DEVELOPMENT_GUIDE.md]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)** - Master setup and methodology guide
+4. **[QUICK_REFERENCE.md]({project_root}/framework/QUICK_REFERENCE.md)** - Quick reference card
+5. **[LAYER_REGISTRY.yaml]({project_root}/framework/registry/LAYER_REGISTRY.yaml)** - Authoritative 8-layer definitions
 
 ### Domain Configuration Files
 
@@ -444,23 +386,20 @@ AI Assistant:
 ✓ Domain-specific subdirectories: tenant, subscription, billing, workspace
 
 Step 2: Folder Creation
-Creating 15-layer architecture (12 artifact directories)...
-✓ Created: docs/BRD/
-✓ Created: docs/PRD/
-✓ Created: docs/EARS/
-✓ Created: docs/BDD/
-✓ Created: docs/ADR/
-✓ Created: docs/SYS/
-✓ Created: docs/REQ/
-✓ Created: docs/IMPL/
-✓ Created: docs/CTR/
-✓ Created: docs/SPEC/
-✓ Created: docs/TASKS/
-✓ Created: docs/REQ/tenant/
-✓ Created: docs/REQ/subscription/
-✓ Created: docs/REQ/billing/
-✓ Created: docs/REQ/workspace/
-✓ Created: scripts/
+Creating the 8-layer SDD flow (8 artifact directories)...
+✓ Created: docs/01_BRD/
+✓ Created: docs/02_PRD/
+✓ Created: docs/03_EARS/
+✓ Created: docs/04_BDD/
+✓ Created: docs/05_ADR/
+✓ Created: docs/06_SPEC/
+✓ Created: docs/07_TDD/
+✓ Created: docs/08_IPLAN/
+✓ Created: docs/08_IPLAN/tmp/
+✓ Created: docs/06_SPEC/tenant/
+✓ Created: docs/06_SPEC/subscription/
+✓ Created: docs/06_SPEC/billing/
+✓ Created: docs/06_SPEC/workspace/
 ✓ Created: plans/
 
 Step 3: Domain Configuration
@@ -470,20 +409,10 @@ Applying Software/SaaS terminology:
 ✓ [USER_ROLE] → Account Admin
 ✓ [REGULATORY_REQUIREMENT] → SOC2 Control
 
-Step 5: Contract Decision
-"Does this project require API contracts?"
+Step 5: Index Files
+✓ All 8 index files created
 
-User: "1,2" (REST APIs + Event Schemas)
-
-AI Assistant:
-✓ Contracts needed
-✓ Contract types: REST API (OpenAPI), Event Schemas (AsyncAPI)
-✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
-
-Step 6: Index Files
-✓ All 11 index files created
-
-Step 7: Validation
+Step 6: Validation
 ✓ All directories verified
 ✓ All index files verified
 
@@ -492,9 +421,8 @@ Step 7: Validation
 ═══════════════════════════════════════════════════════════
 
 ✓ Domain: Software/SaaS
-✓ Folders: Created (11 artifact directories + 4 SaaS subdirectories)
-✓ Contracts: Included (CTR layer active)
-✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
+✓ Folders: Created (8 artifact directories + 4 SaaS subdirectories)
+✓ Workflow: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 Next: Use `doc-flow` skill to begin workflow execution
 Start with: BRD-01 (Business Requirements Document)
@@ -520,9 +448,9 @@ AI Assistant:
 ✓ Domain-specific subdirectories: tenant, subscription, billing, workspace
 
 Step 2: Folder Creation
-✓ All core directories created
+✓ All core directories created (01_BRD … 08_IPLAN)
 ✓ SaaS subdirectories created: tenant/, subscription/, billing/, workspace/
-✓ Support directories created: scripts/, plans/
+✓ Support directories created: plans/
 
 Step 3: Domain Configuration
 ✓ [RESOURCE_COLLECTION] → Workspace
@@ -531,12 +459,9 @@ Step 3: Domain Configuration
 ✓ [TRANSACTION] → API Call
 ✓ [REGULATORY_REQUIREMENT] → SOC2 Control
 
-Step 5: Contract Decision
-User: "1,2" (REST API + Event Schemas)
-
-AI Assistant:
-✓ Contracts included
-✓ Workflow: REQ → IMPL → CTR → SPEC → TASKS
+Step 5: Index Files
+✓ All 8 index files created
+✓ Workflow: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 Project Ready!
 Next: Use `doc-flow` skill for BRD-01 creation
@@ -603,8 +528,8 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 
 **After project-init completes, use:**
 - **doc-flow** - Main workflow execution skill
-  - Create BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS
-  - Follow 15-layer architecture (Layers 0-14: Strategy layer + 11 artifact directories + 3 execution layers)
+  - Create BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN
+  - Follow the 8-layer SDD flow (Layers 1-8: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code)
   - Generate code from specifications
 
 **Other complementary skills:**
@@ -625,7 +550,7 @@ Run follow-up questions from DOMAIN_SELECTION_QUESTIONNAIRE.md:
 
 **When to use doc-flow:**
 - ✅ Project already initialized
-- ✅ Folders exist (docs/BRD/, docs/PRD/, etc.)
+- ✅ Folders exist (docs/01_BRD/, docs/02_PRD/, etc.)
 - ✅ Workflow execution (creating BRD, PRD, SPEC, etc.)
 
 **Workflow sequence:**

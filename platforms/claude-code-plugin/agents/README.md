@@ -67,7 +67,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 └── requirements-analyst ──┘   └── solutions-architect ──┘  └ test-arch ┘ └ software-engineer ┘
 ```
 
-> The plugin also ships legacy auxiliary artifacts (SYS, REQ, CTR, TSPEC, TASKS) as `doc-*` skills; agents use them where useful. The canonical layer model is the 8 layers above (see `framework/layers/`).
+> The canonical layer model is the 8 layers above (see `framework/layers/`). The plugin also ships per-test-type authoring skills (`doc-utest/itest/stest/ftest/ptest/sectest`) and SPEC-subtype skills (`doc-cspec/dspec/uxspec/riskspec/procspec`) as helpers under the SPEC and TDD layers; these are pending PLM-B5 reconciliation.
 
 ---
 
@@ -99,23 +99,23 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ### `requirements-analyst` — Requirements Analyst
 - **Purpose:** Decompose, analyze, and validate requirements across the SDD workflow; traceability and coverage analysis (not code).
-- **Owns:** BRD → PRD → EARS → REQ. Atomic requirements with SMART criteria, cumulative upstream tags, and SPEC-Ready scoring.
-- **Skills:** `doc-brd/prd/ears/req-*` families.
-- **Handoff:** validated REQ/PRD → Solutions Architect.
+- **Owns:** BRD → PRD → EARS. Formal requirements with SMART criteria, cumulative upstream tags, and SPEC-Ready scoring.
+- **Skills:** `doc-brd/prd/ears-*` families.
+- **Handoff:** validated PRD/EARS → Solutions Architect.
 - **Model:** inherit.
 
 ### `solutions-architect` — Solutions Architect
 - **Purpose:** Design system architecture and author the decision/component layers; C4 + DFD modeling in Mermaid.
-- **Owns:** BDD, ADR, SPEC, plus legacy SYS and contracts (CTR). Captures every significant decision as an ADR (Context → Decision → Consequences) and produces interface-complete SPECs.
-- **Skills:** `doc-bdd/adr/sys/spec/ctr-*`, `charts-flow`, `mermaid-gen`, `adr-roadmap`.
+- **Owns:** BDD, ADR, SPEC. Captures every significant decision as an ADR (Context → Decision → Consequences) and produces interface-complete SPECs (interfaces and data contracts live in the SPEC).
+- **Skills:** `doc-bdd/adr/spec-*`, `charts-flow`, `mermaid-gen`, `adr-roadmap`.
 - **Handoff:** SPEC-Ready architecture → Test Architect + Software Engineer.
 - **Model:** opus.
 
 ### `test-architect` — Test Architect (QA Lead) ★
 - **Purpose:** Design the test strategy and author every test specification layer; own coverage targets and readiness scoring.
-- **Owns:** TDD guide (Layer 7) + TSPEC subtypes — UTEST (unit), ITEST (integration), STEST (smoke), FTEST (functional), PTEST (performance), SECTEST (security, co-owned with Security Engineer).
-- **Discipline:** chooses the right test layer per obligation (avoids redundant coverage), maps every case to a requirement/scenario, enforces threshold rules, flags untested requirements.
-- **Skills:** `doc-tspec/utest/itest/stest/ftest/ptest-*`, `test-automation`, `contract-tester`.
+- **Owns:** TDD guide (Layer 7) + per-test-type authoring skills — UTEST (unit), ITEST (integration), STEST (smoke), FTEST (functional), PTEST (performance), SECTEST (security, co-owned with Security Engineer).
+- **Discipline:** chooses the right test type per obligation (avoids redundant coverage), maps every case to a requirement/scenario, enforces threshold rules, flags untested requirements.
+- **Skills:** `doc-tdd/utest/itest/stest/ftest/ptest/sectest-*`, `test-automation`, `contract-tester`.
 - **Handoff:** test design + coverage matrix → Software Engineer + Code Reviewer.
 - **Model:** sonnet.
 
@@ -123,7 +123,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Purpose:** Implement source code and tests from an approved IPLAN.
 - **Planning-first rule:** implements only `ai:ready` scope with an approved IPLAN; routes unplanned work back to PM + Architect rather than free-styling architecture.
 - **Owns:** the execution lane — small verifiable increments, runs the suite, opens PRs with traceability tags, test evidence, and risk flags; applies fixes from the read-only gates.
-- **Skills:** `doc-tasks*`, `doc-flow` (IPLAN), `test-automation`, `contract-tester`.
+- **Skills:** `doc-iplan*`, `doc-flow`, `test-automation`, `contract-tester`.
 - **Model:** sonnet.
 
 ### `devops-release-engineer` — DevOps / Release Engineer

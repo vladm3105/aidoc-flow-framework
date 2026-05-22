@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-00, ADR-000]
+  upstream_artifacts: [PRD-01, ADR-01]
   downstream_artifacts: []
 ---
 
@@ -70,14 +70,11 @@ Extract action verbs and targets from the user request:
 | business requirements | business, brd, objectives | doc-brd |
 | product requirements | product, prd, features, user stories | doc-prd |
 | formal requirements | ears, formal, when-the-shall | doc-ears |
-| test scenarios | bdd, tests, scenarios, gherkin | doc-bdd |
+| test scenarios | bdd, scenarios, gherkin | doc-bdd |
 | architecture decisions | adr, architecture, decision | doc-adr |
-| system requirements | sys, system, technical | doc-sys |
-| requirements | req, requirement, atomic | doc-req |
-| implementation plan | impl, implementation, plan | doc-impl |
-| contracts | ctr, contract, api, interface | doc-ctr |
-| specifications | spec, specification, yaml | doc-spec |
-| tasks | tasks, todo, implementation tasks | doc-tasks |
+| technical specification | spec, specification, interfaces, contracts, data models, yaml | doc-spec |
+| test definitions | tdd, test cases, test plan, quality thresholds | doc-tdd |
+| implementation plan | iplan, implementation plan, file manifest, execution | doc-iplan |
 | traceability | trace, traceability, links | trace-check |
 | validation | validate, quality, compliance | doc-validator |
 | diagrams | diagram, mermaid, chart, flow | charts-flow, mermaid-gen |
@@ -97,12 +94,9 @@ Match parsed intent against skill catalog:
 | doc-ears | core-workflow | 3 | EARS Formal Requirements |
 | doc-bdd | core-workflow | 4 | BDD Test Scenarios |
 | doc-adr | core-workflow | 5 | Architecture Decision Records |
-| doc-sys | core-workflow | 6 | System Requirements |
-| doc-req | core-workflow | 7 | Atomic Requirements |
-| doc-impl | core-workflow | 8 | Implementation Plans (optional) |
-| doc-ctr | core-workflow | 9 | API Contracts (optional) |
-| doc-spec | core-workflow | 10 | Technical Specifications |
-| doc-tasks | core-workflow | 11 | Implementation Tasks |
+| doc-spec | core-workflow | 6 | Technical Specifications |
+| doc-tdd | core-workflow | 7 | Test-Driven Development guides |
+| doc-iplan | core-workflow | 8 | Implementation Plans |
 
 **Quality Assurance Skills**:
 
@@ -206,7 +200,7 @@ recommendations:
 **Skill Analysis**:
 ```
 Intent: create (keywords: document)
-Target: ambiguous - could be ADR, SYS, or diagrams
+Target: ambiguous - could be ADR, SPEC, or diagrams
 ```
 
 **Recommendations**:
@@ -216,16 +210,16 @@ recommendations:
     confidence: 60%
     rationale: "Architecture decisions typically documented in ADRs"
 
-  - skill: doc-sys
+  - skill: doc-spec
     confidence: 55%
-    rationale: "System requirements capture technical architecture"
+    rationale: "Technical specifications capture component interfaces and architecture contracts"
 
   - skill: charts-flow
     confidence: 50%
     rationale: "Architecture diagrams visualize system structure"
 
 clarification_needed: true
-clarification_question: "What aspect of architecture? (1) Decisions/rationale (ADR), (2) System specs (SYS), (3) Visual diagrams?"
+clarification_question: "What aspect of architecture? (1) Decisions/rationale (ADR), (2) Technical specs (SPEC), (3) Visual diagrams?"
 ```
 
 ### Example 3: Validation Request
@@ -277,16 +271,16 @@ recommendations:
 
 **Required Tags**:
 ```
-@prd: PRD.000.001
-@adr: ADR-000
+@prd: PRD.01.01.1dbc
+@adr: ADR-01
 ```
 
 ### Upstream Sources
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-00 | Product Requirements | [PRD-00]({project_root}/framework/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
-| ADR-000 | Architecture Decision | [ADR-000]({project_root}/framework/ADR/ADR-00_ai_powered_documentation_assistant_architecture.md#ADR-000) |
+| PRD-01 | Product Requirements | [PRD-01]({project_root}/framework/layers/02_PRD/PRD-01_ai_assisted_documentation_features.yaml#PRD-01) |
+| ADR-01 | Architecture Decision | [ADR-01]({project_root}/framework/layers/05_ADR/ADR-01_ai_powered_documentation_assistant_architecture.yaml#ADR-01) |
 
 ### Downstream Artifacts
 
