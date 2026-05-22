@@ -1,42 +1,48 @@
 ---
 name: doc-itest-audit
-description: Unified ITEST audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+description: Unified integration-focused TDD audit wrapper that runs validator then reviewer and emits a combined fixer-ready report
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
     - quality-assurance
     - itest-audit
   custom_fields:
-    layer: 10
-    artifact_type: ITEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: integration
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [ITEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ITEST-MVP-TEMPLATE schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-itest-audit
 
 ## Purpose
 
-Run a single ITEST audit workflow:
+Run a single audit workflow over an integration-focused **TDD (Layer 7)**
+document:
 1. `doc-itest-validator`
 2. `doc-itest-reviewer`
 
 Then emit a combined fixer-ready report.
+
+This skill is a **TDD (Layer 7) specialization** (integration-test focus); it
+operates on TDD documents authored against the single canonical artifact
+contract `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`).
 
 ---
 
 ## Output Contract
 
 Primary output:
-- `ITEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Fixer compatibility:
 - `doc-itest-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
@@ -73,8 +79,17 @@ If remediation needed:
 ## Example
 
 ```bash
-/doc-itest-audit docs/10_TSPEC/ITEST/ITEST-01_scope/ITEST-01_scope.md
+/doc-itest-audit docs/07_TDD/TDD-01_scope/TDD-01_scope.yaml
 ```
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -82,12 +97,12 @@ If remediation needed:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial ITEST audit wrapper with validator->reviewer orchestration and `.A_` preferred fixer contract |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Repositioned as a TDD (Layer 7) integration-focus audit wrapper over `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; reports keyed to `TDD-NN`. |
+| 1.0 | 2026-02-27 | Initial audit wrapper with validator->reviewer orchestration and `.A_` preferred fixer contract (pre-migration legacy 12-layer model). |
 
 ## Implementation Plan Consistency (IPLAN-004)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Treat plan-derived outputs as a valid source mode and verify intent preservation from implementation-plan (IPLAN) scope/objectives.
+- Validate the upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
 - Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Do not introduce legacy fallback paths.

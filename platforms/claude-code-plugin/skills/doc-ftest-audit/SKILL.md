@@ -1,42 +1,51 @@
 ---
 name: doc-ftest-audit
-description: Unified FTEST audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+description: Unified functional-TDD audit wrapper that runs validator then reviewer and emits a combined fixer-ready report
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-functional-helper
     - quality-assurance
-    - ftest-audit
   custom_fields:
-    layer: 10
-    artifact_type: FTEST
+    layer: 7
+    artifact_type: TDD
+    tdd_focus: functional
+    deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [FTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks FTEST-MVP-TEMPLATE schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ftest-audit
 
 ## Purpose
 
-Run a single FTEST audit workflow:
+Run a single functional-TDD audit workflow over functional-focused
+**TDD (Layer 7)** documents:
+
 1. `doc-ftest-validator`
 2. `doc-ftest-reviewer`
 
 Then emit a combined fixer-ready report.
+
+This skill is a **TDD (Layer 7) specialization** for the functional-test focus.
+It audits TDD documents against the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`); it does **not**
+define a separate artifact, template, or element-code.
 
 ---
 
 ## Output Contract
 
 Primary output:
-- `FTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Fixer compatibility:
 - `doc-ftest-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
@@ -56,7 +65,7 @@ Fixer compatibility:
 2. Score Calculation
 3. Validator Findings
 4. Reviewer Findings
-5. Coverage Findings
+5. Coverage Findings (functional cases trace to EARS / BDD / SPEC)
 6. Fix Queue (`auto_fixable`, `manual_required`, `blocked`)
 7. Recommended Next Step
 
@@ -73,8 +82,17 @@ If remediation needed:
 ## Example
 
 ```bash
-/doc-ftest-audit docs/10_TSPEC/FTEST/FTEST-01_scope/FTEST-01_scope.md
+/doc-ftest-audit docs/07_TDD/TDD-01_checkout_flow.yaml
 ```
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -82,12 +100,11 @@ If remediation needed:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial FTEST audit wrapper with validator->reviewer orchestration and `.A_` preferred fixer contract |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model (D-0015). Audits functional-focused TDD (Layer 7) documents against the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; report contract retargeted to `TDD-NN.*`; coverage findings trace to EARS/BDD/SPEC (no SYS). |
+| 1.0 | 2026-02-27 | Initial functional-test audit wrapper (pre-migration legacy model). |
 
 ## Implementation Plan Consistency (IPLAN-004)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Treat plan-derived outputs as a valid source mode and verify intent preservation from implementation-plan scope/objectives.
+- Validate the upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
 - Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-

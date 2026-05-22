@@ -1,122 +1,134 @@
 ---
 name: doc-stest
-description: Create Smoke Test Specifications (STEST) as Layer 10 subtype artifacts for deployment critical-path validation
+description: Author TDD (Layer 7) test cases with a smoke-test focus for deployment critical-path validation, health checks, and rollback readiness
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
-    - stest
+    - layer-7-artifact
+    - tdd-smoke-helper
     - shared-architecture
   custom_fields:
-    layer: 10
-    artifact_type: STEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: smoke
+    deliverable_type: code
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
-    downstream_artifacts: [TASKS, Code]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks STEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-stest
 
 ## Purpose
 
-Create **Smoke Test Specifications (STEST)** for deployment critical-path validation with strict fail-fast pass/fail outcomes as a Layer 10 TSPEC subtype.
+Author **TDD (Layer 7)** test cases with a **smoke-test focus** — deployment
+critical-path validation, post-deploy health checks, and rollback readiness,
+with strict fail-fast pass/fail outcomes.
 
-**Layer**: 10  
-**Subtype Code**: 42 (`TSPEC.NN.42.SS`)
+This skill is a **TDD (Layer 7) specialization** for the smoke-test focus. It
+authors test cases inside the single canonical TDD document contract and does
+**not** define a separate artifact, template, or element-code. Smoke tests are
+TDD test cases (`type: e2e` / `type: integration`) whose intent is rapid
+critical-path verification of a deployed system.
+
+**Layer**: 7
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
 
 ---
 
 ## Canonical References
 
-Before authoring STEST, read:
+Before authoring smoke-focused TDD test cases, read:
 
-1. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-2. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.yaml`
-3. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST-MVP-TEMPLATE.md`
-4. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml`
-5. `ai_dev_ssd_flow/10_TSPEC/STEST/STEST_MVP_SCHEMA.yaml`
+1. Canonical artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+2. Layer overview: `framework/layers/07_TDD/README.md`
+3. ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+4. Parent TDD skill: `../doc-tdd/`
+5. Shared standards: `../doc-flow/SHARED_CONTENT.md`
 
 ---
 
 ## When to Use
 
 Use `doc-stest` when:
-- You are creating or editing **STEST-only** artifacts.
-- `@ears`, `@bdd`, and `@req` constraints are primary.
-- Deployment smoke validation and critical-path rollback readiness are the core objective.
+- You are authoring TDD test cases with a **smoke / deployment critical-path** focus.
+- `@ears`, `@bdd`, and `@spec` constraints drive the critical paths under test.
+- Deployment smoke validation, health checks, and rollback readiness are the core objective.
 
-Use `doc-tspec` instead when:
-- Multi-subtype orchestration is required (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
-- Cross-subtype normalization or batch TSPEC work is primary.
+Use `doc-tdd` instead when:
+- Authoring the full TDD test suite across unit/integration/e2e/security types.
+- Cross-focus normalization or whole-document TDD work is primary.
 
 ---
 
-## STEST Contract (MVP)
+## Smoke-Focus Contract
 
-### Required Structure
+### Where smoke tests live in the TDD document
 
-STEST follows a 6-section contract:
-1. Document Control
-2. Test Scope
-3. Critical Path Index
-4. Test Case Details
-5. Rollback Procedures
-6. Traceability
+Smoke test cases are authored in **Section 4 (Test Case Definitions)** of the
+single TDD document (`framework/layers/07_TDD/TDD-TEMPLATE.yaml`), typically as
+`integration` or `e2e` cases that exercise the deployment critical path. They
+are mapped from BDD scenarios in Section 3 and gated by thresholds in Section 5.
 
 ### Required Tags
 
-- Cumulative Layer-10 tags: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec` (+ `@ctr` if exists)
-- Type-specific required tags: `@ears`, `@bdd`, `@req`
+- Cumulative upstream tags (Layer 7): `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@spec`
+- TDD self-tag: `@tdd: TDD-NN`
+- Critical-path test cases must trace to `@bdd` and `@spec`.
 
-### Deployment Gate Requirements
+### Deployment Gate Requirements (smoke focus)
 
-- Total timeout budget must be `<=300s` (max 300s / <5 minutes)
-- Quality gate target is `100% quality gate` (`Target: 100%`)
-- Every test must have rollback procedure
-- Pass/fail criteria must be binary and fail-fast
+- Total smoke timeout budget should be `<=300s` (max 300s / <5 minutes).
+- Critical-path quality target is `100%` (every critical-path scenario passes).
+- Every critical-path test case declares a rollback procedure (`cleanup` /
+  rollback action).
+- Pass/fail criteria must be binary and fail-fast.
+
+### Element IDs
+
+- Document: `TDD-NN`
+- Test cases (Section 4): `TDD.NN.04.xxxx` (4-segment; `xxxx` = 4-char hex hash).
+- Smoke focus is expressed as test-case content/`type`, NOT as a separate ID code.
 
 ### Folder Rule
 
-Use nested folder structure:
-- `docs/10_TSPEC/STEST/STEST-NN_{slug}/STEST-NN_{slug}.md`
+- `docs/07_TDD/TDD-NN_{slug}.yaml` (one TDD per SPEC component).
 
 ---
 
-## Validation Commands
+## Validation (declarative — framework is spec-only)
 
-```bash
-# STEST subtype validation
-python ai_dev_ssd_flow/10_TSPEC/scripts/validate_stest.py docs/10_TSPEC/STEST/
+The framework ships no validation scripts; this skill *is* the validator. Apply
+the checklist below, with `framework/layers/07_TDD/README.md` and
+`framework/governance/` as authority:
 
-# Layer-wide TSPEC validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
-
-# Quality score validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/STEST/STEST-NN_slug/STEST-NN_slug.md --auto-fix
-
-# Cumulative tag validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact STEST-NN --expected-layers brd,prd,ears,bdd,adr,sys,req,spec --strict
-```
+1. TDD document follows the 7-section template and parses as YAML.
+2. Smoke test cases use `TDD.NN.04.xxxx` element IDs with a `type`
+   (`integration` / `e2e`).
+3. Cumulative upstream tags present (`@brd`..`@spec`) plus the `@tdd` self-tag.
+4. Critical-path cases trace to `@ears`, `@bdd`, and `@spec`.
+5. Smoke timeout budget markers present (`max 300s` or `<=300s`).
+6. Rollback / cleanup declared for every critical-path case.
+7. Binary, fail-fast pass/fail criteria are explicit for critical paths.
 
 ---
 
 ## Output Quality Gate
 
-- No schema/structure blockers.
-- All required STEST sections present.
-- `@ears`, `@bdd`, and `@req` mappings are explicit.
-- Timeout and rollback constraints are present.
-- Binary pass/fail criteria are explicit for critical paths.
-- Report references use versioned naming where applicable.
+- No schema/structure blockers; all 7 TDD sections present.
+- `@ears`, `@bdd`, and `@spec` mappings explicit for critical paths.
+- Smoke timeout and rollback constraints present.
+- Binary pass/fail criteria explicit for critical paths.
 
 ---
 
@@ -127,7 +139,7 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact STEST-NN
 - `doc-stest-reviewer`
 - `doc-stest-fixer`
 - `doc-stest-audit`
-- `doc-tspec` (multi-subtype fallback path)
+- `../doc-tdd/` (full-suite TDD authoring)
 
 ---
 
@@ -135,4 +147,5 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact STEST-NN
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial STEST authoring skill aligned to canonical STEST MVP template/rules/schema with deployment-gate constraints and TSPEC coexistence routing |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model (D-0015). Repositioned as a TDD (Layer 7) smoke-focus specialization referencing `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; documents are `TDD-NN`, test cases `TDD.NN.04.xxxx`. Dropped the retired upstream layers and the legacy smoke-test subtype identity, numeric subtype code, legacy flow paths, and dead validation scripts (now a declarative checklist). Upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN. |
+| 1.0 | 2026-02-27 | Initial smoke-test authoring skill (pre-migration). |

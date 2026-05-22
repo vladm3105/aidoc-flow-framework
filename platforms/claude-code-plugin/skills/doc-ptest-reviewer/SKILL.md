@@ -1,53 +1,61 @@
 ---
 name: doc-ptest-reviewer
-description: Review PTEST content quality, threshold coverage, and performance scenario completeness for performance test specifications
+description: Review performance-focused TDD (Layer 7) content quality, threshold coverage, and performance scenario completeness
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-performance-helper
     - quality-assurance
-    - ptest-review
   custom_fields:
-    layer: 10
-    artifact_type: PTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: performance
+    deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [PTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: []
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks PTEST-MVP-TEMPLATE schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ptest-reviewer
 
 ## Purpose
 
-Perform semantic quality review for PTEST artifacts beyond structural validation.
+Perform semantic quality review for performance-focused **TDD (Layer 7)** test
+cases beyond structural validation.
+
+This skill is a **TDD (Layer 7) specialization** for the performance-test
+focus. It reviews TDD documents against the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`); it does **not**
+define a separate artifact, template, or element-code.
 
 ---
 
 ## Review Scope
 
-1. SYS and SPEC alignment for performance requirements
-2. Category completeness (`[Load]`, `[Stress]`, `[Endurance]`, `[Spike]`)
+1. SPEC and ADR alignment for performance requirements
+2. Performance scenario completeness (Load / Stress / Endurance / Spike)
 3. Load scenario realism and threshold measurability
-4. Execution profile completeness for complex scenarios
-5. Traceability completeness and consistency
+4. `execution_profile` completeness for complex scenarios
+5. Traceability completeness and consistency (cumulative `@brd`..`@spec` + `@tdd`)
 
 ---
 
 ## Output Contract
 
 Reviewer-native output:
-- `PTEST-NN.R_review_report_vNNN.md`
+- `TDD-NN.R_review_report_vNNN.md`
 
 Audit-wrapper compatibility:
-- `doc-ptest-audit` may emit `PTEST-NN.A_audit_report_vNNN.md` as preferred fixer input.
+- `doc-ptest-audit` may emit `TDD-NN.A_audit_report_vNNN.md` as preferred fixer input.
 
-All reports are colocated with parent PTEST file.
+All reports are colocated with the parent TDD document.
 
 ---
 
@@ -64,6 +72,16 @@ All reports are colocated with parent PTEST file.
 - `doc-ptest-fixer`
 - `doc-ptest-audit`
 - `doc-ptest-autopilot`
+- `../doc-tdd/` (parent TDD authoring skill)
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Performance threshold rules: `framework/governance/THRESHOLD_NAMING_RULES.md`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -71,12 +89,12 @@ All reports are colocated with parent PTEST file.
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial PTEST reviewer with audit-compatible report contract and threshold-based pass gate |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Repositioned as a TDD (Layer 7) performance-test reviewer over the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; review scope recast to SPEC/ADR alignment and performance scenarios; report contract `TDD-NN.R_…`. |
+| 1.0 | 2026-02-27 | Initial PTEST reviewer (pre-migration, legacy 12-layer model). |
 
-## Implementation Plan Consistency (IPLAN-004)
+## Implementation Plan Consistency (IPLAN)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Treat plan-derived outputs as a valid source mode and verify intent preservation from implementation-plan scope/objectives.
+- Validate the upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
 - Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Do not introduce legacy fallback paths.

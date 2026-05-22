@@ -1,41 +1,55 @@
 ---
 name: doc-sectest-fixer
-description: Apply automated and guided fixes for SECTEST findings from audit/review reports
+description: Apply automated and guided fixes to security-focused TDD (Layer 7) test cases from audit/review reports
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-security-helper
     - quality-assurance
-    - sectest-fix
   custom_fields:
-    layer: 10
-    artifact_type: SECTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: security
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [SECTEST, Audit Report, Review Report]
-    downstream_artifacts: [Fixed SECTEST, Fix Report]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SECTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [TDD, Audit Report, Review Report]
+    downstream_artifacts: [Fixed TDD, Fix Report]
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-sectest-fixer
 
 ## Purpose
 
-Apply fixes for SECTEST issues identified by validator/reviewer workflows, with deterministic source-report precedence.
+Apply fixes to security-focused **TDD (Layer 7)** test cases identified by the
+validator/reviewer workflows, with deterministic source-report precedence.
+
+This skill is a **TDD (Layer 7) specialization** operating on the security-test
+focus of TDD. It does **not** define a separate artifact, template, or
+element-code; the canonical artifact contract is
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`). Security tests
+are the `security` `type` of TDD test cases.
+
+**Layer**: 7 (TDD — security-test focus)
+
+**Upstream**: TDD document, Audit Report (`TDD-NN.A_audit_report_vNNN.md`),
+Review Report (`TDD-NN.R_review_report_vNNN.md`)
+
+**Downstream**: Fixed TDD, Fix Report (`TDD-NN.F_fix_report_vNNN.md`)
 
 ---
 
 ## Input Contract
 
 Preferred:
-- `SECTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Legacy-compatible:
-- `SECTEST-NN.R_review_report_vNNN.md`
+- `TDD-NN.R_review_report_vNNN.md`
 
 Selection precedence:
 1. Newest timestamp/version.
@@ -45,28 +59,30 @@ Selection precedence:
 
 ## Fix Categories
 
-- Missing required sections (6-section contract)
-- Missing/invalid subtype tags (`@sec`, `@spec`)
+- Missing required template sections (7-section TDD contract)
+- Missing/invalid security test-case attributes (`type: security`, `threat`,
+  `expected_result`)
 - Missing security categories, threat scenarios, or controls
 - Missing/weak safety constraints or production-targeting language
-- Traceability and cross-reference consistency
-- Naming/path corrections for nested-folder compliance
+- Missing/invalid element IDs (`TDD.NN.04.xxxx`)
+- Traceability and cross-reference consistency (`@brd`..`@spec`, `@tdd`)
+- Naming/path corrections for TDD-document compliance
 
 ---
 
 ## Outputs
 
-- Fixed SECTEST document(s)
-- `SECTEST-NN.F_fix_report_vNNN.md`
+- Fixed TDD document(s)
+- `TDD-NN.F_fix_report_vNNN.md`
 
 ---
 
 ## Commands
 
 ```bash
-/doc-sectest-fixer SECTEST-01
-/doc-sectest-fixer SECTEST-01 --review-report SECTEST-01.A_audit_report_v001.md
-/doc-sectest-fixer SECTEST-01 --review-report SECTEST-01.R_review_report_v001.md
+/doc-sectest-fixer TDD-01
+/doc-sectest-fixer TDD-01 --review-report TDD-01.A_audit_report_v001.md
+/doc-sectest-fixer TDD-01 --review-report TDD-01.R_review_report_v001.md
 ```
 
 ---
@@ -78,16 +94,26 @@ Selection precedence:
 
 ---
 
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial SECTEST fixer with deterministic `.A_` preferred / `.R_` legacy precedence, safety remediation checks, and versioned fix report contract |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Repositioned as a security-test-focused TDD fixer referencing `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no separate SECTEST/TSPEC artifact or numeric code; `type: security` cases). Report contract retargeted to `TDD-NN.A_/.R_/.F_`. Safety remediation checks preserved. |
+| 1.0 | 2026-02-27 | Initial security-test fixer (pre-migration legacy layer). |
 
-## Implementation Plan Consistency (IPLAN-004)
+## Implementation Plan Consistency (IPLAN)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Treat plan-derived outputs as valid source mode and verify intent
+  preservation from implementation plan scope/objectives.
 - Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Flag objective/scope conflicts between plan context and artifact output as
+  blocking issues requiring clarification.

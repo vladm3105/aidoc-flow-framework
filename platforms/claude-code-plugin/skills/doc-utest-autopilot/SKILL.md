@@ -1,51 +1,64 @@
 ---
 name: doc-utest-autopilot
-description: Automated UTEST generation and review orchestration for component-level unit test workflows
+description: Automated generation and review orchestration for unit-focused TDD (Layer 7) test cases
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-unit-helper
     - automation-workflow
-    - utest
   custom_fields:
-    layer: 10
-    artifact_type: UTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: unit
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [REQ, SPEC, CTR]
-    downstream_artifacts: [TASKS]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks UTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-utest-autopilot
 
 ## Purpose
 
-Automate UTEST lifecycle for subtype-specific workflows:
-- generate UTEST from upstream context,
+Automate the unit-focused **TDD (Layer 7)** lifecycle:
+- generate unit-focused TDD test cases from upstream context,
 - validate and audit outputs,
 - hand off to fixer when required.
 
+This skill is a **TDD (Layer 7) specialization** for the unit-test focus of TDD.
+It generates against the single canonical artifact contract
+(`framework/layers/07_TDD/TDD-TEMPLATE.yaml`, see `../doc-tdd/`) and does **not**
+define a separate artifact, template, or element-code.
+
+**Layer**: 7 (TDD — unit-test focus)
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
+
 ---
 
-## Input Contract (IPLAN-004 Standard)
+## Input Contract (IPLAN Standard)
 
 - Supported modes:
   - `--ref <path>`
   - `--prompt "<text>"`
-  - `--iplan <path|IPLAN-NNN>`
+  - `--iplan <path|IPLAN-NN>`
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
-  1. Use explicit file path when it exists
-  2. Resolve `plans/IPLAN-NNN*.md`
-  3. Resolve `governance/plans/IPLAN-NNN*.md`
-  4. If multiple matches exist, fail with disambiguation request
+  1. Use the explicit file path when it exists
+  2. Resolve `plans/IPLAN-NN*.md`
+  3. Resolve `governance/plans/IPLAN-NN*.md`
+  4. If multiple matches exist, fail with a disambiguation request
 - Merge conflict rule:
-  - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
+  - Objective/scope conflicts between primary and supplemental sources are
+    blocking and require user clarification.
 
 ---
 
@@ -54,9 +67,9 @@ Automate UTEST lifecycle for subtype-specific workflows:
 ### Generate/Find Mode
 
 Input:
-- `UTEST-NN` (self type): review existing
-- `REQ-NN` or `SPEC-NN`: generate if missing, else review existing `UTEST-NN`
-- optional `CTR-NN`: include contract-alignment checks when present
+- `TDD-NN` (self type): review existing
+- `SPEC-NN`: generate unit cases if missing, else review existing `TDD-NN`
+- upstream `BDD-NN`: include scenario-to-unit-test mapping when present
 
 ### Audit/Fix Mode
 
@@ -69,8 +82,8 @@ Input:
 ## Orchestration Flow
 
 ```text
-1) Resolve target UTEST document
-2) Generate or load UTEST
+1) Resolve target TDD document
+2) Generate or load unit-focused TDD test cases
 3) Run doc-utest-audit
 4) If needed, run doc-utest-fixer
 5) Re-audit
@@ -81,76 +94,63 @@ Input:
 
 ## Naming and Contract Rules
 
-- Primary audit output: `UTEST-NN.A_audit_report_vNNN.md`
-- Legacy-compatible review output: `UTEST-NN.R_review_report_vNNN.md`
-- Fix report: `UTEST-NN.F_fix_report_vNNN.md`
+- Primary audit output: `TDD-NN.A_audit_report_vNNN.md`
+- Legacy-compatible review output: `TDD-NN.R_review_report_vNNN.md`
+- Fix report: `TDD-NN.F_fix_report_vNNN.md`
 
-All reports are stored beside parent UTEST in nested folder.
+All reports are stored beside the parent TDD document.
 
 ---
 
 ## Document Type Contract (MANDATORY)
 
-When generating UTEST document instances, the autopilot MUST:
+When generating TDD document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "utest-document"`
+1. **Read** the document type from the canonical template:
+   - Source: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "tdd-document"`
 
-2. **Set** `document_type` in generated document frontmatter:
+2. **Set** the document type in generated document frontmatter:
    ```yaml
-   custom_fields:
-     document_type: utest-document    # NOT "template"
-     artifact_type: UTEST
-     layer: 10
-     test_type_code: 40
+   metadata:
+     document_type: tdd-document    # NOT "template"
+     artifact_type: TDD
+     test_focus: unit
+     layer: 7
    ```
 
-3. **Validation**: Generated documents MUST have `document_type: utest-document`
-   - Templates have `document_type: template`
-   - Instances have `document_type: utest-document`
-   - Schema validates both values
+3. **Validation**: Generated documents MUST have `document_type: tdd-document`;
+   templates have `document_type: template`.
 
-**Error Handling**: If `instance_document_type` is missing from template, default to `utest-document`.
+**Error Handling**: If the document type is missing from the template, default
+to `tdd-document`.
 
 ---
 
 ## Canonical References
 
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
-- `ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py`
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
 ## Unit-Test Gate Constraints
 
-- TASKS-Ready score target must be `>=90%`.
-- REQ coverage target must be `>=90%`.
-- Required categories: `[Logic]`, `[State]`, `[Validation]`, `[Edge]`.
-- Every test case requires Input/Output table.
-- Complex logic requires pseudocode.
-
----
-
-## Coexistence Rules with `doc-tspec-autopilot`
-
-Use `doc-utest-autopilot` when UTEST-only scope is required.  
-Route to `doc-tspec-autopilot` when cross-subtype orchestration is required.
-
-Fallback:
-- If unresolved subtype blockers persist, escalate to `doc-tspec-autopilot` while preserving report compatibility (`.A_` preferred, `.R_` legacy).
+- IPLAN-Ready score target must be `>=90`.
+- Unit coverage target must be `>=90%`.
+- Unit cases must cover logic, state, validation, and edge conditions.
+- Every unit case requires concrete inputs and expected outputs.
+- Complex logic requires documented edge cases.
 
 ---
 
 ## Example Invocations
 
 ```bash
-/doc-utest-autopilot UTEST-01
-/doc-utest-autopilot REQ-01
+/doc-utest-autopilot TDD-01
 /doc-utest-autopilot SPEC-01
-/doc-utest-autopilot CTR-01
 ```
 
 ---
@@ -158,11 +158,11 @@ Fallback:
 ## Quality Gate
 
 Pass when:
-- UTEST structure matches 6-section contract,
-- required tags are complete,
-- REQ coverage and TASKS-Ready score meet `>=90%`,
-- I/O tables and pseudocode requirements are met,
-- audit status is PASS under UTEST gate requirements.
+- unit-focused TDD test cases match the `TDD-TEMPLATE.yaml` contract,
+- required tags are complete (`@brd`..`@spec`, `@tdd` self-tag),
+- unit coverage and IPLAN-Ready score meet `>=90`/`>=90%`,
+- inputs/outputs and edge-case requirements are met,
+- audit status is PASS under the unit-test gate requirements.
 
 ---
 
@@ -173,7 +173,7 @@ Pass when:
 - `doc-utest-reviewer`
 - `doc-utest-fixer`
 - `doc-utest-audit`
-- `doc-tspec-autopilot` (fallback for mixed subtype workflows)
+- `../doc-tdd/` (parent TDD authoring skill)
 
 ---
 
@@ -181,4 +181,5 @@ Pass when:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial UTEST autopilot skill with explicit input contract, audit-fix orchestration, and UTEST-specific 90% gate constraints |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Generates unit-focused TDD test cases from `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no UTEST/TSPEC artifact or numeric code); upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN,Code; dead validation scripts removed; audit-fix orchestration and IPLAN input contract retained. |
+| 1.0 | 2026-02-27 | Initial unit-test autopilot (pre-migration legacy layer). |

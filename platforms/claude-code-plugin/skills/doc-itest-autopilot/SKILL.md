@@ -1,34 +1,47 @@
 ---
 name: doc-itest-autopilot
-description: Automated ITEST generation and review orchestration for integration contract and interaction validation
+description: Automated generation and review orchestration for integration-focused TDD (Layer 7) test cases - contract and interaction validation
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
     - automation-workflow
     - itest
   custom_fields:
-    layer: 10
-    artifact_type: ITEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: integration
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [CTR, SYS, SPEC]
-    downstream_artifacts: [TASKS]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks ITEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-itest-autopilot
 
 ## Purpose
 
-Automate ITEST lifecycle for subtype-specific workflows:
-- generate ITEST from upstream context,
+Automate the lifecycle of integration-focused **TDD (Layer 7)** test cases:
+- generate the TDD document (integration focus) from upstream context,
 - validate and audit outputs,
 - hand off to fixer when required.
+
+This skill is a **TDD (Layer 7) specialization** (integration-test focus). It
+authors TDD documents referencing the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`); it does **not**
+define a separate artifact, template, or element-code.
+
+**Layer**: 7 (TDD — integration-test focus)
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
 
 ---
 
@@ -37,12 +50,12 @@ Automate ITEST lifecycle for subtype-specific workflows:
 - Supported modes:
   - `--ref <path>`
   - `--prompt "<text>"`
-  - `--iplan <path|IPLAN-NNN>`
+  - `--iplan <path|IPLAN-NN>`
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
   1. Use explicit file path when it exists
-  2. Resolve `plans/IPLAN-NNN*.md`
-  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  2. Resolve `plans/IPLAN-NN*.md`
+  3. Resolve `governance/plans/IPLAN-NN*.md`
   4. If multiple matches exist, fail with disambiguation request
 - Merge conflict rule:
   - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
@@ -54,8 +67,8 @@ Automate ITEST lifecycle for subtype-specific workflows:
 ### Generate/Find Mode
 
 Input:
-- `ITEST-NN` (self type): review existing
-- `CTR-NN`, `SYS-NN`, or `SPEC-NN`: generate if missing, else review existing `ITEST-NN`
+- `TDD-NN` (self type): review existing
+- `SPEC-NN`: generate the integration-focused TDD if missing, else review existing `TDD-NN`
 
 ### Audit/Fix Mode
 
@@ -68,8 +81,8 @@ Input:
 ## Orchestration Flow
 
 ```text
-1) Resolve target ITEST document
-2) Generate or load ITEST
+1) Resolve target TDD document
+2) Generate or load the integration-focused TDD
 3) Run doc-itest-audit
 4) If needed, run doc-itest-fixer
 5) Re-audit
@@ -80,65 +93,63 @@ Input:
 
 ## Naming and Contract Rules
 
-- Primary audit output: `ITEST-NN.A_audit_report_vNNN.md`
-- Legacy-compatible review output: `ITEST-NN.R_review_report_vNNN.md`
-- Fix report: `ITEST-NN.F_fix_report_vNNN.md`
+- Primary audit output: `TDD-NN.A_audit_report_vNNN.md`
+- Legacy-compatible review output: `TDD-NN.R_review_report_vNNN.md`
+- Fix report: `TDD-NN.F_fix_report_vNNN.md`
 
-All reports are stored beside parent ITEST in nested folder.
+All reports are stored beside the parent TDD document in its nested folder.
 
 ---
 
 ## Document Type Contract (MANDATORY)
 
-When generating ITEST document instances, the autopilot MUST:
+When generating TDD document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "itest-document"`
+1. **Read** `document_type` from the canonical template:
+   - Source: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "tdd-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
    ```yaml
-   custom_fields:
-     document_type: itest-document    # NOT "template"
-     artifact_type: ITEST
-     layer: 10
-     test_type_code: 41
+   metadata:
+     document_type: tdd-document    # NOT "template"
+     artifact_type: TDD
+     layer: 7
    ```
+   Each integration test case in Section 4 carries `type: integration`.
 
-3. **Validation**: Generated documents MUST have `document_type: itest-document`
+3. **Validation**: Generated documents MUST have `document_type: tdd-document`
    - Templates have `document_type: template`
-   - Instances have `document_type: itest-document`
-   - Schema validates both values
+   - Instances have `document_type: tdd-document`
 
-**Error Handling**: If `instance_document_type` is missing from template, default to `itest-document`.
+**Error Handling**: If `document_type` is missing from the template, default to
+`tdd-document`.
 
 ---
 
 ## Canonical References
 
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/ITEST/ITEST_MVP_SCHEMA.yaml`
-- `ai_dev_ssd_flow/10_TSPEC/scripts/validate_itest.py`
+- `framework/layers/07_TDD/TDD-TEMPLATE.yaml` — the single TDD artifact contract
+- `framework/layers/07_TDD/README.md` — layer overview
+- `framework/governance/ID_NAMING_STANDARDS.md` — element ID and tag formats
+- `../doc-tdd/SKILL.md` — the parent TDD authoring skill
 
 ---
 
-## Coexistence Rules with `doc-tspec-autopilot`
+## Relationship to `../doc-tdd/`
 
-Use `doc-itest-autopilot` when ITEST-only scope is required.  
-Route to `doc-tspec-autopilot` when cross-subtype orchestration is required.
-
-Fallback:
-- If unresolved subtype blockers persist, escalate to `doc-tspec-autopilot` while preserving report compatibility (`.A_` preferred, `.R_` legacy).
+Use `doc-itest-autopilot` when integration-focused TDD scope is required.
+Use the parent `../doc-tdd/` authoring skill when a full-spectrum TDD document
+(all test types) is required. Both produce TDD (Layer 7) documents against the
+same single template; report contracts (`.A_` preferred, `.R_` legacy) remain
+compatible.
 
 ---
 
 ## Example Invocations
 
 ```bash
-/doc-itest-autopilot ITEST-01
-/doc-itest-autopilot CTR-01
-/doc-itest-autopilot SYS-01
+/doc-itest-autopilot TDD-01
 /doc-itest-autopilot SPEC-01
 ```
 
@@ -147,10 +158,10 @@ Fallback:
 ## Quality Gate
 
 Pass when:
-- ITEST structure matches 6-section contract,
-- required tags are complete,
-- contract compliance and interaction checks are present,
-- audit status is PASS and score meets configured threshold.
+- the TDD document matches the 7-section template,
+- required cumulative tags are complete (@brd through @spec, plus @tdd),
+- contract compliance and interaction checks are present in the integration cases,
+- audit status is PASS and score meets the configured threshold (>=90/100).
 
 ---
 
@@ -161,7 +172,7 @@ Pass when:
 - `doc-itest-reviewer`
 - `doc-itest-fixer`
 - `doc-itest-audit`
-- `doc-tspec-autopilot` (fallback for mixed subtype workflows)
+- `../doc-tdd/` (parent TDD authoring skill — full-spectrum test cases)
 
 ---
 
@@ -169,4 +180,5 @@ Pass when:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial ITEST autopilot skill with generate/find plus audit-fix orchestration, versioned report contracts, and TSPEC coexistence routing |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Repositioned as a TDD (Layer 7) integration-focus autopilot over the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no separate ITEST/TSPEC artifact, template, or numeric subtype code). Targets/reports keyed to `TDD-NN`; upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN,Code. Dead validation-script references removed (framework is spec-only). |
+| 1.0 | 2026-02-27 | Initial autopilot skill with generate/find plus audit-fix orchestration (pre-migration legacy 12-layer model). |

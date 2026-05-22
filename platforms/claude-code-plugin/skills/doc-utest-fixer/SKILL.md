@@ -1,41 +1,49 @@
 ---
 name: doc-utest-fixer
-description: Apply automated and guided fixes for UTEST findings from audit/review reports
+description: Apply automated and guided fixes for unit-focused TDD (Layer 7) findings from audit/review reports
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-unit-helper
     - quality-assurance
-    - utest-fix
   custom_fields:
-    layer: 10
-    artifact_type: UTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: unit
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [UTEST, Audit Report, Review Report]
-    downstream_artifacts: [Fixed UTEST, Fix Report]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks UTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [TDD, Audit Report, Review Report]
+    downstream_artifacts: [Fixed TDD, Fix Report]
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-utest-fixer
 
 ## Purpose
 
-Apply fixes for UTEST issues identified by validator/reviewer workflows, with deterministic source-report precedence.
+Apply fixes for unit-focused **TDD (Layer 7)** test-case issues identified by
+validator/reviewer workflows, with deterministic source-report precedence.
+
+This skill is a **TDD (Layer 7) specialization** for the unit-test focus of TDD.
+It remediates against the single canonical artifact contract
+(`framework/layers/07_TDD/TDD-TEMPLATE.yaml`, see `../doc-tdd/`) and does **not**
+define a separate artifact, template, or element-code.
+
+**Layer**: 7 (TDD — unit-test focus)
 
 ---
 
 ## Input Contract
 
 Preferred:
-- `UTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Legacy-compatible:
-- `UTEST-NN.R_review_report_vNNN.md`
+- `TDD-NN.R_review_report_vNNN.md`
 
 Selection precedence:
 1. Newest timestamp/version.
@@ -45,30 +53,30 @@ Selection precedence:
 
 ## Fix Categories
 
-- Missing required sections (6-section contract)
-- Missing/invalid subtype tags (`@req`, `@spec`)
-- Missing category coverage (`[Logic]`, `[State]`, `[Validation]`, `[Edge]`)
-- Missing Input/Output tables for test cases
-- Missing pseudocode for complex logic
-- REQ coverage below `>=90%` target
+- Missing required TDD sections
+- Missing/invalid tags (`@spec`, cumulative `@brd`..`@spec`, `@tdd` self-tag)
+- Missing unit category coverage (logic, state, validation, edge)
+- Missing inputs/expected outputs for unit cases
+- Missing edge cases for complex logic
+- Unit coverage below `>=90%` target
 - Traceability and cross-reference consistency
-- Naming/path corrections for nested-folder compliance
+- Element-ID corrections to `TDD.NN.04.xxxx` with `type: unit`
 
 ---
 
 ## Outputs
 
-- Fixed UTEST document(s)
-- `UTEST-NN.F_fix_report_vNNN.md`
+- Fixed TDD document(s)
+- `TDD-NN.F_fix_report_vNNN.md`
 
 ---
 
 ## Commands
 
 ```bash
-/doc-utest-fixer UTEST-01
-/doc-utest-fixer UTEST-01 --review-report UTEST-01.A_audit_report_v001.md
-/doc-utest-fixer UTEST-01 --review-report UTEST-01.R_review_report_v001.md
+/doc-utest-fixer TDD-01
+/doc-utest-fixer TDD-01 --review-report TDD-01.A_audit_report_v001.md
+/doc-utest-fixer TDD-01 --review-report TDD-01.R_review_report_v001.md
 ```
 
 ---
@@ -80,16 +88,29 @@ Selection precedence:
 
 ---
 
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
+
+---
+
+## Implementation Plan Consistency (IPLAN)
+
+- Treat plan-derived outputs as a valid source mode and verify intent
+  preservation from implementation plan scope/objectives.
+- Validate the upstream autopilot precedence assumption:
+  `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as
+  blocking issues requiring clarification.
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial UTEST fixer with deterministic `.A_` preferred / `.R_` legacy precedence and UTEST 90%-gate remediation checks |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Remediates unit-focused TDD test cases (no UTEST/TSPEC artifact or numeric code); 4-segment IDs (`TDD.NN.04.xxxx`, `type: unit`); `.A_` preferred / `.R_` legacy precedence retained. |
+| 1.0 | 2026-02-27 | Initial unit-test fixer (pre-migration legacy layer). |

@@ -1,64 +1,81 @@
 ---
 name: doc-ptest-validator
-description: Validate Performance Test Specifications (PTEST) against Layer 10 PTEST MVP schema and structure contracts
+description: Validate performance-focused TDD (Layer 7) test cases against the framework TDD contract and performance-threshold requirements
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-performance-helper
     - quality-assurance
-    - ptest
   custom_fields:
-    layer: 10
-    artifact_type: PTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: performance
+    deliverable_type: code
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [PTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit, Fix]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks PTEST_MVP_SCHEMA schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ptest-validator
 
 ## Purpose
 
-Validate PTEST documents for subtype-specific schema, structure, traceability, and performance-threshold requirements.
+Validate performance-focused **TDD (Layer 7)** test cases for structure,
+traceability, and performance-threshold requirements.
+
+This skill is a **TDD (Layer 7) specialization** for the performance-test
+focus. It validates against the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`) and does **not**
+define a separate artifact, template, or element-code. The plugin skill *is*
+the validator — there is no external validation script.
 
 ---
 
-## Validation Schema Reference
+## Validation Contract Reference
 
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_SCHEMA.yaml`
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_SCHEMA.yaml`
+- Canonical artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Performance threshold rules: `framework/governance/THRESHOLD_NAMING_RULES.md`
+- Layer: 7 (TDD — performance focus)
+- Artifact Type: TDD
+- Deliverable Type: code
 
 ---
 
 ## Validation Checklist
 
-1. Nested folder rule (`PTEST-NN_{slug}/PTEST-NN_{slug}.md`)
-2. Six required sections present and ordered
-3. PTEST element IDs use `TSPEC.NN.44.SS`
-4. Required cumulative tags present (`@brd`..`@spec`, optional `@ctr`)
-5. Required subtype tags present (`@sys`, `@spec`)
-6. Required categories represented (`[Load]`, `[Stress]`, `[Endurance]`, `[Spike]`)
-7. Load scenario tables and measurable thresholds are present
-8. TASKS-Ready score claim present and threshold-aligned
+1. File follows TDD naming (`TDD-NN_{slug}.yaml`) and YAML parses
+2. All 7 TDD template sections present and ordered
+3. Performance test cases use the 4-segment element ID `TDD.NN.04.xxxx`
+4. Required cumulative tags present (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@spec`) + `@tdd` self-tag
+5. SPEC/ADR performance constraints referenced (`@spec`, `@adr`)
+6. Performance scenario categories represented (Load / Stress / Endurance / Spike)
+7. Load scenario tables present; thresholds measurable and `@threshold:`-tagged
+8. IPLAN-Ready Score claim present and threshold-aligned (`>=90/100`)
 
 ---
 
-## Commands
+## Validation Procedure (declarative)
 
-```bash
-python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ptest.py docs/10_TSPEC/PTEST/
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/PTEST/PTEST-NN_slug/PTEST-NN_slug.md --auto-fix
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact PTEST-NN --expected-layers brd,prd,ears,bdd,adr,sys,req,spec --strict
-```
+This skill performs validation directly — there is no external script. Walk the
+checklist above against the document, then:
+
+1. Confirm the filename and YAML parse cleanly.
+2. Confirm all 7 template sections are present and ordered.
+3. Confirm performance test-case IDs and scenario labels are valid.
+4. Confirm load scenarios and `@threshold:`-tagged measurable targets are present.
+5. Confirm all upstream tags resolve to existing documents.
+
+For the authoritative rules, consult `framework/layers/07_TDD/README.md`,
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml`,
+`framework/governance/THRESHOLD_NAMING_RULES.md`, and `framework/governance/`.
 
 ---
 
@@ -69,16 +86,26 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact PTEST-NN
 
 ---
 
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Performance threshold rules: `framework/governance/THRESHOLD_NAMING_RULES.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial PTEST validator with schema/structure/tag/performance checks and canonical script references |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Repositioned as a TDD (Layer 7) performance-test validator over the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; checklist recast to 4-segment IDs, performance scenarios, and `@threshold:` tags; external validation scripts removed (framework is spec-only — this skill is the validator). |
+| 1.0 | 2026-02-27 | Initial PTEST validator (pre-migration, legacy 12-layer model). |
 
-## Implementation Plan Consistency (IPLAN-004)
+## Implementation Plan Consistency (IPLAN)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Treat plan-derived outputs as a valid source mode and verify intent preservation from implementation-plan scope/objectives.
+- Validate the upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
 - Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Do not introduce legacy fallback paths.

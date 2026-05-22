@@ -1,86 +1,100 @@
 ---
 name: doc-utest-validator
-description: Validate Unit Test Specifications (UTEST) against Layer 10 UTEST MVP schema and structure contracts
+description: Validate unit-focused TDD (Layer 7) test cases against the framework TDD contract
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-unit-helper
     - quality-assurance
-    - utest
   custom_fields:
-    layer: 10
-    artifact_type: UTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: unit
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [UTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit, Fix]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks UTEST_MVP_SCHEMA schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-utest-validator
 
-## Purpose
+Validate unit-focused **TDD (Layer 7)** test cases against the framework TDD
+contract.
 
-Validate UTEST documents for subtype-specific schema, structure, traceability, and unit-test gate requirements.
+This skill is a **TDD (Layer 7) specialization** for the unit-test focus of TDD.
+It validates against the single canonical artifact contract and does **not**
+define a separate artifact, template, or element-code. The plugin skill *is* the
+validator — there is no external validation script.
 
----
+## Activation
 
-## Validation Schema Reference
+Invoke when the user requests validation of unit-focused TDD test cases, or
+after creating/modifying such an artifact.
 
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
+## Validation Contract Reference
 
----
+- Canonical artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Layer: 7 (TDD — unit-test focus)
+- Artifact Type: TDD
 
 ## Validation Checklist
 
-1. Nested folder rule (`UTEST-NN_{slug}/UTEST-NN_{slug}.md`)
-2. Six required sections present and ordered
-3. UTEST element IDs use `TSPEC.NN.40.SS`
-4. Required cumulative tags present (`@brd`..`@spec`, optional `@ctr`)
-5. Required subtype tags present (`@req`, `@spec`)
-6. TASKS-Ready score markers are present (`Target: >=90%`)
-7. REQ coverage markers are present (`Coverage: >=90%`)
-8. Test categories include `[Logic]`, `[State]`, `[Validation]`, `[Edge]`
-9. Input/Output table requirement is satisfied for test cases
-10. Pseudocode guidance exists for complex test logic
+1. Document location: `docs/07_TDD/TDD-NN_{slug}.yaml`
+2. TDD template sections present and ordered
+3. Unit test cases use element IDs `TDD.NN.04.xxxx` with `type: unit`
+4. Required cumulative tags present (`@brd` .. `@spec`)
+5. Self tag present (`@tdd: TDD-NN`)
+6. IPLAN-Ready score markers present (`Target: >=90`)
+7. Unit coverage markers present (`Coverage: >=90%`)
+8. Unit cases cover logic, state, validation, and edge conditions
+9. Inputs and expected outputs present for each unit case
+10. Edge cases documented for complex unit logic
 
----
+## Validation Procedure (declarative)
 
-## Commands
+This skill performs validation directly — there is no external script. Walk the
+checklist above against the document, then:
 
-```bash
-python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-NN_slug/UTEST-NN_slug.md --auto-fix
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact UTEST-NN --expected-layers brd,prd,ears,bdd,adr,sys,req,spec --strict
-```
+1. Confirm the file location and YAML parse cleanly.
+2. Confirm unit cases carry `TDD.NN.04.xxxx` IDs and `type: unit`.
+3. Confirm logic/state/validation/edge conditions are represented.
+4. Confirm all upstream tags resolve to existing documents.
+5. Compute the unit coverage and IPLAN-Ready scores; flag any below threshold.
 
----
+For the authoritative rules, consult `framework/layers/07_TDD/README.md`,
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml`, and `framework/governance/`.
+
+## Error Codes
+
+| Code | Severity | Description |
+|------|----------|-------------|
+| TDD-E001 | Error | Missing required upstream tag |
+| TDD-E002 | Error | Unit case missing inputs/expected outputs |
+| TDD-E003 | Error | Missing unit category coverage (logic/state/validation/edge) |
+| TDD-W001 | Warning | Edge cases for complex logic incomplete |
+| TDD-W002 | Warning | Unit coverage or IPLAN-Ready score below threshold |
 
 ## Integration
 
 - Invoked by: `doc-utest`, `doc-utest-autopilot`, `doc-utest-audit`
 - Feeds into: `doc-utest-audit`, `doc-utest-fixer`
 
----
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial UTEST validator with schema/structure/tag checks and unit-test 90% gate validation rules |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Validates unit-focused TDD test cases against `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no UTEST/TSPEC schema, numeric code, or external script). 4-segment IDs (`TDD.NN.04.xxxx`, `type: unit`); upstream BRD,PRD,EARS,BDD,ADR,SPEC. |
+| 1.0 | 2026-02-27 | Initial unit-test validator (pre-migration legacy layer). |

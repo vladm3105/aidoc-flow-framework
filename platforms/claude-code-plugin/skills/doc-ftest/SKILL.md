@@ -1,119 +1,161 @@
 ---
 name: doc-ftest
-description: Create Functional Test Specifications (FTEST) as Layer 10 subtype artifacts focused on quality-attribute validation
+description: Author functional-focused TDD (Layer 7) test cases - end-to-end scenarios and quality-attribute thresholds validating SPEC behavior contracts
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
-    - ftest
+    - layer-7-artifact
+    - tdd-functional-helper
     - shared-architecture
   custom_fields:
-    layer: 10
-    artifact_type: FTEST
+    layer: 7
+    artifact_type: TDD
+    tdd_focus: functional
+    deliverable_type: code
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
-    downstream_artifacts: [TASKS, Code]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks FTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ftest
 
 ## Purpose
 
-Create **Functional Test Specifications (FTEST)** for system-level quality attribute validation (Performance, Reliability, Security, Scalability) as a Layer 10 TSPEC subtype.
+Author **functional-focused TDD (Layer 7)** test cases — end-to-end workflow
+scenarios and quality-attribute thresholds (performance, reliability,
+scalability, security) that validate SPEC behavior contracts through test
+execution.
 
-**Layer**: 10  
-**Subtype Code**: 43 (`TSPEC.NN.43.SS`)
+This skill is a **TDD (Layer 7) specialization** for the functional-test focus.
+It authors TDD documents (and their Section 4 test-case definitions) against the
+single canonical artifact contract `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+(see `../doc-tdd/`); it does **not** define a separate artifact, template, or
+element-code.
+
+**Layer**: 7 (TDD — functional focus)
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
 
 ---
 
 ## Canonical References
 
-Before authoring FTEST, read:
+Before authoring functional TDD test cases, read:
 
-1. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-2. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.yaml`
-3. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST-MVP-TEMPLATE.md`
-4. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml`
-5. `ai_dev_ssd_flow/10_TSPEC/FTEST/FTEST_MVP_SCHEMA.yaml`
+1. Canonical artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+2. Layer overview: `framework/layers/07_TDD/README.md`
+3. ID & naming standards: `framework/governance/ID_NAMING_STANDARDS.md`
+4. Parent TDD skill: `../doc-tdd/`
 
 ---
 
 ## When to Use
 
 Use `doc-ftest` when:
-- You are creating or editing **FTEST-only** artifacts.
-- `@sys` and `@threshold` constraints are primary.
-- Quality-attribute threshold validation is the core objective.
+- You are authoring TDD test cases with a **functional / end-to-end focus**.
+- Quality-attribute threshold validation (performance, reliability,
+  scalability, security) is a core objective.
+- The behavior under test maps to full user workflows from BDD scenarios.
 
-Use `doc-tspec` instead when:
-- Multi-subtype orchestration is required (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
-- Cross-subtype normalization or batch TSPEC work is primary.
+Use `doc-tdd` (the parent skill) instead when:
+- You need the full unified TDD authoring contract across all test types.
+- Unit/integration test-case authoring is the primary focus.
 
 ---
 
-## FTEST Contract (MVP)
+## TDD Functional-Test Contract
 
-### Required Structure
+Functional test cases are **content within a TDD document**, not a separate
+artifact. They live in the TDD template's Section 4 (Test Case Definitions),
+typically as `e2e_tests` (end-to-end workflows) and optionally `security_tests`
+(quality-attribute thresholds when SPEC or ADR mandates them).
 
-FTEST follows a 6-section contract:
+### Structure
+
+The single TDD template defines 7 sections (see `../doc-tdd/`):
+
 1. Document Control
-2. Test Scope
-3. Test Case Index
-4. Test Case Details
-5. SYS Coverage Matrix
-6. Traceability
+2. Test Pyramid
+3. BDD Scenario to Test Mapping
+4. Test Case Definitions — functional cases authored here
+5. Test Thresholds — quality-attribute gates
+6. TDD Execution Order
+7. Traceability
+
+### Element ID Format
+
+Functional test cases use the 4-segment standard, NOT a legacy subtype code:
+
+- Pattern: `TDD.NN.04.xxxx` (test cases live in Section 4)
+- `xxxx` = 4-character hex content hash
+
+A `type` attribute (`e2e` / `security`) marks the functional focus on each case —
+there are no separate numeric type-codes or test-subtype documents.
+
+### Functional Focus Specifics
+
+| Concern | Where it goes in TDD |
+|---------|----------------------|
+| End-to-end workflow scenarios | Section 4 `e2e_tests` (numbered `workflow` steps, `timeout_seconds`, `cleanup`) |
+| Quality-attribute thresholds | Section 5 Test Thresholds (`coverage_target`, `timeout_budget`, `fail_action`) |
+| Security/threat validation | Section 4 `security_tests` (`threat`, `expected_result`) |
+
+> **Coverage note**: Functional tests trace to **EARS / BDD / SPEC** — the
+> behavior they validate. The legacy SYS coverage matrix is dropped (there is no
+> SYS layer in the 8-layer model).
 
 ### Required Tags
 
-- Cumulative Layer-10 tags: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec` (+ `@ctr` if exists)
-- Type-specific required tags: `@sys`, `@threshold`
+- Cumulative upstream tags (Section 7 — Traceability): `@brd`, `@prd`, `@ears`,
+  `@bdd`, `@adr` (element refs, dot notation) + `@spec: SPEC-NN` (document, dash).
+- Self tag: `@tdd: TDD-NN` (document, dash).
+- Functional test cases reference behavior via `@bdd:` (end-to-end scenarios)
+  and `@spec:` (the validated contract).
 
-### Threshold and Coverage
+### Threshold
 
-- TASKS-Ready threshold: `>=90%`
-- SYS coverage target: template-aligned (`>=85%` baseline)
-
-### Folder Rule
-
-Use nested folder structure:
-- `docs/10_TSPEC/FTEST/FTEST-NN_{slug}/FTEST-NN_{slug}.md`
+- IPLAN-Ready score: `>=90/100`.
 
 ---
 
-## Validation Commands
+## Validation
 
-```bash
-# FTEST subtype validation
-python ai_dev_ssd_flow/10_TSPEC/scripts/validate_ftest.py docs/10_TSPEC/FTEST/
+The framework is spec-only — there are no validation scripts to run. This skill
+*is* the validator: apply the declarative checklist below, with
+`framework/layers/07_TDD/README.md` and `framework/governance/` as authority.
 
-# Layer-wide TSPEC validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
+### Manual Checklist
 
-# Quality score validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/FTEST/FTEST-NN_slug/FTEST-NN_slug.md --auto-fix
-
-# Cumulative tag validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact FTEST-NN --expected-layers brd,prd,ears,bdd,adr,sys,req,spec --strict
-```
+- [ ] Document Control complete (Section 1)
+- [ ] Functional cases in Section 4 carry a valid `type` (`e2e` / `security`)
+- [ ] Each functional case has a `TDD.NN.04.xxxx` element ID
+- [ ] End-to-end cases declare numbered `workflow` steps and a `timeout_seconds`
+- [ ] Quality-attribute thresholds set in Section 5 (`coverage_target`,
+      `fail_action`)
+- [ ] Functional cases trace to EARS / BDD / SPEC (no SYS coverage)
+- [ ] Cumulative upstream tags `@brd`..`@spec` present + `@tdd` self-tag
+- [ ] IPLAN-Ready score meets target (>=90/100)
+- [ ] Index updated (`docs/07_TDD/TDD-00_index.md`)
 
 ---
 
 ## Output Quality Gate
 
-- No schema/structure blockers.
-- All required FTEST sections present.
-- `@threshold` mappings are explicit for measurable criteria.
-- Traceability includes required cumulative tags.
-- Report references use versioned naming where applicable.
+- All required TDD sections present (single 7-section template).
+- Each functional test case carries explicit inputs/workflow and expected
+  results.
+- Quality-attribute thresholds are explicit and measurable (Section 5).
+- Traceability includes the required cumulative upstream tags (no SYS).
+- IPLAN-Ready score `>=90/100`.
 
 ---
 
@@ -124,7 +166,16 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact FTEST-NN
 - `doc-ftest-reviewer`
 - `doc-ftest-fixer`
 - `doc-ftest-audit`
-- `doc-tspec` (multi-subtype fallback path)
+- `../doc-tdd/` (parent TDD authoring skill — full unified contract)
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -132,4 +183,5 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact FTEST-NN
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial FTEST authoring skill; aligned to canonical FTEST MVP template/rules/schema; added TSPEC coexistence routing and canonical validation command set |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model (D-0015). Repositioned as a TDD (Layer 7) functional-test specialization referencing the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml` — no FTEST/TSPEC artifact, template, or numeric subtype-code. Functional/end-to-end scenarios and quality-attribute thresholds recast as TDD Section 4/5 content; element IDs `TDD.NN.04.xxxx`; upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN,Code; dropped SYS coverage (functional tests trace to EARS/BDD/SPEC); validation is now this skill's declarative checklist (framework is spec-only). |
+| 1.0 | 2026-02-27 | Initial functional-test authoring skill (pre-migration legacy model). |

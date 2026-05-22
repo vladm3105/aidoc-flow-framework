@@ -416,7 +416,11 @@ to the suite at B7).
   repositioned as SPEC-L6 specialization helpers per D-0015 (33 files). Verified:
   `plm_lint` scope clean (48 remain); conformance 31/31; 125 skills; name==dir; layer:6.
   DONE 2026-05-22.
-- [ ] PLM-B5 — **OPEN** test-subtype decision + rewrite (`doc-*test`).
+- [x] PLM-B5 — Body rewrite: the 6 test-subtype families
+  (`doc-utest/itest/stest/ftest/ptest/sectest`) repositioned as TDD-L7
+  specialization helpers per D-0015 (36 files; legacy codes 40-45/L10 → TDD
+  test-case content). Verified: `plm_lint` scope clean (12 remain); conformance
+  31/31; 125 skills; name==dir; layer:7. DONE 2026-05-22.
 - [ ] PLM-B6 — Helpers/orchestrators + residual quickrefs/READMEs.
 - [ ] PLM-B7 — Promote `plm_lint --all` into conformance; delete the PARITY gap
   section; CHANGELOG/ROADMAP close-out.

@@ -1,48 +1,63 @@
 ---
 name: doc-ptest-autopilot
-description: Automated PTEST generation and review orchestration for performance category and threshold validation
+description: Automated generation and review orchestration for performance-focused TDD (Layer 7) test cases - performance category and threshold validation
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-performance-helper
     - automation-workflow
-    - ptest
   custom_fields:
-    layer: 10
-    artifact_type: PTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: performance
+    deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [SYS, SPEC]
-    downstream_artifacts: [TASKS]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks PTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ptest-autopilot
 
 ## Purpose
 
-Automate PTEST lifecycle for subtype-specific workflows:
-- generate PTEST from upstream context,
+Automate the lifecycle for performance-focused **TDD (Layer 7)** test cases:
+- generate performance test cases from upstream context,
 - validate and audit outputs,
 - hand off to fixer when required.
 
+This skill is a **TDD (Layer 7) specialization** for the performance-test
+focus. It authors TDD documents with a performance emphasis and references the
+single canonical artifact contract `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+(see `../doc-tdd/`); it does **not** define a separate artifact, template, or
+element-code.
+
+**Layer**: 7 (TDD — performance focus)
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
+
 ---
 
-## Input Contract (IPLAN-004 Standard)
+## Input Contract (IPLAN Standard)
 
 - Supported modes:
   - `--ref <path>`
   - `--prompt "<text>"`
-  - `--iplan <path|IPLAN-NNN>`
+  - `--iplan <path|IPLAN-NN>`
 - Precedence: `--iplan > --ref > --prompt`
 - IPLAN resolution order:
   1. Use explicit file path when it exists
-  2. Resolve `plans/IPLAN-NNN*.md`
-  3. Resolve `governance/plans/IPLAN-NNN*.md`
+  2. Resolve `plans/IPLAN-NN*.md`
+  3. Resolve `governance/plans/IPLAN-NN*.md`
   4. If multiple matches exist, fail with disambiguation request
 - Merge conflict rule:
   - Objective/scope conflicts between primary and supplemental sources are blocking and require user clarification.
@@ -54,8 +69,8 @@ Automate PTEST lifecycle for subtype-specific workflows:
 ### Generate/Find Mode
 
 Input:
-- `PTEST-NN` (self type): review existing
-- `SYS-NN` or `SPEC-NN`: generate if missing, else review existing `PTEST-NN`
+- `TDD-NN` (self type): review existing
+- `SPEC-NN`: generate performance test cases if missing, else review existing `TDD-NN`
 
 ### Audit/Fix Mode
 
@@ -68,8 +83,8 @@ Input:
 ## Orchestration Flow
 
 ```text
-1) Resolve target PTEST document
-2) Generate or load PTEST
+1) Resolve target TDD document
+2) Generate or load performance-focused TDD test cases
 3) Run doc-ptest-audit
 4) If needed, run doc-ptest-fixer
 5) Re-audit
@@ -80,64 +95,65 @@ Input:
 
 ## Naming and Contract Rules
 
-- Primary audit output: `PTEST-NN.A_audit_report_vNNN.md`
-- Legacy-compatible review output: `PTEST-NN.R_review_report_vNNN.md`
-- Fix report: `PTEST-NN.F_fix_report_vNNN.md`
+- Primary audit output: `TDD-NN.A_audit_report_vNNN.md`
+- Legacy-compatible review output: `TDD-NN.R_review_report_vNNN.md`
+- Fix report: `TDD-NN.F_fix_report_vNNN.md`
 
-All reports are stored beside parent PTEST in nested folder.
+All reports are stored beside the parent TDD document.
 
 ---
 
 ## Document Type Contract (MANDATORY)
 
-When generating PTEST document instances, the autopilot MUST:
+When generating TDD document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "ptest-document"`
+1. **Read** `document_type` from the canonical template:
+   - Source: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "tdd-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
    ```yaml
-   custom_fields:
-     document_type: ptest-document    # NOT "template"
-     artifact_type: PTEST
-     layer: 10
-     test_type_code: 44
+   metadata:
+     document_type: tdd-document    # NOT "template"
+     artifact_type: TDD
+     deliverable_type: code
+     layer: 7
    ```
 
-3. **Validation**: Generated documents MUST have `document_type: ptest-document`
+3. **Validation**: Generated documents MUST have `document_type: tdd-document`
    - Templates have `document_type: template`
-   - Instances have `document_type: ptest-document`
-   - Schema validates both values
+   - Instances have `document_type: tdd-document`
 
-**Error Handling**: If `instance_document_type` is missing from template, default to `ptest-document`.
+Performance test cases live in Section 4 with a `type` attribute and a scenario
+label (Load/Stress/Endurance/Spike) — NOT a separate artifact or element-code.
 
 ---
 
 ## Canonical References
 
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST-MVP-TEMPLATE.md`
-- `ai_dev_ssd_flow/10_TSPEC/PTEST/PTEST_MVP_SCHEMA.yaml`
-- `ai_dev_ssd_flow/10_TSPEC/scripts/validate_ptest.py`
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Performance threshold rules: `framework/governance/THRESHOLD_NAMING_RULES.md`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
-## Coexistence Rules with `doc-tspec-autopilot`
+## Coexistence Rules with `../doc-tdd/`
 
-Use `doc-ptest-autopilot` when PTEST-only scope is required.  
-Route to `doc-tspec-autopilot` when cross-subtype orchestration is required.
+Use `doc-ptest-autopilot` when a performance-test focus is required.
+Route to `../doc-tdd/` (or its autopilot) when authoring general
+functional unit/integration/e2e test cases is primary.
 
 Fallback:
-- If unresolved subtype blockers persist, escalate to `doc-tspec-autopilot` while preserving report compatibility (`.A_` preferred, `.R_` legacy).
+- If unresolved blockers persist, escalate to `../doc-tdd/` while preserving
+  report compatibility (`.A_` preferred, `.R_` legacy).
 
 ---
 
 ## Example Invocations
 
 ```bash
-/doc-ptest-autopilot PTEST-01
-/doc-ptest-autopilot SYS-01
+/doc-ptest-autopilot TDD-01
 /doc-ptest-autopilot SPEC-01
 ```
 
@@ -146,10 +162,10 @@ Fallback:
 ## Quality Gate
 
 Pass when:
-- PTEST structure matches 6-section contract,
-- required tags are complete,
-- performance categories and thresholds are represented,
-- audit status is PASS and score meets configured threshold.
+- TDD structure matches `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (7 sections),
+- required cumulative tags are complete (`@brd`..`@spec` + `@tdd`),
+- performance scenario categories and measurable `@threshold:`-tagged targets are represented,
+- audit status is PASS and score meets the configured threshold.
 
 ---
 
@@ -160,7 +176,7 @@ Pass when:
 - `doc-ptest-reviewer`
 - `doc-ptest-fixer`
 - `doc-ptest-audit`
-- `doc-tspec-autopilot` (fallback for mixed subtype workflows)
+- `../doc-tdd/` (parent TDD authoring skill)
 
 ---
 
@@ -168,4 +184,5 @@ Pass when:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial PTEST autopilot skill with generate/find plus audit-fix orchestration, versioned report contracts, and TSPEC coexistence routing |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Repositioned as a TDD (Layer 7) performance-test autopilot over the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no PTEST/TSPEC artifact, subtype code, or `test_type_code`). Upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN; report contract emits `TDD-NN.*`. |
+| 1.0 | 2026-02-27 | Initial PTEST autopilot skill (pre-migration, legacy 12-layer model). |

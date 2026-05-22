@@ -1,42 +1,55 @@
 ---
 name: doc-sectest-audit
-description: Unified SECTEST audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+description: Quality gate for security-focused TDD (Layer 7) test cases - runs validator then reviewer and emits a combined fixer-ready report
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-security-helper
     - quality-assurance
-    - sectest-audit
   custom_fields:
-    layer: 10
-    artifact_type: SECTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: security
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [SECTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SECTEST-MVP-TEMPLATE schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-sectest-audit
 
 ## Purpose
 
-Run a single SECTEST audit workflow:
+Quality gate for **security-focused TDD** test cases — the security-test
+specialization of TDD (Layer 7). Runs a single audit workflow:
+
 1. `doc-sectest-validator`
 2. `doc-sectest-reviewer`
 
-Then emit a combined fixer-ready report.
+Then emits a combined fixer-ready report.
+
+This skill is a **TDD (Layer 7) specialization**. It audits TDD test cases
+authored with a security focus; it does **not** define a separate artifact,
+template, or element-code. The canonical artifact contract is
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`).
+
+**Layer**: 7 (TDD — security-test focus)
+
+**Upstream**: TDD document (security focus)
+
+**Downstream**: Audit Report (`TDD-NN.A_audit_report_vNNN.md`)
 
 ---
 
 ## Output Contract
 
 Primary output:
-- `SECTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Fixer compatibility:
 - `doc-sectest-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
@@ -49,7 +62,9 @@ Fixer compatibility:
 - FAIL: validator FAIL OR reviewer score below threshold OR blocking/manual-required issues present
 
 Unsafe-guidance policy:
-- Any guidance that enables operational misuse, production-targeted testing, or exploit execution steps is classified as `manual_required` or `blocked` and cannot auto-pass.
+- Any guidance that enables operational misuse, production-targeted testing, or
+  exploit execution steps is classified as `manual_required` or `blocked` and
+  cannot auto-pass.
 
 ---
 
@@ -77,8 +92,17 @@ If remediation needed:
 ## Example
 
 ```bash
-/doc-sectest-audit docs/10_TSPEC/SECTEST/SECTEST-01_scope/SECTEST-01_scope.md
+/doc-sectest-audit docs/07_TDD/TDD-01_auth_service.yaml
 ```
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -86,12 +110,13 @@ If remediation needed:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial SECTEST audit wrapper with validator->reviewer orchestration, unsafe-guidance blocking policy, and `.A_` preferred fixer contract |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Repositioned as a security-test-focused TDD audit wrapper over the validator->reviewer chain; references `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no separate SECTEST/TSPEC artifact or numeric code). Report contract retargeted to `TDD-NN.A_/.R_`. Unsafe-guidance blocking policy preserved. |
+| 1.0 | 2026-02-27 | Initial security-test audit wrapper (pre-migration legacy layer). |
 
-## Implementation Plan Consistency (IPLAN-004)
+## Implementation Plan Consistency (IPLAN)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
+- Treat plan-derived outputs as valid source mode and verify intent
+  preservation from implementation plan scope/objectives.
 - Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Flag objective/scope conflicts between plan context and artifact output as
+  blocking issues requiring clarification.

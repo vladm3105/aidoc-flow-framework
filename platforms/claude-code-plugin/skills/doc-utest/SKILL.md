@@ -1,124 +1,140 @@
 ---
 name: doc-utest
-description: Create Unit Test Specifications (UTEST) as Layer 10 subtype artifacts for component-level test validation
+description: Author TDD (Layer 7) test cases with a unit-test focus - component-level logic, state, validation, and edge-case tests traced to SPEC
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
-    - utest
+    - layer-7-artifact
+    - tdd-unit-helper
     - shared-architecture
   custom_fields:
-    layer: 10
-    artifact_type: UTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: unit
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC]
-    downstream_artifacts: [TASKS, Code]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks UTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    downstream_artifacts: [IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-utest
 
 ## Purpose
 
-Create **Unit Test Specifications (UTEST)** for component-level validation as a Layer 10 TSPEC subtype with explicit REQ traceability and TASKS-ready quality gates.
+Author **TDD (Layer 7)** test-case definitions with a **unit-test focus** —
+component-level logic, state, validation, and edge-case checks traced to SPEC
+component contracts.
 
-**Layer**: 10  
-**Subtype Code**: 40 (`TSPEC.NN.40.SS`)
+This skill is a **TDD (Layer 7) specialization**. It authors TDD documents with
+a unit-test focus and references the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`); it does **not**
+define a separate artifact, template, or element-code. Unit tests are the `unit`
+`type` of TDD test cases, not a distinct layer or numeric code.
+
+**Layer**: 7 (TDD — unit-test focus)
+
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4),
+ADR (Layer 5), SPEC (Layer 6)
+
+**Downstream**: IPLAN (Layer 8), Code
 
 ---
 
 ## Canonical References
 
-Before authoring UTEST, read:
+Before authoring unit-focused TDD test cases, read:
 
-1. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-2. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.yaml`
-3. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST-MVP-TEMPLATE.md`
-4. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
-5. `ai_dev_ssd_flow/10_TSPEC/UTEST/UTEST_MVP_SCHEMA.yaml`
+1. Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+2. Layer overview: `framework/layers/07_TDD/README.md`
+3. Parent TDD skill: `../doc-tdd/`
+4. Governance / ID & naming standards: `framework/governance/`
 
 ---
 
 ## When to Use
 
 Use `doc-utest` when:
-- You are creating or editing **UTEST-only** artifacts.
-- `@req` and `@spec` mappings are primary.
-- Component-level logic, state, validation, and edge-case checks are the core objective.
+- You are authoring TDD test cases focused on **unit-level** validation.
+- `@spec` (and upstream `@ears`/`@bdd`) mappings are primary.
+- Component-level logic, state, validation, and edge-case checks are the core
+  objective.
 
-Use `doc-tspec` instead when:
-- Multi-subtype orchestration is required (UTEST/ITEST/STEST/FTEST/PTEST/SECTEST).
-- Cross-subtype normalization or batch TSPEC work is primary.
+Use `../doc-tdd/` directly when:
+- You need the full TDD document spanning all test types (unit, integration,
+  e2e, security) rather than a unit-focused authoring pass.
 
 ---
 
-## UTEST Contract (MVP)
+## Unit-Test Focus Contract
 
 ### Required Structure
 
-UTEST follows a 6-section contract:
-1. Document Control
-2. Test Scope
-3. Test Case Index
-4. Test Case Details
-5. REQ Coverage Matrix
-6. Traceability
+Unit-focused work lives inside the single TDD document
+(`framework/layers/07_TDD/TDD-TEMPLATE.yaml`, 7 sections). For unit cases,
+emphasize:
+
+1. Document Control (Section 1)
+2. Test Pyramid — unit slice (Section 2)
+3. BDD Scenario to Test Mapping — `type: unit` entries (Section 3)
+4. Test Case Definitions — `type: unit` cases (Section 4)
+5. Test Thresholds — unit coverage gate (Section 5)
+6. Traceability (Section 7)
+
+### Element IDs
+
+Unit test cases use the 4-segment element ID `TDD.NN.04.xxxx` (test cases live
+in Section 4) with a `type: unit` attribute — NOT a separate numeric code.
 
 ### Required Tags
 
-- Cumulative Layer-10 tags: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`, `@spec` (+ `@ctr` if exists)
-- UTEST-specific required tags: `@req`, `@spec`
+- Cumulative Layer-7 tags: `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@spec`
+  (elements use `TYPE.NN.SS.xxxx`; SPEC uses document-level `SPEC-NN`)
+- Self tag: `@tdd: TDD-NN`
 
 ### Unit-Test Gate Requirements
 
-- TASKS-Ready score target must be `>=90%`.
-- REQ coverage target must be `>=90%`.
-- Test categories must include `[Logic]`, `[State]`, `[Validation]`, `[Edge]`.
-- Every test case must include an Input/Output table.
-- Complex test logic must include pseudocode.
+- IPLAN-Ready score target must be `>=90`.
+- Unit coverage target must be `>=90%`.
+- Unit cases must cover logic, state, validation, and edge conditions.
+- Every test case must include concrete inputs and expected outputs.
+- Complex test logic must document edge cases.
 
 ### Folder Rule
 
-Use nested folder structure:
-- `docs/10_TSPEC/UTEST/UTEST-NN_{slug}/UTEST-NN_{slug}.md`
+Unit cases live in the parent TDD document:
+- `docs/07_TDD/TDD-NN_{component_slug}.yaml`
 
 ---
 
-## Validation Commands
+## Validation
 
-```bash
-# UTEST subtype validation
-python ai_dev_ssd_flow/10_TSPEC/scripts/validate_utest.py docs/10_TSPEC/UTEST/
+The framework is spec-only — there are no validation scripts to run. This skill
+*is* the validator. Apply the declarative checklist below, with
+`framework/layers/07_TDD/README.md` and `framework/governance/` as authority.
 
-# Layer-wide TSPEC validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_all_tspec.sh docs/10_TSPEC/
-
-# Quality score validation
-bash ai_dev_ssd_flow/10_TSPEC/scripts/validate_tspec_quality_score.sh docs/10_TSPEC/
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/10_TSPEC/UTEST/UTEST-NN_slug/UTEST-NN_slug.md --auto-fix
-
-# Cumulative tag validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact UTEST-NN --expected-layers brd,prd,ears,bdd,adr,sys,req,spec --strict
-```
+- [ ] Unit cases authored inside the TDD document (`TDD-NN_{slug}.yaml`)
+- [ ] Each unit case has a `TDD.NN.04.xxxx` ID and `type: unit`
+- [ ] Inputs and expected outputs present for every unit case
+- [ ] Edge cases documented for complex logic
+- [ ] Logic / state / validation / edge conditions all represented
+- [ ] Unit coverage threshold set (`>=90%`)
+- [ ] Cumulative tags `@brd` through `@spec` present, plus `@tdd` self-tag
+- [ ] IPLAN-Ready score `>=90`
 
 ---
 
 ## Output Quality Gate
 
-- No schema/structure blockers.
-- All required UTEST sections present.
-- `@req` and `@spec` mappings are explicit.
-- REQ coverage and TASKS-ready scores meet `>=90%` target.
-- `[Logic]`, `[State]`, `[Validation]`, `[Edge]` categories are represented.
-- Input/Output tables and pseudocode guidance are present where required.
-- Report references use versioned naming where applicable.
+- No schema/structure blockers against `TDD-TEMPLATE.yaml`.
+- Unit-focused TDD sections present.
+- `@spec` and upstream mappings are explicit.
+- Unit coverage and IPLAN-Ready scores meet `>=90`/`>=90%` targets.
+- Logic, state, validation, and edge conditions are represented.
+- Inputs/expected outputs documented for each unit case.
 
 ---
 
@@ -129,7 +145,16 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact UTEST-NN
 - `doc-utest-reviewer`
 - `doc-utest-fixer`
 - `doc-utest-audit`
-- `doc-tspec` (multi-subtype fallback path)
+- `../doc-tdd/` (parent TDD authoring skill — full document, all test types)
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
 
 ---
 
@@ -137,4 +162,5 @@ python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact UTEST-NN
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial UTEST authoring skill aligned to canonical UTEST MVP template/rules/schema with 90%-gate constraints and TSPEC coexistence routing |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Repositioned as a unit-test-focused TDD specialization referencing `framework/layers/07_TDD/TDD-TEMPLATE.yaml` (no separate UTEST/TSPEC artifact, template, or numeric code). 4-segment element IDs (`TDD.NN.04.xxxx`, `type: unit`); upstream BRD,PRD,EARS,BDD,ADR,SPEC; downstream IPLAN. Dead validation scripts removed in favor of this skill's declarative checklist. |
+| 1.0 | 2026-02-27 | Initial unit-test authoring skill (pre-migration legacy layer). |

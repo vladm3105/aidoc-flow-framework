@@ -1,41 +1,49 @@
 ---
 name: doc-ftest-fixer
-description: Apply automated and guided fixes for FTEST findings from audit/review reports
+description: Apply automated and guided fixes for functional-TDD (Layer 7) findings from audit/review reports
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-functional-helper
     - quality-assurance
-    - ftest-fix
   custom_fields:
-    layer: 10
-    artifact_type: FTEST
+    layer: 7
+    artifact_type: TDD
+    tdd_focus: functional
+    deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [FTEST, Audit Report, Review Report]
-    downstream_artifacts: [Fixed FTEST, Fix Report]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks FTEST-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [TDD, Audit Report, Review Report]
+    downstream_artifacts: [Fixed TDD, Fix Report]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks TDD-TEMPLATE schema_version"
 ---
 
 # doc-ftest-fixer
 
 ## Purpose
 
-Apply fixes for FTEST issues identified by validator/reviewer workflows, with deterministic source-report precedence.
+Apply fixes for functional-focused **TDD (Layer 7)** issues identified by
+validator/reviewer workflows, with deterministic source-report precedence.
+
+This skill is a **TDD (Layer 7) specialization** for the functional-test focus.
+It fixes TDD documents against the single canonical artifact contract
+`framework/layers/07_TDD/TDD-TEMPLATE.yaml` (see `../doc-tdd/`); it does **not**
+define a separate artifact, template, or element-code.
 
 ---
 
 ## Input Contract
 
 Preferred:
-- `FTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Legacy-compatible:
-- `FTEST-NN.R_review_report_vNNN.md`
+- `TDD-NN.R_review_report_vNNN.md`
 
 Selection precedence:
 1. Newest timestamp/version.
@@ -45,27 +53,28 @@ Selection precedence:
 
 ## Fix Categories
 
-- Missing required sections (6-section contract)
-- Missing/invalid subtype tags (`@sys`, `@threshold`)
-- Threshold-table and measurement-methodology completeness
-- Traceability and cross-reference consistency
-- Naming/path corrections for nested-folder compliance
+- Missing required sections (single 7-section TDD template)
+- Missing/invalid element IDs (correct to `TDD.NN.04.xxxx`)
+- Missing/invalid functional-case `type` (`e2e` / `security`)
+- Quality-attribute threshold and measurement-methodology completeness (Section 5)
+- Traceability and cross-reference consistency (functional cases trace to EARS / BDD / SPEC; no SYS)
+- Naming/path corrections for the `docs/07_TDD/` layout
 
 ---
 
 ## Outputs
 
-- Fixed FTEST document(s)
-- `FTEST-NN.F_fix_report_vNNN.md`
+- Fixed TDD document(s)
+- `TDD-NN.F_fix_report_vNNN.md`
 
 ---
 
 ## Commands
 
 ```bash
-/doc-ftest-fixer FTEST-01
-/doc-ftest-fixer FTEST-01 --review-report FTEST-01.A_audit_report_v001.md
-/doc-ftest-fixer FTEST-01 --review-report FTEST-01.R_review_report_v001.md
+/doc-ftest-fixer TDD-01
+/doc-ftest-fixer TDD-01 --review-report TDD-01.A_audit_report_v001.md
+/doc-ftest-fixer TDD-01 --review-report TDD-01.R_review_report_v001.md
 ```
 
 ---
@@ -77,16 +86,24 @@ Selection precedence:
 
 ---
 
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
+
+---
+
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial FTEST fixer with deterministic `.A_` preferred / `.R_` legacy precedence and versioned fix report contract |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model (D-0015). Fixes functional-focused TDD (Layer 7) documents against the single `framework/layers/07_TDD/TDD-TEMPLATE.yaml`; fix categories retargeted to `TDD.NN.04.xxxx` IDs and `e2e`/`security` case types; traceability traces to EARS/BDD/SPEC (no SYS); report contract retargeted to `TDD-NN.*`. |
+| 1.0 | 2026-02-27 | Initial functional-test fixer (pre-migration legacy model). |
 
 ## Implementation Plan Consistency (IPLAN-004)
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
+- Treat plan-derived outputs as a valid source mode and verify intent preservation from implementation-plan scope/objectives.
+- Validate the upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
 - Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-

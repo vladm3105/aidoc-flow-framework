@@ -1,42 +1,49 @@
 ---
 name: doc-utest-audit
-description: Unified UTEST audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+description: Unified unit-focused TDD (Layer 7) audit wrapper that runs validator then reviewer and emits a combined fixer-ready report
 metadata:
   tags:
     - sdd-workflow
-    - layer-10-artifact
+    - layer-7-artifact
+    - tdd-unit-helper
     - quality-assurance
-    - utest-audit
   custom_fields:
-    layer: 10
-    artifact_type: UTEST
+    layer: 7
+    artifact_type: TDD
+    test_focus: unit
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [UTEST]
+    upstream_artifacts: [TDD]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks UTEST-MVP-TEMPLATE schema_version"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-utest-audit
 
 ## Purpose
 
-Run a single UTEST audit workflow:
+Run a single unit-focused **TDD (Layer 7)** audit workflow:
 1. `doc-utest-validator`
 2. `doc-utest-reviewer`
 
 Then emit a combined fixer-ready report.
+
+This skill is a **TDD (Layer 7) specialization** for the unit-test focus of TDD.
+It audits against the single canonical artifact contract
+(`framework/layers/07_TDD/TDD-TEMPLATE.yaml`, see `../doc-tdd/`) and does **not**
+define a separate artifact, template, or element-code.
+
+**Layer**: 7 (TDD — unit-test focus)
 
 ---
 
 ## Output Contract
 
 Primary output:
-- `UTEST-NN.A_audit_report_vNNN.md`
+- `TDD-NN.A_audit_report_vNNN.md`
 
 Fixer compatibility:
 - `doc-utest-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
@@ -45,11 +52,15 @@ Fixer compatibility:
 
 ## Combined Status Rules
 
-- PASS: validator PASS AND reviewer score >= 90 AND no blocking/manual-required issues
-- FAIL: validator FAIL OR reviewer score < 90 OR blocking/manual-required issues present
+- PASS: validator PASS AND reviewer score >= 90 AND no blocking/manual-required
+  issues
+- FAIL: validator FAIL OR reviewer score < 90 OR blocking/manual-required issues
+  present
 
 Unit-test gate policy:
-- Missing category coverage, missing Input/Output tables, REQ coverage below 90%, or missing pseudocode for complex logic are `manual_required` or `blocked` and cannot auto-pass.
+- Missing category coverage (logic/state/validation/edge), missing
+  inputs/expected outputs, unit coverage below 90%, or missing edge cases for
+  complex logic are `manual_required` or `blocked` and cannot auto-pass.
 
 ---
 
@@ -69,7 +80,7 @@ Unit-test gate policy:
 ## Handoff Rule
 
 If remediation needed:
-- Run `doc-utest-fixer` with newest report.
+- Run `doc-utest-fixer` with the newest report.
 - On timestamp/version tie, prefer `.A_` over `.R_`.
 
 ---
@@ -77,8 +88,28 @@ If remediation needed:
 ## Example
 
 ```bash
-/doc-utest-audit docs/10_TSPEC/UTEST/UTEST-01_scope/UTEST-01_scope.md
+/doc-utest-audit docs/07_TDD/TDD-01_auth_service.yaml
 ```
+
+---
+
+## References
+
+- Canonical TDD artifact contract: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer overview: `framework/layers/07_TDD/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent TDD skill: `../doc-tdd/`
+
+---
+
+## Implementation Plan Consistency (IPLAN)
+
+- Treat plan-derived outputs as a valid source mode and verify intent
+  preservation from implementation plan scope/objectives.
+- Validate the upstream autopilot precedence assumption:
+  `--iplan > --ref > --prompt`.
+- Flag objective/scope conflicts between plan context and artifact output as
+  blocking issues requiring clarification.
 
 ---
 
@@ -86,12 +117,5 @@ If remediation needed:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.0 | 2026-02-27 | Initial UTEST audit wrapper with validator->reviewer orchestration and 90%-gate unit-test pass contract |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer TDD model (Layer 7). Audits unit-focused TDD test cases (no UTEST/TSPEC artifact or numeric code); validator->reviewer orchestration retained; report contract emits `TDD-NN.A_…`. |
+| 1.0 | 2026-02-27 | Initial unit-test audit wrapper (pre-migration legacy layer). |
