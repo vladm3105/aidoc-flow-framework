@@ -1,7 +1,7 @@
 # aidoc-flow — Claude Code plugin
 
 The native **Claude Code** delivery of the AI Doc Flow framework. Ships a
-124-skill SDD (Specification-Driven Development) engine plus 1 agent and 1
+124-skill SDD (Specification-Driven Development) engine plus 9 agents and 1
 command. Claude itself performs validation, generation, and scoring — there's
 no MCP backend.
 
@@ -11,7 +11,7 @@ no MCP backend.
 |-----------|------:|--------|
 | Skills (`doc-*`) | 112 | SDD layer engine — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` and their `-audit` / `-autopilot` / `-fixer` / `-reviewer` / `-validator` variants, plus subtype skills (CSPEC/DSPEC/UXSPEC/RISKSPEC/PROCSPEC, UTEST/ITEST/STEST/FTEST/PTEST/SECTEST) and orchestrators (`doc-flow`, `doc-naming`, `doc-validator`, `doc-review`, `doc-ref`). |
 | Skills (non-doc, SDD-adjacent) | 12 | `adr-roadmap`, `charts-flow`, `context-analyzer`, `contract-tester`, `mermaid-gen`, `project-init`, `quality-advisor`, `security-audit`, `skill-recommender`, `test-automation`, `trace-check`, `workflow-optimizer`. |
-| Agents | 1 | `requirements-analyst` — SDD requirements decomposition. |
+| Agents | 9 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor` (SDD lifecycle: spec lane → execution lane → read-only quality gates). See `agents/README.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture current conversation plan to a timestamped file. |
 | **Total skills** | **124** | |
 
