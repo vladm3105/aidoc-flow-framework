@@ -427,5 +427,12 @@ to the suite at B7).
   `workflow-optimizer`, `REVIEW_DOCUMENT_STANDARDS.md` + 2 quickrefs. **`plm_lint
   --all` now clean corpus-wide (0 fingerprints)**; conformance 31/31; 125 skills;
   all SKILL.md name==dir. DONE 2026-05-22.
-- [ ] PLM-B7 — Promote `plm_lint --all` into conformance; delete the PARITY gap
-  section; CHANGELOG/ROADMAP close-out.
+- [x] PLM-B7 — Promoted the gate into conformance
+  (`tests/conformance/platforms/test_plm_lint.py`; suite 31→**32**); deleted the
+  `docs/PARITY.md` gap section (→ "both platforms aligned"); CHANGELOG close-out
+  (project + plugin `[Unreleased]`). DONE 2026-05-22.
+
+**✅ PLM COMPLETE (2026-05-22).** The Claude Code plugin's entire 125-skill
+corpus is migrated to the framework's 8-layer model; `plm_lint --all` is clean
+and enforced by conformance (32/32). The `docs/PARITY.md` layer-model gap is
+closed. Both platforms now implement the 8-layer model.

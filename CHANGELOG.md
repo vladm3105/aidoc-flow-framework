@@ -10,6 +10,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+- **Plugin layer-model migration (PLM).** Migrated the entire Claude Code
+  plugin skill corpus (125 skills) from the legacy **12-layer** SDD model to the
+  framework's **8-layer** model (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN), closing
+  the layer-model gap noted under [1.0.0] and in `docs/PARITY.md` (the gap was
+  far larger than that note implied — 116/142 skills carried legacy
+  fingerprints). Renamed `doc-tspec*`→`doc-tdd*` and `doc-tasks*`→`doc-iplan*`;
+  retired the legacy SYS/REQ/CTR families (142→125 skills); kept the SPEC- and
+  test-subtype families as L6/L7 specialization helpers (decision D-0015);
+  realigned every layer number, element ID (now 4-segment `TYPE.NN.SS.xxxx`),
+  `framework/layers/` path, downstream/traceability chain, and skill
+  cross-reference; removed dead validation-script references. Delivered in
+  staged, conformance-gated batches B0–B7 (`plans/PLM-PLAN.md`).
+
+### Added
+- Conformance check `tests/conformance/platforms/test_plm_lint.py` (suite now
+  **32** tests) — fails if any plugin skill reintroduces a legacy 12-layer
+  fingerprint, locking the migration in against regression.
+
 ## [1.0.0] — 2026-05-21
 
 **Phase 5 — Cutover.** The multi-platform project replaces `main`.

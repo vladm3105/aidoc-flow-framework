@@ -7,8 +7,9 @@ shape on each side.
 
 > Status: as of `v1.0.0` / `hermes/v0.1.1` /
 > `claude-code-plugin/v0.1.0` (2026-05-22; plugin layer-model
-> migration PLM-B1 landed). Updates land when a platform ships a
-> structurally different capability, not per-PR.
+> migration PLM complete — both platforms on the 8-layer model).
+> Updates land when a platform ships a structurally different
+> capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
@@ -106,42 +107,20 @@ retired the legacy SYS/REQ/CTR families.)
   validator) as a separate skill invocation; Hermes' generic tools
   dispatch based on inputs.
 
-## Known parity gap — SDD layer model (migration in progress)
+## SDD layer model — both platforms aligned
 
-The plugin's skill set was originally authored against the **legacy
-12-layer model** (BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR, SPEC,
-TSPEC, TASKS, Code) — not the framework's current **8-layer model**
-(BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN). The mismatch is
-pervasive — legacy layer numbers, element-code scheme, upstream
-chains, `ai_dev_ssd_flow/` paths, and dead validation-script
-references run through most skill bodies. Hermes was rewritten to the
-8-layer model during P2-T9; the plugin is being migrated under task
-**PLM** (`plans/PLM-PLAN.md`), staged and conformance-gated by
-`tests/conformance/platforms/plm_lint.py`.
-
-**Done (PLM-B1):**
-
-- **Layers 7 & 8 now exist** — `doc-tspec*` → `doc-tdd*` and
-  `doc-tasks*` → `doc-iplan*`, fully rewritten to the framework's
-  `07_TDD` / `08_IPLAN` contracts (TDD is a single unified template,
-  no subtypes; IPLAN carries the file-manifest / session-handoff
-  model).
-- **Legacy layers retired** — `doc-sys`, `doc-req`, `doc-ctr` removed
-  (no home in the 8-layer model; their concerns fold into EARS / ADR
-  / SPEC). Plugin skill count 142 → 125.
-- **Orchestrators + agents realigned** — `doc-flow`,
-  `skill-recommender`, `project-init`, and the agent roster now route
-  the 8-layer flow only.
-
-**Remaining (PLM-B2…B7):** the other layer families (`doc-brd`,
-`doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`), the SPEC-
-and test-subtype families, and the residual helpers still carry
-legacy-model bodies (~108 skill files). Tracked per-batch in
-`plans/MIGRATION_TODO.md`; the gap section is removed once
-`plm_lint --all` is clean (PLM-B7). **Open decision** before B4/B5:
-the fate of the SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`)
-and test-subtype (`doc-utest/itest/stest/ftest/ptest/sectest`)
-families, which have no single-template backing in the 8-layer model.
+Both platforms now implement the framework's **8-layer model**
+(BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN → Code). Hermes was rewritten to
+it during P2-T9; the Claude Code plugin's skill corpus — originally
+authored against the legacy 12-layer model (…SYS, REQ, CTR, SPEC,
+TSPEC, TASKS…) — was migrated under task **PLM** (`plans/PLM-PLAN.md`):
+`doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*`, the SYS/REQ/CTR
+families retired, and all layer numbers, element IDs (now 4-segment
+`TYPE.NN.SS.xxxx`), paths, and traceability chains realigned. The
+plugin's SPEC- and test-subtype families are kept as L6/L7
+specialization helpers (decision D-0015). Conformance test
+`tests/conformance/platforms/test_plm_lint.py` enforces that the plugin
+carries no legacy-model fingerprints, so the alignment cannot regress.
 
 ## Choosing between Hermes and the plugin
 
@@ -151,7 +130,6 @@ families, which have no single-template backing in the 8-layer model.
 | Native Claude Code experience with slash-commands | **Plugin** |
 | Per-operation skill granularity in your workflow | **Plugin** |
 | Server-side validation as an HTTP / stdio service | **Hermes** |
-| Fully 8-layer-clean SDD coverage end-to-end today | **Hermes** (plugin mid-migration — PLM; layers 7–8 + orchestrators done) |
 | The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers + SPEC subtypes + test subtypes) |
 | Internal pytest-style validation of the platform itself | **Hermes** (447 tests) |
 | Documentation-first artifacts via skill bodies | **Plugin** (declarative SKILL.md per operation) |

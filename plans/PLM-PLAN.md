@@ -4,8 +4,8 @@
 |------------|--------------------------------|
 | Task       | PLM (Plugin Layer Migration)   |
 | Depends on | P3-T1 §Deferred R2 · P5-T1 Q3 · D-0013 · `framework/registry/LAYER_REGISTRY.yaml` |
-| Status     | PLANNED — 2026-05-22T00:48:53Z |
-| Feeds      | Removal of the `docs/PARITY.md` "Known parity gap — SDD layer model" section |
+| Status     | ✅ COMPLETE — 2026-05-22 (B0–B7 landed; corpus fully 8-layer; conformance 32/32) |
+| Feeds      | Removal of the `docs/PARITY.md` "Known parity gap — SDD layer model" section (done) |
 
 ## Objective
 
@@ -113,7 +113,7 @@ blanket find/replace. Edit only where the token denotes a *legacy layer*.
 | **B4** | Body rewrite: `doc-spec` (renumbered L9→**L6**, dropped SYS/REQ/CTR upstream) + the 5 SPEC-subtype families (`doc-cspec/dspec/uxspec/riskspec/procspec`) repositioned as SPEC-L6 specialization helpers per D-0015 (33 files). Verified: `plm_lint` scope clean (48 remain); conformance 31/31; 125 skills; name==dir; layer:6. | doc-spec + 5 subtypes / 33 files | ✅ DONE 2026-05-22 |
 | **B5** | Body rewrite: the 6 test-subtype families (`doc-utest/itest/stest/ftest/ptest/sectest`) repositioned as TDD-L7 specialization helpers per D-0015 (36 files; legacy TSPEC subtype codes 40-45, L10 → TDD test-case content with a test_focus). Verified: `plm_lint` scope clean (12 remain); conformance 31/31; 125 skills; name==dir; layer:7. | 6 subtypes / 36 files | ✅ DONE 2026-05-22 |
 | **B6** | Helper/orchestrator skills (12 files): `doc-naming` (+ the deleted element-code system), `doc-validator`, `doc-ref`, `charts-flow`, `trace-check`, `quality-advisor`, `project-mngt`, `context-analyzer`, `workflow-optimizer`, `REVIEW_DOCUMENT_STANDARDS.md` + 2 quickrefs. Verified: **`plm_lint --all` clean (whole corpus, 0 fingerprints)**; conformance 31/31; 125 skills; all 125 SKILL.md name==dir. | 12 files | ✅ DONE 2026-05-22 |
-| **B7** | Promote `plm_lint` into the conformance suite; delete the PARITY gap section; CHANGELOG/ROADMAP/TODO close-out | docs + tests | — |
+| **B7** | Promoted the gate into the conformance suite (`tests/conformance/platforms/test_plm_lint.py`, suite 31→**32**, enforces `scan(all)`); deleted the `docs/PARITY.md` gap section (→ "both platforms aligned"); CHANGELOG close-out (project + plugin `[Unreleased]`). | docs + tests | ✅ DONE 2026-05-22 |
 
 ## Step sequence
 

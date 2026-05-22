@@ -8,22 +8,18 @@
 > (commands in `plans/MIGRATION_TODO.md` P5-T6). Pre-migration
 > history is on the protected `legacy-ucx-v3.2-read-only` branch.
 >
-> **▶ ACTIVE post-v1.0 task — PLM (Plugin layer-model migration).** The
-> plugin's skills are authored against the legacy **12-layer** model;
-> this migrates the whole corpus to the framework's **8-layer** model.
-> Plan + shared rewrite spec: `plans/PLM-PLAN.md`. Gate:
-> `tests/conformance/platforms/plm_lint.py`. **B0–B3 done.** B1: renamed
-> tspec→tdd & tasks→iplan (12 bodies), retired sys/req/ctr (142→125 skills),
-> migrated doc-flow/skill-recommender/project-init + 9-agent roster. B2:
-> doc-brd/doc-prd/doc-ears (21 files). B3: doc-bdd/doc-adr + adr-roadmap (15
-> files). B4: doc-spec (L9→L6) + 5 SPEC-subtype families as L6 helpers (33
-> files). B5: 6 test-subtype families as TDD-L7 helpers (36 files). B6: 12
-> helper/orchestrator skills incl. doc-naming (element-code system deleted).
-> **`plm_lint --all` is now CLEAN corpus-wide (0 fingerprints)** — every plugin
-> skill is on the 8-layer model. Verified clean each batch (conformance 31/31;
-> all 125 SKILL.md name==dir). **0 files remain.** **Next: B7 (final)** —
-> promote `plm_lint --all` into the conformance suite (`test_*`), delete the
-> `docs/PARITY.md` gap section, CHANGELOG/ROADMAP close-out.
+> **✅ PLM COMPLETE (2026-05-22) — Plugin layer-model migration.** The Claude
+> Code plugin's entire **125-skill** corpus is migrated from the legacy
+> 12-layer SDD model to the framework's **8-layer** model — all batches B0–B7
+> landed. Sequence: B1 renamed tspec→tdd & tasks→iplan + retired sys/req/ctr
+> (142→125); B2 brd/prd/ears; B3 bdd/adr + adr-roadmap; B4 spec (L9→L6) + 5
+> SPEC-subtypes (L6 helpers); B5 6 test-subtypes (L7 helpers); B6 12
+> helper/orchestrator skills (incl. doc-naming, element-code system deleted);
+> B7 promoted the gate to conformance + deleted the PARITY gap + CHANGELOG
+> close-out. Both platforms now implement the 8-layer model. `plm_lint --all`
+> is clean and enforced by conformance (`tests/conformance/platforms/test_plm_lint.py`;
+> suite **32/32**). Records: `plans/PLM-PLAN.md`, `DECISIONS.md` D-0015. SPEC-/
+> test-subtype families kept as L6/L7 specialization helpers (D-0015).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
@@ -33,8 +29,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-22T00:48:53Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration complete (`v1.0.0`); **PLM active** — B0–B6 done, corpus fully 8-layer (`plm_lint --all` clean); only B7 (finalize) left |
-| Next task     | **PLM-B7 (final)** — promote `plm_lint --all` into the conformance suite as a `test_*` module; delete the `docs/PARITY.md` "Known parity gap" section; CHANGELOG/ROADMAP close-out. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
+| Current phase | Migration complete (`v1.0.0`); **PLM COMPLETE** — plugin fully 8-layer (125 skills; conformance 32/32) |
+| Next task     | **None for PLM** — task closed. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation — see `plans/MIGRATION_TODO.md` P5-T6.)* |
 
 ## Progress
 

@@ -29,6 +29,24 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   canonical 8-layer model (legacy SYS/REQ/CTR/TSPEC labelled as
   legacy auxiliaries). Conformance suite stays green (31/31).
 
+### Changed
+- **Whole skill corpus migrated to the framework's 8-layer SDD model**
+  (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN), replacing the legacy 12-layer
+  authoring model the skills were built on (task PLM,
+  `../../plans/PLM-PLAN.md`). `doc-tspec*`→`doc-tdd*` (Layer 7),
+  `doc-tasks*`→`doc-iplan*` (Layer 8); SPEC renumbered 9→6; element IDs
+  now 4-segment `TYPE.NN.SS.xxxx`; all `framework/layers/` paths,
+  downstream/traceability chains, and skill cross-references realigned;
+  dead validation-script references replaced with declarative checks.
+  The SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`) and
+  test-subtype (`doc-utest/itest/stest/ftest/ptest/sectest`) families
+  are retained as SPEC-L6 / TDD-L7 specialization helpers (D-0015).
+
+### Removed
+- Legacy `doc-sys*`, `doc-req*`, `doc-ctr*` skill families — the SYS,
+  REQ, and CTR layers do not exist in the 8-layer model. Plugin skill
+  count 142 → 125.
+
 ## [0.1.0] — 2026-05-20
 
 First independent release of the Claude Code plugin platform on the
