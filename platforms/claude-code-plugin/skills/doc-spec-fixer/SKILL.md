@@ -6,20 +6,20 @@ metadata:
     - sdd-workflow
     - quality-assurance
     - spec-fix
-    - layer-9-artifact
+    - layer-6-artifact
     - shared-architecture
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [REQ, CTR, SPEC, Review Report]
-    downstream_artifacts: [Fixed SPEC, Fix Report]
-    version: "2.2"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, Audit Report]
+    downstream_artifacts: [Fixed SPEC, Fix Report, TDD, IPLAN, Code]
+    version: "2.3"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 ---
 
 # doc-spec-fixer
@@ -28,9 +28,9 @@ metadata:
 
 Automated **fix skill** that reads the latest review report and applies fixes to SPEC (Specification) documents. This skill bridges the gap between `doc-spec-reviewer` (which identifies issues) and the corrected SPEC, enabling iterative improvement cycles.
 
-**Layer**: 9 (SPEC Quality Improvement)
+**Layer**: 6 (SPEC Quality Improvement)
 
-**Upstream**: REQ documents, CTR documents, SPEC document, Review Report (`SPEC-NN.A_audit_report_vNNN.md` preferred; `SPEC-NN.R_review_report_vNNN.md` legacy-compatible)
+**Upstream**: SPEC document, Audit/Review Report (`SPEC-NN.A_audit_report_vNNN.md` preferred; `SPEC-NN.R_review_report_vNNN.md` legacy-compatible), plus upstream BRD/PRD/EARS/BDD/ADR for traceability alignment
 
 **Downstream**: Fixed SPEC, Fix Report (`SPEC-NN.F_fix_report_vNNN.md`)
 
@@ -61,8 +61,8 @@ Use `doc-spec-fixer` when:
 | `doc-spec-audit` | Unified validator+reviewer wrapper | Preferred upstream report source |
 | `doc-naming` | Element ID standards | Fix element IDs |
 | `doc-spec` | SPEC creation rules | Create missing sections |
-| `doc-req` | REQ traceability | Validate upstream links |
-| `doc-ctr` | CTR traceability | Validate contract links |
+| `doc-adr` | ADR traceability | Validate upstream architecture links |
+| `doc-bdd` | BDD traceability | Validate behavior-contract links |
 
 ---
 
@@ -118,7 +118,7 @@ Fixes SPEC documents that are not in nested folders. This phase runs FIRST becau
 **Required Structure**:
 | SPEC Type | Required Location |
 |-----------|-------------------|
-| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+| YAML | `docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
 
 **Fix Actions**:
 
@@ -160,8 +160,8 @@ def fix_spec_structure(spec_path: str) -> list[Fix]:
 
         # Update upstream references in YAML file
         content = Path(new_path).read_text()
-        updated_content = content.replace('../08_CTR/', '../../08_CTR/')
-        updated_content = updated_content.replace('../07_REQ/', '../../07_REQ/')
+        updated_content = content.replace('../05_ADR/', '../../05_ADR/')
+        updated_content = updated_content.replace('../04_BDD/', '../../04_BDD/')
         Path(new_path).write_text(updated_content)
         fixes.append(f"Updated relative links for nested folder structure")
 
@@ -172,8 +172,8 @@ def fix_spec_structure(spec_path: str) -> list[Fix]:
 
 | Original Path | Updated Path |
 |---------------|--------------|
-| `../08_CTR/CTR-01_slug/CTR-01.yaml` | `../../08_CTR/CTR-01_slug/CTR-01.yaml` |
-| `../07_REQ/REQ-01_slug/REQ-01.md` | `../../07_REQ/REQ-01_slug/REQ-01.md` |
+| `../05_ADR/ADR-01_slug/ADR-01.yaml` | `../../05_ADR/ADR-01_slug/ADR-01.yaml` |
+| `../04_BDD/BDD-01_slug/BDD-01.yaml` | `../../04_BDD/BDD-01_slug/BDD-01.yaml` |
 
 ---
 
@@ -272,9 +272,9 @@ Updates links to point to correct locations.
 def fix_link_path(spec_location: str, target_path: str) -> str:
     """Calculate correct relative path based on SPEC location."""
 
-    # SPEC files: docs/09_SPEC/SPEC-01.md
-    # Schema files: docs/09_SPEC/schemas/
-    # Config files: docs/09_SPEC/config/
+    # SPEC files: docs/06_SPEC/SPEC-01.md
+    # Schema files: docs/06_SPEC/schemas/
+    # Config files: docs/06_SPEC/config/
 
     if is_yaml_include(target_path):
         return fix_yaml_include(spec_location, target_path)
@@ -306,9 +306,15 @@ SPEC documents are primarily YAML-based and use a different ID structure. Elemen
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `SPEC.NN.XX.SS` | Legacy numeric format | Convert to YAML path format |
+| `SPEC.NN.XX.SS` | Legacy numeric element-code format (removed) | Convert to YAML path format |
 | `SPEC-NN-XXX` | Invalid slug format | `SPEC-NN.section.element` |
 | Missing IDs | No element identifier | Generate based on YAML path |
+
+SPEC is referenced at the **document level** as `SPEC-NN` (dash form) per
+`framework/governance/ID_NAMING_STANDARDS.md`. Upstream references use the
+4-segment element form `TYPE.NN.SS.xxxx` (e.g. `ADR.01.03.e5b1`,
+`BDD.01.03.8f4c`) for hierarchical layers, and the dash form for document-level
+ADR (`ADR-NN`).
 
 **YAML Path ID Generation**:
 
@@ -387,12 +393,12 @@ Ensures traceability and cross-references are correct.
 
 | Issue | Fix Action |
 |-------|------------|
-| Missing `@req:` reference | Add REQ traceability tag |
-| Missing `@ctr:` reference | Add CTR traceability tag |
+| Missing `@adr:` reference | Add ADR traceability tag |
+| Missing `@bdd:` reference | Add BDD traceability tag |
 | Incorrect upstream path | Update to correct relative path |
 | Missing traceability entry | Add to traceability matrix |
 
-**REQ/CTR Traceability Fix**:
+**ADR/BDD Traceability Fix**:
 
 ```markdown
 <!-- Before -->
@@ -401,15 +407,15 @@ Ensures traceability and cross-references are correct.
 <!-- After -->
 ## 3. Schema Definitions
 
-@req: [REQ-01.28.01](../07_REQ/REQ-01.md#req-01-28-01)
-@ctr: [CTR-01-API](../08_CTR/CTR-01-API.md)
+@adr: [ADR-01](../05_ADR/ADR-01_slug/ADR-01.yaml)
+@bdd: [BDD.01.03.8f4c](../04_BDD/BDD-01_slug/BDD-01.yaml)
 ```
 
 ---
 
 ### Phase 6: Handle Upstream Drift (Auto-Merge)
 
-Addresses issues where upstream REQ/CTR documents have changed since SPEC creation using a tiered auto-merge system.
+Addresses issues where upstream ADR/BDD documents have changed since SPEC creation using a tiered auto-merge system.
 
 #### 6.0.1 Hash Validation Fixes
 
@@ -590,22 +596,22 @@ archive_manifest:
 
   drift_details:
     upstream_documents:
-      - doc: REQ-01.md
+      - doc: ADR-01
         drift_percentage: 23.5
         lines_changed: 47
         sections_affected: [3, 5, 7]
-      - doc: CTR-01-API.yaml
+      - doc: BDD-01
         drift_percentage: 18.2
-        endpoints_changed: 5
-        schemas_modified: 3
+        scenarios_changed: 5
+        models_modified: 3
 
     total_drift: 20.85
     trigger_tier: 3
 
   archived_files:
-    - source: docs/09_SPEC/SPEC-01-AUTH-13.md
+    - source: docs/06_SPEC/SPEC-01-AUTH-13.md
       archive: archive/SPEC-01-AUTH-13_v1.2.0_20260210.md
-    - source: docs/09_SPEC/schemas/SPEC-01-AUTH-13_schemas.yaml
+    - source: docs/06_SPEC/schemas/SPEC-01-AUTH-13_schemas.yaml
       archive: archive/SPEC-01-AUTH-13_schemas_v1.2.0_20260210.yaml
 
   regeneration:
@@ -614,10 +620,10 @@ archive_manifest:
     new_version: "2.0.0"
 
   downstream_impact:
-    tspec_documents:
-      - TSPEC-01-AUTH-13 (requires update)
-    tasks_documents:
-      - TASKS-01-AUTH-13 (requires review)
+    tdd_documents:
+      - TDD-01-AUTH-13 (requires update)
+    iplan_documents:
+      - IPLAN-01-AUTH-13 (requires review)
 ```
 
 #### Enhanced Drift Cache
@@ -634,15 +640,15 @@ The `.drift_cache.json` file tracks drift state and merge history:
       "created": "2026-02-05T10:00:00",
       "last_sync": "2026-02-08T14:30:00",
       "upstream_refs": {
-        "REQ-01.md": {
+        "ADR-01": {
           "last_known_hash": "a1b2c3d4",
           "last_modified": "2026-02-08T09:00:00",
           "sections_tracked": ["3.1", "3.2", "5.4"]
         },
-        "CTR-01-API.yaml": {
+        "BDD-01": {
           "last_known_hash": "e5f6g7h8",
           "last_modified": "2026-02-07T16:00:00",
-          "endpoints_tracked": ["/auth/login", "/auth/refresh"]
+          "scenarios_tracked": ["login_success", "refresh_token"]
         }
       },
       "merge_history": [
@@ -652,7 +658,7 @@ The `.drift_cache.json` file tracks drift state and merge history:
           "drift_percentage": 3.2,
           "version_before": "1.0.0",
           "version_after": "1.0.1",
-          "changes_merged": ["REQ-01.md: Updated validation rules"]
+          "changes_merged": ["ADR-01: Updated validation rules"]
         },
         {
           "date": "2026-02-08T14:30:00",
@@ -661,15 +667,15 @@ The `.drift_cache.json` file tracks drift state and merge history:
           "version_before": "1.0.1",
           "version_after": "1.1.0",
           "changes_merged": [
-            "REQ-01.md: Added new requirement REQ-01.28.05",
-            "CTR-01-API.yaml: Modified /auth/refresh response"
+            "EARS-01: Added new requirement EARS.01.03.5e2a",
+            "BDD-01: Modified refresh_token scenario response"
           ],
           "changelog_file": "changelogs/SPEC-01-AUTH-13_v1.1.0_changelog.md"
         }
       ],
       "downstream_documents": {
-        "tspec": ["TSPEC-01-AUTH-13"],
-        "tasks": ["TASKS-01-AUTH-13"]
+        "tdd": ["TDD-01-AUTH-13"],
+        "iplan": ["IPLAN-01-AUTH-13"]
       }
     }
   }
@@ -686,20 +692,20 @@ schemas:
   _drift_metadata:
     last_merge: "2026-02-08T14:30:00"
     merge_tier: 2
-    upstream_version: "REQ-01.md@v1.3.0"
+    upstream_version: "ADR-01@v1.3.0"
 
   AuthRequest:
     type: object
     properties:
       username:
         type: string
-        # @merged: 2026-02-08 from REQ-01.28.01
+        # @merged: 2026-02-08 from BDD.01.03.8f4c
         minLength: 3
         maxLength: 64
       password:
         type: string
         format: password
-        # @merged: 2026-02-08 from REQ-01.28.02 (new validation)
+        # @merged: 2026-02-08 from EARS.01.03.5e2a (new validation)
         minLength: 12
 ```
 
@@ -714,12 +720,12 @@ schemas:
 **Drift Marker Format** (Updated for v2.0):
 
 ```markdown
-<!-- DRIFT-MERGED: Tier 1 | REQ-01.md | 3.2% | 2026-02-08 | v1.0.0 -> v1.0.1 -->
-@req: [REQ-01.28.01](../07_REQ/REQ-01.md#req-01-28-01) @version:1.3.0
+<!-- DRIFT-MERGED: Tier 1 | ADR-01 | 3.2% | 2026-02-08 | v1.0.0 -> v1.0.1 -->
+@adr: [ADR-01](../05_ADR/ADR-01_slug/ADR-01.yaml) @version:1.3.0
 
-<!-- DRIFT-MERGED: Tier 2 | CTR-01-API.yaml | 8.5% | 2026-02-08 | v1.0.1 -> v1.1.0 -->
+<!-- DRIFT-MERGED: Tier 2 | BDD-01 | 8.5% | 2026-02-08 | v1.0.1 -> v1.1.0 -->
 <!-- See: changelogs/SPEC-01-AUTH-13_v1.1.0_changelog.md -->
-@ctr: [CTR-01-API](../08_CTR/CTR-01-API.md) @version:2.1.0
+@bdd: [BDD.01.03.8f4c](../04_BDD/BDD-01_slug/BDD-01.yaml) @version:2.1.0
 
 <!-- DRIFT-ARCHIVED: Tier 3 | 20.85% | 2026-02-10 | Regeneration triggered -->
 <!-- Archive: archive/SPEC-01-AUTH-13_v1.2.0_20260210.md -->
@@ -804,7 +810,7 @@ def find_yaml_blocks(content: str) -> list:
 | `broken_links` | Fix link paths and YAML includes |
 | `element_ids` | Convert invalid element IDs to YAML paths |
 | `content` | Fix placeholders, dates, names |
-| `references` | Update REQ/CTR traceability and cross-references |
+| `references` | Update ADR/BDD traceability and cross-references |
 | `drift` | Handle upstream drift detection issues |
 | `yaml` | Fix YAML structure and syntax issues |
 | `all` | All fix types (default) |
@@ -823,7 +829,7 @@ def find_yaml_blocks(content: str) -> list:
 1. Select newest report timestamp.
 2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
 
-**Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
+**Location**: Inside the SPEC nested folder: `docs/06_SPEC/SPEC-NN_{slug}/`
 
 **Structure**:
 
@@ -837,7 +843,7 @@ tags:
 custom_fields:
   document_type: fix-report
   artifact_type: SPEC-FIX
-  layer: 9
+  layer: 6
   parent_doc: SPEC-NN
   source_review: SPEC-NN.A_audit_report_v001.md
   fix_date: "YYYY-MM-DDTHH:MM:SS"
@@ -863,8 +869,8 @@ custom_fields:
 
 | File | Type | Location |
 |------|------|----------|
-| SPEC-01_schemas.yaml | Schema Definitions | docs/09_SPEC/schemas/ |
-| SPEC-01_config.yaml | Configuration Spec | docs/09_SPEC/config/ |
+| SPEC-01_schemas.yaml | Schema Definitions | docs/06_SPEC/schemas/ |
+| SPEC-01_config.yaml | Configuration Spec | docs/06_SPEC/config/ |
 
 ## YAML Repairs
 
@@ -888,14 +894,14 @@ custom_fields:
 | # | Issue Code | Issue | Location | Reason |
 |---|------------|-------|----------|--------|
 | 1 | REV-P001 | [TODO] placeholder | SPEC-01.md:L78 | Domain knowledge needed |
-| 2 | REV-D002 | REQ content changed | REQ-01.28.01 | Review requirement update |
+| 2 | REV-D002 | BDD content changed | BDD.01.03.8f4c | Review behavior update |
 
 ## Upstream Drift Summary
 
 | Upstream Document | Reference | Modified | SPEC Updated | Days Stale | Action Required |
 |-------------------|-----------|----------|--------------|------------|-----------------|
-| REQ-01.md | SPEC-01:L57 | 2026-02-08 | 2026-02-05 | 3 | Review for changes |
-| CTR-01-API.yaml | SPEC-01:L92 | 2026-02-09 | 2026-02-05 | 4 | Review for changes |
+| ADR-01 | SPEC-01:L57 | 2026-02-08 | 2026-02-05 | 3 | Review for changes |
+| BDD-01 | SPEC-01:L92 | 2026-02-09 | 2026-02-05 | 4 | Review for changes |
 
 ## Validation After Fix
 
@@ -909,7 +915,7 @@ custom_fields:
 ## Next Steps
 
 1. Complete [TODO] placeholders in SPEC-01.md
-2. Review upstream REQ/CTR drift
+2. Review upstream ADR/BDD drift
 3. Populate schema definitions in SPEC-01_schemas.yaml
 4. Run `/doc-spec-reviewer SPEC-01` to verify fixes
 ```
@@ -976,8 +982,8 @@ Before applying any fixes:
 | `doc-spec-validator` | Structural validation |
 | `doc-naming` | Element ID standards |
 | `doc-spec` | SPEC creation rules |
-| `doc-req` | REQ upstream traceability |
-| `doc-ctr` | CTR upstream traceability |
+| `doc-adr` | ADR upstream traceability |
+| `doc-bdd` | BDD upstream traceability |
 
 ---
 
@@ -985,7 +991,7 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.2 | 2026-02-27 | Normalized metadata schema; added `.A_audit_report` preferred upstream contract with deterministic `.A_` over `.R_` tie-break |
+| 2.3 | 2026-05-22 | Migrated to the framework 8-layer model: SPEC renumbered to Layer 6; upstream is now BRD/PRD/EARS/BDD/ADR (SYS/REQ/CTR dropped); downstream is TDD (L7)/IPLAN (L8)/Code; traceability fixes target `@adr`/`@bdd`; SPEC paths under `docs/06_SPEC/`; element refs use 4-segment `TYPE.NN.SS.xxxx` and document-level `SPEC-NN`; tracks `SPEC-TEMPLATE` schema version |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system (Tier 1: <5%, Tier 2: 5-15%, Tier 3: >15%); Auto-generated SPEC IDs (SPEC-NN-COMPONENT-SS pattern); No-deletion policy with [DEPRECATED] marking; Archive manifest creation for Tier 3; Enhanced drift cache with merge history; YAML spec format handling with drift metadata; Change percentage calculation algorithm |
 | 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; YAML structure repair; Schema and config file generation; YAML path-based element IDs; REQ/CTR drift handling; Integration with autopilot Review->Fix cycle |

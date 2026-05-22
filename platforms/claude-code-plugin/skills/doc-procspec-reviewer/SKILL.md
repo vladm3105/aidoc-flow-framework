@@ -1,34 +1,42 @@
 ---
 name: doc-procspec-reviewer
-description: Comprehensive content review and quality assurance for PROCSPEC documents - validates process specification completeness, step clarity, and role coverage
+description: Comprehensive content review and quality assurance for process-spec SPEC (Layer 6) documents - validates process completeness, step clarity, and role coverage
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - procspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 54
-    artifact_type: PROCSPEC
-    deliverable_type: process
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: process-design
+    deliverable_type: document
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [PROCSPEC]
+    upstream_artifacts: [SPEC]
     downstream_artifacts: []
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-procspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Process Specification (PROCSPEC) documents. Validates step completeness, role assignments, decision points, and error handling.
+Comprehensive **content review and quality assurance** for process-spec SPEC
+documents. Validates step completeness, role assignments, decision points, and
+error handling. This is a plugin-only authoring helper — a process/workflow-design
+specialization of SPEC (Layer 6) — that reviews against the single framework
+SPEC template (`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`, see `../doc-spec/`).
 
-**Layer**: 9.54 (PROCSPEC Quality Assurance)
+**Layer**: 6 (SPEC — process-design quality assurance)
+
+**Parent**: `../doc-spec/`
+
+**Upstream**: SPEC (from `../doc-procspec-autopilot/`)
 
 ---
 
@@ -59,9 +67,15 @@ Comprehensive **content review and quality assurance** for Process Specification
 - [ ] Quality checks defined
 - [ ] Sign-off requirements noted
 
+### 6. Traceability
+- [ ] All cumulative upstream tags present (@brd, @prd, @ears, @bdd, @adr)
+- [ ] Upstream requirements mapped
+
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

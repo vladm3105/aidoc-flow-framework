@@ -1,13 +1,13 @@
 ---
 name: doc-spec-validator
-description: Validate Technical Specifications (SPEC) documents against Layer 9 schema standards
+description: Validate Technical Specifications (SPEC) documents against Layer 6 schema standards
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
+    - layer-6-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
@@ -15,14 +15,14 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [SPEC]
     downstream_artifacts: []
-    version: "1.4"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SPEC_MVP_SCHEMA schema_version"
+    version: "1.5"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 ---
 
 # doc-spec-validator
 
-Validate Technical Specifications (SPEC) documents against Layer 9 schema standards.
+Validate Technical Specifications (SPEC) documents against Layer 6 schema standards.
 
 ## Activation
 
@@ -30,8 +30,9 @@ Invoke when user requests validation of SPEC documents or after creating/modifyi
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-Layer: 9
+Template (single source of truth): `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+Standards: `framework/governance/ID_NAMING_STANDARDS.md`, `framework/layers/06_SPEC/README.md`
+Layer: 6
 Artifact Type: SPEC
 
 ## Validation Checklist
@@ -44,21 +45,21 @@ Artifact Type: SPEC
 
 | SPEC Type | Required Location |
 |-----------|-------------------|
-| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+| YAML | `docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
 
 **Validation**:
 
 ```
-1. Check document is inside a nested folder: docs/09_SPEC/SPEC-NN_{slug}/
+1. Check document is inside a nested folder: docs/06_SPEC/SPEC-NN_{slug}/
 2. Verify folder name matches SPEC ID pattern: SPEC-NN_{slug}
 3. Verify file name matches folder: SPEC-NN_{slug}.yaml
-4. Parent path must be: docs/09_SPEC/
+4. Parent path must be: docs/06_SPEC/
 ```
 
 **Example Valid Structure**:
 
 ```
-docs/09_SPEC/
+docs/06_SPEC/
 ├── SPEC-01_f1_iam/
 │   ├── SPEC-01_f1_iam.yaml        ✓ Valid
 │   ├── SPEC-01.A_audit_report_v001.md (preferred)
@@ -71,7 +72,7 @@ docs/09_SPEC/
 **Invalid Structure**:
 
 ```
-docs/09_SPEC/
+docs/06_SPEC/
 ├── SPEC-01_f1_iam.yaml            ✗ NOT in nested folder
 ```
 
@@ -94,7 +95,7 @@ docs/09_SPEC/
 ```yaml
 File Format:
   - Extension: .yaml (NOT .md)
-  - Naming pattern: SPEC-NNN_descriptive_name.yaml
+  - Naming pattern: SPEC-NN_descriptive_name.yaml
   - Encoding: UTF-8
   - YAML version: 1.2
 ```
@@ -190,24 +191,29 @@ Optional fields:
 
 ### 8. Traceability Validation
 
-**Layer 9 Cumulative Tags:**
-- @brd: BRD.NN.EE.SS (required)
-- @prd: PRD.NN.EE.SS (required)
-- @ears: EARS.NN.24.SS (required)
-- @bdd: BDD.NN.13.SS (required)
+**Layer 6 Cumulative Tags** (4-segment element IDs `TYPE.NN.SS.xxxx`; ADR uses document-level `ADR-NN`):
+- @brd: BRD.NN.SS.xxxx (required)
+- @prd: PRD.NN.SS.xxxx (required)
+- @ears: EARS.NN.SS.xxxx (required)
+- @bdd: BDD.NN.SS.xxxx (required)
 - @adr: ADR-NN (required)
-- @sys: SYS.NN.25.SS (required)
-- @req: REQ.NN.26.SS (required)
-- @ctr: CTR-NN (optional)
+
+No `@sys`, `@req`, or `@ctr` tags — the 8-layer model has no SYS/REQ/CTR layers. SPEC carries its own document-level reference `@spec: SPEC-NN`.
 
 **Downstream Expected:**
-- TASKS documents
+- TDD documents (Layer 7)
+- IPLAN documents (Layer 8)
 - Code (src/...)
 - Tests (tests/...)
 
 **Same-Type References:**
 - related_spec: [SPEC-NN]
 - depends_spec: [SPEC-NN]
+
+**Legacy forms REJECTED** (validation must flag these):
+- 3-segment element IDs `TYPE.NN.xxxx` (e.g. `SPEC.02.2801`) or any numeric type-code element ID from the retired scheme
+- Document IDs with extra leading zero `SPEC-NNN`
+- Upstream tags or layer references for the retired system/requirement/contract layers
 
 ## Error Codes
 
@@ -242,18 +248,22 @@ Optional fields:
 | SPEC-I003 | info | Consider adding circuit_breaker section |
 | SPEC-I004 | info | Consider adding operations runbook |
 
-## Validation Commands
+## Validation Procedure
 
-```bash
-# Validate single SPEC document
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-001_example/SPEC-001_example.yaml
+The framework ships no runtime validation scripts — **this skill is the validator**. Apply the checklist above declaratively against each SPEC document:
 
-# Validate all SPEC documents
-find docs/09_SPEC -name "SPEC-*.yaml" -exec python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py {} \;
-
-# Check with verbose output
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-001_example/SPEC-001_example.yaml --verbose
 ```
+1. Locate SPEC documents: docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
+2. For each document, walk Checklist sections 0-8 in order.
+3. Section 0 (folder structure) is BLOCKING — stop if it fails.
+4. Record every finding with its Error Code and severity.
+5. Emit the Output Format report.
+```
+
+Authoritative references:
+- Template (single source of truth): `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- ID rules: `framework/governance/ID_NAMING_STANDARDS.md`
+- Layer contract: `framework/layers/06_SPEC/README.md`
 
 ## Validation Workflow
 
@@ -264,7 +274,7 @@ python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.p
 5. Validate performance section (latency targets, p50 < p95 < p99)
 6. Check security section (authentication, authorization)
 7. Validate observability section (metrics, logging, health)
-8. Check traceability cumulative tags (7 required)
+8. Check traceability cumulative tags (5 required: @brd, @prd, @ears, @bdd, @adr)
 9. Verify verification section (BDD scenarios)
 10. Validate implementation section
 11. Check file naming convention
@@ -281,7 +291,7 @@ python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.p
 ```
 SPEC Validation Report
 ======================
-Document: SPEC-001_example.yaml
+Document: SPEC-01_example.yaml
 Status: PASS/FAIL
 
 YAML Validity: Valid/Invalid
@@ -316,10 +326,11 @@ Info: N
 
 ## Related Resources
 
-- **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
-- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
-- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-- **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
+- **SPEC Skill**: `../doc-spec/SKILL.md`
+- **Naming Standards**: `../doc-naming/SKILL.md` (ID and naming conventions)
+- **SPEC Template** (single source of truth): `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- **ID Naming Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **SPEC Layer Contract**: `framework/layers/06_SPEC/README.md`
 
 ---
 
@@ -327,10 +338,11 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.4 | 2026-02-27 | Normalized metadata schema and command references to canonical `ai_dev_ssd_flow/09_SPEC/scripts` validators | System |
-| 1.3 | 2026-02-26 | Fixed schema path to ai_dev_ssd_flow/09_SPEC/; Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
-| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); SPEC must be in `docs/09_SPEC/SPEC-NN_{slug}/` folders; Added error codes SPEC-E020, SPEC-E021, SPEC-E022 | System |
-| 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
+| 1.5 | 2026-05-22 | Migrated to the framework 8-layer model: SPEC renumbered to **Layer 6**; dropped the retired system/requirement/contract upstream layers (now @brd,@prd,@ears,@bdd,@adr); 4-segment element IDs `TYPE.NN.SS.xxxx` with `SPEC-NN`/`ADR-NN` document refs (rejects legacy 3-segment, numeric type-code, and `SPEC-NNN` forms); downstream TDD (L7) + IPLAN (L8); paths repointed to `framework/layers/06_SPEC/` + `framework/governance/`; removed dead validation-script references (skill is the validator) | System |
+| 1.4 | 2026-02-27 | Normalized metadata schema and command references | System |
+| 1.3 | 2026-02-26 | Updated cumulative tag formats to unified dot notation; Fixed validation rules paths | System |
+| 1.2 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); Added error codes SPEC-E020, SPEC-E021, SPEC-E022 | System |
+| 1.1.0 | 2026-02-08 | Updated layer assignment per LAYER_REGISTRY v1.6; removed @impl from cumulative tags | System |
 | 1.0.0 | 2025-01-15 | Initial validator skill definition | System |
 
 ## Implementation Plan Consistency (IPLAN-004)

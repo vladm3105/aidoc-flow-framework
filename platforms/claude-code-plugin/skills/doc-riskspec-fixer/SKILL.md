@@ -1,44 +1,46 @@
 ---
 name: doc-riskspec-fixer
-description: Automated fix skill that reads review reports and applies fixes to RISKSPEC documents - handles structure issues and iterative improvement
+description: Automated fix skill that reads review reports and applies fixes to risk-analysis SPEC (Layer 6) documents - handles structure issues and iterative improvement
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - riskspec-artifact
+    - layer-6-artifact
+    - spec-document
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 53
-    artifact_type: RISKSPEC
+    layer: 6
+    artifact_type: SPEC
     deliverable_type: risk
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [REQ, RISKSPEC, Review Report]
-    downstream_artifacts: [Fixed RISKSPEC, Fix Report]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, Review Report]
+    downstream_artifacts: [Fixed SPEC, Fix Report]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-riskspec-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to RISKSPEC (Risk Specification) documents.
+Automated **fix skill** that reads the latest review report and applies fixes
+to risk-analysis SPEC documents. This is the risk-spec specialization of the
+SPEC (Layer 6) authoring helpers — see the parent skill `../doc-spec/` and the
+single SPEC template at `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`.
 
-**Layer**: 9.53 (RISKSPEC Quality Improvement)
+**Layer**: 6 (SPEC quality improvement, risk-analysis focus)
 
 ---
 
 ## Fixable Issue Types
 
 ### Automatic Fixes
-- Missing `document_type` → Add `document_type: riskspec-document`
-- Missing `subtype_code` → Add `subtype_code: 53`
+- Missing `document_type` → Add `document_type: spec-document`
+- Missing `artifact_type` → Add `artifact_type: SPEC`
 - Broken internal links → Update to correct paths
-- Missing traceability tags → Add required cumulative tags
+- Missing traceability tags → Add required upstream tags
 
 ### Manual Review Required
 - Risk rating decisions
@@ -51,12 +53,14 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 
 | File | Purpose |
 |------|---------|
-| Updated RISKSPEC YAML | Fixed document |
-| `RISKSPEC-NN.F_fix_report_vNNN.md` | Fix report |
+| Updated SPEC YAML | Fixed document |
+| `SPEC-NN.F_fix_report_vNNN.md` | Fix report |
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guidance: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

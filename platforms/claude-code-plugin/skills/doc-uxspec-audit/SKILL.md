@@ -1,34 +1,40 @@
 ---
 name: doc-uxspec-audit
-description: Unified UXSPEC quality gate - validates structure, detects issues, computes DESIGN-Ready score
+description: Quality gate for UX-focused SPEC (Layer 6) documents - validates structure, detects issues, computes DESIGN-Ready score
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - uxspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 52
-    artifact_type: UXSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: ux
     deliverable_type: ux
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [UXSPEC]
+    upstream_artifacts: [SPEC]
     downstream_artifacts: [Audit Report]
-    version: "1.0"
-    last_updated: "2026-03-01"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-uxspec-audit
 
 ## Purpose
 
-Unified **UXSPEC quality gate** that combines structural validation, content review, and DESIGN-Ready scoring.
+Quality gate for **UX-focused SPEC documents** (Layer 6) that combines structural
+validation, content review, and DESIGN-Ready scoring. This is the UX/interface-design
+specialization of the SPEC layer — it audits SPEC documents whose `spec_focus` is `ux`
+(wireframes, mockups, prototypes, user journeys), not a separate artifact type.
 
-**Layer**: 9.52 (UXSPEC Quality Gate)
+**Layer**: 6 (SPEC — UX-focused quality gate)
+
+A UX-focused SPEC is a SPEC document. It uses the single SPEC template; this skill
+adds UX-design audit criteria on top of the standard SPEC checks.
 
 ---
 
@@ -41,7 +47,7 @@ Unified **UXSPEC quality gate** that combines structural validation, content rev
 | Visual Consistency | 20% | Design system compliance |
 | Accessibility | 15% | WCAG requirements met |
 | Responsive Design | 15% | Breakpoints defined |
-| Traceability | 10% | Cumulative tags present |
+| Traceability | 10% | Upstream tags present |
 
 **Thresholds**:
 - **PASS**: ≥85%
@@ -54,11 +60,19 @@ Unified **UXSPEC quality gate** that combines structural validation, content rev
 
 | File | Purpose |
 |------|---------|
-| `UXSPEC-NN.A_audit_report_vNNN.md` | Audit report |
+| `SPEC-NN.A_audit_report_vNNN.md` | Audit report |
 
 ---
 
+## Validation Procedure
+
+The framework ships no runtime validation scripts — **this skill is the auditor**.
+Apply the DESIGN-Ready criteria above declaratively against each UX-focused SPEC
+document, record findings, and emit the audit report.
+
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC_MVP_SCHEMA.yaml`
+- Parent SPEC skill: `../doc-spec/SKILL.md`
+- Template (single source of truth): `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer contract: `framework/layers/06_SPEC/README.md`
+- ID rules: `framework/governance/ID_NAMING_STANDARDS.md`

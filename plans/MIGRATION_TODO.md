@@ -411,7 +411,11 @@ to the suite at B7).
   name==dir. DONE 2026-05-22.
   - Subtype decision recorded as **D-0015** (migrate & keep SPEC-/test-subtypes
     as L6/L7 helpers) — unblocks B4/B5.
-- [ ] PLM-B4 — Body rewrite: `doc-spec` (+ **OPEN** SPEC-subtype decision).
+- [x] PLM-B4 — Body rewrite: `doc-spec` (renumbered L9→L6, dropped SYS/REQ/CTR
+  upstream) + the 5 SPEC-subtype families (`doc-cspec/dspec/uxspec/riskspec/procspec`)
+  repositioned as SPEC-L6 specialization helpers per D-0015 (33 files). Verified:
+  `plm_lint` scope clean (48 remain); conformance 31/31; 125 skills; name==dir; layer:6.
+  DONE 2026-05-22.
 - [ ] PLM-B5 — **OPEN** test-subtype decision + rewrite (`doc-*test`).
 - [ ] PLM-B6 — Helpers/orchestrators + residual quickrefs/READMEs.
 - [ ] PLM-B7 — Promote `plm_lint --all` into conformance; delete the PARITY gap

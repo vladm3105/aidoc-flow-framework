@@ -1,36 +1,36 @@
 ---
 name: doc-spec
-description: Create Technical Specifications (SPEC) - Layer 9 artifact using YAML format for implementation-ready specifications
+description: Create Technical Specifications (SPEC) - Layer 6 artifact using YAML format for implementation-ready specifications
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
+    - layer-6-artifact
     - shared-architecture
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based, traditional-8layer]
     priority: shared
     development_status: active
     skill_category: core-workflow
-    upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SYS,REQ,CTR]
-    downstream_artifacts: [TSPEC, TASKS, Code]
-    version: "1.3.0"
-    last_updated: "2026-03-06"
-  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN, Code]
+    version: "2.0"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 ---
 
 # doc-spec
 
 ## Purpose
 
-Create **Technical Specifications (SPEC)** - Layer 9 artifact in the SDD workflow that defines implementation-ready specifications in YAML format, providing complete technical details for code generation.
+Create **Technical Specifications (SPEC)** - Layer 6 artifact in the SDD workflow that defines implementation-ready specifications in YAML format, providing complete technical details for the downstream test and implementation layers.
 
-**Layer**: 9
+**Layer**: 6
 
-**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SYS (Layer 6), REQ (Layer 7), CTR (Layer 8 - optional)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 
-**Downstream Artifacts**: TSPEC (Layer 10), TASKS (Layer 11), Code (Layer 12)
+**Downstream Artifacts**: TDD (Layer 7), IPLAN (Layer 8), Code
 
 ## Prerequisites
 
@@ -40,7 +40,7 @@ Create **Technical Specifications (SPEC)** - Layer 9 artifact in the SDD workflo
 
 1. **List existing upstream artifacts**:
    ```bash
-   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ docs/08_CTR/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
@@ -51,19 +51,16 @@ Create **Technical Specifications (SPEC)** - Layer 9 artifact in the SDD workflo
 
 Before creating SPEC, read:
 
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Upstream REQ**: Read atomic requirements (PRIMARY SOURCE)
-3. **Upstream CTR**: Read contracts if Layer 9 created
-4. **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
-5. **Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-7. **Validation Scripts**:
-  - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py`
-  - `python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+2. **Upstream ADR**: Read architecture decisions (PRIMARY SOURCE)
+3. **Upstream BDD/EARS**: Read acceptance scenarios and formal requirements
+4. **Template**: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+5. **SPEC README**: `framework/layers/06_SPEC/README.md`
+6. **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ## Reserved ID Exemption (SPEC-00_*)
 
-**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
+**Scope**: Documents with reserved ID `00` are FULLY EXEMPT from validation.
 
 **Pattern**: `SPEC-00_*.md`, `SPEC-00_*.yaml`
 
@@ -72,18 +69,18 @@ Before creating SPEC, read:
 - Traceability matrix templates (`SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
-**Rationale**: Reserved ID 000 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
+**Rationale**: Reserved ID 00 documents are framework infrastructure (indexes, templates, reference materials), not project artifacts requiring traceability or quality gates.
 
 **Validation Behavior**: Skip all checks when filename matches `SPEC-00_*` pattern.
 
 ## When to Use This Skill
 
 Use `doc-spec` when:
-- Have completed BRD through REQ (Layers 1-7)
+- Have completed BRD through ADR (Layers 1-5)
 - Ready to create implementation-ready specifications
-- Preparing for code generation or implementation
+- Preparing for downstream test definitions and implementation planning
 - Need complete technical details in structured format
-- You are at Layer 9 of the SDD workflow
+- You are at Layer 6 of the SDD workflow
 
 ## SPEC-Specific Guidance
 
@@ -103,24 +100,21 @@ metadata:
   updated_date: "2025-01-15T00:00:00"
   status: "approved"
   owner: "team-backend"
-  task_ready_score: "✅ 95% (Target: ≥90%)"
+  tdd_ready_score: "✅ 95% (Target: ≥90%)"
 
 cumulative_tags:
-  brd: ["BRD.01.0103"]
-  prd: ["PRD.01.0702"]
-  ears: ["EARS.01.2501"]
-  bdd: ["BDD.01.1401"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.2601"]
-  req: ["REQ.01.2701"]
-  contracts: ["CTR-01"]  # optional - if Layer 8 created
+  brd: ["BRD.01.01.0a13"]
+  prd: ["PRD.01.07.1dbc"]
+  ears: ["EARS.01.03.5e2a"]
+  bdd: ["BDD.01.14.8f4c"]
+  adr: ["ADR-03", "ADR-04"]
 
 overview:
   purpose: "Define trade order validation service implementation"
   scope: "Validate trade orders against position limits and business rules"
   requirements:
-    - "REQ-risk-limits-01"
-    - "REQ-risk-limits-02"
+    - "EARS.01.03.5e2a"
+    - "EARS.01.03.5e2b"
 
 architecture:
   pattern: "layered"
@@ -139,16 +133,15 @@ interfaces:
   api_endpoints:
     - endpoint: "/api/v1/trades/validate"
       method: "POST"
-      contract_ref: "CTR-01"
       authentication: "Bearer token"
       rate_limit: "@threshold: PRD.NN.limit.api.requests_per_second"
       rate_limit_window: "1min"
 
   data_models:
     - model: "TradeOrderRequest"
-      schema_ref: "CTR-01#/components/schemas/TradeOrderRequest"
+      description: "Inbound trade order payload"
     - model: "ValidationResponse"
-      schema_ref: "CTR-01#/components/schemas/ValidationResponse"
+      description: "Validation result payload"
 
 implementation:
   modules:
@@ -251,39 +244,37 @@ traceability:
       sections: ["section-3"]
     - artifact: "PRD-01"
       sections: ["feature-2"]
-    - artifact: "REQ-risk-limits-01"
+    - artifact: "ADR-03"
       sections: ["all"]
 
   downstream_artifacts:
-    - "TASKS-01"
+    - "TDD-01"
+    - "IPLAN-01"
     - "Code: src/services/trade_validator.py"
 ```
 
 ### 2. Element ID Format (MANDATORY)
 
-**Pattern**: `SPEC.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
+**Document-level ID**: `SPEC-NN` (dash notation, two-digit number) per `framework/governance/ID_NAMING_STANDARDS.md`.
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Step | 15 | SPEC.02.1501 |
-| Interface | 16 | SPEC.02.1601 |
-| Data Model | 17 | SPEC.02.1701 |
-| Validation Rule | 21 | SPEC.02.2101 |
-| Specification Element | 28 | SPEC.02.2801 |
+| ID kind | Format | Example |
+|---------|--------|---------|
+| Document reference | `SPEC-NN` | `SPEC-01` |
+| Upstream element reference | `TYPE.NN.SS.xxxx` (4-segment) | `BRD.01.07.a7f3` |
+| Upstream document reference | `TYPE-NN` | `ADR-03` |
 
 > **REMOVED PATTERNS** - Do NOT use legacy formats:
-> - `STEP-XXX` - Use `SPEC.NN.15.SS` instead
-> - `IF-XXX` or `INT-XXX` - Use `SPEC.NN.16.SS` instead
-> - `DM-XXX` or `MODEL-XXX` - Use `SPEC.NN.17.SS` instead
-> - `VR-XXX` - Use `SPEC.NN.21.SS` instead
+> - `STEP-XXX`, `IF-XXX`, `INT-XXX`, `DM-XXX`, `MODEL-XXX`, `VR-XXX` - element-level code labels are not used
+> - 3-digit `SPEC-NNN` (e.g. `SPEC-001`) - use two-digit `SPEC-NN`
+> - Numeric element-type-code tables (15/16/17/21/28) - the 8-layer model has no such codes
 
-**Reference**: [ID_NAMING_STANDARDS.md - Cross-Reference Link Format](../ai_dev_ssd_flow/ID_NAMING_STANDARDS.md#cross-reference-link-format-mandatory)
+**Reference**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ### 3. Required Top-Level Sections
 
 **MANDATORY Sections**:
-1. **metadata**: Spec ID, title, version, dates, status, owner, task_ready_score
-2. **cumulative_tags**: All upstream tags (7-9 tags depending on layers)
+1. **metadata**: Spec ID, title, version, dates, status, owner, tdd_ready_score
+2. **cumulative_tags**: All upstream tags (BRD, PRD, EARS, BDD, ADR)
 3. **overview**: Purpose, scope, requirements
 4. **architecture**: Pattern, layers, technologies
 5. **interfaces**: API endpoints, data models
@@ -295,19 +286,19 @@ traceability:
 11. **monitoring**: Metrics, alerts, logging
 12. **traceability**: Upstream sources, downstream artifacts
 
-### 4. TASKS-Ready Scoring System
+### 4. TDD-Ready Scoring System
 
-**Purpose**: Measures SPEC maturity and readiness for progression to TASKS implementation planning.
+**Purpose**: Measures SPEC maturity and readiness for progression to TDD test case definitions.
 
 **Format in Metadata**:
 ```yaml
 metadata:
-  task_ready_score: "✅ 95% (Target: ≥90%)"
+  tdd_ready_score: "✅ 95% (Target: ≥90%)"
 ```
 
-**Status and TASKS-Ready Score Mapping**:
+**Status and TDD-Ready Score Mapping**:
 
-| TASKS-Ready Score | Required Status |
+| TDD-Ready Score | Required Status |
 |-------------------|-----------------|
 | ≥90% | approved |
 | 70-89% | in_review |
@@ -315,11 +306,11 @@ metadata:
 
 **Scoring Criteria**:
 - **YAML Completeness (25%)**: All metadata fields, traceability chain, all sections populated
-- **Interface Definitions (25%)**: External APIs with CTR contracts, internal interfaces, data schemas
+- **Interface Definitions (25%)**: External APIs, internal interfaces, data schemas
 - **Implementation Specifications (25%)**: Behavior enables code generation, performance/security quantifiable
-- **Code Generation Readiness (25%)**: Machine-readable fields, TASKS-ready metadata
+- **Code Generation Readiness (25%)**: Machine-readable fields, TDD-ready metadata
 
-**Quality Gate**: Score <90% prevents TASKS artifact creation.
+**Quality Gate**: Score <90% prevents TDD artifact creation.
 
 ### 5. Threshold Registry Integration
 
@@ -367,48 +358,30 @@ rate_limit:
 
 **CRITICAL**: SPEC must include cumulative_tags section with ALL upstream tags
 
-**Element Type Codes for Cumulative Tags**:
-| Tag | Artifact | Element Type | Code |
-|-----|----------|--------------|------|
-| brd | BRD | Business Requirement | 01 |
-| prd | PRD | Product Feature | 07 |
-| ears | EARS | EARS Statement | 25 |
-| bdd | BDD | Scenario | 14 |
-| adr | ADR | Document reference | (dash notation) |
-| sys | SYS | System Requirement | 26 |
-| req | REQ | Atomic Requirement | 27 |
-| contracts | CTR | Document reference | (dash notation) |
+**Upstream tags (Layer 6 cumulative chain)**:
+| Tag | Artifact | Reference form |
+|-----|----------|----------------|
+| brd | BRD | element `BRD.NN.SS.xxxx` |
+| prd | PRD | element `PRD.NN.SS.xxxx` |
+| ears | EARS | element `EARS.NN.SS.xxxx` |
+| bdd | BDD | element `BDD.NN.SS.xxxx` |
+| adr | ADR | document `ADR-NN` |
 
-**Format (maximum - CTR included)**:
+**Format**:
 ```yaml
 cumulative_tags:
-  brd: ["BRD.01.0103", "BRD.01.0105"]
-  prd: ["PRD.01.0702", "PRD.01.0715"]
-  ears: ["EARS.01.2501", "EARS.01.2502"]
-  bdd: ["BDD.01.1401"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.2601", "SYS.01.2607"]
-  req: ["REQ.01.2701"]
-  contracts: ["CTR-01"]
+  brd: ["BRD.01.01.0a13", "BRD.01.01.0c2f"]
+  prd: ["PRD.01.07.1dbc", "PRD.01.07.4e91"]
+  ears: ["EARS.01.03.5e2a", "EARS.01.03.5e2b"]
+  bdd: ["BDD.01.14.8f4c"]
+  adr: ["ADR-03", "ADR-04"]
 ```
 
-**Format (minimum - CTR skipped)**:
-```yaml
-cumulative_tags:
-  brd: ["BRD.01.0103"]
-  prd: ["PRD.01.0702"]
-  ears: ["EARS.01.2501"]
-  bdd: ["BDD.01.1401"]
-  adr: ["ADR-033", "ADR-045"]
-  sys: ["SYS.01.2601"]
-  req: ["REQ.01.2701"]
-```
+**Tag Count**: 5 upstream tag families (@brd, @prd, @ears, @bdd, @adr)
 
-**Tag Count**: 7-8 tags (minimum 7, maximum 8)
+### 7. Interface and Schema References
 
-### 7. contract_ref Field
-
-**Purpose**: Link SPEC to CTR (if Layer 9 created)
+**Purpose**: Define component interfaces and data models directly within the SPEC (the SPEC is the component contract at C4-L3).
 
 **Format**:
 ```yaml
@@ -416,23 +389,22 @@ interfaces:
   api_endpoints:
     - endpoint: "/api/v1/trades/validate"
       method: "POST"
-      contract_ref: "CTR-01"  # Link to contract
-      contract_path: "#/paths/~1api~1v1~1trades~1validate/post"  # JSON Pointer
+      authentication: "Bearer token"
 
   data_models:
     - model: "TradeOrderRequest"
-      schema_ref: "CTR-01#/components/schemas/TradeOrderRequest"
+      schema_ref: "#/components/schemas/TradeOrderRequest"
 ```
 
 ### 8. Implementation Readiness
 
-**100% Implementation-Ready**: SPEC must contain ALL information needed to write code
+**100% Implementation-Ready**: SPEC must contain ALL information needed to define tests and write code
 
 **Checklist**:
 - [ ] All modules identified with file paths
 - [ ] All functions identified with signatures
 - [ ] All algorithms documented step-by-step
-- [ ] All data models linked to schemas
+- [ ] All data models defined with schemas
 - [ ] All error codes defined
 - [ ] All configuration specified
 - [ ] All tests specified
@@ -444,97 +416,72 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, IPLAN            | Technical artifacts - references to files/documents                 |
+| Dot      | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, TDD | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
+- `@adr: ADR-03` → Points to the document `ADR-03_risk_limit_enforcement.yaml`
+- `@brd: BRD.01.07.a7f3` → Points to element in section 07 inside document `BRD-01`
 
 ## Unified Element ID Format (MANDATORY)
 
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ, IMPL)**:
-- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
+**For hierarchical references (BRD, PRD, EARS, BDD, TDD)**:
+- **Always use**: `TYPE.NN.SS.xxxx` (dot separator, 4-segment standard)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.xxxx` (old 3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.0101` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
+- `@brd: BRD.01.07.a7f3` ✅
+- `@brd: BRD.017.001` ❌ (old format)
 
-## Validation Checks
+**For document-level references (SPEC, ADR, IPLAN)**: use `TYPE-NN` (e.g. `SPEC-01`, `ADR-03`).
 
-### Tier 1: Errors (Blocking)
+## Validation
+
+The framework is spec-only — there are no validation scripts to run. This skill
+*is* the validator: apply the declarative checklist below, using
+`framework/layers/06_SPEC/README.md` and `framework/governance/` as authority.
+
+### Validation Checks
+
+#### Tier 1: Errors (Blocking)
 
 | Check | Description |
 |-------|-------------|
 | CHECK 1 | YAML Syntax Validation (parseable) |
-| CHECK 2 | Required Metadata Fields (version, status, task_ready_score) |
-| CHECK 3 | TASKS-Ready Score format (✅ emoji + percentage + target) |
+| CHECK 2 | Required Metadata Fields (version, status, tdd_ready_score) |
+| CHECK 3 | TDD-Ready Score format (✅ emoji + percentage + target) |
 | CHECK 4 | Complete Traceability Chain (cumulative_tags section) |
-| CHECK 5 | Element ID Format (`SPEC.NN.xxxx`) |
+| CHECK 5 | Document ID Format (`SPEC-NN`) |
 
-### Tier 2: Warnings (Recommended)
+#### Tier 2: Warnings (Recommended)
 
 | Check | Description |
 |-------|-------------|
-| CHECK 6 | Interface Specifications (CTR contract references) |
+| CHECK 6 | Interface Specifications (endpoints + data models defined) |
 | CHECK 7 | Implementation Readiness (code generation enabling) |
-| CHECK 8 | Code Generation Compatibility (TASKS creation) |
+| CHECK 8 | Test Definition Compatibility (TDD creation) |
 
-### Tier 3: Info
+#### Tier 3: Info
 
 | Check | Description |
 |-------|-------------|
 | CHECK 9 | Threshold Registry Integration (@threshold references) |
 | CHECK 10 | Performance benchmarks defined |
 
-### Pre-Commit Hooks
+### Quality Gates Enforced
 
-SPEC validation is **automatically enforced** via pre-commit hooks:
-
-```yaml
-# .pre-commit-config.yaml
-- id: spec-core-validator
-  name: Validate SPEC core checks (validator, framework library)
-  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_core_validator_hook.sh ai_dev_ssd_flow/09_SPEC
-  language: system
-  pass_filenames: false
-  stages: [pre-commit]
-
-- id: spec-quality-gate
-  name: Validate SPEC quality gates
-  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_quality_gate_hook.sh ai_dev_ssd_flow/09_SPEC
-  language: system
-  pass_filenames: false
-  stages: [pre-commit]
-
-- id: spec-implementation-ready
-  name: Validate SPEC Implementation-Ready score (≥90%)
-  entry: bash ai_dev_ssd_flow/09_SPEC/scripts/spec_implementation_ready_hook.sh ai_dev_ssd_flow/09_SPEC
-  language: system
-  pass_filenames: false
-  stages: [pre-commit]
-```
-
-**Quality Gates Enforced**:
 - ✅ YAML syntax validation (parseable structure)
-- ✅ Implementation-Ready score ≥90% for implementation
-- ✅ Required metadata fields (version, status, tasks_ready_score)
-- ✅ TASKS-Ready score format (✅ emoji + percentage)
-- ✅ Complete traceability chain (8 cumulative tags: @brd through @ctr)
-- ✅ Element ID format (SPEC.NN.xxxx for components)
-- ✅ Interface specifications (CTR contract references)
+- ✅ Implementation-Ready score ≥90% for progression
+- ✅ Required metadata fields (version, status, tdd_ready_score)
+- ✅ TDD-Ready score format (✅ emoji + percentage)
+- ✅ Complete traceability chain (5 upstream tag families: @brd through @adr)
+- ✅ Document ID format (`SPEC-NN`)
+- ✅ Interface specifications (endpoints + data models)
 - ✅ Code generation compatibility
 - ✅ Threshold registry integration (@threshold references)
 - ✅ Performance benchmarks defined
-- ✅ REQ implementations section (per-REQ mapping)
-- ✅ Concrete examples (pseudocode, API samples, Pydantic models)
-
-**Hook Scripts**:
-- `spec_core_validator_hook.sh` - Core SPEC structure and YAML validation
-- `spec_quality_gate_hook.sh` - Quality gate checks for completeness
-- `spec_implementation_ready_hook.sh` - Implementation-Ready score calculation (≥90% required)
+- ✅ Concrete examples (pseudocode, API samples, model definitions)
 
 ## Upstream/Downstream Artifacts
 
@@ -543,15 +490,12 @@ SPEC validation is **automatically enforced** via pre-commit hooks:
 - **PRD** (Layer 2) - Product features
 - **EARS** (Layer 3) - Formal requirements
 - **BDD** (Layer 4) - Test scenarios
-- **ADR** (Layer 5) - Architecture decisions
-- **SYS** (Layer 6) - System requirements
-- **REQ** (Layer 7) - Atomic requirements (PRIMARY SOURCE)
-- **CTR** (Layer 8) - Data contracts (optional)
+- **ADR** (Layer 5) - Architecture decisions (PRIMARY SOURCE)
 
 **Downstream Artifacts**:
-- **TSPEC** (Layer 10) - Test specifications
-- **TASKS** (Layer 11) - Task breakdown
-- **Code** (Layer 12) - Implementation code
+- **TDD** (Layer 7) - Test case definitions validating SPEC contracts
+- **IPLAN** (Layer 8) - Implementation plan bridging TDD to Code
+- **Code** - Implementation source code
 
 **Same-Type Document Relationships** (conditional):
 - `@related-spec: SPEC-NN` - SPECs sharing implementation context
@@ -561,11 +505,11 @@ SPEC validation is **automatically enforced** via pre-commit hooks:
 
 ### Step 1: Read Upstream Artifacts
 
-Focus on REQ (Layer 7) and optionally CTR (Layer 9).
+Focus on ADR (Layer 5) decisions and BDD/EARS acceptance criteria.
 
 ### Step 2: Reserve ID Number
 
-Check `docs/09_SPEC/` for next available ID number (or create `docs/09_SPEC/` directory if first SPEC).
+Check `docs/06_SPEC/` for next available ID number (or create `docs/06_SPEC/` directory if first SPEC).
 
 **ID Numbering Convention**: Start with 2 digits and expand only as needed.
 - ✅ Correct: SPEC-01, SPEC-99, SPEC-102
@@ -575,23 +519,23 @@ Check `docs/09_SPEC/` for next available ID number (or create `docs/09_SPEC/` di
 
 **Nested Folder Rule (MANDATORY)**: ALL SPEC documents MUST use nested folders regardless of document size.
 
-**File naming**: `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml`
+**File naming**: `docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml`
 
-**Example**: `docs/09_SPEC/SPEC-01_trade_validation/SPEC-01_trade_validation.yaml`
+**Example**: `docs/06_SPEC/SPEC-01_trade_validation/SPEC-01_trade_validation.yaml`
 
 **IMPORTANT**: Pure YAML format (NOT markdown)
 
-**Note**: Templates and examples are in `ai_dev_ssd_flow/09_SPEC/` while project-specific SPECs go in `docs/09_SPEC/`.
+**Note**: Templates and examples are in `framework/layers/06_SPEC/` while project-specific SPECs go in `docs/06_SPEC/`.
 
-**CRITICAL**: Never create SPEC files directly in `docs/09_SPEC/` without a nested folder structure.
+**CRITICAL**: Never create SPEC files directly in `docs/06_SPEC/` without a nested folder structure.
 
 ### Step 4: Fill Metadata Section
 
-Complete spec_id, title, version, dates, status, owner, task_ready_score.
+Complete spec_id, title, version, dates, status, owner, tdd_ready_score.
 
 ### Step 5: Add Cumulative Tags
 
-Include all 7-9 upstream tags (brd through req/impl/contracts).
+Include all 5 upstream tag families (brd, prd, ears, bdd, adr).
 
 ### Step 6: Define Overview
 
@@ -603,7 +547,7 @@ Pattern, layers, and technologies (reference ADR decisions).
 
 ### Step 8: Define Interfaces
 
-API endpoints (with contract_ref), data models (with schema_ref).
+API endpoints and data models with schema definitions.
 
 ### Step 9: Document Implementation
 
@@ -635,59 +579,26 @@ Upstream sources and downstream artifacts.
 
 ### Step 16: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use template from `ai_dev_ssd_flow/09_SPEC/SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
+**MANDATORY**: Create or update `docs/06_SPEC/SPEC-00_TRACEABILITY_MATRIX.md` (use the index template from `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`)
 
 ### Step 17: Validate SPEC
 
-```bash
-# YAML validation
-yamllint docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-
-# Schema + quality validation
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml --verbose
-
-# Cumulative tagging validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py --artifact SPEC-01 --expected-layers brd,prd,ears,bdd,adr,sys,req,contracts --strict
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-```
+Apply the declarative validation checklist (above) and the Manual Checklist
+(below). The plugin skill *is* the validator — confirm YAML parses, the
+cumulative-tag chain is complete, and the document is implementation-ready.
 
 ### Step 18: Commit Changes
 
 Commit SPEC file and traceability matrix.
 
-## Validation
-
-### Automated Validation
-
-```bash
-# YAML validation
-yamllint docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-
-# Schema + quality validation
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-python3 ai_dev_ssd_flow/09_SPEC/scripts/validate_spec_implementation_readiness.py docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml --verbose
-
-# Cumulative tagging validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
-  --artifact SPEC-01 \
-  --expected-layers brd,prd,ears,bdd,adr,sys,req,contracts \
-  --strict
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-01_*/SPEC-01_*.yaml
-```
-
-### Manual Checklist
+## Manual Checklist
 
 - [ ] Pure YAML format (not markdown)
-- [ ] Metadata section complete with task_ready_score
-- [ ] cumulative_tags section with 7-9 upstream tags
+- [ ] Metadata section complete with tdd_ready_score
+- [ ] cumulative_tags section with 5 upstream tag families (@brd, @prd, @ears, @bdd, @adr)
 - [ ] Overview defines purpose and scope
 - [ ] Architecture references ADR decisions
-- [ ] Interfaces link to CTR (if Layer 9 created)
+- [ ] Interfaces define endpoints and data models
 - [ ] Implementation specifies modules with file paths
 - [ ] Functions have signatures and algorithms
 - [ ] Error handling complete
@@ -697,23 +608,23 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPE
 - [ ] Monitoring specified
 - [ ] Traceability links to upstream/downstream
 - [ ] 100% implementation-ready
-- [ ] Element IDs use `SPEC.NN.xxxx` format
+- [ ] Document ID uses `SPEC-NN` format
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See the `mermaid-gen` skill and `framework/governance/`.
 
 ## Common Pitfalls
 
 1. **Markdown format**: SPEC must be pure YAML, not markdown
-2. **Missing cumulative_tags**: Must include all 7-9 upstream tags
-3. **No contract_ref**: Must link to CTR if Layer 9 created
+2. **Missing cumulative_tags**: Must include all 5 upstream tag families (@brd, @prd, @ears, @bdd, @adr)
+3. **Skipped interfaces**: Must define component endpoints and data models
 4. **Vague implementation**: Must specify exact file paths and signatures
 5. **Missing algorithms**: Functions need step-by-step algorithms
 6. **Incomplete**: Must be 100% implementation-ready
 7. **Hardcoded values**: Use @threshold for performance/timeout/rate limits
-8. **Wrong element IDs**: Use `SPEC.NN.xxxx`, not legacy `STEP-XXX`, `IF-XXX`, `DM-XXX`
-9. **Wrong cumulative tag codes**: Use correct element type codes (EARS=25, BDD=14, SYS=26, REQ=27, IMPL=29)
+8. **Wrong element IDs**: Use `SPEC-NN` (document) and 4-segment `TYPE.NN.SS.xxxx` (upstream elements), not legacy `STEP-XXX`, `IF-XXX`, `DM-XXX`
+9. **Legacy upstream layers**: SPEC upstream is BRD, PRD, EARS, BDD, ADR only — never reference removed SYS/REQ/CTR layers
 
 ## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
 
@@ -723,35 +634,25 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 ```
 LOOP:
-  1. Run: python ai_dev_ssd_flow/scripts/validate_cross_document.py --document {doc_path} --auto-fix
-  2. IF errors fixed: GOTO LOOP (re-validate)
-  3. IF warnings fixed: GOTO LOOP (re-validate)
+  1. Apply the declarative validation checklist to {doc_path}
+  2. IF errors found: fix, GOTO LOOP (re-validate)
+  3. IF warnings found: fix where feasible, GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review, continue
   5. IF clean: Mark VALIDATED, proceed
-```
-
-### Validation Command
-
-```bash
-# Per-document validation (Phase 1)
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/09_SPEC/SPEC-NN_slug/SPEC-NN_slug.yaml --auto-fix
-
-# Layer validation (Phase 2) - run when all SPEC documents complete
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer SPEC --auto-fix
 ```
 
 ### Layer-Specific Upstream Requirements
 
 | This Layer | Required Upstream Tags | Count |
 |------------|------------------------|-------|
-| SPEC (Layer 9) | @brd, @prd, @ears, @bdd, @adr, @sys, @req (+ @ctr if created) | 7-8 tags |
+| SPEC (Layer 6) | @brd, @prd, @ears, @bdd, @adr | 5 tag families |
 
 ### Auto-Fix Actions (No Confirmation Required)
 
 | Issue | Fix Action |
 |-------|------------|
 | Missing upstream tag | Add with upstream document reference |
-| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
+| Invalid tag format | Correct to `TYPE.NN.SS.xxxx` (4-segment) or `TYPE-NN` format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -768,7 +669,7 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer SPEC --auto-fi
 
 ### Quality Gate
 
-**Blocking**: YES - Cannot proceed to next document until Phase 1 validation passes with 0 errors.
+**Blocking**: YES - Cannot proceed to next document until validation passes with 0 errors.
 
 ---
 
@@ -776,13 +677,12 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer SPEC --auto-fi
 
 After creating SPEC, use:
 
-**`doc-tasks`** - Create Task Breakdown (Layer 11)
+**`doc-tdd`** - Create Test-Driven Definitions (Layer 7)
 
-The TASKS will:
+The TDD will:
 - Reference this SPEC as upstream source
-- Include all 8-9 upstream tags
-- Break SPEC into actionable tasks
-- Provide AI-structured TODO format
+- Include all 6 upstream tag families (@brd through @spec)
+- Define test cases, inputs, expected outputs, and thresholds for the SPEC contracts
 
 ## Reference Documents
 
@@ -794,46 +694,42 @@ For supplementary documentation needs, create:
 
 ## Related Resources
 
-- **Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` (primary authority)
-- **SPEC Creation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md`
-- **SPEC Validation Rules**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-- **SPEC Schema**: `ai_dev_ssd_flow/09_SPEC/SPEC_MVP_SCHEMA.yaml`
-- **SPEC README**: `ai_dev_ssd_flow/09_SPEC/README.md`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (ID and naming conventions)
+- **Template**: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (primary authority)
+- **SPEC README**: `framework/layers/06_SPEC/README.md`
+- **SPEC Index template**: `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+- **doc-adr skill**: `../doc-adr/SKILL.md` (upstream architecture decisions)
+- **doc-tdd skill**: `../doc-tdd/SKILL.md` (downstream test definitions)
 
 ## Quick Reference
 
 **SPEC Purpose**: Implementation-ready technical specifications
 
-**Layer**: 9
+**Layer**: 6
 
-**Element ID Format**: `SPEC.NN.xxxx`
-- Step = 15
-- Interface = 16
-- Data Model = 17
-- Validation Rule = 21
-- Specification Element = 28
+**Document ID Format**: `SPEC-NN` (dash notation)
 
-**Removed Patterns**: STEP-XXX, IF-XXX, INT-XXX, DM-XXX, MODEL-XXX, VR-XXX
+**Upstream element refs**: 4-segment `TYPE.NN.SS.xxxx` (BRD, PRD, EARS, BDD); document-level `ADR-NN`
 
-**Tags Required**: @brd through @req/contracts (7-8 tags)
+**Removed Patterns**: STEP-XXX, IF-XXX, INT-XXX, DM-XXX, MODEL-XXX, VR-XXX, 3-digit `SPEC-NNN`, numeric element-type codes
+
+**Tags Required**: @brd, @prd, @ears, @bdd, @adr (5 tag families)
 
 **Format**: Pure YAML (not markdown)
 
 **Key Features**:
 - cumulative_tags section (CRITICAL)
-- contract_ref field (links to CTR)
-- schema_ref field (links to data models)
+- interface and data-model definitions
 - @threshold references for quantitative values
 - 100% implementation-ready
 - All modules, functions, algorithms specified
 
-**TASKS-Ready Score**: ≥90% required for "approved" status
+**TDD-Ready Score**: ≥90% required for "approved" status
 
 **Quality Gate**: Must be 100% implementation-ready
 
-**Next**: doc-tasks
+**Next**: doc-tdd
 
 ---
 
@@ -841,6 +737,7 @@ For supplementary documentation needs, create:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.2.0 | 2026-02-27 | Normalized metadata schema; migrated canonical references to `ai_dev_ssd_flow/09_SPEC`; replaced stale `docs/SPEC` validation examples; aligned commands to existing SPEC validators | System |
-| 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; updated downstream artifacts (TSPEC Layer 10, TASKS Layer 11); removed IMPL from upstream; updated tag counts to 7-8 | System |
+| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. SPEC renumbered to Layer 6 (from its prior position); tag `layer-9-artifact` → `layer-6-artifact`. Upstream chain reduced to BRD, PRD, EARS, BDD, ADR (removed SYS/REQ/CTR); downstream rebuilt to TDD (L7), IPLAN (L8), Code. Element IDs are document-level `SPEC-NN` (dash) with 4-segment `TYPE.NN.SS.xxxx` upstream refs; removed legacy numeric element-type-code tables and 3-digit `SPEC-NNN`. Paths point at `framework/layers/06_SPEC/`; templates are `.yaml`. TASKS-Ready score renamed TDD-Ready; validation is now this skill's declarative checklist (framework is spec-only, no scripts). Next skill is `doc-tdd`. | System |
+| 1.2.0 | 2026-02-27 | Normalized metadata schema; migrated canonical references; replaced stale validation examples; aligned commands to existing SPEC validators | System |
+| 1.1.0 | 2026-02-08 | Updated layer assignment from 10 to 9 per LAYER_REGISTRY v1.6; updated downstream artifacts; removed IMPL from upstream; updated tag counts | System |
 | 1.0.0 | 2025-01-15 | Initial skill definition | System |

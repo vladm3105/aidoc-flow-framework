@@ -1,53 +1,61 @@
 ---
 name: doc-cspec-reviewer
-description: Comprehensive content review and quality assurance for CSPEC documents - validates code specification completeness, CTR compliance, interface definitions, and identifies issues requiring manual attention
+description: Comprehensive content review and quality assurance for component-focused SPEC (Layer 6) documents - validates component-spec completeness, behavior contracts, interface definitions, and flags issues requiring manual attention
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - cspec-artifact
+    - layer-6-artifact
+    - spec-component-helper
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 50
-    artifact_type: CSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: component
     deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [CSPEC]
+    upstream_artifacts: [SPEC]
     downstream_artifacts: []
-    version: "1.0"
-    last_updated: "2026-03-01"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-cspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Code Specification (CSPEC) documents. This skill performs deep content analysis beyond structural validation, checking interface completeness, CTR compliance, algorithm specifications, and identifying issues that require manual review.
+Comprehensive **content review and quality assurance** for component-focused
+SPEC (Layer 6) documents. This skill performs deep content analysis beyond
+structural validation — checking interface completeness, behavior contracts,
+algorithm specifications, and flagging issues that require manual review.
 
-**Layer**: 9.50 (CSPEC Quality Assurance)
+This skill is a **SPEC (Layer 6) specialization** focused on component design.
+It does **not** define a separate artifact, template, or element-code; the
+canonical artifact contract is `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+(see `../doc-spec/`).
 
-**Upstream**: CSPEC (from `doc-cspec-autopilot`)
+**Layer**: 6 (SPEC — component focus)
 
-**Downstream**: None (final QA gate before TSPEC/TASKS generation)
+**Upstream**: SPEC (from `doc-cspec-autopilot`)
+
+**Downstream**: None (final QA gate before TDD/IPLAN generation)
 
 ---
 
 ## When to Use
 
 Use `doc-cspec-reviewer` when:
-- **After CSPEC Generation**: Run immediately after `doc-cspec-autopilot` completes
-- **Manual CSPEC Edits**: After making manual changes to CSPEC
-- **Pre-TASKS Check**: Before running `doc-tasks-autopilot`
-- **Pre-TSPEC Check**: Before running `doc-tspec-autopilot`
-- **Periodic Review**: Regular quality checks on existing CSPECs
+- **After SPEC Generation**: Run immediately after `doc-cspec-autopilot` completes
+- **Manual SPEC Edits**: After making manual changes to a component SPEC
+- **Pre-IPLAN Check**: Before running IPLAN authoring
+- **Pre-TDD Check**: Before running TDD authoring
+- **Periodic Review**: Regular quality checks on existing SPECs
 
 **Do NOT use when**:
-- CSPEC does not exist yet (use `doc-cspec-autopilot` first)
-- Only structural validation needed (use `doc-cspec-validator`)
+- SPEC does not exist yet (use `doc-cspec-autopilot` first)
+- Only structural validation needed (use `../doc-cspec-validator/`)
 
 ---
 
@@ -56,16 +64,16 @@ Use `doc-cspec-reviewer` when:
 ### 1. Interface Definition Review
 
 - [ ] All public interfaces documented
-- [ ] Method signatures complete (params, returns, exceptions)
+- [ ] Method signatures complete (params, returns, errors)
 - [ ] Type definitions accurate
-- [ ] API contracts match CTR specifications
+- [ ] Interfaces consistent with upstream EARS/BDD intent
 
-### 2. CTR Compliance Review
+### 2. Behavior Contract Review
 
-- [ ] CTR reference valid and accessible
-- [ ] Interface implementations match CTR schema
-- [ ] Error responses match CTR error definitions
-- [ ] Data models align with CTR schemas
+- [ ] Validation rules trace to EARS (`@ears: EARS.NN.SS.xxxx`)
+- [ ] State transitions trace to BDD (`@bdd: BDD.NN.SS.xxxx`)
+- [ ] Error handling responses are defined
+- [ ] Data models align with interface contracts
 
 ### 3. Algorithm Specification Review
 
@@ -77,35 +85,35 @@ Use `doc-cspec-reviewer` when:
 ### 4. Implementation Guidance Review
 
 - [ ] Class/module structure defined
-- [ ] Dependency injection patterns specified
+- [ ] Dependency patterns specified
 - [ ] Configuration options documented
 - [ ] Resource management specified
 
-### 5. Test Mapping Review
+### 5. TDD Contract Mapping Review
 
-- [ ] Unit test cases cover all methods
-- [ ] Integration test cases cover interfaces
-- [ ] Edge cases have test coverage
-- [ ] Performance test requirements defined
+- [ ] Downstream TDD document referenced (`@tdd: TDD-NN`)
+- [ ] Test files identified for interfaces
+- [ ] Edge cases flagged for test coverage
+- [ ] Performance test requirements noted
 
 ### 6. Traceability Review
 
-- [ ] All cumulative tags present (@brd through @ctr)
-- [ ] REQ requirements mapped to implementations
-- [ ] CTR contracts linked
-- [ ] Test references complete
+- [ ] All upstream tags present (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`)
+- [ ] Upstream requirements mapped to interfaces/behavior
+- [ ] ADR decisions linked (`@adr: ADR-NN`)
+- [ ] Downstream TDD references complete
 
 ---
 
 ## Review Report Format
 
 ```markdown
-# CSPEC-NN Review Report
+# SPEC-NN Review Report (component focus)
 
 ## Summary
-- **Document**: CSPEC-NN_{slug}
+- **Document**: SPEC-NN_{slug}
 - **Review Date**: YYYY-MM-DD
-- **CODE-Ready Score**: NN%
+- **TDD-Ready Score**: NN%
 - **Status**: PASS/FAIL
 
 ## Findings
@@ -126,8 +134,8 @@ Use `doc-cspec-reviewer` when:
 | Metric | Value | Target |
 |--------|-------|--------|
 | Interface Coverage | NN% | 100% |
-| CTR Compliance | NN% | 100% |
-| Test Mapping | NN% | 90% |
+| Behavior Contracts | NN% | 100% |
+| TDD Contract Mapping | NN% | 90% |
 ```
 
 ---
@@ -136,8 +144,8 @@ Use `doc-cspec-reviewer` when:
 
 | File | Purpose |
 |------|---------|
-| `CSPEC-NN.A_audit_report_vNNN.md` | Audit report with findings |
-| `CSPEC-NN.R_review_report_vNNN.md` | Legacy review report format |
+| `SPEC-NN.A_audit_report_vNNN.md` | Audit report with findings |
+| `SPEC-NN.R_review_report_vNNN.md` | Legacy review report format |
 
 ---
 
@@ -145,7 +153,7 @@ Use `doc-cspec-reviewer` when:
 
 After review, issues can be fixed automatically:
 1. Run `doc-cspec-reviewer` to identify issues
-2. Review generates `CSPEC-NN.A_audit_report_vNNN.md`
+2. Review generates `SPEC-NN.A_audit_report_vNNN.md`
 3. Run `doc-cspec-fixer` to apply automated fixes
 4. Re-run reviewer to verify fixes
 
@@ -153,6 +161,7 @@ After review, issues can be fixed automatically:
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
+- Canonical SPEC artifact contract: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer overview: `framework/layers/06_SPEC/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent SPEC skill: `../doc-spec/`

@@ -1,47 +1,53 @@
 ---
 name: doc-procspec-audit
-description: Unified PROCSPEC quality gate - validates structure, detects issues, computes PROC-Ready score
+description: Unified process-spec SPEC (Layer 6) quality gate - validates structure, detects issues, computes TDD-Ready score, and produces a report for doc-procspec-fixer
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - procspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 54
-    artifact_type: PROCSPEC
-    deliverable_type: process
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: process-design
+    deliverable_type: document
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [PROCSPEC]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [Audit Report]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-procspec-audit
 
 ## Purpose
 
-Unified **PROCSPEC quality gate** that combines structural validation, content review, and PROC-Ready scoring.
+Unified **process-spec SPEC quality gate** that combines structural validation,
+content review, and TDD-Ready scoring into a single comprehensive audit. This
+is a plugin-only authoring helper — a process/workflow-design specialization of
+SPEC (Layer 6) — that audits against the single framework SPEC template
+(`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`, see `../doc-spec/`).
 
-**Layer**: 9.54 (PROCSPEC Quality Gate)
+**Layer**: 6 (SPEC — process-design quality gate)
+
+**Parent**: `../doc-spec/`
 
 ---
 
-## PROC-Ready Score Calculation
+## TDD-Ready Score Calculation
 
 | Component | Weight | Scoring Criteria |
 |-----------|--------|------------------|
-| Step Completeness | 25% | All steps documented |
-| Role Assignment | 20% | Roles defined |
-| Decision Points | 15% | Branch logic clear |
-| Error Handling | 15% | Recovery documented |
-| Verification Steps | 15% | Quality checks defined |
-| Traceability | 10% | Cumulative tags present |
+| Step Completeness | 25% | All process steps documented with pre/post conditions |
+| Role Assignment | 20% | Responsible roles defined per step |
+| Decision Points | 15% | Branch logic and outcomes clear |
+| Error Handling | 15% | Recovery and fallback procedures documented |
+| Verification Steps | 15% | Completion criteria and quality checks defined |
+| Traceability | 10% | All upstream tags present |
 
 **Thresholds**:
 - **PASS**: ≥85%
@@ -54,11 +60,13 @@ Unified **PROCSPEC quality gate** that combines structural validation, content r
 
 | File | Purpose |
 |------|---------|
-| `PROCSPEC-NN.A_audit_report_vNNN.md` | Audit report |
+| `SPEC-NN.A_audit_report_vNNN.md` | Comprehensive audit report |
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

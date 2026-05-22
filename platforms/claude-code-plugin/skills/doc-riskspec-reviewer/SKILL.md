@@ -1,41 +1,44 @@
 ---
 name: doc-riskspec-reviewer
-description: Comprehensive content review and quality assurance for RISKSPEC documents - validates risk specification completeness, control coverage, and mitigation adequacy
+description: Comprehensive content review and quality assurance for risk-analysis SPEC (Layer 6) documents - validates risk specification completeness, control coverage, and mitigation adequacy
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - riskspec-artifact
+    - layer-6-artifact
+    - spec-document
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 53
-    artifact_type: RISKSPEC
+    layer: 6
+    artifact_type: SPEC
     deliverable_type: risk
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [RISKSPEC]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: []
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-riskspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Risk Specification (RISKSPEC) documents. Validates risk identification, impact analysis, control measures, and mitigation planning.
+Comprehensive **content review and quality assurance** for risk-analysis SPEC
+documents. Validates risk identification, impact analysis, control measures,
+and mitigation planning. This is the risk-spec specialization of the SPEC
+(Layer 6) authoring helpers — see the parent skill `../doc-spec/` and the
+single SPEC template at `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`.
 
-**Layer**: 9.53 (RISKSPEC Quality Assurance)
+**Layer**: 6 (SPEC quality assurance, risk-analysis focus)
 
 ---
 
 ## Review Checklist
 
 ### 1. Risk Identification
-- [ ] All risks from REQ identified
+- [ ] All risks from upstream artifacts identified
 - [ ] Risk categories appropriate
 - [ ] Risk descriptions clear
 
@@ -63,5 +66,7 @@ Comprehensive **content review and quality assurance** for Risk Specification (R
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guidance: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

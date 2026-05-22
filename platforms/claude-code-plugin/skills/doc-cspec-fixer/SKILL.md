@@ -1,38 +1,46 @@
 ---
 name: doc-cspec-fixer
-description: Automated fix skill that reads review reports and applies fixes to CSPEC documents - handles broken links, YAML structure issues, CTR compliance, and iterative improvement
+description: Automated fix skill that reads review reports and applies fixes to component-focused SPEC (Layer 6) documents - handles broken links, YAML structure, behavior-contract alignment, and iterative improvement
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - cspec-artifact
+    - layer-6-artifact
+    - spec-component-helper
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 50
-    artifact_type: CSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: component
     deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [REQ, CTR, CSPEC, Review Report]
-    downstream_artifacts: [Fixed CSPEC, Fix Report]
-    version: "1.0"
-    last_updated: "2026-03-01"
+    upstream_artifacts: [SPEC, Review Report]
+    downstream_artifacts: [Fixed SPEC, Fix Report]
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-cspec-fixer
 
 ## Purpose
 
-Automated **fix skill** that reads the latest review report and applies fixes to CSPEC (Code Specification) documents. This skill bridges the gap between `doc-cspec-reviewer` (which identifies issues) and the corrected CSPEC, enabling iterative improvement cycles.
+Automated **fix skill** that reads the latest review report and applies fixes
+to component-focused SPEC (Layer 6) documents. It bridges the gap between
+`doc-cspec-reviewer` (which identifies issues) and the corrected SPEC, enabling
+iterative improvement cycles.
 
-**Layer**: 9.50 (CSPEC Quality Improvement)
+This skill is a **SPEC (Layer 6) specialization** operating on the
+component-design focus of SPEC. It does **not** define a separate artifact,
+template, or element-code; the canonical artifact contract is
+`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (see `../doc-spec/`).
 
-**Upstream**: REQ, CTR, CSPEC, Review Report (`CSPEC-NN.A_audit_report_vNNN.md`)
+**Layer**: 6 (SPEC — component focus)
 
-**Downstream**: Fixed CSPEC, Fix Report (`CSPEC-NN.F_fix_report_vNNN.md`)
+**Upstream**: SPEC document, Review Report (`SPEC-NN.A_audit_report_vNNN.md`)
+
+**Downstream**: Fixed SPEC, Fix Report (`SPEC-NN.F_fix_report_vNNN.md`)
 
 ---
 
@@ -41,13 +49,13 @@ Automated **fix skill** that reads the latest review report and applies fixes to
 Use `doc-cspec-fixer` when:
 - **After Review**: Run after `doc-cspec-reviewer` identifies issues
 - **Iterative Improvement**: Part of Review → Fix → Review cycle
-- **CTR Alignment**: Fix CTR compliance issues
-- **YAML Structure Issues**: CSPEC contains malformed YAML blocks
+- **Behavior-Contract Alignment**: Fix behavior/validation contract issues
+- **YAML Structure Issues**: SPEC contains malformed YAML blocks
 
 **Do NOT use when**:
 - No review report exists (run `doc-cspec-reviewer` first)
 - Issues require manual architectural decisions
-- CTR contract itself needs modification
+- The upstream ADR decision itself needs modification
 
 ---
 
@@ -57,10 +65,10 @@ Use `doc-cspec-fixer` when:
 
 | Issue Type | Fix Action |
 |------------|------------|
-| Missing `document_type` | Add `document_type: cspec-document` |
-| Missing `subtype_code` | Add `subtype_code: 50` |
+| Missing `document_type` | Add `document_type: spec-document` |
+| Missing `layer` | Add `layer: 6` |
 | Broken internal links | Update to correct paths |
-| Missing traceability tags | Add required cumulative tags |
+| Missing traceability tags | Add required upstream tags |
 | YAML syntax errors | Fix formatting issues |
 | Incomplete metadata | Add required fields |
 
@@ -68,8 +76,8 @@ Use `doc-cspec-fixer` when:
 
 | Issue Type | Fix Action |
 |------------|------------|
-| Missing interface definitions | Generate skeleton from CTR |
-| Incomplete test mapping | Generate test case placeholders |
+| Missing interface definitions | Generate skeleton from upstream sources |
+| Incomplete TDD contract mapping | Generate test contract placeholders |
 | Missing algorithm details | Add TODO markers |
 
 ### Manual Review Required
@@ -77,7 +85,7 @@ Use `doc-cspec-fixer` when:
 | Issue Type | Action |
 |------------|--------|
 | Architectural changes | Flag for human review |
-| CTR contract mismatches | Escalate to CTR owner |
+| Behavior-contract mismatches | Escalate to ADR/SPEC owner |
 | Business logic errors | Requires domain expertise |
 
 ---
@@ -102,12 +110,12 @@ flowchart TD
 ## Fix Report Format
 
 ```markdown
-# CSPEC-NN Fix Report
+# SPEC-NN Fix Report (component focus)
 
 ## Summary
-- **Document**: CSPEC-NN_{slug}
+- **Document**: SPEC-NN_{slug}
 - **Fix Date**: YYYY-MM-DD
-- **Source Report**: CSPEC-NN.A_audit_report_v001.md
+- **Source Report**: SPEC-NN.A_audit_report_v001.md
 - **Issues Fixed**: N
 - **Issues Remaining**: N
 
@@ -126,7 +134,7 @@ flowchart TD
 - **Recommendation**: [action needed]
 
 ## Validation
-- **Post-Fix CODE-Ready Score**: NN%
+- **Post-Fix TDD-Ready Score**: NN%
 - **Status**: PASS/FAIL
 ```
 
@@ -136,8 +144,8 @@ flowchart TD
 
 | File | Purpose |
 |------|---------|
-| Updated CSPEC YAML | Fixed document |
-| `CSPEC-NN.F_fix_report_vNNN.md` | Fix report documenting changes |
+| Updated SPEC YAML | Fixed document |
+| `SPEC-NN.F_fix_report_vNNN.md` | Fix report documenting changes |
 
 ---
 
@@ -145,12 +153,12 @@ flowchart TD
 
 ### With Reviewer
 ```
-doc-cspec-reviewer → CSPEC-NN.A_audit_report.md → doc-cspec-fixer → Fixed CSPEC
+doc-cspec-reviewer → SPEC-NN.A_audit_report.md → doc-cspec-fixer → Fixed SPEC
 ```
 
 ### Iterative Loop
 ```
-CSPEC → reviewer → audit_report → fixer → fixed_CSPEC → reviewer → ...
+SPEC → reviewer → audit_report → fixer → fixed_SPEC → reviewer → ...
 ```
 
 Maximum iterations: 3 (to prevent infinite loops)
@@ -159,6 +167,7 @@ Maximum iterations: 3 (to prevent infinite loops)
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
+- Canonical SPEC artifact contract: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer overview: `framework/layers/06_SPEC/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent SPEC skill: `../doc-spec/`

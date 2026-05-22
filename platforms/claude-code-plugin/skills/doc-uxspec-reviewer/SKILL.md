@@ -1,34 +1,37 @@
 ---
 name: doc-uxspec-reviewer
-description: Comprehensive content review and quality assurance for UXSPEC documents - validates UX specification completeness, design consistency, and accessibility
+description: Content review and quality assurance for UX-focused SPEC (Layer 6) documents - validates UX specification completeness, design consistency, and accessibility
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - uxspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 52
-    artifact_type: UXSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: ux
     deliverable_type: ux
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [UXSPEC]
+    upstream_artifacts: [SPEC]
     downstream_artifacts: []
-    version: "1.0"
-    last_updated: "2026-03-01"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-uxspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for UX Specification (UXSPEC) documents. Validates layout completeness, interaction specifications, visual consistency, and accessibility compliance.
+Comprehensive **content review and quality assurance** for UX-focused SPEC documents
+(Layer 6). Validates layout completeness, interaction specifications, visual
+consistency, and accessibility compliance. This is the UX/interface-design
+specialization of the SPEC layer — it reviews SPEC documents whose `spec_focus` is `ux`.
 
-**Layer**: 9.52 (UXSPEC Quality Assurance)
+**Layer**: 6 (SPEC — UX-focused quality assurance)
 
 ---
 
@@ -59,9 +62,23 @@ Comprehensive **content review and quality assurance** for UX Specification (UXS
 - [ ] Mobile-first approach
 - [ ] Touch targets appropriate
 
+### 6. Traceability Review
+- [ ] Upstream tags present (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`)
+- [ ] Element IDs use 4-segment `TYPE.NN.SS.xxxx`; ADR uses `ADR-NN`
+- [ ] Document referenced as `@spec: SPEC-NN`
+
 ---
+
+## Review Procedure
+
+The framework ships no runtime review scripts — **this skill is the reviewer**.
+Walk the checklist above declaratively against each UX-focused SPEC document and
+emit a review report for `doc-uxspec-fixer` to consume.
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/UXSPEC/UXSPEC_MVP_SCHEMA.yaml`
+- Parent SPEC skill: `../doc-spec/SKILL.md`
+- Fixer: `../doc-uxspec-fixer/SKILL.md`
+- Template (single source of truth): `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer contract: `framework/layers/06_SPEC/README.md`
+- ID rules: `framework/governance/ID_NAMING_STANDARDS.md`

@@ -7,10 +7,10 @@ metadata:
     - sdd-workflow
     - quality-assurance
     - spec-audit
-    - layer-9-artifact
+    - layer-6-artifact
     - shared-architecture
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based]
     priority: primary
@@ -18,9 +18,9 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [SPEC]
     downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
+    version: "1.1"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 
 ---
 
@@ -35,7 +35,7 @@ Run a **single SPEC audit workflow** that executes:
 
 Then emit one **combined report** optimized for `doc-spec-fixer` input.
 
-**Layer**: 9 (SPEC Quality Gate Wrapper)
+**Layer**: 6 (SPEC Quality Gate Wrapper)
 
 **Upstream**: SPEC file(s)
 
@@ -62,7 +62,7 @@ Use this wrapper to avoid user confusion between validator and reviewer while pr
 Use `doc-spec-audit` when:
 - You want one command for SPEC quality checks
 - You need a combined report for `doc-spec-fixer`
-- You are running QA before TSPEC/TASKS generation
+- You are running QA before TDD/IPLAN generation
 
 Do NOT use when:
 - SPEC does not exist (use `doc-spec` / `doc-spec-autopilot` generation first)
@@ -73,7 +73,7 @@ Do NOT use when:
 ## Execution Contract
 
 ### Input
-- SPEC path (`docs/09_SPEC/SPEC-NN_*/...`)
+- SPEC path (`docs/06_SPEC/SPEC-NN_*/...`)
 - Optional: threshold (default review threshold: 90)
 
 ### Sequence (Mandatory)
@@ -149,7 +149,7 @@ Precedence rule:
 ## Example Invocation
 
 ```bash
-/doc-spec-audit docs/09_SPEC/SPEC-01_f1_iam/
+/doc-spec-audit docs/06_SPEC/SPEC-01_f1_iam/
 ```
 
 Expected outcome:
@@ -164,6 +164,7 @@ Expected outcome:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2026-05-22 | Migrated to the framework 8-layer model: SPEC renumbered to Layer 6; QA gate now precedes TDD (Layer 7)/IPLAN (Layer 8), not TSPEC/TASKS; SPEC paths under `docs/06_SPEC/`; tracks `SPEC-TEMPLATE` schema version |
 | 1.0 | 2026-02-27 | Initial SPEC audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
 
 ## Implementation Plan Consistency (IPLAN-004)

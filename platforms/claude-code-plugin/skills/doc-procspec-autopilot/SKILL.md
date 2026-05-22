@@ -1,84 +1,91 @@
 ---
 name: doc-procspec-autopilot
-description: Automated PROCSPEC (Process Specification) generation from REQ - generates specifications for SOPs, runbooks, playbooks, and operational procedures
+description: Automated process-spec SPEC (Layer 6) generation - produces process/workflow specifications (SOPs, runbooks, playbooks, checklists) against the framework SPEC template
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - procspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - automation-workflow
   custom_fields:
-    layer: 9
-    subtype_code: 54
-    artifact_type: PROCSPEC
-    deliverable_type: process
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: process-design
+    deliverable_type: document
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [REQ]
-    downstream_artifacts: [TSPEC, TASKS]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN, Code]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-procspec-autopilot
 
 ## Purpose
 
-Automated **Process Specification (PROCSPEC)** generation pipeline that processes REQ documents to generate specifications for operational procedures including SOPs, runbooks, playbooks, and checklists.
+Automated **process-spec SPEC** generation pipeline that produces SPEC documents
+with a process/workflow-design focus — operational procedures such as SOPs,
+runbooks, playbooks, and checklists. This is a plugin-only authoring helper: a
+process-design specialization of SPEC (Layer 6) that generates against the
+single framework SPEC template — it does not define its own template.
 
-**Layer**: 9.54 (PROCSPEC - Process Specifications)
+**Layer**: 6 (SPEC — process/workflow design)
 
-**Upstream**: REQ (Layer 7)
+**Parent**: `../doc-spec/`
 
-**Downstream**: TSPEC (Layer 10), TASKS (Layer 11)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+
+**Downstream**: TDD (Layer 7), IPLAN (Layer 8), Code
 
 ---
 
 ## When to Use
 
 Use `doc-procspec-autopilot` when:
-- REQ documents have `deliverable_type: process`
+- A SPEC's focus is an operational process or workflow
 - Creating Standard Operating Procedures (SOPs)
 - Generating runbook specifications
-- Creating playbook requirements
+- Creating playbook specifications
 - Specifying operational checklists
 
 ---
 
 ## Document Type Contract (MANDATORY)
 
-When generating PROCSPEC document instances, the autopilot MUST:
+When generating process-spec SPEC instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "procspec-document"`
+1. **Read** the canonical SPEC template:
+   - Source: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
 
-2. **Set** `document_type` in generated document frontmatter:
+2. **Set** the artifact fields in the generated document frontmatter:
    ```yaml
    custom_fields:
-     document_type: procspec-document
-     artifact_type: PROCSPEC
-     deliverable_type: process
-     layer: 9
-     subtype_code: 54
+     document_type: spec-document
+     artifact_type: SPEC
+     spec_focus: process-design
+     layer: 6
    ```
 
 ---
 
-## Process Element Types
+## Process Specification Facets
 
-| Element Type | Code | Description |
-|--------------|------|-------------|
-| SOP | 70 | Standard Operating Procedure |
-| Runbook | 71 | Operational runbook |
-| Playbook | 72 | Response playbook |
-| Checklist | 73 | Verification checklist |
+The process focus shapes the SPEC content (not separate ID codes — the
+8-layer model has no element-type-code scheme):
+
+| Facet | Description |
+|-------|-------------|
+| SOP | Standard Operating Procedure |
+| Runbook | Operational runbook |
+| Playbook | Response playbook |
+| Checklist | Verification checklist |
 
 ---
 
-## PROC-Ready Score Components
+## TDD-Ready Score Components
 
 | Component | Weight | Target |
 |-----------|--------|--------|
@@ -89,11 +96,13 @@ When generating PROCSPEC document instances, the autopilot MUST:
 | Verification Steps | 15% | ≥85% |
 | Traceability | 10% | 100% |
 
-**Target**: PROC-Ready ≥85%
+**Target**: TDD-Ready ≥85%
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/PROCSPEC/PROCSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

@@ -1,47 +1,56 @@
 ---
 name: doc-cspec-audit
-description: Unified CSPEC quality gate - validates structure, detects issues, computes CODE-Ready score, and produces report for fixer
+description: Quality gate for component-focused SPEC (Layer 6) documents - validates structure, detects issues, computes TDD-Ready score, and produces a report for doc-cspec-fixer
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - cspec-artifact
+    - layer-6-artifact
+    - spec-component-helper
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 50
-    artifact_type: CSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: component
     deliverable_type: code
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [CSPEC]
+    upstream_artifacts: [SPEC]
     downstream_artifacts: [Audit Report]
-    version: "1.0"
-    last_updated: "2026-03-01"
+    version: "2.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-cspec-audit
 
 ## Purpose
 
-Unified **CSPEC quality gate** that combines structural validation, content review, and CODE-Ready scoring into a single comprehensive audit. Produces a standardized report that can be consumed by `doc-cspec-fixer` for automated remediation.
+Quality gate for **component-focused SPEC** documents — the component-design
+specialization of SPEC (Layer 6). It combines structural validation, content
+review, and TDD-Ready scoring into a single comprehensive audit, producing a
+standardized report that `doc-cspec-fixer` can consume for automated
+remediation.
 
-**Layer**: 9.50 (CSPEC Quality Gate)
+This skill is a **SPEC (Layer 6) specialization**. It audits SPEC documents
+authored with a component-design focus; it does **not** define a separate
+artifact, template, or element-code. The canonical artifact contract is
+`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (see `../doc-spec/`).
 
-**Upstream**: CSPEC document
+**Layer**: 6 (SPEC — component focus)
 
-**Downstream**: Audit Report (`CSPEC-NN.A_audit_report_vNNN.md`)
+**Upstream**: SPEC document (component focus)
+
+**Downstream**: Audit Report (`SPEC-NN.A_audit_report_vNNN.md`)
 
 ---
 
 ## When to Use
 
 Use `doc-cspec-audit` when:
-- **Pre-Release Check**: Final quality gate before TSPEC/TASKS generation
+- **Pre-Release Check**: Final quality gate before TDD/IPLAN generation
 - **Comprehensive Review**: Need both structural and content validation
-- **Score Verification**: Need official CODE-Ready score
+- **Score Verification**: Need official TDD-Ready score
 - **CI/CD Integration**: Automated quality checks in pipeline
 
 **Preferred over individual skills when**:
@@ -56,38 +65,38 @@ Use `doc-cspec-audit` when:
 ### 1. Structure Validation (30%)
 - File location compliance
 - YAML syntax validity
-- Required sections present
+- Required sections present (8 core SPEC sections)
 - Metadata completeness
 
 ### 2. Content Quality (40%)
 - Interface definitions complete
-- CTR compliance verified
-- Algorithm specifications present
+- Behavior contracts verified
+- Algorithm/behavior specifications present
 - Implementation guidance adequate
 
 ### 3. Traceability (15%)
-- Cumulative tags complete
-- REQ mappings valid
-- CTR references valid
-- Test mappings complete
+- Upstream tags complete (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`)
+- ADR mappings valid (`@adr: ADR-NN`)
+- Behavior contract references valid
+- Downstream TDD mappings present
 
 ### 4. Readiness Metrics (15%)
-- CODE-Ready score calculation
+- TDD-Ready score calculation
 - Downstream readiness assessment
 - Risk identification
 
 ---
 
-## CODE-Ready Score Calculation
+## TDD-Ready Score Calculation
 
 | Component | Weight | Scoring Criteria |
 |-----------|--------|------------------|
 | Interface Completeness | 20% | All interfaces documented with full signatures |
-| CTR Compliance | 20% | All CTR contracts implemented correctly |
+| Behavior Contracts | 20% | All behavior/validation contracts specified |
 | Algorithm Specification | 15% | Core algorithms documented with complexity analysis |
-| Error Handling | 15% | Exception handling defined for all interfaces |
-| Test Mapping | 15% | Unit and integration tests mapped |
-| Traceability | 15% | All cumulative tags present and valid |
+| Error Handling | 15% | Error handling defined for all interfaces |
+| TDD Contract Mapping | 15% | Downstream TDD test contracts referenced |
+| Traceability | 15% | All upstream tags present and valid |
 
 **Thresholds**:
 - **PASS**: ≥90%
@@ -99,16 +108,16 @@ Use `doc-cspec-audit` when:
 ## Audit Report Format
 
 ```markdown
-# CSPEC-NN Audit Report
+# SPEC-NN Audit Report (component focus)
 
 ## Document Information
-- **CSPEC ID**: CSPEC-NN
+- **SPEC ID**: SPEC-NN
 - **Title**: {title}
 - **Audit Date**: YYYY-MM-DD
 - **Audit Version**: vNNN
 
 ## Executive Summary
-- **CODE-Ready Score**: NN% [PASS/CONDITIONAL/FAIL]
+- **TDD-Ready Score**: NN% [PASS/CONDITIONAL/FAIL]
 - **Critical Issues**: N
 - **Warnings**: N
 - **Recommendations**: N
@@ -127,7 +136,7 @@ Use `doc-cspec-audit` when:
 | Check | Status | Details |
 |-------|--------|---------|
 | Interfaces | NN% | |
-| CTR Compliance | NN% | |
+| Behavior Contracts | NN% | |
 | Algorithms | NN% | |
 | Error Handling | NN% | |
 
@@ -136,7 +145,9 @@ Use `doc-cspec-audit` when:
 |-----|---------|-------|
 | @brd | Yes/No | Yes/No |
 | @prd | Yes/No | Yes/No |
-| ... | | |
+| @ears | Yes/No | Yes/No |
+| @bdd | Yes/No | Yes/No |
+| @adr | Yes/No | Yes/No |
 
 ### Issues
 
@@ -152,15 +163,15 @@ Use `doc-cspec-audit` when:
 ## Metrics Summary
 | Metric | Value | Target | Status |
 |--------|-------|--------|--------|
-| CODE-Ready | NN% | ≥90% | |
+| TDD-Ready | NN% | ≥90% | |
 | Interface Coverage | NN% | 100% | |
-| CTR Compliance | NN% | 100% | |
-| Test Mapping | NN% | 90% | |
+| Behavior Contracts | NN% | 100% | |
+| TDD Contract Mapping | NN% | 90% | |
 
 ## Next Steps
 1. Run `doc-cspec-fixer` with this report
 2. Re-audit after fixes applied
-3. Proceed to TSPEC generation when PASS
+3. Proceed to TDD generation when PASS
 ```
 
 ---
@@ -169,7 +180,7 @@ Use `doc-cspec-audit` when:
 
 | File | Purpose |
 |------|---------|
-| `CSPEC-NN.A_audit_report_vNNN.md` | Comprehensive audit report |
+| `SPEC-NN.A_audit_report_vNNN.md` | Comprehensive audit report |
 
 ---
 
@@ -177,25 +188,25 @@ Use `doc-cspec-audit` when:
 
 ### Audit → Fix → Re-Audit Cycle
 ```
-doc-cspec-audit → CSPEC-NN.A_audit_report.md → doc-cspec-fixer → doc-cspec-audit
+doc-cspec-audit → SPEC-NN.A_audit_report.md → doc-cspec-fixer → doc-cspec-audit
 ```
 
 ### CI/CD Pipeline
 ```yaml
 steps:
-  - name: CSPEC Audit
-    run: invoke doc-cspec-audit --cspec docs/09_SPEC/CSPEC/CSPEC-NN/
+  - name: SPEC (component) Audit
+    run: invoke doc-cspec-audit --spec docs/06_SPEC/SPEC-NN/
   - name: Check Score
-    run: check CODE-Ready >= 90%
+    run: check TDD-Ready >= 90%
   - name: Fix if Needed
-    run: invoke doc-cspec-fixer --report CSPEC-NN.A_audit_report.md
+    run: invoke doc-cspec-fixer --report SPEC-NN.A_audit_report.md
 ```
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml`
-- Creation Rules: `ai_dev_ssd_flow/09_SPEC/CSPEC/CSPEC-MVP-TEMPLATE.md`
+- Canonical SPEC artifact contract: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer overview: `framework/layers/06_SPEC/README.md`
+- Governance / ID & naming standards: `framework/governance/`
+- Parent SPEC skill: `../doc-spec/`

@@ -2,22 +2,22 @@
 
 ## Overview
 
-This index documents the specialized skills for each SPEC subtype. SPEC serves as an orchestrator that routes to subtypes based on `deliverable_type`.
+This index documents the specialized skills for each SPEC subtype. SPEC (Layer 6) serves as an orchestrator that routes to subtypes based on `deliverable_type`. The subtypes are plugin-only authoring helpers under the SPEC layer — each references (does not redefine) the single `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` template.
 
 ## Subtype Skills Matrix
 
-| Subtype | Code | deliverable_type | Skills |
-|---------|------|------------------|--------|
-| **CSPEC** | 50 | `code` | autopilot, validator, reviewer, fixer, audit |
-| **DSPEC** | 51 | `document` | autopilot, validator, reviewer, fixer, audit |
-| **UXSPEC** | 52 | `ux` | autopilot, validator, reviewer, fixer, audit |
-| **RISKSPEC** | 53 | `risk` | autopilot, validator, reviewer, fixer, audit |
-| **PROCSPEC** | 54 | `process` | autopilot, validator, reviewer, fixer, audit |
+| Subtype | deliverable_type | Skills |
+|---------|------------------|--------|
+| **CSPEC** | `code` | autopilot, validator, reviewer, fixer, audit |
+| **DSPEC** | `document` | autopilot, validator, reviewer, fixer, audit |
+| **UXSPEC** | `ux` | autopilot, validator, reviewer, fixer, audit |
+| **RISKSPEC** | `risk` | autopilot, validator, reviewer, fixer, audit |
+| **PROCSPEC** | `process` | autopilot, validator, reviewer, fixer, audit |
 
 ## Skill Types
 
 ### Autopilot Skills
-Generate subtype documents from REQ (and CTR for CSPEC).
+Generate subtype documents from upstream ADR/BDD/EARS.
 
 | Skill | Description |
 |-------|-------------|
@@ -32,11 +32,11 @@ Validate documents against schema standards.
 
 | Skill | Description |
 |-------|-------------|
-| `doc-cspec-validator` | Validate against CSPEC_MVP_SCHEMA |
-| `doc-dspec-validator` | Validate against DSPEC_MVP_SCHEMA |
-| `doc-uxspec-validator` | Validate against UXSPEC_MVP_SCHEMA |
-| `doc-riskspec-validator` | Validate against RISKSPEC_MVP_SCHEMA |
-| `doc-procspec-validator` | Validate against PROCSPEC_MVP_SCHEMA |
+| `doc-cspec-validator` | Validate against CSPEC schema |
+| `doc-dspec-validator` | Validate against DSPEC schema |
+| `doc-uxspec-validator` | Validate against UXSPEC schema |
+| `doc-riskspec-validator` | Validate against RISKSPEC schema |
+| `doc-procspec-validator` | Validate against PROCSPEC schema |
 
 ### Reviewer Skills
 Comprehensive content review and quality assurance.
@@ -84,7 +84,7 @@ Unified quality gates with readiness scoring.
 ## Workflow Integration
 
 ```
-REQ (with deliverable_type)
+ADR (with deliverable_type)
     ↓
 SPEC Orchestrator (routes based on deliverable_type)
     ↓
@@ -95,16 +95,16 @@ SPEC Orchestrator (routes based on deliverable_type)
 Per-Subtype Workflow:
     autopilot → validator → reviewer → fixer → audit
     ↓
-TSPEC / TASKS
+TDD / IPLAN
 ```
 
 ## References
 
-- SPEC Parent: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
-- Subtype Templates: `ai_dev_ssd_flow/09_SPEC/{SUBTYPE}/{SUBTYPE}-MVP-TEMPLATE.yaml`
-- Subtype Schemas: `ai_dev_ssd_flow/09_SPEC/{SUBTYPE}/{SUBTYPE}_MVP_SCHEMA.yaml`
+- SPEC Parent Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- SPEC README: `framework/layers/06_SPEC/README.md`
+- ID & Tag Standards: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ---
 
-**Version**: 1.0
-**Last Updated**: 2026-03-01
+**Version**: 2.0
+**Last Updated**: 2026-05-22

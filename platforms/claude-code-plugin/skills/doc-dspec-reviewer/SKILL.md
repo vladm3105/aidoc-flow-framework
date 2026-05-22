@@ -1,105 +1,107 @@
 ---
 name: doc-dspec-reviewer
-description: Comprehensive content review and quality assurance for DSPEC documents - validates documentation specification completeness, audience alignment, content coverage, and identifies issues requiring manual attention
+description: Comprehensive content review and quality assurance for data-spec SPEC (Layer 6) documents - validates data-model completeness, interface coverage, behavior contracts, and identifies issues requiring manual attention
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - dspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 51
-    artifact_type: DSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: data-design
     deliverable_type: document
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [DSPEC]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: []
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-dspec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Documentation Specification (DSPEC) documents. This skill performs deep content analysis beyond structural validation, checking content coverage, audience alignment, style compliance, and identifying issues that require manual review.
+Comprehensive **content review and quality assurance** for data-spec SPEC
+(Layer 6) documents. This skill performs deep content analysis beyond
+structural validation, checking data-model completeness, interface coverage,
+behavior contracts, and identifying issues that require manual review. It is a
+plugin-only authoring helper — a data-design specialization of SPEC — and
+reviews against the single framework SPEC template.
 
-**Layer**: 9.51 (DSPEC Quality Assurance)
+**Layer**: 6 (SPEC — data-design quality assurance)
 
-**Upstream**: DSPEC (from `doc-dspec-autopilot`)
+**Parent**: `../doc-spec/`
 
-**Downstream**: None (final QA gate before TASKS generation)
+**Upstream**: SPEC (from `../doc-dspec-autopilot/`)
+
+**Downstream**: None (final QA gate before TDD generation)
 
 ---
 
 ## When to Use
 
 Use `doc-dspec-reviewer` when:
-- **After DSPEC Generation**: Run immediately after `doc-dspec-autopilot` completes
-- **Manual DSPEC Edits**: After making manual changes to DSPEC
-- **Pre-TASKS Check**: Before running `doc-tasks-autopilot`
-- **Periodic Review**: Regular quality checks on existing DSPECs
+- **After SPEC Generation**: Run immediately after `../doc-dspec-autopilot/` completes
+- **Manual SPEC Edits**: After making manual changes to a SPEC's data models
+- **Pre-TDD Check**: Before authoring the downstream TDD
+- **Periodic Review**: Regular quality checks on existing data-focused SPECs
 
 ---
 
 ## Review Checklist
 
-### 1. Content Coverage Review
+### 1. Data-Model Coverage Review
 
-- [ ] All REQ topics addressed
-- [ ] Information architecture logical
-- [ ] Content depth appropriate for audience
-- [ ] Examples sufficient and relevant
+- [ ] All upstream data requirements addressed
+- [ ] Field types and required flags complete
+- [ ] Constraints and invariants captured
+- [ ] No SQL/ORM implementation leakage
 
-### 2. Audience Alignment Review
+### 2. Interface Review
 
-- [ ] Primary audience clearly defined
-- [ ] Technical level appropriate
-- [ ] Prerequisites realistic
-- [ ] Terminology appropriate for audience
+- [ ] Public exports defined with typed signatures
+- [ ] Return shapes carry the specified data models
+- [ ] Error conditions documented per export
 
-### 3. Structure Review
+### 3. Behavior Review
 
-- [ ] Logical flow of topics
-- [ ] Section hierarchy appropriate
-- [ ] Navigation aids specified
-- [ ] Cross-references defined
+- [ ] Validation rules sourced from EARS
+- [ ] State transitions sourced from BDD
+- [ ] Error handling defined
 
-### 4. Style Compliance Review
+### 4. Implementation Notes Review
 
-- [ ] Style guide referenced
-- [ ] Voice and tone consistent
-- [ ] Formatting standards met
-- [ ] Terminology consistent
+- [ ] Constraints documented
+- [ ] Patterns appropriate for the data design
+- [ ] Performance considerations noted
 
-### 5. Accessibility Review
+### 5. Downstream TDD Contract Review
 
-- [ ] Visual content has alt text specs
-- [ ] Color contrast considered
-- [ ] Reading level appropriate
-- [ ] Multi-format considerations
+- [ ] TDD document referenced (`@tdd: TDD-NN`)
+- [ ] Test files cover data models and schemas
 
 ### 6. Traceability Review
 
-- [ ] All cumulative tags present
-- [ ] REQ requirements mapped
-- [ ] Source references complete
+- [ ] All upstream tags present (`@brd`, `@prd`, `@ears`, `@bdd`, `@adr`)
+- [ ] Architecture decision linked (`@adr: ADR-NN`)
+- [ ] This document tagged `@spec: SPEC-NN`
 
 ---
 
 ## Review Report Format
 
 ```markdown
-# DSPEC-NN Review Report
+# SPEC-NN Review Report
 
 ## Summary
-- **Document**: DSPEC-NN_{slug}
+- **Document**: SPEC-NN_{slug}
 - **Review Date**: YYYY-MM-DD
-- **DOC-Ready Score**: NN%
+- **TDD-Ready Score**: NN%
 - **Status**: PASS/FAIL
 
 ## Findings
@@ -116,14 +118,16 @@ Use `doc-dspec-reviewer` when:
 ## Metrics
 | Metric | Value | Target |
 |--------|-------|--------|
-| Content Coverage | NN% | 100% |
-| Audience Alignment | NN% | 90% |
-| Style Compliance | NN% | 85% |
+| Data-Model Coverage | NN% | 100% |
+| Interface Completeness | NN% | 90% |
+| Behavior Specification | NN% | 90% |
 ```
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

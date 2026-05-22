@@ -1,37 +1,37 @@
 ---
 name: doc-spec-autopilot
-description: Automated SPEC generation from REQ/CTR - generates implementation-ready YAML specifications with TASKS-Ready scoring
+description: Automated SPEC generation from BDD/ADR - generates implementation-ready YAML specifications with TDD-Ready scoring
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
+    - layer-6-artifact
     - automation-workflow
     - shared-architecture
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, CTR]
-    downstream_artifacts: [TSPEC, TASKS]
-    version: "2.5"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN, Code]
+    version: "2.6"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 ---
 
 # doc-spec-autopilot
 
 ## Purpose
 
-Automated **Technical Specifications (SPEC)** generation pipeline that processes REQ documents (and optional CTR) to generate implementation-ready YAML specifications with TASKS-Ready scoring.
+Automated **Technical Specifications (SPEC)** generation pipeline that processes upstream documents (BDD/ADR and the EARS/PRD/BRD chain) to generate implementation-ready YAML specifications with TDD-Ready scoring.
 
-**Layer**: 9
+**Layer**: 6
 
-**Upstream**: REQ (Layer 7), CTR (Layer 8 - optional)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 
-**Downstream**: TSPEC (Layer 10), TASKS (Layer 11)
+**Downstream**: TDD (Layer 7), IPLAN (Layer 8), Code
 
 ---
 
@@ -73,11 +73,11 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (SPEC.NN.xxxx, codes 15, 16, 17, 21, 28) | All Phases |
-| `doc-req-validator` | Validate REQ SPEC-Ready score | Phase 2 |
+| `doc-naming` | Element ID format (document `SPEC-NN`; element refs `SPEC.NN.SS.xxxx`) | All Phases |
+| `doc-bdd-validator` | Validate upstream BDD SPEC-Ready score | Phase 2 |
 | `doc-spec` | SPEC creation rules, YAML format | Phase 3 |
 | `quality-advisor` | Real-time quality feedback | Phase 3 |
-| `doc-spec-validator` | Validation with TASKS-Ready scoring | Phase 4 |
+| `doc-spec-validator` | Validation with TDD-Ready scoring | Phase 4 |
 | `doc-spec-reviewer` | Content review, link validation, quality scoring | Phase 5: Review |
 | `doc-spec-fixer` | Apply fixes from review report, create missing files | Phase 5: Fix |
 
@@ -88,7 +88,7 @@ Automated **Technical Specifications (SPEC)** generation pipeline that processes
 When generating SPEC document instances, the autopilot MUST:
 
 1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+   - Source: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
    - Field: `metadata.instance_document_type: "spec-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
@@ -96,7 +96,7 @@ When generating SPEC document instances, the autopilot MUST:
    custom_fields:
      document_type: spec-document    # NOT "template"
      artifact_type: SPEC
-     layer: 9
+     layer: 6
    ```
 
 3. **Validation**: Generated documents MUST have `document_type: spec-document`
@@ -114,13 +114,13 @@ The autopilot automatically determines the action based on the input document ty
 
 ### Input Type Recognition (Multiple Upstreams)
 
-SPEC can be derived from REQ and/or CTR:
+SPEC can be derived from BDD and/or ADR:
 
 | Input | Detected As | Action |
 |-------|-------------|--------|
 | `SPEC-NN` | Self type | Review existing SPEC document |
-| `REQ-NN` | Primary upstream | Generate if missing, review if exists |
-| `CTR-NN` | Alternative upstream | Generate if missing, review if exists |
+| `BDD-NN` | Primary upstream | Generate if missing, review if exists |
+| `ADR-NN` | Alternative upstream | Generate if missing, review if exists |
 
 ### Detection Algorithm
 
@@ -128,10 +128,10 @@ SPEC can be derived from REQ and/or CTR:
 1. Parse input: Extract TYPE and NN from "{TYPE}-{NN}"
 2. Determine action:
    - IF TYPE == "SPEC": Review Mode
-   - ELSE IF TYPE in ["REQ", "CTR"]: Generate/Find Mode
+   - ELSE IF TYPE in ["BDD", "ADR"]: Generate/Find Mode
    - ELSE: Error (invalid type for this autopilot)
 3. For Generate/Find Mode:
-   - Check: Does SPEC-{NN} exist in docs/09_SPEC/?
+   - Check: Does SPEC-{NN} exist in docs/06_SPEC/?
    - IF exists: Switch to Review Mode for SPEC-{NN}
    - ELSE: Proceed with Generation from {TYPE}-{NN}
 ```
@@ -140,7 +140,7 @@ SPEC can be derived from REQ and/or CTR:
 
 ```bash
 # Check for nested folder structure (mandatory)
-ls docs/09_SPEC/SPEC-{NN}_*/
+ls docs/06_SPEC/SPEC-{NN}_*/
 ```
 
 ### Examples
@@ -150,28 +150,28 @@ ls docs/09_SPEC/SPEC-{NN}_*/
 /doc-spec-autopilot SPEC-01          # Reviews existing SPEC-01
 
 # Generate/Find mode (upstream types)
-/doc-spec-autopilot REQ-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
-/doc-spec-autopilot CTR-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
+/doc-spec-autopilot BDD-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
+/doc-spec-autopilot ADR-01           # Generates SPEC-01 if missing, or reviews existing SPEC-01
 
 # Multiple inputs
-/doc-spec-autopilot REQ-01,REQ-02    # Generates/reviews SPEC-01 and SPEC-02
+/doc-spec-autopilot BDD-01,BDD-02    # Generates/reviews SPEC-01 and SPEC-02
 /doc-spec-autopilot SPEC-01,SPEC-02  # Reviews SPEC-01 and SPEC-02
 ```
 
 ### Action Determination Output
 
 ```
-Input: REQ-01
-├── Detected Type: REQ (primary upstream)
+Input: BDD-01
+├── Detected Type: BDD (primary upstream)
 ├── Expected SPEC: SPEC-01
-├── SPEC Exists: Yes → docs/09_SPEC/SPEC-01_f1_iam/
+├── SPEC Exists: Yes → docs/06_SPEC/SPEC-01_f1_iam/
 └── Action: REVIEW MODE - Running doc-spec-reviewer on SPEC-01
 
-Input: CTR-05
-├── Detected Type: CTR (alternative upstream)
+Input: ADR-05
+├── Detected Type: ADR (alternative upstream)
 ├── Expected SPEC: SPEC-05
 ├── SPEC Exists: No
-└── Action: GENERATE MODE - Creating SPEC-05 from CTR-05
+└── Action: GENERATE MODE - Creating SPEC-05 from ADR-05
 
 Input: SPEC-03
 ├── Detected Type: SPEC (self)
@@ -184,22 +184,22 @@ Input: SPEC-03
 
 ```mermaid
 flowchart TD
-    subgraph Phase1["Phase 1: REQ/CTR Analysis"]
-        A[Start] --> B[Read REQ Documents]
-        B --> C[Read CTR Documents if exists]
+    subgraph Phase1["Phase 1: BDD/ADR Analysis"]
+        A[Start] --> B[Read BDD Documents]
+        B --> C[Read ADR Documents if exists]
         C --> D[Extract Implementation Details]
         D --> E[Map to SPEC Structure]
     end
 
     subgraph Phase2["Phase 2: SPEC Readiness Check"]
-        E --> F[Check REQ SPEC-Ready Score]
+        E --> F[Check Upstream SPEC-Ready Score]
         F --> G{Score >= 90%?}
-        G -->|No| H[Flag REQ Issues]
+        G -->|No| H[Flag Upstream Issues]
         H --> I{Auto-Fixable?}
-        I -->|Yes| J[Fix REQ Issues]
+        I -->|Yes| J[Fix Upstream Issues]
         J --> F
         I -->|No| K[Abort - Manual Fix Required]
-        G -->|Yes| L[Mark REQ Ready]
+        G -->|Yes| L[Mark Upstream Ready]
     end
 
     subgraph Phase3["Phase 3: SPEC Generation"]
@@ -213,7 +213,7 @@ flowchart TD
 
     subgraph Phase4["Phase 4: SPEC Validation"]
         R --> S[Run doc-spec-validator]
-        S --> T{TASKS-Ready >= 90%?}
+        S --> T{TDD-Ready >= 90%?}
         T -->|No| U[Auto-Fix SPEC Issues]
         U --> V[Re-validate SPEC]
         V --> T
@@ -254,33 +254,30 @@ metadata:
   status: "approved"
   created_date: "2026-02-09T00:00:00"
   last_updated: "2026-02-09T00:00:00"
-  task_ready_score: "✅ 95% (Target: ≥90%)"
+  tdd_ready_score: "✅ 95% (Target: ≥90%)"
   authors: [{name: "...", email: "...", role: "..."}]
   reviewers: [{name: "...", email: "...", role: "..."}]
 
 traceability:
   upstream_sources:
     business_requirements:
-      - id: "BRD.01.0103"
-        link: "../01_BRD/BRD-01.md#BRD.01.0103"
+      - id: "BRD.01.07.a7f3"
+        link: "../01_BRD/BRD-01.md#BRD.01.07.a7f3"
         relationship: "Business driver"
     product_requirements:
-      - id: "PRD.01.0702"
-        link: "../02_PRD/PRD-01.md#PRD.01.0702"
-    atomic_requirements:
-      - id: "REQ-01.01.01"
-        # CRITICAL: Use nested REQ path format
-        link: "../07_REQ/SYS-01_iam/REQ-01.01_jwt_authentication.md"
+      - id: "PRD.01.09.1dbc"
+        link: "../02_PRD/PRD-01.md#PRD.01.09.1dbc"
+    acceptance_scenarios:
+      - id: "BDD.01.03.8f4c"
+        # Upstream BDD scenario this component satisfies
+        link: "../04_BDD/BDD-01_iam/BDD-01_jwt_authentication.md"
   cumulative_tags:
-    brd: ["BRD.01.0103"]
-    prd: ["PRD.01.0702"]
-    ears: ["EARS.01.2501"]
-    bdd: ["BDD.01.1401"]
+    brd: ["BRD.01.07.a7f3"]
+    prd: ["PRD.01.09.1dbc"]
+    ears: ["EARS.01.03.5e2a"]
+    bdd: ["BDD.01.03.8f4c"]
     adr: ["ADR-01"]
-    sys: ["SYS.01.2601"]
-    req: ["REQ.01.2701"]
-    ctr: ["CTR.01.1601"]
-    threshold: ["perf.auth.p95_latency", "sla.uptime.target"]  # 9th layer
+    threshold: ["perf.auth.p95_latency", "sla.uptime.target"]
 
 interfaces:
   # Level 1: External APIs (REST)
@@ -324,7 +321,7 @@ interfaces:
           output: { success: boolean }
 
 data_models:
-  - id: SPEC.01.1701
+  - id: SPEC.01.04.7a1c
     name: "RequestModel"
     json_schema:
       type: object
@@ -336,9 +333,10 @@ data_models:
           id: str
 
 validation_rules:
-  - id: SPEC.01.2101
+  - id: SPEC.01.05.b3e9
     rule: "Email format validation"
     implementation: "Use EmailStr from pydantic"
+    source: "@ears: EARS.01.03.5e2a"
 
 error_handling:
   catalog:
@@ -400,9 +398,9 @@ operations:
     error_rate: "<1%"
   monitoring_metrics: ["auth_login_latency_p95_ms", "auth_errors_total"]
 
-req_implementations:
-  - req_id: "REQ-01.01"
-    req_link: "../07_REQ/SYS-01_iam/REQ-01.01.md"
+requirement_implementations:
+  - requirement_id: "EARS.01.03.5e2a"
+    requirement_link: "../03_EARS/EARS-01_iam/EARS-01_jwt_authentication.md"
     implementation:
       interfaces:
         - class: "AuthService"
@@ -481,11 +479,11 @@ If review score < 90%, invoke `doc-spec-fixer`.
 | Category | Fixes Applied |
 |----------|---------------|
 | Missing Sections | Add missing 13 required sections |
-| Broken Links | Update paths, fix REQ references |
-| Element IDs | Convert legacy patterns, fix invalid type codes |
+| Broken Links | Update paths, fix upstream references |
+| Element IDs | Convert legacy patterns to 4-segment `SPEC.NN.SS.xxxx` |
 | Threshold References | Replace hardcoded values with @threshold syntax |
 | Interface Levels | Add missing external/internal/classes stubs |
-| Traceability | Update cumulative tags (9 layers) |
+| Traceability | Update cumulative tags (5 upstream layers) |
 
 **Output**: `SPEC-NN.F_fix_report_v001.md`
 
@@ -534,59 +532,62 @@ After passing the fix cycle:
    - classes defined with constructors and methods
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use SPEC.NN.xxxx format
-   - Element type codes valid for SPEC (15, 16, 17, 21, 28)
-   - No legacy patterns
+   - Document-level reference uses dash form `SPEC-NN`
+   - Element refs use 4-segment `SPEC.NN.SS.xxxx` (`xxxx` = 4-char hex hash)
+   - No legacy patterns (no numeric type codes, no 3-segment `SPEC.NN.xxxx`)
 
-4. **TASKS-Ready Report**:
+4. **TDD-Ready Report**:
    ```
-   TASKS-Ready Score Breakdown
+   TDD-Ready Score Breakdown
    ===========================
    Interface Completeness:  23/25 (3 levels defined)
    Data Models:             20/20 (Pydantic + JSON Schema)
    Validation Rules:        15/15 (input/output validated)
    Error Handling:          15/15 (catalog with HTTP status)
    Test Approach:           10/10 (unit + integration tests)
-   Traceability:            10/10 (all 9 cumulative tags)
+   Traceability:            10/10 (all 5 upstream cumulative tags)
    Performance Specs:        5/5 (@threshold references)
    ----------------------------
-   Total TASKS-Ready Score: 98/100 (Target: >= 90)
-   Status: READY FOR TASKS GENERATION
+   Total TDD-Ready Score: 98/100 (Target: >= 90)
+   Status: READY FOR TDD GENERATION
    ```
 
 5. **Traceability Matrix Update**:
-   ```bash
-   # Update SPEC traceability
-   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
-     --spec docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml \
-     --matrix docs/09_SPEC/SPEC-00_TRACEABILITY_MATRIX.md
-   ```
+   - Update or create `docs/06_SPEC/SPEC-00_TRACEABILITY_MATRIX.md`, mapping
+     each SPEC element to its upstream BRD/PRD/EARS/BDD/ADR tags and downstream
+     TDD coverage.
+   - Validate the matrix declaratively against
+     `framework/layers/06_SPEC/README.md` and `framework/governance/` — the
+     plugin skill is the validator (no external script).
 
 ---
 
-## Element Type Codes
+## Element ID Format
 
-| Code | Element Type | Example |
-|------|--------------|---------|
-| 15 | Step | SPEC.01.1501 |
-| 16 | Interface | SPEC.01.1601 |
-| 17 | Data Model | SPEC.01.1701 |
-| 21 | Validation Rule | SPEC.01.2101 |
-| 28 | Specification Element | SPEC.01.2801 |
+SPEC documents are referenced at the **document level** with the dash form
+`SPEC-NN` (e.g. `@spec: SPEC-01`). Elements *inside* a SPEC (interfaces, data
+models, validation rules, steps, specification elements) use the unified
+4-segment element ID `SPEC.NN.SS.xxxx`:
+
+- `NN` — two-digit document number (e.g. `01`)
+- `SS` — two-digit section number (e.g. `04` for data models)
+- `xxxx` — 4-character hex content hash (SHA256, first 4 chars)
+
+Example: `SPEC.01.04.7a1c`. There are **no numeric element type-code tables** in
+the 8-layer model — element kind is conveyed by its section, not an ID code.
+
+See `framework/governance/ID_NAMING_STANDARDS.md`.
 
 ---
 
-## Cumulative Tags (7-8 Required)
+## Cumulative Tags (5 Upstream Layers)
 
 ```markdown
-@brd: BRD.NN.xxxx
-@prd: PRD.NN.xxxx
-@ears: EARS.NN.xxxx
-@bdd: BDD.NN.xxxx
+@brd: BRD.NN.SS.xxxx
+@prd: PRD.NN.SS.xxxx
+@ears: EARS.NN.SS.xxxx
+@bdd: BDD.NN.SS.xxxx
 @adr: ADR-NN
-@sys: SYS.NN.xxxx
-@req: REQ.NN.xxxx
-@ctr: CTR.NN.xxxx  # Optional
 ```
 
 ---
@@ -601,7 +602,7 @@ spec_autopilot:
 
   scoring:
     spec_ready_min: 90
-    tasks_ready_min: 90
+    tdd_ready_min: 90
     strict_mode: false
     # NEW: 7-component scoring weights
     scoring_weights:
@@ -610,7 +611,7 @@ spec_autopilot:
       validation_rules: 15        # Input/output validation
       error_handling: 15          # Error catalog with HTTP status
       test_approach: 10           # Unit + integration tests
-      traceability: 10            # All 9 cumulative tags
+      traceability: 10            # All 5 upstream cumulative tags
       performance_specs: 5        # Latency targets with thresholds
 
   execution:
@@ -619,7 +620,7 @@ spec_autopilot:
     pause_between_chunks: true
     auto_fix: true
     continue_on_error: false
-    timeout_per_req: 180  # seconds
+    timeout_per_doc: 180  # seconds
 
   output:
     format: yaml
@@ -635,16 +636,16 @@ spec_autopilot:
     require_all_13_sections: true
     require_three_interface_levels: true
     require_threshold_registry: true
-    require_req_implementations: true
-    require_nested_req_paths: true
+    require_requirement_implementations: true
+    require_nested_upstream_paths: true
 
   traceability:
-    # NEW: 9-layer cumulative tags
-    required_layers: 9
+    # 5 upstream cumulative tags (BRD,PRD,EARS,BDD,ADR)
+    required_upstream_layers: 5
     include_threshold_references: true
 ```
 
-### 7-Component TASKS-Ready Scoring
+### 7-Component TDD-Ready Scoring
 
 | Component | Weight | Criteria |
 |-----------|--------|----------|
@@ -652,8 +653,8 @@ spec_autopilot:
 | Data Models | 20% | Pydantic code + JSON Schema present |
 | Validation Rules | 15% | Input/output validation specified |
 | Error Handling | 15% | Error catalog with HTTP status codes |
-| Test Approach | 10% | Unit + integration tests in req_implementations |
-| Traceability | 10% | All 9 cumulative tags populated |
+| Test Approach | 10% | Unit + integration tests in requirement_implementations |
+| Traceability | 10% | All 5 upstream cumulative tags populated |
 | Performance Specs | 5% | Latency targets with @threshold references |
 
 **Score Display Format**:
@@ -675,7 +676,7 @@ spec_autopilot:
 
 **Chunking Rules**:
 
-1. **Chunk Formation**: Group REQ-derived SPEC documents into chunks of maximum 3 at a time
+1. **Chunk Formation**: Group upstream-derived SPEC documents into chunks of maximum 3 at a time
 2. **Sequential Chunk Processing**: Process one chunk at a time, completing all documents in a chunk before starting the next
 3. **Context Pause**: After completing each chunk, provide a summary and pause for user acknowledgment
 4. **Progress Tracking**: Display chunk progress (e.g., "Chunk 2/4: Processing SPEC-04, SPEC-05, SPEC-06...")
@@ -693,9 +694,9 @@ spec_autopilot:
 ## Chunk N/M Complete
 
 Generated:
-- SPEC-XX: TASKS-Ready Score 94%
-- SPEC-YY: TASKS-Ready Score 92%
-- SPEC-ZZ: TASKS-Ready Score 95%
+- SPEC-XX: TDD-Ready Score 94%
+- SPEC-YY: TDD-Ready Score 92%
+- SPEC-ZZ: TDD-Ready Score 95%
 
 Proceeding to next chunk...
 ```
@@ -706,15 +707,15 @@ Proceeding to next chunk...
 
 ### Single SPEC Mode
 
-Generate SPEC from one REQ document.
+Generate SPEC from one BDD document.
 
 ```bash
-/doc-spec-autopilot REQ-01 --output docs/09_SPEC/
+/doc-spec-autopilot BDD-01 --output docs/06_SPEC/
 ```
 
 ### Batch Mode
 
-Generate SPEC from multiple REQ documents.
+Generate SPEC from multiple BDD documents.
 
 ```bash
 /doc-spec-autopilot all --auto
@@ -725,7 +726,7 @@ Generate SPEC from multiple REQ documents.
 Preview execution plan without generating files.
 
 ```bash
-/doc-spec-autopilot REQ-01 --dry-run
+/doc-spec-autopilot BDD-01 --dry-run
 ```
 
 ### Review Mode (v2.1)
@@ -754,7 +755,7 @@ flowchart TD
     C --> D[Check 13 Required Sections]
     D --> E[Validate 3-Level Interfaces]
     E --> F[Check Threshold References]
-    F --> G[Calculate TASKS-Ready Score]
+    F --> G[Calculate TDD-Ready Score]
     G --> H{Generate Report}
     H --> I[Fixable Issues List]
     H --> J[Manual Review Items]
@@ -770,7 +771,7 @@ flowchart TD
 # SPEC Review Report: SPEC-01.yaml
 
 ## Summary
-- **TASKS-Ready Score**: 87% 🟡
+- **TDD-Ready Score**: 87% 🟡
 - **Total Issues**: 9
 - **Auto-Fixable**: 6
 - **Manual Review**: 3
@@ -790,7 +791,7 @@ flowchart TD
 | Section | Present | Status |
 |---------|---------|--------|
 | metadata | ✅ | Complete |
-| traceability | ✅ | Missing @ctr tag |
+| traceability | ✅ | Missing @adr tag |
 | interfaces | 🟡 | Missing internal_apis |
 | data_models | ✅ | Complete |
 | validation_rules | ✅ | Complete |
@@ -801,24 +802,24 @@ flowchart TD
 | behavioral_examples | ✅ | Complete |
 | architecture | ✅ | Complete |
 | operations | ✅ | Complete |
-| req_implementations | ❌ | Missing |
+| requirement_implementations | ❌ | Missing |
 
 ## v2.0 Compliance
 | Check | Status | Details |
 |-------|--------|---------|
-| 13 Sections Present | ❌ | Missing req_implementations |
+| 13 Sections Present | ❌ | Missing requirement_implementations |
 | Three Interface Levels | 🟡 | Missing internal_apis |
 | Threshold Registry | ✅ | Present |
-| Nested REQ Paths | ✅ | Correct format |
-| 9-Layer Traceability | 🟡 | Missing @ctr |
+| Nested Upstream Paths | ✅ | Correct format |
+| 5-Layer Upstream Traceability | 🟡 | Missing @adr |
 | @threshold Format | ❌ | 2 hardcoded values |
 
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Missing @ctr tag | traceability | Add placeholder @ctr reference |
+| 1 | Missing @adr tag | traceability | Add placeholder @adr reference |
 | 2 | Hardcoded latency | performance.latency_targets | Replace with @threshold:perf.api.p95 |
-| 3 | Missing req_implementations | root | Add template section |
+| 3 | Missing requirement_implementations | root | Add template section |
 | ... | ... | ... | ... |
 
 ## Manual Review Required
@@ -839,8 +840,8 @@ review_mode:
     - section_completeness     # All 13 sections present
     - interface_levels         # 3-level interface hierarchy
     - threshold_references     # @threshold format
-    - cumulative_tags          # 9-layer traceability
-    - score_calculation        # TASKS-Ready score
+    - cumulative_tags          # 5 upstream layers traceability
+    - score_calculation        # TDD-Ready score
     - file_size                # <66KB check
   output:
     format: markdown
@@ -880,17 +881,17 @@ Auto-repair existing SPEC documents while preserving manual content.
 
 | Category | Issue | Auto-Fix Action | Preserves Content |
 |----------|-------|-----------------|-------------------|
-| **Sections** | Missing req_implementations | Add template section | ✅ |
+| **Sections** | Missing requirement_implementations | Add template section | ✅ |
 | **Sections** | Missing threshold_references | Add template section | ✅ |
 | **Sections** | Missing metadata fields | Add required fields | ✅ |
 | **Thresholds** | Hardcoded numeric values | Replace with @threshold:xxx | ✅ |
 | **Thresholds** | Invalid @threshold format | Convert to category.field format | ✅ |
 | **Traceability** | Missing cumulative tags | Add with placeholder references | ✅ |
-| **Traceability** | Wrong REQ path format | Convert to nested format | ✅ |
+| **Traceability** | Wrong upstream path format | Convert to nested format | ✅ |
 | **Interfaces** | Missing level placeholder | Add template structure | ✅ |
 | **Interfaces** | Missing method signatures | Flag for manual (content needed) | N/A |
 | **YAML** | Formatting issues | Auto-format with ruamel.yaml | ✅ |
-| **Score** | Missing TASKS-Ready score | Calculate and insert | ✅ |
+| **Score** | Missing TDD-Ready score | Calculate and insert | ✅ |
 
 **Content Preservation Rules**:
 
@@ -907,21 +908,21 @@ Auto-repair existing SPEC documents while preserving manual content.
 # SPEC Fix Report: SPEC-01.yaml
 
 ## Summary
-- **Before TASKS-Ready Score**: 87% 🟡
-- **After TASKS-Ready Score**: 94% ✅
+- **Before TDD-Ready Score**: 87% 🟡
+- **After TDD-Ready Score**: 94% ✅
 - **Issues Fixed**: 6
 - **Issues Remaining**: 3 (manual review required)
 
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Missing req_implementations | root | Added template section |
+| 1 | Missing requirement_implementations | root | Added template section |
 | 2 | Hardcoded latency | performance.latency_targets | Replaced with @threshold:perf.api.p95 |
-| 3 | Missing @ctr tag | traceability | Added @ctr: CTR.01.1601 |
+| 3 | Missing @adr tag | traceability | Added @adr: ADR-01 |
 | ... | ... | ... | ... |
 
 ## Files Modified
-- docs/09_SPEC/SPEC-01_f1_iam/SPEC-01_f1_iam.yaml
+- docs/06_SPEC/SPEC-01_f1_iam/SPEC-01_f1_iam.yaml
 
 ## Backup Location
 - tmp/backup/SPEC-01_20260209_143022.yaml
@@ -988,11 +989,13 @@ fix_mode:
 
 ## Related Resources
 
-- **SPEC Skill**: `.claude/skills/doc-spec/SKILL.md`
-- **SPEC Validator**: `.claude/skills/doc-spec-validator/SKILL.md`
-- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md`
-- **Quality Advisor**: `.claude/skills/quality-advisor/SKILL.md`
-- **SPEC Template**: `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml`
+- **SPEC Skill**: `../doc-spec/SKILL.md`
+- **SPEC Validator**: `../doc-spec-validator/SKILL.md`
+- **Naming Standards**: `../doc-naming/SKILL.md`
+- **Quality Advisor**: `../quality-advisor/SKILL.md`
+- **SPEC Template**: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- **SPEC Spec Overview**: `framework/layers/06_SPEC/README.md`
+- **ID & Naming Governance**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ---
 
@@ -1003,11 +1006,11 @@ fix_mode:
 | 13 Sections | All required sections present | SPEC-E030 |
 | Three Interface Levels | external_apis, internal_apis, classes | SPEC-E031 |
 | Threshold Registry | threshold_references section present | SPEC-E032 |
-| REQ Implementation | req_implementations section present | SPEC-E033 |
-| Nested REQ Paths | `../07_REQ/SYS-XX_domain/REQ-XX.YY.md` format | SPEC-E034 |
+| Requirement Implementation | requirement_implementations section present | SPEC-E033 |
+| Nested Upstream Paths | `../04_BDD/BDD-XX_domain/BDD-XX_slug.md` format | SPEC-E034 |
 | 7-Component Score | All components calculated | SPEC-E035 |
 | File Size | <66KB or split into micro-SPECs | SPEC-E036 |
-| 9-Layer Traceability | All 9 cumulative_tags populated | SPEC-E037 |
+| 5-Layer Upstream Traceability | All 5 upstream cumulative_tags populated | SPEC-E037 |
 | Threshold Format | `@threshold:category.field` syntax | SPEC-E038 |
 
 ---
@@ -1032,22 +1035,22 @@ Review reports generated by this skill are formal project documents and MUST com
 
 1. **Storage Location**: Same folder as the reviewed SPEC document
 2. **File Naming**: preferred `SPEC-NN.A_audit_report_vNNN.md`; legacy-compatible `SPEC-NN.R_review_report_vNNN.md`
-3. **YAML Frontmatter**: Required with `artifact_type: SPEC-REVIEW`, `layer: 9`
-4. **Score Field**: `tasks_ready_score_claimed` / `tasks_ready_score_validated`
+3. **YAML Frontmatter**: Required with `artifact_type: SPEC-REVIEW`, `layer: 6`
+4. **Score Field**: `tdd_ready_score_claimed` / `tdd_ready_score_validated`
 5. **Parent Reference**: Must link to parent SPEC document
 
 **Example Location** (ALWAYS use nested folders):
 
 ```
 # Monolithic SPEC (<20k tokens):
-docs/09_SPEC/SPEC-03_f3_observability/
+docs/06_SPEC/SPEC-03_f3_observability/
 ├── SPEC-03_f3_observability.yaml        # ← Single YAML file
 ├── SPEC-03.A_audit_report_v001.md       # ← Preferred combined audit report
 ├── SPEC-03.F_fix_report_v001.md         # ← Fix report
 └── .drift_cache.json                     # ← Drift cache
 
 # Split SPEC (≥20k tokens or multiple components):
-docs/09_SPEC/SPEC-01_f1_iam/
+docs/06_SPEC/SPEC-01_f1_iam/
 ├── SPEC-01.01_authentication.yaml       # ← Component 1
 ├── SPEC-01.02_authorization.yaml        # ← Component 2
 ├── SPEC-01.03_user_profile.yaml         # ← Component 3
@@ -1066,11 +1069,12 @@ docs/09_SPEC/SPEC-01_f1_iam/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.5 | 2026-02-27 | Normalized metadata schema; removed legacy script-based execution examples; migrated stale path references to canonical `ai_dev_ssd_flow/09_SPEC`; aligned review report standards to audit-first `.A_` with `.R_` compatibility |
-| 2.4 | 2026-02-26 | Fixed legacy template reference to canonical `ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml` |
+| 2.6 | 2026-05-22 | **8-layer migration (PLM-B4)**: SPEC renumbered to Layer 6; dropped the retired SYS/REQ/CTR upstream layers (upstream now BRD,PRD,EARS,BDD,ADR); downstream renamed/renumbered to TDD (7), IPLAN (8), +Code; readiness scoring renamed to TDD-Ready; element IDs to 4-segment `SPEC.NN.SS.xxxx` (deleted numeric type-code table); paths to `framework/layers/06_SPEC/` + `.yaml` template; removed dead validation-script refs (declarative checklist + `framework/governance/` pointer); `req_implementations`→`requirement_implementations` (EARS-anchored); sibling skill refs to `../doc-X/` |
+| 2.5 | 2026-02-27 | Normalized metadata schema; removed legacy script-based execution examples; migrated stale path references to canonical SPEC layer; aligned review report standards to audit-first `.A_` with `.R_` compatibility |
+| 2.4 | 2026-02-26 | Fixed legacy template reference to canonical SPEC template |
 | 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (SPEC-NN) triggers review mode; Multiple upstream-type inputs (REQ/CTR-NN) trigger generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
-| 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-spec-reviewer` and `doc-spec-fixer`; Added `doc-spec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (section completeness, three-level interface coverage, element ID compliance, TASKS-Ready report); Added traceability matrix update step |
+| 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 with iterative Review -> Fix cycle using `doc-spec-reviewer` and `doc-spec-fixer`; Added `doc-spec-fixer` skill dependency; Added iteration control (max 3 cycles); Added quality checks (section completeness, three-level interface coverage, element ID compliance, readiness report); Added traceability matrix update step |
 | 2.1 | 2026-02-10 | Added Review Document Standards section; Review reports now stored alongside reviewed documents with proper YAML frontmatter and parent references |
 | 2.0 | 2026-02-09 | Added Review Mode for validating existing SPEC documents without modification; Added Fix Mode for auto-repairing SPEC documents while preserving manual content; Added fix categories (sections, thresholds, traceability, interfaces, yaml); Added content preservation rules; Added backup functionality for fix operations; Added review/fix report generation with 7-component score impact; Added execution modes section (single, batch, dry-run, review, fix) |
-| 1.1 | 2026-02-09 | Added 13-section YAML structure; Added 9-layer cumulative traceability; Added three-level interface specification (external, internal, classes); Added threshold registry pattern; Added req_implementations section for REQ-to-implementation bridges; Added 7-component TASKS-Ready scoring; Added file splitting strategy (<66KB); Added validation rules SPEC-E030 to SPEC-E038 |
+| 1.1 | 2026-02-09 | Added 13-section YAML structure; Added cumulative traceability; Added three-level interface specification (external, internal, classes); Added threshold registry pattern; Added requirement-implementations section for upstream-to-implementation bridges; Added 7-component readiness scoring; Added file splitting strategy (<66KB); Added validation rules SPEC-E030 to SPEC-E038 |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-spec, quality-advisor, doc-spec-validator |

@@ -16,11 +16,12 @@
 > tspec→tdd & tasks→iplan (12 bodies), retired sys/req/ctr (142→125 skills),
 > migrated doc-flow/skill-recommender/project-init + 9-agent roster. B2:
 > doc-brd/doc-prd/doc-ears (21 files). B3: doc-bdd/doc-adr + adr-roadmap (15
+> files). B4: doc-spec (L9→L6) + 5 SPEC-subtype families as L6 helpers (33
 > files). Verified clean each batch (plm_lint scope; conformance 31/31;
-> name==dir). **81 files remain** (B4–B6). **Next: B4** (doc-spec + the 5
-> SPEC-subtype families). Subtype fate RESOLVED — **D-0015**: migrate & keep
-> SPEC-/test-subtypes as L6/L7 helpers (B4 = SPEC + cspec/dspec/uxspec/
-> riskspec/procspec; B5 = utest/itest/stest/ftest/ptest/sectest).
+> name==dir). **48 files remain** (B5–B6). **Next: B5** — the 6 test-subtype
+> families (`doc-utest/itest/stest/ftest/ptest/sectest`) as TDD-L7 helpers
+> per D-0015. Then B6 (residual helpers/quickrefs), B7 (promote plm_lint
+> --all to conformance + delete PARITY gap).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
@@ -30,8 +31,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-22T00:48:53Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0–B3 done (125 skills; 81 files remain) |
-| Next task     | **PLM-B4** — rewrite `doc-spec` + the 5 SPEC-subtype families (`doc-cspec/dspec/uxspec/riskspec/procspec`) to the 8-layer model (per D-0015, kept as L6 helpers); then add to `plm_lint` `MIGRATED` and verify. See the batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
+| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0–B4 done (125 skills; 48 files remain) |
+| Next task     | **PLM-B5** — rewrite the 6 test-subtype families (`doc-utest/itest/stest/ftest/ptest/sectest`) as TDD-L7 specialization helpers (per D-0015); then add to `plm_lint` `MIGRATED` and verify. See the batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
 
 ## Progress
 

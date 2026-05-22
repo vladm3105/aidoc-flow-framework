@@ -1,47 +1,52 @@
 ---
 name: doc-dspec-audit
-description: Unified DSPEC quality gate - validates structure, detects issues, computes DOC-Ready score, and produces report for fixer
+description: Unified data-spec SPEC (Layer 6) quality gate - validates structure, detects issues, computes TDD-Ready score, and produces a report for the fixer
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - dspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 51
-    artifact_type: DSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: data-design
     deliverable_type: document
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [DSPEC]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [Audit Report]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-dspec-audit
 
 ## Purpose
 
-Unified **DSPEC quality gate** that combines structural validation, content review, and DOC-Ready scoring into a single comprehensive audit.
+Unified **data-spec SPEC quality gate** that combines structural validation,
+content review, and TDD-Ready scoring into a single comprehensive audit. This
+is a plugin-only authoring helper — a data-design specialization of SPEC
+(Layer 6) — that audits against the single framework SPEC template.
 
-**Layer**: 9.51 (DSPEC Quality Gate)
+**Layer**: 6 (SPEC — data-design quality gate)
+
+**Parent**: `../doc-spec/`
 
 ---
 
-## DOC-Ready Score Calculation
+## TDD-Ready Score Calculation
 
 | Component | Weight | Scoring Criteria |
 |-----------|--------|------------------|
-| Content Coverage | 25% | All REQ topics addressed |
-| Audience Alignment | 20% | Audience analysis complete |
-| Structure Completeness | 20% | Content outline complete |
-| Style Compliance | 15% | Style guide referenced |
-| Accessibility | 10% | Accessibility requirements met |
-| Traceability | 10% | All cumulative tags present |
+| Data-Model Coverage | 25% | All data structures defined with typed fields |
+| Interface Completeness | 20% | Public exports and signatures complete |
+| Behavior Specification | 20% | Validation rules and state transitions sourced |
+| Implementation Notes | 15% | Constraints and patterns documented |
+| Downstream TDD Contract | 10% | TDD document referenced |
+| Traceability | 10% | All upstream tags present |
 
 **Thresholds**:
 - **PASS**: ≥85%
@@ -54,11 +59,13 @@ Unified **DSPEC quality gate** that combines structural validation, content revi
 
 | File | Purpose |
 |------|---------|
-| `DSPEC-NN.A_audit_report_vNNN.md` | Comprehensive audit report |
+| `SPEC-NN.A_audit_report_vNNN.md` | Comprehensive audit report |
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

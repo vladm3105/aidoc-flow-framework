@@ -1,7 +1,7 @@
 # doc-spec - Quick Reference
 
 **Skill ID:** doc-spec
-**Layer:** 9 (Technical Specifications)
+**Layer:** 6 (Technical Specifications)
 **Purpose:** Create implementation-ready specifications in YAML format
 
 ## Quick Start
@@ -11,37 +11,39 @@
 skill: "doc-spec"
 
 # Common requests
-- "Create technical specification from REQ-001"
+- "Create technical specification from ADR-03"
 - "Generate implementation-ready SPEC"
-- "Document Layer 9 specification for validation service"
+- "Document Layer 6 specification for validation service"
 ```
 
 ## What This Skill Does
 
 1. Create 100% implementation-ready specifications
 2. Define modules, functions, and algorithms
-3. Specify interfaces and data models (with CTR references)
+3. Specify interfaces and data models
 4. Document error handling and configuration
 5. Define testing, deployment, and monitoring requirements
 
 ## Output Location (Nested Folder - MANDATORY)
 
 ```
-docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
+docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
 ```
 
 ## Format: Pure YAML (NOT Markdown)
 
 ```yaml
 metadata:
-  spec_id: SPEC-001
+  spec_id: SPEC-01
   title: "Service Specification"
   version: "1.0.0"
 
 cumulative_tags:
-  brd: ["BRD-001:section-3"]
-  prd: ["PRD-001:feature-2"]
-  # ... all upstream tags
+  brd: ["BRD.01.01.0a13"]
+  prd: ["PRD.01.07.1dbc"]
+  ears: ["EARS.01.03.5e2a"]
+  bdd: ["BDD.01.14.8f4c"]
+  adr: ["ADR-03"]
 
 architecture:
   pattern: "layered"
@@ -61,46 +63,48 @@ implementation:
         - "Step 2: Process logic"
 ```
 
-## Required Sections (MVP - 8 Numbered + 2 Appendices)
+## Required Sections (8 Numbered + 2 Appendices)
 
-1. Document Control, 2. Traceability, 3. Component Overview, 4. Technical Design
-5. Implementation Logic, 6. Configuration, 7. Non-Functional Requirements, 8. Quality Gates
+1. Document Control, 2. Component Overview, 3. Interfaces, 4. Data Models
+5. Behavior, 6. Implementation Notes, 7. Downstream TDD Contracts, 8. Traceability
 Appendix A: Glossary, Appendix B: References
 
 ## Upstream/Downstream
 
 ```
-BRD through REQ/IMPL/CTR → SPEC → TASKS → Code
+BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ```
+
+SPEC upstream = @brd, @prd, @ears, @bdd, @adr (no SYS/REQ/CTR).
 
 ## Quick Validation
 
 - [ ] Pure YAML format (not markdown)
-- [ ] cumulative_tags section with 7-9 upstream tags
+- [ ] cumulative_tags section with 5 upstream tag families (@brd, @prd, @ears, @bdd, @adr)
 - [ ] All modules have file paths
 - [ ] All functions have signatures and algorithms
-- [ ] contract_ref links to CTR (if Layer 8 created)
+- [ ] Document ID uses `SPEC-NN` (dash notation)
 - [ ] 100% implementation-ready (no ambiguity)
 
 ## Nested Folder Rule (MANDATORY)
 
 ALL SPEC documents MUST use nested folders:
 ```
-docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
+docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml
 ```
 
-Invalid: `docs/09_SPEC/SPEC-01_api.yaml` (not in nested folder)
-Valid: `docs/09_SPEC/SPEC-01_api/SPEC-01_api.yaml`
+Invalid: `docs/06_SPEC/SPEC-01_api.yaml` (not in nested folder)
+Valid: `docs/06_SPEC/SPEC-01_api/SPEC-01_api.yaml`
 
 ## Template Location
 
 ```
-ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.md    # Human workflow
-ai_dev_ssd_flow/09_SPEC/SPEC-MVP-TEMPLATE.yaml  # Autopilot workflow
+framework/layers/06_SPEC/SPEC-TEMPLATE.yaml   # Specification template
+framework/layers/06_SPEC/README.md            # Layer overview
 ```
 
 ## Related Skills
 
-- `doc-req` - Atomic requirements (upstream)
-- `doc-ctr` - Data contracts (upstream, optional)
-- `doc-tasks` - Task breakdown (downstream)
+- `doc-adr` - Architecture decisions (upstream)
+- `doc-tdd` - Test definitions (downstream)
+- `doc-iplan` - Implementation plan (downstream)

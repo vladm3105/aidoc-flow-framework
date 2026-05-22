@@ -1,45 +1,49 @@
 ---
 name: doc-riskspec-autopilot
-description: Automated RISKSPEC (Risk Specification) generation from REQ - generates specifications for risk matrices, impact assessments, and mitigation plans
+description: Automated risk-analysis SPEC (Layer 6) generation - generates specifications for risk matrices, impact assessments, and mitigation plans
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - riskspec-artifact
+    - layer-6-artifact
+    - spec-document
     - automation-workflow
   custom_fields:
-    layer: 9
-    subtype_code: 53
-    artifact_type: RISKSPEC
+    layer: 6
+    artifact_type: SPEC
     deliverable_type: risk
     architecture_approaches: [ai-agent-based]
     priority: primary
     development_status: active
     skill_category: automation-workflow
-    upstream_artifacts: [REQ]
-    downstream_artifacts: [TSPEC, TASKS]
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-riskspec-autopilot
 
 ## Purpose
 
-Automated **Risk Specification (RISKSPEC)** generation pipeline that processes REQ documents to generate specifications for risk management deliverables including risk matrices, impact assessments, control measures, and mitigation plans.
+Automated **risk-analysis SPEC** generation pipeline that processes upstream
+artifacts (BRD, PRD, EARS, BDD, ADR) to generate SPEC documents for risk
+management deliverables including risk matrices, impact assessments, control
+measures, and mitigation plans. This is the risk-spec specialization of the
+SPEC (Layer 6) authoring helpers — see the parent skill `../doc-spec/` and the
+single SPEC template at `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`.
 
-**Layer**: 9.53 (RISKSPEC - Risk Specifications)
+**Layer**: 6 (SPEC, risk-analysis focus)
 
-**Upstream**: REQ (Layer 7)
+**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 
-**Downstream**: TSPEC (Layer 10), TASKS (Layer 11)
+**Downstream**: TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
 ## When to Use
 
 Use `doc-riskspec-autopilot` when:
-- REQ documents have `deliverable_type: risk`
+- Upstream artifacts have `deliverable_type: risk`
 - Creating risk matrix specifications
 - Generating impact assessment specs
 - Creating control measure documentation
@@ -49,32 +53,34 @@ Use `doc-riskspec-autopilot` when:
 
 ## Document Type Contract (MANDATORY)
 
-When generating RISKSPEC document instances, the autopilot MUST:
+When generating risk-analysis SPEC document instances, the autopilot MUST:
 
-1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "riskspec-document"`
+1. **Read** `document_type` from the single SPEC template:
+   - Source: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "spec-document"`
 
-2. **Set** `document_type` in generated document frontmatter:
+2. **Set** the metadata in generated document frontmatter:
    ```yaml
    custom_fields:
-     document_type: riskspec-document
-     artifact_type: RISKSPEC
+     document_type: spec-document
+     artifact_type: SPEC
      deliverable_type: risk
-     layer: 9
-     subtype_code: 53
+     layer: 6
    ```
 
 ---
 
-## Risk Element Types
+## Risk Content Areas
 
-| Element Type | Code | Description |
-|--------------|------|-------------|
-| Risk Matrix | 65 | Probability × Impact grid |
-| Impact Assessment | 66 | Consequence analysis |
-| Control Measure | 67 | Risk mitigation controls |
-| Mitigation Plan | 68 | Action plan for risks |
+| Content Area | Description |
+|--------------|-------------|
+| Risk Matrix | Probability × Impact grid |
+| Impact Assessment | Consequence analysis |
+| Control Measure | Risk mitigation controls |
+| Mitigation Plan | Action plan for risks |
+
+These are expressed inside the standard SPEC sections (behavior, data models,
+implementation notes) — not as separate ID type codes.
 
 ---
 
@@ -87,7 +93,7 @@ When generating RISKSPEC document instances, the autopilot MUST:
 
 ---
 
-## RISK-Ready Score Components
+## SPEC-Ready Score Components
 
 | Component | Weight | Target |
 |-----------|--------|--------|
@@ -98,11 +104,13 @@ When generating RISKSPEC document instances, the autopilot MUST:
 | Residual Risk | 10% | ≥85% |
 | Traceability | 10% | 100% |
 
-**Target**: RISK-Ready ≥85%
+**Target**: SPEC-Ready ≥85%
 
 ---
 
 ## References
 
-- Template: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC-MVP-TEMPLATE.yaml`
-- Schema: `ai_dev_ssd_flow/09_SPEC/RISKSPEC/RISKSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guidance: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`

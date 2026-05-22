@@ -1,15 +1,15 @@
 ---
 name: doc-spec-reviewer
-description: Comprehensive content review and quality assurance for SPEC documents - validates YAML structure, REQ coverage, interface definitions, and identifies issues requiring manual attention
+description: Comprehensive content review and quality assurance for SPEC documents - validates YAML structure, requirement coverage, interface definitions, and identifies issues requiring manual attention
 metadata:
   tags:
     - sdd-workflow
     - quality-assurance
     - spec-review
-    - layer-9-artifact
+    - layer-6-artifact
     - shared-architecture
   custom_fields:
-    layer: 9
+    layer: 6
     artifact_type: SPEC
     architecture_approaches: [ai-agent-based]
     priority: primary
@@ -17,22 +17,22 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [SPEC]
     downstream_artifacts: []
-    version: "1.5"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks SPEC-MVP-TEMPLATE schema_version"
+    version: "1.6"
+    last_updated: "2026-05-22"
+  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
 ---
 
 # doc-spec-reviewer
 
 ## Purpose
 
-Comprehensive **content review and quality assurance** for Technical Specification (SPEC) documents. This skill performs deep content analysis beyond structural validation, checking YAML structure completeness, REQ coverage, interface definitions, threshold compliance, and identifying issues that require manual review.
+Comprehensive **content review and quality assurance** for Technical Specification (SPEC) documents. This skill performs deep content analysis beyond structural validation, checking YAML structure completeness, upstream-requirement coverage, interface definitions, threshold compliance, and identifying issues that require manual review.
 
-**Layer**: 9 (SPEC Quality Assurance)
+**Layer**: 6 (SPEC Quality Assurance)
 
 **Upstream**: SPEC (from `doc-spec-autopilot` or `doc-spec`)
 
-**Downstream**: None (final QA gate before TSPEC/TASKS generation)
+**Downstream**: None (final QA gate before TDD/IPLAN generation)
 
 ---
 
@@ -42,8 +42,8 @@ Use `doc-spec-reviewer` when:
 
 - **After SPEC Generation**: Run immediately after `doc-spec-autopilot` completes
 - **Manual SPEC Edits**: After making manual changes to SPEC
-- **Pre-TASKS Check**: Before running `doc-tasks-autopilot`
-- **Pre-TSPEC Check**: Before running `doc-tspec-autopilot`
+- **Pre-TDD Check**: Before running `doc-tdd-autopilot`
+- **Pre-IPLAN Check**: Before running `doc-iplan-autopilot`
 - **Periodic Review**: Regular quality checks on existing SPECs
 
 **Do NOT use when**:
@@ -57,12 +57,12 @@ Use `doc-spec-reviewer` when:
 
 | Aspect | `doc-spec-validator` | `doc-spec-reviewer` |
 |--------|----------------------|---------------------|
-| **Focus** | Schema compliance, TASKS-Ready score | Content quality, implementation readiness |
-| **Checks** | Required sections, YAML syntax | REQ coverage, interface completeness |
+| **Focus** | Schema compliance, TDD-Ready score | Content quality, implementation readiness |
+| **Checks** | Required sections, YAML syntax | Upstream-requirement coverage, interface completeness |
 | **Auto-Fix** | Structural issues only | Content issues (formatting) |
-| **Output** | TASKS-Ready score (numeric) | Review score + issue list |
+| **Output** | TDD-Ready score (numeric) | Review score + issue list |
 | **Phase** | Phase 4 (Validation) | Phase 5 (Final Review) |
-| **Blocking** | TASKS-Ready < threshold blocks | Review score < threshold flags |
+| **Blocking** | TDD-Ready < threshold blocks | Review score < threshold flags |
 
 ---
 
@@ -81,7 +81,7 @@ flowchart TD
 
     subgraph Review["Review Checks"]
         F --> G[1. YAML Structure Completeness]
-        G --> H[2. REQ Coverage]
+        G --> H[2. Requirement Coverage]
         H --> I[3. Interface Definition Completeness]
         I --> J[4. Threshold Registry Compliance]
         J --> K[5. Data Model Completeness]
@@ -120,7 +120,7 @@ Validates SPEC follows the mandatory nested folder rule.
 
 | SPEC Type | Required Location |
 |-----------|-------------------|
-| YAML | `docs/09_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
+| YAML | `docs/06_SPEC/SPEC-NN_{slug}/SPEC-NN_{slug}.yaml` |
 
 **Error Codes**:
 
@@ -164,13 +164,13 @@ Validates 13-section YAML structure is complete.
 
 ---
 
-### 2. REQ Coverage
+### 2. Requirement Coverage
 
-Validates all REQ requirements implemented in SPEC.
+Validates that every upstream formal requirement (EARS, Layer 3) is realized in the SPEC.
 
 **Scope**:
-- Every REQ has corresponding implementation
-- req_implementations section complete
+- Every upstream EARS requirement has a corresponding specification element
+- The behavior/requirement-mapping content is complete
 - Acceptance criteria mapped
 - No orphaned specifications
 
@@ -178,10 +178,10 @@ Validates all REQ requirements implemented in SPEC.
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-RC001 | Error | REQ not implemented in SPEC |
+| REV-RC001 | Error | Upstream requirement not realized in SPEC |
 | REV-RC002 | Warning | Acceptance criteria not mapped |
-| REV-RC003 | Warning | Orphaned specification (no REQ) |
-| REV-RC004 | Info | Multiple SPEC items for single REQ (acceptable) |
+| REV-RC003 | Warning | Orphaned specification (no upstream requirement) |
+| REV-RC004 | Info | Multiple SPEC items for single requirement (acceptable) |
 
 ---
 
@@ -212,7 +212,7 @@ Validates external, internal, and class interfaces.
 Validates thresholds match upstream documents.
 
 **Scope**:
-- Thresholds from REQ/SYS/PRD/BRD consistent
+- Thresholds consistent with upstream BRD/PRD/EARS values
 - Performance targets defined
 - SLA requirements met
 - Monitoring thresholds set
@@ -221,7 +221,7 @@ Validates thresholds match upstream documents.
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-TR001 | Error | Threshold mismatch with REQ |
+| REV-TR001 | Error | Threshold mismatch with upstream requirement |
 | REV-TR002 | Error | Performance target not defined |
 | REV-TR003 | Warning | SLA requirement may not be met |
 | REV-TR004 | Info | Monitoring threshold missing |
@@ -286,42 +286,43 @@ Identifies incomplete content requiring replacement.
 
 ### 8. Naming Compliance
 
-Validates element IDs follow `doc-naming` standards.
+Validates element IDs follow `doc-naming` standards (`framework/governance/ID_NAMING_STANDARDS.md`).
 
 **Scope**:
-- Element IDs use `SPEC.NN.xxxx` format
-- Element type codes valid for SPEC
+- SPEC document references use the document-level form `SPEC-NN`
+- Upstream element references use the 4-segment form `TYPE.NN.SS.xxxx` (BRD/PRD/EARS/BDD), with `ADR-NN` for ADR documents
 - Component naming convention
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-N001 | Error | Invalid element ID format |
-| REV-N002 | Error | Element type code not valid for SPEC |
-| REV-N003 | Error | Legacy pattern detected |
+| REV-N001 | Error | Invalid element ID format (not 4-segment `TYPE.NN.SS.xxxx`) |
+| REV-N002 | Error | Document reference not in `SPEC-NN` / `ADR-NN` form |
+| REV-N003 | Error | Legacy pattern detected (3-segment, numeric type-code, `SPEC-NNN`, or retired-layer tags) |
 
 ---
 
 ### 9. Upstream Drift Detection (Mandatory Cache)
 
-Detects when upstream REQ and CTR documents have been modified after the SPEC was created or last updated.
+Detects when upstream EARS, BDD, and ADR documents have been modified after the SPEC was created or last updated.
 
 **The drift cache is mandatory**. All SPEC review operations must maintain drift cache state to enable accurate incremental drift detection. The cache persists hash values between reviews, eliminating false positives from timestamp-only comparisons.
 
-**Purpose**: Identifies stale SPEC content that may not reflect current REQ and CTR documentation. When REQ documents (requirements, acceptance criteria) or CTR documents (external API contracts) change, the SPEC may need updates to maintain alignment.
+**Purpose**: Identifies stale SPEC content that may not reflect current upstream documentation. When EARS documents (formal requirements, acceptance criteria), BDD documents (scenarios), or ADR documents (architecture decisions) change, the SPEC may need updates to maintain alignment.
 
 **Scope**:
-- `@req:` tag targets (REQ documents)
-- `@ctr:` tag targets (CTR documents)
+- `@ears:` tag targets (EARS documents)
+- `@bdd:` tag targets (BDD documents)
+- `@adr:` tag targets (ADR documents)
 - Traceability section upstream artifact links
-- Any markdown links to `../07_REQ/` or `../08_CTR/` source documents
+- Any markdown links to `../03_EARS/`, `../04_BDD/`, or `../05_ADR/` source documents
 
 ---
 
 #### Drift Cache File (MANDATORY)
 
-Location: `docs/09_SPEC/.drift_cache.json`
+Location: `docs/06_SPEC/.drift_cache.json`
 
 **Schema**:
 
@@ -334,18 +335,18 @@ Location: `docs/09_SPEC/.drift_cache.json`
       "spec_hash": "sha256:abc123...",
       "last_reviewed": "2026-02-10T17:00:00",
       "upstream_refs": {
-        "REQ-03.yaml": {
+        "EARS-03.yaml": {
           "file_hash": "sha256:def456...",
           "section_hashes": {
-            "req_implementations": "sha256:ghi789...",
+            "requirements": "sha256:ghi789...",
             "acceptance_criteria": "sha256:jkl012..."
           },
           "last_modified": "2026-02-08T10:15:00"
         },
-        "CTR-03-001.yaml": {
+        "ADR-03.yaml": {
           "file_hash": "sha256:mno345...",
           "section_hashes": {
-            "endpoints": "sha256:pqr678..."
+            "decision": "sha256:pqr678..."
           },
           "last_modified": "2026-02-09T14:30:00"
         }
@@ -376,7 +377,7 @@ Location: `docs/09_SPEC/.drift_cache.json`
 **Phase 1: Cache Load**
 
 ```
-1. Load .drift_cache.json from docs/09_SPEC/
+1. Load .drift_cache.json from docs/06_SPEC/
 2. If cache missing → initialize empty cache, flag REV-D006
 3. Validate cache_version compatibility
 4. Extract cached state for target SPEC file
@@ -386,10 +387,12 @@ Location: `docs/09_SPEC/.drift_cache.json`
 
 ```
 1. Extract all upstream references from SPEC:
-   - @req: tags → [path, section anchor]
-   - @ctr: tags → [path, section anchor]
-   - Links to ../07_REQ/ → [path]
-   - Links to ../08_CTR/ → [path]
+   - @ears: tags → [path, section anchor]
+   - @bdd: tags → [path, section anchor]
+   - @adr: tags → [path, section anchor]
+   - Links to ../03_EARS/ → [path]
+   - Links to ../04_BDD/ → [path]
+   - Links to ../05_ADR/ → [path]
    - Traceability table upstream artifacts → [path]
 
 2. For each upstream reference:
@@ -457,7 +460,7 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-D001 | Warning | Upstream REQ/CTR document modified after SPEC creation |
+| REV-D001 | Warning | Upstream EARS/BDD/ADR document modified after SPEC creation |
 | REV-D002 | Warning | Referenced section content has changed (hash mismatch) |
 | REV-D003 | Info | Upstream document version incremented |
 | REV-D004 | Info | New content added to upstream document |
@@ -476,15 +479,15 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 
 | Upstream Document | SPEC Reference | Cached Hash | Current Hash | Status | Severity |
 |-------------------|----------------|-------------|--------------|--------|----------|
-| REQ-03.yaml | @req Section req_implementations | sha256:abc1... | sha256:def4... | DRIFT | Warning |
-| CTR-03-001.yaml | @ctr endpoints | sha256:ghi7... | sha256:ghi7... | FRESH | - |
+| EARS-03.yaml | @ears Section requirements | sha256:abc1... | sha256:def4... | DRIFT | Warning |
+| ADR-03.yaml | @adr decision | sha256:ghi7... | sha256:ghi7... | FRESH | - |
 
 **Drift Summary**:
 - Files checked: 2
 - Files with drift: 1
 - Sections with drift: 1
 
-**Recommendation**: Review upstream REQ/CTR changes and update SPEC if requirements or contracts have changed.
+**Recommendation**: Review upstream EARS/BDD/ADR changes and update SPEC if requirements or decisions have changed.
 ```
 
 ---
@@ -492,7 +495,7 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 #### Auto-Actions
 
 - **Mandatory**: Update `.drift_cache.json` with current hashes after every review
-- Add `[DRIFT]` marker to affected @req/@ctr tags (optional)
+- Add `[DRIFT]` marker to affected @ears/@bdd/@adr tags (optional)
 - Generate drift summary in review report
 
 ---
@@ -504,7 +507,7 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 | `cache_enabled` | true | **Mandatory** - cache cannot be disabled |
 | `drift_threshold_days` | 7 | Days before drift becomes Warning |
 | `critical_threshold_days` | 30 | Days before drift becomes Error |
-| `tracked_patterns` | `@req:`, `@ctr:` | Patterns to track for drift |
+| `tracked_patterns` | `@ears:`, `@bdd:`, `@adr:` | Patterns to track for drift |
 
 ---
 
@@ -515,7 +518,7 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 | Category | Weight | Calculation |
 |----------|--------|-------------|
 | YAML Structure Completeness | 14% | (complete_sections / 13) × 14 |
-| REQ Coverage | 19% | (implemented / total_reqs) × 19 |
+| Requirement Coverage | 19% | (implemented / total_requirements) × 19 |
 | Interface Definition Completeness | 19% | (complete_interfaces / total) × 19 |
 | Threshold Registry Compliance | 10% | (compliant / total_thresholds) × 10 |
 | Data Model Completeness | 14% | (complete_models / total) × 14 |
@@ -540,7 +543,7 @@ grep -oP '"hash":\s*"sha256:[0-9a-f]{64}"' .drift_cache.json
 /doc-spec-reviewer SPEC-03
 
 # Review SPEC by path
-/doc-spec-reviewer docs/09_SPEC/SPEC-03.yaml
+/doc-spec-reviewer docs/06_SPEC/SPEC-03.yaml
 
 # Review all SPECs
 /doc-spec-reviewer all
@@ -558,7 +561,7 @@ Review reports are stored alongside the reviewed document per project standards.
 
 **Audit Wrapper Compatibility**: `doc-spec-audit` may emit preferred `SPEC-NN.A_audit_report_vNNN.md`; reviewer output remains valid legacy-compatible input for fixer.
 
-**Location**: Inside the SPEC nested folder: `docs/09_SPEC/SPEC-NN_{slug}/`
+**Location**: Inside the SPEC nested folder: `docs/06_SPEC/SPEC-NN_{slug}/`
 
 ### Versioning Rules
 
@@ -571,7 +574,7 @@ Review reports are stored alongside the reviewed document per project standards.
 **Example**:
 
 ```
-docs/09_SPEC/SPEC-03_f3_observability/
+docs/06_SPEC/SPEC-03_f3_observability/
 ├── SPEC-03_f3_observability.yaml
 ├── SPEC-03.R_review_report_v001.md    # First review
 ├── SPEC-03.R_review_report_v002.md    # After fixes
@@ -608,10 +611,10 @@ flowchart LR
 | `doc-spec-validator` | Structural validation (Phase 4) |
 | `doc-spec-fixer` | Applies fixes based on review findings |
 | `doc-spec` | SPEC creation rules |
-| `doc-req-reviewer` | Upstream QA |
-| `doc-ctr-reviewer` | Upstream QA (for external APIs) |
-| `doc-tasks-autopilot` | Downstream consumer |
-| `doc-tspec-autopilot` | Downstream consumer |
+| `doc-ears-reviewer` | Upstream QA (formal requirements) |
+| `doc-adr-reviewer` | Upstream QA (architecture decisions) |
+| `doc-tdd-autopilot` | Downstream consumer |
+| `doc-iplan-autopilot` | Downstream consumer |
 
 ---
 
@@ -619,12 +622,13 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-05-22 | Migrated to the framework 8-layer model: SPEC renumbered to **Layer 6**; dropped the retired system/requirement/contract upstream layers — Check #2 + #4 + #9 now track upstream EARS (L3), BDD (L4), ADR (L5); Check #8 enforces 4-segment `TYPE.NN.SS.xxxx` element IDs with `SPEC-NN`/`ADR-NN` document refs (rejects legacy 3-segment, numeric type-code, and `SPEC-NNN` forms); downstream consumers `doc-tdd-autopilot` + `doc-iplan-autopilot`; paths repointed to `docs/06_SPEC/` + `framework/governance/`; TDD-Ready terminology |
 | 1.5 | 2026-02-27 | Normalized metadata schema; aligned structure heading to MVP contract; added audit-wrapper compatibility for `.A_` reports |
 | 1.4 | 2026-02-11 | **Structure Compliance BLOCKING check**: Added Check #0 as BLOCKING prerequisite; Validates nested folder rule for SPEC documents; REV-STR001-STR003 error codes; Must pass before other checks proceed |
-| 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required (REV-D006 error if missing); Three-phase detection algorithm; SHA-256 hash calculation with Python implementation; Enhanced cache schema with section-level hashing; Cache status in report output |
-| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection - detects when REQ/CTR documents modified after SPEC creation; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
+| 1.3 | 2026-02-10 | **Mandatory drift cache**: Cache is now required (REV-D006 error if missing); Three-phase detection algorithm; SHA-256 hash calculation; Enhanced cache schema with section-level hashing; Cache status in report output |
+| 1.2 | 2026-02-10 | Added Check #9: Upstream Drift Detection; REV-D001-D005 error codes; drift cache support; configurable thresholds; added doc-spec-fixer to related skills |
 | 1.1 | 2026-02-10 | Added review versioning support (_vNNN pattern); Delta reporting for score comparison |
-| 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; YAML structure validation; REQ coverage; Interface completeness; Threshold compliance |
+| 1.0 | 2026-02-10 | Initial skill creation with 8 review checks; YAML structure validation; requirement coverage; Interface completeness; Threshold compliance |
 
 ## Implementation Plan Consistency (IPLAN-004)
 

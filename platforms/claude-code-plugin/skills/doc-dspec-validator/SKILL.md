@@ -1,41 +1,47 @@
 ---
 name: doc-dspec-validator
-description: Validate Documentation Specifications (DSPEC) documents against Layer 9.51 schema standards
+description: Validate data-spec SPEC (Layer 6) documents against the framework SPEC contract with a data-design focus
 metadata:
   tags:
     - sdd-workflow
-    - layer-9-artifact
-    - dspec-artifact
+    - layer-6-artifact
+    - spec-artifact
     - quality-assurance
   custom_fields:
-    layer: 9
-    subtype_code: 51
-    artifact_type: DSPEC
+    layer: 6
+    artifact_type: SPEC
+    spec_focus: data-design
     deliverable_type: document
-    architecture_approaches: [ai-agent-based, traditional-8layer]
+    architecture_approaches: [ai-agent-based]
     priority: shared
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [DSPEC]
-    downstream_artifacts: []
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN, Code]
     version: "1.0"
-    last_updated: "2026-03-01"
+    last_updated: "2026-05-22"
 ---
 
 # doc-dspec-validator
 
-Validate Documentation Specifications (DSPEC) documents against Layer 9.51 schema standards.
+Validate **data-spec SPEC (Layer 6)** documents against the framework SPEC
+contract, with a focus on the data-design aspects of a component specification
+(data models, schemas, field definitions). This is a plugin-only authoring
+helper: a data-design specialization of SPEC. It validates against the single
+SPEC template — it does not define its own template.
 
 ## Activation
 
-Invoke when user requests validation of DSPEC documents or after creating/modifying DSPEC artifacts.
+Invoke when the user requests validation of a data-focused SPEC document, or
+after creating/modifying the data-model sections of a SPEC artifact.
 
-## Validation Schema Reference
+## Specialization
 
-- Schema: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
-- Layer: 9.51
-- Artifact Type: DSPEC
-- Deliverable Type: document
+- **Parent**: `../doc-spec/` (SPEC, Layer 6)
+- **Template**: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (the single SPEC
+  template — reference, do not redefine)
+- **Focus**: SPEC Section 4 (Data Models) and the data-design facets of
+  Sections 3 (Interfaces) and 5 (Behavior)
 
 ## Validation Checklist
 
@@ -43,69 +49,74 @@ Invoke when user requests validation of DSPEC documents or after creating/modify
 
 | Field | Required | Valid Values |
 |-------|----------|--------------|
-| `document_type` | Yes | `dspec-document` |
-| `artifact_type` | Yes | `DSPEC` |
-| `deliverable_type` | Yes | `document` |
-| `subtype_code` | Yes | `51` |
-| `layer` | Yes | `9` |
+| `document_type` | Yes | `spec-document` |
+| `artifact_type` | Yes | `SPEC` |
+| `deliverable_type` | Yes | `code` |
+| `layer` | Yes | `6` |
 
-### 2. Content Structure
+### 2. Component Overview
 
-- [ ] Document type specified (55-58)
-- [ ] Target audience defined
-- [ ] Content outline complete
-- [ ] Style guide referenced
+- [ ] Component purpose and role described
+- [ ] `architecture_decision` references an ADR (`@adr: ADR-NN`)
+- [ ] Language and dependencies specified
 
-### 3. Audience Analysis
+### 3. Data Models (primary focus)
 
-- [ ] Primary audience identified
-- [ ] Secondary audiences listed
-- [ ] Technical level specified
-- [ ] Prerequisites documented
+- [ ] Data structures defined with typed fields
+- [ ] Field types, required flags, and descriptions present
+- [ ] Models map to upstream EARS/BDD data requirements
+- [ ] No SQL/ORM implementation detail (specification, not source)
 
-### 4. Content Coverage
+### 4. Interfaces
 
-- [ ] All REQ topics covered
-- [ ] Examples included
-- [ ] Diagrams/visuals specified
-- [ ] Glossary terms defined
+- [ ] Public exports defined with typed signatures
+- [ ] Error conditions documented per export
 
-### 5. Accessibility
+### 5. Behavior
 
-- [ ] Alt text requirements noted
-- [ ] Reading level specified
-- [ ] Translation requirements documented
-- [ ] Format accessibility considered
+- [ ] Validation rules sourced from EARS (`@ears: EARS.NN.SS.xxxx`)
+- [ ] State transitions sourced from BDD (`@bdd: BDD.NN.SS.xxxx`)
+- [ ] Error handling defined
 
-### 6. Traceability
+### 6. Downstream TDD Contracts
 
-Required cumulative tags:
-- `@brd`, `@prd`, `@ears`, `@bdd`, `@adr`, `@sys`, `@req`
+- [ ] References the downstream TDD document (`@tdd: TDD-NN`)
+- [ ] Test files identified for data-model coverage
 
-### 7. DOC-Ready Score
+### 7. Traceability
+
+Required upstream tags (per `framework/governance/ID_NAMING_STANDARDS.md`):
+- `@brd: BRD-NN`, `@prd: PRD-NN`
+- `@ears: EARS.NN.SS.xxxx`, `@bdd: BDD.NN.SS.xxxx`
+- `@adr: ADR-NN` (or element-level `@adr: ADR.NN.SS.xxxx`)
+- `@spec: SPEC-NN` (this document)
+
+### 8. TDD-Ready Score
 
 | Component | Weight | Minimum |
 |-----------|--------|---------|
-| Content Coverage | 25% | 100% |
-| Audience Alignment | 20% | 90% |
-| Structure Completeness | 20% | 90% |
-| Style Compliance | 15% | 85% |
-| Accessibility | 10% | 85% |
+| Data-Model Coverage | 25% | 100% |
+| Interface Completeness | 20% | 90% |
+| Behavior Specification | 20% | 90% |
+| Implementation Notes | 15% | 85% |
+| Downstream TDD Contract | 10% | 85% |
 | Traceability | 10% | 100% |
 
-**Target**: DOC-Ready ≥85%
+**Target**: TDD-Ready ≥85%
 
 ## Error Codes
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| DSPEC-E001 | Error | Missing audience definition |
-| DSPEC-E002 | Error | Incomplete content outline |
-| DSPEC-E003 | Error | Missing document type |
-| DSPEC-W001 | Warning | Style guide not referenced |
-| DSPEC-W002 | Warning | DOC-Ready score below threshold |
+| SPEC-E001 | Error | Missing or incomplete data models |
+| SPEC-E002 | Error | Missing interface definition |
+| SPEC-E003 | Error | Missing `document_type` |
+| SPEC-W001 | Warning | Upstream traceability tag missing |
+| SPEC-W002 | Warning | TDD-Ready score below threshold |
 
 ## References
 
-- Schema: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
-- Validation Rules: `ai_dev_ssd_flow/09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml`
+- Parent skill: `../doc-spec/`
+- Template: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer guide: `framework/layers/06_SPEC/README.md`
+- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`
