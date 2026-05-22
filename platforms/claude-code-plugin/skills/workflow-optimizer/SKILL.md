@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-00, ADR-000]
+  upstream_artifacts: [PRD-00, ADR-00]
   downstream_artifacts: []
 ---
 
@@ -24,7 +24,7 @@ custom_fields:
 
 Guide users through the SDD workflow by determining current position, recommending next steps, identifying parallel work opportunities, and tracking progress.
 
-**Problem Solved**: Users must manually determine next steps in the 15-layer SDD workflow, leading to workflow friction, missed dependencies, and inefficient sequencing.
+**Problem Solved**: Users must manually determine next steps in the 8-layer SDD workflow, leading to workflow friction, missed dependencies, and inefficient sequencing.
 
 **Solution**: Analyze completed artifacts, determine workflow position, and provide prioritized recommendations for next steps with clear rationale.
 
@@ -131,42 +131,22 @@ workflow_layers:
     description: "Technical decision records"
 
   layer_6:
-    type: SYS
-    name: System Requirements
+    type: SPEC
+    name: Technical Specification
     prerequisite: ADR
-    description: "Technical system specifications"
+    description: "Implementation-ready interfaces, data models, behavior contracts"
 
   layer_7:
-    type: REQ
-    name: Atomic Requirements
-    prerequisite: SYS
-    description: "Detailed atomic requirements"
+    type: TDD
+    name: Test-Driven Development Guide
+    prerequisite: SPEC
+    description: "Test case definitions, BDD-to-test mapping, quality thresholds"
 
   layer_8:
-    type: IMPL
+    type: IPLAN
     name: Implementation Plan
-    prerequisite: REQ
-    optional: true
-    description: "WHO/WHEN project management"
-
-  layer_9:
-    type: CTR
-    name: Interface Contracts
-    prerequisite: [IMPL, REQ]
-    optional: true
-    description: "API contracts and schemas"
-
-  layer_10:
-    type: SPEC
-    name: Technical Specifications
-    prerequisite: REQ
-    description: "YAML implementation specs"
-
-  layer_11:
-    type: TASKS
-    name: Implementation Tasks
-    prerequisite: SPEC
-    description: "Code generation task lists - flows to Code layer"
+    prerequisite: TDD
+    description: "Execution bridge: file manifest, commands, code audit trail - flows to Code layer"
 ```
 
 **Position Calculation**:
@@ -174,16 +154,15 @@ workflow_layers:
 workflow_position:
   completed_layers: [1, 2]  # BRD, PRD done
   in_progress_layers: [3]   # EARS in progress
-  blocked_layers: [4, 5, 6, 7, 10, 11]  # Waiting on prerequisites
+  blocked_layers: [4, 5, 6, 7, 8]  # Waiting on prerequisites
   ready_layers: [3]         # Can start now
-  optional_ready: [8, 9]    # Optional, prereqs met
 
   current_position:
     layer: 3
     type: EARS
     status: in_progress
 
-  progress_percentage: 18%  # 2 of 11 layers complete
+  progress_percentage: 25%  # 2 of 8 layers complete
 ```
 
 ### Step 3: Identify Required Next Steps
@@ -198,8 +177,8 @@ dependency_graph:
     downstream_required:
       - EARS (Layer 3) - formal requirements
       - BDD (Layer 4) - test scenarios
-    downstream_optional:
-      - IMPL (Layer 8) - if complex project
+    downstream_later:
+      - IPLAN (Layer 8) - execution planning
 
   EARS (to be created):
     upstream_required:
@@ -256,8 +235,8 @@ parallel_opportunities:
 
   blocked_parallelization:
     - item: "SPEC creation"
-      blocker: "REQ layer incomplete"
-      unblock_by: "Complete REQ-01 through REQ-05"
+      blocker: "ADR layer incomplete"
+      unblock_by: "Complete ADR-01 through ADR-05"
 ```
 
 ### Step 5: Calculate Progress Metrics
@@ -269,8 +248,8 @@ Generate progress report:
 progress_report:
   overall:
     layers_complete: 2
-    total_layers: 12
-    percentage: 17%
+    total_layers: 8
+    percentage: 25%
 
   by_layer:
     - layer: 1 (BRD)
@@ -294,13 +273,14 @@ progress_report:
 
   estimated_remaining:
     artifacts: 25
-    layers: 10
+    layers: 6
 
   critical_path:
     - EARS (blocks BDD)
     - BDD (blocks ADR)
-    - REQ (blocks SPEC)
-    - SPEC (blocks TASKS)
+    - ADR (blocks SPEC)
+    - SPEC (blocks TDD)
+    - TDD (blocks IPLAN)
 ```
 
 ### Step 6: Generate Recommendations
@@ -346,19 +326,19 @@ recommendations:
 
   blocked_items:
     - item: "SPEC creation"
-      reason: "Requires REQ completion (Layer 7)"
-      unblock_path: "Complete layers 3-7 first"
+      reason: "Requires ADR completion (Layer 5)"
+      unblock_path: "Complete layers 3-5 first"
 
   workflow_guidance:
     current_focus: "EARS creation for PRD-00 features"
     short_term: "Complete EARS → BDD → ADR sequence"
-    medium_term: "Progress through SYS → REQ → SPEC"
+    medium_term: "Progress through SPEC → TDD → IPLAN"
 
   progress_summary:
     completed: "BRD-01, BRD-02, BRD-03, PRD-01, PRD-00"
     in_progress: "None"
     next_milestone: "Complete Layer 3 (EARS)"
-    overall: "17% complete (2/12 layers)"
+    overall: "25% complete (2/8 layers)"
 ```
 
 ## Example Usage
@@ -402,12 +382,12 @@ project_status:
     - Layer 3 (EARS): 0 documents, target 5
 
   blocked:
-    - Layers 4-11: Waiting on upstream completion
+    - Layers 4-8: Waiting on upstream completion
 
-  progress: 18%
+  progress: 25%
 
   critical_path:
-    EARS → BDD → ADR → SYS → REQ → SPEC → TASKS
+    EARS → BDD → ADR → SPEC → TDD → IPLAN
 
   recommended_focus:
     "Complete EARS layer to unblock BDD and ADR"
@@ -436,8 +416,8 @@ parallel_work:
   - "BDD scenarios can start once first EARS requirements defined"
 
 sequential_requirements:
-  - "SPEC requires REQ completion - no parallel path"
-  - "TASKS requires SPEC - sequential"
+  - "SPEC requires ADR completion - no parallel path"
+  - "TDD requires SPEC, IPLAN requires TDD - sequential"
 ```
 
 ## Integration with Other Skills
@@ -472,16 +452,16 @@ sequential_requirements:
 
 **Required Tags**:
 ```
-@prd: PRD.000.004
-@adr: ADR-000
+@prd: PRD.00.00.004a
+@adr: ADR-00
 ```
 
 ### Upstream Sources
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-00 | Product Requirements | [PRD-00]({project_root}/framework/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
-| ADR-000 | Architecture Decision | [ADR-000]({project_root}/framework/ADR/ADR-00_ai_powered_documentation_assistant_architecture.md#ADR-000) |
+| PRD-00 | Product Requirements | [PRD-00]({project_root}/framework/layers/02_PRD/PRD-00_ai_assisted_documentation_features.yaml#PRD-00) |
+| ADR-00 | Architecture Decision | [ADR-00]({project_root}/framework/layers/05_ADR/ADR-00_ai_powered_documentation_assistant_architecture.yaml#ADR-00) |
 
 ### Downstream Artifacts
 

@@ -9,8 +9,8 @@ tags:
 custom_fields:
   document_type: standards
   applies_to: all-autopilot-skills
-  version: "2.1"
-  last_updated: "2026-02-27T15:45:00"
+  version: "2.2"
+  last_updated: "2026-05-22T00:00:00"
 ---
 
 # Review Document Standards for Autopilot Skills
@@ -67,7 +67,7 @@ docs/02_PRD/
 
 | Component | Description | Example |
 |-----------|-------------|---------|
-| `{ARTIFACT}` | Artifact type code | BRD, PRD, ADR, SYS, REQ, etc. |
+| `{ARTIFACT}` | Artifact type code | BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN |
 | `-NN` | Document number | -01, -03, -12 |
 | `.R` | Review document suffix | Always `.R` |
 | `_review_report` | Document type descriptor | Always `_review_report` |
@@ -81,12 +81,12 @@ docs/02_PRD/
 | BRD-01 | `BRD-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
 | BRD-03 | `BRD-03.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
 | PRD-01 | `PRD-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| EARS-02 | `EARS-02.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| BDD-04 | `BDD-04.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
 | ADR-05 | `ADR-05.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
-| SYS-02 | `SYS-02.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
-| REQ-03-001 | `REQ-03-001.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
 | SPEC-01 | `SPEC-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
-| TSPEC-01 | `TSPEC-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
-| TASKS-01 | `TASKS-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| TDD-01 | `TDD-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
+| IPLAN-01 | `IPLAN-01.R_review_report_v001.md` | `_v002.md`, `_v003.md`, ... |
 
 ### 2.1 Version Number Rules
 
@@ -178,13 +178,13 @@ title: "{ARTIFACT}-NN.R: {Module Name} - Review Report v{NNN}"
 tags:
   - {artifact-type-lowercase}     # e.g., brd, prd, adr
   - {module-type}                 # e.g., foundation-module, domain-module
-  - layer-{N}-artifact            # Layer number
+  - layer-{N}-artifact            # Layer number (1-8)
   - review-report                 # Always include
   - quality-assurance             # Always include
 custom_fields:
   document_type: review-report
   artifact_type: {ARTIFACT}-REVIEW    # e.g., BRD-REVIEW, PRD-REVIEW
-  layer: {N}                          # Layer number (1-11)
+  layer: {N}                          # Layer number (1-8)
   parent_doc: {ARTIFACT}-NN           # e.g., BRD-03, PRD-01
   reviewed_document: {full_slug}       # e.g., BRD-03_f3_observability
   module_id: {module_id}              # e.g., F3, D1
@@ -215,12 +215,10 @@ custom_fields:
 | PRD | `ears_ready_score` |
 | EARS | `bdd_ready_score` |
 | BDD | `adr_ready_score` |
-| ADR | `sys_ready_score` |
-| SYS | `req_ready_score` |
-| REQ | `spec_ready_score` |
-| SPEC | `tasks_ready_score` |
-| TSPEC | `impl_ready_score` |
-| TASKS | `code_ready_score` |
+| ADR | `spec_ready_score` |
+| SPEC | `tdd_ready_score` |
+| TDD | `iplan_ready_score` |
+| IPLAN | `code_ready_score` |
 
 ---
 
@@ -319,15 +317,12 @@ Each autopilot skill MUST:
 |-------|------------------------|
 | doc-brd-autopilot | Review Reports (v2.2) section |
 | doc-prd-autopilot | Add similar section |
-| doc-adr-autopilot | Add similar section |
-| doc-sys-autopilot | Add similar section |
-| doc-req-autopilot | Add similar section |
-| doc-spec-autopilot | Add similar section |
-| doc-tspec-autopilot | Add similar section |
-| doc-tasks-autopilot | Add similar section |
 | doc-ears-autopilot | Add similar section |
 | doc-bdd-autopilot | Add similar section |
-| doc-ctr-autopilot | Add similar section |
+| doc-adr-autopilot | Add similar section |
+| doc-spec-autopilot | Add similar section |
+| doc-tdd-autopilot | Add similar section |
+| doc-iplan-autopilot | Add similar section |
 
 ---
 
@@ -374,7 +369,7 @@ Store result as: `"hash": "sha256:<64_hex_characters>"`
 | Layer | Artifact | Upstream | Mode |
 |-------|----------|----------|------|
 | 1 | BRD | REF docs | **Optional** |
-| 2-11 | PRD to TASKS | Previous layer | **MANDATORY** |
+| 2-8 | PRD to IPLAN | Previous layer | **MANDATORY** |
 
 **BRD is the only Layer 1 artifact** that can skip upstream tracking (when created from prompt).
 
@@ -420,6 +415,7 @@ See: `docs/01_BRD/BRD-03_f3_observability/BRD-03.R_review_report.md` for a compl
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.2 | 2026-05-22 | **8-layer migration**: artifact codes, file-naming examples, score-field map, skill-specific guidance, and upstream-tracking table rebuilt to the 8-layer model (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN); dropped SYS/REQ/CTR/TSPEC/TASKS; layer range corrected to 1-8 |
 | 2.1 | 2026-02-27 | **Drift Cache Requirements**: Added Section 8 with mandatory bash sha256sum execution; Rejected placeholder values; Upstream tracking requirements by layer |
 | 2.0 | 2026-02-10 | Added review versioning (Section 2.1-2.4); Pattern changed to `_vNNN.md`; Added version tracking in frontmatter; Added delta reporting |
 | 1.0 | 2026-02-10 | Initial standards document; Defines storage location, file naming, YAML frontmatter, section structure, parent document references |

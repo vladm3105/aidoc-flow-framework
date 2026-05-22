@@ -421,6 +421,11 @@ to the suite at B7).
   specialization helpers per D-0015 (36 files; legacy codes 40-45/L10 → TDD
   test-case content). Verified: `plm_lint` scope clean (12 remain); conformance
   31/31; 125 skills; name==dir; layer:7. DONE 2026-05-22.
-- [ ] PLM-B6 — Helpers/orchestrators + residual quickrefs/READMEs.
+- [x] PLM-B6 — Helper/orchestrator skills (12 files): `doc-naming` (element-code
+  system deleted → 4-segment scheme), `doc-validator`, `doc-ref`, `charts-flow`,
+  `trace-check`, `quality-advisor`, `project-mngt`, `context-analyzer`,
+  `workflow-optimizer`, `REVIEW_DOCUMENT_STANDARDS.md` + 2 quickrefs. **`plm_lint
+  --all` now clean corpus-wide (0 fingerprints)**; conformance 31/31; 125 skills;
+  all SKILL.md name==dir. DONE 2026-05-22.
 - [ ] PLM-B7 — Promote `plm_lint --all` into conformance; delete the PARITY gap
   section; CHANGELOG/ROADMAP close-out.

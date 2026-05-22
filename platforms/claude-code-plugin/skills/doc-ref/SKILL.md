@@ -66,13 +66,17 @@ Use `doc-ref` when creating supplementary documentation that:
 
 **Do NOT use `doc-ref` for**:
 - Documents that should participate in traceability chain
-- Core artifacts (BRD, PRD, REQ, ADR, SPEC, etc.)
+- Core artifacts (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN)
 - Documents requiring validation gates
 - **Any parent type other than BRD or ADR** (REF is limited to these two types)
 
 ## Template Reference
 
-**Template**: `framework/REF/REF-TEMPLATE.md`
+**Templates**: REF documents reuse their parent layer's template as the structural baseline:
+- BRD-REF → `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- ADR-REF → `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+
+REF documents are free-format supplements; they keep only the four mandatory sections below and otherwise drop the parent template's traceability scaffolding.
 
 ### Required Sections (4 Mandatory)
 
@@ -115,7 +119,7 @@ ls docs/BRD/*-REF-*.md 2>/dev/null | sort -V | tail -1
 
 ### Step 4: Create Document
 
-1. Copy template: `framework/REF/REF-TEMPLATE.md`
+1. Start from the parent layer's template (`framework/layers/01_BRD/BRD-TEMPLATE.yaml` for BRD-REF, `framework/layers/05_ADR/ADR-TEMPLATE.yaml` for ADR-REF) and strip it to the four mandatory REF sections
 2. Rename to: `{TYPE}-REF-NN_{slug}.md` (NN = next sequence number, 2+ digits)
 3. Update H1 heading: `# {TYPE}-REF-NN: [Document Title]`
 4. Fill Document Control section
@@ -134,8 +138,8 @@ docs/{TYPE}/{TYPE}-REF-NN_{slug}.md
 
 REF documents are **free-format supplementary documents** and do NOT use element IDs:
 
-- **No element type codes** (01-31 codes from ID_NAMING_STANDARDS.md do not apply)
-- **No sub-element IDs** (no `TYPE.NN.xxxx` pattern)
+- **No element IDs** — the 4-segment `TYPE.NN.SS.xxxx` element scheme from `framework/governance/ID_NAMING_STANDARDS.md` does not apply
+- **No sub-element IDs** (no `TYPE.NN.SS.xxxx` pattern)
 - Content sections can be organized freely without formal ID structure
 
 **Rationale**: REF documents serve as reference targets that other documents link to. They provide supporting information but do not define formal requirements or architecture decisions requiring element-level traceability.
@@ -225,7 +229,7 @@ Reference guide for infrastructure components and deployment architecture...
 | Aspect | Standard Document | REF Document |
 |--------|-------------------|--------------|
 | **PRD-Ready Score** (BRD-REF) | Required ≥90% | **NOT APPLICABLE** |
-| **SYS-Ready Score** (ADR-REF) | Required ≥90% | **NOT APPLICABLE** |
+| **SPEC-Ready Score** (ADR-REF) | Required ≥90% | **NOT APPLICABLE** |
 | **Cumulative Tags** | Required per layer | **NOT REQUIRED** |
 | **Quality Gates** | Full validation | **EXEMPT** |
 | **Format** | Structured sections | **Free format** |
@@ -243,13 +247,14 @@ Reference guide for infrastructure components and deployment architecture...
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `framework/governance/DIAGRAM_STANDARDS.md` and the `mermaid-gen` skill.
 
 ## Related Resources
 
-- **Template**: `framework/REF/REF-TEMPLATE.md`
+- **Parent layer templates**: `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (BRD-REF), `framework/layers/05_ADR/ADR-TEMPLATE.yaml` (ADR-REF)
 - **Naming Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
-- **Validation**: `framework/scripts/validate_artifact.py`
+- **Governance & layer authority**: `framework/governance/` and each layer's `README.md`
+- **Validation**: declarative — apply the four-section checklist in this skill (the framework is spec-only; this skill is the validator)
 
 ## Regex Validation Patterns
 

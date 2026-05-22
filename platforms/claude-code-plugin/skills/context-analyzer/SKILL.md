@@ -14,7 +14,7 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: utility
-  upstream_artifacts: [PRD-00, ADR-000]
+  upstream_artifacts: [PRD-01, ADR-01]
   downstream_artifacts: []
 ---
 
@@ -60,18 +60,15 @@ Enumerate all documentation artifacts by type and location:
 ```
 {project_root}/
 ├── docs/
-│   ├── BRD/
-│   ├── PRD/
-│   ├── EARS/
-│   ├── BDD/
-│   ├── ADR/
-│   ├── SYS/
-│   ├── REQ/
-│   ├── IMPL/
-│   ├── CTR/
-│   ├── SPEC/
-│   └── TASKS/
-└── framework/  (framework templates)
+│   ├── 01_BRD/
+│   ├── 02_PRD/
+│   ├── 03_EARS/
+│   ├── 04_BDD/
+│   ├── 05_ADR/
+│   ├── 06_SPEC/
+│   ├── 07_TDD/
+│   └── 08_IPLAN/
+└── framework/layers/  (framework templates and READMEs)
 ```
 
 **Artifact Discovery**:
@@ -87,18 +84,18 @@ artifact_inventory:
     count: 3
     files:
       - id: BRD-01
-        path: docs/BRD/BRD-01_platform_foundation.md
+        path: docs/01_BRD/BRD-01_platform_foundation.yaml
         title: Platform Foundation
         status: Approved
       - id: BRD-02
-        path: docs/BRD/BRD-02_partner_integration.md
+        path: docs/01_BRD/BRD-02_partner_integration.yaml
         title: Partner Integration
         status: Draft
   PRD:
     count: 2
     files:
       - id: PRD-01
-        path: docs/PRD/PRD-01_core_features.md
+        path: docs/02_PRD/PRD-01_core_features.yaml
         title: Core Features
         status: In Review
   SPEC:
@@ -157,7 +154,7 @@ Parse Section 7 Traceability from each artifact:
 ### Upstream Sources
 | Source | Type | Reference |
 |--------|------|-----------|
-| [BRD-01](../BRD/BRD-01_platform.md#BRD-01) | Business Requirements | Platform foundation |
+| [BRD-01](../01_BRD/BRD-01_platform.yaml#BRD-01) | Business Requirements | Platform foundation |
 ```
 
 **Downstream Artifacts Extraction**:
@@ -165,7 +162,7 @@ Parse Section 7 Traceability from each artifact:
 ### Downstream Artifacts
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| [SPEC-01](../SPEC/SPEC-01_api.yaml) | Technical Specification | API implementation |
+| [SPEC-01](../06_SPEC/SPEC-01_api.yaml) | Technical Specification | API implementation |
 ```
 
 **Traceability Graph**:
@@ -173,13 +170,16 @@ Parse Section 7 Traceability from each artifact:
 traceability_graph:
   BRD-01:
     upstream: []
-    downstream: [PRD-01, PRD-00]
+    downstream: [PRD-01, PRD-02]
   PRD-01:
     upstream: [BRD-01]
-    downstream: [EARS-01, SPEC-01]
+    downstream: [EARS-01]
   SPEC-01:
-    upstream: [PRD-01, REQ-01]
-    downstream: [TASKS-01]
+    upstream: [BRD-01, PRD-01, EARS-01, BDD-01, ADR-01]
+    downstream: [TDD-01]
+  TDD-01:
+    upstream: [SPEC-01]
+    downstream: [IPLAN-01]
 ```
 
 ### Step 4: Determine Workflow Position
@@ -191,15 +191,12 @@ Calculate current position in SDD workflow:
 |-------|---------------|-------------------|
 | 1 | BRD | None |
 | 2 | PRD | BRD |
-| 3 | EARS | PRD |
-| 4 | BDD | EARS |
-| 5 | ADR | BDD |
-| 6 | SYS | ADR |
-| 7 | REQ | SYS |
-| 8 | IMPL | REQ (optional) |
-| 9 | CTR | IMPL or REQ (optional) |
-| 10 | SPEC | REQ, optional IMPL/CTR |
-| 11 | TASKS | SPEC |
+| 3 | EARS | BRD, PRD |
+| 4 | BDD | BRD, PRD, EARS |
+| 5 | ADR | BRD, PRD, EARS, BDD |
+| 6 | SPEC | BRD, PRD, EARS, BDD, ADR |
+| 7 | TDD | BRD, PRD, EARS, BDD, ADR, SPEC |
+| 8 | IPLAN | BRD, PRD, EARS, BDD, ADR, SPEC, TDD |
 
 **Position Analysis**:
 ```yaml
@@ -231,18 +228,18 @@ For a target artifact type, identify relevant upstream documents:
 upstream_candidates:
   target_type: SPEC
   candidates:
-    - id: REQ-01
+    - id: ADR-05
       relevance: 95%
-      title: API Requirements
+      title: API Architecture Decision
       reason: "Direct upstream, topic match: API, approved status"
-    - id: REQ-02
+    - id: EARS-02
       relevance: 80%
       title: Data Model Requirements
-      reason: "Direct upstream, related topic: data"
-    - id: ADR-005
+      reason: "Formal requirements, related topic: data"
+    - id: BDD-03
       relevance: 70%
-      title: API Architecture Decision
-      reason: "Architecture context for API design"
+      title: API Acceptance Scenarios
+      reason: "Acceptance context for API design"
 ```
 
 ### Step 6: Extract Key Terms
@@ -261,17 +258,17 @@ key_terms:
   domain_terms:
     - term: workflow
       frequency: 45
-      documents: [BRD-01, PRD-01, REQ-01]
+      documents: [BRD-01, PRD-01, EARS-01]
     - term: resource
       frequency: 32
-      documents: [BRD-01, REQ-02, SPEC-01]
+      documents: [BRD-01, EARS-02, SPEC-01]
   technical_terms:
     - term: WebSocket
       frequency: 18
-      documents: [ADR-003, SPEC-01]
+      documents: [ADR-03, SPEC-01]
     - term: PostgreSQL
       frequency: 12
-      documents: [BRD-01, ADR-000]
+      documents: [BRD-01, ADR-01]
 ```
 
 ### Step 7: Build Context Model
@@ -293,27 +290,27 @@ context_model:
       EARS: 4
       BDD: 6
       ADR: 3
-      REQ: 4
-      SPEC: 0
-      TASKS: 0
+      SPEC: 4
+      TDD: 0
+      IPLAN: 0
 
   workflow_position:
-    completed_layers: [1, 2, 3, 4, 5, 7]
-    current_layer: 7
-    ready_for: [SPEC, TASKS]
+    completed_layers: [1, 2, 3, 4, 5, 6]
+    current_layer: 6
+    ready_for: [TDD, IPLAN]
     gaps:
-      - type: SYS
-        status: missing
-        impact: "SPEC creation may lack system context"
+      - type: BDD
+        status: partial
+        impact: "TDD creation may lack acceptance-scenario coverage"
 
   upstream_candidates:
-    target_type: SPEC
+    target_type: TDD
     primary:
-      - id: REQ-01
-        title: Core API Requirements
+      - id: SPEC-01
+        title: Core API Specification
         relevance: 95%
     secondary:
-      - id: ADR-003
+      - id: ADR-03
         title: WebSocket Architecture
         relevance: 75%
 
@@ -325,7 +322,7 @@ context_model:
     - area: Testing
       description: "BDD scenarios cover only 60% of EARS requirements"
     - area: Implementation
-      description: "No SPEC or TASKS documents created yet"
+      description: "No SPEC, TDD, or IPLAN documents created yet"
 ```
 
 ## Example Usage
@@ -340,14 +337,14 @@ context_summary:
   target: SPEC creation
   readiness: ready
   upstream_available:
-    - REQ-01: Core API Requirements (Approved)
-    - REQ-02: Data Model Requirements (Approved)
-    - ADR-003: WebSocket Architecture (Approved)
+    - EARS-01: Core API Requirements (Approved)
+    - EARS-02: Data Model Requirements (Approved)
+    - ADR-03: WebSocket Architecture (Approved)
   recommended_references:
-    - "Reference REQ-01 for API endpoint specifications"
-    - "Include ADR-003 for WebSocket implementation decisions"
+    - "Reference EARS-01 for API endpoint requirements"
+    - "Include ADR-03 for WebSocket implementation decisions"
   warnings:
-    - "No CTR (contract) documents exist - consider if API contracts needed"
+    - "BDD coverage incomplete - confirm acceptance scenarios exist for the SPEC's behavior contracts"
 ```
 
 ### Example 2: Gap Analysis
@@ -358,19 +355,19 @@ context_summary:
 ```yaml
 documentation_gaps:
   critical:
-    - type: SYS
-      reason: "No system requirements linking ADR to REQ"
-      impact: "REQ documents may lack architectural context"
     - type: SPEC
       reason: "No technical specifications for implementation"
-      impact: "Cannot proceed to code generation"
+      impact: "Cannot proceed to TDD test definitions or code generation"
+    - type: TDD
+      reason: "No test-case definitions for the SPEC component contracts"
+      impact: "Implementation cannot be test-driven"
   moderate:
     - type: BDD
       coverage: 60%
       reason: "4 of 10 EARS requirements have BDD scenarios"
   low:
-    - type: IMPL
-      reason: "Implementation plan optional but recommended for complex projects"
+    - type: IPLAN
+      reason: "Implementation plan recommended before code generation for complex components"
 ```
 
 ### Example 3: Quick Structure Check
@@ -387,25 +384,22 @@ project_structure:
     EARS: 4
     BDD: 6
     ADR: 3
-    SYS: 0
-    REQ: 4
-    IMPL: 0
-    CTR: 0
-    SPEC: 0
-    TASKS: 0
+    SPEC: 4
+    TDD: 0
+    IPLAN: 0
   total_artifacts: 25
-  workflow_coverage: 50% (6 of 12 layers)
+  workflow_coverage: 75% (6 of 8 layers)
 ```
 
 ## Integration with Other Skills
 
 | Integration | Description |
 |-------------|-------------|
-| skill-recommender | Provides project context for better recommendations |
-| doc-* skills | Supplies upstream candidates and key terms |
-| quality-advisor | Shares artifact inventory for validation |
-| workflow-optimizer | Provides workflow position data |
-| trace-check | Overlaps with traceability extraction (uses trace-check for deep validation) |
+| `../skill-recommender/` | Provides project context for better recommendations |
+| `../doc-*/` skills | Supplies upstream candidates and key terms |
+| `../quality-advisor/` | Shares artifact inventory for validation |
+| `../workflow-optimizer/` | Provides workflow position data |
+| `../trace-check/` | Overlaps with traceability extraction (uses trace-check for deep validation) |
 
 ## Quality Gates
 
@@ -432,29 +426,36 @@ project_structure:
 
 **Required Tags**:
 ```
-@prd: PRD.000.002
-@adr: ADR-000
+@prd: PRD.01.02.1dbc
+@adr: ADR-01
 ```
 
 ### Upstream Sources
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-00 | Product Requirements | [PRD-00]({project_root}/framework/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
-| ADR-000 | Architecture Decision | [ADR-000]({project_root}/framework/ADR/ADR-00_ai_powered_documentation_assistant_architecture.md#ADR-000) |
+| PRD | Product Requirements | `framework/layers/02_PRD/README.md` |
+| ADR | Architecture Decision | `framework/layers/05_ADR/README.md` |
 
 ### Downstream Artifacts
 
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| skill-recommender | Skill Consumer | Uses context for better recommendations |
-| doc-* skills | Skill Consumer | Uses context for artifact creation |
+| `../skill-recommender/` | Skill Consumer | Uses context for better recommendations |
+| `../doc-*/` skills | Skill Consumer | Uses context for artifact creation |
 
 ---
 
 ## Version Information
 
-**Version**: 1.0.0
+**Version**: 2.0.0
 **Created**: 2025-11-29
 **Status**: Active
 **Author**: AI Dev Flow Framework Team
+
+### Version History
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 2.0.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Directory patterns, layer mapping, traceability graph, workflow position, upstream candidates, gap analysis, and key-term examples rebuilt to BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN (removed SYS/REQ/CTR/IMPL; SPEC renumbered to L6; TSPEC→TDD L7; TASKS→IPLAN L8). Project doc paths use `docs/<NN>_<X>/`; framework references point at `framework/layers/<NN>_<X>/`. Document/element IDs use dash document refs and the 4-segment standard. |
+| 1.0.0 | 2025-11-29 | Initial release |

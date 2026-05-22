@@ -15,10 +15,10 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: quality-assurance
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SYS, REQ, IMPL, CTR, SPEC, TASKS]
+  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
   downstream_artifacts: []
-  version: "3.2"
-  last_updated: "2026-02-10T15:00:00"
+  version: "4.0"
+  last_updated: "2026-05-22T00:00:00"
 ---
 
 # doc-validator
@@ -43,24 +43,21 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 - Validate single document metadata (use `{TYPE}_VALIDATION_RULES.md` in each artifact directory)
 - Validate single document content (use `{TYPE}_VALIDATION_RULES.md` in each artifact directory)
 
-**Dedicated Layer Validators**:
-| Layer | Artifact | Validation Rules File |
-|-------|----------|----------------------|
-| 1 | BRD | `framework/BRD/BRD_VALIDATION_RULES.md` |
-| 2 | PRD | `framework/PRD/PRD_VALIDATION_RULES.md` |
-| 3 | EARS | `framework/EARS/EARS_VALIDATION_RULES.md` |
-| 4 | BDD | `framework/BDD/BDD_VALIDATION_RULES.md` |
-| 5 | ADR | `framework/ADR/ADR_VALIDATION_RULES.md` |
-| 6 | SYS | `framework/SYS/SYS_VALIDATION_RULES.md` |
-| 7 | REQ | `framework/REQ/REQ_VALIDATION_RULES.md` |
-| 8 | IMPL | `framework/IMPL/IMPL_VALIDATION_RULES.md` |
-| 8 | CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml` |
-| 10 | SPEC | `framework/10_SPEC/SPEC_VALIDATION_RULES.md` |
-| 11 | TASKS | `framework/11_TASKS/TASKS_VALIDATION_RULES.md` |
+**Dedicated Layer Validators** (single-document structure/metadata/content — use the sibling `../doc-{type}-validator/` skills, with the layer `README.md` as authority):
+| Layer | Artifact | Single-Document Validator | Layer Authority |
+|-------|----------|---------------------------|-----------------|
+| 1 | BRD | `../doc-brd-validator/` | `framework/layers/01_BRD/README.md` |
+| 2 | PRD | `../doc-prd-validator/` | `framework/layers/02_PRD/README.md` |
+| 3 | EARS | `../doc-ears-validator/` | `framework/layers/03_EARS/README.md` |
+| 4 | BDD | `../doc-bdd-validator/` | `framework/layers/04_BDD/README.md` |
+| 5 | ADR | `../doc-adr-validator/` | `framework/layers/05_ADR/README.md` |
+| 6 | SPEC | `../doc-spec-validator/` | `framework/layers/06_SPEC/README.md` |
+| 7 | TDD | `../doc-tdd-validator/` | `framework/layers/07_TDD/README.md` |
+| 8 | IPLAN | `../doc-iplan-validator/` | `framework/layers/08_IPLAN/README.md` |
 
-**ID Format Validation**: For unified ID format validation (3-segment element IDs), use `doc-naming` skill.
+**ID Format Validation**: For unified ID format validation (4-segment element IDs `TYPE.NN.SS.xxxx` and dash document refs `SPEC-NN`/`ADR-NN`/`IPLAN-NN`), use the `../doc-naming/` skill.
 
-**Reference**: [ID_NAMING_STANDARDS.md]({project_root}/framework/governance/ID_NAMING_STANDARDS.md)
+**Reference**: [ID_NAMING_STANDARDS.md](../../../framework/governance/ID_NAMING_STANDARDS.md)
 
 **Complexity**: Medium (cross-reference analysis across multiple documents)
 
@@ -117,35 +114,43 @@ Validates relationships and consistency ACROSS documents in the SDD framework.
 
 ## Cross-Document Validators
 
-### [IMPLEMENTED] Validation Scripts
+This skill *is* the validator: the framework is spec-only (no runtime code).
+Apply the declarative checks below, using `framework/governance/` (for ID,
+tag, and traceability rules) and the layer `README.md` files as authority.
 
-| Category | Script | Description | Error Codes |
-|----------|--------|-------------|-------------|
-| LINKS | `validate_links.py` | Markdown link resolution | XDOC-E001, XDOC-E004 |
-| CROSS-REF | `validate_cross_document.py` | Cross-reference validation | XDOC-E001, XDOC-E003 |
-| SECTION | `validate_section_count.py` | Section file count vs metadata | SEC-E001, SEC-E002, SEC-E003, SEC-W001 |
-| DIAGRAM | `validate_diagram_consistency.py` | Mermaid diagrams match prose | DIAG-E001, DIAG-E002, DIAG-W001, DIAG-W002 |
-| TERM | `validate_terminology.py` | Terminology/acronym consistency | TERM-E001, TERM-E002, TERM-W001, TERM-W002 |
-| COUNT | `validate_counts.py` | Stated counts match itemized totals | COUNT-E001, COUNT-W001 |
-| FWDREF | `validate_forward_references.py` | Prevent upstream to downstream ID refs | FWDREF-E001, FWDREF-E002, FWDREF-W001 |
-| TAGS | `validate_tags_against_docs.py` | Cumulative tag compliance | XDOC-E002 |
-| IDS | `validate_requirement_ids.py` | Duplicate ID detection | XDOC-E006 |
-| MATRIX | `validate_traceability_matrix.py` | Matrix validation | XDOC-W001 |
+| Category | Check | Description | Error Codes |
+|----------|-------|-------------|-------------|
+| LINKS | Link resolution | Every markdown/document link resolves to an existing file/anchor | XDOC-E001, XDOC-E004 |
+| CROSS-REF | Cross-reference | Each cited document/element ID exists in the corpus | XDOC-E001, XDOC-E003 |
+| SECTION | Section count | Section file count matches metadata | SEC-E001, SEC-E002, SEC-E003, SEC-W001 |
+| DIAGRAM | Diagram consistency | Mermaid diagrams match prose entities | DIAG-E001, DIAG-E002, DIAG-W001, DIAG-W002 |
+| TERM | Terminology | Terminology/acronym consistency | TERM-E001, TERM-E002, TERM-W001, TERM-W002 |
+| COUNT | Counts | Stated counts match itemized totals | COUNT-E001, COUNT-W001 |
+| FWDREF | Forward reference | No upstream→downstream ID references | FWDREF-E001, FWDREF-E002, FWDREF-W001 |
+| TAGS | Cumulative tags | Cumulative tag compliance per the 8-layer hierarchy | XDOC-E002 |
+| IDS | ID format & uniqueness | Element IDs are 4-segment `TYPE.NN.SS.xxxx`; document refs are dash form (`SPEC-NN`/`ADR-NN`/`IPLAN-NN`); no duplicates | XDOC-E006, XDOC-E007 |
+| MATRIX | Traceability matrix | Matrix completeness across the 8 layers | XDOC-W001 |
 
-**Auto-Fix Support**: SECTION, TERM, COUNT validators support `--auto-fix` flag.
+**Auto-Fixable categories**: SECTION, TERM, COUNT findings are typically
+auto-fixable (regenerate counts/sections, normalize terms).
 
-**Reference**: See [VALIDATION_STANDARDS.md]({project_root}/framework/VALIDATION_STANDARDS.md) for complete error code registry.
+**Reference**: See `framework/governance/DOC_GOVERNANCE_CORE.md` and
+`framework/governance/TRACEABILITY.md` for the governing rules.
 
-### [IMPLEMENTED] Support Scripts
+### ID-Format Enforcement (IDS)
 
-| Script | Purpose | Status |
-|--------|---------|--------|
-| `validate_all.py` | Unified orchestrator for all validators | [IMPLEMENTED] |
-| `validate_cross_document.py` | Cross-reference validation | [IMPLEMENTED] |
-| `validate_links.py` | Markdown link resolution | [IMPLEMENTED] |
-| `validate_tags_against_docs.py` | Cumulative tag compliance | [IMPLEMENTED] |
-| `validate_traceability_matrix.py` | Matrix validation | [IMPLEMENTED] |
-| `error_codes.py` | Standardized error code registry | [IMPLEMENTED] |
+The IDS check MUST enforce the 8-layer ID standard from
+`framework/governance/ID_NAMING_STANDARDS.md`:
+
+- **Element IDs** — require the 4-segment form `TYPE.NN.SS.xxxx`
+  (`TYPE` ∈ {BRD, PRD, EARS, BDD, ADR, TDD}; `NN`/`SS` two-digit;
+  `xxxx` 4-char hex). Example: `BRD.01.07.a7f3`.
+- **Document-level refs** — require the dash form `SPEC-NN`, `ADR-NN`,
+  `IPLAN-NN`. Example: `SPEC-01`.
+- **REJECT** legacy forms: 3-segment element IDs (`TYPE.NN.xxxx`), the
+  numeric type-code scheme (e.g. `40`–`45`, `26`, `27`), and any reference
+  to the retired `SYS`/`REQ`/`CTR`/`TSPEC`/`TASKS` artifacts — these have no
+  place in the 8-layer model. Flag each with XDOC-E007.
 
 ---
 
@@ -192,6 +197,7 @@ graph TD
 | XDOC-E004 | Anchor not found in target | ERROR | Fix anchor reference |
 | XDOC-E005 | Orphaned artifact | ERROR | Add upstream reference |
 | XDOC-E006 | Duplicate ID detected | ERROR | Use unique IDs across project |
+| XDOC-E007 | Invalid/legacy ID format | ERROR | Use 4-segment `TYPE.NN.SS.xxxx` or dash `SPEC-NN`/`ADR-NN`/`IPLAN-NN`; remove legacy/retired-artifact IDs |
 | XDOC-W001 | Weak traceability | WARNING | Add direct links |
 | XDOC-W002 | Unused artifact | WARNING | Consider removal or linking |
 
@@ -241,7 +247,7 @@ graph TD
 
 ## Cumulative Tag Validation
 
-Each layer must include ALL upstream tags per the SDD hierarchy:
+Each layer must include ALL upstream tags per the 8-layer SDD hierarchy:
 
 | Layer | Artifact | Required Upstream Tags |
 |-------|----------|------------------------|
@@ -250,14 +256,12 @@ Each layer must include ALL upstream tags per the SDD hierarchy:
 | 3 | EARS | @brd, @prd |
 | 4 | BDD | @brd, @prd, @ears |
 | 5 | ADR | @brd, @prd, @ears, @bdd |
-| 6 | SYS | @brd through @adr (5 tags) |
-| 7 | REQ | @brd through @sys (6 tags) |
-| 8 | IMPL | @brd through @req (7 tags) |
-| 9 | CTR | @brd through @req (7 tags) |
-| 10 | SPEC | @brd through @req (7 tags) |
-| 11 | TASKS | @brd through @spec (8 tags) |
+| 6 | SPEC | @brd, @prd, @ears, @bdd, @adr (5 tags) |
+| 7 | TDD | @brd, @prd, @ears, @bdd, @adr, @spec (6 tags) |
+| 8 | IPLAN | @brd, @prd, @ears, @bdd, @adr, @spec, @tdd (7 tags) |
 
-**Validation Script**: `validate_tags_against_docs.py`
+**Authority**: `framework/registry/LAYER_REGISTRY.yaml` (`required_tags`) and
+`framework/governance/TRACEABILITY.md`.
 
 ---
 
@@ -312,38 +316,33 @@ Each layer must include ALL upstream tags per the SDD hierarchy:
 
 ## Usage Examples
 
+This skill runs as declarative checks (no runtime scripts). Invoke it by
+naming the scope; it reads the corpus and applies the checks above.
+
 ### Validate Cross-References
 
-```bash
-python framework/scripts/validate_cross_document.py docs/ --strict
-```
+> Run doc-validator over `docs/` with scope `cross-document`, strictness
+> `strict`. Reports broken/one-way references (XDOC-E001/E003/E004).
 
 ### Validate All Links
 
-```bash
-python framework/scripts/validate_links.py docs/
-```
+> Run doc-validator over `docs/` with the LINKS check. Confirms every link
+> and anchor resolves.
 
 ### Validate Cumulative Tags
 
-```bash
-python framework/scripts/validate_tags_against_docs.py \
-  --source docs/ \
-  --validate-cumulative \
-  --strict
-```
+> Run doc-validator over `docs/` with scope `traceability`. Confirms each
+> document carries its full upstream tag set per the 8-layer hierarchy.
 
-### Detect Duplicate IDs
+### Detect Duplicate / Malformed IDs
 
-```bash
-python framework/scripts/validate_requirement_ids.py docs/ --check-duplicates
-```
+> Run doc-validator over `docs/` with the IDS check. Flags duplicate IDs
+> (XDOC-E006) and any legacy/3-segment/retired-artifact IDs (XDOC-E007).
 
 ### Full Cross-Document Validation
 
-```bash
-python framework/scripts/validate_all.py docs/ --scope cross-document
-```
+> Run doc-validator over `docs/` with scope `full`. Applies every check
+> above and emits a consolidated report.
 
 ---
 
@@ -356,20 +355,20 @@ Scope: docs/
 Status: FAILED
 
 Cross-Reference Errors (3):
-- [XDOC-E001] REQ-02_payments.md references non-existent SPEC-05_gateway.yaml
+- [XDOC-E001] EARS-02_payments.yaml references non-existent SPEC-05_gateway.yaml
   → Create target document or fix reference
 
-- [XDOC-E003] ADR-03_caching.md linked from SYS-01 but no reverse link
-  → Add @sys reference to ADR-03
+- [XDOC-E003] ADR-03_caching.yaml linked from SPEC-01 but no reverse link
+  → Add @adr reference from SPEC-01
 
-- [XDOC-E005] IMPL-04_batch.md has no upstream references
-  → Add @req tag to connect to requirements
+- [XDOC-E005] IPLAN-04_batch.yaml has no upstream references
+  → Add @tdd tag to connect to its TDD
 
 Cumulative Tag Warnings (2):
-- [XDOC-E002] TASKS-02 missing required @adr tag
+- [XDOC-E002] IPLAN-02 missing required @adr tag
   → Add @adr: ADR-NN to traceability section
 
-- [XDOC-E002] TASKS-01 missing required @spec tag
+- [XDOC-E002] IPLAN-01 missing required @spec tag
   → Add @spec: SPEC-NN to traceability section
 
 Summary:
@@ -382,24 +381,27 @@ Summary:
 
 ---
 
-## Script Reference
+## Check Reference
 
-### Cross-Document Validation Scripts (Location: `framework/scripts/`)
+The framework is spec-only, so there are no runtime scripts. This skill
+applies the following declarative checks (see the Cross-Document Validators
+table above for error codes):
 
-| Script | Purpose | Usage |
-|--------|---------|-------|
-| `validate_all.py` | Unified orchestrator | `python validate_all.py <dir> --scope cross-document` |
-| `validate_cross_document.py` | Cross-references | `python validate_cross_document.py <dir>` |
-| `validate_links.py` | Link resolution | `python validate_links.py <dir>` |
-| `validate_tags_against_docs.py` | Cumulative tags | `python validate_tags_against_docs.py <dir>` |
-| `validate_traceability_matrix.py` | Matrix validation | `python validate_traceability_matrix.py <dir>` |
-| `validate_requirement_ids.py` | Duplicate IDs | `python validate_requirement_ids.py <dir>` |
-| `validate_section_count.py` | Section consistency | `python validate_section_count.py <dir>` |
-| `validate_diagram_consistency.py` | Diagram vs prose | `python validate_diagram_consistency.py <dir>` |
-| `validate_terminology.py` | Term consistency | `python validate_terminology.py <dir>` |
-| `validate_counts.py` | Count consistency | `python validate_counts.py <dir>` |
-| `validate_forward_references.py` | Forward refs | `python validate_forward_references.py <dir>` |
-| `error_codes.py` | Error code registry | (library - import in validators) |
+| Check | Purpose |
+|-------|---------|
+| Cross-reference | Each cited document/element ID resolves |
+| Link resolution | Markdown/document links and anchors resolve |
+| Cumulative tags | Full upstream tag set per the 8-layer hierarchy |
+| Traceability matrix | Matrix completeness across the 8 layers |
+| ID format & uniqueness | 4-segment / dash refs; no duplicates; no legacy/retired IDs |
+| Section consistency | Section file count matches metadata |
+| Diagram vs prose | Mermaid entities match prose |
+| Term consistency | Canonical terminology/acronyms |
+| Count consistency | Stated counts match itemized totals |
+| Forward references | No upstream→downstream references |
+
+**Authority**: `framework/governance/` (ID, tag, traceability rules) and the
+layer `README.md` files under `framework/layers/<NN>_<X>/`.
 
 ---
 
@@ -407,6 +409,7 @@ Summary:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
+| 4.0.0 | 2026-05-22 | Migrated to the 8-layer framework model: dropped SYS/REQ/CTR/TSPEC/TASKS; SPEC=L6, TDD=L7, IPLAN=L8; layer-validator and tag tables rebuilt to 8 layers; ID-format check now requires 4-segment `TYPE.NN.SS.xxxx` + dash document refs and rejects legacy 3-segment/numeric-type-code/retired-artifact forms (XDOC-E007); removed dead validation-script commands — this skill *is* the validator (framework is spec-only); paths point at `framework/layers/<NN>_<X>/` and `framework/governance/`; cross-references use plugin-relative `../doc-X/` | System |
 | 3.2.0 | 2026-02-08 | Added YAML frontmatter version/last_updated fields; standardized Version History format | System |
 | 3.1.0 | 2025-12-29 | Updated layer validator references to `{TYPE}_VALIDATION_RULES.md` files; added doc-naming skill reference | System |
 | 3.0.0 | 2025-12-20 | Refactored to cross-document validation only; removed single-document validation | System |

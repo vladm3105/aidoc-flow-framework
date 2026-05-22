@@ -67,12 +67,12 @@ graph TD
 ```
 
 **Diagrams are stored in document type-specific subfolders**:
-- BRD: `docs/BRD/diagrams/BRD-001-diag_user_workflow.md`
-- PRD: `docs/PRD/diagrams/PRD-001-diag_3_tier_agent_hierarchy.md`
-- ADR: `docs/ADR/diagrams/ADR-005-diag_cloud_deployment.md`
-- SYS: `docs/SYS/diagrams/SYS-002-diag_data_flow.md`
-- IMPL: `docs/IMPL/diagrams/IMPL-010-diag_phases.md`
-- Strategy: `{project_root}/strategy/diagrams/SSM-001-diag_state_transitions.md`
+- BRD: `docs/BRD/diagrams/BRD-01-diag_user_workflow.md`
+- PRD: `docs/PRD/diagrams/PRD-01-diag_3_tier_agent_hierarchy.md`
+- ADR: `docs/ADR/diagrams/ADR-05-diag_cloud_deployment.md`
+- SPEC: `docs/SPEC/diagrams/SPEC-02-diag_data_flow.md`
+- IPLAN: `docs/IPLAN/diagrams/IPLAN-10-diag_phases.md`
+- Strategy: `{project_root}/strategy/diagrams/SSM-01-diag_state_transitions.md`
 
 ## Supported Diagram Types
 
@@ -217,14 +217,14 @@ graph LR
 
 **Works with**:
 - `doc-flow` skill (add diagrams to specification documents)
-- `google-adk` skill (visualize agent architectures)
-- `project-mngt` skill (show dependency graphs)
+- `mermaid-gen` skill (generate and validate Mermaid syntax)
+- `doc-iplan` skill (show dependency graphs)
 
 **Enhances**:
-- PRD documents (product architecture)
+- BRD documents (business workflows, C4 L1 context)
+- PRD documents (product architecture, C4 L2 container)
 - ADR documents (architecture decisions)
-- SYS documents (system specifications)
-- BRD documents (business workflows)
+- SPEC documents (component architecture, C4 L3)
 
 ## Example Commands
 
@@ -254,32 +254,32 @@ AI: [Invokes charts-flow skill in migration mode]
 ```
 docs/
 ├── BRD/                              ← Business Requirements Documents
-│   ├── BRD-001_project_reqs.md      ← Parent document (with SVG)
+│   ├── BRD-01_project_reqs.md       ← Parent document (with SVG)
 │   └── diagrams/
-│       ├── BRD-001-diag_workflow.md ← BRD diagrams
-│       └── BRD-001-diag_rules.md
+│       ├── BRD-01-diag_workflow.md  ← BRD diagrams
+│       └── BRD-01-diag_rules.md
 ├── PRD/                              ← Product Requirements Documents
-│   ├── PRD-001_multi_agent.md       ← Parent document (with SVG)
+│   ├── PRD-01_multi_agent.md        ← Parent document (with SVG)
 │   └── diagrams/
-│       ├── PRD-001-diag_architecture.md ← PRD diagrams
-│       └── PRD-001-diag_components.md
+│       ├── PRD-01-diag_architecture.md ← PRD diagrams
+│       └── PRD-01-diag_components.md
 ├── ADR/                              ← Architecture Decision Records
-│   ├── ADR-005_deployment.md        ← Parent document (with SVG)
+│   ├── ADR-05_deployment.md         ← Parent document (with SVG)
 │   └── diagrams/
-│       └── ADR-005-diag_deploy.md   ← ADR diagrams
-├── SYS/                              ← System Specifications
-│   ├── SYS-002_data_pipeline.md     ← Parent document (with SVG)
+│       └── ADR-05-diag_deploy.md    ← ADR diagrams
+├── SPEC/                             ← Technical Specifications
+│   ├── SPEC-02_data_pipeline.md     ← Parent document (with SVG)
 │   └── diagrams/
-│       └── SYS-002-diag_flow.md     ← SYS diagrams
-└── IMPL/                             ← Implementation Plans
-    ├── IMPL-010_phase_1.md          ← Parent document (with SVG)
+│       └── SPEC-02-diag_flow.md     ← SPEC diagrams
+└── IPLAN/                            ← Implementation Plans
+    ├── IPLAN-10_phase_1.md          ← Parent document (with SVG)
     └── diagrams/
-        └── IMPL-010-diag_phases.md  ← IMPL diagrams
+        └── IPLAN-10-diag_phases.md  ← IPLAN diagrams
 ```
 
 ## Getting Help
 
-- **Full documentation**: `.claude/skills/charts-flow/SKILL.md`
+- **Full documentation**: `../charts-flow/SKILL.md`
 - **Mermaid syntax**: https://mermaid.js.org/
 - **Live editor**: https://mermaid.live
 - **Mermaid CLI**: https://github.com/mermaid-js/mermaid-cli

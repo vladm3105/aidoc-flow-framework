@@ -12,8 +12,8 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: utility
-  upstream_artifacts: [BRD, PRD, REQ]
-  downstream_artifacts: [TASKS, Code]
+  upstream_artifacts: [BRD, PRD, EARS]
+  downstream_artifacts: [IPLAN, Code]
 ---
 
 # project-mngt
@@ -557,7 +557,7 @@ Inputs:
 - Context: E-commerce domain, 5 FTE team, staging deployment first
 - Constraint: MVP in <3 months
 
-Create PLAN-01_inventory_system.md in docs/IMPL/"
+Create PLAN-01_inventory_system.md in docs/08_IPLAN/"
 ```
 
 ---
@@ -583,7 +583,7 @@ IMPORTANT: Preserve completed work, only modify planned work."
 
 Inputs:
 - Modified: BRD-004 added 5 new security requirements
-- Plan: docs/IMPL/PLAN-01_inventory_system.md v1.0
+- Plan: docs/08_IPLAN/PLAN-01_inventory_system.md v1.0
 - Progress: MVP complete (Groups 1-4), Group 5 in progress (week 2/4)
 - Date: 2024-02-01
 
@@ -598,7 +598,7 @@ Every invocation MUST produce:
 
 1. **Implementation Plan Document**
    - Filename: `PLAN-XXX_[project_name].md`
-   - Location: User-specified or docs/IMPL/
+   - Location: User-specified or docs/08_IPLAN/
    - Format: Markdown following template
    - Versioning: v1.0, v2.0, v3.0...
 
@@ -958,7 +958,7 @@ See examples directory for complete worked examples:
 - New requirements added
 - Timeline adjusted, change log included
 
-*(Full examples in `{project_root}/.claude/skills/project-mngt/examples/`)*
+*(Full examples in `../project-mngt/examples/`)*
 
 ---
 

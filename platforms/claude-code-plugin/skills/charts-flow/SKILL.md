@@ -12,7 +12,7 @@ custom_fields:
   priority: shared
   development_status: active
   skill_category: utility
-  upstream_artifacts: [BRD, PRD, ADR, SYS, SPEC]
+  upstream_artifacts: [BRD, PRD, ADR, SPEC]
   downstream_artifacts: []
 ---
 
@@ -32,7 +32,7 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 ## When to Use This Skill
 
 **Use charts-flow when**:
-- Creating architecture diagrams for PRD, BRD, ADR, SYS, or other technical documents
+- Creating architecture diagrams for BRD, PRD, ADR, SPEC, or other technical documents
 - Migrating existing inline Mermaid diagrams to separate files
 - Main document becomes slow to render due to complex diagrams
 - Diagram needs to be reused across multiple documents
@@ -68,7 +68,7 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 
 **Step 1: Parse Parent Document**
 - Extract parent document ID from filename (e.g., `PRD-01` from `PRD-01_multi_agent_system_architecture.md`)
-- Identify parent document type (PRD, BRD, ADR, SYS, etc.)
+- Identify parent document type (BRD, PRD, ADR, SPEC, etc.)
 - Determine correct `diagrams/` subfolder location
 
 **Step 2: Generate Diagram File Path**
@@ -77,9 +77,9 @@ The `charts-flow` skill automates creation and management of Mermaid diagrams fo
 - Examples by document type:
   - BRD: `docs/BRD/diagrams/BRD-01-diag_workflow.md`
   - PRD: `docs/PRD/diagrams/PRD-01-diag_3_tier_agent_hierarchy.md`
-  - ADR: `docs/ADR/diagrams/ADR-005-diag_cloud_deployment.md`
-  - SYS: `docs/SYS/diagrams/SYS-002-diag_data_flow.md`
-  - IMPL: `docs/IMPL/diagrams/IMPL-010-diag_implementation_phases.md`
+  - ADR: `docs/ADR/diagrams/ADR-05-diag_cloud_deployment.md`
+  - SPEC: `docs/SPEC/diagrams/SPEC-02-diag_data_flow.md`
+  - IPLAN: `docs/IPLAN/diagrams/IPLAN-10-diag_implementation_phases.md`
 - Create `diagrams/` folder if it doesn't exist
 
 **Step 3: Create Diagram File**
@@ -479,50 +479,59 @@ docs/
 │       ├── PRD-01-diag_3_tier_hierarchy.md    ← PRD diagrams
 │       └── PRD-01-diag_cloud_architecture.md
 ├── ADR/
-│   ├── ADR-005_deployment_strategy.md          ← Updated with SVG + link
+│   ├── ADR-05_deployment_strategy.md           ← Updated with SVG + link
 │   └── diagrams/
-│       └── ADR-005-diag_deployment_flow.md     ← ADR diagrams
-├── SYS/
-│   ├── SYS-002_data_pipeline.md                ← Updated with SVG + link
+│       └── ADR-05-diag_deployment_flow.md      ← ADR diagrams
+├── SPEC/
+│   ├── SPEC-02_data_pipeline.md                ← Updated with SVG + link
 │   └── diagrams/
-│       └── SYS-002-diag_data_flow.md           ← SYS diagrams
-└── IMPL/
-    ├── IMPL-010_phase_1_plan.md                ← Updated with SVG + link
+│       └── SPEC-02-diag_data_flow.md           ← SPEC diagrams
+└── IPLAN/
+    ├── IPLAN-10_phase_1_plan.md                ← Updated with SVG + link
     └── diagrams/
-        └── IMPL-010-diag_implementation.md     ← IMPL diagrams
+        └── IPLAN-10-diag_implementation.md     ← IPLAN diagrams
 ```
 
 ## Integration with Project Workflow
 
 ### Traceability Chain
 
+The 8-layer SDD flow (diagrams attach to the layers that own visual models):
+
 ```
-Product Strategy ({project_root}/strategy/*.md)
+BRD (L1) ← C4 L1 Context + DFD L1
   ↓
-Requirements (docs/reqs/*.md)
+PRD (L2) ← C4 L2 Container + DFD L2 + key sequence
   ↓
-Architecture Decisions (docs/adrs/*.md) ← diagrams support ADRs
+EARS (L3)
   ↓
-System Specifications (docs/sys/*.md) ← diagrams show architecture
+BDD (L4)
   ↓
-BDD Scenarios (docs/BDD/*.feature)
+ADR (L5) ← decision sequence diagrams
   ↓
-Code Implementation
+SPEC (L6) ← C4 L3 Component + DFD L3
+  ↓
+TDD (L7)
+  ↓
+IPLAN (L8)
+  ↓
+Code ← C4 L4
 ```
 
-**Diagrams enhance**: ADRs, SYS, PRD, BRD documents with visual architecture representations
+**Diagrams enhance**: BRD, PRD, ADR, and SPEC documents with visual architecture representations
 
 ### Relationship to Other Skills
 
 - **doc-flow**: Creates specification documents; charts-flow adds diagrams to those documents
-- **google-adk**: Defines agent framework; charts-flow visualizes agent hierarchies
-- **project-mngt**: Creates implementation plans; charts-flow shows dependency graphs
+- **mermaid-gen**: Generates and validates Mermaid syntax; charts-flow uses it to render diagram source
+- **doc-iplan**: Creates implementation plans; charts-flow shows dependency graphs
 
 ## References
 
 ### Internal Documentation
 - [Claude Code Skills README](./../README.md)
-- [SDD Framework Guide]({project_root}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
+- [Diagram Standards](../../../../framework/governance/DIAGRAM_STANDARDS.md)
+- [ID & Tag Standards](../../../../framework/governance/ID_NAMING_STANDARDS.md)
 
 ### External Resources
 - [Mermaid Documentation](https://mermaid.js.org/)
@@ -530,11 +539,11 @@ Code Implementation
 - [Mermaid CLI Documentation](https://github.com/mermaid-js/mermaid-cli)
 
 ### Related Templates
-- [BRD Template]({project_root}/framework/BRD/BRD-TEMPLATE.md)
-- [PRD Template]({project_root}/framework/PRD/PRD-TEMPLATE.md)
-- [ADR Template]({project_root}/framework/ADR/ADR-TEMPLATE.md)
-- [SYS Template]({project_root}/framework/SYS/SYS-TEMPLATE.md)
-- [IMPL Template]({project_root}/framework/IMPL/IMPL-TEMPLATE.md)
+- [BRD Template](../../../../framework/layers/01_BRD/BRD-TEMPLATE.yaml)
+- [PRD Template](../../../../framework/layers/02_PRD/PRD-TEMPLATE.yaml)
+- [ADR Template](../../../../framework/layers/05_ADR/ADR-TEMPLATE.yaml)
+- [SPEC Template](../../../../framework/layers/06_SPEC/SPEC-TEMPLATE.yaml)
+- [IPLAN Template](../../../../framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml)
 
 ---
 

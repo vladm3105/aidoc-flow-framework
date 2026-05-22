@@ -14,10 +14,10 @@ custom_fields:
   priority: primary
   development_status: active
   skill_category: quality-assurance
-  upstream_artifacts: [PRD-00, ADR-000]
+  upstream_artifacts: [PRD-01, ADR-01]
   downstream_artifacts: []
-  version: "1.1.0"
-  last_updated: "2026-02-10T15:00:00"
+  version: "2.0.0"
+  last_updated: "2026-05-22T00:00:00"
 ---
 
 # quality-advisor
@@ -59,7 +59,7 @@ Provide proactive quality guidance during artifact creation by monitoring sectio
 
 Load requirements for the specified artifact type:
 
-**Template Requirements by Type** (per LAYER_REGISTRY v1.6):
+**Template Requirements by Type** (per `framework/registry/LAYER_REGISTRY.yaml`):
 
 | Layer | Artifact | Required Sections | Min Tags | Special Requirements |
 |-------|----------|-------------------|----------|----------------------|
@@ -68,14 +68,11 @@ Load requirements for the specified artifact type:
 | 3 | EARS | Document Control, Requirements (WHEN-THE-SHALL), Traceability | 2 (@brd, @prd) | EARS syntax validation |
 | 4 | BDD | Feature, Scenarios, Tags | 3 (@brd, @prd, @ears) | Gherkin syntax |
 | 5 | ADR | Document Control, Context, Decision, Rationale, Consequences, Traceability | 4 (@brd, @prd, @ears, @bdd) | Decision must be explicit |
-| 6 | SYS | Document Control, System Requirements, Traceability | 5 | Technical specifications |
-| 7 | REQ | Document Control, Requirement, Acceptance Criteria, Traceability | 6 | Atomic requirement |
-| 8 | CTR | Document Control, Interfaces, Data Models, Contract Clauses, Traceability | 7 | Dual-file format (md+yaml) |
-| 9 | SPEC | id, description, methods, traceability | 7 | YAML format |
-| 10 | TSPEC | Document Control, Test Cases, Coverage, Traceability | 8 | UTEST/ITEST/STEST/FTEST types |
-| 11 | TASKS | Document Control, Tasks, Dependencies, Traceability | 9 | Actionable TODOs |
+| 6 | SPEC | id, description, interfaces, data models, behavior contracts, traceability | 5 (@brd, @prd, @ears, @bdd, @adr) | YAML format |
+| 7 | TDD | Document Control, Test Cases, BDD-to-test mapping, Coverage, Traceability | 6 (@brd, @prd, @ears, @bdd, @adr, @spec) | Quality thresholds, TDD execution order |
+| 8 | IPLAN | File manifest, Bash commands, Session handoff, Code audit trail, Traceability | 7 (@brd, @prd, @ears, @bdd, @adr, @spec, @tdd) | Actionable execution bridge |
 
-**Note**: Layers 12-14 (CODE, TESTS, VALIDATION) are execution layers, not documentation artifacts.
+**Note**: Code is the execution output target downstream of IPLAN, not a documentation artifact.
 
 ### Step 2: Check Section Completion
 
@@ -164,7 +161,7 @@ anti_patterns_detected:
     severity: error
     location: "Section 7: Traceability"
     details: "PRD requires @brd tag (Layer 2 cumulative requirement)"
-    suggestion: "Add '@brd: BRD.NN.EE.SS' to Traceability section"
+    suggestion: "Add '@brd: BRD.NN.SS.xxxx' to Traceability section"
 
   - id: AP-003
     name: Vague Acceptance Criteria
@@ -185,7 +182,7 @@ anti_patterns_detected:
 
 Check tag hierarchy compliance:
 
-**Tag Hierarchy by Layer** (per LAYER_REGISTRY v1.6):
+**Tag Hierarchy by Layer** (per `framework/registry/LAYER_REGISTRY.yaml`):
 
 ```yaml
 cumulative_tag_requirements:
@@ -209,33 +206,18 @@ cumulative_tag_requirements:
     layer: 5
     required_tags: [@brd, @prd, @ears, @bdd]
     tag_count: 4
-  SYS:
+  SPEC:
     layer: 6
     required_tags: [@brd, @prd, @ears, @bdd, @adr]
     tag_count: 5
-  REQ:
+  TDD:
     layer: 7
-    required_tags: [@brd, @prd, @ears, @bdd, @adr, @sys]
+    required_tags: [@brd, @prd, @ears, @bdd, @adr, @spec]
     tag_count: 6
-  CTR:
+  IPLAN:
     layer: 8
-    required_tags: [@brd, @prd, @ears, @bdd, @adr, @sys, @req]
+    required_tags: [@brd, @prd, @ears, @bdd, @adr, @spec, @tdd]
     tag_count: 7
-  SPEC:
-    layer: 9
-    required_tags: [@brd, @prd, @ears, @bdd, @adr, @sys, @req]
-    optional_tags: [@ctr]
-    tag_count: 7
-  TSPEC:
-    layer: 10
-    required_tags: [@brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec]
-    optional_tags: [@ctr]
-    tag_count: 8
-  TASKS:
-    layer: 11
-    required_tags: [@brd, @prd, @ears, @bdd, @adr, @sys, @req, @spec, @tspec]
-    optional_tags: [@ctr]
-    tag_count: 9
 ```
 
 **Tag Validation Output**:
@@ -251,15 +233,15 @@ tag_validation:
   fix_suggestion: |
     Add to Traceability section:
     ```
-    @brd: BRD.001.003
+    @brd: BRD.01.03.a7f3
     ```
 ```
 
 ### Step 5: Check Naming Conventions
 
-Validate document ID, element ID, and filename conventions per `doc-naming` skill.
+Validate document ID, element ID, and filename conventions per the `../doc-naming/` skill and `framework/governance/ID_NAMING_STANDARDS.md`.
 
-**Naming Rules** (see `doc-naming` skill for complete standards):
+**Naming Rules** (see `framework/governance/ID_NAMING_STANDARDS.md` for complete standards):
 
 ```yaml
 naming_conventions:
@@ -267,8 +249,8 @@ naming_conventions:
   document_id_format: "{TYPE}-{NN}"  # e.g., PRD-01
   filename_format: "{TYPE}-{NN}_{slug}.md"  # e.g., PRD-01_authentication.md
 
-  # Element ID format (unified)
-  element_id_format: "{TYPE}.{NN}.{TT}.{SS}"  # e.g., PRD.01.0901
+  # Element ID format (4-segment standard)
+  element_id_format: "{TYPE}.{NN}.{SS}.{xxxx}"  # e.g., PRD.01.09.1dbc (xxxx = 4-char hex hash)
 
   # Threshold tag format
   threshold_format: "@threshold: {TYPE}.{NN}.{key}"  # e.g., @threshold: PRD.01.perf.auth.p99
@@ -293,8 +275,8 @@ naming_validation:
     valid: 22
     invalid: 2
     issues:
-      - "PRD.01.2501 - code 25 not valid for PRD"
-      - "US-001 - deprecated pattern, use PRD.01.09.SS"
+      - "PRD.01.09 - legacy 3-segment ID, use 4-segment PRD.01.09.xxxx"
+      - "US-001 - deprecated pattern, use PRD.01.09.xxxx"
   threshold_tags:
     total: 8
     valid: 7
@@ -304,7 +286,7 @@ naming_validation:
   legacy_patterns_detected: 1
 ```
 
-**Reference**: See `doc-naming` skill for complete element type codes and validation rules.
+**Reference**: See the `../doc-naming/` skill and `framework/governance/ID_NAMING_STANDARDS.md` for complete element-ID and tag validation rules.
 
 ### Step 6: Generate Quality Report
 
@@ -396,7 +378,7 @@ completion_estimate: "3 sections need attention"
 submission_readiness: not_ready
 blocking_issues:
   - severity: error
-    issue: "Missing @req tag (required for Layer 10)"
+    issue: "Missing @adr tag (required for Layer 6)"
   - severity: error
     issue: "YAML syntax error at line 45"
 warnings:
@@ -407,34 +389,34 @@ recommendation: "Fix 2 errors before submission"
 
 ### Example 3: Quick Compliance Check
 
-**User Request**: "Quick check on tag compliance for this REQ"
+**User Request**: "Quick check on tag compliance for this TDD"
 
 **Tag Check Output**:
 ```yaml
-artifact_type: REQ
+artifact_type: TDD
 layer: 7
 tag_compliance: pass
 required_tags:
-  - "@brd: BRD.01.0101 ✓"
-  - "@prd: PRD.01.0701 ✓"
-  - "@ears: EARS.01.2401 ✓"
-  - "@bdd: BDD.01.1301 ✓"
+  - "@brd: BRD.01.01.a7f3 ✓"
+  - "@prd: PRD.01.07.1dbc ✓"
+  - "@ears: EARS.01.04.5e2a ✓"
+  - "@bdd: BDD.01.03.8f4c ✓"
   - "@adr: ADR-02 ✓"
-  - "@sys: SYS.01.2501 ✓"
+  - "@spec: SPEC-01 ✓"
 tag_count: "6/6 required tags present"
-status: "Ready for downstream artifacts"
+status: "Ready for downstream artifacts (IPLAN)"
 ```
 
 ## Integration with Other Skills
 
 | Integration | Description |
 |-------------|-------------|
-| `doc-naming` | Element ID format, threshold tags, legacy pattern detection |
-| `doc-*-autopilot` | Invoked during Phase 3 (artifact generation) for real-time guidance |
-| `doc-*-validator` | Structural validation (use quality-advisor for creation, validator for post-creation) |
-| `doc-*-reviewer` | Content review (use quality-advisor for creation, reviewer for final QA) |
-| `trace-check` | Shares validation logic for traceability checks |
-| `context-analyzer` | Uses project context for reference validation |
+| `../doc-naming/` | Element ID format, threshold tags, legacy pattern detection |
+| `../doc-*-autopilot/` | Invoked during Phase 3 (artifact generation) for real-time guidance |
+| `../doc-*-validator/` | Structural validation (use quality-advisor for creation, validator for post-creation) |
+| `../doc-*-reviewer/` | Content review (use quality-advisor for creation, reviewer for final QA) |
+| `../trace-check/` | Shares validation logic for traceability checks |
+| `../context-analyzer/` | Uses project context for reference validation |
 
 ## Quality Gates
 
@@ -462,22 +444,22 @@ status: "Ready for downstream artifacts"
 **Required Tags**:
 
 ```markdown
-@prd: PRD.000.003
-@adr: ADR-000
+@prd: PRD.01.03.1dbc
+@adr: ADR-01
 ```
 
 ### Upstream Sources
 
 | Source | Type | Reference |
 |--------|------|-----------|
-| PRD-00 | Product Requirements | [PRD-00]({project_root}/framework/PRD/PRD-00_ai_assisted_documentation_features.md#PRD-00) |
-| ADR-000 | Architecture Decision | [ADR-000]({project_root}/framework/ADR/ADR-00_ai_powered_documentation_assistant_architecture.md#ADR-000) |
+| PRD | Product Requirements | `framework/layers/02_PRD/README.md` |
+| ADR | Architecture Decision | `framework/layers/05_ADR/README.md` |
 
 ### Downstream Artifacts
 
 | Artifact | Type | Reference |
 |----------|------|-----------|
-| doc-* skills | Skill Consumer | Quality checks during creation |
+| `../doc-*/` skills | Skill Consumer | Quality checks during creation |
 
 ---
 
@@ -485,7 +467,8 @@ status: "Ready for downstream artifacts"
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 1.1.0 | 2026-02-08 | Updated layer assignments per LAYER_REGISTRY v1.6; Added CTR (L8), TSPEC (L10); Fixed SPEC to L9, TASKS to L11; Integrated doc-naming skill for element ID validation |
+| 2.0.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. Template-requirement and cumulative-tag tables rebuilt to BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN (removed SYS/REQ/CTR; SPEC renumbered to L6; TSPEC→TDD L7; TASKS→IPLAN L8). Element IDs use the 4-segment `TYPE.NN.SS.xxxx` standard with dash document refs (`SPEC-NN`, `ADR-NN`); removed legacy numeric type-code references. Paths point at `framework/layers/<NN>_<X>/`; validation authority is `framework/governance/`. |
+| 1.1.0 | 2026-02-08 | Updated layer assignments per legacy LAYER_REGISTRY; Integrated doc-naming skill for element ID validation |
 | 1.0.0 | 2025-11-29 | Initial release |
 
 **Status**: Active

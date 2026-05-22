@@ -15,7 +15,7 @@ custom_fields:
   skill_category: quality-assurance
   upstream_artifacts: []
   downstream_artifacts: []
-  version: "1.7"
+  version: "1.8"
 ---
 
 # doc-naming Skill
@@ -36,7 +36,7 @@ Invoke this skill BEFORE creating or editing any SDD documentation artifact. Use
 
 ### Coverage
 
-This skill covers all 11 SDD documentation artifact types (Layers 1-11):
+This skill covers all 8 SDD documentation artifact types (Layers 1-8):
 
 | Layer | Document Type | Description |
 |-------|---------------|-------------|
@@ -45,14 +45,11 @@ This skill covers all 11 SDD documentation artifact types (Layers 1-11):
 | 3 | EARS | Easy Approach to Requirements Syntax |
 | 4 | BDD | Behavior-Driven Development |
 | 5 | ADR | Architecture Decision Record |
-| 6 | SYS | System Requirements |
-| 7 | REQ | Atomic Requirements |
-| 8 | CTR | Data Contracts |
-| 9 | SPEC | Technical Specifications |
-| 10 | TSPEC | Test Specifications (UTEST, ITEST, STEST, FTEST) |
-| 11 | TASKS | AI Task Breakdown |
+| 6 | SPEC | Technical Specification |
+| 7 | TDD | Test-Driven Development Guide |
+| 8 | IPLAN | Implementation Plan |
 
-**Note**: Layers 12-14 (CODE, TESTS, VALIDATION) are execution layers, not documentation artifacts.
+**Note**: Code is the output target, not a documentation artifact layer.
 
 ---
 
@@ -68,7 +65,7 @@ Documents with reserved ID `000` are FULLY EXEMPT from standard validation.
 
 ### Document Types
 
-- Index documents (e.g., `BRD-00_index.md`, `REQ-00_index.md`)
+- Index documents (e.g., `BRD-00_index.md`, `IPLAN-00_index.yaml`)
 - Traceability matrix templates (e.g., `SPEC-00_TRACEABILITY_MATRIX-TEMPLATE.md`)
 - Glossaries, registries, checklists
 
@@ -107,7 +104,7 @@ TYPE-NN
 | `BRD-01` | ✅ | Correct format |
 | `PRD-02` | ✅ | Correct format |
 | `ADR-001` | ✅ | 3-digit ID allowed |
-| `TASKS-12` | ✅ | Correct format |
+| `IPLAN-12` | ✅ | Correct format |
 | `brd-01` | ❌ | Lowercase not allowed |
 | `PRD_02` | ❌ | Underscore not allowed |
 | `BRD-1` | ❌ | Single digit not allowed |
@@ -138,106 +135,87 @@ Reference documents use a modified pattern within parent TYPE directories:
 
 ---
 
-## 4. Element ID Format (TYPE.NN.xxxx)
+## 4. Element ID Format (TYPE.NN.SS.xxxx)
+
+Element IDs use the 4-segment standard from
+`framework/governance/ID_NAMING_STANDARDS.md`. Hierarchical (element-level)
+references apply to BRD, PRD, EARS, BDD, ADR, and TDD. SPEC and IPLAN are
+referenced at the document level only — see Section 5.
 
 ### Pattern
 
 ```
-{DOC_TYPE}.{DOC_NUM}.{HASH}
+{TYPE}.{doc_id}.{section_id}.{hash}
 ```
 
 | Segment | Description | Format |
 |---------|-------------|--------|
-| DOC_TYPE | Document type acronym | 2-8 uppercase letters |
-| DOC_NUM | Document number | 2+ digits |
-| HASH | Element hash | 4+ alphanumeric chars |
+| TYPE | Artifact prefix | Uppercase {BRD, PRD, EARS, BDD, ADR, TDD} |
+| doc_id | Document number | 2+ digits (e.g., 01) |
+| section_id | Section number | 2+ digits (e.g., 07) |
+| hash | Content hash (SHA256, first 4 chars) | 4-8 hex chars `[a-f0-9]` |
 
 ### Validation Regex
 
 ```regex
-^[A-Z]{2,8}\.[0-9]{2,}\.[a-z0-9]{4,}$
+^[A-Z]+\.[0-9]{2,}\.[0-9]{2,}\.[a-f0-9]{4,8}$
 ```
 
 ### Examples
 
 | Element ID | Valid | Breakdown |
 |------------|-------|-----------|
-| `BRD.02.0601` | ✅ | BRD doc 02, Acceptance Criteria (06), item 01 |
-| `PRD.01.0903` | ✅ | PRD doc 01, User Story (09), item 03 |
-| `ADR.05.1001` | ✅ | ADR doc 05, Decision (10), item 01 |
-| `SPEC.03.1602` | ✅ | SPEC doc 03, Interface (16), item 02 |
-| `AC-001` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
-| `FR-01` | ❌ | Legacy pattern - use TYPE.NN.xxxx format |
-| `BRD-02-0601` | ❌ | Wrong separator (use dots) |
-| `brd.02.0601` | ❌ | Lowercase not allowed |
+| `BRD.01.07.a7f3` | ✅ | BRD doc 01, section 07, hash a7f3 |
+| `PRD.01.09.1dbc` | ✅ | PRD doc 01, section 09, hash 1dbc |
+| `EARS.01.03.5e2a` | ✅ | EARS doc 01, section 03, hash 5e2a |
+| `BDD.01.03.8f4c` | ✅ | BDD doc 01, section 03, hash 8f4c |
+| `ADR.01.03.e5b1` | ✅ | ADR doc 01, section 03, hash e5b1 |
+| `TDD.01.04.a3c1` | ✅ | TDD doc 01, section 04, hash a3c1 |
+| `AC-001` | ❌ | Legacy pattern - use TYPE.NN.SS.xxxx format |
+| `FR-01` | ❌ | Legacy pattern - use TYPE.NN.SS.xxxx format |
+| `BRD.01.0701` | ❌ | 3-segment legacy form - section + hash must be separate |
+| `BRD-01-07-a7f3` | ❌ | Wrong separator (use dots) |
+| `brd.01.07.a7f3` | ❌ | Lowercase type not allowed |
 
 ### Heading Format
 
 Element IDs appear as markdown headings:
 
 ```markdown
-### BRD.02.0601: User Authentication Acceptance Criteria
-#### PRD.01.0903: User Login Story
+### BRD.01.07.a7f3: User Authentication Acceptance Criteria
+#### PRD.01.09.1dbc: User Login Story
 ```
 
 ---
 
-## 5. Element Type Codes Table
+## 5. Reference Granularity (Element vs Document)
 
-Active element type codes with document type applicability:
+The 8-layer model has **no numeric element-type codes**. There is no table
+mapping numbers like 01/07/14/26/40 to element kinds. Element identity comes
+from the 4-segment `TYPE.NN.SS.xxxx` form (Section 4), where `SS` is the source
+**section number** and `xxxx` is a content hash — not a fixed type code.
 
-| Code | Element Type | Applicable Document Types |
-|------|--------------|---------------------------|
-| 01 | Functional Requirement | BRD, PRD, SYS, REQ |
-| 02 | Quality Attribute | BRD, PRD, SYS |
-| 03 | Constraint | BRD, PRD |
-| 04 | Assumption | BRD, PRD |
-| 05 | Dependency | BRD, PRD, REQ |
-| 06 | Acceptance Criteria | BRD, PRD, REQ |
-| 07 | Risk | BRD, PRD |
-| 08 | Metric | BRD, PRD |
-| 09 | User Story | PRD, BRD |
-| 10 | Decision | ADR, BRD |
-| 11 | Use Case | PRD, SYS |
-| 12 | Alternative | ADR |
-| 13 | Consequence | ADR |
-| 14 | Test Scenario | BDD |
-| 15 | Step | BDD, SPEC |
-| 16 | Interface | SPEC, CTR |
-| 17 | Data Model | SPEC, CTR |
-| 18 | Task | TASKS |
-| 20 | Contract Clause | CTR |
-| 21 | Validation Rule | SPEC |
-| 22 | Feature Item | BRD, PRD |
-| 23 | Business Objective | BRD |
-| 24 | Stakeholder Need | BRD, PRD |
-| 25 | EARS Statement | EARS |
-| 26 | System Requirement | SYS |
-| 27 | Atomic Requirement | REQ |
-| 28 | Specification Element | SPEC |
-| 30 | Task Item | TASKS |
-| 32 | Architecture Topic | BRD |
-| 33 | Benefit Statement | BRD |
-| 40 | Unit Test Case | TSPEC (UTEST) |
-| 41 | Integration Test Case | TSPEC (ITEST) |
-| 42 | Smoke Test Case | TSPEC (STEST) |
-| 43 | Functional Test Case | TSPEC (FTEST) |
+How a layer is referenced depends only on its granularity:
 
-### Quick Lookup by Document Type
+| Layer | Reference granularity | Reference form | Example |
+|-------|----------------------|----------------|---------|
+| BRD | element (dotted) | `BRD.NN.SS.xxxx` | `BRD.01.07.a7f3` |
+| PRD | element (dotted) | `PRD.NN.SS.xxxx` | `PRD.01.09.1dbc` |
+| EARS | element (dotted) | `EARS.NN.SS.xxxx` | `EARS.01.03.5e2a` |
+| BDD | element (dotted) | `BDD.NN.SS.xxxx` | `BDD.01.03.8f4c` |
+| ADR | element (dotted) | `ADR.NN.SS.xxxx` | `ADR.01.03.e5b1` |
+| SPEC | document (dash) | `SPEC-NN` | `SPEC-01` |
+| TDD | element (dotted) | `TDD.NN.SS.xxxx` | `TDD.01.04.a3c1` |
+| IPLAN | document (dash) | `IPLAN-NN` | `IPLAN-01` |
 
-| Document | Common Element Codes |
-|----------|---------------------|
-| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32, 33 |
-| PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
-| EARS | 25 |
-| BDD | 14, 15 |
-| ADR | 10, 12, 13 |
-| SYS | 01, 02, 11, 26 |
-| REQ | 01, 05, 06, 27 |
-| CTR | 16, 17, 20 |
-| SPEC | 15, 16, 17, 21, 28 |
-| TSPEC | 40 (UTEST), 41 (ITEST), 42 (STEST), 43 (FTEST) |
-| TASKS | 18, 30 |
+**Dash document refs** (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) point at a whole
+document. **Dotted element refs** (`TYPE.NN.SS.xxxx`) point at a specific
+element within a document. ADR supports both: the document `ADR-NN` and its
+elements `ADR.NN.SS.xxxx`.
+
+Test categories (unit / integration / smoke / functional, etc.) are **not** ID
+codes in this model — they live as content/`test_focus` within TDD (Layer 7)
+test cases, addressed by ordinary `TDD.NN.SS.xxxx` element IDs.
 
 ---
 
@@ -247,36 +225,32 @@ These patterns are DEPRECATED. Do NOT use them in new documents.
 
 | Removed Pattern | Migration Path | Applies To |
 |-----------------|----------------|------------|
-| `AC-XXX` | `TYPE.NN.xxxx` | BRD, PRD, REQ |
-| `FR-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS, REQ |
-| `BC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
-| `BA-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
-| `QA-XXX` | `TYPE.NN.xxxx` | BRD, PRD, SYS |
-| `BO-XXX` | `TYPE.NN.xxxx` | BRD |
-| `RISK-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
-| `METRIC-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
-| `Feature F-XXX` | `TYPE.NN.xxxx` | BRD, PRD |
-| `Event-XXX` | `TYPE.NN.xxxx` | EARS |
-| `State-XXX` | `TYPE.NN.xxxx` | EARS |
-| `TASK-XXX` | `TYPE.NN.xxxx` | TASKS |
-| `T-XXX` | `TYPE.NN.xxxx` | TASKS |
-| `IF-XXX` | `TYPE.NN.xxxx` | CTR |
-| `DM-XXX` | `TYPE.NN.xxxx` | CTR |
-| `CC-XXX` | `TYPE.NN.xxxx` | CTR |
-| `DEC-XXX` | `TYPE.NN.xxxx` | ADR |
-| `ALT-XXX` | `TYPE.NN.xxxx` | ADR |
-| `CON-XXX` | `TYPE.NN.xxxx` | ADR |
+| `AC-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `FR-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `BC-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `BA-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `QA-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `BO-XXX` | `TYPE.NN.SS.xxxx` | BRD |
+| `RISK-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `METRIC-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `Feature F-XXX` | `TYPE.NN.SS.xxxx` | BRD, PRD |
+| `Event-XXX` | `TYPE.NN.SS.xxxx` | EARS |
+| `State-XXX` | `TYPE.NN.SS.xxxx` | EARS |
+| `DEC-XXX` | `TYPE.NN.SS.xxxx` | ADR |
+| `ALT-XXX` | `TYPE.NN.SS.xxxx` | ADR |
+| `CON-XXX` | `TYPE.NN.SS.xxxx` | ADR |
+| `TYPE.NN.xxxx` (3-segment) | `TYPE.NN.SS.xxxx` (4-segment) | all element layers |
 
 ### Migration Examples
 
 | Legacy | Unified Format |
 |--------|----------------|
-| `### AC-001: Login Validation` | `### BRD.02.0601: Login Validation` |
-| `#### FR-01: User Auth` | `#### PRD.01.0101: User Auth` |
-| `### Event-001: KYC Submission` | `### EARS.06.2501: KYC Submission` |
-| `### TASK-01: Setup` | `### TASKS.02.1801: Setup` |
-| `### DEC-01: Use PostgreSQL` | `### ADR.05.1001: Use PostgreSQL` |
-| `### ALT-01: MongoDB Option` | `### ADR.05.1201: MongoDB Option` |
+| `### AC-001: Login Validation` | `### BRD.01.06.a7f3: Login Validation` |
+| `#### FR-01: User Auth` | `#### PRD.01.01.1dbc: User Auth` |
+| `### Event-001: KYC Submission` | `### EARS.01.03.5e2a: KYC Submission` |
+| `### DEC-01: Use PostgreSQL` | `### ADR.05.03.e5b1: Use PostgreSQL` |
+| `### ALT-01: MongoDB Option` | `### ADR.05.04.9c2d: MongoDB Option` |
+| `### BRD.02.0601: Login` (3-seg) | `### BRD.02.06.0601` → re-hash to `BRD.02.06.a7f3` |
 
 ---
 
@@ -384,7 +358,7 @@ custom_fields:
 | `review_date` | Review execution time | Review reports |
 | `approval_date` | Document approval time | Document control |
 | `decision_date` | ADR decision time | ADR documents |
-| `release_date` | Release/deployment time | CTR, SPEC |
+| `release_date` | Release/deployment time | SPEC, IPLAN |
 
 ### Migration from Date-Only Format
 
@@ -448,73 +422,68 @@ timestamp_utc = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 ### BRD Examples
 
 ```markdown
-### BRD.02.0101: User Authentication Requirement
-### BRD.02.0601: Login Acceptance Criteria
-### BRD.02.2301: Revenue Growth Objective
-### BRD.02.0901: User Onboarding Story
-### BRD.02.1001: Database Selection Decision
-### BRD.02.3201: Infrastructure Architecture Topic
-### BRD.02.3202: Data Architecture Topic
-### BRD.02.3301: Cost Reduction Benefit
-### BRD.02.3302: Efficiency Improvement Benefit
+### BRD.02.01.a7f3: User Authentication Requirement
+### BRD.02.06.5e2a: Login Acceptance Criteria
+### BRD.02.23.1dbc: Revenue Growth Objective
+### BRD.02.09.8f4c: User Onboarding Story
 @threshold: BRD.02.perf.response_time.max
 ```
 
 ### PRD Examples
 
 ```markdown
-### PRD.01.0901: User Login Story
-### PRD.01.2201: Dashboard Feature
-### PRD.01.0601: Feature Acceptance Criteria
+### PRD.01.09.1dbc: User Login Story
+### PRD.01.22.a3c1: Dashboard Feature
+### PRD.01.06.e5b1: Feature Acceptance Criteria
 @threshold: PRD.01.timeout.session.idle
 ```
 
 ### EARS Examples
 
 ```markdown
-#### EARS.06.2501: KYC Submission Event
-#### EARS.06.2502: Pending Status State
+#### EARS.06.03.5e2a: KYC Submission Event
+#### EARS.06.03.9c2d: Pending Status State
+```
+
+### BDD Examples
+
+```markdown
+### BDD.01.03.8f4c: Successful Login Scenario
+### BDD.01.03.b6e0: Login Step
 ```
 
 ### ADR Examples
 
 ```markdown
-### ADR.05.1001: Use PostgreSQL Decision
-### ADR.05.1201: MongoDB Alternative
-### ADR.05.1301: Migration Consequence
+### ADR.05.03.e5b1: Use PostgreSQL Decision
+### ADR.05.04.9c2d: MongoDB Alternative
+### ADR.05.05.1f7a: Migration Consequence
 @threshold: ADR.05.circuit.failure_threshold
 ```
 
 ### SPEC Examples
 
+SPEC is referenced at the document level (dash form):
+
 ```markdown
-### SPEC.03.1601: REST API Interface
-### SPEC.03.1701: User Data Model
-### SPEC.03.2101: Email Validation Rule
+@spec: SPEC-03
+@spec: SPEC-06
 ```
 
-### CTR Examples
+### TDD Examples
 
 ```markdown
-### CTR.02.1601: Partner API Interface
-### CTR.02.1701: Order Data Model
-### CTR.02.2001: Rate Limit Clause
+### TDD.01.04.a3c1: User Authentication Test Case
+### TDD.01.04.c2f8: API Integration Test Case
 ```
 
-### TSPEC Examples
+### IPLAN Examples
+
+IPLAN is referenced at the document level (dash form):
 
 ```markdown
-### TSPEC.01.4001: User Authentication Unit Test
-### TSPEC.01.4101: API Integration Test
-### TSPEC.01.4201: Login Flow Smoke Test
-### TSPEC.01.4301: Order Processing Functional Test
-```
-
-### TASKS Examples
-
-```markdown
-### TASKS.02.1801: Setup Development Environment
-### TASKS.02.3001: Configure CI Pipeline
+@iplan: IPLAN-01
+@iplan: IPLAN-02
 ```
 
 ---
@@ -532,10 +501,11 @@ Run this checklist BEFORE creating any SDD document:
 
 ### Element IDs
 
-- [ ] All element IDs use 3-segment dot notation: `TYPE.NN.xxxx`
-- [ ] Element hash is 4+ alphanumeric characters (see Section 5)
+- [ ] All element IDs use 4-segment dot notation: `TYPE.NN.SS.xxxx`
+- [ ] Element hash is 4-8 hex characters (see Section 4)
 - [ ] Element hashes are unique within the document
-- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, etc.) are used
+- [ ] Document-level layers (SPEC, IPLAN) use dash refs: `SPEC-NN`, `IPLAN-NN`
+- [ ] No legacy patterns (AC-XXX, FR-XXX, DEC-XXX, 3-segment IDs, etc.) are used
 
 ### Threshold Tags
 
@@ -589,48 +559,48 @@ grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
 
 | Legacy Pattern | Detected By | Migration Target |
 |----------------|-------------|------------------|
-| `FR-001` | Simple pattern | `BRD.NN.01.01` |
-| `FR-CICD-001` | Compound pattern | `BRD.NN.01.01` |
-| `NFR-PERF-002` | Compound pattern | `BRD.NN.02.02` |
-| `AC-AUTH-V2-003` | Compound pattern | `BRD.NN.06.03` |
+| `FR-001` | Simple pattern | `BRD.NN.SS.xxxx` |
+| `FR-CICD-001` | Compound pattern | `BRD.NN.SS.xxxx` |
+| `NFR-PERF-002` | Compound pattern | `BRD.NN.SS.xxxx` |
+| `AC-AUTH-V2-003` | Compound pattern | `BRD.NN.SS.xxxx` |
 
 ### Migration Procedure
 
 1. **Identify the document type and number** from the filename
-   - Example: `BRD-02_requirements.md` → DOC_TYPE=BRD, DOC_NUM=02
+   - Example: `BRD-02_requirements.yaml` → TYPE=BRD, doc_id=02
 
-2. **Look up the element type code** from Section 5
-   - Example: `AC-XXX` → Acceptance Criteria → Code 06
-   - Example: `DEC-XXX` → Decision → Code 10
+2. **Determine the source section** that contains the element
+   - Example: an Acceptance Criteria item in Section 6 → section_id=06
+   - Example: a Decision in Section 3 of an ADR → section_id=03
 
-3. **Construct the unified ID**
-   - Pattern: `{DOC_TYPE}.{DOC_NUM}.{HASH}`
-   - Example: `AC-001` in BRD-02 → `BRD.02.0601`
-   - Example: `DEC-01` in ADR-05 → `ADR.05.1001`
+3. **Construct the unified ID** (4-segment)
+   - Pattern: `{TYPE}.{doc_id}.{section_id}.{hash}` where `hash` is the
+     first 4 hex chars of the element's content SHA256
+   - Example: `AC-001` in BRD-02 (section 6) → `BRD.02.06.a7f3`
+   - Example: `DEC-01` in ADR-05 (section 3) → `ADR.05.03.e5b1`
+   - For SPEC/IPLAN, use document-level dash refs instead: `SPEC-NN`, `IPLAN-NN`
 
-4. **Replace all occurrences**
-   ```bash
-   # Example sed replacement
-   sed -i 's/### AC-001:/### BRD.02.0601:/g' file.md
-   sed -i 's/### DEC-01:/### ADR.05.1001:/g' file.md
-   ```
+4. **Replace all occurrences**, then re-verify with the grep patterns above.
 
 5. **Validate the result**
    ```bash
    # Verify no legacy patterns remain (COMPREHENSIVE check)
    # Must return empty for all commands
-   grep -E "(AC|FR|BC|BA|QA|BO|NFR|DEC|ALT|CON)-[0-9]+" file.md
-   grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.md
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR|DEC|ALT|CON)-[0-9]+" file.yaml
+   grep -E "(AC|FR|BC|BA|QA|BO|NFR)(-[A-Za-z0-9]+)+-[0-9]+" file.yaml
+   # Verify no 3-segment legacy element IDs remain
+   grep -E "[A-Z]+\.[0-9]{2,}\.[a-z0-9]{4,}([^.]|$)" file.yaml
    ```
 
 ### Common Migration Errors
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| Wrong element code | Using FR code (01) for Acceptance Criteria | Use code 06 for AC |
-| Missing document number | `BRD..06.01` | Include document number: `BRD.02.0601` |
-| Dash instead of dot | `BRD-02-06-01` | Use dots: `BRD.02.0601` |
-| Lowercase type | `brd.02.06.01` | Uppercase: `BRD.02.0601` |
+| 3-segment ID | `BRD.02.0601` (section + item fused) | Split: `BRD.02.06.a7f3` |
+| Missing section segment | `BRD.02.a7f3` | Include section: `BRD.02.06.a7f3` |
+| Dash instead of dot | `BRD-02-06-a7f3` | Use dots: `BRD.02.06.a7f3` |
+| Lowercase type | `brd.02.06.a7f3` | Uppercase: `BRD.02.06.a7f3` |
+| Dotted ref for SPEC/IPLAN | `SPEC.06.0101` | Use dash doc ref: `SPEC-06` |
 
 ---
 
@@ -640,51 +610,52 @@ grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md
 
 | Document | Location | Content |
 |----------|----------|---------|
-| ID Naming Standards | `framework/governance/ID_NAMING_STANDARDS.md` | Document IDs, Element IDs, 31 type codes |
-| Threshold Naming Rules | `framework/THRESHOLD_NAMING_RULES.md` | Threshold tags, key formats, categories |
+| ID Naming Standards | `framework/governance/ID_NAMING_STANDARDS.md` | Canonical document IDs, element IDs, tag formats, file naming |
+| Layer Registry | `framework/registry/LAYER_REGISTRY.yaml` | The 8-layer roster, chains, and per-layer folders/templates |
+| Threshold Naming Rules | `framework/governance/THRESHOLD_NAMING_RULES.md` | Threshold tags, key formats, categories |
 
-### Validation Rules Files
+### Per-Layer Authoring Guidance
 
-Each document type has validation rules with Element ID compliance checks:
+The framework is spec-only (no runtime validation scripts). Each layer's
+template and README carry its declarative rules; this skill is the naming
+validator. Per-layer sources live under `framework/layers/<NN>_<X>/`:
 
-| Document Type | Validation Rules File |
-|---------------|----------------------|
-| BRD | `framework/layers/01_BRD/BRD_VALIDATION_RULES.md` |
-| PRD | `framework/layers/02_PRD/PRD_VALIDATION_RULES.md` |
-| EARS | `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` |
-| BDD | `framework/layers/04_BDD/BDD_VALIDATION_RULES.md` |
-| ADR | `framework/layers/05_ADR/ADR_VALIDATION_RULES.md` |
-| SYS | `framework/06_SYS/SYS_VALIDATION_RULES.md` |
-| REQ | `framework/07_REQ/REQ_VALIDATION_RULES.md` |
-| CTR | `ai_dev_ssd_flow/08_CTR/CTR_MVP_SCHEMA.yaml` |
-| SPEC | `framework/09_SPEC/SPEC_VALIDATION_RULES.md` |
-| TSPEC | `framework/10_TSPEC/TSPEC_VALIDATION_RULES.md` |
-| TASKS | `framework/11_TASKS/TASKS_VALIDATION_RULES.md` |
+| Document Type | Layer Folder |
+|---------------|-------------------------------|
+| BRD | `framework/layers/01_BRD/` |
+| PRD | `framework/layers/02_PRD/` |
+| EARS | `framework/layers/03_EARS/` |
+| BDD | `framework/layers/04_BDD/` |
+| ADR | `framework/layers/05_ADR/` |
+| SPEC | `framework/layers/06_SPEC/` |
+| TDD | `framework/layers/07_TDD/` |
+| IPLAN | `framework/layers/08_IPLAN/` |
 
 ### Related Skills
 
 | Skill | Purpose |
 |-------|---------|
-| doc-validator | Automated validation of SDD documents |
-| doc-flow | SDD workflow orchestration |
-| trace-check | Traceability validation |
+| `../doc-validator/` | Cross-document validation of SDD documents |
+| `../doc-flow/` | SDD workflow orchestration |
+| `../trace-check/` | Traceability validation |
 
 ---
 
 ### Diagram Standards
 
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See the `mermaid-gen` skill and `framework/governance/DIAGRAM_STANDARDS.md`.
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.8 | 2026-05-22 | **8-layer migration (PLM-B6)**: Retired the legacy 12-layer roster (removed SYS/REQ/CTR/TSPEC/TASKS); roster is now BRD(1)·PRD(2)·EARS(3)·BDD(4)·ADR(5)·SPEC(6)·TDD(7)·IPLAN(8)→Code. Deleted the numeric element-type-code system entirely; element IDs are now the 4-segment `TYPE.NN.SS.xxxx` (section + 4-hex-char hash) per `framework/governance/ID_NAMING_STANDARDS.md`, with dash document refs `SPEC-NN`/`ADR-NN`/`IPLAN-NN`. Repointed all paths to `framework/layers/<NN>_<X>/`; removed dead validation-script references (framework is spec-only). |
 | 1.7 | 2026-02-27 | **Compound legacy pattern detection**: Enhanced Section 11 grep patterns to catch compound/domain-prefixed legacy IDs (e.g., `FR-CICD-001`, `NFR-PERF-002`); Added regex `(-[A-Za-z0-9]+)*` to match optional domain components; Added pattern explanation table and examples; Updated validation step to run comprehensive checks |
 | 1.6 | 2026-02-10 | Added Section 8: ISO 8601 Datetime Format Standard - all date fields now require `YYYY-MM-DDTHH:MM:SS` format for precise drift detection; Deprecated date-only format |
 | 1.5 | 2026-02-10 | Added element code 33 (Benefit Statement) for BRD Section 2.5; Updated BRD Quick Lookup to include code 33; Added BRD examples for code 33 |
 | 1.4 | 2026-02-08 | Added element code 32 (Architecture Topic) for BRD Section 7.2; Updated BRD Quick Lookup to include code 32; Added BRD examples for code 32 |
-| 1.3 | 2026-02-08 | Fixed layer assignments per LAYER_REGISTRY v1.6: CTR=8, SPEC=9, TSPEC=10, TASKS=11; Removed deprecated IMPL layer; Added TSPEC element codes 40-43; Updated folder paths to use numbered prefixes |
+| 1.3 | 2026-02-08 | (Superseded by 1.8) Adjusted layer assignments and element codes for the then-current registry; the legacy roster and numeric element codes referenced here were retired in 1.8. |
 | 1.2 | 2026-01-17 | Updated to 11 active artifact types; Removed legacy element codes 19, 31 |
 | 1.1 | 2025-12-29 | Added Reserved ID Exemption, REF document pattern, ADR removed patterns, fixed element type codes for BRD |
 | 1.0 | 2025-12-19 | Initial release with all 31 element codes and 18 removed patterns |

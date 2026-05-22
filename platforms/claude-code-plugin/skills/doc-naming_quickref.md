@@ -6,53 +6,42 @@
 TYPE-NN                    Example: BRD-02, PRD-01, ADR-001
 ```
 
-## Element ID Format
+TYPE ∈ {BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN}
+
+## Element ID Format (4-segment)
 
 ```
-TYPE.NN.xxxx              Example: BRD.02.0601
-│    │   │
-│    │   └───── Element hash (4+ alphanumeric chars)
-│    └───────── Document number (02, 03, ...)
-└────────────── Document type (BRD, PRD, ADR, ...)
+TYPE.NN.SS.xxxx          Example: BRD.01.07.a7f3
+│    │  │   │
+│    │  │   └───── Content hash (4-8 hex chars, SHA256 first 4)
+│    │  └───────── Section number (07, 03, ...)
+│    └──────────── Document number (01, 02, ...)
+└───────────────── Document type (BRD, PRD, EARS, BDD, ADR, TDD)
 ```
 
-**Regex**: `^[A-Z]{2,8}\.[0-9]{2,}\.[a-z0-9]{4,}$`
+**Regex**: `^[A-Z]+\.[0-9]{2,}\.[0-9]{2,}\.[a-f0-9]{4,8}$`
+
+There are NO numeric element-type codes in the 8-layer model. Element identity
+is `TYPE.NN.SS.xxxx` (section + hash), not a fixed type code.
 
 ---
 
-## Element Type Codes
+## Reference Granularity (Element vs Document)
 
-| Code | Type | Documents |
-|------|------|-----------|
-| 01 | Functional Requirement | BRD, PRD, SYS, REQ |
-| 02 | Quality Attribute | BRD, PRD, SYS |
-| 03 | Constraint | BRD, PRD |
-| 04 | Assumption | BRD, PRD |
-| 05 | Dependency | BRD, PRD, REQ |
-| 06 | Acceptance Criteria | BRD, PRD, REQ |
-| 07 | Risk | BRD, PRD |
-| 08 | Metric | BRD, PRD |
-| 09 | User Story | PRD |
-| 10 | Decision | ADR |
-| 11 | Use Case | PRD, SYS |
-| 12 | Alternative | ADR |
-| 13 | Consequence | ADR |
-| 14 | Test Scenario | BDD |
-| 15 | Step | BDD, SPEC |
-| 16 | Interface | SPEC, CTR |
-| 17 | Data Model | SPEC, CTR |
-| 18 | Task | TASKS |
-| 20 | Contract Clause | CTR |
-| 21 | Validation Rule | SPEC |
-| 22 | Feature Item | BRD, PRD |
-| 23 | Business Objective | BRD |
-| 24 | Stakeholder Need | BRD, PRD |
-| 25 | EARS Statement | EARS |
-| 26 | System Requirement | SYS |
-| 27 | Atomic Requirement | REQ |
-| 28 | Specification Element | SPEC |
-| 29 | Implementation Phase | IMPL |
-| 30 | Task Item | TASKS |
+| Layer | # | Reference form | Example |
+|-------|---|----------------|---------|
+| BRD   | 1 | element (dotted) | `BRD.01.07.a7f3` |
+| PRD   | 2 | element (dotted) | `PRD.01.09.1dbc` |
+| EARS  | 3 | element (dotted) | `EARS.01.03.5e2a` |
+| BDD   | 4 | element (dotted) | `BDD.01.03.8f4c` |
+| ADR   | 5 | element (dotted) + doc `ADR-NN` | `ADR.01.03.e5b1` |
+| SPEC  | 6 | document (dash) | `SPEC-01` |
+| TDD   | 7 | element (dotted) | `TDD.01.04.a3c1` |
+| IPLAN | 8 | document (dash) | `IPLAN-01` |
+
+Dash refs (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) point at a whole document; dotted
+refs (`TYPE.NN.SS.xxxx`) point at an element within one. Test categories
+(unit/integration/smoke/functional) live as TDD test-case content, not ID codes.
 
 ---
 
@@ -60,24 +49,21 @@ TYPE.NN.xxxx              Example: BRD.02.0601
 
 | Legacy | Use Instead |
 |--------|-------------|
-| `AC-XXX` | `TYPE.NN.06.SS` |
-| `FR-XXX` | `TYPE.NN.01.SS` |
-| `BC-XXX` | `TYPE.NN.03.SS` |
-| `BA-XXX` | `TYPE.NN.04.SS` |
-| `QA-XXX` | `TYPE.NN.02.SS` |
-| `BO-XXX` | `TYPE.NN.23.SS` |
-| `RISK-XXX` | `TYPE.NN.07.SS` |
-| `METRIC-XXX` | `TYPE.NN.08.SS` |
-| `Feature F-XXX` | `TYPE.NN.22.SS` |
-| `Event-XXX` | `TYPE.NN.25.SS` |
-| `State-XXX` | `TYPE.NN.25.SS` |
-| `TASK-XXX` | `TYPE.NN.18.SS` |
-| `T-XXX` | `TYPE.NN.18.SS` |
-| `Phase-XXX` | `TYPE.NN.29.SS` |
-| `IP-XXX` | `TYPE.NN.29.SS` |
-| `IF-XXX` | `TYPE.NN.16.SS` |
-| `DM-XXX` | `TYPE.NN.17.SS` |
-| `CC-XXX` | `TYPE.NN.20.SS` |
+| `AC-XXX` | `TYPE.NN.SS.xxxx` |
+| `FR-XXX` | `TYPE.NN.SS.xxxx` |
+| `BC-XXX` | `TYPE.NN.SS.xxxx` |
+| `BA-XXX` | `TYPE.NN.SS.xxxx` |
+| `QA-XXX` | `TYPE.NN.SS.xxxx` |
+| `BO-XXX` | `TYPE.NN.SS.xxxx` |
+| `RISK-XXX` | `TYPE.NN.SS.xxxx` |
+| `METRIC-XXX` | `TYPE.NN.SS.xxxx` |
+| `Feature F-XXX` | `TYPE.NN.SS.xxxx` |
+| `Event-XXX` | `TYPE.NN.SS.xxxx` |
+| `State-XXX` | `TYPE.NN.SS.xxxx` |
+| `DEC-XXX` | `ADR.NN.SS.xxxx` |
+| `ALT-XXX` | `ADR.NN.SS.xxxx` |
+| `CON-XXX` | `ADR.NN.SS.xxxx` |
+| `TYPE.NN.xxxx` (3-segment) | `TYPE.NN.SS.xxxx` (4-segment) |
 
 ---
 
@@ -93,22 +79,19 @@ TYPE.NN.xxxx              Example: BRD.02.0601
 
 ---
 
-## Quick Lookup by Document
+## Traceability Tags
 
-| Doc | Common Codes |
-|-----|--------------|
-| BRD | 01, 02, 03, 04, 05, 06, 07, 08, 22, 23, 24 |
-| PRD | 01, 02, 03, 04, 05, 06, 07, 08, 09, 11, 22, 24 |
-| EARS | 25 |
-| BDD | 14, 15 |
-| ADR | 10, 12, 13 |
-| SYS | 01, 02, 11, 26 |
-| REQ | 01, 05, 06, 27 |
-| IMPL | 29 |
-| CTR | 16, 17, 20 |
-| SPEC | 15, 16, 17, 21, 28 |
-| TASKS | 18, 30 |
+| Tag | Example |
+|-----|---------|
+| `@brd:` | `@brd: BRD.01.07.a7f3` |
+| `@prd:` | `@prd: PRD.01.09.1dbc` |
+| `@ears:` | `@ears: EARS.01.03.5e2a` |
+| `@bdd:` | `@bdd: BDD.01.03.8f4c` |
+| `@adr:` | `@adr: ADR.01.03.e5b1` |
+| `@spec:` | `@spec: SPEC-01` |
+| `@tdd:` | `@tdd: TDD.01.04.a3c1` |
+| `@iplan:` | `@iplan: IPLAN-01` |
 
 ---
 
-**Full Reference**: `.claude/skills/doc-naming/SKILL.md`
+**Full Reference**: `../doc-naming/SKILL.md`
