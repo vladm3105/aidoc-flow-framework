@@ -48,7 +48,7 @@ Analyze Architecture Decision Records (ADRs) and generate phased implementation 
 ### Do NOT use adr-roadmap when:
 - Single ADR with straightforward implementation (direct implementation)
 - ADRs are informational only with no implementation needed
-- Planning from requirements (BRD/PRD) not ADRs → use `project-mngt` skill instead
+- Planning from requirements (BRD/PRD) not ADRs → use the requirements layers (`doc-brd` / `doc-prd` / `doc-ears`) instead
 - Need to generate documentation artifacts (SPEC/TDD) → use `doc-flow` skill instead
 - Only need architecture diagrams → use `charts-flow` skill instead
 
@@ -857,7 +857,6 @@ Roadmap document must satisfy:
 - [Governance](../../../../framework/governance/) - Traceability, naming, and validation standards
 
 ### Related Skills
-- [project-mngt](../project-mngt/) - Use for requirement-based planning (BRD/PRD → MVP)
 - [doc-flow](../doc-flow/) - Use for generating SPEC/TDD documents from ADRs
 - [charts-flow](../charts-flow/) - Use for enhanced Mermaid diagram generation
 
@@ -869,12 +868,6 @@ Roadmap document must satisfy:
 
 ## Related Skills
 
-### Use `project-mngt` Skill Instead When:
-- Planning from business/product requirements (BRD/PRD), not architectural decisions
-- Defining MVP/MMP/MMR scope before technical design
-- No ADRs exist yet (requirements → ADRs workflow)
-- Need product roadmap vs. implementation roadmap
-
 ### Use `doc-flow` Skill Instead When:
 - Generating SPEC/TDD documents from ADRs
 - Creating detailed specification artifacts
@@ -885,11 +878,6 @@ Roadmap document must satisfy:
 - Need enhanced visualizations beyond standard Mermaid
 - Want architecture diagrams alongside roadmap
 - Require multiple diagram types (sequence, C4, state machines)
-
-### Combine `adr-roadmap` + `project-mngt` When:
-- Have both requirements (BRD/PRD) and architectural decisions (ADR)
-- Need to align product roadmap with implementation roadmap
-- Want to map features to ADR phases
 
 ---
 

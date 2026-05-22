@@ -938,14 +938,12 @@ tar -xzf ../backups/docs_backup_20251111_174001.tar.gz
 
 **Complementary Skills**:
 - `../doc-flow/` - Create SDD artifacts from templates
-- `../project-mngt/` - MVP/MMP/MMR project planning
 - `../adr-roadmap/` - Generate implementation roadmaps from ADRs
 
 **Workflow Integration**:
 1. Use `doc-flow` to create new artifacts
 2. Use `trace-check` to validate traceability
 3. Use `adr-roadmap` to generate implementation plans
-4. Use `project-mngt` for release planning
 
 ### Artifact Templates
 

@@ -46,6 +46,15 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 - Legacy `doc-sys*`, `doc-req*`, `doc-ctr*` skill families — the SYS,
   REQ, and CTR layers do not exist in the 8-layer model. Plugin skill
   count 142 → 125.
+- `project-mngt` skill parked to `legacy/claude-code-plugin/` (marked
+  legacy, pending review): a generic MVP/MMP/MMR planning methodology,
+  not SDD-layer-specific, so it no longer ships with the plugin. All
+  inbound references (`README` counts, `skill-recommender` routing,
+  `adr-roadmap`/`doc-flow`/`trace-check`/`mermaid-gen`/`workflow-optimizer`
+  cross-links, `pm-orchestrator` + agents roster) neutralized. Plugin
+  skill count 125 → 124. See `../../plans/DECISIONS.md` D-0017. README
+  skill counts also corrected to the as-built totals (the migration's
+  142 → 125 reduction had not been reflected there).
 
 ## [0.1.0] — 2026-05-20
 

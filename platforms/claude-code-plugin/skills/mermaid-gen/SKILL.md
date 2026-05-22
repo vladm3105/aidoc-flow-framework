@@ -612,11 +612,6 @@ Every output from `mermaid-gen` must meet these criteria:
 - **Integration**: Diagrams created with `mermaid-gen` support ADRs, SYS docs, and architecture specifications
 - **Use Case**: Adding architecture diagrams to ADR documents or system specifications
 
-**project-mngt Skill**:
-- **Purpose**: MVP/MMP/MMR implementation planning
-- **Integration**: Diagrams visualize project dependencies and implementation flows
-- **Use Case**: Creating Gantt-style timelines or dependency graphs (if supported by Mermaid)
-
 ### Documentation Standards Alignment
 
 **Technical Guidelines** (per CLAUDE.md):

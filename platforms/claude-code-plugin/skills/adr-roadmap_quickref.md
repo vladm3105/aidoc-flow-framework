@@ -199,7 +199,7 @@ Output: ADR-00_IMPLEMENTATION-ROADMAP.md
 
 ❌ **Single ADR**: Direct implementation, no roadmap needed
 
-❌ **No ADRs yet**: Use `project-mngt` skill to plan from requirements (BRD/PRD)
+❌ **No ADRs yet**: Use the requirements layers (`doc-brd` / `doc-prd` / `doc-ears`) to plan from requirements (BRD/PRD)
 
 ❌ **Documentation generation**: Use `doc-flow` skill for SYS/REQ/SPEC creation
 
@@ -300,8 +300,8 @@ Output: {project_root}/docs/ROADMAP.md
 
 ## Related Skills
 
-**project-mngt**: Use for requirement-based planning (BRD/PRD → MVP)
-**doc-flow**: Use for generating SYS/REQ/SPEC from ADRs
+**doc-brd / doc-prd / doc-ears**: Use for requirement-based planning (BRD/PRD → EARS)
+**doc-flow**: Use for generating SPEC/TDD from ADRs
 **charts-flow**: Combine for enhanced Mermaid visualizations
 
 ---

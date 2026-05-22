@@ -81,12 +81,12 @@ FINGERPRINTS = {
     ),
 }
 
-# Documented exceptions (post-migration gap review, 2026-05-22): the project-mngt
-# methodology skill intentionally uses domain-generic ``REQ-NN`` requirement
-# identifiers (it is a general MVP/MMP/MMR planning skill, not SDD-layer-specific),
-# so the dash-ref pattern is suppressed for it. (label, family) pairs to ignore.
+# Documented exceptions: (label, family) pairs to ignore. ``doc-naming`` is the
+# ID-format teaching authority, so it legitimately shows 3-segment IDs as
+# "wrong → right" examples. (The former ``project-mngt`` dash-ref exception was
+# dropped when that skill was parked to ``legacy/`` — see plans/DECISIONS.md
+# D-0017; it no longer lives under any scanned scope.)
 EXCEPTIONS = {
-    ("legacy-doc-ref", "project-mngt"),
     ("legacy-3seg-id", "doc-naming"),
 }
 

@@ -320,11 +320,6 @@ If a required upstream artifact is missing, the downstream functionality **MUST 
 - Creates timeline, risk assessment, dependency mapping
 - Reference: `../adr-roadmap/SKILL.md`
 
-**`project-mngt`** - MVP/MMP/MMR planning
-- Use for strategic release planning
-- Integrates with IPLAN artifacts
-- Reference: `../project-mngt/SKILL.md`
-
 ### Typical Workflow Integration
 
 ```text

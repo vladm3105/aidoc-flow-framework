@@ -436,3 +436,12 @@ to the suite at B7).
 corpus is migrated to the framework's 8-layer model; `plm_lint --all` is clean
 and enforced by conformance (32/32). The `docs/PARITY.md` layer-model gap is
 closed. Both platforms now implement the 8-layer model.
+
+## Review-later backlog
+
+- [ ] **`project-mngt` (parked legacy 2026-05-22, D-0017).** Generic MVP/MMP/MMR
+  planning methodology, pulled from the shipped plugin to
+  `legacy/claude-code-plugin/project-mngt/` (skill count 125 → 124). Decide its
+  fate: rework into an IPLAN-layer (Layer 8) helper, keep as an out-of-band
+  methodology doc, or retire. If un-parked, restore the inbound references that
+  were neutralized (see D-0017) and re-run conformance.

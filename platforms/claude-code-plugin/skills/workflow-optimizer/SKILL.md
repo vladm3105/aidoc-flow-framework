@@ -427,7 +427,6 @@ sequential_requirements:
 | context-analyzer | Provides artifact inventory and traceability data |
 | skill-recommender | Receives workflow position for better skill suggestions |
 | doc-flow | Can be invoked by doc-flow for workflow orchestration |
-| project-mngt | Shares planning concepts (MVP, phases) |
 
 ## Quality Gates
 
@@ -468,7 +467,6 @@ sequential_requirements:
 | Artifact | Type | Reference |
 |----------|------|-----------|
 | doc-flow | Skill Consumer | Workflow orchestration |
-| project-mngt | Skill Consumer | Release planning integration |
 
 ---
 

@@ -89,7 +89,7 @@ to also gate its own work — always route review to the read-only gates.
 
 ## GitHub & Issue Governance
 
-Use `project-mngt`, `workflow-optimizer`, `project-init`, and `adr-roadmap` for
+Use `workflow-optimizer`, `project-init`, and `adr-roadmap` for
 planning, prioritization, and roadmap work. Manage labels and round-based merge
 gates. Be frugal with external comments; escalate ambiguous or
 architecturally-significant decisions to the human approver rather than guessing.

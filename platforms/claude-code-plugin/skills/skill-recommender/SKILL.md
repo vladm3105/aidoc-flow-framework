@@ -79,7 +79,6 @@ Extract action verbs and targets from the user request:
 | validation | validate, quality, compliance | doc-validator |
 | diagrams | diagram, mermaid, chart, flow | charts-flow, mermaid-gen |
 | roadmap | roadmap, adr implementation | adr-roadmap |
-| project management | mvp, mmp, release, planning | project-mngt |
 
 ### Step 2: Match Skills
 
@@ -121,7 +120,6 @@ Match parsed intent against skill catalog:
 | Skill ID | Category | Description |
 |----------|----------|-------------|
 | adr-roadmap | planning | ADR implementation roadmaps |
-| project-mngt | planning | MVP/MMP/MMR release planning |
 | doc-flow | planning | SDD workflow orchestration |
 
 ### Step 3: Score and Rank

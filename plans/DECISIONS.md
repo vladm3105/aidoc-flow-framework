@@ -10,6 +10,39 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0017 — Park `project-mngt` as legacy (pending review); pull it from the shipped plugin
+
+- **Date:** 2026-05-22T00:00:00Z
+- **Context:** `project-mngt` is a generic MVP/MMP/MMR planning *methodology*
+  skill (frontmatter `layer: null`, domain-generic `REQ-NN` requirement IDs) —
+  it teaches HOW to plan, not an SDD-layer artifact. It does not cleanly fit the
+  8-layer engine and needs re-evaluation for fit/placement, so it should not
+  ship with the plugin in the meantime.
+- **Decision / actions:**
+  1. **Parked**, not deleted: moved `platforms/claude-code-plugin/skills/project-mngt/`
+     → `legacy/claude-code-plugin/project-mngt/` (Claude Code auto-discovers
+     everything under `skills/`, so leaving `skills/` is the only reliable way to
+     stop shipping it). Frontmatter `development_status: active → legacy`; park
+     rationale + un-park procedure in `legacy/claude-code-plugin/README.md`.
+  2. **Neutralized all inbound references** in the shipped surface: `README`
+     skill table + prose; `skill-recommender` intent-map + catalog rows;
+     `adr-roadmap` (SKILL + quickref) "use instead"/"combine"/related-skills;
+     `doc-flow`, `trace-check`, `mermaid-gen`, `workflow-optimizer` cross-links;
+     `pm-orchestrator` + `agents/README` rosters. Where a recommendation pointed
+     at it for requirement planning, repointed to the requirements layers
+     (`doc-brd`/`doc-prd`/`doc-ears`).
+  3. **Dropped** the now-dead `("legacy-doc-ref", "project-mngt")` `plm_lint`
+     exception (the skill no longer lives under any scanned scope).
+  4. **Corrected** the plugin `README` skill counts to the as-built totals
+     (112 `doc-*` + 12 non-doc = 124). The migration's documented 142 → 125
+     reduction (plugin CHANGELOG `[Unreleased]`) had never been reflected in the
+     README; parking `project-mngt` then took 125 → 124.
+- **Skill count:** 125 → 124. Conformance unaffected (no count assertion; the
+  parked tree is outside `skills/`, `agents/`, `commands/`).
+- **Follow-up (review later):** decide whether `project-mngt` is reworked into
+  an IPLAN-layer (Layer 8) helper, kept as an out-of-band methodology doc, or
+  retired. Tracked in `plans/MIGRATION_TODO.md`.
+
 ## D-0016 — Post-migration gap audit: fix plugin-surface residue + harden the gate (not bare-token/prose patterns)
 
 - **Date:** 2026-05-22T03:10:00Z

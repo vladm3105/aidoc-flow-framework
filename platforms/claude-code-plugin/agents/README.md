@@ -94,7 +94,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Drives** the lifecycle through the native `doc-flow` orchestrator plus the `doc-*` skill families.
 - **Delegates to** all eight specialists via the `Task` tool, giving each a self-contained brief; runs independent work in parallel and sequences dependent work; never lets an author gate its own work.
 - **Governance:** Enforces *analyze → roadmap → planning index → changelog plan → gap review → IPLAN → approval → implementation*. Approval authority is a human reviewer or independent LLM-as-judge — never self-approval. Only `ai:ready` issues are eligible for autonomous execution.
-- **Skills:** `project-mngt`, `workflow-optimizer`, `project-init`, `adr-roadmap`.
+- **Skills:** `workflow-optimizer`, `project-init`, `adr-roadmap`.
 - **Model:** opus.
 
 ### `requirements-analyst` — Requirements Analyst

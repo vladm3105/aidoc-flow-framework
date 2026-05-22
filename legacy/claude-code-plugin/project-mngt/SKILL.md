@@ -10,7 +10,7 @@ custom_fields:
   artifact_type: null
   architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
-  development_status: active
+  development_status: legacy
   skill_category: utility
   upstream_artifacts: [BRD, PRD, EARS]
   downstream_artifacts: [IPLAN, Code]
