@@ -88,8 +88,15 @@ plus orchestrators (`doc-flow`, `doc-naming`, `doc-validator`,
   registration block in the manifest.
 - **Slash-prefix invocation** — `/aidoc-flow:doc-brd-autopilot`,
   `/aidoc-flow:doc-flow`, etc.
-- **`requirements-analyst`** subagent (in `agents/`) — specialized
-  for decomposing, analyzing, and validating SDD requirements.
+- **AI Team subagent roster** (9 agents in `agents/`) — a specialist
+  team mirroring the SDD lifecycle: `pm-orchestrator` (delegates via
+  the `Task` tool) plus the spec lane (`requirements-analyst`,
+  `solutions-architect`, `test-architect`), execution lane
+  (`software-engineer`, `devops-release-engineer`), and read-only
+  quality gates (`code-reviewer`, `security-engineer`,
+  `traceability-auditor`). Subagents are a Claude Code construct;
+  Hermes has no equivalent (it is the MCP tool-server such agents
+  call). See `platforms/claude-code-plugin/agents/README.md`.
 - **`save-plan`** slash command (in `commands/`) — captures the
   current conversation plan to a timestamped file.
 - **Per-skill operation granularity** — the plugin user picks the
