@@ -7,6 +7,16 @@
 > pushes + the `main` force-replace + CI-workflow relocation
 > (commands in `plans/MIGRATION_TODO.md` P5-T6). Pre-migration
 > history is on the protected `legacy-ucx-v3.2-read-only` branch.
+>
+> **▶ ACTIVE post-v1.0 task — PLM (Plugin layer-model migration).** The
+> plugin's skills are authored against the legacy **12-layer** model;
+> this migrates the whole corpus to the framework's **8-layer** model.
+> Plan + shared rewrite spec: `plans/PLM-PLAN.md`. Gate:
+> `tests/conformance/platforms/plm_lint.py`. **B0 done** (plan + checker;
+> baseline 146 files / 2319 hits). **Next: B1** (rename tspec→tdd,
+> tasks→iplan; retire sys/req/ctr; fix cross-refs; interim PARITY). **OPEN
+> decision** before B4/B5: fate of the SPEC- and test-subtype families
+> (no framework backing in the 8-layer model).
 
 Continuity record across ephemeral sessions. Read this first each session;
 refresh it at milestones and **before any context compaction**.
@@ -14,10 +24,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-21T09:25:00Z                       |
+| Last updated  | 2026-05-22T00:48:53Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | **Migration complete** — Phase 5 cutover closed (`v1.0.0`, in-container half) |
-| Next task     | **User-side only** (in-container is blocked from `refs/tags/*` + never pushes `main`): push tags `v1.0.0` (+ optional `hermes/v0.1.1`); **force-replace `main`** (lift protection → `git push --force origin claude/multi-platform-migration-AamWB:main` → re-enable); relocate `plans/workflows-pending/*.yml` → `.github/workflows/`. Exact commands in `plans/MIGRATION_TODO.md` P5-T6. |
+| Current phase | Migration complete (`v1.0.0`); **PLM active** — plugin 12→8-layer migration, B0 done |
+| Next task     | **PLM-B1** — rename `doc-tspec*`→`doc-tdd*` + `doc-tasks*`→`doc-iplan*` (rewrite the 12 bodies), retire `doc-sys*`/`doc-req*`/`doc-ctr*`, fix orchestrator cross-refs, interim `docs/PARITY.md`. See `plans/PLM-PLAN.md` batch table. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation.)* |
 
 ## Progress
 

@@ -381,3 +381,26 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [ ] CHG-D1 — Re-introduce change management as skills + CI/CD (see `ROADMAP.md`).
 - [ ] CHG-D2 — Record CHG decision formally in `framework/governance/`.
 - [ ] INFRA-1 — Refresh stale `.github/` metadata (CODEOWNERS, dependabot, labeler) for the new layout.
+
+## PLM — Plugin layer-model migration (legacy 12-layer → 8-layer)
+
+Resolves the `docs/PARITY.md` "Known parity gap". Investigation found the gap is
+corpus-wide: **146 of the plugin's `.md` skill files carry legacy fingerprints
+(2319 occurrences)** — not the ~2 skills + ~150 refs PARITY implied. Staged,
+conformance-gated, resumable. Plan + rewrite spec: `plans/PLM-PLAN.md`. Gate:
+`tests/conformance/platforms/plm_lint.py` (enforces migrated families; promoted
+to the suite at B7).
+
+- [x] PLM-B0 — Plan (≥2 review passes, verification dry-run-calibrated) + the
+  `plm_lint` legacy-fingerprint checker. Baseline: 146 files / 2319 hits.
+  Conformance 31/31 (checker is non-`test_`, ignored by discovery until B7).
+- [ ] PLM-B1 — Roster: rename `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*`
+  (full body rewrite of those 12); retire `doc-sys*`/`doc-req*`/`doc-ctr*`; fix
+  orchestrator cross-refs; interim PARITY update.
+- [ ] PLM-B2 — Body rewrite: `doc-brd`, `doc-prd`, `doc-ears`.
+- [ ] PLM-B3 — Body rewrite: `doc-bdd`, `doc-adr`.
+- [ ] PLM-B4 — Body rewrite: `doc-spec` (+ **OPEN** SPEC-subtype decision).
+- [ ] PLM-B5 — **OPEN** test-subtype decision + rewrite (`doc-*test`).
+- [ ] PLM-B6 — Helpers/orchestrators + residual quickrefs/READMEs.
+- [ ] PLM-B7 — Promote `plm_lint --all` into conformance; delete the PARITY gap
+  section; CHANGELOG/ROADMAP close-out.
