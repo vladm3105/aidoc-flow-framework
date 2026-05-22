@@ -107,7 +107,7 @@ blanket find/replace. Edit only where the token denotes a *legacy layer*.
 |---|---|---|---|
 | **B0** | This plan + rewrite spec + the `plm_lint` legacy-fingerprint checker | `plans/PLM-PLAN.md`, `tests/conformance/platforms/plm_lint.py` | ✅ DONE 2026-05-22 |
 | **B1** | Roster: renamed `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*` (12 bodies fully rewritten to `07_TDD`/`08_IPLAN`); retired `doc-sys*`/`doc-req*`/`doc-ctr*` (142→125 skills); migrated orchestrators `doc-flow`+`SHARED_CONTENT`, `skill-recommender`, `project-init` to the 8-layer flow; realigned the 9-agent roster; interim `docs/PARITY.md`. Verified: `plm_lint` scope `{doc-tdd,doc-iplan,doc-flow,skill-recommender,project-init}` clean; conformance 31/31; 125 skills; frontmatter parses + `name==dir`. `MIGRATED` remaining: 108 files. | 14 rewritten + 17 removed + 5 orchestrators/agents | ✅ DONE 2026-05-22 |
-| **B2** | Body rewrite: `doc-brd`, `doc-prd`, `doc-ears` families | 3 families | — |
+| **B2** | Body rewrite: `doc-brd`, `doc-prd`, `doc-ears` families (21 files; layer numbers 1-3 unchanged, but element IDs 3→4-segment, paths→`framework/layers/`, downstream chains + cumulative-tag tables → 8 layers, dead validation-scripts removed). Verified: `plm_lint` scope clean (91 files remain); conformance 31/31; 125 skills; name==dir. | 3 families / 21 files | ✅ DONE 2026-05-22 |
 | **B3** | Body rewrite: `doc-bdd`, `doc-adr` families | 2 families | — |
 | **B4** | Body rewrite: `doc-spec` family **(+ SPEC-subtype decision)** | 1 + OPEN | blocked on OPEN |
 | **B5** | Test-subtype decision + rewrite (`doc-*test`) | OPEN | blocked on OPEN |

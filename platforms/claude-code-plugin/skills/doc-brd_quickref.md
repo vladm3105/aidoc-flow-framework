@@ -14,8 +14,8 @@
 ## Location Policy
 
 - This framework BRD skill family is intended for many downstream projects.
-- Canonical skill/docs home: `ucx_framework/.claude/skills/`
-- Project repositories consume `doc-brd*` skills via symlinks only.
+- Canonical skill/docs home: the plugin's `skills/` directory (sibling skills referenced as `../doc-X/`).
+- Project repositories consume `doc-brd*` skills via the installed plugin.
 
 ## When to Use Which Skill
 
@@ -55,10 +55,10 @@
 
 ## Source of Truth
 
-- Template: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- Validation policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-- Wrapper/quality workflow: `ai_dev_ssd_flow/01_BRD/BRD_QUALITY_GATE_WORKFLOW.md`
+- Template: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- BRD README: `framework/layers/01_BRD/README.md`
+- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ---
 
-*Version: 2.2 | Updated: 2026-03-01*
+*Version: 2.3 | Updated: 2026-05-22*

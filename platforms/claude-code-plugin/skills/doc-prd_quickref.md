@@ -28,7 +28,7 @@ skill: "doc-prd"
 ## Output Location
 
 ```
-docs/PRD/PRD-NNN_{descriptive_name}.md
+docs/02_PRD/PRD-NN_{descriptive_name}/PRD-NN_{descriptive_name}.yaml
 ```
 
 ## Key Sections
@@ -65,12 +65,12 @@ When BRD is sectioned (multiple files):
 - Read ALL section files (0-18) as ONE document
 - No BRD section → PRD section mapping
 - Extract holistically across all sections
-- Reference: See `PRD_CREATION_RULES.md` Section 22
+- Reference: See `framework/layers/02_PRD/PRD-TEMPLATE.yaml` Section 22
 
 ## Template Location
 
 ```
-framework/layers/02_PRD/PRD-MVP-TEMPLATE.md
+framework/layers/02_PRD/PRD-TEMPLATE.yaml
 ```
 
 ## Related Skills

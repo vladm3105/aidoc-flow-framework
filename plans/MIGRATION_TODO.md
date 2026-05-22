@@ -400,7 +400,10 @@ to the suite at B7).
   `project-init` + the 9-agent roster to the 8-layer flow; interim PARITY.
   Verified: `plm_lint` B1 scope clean; conformance 31/31; 125 skills; frontmatter
   parses + `name==dir`. 108 files remain (B2–B6). DONE 2026-05-22.
-- [ ] PLM-B2 — Body rewrite: `doc-brd`, `doc-prd`, `doc-ears`.
+- [x] PLM-B2 — Body rewrite: `doc-brd`, `doc-prd`, `doc-ears` (21 files): element
+  IDs 3→4-segment, `framework/layers/` paths, downstream chains + cumulative-tag
+  tables → 8 layers, dead validation-scripts removed. Verified: `plm_lint` B1+B2
+  scope clean (91 files remain); conformance 31/31; 125 skills; name==dir. DONE 2026-05-22.
 - [ ] PLM-B3 — Body rewrite: `doc-bdd`, `doc-adr`.
 - [ ] PLM-B4 — Body rewrite: `doc-spec` (+ **OPEN** SPEC-subtype decision).
 - [ ] PLM-B5 — **OPEN** test-subtype decision + rewrite (`doc-*test`).

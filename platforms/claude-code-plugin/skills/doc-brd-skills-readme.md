@@ -7,9 +7,9 @@ This guide defines the minimum command flow for BRD quality operations.
 ## Location Policy
 
 - This framework BRD skill set is designed for reuse across multiple projects.
-- Canonical location for `doc-brd*` skills and docs: `ucx_framework/.claude/skills/`
-- Downstream projects should reference these via symlinks only.
-- Keep framework as single source of truth for skill content.
+- Canonical location for `doc-brd*` skills and docs: the plugin's `skills/` directory (sibling skills referenced as `../doc-X/`).
+- Downstream projects should reference these via the installed plugin.
+- Keep the `framework/` spec as single source of truth for templates and standards.
 
 ## Core Model (2-Skill Quality Pipeline)
 
@@ -81,9 +81,10 @@ No score warning band is used.
 
 ## Source of Truth
 
-- Template structure: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- Scoring policy: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
+- Template structure: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- BRD README: `framework/layers/01_BRD/README.md`
+- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ---
 
-*Version: 2.2 | Updated: 2026-03-01*
+*Version: 2.3 | Updated: 2026-05-22*

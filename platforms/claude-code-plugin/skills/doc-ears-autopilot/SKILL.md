@@ -15,9 +15,9 @@ metadata:
     development_status: active
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD]
-    downstream_artifacts: [BDD, ADR, SYS]
-    version: "2.4"
-    last_updated: "2026-02-26"
+    downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
+    version: "2.5"
+    last_updated: "2026-05-22"
 ---
 
 # doc-ears-autopilot
@@ -30,7 +30,7 @@ Automated **EARS (Easy Approach to Requirements Syntax)** generation pipeline th
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2)
 
-**Downstream Artifacts**: BDD (Layer 4), ADR (Layer 5), SYS (Layer 6)
+**Downstream Artifacts**: BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
@@ -74,7 +74,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (EARS.NN.25.SS), threshold tags, category ID ranges | All Phases |
+| `doc-naming` | Element ID format (EARS.NN.SS.xxxx), threshold tags, category ID ranges | All Phases |
 | `doc-prd-validator` | Validate PRD EARS-Ready score | Phase 2: PRD Readiness |
 | `doc-ears` | EARS creation rules, WHEN-THE-SHALL syntax, template, section structure | Phase 3: EARS Generation |
 | `quality-advisor` | Real-time quality feedback during EARS generation | Phase 3: EARS Generation |
@@ -99,7 +99,7 @@ This autopilot orchestrates the following skills:
 When generating EARS document instances, the autopilot MUST:
 
 1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.yaml`
+   - Source: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
    - Field: `metadata.instance_document_type: "ears-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
@@ -303,7 +303,7 @@ ls -la docs/02_PRD/
 Validate that source PRDs meet EARS-Ready requirements before generation.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-prd-validator` skill.
-> See: `.claude/skills/doc-prd-validator/SKILL.md` for complete PRD validation rules.
+> See: `../doc-prd-validator/SKILL.md` for complete PRD validation rules.
 
 **EARS-Ready Scoring Criteria (100%)**:
 
@@ -337,10 +337,10 @@ Validate that source PRDs meet EARS-Ready requirements before generation.
 Generate EARS statements from validated PRD with real-time quality feedback.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-ears` skill.
-> See: `.claude/skills/doc-ears/SKILL.md` for complete EARS creation guidance.
+> See: `../doc-ears/SKILL.md` for complete EARS creation guidance.
 >
 > **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
-> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
+> See: `../quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -353,7 +353,7 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    ```
 
 2. **Load EARS Template**:
-   - Primary: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
+   - Primary: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
    - Section templates: For sectioned EARS (>800 lines)
 
 3. **Generate Document Control Section**:
@@ -366,25 +366,25 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    | Last Updated | Current date (YYYY-MM-DD) |
    | Status | Draft |
    | Priority | From PRD priority |
-   | Source Document | @prd: PRD.NN.EE.SS (single value) |
+   | Source Document | @prd: PRD.NN.SS.xxxx (single value) |
    | BDD-Ready Score | Calculated after generation |
 
 4. **Categorize Requirements**:
 
    **Requirement Category Detection**:
 
-   | PRD Pattern | EARS Category | ID Range |
-   |-------------|---------------|----------|
-   | "when user...", "upon receiving...", "triggered by..." | Event-Driven | 001-099 |
-   | "while connected...", "during session...", "maintaining..." | State-Driven | 101-199 |
-   | "if error...", "prevent...", "handle failure..." | Unwanted Behavior | 201-299 |
-   | "always...", "system-wide...", "all requests..." | Ubiquitous | 401-499 |
+   | PRD Pattern | EARS Category | Section |
+   |-------------|---------------|---------|
+   | "when user...", "upon receiving...", "triggered by..." | Event-Driven | Requirements |
+   | "while connected...", "during session...", "maintaining..." | State-Driven | Requirements |
+   | "if error...", "prevent...", "handle failure..." | Unwanted Behavior | Requirements |
+   | "always...", "system-wide...", "all requests..." | Ubiquitous | Requirements |
 
 5. **Generate EARS Statements by Category**:
 
-   **Event-Driven Requirements** (ID Range: 001-099):
+   **Event-Driven Requirements**:
    ```
-   #### EARS.NN.25.001: [Requirement Name]
+   #### EARS.NN.SS.xxxx: [Requirement Name]
    ```
    WHEN [trigger condition],
    THE [system component] SHALL [action 1],
@@ -392,46 +392,46 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    and [action 3]
    WITHIN [timing constraint] (@threshold: PRD.NN.category.key).
    ```
-   **Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS
+   **Traceability**: @brd: BRD.NN.SS.xxxx | @prd: PRD.NN.SS.xxxx
    ```
 
-   **State-Driven Requirements** (ID Range: 101-199):
+   **State-Driven Requirements**:
    ```
-   #### EARS.NN.25.101: [Requirement Name]
+   #### EARS.NN.SS.xxxx: [Requirement Name]
    ```
    WHILE [state condition],
    THE [system component] SHALL [continuous behavior]
    WITHIN [operational context].
    ```
-   **Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS
+   **Traceability**: @brd: BRD.NN.SS.xxxx | @prd: PRD.NN.SS.xxxx
    ```
 
-   **Unwanted Behavior Requirements** (ID Range: 201-299):
+   **Unwanted Behavior Requirements**:
    ```
-   #### EARS.NN.25.201: [Requirement Name]
+   #### EARS.NN.SS.xxxx: [Requirement Name]
    ```
    IF [error condition],
    THE [system component] SHALL [prevention/recovery action]
    WITHIN [timing constraint].
    ```
-   **Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS
+   **Traceability**: @brd: BRD.NN.SS.xxxx | @prd: PRD.NN.SS.xxxx
    ```
 
-   **Ubiquitous Requirements** (ID Range: 401-499):
+   **Ubiquitous Requirements**:
    ```
-   #### EARS.NN.25.401: [Requirement Name]
+   #### EARS.NN.SS.xxxx: [Requirement Name]
    ```
    THE [system component] SHALL [universal behavior]
    for [scope/context].
    ```
-   **Traceability**: @brd: BRD.NN.01.SS | @prd: PRD.NN.07.SS
+   **Traceability**: @brd: BRD.NN.SS.xxxx | @prd: PRD.NN.SS.xxxx
    ```
 
 6. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor EARS syntax compliance as statements are generated
    - Detect anti-patterns (missing SHALL, ambiguous terms, non-atomic statements)
    - Validate @threshold tag format and references
-   - Check element ID format compliance (EARS.NN.25.SS)
+   - Check element ID format compliance (EARS.NN.SS.xxxx)
    - Flag issues early to reduce post-generation rework
 
 7. **Generate Quality Attributes Section**:
@@ -440,20 +440,20 @@ Generate EARS statements from validated PRD with real-time quality feedback.
 
    | QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
    |-------|----------------------|--------|--------|----------|-------------------|
-   | EARS.NN.02.01 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
-   | EARS.NN.02.02 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
+   | EARS.NN.SS.xxxx | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
+   | EARS.NN.SS.xxxx | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
 
    **Security Requirements Table**:
 
    | QA ID | Requirement Statement | Control | Compliance | Priority |
    |-------|----------------------|---------|------------|----------|
-   | EARS.NN.03.01 | THE [component] SHALL authenticate using [method] | Authentication | [standard] | High |
+   | EARS.NN.SS.xxxx | THE [component] SHALL authenticate using [method] | Authentication | [standard] | High |
 
    **Reliability Requirements Table**:
 
    | QA ID | Requirement Statement | Metric | Target | Priority |
    |-------|----------------------|--------|--------|----------|
-   | EARS.NN.04.01 | THE [component] SHALL maintain availability | Uptime | 99.9% | High |
+   | EARS.NN.SS.xxxx | THE [component] SHALL maintain availability | Uptime | 99.9% | High |
 
 8. **Add Cumulative Traceability Tags**:
 
@@ -461,8 +461,8 @@ Generate EARS statements from validated PRD with real-time quality feedback.
    ## Traceability
 
    **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
-   @brd: BRD.01.0103, BRD.01.0110
-   @prd: PRD.01.0702, PRD.01.0715
+   @brd: BRD.01.07.a7f3, BRD.01.07.b210
+   @prd: PRD.01.09.1dbc, PRD.01.09.4e5f
    ```
 
 9. **Add Threshold References Section**:
@@ -488,33 +488,34 @@ Generate EARS statements from validated PRD with real-time quality feedback.
 After EARS generation, validate structure and BDD-Ready score.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-ears-validator` skill.
-> See: `.claude/skills/doc-ears-validator/SKILL.md` for complete validation rules.
+> See: `../doc-ears-validator/SKILL.md` for complete validation rules.
 
-**Validation Command**:
+**Validation Approach**: This autopilot is the validator. There is no external
+validation script — the framework spec is declarative. Apply the checks below
+directly, sourcing the rules from the EARS layer spec.
 
-```bash
-python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md --verbose
-```
+> **Authoritative rules**: `framework/layers/03_EARS/README.md` and the
+> governance standards in `framework/governance/` (ID and tag formats).
 
 **Validation Checks**:
 
-| Check | Requirement | Error Code |
-|-------|-------------|------------|
-| YAML Frontmatter | Valid metadata fields | EARS-E001 to EARS-E005 |
-| Section Structure | Required sections present | EARS-E006 |
-| Document Control | All required fields | EARS-E009 |
-| EARS Syntax | WHEN-THE-SHALL-WITHIN patterns | EARS-E010 |
-| Element ID Format | EARS.NN.25.SS (3-segment) | EARS-E030 |
-| Source Document | Single @prd: PRD.NN.EE.SS value | EARS-E040, EARS-E044 |
-| Cumulative Tags | @brd, @prd present | EARS-W002 |
-| BDD-Ready Score | >= 90% | EARS-W003 |
+| Check | Requirement |
+|-------|-------------|
+| YAML Frontmatter | Valid metadata fields |
+| Section Structure | Required sections present |
+| Document Control | All required fields |
+| EARS Syntax | WHEN-THE-SHALL-WITHIN patterns |
+| Element ID Format | EARS.NN.SS.xxxx (4-segment) |
+| Source Document | Single @prd: PRD.NN.SS.xxxx value |
+| Cumulative Tags | @brd, @prd present |
+| BDD-Ready Score | >= 90% |
 
 **Auto-Fix Actions**:
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
 | Missing SHALL keyword | Add SHALL to statement |
-| Invalid element ID format | Convert to EARS.NN.25.SS format |
+| Invalid element ID format | Convert to EARS.NN.SS.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing @threshold tags | Add placeholder tags |
 | Deprecated ID patterns | Convert to unified format |
@@ -674,12 +675,10 @@ After passing the fix cycle:
 
 2. **Traceability Matrix Update**:
 
-   ```bash
-   # Update EARS-00_TRACEABILITY_MATRIX.md
-   python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
-     --ears docs/03_EARS/EARS-NN_{slug}.md \
-     --matrix docs/03_EARS/EARS-00_TRACEABILITY_MATRIX.md
-   ```
+   Update `docs/03_EARS/EARS-00_TRACEABILITY_MATRIX.md` so each generated EARS
+   element appears with its upstream `@brd`/`@prd` links. The autopilot edits
+   this matrix directly (no external script) — add or update one row per EARS
+   element, preserving existing rows.
 
 ---
 
@@ -878,7 +877,7 @@ flowchart TD
 ### Auto-Fixable Issues
 | Issue | Location | Fix Action |
 |-------|----------|------------|
-| Legacy ID pattern | EARS.01.25001 | Convert ER-001 → EARS.01.25001 |
+| Legacy ID pattern | EARS.01.03.5e2a | Convert ER-001 → EARS.01.03.5e2a |
 | Missing @threshold | Line 45 | Add @threshold: PRD.01.xx.yy |
 
 ### Manual Review Required
@@ -903,7 +902,7 @@ review_mode:
     - statement_atomicity  # One testable concept per statement
     - threshold_refs       # @threshold tag validation
     - cumulative_tags      # @brd, @prd presence
-    - element_ids          # EARS.NN.25.SS format
+    - element_ids          # EARS.NN.SS.xxxx format
     - quantifiable         # No ambiguous terms
   output:
     format: markdown       # markdown, json, html
@@ -964,7 +963,7 @@ flowchart TD
 
 | Category | Description | Auto-Fix Actions |
 |----------|-------------|------------------|
-| `element_ids` | Element ID format | Convert legacy patterns to EARS.NN.25.SS |
+| `element_ids` | Element ID format | Convert legacy patterns to EARS.NN.SS.xxxx |
 | `ears_syntax` | EARS statement format | Add missing SHALL, fix WHEN-THE-SHALL structure |
 | `thresholds` | @threshold tags | Add missing threshold references from PRD |
 | `cumulative_tags` | Traceability tags | Add missing @brd, @prd tags |
@@ -974,13 +973,19 @@ flowchart TD
 
 **Element ID Migration** (Layer 3):
 
+All legacy element-ID patterns convert to the 4-segment standard
+`EARS.NN.SS.xxxx` (`NN` = document number, `SS` = section number, `xxxx` =
+4-char hex content hash). Category prefixes carry no ID meaning — Event-Driven,
+State-Driven, Unwanted Behavior, and Ubiquitous statements all use the same
+format and are distinguished by section, not by a numeric code.
+
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| ER-XXX | EARS.NN.25.0XX | ER-001 → EARS.01.25001 |
-| SR-XXX | EARS.NN.25.1XX | SR-101 → EARS.01.25101 |
-| UB-XXX | EARS.NN.25.2XX | UB-201 → EARS.01.25201 |
-| UQ-XXX | EARS.NN.25.4XX | UQ-401 → EARS.01.25401 |
-| QA-XXX | EARS.NN.02.SS | QA-001 → EARS.01.0201 |
+| ER-XXX (Event-Driven) | EARS.NN.SS.xxxx | ER-001 → EARS.01.03.5e2a |
+| SR-XXX (State-Driven) | EARS.NN.SS.xxxx | SR-101 → EARS.01.03.9c11 |
+| UB-XXX (Unwanted Behavior) | EARS.NN.SS.xxxx | UB-201 → EARS.01.03.2d7b |
+| UQ-XXX (Ubiquitous) | EARS.NN.SS.xxxx | UQ-401 → EARS.01.03.f604 |
+| QA-XXX (Quality Attribute) | EARS.NN.SS.xxxx | QA-001 → EARS.01.04.0201 |
 
 **Content Preservation Rules**:
 
@@ -1034,24 +1039,24 @@ fix_mode:
 ### Element ID Migration
 | Original | Fixed | Location |
 |----------|-------|----------|
-| ER-001 | EARS.01.25001 | Line 45 |
-| SR-101 | EARS.01.25101 | Line 78 |
+| ER-001 | EARS.01.03.5e2a | Line 45 |
+| SR-101 | EARS.01.03.9c11 | Line 78 |
 
 ### Threshold References Added
 | Statement | Threshold Added |
 |-----------|-----------------|
-| EARS.01.25001 | @threshold: PRD.01.auth.p95 |
+| EARS.01.03.5e2a | @threshold: PRD.01.auth.p95 |
 
 ### Cumulative Tags Added
-- @brd: BRD.01.0103 (added)
-- @prd: PRD.01.0702 (verified)
+- @brd: BRD.01.07.a7f3 (added)
+- @prd: PRD.01.09.1dbc (verified)
 
 ## Manual Review Required
 
 ### Compound Statements (Split Required)
 | Statement ID | Issue | Recommendation |
 |--------------|-------|----------------|
-| EARS.01.25015 | Multiple actions | Split into EARS.01.25015, .016 |
+| EARS.01.03.5e2a | Multiple actions | Split into EARS.01.03.5e2a, EARS.01.03.6b08 |
 
 ### Ambiguous Terms
 | Location | Term | Suggested Replacement |
@@ -1335,7 +1340,7 @@ After autopilot completion:
 - [ ] No ambiguous terms in statements
 - [ ] Each statement is atomic (one testable concept)
 - [ ] Quality Attributes section uses tabular format
-- [ ] Element IDs use EARS.NN.25.SS format
+- [ ] Element IDs use EARS.NN.SS.xxxx format
 - [ ] Source Document has single @prd value
 
 ---
@@ -1372,30 +1377,24 @@ After autopilot completion:
 
 ### Skills (Delegated)
 
-- **EARS Skill**: `.claude/skills/doc-ears/SKILL.md` - EARS creation rules and WHEN-THE-SHALL syntax
-- **EARS Validator Skill**: `.claude/skills/doc-ears-validator/SKILL.md` - Validation rules and error codes
-- **PRD Validator Skill**: `.claude/skills/doc-prd-validator/SKILL.md` - PRD readiness validation
-- **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md` - Real-time quality feedback
-- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md` - Element ID format
+- **EARS Skill**: `../doc-ears/SKILL.md` - EARS creation rules and WHEN-THE-SHALL syntax
+- **EARS Validator Skill**: `../doc-ears-validator/SKILL.md` - Validation rules and error codes
+- **PRD Validator Skill**: `../doc-prd-validator/SKILL.md` - PRD readiness validation
+- **Quality Advisor Skill**: `../quality-advisor/SKILL.md` - Real-time quality feedback
+- **Naming Standards Skill**: `../doc-naming/SKILL.md` - Element ID format
 
 ### Templates and Rules
 
-- **EARS Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- **EARS Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
-- **EARS Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- **EARS Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
-
-### Section Templates (for documents >800 lines)
-
-- Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- **EARS Template**: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+- **EARS Layer Spec**: `framework/layers/03_EARS/README.md`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **EARS Index Template**: `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md`
-- **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
-- **BRD Autopilot Skill**: `.claude/skills/doc-brd-autopilot/SKILL.md`
+- **SDD Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code (see `framework/README.md`)
+- **PRD Autopilot Skill**: `../doc-prd-autopilot/SKILL.md`
+- **BRD Autopilot Skill**: `../doc-brd-autopilot/SKILL.md`
 
 ---
 
@@ -1403,7 +1402,7 @@ After autopilot completion:
 
 **IMPORTANT**: Audit/review reports generated by this autopilot are formal project documents.
 
-See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
+See: `../REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
 ### Quick Reference
 
@@ -1429,8 +1428,9 @@ docs/03_EARS/
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 2.4 | 2026-02-26 | Migrated frontmatter to `metadata`; switched active references to `ai_dev_ssd_flow`; integrated `doc-ears-audit` with `.A_audit_report` preferred and `.R_review_report` legacy compatibility |
+| 2.5 | 2026-05-22 | Migrated from the legacy 12-layer model to the framework 8-layer model: downstream chain BDD/ADR/SPEC/TDD/IPLAN; 4-segment element IDs (`EARS.NN.SS.xxxx`); templates point to `framework/layers/03_EARS/`; removed dead validation-script references in favor of declarative checks; plugin-relative sibling-skill paths |
+| 2.4 | 2026-02-26 | Migrated frontmatter to `metadata`; switched active references to the framework layer paths; integrated `doc-ears-audit` with `.A_audit_report` preferred and `.R_review_report` legacy compatibility |
 | 2.3 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (EARS-NN) triggers review mode; Upstream-type input (PRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.2 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Final Review) with iterative Review -> Fix cycle using `doc-ears-reviewer` and `doc-ears-fixer`; Added `doc-ears-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score; Added Review Document Standards |
-| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (ER-XXX→EARS.NN.25.0XX, SR-XXX→EARS.NN.25.1XX, UB-XXX→EARS.NN.25.2XX, UQ-XXX→EARS.NN.25.4XX) |
+| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration of legacy category-prefixed IDs (ER/SR/UB/UQ) to the unified element-ID format |
 | 1.0 | 2026-02-08 | Initial skill creation with 5-phase workflow; Integrated doc-naming, doc-ears, doc-ears-validator, quality-advisor skills; Added EARS statement type reference (Event-Driven, State-Driven, Unwanted Behavior, Ubiquitous); Added requirement categorization and ID range mapping |

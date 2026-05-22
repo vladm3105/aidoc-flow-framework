@@ -200,7 +200,7 @@ Comparing thresholds across sections...
 
 ### 2a. Diagram Contract Compliance
 
-Validates PRD diagram contract requirements defined by `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md`.
+Validates PRD diagram contract requirements defined by the `mermaid-gen` skill and `framework/layers/02_PRD/README.md`.
 
 **Scope**:
 - Required PRD tags: `@diagram: c4-l2`, `@diagram: dfd-l1`, `@diagram: sequence-*`
@@ -229,11 +229,11 @@ Validates PRD requirements accurately reflect BRD source.
 **Detection**:
 ```
 Verifying PRD requirements map to BRD source...
-├── PRD.01.0101 → BRD.01.0101 (Multi-Provider Auth) ✓
-├── PRD.01.0102 → BRD.01.0102 (4D Authorization) ✓
-├── PRD.01.0103 → BRD.01.0103 (Trust Levels) ✓
-├── PRD.01.0109 → ??? ✗ NO BRD MAPPING
-├── BRD.01.0110 → ??? ✗ NO PRD MAPPING (deferred)
+├── PRD.01.08.1dbc → BRD.01.07.a7f3 (Multi-Provider Auth) ✓
+├── PRD.01.08.2e4f → BRD.01.07.b5c2 (4D Authorization) ✓
+├── PRD.01.08.3a9d → BRD.01.07.c6d1 (Trust Levels) ✓
+├── PRD.01.08.4f7b → ??? ✗ NO BRD MAPPING
+├── BRD.01.07.d8e0 → ??? ✗ NO PRD MAPPING (deferred)
 └── Result: 11/12 aligned, 1 orphan, 1 missing
 
 Scope Alignment:
@@ -302,7 +302,7 @@ Scanning for placeholder text...
 Validates `@brd:`, `@depends:`, and `@discoverability:` tags.
 
 **Scope**:
-- All `@brd: BRD.XX.XX.XX` tags reference valid BRD IDs
+- All `@brd: BRD.NN.SS.xxxx` tags reference valid BRD IDs
 - `@depends: PRD-XX` references exist
 - `@discoverability: PRD-XX` references exist
 - Tag format follows convention
@@ -311,9 +311,9 @@ Validates `@brd:`, `@depends:`, and `@discoverability:` tags.
 ```
 Validating traceability tags...
 ├── @brd tags: 15 found
-│   ├── BRD.01.0101 ✓ (exists in BRD-01)
-│   ├── BRD.01.0102 ✓
-│   ├── BRD.01.9901 ✗ NOT FOUND in BRD
+│   ├── BRD.01.07.a7f3 ✓ (exists in BRD-01)
+│   ├── BRD.01.07.b5c2 ✓
+│   ├── BRD.01.07.ff01 ✗ NOT FOUND in BRD
 │   └── ...
 ├── @depends tags: 2 found
 │   ├── PRD-06 ✓ (exists)
@@ -425,44 +425,44 @@ Reviewing customer-facing content (Section 10)...
 Validates element IDs and threshold tags follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `PRD.NN.xxxx` format
-- Element type codes valid for PRD (01-09, 11, 22, 24)
+- Element IDs use the canonical 4-segment `PRD.NN.SS.xxxx` format (`SS` = section number, `xxxx` = 4-char hex content hash)
+- The section segment (`SS`) matches the section in which the element is authored
 - Threshold tags use `@threshold: PRD.NN.key` format
-- No legacy patterns (US-NNN, FR-NNN, AC-NNN, F-NNN)
+- No legacy patterns (US-NNN, FR-NNN, AC-NNN, F-NNN, or 3-segment `PRD.NN.SSSS`)
 
 **Detection**:
 ```
 Validating naming compliance (per doc-naming skill)...
 ├── Element IDs: 24 found
-│   ├── PRD.01.0101 ✓ (valid format, code 01 valid for PRD)
-│   ├── PRD.01.0905 ✓ (valid format, code 09 valid for PRD)
-│   ├── PRD.01.2501 ✗ (code 25 not valid for PRD - EARS only)
+│   ├── PRD.01.08.1dbc ✓ (valid 4-segment, section 08 matches Functional Requirements)
+│   ├── PRD.01.09.0905 ✓ (valid 4-segment, section 09 matches Quality Attributes)
+│   ├── PRD.01.0101    ✗ (legacy 3-segment - re-segment to PRD.NN.SS.xxxx)
 │   └── ...
 ├── Threshold tags: 8 found
 │   ├── @threshold: PRD.01.perf.auth.p99 ✓
 │   ├── @threshold: perf.auth.p99 ✗ (missing PRD.NN prefix)
 │   └── ...
 ├── Legacy patterns: 2 found
-│   ├── US-001 ✗ (deprecated - use PRD.NN.09.SS)
-│   └── FR-003 ✗ (deprecated - use PRD.NN.01.SS)
+│   ├── US-001 ✗ (deprecated - use PRD.NN.SS.xxxx in Section 8)
+│   └── FR-003 ✗ (deprecated - use PRD.NN.SS.xxxx in Section 8)
 └── Result: 3 naming violations
 ```
 
 **Auto-Fix**:
-- Convert legacy patterns to unified format
+- Convert legacy patterns and 3-segment IDs to the canonical 4-segment format
 - Add missing `PRD.NN` prefix to threshold tags
-- Suggest correct element type codes
+- Recompute the section segment from the element's containing section
 
 **Error Codes**:
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-N001 | Error | Invalid element ID format |
-| REV-N002 | Error | Element type code not valid for PRD |
-| REV-N003 | Error | Legacy pattern detected (US-NNN, FR-NNN, etc.) |
+| REV-N001 | Error | Invalid element ID format (not 4-segment `PRD.NN.SS.xxxx`) |
+| REV-N002 | Error | Section segment does not match the element's containing section |
+| REV-N003 | Error | Legacy pattern detected (US-NNN, FR-NNN, 3-segment `PRD.NN.SSSS`, etc.) |
 | REV-N004 | Error | Threshold tag missing document reference |
 | REV-N005 | Warning | Threshold key format non-standard |
 
-**Reference**: See `doc-naming` skill for complete naming rules.
+**Reference**: See `doc-naming` skill and `framework/governance/ID_NAMING_STANDARDS.md` for complete naming rules.
 
 ---
 
@@ -976,8 +976,8 @@ docs/02_PRD/PRD-01_f1_iam/
 
 | Requirement | Reason | Note |
 |-------------|--------|------|
-| BRD.01.0110 | Device Trust | Marked P3, next cycle |
-| BRD.01.0112 | Time-Based Access | Marked P3, next cycle |
+| BRD.01.07.d8e0 | Device Trust | Marked P3, next cycle |
+| BRD.01.07.e1a4 | Time-Based Access | Marked P3, next cycle |
 
 ---
 

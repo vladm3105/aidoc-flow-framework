@@ -32,6 +32,8 @@ OP_SUFFIX = re.compile(r"-(audit|autopilot|fixer|reviewer|validator)$")
 MIGRATED: set[str] = {
     # PLM-B1
     "doc-tdd", "doc-iplan", "doc-flow", "skill-recommender", "project-init",
+    # PLM-B2
+    "doc-brd", "doc-prd", "doc-ears",
 }
 
 # Calibrated legacy fingerprints (see PLM-PLAN.md §Verification, dry-run Pass 2).

@@ -14,9 +14,9 @@ metadata:
     development_status: active
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD]
-    downstream_artifacts: [BDD, ADR, SYS]
-    version: "1.1"
-    last_updated: "2026-02-26"
+    downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
+    version: "1.2"
+    last_updated: "2026-05-22"
 ---
 
 # doc-ears
@@ -29,7 +29,7 @@ Create **EARS (Easy Approach to Requirements Syntax)** documents - Layer 3 artif
 
 **Upstream**: BRD (Layer 1), PRD (Layer 2)
 
-**Downstream Artifacts**: BDD (Layer 4), ADR (Layer 5), SYS (Layer 6)
+**Downstream Artifacts**: BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ## Prerequisites
 
@@ -49,12 +49,12 @@ Create **EARS (Easy Approach to Requirements Syntax)** documents - Layer 3 artif
 
 Before creating EARS, read:
 
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
 2. **Upstream BRD and PRD**: Read the BRD and PRD that drive this EARS
-3. **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 1.1, primary authority)
-4. **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation rules)
-5. **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-6. **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
+3. **Template**: `framework/layers/03_EARS/EARS-TEMPLATE.yaml` (single source of truth, embedded authoring guidance)
+4. **Layer README**: `framework/layers/03_EARS/README.md` (layer overview, syntax patterns, element-ID format)
+5. **ID Standards**: `framework/governance/ID_NAMING_STANDARDS.md` (element-ID and tag format)
+6. **Creation/Validation Rules**: this skill plus `framework/layers/03_EARS/EARS-TEMPLATE.yaml` (the template carries the authoring rules; validation is the skill's own declarative checklist below)
 
 ### Template Binding (CRITICAL)
 
@@ -86,7 +86,7 @@ Use `doc-ears` when:
 
 ## Document Structure (MANDATORY)
 
-Per EARS-MVP-TEMPLATE.md, EARS documents require these sections:
+Per `framework/layers/03_EARS/EARS-TEMPLATE.yaml`, EARS documents require these sections:
 
 | Section | Content |
 |---------|---------|
@@ -105,16 +105,16 @@ Per EARS-MVP-TEMPLATE.md, EARS documents require these sections:
 - **Version**: Semantic versioning (e.g., 1.0.0)
 - **Date Created/Last Updated**: YYYY-MM-DD
 - **Priority**: High/Medium/Low
-- **Source Document**: Single `@prd: PRD.NN.EE.SS` value (NO ranges, NO multiple @prd values)
+- **Source Document**: Single `@prd: PRD.NN.SS.xxxx` value (NO ranges, NO multiple @prd values)
 - **BDD-Ready Score**: Format `XX% (Target: ≥90%)`
 
 **Source Document Rule (E044)**:
 ```markdown
 # VALID - Single @prd reference
-| **Source Document** | @prd: PRD.01.0701 |
+| **Source Document** | @prd: PRD.01.09.1dbc |
 
 # INVALID - Range or multiple values
-| **Source Document** | @prd: PRD.12.1901 - @prd: PRD.12.1957 |
+| **Source Document** | @prd: PRD.12.09.1dbc - @prd: PRD.12.09.a6ce |
 ```
 
 ## EARS Syntax Patterns
@@ -168,35 +168,36 @@ for [scope/context].
 Always use triple backticks for EARS statements:
 
 ````markdown
-#### EARS.01.2501: Requirement Name
+#### EARS.01.03.c4d8: Requirement Name
 ```
 WHEN [condition],
 THE [component] SHALL [action]
 WITHIN [constraint].
 ```
-**Traceability**: @brd: BRD.01.0101 | @prd: PRD.01.0701
+**Traceability**: @brd: BRD.01.07.a7f3 | @prd: PRD.01.09.1dbc
 ````
 
-## Unified Element ID Format (MANDATORY)
+## Element ID Format (MANDATORY)
 
-**Pattern**: `EARS.{DOC_NUM}.{HASH}` (3 segments, dot-separated)
+**Pattern**: `EARS.{doc_id}.{section_id}.{hash}` (4 segments, dot-separated)
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| EARS Statement | 25 | EARS.02.2501 |
+| Segment | Meaning | Example |
+|---------|---------|---------|
+| `EARS` | Artifact prefix | EARS |
+| `doc_id` | Two-digit document number | 01 |
+| `section_id` | Two-digit section number (03 = Requirements) | 03 |
+| `hash` | 4-char hex content hash (SHA256, first 4 chars) | c4d8 |
 
-**Category ID Ranges**:
+**Example**: `EARS.01.03.c4d8`
 
-| Category | ID Range | Example |
-|----------|----------|---------|
-| Event-Driven | 001-099 | EARS.01.25001 |
-| State-Driven | 101-199 | EARS.01.25101 |
-| Unwanted Behavior | 201-299 | EARS.01.25201 |
-| Ubiquitous | 401-499 | EARS.01.25401 |
+Hash input: `"{doc_id}:{section_id}:{title}:{description}"`; compute
+`hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]`. Extend to 8 chars only
+on collision. See `framework/governance/ID_NAMING_STANDARDS.md` and
+`framework/layers/03_EARS/README.md`.
 
 > **REMOVED PATTERNS** - Do NOT use:
 > - Category prefixes: `E-XXX`, `S-XXX`, `Event-XXX`, `State-XXX`
-> - 3-segment format: `EARS.NN.EE`
+> - Legacy 3-segment / numeric type-code format: `EARS.NN.25SS`
 > - Dash-based: `EARS-NN-XXX`
 
 ## BDD-Ready Scoring System
@@ -247,8 +248,8 @@ Use tabular format for quality attribute requirements:
 
 | QA ID | Requirement Statement | Metric | Target | Priority | Measurement Method |
 |-------|----------------------|--------|--------|----------|-------------------|
-| EARS.NN.02.01 | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
-| EARS.NN.02.02 | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
+| EARS.NN.04.xxxx | THE [component] SHALL complete [operation] | Latency | p95 < NNms | High | [method] |
+| EARS.NN.04.xxxx | THE [component] SHALL process [workload] | Throughput | NN/s | Medium | [method] |
 
 ### Quality Attribute Categories
 
@@ -306,8 +307,8 @@ error:
 
 | Notation | Format | Artifacts | Purpose |
 |----------|--------|-----------|---------|
-| Dash | TYPE-NN | ADR, SPEC, CTR | Technical artifacts - document references |
-| Dot | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - element references |
+| Dash | TYPE-NN | SPEC, ADR, IPLAN | Document-level references |
+| Dot | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, ADR, TDD | Hierarchical artifacts - element references |
 
 ## Cumulative Tagging Requirements
 
@@ -321,8 +322,8 @@ error:
 
 **Required Tags** (Cumulative Tagging Hierarchy - Layer 3):
 ```markdown
-@brd: BRD.01.0103, BRD.01.0110
-@prd: PRD.01.0702, PRD.01.0715
+@brd: BRD.01.07.a7f3 | BRD.01.07.b210
+@prd: PRD.01.09.1dbc | PRD.01.09.a6ce
 ```
 ```
 
@@ -330,14 +331,14 @@ error:
 
 **Inline format** - Use pipes:
 ```markdown
-**Traceability**: @brd: BRD.02.0110 | @prd: PRD.02.0101 | @threshold: PRD.035.key
+**Traceability**: @brd: BRD.02.07.b210 | @prd: PRD.02.09.a6ce | @threshold: PRD.035.key
 ```
 
 **List format** - Also valid:
 ```markdown
 **Traceability**:
-- @brd: BRD.02.0110
-- @prd: PRD.02.0101
+- @brd: BRD.02.07.b210
+- @prd: PRD.02.09.a6ce
 - @threshold: PRD.035.category.key
 ```
 
@@ -347,10 +348,10 @@ error:
 
 ```markdown
 # INVALID - Numeric references to non-existent artifacts
-Downstream: BDD-01, ADR-02, REQ-03
+Downstream: BDD-01, ADR-02, SPEC-03
 
 # VALID - Generic downstream names
-Downstream: BDD, ADR, SYS, REQ, SPEC
+Downstream: BDD, ADR, SPEC, TDD, IPLAN
 ```
 
 ## File Size Limits and Splitting
@@ -425,7 +426,7 @@ Complete all required metadata fields:
 - Version
 - Dates
 - Priority
-- Source Document (single @prd: PRD.NN.EE.SS)
+- Source Document (single @prd: PRD.NN.SS.xxxx)
 - BDD-Ready Score
 
 ### Step 5: Categorize Requirements
@@ -462,17 +463,17 @@ Document all thresholds used in section 5.4.
 
 ### Step 11: Validate EARS
 
-Run validation scripts:
-```bash
-# EARS validation (must be in nested folder)
-python scripts/validate_ears.py --path docs/03_EARS/EARS-01_{slug}/EARS-01_{slug}.md
+The framework ships no runtime scripts — **this skill is the validator**. Apply
+the declarative checklist below (see also the Manual Checklist section). Validate
+against `framework/layers/03_EARS/EARS-TEMPLATE.yaml` and the standards in
+`framework/governance/` and `framework/layers/03_EARS/README.md`:
 
-# Cumulative tagging validation
-python ai_dev_ssd_flow/scripts/validate_tags_against_docs.py \
-  --artifact EARS-01 \
-  --expected-layers brd,prd \
-  --strict
-```
+- Document is in a nested folder `docs/03_EARS/EARS-NN_{slug}/`.
+- All required sections present (Document Control + Sections 1-6).
+- Every element ID is 4-segment `EARS.NN.SS.xxxx`.
+- Cumulative upstream tags present: `@brd` and `@prd` (Layers 1-2).
+- Traceability tags use pipe separators; no ranges; correct prefixes.
+- No numeric downstream references to artifacts that do not yet exist.
 
 ### Step 12: Commit Changes
 
@@ -483,22 +484,22 @@ Commit EARS file and traceability matrix together.
 ### Pre-Batch Verification
 
 Before starting batch creation:
-1. Read `EARS_SCHEMA.yaml` for current metadata requirements
+1. Read `framework/layers/03_EARS/EARS-TEMPLATE.yaml` for current metadata requirements
 2. Verify tag standards: `ears` (not `ears-requirements`)
 3. Verify document_type: `ears`
 4. Verify architecture format: `architecture_approaches: [value]` (array)
 
 ### Every 5-Document Checkpoint
 
-After creating every 5 EARS documents:
-1. Run validation: `python scripts/validate_ears.py --path docs/03_EARS/`
+After creating every 5 EARS documents, re-apply this skill's validation checklist:
+1. Re-run the declarative checklist (Step 11) across `docs/03_EARS/`
 2. Check for tag consistency, document_type, Source Document format
 3. Fix any errors before continuing
 
 ### End-of-Session Validation
 
 Before ending session:
-1. Run full validation: `python scripts/validate_ears.py`
+1. Re-apply the full validation checklist across all EARS documents
 2. Verify 0 errors
 3. Update EARS-00_index.md if document counts changed
 
@@ -531,10 +532,10 @@ Before ending session:
 
 - [ ] Document Control section uses table format
 - [ ] All required metadata fields completed
-- [ ] Source Document has single @prd: PRD.NN.EE.SS value
+- [ ] Source Document has single @prd: PRD.NN.SS.xxxx value
 - [ ] All statements use WHEN-THE-SHALL-WITHIN format
 - [ ] Requirements categorized (Event, State, Unwanted, Ubiquitous)
-- [ ] Element IDs use EARS.NN.25.SS format
+- [ ] Element IDs use 4-segment EARS.NN.SS.xxxx format
 - [ ] SHALL/SHOULD/MAY keywords used correctly
 - [ ] Quantifiable constraints with @threshold tags
 - [ ] No ambiguous terms ("fast", "efficient")
@@ -552,8 +553,8 @@ Before ending session:
 | `ears-requirements` tag | Use `ears` |
 | `document_type: engineering-requirements` | Use `document_type: ears` |
 | `architecture_approach: value` | Use `architecture_approaches: [value]` |
-| `#### Event-001: Title` | Use `#### EARS.01.2501: Title` |
-| `Source Document: PRD-NN` | Use `Source Document: @prd: PRD.NN.EE.SS` |
+| `#### Event-001: Title` | Use `#### EARS.01.03.c4d8: Title` |
+| `Source Document: PRD-NN` | Use `Source Document: @prd: PRD.NN.SS.xxxx` |
 | Multiple @prd in Source Document | Use single @prd, list others in Upstream Sources |
 | `@brd: X @prd: Y` (no separators) | Use `@brd: X \| @prd: Y` |
 | `Downstream: BDD-01, ADR-02` | Use `Downstream: BDD, ADR` |
@@ -568,7 +569,7 @@ Before ending session:
 
 ```
 LOOP:
-  1. Run: python scripts/validate_ears.py --path {doc_path}
+  1. Apply this skill's declarative validation checklist (Step 11) to {doc_path}
   2. IF errors fixed: GOTO LOOP (re-validate)
   3. IF warnings fixed: GOTO LOOP (re-validate)
   4. IF unfixable issues: Log for manual review
@@ -595,17 +596,12 @@ The BDD will:
 
 ## Related Resources
 
-- **Template**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md` (Template Version 3.0, primary authority)
-- **Schema**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml` (machine-readable validation)
-- **Creation Rules**: `ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md`
-- **Validation Rules**: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md`
-- **Threshold Naming**: `ai_dev_ssd_flow/THRESHOLD_NAMING_RULES.md`
-
-**Section Templates** (for documents >800 lines):
-- Index template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_ssd_flow/03_EARS/EARS-SECTION-TEMPLATE.md`
+- **Template**: `framework/layers/03_EARS/EARS-TEMPLATE.yaml` (single source of truth, primary authority)
+- **Layer README**: `framework/layers/03_EARS/README.md` (overview, syntax patterns, element-ID format)
+- **Creation/Validation Rules**: this skill + `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+- **ID Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Index template**: `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`
 
 ## Quick Reference
 
@@ -615,8 +611,8 @@ The BDD will:
 | **Layer** | 3 |
 | **Tags Required** | @brd, @prd (2 tags) |
 | **BDD-Ready Score** | ≥90% required for "Approved" status |
-| **Element ID Format** | `EARS.NN.25.SS` (3-segment unified format) |
-| **Source Document** | Single @prd: PRD.NN.EE.SS value |
+| **Element ID Format** | `EARS.NN.SS.xxxx` (4-segment format) |
+| **Source Document** | Single @prd: PRD.NN.SS.xxxx value |
 | **Downstream References** | Generic names only (no numeric IDs) |
 | **File Size Limit** | 1200 lines maximum |
 | **Next Skill** | doc-bdd |
@@ -627,5 +623,6 @@ The BDD will:
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.1 | 2026-02-26 | Migrated frontmatter to `metadata` schema; updated validation and standards references to `ai_dev_ssd_flow` paths | System |
+| 1.2 | 2026-05-22 | Migrated to framework 8-layer model: downstream BDD/ADR/SPEC/TDD/IPLAN; 4-segment element IDs `EARS.NN.SS.xxxx`; `framework/layers/03_EARS/` template paths; removed runtime validation scripts in favor of declarative checklist | System |
+| 1.1 | 2026-02-26 | Migrated frontmatter to `metadata` schema; updated validation and standards references | System |
 | 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |

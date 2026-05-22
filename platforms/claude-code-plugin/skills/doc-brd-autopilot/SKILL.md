@@ -16,11 +16,10 @@ metadata:
     development_status: active
     skill_category: automation-workflow
     upstream_artifacts: []
-    downstream_artifacts: [PRD, EARS, BDD, ADR]
+    downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "3.8"
-    last_updated: "2026-03-05"
-  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
-
+    last_updated: "2026-05-22"
+    versioning_policy: "tracks BRD-TEMPLATE schema_version"
 ---
 
 # doc-brd-autopilot
@@ -31,7 +30,7 @@ Automated **Business Requirements Document (BRD)** generation pipeline that proc
 
 **Layer**: 1 (Entry point - no upstream document dependencies)
 
-**Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+**Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
@@ -63,7 +62,7 @@ This autopilot orchestrates the following skills:
 
 | Skill | Purpose | Phase |
 |-------|---------|-------|
-| `doc-naming` | Element ID format (BRD.NN.xxxx), threshold tags, legacy pattern detection | All Phases |
+| `doc-naming` | Element ID format (BRD.NN.SS.xxxx), threshold tags, legacy pattern detection | All Phases |
 | `doc-brd` | BRD creation rules, template, section structure, Platform vs Feature guidance | Phase 3: BRD Generation |
 | `quality-advisor` | Real-time quality feedback during BRD generation | Phase 3: BRD Generation |
 | `doc-brd-audit` | **Unified quality gate**: structure validation + content review + PRD-Ready scoring | Phase 4-5: Audit |
@@ -82,9 +81,9 @@ This autopilot orchestrates the following skills:
 
 All generation/review/fix orchestration MUST align to:
 
-- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` (human-readable source of truth)
-- `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml` (autopilot template)
-- `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` (shared validation contract)
+- `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (single source of truth — template with embedded authoring guidance)
+- `framework/layers/01_BRD/README.md` (layer overview, element-ID format, BRD types)
+- `framework/governance/ID_NAMING_STANDARDS.md` (element-ID and tag standards)
 
 **Mandatory Alignment Areas**:
 - 18-section structure and subsection numbering
@@ -102,7 +101,7 @@ When generating BRD document instances, the autopilot MUST:
 ### 1. Document Type
 
 **Read** `instance_document_type` from template:
-- Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+- Source: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 - Field: `metadata.instance_document_type: "brd-document"`
 
 **Set** `document_type` in generated document frontmatter:
@@ -125,7 +124,7 @@ custom_fields:
 ### 2. Deliverable Type
 
 **Read** `deliverable_type` from template:
-- Source: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- Source: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 - Field: `custom_fields.deliverable_type: "code"`
 - Valid values: `code`, `document`, `ux`, `risk`, `process`
 
@@ -262,11 +261,12 @@ BRD has no upstream document type. Smart detection works differently:
        - Simple patterns: `FR-XXX`, `AC-XXX`, `BO-XXX`, `NFR-XXX`
        - Compound patterns: `FR-{DOMAIN}-XXX` (e.g., `FR-CICD-001`, `FR-AUTH-002`)
        - Any pattern matching: `(FR|AC|BO|NFR|QA|BC)(-[A-Za-z0-9]+)*-[0-9]+`
-    b. Convert ALL detected IDs to BRD.NN.xxxx format:
-       - `FR-*` → `BRD.NN.01.SS` (Functional Requirement)
-       - `NFR-*` → `BRD.NN.02.SS` (Quality Attribute)
-       - `AC-*` → `BRD.NN.06.SS` (Acceptance Criteria)
-       - `BO-*` → `BRD.NN.23.SS` (Business Objective)
+    b. Convert ALL detected IDs to the 4-segment `BRD.NN.SS.xxxx` format
+       (`NN` = doc number, `SS` = section number, `xxxx` = 4-hex content hash):
+       - `FR-*` → BRD functional-requirement element in its section
+       - `NFR-*` → BRD quality-attribute element in its section
+       - `AC-*` → BRD acceptance-criteria element in its section
+       - `BO-*` → BRD business-objective element in its section
     c. Validate ALL element IDs against `doc-naming` patterns BEFORE writing
     d. BLOCK generation if any legacy patterns remain after transformation
   - Run Generate Mode (Phase 1-5)
@@ -656,7 +656,7 @@ ACTION REQUIRED: Create missing reference document or update source references.
 Determine if creating a Platform BRD or Feature BRD.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-brd` skill.
-> See: `.claude/skills/doc-brd/SKILL.md` Section "BRD Categorization: Platform vs Feature"
+> See: `../doc-brd/SKILL.md` Section "BRD Categorization: Platform vs Feature"
 
 **Questionnaire** (automated):
 
@@ -696,10 +696,10 @@ ls docs/01_BRD/BRD-01_* 2>/dev/null || echo "ERROR: Platform BRD-01 required"
 Generate the BRD document with real-time quality feedback.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-brd` skill.
-> See: `.claude/skills/doc-brd/SKILL.md` for complete BRD creation guidance.
+> See: `../doc-brd/SKILL.md` for complete BRD creation guidance.
 >
 > **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
-> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
+> See: `../quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -712,8 +712,8 @@ Generate the BRD document with real-time quality feedback.
    ```
 
 2. **Load BRD Template**:
-   - Primary: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-   - Comprehensive: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+   - Single source of truth: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+   - Index template: `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
 
 3. **Generate Document Control Section**:
    | Field | Value |
@@ -746,7 +746,7 @@ Generate the BRD document with real-time quality feedback.
    - Section 1: Executive Summary
    - Section 2: Business Context
    - Section 3: Stakeholder Analysis
-   - Section 4: Business Requirements (using BRD.NN.01.SS format)
+   - Section 4: Business Requirements (using BRD.NN.SS.xxxx element-ID format)
    - Section 5: Success Criteria
    - Section 6: Constraints and Assumptions
    - Section 7: Architecture Decision Requirements
@@ -755,17 +755,20 @@ Generate the BRD document with real-time quality feedback.
 
 5. **Generate Section 7.2: Architecture Decision Requirements**:
 
-   **7 Mandatory ADR Topic Categories** (per `doc-brd` skill):
+   **7 Mandatory ADR Topic Categories** (per `doc-brd` skill). Each topic is a
+   Section 7.2 element carrying a `BRD.NN.SS.xxxx` element ID (no numeric
+   type-code scheme — IDs are content-hash based per
+   `framework/governance/ID_NAMING_STANDARDS.md`):
 
-   | # | Category | Element ID | Fields Required |
-   |---|----------|------------|-----------------|
-   | 1 | Infrastructure | BRD.NN.32.01 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 2 | Data Architecture | BRD.NN.32.02 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 3 | Integration | BRD.NN.32.03 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 4 | Security | BRD.NN.32.04 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 5 | Observability | BRD.NN.32.05 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 6 | AI/ML | BRD.NN.32.06 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
-   | 7 | Technology Selection | BRD.NN.32.07 | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | # | Category | Fields Required |
+   |---|----------|-----------------|
+   | 1 | Infrastructure | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 2 | Data Architecture | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 3 | Integration | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 4 | Security | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 5 | Observability | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 6 | AI/ML | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
+   | 7 | Technology Selection | Status, Business Driver, Constraints, Alternatives, Cloud Comparison |
 
    **Status Values**: `Selected`, `Pending`, `N/A`
 
@@ -776,7 +779,7 @@ Generate the BRD document with real-time quality feedback.
 6. **Real-Time Quality Feedback** (via `quality-advisor` skill):
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
-   - Validate element ID format compliance (BRD.NN.xxxx)
+   - Validate element ID format compliance (BRD.NN.SS.xxxx)
    - Check for placeholder text ([TBD], TODO, XXX)
    - Flag issues early to reduce post-generation rework
 
@@ -1010,17 +1013,15 @@ Generate the BRD document with real-time quality feedback.
 After BRD generation, validate structure and PRD-Ready score.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-brd-audit` skill (unified quality gate).
-> See: `.claude/skills/doc-brd-audit/SKILL.md` for complete validation and review rules.
+> See: `../doc-brd-audit/SKILL.md` for complete validation and review rules.
 
-**Validation Command**:
+**Validation Approach** (the plugin skill *is* the validator — no external scripts):
 
-```bash
-# Unified BRD core validation (primary)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-
-# Optional full tiered validation (includes advisory checks)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
-```
+The autopilot delegates to `doc-brd-audit`, which applies the declarative
+checklist below. There is no runtime validation script; the authoritative
+rules live in `framework/layers/01_BRD/README.md`,
+`framework/layers/01_BRD/BRD-TEMPLATE.yaml`, and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Validation Checks**:
 
@@ -1029,20 +1030,20 @@ bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
 | YAML Frontmatter | Valid metadata fields | BRD-E001 to BRD-E005 |
 | Section Structure | 18 required sections | BRD-E006 to BRD-E008 |
 | Document Control | All required fields | BRD-E009 |
-| Business Objectives | BRD.NN.23.SS format | BRD-W001 |
-| Business Requirements | BRD.NN.01.SS format | BRD-W002 |
+| Business Objectives | BRD.NN.SS.xxxx format | BRD-W001 |
+| Business Requirements | BRD.NN.SS.xxxx format | BRD-W002 |
 | Section 7.2 ADR Topics | All 7 categories present | BRD-E013 to BRD-E018 |
-| Element ID Format | BRD.NN.xxxx (3-segment) | BRD-E019 to BRD-E021 |
+| Element ID Format | BRD.NN.SS.xxxx (4-segment, 4-hex hash) | BRD-E019 to BRD-E021 |
 | PRD-Ready Score | >= 90% | BRD-W004 |
 
 **Auto-Fix Actions**:
 
 | Issue | Auto-Fix Action |
 |-------|-----------------|
-| Invalid element ID format | Convert to BRD.NN.xxxx format |
+| Invalid element ID format | Convert to BRD.NN.SS.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
-| Deprecated ID patterns (BO-XXX, FR-XXX) | Convert to unified format |
+| Deprecated ID patterns (BO-XXX, FR-XXX) | Convert to 4-segment format |
 | Missing PRD-Ready Score | Calculate and insert |
 
 **Validation Loop**:
@@ -1165,8 +1166,8 @@ After passing the fix cycle:
    - N/A topics have explicit reasons
 
 3. **Element ID Compliance** (per `doc-naming` skill):
-   - All IDs use BRD.NN.xxxx format
-  - Element type codes valid for BRD (01, 02, 03, 04, 05, 06, 07, 08, 09, 10, 22, 23, 24, 32)
+   - All IDs use the 4-segment BRD.NN.SS.xxxx format (NN = doc, SS = section, xxxx = 4-hex content hash)
+   - No numeric element-type-code scheme — IDs are content-hash based per `framework/governance/ID_NAMING_STANDARDS.md`
    - No legacy patterns (BO-XXX, FR-XXX, AC-XXX, BC-XXX)
 
 4. **PRD-Ready Report**:
@@ -1186,10 +1187,10 @@ After passing the fix cycle:
    ```
 
 5. **Traceability Matrix Update**:
-   ```bash
-   # Update BRD-00_TRACEABILITY_MATRIX.md
-   python ai_dev_ssd_flow/scripts/validate_all.py ai_dev_ssd_flow --layer BRD
-   ```
+   - Update the project BRD index (`docs/01_BRD/BRD-00_index.md`) with the new
+     BRD entry, upstream sources, and downstream artifacts.
+   - Apply the traceability rules in `framework/governance/TRACEABILITY.md`.
+   - The skill performs this update directly; there is no runtime script.
 
 #### 5.6 Drift Cache Verification (MANDATORY)
 
@@ -1511,9 +1512,9 @@ flowchart TD
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Legacy element ID | Section 4:L45 | Convert BO-001 to BRD.01.2301 |
+| 1 | Legacy element ID | Section 4:L45 | Convert BO-001 to BRD.01.02.a7f3 |
 | 2 | Missing PRD-Ready score | Document Control | Calculate and insert |
-| 3 | Invalid ID format | Section 5:L78 | Convert FR-001 to BRD.01.0101 |
+| 3 | Invalid ID format | Section 5:L78 | Convert FR-001 to BRD.01.04.1dbc |
 | ... | ... | ... | ... |
 
 ## Manual Review Required
@@ -1536,7 +1537,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # 18 sections, Document Control
-    - element_id_compliance     # BRD.NN.xxxx format
+    - element_id_compliance     # BRD.NN.SS.xxxx format
     - adr_topics_validation     # 7 ADR categories in Section 7.2
     - platform_feature_check    # Correct section handling
     - cumulative_tags           # Traceability references
@@ -1621,11 +1622,11 @@ flowchart TD
 
 | Category | Issue | Auto-Fix Action | Preserves Content |
 |----------|-------|-----------------|-------------------|
-| **Element IDs** | Legacy BO-XXX format | Convert to BRD.NN.23.SS | ✅ |
-| **Element IDs** | Legacy FR-XXX format | Convert to BRD.NN.01.SS | ✅ |
-| **Element IDs** | Legacy AC-XXX format | Convert to BRD.NN.06.SS | ✅ |
-| **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.03.SS | ✅ |
-| **Element IDs** | Invalid type code for BRD | Suggest context-appropriate valid BRD code (manual classification if ambiguous) | ✅ |
+| **Element IDs** | Legacy BO-XXX format | Convert to BRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy FR-XXX format | Convert to BRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy AC-XXX format | Convert to BRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy BC-XXX format | Convert to BRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy 3-segment ID (BRD.NN.xxxx) | Convert to 4-segment BRD.NN.SS.xxxx | ✅ |
 | **Sections** | Missing Document Control fields | Add from template | ✅ |
 | **Sections** | Missing traceability section | Insert from template | ✅ |
 | **Sections** | Missing PRD-Ready score | Calculate and insert | ✅ |
@@ -1650,21 +1651,23 @@ flowchart TD
 
 **Element ID Migration**:
 
+All legacy element-ID patterns convert to the 4-segment `BRD.NN.SS.xxxx`
+format (NN = doc number, SS = section number, xxxx = 4-hex content hash from
+SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`). There is no numeric
+element-type-code scheme.
+
 | Legacy Pattern | New Format | Example |
 |----------------|------------|---------|
-| `BO-XXX` | `BRD.NN.23.SS` | BO-001 → BRD.01.2301 |
-| `FR-XXX` | `BRD.NN.01.SS` | FR-001 → BRD.01.0101 |
-| `AC-XXX` | `BRD.NN.06.SS` | AC-001 → BRD.01.0601 |
-| `BC-XXX` | `BRD.NN.03.SS` | BC-001 → BRD.01.0301 |
-| `ADR-T-XXX` | `BRD.NN.32.SS` | ADR-T-001 → BRD.01.3201 |
+| `BO-XXX` | `BRD.NN.SS.xxxx` | BO-001 → BRD.01.02.a7f3 (business objective in section 2) |
+| `FR-XXX` | `BRD.NN.SS.xxxx` | FR-001 → BRD.01.04.1dbc (functional requirement in section 4) |
+| `AC-XXX` | `BRD.NN.SS.xxxx` | AC-001 → BRD.01.09.5e2a (acceptance criterion in section 9) |
+| `BC-XXX` | `BRD.NN.SS.xxxx` | BC-001 → BRD.01.06.8f4c (business constraint in section 6) |
+| `ADR-T-XXX` | `BRD.NN.SS.xxxx` | ADR-T-001 → BRD.01.07.e5b1 (architecture topic in section 7.2) |
+| Legacy 3-segment `BRD.NN.xxxx` | `BRD.NN.SS.xxxx` | BRD.01.0101 → BRD.01.04.1dbc |
 
-**Element Type Code Migration** (v2.3):
-
-| Invalid Code | Correct Action | Context | Example |
-|--------------|----------------|---------|---------|
-| 25 in BRD | Manual reclassification to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) | Business content section | BRD.01.2501 → BRD.01.2301 (if business objective) |
-
-**Note**: Code 25 is valid only for EARS documents (EARS Statement). In BRD, code 33 is not accepted by the standardized BRD validator; use a context-appropriate valid BRD code.
+**Note**: The 8-layer model assigns IDs by document/section position plus a
+content hash — see `framework/governance/ID_NAMING_STANDARDS.md`. Test
+categories and similar concerns live as section content, not as ID codes.
 
 **Broken Link Fixes** (v2.3):
 
@@ -1689,7 +1692,7 @@ flowchart TD
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 4:L45 | Converted BO-001 → BRD.01.2301 |
+| 1 | Legacy element ID | Section 4:L45 | Converted BO-001 → BRD.01.02.a7f3 |
 | 2 | Missing PRD-Ready score | Document Control | Added 94% with breakdown |
 | 3 | Missing Cloud Comparison | Section 7.2.3 | Added template table |
 | ... | ... | ... | ... |
@@ -1750,10 +1753,11 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    BO_XXX_to_BRD_NN_23_SS: true   # BO-001 → BRD.01.2301
-    FR_XXX_to_BRD_NN_xxxx: true   # FR-001 → BRD.01.0101
-    AC_XXX_to_BRD_NN_06_SS: true   # AC-001 → BRD.01.0601
-    BC_XXX_to_BRD_NN_03_SS: true   # BC-001 → BRD.01.0301
+    BO_XXX_to_BRD_NN_SS_xxxx: true   # BO-001 → BRD.01.02.a7f3
+    FR_XXX_to_BRD_NN_SS_xxxx: true   # FR-001 → BRD.01.04.1dbc
+    AC_XXX_to_BRD_NN_SS_xxxx: true   # AC-001 → BRD.01.09.5e2a
+    BC_XXX_to_BRD_NN_SS_xxxx: true   # BC-001 → BRD.01.06.8f4c
+    legacy_3seg_to_4seg: true        # BRD.01.0101 → BRD.01.04.1dbc
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -2145,15 +2149,17 @@ jobs:
 
 ## Related Resources
 
-- **BRD Creation Skill**: `.claude/skills/doc-brd/SKILL.md`
-- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` (unified quality gate)
-- **Quality Advisor Skill**: `.claude/skills/quality-advisor/SKILL.md`
-- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
-- **BRD Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-- **Platform vs Feature Guide**: `framework/PLATFORM_VS_FEATURE_BRD.md`
-- **PRD Autopilot Skill**: `.claude/skills/doc-prd-autopilot/SKILL.md`
+- **BRD Creation Skill**: `../doc-brd/SKILL.md`
+- **BRD Audit Skill**: `../doc-brd-audit/SKILL.md` (unified quality gate)
+- **BRD Fixer Skill**: `../doc-brd-fixer/SKILL.md`
+- **Quality Advisor Skill**: `../quality-advisor/SKILL.md`
+- **Naming Standards Skill**: `../doc-naming/SKILL.md`
+- **BRD Template**: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- **BRD Layer Overview**: `framework/layers/01_BRD/README.md`
+- **BRD Index Template**: `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
+- **ID Naming Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Governance**: `framework/governance/`
+- **PRD Autopilot Skill**: `../doc-prd-autopilot/SKILL.md`
 
 ---
 

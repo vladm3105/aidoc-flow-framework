@@ -16,11 +16,11 @@ metadata:
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BRD, Audit Report]
-    downstream_artifacts: [Fixed BRD, Fix Report]
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "3.1"
     last_updated: "2026-03-05"
-  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+  versioning_policy: "tracks BRD-TEMPLATE schema_version"
 
 ---
 
@@ -61,7 +61,7 @@ Use `doc-brd-fixer` when:
 | Skill | Purpose | When Used |
 |-------|---------|-----------|
 | `doc-brd-audit` | Source of issues to fix (REQUIRED) | Input (reads audit report) |
-| `doc-naming` | Element ID standards | Fix element IDs |
+| `doc-naming` | Element ID standards (`framework/governance/ID_NAMING_STANDARDS.md`) | Fix element IDs |
 | `doc-brd` | BRD creation rules | Create missing sections |
 
 **2-Skill Model**:
@@ -313,37 +313,60 @@ def fix_link_path(brd_location: str, target_path: str) -> str:
 
 ### Phase 3: Fix Element IDs
 
-Converts invalid element IDs to correct format.
+Converts invalid element IDs to the 4-segment standard.
+
+**Target format** (`framework/governance/ID_NAMING_STANDARDS.md`):
+
+```text
+Format:  BRD.{doc_id}.{section_id}.{hash}
+Example: BRD.01.07.a7f3
+```
+
+- `doc_id` — two-digit document number (e.g., `01`)
+- `section_id` — two-digit section number where the element lives (e.g., `07` for Functional Requirements)
+- `hash` — 4-char hex content hash (SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 chars; extend to 8 on collision)
+
+There is **no numeric element-type-code scheme** in the 8-layer model — the
+section number carries placement, and the hash carries identity.
 
 **Conversion Rules**:
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `BRD.NN.25.SS` | Code 25 invalid for BRD | Manual remap to context-appropriate valid BRD code (`23`, `24`, `22`, `08`, etc.) |
-| `BO-XXX` | Legacy pattern | `BRD.NN.23.SS` |
-| `FR-XXX` | Legacy pattern | `BRD.NN.01.SS` |
-| `AC-XXX` | Legacy pattern | `BRD.NN.06.SS` |
-| `BC-XXX` | Legacy pattern | `BRD.NN.03.SS` |
+| `BRD.NN.xxxx` (3-segment) | Legacy 3-segment ID | Re-derive as `BRD.NN.SS.xxxx`: keep `doc_id`, set `section_id` from the element's section, compute the 4-hex hash |
+| `BRD.NN.TT.SS` (numeric type-code) | Legacy type-code scheme | Drop the numeric type code; re-derive as `BRD.NN.SS.xxxx` using the section number + content hash |
+| `BO-XXX` / `FR-XXX` / `AC-XXX` / `BC-XXX` | Legacy prefix pattern | Re-derive as `BRD.NN.SS.xxxx` (`SS` = the section the item belongs to) |
 
-**Type Code Mapping** (BRD-specific):
-
-| Invalid Code | Valid Code | Element Type |
-|--------------|------------|--------------|
-| 19 | 22 | Feature Item (deprecated 19) |
-| 31 | 32 | Architecture Topic (deprecated 31) |
-
-For code `25` in BRD context, do not auto-convert to a fixed code; classify by section semantics and remap manually.
+**Document-level (dash) references** stay in dash form — `SPEC-NN`, `ADR-NN`,
+`IPLAN-NN` (no hash). Element-level references inside hierarchical artifacts use
+the dotted 4-segment form.
 
 **Regex Patterns**:
 
 ```python
-# Find element IDs with invalid type codes for BRD
-invalid_brd_type_25 = r'BRD\.(\d{2})\.25\.(\d{2})'
-# No fixed replacement for BRD type 25; requires section-aware remapping
+# Find legacy 3-segment IDs (no section_id between doc_id and hash)
+legacy_3seg = r'\bBRD\.(\d{2})\.([0-9a-f]{4})\b'
 
-# Find legacy patterns
-legacy_bo = r'###\s+BO-(\d+):'
-legacy_fr = r'###\s+FR-(\d+):'
+# Find legacy numeric type-code IDs (4 numeric segments)
+legacy_typecode = r'\bBRD\.(\d{2})\.(\d{2})\.(\d{2})\b'
+
+# Find legacy prefix patterns
+legacy_prefix = r'###\s+(BO|FR|AC|BC)-(\d+):'
+
+# Valid target: BRD.NN.SS.xxxx  (xxxx = 4 hex chars)
+valid_id = r'\bBRD\.(\d{2})\.(\d{2})\.([0-9a-f]{4})\b'
+```
+
+**Hash Re-derivation**:
+
+```python
+import hashlib
+
+def derive_element_id(doc_id: str, section_id: str, title: str, description: str) -> str:
+    """Derive a 4-segment element ID per ID_NAMING_STANDARDS.md."""
+    key = f"{doc_id}:{section_id}:{title[:100].lower()}:{description[:100].lower()}"
+    h = hashlib.sha256(key.encode("utf-8")).hexdigest()[:4]
+    return f"BRD.{doc_id}.{section_id}.{h}"  # extend hash to 8 chars on collision
 ```
 
 ---
@@ -417,10 +440,10 @@ def renumber_sibling_headings(content: str, section_prefix: str, insert_at: floa
 
 #### 4.3 Template Compliance Contract (NEW in v2.5)
 
-All content fixes MUST align to the canonical template:
+All content fixes MUST align to the canonical template (single source of truth):
 
-- `ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- `ucx_framework/ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.yaml`
+- `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- `framework/layers/01_BRD/README.md`
 
 **Canonical Subsection Anchors (MVP)**:
 
@@ -818,35 +841,41 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 
 | Change Type | Auto-Action | Example |
 |-------------|-------------|---------|
-| New requirement added | Append with generated ID | `BRD.01.0113` |
+| New requirement added | Append with derived ID | `BRD.01.07.a7f3` |
 | Threshold value changed | Find & replace value | `timeout: 30 → 45` |
 | Reference updated | Update `@ref:` path | Path correction |
 | Version incremented | Update version reference | `v1.2 → v1.3` |
 
 **ID Generation for New Requirements**:
 
+IDs are content-derived hashes, not sequential numbers (see
+`framework/governance/ID_NAMING_STANDARDS.md`).
+
 ```python
-def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_ids: list) -> str:
+import hashlib
+
+def derive_new_id(doc_type: str, doc_id: str, section_id: str,
+                  title: str, description: str, existing_ids: list) -> str:
     """
-    Generate next sequential ID for new requirement.
+    Derive a 4-segment element ID for a new requirement.
 
     Args:
-        doc_type: 'BRD', 'PRD', etc.
-        doc_num: '01', '02', etc.
-        element_type: '01' (Functional), '02' (Quality), etc.
-        existing_ids: List of existing IDs in document
+        doc_type:   'BRD', 'PRD', etc.
+        doc_id:     '01', '02', etc.
+        section_id: two-digit section number the element lives in (e.g., '07')
+        title/description: element content used for the hash
+        existing_ids: existing IDs in document (collision check)
 
     Returns:
-        Next available ID (e.g., 'BRD.01.0113')
+        Derived ID (e.g., 'BRD.01.07.a7f3'); hash extends to 8 chars on collision.
     """
-    pattern = f"{doc_type}.{doc_num}.{element_type}."
-    matching = [id for id in existing_ids if id.startswith(pattern)]
-
-    if not matching:
-        return f"{pattern}01"
-
-    max_seq = max(int(id.split('.')[-1]) for id in matching)
-    return f"{pattern}{str(max_seq + 1).zfill(2)}"
+    key = f"{doc_id}:{section_id}:{title[:100].lower()}:{description[:100].lower()}"
+    digest = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    h = digest[:4]
+    candidate = f"{doc_type}.{doc_id}.{section_id}.{h}"
+    if candidate in existing_ids:               # collision → extend hash
+        candidate = f"{doc_type}.{doc_id}.{section_id}.{digest[:8]}"
+    return candidate
 ```
 
 **Auto-Merge Template for New Requirements**:
@@ -902,11 +931,11 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 | Added | GAP_Analysis.md | GAP-F1-07 | New gap identified for WebAuthn |
 
 **New Requirements Added**:
-- BRD.01.0113: Passkey Authentication Support
-- BRD.01.0114: WebAuthn Fallback Mechanism
+- BRD.01.07.a7f3: Passkey Authentication Support
+- BRD.01.07.5e2a: WebAuthn Fallback Mechanism
 
 **Thresholds Updated**:
-- BRD.01.0205: session_idle_timeout: 30→45 min
+- BRD.01.09.1dbc: session_idle_timeout: 30→45 min
 
 **Impact**: PRD-01, EARS-01, ADR-01 may require review
 ```
@@ -993,10 +1022,10 @@ Documents requiring update after regeneration:
 - Instead, marked with `[DEPRECATED]` status:
 
 ```markdown
-### BRD.01.0105: Legacy Authentication Method [DEPRECATED]
+### BRD.01.07.8f4c: Legacy Authentication Method [DEPRECATED]
 
 > **Status**: DEPRECATED (upstream removed 2026-02-10T16:00:00)
-> **Reason**: Replaced by BRD.01.0113 (Passkey Authentication)
+> **Reason**: Replaced by BRD.01.07.a7f3 (Passkey Authentication)
 > **Action**: Retain for traceability; do not implement
 
 **Original Requirement**: {original_text}
@@ -1042,10 +1071,10 @@ After processing drift, update `.drift_cache.json`:
   ],
   "deprecated_items": [
     {
-      "id": "BRD.01.0105",
+      "id": "BRD.01.07.8f4c",
       "deprecated_date": "2026-02-10T16:00:00",
       "reason": "Upstream removal",
-      "replaced_by": "BRD.01.0113"
+      "replaced_by": "BRD.01.07.a7f3"
     }
   ]
 }
@@ -1072,15 +1101,15 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| BRD.01.0113 | Added | F1_IAM:3.5 | Passkey authentication support |
-| BRD.01.0205 | Updated | F1_IAM:4.2 | Session timeout 30→45 min |
+| BRD.01.07.a7f3 | Added | F1_IAM:3.5 | Passkey authentication support |
+| BRD.01.09.1dbc | Updated | F1_IAM:4.2 | Session timeout 30→45 min |
 
 ### Tier 2 Auto-Merges (5-15%)
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| BRD.01.0114 | Added | GAP:GAP-F1-07 | WebAuthn fallback mechanism |
-| BRD.01.0704 | Added | GAP:GAP-F1-08 | New risk: credential phishing |
+| BRD.01.07.5e2a | Added | GAP:GAP-F1-07 | WebAuthn fallback mechanism |
+| BRD.01.12.e5b1 | Added | GAP:GAP-F1-08 | New risk: credential phishing |
 
 ### Tier 3 Archives (> 15%)
 
@@ -1094,7 +1123,7 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Deprecated Date | Reason | Replaced By |
 |----|-----------------|--------|-------------|
-| BRD.01.0105 | 2026-02-10T16:00:00 | Upstream removed | BRD.01.0113 |
+| BRD.01.07.8f4c | 2026-02-10T16:00:00 | Upstream removed | BRD.01.07.a7f3 |
 
 ### Version Changes
 
@@ -1269,8 +1298,10 @@ custom_fields:
 
 ## Next Steps
 
-1. Run unified BRD core validation wrapper:
-  `bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory`
+1. Re-run the BRD structural checks via `/doc-brd-audit` (the skill is the
+   validator; it checks element ID format, structure, and cross-section rules
+   against `framework/governance/ID_NAMING_STANDARDS.md` and
+   `framework/layers/01_BRD/README.md`)
 2. Complete GAP_Foundation_Module_Gap_Analysis.md placeholder
 3. Address remaining [TODO] placeholders
 4. Run `/doc-brd-audit BRD-01` to verify fixes
@@ -1300,7 +1331,7 @@ flowchart LR
 |-------|--------|-------|
 | Phase 5a | Run initial audit | `doc-brd-audit` |
 | Phase 5b | Apply fixes if issues found | `doc-brd-fixer` |
-| Phase 5c | Re-run unified core validation wrapper | `validate_brd_wrapper.sh` |
+| Phase 5c | Re-run the structural checks | `doc-brd-audit` |
 | Phase 5d | Re-run audit | `doc-brd-audit` |
 | Phase 5e | Repeat until pass or max iterations | Loop |
 
@@ -1362,17 +1393,18 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.2 | 2026-05-22 | **8-layer migration**: Migrated to the framework 8-layer model; element IDs use the 4-segment `BRD.NN.SS.xxxx` standard (numeric element-type-code scheme removed); ID generation is content-hash-derived per `framework/governance/ID_NAMING_STANDARDS.md`; template/governance references repointed to `framework/layers/01_BRD/`; removed external validation-script references (the skill is the validator); downstream chain set to PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN |
 | 3.1 | 2026-03-05 | **Metadata Fixes**: Added Phase 6.0 for deliverable_type validation fixes (FIX-M001, FIX-M002, FIX-M003); Auto-detects deliverable_type from content (`code`, `document`, `ux`, `risk`, `process`); Fixes document_type for instances; Renumbered Phase 6 subsections (6.1→6.1, 6.0.1→6.2, 6.1→6.3) |
 | 3.0 | 2026-03-05 | **Report Cleanup Policy**: Added mandatory cleanup of old fix reports after generating new one; Deletes previous `BRD-NN.F_fix_report_v*.md` files; Added cleanup summary section to fix report |
 | 2.9 | 2026-03-01 | **2-Skill Model**: Updated Related Skills to reference `doc-brd-audit` only; deprecated `doc-brd-validator` and `doc-brd-reviewer` merged into unified audit |
-| 2.7 | 2026-02-28 | **Standardized validator parity**: Removed `25→33` auto-conversion guidance; code `25` in BRD now requires manual context-based remapping to valid BRD codes, aligned with `validate_standardized_element_codes.py`. |
+| 2.7 | 2026-02-28 | **Validator parity**: Removed the legacy auto-conversion guidance for the retired numeric element-type-code scheme; element IDs require section-aware remapping aligned with the structural checks. |
 | 2.6 | 2026-02-27 | **Hash Validation Fixes**: Added Section 6.0.1 with FIX-H001 (placeholder replacement via sha256sum), FIX-H002 (missing prefix), FIX-H003 (file not found); Auto-fix invalid hash placeholders like `verified_no_drift` and `pending_verification` |
-| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |
-| 2.5 | 2026-02-26 | **Template contract enforcement**: Added explicit compliance anchors to `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` + YAML variant; required subsection map now includes 3.4.1/3.4.2, 12.1-12.3, and 18.1-18.5 for fixer normalization and insertion logic. |
+| 1.2 | 2026-02-26 | **Unified template-based versioning**: Skill version now tracks the `framework/layers/01_BRD/BRD-TEMPLATE` schema version for reviewer/fixer/autopilot consistency. |
+| 2.5 | 2026-02-26 | **Template contract enforcement**: Added explicit compliance anchors to `framework/layers/01_BRD/BRD-TEMPLATE.yaml`; required subsection map now includes 3.4.1/3.4.2, 12.1-12.3, and 18.1-18.5 for fixer normalization and insertion logic. |
 | 2.4 | 2026-02-26 | **Fix quality upgrade**: Added semantic normalization for MVP subsection headers (REV-MVP001/002/003), safe sibling subsection renumbering, explicit auto-fixes for REV-MVP004/008/010, markdown normalization for generated fix artifacts, and confidence tagging (`auto-safe`, `auto-assisted`, `manual-required`) for each applied fix. |
 | 2.3 | 2026-02-25 | **Template alignment**: Updated for 18-section structure with sections 12 (Support), 14 (Governance/Approval), 15 (QA), 16 (Traceability 16.1-16.4), 17 (Glossary 17.1-17.6); Added fixes for missing section subsections |
 | 2.2 | 2026-02-24T21:30:00 | **Upstream Configuration Fixes**: Added Phase 6.0 for upstream_mode fixes (FIX-U001, FIX-U002, FIX-U003); Detects @ref: tags and suggests upstream_mode: "ref"; Cleans up ignored upstream_ref_path when mode is "none" |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
 | 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates; Tier 2 (5-15%): auto-merge with detailed changelog; Tier 3 (>15%): archive current version and trigger regeneration; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements; Archive manifest creation; Enhanced drift cache with merge history |
 | 1.1 | 2026-02-10T14:30:00 | Added Phase 6: Handle Upstream Drift - processes REV-D001-D005 issues from reviewer Check #9; drift marker insertion; drift cache management; acknowledgment workflow |
-| 1.0 | 2026-02-10T12:00:00 | Initial skill creation; 5-phase fix workflow; Glossary and GAP file creation; Element ID conversion (type 25→33); Broken link fixes; Integration with autopilot Review→Fix cycle |
+| 1.0 | 2026-02-10T12:00:00 | Initial skill creation; 5-phase fix workflow; Glossary and GAP file creation; Element ID conversion; Broken link fixes; Integration with autopilot Review→Fix cycle |

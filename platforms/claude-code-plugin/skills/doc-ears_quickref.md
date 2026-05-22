@@ -51,7 +51,7 @@ EARS-001: WHEN a user submits login credentials
 ## Upstream/Downstream
 
 ```
-BRD, PRD → EARS → BDD, ADR
+BRD, PRD → EARS → BDD, ADR, SPEC, TDD, IPLAN
 ```
 
 ## Quick Validation
@@ -65,7 +65,7 @@ BRD, PRD → EARS → BDD, ADR
 ## Template Location
 
 ```
-ai_dev_ssd_flow/03_EARS/EARS-MVP-TEMPLATE.md
+framework/layers/03_EARS/EARS-TEMPLATE.yaml
 ```
 
 ## Structure (6-Section MVP)

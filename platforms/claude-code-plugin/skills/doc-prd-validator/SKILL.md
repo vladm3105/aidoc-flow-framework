@@ -16,9 +16,9 @@ metadata:
     development_status: deprecated
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
-    downstream_artifacts: [EARS, BDD, ADR]
-    version: "3.0"
-    last_updated: "2026-03-02"
+    downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
+    version: "3.1"
+    last_updated: "2026-05-22"
     deprecated_date: "2026-03-02"
     replacement_skill: "doc-prd-audit"
 ---
@@ -45,7 +45,7 @@ Validates PRD documents for:
 - Section structure (21 sections for MVP template)
 - Document Control completeness
 - Traceability tag format and presence
-- Dual scoring requirements (SYS-Ready + EARS-Ready)
+- Dual scoring requirements (SPEC-Ready + EARS-Ready)
 - File naming conventions
 
 ## Activation
@@ -61,12 +61,15 @@ Invoke when:
 
 | Item | Value |
 |------|-------|
-| Schema | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
-| Template | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Creation Rules | `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` |
-| Validation Rules | `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml` |
+| Template | `framework/layers/02_PRD/PRD-TEMPLATE.yaml` |
+| PRD README | `framework/layers/02_PRD/README.md` |
+| ID & Tag Standards | `framework/governance/ID_NAMING_STANDARDS.md` |
 | Layer | 2 |
 | Artifact Type | PRD |
+
+> **Note**: The framework is spec-only — there are no validation scripts. This
+> skill *is* the validator: apply the declarative checks below, using
+> `framework/layers/02_PRD/README.md` and `framework/governance/` as authority.
 
 ## Validation Checklist
 
@@ -130,65 +133,62 @@ Forbidden tag patterns:
 | Author | Product Manager/Owner Name | MANDATORY |
 | Reviewer | Technical reviewer name | MANDATORY |
 | Approver | Final approver name | MANDATORY |
-| BRD Reference | `@brd: BRD.NN.xxxx` format | MANDATORY |
-| SYS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
+| BRD Reference | `@brd: BRD.NN.SS.xxxx` format | MANDATORY |
+| SPEC-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 | EARS-Ready Score | `XX/100 (Target: ≥90)` | MANDATORY |
 
 ### 4. Dual Scoring Requirements
 
 | Score | Threshold |
 |-------|-----------|
-| SYS-Ready Score | ≥90% |
+| SPEC-Ready Score | ≥90% |
 | EARS-Ready Score | ≥90% |
 
 Both scores must be present and meet thresholds for downstream artifact generation.
 
 ### 5. File Naming Convention
 
-**Pattern**: `PRD-NN_{descriptive_slug}.md`
+**Pattern**: `PRD-NN_{descriptive_slug}.yaml`
 
 - `NN`: 2+ digit number (01, 02, ... 99, 100)
 - `descriptive_slug`: lowercase with underscores
 
 **Examples**:
 
-- `PRD-01_user_authentication.md` (correct)
-- `PRD-001_feature.md` (incorrect - use 2 digits minimum, expand only as needed)
-- `PRD-1_feature.md` (incorrect - minimum 2 digits)
+- `PRD-01_user_authentication.yaml` (correct)
+- `PRD-001_feature.yaml` (incorrect - use 2 digits minimum, expand only as needed)
+- `PRD-1_feature.yaml` (incorrect - minimum 2 digits)
 
-**Sectioned PRD Pattern**: `docs/PRD/PRD-NN_{slug}/PRD-NN.S_{section}.md`
+**Sectioned PRD Pattern**: `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{section}.yaml`
 
 ### 6. Traceability Validation
 
 **Layer 2 Cumulative Tags (Required)**:
 
 ```markdown
-@brd: BRD.NN.xxxx
+@brd: BRD.NN.SS.xxxx
 ```
 
 **Unified Element ID Format**:
 
-| Element Type | Code | Example |
-|--------------|------|---------|
-| Functional Requirement | 01 | PRD.02.0101 |
-| Quality Attribute | 02 | PRD.02.0201 |
-| Constraint | 03 | PRD.02.0301 |
-| Assumption | 04 | PRD.02.0401 |
-| Dependency | 05 | PRD.02.0501 |
-| Acceptance Criteria | 06 | PRD.02.0601 |
-| Risk | 07 | PRD.02.0701 |
-| Metric | 08 | PRD.02.0801 |
-| User Story | 09 | PRD.02.0901 |
-| Use Case | 11 | PRD.02.1101 |
-| Feature Item | 22 | PRD.02.2201 |
-| Stakeholder Need | 24 | PRD.02.2401 |
+**Pattern**: `PRD.{doc_id}.{section_id}.{hash}` (4 segments, dot-separated)
+
+- `doc_id` — two-digit document number (e.g., `01`)
+- `section_id` — two-digit section number (e.g., `09`)
+- `hash` — 4-character hex content hash (SHA256, first 4 chars)
+
+**Example**: `PRD.01.09.b3f2`
+
+The 8-layer model uses no numeric element-type codes — content placement is by
+section number. See `framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Deprecated Patterns (Do NOT use)**:
 
-- `US-NNN` → Use `PRD.NN.09.SS`
-- `FR-NNN` → Use `PRD.NN.01.SS`
-- `AC-NNN` → Use `PRD.NN.06.SS`
-- `F-NNN` → Use `PRD.NN.22.SS`
+- `US-NNN` → Use `PRD.NN.SS.xxxx`
+- `FR-NNN` → Use `PRD.NN.SS.xxxx`
+- `AC-NNN` → Use `PRD.NN.SS.xxxx`
+- `F-NNN` → Use `PRD.NN.SS.xxxx`
+- legacy 3-segment `PRD.NN.xxxx` → Use 4-segment `PRD.NN.SS.xxxx`
 
 **Same-Type References**:
 
@@ -200,18 +200,19 @@ Both scores must be present and meet thresholds for downstream artifact generati
 - EARS statements (Layer 3)
 - BDD scenarios (Layer 4)
 - ADR documents (Layer 5)
+- SPEC documents (Layer 6)
 
 ### 7. Content Validation
 
 **User Story Format** (Section 7):
 
-- Pattern: `PRD.NN.09.SS`
+- Pattern: `PRD.NN.SS.xxxx` (user stories live in the User Stories section)
 - Format: "As a [role], I want [capability] so that [benefit]"
 - Must include layer separation scope note
 
 **Functional Requirement Format** (Section 8):
 
-- Pattern: `PRD.NN.01.SS`
+- Pattern: `PRD.NN.SS.xxxx` (functional requirements live in the Functional Requirements section)
 - Required fields: ID, Requirement, Priority, Acceptance Criteria
 - Priority values: P1 (Must Have), P2 (Should Have), P3 (Could Have), P4 (Won't Have)
 
@@ -232,12 +233,12 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-E011 | ERROR | Missing Functional Requirements (Section 8) |
 | PRD-E012 | ERROR | Missing Traceability (Section 16) |
 | PRD-E013 | ERROR | Missing upstream @brd tag |
-| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.xxxx) |
-| PRD-E015 | ERROR | SYS-Ready Score missing or below threshold |
+| PRD-E014 | ERROR | Invalid element ID format (not PRD.NN.SS.xxxx) |
+| PRD-E015 | ERROR | SPEC-Ready Score missing or below threshold |
 | PRD-E016 | ERROR | EARS-Ready Score missing or below threshold |
-| PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, etc.) |
+| PRD-E017 | ERROR | Deprecated ID pattern used (US-NNN, FR-NNN, legacy 3-segment, etc.) |
 | PRD-E018 | ERROR | Invalid threshold tag format (must be @threshold: PRD.NN.key) |
-| PRD-E019 | ERROR | Element type code not valid for PRD (see doc-naming) |
+| PRD-E019 | ERROR | Element ID not in 4-segment PRD.NN.SS.xxxx format (see doc-naming) |
 | PRD-E020 | ERROR | PRD not in nested folder structure (must be in `docs/02_PRD/PRD-NN_{slug}/`) |
 | PRD-E021 | ERROR | PRD folder name doesn't match PRD ID |
 | PRD-E022 | ERROR | Monolithic PRD not in nested folder (must be `PRD-NN_{slug}/PRD-NN_{slug}.md`) |
@@ -256,37 +257,24 @@ Both scores must be present and meet thresholds for downstream artifact generati
 | PRD-I001 | INFO | Consider adding success metrics with quantified targets |
 | PRD-I002 | INFO | Consider adding competitive analysis |
 
-## Validation Commands
+## Validation (Declarative)
 
-```bash
-# Canonical wrapper (core only; pre-commit/CI parity)
-bash ai_dev_ssd_flow/02_PRD/scripts/prd_core_wrapper_hook.sh ai_dev_ssd_flow/02_PRD
+The framework is spec-only — there are no scripts to invoke. This skill *is* the
+validator. Apply the checks declaratively against each PRD document:
 
-# Strict PRD ID checks (same quality class as BRD ID checks)
-bash ai_dev_ssd_flow/02_PRD/scripts/prd_standardized_element_codes_hook.sh ai_dev_ssd_flow/02_PRD
-bash ai_dev_ssd_flow/02_PRD/scripts/prd_legacy_pattern_hook.sh ai_dev_ssd_flow/02_PRD
+- **Folder structure**: PRD lives in `docs/02_PRD/PRD-NN_{slug}/`.
+- **Metadata**: required tags (`prd`, `layer-2-artifact`) and `custom_fields`
+  (`document_type`, `artifact_type`, `layer: 2`) present and valid.
+- **Structure**: all required sections present and sequentially numbered.
+- **Document Control**: all mandatory fields present, both readiness scores
+  (SPEC-Ready + EARS-Ready) >=90%.
+- **Element IDs**: every element uses 4-segment `PRD.NN.SS.xxxx`; no deprecated
+  patterns (US-NNN, FR-NNN, AC-NNN, F-NNN, legacy 3-segment).
+- **Traceability**: cumulative `@brd` tag present and resolves to existing BRD
+  elements; no forward references to ADR/SPEC document numbers.
+- **Diagram contract**: C4-L2, DFD-L1, sequence tag, sequence exception path.
 
-# Canonical wrapper (core + advisory)
-bash ai_dev_ssd_flow/02_PRD/scripts/validate_prd_wrapper.sh docs/02_PRD
-
-# Validate single PRD document (must be in nested folder)
-python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/PRD-01_example/PRD-01_example.md
-
-# Validate all PRD documents in directory
-python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/
-
-# Validate with verbose output
-python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --verbose
-
-# Validate with auto-fix (includes structure fixes)
-python ai_dev_ssd_flow/02_PRD/scripts/validate_prd.py docs/02_PRD/ --auto-fix
-
-# Cross-document validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --document docs/02_PRD/PRD-01_slug/PRD-01_slug.md --auto-fix
-
-# Layer-wide validation
-python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
-```
+Authority: `framework/layers/02_PRD/README.md` and `framework/governance/`.
 
 ## Validation Workflow
 
@@ -296,10 +284,10 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 4. Validate tag taxonomy (prd, layer-2-artifact)
 5. Verify section structure (1-17 for MVP)
 6. Validate Document Control table completeness
-7. Check dual scoring (SYS-Ready + EARS-Ready ≥90%)
+7. Check dual scoring (SPEC-Ready + EARS-Ready ≥90%)
 8. Validate upstream @brd reference format
-9. Check element ID format (PRD.NN.xxxx)
-10. Detect deprecated patterns (US-NNN, FR-NNN)
+9. Check element ID format (PRD.NN.SS.xxxx)
+10. Detect deprecated patterns (US-NNN, FR-NNN, legacy 3-segment)
 11. Validate diagram contract (C4-L2, DFD-L1, sequence tag, sequence exception path)
 12. Validate diagram intent header fields
 13. Verify file naming convention
@@ -311,8 +299,8 @@ python ai_dev_ssd_flow/scripts/validate_cross_document.py --layer PRD --auto-fix
 
 | PRD Type | Required Location |
 |----------|-------------------|
-| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md` |
-| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.md`, `PRD-NN.1_*.md`, etc. |
+| Monolithic | `docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.yaml` |
+| Sectioned | `docs/02_PRD/PRD-NN_{slug}/PRD-NN.0_index.yaml`, `PRD-NN.1_*.yaml`, etc. |
 
 **Validation Logic**:
 ```python
@@ -321,7 +309,7 @@ def validate_prd_structure(prd_path: str) -> list[Error]:
 
     # Extract PRD ID from filename
     filename = os.path.basename(prd_path)
-    match = re.match(r'PRD-(\d+)_([^/]+)\.md', filename)
+    match = re.match(r'PRD-(\d+)_([^/]+)\.yaml', filename)
 
     if not match:
         errors.append(PRD_E001)  # Invalid filename
@@ -352,7 +340,7 @@ def validate_prd_structure(prd_path: str) -> list[Error]:
 | Folder name mismatch (PRD-E021) | Rename folder to match PRD ID |
 | Link paths broken after move | Update `../01_BRD/` → `../../01_BRD/` |
 | Missing cumulative @brd tag | Add with upstream document reference |
-| Invalid element ID format | Convert to PRD.NN.xxxx format |
+| Invalid element ID format | Convert to 4-segment PRD.NN.SS.xxxx format |
 | Missing traceability section | Insert from template |
 | Missing Document Control fields | Add placeholder fields |
 | Deprecated ID patterns | Convert to unified format |
@@ -368,11 +356,11 @@ def validate_prd_structure(prd_path: str) -> list[Error]:
 ```
 PRD Validation Report
 =====================
-Document: PRD-01_user_authentication.md
+Document: PRD-01_user_authentication.yaml
 Status: PASS/FAIL
 
 Scores:
-  SYS-Ready:  92% (Target: ≥90%) ✓
+  SPEC-Ready: 92% (Target: ≥90%) ✓
   EARS-Ready: 91% (Target: ≥90%) ✓
 
 Errors: 0
@@ -386,18 +374,18 @@ Info: 1
 
 ## Related Resources
 
-- **Naming Standards**: `.claude/skills/doc-naming/SKILL.md` (element IDs, threshold tags)
-- **PRD Skill**: `.claude/skills/doc-prd/SKILL.md`
-- **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+- **Naming Standards**: `../doc-naming/SKILL.md` (element IDs, threshold tags)
+- **PRD Skill**: `../doc-prd/SKILL.md`
+- **PRD Template**: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+- **PRD README**: `framework/layers/02_PRD/README.md`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.1 | 2026-05-22 | Migrated to the 8-layer model: 4-segment element IDs (`PRD.NN.SS.xxxx`); removed legacy numeric element-type-code table; downstream chain rebuilt to EARS, BDD, ADR, SPEC, TDD, IPLAN; SYS-Ready renamed SPEC-Ready; paths point at `framework/layers/02_PRD/`; templates `.yaml`; validation is now declarative (framework is spec-only). |
 | 3.0 | 2026-03-02 | **DEPRECATED**: Merged into `doc-prd-audit` as part of 2-skill model standardization. Use `doc-prd-audit` instead. |
 | 2.3 | 2026-02-26 | Updated to 21-section MVP template structure |
 | 2.2 | 2026-02-11 | **Structure Validation**: Added PRD-E020/E021/E022 for nested folder rule enforcement; Structure validation as Step 1 in workflow; Auto-fix for structure violations; Fixed paths `docs/PRD/` → `docs/02_PRD/` |

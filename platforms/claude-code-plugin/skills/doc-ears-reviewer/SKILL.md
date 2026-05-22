@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [EARS]
     downstream_artifacts: []
-    version: "1.5"
-    last_updated: "2026-02-26"
+    version: "1.6"
+    last_updated: "2026-05-22"
 ---
 
 # doc-ears-reviewer
@@ -264,16 +264,17 @@ Verifies all required sections have substantive content.
 Validates element IDs follow `doc-naming` standards.
 
 **Scope**:
-- Element IDs use `EARS.NN.xxxx` format
-- Element type codes valid for EARS (25, 26)
-- No legacy patterns (REQ-NNN, R-NNN)
+- Element IDs use the 4-segment `EARS.NN.SS.xxxx` format (`SS` = section, `xxxx` = 4-char hex hash)
+- No numeric type-code segment (legacy `EARS.NN.25.SS` / `EARS.NN.26.SS`) — element kind is conveyed by its section, not the ID
+- No legacy patterns (REQ-NNN, R-NNN, legacy 3-segment `EARS.NN.xxxx`)
+- See `framework/governance/ID_NAMING_STANDARDS.md` and `framework/layers/03_EARS/README.md`
 
 **Error Codes**:
 
 | Code | Severity | Description |
 |------|----------|-------------|
-| REV-N001 | Error | Invalid element ID format |
-| REV-N002 | Error | Element type code not valid for EARS |
+| REV-N001 | Error | Invalid element ID format (not 4-segment `EARS.NN.SS.xxxx`) |
+| REV-N002 | Error | Legacy numeric type-code segment present |
 | REV-N003 | Error | Legacy pattern detected |
 
 ---
@@ -536,6 +537,7 @@ flowchart LR
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.6 | 2026-05-22 | Migrated to the framework 8-layer model: Check #7 now enforces the 4-segment `EARS.NN.SS.xxxx` element-ID standard (no numeric type codes), rejects the legacy 3-segment format, and points to `framework/governance/ID_NAMING_STANDARDS.md` and `framework/layers/03_EARS/README.md` |
 | 1.5 | 2026-02-26 | Migrated frontmatter to `metadata` schema; documented audit-wrapper relationship and preferred `.A_audit_report` fixer handoff |
 | 1.4 | 2026-02-11 | **Structure Compliance**: Added Check #0 for nested folder rule enforcement (REV-STR001-STR003); Updated workflow diagram; Structure check is BLOCKING |
 | 1.3 | 2026-02-10 | Made drift cache mandatory; Added cache schema and location (`docs/03_EARS/.drift_cache.json`); Three-phase detection algorithm; SHA-256 hash calculation; REV-D006 error code for cache creation; Cache status in report output |

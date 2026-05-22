@@ -14,10 +14,10 @@ metadata:
     development_status: active
     skill_category: core-workflow
     upstream_artifacts: []
-    downstream_artifacts: [PRD, EARS, BDD, ADR]
-    version: "1.2"
-    last_updated: "2026-03-01"
-    versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+    downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
+    version: "2.0"
+    last_updated: "2026-05-22"
+    versioning_policy: "tracks BRD-TEMPLATE schema_version"
 ---
 
 # doc-brd
@@ -28,7 +28,7 @@ Create **Business Requirements Documents (BRD)** - Layer 1 artifact in the SDD w
 
 **Layer**: 1 (Entry point - no upstream dependencies)
 
-**Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+**Downstream Artifacts**: PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ## MVP → PROD → NEW MVP Lifecycle
 
@@ -55,24 +55,24 @@ BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production 
 
 **Before creating this document, you MUST:**
 
-1. **List existing upstream artifacts**:
+1. **List existing artifacts** (BRD is the entry point, so this confirms no
+   collision and surfaces any related downstream documents):
    ```bash
-   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SYS/ docs/07_REQ/ 2>/dev/null
+   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ 2>/dev/null
    ```
 
 2. **Reference only existing documents** in traceability tags
-3. **Use `null`** only when upstream artifact type genuinely doesn't exist
+3. **Use `null`** only when an artifact type genuinely doesn't exist
 4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
-5. **Do NOT create missing upstream artifacts** - skip functionality instead
+5. **Do NOT create missing artifacts** - skip functionality instead
 
 
 Before creating a BRD, read:
 
-1. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-2. **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-3. **Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-4. **Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-5. **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
+1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+2. **Template**: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+3. **BRD README**: `framework/layers/01_BRD/README.md`
+4. **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 **For New Projects**: Use `project-init` skill first to initialize project structure.
 
@@ -80,18 +80,18 @@ Before creating a BRD, read:
 
 Before creating ANY BRD section, confirm:
 
-1. ✅ Read `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` - Element Type Codes table
-2. ✅ Element ID format: `BRD.{DOC_NUM}.{HASH}` (3 segments, dots)
+1. ✅ Read `framework/governance/ID_NAMING_STANDARDS.md` - Element IDs section
+2. ✅ Element ID format: `BRD.{doc_id}.{section_id}.{hash}` (4 segments, dots; `hash` = 4-char hex content hash)
 
-**Common Element Types**:
-| Code | Type | Example |
-|------|------|---------|
-| 01 | Functional Requirement | BRD.02.0101 |
-| 06 | Acceptance Criteria | BRD.02.0601 |
-| 23 | Business Objective | BRD.02.2301 |
-| 32 | Architecture Topic | BRD.02.3201 |
+**Element ID examples** (the `section_id` is the BRD section the element lives in):
+| Element kind | Lives in section | Example ID |
+|--------------|------------------|------------|
+| Business Objective | 2 | BRD.01.02.a7f3 |
+| Functional Requirement | 6 | BRD.01.06.1dbc |
+| Architecture Topic | 7 | BRD.01.07.5e2a |
+| Acceptance Criteria | 9 | BRD.01.09.8f4c |
 
-> ⚠️ **Removed Patterns**: Do NOT use `AC-XXX`, `FR-XXX`, `BC-XXX`, `BO-XXX` formats.
+> ⚠️ **Removed Patterns**: Do NOT use `AC-XXX`, `FR-XXX`, `BC-XXX`, `BO-XXX`, or the legacy 3-segment `BRD.NN.xxxx` formats.
 
 ## When to Use This Skill
 
@@ -145,7 +145,7 @@ Use `doc-brd` when:
 2. Create ADRs for critical technology decisions (identified in BRD sections 3.6/3.7)
 3. Create PRD referencing Platform BRD and ADRs
 4. Create additional ADRs for implementation details
-5. Continue to SPEC
+5. Continue to SPEC (Layer 6)
 ```
 
 **Feature BRD Path:**
@@ -153,7 +153,7 @@ Use `doc-brd` when:
 1. Create Feature BRD (reference Platform BRD in sections 3.6 and 3.7)
 2. Create PRD for feature
 3. Create ADRs for implementation decisions (if needed)
-4. Continue to SPEC
+4. Continue to SPEC (Layer 6)
 ```
 
 ### Section 3.6 & 3.7 Rules
@@ -166,7 +166,7 @@ Use `doc-brd` when:
 - **MUST mark** Section 3.6 as "N/A - See Platform BRD-NN Section 3.6" and reference specific items
 - **MUST mark** Section 3.7 as "N/A - See Platform BRD-NN Section 3.7" and reference specific conditions
 
-**Reference**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md` for detailed guidance
+**Reference**: `framework/layers/01_BRD/README.md` (BRD Types section) for detailed guidance
 
 ## BRD-Specific Guidance
 
@@ -174,36 +174,35 @@ Use `doc-brd` when:
 
 **Primary Template**:
 
-**BRD-MVP-TEMPLATE.md** - Comprehensive business requirements (general purpose)
+**BRD-TEMPLATE.yaml** - Comprehensive business requirements (general purpose)
 - Use for: All business requirements documents
 - Sections: Complete 18-section structure
 - Best for: Complex projects, regulatory compliance needs
-- Location: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- Location: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 
 **Note**: Use the comprehensive template for all BRD documents. For simpler requirements, complete only the essential sections and mark others as "N/A - Not applicable for this scope".
 
-> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.md Section 21 (product level).
+> **Note**: Technical QA standards, testing strategy, and defect management are documented in PRD-TEMPLATE.yaml Section 21 (product level).
 
 **Nested Folder Rule (MANDATORY)**: ALL BRDs MUST be in nested folders regardless of document size.
 
 | Structure | Format | Use When |
 |-----------|--------|----------|
-| **Monolithic** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` | Single-file documents ≤25KB |
-| **Section-Based** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md` | Documents >25KB |
+| **Monolithic** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.yaml` | Single-file documents ≤25KB |
+| **Section-Based** | `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.yaml` | Documents >25KB |
 
 **Monolithic Structure** - for MVP/small documents:
-- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.md` (INSIDE nested folder)
-- **H1 Title**: `# BRD-NN: Document Title` (no `.S` suffix)
-- **Template**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
+- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN_{slug}.yaml` (INSIDE nested folder)
+- **Title**: `BRD-NN: Document Title` (no `.S` suffix)
+- **Template**: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 - **CRITICAL**: Even monolithic BRDs MUST be in a nested folder
 
 **Section-Based Structure** - for large/complex documents:
-- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.md`
+- **Location**: `docs/01_BRD/BRD-NN_{slug}/BRD-NN.S_{section}.yaml`
 - **Folder Naming**: `BRD-NN_{slug}/` where slug MUST match the index file slug
-- **H1 Title**: `# BRD-NN.S: Section Title` (includes `.S` suffix)
-- Index template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-0-TEMPLATE.md`
-- Content template: `ai_dev_ssd_flow/01_BRD/BRD-SECTION-TEMPLATE.md`
-- Reference: `ai_dev_ssd_flow/ID_NAMING_STANDARDS.md` (Section-Based File Splitting)
+- **Title**: `BRD-NN.S: Section Title` (includes `.S` suffix)
+- Index template: `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
+- Reference: `framework/governance/ID_NAMING_STANDARDS.md` (File Naming)
 
 ### 2. Required Sections (18 Total)
 
@@ -320,15 +319,16 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 
 | # | Category | Element ID | Description | When N/A |
 |---|----------|------------|-------------|----------|
-| 1 | **Infrastructure** | BRD.NN.32.01 | Compute, deployment, scaling | Pure data/analytics project |
-| 2 | **Data Architecture** | BRD.NN.32.02 | Database, storage, caching | No persistent data needed |
-| 3 | **Integration** | BRD.NN.32.03 | APIs, messaging, external systems | Standalone system |
-| 4 | **Security** | BRD.NN.32.04 | Auth, encryption, access control | Internal tool, no sensitive data |
-| 5 | **Observability** | BRD.NN.32.05 | Monitoring, logging, alerting | MVP/prototype only |
-| 6 | **AI/ML** | BRD.NN.32.06 | Model serving, training, MLOps | No AI/ML components |
-| 7 | **Technology Selection** | BRD.NN.32.07 | Languages, frameworks, platforms | Using existing stack |
+| 1 | **Infrastructure** | BRD.NN.07.xxxx | Compute, deployment, scaling | Pure data/analytics project |
+| 2 | **Data Architecture** | BRD.NN.07.xxxx | Database, storage, caching | No persistent data needed |
+| 3 | **Integration** | BRD.NN.07.xxxx | APIs, messaging, external systems | Standalone system |
+| 4 | **Security** | BRD.NN.07.xxxx | Auth, encryption, access control | Internal tool, no sensitive data |
+| 5 | **Observability** | BRD.NN.07.xxxx | Monitoring, logging, alerting | MVP/prototype only |
+| 6 | **AI/ML** | BRD.NN.07.xxxx | Model serving, training, MLOps | No AI/ML components |
+| 7 | **Technology Selection** | BRD.NN.07.xxxx | Languages, frameworks, platforms | Using existing stack |
 
-**Element Type Code**: `32` = Architecture Topic
+**Element IDs**: Architecture Topics live in Section 7, so each carries a
+`BRD.NN.07.xxxx` ID (`xxxx` = 4-char hex content hash, unique per topic).
 
 #### Required Fields Per Topic
 
@@ -371,7 +371,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 #### Complete Topic Example
 
 ```markdown
-### BRD.01.3201: Infrastructure
+### BRD.01.07.a7f3: Infrastructure
 
 **Status**: Selected
 
@@ -409,7 +409,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 
 **N/A Example**:
 ```markdown
-### BRD.01.3206: AI/ML Architecture
+### BRD.01.07.6c2d: AI/ML Architecture
 
 **Status**: N/A - No AI/ML components in project scope
 
@@ -420,7 +420,7 @@ Every BRD **MUST** include **Section 7.2: "Architecture Decision Requirements"**
 
 **Pending Example**:
 ```markdown
-### BRD.01.3205: Observability
+### BRD.01.07.5e2a: Observability
 
 **Status**: Pending - Awaiting infrastructure finalization
 
@@ -448,7 +448,7 @@ Cost estimates                Evaluation criteria        Selected approach
 
 **Do NOT write**: "See ADR-033" or "Reference ADR-045" (ADRs don't exist yet)
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md` Section 9 for complete guidelines
+**Reference**: See `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (Section 7) for complete guidelines
 
 ### 5. Document Control Section Positioning
 
@@ -474,8 +474,8 @@ Cost estimates                Evaluation criteria        Selected approach
 **Format**: BRD has no `@` tags since it's Layer 1 (top of hierarchy)
 
 **Downstream artifacts will tag BRD** (using unified format):
-- PRD will include: `@brd: BRD.01.0130` (TYPE.NN.xxxx format)
-- EARS will include: `@brd: BRD.01.0130`
+- PRD will include: `@brd: BRD.01.06.a7f3` (TYPE.NN.SS.xxxx format)
+- EARS will include: `@brd: BRD.01.06.a7f3`
 - All downstream artifacts inherit BRD tags
 
 ## Tag Format Convention (By Design)
@@ -484,23 +484,23 @@ The SDD framework uses two distinct notation systems for cross-references:
 
 | Notation | Format        | Artifacts                               | Purpose                                                             |
 |----------|---------------|----------------------------------------|---------------------------------------------------------------------|
-| Dash     | TYPE-NN      | ADR, SPEC, CTR            | Technical artifacts - references to files/documents                 |
-| Dot      | TYPE.NN.xxxx | BRD, PRD, EARS, BDD, SYS, REQ, IMPL, TASKS | Hierarchical artifacts - references to elements inside documents |
+| Dash     | TYPE-NN      | ADR, SPEC, IPLAN            | Document-level artifacts - references to whole files/documents      |
+| Dot      | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, TDD | Hierarchical artifacts - references to elements inside documents |
 
 **Key Distinction**:
-- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.md`
-- `@brd: BRD.17.0101` → Points to element 01.01 inside document `BRD-017.md`
+- `@adr: ADR-033` → Points to the document `ADR-033_risk_limit_enforcement.yaml`
+- `@brd: BRD.17.01.0101` → Points to element in Section 01 inside document `BRD-17`
 
 ## Unified Element ID Format (MANDATORY)
 
-**For hierarchical requirements (BRD, PRD, EARS, BDD, SYS, REQ)**:
-- **Always use**: `TYPE.NN.xxxx` (dot separator, 3-segment unified format)
+**For hierarchical requirements (BRD, PRD, EARS, BDD, TDD)**:
+- **Always use**: `TYPE.NN.SS.xxxx` (dot separator, 4-segment unified format; `xxxx` = 4-char hex content hash)
 - **Never use**: `TYPE-NN:NNN` (colon separator - DEPRECATED)
-- **Never use**: `TYPE.NN.TT.SS` (old 4-segment format - DEPRECATED)
+- **Never use**: `TYPE.NN.xxxx` (old 3-segment format - DEPRECATED)
 
 Examples:
-- `@brd: BRD.17.0101` ✅
-- `@brd: BRD.017.001` ❌ (old 3-segment format)
+- `@brd: BRD.17.01.a7f3` ✅
+- `@brd: BRD.17.0101` ❌ (old 3-segment format)
 
 
 ## Upstream/Downstream Artifacts
@@ -517,6 +517,9 @@ Examples:
 - **EARS** (Layer 3) - Formal requirements from BRD business needs
 - **BDD** (Layer 4) - Test scenarios validating BRD objectives
 - **ADR** (Layer 5) - Architecture decisions for topics identified in BRD Section "Architecture Decision Requirements"
+- **SPEC** (Layer 6) - Component specifications tracing to BRD
+- **TDD** (Layer 7) - Test definitions tracing to BRD objectives
+- **IPLAN** (Layer 8) - Implementation plan tracing to BRD
 
 **Same-Type Document Relationships** (conditional):
 - `@related-brd: BRD-NN` - BRDs sharing business domain context
@@ -598,39 +601,26 @@ custom_fields:
 
 ### Step 10: Create/Update Traceability Matrix
 
-**MANDATORY**: Create or update `docs/01_BRD/BRD-00_TRACEABILITY_MATRIX.md`
-- Use template: `ai_dev_ssd_flow/01_BRD/BRD-00_TRACEABILITY_MATRIX-TEMPLATE.md`
+**MANDATORY**: Create or update the BRD index `docs/01_BRD/BRD-00_index.md`
+- Use template: `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
 - Add BRD entry with upstream sources and downstream artifacts
-- Update traceability matrix in same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
+- Update the index in the same commit after BRD validation passes (see SHARED_CONTENT.md Traceability Matrix Update Workflow)
 
 ### Step 11: Validate BRD
 
-Run unified BRD validation wrapper (primary gate):
-```bash
-# Core blocking checks (used by pre-commit and CI)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-
-# Optional full tiered run (includes advisory checks)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
-```
+The framework is spec-only — there are no validation scripts to run. This skill
+*is* the validator: apply the declarative validation checklist below, with
+`framework/layers/01_BRD/README.md` and `framework/governance/` as authority.
 
 ### Step 12: Commit Changes
 
-Commit BRD file and traceability matrix together.
+Commit BRD file and index together.
 
 ## Validation
 
-### Automated Validation
-
-**BRD-Specific Validation**:
-```bash
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-```
-
-**Quality Gates Validation**:
-```bash
-./scripts/validate_quality_gates.sh docs/01_BRD/BRD-01_platform.md
-```
+The framework ships no runtime code — validate by applying the checklist below.
+Authority: `framework/layers/01_BRD/README.md` and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
 ### Manual Checklist
 
@@ -648,7 +638,7 @@ bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-a
 
 ### Diagram Standards
 All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
+See: `framework/governance/` diagram standards and the `mermaid-gen` skill.
 
 **BRD Diagram Contract (MANDATORY)**:
 - Include `@diagram: c4-l1` and `@diagram: dfd-l0`
@@ -667,29 +657,20 @@ See: `ai_dev_ssd_flow/DIAGRAM_STANDARDS.md` and `mermaid-gen` skill.
 
 **CRITICAL**: Execute this validation loop IMMEDIATELY after document creation. Do NOT proceed to next document until validation passes.
 
-### Automatic Validation Loop
+### Validation Loop
 
 ```
 LOOP:
-  1. Run BRD template validation script
+  1. Apply the declarative validation checklist (above)
   2. IF errors found: Fix issues
   3. IF warnings found: Review and address
   4. IF unfixable issues: Log for manual review, continue
   5. IF clean: Mark VALIDATED, proceed
 ```
 
-### Validation Command
-
-```bash
-# Unified BRD core validation (primary)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD --skip-advisory
-
-# Unified BRD full tiered validation (optional)
-bash ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh docs/01_BRD
-
-# Component-level diagnostics (secondary, optional)
-python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
-```
+The framework is spec-only; there are no scripts to invoke. This skill *is* the
+validator — apply the checklist above against `framework/layers/01_BRD/README.md`
+and `framework/governance/ID_NAMING_STANDARDS.md`.
 
 ### Layer-Specific Upstream Requirements
 
@@ -701,7 +682,7 @@ python ai_dev_ssd_flow/01_BRD/scripts/validate_brd.py docs/01_BRD/BRD-NN_slug.md
 
 | Issue | Fix Action |
 |-------|------------|
-| Invalid tag format | Correct to TYPE.NN.xxxx (3-segment) or TYPE-NN format |
+| Invalid tag format | Correct to TYPE.NN.SS.xxxx (4-segment) or TYPE-NN format |
 | Broken link | Recalculate path from current location |
 | Missing traceability section | Insert from template |
 
@@ -727,7 +708,7 @@ After creating BRD, use:
 
 The PRD will:
 - Reference this BRD as upstream source
-- Include `@brd: BRD.NN.01.SS` tags (unified 3-segment format)
+- Include `@brd: BRD.NN.SS.xxxx` tags (unified 4-segment format)
 - Define product features and KPIs
 - Inherit Architecture Decision Requirements topics
 
@@ -752,18 +733,17 @@ For supplementary documentation related to BRD artifacts:
 
 **Purpose**: BRD-REF documents are **reference targets** that other documents link to. They provide supporting information, context, or external references but do not define formal business requirements.
 
-**Reference**: See `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml` for validation details.
+**Reference**: See `framework/layers/01_BRD/README.md` for validation details.
 
 ## Related Resources
 
-- **Main Guide**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **Platform vs Feature Guide**: `ai_dev_ssd_flow/PLATFORM_VS_FEATURE_BRD.md`
-- **BRD Creation Rules**: `ai_dev_ssd_flow/01_BRD/BRD-MVP-TEMPLATE.md`
-- **BRD Validation Rules**: `ai_dev_ssd_flow/01_BRD/BRD_MVP_SCHEMA.yaml`
-- **BRD README**: `ai_dev_ssd_flow/01_BRD/README.md`
-- **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
-- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` (unified; deprecated: doc-brd-validator, doc-brd-reviewer)
-- **Naming Standards Skill**: `.claude/skills/doc-naming/SKILL.md`
+- **BRD README**: `framework/layers/01_BRD/README.md`
+- **BRD Template / Creation Rules**: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **Governance**: `framework/governance/`
+- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
+- **BRD Audit Skill**: `../doc-brd-audit/SKILL.md` (unified; deprecated: doc-brd-validator, doc-brd-reviewer)
+- **Naming Standards Skill**: `../doc-naming/SKILL.md`
 
 ## Quick Reference
 

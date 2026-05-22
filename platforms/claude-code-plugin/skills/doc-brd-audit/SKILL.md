@@ -1,6 +1,6 @@
 ---
 name: doc-brd-audit
-description: Manual BRD audit skill that runs shell validation scripts, adds Claude content review, and produces a combined report for doc-brd-fixer
+description: Manual BRD audit skill that runs declarative structural checks, adds Claude content review, and produces a combined report for doc-brd-fixer - Layer 1 artifact
 
 metadata:
   tags:
@@ -16,24 +16,23 @@ metadata:
     priority: primary
     development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BRD]
-    downstream_artifacts: [Audit Report, Fix Cycle]
+    upstream_artifacts: []
+    downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "2.4"
     last_updated: "2026-03-05"
-  versioning_policy: "tracks BRD-MVP-TEMPLATE schema_version"
+  versioning_policy: "tracks BRD-TEMPLATE schema_version"
 
 ---
 
 # doc-brd-audit
 
 > **MANUAL USE ONLY** - This skill is for interactive use, not pre-commit.
-> Pre-commit runs shell scripts directly without Claude.
 
 ## Purpose
 
-Run a **unified BRD audit workflow** that combines shell script validation and Claude content review into a single pass, producing one **combined report** optimized for `doc-brd-fixer` input.
+Run a **unified BRD audit workflow** that combines declarative structural checks and Claude content review into a single pass, producing one **combined report** optimized for `doc-brd-fixer` input.
 
-**Architecture**: Shell scripts for structural validation + Claude for content quality review.
+**Architecture**: Declarative structural checks + Claude for content quality review. The skill *is* the validator — there is no external runtime tooling.
 
 **Layer**: 1 (BRD Quality Gate Wrapper)
 
@@ -44,6 +43,8 @@ Run a **unified BRD audit workflow** that combines shell script validation and C
 - Optional Fix Cycle trigger for `doc-brd-fixer`
 
 ---
+
+**Downstream Artifacts** (what BRD drives): PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8).
 
 ## Why This Skill Exists
 
@@ -151,8 +152,8 @@ Do NOT use when:
 ### Sequence (Mandatory)
 
 ```text
-1) Run pre-commit validation scripts (see Script-Based Validation)
-2) Parse script output for findings
+1) Run the declarative structural checks (see Structural Validation Checklist)
+2) Record findings from each check
 3) Run content quality review (Claude analysis)
 4) Normalize and merge all findings
 5) Write BRD-NN.A_audit_report_vNNN.md
@@ -161,66 +162,46 @@ Do NOT use when:
 
 ---
 
-## Script-Based Validation (Pre-commit Integration)
+## Structural Validation Checklist
 
-This skill **MUST** invoke the same validation scripts used by pre-commit hooks. This ensures consistency between CI/CD and manual audit runs.
+The framework spec carries no runtime code — **this skill is the validator**. Claude
+performs each check below directly against the BRD source, using the authoritative
+spec as the contract:
 
-### Required Scripts
+- **Element ID format & standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- **BRD structure & content rules**: `framework/layers/01_BRD/README.md` and
+  `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded authoring guidance +
+  `cross_section_rules`)
 
-| Script | Purpose | Exit Codes |
-|--------|---------|------------|
-| `validate_brd_wrapper.sh` | Core + advisory validation wrapper | 0=pass, 2=core fail, 1=advisory fail |
-| `validate_standardized_element_codes.py` | Element ID format validation | 0=pass, non-zero=fail |
-| `detect_legacy_element_ids.py` | Legacy pattern detection | 0=pass, non-zero=warnings |
+### Required Checks (Tier 1 — Blocking)
 
-### Script Execution
+| Check | What Claude verifies | Severity |
+|-------|----------------------|----------|
+| Element ID format | Every element ID matches the 4-segment standard `BRD.NN.SS.xxxx` (`xxxx` = 4-hex content hash) | error |
+| BRD structure | All required template sections present and non-empty (per `BRD-TEMPLATE.yaml`) | error |
+| Cross-section rules | `cross_section_rules` from the template hold (e.g., BRD-XS-001..005) | error |
+| Quality gate | PRD-Ready score `>=90/100` | error |
 
-```bash
-# From repository root
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-BRD_PATH="$1"  # e.g., docs/01_BRD/BRD-01_platform
+### Advisory Checks (Tier 2 — Non-Blocking)
 
-# 1. Run core wrapper (includes structural + quality gate)
-bash "${REPO_ROOT}/ai_dev_ssd_flow/01_BRD/scripts/validate_brd_wrapper.sh" "${BRD_PATH}" 2>&1
+| Check | What Claude verifies |
+|-------|----------------------|
+| Metadata | Frontmatter fields present and valid (see Metadata Validation) |
+| Links | Internal links and template/governance references resolve |
+| Forward references | No downstream artifact numbers cited before they exist |
+| Diagram consistency | Diagram contract tags present (advisory for BRD) |
 
-# 2. Run standardized element codes (strict mode)
-python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/validate_standardized_element_codes.py" "${BRD_PATH}" --strict 2>&1
+### Check Result Recording
 
-# 3. Run legacy pattern detection
-python3 "${REPO_ROOT}/ai_dev_ssd_flow/scripts/detect_legacy_element_ids.py" "${BRD_PATH}" --summary 2>&1
-```
+Record each check result as a finding:
 
-### Script Output Parsing
+| Result | Finding Type | Severity |
+|--------|--------------|----------|
+| FAIL | Blocking issue | error |
+| WARN | Non-blocking issue | warning |
+| PASS | Check passed | info |
 
-The skill MUST parse script output to extract findings:
-
-| Output Pattern | Finding Type | Severity |
-|----------------|--------------|----------|
-| `[FAIL]` | Blocking issue | error |
-| `[WARN]` | Non-blocking issue | warning |
-| `[PASS]` | Check passed | info |
-| `ERROR:` | Script error | error |
-| Line with file path + issue | File-specific finding | varies |
-
-### Validation Tiers (from validate_brd_wrapper.sh)
-
-| Tier | Checks | Blocking |
-|------|--------|----------|
-| **Tier 1 (CORE)** | Standardized element codes, BRD structural validation, BRD quality gate | Yes |
-| **Tier 2 (ADVISORY)** | Metadata validation, Link validation, Forward reference validation, Diagram consistency | No (default) |
-
-### Pre-commit vs Skill Separation
-
-**Pre-commit hooks run shell scripts directly** (no Claude):
-
-```yaml
-# .pre-commit-config.yaml - runs on every commit
-- id: brd-core-wrapper           # validate_brd_wrapper.sh
-- id: brd-standardized-element-codes  # validate_standardized_element_codes.py
-- id: brd-legacy-patterns        # detect_legacy_element_ids.py
-```
-
-**This skill is for manual/interactive use**:
+### Manual Invocation
 
 ```bash
 # Manual invocation for full audit + report generation
@@ -229,21 +210,17 @@ The skill MUST parse script output to extract findings:
 
 **Flow**:
 ```
-Automatic (pre-commit):
-  git commit → shell scripts → pass/fail
-
-Manual (skill):
-  /doc-brd-audit → shell scripts → Claude review → audit report
+/doc-brd-audit → declarative structural checks → Claude review → audit report
 ```
 
 ### Combined Status Rules
 
-- `PASS`: Script validation PASS AND Claude review score >= threshold AND no blocking issues
-- `FAIL`: Script validation FAIL OR Claude review score < threshold OR blocking/manual-required issues present
+- `PASS`: All Tier 1 checks PASS AND Claude review score >= threshold AND no blocking issues
+- `FAIL`: Any Tier 1 check FAIL OR Claude review score < threshold OR blocking/manual-required issues present
 
 **Diagram Contract Gate (ADVISORY for BRD)**:
 - BRD diagram findings are recorded as non-blocking by default.
-- Recommended tags: `@diagram: c4-l1` and `@diagram: dfd-l0`
+- Recommended tags: `@diagram: c4-l1` and `@diagram: dfd-l1`
 - If sequence diagram exists, recommend one sequence tag (`@diagram: sequence-sync|sequence-async|sequence-error`)
 - Recommended intent fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
 - Optional strict mode only when explicitly enabled (e.g., `audit_strict_diagrams: true`).
@@ -326,7 +303,7 @@ Required sections:
 
 1. `## Summary`
    - BRD ID, timestamp (EST), overall status
-   - Script validation status, Claude review score
+   - Structural check status, Claude review score
 2. `## Score Calculation (Deduction-Based)`
    - Formula: `100 - total_deductions`
    - Deductions grouped by: contamination (max 50), FR completeness (max 30), structure/quality (max 20)
@@ -335,14 +312,14 @@ Required sections:
    - deliverable_type presence and validity
    - document_type correctness
    - Other required metadata fields
-4. `## Script Findings`
-   - Findings from shell validation scripts
+4. `## Structural Check Findings`
+   - Findings from the declarative structural checks
    - List by severity/code
 5. `## Claude Review Findings`
    - Findings from Claude content quality review
    - List by severity/code
 6. `## Diagram Contract Findings`
-   - Required BRD tags status (`c4-l1`, `dfd-l0`)
+   - Required BRD tags status (`c4-l1`, `dfd-l1`)
    - Sequence contract status when sequence is present
    - Intent header completeness status
 7. `## Fix Queue for doc-brd-fixer`
@@ -356,7 +333,7 @@ Required sections:
 ### Fix Queue Normalization
 
 Each finding MUST include:
-- `source`: `script` | `claude` (script = shell validation, claude = content review)
+- `source`: `structural` | `claude` (structural = declarative checks, claude = content review)
 - `code`: issue code
 - `severity`: `error|warning|info`
 - `file`: relative path
@@ -383,7 +360,7 @@ If both exist, fixer should prefer latest timestamp.
 ```
 
 Expected outcome:
-1. Shell validation scripts run (same as pre-commit)
+1. Declarative structural checks run (element ID format, structure, cross-section rules, quality gate)
 2. Claude content quality review runs
 3. Combined audit report generated: `BRD-01.A_audit_report_vNNN.md`
 4. Fixer can execute directly from combined report
@@ -396,7 +373,8 @@ Expected outcome:
 |---------|------|---------|
 | 2.4 | 2026-03-05 | **Metadata Validation**: Added validation for `deliverable_type` metadata field (VALID-M001, VALID-M002, VALID-M003); Validates presence, valid values (`code`, `document`, `ux`, `risk`, `process`), and `document_type` correctness; Added "Metadata Validation Findings" section to combined report |
 | 2.3 | 2026-03-05 | **Report Cleanup Policy**: Added mandatory cleanup of old audit reports after generating new one; Deletes previous `BRD-NN.A_audit_report_v*.md` and legacy `BRD-NN.R_review_report_v*.md` files; Keeps fix reports and drift cache; Added cleanup summary section to audit report |
-| 2.2 | 2026-03-05 | **Shell-first approach**: Pre-commit runs shell scripts directly (not Claude); Skill is for manual use only; Skill invokes same scripts then adds Claude review; Removed obsolete `doc-brd-validator`/`doc-brd-reviewer` references |
+| 2.5 | 2026-05-22 | **8-layer migration**: Migrated to the framework 8-layer model; replaced external shell/Python validation-script references with the skill's own declarative structural checklist pointing to `framework/governance/` and `framework/layers/01_BRD/README.md`; element IDs use the 4-segment `BRD.NN.SS.xxxx` standard; downstream chain set to PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN |
+| 2.2 | 2026-03-05 | **Manual-use clarification**: Skill is for manual/interactive use only; adds Claude review on top of structural checks; Removed obsolete `doc-brd-validator`/`doc-brd-reviewer` references |
 | 2.1 | 2026-03-01 | Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill |
 | 1.3 | 2026-02-26 | Added advisory BRD C4/DFD/sequence diagram contract checks and required `Diagram Contract Findings` section in combined audit reports |
 | 1.2 | 2026-02-26 | Initial audit wrapper; combined report contract for fixer |

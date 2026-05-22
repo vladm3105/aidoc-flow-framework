@@ -17,8 +17,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [EARS, Audit Report, Review Report, PRD]
     downstream_artifacts: [Fixed EARS, Fix Report]
-    version: "2.2"
-    last_updated: "2026-02-26"
+    version: "2.3"
+    last_updated: "2026-05-22"
 ---
 
 # doc-ears-fixer
@@ -313,45 +313,53 @@ def fix_link_path(ears_location: str, target_path: str) -> str:
 
 ### Phase 3: Fix Element IDs
 
-Converts invalid element IDs to correct format.
+Converts invalid element IDs to the 4-segment standard.
+
+**Element ID Standard**: `EARS.{doc_id}.{section_id}.{hash}` (4 segments) where
+`doc_id` is the two-digit EARS document number, `section_id` is the two-digit
+section number, and `hash` is the first 4 hex characters of
+`SHA256("{doc_id}:{section_id}:{title}:{description}")`. There are no numeric
+type codes — element kind (statement vs. constraint) is conveyed by the section
+it lives in, not by the ID. See `framework/governance/ID_NAMING_STANDARDS.md`
+and `framework/layers/03_EARS/README.md`.
 
 **Conversion Rules**:
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `EARS.NN.01.SS` | Code 01 invalid for EARS | `EARS.NN.25.SS` (EARS Statement) |
-| `EARS.NN.22.SS` | Code 22 invalid for EARS | `EARS.NN.26.SS` (Constraint Statement) |
-| `REQ-XXX` | Legacy pattern | `EARS.NN.25.SS` |
-| `CON-XXX` | Legacy pattern | `EARS.NN.26.SS` |
-| `PAT-XXX` | Legacy pattern | `EARS.NN.25.SS` |
+| `EARS.NN.SSSS` | Legacy 3-segment format | `EARS.NN.SS.xxxx` (recompute hash) |
+| `EARS.NN.25.SS` / `EARS.NN.26.SS` | Legacy numeric type-code segment | `EARS.NN.SS.xxxx` (drop type code, recompute hash) |
+| `REQ-XXX` | Legacy pattern | `EARS.NN.SS.xxxx` |
+| `CON-XXX` | Legacy pattern | `EARS.NN.SS.xxxx` |
+| `PAT-XXX` | Legacy pattern | `EARS.NN.SS.xxxx` |
 
-**Type Code Mapping** (EARS-specific valid codes: 25, 26):
+**Hash Recomputation**:
 
-| Invalid Code | Valid Code | Element Type |
-|--------------|------------|--------------|
-| 01 | 25 | EARS Statement |
-| 02 | 25 | EARS Statement |
-| 03 | 26 | Constraint Statement |
-| 05 | 25 | EARS Statement |
-| 06 | 26 | Constraint Statement |
-| 22 | 25 | EARS Statement |
-| 33 | 26 | Constraint Statement |
+```python
+import hashlib
+
+def ears_element_hash(doc_id: str, section_id: str, title: str, description: str) -> str:
+    """First 4 hex chars of SHA256('{doc_id}:{section_id}:{title}:{description}')."""
+    payload = f"{doc_id}:{section_id}:{title}:{description}"
+    return hashlib.sha256(payload.encode()).hexdigest()[:4]
+```
 
 **Regex Patterns**:
 
 ```python
-# Find element IDs with invalid type codes for EARS
-invalid_ears_type_01 = r'EARS\.(\d{2})\.01\.(\d{2})'
-replacement_01 = r'EARS.\1.25.\2'
+# Find legacy 3-segment IDs (no section + hash) and numeric type-code IDs
+legacy_3seg = r'EARS\.(\d{2})\.(\d{2,4})\b'           # EARS.NN.SSSS -> recompute
+legacy_typecode = r'EARS\.(\d{2})\.(?:25|26)\.(\d{2})' # drop type code, recompute hash
 
-invalid_ears_type_22 = r'EARS\.(\d{2})\.22\.(\d{2})'
-replacement_22 = r'EARS.\1.26.\2'
-
-# Find legacy patterns
+# Find legacy named patterns
 legacy_req = r'###\s+REQ-(\d+):'
 legacy_con = r'###\s+CON-(\d+):'
 legacy_pat = r'###\s+PAT-(\d+):'
 ```
+
+When converting, the fixer reads each element's section and title/description to
+recompute the 4-char hash; it never invents a hash or reuses a legacy sequence
+number as the final segment.
 
 ---
 
@@ -413,7 +421,7 @@ Ensures traceability and cross-references are correct.
 
 ```markdown
 <!-- Traceability to PRD -->
-@trace: PRD-01.22.01 -> EARS-01.25.01
+@trace: PRD.01.09.1dbc -> EARS.01.03.5e2a
 
 <!-- Reference to upstream -->
 @ref: PRD-01 Section 3 (../02_PRD/PRD-01.md#3-feature-requirements)
@@ -459,7 +467,7 @@ Fix: Set `drift_detected: true`, add to manual review
 
 **Upstream**: PRD (Layer 2)
 **Downstream**: BDD (Layer 4)
-**ID Pattern**: `EARS.NN.xxxx` (e.g., `EARS.01.2513`)
+**ID Pattern**: `EARS.NN.SS.xxxx` (e.g., `EARS.01.03.5e2a`)
 
 #### Drift Issue Codes (from `doc-ears-reviewer` Check #9)
 
@@ -538,43 +546,32 @@ def determine_tier(drift_percentage: float) -> int:
 
 | Change Type | Action | ID Assignment |
 |-------------|--------|---------------|
-| New requirement in PRD | Add EARS statement | Next sequential ID (e.g., `EARS.01.2513`) |
+| New requirement in PRD | Add EARS statement | New ID (e.g., `EARS.01.03.5e2a`) |
 | Updated threshold | Update constraint value | Keep existing ID |
 | Added clarification | Append to existing statement | Keep existing ID |
 
 **ID Generation for New Requirements**:
 
 ```python
-def generate_next_ears_id(ears_doc: str, type_code: str = "25") -> str:
+import hashlib
+
+def generate_ears_id(doc_num: str, section_id: str, title: str, description: str) -> str:
     """
-    Generate next sequential EARS ID.
+    Generate a 4-segment EARS element ID.
 
-    ID Pattern: EARS.NN.xxxx
+    ID Pattern: EARS.NN.SS.xxxx
     - NN: Document number (01-99)
-    - TT: Type code (25=Statement, 26=Constraint)
-    - SS: Sequence number (01-99)
+    - SS: Section number the element lives in (e.g., 03)
+    - xxxx: First 4 hex chars of SHA256('NN:SS:title:description')
 
-    Args:
-        ears_doc: Path to EARS document
-        type_code: Type code ("25" for statement, "26" for constraint)
+    No numeric type codes — element kind is conveyed by its section, not the ID.
 
     Returns:
-        Next available EARS ID
+        New EARS element ID
     """
-    # Extract document number from filename
-    doc_num = extract_doc_number(ears_doc)  # e.g., "01" from "EARS-01.md"
-
-    # Find highest existing sequence for this type
-    pattern = rf'EARS\.{doc_num}\.{type_code}\.(\d{{2}})'
-    existing_ids = re.findall(pattern, read_file(ears_doc))
-
-    if existing_ids:
-        max_seq = max(int(seq) for seq in existing_ids)
-        next_seq = str(max_seq + 1).zfill(2)
-    else:
-        next_seq = "01"
-
-    return f"EARS.{doc_num}.{type_code}.{next_seq}"
+    payload = f"{doc_num}:{section_id}:{title}:{description}"
+    digest = hashlib.sha256(payload.encode()).hexdigest()[:4]
+    return f"EARS.{doc_num}.{section_id}.{digest}"
 ```
 
 **Version Update**:
@@ -615,15 +612,15 @@ new_version = increment_version(current_version, "patch")  # "1.0.1"
 
 | New ID | Statement Summary | Source PRD Section |
 |--------|-------------------|-------------------|
-| EARS.01.2513 | System shall support batch processing | PRD-01 Section 5.2 |
-| EARS.01.2514 | System shall provide progress notifications | PRD-01 Section 5.3 |
-| EARS.01.2605 | Response time constraint for batch ops | PRD-01 Section 7.1 |
+| EARS.01.03.5e2a | System shall support batch processing | PRD-01 Section 5.2 |
+| EARS.01.03.8f4c | System shall provide progress notifications | PRD-01 Section 5.3 |
+| EARS.01.04.b1d7 | Response time constraint for batch ops | PRD-01 Section 7.1 |
 
 ### Modifications
 
 | ID | Previous | Updated | Reason |
 |----|----------|---------|--------|
-| EARS.01.2507 | "within 100ms" | "within 50ms" | Performance threshold tightened |
+| EARS.01.03.a3c1 | "within 100ms" | "within 50ms" | Performance threshold tightened |
 
 ### No Deletions (See No-Deletion Policy)
 ```
@@ -751,7 +748,7 @@ new_version = increment_version(current_version, "major")  # "2.0.0"
 **Deprecation Marker Format**:
 
 ```markdown
-### EARS.01.2505 [DEPRECATED]
+### EARS.01.04.7b9e [DEPRECATED]
 
 > **Deprecation Date**: 2026-02-10
 > **Reason**: Removed from PRD-01 v1.3.0 (Section 4.2 deleted)
@@ -776,7 +773,7 @@ def mark_deprecated(
     Mark EARS requirement as deprecated instead of deleting.
 
     Args:
-        ears_id: EARS ID to deprecate (e.g., "EARS.01.2505")
+        ears_id: EARS ID to deprecate (e.g., "EARS.01.04.7b9e")
         reason: Reason for deprecation
         upstream_ref: PRD reference that triggered deprecation
         downstream_refs: List of downstream BDD references affected
@@ -825,8 +822,8 @@ After processing drift issues, update `.drift_cache.json`:
       "drift_percentage": 8.3,
       "version_before": "1.0.1",
       "version_after": "1.1.0",
-      "additions": ["EARS.01.2513", "EARS.01.2514", "EARS.01.2605"],
-      "modifications": ["EARS.01.2507"],
+      "additions": ["EARS.01.03.5e2a", "EARS.01.03.8f4c", "EARS.01.04.b1d7"],
+      "modifications": ["EARS.01.03.a3c1"],
       "deprecations": []
     }
   ],
@@ -993,7 +990,7 @@ custom_fields:
 |---|------------|-------|-------------|------|
 | 1 | REV-L001 | Broken glossary link | Created EARS-00_GLOSSARY.md | EARS-01.3_constraints.md |
 | 2 | REV-L004 | Broken PRD reference | Updated path to ../02_PRD/PRD-01.md | EARS-01.1_core.md |
-| 3 | REV-N004 | Element type 01 invalid | Converted to type 25 | EARS-01.1_core.md |
+| 3 | REV-N004 | Legacy 3-segment element ID | Converted to `EARS.NN.SS.xxxx` | EARS-01.1_core.md |
 | 4 | REV-L003 | Absolute path used | Converted to relative | EARS-01.2_requirements.md |
 
 ## Issues Requiring Manual Review
@@ -1088,10 +1085,11 @@ Before applying any fixes:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 2.3 | 2026-05-22 | Migrated to the framework 8-layer model: replaced the legacy 3-segment / numeric type-code (25, 26) element-ID scheme with the 4-segment `EARS.NN.SS.xxxx` hash standard; updated Phase 3 conversion rules, ID generation, and example IDs; pointed validation to `framework/governance/` and `framework/layers/03_EARS/README.md` |
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata`; added compatibility for `EARS-NN.A_audit_report_vNNN.md` (preferred) with legacy `EARS-NN.R_review_report_vNNN.md`; defined deterministic precedence (latest timestamp, then `.A_` over `.R_` on ties) |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR003); Runs FIRST before other fix phases |
-| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.xxxx pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
-| 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary and pattern file creation; Element ID conversion for EARS codes (25, 26); Broken link fixes; PRD drift detection; EARS pattern syntax validation; Integration with autopilot Review->Fix cycle |
+| 2.0 | 2026-02-10 | Enhanced Phase 6 with tiered auto-merge system; Tier 1 (< 5%): auto-merge additions with patch version; Tier 2 (5-15%): auto-merge with changelog and minor version; Tier 3 (> 15%): archive + regenerate with major version; No-deletion policy with deprecation markers; Auto-generated IDs (EARS.NN.SS.xxxx pattern); Enhanced drift cache with merge history; Downstream BDD notification system |
+| 1.0 | 2026-02-10 | Initial skill creation; 6-phase fix workflow; Glossary and pattern file creation; Element ID conversion to the 4-segment `EARS.NN.SS.xxxx` standard; Broken link fixes; PRD drift detection; EARS pattern syntax validation; Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)
 

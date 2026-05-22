@@ -15,8 +15,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [EARS]
     downstream_artifacts: []
-    version: "1.3"
-    last_updated: "2026-02-26"
+    version: "1.4"
+    last_updated: "2026-05-22"
 ---
 
 # doc-ears-validator
@@ -29,7 +29,8 @@ Invoke when user requests validation of EARS documents or after creating/modifyi
 
 ## Validation Schema Reference
 
-Schema: `ai_dev_ssd_flow/03_EARS/EARS_MVP_SCHEMA.yaml`
+Template (single source of truth): `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+Standards: `framework/governance/ID_NAMING_STANDARDS.md`, `framework/layers/03_EARS/README.md`
 Layer: 3
 Artifact Type: EARS
 
@@ -147,8 +148,8 @@ Pattern: `EARS-NNN_descriptive_name.md`
 | Complex | Combination of patterns | WHEN user logs in WHILE session active THE system SHALL refresh token |
 
 **Requirement ID Format:**
-- Pattern: `EARS.NN.EE.SS` (3-segment format)
-- Example: `EARS.01.2401`
+- Pattern: `EARS.NN.SS.xxxx` (4-segment: doc_id.section_id.4-hex-hash)
+- Example: `EARS.01.03.c4d8`
 
 **BDD-Ready Score:**
 - Minimum threshold: 90%
@@ -157,13 +158,13 @@ Pattern: `EARS-NNN_descriptive_name.md`
 ### 4. Traceability Validation
 
 **Layer 3 Cumulative Tags:**
-- @brd: BRD.NN.01.SS (required)
-- @prd: PRD.NN.07.SS (required)
+- @brd: BRD.NN.SS.xxxx (required)
+- @prd: PRD.NN.SS.xxxx (required)
 
 **Downstream Expected:**
 - BDD scenarios
 - ADR documents
-- SYS requirements
+- SPEC, TDD, IPLAN (added only once those artifacts exist)
 
 **Same-Type References:**
 - @related-ears: EARS-NN
@@ -193,18 +194,18 @@ Pattern: `EARS-NNN_descriptive_name.md`
 | EARS-I001 | info | Consider adding unwanted behavior handling |
 | EARS-I002 | info | Consider adding timing constraints (WITHIN) |
 
-## Validation Commands
+## How Validation Runs
 
-```bash
-# Validate single EARS document
-python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/EARS-001_example.md
+The framework ships no runtime scripts — **this skill is the validator**. There
+is no external `validate_ears.py` to call. Apply the Validation Checklist and
+Validation Workflow below directly against the target document(s), checking each
+against `framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
+`framework/governance/ID_NAMING_STANDARDS.md`, and
+`framework/layers/03_EARS/README.md`:
 
-# Validate all EARS documents
-python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/
-
-# Check with verbose output
-python ai_dev_ssd_flow/03_EARS/scripts/validate_ears.py docs/03_EARS/ --verbose
-```
+- Single EARS document: apply the checklist to `docs/03_EARS/EARS-NN_{slug}/EARS-NN_{slug}.md`.
+- All EARS documents: apply the checklist across every document under `docs/03_EARS/`.
+- Emit the Output Format report (below), listing errors/warnings/info by severity.
 
 ## Validation Workflow
 
@@ -266,7 +267,8 @@ Info: N
 
 | Version | Date | Changes | Author |
 |---------|------|---------|--------|
-| 1.3 | 2026-02-26 | Migrated frontmatter to `metadata`; updated validator command paths to `ai_dev_ssd_flow/03_EARS/scripts`; aligned valid structure examples with audit-wrapper compatibility | System |
+| 1.4 | 2026-05-22 | Migrated to framework 8-layer model: 4-segment element IDs `EARS.NN.SS.xxxx`; downstream SPEC/TDD/IPLAN; `framework/layers/03_EARS/` references; removed runtime `validate_ears.py` calls — the skill is the validator (declarative checklist) | System |
+| 1.3 | 2026-02-26 | Migrated frontmatter to `metadata`; aligned valid structure examples with audit-wrapper compatibility | System |
 | 1.1 | 2026-02-11 | **Nested Folder Rule**: Added Section 0 Folder Structure Validation (BLOCKING); EARS must be in `docs/03_EARS/EARS-NN_{slug}/` folders; Added error codes EARS-E020, EARS-E021, EARS-E022 |
 | 1.0 | 2026-02-08 | Initial validator skill definition with YAML frontmatter | System |
 

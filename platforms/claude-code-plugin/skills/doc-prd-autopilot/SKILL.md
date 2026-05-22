@@ -16,9 +16,9 @@ metadata:
     development_status: active
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
-    downstream_artifacts: [EARS, BDD, ADR]
-    version: "2.9"
-    last_updated: "2026-03-02"
+    downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
+    version: "3.0"
+    last_updated: "2026-05-22"
 ---
 
 # doc-prd-autopilot
@@ -31,7 +31,7 @@ Automated **Product Requirements Document (PRD)** generation pipeline that proce
 
 **Upstream**: BRD (Layer 1)
 
-**Downstream**: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
+**Downstream**: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
 
 ---
 
@@ -99,8 +99,8 @@ This autopilot orchestrates the following skills:
 When generating PRD document instances, the autopilot MUST:
 
 1. **Read** `instance_document_type` from template:
-   - Source: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.yaml`
-   - Field: `metadata.instance_document_type: "prd-document"`
+   - Source: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+   - Field: `metadata.document_type: "prd-document"`
 
 2. **Set** `document_type` in generated document frontmatter:
    ```yaml
@@ -373,7 +373,7 @@ Dependency Analysis Complete:
 Before generating a PRD, validate that the source BRD meets PRD-Ready requirements.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-brd-audit` skill (unified BRD quality gate).
-> See: `.claude/skills/doc-brd-audit/SKILL.md` for complete BRD validation rules.
+> See: `../doc-brd-audit/SKILL.md` for complete BRD validation rules.
 
 **PRD-Ready Scoring Criteria (100%)**:
 
@@ -395,23 +395,22 @@ Before generating a PRD, validate that the source BRD meets PRD-Ready requiremen
 | Incomplete Document Control | Add missing required fields |
 | Missing section numbers | Renumber sections sequentially |
 
-**Validation Command** (internal):
-```bash
-python ai_dev_ssd_flow/scripts/validate_prd_ready.py \
-  --brd docs/01_BRD/BRD-01_f1_iam/ \
-  --min-score 90 \
-  --auto-fix
-```
+**PRD-Ready Validation** (declarative): the framework is spec-only (no runtime
+scripts). This skill *is* the validator. Apply the PRD-Ready scoring criteria
+above against the source BRD; if the score is below the minimum, apply the
+auto-fix actions and re-score until the threshold is met or only manual issues
+remain. Authority: `../doc-brd-audit/SKILL.md`, `framework/governance/`, and
+`framework/layers/02_PRD/README.md`.
 
 ### Step 4: PRD Generation
 
 Generate the PRD document from the validated BRD with real-time quality feedback.
 
 > **Skill Delegation**: This phase follows rules defined in `doc-prd` skill.
-> See: `.claude/skills/doc-prd/SKILL.md` for complete PRD creation guidance.
+> See: `../doc-prd/SKILL.md` for complete PRD creation guidance.
 >
 > **Quality Guidance**: Uses `quality-advisor` skill for real-time feedback during generation.
-> See: `.claude/skills/quality-advisor/SKILL.md` for quality monitoring.
+> See: `../quality-advisor/SKILL.md` for quality monitoring.
 
 **Generation Process**:
 
@@ -421,7 +420,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Parse Architecture Decision Requirements topics
 
 2. **Template Selection** (per `doc-prd` skill):
-  - **MVP Template** (standard): `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md` (21 sections, ≥90% thresholds)
+  - **MVP Template** (standard): `framework/layers/02_PRD/PRD-TEMPLATE.yaml` (≥90% thresholds)
    - **Section Templates**: For sectioned PRDs (>25KB)
    - **Note**: MVP template IS the standard. Expansion through NEW iterations (PRD-02, PRD-03).
 
@@ -457,12 +456,12 @@ Generate the PRD document from the validated BRD with real-time quality feedback
    - Monitor section completion as content is generated
    - Detect anti-patterns (AP-001 to AP-017) during creation
    - Validate cumulative tagging (@brd requirement for Layer 2)
-   - Check element ID format compliance (PRD.NN.xxxx)
+   - Check element ID format compliance (4-segment `PRD.NN.SS.xxxx`)
    - Flag issues early to reduce post-generation rework
 
 6. **Traceability Tags**:
    ```markdown
-   @brd: BRD.01.0101, BRD.01.0102, BRD.01.2301
+   @brd: BRD.01.07.a7f3, BRD.01.07.b2c4, BRD.01.08.e5b1
    ```
 
 7. **File Output** (ALWAYS use nested folder):
@@ -477,7 +476,7 @@ Generate the PRD document from the validated BRD with real-time quality feedback
 After PRD generation, validate EARS-Ready score.
 
 > **Skill Delegation**: This phase uses validation rules from `doc-prd-validator` skill.
-> See: `.claude/skills/doc-prd-validator/SKILL.md` for complete validation rules and error codes.
+> See: `../doc-prd-validator/SKILL.md` for complete validation rules and error codes.
 
 **EARS-Ready Scoring Criteria (100%)**:
 
@@ -507,15 +506,18 @@ After PRD generation, validate EARS-Ready score.
   - `PRD-E025` (missing `@diagram: sequence-*`)
   - `PRD-E026` (sequence diagram missing `alt/else` exception path)
 
-**Blocking Element Code Contract Gate**:
-- Autopilot must fail Phase 4 when element type codes violate naming standards:
-  - `PRD-E020` (element type code not valid for PRD)
-  - `PRD-E022` (section-element type code mismatch)
-- Section-element mapping enforcement (e.g., Section 5 metrics must use type `08`)
+**Blocking Element ID Contract Gate**:
+- Autopilot must fail Phase 4 when element IDs violate the 4-segment naming
+  standard:
+  - `PRD-E020` (element ID is not valid 4-segment `PRD.NN.SS.xxxx` format)
+  - `PRD-E022` (element ID `section_id` does not match its document section)
+- The 8-layer model uses content-derived `PRD.NN.SS.xxxx` IDs (`SS` = 2-digit
+  section number, `xxxx` = 4-char hex hash) — there are no fixed numeric
+  type-codes. See `framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Report Requirement**:
 - Include `Diagram Contract Compliance: PASS/FAIL` in phase summary output.
-- Include `Element Code Compliance: PASS/FAIL` in phase summary output.
+- Include `Element ID Compliance: PASS/FAIL` in phase summary output.
 
 ### Step 6: Review & Fix Cycle (v2.3)
 
@@ -645,8 +647,8 @@ After passing the fix cycle:
 3. **BRD Alignment Check**:
    ```
    Verifying PRD requirements map to BRD source...
-   ├── PRD.01.0101 → BRD.01.0101 (Multi-Provider Auth) ✓
-   ├── PRD.01.0102 → BRD.01.0102 (4D Authorization) ✓
+   ├── PRD.01.09.1dbc → BRD.01.07.a7f3 (Multi-Provider Auth) ✓
+   ├── PRD.01.09.4f2a → BRD.01.07.b2c4 (4D Authorization) ✓
    └── Result: 12/12 requirements aligned ✓
    ```
 
@@ -663,13 +665,11 @@ After passing the fix cycle:
    Status: READY FOR EARS GENERATION
    ```
 
-5. **Traceability Matrix Update**:
-   ```bash
-   # Update PRD-00_TRACEABILITY_MATRIX.md
-  python ai_dev_ssd_flow/scripts/update_traceability_matrix.py \
-     --prd docs/02_PRD/PRD-NN_{slug}/PRD-NN_{slug}.md \
-     --matrix docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md
-   ```
+5. **Traceability Matrix Update**: create or update
+   `docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md` so each generated PRD maps to its
+   upstream BRD element IDs and to its downstream placeholders. This is a
+   declarative step performed by the autopilot — the framework ships no runtime
+   scripts.
 
 ---
 
@@ -955,7 +955,7 @@ Validate existing PRD documents and generate a quality report without modificati
 ## Auto-Fixable Issues
 | # | Issue | Location | Fix Action |
 |---|-------|----------|------------|
-| 1 | Legacy element ID | Section 9:L45 | Convert PO-001 to PRD.01.0701 |
+| 1 | Legacy element ID | Section 9:L45 | Convert PO-001 to PRD.01.07.1dbc |
 | 2 | Placeholder text | Section 14:L78 | Remove [TODO] marker |
 | 3 | Inconsistent threshold | Section 5:L23 | Align to BRD value |
 | ... | ... | ... | ... |
@@ -975,7 +975,7 @@ review_mode:
   enabled: true
   checks:
     - structure_validation      # 21 sections
-    - element_id_compliance     # PRD.NN.xxxx format
+    - element_id_compliance     # 4-segment PRD.NN.SS.xxxx format
     - link_integrity            # Internal link check
     - threshold_consistency     # Cross-section consistency
     - brd_alignment             # Upstream traceability
@@ -1018,9 +1018,9 @@ Auto-repair existing PRD documents while preserving manual content.
 
 | Category | Issue | Auto-Fix Action | Preserves Content |
 |----------|-------|-----------------|-------------------|
-| **Element IDs** | Legacy PO-XXX format | Convert to PRD.NN.07.SS | ✅ |
-| **Element IDs** | Legacy FF-XXX format | Convert to PRD.NN.01.SS | ✅ |
-| **Element IDs** | Legacy AC-XXX format | Convert to PRD.NN.06.SS | ✅ |
+| **Element IDs** | Legacy PO-XXX format | Convert to PRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy FF-XXX format | Convert to PRD.NN.SS.xxxx | ✅ |
+| **Element IDs** | Legacy AC-XXX format | Convert to PRD.NN.SS.xxxx | ✅ |
 | **Thresholds** | Inconsistent values | Align to BRD source | ✅ |
 | **Thresholds** | Hardcoded values | Replace with @threshold | ✅ |
 | **Links** | Broken internal links | Update paths or remove | ✅ |
@@ -1042,12 +1042,18 @@ Auto-repair existing PRD documents while preserving manual content.
 
 **Element ID Migration**:
 
-| Legacy Pattern | New Format | Example |
-|----------------|------------|---------|
-| `PO-XXX` | `PRD.NN.07.SS` | PO-001 → PRD.01.0701 |
-| `FF-XXX` | `PRD.NN.01.SS` | FF-001 → PRD.01.0101 |
-| `AC-XXX` | `PRD.NN.06.SS` | AC-001 → PRD.01.0601 |
-| `US-XXX` | `PRD.NN.08.SS` | US-001 → PRD.01.0801 |
+All legacy element IDs convert to the 4-segment standard
+`PRD.NN.SS.xxxx` (`NN` = document number, `SS` = 2-digit section number,
+`xxxx` = 4-char hex content hash). The legacy numeric type-codes are dropped —
+section context, not a type-code, determines `SS`. See
+`framework/governance/ID_NAMING_STANDARDS.md`.
+
+| Legacy Pattern | New Format | Example (section → SS) |
+|----------------|------------|------------------------|
+| `PO-XXX` | `PRD.NN.SS.xxxx` | PO-001 → PRD.01.13.1dbc (Risk, §13) |
+| `FF-XXX` | `PRD.NN.SS.xxxx` | FF-001 → PRD.01.09.4f2a (Functional Req, §9) |
+| `AC-XXX` | `PRD.NN.SS.xxxx` | AC-001 → PRD.01.11.8f4c (Acceptance, §11) |
+| `US-XXX` | `PRD.NN.SS.xxxx` | US-001 → PRD.01.08.5e2a (User Story, §8) |
 
 **Fix Report Structure**:
 
@@ -1063,7 +1069,7 @@ Auto-repair existing PRD documents while preserving manual content.
 ## Fixes Applied
 | # | Issue | Location | Fix Applied |
 |---|-------|----------|-------------|
-| 1 | Legacy element ID | Section 9:L45 | Converted PO-001 → PRD.01.0701 |
+| 1 | Legacy element ID | Section 9:L45 | Converted PO-001 → PRD.01.09.4f2a |
 | 2 | Placeholder text | Section 14:L78 | Removed [TODO] marker |
 | 3 | Inconsistent threshold | Section 5:L23 | Aligned to BRD.01 value |
 | ... | ... | ... | ... |
@@ -1119,10 +1125,7 @@ fix_mode:
     max_fix_iterations: 3
 
   element_id_migration:
-    PO_XXX_to_PRD_NN_07_SS: true
-    FF_XXX_to_PRD_NN_xxxx: true
-    AC_XXX_to_PRD_NN_06_SS: true
-    US_XXX_to_PRD_NN_08_SS: true
+    legacy_codes_to_PRD_NN_SS_xxxx: true   # PO-/FF-/AC-/US- → 4-segment PRD.NN.SS.xxxx
 ```
 
 **Command Line Options (Review/Fix)**:
@@ -1215,7 +1218,7 @@ Generated after completion:
 | `BRDNotFoundError` | Specified BRD does not exist | Check path and BRD ID |
 | `PRDReadyScoreLow` | BRD score < 90% after auto-fix attempts | Manual BRD improvement required |
 | `EARSReadyScoreLow` | PRD score < 90% after auto-fix | Manual PRD improvement required |
-| `TemplateNotFoundError` | PRD template missing | Verify `ai_dev_ssd_flow/02_PRD/` exists |
+| `TemplateNotFoundError` | PRD template missing | Verify `framework/layers/02_PRD/PRD-TEMPLATE.yaml` exists |
 
 ### Recovery Actions
 
@@ -1250,7 +1253,7 @@ Generated after completion:
 2. doc-prd-autopilot (generate PRDs) ← This skill
 3. doc-ears (create EARS from PRDs)
 4. doc-bdd (create BDD from EARS)
-5. ... continue SDD workflow
+5. doc-adr → doc-spec → doc-tdd → doc-iplan (continue 8-layer SDD workflow)
 ```
 
 ---
@@ -1260,8 +1263,8 @@ Generated after completion:
 Before using this skill, ensure:
 
 1. **BRD Documents Exist**: At least one BRD in `docs/01_BRD/`
-2. **Templates Available**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-3. **Shared Standards**: `.claude/skills/doc-flow/SHARED_CONTENT.md`
+2. **Templates Available**: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+3. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
 
 ### Pre-Flight Check
 
@@ -1270,7 +1273,7 @@ Before using this skill, ensure:
 ls docs/01_BRD/
 
 # Verify PRD template
-ls ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md
+ls framework/layers/02_PRD/PRD-TEMPLATE.yaml
 
 # Check for existing PRDs
 ls docs/02_PRD/ 2>/dev/null || echo "PRD directory will be created"
@@ -1329,21 +1332,21 @@ After autopilot completion:
 
 ### Skills (Delegated)
 
-- **PRD Skill**: `.claude/skills/doc-prd/SKILL.md` - PRD creation rules and structure
-- **PRD Validator Skill**: `.claude/skills/doc-prd-validator/SKILL.md` - Validation rules and error codes
-- **BRD Audit Skill**: `.claude/skills/doc-brd-audit/SKILL.md` - Unified BRD quality gate (replaces deprecated doc-brd-validator)
+- **PRD Skill**: `../doc-prd/SKILL.md` - PRD creation rules and structure
+- **PRD Validator Skill**: `../doc-prd-validator/SKILL.md` - Validation rules and error codes
+- **BRD Audit Skill**: `../doc-brd-audit/SKILL.md` - Unified BRD quality gate (replaces deprecated doc-brd-validator)
 
 ### Templates and Rules
 
-- **PRD Template**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Schema**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
-- **PRD Creation Rules**: `ai_dev_ssd_flow/02_PRD/PRD-MVP-TEMPLATE.md`
-- **PRD Validation Rules**: `ai_dev_ssd_flow/02_PRD/PRD_MVP_SCHEMA.yaml`
+- **PRD Template**: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+- **PRD README**: `framework/layers/02_PRD/README.md`
+- **PRD Creation & Validation Rules**: this skill + `doc-prd` (the plugin skill IS the validator; framework is spec-only)
+- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
 
 ### Framework References
 
-- **SDD Workflow**: `ai_dev_ssd_flow/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- **MVP Autopilot**: `ai_dev_ssd_flow/AUTOPILOT/MVP_AUTOPILOT.md`
+- **SDD Workflow**: `framework/README.md` (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code)
+- **Governance**: `framework/governance/`
 
 ---
 
@@ -1351,7 +1354,7 @@ After autopilot completion:
 
 **IMPORTANT**: Review reports generated by this autopilot are formal project documents.
 
-See: `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
+See: `../REVIEW_DOCUMENT_STANDARDS.md` for complete standards.
 
 ### Quick Reference
 
@@ -1385,15 +1388,16 @@ docs/02_PRD/PRD-04_f4_config/               # Sectioned PRD example
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 3.0 | 2026-05-22 | **8-layer model migration (PLM-B2)**: PRD stays Layer 2; downstream chain rebuilt to EARS, BDD, ADR, SPEC (L6), TDD (L7), IPLAN (L8). 4-segment element IDs (`PRD.NN.SS.xxxx`); legacy numeric type-codes (PO-/FF-/AC-/US-) dropped — section context drives `SS`. Paths point at `framework/layers/02_PRD/` (`.yaml` templates); validation-script refs removed (framework is spec-only; this skill IS the validator) with pointers to `framework/governance/` and `framework/layers/02_PRD/README.md`. Sibling-skill refs now `../doc-X/`. |
 | 2.9 | 2026-03-02 | **Drift Cache Creation Enforcement (MANDATORY)**: Added "Review Mode Mandatory Steps" section; Updated Action Determination Output to use `doc-prd-audit` instead of `doc-prd-reviewer`; Added drift cache to validation checklist; Updated Mode 4: Review Mode (v2.2) with mandatory audit execution and drift cache creation warnings |
 | 2.8 | 2026-03-02 | **Element Code Contract Gate (BLOCKING)**: Added element type code validation as blocking gate in Phase 4; PRD-E020/PRD-E022 now fail autopilot; Added section-element mapping enforcement; Report must include Element Code Compliance status |
 | 2.7 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-validator` to `doc-brd-audit` (unified quality gate) |
-| 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; switched PRD references to `ai_dev_ssd_flow`; integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
+| 2.6 | 2026-02-26 | Migrated frontmatter to `metadata`; updated PRD references (paths later remapped to `framework/layers/` in 3.0); integrated `doc-prd-audit` in Phase 5 with combined report compatibility (`.A_audit_report` preferred, `.R_review_report` legacy) |
 | 2.5 | 2026-02-11 | **Smart Document Detection**: Added automatic document type recognition; Self-type input (PRD-NN) triggers review mode; Upstream-type input (BRD-NN) triggers generate-if-missing or find-and-review; Updated input patterns table with type-based actions |
 | 2.4 | 2026-02-11 | **Nested Folder Enforcement**: Fixed output structure examples to show ALL PRDs in nested folders regardless of size; Removed incorrect non-nested monolithic PRD example; Updated review report location examples |
 | 2.3 | 2026-02-10 | **Review & Fix Cycle**: Replaced Phase 5 (Step 6) with iterative Review -> Fix cycle using `doc-prd-reviewer` and `doc-prd-fixer`; Added `doc-prd-fixer` skill dependency; Added iteration control with max 3 cycles and 90% target score |
-| 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references; references shared `.claude/skills/REVIEW_DOCUMENT_STANDARDS.md` |
-| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration (PO-XXX→PRD.NN.07.SS, FF-XXX→PRD.NN.01.SS, AC-XXX→PRD.NN.06.SS, US-XXX→PRD.NN.08.SS) |
+| 2.2 | 2026-02-10 | Added Review Document Standards: review reports stored alongside reviewed documents with YAML frontmatter and parent references; references shared `../REVIEW_DOCUMENT_STANDARDS.md` |
+| 2.1 | 2026-02-09 | Added Mode 4: Review Mode for validation-only analysis with visual score indicators; Added Mode 5: Fix Mode for auto-repair with backup and content preservation; Element ID migration of legacy PO-/FF-/AC-/US- patterns (superseded in 3.0 by 4-segment `PRD.NN.SS.xxxx`) |
 | 1.3 | 2026-02-08 | Integrated quality-advisor skill for real-time quality feedback in Phase 3 (PRD Generation) |
 | 1.2 | 2026-02-08 | Added Phase 5: Final Content Review with link integrity, threshold consistency, BRD alignment, and placeholder detection checks |
 | 1.1 | 2026-02-08 | Added skill dependencies, integrated doc-prd and doc-prd-validator skills |

@@ -252,7 +252,7 @@ custom_fields:
 
 | Story ID | As a... | I want to... | So that... |
 |----------|---------|--------------|------------|
-| US-XX-01 | [Role] | [Action] | [Benefit] |
+| PRD.NN.08.{hash} | [Role] | [Action] | [Benefit] |
 
 ## 3. Acceptance Criteria
 
@@ -307,66 +307,47 @@ def fix_link_path(prd_location: str, target_path: str) -> str:
 
 ### Phase 3: Fix Element IDs (BLOCKING)
 
-Converts invalid element IDs to correct format. **Element code violations are now BLOCKING** - the PRD audit will fail until these are fixed.
+Converts invalid element IDs to the canonical 4-segment format. **Element ID violations are now BLOCKING** - the PRD audit will fail until these are fixed.
+
+**Canonical format**: `PRD.{NN}.{SS}.{hash}` — `NN` = two-digit document number, `SS` = two-digit section number, `hash` = 4-character hex content hash (SHA256, first 4 chars). See `framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Conversion Rules**:
 
 | Pattern | Issue | Conversion |
 |---------|-------|------------|
-| `PRD.NN.25.SS` | Code 25 invalid for PRD | `PRD.NN.01.SS` (Functional Requirement) |
-| `PRD.NN.33.SS` | Code 33 invalid for PRD | `PRD.NN.22.SS` (Feature Item) |
-| `FR-XXX` | Legacy pattern | `PRD.NN.01.SS` |
-| `US-XXX` | Legacy pattern | `PRD.NN.05.SS` |
-| `AC-XXX` | Legacy pattern | `PRD.NN.06.SS` |
+| `PRD.NN.SSSS` (3-segment, packed type+seq) | Legacy 3-segment scheme | `PRD.NN.SS.{hash}` (4-segment) |
+| `FR-XXX` | Legacy pattern | `PRD.NN.SS.{hash}` |
+| `US-XXX` | Legacy pattern | `PRD.NN.SS.{hash}` |
+| `AC-XXX` | Legacy pattern | `PRD.NN.SS.{hash}` |
 
-**Type Code Mapping** (PRD-specific valid codes: 01-10, 22, 24, 32):
+The 8-layer model has **no numeric element type-code scheme**. The middle segment is the document section number (`SS`), not a type code. Element semantics derive from the section in which the element appears, not from an ID code.
 
-| Invalid Code | Valid Code | Element Type |
-|--------------|------------|--------------|
-| 25 | 01 | Functional Requirement |
-| 33 | 22 | Feature Item |
-| 35 | 06 | Acceptance Criterion |
-| 10 | 09 | Business Rule |
-| 12 | 11 | Interface Requirement |
+**Section-Anchored IDs (BLOCKING Enforcement)**:
 
-**Section-Element Type Code Mapping (BLOCKING Enforcement)**:
-
-Elements MUST use the correct type code based on their section:
-
-| Section | Expected Type Code | Element Type |
-|---------|-------------------|--------------|
-| 5 | 08 | Metric/KPI |
-| 7 | 09 | User Story |
-| 8 | 01 | Functional Requirement |
-| 9 | 02 | Quality Attribute |
-| 10 | 32 | Architecture Topic |
-| 12 | 07 | Risk |
-| 14 | 06 | Acceptance Criteria |
+The `SS` segment MUST match the section in which the element is authored — e.g. an element in Section 5 uses `PRD.NN.05.{hash}`, an element in Section 8 uses `PRD.NN.08.{hash}`. Mismatched section segments are a blocking violation.
 
 **Fix Action for Section Mismatch (PRD-E022)**:
 
-When `PRD.NN.05.*` IDs appear in Section 5 (Success Metrics), convert to `PRD.NN.08.*`:
+When an element's section segment does not match its containing section, recompute it from the section number:
 
 ```python
-# Section 5 metrics must use type code 08, not 05
-old_id = "PRD.01.0501"  # Wrong: uses section number as type code
-new_id = "PRD.01.0801"  # Correct: uses Metric type code 08
+# An element authored in Section 8 must carry section segment 08
+old_id = "PRD.01.05.a7f3"  # Wrong: section segment 05 but element lives in Section 8
+new_id = "PRD.01.08.a7f3"  # Correct: section segment matches Section 8
 ```
 
 **Regex Patterns**:
 
 ```python
-# Find element IDs with invalid type codes for PRD
-invalid_prd_type_25 = r'PRD\.(\d{2})\.25\.(\d{2})'
-replacement_25 = r'PRD.\1.01.\2'
+# Find legacy 3-segment IDs (packed type+sequence tail) and re-segment to PRD.NN.SS.hash
+legacy_3seg = r'PRD\.(\d{2})\.(\d{4})\b'
+# -> resolve SS from the element's containing section; recompute the 4-char content hash
 
-invalid_prd_type_33 = r'PRD\.(\d{2})\.33\.(\d{2})'
-replacement_33 = r'PRD.\1.22.\2'
-
-# Find legacy patterns
+# Find legacy prefix patterns
 legacy_fr = r'###\s+FR-(\d+):'
 legacy_us = r'###\s+US-(\d+):'
 legacy_ac = r'###\s+AC-(\d+):'
+# -> convert each to PRD.NN.SS.{hash} using the containing section's number
 ```
 
 ---
@@ -424,10 +405,10 @@ Ensures traceability and cross-references are correct.
 
 ```markdown
 <!-- Traceability to BRD -->
-@trace: BRD-01.22.01 -> PRD-01.22.01
+@trace: BRD.01.07.a7f3 -> PRD.01.08.1dbc
 
 <!-- Reference to upstream -->
-@ref: [BRD-01](../../../ai_dev_ssd_flow/PROJECT/fixtures/budget_alert/BRD-01.md)
+@ref: [BRD-01](../../01_BRD/BRD-01_slug/BRD-01_slug.md)
 ```
 
 ---
@@ -551,7 +532,7 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 
 | Change Type | Auto-Action | Example |
 |-------------|-------------|---------|
-| New requirement added | Append with generated ID | `PRD.01.0113` |
+| New requirement added | Append with generated ID | `PRD.01.08.b3f2` |
 | Threshold value changed | Find & replace value | `timeout: 30 -> 45` |
 | Reference updated | Update `@ref:` path | Path correction |
 | Version incremented | Update version reference | `v1.2 -> v1.3` |
@@ -559,33 +540,30 @@ def calculate_change_percentage(upstream_old: str, upstream_new: str) -> dict:
 **ID Generation for New Requirements**:
 
 ```python
-def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_ids: list) -> str:
+def generate_next_id(doc_type: str, doc_num: str, section_id: str, title: str, description: str) -> str:
     """
-    Generate next sequential ID for new requirement.
+    Generate the canonical 4-segment ID for a new element.
 
     Args:
         doc_type: 'PRD', 'BRD', etc.
         doc_num: '01', '02', etc.
-        element_type: '01' (Functional), '05' (User Story), etc.
-        existing_ids: List of existing IDs in document
+        section_id: two-digit section number the element lives in ('08', etc.)
+        title: element title (feeds the content hash)
+        description: element description (feeds the content hash)
 
     Returns:
-        Next available ID (e.g., 'PRD.01.0113')
+        Canonical ID (e.g., 'PRD.01.08.b3f2')
     """
-    pattern = f"{doc_type}.{doc_num}.{element_type}."
-    matching = [id for id in existing_ids if id.startswith(pattern)]
-
-    if not matching:
-        return f"{pattern}01"
-
-    max_seq = max(int(id.split('.')[-1]) for id in matching)
-    return f"{pattern}{str(max_seq + 1).zfill(2)}"
+    import hashlib
+    seed = f"{doc_num}:{section_id}:{title}:{description}"
+    h = hashlib.sha256(seed.encode()).hexdigest()[:4]
+    return f"{doc_type}.{doc_num}.{section_id}.{h}"
 ```
 
-**ID Pattern for PRD**: `PRD.NN.xxxx` where:
+**ID Pattern for PRD**: `PRD.NN.SS.hash` where:
 - `NN` = Document number (01, 02, etc.)
-- `TT` = Type code (01=Functional, 05=User Story, 06=Acceptance Criterion, etc.)
-- `SS` = Sequence number (01, 02, etc.)
+- `SS` = Section number the element is authored in (01, 02, etc.)
+- `hash` = 4-character hex content hash (SHA256 of `doc_id:section_id:title:description`, first 4 chars)
 
 **Auto-Merge Template for New Requirements**:
 
@@ -643,11 +621,11 @@ def generate_next_id(doc_type: str, doc_num: str, element_type: str, existing_id
 | Added | BRD-01.3_quality_ops.md | 7.2 | New performance requirement |
 
 **New Requirements Added**:
-- PRD.01.0113: Passkey Authentication Support
-- PRD.01.0114: WebAuthn Fallback Mechanism
+- PRD.01.08.b3f2: Passkey Authentication Support
+- PRD.01.08.c4a1: WebAuthn Fallback Mechanism
 
 **Thresholds Updated**:
-- PRD.01.0205: session_idle_timeout: 30->45 min
+- PRD.01.09.2d7e: session_idle_timeout: 30->45 min
 
 **Impact**: EARS-01, BDD-01, ADR-01 may require review
 ```
@@ -734,10 +712,10 @@ Documents requiring update after regeneration:
 - Instead, marked with `[DEPRECATED]` status:
 
 ```markdown
-### PRD.01.0105: Legacy Authentication Method [DEPRECATED]
+### PRD.01.08.9f10: Legacy Authentication Method [DEPRECATED]
 
 > **Status**: DEPRECATED (upstream removed 2026-02-10T16:00:00)
-> **Reason**: Replaced by PRD.01.0113 (Passkey Authentication)
+> **Reason**: Replaced by PRD.01.08.b3f2 (Passkey Authentication)
 > **Action**: Retain for traceability; do not implement
 
 **Original Requirement**: {original_text}
@@ -783,10 +761,10 @@ After processing drift, update `.drift_cache.json`:
   ],
   "deprecated_items": [
     {
-      "id": "PRD.01.0105",
+      "id": "PRD.01.08.9f10",
       "deprecated_date": "2026-02-10T16:00:00",
       "reason": "Upstream removal",
-      "replaced_by": "PRD.01.0113"
+      "replaced_by": "PRD.01.08.b3f2"
     }
   ]
 }
@@ -813,15 +791,15 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| PRD.01.0113 | Added | BRD-01.1:3.5 | Passkey authentication support |
-| PRD.01.0205 | Updated | BRD-01.1:4.2 | Session timeout 30->45 min |
+| PRD.01.08.b3f2 | Added | BRD-01.1:3.5 | Passkey authentication support |
+| PRD.01.09.2d7e | Updated | BRD-01.1:4.2 | Session timeout 30->45 min |
 
 ### Tier 2 Auto-Merges (5-15%)
 
 | ID | Type | Source | Description |
 |----|------|--------|-------------|
-| PRD.01.0114 | Added | BRD-01.2:5.3 | WebAuthn fallback mechanism |
-| PRD.01.0704 | Added | BRD-01.2:7.2 | New risk: credential phishing |
+| PRD.01.08.c4a1 | Added | BRD-01.2:5.3 | WebAuthn fallback mechanism |
+| PRD.01.12.5b8f | Added | BRD-01.2:7.2 | New risk: credential phishing |
 
 ### Tier 3 Archives (> 15%)
 
@@ -835,7 +813,7 @@ After processing drift, update `.drift_cache.json`:
 
 | ID | Deprecated Date | Reason | Replaced By |
 |----|-----------------|--------|-------------|
-| PRD.01.0105 | 2026-02-10T16:00:00 | Upstream removed | PRD.01.0113 |
+| PRD.01.08.9f10 | 2026-02-10T16:00:00 | Upstream removed | PRD.01.08.b3f2 |
 
 ### Version Changes
 
@@ -1052,8 +1030,8 @@ Before applying any fixes:
 | 2.3 | 2026-03-01 | **2-Skill BRD Model**: Updated BRD validation references from `doc-brd-reviewer` to `doc-brd-audit` (unified quality gate) |
 | 2.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; added compatibility for `PRD-NN.A_audit_report_vNNN.md` (preferred) with legacy `PRD-NN.R_review_report_vNNN.md` support |
 | 2.1 | 2026-02-11 | **Structure Compliance**: Added Phase 0 for nested folder rule enforcement (REV-STR001-STR004); Fixed all path comments to use nested folders for both monolithic and sectioned PRDs; Updated link path calculations for mandatory nested structure |
-| 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (PRD.NN.xxxx format); Archive manifest creation; Enhanced drift cache with merge history |
-| 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion for PRD codes (01-09, 11, 22, 24); Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |
+| 2.0 | 2026-02-10T16:00:00 | **Major**: Implemented tiered auto-merge system - Tier 1 (<5%): auto-merge additions/updates with patch version increment; Tier 2 (5-15%): auto-merge with detailed changelog and minor version increment; Tier 3 (>15%): archive current version and trigger regeneration with major version increment; No deletion policy (mark as DEPRECATED instead); Auto-generated IDs for new requirements (canonical `PRD.NN.SS.hash` format); Archive manifest creation; Enhanced drift cache with merge history |
+| 1.0 | 2026-02-10T15:00:00 | Initial skill creation; 6-phase fix workflow; Glossary and feature file creation; Element ID conversion to the canonical 4-segment `PRD.NN.SS.hash` format; Broken link fixes; BRD drift detection; Integration with autopilot Review->Fix cycle |
 
 ## Implementation Plan Consistency (IPLAN-004)
 
