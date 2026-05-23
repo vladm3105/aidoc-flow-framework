@@ -6,7 +6,7 @@ from typing import Any
 
 
 _VALID_CHANGE_LEVELS = {"C1", "C2", "C3", "Emergency"}
-_VALID_GATES = {"GATE-01", "GATE-03", "GATE-06", "GATE-08", "GATE-CODE"}
+_VALID_GATES = {"GATE-01", "GATE-03", "GATE-06", "GATE-08", "GATE-CODE", "GATE-SPEC"}
 _SOURCE_TO_GATE = {
     "upstream": "GATE-01",
     "external": "GATE-01",
@@ -14,7 +14,9 @@ _SOURCE_TO_GATE = {
     "design": "GATE-06",
     "execution": "GATE-08",
     "feedback": "GATE-CODE",
+    "spec": "GATE-SPEC",
 }
+_VALID_SEMVER_IMPACT = {"major", "minor", "patch"}
 _GATE_TO_LAYERS = {
     "GATE-01": {"BRD", "PRD"},
     "GATE-03": {"EARS", "BDD", "ADR"},
@@ -115,6 +117,11 @@ def check_gate_layer_coverage(
         return
 
     gate = change_control.get("entry_gate")
+    if gate == "GATE-SPEC":
+        # Meta gate — its scope is the framework spec, not the L1–L8 artifacts;
+        # the artifact-layer coverage check does not apply.
+        passes.append("CHG-003: gate-layer coverage not applicable for GATE-SPEC (meta gate)")
+        return
     if not isinstance(gate, str) or gate not in _GATE_TO_LAYERS:
         return
 
@@ -212,6 +219,53 @@ def check_rollback_and_emergency(
         passes.append("CHG-005: emergency change fields validated")
 
 
+def check_spec_change_requirements(
+    yaml_data: dict[str, Any],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+) -> None:
+    """GATE-SPEC record-level checks for a framework-spec change.
+
+    Applies when change_source is ``spec`` or entry_gate is ``GATE-SPEC``:
+    provenance (E001), semver_impact + major⇒C3 (E002), never C1 (E003). The
+    C3 human-approval requirement (E004) is covered by the shared C3 path in
+    ``check_gate_approval_requirements`` (GATE-SPEC is a valid gate).
+    """
+    change_control = yaml_data.get("change_control", {})
+    if not isinstance(change_control, dict):
+        return
+
+    source = str(change_control.get("change_source", "")).strip().lower()
+    gate = change_control.get("entry_gate")
+    if source != "spec" and gate != "GATE-SPEC":
+        return
+
+    level = str(change_control.get("change_level", "")).strip()
+    if level == "C1":
+        errors.append("CHG-006: spec change (GATE-SPEC-E003) must be >= C2, never C1")
+
+    semver_impact = str(change_control.get("semver_impact", "")).strip().lower()
+    if semver_impact not in _VALID_SEMVER_IMPACT:
+        errors.append(
+            f"CHG-006: spec change (GATE-SPEC-E002) requires semver_impact in {sorted(_VALID_SEMVER_IMPACT)}"
+        )
+    elif semver_impact == "major" and level != "C3":
+        errors.append("CHG-006: spec change (GATE-SPEC-E002) with semver_impact 'major' must be C3")
+    else:
+        passes.append(f"CHG-006: spec change semver_impact valid ({semver_impact})")
+
+    description = yaml_data.get("change_description", {})
+    why = description.get("why") if isinstance(description, dict) else None
+    trigger = description.get("trigger") if isinstance(description, dict) else None
+    if not (isinstance(why, str) and why.strip()) or not (isinstance(trigger, str) and trigger.strip()):
+        errors.append(
+            "CHG-006: spec change (GATE-SPEC-E001) requires provenance in change_description.why and .trigger"
+        )
+    else:
+        passes.append("CHG-006: spec change provenance present (why + trigger)")
+
+
 def run_chg_validation_checks(
     *,
     yaml_data: dict[str, Any],
@@ -225,3 +279,4 @@ def run_chg_validation_checks(
     check_gate_layer_coverage(yaml_data, errors, warnings, passes)
     check_gate_approval_requirements(yaml_data, errors, warnings, passes)
     check_rollback_and_emergency(yaml_data, errors, warnings, passes)
+    check_spec_change_requirements(yaml_data, errors, warnings, passes)
