@@ -14,6 +14,28 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+- **Skill set revised to the canonical 46** and recreated to a single standard
+  (`docs/SKILL_AUTHORING.md`), task `../../plans/P3-T6-PLAN.md`. The set is now
+  the 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) each in 4
+  variants — base, `-autopilot`, `-audit`, `-fixer` — plus 14 utilities. Every
+  retained `SKILL.md` was regenerated lean and consistent: `version` now
+  defaults to the plugin version (`0.2.0`) with `framework_spec_version`
+  recorded; `## Version History` footers dropped (history lives here + in git);
+  `mermaid-gen` references repointed to `charts-flow`; cross-references limited
+  to the canonical set. `agents/README.md`, `doc-validator`, and `doc-review`
+  repointed their `-reviewer`/`-validator` references to the unified `-audit`.
+
+### Removed
+- Stale skill families not in the 8-layer contract (`framework/registry/LAYER_REGISTRY.yaml`),
+  reversing the D-0015 retention: SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`,
+  25) — subsumed by SPEC (L6); test-type (`doc-utest/itest/ftest/ptest/stest/sectest`,
+  36) — folded into TDD (L7); deprecated `-reviewer`/`-validator` variants (14) —
+  merged into `-audit`; legacy utilities `contract-tester`, `test-automation`,
+  `mermaid-gen` (3); 16 loose `*.md` helper files at the `skills/` root; and the
+  orphaned `doc-flow/SHARED_CONTENT.md` (a plugin-local standards copy superseded
+  by `framework/`, per D-0013). Plugin skill count 124 → 46.
+
 ## [0.2.0] — 2026-05-23
 
 ### Added

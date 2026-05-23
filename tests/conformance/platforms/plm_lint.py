@@ -42,18 +42,18 @@ ROOTS = [
 
 OP_SUFFIX = re.compile(r"-(audit|autopilot|fixer|reviewer|validator)$")
 
-# Families migrated to the 8-layer model (all of them — migration complete).
+# The canonical 46-skill set after the P3-T6 revision: the 8 layer families
+# plus the retained utilities. Legacy test-type and SPEC-subtype families were
+# removed (they are not in framework/registry/LAYER_REGISTRY.yaml).
 MIGRATED: set[str] = {
-    # PLM-B1
-    "doc-tdd", "doc-iplan", "doc-flow", "skill-recommender", "project-init",
-    # PLM-B2
-    "doc-brd", "doc-prd", "doc-ears",
-    # PLM-B3
-    "doc-bdd", "doc-adr", "adr-roadmap",
-    # PLM-B4
-    "doc-spec", "doc-cspec", "doc-dspec", "doc-uxspec", "doc-riskspec", "doc-procspec",
-    # PLM-B5
-    "doc-utest", "doc-itest", "doc-stest", "doc-ftest", "doc-ptest", "doc-sectest",
+    # 8 layer families (base + -autopilot/-audit/-fixer share the family key)
+    "doc-brd", "doc-prd", "doc-ears", "doc-bdd",
+    "doc-adr", "doc-spec", "doc-tdd", "doc-iplan",
+    # retained utilities
+    "doc-flow", "doc-naming", "doc-ref", "doc-review", "doc-validator",
+    "project-init", "trace-check", "charts-flow", "adr-roadmap",
+    "context-analyzer", "quality-advisor", "skill-recommender",
+    "workflow-optimizer", "security-audit",
 }
 
 # Calibrated legacy fingerprints (see PLM-PLAN.md §Verification + the 2026-05-22

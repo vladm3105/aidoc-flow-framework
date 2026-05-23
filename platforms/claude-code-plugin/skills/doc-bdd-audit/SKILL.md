@@ -1,175 +1,117 @@
 ---
 name: doc-bdd-audit
-description: Unified BDD audit wrapper that runs validator then reviewer and produces a combined report for fixer consumption
-
+description: Audit a BDD suite - run declarative structural checks plus content review and produce a combined report for doc-bdd-fixer. Use for BDD quality gating before ADR.
 metadata:
   tags:
     - sdd-workflow
-    - quality-assurance
-    - bdd-audit
     - layer-4-artifact
-    - shared-architecture
+    - quality-assurance
   custom_fields:
     layer: 4
     artifact_type: BDD
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [BDD]
-    downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-27"
-  versioning_policy: "tracks BDD-TEMPLATE schema_version"
-
+    upstream_artifacts: [BRD, PRD, EARS]
+    downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
+    version: "0.2.0"
+    framework_spec_version: "0.1.0"
+    last_updated: "2026-05-23"
 ---
 
 # doc-bdd-audit
 
 ## Purpose
 
-Run a **single BDD audit workflow** that executes:
+Run a **unified BDD audit** — declarative structural checks plus content-quality
+review — in one pass, producing a single combined report that
+`../doc-bdd-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+BDD suite using the spec as the contract.
 
-1. `doc-bdd-validator` (structural/schema gate)
-2. `doc-bdd-reviewer` (semantic/content quality gate)
-
-Then emit one **combined report** optimized for `doc-bdd-fixer` input.
-
-**Layer**: 4 (BDD Quality Gate Wrapper)
-
-**Upstream**: BDD file(s)
-
-**Downstream**:
-- Combined Audit Report: `BDD-NN.A_audit_report_vNNN.md`
-- Optional Fix Cycle trigger for `doc-bdd-fixer`
-
----
-
-## Why This Skill Exists
-
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
-
-| Concern | Owner Skill |
-|---------|-------------|
-| Schema/template compliance | `doc-bdd-validator` |
-| Content quality and scenario completeness | `doc-bdd-reviewer` |
-| Single user-facing audit command | `doc-bdd-audit` |
-
----
+**Layer**: 4 (BDD quality gate). **Upstream**: a BDD file. **Downstream**:
+`BDD-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
-Use `doc-bdd-audit` when:
-- You want one command for BDD quality checks
-- You need a combined report for `doc-bdd-fixer`
-- You are running QA before ADR generation
+Use after a BDD suite exists and before generating the ADR, or inside the
+autopilot's audit↔fix cycle. Do **not** use to create a BDD (use
+`../doc-bdd/SKILL.md` or `../doc-bdd-autopilot/SKILL.md`).
 
-Do NOT use when:
-- BDD does not exist (use `doc-bdd` / `doc-bdd-autopilot` generation first)
-- You only need one specific check domain (use validator or reviewer directly)
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the ADR-Ready score independently each run.
 
----
+**Report cleanup:** after writing the new report, delete superseded
+`BDD-NN.A_audit_report_v*.md`; keep `BDD-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
 ## Execution Contract
 
-### Input
-- BDD path (`docs/04_BDD/BDD-NN_*/...`)
-- Optional: threshold (default review threshold: 90)
+**Input:** BDD path (`docs/04_BDD/BDD-NN_*/...`); optional score threshold
+(default 90).
 
-### Sequence (Mandatory)
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write `BDD-NN.A_audit_report_vNNN.md`
+→ 6) if auto-fixable findings exist, hand off to `doc-bdd-fixer`.
 
-```text
-1) Run doc-bdd-validator
-2) Run doc-bdd-reviewer
-3) Normalize and merge findings
-4) Write BDD-NN.A_audit_report_vNNN.md
-5) If auto-fixable findings exist, hand off to doc-bdd-fixer
-```
+## Structural Checklist
 
-### Combined Status Rules
+Authority: `framework/layers/04_BDD/README.md`,
+`framework/layers/04_BDD/BDD-TEMPLATE.yaml` (embedded rules + scenario
+conventions), and `framework/governance/ID_NAMING_STANDARDS.md`.
 
-- `PASS`: Validator PASS AND Reviewer score >= threshold AND no blocking issues
-- `FAIL`: Validator FAIL OR Reviewer score < threshold OR blocking/manual-required issues present
+**Tier 1 — blocking (error):**
 
----
+| Check | Verifies |
+|-------|----------|
+| Element ID format | every ID matches `BDD.NN.SS.xxxx` (4-hex hash) |
+| Structure | all 5 template sections present and non-empty |
+| Gherkin quality | scenarios are atomic, executable, valid Given-When-Then |
+| Cumulative tags | `@brd @prd @ears` present, Gherkin-native, no space after colon |
+| Scenario tags | each scenario has `@scenario-type`, priority, `@scenario-id`, `spec_trace` |
+| Thresholds | quantitative values use `@threshold:` keys (no magic numbers) |
+| Quality gate | ADR-Ready score ≥ threshold (default 90) |
 
-## Combined Report Format (for doc-bdd-fixer)
+**Tier 2 — advisory (warning):** frontmatter metadata (below); internal links
+and template/governance references resolve; no downstream numbers cited before
+they exist; five scenario categories represented; times `HH:MM:SS` with IANA
+timezones; sequence-diagram tag present if a flow is illustrated (use
+`../charts-flow/SKILL.md`).
 
-Output file: `BDD-NN.A_audit_report_vNNN.md`
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-Required sections:
+## Metadata Checks
 
-1. `## Summary`
-   - BDD ID, timestamp (EST), overall status
-   - Validator status, reviewer score
-2. `## Score Calculation (Deduction-Based)`
-   - Formula: `100 - total_deductions`
-   - Threshold comparison (`>=90` pass gate)
-3. `## Validator Findings`
-   - List by severity/code
-4. `## Reviewer Findings`
-   - List by severity/code
-5. `## Coverage Findings`
-   - Gherkin syntax compliance summary
-   - Scenario completeness coverage summary
-   - Traceability/tag coverage summary
-6. `## Fix Queue for doc-bdd-fixer`
-   - `auto_fixable`
-   - `manual_required`
-   - `blocked`
-7. `## Recommended Next Step`
-   - `run doc-bdd-fixer`
-   - or `manual update required`
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `bdd-document` (not `template`) |
+| `artifact_type` | yes | `BDD` |
+| `layer` | yes | `4` |
+| `deliverable_type` | yes | `code`, `document`, `ux`, `risk`, `process` |
 
-### Fix Queue Normalization
+Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
+`VALID-M003` `document_type` not `bdd-document`.
 
-Each finding MUST include:
-- `source`: `validator` | `reviewer`
-- `code`: issue code
-- `severity`: `error|warning|info`
-- `file`: relative path
-- `section`: heading/anchor if known
-- `action_hint`: short imperative guidance
-- `confidence`: `high|medium|manual-required`
+## Combined Report Format
 
----
+Output: `BDD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** · **Coverage Findings** (Gherkin
+syntax, five-category coverage, cumulative-tag coverage, `spec_trace` presence) ·
+**Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
+Next Step** · **Cleanup Summary**.
 
-## Hand-off Contract to doc-bdd-fixer
+## Hand-off to doc-bdd-fixer
 
-`doc-bdd-fixer` MUST accept combined audit report as equivalent upstream input:
-- `BDD-NN.A_audit_report_vNNN.md` (preferred)
-- `BDD-NN.R_review_report_vNNN.md` (legacy compatibility)
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-bdd-fixer`
+consumes the latest `BDD-NN.A_audit_report_vNNN.md`.
 
-Precedence rule:
-1. Select newest timestamp.
-2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
+## Related Resources
 
----
-
-## Example Invocation
-
-```bash
-/doc-bdd-audit docs/04_BDD/BDD-01_f1_iam/
-```
-
-Expected outcome:
-1. validator runs
-2. reviewer runs
-3. combined audit report generated
-4. fixer can execute directly from combined report
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-02-27 | Initial BDD audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Create: `../doc-bdd/SKILL.md` · Fix: `../doc-bdd-fixer/SKILL.md` · Generate:
+  `../doc-bdd-autopilot/SKILL.md`
+- Authority: `framework/layers/04_BDD/README.md`,
+  `framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

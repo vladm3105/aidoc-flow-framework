@@ -43,15 +43,16 @@ CI/CD and deployment actions can be high blast-radius. By default:
 Infrastructure work is engine-agnostic and largely native (Bash, CI/pipeline
 config). The plugin does not yet ship a dedicated `devops-flow` skill, so drive
 pipeline/deploy work natively; coordinate smoke-test gates with the Test
-Architect's `doc-stest*` skills and record deployment governance evidence in the
-SDD flow via the relevant `doc-*` skills.
+Architect's `doc-tdd*` skills (smoke tests are TDD `type: smoke` cases) and
+record deployment governance evidence in the SDD flow via the relevant `doc-*`
+skills.
 
 ## Lifecycle Ownership
 
 | Activity | Skills / assets |
 |----------|-----------------|
 | CI/CD, MLOps, DevSecOps (GCP/Azure/AWS) | native (Bash, pipeline config) |
-| Smoke validation gates | coordinate with Test Architect's `doc-stest*` |
+| Smoke validation gates | coordinate with Test Architect's `doc-tdd*` (TDD `type: smoke`) |
 | Governance scripts | `framework/governance/` CI/CD scripts |
 
 You receive green PRs from the **Code Reviewer** / **Security Engineer** and

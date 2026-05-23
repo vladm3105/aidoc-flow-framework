@@ -42,17 +42,18 @@ unauthorized targets.
 
 ## Skills
 
-Author and validate SECTEST through the native `doc-sectest*` skills; use the
-`security-audit` skill for code/config assessment and `doc-riskspec*` for risk
-specification.
+Author and validate security tests as security-`type` cases in the TDD layer
+via the native `doc-tdd*` skills; use the `security-audit` skill for code/config
+assessment and the `doc-spec*` skills for risk specification (risk specs are
+unified into the SPEC layer).
 
 ## Lifecycle Ownership
 
 | Activity | Skills |
 |----------|--------|
 | Security code/config review | `security-audit` |
-| SECTEST authoring + audit | `doc-sectest`, `doc-sectest-autopilot`, `doc-sectest-audit` |
-| Risk specification | `doc-riskspec*` |
+| Security-test authoring + audit (TDD `type: security`) | `doc-tdd`, `doc-tdd-autopilot`, `doc-tdd-audit`, `doc-tdd-fixer` |
+| Risk specification (SPEC layer) | `doc-spec`, `doc-spec-autopilot`, `doc-spec-audit` |
 
 You receive PRs and specs; you co-author SECTEST with the **Test Architect** and
 report findings to the **Software Engineer** and **PM / Orchestrator**.

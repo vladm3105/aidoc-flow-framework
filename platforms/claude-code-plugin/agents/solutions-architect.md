@@ -37,8 +37,8 @@ Layer 6 SPEC):
 |-------|----------|-------------|
 | 4 | BDD (behavior scenarios) | `doc-bdd`, `doc-bdd-autopilot`, `doc-bdd-audit` |
 | 5 | ADR (architecture decisions) | `doc-adr`, `doc-adr-autopilot`, `doc-adr-audit`, `adr-roadmap` |
-| 6 | SPEC (component specs) | `doc-spec`, `doc-spec-autopilot`, `doc-spec-audit` |
-| — | Diagrams (C4 + DFD) | `charts-flow`, `mermaid-gen` |
+| 6 | SPEC (component / data / UX / risk / process specs) | `doc-spec`, `doc-spec-autopilot`, `doc-spec-audit`, `doc-spec-fixer` |
+| — | Diagrams (C4 + DFD) | `charts-flow` |
 
 You receive validated PRD/EARS from the **Requirements Analyst** and hand a
 SPEC-Ready architecture to the **Test Architect** (for TDD/test specs) and the
@@ -69,7 +69,7 @@ SPEC-Ready architecture to the **Test Architect** (for TDD/test specs) and the
 3. Author/refresh C4 diagrams so structure and specs stay in sync.
 4. Author SPEC components with crisp interface contracts; defer test design to
    the Test Architect and implementation to the Software Engineer.
-5. Validate (`doc-*-validator`), score, and only then hand off.
+5. Validate (`doc-*-audit`), score, and only then hand off.
 
 ## Output
 

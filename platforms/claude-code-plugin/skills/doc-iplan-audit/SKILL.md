@@ -1,98 +1,118 @@
 ---
 name: doc-iplan-audit
-description: Unified IPLAN audit wrapper that runs validator then reviewer and emits combined report for fixer workflows
+description: Audit an IPLAN - run declarative structural checks plus content review and produce a combined report for doc-iplan-fixer. Use for IPLAN quality gating before code implementation.
 metadata:
   tags:
     - sdd-workflow
     - layer-8-artifact
     - quality-assurance
-    - iplan-audit
-    - shared-architecture
   custom_fields:
     layer: 8
     artifact_type: IPLAN
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [IPLAN]
-    downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "2.0"
-    last_updated: "2026-05-22"
-  versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
+    downstream_artifacts: [CODE]
+    version: "0.2.0"
+    framework_spec_version: "0.1.0"
+    last_updated: "2026-05-23"
 ---
 
 # doc-iplan-audit
 
 ## Purpose
 
-Run a single IPLAN audit workflow:
-1. `doc-iplan-validator`
-2. `doc-iplan-reviewer`
+Run a **unified IPLAN audit** — declarative structural checks plus
+content-quality review — in one pass, producing a single combined report that
+`../doc-iplan-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+IPLAN using the spec as the contract.
 
-Then emit a combined fixer-ready report.
+**Layer**: 8 (IPLAN quality gate). **Upstream**: an IPLAN file. **Downstream**:
+`IPLAN-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
----
+## When to Use
 
-## Output Contract
+Use after an IPLAN exists and before code implementation begins, or inside the
+autopilot's audit↔fix cycle. Do **not** use to create an IPLAN (use
+`../doc-iplan/SKILL.md` or `../doc-iplan-autopilot/SKILL.md`).
 
-Primary output:
-- `IPLAN-NN.A_audit_report_vNNN.md`
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the CODE-Ready score independently each run.
 
-Fixer compatibility:
-- `doc-iplan-fixer` accepts `.A_` (preferred) and `.R_` (legacy-compatible).
+**Report cleanup:** after writing the new report, delete superseded
+`IPLAN-NN.A_audit_report_v*.md`; keep `IPLAN-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
----
+## Execution Contract
 
-## Combined Status Rules
+**Input:** IPLAN path (`docs/08_IPLAN/IPLAN-NN_*.yaml`); optional score
+threshold (default 90).
 
-- PASS: validator PASS AND reviewer score >= 90 AND no blocking/manual-required issues
-- FAIL: validator FAIL OR reviewer score < 90 OR blocking/manual-required issues present
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write
+`IPLAN-NN.A_audit_report_vNNN.md` → 6) if auto-fixable findings exist, hand off
+to `doc-iplan-fixer`.
 
-IPLAN gate policy:
-- Missing structural compliance, missing implementation-contract essentials, broken traceability, test-first ordering violations, or unresolved manual-required findings cannot auto-pass.
+## Structural Checklist
 
----
+Authority: `framework/layers/08_IPLAN/README.md`,
+`framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
-## Combined Report Sections
+**Tier 1 — blocking (error):**
 
-1. Summary
-2. Score Calculation
-3. Validator Findings
-4. Reviewer Findings
-5. Coverage Findings
-6. IPLAN Gate Findings
-7. Fix Queue (`auto_fixable`, `manual_required`, `blocked`)
-8. Recommended Next Step
+| Check | Verifies |
+|-------|----------|
+| Document ID format | IPLAN referenced as `IPLAN-NN` (dash form); no dotted `IPLAN.NN.SS.xxxx`; `@tdd` uses `TDD.NN.SS.xxxx`, `@spec` uses `SPEC-NN` |
+| Structure | all 6 template sections present and non-empty |
+| Test-first order | `file_manifest` lists tests before implementation files |
+| Session handoff | `session_handoff.sessions` present with a `next_session_directive` |
+| Upstream references | parent SPEC/TDD references resolve to existing docs |
+| Quality gate | CODE-Ready score ≥ threshold (default 90) |
 
----
+**Tier 2 — advisory (warning):** frontmatter metadata (below); execution
+commands cover setup/implementation/validation; implementation contracts present
+when 3+ files share interfaces; `code_inventory` populated for each
+created/modified file; `validation_results` recorded per session; internal links
+and template/governance references resolve; permanent plan registered in
+`IPLAN-00_index.yaml`; any dependency diagram uses `../charts-flow/SKILL.md`.
 
-## Handoff Rule
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-If remediation needed:
-- Run `doc-iplan-fixer` with newest report.
-- On timestamp/version tie, prefer `.A_` over `.R_`.
+## Metadata Checks
 
----
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `iplan-document` (not `template`) |
+| `artifact_type` | yes | `IPLAN` |
+| `layer` | yes | `8` |
+| `iplan_id` | yes | `IPLAN-NN` |
+| `source_spec` | yes | `@spec: SPEC-NN` |
 
-## Example
+Findings: `VALID-M001` missing `iplan_id`/`source_spec`; `VALID-M002` invalid
+value; `VALID-M003` `document_type` not `iplan-document`.
 
-```bash
-/doc-iplan-audit docs/08_IPLAN/IPLAN-01_scope/IPLAN-01_scope.yaml
-```
+## Combined Report Format
 
----
+Output: `IPLAN-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** · **Manifest & Handoff Findings**
+· **Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) ·
+**Recommended Next Step** · **Cleanup Summary**.
 
-## Version History
+## Hand-off to doc-iplan-fixer
 
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.0 | 2026-05-22 | Migrated to the 8-layer model: audits IPLAN (Layer 8) documents; orchestrates `doc-iplan-validator` -> `doc-iplan-reviewer`; combined `.A_` report contract for `doc-iplan-fixer` handoff |
-| 1.0 | 2026-02-27 | Initial audit wrapper with validator->reviewer orchestration and combined `.A_` report contract for fixer handoff |
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-iplan-fixer`
+consumes the latest `IPLAN-NN.A_audit_report_vNNN.md`.
 
-## Implementation Plan Consistency (IPLAN-004)
+## Related Resources
 
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
+- Create: `../doc-iplan/SKILL.md` · Fix: `../doc-iplan-fixer/SKILL.md` ·
+  Generate: `../doc-iplan-autopilot/SKILL.md`
+- Authority: `framework/layers/08_IPLAN/README.md`,
+  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

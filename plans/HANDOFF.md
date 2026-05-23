@@ -1,5 +1,22 @@
 # Session Handoff
 
+> **✅ SKILL SET REVISED — canonical 46 (2026-05-23, P3-T6).** Pruned the plugin
+> skill corpus **124 → 46** and recreated every survivor to one standard
+> (`platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`): the 8 layer families
+> `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}` × {base, `-autopilot`, `-audit`,
+> `-fixer`} = 32, plus 14 utilities. Removed (reversing D-0015): 25 SPEC-subtype
+> + 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
+> `-reviewer`/`-validator` (merged into `-audit`), 3 legacy utils
+> (contract-tester/test-automation/mermaid-gen), 16 loose `.md`, and the orphaned
+> `doc-flow/SHARED_CONTENT.md` (D-0013). Each skill `version` now defaults to the
+> plugin version (0.2.0) + `framework_spec_version`; Version-History footers
+> dropped; `mermaid-gen`→`charts-flow`; `agents/README` + `doc-validator` +
+> `doc-review` repointed to `-audit`. Conformance **32/32**. Record:
+> `plans/P3-T6-PLAN.md`. **Open:** (1) confirm push branch — working tree is on
+> `claude/skill-revision`, task setup named `claude/multi-platform-migration-AamWB`;
+> (2) consider bumping plugin 0.2.0→0.3.0 given the scope (skills track the
+> plugin version, so they'd follow); (3) the "new skills" idea is still pending.
+
 > **🚀 PLUGIN v0.2.0 RELEASE PREPPED (2026-05-23) — launch-wise, in-container half.**
 > Cut the Claude Code plugin's first post-migration release: `VERSION` +
 > `plugin.json` bumped `0.1.0 → 0.2.0`; CHANGELOG `[Unreleased]` → `[0.2.0] —

@@ -1,380 +1,112 @@
 ---
 name: doc-brd-audit
-description: Manual BRD audit skill that runs declarative structural checks, adds Claude content review, and produces a combined report for doc-brd-fixer - Layer 1 artifact
-
+description: Audit a BRD - run declarative structural checks plus content review and produce a combined report for doc-brd-fixer. Use for BRD quality gating before PRD.
 metadata:
   tags:
     - sdd-workflow
-    - quality-assurance
-    - brd-audit
     - layer-1-artifact
-    - shared-architecture
+    - quality-assurance
   custom_fields:
     layer: 1
     artifact_type: BRD
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "2.4"
-    last_updated: "2026-03-05"
-  versioning_policy: "tracks BRD-TEMPLATE schema_version"
-
+    version: "0.2.0"
+    framework_spec_version: "0.1.0"
+    last_updated: "2026-05-23"
 ---
 
 # doc-brd-audit
 
-> **MANUAL USE ONLY** - This skill is for interactive use, not pre-commit.
-
 ## Purpose
 
-Run a **unified BRD audit workflow** that combines declarative structural checks and Claude content review into a single pass, producing one **combined report** optimized for `doc-brd-fixer` input.
+Run a **unified BRD audit** — declarative structural checks plus content-quality
+review — in one pass, producing a single combined report that
+`../doc-brd-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+BRD using the spec as the contract.
 
-**Architecture**: Declarative structural checks + Claude for content quality review. The skill *is* the validator — there is no external runtime tooling.
-
-**Layer**: 1 (BRD Quality Gate Wrapper)
-
-**Upstream**: BRD file(s)
-
-**Downstream**:
-- Combined Audit Report: `BRD-NN.A_audit_report_vNNN.md`
-- Optional Fix Cycle trigger for `doc-brd-fixer`
-
----
-
-**Downstream Artifacts** (what BRD drives): PRD (Layer 2), EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8).
-
-## Why This Skill Exists
-
-The 2-skill model (`doc-brd-audit` + `doc-brd-fixer`) simplifies the BRD quality workflow.
-
-| Concern | Owner Skill |
-|---------|-------------|
-| All validation + scoring | `doc-brd-audit` (this skill) |
-| Apply fixes from audit report | `doc-brd-fixer` |
-
----
-
-## Fresh Audit Policy (MANDATORY)
-
-**ALWAYS run the audit from scratch.** Do NOT:
-- Reference previous audit reports for scoring decisions
-- Skip validation steps based on drift cache history
-- Assume compliance from prior fix history
-- Use cached results from previous runs
-
-**ALWAYS**:
-- Run all validation scripts fresh every time
-- Re-check all structure/schema compliance
-- Re-compute PRD-ready score independently
-- Generate a new audit report with incremented version
-
----
-
-## Report Cleanup Policy (MANDATORY)
-
-**After generating a new audit report, delete all previous reports.** Old reports serve no purpose since:
-- Fresh Audit Policy means old reports are never reused for scoring
-- Only the latest report is used by `doc-brd-fixer`
-- Multiple old reports clutter the BRD folder
-
-### Cleanup Rules
-
-| File Pattern | Action | Reason |
-|--------------|--------|--------|
-| `BRD-NN.A_audit_report_v*.md` (older versions) | **DELETE** | Superseded by new audit |
-| `BRD-NN.R_review_report_v*.md` (legacy) | **DELETE** | Deprecated format, superseded |
-| `BRD-NN.F_fix_report_v*.md` | **KEEP** | Fix history may be useful for tracking |
-| `.drift_cache.json` | **KEEP** | Tracks review history metadata |
-
-### Cleanup Execution
-
-After writing the new audit report, run:
-
-```bash
-# In the BRD folder (e.g., docs/01_BRD/BRD-50_octo_agent_orchestration/)
-BRD_FOLDER="$1"
-NEW_REPORT="$2"  # e.g., BRD-50.A_audit_report_v012.md
-
-# Delete old audit reports (keep only the new one)
-find "${BRD_FOLDER}" -name "BRD-*.A_audit_report_v*.md" ! -name "$(basename ${NEW_REPORT})" -delete
-
-# Delete legacy review reports (deprecated format)
-find "${BRD_FOLDER}" -name "BRD-*.R_review_report_v*.md" -delete
-```
-
-### What Gets Kept
-
-After cleanup, the BRD folder should contain:
-
-```
-docs/01_BRD/BRD-NN_{slug}/
-├── BRD-NN_{slug}.md              # Main BRD document
-├── BRD-NN.A_audit_report_vNNN.md # Latest audit report (ONLY ONE)
-├── BRD-NN.F_fix_report_v*.md     # Fix reports (kept for history)
-└── .drift_cache.json             # Drift detection cache
-```
-
-### Cleanup Confirmation
-
-The audit report should include a cleanup summary:
-
-```markdown
-## Cleanup Summary
-- Deleted: 3 old audit reports (v009, v010, v011)
-- Deleted: 4 legacy review reports
-- Kept: 2 fix reports
-```
-
----
+**Layer**: 1 (BRD quality gate). **Upstream**: a BRD file. **Downstream**:
+`BRD-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
-Use `doc-brd-audit` when:
-- You want one command for BRD quality checks
-- You need a combined report for `doc-brd-fixer`
-- You are running CI/manual QA before PRD generation
+Use after a BRD exists and before generating the PRD, or inside the autopilot's
+audit↔fix cycle. Do **not** use to create a BRD (use `../doc-brd/SKILL.md` or
+`../doc-brd-autopilot/SKILL.md`).
 
-Do NOT use when:
-- BRD does not exist (use `doc-brd` / `doc-brd-autopilot` generation first)
-- You only need one specific check domain (use validator or reviewer directly)
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the PRD-Ready score independently each run.
 
----
+**Report cleanup:** after writing the new report, delete superseded
+`BRD-NN.A_audit_report_v*.md`; keep `BRD-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
 ## Execution Contract
 
-### Input
-- BRD path (`docs/01_BRD/BRD-NN_*/...`)
-- Optional: threshold (default review threshold: 90)
+**Input:** BRD path (`docs/01_BRD/BRD-NN_*/...`); optional score threshold
+(default 90).
 
-### Sequence (Mandatory)
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write `BRD-NN.A_audit_report_vNNN.md`
+→ 6) if auto-fixable findings exist, hand off to `doc-brd-fixer`.
 
-```text
-1) Run the declarative structural checks (see Structural Validation Checklist)
-2) Record findings from each check
-3) Run content quality review (Claude analysis)
-4) Normalize and merge all findings
-5) Write BRD-NN.A_audit_report_vNNN.md
-6) If auto-fixable findings exist, hand off to doc-brd-fixer
-```
+## Structural Checklist
 
----
+Authority: `framework/layers/01_BRD/README.md`,
+`framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded rules +
+`cross_section_rules`), and `framework/governance/ID_NAMING_STANDARDS.md`.
 
-## Structural Validation Checklist
+**Tier 1 — blocking (error):**
 
-The framework spec carries no runtime code — **this skill is the validator**. Claude
-performs each check below directly against the BRD source, using the authoritative
-spec as the contract:
+| Check | Verifies |
+|-------|----------|
+| Element ID format | every ID matches `BRD.NN.SS.xxxx` (4-hex hash) |
+| Structure | all required template sections present and non-empty |
+| Cross-section rules | `cross_section_rules` from the template hold |
+| Quality gate | PRD-Ready score ≥ threshold (default 90) |
 
-- **Element ID format & standards**: `framework/governance/ID_NAMING_STANDARDS.md`
-- **BRD structure & content rules**: `framework/layers/01_BRD/README.md` and
-  `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded authoring guidance +
-  `cross_section_rules`)
+**Tier 2 — advisory (warning):** frontmatter metadata (below); internal links
+and template/governance references resolve; no downstream numbers cited before
+they exist; diagram contract tags present (`@diagram: c4-l1`, `@diagram: dfd-l1`
+— advisory for BRD; use `../charts-flow/SKILL.md`).
 
-### Required Checks (Tier 1 — Blocking)
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-| Check | What Claude verifies | Severity |
-|-------|----------------------|----------|
-| Element ID format | Every element ID matches the 4-segment standard `BRD.NN.SS.xxxx` (`xxxx` = 4-hex content hash) | error |
-| BRD structure | All required template sections present and non-empty (per `BRD-TEMPLATE.yaml`) | error |
-| Cross-section rules | `cross_section_rules` from the template hold (e.g., BRD-XS-001..005) | error |
-| Quality gate | PRD-Ready score `>=90/100` | error |
+## Metadata Checks
 
-### Advisory Checks (Tier 2 — Non-Blocking)
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `brd-document` (not `template`) |
+| `artifact_type` | yes | `BRD` |
+| `layer` | yes | `1` |
+| `deliverable_type` | yes | `code`, `document`, `ux`, `risk`, `process` |
 
-| Check | What Claude verifies |
-|-------|----------------------|
-| Metadata | Frontmatter fields present and valid (see Metadata Validation) |
-| Links | Internal links and template/governance references resolve |
-| Forward references | No downstream artifact numbers cited before they exist |
-| Diagram consistency | Diagram contract tags present (advisory for BRD) |
+Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
+`VALID-M003` `document_type` not `brd-document`.
 
-### Check Result Recording
+## Combined Report Format
 
-Record each check result as a finding:
+Output: `BRD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** · **Diagram Contract Findings** ·
+**Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
+Next Step** · **Cleanup Summary**.
 
-| Result | Finding Type | Severity |
-|--------|--------------|----------|
-| FAIL | Blocking issue | error |
-| WARN | Non-blocking issue | warning |
-| PASS | Check passed | info |
+## Hand-off to doc-brd-fixer
 
-### Manual Invocation
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-brd-fixer`
+consumes the latest `BRD-NN.A_audit_report_vNNN.md`.
 
-```bash
-# Manual invocation for full audit + report generation
-/doc-brd-audit docs/01_BRD/BRD-01_platform
-```
+## Related Resources
 
-**Flow**:
-```
-/doc-brd-audit → declarative structural checks → Claude review → audit report
-```
-
-### Combined Status Rules
-
-- `PASS`: All Tier 1 checks PASS AND Claude review score >= threshold AND no blocking issues
-- `FAIL`: Any Tier 1 check FAIL OR Claude review score < threshold OR blocking/manual-required issues present
-
-**Diagram Contract Gate (ADVISORY for BRD)**:
-- BRD diagram findings are recorded as non-blocking by default.
-- Recommended tags: `@diagram: c4-l1` and `@diagram: dfd-l1`
-- If sequence diagram exists, recommend one sequence tag (`@diagram: sequence-sync|sequence-async|sequence-error`)
-- Recommended intent fields: `diagram_type`, `level`, `scope_boundary`, `upstream_refs`, `downstream_refs`
-- Optional strict mode only when explicitly enabled (e.g., `audit_strict_diagrams: true`).
-
----
-
-## Metadata Validation
-
-The audit MUST validate BRD frontmatter metadata compliance.
-
-### Required Metadata Fields
-
-| Field | Type | Required | Valid Values |
-|-------|------|----------|--------------|
-| `document_type` | string | Yes | `brd-document` |
-| `artifact_type` | string | Yes | `BRD` |
-| `layer` | integer | Yes | `1` |
-| `deliverable_type` | string | Yes | `code`, `document`, `ux`, `risk`, `process` |
-
-### Metadata Validation Rules
-
-**VALID-M001: deliverable_type Present**
-- Severity: Error
-- Check: `deliverable_type` exists in `custom_fields`
-- Fix: Add `deliverable_type: code` (default)
-
-**VALID-M002: deliverable_type Valid Value**
-- Severity: Error
-- Check: `deliverable_type` is one of: `code`, `document`, `ux`, `risk`, `process`
-- Fix: Reset to `code` (default) or suggest based on BRD content
-
-**VALID-M003: document_type Correct for Instance**
-- Severity: Error
-- Check: `document_type` is `brd-document` (not `template`)
-- Fix: Change to `brd-document`
-
-### Metadata Validation Detection
-
-```python
-def validate_deliverable_type(frontmatter: dict) -> list[Finding]:
-    """Validate deliverable_type metadata field."""
-    findings = []
-    custom_fields = frontmatter.get('custom_fields', {})
-
-    # Check M001: deliverable_type present
-    if 'deliverable_type' not in custom_fields:
-        findings.append({
-            'code': 'VALID-M001',
-            'severity': 'error',
-            'message': 'Missing deliverable_type in custom_fields',
-            'fix_action': 'Add deliverable_type: code',
-            'confidence': 'auto-safe'
-        })
-        return findings
-
-    # Check M002: valid value
-    deliverable_type = custom_fields['deliverable_type']
-    valid_values = ['code', 'document', 'ux', 'risk', 'process']
-
-    if deliverable_type not in valid_values:
-        findings.append({
-            'code': 'VALID-M002',
-            'severity': 'error',
-            'message': f'Invalid deliverable_type: {deliverable_type}',
-            'valid_values': valid_values,
-            'fix_action': f'Change to one of: {", ".join(valid_values)}',
-            'confidence': 'auto-assisted'  # May need content analysis
-        })
-
-    return findings
-```
-
----
-
-## Combined Report Format (for doc-brd-fixer)
-
-Output file: `BRD-NN.A_audit_report_vNNN.md`
-
-Required sections:
-
-1. `## Summary`
-   - BRD ID, timestamp (EST), overall status
-   - Structural check status, Claude review score
-2. `## Score Calculation (Deduction-Based)`
-   - Formula: `100 - total_deductions`
-   - Deductions grouped by: contamination (max 50), FR completeness (max 30), structure/quality (max 20)
-   - Threshold comparison (`>=90` pass gate)
-3. `## Metadata Validation Findings`
-   - deliverable_type presence and validity
-   - document_type correctness
-   - Other required metadata fields
-4. `## Structural Check Findings`
-   - Findings from the declarative structural checks
-   - List by severity/code
-5. `## Claude Review Findings`
-   - Findings from Claude content quality review
-   - List by severity/code
-6. `## Diagram Contract Findings`
-   - Required BRD tags status (`c4-l1`, `dfd-l1`)
-   - Sequence contract status when sequence is present
-   - Intent header completeness status
-7. `## Fix Queue for doc-brd-fixer`
-   - `auto_fixable`
-   - `manual_required`
-   - `blocked`
-8. `## Recommended Next Step`
-   - `run doc-brd-fixer`
-   - or `manual update required`
-
-### Fix Queue Normalization
-
-Each finding MUST include:
-- `source`: `structural` | `claude` (structural = declarative checks, claude = content review)
-- `code`: issue code
-- `severity`: `error|warning|info`
-- `file`: relative path
-- `section`: heading/anchor if known
-- `action_hint`: short imperative guidance
-- `confidence`: `high|medium|manual-required`
-
----
-
-## Hand-off Contract to doc-brd-fixer
-
-`doc-brd-fixer` MUST accept combined audit report as equivalent upstream input:
-- `BRD-NN.A_audit_report_vNNN.md`
-- `BRD-NN.R_review_report_vNNN.md` (legacy compatibility)
-
-If both exist, fixer should prefer latest timestamp.
-
----
-
-## Example Invocation
-
-```bash
-/doc-brd-audit docs/01_BRD/BRD-01_platform/BRD-01_platform.md
-```
-
-Expected outcome:
-1. Declarative structural checks run (element ID format, structure, cross-section rules, quality gate)
-2. Claude content quality review runs
-3. Combined audit report generated: `BRD-01.A_audit_report_vNNN.md`
-4. Fixer can execute directly from combined report
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 2.4 | 2026-03-05 | **Metadata Validation**: Added validation for `deliverable_type` metadata field (VALID-M001, VALID-M002, VALID-M003); Validates presence, valid values (`code`, `document`, `ux`, `risk`, `process`), and `document_type` correctness; Added "Metadata Validation Findings" section to combined report |
-| 2.3 | 2026-03-05 | **Report Cleanup Policy**: Added mandatory cleanup of old audit reports after generating new one; Deletes previous `BRD-NN.A_audit_report_v*.md` and legacy `BRD-NN.R_review_report_v*.md` files; Keeps fix reports and drift cache; Added cleanup summary section to audit report |
-| 2.5 | 2026-05-22 | **8-layer migration**: Migrated to the framework 8-layer model; replaced external shell/Python validation-script references with the skill's own declarative structural checklist pointing to `framework/governance/` and `framework/layers/01_BRD/README.md`; element IDs use the 4-segment `BRD.NN.SS.xxxx` standard; downstream chain set to PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN |
-| 2.2 | 2026-03-05 | **Manual-use clarification**: Skill is for manual/interactive use only; adds Claude review on top of structural checks; Removed obsolete `doc-brd-validator`/`doc-brd-reviewer` references |
-| 2.1 | 2026-03-01 | Added Fresh Audit Policy (MANDATORY); All validation and scoring unified in this skill |
-| 1.3 | 2026-02-26 | Added advisory BRD C4/DFD/sequence diagram contract checks and required `Diagram Contract Findings` section in combined audit reports |
-| 1.2 | 2026-02-26 | Initial audit wrapper; combined report contract for fixer |
+- Create: `../doc-brd/SKILL.md` · Fix: `../doc-brd-fixer/SKILL.md` · Generate:
+  `../doc-brd-autopilot/SKILL.md`
+- Authority: `framework/layers/01_BRD/README.md`,
+  `framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

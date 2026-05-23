@@ -43,7 +43,7 @@ it natively. Refactoring and cleanup happen natively, kept within IPLAN scope.
 | Input | Your work | Skills |
 |-------|-----------|--------|
 | IPLAN (Layer 8) | Implementation | `doc-iplan`, `doc-iplan-autopilot`, `doc-flow` |
-| SPEC + test specs | Code + tests | `test-automation`, `contract-tester` |
+| SPEC + TDD test cases | Code + tests | `doc-tdd` (test definitions), `doc-review` |
 
 You receive the test design from the **Test Architect** and approved SPEC/IPLAN,
 then hand PRs to the **Code Reviewer**, **Security Engineer**, and **DevOps /
