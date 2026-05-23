@@ -87,6 +87,7 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 
 - **`../project-init/SKILL.md`** — scaffold a new project (run before any layer).
 - **`../project-adopt/SKILL.md`** — adopt SDD into an existing codebase (brownfield).
+- **`../project-profile/SKILL.md`** — tailor the flow to this project (optional; sets `.aidoc/profile.yaml`).
 - **`../doc-naming/SKILL.md`** — ID / naming authority (`TYPE-NN`, `TYPE.NN.SS.xxxx`).
 - **`../doc-ref/SKILL.md`** — free-format reference documents (BRD-REF / ADR-REF).
 - **`../doc-review/SKILL.md`** — cross-cutting quality review (typos, links, terms).

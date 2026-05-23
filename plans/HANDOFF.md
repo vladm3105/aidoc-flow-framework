@@ -13,10 +13,16 @@
 > base/autopilot/audit/fixer ×8 + `trace-check` + `project-init`/`-adopt`) via
 > `/tmp/wire_adapts.py`; new `tests/conformance/platforms/test_adaptation.py`
 > asserts `adapts ⊆ surface` + authority-ref + ≥35 wired. Conformance **36/36**,
-> `plm_lint --all` clean. **Branch: `claude/skill-revision`** (user-confirmed, not
-> the AamWB task-default). **Next ADAPT-A increments:** (3) `project-profile`
-> skill; (4) `SKILL_AUTHORING` count (52→53) / README / skill-recommender wiring;
-> (5) bump `framework/VERSION` → 0.2.0 + both platform `FRAMEWORK_SPEC_VERSION`.
+> `plm_lint --all` clean. **Increments 3+4 done:** new **`project-profile`**
+> utility skill (creates/maintains `.aidoc/profile.yaml`, materializes the
+> user-global seed, validates against the surface); registered everywhere —
+> plugin README (52→**53**, utilities 16→17), `SKILL_AUTHORING` §1 (corrected
+> stale 46→53, added the change-mgmt family + project-adopt/gate-check it had
+> omitted), `skill-recommender` intent map + catalog, `doc-flow` utility list.
+> Conformance **36/36**, `plm_lint` clean, skill count **53**. **Branch:
+> `claude/skill-revision`** (user-confirmed, not the AamWB task-default).
+> **Remaining ADAPT-A:** (5) bump `framework/VERSION` → 0.2.0 + both platform
+> `FRAMEWORK_SPEC_VERSION` (decide the per-skill `framework_spec_version` ripple).
 > Then **ADAPT-B** (learnings + `knowledge-extractor`, tool-PR path only per
 > ADAPT-0 = defer).
 

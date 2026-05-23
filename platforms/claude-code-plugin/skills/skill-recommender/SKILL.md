@@ -68,10 +68,11 @@ Extract an action and a target from the request.
 | naming / IDs | id, naming, format | `doc-naming` |
 | new project | initialize, scaffold, greenfield | `project-init` |
 | existing codebase | adopt, brownfield, existing code, reverse-engineer | `project-adopt` |
+| tailor the flow to a project | adapt, profile, house style, skip layer, stricter gate, glossary | `project-profile` |
 | change to a published artifact | change, chg, modify existing, change request | `doc-chg` |
 | approval gate | gate, approval, sign-off | `gate-check` |
 
-### Step 2 — Match against the catalog (52 skills)
+### Step 2 — Match against the catalog (53 skills)
 
 **Layer families** — each ships four variants: base, `-autopilot` (generate
 end-to-end), `-audit` (quality gate), `-fixer` (apply audit fixes):
@@ -84,13 +85,14 @@ end-to-end), `-audit` (quality gate), `-fixer` (apply audit fixes):
 
 `doc-chg` (× {base, -autopilot, -audit, -fixer} = 4 skills).
 
-**Utilities (16)**:
+**Utilities (17)**:
 
 | Skill | Category | Role |
 |-------|----------|------|
 | `doc-flow` | core-workflow | Workflow orchestrator / routing |
 | `project-init` | core-workflow | Scaffold a new project (greenfield) |
 | `project-adopt` | utility | Adopt SDD into an existing codebase (brownfield) |
+| `project-profile` | utility | Create/maintain the project adaptation profile (`.aidoc/profile.yaml`) |
 | `gate-check` | utility | Run CHG approval gates; prepare sign-off |
 | `doc-naming` | utility | ID & naming authority |
 | `doc-ref` | utility | Reference (REF) documents |
