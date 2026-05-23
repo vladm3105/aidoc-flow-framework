@@ -19,12 +19,21 @@
 > plugin README (52→**53**, utilities 16→17), `SKILL_AUTHORING` §1 (corrected
 > stale 46→53, added the change-mgmt family + project-adopt/gate-check it had
 > omitted), `skill-recommender` intent map + catalog, `doc-flow` utility list.
-> Conformance **36/36**, `plm_lint` clean, skill count **53**. **Branch:
-> `claude/skill-revision`** (user-confirmed, not the AamWB task-default).
-> **Remaining ADAPT-A:** (5) bump `framework/VERSION` → 0.2.0 + both platform
-> `FRAMEWORK_SPEC_VERSION` (decide the per-skill `framework_spec_version` ripple).
-> Then **ADAPT-B** (learnings + `knowledge-extractor`, tool-PR path only per
-> ADAPT-0 = defer).
+> Conformance **36/36**, `plm_lint` clean, skill count **53**. **ADAPT-B done
+> (functional):** added the **learnings-log** convention to `ADAPTATION.md` (§7,
+> entry shape + best-effort capture + owner-routing) and the **`knowledge-extractor`**
+> skill (manual: read profile+learnings → judge generalizability → classify owner
+> → draft; spec target → CHG draft stamped *blocked on the unbuilt spec-gate*,
+> guidance target → PR-ready description; never applies/approves). Registered
+> everywhere (README 53→**54**, utilities 17→18; `SKILL_AUTHORING`;
+> `skill-recommender` intent+catalog); `project-profile` link restored. Conformance
+> **36/36**, `plm_lint` clean, skill count **54**. **Branch:
+> `claude/skill-revision`**. **ONLY REMAINING ADAPT step — version bump (release
+> marking), pending a user decision on the ripple:** bump `framework/VERSION` +
+> both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → 0.2.0`; decide whether to also
+> bump the 54 plugin skills' frontmatter `framework_spec_version` (SKILL_AUTHORING
+> §3 says they should match; conformance does NOT enforce it). Then ADAPT is
+> complete (spec→CHG promotion remains the documented CHG-D1 follow-up).
 
 > **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
 > found framework-backed capabilities with no skill; added 6 (skipping

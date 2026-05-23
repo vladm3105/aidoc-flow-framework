@@ -5,16 +5,16 @@ plugin. It is the single pattern the skill set is recreated against (P3-T6).
 The framework spec is the source of truth for *content*; this file governs
 *form*.
 
-## 1. Scope — the canonical skill set (53)
+## 1. Scope — the canonical skill set (54)
 
 - **Layer families (8 × 4 = 32):** `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`
   in four variants — base (`doc-X`), `-autopilot`, `-audit`, `-fixer`.
 - **Change-management family (4):** `doc-chg` + `-autopilot`/`-audit`/`-fixer`
   — the CHG governance overlay (governs edits to existing artifacts; not a layer).
-- **Utilities (17):** doc-flow, doc-naming, doc-ref, doc-review, doc-validator,
-  project-init, project-adopt, project-profile, gate-check, trace-check,
-  charts-flow, adr-roadmap, context-analyzer, quality-advisor, skill-recommender,
-  workflow-optimizer, security-audit.
+- **Utilities (18):** doc-flow, doc-naming, doc-ref, doc-review, doc-validator,
+  project-init, project-adopt, project-profile, knowledge-extractor, gate-check,
+  trace-check, charts-flow, adr-roadmap, context-analyzer, quality-advisor,
+  skill-recommender, workflow-optimizer, security-audit.
 
 Removed and **never reintroduced**: `-reviewer`/`-validator` variants (merged
 into `-audit`); test-type families (utest/itest/ftest/ptest/stest/sectest);

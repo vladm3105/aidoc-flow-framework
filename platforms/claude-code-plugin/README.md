@@ -11,10 +11,10 @@ no MCP backend.
 |-----------|------:|--------|
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
-| Skills (utilities) | 17 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`, `gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
+| Skills (utilities) | 18 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
 | Agents | 9 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor` (SDD lifecycle: spec lane → execution lane → read-only quality gates). See `agents/README.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture current conversation plan to a timestamped file. |
-| **Total skills** | **53** | |
+| **Total skills** | **54** | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in

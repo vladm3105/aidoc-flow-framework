@@ -38,8 +38,8 @@ set of preferences; the authority for what may appear in it is
 
 **Do NOT use to**:
 - Author or audit an artifact — use the layer skills (`../doc-brd/SKILL.md` …).
-- Promote a local adaptation upward into the framework spec or skills — that is
-  a separate, on-demand knowledge-extraction step.
+- Promote a local adaptation upward into the framework — that is the
+  `../knowledge-extractor/SKILL.md` job.
 
 ## Behavior
 
@@ -113,6 +113,7 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 - Surface registry: `framework/governance/ADAPTATION_SURFACE.yaml`
 - Context model: `../context-analyzer/SKILL.md`
 - Scaffolding: `../project-init/SKILL.md`, `../project-adopt/SKILL.md`
+- Promote adaptations upward: `../knowledge-extractor/SKILL.md`
 - Next: `../doc-flow/SKILL.md`
 
 ## Quick Reference

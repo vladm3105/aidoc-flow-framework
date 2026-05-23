@@ -145,7 +145,42 @@ the `schema_version` it targets. Changing the surface (adding, renaming, or
 removing a knob, or changing the mandatory/skippable split) is a framework-spec
 change and moves `framework/VERSION` accordingly.
 
-## 7. Conformance
+## 7. Learnings log (raw signal for promotion)
+
+A project may keep a learnings log alongside its profile:
+
+```
+.aidoc/learnings.md
+```
+
+Each entry records one observed deviation from a framework default — the raw
+signal a later, **on-demand** knowledge-extraction step mines to decide whether a
+local adaptation deserves promoting into the framework. Entry shape (one YAML
+list item per learning):
+
+```yaml
+- ts: 2026-05-23T16:40:00Z      # ISO 8601 UTC
+  layer: EARS                    # layer name | "utility:<name>" | "cross"
+  knob: section_toggles.security # surface path, or "none" (not yet a knob)
+  default: <framework default>
+  chosen: <value the project used>
+  rationale: <why the deviation>
+  recurrence: 1                  # bumped when the same (layer, knob, chosen) recurs
+  scope: project                 # project | user-global
+  conflict: false                # true if the project overrode the user-global seed
+```
+
+**Capture is best-effort** — entries are appended when a profile override is
+applied or a correction is made; `recurrence` *weights* generalizability, it does
+not decide it.
+
+**Promotion routes by owner.** A change to the framework **spec** (a template, a
+governance rule, or the registry) is routed through **change management** (CHG);
+a change to an **engine's own authoring guidance** is an ordinary platform
+review. Spec-level promotion additionally depends on the CHG spec-change gate,
+which is not yet built.
+
+## 8. Conformance
 
 The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 
@@ -155,11 +190,12 @@ The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 - no project profile or learnings file is committed under `framework/`;
 - this document and the surface YAML carry no engine-specific tokens.
 
-## 8. Out of scope (v1)
+## 9. Out of scope (v1)
 
 - `id_format` as a knob — deferred pending an `ID_NAMING_STANDARDS.md` review to
   enumerate genuinely project-selectable conventions; the narrow-surface
   principle favors not inventing options.
-- Promotion of project adaptations *upward* into the framework — covered by the
-  knowledge-extraction overlay, which routes spec-level changes through change
-  management and tool-level changes through ordinary platform review.
+- **Spec-level** promotion (the CHG path in §7) — deferred until the CHG
+  spec-change gate is built. Until then the extraction step still drafts
+  spec-level proposals, but they cannot be run through a gate; engine-level
+  guidance promotion (ordinary platform review) is unaffected.
