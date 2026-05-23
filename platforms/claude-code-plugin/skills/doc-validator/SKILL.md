@@ -1,24 +1,25 @@
 ---
-title: "doc-validator: Cross-document validation for SDD framework"
 name: doc-validator
 description: Cross-document validation, traceability gaps, and project-wide consistency checks for SDD framework
-tags:
-  - sdd-workflow
-  - shared-architecture
-  - quality-assurance
-  - required-both-approaches
-  - cross-document-validation
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-  downstream_artifacts: []
-  version: "4.0"
-  last_updated: "2026-05-22T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+    - quality-assurance
+    - required-both-approaches
+    - cross-document-validation
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
+    downstream_artifacts: []
+    version: "4.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # doc-validator

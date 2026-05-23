@@ -1,23 +1,24 @@
 ---
 name: doc-iplan-autopilot
 description: Automated IPLAN generation from SPEC/TDD - generates an executable, session-resumable file manifest for implementation with CODE-Ready scoring
-tags:
-  - sdd-workflow
-  - layer-8-artifact
-  - automation-workflow
-  - shared-architecture
-custom_fields:
-  layer: 8
-  artifact_type: IPLAN
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: automation-workflow
-  upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
-  downstream_artifacts: [Code]
-  version: "3.0"
-  last_updated: "2026-05-22"
-  versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-8-artifact
+    - automation-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 8
+    artifact_type: IPLAN
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: automation-workflow
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
+    downstream_artifacts: [Code]
+    version: "3.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
 ---
 
 # doc-iplan-autopilot

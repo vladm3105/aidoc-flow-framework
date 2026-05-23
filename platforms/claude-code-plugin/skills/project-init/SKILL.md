@@ -1,20 +1,23 @@
 ---
-title: "project-init: Initialize projects with AI Dev Flow framework"
 name: project-init
 description: Initialize projects with AI Dev Flow framework using domain-aware setup
-tags:
-  - sdd-workflow
-  - shared-architecture
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: utility
-  upstream_artifacts: []
-  downstream_artifacts: [BRD]
-  framework_spec_version: 8-layer
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: utility
+    upstream_artifacts: []
+    downstream_artifacts: [BRD]
+    framework_spec_version: 8-layer
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # project-init

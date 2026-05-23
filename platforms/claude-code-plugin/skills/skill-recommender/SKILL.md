@@ -1,21 +1,24 @@
 ---
-title: "skill-recommender: Intelligent skill suggestion engine for documentation tasks"
 name: skill-recommender
 description: Intelligent skill suggestion engine that analyzes user intent and project context to recommend appropriate documentation skills
-tags:
-  - sdd-workflow
-  - ai-assistant
-  - utility
-  - shared-architecture
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: utility
-  upstream_artifacts: [PRD-01, ADR-01]
-  downstream_artifacts: []
+metadata:
+  tags:
+    - sdd-workflow
+    - ai-assistant
+    - utility
+    - shared-architecture
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: utility
+    upstream_artifacts: [PRD-01, ADR-01]
+    downstream_artifacts: []
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # skill-recommender

@@ -1,20 +1,23 @@
 ---
-title: "test-automation: Create test plans, write tests, validate code quality"
 name: test-automation
 description: Create test plans, write tests, validate code quality through testing
-tags:
-  - sdd-workflow
-  - shared-architecture
-  - quality-assurance
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [BDD, SPEC, TASKS]
-  downstream_artifacts: []
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+    - quality-assurance
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [BDD, SPEC, TASKS]
+    downstream_artifacts: []
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # test-automation

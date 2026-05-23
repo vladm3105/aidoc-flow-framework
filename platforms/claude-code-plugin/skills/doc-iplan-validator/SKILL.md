@@ -1,22 +1,23 @@
 ---
 name: doc-iplan-validator
 description: Validate Implementation Plan (IPLAN) documents against Layer 8 schema standards
-tags:
-  - sdd-workflow
-  - layer-8-artifact
-  - quality-assurance
-custom_fields:
-  layer: 8
-  artifact_type: IPLAN
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [IPLAN]
-  downstream_artifacts: []
-  version: "2.0"
-  last_updated: "2026-05-22"
-  versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-8-artifact
+    - quality-assurance
+  custom_fields:
+    layer: 8
+    artifact_type: IPLAN
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [IPLAN]
+    downstream_artifacts: []
+    version: "2.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
 ---
 
 # doc-iplan-validator

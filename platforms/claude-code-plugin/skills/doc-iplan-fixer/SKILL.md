@@ -1,24 +1,25 @@
 ---
 name: doc-iplan-fixer
 description: Automated fix skill that reads review reports and applies fixes to IPLAN documents - handles broken links, IDs, implementation contract issues, file manifest/session handoff repair, and iterative improvement
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - iplan-fix
-  - layer-8-artifact
-  - shared-architecture
-custom_fields:
-  layer: 8
-  artifact_type: IPLAN
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC, TDD, IPLAN, Review Report]
-  downstream_artifacts: [Fixed IPLAN, Fix Report]
-  version: "2.1"
-  last_updated: "2026-05-22"
-  versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - iplan-fix
+    - layer-8-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 8
+    artifact_type: IPLAN
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC, TDD, IPLAN, Review Report]
+    downstream_artifacts: [Fixed IPLAN, Fix Report]
+    version: "2.1"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
 ---
 
 # doc-iplan-fixer

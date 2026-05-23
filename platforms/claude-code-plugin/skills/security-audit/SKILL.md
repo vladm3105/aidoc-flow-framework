@@ -1,22 +1,23 @@
 ---
-title: "security-audit: Security analysis, vulnerability assessment, and security code reviews"
 name: security-audit
 description: Security analysis, vulnerability assessment, and security code reviews
-tags:
-  - sdd-workflow
-  - shared-architecture
-  - quality-assurance
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [SPEC, CTR]
-  downstream_artifacts: []
-  version: "1.0"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+    - quality-assurance
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [SPEC, CTR]
+    downstream_artifacts: []
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # security-audit

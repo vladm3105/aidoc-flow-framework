@@ -1,21 +1,25 @@
 ---
 name: doc-flow
 description: AI-Driven Specification-Driven Development (SDD) workflow orchestrator - guides skill selection and general SDD methodology
-tags:
-  - sdd-workflow
-  - layer-0-artifact
-  - shared-architecture
-  - required-both-approaches
-  - ai-assistant
-custom_fields:
-  layer: 0
-  artifact_type: META
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: []
-  downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, REF]
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-0-artifact
+    - shared-architecture
+    - required-both-approaches
+    - ai-assistant
+  custom_fields:
+    layer: 0
+    artifact_type: META
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: []
+    downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, REF]
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # doc-flow (Orchestrator)

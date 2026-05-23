@@ -1,23 +1,24 @@
 ---
-title: "quality-advisor: Proactive quality guidance for artifact creation"
 name: quality-advisor
 description: Proactive quality guidance system that monitors artifact creation and provides real-time feedback on documentation quality
-tags:
-  - sdd-workflow
-  - ai-assistant
-  - quality-assurance
-  - shared-architecture
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [PRD-01, ADR-01]
-  downstream_artifacts: []
-  version: "2.0.0"
-  last_updated: "2026-05-22T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - ai-assistant
+    - quality-assurance
+    - shared-architecture
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [PRD-01, ADR-01]
+    downstream_artifacts: []
+    version: "2.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # quality-advisor

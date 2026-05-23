@@ -1,21 +1,24 @@
 ---
 name: doc-naming
 description: Enforces unified ID naming standards and threshold naming rules for all SDD documentation artifacts
-tags:
-  - sdd-workflow
-  - shared-architecture
-  - quality-assurance
-  - required-both-approaches
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: []
-  downstream_artifacts: []
-  version: "1.8"
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+    - quality-assurance
+    - required-both-approaches
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: []
+    downstream_artifacts: []
+    version: "1.8"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # doc-naming Skill

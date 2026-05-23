@@ -1,22 +1,23 @@
 ---
 name: doc-iplan
 description: Create Implementation Plan (IPLAN) - Layer 8 artifact bridging TDD/SPEC to source code via an executable, session-resumable file manifest
-tags:
-  - sdd-workflow
-  - layer-8-artifact
-  - shared-architecture
-custom_fields:
-  layer: 8
-  artifact_type: IPLAN
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: core-workflow
-  upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SPEC,TDD]
-  downstream_artifacts: [Code]
-  version: "2.0"
-  last_updated: "2026-05-22T15:00:00"
-  versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
+metadata:
+  tags:
+    - sdd-workflow
+    - layer-8-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 8
+    artifact_type: IPLAN
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: core-workflow
+    upstream_artifacts: [BRD,PRD,EARS,BDD,ADR,SPEC,TDD]
+    downstream_artifacts: [Code]
+    version: "2.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
 ---
 
 # doc-iplan

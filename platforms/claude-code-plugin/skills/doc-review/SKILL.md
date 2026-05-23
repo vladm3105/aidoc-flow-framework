@@ -1,26 +1,25 @@
 ---
-title: "doc-review: Multi-agent documentation quality review"
 name: doc-review
 description: Review a single file or all files in a folder for data inconsistencies, reference errors, typos, and unclear terminology using parallel sub-agents
-tags:
-  - quality-assurance
-  - shared-architecture
-  - multi-agent
-  - validation
-  - documentation
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: []
-  downstream_artifacts: []
-version: "1.1.0"
-document_control:
-  created: "2026-01-01T00:00:00"
-  last_updated: "2026-02-10T15:00:00"
+metadata:
+  tags:
+    - quality-assurance
+    - shared-architecture
+    - multi-agent
+    - validation
+    - documentation
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: []
+    downstream_artifacts: []
+    version: "1.1"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # doc-review

@@ -1,23 +1,25 @@
 ---
 name: doc-iplan-reviewer
 description: Comprehensive content review and quality assurance for IPLAN documents - validates file manifest completeness, SPEC/TDD alignment, implementation contracts, session-handoff integrity, and identifies issues requiring manual attention
-tags:
-  - sdd-workflow
-  - quality-assurance
-  - iplan-review
-  - layer-8-artifact
-  - shared-architecture
-custom_fields:
-  layer: 8
-  artifact_type: IPLAN
-  architecture_approaches: [ai-agent-based]
-  priority: primary
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: [IPLAN]
-  downstream_artifacts: []
-  version: "1.4"
-  last_updated: "2026-05-22"
+metadata:
+  tags:
+    - sdd-workflow
+    - quality-assurance
+    - iplan-review
+    - layer-8-artifact
+    - shared-architecture
+  custom_fields:
+    layer: 8
+    artifact_type: IPLAN
+    architecture_approaches: [ai-agent-based]
+    priority: primary
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: [IPLAN]
+    downstream_artifacts: []
+    version: "1.4"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks IPLAN-TEMPLATE schema_version"
 ---
 
 # doc-iplan-reviewer

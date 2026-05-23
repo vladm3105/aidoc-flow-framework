@@ -1,22 +1,23 @@
 ---
-title: "trace-check: Validate bidirectional traceability across SDD artifacts"
 name: trace-check
 description: Validate and update bidirectional traceability across the 8-layer SDD flow (BRD through IPLAN to Code)
-tags:
-  - sdd-workflow
-  - shared-architecture
-  - quality-assurance
-custom_fields:
-  layer: null
-  artifact_type: null
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: quality-assurance
-  upstream_artifacts: []
-  downstream_artifacts: []
-  version: "3.0.0"
-  last_updated: "2026-05-22T00:00:00"
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+    - quality-assurance
+  custom_fields:
+    layer: null
+    artifact_type: null
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: quality-assurance
+    upstream_artifacts: []
+    downstream_artifacts: []
+    version: "3.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # trace-check

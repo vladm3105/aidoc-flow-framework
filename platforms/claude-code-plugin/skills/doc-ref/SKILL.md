@@ -1,21 +1,25 @@
 ---
 name: doc-ref
 description: Create Reference Documents (REF) - supplementary documentation that doesn't participate in formal traceability chain
-tags:
-  - sdd-workflow
-  - supplementary-documentation
-  - shared-architecture
-  - required-both-approaches
-custom_fields:
-  layer: "N/A"
-  artifact_type: REF
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: utility
-  upstream_artifacts: [BRD, ADR]
-  downstream_artifacts: []
-  valid_parent_types: [BRD, ADR]
+metadata:
+  tags:
+    - sdd-workflow
+    - supplementary-documentation
+    - shared-architecture
+    - required-both-approaches
+  custom_fields:
+    layer: "N/A"
+    artifact_type: REF
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: utility
+    upstream_artifacts: [BRD, ADR]
+    downstream_artifacts: []
+    valid_parent_types: [BRD, ADR]
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # doc-ref

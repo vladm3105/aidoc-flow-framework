@@ -1,19 +1,22 @@
 ---
-title: "adr-roadmap: Generate phased implementation roadmaps from Architecture Decision Records"
 name: adr-roadmap
 description: Generate phased implementation roadmaps from Architecture Decision Records
-tags:
-  - sdd-workflow
-  - shared-architecture
-custom_fields:
-  layer: 5
-  artifact_type: ADR
-  architecture_approaches: [ai-agent-based, traditional-8layer]
-  priority: shared
-  development_status: active
-  skill_category: utility
-  upstream_artifacts: [ADR]
-  downstream_artifacts: [SPEC, IPLAN, Code]
+metadata:
+  tags:
+    - sdd-workflow
+    - shared-architecture
+  custom_fields:
+    layer: 5
+    artifact_type: ADR
+    architecture_approaches: [ai-agent-based, traditional-8layer]
+    priority: shared
+    development_status: active
+    skill_category: utility
+    upstream_artifacts: [ADR]
+    downstream_artifacts: [SPEC, IPLAN, Code]
+    version: "1.0"
+    last_updated: "2026-05-23"
+    versioning_policy: "tracks skill behavior"
 ---
 
 # adr-roadmap
