@@ -59,7 +59,8 @@ trigger.
 1. **Input analysis** — classify the input (diff / incident / prompt / upstream
    edit), locate the touched artifacts, and decide generate vs review-and-fix.
 2. **Type & scope** — classify the change level and source per
-   `../doc-chg/SKILL.md`; select the entry gate (GATE-01/03/06/08/CODE);
+   `../doc-chg/SKILL.md`; select the entry gate (GATE-01/03/06/08/CODE, or
+   GATE-SPEC for a `framework/`-spec change — set `semver_impact`, ≥C2);
    reserve the next `CHG-NN` (or `CHG-EMG-YYYYMMDD-HHMM` for Emergency).
 3. **Generation** — populate `framework/governance/chg/CHG-TEMPLATE.yaml`:
    metadata, change_control, description (what/why/trigger), implementation,

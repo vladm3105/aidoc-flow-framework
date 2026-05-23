@@ -90,12 +90,20 @@ Where the change originates determines the **entry gate**. Authority:
 | **Design** | SPEC/TDD change | GATE-06 | downstream |
 | **Execution** | IPLAN change | GATE-08 | downstream |
 | **Feedback** | Production feedback, user/defect issues | GATE-CODE | bubble-up |
+| **Spec** | Change to the `framework/` spec (template/governance/registry/VERSION) | GATE-SPEC | meta — no cascade |
 
 Gate definitions live in `framework/governance/chg/gates/`
 (`GATE-01_BUSINESS_PRODUCT.md`, `GATE-03_REQUIREMENTS_ARCHITECTURE.md`,
-`GATE-06_DESIGN_TEST.md`, `GATE-08_IPLAN.md`, `GATE-CODE_IMPLEMENTATION.md`).
-Running a gate is the job of `../gate-check/SKILL.md`; `doc-chg` only selects
-the entry gate and records it.
+`GATE-06_DESIGN_TEST.md`, `GATE-08_IPLAN.md`, `GATE-CODE_IMPLEMENTATION.md`,
+`GATE-SPEC_FRAMEWORK.md`). Running a gate is the job of `../gate-check/SKILL.md`;
+`doc-chg` only selects the entry gate and records it.
+
+**`Spec` is target-based, not layer-based.** When the change edits the
+`framework/` spec itself, set `change_source: spec`, `entry_gate: GATE-SPEC`, and
+a `semver_impact` (`major` → C3; `minor`/`patch` may be C2 — a spec change is
+never C1). It does **not** cascade into the artifact gates. A change to an
+engine's own authoring guidance or runtime is *not* a spec change — it is an
+ordinary platform PR.
 
 ## Cross-Layer Cascade Assessment
 

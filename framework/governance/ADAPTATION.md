@@ -175,10 +175,9 @@ applied or a correction is made; `recurrence` *weights* generalizability, it doe
 not decide it.
 
 **Promotion routes by owner.** A change to the framework **spec** (a template, a
-governance rule, or the registry) is routed through **change management** (CHG);
-a change to an **engine's own authoring guidance** is an ordinary platform
-review. Spec-level promotion additionally depends on the CHG spec-change gate,
-which is not yet built.
+governance rule, or the registry) is routed through **change management** (CHG)
+via the **GATE-SPEC** meta gate (`chg/gates/GATE-SPEC_FRAMEWORK.md`); a change to
+an **engine's own authoring guidance** is an ordinary platform review.
 
 ## 8. Conformance
 
@@ -195,7 +194,3 @@ The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 - `id_format` as a knob — deferred pending an `ID_NAMING_STANDARDS.md` review to
   enumerate genuinely project-selectable conventions; the narrow-surface
   principle favors not inventing options.
-- **Spec-level** promotion (the CHG path in §7) — deferred until the CHG
-  spec-change gate is built. Until then the extraction step still drafts
-  spec-level proposals, but they cannot be run through a gate; engine-level
-  guidance promotion (ordinary platform review) is unaffected.

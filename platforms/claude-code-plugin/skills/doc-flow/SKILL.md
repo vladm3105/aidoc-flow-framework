@@ -107,9 +107,10 @@ flow:
 - **`../doc-chg/SKILL.md`** (+ `-autopilot` / `-audit` / `-fixer`) — author and
   validate a change record; classifies the change level (C1–C3 / Emergency) and
   routes it to the right approval gate.
-- **`../gate-check/SKILL.md`** — run the approval gate (GATE-01/03/06/08/CODE)
-  for the change's affected layers and prepare the sign-off form (a human
-  approves — the skill never does).
+- **`../gate-check/SKILL.md`** — run the approval gate (GATE-01/03/06/08/CODE,
+  or **GATE-SPEC** for a change to the `framework/` spec itself) for the change's
+  affected layers and prepare the sign-off form (a human approves — the skill
+  never does).
 
 ### Upstream-artifact policy (mandatory)
 

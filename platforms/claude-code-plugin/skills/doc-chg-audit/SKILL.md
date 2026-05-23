@@ -70,9 +70,10 @@ Authority: `framework/governance/chg/CHG-TEMPLATE.yaml`,
 |-------|----------|------|
 | Schema / required fields | `metadata`, `change_control`, `change_description`, `impact_assessment`, `implementation`, `verification` present and non-empty per template | CHG-E001 |
 | Change level | `change_level` is one of C1/C2/C3/Emergency **and** matches the actual scope (typo→C1, section→C2, cross-layer→C3, P0/P1 prod→Emergency) | CHG-E001 |
-| Gate routing | `entry_gate` matches `change_source` (Upstream/External→GATE-01, Midstream→GATE-03, Design→GATE-06, Execution→GATE-08, Feedback→GATE-CODE) | CHG-E002 |
+| Gate routing | `entry_gate` matches `change_source` (Upstream/External→GATE-01, Midstream→GATE-03, Design→GATE-06, Execution→GATE-08, Feedback→GATE-CODE, Spec→GATE-SPEC) | CHG-E002 |
 | Impact / cascade | `impact_assessment.affected_layers` lists **every** affected artifact; `cascade_direction` correct for the source (downstream / bubble-up / lateral); no template anti-pattern | CHG-E003 |
 | Conditional blocks | `rollback_plan` present for C2/C3; `gate_approval.gate` set for C3; `emergency_change` complete for Emergency (incl. `post_mortem_due`, `incident_severity`) | CHG-E004 |
+| Spec change | if `change_source: spec`: `semver_impact` set; `change_level` ≥ C2 (never C1); `major`⇒C3; provenance (`why`/`trigger`) present — see `gates/GATE-SPEC_FRAMEWORK.md` | CHG-E002 |
 
 **Tier 2 — advisory (warning):** ID form (`CHG-NN` dash, or
 `CHG-EMG-YYYYMMDD-HHMM`; no hierarchical 4-segment IDs); internal links and
@@ -91,7 +92,7 @@ C2 peer review, C3/Emergency `../gate-check/SKILL.md`).
 | `document_type` | yes | `chg-document` (not `template`) |
 | `purpose` | yes | `governance` |
 | `change_level` | yes | `C1`, `C2`, `C3`, `Emergency` |
-| `change_source` | yes (≥C2) | `upstream`, `midstream`, `design`, `execution`, `external`, `feedback` |
+| `change_source` | yes (≥C2) | `upstream`, `midstream`, `design`, `execution`, `external`, `feedback`, `spec` |
 
 Findings: `VALID-M001` missing `change_source`; `VALID-M002` invalid level/source
 value; `VALID-M003` `document_type` not `chg-document`.

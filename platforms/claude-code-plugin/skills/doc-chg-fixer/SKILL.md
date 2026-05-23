@@ -54,15 +54,16 @@ Run in order; later phases assume the earlier ones succeeded.
 |-------|-------|------------------------|
 | 0 — Schema | required sections/fields (CHG-E001) | insert missing template sections (`change_description`, `impact_assessment`, `implementation`, `verification`) from `CHG-TEMPLATE.yaml`; fill `document_type: chg-document`, `purpose: governance` |
 | 1 — Change level | level vs scope (CHG-E001) | correct `change_level` to match scope (typo→C1, section→C2, cross-layer→C3, P0/P1 prod→Emergency); when scope expands, escalate and flag the new conditional blocks |
-| 2 — Routing | source→gate (CHG-E002) | set/correct `entry_gate` per the source table (Upstream/External→GATE-01, Midstream→GATE-03, Design→GATE-06, Execution→GATE-08, Feedback→GATE-CODE); set `change_source` if missing |
+| 2 — Routing | source→gate (CHG-E002) | set/correct `entry_gate` per the source table (Upstream/External→GATE-01, Midstream→GATE-03, Design→GATE-06, Execution→GATE-08, Feedback→GATE-CODE, Spec→GATE-SPEC); set `change_source` if missing; for `spec` set `semver_impact` and ensure ≥C2 |
 | 3 — Impact / cascade | completeness (CHG-E003) | re-trace the chain and add every affected artifact to `impact_assessment.affected_layers`; set `cascade_direction` (downstream / bubble-up / lateral); set `risk_level` |
 | 4 — Conditional blocks | level-required blocks (CHG-E004) | scaffold `rollback_plan` for C2/C3; `gate_approval` for C3; `emergency_change` for Emergency (`emergency_id`, `incident_severity`, `fix_deployed`, `post_mortem_due` = deploy + 48h) |
 | 5 — Links & registry | references | recompute relative paths; convert absolute → relative; add/update the entry in `CHG-00_index.md`; validate `supersedes` IDs |
 | 6 — IDs & metadata | ID form | normalize to dash `CHG-NN` (or `CHG-EMG-YYYYMMDD-HHMM`); drop any hierarchical 4-segment IDs; fix `change_level`/`change_source` enum values |
 
 **Routing re-derivation:** `entry_gate = f(change_source)` per the README table;
-never invent a gate not in {GATE-01, GATE-03, GATE-06, GATE-08, GATE-CODE, None
-(C1)}. **Post-mortem due date:** Emergency `post_mortem_due = fix_deployed + 48h`.
+never invent a gate not in {GATE-01, GATE-03, GATE-06, GATE-08, GATE-CODE,
+GATE-SPEC, None (C1)}. **Post-mortem due date:** Emergency `post_mortem_due =
+fix_deployed + 48h`.
 
 ## Confidence Classification
 

@@ -71,13 +71,15 @@ For each generalizable item, decide what it would actually change:
 
 ### 4. Route and draft
 
-- **Spec target → a CHG draft.** Shape it to
-  `framework/governance/chg/CHG-TEMPLATE.yaml`, carry **provenance** (the
-  learnings entries + profile keys that motivated it), and stamp it
-  **`BLOCKED — needs the CHG spec-change gate (not yet built)`**: the spec-change
-  gate does not exist yet, so this draft cannot be run through `../gate-check/`
-  today. Hand the draft to `../doc-chg/SKILL.md` for a human to carry forward
-  when the gate lands.
+- **Spec target → a CHG record.** Shape it to
+  `framework/governance/chg/CHG-TEMPLATE.yaml` with `change_source: spec`,
+  `entry_gate: GATE-SPEC`, and a `semver_impact` (additive → `minor`, breaking →
+  `major`); carry **provenance** (the learnings entries + profile keys that
+  motivated it) in `change_description.why` / `.trigger`. Hand it to
+  `../doc-chg/SKILL.md` to complete the record and `../gate-check/SKILL.md` to
+  run **GATE-SPEC**, the framework-spec change gate
+  (`framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`). A human approves;
+  the extractor never opens a PR or grants approval.
 - **Engine-guidance target → a PR-ready change description.** Name the file, give
   a before/after, and carry the same provenance. This is an ordinary platform
   change, **not** a CHG record (per `framework/governance/ADAPTATION.md` §7).
@@ -91,7 +93,7 @@ Present the drafts grouped by path, with the idiosyncratic items listed as
 
 | Target | Artifact | Carries | Status |
 |--------|----------|---------|--------|
-| framework spec | CHG draft (CHG-TEMPLATE shape) | provenance | blocked on spec-change gate |
+| framework spec | CHG record (`change_source: spec` → GATE-SPEC) | provenance | ready for GATE-SPEC review |
 | engine guidance | PR-ready change description | provenance (file, before/after) | ready for ordinary review |
 | neither | "kept local" note | rationale | no action |
 
@@ -99,7 +101,7 @@ Present the drafts grouped by path, with the idiosyncratic items listed as
 
 - Signal source: `../project-profile/SKILL.md`, `framework/governance/ADAPTATION.md` (§7 learnings log)
 - CHG authoring: `../doc-chg/SKILL.md`; template `framework/governance/chg/CHG-TEMPLATE.yaml`
-- Gate (spec path, once built): `../gate-check/SKILL.md`
+- Spec gate: `../gate-check/SKILL.md` → `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`
 
 ## Quick Reference
 
@@ -107,6 +109,6 @@ Present the drafts grouped by path, with the idiosyncratic items listed as
 |------|--------|
 | 1 | Read profile + learnings; diff vs defaults |
 | 2 | Judge generalizable vs idiosyncratic (recurrence ↑, conflict ↓) |
-| 3 | Classify owner: spec → CHG, guidance → PR |
-| 4 | Draft + provenance (spec draft stamped blocked-on-gate) |
+| 3 | Classify owner: spec → CHG/GATE-SPEC, guidance → PR |
+| 4 | Draft + provenance (spec record routed to GATE-SPEC) |
 | 5 | Hand off; never apply/approve |
