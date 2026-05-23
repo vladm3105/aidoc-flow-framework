@@ -25,6 +25,7 @@ across the 8-layer SDD workflow.
 | Execution | GATE-08 | IPLAN change |
 | External | GATE-01 | Regulatory, vendor, market |
 | Feedback | GATE-CODE | Production feedback, user issues |
+| Spec | GATE-SPEC | Change to the `framework/` spec (meta — orthogonal to the cascade) |
 
 ## Cascade Chain
 
@@ -38,9 +39,21 @@ BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7
 |----------|---------|
 | `CHG-TEMPLATE.yaml` | Single template — all change levels |
 | `CHG-00_index.TEMPLATE.md` | Change registry template |
-| `gates/` | Gate definitions (GATE-01, 03, 06, 08, CODE + error catalog + diagram) |
+| `gates/` | Gate definitions (GATE-01, 03, 06, 08, CODE + GATE-SPEC meta + error catalog + diagram) |
 | `templates/GATE_APPROVAL_FORM.md` | Companion — gate approval documentation |
 | `templates/POST_MORTEM-TEMPLATE.md` | Companion — emergency post-mortem |
+
+## Spec-governance gate (GATE-SPEC)
+
+The five gates above govern changes to a project's **artifact instances** in the
+BRD→Code chain. **GATE-SPEC** is a separate, *meta* gate: it governs changes to
+the **`framework/` spec itself** — templates, governance, registry, `VERSION` —
+the contract both platforms consume. This is the "Process" role in
+`docs/PROJECT.md` §6. It is **orthogonal** to the cascade (no GATE-03/06/08
+successor); a passed spec change instead obliges every platform to re-declare
+`FRAMEWORK_SPEC_VERSION` and re-pass the shared conformance suite. Per-platform
+internal development (a skill's wording, a server's code) is **not** a spec
+change — it is an ordinary platform PR. See `gates/GATE-SPEC_FRAMEWORK.md`.
 
 ## NOT a Lifecycle Layer
 

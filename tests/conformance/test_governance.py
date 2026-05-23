@@ -25,6 +25,7 @@ EXPECTED_FILES = [
     "chg/gates/GATE-06_DESIGN_TEST.md",
     "chg/gates/GATE-08_IPLAN.md",
     "chg/gates/GATE-CODE_IMPLEMENTATION.md",
+    "chg/gates/GATE-SPEC_FRAMEWORK.md",
     "chg/gates/GATE_ERROR_CATALOG.md",
     "chg/gates/GATE_INTERACTION_DIAGRAM.md",
     "chg/templates/GATE_APPROVAL_FORM.md",
@@ -64,6 +65,19 @@ class GovernanceFiles(unittest.TestCase):
     def test_chg_template_parses(self):
         with (GOVERNANCE / "chg" / "CHG-TEMPLATE.yaml").open(encoding="utf-8") as fh:
             self.assertIsNotNone(yaml.safe_load(fh))
+
+    def test_spec_gate_is_wired(self):
+        """GATE-SPEC (the framework-spec change gate, CHG-D1) is declared
+        consistently across the gate def, the error catalog, and the CHG
+        template enums."""
+        catalog = (GOVERNANCE / "chg" / "gates" / "GATE_ERROR_CATALOG.md").read_text(encoding="utf-8")
+        for code in ("GATE-SPEC-E001", "GATE-SPEC-E002", "GATE-SPEC-E003", "GATE-SPEC-E004"):
+            self.assertIn(code, catalog, f"error catalog missing {code}")
+
+        template = (GOVERNANCE / "chg" / "CHG-TEMPLATE.yaml").read_text(encoding="utf-8")
+        self.assertIn("GATE-SPEC", template, "CHG-TEMPLATE does not mention GATE-SPEC")
+        self.assertIn("spec", template, "CHG-TEMPLATE does not declare the 'spec' change_source")
+        self.assertIn("semver_impact", template, "CHG-TEMPLATE missing semver_impact field")
 
     def test_adaptation_surface_is_well_formed(self):
         """The adaptation surface parses, declares a closed unique knob set,

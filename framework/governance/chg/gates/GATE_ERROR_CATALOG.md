@@ -20,10 +20,14 @@ Complete catalog of all error and warning codes across the 5-Gate Change Managem
 GATE-NN-SNNN
 
 Where:
-  NN   = Gate number (01, 03, 06, 08, CODE)
+  NN   = Gate number (01, 03, 06, 08, CODE, SPEC)
   S    = Severity (E=Error, W=Warning, I=Info)
   NNN  = Sequential number within gate and severity
 ```
+
+> GATE-SPEC is the **meta** gate — it governs changes to the `framework/` spec
+> itself, orthogonal to the artifact-cascade gates below. See
+> `GATE-SPEC_FRAMEWORK.md`.
 
 ## 2. GATE-01: Business/Product Errors (L1-L2)
 
@@ -123,6 +127,34 @@ Where:
 | GATE-CODE-W002 | Quality | Build warning introduced | Fix or document rationale |
 | GATE-CODE-W003 | Debt | Technical debt without tracking ticket | Create follow-up issue |
 
+## 6b. GATE-SPEC: Framework Specification Errors (meta)
+
+Governs changes to the `framework/` spec (templates, governance, registry,
+VERSION). Split by enforcer: E001–E004 are validated from the CHG record (each
+platform's record validator); E005–E008 are enforced by continuous integration
+(diff-aware checks + the conformance suite); the human approval half is the
+platform's protected-branch review.
+
+### 6b.1 Blocking Errors (E)
+
+| Code | Category | Description | Resolution |
+|------|----------|-------------|------------|
+| GATE-SPEC-E001 | Provenance | Spec change missing justification | Populate `change_description.why` + `.trigger`; cite the motivating signal |
+| GATE-SPEC-E002 | Classification | SemVer impact undeclared, or `major` not classified C3 | Set `semver_impact`; escalate a breaking change to C3 |
+| GATE-SPEC-E003 | Classification | Spec change classified C1 | Reclassify ≥ C2 — a spec change reaches multiple consumers |
+| GATE-SPEC-E004 | Approval | C3 spec change missing human gate approval | Record `gate_approval` (gate GATE-SPEC + approver); a human signs |
+| GATE-SPEC-E005 | Versioning | `framework/VERSION` not bumped when `framework/**` changed | Bump `framework/VERSION` per `semver_impact` |
+| GATE-SPEC-E006 | Conformance | Platform `FRAMEWORK_SPEC_VERSION` out of sync | Update both to match `framework/VERSION` |
+| GATE-SPEC-E007 | Conformance | Shared conformance suite failing | Fix the spec or the platform; never weaken a check |
+| GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change |
+
+### 6b.2 Warnings (W)
+
+| Code | Category | Description | Resolution |
+|------|----------|-------------|------------|
+| GATE-SPEC-W001 | Migration | `major` change without a per-platform migration note | Add a migration note for each platform |
+| GATE-SPEC-W002 | Parity | Change touches only one platform's conformance | Confirm both platforms track the new spec version |
+
 ## 7. Emergency Bypass Errors
 
 ### 7.1 Blocking Errors (E)
@@ -208,4 +240,5 @@ Add Root Cause Analysis section:
 - [GATE-06_DESIGN_TEST.md](./GATE-06_DESIGN_TEST.md)
 - [GATE-08_IPLAN.md](./GATE-08_IPLAN.md)
 - [GATE-CODE_IMPLEMENTATION.md](./GATE-CODE_IMPLEMENTATION.md)
+- [GATE-SPEC_FRAMEWORK.md](./GATE-SPEC_FRAMEWORK.md)
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)

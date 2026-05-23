@@ -20,8 +20,13 @@ of which engine executes the workflow.
 
 The `chg/` directory holds the Change Management overlay — a governance overlay
 for managing changes to existing artifacts (gate definitions, the CHG template,
-approval and post-mortem companions).
+approval and post-mortem companions). It also carries **GATE-SPEC**, the *meta*
+gate that governs changes to the `framework/` spec itself (CHG-D1).
 
-CHG is **spec-only** in the framework: it is extracted here for completeness but
-is **not enforced**. Change-management enforcement is deferred until after the
-Phase 5 cutover (see `ROADMAP.md`, CHG-D1/D2).
+CHG is **spec-only** in the framework: the spec defines the gates and their
+checks; each consuming platform implements the enforcement against this shared
+contract (a record validator for the record-level checks, continuous
+integration for the diff-aware and suite checks, protected-branch review for the
+human approval). The remaining CHG follow-up is CHG-D2 (recording the
+implementation model as a formal `framework/governance/` decision — see
+`ROADMAP.md`).

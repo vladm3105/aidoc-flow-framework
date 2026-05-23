@@ -37,6 +37,25 @@ Visual representation of the 5-Gate Change Management System across the 8-layer 
       DEPLOYED
 ```
 
+### 1.1 GATE-SPEC — the meta gate (orthogonal)
+
+GATE-SPEC sits *beside* the cascade above, not inside it. The artifact gates
+govern a project's artifact instances; GATE-SPEC governs the **`framework/` spec
+that defines the layers**. It has no cascade successor — instead, a passed spec
+change obliges every platform to re-declare `FRAMEWORK_SPEC_VERSION` and re-pass
+the shared conformance suite.
+
+```
+   CHANGE TO framework/ (templates · governance · registry · VERSION)
+                              │
+                          GATE-SPEC  (meta — see GATE-SPEC_FRAMEWORK.md)
+                              │
+                           PASSED
+                              │
+        both platforms re-declare FRAMEWORK_SPEC_VERSION
+              and re-pass the shared conformance suite
+```
+
 ## 2. Gate-to-Layer Mapping
 
 ```
@@ -255,6 +274,7 @@ Legend:
 | Code fix | GATE-CODE | CODE only |
 | Security vulnerability | GATE-03 or EMERGENCY | Depends on CVSS |
 | P1 Production incident | EMERGENCY | Bypass + Post-mortem |
+| `framework/` spec change | GATE-SPEC | Meta — no cascade; both platforms re-sync |
 
 ### 8.2 Gate Entry Points by Change Source
 
@@ -269,6 +289,7 @@ Legend:
 | External | EMERGENCY | Critical vulnerabilities |
 | Feedback | GATE-CODE | Defect fixes |
 | Feedback | EMERGENCY | P1 incidents |
+| Spec | GATE-SPEC | Changes to the `framework/` spec (meta) |
 
 ---
 
@@ -278,5 +299,6 @@ Legend:
 - [GATE-06_DESIGN_TEST.md](./GATE-06_DESIGN_TEST.md)
 - [GATE-08_IPLAN.md](./GATE-08_IPLAN.md)
 - [GATE-CODE_IMPLEMENTATION.md](./GATE-CODE_IMPLEMENTATION.md)
+- [GATE-SPEC_FRAMEWORK.md](./GATE-SPEC_FRAMEWORK.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 ```
