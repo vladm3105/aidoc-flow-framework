@@ -41,6 +41,18 @@ class GovernanceFiles(unittest.TestCase):
                     f"missing governance file: {relative}",
                 )
 
+    def test_no_project_adaptation_artifacts_in_framework(self):
+        """A consuming project's adaptation profile/learnings must never be
+        committed under framework/ — the spec ships the contract, not project
+        data (ADAPTATION.md; D-0013)."""
+        leaked = [
+            p.relative_to(FRAMEWORK).as_posix()
+            for p in FRAMEWORK.rglob("*")
+            if p.is_file()
+            and (".aidoc" in p.parts or p.name in ("profile.yaml", "learnings.md"))
+        ]
+        self.assertEqual(leaked, [], f"project adaptation artifacts under framework/: {leaked}")
+
     def test_no_unexpected_files(self):
         found = {
             p.relative_to(GOVERNANCE).as_posix()

@@ -26,14 +26,16 @@
 > → draft; spec target → CHG draft stamped *blocked on the unbuilt spec-gate*,
 > guidance target → PR-ready description; never applies/approves). Registered
 > everywhere (README 53→**54**, utilities 17→18; `SKILL_AUTHORING`;
-> `skill-recommender` intent+catalog); `project-profile` link restored. Conformance
-> **36/36**, `plm_lint` clean, skill count **54**. **Branch:
-> `claude/skill-revision`**. **ONLY REMAINING ADAPT step — version bump (release
-> marking), pending a user decision on the ripple:** bump `framework/VERSION` +
-> both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → 0.2.0`; decide whether to also
-> bump the 54 plugin skills' frontmatter `framework_spec_version` (SKILL_AUTHORING
-> §3 says they should match; conformance does NOT enforce it). Then ADAPT is
-> complete (spec→CHG promotion remains the documented CHG-D1 follow-up).
+> `skill-recommender` intent+catalog); `project-profile` link restored.
+> **✅ ADAPT COMPLETE — version bumped (feature close):** `framework/VERSION` +
+> both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → **0.2.0**`, and all 54 plugin
+> skills' `framework_spec_version` (user decision = bump everything). Conformance
+> **37/37** (+leakage guard), `plm_lint` clean, skill count **54**. **Branch:
+> `claude/skill-revision`** (user-confirmed). **Deferred follow-up:** the CHG
+> spec-change gate (CHG-D1) — spec→CHG promotions are drafted but ungated until
+> built. **Pending user-only (carry-overs):** push the 0.2.0 spec/release tags
+> from a local clone (in-container `refs/tags/*` 403); decide whether to roll
+> these commits into a plugin release (CHANGELOG `[Unreleased]` not yet cut).
 
 > **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
 > found framework-backed capabilities with no skill; added 6 (skipping

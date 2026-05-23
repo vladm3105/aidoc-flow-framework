@@ -50,12 +50,20 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
      must honor the profile or they false-fail adapted docs; `trace-check`,
      `project-init`, `project-adopt` consult `active_layers`. (Implemented in a
      later ADAPT-A increment.)
-- **Increment landed (this commit):** `framework/governance/ADAPTATION.md` +
-  `ADAPTATION_SURFACE.yaml`; registered in `governance/README.md` and the
-  governance conformance contract (+1 well-formedness test). Conformance
-  **33/33**. The `framework/VERSION` bump (`0.1.0 → 0.2.0`) lands at ADAPT-A
-  close with the platform `FRAMEWORK_SPEC_VERSION` files, once the skills are
-  updated.
+- **Status — ADAPT complete (2026-05-23):** landed across 7 commits on
+  `claude/skill-revision`. ADAPT-A: `framework/governance/ADAPTATION.md` +
+  `ADAPTATION_SURFACE.yaml` (4-knob closed surface); `adapts:` + consult-clause
+  wired into the 35-skill adapting set; `project-profile` skill; full doc
+  registration. ADAPT-B: `ADAPTATION.md` §7 learnings-log convention +
+  `knowledge-extractor` skill (owner-routing; spec→CHG draft stamped blocked on
+  the unbuilt CHG-D1 gate; guidance→PR). **Single feature-close version bump**
+  (sequencing refinement vs the plan's per-step bump): `framework/VERSION` +
+  both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → 0.2.0`, and all 54 plugin
+  skills' `framework_spec_version` (user decision: bump everything). Conformance
+  **33 → 37** (governance surface well-formedness, `adapts ⊆ surface` +
+  authority-ref + ≥35-wired, framework leakage guard); `plm_lint` clean.
+  **Deferred (CHG-D1):** the spec→CHG promotion gate — until built, spec-level
+  promotions are drafted but cannot be gated.
 
 ## D-0018 — Cut Claude Code plugin `v0.2.0`; add a repo-root plugin marketplace
 
