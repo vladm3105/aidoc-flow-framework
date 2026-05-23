@@ -1,0 +1,54 @@
+# GATE-SPEC enforcement (CHG-D1).
+#
+# STAGED — relocate to .github/workflows/chg-gate.yml from a local clone.
+# The in-container GitHub App lacks the `workflows` permission, so pushes to
+# .github/workflows/** are rejected (same restriction as the other workflows;
+# see docs/TAGGING.md "In-container push restrictions" and plans/P4-T3-PLAN.md).
+#
+# This is the CI half of GATE-SPEC: it runs the diff-aware guard (E005/E008) and
+# the shared conformance suite (E006 FRAMEWORK_SPEC_VERSION match + E007 suite
+# green). The human-approval half (E004 sign-off) is NOT a workflow — configure
+# GitHub branch protection / required reviewers on framework/** so a spec change
+# cannot merge without a human approver. A skill never self-approves.
+name: GATE-SPEC
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate-spec:
+    name: Framework-spec change gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so the diff-aware guard can reach the base
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install conformance suite dependencies
+        run: pip install -r tests/conformance/requirements.txt
+
+      # E005 (framework/VERSION bumped) + E008 (CHANGELOG updated) — diff-aware.
+      - name: GATE-SPEC diff-aware checks
+        env:
+          GATE_SPEC_BASE: >-
+            ${{ github.event_name == 'pull_request'
+                && format('origin/{0}', github.base_ref)
+                || github.event.before }}
+        run: python tests/chg/spec_gate.py
+
+      # E006 (FRAMEWORK_SPEC_VERSION match) + E007 (suite green) — static.
+      - name: Conformance suite
+        run: python -m unittest discover -s tests/conformance
