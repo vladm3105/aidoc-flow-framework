@@ -10,9 +10,14 @@
 > skills). Conformance **43** (DECISIONS.md folded into the existing governance
 > file-set checks; its content passes the engine-token hygiene scan);
 > `plm_lint` clean; `spec_gate` passes vs origin/main. ROADMAP CHG-D1 **and**
-> CHG-D2 are now done. **Branch: `claude/skill-revision`.** **User-only:**
-> relocate `plans/workflows-pending/chg-gate.yml` → `.github/workflows/`; branch
-> protection on `framework/**`; push the 0.3.x tags from a local clone.
+> CHG-D2 are now done. **Branch: `claude/skill-revision`** (PR #2 → `main`,
+> clean fast-forward). **PR CI:** conformance + Hermes green; the **Plugin
+> smoke-checks** job fails on a **stale guard** — it expects the pre-revision
+> ~142 skills (`-lt 100`) but the canonical set is **54** (P3-T6). Fix staged at
+> `plans/workflows-pending/plugin.yml` (threshold → 40); the container can't push
+> `.github/workflows/**`, so apply it from a local clone. **User-only:** apply
+> the plugin.yml fix + relocate `plans/workflows-pending/chg-gate.yml` →
+> `.github/workflows/`; branch protection on `framework/**`; push the 0.3.x tags.
 
 > **✅ CHG-D1 COMPLETE — GATE-SPEC, the framework-spec change gate (2026-05-23).**
 > ROADMAP CHG-D1 done (D-0020, plan `plans/CHG-D1-PLAN.md`): change management as

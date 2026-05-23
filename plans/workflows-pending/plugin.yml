@@ -1,0 +1,62 @@
+# Claude Code plugin smoke checks — CORRECTED COPY (apply to .github/workflows/plugin.yml).
+#
+# FIX: the active .github/workflows/plugin.yml structural-sanity step still
+# expected the pre-revision ~142-skill corpus (`-lt 100`) and fails on the
+# canonical 54-skill set (P3-T6 pruned 124 -> 46, then +8 -> 54). This copy
+# lowers the mass-deletion guard to 40 and corrects the message.
+#
+# The in-container GitHub App lacks the `workflows` permission, so this can't be
+# pushed to .github/workflows/** from the container (same restriction as the
+# tag pushes; see docs/TAGGING.md + plans/P4-T3-PLAN.md). Apply from a local
+# clone, e.g.:
+#     cp plans/workflows-pending/plugin.yml .github/workflows/plugin.yml
+#     git add .github/workflows/plugin.yml && git commit -m "ci(plugin): fix stale skill-count guard (~142 -> ~54)" && git push
+# (chg-gate.yml in this directory is a NEW workflow to add the same way.)
+name: Claude Code plugin
+
+on:
+  push:
+    paths:
+      - 'platforms/claude-code-plugin/**'
+      - '.github/workflows/plugin.yml'
+  pull_request:
+    paths:
+      - 'platforms/claude-code-plugin/**'
+      - '.github/workflows/plugin.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  smoke:
+    name: Plugin smoke checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate plugin manifest is JSON
+        run: python -m json.tool < platforms/claude-code-plugin/.claude-plugin/plugin.json
+
+      - name: Coupling sweep — no Hermes references in plugin runtime
+        run: |
+          if grep -rEln 'ucx_flow|UCX_FLOW|ucx_hermes' \
+               platforms/claude-code-plugin/.claude-plugin \
+               platforms/claude-code-plugin/commands \
+               platforms/claude-code-plugin/agents 2>/dev/null; then
+            echo "::error::Found forbidden Hermes-engine tokens in plugin runtime"
+            exit 1
+          fi
+          echo "ok: no forbidden tokens"
+
+      - name: Plugin structural sanity
+        run: |
+          dirs=$(find platforms/claude-code-plugin/skills -mindepth 1 -maxdepth 1 -type d | wc -l)
+          if [ "$dirs" -lt 40 ]; then
+            echo "::error::Plugin skill count $dirs is suspiciously low (canonical set is ~54 since P3-T6)"
+            exit 1
+          fi
+          echo "ok: $dirs skill dirs"
