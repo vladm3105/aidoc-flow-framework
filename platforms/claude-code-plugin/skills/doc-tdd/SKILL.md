@@ -14,6 +14,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [section_toggles, glossary]
 ---
 
 # doc-tdd
@@ -169,6 +170,16 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 `../doc-iplan/SKILL.md` — the IPLAN references this TDD (`@tdd: TDD-NN`),
 inherits the full upstream tag chain, and orchestrates the build, enforcing test
 files before implementation files.
+
+
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (include or omit template-declared **optional** sections)
+and `glossary` (substitute preferred terms in generated prose). Ignore any
+unknown or out-of-surface key; absent a profile, use framework defaults.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

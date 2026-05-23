@@ -14,6 +14,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [section_toggles, glossary]
 ---
 
 # doc-iplan
@@ -170,6 +171,16 @@ IPLAN is the last documentation layer. Proceed to **Code**: execute the file
 manifest test-first, updating each file's `status`/`verified`, the
 `session_handoff` sessions, and the `code_inventory` as you go — so any later
 stateless session can resume exactly where the previous one stopped.
+
+
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (include or omit template-declared **optional** sections)
+and `glossary` (substitute preferred terms in generated prose). Ignore any
+unknown or out-of-surface key; absent a profile, use framework defaults.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

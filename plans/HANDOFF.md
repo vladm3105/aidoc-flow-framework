@@ -8,14 +8,17 @@
 > `active_layers`, `section_toggles`, `audit_threshold` raise-only, `glossary`;
 > `id_format` deferred; skippable layers `[BDD, ADR]` + cascade rule). Registered
 > in `governance/README.md` + the governance conformance contract (+1 test).
-> Conformance **33/33**. **Branch: `claude/skill-revision`** (user-confirmed, not
-> the AamWB task-default). **Next ADAPT-A increments:** (2) add `adapts:` +
-> consult-clause to the adapting set (layer base/autopilot/audit/fixer ×8 +
-> trace-check + project-init/adopt) + the `adapts ⊆ surface` conformance check;
-> (3) `project-profile` skill; (4) `SKILL_AUTHORING`/README/skill-recommender
-> wiring; (5) bump `framework/VERSION` → 0.2.0 + both platform
-> `FRAMEWORK_SPEC_VERSION`. Then **ADAPT-B** (learnings + `knowledge-extractor`,
-> tool-PR path only per ADAPT-0 = defer).
+> Conformance **33/33**. **Increment 2 done:** `adapts:` frontmatter +
+> `## Adaptation` consult-clause wired into the **35-skill adapting set** (layer
+> base/autopilot/audit/fixer ×8 + `trace-check` + `project-init`/`-adopt`) via
+> `/tmp/wire_adapts.py`; new `tests/conformance/platforms/test_adaptation.py`
+> asserts `adapts ⊆ surface` + authority-ref + ≥35 wired. Conformance **36/36**,
+> `plm_lint --all` clean. **Branch: `claude/skill-revision`** (user-confirmed, not
+> the AamWB task-default). **Next ADAPT-A increments:** (3) `project-profile`
+> skill; (4) `SKILL_AUTHORING` count (52→53) / README / skill-recommender wiring;
+> (5) bump `framework/VERSION` → 0.2.0 + both platform `FRAMEWORK_SPEC_VERSION`.
+> Then **ADAPT-B** (learnings + `knowledge-extractor`, tool-PR path only per
+> ADAPT-0 = defer).
 
 > **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
 > found framework-backed capabilities with no skill; added 6 (skipping

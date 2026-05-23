@@ -13,6 +13,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [active_layers]
 ---
 
 # trace-check
@@ -73,6 +74,15 @@ history; provide a rollback command. Never invent placeholder IDs.
 **Quality gates**: 100% link resolution and ID compliance, ≥ 95% bidirectional
 consistency, no orphaned mid-chain artifacts, Traceability section present on
 every artifact.
+
+
+## Adaptation
+
+Before checking references, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor `active_layers`: treat a disabled skippable
+layer as absent by design — do not report a missing reference to it (apply
+the cascade rule). Ignore any unknown or out-of-surface key.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

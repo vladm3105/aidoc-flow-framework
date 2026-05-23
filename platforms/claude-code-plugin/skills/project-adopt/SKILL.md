@@ -12,6 +12,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [active_layers]
 ---
 
 # project-adopt
@@ -116,6 +117,15 @@ direct the user to:
 
 so the drafts close their gaps and rise from `draft` to ready. Run
 `../trace-check/SKILL.md` once baselines link up to confirm traceability.
+
+
+## Adaptation
+
+Before scaffolding, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor `active_layers`: create structure for the
+active layers only — do not scaffold a disabled skippable layer. Ignore any
+unknown or out-of-surface key.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

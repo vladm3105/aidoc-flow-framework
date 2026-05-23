@@ -15,6 +15,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [section_toggles]
 ---
 
 # doc-prd-fixer
@@ -95,6 +96,15 @@ file, confidence) · **Manual-Review Queue** · **Validation After Fix**
 (score/errors/warnings before→after) · **Cleanup Summary** (delete superseded
 fix reports) · **Next Steps** (re-run `doc-prd-audit`). Loop until score ≥
 threshold or max iterations reached.
+
+
+## Adaptation
+
+Before applying fixes, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor `section_toggles`: do not reintroduce an
+**optional** section the project has toggled off. Ignore any unknown or
+out-of-surface key.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

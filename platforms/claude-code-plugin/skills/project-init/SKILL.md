@@ -12,6 +12,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [active_layers]
 ---
 
 # project-init
@@ -89,6 +90,15 @@ Confirm all 8 directories, the index files, the domain subdirectories, and
 Report initialization complete and direct the user to `../doc-flow/SKILL.md`
 to begin with `doc-brd`. Templates are referenced from `framework/layers/NN_<X>/`;
 copying them into the project is optional.
+
+
+## Adaptation
+
+Before scaffolding, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor `active_layers`: create structure for the
+active layers only — do not scaffold a disabled skippable layer. Ignore any
+unknown or out-of-surface key.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

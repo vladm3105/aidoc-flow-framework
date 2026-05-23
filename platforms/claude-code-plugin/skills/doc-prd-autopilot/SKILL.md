@@ -15,6 +15,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [section_toggles, active_layers, audit_threshold, glossary]
 ---
 
 # doc-prd-autopilot
@@ -102,6 +103,16 @@ it already exists. Determine `deliverable_type`
 | Max iterations reached below threshold | write reports, flag for manual review, continue batch |
 | Source input ambiguous | fall back to prompt mode; record assumptions in the PRD |
 | Write/permission error | log, skip the item, continue the batch |
+
+
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`) and apply it in both the generation and the internal
+audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
+(raise-only — stricter only), and `glossary`. Ignore any unknown or
+out-of-surface key; absent a profile, use framework defaults.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

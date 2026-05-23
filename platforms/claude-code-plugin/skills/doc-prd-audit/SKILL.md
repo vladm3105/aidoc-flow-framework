@@ -15,6 +15,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
+    adapts: [section_toggles, active_layers, audit_threshold]
 ---
 
 # doc-prd-audit
@@ -105,6 +106,19 @@ Normalize every finding to: `source` (`structural`|`content`), `code`,
 `severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-prd-fixer`
 consumes the latest `PRD-NN.A_audit_report_vNNN.md`.
+
+
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (a toggled-off **optional** section is not a finding; a
+missing **required** section still is), `active_layers` (never flag the
+absence of — or a missing reference to — a layer the project disabled, per the
+cascade rule), and `audit_threshold` (use the project's quality-gate score
+only when it is **>=** the framework default; ignore any lower value). Ignore
+unknown keys.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
