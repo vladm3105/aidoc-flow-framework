@@ -26,10 +26,20 @@ conformance suite at `tests/conformance/`.
 | Platform | Engine | Release |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.1.0` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.1.0` (`platforms/claude-code-plugin/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.2.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
+
+### Install the Claude Code plugin
+
+This repo doubles as a plugin marketplace (`.claude-plugin/marketplace.json`).
+From Claude Code:
+
+```
+/plugin marketplace add vladm3105/aidoc-flow-framework
+/plugin install aidoc-flow@aidoc-flow-framework
+```
 
 ## Documentation
 

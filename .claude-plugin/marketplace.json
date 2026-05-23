@@ -1,0 +1,15 @@
+{
+  "name": "aidoc-flow-framework",
+  "owner": {
+    "name": "vladm3105",
+    "email": "vla.myakota@gmail.com"
+  },
+  "plugins": [
+    {
+      "name": "aidoc-flow",
+      "source": "./platforms/claude-code-plugin",
+      "description": "AI-Driven Specification-Driven Development (SDD) workflow — 124 skills, 9 agents, and 1 command for the 8-layer doc flow (BRD → IPLAN). Consumes the engine-agnostic aidoc-flow framework spec.",
+      "version": "0.2.0"
+    }
+  ]
+}

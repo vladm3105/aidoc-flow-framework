@@ -14,6 +14,8 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-05-23
+
 ### Added
 - AI Team specialist agent roster — 8 new subagents under `agents/`
   (`pm-orchestrator`, `solutions-architect`, `test-architect`,

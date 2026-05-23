@@ -21,9 +21,16 @@ the manifest.
 
 ## Install
 
-This plugin lives in the multi-platform `aidoc-flow-framework` repository.
-See `../../README.md` for the project-level overview and Claude Code's
-plugin manager documentation for installation steps.
+This plugin lives in the multi-platform `aidoc-flow-framework` repository,
+published through the repo-root marketplace manifest
+(`../../.claude-plugin/marketplace.json`). From Claude Code:
+
+```
+/plugin marketplace add vladm3105/aidoc-flow-framework
+/plugin install aidoc-flow@aidoc-flow-framework
+```
+
+See `../../README.md` for the project-level overview.
 
 ## Use
 
@@ -46,7 +53,7 @@ The plugin consumes the engine-agnostic SDD specification at `../../framework/`
 
 ```
 $ cat VERSION
-0.1.0
+0.2.0
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.1.0
@@ -62,7 +69,7 @@ matches the framework's published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.1.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Version | `0.2.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.1.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | https://github.com/vladm3105/aidoc-flow-framework |

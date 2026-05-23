@@ -10,6 +10,34 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0018 — Cut Claude Code plugin `v0.2.0`; add a repo-root plugin marketplace
+
+- **Date:** 2026-05-23T00:00:00Z
+- **Context:** The plugin's last tag (`claude-code-plugin/v0.1.0`) predates the
+  8-layer migration; everything since (124-skill 8-layer corpus, 9-agent roster,
+  `project-mngt` parking) sat in CHANGELOG `[Unreleased]`. There was also no way
+  to *install* the plugin — only a per-plugin `plugin.json`, no marketplace
+  manifest.
+- **Decisions:**
+  1. **Version `0.2.0` (minor), not `1.0.0`.** The 8-layer migration is a large
+     feature jump but the skill/command surface may still move; staying pre-1.0
+     signals that. Bumped `platforms/claude-code-plugin/VERSION` + `plugin.json`
+     `version`. `FRAMEWORK_SPEC_VERSION` stays `0.1.0` (independent streams,
+     `docs/PROJECT.md` §2; the conformance test checks `FRAMEWORK_SPEC_VERSION`
+     against `framework/VERSION`, not the platform version — verified green).
+  2. **Repo-root `.claude-plugin/marketplace.json`** (schema confirmed against
+     code.claude.com/docs): marketplace `name: aidoc-flow-framework` (matches the
+     repo; reads as `aidoc-flow@aidoc-flow-framework` on install) → plugin
+     `aidoc-flow` via relative subdir `source: ./platforms/claude-code-plugin`.
+     `version`/`description` set on the entry (optional, not inherited). Install
+     command added to root + plugin READMEs.
+  3. **Tag deferred to the user.** Annotated `claude-code-plugin/v0.2.0` is cut
+     locally on the release commit; the in-container push 403s (5th occurrence
+     of the `refs/tags/*` restriction), so the user pushes it from a local clone
+     — alongside merging this branch into `main` and relocating CI.
+- **Conformance:** 32/32. Recorded in plugin CHANGELOG `[0.2.0]`,
+  `docs/TAGGING.md`, and `plans/HANDOFF.md`.
+
 ## D-0017 — Park `project-mngt` as legacy (pending review); pull it from the shipped plugin
 
 - **Date:** 2026-05-22T00:00:00Z

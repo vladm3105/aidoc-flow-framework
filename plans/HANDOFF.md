@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🚀 PLUGIN v0.2.0 RELEASE PREPPED (2026-05-23) — launch-wise, in-container half.**
+> Cut the Claude Code plugin's first post-migration release: `VERSION` +
+> `plugin.json` bumped `0.1.0 → 0.2.0`; CHANGELOG `[Unreleased]` → `[0.2.0] —
+> 2026-05-23`; added the repo-root **plugin marketplace** manifest
+> (`.claude-plugin/marketplace.json`, marketplace `aidoc-flow-framework` →
+> plugin `aidoc-flow`, subdir source) so it installs via `/plugin marketplace
+> add vladm3105/aidoc-flow-framework` + `/plugin install
+> aidoc-flow@aidoc-flow-framework`; install command added to root + plugin
+> READMEs; `docs/TAGGING.md` Current-tags table extended (`v1.0.0`,
+> `claude-code-plugin/v0.2.0`). Conformance 32/32. The annotated tag
+> `claude-code-plugin/v0.2.0` is created locally on the release commit (push
+> 403s in-container — same pattern as every prior tag). **Remaining = user-only:
+> (1) merge this branch into `main`; (2) push the tag from a local clone;
+> (3) relocate CI workflows from `plans/workflows-pending/` → `.github/workflows/`.**
+> See "Independent pending user actions" below for exact commands.
+
 > **✅ MIGRATION COMPLETE (2026-05-21).** All five phases done; the
 > Phase 5 cutover is closed at project `v1.0.0` (in-container half).
 > The working branch holds the finished multi-platform project. The
@@ -34,10 +50,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-22T00:48:53Z                       |
+| Last updated  | 2026-05-23T00:00:00Z                       |
 | Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration complete (`v1.0.0`); **PLM COMPLETE** — plugin fully 8-layer (125 skills; conformance 32/32) |
-| Next task     | **None for PLM** — task closed. *(User-side cutover actions from P5-T6 still pending: tag pushes + `main` force-replace + CI relocation — see `plans/MIGRATION_TODO.md` P5-T6.)* |
+| Current phase | Migration + PLM complete; **plugin v0.2.0 release prepped** (124 skills, 9 agents; marketplace install; conformance 32/32) |
+| Next task     | **None in-container.** User-only launch steps remain: merge branch → `main`; push tag `claude-code-plugin/v0.2.0`; relocate CI. See "Independent pending user actions". |
 
 ## Progress
 
@@ -415,6 +431,20 @@ hooks survive only in working-branch git history).
 - Relocate workflows: `git mv plans/workflows-pending/*.yml
   .github/workflows/` from a local clone (P4-T3; in-container
   can't push `.github/workflows/`).
+
+**Plugin v0.2.0 launch — remaining user-only steps** (2026-05-23):
+1. **Merge into `main`** — the migrated plugin (8-layer corpus, 9-agent
+   roster, marketplace) lives only on `claude/multi-platform-migration-AamWB`,
+   13+ commits ahead of `origin/main` (which is at the `v1.0.0` cutover). Until
+   merged, `/plugin install` from the repo serves the **pre-migration** plugin.
+2. **Push the release tag** from a local clone (in-container 403):
+   ```sh
+   git tag -a claude-code-plugin/v0.2.0 <release-commit> \
+     -m "Claude Code plugin v0.2.0 — full 8-layer SDD model + marketplace install"
+   git push origin claude-code-plugin/v0.2.0
+   ```
+3. **Relocate CI** (item above) so the plugin/conformance workflows actually run.
+Verify the tag with `git ls-remote --tags origin`.
 
 ## Open questions
 
