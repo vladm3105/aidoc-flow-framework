@@ -1,7 +1,7 @@
 # aidoc-flow — Claude Code plugin
 
 The native **Claude Code** delivery of the AI Doc Flow framework. Ships a
-46-skill SDD (Specification-Driven Development) engine plus 9 agents and 1
+52-skill SDD (Specification-Driven Development) engine plus 9 agents and 1
 command. Claude itself performs validation, generation, and scoring — there's
 no MCP backend.
 
@@ -10,10 +10,11 @@ no MCP backend.
 | Component | Count | Source |
 |-----------|------:|--------|
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
-| Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `project-init`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
+| Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
+| Skills (utilities) | 16 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `project-init`, `project-adopt`, `gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
 | Agents | 9 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor` (SDD lifecycle: spec lane → execution lane → read-only quality gates). See `agents/README.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture current conversation plan to a timestamped file. |
-| **Total skills** | **46** | |
+| **Total skills** | **52** | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in

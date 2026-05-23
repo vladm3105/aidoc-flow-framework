@@ -14,6 +14,22 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+- **CHG change-management skills + onboarding/gate utilities (task P3-T7)** —
+  six new skills, bringing the set to **52**:
+  - `doc-chg` family (base + `-autopilot` + `-audit` + `-fixer`) — author and
+    validate change records against the framework CHG overlay
+    (`framework/governance/chg/`): change-level classification (C1–C3/Emergency),
+    source→gate routing, and cross-layer cascade impact. CHG uses gate approval,
+    not a ≥90 readiness score.
+  - `gate-check` — run the CHG approval gate (GATE-01/03/06/08/CODE) for a
+    change's affected layers and prepare `GATE_APPROVAL_FORM`; the skill prepares
+    and verifies, a human approves.
+  - `project-adopt` — adopt SDD into an existing (brownfield) codebase, the
+    counterpart to the greenfield `project-init`.
+  Wired into `doc-flow`, `skill-recommender`, the plugin README inventory, and
+  the conformance lint's enforced scope.
+
 ### Changed
 - **Skill set revised to the canonical 46** and recreated to a single standard
   (`docs/SKILL_AUTHORING.md`), task `../../plans/P3-T6-PLAN.md`. The set is now

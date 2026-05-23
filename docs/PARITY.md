@@ -61,13 +61,16 @@ specifies):
 | `-fixer` | 8 |
 
 The 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) cover all 8
-SDD layers, plus 14 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
-`doc-review`, `doc-validator`, `project-init`, `trace-check`, `charts-flow`,
-`adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`,
-`workflow-optimizer`, `security-audit`) — **46 skills** total. The `-reviewer`
-and `-validator` variants were merged into `-audit`; the former SPEC-subtype and
-test-type families were folded into the unified SPEC (L6) and TDD (L7) skills
-(task P3-T6, reversing D-0015; see `plans/P3-T6-PLAN.md`).
+SDD layers, plus the `doc-chg` change-management family (4 variants — the CHG
+governance overlay) and 16 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
+`doc-review`, `doc-validator`, `project-init`, `project-adopt`, `gate-check`,
+`trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`,
+`quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`)
+— **52 skills** total. The `-reviewer` and `-validator` variants were merged
+into `-audit`; the former SPEC-subtype and test-type families were folded into
+the unified SPEC (L6) and TDD (L7) skills (task P3-T6, reversing D-0015). The
+CHG family, `gate-check`, and `project-adopt` were added in P3-T7 (see
+`plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`).
 
 ## Platform-specific extras
 

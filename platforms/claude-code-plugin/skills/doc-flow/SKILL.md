@@ -35,6 +35,10 @@ Authoritative spec: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
 - You need an overview of the 8-layer flow or where you are in it.
 - You are starting a brand-new project — run `../project-init/SKILL.md` **first**
   to scaffold folders, then return here.
+- You are adopting SDD into an **existing** codebase — run
+  `../project-adopt/SKILL.md` to reverse-engineer baseline artifacts first.
+- You are changing an already-published artifact — use the CHG overlay
+  (`../doc-chg/SKILL.md`), not the linear flow (see *Change management* below).
 
 For end-to-end generation of a single layer, use that layer's `-autopilot`
 skill. For intent-based suggestions, use `../skill-recommender/SKILL.md`.
@@ -82,6 +86,7 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 ### Utility skills
 
 - **`../project-init/SKILL.md`** — scaffold a new project (run before any layer).
+- **`../project-adopt/SKILL.md`** — adopt SDD into an existing codebase (brownfield).
 - **`../doc-naming/SKILL.md`** — ID / naming authority (`TYPE-NN`, `TYPE.NN.SS.xxxx`).
 - **`../doc-ref/SKILL.md`** — free-format reference documents (BRD-REF / ADR-REF).
 - **`../doc-review/SKILL.md`** — cross-cutting quality review (typos, links, terms).
@@ -92,6 +97,18 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 - **`../context-analyzer/SKILL.md`** · **`../quality-advisor/SKILL.md`** ·
   **`../skill-recommender/SKILL.md`** · **`../workflow-optimizer/SKILL.md`** ·
   **`../security-audit/SKILL.md`** — analysis and advisory helpers.
+
+### Change management (editing existing artifacts)
+
+Changes to already-published artifacts use the **CHG overlay**, not the linear
+flow:
+
+- **`../doc-chg/SKILL.md`** (+ `-autopilot` / `-audit` / `-fixer`) — author and
+  validate a change record; classifies the change level (C1–C3 / Emergency) and
+  routes it to the right approval gate.
+- **`../gate-check/SKILL.md`** — run the approval gate (GATE-01/03/06/08/CODE)
+  for the change's affected layers and prepare the sign-off form (a human
+  approves — the skill never does).
 
 ### Upstream-artifact policy (mandatory)
 

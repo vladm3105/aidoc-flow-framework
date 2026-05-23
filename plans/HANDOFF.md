@@ -1,5 +1,18 @@
 # Session Handoff
 
+> **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
+> found framework-backed capabilities with no skill; added 6 (skipping
+> `doc-code`/implement by user choice): the **`doc-chg` family** (base +
+> `-autopilot`/`-audit`/`-fixer`) for the CHG change-management overlay
+> (`framework/governance/chg/`) — change-level classification (C1–C3/Emergency),
+> source→gate routing, cascade impact, `gate_ready` instead of a ≥90 score;
+> **`gate-check`** — runs the CHG approval gates (GATE-01/03/06/08/CODE) and
+> prepares `GATE_APPROVAL_FORM` (human approves, never the skill); and
+> **`project-adopt`** — brownfield counterpart to `project-init`. Wired into
+> `doc-flow`, `skill-recommender`, plugin `README` (52), `CHANGELOG`,
+> `docs/PARITY.md`, and `plm_lint` `MIGRATED`. Conformance **32/32**. Record:
+> `plans/P3-T7-PLAN.md`.
+
 > **✅ SKILL SET REVISED — canonical 46 (2026-05-23, P3-T6).** Pruned the plugin
 > skill corpus **124 → 46** and recreated every survivor to one standard
 > (`platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`): the 8 layer families

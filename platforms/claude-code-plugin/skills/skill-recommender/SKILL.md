@@ -67,8 +67,11 @@ Extract an action and a target from the request.
 | roadmap | roadmap, adr implementation | `adr-roadmap` |
 | naming / IDs | id, naming, format | `doc-naming` |
 | new project | initialize, scaffold, greenfield | `project-init` |
+| existing codebase | adopt, brownfield, existing code, reverse-engineer | `project-adopt` |
+| change to a published artifact | change, chg, modify existing, change request | `doc-chg` |
+| approval gate | gate, approval, sign-off | `gate-check` |
 
-### Step 2 — Match against the catalog (46 skills)
+### Step 2 — Match against the catalog (52 skills)
 
 **Layer families** — each ships four variants: base, `-autopilot` (generate
 end-to-end), `-audit` (quality gate), `-fixer` (apply audit fixes):
@@ -76,12 +79,19 @@ end-to-end), `-audit` (quality gate), `-fixer` (apply audit fixes):
 `doc-brd` · `doc-prd` · `doc-ears` · `doc-bdd` · `doc-adr` · `doc-spec` ·
 `doc-tdd` · `doc-iplan` (× {base, -autopilot, -audit, -fixer} = 32 skills).
 
-**Utilities (14)**:
+**Change-management family** — the CHG overlay for editing existing artifacts
+(a governance overlay, not a layer), with the same four variants:
+
+`doc-chg` (× {base, -autopilot, -audit, -fixer} = 4 skills).
+
+**Utilities (16)**:
 
 | Skill | Category | Role |
 |-------|----------|------|
 | `doc-flow` | core-workflow | Workflow orchestrator / routing |
-| `project-init` | core-workflow | Scaffold a new project |
+| `project-init` | core-workflow | Scaffold a new project (greenfield) |
+| `project-adopt` | utility | Adopt SDD into an existing codebase (brownfield) |
+| `gate-check` | utility | Run CHG approval gates; prepare sign-off |
 | `doc-naming` | utility | ID & naming authority |
 | `doc-ref` | utility | Reference (REF) documents |
 | `doc-review` | utility | Cross-cutting quality review |
