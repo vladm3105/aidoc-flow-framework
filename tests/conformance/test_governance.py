@@ -4,7 +4,7 @@ import unittest
 
 import yaml
 
-from _spec import FRAMEWORK
+from _spec import ARTIFACTS, FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
 
@@ -14,6 +14,8 @@ EXPECTED_FILES = [
     "TRACEABILITY.md",
     "DIAGRAM_STANDARDS.md",
     "THRESHOLD_NAMING_RULES.md",
+    "ADAPTATION.md",
+    "ADAPTATION_SURFACE.yaml",
     "README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
@@ -50,6 +52,24 @@ class GovernanceFiles(unittest.TestCase):
     def test_chg_template_parses(self):
         with (GOVERNANCE / "chg" / "CHG-TEMPLATE.yaml").open(encoding="utf-8") as fh:
             self.assertIsNotNone(yaml.safe_load(fh))
+
+    def test_adaptation_surface_is_well_formed(self):
+        """The adaptation surface parses, declares a closed unique knob set,
+        and the mandatory/skippable layer split partitions a subset of the 8
+        artifacts (ADAPTATION.md)."""
+        with (GOVERNANCE / "ADAPTATION_SURFACE.yaml").open(encoding="utf-8") as fh:
+            surface = yaml.safe_load(fh)
+        names = [k["name"] for k in surface["knobs"]]
+        self.assertTrue(names, "no knobs declared")
+        self.assertEqual(len(names), len(set(names)), f"duplicate knob names: {names}")
+
+        mandatory = set(surface["layers"]["mandatory"])
+        skippable = set(surface["layers"]["skippable"])
+        self.assertEqual(mandatory & skippable, set(), "layer is both mandatory and skippable")
+        self.assertLessEqual(
+            mandatory | skippable, set(ARTIFACTS),
+            "adaptation layer split references an unknown artifact",
+        )
 
 
 if __name__ == "__main__":

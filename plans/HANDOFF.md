@@ -1,5 +1,22 @@
 # Session Handoff
 
+> **🚧 ADAPT-A IN PROGRESS — adaptation surface landed (2026-05-23).** New feature:
+> project adaptation overlay + knowledge extractor (plan `plans/ADAPT-PLAN.md`,
+> hardened Pass 1–4; design recorded D-0019). **Increment 1 (this commit):** the
+> engine-agnostic surface spec `framework/governance/ADAPTATION.md` + the
+> machine-readable `ADAPTATION_SURFACE.yaml` (closed 4-knob registry —
+> `active_layers`, `section_toggles`, `audit_threshold` raise-only, `glossary`;
+> `id_format` deferred; skippable layers `[BDD, ADR]` + cascade rule). Registered
+> in `governance/README.md` + the governance conformance contract (+1 test).
+> Conformance **33/33**. **Branch: `claude/skill-revision`** (user-confirmed, not
+> the AamWB task-default). **Next ADAPT-A increments:** (2) add `adapts:` +
+> consult-clause to the adapting set (layer base/autopilot/audit/fixer ×8 +
+> trace-check + project-init/adopt) + the `adapts ⊆ surface` conformance check;
+> (3) `project-profile` skill; (4) `SKILL_AUTHORING`/README/skill-recommender
+> wiring; (5) bump `framework/VERSION` → 0.2.0 + both platform
+> `FRAMEWORK_SPEC_VERSION`. Then **ADAPT-B** (learnings + `knowledge-extractor`,
+> tool-PR path only per ADAPT-0 = defer).
+
 > **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
 > found framework-backed capabilities with no skill; added 6 (skipping
 > `doc-code`/implement by user choice): the **`doc-chg` family** (base +

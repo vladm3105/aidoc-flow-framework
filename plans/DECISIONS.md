@@ -10,6 +10,53 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0019 — Project adaptation overlay + knowledge extractor (ADAPT)
+
+- **Date:** 2026-05-23T17:50:00Z
+- **Context:** Give a consuming project a bounded way to adapt the SDD flow
+  without forking, plus a manual path to promote proven adaptations upward.
+  Full design + review (Pass 1–4) in `plans/ADAPT-PLAN.md`.
+- **Decisions:**
+  1. **Promotion routes by governance owner** (corrects the original draft). Per
+     `docs/PROJECT.md` §6: `framework/` spec changes are CHG-governed; platform
+     (skill/tool) changes are ordinary PRs, *not* CHG. The knowledge-extractor
+     classifies each candidate and routes spec→CHG / tool→PR.
+  2. **ADAPT-0 — defer the spec→CHG path (option b).** The spec-change CHG gate
+     is unbuilt (ROADMAP CHG-D1). v1 ships the tool-PR promotion path
+     (plugin-only reach); spec-level candidates are drafted but flagged
+     "blocked — needs CHG-D1". Building CHG-D1 is an out-of-scope follow-up.
+  3. **Surface is closed + declarative** (`framework/governance/ADAPTATION.md`
+     + machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
+     (`active_layers`, `section_toggles`, `audit_threshold`, `glossary`);
+     **`id_format` deferred** pending an `ID_NAMING_STANDARDS.md` review to
+     enumerate genuinely-selectable conventions (narrow-surface principle —
+     don't invent options).
+  4. **`audit_threshold` is raise-only** — a project may only make a layer's
+     quality gate stricter, never lower it (preserves CLAUDE.md "never weaken a
+     check"). The Tier-1 score (default 90) is the real model; the CHG
+     gate-approval model has no score and is untouched.
+  5. **Skippable layers = `[BDD, ADR]`** (the two non-C4 bridge layers);
+     `[BRD, PRD, EARS, SPEC, TDD, IPLAN]` mandatory. A **cascade rule** removes a
+     disabled layer from downstream `required_tags`/`can_reference` so
+     traceability stays consistent. Conservative + reviewable; lives in the
+     adaptation surface, not the core `LAYER_REGISTRY.yaml` (`optional` there is
+     a separate default-flow concern).
+  6. **User-global profile is an authoring-time seed, not a runtime input**
+     (reproducibility). Runtime (incl. audits) reads the version-controlled
+     project profile `.aidoc/profile.yaml` only; `~/.aidoc/profile.yaml` is
+     merged into it at authoring time. Same precedence semantics, merge moved
+     earlier so CI audits identically.
+  7. **The adapting set is wider than the base skills** — `-audit`/`-autopilot`
+     must honor the profile or they false-fail adapted docs; `trace-check`,
+     `project-init`, `project-adopt` consult `active_layers`. (Implemented in a
+     later ADAPT-A increment.)
+- **Increment landed (this commit):** `framework/governance/ADAPTATION.md` +
+  `ADAPTATION_SURFACE.yaml`; registered in `governance/README.md` and the
+  governance conformance contract (+1 well-formedness test). Conformance
+  **33/33**. The `framework/VERSION` bump (`0.1.0 → 0.2.0`) lands at ADAPT-A
+  close with the platform `FRAMEWORK_SPEC_VERSION` files, once the skills are
+  updated.
+
 ## D-0018 — Cut Claude Code plugin `v0.2.0`; add a repo-root plugin marketplace
 
 - **Date:** 2026-05-23T00:00:00Z

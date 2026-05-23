@@ -13,6 +13,8 @@ of which engine executes the workflow.
 | `TRACEABILITY.md` | The 8-layer traceability chain, cumulative tagging, and readiness gates. |
 | `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement and the C4 + DFD + sequence ownership model. |
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |
+| `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
+| `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
 
 ## CHG Overlay (`chg/`)
 
