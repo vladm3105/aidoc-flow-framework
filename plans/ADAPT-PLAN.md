@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | ADAPT (ADAPT-0 prereq · ADAPT-A overlay · ADAPT-B bridge) |
 | Depends on | D-0012, D-0013, CHG overlay (`framework/governance/chg/`), P3-T7 (`doc-chg` + `gate-check`), **ROADMAP CHG-D1 (spec-change gate — currently unbuilt; see ADAPT-0)** |
-| Status     | PLANNED (revised Pass 3/4) — 2026-05-23T16:40:00Z |
+| Status     | PLANNED (Pass 3/4; ADAPT-0 resolved = defer) — 2026-05-23T17:30:00Z |
 | Feeds      | A future `D-0019` (resolved decisions) · the post-v1.0 domain-profile / IPLAN-corpus direction (D-0012 R2) |
 
 ## Objective
@@ -57,16 +57,18 @@ promotions reach the plugin only; cross-platform reach waits for the spec-gate.
 
 ## Scope
 
-**ADAPT-0 — prerequisite decision (blocking for ADAPT-B's spec path):**
-Decide between (a) **build the CHG spec-change gate** (CHG-D1: a `spec`/`meta`
+**ADAPT-0 — prerequisite decision — RESOLVED 2026-05-23 (user): defer (option b).**
+The choice was (a) **build the CHG spec-change gate** (CHG-D1: a `spec`/`meta`
 `change_source` + a `GATE-SPEC` definition under `framework/governance/chg/gates/`)
 so spec-level promotions have a real gate, or (b) **defer the spec path** — ship
 ADAPT-B with the platform-PR path only and leave spec promotion as a documented
-follow-up. Also resolves how ADAPT-A's *own* spec doc lands (it is itself a
-framework-spec change; post-cutover that wants CHG, which is the same unbuilt
-gate). Recommendation: **(b) for v1** — smaller, unblocks the useful 80%, and
-lets CHG-D1 be designed properly rather than rushed under this task. ADAPT-A
-lands under interim PR-review controls with the decision recorded.
+follow-up. **Decided: (b).** Rationale: smaller; unblocks the useful majority
+(local adaptation + plugin-level promotion); lets CHG-D1 be designed on its own
+merits rather than rushed under this task. Consequences: v1 promotions reach the
+**plugin only** (Hermes waits for CHG-D1); spec-level candidates are still
+*drafted* by the extractor but stamped "blocked — needs CHG-D1". ADAPT-A's own
+spec doc (itself a framework-spec change) lands under interim PR-review controls,
+recorded as `D-0019`. Building CHG-D1 is now an explicit out-of-scope follow-up.
 
 **ADAPT-A — the overlay (in):**
 - `framework/governance/ADAPTATION.md` (prose spec) **+ `ADAPTATION_SURFACE.yaml`**
@@ -366,9 +368,8 @@ folded as follows:
   same knobs the *authoring* skills honor, so adapted docs pass their own gate.
 - Confirmed no verification check is a false positive: V6/V7/V11 are
   manual walk-throughs (no runtime exists to execute), explicitly labelled.
-- One residual judgement call surfaced for the user, not a defect: **ADAPT-0
-  recommends deferring the spec→CHG path (option b)**, which means v1
-  promotions reach the plugin only. If cross-platform reach is required for v1,
-  CHG-D1 must be promoted into scope first. Flagged in Scope/R4/R8.
-- No further findings; plan is stable and ready to implement on approval of the
-  ADAPT-0 direction.
+- One residual judgement call was surfaced for the user: the ADAPT-0 spec-gate
+  direction. **Resolved 2026-05-23 (user): defer = option b** — v1 ships the
+  platform-PR promotion path; spec→CHG is a documented follow-up gated on
+  CHG-D1. Reflected in ADAPT-0 + Scope/R4/R8.
+- No further findings; plan is stable and ready to implement.
