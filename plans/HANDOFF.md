@@ -1,5 +1,19 @@
 # Session Handoff
 
+> **✅ CHG-D2 COMPLETE — framework governance decision register (2026-05-23).**
+> Established `framework/governance/DECISIONS.md` — the spec's own durable home
+> for decisions about the spec + its governance — and recorded the CHG
+> implementation model (CHG-D1) there as **GD-01** (engine-agnostic). The
+> migration log's spec-affecting decisions now graduate here; D-0013 + D-0019 are
+> listed pending. Recording it was itself a GATE-SPEC change — the **first real
+> exercise of the gate** (framework spec **0.3.0 → 0.3.1**; + both FSV + 54
+> skills). Conformance **43** (DECISIONS.md folded into the existing governance
+> file-set checks; its content passes the engine-token hygiene scan);
+> `plm_lint` clean; `spec_gate` passes vs origin/main. ROADMAP CHG-D1 **and**
+> CHG-D2 are now done. **Branch: `claude/skill-revision`.** **User-only:**
+> relocate `plans/workflows-pending/chg-gate.yml` → `.github/workflows/`; branch
+> protection on `framework/**`; push the 0.3.x tags from a local clone.
+
 > **✅ CHG-D1 COMPLETE — GATE-SPEC, the framework-spec change gate (2026-05-23).**
 > ROADMAP CHG-D1 done (D-0020, plan `plans/CHG-D1-PLAN.md`): change management as
 > **skills + CI/CD, both platforms**. Added **GATE-SPEC** — the *meta* gate
@@ -140,8 +154,8 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-23T00:00:00Z                       |
 | Working branch| `claude/skill-revision` (user-confirmed)   |
-| Current phase | Post-migration features on `claude/skill-revision`: **ADAPT** (D-0019) + **CHG-D1 / GATE-SPEC** (D-0020) complete. Framework spec **0.3.0**; 54 skills; conformance **43**; `plm_lint` clean. |
-| Next task     | **CHG-D2** — record CHG-D1 as a formal `framework/governance/` decision (now actionable). **User-only:** relocate `plans/workflows-pending/*.yml` → `.github/workflows/`; branch protection on `framework/**`; push `framework/v0.3.0` + release tags from a local clone. |
+| Current phase | Post-migration features on `claude/skill-revision`: **ADAPT** (D-0019), **CHG-D1 / GATE-SPEC** (D-0020), **CHG-D2** (GD-01) all complete. Framework spec **0.3.1**; 54 skills; conformance **43**; `plm_lint` clean. |
+| Next task     | **None in-container** — the CHG ROADMAP items are done. **User-only:** relocate `plans/workflows-pending/*.yml` → `.github/workflows/`; branch protection on `framework/**` (the human-approval half of GATE-SPEC); push `framework/v0.3.1` + release tags from a local clone. |
 
 ## Progress
 

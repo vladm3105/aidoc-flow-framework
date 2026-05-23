@@ -25,6 +25,12 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   staged, conformance-gated batches B0–B7 (`plans/PLM-PLAN.md`).
 
 ### Added
+- **Framework governance decision register (CHG-D2).** New
+  `framework/governance/DECISIONS.md` — the spec's own durable home for
+  decisions about the spec and its governance. Records the CHG implementation
+  model (CHG-D1) as **GD-01**, engine-agnostic; lists D-0013 + D-0019 as pending
+  graduation from the migration log. Recording it was itself a GATE-SPEC change
+  (framework spec **0.3.0 → 0.3.1**, the first real exercise of the gate).
 - **GATE-SPEC — the framework-spec change gate (CHG-D1, D-0020).** Implements
   ROADMAP CHG-D1 — change management as skills + CI/CD, both platforms. Adds the
   *meta* gate that governs changes to the `framework/` spec itself (templates,

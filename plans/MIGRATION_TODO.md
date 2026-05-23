@@ -382,8 +382,9 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   D-0020). Added GATE-SPEC (the framework-spec meta gate) + `spec` change_source;
   wired into the plugin CHG skills + Hermes server-side; diff-aware CI guard
   (`tests/chg/spec_gate.py`) + staged workflow; unblocked `knowledge-extractor`.
-- [ ] CHG-D2 — Record CHG decision formally in `framework/governance/`
-  (now actionable — the immediate follow-up to CHG-D1).
+- [x] CHG-D2 — Record CHG decision formally in `framework/governance/`
+  (2026-05-23). Established `framework/governance/DECISIONS.md`; CHG-D1 recorded
+  as GD-01; D-0013 + D-0019 listed pending graduation. Framework spec 0.3.0 → 0.3.1.
 - [ ] INFRA-1 — Refresh stale `.github/` metadata (CODEOWNERS, dependabot, labeler) for the new layout.
 
 ## PLM — Plugin layer-model migration (legacy 12-layer → 8-layer)

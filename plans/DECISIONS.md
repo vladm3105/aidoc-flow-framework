@@ -3,8 +3,10 @@
 Non-obvious decisions made during the migration, with rationale, so the "why"
 survives across ephemeral sessions. Newest first. Timestamps are ISO 8601 UTC.
 
-Decisions that affect the **shared spec** graduate into `framework/governance/`
-when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
+Decisions that affect the **shared spec** graduate into the spec's own register,
+`framework/governance/DECISIONS.md` (established by CHG-D2). D-0020 (CHG-D1) is
+graduated there as **GD-01**; D-0013 and D-0019 are listed there as pending
+graduation.
 
 ---
 

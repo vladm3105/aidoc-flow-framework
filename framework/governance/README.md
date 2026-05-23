@@ -15,6 +15,7 @@ of which engine executes the workflow.
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
+| `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
 
 ## CHG Overlay (`chg/`)
 
@@ -27,6 +28,4 @@ CHG is **spec-only** in the framework: the spec defines the gates and their
 checks; each consuming platform implements the enforcement against this shared
 contract (a record validator for the record-level checks, continuous
 integration for the diff-aware and suite checks, protected-branch review for the
-human approval). The remaining CHG follow-up is CHG-D2 (recording the
-implementation model as a formal `framework/governance/` decision — see
-`ROADMAP.md`).
+human approval). This model is recorded formally as **GD-01** in `DECISIONS.md`.

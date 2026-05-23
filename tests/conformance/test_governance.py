@@ -16,6 +16,7 @@ EXPECTED_FILES = [
     "THRESHOLD_NAMING_RULES.md",
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
+    "DECISIONS.md",
     "README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
