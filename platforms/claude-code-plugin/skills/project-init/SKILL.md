@@ -39,17 +39,17 @@ Run the steps in order; create folders before any documents.
 
 ### 1. Domain selection (first)
 
-Present the questionnaire (`framework/DOMAIN_SELECTION_QUESTIONNAIRE.md`) and
-load the matching config:
+Ask which domain the project targets and record the choice — it drives the
+terminology mappings applied in step 3:
 
-| Choice | Domain | Config |
-|--------|--------|--------|
-| 1 (default) | Financial Services | `FINANCIAL_DOMAIN_CONFIG.md` |
-| 2 | Software / SaaS | `SOFTWARE_DOMAIN_CONFIG.md` |
-| 3 | Healthcare | `DOMAIN_ADAPTATION_GUIDE.md` |
-| 4 | E-commerce | `DOMAIN_ADAPTATION_GUIDE.md` |
-| 5 | IoT | `DOMAIN_ADAPTATION_GUIDE.md` |
-| 6 | Other / Generic | `GENERIC_DOMAIN_CONFIG.md` |
+| Choice | Domain |
+|--------|--------|
+| 1 (default) | Financial Services |
+| 2 | Software / SaaS |
+| 3 | Healthcare |
+| 4 | E-commerce |
+| 5 | IoT |
+| 6 | Other / Generic |
 
 ### 2. Folder structure
 
@@ -62,7 +62,7 @@ mkdir -p docs/08_IPLAN/tmp plans
 
 ### 3. Domain configuration
 
-Read the selected config and apply its placeholder mappings (e.g. Financial:
+Apply the selected domain's terminology mappings (e.g. Financial:
 `[RESOURCE_ITEM]→Position`, `[USER_ROLE]→Trader`; Software:
 `[RESOURCE_ITEM]→Resource`, `[USER_ROLE]→Account Admin`; Generic:
 `[RESOURCE_ITEM]→Entity`). Create any domain-specific subdirectories.
@@ -93,9 +93,6 @@ copying them into the project is optional.
 ## Related Resources
 
 - Next: `../doc-flow/SKILL.md` (start with `doc-brd`)
-- Domain questionnaire: `framework/DOMAIN_SELECTION_QUESTIONNAIRE.md`
-- Domain configs: `framework/FINANCIAL_DOMAIN_CONFIG.md`,
-  `framework/SOFTWARE_DOMAIN_CONFIG.md`, `framework/GENERIC_DOMAIN_CONFIG.md`
 - Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
 - Templates & READMEs: `framework/layers/NN_<X>/`
 - Diagrams: `../charts-flow/SKILL.md`

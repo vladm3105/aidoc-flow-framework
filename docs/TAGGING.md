@@ -103,7 +103,7 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `claude-code-plugin/v0.1.0` | Phase 3 close | Claude Code plugin — first independent release |
 | `v0.5.0` | Phase 4 close | Conformance & Independence milestone |
 | `v1.0.0` | Phase 5 close | Cutover milestone — multi-platform project complete |
-| `claude-code-plugin/v0.2.0` | Plugin 8-layer migration close | Claude Code plugin — full 8-layer SDD model (124 skills, 9-agent roster) + marketplace install |
+| `claude-code-plugin/v0.2.0` | Plugin 8-layer migration close | Claude Code plugin — full 8-layer SDD model (46 skills, 9-agent roster) + marketplace install |
 
 > Phase 1 tags (`v0.1.0`, `v0.2.0`, `framework/v0.1.0`) are published
 > on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`), Phase 3
