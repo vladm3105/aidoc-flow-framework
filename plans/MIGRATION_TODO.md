@@ -378,8 +378,12 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 
 ## Deferred / Post-Migration
 
-- [ ] CHG-D1 — Re-introduce change management as skills + CI/CD (see `ROADMAP.md`).
-- [ ] CHG-D2 — Record CHG decision formally in `framework/governance/`.
+- [x] CHG-D1 — Re-introduce change management as skills + CI/CD (2026-05-23,
+  D-0020). Added GATE-SPEC (the framework-spec meta gate) + `spec` change_source;
+  wired into the plugin CHG skills + Hermes server-side; diff-aware CI guard
+  (`tests/chg/spec_gate.py`) + staged workflow; unblocked `knowledge-extractor`.
+- [ ] CHG-D2 — Record CHG decision formally in `framework/governance/`
+  (now actionable — the immediate follow-up to CHG-D1).
 - [ ] INFRA-1 — Refresh stale `.github/` metadata (CODEOWNERS, dependabot, labeler) for the new layout.
 
 ## PLM — Plugin layer-model migration (legacy 12-layer → 8-layer)

@@ -25,9 +25,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   staged, conformance-gated batches B0–B7 (`plans/PLM-PLAN.md`).
 
 ### Added
+- **GATE-SPEC — the framework-spec change gate (CHG-D1, D-0020).** Implements
+  ROADMAP CHG-D1 — change management as skills + CI/CD, both platforms. Adds the
+  *meta* gate that governs changes to the `framework/` spec itself (templates,
+  governance, registry, VERSION), orthogonal to the artifact-cascade gates: a new
+  `GATE-SPEC_FRAMEWORK.md` definition, a `spec` `change_source` + `semver_impact`
+  field, error-catalog/interaction-diagram/CHG-template/README wiring. Wired
+  through the plugin CHG skills (`gate-check` runs it; `doc-chg` family routes to
+  it) and the Hermes server-side validator (`validation/chg_rules.py`). The
+  diff-aware checks (E005 VERSION bump, E008 CHANGELOG) ship as
+  `tests/chg/spec_gate.py` + a staged CI workflow; the human-approval half is
+  documented as protected-branch review. This **unblocks** `knowledge-extractor`'s
+  spec-promotion path. Framework spec **0.2.0 → 0.3.0**.
+- **Project adaptation overlay (ADAPT, D-0019).** `framework/governance/ADAPTATION.md`
+  + machine-readable `ADAPTATION_SURFACE.yaml` (a closed 4-knob surface:
+  `active_layers`, `section_toggles`, `audit_threshold` raise-only, `glossary`),
+  the `adapts:` consult-clause across the 35-skill adapting set, and two new
+  utility skills — `project-profile` (maintains `.aidoc/profile.yaml`) and
+  `knowledge-extractor` (promotes proven local adaptations upward). Framework spec
+  **0.1.0 → 0.2.0**.
 - Conformance check `tests/conformance/platforms/test_plm_lint.py` (suite now
   **32** tests) — fails if any plugin skill reintroduces a legacy 12-layer
-  fingerprint, locking the migration in against regression.
+  fingerprint, locking the migration in against regression. *(Suite has since
+  grown to 43 with the adaptation-surface and GATE-SPEC guards.)*
 
 ## [1.0.0] — 2026-05-21
 

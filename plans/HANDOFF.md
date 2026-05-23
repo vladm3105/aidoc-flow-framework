@@ -1,6 +1,27 @@
 # Session Handoff
 
-> **🚧 ADAPT-A IN PROGRESS — adaptation surface landed (2026-05-23).** New feature:
+> **✅ CHG-D1 COMPLETE — GATE-SPEC, the framework-spec change gate (2026-05-23).**
+> ROADMAP CHG-D1 done (D-0020, plan `plans/CHG-D1-PLAN.md`): change management as
+> **skills + CI/CD, both platforms**. Added **GATE-SPEC** — the *meta* gate
+> governing changes to the `framework/` spec itself (templates/governance/
+> registry/VERSION), orthogonal to the artifact-cascade gates. Five increments:
+> (1) shared spec — `GATE-SPEC_FRAMEWORK.md` + `spec` change_source +
+> `semver_impact` + error-catalog/diagram/CHG-template/README wiring + a
+> conformance guard; (2) plugin skills — `gate-check` runs it, `doc-chg` family
+> routes to it, `knowledge-extractor` **unblocked** (spec promotion now routes to
+> a real CHG record + GATE-SPEC); (3) CI — `tests/chg/spec_gate.py` (diff-aware
+> E005/E008) + staged `plans/workflows-pending/chg-gate.yml`; (4) Hermes
+> server-side — `validation/chg_rules.py` + 5 unit tests; (5) close. Three-way
+> enforcer split: record validator (E001–E004) · CI (E005–E008) · protected-branch
+> review (human E004); **a skill never self-approves**. Framework spec **0.2.0 →
+> 0.3.0** (+ both FSV + 54 skills). Conformance **38 → 43**; Hermes CHG 8/8 (full
+> validation suite green bar pre-existing `mcp`-SDK-missing collection errors);
+> `plm_lint` clean. **Branch: `claude/skill-revision`.** **Follow-up: CHG-D2**
+> (record CHG-D1 as a formal `framework/governance/` decision — now actionable).
+> **User-only:** relocate `chg-gate.yml` → `.github/workflows/`; set branch
+> protection on `framework/**` (the human-approval half); push the 0.3.0 tags.
+
+> **✅ ADAPT COMPLETE — adaptation surface + knowledge extractor (2026-05-23).** New feature:
 > project adaptation overlay + knowledge extractor (plan `plans/ADAPT-PLAN.md`,
 > hardened Pass 1–4; design recorded D-0019). **Increment 1 (this commit):** the
 > engine-agnostic surface spec `framework/governance/ADAPTATION.md` + the
@@ -118,9 +139,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-23T00:00:00Z                       |
-| Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration + PLM complete; **plugin v0.2.0 release prepped** (124 skills, 9 agents; marketplace install; conformance 32/32) |
-| Next task     | **None in-container.** User-only launch steps remain: merge branch → `main`; push tag `claude-code-plugin/v0.2.0`; relocate CI. See "Independent pending user actions". |
+| Working branch| `claude/skill-revision` (user-confirmed)   |
+| Current phase | Post-migration features on `claude/skill-revision`: **ADAPT** (D-0019) + **CHG-D1 / GATE-SPEC** (D-0020) complete. Framework spec **0.3.0**; 54 skills; conformance **43**; `plm_lint` clean. |
+| Next task     | **CHG-D2** — record CHG-D1 as a formal `framework/governance/` decision (now actionable). **User-only:** relocate `plans/workflows-pending/*.yml` → `.github/workflows/`; branch protection on `framework/**`; push `framework/v0.3.0` + release tags from a local clone. |
 
 ## Progress
 

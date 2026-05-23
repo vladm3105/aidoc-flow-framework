@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | CHG-D1                         |
 | Depends on | D-0019 / ADAPT (knowledge-extractor spec→CHG draft is *blocked* on this), `framework/governance/chg/` overlay, P3-T7 (`doc-chg` + `gate-check`), Hermes `validation/chg_rules.py` (P2-T9), `docs/PROJECT.md` §6, ROADMAP CHG-D1 |
-| Status     | IN PROGRESS — 2026-05-23T00:00:00Z (reviewed, Pass 1–2) |
+| Status     | DONE — 2026-05-23T00:00:00Z (5 commits; framework spec 0.3.0; conformance 43; Hermes CHG 8/8) |
 | Feeds      | unblocks knowledge-extractor's spec promotion; CHG-D2 (record as a `framework/governance/` decision) |
 
 ## Objective

@@ -10,6 +10,52 @@ when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
 
 ---
 
+## D-0020 — GATE-SPEC: the framework-spec change gate (CHG-D1)
+
+- **Date:** 2026-05-23T00:00:00Z
+- **Context:** ROADMAP CHG-D1 — re-introduce change management as **skills +
+  CI/CD**, both platforms. The five existing gates (GATE-01/03/06/08/CODE) all
+  govern a project's **artifact instances** along the BRD→Code chain; none
+  governed a change to the **`framework/` spec itself**. That gap was what
+  `knowledge-extractor`'s spec→CHG drafts were stamped *blocked* on (D-0019,
+  ADAPT-0). Full design + 2 review passes in `plans/CHG-D1-PLAN.md`.
+- **Decisions:**
+  1. **GATE-SPEC is a *meta* gate, orthogonal to the artifact cascade.** It
+     governs the shared contract that defines the layers (templates, governance,
+     registry, VERSION) — the `docs/PROJECT.md` §6 "Process" role. It has no
+     GATE-03/06/08 successor; a passed spec change instead obliges every platform
+     to re-declare `FRAMEWORK_SPEC_VERSION` and re-pass conformance. Selected by
+     **target** (the change edits `framework/`), not by artifact layer.
+  2. **Three-way enforcer split** (the ROADMAP CHG-D1 model). Record-level
+     E001–E004 (provenance, `semver_impact`+major⇒C3, never-C1, C3-approval) →
+     the platform's record validator (plugin `gate-check`/`doc-chg`, Hermes
+     `chg_rules.py`). Diff-aware E005 (VERSION bump) + E008 (CHANGELOG) → CI
+     (`tests/chg/spec_gate.py`). Static E006 (spec-version match) + E007 (suite
+     green) → the shared conformance suite. The **human** approval (E004) is
+     protected-branch review — **a skill never self-approves**.
+  3. **`major`⇒C3 is one-directional.** A breaking spec change must be C3;
+     `minor`/`patch` may be C2. An additive change (a new optional knob, a new
+     gate) reaches both platforms yet is not breaking — so it is not forced to
+     C3. (GATE-SPEC's own introduction is `minor`/C2.)
+  4. **New `change_source: spec` + `semver_impact` field** added to
+     CHG-TEMPLATE (additive, backward-compatible; Hermes validation is
+     `.get`-based, no strict key-schema to violate).
+  5. **CI tooling is engine-agnostic and lives under `tests/`**, not
+     `framework/` (the spec ships no runtime). The workflow stages at
+     `plans/workflows-pending/chg-gate.yml` — the in-container app can't push
+     `.github/workflows/**` (the standing `workflows`-permission restriction).
+  6. **GATE-SPEC's introduction lands under interim PR-review controls** — a gate
+     cannot gate its own introduction (mirrors how D-0019's spec doc landed).
+- **Status — DONE (2026-05-23):** landed across 5 commits on
+  `claude/skill-revision`. Framework spec **0.2.0 → 0.3.0** (minor; + both
+  `FRAMEWORK_SPEC_VERSION` + all 54 skills' `framework_spec_version`).
+  Conformance **38 → 43**; Hermes CHG unit tests 8/8 (full validation suite
+  green bar the pre-existing `mcp`-SDK-missing collection errors); `plm_lint`
+  clean. **Follow-up: CHG-D2** — record this as a formal `framework/governance/`
+  decision (now actionable). **User-only:** relocate `plans/workflows-pending/
+  chg-gate.yml` → `.github/workflows/`; configure branch protection on
+  `framework/**` (the human-approval half).
+
 ## D-0019 — Project adaptation overlay + knowledge extractor (ADAPT)
 
 - **Date:** 2026-05-23T17:50:00Z

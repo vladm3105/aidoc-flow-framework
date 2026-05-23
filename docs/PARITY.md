@@ -62,15 +62,28 @@ specifies):
 
 The 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) cover all 8
 SDD layers, plus the `doc-chg` change-management family (4 variants — the CHG
-governance overlay) and 16 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
-`doc-review`, `doc-validator`, `project-init`, `project-adopt`, `gate-check`,
-`trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`,
-`quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`)
-— **52 skills** total. The `-reviewer` and `-validator` variants were merged
-into `-audit`; the former SPEC-subtype and test-type families were folded into
-the unified SPEC (L6) and TDD (L7) skills (task P3-T6, reversing D-0015). The
-CHG family, `gate-check`, and `project-adopt` were added in P3-T7 (see
+governance overlay) and 18 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
+`doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`,
+`gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`,
+`quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`,
+`knowledge-extractor`) — **54 skills** total. The `-reviewer` and `-validator`
+variants were merged into `-audit`; the former SPEC-subtype and test-type
+families were folded into the unified SPEC (L6) and TDD (L7) skills (task P3-T6,
+reversing D-0015). `project-profile` + `knowledge-extractor` were added in ADAPT
+(D-0019). The CHG family, `gate-check`, and `project-adopt` were added in P3-T7 (see
 `plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`).
+
+## Change management — GATE-SPEC (CHG-D1, both platforms)
+
+Both platforms implement the **GATE-SPEC** framework-spec change gate from the
+shared spec (D-0020), with the same three-way enforcer split:
+
+| Half | Plugin | Hermes |
+|------|--------|--------|
+| Record-level checks (E001–E004) | `gate-check` + `doc-chg` family (skills) | `validation/chg_rules.py` (server-side) |
+| Diff-aware checks (E005, E008) | `tests/chg/spec_gate.py` via the staged CI workflow | same shared script in CI |
+| Static checks (E006, E007) | shared conformance suite | shared conformance suite |
+| Human approval (E004 sign-off) | branch protection on `framework/**` | branch protection on `framework/**` |
 
 ## Platform-specific extras
 
