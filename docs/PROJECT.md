@@ -109,8 +109,8 @@ CHG is implemented as **skills + CI/CD**, split by responsibility:
 - **Skills** — authoring (CHG document, impact assessment, cascading layer
   edits) and the *automatable* gate checks (schema validity, upstream tags,
   traceability, `GATE_APPROVAL_FORM` preparation, pass/fail gate report).
-- **CI/CD** — runs the gate-validator skill on every PR as a required status
-  check; blocks merge on failure.
+- **CI/CD** — runs the automatable gate checks (above) on every PR as a
+  required status check; blocks merge on failure.
 - **Repo settings** — the *human* gate (e.g. C3 board sign-off) is enforced by
   GitHub branch protection / required reviewers. A skill prepares and verifies
   the approval form but is never the authority that grants approval.

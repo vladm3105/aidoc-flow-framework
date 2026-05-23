@@ -88,7 +88,10 @@ document.
 |------|-----------|----------------|
 | unit | individual functions/methods, data-model constraints | SPEC §3–4 |
 | integration | component interactions, state transitions, error handling | SPEC §5 |
+| functional | feature behavior against acceptance criteria | EARS/BDD |
 | e2e | full workflows mapped from acceptance scenarios | BDD (Layer 4) |
+| smoke | critical-path sanity (post-build/deploy) | BDD critical scenarios |
+| performance | latency/throughput against `@threshold` targets | EARS quality attributes |
 | security | optional — threat/vulnerability paths | SPEC/ADR (only if mandated) |
 
 Unit cases carry `target`, `inputs`, `expected_output`, `edge_cases`.
