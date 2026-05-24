@@ -61,6 +61,7 @@ Where:
 | GATE-03-E005 | Traceability | EARS missing upstream tags (@brd @prd) | Add 2 upstream traceability tags |
 | GATE-03-E006 | Traceability | BDD missing upstream tags (@brd @prd @ears) | Add 3 upstream traceability tags |
 | GATE-03-E007 | Traceability | ADR missing upstream tags (@brd @prd @ears @bdd) | Add 4 upstream traceability tags |
+| GATE-03-E008 | Security | External-source change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 
 ### 3.2 Warnings (W)
 
@@ -154,6 +155,7 @@ platform's protected-branch review.
 |------|----------|-------------|------------|
 | GATE-SPEC-W001 | Migration | `major` change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Parity | Change touches only one platform's conformance | Confirm both platforms track the new spec version |
+| GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
 
 ## 7. Emergency Bypass Errors
 

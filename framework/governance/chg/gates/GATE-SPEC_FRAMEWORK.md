@@ -102,6 +102,7 @@ the platform's protected-branch review. The validator never grants approval.
 |----------|-------------|----------------|
 | GATE-SPEC-W001 | `major` (breaking) change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Change touches only one platform's conformance (parity drift) | Confirm both platforms track the new spec version |
+| GATE-SPEC-W003 | Agent-facing spec change (template/governance guidance) without a recorded `SECURITY_REVIEW.md` assessment | Run the `SECURITY_REVIEW.md` checklist — a spec change reaches every platform, so injected/unsafe guidance has the widest blast radius |
 
 ## 4. Approval Workflow
 
@@ -142,7 +143,7 @@ level. Signature fields stay blank for the human.
 ```markdown
 - [ ] GATE-SPEC-E001..E004 pass (record-level)
 - [ ] GATE-SPEC-E005..E008 pass (CI: VERSION bump, FSV match, suite green, CHANGELOG)
-- [ ] GATE-SPEC-W001..W002 reviewed
+- [ ] GATE-SPEC-W001..W003 reviewed (W003: SECURITY_REVIEW.md for agent-facing changes)
 - [ ] CHG document created (>= C2)
 - [ ] Human approval obtained per matrix (branch protection)
 - [ ] Both platforms re-declare FRAMEWORK_SPEC_VERSION; conformance green
@@ -189,6 +190,7 @@ GATE-SPEC passes:
 | GATE-SPEC-E008 | Documentation | `CHANGELOG.md` not updated | Add a changelog entry for the spec change |
 | GATE-SPEC-W001 | Migration | Breaking change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Parity | One-platform conformance drift | Confirm both platforms track the new version |
+| GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
 
 ### 7.2 Common Resolutions
 
