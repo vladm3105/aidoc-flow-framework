@@ -10,6 +10,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- **Pre-commit hooks** (`.pre-commit-config.yaml` + a `pre-commit` CI workflow,
+  D-0021): hygiene (whitespace/EOF/check-yaml·json·toml/merge/large-files/
+  private-key), **ruff** + ruff-format, **bandit** (gated medium+), **markdownlint**,
+  **yamllint**, **detect-secrets** (baseline), **pip-audit** (manual/CI stage), and
+  a local hook running the conformance suite. Pragmatic rule sets (stylistic
+  noise disabled); `legacy/` + Hermes vendored/parsed content excluded. A repo-wide
+  autofix + cleanup pass was applied (markdownlint/ruff over ~450 files, plus
+  hand-fixed genuine findings) so `pre-commit run --all-files` is green; the stale
+  `ucx_hermes` placeholder config was replaced.
+
 ## [1.1.0] — 2026-05-24
 
 First post-cutover feature release. Tagged `v1.1.0` at the PR #2 merge; bundles
