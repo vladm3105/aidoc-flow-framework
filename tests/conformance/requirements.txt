@@ -1,4 +1,4 @@
 # Conformance suite dependencies.
 # The suite itself runs on the Python 3.11+ standard library (`unittest`);
 # only YAML parsing needs an external package.
-PyYAML>=6.0
+PyYAML>=6.0.3
