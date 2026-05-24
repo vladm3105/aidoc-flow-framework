@@ -33,7 +33,7 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
@@ -50,11 +50,6 @@ def check_required_secrets(repo: str) -> list[str]:
         "GITHUB_TOKEN",  # This is always available
     ]
 
-    optional_secrets = [
-        "ELEVATED_PAT",
-        "TEAMS_WEBHOOK",
-    ]
-
     # Check workflow files for secret references
     workflow_dir = ".github/workflows"
     if not os.path.exists(workflow_dir):
@@ -65,9 +60,9 @@ def check_required_secrets(repo: str) -> list[str]:
     for filename in os.listdir(workflow_dir):
         if filename.endswith((".yml", ".yaml")):
             filepath = os.path.join(workflow_dir, filename)
-            with open(filepath, "r") as f:
+            with open(filepath) as f:
                 content = f.read()
-            for match in re.finditer(r'\$\{\{\s*secrets\.([A-Z_]+)\s*\}\}', content):
+            for match in re.finditer(r"\$\{\{\s*secrets\.([A-Z_]+)\s*\}\}", content):
                 referenced_secrets.add(match.group(1))
 
     for secret in required_secrets:
@@ -85,9 +80,7 @@ def check_branch_protection(repo: str) -> list[str]:
     warnings = []
 
     try:
-        output = run_gh([
-            "api", f"/repos/{repo}/branches/main/protection"
-        ], check=False)
+        output = run_gh(["api", f"/repos/{repo}/branches/main/protection"], check=False)
 
         if not output or "Not Found" in output:
             warnings.append(
@@ -100,15 +93,11 @@ def check_branch_protection(repo: str) -> list[str]:
 
         # Check required reviews
         if not protection.get("required_pull_request_reviews"):
-            warnings.append(
-                "Branch protection: Required pull request reviews not enabled"
-            )
+            warnings.append("Branch protection: Required pull request reviews not enabled")
 
         # Check required status checks
         if not protection.get("required_status_checks"):
-            warnings.append(
-                "Branch protection: Required status checks not enabled"
-            )
+            warnings.append("Branch protection: Required status checks not enabled")
 
     except (subprocess.CalledProcessError, json.JSONDecodeError):
         warnings.append("Unable to check branch protection (may require admin access)")
@@ -125,7 +114,7 @@ def check_claude_md() -> list[str]:
 
     for path in claude_md_paths:
         if os.path.exists(path):
-            with open(path, "r") as f:
+            with open(path) as f:
                 claude_md_content = f.read()
             break
 
@@ -144,16 +133,12 @@ def check_claude_md() -> list[str]:
     if "templates" in str(claude_md_paths):
         for placeholder in required_placeholders:
             if placeholder not in claude_md_content:
-                warnings.append(
-                    f"CLAUDE.md template missing placeholder: {placeholder}"
-                )
+                warnings.append(f"CLAUDE.md template missing placeholder: {placeholder}")
     else:
         # If this is an instantiated file, placeholders should be replaced
         for placeholder in required_placeholders:
             if placeholder in claude_md_content:
-                warnings.append(
-                    f"CLAUDE.md has unreplaced placeholder: {placeholder}"
-                )
+                warnings.append(f"CLAUDE.md has unreplaced placeholder: {placeholder}")
 
     # Check for required sections
     required_sections = [
@@ -178,7 +163,7 @@ def check_mcp_config() -> list[str]:
         return warnings
 
     try:
-        with open(".mcp.json", "r") as f:
+        with open(".mcp.json") as f:
             mcp_config = json.load(f)
 
         # Check for required MCP servers
@@ -187,9 +172,7 @@ def check_mcp_config() -> list[str]:
         recommended_servers = ["filesystem", "git"]
         for server in recommended_servers:
             if not any(server in s.lower() for s in servers.keys()):
-                warnings.append(
-                    f"Recommended MCP server not configured: {server}"
-                )
+                warnings.append(f"Recommended MCP server not configured: {server}")
 
     except json.JSONDecodeError as e:
         warnings.append(f".mcp.json is not valid JSON: {e}")
@@ -202,37 +185,43 @@ def generate_report(all_warnings: list[str]) -> str:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     lines = [
-        f"## Project Setup Validation Report",
-        f"",
+        "## Project Setup Validation Report",
+        "",
         f"**Generated**: {timestamp}",
         f"**Status**: {'PASS' if not all_warnings else 'WARNINGS'}",
         f"**Issues Found**: {len(all_warnings)}",
-        f"",
+        "",
     ]
 
     if all_warnings:
-        lines.extend([
-            f"### Issues",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Issues",
+                "",
+            ]
+        )
         for warning in all_warnings:
             lines.append(f"- {warning}")
         lines.append("")
 
-        lines.extend([
-            f"### Recommended Actions",
-            f"",
-            f"1. Review and address warnings above",
-            f"2. Configure missing secrets in repository settings",
-            f"3. Enable branch protection rules",
-            f"4. Update CLAUDE.md with project-specific values",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Recommended Actions",
+                "",
+                "1. Review and address warnings above",
+                "2. Configure missing secrets in repository settings",
+                "3. Enable branch protection rules",
+                "4. Update CLAUDE.md with project-specific values",
+                "",
+            ]
+        )
     else:
-        lines.extend([
-            f"Project setup validated successfully.",
-            f"",
-        ])
+        lines.extend(
+            [
+                "Project setup validated successfully.",
+                "",
+            ]
+        )
 
     return "\n".join(lines)
 

@@ -15,6 +15,7 @@ AI Cost Monitoring is an active project entering Phase 1 implementation. Archite
 ## What's Complete
 
 ### Sprint 0: Research & Decisions (Done)
+
 - [x] LLM strategy: Vertex AI vs LiteLLM ([#6](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/issues/6))
 - [x] Auth strategy: GCP Identity Platform vs Auth0 ([#7](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/issues/7))
 - [x] OTEL Gen-AI conventions maturity ([#8](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/issues/8))
@@ -22,6 +23,7 @@ AI Cost Monitoring is an active project entering Phase 1 implementation. Archite
 - [x] OpenCost integration approach ([#10](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/issues/10))
 
 ### Architecture & Documentation
+
 - [x] 8 Architecture Decision Records ([docs/adr/](docs/adr/))
 - [x] 8 Technical specifications ([docs/core/](docs/core/))
 - [x] Project governance: roadmap, project plan, branching strategy, DoD
@@ -53,6 +55,7 @@ Standalone GCP budget protection system. 14 sub-tasks tracked on [Project Board 
 **Epic**: [#11](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}/issues/11) | **Tasks**: #19-#32 (Status: Backlog)
 
 Key deliverables:
+
 - `{PROJECT_PREFIX}-{SERVICE_NAME}` component repo
 - Terraform module structure
 - Firestore config schema
@@ -87,12 +90,14 @@ Key deliverables:
 ## Key Files for Developers
 
 ### Start Here
+
 1. [README.md](README.md) — Architecture overview, project status
 2. [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) — Local setup, project structure
 3. [CONTRIBUTING.md](CONTRIBUTING.md) — Code standards, git workflow
 4. [governance/PROJECT_PLAN.md](governance/PROJECT_PLAN.md) — Full task list with acceptance criteria
 
 ### Architecture
+
 5. [docs/adr/](docs/adr/) — 8 Architecture Decision Records
 6. [docs/core/01-database-schema.md](docs/core/01-database-schema.md) — Database design
 7. [docs/core/02-mcp-tool-contracts.md](docs/core/02-mcp-tool-contracts.md) — MCP interfaces
@@ -100,12 +105,14 @@ Key deliverables:
 9. [docs/core/05-api-endpoint-spec.md](docs/core/05-api-endpoint-spec.md) — REST API
 
 ### Governance
+
 10. [governance/ROADMAP.md](governance/ROADMAP.md) — Phase timeline and dependencies
 11. [governance/HOME_REPO.md](governance/HOME_REPO.md) — Home repo vs component repos
 12. [governance/REPOSITORY_STRATEGY.md](governance/REPOSITORY_STRATEGY.md) — Polyrepo architecture
 13. [governance/GITHUB_WORKFLOWS.md](governance/GITHUB_WORKFLOWS.md) — CI/CD workflow docs
 
 ### Deployment
+
 14. [GCP-DEPLOYMENT.md](GCP-DEPLOYMENT.md) — GCP deployment guide
 15. [docs/core/07-deployment-infrastructure.md](docs/core/07-deployment-infrastructure.md) — Cloud Run architecture
 
@@ -130,6 +137,7 @@ Key deliverables:
 **Board**: [#{PROJECT_BOARD_NUMBER}](https://{GITHUB_HOST}/orgs/{GITHUB_ORG}/projects/{PROJECT_BOARD_NUMBER})
 
 **Status Lifecycle**:
+
 ```
 Todo (default) → Backlog (nearest phase) → In Progress → In Review → Done
 ```

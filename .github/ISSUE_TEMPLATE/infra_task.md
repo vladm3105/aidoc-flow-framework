@@ -10,6 +10,7 @@ assignees: ''
 <!-- What infrastructure needs to be created or changed? -->
 
 ## Cloud Provider
+
 - [ ] GCP
 - [ ] AWS
 - [ ] Azure
@@ -32,6 +33,7 @@ assignees: ''
 - Modified resources:
 
 ## Verification
+
 - [ ] `terraform plan` shows expected changes
 - [ ] `terraform apply` succeeds in dev environment
 - [ ] Health checks pass on deployed services

@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -32,7 +31,9 @@ def test_run_preflight_uses_iso_date_fallback_when_no_status_token(tmp_path: Pat
     main(["init", "--project", str(tmp_path)])
     probe_file = tmp_path / "tmp/preflight_probe_response.txt"
     probe_file.parent.mkdir(parents=True, exist_ok=True)
-    probe_file.write_text("Provider check completed on 2026-03-27 without explicit status", encoding="utf-8")
+    probe_file.write_text(
+        "Provider check completed on 2026-03-27 without explicit status", encoding="utf-8"
+    )
 
     result = run_preflight(project_root=tmp_path, context="any", output_dir=None)
 

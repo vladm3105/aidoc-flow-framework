@@ -18,6 +18,7 @@ The `-` at column 0 breaks the YAML structure because it appears to start a new 
 When constructing replacement strings for `patch` operations, the new lines must include the same leading whitespace as the lines they're replacing. If the old string is at 4-space indent but the new string omits that indent, the patch tool inserts the replacement verbatim at column 0.
 
 Common culprits:
+
 - Adding a new list item to `business_rules` (should be indented 4 spaces)
 - Adding a new constraint or assumption (should be indented 2 spaces under `items:`)
 - Adding a new acceptance criterion (should be indented 6 spaces under `items:`)

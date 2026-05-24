@@ -37,6 +37,7 @@ Each EARS statement must be **testable** (Given-When-Then derivable),
 ## When to Use
 
 Use `doc-ears` when:
+
 - BRD (Layer 1) and PRD (Layer 2) exist and you need formal requirements.
 - Translating product features into precise behavioral statements.
 - Establishing event-driven, state-driven, error-handling, or system-wide rules.
@@ -113,7 +114,7 @@ timing uses p50/p95/p99 notation. Carry changeable values as
 3. **Create the nested folder** — every EARS lives in
    `docs/03_EARS/EARS-NN_{slug}/` regardless of size. Monolithic:
    `EARS-NN_{slug}.md` inside it; section-based (>25 KB): `EARS-NN.S_{section}.md`
-   + index from `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
+   - index from `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 5 sections from the template.
 5. **Categorize requirements** into the four patterns; write atomic
    WHEN-THE-SHALL-WITHIN statements with `@threshold:` constraints.
@@ -152,7 +153,6 @@ are found, fix and re-check; if unfixable, log for manual review.
 `../doc-bdd/SKILL.md` — the BDD references this EARS (`@ears: EARS.NN.SS.xxxx`),
 inherits cumulative `@brd`/`@prd` tags, and turns each statement into executable
 Given-When-Then scenarios.
-
 
 ## Adaptation
 

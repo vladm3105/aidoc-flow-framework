@@ -334,6 +334,7 @@ GH_HOST={GITHUB_HOST} gh api user --jq '.login'
 ```
 
 In {AI_TOOL_NAME} Code, the AI can call:
+
 ```
 mcp__github-{PROJECT_PREFIX}-{PROJECT_PREFIX}__list_issues(owner="{GITHUB_ORG}", repo="{REPO_NAME}")
 ```
@@ -524,6 +525,7 @@ MCP lacks support for these operations (use gh CLI):
 The project includes `.mcp.json` with 6 MCP servers using the `-tt-{PROJECT_PREFIX}` suffix (TechTrend AI Cost Monitoring).
 
 **Naming Convention**: `{function}-tt-{PROJECT_PREFIX}`
+
 - `tt` = TechTrend (GitHub Enterprise instance)
 - `{PROJECT_PREFIX}` = AI Cost Monitoring project prefix
 
@@ -615,34 +617,34 @@ All 6 servers configured in `.mcp.json` are open source and active.
 
 ```
 
-              AI ASSISTANT - 6 ACTIVE MCP SERVERS                  
-              (All using -tt-{PROJECT_PREFIX} suffix)                        
+              AI ASSISTANT - 6 ACTIVE MCP SERVERS
+              (All using -tt-{PROJECT_PREFIX} suffix)
 
-                                                                   
-  CORE DEVELOPMENT (4)                                            
-   github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)                                   
-      Issues, PRs, branches, files, workflows                 
-   filesystem-tt-{PROJECT_PREFIX}                                        
-      File operations                                         
-   memory-tt-{PROJECT_PREFIX}                                            
-      Knowledge graph                                         
-   sequential-thinking-tt-{PROJECT_PREFIX}                               
-       Problem decomposition                                   
-                                                                   
-  DOCUMENTATION (1)                                               
-   context7-tt-{PROJECT_PREFIX}                                          
-       Library docs lookup                                     
-                                                                   
-  BROWSER AUTOMATION (1)                                          
-   playwright-tt-{PROJECT_PREFIX}                                        
-       E2E tests, web scraping                                 
-                                                                   
 
-  gh CLI (Fallback - only when MCP lacks support)                 
-   Projects V2, Labels, Milestones, GraphQL                    
+  CORE DEVELOPMENT (4)
+   github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)
+      Issues, PRs, branches, files, workflows
+   filesystem-tt-{PROJECT_PREFIX}
+      File operations
+   memory-tt-{PROJECT_PREFIX}
+      Knowledge graph
+   sequential-thinking-tt-{PROJECT_PREFIX}
+       Problem decomposition
 
-  Local git (Workspace operations)                                
-   git add, commit, push                                       
+  DOCUMENTATION (1)
+   context7-tt-{PROJECT_PREFIX}
+       Library docs lookup
+
+  BROWSER AUTOMATION (1)
+   playwright-tt-{PROJECT_PREFIX}
+       E2E tests, web scraping
+
+
+  gh CLI (Fallback - only when MCP lacks support)
+   Projects V2, Labels, Milestones, GraphQL
+
+  Local git (Workspace operations)
+   git add, commit, push
 
 ```
 
@@ -990,6 +992,7 @@ Playwright MCP uses `ref` attributes from snapshots to identify elements:
 2. **Use reference**: Pass `ref="eN"` to interaction tools
 
 Example snapshot output:
+
 ```yaml
 - generic [ref=e2]:
   - heading "Dashboard" [level=1] [ref=e3]

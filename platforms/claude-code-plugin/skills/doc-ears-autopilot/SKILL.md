@@ -100,7 +100,6 @@ inherited from the upstream PRD) from the source content.
 | Vague/compound statement cannot be auto-resolved | flag for manual review, continue batch |
 | Write/permission error | log, skip the item, continue the batch |
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

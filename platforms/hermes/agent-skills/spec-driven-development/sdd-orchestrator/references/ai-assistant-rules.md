@@ -30,6 +30,7 @@
 ## TDD Enforcement
 
 When generating code from IPLAN:
+
 1. Generate test files FIRST (from TDD Sections 3-4 test mappings and cases)
 2. Run tests — they MUST fail (no implementation exists)
 3. Generate implementation files
@@ -39,11 +40,13 @@ When generating code from IPLAN:
 ## Development Completion Rule
 
 A development IPLAN is **Completed** when:
+
 - Source code is authored, committed, and tests pass
 - Terraform modules, Helm charts, CI/CD workflow files, schema DDL, and deployment scripts are authored and committed
 - `pre-commit run --all-files` passes with no errors
 
 A development IPLAN is **NOT** blocked by:
+
 - `terraform apply` not yet executed
 - `atlas migrate apply` not yet run against the target environment
 - Acceptance/soak testing not yet performed
@@ -54,6 +57,7 @@ These operator-only execution steps belong to a separate deployment plan. When c
 ## IPLAN Session Handoff
 
 Each AI agent session follows this protocol:
+
 1. Read `session_handoff.sessions` — identify the last session's state
 2. Check `file_manifest.files` — find next NOT_STARTED or PARTIAL file
 3. Read `partial_work` description if resuming a PARTIAL step

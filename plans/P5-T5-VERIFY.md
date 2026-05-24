@@ -170,6 +170,7 @@ docs framework plans platforms tests
 
 **No `legacy/`, no `.claude/`** top-level entries — both removals
 confirmed at the tree level. The shipped project = `framework/` spec
+
 + `platforms/{hermes,claude-code-plugin}/` + `tests/` + `docs/` +
 `plans/` (audit trail, P5-T1 Q5) + root project files.
 

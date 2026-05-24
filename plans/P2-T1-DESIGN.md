@@ -25,6 +25,7 @@ The single non-obvious choice — Q3 — is also recorded as D-0013 in
 ## Q1 — Python module / package name
 
 **Options:**
+
 1. Keep `mcp_server` import path; rename distribution to `hermes-server`.
 2. Rename import path to `hermes_mcp` (`platforms/hermes/src/hermes_mcp/`); rename distribution.
 3. Rename to `aidocflow_hermes` / `aidocflow.hermes`.
@@ -46,6 +47,7 @@ imports across the codebase for no functional gain. Minimal-churn wins on
 all criteria.
 
 **Downstream implications:**
+
 - **P2-T3 `pyproject.toml`:** `[project] name = "hermes-server"`.
 - **P2-T3 src/ + tests/:** zero import edits required.
 - Future-proofing: if a *third* MCP platform later wants to ship a
@@ -56,6 +58,7 @@ all criteria.
 ## Q2 — `framework_spec_version` declaration mechanism
 
 **Options:**
+
 1. Two plain-text files: `platforms/hermes/VERSION` + `platforms/hermes/FRAMEWORK_SPEC_VERSION`.
 2. Single key in `pyproject.toml`: `[tool.hermes] framework_spec_version = "0.1.0"`.
 3. YAML manifest: `platforms/hermes/manifest.yaml`.
@@ -70,6 +73,7 @@ churn. Option 2 couples spec conformance to a Python-only build artifact
 adds a YAML schema for a single value. KISS wins.
 
 **Downstream implications:**
+
 - **P2-T4** creates:
   - `platforms/hermes/VERSION` — the platform's own SemVer (initial value
     `0.1.0`, per the platform tag namespace in `docs/TAGGING.md`).
@@ -83,6 +87,7 @@ adds a YAML schema for a single value. KISS wins.
 ## Q3 — `templates/` overlap
 
 **Inputs gathered:**
+
 - `framework/layers/<NN>_<X>/` ships **`<X>-TEMPLATE.yaml`** for all 8
   layers (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN). Confirmed by
   directory listing.
@@ -101,6 +106,7 @@ the same artifact, with platform-specific drift**, and the framework already
 holds the engine-agnostic source of truth.
 
 **Options:**
+
 1. Drop platform templates entirely; consume `framework/layers/` at runtime.
 2. Keep platform copies; require the platform to update them whenever the
    framework's change.
@@ -133,6 +139,7 @@ BRD variant) has no framework equivalent. P2-T3 investigation:
   directory.
 
 **Downstream implications:**
+
 - **P2-T3:** do **not** copy `legacy/ucx_hermes/templates/` to
   `platforms/hermes/templates/`. Investigate `BRD-MD-TEMPLATE.md` usage;
   port-or-drop based on the answer.
@@ -151,6 +158,7 @@ BRD variant) has no framework equivalent. P2-T3 investigation:
 ## Q4 — Distribution script entry
 
 **Options:**
+
 1. `hermes-mcp = "mcp_server.server:main_sync"`
 2. `mcp-hermes = "mcp_server.server:main_sync"`
 3. Keep legacy `mcp-ucx`.
@@ -165,11 +173,14 @@ project's name and is misleading. Collision with the (now-frozen)
 this repo.
 
 **Downstream implications:**
+
 - **P2-T3 `pyproject.toml`:**
+
   ```toml
   [project.scripts]
   hermes-mcp = "mcp_server.server:main_sync"
   ```
+
 - Docs / READMEs / install instructions reference `hermes-mcp` going
   forward (cleaned up in P2-T3 as part of the docs port).
 - `.mcp.json` (P2-T3): the command name in the MCP config points at the
@@ -178,6 +189,7 @@ this repo.
 ## Q5 — Target `platforms/hermes/` layout
 
 **Options:**
+
 1. Mirror legacy structure (`src/`, `tests/`, `skills/`, `docs/`,
    `examples/`, `prompts/`, `pyproject.toml`) minus the paths the audit
    dropped (`templates/` per Q3, `docs/migration/`).
@@ -227,6 +239,7 @@ FRAMEWORK_SPEC_VERSION) are the only structural additions and they live at
 the conventional top.
 
 **Downstream implications:**
+
 - **P2-T2** copy targets: `examples/`, `prompts/`, `skills/layer_aliases/`,
   `skills/personas/`, `persona_mappings.yaml` map to identical paths under
   `platforms/hermes/`.

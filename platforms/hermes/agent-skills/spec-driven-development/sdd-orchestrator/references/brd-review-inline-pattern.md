@@ -3,6 +3,7 @@
 ## When to Use
 
 Use this pattern when:
+
 - UCX `sdd_review` executors are unavailable or would time out
 - You need rapid BRD review without subagent dispatch overhead
 - User prefers batch processing: review → remediate → next, minimal friction
@@ -29,6 +30,7 @@ Unlike ADR reviews (5 personas), BRD reviews use 4 personas focused on business-
 ### Step 1: Read BRD in Sections
 
 For large BRDs (1000+ lines), read strategically:
+
 ```
 read_file offset=1    limit=200   # metadata, document_control, executive_summary, diagrams, introduction
 read_file offset=200  limit=200   # business_objectives, project_scope, stakeholders, first FRs
@@ -41,6 +43,7 @@ read_file offset=1000 limit=110   # glossary, appendix
 ### Step 2: Produce 4-Persona Review Inline
 
 Structure:
+
 ```
 ## PERSONA REVIEW REPORT: BRD-NN
 
@@ -49,7 +52,7 @@ Structure:
 | Aspect | Assessment |
 Architecture soundness, C4-level check, interface clarity, cross-BRD links
 
-### 2. THE AUDITOR — Security & Compliance  
+### 2. THE AUDITOR — Security & Compliance
 **Verdict: PASS/PASS with gaps/FAIL**
 Credential management, isolation guarantees, audit trail, regulatory refs
 
@@ -88,6 +91,7 @@ content = r.stdout
 ```
 
 After all patches:
+
 - Update `document_control.version` (1.0 → 1.1)
 - Update `document_control.last_updated` to current timestamp
 - Update `document_control.status` to "Reviewed"
@@ -114,6 +118,7 @@ After remediation, re-run `sdd_validate` and `sdd_score_show`. Update `health_sc
 ## Proven Cadence (TradeGent CC BRD-10, 2026-05-14)
 
 BRD-10 review and remediation in a single session:
+
 - BRD-10 (1,102 lines): 8 fixes (3 P1 + 5 P2) → v1.0→v1.1, score 100/100
 - P1 fixes: startup reconciliation, malformed data validation, position sanity checks
 - P2 fixes: session expiry, paper trading caveat, network security, clock skew, partial fill handling

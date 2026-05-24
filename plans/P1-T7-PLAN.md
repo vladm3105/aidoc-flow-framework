@@ -57,7 +57,7 @@ methodology content verbatim; transform only what the rules below require.
   doc not carried into `framework/`.
 - **T6 — minor cleanup.** `AI_ASSISTANT_RULES.md` "CHG/ gates — not a v3
   concern" → "CHG gates — a governance overlay, outside layer authoring";
-  drop the stray trailing ` |` at the end of `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
+  drop the stray trailing `|` at the end of `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`.
 
 ## Conformance
 

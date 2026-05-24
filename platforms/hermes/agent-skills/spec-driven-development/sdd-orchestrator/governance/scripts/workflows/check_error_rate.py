@@ -26,7 +26,8 @@ def main():
 
     result = subprocess.run(
         ["gcloud", "monitoring", "read", mql, f"--project={args.project}", "--format=json"],
-        capture_output=True, text=True
+        capture_output=True,
+        text=True,
     )
 
     if result.returncode != 0:

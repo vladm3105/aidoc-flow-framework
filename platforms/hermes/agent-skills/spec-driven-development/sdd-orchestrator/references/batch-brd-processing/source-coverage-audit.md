@@ -12,6 +12,7 @@ grep -n '^# ' CC_Delta_Unified_Rulebook.md
 ```
 
 Output format:
+
 ```
      1|# TradeGent CC — Delta-Unified Covered Call Strategy
     23|# Section 1: Stock Selection Criteria
@@ -19,9 +20,10 @@ Output format:
    ...
 ```
 
-The regex `^# ` will:
-- Match `# ` lines (H1)
-- NOT double-match `## ` lines (H2)
+The regex `^#` will:
+
+- Match `#` lines (H1)
+- NOT double-match `##` lines (H2)
 - NOT count blank H1s
 
 ## Step 2: Build Coverage Matrix
@@ -47,7 +49,7 @@ The regex `^# ` will:
 
 ### Gap Detection Rules
 
-1. **No unassigned H1**. Every `# ` line must appear in the coverage matrix.
+1. **No unassigned H1**. Every `#` line must appear in the coverage matrix.
 2. **No orphan content**. Content between two H1 boundaries that doesn't belong
 to either header is an orphan. Check:
    - Tables spanning sections
@@ -62,6 +64,7 @@ so combining is correct. §1+§12 do NOT share a domain.
 
 The coverage matrix must be presented in a plan document with an explicit human
 approval gate. Do NOT start extraction before the human has:
+
 1. Confirmed the section → BRD mapping
 2. Approved combined sections (some users want each section as its own BRD)
 3. Approved exclusions (some users want cheat sheet as a BRD for completeness)
@@ -71,6 +74,7 @@ approval gate. Do NOT start extraction before the human has:
 
 If any section has no natural BRD home, it may indicate a missing BRD in the
 architecture — NOT an exclusion. Before excluding, ask:
+
 - Does this section introduce a new capability not covered by existing BRDs?
 - Would this section need its own EARS requirements?
 - Would this section generate its own test cases?

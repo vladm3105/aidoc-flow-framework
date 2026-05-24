@@ -56,6 +56,7 @@ Control-plane and execution-plane model:
 ### Project Manager / Tech Lead
 
 **Responsibilities**:
+
 - Sprint planning and prioritization
 - Architecture decisions (ADRs)
 - Release approval and deployment
@@ -63,6 +64,7 @@ Control-plane and execution-plane model:
 - Risk management
 
 **Tools**:
+
 | Tool | Purpose |
 |:-----|:--------|
 | GitHub Project Board | Sprint planning, roadmap views, progress tracking |
@@ -71,6 +73,7 @@ Control-plane and execution-plane model:
 | Microsoft Teams | Team communication |
 
 **Key Actions**:
+
 - Mark issues as `ai:ready` when specifications are complete
 - Review AI-generated PRs and approve/reject
 - Update project board custom fields (Size, Priority, Component)
@@ -81,6 +84,7 @@ Control-plane and execution-plane model:
 ### Developer (Human)
 
 **Responsibilities**:
+
 - Implement tasks marked `ai:human-required`
 - Review AI-generated code
 - Handle security-sensitive implementations
@@ -88,6 +92,7 @@ Control-plane and execution-plane model:
 - Production deployments
 
 **Tools**:
+
 | Tool | Purpose |
 |:-----|:--------|
 | IDE (VS Code, etc.) | Code development |
@@ -97,6 +102,7 @@ Control-plane and execution-plane model:
 | Docker | Local development and testing |
 
 **Key Actions**:
+
 - Implement tasks AI cannot do (console work, approvals)
 - Code review all AI PRs before merge
 - Run `terraform apply` for infrastructure changes
@@ -107,18 +113,21 @@ Control-plane and execution-plane model:
 ### Reviewer
 
 **Responsibilities**:
+
 - Code quality assurance
 - Security review
 - Validate AI-generated implementations
 - Ensure acceptance criteria are met
 
 **Tools**:
+
 | Tool | Purpose |
 |:-----|:--------|
 | GitHub PR interface | Review diffs, add comments |
 | GitHub Project Board | Track review queue |
 
 **Key Actions**:
+
 - Review PRs labeled `ai:review-requested`
 - Approve → merge PR (no label change needed)
 - Request changes → add PR comments, AI revises
@@ -131,6 +140,7 @@ Control-plane and execution-plane model:
 ### AI Developer
 
 **Responsibilities**:
+
 - Implement tasks marked `ai:ready`
 - Generate code following acceptance criteria
 - Write tests for implementations
@@ -138,6 +148,7 @@ Control-plane and execution-plane model:
 - Signal work status via labels
 
 **Tools**:
+
 | Tool | Access Level | Purpose |
 |:-----|:-------------|:--------|
 | GitHub MCP (`github-{PROJECT_PREFIX}-{PROJECT_PREFIX}`) | Full | Issues, PRs, branches, files |
@@ -148,6 +159,7 @@ Control-plane and execution-plane model:
 | Playwright MCP | Full | Browser automation, E2E tests |
 
 **Capabilities**:
+
 ```
 [PASS] CAN DO:
 - Query issues by label (find ai:ready work)
@@ -175,6 +187,7 @@ Control-plane and execution-plane model:
 ```
 
 **Workflow**:
+
 ```
 1. FIND WORK
     list_issues(labels=["ai:ready"])
@@ -203,6 +216,7 @@ Control-plane and execution-plane model:
 ### Hermes Orchestrator
 
 **Responsibilities**:
+
 - Consume observability alerts and incident signals
 - Create and prioritize GitHub issues with severity, repro context, and traceability
 - Keep issue lifecycle aligned with governance gates
@@ -211,6 +225,7 @@ Control-plane and execution-plane model:
 - Validate post-deployment evidence before issue closure
 
 **Tools**:
+
 | Tool | Access Level | Purpose |
 |:-----|:-------------|:--------|
 | Observability dashboards/APIs | Read | Alert and incident signal intake |
@@ -218,6 +233,7 @@ Control-plane and execution-plane model:
 | UCX MCP (`sdd-lifecycle`) | Full | BRD->IPLAN orchestration and governance checks |
 
 **Handoff Contract**:
+
 - Hermes routes eligible issues into `ai:ready` after governance conditions are satisfied.
 - Execution agents process `ai:ready` issues autonomously through implementation and PR submission.
 - Hermes controls round-based PR gating, escalation decisions, and post-deployment closure.
@@ -230,41 +246,41 @@ Control-plane and execution-plane model:
 
 ```
 
-                    GITHUB ECOSYSTEM                            
+                    GITHUB ECOSYSTEM
 
-                                                                
-  REPOSITORY LAYER (AI + Human)                                 
-   
-                                                             
-    Issues  Labels  Branches  PRs    
-                                                         
-                                 
-             AI ACCESS (MCP)                            
-             - list_issues                              
-             - issue_write                              
-             - create_branch                            
-             - push_files                               
-             - create_pull_req                          
-                                 
-                                                           
-   
-                                                             
-                 
-                                                              
-  PROJECT LAYER (Human Only)                                    
-    
-                                                             
-    Board  Views  Custom Fields  Roadmap   
-                                                             
-             
-         HUMAN ACCESS ONLY                                
-         - gh CLI (GraphQL)                               
-         - GitHub Web UI                                  
-         - No MCP tools available                         
-             
-                                                             
-    
-                                                                
+
+  REPOSITORY LAYER (AI + Human)
+
+
+    Issues  Labels  Branches  PRs
+
+
+             AI ACCESS (MCP)
+             - list_issues
+             - issue_write
+             - create_branch
+             - push_files
+             - create_pull_req
+
+
+
+
+
+
+  PROJECT LAYER (Human Only)
+
+
+    Board  Views  Custom Fields  Roadmap
+
+
+         HUMAN ACCESS ONLY
+         - gh CLI (GraphQL)
+         - GitHub Web UI
+         - No MCP tools available
+
+
+
+
 
 ```
 
@@ -272,31 +288,31 @@ Control-plane and execution-plane model:
 
 ```
 
-                      GCP ECOSYSTEM                             
+                      GCP ECOSYSTEM
 
-                                                                
-  INFRASTRUCTURE AS CODE (AI + Human)                           
-   
-                                                             
-    Terraform  Python Code  Config Files             
-                                                             
-    AI can WRITE these files, but CANNOT APPLY them          
-                                                             
-   
-                                                               
-                                                               
-  GCP CONSOLE / CLI (Human Only)                                
-   
-                                                             
-    Billing  IAM  APIs  Resources                
-                                                             
-    - Create budgets (Console)                               
-    - Enable billing export (Console)                        
-    - terraform apply (CLI)                                  
-    - gcloud commands (CLI)                                  
-                                                             
-   
-                                                                
+
+  INFRASTRUCTURE AS CODE (AI + Human)
+
+
+    Terraform  Python Code  Config Files
+
+    AI can WRITE these files, but CANNOT APPLY them
+
+
+
+
+  GCP CONSOLE / CLI (Human Only)
+
+
+    Billing  IAM  APIs  Resources
+
+    - Create budgets (Console)
+    - Enable billing export (Console)
+    - terraform apply (CLI)
+    - gcloud commands (CLI)
+
+
+
 
 ```
 
@@ -319,6 +335,7 @@ The AI workflow uses labels to signal state transitions between AI and humans:
 | `ai:human-required` | Human | Human | Not suitable for AI |
 
 **Workflow:**
+
 ```
 ai:ready → ai:in-progress → ai:review-requested → (Round 1 gates) → (Round 2 if needed) → merge
                ↓
@@ -426,22 +443,22 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 
 ```
 
-                    TRUST BOUNDARY                           
+                    TRUST BOUNDARY
 
-                                                             
-  AI CAN ACCESS:                                             
-   Public repository code                                 
-   Issue content (non-secret)                             
-   Documentation                                          
-   Test fixtures (non-production data)                    
-                                                             
-  AI CANNOT ACCESS:                                          
-   GCP service account keys                               
-   API tokens (except via environment)                    
-   Production databases                                   
-   Customer data                                          
-   Billing account credentials                            
-                                                             
+
+  AI CAN ACCESS:
+   Public repository code
+   Issue content (non-secret)
+   Documentation
+   Test fixtures (non-production data)
+
+  AI CANNOT ACCESS:
+   GCP service account keys
+   API tokens (except via environment)
+   Production databases
+   Customer data
+   Billing account credentials
+
 
 ```
 

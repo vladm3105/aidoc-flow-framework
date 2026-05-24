@@ -55,6 +55,7 @@
 ### 20% Buffer Rationale
 
 All estimates include 20% buffer for:
+
 - **Human review time**: Code review, PR approval, architectural decisions
 - **Test deployment**: Deploying to GCP, waiting for resources to provision
 - **Integration issues**: API compatibility, authentication, network configuration
@@ -129,12 +130,14 @@ All estimates include 20% buffer for:
 > **Architecture Principle**: MCP servers provide **data access only**. AI Agents handle reasoning, forecasting, and decision-making.
 >
 > **MCP Servers (4 total)**:
+>
 > - AWS: [`@awslabs/mcp-server-aws-core`](https://github.com/awslabs/mcp) (native, GA Jan 2026)
 > - Azure: [`Azure.Mcp.Server`](https://github.com/microsoft/mcp/tree/main/servers/Azure.Mcp.Server) (native, GA)
 > - GCP: [`gcloud-mcp`](https://github.com/googleapis/gcloud-mcp) + BigQuery MCP (native, GA)
 > - OpenCost: Custom (no native available for Kubernetes cost allocation)
 >
 > **Moved to Phase 4 (AI Agents)**:
+>
 > - ~~Forecast MCP~~ → Cost Agent handles forecasting
 > - ~~Remediation MCP~~ → Remediation Agent handles actions
 > - ~~Policy MCP~~ → Domain Agents evaluate policies
@@ -161,11 +164,13 @@ All estimates include 20% buffer for:
 ### Phase 4: AI Agents (3 weeks AI-optimized)
 
 > **Architecture Simplification**: 11 agents → 5 agents
+>
 > - **Removed**: 4 Cloud Agents (Coordinator calls MCP servers directly)
 > - **Merged**: Cost + Optimization + Reporting → single Cost Agent
 > - **Deferred**: Tenant Agent → Phase 7 (multi-tenancy)
 >
 > **Final Agent Architecture (5 agents)**:
+>
 > - Coordinator Agent (intent classification, routing)
 > - Cost Agent (analysis, forecasting, optimization, reporting)
 > - Remediation Agent (action decisions and execution)
@@ -193,6 +198,7 @@ All estimates include 20% buffer for:
 ### Phase 5: UI/UX - CopilotKit Chat (2 weeks AI-optimized)
 
 > **Architecture Simplification**: AI-first interface only for MVP
+>
 > - **Deferred**: Grafana dashboards (traditional BI) → post-MVP enhancement
 > - **Keep**: CopilotKit Chat UI (core AI-agent interaction pattern)
 >
@@ -217,6 +223,7 @@ All estimates include 20% buffer for:
 ### Phase 6: Event Processing & Alerts (2 weeks AI-optimized)
 
 > **Architecture Simplification**: MCP servers provide real-time data access
+>
 > - **Deferred**: Batch ETL pipelines (AWS/Azure → BigQuery) → post-MVP
 > - **Keep**: Event processing for alerts (real-time notifications)
 >

@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
-from datetime import datetime
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
-from typing import Any, Callable, cast
+from collections.abc import Callable
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+from typing import Any, cast
 from zoneinfo import ZoneInfo
-
 
 FAMILY_PREFIX = {
     "audit": "A",
@@ -75,7 +75,9 @@ def build_validation_report_name(*, doc_id: str) -> str:
     return f"{doc_id}_validation_report.md"
 
 
-def build_lifecycle_report_name(*, doc_id: str, source_stage: str, report_type: str, version: int) -> str:
+def build_lifecycle_report_name(
+    *, doc_id: str, source_stage: str, report_type: str, version: int
+) -> str:
     if report_type not in {"review", "remediation"}:
         raise ValueError(f"Unsupported lifecycle report type: {report_type}")
     if version <= 0:
@@ -113,7 +115,9 @@ def _extract_version(path_name: str) -> int | None:
 def _select_latest_lifecycle_report(file_names: list[str], *, suffix: str) -> str | None:
     candidates = [name for name in file_names if name.endswith(suffix)]
     raw_ranked = [(name, _extract_version(name)) for name in candidates]
-    ranked: list[tuple[str, int]] = [(name, version) for name, version in raw_ranked if version is not None]
+    ranked: list[tuple[str, int]] = [
+        (name, version) for name, version in raw_ranked if version is not None
+    ]
     if not ranked:
         return None
     ranked.sort(key=lambda item: item[1], reverse=True)
@@ -125,7 +129,9 @@ def discover_artifacts(*, folder: Path, doc_id: str, slug: str) -> ArtifactDisco
 
     source_name = build_source_artifact_name(doc_id=doc_id, slug=slug)
     validation_name = build_validation_report_name(doc_id=doc_id)
-    validation_fixed_name = build_derived_artifact_name(doc_id=doc_id, slug=slug, stage="validation-fixed")
+    validation_fixed_name = build_derived_artifact_name(
+        doc_id=doc_id, slug=slug, stage="validation-fixed"
+    )
     remediated_name = build_derived_artifact_name(doc_id=doc_id, slug=slug, stage="remediated")
 
     audit_candidates: list[ReportFamilySelection] = []
@@ -136,19 +142,35 @@ def discover_artifacts(*, folder: Path, doc_id: str, slug: str) -> ArtifactDisco
         if version is None:
             continue
         if ".A_audit_report_" in name:
-            audit_candidates.append(ReportFamilySelection(family="audit", path=name, version=version, timestamp=f"v{version}"))
+            audit_candidates.append(
+                ReportFamilySelection(
+                    family="audit", path=name, version=version, timestamp=f"v{version}"
+                )
+            )
         elif ".R_review_report_" in name:
-            audit_candidates.append(ReportFamilySelection(family="review", path=name, version=version, timestamp=f"v{version}"))
+            audit_candidates.append(
+                ReportFamilySelection(
+                    family="review", path=name, version=version, timestamp=f"v{version}"
+                )
+            )
 
-    latest_review_report = choose_preferred_review_input(audit_candidates).path if audit_candidates else _select_latest_lifecycle_report(
-        file_names,
-        suffix="_review_report_v1.md",
+    latest_review_report = (
+        choose_preferred_review_input(audit_candidates).path
+        if audit_candidates
+        else _select_latest_lifecycle_report(
+            file_names,
+            suffix="_review_report_v1.md",
+        )
     )
     if latest_review_report is None:
         lifecycle_review_candidates = [name for name in file_names if "_review_report_v" in name]
-        latest_review_report = _select_latest_lifecycle_report(lifecycle_review_candidates, suffix=".md")
+        latest_review_report = _select_latest_lifecycle_report(
+            lifecycle_review_candidates, suffix=".md"
+        )
 
-    lifecycle_remediation_candidates = [name for name in file_names if "_remediation_report_v" in name or ".F_fix_report_v" in name]
+    lifecycle_remediation_candidates = [
+        name for name in file_names if "_remediation_report_v" in name or ".F_fix_report_v" in name
+    ]
     latest_remediation_report = None
     if lifecycle_remediation_candidates:
         latest_remediation_report = sorted(
@@ -165,7 +187,9 @@ def discover_artifacts(*, folder: Path, doc_id: str, slug: str) -> ArtifactDisco
     return ArtifactDiscoveryResult(
         source_artifact=source_name if source_name in file_names else None,
         validation_report=validation_name if validation_name in file_names else None,
-        validation_fixed_artifact=validation_fixed_name if validation_fixed_name in file_names else None,
+        validation_fixed_artifact=validation_fixed_name
+        if validation_fixed_name in file_names
+        else None,
         remediated_artifact=remediated_name if remediated_name in file_names else None,
         latest_review_report=latest_review_report,
         latest_remediation_report=latest_remediation_report,
@@ -173,7 +197,9 @@ def discover_artifacts(*, folder: Path, doc_id: str, slug: str) -> ArtifactDisco
     )
 
 
-def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation: str) -> dict[str, object]:
+def resolve_operation_inputs(
+    *, folder: Path, doc_id: str, slug: str, operation: str
+) -> dict[str, object]:
     discovered = discover_artifacts(folder=folder, doc_id=doc_id, slug=slug)
     source_name = build_source_artifact_name(doc_id=doc_id, slug=slug)
 
@@ -227,7 +253,9 @@ def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation:
                 "status": "error",
                 "operation": operation,
                 "missing_prerequisite_type": "validation_fixed_artifact",
-                "expected_filename_pattern": build_derived_artifact_name(doc_id=doc_id, slug=slug, stage="validation-fixed"),
+                "expected_filename_pattern": build_derived_artifact_name(
+                    doc_id=doc_id, slug=slug, stage="validation-fixed"
+                ),
             }
         return {
             "status": "ready",
@@ -241,7 +269,9 @@ def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation:
                 "status": "error",
                 "operation": operation,
                 "missing_prerequisite_type": "validation_fixed_artifact",
-                "expected_filename_pattern": build_derived_artifact_name(doc_id=doc_id, slug=slug, stage="validation-fixed"),
+                "expected_filename_pattern": build_derived_artifact_name(
+                    doc_id=doc_id, slug=slug, stage="validation-fixed"
+                ),
             }
         if discovered.latest_review_report is None:
             return {
@@ -263,7 +293,9 @@ def resolve_operation_inputs(*, folder: Path, doc_id: str, slug: str, operation:
                 "status": "error",
                 "operation": operation,
                 "missing_prerequisite_type": "validation_fixed_artifact",
-                "expected_filename_pattern": build_derived_artifact_name(doc_id=doc_id, slug=slug, stage="validation-fixed"),
+                "expected_filename_pattern": build_derived_artifact_name(
+                    doc_id=doc_id, slug=slug, stage="validation-fixed"
+                ),
             }
         if discovered.latest_remediation_report is None:
             return {
@@ -350,7 +382,10 @@ def _normalize_identity_value(value: object) -> object:
     if isinstance(value, Path):
         return str(value)
     if isinstance(value, dict):
-        return {str(key): _normalize_identity_value(val) for key, val in sorted(value.items(), key=lambda item: str(item[0]))}
+        return {
+            str(key): _normalize_identity_value(val)
+            for key, val in sorted(value.items(), key=lambda item: str(item[0]))
+        }
     if isinstance(value, (list, tuple)):
         return [_normalize_identity_value(item) for item in value]
     return value
@@ -359,13 +394,17 @@ def _normalize_identity_value(value: object) -> object:
 def _compute_identity_digest(*, namespace: str, identity_fields: dict[str, object]) -> str:
     normalized = {
         "namespace": namespace,
-        "identity_fields": {key: _normalize_identity_value(value) for key, value in sorted(identity_fields.items())},
+        "identity_fields": {
+            key: _normalize_identity_value(value) for key, value in sorted(identity_fields.items())
+        },
     }
     serialized = json.dumps(normalized, sort_keys=True, separators=(",", ":"), ensure_ascii=True)
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
-def _allocate_hash_identity(*, prefix: str, digest: str, existing_ids: set[str] | None, initial_hex_length: int) -> str:
+def _allocate_hash_identity(
+    *, prefix: str, digest: str, existing_ids: set[str] | None, initial_hex_length: int
+) -> str:
     if initial_hex_length < 8:
         raise ValueError("initial_hex_length must be at least 8")
 
@@ -387,9 +426,13 @@ def build_finding_id(
 ) -> str:
     if priority not in FINDING_PRIORITY_CODES:
         supported = ", ".join(FINDING_PRIORITY_CODES)
-        raise ValueError(f"Unsupported finding priority: {priority!r}. Supported values: {supported}")
+        raise ValueError(
+            f"Unsupported finding priority: {priority!r}. Supported values: {supported}"
+        )
 
-    digest = _compute_identity_digest(namespace="finding", identity_fields={"priority": priority, **identity_fields})
+    digest = _compute_identity_digest(
+        namespace="finding", identity_fields={"priority": priority, **identity_fields}
+    )
     return _allocate_hash_identity(
         prefix=priority,
         digest=digest,
@@ -542,7 +585,9 @@ def resolve_legacy_report_policy(configured_policy: str | None) -> str:
     policy = (configured_policy or DEFAULT_LEGACY_REPORT_POLICY).strip().casefold()
     if policy not in LEGACY_REPORT_POLICY_VALUES:
         supported = ", ".join(LEGACY_REPORT_POLICY_VALUES)
-        raise ValueError(f"Unsupported legacy report policy: {configured_policy!r}. Supported values: {supported}")
+        raise ValueError(
+            f"Unsupported legacy report policy: {configured_policy!r}. Supported values: {supported}"
+        )
     return policy
 
 

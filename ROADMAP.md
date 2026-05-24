@@ -34,12 +34,14 @@ The *project-level* version below tracks migration milestones only.
 ## Phases
 
 ### Phase 0 — Planning & Scaffolding  → `v0.1.0`
+
 - Working branch created; planning baseline tagged.
 - `ROADMAP.md`, `CHANGELOG.md`, `docs/PROJECT.md`, `docs/REPO_STRUCTURE.md`.
 - `platforms/` directories established.
 - Status: **complete** (`v0.1.0`).
 
 ### Phase 1 — Framework Spec Extraction  → `v0.2.0`
+
 - **Step 0 — Legacy isolation (done):** all pre-migration content moved into
   `legacy/`; legacy GitHub Actions workflows disabled.
 - Consolidate engine-agnostic content from `legacy/` into `framework/` (layers,
@@ -50,12 +52,14 @@ The *project-level* version below tracks migration milestones only.
   conformance suite green, framework spec released as `framework/v0.1.0`.
 
 ### Phase 2 — Platform A: Hermes Re-homing  → `v0.3.0`
+
 - Copy `legacy/ucx_hermes/` + `legacy/mcp_ucx/` into `platforms/hermes/`.
 - Point Hermes at `framework/`; declare `framework_spec_version`.
 - Hermes passes the conformance suite.
 - Status: **complete** (`v0.3.0`, `hermes/v0.1.0`).
 
 ### Phase 3 — Platform B: Claude Code Plugin  → `v0.4.0`
+
 - Scaffold `.claude-plugin/plugin.json`.
 - Port the `doc-*` skill set, commands, and agents into the plugin.
 - Remove all Hermes/MCP dependency — Claude is the engine.
@@ -63,12 +67,14 @@ The *project-level* version below tracks migration milestones only.
 - Status: **complete** (`v0.4.0`, `claude-code-plugin/v0.1.0`).
 
 ### Phase 4 — Conformance & Independence  → `v0.5.0`
+
 - Both platforms green on the shared conformance suite.
 - Independent per-platform `CHANGELOG.md` and CI.
 - Parity report: feature gaps between platforms documented.
 - Status: **complete** (`v0.5.0`).
 
 ### Phase 5 — Cutover  → `v1.0.0`
+
 - New project replaces `main`.
 - Legacy trees archived.
 - Tag `v1.0.0`; platforms tag their own first stable releases.

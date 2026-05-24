@@ -7,13 +7,17 @@
 UCRem uses **5 specialized Fixer Personas** organized into two categories:
 
 ### Domain Fixers (Adaptive Loading)
+
 Loaded only when findings exist in their domain:
+
 - **Architect Fixer** - Structural integrity, patterns, cross-references
 - **Auditor Fixer** - Compliance, security controls
 - **QA Fixer** - Testability, verification
 
 ### Mandatory Fixers (Always Loaded)
+
 Always loaded to ensure quality and synthesis:
+
 - **Chaos Engineer** - Root cause validation, edge cases
 - **Chairperson** - De-duplication, conflict resolution, final synthesis
 
@@ -37,6 +41,7 @@ ucx prescreen BRD-01.UCR_review_report_v003.md --verbose
 ```
 
 **Benefits:**
+
 - 30-60% token reduction by excluding unnecessary personas
 - Focused AI attention on relevant domains
 - Chairperson provides consistent synthesis regardless of which domain fixers ran
@@ -60,12 +65,14 @@ ucx remediate docs/01_BRD/BRD-01 -r BRD-01.UCR_review_report_v001.md
 ```
 
 **Report Selection Logic:**
+
 1. Finds all `*.UCR_review_report_v*.md` files in document directory
 2. Extracts version numbers (e.g., v001, v003)
 3. Returns report with highest version number
 4. Falls back to modification time if versions match
 
 **API Usage:**
+
 ```python
 from ucx import UCRemPhase
 
@@ -452,6 +459,7 @@ chairperson_synthesis:
 ### Why Mandatory
 
 The Chairperson is **always loaded** because:
+
 1. Provides consistent synthesis regardless of which domain fixers ran
 2. Ensures de-duplication even with single domain fixer
 3. Generates coherent execution order for fix application

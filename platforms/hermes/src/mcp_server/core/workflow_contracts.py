@@ -151,7 +151,9 @@ def route_optional_layer(
     }
 
 
-def run_rollback_smoke(*, source_artifact: str | None, derived_artifacts: list[str]) -> dict[str, object]:
+def run_rollback_smoke(
+    *, source_artifact: str | None, derived_artifacts: list[str]
+) -> dict[str, object]:
     """Validate that rollback can target the canonical source artifact without mutating derived artifacts."""
 
     if source_artifact is None:

@@ -154,6 +154,7 @@ algorithm: |
 Create technical specifications from REQ and CTR.
 
 **CRITICAL REMINDERS**:
+
 - Detailed algorithms
 - Complete error handling
 - Include ALL configurations

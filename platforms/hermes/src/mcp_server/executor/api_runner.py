@@ -11,8 +11,8 @@ import contextlib
 import logging
 import os
 
-from .registry import ExecutorConfig
 from .contracts import ExecutorResult
+from .registry import ExecutorConfig
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,7 @@ def _inject_env(
         return
 
     from mcp_server.env_manager import BLOCKED_ENV_VARS
+
     saved: dict[str, str | None] = {}
     for key, val in merged.items():
         if key in BLOCKED_ENV_VARS:
@@ -75,6 +76,7 @@ def _resolve_overrides(
     raw_key_env = env.get("UCX_EXECUTOR_API_KEY_ENV", "")
     if raw_key_env:
         from mcp_server.env_manager import BLOCKED_ENV_VARS
+
         if raw_key_env in BLOCKED_ENV_VARS:
             logger.warning(
                 "UCX_EXECUTOR_API_KEY_ENV='%s' is a blocked system variable — ignoring",
@@ -90,7 +92,9 @@ def _resolve_overrides(
     try:
         timeout = int(timeout_str) if timeout_str else config.timeout
     except ValueError:
-        logger.warning("Invalid UCX_EXECUTOR_TIMEOUT='%s', using default %d", timeout_str, config.timeout)
+        logger.warning(
+            "Invalid UCX_EXECUTOR_TIMEOUT='%s', using default %d", timeout_str, config.timeout
+        )
         timeout = config.timeout
 
     return model, api_base, timeout, api_key_env

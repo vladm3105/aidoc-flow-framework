@@ -22,12 +22,12 @@ import re
 import subprocess
 import sys
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass
 class Criterion:
     """Single acceptance criterion with verification status."""
+
     text: str
     verified: bool = False
     note: str = ""
@@ -41,14 +41,14 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
 
-def get_linked_issue(pr_body: str) -> Optional[int]:
+def get_linked_issue(pr_body: str) -> int | None:
     """Extract linked issue number from PR body."""
-    match = re.search(r'(Closes|Fixes|Resolves|closes|fixes|resolves)\s*#(\d+)', pr_body)
+    match = re.search(r"(Closes|Fixes|Resolves|closes|fixes|resolves)\s*#(\d+)", pr_body)
     return int(match.group(2)) if match else None
 
 
@@ -56,27 +56,24 @@ def extract_criteria(issue_body: str) -> list[Criterion]:
     """Extract acceptance criteria (checkboxes) from issue body."""
     criteria = []
     # Match unchecked checkboxes: - [ ] text
-    for match in re.finditer(r'- \[ \] (.+)', issue_body):
+    for match in re.finditer(r"- \[ \] (.+)", issue_body):
         criteria.append(Criterion(text=match.group(1).strip()))
     return criteria
 
 
 def get_changed_files(repo: str, pr_number: int) -> list[str]:
     """Get list of files changed in the PR."""
-    output = run_gh([
-        "api", f"/repos/{repo}/pulls/{pr_number}/files",
-        "--jq", ".[].filename"
-    ], check=False)
+    output = run_gh(
+        ["api", f"/repos/{repo}/pulls/{pr_number}/files", "--jq", ".[].filename"], check=False
+    )
     return output.split("\n") if output else []
 
 
 def get_ci_status(repo: str, pr_number: int) -> dict:
     """Get CI check status for the PR."""
-    output = run_gh([
-        "pr", "view", str(pr_number),
-        "--repo", repo,
-        "--json", "statusCheckRollup"
-    ], check=False)
+    output = run_gh(
+        ["pr", "view", str(pr_number), "--repo", repo, "--json", "statusCheckRollup"], check=False
+    )
     try:
         data = json.loads(output) if output else {}
         checks = data.get("statusCheckRollup", [])
@@ -84,23 +81,20 @@ def get_ci_status(repo: str, pr_number: int) -> dict:
             "total": len(checks),
             "passed": sum(1 for c in checks if c.get("conclusion") == "SUCCESS"),
             "failed": sum(1 for c in checks if c.get("conclusion") == "FAILURE"),
-            "pending": sum(1 for c in checks if c.get("status") == "IN_PROGRESS")
+            "pending": sum(1 for c in checks if c.get("status") == "IN_PROGRESS"),
         }
     except json.JSONDecodeError:
         return {"total": 0, "passed": 0, "failed": 0, "pending": 0}
 
 
 def verify_criterion(
-    criterion: Criterion,
-    changed_files: list[str],
-    ci_status: dict,
-    test_files: list[str]
+    criterion: Criterion, changed_files: list[str], ci_status: dict, test_files: list[str]
 ) -> Criterion:
     """Verify a single criterion against available evidence."""
     text_lower = criterion.text.lower()
 
     # Check 1: File patterns mentioned in criterion
-    file_patterns = re.findall(r'`([^`]+\.\w+)`', criterion.text)
+    file_patterns = re.findall(r"`([^`]+\.\w+)`", criterion.text)
     if file_patterns:
         matched = [f for f in changed_files for p in file_patterns if p in f]
         if matched:
@@ -147,10 +141,7 @@ def verify_criterion(
 
 
 def generate_report(
-    criteria: list[Criterion],
-    pr_number: int,
-    issue_number: int,
-    blocking: bool
+    criteria: list[Criterion], pr_number: int, issue_number: int, blocking: bool
 ) -> tuple[str, bool]:
     """Generate verification report and determine pass/fail."""
     verified_count = sum(1 for c in criteria if c.verified)
@@ -158,15 +149,15 @@ def generate_report(
     all_verified = verified_count == total_count
 
     lines = [
-        f"## Acceptance Criteria Verification",
-        f"",
+        "## Acceptance Criteria Verification",
+        "",
         f"**PR**: #{pr_number}",
         f"**Linked Issue**: #{issue_number}",
         f"**Status**: {'PASS' if all_verified else 'NEEDS REVIEW'}",
         f"**Verified**: {verified_count}/{total_count}",
-        f"",
-        f"### Criteria Status",
-        f""
+        "",
+        "### Criteria Status",
+        "",
     ]
 
     for c in criteria:
@@ -178,20 +169,24 @@ def generate_report(
             lines.append(f"  - Evidence: {c.evidence}")
 
     if not all_verified:
-        lines.extend([
-            f"",
-            f"### Action Required",
-            f"",
-            f"Some criteria could not be automatically verified. "
-            f"A human reviewer should confirm these items before merging."
-        ])
+        lines.extend(
+            [
+                "",
+                "### Action Required",
+                "",
+                "Some criteria could not be automatically verified. "
+                "A human reviewer should confirm these items before merging.",
+            ]
+        )
 
     if blocking and not all_verified:
-        lines.extend([
-            f"",
-            f"> **Note**: This check is configured as blocking. "
-            f"Merge will be blocked until all criteria are verified."
-        ])
+        lines.extend(
+            [
+                "",
+                "> **Note**: This check is configured as blocking. "
+                "Merge will be blocked until all criteria are verified.",
+            ]
+        )
 
     report = "\n".join(lines)
     should_pass = all_verified or not blocking
@@ -207,11 +202,9 @@ def main():
     args = parser.parse_args()
 
     # Get PR details
-    pr_json = run_gh([
-        "pr", "view", str(args.pr_number),
-        "--repo", args.repo,
-        "--json", "body,title"
-    ])
+    pr_json = run_gh(
+        ["pr", "view", str(args.pr_number), "--repo", args.repo, "--json", "body,title"]
+    )
     pr_data = json.loads(pr_json)
     pr_body = pr_data.get("body", "")
 
@@ -222,11 +215,7 @@ def main():
         sys.exit(0)
 
     # Get issue body
-    issue_json = run_gh([
-        "issue", "view", str(issue_number),
-        "--repo", args.repo,
-        "--json", "body"
-    ])
+    issue_json = run_gh(["issue", "view", str(issue_number), "--repo", args.repo, "--json", "body"])
     issue_data = json.loads(issue_json)
     issue_body = issue_data.get("body", "")
 
@@ -253,11 +242,10 @@ def main():
 
     # Post comment if requested
     if args.post_comment:
-        run_gh([
-            "pr", "comment", str(args.pr_number),
-            "--repo", args.repo,
-            "--body", report
-        ], check=False)
+        run_gh(
+            ["pr", "comment", str(args.pr_number), "--repo", args.repo, "--body", report],
+            check=False,
+        )
         print(f"\nPosted verification report to PR #{args.pr_number}")
 
     # Exit with appropriate code

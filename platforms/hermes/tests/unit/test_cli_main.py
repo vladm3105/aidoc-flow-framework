@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
 from importlib import import_module
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -305,7 +304,9 @@ def test_main_review_build_document_auto_loads_main_and_appendices(tmp_path: Pat
     assert "BRD-01_appendices" in merged_ids
 
 
-def test_main_review_build_document_auto_loads_main_and_appendices_across_layers(tmp_path: Path) -> None:
+def test_main_review_build_document_auto_loads_main_and_appendices_across_layers(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
 
     document_dir = tmp_path / "docs/06_SYS/SYS-07_runtime_architecture"
@@ -435,9 +436,15 @@ def test_main_consistency_pass_with_complete_artifact_chain(tmp_path: Path) -> N
     source = doc_dir / "BRD-01_platform_architecture.md"
     source.write_text("# source\n", encoding="utf-8")
     (doc_dir / "BRD-01.ucx.validate.json").write_text("{}", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_architecture_validated.md").write_text("# validation copy\n", encoding="utf-8")
-    (doc_dir / "BRD-01_platform_architecture_remediate_v1.md").write_text("# remediated v1\n", encoding="utf-8")
-    (doc_dir / "BRD-01_validation_remediation_report_v1.md").write_text("# remediation report\n", encoding="utf-8")
+    (doc_dir / "BRD-01_platform_architecture_validated.md").write_text(
+        "# validation copy\n", encoding="utf-8"
+    )
+    (doc_dir / "BRD-01_platform_architecture_remediate_v1.md").write_text(
+        "# remediated v1\n", encoding="utf-8"
+    )
+    (doc_dir / "BRD-01_validation_remediation_report_v1.md").write_text(
+        "# remediation report\n", encoding="utf-8"
+    )
 
     out_dir = tmp_path / "tmp/consistency"
     exit_code = main(
@@ -485,7 +492,9 @@ def test_main_preflight_ready_for_initialized_project(tmp_path: Path) -> None:
 
 
 def test_main_preflight_blocked_for_missing_ucx_root(tmp_path: Path) -> None:
-    exit_code = main(["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"])
+    exit_code = main(
+        ["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"]
+    )
     assert exit_code == 1
 
 
@@ -505,5 +514,7 @@ def test_main_preflight_runtime_error_returns_2(tmp_path: Path, monkeypatch) -> 
 
     cli_main_module = import_module("mcp_server.cli.main")
     monkeypatch.setattr(cli_main_module, "run_preflight", _boom)
-    exit_code = main(["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"])
+    exit_code = main(
+        ["preflight", "--project", str(tmp_path), "--context", "any", "--format", "json"]
+    )
     assert exit_code == 2

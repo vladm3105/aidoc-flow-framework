@@ -13,9 +13,7 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 import pytest
-
 from mcp_server.env_manager import (
-    BLOCKED_ENV_VARS,
     _env_cache,
     _invalidate_env_cache,
     load_project_env,
@@ -69,6 +67,7 @@ class TestLoadProjectEnv:
 
         # Change file content and force mtime update
         import time
+
         time.sleep(0.05)
         env_path.write_text("KEY=val2\n", encoding="utf-8")
         os.utime(env_path, (env_path.stat().st_mtime + 1, env_path.stat().st_mtime + 1))
@@ -123,6 +122,7 @@ class TestLoadProjectEnv:
         env_path = _write_env(tmp_path, "KEY=val\n")
         env_path.chmod(stat.S_IRUSR | stat.S_IWUSR | stat.S_IRGRP | stat.S_IROTH)
         import logging
+
         with caplog.at_level(logging.WARNING, logger="mcp_server.env_manager"):
             load_project_env(tmp_path)
         assert any("Insecure permissions" in r.message for r in caplog.records)

@@ -314,20 +314,24 @@ The home repo has **63 labels** organized by category:
 ## Related Documents
 
 ### Planning Templates
+
 - [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) — Full project plan template
 - [templates/ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) — Phase timeline template
 - [templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md](./templates/PROJECT_KICKOFF_PLAN-TEMPLATE.md) — Executive summary template
 
 ### Repository & Architecture
+
 - [REPOSITORY_STRATEGY.md](./REPOSITORY_STRATEGY.md) — Monorepo architecture details
 - [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) — Git workflow
 
 ### Governance
+
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
 - [RELEASE_PROCESS.md](./RELEASE_PROCESS.md) — Versioning and releases
 - [plans/README.md](./plans/README.md) — Permanent development plans guide
 
 ### GitHub Integration
+
 - [github/GITHUB_WORKFLOWS.md](./github/GITHUB_WORKFLOWS.md) — All GitHub Actions workflow documentation
 - [github/GITHUB_PROJECT_SETUP.md](./github/GITHUB_PROJECT_SETUP.md) — Project board setup
 - [github/GITHUB_TOOLS_SETUP.md](./github/GITHUB_TOOLS_SETUP.md) — CLI and MCP configuration

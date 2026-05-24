@@ -12,6 +12,36 @@ graduation.
 
 ---
 
+## D-0021 — pre-commit hooks (lint / format / security / pip-audit) + repo cleanup
+
+- **Date:** 2026-05-24
+- **Context:** Adopt automated pre-commit checks across the repo (linter errors,
+  security, dependency audit) per best practices.
+- **Decisions:**
+  1. **Tooling:** the `pre-commit` framework. Hooks: hygiene (pre-commit-hooks),
+     **ruff** + ruff-format (Python = `platforms/hermes` + `tests` only), **bandit**
+     SAST (gated **medium+** — all current findings are low), **markdownlint**,
+     **yamllint**, **detect-secrets** (baseline), **pip-audit** (`manual` stage —
+     heavy/network, runs in CI not every commit), and a **local conformance** hook.
+  2. **Pragmatic rule sets, not raw defaults** (best practice for a doc-heavy
+     brownfield repo): markdownlint disables stylistic rules (MD013 line-length,
+     MD060 table-style, …); ruff selects E/F/W/I/UP; yamllint lenient.
+  3. **Scope:** `legacy/` + **Hermes vendored/parsed content** (`agent-skills/`,
+     `prompts/`, `skills/`) excluded from markdownlint — restructuring
+     code-parsed prompt headers is risky and out of scope.
+  4. **Full cleanup applied** (user choice): markdownlint `--fix` (321 files) +
+     ruff safe-fix/format (127), then hand-fixed the residual — incl. the genuine
+     pre-existing Hermes findings (F821 missing TYPE_CHECKING import, F823
+     redundant local `import os`, UP042 `str,Enum`→`StrEnum` — behavior verified),
+     malformed tables, hard tabs, a double-H1, and blockquote/blank-line edges.
+     `pre-commit run --all-files` is green; conformance + 383 testable Hermes
+     tests pass (the 2 failures are the standing `mcp`-SDK-missing collection
+     errors). Replaced the stale `ucx_hermes`-era `repos: []` placeholder.
+  5. **CI:** `.github/workflows/pre-commit.yml` runs all hooks + `pip-audit`.
+- **Status — DONE (2026-05-24):** branch `claude/precommit-hooks`. Contributors
+  enable locally with `pip install pre-commit && pre-commit install`; pin refresh
+  via `pre-commit autoupdate`.
+
 ## D-0020 — GATE-SPEC: the framework-spec change gate (CHG-D1)
 
 - **Date:** 2026-05-23T00:00:00Z
@@ -74,7 +104,7 @@ graduation.
      (plugin-only reach); spec-level candidates are drafted but flagged
      "blocked — needs CHG-D1". Building CHG-D1 is an out-of-scope follow-up.
   3. **Surface is closed + declarative** (`framework/governance/ADAPTATION.md`
-     + machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
+     - machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
      (`active_layers`, `section_toggles`, `audit_threshold`, `glossary`);
      **`id_format` deferred** pending an `ID_NAMING_STANDARDS.md` review to
      enumerate genuinely-selectable conventions (narrow-surface principle —

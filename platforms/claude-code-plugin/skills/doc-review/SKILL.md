@@ -33,6 +33,7 @@ structure or traceability.
 generation, or to audit a folder for cross-file consistency.
 
 **Do NOT use** for:
+
 - bidirectional traceability — use `../trace-check/SKILL.md`;
 - cross-document SDD validation (links, tags, IDs) — use
   `../doc-validator/SKILL.md`;

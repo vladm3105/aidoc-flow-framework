@@ -1,20 +1,19 @@
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
 import pytest
-
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from mcp_server.executor.contracts import ExecutorResult  # noqa: E402
 from mcp_server.prompts import SourceSection  # noqa: E402
 from mcp_server.review.saga_orchestrator import run_project_review_build_saga  # noqa: E402
-from mcp_server.executor.contracts import ExecutorResult  # noqa: E402
 
 
 def _create_project_ucx(root: Path) -> None:
@@ -32,7 +31,9 @@ def _create_project_ucx(root: Path) -> None:
     (root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
     (root / "UCX/skills/personas/architect.md").write_text("Architect persona", encoding="utf-8")
     (root / "UCX/skills/personas/auditor.md").write_text("Auditor persona", encoding="utf-8")
-    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template", encoding="utf-8")
+    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text(
+        "Review template", encoding="utf-8"
+    )
     layer_root = root / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
@@ -52,8 +53,14 @@ def test_saga_orchestrator_closed_status(tmp_path: Path) -> None:
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
-            SourceSection(section_id="9.0", title="Appendix", content="reference metadata appendix"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture",
+                content="system architecture and integration",
+            ),
+            SourceSection(
+                section_id="9.0", title="Appendix", content="reference metadata appendix"
+            ),
         ],
         document_path=document_dir,
         layer="01_BRD",
@@ -86,7 +93,11 @@ def test_saga_orchestrator_escalated_on_missing_persona(tmp_path: Path) -> None:
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture",
+                content="system architecture and integration",
+            ),
         ],
         layer="01_BRD",
         output_dir=out,
@@ -114,7 +125,9 @@ def test_saga_source_stage_detection_and_resume_behavior(tmp_path: Path) -> None
     remediated_file.write_text("# remediated", encoding="utf-8")
 
     out = tmp_path / "tmp/evidence"
-    sections = [SourceSection(section_id="1.0", title="Architecture", content="system architecture")]
+    sections = [
+        SourceSection(section_id="1.0", title="Architecture", content="system architecture")
+    ]
 
     source_result = run_project_review_build_saga(
         project_root=tmp_path,
@@ -161,7 +174,9 @@ def test_saga_source_stage_detection_and_resume_behavior(tmp_path: Path) -> None
     assert "Cannot resume terminal saga run" in str(exc_info.value)
 
 
-def test_saga_branch_llm_enabled_collects_branch_telemetry(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_saga_branch_llm_enabled_collects_branch_telemetry(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     _create_project_ucx(tmp_path)
     out = tmp_path / "tmp/evidence"
 
@@ -185,7 +200,11 @@ def test_saga_branch_llm_enabled_collects_branch_telemetry(tmp_path: Path, monke
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture",
+                content="system architecture and integration",
+            ),
         ],
         layer="01_BRD",
         output_dir=out,
@@ -201,7 +220,9 @@ def test_saga_branch_llm_enabled_collects_branch_telemetry(tmp_path: Path, monke
     assert len(result.reduced_findings) >= 1
 
 
-def test_saga_rollout_phase_c_enables_branch_llm_without_flag(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_saga_rollout_phase_c_enables_branch_llm_without_flag(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     _create_project_ucx(tmp_path)
     out = tmp_path / "tmp/evidence-rollout"
 
@@ -224,7 +245,9 @@ def test_saga_rollout_phase_c_enables_branch_llm_without_flag(tmp_path: Path, mo
         personas=["architect"],
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
-        sections=[SourceSection(section_id="1.0", title="Architecture", content="system architecture")],
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture", content="system architecture")
+        ],
         layer="01_BRD",
         output_dir=out,
         executor_name="api/openrouter",
@@ -237,7 +260,9 @@ def test_saga_rollout_phase_c_enables_branch_llm_without_flag(tmp_path: Path, mo
     assert result.branch_summary["rollout_phase"] == "C"
 
 
-def test_saga_debug_raw_outputs_are_redacted(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_saga_debug_raw_outputs_are_redacted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     _create_project_ucx(tmp_path)
     out = tmp_path / "tmp/evidence-debug"
 
@@ -260,7 +285,9 @@ def test_saga_debug_raw_outputs_are_redacted(tmp_path: Path, monkeypatch: pytest
         personas=["architect"],
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
-        sections=[SourceSection(section_id="1.0", title="Architecture", content="system architecture")],
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture", content="system architecture")
+        ],
         layer="01_BRD",
         output_dir=out,
         executor_name="api/openrouter",

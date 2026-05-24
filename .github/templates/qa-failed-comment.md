@@ -1,8 +1,8 @@
 ## QA Testing Failed
 
 **Failed Tests**
-__FAILURES__
+**FAILURES**
 
 Bug issues will be created for each failure.
 
-*Tested at __TIMESTAMP__*
+*Tested at **TIMESTAMP***

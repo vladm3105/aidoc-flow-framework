@@ -10,13 +10,13 @@
 
 ```
 
-                     Security Testing Pipeline                    
+                     Security Testing Pipeline
 
-    SAST       Dependency   Container     Secret      DAST   
-   (Code)        Scan         Scan       Detection    (API)  
+    SAST       Dependency   Container     Secret      DAST
+   (Code)        Scan         Scan       Detection    (API)
 
-   bandit      pip-audit     trivy       gitleaks    (TBD)   
-   semgrep     npm audit                                     
+   bandit      pip-audit     trivy       gitleaks    (TBD)
+   semgrep     npm audit
 
 ```
 
@@ -205,7 +205,7 @@ allowlist = true
 
 ```
 Discovery → Triage → Assign → Fix → Verify → Close
-                                    
+
      Track in issue
 ```
 

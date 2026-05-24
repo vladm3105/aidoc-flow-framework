@@ -24,6 +24,7 @@ These plans are not the same artifact as SDD document-layer IPLAN (Layer 8). Use
 | Incident or blocker resolution | Document workaround and follow-up actions |
 
 Do **not** create a permanent development plan for:
+
 - Single-issue fixes with no cross-cutting impact
 - Routine code reviews or PR feedback
 - Changes already captured in an ADR

@@ -20,6 +20,7 @@ When tasks involve retrieval, MCP, or knowledge indexing, also read:
 5. **[ucx_kb/README.md](ucx_kb/README.md)** — UCX Knowledge Base setup and operations
 
 Knowledge operation modes:
+
 - **File-only mode**: use direct file reads/search; no DB/MCP runtime.
 - **Indexed mode**: start `ucx_kb` DB + MCP for RAG/Graph retrieval.
 
@@ -169,6 +170,7 @@ When picking up a GitHub issue labeled `ai:ready`, follow this **5-phase workflo
 ### Document Sync
 
 After completing a sprint or any significant/breaking change, review and update:
+
 - [ROADMAP.md](governance/ROADMAP.md) — Phase dates, statuses, dependencies
 - [RELEASE_PROCESS.md](governance/RELEASE_PROCESS.md) — Release workflow, tooling conventions
 - [PROJECT_PLAN.md](governance/PROJECT_PLAN.md) — Task statuses, schedule, gap analysis
@@ -204,6 +206,7 @@ Use the correct plan type for each scope:
 | Temporary plan | Bug fix, document correction, or one-off minor change with no long-term tracking value | `tmp/` | `TMP-PLAN-YYYY-MM-DD_{slug}.md` |
 
 Rules:
+
 - Do not place temporary plans in `plans/`.
 - If temporary scope expands to new functionality or cross-cutting dependencies, promote it to a permanent plan in `plans/`.
 
@@ -324,6 +327,7 @@ AI assistants lose context as sessions grow. These practices prevent rule drift:
 | Plan audit trail | IPLANs capture deviations so future sessions understand why things changed |
 
 **When adding new rules**, follow this hierarchy:
+
 1. Add the rule to its canonical governance doc
 2. If critical "never/always", add a one-liner to this file (Section 3 or 4)
 3. If it gates completion, add a checklist item to DEFINITION_OF_DONE.md

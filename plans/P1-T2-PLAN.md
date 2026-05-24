@@ -117,6 +117,7 @@ block neutralized, BRD README diff = engine sections only, index templates
 well-formed.
 
 Notable executor judgment calls (all sound, kept):
+
 - Fixed two pre-existing YAML defects copied from legacy (`ADR-TEMPLATE.yaml`
   stray-indented `implementation_assessment:`; `SPEC-TEMPLATE.yaml`
   mis-indented `document_control:`) — indentation-only, in the `framework/`

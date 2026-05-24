@@ -22,7 +22,6 @@ import json
 import os
 import subprocess
 from datetime import datetime
-from typing import Optional
 
 
 def run_gh(args: list[str], check: bool = True) -> str:
@@ -32,21 +31,30 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
 
 def get_phase_issues(repo: str, phase: int) -> list[dict]:
     """Get all closed issues for a specific phase."""
-    output = run_gh([
-        "issue", "list",
-        "--repo", repo,
-        "--label", f"phase:{phase}",
-        "--state", "closed",
-        "--json", "number,title,labels,createdAt,closedAt,author",
-        "--limit", "200"
-    ], check=False)
+    output = run_gh(
+        [
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--label",
+            f"phase:{phase}",
+            "--state",
+            "closed",
+            "--json",
+            "number,title,labels,createdAt,closedAt,author",
+            "--limit",
+            "200",
+        ],
+        check=False,
+    )
     return json.loads(output) if output else []
 
 
@@ -58,7 +66,7 @@ def categorize_issues(issues: list[dict]) -> dict:
         "documentation": [],
         "chores": [],
         "ai_implemented": [],
-        "other": []
+        "other": [],
     }
 
     for issue in issues:
@@ -67,7 +75,7 @@ def categorize_issues(issues: list[dict]) -> dict:
             "number": issue["number"],
             "title": issue["title"],
             "created": issue.get("createdAt", ""),
-            "closed": issue.get("closedAt", "")
+            "closed": issue.get("closedAt", ""),
         }
 
         # Check for AI implementation
@@ -113,15 +121,11 @@ def calculate_cycle_times(issues: list[dict]) -> dict:
         "avg": sum(cycle_times) / len(cycle_times),
         "min": min(cycle_times),
         "max": max(cycle_times),
-        "total": len(cycle_times)
+        "total": len(cycle_times),
     }
 
 
-def generate_summary(
-    phase: int,
-    issues: list[dict],
-    repo: str
-) -> str:
+def generate_summary(phase: int, issues: list[dict], repo: str) -> str:
     """Generate phase completion summary."""
     timestamp = datetime.now().strftime("%Y-%m-%d")
     categories = categorize_issues(issues)
@@ -129,59 +133,61 @@ def generate_summary(
 
     lines = [
         f"# Phase {phase} Completion Summary",
-        f"",
-        f"## Metadata",
-        f"",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "",
+        "## Metadata",
+        "",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| **Phase** | {phase} |",
         f"| **Generated** | {timestamp} |",
         f"| **Repository** | {repo} |",
         f"| **Total Issues** | {len(issues)} |",
-        f"",
-        f"---",
-        f"",
-        f"## Issue Breakdown",
-        f"",
-        f"| Category | Count |",
-        f"|----------|-------|",
+        "",
+        "---",
+        "",
+        "## Issue Breakdown",
+        "",
+        "| Category | Count |",
+        "|----------|-------|",
         f"| Features | {len(categories['features'])} |",
         f"| Bug Fixes | {len(categories['bugs'])} |",
         f"| Documentation | {len(categories['documentation'])} |",
         f"| Chores | {len(categories['chores'])} |",
         f"| Other | {len(categories['other'])} |",
         f"| **AI Implemented** | {len(categories['ai_implemented'])} |",
-        f"",
-        f"---",
-        f"",
-        f"## Cycle Time Metrics",
-        f"",
-        f"| Metric | Days |",
-        f"|--------|------|",
+        "",
+        "---",
+        "",
+        "## Cycle Time Metrics",
+        "",
+        "| Metric | Days |",
+        "|--------|------|",
         f"| Average | {cycle_times['avg']:.1f} |",
         f"| Minimum | {cycle_times['min']} |",
         f"| Maximum | {cycle_times['max']} |",
         f"| Issues Measured | {cycle_times['total']} |",
-        f"",
-        f"---",
-        f"",
-        f"## AI Implementation Rate",
-        f"",
+        "",
+        "---",
+        "",
+        "## AI Implementation Rate",
+        "",
     ]
 
-    ai_count = len(categories['ai_implemented'])
+    ai_count = len(categories["ai_implemented"])
     total = len(issues)
     ai_rate = (ai_count / total * 100) if total > 0 else 0
 
-    lines.extend([
-        f"- **AI Implemented**: {ai_count}/{total} ({ai_rate:.1f}%)",
-        f"- **Human Implemented**: {total - ai_count}/{total} ({100 - ai_rate:.1f}%)",
-        f"",
-        f"---",
-        f"",
-        f"## Completed Issues",
-        f"",
-    ])
+    lines.extend(
+        [
+            f"- **AI Implemented**: {ai_count}/{total} ({ai_rate:.1f}%)",
+            f"- **Human Implemented**: {total - ai_count}/{total} ({100 - ai_rate:.1f}%)",
+            "",
+            "---",
+            "",
+            "## Completed Issues",
+            "",
+        ]
+    )
 
     for category_name, category_issues in categories.items():
         if category_issues and category_name != "ai_implemented":
@@ -191,16 +197,18 @@ def generate_summary(
                 lines.append(f"- #{issue['number']}: {issue['title'][:60]}")
             lines.append("")
 
-    lines.extend([
-        f"---",
-        f"",
-        f"## Lessons Learned",
-        f"",
-        f"<!-- Add retrospective notes here -->",
-        f"",
-        f"- ",
-        f"",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Lessons Learned",
+            "",
+            "<!-- Add retrospective notes here -->",
+            "",
+            "- ",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 

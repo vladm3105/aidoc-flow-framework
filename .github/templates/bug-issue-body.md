@@ -1,12 +1,13 @@
 ## Bug Fix Issue
 
 **Source**
+
 | Field | Value |
 |:------|:------|
-| QA Testing Issue | #__QA_ISSUE__ |
-| Original Development Issue | #__DEV_ISSUE__ |
-| Phase | __PHASE_NUM__ |
-| Iteration | __ITERATION__ |
+| QA Testing Issue | #**QA_ISSUE** |
+| Original Development Issue | #**DEV_ISSUE** |
+| Phase | **PHASE_NUM** |
+| Iteration | **ITERATION** |
 
 ---
 
@@ -17,16 +18,19 @@ Test failure detected during QA testing.
 ## Failure Details
 
 ### Test That Failed
+
 - **Test file**: `__TEST_FILE__`
 - **Test name**: `__TEST_NAME__`
-- **Error type**: __ERROR_TYPE__
+- **Error type**: **ERROR_TYPE**
 
 ### Error Message
+
 ```
 __ERROR_MESSAGE__
 ```
 
 ### Stack Trace
+
 ```
 __STACK_TRACE__
 ```
@@ -53,4 +57,4 @@ __STACK_TRACE__
 
 ---
 
-*Created automatically from QA failure in #__QA_ISSUE__*
+*Created automatically from QA failure in #**QA_ISSUE***

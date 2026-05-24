@@ -32,11 +32,13 @@ nano setup-projects.sh
 ```
 
 **Configuration variables:**
+
 - `PROJECT_PREFIX` - Project identifier (e.g., `myproj`)
 - `BILLING_ACCOUNT` - Your GCP billing account ID
 - `ORG_ID` - Your GCP organization ID
 
 **Output:**
+
 - `{PROJECT_PREFIX}-dev` project
 - `{PROJECT_PREFIX}-staging` project
 - `{PROJECT_PREFIX}-prod` project
@@ -54,6 +56,7 @@ nano setup-wif.sh
 ```
 
 **Configuration variables:**
+
 - `GCP_PROJECT_DEV` - Dev project ID
 - `GCP_PROJECT_STAGING` - Staging project ID
 - `GCP_PROJECT_PROD` - Prod project ID
@@ -63,6 +66,7 @@ nano setup-wif.sh
 - `WIF_PROVIDER_NAME` - Workload Identity provider name
 
 **Output:**
+
 - Workload Identity pool and provider
 - Service account with appropriate roles
 - WIF credentials JSON for each environment
@@ -74,6 +78,7 @@ nano setup-wif.sh
 ```
 
 **Output:**
+
 - Docker repository in Artifact Registry
 - Push permissions for service accounts
 
@@ -84,6 +89,7 @@ nano setup-wif.sh
 ```
 
 **Output:**
+
 - GitHub environments (dev, staging, production)
 - Environment secrets (WIF_CREDENTIALS_*, GCP_PROJECT_*)
 

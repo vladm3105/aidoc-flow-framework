@@ -44,7 +44,7 @@ class PlatformVersionDeclarationTests(unittest.TestCase):
                 f = platform_framework_spec_version_file(platform)
                 declared = f.read_text(encoding="utf-8").strip()
                 self.assertEqual(
-                    declared, fwk,
-                    f"{platform.name} declares spec {declared!r}; "
-                    f"framework/VERSION is {fwk!r}",
+                    declared,
+                    fwk,
+                    f"{platform.name} declares spec {declared!r}; framework/VERSION is {fwk!r}",
                 )

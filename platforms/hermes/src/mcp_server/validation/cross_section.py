@@ -30,7 +30,14 @@ READINESS_SCORE_FIELDS: dict[str, str] = {
 }
 
 MAX_CUMULATIVE_TAGS: dict[str, int] = {
-    "brd": 1, "prd": 2, "ears": 3, "bdd": 4, "adr": 5, "spec": 6, "tdd": 7, "iplan": 8
+    "brd": 1,
+    "prd": 2,
+    "ears": 3,
+    "bdd": 4,
+    "adr": 5,
+    "spec": 6,
+    "tdd": 7,
+    "iplan": 8,
 }
 
 _DIAGRAM_LAYERS: frozenset[str] = frozenset({"brd", "prd", "adr", "spec"})
@@ -119,9 +126,7 @@ def _check_traceability_id_existence(
         for mid in missing:
             errors.append(f"SDD-XS-001: Traceability references non-existent ID: {mid}")
     else:
-        passes.append(
-            f"SDD-XS-001: All {len(referenced_ids)} traceability IDs exist in document"
-        )
+        passes.append(f"SDD-XS-001: All {len(referenced_ids)} traceability IDs exist in document")
 
 
 # ---------------------------------------------------------------------------
@@ -258,9 +263,7 @@ def _check_cumulative_tags(
 # SDD-XS-001 (Markdown fallback)
 # ---------------------------------------------------------------------------
 
-_MD_TRACEABILITY_HEADING_RE = re.compile(
-    r"^##\s+(?:Traceability|19\.)", re.MULTILINE
-)
+_MD_TRACEABILITY_HEADING_RE = re.compile(r"^##\s+(?:Traceability|19\.)", re.MULTILINE)
 
 
 def _check_traceability_id_existence_md(
@@ -291,7 +294,7 @@ def _check_traceability_id_existence_md(
         passes.append("SDD-XS-001: No traceability section found (skipped)")
         return
 
-    trace_section = content[trace_match.start():]
+    trace_section = content[trace_match.start() :]
     # Truncate at next H2 heading (if any).
     next_heading = re.search(r"\n##\s+", trace_section[1:])
     if next_heading is not None:
@@ -307,9 +310,7 @@ def _check_traceability_id_existence_md(
         for mid in missing:
             errors.append(f"SDD-XS-001: Traceability references non-existent ID: {mid}")
     else:
-        passes.append(
-            f"SDD-XS-001: All {len(referenced_ids)} traceability IDs exist in document"
-        )
+        passes.append(f"SDD-XS-001: All {len(referenced_ids)} traceability IDs exist in document")
 
 
 # ---------------------------------------------------------------------------

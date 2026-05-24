@@ -108,7 +108,6 @@ Normalize every finding to: `source` (`structural`|`content`), `code`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-tdd-fixer`
 consumes the latest `TDD-NN.A_audit_report_vNNN.md`.
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

@@ -4,14 +4,11 @@ from __future__ import annotations
 
 import asyncio
 import json
-import tempfile
-from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
-
-from mcp_server.tool_registry import TOOLS, handle_tool, _inspect_document_folder
+from mcp_server.executor.contracts import ExecutorResult
 from mcp_server.executor.registry import (
     ExecutorConfig,
     ExecutorType,
@@ -20,8 +17,7 @@ from mcp_server.executor.registry import (
     register_executor,
     remove_executor,
 )
-from mcp_server.executor.contracts import ExecutorResult
-
+from mcp_server.tool_registry import TOOLS, _inspect_document_folder, handle_tool
 
 # ── Tool registry tests ─────────────────────────────────────────────────────
 
@@ -32,7 +28,9 @@ class TestToolRegistry:
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
-        assert len(names) == len(set(names)), f"Duplicate tool names: {[n for n in names if names.count(n) > 1]}"
+        assert len(names) == len(set(names)), (
+            f"Duplicate tool names: {[n for n in names if names.count(n) > 1]}"
+        )
 
     def test_all_tools_have_input_schema(self):
         for tool in TOOLS:
@@ -46,9 +44,19 @@ class TestToolRegistry:
 
     def test_deterministic_tool_names(self):
         deterministic = {
-            "sdd_init", "sdd_validate", "sdd_consistency", "sdd_validate_links", "sdd_preflight",
-            "sdd_prescreen", "sdd_scan", "sdd_score_show", "sdd_score_validate",
-            "sdd_score_compare", "sdd_list_executors", "sdd_register_executor", "sdd_validate_chg",
+            "sdd_init",
+            "sdd_validate",
+            "sdd_consistency",
+            "sdd_validate_links",
+            "sdd_preflight",
+            "sdd_prescreen",
+            "sdd_scan",
+            "sdd_score_show",
+            "sdd_score_validate",
+            "sdd_score_compare",
+            "sdd_list_executors",
+            "sdd_register_executor",
+            "sdd_validate_chg",
         }
         tool_names = {t.name for t in TOOLS}
         assert deterministic.issubset(tool_names)
@@ -60,7 +68,9 @@ class TestToolRegistry:
 
     def test_llm_dependent_tool_names(self):
         llm_dependent = {
-            "sdd_create_build", "sdd_create", "sdd_review",
+            "sdd_create_build",
+            "sdd_create",
+            "sdd_review",
             "sdd_remediate",
         }
         tool_names = {t.name for t in TOOLS}
@@ -73,8 +83,7 @@ class TestToolRegistry:
         assert "sdd_clean" in tool_names
 
     def test_llm_tools_have_executor_param(self):
-        llm_tools = ["sdd_create_build", "sdd_create", "sdd_review",
-                      "sdd_remediate"]
+        llm_tools = ["sdd_create_build", "sdd_create", "sdd_review", "sdd_remediate"]
         for tool in TOOLS:
             if tool.name in llm_tools:
                 props = tool.inputSchema.get("properties", {})
@@ -178,9 +187,12 @@ class TestExecutorRegistry:
 
     def test_load_config_file_old_array_format(self, tmp_path):
         from mcp_server.executor.registry import load_config_file
+
         config_file = tmp_path / "executors.json"
         config_file.write_text(
-            json.dumps([{"name": "test-old", "executor_type": "api", "model": "openai/gpt-4o-mini"}]),
+            json.dumps(
+                [{"name": "test-old", "executor_type": "api", "model": "openai/gpt-4o-mini"}]
+            ),
             encoding="utf-8",
         )
         count = load_config_file(config_file)
@@ -190,15 +202,20 @@ class TestExecutorRegistry:
         remove_executor("test-old")
 
     def test_load_config_file_new_object_format(self, tmp_path):
-        from mcp_server.executor.registry import load_config_file
         import mcp_server.project_context as pc
+        from mcp_server.executor.registry import load_config_file
+
         old_config = pc._config_default_project
         config_file = tmp_path / "executors.json"
         config_file.write_text(
-            json.dumps({
-                "default_project": str(tmp_path),
-                "executors": [{"name": "test-new", "executor_type": "api", "model": "openai/gpt-4o-mini"}],
-            }),
+            json.dumps(
+                {
+                    "default_project": str(tmp_path),
+                    "executors": [
+                        {"name": "test-new", "executor_type": "api", "model": "openai/gpt-4o-mini"}
+                    ],
+                }
+            ),
             encoding="utf-8",
         )
         count = load_config_file(config_file)
@@ -210,8 +227,9 @@ class TestExecutorRegistry:
         pc._config_default_project = old_config
 
     def test_load_config_file_object_without_executors(self, tmp_path):
-        from mcp_server.executor.registry import load_config_file
         import mcp_server.project_context as pc
+        from mcp_server.executor.registry import load_config_file
+
         old_config = pc._config_default_project
         config_file = tmp_path / "executors.json"
         config_file.write_text(
@@ -242,17 +260,13 @@ class TestExecutorRegistry:
 
 class TestHandlers:
     def test_unknown_tool_returns_error(self):
-        result = asyncio.get_event_loop().run_until_complete(
-            handle_tool("nonexistent_tool", {})
-        )
+        result = asyncio.get_event_loop().run_until_complete(handle_tool("nonexistent_tool", {}))
         assert len(result) == 1
         payload = json.loads(result[0].text)
         assert "error" in payload
 
     def test_sdd_list_executors(self):
-        result = asyncio.get_event_loop().run_until_complete(
-            handle_tool("sdd_list_executors", {})
-        )
+        result = asyncio.get_event_loop().run_until_complete(handle_tool("sdd_list_executors", {}))
         payload = json.loads(result[0].text)
         assert "executors" in payload
         names = {e["name"] for e in payload["executors"]}
@@ -260,11 +274,14 @@ class TestHandlers:
 
     def test_sdd_register_executor_via_handler(self):
         result = asyncio.get_event_loop().run_until_complete(
-            handle_tool("sdd_register_executor", {
-                "name": "handler-test-agent",
-                "executor_type": "api",
-                "model": "openai/gpt-4o-mini",
-            })
+            handle_tool(
+                "sdd_register_executor",
+                {
+                    "name": "handler-test-agent",
+                    "executor_type": "api",
+                    "model": "openai/gpt-4o-mini",
+                },
+            )
         )
         payload = json.loads(result[0].text)
         assert payload["registered"] == "handler-test-agent"
@@ -405,9 +422,11 @@ class TestLifecyclePipeline:
     def test_pipeline_stops_on_failure(self):
         """Pipeline should stop when a stage returns passed=False (e.g. review)."""
         import mcp_server.tool_registry as tr
+
         original = tr._dispatch
 
         call_count = 0
+
         async def mock_dispatch(name, arguments):
             nonlocal call_count
             call_count += 1
@@ -419,13 +438,15 @@ class TestLifecyclePipeline:
         async def _run():
             tr._dispatch = mock_dispatch
             try:
-                result = await tr._handle_lifecycle_pipeline({
-                    "project": "/tmp/test",
-                    "doc_type": "brd",
-                    "layer": "01_BRD",
-                    "document": "/tmp/test/docs/01_BRD/BRD-01/",
-                    "stages": ["validate", "review"],
-                })
+                result = await tr._handle_lifecycle_pipeline(
+                    {
+                        "project": "/tmp/test",
+                        "doc_type": "brd",
+                        "layer": "01_BRD",
+                        "document": "/tmp/test/docs/01_BRD/BRD-01/",
+                        "stages": ["validate", "review"],
+                    }
+                )
                 return result
             finally:
                 tr._dispatch = original
@@ -437,6 +458,7 @@ class TestLifecyclePipeline:
     def test_pipeline_completes_all_stages(self):
         """Pipeline should run all stages when none fail."""
         import mcp_server.tool_registry as tr
+
         original = tr._dispatch
 
         async def mock_dispatch(name, arguments):
@@ -445,13 +467,15 @@ class TestLifecyclePipeline:
         async def _run():
             tr._dispatch = mock_dispatch
             try:
-                result = await tr._handle_lifecycle_pipeline({
-                    "project": "/tmp/test",
-                    "doc_type": "brd",
-                    "layer": "01_BRD",
-                    "document": "/tmp/test/docs/01_BRD/BRD-01/",
-                    "stages": ["validate", "review"],
-                })
+                result = await tr._handle_lifecycle_pipeline(
+                    {
+                        "project": "/tmp/test",
+                        "doc_type": "brd",
+                        "layer": "01_BRD",
+                        "document": "/tmp/test/docs/01_BRD/BRD-01/",
+                        "stages": ["validate", "review"],
+                    }
+                )
                 return result
             finally:
                 tr._dispatch = original
@@ -464,9 +488,11 @@ class TestLifecyclePipeline:
     def test_validate_fix_stage_absorbed(self):
         """Pipeline should absorb validate_fix when validate already ran."""
         import mcp_server.tool_registry as tr
+
         original = tr._dispatch
 
         call_count = 0
+
         async def mock_dispatch(name, arguments):
             nonlocal call_count
             call_count += 1
@@ -475,13 +501,15 @@ class TestLifecyclePipeline:
         async def _run():
             tr._dispatch = mock_dispatch
             try:
-                result = await tr._handle_lifecycle_pipeline({
-                    "project": "/tmp/test",
-                    "doc_type": "brd",
-                    "layer": "01_BRD",
-                    "document": "/tmp/test/docs/01_BRD/BRD-01/",
-                    "stages": ["validate", "validate_fix"],
-                })
+                result = await tr._handle_lifecycle_pipeline(
+                    {
+                        "project": "/tmp/test",
+                        "doc_type": "brd",
+                        "layer": "01_BRD",
+                        "document": "/tmp/test/docs/01_BRD/BRD-01/",
+                        "stages": ["validate", "validate_fix"],
+                    }
+                )
                 return result
             finally:
                 tr._dispatch = original
@@ -556,14 +584,19 @@ class TestReviewReportPersistence:
             ) as run_executor_mock,
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "document": str(doc_dir),
-                    "executor": "api/gpt-4o",
-                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "document": str(doc_dir),
+                        "executor": "api/gpt-4o",
+                        "sections": [
+                            {"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -625,14 +658,19 @@ class TestReviewSagaSchema:
             ),
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "review_mode": "saga_parallel",
-                    "executor": "api/gpt-4o",
-                    "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "review_mode": "saga_parallel",
+                        "executor": "api/gpt-4o",
+                        "sections": [
+                            {"section_id": "1.0", "title": "Architecture", "content": "text"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -693,15 +731,20 @@ class TestReviewSagaSchema:
             ),
         ):
             _ = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "review_mode": "saga_parallel",
-                    "executor": "api/gpt-4o",
-                    "document": str(doc_dir),
-                    "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "review_mode": "saga_parallel",
+                        "executor": "api/gpt-4o",
+                        "document": str(doc_dir),
+                        "sections": [
+                            {"section_id": "1.0", "title": "Architecture", "content": "text"}
+                        ],
+                    },
+                )
             )
 
         called_kwargs = saga_mock.call_args.kwargs
@@ -759,14 +802,19 @@ class TestReviewSagaSchema:
             ) as run_executor_mock,
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "review_mode": "saga_parallel",
-                    "executor": "api/gpt-4o",
-                    "sections": [{"section_id": "1.0", "title": "Architecture", "content": "text"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "review_mode": "saga_parallel",
+                        "executor": "api/gpt-4o",
+                        "sections": [
+                            {"section_id": "1.0", "title": "Architecture", "content": "text"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -800,12 +848,15 @@ class TestRemediateExecutorRequired:
             rem_fix_mock.side_effect = ValueError("skip")
 
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_remediate", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "layer": "01_BRD",
-                    "document": str(doc_dir),
-                })
+                handle_tool(
+                    "sdd_remediate",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "layer": "01_BRD",
+                        "document": str(doc_dir),
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -820,13 +871,16 @@ class TestRemediateExecutorRequired:
         (doc_dir / "BRD-01_platform.md").write_text("# BRD-01", encoding="utf-8")
 
         result = asyncio.get_event_loop().run_until_complete(
-            handle_tool("sdd_remediate", {
-                "project": str(tmp_path),
-                "doc_type": "brd",
-                "layer": "01_BRD",
-                "document": str(doc_dir),
-                "executor": "claude",
-            })
+            handle_tool(
+                "sdd_remediate",
+                {
+                    "project": str(tmp_path),
+                    "doc_type": "brd",
+                    "layer": "01_BRD",
+                    "document": str(doc_dir),
+                    "executor": "claude",
+                },
+            )
         )
         payload = json.loads(result[0].text)
         assert payload.get("passed") is False
@@ -854,13 +908,18 @@ class TestRemediateExecutorRequired:
             return_value=fake_review_result,
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "document": str(doc_dir),
-                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "document": str(doc_dir),
+                        "sections": [
+                            {"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -889,14 +948,19 @@ class TestRemediateExecutorRequired:
             return_value=fake_review_result,
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "document": str(doc_dir),
-                    "executor": "claude",
-                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "document": str(doc_dir),
+                        "executor": "claude",
+                        "sections": [
+                            {"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)
@@ -938,14 +1002,19 @@ class TestRemediateExecutorRequired:
             ),
         ):
             result = asyncio.get_event_loop().run_until_complete(
-                handle_tool("sdd_review", {
-                    "project": str(tmp_path),
-                    "doc_type": "brd",
-                    "template": "UCR_PROMPT_BRD_PROJECT.md",
-                    "document": str(doc_dir),
-                    "executor": "api/gpt-4o",
-                    "sections": [{"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}],
-                })
+                handle_tool(
+                    "sdd_review",
+                    {
+                        "project": str(tmp_path),
+                        "doc_type": "brd",
+                        "template": "UCR_PROMPT_BRD_PROJECT.md",
+                        "document": str(doc_dir),
+                        "executor": "api/gpt-4o",
+                        "sections": [
+                            {"section_id": "BRD-01", "title": "BRD-01", "content": "# BRD-01"}
+                        ],
+                    },
+                )
             )
 
         payload = json.loads(result[0].text)

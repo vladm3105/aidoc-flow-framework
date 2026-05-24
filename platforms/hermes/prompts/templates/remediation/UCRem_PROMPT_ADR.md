@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## ADR-Specific Context
 
 ADR is Layer 5 in the SDD workflow:
+
 - **Upstream**: BDD (Behavior Scenarios), BRD (Business Requirements)
 - **Downstream**: SYS (System Requirements)
 
 Common ADR issues to remediate:
+
 - Missing alternatives analysis
 - Incomplete consequences
 - Missing BRD/BDD traceability
@@ -75,17 +77,20 @@ Common ADR issues to remediate:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Documentation-only fix (typos, formatting)
 - Missing section with clear content
 - Traceability addition with valid references
 - Chaos Engineer has no objections
 
 ### auto-assisted
+
 - Template structure provided
 - Contains [TODO] for team-specific details
 - Alternatives need team input
 
 ### manual-required
+
 - Architectural decision change
 - New pattern introduction
 - Cross-ADR conflict
@@ -156,6 +161,7 @@ verification: |
 ## ADR-Specific Fix Examples
 
 ### Missing Alternatives Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -179,6 +185,7 @@ fix_action:
 ```
 
 ### Missing Implementation Guidance Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -204,6 +211,7 @@ fix_action:
 ```
 
 ### Traceability Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -235,6 +243,7 @@ Example: `ADR.01.01` - First decision in ADR-01
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] Context section explains the problem clearly
 - [ ] Decision is stated explicitly
 - [ ] Consequences have positive/negative/neutral
@@ -250,6 +259,7 @@ Analyze the UCR review report and original ADR document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - ADR fixes often have high impact - be conservative
 - Flag architectural changes as manual-required
 - Ensure alternatives analysis is complete

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import re
-
+from dataclasses import dataclass
 
 _REQUIRED_FINDING_FIELDS: tuple[str, ...] = (
     "priority",
@@ -45,7 +44,9 @@ def _coerce_findings(raw: object) -> list[dict[str, str]]:
 
 
 def _extract_json_block(text: str) -> str | None:
-    fenced_match = re.search(r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", text, re.IGNORECASE | re.DOTALL)
+    fenced_match = re.search(
+        r"```(?:json)?\s*(\{.*?\}|\[.*?\])\s*```", text, re.IGNORECASE | re.DOTALL
+    )
     if fenced_match:
         return fenced_match.group(1)
 

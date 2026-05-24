@@ -8,15 +8,17 @@ last_updated: 2026-03-27
 status: completed
 owner: ai-agent
 tags:
-  - checklist
-  - mcp
-  - gap-closure
-  - phase-g1
+
+- checklist
+- mcp
+- gap-closure
+- phase-g1
 custom_fields:
   document_type: checklist
   parent_plan: IPLAN-005
   phase: G1
   timezone: America/New_York
+
 ---
 
 ## CHECKLIST-005-G1: Baseline and Contracts

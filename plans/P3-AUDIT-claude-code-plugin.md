@@ -195,6 +195,7 @@ flag the size and shape.
 ### 3b. The `/opt/data/ucx_framework` rewire (1 file)
 
 `project-mngt/SKILL.md:46` reads:
+
 ```
 `/opt/data/ucx_framework/ai_dev_flow/ID_NAMING_STANDARDS.md`
 ```
@@ -217,6 +218,7 @@ Net: 2 illustration paths preserved verbatim per G13.
 ### Verify gate for P3-T2
 
 After the port + rewires:
+
 - `grep -rE 'ucx_flow|UCX_FLOW|ucx_hermes' platforms/claude-code-plugin/` returns **zero**.
 - `grep -rE '\bai_dev_flow\b' platforms/claude-code-plugin/` returns **zero**.
 - `/opt/data/ucx_framework` returns zero.

@@ -1,9 +1,11 @@
 # TEST-CHECKLIST-001: MCP New Contract Compliance Rows
 
 ## Scope
+
 This checklist maps newly added compliance-matrix contract rows in SPEC-001, SPEC-002, SPEC-003, and SPEC-004 to concrete unit and integration tests.
 
 ## Execution Notes
+
 - Unit tests validate deterministic parsing, normalization, and schema checks.
 - Integration tests validate end-to-end workflow behavior across create/validate/review/fix/report stages.
 - Mark each item complete only after executable evidence exists in CI or local test logs.
@@ -30,15 +32,18 @@ This checklist maps newly added compliance-matrix contract rows in SPEC-001, SPE
 | TC-014 | SPEC-004: Drift hash validation | `test_drift_hash_format_requires_sha256_prefix_and_64_hex` | `test_drift_enabled_run_enforces_required_upstream_hash_entries` | PASS | PASS | `mcp/tmp/TEST_EVIDENCE_2026-03-24_TC010_TC014.md` |
 
 ## Coverage Summary
+
 - Total new contract rows covered: 14
 - Unit test cases: 14
 - Integration test cases: 14
 
 ## Completion Rule
+
 - Checklist is complete only when all TC rows have Unit Status = PASS, Integration Status = PASS, and Evidence Link is populated.
 - Workstream G and Workstream H approval gates must reject incomplete rows.
 
 ## Referenced Compliance Matrices
+
 - SPEC-001 Section 7
 - SPEC-002 Section 11
 - SPEC-003 Section 9

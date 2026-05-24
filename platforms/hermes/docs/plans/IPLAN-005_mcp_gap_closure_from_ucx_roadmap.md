@@ -8,12 +8,13 @@ last_updated: 2026-03-27
 status: completed
 owner: ai-agent
 tags:
-  - implementation-plan
-  - mcp
-  - roadmap
-  - validation
-  - diagnostics
-  - governance
+
+- implementation-plan
+- mcp
+- roadmap
+- validation
+- diagnostics
+- governance
 custom_fields:
   document_type: iplan
   plan_id: IPLAN-005
@@ -21,6 +22,7 @@ custom_fields:
   execution_state: completed
   created_date: 2026-03-27
   timezone: America/New_York
+
 ---
 
 ## IPLAN-005: MCP Gap Closure from UCX Roadmap

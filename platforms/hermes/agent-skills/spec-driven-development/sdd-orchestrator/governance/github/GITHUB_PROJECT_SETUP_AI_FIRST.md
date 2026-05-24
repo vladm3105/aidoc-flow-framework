@@ -11,6 +11,7 @@ This document supplements (does not replace) [GITHUB_PROJECT_SETUP.md](./GITHUB_
 Use this companion when enabling AI-driven issue execution and phase-gated automation in a new repository.
 
 Core goals:
+
 - Align labels, board fields, and workflows to AI lifecycle.
 - Ensure workflow automation and governance docs are consistent.
 - Keep all configuration reusable across organizations/projects.
@@ -22,6 +23,7 @@ Core goals:
 ### 1) Label Lifecycle
 
 Ensure these labels exist and are documented consistently:
+
 - `ai:ready`
 - `ai:in-progress`
 - `ai:review-requested`
@@ -35,6 +37,7 @@ Ensure status transitions map to label lifecycle and automation workflows.
 ### 3) Workflow Migration Coverage
 
 Verify the workflow inventory in [GITHUB_WORKFLOWS.md](./GITHUB_WORKFLOWS.md) includes:
+
 - issue/PR board sync
 - AI review
 - phase completion checks

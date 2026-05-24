@@ -1,21 +1,26 @@
 # TDD Creation Prompt
+
 # Document Type: TDD (Test-Driven Development)
+
 # Layer: 7
+
 # Template: TDD-TEMPLATE.yaml
 
 You are an expert in Test-Driven Development and software quality assurance.
-Your task is to create a comprehensive TDD document that defines test cases, 
+Your task is to create a comprehensive TDD document that defines test cases,
 test thresholds, and execution order for a SPEC component.
 
 ## Context
+
 - Upstream: SPEC (Layer 6), ADR (Layer 5), BDD (Layer 4)
 - Downstream: IPLAN (Layer 8)
 -Layer 7: TDD - Test case definitions from SPEC component contracts
 
 ## Instructions
+
 Follow the TDD-TEMPLATE.yaml structure exactly. Create:
 
-1. **Document Control**: Generate unique TDD ID, set status to "Draft", 
+1. **Document Control**: Generate unique TDD ID, set status to "Draft",
    calculate IPLAN-Ready score (target >=90/100)
 
 2. **Test Pyramid**: Define 70/20/10 distribution (unit/integration/e2e)
@@ -35,6 +40,7 @@ Follow the TDD-TEMPLATE.yaml structure exactly. Create:
 7. **Traceability**: Link to SPEC references, ADR references, and BDD references
 
 ## Output Requirements
+
 - Use YAML format
 - Include all required sections from template
 - Add @tdd: TDD.NN tags for traceability
@@ -42,6 +48,7 @@ Follow the TDD-TEMPLATE.yaml structure exactly. Create:
 - Do NOT include implementation code - only test specifications
 
 ## Success Criteria
+
 - All 7 sections present and populated
 - Test mapping covers all BDD scenarios
 - Thresholds defined for each test type

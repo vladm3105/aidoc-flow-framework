@@ -99,6 +99,7 @@ nano .env  # or use your preferred editor
 ```
 
 **Critical Values to Update:**
+
 - `GCP_PROJECT_ID` - Your GCP project ID
 - `AUTH0_DOMAIN` - Your Auth0 tenant domain
 - `DATABASE_PASSWORD` - Generate a strong password
@@ -334,6 +335,7 @@ gcloud run services describe ai-cost-monitoring-backend \
 **Symptom**: Service shows "Revision failed"
 
 **Solutions**:
+
 ```bash
 # Check logs
 gcloud run services logs read ai-cost-monitoring-backend --limit=100
@@ -349,6 +351,7 @@ gcloud run services logs read ai-cost-monitoring-backend --limit=100
 **Symptom**: "Connection refused" or "Could not connect to Cloud SQL"
 
 **Solutions**:
+
 ```bash
 # Verify Cloud SQL instance is running
 gcloud sql instances describe ai-cost-monitoring-db
@@ -364,6 +367,7 @@ gcloud compute networks vpc-access connectors list --region us-central1
 **Symptom**: "Unauthorized" or Auth0 errors
 
 **Solutions**:
+
 - Verify Auth0 callback URLs match exactly
 - Check that secrets are properly set
 - Ensure `AUTH0_AUDIENCE` matches your API identifier
@@ -373,6 +377,7 @@ gcloud compute networks vpc-access connectors list --region us-central1
 **Symptom**: First request takes 5-10 seconds
 
 **Solutions**:
+
 ```bash
 # Set minimum instances to 1
 gcloud run services update ai-cost-monitoring-backend \
@@ -405,7 +410,7 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}
-      
+
       - name: Deploy Backend
         run: |
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend ./backend
@@ -423,6 +428,7 @@ jobs:
    - Set `min-instances=1` only for production critical services
 
 2. **Enable Request Logging Sampling**
+
    ```bash
    gcloud run services update ai-cost-monitoring-backend \
        --no-cpu-throttling \
@@ -443,7 +449,7 @@ jobs:
 
 - **Documentation**: [docs/](docs/)
 - **ADRs**: [docs/adr/](docs/adr/)
-- **Cloud Run Docs**: https://cloud.google.com/run/docs
+- **Cloud Run Docs**: <https://cloud.google.com/run/docs>
 - **Terraform Docs**: [terraform/README.md](terraform/README.md)
 
 ---
@@ -452,9 +458,9 @@ jobs:
 
 1. [PASS] Deploy infrastructure
 2. [PASS] Deploy application services
-3.  Configure monitoring dashboards
-4.  Set up automated backups
-5.  Configure custom domain
-6.  Enable HTTPS with SSL certificate
-7.  Set up CI/CD pipeline
-8.  Load test and optimize
+3. Configure monitoring dashboards
+4. Set up automated backups
+5. Configure custom domain
+6. Enable HTTPS with SSL certificate
+7. Set up CI/CD pipeline
+8. Load test and optimize

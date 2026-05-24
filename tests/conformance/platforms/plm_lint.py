@@ -47,15 +47,33 @@ OP_SUFFIX = re.compile(r"-(audit|autopilot|fixer|reviewer|validator)$")
 # families were removed (not in framework/registry/LAYER_REGISTRY.yaml).
 MIGRATED: set[str] = {
     # 8 layer families (base + -autopilot/-audit/-fixer share the family key)
-    "doc-brd", "doc-prd", "doc-ears", "doc-bdd",
-    "doc-adr", "doc-spec", "doc-tdd", "doc-iplan",
+    "doc-brd",
+    "doc-prd",
+    "doc-ears",
+    "doc-bdd",
+    "doc-adr",
+    "doc-spec",
+    "doc-tdd",
+    "doc-iplan",
     # CHG change-management family (governance overlay, not a layer)
     "doc-chg",
     # utilities
-    "doc-flow", "doc-naming", "doc-ref", "doc-review", "doc-validator",
-    "project-init", "project-adopt", "gate-check", "trace-check",
-    "charts-flow", "adr-roadmap", "context-analyzer", "quality-advisor",
-    "skill-recommender", "workflow-optimizer", "security-audit",
+    "doc-flow",
+    "doc-naming",
+    "doc-ref",
+    "doc-review",
+    "doc-validator",
+    "project-init",
+    "project-adopt",
+    "gate-check",
+    "trace-check",
+    "charts-flow",
+    "adr-roadmap",
+    "context-analyzer",
+    "quality-advisor",
+    "skill-recommender",
+    "workflow-optimizer",
+    "security-audit",
 }
 
 # Calibrated legacy fingerprints (see PLM-PLAN.md §Verification + the 2026-05-22
@@ -139,9 +157,7 @@ def scan(enforce_all: bool):
                 if (label, fam) in EXCEPTIONS:
                     continue
                 for m in pat.finditer(text):
-                    if label == "legacy-3seg-id" and _is_teaching_example(
-                        text, m.start(), m.end()
-                    ):
+                    if label == "legacy-3seg-id" and _is_teaching_example(text, m.start(), m.end()):
                         continue
                     line_no = text.count("\n", 0, m.start()) + 1
                     file_hits.append((disp, line_no, label, m.group(0)))
@@ -156,18 +172,21 @@ def scan(enforce_all: bool):
 
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--migrated", default="",
-                    help="comma-separated families to enforce (overrides built-in MIGRATED)")
-    ap.add_argument("--all", action="store_true",
-                    help="enforce the whole corpus (final gate)")
+    ap.add_argument(
+        "--migrated",
+        default="",
+        help="comma-separated families to enforce (overrides built-in MIGRATED)",
+    )
+    ap.add_argument("--all", action="store_true", help="enforce the whole corpus (final gate)")
     args = ap.parse_args()
     if args.migrated:
         MIGRATED.clear()
         MIGRATED.update(f.strip() for f in args.migrated.split(",") if f.strip())
 
     hits, remaining = scan(args.all)
-    scope = "ALL families" if args.all else (
-        ", ".join(sorted(MIGRATED)) if MIGRATED else "(none yet)")
+    scope = (
+        "ALL families" if args.all else (", ".join(sorted(MIGRATED)) if MIGRATED else "(none yet)")
+    )
     print(f"PLM lint — enforced scope: {scope} (+ agents/, commands/ always)")
     print(f"  files with legacy fingerprints outside enforced scope (remaining): {remaining}")
     if hits:

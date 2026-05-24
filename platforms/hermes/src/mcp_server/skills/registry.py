@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 
-
 # Active SDD v3.2 flow prefixes plus legacy compatibility prefixes.
 LAYER_PREFIXES: tuple[str, ...] = (
     "brd",

@@ -22,12 +22,14 @@ Define MCP-native persona behavior, runtime loading rules, and context-engineeri
 ## 2. Scope
 
 In scope:
+
 - Persona taxonomy and role boundaries for MCP tools.
 - Runtime source resolution for project-specific personas, skills, and prompts.
 - Context-engineering requirements for prompt assembly and diagnostics.
 - Error conditions when project-specific assets are missing.
 
 Out of scope:
+
 - Canonical contract definitions (owned by SPEC-001..SPEC-004).
 - UI workflow concerns.
 
@@ -36,6 +38,7 @@ Out of scope:
 ### 3.1 Source-of-truth at runtime
 
 At runtime, MCP loads personas/skills/prompts from project scope only:
+
 - `{project_root}/UCX/skills/personas/`
 - `{project_root}/UCX/skills/persona_mappings.yaml`
 - `{project_root}/UCX/skills/layer_aliases/`
@@ -91,15 +94,18 @@ They are not loaded by runtime execution paths.
 ### 3.5 Missing asset behavior
 
 If required project-specific paths are missing, MCP must raise:
+
 - `ProjectSkillsNotFound`
 
 Minimum error payload fields:
+
 - `error_code`
 - `project_root`
 - `missing_paths`
 - `resolution`
 
 Required resolution message:
+
 - `Run mcp init --project {project_root} to create project-specific files.`
 
 ## 4. Persona Taxonomy
@@ -145,6 +151,7 @@ This layered approach reduces false-positive P0 findings from generic regulatory
 This guide consumes SPEC-002 Section 4 as normative source.
 
 Required finding fields:
+
 - `finding_id`
 - `priority`
 - `category`
@@ -153,6 +160,7 @@ Required finding fields:
 - `target_layer`
 
 Priority domain:
+
 - `P0`
 - `P1`
 - `P2`
@@ -165,6 +173,7 @@ This guide consumes SPEC-002 Section 5 and Section 6 as normative source.
 ### 6.1 Required context behavior
 
 Prompt assembly must implement:
+
 - Persona-mapped section inclusion.
 - Section skip list emission.
 - Hybrid keyword-discovered snippets.
@@ -172,6 +181,7 @@ Prompt assembly must implement:
 - Dynamic mapping confidence output.
 
 Required context fields:
+
 - `sections_included`
 - `sections_skipped`
 - `discovered_snippets`
@@ -183,6 +193,7 @@ Required context fields:
 Prompt diagnostics must emit deterministic sidecar metadata.
 
 Required metadata fields (`PromptMetadataSidecar`):
+
 - `personas` — `list[str]` of persona identifiers loaded for the prompt
 - `persona_count` — integer count of loaded personas
 - `persona_token_estimate` — estimated token cost for all persona content
@@ -196,6 +207,7 @@ Required metadata fields (`PromptMetadataSidecar`):
 ### 6.3 Minimum verification checks
 
 For each persona prompt build:
+
 - Validate required context fields exist.
 - Validate required metadata sidecar fields exist.
 - Validate deterministic output for repeated identical inputs.

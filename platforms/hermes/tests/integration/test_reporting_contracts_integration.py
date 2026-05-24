@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from pathlib import Path
 import sys
-
+from datetime import UTC, datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -22,8 +21,18 @@ from mcp_server.reporting import (  # noqa: E402
 
 def test_audit_wrapper_outputs_deterministic_family_selection_and_versioned_names() -> None:
     candidates = [
-        ReportFamilySelection(family="review", path="SPEC-001.R_review_report_v5.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
-        ReportFamilySelection(family="audit", path="SPEC-001.A_audit_report_v5.md", version=5, timestamp="2026-03-24T10:00:00+00:00"),
+        ReportFamilySelection(
+            family="review",
+            path="SPEC-001.R_review_report_v5.md",
+            version=5,
+            timestamp="2026-03-24T10:00:00+00:00",
+        ),
+        ReportFamilySelection(
+            family="audit",
+            path="SPEC-001.A_audit_report_v5.md",
+            version=5,
+            timestamp="2026-03-24T10:00:00+00:00",
+        ),
     ]
     selected_first = choose_preferred_review_input(candidates)
     selected_second = choose_preferred_review_input(candidates)
@@ -53,7 +62,7 @@ def test_multi_stage_run_preserves_deterministic_name_mapping_across_reports() -
 
 def test_report_generation_applies_repository_timezone_policy_when_enabled() -> None:
     ts = apply_repository_timezone_policy(
-        dt=datetime(2026, 3, 24, 12, 0, 0, tzinfo=timezone.utc),
+        dt=datetime(2026, 3, 24, 12, 0, 0, tzinfo=UTC),
         timezone_name="America/New_York",
     )
     assert ts.endswith("-04:00") or ts.endswith("-05:00")
@@ -96,7 +105,11 @@ def test_drift_enabled_run_enforces_required_upstream_hash_entries() -> None:
         drift_enabled=True,
         required_upstreams=["REQ-001", "SYS-001"],
         entries=[
-            {"upstream_artifact": "REQ-001", "hash_algorithm": "sha256", "hash_value": "sha256:" + "a" * 64},
+            {
+                "upstream_artifact": "REQ-001",
+                "hash_algorithm": "sha256",
+                "hash_value": "sha256:" + "a" * 64,
+            },
         ],
     )
     assert "missing_upstream:SYS-001" in errors

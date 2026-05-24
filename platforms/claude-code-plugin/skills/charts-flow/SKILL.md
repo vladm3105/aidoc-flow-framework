@@ -27,6 +27,7 @@ validation, and SVG rendering lives here.
 ## When to Use
 
 Use `charts-flow` when:
+
 - Adding an architecture diagram (flowchart, sequence, class, state, component,
   or deployment) to a BRD, PRD, ADR, SPEC, or IPLAN.
 - Migrating an existing inline `mermaid` block into a separate diagram file.
@@ -40,6 +41,7 @@ the SDD diagram contract.
 ## Behavior
 
 **Create a new diagram**
+
 1. Derive the parent document ID from its filename (e.g. `PRD-01`) and locate
    its folder.
 2. Create `diagrams/` beside the parent if absent, and write
@@ -51,6 +53,7 @@ the SDD diagram contract.
    `<details>` block with a link to the diagram file.
 
 **Migrate inline diagrams**
+
 - Scan the parent for `mermaid` blocks, move each into its own diagram file
   (numbering multiples), then replace the original block with the SVG preview
   plus a reference link, preserving document flow.
@@ -78,4 +81,4 @@ valid Mermaid syntax; SVG embedded; all cross-references resolve; SVG < 1 MB.
   `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
   `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
 - Roadmap visuals: `../adr-roadmap/SKILL.md`
-- Mermaid: https://mermaid.js.org/ · https://mermaid.live
+- Mermaid: <https://mermaid.js.org/> · <https://mermaid.live>

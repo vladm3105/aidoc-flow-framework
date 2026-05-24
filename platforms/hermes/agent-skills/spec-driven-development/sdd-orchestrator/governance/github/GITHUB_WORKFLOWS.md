@@ -66,83 +66,83 @@ This diagram shows how workflows trigger each other and their dependencies:
 
 ```
 
-                           DEVELOPMENT PHASE                                   
-
-                                                                               
-   Issue Created           PR Created/Updated          PR Merged               
-                                                                            
-                                                                            
-  auto-add-to-project     ai-review.yml          create-deployment-issue       
-                                                create-qa-testing-issue      
-                                                                            
-  issue-label-sync              CI                                            
-  (labeled/assigned)                             pr-merge-cleanup             
-                                                                              
-                        (must pass)                                            
-                                                                               
+                           DEVELOPMENT PHASE
 
 
+   Issue Created           PR Created/Updated          PR Merged
 
-                           DEPLOYMENT PIPELINE                                 
 
-                                                                               
-  check-phase-completion (hourly)                                              
-                                                                              
-         (phase N issues all closed)                                          
-  deploy-dev.yml (phase N)                                                     
-                                                                              
-         [REQUIRES] phases 1..N-1 dev_deployed                              
-         Build → Push → Deploy → Smoke Test                                 
-                                                                              
-         (success)                                                            
-  check-all-phases-dev.yml                                                     
-                                                                              
-         [REQUIRES] ALL 8 phases dev_deployed                               
-                                                                              
-         (all complete)                                                       
-  deploy-staging.yml (Phase 8 image)                                           
-                                                                              
-         Copy image from dev → staging                                      
-         Deploy → Health Check → Acceptance Tests                           
-                                                                              
-         (staging verified)                                                   
-  deploy-prod.yml [MANUAL]                                                     
-                                                                              
-         [REQUIRES] staging verified, deployment window, 2 approvers        
-         Gradual rollout: 10% → 50% → 100%                                  
-                                                                               
+  auto-add-to-project     ai-review.yml          create-deployment-issue
+                                                create-qa-testing-issue
+
+  issue-label-sync              CI
+  (labeled/assigned)                             pr-merge-cleanup
+
+                        (must pass)
 
 
 
-                              QA PIPELINE                                      
 
-                                                                               
-  execute-qa-testing.yml (after staging deploy OR scheduled)                   
-                                                                              
-         [REQUIRES] deployment complete                                     
-                                                                              
-         PASS → Close QA issue, board status → Done                         
-                                                                              
-         FAIL  create-bug-issue.yml                                      
-                                                                              
-                            iteration < 3 → Create bug issue (ai:ready candidate)     
-                                                                              
-                            iteration ≥ 3 → Create escalation (needs-human) 
-                                                                               
+                           DEPLOYMENT PIPELINE
 
 
+  check-phase-completion (hourly)
 
-                           RECOVERY WORKFLOWS                                  
+         (phase N issues all closed)
+  deploy-dev.yml (phase N)
 
-                                                                               
-  rollback-prod.yml [MANUAL]                                                   
-                                                                              
-         Traffic shift to previous revision → Health check                  
-                                                                               
-  phase-transition.yml [MANUAL]                                                
-                                                                              
-         Bulk move phase issues: Backlog ↔ Todo                             
-                                                                               
+         [REQUIRES] phases 1..N-1 dev_deployed
+         Build → Push → Deploy → Smoke Test
+
+         (success)
+  check-all-phases-dev.yml
+
+         [REQUIRES] ALL 8 phases dev_deployed
+
+         (all complete)
+  deploy-staging.yml (Phase 8 image)
+
+         Copy image from dev → staging
+         Deploy → Health Check → Acceptance Tests
+
+         (staging verified)
+  deploy-prod.yml [MANUAL]
+
+         [REQUIRES] staging verified, deployment window, 2 approvers
+         Gradual rollout: 10% → 50% → 100%
+
+
+
+
+                              QA PIPELINE
+
+
+  execute-qa-testing.yml (after staging deploy OR scheduled)
+
+         [REQUIRES] deployment complete
+
+         PASS → Close QA issue, board status → Done
+
+         FAIL  create-bug-issue.yml
+
+                            iteration < 3 → Create bug issue (ai:ready candidate)
+
+                            iteration ≥ 3 → Create escalation (needs-human)
+
+
+
+
+                           RECOVERY WORKFLOWS
+
+
+  rollback-prod.yml [MANUAL]
+
+         Traffic shift to previous revision → Health check
+
+  phase-transition.yml [MANUAL]
+
+         Bulk move phase issues: Backlog ↔ Todo
+
 
 ```
 
@@ -210,6 +210,7 @@ permissions:
 | Tools | `ruff` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install ruff
 - Ruff linter check with GitHub output format
@@ -224,6 +225,7 @@ permissions:
 | Tools | `mypy`, `types-requests` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install mypy
 - Run mypy with `--ignore-missing-imports`
@@ -238,6 +240,7 @@ permissions:
 | Tools | `pytest`, `pytest-cov`, `pytest-asyncio` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Resolve Python binary for matrix version (falls back to `python3`)
 - Create venv, install test deps + requirements
@@ -252,6 +255,7 @@ permissions:
 | Tools | `bandit`, `safety` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install bandit + safety
 - Bandit security scan (excludes `./tests`)
@@ -377,6 +381,7 @@ permissions:
 ### Close Behavior
 
 When an issue is closed:
+
 1. Board status set to **Done**
 2. Stale labels removed: `ai:ready`, `ai:in-progress`, `ai:review-requested`, `status:planning`
 3. Label removal uses REST API with 404 tolerance (labels not present are silently skipped)
@@ -410,6 +415,7 @@ permissions:
 ### Behavior
 
 When a PR is **closed** (merged or not):
+
 1. Finds the PR's project board item via GraphQL
 2. Sets board Status to **Done**
 3. Skips silently if the item is not on the project board
@@ -532,6 +538,7 @@ jobs:
 ### Skip Conditions
 
 The workflow skips automatically when:
+
 - PR is in draft mode
 - Actor is `dependabot[bot]`
 - PR has label `skip-ai-review`
@@ -590,17 +597,17 @@ Called by `check-phase-completion.yml` when a phase's issues are all closed.
 
 ```
 check-phase-completion.yml (phase N complete)
-        
-        
+
+
 deploy-dev.yml (phase N)
-        
+
          Verify prerequisites (phases 1..N-1 dev_deployed)
          Build and push image (phase-N-{sha})
          Deploy to Cloud Run (dev)
          Run smoke tests
          Update phase tracking (dev_deployed or dev_failed)
-        
-        
+
+
 check-all-phases-dev.yml (triggered on success)
 ```
 
@@ -701,18 +708,18 @@ Called by `check-all-phases-dev.yml` when all phases are complete.
 
 ```
 check-all-phases-dev.yml (all phases complete)
-        
-        
+
+
 deploy-staging.yml (Phase 8 image)
-        
+
          Copy image from dev registry to staging registry
          Deploy to Cloud Run (staging)
          Health check with retry
          Run full acceptance tests (all phases)
          Update staging tracking (deployed or failed)
          Close deployment issues on success
-        
-        
+
+
 Ready for production (manual dispatch)
 ```
 
@@ -722,9 +729,9 @@ Staging receives the exact same image that was validated on dev:
 
 ```
 Dev Registry:  {GCP_REGION}-docker.pkg.dev/{GCP_PROJECT_DEV}/{PROJECT_PREFIX}/{PROJECT_PREFIX}-{SERVICE_NAME}:phase-8-{sha}
-        
+
          docker pull → docker tag → docker push
-        
+
 Staging Registry: {GCP_REGION}-docker.pkg.dev/{GCP_PROJECT_STAGING}/{PROJECT_PREFIX}/{PROJECT_PREFIX}-{SERVICE_NAME}:phase-8-{sha}
 ```
 
@@ -862,6 +869,7 @@ GH_HOST={GITHUB_HOST} gh secret set ELEVATED_PAT \
 ```
 
 **Security Notes**:
+
 - Use a service account if available (not personal account)
 - Set expiration and rotate per security policy
 - The PAT owner must be a repository admin or have bypass permissions
@@ -874,30 +882,30 @@ The `WIF_CREDENTIALS_*` and `GCP_PROJECT_*` secrets enable keyless authenticatio
 
 ```
 GitHub Actions Workflow
-        
-        
 
-  1. Read WIF_CREDENTIALS_STAGING        
-     (Workload Identity Federation JSON) 
 
-        
-        
 
-  2. gcloud auth login --cred-file       
-     Exchange GitHub OIDC token for      
-     short-lived GCP access token        
+  1. Read WIF_CREDENTIALS_STAGING
+     (Workload Identity Federation JSON)
 
-        
-        
 
-  3. gcloud config set project           
-     Target GCP_PROJECT_STAGING          
 
-        
-        
 
-  4. docker push / gcloud run deploy     
-     Authenticated to correct project    
+  2. gcloud auth login --cred-file
+     Exchange GitHub OIDC token for
+     short-lived GCP access token
+
+
+
+
+  3. gcloud config set project
+     Target GCP_PROJECT_STAGING
+
+
+
+
+  4. docker push / gcloud run deploy
+     Authenticated to correct project
 
 ```
 
@@ -1103,6 +1111,7 @@ DEV Deployment Complete
 **Test Types**: Smoke, unit (≥90% coverage), integration (≥70% coverage), E2E, feature-specific.
 
 **Outcomes**:
+
 - Pass: Close QA issue with `ai:qa-passed`, board status → Done
 - Fail: Add `ai:qa-failed`, trigger bug issue creation
 
@@ -1165,6 +1174,7 @@ done
 ```
 
 The `/health` endpoint must return HTTP 200 with JSON:
+
 ```json
 {
   "status": "healthy",
@@ -1251,6 +1261,7 @@ Automatically posts a comment on the linked issue when a PR is created, providin
 ### Output
 
 Issue comment:
+
 ```
 **PR Created**: #123 - Feature title
 **Branch**: `ai/123-feature-name`

@@ -3,6 +3,7 @@
 This document defines when a task, sprint, or phase is considered **complete**.
 
 **Related Documents**:
+
 - [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md) — Operational policies and conventions (how we work)
 - [templates/PROJECT_PLAN-TEMPLATE.md](./templates/PROJECT_PLAN-TEMPLATE.md) — Project plan template
 - [templates/ROADMAP-TEMPLATE.md](./templates/ROADMAP-TEMPLATE.md) — Roadmap template
@@ -16,6 +17,7 @@ This document defines when a task, sprint, or phase is considered **complete**.
 Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 
 **Planning-First Governance Package**:
+
 - [ ] Planning roadmap is created for the target scope
 - [ ] Planning index lists required planning documents
 - [ ] Changelog plan is defined for the target scope
@@ -23,6 +25,7 @@ Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 - [ ] Gaps are resolved or explicitly deferred with rationale and owner
 
 **Practical Implementation Review**:
+
 - [ ] Solution addresses the stated problem directly
 - [ ] Implementation approach is practical and feasible
 - [ ] No over-engineering or unnecessary complexity
@@ -31,6 +34,7 @@ Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 - [ ] Resource requirements are reasonable
 
 **Technical Review**:
+
 - [ ] Edge cases and error handling considered
 - [ ] Testability verified (can be unit/integration tested)
 - [ ] Maintainability assessed (long-term code health)
@@ -38,6 +42,7 @@ Before implementation begins, a plan (IPLAN or feature plan) is **Ready** when:
 - [ ] Performance impact evaluated (if applicable)
 
 **Approval**:
+
 - [ ] Plan reviewed by at least one other person (or self-review for solo projects)
 - [ ] Plan status updated to "Approved" before implementation starts
 - [ ] Approval record exists for both planning package and IPLAN
@@ -52,7 +57,9 @@ Agent operating model for DoD:
 ---
 
 ## Task Level
+
 A task (Issue) is **Done** when:
+
 - [ ] Code is written and follows project conventions
 - [ ] Unit tests written with ≥80% coverage on new/modified code
 - [ ] Integration tests written for service boundary changes (if applicable)
@@ -73,22 +80,27 @@ A task (Issue) is **Done** when:
 - [ ] Human approval is present when escalation occurred or branch protection requires reviewer approval
 
 ## UI/Frontend Task Level
+
 A UI task is **Done** when (in addition to Task Level criteria):
+
 - [ ] E2E tests written using Playwright MCP or Playwright test runner
 - [ ] Visual regression verified (screenshot comparison if applicable)
 - [ ] Accessibility snapshot captured and reviewed
 - [ ] Console errors checked (no JavaScript errors)
 
 ## AI-Implemented Task Level
+
 An AI-implemented task is **Done** when (in addition to Task Level criteria):
 
 **Workflow & Labels**:
+
 - [ ] AI label workflow completed: `ai:ready` → `ai:in-progress` → `ai:review-requested` → (PR merge)
 - [ ] Project Board #{PROJECT_BOARD_NUMBER} status updated at each label transition (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#3-ai-workflow))
 - [ ] Issue acceptance criteria **verified** (not blind-checked) and marked (`- [x]`) before requesting review
 - [ ] Issue entered execution queue through approved `ai:ready` transition (no `ai:approved` label)
 
 **AI Agent Test/Code Review** (performed before PR):
+
 - [ ] All identified bugs fixed
 - [ ] Unit tests written for new functions/classes (≥80% coverage on new code)
 - [ ] Regression tests pass (existing functionality verified)
@@ -102,6 +114,7 @@ An AI-implemented task is **Done** when (in addition to Task Level criteria):
 - [ ] Module-level docstrings updated (if new module)
 
 **PR & Review**:
+
 - [ ] PR number and URL posted as comment on linked issue (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#issue-pr-link-mandatory))
 - [ ] PR has at least one reviewer assigned (CODEOWNERS auto-assign or manual from [CONTRIBUTING.md roster](../CONTRIBUTING.md#reviewer-roster))
 - [ ] If AI agent performed on-demand review with fix loop: all critical/medium findings resolved and re-review APPROVE posted ([AI_AGENT_REVIEW_WORKFLOW.md](./AI_PR_Review/AI_AGENT_REVIEW_WORKFLOW.md))
@@ -109,20 +122,26 @@ An AI-implemented task is **Done** when (in addition to Task Level criteria):
 - [ ] Review history posted to linked issue after each review/re-review (see [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#issue-review-history-mandatory))
 
 **Human Validation**:
+
 - [ ] Human reviewer has validated AI-generated code when escalation is triggered or branch protection requires approval
 - [ ] No security vulnerabilities introduced (verified by human)
 
 **Commit & Cleanup**:
+
 - [ ] Commit includes AI co-author attribution:
+
   ```
   Co-Authored-By: {AI_TOOL_NAME} <{AI_TOOL_EMAIL}>
   ```
+
 - [ ] AI branch `ai/<issue>-<name>` is auto-deleted after merge
 
 > **Note**: `ai:approved`/`ai:rejected` labels are not used — PR approval status is sufficient. See [GOVERNANCE_RULES.md §3](./GOVERNANCE_RULES.md#3-ai-workflow).
 
 ## Sprint Level
+
 A sprint is **Done** when:
+
 - [ ] All committed sprint tasks meet the Task-level DoD
 - [ ] No critical (`P0`) bugs remain open
 - [ ] Sprint retrospective is completed (lessons learned noted)
@@ -130,7 +149,9 @@ A sprint is **Done** when:
 - [ ] Governance document sync completed (see [GOVERNANCE_RULES.md §6](./GOVERNANCE_RULES.md#6-document-maintenance))
 
 ## Phase Level
+
 A phase is **Done** when:
+
 - [ ] All sprints within the phase are complete
 - [ ] Phase **Exit Criteria** (defined in your project's `ROADMAP.md`) are met
 - [ ] Component is tagged with a release version (SemVer)
@@ -141,27 +162,35 @@ A phase is **Done** when:
 ## Phase-Gated Deployment
 
 ### Development Issue Complete
+
 A development issue (`ai:development`) is **Complete** when:
+
 - [ ] PR merged to `main`
 - [ ] Issue closed via PR link
 - [ ] Deployment issue auto-created (`ai:deployment`)
 - [ ] QA testing issue auto-created (`ai:qa-testing`) if functional changes
 
 ### Phase Development Complete
+
 A phase's development is **Complete** when:
+
 - [ ] All development issues with `phase:N` are closed
 - [ ] `check-phase-completion.yml` detects phase completion
 - [ ] All deployment issues exist for the phase
 
 ### Staging Deployment Complete
+
 A phase's staging deployment is **Complete** when:
+
 - [ ] AI Agent reviews all deployment issues
 - [ ] Consolidated deployment plan created
 - [ ] `deploy-staging.yml` successfully deploys all phases 1..N
 - [ ] All deployment issues closed with `ai:deployment`
 
 ### QA Testing Complete
+
 A phase's QA testing is **Complete** when:
+
 - [ ] All QA issues activated (blocked-by deployment resolved)
 - [ ] `execute-qa-testing.yml` runs all test types:
   - Smoke tests pass
@@ -173,14 +202,18 @@ A phase's QA testing is **Complete** when:
 - [ ] OR: Bug issues created and iterated (max 3 times)
 
 ### Bug Fix Iteration Complete
+
 A bug fix iteration is **Complete** when:
+
 - [ ] Bug issue (`ai:development` + `bug` + `iteration:N`) resolved
 - [ ] PR merged, creating new deployment + QA issues
 - [ ] QA tests pass on fixed code
 - [ ] OR: Max iterations (3) reached → `needs-human` escalation created
 
 ### Production Ready
+
 A phase is **Production Ready** when:
+
 - [ ] All phases 1..N deployed to staging
 - [ ] All QA testing complete (all `ai:qa-passed`)
 - [ ] No open `blocker` issues
@@ -188,7 +221,9 @@ A phase is **Production Ready** when:
 - [ ] `governance/cicd/phase-deployments.json` shows all phases `qa_status: passed`
 
 ## Component Repository Release
+
 A component repo is **Release-Ready** when:
+
 - [ ] All Phase-level DoD items are satisfied
 - [ ] README is complete and accurate
 - [ ] CI/CD pipeline builds and tests successfully
@@ -211,6 +246,7 @@ A component repo is **Release-Ready** when:
 ### Commit Frequency Checkpoints
 
 **During feature development**, commit when:
+
 - [ ] A logical unit of work is complete
 - [ ] Tests pass for the new code
 - [ ] Code compiles/runs without errors
@@ -218,11 +254,13 @@ A component repo is **Release-Ready** when:
 - [ ] End of work session
 
 **After bug fix**, commit when:
+
 - [ ] Fix is implemented
 - [ ] Fix is tested locally
 - [ ] No regressions introduced
 
 **After documentation**, commit when:
+
 - [ ] Document is complete and reviewed
 - [ ] Links and references are valid
 
@@ -241,6 +279,7 @@ Follow **[Conventional Commits](https://www.conventionalcommits.org/)**:
 **Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
 
 **Best Practices**:
+
 - Atomic commits: Each commit represents one logical change
 - Passing state: Never commit broken code to shared branches
 - Reference issues: Include `Fixes #NNN` or `Closes #NNN` for bug fixes

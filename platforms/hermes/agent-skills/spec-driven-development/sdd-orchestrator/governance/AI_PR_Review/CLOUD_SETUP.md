@@ -9,6 +9,7 @@ Project-agnostic setup reference for cloud authentication requirements used by A
 ## Scope
 
 This guide covers:
+
 - OIDC/WIF identity setup pattern
 - service account/identity role scoping
 - repository secret wiring for workflows
@@ -56,6 +57,7 @@ gh secret list
 ```
 
 Validation goals:
+
 - workflow can acquire short-lived cloud credentials
 - workflow can perform least-privilege calls
 - no long-lived key files are required

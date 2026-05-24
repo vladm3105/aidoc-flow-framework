@@ -39,6 +39,7 @@ AI-powered cost monitoring and optimization across AWS, Azure, GCP, and Kubernet
 ```
 
 **Architecture v2.0 Simplifications**:
+
 - MCP Servers: 8 → 4 (data access only, using native cloud provider MCP servers)
 - AI Agents: 11 → 5 (removed Cloud Agent layer, merged Domain Agents)
 - UI: CopilotKit Chat MVP (Grafana deferred to post-MVP)
@@ -163,33 +164,39 @@ The platform is cloud-agnostic in monitoring but GCP-specific in deployment ([AD
 ## Technology Stack
 
 ### Frontend
+
 - **Next.js** — React framework on Cloud Run
 - **CopilotKit** — AI chat interface implementing AG-UI protocol (SSE streaming)
 - **Tailwind CSS + shadcn/ui** — Styling
 
 ### Agent Layer
+
 - **Google ADK** — Agent Development Kit
 - **Google A2A Protocol** — Agent-to-Agent communication (Phase 7)
 - **LiteLLM** — Vendor-neutral LLM abstraction ([ADR-005](docs/adr/005-use-litellm-for-llms.md))
 - **AG-UI Protocol** — Agent-to-UI streaming via FastAPI SSE endpoint
 
 ### Backend
+
 - **FastAPI** — AG-UI server (SSE streaming, JWT validation, tenant context)
 - **FastMCP** — MCP server framework (OpenCost custom server)
 - **Cloud Tasks + Cloud Scheduler** — Background jobs ([ADR-006](docs/adr/006-cloud-native-task-queues-not-celery.md))
 
 ### Data Layer
+
 - **BigQuery** — Cost metrics and analytics ([ADR-003](docs/adr/003-use-bigquery-not-timescaledb.md))
 - **Firestore** — Configuration, task progress, metadata (Phase 1-6)
 - **Cloud SQL PostgreSQL** — Multi-tenant relational data (Phase 7)
 - **Cloud Storage** — Reports, exports, backups
 
 ### Infrastructure
+
 - **Cloud Run** — Serverless containers ([ADR-004](docs/adr/004-cloud-run-not-kubernetes.md))
 - **Terraform** — Infrastructure as Code
 - **OpenTelemetry** — Distributed tracing ([ADR-008](docs/adr/008-otel-gen-ai-conventions.md))
 
 ### MCP Servers (Data Access)
+
 - **GCP**: `gcloud-mcp` + BigQuery MCP (native)
 - **AWS**: `@awslabs/mcp-server-aws-core` (native)
 - **Azure**: `Azure.Mcp.Server` (native)
@@ -292,16 +299,19 @@ See [GITHUB_WORKFLOWS.md](governance/GITHUB_WORKFLOWS.md) for configuration deta
 ## Security & Deployment
 
 ### Single-Tenant Mode (Default)
+
 - Single organization managing cloud costs
 - Firestore for config/metadata (no PostgreSQL overhead)
 - All authenticated users trusted (RBAC optional)
 
 ### Multi-Tenant Mode (Phase 7)
+
 - PostgreSQL Row-Level Security on `tenant_id`
 - Per-tenant credential management (Secret Manager)
 - RBAC: Super Admin, Org Admin, Operator, Analyst, Viewer
 
 ### Security Controls
+
 - OAuth 2.0/OIDC authentication (provider per Sprint 0 decision)
 - JWT with refresh tokens
 - AES-256 encryption at rest, TLS 1.3 in transit

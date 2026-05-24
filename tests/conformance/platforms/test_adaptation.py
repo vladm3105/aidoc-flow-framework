@@ -5,7 +5,6 @@ in the closed surface (``ADAPTATION_SURFACE.yaml``), and any skill that declares
 import unittest
 
 import yaml
-
 from _spec import FRAMEWORK, PLATFORMS_ROOT
 
 SURFACE = FRAMEWORK / "governance" / "ADAPTATION_SURFACE.yaml"

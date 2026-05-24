@@ -19,6 +19,7 @@ UCX Hermes v2.0.0 promotes `ucx_hermes/` to the **sole active MCP runtime** and 
 **What changed**: The `executor` parameter no longer triggers AI agent execution in document-critical tools. Instead, the tools return structured text (reports, prompts, fix instructions) for human or Hermes review.
 
 **Affected tools**:
+
 - `sdd_validate` (fix path; `executor` parameter)
 - `sdd_create_build`
 - `sdd_review`
@@ -29,6 +30,7 @@ UCX Hermes v2.0.0 promotes `ucx_hermes/` to the **sole active MCP runtime** and 
 **After**: The same tools return deterministic findings + human-readable instructions. The caller (Hermes or human) decides whether and how to apply changes.
 
 **Migration**: No code migration needed. If your workflow depended on silent auto-rewrite, switch to:
+
 1. Call tool without `executor`
 2. Receive prompt/report text
 3. Feed text to Hermes with explicit instruction to edit
@@ -47,6 +49,7 @@ See `docs/HERMES_INTEGRATION.md` for detailed safe workflow.
 **Purpose**: Codifies the safe UCX-Hermes integration contract for the agent.
 
 **Contents**:
+
 - Tool safety classification (18 safe deterministic vs 4 human-gated)
 - Standard 6-phase workflow (init → validate → review → remediate → score → advance)
 - Dangerous patterns to refuse
@@ -54,6 +57,7 @@ See `docs/HERMES_INTEGRATION.md` for detailed safe workflow.
 - Configuration notes for `.mcp.json`
 
 **Installation**:
+
 ```bash
 cp -r /opt/data/ucx_framework/ucx_hermes/skills/hermes/ucx-sdd-bridge ~/.hermes/skills/
 hermes skills enable ucx-sdd-bridge
@@ -66,6 +70,7 @@ hermes skills enable ucx-sdd-bridge
 **Purpose**: Complete reference for integrating UCX with Hermes Agent.
 
 **Contents**:
+
 - Architecture diagram (Hermes + UCX)
 - Safe vs unsafe tool reference table
 - Configuration steps (MCP config, skill install, project setup)
@@ -80,6 +85,7 @@ hermes skills enable ucx-sdd-bridge
 **Purpose**: Step-by-step guide for moving from `mcp_ucx/` to `ucx_hermes/`.
 
 **Contents**:
+
 - Path mapping (old → new)
 - MCP configuration changes
 - What was patched and why
@@ -93,6 +99,7 @@ hermes skills enable ucx-sdd-bridge
 ### 5. Canonical Documentation Moved
 
 All canonical docs now maintained under `ucx_hermes/docs/`:
+
 - `README.md` — primary entry point, declares v2.0.0 canonical status
 - `ROADMAP.md` — version updated to 2.0.0
 - Architecture, specs, policies, plans, changelogs — all migrated
@@ -102,6 +109,7 @@ All canonical docs now maintained under `ucx_hermes/docs/`:
 ### 6. Template References Updated
 
 All YAML templates in `ucx_hermes/templates/` updated to reference `ucx_hermes` instead of `mcp_ucx`:
+
 - `BRD-TEMPLATE.yaml`
 - `PRD-TEMPLATE.yaml`
 - `EARS-TEMPLATE.yaml`
@@ -123,6 +131,7 @@ All active templates were re-sourced from `ucx_flow_v3/` (canonical v3.2 layer d
 | C4 mapping used v2 4-layer map with SYS/REQ/CTR | C4 mapping: BRD→PRD→SPEC→Code |
 
 Cut layers moved to `templates/archive/`:
+
 - `SYS-TEMPLATE.yaml` → archive (ADR replaces architecture decisions)
 - `REQ-TEMPLATE.yaml` → archive (EARS replaces formal requirements)
 - `CTR-TEMPLATE.yaml` → archive (SPEC inline contracts)
@@ -134,6 +143,7 @@ Cut layers moved to `templates/archive/`:
 ### 7. Root README Updated
 
 The framework-level `README.md` at `/opt/data/ucx_framework/README.md` now:
+
 - Lists `ucx_hermes/` as primary
 - Marks `mcp_ucx/` as deprecated
 - References `ucx_hermes` version 2.0.0
@@ -146,6 +156,7 @@ The framework-level `README.md` at `/opt/data/ucx_framework/README.md` now:
 ### 9. MCP Configuration Updated
 
 `.mcp.json` at framework root updated:
+
 - `cwd` changed from `/opt/data/ucx_framework/mcp_ucx/src` to `/opt/data/ucx_framework/ucx_hermes/src`
 
 ---
@@ -155,6 +166,7 @@ The framework-level `README.md` at `/opt/data/ucx_framework/README.md` now:
 ### 10. Logger Naming
 
 `src/mcp_server/logging_config.py`:
+
 - Logger name changed from `mcp_ucx` to `ucx_hermes`
 - Log file name changed from `mcp_ucx.log` to `ucx_hermes.log`
 - Module docstring updated
@@ -168,9 +180,11 @@ The framework-level `README.md` at `/opt/data/ucx_framework/README.md` now:
 ### 12. Inline Comments
 
 `src/mcp_server/utils/source_files.py`:
+
 - Comment updated to reference `ucx_hermes`
 
 `src/mcp_server/executor/api_runner.py`:
+
 - Error message updated to `pip install 'ucx_hermes[api]'`
 
 ---

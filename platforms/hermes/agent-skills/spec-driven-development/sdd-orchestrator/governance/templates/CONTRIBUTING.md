@@ -58,6 +58,7 @@ This project is for professional use. Please be respectful and constructive in a
 See **[DEVELOPER_GUIDE.md](./DEVELOPER_GUIDE.md)** for complete setup instructions.
 
 **Quick Start:**
+
 ```bash
 git clone https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME}.git
 cd {REPO_NAME}
@@ -65,6 +66,7 @@ cd {REPO_NAME}
 ```
 
 **Pre-commit setup (required for BRD naming checks):**
+
 ```bash
 python3 -m pip install pre-commit
 pre-commit install
@@ -80,6 +82,7 @@ pre-commit run --all-files
 **Style Guide:** PEP 8
 
 **Requirements:**
+
 - [PASS] Type hints required for all functions
 - [PASS] Docstrings for all public functions/classes (Google style)
 - [PASS] Maximum line length: 100 characters
@@ -87,6 +90,7 @@ pre-commit run --all-files
 - [PASS] Use `ruff` for linting
 
 **Example:**
+
 ```python
 from typing import List, Optional
 
@@ -96,12 +100,12 @@ def calculate_cost(
     currency: str = "USD"
 ) -> dict:
     \"\"\"Calculate cost for a given usage amount.
-    
+
     Args:
         usage_amount: Amount of resource used
         rate_per_unit: Cost per unit of resource
         currency: Currency code (default: USD)
-        
+
     Returns:
         Dictionary with cost breakdown
     \"\"\"
@@ -118,12 +122,14 @@ def calculate_cost(
 **Style Guide:** Airbnb + Prettier
 
 **Requirements:**
+
 - [PASS] TypeScript for all new code
 - [PASS] ESLint + Prettier configured
 - [PASS] React functional components with hooks
 - [PASS] Interfaces for all props
 
 **Example:**
+
 ```typescript
 interface CostMetric {
   date: string;
@@ -142,14 +148,16 @@ export function calculateTotalCost(metrics: CostMetric[]): number {
 **Style Guide:** sqlfluff
 
 **Requirements:**
+
 - [PASS] Keywords in UPPERCASE
 - [PASS] Table/column names in snake_case
 - [PASS] Indentation: 2 spaces
 - [PASS] Comments for complex queries
 
 **Example:**
+
 ```sql
-SELECT 
+SELECT
   date,
   cloud_provider,
   SUM(cost_usd) AS total_cost
@@ -165,6 +173,7 @@ ORDER BY date DESC;
 **Style Guide:** HashiCorp style
 
 **Requirements:**
+
 - [PASS] Use modules for reusable components
 - [PASS] Variables with descriptions
 - [PASS] Outputs documented
@@ -198,6 +207,7 @@ Follow **[Conventional Commits](https://www.conventionalcommits.org/)**:
 ```
 
 **Types:**
+
 - `feat`: New feature
 - `fix`: Bug fix
 - `docs`: Documentation
@@ -207,6 +217,7 @@ Follow **[Conventional Commits](https://www.conventionalcommits.org/)**:
 - `chore`: Build, CI, dependencies
 
 **Examples:**
+
 ```
 feat(mcp): add AWS Cost Explorer integration
 
@@ -228,6 +239,7 @@ instead of query-time aggregation.
 ### Workflow
 
 1. **Create branch** from `main`:
+
    ```bash
    git checkout -b feature/my-feature
    ```
@@ -235,6 +247,7 @@ instead of query-time aggregation.
 2. **Make changes** with frequent commits
 
 3. **Push** to remote:
+
    ```bash
    git push origin feature/my-feature
    ```
@@ -259,6 +272,7 @@ instead of query-time aggregation.
 ### Running Tests
 
 **Python:**
+
 ```bash
 # All tests
 pytest
@@ -271,6 +285,7 @@ pytest tests/test_mcp_gcp.py
 ```
 
 **TypeScript:**
+
 ```bash
 # All tests
 npm test
@@ -285,6 +300,7 @@ npm test -- --coverage
 ### Writing Tests
 
 **Python (pytest):**
+
 ```python
 def test_calculate_cost():
     result = calculate_cost(usage_amount=100, rate_per_unit=0.05)
@@ -293,6 +309,7 @@ def test_calculate_cost():
 ```
 
 **TypeScript (Jest):**
+
 ```typescript
 describe('calculateTotalCost', () => {
   it('sums costs correctly', () => {
@@ -334,6 +351,7 @@ scripts/validate_changed_links.sh
 ```
 
 Validation behavior:
+
 - Checks changed non-template markdown files with `sdd_validate_links`.
 - Skips `governance/templates/` files in framework-repo context.
 - Template links are validated after scaffold in target-project context.
@@ -391,6 +409,7 @@ How you tested these changes
 
 - Delete feature branch
 - Update local `main`:
+
   ```bash
   git checkout main
   git pull origin main
@@ -406,4 +425,4 @@ How you tested these changes
 
 ---
 
-**Thank you for contributing!** 
+**Thank you for contributing!**

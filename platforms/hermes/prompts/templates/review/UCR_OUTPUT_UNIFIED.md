@@ -7,6 +7,7 @@ This document defines the unified output format for UCR (Unified Context Review)
 ## Overview
 
 UCR v2.0 produces a unified report with three sections:
+
 1. **Validation Results** - Automated schema/structure checks
 2. **Content Review** - Multi-persona content analysis
 3. **Remediation Table** - Combined findings for UCRem

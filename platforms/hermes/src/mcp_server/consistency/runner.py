@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 
 from mcp_server.utils.source_files import extract_doc_id
-
 
 SOURCE_PATTERN = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
 
@@ -72,7 +71,8 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
         if SOURCE_PATTERN.match(path.name)
     )
     candidates = [
-        path for path in candidates
+        path
+        for path in candidates
         if "_validated" not in path.stem
         and "_remediate_copy" not in path.stem
         and not re.search(r"_remediate_v\d+", path.stem)
@@ -86,7 +86,9 @@ def _resolve_source(folder: Path, target_path: Path) -> tuple[Path | None, list[
     return candidates[0], []
 
 
-def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) -> ConsistencyRunResult:
+def run_consistency_check(
+    *, target_path: Path, output_dir: Path | None = None
+) -> ConsistencyRunResult:
     folder = target_path if target_path.is_dir() else target_path.parent
     source, source_errors = _resolve_source(folder=folder, target_path=target_path)
 
@@ -122,7 +124,9 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         # Validation copy: check same extension as source first, then .md fallback
         validation_copy_src = folder / f"{stem}_validated{src_ext}"
         validation_copy_md = folder / f"{stem}_validated.md"
-        validation_copy = validation_copy_src if validation_copy_src.exists() else validation_copy_md
+        validation_copy = (
+            validation_copy_src if validation_copy_src.exists() else validation_copy_md
+        )
 
         # Remediated copy: prefer versioned (_remediate_v{N}), fallback to legacy _remediate_copy
         _versioned_glob = sorted(
@@ -134,16 +138,26 @@ def run_consistency_check(*, target_path: Path, output_dir: Path | None = None) 
         else:
             remediated_copy_src = folder / f"{stem}_remediate_copy{src_ext}"
             remediated_copy_md = folder / f"{stem}_remediate_copy.md"
-            remediated_copy = remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
+            remediated_copy = (
+                remediated_copy_src if remediated_copy_src.exists() else remediated_copy_md
+            )
 
-        review_reports = sorted(folder.glob("*_review_report_v*.md")) + sorted(folder.glob(f"{doc_id}.R_review_report_v*.md"))
-        remediation_reports = sorted(folder.glob("*_remediation_report_v*.md")) + sorted(folder.glob(f"{doc_id}.F_fix_report_v*.md"))
+        review_reports = sorted(folder.glob("*_review_report_v*.md")) + sorted(
+            folder.glob(f"{doc_id}.R_review_report_v*.md")
+        )
+        remediation_reports = sorted(folder.glob("*_remediation_report_v*.md")) + sorted(
+            folder.glob(f"{doc_id}.F_fix_report_v*.md")
+        )
 
-        details["validation_report"] = validation_report.name if validation_report.exists() else None
+        details["validation_report"] = (
+            validation_report.name if validation_report.exists() else None
+        )
         details["validation_copy"] = validation_copy.name if validation_copy.exists() else None
         details["remediated_copy"] = remediated_copy.name if remediated_copy.exists() else None
         details["review_report"] = review_reports[-1].name if review_reports else None
-        details["remediation_report"] = remediation_reports[-1].name if remediation_reports else None
+        details["remediation_report"] = (
+            remediation_reports[-1].name if remediation_reports else None
+        )
 
         if validation_copy.exists() and not validation_report.exists():
             errors.append("validation_copy_without_validation_report")

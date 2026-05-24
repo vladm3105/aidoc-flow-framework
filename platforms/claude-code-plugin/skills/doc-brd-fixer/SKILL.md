@@ -95,7 +95,6 @@ file, confidence) · **Manual-Review Queue** · **Validation After Fix**
 fix reports) · **Next Steps** (re-run `doc-brd-audit`). Loop until score ≥
 threshold or max iterations reached.
 
-
 ## Adaptation
 
 Before applying fixes, read the project adaptation profile

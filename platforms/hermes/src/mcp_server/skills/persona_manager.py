@@ -17,7 +17,6 @@ from mcp_server.skills.project_ucx_loader import (
     PersonaMappingError,
     _invalidate_persona_mapping_cache,
     load_persona_mapping,
-    resolve_ucx_root,
     validate_project_ucx_root,
 )
 
@@ -27,6 +26,7 @@ VALID_PHASES: tuple[str, ...] = ("creation", "review", "remediation")
 # ---------------------------------------------------------------------------
 # YAML write helpers — preserve header comments + flow-style persona lists
 # ---------------------------------------------------------------------------
+
 
 class _FlowListDumper(yaml.SafeDumper):
     """Dumper that renders lists in flow style ``[a, b, c]``."""
@@ -53,7 +53,7 @@ def _extract_header(raw_text: str) -> tuple[str, str]:
         else:
             break
     header = "".join(header_lines)
-    return header, raw_text[len(header):]
+    return header, raw_text[len(header) :]
 
 
 def _dump_with_header(header: str, data: dict) -> str:
@@ -66,6 +66,7 @@ def _dump_with_header(header: str, data: dict) -> str:
 # Framework default loader
 # ---------------------------------------------------------------------------
 
+
 def _load_framework_default() -> dict:
     """Load the framework's canonical persona_mappings.yaml."""
     path = Path(__file__).resolve().parents[3] / "skills" / "persona_mappings.yaml"
@@ -77,6 +78,7 @@ def _load_framework_default() -> dict:
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def show_persona_mappings(
     *,
@@ -190,8 +192,14 @@ def diff_persona_mappings(
 
             proj_personas = proj_entry.get("personas", []) if isinstance(proj_entry, dict) else []
             def_personas = def_entry.get("personas", []) if isinstance(def_entry, dict) else []
-            proj_mode = proj_entry.get("mode", "sequential") if isinstance(proj_entry, dict) else "sequential"
-            def_mode = def_entry.get("mode", "sequential") if isinstance(def_entry, dict) else "sequential"
+            proj_mode = (
+                proj_entry.get("mode", "sequential")
+                if isinstance(proj_entry, dict)
+                else "sequential"
+            )
+            def_mode = (
+                def_entry.get("mode", "sequential") if isinstance(def_entry, dict) else "sequential"
+            )
 
             if proj_entry and not def_entry:
                 added.append({"phase": phase, "doc_type": dt, "personas": proj_personas})
@@ -238,8 +246,13 @@ def check_persona_mapping_health(
     mappings_path = ucx_root / "skills" / "persona_mappings.yaml"
     mapping = yaml.safe_load(mappings_path.read_text(encoding="utf-8"))
     if not isinstance(mapping, dict):
-        return {"status": "error", "missing_persona_files": [], "missing_doctypes": [],
-                "extra_doctypes": [], "total_entries": 0}
+        return {
+            "status": "error",
+            "missing_persona_files": [],
+            "missing_doctypes": [],
+            "extra_doctypes": [],
+            "total_entries": 0,
+        }
     default_mapping = _load_framework_default()
 
     personas_dir = ucx_root / "skills" / "personas"

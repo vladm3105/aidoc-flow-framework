@@ -232,6 +232,7 @@ ucx validate --help
 UCX v1.12.0 introduces category-weighted scoring for more accurate document quality assessment.
 
 **Scoring Categories**:
+
 | Category | ID | Weight | Max Deduction |
 |----------|-----|--------|---------------|
 | functional | CAT-01 | 25% | -25 |
@@ -244,6 +245,7 @@ UCX v1.12.0 introduces category-weighted scoring for more accurate document qual
 | architecture | CAT-08 | 5% | -5 |
 
 **Formula**:
+
 ```
 raw_deduction = (P0 × 10) + (P1 × 3) + (P2 × 1)
 capped_deduction = min(raw_deduction, max_deduction)
@@ -252,6 +254,7 @@ final_score = 100 - sum(weighted_deduction for each category)
 ```
 
 **Thresholds**:
+
 | Score | Status | Action |
 |-------|--------|--------|
 | ≥85 | PASS | PRD-Ready |
@@ -275,6 +278,7 @@ mkdir -p /opt/data/project_name/docs/UCX/{skills,review,creation,remediation}
 ```
 
 **Project UCX Structure** (example from b-local):
+
 ```
 docs/UCX/
 ├── README.md                     # Project UCX config (version, commands)
@@ -294,6 +298,7 @@ docs/UCX/
 ```
 
 **Key v1.12.0 Requirements**:
+
 1. **Category Tagging**: Chairperson must assign `[CAT:xxx]` tags to findings
 2. **Category Summary Table**: Manifest includes per-category scoring breakdown
 3. **Weighted Score**: Use category-weighted formula (not legacy 100-P0×10-P1×3-P2×1)
@@ -366,14 +371,14 @@ Use when the project needs retrieval and graph-backed context:
 Choose one mode:
 
 - **File-only mode**
-    - Store and manage knowledge as files only.
-    - No database services, no MCP runtime required.
-    - Use this as the default for lightweight/MVP workflows.
+  - Store and manage knowledge as files only.
+  - No database services, no MCP runtime required.
+  - Use this as the default for lightweight/MVP workflows.
 
 - **Indexed mode (RAG + Graph + MCP)**
-    - Ingest files into PostgreSQL (`pgvector`) and Neo4j.
-    - Enable semantic retrieval and graph relationship queries.
-    - Use when the project requires reusable knowledge context across runs.
+  - Ingest files into PostgreSQL (`pgvector`) and Neo4j.
+  - Enable semantic retrieval and graph relationship queries.
+  - Use when the project requires reusable knowledge context across runs.
 
 ```bash
 cd /opt/data/ucx_framework/ucx_kb
@@ -392,6 +397,7 @@ python ucx_kb/orchestrator.py /path/to/docs --pattern "*.yaml"
 ```
 
 Core docs:
+
 - `ucx_kb/README.md`
 - `ucx_kb/mcp/README.md`
 
@@ -400,6 +406,7 @@ Core docs:
 ### 1. Framework Prerequisites
 
 **Verify framework structure:**
+
 ```bash
 ls -la /opt/data/ucx_framework/.claude/
 # Expected: skills/, commands/, agents/
@@ -562,6 +569,7 @@ cp framework/AI_EXPERTS/review.template.yaml docs/AI_EXPERTS/review.yaml
 Use a framework-maintained hook profile and symlink project-level `.pre-commit-config.yaml` to avoid manual mirroring across repositories.
 
 **Framework library location (current profile):**
+
 - `ucx_framework/framework/scripts/pre_commit_hooks/library/pre-commit-config.project.yaml`
 
 **Project symlink example (any project):**
@@ -578,6 +586,7 @@ ls -l .pre-commit-config.yaml
 ```
 
 **Operational constraints:**
+
 - Symlink target is path-dependent; it requires sibling repo layout under `/opt/data/`.
 - If the framework repo path changes, recreate the symlink with the updated relative or absolute target.
 - For CI/clones without this shared filesystem layout, use copied config or generate the symlink during bootstrap.
@@ -601,12 +610,14 @@ PY
 ### 3. Setup Script vs Project-Init Skill
 
 **`setup_project_hybrid.sh`** (Lightweight):
+
 - Creates `.claude/` directory structure
 - Creates symlinks to framework skills/agents/commands
 - Ideal for: Adding framework to existing projects
 - Does NOT create: `docs/` or `plans/` directories
 
 **`/skill project-init`** (Full Structure):
+
 - Creates complete documentation structure (`docs/`)
 - Creates `plans/` directory
 - Initializes all 8 artifact directories (BRD through IPLAN) for v3, or 11 directories for v2
@@ -743,6 +754,7 @@ Priority 2: .claude/skills/            # Shared framework
 ```
 
 **Example:**
+
 - Framework skill: `.claude/skills/doc-flow/` → Available
 - Custom skill: `.claude/custom_skills/ib-api-helper/` → Available
 - Both accessible via `/skill` command
@@ -755,6 +767,7 @@ Priority 2: .claude/commands/          # Shared framework
 ```
 
 **Example:**
+
 - Framework command: `/save-plan` → Available
 - Custom command: `/ib-connect` → Available
 
@@ -788,6 +801,7 @@ You are a project specialist...
 ```
 
 **Access:**
+
 ```bash
 # Available only in this project
 /skill project-helper
@@ -802,6 +816,7 @@ Test service connection and report status with diagnostics
 ```
 
 **Access:**
+
 ```bash
 # Available only in this project
 /service-connect
@@ -986,6 +1001,7 @@ ls -la ${PROJECT_PATH}/.templates/governance/
 ### Troubleshooting
 
 **Issue: Symlink broken**
+
 ```bash
 # Check target exists
 ls -la /opt/data/ucx_framework/.claude/skills/
@@ -998,6 +1014,7 @@ ln -s /opt/data/ucx_framework/.claude/skills skills
 ```
 
 **Issue: Custom skill not discovered**
+
 ```bash
 # Verify directory structure
 ls -la /opt/data/project_name/.claude/custom_skills/skill_name/
@@ -1064,9 +1081,11 @@ rm -rf skills.backup_20251113
 ### Storage Savings
 
 **Before** (copied skills):
+
 - 5 projects × 50MB skills = 250MB total
 
 **After** (symlinked skills):
+
 - 1 framework × 50MB skills = 50MB total
 - 5 projects × 1KB symlinks = 5KB total
 - **Total savings**: 200MB (80% reduction)
@@ -1078,11 +1097,13 @@ rm -rf skills.backup_20251113
 ### Access Control
 
 **Framework directory**:
+
 - Permissions: `755` (read/execute for all users)
 - Ownership: Controlled by framework maintainer
 - Modification: Requires write access to framework
 
 **Project directories**:
+
 - Permissions: `755` for shared symlinks
 - Permissions: `755` for custom resources
 - Ownership: Project-specific
@@ -1090,6 +1111,7 @@ rm -rf skills.backup_20251113
 ### Isolation
 
 **Symlinks provide read-only access**:
+
 - Projects cannot modify shared framework resources
 - Framework changes require explicit access to framework directory
 - Custom resources remain project-isolated
@@ -1223,25 +1245,28 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - [UCX Flow Framework README](./README.md) - Framework overview
 
 **SDD v3 Framework (framework — current, recommended)**:
+
 - [SDD v3 README](./framework/README.md) - 8-layer workflow with C4 mapping
 - [Layer Registry](./framework/registry/LAYER_REGISTRY.yaml) - Authoritative layer definitions
 - [CHG Governance Overlay](./framework/governance/chg/README.md) - 5-gate change management
 
 **SDD v2 Framework (framework — legacy)**:
+
 - [SDD Methodology Guide](./framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
 - [ID Naming Standards](./framework/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./framework/TRACEABILITY_SETUP.md) - Tag-based traceability
 
 **SDD Governance Framework (governance)**:
+
 - [SDD governance README](./governance/README.md) - Lightweight governance overview
 - [Setup Guide](./governance/SETUP_GUIDE.md) - Quick start
 - [Governance Rules](./governance/GOVERNANCE_RULES.md) - Operational rules
 
 ### External Resources
 
-- Claude Code Skills Documentation: https://docs.claude.com/claude-code/skills
+- Claude Code Skills Documentation: <https://docs.claude.com/claude-code/skills>
 - Symlink best practices: `man ln`
-- Git symlink handling: https://git-scm.com/docs/git-add#_symbolic_links
+- Git symlink handling: <https://git-scm.com/docs/git-add#_symbolic_links>
 
 ---
 

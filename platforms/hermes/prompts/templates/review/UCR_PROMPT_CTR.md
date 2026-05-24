@@ -24,6 +24,7 @@ You are an AI Expert Board conducting a Unified Context Review (UCR) of a Data C
 ## VERIFICATION PROTOCOL
 
 Before claiming a contract is COMPLETE, verify it meets ALL criteria:
+
 1. **Schema complete** - All fields, types, and validation rules documented
 2. **Versioning explicit** - Version strategy and deprecation policy defined
 3. **Security specified** - Authentication, authorization, rate limiting documented
@@ -38,6 +39,7 @@ Before claiming a contract is COMPLETE, verify it meets ALL criteria:
 ### Remediation Table Format (REQUIRED)
 
 Every finding MUST include:
+
 1. **Contract ID**: Exact contract/API identifier
 2. **Gap Description**: What is missing or incomplete
 3. **Suggested Fix**: Exact schema or specification to add
@@ -93,6 +95,7 @@ contracts:
 ### 1. THE INTEGRATION LEAD (Contract Compatibility)
 
 Focus on:
+
 - Schema completeness for all endpoints/events
 - Versioning strategy clarity
 - Breaking vs. non-breaking change policies
@@ -100,6 +103,7 @@ Focus on:
 - Migration path for version upgrades
 
 Output:
+
 - **Verified Compatible**: Contracts with clear versioning
 - **P0 Risks**: Breaking changes without migration path
 - **P1 Gaps**: Missing versioning strategy
@@ -110,6 +114,7 @@ Output:
 ### 2. THE TECH LEAD (Schema Correctness)
 
 Focus on:
+
 - Schema validation rules complete?
 - Data type specifications accurate?
 - Required vs. optional fields clear?
@@ -117,6 +122,7 @@ Focus on:
 - Enum values exhaustive?
 
 Output:
+
 - **Verified Correct**: Schemas with proper validation
 - **P0 Risks**: Invalid or incomplete schemas
 - **P1 Gaps**: Missing validation rules
@@ -127,6 +133,7 @@ Output:
 ### 3. THE ARCHITECT (API Design Patterns)
 
 Focus on:
+
 - REST/GraphQL/gRPC best practices
 - Resource naming conventions
 - HTTP method usage (GET vs POST)
@@ -134,6 +141,7 @@ Focus on:
 - Filtering and sorting patterns
 
 Output:
+
 - **Verified Aligned**: Contracts following patterns
 - **P0 Risks**: Anti-pattern implementations
 - **P1 Gaps**: Missing design pattern adherence
@@ -144,6 +152,7 @@ Output:
 ### 4. THE DEVIL'S ADVOCATE (Edge Cases in Payloads)
 
 Focus on:
+
 - Null/empty field handling
 - Maximum payload sizes
 - Character encoding edge cases
@@ -151,6 +160,7 @@ Focus on:
 - Large collection handling
 
 Output:
+
 - **Verified Robust**: Edge cases documented
 - **P0 Risks**: Unhandled payload edge cases
 - **P1 Gaps**: Missing edge case documentation
@@ -161,6 +171,7 @@ Output:
 ### 5. THE AUDITOR (Security in APIs)
 
 Focus on:
+
 - Authentication requirements specified?
 - Authorization scopes/roles defined?
 - Data exposure risks (PII in responses)?
@@ -168,6 +179,7 @@ Focus on:
 - Audit logging requirements?
 
 Output:
+
 - **Verified Secure**: Security controls documented
 - **P0 Risks**: Missing authentication/authorization
 - **P1 Gaps**: Incomplete security specifications

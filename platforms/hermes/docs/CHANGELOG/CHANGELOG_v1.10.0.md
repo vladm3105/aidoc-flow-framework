@@ -13,6 +13,7 @@ Relocates UCX operational infrastructure from `{project}/docs/UCX/` to `{project
 ### Path Relocation
 
 All UCX paths changed from `docs/UCX/` to `UCX/`:
+
 - `UCX/skills/personas/` — persona files
 - `UCX/prompts/templates/` — creation, review, remediation templates
 - `UCX/templates/` — document templates and layer assets

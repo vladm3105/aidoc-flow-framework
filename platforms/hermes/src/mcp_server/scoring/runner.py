@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -82,7 +82,6 @@ def _derive_score(report_payload: dict[str, object]) -> tuple[int, dict[str, int
     return score, {"errors": errors, "warnings": warnings}
 
 
-
 def _extract_readiness_gate(report_payload: dict[str, object]) -> tuple[str | None, int | None]:
     doc_type_val = report_payload.get("doc_type")
     if not isinstance(doc_type_val, str):
@@ -112,6 +111,7 @@ def _extract_readiness_gate(report_payload: dict[str, object]) -> tuple[str | No
                     return doc_type, int(m.group(1))
 
     return doc_type, None
+
 
 def _load_report(path: Path) -> dict[str, object]:
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -170,7 +170,9 @@ def validate_score(*, report_file: Path, threshold: int) -> ScoreValidateResult:
     )
 
 
-def compare_scores(*, baseline_report_file: Path, candidate_report_file: Path) -> ScoreCompareResult:
+def compare_scores(
+    *, baseline_report_file: Path, candidate_report_file: Path
+) -> ScoreCompareResult:
     baseline = show_score(report_file=baseline_report_file)
     candidate = show_score(report_file=candidate_report_file)
     delta = candidate.score - baseline.score

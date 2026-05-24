@@ -9,9 +9,18 @@ REGISTRY = load_registry()
 LAYERS = registry_layers()
 
 REQUIRED_LAYER_KEYS = {
-    "number", "artifact", "name", "folder", "extensions",
-    "required_tags", "can_reference", "error_prefix", "optional",
-    "description", "template", "downstream",
+    "number",
+    "artifact",
+    "name",
+    "folder",
+    "extensions",
+    "required_tags",
+    "can_reference",
+    "error_prefix",
+    "optional",
+    "description",
+    "template",
+    "downstream",
 }
 
 

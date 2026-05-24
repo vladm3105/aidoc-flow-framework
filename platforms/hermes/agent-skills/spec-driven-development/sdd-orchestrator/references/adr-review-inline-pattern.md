@@ -3,6 +3,7 @@
 ## When to Use
 
 Use this pattern when:
+
 - UCX `sdd_review` executors are unavailable (no API keys, auth failures)
 - `delegate_task` subagents would time out with large review prompts (48KB+)
 - You need rapid sequential ADR reviews without tool-call overhead
@@ -19,6 +20,7 @@ Use this pattern when:
 ### Step 1: Read ADR in Sections
 
 For large ADRs (1000+ lines), read strategically:
+
 ```
 read_file offset=1    limit=80   # metadata, document_control, context
 read_file offset=200  limit=200  # decision, implementation, alternatives
@@ -76,6 +78,7 @@ patch(path, old_string="...", new_string="...")
 ```
 
 After all patches, update metadata:
+
 - `last_updated` → today's date
 - `spec_ready_score` → increment (e.g., 92→93)
 - `version` → increment (e.g., 1.0→1.1)
@@ -95,6 +98,7 @@ Then offer: "Next: update ADR index, continue to ADR-NN+1"
 ## Proven Cadence (TradeGent CC, 2026-05-14)
 
 Six engine ADRs reviewed and remediated in one session:
+
 - ADR-04 (404 lines): 4 P1 fixes → 92→93/100 v1.1, risks 3→6
 - ADR-05 (1079 lines): 2 P1 fixes → 92→93/100 v1.1, risks 3→4
 - ADR-06 (1120 lines): 1 P1 fix → 92→93/100 v1.1, monitoring metrics 4→5
@@ -107,6 +111,7 @@ User interaction pattern: "continue" → review → "yes, remediate" (or "fix al
 ### Cross-Cutting ADR Batch (ADRs 10-19)
 
 Cross-cutting ADRs tend to be shorter (96-273 lines) and more focused than engine ADRs. Review speed increases significantly:
+
 - ADR-10 (Event Bus, 273 lines): 2 fixes (async ack, Redis SPOF buffer) → 90→92/100
 - ADR-11 (Auth, 175 lines): CLEAN, 90/100
 - ADR-12 (Clock, 160 lines): 4 fixes (NTP self-recovery, monitoring, drift risk, GPS alt) → 89→91/100

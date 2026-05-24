@@ -20,9 +20,11 @@ This document maps SDD v3 `TDD` and `BDD` artifacts to governance QA execution.
 ## Registry Guidance
 
 Preferred registry path:
+
 - `docs/07_TDD/test_registry.yaml`
 
 Optional BDD scenario catalog:
+
 - `tests/bdd/features/*.feature`
 
 ## QA Script Integration

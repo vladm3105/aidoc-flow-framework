@@ -43,6 +43,7 @@ All PRDs MUST contain exactly 15 numbered sections in this order, matching `PRD-
 | 15 | Glossary | Flat terms list |
 
 MVP format constraints:
+
 - Keep PRD as a single monolithic file (no section split files)
 - Follow MVP lifecycle framing (MVP -> PROD -> NEW MVP)
 - Preserve section titles exactly as listed above
@@ -58,6 +59,7 @@ PRD.NN.TT.SS
 ```
 
 Where:
+
 - `NN` = PRD document number (e.g., 01)
 - `TT` = element type code (e.g., 09 for User Story)
 - `SS` = sequence number within that type (e.g., 01)
@@ -79,6 +81,7 @@ Where:
 | 24 | Stakeholder Need | 4, 15 |
 
 **FORBIDDEN PATTERNS** (legacy - DO NOT USE):
+
 - `FR-XXX`, `NFR-XXX`, `AC-XXX`, `US-XXX`, `F-XXX`
 - `RISK-XXX`, `METRIC-XXX`, `BC-XXX`, `BA-XXX`
 - `Feature-NNN-NNN`
@@ -112,6 +115,7 @@ The document ID must be internally consistent across filename, frontmatter, H1, 
 To avoid low readiness scores, include enough concrete elements for each major validator-scored family.
 
 Minimum recommended coverage in the initial PRD draft:
+
 - Section 4: at least 3 stakeholder needs using `PRD.NN.24.SS`
 - Section 5: at least 5 success metrics using `PRD.NN.08.SS`
 - Section 6: at least 3 goals using `PRD.NN.23.SS`
@@ -133,6 +137,7 @@ Section 10 **MUST** contain substantive content. Placeholders will fail validati
 Use heading title: `## 10. Customer-Facing Content & Messaging`.
 
 Required subsections:
+
 - **10.1 Product Positioning Statement** - 2-3 sentences, unique value proposition
 - **10.2 Key Messaging Themes** - 3-5 themes with target audience
 - **10.3 User-Facing Content Samples** - Welcome message, onboarding text
@@ -141,6 +146,7 @@ Required subsections:
 - **10.6 Release Notes Template** - Structure for release communication
 
 **Minimum Requirements:**
+
 - Positioning statement: ≥50 characters
 - Messaging themes: ≥3 themes
 - Error patterns: ≥3 patterns
@@ -154,6 +160,7 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 > **Layer Separation Note**: This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
 
 **CORRECT User Story Format:**
+
 ```markdown
 #### PRD.01.5612: [Story Title]
 
@@ -172,6 +179,7 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 ```
 
 **FORBIDDEN in Section 8:**
+
 - `Given ... When ... Then ...` (BDD - Layer 4)
 - `WHEN ... THE ... SHALL ...` (EARS - Layer 3)
 - `@given`, `@when`, `@then` decorators
@@ -185,6 +193,7 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 ### 18.1 Upstream Traceability
 
 Use 4-segment format with `@brd:` prefix:
+
 - **CORRECT**: `@brd: BRD.01.92d8`
 - **WRONG**: `@brd: BRD-01` (document-level only)
 
@@ -213,19 +222,23 @@ PRD creation must remain consistent with the PRD traceability matrix workflow.
 Required content for EARS translation readiness:
 
 ### 20.1 Timing Profiles
+
 | Operation | p50 | p95 | p99 | Timeout |
 |-----------|-----|-----|-----|---------|
 | [Operation 1] | Xms | Xms | Xms | Xs |
 
 ### 20.2 Boundary Values
+
 | Parameter | Min | Max | Default | Units |
 |-----------|-----|-----|---------|-------|
 | [Param 1] | X | Y | Z | units |
 
 ### 20.3 State Transition Diagram
+
 Reference or description of state machine (link to @diagram: sequence-*)
 
 ### 20.4 Fallback Paths
+
 | Failure Mode | Fallback Behavior | Recovery Action |
 |--------------|-------------------|-----------------|
 | [Failure 1] | [Behavior] | [Action] |
@@ -258,11 +271,13 @@ Section 1 **MUST** include dual readiness scores:
 Initial creation should estimate scores based on content completeness.
 
 **Score Thresholds:**
+
 - ≥90%: Approved (both scores required)
 - 70-89%: Review
 - <70%: Draft
 
 ### SYS-Ready Components (40%/30%/20%/10%)
+
 | Component | Weight | Focus |
 |-----------|--------|-------|
 | Product Completeness | 40% | All 21 sections, features defined |
@@ -271,6 +286,7 @@ Initial creation should estimate scores based on content completeness.
 | Traceability | 10% | BRD elements traced, ADR topics listed |
 
 ### EARS-Ready Components (25%/25%/25%/15%/10%)
+
 | Component | Weight | Focus |
 |-----------|--------|-------|
 | Timing Profiles | 25% | p50/p95/p99 for key operations |
@@ -304,6 +320,7 @@ custom_fields:
 ```
 
 Frontmatter rules:
+
 - `custom_fields.document_type` must be exactly `prd`
 - `custom_fields.artifact_type` must be exactly `PRD`
 - `custom_fields.layer` must be exactly `2`
@@ -340,6 +357,7 @@ Before completing PRD creation, verify:
 Create a complete PRD from the upstream BRD artifact.
 
 **CRITICAL REMINDERS**:
+
 1. Use 21-section structure exactly
 2. Keep section titles identical to PRD-TEMPLATE.yaml
 3. Section 10 is BLOCKING - no placeholders

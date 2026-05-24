@@ -30,6 +30,7 @@ nano setup-iam-oidc.sh
 ```
 
 **Configuration variables:**
+
 - `AWS_ACCOUNT_ID` - Your AWS account ID
 - `AWS_REGION` - Target region (e.g., `us-east-1`)
 - `GITHUB_ORG` - Your GitHub organization
@@ -37,6 +38,7 @@ nano setup-iam-oidc.sh
 - `PROJECT_PREFIX` - Project identifier
 
 **Output:**
+
 - IAM OIDC provider (if not exists)
 - IAM role with trust policy for GitHub Actions
 - Attached ECR policies
@@ -52,11 +54,13 @@ nano setup-ecr.sh
 ```
 
 **Configuration variables:**
+
 - `AWS_REGION` - Target region
 - `PROJECT_PREFIX` - Project identifier
 - `SERVICE_NAME` - Service/application name
 
 **Output:**
+
 - ECR repository with lifecycle policy
 - Repository URI for Docker pushes
 

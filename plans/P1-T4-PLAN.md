@@ -113,6 +113,7 @@ diagram-generation tooling" (Mermaid standard intact); G8 index-template naming
 row present in `ID_NAMING_STANDARDS.md`.
 
 Notable executor judgment calls (all sound, kept):
+
 - `framework/governance/README.md` first draft used "MCP server" as an example
   engine and tripped the `\bmcp\b` check → reworded engine-neutrally.
 - `GATE-08_IPLAN.md` cross-link retargeted to `../../../layers/08_IPLAN/` for

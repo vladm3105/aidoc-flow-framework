@@ -22,6 +22,7 @@ The `_build_remediate_fix_prompt()` function in `remediation/runner.py` now prod
 | No document content in prompt | Derived copy content embedded (capped at 50K chars) |
 
 New fix strategy instructions:
+
 1. Read derived file first to understand existing structure
 2. FWDREF-DEFERRED: do not rename without adding substantive content
 3. New sections must contain minimum 3 paragraphs or detailed table
@@ -69,6 +70,7 @@ The `fact_checker` persona (already defined in framework) detects scope misunder
 New function `verify_remediation_quality()` in `remediation/runner.py`. Deterministic quality check comparing original vs remediated document — no LLM call needed.
 
 Detects:
+
 - Cosmetic FWDREF-DEFERRED to FWDREF renames without new content
 - Stub sections (new headers with <50 words of content)
 - Suspiciously low content delta for the number of findings

@@ -19,5 +19,6 @@ Canonical chain:
 ## Validation
 
 After customization, verify:
+
 - no unresolved placeholders
 - no legacy framework root references in active files

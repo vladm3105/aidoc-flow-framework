@@ -29,6 +29,7 @@ framework ships no runtime code).
 ## When to Use
 
 **Use** before creating or editing any artifact, to:
+
 - verify a document or element ID format,
 - check a `@threshold:` tag, or
 - detect removed/legacy ID patterns and get the migration target.

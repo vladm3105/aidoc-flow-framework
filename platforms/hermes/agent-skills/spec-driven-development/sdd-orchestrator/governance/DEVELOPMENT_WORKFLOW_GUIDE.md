@@ -5,6 +5,7 @@ This guide describes the workflow for developing GitHub Issues within the govern
 **Scope**: GitHub Issue-based development workflow only. For full governance policies, see [GOVERNANCE_RULES.md](./GOVERNANCE_RULES.md).
 
 **Related Documents**:
+
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion checklists
 - [AI_ISSUE_LIFECYCLE.md](./AI_ISSUE_LIFECYCLE.md) — Issue flow and labels
 - [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) — Git workflow
@@ -63,6 +64,7 @@ When an issue is assigned (label: `ai:ready` or manual assignment):
 ### Issue Checklist
 
 Before starting work:
+
 - [ ] Issue has clear acceptance criteria
 - [ ] Scope is well-defined
 - [ ] No unresolved blockers
@@ -382,6 +384,7 @@ Implements budget threshold notification.
 ### Address Feedback
 
 If changes requested:
+
 1. Make requested changes
 2. Push new commits
 3. Re-request review
@@ -455,22 +458,26 @@ ai/456-fix-api-timeout
 ### Checklist Summary
 
 **Before Implementation**:
+
 - [ ] Issue understood and acceptance criteria clear
 - [ ] Approach reviewed for practicality
 - [ ] Branch created
 
 **During Implementation**:
+
 - [ ] Code follows conventions
 - [ ] Incremental commits made
 - [ ] Tests written
 
 **Before PR**:
+
 - [ ] All tests pass
 - [ ] Docstrings complete
 - [ ] Comments updated
 - [ ] CI passes
 
 **Before Close**:
+
 - [ ] PR approved and merged
 - [ ] Issue acceptance criteria marked complete
 - [ ] Branch deleted

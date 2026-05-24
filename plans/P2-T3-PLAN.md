@@ -59,6 +59,7 @@ authoritative scope.
 
 - Copy 7 source paths from `legacy/ucx_hermes/` to `platforms/hermes/`,
   byte-identical *except* for the targeted edits in Approach §3–§4:
+
   | Source | Target | Files |
   |--------|--------|------:|
   | `pyproject.toml` | `pyproject.toml` | 1 |
@@ -68,6 +69,7 @@ authoritative scope.
   | `skills/README.md` | `skills/README.md` | 1 |
   | `skills/hermes/` | `skills/hermes/` | 8 |
   | **Total** | | **200** |
+
 - Edit `pyproject.toml` per P2-T1 Q1 (`name = "hermes-server"`,
   `version = "0.1.0"` — new lineage per P2-T6 rationale) and Q4
   (`[project.scripts] hermes-mcp = "mcp_server.server:main_sync"`).
@@ -282,7 +284,7 @@ After all edits land, update `plans/P2-AUDIT-hermes.md`:
   port,
   `grep -rE 'ucx_flow|UCX_FLOW' legacy/ucx_hermes/ | cut -d: -f1 | sort -u`
   returns the same 29 files this plan accounts for (4 §3a code + 3 tests
-  + 5 §3b skills + 6 §3c current-docs + 11 historical-docs whitelist +
+  - 5 §3b skills + 6 §3c current-docs + 11 historical-docs whitelist +
   the `pyproject.toml` re-grep target). No new file appearing implies a
   scope leak; differing count blocks the commit.
 

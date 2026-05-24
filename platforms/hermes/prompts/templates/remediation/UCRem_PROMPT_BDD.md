@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## BDD-Specific Context
 
 BDD is Layer 4 in the SDD workflow:
+
 - **Upstream**: EARS (Formal Requirements)
 - **Downstream**: ADR (Architecture Decisions)
 
 Common BDD issues to remediate:
+
 - Invalid Gherkin syntax
 - Missing EARS traceability
 - Incomplete scenario coverage
@@ -71,17 +73,20 @@ Feature: {Feature Name}
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Valid Gherkin syntax
 - Clear Given/When/Then structure
 - EARS traceability present
 - Chaos Engineer approves
 
 ### auto-assisted
+
 - Template with [TODO] placeholders
 - Structure correct but values unclear
 - Examples table incomplete
 
 ### manual-required
+
 - Business logic decision needed
 - New scenario requires validation
 - Conflicting requirements
@@ -148,6 +153,7 @@ verification: |
 ## BDD-Specific Fix Examples
 
 ### Missing Scenario Fix
+
 ```yaml
 fix_type: add_scenario
 fix_action:
@@ -164,6 +170,7 @@ fix_action:
 ```
 
 ### Incomplete Steps Fix
+
 ```yaml
 fix_type: modify_scenario
 fix_action:
@@ -184,6 +191,7 @@ fix_action:
 ```
 
 ### Missing Examples Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -199,6 +207,7 @@ fix_action:
 ```
 
 ### Traceability Tag Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -212,6 +221,7 @@ fix_action:
 ## BDD Tagging Convention
 
 Required tags for traceability:
+
 - `@EARS.XX.XX.XX` - EARS requirement trace
 - `@happy-path` / `@edge-case` / `@error-handling` - Scenario type
 - `@P0` / `@P1` / `@P2` - Priority
@@ -222,6 +232,7 @@ Required tags for traceability:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] All scenarios have valid Gherkin syntax
 - [ ] EARS traceability tags are present
 - [ ] Happy path scenarios exist
@@ -237,6 +248,7 @@ Analyze the UCR review report and original BDD feature file provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - Fixes must use valid Gherkin syntax
 - Include EARS traceability tags
 - Ensure edge cases are covered

@@ -21,11 +21,13 @@ Implementation complexity: 3/5.
 ## 2. Compatibility Model
 
 Compatibility classes:
+
 - read-compatible: older artifact remains accepted as historical input
 - write-compatible: current workflows may emit artifact format
 - non-compatible: artifact must not be produced by canonical workflows
 
 Policy rules:
+
 - Legacy artifacts may remain read-compatible during deprecation period.
 - New canonical workflows must not emit deprecated formats.
 - Canonical active artifacts must define replacement mapping for deprecated predecessors.
@@ -35,6 +37,7 @@ Policy rules:
 ## 3. Deprecation Procedure
 
 Required steps:
+
 1. Register artifact in reconciliation log with status deprecate.
 2. Declare replacement artifact path or explicit no-replacement rationale.
 3. Add sunset date and owner.
@@ -42,6 +45,7 @@ Required steps:
 5. Archive only after sunset criteria are met.
 
 Failure modes:
+
 - Deprecation without replacement or rationale.
 - Removal before sunset criteria.
 - Canonical workflow still writes deprecated artifact format.
@@ -51,6 +55,7 @@ Failure modes:
 ## 4. Legacy Artifact Constraints
 
 Legacy policy alignment:
+
 - Existing legacy report policy remains active.
 - Legacy UCX report naming remains read-compatible when policy permits.
 - Canonical MCP flows do not allocate new legacy report names.
@@ -60,6 +65,7 @@ Legacy policy alignment:
 ## 5. Evidence Requirements
 
 For each deprecation action provide:
+
 - reconciliation log entry
 - replacement mapping
 - owner assignment

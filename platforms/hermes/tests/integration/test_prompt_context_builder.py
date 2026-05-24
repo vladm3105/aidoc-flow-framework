@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -25,7 +24,6 @@ from mcp_server.prompts import (  # noqa: E402
 )
 
 
-
 def test_build_prompt_bundle_emits_required_context_and_metadata() -> None:
     bundle = build_prompt_bundle(
         personas=["architect"],
@@ -36,7 +34,9 @@ def test_build_prompt_bundle_emits_required_context_and_metadata() -> None:
             SourceSection(section_id="2.0", title="Architecture", content="architecture text"),
         ],
         skipped_sections=[
-            SourceSection(section_id="9.0", title="Appendix Ref", content="appendix ref", included=False)
+            SourceSection(
+                section_id="9.0", title="Appendix Ref", content="appendix ref", included=False
+            )
         ],
         discovered_snippets=[
             RelevantSnippet(
@@ -62,7 +62,6 @@ def test_build_prompt_bundle_emits_required_context_and_metadata() -> None:
     assert bundle.metadata.doc_type == "brd"
     assert bundle.metadata.sections_included == ["1.0", "2.0"]
     assert bundle.metadata.tokens_total > 0
-
 
 
 def test_build_prompt_bundle_is_deterministic_for_identical_inputs() -> None:
@@ -91,7 +90,6 @@ def test_build_prompt_bundle_is_deterministic_for_identical_inputs() -> None:
     assert deterministic_fingerprint(bundle_one) == deterministic_fingerprint(bundle_two)
 
 
-
 def test_build_prompt_bundle_fails_fast_for_missing_personas() -> None:
     try:
         build_prompt_bundle(
@@ -115,8 +113,14 @@ def test_map_sections_for_personas_filters_by_semantic_category() -> None:
     result = map_sections_for_personas(
         ["architect"],
         [
-            SourceSection(section_id="1.0", title="Architecture Overview", content="system architecture and component design"),
-            SourceSection(section_id="9.0", title="Glossary", content="reference metadata appendix"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture Overview",
+                content="system architecture and component design",
+            ),
+            SourceSection(
+                section_id="9.0", title="Glossary", content="reference metadata appendix"
+            ),
         ],
     )
 
@@ -130,7 +134,9 @@ def test_inspect_prompt_bundle_emits_warning_when_format_block_missing() -> None
         personas=["operator"],
         doc_type="spec",
         structure_blocks=["level1_overview", "appendix_index"],
-        included_sections=[SourceSection(section_id="1.0", title="Ops", content="monitoring and logs")],
+        included_sections=[
+            SourceSection(section_id="1.0", title="Ops", content="monitoring and logs")
+        ],
         skipped_sections=[],
         discovered_snippets=[],
         appendix_index=[],
@@ -145,7 +151,9 @@ def test_prompt_metadata_sidecar_serialization_is_json() -> None:
         personas=["architect"],
         doc_type="brd",
         structure_blocks=["level1_overview", "format_rules"],
-        included_sections=[SourceSection(section_id="1.0", title="Overview", content="overview text")],
+        included_sections=[
+            SourceSection(section_id="1.0", title="Overview", content="overview text")
+        ],
         skipped_sections=[],
         discovered_snippets=[],
         appendix_index=[],
@@ -169,8 +177,12 @@ def test_assemble_project_review_prompt_uses_project_ucx_assets(tmp_path: Path) 
         (tmp_path / relative).mkdir(parents=True, exist_ok=True)
 
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
-    (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect domain knowledge", encoding="utf-8")
-    (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template body", encoding="utf-8")
+    (tmp_path / "UCX/skills/personas/architect.md").write_text(
+        "Architect domain knowledge", encoding="utf-8"
+    )
+    (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text(
+        "Review template body", encoding="utf-8"
+    )
 
     assembly = assemble_project_review_prompt(
         project_root=tmp_path,
@@ -178,8 +190,14 @@ def test_assemble_project_review_prompt_uses_project_ucx_assets(tmp_path: Path) 
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture Overview", content="system architecture and integration design"),
-            SourceSection(section_id="9.0", title="Appendix", content="reference appendix metadata"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture Overview",
+                content="system architecture and integration design",
+            ),
+            SourceSection(
+                section_id="9.0", title="Appendix", content="reference appendix metadata"
+            ),
         ],
     )
 
@@ -188,7 +206,9 @@ def test_assemble_project_review_prompt_uses_project_ucx_assets(tmp_path: Path) 
     assert assembly.bundle.metadata.personas == ["architect"]
 
 
-def test_assemble_project_review_prompt_with_layer_includes_template_schema_assets(tmp_path: Path) -> None:
+def test_assemble_project_review_prompt_with_layer_includes_template_schema_assets(
+    tmp_path: Path,
+) -> None:
     for relative in [
         Path("UCX/skills/personas"),
         Path("UCX/skills/layer_aliases"),
@@ -201,10 +221,18 @@ def test_assemble_project_review_prompt_with_layer_includes_template_schema_asse
         (tmp_path / relative).mkdir(parents=True, exist_ok=True)
 
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
-    (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect domain knowledge", encoding="utf-8")
-    (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template body", encoding="utf-8")
-    (tmp_path / "UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
-    (tmp_path / "UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").write_text("schema_version: '1.0'\n", encoding="utf-8")
+    (tmp_path / "UCX/skills/personas/architect.md").write_text(
+        "Architect domain knowledge", encoding="utf-8"
+    )
+    (tmp_path / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text(
+        "Review template body", encoding="utf-8"
+    )
+    (tmp_path / "UCX/templates/layers/01_BRD/BRD-MVP-TEMPLATE.md").write_text(
+        "BRD template layer asset", encoding="utf-8"
+    )
+    (tmp_path / "UCX/templates/layers/01_BRD/BRD_MVP_SCHEMA.yaml").write_text(
+        "schema_version: '1.0'\n", encoding="utf-8"
+    )
 
     assembly = assemble_project_review_prompt(
         project_root=tmp_path,
@@ -212,8 +240,14 @@ def test_assemble_project_review_prompt_with_layer_includes_template_schema_asse
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture Overview", content="system architecture and integration design"),
-            SourceSection(section_id="9.0", title="Appendix", content="reference appendix metadata"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture Overview",
+                content="system architecture and integration design",
+            ),
+            SourceSection(
+                section_id="9.0", title="Appendix", content="reference appendix metadata"
+            ),
         ],
         layer="01_BRD",
     )
@@ -264,8 +298,12 @@ def test_resolve_personas_fallback_to_config(tmp_path: Path) -> None:
     ]:
         (tmp_path / relative).mkdir(parents=True, exist_ok=True)
 
-    (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect knowledge", encoding="utf-8")
-    (tmp_path / "UCX/skills/personas/tech_lead.md").write_text("Tech lead knowledge", encoding="utf-8")
+    (tmp_path / "UCX/skills/personas/architect.md").write_text(
+        "Architect knowledge", encoding="utf-8"
+    )
+    (tmp_path / "UCX/skills/personas/tech_lead.md").write_text(
+        "Tech lead knowledge", encoding="utf-8"
+    )
     mapping_yaml = (
         'version: "1.0"\n'
         "review:\n"
@@ -287,8 +325,14 @@ def test_resolve_personas_fallback_to_config(tmp_path: Path) -> None:
 def test_map_sections_for_personas_union_includes_all_categories() -> None:
     """Verify union of categories from multiple personas includes sections for any persona."""
     sections = [
-        SourceSection(section_id="1.0", title="Architecture", content="system architecture and component design"),
-        SourceSection(section_id="2.0", title="Compliance", content="regulation compliance audit policy"),
+        SourceSection(
+            section_id="1.0",
+            title="Architecture",
+            content="system architecture and component design",
+        ),
+        SourceSection(
+            section_id="2.0", title="Compliance", content="regulation compliance audit policy"
+        ),
         SourceSection(section_id="9.0", title="Glossary", content="reference metadata appendix"),
     ]
     # architect has: functional, quality, technical, integration
@@ -314,8 +358,12 @@ def test_resolve_personas_remediation_default_fallback(tmp_path: Path) -> None:
     ]:
         (tmp_path / relative).mkdir(parents=True, exist_ok=True)
 
-    (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect knowledge", encoding="utf-8")
-    (tmp_path / "UCX/skills/personas/chairperson.md").write_text("Chairperson knowledge", encoding="utf-8")
+    (tmp_path / "UCX/skills/personas/architect.md").write_text(
+        "Architect knowledge", encoding="utf-8"
+    )
+    (tmp_path / "UCX/skills/personas/chairperson.md").write_text(
+        "Chairperson knowledge", encoding="utf-8"
+    )
     mapping_yaml = (
         'version: "1.0"\n'
         "remediation:\n"

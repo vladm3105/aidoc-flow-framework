@@ -30,6 +30,7 @@ nano setup-managed-identity.sh
 ```
 
 **Configuration variables:**
+
 - `AZURE_SUBSCRIPTION_ID` - Your subscription ID
 - `AZURE_TENANT_ID` - Your Azure AD tenant ID
 - `AZURE_RESOURCE_GROUP` - Target resource group
@@ -38,6 +39,7 @@ nano setup-managed-identity.sh
 - `PROJECT_PREFIX` - Project identifier
 
 **Output:**
+
 - Azure AD application registration
 - Service principal with Contributor role
 - Federated credentials for main branch and PRs
@@ -53,12 +55,14 @@ nano setup-acr.sh
 ```
 
 **Configuration variables:**
+
 - `AZURE_SUBSCRIPTION_ID` - Your subscription ID
 - `AZURE_RESOURCE_GROUP` - Target resource group
 - `PROJECT_PREFIX` - Project identifier (alphanumeric only)
 - `SKU` - Registry tier (Basic, Standard, Premium)
 
 **Output:**
+
 - Azure Container Registry
 - Admin user enabled for local development
 - Login server URL

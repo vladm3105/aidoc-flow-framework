@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -11,7 +10,9 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from mcp_server.cli.main import main  # noqa: E402  # type: ignore[import-not-found]
-from mcp_server.validation import run_project_validation_build  # noqa: E402  # type: ignore[import-not-found]
+from mcp_server.validation import (
+    run_project_validation_build,  # noqa: E402  # type: ignore[import-not-found]
+)
 
 
 def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> None:
@@ -45,11 +46,11 @@ def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> No
     (layer_root / "BRD-MVP-TEMPLATE.yaml").write_text(
         (
             "id: BRD-01\n"
-            "title: \"Sample BRD\"\n"
+            'title: "Sample BRD"\n'
             "metadata: {}\n"
             "sections:\n"
             "  - number: 1\n"
-            "    title: \"Intro\"\n"
+            '    title: "Intro"\n'
             "    required: true\n"
         ),
         encoding="utf-8",
@@ -57,7 +58,7 @@ def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> No
     (canonical_root / "BRD-MVP-TEMPLATE.yaml").write_text(
         (
             "id: BRD-01\n"
-            "title: \"Sample BRD\"\n"
+            'title: "Sample BRD"\n'
             "metadata:\n"
             "  required_custom_fields:\n"
             "    document_type:\n"
@@ -68,7 +69,7 @@ def _write_minimal_layer_assets(project_root: Path, layer: str = "01_BRD") -> No
             "    - brd\n"
             "sections:\n"
             "  - number: 1\n"
-            "    title: \"Intro\"\n"
+            '    title: "Intro"\n'
             "    required: true\n"
         ),
         encoding="utf-8",
@@ -139,7 +140,9 @@ sections: []
     )
 
 
-def test_run_project_validation_build_uses_canonical_yaml_template_not_project_layer_assets(tmp_path: Path) -> None:
+def test_run_project_validation_build_uses_canonical_yaml_template_not_project_layer_assets(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
     _write_minimal_layer_assets(tmp_path)
 
@@ -319,16 +322,18 @@ custom_fields:
     assert checked == [str(source_doc)]
 
 
-def test_run_project_validation_build_file_appendix_redirects_to_source_artifact(tmp_path: Path) -> None:
-        main(["init", "--project", str(tmp_path)])
-        _write_minimal_layer_assets(tmp_path)
+def test_run_project_validation_build_file_appendix_redirects_to_source_artifact(
+    tmp_path: Path,
+) -> None:
+    main(["init", "--project", str(tmp_path)])
+    _write_minimal_layer_assets(tmp_path)
 
-        doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform"
-        doc_dir.mkdir(parents=True, exist_ok=True)
+    doc_dir = tmp_path / "docs/01_BRD/BRD-01_platform"
+    doc_dir.mkdir(parents=True, exist_ok=True)
 
-        source_doc = doc_dir / "BRD-01_platform.md"
-        source_doc.write_text(
-                """---
+    source_doc = doc_dir / "BRD-01_platform.md"
+    source_doc.write_text(
+        """---
 title: "Sample"
 tags: [brd]
 custom_fields:
@@ -340,12 +345,12 @@ custom_fields:
 
 ## 1. Intro
 """,
-                encoding="utf-8",
-        )
+        encoding="utf-8",
+    )
 
-        appendix_doc = doc_dir / "BRD-01_appendices.md"
-        appendix_doc.write_text(
-                """---
+    appendix_doc = doc_dir / "BRD-01_appendices.md"
+    appendix_doc.write_text(
+        """---
 title: "Appendices"
 tags: [brd]
 custom_fields:
@@ -355,21 +360,21 @@ custom_fields:
 
 # BRD-01: Appendices
 """,
-                encoding="utf-8",
-        )
+        encoding="utf-8",
+    )
 
-        result = run_project_validation_build(
-                project_root=tmp_path,
-                doc_type="brd",
-                layer="01_BRD",
-                document_path=appendix_doc,
-                output_dir=None,
-        )
+    result = run_project_validation_build(
+        project_root=tmp_path,
+        doc_type="brd",
+        layer="01_BRD",
+        document_path=appendix_doc,
+        output_dir=None,
+    )
 
-        assert result.is_valid
-        payload = json.loads(result.report_json)
-        checked = payload.get("files_checked", [])
-        assert checked == [str(source_doc)]
+    assert result.is_valid
+    payload = json.loads(result.report_json)
+    checked = payload.get("files_checked", [])
+    assert checked == [str(source_doc)]
 
 
 def test_run_project_validation_build_directory_fallback_to_section_set(tmp_path: Path) -> None:
@@ -488,7 +493,9 @@ The system records user input.
     assert any("Missing EARS trigger clause" in error for error in payload["errors"])
 
 
-def test_run_project_validation_build_ears_parity_fail_without_system_actor_clause(tmp_path: Path) -> None:
+def test_run_project_validation_build_ears_parity_fail_without_system_actor_clause(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
     _write_minimal_generic_layer_assets(
         tmp_path,
@@ -528,7 +535,9 @@ WHEN user submits valid input SHALL persist the record.
     assert any("Missing EARS actor clause" in error for error in payload["errors"])
 
 
-def test_run_project_validation_build_ears_directory_fallback_passes_with_section_files(tmp_path: Path) -> None:
+def test_run_project_validation_build_ears_directory_fallback_passes_with_section_files(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
     _write_minimal_generic_layer_assets(
         tmp_path,
@@ -573,9 +582,15 @@ WHEN request payload is accepted THE SYSTEM SHALL persist the record.
 def test_run_project_validation_build_spec_tasks_ctr_parity(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
 
-    _write_minimal_generic_layer_assets(tmp_path, layer="09_SPEC", artifact_prefix="SPEC", required_tag="spec")
-    _write_minimal_generic_layer_assets(tmp_path, layer="11_TASKS", artifact_prefix="TASKS", required_tag="tasks")
-    _write_minimal_generic_layer_assets(tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr")
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="09_SPEC", artifact_prefix="SPEC", required_tag="spec"
+    )
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="11_TASKS", artifact_prefix="TASKS", required_tag="tasks"
+    )
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr"
+    )
 
     spec_doc = tmp_path / "docs/09_SPEC/SPEC-01_sample.md"
     spec_doc.parent.mkdir(parents=True, exist_ok=True)
@@ -663,7 +678,9 @@ openapi: 3.0.0
 
 def test_run_project_validation_build_spec_parity_fail_without_yaml_block(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
-    _write_minimal_generic_layer_assets(tmp_path, layer="09_SPEC", artifact_prefix="SPEC", required_tag="spec")
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="09_SPEC", artifact_prefix="SPEC", required_tag="spec"
+    )
 
     spec_doc = tmp_path / "docs/09_SPEC/SPEC-02_sample.md"
     spec_doc.parent.mkdir(parents=True, exist_ok=True)
@@ -696,9 +713,13 @@ service: api
     assert any("Missing SPEC structure" in error for error in payload["errors"])
 
 
-def test_run_project_validation_build_tasks_parity_fail_without_checkbox_item(tmp_path: Path) -> None:
+def test_run_project_validation_build_tasks_parity_fail_without_checkbox_item(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
-    _write_minimal_generic_layer_assets(tmp_path, layer="11_TASKS", artifact_prefix="TASKS", required_tag="tasks")
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="11_TASKS", artifact_prefix="TASKS", required_tag="tasks"
+    )
 
     tasks_doc = tmp_path / "docs/11_TASKS/TASKS-02_sample.md"
     tasks_doc.parent.mkdir(parents=True, exist_ok=True)
@@ -731,9 +752,13 @@ custom_fields:
     assert any("Missing TASKS structure" in error for error in payload["errors"])
 
 
-def test_run_project_validation_build_ctr_parity_fail_without_contract_token(tmp_path: Path) -> None:
+def test_run_project_validation_build_ctr_parity_fail_without_contract_token(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
-    _write_minimal_generic_layer_assets(tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr")
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr"
+    )
 
     ctr_doc = tmp_path / "docs/08_CTR/CTR-02_sample.md"
     ctr_doc.parent.mkdir(parents=True, exist_ok=True)
@@ -766,7 +791,9 @@ This file documents integration context only.
     assert any("Missing CTR structure" in error for error in payload["errors"])
 
 
-def test_run_project_validation_build_file_section_redirects_to_source_artifact_across_layers(tmp_path: Path) -> None:
+def test_run_project_validation_build_file_section_redirects_to_source_artifact_across_layers(
+    tmp_path: Path,
+) -> None:
     main(["init", "--project", str(tmp_path)])
 
     layer_cases = [

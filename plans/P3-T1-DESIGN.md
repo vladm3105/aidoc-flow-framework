@@ -37,6 +37,7 @@ scoping calls, not framework-level decisions.
 ## Q1 — Plugin manifest schema
 
 **Options:**
+
 1. Minimal manifest — only `name`, `description`, `version`, `author`,
    `license`, `repository`. Skills/agents/commands auto-discovered
    from conventional paths.
@@ -81,6 +82,7 @@ is the doc-conformant minimum + the recommended polish (description,
 keywords, repository links) and nothing more.
 
 **Downstream implications:**
+
 - **P3-T3 plugin.json:** write the file above with the exact field
   set. Validate by `python -m json.tool < .claude-plugin/plugin.json`.
 - **P3-T3 directory layout:** `skills/`, `agents/`, `commands/` live
@@ -121,12 +123,14 @@ user's individual setup, not this distribution.
 `workflow-optimizer`) + 3 (borderline-IN) = **13**.
 
 **Combined non-doc OUT total:** 2 (clearly OUT: `google-adk`, `n8n`)
-+ 5 (borderline-OUT) = **7**.
+
+- 5 (borderline-OUT) = **7**.
 
 **Plugin skill total:** 129 `doc-*` + 13 non-doc = **142 skills**.
 (Confirmed: 20 non-doc dirs under `.claude/skills/` total; 13 + 7 = 20.)
 
 **Downstream implications:**
+
 - **P3-T2 exclusion list:** `.claude/skills/{code-review,refactor-flow,
   analytics-flow,devops-flow,ai-pr-review,google-adk,n8n}/` — 7 dirs
   not copied to the plugin.
@@ -137,6 +141,7 @@ user's individual setup, not this distribution.
 ## Q3 — `save-plan` command
 
 **Options:**
+
 1. Port — `save-plan.md` is a generic "save current conversation plan
    to a timestamped file" utility. Re-read of the command body
    confirms it's not migration-specific.
@@ -158,6 +163,7 @@ project-init plans, IPLAN drafts, etc.). Migration-only behavior is
 in the **hooks**, not in this command.
 
 **Downstream implications:**
+
 - **P3-T2:** copy `.claude/commands/save-plan.md` →
   `platforms/claude-code-plugin/commands/save-plan.md`.
 - **P3-T4 verify:** `commands/` has exactly 1 file in the plugin.
@@ -180,6 +186,7 @@ in/out judgement happens here.
 **Total:** 22 root files → **19 IN, 3 OUT**.
 
 **Downstream implications:**
+
 - **P3-T2:** copy the 19 IN files; explicitly exclude the 3 OUT files.
 - **P3-T2 coupling rewire:** apply the `\bai_dev_flow\b → framework`
   sed pattern (with sub-path follow-ups, P2-T3 G15 idempotency rule)
@@ -190,6 +197,7 @@ in/out judgement happens here.
 ## Q5 — Plugin name
 
 **Options:**
+
 1. `aidoc-flow` — matches project name; clean and short.
 2. `doc-flow` — matches the orchestrator skill name; risk of user
    confusion (is `doc-flow` the plugin or the skill?).
@@ -206,6 +214,7 @@ inside the plugin. Option 3 is too long for daily use
 (`/aidoc-flow-doc-skills:doc-brd`). Option 4 is opaque.
 
 **Downstream implications:**
+
 - **plugin.json `name`:** `"aidoc-flow"`.
 - **Slash-prefix:** users invoke skills as `/aidoc-flow:doc-brd`,
   `/aidoc-flow:doc-flow`, etc.
@@ -215,6 +224,7 @@ inside the plugin. Option 3 is too long for daily use
 ## Q6 — Copy strategy
 
 **Options:**
+
 1. `cp -r .claude/<subset>` per source path with an explicit
    exclusion list.
 2. `rsync --exclude=...` with the exclusion list passed inline.
@@ -254,6 +264,7 @@ After Stage 3: `skills/` has 142 dirs + 19 root files = 161 entries
 at maxdepth 1.
 
 **Downstream implications:**
+
 - **P3-T2 verify (file counts):**
   - `find platforms/claude-code-plugin/skills -mindepth 1 -maxdepth 1 -type d | wc -l` = **142**
   - `find platforms/claude-code-plugin/skills -maxdepth 1 -type f | wc -l` = **19**
@@ -265,6 +276,7 @@ at maxdepth 1.
 ## Q7 — Plugin lifecycle hooks in v0.1.0
 
 **Options:**
+
 1. None — the plugin is declarative-only (skills + agents + commands).
 2. Port a minimal set (e.g. a `PreToolUse` hook to validate SDD
    structure before saves).
@@ -280,6 +292,7 @@ declaratively; hooks can be added later when motivated by a real
 user need.
 
 **Downstream implications:**
+
 - **P3-T2:** do **not** copy `.claude/hooks/` to the plugin.
 - **plugin.json:** no `hooks` block; no `hooks/` directory at plugin
   root.

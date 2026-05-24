@@ -19,11 +19,9 @@ class PluginLayerModelConformanceTests(unittest.TestCase):
             self.skipTest("claude-code-plugin skills absent")
         hits, _ = plm_lint.scan(enforce_all=True)
         self.assertEqual(
-            hits, [],
+            hits,
+            [],
             "legacy 12-layer fingerprints remain in the plugin "
             "(skills/agents/commands):\n  "
-            + "\n  ".join(
-                f"{disp}:{line}: [{label}] {frag!r}"
-                for disp, line, label, frag in hits
-            ),
+            + "\n  ".join(f"{disp}:{line}: [{label}] {frag!r}" for disp, line, label, frag in hits),
         )

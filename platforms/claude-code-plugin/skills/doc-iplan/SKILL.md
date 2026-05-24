@@ -38,6 +38,7 @@ no new functionality use a temporary plan in `docs/08_IPLAN/tmp/` instead.
 ## When to Use
 
 Use `doc-iplan` when:
+
 - Layers 1–7 exist and the source TDD has reached IPLAN-Ready ≥ 90/100.
 - You are ready to bridge a SPEC/TDD component into source code.
 - You need an executable, session-resumable plan for stateless coding agents.
@@ -171,7 +172,6 @@ IPLAN is the last documentation layer. Proceed to **Code**: execute the file
 manifest test-first, updating each file's `status`/`verified`, the
 `session_handoff` sessions, and the `code_inventory` as you go — so any later
 stateless session can resume exactly where the previous one stopped.
-
 
 ## Adaptation
 

@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## EARS-Specific Context
 
 EARS is Layer 3 in the SDD workflow:
+
 - **Upstream**: PRD (Product Requirements)
 - **Downstream**: BDD (Behavior-Driven Development)
 
 Common EARS issues to remediate:
+
 - Invalid EARS pattern syntax
 - Missing PRD traceability
 - Incomplete requirement types
@@ -54,17 +56,20 @@ Valid EARS patterns:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Deterministic EARS syntax
 - Clear pattern match
 - Single interpretation possible
 - Chaos Engineer has no objections
 
 ### auto-assisted
+
 - Template with [TODO] placeholders
 - Pattern identified but values unclear
 - Syntax structure provided
 
 ### manual-required
+
 - New pattern invention needed
 - Business logic decision required
 - PRD update needed first
@@ -125,6 +130,7 @@ verification: |
 ## EARS-Specific Fix Examples
 
 ### Pattern Syntax Fix
+
 ```yaml
 fix_type: modify_text
 fix_action:
@@ -139,6 +145,7 @@ fix_action:
 ```
 
 ### Missing Constraint Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -151,6 +158,7 @@ rationale: |
 ```
 
 ### Traceability Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -175,6 +183,7 @@ EARS elements use hash-based IDs: `EARS.{doc_id}.{section_id}.{hash}`
 - Example: `EARS.01.03.c4d8` (doc 01, section 3 requirements, hash c4d8)
 
 Common section IDs:
+
 - `03` = Requirements (Section 3 — all EARS syntax patterns)
 - `04` = Quality Attributes (Section 4 — performance, security, reliability)
 - `05` = Traceability (Section 5)
@@ -184,6 +193,7 @@ Common section IDs:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] All statements use valid EARS pattern (WHEN/WHILE/IF/THE-SHALL)
 - [ ] Each statement is atomic (single requirement)
 - [ ] PRD traceability complete: `@prd: PRD.NN.09.xxxx`
@@ -199,6 +209,7 @@ Analyze the UCR review report and original EARS document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - Fixes must use valid EARS syntax
 - Each statement must be atomic
 - Include PRD trace for all requirements

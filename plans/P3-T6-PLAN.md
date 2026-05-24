@@ -19,6 +19,7 @@ version (`0.2.0`).
 ## Scope
 
 **In:**
+
 - Remove stale skills/files (manifest below).
 - Author a canonical SKILL.md spec: `platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`.
 - Recreate the 46 retained skills against that spec, sourced from
@@ -29,6 +30,7 @@ version (`0.2.0`).
   delegations; orchestrator skill lists).
 
 **Out:**
+
 - Platform A (Hermes) skills/templates — untouched.
 - `framework/` spec content — untouched (it is the source of truth, not a target).
 - Adding brand-new skills — tracked separately (user's "new skills" note).
@@ -37,12 +39,14 @@ version (`0.2.0`).
 ## Manifest
 
 **Retain (46):**
+
 - Layer skills (32): `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}` × {base, `-autopilot`, `-audit`, `-fixer`}.
 - Utilities (14): doc-flow, doc-naming, doc-ref, doc-review, doc-validator,
   project-init, trace-check, charts-flow, adr-roadmap, context-analyzer,
   quality-advisor, skill-recommender, workflow-optimizer, security-audit.
 
 **Remove (94):**
+
 - Deprecated variants (14): `-reviewer` + `-validator` for prd, ears, bdd, adr,
   spec, tdd, iplan (brd already has none).
 - Test-type families (36): doc-{utest,itest,ftest,ptest,stest,sectest}×6.
@@ -56,6 +60,7 @@ version (`0.2.0`).
 ### Canonical SKILL.md (defined fully in SKILL_AUTHORING.md)
 
 Frontmatter (Claude Code requires `name` + `description`; rest is metadata):
+
 ```yaml
 name: <unchanged — equals dir name>
 description: <one line: what it does + when to use>
@@ -71,11 +76,13 @@ metadata:
     framework_spec_version: "0.1.0"
     last_updated: "2026-05-23"
 ```
+
 Rules: `name` is frozen (it is the identifier). `version` defaults to the
 plugin VERSION. No `## Version History` section. Sibling links use `../<skill>/`.
 All template/README/governance links point into `framework/`. No `mermaid-gen`.
 
 Per-variant body structure:
+
 - **base** (`doc-X`): Purpose · When to Use · Prerequisites · Layer Guidance
   (distilled from `framework/layers/NN_X/*-TEMPLATE.yaml` + README) · Creation
   Process · Validation (checklist + codes + quality gate) · Next Skill ·
@@ -91,6 +98,7 @@ Per-variant body structure:
 - **utility**: Purpose · When to Use · Behavior · Related Resources.
 
 ### Reference repairs (apply with deletions)
+
 - `mermaid-gen` → `charts-flow` everywhere it is referenced (e.g.
   `doc-flow/SKILL.md`, `doc-brd/SKILL.md:641`).
 - `agents/*.md` delegating to removed skills → repoint to a retained skill or

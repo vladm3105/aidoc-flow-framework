@@ -80,4 +80,3 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 > **`legacy-ucx-v3.2-read-only`**. The root `.claude/` skill set was ported
 > into the Claude Code plugin in Phase 3; the root loader is removed at cutover
 > (the plugin is the distribution).
-

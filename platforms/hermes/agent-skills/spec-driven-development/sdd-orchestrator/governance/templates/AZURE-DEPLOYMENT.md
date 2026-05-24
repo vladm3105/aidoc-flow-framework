@@ -47,6 +47,7 @@ This guide walks you through deploying the AI Cloud Cost Monitoring platform to 
 ### Required Permissions
 
 Azure RBAC roles:
+
 - `Contributor` (on resource group) OR specific roles:
   - `Azure Container Apps Contributor`
   - `PostgreSQL Flexible Server Administrator`
@@ -229,6 +230,7 @@ REDIS_SSL=true
 ### Managed Identity
 
 Azure Container Apps can use **Managed Identity** to access:
+
 - Azure Database for PostgreSQL
 - Key Vault
 - Storage Account
@@ -285,13 +287,13 @@ az keyvault set-policy \
 To implement Azure deployment:
 
 1. [PASS] Review this service mapping
-2.  Create Terraform modules in `terraform/azure/`
-3.  Adapt application code for Azure services (Azure SDK for Synapse, Service Bus, Key Vault)
-4.  Create Container App definitions
-5.  Set up CI/CD pipeline (Azure DevOps or GitHub Actions)
-6.  Configure Managed Identity for passwordless authentication
-7.  Test full deployment
-8.  Expand this guide with actual deployment commands
+2. Create Terraform modules in `terraform/azure/`
+3. Adapt application code for Azure services (Azure SDK for Synapse, Service Bus, Key Vault)
+4. Create Container App definitions
+5. Set up CI/CD pipeline (Azure DevOps or GitHub Actions)
+6. Configure Managed Identity for passwordless authentication
+7. Test full deployment
+8. Expand this guide with actual deployment commands
 
 ---
 
@@ -299,8 +301,8 @@ To implement Azure deployment:
 
 - **Main README**: [README.md](README.md) - Architecture overview
 - **GCP Deployment**: [GCP-DEPLOYMENT.md](GCP-DEPLOYMENT.md) - Reference implementation
-- **Azure Container Apps**: https://learn.microsoft.com/en-us/azure/container-apps/
-- **Azure Terraform Provider**: https://registry.terraform.io/providers/hashicorp/azurerm/
+- **Azure Container Apps**: <https://learn.microsoft.com/en-us/azure/container-apps/>
+- **Azure Terraform Provider**: <https://registry.terraform.io/providers/hashicorp/azurerm/>
 
 ---
 

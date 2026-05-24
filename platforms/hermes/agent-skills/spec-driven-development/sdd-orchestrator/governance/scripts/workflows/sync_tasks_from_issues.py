@@ -16,24 +16,23 @@ Removal criteria:
 from __future__ import annotations
 
 import argparse
-import sys
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='Deprecated legacy script')
-    parser.add_argument('--phase')
-    parser.add_argument('--repo')
-    parser.add_argument('--output')
-    parser.add_argument('--dry-run', action='store_true')
+    parser = argparse.ArgumentParser(description="Deprecated legacy script")
+    parser.add_argument("--phase")
+    parser.add_argument("--repo")
+    parser.add_argument("--output")
+    parser.add_argument("--dry-run", action="store_true")
     _ = parser.parse_args()
 
     msg = (
-        'DEPRECATED: sync_tasks_from_issues.py is legacy-only and disabled in '
-        'governance v3. Use sdd_create + IPLAN workflows.'
+        "DEPRECATED: sync_tasks_from_issues.py is legacy-only and disabled in "
+        "governance v3. Use sdd_create + IPLAN workflows."
     )
     print(msg)
     return 2
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     raise SystemExit(main())

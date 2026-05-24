@@ -8,17 +8,19 @@ last_updated: 2026-03-27
 status: completed
 owner: ai-agent
 tags:
-  - implementation-plan
-  - mcp
-  - history
-  - documentation
-  - lifecycle
+
+- implementation-plan
+- mcp
+- history
+- documentation
+- lifecycle
 custom_fields:
   document_type: iplan
   plan_id: IPLAN-004
   status: completed
   created_date: 2026-03-27
   timezone: America/New_York
+
 ---
 
 ## IPLAN-004: MCP Lifecycle Normalization and Command Alignment

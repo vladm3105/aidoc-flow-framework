@@ -24,10 +24,10 @@ Default governance sequence for execution PRs:
 
 ```
 Home repo: PR opened / synchronize / ready_for_review
-  
-  
+
+
 ai-review.yml (triggers directly)
-  
+
    Verify {AI_TOOL_NAME} Code CLI on runner
    Checkout PR branch
    Fetch PR diff + metadata via gh API
@@ -41,10 +41,10 @@ ai-review.yml (triggers directly)
    Cleanup temp files
 
 Component repos: PR opened / synchronize / ready_for_review
-  
-  
+
+
 Caller workflow (~10 lines)
-  
+
    uses: {REPO_NAME}/.github/workflows/ai-review.yml@main
            secrets: inherit
 ```

@@ -36,16 +36,21 @@ The following require **billing enabled** on both GCP projects:
 
 1. **Enable billing** on `{GCP_PROJECT_DEV}` and `{GCP_PROJECT_STAGING}` via GCP Console
 2. **Enable Cloud Run API**:
+
    ```bash
    gcloud services enable run.googleapis.com --project={GCP_PROJECT_DEV}
    gcloud services enable run.googleapis.com --project={GCP_PROJECT_STAGING}
    ```
+
 3. **Enable Artifact Registry API**:
+
    ```bash
    gcloud services enable artifactregistry.googleapis.com --project={GCP_PROJECT_DEV}
    gcloud services enable artifactregistry.googleapis.com --project={GCP_PROJECT_STAGING}
    ```
+
 4. **Create Artifact Registry repositories**:
+
    ```bash
    gcloud artifacts repositories create {PROJECT_PREFIX} \
      --repository-format=docker \
@@ -57,6 +62,7 @@ The following require **billing enabled** on both GCP projects:
      --location={GCP_REGION} \
      --project={GCP_PROJECT_STAGING}
    ```
+
 5. **Configure Teams webhook** (see [Teams Webhook Setup](#teams-webhook-setup))
 
 ---
@@ -254,6 +260,7 @@ GH_HOST={GITHUB_HOST} gh secret list --repo {GITHUB_ORG}/{REPO_NAME}
 ```
 
 Expected output:
+
 ```
 ELEVATED_PAT            Updated {DATE}
 GCP_PROJECT_DEV         Updated {DATE}
@@ -293,6 +300,7 @@ gh secret set TEAMS_WEBHOOK --repo "$REPO" --body "https://outlook.office.com/we
 5. Name it `AI Cost Monitoring Deployments`
 6. Copy the webhook URL
 7. Update the secret:
+
    ```bash
    GH_HOST={GITHUB_HOST} gh secret set TEAMS_WEBHOOK \
      --repo {GITHUB_ORG}/{REPO_NAME} \

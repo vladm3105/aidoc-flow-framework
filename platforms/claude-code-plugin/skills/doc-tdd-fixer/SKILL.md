@@ -95,7 +95,6 @@ After Fix** (score/errors/warnings before→after) · **Cleanup Summary** (delet
 superseded fix reports) · **Next Steps** (re-run `doc-tdd-audit`). Loop until
 score ≥ threshold or max iterations reached.
 
-
 ## Adaptation
 
 Before applying fixes, read the project adaptation profile

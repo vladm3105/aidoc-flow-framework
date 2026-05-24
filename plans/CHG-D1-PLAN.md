@@ -23,6 +23,7 @@ adds the automatable CI enforcement, and unblocks the spec-promotion path.
 ## Scope
 
 **In:**
+
 - **Shared spec (the contract):** a new `GATE-SPEC` gate definition + a `spec`
   `change_source`; ripple through the error catalog, interaction diagram,
   CHG-TEMPLATE enums, `chg/README.md`, `governance/README.md`; conformance
@@ -36,11 +37,12 @@ adds the automatable CI enforcement, and unblocks the spec-promotion path.
   as a required status check. The **human** approval half is GitHub branch
   protection / required reviewers — *documented*, never self-approved.
 - **Hermes (Platform A) server-side:** extend `validation/chg_rules.py` to route
-  + validate `spec`/GATE-SPEC records; extend its unit tests.
+  - validate `spec`/GATE-SPEC records; extend its unit tests.
 - **Close:** decision record, version bump (spec minor `0.2.0 → 0.3.0` + ripple),
   CHANGELOG/ROADMAP/PROJECT §6/PARITY/MIGRATION_TODO/HANDOFF.
 
 **Out (deferred):**
+
 - **CHG-D2** — graduating this decision into a formal `framework/governance/`
   record (separate ROADMAP item; noted as the immediate follow-up).
 - **Building** GitHub branch protection itself — repo-settings, user-only; we
@@ -64,6 +66,7 @@ wired into the artifact cascade.
 ### The checks, split by enforcer (ROADMAP CHG-D1's three-way split)
 
 **Record-level** — `gate-check` skill + Hermes `chg_rules.py` read the CHG yaml:
+
 - `GATE-SPEC-E001` (Provenance) — spec change carries justification:
   `change_description.why` **and** `.trigger` non-empty; a promotion references
   the motivating `.aidoc/learnings.md` / profile signal.
@@ -76,6 +79,7 @@ wired into the artifact cascade.
   skill never fills it).
 
 **Repo-level** — CI workflow + conformance suite (diff-aware / static):
+
 - `GATE-SPEC-E005` (Versioning) — `framework/VERSION` changed when any
   `framework/**` content changed in the PR. *(diff-aware → CI)*
 - `GATE-SPEC-E006` (Conformance) — both platforms' `FRAMEWORK_SPEC_VERSION` ==
@@ -87,6 +91,7 @@ wired into the artifact cascade.
   *(diff-aware → CI)*
 
 **Human** — repo settings (documented, not code):
+
 - GATE-SPEC approval = branch protection / required reviewers on `framework/**`.
 
 **Warnings:** `W001` major change without a per-platform migration note;
@@ -110,6 +115,7 @@ orphan this work from its dependency; do **not** switch (R4).
 ## Step sequence
 
 **Increment 1 — shared spec (the contract).**
+
 1. NEW `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md` — full gate def
    mirroring GATE-01's structure (purpose/scope, entry criteria, E/W checklist
    E001–E008 + W001–W002, approval matrix, exit criteria, routing, error

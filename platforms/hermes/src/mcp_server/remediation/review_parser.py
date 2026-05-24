@@ -12,17 +12,17 @@ from pathlib import Path
 
 import yaml
 
-
 # ---------------------------------------------------------------------------
 # Data classes
 # ---------------------------------------------------------------------------
+
 
 @dataclass(frozen=True)
 class ReviewSummary:
     """Structured summary extracted from report frontmatter."""
 
-    score: str                    # e.g. "72/100"
-    recommendation: str           # "REMEDIATION REQUIRED", "PROCEED", "FUNDAMENTAL REDESIGN"
+    score: str  # e.g. "72/100"
+    recommendation: str  # "REMEDIATION REQUIRED", "PROCEED", "FUNDAMENTAL REDESIGN"
     p0_count: int
     p1_count: int
     p2_count: int
@@ -33,13 +33,13 @@ class ReviewSummary:
 class ReviewFinding:
     """Single finding or remediation row from the review report."""
 
-    finding_id: str               # "R1", "REM-P0-001", "P0-1"
-    priority: str                 # "P0", "P1", "P2"
-    severity: str                 # "tier1" (P0/P1), "tier2" (P2)
-    message: str                  # Full finding / remediation text
-    section: str                  # Target section reference
-    source_expert: str            # Which persona raised the finding
-    recommended_action: str       # Cleaned remediation text, truncated ~300 chars
+    finding_id: str  # "R1", "REM-P0-001", "P0-1"
+    priority: str  # "P0", "P1", "P2"
+    severity: str  # "tier1" (P0/P1), "tier2" (P2)
+    message: str  # Full finding / remediation text
+    section: str  # Target section reference
+    source_expert: str  # Which persona raised the finding
+    recommended_action: str  # Cleaned remediation text, truncated ~300 chars
 
 
 # ---------------------------------------------------------------------------
@@ -53,26 +53,20 @@ _SEVERITY_MAP: dict[str, str] = {
 }
 
 # Section 4 — 6-column remediation table (preferred)
-_RE_SEC4_ROW = re.compile(
-    r"\|\s*(R\d+)\s*\|\s*(P[012])\s*\|(.+?)\|(.+?)\|(.+?)\|(.+?)\|"
-)
+_RE_SEC4_ROW = re.compile(r"\|\s*(R\d+)\s*\|\s*(P[012])\s*\|(.+?)\|(.+?)\|(.+?)\|(.+?)\|")
 
 # Sections 2-3 — 5-column P0/P1 findings table (fallback)
-_RE_SEC23_ROW = re.compile(
-    r"\|\s*((?:REM-)?P[012]-?\d+)\s*\|(.+?)\|(.+?)\|(.+?)\|(.+?)\|"
-)
+_RE_SEC23_ROW = re.compile(r"\|\s*((?:REM-)?P[012]-?\d+)\s*\|(.+?)\|(.+?)\|(.+?)\|(.+?)\|")
 
 # Section 5 — 4-column P2 enhancements table
-_RE_SEC5_ROW = re.compile(
-    r"\|\s*((?:REM-)?P2-?\d+)\s*\|(.+?)\|(.+?)\|(.+?)\|"
-)
+_RE_SEC5_ROW = re.compile(r"\|\s*((?:REM-)?P2-?\d+)\s*\|(.+?)\|(.+?)\|(.+?)\|")
 
 
 def _clean_text(text: str, max_len: int = 300) -> str:
     """Strip markdown formatting and truncate."""
     cleaned = text.strip()
-    cleaned = re.sub(r"\*\*(.+?)\*\*", r"\1", cleaned)   # strip bold
-    cleaned = re.sub(r"`(.+?)`", r"\1", cleaned)          # strip backticks
+    cleaned = re.sub(r"\*\*(.+?)\*\*", r"\1", cleaned)  # strip bold
+    cleaned = re.sub(r"`(.+?)`", r"\1", cleaned)  # strip backticks
     cleaned = cleaned.strip('" ')
     if len(cleaned) > max_len:
         cleaned = cleaned[:max_len] + "..."
@@ -111,6 +105,7 @@ def _derive_recommendation(score_str: str) -> str:
 # Frontmatter parsing  (Strategy A)
 # ---------------------------------------------------------------------------
 
+
 def _parse_frontmatter(text: str) -> ReviewSummary | None:
     """Extract ReviewSummary from YAML frontmatter between ``---`` markers."""
     parts = text.split("---", 2)
@@ -145,6 +140,7 @@ def _parse_frontmatter(text: str) -> ReviewSummary | None:
 # Table parsing  (Strategy B)
 # ---------------------------------------------------------------------------
 
+
 def _parse_section4(text: str) -> list[ReviewFinding]:
     """Parse Section 4 'Required Remediations' 6-column table.
 
@@ -178,15 +174,17 @@ def _parse_section4(text: str) -> list[ReviewFinding]:
         message = _clean_text(m.group(5), max_len=2000)
         source = _clean_text(m.group(6))
 
-        findings.append(ReviewFinding(
-            finding_id=fid,
-            priority=priority,
-            severity=_SEVERITY_MAP.get(priority, "tier2"),
-            message=message,
-            section=section,
-            source_expert=source,
-            recommended_action=_clean_text(m.group(5), max_len=2000),
-        ))
+        findings.append(
+            ReviewFinding(
+                finding_id=fid,
+                priority=priority,
+                severity=_SEVERITY_MAP.get(priority, "tier2"),
+                message=message,
+                section=section,
+                source_expert=source,
+                recommended_action=_clean_text(m.group(5), max_len=2000),
+            )
+        )
     return findings
 
 
@@ -204,7 +202,9 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
             continue
 
         section_start = heading_match.end()
-        next_heading = re.search(r"^##\s+(?:Section\s+)?\d+[\.:]", text[section_start:], re.MULTILINE)
+        next_heading = re.search(
+            r"^##\s+(?:Section\s+)?\d+[\.:]", text[section_start:], re.MULTILINE
+        )
         section_text = (
             text[section_start : section_start + next_heading.start()]
             if next_heading
@@ -218,15 +218,17 @@ def _parse_sections_23(text: str) -> list[ReviewFinding]:
             source = _clean_text(m.group(3))
             section = _clean_text(m.group(4))
 
-            findings.append(ReviewFinding(
-                finding_id=fid,
-                priority=priority,
-                severity=_SEVERITY_MAP.get(priority, "tier2"),
-                message=message,
-                section=section,
-                source_expert=source,
-                recommended_action=_clean_text(m.group(2), max_len=2000),
-            ))
+            findings.append(
+                ReviewFinding(
+                    finding_id=fid,
+                    priority=priority,
+                    severity=_SEVERITY_MAP.get(priority, "tier2"),
+                    message=message,
+                    section=section,
+                    source_expert=source,
+                    recommended_action=_clean_text(m.group(2), max_len=2000),
+                )
+            )
     return findings
 
 
@@ -255,21 +257,24 @@ def _parse_section5(text: str) -> list[ReviewFinding]:
         source = _clean_text(m.group(3))
         value_add = _clean_text(m.group(4))
 
-        findings.append(ReviewFinding(
-            finding_id=fid,
-            priority="P2",
-            severity="tier2",
-            message=message,
-            section="",
-            source_expert=source,
-            recommended_action=value_add,
-        ))
+        findings.append(
+            ReviewFinding(
+                finding_id=fid,
+                priority="P2",
+                severity="tier2",
+                message=message,
+                section="",
+                source_expert=source,
+                recommended_action=value_add,
+            )
+        )
     return findings
 
 
 # ---------------------------------------------------------------------------
 # Public API
 # ---------------------------------------------------------------------------
+
 
 def parse_review_report(
     report_path: Path,

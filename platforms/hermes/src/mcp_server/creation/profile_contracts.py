@@ -26,7 +26,9 @@ class ValidationStageResult:
     message: str
 
 
-def resolve_input_source_precedence(sources: dict[str, dict[str, str]]) -> tuple[str, dict[str, str]]:
+def resolve_input_source_precedence(
+    sources: dict[str, dict[str, str]],
+) -> tuple[str, dict[str, str]]:
     for source_name in ("iplan", "ref", "prompt"):
         if source_name in sources:
             return source_name, sources[source_name]
@@ -128,7 +130,9 @@ def run_validation_stages(stages: list[ValidationStageResult]) -> dict[str, obje
     first_blocking = next((stage for stage in stages if stage.blocking), None)
     return {
         "stage_order": stage_order,
-        "structural_gate_status": "failed" if first_blocking and first_blocking.stage == "structure" else "passed",
+        "structural_gate_status": "failed"
+        if first_blocking and first_blocking.stage == "structure"
+        else "passed",
         "first_blocking_stage": first_blocking.stage if first_blocking else None,
         "blocked_message": first_blocking.message if first_blocking else None,
     }

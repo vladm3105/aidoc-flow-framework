@@ -1,20 +1,21 @@
 ## Deployment Issue
 
 **Source**
+
 | Field | Value |
 |:------|:------|
-| Development Issue | #__DEV_ISSUE__ |
-| Pull Request | #__PR_NUMBER__ |
-| Merged | __MERGED_AT__ |
-| Commits | __COMMITS__ |
+| Development Issue | #**DEV_ISSUE** |
+| Pull Request | #**PR_NUMBER** |
+| Merged | **MERGED_AT** |
+| Commits | **COMMITS** |
 
-**Depends on**: #__DEV_ISSUE__ (development complete)
+**Depends on**: #**DEV_ISSUE** (development complete)
 
 ---
 
 ## Changes Summary
 
-__PR_TITLE__
+**PR_TITLE**
 
 ---
 
@@ -22,9 +23,9 @@ __PR_TITLE__
 
 | Category | Status | Notes |
 |:---------|:-------|:------|
-| Database Migrations | __MIGRATIONS_NOTE__ | Review migrations/ or alembic/ |
-| Config Changes | __CONFIG_NOTE__ | Review .env, config/, Terraform |
-| Infrastructure | __INFRA_NOTE__ | Review Dockerfile, Cloud Run config |
+| Database Migrations | **MIGRATIONS_NOTE** | Review migrations/ or alembic/ |
+| Config Changes | **CONFIG_NOTE** | Review .env, config/, Terraform |
+| Infrastructure | **INFRA_NOTE** | Review Dockerfile, Cloud Run config |
 
 ---
 
@@ -38,4 +39,4 @@ __PR_TITLE__
 
 ---
 
-*Created automatically from PR #__PR_NUMBER__ merge*
+*Created automatically from PR #**PR_NUMBER** merge*

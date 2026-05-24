@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import os
 import stat
 from pathlib import Path
 from typing import Any
@@ -12,10 +11,18 @@ from dotenv import dotenv_values
 
 logger = logging.getLogger(__name__)
 
-BLOCKED_ENV_VARS: frozenset[str] = frozenset({
-    "PATH", "HOME", "PYTHONPATH", "LD_LIBRARY_PATH",
-    "LD_PRELOAD", "SHELL", "USER", "IFS",
-})
+BLOCKED_ENV_VARS: frozenset[str] = frozenset(
+    {
+        "PATH",
+        "HOME",
+        "PYTHONPATH",
+        "LD_LIBRARY_PATH",
+        "LD_PRELOAD",
+        "SHELL",
+        "USER",
+        "IFS",
+    }
+)
 
 # mtime-based cache: {str(project_root): (mtime, env_dict)}
 _env_cache: dict[str, tuple[float, dict[str, str]]] = {}
@@ -41,7 +48,8 @@ def _check_permissions(env_path: Path) -> None:
             logger.warning(
                 "Insecure permissions on %s (mode %o). "
                 "Consider restricting to owner-only (chmod 600).",
-                env_path, stat.S_IMODE(mode),
+                env_path,
+                stat.S_IMODE(mode),
             )
     except OSError:
         pass
@@ -89,7 +97,8 @@ def load_project_env(project_root: Path) -> dict[str, str]:
     if blocked_found:
         logger.warning(
             "Blocked system variables in %s: %s — these will not be passed to executors",
-            env_path, ", ".join(sorted(blocked_found)),
+            env_path,
+            ", ".join(sorted(blocked_found)),
         )
         for key in blocked_found:
             del env[key]

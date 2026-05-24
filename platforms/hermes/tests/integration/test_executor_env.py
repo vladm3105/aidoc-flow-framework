@@ -30,18 +30,28 @@ def _make_config(**overrides) -> ExecutorConfig:
 class TestProjectEnvThreading:
     def test_project_env_passed_to_api_runner(self) -> None:
         config = _make_config()
-        mock_response = type("Resp", (), {
-            "choices": [type("Choice", (), {"message": type("Msg", (), {"content": "ok"})()})()],
-            "usage": None,
-        })()
+        mock_response = type(
+            "Resp",
+            (),
+            {
+                "choices": [
+                    type("Choice", (), {"message": type("Msg", (), {"content": "ok"})()})()
+                ],
+                "usage": None,
+            },
+        )()
 
-        mock_litellm = type("LiteLLM", (), {
-            "acompletion": AsyncMock(return_value=mock_response),
-            "AuthenticationError": Exception,
-            "RateLimitError": Exception,
-            "Timeout": Exception,
-            "APIError": Exception,
-        })()
+        mock_litellm = type(
+            "LiteLLM",
+            (),
+            {
+                "acompletion": AsyncMock(return_value=mock_response),
+                "AuthenticationError": Exception,
+                "RateLimitError": Exception,
+                "Timeout": Exception,
+                "APIError": Exception,
+            },
+        )()
 
         with patch.dict("sys.modules", {"litellm": mock_litellm}):
             from mcp_server.executor.api_runner import run_api_executor
@@ -66,18 +76,28 @@ class TestProjectEnvThreading:
             import os
 
             seen["value"] = os.environ.get("TEST_ENV_FLAG")
-            return type("Resp", (), {
-                "choices": [type("Choice", (), {"message": type("Msg", (), {"content": "ok"})()})()],
-                "usage": None,
-            })()
+            return type(
+                "Resp",
+                (),
+                {
+                    "choices": [
+                        type("Choice", (), {"message": type("Msg", (), {"content": "ok"})()})()
+                    ],
+                    "usage": None,
+                },
+            )()
 
-        mock_litellm = type("LiteLLM", (), {
-            "acompletion": staticmethod(_fake_completion),
-            "AuthenticationError": Exception,
-            "RateLimitError": Exception,
-            "Timeout": Exception,
-            "APIError": Exception,
-        })()
+        mock_litellm = type(
+            "LiteLLM",
+            (),
+            {
+                "acompletion": staticmethod(_fake_completion),
+                "AuthenticationError": Exception,
+                "RateLimitError": Exception,
+                "Timeout": Exception,
+                "APIError": Exception,
+            },
+        )()
 
         with patch.dict("sys.modules", {"litellm": mock_litellm}):
             from mcp_server.executor.api_runner import run_api_executor

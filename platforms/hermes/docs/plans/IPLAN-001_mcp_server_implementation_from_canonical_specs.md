@@ -25,6 +25,7 @@ Execute MCP server implementation using canonical contract sources and remove po
 - SPEC-004: mcp_ucx/docs/specs/SPEC-004_mcp_reporting_lineage_artifact_contracts.md
 
 Policy rule:
+
 - This IPLAN references canonical contracts and does not redefine them.
 
 ---
@@ -66,6 +67,7 @@ Policy rule:
 ## MCP Structure Design
 
 Reference baseline:
+
 - Structure pattern derived from `UCX_v1_archive` (`creation`, `review`, `remediation`, `skills`, `templates`, `ucx/*`, `tests/*`, `docs`).
 
 Target structure for MCP implementation:
@@ -115,6 +117,7 @@ mcp/
 ```
 
 Required structure constraints:
+
 - Contract docs remain authoritative under `mcp_ucx/docs/specs`.
 - Runtime implementation code exists only under `mcp_ucx/src/mcp_server`.
 - `mcp_ucx/skills/` and `mcp_ucx/prompts/templates/` are the canonical scaffold source used by `mcp init` to create project-specific UCX files; they are never loaded by the runtime directly.
@@ -125,6 +128,7 @@ Required structure constraints:
 - Generated artifacts (rendered prompts, compliance reports) are gitignored and must not be committed.
 
 Runtime Resolution Policy:
+
 - Project onboarding: `mcp init --project {project_root}` scaffolds `{project_root}/docs/UCX/` from canonical templates in `mcp_ucx/skills/` and `mcp_ucx/prompts/templates/`; existing project files are never overwritten.
 - The MCP runtime resolves skills, personas, and prompt templates from the project-specific UCX directory only.
 - Expected project UCX path: `{project_root}/docs/UCX/` (e.g., `/opt/data/b-local/b-local-docs/docs/UCX/`).
@@ -133,6 +137,7 @@ Runtime Resolution Policy:
 - MCP bundled files under `mcp_ucx/skills/` and `mcp_ucx/prompts/templates/` are the `mcp init` scaffold source; they are never loaded at runtime.
 
 Implementation mapping from UCX_v1_archive:
+
 - `UCX_v1_archive/skills/*` -> `mcp_ucx/skills/personas/*`
 - `UCX_v1_archive/review/*`, `UCX_v1_archive/creation/*`, `UCX_v1_archive/remediation/*` -> `mcp_ucx/prompts/templates/{review|creation|remediation}/*`
 - `UCX_v1_archive/ucx/*` modules -> `mcp_ucx/src/mcp_server/*` package modules
@@ -140,6 +145,7 @@ Implementation mapping from UCX_v1_archive:
 - `UCX_v1_archive/docs/plans/*` and standards docs -> `mcp_ucx/docs/architecture/*` and `mcp_ucx/docs/plans/*` as applicable
 
 Structure readiness gate:
+
 - Workstream execution starts only after this target structure exists with placeholder modules/tests where required.
 
 ---
@@ -147,6 +153,7 @@ Structure readiness gate:
 ## Implementation Workstreams
 
 Execution order and gate policy:
+
 - Workstreams A through F may execute in parallel where dependencies allow.
 - Workstream G starts only after all exit criteria for Workstreams A through F pass.
 - Workstream H starts only after all exit criteria for Workstream G pass.
@@ -155,10 +162,12 @@ Execution order and gate policy:
 ### Workstream A: Registry and Namespace Compliance
 
 Reference contracts:
+
 - SPEC-001 Section 3
 - SPEC-001 Section 7
 
 Actions:
+
 - Implement layer-prefix registry checks.
 - Implement cross-layer alias generation for all canonical cross-layer tools.
 - Add registry tests for alias coverage and canonical/alias resolution.
@@ -168,6 +177,7 @@ Actions:
 - Ensure no runtime code path loads from `mcp_ucx/skills/` or `mcp_ucx/prompts/templates/`.
 
 Exit criteria:
+
 - All cross-layer tools expose per-layer aliases.
 - Alias invocation preserves canonical tool identity and alias_invoked metadata.
 - `mcp init` scaffolds a complete `{project_root}/docs/UCX/` from canonical templates without overwriting existing project files.
@@ -177,16 +187,19 @@ Exit criteria:
 ### Workstream B: Core Tool Response and Lifecycle Guards
 
 Reference contracts:
+
 - SPEC-001 Section 4
 - SPEC-001 Section 5
 - SPEC-001 Section 6
 
 Actions:
+
 - Implement response envelope schema validation across all tools.
 - Enforce lifecycle transition guards for staged workflow.
 - Enforce source immutability and derived artifact lineage metadata.
 
 Exit criteria:
+
 - Contract tests pass for required response keys and finding schema.
 - Invalid stage transitions return explicit transition errors.
 - Source artifact overwrite is blocked.
@@ -194,22 +207,26 @@ Exit criteria:
 ### Workstream C: Review Scoring and Prompt Contracts
 
 Reference contracts:
+
 - SPEC-002 Section 3
 - SPEC-002 Section 4
 - SPEC-002 Section 5
 - SPEC-002 Section 6
 
 Actions:
+
 - Implement category-weighted scoring engine and deduction cap checks.
 - Implement persona output parseability constraints and manifest structure checks.
 - Implement context mapping, discovered snippets, and prompt metadata sidecar validation.
 
 Exit criteria:
+
 - Scoring remains deterministic for identical fixtures.
 - Priority/severity domains accept P0-P3.
 - Prompt diagnostics return required metadata fields.
 
 Implementation checklist (Workstream C context engineering):
+
 - [x] Define typed context models for `sections_included`, `sections_skipped`, `discovered_snippets`, `appendix_index`, and `token_estimate`.
 - [x] Define typed prompt metadata sidecar model for `persona`, `doc_type`, `structure_blocks`, `sections.included`, `sections.skipped`, and `tokens.total`.
 - [x] Implement strict field validation for context and metadata payloads.
@@ -219,18 +236,21 @@ Implementation checklist (Workstream C context engineering):
 ### Workstream D: Handoff and Identity Contracts
 
 Reference contracts:
+
 - SPEC-002 Section 7
 - SPEC-002 Section 8
 - SPEC-002 Section 9
 - SPEC-002 Section 10
 
 Actions:
+
 - Implement fixer context schema and validation.
 - Implement action extraction, deduplication, and target-layer checks.
 - Implement deterministic hash ID generation and legacy compatibility parser.
 - Add review tool alias coverage for strict namespace compliance.
 
 Exit criteria:
+
 - Handoff-only actions do not apply direct score penalties.
 - ID generation is deterministic and collision policy is verified.
 - Legacy ID fixtures parse without contract errors.
@@ -238,9 +258,11 @@ Exit criteria:
 ### Workstream E: Creation and Validation Profile Contracts
 
 Reference contracts:
+
 - SPEC-003 Sections 3-8
 
 Actions:
+
 - Implement prompt-driven source-only creation contract and profile registry resolution.
 - Implement input-source precedence (`iplan > ref > prompt`) and explicit conflict blocking for contradictory scope/objective content.
 - Implement strict registry binding so active profile selection always matches authoritative registry metadata.
@@ -252,6 +274,7 @@ Actions:
 - Enforce threshold precedence for active threshold/formula source resolution.
 
 Exit criteria:
+
 - Create emits canonical source artifacts only.
 - Validation resolves exactly one profile per artifact and reports deterministic profile outputs.
 - Input precedence, conflict blocking, registry binding, subtype resolution, and structural gate order are test-covered and deterministic.
@@ -261,9 +284,11 @@ Exit criteria:
 ### Workstream F: Reporting, Lineage, and Derived Artifact Contracts
 
 Reference contracts:
+
 - SPEC-004 Sections 3-9
 
 Actions:
+
 - Implement report-mode separation and canonical report naming rules.
 - Implement audit/review/fix report family naming (`.A_`, `.R_`, `.F_`) with deterministic precedence.
 - Implement lifecycle-to-audit-wrapper naming-family mapping with preserved lineage metadata.
@@ -276,6 +301,7 @@ Actions:
 - Implement explicit repository policy for legacy `UCX_*` report compatibility or import behavior.
 
 Exit criteria:
+
 - Standard and pre-commit reporting paths are separated.
 - Audit/review/fix report-family naming and naming-family mapping are deterministic and test-covered.
 - Derived artifacts preserve source identity and required lineage metadata.
@@ -286,12 +312,14 @@ Exit criteria:
 ### Workstream G: Integration and Regression Gates
 
 Reference contracts:
+
 - SPEC-001 Section 7
 - SPEC-002 Section 11
 - SPEC-003 Section 9
 - SPEC-004 Section 10
 
 Actions:
+
 - Build end-to-end tests for validate -> validate_fix -> review -> remediate_content -> remediate_apply.
 - Build regression fixtures for scoring, action manifests, and ID stability.
 - Build regression fixtures for creation profiles, report naming, and lineage metadata.
@@ -300,6 +328,7 @@ Actions:
 - Enforce execution gate: do not run Workstream G until Workstreams A-F exit criteria pass.
 
 Exit criteria:
+
 - End-to-end staged flow succeeds for representative layer fixtures.
 - Regression tests pass for determinism and compatibility invariants.
 - All checklist entries TC-001..TC-014 are marked complete with executable evidence.
@@ -308,12 +337,14 @@ Exit criteria:
 ### Workstream H: Release Readiness and Cutover
 
 Reference contracts:
+
 - SPEC-001 Section 9
 - SPEC-002 Section 13
 - SPEC-003 Section 11
 - SPEC-004 Section 12
 
 Actions:
+
 - Publish canonical compliance report with section-level pass/fail evidence.
 - Publish checklist evidence summary referencing `mcp_ucx/docs/plans/TEST-CHECKLIST-001_mcp_new_contract_rows.md`.
 - Lock repository-level policy for legacy report handling (`import|ignore|fail-fast`) before cutover.
@@ -323,6 +354,7 @@ Actions:
 - Execute rollback smoke test using prepared rollback notes.
 
 Exit criteria:
+
 - Canonical compliance report is approved.
 - Checklist evidence summary is approved and traceable to TC-001..TC-014.
 - Legacy report policy is configured and test-proven.
@@ -392,12 +424,14 @@ Exit criteria:
 ## Change Execution Checklist
 
 ### Pre-Implementation
+
 - [x] Confirm canonical docs remain authoritative and unchanged.
 - [x] Create MCP target structure defined in "MCP Structure Design" with required top-level directories.
 - [x] Freeze contract edits in execution branches unless canonical docs are updated first.
 - [x] Create implementation task list mapped to Workstreams A-H.
 
 ### Implementation
+
 - [x] Complete Workstream A and pass alias/registry tests.
 - [x] Complete Workstream B and pass lifecycle and envelope tests.
 - [x] Complete Workstream C and pass scoring/prompt/context tests.
@@ -409,6 +443,7 @@ Exit criteria:
 - [x] Complete Workstream H and approve release readiness evidence.
 
 ### Post-Implementation
+
 - [x] Mark this IPLAN status as Complete.
 - [x] Append implementation summary with links to test evidence.
 - [x] Create next IPLAN only for delta contracts or new scope.

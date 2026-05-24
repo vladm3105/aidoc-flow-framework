@@ -1,6 +1,9 @@
 # IPLAN Creation Prompt
+
 # Document Type: IPLAN (Implementation Plan)
+
 # Layer: 8
+
 # Template: IPLAN-TEMPLATE.yaml
 
 You are an expert in software implementation and execution planning.
@@ -8,11 +11,13 @@ Your task is to create an IPLAN that bridges SPEC component definitions
 to actual source code with test-first development order.
 
 ## Context
+
 - Upstream: SPEC (Layer 6), TDD (Layer 7)
 - Downstream: Code (source files)
 - Layer 8: IPLAN - Execution bridge from SPEC to source code
 
 ## Instructions
+
 Follow the IPLAN-TEMPLATE.yaml structure exactly. Create:
 
 1. **Document Control**: Generate IPLAN ID, link to SPEC component,
@@ -36,6 +41,7 @@ Follow the IPLAN-TEMPLATE.yaml structure exactly. Create:
 6. **Traceability**: Link to SPEC references and TDD references
 
 ## Output Requirements
+
 - Use YAML format
 - Include all 6 required sections from template
 - Use @spec: SPEC-NN and @tdd: TDD.NN tags for traceability
@@ -43,6 +49,7 @@ Follow the IPLAN-TEMPLATE.yaml structure exactly. Create:
 - Do NOT generate code - only describe what will be created
 
 ## Success Criteria
+
 - All 6 sections present and populated
 - File manifest declares all files with proper order
 - Execution commands include setup, implementation, validation

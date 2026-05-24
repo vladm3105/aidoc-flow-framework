@@ -8,15 +8,9 @@ from pathlib import Path
 
 def main():
     parser = argparse.ArgumentParser(description="Check QA iteration limit")
-    parser.add_argument(
-        "--iteration", required=True, type=int, help="Current iteration number"
-    )
-    parser.add_argument(
-        "--max-iterations", type=int, default=3, help="Maximum allowed iterations"
-    )
-    parser.add_argument(
-        "--output-file", required=True, type=Path, help="Output JSON file"
-    )
+    parser.add_argument("--iteration", required=True, type=int, help="Current iteration number")
+    parser.add_argument("--max-iterations", type=int, default=3, help="Maximum allowed iterations")
+    parser.add_argument("--output-file", required=True, type=Path, help="Output JSON file")
     args = parser.parse_args()
 
     within_limit = args.iteration <= args.max_iterations
@@ -27,7 +21,9 @@ def main():
         message = f"Iteration {args.iteration}/{args.max_iterations} - creating bug issue"
     else:
         action = "escalate"
-        message = f"Iteration {args.iteration} exceeds max {args.max_iterations} - escalating to human"
+        message = (
+            f"Iteration {args.iteration} exceeds max {args.max_iterations} - escalating to human"
+        )
 
     result = {
         "iteration": args.iteration,

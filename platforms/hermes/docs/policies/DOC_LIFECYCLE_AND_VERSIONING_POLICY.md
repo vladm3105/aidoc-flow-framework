@@ -43,12 +43,14 @@ Mandatory constraints:
 ## 3. Lifecycle States
 
 Allowed lifecycle states:
+
 - draft
 - active
 - deprecated
 - archived
 
 State transition rules:
+
 - draft to active requires quality gate PASS.
 - active to deprecated requires replacement reference or explicit no-replacement rationale.
 - deprecated to archived requires deprecation window completion and final reconciliation entry.
@@ -58,11 +60,13 @@ State transition rules:
 ## 4. Versioning Rules
 
 Version increments:
+
 - patch: typo, formatting, non-normative clarifications with no contract impact
 - minor: added sections, added examples, expanded validation guidance without breaking contract
 - major: normative rule change, precedence change, compatibility behavior change, or gate behavior change
 
 Required update behavior:
+
 - Every version increment must update revision history in the artifact.
 - Major version changes must include a compatibility note and migration note.
 
@@ -71,6 +75,7 @@ Required update behavior:
 ## 5. Mandatory Review Triggers
 
 A documentation review is required when changes affect:
+
 - ucx_hermes/src/mcp_server/cli/main.py (CLI surface contract)
 - ucx_hermes/src/mcp_server/prompts/context_builder.py (source mapping and prompt assembly contracts)
 - ucx_hermes/src/mcp_server/review/runner.py (artifact emission and run result contracts)
@@ -105,11 +110,13 @@ Alert channels for escalation and merge-time notifications are implementation-de
 ## 7. Compatibility and Deprecation Constraints
 
 Mandatory constraints:
+
 - Deprecated artifacts must remain readable during deprecation period when policy requires compatibility.
 - New canonical artifacts must not silently change semantics of existing active docs.
 - Deprecation entry must specify start date, planned sunset date, and replacement artifact.
 
 Failure modes:
+
 - Contract-impacting change published as patch.
 - Deprecated artifact removed without replacement or rationale.
 - Runtime behavior changes with no triggered doc update.
@@ -119,6 +126,7 @@ Failure modes:
 ## 8. Evidence Requirements
 
 Required evidence for lifecycle compliance:
+
 - Planning package artifacts (roadmap, planning index, per-layer changelog plan).
 - Plan review artifact with resolved gaps and explicit deferrals.
 - Plan approval record (human reviewer or independent LLM-as-judge session).

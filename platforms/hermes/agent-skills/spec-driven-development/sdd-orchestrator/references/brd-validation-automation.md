@@ -141,25 +141,25 @@ for brd_id, filename in [("BRD-01", "BRD-01.yaml"), ...]:
     path = f"/opt/data/tradegent_covered_calls/01_BRD/{filename}"
     r = subprocess.run(["cat", path], capture_output=True, text=True)
     doc = yaml.safe_load(r.stdout)
-    
+
     present = set(doc.keys())
     missing = [k for k in CANONICAL_SECTIONS if k not in present]
-    
+
     if missing:
         print(f"❌ {brd_id} MISSING: {missing}")
     else:
         print(f"✅ {brd_id}: all 20 canonical sections present")
-    
+
     # Check server header
     server = doc["metadata"]["validation"]["server"]
     needs_fix = (server != "ucx_hermes")
-    
+
     # Scan for legacy IDs
     for line in r.stdout.splitlines():
         for pat in ["REQ-001", "NFR-001", "SYS-0", "CTR-0", "TSPEC-", "TASK-0"]:
             if pat in line:
                 print(f"  LEGACY ID: {pat}")
-    
+
     # Count FRs and ADR topics
     fr_count = len(doc.get("functional_requirements", {}).get("requirements", []))
     adr_count = len(doc.get("adr_topics", {}).get("topics", []))
