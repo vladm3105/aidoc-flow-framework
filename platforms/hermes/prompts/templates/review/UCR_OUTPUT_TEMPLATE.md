@@ -64,6 +64,7 @@ custom_fields:
 ## 4. Required Remediations
 
 **FORMAT REQUIREMENTS**: Every remediation MUST include:
+
 1. **Target File**: Exact filename (e.g., `BRD-01.6_functional_requirements.md`)
 2. **Target Section**: Specific section number (e.g., `Section 6.1.1`)
 3. **Remediation Text**: Exact wording to add (not just "add more detail")
@@ -86,6 +87,7 @@ custom_fields:
 ## 6. Items Verified as Present
 
 **VERIFICATION CRITERIA**: Items listed here were checked and confirmed to be:
+
 1. Explicitly stated (not implied)
 2. Specific and actionable
 3. Complete specification
@@ -99,11 +101,13 @@ custom_fields:
 ## 7. Persona Review Details (Optional)
 
 ### 7.1 THE ARCHITECT
+
 **Verified Present**: [List items with locations]
 **P0 Critical**: [Findings]
 **P1 High**: [Findings]
 
 ### 7.2 THE AUDITOR
+
 **Verified Compliant**: [List items with locations]
 **P0 Compliance Blockers**: [Findings]
 **P1 Compliance Gaps**: [Findings]
@@ -119,6 +123,7 @@ custom_fields:
 **Recommended Alternative**: [Description of alternative approach]
 
 **Trade-offs**:
+
 | Aspect | Current Approach | Alternative Approach |
 |--------|------------------|---------------------|
 | [Factor] | [Current state] | [Alternative state] |
@@ -130,15 +135,16 @@ custom_fields:
 **Document Viability**: [Fundamentally sound with gaps / Requires significant rework / Needs redesign]
 
 **PRD-Ready Assessment** (for BRD reviews):
-- Current score: XX/100 (due to P0 findings)
-- After P0 remediation: XX/100 (PRD-Ready threshold: ≥90%)
+* Current score: XX/100 (due to P0 findings)
+* After P0 remediation: XX/100 (PRD-Ready threshold: ≥90%)
 
 **Remediation Effort**:
-- P0 items: ~X-Y hours of specification writing
-- P1 items: ~X-Y hours of specification writing
-- Architectural redesign: [Not required / Required with scope]
+* P0 items: ~X-Y hours of specification writing
+* P1 items: ~X-Y hours of specification writing
+* Architectural redesign: [Not required / Required with scope]
 
 **Recommended Path**:
+
 1. Address P0 items before document progression
 2. Address P1 items in parallel with downstream development
 3. Track P2 items for future versions

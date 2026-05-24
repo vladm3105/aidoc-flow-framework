@@ -8,26 +8,42 @@ Validates markdown links in documentation files:
 
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 from urllib.parse import unquote
 
 from mcp_server.utils.source_files import extract_doc_id
-
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
 
 SKIP_DIRS = {
-    "node_modules", ".git", "__pycache__", "venv", ".venv",
-    "env", ".env", "dist", "build", ".cache", "tmp",
+    "node_modules",
+    ".git",
+    "__pycache__",
+    "venv",
+    ".venv",
+    "env",
+    ".env",
+    "dist",
+    "build",
+    ".cache",
+    "tmp",
 }
 
 MEDIA_EXTENSIONS = (
-    ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp",
-    ".ico", ".bmp", ".tiff", ".pdf",
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".svg",
+    ".webp",
+    ".ico",
+    ".bmp",
+    ".tiff",
+    ".pdf",
 )
 
 
@@ -111,9 +127,7 @@ def _resolve_target(workspace_root: Path, source_file: Path, target: str) -> Pat
 def _collect_md_files(target_path: Path) -> list[Path]:
     if target_path.is_file():
         return [target_path] if target_path.suffix.lower() == ".md" else []
-    return sorted(
-        f for f in target_path.rglob("*.md") if not _should_skip_dir(f, target_path)
-    )
+    return sorted(f for f in target_path.rglob("*.md") if not _should_skip_dir(f, target_path))
 
 
 def _render_text(payload: dict[str, object]) -> str:
@@ -193,13 +207,15 @@ def run_link_validation(
                 if link.startswith("#"):
                     anchor = link[1:]
                     if anchor and anchor not in anchors.get(file_path.resolve(), set()):
-                        broken_links.append({
-                            "source_file": str(file_path),
-                            "line_number": line_number,
-                            "link": link,
-                            "target_path": str(file_path),
-                            "reason": "anchor_not_found",
-                        })
+                        broken_links.append(
+                            {
+                                "source_file": str(file_path),
+                                "line_number": line_number,
+                                "link": link,
+                                "target_path": str(file_path),
+                                "reason": "anchor_not_found",
+                            }
+                        )
                     continue
 
                 # Split target and anchor
@@ -212,25 +228,29 @@ def run_link_validation(
 
                 resolved = _resolve_target(workspace_root, file_path, target)
                 if not resolved.exists():
-                    broken_links.append({
-                        "source_file": str(file_path),
-                        "line_number": line_number,
-                        "link": link,
-                        "target_path": str(resolved),
-                        "reason": "file_not_found",
-                    })
+                    broken_links.append(
+                        {
+                            "source_file": str(file_path),
+                            "line_number": line_number,
+                            "link": link,
+                            "target_path": str(resolved),
+                            "reason": "file_not_found",
+                        }
+                    )
                     continue
 
                 if anchor and resolved.suffix.lower() == ".md":
                     anchor_set = anchors.get(resolved.resolve(), set())
                     if anchor not in anchor_set:
-                        broken_links.append({
-                            "source_file": str(file_path),
-                            "line_number": line_number,
-                            "link": link,
-                            "target_path": str(resolved),
-                            "reason": "anchor_not_found",
-                        })
+                        broken_links.append(
+                            {
+                                "source_file": str(file_path),
+                                "line_number": line_number,
+                                "link": link,
+                                "target_path": str(resolved),
+                                "reason": "anchor_not_found",
+                            }
+                        )
 
     passed = len(broken_links) == 0
     payload: dict[str, object] = {

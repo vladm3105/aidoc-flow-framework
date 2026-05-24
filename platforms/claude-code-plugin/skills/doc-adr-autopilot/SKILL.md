@@ -104,7 +104,6 @@ BRD §7.2) from the source content. One ADR records **one** decision.
 | Source input ambiguous | fall back to prompt mode; record assumptions in the ADR |
 | Write/permission error | log, skip the item, continue the batch |
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

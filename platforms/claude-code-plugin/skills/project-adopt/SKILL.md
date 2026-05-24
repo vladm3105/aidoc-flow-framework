@@ -32,10 +32,12 @@ backbone. It is the brownfield counterpart to `../project-init/SKILL.md`.
 The greenfield/brownfield boundary is the deciding factor:
 
 **Use `project-adopt` when** (brownfield):
+
 - Source code already exists, but there is no `docs/` SDD structure.
 - You need baseline SDD artifacts derived from the running system.
 
 **Use `../project-init/SKILL.md` instead when** (greenfield):
+
 - No code and no docs yet — a brand-new project to be built SDD-first.
 
 **Do NOT use** when `docs/01_BRD/` etc. already exist — go straight to
@@ -110,6 +112,7 @@ artifact per layer exist. If anything is missing, re-run the relevant step.
 
 Report adoption complete with the list of draft artifacts and known gaps, then
 direct the user to:
+
 - `../doc-flow/SKILL.md` to drive the layers forward, and
 - the per-layer `-audit` skills (`../doc-brd-audit/SKILL.md` …
   `../doc-iplan-audit/SKILL.md`) to score each draft and produce fix reports
@@ -117,7 +120,6 @@ direct the user to:
 
 so the drafts close their gaps and rise from `draft` to ready. Run
 `../trace-check/SKILL.md` once baselines link up to confirm traceability.
-
 
 ## Adaptation
 

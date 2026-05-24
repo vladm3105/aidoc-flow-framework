@@ -19,11 +19,13 @@
 ## 2. Architecture Summary
 
 ### High-Level Architecture
+
 ```
 {ARCHITECTURE_DIAGRAM}
 ```
 
 ### Infrastructure Strategy
+
 | Concept | Choice |
 |:---|:---|
 | **Primary Cloud** (where infrastructure runs) | {PRIMARY_CLOUD} |
@@ -85,6 +87,7 @@ The **home repo** ([`{REPO_NAME}`](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME
 ## 9. Related Documents
 
 ### Planning & Execution
+
 - [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with all phases, tasks, and sprint planning
 - [ROADMAP.md](./ROADMAP.md) — Phase timeline and dependencies
 - [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
@@ -92,11 +95,13 @@ The **home repo** ([`{REPO_NAME}`](https://{GITHUB_HOST}/{GITHUB_ORG}/{REPO_NAME
 - [Temporary Plans](./tmp/) — Disposable bug-fix and minor-correction plans
 
 ### Project Specification
+
 - [PROJECT_DEFINITION.md](../docs/PROJECT_DEFINITION.md) — Full project specification
 - [Architecture README](../docs/architecture/README.md) — System architecture diagram
 - [ADR Index](../docs/adr/README.md) — Architecture Decision Records
 
 ### Repository & Governance
+
 - [Home Repository Guide](./HOME_REPO.md) — Central repo structure and usage
 - [Repository Strategy](./REPOSITORY_STRATEGY.md) — Repository architecture
 - [GitHub Project Setup](./github/GITHUB_PROJECT_SETUP.md)

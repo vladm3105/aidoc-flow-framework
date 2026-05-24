@@ -19,6 +19,7 @@ assignees: ''
 - [ ] New server (specify below)
 
 ## Task Type
+
 - [ ] New tool/resource
 - [ ] Bug fix
 - [ ] Enhancement
@@ -49,11 +50,13 @@ assignees: ''
 - SDK version:
 
 ## Testing Requirements
+
 - [ ] Unit tests
 - [ ] Integration tests
 - [ ] Manual verification
 
 ## Acceptance Criteria
+
 - [ ]
 - [ ]
 - [ ]

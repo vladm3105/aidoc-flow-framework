@@ -7,6 +7,7 @@ strategy rulebook).
 ## Context
 
 After extracting 7+ feature BRDs from a source document, each BRD needs:
+
 1. Structural validation (`sdd_validate`)
 2. Content review (4-persona: system-architect, security-auditor, business-analyst, chaos-engineer)
 3. Remediation (apply fixes)
@@ -70,18 +71,18 @@ fixes_log = {}
 
 for num, doc in brds.items():
     fix_count = 0
-    
+
     # Fix 1: objectives_to_requirements placeholders
     obj_section = doc.get("traceability", {}).get("objectives_to_requirements", [])
     goals = doc.get("business_objectives", {}).get("goals", [])
     frs = doc.get("functional_requirements", {}).get("requirements", [])
-    
+
     has_placeholders = any(
         "xxxx" in str(v)
         for entry in obj_section
         for v in [entry.get("objective_id", ""), entry.get("related_frs", [])]
     )
-    
+
     if has_placeholders and goals and frs:
         new_entries = []
         for i, g in enumerate(goals):
@@ -94,7 +95,7 @@ for num, doc in brds.items():
             })
         doc["traceability"]["objectives_to_requirements"] = new_entries
         fix_count += 1
-    
+
     # Fix 2: Expand cross_brd_dependencies
     cross_deps = doc.get("traceability", {}).get("cross_brd_dependencies", [])
     if len(cross_deps) == 1 and cross_deps[0].get("related_brd") == "BRD-01":
@@ -104,7 +105,7 @@ for num, doc in brds.items():
             new_deps.append({"related_brd": other, "dependency_type": "Discoverability", "rationale": "Cross-reference for comprehensive trade agent coverage"})
         doc["traceability"]["cross_brd_dependencies"] = new_deps
         fix_count += 1
-    
+
     # Fix 3: Add data freshness thresholds per BRD domain
     if num == 4:  # Trade Scheduling — execution quotes
         for fr in frs:
@@ -114,7 +115,7 @@ for num, doc in brds.items():
                 )
                 fix_count += 1
                 break
-    
+
     if num == 5:  # Risk — stop-loss prices
         for fr in frs:
             if "stop" in fr.get("title", "").lower():
@@ -123,7 +124,7 @@ for num, doc in brds.items():
                 )
                 fix_count += 1
                 break
-    
+
     if num == 7:  # Market State — indicators
         for fr in frs:
             if "state" in fr.get("title", "").lower():
@@ -132,7 +133,7 @@ for num, doc in brds.items():
                 )
                 fix_count += 1
                 break
-    
+
     if num == 9:  # Portfolio — PnL
         for fr in frs:
             if "position" in fr.get("title", "").lower():
@@ -141,7 +142,7 @@ for num, doc in brds.items():
                 )
                 fix_count += 1
                 break
-    
+
     if fix_count > 0:
         doc["document_control"]["version"] = "1.1"
         doc["document_control"]["last_updated"] = datetime.now().isoformat()
@@ -152,7 +153,7 @@ for num, doc in brds.items():
             "changes": f"Post-review: {fix_count} fixes including objectives_to_requirements placeholders, cross_brd_dependencies expansion, and data freshness thresholds.",
             "approver": ""
         })
-    
+
     fixes_log[num] = fix_count
 
 # Write all files
@@ -177,6 +178,7 @@ for num in files.keys():
 ## Results
 
 Applied to TradeGent CC (6 BRDs in one batch):
+
 - BRD-04: 2 fixes
 - BRD-05: 2 fixes
 - BRD-06: 0 fixes (already clean)

@@ -21,9 +21,7 @@ import json
 import os
 import re
 import subprocess
-import sys
 from datetime import datetime
-from typing import Optional
 
 
 def run_gh(args: list[str], check: bool = True) -> str:
@@ -33,7 +31,7 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
@@ -41,15 +39,15 @@ def run_gh(args: list[str], check: bool = True) -> str:
 def slugify(text: str, max_length: int = 40) -> str:
     """Convert text to URL-friendly slug."""
     # Remove special characters, convert spaces to hyphens
-    slug = re.sub(r'[^\w\s-]', '', text.lower())
-    slug = re.sub(r'[-\s]+', '-', slug).strip('-')
+    slug = re.sub(r"[^\w\s-]", "", text.lower())
+    slug = re.sub(r"[-\s]+", "-", slug).strip("-")
     return slug[:max_length]
 
 
 def extract_phase(title: str, labels: list[str]) -> str:
     """Extract phase from title or labels."""
     # Check title for [P1-...] or [P2-...] pattern
-    match = re.search(r'\[P(\d+)', title)
+    match = re.search(r"\[P(\d+)", title)
     if match:
         return f"Phase {match.group(1)}"
 
@@ -64,7 +62,7 @@ def extract_phase(title: str, labels: list[str]) -> str:
 def extract_acceptance_criteria(body: str) -> list[str]:
     """Extract acceptance criteria checkboxes from issue body."""
     criteria = []
-    for match in re.finditer(r'- \[[ x]\] (.+)', body):
+    for match in re.finditer(r"- \[[ x]\] (.+)", body):
         criteria.append(match.group(1).strip())
     return criteria
 
@@ -73,18 +71,16 @@ def extract_description(body: str) -> str:
     """Extract description section from issue body."""
     # Try to find description section
     desc_match = re.search(
-        r'##\s*Description\s*\n(.*?)(?=\n##|\Z)',
-        body,
-        re.IGNORECASE | re.DOTALL
+        r"##\s*Description\s*\n(.*?)(?=\n##|\Z)", body, re.IGNORECASE | re.DOTALL
     )
     if desc_match:
         return desc_match.group(1).strip()
 
     # Fall back to first paragraph
-    paragraphs = body.split('\n\n')
+    paragraphs = body.split("\n\n")
     for p in paragraphs:
         p = p.strip()
-        if p and not p.startswith('#') and not p.startswith('-'):
+        if p and not p.startswith("#") and not p.startswith("-"):
             return p[:500]
 
     return "See linked issue for details."
@@ -95,15 +91,15 @@ def extract_references(body: str) -> list[str]:
     refs = []
 
     # ADR references
-    for match in re.finditer(r'ADR-\d+', body, re.IGNORECASE):
+    for match in re.finditer(r"ADR-\d+", body, re.IGNORECASE):
         refs.append(match.group(0))
 
     # SPEC references
-    for match in re.finditer(r'SPEC-\d+', body, re.IGNORECASE):
+    for match in re.finditer(r"SPEC-\d+", body, re.IGNORECASE):
         refs.append(match.group(0))
 
     # Issue references (Depends on, Blocks)
-    for match in re.finditer(r'(Depends on|Blocks|Related to)\s*#(\d+)', body, re.IGNORECASE):
+    for match in re.finditer(r"(Depends on|Blocks|Related to)\s*#(\d+)", body, re.IGNORECASE):
         refs.append(f"Issue #{match.group(2)}")
 
     return list(set(refs))
@@ -117,7 +113,7 @@ def generate_tasks(criteria: list[str]) -> list[dict]:
             "id": f"TASK-{i:03d}",
             "description": criterion,
             "type": infer_task_type(criterion),
-            "estimated_complexity": infer_complexity(criterion)
+            "estimated_complexity": infer_complexity(criterion),
         }
         tasks.append(task)
     return tasks
@@ -163,26 +159,19 @@ def extract_plan_approval_mode(body: str) -> str:
       - LLM-as-judge
     """
     explicit = re.search(
-        r'(?im)^(?:[-*]\s*)?(?:plan\s+approval|approval\s+authority|approved\s+by)\s*[:|-]\s*(.+)$',
+        r"(?im)^(?:[-*]\s*)?(?:plan\s+approval|approval\s+authority|approved\s+by)\s*[:|-]\s*(.+)$",
         body,
     )
     candidate = explicit.group(1).strip() if explicit else body
-    if re.search(r'human', candidate, re.IGNORECASE):
+    if re.search(r"human", candidate, re.IGNORECASE):
         return "Human"
-    if re.search(r'llm[- ]?as[- ]?judge|llm[- ]?judge|ai[- ]?judge', candidate, re.IGNORECASE):
+    if re.search(r"llm[- ]?as[- ]?judge|llm[- ]?judge|ai[- ]?judge", candidate, re.IGNORECASE):
         return "LLM-as-judge"
     return "Pending"
 
 
-def generate_iplan(
-    issue_number: int,
-    title: str,
-    body: str,
-    labels: list[str],
-    author: str
-) -> str:
+def generate_iplan(issue_number: int, title: str, body: str, labels: list[str], author: str) -> str:
     """Generate IPLAN content from issue data."""
-    slug = slugify(title)
     phase = extract_phase(title, labels)
     description = extract_description(body)
     criteria = extract_acceptance_criteria(body)
@@ -194,47 +183,47 @@ def generate_iplan(
     # Build IPLAN content
     lines = [
         f"# IPLAN-{issue_number}: {title}",
-        f"",
-        f"## Metadata",
-        f"",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "",
+        "## Metadata",
+        "",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| **Issue** | #{issue_number} |",
         f"| **Phase** | {phase} |",
-        f"| **Status** | Draft |",
+        "| **Status** | Draft |",
         f"| **Created** | {timestamp} |",
         f"| **Author** | @{author} |",
-        f"| **AI Agent** | Pending assignment |",
+        "| **AI Agent** | Pending assignment |",
         f"| **Plan Approval Mode** | {approval_mode} |",
-        f"",
-        f"---",
-        f"",
-        f"## Planning Package",
-        f"",
-        f"| Field | Value |",
-        f"|-------|-------|",
-        f"| Planning Roadmap | Pending |",
-        f"| Planning Index | Pending |",
-        f"| Changelog Plan | Pending |",
+        "",
+        "---",
+        "",
+        "## Planning Package",
+        "",
+        "| Field | Value |",
+        "|-------|-------|",
+        "| Planning Roadmap | Pending |",
+        "| Planning Index | Pending |",
+        "| Changelog Plan | Pending |",
         f"| Plan Approval | {approval_mode} |",
-        f"",
-        f"Planning-first gate: this IPLAN must be reviewed and set to Approved before implementation begins.",
-        f"",
-        f"---",
-        f"",
-        f"## Summary",
-        f"",
+        "",
+        "Planning-first gate: this IPLAN must be reviewed and set to Approved before implementation begins.",
+        "",
+        "---",
+        "",
+        "## Summary",
+        "",
         f"{description}",
-        f"",
-        f"---",
-        f"",
-        f"## Acceptance Criteria Mapping",
-        f"",
+        "",
+        "---",
+        "",
+        "## Acceptance Criteria Mapping",
+        "",
     ]
 
     if criteria:
-        lines.append(f"| # | Criterion | Task ID | Type | Complexity |")
-        lines.append(f"|---|-----------|---------|------|------------|")
+        lines.append("| # | Criterion | Task ID | Type | Complexity |")
+        lines.append("|---|-----------|---------|------|------------|")
         for i, (criterion, task) in enumerate(zip(criteria, tasks), 1):
             lines.append(
                 f"| {i} | {criterion[:50]}{'...' if len(criterion) > 50 else ''} | "
@@ -243,40 +232,46 @@ def generate_iplan(
     else:
         lines.append("*No acceptance criteria found in issue. Add criteria before implementation.*")
 
-    lines.extend([
-        f"",
-        f"---",
-        f"",
-        f"## Tasks",
-        f"",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Tasks",
+            "",
+        ]
+    )
 
     if tasks:
         for task in tasks:
-            lines.extend([
-                f"### {task['id']}: {task['description'][:60]}",
-                f"",
-                f"- **Type**: {task['type']}",
-                f"- **Complexity**: {task['estimated_complexity']}/5",
-                f"- **Status**: Pending",
-                f"",
-                f"#### Steps",
-                f"",
-                f"1. [ ] Analyze requirements",
-                f"2. [ ] Implement changes",
-                f"3. [ ] Write/update tests",
-                f"4. [ ] Verify acceptance criterion",
-                f"",
-            ])
+            lines.extend(
+                [
+                    f"### {task['id']}: {task['description'][:60]}",
+                    "",
+                    f"- **Type**: {task['type']}",
+                    f"- **Complexity**: {task['estimated_complexity']}/5",
+                    "- **Status**: Pending",
+                    "",
+                    "#### Steps",
+                    "",
+                    "1. [ ] Analyze requirements",
+                    "2. [ ] Implement changes",
+                    "3. [ ] Write/update tests",
+                    "4. [ ] Verify acceptance criterion",
+                    "",
+                ]
+            )
     else:
         lines.append("*Tasks will be generated from acceptance criteria.*")
 
-    lines.extend([
-        f"---",
-        f"",
-        f"## References",
-        f"",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## References",
+            "",
+        ]
+    )
 
     if references:
         for ref in references:
@@ -284,25 +279,27 @@ def generate_iplan(
     else:
         lines.append("- Issue #{issue_number}")
 
-    lines.extend([
-        f"",
-        f"---",
-        f"",
-        f"## Risks & Considerations",
-        f"",
-        f"<!-- AI Agent: Document risks, edge cases, and considerations -->",
-        f"",
-        f"- [ ] Review impact on existing functionality",
-        f"- [ ] Consider backward compatibility",
-        f"- [ ] Identify test coverage gaps",
-        f"",
-        f"---",
-        f"",
-        f"## Session Notes",
-        f"",
-        f"<!-- AI Agent: Add notes during implementation -->",
-        f"",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Risks & Considerations",
+            "",
+            "<!-- AI Agent: Document risks, edge cases, and considerations -->",
+            "",
+            "- [ ] Review impact on existing functionality",
+            "- [ ] Consider backward compatibility",
+            "- [ ] Identify test coverage gaps",
+            "",
+            "---",
+            "",
+            "## Session Notes",
+            "",
+            "<!-- AI Agent: Add notes during implementation -->",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 
@@ -316,11 +313,17 @@ def main():
     args = parser.parse_args()
 
     # Get issue details
-    issue_json = run_gh([
-        "issue", "view", str(args.issue_number),
-        "--repo", args.repo,
-        "--json", "title,body,labels,author"
-    ])
+    issue_json = run_gh(
+        [
+            "issue",
+            "view",
+            str(args.issue_number),
+            "--repo",
+            args.repo,
+            "--json",
+            "title,body,labels,author",
+        ]
+    )
     issue_data = json.loads(issue_json)
 
     title = issue_data.get("title", f"Issue {args.issue_number}")

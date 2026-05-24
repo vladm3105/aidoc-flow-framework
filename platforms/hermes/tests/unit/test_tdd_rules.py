@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -56,7 +55,9 @@ def test_tdd_rules_fail_when_readiness_below_threshold() -> None:
     yaml_data = {
         "document_control": {"iplan_ready_score": "89/100"},
         "test_pyramid": {"distribution": {"unit": 70, "integration": 20, "e2e": 10}},
-        "test_mapping": {"scenarios": [{"bdd_scenario": "@bdd: BDD.01.abcd", "tests": [{"type": "unit"}]}]},
+        "test_mapping": {
+            "scenarios": [{"bdd_scenario": "@bdd: BDD.01.abcd", "tests": [{"type": "unit"}]}]
+        },
         "thresholds": {
             "unit": {"coverage_target": ">=90%", "pass_criteria": ["All pass"]},
             "integration": {"coverage_target": ">=85%", "pass_criteria": ["All pass"]},

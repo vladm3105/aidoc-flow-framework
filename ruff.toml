@@ -1,0 +1,18 @@
+# Ruff — Python linter + formatter. Scope: platforms/hermes + tests (the only Python).
+line-length = 100
+target-version = "py311"
+
+[lint]
+# High-value set: pycodestyle errors/warnings, pyflakes, import-sorting, pyupgrade.
+# Opinionated refactor families (B/SIM/C4) deferred — adopt incrementally on a
+# codebase not fully exercised in CI yet.
+select = ["E", "F", "W", "I", "UP"]
+ignore = [
+  "E501",  # line length — left to the formatter, not a hard error
+  "E741",  # ambiguous names (l/O/I) — cosmetic; renaming untested code isn't worth the risk
+]
+
+[lint.per-file-ignores]
+# Test/loader modules legitimately set sys.path before importing the package under test.
+"**/tests/**" = ["E402"]
+"**/__init__.py" = ["F401"]

@@ -46,6 +46,7 @@ jobs:
 ```
 
 This is the only file needed. The home repo workflow handles:
+
 - Verifying {AI_TOOL_NAME} Code CLI on the runner
 - Checking out the PR branch
 - Fetching the PR diff and metadata
@@ -129,6 +130,7 @@ claude --version
 ```
 
 Install if needed:
+
 ```bash
 npm install -g @anthropic-ai/claude-code
 ```

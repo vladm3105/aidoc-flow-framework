@@ -46,6 +46,7 @@ hermes -p tradegent mcp add broker-ib \
 ### 3. Create Strategy Skills from SDD Documents
 
 Convert each SDD document into a Hermes skill:
+
 - BRD → "what to do" (objectives, constraints)
 - PRD → "how it works" (features, capabilities)
 - EARS → "formal rules" (WHEN-THE-SHALL-WITHIN)

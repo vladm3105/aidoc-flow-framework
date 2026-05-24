@@ -3,6 +3,7 @@
 This document defines how to version, tag, and release components in the {PROJECT_NAME} (`{PROJECT_PREFIX}`) project.
 
 ## Versioning
+
 All repositories follow **Semantic Versioning (SemVer)**: `MAJOR.MINOR.PATCH`
 
 | Change Type | Bump | Example |
@@ -35,6 +36,7 @@ git push origin {SERVICE_NAME}/v1.1.0
 ```
 
 ## CHANGELOG Format
+
 Follow [Keep a Changelog](https://keepachangelog.com/) format:
 
 ```markdown
@@ -46,6 +48,7 @@ Follow [Keep a Changelog](https://keepachangelog.com/) format:
 ```
 
 ### AI Contributions
+
 When AI assistants contribute to a release, document them in the CHANGELOG:
 
 ```markdown
@@ -57,10 +60,12 @@ When AI assistants contribute to a release, document them in the CHANGELOG:
 ```
 
 Use these tags:
+
 - `[AI-implemented]` — Fully implemented by AI, human-reviewed
 - `[AI-assisted]` — Human-led with AI assistance
 
 ## Release Checklist
+
 - [ ] All tests pass on `main`
 - [ ] CHANGELOG.md updated
 - [ ] Version bumped in config files
@@ -111,6 +116,7 @@ Development → Staging (cumulative) → QA Testing → Production
 ### Rollback
 
 Production rollback is handled by `rollback-prod.yml`:
+
 1. Shift traffic to previous revision
 2. Verify health checks pass
 3. Update tracking file

@@ -71,6 +71,7 @@ custom_fields:
 ```
 
 **Required Sections**:
+
 1. Executive Summary
 2. Business Context
 3. Stakeholder Analysis
@@ -95,6 +96,7 @@ custom_fields:
 ```
 
 **Required Sections**:
+
 1. Product Overview
 2. User Personas
 3. User Stories
@@ -118,12 +120,14 @@ custom_fields:
 ```
 
 **Required Sections**:
+
 1. EARS Overview
 2. Requirement Categories
 3. EARS Statements (using EARS syntax patterns)
 4. Traceability Matrix
 
 **EARS Patterns**:
+
 - Ubiquitous: "The [system] shall [action]"
 - Event-Driven: "When [event], the [system] shall [action]"
 - State-Driven: "While [state], the [system] shall [action]"
@@ -186,6 +190,7 @@ custom_fields:
 ```
 
 **Required Sections**:
+
 1. Context
 2. Decision
 3. Consequences
@@ -208,6 +213,7 @@ custom_fields:
 ```
 
 **Required Sections**:
+
 1. System Overview
 2. Component Specifications
 3. Interface Definitions
@@ -215,6 +221,7 @@ custom_fields:
 5. Operational Requirements
 
 **Element ID Format**: `SYS.{doc}.{type}.{seq}`
+
 - Types: CP (Component), IF (Interface), DT (Data), PF (Performance), SC (Security), OP (Operational)
 
 ---
@@ -266,6 +273,7 @@ custom_fields:
 **Required Format**: Dual-file (YAML schema + MD documentation)
 
 **CTR-XX.yaml**:
+
 ```yaml
 contract_id: CTR-{NN}
 name: "{Contract Name}"

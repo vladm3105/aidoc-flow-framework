@@ -202,7 +202,7 @@ Expected test count after P4-T2: **25 + 3 to 5 = 28 to 30 tests**.
 |----------|---------|-----|
 | `conformance.yml` | push / PR to any branch | Run `python3 -m unittest discover -s tests/conformance` |
 | `hermes.yml` | push / PR touching `platforms/hermes/` | Run Hermes' own pytest in a Python 3.12 venv |
-| `plugin.yml` | push / PR touching `platforms/claude-code-plugin/` | Lint `plugin.json` (`python -m json.tool`) + coupling sweep (`grep -r 'ucx_flow|ucx_hermes' returns 0`) |
+| `plugin.yml` | push / PR touching `platforms/claude-code-plugin/` | Lint `plugin.json` (`python -m json.tool`) + coupling sweep (`grep -r 'ucx_flow\|ucx_hermes' returns 0`) |
 
 Legacy `legacy/github-workflows-disabled/` is a 28-workflow set
 that's deeply coupled to the pre-migration project's structure (BRD
@@ -245,6 +245,7 @@ plugin** for users choosing between them.
 (`create`, `audit`, `validate`, `review`, `fix`, `autopilot`).
 
 For each (layer × operation) cell, mark:
+
 - **H** if Hermes provides it
 - **P** if the plugin provides it
 - **HP** if both
@@ -252,6 +253,7 @@ For each (layer × operation) cell, mark:
 
 Plus a freeform "platform-specific extras" section for things only
 one platform has:
+
 - Hermes-only: MCP-server runtime, conformance-suite-extension
   hooks, scaffold runtime, etc.
 - Plugin-only: skill auto-discovery, slash-command UX,

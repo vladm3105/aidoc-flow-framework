@@ -29,6 +29,7 @@ parent types only**.
 ## When to Use
 
 **Use** `doc-ref` for supplements such as:
+
 - **BRD-REF** — project overviews, executive summaries, strategic vision,
   stakeholder guides.
 - **ADR-REF** — technology-stack summaries, architecture overviews,

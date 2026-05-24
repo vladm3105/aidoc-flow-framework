@@ -12,15 +12,16 @@ Staging status values:
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tracking-file", required=True, type=Path)
-    parser.add_argument("--status", required=True,
-                        choices=["pending", "deploying", "deployed", "failed"])
+    parser.add_argument(
+        "--status", required=True, choices=["pending", "deploying", "deployed", "failed"]
+    )
     parser.add_argument("--image-tag", default=None)
     parser.add_argument("--url", default=None)
     parser.add_argument("--test-results", default=None)
@@ -28,13 +29,17 @@ def main():
     args = parser.parse_args()
 
     try:
-        tracking = json.loads(args.tracking_file.read_text()) if args.tracking_file.exists() else {
-            "config": {"total_phases": 8},
-            "phases": {},
-            "staging": {},
-            "production": {},
-            "last_check": None
-        }
+        tracking = (
+            json.loads(args.tracking_file.read_text())
+            if args.tracking_file.exists()
+            else {
+                "config": {"total_phases": 8},
+                "phases": {},
+                "staging": {},
+                "production": {},
+                "last_check": None,
+            }
+        )
     except json.JSONDecodeError as e:
         print(f"Error parsing tracking file: {e}")
         tracking = {
@@ -42,10 +47,10 @@ def main():
             "phases": {},
             "staging": {},
             "production": {},
-            "last_check": None
+            "last_check": None,
         }
 
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     # Ensure staging section exists
     if "staging" not in tracking:
@@ -55,7 +60,7 @@ def main():
             "url": None,
             "image_tag": None,
             "test_results": None,
-            "test_report_url": None
+            "test_report_url": None,
         }
 
     # Update staging fields

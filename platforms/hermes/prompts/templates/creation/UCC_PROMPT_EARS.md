@@ -25,31 +25,37 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **EA
 ## EARS Syntax Patterns
 
 ### Ubiquitous Requirements
+
 ```
 The {system} shall {action}.
 ```
 
 ### Event-Driven Requirements
+
 ```
 When {trigger event}, the {system} shall {action}.
 ```
 
 ### State-Driven Requirements
+
 ```
 While {system state}, the {system} shall {action}.
 ```
 
 ### Optional Feature Requirements
+
 ```
 Where {feature is enabled}, the {system} shall {action}.
 ```
 
 ### Unwanted Behavior Requirements
+
 ```
 If {unwanted condition}, then the {system} shall {response}.
 ```
 
 ### Complex Requirements
+
 ```
 While {state}, when {event}, the {system} shall {action}.
 ```
@@ -63,6 +69,7 @@ EARS.{doc_num}.{category}.{sequence}
 ```
 
 Categories:
+
 - `UB` = Ubiquitous
 - `EV` = Event-driven
 - `ST` = State-driven
@@ -138,6 +145,7 @@ A complete EARS document MUST include:
 Convert PRD requirements into EARS syntax requirements.
 
 **CRITICAL REMINDERS**:
+
 - STRICT EARS syntax compliance
 - Cover ALL five categories
 - Trace to PRD elements

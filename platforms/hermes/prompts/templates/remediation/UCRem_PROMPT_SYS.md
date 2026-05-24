@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## SYS-Specific Context
 
 SYS is Layer 6 in the SDD workflow:
+
 - **Upstream**: ADR (Architecture Decisions)
 - **Downstream**: REQ (Atomic Requirements)
 
 Common SYS issues to remediate:
+
 - Missing interface specifications
 - Undefined performance targets
 - Incomplete error handling
@@ -64,17 +66,20 @@ Common SYS issues to remediate:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Missing section with deterministic content
 - Quantifiable targets (latency, throughput)
 - Traceability additions
 - Error handling patterns from standard library
 
 ### auto-assisted
+
 - Template with [TODO] for team-specific values
 - Performance targets need measurement
 - Interface needs contract review
 
 ### manual-required
+
 - Component boundary change
 - New interface definition
 - ADR update required
@@ -139,6 +144,7 @@ verification: |
 ## SYS-Specific Fix Examples
 
 ### Missing Performance Targets Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -159,6 +165,7 @@ fix_action:
 ```
 
 ### Missing Interface Definition Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -189,6 +196,7 @@ fix_action:
 ```
 
 ### Missing Error Handling Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -210,6 +218,7 @@ fix_action:
 ```
 
 ### Missing Operational Requirements Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -248,6 +257,7 @@ fix_action:
 SYS elements follow: `SYS.{doc_num}.{type_code}.{seq}`
 
 Type codes:
+
 - `CP` = Component
 - `IF` = Interface
 - `DT` = Data
@@ -261,6 +271,7 @@ Type codes:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] All components have defined responsibilities
 - [ ] Interfaces are fully specified
 - [ ] Performance targets are quantified
@@ -276,6 +287,7 @@ Analyze the UCR review report and original SYS document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - SYS fixes define implementation contracts - be precise
 - Quantify all performance targets
 - Include comprehensive error handling

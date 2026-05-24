@@ -661,6 +661,7 @@ python3 framework/AUTOPILOT/scripts/mvp_autopilot.py \
 ```
 
 **Key v6.0 Features** (v2 only):
+
 - **TSPEC** (Layer 10): Test Specifications (UTEST, ITEST, STEST, FTEST)
 - **TDD Mode**: Test-first development with Red→Green validation
 - **CHG Integration**: 4-Gate change management system (v2; v3 uses 5-gate CHG overlay)

@@ -37,6 +37,7 @@ After completing a full pipeline for a new document (any of BRD→PRD→EARS→B
 ## ADR ID Collision Resolution
 
 When `ADR-NN.yaml` already exists in the project with a different topic:
+
 1. Search for next available ADR number: `grep -r "id: ADR-" 05_ADR/*.yaml`
 2. Use next available number (e.g., ADR-20 if ADR-19 is last)
 3. Rename the file: `ADR-10_broker...yaml` → `ADR-20_broker...yaml`

@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## CTR-Specific Context
 
 CTR is Layer 8 in the SDD workflow:
+
 - **Upstream**: REQ (Atomic Requirements)
 - **Downstream**: SPEC (Technical Specification)
 
 Common CTR issues to remediate:
+
 - Missing validation rules
 - Incomplete schema definitions
 - Missing versioning strategy
@@ -35,6 +37,7 @@ Common CTR issues to remediate:
 ## Contract Structure Reference
 
 **Dual-file format:**
+
 1. `CTR-XX.yaml` - Machine-readable schema
 2. `CTR-XX.md` - Human-readable documentation
 
@@ -70,17 +73,20 @@ producers: []
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Missing field description
 - Validation rule addition (non-breaking)
 - Consumer/producer list update
 - Example data addition
 
 ### auto-assisted
+
 - New field with [TODO] for defaults
 - Validation pattern template
 - Migration guide structure
 
 ### manual-required
+
 - Schema type change
 - Required field addition
 - Field removal or rename
@@ -145,6 +151,7 @@ verification: |
 ## CTR-Specific Fix Examples
 
 ### Missing Validation Rules Fix
+
 ```yaml
 fix_type: add_validation
 fix_action:
@@ -164,6 +171,7 @@ rationale: |
 ```
 
 ### Missing Field Description Fix
+
 ```yaml
 fix_type: modify_field
 fix_action:
@@ -180,6 +188,7 @@ fix_action:
 ```
 
 ### Missing Consumers/Producers Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -201,6 +210,7 @@ fix_action:
 ```
 
 ### Breaking Change Documentation Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -218,6 +228,7 @@ fix_action:
 ```
 
 ### Version Strategy Fix
+
 ```yaml
 fix_type: modify_text
 fix_action:
@@ -238,6 +249,7 @@ fix_action:
 ```
 
 ### Example Data Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -282,6 +294,7 @@ fix_action:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] All fields have descriptions
 - [ ] Validation rules are defined
 - [ ] Version follows semantic versioning
@@ -297,6 +310,7 @@ Analyze the UCR review report and original CTR document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - Contract changes can break integrations - be careful
 - Document all breaking changes
 - Include validation rules

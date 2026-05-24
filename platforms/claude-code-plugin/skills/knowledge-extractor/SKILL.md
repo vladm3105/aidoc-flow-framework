@@ -29,11 +29,13 @@ runs it when a local tweak looks generally useful. It **only drafts and routes**
 ## When to Use
 
 **Use when**:
+
 - A project's `.aidoc/profile.yaml` / `.aidoc/learnings.md` shows a recurring
   adaptation that might belong in the framework.
 - Reviewing whether local deviations should be standardized.
 
 **Do NOT use to**:
+
 - Create or maintain the profile — that is `../project-profile/SKILL.md`.
 - Author a change record or run a gate yourself — this skill *drafts* the input;
   `../doc-chg/SKILL.md` and `../gate-check/SKILL.md` own the CHG process.
@@ -53,6 +55,7 @@ defaults to list the project's active deviations.
 
 For each deviation decide *generalizable* vs *project-idiosyncratic*. Weigh —
 do not let either decide alone:
+
 - **`recurrence`** (higher → stronger signal it is not a one-off);
 - **`conflict: true`** (the project overrode the developer's own seed → weaker;
   a per-project exception is less likely to be universal);

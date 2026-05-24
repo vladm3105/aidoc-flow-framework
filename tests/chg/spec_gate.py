@@ -91,7 +91,9 @@ def evaluate(files: list[str]) -> list[str]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="GATE-SPEC diff-aware checks (CHG-D1).")
-    parser.add_argument("--base", help="Base ref to diff against (else $GATE_SPEC_BASE, else origin/main).")
+    parser.add_argument(
+        "--base", help="Base ref to diff against (else $GATE_SPEC_BASE, else origin/main)."
+    )
     args = parser.parse_args(argv)
 
     base = _resolve_base(args.base)

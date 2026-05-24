@@ -7,6 +7,7 @@ assignees: ''
 ---
 
 ## Security Issue Type
+
 - [ ] Authentication/Authorization
 - [ ] Data exposure
 - [ ] Input validation
@@ -41,9 +42,11 @@ assignees: ''
 <!-- If you have a suggestion for fixing this -->
 
 ## Environment
+
 - Version:
 - Cloud Provider:
 
 ## Disclosure
+
 - [ ] I confirm this is a non-critical issue suitable for public tracking
 - [ ] For critical vulnerabilities, I will use private disclosure via security@{DOMAIN}

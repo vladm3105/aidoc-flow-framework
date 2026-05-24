@@ -132,8 +132,6 @@ CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GA
 
 The original 14-layer framework is preserved in `framework/` for existing projects. SYS, REQ, CTR, TSPEC subtypes, and TASKS remain available.
 
-
-
 ---
 
 ## Repository Structure
@@ -259,6 +257,7 @@ Template-link validation policy:
 Each layer requires traceability tags from ALL upstream layers:
 
 **v3 (8 layers):**
+
 ```
 BRD (0 tags) → PRD (@brd) → EARS (+@prd) → BDD (+@ears) → ADR (+@bdd) → SPEC (+@adr) → TDD (+@spec) → IPLAN (+@tdd)
 ```
@@ -266,6 +265,7 @@ BRD (0 tags) → PRD (@brd) → EARS (+@prd) → BDD (+@ears) → ADR (+@bdd) �
 See [framework/TRACEABILITY.md](./framework/TRACEABILITY.md).
 
 **v2 (14 layers):**
+
 ```
 BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS
 ```

@@ -1,11 +1,8 @@
 """Tests for link validation runner."""
 
 import json
-import tempfile
-from pathlib import Path
 
 import pytest
-
 from mcp_server.link_validation import run_link_validation
 
 

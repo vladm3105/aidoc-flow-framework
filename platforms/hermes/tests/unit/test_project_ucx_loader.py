@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -21,7 +20,6 @@ from mcp_server.skills import (  # noqa: E402
 )
 from mcp_server.skills.project_ucx_loader import load_project_persona_file  # noqa: E402
 
-
 REQUIRED_RELATIVE_PATHS = [
     Path("UCX/skills/personas"),
     Path("UCX/skills/layer_aliases"),
@@ -33,8 +31,9 @@ REQUIRED_RELATIVE_PATHS = [
 ]
 
 
-
-_DEFAULT_PERSONA_MAPPINGS = 'version: "1.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n'
+_DEFAULT_PERSONA_MAPPINGS = (
+    'version: "1.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n'
+)
 
 
 def create_runtime_ucx_tree(project_root: Path) -> None:
@@ -43,9 +42,10 @@ def create_runtime_ucx_tree(project_root: Path) -> None:
     # Required file: persona_mappings.yaml
     mappings_path = project_root / "UCX/skills/persona_mappings.yaml"
     if not mappings_path.exists():
-        (project_root / "UCX/skills/personas/architect.md").write_text("Architect stub", encoding="utf-8")
+        (project_root / "UCX/skills/personas/architect.md").write_text(
+            "Architect stub", encoding="utf-8"
+        )
         mappings_path.write_text(_DEFAULT_PERSONA_MAPPINGS, encoding="utf-8")
-
 
 
 def test_validate_project_ucx_root_raises_for_missing_paths(tmp_path: Path) -> None:
@@ -58,7 +58,6 @@ def test_validate_project_ucx_root_raises_for_missing_paths(tmp_path: Path) -> N
         raise AssertionError("Expected ProjectSkillsNotFound")
 
 
-
 def test_load_project_persona_file_reads_project_specific_persona(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
     persona_file = tmp_path / "UCX/skills/personas/architect.md"
@@ -66,7 +65,6 @@ def test_load_project_persona_file_reads_project_specific_persona(tmp_path: Path
 
     result = load_project_persona_file(project_root=tmp_path, persona="architect")
     assert result == "Architect persona"
-
 
 
 def test_load_project_prompt_template_reads_project_specific_template(tmp_path: Path) -> None:
@@ -124,11 +122,7 @@ def test_load_persona_mapping_valid(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
     (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect", encoding="utf-8")
     mapping_content = (
-        'version: "1.0"\n'
-        "creation:\n"
-        "  brd:\n"
-        "    personas: [architect]\n"
-        "    mode: sequential\n"
+        'version: "1.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n'
     )
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text(mapping_content, encoding="utf-8")
 
@@ -154,6 +148,7 @@ def test_validate_persona_mapping_raises_on_missing_version(tmp_path: Path) -> N
     create_runtime_ucx_tree(tmp_path)
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text("creation: {}", encoding="utf-8")
     from mcp_server.skills.project_ucx_loader import _invalidate_persona_mapping_cache
+
     _invalidate_persona_mapping_cache(tmp_path)
     try:
         load_persona_mapping(project_root=tmp_path)
@@ -174,6 +169,7 @@ def test_validate_persona_mapping_raises_on_invalid_persona_name(tmp_path: Path)
     )
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text(mapping_content, encoding="utf-8")
     from mcp_server.skills.project_ucx_loader import _invalidate_persona_mapping_cache
+
     _invalidate_persona_mapping_cache(tmp_path)
     try:
         load_persona_mapping(project_root=tmp_path)

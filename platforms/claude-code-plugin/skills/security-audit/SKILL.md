@@ -29,6 +29,7 @@ security topics upstream of it.
 ## When to Use
 
 Use `security-audit` when:
+
 - Reviewing the security posture of an SDD project or its implementation.
 - Validating that security requirements in SPEC (and upstream EARS/ADR) are
   complete and testable.

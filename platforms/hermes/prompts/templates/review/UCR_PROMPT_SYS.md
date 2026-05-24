@@ -24,12 +24,14 @@ You are an AI Expert Board conducting a Unified Context Review (UCR) of a System
 ## VERIFICATION PROTOCOL
 
 Before claiming a requirement is PRESENT, verify it meets ALL criteria:
+
 1. **Explicitly stated** - Not implied or "covered by" another requirement
 2. **Testable** - Has measurable acceptance criteria
 3. **Complete** - Includes all necessary details for implementation
 4. **Traceable** - Links to parent EARS/BRD/PRD requirements
 
 **Cross-Reference Check**:
+
 - Functional requirements section - Complete coverage of system capabilities
 - Interface definitions - ALL external interfaces documented
 - Performance requirements - Quantified, not vague
@@ -43,6 +45,7 @@ Before claiming a requirement is PRESENT, verify it meets ALL criteria:
 ### Remediation Table Format (REQUIRED)
 
 Every finding MUST include:
+
 1. **Req ID**: Exact requirement ID or section
 2. **Gap Description**: What is missing or incomplete
 3. **Suggested Fix**: Exact wording to add
@@ -93,6 +96,7 @@ Every finding MUST include:
 ### 1. THE ARCHITECT (System Design Alignment)
 
 Focus on:
+
 - System boundary definitions clear?
 - Subsystem decomposition logical?
 - Interface boundaries appropriate?
@@ -100,6 +104,7 @@ Focus on:
 - Scalability paths defined?
 
 Output:
+
 - **Verified Aligned**: Requirements matching architecture
 - **P0 Risks**: Requirements conflicting with architecture
 - **P1 Gaps**: Missing architectural requirements
@@ -110,6 +115,7 @@ Output:
 ### 2. THE TECH LEAD (Technical Feasibility)
 
 Focus on:
+
 - Implementation feasibility per requirement
 - Technology constraints acknowledged?
 - Complexity assessment accurate?
@@ -117,6 +123,7 @@ Focus on:
 - Technical debt implications?
 
 Output:
+
 - **Verified Feasible**: Implementable requirements
 - **P0 Risks**: Infeasible requirements
 - **P1 Gaps**: Underspecified requirements
@@ -127,6 +134,7 @@ Output:
 ### 3. THE QA LEAD (Requirement Testability)
 
 Focus on:
+
 - Each requirement testable?
 - Verification method specified?
 - Acceptance criteria measurable?
@@ -134,6 +142,7 @@ Focus on:
 - Traceability to test cases possible?
 
 Output:
+
 - **Verified Testable**: Requirements with clear test paths
 - **P0 Risks**: Untestable requirements
 - **P1 Gaps**: Missing verification criteria
@@ -144,6 +153,7 @@ Output:
 ### 4. THE DEVIL'S ADVOCATE (Missing System Behaviors)
 
 Focus on:
+
 - Error handling requirements complete?
 - Failure mode requirements specified?
 - Recovery requirements defined?
@@ -151,6 +161,7 @@ Focus on:
 - Boundary condition handling?
 
 Output:
+
 - **Verified Complete**: Failure modes addressed
 - **P0 Risks**: Missing critical failure requirements
 - **P1 Gaps**: Incomplete error handling
@@ -161,6 +172,7 @@ Output:
 ### 5. THE INTEGRATION LEAD (Interface Requirements)
 
 Focus on:
+
 - All external interfaces documented?
 - Interface data formats specified?
 - Interface protocols defined?
@@ -168,6 +180,7 @@ Focus on:
 - Version compatibility requirements?
 
 Output:
+
 - **Verified Complete**: Interface requirements complete
 - **P0 Risks**: Missing critical interfaces
 - **P1 Gaps**: Incomplete interface specs
@@ -178,6 +191,7 @@ Output:
 ### 6. THE OPERATOR (Operational Requirements)
 
 Focus on:
+
 - Logging requirements specified?
 - Monitoring requirements defined?
 - Backup/recovery requirements?
@@ -185,6 +199,7 @@ Focus on:
 - Health check requirements?
 
 Output:
+
 - **Verified Operable**: Operational requirements complete
 - **P0 Risks**: Missing critical operational requirements
 - **P1 Gaps**: Incomplete operational specs

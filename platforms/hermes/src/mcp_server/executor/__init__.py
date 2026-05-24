@@ -1,5 +1,7 @@
 """Executor package — API agent dispatch for LLM-dependent tools."""
 
+from .contracts import ExecutorResult
+from .dispatcher import run_executor
 from .registry import (
     ExecutorConfig,
     ExecutorType,
@@ -9,8 +11,6 @@ from .registry import (
     register_executor,
     remove_executor,
 )
-from .dispatcher import run_executor
-from .contracts import ExecutorResult
 
 __all__ = [
     "ExecutorConfig",

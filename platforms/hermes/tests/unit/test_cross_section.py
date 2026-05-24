@@ -11,8 +11,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -23,10 +21,10 @@ from mcp_server.validation.cross_section import (  # noqa: E402
     run_cross_section_checks_md,
 )
 
-
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_lists() -> tuple[list[str], list[str], list[str]]:
     """Return fresh (errors, warnings, passes) lists."""
@@ -190,11 +188,7 @@ def test_diagram_registry_skips_non_diagram_layer():
 
 def test_md_fallback_runs_without_crash():
     """run_cross_section_checks_md completes without exception."""
-    md_content = (
-        "---\ntitle: Test\n---\n\n"
-        "## Traceability\n\n"
-        "Maps to BRD.01.aaaa\n"
-    )
+    md_content = "---\ntitle: Test\n---\n\n## Traceability\n\nMaps to BRD.01.aaaa\n"
     errors, warnings, passes = _make_lists()
     run_cross_section_checks_md(
         content=md_content, doc_type="brd", errors=errors, warnings=warnings, passes=passes
@@ -206,13 +200,7 @@ def test_md_fallback_runs_without_crash():
 
 def test_cumulative_tags_enforces_max_for_iplan():
     """IPLAN documents enforce maximum 8 cumulative tags."""
-    yaml_data = {
-        "metadata": {
-            "tags": [
-                "a", "b", "c", "d", "e", "f", "g", "h", "i"
-            ]
-        }
-    }
+    yaml_data = {"metadata": {"tags": ["a", "b", "c", "d", "e", "f", "g", "h", "i"]}}
     errors, warnings, passes = _make_lists()
     run_cross_section_checks(
         yaml_data=yaml_data, doc_type="iplan", errors=errors, warnings=warnings, passes=passes
@@ -222,13 +210,7 @@ def test_cumulative_tags_enforces_max_for_iplan():
 
 def test_cumulative_tags_passes_within_max_for_tdd():
     """TDD documents pass when tags count <= 7."""
-    yaml_data = {
-        "metadata": {
-            "tags": [
-                "a", "b", "c", "d", "e", "f", "g"
-            ]
-        }
-    }
+    yaml_data = {"metadata": {"tags": ["a", "b", "c", "d", "e", "f", "g"]}}
     errors, warnings, passes = _make_lists()
     run_cross_section_checks(
         yaml_data=yaml_data, doc_type="tdd", errors=errors, warnings=warnings, passes=passes

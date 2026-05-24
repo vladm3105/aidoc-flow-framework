@@ -26,6 +26,7 @@ These plans are not the same artifact as SDD document-layer IPLAN (Layer 8). Use
 | Incident or blocker resolution | Document workaround and follow-up actions |
 
 Do **not** create a permanent development plan for:
+
 - Single-issue fixes with no cross-cutting impact
 - Routine code reviews or PR feedback
 - Changes already captured in an ADR
@@ -80,7 +81,7 @@ Every permanent development plan starts with these fields:
 
 ```
 Draft → Approved → In Progress → Complete
-                                         
+
                  → Superseded ←
                      (by PLAN-NNN)
 ```
@@ -140,11 +141,11 @@ Track your project's permanent development plans here. Copy the template row and
 
 ```
 ROADMAP.md          ← What to build (phases, timeline)
-  
+
 PROJECT_PLAN.md     ← How to build it (tasks, specs, schedule)
-  
+
 governance/plans/   ← Permanent development planning history (this directory)
-  
+
 GitHub Issues       ← Tracking units (updated per plan checklists)
 ```
 
@@ -153,6 +154,7 @@ Permanent development plans do not replace or duplicate PROJECT_PLAN.md. They do
 ### Governance Document Sync Rule
 
 After completing a permanent development plan (or after every sprint/significant change), review and update:
+
 - **[ROADMAP.md](../ROADMAP.md)** — Phase dates, statuses, dependencies
 - **[RELEASE_PROCESS.md](../RELEASE_PROCESS.md)** — Release workflow, tooling conventions
 - **[PROJECT_PLAN.md](../PROJECT_PLAN.md)** — Task statuses, schedule, gap analysis
@@ -176,6 +178,7 @@ This project uses an AI-first development approach. AI assistants lose context a
 | **Plan audit trail** | Permanent plans capture deviations so future sessions can understand why things changed |
 
 When adding new rules, follow this hierarchy:
+
 1. Add the rule to its canonical doc (GOVERNANCE_RULES.md, BRANCHING_STRATEGY.md, etc.)
 2. If it's a critical "never do" or "always do", add a one-liner to README_AIAGENT.md (and CLAUDE.md if Claude-specific)
 3. If it affects sprint/phase completion, add a checklist item to DEFINITION_OF_DONE.md

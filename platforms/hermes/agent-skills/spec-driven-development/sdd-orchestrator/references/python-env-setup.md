@@ -40,6 +40,7 @@ find /opt -maxdepth 3 -name "conda" -type f 2>/dev/null
 ### Fallback If Conda Is Not Available
 
 Install pyenv build dependencies first:
+
 ```bash
 sudo apt-get install -y build-essential libssl-dev zlib1g-dev \
   libbz2-dev libreadline-dev libsqlite3-dev libncursesw5-dev \
@@ -47,6 +48,7 @@ sudo apt-get install -y build-essential libssl-dev zlib1g-dev \
 ```
 
 Then temporarily unset conda from PATH before building:
+
 ```bash
 PATH=$(echo "$PATH" | tr ':' '\n' | grep -v anaconda | tr '\n' ':')
 pyenv install 3.12.13

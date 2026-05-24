@@ -29,6 +29,7 @@
 Dev receives incremental deployments; staging deploys only when complete:
 
 **Dev Deployment (Per-Phase)**:
+
 1. `check-phase-completion.yml` runs hourly and on issue close events
 2. When phase N issues are closed → triggers `deploy-dev.yml` for phase N
 3. Dev deployment runs smoke tests (health, readiness, version, config)
@@ -36,6 +37,7 @@ Dev receives incremental deployments; staging deploys only when complete:
 5. `check-all-phases-dev.yml` runs to check overall status
 
 **Staging Deployment (All Phases Complete)**:
+
 1. `check-all-phases-dev.yml` verifies all 8 phases are `dev_deployed`
 2. When all complete → triggers `deploy-staging.yml` with final image
 3. Staging receives Phase 8 image (includes all functionality)

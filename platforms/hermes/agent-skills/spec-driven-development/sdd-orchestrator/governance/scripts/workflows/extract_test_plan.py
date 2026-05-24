@@ -93,18 +93,14 @@ def format_test_plan(criteria: list[str], special_instructions: str) -> str:
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Extract test plan from development issue"
-    )
+    parser = argparse.ArgumentParser(description="Extract test plan from development issue")
     parser.add_argument(
         "--issue-body-file",
         required=True,
         type=Path,
         help="File containing issue body",
     )
-    parser.add_argument(
-        "--output-file", required=True, type=Path, help="Output markdown file"
-    )
+    parser.add_argument("--output-file", required=True, type=Path, help="Output markdown file")
     args = parser.parse_args()
 
     try:

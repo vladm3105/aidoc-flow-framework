@@ -1,0 +1,13 @@
+legacy/
+node_modules/
+.git/
+.pytest_cache/
+**/__pycache__/
+# Hermes vendored / runtime-parsed content (ported sdd-orchestrator package,
+# prompt templates parsed by code, persona content) — not maintained docs.
+platforms/hermes/agent-skills/
+platforms/hermes/prompts/
+platforms/hermes/skills/
+# framework/ is the GATE-SPEC-governed spec — changes are deliberate, versioned
+# events (CHG/GATE-SPEC), not drive-by style edits. Exclude from the style linter.
+framework/

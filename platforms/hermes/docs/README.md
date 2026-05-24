@@ -41,14 +41,14 @@ This directory (`ucx_hermes/`) is now the **sole active runtime** for the UCX MC
 Active document flow for SDD v3.2 (8 layers):
 
 ```
-BRD (L1: Context/C4-L1) 
-  → PRD (L2: Container/C4-L2) 
-  → EARS (L3: Decision Bridge) 
-  → BDD (L4: Decision Bridge) 
-  → ADR (L5: Decision Bridge) 
-  → SPEC (L6: Component/C4-L3) 
-  → TDD (L7: Implementation Bridge) 
-  → IPLAN (L8: Implementation Bridge) 
+BRD (L1: Context/C4-L1)
+  → PRD (L2: Container/C4-L2)
+  → EARS (L3: Decision Bridge)
+  → BDD (L4: Decision Bridge)
+  → ADR (L5: Decision Bridge)
+  → SPEC (L6: Component/C4-L3)
+  → TDD (L7: Implementation Bridge)
+  → IPLAN (L8: Implementation Bridge)
   → Code
 ```
 
@@ -142,7 +142,6 @@ These layers were removed in v3.2. Their content is subsumed by the bridge layer
 | Task Breakdown | `tasks` | IPLAN execution bridge | `templates/archive/TASKS-TEMPLATE.yaml` |
 
 > **Rule**: Do not create new documents referencing SYS, REQ, CTR, TSPEC, or TASKS as active layers. Use the 8-layer v3.2 flow above.
-
 
 ---
 
@@ -292,6 +291,7 @@ authoring policy.
 This section tracks migration from the legacy `mcp_ucx/` package to `ucx_hermes/`.
 
 See [migration/MIGRATION_FROM_MCP_UCX.md](migration/MIGRATION_FROM_MCP_UCX.md) for:
+
 - Path mapping (old -> new)
 - MCP configuration changes
 - What was patched and why
@@ -300,6 +300,7 @@ See [migration/MIGRATION_FROM_MCP_UCX.md](migration/MIGRATION_FROM_MCP_UCX.md) f
 ## 8. Hermes Integration
 
 See [HERMES_INTEGRATION.md](HERMES_INTEGRATION.md) for:
+
 - Safe workflow (UCX validates, Hermes reasons, humans decide)
 - Tool safety classification
 - Bridge skill installation

@@ -75,6 +75,7 @@ BRD.{doc_num}.{type_code}.{sequence}
 ```
 
 Type codes:
+
 - `01` = Functional requirement
 - `02` = Non-functional requirement
 - `03` = Constraint
@@ -134,6 +135,7 @@ Analyze the input documents (template, references, upstream) and create a comple
 Apply all assigned author personas to ensure comprehensive coverage across business value, requirements completeness, architecture, implementation feasibility, and economics.
 
 **CRITICAL REMINDERS**:
+
 - Use exact template structure
 - Assign IDs to ALL requirements
 - Document assumptions and risks

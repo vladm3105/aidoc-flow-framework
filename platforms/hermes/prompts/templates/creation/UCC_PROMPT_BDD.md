@@ -90,6 +90,7 @@ Scenario: User login with valid credentials
 ## Step Writing Guidelines
 
 ### Good Steps
+
 ```gherkin
 Given the user "john@example.com" exists with password "secret123"
 When the user logs in with email "john@example.com" and password "secret123"
@@ -97,6 +98,7 @@ Then the user should see the dashboard
 ```
 
 ### Bad Steps (Too Vague)
+
 ```gherkin
 Given a user exists
 When the user logs in
@@ -123,6 +125,7 @@ Then it should work
 Convert EARS requirements into executable BDD scenarios.
 
 **CRITICAL REMINDERS**:
+
 - Valid Gherkin syntax
 - Cover ALL EARS requirements
 - Include error scenarios

@@ -1,13 +1,12 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
 import sys
+from dataclasses import dataclass
+from pathlib import Path
 
 from mcp_server.skills.project_ucx_loader import resolve_ucx_root
-
 
 _ALLOWED_CONTEXTS = {"create", "review", "remediate", "any"}
 _STATUS_TOKEN_PATTERN = re.compile(r"\b(READY|DEGRADED|BLOCKED)\b", re.IGNORECASE)
@@ -167,6 +166,7 @@ def run_preflight(
         elif persona_mappings.exists():
             try:
                 from mcp_server.skills.persona_manager import check_persona_mapping_health
+
                 health = check_persona_mapping_health(project_root=project_root)
                 checks["persona_mapping_health"] = health["status"]
                 for name in health["missing_persona_files"]:
@@ -205,6 +205,7 @@ def run_preflight(
     else:
         try:
             from mcp_server.env_manager import show_project_env
+
             env_info = show_project_env(project_root)
             checks["env_key_count"] = env_info["env_key_count"]
             checks["env_keys"] = env_info["env_keys"]
@@ -224,6 +225,7 @@ def run_preflight(
     checks["project_executors_json"] = project_executors_path.is_file()
     if project_executors_path.is_file():
         from mcp_server.executor.registry import load_project_executor_config
+
         project_execs = load_project_executor_config(project_root)
         checks["project_executor_count"] = len(project_execs)
         if not project_execs:

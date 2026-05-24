@@ -41,13 +41,16 @@ PLAN → BRD (create → validate → review → remediate)
 | BDD | Add parameterized Scenario Outlines, add error/recovery scenarios | execute_code |
 
 ### Metadata Update After Remediation
+
 All remediated documents need:
+
 - `version`: 1.0 → 1.1
 - `status`: Draft → Reviewed
 - `last_updated`: current ISO 8601 timestamp
 - `revision_history`: prepend new entry with fix summary
 
 ### Cross-Layer Consistency Checks
+
 - BRD hashes in PRD must match BRD element IDs
 - EARS requirements map 1:1 (or N:1) to PRD capabilities
 - BDD spec_trace must reference actual EARS requirement names
@@ -65,6 +68,7 @@ All remediated documents need:
 ## Verification Command
 
 After each layer's remediation, run both:
+
 ```
 sdd_validate doc_type=<type> document=<path> layer=<0N_TYPE>
 sdd_score_show report_file=<path>/.ucx/validate/<DOC>.ucx.validate.json

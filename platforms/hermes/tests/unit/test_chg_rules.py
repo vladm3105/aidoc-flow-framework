@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -116,7 +115,7 @@ def test_spec_source_routes_to_gate_spec_and_passes() -> None:
 def test_spec_change_rejects_c1() -> None:
     yaml_data = _base_spec_chg_payload()
     yaml_data["change_control"]["change_level"] = "C1"  # type: ignore[index]
-    yaml_data["change_control"]["entry_gate"] = None     # type: ignore[index]
+    yaml_data["change_control"]["entry_gate"] = None  # type: ignore[index]
     errors, _, _ = _run(yaml_data)
     assert any("GATE-SPEC-E003" in msg for msg in errors)
 

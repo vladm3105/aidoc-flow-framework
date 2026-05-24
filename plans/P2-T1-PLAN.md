@@ -38,6 +38,7 @@ P2-T1 is **paper only** — no code or files move. P2-T2 begins the copy work.
    restructure?
 
 **Out:**
+
 - Any file moves, code edits, or `.mcp.json` repoints (those start in P2-T2).
 - New conformance tests (Phase 4).
 - Platform B (Claude Code plugin) design — Phase 3.

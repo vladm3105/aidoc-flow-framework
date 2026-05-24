@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -18,8 +17,12 @@ from mcp_server.reporting import (  # noqa: E402
 
 def test_rollback_smoke_restores_source_target_without_mutating_derived_artifacts() -> None:
     source_artifact = build_source_artifact_name(doc_id="SPEC-006", slug="rollback_contract")
-    validation_artifact = build_derived_artifact_name(doc_id="SPEC-006", slug="rollback_contract", stage="validation-fixed")
-    remediated_artifact = build_derived_artifact_name(doc_id="SPEC-006", slug="rollback_contract", stage="remediated")
+    validation_artifact = build_derived_artifact_name(
+        doc_id="SPEC-006", slug="rollback_contract", stage="validation-fixed"
+    )
+    remediated_artifact = build_derived_artifact_name(
+        doc_id="SPEC-006", slug="rollback_contract", stage="remediated"
+    )
 
     result = run_rollback_smoke(
         source_artifact=source_artifact,

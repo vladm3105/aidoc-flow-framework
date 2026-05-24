@@ -29,11 +29,13 @@ skill_view(name='sdd-orchestrator', file_path='references/governance-load-protoc
 This single file condenses the planning-first rules from GOVERANCE_RULES.md §2b/§3, DEFINITION_OF_DONE.md plan/IPLAN review level, and DEVELOPMENT_WORKFLOW_GUIDE.md §2. **Skip this load step = governance violation.**
 
 If the protocol file is missing or stale (after a UCX framework sync), fall back to loading the three governance docs individually via:
+
 ```
 skill_view(name='sdd-orchestrator', file_path='governance/GOVERNANCE_RULES.md')
 skill_view(name='sdd-orchestrator', file_path='governance/DEFINITION_OF_DONE.md')
 skill_view(name='sdd-orchestrator', file_path='governance/DEVELOPMENT_WORKFLOW_GUIDE.md')
 ```
+
 These docs contain the planning-first gates (§3), Definition of Done for plan/IPLAN review level,
 depth model selection, plan types and storage rules (§2b), and the full agent operating model.
 
@@ -99,6 +101,7 @@ When the SDD pipeline defines an autonomous strategy (trading agent, monitoring 
 Pattern documented in: `references/hermes-agent-sdd-runtime-pattern.md`
 
 Key integration points:
+
 - **cronjob**: Schedule check windows at precise times (market hours, daily scans)
 - **skills**: Load SDD documents as decision rules — soft updates via skill patches
 - **MCP servers**: Register broker/external system MCP servers as Hermes tools
@@ -192,6 +195,7 @@ Templates containing `id: ADR-NN` (or `_id: ADR-NN`) collide with the parse stre
 validation failures even when the actual document is structurally valid.
 
 **Files that must be temporarily moved (4 locations):**
+
 - Project: `UCX/templates/layers/05_ADR/ADR-TEMPLATE.yaml`
 - Framework: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
 - MCP: `ucx_hermes/templates/ADR-TEMPLATE.yaml` AND `mcp_ucx/templates/ADR-TEMPLATE.yaml`
@@ -218,6 +222,7 @@ metadata update conventions, and common P1 finding categories.
 ### Subagent Timeout Recovery (Large Document Generation)
 
 When subagent generation times out at 600s on large documents (>50KB output expected):
+
 - Pre-extract upstream data into the subagent prompt (don't make subagent read 6 files)
 - Retry solo on timeout — check file mtime; if advanced, subagent wrote before timing out
 - Fall back: build YAML via execute_code and write_file directly
@@ -244,6 +249,7 @@ After all BRDs are validated and reviewed, generate PRDs for each BRD.
 A feature PRD with one generic core capability (e.g., "Product delivers [feature] as specified in BRD-XX" with acceptance criterion "All BRD acceptance criteria met — target 100%") IS NOT A VALID PRD. It is a placeholder shell. The EARS layer 3 cannot formalize requirements from stubs. The entire SDD pipeline stalls.
 
 **Correct pattern**: Decompose EVERY BRD functional requirement into a PRD core capability with:
+
 - Hash-level BRD references: `@brd: BRD.NN.07.xxxx` (not document-level `@brd: BRD-NN`)
 - Populated diagram_contract with containers + data_flows (not empty `{}`)
 - User journeys with alt/else error branches
@@ -274,6 +280,7 @@ PROHIBITED QUALIFIERS (replace with quantified targets):
   "near X" → "within 0.0Y of X"
 
 STRUCTURAL RULES:
+
   1. No compound WHEN with AND — split into atomic requirements
   2. No nested IF inside SHALL — each conditional path is a separate requirement
   3. WITHIN must reference a specific event (not orphaned "WITHIN 5 minutes")
@@ -374,6 +381,7 @@ sdd_create_build(doc_type="prd", layer="02_PRD", template="PRD-TEMPLATE.yaml")
 If templates are not found, run `sdd_init(project_path)` to scaffold the project with template files. After init, re-run `sdd_create_build` to confirm template discovery.
 
 **Pre-flight checklist before PRD generation**:
+
 1. `sdd_preflight(context="create")` — confirms project state and next action
 2. `sdd_create_build` — confirms template availability
 3. If either fails, run `sdd_init` then retry
@@ -405,6 +413,7 @@ diagrams:
 ### sdd_next_action Layer Gate
 
 After all PRDs are generated and validated, call `sdd_next_action(document="02_PRD")` to confirm the layer's next stage. The response shows:
+
 - `current_stage`: "created"
 - `existing_artifacts`: list of all PRD files in the layer
 - `next_action`: "validate" (or "review" if already validated)
@@ -415,6 +424,7 @@ This gate confirms all documents are visible to the UCX tooling before proceedin
 ### PRD-to-BRD Traceability
 
 Every PRD must reference its upstream BRD:
+
 ```yaml
 traceability:
   upstream:
@@ -457,6 +467,7 @@ For umbrella PRDs, populate `discoverability` with all 8 feature PRDs. For featu
 ### Creation Prompt Rules
 
 For BRD creation, enforce:
+
 - All 15 required sections present (Executive Summary, Problem Statement, Proposed Solution, Stakeholder Analysis, Functional Requirements, Non-Functional Requirements, Quality Attributes, Constraints, Assumptions, Dependencies, Risk Analysis, Success Criteria, Glossary, Appendices, Cross-References)
 - YAML frontmatter with `doc_id: "BRD-{NN}"`
 - Element IDs: `TYPE.NN.SS.xxxx` (4-segment format per naming standards: e.g., `BRD.01.07.a7f3`)
@@ -464,17 +475,20 @@ For BRD creation, enforce:
 - No TBD/TODO items without explanation
 
 For PRD creation, enforce:
+
 - User stories with acceptance criteria
 - Feature prioritization (MoSCoW)
 - MVP scope boundary
 - User personas and journeys
 
 For ADR creation, enforce:
+
 - Context-Decision-Consequences format
 - Each decision has documented alternatives considered
 - Trade-off analysis present
 
 For TDD creation, enforce:
+
 - Test pyramid: 70% unit / 20% integration / 10% e2e
 - Every BDD scenario maps to one or more TDD test cases
 - Test case format: inputs, expected outputs, edge cases
@@ -482,6 +496,7 @@ For TDD creation, enforce:
 - Tests MUST be defined before implementation (test-first TDD)
 
 For IPLAN creation, enforce:
+
 - File manifest: one entry per deliverable file with status (NOT_STARTED/PARTIAL/COMPLETED)
 - Bash commands: executable one-liners only, no interactive prompts
 - Session handoff: previous session state, next_step directive
@@ -524,6 +539,7 @@ structure, common P1 finding categories, and differences from the ADR inline rev
 ### Review Post-Processing (Sequential, After Parallel Dispatch)
 
 After ALL parallel subagents return findings:
+
 1. **fact-checker**: Cross-validate all P0/P1 findings against the document. Remove false positives, correct categories.
 2. **board-chairperson**: Synthesize verified findings, de-duplicate, compute category-weighted score, produce final manifest with readiness verdict.
 
@@ -537,6 +553,7 @@ After ALL parallel subagents return findings:
 ### Chairperson Scoring
 
 Category-weighted scoring with 8 categories:
+
 - functional, quality, compliance, constraints, integration, acceptance, risk, architecture
 
 Formula: Score = 100 - sum(capped_category_deductions × weights)
@@ -573,17 +590,20 @@ Pass thresholds vary by doc type (check document-specific README).
 ### UCX `sdd_remediate` Limitation — Structural-Only Fixes
 
 UCX `sdd_remediate` is a **structural/schema fixer**, not a content author. It detects:
+
 - Placeholder tokens (`xxxx`, `TBD` without explanation)
 - Invalid element ID formats
 - Missing required sections
 
 It does **NOT**:
+
 - Add new scenarios to `scenario_structure.scenarios`
 - Rewrite boilerplate Gherkin steps into domain-specific language
 - Generate missing success/error/recovery/audit scenario blocks
 - Apply findings from narrative markdown review reports (UCREM, chairperson manifests)
 
 **Observed behavior (TradeGent CC, 2026-05-08):**
+
 ```
 sdd_remediate(document=BDD-02.yaml, remediation_report=UCREM-REPORT.md)
 → findings: 2 tier2 (placeholder, element_id)
@@ -595,6 +615,7 @@ sdd_remediate(document=BDD-02.yaml, remediation_report=UCREM-REPORT.md)
 The UCREM report described 58 content-level findings (missing Gate 3 scenarios, audit logging, recovery paths, parameterized tables). `sdd_remediate` ignored all of them because they require semantic authoring, not structural repair.
 
 **Correct content-remediation path:**
+
 1. Parse chairperson manifest / UCREM report into a per-document fix list
 2. Dispatch `delegate_task` fixer subagents (or scripted Python patching) to rewrite YAML content
 3. Subagents must explicitly write `scenario_structure.scenarios.{success,error,recovery,audit}` blocks
@@ -608,10 +629,12 @@ Never assume `sdd_remediate` with a markdown report will apply content fixes. It
 When `sdd_remediate` is confirmed structural-only (see reproduction above), use `delegate_task` fixer subagents for semantic authoring. Proven at TradeGent CC 2026-05-08 for 7 BDDs.
 
 **Dispatcher setup:**
+
 - `delegate_task` enforces `max_concurrent_children=3`. Split docs into batches of 3 (or fewer).
 - Each subagent receives: original BDD path, upstream EARS path, per-document fix list, YAML structure rules.
 
 **Fix list per document (example: BDD-02):**
+
 ```
 doc_path: /path/to/BDD-02.yaml
 priority: P1| P2
@@ -633,12 +656,14 @@ health_score: "6/10"       # realistic, not fabricated
 ```
 
 **Subagent rules:**
+
 - Overwrite the original file; do NOT create a new path
 - Scenario IDs: `BDD.NN.SS.xxxx` where `xxxx` = first 4 chars of SHA256("BDD.NN:{section}:{name}")
 - After writing, verify with `yaml.safe_load()` and report scenario count breakdown
 - Include upstream EARS requirement text in `spec_trace` entries (not placeholders)
 
 **Dispatcher verification (mandatory after each batch):**
+
 ```python
 import os, yaml
 for f in bdd_files:
@@ -651,10 +676,12 @@ for f in bdd_files:
     total = sum(len(sc.get(k, [])) for k in ["success","error","recovery","audit","edge","performance","security"])
     print(f"{f}: modified={mtime} scenarios={total}")
 ```
+
 - Reject any subagent result where `mtime` is unchanged or scenario count matches pre-remediation
 - Re-dispatch timed-out subagents individually (common for complex docs like BDD-05 with pre-trade risk)
 
 **Post-remediation validation:**
+
 - Run `sdd_validate` on each rewritten file to confirm structural compliance
 - Expected: PASS, 0 errors, 0 warnings
 - Do NOT rely on the subagent's own "verification" claim — validate independently
@@ -680,6 +707,7 @@ See `references/ucx-remediate-content-limitations.md` for the full reproduction 
 ## Templates & Layer Assets (v3.2)
 
 All templates are unified YAML files available as linked files in this skill:
+
 - `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 - `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
 - `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
@@ -768,6 +796,7 @@ was rejected with "Missing or invalid YAML frontmatter" while the identical cont
 renamed to `BRD-08.yaml` passed clean — same structure, same 0 errors/0 warnings.
 
 When this occurs, the validation report shows:
+
 - **Error**: "Missing or invalid YAML frontmatter"
 - **Pass log**: "Requires YAML data (skipped for MD)"
 - **Generated fix file**: `*_validated.yaml` (validator's own re-serialization)
@@ -776,6 +805,7 @@ When this occurs, the validation report shows:
 patterns (long descriptive names with multiple underscores/keywords).
 
 **Diagnostic steps**:
+
 1. Verify `yaml.safe_load()` passes cleanly on the file
 2. Compare raw bytes at file start — look for invisible BOM or encoding issues
 3. Rename to a short canonical form (`BRD-NN.yaml`) and re-validate
@@ -789,7 +819,7 @@ patterns (long descriptive names with multiple underscores/keywords).
 ### read_file Inside execute_code Returns Line-Numbered Output
 
 When you call `read_file(path)` inside an `execute_code` sandbox, each line is
-prefixed with a line-number (`     1|content here`). This breaks YAML parsers
+prefixed with a line-number (`1|content here`). This breaks YAML parsers
 (`yaml.safe_load()` fails because the first column is no longer the YAML
 structure). **Use `subprocess.run(["cat", path])` instead to get clean content
 for YAML parsing inside sandbox code.** Outside `execute_code` (direct
@@ -867,6 +897,7 @@ Each layer must achieve >=90/100 readiness score before generating the next laye
 ### Validation Tooling: sdd_validate vs Programmatic Parsing
 
 **`yaml.safe_load()` + manual checks ARE NOT VALIDATION.** They confirm YAML syntax and surface section/key presence, but they do NOT enforce:
+
 - Cross-section rules (entities in executive_summary must appear in functional_requirements or stakeholders)
 - Phase name/consistency rules between scope and implementation
 - Template compliance (all required subsections present, correct C4 level content)
@@ -881,6 +912,7 @@ Each layer must achieve >=90/100 readiness score before generating the next laye
 The UCX `sdd_validate` tool returns **different output formats for pass vs fail**:
 
 **PASS result** (text format):
+
 ```
 [mcp_sdd_lifecycle_sdd_validate] BRD-NN PASS
 Errors: 0 | Warnings: 0
@@ -888,6 +920,7 @@ Details: /path/to/BRD-NN.ucx.validate.txt
 ```
 
 **FAIL result** (JSON format):
+
 ```json
 {
   "report_path": "/path/to/BRD-NN.ucx.validate.json",
@@ -1104,7 +1137,9 @@ After completing a full SDD pipeline (BRD→PRD→EARS→BDD→ADR), run a cross
 The following skills were consolidated into this umbrella skill or its support directories. Their unique insights are preserved in labeled subsections below and in `references/` / `scripts/` / `templates/`.
 
 ### Batch BRD Processing
+
 Session-specific batch patterns for extracting 5+ BRDs from a large source document using programmatic `execute_code` + `yaml.dump` rather than one-by-one subagent dispatch. Key patterns:
+
 - **Coverage audit**: Map source sections → BRD assignments with 100% coverage rule
 - **Base template dict**: Reusable Python dict with all 18 BRD sections, `None`/`TBD` for per-BRD content
 - **YAML post-processing**: Quote `>=`/`<=`/`>`/`<` at line starts after `yaml.dump()`
@@ -1114,6 +1149,7 @@ Session-specific batch patterns for extracting 5+ BRDs from a large source docum
 For the complete scripts, see `references/batch-brd-processing/` (migrated from the `batch-brd-processing` skill).
 
 ### UCX SDD Bridge
+
 Bridge between Hermes conversational reasoning and UCX deterministic SDD tools. Core principle: **UCX validates. Hermes reasons. Humans decide.**
 
 **Safe UCX tools** (deterministic, call freely): `sdd_validate`, `sdd_validate_chg`, `sdd_consistency`, `sdd_validate_links`, `sdd_preflight`, `sdd_scan`, `sdd_score_show`, `sdd_score_validate`, `sdd_score_compare`, `sdd_next_action`, `sdd_run_lifecycle`, `sdd_clean`, `sdd_init`, `sdd_personas_show/set/diff`, `sdd_env_show`, `sdd_prescreen`, `sdd_list_executors`, `sdd_register_executor`.
@@ -1121,6 +1157,7 @@ Bridge between Hermes conversational reasoning and UCX deterministic SDD tools. 
 **Dangerous patterns** (never do): Pass `executor` to `sdd_validate`, `sdd_review`, `sdd_remediate`, or `sdd_create_build`. The patched UCX server has disabled AI executor delegation for these tools.
 
 **MCP server config**:
+
 ```yaml
 mcp_servers:
   sdd-lifecycle:
@@ -1132,6 +1169,7 @@ mcp_servers:
 **Template sourcing (D-0013, aidoc-flow migration)**: Hermes does **not** maintain local copies of framework templates. The platform reads layer templates and indices directly from `framework/layers/<NN>_<X>/` in the repository. The legacy template-sync procedure and the related `sync-ucx-templates.sh` / `update-sdd-from-ucx` scripts were removed during the aidoc-flow migration — see `plans/DECISIONS.md` D-0013 for the rationale. There is no longer anything to sync.
 
 ### SDD Naming Standards
+
 Enforce SDD v3.2 ID naming standards and format rules. Use BEFORE creating or editing any SDD document.
 
 **Document ID**: `TYPE-NN` (e.g., `BRD-01`). Regex: `^[A-Z]+-\d{2,}$`. File naming: `TYPE-NN.yaml`.
@@ -1139,6 +1177,7 @@ Enforce SDD v3.2 ID naming standards and format rules. Use BEFORE creating or ed
 **Element ID**: `TYPE.NN.SS.xxxx` where `xxxx` = first 4 chars of SHA256 hash. Example: `BRD.01.07.a7f3`.
 
 **Tags**:
+
 - Traceability: `@brd:`, `@prd:`, `@ears:`, `@bdd:`, `@adr:`, `@spec:`, `@tdd:`, `@iplan:`
 - Dependency: `@depends: TYPE-NN` (hard prerequisite)
 - Discovery: `@discoverability: TYPE-NN` (soft reference)
@@ -1149,9 +1188,11 @@ Enforce SDD v3.2 ID naming standards and format rules. Use BEFORE creating or ed
 **Datetime**: ISO 8601 `YYYY-MM-DDTHH:MM:SS`. Date-only format deprecated.
 
 ### SDD Cross-Validation
+
 Cross-document quality assurance: broken cross-references, orphaned artifacts, bidirectional link consistency, cumulative tag compliance, duplicate IDs, traceability matrix completeness.
 
 **Error codes (XDOC)**:
+
 - XDOC-001: Referenced requirement ID not found
 - XDOC-002: Missing cumulative tag
 - XDOC-003: Upstream document not found
@@ -1159,6 +1200,7 @@ Cross-document quality assurance: broken cross-references, orphaned artifacts, b
 - XDOC-006–010: Invalid tag format, gap in tag chain, circular reference, missing traceability, orphaned document
 
 **Quality gates**:
+
 - Zero cross-reference errors
 - Zero orphaned artifacts
 - 100% bidirectional link compliance
@@ -1172,19 +1214,25 @@ Cross-document quality assurance: broken cross-references, orphaned artifacts, b
 ## Operation Modes
 
 ### Creating a Document
+
 Say: "Create a BRD for [project]" — I will check for an approved plan first. If missing, STOP and create one before any document work.
 
 ### Reviewing a Document
+
 Say: "Review [document path]" — I will check for an approved plan first. If missing, STOP and create one before any review work.
 
 ### Remediating a Document
+
 Say: "Fix findings in [document path] from [review report]" — I will check for an approved plan first. If missing, STOP and create one before any remediation work.
 
 ### Full Lifecycle
+
 Say: "Run full SDD lifecycle for [project]" — I will FIRST create a planning package, get human approval, THEN orchestrate creation → review → remediation for each layer.
 
 ### Planning-First Enforcement
+
 For ALL modes above, execute this gate before any work:
+
 1. Check for existing plan in `.hermes/plans/` or `governance/plans/` or `plans/`
 2. If plan exists: verify it covers the requested scope. If yes → proceed. If no → update plan first.
 3. If no plan exists: create plan per `plan` skill, present to human, STOP until approval.

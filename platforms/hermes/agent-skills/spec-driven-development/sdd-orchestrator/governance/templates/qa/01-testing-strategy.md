@@ -10,6 +10,7 @@ Canonical chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`
 
 Primary guide:
+
 - `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
 
 ## Quick Reference

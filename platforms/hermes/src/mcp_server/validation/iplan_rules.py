@@ -41,7 +41,6 @@ def check_iplan_readiness_score(
         return
 
     numerator = int(match.group(1))
-    denominator = int(match.group(2))
 
     if numerator < 90:
         errors.append(
@@ -78,9 +77,7 @@ def check_file_manifest(
 
         missing_fields = [f for f in required_fields if f not in file_info]
         if missing_fields:
-            errors.append(
-                f"IPLAN-002: file_manifest.files item missing fields: {missing_fields}"
-            )
+            errors.append(f"IPLAN-002: file_manifest.files item missing fields: {missing_fields}")
             continue
 
         if file_info.get("status") not in status_values:
@@ -235,7 +232,9 @@ def check_implementation_contracts(
         )
         return
 
-    passes.append(f"IPLAN-006: implementation_contracts validated with {len(contracts)} contracts and {file_count} files")
+    passes.append(
+        f"IPLAN-006: implementation_contracts validated with {len(contracts)} contracts and {file_count} files"
+    )
 
 
 def run_iplan_validation_checks(

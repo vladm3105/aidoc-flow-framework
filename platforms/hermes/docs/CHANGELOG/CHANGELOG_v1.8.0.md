@@ -44,6 +44,7 @@ Existing `payload`/`passed` attributes unchanged (non-breaking).
 ### Shared Source File Collector
 
 New `mcp_server.utils.source_files` module:
+
 - `collect_source_files()` — handles both MD and YAML, excludes derived copies and templates
 - `is_yaml_document()` — extension check utility
 - Used by validation runner; consistency and remediation runners use updated internal logic
@@ -51,6 +52,7 @@ New `mcp_server.utils.source_files` module:
 ### Tests
 
 24 new tests (187 total):
+
 - `test_source_files.py` (7): shared collector
 - `test_yaml_parity.py` (9): consistency, next_action, scoring YAML support
 - `test_api_aliases.py` (8): result class property aliases

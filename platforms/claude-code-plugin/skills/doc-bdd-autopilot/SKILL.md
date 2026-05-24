@@ -99,7 +99,6 @@ inherited PRD/BRD chain. Verify the upstream EARS exists before generating.
 | Source input ambiguous | fall back to prompt mode; record assumptions in the BDD |
 | Write/permission error | log, skip the item, continue the batch |
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

@@ -68,9 +68,9 @@ class PlatformEngineIsolationTests(unittest.TestCase):
             self.skipTest("hermes platform absent")
         hits = list(_violations(hermes, HERMES_SCOPE, HERMES_FORBIDDEN))
         self.assertEqual(
-            hits, [],
-            "Hermes runtime surface references plugin engine:\n  "
-            + _format_hits(hits),
+            hits,
+            [],
+            "Hermes runtime surface references plugin engine:\n  " + _format_hits(hits),
         )
 
     def test_plugin_does_not_reference_hermes_engine(self):
@@ -79,7 +79,7 @@ class PlatformEngineIsolationTests(unittest.TestCase):
             self.skipTest("claude-code-plugin platform absent")
         hits = list(_violations(plugin, PLUGIN_SCOPE, PLUGIN_FORBIDDEN))
         self.assertEqual(
-            hits, [],
-            "Plugin runtime surface references Hermes engine:\n  "
-            + _format_hits(hits),
+            hits,
+            [],
+            "Plugin runtime surface references Hermes engine:\n  " + _format_hits(hits),
         )

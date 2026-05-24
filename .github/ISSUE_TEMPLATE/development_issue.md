@@ -33,13 +33,16 @@ assignees: ''
 <!-- List specific test scenarios for staging verification -->
 
 ### Unit Tests
+
 - [ ] Test case 1: {description}
 - [ ] Test case 2: {description}
 
 ### Integration Tests
+
 - [ ] Test case 1: {description}
 
 ### Feature-Specific Tests
+
 - [ ] Functional test: {description}
 - [ ] Edge case: {description}
 
@@ -82,5 +85,6 @@ assignees: ''
 ---
 
 *After PR merge, this issue will trigger:*
+
 1. *Deployment issue creation (`ai:deployment`)*
 2. *QA testing issue creation (`ai:qa-testing`)*

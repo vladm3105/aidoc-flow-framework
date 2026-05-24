@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## REQ-Specific Context
 
 REQ is Layer 7 in the SDD workflow:
+
 - **Upstream**: SYS (System Requirements)
 - **Downstream**: CTR (Data Contracts), SPEC (Technical Specification)
 
 Common REQ issues to remediate:
+
 - Compound requirements (not atomic)
 - Missing verification method
 - Broken SYS traceability
@@ -35,11 +37,13 @@ Common REQ issues to remediate:
 ## Atomic Requirement Rules
 
 **ATOMIC MEANS INDIVISIBLE:**
+
 - One REQ = One testable statement
 - One verification method
 - Single, clear pass/fail criteria
 
 **Signs of compound requirement (SPLIT REQUIRED):**
+
 - Contains "and" connecting actions
 - Multiple verbs
 - Multiple conditions with different outcomes
@@ -53,17 +57,20 @@ Common REQ issues to remediate:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Verification method addition
 - Type classification
 - Traceability fix with valid references
 - Priority assignment
 
 ### auto-assisted
+
 - Requirement rewrite with [TODO] for values
 - Split compound into template
 - Verification criteria template
 
 ### manual-required
+
 - Requirement decomposition decision
 - New SYS element needed
 - Business logic interpretation
@@ -127,6 +134,7 @@ verification: |
 ## REQ-Specific Fix Examples
 
 ### Missing Verification Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -142,6 +150,7 @@ fix_action:
 ```
 
 ### Compound Requirement Split
+
 ```yaml
 fix_type: split_requirement
 fix_action:
@@ -197,6 +206,7 @@ rationale: |
 ```
 
 ### Ambiguous Statement Fix
+
 ```yaml
 fix_type: modify_text
 fix_action:
@@ -215,6 +225,7 @@ validated_by:
 ```
 
 ### Missing Type Classification Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -228,6 +239,7 @@ rationale: |
 ```
 
 ### Traceability Fix
+
 ```yaml
 fix_type: add_text
 fix_action:
@@ -251,6 +263,7 @@ rationale: |
 REQ elements follow: `REQ.{doc_num}.{type_code}.{seq}`
 
 Type codes:
+
 - `FN` = Functional
 - `IF` = Interface
 - `PF` = Performance
@@ -273,6 +286,7 @@ Type codes:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] Each REQ is truly atomic
 - [ ] Every REQ has verification method
 - [ ] Verification criteria are measurable
@@ -288,6 +302,7 @@ Analyze the UCR review report and original REQ document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - Compound requirements MUST be split
 - Include verification method for every REQ
 - Maintain SYS traceability

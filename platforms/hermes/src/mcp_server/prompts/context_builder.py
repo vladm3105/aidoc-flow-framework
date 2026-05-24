@@ -1,10 +1,19 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
-from mcp_server.models.context_engineering_contracts import serialize_prompt_metadata_sidecar
+from mcp_server.models.context_engineering_contracts import (
+    AppendixIndexEntry,
+    ContextContract,
+    PromptBundle,
+    PromptMetadataSidecar,
+    RelevantSnippet,
+    serialize_prompt_metadata_sidecar,
+    validate_context_contract,
+    validate_prompt_metadata_sidecar,
+)
 from mcp_server.skills.project_ucx_loader import (
     PersonaMappingError,
     load_multi_persona_files,
@@ -14,16 +23,6 @@ from mcp_server.skills.project_ucx_loader import (
     load_project_prompt_template,
 )
 from mcp_server.utils.template_naming import load_tuned_template
-
-from mcp_server.models.context_engineering_contracts import (
-    AppendixIndexEntry,
-    ContextContract,
-    PromptBundle,
-    PromptMetadataSidecar,
-    RelevantSnippet,
-    validate_context_contract,
-    validate_prompt_metadata_sidecar,
-)
 
 
 class ContractValidationError(ValueError):
@@ -88,7 +87,15 @@ PERSONA_CATEGORY_MAP: dict[str, tuple[str, ...]] = {
     "chaos_engineer": ("risk", "quality", "operations", "integration"),
     "operator": ("operations", "quality", "technical", "risk"),
     "integration_lead": ("integration", "technical", "functional"),
-    "chairperson": ("functional", "quality", "technical", "integration", "compliance", "risk", "operations"),
+    "chairperson": (
+        "functional",
+        "quality",
+        "technical",
+        "integration",
+        "compliance",
+        "risk",
+        "operations",
+    ),
     "product_owner": ("functional", "quality", "compliance"),
     "business_analyst": ("functional", "compliance", "quality"),
     "strategist": ("functional", "quality", "risk"),
@@ -146,7 +153,9 @@ def categorize_section(section: SourceSection) -> tuple[str, float]:
     return best_category, normalized_score
 
 
-def map_sections_for_personas(personas: list[str], sections: list[SourceSection]) -> SectionMappingResult:
+def map_sections_for_personas(
+    personas: list[str], sections: list[SourceSection]
+) -> SectionMappingResult:
     """Union of all persona categories — include section if ANY persona needs it."""
     all_categories: set[str] = set()
     for p in personas:
@@ -189,7 +198,12 @@ def discover_relevant_snippets(
         matched_keyword = next((keyword for keyword in keywords if keyword in lowered), None)
         if not matched_keyword:
             matched_keyword = next(
-                (keyword for category in keywords for keyword in SECTION_CATEGORIES.get(category, ()) if keyword in lowered),
+                (
+                    keyword
+                    for category in keywords
+                    for keyword in SECTION_CATEGORIES.get(category, ())
+                    if keyword in lowered
+                ),
                 None,
             )
         if not matched_keyword:
@@ -227,7 +241,6 @@ def build_appendix_index(sections: list[SourceSection]) -> list[AppendixIndexEnt
     return appendix_entries
 
 
-
 def build_runtime_context(
     *,
     included_sections: list[SourceSection],
@@ -251,7 +264,6 @@ def build_runtime_context(
         appendix_index=appendix_index,
         token_estimate=token_estimate,
     )
-
 
 
 def build_prompt_bundle(
@@ -288,7 +300,6 @@ def build_prompt_bundle(
     return bundle
 
 
-
 def validate_prompt_bundle_or_raise(bundle: PromptBundle) -> None:
     errors = [
         *validate_context_contract(bundle.context),
@@ -298,7 +309,9 @@ def validate_prompt_bundle_or_raise(bundle: PromptBundle) -> None:
         raise ContractValidationError(errors)
 
 
-def inspect_prompt_bundle(bundle: PromptBundle, *, token_warning_threshold: int = 12000) -> dict[str, object]:
+def inspect_prompt_bundle(
+    bundle: PromptBundle, *, token_warning_threshold: int = 12000
+) -> dict[str, object]:
     warnings: list[str] = []
     if "format_rules" not in bundle.metadata.structure_blocks:
         warnings.append("format degradation risk: missing format_rules block")

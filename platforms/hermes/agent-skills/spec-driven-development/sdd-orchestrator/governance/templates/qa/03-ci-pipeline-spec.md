@@ -9,12 +9,12 @@
 ## Pipeline Overview
 
 ```
-                
-  Lint     Unit     Integration  Security  Build 
-               Tests           Tests           Scan              
-                
-                                                                   
-                                                                   
+
+  Lint     Unit     Integration  Security  Build
+               Tests           Tests           Scan
+
+
+
    ~1min          ~3min             ~5min            ~2min          ~3min
 ```
 
@@ -49,6 +49,7 @@
 | YAML validation | `yamllint` | Warn |
 
 **Configuration**:
+
 ```yaml
 jobs:
   lint:
@@ -73,6 +74,7 @@ jobs:
 | Failures | 0 | Fail build |
 
 **Configuration**:
+
 ```yaml
 jobs:
   test-unit:
@@ -100,6 +102,7 @@ jobs:
 | Failures | 0 | Fail build |
 
 **Configuration**:
+
 ```yaml
 jobs:
   test-integration:
@@ -128,6 +131,7 @@ jobs:
 | Secret detection | `gitleaks` | Any = fail |
 
 **Configuration**:
+
 ```yaml
 jobs:
   security:
@@ -154,6 +158,7 @@ jobs:
 | Python wheel | `.whl` | Artifacts |
 
 **Configuration**:
+
 ```yaml
 jobs:
   build:

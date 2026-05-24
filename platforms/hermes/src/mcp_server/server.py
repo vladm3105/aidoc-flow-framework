@@ -19,8 +19,8 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
-from mcp_server.tool_registry import TOOLS, handle_tool
 from mcp_server.executor.registry import load_config_file
+from mcp_server.tool_registry import TOOLS, handle_tool
 
 logger = logging.getLogger(__name__)
 

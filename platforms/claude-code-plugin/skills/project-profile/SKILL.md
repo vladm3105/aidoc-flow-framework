@@ -30,6 +30,7 @@ set of preferences; the authority for what may appear in it is
 ## When to Use
 
 **Use when**:
+
 - A project needs to deviate from framework defaults — run a leaner layer set,
   toggle an optional section, tighten an audit gate, or apply house terminology.
 - Onboarding a project that has a developer house style to carry in (the
@@ -37,6 +38,7 @@ set of preferences; the authority for what may appear in it is
 - Reviewing or refreshing an existing `.aidoc/profile.yaml`.
 
 **Do NOT use to**:
+
 - Author or audit an artifact — use the layer skills (`../doc-brd/SKILL.md` …).
 - Promote a local adaptation upward into the framework — that is the
   `../knowledge-extractor/SKILL.md` job.
@@ -78,6 +80,7 @@ Confirm or adjust each of the four v1 knobs:
 ### 4. Validate against the surface
 
 Parse `framework/governance/ADAPTATION_SURFACE.yaml` and enforce it:
+
 - drop any key not in `knobs`;
 - reject disabling a mandatory layer; apply the `cascade_rule` for any disabled
   skippable layer;

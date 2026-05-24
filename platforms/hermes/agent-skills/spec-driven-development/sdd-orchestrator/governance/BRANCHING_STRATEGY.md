@@ -42,19 +42,22 @@ ai/456-fix-api-timeout
 ```
 
 **Rules for AI branches**:
-1.  Include issue number in branch name for traceability.
-2.  AI branches require human review before merge.
-3.  Auto-deleted after PR merge (via GitHub Actions).
-4.  Never force-push to AI branches once a review is requested.
+
+1. Include issue number in branch name for traceability.
+2. AI branches require human review before merge.
+3. Auto-deleted after PR merge (via GitHub Actions).
+4. Never force-push to AI branches once a review is requested.
 
 ## Rules
-1.  **`main` is always deployable.** Never push broken code to `main`.
-2.  **All changes go through PRs.** No direct commits to `main`.
-3.  **Branch from `main`, merge back to `main`.** No long-lived branches.
-4.  **Delete branches after merge.** Keep the repo clean.
-5.  **Squash merge** for feature branches to keep history clean.
+
+1. **`main` is always deployable.** Never push broken code to `main`.
+2. **All changes go through PRs.** No direct commits to `main`.
+3. **Branch from `main`, merge back to `main`.** No long-lived branches.
+4. **Delete branches after merge.** Keep the repo clean.
+5. **Squash merge** for feature branches to keep history clean.
 
 ## Naming Convention
+
 ```
 feature/add-bigquery-export      # Human feature
 bugfix/fix-alert-threshold       # Human bugfix
@@ -64,7 +67,8 @@ ai/456-fix-alert-threshold       # AI bugfix (issue #456)
 ```
 
 ## Protection Rules (Apply to All Repos)
-*   Require at least 1 PR review before merge.
-*   Require CI status checks to pass (lint, test).
-*   Prevent force-push to `main`.
-*   Auto-delete head branches after merge.
+
+* Require at least 1 PR review before merge.
+* Require CI status checks to pass (lint, test).
+* Prevent force-push to `main`.
+* Auto-delete head branches after merge.

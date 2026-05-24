@@ -4,7 +4,6 @@ from __future__ import annotations
 
 from typing import Any
 
-
 _VALID_CHANGE_LEVELS = {"C1", "C2", "C3", "Emergency"}
 _VALID_GATES = {"GATE-01", "GATE-03", "GATE-06", "GATE-08", "GATE-CODE", "GATE-SPEC"}
 _SOURCE_TO_GATE = {
@@ -258,7 +257,9 @@ def check_spec_change_requirements(
     description = yaml_data.get("change_description", {})
     why = description.get("why") if isinstance(description, dict) else None
     trigger = description.get("trigger") if isinstance(description, dict) else None
-    if not (isinstance(why, str) and why.strip()) or not (isinstance(trigger, str) and trigger.strip()):
+    if not (isinstance(why, str) and why.strip()) or not (
+        isinstance(trigger, str) and trigger.strip()
+    ):
         errors.append(
             "CHG-006: spec change (GATE-SPEC-E001) requires provenance in change_description.why and .trigger"
         )

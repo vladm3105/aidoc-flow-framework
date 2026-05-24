@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import re
+import shutil
 from dataclasses import dataclass
 from pathlib import Path
-import shutil
-import re
-
 
 CANONICAL_SCAFFOLD_MAPPINGS: tuple[tuple[Path, Path], ...] = (
     (Path("skills/personas"), Path("UCX/skills/personas")),
@@ -17,9 +16,11 @@ CANONICAL_SCAFFOLD_MAPPINGS: tuple[tuple[Path, Path], ...] = (
 
 # Files that are project-owned after initial scaffold.
 # --update will NOT overwrite these; use --update-mappings explicitly.
-PROTECTED_PROJECT_FILES: frozenset[str] = frozenset({
-    "persona_mappings.yaml",
-})
+PROTECTED_PROJECT_FILES: frozenset[str] = frozenset(
+    {
+        "persona_mappings.yaml",
+    }
+)
 
 
 LAYER_DIR_PATTERN = re.compile(r"^\d{2}_[A-Z]+$")
@@ -134,12 +135,16 @@ def _copy_ssd_layer_assets(
     skipped: list[str] = []
     updated: list[str] = []
 
-    for layer_dir in sorted(path for path in ssd_root.iterdir() if path.is_dir() and LAYER_DIR_PATTERN.match(path.name)):
+    for layer_dir in sorted(
+        path for path in ssd_root.iterdir() if path.is_dir() and LAYER_DIR_PATTERN.match(path.name)
+    ):
         layer_destination = destination_root / layer_dir.name
         layer_destination.mkdir(parents=True, exist_ok=True)
 
         for source_file in sorted(path for path in layer_dir.iterdir() if path.is_file()):
-            if "-TEMPLATE" not in source_file.name and not source_file.name.endswith("_MVP_SCHEMA.yaml"):
+            if "-TEMPLATE" not in source_file.name and not source_file.name.endswith(
+                "_MVP_SCHEMA.yaml"
+            ):
                 continue
 
             target_file = layer_destination / source_file.name
@@ -158,13 +163,19 @@ def _copy_ssd_layer_assets(
 
 
 # Keep old names as aliases for backward compatibility with external callers.
-def _copy_tree_no_overwrite(source_root: Path, destination_root: Path) -> tuple[list[str], list[str]]:
+def _copy_tree_no_overwrite(
+    source_root: Path, destination_root: Path
+) -> tuple[list[str], list[str]]:
     created, skipped, _, _ = _copy_tree(source_root, destination_root, force_update=False)
     return created, skipped
 
 
-def _copy_ssd_layer_assets_no_overwrite(*, ssd_root: Path, destination_root: Path) -> tuple[list[str], list[str]]:
-    created, skipped, _ = _copy_ssd_layer_assets(ssd_root=ssd_root, destination_root=destination_root, force_update=False)
+def _copy_ssd_layer_assets_no_overwrite(
+    *, ssd_root: Path, destination_root: Path
+) -> tuple[list[str], list[str]]:
+    created, skipped, _ = _copy_ssd_layer_assets(
+        ssd_root=ssd_root, destination_root=destination_root, force_update=False
+    )
     return created, skipped
 
 
@@ -210,7 +221,8 @@ def scaffold_project_ucx(
             # Directory scaffold mapping
             destination_path.mkdir(parents=True, exist_ok=True)
             created, skipped, updated, prot = _copy_tree(
-                source_path, destination_path,
+                source_path,
+                destination_path,
                 force_update=force_update,
                 force_update_mappings=force_update_mappings,
             )

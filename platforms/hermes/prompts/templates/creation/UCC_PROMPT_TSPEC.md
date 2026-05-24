@@ -182,6 +182,7 @@ custom_fields:
 Create test specifications from SPEC.
 
 **CRITICAL REMINDERS**:
+
 - Test ALL requirements
 - Include edge cases
 - Define test data

@@ -138,12 +138,14 @@ Rules:
 | `templates/layers/NN_TYPE/` | Layer-specific templates and schemas (from `framework/`) |
 
 **Rules**:
+
 - Existing files are never overwritten (idempotent) in default mode.
 - Source assets come from the framework canonical scaffold and `framework/` layer directories.
 - Templates matching `*-TEMPLATE.*` are copied from layer directories.
 - Active layer model is v3.2 8-layer flow (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN). Deprecated layers (SYS, REQ, CTR, TSPEC, TASKS) remain archive-only and are not active outputs.
 
 **Update mode** (`--update`):
+
 - Overwrites stale templates and prompts with latest framework versions.
 - `persona_mappings.yaml` is protected (project-owned after init). Use `--update --update-mappings` to explicitly reset it.
 - `--update-mappings` without `--update` is invalid and fails command validation.
@@ -250,6 +252,7 @@ Environment variables from `.env` are auto-loaded when executors run. Merge orde
 | Layer asset files | Unified YAML template, schema, and any project-tuned template bundled into the prompt |
 
 **Rules**:
+
 - Loads project-tuned template: tries `TYPE-TEMPLATE.yaml`, then `TYPE-TEMPLATE.md`, then `TYPE-MVP-TEMPLATE.md` from `UCX/templates/`. Falls back to layer template from `UCX/templates/layers/NN_TYPE/`.
 - Does not write the final document artifact; use `create` for that.
 - `--sections-json` injects existing document sections into the prompt for guided creation (incremental authoring).
@@ -296,6 +299,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 **Output**: `TYPE-NN_{slug}.md`
 
 **Rules**:
+
 - Source document is the canonical authored artifact.
 - Filename contains no stage suffix.
 - `processing_stage: source` in metadata.
@@ -317,6 +321,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 | `{DOC_ID}.ucx.validate_fix.json`, `{DOC_ID}.ucx.validate_fix.txt` | Produced when validation errors are found |
 
 **Rules**:
+
 - Validation reads the source document; it does not modify it.
 - Deterministic, script-based checks only (no LLM).
 - When validation errors are found, `validate` automatically creates a source-protected derived copy (`_validated`) containing fix instructions. The source document is never modified.
@@ -338,6 +343,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 **Output**: `review_prompt.txt`, `review_prompt_sidecar.json`, `review_prompt_inspection.json`
 
 **Rules**:
+
 - Review runs against the `_validated` copy, not the source.
 - Multiple personas are loaded per the 2-tier resolution: explicit `--personas` override or `persona_mappings.yaml` defaults for the `(doc_type, review)` pair.
 - Each persona receives only the document sections mapped to its domain categories.
@@ -360,6 +366,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 **Output**: `{DOC_ID}.ucx.remediate.json`, `{DOC_ID}.ucx.remediate.txt`
 
 **Rules**:
+
 - Remediation runs against the `_validated` copy, not the source.
 - Report is deterministic and stage-scoped (non-versioned file names).
 - When `--document` points to a folder, MCP resolves the canonical source artifact (the `_validated` copy) automatically.
@@ -377,6 +384,7 @@ Each stage reads from the previous stage's output artifact. The source document 
 **Output**: `TYPE-NN_{slug}_remediate_v{N}.{ext}` (derived copy, written alongside source) + `{DOC_ID}.ucx.remediate_fix.json/.txt`
 
 **Rules**:
+
 - Input is the `_validated` copy, not the source.
 - Output uses the canonical base name plus version suffix (`{slug}_remediate_v{N}.{ext}`), not `{slug}_validated_remediate_v{N}.{ext}`.
 - When `--document` points to a folder, MCP resolves the `_validated` copy automatically.
@@ -385,11 +393,13 @@ Each stage reads from the previous stage's output artifact. The source document 
 - `derived_from: TYPE-NN_{slug}_validated.md` in derived copy metadata.
 
 **Remediation guidance (UCX V3 / v2.0+)**:
+
 - Findings are grouped by priority phase: Phase 1 (P0 critical), Phase 2 (P1 high), Phase 3 (P2 enhancements).
 - `sdd_remediate` returns deterministic findings/fix artifacts and API executor apply-stage output.
 - Use API executor names for remediation apply stages; legacy CLI executor names are unsupported.
 
 **Post-fix quality checks (UCX V3 / v2.0+)**:
+
 - Re-run `sdd_validate` after remediation to confirm deterministic compliance and prevent regression.
 - In governed PR pipelines, a Hermes final blocker-gap/inconsistency check runs after post-remediation validation.
 

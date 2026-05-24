@@ -36,6 +36,7 @@ concrete test cases. **Execution is QA-staging only — never run BDD in CI**
 ## When to Use
 
 Use `doc-bdd` when:
+
 - EARS (Layer 3) exists and you need executable acceptance scenarios.
 - Validating EARS requirements with concrete Given-When-Then behaviors.
 - Defining the req-to-SPEC trace bridge (`spec_trace`) before ADR/SPEC.
@@ -167,7 +168,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 along with `@brd @prd @ears`, records architecture decisions in
 Context-Decision-Consequences form, and cites the BDD scenarios that validate
 each decision.
-
 
 ## Adaptation
 

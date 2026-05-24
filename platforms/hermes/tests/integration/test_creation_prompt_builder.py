@@ -1,27 +1,26 @@
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+from mcp_server.cli.main import main  # noqa: E402
 from mcp_server.prompts import (  # noqa: E402
     CreationAssembly,
     SourceSection,
     assemble_project_creation_prompt,
 )
-from mcp_server.review import CreationRunResult, run_project_creation_build  # noqa: E402
-from mcp_server.cli.main import main  # noqa: E402
-
+from mcp_server.review import run_project_creation_build  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _scaffold_creation_fixtures(project_root: Path, layer: str = "01_BRD") -> None:
     """Create minimal project UCX layout with creation assets."""
@@ -36,7 +35,9 @@ def _scaffold_creation_fixtures(project_root: Path, layer: str = "01_BRD") -> No
     ]:
         (project_root / relative).mkdir(parents=True, exist_ok=True)
 
-    (project_root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
+    (project_root / "UCX/skills/persona_mappings.yaml").write_text(
+        'version: "1.0"\n', encoding="utf-8"
+    )
 
     # Persona
     (project_root / "UCX/skills/personas/architect.md").write_text(
@@ -66,6 +67,7 @@ def _scaffold_creation_fixtures(project_root: Path, layer: str = "01_BRD") -> No
 # Unit-level: assemble_project_creation_prompt
 # ---------------------------------------------------------------------------
 
+
 def test_assemble_project_creation_prompt_includes_persona(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
@@ -76,7 +78,10 @@ def test_assemble_project_creation_prompt_includes_persona(tmp_path: Path) -> No
         template_name="UCC_PROMPT_BRD_PROJECT.md",
     )
     assert "Architect domain knowledge" in assembly.prompt_text
-    assert assembly.persona_texts[0].strip() == "Architect domain knowledge and system design principles."
+    assert (
+        assembly.persona_texts[0].strip()
+        == "Architect domain knowledge and system design principles."
+    )
 
 
 def test_assemble_project_creation_prompt_includes_creation_template(tmp_path: Path) -> None:
@@ -147,7 +152,9 @@ def test_assemble_project_creation_prompt_layer_asset_names_sorted(tmp_path: Pat
     assert "BRD_MVP_SCHEMA.yaml" in names
 
 
-def test_assemble_project_creation_prompt_includes_mcp_internal_actionable_rules(tmp_path: Path) -> None:
+def test_assemble_project_creation_prompt_includes_mcp_internal_actionable_rules(
+    tmp_path: Path,
+) -> None:
     _scaffold_creation_fixtures(tmp_path)
     assembly = assemble_project_creation_prompt(
         project_root=tmp_path,
@@ -160,7 +167,9 @@ def test_assemble_project_creation_prompt_includes_mcp_internal_actionable_rules
     assert "Do not rely on deprecated `*_MVP_CREATION_RULES.md`" in assembly.prompt_text
 
 
-def test_assemble_project_creation_prompt_tolerates_missing_project_template(tmp_path: Path) -> None:
+def test_assemble_project_creation_prompt_tolerates_missing_project_template(
+    tmp_path: Path,
+) -> None:
     """document_template_text is None when the project-tuned template does not exist."""
     _scaffold_creation_fixtures(tmp_path)
     (tmp_path / "UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
@@ -192,7 +201,9 @@ def test_assemble_project_creation_prompt_bundle_metadata(tmp_path: Path) -> Non
 def test_assemble_project_creation_prompt_with_sections(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     sections = [
-        SourceSection(section_id="1.0", title="Business Context", content="functional business workflow"),
+        SourceSection(
+            section_id="1.0", title="Business Context", content="functional business workflow"
+        ),
         SourceSection(section_id="9.0", title="Glossary", content="reference appendix metadata"),
     ]
     assembly = assemble_project_creation_prompt(
@@ -226,6 +237,7 @@ def test_assemble_project_creation_prompt_returns_frozen_dataclass(tmp_path: Pat
 # ---------------------------------------------------------------------------
 # Runner: run_project_creation_build
 # ---------------------------------------------------------------------------
+
 
 def test_run_project_creation_build_writes_artifacts(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
@@ -323,19 +335,28 @@ def test_run_project_creation_build_no_output_dir_leaves_no_files(tmp_path: Path
 # CLI: create-build end-to-end
 # ---------------------------------------------------------------------------
 
+
 def test_cli_create_build_exit_zero(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     output_dir = tmp_path / "cli_output"
 
-    rc = main([
-        "create-build",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--out", str(output_dir),
-    ])
+    rc = main(
+        [
+            "create-build",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--out",
+            str(output_dir),
+        ]
+    )
 
     assert rc == 0
 
@@ -344,15 +365,23 @@ def test_cli_create_build_writes_prompt_file(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     output_dir = tmp_path / "cli_output"
 
-    main([
-        "create-build",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--out", str(output_dir),
-    ])
+    main(
+        [
+            "create-build",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--out",
+            str(output_dir),
+        ]
+    )
 
     prompt_file = output_dir / "creation_prompt.txt"
     assert prompt_file.exists()
@@ -365,15 +394,23 @@ def test_cli_create_build_writes_sidecar_json(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     output_dir = tmp_path / "cli_output"
 
-    main([
-        "create-build",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--out", str(output_dir),
-    ])
+    main(
+        [
+            "create-build",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--out",
+            str(output_dir),
+        ]
+    )
 
     sidecar_file = output_dir / "creation_prompt_sidecar.json"
     assert sidecar_file.exists()
@@ -399,15 +436,23 @@ def test_cli_create_build_without_out_uses_document_dir(tmp_path: Path) -> None:
         encoding="utf-8",
     )
 
-    rc = main([
-        "create-build",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--sections-json", str(sections_path),
-    ])
+    rc = main(
+        [
+            "create-build",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--sections-json",
+            str(sections_path),
+        ]
+    )
 
     default_out = sections_dir / ".ucx" / "creation"
     assert rc == 0
@@ -419,15 +464,23 @@ def test_cli_create_writes_final_target_artifact(tmp_path: Path) -> None:
     _scaffold_creation_fixtures(tmp_path)
     target = tmp_path / "docs/01_BRD/BRD-01_platform_architecture/BRD-01_platform_architecture.md"
 
-    rc = main([
-        "create",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--target", str(target),
-    ])
+    rc = main(
+        [
+            "create",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--target",
+            str(target),
+        ]
+    )
 
     assert rc == 0
     assert target.exists()
@@ -440,15 +493,23 @@ def test_cli_create_uses_layer_template_when_project_tuned_missing(tmp_path: Pat
     (tmp_path / "UCX/templates/BRD-MVP-TEMPLATE.md").unlink()
     target = tmp_path / "docs/01_BRD/BRD-02_platform/BRD-02_platform.md"
 
-    rc = main([
-        "create",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--target", str(target),
-    ])
+    rc = main(
+        [
+            "create",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--target",
+            str(target),
+        ]
+    )
 
     assert rc == 0
     assert target.exists()
@@ -462,15 +523,23 @@ def test_cli_create_fails_when_target_exists_without_overwrite(tmp_path: Path) -
     target.parent.mkdir(parents=True, exist_ok=True)
     target.write_text("existing", encoding="utf-8")
 
-    rc = main([
-        "create",
-        "--project", str(tmp_path),
-        "--personas", "architect",
-        "--doc-type", "brd",
-        "--layer", "01_BRD",
-        "--template", "UCC_PROMPT_BRD_PROJECT.md",
-        "--target", str(target),
-    ])
+    rc = main(
+        [
+            "create",
+            "--project",
+            str(tmp_path),
+            "--personas",
+            "architect",
+            "--doc-type",
+            "brd",
+            "--layer",
+            "01_BRD",
+            "--template",
+            "UCC_PROMPT_BRD_PROJECT.md",
+            "--target",
+            str(target),
+        ]
+    )
 
     assert rc == 1
     assert target.read_text(encoding="utf-8") == "existing"

@@ -54,6 +54,7 @@ nano .env  # or your preferred editor
 ```
 
 **Minimum required variables:**
+
 ```bash
 GCP_PROJECT_ID=your-project-id
 GH_TOKEN=ghp_your-github-token
@@ -248,6 +249,7 @@ Issues auto-add to [Project Board #{PROJECT_BOARD_NUMBER}](https://{GITHUB_HOST}
 ### Python Debugging
 
 **VS Code configuration (`.vscode/launch.json`):**
+
 ```json
 {
   "version": "0.2.0",
@@ -265,6 +267,7 @@ Issues auto-add to [Project Board #{PROJECT_BOARD_NUMBER}](https://{GITHUB_HOST}
 ```
 
 **Inline breakpoint:**
+
 ```python
 import pdb; pdb.set_trace()
 ```
@@ -272,6 +275,7 @@ import pdb; pdb.set_trace()
 ### Logging
 
 **Python:**
+
 ```python
 import logging
 logger = logging.getLogger(__name__)
@@ -283,6 +287,7 @@ logger.error("Error occurred")
 ```
 
 **TypeScript:**
+
 ```typescript
 console.log('Debug:', data);
 console.warn('Warning:', warning);
@@ -296,6 +301,7 @@ console.error('Error:', error);
 GCP is the deployment target for all components. See [GCP-DEPLOYMENT.md](./GCP-DEPLOYMENT.md) for the full guide.
 
 **Quick deploy to Cloud Run:**
+
 ```bash
 # Deploy API
 gcloud run deploy ai-cost-api \
@@ -320,6 +326,7 @@ Infrastructure is managed via Terraform in `components/infrastructure/`. See [07
 ### Common Issues
 
 **Issue:** `ModuleNotFoundError: No module named 'src'`
+
 ```bash
 # Ensure you're in the component directory root and venv is activated
 source venv/bin/activate
@@ -327,12 +334,15 @@ python -m src.api.main  # Use -m flag
 ```
 
 **Issue:** BigQuery authentication fails
+
 ```bash
 gcloud auth application-default login
 ```
+
 > **Note**: Do not use `GOOGLE_APPLICATION_CREDENTIALS` with service account key files. This project uses Workload Identity Federation for all GCP auth. See [GOVERNANCE_RULES.md §2](governance/GOVERNANCE_RULES.md#2-security-posture).
 
 **Issue:** Port already in use
+
 ```bash
 lsof -ti:8000 | xargs kill -9
 ```

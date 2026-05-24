@@ -103,7 +103,6 @@ the source content.
 | Source input ambiguous | fall back to prompt mode; record assumptions in the TDD |
 | Write/permission error | log, skip the item, continue the batch |
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

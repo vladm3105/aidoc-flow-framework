@@ -28,10 +28,12 @@ one-time setup that must happen **before** workflow execution.
 ## When to Use
 
 **Use when**:
+
 - Starting a greenfield project — no `docs/` structure yet.
 - The domain has not been selected.
 
 **Do NOT use when**:
+
 - `docs/01_BRD/` etc. already exist — go straight to `../doc-flow/SKILL.md`.
 
 ## Behavior
@@ -90,7 +92,6 @@ Confirm all 8 directories, the index files, the domain subdirectories, and
 Report initialization complete and direct the user to `../doc-flow/SKILL.md`
 to begin with `doc-brd`. Templates are referenced from `framework/layers/NN_<X>/`;
 copying them into the project is optional.
-
 
 ## Adaptation
 

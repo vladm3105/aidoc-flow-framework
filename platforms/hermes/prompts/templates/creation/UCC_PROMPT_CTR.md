@@ -143,6 +143,7 @@ custom_fields:
 Create data contracts from REQ interface requirements.
 
 **CRITICAL REMINDERS**:
+
 - Include ALL validation rules
 - Version semantically
 - Document breaking changes

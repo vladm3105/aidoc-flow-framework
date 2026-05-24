@@ -104,6 +104,7 @@ new = "- 'Detect stale position data: ...'\n    - 'Position data sanity check: .
 **Detection**: `yaml.safe_load()` fails with `expected <block end>, but found '-'`.
 
 **Heuristic fix** (runnable in execute_code):
+
 ```python
 lines = content.split('\n')
 fixed = []

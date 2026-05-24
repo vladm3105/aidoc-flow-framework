@@ -40,6 +40,7 @@ Parses UCR review reports (MD format) using two strategies:
 
 **Strategy A — Frontmatter extraction** (fast, reliable):
 Review reports have YAML frontmatter with structured metadata:
+
 ```yaml
 custom_fields:
   prd_ready_score: "72/100"
@@ -48,32 +49,40 @@ custom_fields:
   findings_p2: 11
   false_positives_identified: 4
 ```
+
 Extract score, counts, and recommendation directly.
 
 **Strategy B — Table row parsing** (detailed findings):
 Three table formats to support (different column counts):
 
 1. **Section 4 "Required Remediations"** (preferred — 6 columns, has actionable detail):
+
    ```
    | R1 | P0 | `target_file.md` | Section ref | Remediation text | Source |
    ```
+
    Regex: `r'\|\s*(R\d+)\s*\|\s*(P[012])\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.+?)\s*\|'`
 
 2. **Sections 2-3 "Critical/High Findings"** (fallback — 5 columns):
+
    ```
    | REM-P0-001 | Finding text | Expert | Section | Impact |
    ```
+
    Regex: supports both `REM-P0-NNN` and `P0-N` ID patterns.
 
 3. **Section 5 "Enhancement Recommendations"** (P2 — 4 columns, no Section column):
+
    ```
    | REM-P2-001 | Finding text | Expert | Value Add |
    ```
+
    Different column count from P0/P1 tables. Parser uses flexible column detection or separate regex.
 
 **Priority**: Parse Section 4 first. If found, use remediation text as `recommended_action`. If Section 4 absent, fall back to Sections 2-3 + Section 5 findings.
 
 **Text cleanup**: Remediation text from Section 4 may contain markdown formatting (`**bold**`, backtick code refs, long multi-sentence text). Parser must:
+
 - Strip `**` bold markers
 - Strip backtick formatting
 - Truncate `recommended_action` to ~300 chars (append "..." if truncated)
@@ -105,7 +114,7 @@ class ReviewFinding:
 
 def parse_review_report(report_path: Path) -> tuple[ReviewSummary | None, list[ReviewFinding]]:
     """Parse a UCR review report and extract structured findings.
-    
+
     Returns (summary, findings). If parsing fails completely,
     returns (None, []) — caller should keep fallback finding.
     """
@@ -126,7 +135,7 @@ _review_summary_data: dict[str, object] | None = None  # stored for report dict
 if review_report is not None and review_report.exists():
     from mcp_server.remediation.review_parser import parse_review_report
     review_summary, review_findings = parse_review_report(review_report)
-    
+
     if review_findings:
         # Cap at 50 findings to avoid prompt inflation
         capped = review_findings[:50]
@@ -261,34 +270,41 @@ __all__ = [
 ### `test_review_parser.py`
 
 **Frontmatter parsing**:
+
 - `test_parse_frontmatter_extracts_score` — score "72/100" from frontmatter
 - `test_parse_frontmatter_extracts_counts` — p0=3, p1=18, p2=11
 - `test_parse_frontmatter_missing_returns_none` — no frontmatter → summary is None
 
 **Section 4 remediation table**:
+
 - `test_parse_remediation_table_extracts_findings` — parse R1/R2/R3 rows
 - `test_parse_remediation_priority_mapping` — P0 → tier1, P1 → tier1, P2 → tier2
 - `test_parse_remediation_text_as_action` — remediation text becomes recommended_action
 
 **Section 2-3 finding tables (fallback, 5 columns)**:
+
 - `test_parse_finding_table_rem_id_pattern` — `REM-P0-001` ID format
 - `test_parse_finding_table_short_id_pattern` — `P0-1` ID format
 - `test_parse_fallback_when_no_section_4` — only Sections 2-3 present
 
 **Section 5 P2 table (4 columns)**:
+
 - `test_parse_p2_table_4_columns` — `REM-P2-001` with Value Add column (no Section)
 - `test_parse_p2_severity_tier2` — P2 findings mapped to tier2
 
 **Text cleanup**:
+
 - `test_strip_markdown_bold` — `**bold text**` → `bold text`
 - `test_strip_backticks` — `` `code` `` → `code`
 - `test_truncate_long_action` — action >300 chars truncated with "..."
 
 **Wiring**:
+
 - `test_findings_capped_at_50` — 60 review findings → 50 entries + 1 overflow note
 - `test_review_summary_in_report` — verify `review_summary` key in remediation report dict
 
 **Integration**:
+
 - `test_parse_returns_empty_on_unparseable` — garbage input → (None, [])
 - `test_parse_full_brd03_report` — real BRD-03 review report
 

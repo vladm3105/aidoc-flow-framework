@@ -15,6 +15,7 @@ test_{module_name}.py
 ```
 
 Examples:
+
 - `test_models.py` — Tests for `models.py`
 - `test_firestore.py` — Tests for `firestore.py`
 - `test_budget_remediation.py` — Tests for `budget_remediation.py`
@@ -26,6 +27,7 @@ test_{function_name}_{scenario}_{expected_outcome}
 ```
 
 Examples:
+
 - `test_validate_budget_valid_input_returns_true`
 - `test_validate_budget_negative_amount_raises_error`
 - `test_get_costs_empty_project_returns_empty_list`
@@ -38,6 +40,7 @@ class Test{ClassName}:
 ```
 
 Example:
+
 ```python
 class TestBudgetConfig:
     def test_from_dict_valid_data_creates_instance(self):

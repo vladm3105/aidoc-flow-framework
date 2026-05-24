@@ -65,6 +65,7 @@ mappings), the validator WILL parse it and fail with a YAML error — even when
 the target document itself is clean.
 
 **Symptoms**:
+
 ```
 sdd_validate(document=ADR-01.yaml, layer=05_ADR)
 → YAMLError: while parsing a block mapping
@@ -75,6 +76,7 @@ sdd_validate(document=ADR-01.yaml, layer=05_ADR)
 ```
 
 **Root cause**: The validator scans these locations:
+
 - The target layer directory (`0N_TYPE/`)
 - `UCX/templates/` (top-level template set)
 - `UCX/templates/layers/0N_TYPE/` (layer-specific templates)
@@ -84,6 +86,7 @@ will trigger false parse failures.
 
 **Workaround**: Before validation, move ALL ADR template files out of the
 project tree entirely:
+
 ```bash
 # Move all template copies to /tmp
 find /opt/data/tradegent_covered_calls -name "ADR-TEMPLATE*" \

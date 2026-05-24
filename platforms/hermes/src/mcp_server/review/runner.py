@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
+from dataclasses import dataclass
 from pathlib import Path
 
 from mcp_server.models.context_engineering_contracts import serialize_prompt_metadata_sidecar

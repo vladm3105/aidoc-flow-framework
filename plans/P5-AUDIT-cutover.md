@@ -10,6 +10,7 @@
 > an **archive-then-clean** model: the pristine pre-migration project is
 > preserved as the protected branch `legacy-ucx-v3.2-read-only` (created
 > off `main` at `491e8db`; **done + protected**), and **then** `legacy/`
+>
 > + root `.claude/` are removed from the working branch. The removal
 > analysis below (§1, §3, §5) is therefore **active** — and its
 > conclusion ("no runtime dependency; removals safe") now also rests on
@@ -93,11 +94,12 @@ directory.
 **Session-impact caveat:** root `.claude/` is what the *current
 in-container migration session* loads (skills + the 3 hooks). Removing
 it disables:
-- `session-start-handoff.sh` — only matters for *new* sessions (none
+
++ `session-start-handoff.sh` — only matters for *new* sessions (none
   after cutover).
-- `pre-compact-snapshot.sh` — matters if a compaction happens after
++ `pre-compact-snapshot.sh` — matters if a compaction happens after
   removal (mitigate: commit+push frequently).
-- `plan-review-gate.sh` — the commit-time warning (non-blocking).
++ `plan-review-gate.sh` — the commit-time warning (non-blocking).
 
 **Conclusion:** root `.claude/` removal is safe but **session-
 affecting**; sequence it **late** in P5 (P5-T3), and the migration
@@ -213,17 +215,17 @@ commits. Minor; P5-T1 can reorder.)
 
 ## 7. Verify (against the plan's gate)
 
-- Removal targets sized: `legacy/` (28M / 2275 files), root
++ Removal targets sized: `legacy/` (28M / 2275 files), root
   `.claude/` (loader + 3 migration hooks + settings).
-- No runtime dependency from the surviving tree on either target
++ No runtime dependency from the surviving tree on either target
   (framework/ + tests/ + .mcp.json clean; the few hits are
   documentary or already-known stale refs).
-- Every cutover operation classified (reversibility × authority);
++ Every cutover operation classified (reversibility × authority);
   `main` replacement + tag pushes flagged user-only.
-- Carried-issue disposition recommends post-v1.0 for the content
++ Carried-issue disposition recommends post-v1.0 for the content
   migration; confirms `api_runner.py` already fixed.
-- Cutover sequencing addresses the root-`.claude/`-removal session-
++ Cutover sequencing addresses the root-`.claude/`-removal session-
   impact (late task).
-- 6 open questions for P5-T1.
-- No files removed / `main` untouched (`git status` shows only
++ 6 open questions for P5-T1.
++ No files removed / `main` untouched (`git status` shows only
   `plans/` edits).

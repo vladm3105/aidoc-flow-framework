@@ -19,6 +19,7 @@ Generate all BRDs in Python via `execute_code` using `yaml.dump()` — NOT itera
 Build a base dict template with all 18 standard BRD sections (metadata → appendix). Clone it per BRD, changing only the content sections. This ensures structural consistency across all BRDs — same metadata keys, same section ordering, same format.
 
 Key sections that vary per BRD:
+
 - `id`, `title`
 - `executive_summary.overview`
 - `introduction` (business_context, purpose, document_scope)
@@ -28,6 +29,7 @@ Key sections that vary per BRD:
 - `traceability` (cross_links, upstream, cross_brd_dependencies)
 
 Key sections that remain structurally identical:
+
 - `metadata` (all keys, only changing `last_updated`)
 - `document_control` (only changing date/version)
 - `adr_topics` (7 standard topics, only changing business_driver text)
@@ -37,6 +39,7 @@ Key sections that remain structurally identical:
 ### Element ID generation
 
 Use a deterministic `make_id(doc_id, section_id, label)` function:
+
 - Input: `f"{doc_id}:{section_id}:{label}"[:200].lower()` with special chars stripped
 - Hash: `hashlib.sha256(input.encode()).hexdigest()[:4]`
 - Output: `BRD.{doc_id:02d}.{section_id:02d}.{hash}`
@@ -71,6 +74,7 @@ Example: §8 + §9 (56 lines) → BRD-05 at 589 lines. The expansion comes from 
 ## Validator Quirk: YAML Treated as Markdown
 
 The UCX validator (`sdd_validate`) may fail on structurally valid YAML files, reporting:
+
 - "Missing or invalid YAML frontmatter"
 - "Missing required section: Title (H1)"
 - Passes show: "Requires YAML data (skipped for MD)"

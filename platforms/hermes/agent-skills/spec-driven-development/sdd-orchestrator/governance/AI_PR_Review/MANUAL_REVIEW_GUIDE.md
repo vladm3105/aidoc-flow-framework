@@ -20,6 +20,7 @@ The project has two AI review modes. Use the right one:
 | **Setup** | Zero (runs in CI) | Requires local CLI + `gh` auth |
 
 **Use manual review when**:
+
 - PR touches security-sensitive code (auth, secrets, IAM)
 - Multi-file architectural changes spanning 3+ components
 - Fix-and-verify loop needed (agent reviews, fixes, pushes, re-reviews)
@@ -27,6 +28,7 @@ The project has two AI review modes. Use the right one:
 - Automated review flagged issues that need deeper investigation
 
 **Automated review is sufficient when**:
+
 - Standard feature PR with passing CI
 - Documentation-only or config-only changes
 - Human reviewer is immediately available

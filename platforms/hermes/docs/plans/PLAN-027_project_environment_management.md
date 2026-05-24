@@ -48,11 +48,13 @@ _invalidate_env_cache(project_root: Path) -> None
 **Security protections** (from deep review):
 
 A) **None value filtering**: `dotenv_values()` returns `OrderedDict[str, Optional[str]]`. Keys without values (bare `KEY` lines) return `None`. Filter before returning:
+
 ```python
 env = {k: v for k, v in raw.items() if v is not None}
 ```
 
 B) **System variable blocklist**: Prevent `.env` from overriding `PATH`, `HOME`, `PYTHONPATH`, `LD_LIBRARY_PATH`, `LD_PRELOAD`, `SHELL`, `USER`. Log warning when blocked vars are found:
+
 ```python
 BLOCKED_ENV_VARS: frozenset[str] = frozenset({
     "PATH", "HOME", "PYTHONPATH", "LD_LIBRARY_PATH",
@@ -69,6 +71,7 @@ D) **UTF-8 BOM handling**: Use `encoding="utf-8"` explicitly. Strip BOM prefix (
 **`executor/cli_runner.py`** (line 22): Add `project_env: dict[str, str] | None = None` param. All new params have `None` default — backward compatible; `executor/__init__.py` re-exports are unaffected.
 
 Replace env merge (lines 36-39):
+
 ```python
 # Before:
 env = None
@@ -91,6 +94,7 @@ else:
 **`tool_registry.py`**:
 
 A) In `_maybe_run_executor()` (line 424): Load project env before the `run_executor()` call at line 451:
+
 ```python
 from mcp_server.env_manager import load_project_env
 project_env = None
@@ -98,6 +102,7 @@ project_arg = arguments.get("project")
 if project_arg:
     project_env = load_project_env(Path(project_arg).expanduser().resolve()) or None
 ```
+
 Pass `project_env=project_env` to `run_executor()` at line 451.
 
 All 6 callers of `_maybe_run_executor` always pass `arguments` with `"project"` (verified: sdd_validate, sdd_create_build, sdd_create, sdd_review, sdd_remediate, sdd_remediate_fix).
@@ -109,6 +114,7 @@ C) Add `sdd_env_show` dispatch block **after `sdd_personas_diff` dispatch (line 
 ### Step 4: Enhance preflight `.env` check
 
 **`preflight/runner.py`** (lines 200-203): Replace existence-only check with:
+
 - Load env via `load_project_env()`
 - Report `env_key_count` and `env_keys` (keys only) in checks
 - Report `env_blocked_vars` if any system vars were in `.env`
@@ -125,6 +131,7 @@ Handler: Add dispatch block **after `personas-diff` handler (line 866), before `
 ### Step 6: Tests
 
 **`tests/unit/test_env_manager.py`** (new, ~12 tests):
+
 - Load valid .env, missing .env, malformed .env
 - Mtime cache hit/miss
 - Multi-project isolation
@@ -140,6 +147,7 @@ Handler: Add dispatch block **after `personas-diff` handler (line 866), before `
 **`tests/unit/test_preflight_runner.py`**: Add env_key_count check test.
 
 **`tests/integration/test_executor_env.py`** (new, ~3 tests):
+
 - Verify project_env threads through to `run_cli_executor`
 - Verify project_env overrides config.env
 - Verify missing project_env is backward compatible
@@ -147,29 +155,35 @@ Handler: Add dispatch block **after `personas-diff` handler (line 866), before `
 ### Step 7: Update documentation
 
 **`mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.17.0.md`** (new):
+
 - Summary: project environment management
 - New: `sdd_env_show` tool, `env-show` CLI command, auto-loading in executors
 - Changed: preflight enhanced .env check, executor env merge chain
 - Security: system variable blocklist, file permission warning, None filtering
 
 **`mcp_ucx/docs/README.md`**:
+
 - Version 1.16.0 → 1.17.0
 - Add env management section after Persona Management (Section 3)
 - Add changelog link
 
 **`mcp_ucx/docs/ROADMAP.md`**:
+
 - Version 1.16.0 → 1.17.0
 - Add v1.17.0 release section
 
 **`mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md`**:
+
 - Add `env-show` to commands table
 - Add examples for `env-show`
 
 **`mcp_ucx/docs/architecture/MCP_OPERATIONAL_FLOWS.md`**:
+
 - Add env loading to init flow description
 - Document merge order in executor flow
 
 **`mcp_ucx/docs/architecture/MCP_UNIFIED_CONTEXT_FRAMEWORK.md`**:
+
 - Add Section 4.4 (or similar) for project environment isolation model
 - Document `.env` loading, caching, blocklist
 

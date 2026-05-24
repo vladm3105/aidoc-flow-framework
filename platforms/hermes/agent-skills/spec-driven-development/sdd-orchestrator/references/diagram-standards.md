@@ -34,9 +34,9 @@ The following diagram formats are NOT permitted in any SDD artifact:
 
 | Format Type | Example | Prohibition Reason |
 |-------------|---------|-------------------|
-| ASCII art boxes | `+----+`, `|    |`, `+----+` | Not renderable, inconsistent display |
+| ASCII art boxes | `+----+`, `|    |`,`+----+` | Not renderable, inconsistent display |
 | Text-based flowcharts | `A --> B --> C` (outside Mermaid) | No semantic structure |
-| Unicode box-drawing | ``, `  `, `` | Font-dependent rendering |
+| Unicode box-drawing | ``, `  `,`` | Font-dependent rendering |
 | Manual arrow diagrams | `==>`, `->`, `<--` (outside Mermaid) | No styling or layout control |
 | Indented hierarchy text | Manual spacing alignment | Fragile, breaks with formatting |
 
@@ -44,7 +44,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 
 | Exception | Permitted Use | Example |
 |-----------|---------------|---------|
-| Directory trees | File/folder structure representation | ` src/`, ` tests/` |
+| Directory trees | File/folder structure representation | `src/`, `tests/` |
 | Inline code references | Simple path or command notation | `src/main.py` |
 | Table-based data | Structured data display | Markdown tables |
 
@@ -79,6 +79,7 @@ Use the following model across the MVP → PROD → NEW MVP lifecycle.
 Each required diagram block MUST include an intent header immediately above the Mermaid block.
 
 Required fields:
+
 - `diagram_type`: `c4` | `dfd` | `sequence`
 - `level`: `l1` | `l2` | `l3` | `l4` (as applicable, aligned: C4 level = DFD level)
 - `scope_boundary`: short boundary definition
@@ -86,11 +87,13 @@ Required fields:
 - `downstream_refs`: implementation or validation references
 
 Required machine tags adjacent to diagram blocks:
+
 - `@diagram: c4-l1 | c4-l2 | c4-l3 | c4-l4`
 - `@diagram: dfd-l1 | dfd-l2 | dfd-l3`
 - `@diagram: sequence-sync | sequence-async | sequence-error`
 
 Validation severity defaults:
+
 - Error: missing mandatory diagram type for the layer/section
 - Warning: missing trust-boundary annotation or missing sequence exception-path branch
 - Info: optional enrichment gaps
@@ -103,6 +106,7 @@ Validation severity defaults:
 ### Component Diagram Contract (SPEC)
 
 Required fields in SPEC diagram contract subsection:
+
 - `@diagram: c4-l3` component-level references
 - `@diagram: dfd-l3` data-flow boundary tags
 - Required sequence paths for critical integrations and error handling
@@ -168,6 +172,7 @@ flowchart LR
 ```
 
 **Click Handler Format**:
+
 ```
 click <node_id> "<relative_path>" "<tooltip_text>"
 ```
@@ -231,6 +236,7 @@ flowchart LR
 This standard applies to all SDD artifacts across Layers 1-8.
 
 **Cross-references**:
+
 - `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`
 - `charts-flow` skill: `.claude/skills/charts-flow/SKILL.md`
 - Framework guide: `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`

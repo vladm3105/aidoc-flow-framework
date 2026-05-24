@@ -239,10 +239,12 @@ the `for ... in CANONICAL_SCAFFOLD_MAPPINGS` loop in
 ## Step sequence
 
 1. **Pre-flight:** capture the current failure count baseline.
+
    ```
    cd platforms/hermes
    PYTHONPATH=src /tmp/hermes-venv/bin/python -m pytest tests/ -q 2>&1 | tail -2
    ```
+
    Expect: `50 failed, 397 passed` (matches P2-T3 V10).
 2. **Edit 1** — remove `templates/` row from `CANONICAL_SCAFFOLD_MAPPINGS`.
 3. **Edit 2** — rewrite `_default_ssd_root()`.
@@ -270,6 +272,7 @@ the `for ... in CANONICAL_SCAFFOLD_MAPPINGS` loop in
   `grep -c '"templates"' platforms/hermes/src/mcp_server/skills/scaffold.py`
   returns **0**.
 - **`_default_ssd_root` returns the right path:** one-liner check
+
   ```
   cd platforms/hermes
   PYTHONPATH=src /tmp/hermes-venv/bin/python -c \
@@ -277,6 +280,7 @@ the `for ... in CANONICAL_SCAFFOLD_MAPPINGS` loop in
      p = _default_ssd_root(); print(p); print(p.exists()); \
      print(sorted(d.name for d in p.iterdir() if d.is_dir()))"
   ```
+
   prints `<repo>/framework/layers`, `True`, and the 8 layer dirs.
 - **End-to-end smoke (manual):**
   `PYTHONPATH=src /tmp/hermes-venv/bin/python -c \

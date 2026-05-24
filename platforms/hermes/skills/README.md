@@ -62,6 +62,7 @@ Location (project runtime): `{project}/UCX/skills/persona_mappings.yaml`
 | `qa_lead.md` | QA Lead | Testability, BDD syntax, test coverage | QA |
 
 **Extended Personas** (available for project-specific mappings):
+
 | Skill | Role | Focus |
 |-------|------|-------|
 | `content_strategist.md` | Content Strategist | Documentation clarity, audience alignment, terminology consistency |
@@ -143,6 +144,7 @@ All persona findings must use the canonical format: `PREFIX-P0-NNN`
 | Chairperson | REM | `REM-P0-001` |
 
 **Format rules**:
+
 - `PREFIX`: 2-4 character persona abbreviation
 - `P0/P1/P2`: Priority level
 - `NNN`: 3-digit sequence (001-999)

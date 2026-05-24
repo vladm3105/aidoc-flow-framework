@@ -94,7 +94,7 @@ Run the gates in three groups, recording pass/fail per gate.
   is the sum of the 4 ports:
   P2-T2 (verbatim) 64 + P2-T7 (agent-skills) 181 + P2-T3 (with-repoint)
   200 + P2-T9 ∆ 0 (in-place edits, no new files) + P2-T8 ∆ −8 (deletes)
-  + 4 root files (`README.md`, `VERSION`, `FRAMEWORK_SPEC_VERSION`,
+  - 4 root files (`README.md`, `VERSION`, `FRAMEWORK_SPEC_VERSION`,
   `pyproject.toml` already counted in the 200) = approximately
   64 + 181 + 200 − 8 = **437** tracked files (give-or-take any directory
   README counts I may be missing; actual count is what
@@ -163,6 +163,7 @@ Executed. All 14 gates ran green. See `plans/P2-T5-VERIFY.md` for the
 detailed per-gate record (G15 deliverable).
 
 Headline results:
+
 - Conformance suite: **25 / 25** (unchanged since P1-T7).
 - Hermes own test suite: **447 / 447** (trajectory 397→447 across
   P2-T3→P2-T9).

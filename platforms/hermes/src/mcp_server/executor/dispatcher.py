@@ -4,10 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .registry import ExecutorConfig, ExecutorType, get_executor
-from .contracts import ExecutorResult
-from .api_runner import run_api_executor
 from mcp_server.logging_config import log_executor_launch, log_executor_result
+
+from .api_runner import run_api_executor
+from .contracts import ExecutorResult
+from .registry import ExecutorConfig, ExecutorType, get_executor
 
 
 async def run_executor(

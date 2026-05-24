@@ -27,11 +27,13 @@ returns ranked recommendations with confidence and rationale.
 ## When to Use
 
 **Use when**:
+
 - The user is unsure which skill fits their documentation task.
 - Starting a workflow and needing guidance on the next step.
 - Discovering which skills cover a given intent.
 
 **Do NOT use when**:
+
 - The user names a specific skill (run it directly).
 - The task is non-documentation work.
 

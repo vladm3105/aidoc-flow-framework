@@ -1,9 +1,10 @@
 """Tests for YAML parity fixes in consistency, next_action, and scoring."""
+
 from __future__ import annotations
 
 import json
-from pathlib import Path
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -11,9 +12,8 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from mcp_server.consistency.runner import run_consistency_check  # noqa: E402
-from mcp_server.tool_registry import _inspect_document_folder  # noqa: E402
 from mcp_server.scoring.runner import show_score  # noqa: E402
-
+from mcp_server.tool_registry import _inspect_document_folder  # noqa: E402
 
 # ── Consistency: YAML source detection ───────────────────────────────────────
 
@@ -88,13 +88,17 @@ def test_next_action_detects_yaml_remediated_copy(tmp_path: Path) -> None:
 
 def test_score_categorized_weighted(tmp_path: Path) -> None:
     report = tmp_path / "report.json"
-    report.write_text(json.dumps({
-        "summary": {
-            "structural_errors": 1,
-            "cross_section_errors": 5,
-            "warnings": 2,
-        }
-    }))
+    report.write_text(
+        json.dumps(
+            {
+                "summary": {
+                    "structural_errors": 1,
+                    "cross_section_errors": 5,
+                    "warnings": 2,
+                }
+            }
+        )
+    )
     result = show_score(report_file=report)
     # 100 - (1*20) - (5*10) - (2*5) = 100 - 20 - 50 - 10 = 20
     assert result.score == 20
@@ -102,12 +106,16 @@ def test_score_categorized_weighted(tmp_path: Path) -> None:
 
 def test_score_backward_compat_no_categories(tmp_path: Path) -> None:
     report = tmp_path / "report.json"
-    report.write_text(json.dumps({
-        "summary": {
-            "errors": 3,
-            "warnings": 1,
-        }
-    }))
+    report.write_text(
+        json.dumps(
+            {
+                "summary": {
+                    "errors": 3,
+                    "warnings": 1,
+                }
+            }
+        )
+    )
     result = show_score(report_file=report)
     # 100 - (3*20) - (1*5) = 100 - 60 - 5 = 35
     assert result.score == 35
@@ -115,13 +123,17 @@ def test_score_backward_compat_no_categories(tmp_path: Path) -> None:
 
 def test_score_show_returns_category_breakdown(tmp_path: Path) -> None:
     report = tmp_path / "report.json"
-    report.write_text(json.dumps({
-        "summary": {
-            "structural_errors": 2,
-            "cross_section_errors": 1,
-            "warnings": 0,
-        }
-    }))
+    report.write_text(
+        json.dumps(
+            {
+                "summary": {
+                    "structural_errors": 2,
+                    "cross_section_errors": 1,
+                    "warnings": 0,
+                }
+            }
+        )
+    )
     result = show_score(report_file=report)
     assert "structural_errors" in result.summary
     assert "cross_section_errors" in result.summary

@@ -35,12 +35,14 @@ def parse_failures(junit_file: Path) -> list[dict]:
 
         if failure is not None or error is not None:
             elem = failure if failure is not None else error
-            failures.append({
-                "classname": testcase.get("classname", "unknown"),
-                "name": testcase.get("name", "unknown"),
-                "message": elem.get("message", "")[:500],
-                "text": (elem.text or "")[:1500]
-            })
+            failures.append(
+                {
+                    "classname": testcase.get("classname", "unknown"),
+                    "name": testcase.get("name", "unknown"),
+                    "message": elem.get("message", "")[:500],
+                    "text": (elem.text or "")[:1500],
+                }
+            )
 
     return failures
 
@@ -63,7 +65,7 @@ def main():
         body = f"""## Test Failure
 
 **Phase**: {args.phase}
-**Test**: `{f['classname']}::{f['name']}`
+**Test**: `{f["classname"]}::{f["name"]}`
 
 ## Planning Package (Required Before `ai:ready`)
 
@@ -77,20 +79,27 @@ def main():
 
 ### Error
 ```
-{f['message']}
+{f["message"]}
 ```
 
 ### Details
 ```
-{f['text']}
+{f["text"]}
 ```
 """
-        run_gh_command([
-            "gh", "issue", "create",
-            "--title", title[:200],
-            "--body", body,
-            "--label", args.labels
-        ])
+        run_gh_command(
+            [
+                "gh",
+                "issue",
+                "create",
+                "--title",
+                title[:200],
+                "--body",
+                body,
+                "--label",
+                args.labels,
+            ]
+        )
         print(f"Created issue: {title[:50]}...")
 
 

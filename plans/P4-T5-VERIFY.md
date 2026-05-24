@@ -110,11 +110,13 @@ files) symmetrically per P4-T3 G15 recommendation.
 ### G10. Coupling sweep — PASS (current-behavior content clean)
 
 **Hermes (`platforms/hermes/{src,tests,skills,pyproject.toml}`):**
+
 ```
 grep -rcE 'ucx_flow|UCX_FLOW' => 0 hits in current-behavior content
 ```
 
 **Plugin (`platforms/claude-code-plugin/`):**
+
 ```
 grep -rcE '\bai_dev_flow\b' => 1 hit (CHANGELOG.md only — historical
                                        context, accepted per G13 rule)
@@ -123,6 +125,7 @@ grep -rcE '\bai_dev_flow\b' => 1 hit (CHANGELOG.md only — historical
 **Note — refined gate scope:**
 The initial broader sweep `grep -rE 'ucx_flow|UCX_FLOW|ucx_hermes'`
 returned ~10 hits across Hermes. Investigation showed:
+
 - `ucx_flow_v3` (the framework's old name) → 0 hits in current-
   behavior. **This is the rewire target P2-T3/P2-T9 cleared.** ✓
 - `ucx_hermes` (Hermes' own legacy project name) → multiple hits
@@ -139,9 +142,11 @@ returned ~10 hits across Hermes. Investigation showed:
 **Carried known issue surfaced (documented; not blocking):**
 `platforms/hermes/src/mcp_server/executor/api_runner.py:115`
 contains a stale install instruction:
+
 ```python
 "Install with: pip install 'ucx_hermes[api]' or pip install litellm"
 ```
+
 The distribution name is now `hermes-server` (P2-T1 Q1), so the
 correct command is `pip install 'hermes-server[api]'`. Real bug,
 but **out of P4 scope** per the plan's R5 (Phase 4 is docs/tests/CI;

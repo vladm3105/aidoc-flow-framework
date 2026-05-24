@@ -138,7 +138,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   **Plugin skill total: 142.** Pass 2 caught a Pass 1 counting error
   (corrected from 144 to 142). DONE 2026-05-20T19:10:00Z.
 - [x] P3-T2 — Port content: 3-stage `cp -r` recipe copied 142 skills
-  + 19 root files + 1 agent + 1 command from `.claude/` to
+  - 19 root files + 1 agent + 1 command from `.claude/` to
   `platforms/claude-code-plugin/` (162 total + 6 nested skill files =
   168 total). 7 OUT skill dirs + 3 OUT root files dropped. Basic sed
   cleared 211 line hits of `ai_dev_flow` across 30 source files.
@@ -203,7 +203,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] P4-T1 — Design (paper-only): 6 questions resolved in
   `plans/P4-T1-DESIGN.md`. Test-module placement: new sub-package
   `tests/conformance/platforms/` (`test_version_declaration.py`
-  + `test_engine_isolation.py`); suite grows 25 → 28-30. PC4
+  - `test_engine_isolation.py`); suite grows 25 → 28-30. PC4
   scope: **runtime-significant directories** (`src/`,
   `pyproject.toml`, `.claude-plugin/`, `commands/`, `agents/`);
   prose / READMEs / `skills/<X>/SKILL.md` documentary references
@@ -252,7 +252,7 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
   capability comparison with known-parity-gap call-out on the
   legacy-vs-new layer model); `docs/TAGGING.md` extended with an
   "In-container push restrictions" section documenting the tags
-  + workflows restriction symmetrically. All 9 verify gates green;
+  - workflows restriction symmetrically. All 9 verify gates green;
   conformance still 31/31. DONE 2026-05-21T03:10:00Z.
 - [x] P4-T5 — Phase 4 verify + close (combined): 13 verify gates
   ran green (conformance 31/31, deliverables present, cross-platform

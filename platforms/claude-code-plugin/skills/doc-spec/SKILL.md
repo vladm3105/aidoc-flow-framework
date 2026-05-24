@@ -35,6 +35,7 @@ artifact per component.
 ## When to Use
 
 Use `doc-spec` when:
+
 - Architecture decisions (ADR) are settled and you need to specify a component.
 - Turning EARS/BDD acceptance contracts into concrete interfaces, data models,
   and behavior rules.
@@ -153,7 +154,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 `../doc-tdd/SKILL.md` — the TDD references this SPEC (`@spec: SPEC-NN`), inherits
 the cumulative tags (`@brd` through `@spec`), and defines test cases, inputs,
 expected outputs, and thresholds for the SPEC contracts.
-
 
 ## Adaptation
 

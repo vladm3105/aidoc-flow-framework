@@ -21,6 +21,7 @@ to avoid double-handling.
 ## Scope
 
 **In:**
+
 1. **`README.md`** — drop the "Phase 0 / planning" status + the
    "Migration in progress" section; drop `legacy/` from the
    architecture diagram (removed in P5-T2); update the platform
@@ -41,6 +42,7 @@ to avoid double-handling.
    post-migration project memory (P5-T1 Q6).
 
 **Out:**
+
 - `ROADMAP.md` Phase-5 status marking + the `[1.0.0]` changelog —
   **P5-T6** (close).
 - Root `.claude/` removal — **P5-T3** (next; this task does not
@@ -55,6 +57,7 @@ to avoid double-handling.
 ### 1. README.md
 
 Rewrite as the project's permanent front page (no migration framing):
+
 - **Status line** → drop "early restructure (Phase 0 — planning)";
   replace with a one-line "delivered" framing (multi-platform
   framework; cutover at `v1.0.0`).
@@ -100,6 +103,7 @@ Rewrite as the project's permanent front page (no migration framing):
 ### 4. CLAUDE.md rewrite (P5-T1 Q6)
 
 New slim post-migration project memory. **Keep:**
+
 - What the project is (one engine-agnostic `framework/` spec + two
   independent platforms).
 - Where things are (framework, platforms, tests/conformance, docs,

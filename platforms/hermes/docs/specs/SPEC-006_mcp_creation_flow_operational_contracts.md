@@ -21,12 +21,14 @@ Implementation complexity: 4/5.
 ## 2. Scope and Boundaries
 
 In scope:
+
 - init command operational behavior
 - create-build command operational behavior
 - creation artifact emission behavior
 - project-local UCX dependency requirements
 
 Out of scope:
+
 - review-build operational details except where needed for cross-reference
 - external source-to-sections conversion pipelines
 
@@ -35,16 +37,19 @@ Out of scope:
 ## 3. init Command Contract
 
 Normative behavior:
+
 - init requires project argument.
 - command scaffolds project-local UCX files.
 - existing files may be skipped without failure.
 
 Required outputs:
+
 - initialized project path
 - created count
 - skipped count
 
 Failure modes:
+
 - invalid or inaccessible project path
 - scaffold write failure
 
@@ -53,6 +58,7 @@ Failure modes:
 ## 4. create-build Command Contract
 
 Required arguments:
+
 - project
 - doc-type
 - layer
@@ -60,21 +66,25 @@ Required arguments:
 - out
 
 Optional arguments:
+
 - personas (list of persona identifiers; resolved from `persona_mappings.yaml` when omitted)
 - sections-json
 
 Normative behavior:
+
 1. resolve project and output paths
 2. parse sections-json when provided
 3. invoke creation build runner
 4. emit creation artifacts when output path exists and is writable
 
 Required artifact names when output enabled:
+
 - creation_prompt.txt
 - creation_prompt_sidecar.json
 - creation_prompt_inspection.json
 
 V3 prompt coverage requirements:
+
 - Creation prompt templates must include support for `tdd` and `iplan` document types.
 - Review and remediation prompt templates must include `tdd` and `iplan` variants.
 - Prompt loading must resolve project-local files under `UCX/prompts/templates/{creation|review|remediation}/`.
@@ -86,15 +96,18 @@ V3 prompt coverage requirements:
 Runtime must load required project-local assets from UCX paths.
 
 If required paths are missing, runtime must raise:
+
 - ProjectSkillsNotFound
 
 Required error payload fields:
+
 - error_code
 - project_root
 - missing_paths
 - resolution
 
 Required resolution behavior:
+
 - instruct operator to run init with project path
 
 ---
@@ -114,6 +127,7 @@ Required resolution behavior:
 ## 7. Validation Evidence Requirements
 
 Required checks:
+
 - argument parity verification against cli/main.py
 - runner artifact naming verification against review/runner.py creation result
 - missing asset behavior verification against skills/project_ucx_loader.py

@@ -302,7 +302,7 @@ P2-T9 / P3-T4 and got 447/447). Re-running here is optional.
 - **G5. Permissions minimal — `contents: read`** only. No write
   needed. Defensive against compromised actions.
 - **G6. Plugin smoke is light** — manifest valid + coupling sweep
-  + structural. Doesn't try to invoke skills (would need a Claude
+  - structural. Doesn't try to invoke skills (would need a Claude
   Code runtime).
 - **G7. Hermes smoke uses `pip install -e .`** to honor
   `pyproject.toml`'s deps list. Plus `pip install pytest`
@@ -421,6 +421,7 @@ via `gh run list` or the Actions tab.
 ### Lesson for future planning
 
 The in-container restriction set is now:
+
 - `refs/tags/*` pushes (HTTP 403; 3 occurrences).
 - `.github/workflows/**` file additions / edits (rejected with
   "refusing to allow GitHub App without workflows permission";

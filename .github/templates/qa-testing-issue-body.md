@@ -1,30 +1,34 @@
 ## QA Testing Issue
 
 **Source**
+
 | Field | Value |
 |:------|:------|
-| Development Issue | #__DEV_ISSUE__ |
-| Pull Request | #__PR_NUMBER__ |
-| Phase | __PHASE_NUM__ |
+| Development Issue | #**DEV_ISSUE** |
+| Pull Request | #**PR_NUMBER** |
+| Phase | **PHASE_NUM** |
 | Iteration | 1 |
 
-**Blocked by**: Deployment Issue #__DEPLOY_ISSUE__ (must deploy first)
+**Blocked by**: Deployment Issue #**DEPLOY_ISSUE** (must deploy first)
 
 ---
 
 ## Test Plan
 
 ### Automated Tests
+
 - [ ] Unit tests pass (coverage >= 90%)
 - [ ] Integration tests pass (coverage >= 70%)
 - [ ] E2E tests pass
 
 ### Feature-Specific Tests
-__TEST_PLAN__
+
+**TEST_PLAN**
 
 ---
 
 ## Environment
+
 - **Target**: Staging
 - **Test window**: 06:00-08:00 EST (after deployment)
 
@@ -33,6 +37,7 @@ __TEST_PLAN__
 ## Results
 
 ### Test Execution Summary
+
 | Category | Passed | Failed | Skipped |
 |:---------|-------:|-------:|--------:|
 | Unit | - | - | - |
@@ -44,4 +49,4 @@ __TEST_PLAN__
 
 ---
 
-*Created automatically from PR #__PR_NUMBER__ merge*
+*Created automatically from PR #**PR_NUMBER** merge*

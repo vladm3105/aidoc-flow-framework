@@ -26,6 +26,7 @@ pre-compact-snapshot safety net post-removal).
 ## Scope
 
 **In:**
+
 - `git rm -r .claude/` on the working branch — removes the tracked
   loader (skills/agents/commands/hooks/settings.json).
 - Verify: tracked `.claude/` gone; conformance 31/31; plugin smoke
@@ -33,6 +34,7 @@ pre-compact-snapshot safety net post-removal).
   `.claude/`; archive branch intact.
 
 **Out:**
+
 - Plugin's own `.claude-plugin/` — that's
   `platforms/claude-code-plugin/.claude-plugin/`, a *different* path;
   untouched.
@@ -55,6 +57,7 @@ after this removal the hooks survive only in working-branch git
 history.
 
 **Options (surface at the confirmation gate):**
+
 - **(A) Straight removal** — hooks live in git history; restorable
   via `git show <commit>:.claude/hooks/...` if ever wanted.
 - **(B) Preserve durably first** — copy the 3 hooks (+ a short
@@ -91,6 +94,7 @@ git mv .claude/hooks/pre-compact-snapshot.sh  docs/dev-hooks/
 git mv .claude/hooks/session-start-handoff.sh docs/dev-hooks/
 # + a short docs/dev-hooks/README.md describing them
 ```
+
 (`git mv` out of `.claude/` first, then the `git rm -r .claude/`
 removes the rest.)
 

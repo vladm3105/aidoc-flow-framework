@@ -209,6 +209,7 @@ jobs:
 ### Definition
 
 A test is **flaky** if it:
+
 - Passes and fails on the same code without changes
 - Depends on timing, network conditions, or external state
 - Has failed 3+ times in the last 7 days without code changes
@@ -217,7 +218,7 @@ A test is **flaky** if it:
 
 ```
 Flaky detected → Quarantine → Investigate → Fix or Remove
-                                 
+
       Track in issue
 ```
 

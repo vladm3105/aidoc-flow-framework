@@ -7,7 +7,7 @@ import os
 import subprocess
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -55,13 +55,22 @@ def get_phase_issues(phase: int, rate_limiter: RateLimiter) -> list[dict]:
     Only checks ai:development issues, not deployment/QA issues.
     Deployment and QA issues are created AFTER phase completion.
     """
-    code, stdout, _ = run_gh_command([
-        "gh", "issue", "list",
-        "--label", f"phase:{phase}",
-        "--label", "ai:development",
-        "--state", "all",
-        "--json", "number,title,state,labels"
-    ], rate_limiter)
+    code, stdout, _ = run_gh_command(
+        [
+            "gh",
+            "issue",
+            "list",
+            "--label",
+            f"phase:{phase}",
+            "--label",
+            "ai:development",
+            "--state",
+            "all",
+            "--json",
+            "number,title,state,labels",
+        ],
+        rate_limiter,
+    )
     return json.loads(stdout) if code == 0 and stdout else []
 
 
@@ -85,32 +94,41 @@ def get_project_item_status(issue_number: int, rate_limiter: RateLimiter) -> str
     repo = os.environ.get("GITHUB_REPOSITORY", "{GITHUB_ORG}/{REPO_NAME}")
     owner, name = repo.split("/")
 
-    code, stdout, _ = run_gh_command([
-        "gh", "api", "graphql",
-        "-f", f"query={query}",
-        "-F", f"owner={owner}",
-        "-F", f"repo={name}",
-        "-F", f"number={issue_number}"
-    ], rate_limiter)
+    code, stdout, _ = run_gh_command(
+        [
+            "gh",
+            "api",
+            "graphql",
+            "-f",
+            f"query={query}",
+            "-F",
+            f"owner={owner}",
+            "-F",
+            f"repo={name}",
+            "-F",
+            f"number={issue_number}",
+        ],
+        rate_limiter,
+    )
 
     if code != 0:
         return "unknown"
 
     try:
         data = json.loads(stdout)
-        return data["data"]["repository"]["issue"]["projectItems"]["nodes"][0]["fieldValueByName"]["name"]
+        return data["data"]["repository"]["issue"]["projectItems"]["nodes"][0]["fieldValueByName"][
+            "name"
+        ]
     except (KeyError, IndexError, TypeError):
         return "unknown"
 
 
 def check_blockers(rate_limiter: RateLimiter) -> list[int]:
     """Get list of open blocker issues."""
-    code, stdout, _ = run_gh_command([
-        "gh", "issue", "list",
-        "--label", "blocker",
-        "--state", "open",
-        "--json", "number"
-    ], rate_limiter)
+    code, stdout, _ = run_gh_command(
+        ["gh", "issue", "list", "--label", "blocker", "--state", "open", "--json", "number"],
+        rate_limiter,
+    )
     issues = json.loads(stdout) if code == 0 and stdout else []
     return [i["number"] for i in issues]
 
@@ -119,17 +137,12 @@ def load_tracking(tracking_file: Path) -> dict:
     """Load phase tracking file."""
     if tracking_file.exists():
         return json.loads(tracking_file.read_text())
-    return {
-        "config": {"total_phases": 8},
-        "phases": {},
-        "last_check": None,
-        "production": {}
-    }
+    return {"config": {"total_phases": 8}, "phases": {}, "last_check": None, "production": {}}
 
 
 def save_tracking(tracking_file: Path, tracking: dict) -> None:
     """Save phase tracking file."""
-    tracking["last_check"] = datetime.now(timezone.utc).isoformat()
+    tracking["last_check"] = datetime.now(UTC).isoformat()
     tracking_file.write_text(json.dumps(tracking, indent=2) + "\n")
 
 
@@ -206,7 +219,7 @@ def main():
         save_tracking(args.tracking_file, tracking)
 
         if args.output_github_actions:
-            print(f"phase_completed=true")
+            print("phase_completed=true")
             print(f"phase_number={phase}")
         else:
             print(f"Phase {phase} complete")

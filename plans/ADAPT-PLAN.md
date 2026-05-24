@@ -71,6 +71,7 @@ spec doc (itself a framework-spec change) lands under interim PR-review controls
 recorded as `D-0019`. Building CHG-D1 is now an explicit out-of-scope follow-up.
 
 **ADAPT-A — the overlay (in):**
+
 - `framework/governance/ADAPTATION.md` (prose spec) **+ `ADAPTATION_SURFACE.yaml`**
   — a **machine-readable closed knob registry** (Gap-7 fix), analogous to
   `registry/LAYER_REGISTRY.yaml`. Conformance reads the YAML, not prose.
@@ -92,6 +93,7 @@ recorded as `D-0019`. Building CHG-D1 is now an explicit out-of-scope follow-up.
 - Conformance checks (see Verification).
 
 **ADAPT-B — the bridge (in):**
+
 - `.aidoc/learnings.md` entry-shape convention (locked; see Approach) + a
   lightweight, best-effort **capture path** (Gap-9).
 - `knowledge-extractor` plugin skill — classifies + routes + drafts:
@@ -101,6 +103,7 @@ recorded as `D-0019`. Building CHG-D1 is now an explicit out-of-scope follow-up.
   carries provenance + is flagged as CHG-D1-blocked.
 
 **Out (deferred):**
+
 - **Executing** either path (auto-PR / auto-CHG) — extractor drafts only.
 - **Hermes runtime honoring** of the profile — surface spec is shared and
   engine-agnostic; plugin implements first; Hermes conformance is a tracked
@@ -234,12 +237,13 @@ under interim PR-review controls (or sequences CHG-D1 first).
 record as `D-0019`; note ADAPT-A's interim-controls landing.
 
 **ADAPT-A — overlay**
+
 1. Write `ADAPTATION.md` + `ADAPTATION_SURFACE.yaml` (5 knobs, constraints,
    `runtime_scope`, `schema_version`, consult-clause wording, required/skippable
    layer sets). Link from `governance/README.md`; reference the `skippable` set
    from `registry/LAYER_REGISTRY.yaml`.
 2. Add `adapts:` + consult-clause to the **adapting set**: layer base + autopilot
-   + audit + fixer (×8), `trace-check`, `project-init`, `project-adopt`. Each
+   - audit + fixer (×8), `trace-check`, `project-init`, `project-adopt`. Each
    declares only the knobs it honors (e.g. audit → `section_toggles`,
    `active_layers`, `audit_threshold`).
 3. Author `project-profile/SKILL.md` (utility; interviews/infers → writes the
@@ -314,6 +318,7 @@ Nothing is "done" until all pass.
 ## Review log
 
 ### Pass 1 — 2026-05-23T15:05:00Z
+
 - Precedence under-specified → added merge order + conflict logging.
 - `adapts:` could drift from surface → added closed-set integrity check.
 - Missed that `ADAPTATION.md` is itself a spec change → added version-bump note.
@@ -321,6 +326,7 @@ Nothing is "done" until all pass.
 - Locked the learnings entry schema.
 
 ### Pass 2 — 2026-05-23T15:40:00Z
+
 - Pinned the extractor↔CHG handoff shape (later found wrong — see Pass 3).
 - Tightened the threshold knob to "advisory only" (later found wrong — Pass 3).
 - Noted the stale skill count (→ 54).

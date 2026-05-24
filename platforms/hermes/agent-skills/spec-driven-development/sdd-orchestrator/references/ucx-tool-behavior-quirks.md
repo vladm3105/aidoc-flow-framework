@@ -26,6 +26,7 @@ All use cloud API (not local Ollama). Timeout default: 300s.
 ### Recovery Pattern
 
 If you hit ExecutorRequired:
+
 1. List executors: `sdd_list_executors()`
 2. Pick an active API executor (e.g., `api/claude-sonnet`)
 3. Re-run `sdd_review` with `executor: "<name>"`

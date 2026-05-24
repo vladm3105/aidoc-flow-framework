@@ -17,6 +17,7 @@ Source topics from four streams:
 4. **BRD Constraints & Dependencies** — execution models, broker contracts, external services.
 
 Build the topic inventory as a table:
+
 ```markdown
 | ADR ID | Topic | Source | Priority | Blocks | Consolidated From |
 ```
@@ -24,11 +25,13 @@ Build the topic inventory as a table:
 ## Engine vs Cross-Cutting Categorization
 
 ### Engine-Specific ADRs (one per BDD/engine)
+
 - 1:1 mapping: each engine gets one ADR for its execution model
 - ADR-01 through ADR-09 (umbrella is ADR-01)
 - ADR-01 is the benchmark — generate it first as the quality template
 
 ### Cross-Cutting ADRs (affect all engines)
+
 - ADR-10+: Event Bus, Auth, Calendar, Idempotency, Regulatory Reporting,
   Observability, Alerting, Backpressure, Input Validation, Encryption
 - These unblock BDD deferred findings that are ADR-blocked
@@ -38,6 +41,7 @@ Build the topic inventory as a table:
 ## Coverage Matrix
 
 Every BDD deferred finding must map to exactly one ADR:
+
 ```markdown
 | BDD Finding | Resolved By | Notes |
 ```
@@ -48,6 +52,7 @@ Goal: 0 remaining uncovered.
 ## Gap Review Methodology
 
 After drafting the plan, run a self-review against:
+
 1. BDD chairperson manifest — every P0/P1 deferred finding must have an ADR home
 2. PRD adr_topic_elaboration — every topic from every PRD must be assigned
 3. SEC/REG HEALTH8 findings — regulatory gaps are not optional
@@ -56,6 +61,7 @@ After drafting the plan, run a self-review against:
 ## Pre-Generation Checklist (Phase 0)
 
 Before ADR creation:
+
 - [ ] Fix BDD hash collisions (SCH-002 style — identical hashes across docs)
 - [ ] Fix PRD placeholder hashes (`xxxx` in @brd/@ears references)
 - [ ] Verify all BDD validation reports exist (out/04_BDD/*.ucx.validate.json)

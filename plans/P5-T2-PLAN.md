@@ -23,6 +23,7 @@ confirmation** before the `git rm` runs.
 ## Scope
 
 **In:**
+
 - `git rm -r legacy/` on the working branch — removes the entire
   `legacy/` tree.
 - Verify the removal: `legacy/` absent; conformance 31/31; Hermes
@@ -30,6 +31,7 @@ confirmation** before the `git rm` runs.
   branch still holds the content.
 
 **Out:**
+
 - Root `.claude/` removal — that's P5-T3 (separate, sequenced late).
 - Any rewrite of plan docs that cite `legacy/<path>` — those become
   pointers-to-history (content in the archive branch); acceptable

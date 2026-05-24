@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import hashlib
 import json
-from pathlib import Path
 import re
 import shutil
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 from mcp_server.reporting import build_action_id, build_finding_id
 from mcp_server.utils.source_files import extract_doc_id
-
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
 
@@ -131,7 +130,9 @@ def _has_frontmatter(text: str) -> bool:
     return text.startswith("---\n") and "\n---" in text[4:]
 
 
-def _write_report_files(output_dir: Path | None, json_name: str, txt_name: str, report_json: str, report_text: str) -> tuple[Path | None, Path | None]:
+def _write_report_files(
+    output_dir: Path | None, json_name: str, txt_name: str, report_json: str, report_text: str
+) -> tuple[Path | None, Path | None]:
     if output_dir is None:
         return None, None
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -203,9 +204,7 @@ def _build_validate_fix_prompt(
     validation_data: dict[str, Any] = {}
     if validation_report_path and validation_report_path.exists():
         try:
-            validation_data = json.loads(
-                validation_report_path.read_text(encoding="utf-8")
-            )
+            validation_data = json.loads(validation_report_path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             pass
 
@@ -251,9 +250,7 @@ def _build_validate_fix_prompt(
     lines.append("")
     lines.append("### Fix Strategy")
     lines.append("")
-    lines.append(
-        "1. **Read the derived file first** to understand the document structure."
-    )
+    lines.append("1. **Read the derived file first** to understand the document structure.")
     lines.append(
         "2. **For phantom ID errors (SDD-XS-001)**: Find where the ID is "
         "referenced, then find the correct existing ID it should point to. "
@@ -315,9 +312,7 @@ def _build_remediate_fix_prompt(
     remediation_data: dict[str, Any] = {}
     if remediation_report_path and remediation_report_path.exists():
         try:
-            remediation_data = json.loads(
-                remediation_report_path.read_text(encoding="utf-8")
-            )
+            remediation_data = json.loads(remediation_report_path.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, OSError):
             pass
 
@@ -460,6 +455,7 @@ def verify_remediation_quality(
 
     # 2. Detect FWDREF-DEFERRED → FWDREF rename without content change
     import re as _re
+
     orig_deferred = len(_re.findall(r"FWDREF-DEFERRED", original))
     rem_deferred = len(_re.findall(r"FWDREF-DEFERRED", remediated))
     rem_fwdref = len(_re.findall(r"FWDREF(?!-DEFERRED)", remediated))
@@ -580,6 +576,7 @@ def run_remediation_build(
             continue
         try:
             import yaml as _yaml
+
             yaml_data = _yaml.safe_load(file_path.read_text(encoding="utf-8"))
         except Exception:
             findings.append(
@@ -639,18 +636,23 @@ def run_remediation_build(
 
         # Validate element ID format
         import re as _re
+
         _ID_PATTERN = _re.compile(r"^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$")
         _bad_ids: list[str] = []
+
         def _check_ids(obj: object, path: str = "") -> None:
             if isinstance(obj, dict):
                 for k, v in obj.items():
                     if k == "id" and isinstance(v, str) and v.strip():
-                        if not _ID_PATTERN.match(v) and not v.startswith("{"):  # skip template placeholders
+                        if not _ID_PATTERN.match(v) and not v.startswith(
+                            "{"
+                        ):  # skip template placeholders
                             _bad_ids.append(v)
                     _check_ids(v, f"{path}.{k}")
             elif isinstance(obj, list):
                 for item in obj:
                     _check_ids(item, path)
+
         _check_ids(yaml_data)
 
         if _bad_ids:
@@ -672,6 +674,7 @@ def run_remediation_build(
 
     if review_report is not None and review_report.exists():
         from mcp_server.remediation.review_parser import parse_review_report
+
         review_summary, review_findings = parse_review_report(review_report)
 
         if review_findings:
@@ -718,6 +721,7 @@ def run_remediation_build(
                 )
             if review_summary:
                 import dataclasses as _dc
+
                 _review_summary_data = _dc.asdict(review_summary)
         else:
             # Fallback: parsing returned nothing, keep pointer
@@ -785,7 +789,7 @@ def _next_remediate_version(canonical_stem: str, output_dir: Path) -> int:
         if not name.startswith(prefix):
             continue
         # Exact prefix match — avoid BRD-01_test matching BRD-01_test_extended
-        rest = name[len(prefix):]
+        rest = name[len(prefix) :]
         # rest should be digits only (for files) or digits (for dirs)
         digits = rest.split("_")[0]  # handle unlikely extra suffixes
         if digits.isdigit():
@@ -838,7 +842,9 @@ def _hash_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _guard_source_integrity(source_paths: list[Path], operation: str, apply_fn: Any) -> tuple[list[Path], dict[str, object]]:
+def _guard_source_integrity(
+    source_paths: list[Path], operation: str, apply_fn: Any
+) -> tuple[list[Path], dict[str, object]]:
     snapshots: dict[Path, str] = {}
     for path in source_paths:
         if path.exists() and path.is_file():
@@ -905,9 +911,9 @@ def _resolve_validation_copy_path(document_path: Path) -> Path:
     candidates = []
     for ext in ("*.md", "*.yaml", "*.yml"):
         candidates.extend(
-            path for path in sorted(document_path.glob(ext))
-            if "_validated" in path.stem
-            and re.match(r"^[A-Z]+-\d+_.+_validated\.", path.name)
+            path
+            for path in sorted(document_path.glob(ext))
+            if "_validated" in path.stem and re.match(r"^[A-Z]+-\d+_.+_validated\.", path.name)
         )
     if len(candidates) == 1:
         return candidates[0]
@@ -928,7 +934,9 @@ def run_validate_fix_build(
     effective_document_path = _resolve_source_document_path(document_path)
 
     if output_dir is None:
-        output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
+        output_dir = (
+            effective_document_path.parent if effective_document_path.is_file() else document_path
+        )
 
     source_paths = [effective_document_path] if effective_document_path.is_file() else []
 
@@ -990,23 +998,33 @@ def run_remediate_fix_build(
     effective_document_path = _resolve_validation_copy_path(document_path)
 
     if output_dir is None:
-        output_dir = effective_document_path.parent if effective_document_path.is_file() else document_path
+        output_dir = (
+            effective_document_path.parent if effective_document_path.is_file() else document_path
+        )
 
     source_paths: list[Path] = []
     if effective_document_path.is_file():
         source_paths.append(effective_document_path)
-        base_source = effective_document_path.parent / f"{_canonical_stem(effective_document_path)}.md"
+        base_source = (
+            effective_document_path.parent / f"{_canonical_stem(effective_document_path)}.md"
+        )
         if base_source.exists() and base_source != effective_document_path:
             source_paths.append(base_source)
 
     # Compute versioned suffix
-    canon = _canonical_stem(effective_document_path) if effective_document_path.is_file() else effective_document_path.name
+    canon = (
+        _canonical_stem(effective_document_path)
+        if effective_document_path.is_file()
+        else effective_document_path.name
+    )
     next_ver = _next_remediate_version(canon, output_dir)
     version_suffix = f"remediate_v{next_ver}"
 
     def _apply_copy() -> list[Path]:
         if effective_document_path.is_file():
-            return [_copy_with_canonical_suffix(effective_document_path, version_suffix, output_dir)]
+            return [
+                _copy_with_canonical_suffix(effective_document_path, version_suffix, output_dir)
+            ]
         return _copy_tree_with_suffix(effective_document_path, version_suffix, output_dir)
 
     derived_paths, telemetry = _guard_source_integrity(source_paths, "remediate-fix", _apply_copy)

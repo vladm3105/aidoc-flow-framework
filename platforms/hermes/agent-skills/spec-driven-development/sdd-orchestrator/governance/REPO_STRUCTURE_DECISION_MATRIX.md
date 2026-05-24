@@ -27,14 +27,17 @@
 ## Context: Why This Matters Now
 
 ### Team Size
+
 - **Current**: 1-2 developers (AI-assisted)
 - **Impact**: No cross-team coordination benefits from polyrepo; submodule overhead is pure cost
 
 ### Development Pattern
+
 - **Current**: AI agents drive majority of code changes via {AI_TOOL_NAME} Code, Gemini CLI
 - **Impact**: AI agents work best with single git context; submodules cause "which repo am I in?" confusion
 
 ### Component Coupling
+
 - **Current**: {SERVICE_NAME} closely coupled to home repo governance and infra docs
 - **Impact**: Most changes span home + component repo anyway
 

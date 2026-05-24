@@ -41,14 +41,17 @@ content shouldn't be in the template at all — it's a runtime concern"). Framew
 **Reference inventory (25 lines, 2 files):**
 
 `SKILL.md` (17 lines):
+
 - Lines 683–690: 8-item bulleted list of `templates/0N_TYPE-TEMPLATE.yaml`.
 - Line 692: `skill_view(name='sdd-orchestrator', file_path='templates/NN_TYPE-TEMPLATE.yaml')` API-call example — needs both the path **and** the loading mechanism rewritten (`skill_view` only sees files inside the skill; framework files are outside).
 - Lines 696–703: 8-row table with `templates/0N_TYPE-TEMPLATE.yaml` paths.
 
 `references/sdd-workflow-quickstart.md` (8 lines):
+
 - Lines 13–20: 8-row table with `templates/0N_TYPE-TEMPLATE.yaml` paths.
 
 **Out of P2-T8 scope (related but disjoint):**
+
 - `sdd-orchestrator/governance/templates/` — different directory, not a
   layer-template duplication; holds pre-commit configs and QA bridge docs
   (some already reference `framework/layers/`). Untouched.
@@ -122,6 +125,7 @@ Both reference files use the same skill-relative pattern. The rule:
 | `templates/08_IPLAN-TEMPLATE.yaml` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` |
 
 The structural change is two-fold:
+
 1. **Path prefix:** `templates/` → `framework/layers/0N_TYPE/`.
 2. **Basename:** `0N_TYPE-TEMPLATE.yaml` → `TYPE-TEMPLATE.yaml` (drop
    the `0N_` prefix — the framework's per-layer-dir layout makes the
@@ -200,12 +204,14 @@ delete content that turns out to be unique.
 ## Step sequence
 
 1. **Pre-flight:** capture pre-delete grep snapshot for verify.
+
    ```
    grep -rnE 'templates/0[1-8]_(BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN)-TEMPLATE\.yaml|templates/NN_TYPE-TEMPLATE\.yaml' \
      platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/ \
      > /tmp/p2t8-pregrep.txt
    wc -l /tmp/p2t8-pregrep.txt  # expect 26 (25 references + 1 placeholder)
    ```
+
 2. **Content-equivalence check** (Approach §4) for all 8 pairs. Halt on
    any substantive delta; otherwise proceed.
 3. **Delete** the 8 YAMLs via `git rm`; `rmdir` the empty parent.

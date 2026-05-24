@@ -25,6 +25,7 @@ functional_requirements:    # ← type context is HERE
 The type code segment is redundant noise that creates confusion (all-digit hashes like `2616` look like sequential IDs).
 
 **New format**: `TYPE.NN.hash` (3 segments)
+
 - `BRD.02.8cf7` — element in BRD-02
 - `PRD.01.a3b2` — element in PRD-01
 - Hash: SHA256 4-char hex, input: `"{doc_id}:{yaml_key}:{title}"`
@@ -68,6 +69,7 @@ The `ucx_flow_v3/AUTOPILOT/` directory (14 files, 49 element ID occurrences) is 
 ### Phase 2a: Primary templates (11 files in `mcp_ucx/templates/`)
 
 For each template:
+
 - `id_standard.format:` → `"{doc_type}.{doc_id}.{hash}"`
 - `id_standard._guidance:` → hash input: `"{doc_id}:{yaml_key}:{title}"`
 - All inline examples: `TYPE.NN.TT.xxxx` → `TYPE.NN.xxxx`
@@ -173,6 +175,7 @@ Each README contains element ID examples (e.g., `BRD.01.07.a7f3`). Update all to
 Location: `/opt/data/ucx_framework/.claude/skills/`
 
 **High priority** (most occurrences):
+
 - `doc-naming/SKILL.md` (24 occurrences) — primary ID authority for AI
 - `doc-naming_quickref.md` (20 occurrences)
 - `doc-brd/SKILL.md`, `doc-brd-autopilot/SKILL.md` (~15 combined)
@@ -183,10 +186,11 @@ Location: `/opt/data/ucx_framework/.claude/skills/`
 - `doc-ctr/SKILL.md` (~4)
 
 **Medium priority** (2-3 each):
+
 - `trace-check/SKILL.md`, `doc-flow/SKILL.md`, `doc-flow/SHARED_CONTENT.md`
 - `doc-req/SKILL.md`, `doc-adr/SKILL.md`
 
-**All other** doc-* and doc-*-autopilot skills: 1-2 occurrences each
+**All other** doc-*and doc-*-autopilot skills: 1-2 occurrences each
 
 Total: ~41 files, ~227 occurrences
 

@@ -1,10 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-# 
+#
 # GHES Self-Hosted Runner — Entrypoint
 # Registers with GHES, runs jobs, deregisters on stop
-# 
+#
 
 : "${GHES_URL:?GHES_URL is required (e.g. https://{GITHUB_HOST})}"
 : "${GHES_ORG:={GITHUB_ORG}}"
@@ -27,7 +27,7 @@ fi
 
 RUNNER_DIR="/home/runner/actions-runner"
 
-#  Deregister on shutdown 
+#  Deregister on shutdown
 cleanup() {
     echo ">> Received shutdown signal — removing runner..."
     cd "${RUNNER_DIR}"
@@ -38,7 +38,7 @@ cleanup() {
 }
 trap cleanup SIGTERM SIGINT EXIT
 
-#  Get registration token 
+#  Get registration token
 echo ">> Requesting registration token from GHES..."
 if [ "${RUNNER_SCOPE}" = "org" ]; then
     API_PATH="orgs/${GHES_ORG}/actions/runners/registration-token"
@@ -65,7 +65,7 @@ if [ -z "${REG_TOKEN}" ] || [ "${REG_TOKEN}" = "null" ]; then
 fi
 echo ">> Registration token obtained."
 
-#  Configure runner 
+#  Configure runner
 echo ">> Configuring runner: ${RUNNER_NAME}"
 EXTRA_ARGS=""
 if [ "${RUNNER_EPHEMERAL}" = "true" ]; then
@@ -92,5 +92,5 @@ fi
 
 echo ">> Runner configured. Starting..."
 
-#  Run 
+#  Run
 ./run.sh

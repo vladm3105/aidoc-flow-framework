@@ -7,6 +7,7 @@ assignees: ''
 ---
 
 ## Analysis Type
+
 - [ ] Cost breakdown by service
 - [ ] Anomaly investigation
 - [ ] Optimization opportunity
@@ -14,6 +15,7 @@ assignees: ''
 - [ ] Resource right-sizing
 
 ## Cloud Provider
+
 - [ ] GCP
 - [ ] AWS
 - [ ] Azure
@@ -38,6 +40,7 @@ assignees: ''
 - [ ] Resource cleanup list
 
 ## Priority
+
 - [ ] P1 - Urgent (unexpected cost spike)
 - [ ] P2 - Medium (scheduled review)
 - [ ] P3 - Low (exploratory)

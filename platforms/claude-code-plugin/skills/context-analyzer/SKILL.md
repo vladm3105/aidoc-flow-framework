@@ -25,6 +25,7 @@ duplicate content.
 ## When to Use
 
 Use `context-analyzer` when:
+
 - Starting documentation work in an existing project.
 - About to create an artifact that needs upstream references.
 - You need to understand what documentation exists or where the gaps are.

@@ -11,11 +11,8 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from mcp_server.remediation.review_parser import (  # noqa: E402
-    ReviewFinding,
-    ReviewSummary,
     parse_review_report,
 )
-
 
 # ---------------------------------------------------------------------------
 # Helpers — minimal review report fragments
@@ -80,6 +77,7 @@ _SECTION5_TABLE = """\
 # Frontmatter tests
 # ---------------------------------------------------------------------------
 
+
 def test_parse_frontmatter_extracts_score(tmp_path: Path) -> None:
     report = tmp_path / "review.md"
     report.write_text(_FRONTMATTER, encoding="utf-8")
@@ -109,6 +107,7 @@ def test_parse_frontmatter_missing_returns_none(tmp_path: Path) -> None:
 # Section 4 remediation table tests
 # ---------------------------------------------------------------------------
 
+
 def test_parse_remediation_table(tmp_path: Path) -> None:
     report = tmp_path / "review.md"
     report.write_text(_SECTION4_TABLE, encoding="utf-8")
@@ -137,6 +136,7 @@ def test_parse_remediation_text_as_action(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # Sections 2-3 fallback tests
 # ---------------------------------------------------------------------------
+
 
 def test_parse_finding_table_rem_id(tmp_path: Path) -> None:
     report = tmp_path / "review.md"
@@ -169,6 +169,7 @@ def test_parse_fallback_when_no_section_4(tmp_path: Path) -> None:
 # Section 5 P2 tests
 # ---------------------------------------------------------------------------
 
+
 def test_parse_p2_table_4_columns(tmp_path: Path) -> None:
     report = tmp_path / "review.md"
     report.write_text(_SECTION5_TABLE, encoding="utf-8")
@@ -190,6 +191,7 @@ def test_parse_p2_severity_tier2(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # Text cleanup tests
 # ---------------------------------------------------------------------------
+
 
 def test_strip_markdown_bold(tmp_path: Path) -> None:
     report = tmp_path / "review.md"
@@ -245,6 +247,7 @@ def test_truncate_long_action(tmp_path: Path) -> None:
 # Wiring tests (via run_remediation_build)
 # ---------------------------------------------------------------------------
 
+
 def test_findings_capped_at_50(tmp_path: Path) -> None:
     from mcp_server.remediation.runner import run_remediation_build
 
@@ -277,14 +280,8 @@ def test_findings_capped_at_50(tmp_path: Path) -> None:
         review_report=review,
     )
 
-    review_findings = [
-        f for f in result.report["findings"]
-        if f["category"] == "review_finding"
-    ]
-    overflow = [
-        f for f in result.report["findings"]
-        if f["category"] == "review_finding_overflow"
-    ]
+    review_findings = [f for f in result.report["findings"] if f["category"] == "review_finding"]
+    overflow = [f for f in result.report["findings"] if f["category"] == "review_finding_overflow"]
     assert len(review_findings) == 50
     assert len(overflow) == 1
     assert "10 additional" in overflow[0]["message"]
@@ -319,6 +316,7 @@ def test_review_summary_in_report(tmp_path: Path) -> None:
 # ---------------------------------------------------------------------------
 # Integration / edge-case tests
 # ---------------------------------------------------------------------------
+
 
 def test_parse_returns_empty_on_unparseable(tmp_path: Path) -> None:
     report = tmp_path / "review.md"

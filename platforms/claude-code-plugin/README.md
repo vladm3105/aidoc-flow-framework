@@ -73,7 +73,7 @@ matches the framework's published version.
 | Version | `0.2.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.1.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
-| Repository | https://github.com/vladm3105/aidoc-flow-framework |
+| Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Project changelog | [../../CHANGELOG.md](../../CHANGELOG.md) |
 | Project roadmap | [../../ROADMAP.md](../../ROADMAP.md) |
 | Tagging policy | [../../docs/TAGGING.md](../../docs/TAGGING.md) |

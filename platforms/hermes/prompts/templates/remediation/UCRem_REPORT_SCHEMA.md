@@ -312,17 +312,20 @@ execution_order:
 ### Confidence Level Criteria
 
 **auto-safe** requires ALL of:
+
 - Deterministic text (no placeholders)
 - Single location (no ambiguity)
 - At least 2 persona validations
 - No Chaos Engineer objections
 
 **auto-assisted** requires ALL of:
+
 - Template structure provided
 - [TODO] or [MANUAL] placeholders clearly marked
 - At least 1 persona validation
 
 **manual-required** when ANY of:
+
 - Architectural decision required
 - Business logic needed
 - Chaos Engineer raises objection

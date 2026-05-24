@@ -14,8 +14,19 @@ def get_issue_labels(issue_number: int) -> list[str]:
     env["GH_HOST"] = "{GITHUB_HOST}"
     try:
         result = subprocess.run(
-            ["gh", "issue", "view", str(issue_number), "--json", "labels", "--jq", ".labels[].name"],
-            capture_output=True, text=True, env=env
+            [
+                "gh",
+                "issue",
+                "view",
+                str(issue_number),
+                "--json",
+                "labels",
+                "--jq",
+                ".labels[].name",
+            ],
+            capture_output=True,
+            text=True,
+            env=env,
         )
         return result.stdout.strip().split("\n") if result.stdout.strip() else []
     except subprocess.SubprocessError as e:
@@ -54,7 +65,9 @@ def main():
     # Check if phase was deployed
     phase_data = tracking.get("phases", {}).get(phase, {})
     if phase_data.get("status") == "deployed":
-        print(f"Phase {phase} marked as needs-revalidation due to issue #{args.issue_number} reopen")
+        print(
+            f"Phase {phase} marked as needs-revalidation due to issue #{args.issue_number} reopen"
+        )
         tracking["phases"][phase]["status"] = "needs-revalidation"
         args.tracking_file.write_text(json.dumps(tracking, indent=2) + "\n")
 

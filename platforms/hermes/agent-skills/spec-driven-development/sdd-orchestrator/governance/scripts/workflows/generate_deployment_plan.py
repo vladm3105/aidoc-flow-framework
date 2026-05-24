@@ -21,7 +21,6 @@ import os
 import re
 import subprocess
 from datetime import datetime
-from typing import Optional
 
 
 def run_gh(args: list[str], check: bool = True) -> str:
@@ -31,21 +30,30 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
 
 def get_phase_issues(repo: str, phase: int) -> list[dict]:
     """Get all issues for a specific phase."""
-    output = run_gh([
-        "issue", "list",
-        "--repo", repo,
-        "--label", f"phase:{phase}",
-        "--state", "all",
-        "--json", "number,title,body,state,labels",
-        "--limit", "100"
-    ], check=False)
+    output = run_gh(
+        [
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--label",
+            f"phase:{phase}",
+            "--state",
+            "all",
+            "--json",
+            "number,title,body,state,labels",
+            "--limit",
+            "100",
+        ],
+        check=False,
+    )
     return json.loads(output) if output else []
 
 
@@ -56,26 +64,26 @@ def extract_deployment_info(body: str) -> dict:
         "config_changes": [],
         "dependencies": [],
         "rollback_notes": [],
-        "environment_vars": []
+        "environment_vars": [],
     }
 
     # Extract migration references
-    for match in re.finditer(r'migration|migrate|schema|database', body, re.IGNORECASE):
-        context = body[max(0, match.start()-50):match.end()+100]
+    for match in re.finditer(r"migration|migrate|schema|database", body, re.IGNORECASE):
+        context = body[max(0, match.start() - 50) : match.end() + 100]
         info["migrations"].append(context.strip())
 
     # Extract config changes
-    for match in re.finditer(r'config|configuration|setting|environment', body, re.IGNORECASE):
-        context = body[max(0, match.start()-50):match.end()+100]
+    for match in re.finditer(r"config|configuration|setting|environment", body, re.IGNORECASE):
+        context = body[max(0, match.start() - 50) : match.end() + 100]
         info["config_changes"].append(context.strip())
 
     # Extract dependency mentions
-    for match in re.finditer(r'depends on #(\d+)|requires #(\d+)', body, re.IGNORECASE):
+    for match in re.finditer(r"depends on #(\d+)|requires #(\d+)", body, re.IGNORECASE):
         issue_num = match.group(1) or match.group(2)
         info["dependencies"].append(f"#{issue_num}")
 
     # Extract environment variables
-    for match in re.finditer(r'([A-Z][A-Z0-9_]{2,})', body):
+    for match in re.finditer(r"([A-Z][A-Z0-9_]{2,})", body):
         if len(match.group(1)) > 3:  # Filter out short matches
             info["environment_vars"].append(match.group(1))
 
@@ -94,7 +102,7 @@ def determine_deployment_order(issues: list[dict]) -> list[dict]:
         for issue in remaining[:]:
             deps = []
             body = issue.get("body", "")
-            for match in re.finditer(r'depends on #(\d+)', body, re.IGNORECASE):
+            for match in re.finditer(r"depends on #(\d+)", body, re.IGNORECASE):
                 deps.append(int(match.group(1)))
 
             unseen_deps = [d for d in deps if d not in seen_numbers]
@@ -112,57 +120,55 @@ def determine_deployment_order(issues: list[dict]) -> list[dict]:
     return ordered
 
 
-def generate_deployment_plan(
-    phase: int,
-    issues: list[dict],
-    repo: str
-) -> str:
+def generate_deployment_plan(phase: int, issues: list[dict], repo: str) -> str:
     """Generate deployment plan content."""
     timestamp = datetime.now().strftime("%Y-%m-%d")
     ordered_issues = determine_deployment_order(issues)
 
     lines = [
         f"# Deployment Plan: Phase {phase}",
-        f"",
-        f"## Metadata",
-        f"",
-        f"| Field | Value |",
-        f"|-------|-------|",
+        "",
+        "## Metadata",
+        "",
+        "| Field | Value |",
+        "|-------|-------|",
         f"| **Phase** | {phase} |",
         f"| **Generated** | {timestamp} |",
         f"| **Total Issues** | {len(issues)} |",
         f"| **Repository** | {repo} |",
-        f"",
-        f"---",
-        f"",
-        f"## Deployment Sequence",
-        f"",
-        f"Deploy in this order to respect dependencies:",
-        f"",
+        "",
+        "---",
+        "",
+        "## Deployment Sequence",
+        "",
+        "Deploy in this order to respect dependencies:",
+        "",
     ]
 
     for i, issue in enumerate(ordered_issues, 1):
         state_icon = "[CLOSED]" if issue.get("state") == "CLOSED" else "[OPEN]"
         lines.append(f"{i}. #{issue['number']} - {issue['title']} {state_icon}")
 
-    lines.extend([
-        f"",
-        f"---",
-        f"",
-        f"## Pre-Deployment Checklist",
-        f"",
-        f"- [ ] All phase {phase} issues are closed",
-        f"- [ ] All PRs are merged to main",
-        f"- [ ] CI/CD pipeline passes on main",
-        f"- [ ] Database backups completed",
-        f"- [ ] Rollback plan reviewed",
-        f"- [ ] Team notified of deployment window",
-        f"",
-        f"---",
-        f"",
-        f"## Configuration Changes",
-        f"",
-    ])
+    lines.extend(
+        [
+            "",
+            "---",
+            "",
+            "## Pre-Deployment Checklist",
+            "",
+            f"- [ ] All phase {phase} issues are closed",
+            "- [ ] All PRs are merged to main",
+            "- [ ] CI/CD pipeline passes on main",
+            "- [ ] Database backups completed",
+            "- [ ] Rollback plan reviewed",
+            "- [ ] Team notified of deployment window",
+            "",
+            "---",
+            "",
+            "## Configuration Changes",
+            "",
+        ]
+    )
 
     all_config_changes = []
     all_env_vars = set()
@@ -181,12 +187,14 @@ def generate_deployment_plan(
         lines.append("*No configuration changes detected.*")
         lines.append("")
 
-    lines.extend([
-        f"---",
-        f"",
-        f"## Migration Steps",
-        f"",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Migration Steps",
+            "",
+        ]
+    )
 
     has_migrations = False
     for issue in issues:
@@ -202,26 +210,28 @@ def generate_deployment_plan(
         lines.append("*No database migrations detected.*")
         lines.append("")
 
-    lines.extend([
-        f"---",
-        f"",
-        f"## Rollback Procedure",
-        f"",
-        f"1. Revert deployment in reverse order",
-        f"2. Restore database from backup if migrations were applied",
-        f"3. Verify rollback success with smoke tests",
-        f"4. Notify team of rollback completion",
-        f"",
-        f"---",
-        f"",
-        f"## Post-Deployment Verification",
-        f"",
-        f"- [ ] Smoke tests pass",
-        f"- [ ] No error spikes in monitoring",
-        f"- [ ] Key user flows work correctly",
-        f"- [ ] Performance metrics within acceptable range",
-        f"",
-    ])
+    lines.extend(
+        [
+            "---",
+            "",
+            "## Rollback Procedure",
+            "",
+            "1. Revert deployment in reverse order",
+            "2. Restore database from backup if migrations were applied",
+            "3. Verify rollback success with smoke tests",
+            "4. Notify team of rollback completion",
+            "",
+            "---",
+            "",
+            "## Post-Deployment Verification",
+            "",
+            "- [ ] Smoke tests pass",
+            "- [ ] No error spikes in monitoring",
+            "- [ ] Key user flows work correctly",
+            "- [ ] Performance metrics within acceptable range",
+            "",
+        ]
+    )
 
     return "\n".join(lines)
 

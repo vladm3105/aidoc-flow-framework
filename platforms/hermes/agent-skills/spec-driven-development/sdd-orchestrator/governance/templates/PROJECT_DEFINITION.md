@@ -54,20 +54,20 @@ This project definition describes {PROJECT_DESCRIPTION_SHORT}. Replace this sect
 
 ```
 
-                              USER INTERFACE                                  
-                          {UI_TECHNOLOGY_STACK}                              
+                              USER INTERFACE
+                          {UI_TECHNOLOGY_STACK}
 
-                                      
-                                      
 
-                         APPLICATION LAYER                                    
-                      {APP_TECHNOLOGY_STACK}                                 
 
-                                      
-                                      
 
-                           DATA LAYER                                         
-                      {DATA_TECHNOLOGY_STACK}                                
+                         APPLICATION LAYER
+                      {APP_TECHNOLOGY_STACK}
+
+
+
+
+                           DATA LAYER
+                      {DATA_TECHNOLOGY_STACK}
 
 ```
 
@@ -163,6 +163,7 @@ This project definition describes {PROJECT_DESCRIPTION_SHORT}. Replace this sect
 This document uses placeholder variables. Replace all `{PLACEHOLDER}` values with your project-specific content. See [CONFIG.md](../CONFIG.md) for the complete placeholder reference.
 
 **Required placeholders to replace:**
+
 - `{PROJECT_NAME}` — Your project name
 - `{PROJECT_DESCRIPTION}` — One-sentence project description
 - `{PROJECT_DIFFERENTIATOR}` — What makes this project unique

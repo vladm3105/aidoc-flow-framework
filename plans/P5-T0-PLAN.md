@@ -17,6 +17,7 @@ the new project **replacing `main`**.
 
 Cutover is **high-stakes and partially outside the in-container
 session's authority**:
+
 - `legacy/` and root `.claude/` removal are **destructive** (git
   history preserves them, so reversible, but consequential).
 - The `main` replacement is **forbidden by `CLAUDE.md` / `docs/PROJECT.md`

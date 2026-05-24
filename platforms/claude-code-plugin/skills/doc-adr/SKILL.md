@@ -38,6 +38,7 @@ them with `@depends: ADR-NN`.
 ## When to Use
 
 Use `doc-adr` when:
+
 - An architectural topic from BRD §7.2 / PRD §14 needs a recorded decision.
 - Choosing a technology, pattern, or integration approach with alternatives.
 - Capturing rationale and consequences for a long-lived architectural choice.
@@ -162,7 +163,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 `../doc-spec/SKILL.md` — the SPEC references this ADR (`@adr: ADR-NN`), turns the
 decision into component interfaces, data models, and behavior contracts, and
 inherits the cumulative tag chain.
-
 
 ## Adaptation
 

@@ -35,6 +35,7 @@ tagging, orphan detection, bidirectional-link consistency, duplicate IDs, and
 before major releases.
 
 **Do NOT use** for:
+
 - single-document structure/metadata/content — use that layer's
   `../doc-<layer>-audit/SKILL.md`;
 - ID-format compliance — use `../doc-naming/SKILL.md`;

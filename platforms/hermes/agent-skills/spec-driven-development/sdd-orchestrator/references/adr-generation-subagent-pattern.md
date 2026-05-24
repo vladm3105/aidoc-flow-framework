@@ -7,6 +7,7 @@ The subagent must read 4-6 upstream files (BDD, EARS, PRD, BRD = ~15-30KB each),
 the ADR-TEMPLATE.yaml (~15KB), and a reference ADR (~30-70KB) — 100-300KB total.
 
 Observed pattern (TradeGent CC, 2026-05-12):
+
 - Subagent spends 200-400s reading files
 - Then writes the YAML via write_file (success)
 - Then the LLM call for the summary text exceeds the 600s timeout
@@ -68,6 +69,7 @@ This reduces subagent file-reading time from 200-400s to 50-100s.
 ## Batch Size
 
 `delegate_task` enforces `max_concurrent_children=3`. For ADR generation:
+
 - Phase 1: 2 benchmarks (ADR-01 + ADR-07) — one dispatch
 - Phase 2: 7 remaining engines — 3 dispatches (3+3+1)
 - Phase 3: 10 cross-cutting — 4 dispatches (3+3+3+1)

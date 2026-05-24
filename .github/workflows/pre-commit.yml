@@ -1,0 +1,35 @@
+name: pre-commit
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pre-commit:
+    name: Lint / format / security hooks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # The local 'conformance' hook runs the suite via system python.
+      - name: Install pre-commit + conformance deps
+        run: pip install pre-commit -r tests/conformance/requirements.txt
+
+      - name: Run hooks
+        run: pre-commit run --all-files --show-diff-on-failure
+
+      # Dependency vulnerability audit (manual stage — not run on every commit).
+      - name: Dependency audit (pip-audit)
+        run: pre-commit run --all-files --hook-stage manual pip-audit

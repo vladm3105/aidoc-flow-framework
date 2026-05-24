@@ -3,7 +3,6 @@
 import unittest
 
 import yaml
-
 from _spec import ARTIFACTS, FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
@@ -50,17 +49,12 @@ class GovernanceFiles(unittest.TestCase):
         leaked = [
             p.relative_to(FRAMEWORK).as_posix()
             for p in FRAMEWORK.rglob("*")
-            if p.is_file()
-            and (".aidoc" in p.parts or p.name in ("profile.yaml", "learnings.md"))
+            if p.is_file() and (".aidoc" in p.parts or p.name in ("profile.yaml", "learnings.md"))
         ]
         self.assertEqual(leaked, [], f"project adaptation artifacts under framework/: {leaked}")
 
     def test_no_unexpected_files(self):
-        found = {
-            p.relative_to(GOVERNANCE).as_posix()
-            for p in GOVERNANCE.rglob("*")
-            if p.is_file()
-        }
+        found = {p.relative_to(GOVERNANCE).as_posix() for p in GOVERNANCE.rglob("*") if p.is_file()}
         self.assertEqual(found, set(EXPECTED_FILES))
 
     def test_chg_template_parses(self):
@@ -71,7 +65,9 @@ class GovernanceFiles(unittest.TestCase):
         """GATE-SPEC (the framework-spec change gate, CHG-D1) is declared
         consistently across the gate def, the error catalog, and the CHG
         template enums."""
-        catalog = (GOVERNANCE / "chg" / "gates" / "GATE_ERROR_CATALOG.md").read_text(encoding="utf-8")
+        catalog = (GOVERNANCE / "chg" / "gates" / "GATE_ERROR_CATALOG.md").read_text(
+            encoding="utf-8"
+        )
         for code in ("GATE-SPEC-E001", "GATE-SPEC-E002", "GATE-SPEC-E003", "GATE-SPEC-E004"):
             self.assertIn(code, catalog, f"error catalog missing {code}")
 
@@ -94,7 +90,8 @@ class GovernanceFiles(unittest.TestCase):
         skippable = set(surface["layers"]["skippable"])
         self.assertEqual(mandatory & skippable, set(), "layer is both mandatory and skippable")
         self.assertLessEqual(
-            mandatory | skippable, set(ARTIFACTS),
+            mandatory | skippable,
+            set(ARTIFACTS),
             "adaptation layer split references an unknown artifact",
         )
 

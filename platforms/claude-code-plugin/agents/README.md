@@ -90,6 +90,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ## Agent Details
 
 ### `pm-orchestrator` — PM / Orchestrator
+
 - **Purpose:** Plan, sequence, and orchestrate the whole team across the SDD lifecycle; own planning-first governance and GitHub issue/label governance.
 - **Drives** the lifecycle through the native `doc-flow` orchestrator plus the `doc-*` skill families.
 - **Delegates to** all eight specialists via the `Task` tool, giving each a self-contained brief; runs independent work in parallel and sequences dependent work; never lets an author gate its own work.
@@ -98,6 +99,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** opus.
 
 ### `requirements-analyst` — Requirements Analyst
+
 - **Purpose:** Decompose, analyze, and validate requirements across the SDD workflow; traceability and coverage analysis (not code).
 - **Owns:** BRD → PRD → EARS. Formal requirements with SMART criteria, cumulative upstream tags, and SPEC-Ready scoring.
 - **Skills:** `doc-brd/prd/ears-*` families.
@@ -105,6 +107,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** inherit.
 
 ### `solutions-architect` — Solutions Architect
+
 - **Purpose:** Design system architecture and author the decision/component layers; C4 + DFD modeling in Mermaid.
 - **Owns:** BDD, ADR, SPEC. Captures every significant decision as an ADR (Context → Decision → Consequences) and produces interface-complete SPECs (interfaces and data contracts live in the SPEC).
 - **Skills:** `doc-bdd/adr/spec-*`, `charts-flow`, `adr-roadmap`.
@@ -112,6 +115,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** opus.
 
 ### `test-architect` — Test Architect (QA Lead) ★
+
 - **Purpose:** Design the test strategy and author every test specification layer; own coverage targets and readiness scoring.
 - **Owns:** the TDD guide (Layer 7) and all test cases, tagged by `type` — unit, integration, smoke, functional, performance, security (security-type cases co-owned with Security Engineer).
 - **Discipline:** chooses the right test type per obligation (avoids redundant coverage), maps every case to a requirement/scenario, enforces threshold rules, flags untested requirements.
@@ -120,6 +124,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** sonnet.
 
 ### `software-engineer` — Software Engineer
+
 - **Purpose:** Implement source code and tests from an approved IPLAN.
 - **Planning-first rule:** implements only `ai:ready` scope with an approved IPLAN; routes unplanned work back to PM + Architect rather than free-styling architecture.
 - **Owns:** the execution lane — small verifiable increments, runs the suite, opens PRs with traceability tags, test evidence, and risk flags; applies fixes from the read-only gates.
@@ -127,6 +132,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** sonnet.
 
 ### `devops-release-engineer` — DevOps / Release Engineer
+
 - **Purpose:** CI/CD, build/test pipelines, deployment governance, and release readiness.
 - **Owns:** the path from merged code to verified production release — staging→prod gates, smoke (STEST) validation, observability loop, tested rollback paths, post-deploy evidence.
 - **Risk posture:** confirms shared/irreversible actions (prod deploys, tag/secret changes, force ops) with the human approver unless pre-authorized; never skips hooks/signing.
@@ -134,6 +140,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** sonnet.
 
 ### `code-reviewer` — Code Reviewer ★ (read-only)
+
 - **Purpose:** Review PRs/code for correctness, acceptance-criteria conformance, spec/test alignment, standards, and security hygiene.
 - **Read-only gate:** reports findings and a verdict (Approve / Approve-with-nits / Request-changes / Block); never edits. Findings carry severity (P0–P3) and `file:line`.
 - **Verifies:** acceptance criteria explicitly (met/unmet/unverifiable) and coverage against the Test Architect's bar.
@@ -141,12 +148,14 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 - **Model:** opus.
 
 ### `security-engineer` — Security Engineer (read-only)
+
 - **Purpose:** Threat modeling, security review of code and specs, and authoring/validating SECTEST. Defensive/authorized scope only.
 - **Read-only gate:** enumerates threats (STRIDE-style across trust boundaries/DFDs), maps each to a required control, verifies a SECTEST case exists per control, flags untested controls; reports remediation direction without editing.
 - **Skills:** `security-audit`, `doc-tdd*` (security tests authored as TDD `type: security` cases, co-owned with Test Architect), `doc-spec*` (risk specs unified into the SPEC layer).
 - **Model:** opus.
 
 ### `traceability-auditor` — Traceability & Quality Auditor ★ (read-only)
+
 - **Purpose:** Verify cross-layer traceability and project-wide document integrity; a mechanical, high-frequency gate.
 - **Read-only gate:** runs the validation tooling and reports gaps, broken links, ID/naming violations, and orphaned artifacts; routes fixes to the owning author agent or the relevant `doc-*-fixer` skill.
 - **Audits:** cumulative upstream tags, link/anchor resolution, ID and threshold naming, coverage/orphans, readiness scores.

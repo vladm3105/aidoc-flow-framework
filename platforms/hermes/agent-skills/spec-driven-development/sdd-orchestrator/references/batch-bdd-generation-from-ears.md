@@ -15,23 +15,23 @@ def h(vals):
 
 def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_scenarios=None):
     reqs = ears_dict.get("requirements", {})
-    
+
     event_driven = reqs.get("event_driven", [])
     state_driven = reqs.get("state_driven", [])
     unwanted = reqs.get("unwanted_behavior", [])
     ubiquitous = reqs.get("ubiquitous", [])
     all_reqs = event_driven + state_driven + unwanted + ubiquitous
-    
+
     ears_refs = [f"@ears: {r['id']}" for r in all_reqs if 'id' in r]
     ears_control = ears_dict.get("document_control", {})
     ears_trace = ears_dict.get("traceability", {})
     prd_refs = ears_trace.get("upstream", {}).get("prd_references", [f"@prd: PRD.{doc_num}.09.xxxx"])
     brd_refs = ears_trace.get("upstream", {}).get("brd_references", [f"@brd: BRD.{doc_num}.07.xxxx"])
-    
+
     success_scenarios = []
     error_scenarios = []
     recovery_scenarios = []
-    
+
     # Event-driven → success scenarios (first 3-4)
     for r in event_driven[:3]:
         sid = r["id"]
@@ -39,7 +39,7 @@ def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_sce
         stmt = r.get("statement", "")
         when_part = stmt.split("WHEN ")[1].split(", THE")[0].strip() if "WHEN " in stmt else "the trigger condition is met"
         then_part = stmt.split("THE ")[1].split("WITHIN")[0].strip() if "THE " in stmt else "execute per specification"
-        
+
         success_scenarios.append({
             "id": f"BDD.{doc_num}.03.{h([doc_num,'03',sname,stmt[:80]])}",
             "name": sname,
@@ -52,7 +52,7 @@ def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_sce
             "ears_trace": f"@ears: {sid}",
             "spec_trace": [f"5 (Behavior — {sname.lower().replace(' ','_')})"]
         })
-    
+
     # State-driven → success scenarios (first 2)
     for r in state_driven[:2]:
         sid = r["id"]
@@ -69,7 +69,7 @@ def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_sce
             "ears_trace": f"@ears: {sid}",
             "spec_trace": [f"5 (Behavior — {sname.lower().replace(' ','_')})"]
         })
-    
+
     # Unwanted behavior → error scenarios (first 2)
     for r in unwanted[:2]:
         sid = r["id"]
@@ -86,7 +86,7 @@ def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_sce
             "ears_trace": f"@ears: {sid}",
             "spec_trace": [f"5 (Behavior — error_handling)", f"5 (Behavior — {sname.lower().replace(' ','_')})"]
         })
-    
+
     # Recovery: at least 1 from last unwanted behavior
     if unwanted:
         r = unwanted[-1]
@@ -102,7 +102,7 @@ def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_sce
             "ears_trace": f"@ears: {r['id']}",
             "spec_trace": ["5 (Behavior — recovery)", "5 (Behavior — state_transitions)"]
         })
-    
+
     # Build full document with all required sections
     bdd = {
         "id": f"BDD-{doc_num}",
@@ -174,9 +174,11 @@ for num in ["02", "04", "05", "06", "07", "08", "09"]:
 ## Review + Remediation Strategy
 
 ### Benchmarks First
+
 Generate and fully review (5 personas) the umbrella (BDD-01) and core engine (BDD-03) before batch-generating the remaining 7. Benchmarks establish the pattern — batch documents inherit the learned structure.
 
 ### What to Fix at BDD Layer
+
 - Missing EARS requirement coverage
 - State machine transition gaps
 - Gherkin syntax/executability issues
@@ -184,6 +186,7 @@ Generate and fully review (5 personas) the umbrella (BDD-01) and core engine (BD
 - Alert deduplication and idempotency scenarios
 
 ### What to Defer to ADR/SPEC
+
 - OAuth token lifecycle, credential storage, regulatory hooks (architecture/interface)
 - DST/market holiday, circuit breaker handling (system-level contracts)
 - Concurrent failure, clock skew, cascading triggers (integration test definitions)

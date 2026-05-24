@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
-from pathlib import Path
 import sys
-
+from datetime import UTC, datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -11,24 +10,33 @@ if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
 from mcp_server.reporting import (  # noqa: E402
-    build_family_report_name,
     build_action_id,
+    build_family_report_name,
     build_finding_id,
     evaluate_legacy_report_set,
     parse_compatible_finding_id,
     resolve_legacy_report_policy,
     validate_action_id,
-    validate_compatible_finding_id,
     validate_combined_fix_queue_schema,
+    validate_compatible_finding_id,
     validate_generated_at_has_offset,
     validate_sha256_hash_value,
 )
 
 
 def test_report_family_name_generation_uses_A_R_F_prefixes() -> None:
-    assert build_family_report_name(doc_id="SPEC-001", family="audit", version=1) == "SPEC-001.A_audit_report_v1.md"
-    assert build_family_report_name(doc_id="SPEC-001", family="review", version=2) == "SPEC-001.R_review_report_v2.md"
-    assert build_family_report_name(doc_id="SPEC-001", family="fix", version=3) == "SPEC-001.F_fix_report_v3.md"
+    assert (
+        build_family_report_name(doc_id="SPEC-001", family="audit", version=1)
+        == "SPEC-001.A_audit_report_v1.md"
+    )
+    assert (
+        build_family_report_name(doc_id="SPEC-001", family="review", version=2)
+        == "SPEC-001.R_review_report_v2.md"
+    )
+    assert (
+        build_family_report_name(doc_id="SPEC-001", family="fix", version=3)
+        == "SPEC-001.F_fix_report_v3.md"
+    )
 
 
 def test_lifecycle_to_audit_wrapper_name_mapping_preserves_lineage_fields() -> None:
@@ -48,7 +56,7 @@ def test_lifecycle_to_audit_wrapper_name_mapping_preserves_lineage_fields() -> N
 
 
 def test_generated_at_requires_explicit_timezone_offset() -> None:
-    with_offset = datetime.now(tz=timezone.utc).isoformat()
+    with_offset = datetime.now(tz=UTC).isoformat()
     without_offset = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
     assert validate_generated_at_has_offset(with_offset)
     assert not validate_generated_at_has_offset(without_offset)
@@ -121,7 +129,9 @@ def test_hash_identity_collision_extends_prefix_length(monkeypatch) -> None:
     used_ids: set[str] = set()
     first = build_finding_id(priority="P1", identity_fields={"file": "a.md"}, existing_ids=used_ids)
     used_ids.add(first)
-    second = build_finding_id(priority="P1", identity_fields={"file": "b.md"}, existing_ids=used_ids)
+    second = build_finding_id(
+        priority="P1", identity_fields={"file": "b.md"}, existing_ids=used_ids
+    )
 
     assert first == "P1-abcabcabcabc"
     assert second.startswith("P1-abcabcabcabc")

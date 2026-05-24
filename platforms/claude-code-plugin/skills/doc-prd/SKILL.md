@@ -37,6 +37,7 @@ link cycles with `@depends: PRD-NN`.
 ## When to Use
 
 Use `doc-prd` when:
+
 - A BRD exists and you need to define product features and user requirements.
 - Translating business needs into product capabilities, personas, and KPIs.
 - Elaborating BRD §7.2 architecture topics into technical options for ADR.
@@ -133,7 +134,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 3. **Create the nested folder** — every PRD lives in
    `docs/02_PRD/PRD-NN_{slug}/` regardless of size. Monolithic:
    `PRD-NN_{slug}.md` inside it; section-based (>25 KB): `PRD-NN.S_{section}.md`
-   + index from `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`.
+   - index from `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 15 sections from the template.
 5. **Fill §10** (≥3 customer-facing categories); **elaborate §14** ADR topics
    without ADR numbers.
@@ -176,7 +177,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 `../doc-ears/SKILL.md` — the EARS references this PRD (`@prd: PRD.NN.SS.xxxx`),
 carries cumulative `@brd`/`@prd` tags, and formalizes PRD features into
 `WHEN-THE-SHALL-WITHIN` requirements.
-
 
 ## Adaptation
 

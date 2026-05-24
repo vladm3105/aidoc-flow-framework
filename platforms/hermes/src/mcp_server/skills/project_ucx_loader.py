@@ -6,7 +6,6 @@ from typing import Any
 
 import yaml
 
-
 # Mtime-based cache for persona_mappings.yaml (C-1 fix)
 _persona_mapping_cache: dict[str, tuple[float, dict[str, Any]]] = {}
 
@@ -32,9 +31,7 @@ _REQUIRED_SUBDIRS: tuple[Path, ...] = (
     Path("templates/layers"),
 )
 
-_REQUIRED_FILES: tuple[Path, ...] = (
-    Path("skills/persona_mappings.yaml"),
-)
+_REQUIRED_FILES: tuple[Path, ...] = (Path("skills/persona_mappings.yaml"),)
 
 
 @dataclass
@@ -56,7 +53,6 @@ class ProjectSkillsNotFound(FileNotFoundError):
         return f"{self.error_code}: {', '.join(self.missing_paths)}. {self.resolution}"
 
 
-
 class PersonaMappingError(ValueError):
     """Raised when persona_mappings.yaml is invalid or missing required entries."""
 
@@ -76,15 +72,17 @@ def _raise_missing(project_root: Path, missing_paths: list[Path]) -> None:
     )
 
 
-
 def validate_project_ucx_root(project_root: Path) -> Path:
     ucx_root = resolve_ucx_root(project_root)
-    missing_paths = [ucx_root / relative for relative in _REQUIRED_SUBDIRS if not (ucx_root / relative).exists()]
-    missing_paths.extend(ucx_root / relative for relative in _REQUIRED_FILES if not (ucx_root / relative).exists())
+    missing_paths = [
+        ucx_root / relative for relative in _REQUIRED_SUBDIRS if not (ucx_root / relative).exists()
+    ]
+    missing_paths.extend(
+        ucx_root / relative for relative in _REQUIRED_FILES if not (ucx_root / relative).exists()
+    )
     if missing_paths:
         _raise_missing(project_root, missing_paths)
     return ucx_root
-
 
 
 def load_project_persona_file(*, project_root: Path, persona: str) -> str:
@@ -93,7 +91,6 @@ def load_project_persona_file(*, project_root: Path, persona: str) -> str:
     if not path.exists():
         _raise_missing(project_root, [path])
     return path.read_text(encoding="utf-8")
-
 
 
 def load_project_prompt_template(*, project_root: Path, phase: str, template_name: str) -> str:
@@ -140,9 +137,7 @@ def _validate_persona_mapping(mapping: dict, project_root: Path) -> None:
             continue
         for doc_type, config in phase_map.items():
             if not isinstance(config, dict) or "personas" not in config:
-                raise PersonaMappingError(
-                    f"Entry '{phase}.{doc_type}' missing 'personas' list"
-                )
+                raise PersonaMappingError(f"Entry '{phase}.{doc_type}' missing 'personas' list")
             personas = config["personas"]
             if not isinstance(personas, list) or not personas:
                 raise PersonaMappingError(
@@ -178,11 +173,6 @@ def load_persona_mapping(*, project_root: Path) -> dict:
     return mapping
 
 
-def load_multi_persona_files(
-    *, project_root: Path, personas: list[str]
-) -> list[tuple[str, str]]:
+def load_multi_persona_files(*, project_root: Path, personas: list[str]) -> list[tuple[str, str]]:
     """Load multiple persona .md files. Returns [(name, content), ...]."""
-    return [
-        (p, load_project_persona_file(project_root=project_root, persona=p))
-        for p in personas
-    ]
+    return [(p, load_project_persona_file(project_root=project_root, persona=p)) for p in personas]

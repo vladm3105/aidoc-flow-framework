@@ -22,6 +22,7 @@ staleness, and records the canonical schema so the drift cannot silently return.
 ## Scope
 
 **In:**
+
 - **A — Frontmatter normalization.** Convert the **22 flat-form** skills to the
   canonical `metadata`-nested schema; drop the redundant `title:` key (**14**
   skills); fix the literal `last_updated: "YYYY-MM-DDTHH:MM:SS"` placeholder.
@@ -42,6 +43,7 @@ staleness, and records the canonical schema so the drift cannot silently return.
   mistakes it for a skill), so future skills conform.
 
 **Out:**
+
 - Rewriting skill *methodology* / instructional content (the 8-layer behavior is
   current). Only stale references and demonstrably wrong content are touched.
 - Changing any skill's `name:` or `description:` — these drive Claude Code
@@ -86,6 +88,7 @@ mermaid-gen, project-init, quality-advisor, security-audit, skill-recommender,
 test-automation, trace-check, workflow-optimizer`
 
 Per file:
+
 1. Delete the `title:` line (present in 14 of the 22).
 2. Insert `metadata:` after `description:`; indent the existing `tags:` and
    `custom_fields:` blocks by two spaces under it.
@@ -130,6 +133,7 @@ of the main context while still reading them whole.
 Runnable, all must pass (conformance is frontmatter-shape-agnostic — the suite
 checks framework spec + version declarations + engine isolation + `plm_lint`, not
 SKILL.md structure — so these are quality guards on top of a green suite):
+
 - `python3 -m unittest discover -s tests/conformance` → **32/32**.
 - `python3 tests/conformance/platforms/plm_lint.py --all` → clean.
 - Every `SKILL.md` YAML frontmatter parses (`yaml.safe_load`) and has top-level

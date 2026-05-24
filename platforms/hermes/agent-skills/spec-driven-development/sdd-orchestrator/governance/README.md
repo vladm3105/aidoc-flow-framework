@@ -9,6 +9,7 @@ Canonical delivery chain:
 `BRD->PRD->EARS->BDD->ADR->SPEC->TDD->IPLAN->Code`
 
 Canonical references:
+
 - `framework/registry/LAYER_REGISTRY.yaml`
 - `framework/governance/DOC_GOVERNANCE_CORE.md`
 - `framework/governance/chg/`
@@ -64,6 +65,7 @@ KB support skills:
 - `scripts/workflows/validate_governance.py`
 
 Deprecated automation:
+
 - `scripts/workflows/sync_tasks_from_issues.py` (legacy TASKS sync, disabled)
 
 ## SDD Integration

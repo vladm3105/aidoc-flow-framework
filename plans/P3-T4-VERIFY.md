@@ -190,12 +190,14 @@ diff platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION framework/VERSION
 ### G18. File-inventory reconciliation — PASS (after mid-flight cleanup)
 
 Initial state:
+
 ```
 git ls-files: 218
 find -type f: 171  (delta: 47, all symlinks)
 ```
 
 Post-cleanup state:
+
 ```
 git ls-files: 171
 find -type f: 171  (zero delta)
@@ -220,7 +222,7 @@ Sampled 3 skills, diffed source `.claude/<skill>` vs plugin
   `ai_dev_flow → framework` rewires.
 - `project-init` (1 file `SKILL.md`): 22 diff hunks; **every** `<`
   line contains `ai_dev_flow` (the removed token). Pattern check
-  (filter for `< ` lines without `ai_dev_flow`) returns zero —
+  (filter for `<` lines without `ai_dev_flow`) returns zero —
   confirms no non-rewire drift.
 
 No accidental content drift in the cp -r + sed pipeline.

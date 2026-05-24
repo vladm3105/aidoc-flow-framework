@@ -1,8 +1,7 @@
 from __future__ import annotations
 
-from pathlib import Path
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -27,7 +26,9 @@ def _create_project_ucx(root: Path) -> None:
 
     (root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
     (root / "UCX/skills/personas/architect.md").write_text("Architect persona", encoding="utf-8")
-    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text("Review template", encoding="utf-8")
+    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text(
+        "Review template", encoding="utf-8"
+    )
     layer_root = root / "UCX/templates/layers/01_BRD"
     layer_root.mkdir(parents=True, exist_ok=True)
     (layer_root / "BRD-MVP-TEMPLATE.md").write_text("BRD template layer asset", encoding="utf-8")
@@ -44,8 +45,14 @@ def test_run_project_review_build_writes_artifacts(tmp_path: Path) -> None:
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
-            SourceSection(section_id="9.0", title="Appendix", content="reference metadata appendix"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture",
+                content="system architecture and integration",
+            ),
+            SourceSection(
+                section_id="9.0", title="Appendix", content="reference metadata appendix"
+            ),
         ],
         output_dir=out,
     )
@@ -67,8 +74,14 @@ def test_run_project_review_build_includes_layer_assets_when_layer_provided(tmp_
         doc_type="brd",
         template_name="UCR_PROMPT_BRD_PROJECT.md",
         sections=[
-            SourceSection(section_id="1.0", title="Architecture", content="system architecture and integration"),
-            SourceSection(section_id="9.0", title="Appendix", content="reference metadata appendix"),
+            SourceSection(
+                section_id="1.0",
+                title="Architecture",
+                content="system architecture and integration",
+            ),
+            SourceSection(
+                section_id="9.0", title="Appendix", content="reference metadata appendix"
+            ),
         ],
         layer="01_BRD",
         output_dir=out,

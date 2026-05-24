@@ -1,23 +1,23 @@
 from __future__ import annotations
 
 import asyncio
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
-from dataclasses import dataclass
-from datetime import datetime
 import json
 import os
-from pathlib import Path
 import re
 import time
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FuturesTimeoutError
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
 
-from mcp_server.prompts import ContractValidationError, SourceSection
 from mcp_server.executor.dispatcher import run_executor
 from mcp_server.executor.registry import ExecutorConfig, ExecutorType, get_executor
-from mcp_server.skills.project_ucx_loader import load_persona_mapping
-from mcp_server.skills.project_ucx_loader import load_project_persona_file
+from mcp_server.prompts import ContractValidationError, SourceSection
+from mcp_server.skills.project_ucx_loader import load_persona_mapping, load_project_persona_file
 
-from .runner import run_project_review_build
 from .persona_output_parser import parse_persona_output
+from .runner import run_project_review_build
 from .saga_journal import (
     append_compensation_event,
     create_saga_journal,
@@ -94,7 +94,9 @@ def _resolve_source_stage(*, document_path: Path | None) -> str:
     return "source"
 
 
-def _write_versioned_json(*, output_dir: Path, stem_prefix: str, payload: dict[str, object]) -> Path:
+def _write_versioned_json(
+    *, output_dir: Path, stem_prefix: str, payload: dict[str, object]
+) -> Path:
     output_dir.mkdir(parents=True, exist_ok=True)
     pattern = re.compile(rf"{re.escape(stem_prefix)}_v(\d{{3}})\.json$")
 
@@ -158,7 +160,9 @@ def _resolve_branch_llm_enabled(
 _SECRET_PATTERNS: tuple[re.Pattern[str], ...] = (
     re.compile(r"(sk-[A-Za-z0-9_-]{20,})"),
     re.compile(r"(Bearer\s+[A-Za-z0-9._-]{20,})", re.IGNORECASE),
-    re.compile(r"((?:api[_-]?key|token|secret)\s*[:=]\s*[\"']?[A-Za-z0-9._-]{8,}[\"']?)", re.IGNORECASE),
+    re.compile(
+        r"((?:api[_-]?key|token|secret)\s*[:=]\s*[\"']?[A-Za-z0-9._-]{8,}[\"']?)", re.IGNORECASE
+    ),
 )
 
 
@@ -527,9 +531,7 @@ def run_project_review_build_saga(
                 f"Cannot resume terminal saga run: review_run_id={review_run_id}, status={run.status}"
             )
         compensation_count = len(run.compensation_actions)
-        attempts: dict[str, int] = {
-            persona: 0 for persona in personas
-        }
+        attempts: dict[str, int] = dict.fromkeys(personas, 0)
         for branch in run.branches.values():
             attempts[branch.persona] = max(attempts.get(branch.persona, 0), int(branch.attempt))
     else:
@@ -541,7 +543,7 @@ def run_project_review_build_saga(
         )
         journal_path = create_saga_journal(output_dir=output_dir, run=run)
         compensation_count = 0
-        attempts = {persona: 0 for persona in personas}
+        attempts = dict.fromkeys(personas, 0)
 
     _safe_transition(journal_path=journal_path, target="FANOUT_STARTED")
     _safe_transition(journal_path=journal_path, target="BRANCH_RUNNING")
@@ -558,7 +560,9 @@ def run_project_review_build_saga(
         project_env=project_env,
     )
     rollout_phase = _resolve_rollout_phase(project_env)
-    debug_raw_outputs = _as_bool((project_env or {}).get("UCX_REVIEW_DEBUG_RAW_OUTPUTS"), default=False)
+    debug_raw_outputs = _as_bool(
+        (project_env or {}).get("UCX_REVIEW_DEBUG_RAW_OUTPUTS"), default=False
+    )
 
     if branch_llm_enabled and not executor_name:
         executor_name = "api/openrouter"
@@ -582,14 +586,16 @@ def run_project_review_build_saga(
                     ),
                 )
                 if branch_llm_enabled:
-                    branch_executor_name, branch_timeout, branch_generation = _resolve_review_branch_runtime(
-                        project_root=project_root,
-                        doc_type=doc_type,
-                        persona=persona,
-                        default_timeout=300,
-                        explicit_executor=executor_name,
-                        explicit_generation_params=generation_params,
-                        explicit_timeout=timeout,
+                    branch_executor_name, branch_timeout, branch_generation = (
+                        _resolve_review_branch_runtime(
+                            project_root=project_root,
+                            doc_type=doc_type,
+                            persona=persona,
+                            default_timeout=300,
+                            explicit_executor=executor_name,
+                            explicit_generation_params=generation_params,
+                            explicit_timeout=timeout,
+                        )
                     )
                     future = pool.submit(
                         _branch_llm_findings,

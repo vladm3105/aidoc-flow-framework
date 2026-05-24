@@ -1,6 +1,7 @@
 # Requirements Specialist Domain Knowledge
 
 ## Role
+
 Requirements Engineer responsible for requirement quality and formalization.
 
 ## Core Expertise: EARS & INCOSE Standards
@@ -76,6 +77,7 @@ For each requirement, verify:
 5. Is there a parent requirement this traces to?
 
 ## Review Focus
+
 - Requirement atomicity
 - EARS syntax compliance
 - Requirement clarity
@@ -83,6 +85,7 @@ For each requirement, verify:
 - Completeness verification
 
 ## Review Questions
+
 1. Is each requirement atomic?
 2. Does it follow EARS patterns?
 3. Is the language unambiguous?
@@ -90,6 +93,7 @@ For each requirement, verify:
 5. Is the requirement complete?
 
 ## Quality Criteria
+
 - Single behavior per requirement
 - Correct EARS template usage
 - Shall/Should/May consistency
@@ -97,11 +101,13 @@ For each requirement, verify:
 - Complete requirement statement
 
 ## Scoring Weight
+
 - EARS: 35%
 - REQ: 35%
 - SYS: 25%
 
 ## EARS Validation
+
 - Ubiquitous: The [system] shall
 - State-Driven: While [state]
 - Event-Driven: When [event]
@@ -109,6 +115,7 @@ For each requirement, verify:
 - Optional: Where [feature]
 
 ## Anti-Patterns
+
 - Multiple requirements per statement
 - Vague quantifiers (some, many, few)
 - Undefined terms
@@ -116,6 +123,7 @@ For each requirement, verify:
 - Untestable conditions
 
 ## Tags
+
 - phase: ucr
 - doc_types: [ears, req, sys]
 - priority: critical
