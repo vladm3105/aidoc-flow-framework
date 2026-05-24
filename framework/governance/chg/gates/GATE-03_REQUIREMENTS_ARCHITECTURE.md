@@ -46,6 +46,7 @@ Before entering GATE-03, the change request must satisfy:
 | Technical rationale documented | Yes | Context-Decision-Consequences format for ADR |
 | Impact on downstream layers assessed | Yes | SPEC/TDD/IPLAN impact analysis |
 | Security review (if external) | Conditional | CVE reference or security assessment |
+| CVE/advisory cited or N/A recorded (if external) | Conditional | `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` (E008) |
 | GATE-01 passed (if upstream cascade) | Conditional | GATE-01 approval documented |
 | EARS syntax compliance | Yes | WHEN-THE-SHALL-WITHIN format |
 | BDD scenario format | Yes | Given-When-Then format |
@@ -57,7 +58,7 @@ Before entering GATE-03, the change request must satisfy:
 - [ ] BDD scenarios follow Given-When-Then format
 - [ ] ADR has Context-Decision-Consequences sections
 - [ ] Downstream impact analysis completed (SPEC/TDD/IPLAN)
-- [ ] If external security: CVE/advisory referenced
+- [ ] If external: CVE/advisory referenced, or `no advisory applies: <reason>` recorded (E008)
 - [ ] If from GATE-01: upstream approval confirmed
 - [ ] For C3: Architecture board notified
 ```
@@ -75,6 +76,13 @@ Before entering GATE-03, the change request must satisfy:
 | GATE-03-E005 | EARS upstream tags: @brd @prd (2 tags) | ERROR | Traceability tag count |
 | GATE-03-E006 | BDD upstream tags: @brd @prd @ears (3 tags) | ERROR | Traceability tag count |
 | GATE-03-E007 | ADR upstream tags: @brd @prd @ears @bdd (4 tags) | ERROR | Traceability tag count |
+| GATE-03-E008 | External-source change must cite a CVE/advisory or an explicit N/A | ERROR | A `CVE-YYYY-NNNN` / advisory reference, **or** an explicit `no advisory applies: <reason>` statement, is present |
+
+> **E008 vs W001.** E008 *blocks* an external-source change that records neither
+> a CVE/advisory reference nor an explicit `no advisory applies: <reason>`
+> escape — silence is not acceptable for an external change. W001 stays a
+> non-blocking nudge to prefer a concrete `CVE-YYYY-NNNN` over the N/A escape
+> where one exists. E008 only fires for the **External** change source.
 
 ### 3.2 Warning Checks (Non-Blocking)
 
@@ -185,6 +193,7 @@ After passing GATE-03:
 | GATE-03-E005 | Traceability | EARS missing upstream tags | Add @brd and @prd tags |
 | GATE-03-E006 | Traceability | BDD missing upstream tags | Add @brd, @prd, @ears tags |
 | GATE-03-E007 | Traceability | ADR missing upstream tags | Add @brd, @prd, @ears, @bdd tags |
+| GATE-03-E008 | Security | External change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 | GATE-03-W001 | Documentation | CVE reference missing | Add CVE-YYYY-NNNN to change document |
 | GATE-03-W002 | Completeness | ADR alternatives not documented | Add "Considered Alternatives" section |
 | GATE-03-W003 | Coverage | BDD edge cases missing | Add boundary condition scenarios |
@@ -227,6 +236,15 @@ ADR must have all 4 upstream tags:
 @prd: PRD-XXX
 @ears: EARS-XXX
 @bdd: BDD-XXX
+
+## GATE-03-E008 Resolution
+An External-source change must record one of:
+
+# a concrete advisory
+security_reference: CVE-2026-12345   # or vendor advisory ID
+
+# or an explicit, reasoned escape when none applies
+security_reference: "no advisory applies: internal-only refactor, no dependency change"
 ```
 
 ## 8. Special Considerations

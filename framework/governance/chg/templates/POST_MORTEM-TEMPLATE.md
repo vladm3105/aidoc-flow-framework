@@ -114,7 +114,7 @@ custom_fields:
 
 **Root Cause**: {Clear, specific statement of the root cause}
 
-**Root Cause Layer**: L{N} - {Layer Name} (SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, Code)
+**Root Cause Layer**: L{N} - {Layer Name} (SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, Code; or **Spec** — a `framework/` spec defect, the GATE-SPEC locus)
 
 ### 3.3 Contributing Factors
 

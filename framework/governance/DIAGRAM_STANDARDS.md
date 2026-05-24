@@ -191,6 +191,21 @@ click <node_id> "<relative_path>" "<tooltip_text>"
 | **Fallback** | Diagrams must be readable without clicking |
 | **Validation** | Test links after file moves or renames |
 
+**Security — sanitize handler targets and inline markup (REQUIRED)**:
+
+Click handlers and inline HTML render and execute in HTML-based Mermaid viewers,
+so an agent-authored diagram is an injection surface (see `SECURITY_REVIEW.md`).
+Diagram content MUST be sanitized:
+
+| Rule | Allowed | Rejected |
+|------|---------|----------|
+| **Handler target scheme** | a repo-relative path (`../PRD-01/`) or an `https://` URL | `javascript:`, `data:`, `file:`, `vbscript:` or any other scheme |
+| **Inline node markup** | plain text; an `<a href>` with a relative/`https` target | `<script>`, event attributes (`onclick=…`), `<iframe>`/`<object>`, or markup built from untrusted input |
+| **Untrusted-sourced labels/paths** | escaped and treated as data | a path or label copied verbatim from an external document without review |
+
+A diagram that cannot be sanitized to these rules uses a static (non-interactive)
+form instead. The platform's diagram tooling enforces this scan before embedding.
+
 **Alternative: Inline Anchor Links**:
 
 For HTML-rendered Markdown, anchor links can be embedded in node labels:

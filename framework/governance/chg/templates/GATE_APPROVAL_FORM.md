@@ -25,8 +25,9 @@ custom_fields:
 | **CHG ID** | CHG-XX |
 | **Change Title** | {Brief title} |
 | **Change Level** | C1 / C2 / C3 |
-| **Change Source** | Upstream / Midstream / Design / Execution / External / Feedback |
-| **Entry Gate** | GATE-01 / GATE-03 / GATE-06 / GATE-08 / GATE-CODE |
+| **Change Source** | Upstream / Midstream / Design / Execution / External / Feedback / Spec |
+| **Entry Gate** | GATE-01 / GATE-03 / GATE-06 / GATE-08 / GATE-CODE / GATE-SPEC |
+| **SemVer Impact** | major / minor / patch (`Spec` change_source only) |
 | **Requested By** | {Name} |
 | **Request Date** | {YYYY-MM-DDTHH:MM:SS} |
 
@@ -138,6 +139,27 @@ custom_fields:
 
 **GATE-CODE Result**: [ ] PASS / [ ] PASS WITH WARNINGS / [ ] FAIL
 
+### 2.6 GATE-SPEC: Framework Specification (meta — `Spec` change_source)
+
+**Applicable**: [ ] Yes / [ ] No / [ ] N/A (not a `framework/` spec change)
+
+| Check | Status | Notes |
+|-------|--------|-------|
+| GATE-SPEC-E001: Provenance (`why` + `trigger`) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E002: `semver_impact` set; `major` ⇒ C3 | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E003: Not C1 (≥ C2) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E004: C3 human approval recorded | [ ] Pass / [ ] Fail / [ ] N/A | |
+| GATE-SPEC-E005: `framework/VERSION` bumped (CI) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E006: both `FRAMEWORK_SPEC_VERSION` match (CI) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E007: conformance suite green (CI) | [ ] Pass / [ ] Fail | |
+| GATE-SPEC-E008: `CHANGELOG.md` updated (CI) | [ ] Pass / [ ] Fail | |
+
+**Warnings Addressed**:
+- [ ] GATE-SPEC-W001: `major` change has a per-platform migration note
+- [ ] GATE-SPEC-W002: both platforms track the new spec version (no parity drift)
+
+**GATE-SPEC Result**: [ ] PASS / [ ] PASS WITH WARNINGS / [ ] FAIL
+
 ## 3. Risk Assessment
 
 ### 3.1 Risk Matrix
@@ -223,6 +245,7 @@ custom_fields:
 | GATE-06 | [ ] Pass / [ ] Pass w/Warnings / [ ] Fail / [ ] N/A |
 | GATE-08 | [ ] Pass / [ ] Pass w/Warnings / [ ] Fail / [ ] N/A |
 | GATE-CODE | [ ] Pass / [ ] Pass w/Warnings / [ ] Fail / [ ] N/A |
+| GATE-SPEC | [ ] Pass / [ ] Pass w/Warnings / [ ] Fail / [ ] N/A |
 
 ### 5.2 Final Approval
 

@@ -12,7 +12,7 @@ custom_fields:
 
 # Gate Error Catalog
 
-Complete catalog of all error and warning codes across the 5-Gate Change Management System for the SDD framework.
+Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
 
 ## 1. Error Code Format
 
@@ -61,6 +61,7 @@ Where:
 | GATE-03-E005 | Traceability | EARS missing upstream tags (@brd @prd) | Add 2 upstream traceability tags |
 | GATE-03-E006 | Traceability | BDD missing upstream tags (@brd @prd @ears) | Add 3 upstream traceability tags |
 | GATE-03-E007 | Traceability | ADR missing upstream tags (@brd @prd @ears @bdd) | Add 4 upstream traceability tags |
+| GATE-03-E008 | Security | External-source change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 
 ### 3.2 Warnings (W)
 
@@ -154,6 +155,7 @@ platform's protected-branch review.
 |------|----------|-------------|------------|
 | GATE-SPEC-W001 | Migration | `major` change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Parity | Change touches only one platform's conformance | Confirm both platforms track the new spec version |
+| GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
 
 ## 7. Emergency Bypass Errors
 
@@ -164,7 +166,7 @@ platform's protected-branch review.
 | EMG-E001 | Authorization | Emergency not authorized by incident commander | Obtain authorization |
 | EMG-E002 | Classification | Non-critical issue using emergency bypass | Use standard gate process |
 | EMG-E003 | Documentation | Emergency stub not created | Create CHG-EMG-{timestamp}.yaml |
-| EMG-E004 | Timeline | Post-mortem not completed within 72 hours | Complete POST_MORTEM-{CHG-ID}.md |
+| EMG-E004 | Timeline | Post-mortem not completed within 48 hours | Complete POST_MORTEM-{CHG-ID}.md |
 | EMG-E005 | Closure | Emergency CHG not closed | Complete all closure requirements |
 
 ### 7.2 Warnings (W)

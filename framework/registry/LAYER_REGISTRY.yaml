@@ -12,6 +12,10 @@ metadata:
 
 # Each layer's `folder` is a path relative to the `framework/` root;
 # `template` is a filename within that folder.
+#
+# Index templates: each layer ships a `<X>-00_index.TEMPLATE.*` registry doc.
+# Layers 01-07 use Markdown (.md); layer 08 (IPLAN) uses YAML
+# (IPLAN-00_index.TEMPLATE.yaml) because its index is structured plan data.
 layers:
   - number: 1
     artifact: BRD

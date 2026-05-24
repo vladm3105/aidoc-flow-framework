@@ -12,12 +12,12 @@ custom_fields:
 
 # Gate Interaction Diagram
 
-Visual representation of the 5-Gate Change Management System across the 8-layer SDD workflow.
+Visual representation of the Change Management gate system (5 artifact gates GATE-01/03/06/08/CODE + the GATE-SPEC meta gate) across the 8-layer SDD workflow.
 
 ## 1. System Overview
 
 ```
-                         5-GATE CHANGE MANAGEMENT SYSTEM
+                      CHANGE MANAGEMENT GATE SYSTEM
                            8-Layer SDD Framework
 
     CHANGE REQUEST
@@ -198,7 +198,7 @@ EXECUTION Change (IPLAN change)
     3. Deploy to production
     4. Monitor for resolution
 
-   PHASE 3: POST-INCIDENT (24-72 hours)
+   PHASE 3: POST-INCIDENT (within 48 hours)
 
     1. Complete CHG document with full details
     2. Conduct post-mortem (POST_MORTEM-{CHG-ID}.md)

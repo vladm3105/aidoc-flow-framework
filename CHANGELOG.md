@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.3.2 → 0.4.0** (minor) — FRWK-REVIEW pre-production audit,
+  batches 1 (correctness) + 2 (security). **Correctness:** corrected malformed
+  trace-tag examples in the SPEC/TDD templates to the registry's element form
+  (`TYPE.NN.SS.xxxx`, never a `TYPE-NN.SS.xxxx` hybrid) and added an `id_standard`
+  note to the SPEC/TDD/IPLAN templates documenting where document-level refs are
+  the intentional per-component bridge; reframed the BDD template's downstream
+  guidance; closed a numbering gap in the BRD template's extra-small requirement
+  IDs; renamed the PRD index status "Review" → "In Review" with a
+  doc-status-vs-lifecycle note; documented the index-template extension split in
+  the layer registry; retired stale "5-Gate" branding now that GATE-SPEC is the
+  sixth gate, unified the emergency post-mortem SLA to 48h, and surfaced GATE-SPEC
+  on the change-approval form + post-mortem template. **Security:** new
+  `framework/governance/SECURITY_REVIEW.md` (engine-agnostic safety checks for
+  agent-authored artifacts — secret leakage, prompt-injection, provenance,
+  active-content sanitization), referenced from `DOC_GOVERNANCE_CORE.md` and the
+  gates; a new blocking `GATE-03-E008` requiring external-source changes to cite a
+  CVE/advisory or an explicit `no advisory applies: <reason>` escape (W001 kept as
+  the softer nudge); a `DIAGRAM_STANDARDS.md` sanitization rule for mermaid click
+  handlers + inline HTML; and a `GATE-SPEC-W003` security/abuse-review check for
+  agent-facing spec changes. New `tests/conformance/test_framework_review_guards.py`
+  locks the correctness fixes in (suite now 46 tests); `test_governance.py`
+  `EXPECTED_FILES` gains `SECURITY_REVIEW.md`. Both `FRAMEWORK_SPEC_VERSION` files
+  and the plugin skills' `framework_spec_version` re-synced.
 - Framework spec **0.3.1 → 0.3.2** (patch) — `framework/README.md` governance
   section now documents GATE-SPEC, the project adaptation overlay
   (`ADAPTATION.md` + `ADAPTATION_SURFACE.yaml`), and `DECISIONS.md` (the
