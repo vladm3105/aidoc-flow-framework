@@ -41,8 +41,8 @@ jobs:
       - name: Plugin structural sanity
         run: |
           dirs=$(find platforms/claude-code-plugin/skills -mindepth 1 -maxdepth 1 -type d | wc -l)
-          if [ "$dirs" -lt 100 ]; then
-            echo "::error::Plugin skill count $dirs is suspiciously low (expected ~142)"
+          if [ "$dirs" -lt 40 ]; then
+            echo "::error::Plugin skill count $dirs is suspiciously low (canonical set is ~54 since P3-T6)"
             exit 1
           fi
           echo "ok: $dirs skill dirs"
