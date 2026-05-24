@@ -1,5 +1,26 @@
 # Session Handoff
 
+> **🔵 FRWK-REVIEW PR-1 READY — framework pre-production audit fixes (2026-05-24).**
+> Branch **`claude/framework-review-fixes`** (pushed; 9 commits ahead of `main`).
+> Plan: `plans/FRAMEWORK-REVIEW-FIXES-PLAN.md` (13 findings, decisions D1–D6,
+> 2 review passes). **Batches 1 (correctness) + 2 (security) are complete** and
+> land together as **framework spec `0.3.2 → 0.4.0`** (minor; PR-1 per decision
+> D5). Highlights: corrected SPEC/TDD trace-tag element forms + `id_standard`
+> notes on L6–L8; BDD downstream framing; BRD-XS numbering gap; PRD-index enum;
+> registry index-split doc; retired "5-Gate" branding (GATE-SPEC is the 6th);
+> emergency SLA unified to 48h; GATE-SPEC surfaced on the approval form +
+> post-mortem template. **Security:** new engine-agnostic
+> `framework/governance/SECURITY_REVIEW.md`; blocking `GATE-03-E008` (external
+> change cites a CVE/advisory or an explicit N/A escape); `DIAGRAM_STANDARDS.md`
+> click-handler/inline-HTML sanitization rule; `GATE-SPEC-W003` security review
+> for agent-facing spec changes. New `tests/conformance/test_framework_review_guards.py`
+> (3 guards); `test_governance` EXPECTED_FILES += `SECURITY_REVIEW.md`. **Suite 46
+> green; `spec_gate` passes vs origin/main; FSV aligned at 0.4.0 (+ 54 skills
+> rippled).** **Next:** open PR-1 (awaiting user OK — PRs aren't auto-created),
+> merge, then cut **Batch 3** (THRESHOLD de-bloat, PR-2) from `main` *after* PR-1
+> merges (decision D5/R7 — shares the version/CHANGELOG/skill files). Deferred:
+> finding #4b (EARS index statement-type/syntax model decision).
+>
 > **✅ PRE-COMMIT HOOKS — (2026-05-24, D-0021).** Added `.pre-commit-config.yaml`
 >
 > + a `pre-commit` CI workflow: hygiene, ruff + ruff-format, bandit (medium+),
@@ -198,10 +219,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-24T00:00:00Z                       |
-| Working branch| `main` (PR #2 merged; `claude/skill-revision` merged, safe to delete) |
-| Current phase | Post-cutover features all landed on `main` (merge `3974daa`): **ADAPT** (D-0019), **CHG-D1 / GATE-SPEC** (D-0020), **CHG-D2 / GD-01**. Framework spec **0.3.1**; 54 skills; conformance **43**; GATE-SPEC CI enforcing on PRs. |
-| Next task     | **None pending in-container.** **User-only:** branch protection on `framework/**`; push the framework `v0.2.0/v0.3.0/v0.3.1` tags (+ optional `v1.1.0`) from a local clone (see top blockquote). |
+| Last updated  | 2026-05-24T12:00:00Z                       |
+| Working branch| `claude/framework-review-fixes` (FRWK-REVIEW PR-1; pushed, 9 commits ahead of `main`) |
+| Current phase | **FRWK-REVIEW** — framework pre-production audit fixes. Batches 1+2 done at framework spec **0.4.0**; conformance **46**; `spec_gate` green. PR-1 ready to open. |
+| Next task     | Open **PR-1** (Batches 1+2) once user confirms; after it merges, cut **Batch 3** (THRESHOLD de-bloat, PR-2) from `main`. **User-only carry-overs:** branch protection on `framework/**`; push framework `v0.2.0/v0.3.0/v0.3.1` (+ optional `v1.1.0`) tags from a local clone. |
 
 ## Progress
 

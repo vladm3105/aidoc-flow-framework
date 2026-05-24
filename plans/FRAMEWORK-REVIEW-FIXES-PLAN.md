@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | FRWK-REVIEW                    |
 | Depends on | GATE-SPEC / CHG-D1 (D-0020); framework spec `0.3.2` |
-| Status     | REVIEWED (Pass 1–2) — awaiting decisions D1–D6 |
+| Status     | IN PROGRESS — Batches 1+2 implemented (PR-1, spec `0.4.0`); Batch 3 (PR-2) pending PR-1 merge |
 | Feeds      | a cleaner, security-hardened `framework/` spec; possible `framework/v0.4.0` |
 
 ## Objective
@@ -206,3 +206,33 @@ post-mortem SLA value is identical across the CHG docs (catches #3).
 - **Skill ripple.** Kept (consistent with prior bumps; scripted) — bounded to two
   bumps total. No change.
 - No further findings — plan is implementable pending decisions D1–D6.
+
+## Implementation log
+
+### Batches 1 + 2 — 2026-05-24 (branch `claude/framework-review-fixes`, PR-1)
+
+- **Batch 1 (correctness) landed:** SPEC/TDD trace-tag element forms corrected
+  (dash→dot, truncated→full element); `id_standard` notes added to SPEC/TDD/IPLAN
+  documenting the intentional document-level per-component bridge; SPEC template
+  expanded (`_antipatterns`, `diagram:` stub, multi-interface guidance); BDD
+  downstream reframed (ADR=registry downstream, TDD=cross-reference); BRD-XS
+  numbering gap closed; PRD-index status "Review"→"In Review" + lifecycle note;
+  registry index-split documented; "5-Gate"→gate-system + GATE-SPEC; emergency SLA
+  unified to 48h; GATE_APPROVAL_FORM + POST_MORTEM gained the GATE-SPEC/spec surface.
+- **Finding #1 scope confirmed during implementation:** the BDD layer uses a
+  *no-space* tag convention (`@brd:BRD…`) throughout its template + README + its
+  own antipattern, so it is internally consistent — **not** touched (the
+  cross-layer whitespace difference vs SPEC/TDD's `@brd: ` is a separate
+  normalization question, out of scope for #1's *ID-form* fix). The guard's `_TAG`
+  regex is whitespace-tolerant and skips `FAIL:` antipattern lines.
+- **Batch 2 (security) landed:** new `governance/SECURITY_REVIEW.md` (engine-agnostic);
+  `GATE-03-E008` blocking external-change CVE/advisory-or-N/A (W001 kept);
+  `DIAGRAM_STANDARDS.md` click-handler/inline-HTML sanitization rule;
+  `GATE-SPEC-W003` agent-facing security review; referenced from
+  `DOC_GOVERNANCE_CORE.md` + governance README; added to `test_governance`
+  EXPECTED_FILES.
+- **Guard:** `tests/conformance/test_framework_review_guards.py` (trace-tag forms,
+  no stale 5-gate, 48h SLA). **Verification:** conformance **46/46**; `spec_gate`
+  passes vs `origin/main`; framework `0.3.2 → 0.4.0` with both FSV + 54 skills
+  rippled + CHANGELOG.
+- **Pending:** open PR-1; then Batch 3 (PR-2) cut from `main` after PR-1 merges.
