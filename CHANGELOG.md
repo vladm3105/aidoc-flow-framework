@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.3.2 → 0.4.0** (minor) — FRWK-REVIEW pre-production audit,
+  batch 1 (correctness). Corrected malformed trace-tag examples in the SPEC/TDD
+  templates to the registry's element form (`TYPE.NN.SS.xxxx`, never a
+  `TYPE-NN.SS.xxxx` hybrid) and added an `id_standard` note to the SPEC/TDD/IPLAN
+  templates documenting where document-level refs are the intentional
+  per-component bridge; reframed the BDD template's downstream guidance; closed a
+  numbering gap in the BRD template's extra-small requirement IDs; renamed the PRD
+  index status "Review" → "In Review" with a doc-status-vs-lifecycle note;
+  documented the index-template extension split in the layer registry. Governance:
+  retired stale "5-Gate" branding now that GATE-SPEC is the sixth gate, unified the
+  emergency post-mortem SLA to 48h, and surfaced GATE-SPEC on the change-approval
+  form + post-mortem template. New
+  `tests/conformance/test_framework_review_guards.py` locks the fixes in (suite now
+  46 tests). Both `FRAMEWORK_SPEC_VERSION` files and the plugin skills'
+  `framework_spec_version` re-synced.
 - Framework spec **0.3.1 → 0.3.2** (patch) — `framework/README.md` governance
   section now documents GATE-SPEC, the project adaptation overlay
   (`ADAPTATION.md` + `ADAPTATION_SURFACE.yaml`), and `DECISIONS.md` (the
