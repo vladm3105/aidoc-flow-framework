@@ -1,0 +1,5 @@
+legacy/
+node_modules/
+.git/
+.pytest_cache/
+**/__pycache__/
