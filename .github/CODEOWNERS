@@ -5,30 +5,31 @@
 # - Later patterns override earlier ones
 # - Teams use @org/team-slug, individuals use @username
 # - Reviewers are automatically requested when a PR touches matching paths
+#
+# To make this enforce sign-off, enable "Require review from Code Owners" in the
+# main branch protection rule. The framework/ rule below is the human-approval
+# half of GATE-SPEC (the framework-spec change gate, CHG-D1/GD-01) — a spec
+# change must be reviewed by an owner; a skill never self-approves.
 
-# Default — project leads review anything not matched below
-*                                       @project-lead @tech-lead
+# Default — owner reviews anything not matched below
+*                                       @vladm3105
 
-# Governance and project management
-/governance/                            @project-lead @tech-lead
-/CLAUDE.md                              @project-lead
-/README_AIAGENT.md                      @project-lead @tech-lead
-/CONTRIBUTING.md                        @project-lead @tech-lead
+# The shared framework spec (the contract both platforms consume) — GATE-SPEC
+/framework/                             @vladm3105
+/framework/governance/                  @vladm3105
 
-# Security-sensitive files
-/.github/workflows/                     @project-lead @tech-lead
-/.github/CODEOWNERS                     @project-lead @tech-lead
+# The runnable contract — conformance suite + the CHG diff-aware guard
+/tests/                                 @vladm3105
 
-# Infrastructure
-/components/*/terraform/                @project-lead @tech-lead
-/components/infrastructure/             @project-lead @tech-lead
+# The two platforms
+/platforms/                             @vladm3105
 
-# Components
-/components/gcp-cost-guard/             @project-lead @tech-lead
-/components/mcp-servers/                @project-lead @tech-lead
-/components/agents/                     @project-lead @tech-lead
-/components/frontend/                   @project-lead @tech-lead
+# Security-sensitive
+/.github/workflows/                     @vladm3105
+/.github/CODEOWNERS                     @vladm3105
 
-# Documentation and specs
-/docs/                                  @project-lead @tech-lead
-/docs/adr/                              @project-lead @tech-lead
+# Project governance docs
+/docs/                                  @vladm3105
+/CLAUDE.md                              @vladm3105
+/ROADMAP.md                             @vladm3105
+/CHANGELOG.md                           @vladm3105
