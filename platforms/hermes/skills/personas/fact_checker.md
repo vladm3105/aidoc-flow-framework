@@ -60,11 +60,13 @@ When verifying findings:
 
 **Category Verification**:
 When verifying findings from other personas, verify the category tag is correct:
+
 1. Check if the finding matches the assigned category
 2. Suggest category correction if misassigned
 3. Confirm category if correct
 
 **Output Format**:
+
 ```
 Finding: [CAT:xxx] Original finding text
 Verdict: CONFIRMED / FALSE POSITIVE
@@ -72,6 +74,7 @@ Category: CORRECT / SHOULD BE [CAT:yyy]
 ```
 
 **Examples**:
+
 - `Finding: [CAT:compliance] KYC verification missing
    Verdict: CONFIRMED
    Category: CORRECT (regulatory requirement)`

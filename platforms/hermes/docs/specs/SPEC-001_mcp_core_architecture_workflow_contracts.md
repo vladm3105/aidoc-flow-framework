@@ -22,6 +22,7 @@ Implementation complexity: 4/5.
 ## 2. Scope and Boundaries
 
 In scope:
+
 - Layer tool namespace model.
 - Strict alias model for cross-layer tools.
 - Global tool response envelope.
@@ -31,6 +32,7 @@ In scope:
 - Source eligibility and upstream-missing execution policy.
 
 Out of scope:
+
 - Feature-specific scoring formulas.
 - Multi-persona prompt internals (persona list resolution and `persona_mappings.yaml`).
 - Hash identity generation algorithms.
@@ -44,6 +46,7 @@ Out of scope:
 ### 3.1 Layer Prefix Contract
 
 All layer tools must use one of these prefixes:
+
 - brd
 - prd
 - ears
@@ -59,6 +62,7 @@ All layer tools must use one of these prefixes:
 ### 3.2 Cross-layer Canonical Namespaces
 
 Canonical cross-layer namespaces:
+
 - trace
 - matrix
 - code
@@ -69,14 +73,17 @@ Canonical cross-layer namespaces:
 ### 3.3 Strict Alias Contract (Mandatory)
 
 For each cross-layer tool named {cross_tool_name}, server must expose aliases:
+
 - {layer}_{cross_tool_name} for every layer prefix in 3.1.
 
 Required behavior:
+
 - Canonical cross-layer name remains callable.
 - Alias resolves to canonical implementation.
 - Response includes canonical tool identity and alias_invoked metadata.
 
 Failure mode:
+
 - Missing alias for any layer is a compliance failure.
 
 ---
@@ -84,6 +91,7 @@ Failure mode:
 ## 4. Tool Response Contract (Mandatory)
 
 All tools must return:
+
 - status: ok|warning|error
 - tool
 - layer
@@ -96,6 +104,7 @@ All tools must return:
 ### 4.1 Finding Contract
 
 Finding minimum fields:
+
 - finding_id
 - severity
 - code
@@ -104,12 +113,14 @@ Finding minimum fields:
 - actionable
 
 Severity domain:
+
 - P0
 - P1
 - P2
 - P3
 
 Failure mode:
+
 - Missing required field is contract-invalid output.
 
 ---
@@ -119,6 +130,7 @@ Failure mode:
 ### 5.1 Required Stage Sequence
 
 For layers implementing the full workflow:
+
 1. {layer}_validate
 2. {layer}_validate_fix
 3. {layer}_review
@@ -128,6 +140,7 @@ For layers implementing the full workflow:
 ### 5.2 Supporting Stage Tools
 
 Mandatory support tools:
+
 - {layer}_artifacts
 - {layer}_status
 
@@ -138,32 +151,38 @@ A stage call must fail with explicit transition error when prerequisite stage ar
 ### 5.4 Source Eligibility Contract
 
 Rules:
+
 - Runtime source discovery for workflow tools must exclude paths containing `archive` or `archived` (case-insensitive) unless explicit override is enabled by repository policy.
 - Archived-path exclusion applies to source documents, intermediary artifacts, and candidate references.
 - If explicit override is disabled, tools must not read, route to, or emit references to archived-path artifacts.
 
 Required behavior:
+
 - Tool output includes source-filter metadata describing archive exclusion behavior.
 - Excluded archived candidates are counted in diagnostics but not used as workflow inputs.
 
 Failure modes:
+
 - Tool resolves an archived-path source without explicit override.
 - Tool emits actionable references targeting archived paths when override is disabled.
 
 ### 5.5 Upstream-Missing Execution Contract
 
 Rules:
+
 - If a required upstream artifact is missing for a requested downstream operation, that downstream functionality must be skipped, not synthesized.
 - Optional upstream artifacts may be omitted when optionality is declared by authoritative layer configuration.
 - Skip decisions for missing required upstreams must be explicit and machine-parseable.
 
 Required output fields for upstream-missing decisions:
+
 - skipped_operation
 - missing_upstream_type
 - missing_upstream_id
 - skip_reason
 
 Failure modes:
+
 - Tool fabricates downstream artifacts without required upstream chain.
 - Tool silently drops functionality without upstream-missing diagnostics.
 
@@ -174,6 +193,7 @@ Failure modes:
 ### 6.1 Artifact Immutability
 
 Rules:
+
 - Source artifact is immutable after creation.
 - validate_fix writes derived validation-fixed artifact.
 - remediate_apply writes derived remediated artifact.
@@ -181,11 +201,13 @@ Rules:
 ### 6.2 Report Contracts
 
 Rules:
+
 - Validation reports are deterministic and report-only.
 - Review and remediation reports are versioned artifacts.
 - Every report contains source artifact identity and source processing stage.
 
 Failure modes:
+
 - Source overwrite.
 - Missing lineage metadata.
 - Report without source identity.
@@ -220,6 +242,7 @@ Failure modes:
 ## 9. Canonical Change Control
 
 Change policy:
+
 - Contract changes must be applied to this document first.
 - Implementation plans may reference but must not redefine these rules.
 - Version must increment for normative contract updates.

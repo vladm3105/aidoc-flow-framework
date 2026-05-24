@@ -44,6 +44,7 @@ SYS.{doc_num}.{type_code}.{sequence}
 ```
 
 Type codes:
+
 - `CP` = Component
 - `IF` = Interface
 - `DT` = Data
@@ -120,6 +121,7 @@ custom_fields:
 Create system requirements from ADR decisions.
 
 **CRITICAL REMINDERS**:
+
 - Specify ALL interfaces
 - Quantify performance targets
 - Document error handling

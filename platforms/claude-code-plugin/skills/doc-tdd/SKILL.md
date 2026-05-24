@@ -38,6 +38,7 @@ maintenance.
 ## When to Use
 
 Use `doc-tdd` when:
+
 - BRD through SPEC (Layers 1–6) are complete and you are defining tests.
 - You need concrete test cases, a BDD→test mapping, and quality thresholds
   before implementation.
@@ -170,7 +171,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 `../doc-iplan/SKILL.md` — the IPLAN references this TDD (`@tdd: TDD-NN`),
 inherits the full upstream tag chain, and orchestrates the build, enforcing test
 files before implementation files.
-
 
 ## Adaptation
 

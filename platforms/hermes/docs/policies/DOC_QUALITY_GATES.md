@@ -58,12 +58,14 @@ Implementation complexity: 4/5.
 ## 5. PASS Criteria
 
 A release passes this policy only when all gate results are PASS and:
+
 - unresolved conflict count = 0
 - critical mismatch count = 0
 - broken link count = 0
 - ownership coverage = 100 percent
 
 Pull-request merge passes this policy only when all PR gates are PASS and:
+
 - Round 1 or Round 2 has complete gate evidence.
 - If Round 1 fails, Round 2 runs with the same gate sequence.
 - If Round 2 fails, human review is mandatory before merge.
@@ -73,12 +75,14 @@ Pull-request merge passes this policy only when all PR gates are PASS and:
 ## 6. Failure Handling
 
 When any gate fails:
+
 1. Record failure in compliance report.
 2. Assign remediation owner.
 3. Block release progression.
 4. Re-run gates after remediation.
 
 For pull-request governance failures:
+
 1. Round 1 failure triggers Round 2 automatically or by orchestrator policy.
 2. Round 2 failure sets escalation status to `REQUIRED`.
 3. Hermes alerts a human developer for review (alert channel is implementation-defined).

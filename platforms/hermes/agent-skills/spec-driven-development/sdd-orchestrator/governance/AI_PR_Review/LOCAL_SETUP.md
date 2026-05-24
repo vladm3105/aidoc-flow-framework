@@ -32,12 +32,14 @@ npm install -g @anthropic-ai/claude-code
 ```
 
 **Verification**:
+
 ```bash
 claude --version
 # Expected: 2.x.x or higher
 ```
 
 **Alternative** (if npm is unavailable):
+
 ```bash
 # Using npx (runs without global install)
 npx @anthropic-ai/claude-code --version
@@ -55,11 +57,13 @@ export GH_HOST={GITHUB_HOST}
 ```
 
 Reload your shell or run:
+
 ```bash
 source ~/.bashrc  # or ~/.zshrc
 ```
 
 **Verification**:
+
 ```bash
 echo $GH_HOST
 # Expected: host value only when enterprise host is configured
@@ -86,6 +90,7 @@ gh auth login
 ```
 
 Follow the prompts:
+
 - Protocol: **HTTPS**
 - Authentication method: **Login with a web browser** (recommended) or **Paste an authentication token**
 - Required scopes: `repo`, `read:org`, `workflow`
@@ -114,6 +119,7 @@ export ANTHROPIC_API_KEY="sk-ant-api03-..."
 ```
 
 Reload your shell:
+
 ```bash
 source ~/.bashrc  # or ~/.zshrc
 ```
@@ -198,6 +204,7 @@ GH_HOST={GITHUB_HOST} gh auth status
 ```
 
 Expected output:
+
 ```
 GH_HOST: {GITHUB_HOST}
 ANTHROPIC_API_KEY: sk-ant-api03-...

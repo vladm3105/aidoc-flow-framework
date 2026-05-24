@@ -26,6 +26,7 @@ recommendations.
 ## When to Use
 
 Use `quality-advisor` when:
+
 - Authoring a new artifact and wanting live feedback.
 - Reviewing an artifact before submission.
 - Checking template-requirement, tag, or naming compliance for one document.

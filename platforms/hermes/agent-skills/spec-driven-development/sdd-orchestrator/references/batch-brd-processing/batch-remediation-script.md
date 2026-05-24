@@ -147,6 +147,7 @@ print(f"\nTotal: {sum(fixes_log.values())} fixes across {len(fixes_log)} BRDs")
 ## When to Customize
 
 Customize this script when:
+
 - Your BRDs have different section structures (not all 18 sections)
 - Your source document has different domain-specific freshness thresholds
 - You need to fix diagram placeholder IDs (add a `diagrams` fix block)

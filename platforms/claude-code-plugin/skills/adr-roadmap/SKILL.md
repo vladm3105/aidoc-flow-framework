@@ -29,6 +29,7 @@ data, ML, infrastructure, embedded).
 ## When to Use
 
 Use `adr-roadmap` when:
+
 - A project has roughly five or more ADRs that need coordinated, phased rollout.
 - You need visibility into architectural dependencies and the critical path.
 - Stakeholders need a timeline, milestones, and an executive summary derived

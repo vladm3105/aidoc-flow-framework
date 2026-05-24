@@ -96,7 +96,6 @@ file, confidence) · **Manual-Review Queue** (e.g. syntax, atomicity) ·
 Summary** (delete superseded fix reports) · **Next Steps** (re-run
 `doc-ears-audit`). Loop until score ≥ threshold or max iterations reached.
 
-
 ## Adaptation
 
 Before applying fixes, read the project adaptation profile

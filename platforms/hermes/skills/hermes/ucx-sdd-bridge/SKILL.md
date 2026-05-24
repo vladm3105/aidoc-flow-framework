@@ -275,6 +275,7 @@ When to prefer `prompt_only`:
 ## Integration with Existing Hermes SDD Skills
 
 This skill works with UCX personas and optional Hermes-native skills:
+
 - `business-analyst` — Use for BRD gap analysis after `sdd_validate`
 - `qa_lead` persona — Use for testability review after `sdd_review` evidence is returned
 - `auditor` persona — Use for compliance reasoning after `sdd_review` evidence
@@ -285,6 +286,7 @@ This skill works with UCX personas and optional Hermes-native skills:
 ## Error Handling
 
 If UCX returns an error:
+
 1. Log the tool name and arguments to Hermes memory
 2. Present the error clearly to the human
 3. Do not retry the same call blindly — ask human for direction

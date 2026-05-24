@@ -47,6 +47,7 @@ layouts (old `ucx_framework` root vs the new multi-platform root),
 producing a conflict-laden merge commit.
 
 **Options:**
+
 1. **Force-replace `main`** with the working-branch tip
    (`git push --force origin claude/multi-platform-migration-AamWB:main`,
    or a PR merged with admin override after lifting protection).
@@ -73,14 +74,17 @@ misleading merge commit; Option 3 destroys the audit trail the
 project deliberately maintained.
 
 **Downstream implications:**
+
 - **P5-T6 (user-authorized):** the in-container session does **not**
   push to `main`. P5-T6 hands the user the exact commands:
+
   ```sh
   # main is protected — temporarily lift protection, then:
   git fetch origin
   git push --force origin claude/multi-platform-migration-AamWB:main
   # re-enable protection on main
   ```
+
   Or, equivalently, via a PR with "allow force / admin merge."
 - The old `main` is recoverable any time from
   `legacy-ucx-v3.2-read-only` (and its reflog).
@@ -91,6 +95,7 @@ project deliberately maintained.
 ## Q2 — Does `framework/` tag `v1.0.0`?
 
 **Options:**
+
 1. Keep `framework/VERSION` at `0.1.0`; no `framework/v1.0.0` tag at
    cutover.
 2. Bump `framework/VERSION` → `1.0.0`; tag `framework/v1.0.0`; update
@@ -100,6 +105,7 @@ project deliberately maintained.
 **Chosen:** Option 1 — **stays `0.1.0`**.
 
 **Rationale:**
+
 - **SemVer discipline:** the spec has **not changed** since P1
   (P4 added enforcement *tests*, not spec content). A major bump
   with no change is noise.
@@ -113,6 +119,7 @@ project deliberately maintained.
   conformance suite stays stable; no FRAMEWORK_SPEC_VERSION ripple).
 
 **Downstream implications:**
+
 - `framework/VERSION` untouched in Phase 5.
 - Both platforms' `FRAMEWORK_SPEC_VERSION` stay `0.1.0` — still match
   (conformance PC1 stays green).
@@ -125,6 +132,7 @@ project deliberately maintained.
 **Chosen:** **No — ship `v1.0.0` with the documented gap.**
 
 **Rationale:** (carried from P5-T0 audit §4)
+
 - The gap (plugin lacks `doc-tdd` + `doc-iplan`; reflects the legacy
   11-layer model) is **documented** in `docs/PARITY.md` "Known
   parity gap."
@@ -137,6 +145,7 @@ project deliberately maintained.
   would massively delay cutover for no correctness gain.
 
 **Downstream implications:**
+
 - Post-v1.0 content-migration task (already tracked: P3-T1 §Deferred
   R2, P3-T2 G18, PARITY.md). Not a Phase 5 deliverable.
 - The `v1.0.0` CHANGELOG + README note the gap with a pointer to
@@ -145,6 +154,7 @@ project deliberately maintained.
 ## Q4 — Tag scope at cutover
 
 **Options:**
+
 1. **Project milestone only:** tag `v1.0.0`. Framework stays `0.1.0`;
    platforms version independently (optional `hermes/v0.1.1` for the
    api_runner fix; plugin stays `0.1.0`).
@@ -156,6 +166,7 @@ project deliberately maintained.
 independent.**
 
 **Rationale:**
+
 - The project milestone tags (`v0.1.0` … `v0.5.0`) have tracked
   **phases**, not component releases. `v1.0.0` = the **cutover
   phase** ("new project replaces `main`"), a project-lifecycle
@@ -179,6 +190,7 @@ SemVer-honest reading; the launch-signal reading is a legitimate
 product call the user may prefer. Flagged for redirect.
 
 **Downstream implications:**
+
 - **P5-T6 tags:** `v1.0.0` (project) — required. `hermes/v0.1.1`
   (optional, captures the api_runner fix). No plugin tag, no
   framework tag.
@@ -197,6 +209,7 @@ The trackers (`MIGRATION_TODO.md`, `HANDOFF.md`) become historical
 at cutover — fine; they document how the project got here.
 
 **Downstream implications:**
+
 - **P5-T4 / P5-T6:** add a one-line "migration complete" banner to
   `MIGRATION_TODO.md` / `HANDOFF.md` tops, but keep all content.
 - No `plans/` removal or restructure in Phase 5.
@@ -218,6 +231,7 @@ the tree → archive branch; migration done; main is the new project).
 A slim post-migration `CLAUDE.md` keeps the durable parts.
 
 **The rewritten `CLAUDE.md` covers:**
+
 - What the project is (the shipped multi-platform structure:
   `framework/` spec + `platforms/hermes/` + `platforms/claude-code-plugin/`).
 - Where things are (framework, platforms, conformance suite, docs).
@@ -238,6 +252,7 @@ migration. P5-T4 decides the exact wording.
 ## Cross-question conflicts
 
 None. Specifically checked:
+
 - Q1 (force-replace) × Q5 (keep plans/) — the force-replaced `main`
   carries the working branch's `plans/` intact. Consistent.
 - Q2 (framework stays 0.1.0) × Q4 (component independence) — both

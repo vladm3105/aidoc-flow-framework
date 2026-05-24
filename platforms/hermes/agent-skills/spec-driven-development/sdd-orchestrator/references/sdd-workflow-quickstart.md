@@ -31,6 +31,7 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 ## Cumulative Tag Hierarchy
 
 Each document must include tags for ALL upstream layers:
+
 - BRD: none (root)
 - PRD: `@brd`
 - EARS: `@brd, @prd`
@@ -43,12 +44,14 @@ Each document must include tags for ALL upstream layers:
 ## Three-Phase Lifecycle (per document)
 
 ### Phase 1: Create (UCC)
+
 1. Load the appropriate template
 2. Dispatch creation personas as parallel subagents
 3. Synthesize contributions into a complete document
 4. Validate output against layer schema
 
 ### Phase 2: Review (UCR)
+
 1. Dispatch ALL listed persona subagents in parallel
 2. Collect all findings
 3. Fact-checker cross-validates all P0/P1 findings
@@ -56,6 +59,7 @@ Each document must include tags for ALL upstream layers:
 5. Score must be >= 90/100 to proceed to next layer
 
 ### Phase 3: Remediate (UCRem)
+
 1. Pre-screen findings to determine which domain fixers needed
 2. Dispatch fixers as parallel subagents
 3. Board-chairperson synthesizes fixes, resolves conflicts

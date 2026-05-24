@@ -46,6 +46,7 @@ MCP tool equivalents: `sdd_init(update=true)`, `sdd_init(update=true, update_map
 ### Preflight Persona Health Check
 
 `sdd_preflight` now checks persona mapping integrity when `context` includes review/remediate:
+
 - Verifies all referenced persona `.md` files exist
 - Reports missing doctypes compared to framework defaults
 - Returns `persona_mapping_health` key in checks: `ok` | `warning` | `error`

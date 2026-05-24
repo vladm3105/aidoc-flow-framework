@@ -74,7 +74,7 @@ graduation.
      (plugin-only reach); spec-level candidates are drafted but flagged
      "blocked — needs CHG-D1". Building CHG-D1 is an out-of-scope follow-up.
   3. **Surface is closed + declarative** (`framework/governance/ADAPTATION.md`
-     + machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
+     - machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
      (`active_layers`, `section_toggles`, `audit_threshold`, `glossary`);
      **`id_format` deferred** pending an `ID_NAMING_STANDARDS.md` review to
      enumerate genuinely-selectable conventions (narrow-surface principle —

@@ -24,6 +24,7 @@ parity gap.
 ## Scope
 
 **In:**
+
 - All `platforms/claude-code-plugin/skills/**` (SKILL.md bodies, frontmatter,
   `*_quickref.md`, family READMEs, `SHARED_CONTENT.md`).
 - Family roster changes: rename `doc-tspec*`→`doc-tdd*`,
@@ -34,6 +35,7 @@ parity gap.
 - `docs/PARITY.md`, `CHANGELOG.md`, `ROADMAP.md`, `plans/MIGRATION_TODO.md`.
 
 **Out (this task):**
+
 - Hermes (already on the 8-layer model since P2-T9).
 - The `framework/` spec itself (it is the contract; unchanged).
 - Net-new skill capability beyond the layer remap.
@@ -76,6 +78,7 @@ chain.**
 **(2) Element-ID scheme** — replace the legacy 3-segment `TYPE.NN.xxxx` and the
 numeric type-code scheme (SYS.26, REQ.27, TSPEC.40–45, etc.) with the new
 4-segment standard from `framework/governance/ID_NAMING_STANDARDS.md`:
+
 - Hierarchical elements: `TYPE.NN.SS.xxxx` (`xxxx` = 4-char hex hash), TYPE ∈
   {BRD,PRD,EARS,BDD,ADR,TDD}.
 - Document-level (dash) refs: `SPEC-NN`, `ADR-NN`, `IPLAN-NN`.
@@ -84,11 +87,12 @@ numeric type-code scheme (SYS.26, REQ.27, TSPEC.40–45, etc.) with the new
   not ID codes.
 
 **(3) Path mapping** — every external path must resolve in the 8-layer repo:
+
 | Legacy reference | → New target |
 |---|---|
 | `ai_dev_ssd_flow/NN_X/…` / `framework/NN_X/…` | `framework/layers/<newNN>_<X>/…` (e.g. `10_TSPEC`→`07_TDD`, `11_TASKS`→`08_IPLAN`, `09_SPEC`→`06_SPEC`) |
 | `…/{TYPE}-MVP-TEMPLATE.md` | `framework/layers/<NN>_<X>/{TYPE}-TEMPLATE.yaml` (templates are `.yaml`) |
-| `ai_dev_ssd_flow/scripts/validate_*.py|sh`, `framework/scripts/*` | **removed** — framework is spec-only (no runtime code). Replace "run `validate_X.py`" with the skill's own declarative validation checklist + a pointer to `framework/governance/` and the layer `README.md`. The plugin skill *is* the validator. |
+| `ai_dev_ssd_flow/scripts/validate_*.py|sh`,`framework/scripts/*` | **removed** — framework is spec-only (no runtime code). Replace "run `validate_X.py`" with the skill's own declarative validation checklist + a pointer to `framework/governance/` and the layer `README.md`. The plugin skill *is* the validator. |
 | `.claude/skills/doc-X/…` | plugin-relative `../doc-X/…` (sibling skills) |
 | `framework/ADR/…`, `framework/11_TASKS/…` | `framework/layers/05_ADR/…`, `framework/layers/08_IPLAN/…` |
 

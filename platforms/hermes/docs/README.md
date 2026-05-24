@@ -143,7 +143,6 @@ These layers were removed in v3.2. Their content is subsumed by the bridge layer
 
 > **Rule**: Do not create new documents referencing SYS, REQ, CTR, TSPEC, or TASKS as active layers. Use the 8-layer v3.2 flow above.
 
-
 ---
 
 ## 1. Layer Map
@@ -292,6 +291,7 @@ authoring policy.
 This section tracks migration from the legacy `mcp_ucx/` package to `ucx_hermes/`.
 
 See [migration/MIGRATION_FROM_MCP_UCX.md](migration/MIGRATION_FROM_MCP_UCX.md) for:
+
 - Path mapping (old -> new)
 - MCP configuration changes
 - What was patched and why
@@ -300,6 +300,7 @@ See [migration/MIGRATION_FROM_MCP_UCX.md](migration/MIGRATION_FROM_MCP_UCX.md) f
 ## 8. Hermes Integration
 
 See [HERMES_INTEGRATION.md](HERMES_INTEGRATION.md) for:
+
 - Safe workflow (UCX validates, Hermes reasons, humans decide)
 - Tool safety classification
 - Bridge skill installation

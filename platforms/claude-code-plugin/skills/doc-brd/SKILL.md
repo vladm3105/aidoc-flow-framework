@@ -35,6 +35,7 @@ features get a new BRD rather than expanding an existing one; link cycles with
 ## When to Use
 
 Use `doc-brd` when:
+
 - Starting a new project or feature and defining business requirements.
 - Documenting strategic alignment, market context, and success criteria.
 - Translating an implementation plan back into business-language requirements.
@@ -172,7 +173,6 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 
 `../doc-prd/SKILL.md` — the PRD references this BRD (`@brd: BRD.NN.SS.xxxx`),
 defines product features and KPIs, and inherits the §7.2 architecture topics.
-
 
 ## Adaptation
 

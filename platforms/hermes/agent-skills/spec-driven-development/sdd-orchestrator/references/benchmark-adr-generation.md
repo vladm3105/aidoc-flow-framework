@@ -23,6 +23,7 @@ propagate to all downstream layers.
 
 Pick the umbrella ADR (ADR-01 = Orchestration Model) plus the highest-complexity
 engine ADR (ADR-07 = State Machine Architecture). These two have:
+
 - Most upstream dependencies (BRD-01 covers all engines; BDD-07 has 8 P0/P1 deferred findings)
 - Tightest integration points (orchestration touches all 9 engines; state machine touches 5 engines)
 - Highest review scrutiny (if these pass, the remaining 17 will be easier)
@@ -81,6 +82,7 @@ findings that don't converge are noise (different personas have different
 tolerances).
 
 Typical convergent finding count: 10-14 per ADR. Categories:
+
 - CRITICAL: missing state machine transitions, wrong trigger rules, missing crash recovery
 - HIGH: ambiguous scoring formulations, missing ordering guarantees, underspecified persistence
 - MEDIUM: missing integration points, cost estimate gaps, edge-case handling
@@ -89,6 +91,7 @@ Typical convergent finding count: 10-14 per ADR. Categories:
 
 Dispatch 2 fixer subagents (one per ADR) with the full list of convergent
 fixes. Each fixer must:
+
 1. Read the ADR YAML + all 5 review files
 2. Apply ALL fixes (not a subset)
 3. Overwrite the original file
@@ -102,12 +105,14 @@ generation where cross-ADR consistency checks force resolution).
 ### Step 8: Decision Point
 
 After remediation, decide whether to:
+
 - A) Re-review (if score still < 90 after fixes) — adds 30 min
 - B) Move to Phase 2 (remaining engine ADRs) — faster, gaps surface in Phase 3
 - C) Move to Phase 3 (cross-cutting ADRs) — regulatory ADRs are the real gap;
   engine ADR operational gaps are minor by comparison
 
 Typical post-remediation scores:
+
 - ADR-01 (orchestration): ~82-88/100 (operational gaps, auth deferred to ADR-11)
 - ADR-07 (state machine): ~78-85/100 (scoring rubric detail gaps, exit sequence sub-FSM)
 

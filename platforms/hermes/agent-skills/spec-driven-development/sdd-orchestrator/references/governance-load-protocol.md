@@ -39,6 +39,7 @@ Before ANY SDD document creation, review, or remediation — and before calling 
 ### Definition of Done — Plan/IPLAN Review Level (DoD)
 
 A plan is Ready when:
+
 - [ ] Planning roadmap created for target scope
 - [ ] Planning index lists required planning documents
 - [ ] Changelog plan defined for target scope
@@ -77,6 +78,7 @@ skill_view(name='sdd-orchestrator', file_path='references/governance-load-protoc
 This single file condenses the rules from all three governance documents.
 
 If the full governance text is needed (rare), load individually:
+
 ```
 skill_view(name='sdd-orchestrator', file_path='governance/GOVERNANCE_RULES.md')
 skill_view(name='sdd-orchestrator', file_path='governance/DEFINITION_OF_DONE.md')

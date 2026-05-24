@@ -21,6 +21,7 @@ spec `v0.1.0` (unchanged). Coincides with the project `v1.0.0`
 cutover but versions independently (`docs/PROJECT.md` §3).
 
 ### Fixed
+
 - `src/mcp_server/executor/api_runner.py` — the litellm-missing
   error string told users to `pip install 'ucx_hermes[api]'`;
   corrected to `pip install 'hermes-server[api]'`, matching the
@@ -34,6 +35,7 @@ multi-platform `aidoc-flow-framework` repository. Conforms to framework
 spec `v0.1.0`.
 
 ### Added
+
 - Hermes MCP server platform at `platforms/hermes/` — `src/mcp_server/`
   with 18 sub-modules (`cleanup`, `cli`, `consistency`, `core`,
   `creation`, `executor`, `link_validation`, `models`, `preflight`,
@@ -57,6 +59,7 @@ spec `v0.1.0`.
   `specs/` (80 files; `docs/migration/` dropped per audit).
 
 ### Changed
+
 - Rewired the MCP server's scaffold + validation runtime to consume
   the framework's per-layer layout (`framework/layers/<NN>_<X>/`) per
   D-0013, closing the platform-template duplication: removed the
@@ -79,6 +82,7 @@ spec `v0.1.0`.
   outside the skill.
 
 ### Removed
+
 - The 8 drifted layer template YAMLs at `agent-skills/spec-driven-
   development/sdd-orchestrator/templates/` per D-0013 — the framework's
   `framework/layers/<NN>_<X>/<X>-TEMPLATE.yaml` set is the single

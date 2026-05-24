@@ -81,6 +81,7 @@ state_machine:
 ## Benchmarks-First Strategy
 
 For EARS (and any SDD layer with 9+ documents):
+
 1. Generate 2 benchmark documents from the strongest upstream sources
 2. Validate both with sdd_validate
 3. Review with 4 personas in parallel (requirements-specialist, technical-lead, qa-lead, chaos-engineer)

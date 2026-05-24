@@ -126,6 +126,7 @@ CORRECT:   6 SDK orchestrations × task_multiplier = actual_capacity
 ```
 
 **Why This Matters**:
+
 - Overstated capacity leads to unrealistic timelines
 - Underestimated resource needs cause project delays
 - Budget calculations become inaccurate
@@ -156,6 +157,7 @@ CORRECT:   6 SDK orchestrations × task_multiplier = actual_capacity
 ### 3.4 Core Conversion Formula
 
 **FTE to Person-Weeks**:
+
 ```
 Total_PW_Capacity = Effective_FTE × Duration_Weeks
 ```
@@ -173,6 +175,7 @@ Total_PW_Capacity = Effective_FTE × Duration_Weeks
 **Principle**: Each SDK orchestration = 1 concurrent work stream. The simplest model.
 
 **Formula**:
+
 ```
 Effective_FTE = Σ(1 × Task_Multiplier_per_SDK) + Human_FTE
 Total_PW = Effective_FTE × Duration_Weeks
@@ -193,6 +196,7 @@ Total_PW = Effective_FTE × Duration_Weeks
 | **Total** | | **6 SDKs** | **1.40x avg** | **10.4 FTE** |
 
 **Capacity Output**:
+
 ```
 Total_PW = 10.4 FTE × 33 weeks = 343.2 PW
 ```
@@ -209,6 +213,7 @@ Total_PW = 10.4 FTE × 33 weeks = 343.2 PW
 **Principle**: Account for agent sharing and apply productivity multipliers to effective agent count.
 
 **Formula**:
+
 ```
 Effective_Agents = Total_Agents × (1 - Reuse_Factor)
 Effective_FTE = Effective_Agents × Blended_Multiplier + Human_FTE
@@ -230,6 +235,7 @@ Total_PW = Effective_FTE × Duration_Weeks
 | 7 | **Total FTE** | 26.0 + 2.0 | **28.0** |
 
 **Capacity Output**:
+
 ```
 Total_PW = 28.0 FTE × 33 weeks = 924.0 PW
 ```
@@ -246,6 +252,7 @@ Total_PW = 28.0 FTE × 33 weeks = 924.0 PW
 **Principle**: Apply phase-specific throughput factors based on industry benchmarks.
 
 **Formula**:
+
 ```
 Base_PW = 1.0 PW per SDK per week (baseline capacity)
 Weekly_Capacity = SDK_Active × Throughput_Factor × Base_PW
@@ -264,6 +271,7 @@ Total_Capacity = Σ(Phase_Capacity)
 | **Total** | **33** | | | | | **110.15 PW** |
 
 **With Multiplier Applied**:
+
 ```
 Adjusted_Capacity = 110.15 × Blended_Multiplier × Agent_Factor
                   = 110.15 × 1.43 × 5.5 (avg agents/SDK)
@@ -282,6 +290,7 @@ Adjusted_Capacity = 110.15 × Blended_Multiplier × Agent_Factor
 **Principle**: Agent count provides diminishing returns (square root scaling).
 
 **Formula**:
+
 ```
 Per_SDK_FTE = 1 × √(Agents_in_SDK) × Task_Multiplier
 Effective_FTE = Σ(Per_SDK_FTE) + Human_FTE
@@ -302,6 +311,7 @@ Total_PW = Effective_FTE × Duration_Weeks
 | **Total** | | **6** | **26** | | | **18.78 FTE** |
 
 **Capacity Output**:
+
 ```
 Total_PW = 18.78 FTE × 33 weeks = 619.7 PW
 ```
@@ -328,6 +338,7 @@ Total_PW = 18.78 FTE × 33 weeks = 619.7 PW
 | Little's Law | L = λW: Doubling arrival rate doubles queue length |
 
 **The Bottleneck Shift**:
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │   Code Generation (AI)  ──►  HUMAN REVIEW  ──►  Deploy     │
@@ -338,6 +349,7 @@ Total_PW = 18.78 FTE × 33 weeks = 619.7 PW
 ```
 
 **Formula**:
+
 ```
 Human_Review_Capacity = Human_FTE × Review_Throughput_Factor × Hours_Per_Week
 Effective_SDK_Output = min(SDK_Count × SDK_Output_Rate, Human_Review_Capacity)
@@ -367,12 +379,14 @@ Total_PW = Effective_SDK_Output × Duration_Weeks
 | 7 | **Weekly FTE Equivalent** | 0.94 × 6 SDKs × 1.4 | **7.9 FTE** |
 
 **Capacity Output**:
+
 ```
 Total_PW = 7.9 FTE × 33 weeks = 260.7 PW
 ```
 
 **Reality Check - Parallel Review Optimization**:
 If humans can review multiple SDK outputs in parallel (asynchronous review):
+
 ```
 Parallel_Factor = 2.0 (review 2 streams simultaneously)
 Adjusted_FTE = 7.9 × 2.0 = 15.8 FTE
@@ -388,18 +402,21 @@ Adjusted_PW = 15.8 × 33 = 521.4 PW
 | E-Optimized | AI-assisted review (2.5x) | 19.8 | 653 | Mature AI tooling |
 
 **Use When**:
+
 - Human-in-the-loop is mandatory (compliance, quality gates)
 - Experienced developers with high review standards
 - Projects where validation matters more than generation speed
 - Realistic capacity planning (vs optimistic estimates)
 
 **Strengths**:
+
 - Based on empirical 2024-2025 research
 - Accounts for the real bottleneck (human review)
 - Prevents over-promising capacity
 - Applies Little's Law correctly
 
 **Weaknesses**:
+
 - More conservative than agent-counting models
 - Requires accurate review capacity estimates
 - May underestimate capacity for fully autonomous workflows
@@ -502,6 +519,7 @@ Result: More code generated ≠ More code shipped
 ```
 
 **Industry Evidence**:
+
 - METR 2025: 19% slowdown for experienced developers
 - LinearB: 91% longer PR review times
 - GitHub: 4+ day average PR review wait
@@ -516,6 +534,7 @@ Always validate using Model E as a reality check:
 3. **Lower Bound**: Model A or E-Conservative
 
 **Recommended Approach**:
+
 ```
 Conservative Estimate: Model E-Conservative (261 PW)
 Planning Estimate:     Model E-Standard (521 PW)  ← Use for budgeting
@@ -529,6 +548,7 @@ If capacity needed > E-Standard, options:
 ```
 
 **Example Validation**:
+
 ```
 Model B: 924 PW (agent-based estimate)
 Model E: 521 PW (human-bottleneck estimate)
@@ -600,6 +620,7 @@ Based on industry research and benchmarks (2025-2026):
 ### 6.2 Blended Multiplier Calculation
 
 **Formula**:
+
 ```
 Blended_Multiplier = Σ(Task_PW × Task_Multiplier) ÷ Σ(Task_PW)
 ```
@@ -628,6 +649,7 @@ Productivity varies by project phase:
 | Optimization (M10+) | 1.10x | Base × 1.10 | Refined processes |
 
 **Example**: Month 2 with 1.43x blended multiplier:
+
 ```
 Adjusted_Multiplier = 1.43 × 0.65 = 0.93x
 ```
@@ -705,6 +727,7 @@ Source: AI Agent Productivity Benchmarks 2026
 ```
 
 **Benefits**:
+
 - Reduced startup latency
 - Efficient resource utilization
 - Consistent agent behavior
@@ -720,11 +743,13 @@ Source: AI Agent Productivity Benchmarks 2026
 ### 8.2 Calculating Reuse Factor
 
 **Formula**:
+
 ```
 Reuse_Factor = (Total_Agent_Invocations - Unique_Agent_Roles) ÷ Total_Agent_Invocations
 ```
 
 **Alternative (Simpler)**:
+
 ```
 Reuse_Factor = Shared_Agents ÷ Total_Agents
 ```
@@ -732,6 +757,7 @@ Reuse_Factor = Shared_Agents ÷ Total_Agents
 **Standard Value**: 30% (0.30) - use when actual data unavailable.
 
 **Example**:
+
 - 26 defined agent roles
 - 8 agents shared across multiple SDKs
 - Reuse Factor = 8 ÷ 26 = 0.31 (31%)
@@ -781,6 +807,7 @@ Context window limits affect effective capacity:
 | >85% used | 50% capacity | Mandatory summarization |
 
 **Capacity Adjustment**:
+
 ```
 Adjusted_Capacity = Base_Capacity × Context_Factor
 ```
@@ -803,11 +830,13 @@ Apply to base capacity estimate:
 | **Distributed Team** | Multiple timezones | 0.90x | Global team |
 
 **Combined Risk Factor**:
+
 ```
 Risk_Adjusted_Capacity = Base_Capacity × Risk_Factor_1 × Risk_Factor_2 × ...
 ```
 
 **Example**:
+
 ```
 Base: 924 PW
 Factors: Regulatory (0.75) × Integration (0.85)
@@ -834,6 +863,7 @@ Adjusted: 924 × 0.75 × 0.85 = 589 PW
 | Regulatory | 25% | Total capacity |
 
 **Usable Capacity**:
+
 ```
 Usable_Capacity = Total_Capacity × (1 - Buffer_Percentage)
 ```
@@ -1056,6 +1086,7 @@ Summary:
 | Task Distribution | See below |
 
 **Task Distribution**:
+
 | Task | PW | % |
 |------|-----|---|
 | Infrastructure | 200 | 15% |
@@ -1117,6 +1148,7 @@ Total_PW = 19.62 × 33 = 647.5 PW
 **Root Cause**: Model B assumes linear agent scaling; Model D applies diminishing returns.
 
 **Resolution**: For complex project with 26 agents, use average:
+
 ```
 Averaged_PW = (950 + 648) ÷ 2 = 799 PW
 ```
@@ -1179,6 +1211,7 @@ Usable_Capacity = 645 × 0.85 = 548 PW
 ### 15.3 ROI Calculation
 
 **Formula**:
+
 ```
 ROI = (Traditional_Cost - AI_Cost) ÷ AI_Cost × 100%
 
@@ -1187,6 +1220,7 @@ AI_Cost = (SDK_Count × API_Cost) + (Human_Supervision × Weekly_Rate × Duratio
 ```
 
 **Example**:
+
 ```
 Traditional: 37 humans × $2,500/week × 33 weeks = $3,052,500
 AI System:  6 SDKs × $15,000/month × 8 months = $720,000
@@ -1214,12 +1248,14 @@ ROI = ($3,052,500 - $885,000) ÷ $885,000 × 100% = 245%
 ### 16.2 Dashboards
 
 **Capacity Dashboard**:
+
 - Real-time SDK utilization
 - Agent pool status (warm/cold)
 - Queue depth by team
 - Human oversight workload
 
 **Performance Dashboard**:
+
 - Task completion times
 - Token consumption trends
 - Error rates by agent
@@ -1312,6 +1348,7 @@ Sprint Planning Flow:
 ### 18.4 Escalation Triggers
 
 Escalate to project leadership when:
+
 - Capacity utilization exceeds 110%
 - Cross-model variance exceeds 35%
 - Risk factors reduce capacity by >30%
@@ -1437,6 +1474,7 @@ PW = FTE × Weeks
 | Scope Delivered | 1,242 PW | 1,198 PW | -4% |
 
 **Lessons Learned**:
+
 1. Model B/D average was accurate within 5%
 2. Human supervision needed +15% more than estimated
 3. Regulatory risk factor (0.85x) was appropriate

@@ -25,6 +25,7 @@ manually deciding what to build next.
 ## When to Use
 
 Use `workflow-optimizer` when:
+
 - You just completed an artifact and need next-step guidance.
 - You are starting documentation and want a workflow overview.
 - You want to find parallel-work opportunities or a progress report.

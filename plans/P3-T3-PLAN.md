@@ -50,6 +50,7 @@ ships.
 
 1. **`.claude-plugin/plugin.json`** — minimal manifest per P3-T1 Q1
    (minus the author block per Finding 1):
+
    ```json
    {
      "name": "aidoc-flow",
@@ -61,6 +62,7 @@ ships.
      "keywords": ["sdd", "spec-driven-development", "documentation", "brd", "prd", "ears", "bdd", "adr", "iplan"]
    }
    ```
+
 2. **`VERSION`** — single line `0.1.0\n`. Mirrors `framework/VERSION`
    and `platforms/hermes/VERSION` byte-for-byte (6 bytes).
 3. **`FRAMEWORK_SPEC_VERSION`** — single line `0.1.0\n`. Identical to
@@ -98,6 +100,7 @@ mkdir -p platforms/claude-code-plugin/.claude-plugin
 ```
 
 Validate by parsing:
+
 ```sh
 python -m json.tool < platforms/claude-code-plugin/.claude-plugin/plugin.json > /dev/null && echo "ok: valid JSON"
 ```

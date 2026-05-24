@@ -105,6 +105,7 @@ EARS must achieve **BDD-Ready score >=90/100** before downstream BDD generation.
 ## Maintenance Guidelines
 
 Before marking EARS as "Approved":
+
 - [PASS] All requirements follow EARS patterns (WHEN/THEN, WHILE/THEN, etc.)
 - [PASS] Requirements are atomic and independently testable
 - [PASS] Measurable acceptance criteria defined

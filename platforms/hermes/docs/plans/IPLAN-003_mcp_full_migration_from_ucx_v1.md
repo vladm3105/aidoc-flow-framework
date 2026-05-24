@@ -8,17 +8,19 @@ last_updated: 2026-03-26
 status: planning
 owner: ai-agent
 tags:
-  - implementation-plan
-  - mcp
-  - migration
-  - documentation
-  - unified-context
+
+- implementation-plan
+- mcp
+- migration
+- documentation
+- unified-context
 custom_fields:
   document_type: iplan
   plan_id: IPLAN-003
   status: planning
   created_date: 2026-03-26
   timezone: America/New_York
+
 ---
 
 ## IPLAN-003: MCP Full Migration from UCX_v1 (without autopilot)

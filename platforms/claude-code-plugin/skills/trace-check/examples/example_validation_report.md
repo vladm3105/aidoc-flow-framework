@@ -24,6 +24,7 @@ No broken links detected.
 | SPEC-03 | No TDD reference in Section 7.2 | Info | Add TDD-NN when tests created |
 
 **Details**:
+
 - **File**: `{project_root}/docs/06_SPEC/SPEC-03_data_service.yaml`
 - **Line**: 45-52 (Section 7: Traceability)
 - **Issue**: Downstream section lists "To Be Created" but no specific TDD reference
@@ -40,6 +41,7 @@ No broken links detected.
 **Issue**: SPEC-01 references ADR-02 (line 56), but ADR-02 does not reference SPEC-01 back.
 
 **Current State** (ADR-02:462-467):
+
 ```markdown
 ## 7.2 Downstream Artifacts
 
@@ -48,6 +50,7 @@ No broken links detected.
 ```
 
 **Recommended Fix** (ADR-02:462-470):
+
 ```markdown
 ## 7.2 Downstream Artifacts
 
@@ -59,6 +62,7 @@ No broken links detected.
 ```
 
 **Auto-fix Command**:
+
 ```bash
 /skill trace-check --auto-fix true --artifact-types SPEC
 ```
@@ -104,11 +108,13 @@ layer in the 8-layer model:
 **Complete**: Artifacts with Section 7 containing upstream sources and downstream artifacts (or "To Be Created" note)
 
 **Incomplete**:
+
 - SPEC-03: Missing specific TDD reference (has generic "To Be Created")
 
 ## Orphaned Artifacts (0 found)
 
 No orphaned artifacts detected. All SPEC files have:
+
 - ✅ At least one upstream source (BRD, PRD, EARS, BDD, or ADR)
 - ✅ At least one downstream artifact or "To Be Created" note
 
@@ -117,6 +123,7 @@ No orphaned artifacts detected. All SPEC files have:
 ### High Priority
 
 **1. Fix SPEC-01 → ADR-02 reverse link**
+
 - **Issue**: Impacts traceability integrity (bidirectional consistency at 75%)
 - **Action**: Add SPEC-01 reference to ADR-02 Section 7.2
 - **Estimated Time**: 2 minutes (manual edit)
@@ -125,6 +132,7 @@ No orphaned artifacts detected. All SPEC files have:
 ### Medium Priority
 
 **2. Add TDD reference to SPEC-03**
+
 - **Issue**: Missing downstream test reference
 - **Action**: Create TDD-NN test specification and update SPEC-03
 - **Estimated Time**: 30 minutes (TDD creation + link update)
@@ -133,6 +141,7 @@ No orphaned artifacts detected. All SPEC files have:
 ### Maintenance
 
 **3. Run trace-check weekly**
+
 - **Purpose**: Catch new traceability issues early
 - **Schedule**: Before weekly team review or sprint planning
 - **Command**: `/skill trace-check --strictness-level strict`
@@ -147,6 +156,7 @@ No orphaned artifacts detected. All SPEC files have:
 **Execution Time**: 4.2 seconds
 
 **Validation Parameters**:
+
 - `project_root_path`: `{project_root}/docs/`
 - `artifact_types`: `["SPEC"]`
 - `strictness_level`: `"strict"`

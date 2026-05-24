@@ -31,6 +31,7 @@ the change registry honest.
 ## When to Use
 
 Use `doc-chg` when:
+
 - An existing artifact (any layer) needs a correction, refinement, or
   cross-layer change.
 - A production incident forces an emergency fix that must be documented.

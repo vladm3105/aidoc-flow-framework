@@ -3,6 +3,7 @@
 ## Session Start Protocol
 
 Before starting any implementation or governance work, read these files in order:
+
 1. `README_AIAGENT.md` — Universal AI agent rules (applies to all AI tools)
 2. `governance/GOVERNANCE_RULES.md` — Operational rules (naming, security, AI workflow)
 3. `governance/PROJECT_PLAN.md` §2 (Current State Analysis) — What's done, what's next
@@ -13,6 +14,7 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 ## AI Operating Rules
 
 ### Never Do
+
 - Use Slack — Teams/Email only per governance policy
 - Use service account JSON keys (`GCP_SA_KEY`) — Workload Identity Federation only
 - Use `ai:approved` or `ai:rejected` labels (they do not exist)
@@ -23,6 +25,7 @@ Do NOT invent process rules, naming conventions, or workflow patterns. If uncert
 - Use unreviewed workflow actions without version pinning — marketplace actions are allowed when pinned and reviewed (see GOVERNANCE_RULES.md §2a)
 
 ### Always Do
+
 - Prefix `gh` commands with `GH_HOST={GITHUB_HOST}`
 - Use EST ({TIMEZONE}) for all schedules and timestamps
 - Follow AI label lifecycle: `ai:ready` → `ai:in-progress` → `ai:review-requested` → PR merge
@@ -105,6 +108,7 @@ Do all of these steps in sequence, in the same turn, right after creating a PR:
 **Note**: The automated CI AI review workflow (`ai-review-reusable.yml`) automatically posts a conclusion comment and applies `ai:review-passed` or `ai:review-failed` PR labels. No manual steps needed for automated reviews.
 
 ### Naming Conventions (Quick Reference)
+
 - Repos: `{PROJECT_PREFIX}-{component}`
 - Branches: `feature/{name}`, `bugfix/{name}`, `hotfix/{name}`, `ai/{issue}-{name}`
 - Issues: `[P{phase}-{task_id}] {title}`

@@ -30,6 +30,7 @@ governance spec.
 ## When to Use
 
 Use `trace-check` when:
+
 - Before committing documentation changes, or after creating/updating artifacts.
 - Running a periodic audit (sprint/release) of traceability completeness.
 - Verifying ID-format or cumulative-tag compliance, or detecting orphans.
@@ -74,7 +75,6 @@ history; provide a rollback command. Never invent placeholder IDs.
 **Quality gates**: 100% link resolution and ID compliance, ≥ 95% bidirectional
 consistency, no orphaned mid-chain artifacts, Traceability section present on
 every artifact.
-
 
 ## Adaptation
 

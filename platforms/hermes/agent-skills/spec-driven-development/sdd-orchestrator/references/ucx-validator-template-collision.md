@@ -3,6 +3,7 @@
 ## Symptom
 
 `sdd_validate` fails with a parse error that references line 20, column 1 of a block mapping:
+
 ```
 while parsing a block mapping
   in "<unicode string>", line 20, column 1:

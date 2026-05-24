@@ -81,6 +81,7 @@ this is what keeps two independent engines behaviourally equivalent.
 ## 6. Change Management
 
 ### During migration (Phases 0–5) — lightweight
+
 The gated CHG process is **not** applied to migration work. Interim controls:
 
 - Pull-request review on the working branch.
@@ -89,6 +90,7 @@ The gated CHG process is **not** applied to migration work. Interim controls:
 - Significant decisions recorded as markdown ADRs in `docs/architecture/`.
 
 ### After cutover — CHG re-introduced
+
 Post-migration, the gated CHG process returns in two roles:
 
 1. **Process** — governing changes to the `framework/` spec. A spec change has
@@ -98,7 +100,7 @@ Post-migration, the gated CHG process returns in two roles:
    capability both platforms expose to their end users.
 
 Per-platform internal development continues under ordinary SemVer + changelog
-+ PR review — the gated process is not applied to a platform's own commits.
+- PR review — the gated process is not applied to a platform's own commits.
 
 ### CHG implementation model (implemented — CHG-D1, D-0020)
 

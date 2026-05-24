@@ -121,6 +121,7 @@ ADRs typically cover:
 Create ADRs based on architectural decisions identified in BRD.
 
 **CRITICAL REMINDERS**:
+
 - Document the "WHY" thoroughly
 - Include alternatives (even if obvious)
 - Be honest about negative consequences

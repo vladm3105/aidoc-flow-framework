@@ -15,6 +15,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [Unreleased]
 
 ### Added
+
 - **CHG change-management skills + onboarding/gate utilities (task P3-T7)** —
   six new skills, bringing the set to **52**:
   - `doc-chg` family (base + `-autopilot` + `-audit` + `-fixer`) — author and
@@ -31,6 +32,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   the conformance lint's enforced scope.
 
 ### Changed
+
 - **Skill set revised to the canonical 46** and recreated to a single standard
   (`docs/SKILL_AUTHORING.md`), task `../../plans/P3-T6-PLAN.md`. The set is now
   the 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) each in 4
@@ -43,6 +45,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   repointed their `-reviewer`/`-validator` references to the unified `-audit`.
 
 ### Removed
+
 - Stale skill families not in the 8-layer contract (`framework/registry/LAYER_REGISTRY.yaml`),
   reversing the D-0015 retention: SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`,
   25) — subsumed by SPEC (L6); test-type (`doc-utest/itest/ftest/ptest/stest/sectest`,
@@ -55,6 +58,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ## [0.2.0] — 2026-05-23
 
 ### Added
+
 - AI Team specialist agent roster — 8 new subagents under `agents/`
   (`pm-orchestrator`, `solutions-architect`, `test-architect`,
   `software-engineer`, `devops-release-engineer`, `code-reviewer`,
@@ -70,6 +74,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   legacy auxiliaries). Conformance suite stays green (31/31).
 
 ### Changed
+
 - **Whole skill corpus migrated to the framework's 8-layer SDD model**
   (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN), replacing the legacy 12-layer
   authoring model the skills were built on (task PLM,
@@ -83,6 +88,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   are retained as SPEC-L6 / TDD-L7 specialization helpers (D-0015).
 
 ### Removed
+
 - Legacy `doc-sys*`, `doc-req*`, `doc-ctr*` skill families — the SYS,
   REQ, and CTR layers do not exist in the 8-layer model. Plugin skill
   count 142 → 125.
@@ -104,6 +110,7 @@ framework spec `v0.1.0`. Ships the SDD engine as a **native Claude
 Code plugin** — no MCP backend.
 
 ### Added
+
 - Claude Code plugin platform at `platforms/claude-code-plugin/`.
   171 net files: 142 skill directories (129 `doc-*` + 13 SDD-adjacent
   non-doc), 19 skill-root files (quickrefs + set-overview READMEs +
@@ -130,6 +137,7 @@ Code plugin** — no MCP backend.
   agent's documentation lookup).
 
 ### Changed
+
 - Rewrote all `ai_dev_flow` placeholder paths in the ported skill
   content to point at `framework/` — 211 line hits across 30 files
   cleared via word-boundary regex sed.
@@ -145,6 +153,7 @@ Code plugin** — no MCP backend.
   `/opt/data/my_project` placeholder).
 
 ### Removed
+
 - 7 non-SDD-adjacent skill directories excluded from the port:
   `code-review`, `refactor-flow`, `analytics-flow`, `devops-flow`,
   `ai-pr-review`, `google-adk`, `n8n` (general-purpose, not coupled
@@ -160,6 +169,7 @@ Code plugin** — no MCP backend.
   in-flight during P3-T4 verify.
 
 ### Known limitations
+
 - ~150 documentary references in skill content point at concepts
   that don't exist in the current 8-layer framework (legacy 11-layer
   numbering, legacy alpha-named dirs, legacy top-level guides).

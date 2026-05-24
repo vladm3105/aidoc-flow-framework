@@ -23,15 +23,18 @@ Implementation complexity: 4/5.
 ## 2. Problem Statement
 
 Observed error class:
+
 - Workflow interpretation drift between:
   - Skill-level BRD generation guidance (`doc-brd`, `doc-brd-autopilot`)
   - MCP CLI/runtime behavior (`create-build`, `context_builder`)
   - Existing canonical contracts (`SPEC-001..004`)
 
 Primary gap:
+
 - `mcp/docs` has strong contract specs, but lacks a complete, layered, operator-facing documentation set that bridges source-input expectations to actual runtime behavior.
 
 Current baseline in `mcp/docs`:
+
 - `specs/`: 4 canonical specs
 - `policies/`: 1 policy
 - `architecture/`: 1 guide
@@ -42,6 +45,7 @@ Current baseline in `mcp/docs`:
 ## 3. Scope
 
 In scope:
+
 - Full documentation coverage across defined MCP documentation layers (L0-L9 below).
 - Canonical cross-linking between architecture, policies, specs, and operational runbooks.
 - Explicit documentation for source ingestion behavior and BRD creation flow constraints.
@@ -50,11 +54,13 @@ In scope:
 - Implemented-state documentation only for this cycle; future-state behavior captured separately.
 
 Out of scope:
+
 - Refactoring runtime implementation behavior.
 - Rewriting external project skills under `.claude/skills`.
 - Large-scale renaming of existing canonical SPEC IDs.
 
 Boundary rule for this cycle:
+
 - Any behavior not currently implemented in `mcp_ucx/src/mcp_server` must be documented only in a clearly labeled "Future State" subsection.
 
 ---
@@ -79,6 +85,7 @@ Boundary rule for this cycle:
 ## 5. Deliverables
 
 ### D1: Navigation Foundation
+
 - Create `mcp_ucx/docs/README.md` with:
   - Layer map (L0-L9)
   - Canonical source-of-truth table
@@ -86,43 +93,52 @@ Boundary rule for this cycle:
   - Document reconciliation index with status tags per file
 
 Acceptance criteria:
+
 - Every active canonical artifact is linked from README.
 - Every non-canonical artifact is listed in reconciliation index with one status: retain, update, deprecate, split.
 
 ### D2: Runtime + CLI Docs
+
 - Create:
   - `mcp_ucx/docs/architecture/MCP_RUNTIME_ARCHITECTURE.md`
   - `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md`
 
 Acceptance criteria:
+
 - `create-build`, `review-build`, `init` parameter contracts match `mcp_ucx/src/mcp_server/cli/main.py` exactly.
 - Include explicit statement for current behavior: direct markdown source ingestion is not implemented in `create-build`.
 
 ### D3: New Canonical Specs for Source and Creation Ops
+
 - Create:
   - `SPEC-005_mcp_source_input_ingestion_contracts.md`
   - `SPEC-006_mcp_creation_flow_operational_contracts.md`
   - `SPEC-007_mcp_review_remediation_operational_contracts.md`
 
 Acceptance criteria:
+
 - Source precedence, conflict semantics, and sections-json contract are defined with failure modes.
 - Each spec has: purpose, scope, boundaries, normative rules, failure modes, validation evidence requirements.
 
 ### D4: Policy Layer Completion
+
 - Create:
   - `mcp_ucx/docs/policies/DOC_COMPATIBILITY_AND_DEPRECATION_POLICY.md`
   - `mcp_ucx/docs/policies/DOC_QUALITY_GATES.md`
 
 Acceptance criteria:
+
 - Deprecation policy includes explicit write/read compatibility behavior for legacy artifacts.
 - Quality gates include blocking criteria for docs/code mismatch.
 
 ### D5: Runbook + Coverage Matrix
+
 - Create:
   - `mcp_ucx/docs/architecture/MCP_OPERATOR_RUNBOOK.md`
   - `mcp_ucx/docs/plans/DOC-COVERAGE-MATRIX-001_mcp_layers.md`
 
 Acceptance criteria:
+
 - Runbook includes BRD creation scenarios:
   - sections-json provided
   - sections-json omitted
@@ -130,10 +146,12 @@ Acceptance criteria:
 - Coverage matrix maps each layer to file paths, owner, and validation status.
 
 ### D6: Lifecycle and Version Governance
+
 - Create:
   - `mcp_ucx/docs/policies/DOC_LIFECYCLE_AND_VERSIONING_POLICY.md`
 
 Acceptance criteria:
+
 - Defines version increments by change type (patch/minor/major).
 - Defines review triggers for CLI contract, prompt assembly contract, loader/scaffold behavior, and prompt artifact schema changes.
 - Defines deprecation sunset rules and required compatibility notes.
@@ -143,9 +161,11 @@ Acceptance criteria:
 ## 5A. Reconciliation Strategy (Mandatory)
 
 Objective:
+
 - Resolve conflicts between existing docs and implemented runtime behavior before declaring coverage complete.
 
 Reconciliation workflow:
+
 1. Inventory all files under `mcp/docs` into a reconciliation table.
 2. For each file, assign one status: retain, update, deprecate, split.
 3. For each conflicting statement, record:
@@ -157,6 +177,7 @@ Reconciliation workflow:
 4. Apply updates/deprecations and re-validate cross-links.
 
 Source-of-truth precedence for conflict resolution:
+
 1. Runtime code and tests under `mcp_ucx/src/mcp_server` and `mcp/tests`
 2. Canonical specs (`mcp_ucx/docs/specs`)
 3. Policies (`mcp_ucx/docs/policies`)
@@ -164,9 +185,11 @@ Source-of-truth precedence for conflict resolution:
 5. Plans (`mcp_ucx/docs/plans`)
 
 Required output artifact:
+
 - `mcp_ucx/docs/plans/DOC-RECONCILIATION-LOG-001.md`
 
 Acceptance criteria:
+
 - No unresolved conflicts remain in reconciliation log.
 - Every `update`, `deprecate`, or `split` action is completed or explicitly deferred with owner and gate.
 
@@ -175,47 +198,62 @@ Acceptance criteria:
 ## 6. Execution Workstreams
 
 ### Workstream A: Baseline and Taxonomy
+
 Actions:
+
 - Build complete `mcp/docs` file inventory.
 - Define canonical layer ownership map (L0-L9).
 - Produce reconciliation table with retain/update/deprecate/split statuses.
 
 Outputs:
+
 - Initial matrix scaffold file.
 - Initial reconciliation log.
 
 ### Workstream B: Contract Expansion
+
 Actions:
+
 - Draft SPEC-005/006/007.
 - Cross-link to SPEC-001..004 and runtime modules.
 
 Outputs:
+
 - New canonical specs with normative clauses.
 
 ### Workstream C: Operationalization
+
 Actions:
+
 - Draft runtime architecture and CLI reference.
 - Draft operator runbook with deterministic command flows.
 
 Outputs:
+
 - Architecture docs and runbook.
 
 ### Workstream D: Governance and Drift Controls
+
 Actions:
+
 - Define docs compatibility and deprecation policy.
 - Define doc quality gates and release checks.
 - Define lifecycle/version policy and change-trigger mapping.
 
 Outputs:
+
 - Policy docs and gate checklist.
 
 ### Workstream E: Verification and Release
+
 Actions:
+
 - Validate every claim against current code paths.
 - Complete coverage matrix and release readiness checks.
 - Resolve all reconciliation conflicts or log approved deferrals.
 
 Outputs:
+
 - Updated matrix with PASS/FAIL status by layer.
 - Reconciliation log with closure status.
 
@@ -224,13 +262,16 @@ Outputs:
 ## 7. Anti-Drift Controls (Mandatory)
 
 1. Code-anchored references
+
 - Every behavioral rule must cite concrete module paths under `mcp_ucx/src/mcp_server`.
 
 2. Contract precedence declaration
+
 - Each operational doc must declare precedence:
   - Runtime code/tests > canonical specs > policy docs > runbooks/architecture > plans.
 
 3. Documentation quality gates
+
 - Fail release if:
   - CLI docs differ from current argparse contract.
   - Source-ingestion behavior in docs differs from runtime implementation.
@@ -239,15 +280,18 @@ Outputs:
   - Any layer in coverage matrix has status other than PASS.
 
 4. Change impact checklist
+
 - Any PR touching:
   - `mcp_ucx/src/mcp_server/cli/main.py`
   - `mcp_ucx/src/mcp_server/prompts/context_builder.py`
   - `mcp_ucx/src/mcp_server/review/runner.py`
 
 Must also update:
+
 - CLI reference or relevant SPEC-005/006/007 sections.
 
 5. Enforced gate operations model
+
 - Gate owner roles:
   - Documentation maintainer: executes document checks and reconciliation log updates.
   - Runtime maintainer: verifies code-behavior assertions.
@@ -265,6 +309,7 @@ Must also update:
 ## 8. Validation Procedure
 
 Validation checks:
+
 - Structural:
   - All target files exist.
   - Cross-links resolve.
@@ -288,6 +333,7 @@ PASS rubric (release blocking):
 | Ownership completeness | Layer owner assignment | 100% assigned |
 
 Evidence artifacts:
+
 - `mcp_ucx/docs/plans/DOC-COVERAGE-MATRIX-001_mcp_layers.md`
 - `mcp_ucx/docs/plans/COMPLIANCE-REPORT-002_mcp_docs_layer_coverage.md`
 - `mcp_ucx/docs/plans/DOC-RECONCILIATION-LOG-001.md`
@@ -320,6 +366,7 @@ Evidence artifacts:
 ## 11. Definition of Done
 
 Done when all are true:
+
 - L0-L9 target artifacts exist in `mcp/docs`.
 - Coverage matrix reports PASS for every layer (10/10).
 - BRD creation behavior is unambiguous and code-aligned across specs/runbooks/CLI docs.

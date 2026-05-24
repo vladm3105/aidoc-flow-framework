@@ -35,12 +35,14 @@ level's approval matrix. The skill must not mark a change "approved".
 ## When to Use
 
 Use `gate-check` when:
+
 - Modifying an existing SDD artifact through the CHG process (C2/C3 changes).
 - Verifying a change to the `framework/` spec itself — run **GATE-SPEC**.
 - Verifying a change's gate checks before requesting human sign-off.
 - Preparing the gate approval form for a change.
 
 Do **not** use it for:
+
 - C1 changes (typo/formatting) — no gate applies; fix and commit.
 - Creating fresh artifacts in a clean flow — use the layer skills and
   `../trace-check/SKILL.md`.
@@ -86,7 +88,7 @@ For each selected gate, run its **entry criteria**, **blocking error checks
 codes from `framework/governance/chg/gates/GATE_ERROR_CATALOG.md`. Examples:
 GATE-03 verifies EARS/BDD/ADR upstream-tag counts and syntax; GATE-06 verifies
 SPEC TDD-Ready ≥ 90% and SPEC↔TDD coverage; GATE-CODE requires a root-cause
-analysis. Also apply cross-gate ROUTE-E* checks (no skipped gate, correct
+analysis. Also apply cross-gate ROUTE-E*checks (no skipped gate, correct
 entry per source) and VAL-E* schema checks.
 
 For **GATE-SPEC**, run the **record-level** checks you can verify from the CHG

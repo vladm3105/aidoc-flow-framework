@@ -10,17 +10,20 @@
 > permission is now granted (so `.github/workflows/**` is pushable in-container).
 >
 > **Remaining (user-only):**
+>
 > - **Branch protection on `framework/**`** (repo → Settings → Branches) — the
 >   human-approval half of GATE-SPEC. The automated half now enforces via the
 >   `chg-gate.yml` workflow; the human sign-off exists only once this rule is set.
 > - **Release tags** — annotated; tag pushes still 403 in-container (separate
 >   from the workflows scope, see `docs/TAGGING.md`), so push from a local clone:
+>
 >   ```sh
 >   git tag -a framework/v0.2.0 f22fe6a -m "Framework spec v0.2.0 — adaptation overlay (ADAPT, D-0019)"
 >   git tag -a framework/v0.3.0 f8e8bf5 -m "Framework spec v0.3.0 — GATE-SPEC framework-spec change gate (CHG-D1, D-0020)"
 >   git tag -a framework/v0.3.1 3753de2 -m "Framework spec v0.3.1 — governance decision register (CHG-D2, GD-01)"
 >   git push origin framework/v0.2.0 framework/v0.3.0 framework/v0.3.1
 >   ```
+>
 >   Optional project milestone tag: `git tag -a v1.1.0 3974daa -m "Post-cutover feature release — adaptation overlay + CHG GATE-SPEC" && git push origin v1.1.0`.
 > - Delete the merged `claude/skill-revision` branch.
 
@@ -120,7 +123,8 @@
 > (`platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`): the 8 layer families
 > `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}` × {base, `-autopilot`, `-audit`,
 > `-fixer`} = 32, plus 14 utilities. Removed (reversing D-0015): 25 SPEC-subtype
-> + 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
+>
+> - 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
 > `-reviewer`/`-validator` (merged into `-audit`), 3 legacy utils
 > (contract-tester/test-automation/mermaid-gen), 16 loose `.md`, and the orphaned
 > `doc-flow/SHARED_CONTENT.md` (D-0013). Each skill `version` now defaults to the
@@ -560,21 +564,25 @@ archive's `.claude/` is the pre-migration one, the migration-era
 hooks survive only in working-branch git history).
 
 **Independent pending user actions** (carry-overs, do anytime):
+
 - Relocate workflows: `git mv plans/workflows-pending/*.yml
   .github/workflows/` from a local clone (P4-T3; in-container
   can't push `.github/workflows/`).
 
 **Plugin v0.2.0 launch — remaining user-only steps** (2026-05-23):
+
 1. **Merge into `main`** — the migrated plugin (8-layer corpus, 9-agent
    roster, marketplace) lives only on `claude/multi-platform-migration-AamWB`,
    13+ commits ahead of `origin/main` (which is at the `v1.0.0` cutover). Until
    merged, `/plugin install` from the repo serves the **pre-migration** plugin.
 2. **Push the release tag** from a local clone (in-container 403):
+
    ```sh
    git tag -a claude-code-plugin/v0.2.0 <release-commit> \
      -m "Claude Code plugin v0.2.0 — full 8-layer SDD model + marketplace install"
    git push origin claude-code-plugin/v0.2.0
    ```
+
 3. **Relocate CI** (item above) so the plugin/conformance workflows actually run.
 Verify the tag with `git ls-remote --tags origin`.
 

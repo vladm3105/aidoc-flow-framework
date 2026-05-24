@@ -107,7 +107,6 @@ Normalize every finding to: `source` (`structural`|`content`), `code`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-ears-fixer`
 consumes the latest `EARS-NN.A_audit_report_vNNN.md`.
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

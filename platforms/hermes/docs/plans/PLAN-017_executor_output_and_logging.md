@@ -40,6 +40,7 @@ The executor `working_dir` should also be set to the document folder so any file
 Log file location: `{project_root}/UCX/logs/mcp_ucx.log`
 
 Log entries for:
+
 - Tool invocations (tool name, arguments, timestamp)
 - Executor launches (executor name, prompt length, working_dir, timeout)
 - Executor completions (exit code, stdout length, duration)

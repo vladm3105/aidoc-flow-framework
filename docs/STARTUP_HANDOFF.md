@@ -86,6 +86,7 @@ in scaffold/runner.py *because* the plan made downstream implications
 explicit; P3-T4 G18 caught 47 broken symlinks the audit had missed).
 
 **Monetization:**
+
 - **SaaS** — host the SDD workflow; users author BRDs and the system
   produces gated IPLANs.
 - **Consulting + tooling** — sell the methodology + the platforms to
@@ -105,6 +106,7 @@ artifact users pay for, or whether it's the gate enforcement.
 
 **Premise:** The real long-term value is a *curated library* of proven
 IPLANs that:
+
 - **Compose** — bigger plans assemble from smaller validated plans;
   IPLAN-as-Lego.
 - **Stay fresh** — older plans decay (stack changes, security
@@ -123,6 +125,7 @@ later bugs across P2-T3, P3-T2, P3-T4. The corpus grows from
 retrospectives.
 
 **Monetization:**
+
 - **Marketplace** — IPLAN authors publish; consumers license / buy;
   curation as the platform's value.
 - **Subscription** — pay for access to the curated, vetted, fresh
@@ -152,6 +155,7 @@ adds platform-conformance tests as machine-enforced gates. **The
 multi-platform structure is the demo.**
 
 **Monetization:**
+
 - **Methodology consulting** — help enterprises adopt the
   spec-engine separation for their internal AI tooling.
 - **Reference implementations** — sell support for Hermes (the
@@ -174,6 +178,7 @@ layers apply for a domain and their schemas. Same engine, different
 profile.
 
 Candidate domains:
+
 - Marketing campaigns (BRD → PRD → assets → measurement plan → IPLAN)
 - Sales playbooks (account research → discovery scripts → demo plan
   → IPLAN)
@@ -189,6 +194,7 @@ traceability, IPLAN schema, conformance suite) is **already domain-
 neutral** — recorded explicitly in ROADMAP "Post-v1.0" section.
 
 **Monetization (massively expanded TAM):**
+
 - **Vertical SaaS per domain** — marketing IPLANs, legal IPLANs,
   research IPLANs, each as a separate product.
 - **Profile marketplace** — domain experts author profiles; the
@@ -209,6 +215,7 @@ Whether AI doc-flow methodology generalizes well outside engineering.
 blockers are **traceability** (where did this come from?), **gates**
 (was it reviewed?), and **non-repudiation** (who approved it?).
 Encode the change-management process as:
+
 - **Skills** for authoring + automated gate checks (AI-assistable).
 - **CI/CD** for required status-check enforcement.
 - **GitHub branch protection / required reviewers** for human sign-
@@ -222,6 +229,7 @@ two-pass plan review (D-0007) + hook (`plan-review-gate.sh`) that
 warns when a plan ships with fewer than two reviews.
 
 **Monetization:**
+
 - **Enterprise compliance product** — auditable AI-assisted-change
   management, sells to regulated industries (finance, healthcare,
   pharma, gov).
@@ -260,6 +268,7 @@ handoff infrastructure made this possible. Without it, every
 session would re-derive context from scratch.
 
 **Monetization:**
+
 - **Open-source the infrastructure** as a Claude-Code-skill /
   GitHub-action package — drives top-of-funnel for everything else.
 - **SaaS continuity layer** — host the handoff record + the review
@@ -285,6 +294,7 @@ they are a **seed corpus** for §3.2's IPLAN library.
 `plans/P*-T*-PLAN.md`.
 
 **Monetization:**
+
 - **Marketing asset** — case study for "how to migrate a complex
   legacy AI dev project."
 - **Seed for the IPLAN corpus** (§3.2) — the migration plans
@@ -312,7 +322,7 @@ from real use, not synthetic content. **The flywheel.**
 The 8-layer SDD model is reproducible (anyone could re-implement
 it). The conformance suite is reproducible. **But the corpus +
 the audit trail it accumulates is not reproducible without time
-+ adoption.** This is the long-game moat.
+- adoption.** This is the long-game moat.
 
 ### 4.3 "Spec + multiple engines" is anti-lock-in
 

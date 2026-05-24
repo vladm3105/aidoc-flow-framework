@@ -210,6 +210,7 @@ permissions:
 | Tools | `ruff` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install ruff
 - Ruff linter check with GitHub output format
@@ -224,6 +225,7 @@ permissions:
 | Tools | `mypy`, `types-requests` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install mypy
 - Run mypy with `--ignore-missing-imports`
@@ -238,6 +240,7 @@ permissions:
 | Tools | `pytest`, `pytest-cov`, `pytest-asyncio` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Resolve Python binary for matrix version (falls back to `python3`)
 - Create venv, install test deps + requirements
@@ -252,6 +255,7 @@ permissions:
 | Tools | `bandit`, `safety` |
 
 **Steps**:
+
 - Inline git clone (checkout)
 - Create venv, install bandit + safety
 - Bandit security scan (excludes `./tests`)
@@ -377,6 +381,7 @@ permissions:
 ### Close Behavior
 
 When an issue is closed:
+
 1. Board status set to **Done**
 2. Stale labels removed: `ai:ready`, `ai:in-progress`, `ai:review-requested`, `status:planning`
 3. Label removal uses REST API with 404 tolerance (labels not present are silently skipped)
@@ -410,6 +415,7 @@ permissions:
 ### Behavior
 
 When a PR is **closed** (merged or not):
+
 1. Finds the PR's project board item via GraphQL
 2. Sets board Status to **Done**
 3. Skips silently if the item is not on the project board
@@ -532,6 +538,7 @@ jobs:
 ### Skip Conditions
 
 The workflow skips automatically when:
+
 - PR is in draft mode
 - Actor is `dependabot[bot]`
 - PR has label `skip-ai-review`
@@ -862,6 +869,7 @@ GH_HOST={GITHUB_HOST} gh secret set ELEVATED_PAT \
 ```
 
 **Security Notes**:
+
 - Use a service account if available (not personal account)
 - Set expiration and rotate per security policy
 - The PAT owner must be a repository admin or have bypass permissions
@@ -1103,6 +1111,7 @@ DEV Deployment Complete
 **Test Types**: Smoke, unit (≥90% coverage), integration (≥70% coverage), E2E, feature-specific.
 
 **Outcomes**:
+
 - Pass: Close QA issue with `ai:qa-passed`, board status → Done
 - Fail: Add `ai:qa-failed`, trigger bug issue creation
 
@@ -1165,6 +1174,7 @@ done
 ```
 
 The `/health` endpoint must return HTTP 200 with JSON:
+
 ```json
 {
   "status": "healthy",
@@ -1251,6 +1261,7 @@ Automatically posts a comment on the linked issue when a PR is created, providin
 ### Output
 
 Issue comment:
+
 ```
 **PR Created**: #123 - Feature title
 **Branch**: `ai/123-feature-name`

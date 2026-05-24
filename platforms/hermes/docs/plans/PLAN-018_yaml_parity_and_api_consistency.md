@@ -21,33 +21,37 @@ Full tool testing of all 20 mcp_ucx tools against BRD-03 (YAML format) revealed 
 **Tool**: `sdd_consistency` (`consistency/runner.py`)
 **Symptom**: Reports `missing_source_artifact` and `BLOCKED` for YAML-only BRD directories.
 **Root cause**: Multiple hardcoded `.md` assumptions:
-  - `_resolve_source()` (line 56): `folder.glob("*.md")` — misses `.yaml` source artifacts
-  - Derived artifact detection (lines 85-87): constructs `_validation.md` and `_remediated.md` paths — misses `.yaml` variants
-  - Validation report lookup (line 85): looks for `{doc_id}_validation_report.md` — but we write `.json`
+
+- `_resolve_source()` (line 56): `folder.glob("*.md")` — misses `.yaml` source artifacts
+- Derived artifact detection (lines 85-87): constructs `_validation.md` and `_remediated.md` paths — misses `.yaml` variants
+- Validation report lookup (line 85): looks for `{doc_id}_validation_report.md` — but we write `.json`
 **Impact**: Consistency check is unusable for YAML documents — blocks the lifecycle pipeline.
 
 **Fix**:
-  - `_resolve_source()`: Search both `*.md` and `*.yaml` with `_validation`/`_remediated` exclusion
-  - Derived artifact detection: Check for both `.md` and `.yaml` validation/remediated copies
-  - Validation report: Check `.json` in addition to `.md`
-  - Use shared `collect_source_files()` utility (Issue #6)
+
+- `_resolve_source()`: Search both `*.md` and `*.yaml` with `_validation`/`_remediated` exclusion
+- Derived artifact detection: Check for both `.md` and `.yaml` validation/remediated copies
+- Validation report: Check `.json` in addition to `.md`
+- Use shared `collect_source_files()` utility (Issue #6)
 
 ### Issue 2: `sdd_next_action` doesn't detect YAML artifacts
 
 **Tool**: `sdd_next_action` (`tool_registry.py:_inspect_document_folder()`)
 **Symptom**: After full remediation pipeline on YAML BRD, reports stage as "reviewed" instead of "remediated". YAML files not included in `existing_artifacts` list.
 **Root cause**: Three `.md`-only assumptions:
-  - `md_files = sorted(document_dir.glob("*.md"))` — YAML not collected
-  - `all_names` built from `md_files + json_files` only — YAML invisible
-  - `source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.md$")` — misses `.yaml`
-  - `has_validation_copy`, `has_remediated_copy` check only `md_files`
+
+- `md_files = sorted(document_dir.glob("*.md"))` — YAML not collected
+- `all_names` built from `md_files + json_files` only — YAML invisible
+- `source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.md$")` — misses `.yaml`
+- `has_validation_copy`, `has_remediated_copy` check only `md_files`
 **Impact**: Pipeline orchestration gives wrong recommendations and incomplete artifact lists for YAML documents.
 
 **Fix**:
-  - Add `yaml_files = sorted(document_dir.glob("*.yaml"))` 
-  - Include in `all_names`
-  - Expand `source_pattern` to match `.yaml`
-  - Check both `md_files` and `yaml_files` for validation/remediated copies
+
+- Add `yaml_files = sorted(document_dir.glob("*.yaml"))`
+- Include in `all_names`
+- Expand `source_pattern` to match `.yaml`
+- Check both `md_files` and `yaml_files` for validation/remediated copies
 
 ### Issue 3: Scoring formula weights cross-section errors same as structural errors
 
@@ -88,9 +92,10 @@ else:
 ```
 
 Weights:
-  - `structural_error`: 20 points (missing section, missing frontmatter)
-  - `cross_section_error`: 10 points (SDD-XS, BRD-XS rules)
-  - `warning`: 5 points (unchanged)
+
+- `structural_error`: 20 points (missing section, missing frontmatter)
+- `cross_section_error`: 10 points (SDD-XS, BRD-XS rules)
+- `warning`: 5 points (unchanged)
 
 ### Issue 4: Result class API inconsistency
 
@@ -133,6 +138,7 @@ def is_valid(self) -> bool:
 **Impact**: Remediation report is near-empty for YAML documents.
 
 **Fix**: Add YAML structure validation when document is `.yaml/.yml`:
+
 - **Required top-level keys**: Load from the layer template (`BRD-TEMPLATE.yaml` sections list) via `_load_layer_yaml_template()` — not hardcoded per doc_type. Extract section names from template and verify they exist as top-level keys in the document YAML.
 - **Element ID format**: Verify `id:` values match `TYPE.NN.hash` pattern (`^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$`)
 - **Empty section detection**: Flag sections that are `null`, empty dict `{}`, or empty list `[]`

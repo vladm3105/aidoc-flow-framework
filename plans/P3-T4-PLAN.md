@@ -239,6 +239,7 @@ cleanup" section. P3-T2's audit math now reconciles:
 
 When `cp -r` from a source tree that may contain symlinks (especially
 ones referencing absolute paths outside the repo), either:
+
 - Use `cp -rL` to dereference (substantive content gets copied; bad
   if the symlinks are self-referencing as here).
 - Use `find ... -not -type l` to filter symlinks out upfront.

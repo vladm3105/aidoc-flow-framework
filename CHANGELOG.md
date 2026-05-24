@@ -19,6 +19,7 @@ and the return of change management as the GATE-SPEC framework-spec gate
 0.3.1**.
 
 ### Changed
+
 - **Plugin layer-model migration (PLM).** Migrated the entire Claude Code
   plugin skill corpus (125 skills) from the legacy **12-layer** SDD model to the
   framework's **8-layer** model (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN), closing
@@ -33,6 +34,7 @@ and the return of change management as the GATE-SPEC framework-spec gate
   staged, conformance-gated batches B0–B7 (`plans/PLM-PLAN.md`).
 
 ### Added
+
 - **Framework governance decision register (CHG-D2).** New
   `framework/governance/DECISIONS.md` — the spec's own durable home for
   decisions about the spec and its governance. Records the CHG implementation
@@ -52,7 +54,7 @@ and the return of change management as the GATE-SPEC framework-spec gate
   documented as protected-branch review. This **unblocks** `knowledge-extractor`'s
   spec-promotion path. Framework spec **0.2.0 → 0.3.0**.
 - **Project adaptation overlay (ADAPT, D-0019).** `framework/governance/ADAPTATION.md`
-  + machine-readable `ADAPTATION_SURFACE.yaml` (a closed 4-knob surface:
+  - machine-readable `ADAPTATION_SURFACE.yaml` (a closed 4-knob surface:
   `active_layers`, `section_toggles`, `audit_threshold` raise-only, `glossary`),
   the `adapts:` consult-clause across the 35-skill adapting set, and two new
   utility skills — `project-profile` (maintains `.aidoc/profile.yaml`) and
@@ -81,6 +83,7 @@ project is preserved on the protected, read-only archive branch
 > api_runner fix below ships as the optional `hermes/v0.1.1` patch.
 
 ### Removed
+
 - In-tree `legacy/` directory (2276 tracked files, ~645k lines) —
   the pre-migration `ucx_framework` working copy. **Lossless:** the
   full content is preserved byte-for-byte on the protected
@@ -96,6 +99,7 @@ project is preserved on the protected, read-only archive branch
   history. (P5-T3)
 
 ### Fixed
+
 - `platforms/hermes/src/mcp_server/executor/api_runner.py` — the
   litellm-missing error told users to `pip install 'ucx_hermes[api]'`;
   corrected to `pip install 'hermes-server[api]'` to match the
@@ -104,6 +108,7 @@ project is preserved on the protected, read-only archive branch
   patch (see `platforms/hermes/CHANGELOG.md`).
 
 ### Changed
+
 - Project docs finalized for the as-built, post-migration state
   (P5-T4): `README.md` (dropped migration framing + `legacy/` from
   the structure diagram; platform matrix → release tags; added
@@ -115,6 +120,7 @@ project is preserved on the protected, read-only archive branch
   `.claude/` removal).
 
 ### Known carried issues (post-v1.0)
+
 - **Plugin SDD layer-model gap** — the plugin reflects the legacy
   11-layer model and lacks `doc-tdd` + `doc-iplan` (`docs/PARITY.md`
   "Known parity gap"). Content depth, not a correctness issue;
@@ -134,6 +140,7 @@ authored; per-platform CHANGELOG retrofits; expanded Hermes README;
 repo-root LICENSE; parity report.
 
 ### Added
+
 - `tests/conformance/platforms/` sub-package with PC1 (version
   declaration: VERSION + FRAMEWORK_SPEC_VERSION files exist, are
   bare SemVer, match `framework/VERSION`) and PC4 (engine isolation:
@@ -180,6 +187,7 @@ repo-root LICENSE; parity report.
   and the verify record `plans/P4-T5-VERIFY.md`.
 
 ### Changed
+
 - `tests/conformance/_spec.py` — extended **additively** with
   platform helpers (`PLATFORMS_ROOT`, `platform_dirs`,
   `platform_version_file`, `platform_framework_spec_version_file`,
@@ -196,6 +204,7 @@ repo-root LICENSE; parity report.
   the existing tag-push reference.
 
 ### Known carried issues (deferred)
+
 - **CI workflow files** at `plans/workflows-pending/` — user
   `git mv`'s them into `.github/workflows/` from a local clone.
   Phase 4 closed without that user action; the relocation is a
@@ -226,9 +235,10 @@ auto-discovery from `skills/`, `agents/`, `commands/` at plugin root —
 no explicit registration in the manifest.
 
 ### Added
+
 - `platforms/claude-code-plugin/` — the Claude Code plugin platform.
   171 net files (post-cleanup): 142 skill directories (129 `doc-*`
-  + 13 SDD-adjacent non-doc), 19 skill-root files (quickrefs +
+  - 13 SDD-adjacent non-doc), 19 skill-root files (quickrefs +
   set-overview READMEs + `REVIEW_DOCUMENT_STANDARDS.md`), 1 agent
   (`requirements-analyst`), 1 command (`save-plan`), plus 4 new
   top-level files (manifest + 2 VERSION files + populated README).
@@ -264,6 +274,7 @@ no explicit registration in the manifest.
   manifest validity, integration checks).
 
 ### Changed
+
 - Rewrote all `ai_dev_flow` placeholder paths in the ported skill
   content to point at `framework/` — 211 line hits across 30 files
   cleared via word-boundary regex sed (P2-T7 G12). Class B (5 layer
@@ -276,6 +287,7 @@ no explicit registration in the manifest.
   `framework/governance/ID_NAMING_STANDARDS.md`.
 
 ### Removed
+
 - 7 non-SDD-adjacent skill directories excluded from the plugin
   port: `code-review`, `refactor-flow`, `analytics-flow`,
   `devops-flow`, `ai-pr-review`, `google-adk`, `n8n` (P3-T1 Q2 —
@@ -294,6 +306,7 @@ no explicit registration in the manifest.
   on the 47 symlink entries.
 
 ### Carried known issue (deferred)
+
 - The ~150 Class D stale `framework/<X>` references in the ported
   skills point at concepts not in the current 8-layer framework
   (`framework/scripts/`, legacy 11-layer numbering,
@@ -312,6 +325,7 @@ runtime now reads layer templates from `framework/layers/<NN>_<X>/`
 per D-0013, closing the platform-template duplication.
 
 ### Added
+
 - `docs/TAGGING.md` — the full git-tag policy: release tags (`vX.Y.Z`,
   `framework/vX.Y.Z`, `<platform>/vX.Y.Z`) and `mark/<slug>` bookmark tags,
   with create / push / find commands (D-0011). `docs/PROJECT.md` §3 slimmed
@@ -348,6 +362,7 @@ per D-0013, closing the platform-template duplication.
   templates: platforms consume `framework/layers/`, never duplicate.
 
 ### Changed
+
 - Recorded the framework's purpose — the IPLAN as the terminal product;
   code/deploy out of scope; v1 scope is software/devops (D-0012).
 - Refined D-0012: the IPLAN has a planned and an executed state with
@@ -385,6 +400,7 @@ per D-0013, closing the platform-template duplication.
   gaps discovered during P2-T3 planning.
 
 ### Removed
+
 - The 8 drifted layer template YAMLs at `platforms/hermes/agent-skills/
   spec-driven-development/sdd-orchestrator/templates/` (P2-T8). They
   carried engine hardcodes (`server: ucx_hermes`, `tool: sdd_validate`,
@@ -410,6 +426,7 @@ guarded by a 25-test conformance suite. Framework spec released as
 `framework/v0.1.0`.
 
 ### Added
+
 - Plan-review gate (D-0007): plans require a `## Review log` of ≥2 passes;
   `plans/PLAN-TEMPLATE.md` added; non-blocking `PreToolUse(git commit)` hook
   warns when a staged plan file falls short.
@@ -450,6 +467,7 @@ guarded by a 25-test conformance suite. Framework spec released as
   version-lineage content dropped per D-0010).
 
 ### Changed
+
 - **Legacy isolation (P1-T0):** all pre-migration content moved into `legacy/`
   (frozen) — `ucx_flow_v3`, `ucx_hermes`, `mcp_ucx`, `ai_dev_ssd_flow_v2`,
   `governance`, and supporting trees. Repo root now holds only the new
@@ -464,6 +482,7 @@ guarded by a 25-test conformance suite. Framework spec released as
 Phase 0 — Planning & Scaffolding. The migration baseline.
 
 ### Added
+
 - Planning baseline for the multi-platform restructure:
   - `ROADMAP.md` — phased delivery plan (Phase 0 → cutover v1.0.0).
   - `docs/REPO_STRUCTURE.md` — target repository layout and legacy mapping.
@@ -484,6 +503,7 @@ Phase 0 — Planning & Scaffolding. The migration baseline.
   into context), with scripts under `.claude/hooks/`.
 
 ### Notes
+
 - Forked from `ucx_framework` v0.20.4 (`main`).
 - The gated CHG change-management process is intentionally not applied during
   the migration; it is re-introduced post-cutover (see `docs/PROJECT.md`).

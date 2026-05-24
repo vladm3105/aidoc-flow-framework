@@ -174,9 +174,11 @@ for num in ["02", "04", "05", "06", "07", "08", "09"]:
 ## Review + Remediation Strategy
 
 ### Benchmarks First
+
 Generate and fully review (5 personas) the umbrella (BDD-01) and core engine (BDD-03) before batch-generating the remaining 7. Benchmarks establish the pattern — batch documents inherit the learned structure.
 
 ### What to Fix at BDD Layer
+
 - Missing EARS requirement coverage
 - State machine transition gaps
 - Gherkin syntax/executability issues
@@ -184,6 +186,7 @@ Generate and fully review (5 personas) the umbrella (BDD-01) and core engine (BD
 - Alert deduplication and idempotency scenarios
 
 ### What to Defer to ADR/SPEC
+
 - OAuth token lifecycle, credential storage, regulatory hooks (architecture/interface)
 - DST/market holiday, circuit breaker handling (system-level contracts)
 - Concurrent failure, clock skew, cascading triggers (integration test definitions)

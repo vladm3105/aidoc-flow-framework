@@ -47,6 +47,7 @@ This guide walks you through deploying the AI Cloud Cost Monitoring platform to 
 ### Required Permissions
 
 IAM user/role with:
+
 - `AmazonECS_FullAccess` (ECS Fargate deployment)
 - `AmazonRDSFullAccess` (Database)
 - `AmazonS3FullAccess` (Object storage)
@@ -234,12 +235,12 @@ REDIS_PORT=6379
 To implement AWS deployment:
 
 1. [PASS] Review this service mapping
-2.  Create Terraform modules in `terraform/aws/`
-3.  Adapt application code for AWS services (Boto3 for Athena, SQS, Secrets Manager)
-4.  Create ECS task definitions
-5.  Set up CI/CD pipeline (AWS CodePipeline or GitHub Actions)
-6.  Test full deployment
-7.  Expand this guide with actual deployment commands
+2. Create Terraform modules in `terraform/aws/`
+3. Adapt application code for AWS services (Boto3 for Athena, SQS, Secrets Manager)
+4. Create ECS task definitions
+5. Set up CI/CD pipeline (AWS CodePipeline or GitHub Actions)
+6. Test full deployment
+7. Expand this guide with actual deployment commands
 
 ---
 
@@ -247,8 +248,8 @@ To implement AWS deployment:
 
 - **Main README**: [README.md](README.md) - Architecture overview
 - **GCP Deployment**: [GCP-DEPLOYMENT.md](GCP-DEPLOYMENT.md) - Reference implementation
-- **AWS ECS Docs**: https://docs.aws.amazon.com/ecs/
-- **AWS Terraform Provider**: https://registry.terraform.io/providers/hashicorp/aws/
+- **AWS ECS Docs**: <https://docs.aws.amazon.com/ecs/>
+- **AWS Terraform Provider**: <https://registry.terraform.io/providers/hashicorp/aws/>
 
 ---
 

@@ -9,14 +9,18 @@ User says: "start PRD generation" or "generate PRDs" after 01_BRD layer is compl
 ## Workflow
 
 ### Step 1: Pre-flight Checks
+
 ```
 sdd_preflight(context="create")
 sdd_create_build(doc_type="prd", layer="02_PRD", template="02_PRD-TEMPLATE.yaml")
 ```
+
 If templates missing: `sdd_init(project_path)` then retry.
 
 ### Step 2: Planning Gate
+
 Create `plans/PLAN-NNN_prd-generation.md` covering:
+
 - Which BRDs → which PRDs (1:1 mapping)
 - Priority order (umbrella first, highest-value feature second)
 - Batch size (umbrella separate, features batched)
@@ -24,7 +28,9 @@ Create `plans/PLAN-NNN_prd-generation.md` covering:
 Get human approval. Do NOT start generation without explicit approval.
 
 ### Step 3: Umbrella PRD (detailed)
+
 Map BRD-01 → PRD-01 with full 15-section content:
+
 - Business objectives → product KPIs and success metrics
 - 12 FRs → 7 core capabilities with acceptance criteria
 - Constraints → assumptions and dependencies
@@ -32,6 +38,7 @@ Map BRD-01 → PRD-01 with full 15-section content:
 Target: 500+ lines
 
 ### Step 4: Feature PRDs (full decomposition — NOT lightweight)
+
 For BRD-02 through BRD-09:
 
 **CRITICAL RULE**: Each feature PRD MUST decompose ALL BRD functional requirements
@@ -42,6 +49,7 @@ technical-lead, product-owner, chaos-engineer) independently flagged 7 stub PRDs
 as blocking defects. Fact-checker confirmed 10/10 P0 claims with zero false positives.
 
 Correct pattern (what passed):
+
 - Read each BRD's functional_requirements.requirements[] array
 - For EACH requirement, create a PRD core_capability with proper hash ID
 - Build user stories by decomposing the first 4-5 FRs into "As a [role], I want [capability] so that [benefit]"
@@ -125,16 +133,20 @@ Every feature PRD must have:
 | diagrams.items | At least 1 with specific source description | NOT generic "C4-L2 description" |
 
 ### Step 5: Validation
+
 ```
 for prd in PRD-01 through PRD-09:
     sdd_validate(doc_type="prd", document=prd, layer="02_PRD")
 ```
+
 All must pass 0 errors, 0 warnings.
 
 ### Step 6: Next Action Gate
+
 ```
 sdd_next_action(document="02_PRD")
 ```
+
 Confirm current_stage="created", next_action="validate" or "review".
 
 ## Key Mapping Rules

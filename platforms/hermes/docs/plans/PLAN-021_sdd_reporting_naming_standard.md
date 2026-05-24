@@ -204,6 +204,7 @@ Update report filenames in all runners:
 | `prescreening/runner.py` | `prescreen_report.json/.txt` | `{doc_id}.prescreen.json/.txt` |
 
 Also update `tool_registry.py` dispatch handlers that construct report paths between stages:
+
 - `sdd_validate` handler returns `report_path` — downstream tools use this path
 - `_handle_lifecycle_pipeline` passes stage results — report paths must use new names
 - `_build_remediate_fix_prompt` reads `remediation_report_path` — callers pass new name
@@ -256,16 +257,19 @@ Also update `consistency/runner.py` derived artifact detection (lines 100-114) t
 ### Phase 5: Delete Legacy Reports
 
 **Projects:**
+
 - `/opt/data/b-local/b-local-docs/` — all `docs/01_BRD/` subfolders
 - `/opt/data/ucx_framework/` — if any exist
 
 **Procedure:**
+
 1. Dry run: `find docs/01_BRD -name "*.V_validation_report_*" -o -name "*.A_audit_report_*" ...` — count files
 2. Delete: `find ... -delete`
 3. Also delete old mcp_ucx generic reports: `validation_report.json`, `consistency_report.json`, etc.
 4. Git commit the deletions
 
 **Patterns to delete:**
+
 ```bash
 find docs/ \( \
   -name "*.V_validation_report_*.md" -o \
@@ -295,6 +299,7 @@ find docs/ \( \
 **16 test files need updating:**
 
 Unit tests (11):
+
 - `test_yaml_parity.py` — report path assertions
 - `test_api_aliases.py` — minor if any
 - `test_validation_runner.py` — report filename assertions
@@ -308,15 +313,18 @@ Unit tests (11):
 - `test_reporting_contracts.py` — report format
 
 Integration tests (4):
+
 - `test_migration_flows.py` — report detection
 - `test_creation_profile_contracts_integration.py`
 - `test_lifecycle_pipeline_integration.py` — pipeline report passing
 - `test_reporting_contracts_integration.py`
 
 Contract tests (1):
+
 - `test_context_engineering_contracts.py`
 
 New tests:
+
 - `test_report_naming.py` — regex patterns, `extract_doc_id()`, naming convention
 
 **Estimated: ~250 lines of test changes across 16 files + ~80 lines new test file.**

@@ -3,6 +3,7 @@
 ## When to Use
 
 Generate a BRD, PRD, or other SDD YAML document programmatically via `execute_code` when:
+
 - The document has 500+ lines with many element IDs that need content-based hashing
 - You need deterministic hash generation (SHA256 first 4 chars) across many elements
 - YAML quoting edge cases (comparison operators, special chars) would cause iterative write/fail cycles
@@ -104,12 +105,14 @@ if r.returncode != 0:
 ## Layer-Specific Requirements
 
 ### BRD (Layer 1)
+
 - 18 top-level sections (template says 15, UCX validator accepts more)
 - Functional requirements use `requirements` list with `priority`, `complexity`, `business_needs`, `business_rules`, `acceptance_criteria`
 - Include `adr_topics` with 7+ topics
 - Include `appendix` with lifecycle and next_cycle_roadmap
 
 ### PRD (Layer 2)
+
 - 15 top-level sections
 - `diagrams` section REQUIRED — must have `items[]` with at least 1 diagram entry
 - Functional requirements use `core_capabilities` with `brd_reference` hash links
@@ -122,6 +125,7 @@ if r.returncode != 0:
 ## Quality Gate Checklist
 
 Before calling generation complete, verify:
+
 - [ ] YAML parses cleanly
 - [ ] `sdd_validate` passes 0/0
 - [ ] Element IDs use content hashes (not sequential numbers)

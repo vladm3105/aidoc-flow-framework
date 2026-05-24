@@ -68,6 +68,7 @@
 ## Phase 3: SPEC Subtype Files (16 files)
 
 ### Schema + template files
+
 - [ ] `09_SPEC/CSPEC/CSPEC_MVP_SCHEMA.yaml` — `element_id_format` → 3-segment
 - [ ] `09_SPEC/CSPEC/CSPEC-MVP-TEMPLATE.yaml` — update ID examples
 - [ ] `09_SPEC/DSPEC/DSPEC_MVP_SCHEMA.yaml` — same
@@ -80,6 +81,7 @@
 - [ ] `09_SPEC/PROCSPEC/PROCSPEC-MVP-TEMPLATE.yaml` — same
 
 ### Index + creation rules files
+
 - [ ] `09_SPEC/PROCSPEC/PROCSPEC-00_index.md` — update ID examples
 - [ ] `09_SPEC/PROCSPEC/PROCSPEC_MVP_CREATION_RULES.md` — update ID format
 - [ ] `09_SPEC/RISKSPEC/RISKSPEC-00_index.md` — same
@@ -90,6 +92,7 @@
 ## Phase 4: mcp_ucx Prompt Templates (11 files)
 
 ### Creation prompts
+
 - [ ] `mcp_ucx/prompts/templates/creation/UCC_PROMPT_BRD.md` — update ID format
 - [ ] `mcp_ucx/prompts/templates/creation/UCC_PROMPT_PRD.md` — **HIGH**: remove "4-segment" instruction
 - [ ] `mcp_ucx/prompts/templates/creation/UCC_PROMPT_EARS.md` — update ID examples
@@ -98,9 +101,11 @@
 - [ ] `mcp_ucx/prompts/templates/creation/UCC_OUTPUT_SCHEMA.md` — update output format
 
 ### Review prompts
+
 - [ ] `mcp_ucx/prompts/templates/review/UCR_PROMPT_BRD.md` — update ID refs
 
 ### Remediation prompts
+
 - [ ] `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_BRD.md` — update ID refs
 - [ ] `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_PRD.md` — update ID refs
 - [ ] `mcp_ucx/prompts/templates/remediation/UCRem_PROMPT_EARS.md` — update ID refs
@@ -138,6 +143,7 @@
 ## Phase 6: Claude Code Skills (~41 files)
 
 ### High priority
+
 - [ ] `.claude/skills/doc-naming/SKILL.md` (24 occurrences)
 - [ ] `.claude/skills/doc-naming_quickref.md` (20 occurrences)
 - [ ] `.claude/skills/doc-brd/SKILL.md`
@@ -153,6 +159,7 @@
 - [ ] `.claude/skills/doc-ctr/SKILL.md`
 
 ### Medium priority
+
 - [ ] `.claude/skills/trace-check/SKILL.md`
 - [ ] `.claude/skills/doc-flow/SKILL.md`
 - [ ] `.claude/skills/doc-flow/SHARED_CONTENT.md`
@@ -162,9 +169,11 @@
 - [ ] `.claude/skills/doc-adr-autopilot/SKILL.md`
 
 ### Agents
+
 - [ ] `.claude/agents/requirements-analyst.md` — 9 occurrences
 
 ### All remaining doc-* skills
+
 - [ ] Batch grep + replace across all remaining `.claude/skills/*/SKILL.md` files
 
 ## Phase 7: mcp_ucx Persona Skills
@@ -187,18 +196,21 @@
 ## Phase 10: Changelog & Roadmap
 
 ### SDD Framework
+
 - [ ] Verify `ucx_flow_v3/README.md` uses 3-segment (updated Phase 5)
 - [ ] Verify `README.md` (root) uses 3-segment (updated Phase 9)
 - [ ] CREATE `changelog/CHANGELOG_v0.13.0.md`
 - [ ] UPDATE `roadmap/ROADMAP.md` — v0.12.1 → v0.13.0
 
 ### mcp_ucx Documentation
+
 - [ ] UPDATE `mcp_ucx/docs/README.md` — add v1.6.0 changelog entry
 - [ ] Check `mcp_ucx/docs/architecture/MCP_CLI_REFERENCE.md` for ID examples
 - [ ] Check `mcp_ucx/docs/specs/SPEC-003_mcp_creation_validation_profile_contracts.md` for ID format
 - [ ] Check `mcp_ucx/skills/README.md` for ID format refs
 
 ### mcp_ucx Changelog & Roadmap
+
 - [ ] UPDATE `mcp_ucx/docs/ROADMAP.md` — v1.5.0 → v1.6.0
 - [ ] CREATE `mcp_ucx/docs/CHANGELOG/CHANGELOG_v1.6.0.md`
 

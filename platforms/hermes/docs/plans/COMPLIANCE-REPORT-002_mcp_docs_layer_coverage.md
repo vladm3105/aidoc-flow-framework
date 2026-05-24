@@ -48,6 +48,7 @@
 Recommendation: release gate may proceed for documentation scope covered by this report.
 
 Constraints:
+
 - New runtime changes to cli/main.py, prompts/context_builder.py, review/runner.py, or skills/project_ucx_loader.py require revalidation and report update.
 
 ---
@@ -57,9 +58,10 @@ Constraints:
 Execution date: 2026-03-24 (America/New_York)
 
 Evidence summary:
+
 - Required artifact existence check: PASS (no missing required files)
 - Internal markdown link integrity scan for mcp/docs: PASS (LINKS_OK)
 - CLI contract parity signals:
-	- init, create-build, review-build parser contracts located in mcp_ucx/src/mcp_server/cli/main.py
-	- command surface and sections-json behavior documented in MCP_CLI_REFERENCE and SPEC-005/006
-	- no critical mismatch observed in verification pass
+ 	- init, create-build, review-build parser contracts located in mcp_ucx/src/mcp_server/cli/main.py
+ 	- command surface and sections-json behavior documented in MCP_CLI_REFERENCE and SPEC-005/006
+ 	- no critical mismatch observed in verification pass

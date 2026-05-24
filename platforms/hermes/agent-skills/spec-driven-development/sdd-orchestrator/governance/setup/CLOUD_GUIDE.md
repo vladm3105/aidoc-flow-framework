@@ -42,6 +42,7 @@ nano setup-projects.sh
 ```
 
 This creates three projects:
+
 - `{PROJECT_PREFIX}-dev`
 - `{PROJECT_PREFIX}-staging`
 - `{PROJECT_PREFIX}-prod`
@@ -62,6 +63,7 @@ nano setup-wif.sh
 ```
 
 This configures:
+
 - Workload Identity Pool: `{WIF_POOL_NAME}`
 - OIDC Provider: `{WIF_PROVIDER_NAME}`
 - Service accounts for CI/CD
@@ -81,6 +83,7 @@ Creates Docker repositories in each environment.
 ```
 
 Sets up:
+
 - Cloud Run services
 - IAM permissions
 - Environment-specific configurations
@@ -350,6 +353,7 @@ If using multiple cloud providers, you can:
    - Dev on GCP, Staging on AWS, Prod on Azure
 
 3. **Conditional deployment**
+
    ```yaml
    jobs:
      deploy-gcp:
@@ -363,6 +367,7 @@ If using multiple cloud providers, you can:
 ## Secrets Summary
 
 ### GCP Secrets
+
 | Secret | Description |
 |--------|-------------|
 | `GCP_PROJECT_DEV` | Dev project ID |
@@ -375,6 +380,7 @@ If using multiple cloud providers, you can:
 | `WIF_SA_EMAIL_PROD` | Prod service account |
 
 ### AWS Secrets
+
 | Secret | Description |
 |--------|-------------|
 | `AWS_ACCOUNT_ID` | AWS account ID |
@@ -382,6 +388,7 @@ If using multiple cloud providers, you can:
 | `AWS_ROLE_ARN` | GitHub Actions IAM role ARN |
 
 ### Azure Secrets
+
 | Secret | Description |
 |--------|-------------|
 | `AZURE_SUBSCRIPTION_ID` | Azure subscription ID |

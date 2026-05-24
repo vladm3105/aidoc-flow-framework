@@ -95,11 +95,13 @@ point at their respective Phase 2 / Phase 3 close commits.)
 Consolidated re-run of:
 
 **Group 1 — Conformance + suites**
+
 - G1. Conformance suite: 31 tests, all pass.
 - G2. Hermes test suite: 447 tests (skipped — Phase 4 made no
   Hermes-code changes; re-run optional).
 
 **Group 2 — Phase 4 deliverables present**
+
 - G3. PC1+PC4 test modules at `tests/conformance/platforms/`.
 - G4. CI workflows authored (in `plans/workflows-pending/` OR
   `.github/workflows/` — either is acceptable; record which).
@@ -111,12 +113,14 @@ Consolidated re-run of:
   section.
 
 **Group 3 — Cross-platform sanity**
+
 - G10. No `ucx_flow|UCX_FLOW|ucx_hermes` hits in `platforms/`.
 - G11. Plugin manifest valid JSON.
 - G12. Both platforms' `FRAMEWORK_SPEC_VERSION` matches
   `framework/VERSION` (= `0.1.0`).
 
 **Group 4 — Scope discipline**
+
 - G13. No changes to `framework/`, `platforms/hermes/src/`,
   `platforms/hermes/tests/`, `platforms/claude-code-plugin/skills/`
   in Phase 4 (P4 is docs + tests + CI, never platform code).
@@ -325,7 +329,7 @@ output, "Verdict" section.
   — appending a section to an existing file. The line distinguishes
   Added (new file) from Changed (modified file).
 - **G11. PC1 + PC4 test addition** — Added: new sub-package
-  + 2 test modules. `_spec.py` extension is Changed. Two
+  - 2 test modules. `_spec.py` extension is Changed. Two
   separate Added items vs one is a question; combining as
   "tests/conformance/platforms/" (the sub-package as the unit)
   is cleaner.
@@ -374,6 +378,7 @@ docs/tests/CI; platform-code fixes belong to Phase 5 or a
 patch release).
 
 Recorded in:
+
 - `plans/P4-T5-VERIFY.md` G10 + "Carried known issues" §1
 - `CHANGELOG.md [0.5.0]` "Known carried issues" §3
 

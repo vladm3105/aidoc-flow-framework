@@ -5,6 +5,7 @@
 ## Context
 
 `sdd_validate` and `sdd_validate_fix` are two separate MCP tools that run sequentially:
+
 1. `sdd_validate` — runs structural checks, produces `*.ucx.validate.json/.txt`
 2. `sdd_validate_fix` — reads that report, creates a derived copy, wraps same errors with boilerplate fix instructions
 
@@ -33,6 +34,7 @@ Without an executor, `sdd_validate_fix` adds minimal value — it just copies th
 **File**: `mcp_ucx/src/mcp_server/tool_registry.py` (lines 49-66)
 
 Add to `sdd_validate` inputSchema properties:
+
 ```python
 "validation_report": {"type": "string", "description": "Path to existing validation report. Skips re-validation, generates fix artifacts from this report."},
 "executor": {"type": "string", "description": "Executor name. Omit to return fix report text."},
@@ -40,6 +42,7 @@ Add to `sdd_validate` inputSchema properties:
 ```
 
 Update description:
+
 ```
 "Run structural validation against layer schema/template assets. When errors are found, creates a source-protected derived copy with fix instructions. If executor specified, spawns agent to apply fixes."
 ```
@@ -149,6 +152,7 @@ if name == "sdd_validate":
 Delete the entire `if name == "sdd_validate_fix":` block.
 
 **2c. Add deprecation alias at top of `_dispatch()` (before any handler):**
+
 ```python
 if name == "sdd_validate_fix":
     import warnings
@@ -161,6 +165,7 @@ if name == "sdd_validate_fix":
 **File**: `mcp_ucx/src/mcp_server/tool_registry.py`, `_inspect_document_folder()` (lines 488-495 only — do NOT touch lines 496-499 which are the `elif source_files:` branch)
 
 Replace lines 488-495:
+
 ```python
 elif has_validation_copy:
     current_stage = "validation_fixed"
@@ -173,6 +178,7 @@ elif has_validation_report:
 ```
 
 With:
+
 ```python
 elif has_validation_report or has_validation_copy:
     current_stage = "validated"
@@ -185,6 +191,7 @@ elif has_validation_report or has_validation_copy:
 **File**: `mcp_ucx/src/mcp_server/tool_registry.py`
 
 **4a. Stage handlers** (lines 887-893) — map both to same tool:
+
 ```python
 stage_handlers = {
     "validate": "sdd_validate",
@@ -196,6 +203,7 @@ stage_handlers = {
 ```
 
 **4b. Pipeline absorption** — insert before `stage_result = await _dispatch(...)` (line 907):
+
 ```python
 # Skip validate_fix if validate already produced fix output
 if stage == "validate_fix" and "validate" in results:
@@ -210,6 +218,7 @@ if stage == "validate_fix" and "validate" in results:
 **File**: `mcp_ucx/src/mcp_server/cli/main.py`
 
 **5a. Update `validate` subparser** (lines 115-130) — add optional args:
+
 ```python
 validate_parser.add_argument("--validation-report", default=None)
 validate_parser.add_argument("--executor", default=None)
@@ -258,6 +267,7 @@ return 0 if not failed else 1
 Update help text to `"[DEPRECATED] Use 'validate' instead"`.
 
 **5d. `validate-fix` handler** (lines 622-648):
+
 ```python
 if args.command == "validate-fix":
     import sys
@@ -290,6 +300,7 @@ Or extract shared logic into a helper function called from both handlers.
 | `test_pipeline_completes_all_stages` (L285) | Stages `["validate", "validate_fix"]` | Change to `["validate", "review"]` or keep `["validate", "validate_fix"]` and verify absorption |
 
 New test: `test_validate_fix_stage_absorbed`:
+
 ```python
 # Pipeline ["validate", "validate_fix"] — validate_fix is absorbed
 # Mock: validate returns {"passed": True, "fix_generated": True}
@@ -297,6 +308,7 @@ New test: `test_validate_fix_stage_absorbed`:
 ```
 
 New test: `test_deprecated_alias_forwards`:
+
 ```python
 # Dispatch "sdd_validate_fix" → routed to sdd_validate handler
 ```
@@ -308,6 +320,7 @@ New test: `test_deprecated_alias_forwards`:
 | `test_main_validate_without_out_uses_document_dir` (L296) | After validation with errors, assert `*.ucx.validate_fix.json` and `*_validate_copy.*` also exist in document dir |
 
 New test: `test_main_validate_pass_no_fix_artifacts`:
+
 ```python
 # Validate a passing document. Assert validate report exists but NO validate_fix report or validate_copy.
 ```
@@ -322,12 +335,14 @@ New test: `test_main_validate_pass_no_fix_artifacts`:
 ### Step 7: Update Documentation
 
 **File**: `docs/architecture/MCP_OPERATIONAL_FLOWS.md`
+
 - Collapse Stage 2 (validate) and Stage 3 (validate_fix) into single "Validate" stage
 - Update output table: validate now produces `validation_report.json/.txt` + `*_validate_copy.*` (when errors) + `validate_fix_report.*` (when errors)
 - Update artifact lineage diagram
 - Update source artifact resolution table: remove validate_fix row
 
 **File**: `docs/architecture/MCP_OPERATOR_RUNBOOK.md`
+
 - Remove section 3.6 (Validate-fix procedure)
 - Update section 3.5 (Validate procedure): mention derived copy output when errors found
 - Update troubleshooting table: remove validate-fix output missing row
@@ -347,6 +362,7 @@ New test: `test_main_validate_pass_no_fix_artifacts`:
 | `docs/architecture/MCP_OPERATOR_RUNBOOK.md` | Remove validate_fix procedure |
 
 **Unchanged** (verified):
+
 - `validation/runner.py` — core engine, `ValidationRunResult.is_valid` field unchanged
 - `remediation/runner.py` — `run_validate_fix_build()` and helpers called as-is
 - `consistency/runner.py` — reads `*.ucx.validate.json` (name preserved)
@@ -360,11 +376,13 @@ New test: `test_main_validate_pass_no_fix_artifacts`:
 ## Gaps Identified in Review 3
 
 ### G1: `_maybe_run_executor` drops response fields when executor runs
-When `_maybe_run_executor` is called WITH an executor (line 433), it returns a **new dict** with `executor`, `exit_code`, `output`, `stderr`, `prompt_file`, and nests our response under `"deterministic_result"`. The `passed`, `is_valid`, `errors` fields are NOT at top level. 
+
+When `_maybe_run_executor` is called WITH an executor (line 433), it returns a **new dict** with `executor`, `exit_code`, `output`, `stderr`, `prompt_file`, and nests our response under `"deterministic_result"`. The `passed`, `is_valid`, `errors` fields are NOT at top level.
 
 **Impact on pipeline**: If pipeline reads `stage_result.get("passed")` after an executor run, it gets `None` (not `True`). The pipeline would NOT stop (since `None is False` evaluates to `False`), but the `_completed_stages` logic might behave unexpectedly.
 
 **Fix**: After `_maybe_run_executor`, ensure `passed` and `is_valid` are preserved at top level. Add to Step 2a:
+
 ```python
 if fix_generated and arguments.get("executor"):
     exec_response = await _maybe_run_executor(
@@ -378,17 +396,21 @@ if fix_generated and arguments.get("executor"):
 ```
 
 ### G2: Pipeline passes ALL arguments to every stage including `validation_report`
+
 `_handle_lifecycle_pipeline` (line 901-904) forwards all arguments (except `stages`) to every stage. If user passes `validation_report` for the validate stage, it would also be passed to `sdd_review`, `sdd_remediate`, etc. Those handlers call `_opt_path(arguments, "validation_report")` — but they don't have that parameter, so `_opt_path` returns `None` (harmless). **No fix needed** — confirmed safe.
 
 ### G3: CLI delegation pattern for validate-fix is fragile
+
 Step 5d proposes `args.command = "validate"` + fall-through. But the CLI `main()` uses `if/elif` chain, not fall-through. The validate handler is at line 506 and validate-fix at line 622. Setting `args.command = "validate"` won't re-enter the if block.
 
 **Fix**: Extract the validate handler logic into a helper function `_run_validate_command(args, ...)` called from both `if args.command == "validate"` and `if args.command == "validate-fix"`. For validate-fix, set default values for missing args (`tier1_only=False`, `strict=False`, `format="json"`) before calling the helper.
 
 ### G4: CLI validate-fix has try/except for FileNotFoundError/ValueError (line 642)
+
 The current validate-fix handler wraps `run_validate_fix_build()` in a try/except. The merged validate handler (Step 5b) doesn't include this error handling for the fix phase.
 
 **Fix**: Add try/except around the `run_validate_fix_build()` call in the validate handler:
+
 ```python
 if failed:
     try:
@@ -399,15 +421,19 @@ if failed:
 ```
 
 ### G5: CLI validate handler has extra type guards (lines 528-531)
+
 The existing handler has `if not isinstance(errors, list): errors = []` guards that the plan's MCP handler code (Step 2a) omits.
 
 **Fix**: Add the same guards in the MCP handler after extracting errors/warnings from `payload`.
 
 ### G6: `_dispatch` is async but `run_validate_fix_build` is sync
+
 The plan's Step 2a handler code uses `await _maybe_run_executor(...)` correctly since `_dispatch` is async. But `run_project_validation_build()` and `run_validate_fix_build()` are sync functions called without `await` — this is correct (matches existing pattern). **No fix needed**.
 
 ### G7: Missing `--validation-report` skip logic in CLI handler
+
 Step 5e mentions handling `--validation-report` in the CLI but doesn't provide the code. The CLI handler needs:
+
 ```python
 if args.validation_report:
     validation_report_path = Path(args.validation_report).expanduser().resolve()
@@ -421,6 +447,7 @@ else:
 ```
 
 ### G8: Plan should save to both plan directories
+
 Plan should be saved to `mcp_ucx/docs/plans/PLAN-023_merge_validate_tools.md` (already done) AND referenced in the framework `plans/` directory or changelog when implemented.
 
 ---

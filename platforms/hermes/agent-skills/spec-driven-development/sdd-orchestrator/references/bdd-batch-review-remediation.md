@@ -4,6 +4,7 @@
 
 After batch-generating BDD documents from EARS using `references/batch-bdd-generation-from-ears.md`,
 every BDD needs:
+
 1. Structural validation (`sdd_validate`)
 2. 5-persona parallel review (qa-lead, technical-lead, chaos-engineer, site-reliability-engineer, security-auditor)
 3. Fact-checker + board-chairperson synthesis
@@ -27,6 +28,7 @@ Each persona gets read access to all BDD files + EARS upstreams.
 ## Phase 2: Fact-Checker + Board-Chairperson Synthesis
 
 After all 5 reviews return, dispatch sequentially:
+
 1. **fact-checker**: Cross-validate all P0/P1 findings against documents. Remove false positives.
 2. **board-chairperson**: De-duplicate, category-weight, score, produce manifest with execution order.
 
@@ -139,14 +141,18 @@ When fixes require Gherkin authoring, scenario generation, or EARS-to-BDD transl
 fixer subagents instead. Proven at TradeGent CC 2026-05-08.
 
 ### Subagent batching
+
 `delegate_task` max_concurrent_children=3. For N BDDs, dispatch in ceil(N/3) calls.
 Example for 7 BDDs:
+
 - Call 1: delegate_task([BDD-02, BDD-04, BDD-05 fixers])
 - Call 2: delegate_task([BDD-06, BDD-07, BDD-08 fixers])
 - Call 3: delegate_task([BDD-09 fixer])
 
 ### Per-subagent prompt template
+
 Each subagent receives:
+
 1. TARGET FILE path (original BDD to overwrite)
 2. UPSTREAM EARS path (read for requirement details and timing assertions)
 3. FIX LIST (structured, not prose): priority, cross_links, add_success (list of scenario descriptions), add_error, add_recovery (bool), add_audit (bool), rewrite_gherkin (bool), add_timing (bool), fix_spec_trace (bool), health_score, notes
@@ -158,7 +164,9 @@ Each subagent receives:
    - Return absolute file path and final scenario count
 
 ### Verification after each batch
+
 After each delegate_task returns, run `yaml.safe_load()` + `os.path.getmtime()` on every file in the batch to confirm:
+
 - File mtime changed (not still at pre-remediation timestamp)
 - Scenario count increased by expected delta
 - YAML parses without error
@@ -177,6 +185,7 @@ for f in bdd_files:
 Re-dispatch any subagent that timed out or failed to modify the file.
 
 ### Post-batch UCX validation
+
 Run `sdd_validate` on every rewritten file. Expected: PASS (0 errors, 0 warnings).
 Do not rely on subagent self-verification — validate independently.
 
@@ -190,6 +199,7 @@ but the fixes are qualitatively different — PURE DATA CORRECTIONS, not new sce
 
 The first remediation focuses on *adding missing content* (scenarios, audit trails, recovery paths).
 Reviewers can't catch data-quality issues until that content exists. The second pass catches:
+
 - SHALL keyword pollution in Then clauses (redundant with Given/When/Then format)
 - spec_trace format inconsistency (legacy placeholders, mixed `@ears:` vs `Behavior:` prefixes)
 - ears_coverage miscounts (numerator AND denominator wrong)
@@ -241,6 +251,7 @@ broad authoring instructions causes them to waste API calls rewriting already-go
 ### Why This Won't Reach 9 or 10
 
 The remaining gap (8/x → 10/10) requires ADR decisions:
+
 - Auth/AuthZ scenarios need OAuth/RBAC architecture
 - Race condition scenarios need state-machine contracts
 - Edge-case scenarios need calendar-service decisions
@@ -257,6 +268,7 @@ rationale per finding.
 2. **Subagent timeout on large BDDs**: `delegate_task` with >800 line documents times out. Review via file-read + findings generation is more reliable.
 3. **Placeholder hashes in element IDs**: BDD generation from EARS may produce `xxxx` placeholder hashes. Fix by recomputing SHA256 of "{doc_id}:{section_id}:{label}".
 4. **BDD YAML schema traversal — scenarios are NOT a flat list**: BDD v3.2 nests scenarios under `scenario_structure.scenarios.{success,error,recovery,edge,performance,security}`. Accessing `doc.get("scenarios", [])` returns `[]` every time. Correct traversal:
+
    ```python
    ss = doc.get("scenario_structure", {})
    sc = ss.get("scenarios", {})
@@ -264,6 +276,7 @@ rationale per finding.
    for key in ["success", "error", "edge", "performance", "security", "recovery"]:
        total += len(sc.get(key, []))
    ```
+
    **Symptom**: All BDDs show 0 scenarios in inventory; reality is 6-15 per doc. This broke a user status query because the parser assumed a flat `scenarios` list. Always traverse the typed buckets.
 5. **sdd_remediate is structural-only, not semantic**: See `references/ucx-remediate-content-limitations.md`. For scenario authoring, always use subagent dispatch or scripted patching with complete YAML rewriting.
 6. **UCX validation is structural-only**: `sdd_validate` confirms schema and ID compliance; it does NOT check scenario coverage, Gherkin quality, or traceability accuracy. Content quality is verified via chairperson scoring, not UCX tooling.

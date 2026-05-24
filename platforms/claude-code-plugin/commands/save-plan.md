@@ -42,6 +42,7 @@ Extract the current conversation plan and task list, save to a timestamped imple
    - Ensure directory exists before writing
 
 5. **File Structure**:
+
 ```markdown
 # Implementation Plan - [Brief Title]
 
@@ -93,6 +94,7 @@ Extract the current conversation plan and task list, save to a timestamped imple
 6. **Output to User**:
    - Confirm file location with full path and filename
    - Provide command to start new context:
+
    ```
    To continue implementation in a new context:
    1. Open new Claude Code session
@@ -110,6 +112,7 @@ Extract the current conversation plan and task list, save to a timestamped imple
 8. **CLAUDE.md Configuration Format**:
    - Create `.claude/CLAUDE.md` if it doesn't exist
    - Add or update section:
+
    ```markdown
    ### Project Configuration
    **Work Plans Directory**: /path/to/plans/

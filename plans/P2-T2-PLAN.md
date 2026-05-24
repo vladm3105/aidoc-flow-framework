@@ -31,6 +31,7 @@ framework-coupling detected by initial grep + the §3b verify re-grep):
 | **Total** | | **64** |
 
 **Out:**
+
 - **Content edits** — verbatim is byte-identical; any rewriting belongs in
   P2-T3 (port-with-repoint) or a follow-up that re-classifies the path.
 - **Other paths** — `pyproject.toml`, `src/`, `tests/`, `docs/`,

@@ -10,9 +10,11 @@
 ## Phase 0: Baseline
 
 - [ ] **0.1** Run existing test suite — all must pass before any changes
+
   ```bash
   cd /opt/data/ucx_framework && python -m pytest mcp_ucx/tests/unit/ -v
   ```
+
   **Expected**: All tests in `test_validation_runner.py`, `test_link_validation_runner.py`, and others pass
   **Record**: test count and pass rate as baseline
 
@@ -23,6 +25,7 @@
 ### File: `mcp_ucx/src/mcp_server/validation/cross_section.py` — CREATE (~200 lines)
 
 - [ ] **1.1** Create file with imports:
+
   ```python
   from __future__ import annotations
   import json
@@ -31,6 +34,7 @@
   ```
 
 - [ ] **1.2** Add `READINESS_SCORE_FIELDS` constant:
+
   ```python
   READINESS_SCORE_FIELDS: dict[str, str] = {
       "brd": "prd_ready_score",
@@ -48,6 +52,7 @@
   ```
 
 - [ ] **1.3** Add `DIAGRAM_CONTRACT_LAYERS` constant:
+
   ```python
   DIAGRAM_CONTRACT_LAYERS: set[str] = {"brd", "prd", "adr", "sys", "spec"}
   ```
@@ -84,23 +89,27 @@
   - If present: append pass with item count
 
 - [ ] **1.9** Implement main entry `run_cross_section_checks()`:
+
   ```python
   def run_cross_section_checks(
       *, yaml_data: dict[str, object], doc_type: str,
       errors: list[str], warnings: list[str], passes: list[str],
   ) -> None:
   ```
+
   - Call `_check_traceability_id_existence(yaml_data, errors, warnings, passes)`
   - Call `_check_diagram_registry(yaml_data, doc_type, errors, warnings, passes)`
   - Call `_check_readiness_score_plausibility(yaml_data, doc_type, errors, warnings, passes)` — LAST (reads current errors/warnings)
 
 - [ ] **1.10** Implement MD fallback `run_cross_section_checks_md()`:
+
   ```python
   def run_cross_section_checks_md(
       *, content: str, doc_type: str,
       errors: list[str], warnings: list[str], passes: list[str],
   ) -> None:
   ```
+
   - SDD-XS-001: Extract all ID-shaped strings from content, build registry from `id:` lines, check `## Traceability` or `## 19.` section for references
   - SDD-XS-002: Skip with info "Structured validation requires YAML format"
   - SDD-XS-003: Skip with info "Structured validation requires YAML format"
@@ -112,6 +121,7 @@
 ### File: `mcp_ucx/src/mcp_server/validation/brd_rules.py` — CREATE (~200 lines)
 
 - [ ] **2.1** Create file with imports:
+
   ```python
   from __future__ import annotations
   import json
@@ -155,12 +165,14 @@
   - If superset: append pass
 
 - [ ] **2.6** Implement main entry `run_brd_cross_section_checks()`:
+
   ```python
   def run_brd_cross_section_checks(
       *, yaml_data: dict[str, object],
       errors: list[str], warnings: list[str], passes: list[str],
   ) -> None:
   ```
+
   - Call all 4 BRD-XS check functions in order: 001, 002, 004, 005
 
 - [ ] **2.7** Implement MD fallback `run_brd_cross_section_checks_md()`:
@@ -174,6 +186,7 @@
 ### File: `mcp_ucx/src/mcp_server/validation/runner.py` — MODIFY (+80-100 lines)
 
 - [ ] **3.1** Add imports after line 9 (`import yaml`):
+
   ```python
   from mcp_server.validation.cross_section import (
       run_cross_section_checks,
@@ -186,6 +199,7 @@
   ```
 
 - [ ] **3.2** Add `_collect_yaml_files()` function after `_collect_markdown_files()` (after line 61):
+
   ```python
   def _collect_yaml_files(document_path: Path) -> list[Path]:
       """Collect YAML document files, excluding templates."""
@@ -202,6 +216,7 @@
   ```
 
 - [ ] **3.3** Add `_validate_yaml_metadata()` helper (after `_collect_yaml_files`):
+
   ```python
   def _validate_yaml_metadata(
       yaml_data: dict[str, object],
@@ -237,6 +252,7 @@
   - After `template, template_error = ...` and error/warning/passes init (lines 252-257):
   - Add YAML collection: `yaml_files = _collect_yaml_files(document_path)`
   - Add decision fork:
+
     ```python
     yaml_files = _collect_yaml_files(document_path)
     
@@ -306,11 +322,13 @@
                 errors=errors, warnings=warnings, passes=passes,
             )
     ```
+
   - Keep report building (lines 321-362) unchanged — it uses `errors`, `warnings`, `passes`, `files`
 
 ### File: `mcp_ucx/src/mcp_server/validation/__init__.py` — MODIFY
 
 - [ ] **3.5** Update exports:
+
   ```python
   """Script-based document validation helpers."""
   
@@ -428,9 +446,11 @@
 ## Phase 5: Integration Test
 
 - [ ] **5.1** Run full test suite:
+
   ```bash
   cd /opt/data/ucx_framework && python -m pytest mcp_ucx/tests/unit/ -v
   ```
+
   **Expected**: All existing + new tests pass, zero regressions
 
 ---
@@ -440,6 +460,7 @@
 ### File: `mcp_ucx/templates/BRD-TEMPLATE.yaml` — MODIFY (+40 lines)
 
 - [ ] **6.1** Add `diagrams` section after `executive_summary` section (find the `# Section 3` comment):
+
   ```yaml
   # =============================================================================
   # Diagrams Registry
@@ -469,6 +490,7 @@
   ```
 
 - [ ] **6.2** Add `cross_section_rules` to existing `metadata` section:
+
   ```yaml
     cross_section_rules:
       description: "Machine-enforced by sdd_validate (mcp_ucx)"
@@ -526,9 +548,11 @@
 ## Phase 8: Smoke Tests
 
 - [ ] **8.1** Run `sdd_validate` against BRD-04 YAML (pre-fix version from git):
+
   ```bash
   git show HEAD~2:docs/01_BRD/BRD-04_data_model_ledger/BRD-04_data_model_ledger.yaml > /tmp/brd04_prefix.yaml
   ```
+
   **Expected**: Detects phantom IDs (SDD-XS-001), score plausibility (SDD-XS-002), phase mismatch (BRD-XS-002), Modern Treasury inconsistency (BRD-XS-001)
 
 - [ ] **8.2** Run `sdd_validate` against BRD-04 YAML (current post-fix version):
@@ -541,9 +565,11 @@
   **Expected**: Degraded path works, no crashes, info messages for YAML-only rules
 
 - [ ] **8.5** Verify template sync:
+
   ```bash
   diff mcp_ucx/templates/BRD-TEMPLATE.yaml ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml
   ```
+
   **Expected**: Identical content
 
 ---
@@ -564,6 +590,7 @@
 - [ ] **10.1** Run full test suite one final time
 - [ ] **10.2** Stage all changed files
 - [ ] **10.3** Commit with message:
+
   ```
   feat(mcp_ucx): add cross-section validation rules (PLAN-016)
   

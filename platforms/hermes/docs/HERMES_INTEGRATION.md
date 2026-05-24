@@ -485,6 +485,7 @@ or project API overrides from `UCX/executors.json`.
 ### Validation report shows errors I already fixed
 
 Hermes should re-run `sdd_validate` after each edit. If errors persist:
+
 1. Check the exact error message — it may be a new error introduced by the fix
 2. Verify file was saved to the correct path
 3. Run `sdd_preflight` to check for environment issues
@@ -492,6 +493,7 @@ Hermes should re-run `sdd_validate` after each edit. If errors persist:
 ### sdd_review returns a huge prompt_text
 
 This is correct. The prompt contains:
+
 - Document content broken into sections
 - Persona instructions from `UCX/skills/personas/`
 - Layer assets and templates
@@ -501,6 +503,7 @@ The response may include `prompt_text` for traceability and reproducibility. Tre
 ### How do I actually apply remediation fixes?
 
 `sdd_remediate` returns:
+
 - `findings[]` with `priority`, `message`, `recommended_action`
 - `fix_report_text` with step-by-step instructions
 - API executor output/exit status for the remediation apply stage

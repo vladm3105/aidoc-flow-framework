@@ -102,9 +102,11 @@ All review, creation, and remediation prompt templates updated to match new pers
 ## Files Changed
 
 ### Persona Mappings
+
 - `mcp_ucx/skills/persona_mappings.yaml` — all three phases updated
 
 ### Review Templates (b-local)
+
 - `UCX/prompts/templates/review/UCR_PROMPT_BRD.md` — rewritten (11→5 sections)
 - `UCX/prompts/templates/review/UCR_PROMPT_PRD.md` — rewritten (10→5 sections)
 - `UCX/prompts/templates/review/UCR_PROMPT_ADR.md` — rewritten (7→5 sections)
@@ -112,14 +114,17 @@ All review, creation, and remediation prompt templates updated to match new pers
 - `UCX/prompts/templates/review/UCR_PROMPT_BDD.md` — updated (6→5 sections)
 
 ### Creation Templates (b-local)
+
 - `UCX/prompts/templates/creation/UCC_OUTPUT_SCHEMA.md` — PRD example updated
 
 ### Remediation Templates (framework + b-local)
+
 - `UCRem_PROMPT_{BRD,PRD,EARS,BDD,ADR,REQ,TSPEC}.md` — removed Integration Fixer
 - `UCRem_REPORT_TEMPLATE.md` — removed Integration Fixer
 - `UCRem_REPORT_SCHEMA.md` — removed Integration Fixer
 - `UCRem_PERSONAS.md` — rewritten (6→5 fixers, removed section 4)
 
 ### Documentation
+
 - `b-local UCX/README.md` — updated persona counts, file tree
 - Deleted: `UCX/review/UCR_PROMPT_BRD_PROJECT.md`, `UCR_FORMAT_BRD_PROJECT.md`, `UCR_PROMPT_PRD_PROJECT.md`

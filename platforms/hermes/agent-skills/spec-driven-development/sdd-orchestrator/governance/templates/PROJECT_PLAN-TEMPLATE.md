@@ -152,13 +152,16 @@ All estimates include **20% buffer** for reviews, test deployment, and changes.
 **Summary**: {TASK_SUMMARY}
 
 **Acceptance Criteria**:
+
 - [ ] {CRITERION_1}
 - [ ] {CRITERION_2}
 - [ ] {CRITERION_3}
 
 **Technical Notes**:
+
 - {NOTE_1}
 - {NOTE_2}
+
 </details>
 
 ### Phase 1 Exit Criteria

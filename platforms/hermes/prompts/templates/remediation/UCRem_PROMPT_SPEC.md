@@ -20,10 +20,12 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 ## SPEC-Specific Context
 
 SPEC is Layer 9 in the SDD workflow:
+
 - **Upstream**: REQ (Atomic Requirements), CTR (Data Contracts)
 - **Downstream**: TSPEC (Test Specification), TASKS (Task Breakdown)
 
 Common SPEC issues to remediate:
+
 - Missing edge case handling
 - Undefined error responses
 - Vague algorithm steps
@@ -47,17 +49,20 @@ Common SPEC issues to remediate:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 - Error handling addition with standard patterns
 - Configuration option with sensible default
 - Monitoring metric addition
 - Algorithm step clarification
 
 ### auto-assisted
+
 - Algorithm template with [TODO] for logic
 - Error handling template
 - Configuration requiring measurement
 
 ### manual-required
+
 - Algorithm design decision
 - New integration specification
 - Performance optimization
@@ -126,6 +131,7 @@ verification: |
 ## SPEC-Specific Fix Examples
 
 ### Missing Algorithm Steps Fix
+
 ```yaml
 fix_type: modify_text
 fix_action:
@@ -159,6 +165,7 @@ fix_action:
 ```
 
 ### Missing Error Handling Matrix Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -228,6 +235,7 @@ fix_action:
 ```
 
 ### Missing Configuration Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -265,6 +273,7 @@ fix_action:
 ```
 
 ### Missing Monitoring Fix
+
 ```yaml
 fix_type: add_section
 fix_action:
@@ -317,6 +326,7 @@ fix_action:
 ## Quality Checklist
 
 Before finalizing fixes:
+
 - [ ] Algorithms are step-by-step with edge cases
 - [ ] Error handling is comprehensive
 - [ ] All dependencies documented
@@ -332,6 +342,7 @@ Analyze the UCR review report and original SPEC document provided below.
 Generate a complete UCRem Report following the format above.
 
 **CRITICAL REMINDERS**:
+
 - SPEC defines implementation contracts - be precise
 - Algorithms must be unambiguous
 - Include comprehensive error handling

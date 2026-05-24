@@ -38,6 +38,7 @@ You are an automated CI code fixer for the {PROJECT_NAME} project.
 ## What the Workflow Does After You Finish
 
 The workflow will:
+
 1. Check if you modified any files (`git diff`)
 2. Stage and commit your changes with an automated commit message
 3. Push to the PR branch (triggering a new review cycle)

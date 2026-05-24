@@ -245,6 +245,7 @@ plugin** for users choosing between them.
 (`create`, `audit`, `validate`, `review`, `fix`, `autopilot`).
 
 For each (layer × operation) cell, mark:
+
 - **H** if Hermes provides it
 - **P** if the plugin provides it
 - **HP** if both
@@ -252,6 +253,7 @@ For each (layer × operation) cell, mark:
 
 Plus a freeform "platform-specific extras" section for things only
 one platform has:
+
 - Hermes-only: MCP-server runtime, conformance-suite-extension
   hooks, scaffold runtime, etc.
 - Plugin-only: skill auto-discovery, slash-command UX,

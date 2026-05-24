@@ -35,6 +35,7 @@ PYTHONPATH=platforms/hermes/src /tmp/hermes-venv/bin/python -m pytest platforms/
 ```
 
 Trajectory across Phase 2:
+
 - After P2-T3 port: **397 / 447** (50 D-0013 scaffold failures, deferred to P2-T9).
 - After P2-T9 close: **447 / 447** (all D-0013 gaps closed).
 
@@ -206,6 +207,7 @@ git ls-files platforms/hermes/ | wc -l
 ```
 
 Audit math:
+
 - P2-T2 (verbatim port) → 64 files
 - P2-T7 (agent-skills) → 181 files
 - P2-T3 (with-repoint) → 200 files

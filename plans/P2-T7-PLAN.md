@@ -22,6 +22,7 @@ framework at its new, canonical location (`framework/` in this repo)
 instead of the legacy `ucx_flow_v3/` paths they were authored against.
 
 The package contains two skills:
+
 - `sdd-orchestrator/` (186 files) — SDD v3.2 orchestration engine with
   `governance/`, `references/`, `root-docs/`, `scripts/`.
 - `sdd-review-personas/` (1 file, `SKILL.md`) — 15-persona review panel.
@@ -34,6 +35,7 @@ that D-0013 made obsolete.
 ## Scope
 
 **In:**
+
 - Port all 187 files from `origin/main:hermes_agent_skills/spec-driven-development/`
   to `platforms/hermes/agent-skills/spec-driven-development/`.
 - Rewire all `ucx_flow_v3` references to the equivalent paths under
@@ -52,6 +54,7 @@ that D-0013 made obsolete.
   yields no Hermes-relevant paths outside `hermes_agent_skills/`.
 
 **Out:**
+
 - Behavior re-architecture of the template-sync workflow (D-0013
   obsoletes it). The skill's prose describing that workflow is updated to
   reflect D-0013, but no new behavior is implemented here — that's a
@@ -64,6 +67,7 @@ that D-0013 made obsolete.
 ## Approach
 
 1. **Bring files across** via:
+
    ```
    git checkout origin/main -- hermes_agent_skills/spec-driven-development/
    mkdir -p platforms/hermes/agent-skills/
@@ -71,6 +75,7 @@ that D-0013 made obsolete.
           platforms/hermes/agent-skills/spec-driven-development
    rmdir hermes_agent_skills  # source root was empty after the move
    ```
+
    `git mv` preserves the rename in history so reviewers can see the
    one-step relocation.
 

@@ -426,6 +426,7 @@ The PR template is optimized for the 4-stage QA workflow:
 | **Checklist** | Self-review, security, cost |
 
 **Key Integration Points**:
+
 - `Closes #`, `Fixes #`, `Resolves #` patterns are parsed by `create-deployment-issue.yml` and `create-qa-testing-issue.yml`
 - Bug fix PRs should include iteration number and original dev issue reference
 - Detailed test plans belong in the development issue (extracted to QA issue)
@@ -651,6 +652,7 @@ Views must be created via the GitHub UI:
 | Auto-add to project | [PASS] | Filter: `is:issue repo:ORG/REPO` |
 
 > **Status Assignment Rules**:
+>
 > - **Todo** (default): All new issues added to the board receive Status=Todo automatically via the built-in workflow.
 > - **Backlog**: Sub-tasks of the **nearest planning phase only** are manually set to Backlog. This signals they are ready for sprint pull.
 > - When a phase enters execution, its epic moves to In Progress; sub-tasks move from Backlog → In Progress as work begins.
@@ -674,12 +676,14 @@ mutation($projectId: ID!, $repoId: ID!) {
 ### 3.0 Current Workflows (18 total)
 
 **Core CI/CD (2)**
+
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | CI | `ci.yml` | Continuous integration tests |
 | Release | `release.yml` | Release automation |
 
 **Project Automation (4)**
+
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | Auto-add to Project | `auto-add-to-project.yml` | Add issues to Project #{PROJECT_BOARD_NUMBER} |
@@ -688,12 +692,14 @@ mutation($projectId: ID!, $repoId: ID!) {
 | PR Merge Cleanup | `pr-merge-cleanup.yml` | Branch cleanup on merge |
 
 **AI PR Review (2)**
+
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | AI Review | `ai-review.yml` | Reusable AI PR review (Gemini) |
 | Agent Dispatch | `agent-dispatch.yml` | Execution-agent dispatch for `ai:ready` issue work |
 
 **Phase-Gated Deployment (7)**
+
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | Deploy Dev | `deploy-dev.yml` | Phase-gated dev deployment |
@@ -705,12 +711,14 @@ mutation($projectId: ID!, $repoId: ID!) {
 | Check Phase Completion | `check-phase-completion.yml` | Phase completion checker |
 
 **Deprecated**
+
 | Workflow | File | Status |
 |:---------|:-----|:-------|
 | ~~Deploy PR~~ | `deploy-dev-pr.yml.disabled` | Deprecated — per-PR deploys removed |
 | ~~Cleanup PR Env~~ | `cleanup-pr-env.yml.disabled` | Deprecated — no longer needed |
 
 **QA Loop (3)**
+
 | Workflow | File | Purpose |
 |:---------|:-----|:--------|
 | Create QA Testing Issue | `create-qa-testing-issue.yml` | Auto-create QA testing issues |
@@ -726,6 +734,7 @@ mutation($projectId: ID!, $repoId: ID!) {
    - Copy the token
 
 2. Add to repository:
+
    ```bash
    gh secret set PROJECT_TOKEN --body "ghp_xxxxxxxxxxxx"
    ```
@@ -743,6 +752,7 @@ The `ELEVATED_PAT` allows workflows to push commits to protected branches (e.g.,
    - Copy the token
 
 2. Add to repository:
+
    ```bash
    GH_HOST={GITHUB_HOST} gh secret set ELEVATED_PAT \
      --repo {GITHUB_ORG}/{REPO_NAME} \
@@ -1041,6 +1051,7 @@ The project has 6 MCP servers configured in `.mcp.json` using the `-tt-{PROJECT_
 | `playwright-tt-{PROJECT_PREFIX}` | `@playwright/mcp` | Browser automation | [PASS] |
 
 **Naming Convention**: `{function}-tt-{PROJECT_PREFIX}`
+
 - `tt` = TechTrend (GitHub Enterprise instance)
 - `{PROJECT_PREFIX}` = AI Cost Monitoring project prefix
 
@@ -1160,6 +1171,7 @@ EOF
 ```
 
 **Naming Convention**: `[P{phase}-{task_id}] {title}`
+
 - Example: `[P1-1.3] Implement CostGuardedLLM wrapper class`
 
 ### 5.2 Add Issues to Project Board
@@ -1201,6 +1213,7 @@ GH_HOST={GITHUB_HOST} gh issue list \
 ```
 
 **Compliance Checks**:
+
 - Title matches PROJECT_PLAN.md task name
 - Priority label matches plan priority (P0→P0-critical, P1→P1-high)
 - AI label matches plan (Y→ai:ready, N→ai:human-required)
@@ -1229,6 +1242,7 @@ QA issues (ai:qa-testing):
 ```
 
 **Status Options**:
+
 | Status | Color | Used For |
 |:-------|:------|:---------|
 | Backlog | Gray | Unprioritized items |
@@ -1240,6 +1254,7 @@ QA issues (ai:qa-testing):
 | Done | Green | Completed |
 
 **Rules**:
+
 1. **New issues** get Status=**Todo** and Environment=**Development** automatically (via `issue-auto-add.yml`)
 2. **Nearest planning phase sub-tasks** are set to Status=**Backlog** (manual, one phase at a time)
 3. When a sprint starts, pull tasks from Backlog → **In Progress**
@@ -1345,6 +1360,7 @@ gh projects field-list 31 --org {GITHUB_ORG}
 **Environment Field is Mandatory** for all issues and PRs.
 
 **Environment Rules**:
+
 1. **New issues** get Environment=**Development** by default (set by `auto-add-to-project.yml`)
 2. **New PRs** inherit Environment from linked issue (parsed from `Closes #X`, `Fixes #Y`, `Resolves #Z` in PR body)
 3. **PRs without linked issue** default to Environment=**Development**
@@ -1365,6 +1381,7 @@ gh projects field-list 31 --org {GITHUB_ORG}
 | `ai:human-required` | Requires human implementation | Human → Human |
 
 **Development Workflow:**
+
 ```
 ai:ready (planning package + approved IPLAN) → ai:in-progress → ai:review-requested → (PR merge)
                ↓
@@ -1378,6 +1395,7 @@ Control-plane/execution-plane gate:
 - Execution agents do not begin autonomous work before `ai:ready` is present.
 
 **4-Stage Iterative QA Loop:**
+
 ```
 Development (ai:development) → PR merge
      → Deployment (ai:deployment)     → staging deploy
@@ -1396,6 +1414,7 @@ Development (ai:development) → PR merge
 ```
 
 **Additional Labels for QA Loop:**
+
 | Label | Description |
 |:------|:------------|
 | `ai:deployment` | Deployment issue (auto-created on PR merge) |

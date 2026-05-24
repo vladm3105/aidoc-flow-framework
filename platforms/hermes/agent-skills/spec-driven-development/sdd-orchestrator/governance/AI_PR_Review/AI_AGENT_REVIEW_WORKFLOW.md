@@ -16,12 +16,14 @@ This document defines the workflow for **on-demand AI agent PR reviews** — dis
 | On-demand agent | Human command or `ai:ready` label | Claude / Gemini CLI / Copilot | `REQUEST_CHANGES` / `APPROVE` / `COMMENT` | Yes (up to 3 iterations) | Advisory/policy-gated (human review on escalation or branch protection) |
 
 **When to use on-demand agent review**:
+
 - Deep review of complex PRs (architecture, security, multi-file changes)
 - PRs requiring fix-and-verify loop (agent reviews, fixes, re-reviews)
 - Supplementing automated review with domain-specific analysis
 - Pre-merge validation when human reviewer is unavailable
 
 **When automated review is sufficient**:
+
 - Standard feature PRs with passing CI
 - Documentation-only PRs
 - PRs where human reviewer is immediately available
@@ -113,6 +115,7 @@ GH_HOST={GITHUB_HOST} gh api \
 ### Diff filtering
 
 Apply the same skip patterns as the automated review (`scripts/ai_review.py`). Exclude from code analysis:
+
 - `*.md`, `*.txt`, `*.json`, `*.toml`, `*.yaml`, `*.yml`, `*.lock`, `*.csv`
 - `*.svg`, `*.png`, `*.jpg`, `*.jpeg`, `*.gif`, `*.ico`, `*.woff*`, `*.eot`, `*.ttf`
 - `docs/*`, `.github/*`, `governance/*`, `LICENSE`, `.gitmodules`, `.gitignore`
@@ -128,6 +131,7 @@ Every PR review **must** verify the PR against its linked issue's acceptance cri
 ### 5a. Parse Issue Links
 
 Scan the PR body for issue references:
+
 - `Closes #N`, `Fixes #N`, `Resolves #N` (auto-close keywords)
 - `#N` references in the body text
 - Parent epic references (`Parent Epic: #N`)
@@ -172,6 +176,7 @@ Add a **Linked Issue Verification** section to the review summary:
 ### 5e. No Linked Issue
 
 If no issue is linked in the PR body:
+
 - Note the absence in the review: _"No linked issue found. PR body does not contain Closes/Fixes/Resolves keywords."_
 - Do not block the review for missing issue link, but flag it
 
@@ -190,6 +195,7 @@ If no issue is linked in the PR body:
 ### Review Focus Areas
 
 Same as automated review system prompt (`scripts/ai_review.py`):
+
 1. Bugs, logic errors, off-by-one, null/None handling
 2. Security issues (injection, credential leaks, OWASP Top 10)
 3. Performance problems (N+1 queries, unbounded loops, memory leaks)
@@ -197,6 +203,7 @@ Same as automated review system prompt (`scripts/ai_review.py`):
 5. Type safety and API contract violations
 
 **Exclude from review** (ruff/mypy handle these):
+
 - Style or formatting
 - Missing docstrings or comments
 - Import ordering
@@ -307,6 +314,7 @@ COMMENT_EOF
 ```
 
 **Rules**:
+
 - Post on **every** review event (APPROVE, COMMENT, REQUEST_CHANGES)
 - Post on **every** re-review iteration (prefix with "Re-Review #N")
 - If no linked issue exists, skip this step (already flagged in the PR review)
@@ -319,6 +327,7 @@ After completing the full review cycle (initial review, and fix-and-verify loop 
 **When to post**: After every terminal state — APPROVE, COMMENT (no fix loop), or final RE-REVIEW iteration.
 
 **Decision values**: Exactly one of:
+
 - **"Approved to merge"** — All findings resolved (or none found), acceptance criteria passing
 - **"Work needed"** — Unresolved findings remain, or acceptance criteria are failing
 
@@ -356,6 +365,7 @@ COMMENT_EOF
 ```
 
 **Rules**:
+
 - The conclusion is **separate** from the formal review event and issue cross-post — it is an additional comment
 - Post exactly **one** conclusion per review cycle (not per iteration)
 - If the fix loop ran multiple iterations, the conclusion summarizes the full cycle
@@ -388,6 +398,7 @@ Generate JSON with `jq -c` or equivalent to ensure proper escaping.
 ### Inline Comment Format
 
 Each inline comment must include:
+
 - **Severity tag**: `[Critical]`, `[Medium]`, or `[Low]`
 - **Description**: Concise explanation of the issue
 - **Suggested fix**: Code block with the recommended change (when applicable)
@@ -451,6 +462,7 @@ GH_HOST={GITHUB_HOST} gh pr edit <PR_NUMBER> \
 After posting the conclusion comment, apply the appropriate PR label. This enables machine-queryable filtering of reviewed PRs.
 
 **Labels**:
+
 | Label | When to Apply |
 |:------|:--------------|
 | `ai:review-passed` | APPROVE or COMMENT event with zero critical/medium findings |
@@ -473,6 +485,7 @@ GH_HOST={GITHUB_HOST} gh api -X POST \
 ```
 
 **Scope distinction**:
+
 - **Issue labels** (`ai:ready`, `ai:in-progress`, `ai:review-requested`): Track work lifecycle on issues in the home repo
 - **PR labels** (`ai:review-passed`, `ai:review-failed`): Track AI review outcome on PRs in home and component repos
 
@@ -481,6 +494,7 @@ GH_HOST={GITHUB_HOST} gh api -X POST \
 ## 9. Step 6 — Fix-and-Verify Loop
 
 The fix-and-verify loop is entered when:
+
 1. The review posted `REQUEST_CHANGES`
 2. The AI agent has write access to the PR branch
 3. The agent is authorized to fix (via human instruction or `ai:ready` label on linked issue)
@@ -500,6 +514,7 @@ git checkout <HEAD_BRANCH>
 ### 9b. Apply Fixes
 
 Fix each finding identified in the review. Rules:
+
 - Fix **only** the identified findings; do not refactor surrounding code
 - Each fix must directly address a specific finding from the review
 - If a finding requires an architecture decision, escalate to human reviewer instead of fixing

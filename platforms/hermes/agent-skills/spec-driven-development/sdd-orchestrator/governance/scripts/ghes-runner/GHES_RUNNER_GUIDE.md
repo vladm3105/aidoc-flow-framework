@@ -88,9 +88,11 @@ Serverless runners on GCP with scale-to-zero autoscaling. See implementation pla
 ### Prerequisites
 
 1. `gh` CLI authenticated to GHES with `repo` scope:
+
    ```bash
    GH_HOST={GITHUB_HOST} gh auth status
    ```
+
    Required scopes: `repo`, `workflow`
 
 2. Host tools: Python 3.10+, Node.js, git, jq, curl, {AI_TOOL_NAME} Code CLI (`claude --version`)
@@ -125,6 +127,7 @@ GH_HOST={GITHUB_HOST} gh api \
 ```
 
 Expected output:
+
 ```json
 {
   "name": "local-{PROJECT_PREFIX}-01",
@@ -219,24 +222,28 @@ The `gh` CLI and `curl` inside the container can reach GHES (they obtained the r
 ### Fix
 
 1. Extract the GHES CA certificate on the host:
+
    ```bash
    openssl s_client -connect {GITHUB_HOST}:443 -showcerts </dev/null 2>/dev/null \
      | openssl x509 -outform PEM > governance/scripts/ghes-runner/ghes-ca.crt
    ```
 
 2. Add to `Dockerfile` before the runner binary download:
+
    ```dockerfile
    COPY ghes-ca.crt /usr/local/share/ca-certificates/ghes-ca.crt
    RUN update-ca-certificates
    ```
 
 3. For .NET specifically, set the environment variable:
+
    ```yaml
    # In docker-compose.yml, under environment:
    SSL_CERT_FILE: /etc/ssl/certs/ca-certificates.crt
    ```
 
 4. Rebuild and restart:
+
    ```bash
    GHES_PAT=$(GH_HOST={GITHUB_HOST} gh auth token) docker compose up -d --build
    ```
@@ -293,11 +300,13 @@ The host-based runner does not auto-start on reboot. Options:
 
 1. **Manual**: Run `setup-local-runner.sh start` after login
 2. **systemd service** (persistent):
+
    ```bash
    # From the runner-local directory:
    sudo ./svc.sh install
    sudo ./svc.sh start
    ```
+
    The `svc.sh` script is included in the runner binary distribution and creates a proper systemd unit.
 
 ---
@@ -332,6 +341,7 @@ governance/scripts/ghes-runner/
 | Docker runner | Cloud Run | Production deployment |
 
 When upgrading, deregister the old runner first:
+
 ```bash
 governance/scripts/ghes-runner/setup-local-runner.sh remove
 ```

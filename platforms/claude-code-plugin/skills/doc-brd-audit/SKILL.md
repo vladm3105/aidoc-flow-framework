@@ -104,7 +104,6 @@ Normalize every finding to: `source` (`structural`|`content`), `code`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-brd-fixer`
 consumes the latest `BRD-NN.A_audit_report_vNNN.md`.
 
-
 ## Adaptation
 
 Before applying defaults, read the project adaptation profile

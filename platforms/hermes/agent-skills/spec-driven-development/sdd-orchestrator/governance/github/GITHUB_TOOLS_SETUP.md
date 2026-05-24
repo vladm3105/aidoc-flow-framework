@@ -334,6 +334,7 @@ GH_HOST={GITHUB_HOST} gh api user --jq '.login'
 ```
 
 In {AI_TOOL_NAME} Code, the AI can call:
+
 ```
 mcp__github-{PROJECT_PREFIX}-{PROJECT_PREFIX}__list_issues(owner="{GITHUB_ORG}", repo="{REPO_NAME}")
 ```
@@ -524,6 +525,7 @@ MCP lacks support for these operations (use gh CLI):
 The project includes `.mcp.json` with 6 MCP servers using the `-tt-{PROJECT_PREFIX}` suffix (TechTrend AI Cost Monitoring).
 
 **Naming Convention**: `{function}-tt-{PROJECT_PREFIX}`
+
 - `tt` = TechTrend (GitHub Enterprise instance)
 - `{PROJECT_PREFIX}` = AI Cost Monitoring project prefix
 
@@ -990,6 +992,7 @@ Playwright MCP uses `ref` attributes from snapshots to identify elements:
 2. **Use reference**: Pass `ref="eN"` to interaction tools
 
 Example snapshot output:
+
 ```yaml
 - generic [ref=e2]:
   - heading "Dashboard" [level=1] [ref=e3]

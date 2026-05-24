@@ -68,6 +68,7 @@ Track documentation conflicts, selected source-of-truth decisions, and closure a
 ## 6. Closure Criteria
 
 This log is considered closed for release when:
+
 - unresolved conflict count = 0
 - deferred item count = 0, or every deferred item has explicit owner and gate
 - all canonical files in coverage matrix have PASS status

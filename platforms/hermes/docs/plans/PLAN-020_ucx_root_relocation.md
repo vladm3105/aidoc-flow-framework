@@ -98,6 +98,7 @@ def _resolve_ucx_root(project_root: Path) -> Path:
 ```
 
 Modules that currently hardcode paths:
+
 - `project_ucx_loader.py` — all path functions (persona, template, layer assets)
 - `scaffold.py` — scaffold destination
 - `logging_config.py` — log directory

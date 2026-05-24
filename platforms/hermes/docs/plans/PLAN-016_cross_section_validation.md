@@ -209,6 +209,7 @@ def run_brd_cross_section_checks_md(
 ### 4. BRD-TEMPLATE.yaml updates
 
 **Files** (must stay in sync):
+
 - `mcp_ucx/templates/BRD-TEMPLATE.yaml`
 - `ucx_flow_v3/01_BRD/BRD-TEMPLATE.yaml`
 

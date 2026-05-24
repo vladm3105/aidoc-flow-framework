@@ -92,7 +92,7 @@ conformance suite enforces this declaration matches.
 | Version | `0.1.0` (independent SemVer; tag namespace `hermes/v*`) |
 | Conforms to | framework spec `0.1.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
-| Repository | https://github.com/vladm3105/aidoc-flow-framework |
+| Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Platform changelog | [`CHANGELOG.md`](CHANGELOG.md) |
 | Project changelog | [`../../CHANGELOG.md`](../../CHANGELOG.md) |
 | Project roadmap | [`../../ROADMAP.md`](../../ROADMAP.md) |

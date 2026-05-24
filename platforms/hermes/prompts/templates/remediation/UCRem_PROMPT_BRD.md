@@ -45,20 +45,25 @@ For EACH finding in the UCR review report:
 ## Confidence Level Criteria
 
 ### auto-safe
+
 ALL of these must be true:
+
 - Deterministic text (no placeholders like [TODO])
 - Single unambiguous location
 - At least 2 personas approve without concerns
 - Chaos Engineer has no objections
 
 ### auto-assisted
+
 - Template structure provided
 - Contains clearly marked [TODO] or [MANUAL] placeholders
 - At least 1 persona approves
 - Execution agent should prompt for placeholder completion
 
 ### manual-required
+
 ANY of these trigger manual:
+
 - Architectural decision required
 - Business/domain logic needed
 - Chaos Engineer raises objection
@@ -188,7 +193,7 @@ Use these fix_type values:
 
 | fix_type | fix_action Schema |
 |----------|------------------|
-| `add_text` | `position: after|before|replace`, `anchor: "text to find"`, `text: "text to add"` |
+| `add_text` | `position: after|before|replace`,`anchor: "text to find"`,`text: "text to add"` |
 | `add_section` | `parent_section: "X.X"`, `section_number: "X.X.X"`, `heading: "Title"`, `content: "full content"` |
 | `add_table_row` | `table_anchor: "table header text"`, `row_data: ["col1", "col2", ...]` |
 | `modify_text` | `old_text: "exact old"`, `new_text: "exact new"` |
@@ -350,6 +355,7 @@ Analyze the UCR review report and original document provided below.
 Generate a complete UCRem Report following the format above.
 
 For each finding (P0, P1, P2):
+
 1. Identify the gap and root cause
 2. Propose a specific, executable fix
 3. Apply all 5 persona validations
@@ -357,6 +363,7 @@ For each finding (P0, P1, P2):
 5. Output in YAML format
 
 **CRITICAL REMINDERS**:
+
 - Fixes must be EXACT TEXT, not vague instructions
 - Include `anchor` text that EXISTS in the document
 - When uncertain, classify as `manual-required`

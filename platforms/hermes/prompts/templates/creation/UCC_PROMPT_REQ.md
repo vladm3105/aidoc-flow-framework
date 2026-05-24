@@ -47,16 +47,19 @@ rationale: "{Why this requirement exists}"
 ## Atomic Requirement Guidelines
 
 ### Good (Atomic)
+
 ```yaml
 statement: |
   The system shall return HTTP 401 when authentication fails.
 ```
 
 ### Bad (Compound)
+
 ```yaml
 statement: |
   The system shall authenticate users and log them in and redirect to dashboard.
 ```
+
 This should be 3 separate REQs.
 
 ---
@@ -120,6 +123,7 @@ custom_fields:
 Decompose SYS requirements into atomic REQs.
 
 **CRITICAL REMINDERS**:
+
 - ONE statement per REQ
 - Include verification method
 - Maintain traceability

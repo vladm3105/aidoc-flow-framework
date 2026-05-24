@@ -11,6 +11,7 @@
 > This roadmap aligns with [PROJECT_DEFINITION.md](../docs/PROJECT_DEFINITION.md), the [ADRs](../docs/adr/), and [core specifications](../docs/core/).
 
 **Related Planning Documents**:
+
 - [PROJECT_PLAN.md](./PROJECT_PLAN.md) — Full project plan with task specifications and sprint planning
 - [AI_TIME_ESTIMATION.md](./AI_TIME_ESTIMATION.md) — AI-assisted time estimates for all phases
 - [DEFINITION_OF_DONE.md](./DEFINITION_OF_DONE.md) — Completion criteria
@@ -45,9 +46,9 @@ graph LR
 ---
 
 ## Sprint 0: {PHASE_S0_NAME}
-*   **Scope**: {S0_SCOPE}
-*   **Duration**: {S0_DURATION}
-*   **Target**: {S0_START} – {S0_END}
+- **Scope**: {S0_SCOPE}
+- **Duration**: {S0_DURATION}
+- **Target**: {S0_START} – {S0_END}
 
 | # | Task | Priority | Issue | Blocks |
 |:--|:-----|:---------|:------|:-------|
@@ -59,10 +60,10 @@ graph LR
 ---
 
 ## Phase 1: {PHASE_1_NAME}
-*   **Scope**: {P1_SCOPE}
-*   **Reference**: [{P1_REFERENCE_DOC}](../docs/{P1_REFERENCE_DOC})
-*   **Duration**: {P1_DURATION}
-*   **Target**: {P1_START} – {P1_END}
+- **Scope**: {P1_SCOPE}
+- **Reference**: [{P1_REFERENCE_DOC}](../docs/{P1_REFERENCE_DOC})
+- **Duration**: {P1_DURATION}
+- **Target**: {P1_START} – {P1_END}
 
 ### Sprint 1.1: {SPRINT_1_1_NAME}
 
@@ -77,11 +78,11 @@ graph LR
 ---
 
 ## Phase 2: {PHASE_2_NAME}
-*   **Scope**: {P2_SCOPE}
-*   **Reference**: [{P2_REFERENCE_DOC}](../docs/{P2_REFERENCE_DOC})
-*   **Duration**: {P2_DURATION}
-*   **Target**: {P2_START} – {P2_END}
-*   **Depends on**: {P2_DEPENDENCIES}
+- **Scope**: {P2_SCOPE}
+- **Reference**: [{P2_REFERENCE_DOC}](../docs/{P2_REFERENCE_DOC})
+- **Duration**: {P2_DURATION}
+- **Target**: {P2_START} – {P2_END}
+- **Depends on**: {P2_DEPENDENCIES}
 
 ### Sprint 2.1: {SPRINT_2_1_NAME}
 
@@ -102,11 +103,11 @@ graph LR
 ---
 
 ## Phase 3: {PHASE_3_NAME}
-*   **Scope**: {P3_SCOPE}
-*   **Reference**: [{P3_REFERENCE_DOC}](../docs/{P3_REFERENCE_DOC})
-*   **Duration**: {P3_DURATION}
-*   **Target**: {P3_START} – {P3_END}
-*   **Depends on**: {P3_DEPENDENCIES}
+- **Scope**: {P3_SCOPE}
+- **Reference**: [{P3_REFERENCE_DOC}](../docs/{P3_REFERENCE_DOC})
+- **Duration**: {P3_DURATION}
+- **Target**: {P3_START} – {P3_END}
+- **Depends on**: {P3_DEPENDENCIES}
 
 ### Sprint 3.1: {SPRINT_3_1_NAME}
 
@@ -120,11 +121,11 @@ graph LR
 ---
 
 ## Phase 4: {PHASE_4_NAME} *(Conditional)*
-*   **Scope**: {P4_SCOPE}
-*   **Duration**: {P4_DURATION}
-*   **Target**: {P4_START} – {P4_END}
-*   **Depends on**: {P4_DEPENDENCIES}
-*   **Conditional**: {P4_CONDITION}
+- **Scope**: {P4_SCOPE}
+- **Duration**: {P4_DURATION}
+- **Target**: {P4_START} – {P4_END}
+- **Depends on**: {P4_DEPENDENCIES}
+- **Conditional**: {P4_CONDITION}
 
 ### Sprint 4.1: {SPRINT_4_1_NAME}
 

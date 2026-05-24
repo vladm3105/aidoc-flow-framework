@@ -22,38 +22,47 @@ cat AI_EXPERTS/UCR_PROMPT_ADR.md docs/05_ADR/ADR-*.md | claude -p > ADR_PERSONA_
 ## Domain-Specific Persona Focus
 
 ### 🏛️ Architect (Integration & Scalability)
+
 - **Focus**: Multi-cloud failover (GCP primary), gRPC/REST boundary efficiency, event-bus payload limits, database sharding for high-TPS transaction ledgers
 - **BeeLocal Specifics**: Bridge/Noah custody integration, Asterium FX rate caching, multi-AZ deployment
 
 ### ⚖️ Auditor (Compliance & Risk)
+
 - **Focus**: KYC/KYB bounds, AML velocity limits, SOC2/PCI-DSS, immutable audit trails
 - **BeeLocal Specifics**: OFAC screening, SAR workflow automation, PCI-DSS for Nuvei card integration
 
 ### 🧠 Tech Lead (AI Multi-Agent Systems)
+
 - **Focus**: Claude SDK orchestration, prompt injection vulnerabilities, agent state loops, parallel tool calling, inference cost optimization
 - **BeeLocal Specifics**: Claude Opus 4.5 orchestration for compliance agents, agent failure recovery
 
 ### 👔 Strategist (Value & Economics)
+
 - **Focus**: B2C/B2B onboarding friction, API partner costs (Nuvei vs Bridge), treasury float management, UX conversion
 - **BeeLocal Specifics**: 2-3% fee target, $20k float requirement, 50k MAU projections
 
 ### 🕵️ Chaos Engineer (Edge-Cases)
+
 - **Focus**: FX rate change mid-flight, gateway timeout after balance deduction but before credit
 - **BeeLocal Specifics**: Transaction saga compensation, double-spend prevention, quote TTL expiration
 
 ### 🔧 Operator (SRE)
+
 - **Focus**: Distributed tracing across agent network, CI/CD deployment safety, database migration rollback
 - **BeeLocal Specifics**: Cloud Run auto-scaling, Pub/Sub retry policies, DLQ monitoring
 
 ### 🔗 Integration Lead (Dependencies & Contracts)
+
 - **Focus**: Cross-module dependencies, API contract versioning, data entity ownership
 - **BeeLocal Specifics**: Bridge API version pinning, Asterium webhook validation, schema registry for events
 
 ### 📈 Product Owner (Business Value)
+
 - **Focus**: MVP scope boundaries, feature-to-goal mapping, scope creep prevention
 - **BeeLocal Specifics**: US-to-Uzbekistan corridor focus, diaspora worker persona prioritization
 
 ### 📋 Business Analyst (Requirements)
+
 - **Focus**: Requirements completeness, stakeholder coverage, acceptance criteria precision
 - **BeeLocal Specifics**: Regulatory stakeholder requirements, partner contract constraints
 

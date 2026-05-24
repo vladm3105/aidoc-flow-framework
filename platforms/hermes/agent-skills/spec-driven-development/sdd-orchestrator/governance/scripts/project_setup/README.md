@@ -65,6 +65,7 @@ After cloud setup, configure GitHub environments:
 Validates that all placeholder variables have been replaced with actual values.
 
 **Usage:**
+
 ```bash
 # Check for unreplaced placeholders
 ./validate_configuration.sh
@@ -74,6 +75,7 @@ Validates that all placeholder variables have been replaced with actual values.
 ```
 
 **Output:**
+
 - List of unreplaced placeholders by category
 - Files with most remaining placeholders
 - Optional sed commands for bulk replacement
@@ -83,16 +85,19 @@ Validates that all placeholder variables have been replaced with actual values.
 Configures GitHub environments (dev, staging, production) with appropriate protection rules.
 
 **Prerequisites:**
+
 - GitHub CLI installed and authenticated
 - Repository admin permissions
 - Cloud credentials already configured
 
 **Usage:**
+
 ```bash
 ./setup_github_environments.sh
 ```
 
 **Configures:**
+
 - Environment protection rules
 - Required reviewers (production)
 - Deployment branch policies

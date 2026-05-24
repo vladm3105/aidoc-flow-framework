@@ -98,7 +98,6 @@ Drift Summary** · **Validation After Fix** (score/errors/warnings before→afte
 · **Cleanup Summary** (delete superseded fix reports) · **Next Steps** (re-run
 `doc-spec-audit`). Loop until score ≥ threshold or max iterations reached.
 
-
 ## Adaptation
 
 Before applying fixes, read the project adaptation profile

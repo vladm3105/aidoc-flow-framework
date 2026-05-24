@@ -3,6 +3,7 @@
 ## Symptom
 
 A YAML BRD file fails validation with:
+
 - Error: "Missing or invalid YAML frontmatter"
 - Pass log: "Requires YAML data (skipped for MD)"
 - Generated fix file: `*_validated.yaml` (validator's own re-serialization)
@@ -60,6 +61,7 @@ If BRD-08.yaml passes (0 errors, 0 warnings) with identical content —
 ## Known Trigger Patterns
 
 The validator appears to misclassify filenames with:
+
 - Long descriptive suffixes (`_performance_review_cadence`)
 - Multiple underscore-separated words
 - Certain keywords (`review`, `performance`, `cadence`)
@@ -88,6 +90,7 @@ identical YAML type. Only filename differed.
 ## Long-term Fix
 
 Report to UCX framework maintainers with:
+
 1. Failing filename + passing filename (identical content)
 2. Validator version (from sdd_validate output)
 3. Reproduction: any BRD with the pattern `_performance_review_cadence.yaml`

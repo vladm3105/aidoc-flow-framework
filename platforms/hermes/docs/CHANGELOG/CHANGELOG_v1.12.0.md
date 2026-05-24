@@ -50,15 +50,18 @@ Multi-persona mapping support via `persona_mappings.yaml`. All creation, review,
 Post-implementation architecture review identified and resolved 8 issues:
 
 ### Critical
+
 - **C-1**: Added mtime-based LRU cache to `load_persona_mapping()` — eliminates redundant YAML re-parsing and persona file stat calls on repeated tool invocations
 - **C-2**: Removed `personas` parameter from `sdd_remediate` and `sdd_remediate_fix` tool schemas — runners do not consume it; avoids silent contract violation
 
 ### Important
+
 - **I-1**: Missing persona files in `_validate_persona_mapping()` now raise `ProjectSkillsNotFound` (was `PersonaMappingError`) — correct error type for missing filesystem artifacts
 - **I-3**: Resolution hint updated to mention both `sdd_init` (MCP) and `mcp init --project` (CLI)
 - **I-5**: Removed `create` from `sdd_run_lifecycle` stage enum — stage handler did not exist, caused silent skip
 
 ### Design
+
 - **D-1**: `TOKEN_WARNING_THRESHOLD` raised from 10,000 to 15,000 tokens — default BRD review (11 personas, ~12,250 tokens) no longer triggers false warnings
 - **D-4**: Preflight now checks for `persona_mappings.yaml` existence (warning level: `missing_persona_mappings`)
 - **D-5**: `validate_project_ucx_root()` now checks `_REQUIRED_FILES` tuple (includes `persona_mappings.yaml`) for early detection of missing config

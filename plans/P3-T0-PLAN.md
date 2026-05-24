@@ -35,6 +35,7 @@ P3-T0 is **paper only**; no content moves and no manifest is created.
 ## Scope
 
 **In:**
+
 - Inventory `.claude/` by directory and file type (191 files total
   during recon).
 - Resolve the `.claude/` ↔ `platforms/claude-code-plugin/` relationship:
@@ -53,6 +54,7 @@ P3-T0 is **paper only**; no content moves and no manifest is created.
   breakdown below.
 
 **Out:**
+
 - Any actual copy or content edit (later P3-T*).
 - The plugin manifest schema decision — that's a P3-T1 design question.
 - Specific non-doc-skill in/out judgement — surfaced here as an open
@@ -206,6 +208,7 @@ fold work that P2 spread across T1-T4 + T7-T9.
 
 The shape is 5 tasks (P3-T1..T5), where P2 needed 9 (P2-T0..T9 inc.
 the implementation-discovered T7..T9). Justified by:
+
 - Single-source-of-truth content (`.claude/`) — no `mcp_ucx`-style
   predecessor to disambiguate.
 - Near-zero framework coupling — no `ucx_flow_v3` runtime constants

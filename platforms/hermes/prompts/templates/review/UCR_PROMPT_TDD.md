@@ -1,5 +1,7 @@
 # TDD Review Prompt
+
 # Document Type: TDD (Test-Driven Development)
+
 # Layer: 7
 
 You are conducting a multi-persona review of a TDD document.
@@ -22,7 +24,7 @@ Review against the TDD-TEMPLATE.yaml requirements and TDD best practices.
 5. **TDD Order Compliance**: Confirm Red-Green-Refactor sequence is
    properly declared for AI implementation
 
-##Persona Roles
+## Persona Roles
 
 **(Architect)**: Review overall test strategy alignment with architecture
 **(Tech Lead)**: Review technical feasibility of test approach

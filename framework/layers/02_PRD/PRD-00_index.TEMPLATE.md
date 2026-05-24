@@ -95,6 +95,7 @@ Threshold tags in PRD functional requirements use `@threshold:` convention for q
 | Rate Limits | `api_rate_per_minute` | API rate limiting values |
 
 When to use thresholds:
+
 1. Value appears in 2+ sections
 2. Value affects cross-system behavior
 3. Value requires coordinated updates
@@ -124,6 +125,7 @@ PRD must achieve **EARS-Ready score >=90/100** before downstream EARS generation
 ### Quality Checks
 
 Before marking PRD as "Approved":
+
 - [PASS] All user stories follow standard format (As a... I want... So that...)
 - [PASS] Functional requirements are testable and specific
 - [PASS] Quality attributes have measurable criteria

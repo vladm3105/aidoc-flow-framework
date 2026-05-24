@@ -32,6 +32,7 @@ P2-T0 is **paper only**; no code or files move.
 ## Scope
 
 **In:**
+
 - Inventory both legacy trees by directory and file type.
 - Resolve the `ucx_hermes` ↔ `mcp_ucx` relationship (separate roles? library +
   server? overlap?). This is the highest-risk unknown.
@@ -45,6 +46,7 @@ P2-T0 is **paper only**; no code or files move.
 - Output: `plans/P2-AUDIT-hermes.md` + P2-Tx breakdown.
 
 **Out:**
+
 - Any actual copy, move, or code change (later P2-T*).
 - Conformance suite extension or new tests (Phase 4).
 - Platform B (Claude Code plugin) — Phase 3.

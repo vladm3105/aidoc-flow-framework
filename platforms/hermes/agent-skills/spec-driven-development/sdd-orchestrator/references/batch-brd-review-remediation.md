@@ -7,6 +7,7 @@ strategy rulebook).
 ## Context
 
 After extracting 7+ feature BRDs from a source document, each BRD needs:
+
 1. Structural validation (`sdd_validate`)
 2. Content review (4-persona: system-architect, security-auditor, business-analyst, chaos-engineer)
 3. Remediation (apply fixes)
@@ -177,6 +178,7 @@ for num in files.keys():
 ## Results
 
 Applied to TradeGent CC (6 BRDs in one batch):
+
 - BRD-04: 2 fixes
 - BRD-05: 2 fixes
 - BRD-06: 0 fixes (already clean)
