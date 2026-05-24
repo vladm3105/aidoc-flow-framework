@@ -59,8 +59,12 @@ framework/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
     README.md
-  governance/            Governance rules and the CHG change-management
-                         overlay (gates, templates). See governance/README.md.
+  governance/            Governance rules; the CHG change-management overlay
+                         (gates incl. GATE-SPEC, the framework-spec change gate;
+                         templates); the project adaptation surface
+                         (ADAPTATION.md + ADAPTATION_SURFACE.yaml); and
+                         DECISIONS.md, the spec-level decision register.
+                         See governance/README.md.
 ```
 
 ## Conformance
