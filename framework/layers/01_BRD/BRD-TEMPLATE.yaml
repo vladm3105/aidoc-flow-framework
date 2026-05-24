@@ -158,9 +158,9 @@ metadata:
         rule: "ADT selected decisions must propagate to implementation and cost sections"
       - id: BRD-XS-002
         rule: "Phase names and count must match between scope and implementation"
-      - id: BRD-XS-004
+      - id: BRD-XS-003
         rule: "Entities in executive summary must appear in functional requirements or stakeholders"
-      - id: BRD-XS-005
+      - id: BRD-XS-004
         rule: "Currency lists must be consistent across FR-01, mandatory conditions, acceptance criteria"
 
 # =============================================================================

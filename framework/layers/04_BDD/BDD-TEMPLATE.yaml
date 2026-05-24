@@ -324,10 +324,10 @@ traceability:
   downstream_expected:
     - type: ADR
       layer: 5
-      description: "Architecture decisions informed by BDD scenario coverage"
+      description: "Architecture decisions informed by BDD scenario coverage (the registry `downstream` for BDD)"
     - type: TDD
       layer: 7
-      description: "Test-driven development guide mapping BDD scenarios to test implementation (via SPEC contracts)"
+      description: "Cross-reference (not a registry downstream): TDD maps BDD scenarios to test cases via SPEC contracts"
 
   cross_links:
     depends:

@@ -58,11 +58,16 @@ flowchart LR
 | Status | Meaning | Description |
 |--------|---------|-------------|
 | **Draft** | In development | PRD being written, requirements gathering in progress |
-| **Review** | Under review | Stakeholders reviewing product requirements |
+| **In Review** | Under review | Stakeholders reviewing product requirements |
 | **Approved** | Finalized | PRD approved, ready for downstream EARS generation |
 | **In Progress** | Active development | Features being implemented |
 | **Completed** | Delivered | All features implemented and released |
 | **Archived** | Superseded | Replaced by newer PRD or no longer relevant |
+
+> The PRD document's own `status` enum is **Draft / In Review / Approved** (per
+> `PRD-TEMPLATE.yaml`). The post-Approved rows (In Progress / Completed /
+> Archived) track downstream implementation lifecycle in this index, not the
+> PRD document's authoring status.
 
 ## Adding New Product Requirements
 
