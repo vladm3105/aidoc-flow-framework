@@ -1,9 +1,7 @@
 # Configuration for actions/labeler (v5 format: changed-files / any-glob-to-any-file).
 #
-# Path -> label map for the multi-platform layout. NOTE: no workflow currently
-# runs the labeler, so this is reference config until one is added. To activate:
-# add a workflow using actions/labeler@v5 (permissions: pull-requests: write) and
-# create the labels below (actions/labeler does not create missing labels).
+# Path -> label map for the multi-platform layout. Run by .github/workflows/labeler.yml.
+# The labels below must exist in the repo (actions/labeler does not create them).
 
 documentation:
   - changed-files:
@@ -28,7 +26,7 @@ governance:
       - any-glob-to-any-file:
           - "platforms/hermes/**"
 
-"platform: plugin":
+"platform: claude":
   - changed-files:
       - any-glob-to-any-file:
           - "platforms/claude-code-plugin/**"
