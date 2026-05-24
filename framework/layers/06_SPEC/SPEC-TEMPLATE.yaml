@@ -116,16 +116,16 @@ behavior:
     this is specification, not source.
   validation_rules:
     - rule: "[Validation condition]"
-      source: "@ears: EARS.NN"
+      source: "@ears: EARS.NN.03.xxxx"
   state_transitions:
     - from: "[State]"
       to: "[State]"
       trigger: "[Event/Condition]"
-      source: "@bdd: BDD.NN"
+      source: "@bdd: BDD.NN.03.xxxx"
   error_handling:
     - condition: "[Error condition]"
       response: "[How handled]"
-      source: "@bdd: BDD.NN"
+      source: "@bdd: BDD.NN.03.xxxx"
 
 # =============================================================================
 # Section 6: Implementation Notes
@@ -165,15 +165,15 @@ traceability:
     - "@spec: SPEC-NN"
   upstream:
     adr_references:
-      - "@adr: ADR-NN.03.xxxx"
+      - "@adr: ADR.NN.03.xxxx"
     bdd_references:
       - "@bdd: BDD.NN.03.xxxx"
     ears_references:
       - "@ears: EARS.NN.03.xxxx"
     prd_references:
-      - "@prd: PRD-NN"
+      - "@prd: PRD.NN.09.xxxx"
     brd_references:
-      - "@brd: BRD-NN"
+      - "@brd: BRD.NN.07.xxxx"
   downstream:
     - type: TDD
       layer: 7

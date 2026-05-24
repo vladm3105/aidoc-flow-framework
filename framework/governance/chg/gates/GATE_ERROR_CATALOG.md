@@ -12,7 +12,7 @@ custom_fields:
 
 # Gate Error Catalog
 
-Complete catalog of all error and warning codes across the 5-Gate Change Management System for the SDD framework.
+Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
 
 ## 1. Error Code Format
 
@@ -164,7 +164,7 @@ platform's protected-branch review.
 | EMG-E001 | Authorization | Emergency not authorized by incident commander | Obtain authorization |
 | EMG-E002 | Classification | Non-critical issue using emergency bypass | Use standard gate process |
 | EMG-E003 | Documentation | Emergency stub not created | Create CHG-EMG-{timestamp}.yaml |
-| EMG-E004 | Timeline | Post-mortem not completed within 72 hours | Complete POST_MORTEM-{CHG-ID}.md |
+| EMG-E004 | Timeline | Post-mortem not completed within 48 hours | Complete POST_MORTEM-{CHG-ID}.md |
 | EMG-E005 | Closure | Emergency CHG not closed | Complete all closure requirements |
 
 ### 7.2 Warnings (W)

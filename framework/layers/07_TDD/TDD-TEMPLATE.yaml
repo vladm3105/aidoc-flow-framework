@@ -253,7 +253,7 @@ traceability:
     spec_references:
       - "@spec: SPEC-NN"
     adr_references:
-      - "@adr: ADR-NN.03.xxxx"
+      - "@adr: ADR.NN.03.xxxx"
     bdd_references:
       - "@bdd: BDD.NN.03.xxxx"
   downstream:
