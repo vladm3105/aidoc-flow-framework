@@ -10,6 +10,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-05-24
+
+First post-cutover feature release. Tagged `v1.1.0` at the PR #2 merge; bundles
+the canonical plugin skill-set revision, the project adaptation overlay (ADAPT),
+and the return of change management as the GATE-SPEC framework-spec gate
+(CHG-D1) plus its formal governance record (CHG-D2). Framework spec **0.1.0 →
+0.3.1**.
+
 ### Changed
 - **Plugin layer-model migration (PLM).** Migrated the entire Claude Code
   plugin skill corpus (125 skills) from the legacy **12-layer** SDD model to the
