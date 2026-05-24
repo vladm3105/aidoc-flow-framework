@@ -10,6 +10,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed
+
+- Framework spec **0.3.1 → 0.3.2** (patch) — `framework/README.md` governance
+  section now documents GATE-SPEC, the project adaptation overlay
+  (`ADAPTATION.md` + `ADAPTATION_SURFACE.yaml`), and `DECISIONS.md` (the
+  spec-level decision register). Doc-only; both `FRAMEWORK_SPEC_VERSION` files
+  and the plugin skills' `framework_spec_version` re-synced.
+
 ### Added
 
 - **Pre-commit hooks** (`.pre-commit-config.yaml` + a `pre-commit` CI workflow,
