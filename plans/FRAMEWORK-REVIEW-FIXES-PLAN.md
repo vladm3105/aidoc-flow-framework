@@ -46,13 +46,22 @@ ripple. To bound the ripple churn, **land in two PRs**:
 
 ### Batch 1 — correctness
 
-- **#1 (headline) Traceability tags in SPEC/TDD/IPLAN.** Rewrite the trace-tag
-  *examples* to the registry's 4-segment element convention
-  (`DOC.NN.SS.xxxx`, matching `EARS-TEMPLATE.yaml:124`), replacing the
-  document-level/malformed forms (`SPEC-TEMPLATE.yaml:71,119,165-176`;
-  `TDD-TEMPLATE.yaml:114,134,254`; `IPLAN-TEMPLATE.yaml:36`). **Root-cause #K:**
-  restore the `id_standard` (+ `lifecycle`, `_antipatterns`) blocks that layers
-  1–5 carry but 6–8 dropped, so the convention is in-template.
+- **#1 (headline) Traceability tags in SPEC/TDD/IPLAN — refined after reading.**
+  The registry has *two* legitimate ID forms: document `DOC-NN` (dash) and
+  element `DOC.NN.SS.hash` (dots). The fix is to make element-reference contexts
+  use the element form and leave genuine document pointers as document form —
+  **not** force element form everywhere:
+  - **Fix (bugs):** `@adr: ADR-NN.03.xxxx` → `@adr: ADR.NN.03.xxxx` (dash→dot;
+    `SPEC-TEMPLATE.yaml:168`, `TDD-TEMPLATE.yaml:256`); truncated inline element
+    refs `@ears: EARS.NN` / `@bdd: BDD.NN` → `…NN.SS.xxxx` (`SPEC:119,124,128`);
+    SPEC's `brd_references`/`prd_references` (`SPEC:174-176`) → element form to
+    match their `ears_references` sibling.
+  - **Preserve + document (by design):** IPLAN→SPEC/TDD and TDD→SPEC
+    document-level refs (`IPLAN:36,147-149`; `TDD:114,134`) are the per-component
+    bridge ("one IPLAN per SPEC component") — keep `DOC-NN`, add a one-line note
+    that this granularity is intentional.
+  - **Root-cause #K:** restore the `id_standard`/`lifecycle`/`_antipatterns`
+    blocks that layers 1–5 carry but 6–8 dropped, encoding both forms in-template.
 - **#2** "5-Gate" → "6-gate" / "gate system" in `GATE_INTERACTION_DIAGRAM.md:15,20`
   and `GATE_ERROR_CATALOG.md:15` (catalog already lists GATE-SPEC in §6b).
 - **#3** Emergency post-mortem SLA — **resolve to 48h** (the CHG-TEMPLATE mandate,
@@ -103,11 +112,12 @@ ripple. To bound the ripple churn, **land in two PRs**:
 ### Conformance guard (tests/, no bump)
 
 Add `tests/conformance/` checks: (a) every `@tag:` *example* in a layer template
-has the right **segment structure** for its level — element-level tags carry 4
-dot-segments like the lower layers, **placeholder-aware** (normalize `NN`/`SS`/
-`xxxx` tokens before matching, since the literal registry regex requires real
-digits/hex and would false-fail on template placeholders) — so SPEC/TDD/IPLAN
-can't regress to document-level tags (catches #1); (b) no `5-gate`/`five-gate`
+is **well-formed** — it matches *either* the document form (`DOC-NN`) *or* the
+element form (`DOC.NN.SS.xxxx`), **placeholder-aware** (normalize `NN`/`SS`/`xxxx`
+before matching, since the literal registry regex requires real digits/hex). It
+must NOT match the malformed hybrid (`DOC-NN.SS.xxxx`, dash+dots) that #1 fixes.
+This catches the genuine bugs without forbidding the intentional document-level
+bridges; (b) no `5-gate`/`five-gate`
 string remains in `framework/governance/chg/` (catches #2); (c) the emergency
 post-mortem SLA value is identical across the CHG docs (catches #3).
 
