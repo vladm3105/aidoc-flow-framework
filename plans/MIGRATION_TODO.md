@@ -385,7 +385,9 @@ Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed
 - [x] CHG-D2 — Record CHG decision formally in `framework/governance/`
   (2026-05-23). Established `framework/governance/DECISIONS.md`; CHG-D1 recorded
   as GD-01; D-0013 + D-0019 listed pending graduation. Framework spec 0.3.0 → 0.3.1.
-- [ ] INFRA-1 — Refresh stale `.github/` metadata (CODEOWNERS, dependabot, labeler) for the new layout.
+- [x] INFRA-1 — Refresh stale `.github/` metadata for the new layout (2026-05-24):
+  CODEOWNERS (PR #4), dependabot.yml (PR #6), labeler.yml (PR #7) — all rewritten
+  from the pre-migration template to the multi-platform structure.
 
 ## PLM — Plugin layer-model migration (legacy 12-layer → 8-layer)
 

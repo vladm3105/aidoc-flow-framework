@@ -1,86 +1,56 @@
-# Configuration for actions/labeler
+# Configuration for actions/labeler (v5 format: changed-files / any-glob-to-any-file).
+#
+# Path -> label map for the multi-platform layout. NOTE: no workflow currently
+# runs the labeler, so this is reference config until one is added. To activate:
+# add a workflow using actions/labeler@v5 (permissions: pull-requests: write) and
+# create the labels below (actions/labeler does not create missing labels).
 
-# Documentation
 documentation:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/*.md'
-      - 'docs/**/*'
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "**/*.md"
 
-# Infrastructure
-type:infra:
+framework:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'terraform/**/*'
-      - 'infrastructure/**/*'
-      - '.github/workflows/**/*'
-      - 'Dockerfile*'
-      - 'docker-compose*.yml'
+      - any-glob-to-any-file:
+          - "framework/**"
 
-# MCP Servers
-component:mcp:
+governance:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'components/mcp-servers/**/*'
-      - '**/mcp_*.py'
+      - any-glob-to-any-file:
+          - "framework/governance/**"
+          - "CLAUDE.md"
+          - "docs/PROJECT.md"
 
-# SDK
-component:sdk:
+"platform: hermes":
   - changed-files:
-    - any-glob-to-any-file:
-      - 'sdk/**/*'
-      - '**/telemetry*.py'
+      - any-glob-to-any-file:
+          - "platforms/hermes/**"
 
-# Agents
-component:agents:
+"platform: plugin":
   - changed-files:
-    - any-glob-to-any-file:
-      - 'agents/**/*'
-      - '**/agent*.py'
+      - any-glob-to-any-file:
+          - "platforms/claude-code-plugin/**"
 
-# UI/Frontend
-component:ui:
+conformance:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'frontend/**/*'
-      - 'ui/**/*'
-      - '**/*.tsx'
-      - '**/*.jsx'
+      - any-glob-to-any-file:
+          - "tests/**"
 
-# GCP
-cloud:gcp:
+ci:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/gcp/**/*'
-      - '**/google/**/*'
-      - '**/bigquery*'
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".pre-commit-config.yaml"
 
-# AWS
-cloud:aws:
-  - changed-files:
-    - any-glob-to-any-file:
-      - '**/aws/**/*'
-      - '**/s3*'
-      - '**/lambda*'
-
-# Azure
-cloud:azure:
-  - changed-files:
-    - any-glob-to-any-file:
-      - '**/azure/**/*'
-
-# Tests
-needs-tests:
-  - changed-files:
-    - any-glob-to-any-file:
-      - 'src/**/*.py'
-      - '!tests/**/*'
-
-# Dependencies
 dependencies:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'requirements*.txt'
-      - 'pyproject.toml'
-      - 'setup.py'
-      - 'package*.json'
+      - any-glob-to-any-file:
+          - "**/requirements*.txt"
+          - "**/pyproject.toml"
+
+plans:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "plans/**"
