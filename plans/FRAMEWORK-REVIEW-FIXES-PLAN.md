@@ -149,20 +149,21 @@ post-mortem SLA value is identical across the CHG docs (catches #3).
 | R6 | GATE-SPEC self-gating — these framework PRs must themselves pass GATE-SPEC | Each PR bumps VERSION + CHANGELOG (E005/E008) by construction. |
 | R7 | PR-2 conflicts with PR-1 on the shared version/CHANGELOG/skill files | Cut PR-2's branch from `main` *after* PR-1 merges (sequenced, not parallel). |
 
-## Open decisions (need a steer before implementing)
+## Decisions (RESOLVED 2026-05-24)
 
-- **D1 — Emergency SLA:** standardize on **48h** (template mandate). *(default: yes)*
-- **D2 — CVE enforcement:** add a **new blocking** `GATE-03-E008` for external-dep
-  changes. It *tightens* the gate (borderline-breaking) — accept as a documented
-  strengthened check (default), or keep CVE a warning?
-- **D3 — THRESHOLD content:** **genericize** the financial examples in place +
-  **delete** the runtime/ops sections (default) — vs keep them. (No in-repo
-  profile exists to relocate to.)
-- **D4 — #7 scope:** expand SPEC now (cheap), **defer** the BRD/PRD trim. *(default)*
-- **D5 — PR/bump structure:** PR-1 = Batches 1+2 at `0.4.0`; PR-2 = Batch 3
-  separate (sequenced). *(default)*
-- **D6 — Index extension:** **document** the `08 .yaml` split in the registry
-  (vs converting IPLAN's index to `.md`). *(default: document)*
+- **D1 — Emergency SLA:** ✅ standardize on **48h** (template mandate).
+- **D2 — CVE enforcement:** ✅ add a **new blocking** `GATE-03-E008` for
+  external-source changes, **with an explicit N/A escape** ("no advisory
+  applies: <reason>" satisfies it) so it captures the security value without a
+  brittle hard-block. Documented as a strengthened check.
+- **D3 — THRESHOLD content:** ✅ **genericize** the financial examples in place +
+  **delete** the runtime/ops sections — *after* grepping both platforms for real
+  consumption (flag, don't delete, if something depends on it). Minor + CHANGELOG
+  deprecation note.
+- **D4 — #7 scope:** ✅ expand SPEC now; **defer** the BRD/PRD trim.
+- **D5 — PR/bump structure:** ✅ PR-1 = Batches 1+2 at `0.4.0`; PR-2 = Batch 3
+  separate (sequenced after PR-1 merges).
+- **D6 — Index extension:** ✅ **document** the `08 .yaml` split in the registry.
 
 ## Review log
 
