@@ -107,10 +107,10 @@ Before entering GATE-03, the change request must satisfy:
 
 ```
 C1 (Self-approved)
-
+      
        (if requirement/architecture change)
 C2 (TL + Domain)
-
+      
        (if security or architecture pivot)
 C3 (Architect + Security)
 ```
@@ -155,19 +155,19 @@ After passing GATE-03:
 
 ```
                     GATE-03 PASSED
-
+                           
              Does change affect SPEC?
-
-
+             
+          
            Yes                         No
-
-
+                                      
+                     
       GATE-06                   IPLAN-only change?
-
-
-
+                     
+                                         
+                              
                                Yes                 No
-
+                                                  
                            GATE-08           Direct fix
                                                   (C1 only)
 ```
@@ -245,7 +245,6 @@ For external security changes:
 ---
 
 **Related Documents**:
-
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../templates/GATE_APPROVAL_FORM.md](../templates/GATE_APPROVAL_FORM.md)

@@ -106,7 +106,6 @@ ADR must achieve **SPEC-Ready score >=90/100** before downstream SPEC generation
 ## Maintenance Guidelines
 
 Before marking ADR as "Accepted":
-
 - [PASS] Problem statement clearly defined with business context
 - [PASS] At least 2-3 alternatives considered and documented
 - [PASS] Consequences analysis includes both positive and negative outcomes

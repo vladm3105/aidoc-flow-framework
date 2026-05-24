@@ -111,7 +111,7 @@ the platform's protected-branch review. The validator never grants approval.
 |--------------|-------------------|-----|
 | **C2** | Framework maintainer + 1 platform owner | 2 business days |
 | **C3** (breaking) | Framework maintainer + **both** platform owners | 5 business days |
-| **Emergency** | Not a typical spec path — a spec change is not a production hotfix; handle out-of-band and document | n/a |
+| **Emergency** | Not a typical spec path — a spec change is not a production hotfix; handle out-of-band and document |
 
 The validator **prepares and verifies** the approval form; a **human** signs. It
 must never mark a spec change "approved" — the human gate is the platform's
@@ -211,7 +211,6 @@ change_control:
 ---
 
 **Related Documents**:
-
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../README.md](../README.md) — CHG overview & source routing

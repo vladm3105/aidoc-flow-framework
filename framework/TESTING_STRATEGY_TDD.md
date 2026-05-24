@@ -1,6 +1,5 @@
 # Testing Strategy: Test-Driven Development (SDD)
-
-**Layer 7 — TDD Guide**
+# Layer 7 — TDD Guide
 
 ## Overview
 
@@ -47,7 +46,6 @@ The AI agent follows this order when generating code from the IPLAN document.
 ## Test Case Definitions
 
 SDD embeds test case definitions directly in the TDD document (Section 4):
-
 - **Unit tests**: Inputs, expected outputs, edge cases — derived from SPEC interfaces and data models
 - **Integration tests**: Contract validation, state transitions, error paths — derived from SPEC behavior
 - **E2E tests**: Workflow steps, timeouts, cleanup — derived from BDD scenarios
@@ -55,7 +53,6 @@ SDD embeds test case definitions directly in the TDD document (Section 4):
 ## One Document Per Component
 
 SDD uses a single TDD document per SPEC component. The document:
-
 - Maps BDD scenarios to test types (unit, integration, e2e)
 - Defines concrete test cases with inputs, expected outputs, edge cases
 - Sets quality thresholds per test type

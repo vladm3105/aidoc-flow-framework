@@ -87,7 +87,6 @@ thresholds:
       default: 30          # seconds
       max: 60              # seconds
 ```
-
 ```
 
 **Required Metadata per Threshold**:
@@ -865,7 +864,7 @@ thresholds:
 
 ```text
 {category}.{scope}.{metric}[.{qualifier}]
-
+                             
                               Optional: min/max/p50/p95/warning/critical
                      Required: daily/monthly/timeout/threshold/rate
               Required: l1/l2/l3/api/partner/user/session

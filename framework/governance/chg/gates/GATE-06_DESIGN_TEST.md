@@ -100,10 +100,10 @@ All SPEC changes MUST flow through TDD:
 
 ```
 C1 (Self-approved)
-
+      
        (if interface change)
 C2 (Technical Lead)
-
+      
        (if architecture/performance impact)
 C3 (TL + Domain Expert)
 ```
@@ -146,16 +146,16 @@ After passing GATE-06:
 
 ```
                     GATE-06 PASSED
-
+                           
               Ready for execution planning
-
+                    
                      GATE-08
                       IPLAN
-
-
-
+                    
+                         
+          
             Test-first implementation
-
+                     
                      GATE-CODE
 ```
 
@@ -210,7 +210,6 @@ Updated SPEC flow:
 ---
 
 **Related Documents**:
-
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../templates/GATE_APPROVAL_FORM.md](../templates/GATE_APPROVAL_FORM.md)

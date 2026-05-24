@@ -21,7 +21,6 @@ Adopted 2026-04-29. Permanent plans split into two roles:
 **Rule.** A development IPLAN flips to `Completed` once its source code + Terraform modules + CI/CD scripts are authored, committed, and green. **It does NOT wait for the artifacts to be deployed.** The deploy execution belongs to a separate deployment plan.
 
 Practical effect:
-
 - An IPLAN's validation_results entry like "ready for deployment provisioning before IMPLEMENTED flip" or "`terraform apply` pending" is **NOT** a gate on the IPLAN's status. Those gates belong on the deployment plan's phase markers.
 - An IPLAN that has shipped source code + Terraform module declarations + integration tests **IS** complete from the development side, even if no `terraform apply` has run.
 - Conversely, the deployment plan stays `In Progress` until the apply + acceptance steps actually execute against the target environment.

@@ -8,3 +8,6 @@ node_modules/
 platforms/hermes/agent-skills/
 platforms/hermes/prompts/
 platforms/hermes/skills/
+# framework/ is the GATE-SPEC-governed spec — changes are deliberate, versioned
+# events (CHG/GATE-SPEC), not drive-by style edits. Exclude from the style linter.
+framework/

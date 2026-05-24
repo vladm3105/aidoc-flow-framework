@@ -58,7 +58,6 @@ change — it is an ordinary platform PR. See `gates/GATE-SPEC_FRAMEWORK.md`.
 ## NOT a Lifecycle Layer
 
 CHG is NOT:
-
 - Part of the BRD→IPLAN→Code workflow
 - In the YAML template chain
 - Assigned a C4 level

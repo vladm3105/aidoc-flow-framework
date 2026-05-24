@@ -57,7 +57,6 @@ custom_fields:
 | GATE-01-E004: C3 stakeholder approval | [ ] Pass / [ ] Fail / [ ] N/A | |
 
 **Warnings Addressed**:
-
 - [ ] GATE-01-W001: Large scope reviewed
 - [ ] GATE-01-W002: C2 approval obtained
 - [ ] GATE-01-W003: Implementation plan created
@@ -79,7 +78,6 @@ custom_fields:
 | GATE-03-E007: ADR 4 upstream tags | [ ] Pass / [ ] Fail / [ ] N/A | |
 
 **Warnings Addressed**:
-
 - [ ] GATE-03-W001: CVE reference added
 - [ ] GATE-03-W002: ADR alternatives documented
 - [ ] GATE-03-W003: BDD edge cases covered
@@ -99,7 +97,6 @@ custom_fields:
 | GATE-06-E004: SPEC change → TDD updated | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
-
 - [ ] GATE-06-W001: Performance baseline documented
 - [ ] GATE-06-W002: Complexity acceptable
 
@@ -117,7 +114,6 @@ custom_fields:
 | GATE-08-E004: Session handoff documented | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
-
 - [ ] GATE-08-W001: Manifest size acceptable
 - [ ] GATE-08-W002: Implementation contracts defined
 - [ ] GATE-08-W003: Rollback procedure documented
@@ -136,7 +132,6 @@ custom_fields:
 | GATE-CODE-E004: Code review approved | [ ] Pass / [ ] Fail | |
 
 **Warnings Addressed**:
-
 - [ ] GATE-CODE-W001: Performance benchmarked
 - [ ] GATE-CODE-W002: Build warnings addressed
 - [ ] GATE-CODE-W003: Tech debt tracked
@@ -255,6 +250,5 @@ custom_fields:
 ---
 
 **Related Documents**:
-
 - CHG Document: `CHG-XX/CHG-XX.yaml`
 - Gate Documentation: `gates/GATE-*.md`
