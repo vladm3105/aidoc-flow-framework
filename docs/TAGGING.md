@@ -104,6 +104,10 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `v0.5.0` | Phase 4 close | Conformance & Independence milestone |
 | `v1.0.0` | Phase 5 close | Cutover milestone — multi-platform project complete |
 | `claude-code-plugin/v0.2.0` | Plugin 8-layer migration close | Claude Code plugin — full 8-layer SDD model (46 skills, 9-agent roster) + marketplace install |
+| `framework/v0.2.0` | ADAPT close (`f22fe6a`) | Framework spec — project adaptation overlay (ADAPTATION surface, D-0019) |
+| `framework/v0.3.0` | CHG-D1 close (`f8e8bf5`) | Framework spec — GATE-SPEC framework-spec change gate (D-0020) |
+| `framework/v0.3.1` | CHG-D2 (`3753de2`) | Framework spec — governance decision register, GD-01 |
+| `v1.1.0` | PR #2 merge (`3974daa`) | Post-cutover feature release — skill-set revision + adaptation overlay + CHG GATE-SPEC |
 
 > Phase 1 tags (`v0.1.0`, `v0.2.0`, `framework/v0.1.0`) are published
 > on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`), Phase 3
@@ -116,6 +120,10 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > `plans/P4-T5-PLAN.md` §Approach.6 for the exact local-clone
 > commands. Verify any tag's publication via
 > `git ls-remote --tags origin`.
+>
+> The post-cutover tags (`framework/v0.2.0`, `framework/v0.3.0`,
+> `framework/v0.3.1`, and the project milestone `v1.1.0`) are **published** on
+> the remote, created from a local clone at the PR #2 merge.
 
 ## In-container push restrictions
 
