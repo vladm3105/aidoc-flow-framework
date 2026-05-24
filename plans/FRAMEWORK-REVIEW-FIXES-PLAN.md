@@ -25,6 +25,7 @@ A conformance guard is added (in `tests/`, not `framework/`) so the traceability
 fix can't regress.
 
 **Out (explicitly deferred unless promoted by a decision):**
+
 - The larger BRD/PRD **trim** (#7 bloat side) — high-effort content edit, low
   risk; do the cheap SPEC *expansion* now, defer the BRD/PRD trim.
 - Building branch-protection / repo-settings (the human half of any new gate) —
@@ -222,8 +223,9 @@ post-mortem SLA value is identical across the CHG docs (catches #3).
 - **Finding #1 scope confirmed during implementation:** the BDD layer uses a
   *no-space* tag convention (`@brd:BRD…`) throughout its template + README + its
   own antipattern, so it is internally consistent — **not** touched (the
-  cross-layer whitespace difference vs SPEC/TDD's `@brd: ` is a separate
-  normalization question, out of scope for #1's *ID-form* fix). The guard's `_TAG`
+  cross-layer whitespace difference vs SPEC/TDD's space-after-colon form
+  (`@brd: BRD…`) is a separate normalization question, out of scope for #1's
+  *ID-form* fix). The guard's `_TAG`
   regex is whitespace-tolerant and skips `FAIL:` antipattern lines.
 - **Batch 2 (security) landed:** new `governance/SECURITY_REVIEW.md` (engine-agnostic);
   `GATE-03-E008` blocking external-change CVE/advisory-or-N/A (W001 kept);

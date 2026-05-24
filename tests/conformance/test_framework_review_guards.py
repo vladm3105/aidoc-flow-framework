@@ -9,7 +9,6 @@ These lock in fixes the rest of the suite doesn't otherwise catch:
 
 import re
 import unittest
-from pathlib import Path
 
 from _spec import FRAMEWORK
 
@@ -17,8 +16,8 @@ LAYER_TAGS = ("brd", "prd", "ears", "bdd", "adr", "spec", "tdd", "iplan")
 _TAG = re.compile(r"@(" + "|".join(LAYER_TAGS) + r"):\s*([A-Za-z][A-Za-z0-9.\-]*)")
 # Placeholder-tolerant: tokens may be NN / SS / xxxx etc., so segments are
 # [A-Za-z0-9]+ rather than the literal registry regex's \d / [a-f0-9].
-_DOC_FORM = re.compile(r"^[A-Z]+-[A-Za-z0-9]+$")               # e.g. SPEC-NN
-_ELEM_FORM = re.compile(r"^[A-Z]+(?:\.[A-Za-z0-9]+){3}$")      # e.g. ADR.NN.SS.xxxx
+_DOC_FORM = re.compile(r"^[A-Z]+-[A-Za-z0-9]+$")  # e.g. SPEC-NN
+_ELEM_FORM = re.compile(r"^[A-Z]+(?:\.[A-Za-z0-9]+){3}$")  # e.g. ADR.NN.SS.xxxx
 CHG = FRAMEWORK / "governance" / "chg"
 
 
@@ -35,7 +34,8 @@ class TraceTagForms(unittest.TestCase):
                         rel = tmpl.relative_to(FRAMEWORK).as_posix()
                         bad.append(f"{rel}:{i}: @{m.group(1)}: {tok}")
         self.assertEqual(
-            bad, [],
+            bad,
+            [],
             "trace-tag ids must be document form (DOC-NN) or element form "
             f"(DOC.NN.SS.xxxx), never a hybrid/truncated form: {bad}",
         )
@@ -62,7 +62,8 @@ class EmergencySLA(unittest.TestCase):
         self.assertNotIn("72 hours", emg[0])
         for f in (CHG / "gates").glob("*.md"):
             self.assertNotIn(
-                "24-72", f.read_text(encoding="utf-8"),
+                "24-72",
+                f.read_text(encoding="utf-8"),
                 f"stale 24-72h emergency window in {f.name}",
             )
 
