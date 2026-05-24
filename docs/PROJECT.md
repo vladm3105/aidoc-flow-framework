@@ -100,6 +100,7 @@ Post-migration, the gated CHG process returns in two roles:
    capability both platforms expose to their end users.
 
 Per-platform internal development continues under ordinary SemVer + changelog
+
 - PR review — the gated process is not applied to a platform's own commits.
 
 ### CHG implementation model (implemented — CHG-D1, D-0020)

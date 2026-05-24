@@ -3,3 +3,8 @@ node_modules/
 .git/
 .pytest_cache/
 **/__pycache__/
+# Hermes vendored / runtime-parsed content (ported sdd-orchestrator package,
+# prompt templates parsed by code, persona content) — not maintained docs.
+platforms/hermes/agent-skills/
+platforms/hermes/prompts/
+platforms/hermes/skills/

@@ -26,7 +26,7 @@
 >
 >   Optional project milestone tag: `git tag -a v1.1.0 3974daa -m "Post-cutover feature release — adaptation overlay + CHG GATE-SPEC" && git push origin v1.1.0`.
 > - Delete the merged `claude/skill-revision` branch.
-
+>
 > **✅ CHG-D2 COMPLETE — framework governance decision register (2026-05-23).**
 > Established `framework/governance/DECISIONS.md` — the spec's own durable home
 > for decisions about the spec + its governance — and recorded the CHG
@@ -46,7 +46,7 @@
 > **Remaining user-only:** branch protection / required reviewers on
 > `framework/**` (the human-approval half of GATE-SPEC); push the 0.3.x tags from
 > a local clone.
-
+>
 > **✅ CHG-D1 COMPLETE — GATE-SPEC, the framework-spec change gate (2026-05-23).**
 > ROADMAP CHG-D1 done (D-0020, plan `plans/CHG-D1-PLAN.md`): change management as
 > **skills + CI/CD, both platforms**. Added **GATE-SPEC** — the *meta* gate
@@ -67,7 +67,7 @@
 > (record CHG-D1 as a formal `framework/governance/` decision — now actionable).
 > **User-only:** relocate `chg-gate.yml` → `.github/workflows/`; set branch
 > protection on `framework/**` (the human-approval half); push the 0.3.0 tags.
-
+>
 > **✅ ADAPT COMPLETE — adaptation surface + knowledge extractor (2026-05-23).** New feature:
 > project adaptation overlay + knowledge extractor (plan `plans/ADAPT-PLAN.md`,
 > hardened Pass 1–4; design recorded D-0019). **Increment 1 (this commit):** the
@@ -104,7 +104,7 @@
 > built. **Pending user-only (carry-overs):** push the 0.2.0 spec/release tags
 > from a local clone (in-container `refs/tags/*` 403); decide whether to roll
 > these commits into a plugin release (CHANGELOG `[Unreleased]` not yet cut).
-
+>
 > **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
 > found framework-backed capabilities with no skill; added 6 (skipping
 > `doc-code`/implement by user choice): the **`doc-chg` family** (base +
@@ -117,7 +117,7 @@
 > `doc-flow`, `skill-recommender`, plugin `README` (52), `CHANGELOG`,
 > `docs/PARITY.md`, and `plm_lint` `MIGRATED`. Conformance **32/32**. Record:
 > `plans/P3-T7-PLAN.md`.
-
+>
 > **✅ SKILL SET REVISED — canonical 46 (2026-05-23, P3-T6).** Pruned the plugin
 > skill corpus **124 → 46** and recreated every survivor to one standard
 > (`platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`): the 8 layer families
@@ -135,7 +135,7 @@
 > `claude/skill-revision`, task setup named `claude/multi-platform-migration-AamWB`;
 > (2) consider bumping plugin 0.2.0→0.3.0 given the scope (skills track the
 > plugin version, so they'd follow); (3) the "new skills" idea is still pending.
-
+>
 > **🚀 PLUGIN v0.2.0 RELEASE PREPPED (2026-05-23) — launch-wise, in-container half.**
 > Cut the Claude Code plugin's first post-migration release: `VERSION` +
 > `plugin.json` bumped `0.1.0 → 0.2.0`; CHANGELOG `[Unreleased]` → `[0.2.0] —
@@ -151,7 +151,7 @@
 > (1) merge this branch into `main`; (2) push the tag from a local clone;
 > (3) relocate CI workflows from `plans/workflows-pending/` → `.github/workflows/`.**
 > See "Independent pending user actions" below for exact commands.
-
+>
 > **✅ MIGRATION COMPLETE (2026-05-21).** All five phases done; the
 > Phase 5 cutover is closed at project `v1.0.0` (in-container half).
 > The working branch holds the finished multi-platform project. The

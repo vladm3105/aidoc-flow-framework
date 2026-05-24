@@ -9,5 +9,10 @@
   "MD029": false,
   "MD046": false,
   "MD060": false,
-  "MD024": { "siblings_only": true }
+  "MD024": {
+    "siblings_only": true
+  },
+  "MD025": {
+    "front_matter_title": ""
+  }
 }

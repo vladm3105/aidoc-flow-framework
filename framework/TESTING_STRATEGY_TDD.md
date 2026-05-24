@@ -1,6 +1,6 @@
 # Testing Strategy: Test-Driven Development (SDD)
 
-# Layer 7 — TDD Guide
+**Layer 7 — TDD Guide**
 
 ## Overview
 

@@ -94,6 +94,7 @@ directory.
 **Session-impact caveat:** root `.claude/` is what the *current
 in-container migration session* loads (skills + the 3 hooks). Removing
 it disables:
+
 + `session-start-handoff.sh` — only matters for *new* sessions (none
   after cutover).
 + `pre-compact-snapshot.sh` — matters if a compaction happens after

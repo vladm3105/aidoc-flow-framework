@@ -145,11 +145,11 @@ Rules:
 Naming-mapping rules:
 
 - Lifecycle review outcomes may be represented by either:
- 	- `{DOC_ID}_{source_stage}_review_report_vNNN.md` (lifecycle family), or
- 	- `{DOC_ID}.A_audit_report_vNNN.md` / `{DOC_ID}.R_review_report_vNNN.md` (audit-wrapper family).
+  - `{DOC_ID}_{source_stage}_review_report_vNNN.md` (lifecycle family), or
+  - `{DOC_ID}.A_audit_report_vNNN.md` / `{DOC_ID}.R_review_report_vNNN.md` (audit-wrapper family).
 - Lifecycle remediation/apply outcomes may be represented by either:
- 	- `{DOC_ID}_{source_stage}_remediation_report_vNNN.md` (lifecycle family), or
- 	- `{DOC_ID}.F_fix_report_vNNN.md` (audit-wrapper family).
+  - `{DOC_ID}_{source_stage}_remediation_report_vNNN.md` (lifecycle family), or
+  - `{DOC_ID}.F_fix_report_vNNN.md` (audit-wrapper family).
 - Implementations must preserve lineage linkage across mapped families (source artifact, source stage, and upstream report references).
 
 Terminology clarification:

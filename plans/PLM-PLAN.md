@@ -92,7 +92,7 @@ numeric type-code scheme (SYS.26, REQ.27, TSPEC.40–45, etc.) with the new
 |---|---|
 | `ai_dev_ssd_flow/NN_X/…` / `framework/NN_X/…` | `framework/layers/<newNN>_<X>/…` (e.g. `10_TSPEC`→`07_TDD`, `11_TASKS`→`08_IPLAN`, `09_SPEC`→`06_SPEC`) |
 | `…/{TYPE}-MVP-TEMPLATE.md` | `framework/layers/<NN>_<X>/{TYPE}-TEMPLATE.yaml` (templates are `.yaml`) |
-| `ai_dev_ssd_flow/scripts/validate_*.py|sh`,`framework/scripts/*` | **removed** — framework is spec-only (no runtime code). Replace "run `validate_X.py`" with the skill's own declarative validation checklist + a pointer to `framework/governance/` and the layer `README.md`. The plugin skill *is* the validator. |
+| `ai_dev_ssd_flow/scripts/validate_*.py\|sh`,`framework/scripts/*` | **removed** — framework is spec-only (no runtime code). Replace "run `validate_X.py`" with the skill's own declarative validation checklist + a pointer to `framework/governance/` and the layer `README.md`. The plugin skill *is* the validator. |
 | `.claude/skills/doc-X/…` | plugin-relative `../doc-X/…` (sibling skills) |
 | `framework/ADR/…`, `framework/11_TASKS/…` | `framework/layers/05_ADR/…`, `framework/layers/08_IPLAN/…` |
 

@@ -322,6 +322,7 @@ from real use, not synthetic content. **The flywheel.**
 The 8-layer SDD model is reproducible (anyone could re-implement
 it). The conformance suite is reproducible. **But the corpus +
 the audit trail it accumulates is not reproducible without time
+
 - adoption.** This is the long-game moat.
 
 ### 4.3 "Spec + multiple engines" is anti-lock-in

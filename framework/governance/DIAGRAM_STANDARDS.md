@@ -34,7 +34,7 @@ The following diagram formats are NOT permitted in any SDD artifact:
 
 | Format Type | Example | Prohibition Reason |
 |-------------|---------|-------------------|
-| ASCII art boxes | `+----+`, `|    |`,`+----+` | Not renderable, inconsistent display |
+| ASCII art boxes | `+----+`, `\|    \|`,`+----+` | Not renderable, inconsistent display |
 | Text-based flowcharts | `A --> B --> C` (outside Mermaid) | No semantic structure |
 | Unicode box-drawing | ``, `  `,`` | Font-dependent rendering |
 | Manual arrow diagrams | `==>`, `->`, `<--` (outside Mermaid) | No styling or layout control |

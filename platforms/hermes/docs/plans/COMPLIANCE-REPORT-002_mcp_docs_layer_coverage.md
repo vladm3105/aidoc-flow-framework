@@ -62,6 +62,6 @@ Evidence summary:
 - Required artifact existence check: PASS (no missing required files)
 - Internal markdown link integrity scan for mcp/docs: PASS (LINKS_OK)
 - CLI contract parity signals:
- 	- init, create-build, review-build parser contracts located in mcp_ucx/src/mcp_server/cli/main.py
- 	- command surface and sections-json behavior documented in MCP_CLI_REFERENCE and SPEC-005/006
- 	- no critical mismatch observed in verification pass
+  - init, create-build, review-build parser contracts located in mcp_ucx/src/mcp_server/cli/main.py
+  - command surface and sections-json behavior documented in MCP_CLI_REFERENCE and SPEC-005/006
+  - no critical mismatch observed in verification pass

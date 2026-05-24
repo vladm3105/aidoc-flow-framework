@@ -3,10 +3,14 @@ extends: default
 rules:
   line-length: disable          # spec templates carry long _guidance lines
   document-start: disable       # no mandatory '---' on every doc
-  truthy: { check-keys: false } # allow on/off/yes in values (e.g. GH Actions 'on:')
-  comments: { min-spaces-from-content: 1 }
+  truthy:
+    check-keys: false           # allow on/off/yes in values (e.g. GH Actions 'on:')
+  comments:
+    min-spaces-from-content: 1
   comments-indentation: disable
-  indentation: { spaces: consistent, indent-sequences: whatever }
+  indentation:
+    spaces: consistent
+    indent-sequences: whatever
 ignore: |
   legacy/
   node_modules/

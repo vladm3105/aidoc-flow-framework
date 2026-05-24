@@ -59,6 +59,7 @@ Option 2 muddles the visual separation; Option 3 fragments tests
 that share assertion logic.
 
 **Downstream implications:**
+
 + **P4-T2 file layout:**
 
   ```
@@ -70,6 +71,7 @@ that share assertion logic.
       ├── test_version_declaration.py  (PC1 + structural completeness)
       └── test_engine_isolation.py     (PC4)
   ```
+
 + **`_spec.py` extension:** add helpers `platforms_root()`,
   `platform_dirs()`, `platform_version_file(name)`, etc. — single
   source of truth for path resolution.
@@ -94,11 +96,13 @@ that share assertion logic.
 **Input gathered (recon):**
 
 Hermes mentioning plugin tokens:
+
 + `agent-skills/.../sdd-orchestrator/SKILL.md:40,1132` —
   references "aidoc-flow migration" (the project name), not a
   plugin-engine reference per se.
 
 Plugin mentioning Hermes tokens:
+
 + `README.md:75` — deliberate "Relationship to Hermes" paragraph
   (P3-T3 design); documentary, by design.
 + `doc-naming/SKILL.md:122` — example user-document filename
@@ -130,6 +134,7 @@ skills are markdown bodies executed as Claude instructions, not
 runtime code; documentary references are accepted.
 
 **Downstream implications:**
+
 + **P4-T2 `test_engine_isolation.py`:** two test methods (one per
   platform's forbidden-token check), iterating the in-scope
   directory list, asserting zero hits.
@@ -149,6 +154,7 @@ setup. Faster onboarding; lower op cost; matches the "shippable
 plugin" + "shippable Hermes" framing.
 
 **Downstream implications:**
+
 + **P4-T3 workflows:** all three jobs declare `runs-on:
   ubuntu-latest`.
 + **Python version:** Hermes requires `>=3.12`; CI uses
@@ -194,6 +200,7 @@ single `[0.1.0]` entry, then a footer pointing at the project-
 level changelog for cross-platform / framework changes.
 
 **Downstream implications:**
+
 + **P4-T4 files created:** two new `CHANGELOG.md` files (one per
   platform), each ~30-50 lines.
 + **No retro-tag** for `[0.1.0]` — both platforms already have
@@ -234,6 +241,7 @@ same project.
    plugin README's Hermes section.
 
 **Downstream implications:**
+
 + **P4-T4** writes the new `platforms/hermes/README.md` (~80
   lines, vs 27 placeholder).
 + **No content drift risk** — the structure mirrors plugin README
@@ -252,6 +260,7 @@ same project.
 **Chosen:** **MIT.**
 
 **Rationale:**
+
 + Plugin manifest already declares `"license": "MIT"` (P3-T3); a
   different choice creates a manifest-vs-LICENSE inconsistency.
 + MIT supports both open-source community adoption (low friction)
@@ -262,6 +271,7 @@ same project.
   STARTUP_HANDOFF surfaces as potential paths.
 
 **Downstream implications:**
+
 + **P4-T4 creates** `LICENSE` at repo root with the standard MIT
   text + `Copyright (c) 2026 vladm3105` (matches the repo owner).
 + **Plugin manifest** already correct; no edit needed.

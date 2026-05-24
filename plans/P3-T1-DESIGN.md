@@ -123,6 +123,7 @@ user's individual setup, not this distribution.
 `workflow-optimizer`) + 3 (borderline-IN) = **13**.
 
 **Combined non-doc OUT total:** 2 (clearly OUT: `google-adk`, `n8n`)
+
 - 5 (borderline-OUT) = **7**.
 
 **Plugin skill total:** 129 `doc-*` + 13 non-doc = **142 skills**.
