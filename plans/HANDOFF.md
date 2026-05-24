@@ -1,5 +1,29 @@
 # Session Handoff
 
+> **✅ MERGED TO MAIN — PR #2 (2026-05-24).** The whole post-v1.0.0 line landed
+> on `main` (merge commit `3974daa`): canonical 54-skill plugin set, ADAPT
+> overlay, **CHG-D1 / GATE-SPEC**, **CHG-D2 / GD-01**. All four PR checks were
+> green pre-merge — including the **Framework-spec change gate**, GATE-SPEC's
+> first real enforcement (E005 VERSION + E008 CHANGELOG + E006/E007 conformance)
+> on a live PR. `main` is the integration line; `claude/skill-revision` is merged
+> (safe to delete). Framework spec **0.3.1**; conformance 43; the `workflows`
+> permission is now granted (so `.github/workflows/**` is pushable in-container).
+>
+> **Remaining (user-only):**
+> - **Branch protection on `framework/**`** (repo → Settings → Branches) — the
+>   human-approval half of GATE-SPEC. The automated half now enforces via the
+>   `chg-gate.yml` workflow; the human sign-off exists only once this rule is set.
+> - **Release tags** — annotated; tag pushes still 403 in-container (separate
+>   from the workflows scope, see `docs/TAGGING.md`), so push from a local clone:
+>   ```sh
+>   git tag -a framework/v0.2.0 f22fe6a -m "Framework spec v0.2.0 — adaptation overlay (ADAPT, D-0019)"
+>   git tag -a framework/v0.3.0 f8e8bf5 -m "Framework spec v0.3.0 — GATE-SPEC framework-spec change gate (CHG-D1, D-0020)"
+>   git tag -a framework/v0.3.1 3753de2 -m "Framework spec v0.3.1 — governance decision register (CHG-D2, GD-01)"
+>   git push origin framework/v0.2.0 framework/v0.3.0 framework/v0.3.1
+>   ```
+>   Optional project milestone tag: `git tag -a v1.1.0 3974daa -m "Post-cutover feature release — adaptation overlay + CHG GATE-SPEC" && git push origin v1.1.0`.
+> - Delete the merged `claude/skill-revision` branch.
+
 > **✅ CHG-D2 COMPLETE — framework governance decision register (2026-05-23).**
 > Established `framework/governance/DECISIONS.md` — the spec's own durable home
 > for decisions about the spec + its governance — and recorded the CHG
@@ -158,10 +182,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-23T00:00:00Z                       |
-| Working branch| `claude/skill-revision` (user-confirmed)   |
-| Current phase | Post-migration features on `claude/skill-revision`: **ADAPT** (D-0019), **CHG-D1 / GATE-SPEC** (D-0020), **CHG-D2** (GD-01) all complete. Framework spec **0.3.1**; 54 skills; conformance **43**; `plm_lint` clean. |
-| Next task     | **None in-container** — the CHG ROADMAP items are done. **User-only:** relocate `plans/workflows-pending/*.yml` → `.github/workflows/`; branch protection on `framework/**` (the human-approval half of GATE-SPEC); push `framework/v0.3.1` + release tags from a local clone. |
+| Last updated  | 2026-05-24T00:00:00Z                       |
+| Working branch| `main` (PR #2 merged; `claude/skill-revision` merged, safe to delete) |
+| Current phase | Post-cutover features all landed on `main` (merge `3974daa`): **ADAPT** (D-0019), **CHG-D1 / GATE-SPEC** (D-0020), **CHG-D2 / GD-01**. Framework spec **0.3.1**; 54 skills; conformance **43**; GATE-SPEC CI enforcing on PRs. |
+| Next task     | **None pending in-container.** **User-only:** branch protection on `framework/**`; push the framework `v0.2.0/v0.3.0/v0.3.1` tags (+ optional `v1.1.0`) from a local clone (see top blockquote). |
 
 ## Progress
 
