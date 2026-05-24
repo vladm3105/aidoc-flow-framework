@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import logging
 import os
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
@@ -93,8 +94,6 @@ def resolve_project(explicit: str | None) -> Path:
 
 
 # ── Per-call project snapshot ──────────────────────────────────────────────
-
-from dataclasses import dataclass, field
 
 
 @dataclass(frozen=True)

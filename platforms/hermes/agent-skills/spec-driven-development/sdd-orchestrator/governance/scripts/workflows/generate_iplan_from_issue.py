@@ -172,7 +172,6 @@ def extract_plan_approval_mode(body: str) -> str:
 
 def generate_iplan(issue_number: int, title: str, body: str, labels: list[str], author: str) -> str:
     """Generate IPLAN content from issue data."""
-    slug = slugify(title)
     phase = extract_phase(title, labels)
     description = extract_description(body)
     criteria = extract_acceptance_criteria(body)

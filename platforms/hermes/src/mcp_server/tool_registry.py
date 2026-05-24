@@ -6,6 +6,7 @@ import dataclasses
 import json
 import re
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from mcp.types import TextContent, Tool
 
@@ -23,6 +24,9 @@ from mcp_server.logging_config import (
     log_tool_call,
     log_tool_result,
 )
+
+if TYPE_CHECKING:
+    from mcp_server.project_context import ProjectContext
 
 # ── Tool definitions ────────────────────────────────────────────────────────
 

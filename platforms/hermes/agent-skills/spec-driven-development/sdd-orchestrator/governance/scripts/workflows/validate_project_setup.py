@@ -50,11 +50,6 @@ def check_required_secrets(repo: str) -> list[str]:
         "GITHUB_TOKEN",  # This is always available
     ]
 
-    optional_secrets = [
-        "ELEVATED_PAT",
-        "TEAMS_WEBHOOK",
-    ]
-
     # Check workflow files for secret references
     workflow_dir = ".github/workflows"
     if not os.path.exists(workflow_dir):

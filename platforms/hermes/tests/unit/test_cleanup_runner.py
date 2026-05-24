@@ -66,7 +66,7 @@ class TestReportCleanup:
                 "BRD-01.ucx.validate.v2.json",
             ],
         )
-        result = run_clean(tmp_path, stages=["validate"], keep=1, dry_run=False)
+        run_clean(tmp_path, stages=["validate"], keep=1, dry_run=False)
         # Keeps latest versioned + latest unversioned per format
         assert (tmp_path / "BRD-01_test.yaml").exists()  # Source protected
 
@@ -100,7 +100,7 @@ class TestStageFiltering:
                 "BRD-01.ucx.validate.json",
             ],
         )
-        result = run_clean(tmp_path, stages=["remediate"], keep=1, dry_run=False)
+        run_clean(tmp_path, stages=["remediate"], keep=1, dry_run=False)
         assert not (tmp_path / "BRD-01_test_remediate_v1.yaml").exists()
         assert (tmp_path / "BRD-01_test_validated.yaml").exists()  # Not touched
         assert (tmp_path / "BRD-01.ucx.validate.json").exists()  # Not touched
@@ -117,7 +117,7 @@ class TestKeepZero:
                 "BRD-01.ucx.remediate.json",
             ],
         )
-        result = run_clean(tmp_path, stages=["remediate"], keep=0, dry_run=False)
+        run_clean(tmp_path, stages=["remediate"], keep=0, dry_run=False)
         assert not (tmp_path / "BRD-01_test_remediate_v1.yaml").exists()
         assert not (tmp_path / "BRD-01_test_remediate_v2.yaml").exists()
         assert not (tmp_path / "BRD-01.ucx.remediate.json").exists()
@@ -134,7 +134,7 @@ class TestLegacyCompat:
                 "BRD-01_test_remediate_v1.yaml",
             ],
         )
-        result = run_clean(tmp_path, stages=["remediate"], keep=1, dry_run=False)
+        run_clean(tmp_path, stages=["remediate"], keep=1, dry_run=False)
         assert not (tmp_path / "BRD-01_test_remediate_copy.yaml").exists()
         assert (tmp_path / "BRD-01_test_remediate_v1.yaml").exists()
 
@@ -148,5 +148,5 @@ class TestSourceProtection:
                 "BRD-01.ucx.validate.json",
             ],
         )
-        result = run_clean(tmp_path, stages=["all"], keep=0, dry_run=False)
+        run_clean(tmp_path, stages=["all"], keep=0, dry_run=False)
         assert (tmp_path / "BRD-01_test.yaml").exists()

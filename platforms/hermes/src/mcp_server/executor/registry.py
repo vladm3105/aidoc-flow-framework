@@ -9,7 +9,7 @@ from __future__ import annotations
 import json
 import logging
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -18,7 +18,7 @@ LITELLM_PROXY_API_BASE = "http://localhost:4001/v1"
 LITELLM_PROXY_API_KEY_ENV = "LITELLM_MASTER_KEY"
 
 
-class ExecutorType(str, Enum):
+class ExecutorType(StrEnum):
     API = "api"
 
 
