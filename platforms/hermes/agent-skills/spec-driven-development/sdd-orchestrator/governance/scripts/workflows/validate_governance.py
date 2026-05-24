@@ -24,7 +24,6 @@ import re
 import subprocess
 import sys
 from datetime import datetime
-from typing import Optional
 
 
 def run_gh(args: list[str], check: bool = True) -> str:
@@ -34,15 +33,15 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
 
-def read_file(path: str) -> Optional[str]:
+def read_file(path: str) -> str | None:
     """Read file contents if exists."""
     try:
-        with open(path, "r") as f:
+        with open(path) as f:
             return f.read()
     except FileNotFoundError:
         return None
@@ -55,9 +54,7 @@ def validate_roadmap(roadmap_content: str, issues: list[dict]) -> list[str]:
     # Extract phase dates from ROADMAP
     phase_dates = {}
     for match in re.finditer(
-        r'Phase\s*(\d+).*?(\d{4}-\d{2}-\d{2})',
-        roadmap_content,
-        re.IGNORECASE
+        r"Phase\s*(\d+).*?(\d{4}-\d{2}-\d{2})", roadmap_content, re.IGNORECASE
     ):
         phase_dates[int(match.group(1))] = match.group(2)
 
@@ -90,9 +87,7 @@ def validate_project_plan(plan_content: str, issues: list[dict]) -> list[str]:
 
     # Extract gaps mentioned in PROJECT_PLAN
     gaps_section = re.search(
-        r'##.*Gap.*Analysis.*?\n(.*?)(?=\n##|\Z)',
-        plan_content,
-        re.IGNORECASE | re.DOTALL
+        r"##.*Gap.*Analysis.*?\n(.*?)(?=\n##|\Z)", plan_content, re.IGNORECASE | re.DOTALL
     )
 
     if not gaps_section:
@@ -101,7 +96,7 @@ def validate_project_plan(plan_content: str, issues: list[dict]) -> list[str]:
     gaps_text = gaps_section.group(1)
 
     # Count mentioned gaps vs open issues
-    gap_count = len(re.findall(r'- \[[ x]\]', gaps_text))
+    gap_count = len(re.findall(r"- \[[ x]\]", gaps_text))
     open_issues = sum(1 for i in issues if i.get("state") == "OPEN")
 
     if abs(gap_count - open_issues) > 5:
@@ -122,21 +117,20 @@ def validate_iplan_references(issues: list[dict]) -> list[str]:
         number = issue["number"]
 
         # Check if issue mentions IPLAN
-        iplan_refs = re.findall(r'IPLAN-(\d+)', body, re.IGNORECASE)
+        iplan_refs = re.findall(r"IPLAN-(\d+)", body, re.IGNORECASE)
 
         for ref in iplan_refs:
             iplan_path = f"governance/plans/IPLAN-{ref}_*.md"
             # This would need glob expansion in real implementation
-            if not os.path.exists(f"governance/plans"):
+            if not os.path.exists("governance/plans"):
                 continue
 
             # Check if referenced IPLAN exists
             import glob
+
             matches = glob.glob(f"governance/plans/IPLAN-{ref}_*.md")
             if not matches:
-                warnings.append(
-                    f"Issue #{number}: References IPLAN-{ref} which does not exist"
-                )
+                warnings.append(f"Issue #{number}: References IPLAN-{ref} which does not exist")
 
     return warnings
 
@@ -150,7 +144,7 @@ def validate_governance_files() -> list[str]:
         "governance/PROJECT_PLAN.md",
         "governance/ROADMAP.md",
         "governance/DEFINITION_OF_DONE.md",
-        "CLAUDE.md"
+        "CLAUDE.md",
     ]
 
     for filepath in required_files:
@@ -165,27 +159,31 @@ def generate_report(all_warnings: list[str]) -> str:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     lines = [
-        f"## Governance Validation Report",
-        f"",
+        "## Governance Validation Report",
+        "",
         f"**Generated**: {timestamp}",
         f"**Status**: {'PASS' if not all_warnings else 'WARNINGS'}",
         f"**Issues Found**: {len(all_warnings)}",
-        f"",
+        "",
     ]
 
     if all_warnings:
-        lines.extend([
-            f"### Warnings",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Warnings",
+                "",
+            ]
+        )
         for warning in all_warnings:
             lines.append(f"- {warning}")
         lines.append("")
     else:
-        lines.extend([
-            f"No governance drift detected.",
-            f"",
-        ])
+        lines.extend(
+            [
+                "No governance drift detected.",
+                "",
+            ]
+        )
 
     return "\n".join(lines)
 
@@ -202,13 +200,21 @@ def main():
     all_warnings.extend(validate_governance_files())
 
     # Get all issues
-    output = run_gh([
-        "issue", "list",
-        "--repo", args.repo,
-        "--state", "all",
-        "--json", "number,title,body,state,labels",
-        "--limit", "500"
-    ], check=False)
+    output = run_gh(
+        [
+            "issue",
+            "list",
+            "--repo",
+            args.repo,
+            "--state",
+            "all",
+            "--json",
+            "number,title,body,state,labels",
+            "--limit",
+            "500",
+        ],
+        check=False,
+    )
     issues = json.loads(output) if output else []
 
     # Validate ROADMAP

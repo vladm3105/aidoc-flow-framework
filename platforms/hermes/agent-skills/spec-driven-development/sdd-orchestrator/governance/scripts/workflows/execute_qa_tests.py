@@ -5,12 +5,12 @@ import argparse
 import json
 import os
 import subprocess
-import sys
 from datetime import datetime
 from pathlib import Path
 
 try:
     import yaml
+
     YAML_AVAILABLE = True
 except ImportError:
     YAML_AVAILABLE = False
@@ -33,13 +33,15 @@ def map_results_to_tdd(pytest_results: dict, registry: dict) -> list:
     for test in pytest_results.get("tests", []):
         entry = registry_map.get(test.get("nodeid", ""))
         if entry:
-            mapped.append({
-                "tdd_id": entry.get("tdd_id"),
-                "bdd_scenario": entry.get("bdd_scenario"),
-                "outcome": test.get("outcome"),
-                "duration": test.get("duration", 0),
-                "upstream_refs": entry.get("upstream_refs", []),
-            })
+            mapped.append(
+                {
+                    "tdd_id": entry.get("tdd_id"),
+                    "bdd_scenario": entry.get("bdd_scenario"),
+                    "outcome": test.get("outcome"),
+                    "duration": test.get("duration", 0),
+                    "upstream_refs": entry.get("upstream_refs", []),
+                }
+            )
     return mapped
 
 
@@ -50,7 +52,9 @@ def generate_traceability_report(mapped_results: list) -> str:
     lines.append("|--------|---------|----------|----------|")
     for r in mapped_results:
         refs = ", ".join(r.get("upstream_refs", [])[:2])
-        lines.append(f"| {r.get('tdd_id', 'N/A')} | {r.get('outcome', 'unknown')} | {r.get('duration', 0):.2f}s | {refs} |")
+        lines.append(
+            f"| {r.get('tdd_id', 'N/A')} | {r.get('outcome', 'unknown')} | {r.get('duration', 0):.2f}s | {refs} |"
+        )
     return "\n".join(lines)
 
 
@@ -61,8 +65,14 @@ def run_tests(test_path: str, timeout_seconds: int, env: dict) -> dict:
         return result
 
     cmd = [
-        "python", "-m", "pytest", test_path, "-v", "--tb=short",
-        f"--timeout={timeout_seconds}", "--json-report",
+        "python",
+        "-m",
+        "pytest",
+        test_path,
+        "-v",
+        "--tb=short",
+        f"--timeout={timeout_seconds}",
+        "--json-report",
         "--json-report-file=/tmp/pytest_report.json",
     ]
 
@@ -105,7 +115,12 @@ def main() -> int:
     env["STAGING_URL"] = args.staging_url
     env["TEST_PHASE"] = str(args.phase)
 
-    test_paths = ["tests/acceptance/smoke/", "tests/unit/", "tests/integration/", f"tests/acceptance/phase{args.phase}/"]
+    test_paths = [
+        "tests/acceptance/smoke/",
+        "tests/unit/",
+        "tests/integration/",
+        f"tests/acceptance/phase{args.phase}/",
+    ]
     per_suite_timeout = max(60, (args.timeout_minutes * 60) // len(test_paths))
 
     suite_results = []
@@ -136,7 +151,10 @@ def main() -> int:
         "issue_results": issue_results,
         "test_results": suite_results,
         "total": {"passed": total_passed, "failed": total_failed, "skipped": total_skipped},
-        "tdd_traceability": {"mapped_tests": len(mapped), "report": generate_traceability_report(mapped)},
+        "tdd_traceability": {
+            "mapped_tests": len(mapped),
+            "report": generate_traceability_report(mapped),
+        },
         "executed_at": datetime.utcnow().isoformat() + "Z",
     }
 

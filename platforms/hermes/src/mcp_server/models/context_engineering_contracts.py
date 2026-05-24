@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass, field
 import hashlib
 import json
+from dataclasses import asdict, dataclass, field
 
 
 @dataclass(frozen=True)

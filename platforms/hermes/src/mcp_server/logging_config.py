@@ -8,10 +8,9 @@ from __future__ import annotations
 import json
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
-
 
 _LOG_SUBDIR = "UCX/logs"
 _LOG_FILENAME = "ucx_hermes.log"
@@ -26,15 +25,28 @@ class _JsonFormatter(logging.Formatter):
 
     def format(self, record: logging.LogRecord) -> str:
         entry: dict[str, Any] = {
-            "ts": datetime.now(timezone.utc).isoformat(),
+            "ts": datetime.now(UTC).isoformat(),
             "level": record.levelname,
             "logger": record.name,
             "message": record.getMessage(),
         }
         # Merge extra fields attached via `extra=` kwarg
-        for key in ("tool", "executor", "doc_type", "layer", "document",
-                     "exit_code", "duration_ms", "prompt_chars", "stdout_chars",
-                     "errors", "warnings", "passes", "working_dir", "stage"):
+        for key in (
+            "tool",
+            "executor",
+            "doc_type",
+            "layer",
+            "document",
+            "exit_code",
+            "duration_ms",
+            "prompt_chars",
+            "stdout_chars",
+            "errors",
+            "warnings",
+            "passes",
+            "working_dir",
+            "stage",
+        ):
             val = getattr(record, key, None)
             if val is not None:
                 entry[key] = val
@@ -76,7 +88,8 @@ def configure_logging(project_root: Path) -> Path | None:
     _file_handler = handler
     _configured_project_root = project_root
 
-    logger.info("ucx_hermes logging configured",
+    logger.info(
+        "ucx_hermes logging configured",
         extra={"tool": "logging_config", "working_dir": str(project_root)},
     )
     return log_path
@@ -159,4 +172,6 @@ def log_executor_result(
         "stage": "executor_result",
     }
     level = logging.INFO if exit_code == 0 else logging.WARNING
-    logger.log(level, f"executor_result: {executor} exit={exit_code} ({duration_ms}ms)", extra=extra)
+    logger.log(
+        level, f"executor_result: {executor} exit={exit_code} ({duration_ms}ms)", extra=extra
+    )

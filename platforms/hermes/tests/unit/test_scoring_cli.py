@@ -1,9 +1,8 @@
 from __future__ import annotations
 
-from pathlib import Path
 import json
 import sys
-
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
@@ -55,7 +54,19 @@ def test_scoring_show_validate_compare(tmp_path: Path, capsys) -> None:
     validate_payload = json.loads(capsys.readouterr().out)
     assert validate_payload["passed"] is True
 
-    assert main(["scoring", "compare", "--baseline-report-file", str(baseline), "--candidate-report-file", str(candidate)]) == 0
+    assert (
+        main(
+            [
+                "scoring",
+                "compare",
+                "--baseline-report-file",
+                str(baseline),
+                "--candidate-report-file",
+                str(candidate),
+            ]
+        )
+        == 0
+    )
     compare_payload = json.loads(capsys.readouterr().out)
     assert compare_payload["delta"] > 0
 
@@ -83,9 +94,7 @@ def test_scoring_validate_enforces_tdd_readiness_gate(tmp_path: Path, capsys) ->
             "errors": 0,
             "warnings": 0,
         },
-        "passes": [
-            "TDD-001: iplan_ready_score 89/100 below threshold"
-        ],
+        "passes": ["TDD-001: iplan_ready_score 89/100 below threshold"],
     }
     report.write_text(json.dumps(payload), encoding="utf-8")
 

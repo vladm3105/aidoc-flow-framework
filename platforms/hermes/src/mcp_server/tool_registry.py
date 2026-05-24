@@ -9,12 +9,6 @@ from pathlib import Path
 
 from mcp.types import TextContent, Tool
 
-from mcp_server.logging_config import (
-    configure_logging,
-    log_tool_call,
-    log_tool_result,
-)
-
 from mcp_server.executor import (
     ExecutorConfig,
     ExecutorType,
@@ -24,6 +18,11 @@ from mcp_server.executor import (
     run_executor,
 )
 from mcp_server.executor.contracts import ExecutorResult
+from mcp_server.logging_config import (
+    configure_logging,
+    log_tool_call,
+    log_tool_result,
+)
 
 # ── Tool definitions ────────────────────────────────────────────────────────
 
@@ -35,7 +34,10 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path, or empty string to clear"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path, or empty string to clear",
+                },
             },
             "required": ["project"],
         },
@@ -56,9 +58,20 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "update": {"type": "boolean", "description": "Overwrite stale files with latest framework versions. Protects project-owned files like persona_mappings.yaml (default: false)", "default": False},
-                "update_mappings": {"type": "boolean", "description": "Also reset persona_mappings.yaml to framework defaults. Requires update=true (default: false)", "default": False},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "update": {
+                    "type": "boolean",
+                    "description": "Overwrite stale files with latest framework versions. Protects project-owned files like persona_mappings.yaml (default: false)",
+                    "default": False,
+                },
+                "update_mappings": {
+                    "type": "boolean",
+                    "description": "Also reset persona_mappings.yaml to framework defaults. Requires update=true (default: false)",
+                    "default": False,
+                },
             },
             "required": ["project"],
         },
@@ -69,15 +82,37 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd, ears)"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "doc_type": {
+                    "type": "string",
+                    "description": "Document type (e.g. brd, prd, ears)",
+                },
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
-                "tier1_only": {"type": "boolean", "description": "Evaluate only tier1 blocking checks", "default": False},
-                "strict": {"type": "boolean", "description": "Treat warnings as failures", "default": False},
-                "format": {"type": "string", "enum": ["text", "json"], "description": "Output format", "default": "json"},
+                "tier1_only": {
+                    "type": "boolean",
+                    "description": "Evaluate only tier1 blocking checks",
+                    "default": False,
+                },
+                "strict": {
+                    "type": "boolean",
+                    "description": "Treat warnings as failures",
+                    "default": False,
+                },
+                "format": {
+                    "type": "string",
+                    "enum": ["text", "json"],
+                    "description": "Output format",
+                    "default": "json",
+                },
                 "out": {"type": "string", "description": "Output directory for reports"},
-                "validation_report": {"type": "string", "description": "Path to existing validation report. Skips re-validation, generates fix artifacts from this report."},
+                "validation_report": {
+                    "type": "string",
+                    "description": "Path to existing validation report. Skips re-validation, generates fix artifacts from this report.",
+                },
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -88,9 +123,18 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "layer": {"type": "string", "description": "Layer directory for CHG template assets (typically CHG)"},
-                "document": {"type": "string", "description": "Path to CHG document file or directory"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "layer": {
+                    "type": "string",
+                    "description": "Layer directory for CHG template assets (typically CHG)",
+                },
+                "document": {
+                    "type": "string",
+                    "description": "Path to CHG document file or directory",
+                },
                 "out": {"type": "string", "description": "Output directory for reports"},
             },
             "required": ["project", "layer", "document"],
@@ -102,7 +146,10 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "target": {"type": "string", "description": "Path to source document file or directory"},
+                "target": {
+                    "type": "string",
+                    "description": "Path to source document file or directory",
+                },
                 "format": {"type": "string", "enum": ["text", "json"], "default": "json"},
                 "out": {"type": "string", "description": "Output directory"},
             },
@@ -115,9 +162,20 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "target": {"type": "string", "description": "Path to a markdown file or directory to scan"},
-                "workspace_root": {"type": "string", "description": "Workspace root for resolving absolute paths (defaults to target or its parent)"},
-                "format": {"type": "string", "enum": ["text", "json"], "default": "json", "description": "Output format (used by CLI only)"},
+                "target": {
+                    "type": "string",
+                    "description": "Path to a markdown file or directory to scan",
+                },
+                "workspace_root": {
+                    "type": "string",
+                    "description": "Workspace root for resolving absolute paths (defaults to target or its parent)",
+                },
+                "format": {
+                    "type": "string",
+                    "enum": ["text", "json"],
+                    "default": "json",
+                    "description": "Output format (used by CLI only)",
+                },
                 "out": {"type": "string", "description": "Output directory for reports"},
             },
             "required": ["target"],
@@ -129,8 +187,15 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "context": {"type": "string", "enum": ["create", "review", "remediate", "any"], "default": "any"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "context": {
+                    "type": "string",
+                    "enum": ["create", "review", "remediate", "any"],
+                    "default": "any",
+                },
                 "document": {"type": "string", "description": "Optional document path to verify"},
                 "format": {"type": "string", "enum": ["text", "json"], "default": "json"},
                 "out": {"type": "string", "description": "Output directory"},
@@ -144,8 +209,15 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "phase": {"type": "string", "enum": ["creation", "review", "remediation"], "description": "Filter by phase (optional)"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "phase": {
+                    "type": "string",
+                    "enum": ["creation", "review", "remediation"],
+                    "description": "Filter by phase (optional)",
+                },
                 "doc_type": {"type": "string", "description": "Filter by document type (optional)"},
             },
             "required": ["project"],
@@ -157,10 +229,24 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "phase": {"type": "string", "enum": ["creation", "review", "remediation"], "description": "Lifecycle phase"},
-                "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd, _default)"},
-                "personas": {"type": "array", "items": {"type": "string"}, "description": "Ordered list of persona names"},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "phase": {
+                    "type": "string",
+                    "enum": ["creation", "review", "remediation"],
+                    "description": "Lifecycle phase",
+                },
+                "doc_type": {
+                    "type": "string",
+                    "description": "Document type (e.g. brd, prd, _default)",
+                },
+                "personas": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Ordered list of persona names",
+                },
             },
             "required": ["project", "phase", "doc_type", "personas"],
         },
@@ -171,7 +257,10 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
             },
             "required": ["project"],
         },
@@ -182,7 +271,10 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
             },
             "required": ["project"],
         },
@@ -240,8 +332,14 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "baseline_report_file": {"type": "string", "description": "Path to baseline JSON report"},
-                "candidate_report_file": {"type": "string", "description": "Path to candidate JSON report"},
+                "baseline_report_file": {
+                    "type": "string",
+                    "description": "Path to baseline JSON report",
+                },
+                "candidate_report_file": {
+                    "type": "string",
+                    "description": "Path to candidate JSON report",
+                },
             },
             "required": ["baseline_report_file", "candidate_report_file"],
         },
@@ -266,12 +364,23 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "name": {"type": "string", "description": "Unique executor name (e.g. 'api/mistral')"},
-                "executor_type": {"type": "string", "enum": ["api"], "description": "Executor type"},
+                "name": {
+                    "type": "string",
+                    "description": "Unique executor name (e.g. 'api/mistral')",
+                },
+                "executor_type": {
+                    "type": "string",
+                    "enum": ["api"],
+                    "description": "Executor type",
+                },
                 "model": {"type": "string", "description": "LiteLLM model string"},
                 "api_base": {"type": "string", "description": "Custom API base URL"},
                 "api_key_env": {"type": "string", "description": "Env var name for API key"},
-                "timeout": {"type": "integer", "description": "Default timeout in seconds", "default": 300},
+                "timeout": {
+                    "type": "integer",
+                    "description": "Default timeout in seconds",
+                    "default": 300,
+                },
             },
             "required": ["name", "executor_type"],
         },
@@ -283,16 +392,34 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "document": {"type": "string", "description": "Path to document file or directory to clean."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "document": {
+                    "type": "string",
+                    "description": "Path to document file or directory to clean.",
+                },
                 "stages": {
                     "type": "array",
-                    "items": {"type": "string", "enum": ["validate", "review", "remediate", "creation", "all"]},
+                    "items": {
+                        "type": "string",
+                        "enum": ["validate", "review", "remediate", "creation", "all"],
+                    },
                     "description": "Stages to clean. Default: ['all'].",
                     "default": ["all"],
                 },
-                "keep": {"type": "integer", "description": "Number of latest versions to keep per artifact type. Default: 1.", "default": 1, "minimum": 0},
-                "dry_run": {"type": "boolean", "description": "List files that would be deleted without deleting. Default: true.", "default": True},
+                "keep": {
+                    "type": "integer",
+                    "description": "Number of latest versions to keep per artifact type. Default: 1.",
+                    "default": 1,
+                    "minimum": 0,
+                },
+                "dry_run": {
+                    "type": "boolean",
+                    "description": "List files that would be deleted without deleting. Default: true.",
+                    "default": True,
+                },
             },
             "required": ["document"],
         },
@@ -315,7 +442,10 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
@@ -324,12 +454,27 @@ TOOLS: list[Tool] = [
                     "items": {"type": "string"},
                     "description": "Lifecycle stages to run in order (e.g. validate, review, remediate, prescreen, score_validate)",
                 },
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
-                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override for review/create stages. If omitted, loaded from persona_mappings.yaml."},
+                "executor": {
+                    "type": "string",
+                    "description": "Deprecated. Ignored for safety compatibility.",
+                },
+                "personas": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Persona list override for review/create stages. If omitted, loaded from persona_mappings.yaml.",
+                },
                 "template": {"type": "string", "description": "Template for review/create stages"},
                 "out": {"type": "string", "description": "Output directory"},
-                "threshold": {"type": "integer", "description": "Score threshold for score_validate stage", "default": 80},
-                "clean_before": {"type": "boolean", "description": "Run sdd_clean (keep=0) before starting pipeline. Default: false.", "default": False},
+                "threshold": {
+                    "type": "integer",
+                    "description": "Score threshold for score_validate stage",
+                    "default": 80,
+                },
+                "clean_before": {
+                    "type": "boolean",
+                    "description": "Run sdd_clean (keep=0) before starting pipeline. Default: false.",
+                    "default": False,
+                },
             },
             "required": ["project", "doc_type", "layer", "document", "stages"],
         },
@@ -341,15 +486,36 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "personas": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Persona list override. If omitted, loaded from persona_mappings.yaml.",
+                },
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
-                "template": {"type": "string", "description": "Template file in UCX/prompts/templates/creation"},
-                "sections": {"type": "array", "items": {"type": "object"}, "description": "Optional sections JSON array [{section_id, title, content, included?}]"},
+                "template": {
+                    "type": "string",
+                    "description": "Template file in UCX/prompts/templates/creation",
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "description": "Optional sections JSON array [{section_id, title, content, included?}]",
+                },
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
+                "executor": {
+                    "type": "string",
+                    "description": "Deprecated. Ignored for safety compatibility.",
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Executor timeout in seconds",
+                    "default": 300,
+                },
             },
             "required": ["project", "doc_type", "layer", "template"],
         },
@@ -360,17 +526,39 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "personas": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Persona list override. If omitted, loaded from persona_mappings.yaml.",
+                },
                 "doc_type": {"type": "string", "description": "Document type (e.g. brd, prd)"},
                 "layer": {"type": "string", "description": "SDD layer directory (e.g. 01_BRD)"},
                 "template": {"type": "string", "description": "Template file name"},
                 "target": {"type": "string", "description": "Final target document path to create"},
-                "overwrite": {"type": "boolean", "description": "Overwrite target if exists", "default": False},
-                "sections": {"type": "array", "items": {"type": "object"}, "description": "Optional sections JSON array"},
+                "overwrite": {
+                    "type": "boolean",
+                    "description": "Overwrite target if exists",
+                    "default": False,
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "description": "Optional sections JSON array",
+                },
                 "out": {"type": "string", "description": "Output directory for diagnostics"},
-                "executor": {"type": "string", "description": "Deprecated. Ignored for safety compatibility."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
+                "executor": {
+                    "type": "string",
+                    "description": "Deprecated. Ignored for safety compatibility.",
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Executor timeout in seconds",
+                    "default": 300,
+                },
             },
             "required": ["project", "doc_type", "layer", "template", "target"],
         },
@@ -381,15 +569,37 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
-                "personas": {"type": "array", "items": {"type": "string"}, "description": "Persona list override. If omitted, loaded from persona_mappings.yaml."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "personas": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Persona list override. If omitted, loaded from persona_mappings.yaml.",
+                },
                 "doc_type": {"type": "string", "description": "Document type"},
                 "template": {"type": "string", "description": "Review template file name"},
-                "document": {"type": "string", "description": "Path to document file or directory for auto section loading"},
-                "sections": {"type": "array", "items": {"type": "object"}, "description": "Optional explicit sections JSON array"},
+                "document": {
+                    "type": "string",
+                    "description": "Path to document file or directory for auto section loading",
+                },
+                "sections": {
+                    "type": "array",
+                    "items": {"type": "object"},
+                    "description": "Optional explicit sections JSON array",
+                },
                 "layer": {"type": "string", "description": "SDD layer directory"},
-                "unified": {"type": "boolean", "description": "Enable unified context mode", "default": False},
-                "one_turn": {"type": "boolean", "description": "Enable one-turn review mode", "default": False},
+                "unified": {
+                    "type": "boolean",
+                    "description": "Enable unified context mode",
+                    "default": False,
+                },
+                "one_turn": {
+                    "type": "boolean",
+                    "description": "Enable one-turn review mode",
+                    "default": False,
+                },
                 "review_mode": {
                     "type": "string",
                     "enum": ["prompt_only", "saga_parallel"],
@@ -426,13 +636,32 @@ TOOLS: list[Tool] = [
                     "description": "Enable branch-level LLM fan-out/fan-in execution in saga_parallel mode.",
                     "default": False,
                 },
-                "executor": {"type": "string", "description": "Required API executor name for review execution (e.g. api/openrouter)."},
-                "temperature": {"type": "number", "description": "Optional generation temperature for API executor."},
-                "top_p": {"type": "number", "description": "Optional nucleus sampling parameter for API executor."},
-                "top_k": {"type": "integer", "description": "Optional top-k sampling parameter (provider-specific)."},
-                "max_output_tokens": {"type": "integer", "description": "Optional max output tokens for API executor response."},
+                "executor": {
+                    "type": "string",
+                    "description": "Required API executor name for review execution (e.g. api/openrouter).",
+                },
+                "temperature": {
+                    "type": "number",
+                    "description": "Optional generation temperature for API executor.",
+                },
+                "top_p": {
+                    "type": "number",
+                    "description": "Optional nucleus sampling parameter for API executor.",
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "Optional top-k sampling parameter (provider-specific).",
+                },
+                "max_output_tokens": {
+                    "type": "integer",
+                    "description": "Optional max output tokens for API executor response.",
+                },
                 "out": {"type": "string", "description": "Output directory"},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
+                "timeout": {
+                    "type": "integer",
+                    "description": "Executor timeout in seconds",
+                    "default": 300,
+                },
             },
             "required": ["project", "doc_type", "template"],
         },
@@ -443,20 +672,52 @@ TOOLS: list[Tool] = [
         inputSchema={
             "type": "object",
             "properties": {
-                "project": {"type": "string", "description": "Project root path. Resolved from session/config default when omitted."},
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
                 "doc_type": {"type": "string", "description": "Document type"},
                 "layer": {"type": "string", "description": "SDD layer directory"},
                 "document": {"type": "string", "description": "Path to document file or directory"},
-                "review_report": {"type": "string", "description": "Optional path to review report"},
-                "remediation_report": {"type": "string", "description": "Path to existing remediation report. With fix=true, skips findings generation and applies fix from this report directly."},
+                "review_report": {
+                    "type": "string",
+                    "description": "Optional path to review report",
+                },
+                "remediation_report": {
+                    "type": "string",
+                    "description": "Path to existing remediation report. With fix=true, skips findings generation and applies fix from this report directly.",
+                },
                 "out": {"type": "string", "description": "Output directory"},
-                "executor": {"type": "string", "description": "Required API executor name for remediation apply (e.g. api/gpt-4o)."},
-                "timeout": {"type": "integer", "description": "Executor timeout in seconds", "default": 300},
-                "fix": {"type": "boolean", "description": "Deprecated compatibility flag. Remediation apply runs by default.", "default": True},
-                "temperature": {"type": "number", "description": "Optional generation temperature for API executor."},
-                "top_p": {"type": "number", "description": "Optional nucleus sampling parameter for API executor."},
-                "top_k": {"type": "integer", "description": "Optional top-k sampling parameter (provider-specific)."},
-                "max_output_tokens": {"type": "integer", "description": "Optional max output tokens for API executor response."},
+                "executor": {
+                    "type": "string",
+                    "description": "Required API executor name for remediation apply (e.g. api/gpt-4o).",
+                },
+                "timeout": {
+                    "type": "integer",
+                    "description": "Executor timeout in seconds",
+                    "default": 300,
+                },
+                "fix": {
+                    "type": "boolean",
+                    "description": "Deprecated compatibility flag. Remediation apply runs by default.",
+                    "default": True,
+                },
+                "temperature": {
+                    "type": "number",
+                    "description": "Optional generation temperature for API executor.",
+                },
+                "top_p": {
+                    "type": "number",
+                    "description": "Optional nucleus sampling parameter for API executor.",
+                },
+                "top_k": {
+                    "type": "integer",
+                    "description": "Optional top-k sampling parameter (provider-specific).",
+                },
+                "max_output_tokens": {
+                    "type": "integer",
+                    "description": "Optional max output tokens for API executor response.",
+                },
             },
             "required": ["project", "doc_type", "layer", "document"],
         },
@@ -465,13 +726,12 @@ TOOLS: list[Tool] = [
 
 # Tools that accept a "project" parameter — used by handle_tool injection.
 _PROJECT_TOOLS: frozenset[str] = frozenset(
-    tool.name
-    for tool in TOOLS
-    if "project" in (tool.inputSchema.get("properties") or {})
+    tool.name for tool in TOOLS if "project" in (tool.inputSchema.get("properties") or {})
 )
 
 
 # ── Helper functions ────────────────────────────────────────────────────────
+
 
 def _path(arguments: dict, key: str) -> Path:
     return Path(arguments[key]).expanduser().resolve()
@@ -505,6 +765,7 @@ def _serialize_result(result: object) -> dict:
 def _build_sections(arguments: dict):
     """Reconstruct SourceSection list from JSON array in arguments."""
     from mcp_server.prompts import SourceSection
+
     sections_raw = arguments.get("sections")
     if not sections_raw:
         return None
@@ -525,7 +786,7 @@ async def _maybe_run_executor(
     deterministic_result: dict,
     working_dir: Path | None = None,
     system_prompt: str | None = None,
-    ctx: "ProjectContext | None" = None,
+    ctx: ProjectContext | None = None,
 ) -> dict:
     """If executor specified, run it with the prompt. Otherwise return prompt text.
 
@@ -581,29 +842,35 @@ def _inspect_document_folder(document_dir: Path) -> dict:
     md_files = sorted(document_dir.glob("*.md"))
     json_files = sorted(document_dir.glob("*.json"))
     yaml_files = sorted(document_dir.glob("*.yaml")) + sorted(document_dir.glob("*.yml"))
-    all_names = [f.name for f in md_files] + [f.name for f in json_files] + [f.name for f in yaml_files]
+    all_names = (
+        [f.name for f in md_files] + [f.name for f in json_files] + [f.name for f in yaml_files]
+    )
 
     from mcp_server.utils.source_files import REPORT_PATTERN
 
     source_pattern = re.compile(r"^[A-Z]+-\d+_.+\.(md|yaml|yml)$")
-    source_files = [f for f in md_files + yaml_files if source_pattern.match(f.name) and "_validated" not in f.stem and "_remediate_copy" not in f.stem and not re.search(r"_remediate_v\d+", f.stem)]
+    source_files = [
+        f
+        for f in md_files + yaml_files
+        if source_pattern.match(f.name)
+        and "_validated" not in f.stem
+        and "_remediate_copy" not in f.stem
+        and not re.search(r"_remediate_v\d+", f.stem)
+    ]
     has_validation_report = any(
         REPORT_PATTERN.match(f.name) and ".validate." in f.name
         for f in json_files + md_files + yaml_files
     )
-    has_validation_copy = any(
-        "_validated" in f.stem for f in md_files + yaml_files
-    )
+    has_validation_copy = any("_validated" in f.stem for f in md_files + yaml_files)
     has_review_report = any(
-        REPORT_PATTERN.match(f.name) and ".review." in f.name
-        for f in json_files + md_files
+        REPORT_PATTERN.match(f.name) and ".review." in f.name for f in json_files + md_files
     )
     has_remediation_report = any(
-        REPORT_PATTERN.match(f.name) and ".remediate." in f.name
-        for f in json_files + md_files
+        REPORT_PATTERN.match(f.name) and ".remediate." in f.name for f in json_files + md_files
     )
     has_remediated_copy = any(
-        "_remediate_copy" in f.stem or re.search(r"_remediate_v\d+", f.stem) for f in md_files + yaml_files
+        "_remediate_copy" in f.stem or re.search(r"_remediate_v\d+", f.stem)
+        for f in md_files + yaml_files
     )
 
     if has_remediated_copy:
@@ -642,11 +909,13 @@ def _inspect_document_folder(document_dir: Path) -> dict:
 
 # ── Handler dispatch ────────────────────────────────────────────────────────
 
+
 async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
     """Main tool handler — routes MCP tool calls to runner functions."""
     # Inject resolved default project if not explicitly provided (before logging)
     if name in _PROJECT_TOOLS and not arguments.get("project"):
         from mcp_server.project_context import resolve_project
+
         try:
             resolved = resolve_project(None)
             arguments["project"] = str(resolved)
@@ -672,7 +941,9 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
                 tool=name,
                 start_time=start,
                 errors=summary.get("errors", 0) if isinstance(summary.get("errors"), int) else 0,
-                warnings=summary.get("warnings", 0) if isinstance(summary.get("warnings"), int) else 0,
+                warnings=summary.get("warnings", 0)
+                if isinstance(summary.get("warnings"), int)
+                else 0,
                 passes=summary.get("passes", 0) if isinstance(summary.get("passes"), int) else 0,
                 is_valid=summary.get("is_valid"),
             )
@@ -687,12 +958,14 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 async def _dispatch(name: str, arguments: dict) -> dict:
     """Dispatch to the appropriate handler."""
     from mcp_server.project_context import ProjectContext
+
     ctx = ProjectContext.resolve(arguments.get("project"))
 
     # ── Session management tools ───────────────────────────────────────
 
     if name == "sdd_set_project":
-        from mcp_server.project_context import set_session_project, clear_session_project
+        from mcp_server.project_context import clear_session_project, set_session_project
+
         project_val = arguments.get("project", "")
         if not project_val:
             clear_session_project()
@@ -702,6 +975,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_get_project":
         from mcp_server.project_context import get_session_project, resolve_project
+
         session = get_session_project()
         try:
             resolved = resolve_project(None)
@@ -719,19 +993,25 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_validate_fix":
         import warnings
-        warnings.warn("sdd_validate_fix is deprecated. Use sdd_validate.", DeprecationWarning, stacklevel=2)
+
+        warnings.warn(
+            "sdd_validate_fix is deprecated. Use sdd_validate.", DeprecationWarning, stacklevel=2
+        )
         name = "sdd_validate"
 
     # ── Deterministic tools ──────────────────────────────────────────────
 
     if name == "sdd_init":
-        if bool(arguments.get("update_mappings", False)) and not bool(arguments.get("update", False)):
+        if bool(arguments.get("update_mappings", False)) and not bool(
+            arguments.get("update", False)
+        ):
             return {
                 "passed": False,
                 "error": "InvalidInitParams: update_mappings requires update=true.",
                 "error_code": "InvalidInitParams",
             }
         from mcp_server.skills.scaffold import scaffold_project_ucx
+
         result = scaffold_project_ucx(
             project_root=ctx.project_root,
             force_update=bool(arguments.get("update", False)),
@@ -740,9 +1020,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return _serialize_result(result)
 
     if name == "sdd_validate":
-        from mcp_server.validation import run_project_validation_build
-        from mcp_server.remediation import run_validate_fix_build
         from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
+        from mcp_server.remediation import run_validate_fix_build
+        from mcp_server.validation import run_project_validation_build
 
         project_root = ctx.project_root
         document_path = _path(arguments, "document")
@@ -785,9 +1065,13 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
         if tier1_only:
             effective_errors = [
-                item for item in errors
+                item
+                for item in errors
                 if isinstance(item, str)
-                and (item.startswith("Missing required custom field") or item.startswith("Missing required tag"))
+                and (
+                    item.startswith("Missing required custom field")
+                    or item.startswith("Missing required tag")
+                )
             ]
         else:
             effective_errors = [item for item in errors if isinstance(item, str)]
@@ -811,8 +1095,12 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 )
                 fix_response = {
                     "fix_generated": True,
-                    "fix_report_path": str(fix_result.report_path) if fix_result.report_path else None,
-                    "fix_summary_path": str(fix_result.summary_path) if fix_result.summary_path else None,
+                    "fix_report_path": str(fix_result.report_path)
+                    if fix_result.report_path
+                    else None,
+                    "fix_summary_path": str(fix_result.summary_path)
+                    if fix_result.summary_path
+                    else None,
                     "derived_paths": [str(p) for p in fix_result.derived_paths],
                 }
                 fix_generated = True
@@ -839,8 +1127,8 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return response
 
     if name == "sdd_validate_chg":
-        from mcp_server.validation import run_project_validation_build
         from mcp_server.core.stage_output import STAGE_VALIDATE, resolve_stage_output_dir
+        from mcp_server.validation import run_project_validation_build
 
         project_root = ctx.project_root
         document_path = _path(arguments, "document")
@@ -872,6 +1160,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_consistency":
         from mcp_server.consistency import run_consistency_check
+
         result = run_consistency_check(
             target_path=_path(arguments, "target"),
             output_dir=_opt_path(arguments, "out"),
@@ -884,6 +1173,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_validate_links":
         from mcp_server.link_validation import run_link_validation
+
         result = run_link_validation(
             target_path=_path(arguments, "target"),
             workspace_root=_opt_path(arguments, "workspace_root"),
@@ -897,6 +1187,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_preflight":
         from mcp_server.preflight import run_preflight
+
         result = run_preflight(
             project_root=ctx.project_root,
             context=arguments.get("context", "any"),
@@ -911,6 +1202,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_personas_show":
         from mcp_server.skills.persona_manager import show_persona_mappings
+
         return show_persona_mappings(
             project_root=ctx.project_root,
             phase=arguments.get("phase"),
@@ -919,6 +1211,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_personas_set":
         from mcp_server.skills.persona_manager import set_persona_mapping
+
         return set_persona_mapping(
             project_root=ctx.project_root,
             phase=arguments["phase"],
@@ -928,18 +1221,21 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_personas_diff":
         from mcp_server.skills.persona_manager import diff_persona_mappings
+
         return diff_persona_mappings(
             project_root=ctx.project_root,
         )
 
     if name == "sdd_env_show":
         from mcp_server.env_manager import show_project_env
+
         return show_project_env(
             project_root=ctx.project_root,
         )
 
     if name == "sdd_prescreen":
         from mcp_server.prescreening import run_prescreen
+
         result = run_prescreen(
             document_path=_path(arguments, "document"),
             output_dir=_opt_path(arguments, "out"),
@@ -948,6 +1244,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_scan":
         from mcp_server.scan import run_scan
+
         result = run_scan(
             report_file=_path(arguments, "report_file"),
             output_dir=_opt_path(arguments, "out"),
@@ -956,11 +1253,13 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_score_show":
         from mcp_server.scoring import show_score
+
         result = show_score(report_file=_path(arguments, "report_file"))
         return result.payload
 
     if name == "sdd_score_validate":
         from mcp_server.scoring import validate_score
+
         result = validate_score(
             report_file=_path(arguments, "report_file"),
             threshold=int(arguments["threshold"]),
@@ -969,6 +1268,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_score_compare":
         from mcp_server.scoring import compare_scores
+
         result = compare_scores(
             baseline_report_file=_path(arguments, "baseline_report_file"),
             candidate_report_file=_path(arguments, "candidate_report_file"),
@@ -994,14 +1294,16 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             project_names: set[str] = set()
             for e in ctx.executor_overrides.values():
                 project_names.add(e.name)
-                exec_list.append({
-                    "name": e.name,
-                    "executor_type": e.executor_type.value,
-                    "model": e.model,
-                    "status": e.status,
-                    "timeout": e.timeout,
-                    "source": "project",
-                })
+                exec_list.append(
+                    {
+                        "name": e.name,
+                        "executor_type": e.executor_type.value,
+                        "model": e.model,
+                        "status": e.status,
+                        "timeout": e.timeout,
+                        "source": "project",
+                    }
+                )
             # Mark global entries that are overridden
             for item in exec_list:
                 if item.get("source") != "project" and item["name"] in project_names:
@@ -1035,8 +1337,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
     # ── LLM-dependent tools ──────────────────────────────────────────────
 
     if name == "sdd_create_build":
-        from mcp_server.review import run_project_creation_build
         from mcp_server.core.stage_output import STAGE_CREATE, resolve_stage_output_dir
+        from mcp_server.review import run_project_creation_build
+
         project_root = ctx.project_root
         output_dir = resolve_stage_output_dir(
             stage=STAGE_CREATE,
@@ -1061,8 +1364,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return det_result
 
     if name == "sdd_create":
-        from mcp_server.review import run_project_creation_artifact
         from mcp_server.core.stage_output import STAGE_CREATE, resolve_stage_output_dir
+        from mcp_server.review import run_project_creation_artifact
+
         project_root = ctx.project_root
         target_path = _path(arguments, "target")
         output_dir = resolve_stage_output_dir(
@@ -1085,8 +1389,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return _serialize_result(result)
 
     if name == "sdd_review":
-        from mcp_server.review import run_project_review_build, run_project_review_build_saga
         from mcp_server.core.stage_output import STAGE_REVIEW, resolve_stage_output_dir
+        from mcp_server.review import run_project_review_build, run_project_review_build_saga
+
         project_root = ctx.project_root
         review_mode = arguments.get("review_mode", "prompt_only")
         if review_mode == "saga_parallel":
@@ -1103,7 +1408,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         try:
             executor_cfg = get_executor(
                 executor_name,
-                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                project_overrides=ctx.executor_overrides
+                if ctx and ctx.executor_overrides
+                else None,
             )
         except KeyError as exc:
             return {
@@ -1135,12 +1442,17 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
         if sections is None and document_path is not None:
             from mcp_server.cli.main import _build_review_sections_from_document
+
             sections, _ = _build_review_sections_from_document(document_path)
 
         if sections is None:
             return {"error": "Provide either 'sections' or 'document' parameter"}
 
-        doc_dir = document_path if document_path and document_path.is_dir() else (document_path.parent if document_path else None)
+        doc_dir = (
+            document_path
+            if document_path and document_path.is_dir()
+            else (document_path.parent if document_path else None)
+        )
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REVIEW,
             project_root=project_root,
@@ -1177,7 +1489,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 saga_resume=bool(arguments.get("saga_resume", False)),
                 executor_name=executor_name,
                 project_env=ctx.project_env if ctx and ctx.project_env else None,
-                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                project_overrides=ctx.executor_overrides
+                if ctx and ctx.executor_overrides
+                else None,
                 generation_params={
                     "temperature": (
                         arguments.get("temperature")
@@ -1185,9 +1499,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                         else 0.2
                     ),
                     "top_p": (
-                        arguments.get("top_p")
-                        if arguments.get("top_p") is not None
-                        else 0.9
+                        arguments.get("top_p") if arguments.get("top_p") is not None else 0.9
                     ),
                     "top_k": arguments.get("top_k"),
                     "max_output_tokens": (
@@ -1201,7 +1513,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             det_result = _serialize_result(saga_result)
             if not saga_result.passed:
                 det_result["passed"] = False
-                det_result["error"] = "SagaEscalated: review orchestration escalated before synthesis."
+                det_result["error"] = (
+                    "SagaEscalated: review orchestration escalated before synthesis."
+                )
                 det_result["error_code"] = "SagaEscalated"
                 det_result["executor"] = executor_name
                 det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
@@ -1243,15 +1557,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         timeout = int(arguments.get("timeout", 300) or 300)
         generation_params = {
             "temperature": (
-                arguments.get("temperature")
-                if arguments.get("temperature") is not None
-                else 0.2
+                arguments.get("temperature") if arguments.get("temperature") is not None else 0.2
             ),
-            "top_p": (
-                arguments.get("top_p")
-                if arguments.get("top_p") is not None
-                else 0.9
-            ),
+            "top_p": (arguments.get("top_p") if arguments.get("top_p") is not None else 0.9),
             "top_k": arguments.get("top_k"),
             "max_output_tokens": (
                 arguments.get("max_output_tokens")
@@ -1279,13 +1587,16 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         det_result["prompt_text"] = result.prompt_text
         det_result["system_prompt"] = getattr(result, "system_prompt", None)
         if exec_result.exit_code != 0:
-            det_result["error"] = f"ExecutorFailed: review executor '{executor_name}' returned exit code {exec_result.exit_code}."
+            det_result["error"] = (
+                f"ExecutorFailed: review executor '{executor_name}' returned exit code {exec_result.exit_code}."
+            )
             det_result["error_code"] = "ExecutorFailed"
         return det_result
 
     if name == "sdd_remediate":
-        from mcp_server.remediation import run_remediate_fix_build, run_remediation_build
         from mcp_server.core.stage_output import STAGE_REMEDIATE, resolve_stage_output_dir
+        from mcp_server.remediation import run_remediate_fix_build, run_remediation_build
+
         project_root = ctx.project_root
         document_path = _path(arguments, "document")
         executor_name = arguments.get("executor") or "api/claude-sonnet"
@@ -1293,7 +1604,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         try:
             executor_cfg = get_executor(
                 executor_name,
-                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                project_overrides=ctx.executor_overrides
+                if ctx and ctx.executor_overrides
+                else None,
             )
         except KeyError as exc:
             return {
@@ -1357,11 +1670,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                     if arguments.get("temperature") is not None
                     else 0.2
                 ),
-                "top_p": (
-                    arguments.get("top_p")
-                    if arguments.get("top_p") is not None
-                    else 0.9
-                ),
+                "top_p": (arguments.get("top_p") if arguments.get("top_p") is not None else 0.9),
                 "top_k": arguments.get("top_k"),
                 "max_output_tokens": (
                     arguments.get("max_output_tokens")
@@ -1376,7 +1685,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 timeout=timeout,
                 project_env=ctx.project_env if ctx and ctx.project_env else None,
                 system_prompt=None,
-                project_overrides=ctx.executor_overrides if ctx and ctx.executor_overrides else None,
+                project_overrides=ctx.executor_overrides
+                if ctx and ctx.executor_overrides
+                else None,
                 generation_params=generation_params,
             )
             det_result["executor"] = executor_name
@@ -1399,7 +1710,9 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                     det_result["fix_result"]["remediation_quality"] = quality
 
             if exec_result.exit_code != 0:
-                det_result["error"] = f"ExecutorFailed: remediation executor '{executor_name}' returned exit code {exec_result.exit_code}."
+                det_result["error"] = (
+                    f"ExecutorFailed: remediation executor '{executor_name}' returned exit code {exec_result.exit_code}."
+                )
                 det_result["error_code"] = "ExecutorFailed"
         except (FileNotFoundError, ValueError) as exc:
             det_result["fix_result"] = {"error": str(exc)}
@@ -1411,6 +1724,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
 
     if name == "sdd_clean":
         from mcp_server.cleanup.runner import run_clean
+
         document_path = _path(arguments, "document")
         stages = arguments.get("stages", ["all"])
         keep = arguments.get("keep", 1)
@@ -1441,6 +1755,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
     # Optional pre-clean: remove all stage artifacts before pipeline starts
     if arguments.get("clean_before"):
         from mcp_server.cleanup.runner import run_clean
+
         doc_path = _path(arguments, "document")
         clean_result = run_clean(document_path=doc_path, stages=["all"], keep=0, dry_run=False)
         results["_clean_before"] = {
@@ -1459,10 +1774,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
     }
 
     for stage in stages:
-        stage_args = {
-            k: v for k, v in arguments.items()
-            if k not in ("stages",) and v is not None
-        }
+        stage_args = {k: v for k, v in arguments.items() if k not in ("stages",) and v is not None}
 
         if stage == "score_validate":
             validate_result = results.get("validate", {})
@@ -1493,7 +1805,10 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
 
         tool_name = stage_handlers.get(stage)
         if tool_name is None:
-            results[stage] = {"skipped": True, "reason": f"Stage '{stage}' not supported in pipeline"}
+            results[stage] = {
+                "skipped": True,
+                "reason": f"Stage '{stage}' not supported in pipeline",
+            }
             continue
 
         # Skip validate_fix if validate already produced fix output
@@ -1530,8 +1845,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
                 derived_paths = fix_result.get("derived_paths", [])
                 if derived_paths:
                     verify_args = {
-                        k: v for k, v in stage_args.items()
-                        if k in ("project", "doc_type", "layer")
+                        k: v for k, v in stage_args.items() if k in ("project", "doc_type", "layer")
                     }
                     verify_args["document"] = derived_paths[0]
                     try:
@@ -1549,5 +1863,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
             results["_reason"] = str(e)
             break
 
-    results["_completed_stages"] = [s for s in stages if s in results and "error" not in results.get(s, {})]
+    results["_completed_stages"] = [
+        s for s in stages if s in results and "error" not in results.get(s, {})
+    ]
     return results

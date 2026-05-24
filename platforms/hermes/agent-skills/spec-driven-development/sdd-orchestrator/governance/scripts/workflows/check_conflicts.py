@@ -22,20 +22,26 @@ def run_gh_command(args: list[str]) -> tuple[int, str]:
 
 def get_open_prs() -> list[dict]:
     """Get all open PRs with ai:in-progress label."""
-    code, stdout = run_gh_command([
-        "gh", "pr", "list",
-        "--label", "ai:in-progress",
-        "--state", "open",
-        "--json", "number,headRefName,files"
-    ])
+    code, stdout = run_gh_command(
+        [
+            "gh",
+            "pr",
+            "list",
+            "--label",
+            "ai:in-progress",
+            "--state",
+            "open",
+            "--json",
+            "number,headRefName,files",
+        ]
+    )
     return json.loads(stdout) if code == 0 and stdout else []
 
 
 def get_modified_files() -> set[str]:
     """Get files modified in current branch."""
     result = subprocess.run(
-        ["git", "diff", "--name-only", "origin/main...HEAD"],
-        capture_output=True, text=True
+        ["git", "diff", "--name-only", "origin/main...HEAD"], capture_output=True, text=True
     )
     return set(result.stdout.strip().split("\n")) if result.stdout.strip() else set()
 
@@ -79,6 +85,7 @@ def main():
 
     # Wait mode: poll until conflicts resolve
     import time
+
     wait_time = 0
     while wait_time < args.max_wait * 60:
         time.sleep(300)  # 5 minutes

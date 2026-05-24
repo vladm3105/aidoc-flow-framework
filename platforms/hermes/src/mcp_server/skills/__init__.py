@@ -1,5 +1,11 @@
 """Project-specific UCX runtime loaders."""
 
+from .persona_manager import (
+    check_persona_mapping_health,
+    diff_persona_mappings,
+    set_persona_mapping,
+    show_persona_mappings,
+)
 from .project_ucx_loader import (
     PersonaMappingError,
     ProjectSkillsNotFound,
@@ -18,12 +24,6 @@ from .registry import (
     build_alias_registry,
     resolve_tool_call,
     validate_alias_registry,
-)
-from .persona_manager import (
-    check_persona_mapping_health,
-    diff_persona_mappings,
-    set_persona_mapping,
-    show_persona_mappings,
 )
 from .scaffold import InitScaffoldResult, scaffold_project_ucx
 

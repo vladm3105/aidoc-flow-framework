@@ -12,8 +12,8 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+import mcp_server.project_context as pc
 import pytest
-
 from mcp_server.project_context import (
     ProjectContext,
     clear_session_project,
@@ -22,7 +22,6 @@ from mcp_server.project_context import (
     set_config_default,
     set_session_project,
 )
-import mcp_server.project_context as pc
 
 
 @pytest.fixture(autouse=True)
@@ -97,6 +96,7 @@ class TestResolveProject:
         set_session_project(proj)
         proj.rmdir()
         import logging
+
         with caplog.at_level(logging.WARNING, logger="mcp_server.project_context"):
             result = resolve_project(None)
         assert result == proj
@@ -165,11 +165,16 @@ class TestProjectContext:
         ucx_dir = tmp_path / "UCX"
         ucx_dir.mkdir()
         import json
-        (ucx_dir / "executors.json").write_text(json.dumps({
-            "executors": [
-                {"name": "test-exec", "executor_type": "api", "model": "test-model"}
-            ]
-        }))
+
+        (ucx_dir / "executors.json").write_text(
+            json.dumps(
+                {
+                    "executors": [
+                        {"name": "test-exec", "executor_type": "api", "model": "test-model"}
+                    ]
+                }
+            )
+        )
         ctx = ProjectContext.resolve(str(tmp_path))
         assert "test-exec" in ctx.executor_overrides
 

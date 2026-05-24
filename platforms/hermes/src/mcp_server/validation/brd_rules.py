@@ -18,22 +18,59 @@ from __future__ import annotations
 import json
 import re
 
-
 # ── Helpers ──────────────────────────────────────────────────────────
 
-_GENERIC_WORDS: frozenset[str] = frozenset({
-    "the", "and", "for", "but", "with", "from", "that", "this",
-    "are", "was", "not", "has", "had", "its", "can", "may", "will",
-    "all", "any", "our", "use", "via", "per", "etc", "yet",
-})
+_GENERIC_WORDS: frozenset[str] = frozenset(
+    {
+        "the",
+        "and",
+        "for",
+        "but",
+        "with",
+        "from",
+        "that",
+        "this",
+        "are",
+        "was",
+        "not",
+        "has",
+        "had",
+        "its",
+        "can",
+        "may",
+        "will",
+        "all",
+        "any",
+        "our",
+        "use",
+        "via",
+        "per",
+        "etc",
+        "yet",
+    }
+)
 
 _KNOWN_CURRENCIES: set[str] = {
-    "USD", "MXN", "UZS", "USDC", "EUR", "GBP", "BRL", "COP",
-    "ARS", "PEN", "CLP",
+    "USD",
+    "MXN",
+    "UZS",
+    "USDC",
+    "EUR",
+    "GBP",
+    "BRL",
+    "COP",
+    "ARS",
+    "PEN",
+    "CLP",
 }
 
 _CURRENCY_KEYWORDS: tuple[str, ...] = (
-    "currency", "precision", "rounding", "USD", "MXN", "USDC",
+    "currency",
+    "precision",
+    "rounding",
+    "USD",
+    "MXN",
+    "USDC",
 )
 
 
@@ -43,6 +80,7 @@ def _serialize(section: object) -> str:
 
 
 # ── BRD-XS-001: ADT Decision Propagation ────────────────────────────
+
 
 def _check_adt_propagation(
     yaml_data: dict[str, object],
@@ -115,6 +153,7 @@ def _check_adt_propagation(
 
 # ── BRD-XS-002: Phase Alignment ─────────────────────────────────────
 
+
 def _check_phase_alignment(
     yaml_data: dict[str, object],
     errors: list[str],
@@ -122,22 +161,17 @@ def _check_phase_alignment(
     passes: list[str],
 ) -> None:
     scope_phases_raw = (
-        yaml_data
-        .get("project_scope", {})  # type: ignore[union-attr]
+        yaml_data.get("project_scope", {})  # type: ignore[union-attr]
     )
     if isinstance(scope_phases_raw, dict):
-        scope_phases_raw = (
-            scope_phases_raw
-            .get("phasing", {})
-        )
+        scope_phases_raw = scope_phases_raw.get("phasing", {})
     if isinstance(scope_phases_raw, dict):
         scope_phases_raw = scope_phases_raw.get("phases", [])
     if not isinstance(scope_phases_raw, list):
         scope_phases_raw = []
 
     impl_phases_raw = (
-        yaml_data
-        .get("implementation_approach", {})  # type: ignore[union-attr]
+        yaml_data.get("implementation_approach", {})  # type: ignore[union-attr]
     )
     if isinstance(impl_phases_raw, dict):
         impl_phases_raw = impl_phases_raw.get("phases", {})
@@ -183,8 +217,7 @@ def _check_phase_alignment(
 
     if scope_normalized == impl_normalized:
         passes.append(
-            f"BRD-XS-002: {len(scope_phase_ids)} scope phase(s) aligned "
-            f"with implementation phases"
+            f"BRD-XS-002: {len(scope_phase_ids)} scope phase(s) aligned with implementation phases"
         )
         return
 
@@ -198,8 +231,7 @@ def _check_phase_alignment(
         )
     if extra_in_impl:
         errors.append(
-            f"BRD-XS-002: Phases in implementation but missing from "
-            f"scope: {sorted(extra_in_impl)}"
+            f"BRD-XS-002: Phases in implementation but missing from scope: {sorted(extra_in_impl)}"
         )
     if len(scope_phase_ids) != len(impl_phase_ids):
         errors.append(
@@ -210,6 +242,7 @@ def _check_phase_alignment(
 
 
 # ── BRD-XS-004: Entity Consistency ──────────────────────────────────
+
 
 def _extract_stakeholder_entities(yaml_data: dict[str, object]) -> list[str]:
     """Extract organizational entity names from the top-level stakeholders section.
@@ -318,12 +351,12 @@ def _check_entity_consistency(
             )
     else:
         passes.append(
-            f"BRD-XS-004: All {len(entities)} entity reference(s) "
-            f"found in downstream sections"
+            f"BRD-XS-004: All {len(entities)} entity reference(s) found in downstream sections"
         )
 
 
 # ── BRD-XS-005: Currency Scope Consistency (conditional) ─────────────
+
 
 def _check_currency_consistency(
     yaml_data: dict[str, object],
@@ -344,9 +377,7 @@ def _check_currency_consistency(
     mandatory_str = _serialize(mandatory)
 
     # Check for currency-related keywords.
-    has_currency_keyword = any(
-        kw.lower() in mandatory_str.lower() for kw in _CURRENCY_KEYWORDS
-    )
+    has_currency_keyword = any(kw.lower() in mandatory_str.lower() for kw in _CURRENCY_KEYWORDS)
     if not has_currency_keyword:
         passes.append("BRD-XS-005: No currency scope detected (skipped)")
         return
@@ -377,6 +408,7 @@ def _check_currency_consistency(
 
 
 # ── BRD-XS-006: FR Acceptance Criteria Completeness ───────────────────
+
 
 def _check_fr_acceptance_criteria(
     yaml_data: dict[str, object],
@@ -421,15 +453,14 @@ def _check_fr_acceptance_criteria(
         warnings.append(
             f"BRD-XS-006: {len(frs_missing_ac)}/{total_frs} FRs have no "
             f"acceptance_criteria items: {frs_missing_ac[:5]}"
-            + (f" (+{len(frs_missing_ac)-5} more)" if len(frs_missing_ac) > 5 else "")
+            + (f" (+{len(frs_missing_ac) - 5} more)" if len(frs_missing_ac) > 5 else "")
         )
     else:
-        passes.append(
-            f"BRD-XS-006: All {total_frs} FRs have acceptance_criteria items"
-        )
+        passes.append(f"BRD-XS-006: All {total_frs} FRs have acceptance_criteria items")
 
 
 # ── BRD-XS-007: Traceability Link Completeness ───────────────────────
+
 
 def _check_traceability_link_completeness(
     yaml_data: dict[str, object],
@@ -477,16 +508,14 @@ def _check_traceability_link_completeness(
         warnings.append(
             f"BRD-XS-007: {len(empty_links)}/{total} objective→requirement "
             f"mappings have empty related_frs: {empty_links[:5]}"
-            + (f" (+{len(empty_links)-5} more)" if len(empty_links) > 5 else "")
+            + (f" (+{len(empty_links) - 5} more)" if len(empty_links) > 5 else "")
         )
     else:
-        passes.append(
-            f"BRD-XS-007: All {total} objective→requirement mappings "
-            f"have linked FRs"
-        )
+        passes.append(f"BRD-XS-007: All {total} objective→requirement mappings have linked FRs")
 
 
 # ── Public API ───────────────────────────────────────────────────────
+
 
 def run_brd_cross_section_checks(
     *,
@@ -536,10 +565,7 @@ def run_brd_cross_section_checks_md(
         impl_section = impl_split[1] + impl_split[2]
     else:
         # Cannot reliably separate sections.
-        passes.append(
-            "BRD-XS-002: Cannot identify scope/implementation "
-            "sections in MD (skipped)"
-        )
+        passes.append("BRD-XS-002: Cannot identify scope/implementation sections in MD (skipped)")
         return
 
     scope_phase_count = len(re.findall(r"Phase\s+\d+", scope_section))

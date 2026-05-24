@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 
 from mcp_server.utils.source_files import extract_doc_id
-
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
 
@@ -23,7 +22,11 @@ class PrescreenRunResult:
 def _collect_document_files(document_path: Path) -> list[Path]:
     if document_path.is_file():
         return [document_path]
-    return sorted(document_path.glob("*.md")) + sorted(document_path.glob("*.yaml")) + sorted(document_path.glob("*.yml"))
+    return (
+        sorted(document_path.glob("*.md"))
+        + sorted(document_path.glob("*.yaml"))
+        + sorted(document_path.glob("*.yml"))
+    )
 
 
 def run_prescreen(*, document_path: Path, output_dir: Path | None = None) -> PrescreenRunResult:
@@ -33,7 +36,9 @@ def run_prescreen(*, document_path: Path, output_dir: Path | None = None) -> Pre
     for file_path in files:
         text = file_path.read_text(encoding="utf-8")
         is_yaml = file_path.suffix.lower() in (".yaml", ".yml")
-        missing_frontmatter = False if is_yaml else not (text.startswith("---\n") and "\n---" in text[4:])
+        missing_frontmatter = (
+            False if is_yaml else not (text.startswith("---\n") and "\n---" in text[4:])
+        )
         has_placeholders = bool(PLACEHOLDER_PATTERN.search(text))
         flags = []
         if missing_frontmatter:

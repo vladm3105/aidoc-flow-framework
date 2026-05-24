@@ -13,9 +13,8 @@ Default behavior is dry-run. Use --apply to write changes.
 import argparse
 import csv
 import json
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from pathlib import Path
-
 
 # Default mappings for ucx_framework
 # Format: (old_pattern, new_pattern)
@@ -26,19 +25,32 @@ DEFAULT_MAPPINGS = [
     ("ai_project_issues_flow/governance/BRANCHING_STRATEGY.md", "governance/BRANCHING_STRATEGY.md"),
     ("ai_project_issues_flow/governance/DEFINITION_OF_DONE.md", "governance/DEFINITION_OF_DONE.md"),
     ("ai_project_issues_flow/governance/RELEASE_PROCESS.md", "governance/RELEASE_PROCESS.md"),
-    ("ai_project_issues_flow/governance/REPOSITORY_STRATEGY.md", "governance/REPOSITORY_STRATEGY.md"),
+    (
+        "ai_project_issues_flow/governance/REPOSITORY_STRATEGY.md",
+        "governance/REPOSITORY_STRATEGY.md",
+    ),
     ("ai_project_issues_flow/governance/ROLES_AND_TOOLS.md", "governance/ROLES_AND_TOOLS.md"),
     ("ai_project_issues_flow/governance/HOME_REPO.md", "governance/HOME_REPO.md"),
-    ("ai_project_issues_flow/governance/GITHUB_TOOLS_SETUP.md", "governance/github/GITHUB_TOOLS_SETUP.md"),
-    ("ai_project_issues_flow/governance/GITHUB_WORKFLOWS.md", "governance/github/GITHUB_WORKFLOWS.md"),
-    ("ai_project_issues_flow/governance/GITHUB_PROJECT_SETUP_AI_FIRST.md", "governance/github/GITHUB_PROJECT_SETUP.md"),
+    (
+        "ai_project_issues_flow/governance/GITHUB_TOOLS_SETUP.md",
+        "governance/github/GITHUB_TOOLS_SETUP.md",
+    ),
+    (
+        "ai_project_issues_flow/governance/GITHUB_WORKFLOWS.md",
+        "governance/github/GITHUB_WORKFLOWS.md",
+    ),
+    (
+        "ai_project_issues_flow/governance/GITHUB_PROJECT_SETUP_AI_FIRST.md",
+        "governance/github/GITHUB_PROJECT_SETUP.md",
+    ),
     ("ai_project_issues_flow/governance/ghes_runner/", "governance/github/ghes_runner/"),
     ("ai_project_issues_flow/governance/plans/README.md", "governance/plans/README.md"),
-    ("ai_project_issues_flow/governance/plans/IPLAN-TEMPLATE.md", "governance/plans/IPLAN-TEMPLATE.md"),
-
+    (
+        "ai_project_issues_flow/governance/plans/IPLAN-TEMPLATE.md",
+        "governance/plans/IPLAN-TEMPLATE.md",
+    ),
     # SDD artifact path standardization
     ("framework/", "framework/"),
-
     # Template path corrections
     ("ai_project_issues_flow/templates/CONTRIBUTING.md", "CONTRIBUTING.md"),
     ("ai_project_issues_flow/templates/README_AIAGENT.md", "README_AIAGENT.md"),
@@ -76,8 +88,9 @@ def load_mapping_csv(mapping_csv: Path) -> list[tuple[str, str]]:
     return mappings
 
 
-def run(root: Path, mappings: list[tuple[str, str]], apply: bool,
-        extensions: list[str] = None) -> ReplacementSummary:
+def run(
+    root: Path, mappings: list[tuple[str, str]], apply: bool, extensions: list[str] = None
+) -> ReplacementSummary:
     """Scan files and apply replacements."""
     if extensions is None:
         extensions = [".md", ".yml", ".yaml"]
@@ -97,7 +110,7 @@ def run(root: Path, mappings: list[tuple[str, str]], apply: bool,
 
         try:
             text = file_path.read_text(encoding="utf-8", errors="ignore")
-        except (OSError, IOError):
+        except OSError:
             continue
 
         updated = text
@@ -107,11 +120,13 @@ def run(root: Path, mappings: list[tuple[str, str]], apply: bool,
             count = updated.count(source)
             if count > 0:
                 updated = updated.replace(source, target)
-                replacement_items.append({
-                    "source_pattern": source,
-                    "target_pattern": target,
-                    "count": count,
-                })
+                replacement_items.append(
+                    {
+                        "source_pattern": source,
+                        "target_pattern": target,
+                        "count": count,
+                    }
+                )
                 total_replacements += count
 
         if replacement_items:
@@ -133,33 +148,19 @@ def main() -> int:
         description="Apply documentation path alias replacements for ucx_framework"
     )
     parser.add_argument(
-        "--root",
-        default=".",
-        help="Root folder to process (default: current directory)"
+        "--root", default=".", help="Root folder to process (default: current directory)"
     )
     parser.add_argument(
-        "--mapping-csv",
-        help="Optional CSV containing source_pattern,target_pattern columns"
+        "--mapping-csv", help="Optional CSV containing source_pattern,target_pattern columns"
     )
-    parser.add_argument(
-        "--apply",
-        action="store_true",
-        help="Write updates (default is dry-run)"
-    )
-    parser.add_argument(
-        "--output",
-        help="Write JSON report to this file"
-    )
+    parser.add_argument("--apply", action="store_true", help="Write updates (default is dry-run)")
+    parser.add_argument("--output", help="Write JSON report to this file")
     parser.add_argument(
         "--extensions",
         default=".md,.yml,.yaml",
-        help="Comma-separated file extensions to process (default: .md,.yml,.yaml)"
+        help="Comma-separated file extensions to process (default: .md,.yml,.yaml)",
     )
-    parser.add_argument(
-        "--verbose",
-        action="store_true",
-        help="Print detailed changes"
-    )
+    parser.add_argument("--verbose", action="store_true", help="Print detailed changes")
     args = parser.parse_args()
 
     root = Path(args.root).resolve()
@@ -179,18 +180,23 @@ def main() -> int:
         out.write_text(json.dumps(asdict(summary), indent=2), encoding="utf-8")
 
     # Print summary
-    print(json.dumps({
-        "mode": summary.mode,
-        "files_scanned": summary.files_scanned,
-        "files_changed": summary.files_changed,
-        "total_replacements": summary.total_replacements,
-    }, indent=2))
+    print(
+        json.dumps(
+            {
+                "mode": summary.mode,
+                "files_scanned": summary.files_scanned,
+                "files_changed": summary.files_changed,
+                "total_replacements": summary.total_replacements,
+            },
+            indent=2,
+        )
+    )
 
     if args.verbose and summary.changes:
         print("\nChanges:")
         for change in summary.changes:
             print(f"  {change['file_path']}:")
-            for r in change['replacements']:
+            for r in change["replacements"]:
                 print(f"    {r['source_pattern']} -> {r['target_pattern']} ({r['count']}x)")
 
     return 0

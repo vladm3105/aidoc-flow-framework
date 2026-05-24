@@ -4,15 +4,12 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
 from mcp_server.cli.main import (
     _build_review_sections_from_document,
     _collect_review_document_files,
     _find_canonical_source,
     _list_review_document_candidates,
 )
-
 
 # ---------------------------------------------------------------------------
 # _list_review_document_candidates

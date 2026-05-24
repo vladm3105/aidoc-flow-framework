@@ -6,8 +6,9 @@ naming ({ARTIFACT}-MVP-TEMPLATE.yaml) with new-name-first resolution.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 
 def resolve_template_path(layer_dir: Path, artifact: str, suffix: str) -> Path | None:

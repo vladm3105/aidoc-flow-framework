@@ -31,12 +31,15 @@ class SpecGateGuard(unittest.TestCase):
     def test_owned_codes_match_the_gate(self):
         module = _load_spec_gate()
         self.assertEqual(
-            set(module.CODES), {"GATE-SPEC-E005", "GATE-SPEC-E008"},
+            set(module.CODES),
+            {"GATE-SPEC-E005", "GATE-SPEC-E008"},
             "spec_gate owns exactly the two diff-aware GATE-SPEC codes",
         )
         catalog = CATALOG.read_text(encoding="utf-8")
         for code in module.CODES:
-            self.assertIn(code, catalog, f"{code} owned by spec_gate but absent from the error catalog")
+            self.assertIn(
+                code, catalog, f"{code} owned by spec_gate but absent from the error catalog"
+            )
 
     def test_non_spec_change_is_a_noop(self):
         module = _load_spec_gate()

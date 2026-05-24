@@ -33,21 +33,30 @@ def run_gh(args: list[str], check: bool = True) -> str:
         capture_output=True,
         text=True,
         check=check,
-        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")}
+        env={**os.environ, "GH_TOKEN": os.environ.get("GH_TOKEN", "")},
     )
     return result.stdout.strip()
 
 
 def get_phase_issues(repo: str, phase: int) -> list[dict]:
     """Get all issues for a specific phase."""
-    output = run_gh([
-        "issue", "list",
-        "--repo", repo,
-        "--label", f"phase:{phase}",
-        "--state", "all",
-        "--json", "number,title,body,state,labels",
-        "--limit", "100"
-    ], check=False)
+    output = run_gh(
+        [
+            "issue",
+            "list",
+            "--repo",
+            repo,
+            "--label",
+            f"phase:{phase}",
+            "--state",
+            "all",
+            "--json",
+            "number,title,body,state,labels",
+            "--limit",
+            "100",
+        ],
+        check=False,
+    )
     return json.loads(output) if output else []
 
 
@@ -56,15 +65,15 @@ def check_acceptance_criteria(issue: dict) -> dict:
     body = issue.get("body", "")
 
     # Find all checkboxes
-    total = len(re.findall(r'- \[[ x]\]', body))
-    checked = len(re.findall(r'- \[x\]', body))
-    unchecked = len(re.findall(r'- \[ \]', body))
+    total = len(re.findall(r"- \[[ x]\]", body))
+    checked = len(re.findall(r"- \[x\]", body))
+    unchecked = len(re.findall(r"- \[ \]", body))
 
     return {
         "total": total,
         "checked": checked,
         "unchecked": unchecked,
-        "complete": total > 0 and unchecked == 0
+        "complete": total > 0 and unchecked == 0,
     }
 
 
@@ -75,11 +84,7 @@ def check_blocker_labels(issue: dict) -> bool:
     return any(bl in label for label in labels for bl in blocker_labels)
 
 
-def evaluate_staging_readiness(
-    repo: str,
-    phase: int,
-    issues: list[dict]
-) -> dict:
+def evaluate_staging_readiness(repo: str, phase: int, issues: list[dict]) -> dict:
     """Evaluate overall staging readiness."""
     result = {
         "ready": True,
@@ -91,7 +96,7 @@ def evaluate_staging_readiness(
         "criteria_incomplete": 0,
         "blockers": [],
         "warnings": [],
-        "details": []
+        "details": [],
     }
 
     for issue in issues:
@@ -104,7 +109,7 @@ def evaluate_staging_readiness(
             "title": issue_title,
             "state": state,
             "criteria": None,
-            "blocker": False
+            "blocker": False,
         }
 
         if state == "CLOSED":
@@ -143,56 +148,64 @@ def generate_report(evaluation: dict) -> str:
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
 
     lines = [
-        f"## Staging Readiness Report",
-        f"",
+        "## Staging Readiness Report",
+        "",
         f"**Verdict**: **{verdict}**",
         f"**Phase**: {evaluation['phase']}",
         f"**Generated**: {timestamp}",
-        f"",
-        f"---",
-        f"",
-        f"### Summary",
-        f"",
-        f"| Metric | Value |",
-        f"|--------|-------|",
+        "",
+        "---",
+        "",
+        "### Summary",
+        "",
+        "| Metric | Value |",
+        "|--------|-------|",
         f"| Total Issues | {evaluation['total_issues']} |",
         f"| Closed | {evaluation['closed_issues']} |",
         f"| Open | {evaluation['open_issues']} |",
         f"| Criteria Complete | {evaluation['criteria_complete']} |",
         f"| Criteria Incomplete | {evaluation['criteria_incomplete']} |",
         f"| Blockers | {len(evaluation['blockers'])} |",
-        f"",
+        "",
     ]
 
     if evaluation["blockers"]:
-        lines.extend([
-            f"### Blockers",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Blockers",
+                "",
+            ]
+        )
         for blocker in evaluation["blockers"]:
             lines.append(f"- {blocker}")
         lines.append("")
 
     if evaluation["warnings"]:
-        lines.extend([
-            f"### Warnings",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Warnings",
+                "",
+            ]
+        )
         for warning in evaluation["warnings"][:10]:  # Limit warnings
             lines.append(f"- {warning}")
         lines.append("")
 
     if not evaluation["ready"]:
-        lines.extend([
-            f"### Action Required",
-            f"",
-            f"Before proceeding to production:",
-            f"",
-        ])
+        lines.extend(
+            [
+                "### Action Required",
+                "",
+                "Before proceeding to production:",
+                "",
+            ]
+        )
         if evaluation["open_issues"] > 0:
             lines.append(f"- [ ] Close {evaluation['open_issues']} open issues")
         if evaluation["criteria_incomplete"] > 0:
-            lines.append(f"- [ ] Complete acceptance criteria for {evaluation['criteria_incomplete']} issues")
+            lines.append(
+                f"- [ ] Complete acceptance criteria for {evaluation['criteria_incomplete']} issues"
+            )
         if evaluation["blockers"]:
             lines.append(f"- [ ] Resolve {len(evaluation['blockers'])} blockers")
         lines.append("")
@@ -222,11 +235,10 @@ def main():
 
     # Post comment if requested
     if args.post_comment:
-        run_gh([
-            "issue", "comment", str(args.post_comment),
-            "--repo", args.repo,
-            "--body", report
-        ], check=False)
+        run_gh(
+            ["issue", "comment", str(args.post_comment), "--repo", args.repo, "--body", report],
+            check=False,
+        )
         print(f"\nPosted report to issue #{args.post_comment}")
 
     # Exit with appropriate code

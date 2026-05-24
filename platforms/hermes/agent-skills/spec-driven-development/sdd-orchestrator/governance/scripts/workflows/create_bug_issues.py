@@ -25,22 +25,24 @@ def run_gh_command(args: list[str]) -> tuple[int, str, str]:
 
 def get_existing_bug_issues(phase: int, test_name: str) -> list[int]:
     """Get existing bug issues for a test."""
-    returncode, stdout, _ = run_gh_command([
-        "issue", "list",
-        "--label", f"phase:{phase}",
-        "--label", "bug",
-        "--json", "number,title",
-    ])
+    returncode, stdout, _ = run_gh_command(
+        [
+            "issue",
+            "list",
+            "--label",
+            f"phase:{phase}",
+            "--label",
+            "bug",
+            "--json",
+            "number,title",
+        ]
+    )
 
     if returncode != 0 or not stdout:
         return []
 
     issues = json.loads(stdout)
-    matching = [
-        i["number"]
-        for i in issues
-        if test_name.lower() in i["title"].lower()
-    ]
+    matching = [i["number"] for i in issues if test_name.lower() in i["title"].lower()]
     return matching
 
 
@@ -52,13 +54,19 @@ def trigger_bug_workflow(
     """Trigger the create-bug-issue workflow."""
     failure_json = json.dumps(failure)
 
-    returncode, _, stderr = run_gh_command([
-        "workflow", "run",
-        "create-bug-issue.yml",
-        "-f", f"qa_issue={qa_issue}",
-        "-f", f"failure_details={failure_json}",
-        "-f", f"iteration={iteration}",
-    ])
+    returncode, _, stderr = run_gh_command(
+        [
+            "workflow",
+            "run",
+            "create-bug-issue.yml",
+            "-f",
+            f"qa_issue={qa_issue}",
+            "-f",
+            f"failure_details={failure_json}",
+            "-f",
+            f"iteration={iteration}",
+        ]
+    )
 
     if returncode != 0:
         print(f"Error triggering workflow: {stderr}", file=sys.stderr)
@@ -70,12 +78,8 @@ def trigger_bug_workflow(
 def main():
     parser = argparse.ArgumentParser(description="Create bug issues from QA failures")
     parser.add_argument("--phase", required=True, type=int, help="Phase number")
-    parser.add_argument(
-        "--results-file", required=True, type=Path, help="QA results JSON file"
-    )
-    parser.add_argument(
-        "--max-iterations", type=int, default=3, help="Maximum iterations"
-    )
+    parser.add_argument("--results-file", required=True, type=Path, help="QA results JSON file")
+    parser.add_argument("--max-iterations", type=int, default=3, help="Maximum iterations")
     args = parser.parse_args()
 
     try:
@@ -124,7 +128,7 @@ def main():
         else:
             print(f"Failed to create bug issue for {test_name}")
 
-    print(f"\nSummary:")
+    print("\nSummary:")
     print(f"  Created: {created_count}")
     print(f"  Skipped (max iterations): {skipped_count}")
 

@@ -1,26 +1,26 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
 import json
-from pathlib import Path
 import re
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, cast
 
 import yaml  # type: ignore[import-untyped]
 
 from mcp_server.utils.source_files import collect_source_files, extract_doc_id, is_yaml_document
 from mcp_server.utils.template_naming import resolve_template_path
-from mcp_server.validation.cross_section import (
-    run_cross_section_checks,
-    run_cross_section_checks_md,
-)
 from mcp_server.validation.brd_rules import (
     run_brd_cross_section_checks,
     run_brd_cross_section_checks_md,
 )
-from mcp_server.validation.tdd_rules import run_tdd_validation_checks
-from mcp_server.validation.iplan_rules import run_iplan_validation_checks
 from mcp_server.validation.chg_rules import run_chg_validation_checks
+from mcp_server.validation.cross_section import (
+    run_cross_section_checks,
+    run_cross_section_checks_md,
+)
+from mcp_server.validation.iplan_rules import run_iplan_validation_checks
+from mcp_server.validation.tdd_rules import run_tdd_validation_checks
 
 
 @dataclass(frozen=True)
@@ -164,7 +164,9 @@ def _resolve_canonical_template_root(project_root: Path) -> Path:
     return Path(__file__).resolve().parents[5] / "framework" / "layers"
 
 
-def _load_layer_yaml_template(*, project_root: Path, layer: str) -> tuple[dict[str, object], str | None]:
+def _load_layer_yaml_template(
+    *, project_root: Path, layer: str
+) -> tuple[dict[str, object], str | None]:
     if "_" in layer:
         artifact = layer.split("_", 1)[1].strip().upper()
     else:
@@ -280,7 +282,9 @@ def _build_text_report(report: dict[str, object]) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str], passes: list[str]) -> None:
+def _run_doc_type_parity_checks(
+    *, doc_type: str, content: str, errors: list[str], passes: list[str]
+) -> None:
     normalized = doc_type.strip().lower()
 
     if normalized == "ears":
@@ -312,7 +316,9 @@ def _run_doc_type_parity_checks(*, doc_type: str, content: str, errors: list[str
         return
 
     if normalized == "iplan":
-        if re.search(r"file_manifest:", content, re.IGNORECASE) and re.search(r"session_handoff:", content, re.IGNORECASE):
+        if re.search(r"file_manifest:", content, re.IGNORECASE) and re.search(
+            r"session_handoff:", content, re.IGNORECASE
+        ):
             passes.append("iplan structure present: file_manifest + session_handoff sections")
         else:
             errors.append("Missing IPLAN structure: file_manifest or session_handoff section")
@@ -354,7 +360,11 @@ def run_project_validation_build(
 
     # --- YAML/MD decision fork ---
     # TODO: replace _collect_markdown_files with collect_source_files after full validation
-    yaml_files = [f for f in collect_source_files(document_path, extensions=(".yaml", ".yml")) if is_yaml_document(f)]
+    yaml_files = [
+        f
+        for f in collect_source_files(document_path, extensions=(".yaml", ".yml"))
+        if is_yaml_document(f)
+    ]
 
     if yaml_files:
         # ===== YAML validation path =====
@@ -423,7 +433,9 @@ def run_project_validation_build(
             if not frontmatter:
                 errors.append("Missing or invalid YAML frontmatter")
 
-        custom_fields_raw = frontmatter.get("custom_fields") if isinstance(frontmatter, dict) else None
+        custom_fields_raw = (
+            frontmatter.get("custom_fields") if isinstance(frontmatter, dict) else None
+        )
         custom_fields: dict[str, Any]
         if custom_fields_raw is None:
             custom_fields = {}
@@ -456,7 +468,9 @@ def run_project_validation_build(
             else:
                 errors.append(f"Missing required tag: {required_tag}")
 
-        combined_content = "\n\n".join(path.read_text(encoding="utf-8") for path in files) if files else ""
+        combined_content = (
+            "\n\n".join(path.read_text(encoding="utf-8") for path in files) if files else ""
+        )
         for section_name, pattern in _extract_required_section_patterns(template):
             try:
                 if re.search(pattern, combined_content, re.MULTILINE):

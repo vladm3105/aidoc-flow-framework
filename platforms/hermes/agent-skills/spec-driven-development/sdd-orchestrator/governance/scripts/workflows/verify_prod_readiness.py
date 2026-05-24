@@ -15,7 +15,9 @@ def check_blockers() -> list[int]:
     env["GH_HOST"] = "{GITHUB_HOST}"
     result = subprocess.run(
         ["gh", "issue", "list", "--label", "blocker", "--state", "open", "--json", "number"],
-        capture_output=True, text=True, env=env
+        capture_output=True,
+        text=True,
+        env=env,
     )
     issues = json.loads(result.stdout) if result.returncode == 0 and result.stdout else []
     return [i["number"] for i in issues]

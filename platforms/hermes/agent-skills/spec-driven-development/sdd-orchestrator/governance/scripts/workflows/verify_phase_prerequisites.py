@@ -62,6 +62,7 @@ def main():
 
     # Write to GITHUB_OUTPUT if available
     import os
+
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
         with open(github_output, "a") as f:

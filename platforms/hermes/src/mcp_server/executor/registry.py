@@ -154,6 +154,7 @@ def load_config_file(path: Path) -> int:
 
     if default_project:
         from mcp_server.project_context import set_config_default
+
         set_config_default(Path(default_project).expanduser().resolve())
 
     if not isinstance(executors, list):
@@ -198,7 +199,8 @@ def load_project_executor_config(project_root: Path) -> dict[str, ExecutorConfig
     else:
         logger.warning(
             "Project executors.json at %s: expected object or array, got %s",
-            project_config, type(data).__name__,
+            project_config,
+            type(data).__name__,
         )
         return {}
 
@@ -211,7 +213,9 @@ def load_project_executor_config(project_root: Path) -> dict[str, ExecutorConfig
         if not isinstance(entry, dict) or "name" not in entry:
             continue
         ename = entry["name"]
-        exec_type = _resolve_executor_type(entry, source_label=f"Project config at {project_config}")
+        exec_type = _resolve_executor_type(
+            entry, source_label=f"Project config at {project_config}"
+        )
         if exec_type is None:
             continue
         result[ename] = _build_config(ename, entry, exec_type)
@@ -219,7 +223,9 @@ def load_project_executor_config(project_root: Path) -> dict[str, ExecutorConfig
     return result
 
 
-def get_executor(name: str, project_overrides: dict[str, ExecutorConfig] | None = None) -> ExecutorConfig:
+def get_executor(
+    name: str, project_overrides: dict[str, ExecutorConfig] | None = None
+) -> ExecutorConfig:
     """Get executor config by name. Project overrides take precedence over global."""
     if project_overrides and name in project_overrides:
         return project_overrides[name]

@@ -14,7 +14,7 @@ Status values per phase:
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -22,8 +22,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--tracking-file", required=True, type=Path)
     parser.add_argument("--phase", required=True, type=int)
-    parser.add_argument("--status", required=True,
-                        choices=["pending", "dev_deploying", "dev_deployed", "dev_failed", "deployed"])
+    parser.add_argument(
+        "--status",
+        required=True,
+        choices=["pending", "dev_deploying", "dev_deployed", "dev_failed", "deployed"],
+    )
     parser.add_argument("--commit-sha", default=None)
     parser.add_argument("--image-tag", default=None)
     # Dev-specific fields
@@ -36,13 +39,17 @@ def main():
     args = parser.parse_args()
 
     try:
-        tracking = json.loads(args.tracking_file.read_text()) if args.tracking_file.exists() else {
-            "config": {"total_phases": 8},
-            "phases": {},
-            "staging": {},
-            "production": {},
-            "last_check": None
-        }
+        tracking = (
+            json.loads(args.tracking_file.read_text())
+            if args.tracking_file.exists()
+            else {
+                "config": {"total_phases": 8},
+                "phases": {},
+                "staging": {},
+                "production": {},
+                "last_check": None,
+            }
+        )
     except json.JSONDecodeError as e:
         print(f"Error parsing tracking file: {e}")
         tracking = {
@@ -50,11 +57,11 @@ def main():
             "phases": {},
             "staging": {},
             "production": {},
-            "last_check": None
+            "last_check": None,
         }
 
     phase_key = str(args.phase)
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now(UTC).isoformat()
 
     # Get existing phase data or create new
     phase_data = tracking.get("phases", {}).get(phase_key, {})
@@ -68,11 +75,7 @@ def main():
 
     # Ensure dev sub-object exists
     if "dev" not in phase_data:
-        phase_data["dev"] = {
-            "deployed_at": None,
-            "url": None,
-            "smoke_results": None
-        }
+        phase_data["dev"] = {"deployed_at": None, "url": None, "smoke_results": None}
 
     # Update dev-specific fields
     if args.status in ("dev_deploying", "dev_deployed", "dev_failed"):

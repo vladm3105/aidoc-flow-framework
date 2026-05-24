@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, replace
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from hashlib import sha256
 from pathlib import Path
 
 
 def _utc_now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 @dataclass(frozen=True)

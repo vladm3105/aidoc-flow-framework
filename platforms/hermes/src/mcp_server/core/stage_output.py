@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from pathlib import Path
 
-
 STAGE_OUTPUT_ROOT = ".ucx"
 STAGE_CREATE = "creation"
 STAGE_VALIDATE = "validate"

@@ -71,9 +71,7 @@ def collect_source_files(
     candidates = [
         f
         for f in sorted(document_path.iterdir())
-        if f.is_file()
-        and f.suffix.lower() in extensions
-        and not _is_excluded(f)
+        if f.is_file() and f.suffix.lower() in extensions and not _is_excluded(f)
     ]
 
     canonical = [f for f in candidates if _SOURCE_PATTERN.match(f.name)]

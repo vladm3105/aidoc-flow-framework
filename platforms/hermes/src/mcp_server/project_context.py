@@ -35,9 +35,7 @@ def set_session_project(project_root: Path) -> dict[str, Any]:
     """
     global _session_project
     if not project_root.is_dir():
-        raise ValueError(
-            f"Cannot set session project: '{project_root}' is not a directory"
-        )
+        raise ValueError(f"Cannot set session project: '{project_root}' is not a directory")
     _session_project = project_root
     logger.info("Session project set to %s", project_root)
     return {
@@ -71,9 +69,7 @@ def resolve_project(explicit: str | None) -> Path:
     # 2. Session override
     if _session_project is not None:
         if not _session_project.is_dir():
-            logger.warning(
-                "Session project '%s' no longer exists as a directory", _session_project
-            )
+            logger.warning("Session project '%s' no longer exists as a directory", _session_project)
         return _session_project
 
     # 3. SDD_DEFAULT_PROJECT env var
@@ -81,9 +77,7 @@ def resolve_project(explicit: str | None) -> Path:
     if env_default:
         resolved = Path(env_default).expanduser().resolve()
         if not resolved.is_dir():
-            logger.warning(
-                "SDD_DEFAULT_PROJECT='%s' is not a directory", env_default
-            )
+            logger.warning("SDD_DEFAULT_PROJECT='%s' is not a directory", env_default)
         return resolved
 
     # 4. Config default (from executors.json)
@@ -114,7 +108,7 @@ class ProjectContext:
     # circular import — registry.py imports are deferred to resolve().
 
     @staticmethod
-    def resolve(project_arg: str | None) -> "ProjectContext | None":
+    def resolve(project_arg: str | None) -> ProjectContext | None:
         """Build context from a project argument. Returns None if no project.
 
         Handles both None and "" as no-project (returns None).

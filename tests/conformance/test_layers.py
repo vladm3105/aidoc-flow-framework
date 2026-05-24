@@ -3,7 +3,6 @@
 import unittest
 
 import yaml
-
 from _spec import FRAMEWORK, registry_layers
 
 LAYERS = registry_layers()
@@ -41,7 +40,8 @@ class LayerTemplateMetadata(unittest.TestCase):
                     document = yaml.safe_load(fh)
                 metadata = document.get("metadata", {})
                 self.assertEqual(
-                    metadata.get("layer"), layer["number"],
+                    metadata.get("layer"),
+                    layer["number"],
                     "template metadata.layer disagrees with the registry",
                 )
                 self.assertTrue(

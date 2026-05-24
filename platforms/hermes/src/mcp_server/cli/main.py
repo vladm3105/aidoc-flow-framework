@@ -3,13 +3,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
-from pathlib import Path
 import re
 import shutil
 import sys
+from pathlib import Path
 
-from mcp_server.consistency import run_consistency_check
 from mcp_server.cleanup.runner import run_clean
+from mcp_server.consistency import run_consistency_check
 from mcp_server.core.stage_output import (
     STAGE_CREATE,
     STAGE_REMEDIATE,
@@ -43,42 +43,117 @@ def _build_parser() -> argparse.ArgumentParser:
 
     _default_project = os.environ.get("SDD_DEFAULT_PROJECT")
     _project_required = _default_project is None
-    _project_help = "Project root (default: $SDD_DEFAULT_PROJECT)" if _default_project else "Project root"
+    _project_help = (
+        "Project root (default: $SDD_DEFAULT_PROJECT)" if _default_project else "Project root"
+    )
 
-    get_project_parser = subparsers.add_parser("get-project", help="Show resolved default project from environment")
+    get_project_parser = subparsers.add_parser(
+        "get-project", help="Show resolved default project from environment"
+    )
 
     init_parser = subparsers.add_parser("init", help="Scaffold project-specific UCX assets")
-    init_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help + " where UCX will be created")
-    init_parser.add_argument("--update", action="store_true", default=False, help="Overwrite stale files with latest framework versions (protects persona_mappings.yaml)")
-    init_parser.add_argument("--update-mappings", action="store_true", default=False, help="Also reset persona_mappings.yaml to framework defaults (requires --update)")
+    init_parser.add_argument(
+        "--project",
+        required=_project_required,
+        default=_default_project,
+        help=_project_help + " where UCX will be created",
+    )
+    init_parser.add_argument(
+        "--update",
+        action="store_true",
+        default=False,
+        help="Overwrite stale files with latest framework versions (protects persona_mappings.yaml)",
+    )
+    init_parser.add_argument(
+        "--update-mappings",
+        action="store_true",
+        default=False,
+        help="Also reset persona_mappings.yaml to framework defaults (requires --update)",
+    )
 
-    review_parser = subparsers.add_parser("review-build", help="Assemble project review prompt and diagnostics artifacts")
-    review_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    review_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
+    review_parser = subparsers.add_parser(
+        "review-build", help="Assemble project review prompt and diagnostics artifacts"
+    )
+    review_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    review_parser.add_argument(
+        "--personas",
+        nargs="+",
+        default=None,
+        help="Persona list override. If omitted, loaded from persona_mappings.yaml.",
+    )
     review_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
-    review_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
-    review_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
+    review_parser.add_argument(
+        "--template", required=True, help="Template file in UCX/prompts/templates/review"
+    )
+    review_parser.add_argument(
+        "--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)"
+    )
     review_parser.add_argument("--sections-json", default=None, help="Path to sections JSON array")
-    review_parser.add_argument("--document", default=None, help="Path to document file or document directory for auto section loading")
+    review_parser.add_argument(
+        "--document",
+        default=None,
+        help="Path to document file or document directory for auto section loading",
+    )
     review_parser.add_argument("--unified", action="store_true", help="Enable unified context mode")
-    review_parser.add_argument("--one-turn", action="store_true", help="Enable one-turn review mode")
+    review_parser.add_argument(
+        "--one-turn", action="store_true", help="Enable one-turn review mode"
+    )
     review_parser.add_argument(
         "--review-mode",
         choices=["prompt_only", "saga_parallel"],
         default="prompt_only",
         help="Review execution mode. saga_parallel enables saga journal/reducer scaffolding (parallel scheduler controls are forward-compatible).",
     )
-    review_parser.add_argument("--max-parallel-branches", type=int, default=None, help="Max concurrent persona branches for saga_parallel mode")
-    review_parser.add_argument("--branch-timeout-seconds", type=int, default=None, help="Per-branch timeout for saga_parallel mode")
-    review_parser.add_argument("--max-branch-retries", type=int, default=None, help="Max retry attempts per branch for saga_parallel mode")
-    review_parser.add_argument("--retry-backoff-seconds", type=int, default=None, help="Retry backoff seconds for saga_parallel mode")
-    review_parser.add_argument("--saga-resume", action="store_true", help="Resume existing saga_parallel review run")
-    review_parser.add_argument("--saga-branch-llm-enabled", action="store_true", help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode")
+    review_parser.add_argument(
+        "--max-parallel-branches",
+        type=int,
+        default=None,
+        help="Max concurrent persona branches for saga_parallel mode",
+    )
+    review_parser.add_argument(
+        "--branch-timeout-seconds",
+        type=int,
+        default=None,
+        help="Per-branch timeout for saga_parallel mode",
+    )
+    review_parser.add_argument(
+        "--max-branch-retries",
+        type=int,
+        default=None,
+        help="Max retry attempts per branch for saga_parallel mode",
+    )
+    review_parser.add_argument(
+        "--retry-backoff-seconds",
+        type=int,
+        default=None,
+        help="Retry backoff seconds for saga_parallel mode",
+    )
+    review_parser.add_argument(
+        "--saga-resume", action="store_true", help="Resume existing saga_parallel review run"
+    )
+    review_parser.add_argument(
+        "--saga-branch-llm-enabled",
+        action="store_true",
+        help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode",
+    )
     review_parser.add_argument("--no-resume", action="store_true", help="Disable session resume")
     review_parser.add_argument("--session-ttl", type=int, default=0, help="Session TTL in seconds")
-    review_parser.add_argument("--clean-memory", action="store_true", help="Clean review memory artifacts before execution")
-    review_parser.add_argument("--clean-reports", action="store_true", help="Clean existing report artifacts in output directory")
-    review_parser.add_argument("--keep-versions", type=int, default=0, help="Keep latest N existing report versions when cleaning")
+    review_parser.add_argument(
+        "--clean-memory", action="store_true", help="Clean review memory artifacts before execution"
+    )
+    review_parser.add_argument(
+        "--clean-reports",
+        action="store_true",
+        help="Clean existing report artifacts in output directory",
+    )
+    review_parser.add_argument(
+        "--keep-versions",
+        type=int,
+        default=0,
+        help="Keep latest N existing report versions when cleaning",
+    )
     review_parser.add_argument(
         "--out",
         default=None,
@@ -89,45 +164,126 @@ def _build_parser() -> argparse.ArgumentParser:
         "review",
         help="Alias for review-build (UCX_v1 compatibility)",
     )
-    review_alias_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    review_alias_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
-    review_alias_parser.add_argument("--doc-type", required=True, help="Document type label for metadata")
-    review_alias_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/review")
-    review_alias_parser.add_argument("--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)")
-    review_alias_parser.add_argument("--sections-json", default=None, help="Path to sections JSON array")
-    review_alias_parser.add_argument("--document", default=None, help="Path to document file or document directory for auto section loading")
-    review_alias_parser.add_argument("--unified", action="store_true", help="Enable unified context mode")
-    review_alias_parser.add_argument("--one-turn", action="store_true", help="Enable one-turn review mode")
+    review_alias_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    review_alias_parser.add_argument(
+        "--personas",
+        nargs="+",
+        default=None,
+        help="Persona list override. If omitted, loaded from persona_mappings.yaml.",
+    )
+    review_alias_parser.add_argument(
+        "--doc-type", required=True, help="Document type label for metadata"
+    )
+    review_alias_parser.add_argument(
+        "--template", required=True, help="Template file in UCX/prompts/templates/review"
+    )
+    review_alias_parser.add_argument(
+        "--layer", default=None, help="Optional SSD layer directory name (e.g. 01_BRD)"
+    )
+    review_alias_parser.add_argument(
+        "--sections-json", default=None, help="Path to sections JSON array"
+    )
+    review_alias_parser.add_argument(
+        "--document",
+        default=None,
+        help="Path to document file or document directory for auto section loading",
+    )
+    review_alias_parser.add_argument(
+        "--unified", action="store_true", help="Enable unified context mode"
+    )
+    review_alias_parser.add_argument(
+        "--one-turn", action="store_true", help="Enable one-turn review mode"
+    )
     review_alias_parser.add_argument(
         "--review-mode",
         choices=["prompt_only", "saga_parallel"],
         default="prompt_only",
         help="Review execution mode. saga_parallel enables saga journal/reducer scaffolding (parallel scheduler controls are forward-compatible).",
     )
-    review_alias_parser.add_argument("--max-parallel-branches", type=int, default=None, help="Max concurrent persona branches for saga_parallel mode")
-    review_alias_parser.add_argument("--branch-timeout-seconds", type=int, default=None, help="Per-branch timeout for saga_parallel mode")
-    review_alias_parser.add_argument("--max-branch-retries", type=int, default=None, help="Max retry attempts per branch for saga_parallel mode")
-    review_alias_parser.add_argument("--retry-backoff-seconds", type=int, default=None, help="Retry backoff seconds for saga_parallel mode")
-    review_alias_parser.add_argument("--saga-resume", action="store_true", help="Resume existing saga_parallel review run")
-    review_alias_parser.add_argument("--saga-branch-llm-enabled", action="store_true", help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode")
-    review_alias_parser.add_argument("--no-resume", action="store_true", help="Disable session resume")
-    review_alias_parser.add_argument("--session-ttl", type=int, default=0, help="Session TTL in seconds")
-    review_alias_parser.add_argument("--clean-memory", action="store_true", help="Clean review memory artifacts before execution")
-    review_alias_parser.add_argument("--clean-reports", action="store_true", help="Clean existing report artifacts in output directory")
-    review_alias_parser.add_argument("--keep-versions", type=int, default=0, help="Keep latest N existing report versions when cleaning")
+    review_alias_parser.add_argument(
+        "--max-parallel-branches",
+        type=int,
+        default=None,
+        help="Max concurrent persona branches for saga_parallel mode",
+    )
+    review_alias_parser.add_argument(
+        "--branch-timeout-seconds",
+        type=int,
+        default=None,
+        help="Per-branch timeout for saga_parallel mode",
+    )
+    review_alias_parser.add_argument(
+        "--max-branch-retries",
+        type=int,
+        default=None,
+        help="Max retry attempts per branch for saga_parallel mode",
+    )
+    review_alias_parser.add_argument(
+        "--retry-backoff-seconds",
+        type=int,
+        default=None,
+        help="Retry backoff seconds for saga_parallel mode",
+    )
+    review_alias_parser.add_argument(
+        "--saga-resume", action="store_true", help="Resume existing saga_parallel review run"
+    )
+    review_alias_parser.add_argument(
+        "--saga-branch-llm-enabled",
+        action="store_true",
+        help="Enable branch-level LLM fan-out/fan-in for saga_parallel mode",
+    )
+    review_alias_parser.add_argument(
+        "--no-resume", action="store_true", help="Disable session resume"
+    )
+    review_alias_parser.add_argument(
+        "--session-ttl", type=int, default=0, help="Session TTL in seconds"
+    )
+    review_alias_parser.add_argument(
+        "--clean-memory", action="store_true", help="Clean review memory artifacts before execution"
+    )
+    review_alias_parser.add_argument(
+        "--clean-reports",
+        action="store_true",
+        help="Clean existing report artifacts in output directory",
+    )
+    review_alias_parser.add_argument(
+        "--keep-versions",
+        type=int,
+        default=0,
+        help="Keep latest N existing report versions when cleaning",
+    )
     review_alias_parser.add_argument(
         "--out",
         default=None,
         help="Optional output directory; defaults to <document_dir>/.ucx/review",
     )
 
-    create_parser = subparsers.add_parser("create-build", help="Assemble project creation prompt with SSD layer assets")
-    create_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    create_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
-    create_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    create_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    create_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
-    create_parser.add_argument("--sections-json", default=None, help="Optional path to sections JSON array")
+    create_parser = subparsers.add_parser(
+        "create-build", help="Assemble project creation prompt with SSD layer assets"
+    )
+    create_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    create_parser.add_argument(
+        "--personas",
+        nargs="+",
+        default=None,
+        help="Persona list override. If omitted, loaded from persona_mappings.yaml.",
+    )
+    create_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    create_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    create_parser.add_argument(
+        "--template", required=True, help="Template file in UCX/prompts/templates/creation"
+    )
+    create_parser.add_argument(
+        "--sections-json", default=None, help="Optional path to sections JSON array"
+    )
     create_parser.add_argument(
         "--out",
         default=None,
@@ -138,14 +294,33 @@ def _build_parser() -> argparse.ArgumentParser:
         "create",
         help="Create final document artifact at target path using project/layer templates",
     )
-    create_artifact_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    create_artifact_parser.add_argument("--personas", nargs="+", default=None, help="Persona list override. If omitted, loaded from persona_mappings.yaml.")
-    create_artifact_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    create_artifact_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    create_artifact_parser.add_argument("--template", required=True, help="Template file in UCX/prompts/templates/creation")
-    create_artifact_parser.add_argument("--target", required=True, help="Final target document path to create")
-    create_artifact_parser.add_argument("--sections-json", default=None, help="Optional path to sections JSON array")
-    create_artifact_parser.add_argument("--overwrite", action="store_true", help="Overwrite target document if it exists")
+    create_artifact_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    create_artifact_parser.add_argument(
+        "--personas",
+        nargs="+",
+        default=None,
+        help="Persona list override. If omitted, loaded from persona_mappings.yaml.",
+    )
+    create_artifact_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    create_artifact_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    create_artifact_parser.add_argument(
+        "--template", required=True, help="Template file in UCX/prompts/templates/creation"
+    )
+    create_artifact_parser.add_argument(
+        "--target", required=True, help="Final target document path to create"
+    )
+    create_artifact_parser.add_argument(
+        "--sections-json", default=None, help="Optional path to sections JSON array"
+    )
+    create_artifact_parser.add_argument(
+        "--overwrite", action="store_true", help="Overwrite target document if it exists"
+    )
     create_artifact_parser.add_argument(
         "--out",
         default=None,
@@ -156,13 +331,25 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate",
         help="Run script-based document structure validation against layer template/schema assets",
     )
-    validate_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    validate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    validate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    validate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
-    validate_parser.add_argument("--tier1-only", action="store_true", help="Evaluate only tier1 checks")
+    validate_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    validate_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    validate_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    validate_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory"
+    )
+    validate_parser.add_argument(
+        "--tier1-only", action="store_true", help="Evaluate only tier1 checks"
+    )
     validate_parser.add_argument("--strict", action="store_true", help="Treat warnings as failures")
-    validate_parser.add_argument("--format", choices=["text", "json"], default="text", help="Validation output format")
+    validate_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", help="Validation output format"
+    )
     validate_parser.add_argument(
         "--out",
         default=None,
@@ -178,10 +365,18 @@ def _build_parser() -> argparse.ArgumentParser:
         "remediate",
         help="Run AI remediation from review findings and generate source-protected derived artifacts",
     )
-    remediate_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    remediate_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    remediate_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    remediate_parser.add_argument("--document", required=True, help="Path to document file or document directory")
+    remediate_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    remediate_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    remediate_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    remediate_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory"
+    )
     remediate_parser.add_argument(
         "--review-report",
         default=None,
@@ -203,17 +398,31 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Deprecated compatibility flag. Remediation apply runs by default.",
     )
-    remediate_parser.add_argument("--executor", default="api/claude-sonnet", help="API executor name for remediation apply (default: api/claude-sonnet)")
-    remediate_parser.add_argument("--timeout", type=int, default=300, help="Executor timeout in seconds")
+    remediate_parser.add_argument(
+        "--executor",
+        default="api/claude-sonnet",
+        help="API executor name for remediation apply (default: api/claude-sonnet)",
+    )
+    remediate_parser.add_argument(
+        "--timeout", type=int, default=300, help="Executor timeout in seconds"
+    )
 
     remediate_fix_parser = subparsers.add_parser(
         "remediate-fix",
         help="Generate source-protected remediated derived artifacts",
     )
-    remediate_fix_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    remediate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    remediate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    remediate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
+    remediate_fix_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    remediate_fix_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    remediate_fix_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    remediate_fix_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory"
+    )
     remediate_fix_parser.add_argument(
         "--remediation-report",
         default=None,
@@ -229,10 +438,18 @@ def _build_parser() -> argparse.ArgumentParser:
         "validate-fix",
         help="[DEPRECATED] Use 'validate' instead. Generates validation + fix artifacts.",
     )
-    validate_fix_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    validate_fix_parser.add_argument("--doc-type", required=True, help="Document type label (e.g. brd, prd)")
-    validate_fix_parser.add_argument("--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)")
-    validate_fix_parser.add_argument("--document", required=True, help="Path to document file or document directory")
+    validate_fix_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    validate_fix_parser.add_argument(
+        "--doc-type", required=True, help="Document type label (e.g. brd, prd)"
+    )
+    validate_fix_parser.add_argument(
+        "--layer", required=True, help="SSD layer directory name (e.g. 01_BRD)"
+    )
+    validate_fix_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory"
+    )
     validate_fix_parser.add_argument(
         "--validation-report",
         default=None,
@@ -244,86 +461,166 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Optional output directory; defaults to <document_dir>/.ucx/validate",
     )
 
-    personas_show_parser = subparsers.add_parser("personas-show", help="Show persona assignments for a project")
-    personas_show_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    personas_show_parser.add_argument("--phase", choices=["creation", "review", "remediation"], default=None)
+    personas_show_parser = subparsers.add_parser(
+        "personas-show", help="Show persona assignments for a project"
+    )
+    personas_show_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    personas_show_parser.add_argument(
+        "--phase", choices=["creation", "review", "remediation"], default=None
+    )
     personas_show_parser.add_argument("--doc-type", default=None, help="Filter by document type")
-    personas_show_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
+    personas_show_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", dest="output_format"
+    )
 
-    personas_set_parser = subparsers.add_parser("personas-set", help="Update persona list for a phase+doctype")
-    personas_set_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    personas_set_parser.add_argument("--phase", required=True, choices=["creation", "review", "remediation"])
-    personas_set_parser.add_argument("--doc-type", required=True, help="Document type (e.g. brd, prd, _default)")
-    personas_set_parser.add_argument("--personas", nargs="+", required=True, help="Ordered persona names")
+    personas_set_parser = subparsers.add_parser(
+        "personas-set", help="Update persona list for a phase+doctype"
+    )
+    personas_set_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    personas_set_parser.add_argument(
+        "--phase", required=True, choices=["creation", "review", "remediation"]
+    )
+    personas_set_parser.add_argument(
+        "--doc-type", required=True, help="Document type (e.g. brd, prd, _default)"
+    )
+    personas_set_parser.add_argument(
+        "--personas", nargs="+", required=True, help="Ordered persona names"
+    )
 
-    personas_diff_parser = subparsers.add_parser("personas-diff", help="Compare project persona mappings against framework defaults")
-    personas_diff_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    personas_diff_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
+    personas_diff_parser = subparsers.add_parser(
+        "personas-diff", help="Compare project persona mappings against framework defaults"
+    )
+    personas_diff_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    personas_diff_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", dest="output_format"
+    )
 
-    env_show_parser = subparsers.add_parser("env-show", help="Show project .env keys without exposing values")
-    env_show_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    env_show_parser.add_argument("--format", choices=["text", "json"], default="text", dest="output_format")
+    env_show_parser = subparsers.add_parser(
+        "env-show", help="Show project .env keys without exposing values"
+    )
+    env_show_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    env_show_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", dest="output_format"
+    )
 
-    prescreen_parser = subparsers.add_parser("prescreen", help="Prescreen documents for deterministic remediation candidates")
-    prescreen_parser.add_argument("--document", required=True, help="Path to document file or document directory")
-    prescreen_parser.add_argument("--out", default=None, help="Optional output directory for prescreen artifacts")
+    prescreen_parser = subparsers.add_parser(
+        "prescreen", help="Prescreen documents for deterministic remediation candidates"
+    )
+    prescreen_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory"
+    )
+    prescreen_parser.add_argument(
+        "--out", default=None, help="Optional output directory for prescreen artifacts"
+    )
 
-    scan_parser = subparsers.add_parser("scan", help="Scan validation or remediation reports for finding category metrics")
-    scan_parser.add_argument("--report-file", required=True, help="Path to JSON report file to scan")
-    scan_parser.add_argument("--out", default=None, help="Optional output directory for scan artifacts")
+    scan_parser = subparsers.add_parser(
+        "scan", help="Scan validation or remediation reports for finding category metrics"
+    )
+    scan_parser.add_argument(
+        "--report-file", required=True, help="Path to JSON report file to scan"
+    )
+    scan_parser.add_argument(
+        "--out", default=None, help="Optional output directory for scan artifacts"
+    )
 
     scoring_parser = subparsers.add_parser("scoring", help="Score report quality metrics")
     scoring_subparsers = scoring_parser.add_subparsers(dest="scoring_command")
 
     scoring_show_parser = scoring_subparsers.add_parser("show", help="Show score for a report")
-    scoring_show_parser.add_argument("--report-file", required=True, help="Path to JSON report file")
+    scoring_show_parser.add_argument(
+        "--report-file", required=True, help="Path to JSON report file"
+    )
 
-    scoring_validate_parser = scoring_subparsers.add_parser("validate", help="Validate score threshold for a report")
-    scoring_validate_parser.add_argument("--report-file", required=True, help="Path to JSON report file")
-    scoring_validate_parser.add_argument("--threshold", type=int, required=True, help="Minimum required score")
+    scoring_validate_parser = scoring_subparsers.add_parser(
+        "validate", help="Validate score threshold for a report"
+    )
+    scoring_validate_parser.add_argument(
+        "--report-file", required=True, help="Path to JSON report file"
+    )
+    scoring_validate_parser.add_argument(
+        "--threshold", type=int, required=True, help="Minimum required score"
+    )
 
-    scoring_compare_parser = scoring_subparsers.add_parser("compare", help="Compare scores between baseline and candidate reports")
-    scoring_compare_parser.add_argument("--baseline-report-file", required=True, help="Path to baseline JSON report")
-    scoring_compare_parser.add_argument("--candidate-report-file", required=True, help="Path to candidate JSON report")
+    scoring_compare_parser = scoring_subparsers.add_parser(
+        "compare", help="Compare scores between baseline and candidate reports"
+    )
+    scoring_compare_parser.add_argument(
+        "--baseline-report-file", required=True, help="Path to baseline JSON report"
+    )
+    scoring_compare_parser.add_argument(
+        "--candidate-report-file", required=True, help="Path to candidate JSON report"
+    )
 
     consistency_parser = subparsers.add_parser(
         "consistency",
         help="Run lightweight artifact lineage and stage consistency checks",
     )
-    consistency_parser.add_argument("--target", required=True, help="Path to source document file or document directory")
-    consistency_parser.add_argument("--format", choices=["text", "json"], default="text", help="Consistency output format")
-    consistency_parser.add_argument("--out", default=None, help="Optional output directory for consistency artifacts")
+    consistency_parser.add_argument(
+        "--target", required=True, help="Path to source document file or document directory"
+    )
+    consistency_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", help="Consistency output format"
+    )
+    consistency_parser.add_argument(
+        "--out", default=None, help="Optional output directory for consistency artifacts"
+    )
 
     validate_links_parser = subparsers.add_parser(
         "validate-links",
         help="Validate markdown links in documentation files",
     )
-    validate_links_parser.add_argument("--target", required=True, help="Path to file or directory to scan")
-    validate_links_parser.add_argument("--workspace-root", default=None, help="Workspace root for resolving absolute paths")
-    validate_links_parser.add_argument("--format", choices=["text", "json"], default="text", help="Output format")
+    validate_links_parser.add_argument(
+        "--target", required=True, help="Path to file or directory to scan"
+    )
+    validate_links_parser.add_argument(
+        "--workspace-root", default=None, help="Workspace root for resolving absolute paths"
+    )
+    validate_links_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", help="Output format"
+    )
     validate_links_parser.add_argument("--out", default=None, help="Output directory for reports")
 
     preflight_parser = subparsers.add_parser(
         "preflight",
         help="Run runtime and environment readiness checks before create, review, or remediation stages",
     )
-    preflight_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
+    preflight_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
     preflight_parser.add_argument(
         "--context",
         choices=["create", "review", "remediate", "any"],
         default="any",
         help="Operational context for required readiness checks",
     )
-    preflight_parser.add_argument("--document", default=None, help="Optional document path to verify")
-    preflight_parser.add_argument("--format", choices=["text", "json"], default="text", help="Preflight output format")
-    preflight_parser.add_argument("--out", default=None, help="Optional output directory for preflight artifacts")
+    preflight_parser.add_argument(
+        "--document", default=None, help="Optional document path to verify"
+    )
+    preflight_parser.add_argument(
+        "--format", choices=["text", "json"], default="text", help="Preflight output format"
+    )
+    preflight_parser.add_argument(
+        "--out", default=None, help="Optional output directory for preflight artifacts"
+    )
 
     clean_parser = subparsers.add_parser(
         "clean",
         help="Remove obsolete stage artifacts from a document folder",
     )
-    clean_parser.add_argument("--project", required=_project_required, default=_default_project, help=_project_help)
-    clean_parser.add_argument("--document", required=True, help="Path to document file or document directory to clean")
+    clean_parser.add_argument(
+        "--project", required=_project_required, default=_default_project, help=_project_help
+    )
+    clean_parser.add_argument(
+        "--document", required=True, help="Path to document file or document directory to clean"
+    )
     clean_parser.add_argument(
         "--stages",
         nargs="+",
@@ -331,10 +628,21 @@ def _build_parser() -> argparse.ArgumentParser:
         default=["all"],
         help="Stages to clean (default: all)",
     )
-    clean_parser.add_argument("--keep", type=int, default=1, help="Number of latest versions to keep per artifact type")
-    clean_parser.add_argument("--dry-run", action="store_true", default=True, help="List files that would be deleted (default)")
-    clean_parser.add_argument("--apply", action="store_true", help="Delete files instead of dry-run listing")
-    clean_parser.add_argument("--out", default=None, help="Optional output directory for cleanup report")
+    clean_parser.add_argument(
+        "--keep", type=int, default=1, help="Number of latest versions to keep per artifact type"
+    )
+    clean_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="List files that would be deleted (default)",
+    )
+    clean_parser.add_argument(
+        "--apply", action="store_true", help="Delete files instead of dry-run listing"
+    )
+    clean_parser.add_argument(
+        "--out", default=None, help="Optional output directory for cleanup report"
+    )
 
     return parser
 
@@ -408,7 +716,11 @@ def _find_canonical_source(document_dir: Path) -> Path | None:
 def _collect_review_document_files(document_path: Path) -> list[Path]:
     document_dir = document_path if document_path.is_dir() else document_path.parent
     candidates = _list_review_document_candidates(document_dir)
-    if not candidates and document_path.is_file() and document_path.suffix.lower() in _REVIEW_SOURCE_EXTENSIONS:
+    if (
+        not candidates
+        and document_path.is_file()
+        and document_path.suffix.lower() in _REVIEW_SOURCE_EXTENSIONS
+    ):
         return [document_path]
 
     selected: list[Path] = []
@@ -421,8 +733,7 @@ def _collect_review_document_files(document_path: Path) -> list[Path]:
     appendix_files = [
         path
         for path in candidates
-        if path not in selected
-        and re.search(r"(appendix|appendices)", path.name, re.IGNORECASE)
+        if path not in selected and re.search(r"(appendix|appendices)", path.name, re.IGNORECASE)
     ]
     selected.extend(appendix_files)
 
@@ -431,7 +742,9 @@ def _collect_review_document_files(document_path: Path) -> list[Path]:
     return candidates
 
 
-def _build_review_sections_from_document(document_path: Path) -> tuple[list[SourceSection], list[Path]]:
+def _build_review_sections_from_document(
+    document_path: Path,
+) -> tuple[list[SourceSection], list[Path]]:
     files = _collect_review_document_files(document_path)
     sections = [
         SourceSection(
@@ -577,8 +890,10 @@ def _print_diff_summary(result: dict) -> None:
         print(f"ADDED    {entry['phase']}.{entry['doc_type']}: {', '.join(entry['personas'])}")
     for entry in result.get("removed", []):
         print(f"REMOVED  {entry['phase']}.{entry['doc_type']}: {', '.join(entry['personas'])}")
-    print(f"\nSummary: {summary.get('changed', 0)} changed, {summary.get('added', 0)} added, "
-          f"{summary.get('removed', 0)} removed, {summary.get('unchanged', 0)} unchanged")
+    print(
+        f"\nSummary: {summary.get('changed', 0)} changed, {summary.get('added', 0)} added, "
+        f"{summary.get('removed', 0)} removed, {summary.get('unchanged', 0)} unchanged"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -616,7 +931,9 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command in {"review-build", "review"}:
         project_root = Path(args.project).expanduser().resolve()
-        sections_json = Path(args.sections_json).expanduser().resolve() if args.sections_json else None
+        sections_json = (
+            Path(args.sections_json).expanduser().resolve() if args.sections_json else None
+        )
         review_document = Path(args.document).expanduser().resolve() if args.document else None
         if sections_json is None and review_document is None:
             print("review-build failed: provide --sections-json or --document")
@@ -639,9 +956,13 @@ def main(argv: list[str] | None = None) -> int:
             assert review_document is not None
             review_sections, selected_files = _build_review_sections_from_document(review_document)
             if not review_sections:
-                print("review-build failed: no supported sources found for --document (.md/.yaml/.yml)")
+                print(
+                    "review-build failed: no supported sources found for --document (.md/.yaml/.yml)"
+                )
                 return 1
-            document_dir_for_output = review_document if review_document.is_dir() else review_document.parent
+            document_dir_for_output = (
+                review_document if review_document.is_dir() else review_document.parent
+            )
 
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
@@ -658,7 +979,9 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.clean_reports and output_dir.exists():
             keep_versions = max(0, int(args.keep_versions))
-            candidates = sorted(output_dir.glob("*"), key=lambda path: path.stat().st_mtime, reverse=True)
+            candidates = sorted(
+                output_dir.glob("*"), key=lambda path: path.stat().st_mtime, reverse=True
+            )
             for path in candidates[keep_versions:]:
                 if path.is_file():
                     path.unlink()
@@ -814,9 +1137,7 @@ def main(argv: list[str] | None = None) -> int:
             document_dir=document_path if document_path.is_dir() else document_path.parent,
         )
         validation_report_path = (
-            Path(args.validation_report).expanduser().resolve()
-            if args.validation_report
-            else None
+            Path(args.validation_report).expanduser().resolve() if args.validation_report else None
         )
         return _run_validate_command(
             project_root=project_root,
@@ -833,8 +1154,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "remediate":
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
-        review_report = Path(args.review_report).expanduser().resolve() if args.review_report else None
-        remediation_report = Path(args.remediation_report).expanduser().resolve() if args.remediation_report else None
+        review_report = (
+            Path(args.review_report).expanduser().resolve() if args.review_report else None
+        )
+        remediation_report = (
+            Path(args.remediation_report).expanduser().resolve()
+            if args.remediation_report
+            else None
+        )
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REMEDIATE,
@@ -844,7 +1171,9 @@ def main(argv: list[str] | None = None) -> int:
         )
 
         if remediation_report is not None and not args.fix:
-            print("Warning: --remediation-report is used only with --fix; ignoring provided remediation report.")
+            print(
+                "Warning: --remediation-report is used only with --fix; ignoring provided remediation report."
+            )
 
         if args.fix and remediation_report is not None:
             try:
@@ -877,6 +1206,7 @@ def main(argv: list[str] | None = None) -> int:
 
         if args.fix:
             from mcp_server.remediation import run_remediate_fix_build as _run_fix_build
+
             try:
                 fix_result = _run_fix_build(
                     project_root=project_root,
@@ -897,7 +1227,11 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "remediate-fix":
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
-        remediation_report = Path(args.remediation_report).expanduser().resolve() if args.remediation_report else None
+        remediation_report = (
+            Path(args.remediation_report).expanduser().resolve()
+            if args.remediation_report
+            else None
+        )
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
             stage=STAGE_REMEDIATE,
@@ -927,9 +1261,7 @@ def main(argv: list[str] | None = None) -> int:
         project_root = Path(args.project).expanduser().resolve()
         document_path = Path(args.document).expanduser().resolve()
         validation_report_path = (
-            Path(args.validation_report).expanduser().resolve()
-            if args.validation_report
-            else None
+            Path(args.validation_report).expanduser().resolve() if args.validation_report else None
         )
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         output_dir = resolve_stage_output_dir(
@@ -952,8 +1284,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "prescreen":
         document_path = Path(args.document).expanduser().resolve()
-        prescreen_output_dir: Path | None = Path(args.out).expanduser().resolve() if args.out else None
-        prescreen_result = run_prescreen(document_path=document_path, output_dir=prescreen_output_dir)
+        prescreen_output_dir: Path | None = (
+            Path(args.out).expanduser().resolve() if args.out else None
+        )
+        prescreen_result = run_prescreen(
+            document_path=document_path, output_dir=prescreen_output_dir
+        )
         print(prescreen_result.report_json)
         return 0
 
@@ -961,7 +1297,9 @@ def main(argv: list[str] | None = None) -> int:
         target_path = Path(args.target).expanduser().resolve()
         explicit_out = Path(args.out).expanduser().resolve() if args.out else None
         try:
-            consistency_result = run_consistency_check(target_path=target_path, output_dir=explicit_out)
+            consistency_result = run_consistency_check(
+                target_path=target_path, output_dir=explicit_out
+            )
         except Exception as exc:
             print(f"consistency failed: {exc}")
             return 2
@@ -979,11 +1317,14 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "validate-links":
         from mcp_server.link_validation import run_link_validation
+
         target = Path(args.target).expanduser().resolve()
         ws_root = Path(args.workspace_root).expanduser().resolve() if args.workspace_root else None
         out_dir = Path(args.out).expanduser().resolve() if args.out else None
         try:
-            link_result = run_link_validation(target_path=target, workspace_root=ws_root, output_dir=out_dir)
+            link_result = run_link_validation(
+                target_path=target, workspace_root=ws_root, output_dir=out_dir
+            )
         except Exception as exc:
             print(f"validate-links failed: {exc}")
             return 2
@@ -999,6 +1340,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "personas-show":
         from mcp_server.skills.persona_manager import show_persona_mappings
+
         result = show_persona_mappings(
             project_root=Path(args.project).expanduser().resolve(),
             phase=args.phase,
@@ -1012,6 +1354,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "personas-set":
         from mcp_server.skills.persona_manager import set_persona_mapping
+
         result = set_persona_mapping(
             project_root=Path(args.project).expanduser().resolve(),
             phase=args.phase,
@@ -1025,6 +1368,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "personas-diff":
         from mcp_server.skills.persona_manager import diff_persona_mappings
+
         result = diff_persona_mappings(
             project_root=Path(args.project).expanduser().resolve(),
         )
@@ -1036,6 +1380,7 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "env-show":
         from mcp_server.env_manager import show_project_env
+
         result = show_project_env(
             project_root=Path(args.project).expanduser().resolve(),
         )
@@ -1051,7 +1396,9 @@ def main(argv: list[str] | None = None) -> int:
                 if result.get("api_keys_present"):
                     print(f"API keys present: {', '.join(result['api_keys_present'])}")
                 if result.get("ucx_executor_overrides"):
-                    print(f"UCX executor overrides: {', '.join(result['ucx_executor_overrides'].keys())}")
+                    print(
+                        f"UCX executor overrides: {', '.join(result['ucx_executor_overrides'].keys())}"
+                    )
                 if result.get("parse_error"):
                     print("Warning: .env file has parse errors")
         return 0
@@ -1110,7 +1457,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"Clean report generated at {report_path}")
 
         if dry_run:
-            print(f"Dry run: {payload['deleted_count']} files would be deleted, {payload['kept_count']} kept")
+            print(
+                f"Dry run: {payload['deleted_count']} files would be deleted, {payload['kept_count']} kept"
+            )
         else:
             print(f"Deleted: {payload['deleted_count']} files, kept {payload['kept_count']}")
             print(f"Bytes freed: {payload['bytes_freed']}")
@@ -1138,7 +1487,9 @@ def main(argv: list[str] | None = None) -> int:
         if args.scoring_command == "compare":
             baseline = Path(args.baseline_report_file).expanduser().resolve()
             candidate = Path(args.candidate_report_file).expanduser().resolve()
-            compare_result = compare_scores(baseline_report_file=baseline, candidate_report_file=candidate)
+            compare_result = compare_scores(
+                baseline_report_file=baseline, candidate_report_file=candidate
+            )
             print(json.dumps(compare_result.payload, sort_keys=True))
             return 0
         print("scoring requires one of: show, validate, compare")

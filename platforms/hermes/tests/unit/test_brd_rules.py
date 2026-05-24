@@ -2,21 +2,18 @@
 
 from __future__ import annotations
 
-from pathlib import Path
 import sys
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-import pytest
-
 from mcp_server.validation.brd_rules import (  # noqa: E402
     run_brd_cross_section_checks,
     run_brd_cross_section_checks_md,
 )
-
 
 # ── Helpers ──────────────────────────────────────────────────────────
 
@@ -27,7 +24,10 @@ def _run(yaml_data: dict) -> tuple[list[str], list[str], list[str]]:
     warnings: list[str] = []
     passes: list[str] = []
     run_brd_cross_section_checks(
-        yaml_data=yaml_data, errors=errors, warnings=warnings, passes=passes,
+        yaml_data=yaml_data,
+        errors=errors,
+        warnings=warnings,
+        passes=passes,
     )
     return errors, warnings, passes
 
@@ -146,16 +146,12 @@ def test_phase_alignment_errors_count_mismatch():
     data = {
         "project_scope": {
             "phasing": {
-                "phases": [
-                    {"phase": f"Phase {i}"} for i in range(1, 6)
-                ],
+                "phases": [{"phase": f"Phase {i}"} for i in range(1, 6)],
             },
         },
         "implementation_approach": {
             "phases": {
-                "items": [
-                    {"phase": f"Phase {i}"} for i in range(1, 5)
-                ],
+                "items": [{"phase": f"Phase {i}"} for i in range(1, 5)],
             },
         },
     }
@@ -311,7 +307,10 @@ def test_md_fallback_runs_without_crash():
     warnings: list[str] = []
     passes: list[str] = []
     run_brd_cross_section_checks_md(
-        content=content, errors=errors, warnings=warnings, passes=passes,
+        content=content,
+        errors=errors,
+        warnings=warnings,
+        passes=passes,
     )
     assert any("BRD-XS-001" in p for p in passes)
     assert any("BRD-XS-002" in p for p in passes)

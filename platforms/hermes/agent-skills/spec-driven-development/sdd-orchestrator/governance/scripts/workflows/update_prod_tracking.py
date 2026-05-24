@@ -3,7 +3,7 @@
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 
 
@@ -21,12 +21,12 @@ def main():
 
     tracking["production"] = {
         "deployed": True,
-        "deployed_at": datetime.now(timezone.utc).isoformat(),
+        "deployed_at": datetime.now(UTC).isoformat(),
         "commit_sha": args.commit_sha,
         "current_revision": args.current_revision,
         "previous_revision": args.previous_revision,
         "revision_history": args.revision_history or "",
-        "last_action": "rollback" if args.rollback else "deploy"
+        "last_action": "rollback" if args.rollback else "deploy",
     }
 
     args.tracking_file.write_text(json.dumps(tracking, indent=2) + "\n")

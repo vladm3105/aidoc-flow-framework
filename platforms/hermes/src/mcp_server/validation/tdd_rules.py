@@ -74,9 +74,7 @@ def check_test_pyramid(
 
     total = int(unit_pct) + int(integration_pct) + int(e2e_pct)
     if total != 100:
-        errors.append(
-            f"TDD-002: Test pyramid distribution totals {total}%, expected 100%"
-        )
+        errors.append(f"TDD-002: Test pyramid distribution totals {total}%, expected 100%")
         return
 
     for test_type, pct in [("unit", unit_pct), ("integration", integration_pct), ("e2e", e2e_pct)]:
@@ -115,13 +113,15 @@ def check_bdd_scenario_coverage(
         tests = scenario.get("tests", [])
         if not isinstance(tests, list) or len(tests) == 0:
             if bdd_scenario:
-                errors.append(
-                    f"TDD-003: BDD scenario {bdd_scenario} has no tests mapped"
-                )
+                errors.append(f"TDD-003: BDD scenario {bdd_scenario} has no tests mapped")
             continue
 
         test_types_found = {t.get("type") for t in tests if isinstance(t, dict)}
-        if "unit" not in test_types_found or "integration" not in test_types_found or "e2e" not in test_types_found:
+        if (
+            "unit" not in test_types_found
+            or "integration" not in test_types_found
+            or "e2e" not in test_types_found
+        ):
             warnings.append(
                 f"TDD-003: BDD scenario {bdd_scenario} missing some test types: {test_types_found}"
             )
@@ -179,7 +179,13 @@ def check_tdd_execution_order(
         return
 
     phase_names = [p.get("name") if isinstance(p, dict) else None for p in phases]
-    expected_sequence = ["Write Tests", "Run Tests (Red)", "Implement", "Verify (Green)", "Refactor"]
+    expected_sequence = [
+        "Write Tests",
+        "Run Tests (Red)",
+        "Implement",
+        "Verify (Green)",
+        "Refactor",
+    ]
 
     missing_phases = [exp for exp in expected_sequence if exp not in phase_names]
     if missing_phases:
@@ -213,10 +219,14 @@ def check_spec_traceability(
 
     spec_ref_patterns = [r for r in spec_refs if isinstance(r, str) and "@spec:" in r]
     if len(spec_ref_patterns) == 0:
-        errors.append("TDD-006: No @spec: reference patterns found in traceability.upstream.spec_references")
+        errors.append(
+            "TDD-006: No @spec: reference patterns found in traceability.upstream.spec_references"
+        )
         return
 
-    passes.append(f"TDD-006: traceability.upstream.spec_references has {len(spec_ref_patterns)} @spec: references")
+    passes.append(
+        f"TDD-006: traceability.upstream.spec_references has {len(spec_ref_patterns)} @spec: references"
+    )
 
 
 def run_tdd_validation_checks(

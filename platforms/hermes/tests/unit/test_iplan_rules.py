@@ -3,7 +3,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "src"
 if str(SRC) not in sys.path:
@@ -43,7 +42,9 @@ def test_iplan_rules_pass_with_minimal_valid_payload() -> None:
     errors: list[str] = []
     warnings: list[str] = []
     passes: list[str] = []
-    run_iplan_validation_checks(yaml_data=yaml_data, errors=errors, warnings=warnings, passes=passes)
+    run_iplan_validation_checks(
+        yaml_data=yaml_data, errors=errors, warnings=warnings, passes=passes
+    )
     assert not errors
     assert any(msg.startswith("IPLAN-001") for msg in passes)
 
@@ -65,5 +66,7 @@ def test_iplan_rules_fail_when_manifest_missing_fields() -> None:
     errors: list[str] = []
     warnings: list[str] = []
     passes: list[str] = []
-    run_iplan_validation_checks(yaml_data=yaml_data, errors=errors, warnings=warnings, passes=passes)
+    run_iplan_validation_checks(
+        yaml_data=yaml_data, errors=errors, warnings=warnings, passes=passes
+    )
     assert any(msg.startswith("IPLAN-002") for msg in errors)
