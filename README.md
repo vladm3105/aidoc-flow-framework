@@ -25,7 +25,7 @@ conformance suite at `tests/conformance/`.
 
 | Platform | Engine | Release |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.1.0` (`platforms/hermes/`) |
+| **Hermes AI** | MCP server | `hermes/v0.1.1` (`platforms/hermes/`) |
 | **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.2.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
@@ -41,10 +41,30 @@ From Claude Code:
 /plugin install aidoc-flow@aidoc-flow-framework
 ```
 
+## Status
+
+The migration is complete (cutover shipped as `v1.0.0`); the project is now in
+**post-cutover development** — latest project release `v1.1.0`, framework spec
+`0.3.x`. Post-v1.0 work to date: the project adaptation overlay, the GATE-SPEC
+change-management gate (`framework/governance/chg/`), and the pre-commit + CI
+security tooling (CodeQL, bandit, detect-secrets, pip-audit, Dependabot).
+
+## Contributing
+
+Enable the pre-commit hooks before committing:
+
+```sh
+pip install pre-commit && pre-commit install
+```
+
+See `.pre-commit-config.yaml` for the hook set and [`SECURITY.md`](SECURITY.md)
+for the vulnerability-reporting policy.
+
 ## Documentation
 
-- `ROADMAP.md` — phased delivery plan (Phase 0 → cutover `v1.0.0`).
+- `ROADMAP.md` — delivery plan and post-v1.0 work (migration complete at `v1.0.0`).
 - `CHANGELOG.md` — project-level changelog.
+- `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).

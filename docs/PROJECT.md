@@ -34,18 +34,20 @@ project from legacy `ucx_framework` v0.20.4). Cutover ships `v1.0.0`.
 
 ## 3. Branching & Tagging
 
-- **Working branch:** `claude/multi-platform-migration-AamWB`. All migration
-  work lands here.
-- **Milestone tags:** each completed phase is tagged (`v0.1.0` … `v0.5.0`,
-  then `v1.0.0` at cutover).
-- **Cutover:** at Phase 5 the new project replaces `main`. The pre-migration
-  `main` (the legacy `ucx_framework`) is preserved beforehand on the
-  protected, read-only branch **`legacy-ucx-v3.2-read-only`**, so the
-  replacement is lossless.
-- **`main` was protected (locked / read-only) for the duration of the
-  migration** — all migration work happened on
-  `claude/multi-platform-migration-AamWB`; `main` is replaced (force-updated
-  to the migration branch) only at the Phase 5 cutover.
+- **Development:** `main` is the multi-platform project (since the `v1.0.0`
+  cutover). Work lands via short-lived `claude/*` feature branches → PR → `main`;
+  the migration branch `claude/multi-platform-migration-AamWB` has been merged
+  and deleted.
+- **Milestone tags:** each migration phase was tagged (`v0.1.0` … `v0.5.0`,
+  then `v1.0.0` at cutover); post-v1.0 releases tag from `main` (e.g. `v1.1.0`,
+  `framework/v0.3.1`).
+- **Cutover (done):** at Phase 5 the new project replaced `main`. The
+  pre-migration `main` (legacy `ucx_framework`) is preserved on the protected,
+  read-only branch **`legacy-ucx-v3.2-read-only`**, so the replacement was
+  lossless.
+- **Branch protection:** changes to `framework/**` require code-owner review
+  plus the `Framework-spec change gate` status check — the human half of
+  GATE-SPEC (§6).
 - Platforms tag their own releases independently.
 
 ### Tag namespaces
@@ -87,7 +89,8 @@ The gated CHG process is **not** applied to migration work. Interim controls:
 - Pull-request review on the working branch.
 - Conventional commit messages.
 - `CHANGELOG.md` updated per change.
-- Significant decisions recorded as markdown ADRs in `docs/architecture/`.
+- Significant decisions recorded in the decision log `plans/DECISIONS.md`;
+  spec-affecting ones graduate to `framework/governance/DECISIONS.md`.
 
 ### After cutover — CHG re-introduced
 
@@ -123,6 +126,6 @@ gates) — see `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`.
   verifies the approval form but is never the authority that grants approval.
 
 Implemented twice against the same `framework/` spec — the Claude Code plugin
-(skills + a staged CI workflow) and Hermes (server-side `validation/chg_rules.py`)
-— validated by the shared conformance suite. The remaining follow-up is **CHG-D2**
-(record this as a formal `framework/governance/` decision).
+(skills + CI workflow) and Hermes (server-side `validation/chg_rules.py`) —
+validated by the shared conformance suite. **CHG-D2** is done: the model is
+recorded as **GD-01** in `framework/governance/DECISIONS.md`.

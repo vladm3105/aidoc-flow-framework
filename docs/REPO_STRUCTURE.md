@@ -1,9 +1,10 @@
 # Repository Structure — AI Doc Flow Framework (Multi-Platform)
 
-> Status: **as-built (post-migration).** Created 2026-05-18; the repository
-> converged to this layout through Phases 1–5. The `legacy/` tree has been
-> removed (preserved as the protected `legacy-ucx-v3.2-read-only` branch);
-> the new project replaces `main` at the Phase 5 cutover (`v1.0.0`).
+> Status: **as-built (post-cutover).** Created 2026-05-18; the repository
+> converged to this layout through Phases 1–5 and replaced `main` at the
+> `v1.0.0` cutover. The `legacy/` tree was removed (preserved on the protected
+> `legacy-ucx-v3.2-read-only` branch). Post-v1.0 additions (CI + security
+> tooling, the GATE-SPEC change gate, the adaptation overlay) are reflected below.
 
 ## Principles
 
@@ -20,39 +21,45 @@
 ```
 aidoc-flow-framework/
 ├── README.md                       Project overview, platform matrix
-├── ROADMAP.md                      Phased delivery plan (project-level)
+├── ROADMAP.md                      Delivery plan + post-v1.0 work
 ├── CHANGELOG.md                    Project-level changelog (Keep a Changelog)
+├── SECURITY.md                     Security policy / vulnerability reporting
 ├── LICENSE
+├── .pre-commit-config.yaml         Pre-commit hooks (lint / format / security)
+├── ruff.toml · .markdownlint.json · .markdownlintignore · .yamllint · .secrets.baseline
+├── .github/
+│   ├── workflows/                  CI: conformance, hermes, plugin, pre-commit, codeql, chg-gate, labeler
+│   ├── CODEOWNERS · dependabot.yml · labeler.yml
+│   └── ISSUE_TEMPLATE/ · PULL_REQUEST_TEMPLATE.md
 ├── docs/
 │   ├── REPO_STRUCTURE.md            This file
-│   ├── PROJECT.md                   Project management: versioning, branches, milestones
-│   └── architecture/                Decision records (MADR markdown)
+│   ├── PROJECT.md                   Versioning, branches, milestones, change management
+│   ├── PARITY.md                    Hermes ↔ plugin capability comparison
+│   ├── TAGGING.md                   Git-tag policy
+│   └── STARTUP_HANDOFF.md
 │
 ├── framework/                       SHARED engine-agnostic specification (the contract)
 │   ├── VERSION                      Framework spec SemVer
 │   ├── layers/                      01_BRD … 08_IPLAN: definitions, templates, schemas
-│   ├── governance/                  Governance rules, CHG overlay, gate definitions
+│   ├── governance/                  Rules; CHG overlay (gates incl. GATE-SPEC);
+│   │                                ADAPTATION surface; DECISIONS.md (GD register)
 │   └── registry/LAYER_REGISTRY.yaml
 │
 ├── platforms/
 │   ├── hermes/                      PLATFORM A — Hermes AI (MCP-server engine)
-│   │   ├── VERSION
-│   │   ├── CHANGELOG.md
-│   │   ├── README.md
-│   │   └── src/ tests/ ...
+│   │   ├── FRAMEWORK_SPEC_VERSION   Spec version it conforms to
+│   │   └── VERSION · CHANGELOG.md · README.md · src/ · tests/
 │   │
 │   └── claude-code-plugin/          PLATFORM B — Claude Code plugin (native engine)
-│       ├── .claude-plugin/plugin.json
-│       ├── VERSION
-│       ├── CHANGELOG.md
-│       ├── README.md
-│       ├── skills/                  doc-* skill set (the engine)
-│       ├── commands/                slash commands
-│       ├── agents/                  subagents
-│       └── hooks/
+│       ├── .claude-plugin/          plugin.json + marketplace.json
+│       ├── FRAMEWORK_SPEC_VERSION   Spec version it conforms to
+│       └── VERSION · README.md · skills/ · commands/ · agents/
 │
-└── tests/
-    └── conformance/                 Shared suite both platforms must pass
+├── tests/
+│   ├── conformance/                 Shared suite both platforms must pass
+│   └── chg/                         GATE-SPEC diff-aware guard (spec_gate.py)
+│
+└── plans/                           Migration record: per-task plans, DECISIONS.md, HANDOFF.md, …
 ```
 
 ## Legacy → Target Mapping (historical record)

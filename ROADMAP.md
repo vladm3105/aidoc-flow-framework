@@ -3,10 +3,10 @@
 | Field            | Value                                                        |
 |------------------|--------------------------------------------------------------|
 | Project          | AI Doc Flow Framework (multi-platform)                       |
-| Status           | **Migration complete** — Phase 5 done (`v1.0.0`); new project ready to replace `main` |
-| Working branch   | `claude/multi-platform-migration-AamWB`                      |
-| Origin           | Forked from `main` (`ucx_framework` v0.20.4)                 |
-| Cutover target   | v1.0.0 — new project replaces `main`                         |
+| Status           | **Migration complete** (cutover shipped as `v1.0.0`); post-cutover development — latest project release `v1.1.0` |
+| Development      | `main` + short-lived `claude/*` feature branches (the migration branch is merged and deleted) |
+| Origin           | Forked from `ucx_framework` v0.20.4 (preserved on `legacy-ucx-v3.2-read-only`) |
+| Cutover          | `v1.0.0` — done; `main` is the multi-platform project        |
 | Created          | 2026-05-18                                                   |
 
 ## Goal
@@ -97,6 +97,25 @@ Change Management for the full policy.
 |------|---------------------|---------|
 | ~~**CHG-D1 — CHG implementation model**~~ ✅ **DONE (2026-05-23, D-0020)** | CHG implemented as **skills + CI/CD**, both platforms, against the shared spec. Added **GATE-SPEC**, the *meta* gate governing `framework/` spec changes (orthogonal to the artifact gates). Record-level checks (E001–E004) run in the plugin `gate-check`/`doc-chg` skills and the Hermes `validation/chg_rules.py`; diff-aware checks (E005 VERSION bump, E008 CHANGELOG) ship as `tests/chg/spec_gate.py` + a staged CI workflow; static checks (E006 spec-version match, E007 suite green) are the conformance suite; the human sign-off (E004) is GitHub branch protection / required reviewers — a skill never self-approves. Unblocks `knowledge-extractor` spec promotion. | Done |
 | ~~**CHG-D2 — CHG as a `framework/` decision**~~ ✅ **DONE (2026-05-23)** | Established `framework/governance/DECISIONS.md` — the spec's own durable decision register — and recorded CHG-D1 there as **GD-01** (engine-agnostic). The migration log's spec-affecting decisions now graduate here; D-0013 + D-0019 are listed pending. Recording it was itself a GATE-SPEC change (framework spec 0.3.0 → 0.3.1). | Done |
+
+## Post-v1.0 — Shipped
+
+Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
+0.3.1`):
+
+- **Canonical plugin skill set** — the corpus was pruned/recreated to one
+  standard (P3-T6/T7) and grew to **54 skills** with the CHG family,
+  `gate-check`, `project-adopt`, `project-profile`, and `knowledge-extractor`.
+- **Project adaptation overlay** (ADAPT, D-0019) — `framework/governance/
+  ADAPTATION.md` + `ADAPTATION_SURFACE.yaml` (a closed knob set) and the
+  `project-profile` / `knowledge-extractor` skills.
+- **Change management returned** (CHG-D1/D2 above) — **GATE-SPEC**, the
+  framework-spec change gate, enforced by skills + CI + branch protection;
+  recorded as **GD-01** in `framework/governance/DECISIONS.md`.
+- **Pre-commit + security tooling** — `.pre-commit-config.yaml` (ruff, bandit,
+  markdownlint, yamllint, detect-secrets, pip-audit, conformance) and CI
+  workflows for pre-commit, **CodeQL**, and the GATE-SPEC gate; `SECURITY.md`;
+  refreshed `.github/` metadata (CODEOWNERS, dependabot, labeler — INFRA-1).
 
 ## Post-v1.0 — Planned Capabilities
 

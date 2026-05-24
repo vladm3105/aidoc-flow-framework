@@ -5,11 +5,12 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of `v1.0.0` / `hermes/v0.1.1` /
-> `claude-code-plugin/v0.2.0` (2026-05-23; both platforms on the
-> 8-layer model; plugin skill set revised to the canonical 46 —
-> task P3-T6). Updates land when a platform ships a structurally
-> different capability, not per-PR.
+> Status: as of project `v1.1.0` / `hermes/v0.1.1` /
+> `claude-code-plugin/v0.2.0` (2026-05-24; both platforms on the
+> 8-layer model; plugin skill set is the canonical **54** — the P3-T6
+> base plus the CHG family + `gate-check` + `project-adopt` (P3-T7) and
+> `project-profile` + `knowledge-extractor` (ADAPT)). Updates land when
+> a platform ships a structurally different capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
