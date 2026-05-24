@@ -1,5 +1,17 @@
 # Session Handoff
 
+> **🔵 FRWK-REVIEW PR-2 READY — THRESHOLD de-bloat (2026-05-24).** PR #12
+> (Batches 1+2) **merged** to `main` (spec `0.4.0`). Batch 3 implemented on
+> branch **`claude/framework-review-threshold`** (pushed, cut from updated
+> `main`): `THRESHOLD_NAMING_RULES.md` trimmed 909 → 734 — financial examples
+> genericized in place; off-charter runtime/ops machinery removed (§8 Environment
+> Override Rules + §12 propagation-SLA/approver-matrix); stale "UCX Flow Team"
+> provenance replaced. Safety gate passed (no programmatic consumer; refs are doc
+> links). Spec **`0.4.0 → 0.5.0`** (minor + CHANGELOG deprecation note) + both FSV
+>
+> + 54 skills. Conformance **46**; `spec_gate` green. #13 found N/A for this file.
+> **Next:** open PR-2 (awaiting user OK). That closes the FRWK-REVIEW plan.
+>
 > **🔵 FRWK-REVIEW PR-1 READY — framework pre-production audit fixes (2026-05-24).**
 > Branch **`claude/framework-review-fixes`** (pushed; 9 commits ahead of `main`).
 > Plan: `plans/FRAMEWORK-REVIEW-FIXES-PLAN.md` (13 findings, decisions D1–D6,

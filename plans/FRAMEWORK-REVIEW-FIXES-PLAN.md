@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | FRWK-REVIEW                    |
 | Depends on | GATE-SPEC / CHG-D1 (D-0020); framework spec `0.3.2` |
-| Status     | IN PROGRESS — Batches 1+2 implemented (PR-1, spec `0.4.0`); Batch 3 (PR-2) pending PR-1 merge |
+| Status     | IN PROGRESS — Batches 1+2 merged (PR #12, spec `0.4.0`); Batch 3 implemented (spec `0.5.0`, branch `claude/framework-review-threshold`), PR-2 pending |
 | Feeds      | a cleaner, security-hardened `framework/` spec; possible `framework/v0.4.0` |
 
 ## Objective
@@ -238,3 +238,26 @@ post-mortem SLA value is identical across the CHG docs (catches #3).
   passes vs `origin/main`; framework `0.3.2 → 0.4.0` with both FSV + 54 skills
   rippled + CHANGELOG.
 - **Pending:** open PR-1; then Batch 3 (PR-2) cut from `main` after PR-1 merges.
+
+### Batch 3 — 2026-05-24 (PR #12 merged; branch `claude/framework-review-threshold`, PR-2)
+
+- **PR #12 (Batches 1+2) merged** to `main`; spec is `0.4.0`. Batch 3 branch cut
+  from updated `main` per step 5 / R7.
+- **#12 THRESHOLD de-bloat landed:** `THRESHOLD_NAMING_RULES.md` 909 → 734 lines.
+  Genericized the financial examples (KYC tiers, B2B/B2C, AML/CTR/SAR, USD →
+  neutral `quota`/tier placeholders) **in place**; **removed** the off-charter
+  runtime/ops machinery — §8 Environment Override Rules (permission matrix, prod
+  workflow, env scaling) and §12's config-propagation SLAs + approver-role matrix;
+  condensed the duplicated §1.3.3 per-layer usage examples (now point to §6);
+  replaced the stale "UCX Flow Team"/2025-12-16 provenance with a neutral note.
+- **Safety gate (R3) passed:** grepped both platforms — no code parses the file;
+  all references are documentation links (plus a separate vendored Hermes copy
+  that is independent). Nothing flagged for relocation.
+- **#13 N/A here:** the `total_sections` / `P0-P1` tokens that finding named do
+  **not** appear in this file (it targeted a different doc); the alert-severity
+  vocabulary in the trimmed file is already consistent (`info/warning/critical/
+  emergency`). No change forced.
+- **Bump:** spec `0.4.0 → 0.5.0` (minor, per D3/D5) + both FSV + 54 skills +
+  CHANGELOG with a deprecation note for the removed runtime/override policy.
+  **Verification:** conformance 46/46; `spec_gate` green vs `origin/main`;
+  versions aligned at `0.5.0`. **Pending:** open PR-2.
