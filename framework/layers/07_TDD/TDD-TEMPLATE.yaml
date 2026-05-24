@@ -22,6 +22,13 @@ metadata:
       ownership belongs to the Code layer, referenced by IPLAN.
     value: none
 
+  id_standard:
+    _guidance: |
+      Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
+      document DOC-NN, element DOC.NN.SS.xxxx. TDD validates a single SPEC
+      *component*, so its @spec ref is document-level (SPEC-NN) by design;
+      traces to specific upstream elements (@adr/@bdd) use the element form.
+
 # =============================================================================
 # Section 1: Document Control
 # =============================================================================

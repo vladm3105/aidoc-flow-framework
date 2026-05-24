@@ -48,6 +48,21 @@ metadata:
       - "@diagram: c4-l3"
       - "@diagram: dfd-l3"
 
+  id_standard:
+    _guidance: |
+      Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
+        document  DOC-NN          (e.g. SPEC-01) — references a whole artifact
+        element   DOC.NN.SS.xxxx  (e.g. ADR.01.03.a1b2) — references one element
+      Section-8 upstream traces reference ELEMENTS → use the element form (as in
+      layers 1-5). The document's own id (@spec: SPEC-NN) uses the document form.
+
+_antipatterns:
+  - "FAIL: embedding C4-L4 code/class diagrams — belongs in the Code layer, not SPEC"
+  - "FAIL: restating ADR decisions instead of specifying component contracts"
+  - "FAIL: SQL/ORM schemas in data_models — define typed contracts, not storage"
+  - "FAIL: documenting one interface when the component exports several — list all"
+  - "FAIL: document-level upstream traces (ADR-NN) where an element (ADR.NN.SS.xxxx) is meant"
+
 # =============================================================================
 # Section 1: Document Control
 # =============================================================================
@@ -69,6 +84,13 @@ component_overview:
     in the system architecture (from ADR decisions).
   description: "[Component purpose and role]"
   architecture_decision: "@adr: ADR-NN"
+  diagram:
+    _guidance: "C4-L3 component diagram (Mermaid). Show components + interfaces, not code."
+    tags: ["@diagram: c4-l3", "@diagram: dfd-l3"]
+    mermaid: |
+      flowchart LR
+        Caller --> Component
+        Component --> Dependency
   language: "[Python | TypeScript | Go | Java | ...]"
   dependencies:
     - name: "[Dependency Package]"
@@ -82,6 +104,8 @@ interfaces:
   _guidance: |
     Define the public API of this component: classes, functions, method signatures.
     Use type annotations. No implementation — this is the contract.
+    List EVERY public export (don't stop at one); for a versioned interface, note
+    the version and its backward-compatibility contract.
   exports:
     - name: "[ClassName | function_name]"
       type: "[class | function | async function]"
