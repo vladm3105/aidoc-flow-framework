@@ -89,8 +89,8 @@ Change Management for the full policy.
 
 | TODO | Decision (recorded) | Revisit |
 |------|---------------------|---------|
-| **CHG-D1 — CHG implementation model** | CHG is implemented as **skills + CI/CD**, not a monolith. Skills handle authoring and the automatable gate checks (schema, upstream tags, traceability, gate report + `GATE_APPROVAL_FORM`). CI/CD enforces the gate as a required status check; the human sign-off half is enforced by GitHub branch protection / required reviewers — a skill must never self-approve. Implemented twice against the same `framework/` spec: skills + CI workflow in the Claude Code plugin, server-side in Hermes. | Post-Phase 5 |
-| **CHG-D2 — CHG as a `framework/` decision** | Record CHG-D1 as a formal decision in `framework/governance/` when CHG returns, since both platforms implement it from the shared spec. | Post-Phase 5 |
+| ~~**CHG-D1 — CHG implementation model**~~ ✅ **DONE (2026-05-23, D-0020)** | CHG implemented as **skills + CI/CD**, both platforms, against the shared spec. Added **GATE-SPEC**, the *meta* gate governing `framework/` spec changes (orthogonal to the artifact gates). Record-level checks (E001–E004) run in the plugin `gate-check`/`doc-chg` skills and the Hermes `validation/chg_rules.py`; diff-aware checks (E005 VERSION bump, E008 CHANGELOG) ship as `tests/chg/spec_gate.py` + a staged CI workflow; static checks (E006 spec-version match, E007 suite green) are the conformance suite; the human sign-off (E004) is GitHub branch protection / required reviewers — a skill never self-approves. Unblocks `knowledge-extractor` spec promotion. | Done |
+| ~~**CHG-D2 — CHG as a `framework/` decision**~~ ✅ **DONE (2026-05-23)** | Established `framework/governance/DECISIONS.md` — the spec's own durable decision register — and recorded CHG-D1 there as **GD-01** (engine-agnostic). The migration log's spec-affecting decisions now graduate here; D-0013 + D-0019 are listed pending. Recording it was itself a GATE-SPEC change (framework spec 0.3.0 → 0.3.1). | Done |
 
 ## Post-v1.0 — Planned Capabilities
 

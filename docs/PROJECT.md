@@ -100,21 +100,26 @@ Post-migration, the gated CHG process returns in two roles:
 Per-platform internal development continues under ordinary SemVer + changelog
 + PR review — the gated process is not applied to a platform's own commits.
 
-### CHG implementation model (TODO — tracked as ROADMAP CHG-D1)
+### CHG implementation model (implemented — CHG-D1, D-0020)
 
-> Not built during migration. Recorded here to revisit post-Phase 5.
-
-CHG is implemented as **skills + CI/CD**, split by responsibility:
+CHG is implemented as **skills + CI/CD**, split by responsibility. The
+spec-governance half landed first: **GATE-SPEC**, the *meta* gate governing
+changes to the `framework/` spec itself (orthogonal to the artifact-cascade
+gates) — see `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`.
 
 - **Skills** — authoring (CHG document, impact assessment, cascading layer
-  edits) and the *automatable* gate checks (schema validity, upstream tags,
-  traceability, `GATE_APPROVAL_FORM` preparation, pass/fail gate report).
-- **CI/CD** — runs the gate-validator skill on every PR as a required status
-  check; blocks merge on failure.
+  edits) and the *automatable* record-level checks. For GATE-SPEC: `gate-check`
+  runs E001–E004 (provenance, `semver_impact` + major⇒C3, never-C1, C3 approval
+  prep) and the `doc-chg` family routes `change_source: spec` to it.
+- **CI/CD** — runs the automatable checks on every PR as a required status
+  check. For GATE-SPEC: `tests/chg/spec_gate.py` enforces the diff-aware E005
+  (VERSION bump) + E008 (CHANGELOG), and the conformance suite enforces E006
+  (spec-version match) + E007 (suite green).
 - **Repo settings** — the *human* gate (e.g. C3 board sign-off) is enforced by
-  GitHub branch protection / required reviewers. A skill prepares and verifies
-  the approval form but is never the authority that grants approval.
+  branch protection / required reviewers on `framework/**`. A skill prepares and
+  verifies the approval form but is never the authority that grants approval.
 
-Implemented twice against the same `framework/` spec — skills + CI workflow in
-the Claude Code plugin, server-side in Hermes — validated by the shared
-conformance suite.
+Implemented twice against the same `framework/` spec — the Claude Code plugin
+(skills + a staged CI workflow) and Hermes (server-side `validation/chg_rules.py`)
+— validated by the shared conformance suite. The remaining follow-up is **CHG-D2**
+(record this as a formal `framework/governance/` decision).

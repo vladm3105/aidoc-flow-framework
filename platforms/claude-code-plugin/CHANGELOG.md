@@ -14,6 +14,44 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+- **CHG change-management skills + onboarding/gate utilities (task P3-T7)** —
+  six new skills, bringing the set to **52**:
+  - `doc-chg` family (base + `-autopilot` + `-audit` + `-fixer`) — author and
+    validate change records against the framework CHG overlay
+    (`framework/governance/chg/`): change-level classification (C1–C3/Emergency),
+    source→gate routing, and cross-layer cascade impact. CHG uses gate approval,
+    not a ≥90 readiness score.
+  - `gate-check` — run the CHG approval gate (GATE-01/03/06/08/CODE) for a
+    change's affected layers and prepare `GATE_APPROVAL_FORM`; the skill prepares
+    and verifies, a human approves.
+  - `project-adopt` — adopt SDD into an existing (brownfield) codebase, the
+    counterpart to the greenfield `project-init`.
+  Wired into `doc-flow`, `skill-recommender`, the plugin README inventory, and
+  the conformance lint's enforced scope.
+
+### Changed
+- **Skill set revised to the canonical 46** and recreated to a single standard
+  (`docs/SKILL_AUTHORING.md`), task `../../plans/P3-T6-PLAN.md`. The set is now
+  the 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) each in 4
+  variants — base, `-autopilot`, `-audit`, `-fixer` — plus 14 utilities. Every
+  retained `SKILL.md` was regenerated lean and consistent: `version` now
+  defaults to the plugin version (`0.2.0`) with `framework_spec_version`
+  recorded; `## Version History` footers dropped (history lives here + in git);
+  `mermaid-gen` references repointed to `charts-flow`; cross-references limited
+  to the canonical set. `agents/README.md`, `doc-validator`, and `doc-review`
+  repointed their `-reviewer`/`-validator` references to the unified `-audit`.
+
+### Removed
+- Stale skill families not in the 8-layer contract (`framework/registry/LAYER_REGISTRY.yaml`),
+  reversing the D-0015 retention: SPEC-subtype (`doc-cspec/dspec/uxspec/riskspec/procspec`,
+  25) — subsumed by SPEC (L6); test-type (`doc-utest/itest/ftest/ptest/stest/sectest`,
+  36) — folded into TDD (L7); deprecated `-reviewer`/`-validator` variants (14) —
+  merged into `-audit`; legacy utilities `contract-tester`, `test-automation`,
+  `mermaid-gen` (3); 16 loose `*.md` helper files at the `skills/` root; and the
+  orphaned `doc-flow/SHARED_CONTENT.md` (a plugin-local standards copy superseded
+  by `framework/`, per D-0013). Plugin skill count 124 → 46.
+
 ## [0.2.0] — 2026-05-23
 
 ### Added

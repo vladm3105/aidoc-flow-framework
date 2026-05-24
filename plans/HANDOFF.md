@@ -1,5 +1,113 @@
 # Session Handoff
 
+> **✅ CHG-D2 COMPLETE — framework governance decision register (2026-05-23).**
+> Established `framework/governance/DECISIONS.md` — the spec's own durable home
+> for decisions about the spec + its governance — and recorded the CHG
+> implementation model (CHG-D1) there as **GD-01** (engine-agnostic). The
+> migration log's spec-affecting decisions now graduate here; D-0013 + D-0019 are
+> listed pending. Recording it was itself a GATE-SPEC change — the **first real
+> exercise of the gate** (framework spec **0.3.0 → 0.3.1**; + both FSV + 54
+> skills). Conformance **43** (DECISIONS.md folded into the existing governance
+> file-set checks; its content passes the engine-token hygiene scan);
+> `plm_lint` clean; `spec_gate` passes vs origin/main. ROADMAP CHG-D1 **and**
+> CHG-D2 are now done. **Branch: `claude/skill-revision`** (PR #2 → `main`,
+> clean fast-forward). **Workflows now active** — the user granted the GitHub App
+> the `workflows` permission, so `.github/workflows/**` is pushable from the
+> container. Fixed the stale **Plugin smoke-checks** guard in place (skill count
+> `-lt 100`/~142 → `-lt 40`/~54) and **activated `chg-gate.yml`** (the GATE-SPEC
+> CI workflow, `pull_request`-scoped); `plans/workflows-pending/` is drained.
+> **Remaining user-only:** branch protection / required reviewers on
+> `framework/**` (the human-approval half of GATE-SPEC); push the 0.3.x tags from
+> a local clone.
+
+> **✅ CHG-D1 COMPLETE — GATE-SPEC, the framework-spec change gate (2026-05-23).**
+> ROADMAP CHG-D1 done (D-0020, plan `plans/CHG-D1-PLAN.md`): change management as
+> **skills + CI/CD, both platforms**. Added **GATE-SPEC** — the *meta* gate
+> governing changes to the `framework/` spec itself (templates/governance/
+> registry/VERSION), orthogonal to the artifact-cascade gates. Five increments:
+> (1) shared spec — `GATE-SPEC_FRAMEWORK.md` + `spec` change_source +
+> `semver_impact` + error-catalog/diagram/CHG-template/README wiring + a
+> conformance guard; (2) plugin skills — `gate-check` runs it, `doc-chg` family
+> routes to it, `knowledge-extractor` **unblocked** (spec promotion now routes to
+> a real CHG record + GATE-SPEC); (3) CI — `tests/chg/spec_gate.py` (diff-aware
+> E005/E008) + staged `plans/workflows-pending/chg-gate.yml`; (4) Hermes
+> server-side — `validation/chg_rules.py` + 5 unit tests; (5) close. Three-way
+> enforcer split: record validator (E001–E004) · CI (E005–E008) · protected-branch
+> review (human E004); **a skill never self-approves**. Framework spec **0.2.0 →
+> 0.3.0** (+ both FSV + 54 skills). Conformance **38 → 43**; Hermes CHG 8/8 (full
+> validation suite green bar pre-existing `mcp`-SDK-missing collection errors);
+> `plm_lint` clean. **Branch: `claude/skill-revision`.** **Follow-up: CHG-D2**
+> (record CHG-D1 as a formal `framework/governance/` decision — now actionable).
+> **User-only:** relocate `chg-gate.yml` → `.github/workflows/`; set branch
+> protection on `framework/**` (the human-approval half); push the 0.3.0 tags.
+
+> **✅ ADAPT COMPLETE — adaptation surface + knowledge extractor (2026-05-23).** New feature:
+> project adaptation overlay + knowledge extractor (plan `plans/ADAPT-PLAN.md`,
+> hardened Pass 1–4; design recorded D-0019). **Increment 1 (this commit):** the
+> engine-agnostic surface spec `framework/governance/ADAPTATION.md` + the
+> machine-readable `ADAPTATION_SURFACE.yaml` (closed 4-knob registry —
+> `active_layers`, `section_toggles`, `audit_threshold` raise-only, `glossary`;
+> `id_format` deferred; skippable layers `[BDD, ADR]` + cascade rule). Registered
+> in `governance/README.md` + the governance conformance contract (+1 test).
+> Conformance **33/33**. **Increment 2 done:** `adapts:` frontmatter +
+> `## Adaptation` consult-clause wired into the **35-skill adapting set** (layer
+> base/autopilot/audit/fixer ×8 + `trace-check` + `project-init`/`-adopt`) via
+> `/tmp/wire_adapts.py`; new `tests/conformance/platforms/test_adaptation.py`
+> asserts `adapts ⊆ surface` + authority-ref + ≥35 wired. Conformance **36/36**,
+> `plm_lint --all` clean. **Increments 3+4 done:** new **`project-profile`**
+> utility skill (creates/maintains `.aidoc/profile.yaml`, materializes the
+> user-global seed, validates against the surface); registered everywhere —
+> plugin README (52→**53**, utilities 16→17), `SKILL_AUTHORING` §1 (corrected
+> stale 46→53, added the change-mgmt family + project-adopt/gate-check it had
+> omitted), `skill-recommender` intent map + catalog, `doc-flow` utility list.
+> Conformance **36/36**, `plm_lint` clean, skill count **53**. **ADAPT-B done
+> (functional):** added the **learnings-log** convention to `ADAPTATION.md` (§7,
+> entry shape + best-effort capture + owner-routing) and the **`knowledge-extractor`**
+> skill (manual: read profile+learnings → judge generalizability → classify owner
+> → draft; spec target → CHG draft stamped *blocked on the unbuilt spec-gate*,
+> guidance target → PR-ready description; never applies/approves). Registered
+> everywhere (README 53→**54**, utilities 17→18; `SKILL_AUTHORING`;
+> `skill-recommender` intent+catalog); `project-profile` link restored.
+> **✅ ADAPT COMPLETE — version bumped (feature close):** `framework/VERSION` +
+> both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → **0.2.0**`, and all 54 plugin
+> skills' `framework_spec_version` (user decision = bump everything). Conformance
+> **37/37** (+leakage guard), `plm_lint` clean, skill count **54**. **Branch:
+> `claude/skill-revision`** (user-confirmed). **Deferred follow-up:** the CHG
+> spec-change gate (CHG-D1) — spec→CHG promotions are drafted but ungated until
+> built. **Pending user-only (carry-overs):** push the 0.2.0 spec/release tags
+> from a local clone (in-container `refs/tags/*` 403); decide whether to roll
+> these commits into a plugin release (CHANGELOG `[Unreleased]` not yet cut).
+
+> **✅ NEW SKILLS ADDED — 46 → 52 (2026-05-23, P3-T7).** A post-revision review
+> found framework-backed capabilities with no skill; added 6 (skipping
+> `doc-code`/implement by user choice): the **`doc-chg` family** (base +
+> `-autopilot`/`-audit`/`-fixer`) for the CHG change-management overlay
+> (`framework/governance/chg/`) — change-level classification (C1–C3/Emergency),
+> source→gate routing, cascade impact, `gate_ready` instead of a ≥90 score;
+> **`gate-check`** — runs the CHG approval gates (GATE-01/03/06/08/CODE) and
+> prepares `GATE_APPROVAL_FORM` (human approves, never the skill); and
+> **`project-adopt`** — brownfield counterpart to `project-init`. Wired into
+> `doc-flow`, `skill-recommender`, plugin `README` (52), `CHANGELOG`,
+> `docs/PARITY.md`, and `plm_lint` `MIGRATED`. Conformance **32/32**. Record:
+> `plans/P3-T7-PLAN.md`.
+
+> **✅ SKILL SET REVISED — canonical 46 (2026-05-23, P3-T6).** Pruned the plugin
+> skill corpus **124 → 46** and recreated every survivor to one standard
+> (`platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`): the 8 layer families
+> `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}` × {base, `-autopilot`, `-audit`,
+> `-fixer`} = 32, plus 14 utilities. Removed (reversing D-0015): 25 SPEC-subtype
+> + 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
+> `-reviewer`/`-validator` (merged into `-audit`), 3 legacy utils
+> (contract-tester/test-automation/mermaid-gen), 16 loose `.md`, and the orphaned
+> `doc-flow/SHARED_CONTENT.md` (D-0013). Each skill `version` now defaults to the
+> plugin version (0.2.0) + `framework_spec_version`; Version-History footers
+> dropped; `mermaid-gen`→`charts-flow`; `agents/README` + `doc-validator` +
+> `doc-review` repointed to `-audit`. Conformance **32/32**. Record:
+> `plans/P3-T6-PLAN.md`. **Open:** (1) confirm push branch — working tree is on
+> `claude/skill-revision`, task setup named `claude/multi-platform-migration-AamWB`;
+> (2) consider bumping plugin 0.2.0→0.3.0 given the scope (skills track the
+> plugin version, so they'd follow); (3) the "new skills" idea is still pending.
+
 > **🚀 PLUGIN v0.2.0 RELEASE PREPPED (2026-05-23) — launch-wise, in-container half.**
 > Cut the Claude Code plugin's first post-migration release: `VERSION` +
 > `plugin.json` bumped `0.1.0 → 0.2.0`; CHANGELOG `[Unreleased]` → `[0.2.0] —
@@ -51,9 +159,9 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
 | Last updated  | 2026-05-23T00:00:00Z                       |
-| Working branch| `claude/multi-platform-migration-AamWB`    |
-| Current phase | Migration + PLM complete; **plugin v0.2.0 release prepped** (124 skills, 9 agents; marketplace install; conformance 32/32) |
-| Next task     | **None in-container.** User-only launch steps remain: merge branch → `main`; push tag `claude-code-plugin/v0.2.0`; relocate CI. See "Independent pending user actions". |
+| Working branch| `claude/skill-revision` (user-confirmed)   |
+| Current phase | Post-migration features on `claude/skill-revision`: **ADAPT** (D-0019), **CHG-D1 / GATE-SPEC** (D-0020), **CHG-D2** (GD-01) all complete. Framework spec **0.3.1**; 54 skills; conformance **43**; `plm_lint` clean. |
+| Next task     | **None in-container** — the CHG ROADMAP items are done. **User-only:** relocate `plans/workflows-pending/*.yml` → `.github/workflows/`; branch protection on `framework/**` (the human-approval half of GATE-SPEC); push `framework/v0.3.1` + release tags from a local clone. |
 
 ## Progress
 

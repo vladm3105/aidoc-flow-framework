@@ -43,7 +43,7 @@ Authoring agents and the relevant fixer skills apply corrections.
 Use the native validation skills: `trace-check` (cross-document lineage /
 traceability), `doc-validator` (structure + link/anchor resolution),
 `doc-naming` (ID and threshold naming), `quality-advisor` (readiness scoring),
-and the per-type `*-validator` skills.
+and the per-layer `doc-*-audit` skills.
 
 ## What You Audit
 

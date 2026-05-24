@@ -6,10 +6,10 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of `v1.0.0` / `hermes/v0.1.1` /
-> `claude-code-plugin/v0.1.0` (2026-05-22; plugin layer-model
-> migration PLM complete — both platforms on the 8-layer model).
-> Updates land when a platform ships a structurally different
-> capability, not per-PR.
+> `claude-code-plugin/v0.2.0` (2026-05-23; both platforms on the
+> 8-layer model; plugin skill set revised to the canonical 46 —
+> task P3-T6). Updates land when a platform ships a structurally
+> different capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
@@ -19,14 +19,17 @@ framework specification at [`../framework/`](../framework/).
 
 | # | Layer | Hermes | Plugin |
 |---|-------|--------|--------|
-| 1 | BRD | `sdd_*` tools (generic) | `doc-brd` + `-audit` + `-autopilot` + `-fixer` + `-reviewer` |
-| 2 | PRD | `sdd_*` tools (generic) | `doc-prd` + 5 variants |
-| 3 | EARS | `sdd_*` tools (generic) | `doc-ears` + 5 variants |
-| 4 | BDD | `sdd_*` tools (generic) | `doc-bdd` + 5 variants |
-| 5 | ADR | `sdd_*` tools (generic) | `doc-adr` + 5 variants |
-| 6 | SPEC | `sdd_*` tools (generic) | `doc-spec` + 5 variants |
-| 7 | **TDD** | `sdd_*` tools (generic) | `doc-tdd` + `-audit` + `-autopilot` + `-fixer` + `-reviewer` + `-validator` |
-| 8 | **IPLAN** | `sdd_*` tools (generic) | `doc-iplan` + 5 variants |
+| 1 | BRD | `sdd_*` tools (generic) | `doc-brd` + `-autopilot` + `-audit` + `-fixer` |
+| 2 | PRD | `sdd_*` tools (generic) | `doc-prd` + 3 variants |
+| 3 | EARS | `sdd_*` tools (generic) | `doc-ears` + 3 variants |
+| 4 | BDD | `sdd_*` tools (generic) | `doc-bdd` + 3 variants |
+| 5 | ADR | `sdd_*` tools (generic) | `doc-adr` + 3 variants |
+| 6 | SPEC | `sdd_*` tools (generic) | `doc-spec` + 3 variants |
+| 7 | **TDD** | `sdd_*` tools (generic) | `doc-tdd` + 3 variants |
+| 8 | **IPLAN** | `sdd_*` tools (generic) | `doc-iplan` + 3 variants |
+
+Each plugin layer ships 4 skills: the base authoring skill plus `-autopilot`,
+`-audit`, and `-fixer`.
 
 ## Workflow operations
 
@@ -48,24 +51,39 @@ specifies):
 | `sdd_review` | Review workflow |
 | `sdd_scan` | Project scan |
 
-**Plugin — per-layer skills** (each layer has its own skill bundle):
+**Plugin — per-layer skills** (each of the 8 layers ships a 4-skill bundle):
 
-| Operation | Plugin skills (across 19 layer + subtype families) |
-|-----------|-----------------------------------------------:|
-| Bare skill (authoring rules) | 14 |
-| `-audit` | 19 |
-| `-autopilot` | 19 |
-| `-fixer` | 19 |
-| `-reviewer` | 18 |
-| `-validator` | 18 |
+| Operation | Plugin skills |
+|-----------|--------------:|
+| Bare skill (authoring rules) | 8 |
+| `-autopilot` | 8 |
+| `-audit` | 8 |
+| `-fixer` | 8 |
 
-The 19 plugin layer/subtype families cover **all 8** SDD layers above
-plus SPEC-subtype skills (`doc-cspec`, `doc-dspec`, `doc-uxspec`,
-`doc-riskspec`, `doc-procspec`) and test-subtype skills (`doc-utest`,
-`doc-itest`, `doc-stest`, `doc-ftest`, `doc-ptest`, `doc-sectest`),
-plus orchestrators (`doc-flow`, `doc-naming`, `doc-validator`,
-`doc-review`, `doc-ref`). (Plugin skill count 142 → 125 after PLM-B1
-retired the legacy SYS/REQ/CTR families.)
+The 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) cover all 8
+SDD layers, plus the `doc-chg` change-management family (4 variants — the CHG
+governance overlay) and 18 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
+`doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`,
+`gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`,
+`quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`,
+`knowledge-extractor`) — **54 skills** total. The `-reviewer` and `-validator`
+variants were merged into `-audit`; the former SPEC-subtype and test-type
+families were folded into the unified SPEC (L6) and TDD (L7) skills (task P3-T6,
+reversing D-0015). `project-profile` + `knowledge-extractor` were added in ADAPT
+(D-0019). The CHG family, `gate-check`, and `project-adopt` were added in P3-T7 (see
+`plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`).
+
+## Change management — GATE-SPEC (CHG-D1, both platforms)
+
+Both platforms implement the **GATE-SPEC** framework-spec change gate from the
+shared spec (D-0020), with the same three-way enforcer split:
+
+| Half | Plugin | Hermes |
+|------|--------|--------|
+| Record-level checks (E001–E004) | `gate-check` + `doc-chg` family (skills) | `validation/chg_rules.py` (server-side) |
+| Diff-aware checks (E005, E008) | `tests/chg/spec_gate.py` via the staged CI workflow | same shared script in CI |
+| Static checks (E006, E007) | shared conformance suite | shared conformance suite |
+| Human approval (E004 sign-off) | branch protection on `framework/**` | branch protection on `framework/**` |
 
 ## Platform-specific extras
 
@@ -103,9 +121,8 @@ retired the legacy SYS/REQ/CTR families.)
 - **`save-plan`** slash command (in `commands/`) — captures the
   current conversation plan to a timestamped file.
 - **Per-skill operation granularity** — the plugin user picks the
-  exact operation (audit vs autopilot vs fixer vs reviewer vs
-  validator) as a separate skill invocation; Hermes' generic tools
-  dispatch based on inputs.
+  exact operation (autopilot vs audit vs fixer) as a separate skill
+  invocation; Hermes' generic tools dispatch based on inputs.
 
 ## SDD layer model — both platforms aligned
 
@@ -117,8 +134,10 @@ TSPEC, TASKS…) — was migrated under task **PLM** (`plans/PLM-PLAN.md`):
 `doc-tspec*`→`doc-tdd*`, `doc-tasks*`→`doc-iplan*`, the SYS/REQ/CTR
 families retired, and all layer numbers, element IDs (now 4-segment
 `TYPE.NN.SS.xxxx`), paths, and traceability chains realigned. The
-plugin's SPEC- and test-subtype families are kept as L6/L7
-specialization helpers (decision D-0015). Conformance test
+plugin's former SPEC-subtype and test-type families were subsequently
+folded into the unified SPEC (L6) and TDD (L7) skills, and the corpus
+pruned and recreated to a canonical **46 skills** (task P3-T6,
+reversing D-0015). Conformance test
 `tests/conformance/platforms/test_plm_lint.py` enforces that the plugin
 carries no legacy-model fingerprints, so the alignment cannot regress.
 
@@ -130,7 +149,7 @@ carries no legacy-model fingerprints, so the alignment cannot regress.
 | Native Claude Code experience with slash-commands | **Plugin** |
 | Per-operation skill granularity in your workflow | **Plugin** |
 | Server-side validation as an HTTP / stdio service | **Hermes** |
-| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers + SPEC subtypes + test subtypes) |
+| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers × base/autopilot/audit/fixer) |
 | Internal pytest-style validation of the platform itself | **Hermes** (447 tests) |
 | Documentation-first artifacts via skill bodies | **Plugin** (declarative SKILL.md per operation) |
 

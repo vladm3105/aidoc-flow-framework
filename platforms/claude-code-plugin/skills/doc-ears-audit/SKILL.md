@@ -1,175 +1,129 @@
 ---
 name: doc-ears-audit
-description: Unified EARS audit wrapper that runs validator then reviewer and produces a combined report for fixer consumption
-
+description: Audit an EARS document - run declarative structural checks plus content review and produce a combined report for doc-ears-fixer. Use for EARS quality gating before BDD.
 metadata:
   tags:
     - sdd-workflow
-    - quality-assurance
-    - ears-audit
     - layer-3-artifact
-    - shared-architecture
+    - quality-assurance
   custom_fields:
     layer: 3
     artifact_type: EARS
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [EARS]
-    downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.0"
-    last_updated: "2026-02-26"
-  versioning_policy: "tracks EARS-MVP-TEMPLATE schema_version"
-
+    upstream_artifacts: [BRD, PRD]
+    downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
+    version: "0.2.0"
+    framework_spec_version: "0.3.1"
+    last_updated: "2026-05-23"
+    adapts: [section_toggles, active_layers, audit_threshold]
 ---
 
 # doc-ears-audit
 
 ## Purpose
 
-Run a **single EARS audit workflow** that executes:
+Run a **unified EARS audit** — declarative structural checks plus content-quality
+review — in one pass, producing a single combined report that
+`../doc-ears-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+EARS using the spec as the contract.
 
-1. `doc-ears-validator` (structural/schema gate)
-2. `doc-ears-reviewer` (semantic/content quality gate)
-
-Then emit one **combined report** optimized for `doc-ears-fixer` input.
-
-**Layer**: 3 (EARS Quality Gate Wrapper)
-
-**Upstream**: EARS file(s)
-
-**Downstream**:
-- Combined Audit Report: `EARS-NN.A_audit_report_vNNN.md`
-- Optional Fix Cycle trigger for `doc-ears-fixer`
-
----
-
-## Why This Skill Exists
-
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
-
-| Concern | Owner Skill |
-|---------|-------------|
-| Schema/template compliance | `doc-ears-validator` |
-| Content quality and testability | `doc-ears-reviewer` |
-| Single user-facing audit command | `doc-ears-audit` |
-
----
+**Layer**: 3 (EARS quality gate). **Upstream**: an EARS file. **Downstream**:
+`EARS-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
-Use `doc-ears-audit` when:
-- You want one command for EARS quality checks
-- You need a combined report for `doc-ears-fixer`
-- You are running QA before BDD generation
+Use after an EARS exists and before generating the BDD, or inside the autopilot's
+audit↔fix cycle. Do **not** use to create an EARS (use `../doc-ears/SKILL.md` or
+`../doc-ears-autopilot/SKILL.md`).
 
-Do NOT use when:
-- EARS does not exist (use `doc-ears` / `doc-ears-autopilot` generation first)
-- You only need one specific check domain (use validator or reviewer directly)
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the BDD-Ready score independently each run.
 
----
+**Report cleanup:** after writing the new report, delete superseded
+`EARS-NN.A_audit_report_v*.md`; keep `EARS-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
 ## Execution Contract
 
-### Input
-- EARS path (`docs/03_EARS/EARS-NN_*/...`)
-- Optional: threshold (default review threshold: 90)
+**Input:** EARS path (`docs/03_EARS/EARS-NN_*/...`); optional score threshold
+(default 90).
 
-### Sequence (Mandatory)
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write `EARS-NN.A_audit_report_vNNN.md`
+→ 6) if auto-fixable findings exist, hand off to `doc-ears-fixer`.
 
-```text
-1) Run doc-ears-validator
-2) Run doc-ears-reviewer
-3) Normalize and merge findings
-4) Write EARS-NN.A_audit_report_vNNN.md
-5) If auto-fixable findings exist, hand off to doc-ears-fixer
-```
+## Structural Checklist
 
-### Combined Status Rules
+Authority: `framework/layers/03_EARS/README.md`,
+`framework/layers/03_EARS/EARS-TEMPLATE.yaml` (embedded rules), and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
-- `PASS`: Validator PASS AND Reviewer score >= threshold AND no blocking issues
-- `FAIL`: Validator FAIL OR Reviewer score < threshold OR blocking/manual-required issues present
+**Tier 1 — blocking (error):**
 
----
+| Check | Verifies |
+|-------|----------|
+| Element ID format | every ID matches `EARS.NN.SS.xxxx` (4-hex hash) |
+| Structure | all 5 template sections present and non-empty |
+| EARS syntax | every requirement has a trigger (WHEN/IF/WHILE) + `THE … SHALL`; statements atomic |
+| Quantifiable constraints | timing uses p50/p95/p99; no vague terms ("fast", "real-time") |
+| Quality gate | BDD-Ready score ≥ threshold (default 90) |
 
-## Combined Report Format (for doc-ears-fixer)
+**Tier 2 — advisory (warning):** frontmatter metadata (below); single `@prd:` in
+Document Control; cumulative `@brd`/`@prd` tags pipe-separated, no ranges,
+correct prefixes; `@threshold:` tags well-formed; internal links and
+template/governance references resolve; no downstream numbers cited before they
+exist; diagram tags present where state/sequence diagrams apply (use
+`../charts-flow/SKILL.md`).
 
-Output file: `EARS-NN.A_audit_report_vNNN.md`
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-Required sections:
+## Metadata Checks
 
-1. `## Summary`
-   - EARS ID, timestamp (EST), overall status
-   - Validator status, reviewer score
-2. `## Score Calculation (Deduction-Based)`
-   - Formula: `100 - total_deductions`
-   - Threshold comparison (`>=90` pass gate)
-3. `## Validator Findings`
-   - List by severity/code
-4. `## Reviewer Findings`
-   - List by severity/code
-5. `## Coverage Findings`
-   - EARS syntax compliance summary
-   - Threshold quantification coverage summary
-   - Traceability/tag coverage summary
-6. `## Fix Queue for doc-ears-fixer`
-   - `auto_fixable`
-   - `manual_required`
-   - `blocked`
-7. `## Recommended Next Step`
-   - `run doc-ears-fixer`
-   - or `manual update required`
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `ears-document` (not `template`) |
+| `artifact_type` | yes | `EARS` |
+| `layer` | yes | `3` |
+| `deliverable_type` | yes | `code`, `document`, `ux`, `risk`, `process` |
 
-### Fix Queue Normalization
+Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
+`VALID-M003` `document_type` not `ears-document`.
 
-Each finding MUST include:
-- `source`: `validator` | `reviewer`
-- `code`: issue code
-- `severity`: `error|warning|info`
-- `file`: relative path
-- `section`: heading/anchor if known
-- `action_hint`: short imperative guidance
-- `confidence`: `high|medium|manual-required`
+## Combined Report Format
 
----
+Output: `EARS-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** (EARS syntax, atomicity, threshold
+coverage) · **Traceability/Tag Findings** · **Fix Queue** (`auto_fixable` /
+`manual_required` / `blocked`) · **Recommended Next Step** · **Cleanup Summary**.
 
-## Hand-off Contract to doc-ears-fixer
+## Hand-off to doc-ears-fixer
 
-`doc-ears-fixer` MUST accept combined audit report as equivalent upstream input:
-- `EARS-NN.A_audit_report_vNNN.md` (preferred)
-- `EARS-NN.R_review_report_vNNN.md` (legacy compatibility)
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-ears-fixer`
+consumes the latest `EARS-NN.A_audit_report_vNNN.md`.
 
-Precedence rule:
-1. Select newest timestamp.
-2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
 
----
+## Adaptation
 
-## Example Invocation
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (a toggled-off **optional** section is not a finding; a
+missing **required** section still is), `active_layers` (never flag the
+absence of — or a missing reference to — a layer the project disabled, per the
+cascade rule), and `audit_threshold` (use the project's quality-gate score
+only when it is **>=** the framework default; ignore any lower value). Ignore
+unknown keys.
+Authority: `framework/governance/ADAPTATION.md`.
 
-```bash
-/doc-ears-audit docs/03_EARS/EARS-01_f1_iam/EARS-01_f1_iam.md
-```
+## Related Resources
 
-Expected outcome:
-1. validator runs
-2. reviewer runs
-3. combined audit report generated
-4. fixer can execute directly from combined report
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.0 | 2026-02-26 | Initial EARS audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Create: `../doc-ears/SKILL.md` · Fix: `../doc-ears-fixer/SKILL.md` · Generate:
+  `../doc-ears-autopilot/SKILL.md`
+- Authority: `framework/layers/03_EARS/README.md`,
+  `framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

@@ -1,0 +1,45 @@
+# GATE-SPEC enforcement (CHG-D1) — the CI half of the framework-spec change gate.
+#
+# Runs on pull_request so the whole PR diff (base...HEAD) is the unit of
+# enforcement — a spec change must bump VERSION + CHANGELOG across the PR, not in
+# each incremental commit. The human-approval half (E004 sign-off) is NOT a
+# workflow: configure branch protection / required reviewers on framework/** so a
+# spec change cannot merge without a human. A skill never self-approves.
+name: GATE-SPEC
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate-spec:
+    name: Framework-spec change gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history so the diff-aware guard can reach the base
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install conformance suite dependencies
+        run: pip install -r tests/conformance/requirements.txt
+
+      # E005 (framework/VERSION bumped) + E008 (CHANGELOG updated) — diff-aware.
+      - name: GATE-SPEC diff-aware checks
+        env:
+          GATE_SPEC_BASE: origin/${{ github.base_ref }}
+        run: python tests/chg/spec_gate.py
+
+      # E006 (FRAMEWORK_SPEC_VERSION match) + E007 (suite green) — static.
+      - name: Conformance suite
+        run: python -m unittest discover -s tests/conformance

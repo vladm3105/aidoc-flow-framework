@@ -1,671 +1,209 @@
 ---
 name: doc-prd
-description: Create Product Requirements Documents (PRD) following SDD methodology - Layer 2 artifact defining product features and user needs
+description: Create a Product Requirements Document (PRD) - Layer 2 of the SDD flow, defining product features, personas, success metrics, and acceptance criteria from an upstream BRD. Use after a BRD exists and before EARS.
 metadata:
   tags:
     - sdd-workflow
     - layer-2-artifact
-    - shared-architecture
   custom_fields:
     layer: 2
     artifact_type: PRD
-    architecture_approaches: [ai-agent-based, traditional-8layer]
-    priority: shared
-    development_status: active
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "2.0"
-    last_updated: "2026-05-22"
+    version: "0.2.0"
+    framework_spec_version: "0.3.1"
+    last_updated: "2026-05-23"
+    adapts: [section_toggles, glossary]
 ---
 
 # doc-prd
 
 ## Purpose
 
-Create **Product Requirements Documents (PRD)** - Layer 2 artifact in the SDD workflow that defines product features, user needs, measurable success criteria, and KPIs.
+Create a **Product Requirements Document (PRD)** — Layer 2 of the SDD flow.
+A PRD defines product features, user personas, success metrics, and acceptance
+criteria at the **C4 Container** level — what the product does, not how it is
+built.
 
-**Layer**: 2
+**Layer**: 2 — Container level (product features and functional blocks).
+**Upstream**: BRD (Layer 1).
+**Downstream**: EARS → BDD → ADR → SPEC → TDD → IPLAN → Code.
 
-**Upstream**: BRD (Layer 1)
+Each PRD corresponds to **one BRD iteration cycle** (MVP → PROD → new MVP). New
+scope gets a new PRD (PRD-02, PRD-03) rather than expanding an existing one;
+link cycles with `@depends: PRD-NN`.
 
-**Downstream Artifacts**: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
+## When to Use
+
+Use `doc-prd` when:
+- A BRD exists and you need to define product features and user requirements.
+- Translating business needs into product capabilities, personas, and KPIs.
+- Elaborating BRD §7.2 architecture topics into technical options for ADR.
+
+For end-to-end generation from a BRD, a prompt, or an IPLAN, use
+`../doc-prd-autopilot/SKILL.md`.
 
 ## Prerequisites
 
-### Upstream Artifact Verification (CRITICAL)
-
-**Before creating this document, you MUST:**
-
-1. **List existing upstream artifacts**:
-   ```bash
-   ls docs/01_BRD/ docs/02_PRD/ 2>/dev/null
-   ```
-
-2. **Reference only existing documents** in traceability tags
-3. **Use `null`** only when upstream artifact type genuinely doesn't exist
-4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
-5. **Do NOT create missing upstream artifacts** - skip functionality instead
-
-Before creating a PRD, read:
-
-1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
-2. **Upstream BRD**: Read the BRD that drives this PRD
-  **Note on Sectioned BRDs**: If BRD is split into multiple section files (0-18), read ALL files as ONE logical document. See `PRD-TEMPLATE.yaml` Section 22.
-3. **Template**: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
-4. **PRD README**: `framework/layers/02_PRD/README.md`
-5. **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
-
-## When to Use This Skill
-
-Use `doc-prd` when:
-- Have completed BRD (Layer 1)
-- Need to define product features and user requirements
-- Translating business needs to product specifications
-- Establishing KPIs and success metrics
-- You are at Layer 2 of the SDD workflow
-
-## PRD-Specific Guidance
-
-### 1. Required Sections (21 Total)
-
-PRD documents follow the **MVP template structure** (21 sections). See `framework/layers/02_PRD/PRD-TEMPLATE.yaml` for complete structure.
-
-> **Note**: MVP template is the framework standard. All readiness scores use ≥90% thresholds. Expansion happens through NEW MVP iterations (PRD-02, PRD-03), not template changes.
-
-**Section 1. Document Control** (MANDATORY - First section):
-- Status, Version, Date Created, Last Updated
-- Author, Reviewer, Approver
-- BRD Reference (`@brd: BRD.NN.SS.xxxx`)
-- **SPEC-Ready Score**: >=90% required (format: `XX% (Target: >=90%)`)
-- **EARS-Ready Score**: >=90% required (format: `XX% (Target: >=90%)`)
-- Template Variant (Standard/Agent-Based/Automation-Focused)
-- Document Revision History table
-
-**All 21 Sections (in order)**:
-1. **Document Control**: Metadata, versioning, dual scoring (SPEC-Ready + EARS-Ready >=90%)
-2. **Executive Summary**: Business value and timeline overview (2-3 sentences)
-3. **Problem Statement**: Current state, business impact, opportunity assessment
-4. **Target Audience & User Personas**: Primary users, secondary users, business stakeholders
-5. **Success Metrics (KPIs)**: Primary KPIs, secondary KPIs, success criteria by phase
-6. **Goals & Objectives**: Primary business goals, secondary objectives, stretch goals
-7. **Scope & Requirements**: In scope features, out of scope items, dependencies, assumptions
-8. **User Stories & User Roles**: Role definitions, story summaries (PRD-level only, no EARS/BDD detail)
-9. **Functional Requirements**: User journey mapping, capability requirements
-10. **Customer-Facing Content & Messaging (MANDATORY)**: Product positioning, messaging, user-facing content
-11. **Acceptance Criteria**: Business acceptance, technical acceptance, quality assurance
-12. **Constraints & Assumptions**: Business/technical/external constraints, key assumptions
-13. **Risk Assessment**: High-risk items, risk mitigation plan
-14. **Success Definition**: Go-live criteria, post-launch validation, measurement timeline
-15. **Stakeholders & Communication**: Core team, stakeholders, communication plan
-16. **Implementation Approach**: Development phases, testing strategy
-17. **Budget & Resources**: Development/operational budget, resource requirements
-18. **Traceability**: Upstream sources, downstream artifacts, traceability tags, validation evidence
-19. **References**: Internal documentation, external standards, domain references, technology references
-20. **EARS Enhancement Appendix**: EARS pattern templates and requirement syntax guidance
-21. **Quality Assurance & Testing Strategy**: QA standards, testing strategy
-
-**Critical Notes**:
-- All 21 sections are MANDATORY with explicit numbering (`## N. Title` format)
-- Section 10 (Customer-Facing Content) is blocking - must contain substantive content
-- Section 8 (User Stories) must include layer separation scope note
-- Section 21 (QA & Testing Strategy) moved from BRD as technical QA belongs at product level
-
-### 2. Dual Scoring Requirements
-
-PRD documents require **two quality scores** in Document Control:
-
-| Score | Purpose | Threshold |
-|-------|---------|-----------|
-| **SPEC-Ready Score** | Readiness for downstream SPEC creation (Layer 6) | >=90% |
-| **EARS-Ready Score** | Readiness for EARS creation | >=90% |
-
-**Format**: `XX% (Target: >=90%)`
-
-**SPEC-Ready Scoring Criteria (100%)**:
-- Product Requirements Completeness (40%): All 21 sections, measurable KPIs, acceptance criteria, stakeholder analysis
-- Technical Readiness (30%): System boundaries, quality attributes quantified, Architecture Decision Requirements
-- Business Alignment (20%): ROI validated, market analysis, success metrics, risk mitigation
-- Traceability (10%): Upstream BRD references, downstream links
-
-**EARS-Ready Scoring Criteria (100%)**:
-- Business Requirements Clarity (40%): SMART objectives, functional requirements, acceptance criteria
-- Requirements Maturity (35%): System boundaries, stakeholder requirements, problem statement
-- EARS Translation Readiness (20%): User journeys, quality attributes quantified
-- Strategic Alignment (5%): Domain-specific business logic references
-
-### 3. Template Variant Selection
-
-| Variant | Sections | Use Case |
-|---------|----------|----------|
-| **Standard** | 1-21 (21) | Business features, core platform (DEFAULT) |
-| **Agent-Based** | 1-15 (15) | ML/AI agents, intelligent systems |
-| **Automation-Focused** | 1-12 (12) | n8n workflows, event processing |
-
-**Selection Criteria**:
-1. ML/AI agent? -> Agent-Based
-2. n8n workflow/automation? -> Automation-Focused
-3. Otherwise -> Standard (default)
-
-### 4. User Stories Scope (Section 8)
-
-**Layer Separation Principle**:
-- **PRD (Layer 2)**: User role definitions, story summaries, product-level acceptance criteria
-- **EARS (Layer 3)**: Detailed behavioral scenarios (WHEN-THE-SHALL-WITHIN format)
-- **BDD (Layer 4)**: Executable test scenarios (Given-When-Then format)
-
-**MANDATORY Scope Note** (include in Section 8):
-> This section provides role definitions and story summaries. Detailed behavioral requirements are captured in EARS; executable test specifications are in BDD feature files.
-
-**User Story Format**: "As a [role], I want [capability] so that [benefit]"
-
-**PRD-Level Content (INCLUDE)**:
-- User role definitions (personas)
-- Story titles and summaries (2-3 sentences max)
-- Product-level acceptance criteria
-- Business value justification
-
-**NOT PRD-Level (EXCLUDE)**:
-- EARS-level specifications -> Layer 3
-- BDD-level test scenarios -> Layer 4
-- Component contracts / implementation details -> SPEC (Layer 6) / TDD (Layer 7)
-- System architecture decisions -> ADR (Layer 5)
-
-### 5. Customer-Facing Content (Section 10) - MANDATORY
-
-**Status**: BLOCKING - error if missing or placeholder-only
-
-**Required Content Categories** (minimum 3):
-1. Product positioning statements
-2. Key messaging themes
-3. Feature descriptions for marketing
-4. User-facing documentation requirements
-5. Help text and tooltips
-6. Error messages (user-visible)
-7. Success confirmations
-8. Onboarding content
-9. Release notes template
-
-### 6. Architecture Decision Requirements (Section 18)
-
-**Purpose**: Elaborate BRD Section 7.2 topics with **technical content** (options, criteria).
-
-**Layer Separation**:
-```
-BRD Section 7.2          ->    PRD Section 18         ->    ADR
-(WHAT & WHY)                   (HOW to evaluate)           (Final decision)
--------------------------------------------------------------------
-Business drivers               Technical options           Selected option
-Business constraints           Evaluation criteria         Trade-off analysis
-```
-
-**PRD Section 18 Format**:
-```markdown
-##### PRD.NN.18.xxxx: [Topic Name]
-
-**Upstream**: BRD-NN section 7.2.X
-
-**Technical Options**:
-1. **[Option A]**: [Description]
-2. **[Option B]**: [Description]
-
-**Evaluation Criteria**:
-- **[Criterion 1]**: [Measurable target]
-- **[Criterion 2]**: [Measurable target]
-
-**Product Constraints**:
-- [Constraint 1]
-
-**Decision Timeline**: [Milestone reference]
-
-**ADR Requirements**: [What ADR must decide]
-```
-
-**CRITICAL**: Do NOT reference specific ADR numbers (ADR-01, ADR-033, etc.) - ADRs don't exist yet!
-
-### 6.1 Cross-Linking Tags (AI-Friendly)
-
-**Purpose**: Establish lightweight, machine-readable hints for AI discoverability and dependency tracing across PRD documents without blocking validation.
-
-**Tags Supported**:
-- `@depends: PRD-NN` — Hard prerequisite; this PRD cannot proceed without the referenced PRD
-- `@discoverability: PRD-NN (short rationale)` — Related document for AI search and ranking (informational)
-
-**ID Format**: Document-level IDs follow `{DOC_TYPE}-NN` per `ID_NAMING_STANDARDS.md` (e.g., `PRD-01`, `PRD-02`).
-
-**Placement**: Add tags to Traceability section (Section 18) or inline with dependency descriptions.
-
-**Example**:
-```markdown
-@depends: PRD-01 (Core Platform)
-@discoverability: PRD-02 (Feature Enhancements - shared architecture)
-```
-
-**Validator Behavior**: Cross-linking tags are recognized and reported as **info-level** findings (non-blocking). They enable AI/LLM tools to infer relationships and improve search ranking without affecting document approval.
-
-**Optional for MVP**: Cross-linking tags are optional in MVP templates and are not required for PRD approval; they are purely informational.
-
-### 7. EARS Enhancement Appendix (Section 20)
-
-**Purpose**: Provides structured requirements for EARS transformation.
-
-**Required Subsections**:
-
-**20.1 Timing Profile Matrix**:
-| Operation | p50 | p95 | p99 | Unit | Trigger Event | Notes |
-|-----------|-----|-----|-----|------|---------------|-------|
-| [operation] | [value] | [value] | [value] | ms | [event] | [constraints] |
-
-**20.2 Boundary Value Matrix**:
-| Threshold | Operator | Value | At Boundary | Above | Below |
-|-----------|----------|-------|-------------|-------|-------|
-| [name] | >= or > or <= or < | [value] | [behavior] | [behavior] | [behavior] |
-
-**20.3 State Transition Diagram**: Mermaid stateDiagram-v2 with error states
-
-**20.4 Fallback Path Documentation**:
-| Dependency | Failure Mode | Detection | Fallback Behavior | Timeout | Recovery |
-|------------|--------------|-----------|-------------------|---------|----------|
-
-**20.5 EARS-Ready Checklist**: All timing, boundary, state, fallback items verified
-
-## Tag Format Convention
-
-| Notation | Format | Artifacts | Purpose |
-|----------|--------|-----------|---------|
-| Dash | TYPE-NN | SPEC, IPLAN | Document-level references |
-| Dot | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, ADR, TDD | Hierarchical - element references |
-
-**Key Distinction**:
-- `@spec: SPEC-01` -> Points to document `SPEC-01_slug.yaml`
-- `@brd: BRD.17.01.a7f3` -> Points to element in section 01 inside `BRD-17`
-
-**Reference**: See `framework/governance/ID_NAMING_STANDARDS.md` for the complete element-ID and tag formats.
-
-## Unified Element ID Format (MANDATORY)
-
-**Pattern**: `PRD.{doc_id}.{section_id}.{hash}` (4 segments, dot-separated)
-
-- `doc_id` — two-digit document number (e.g., `01`)
-- `section_id` — two-digit section number (e.g., `09`)
-- `hash` — 4-character hex content hash (SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 chars)
-
-**Example**: `PRD.01.09.b3f2` (PRD-01, section 09, hash b3f2)
-
-The section number identifies where the element lives (e.g. section 09 = User Stories, section 01 = Functional Requirements). The 8-layer model uses no numeric element-type codes — content placement is by section.
-
-**REMOVED Patterns** (Do NOT use):
-- `AC-XXX` -> Use `PRD.NN.SS.xxxx`
-- `FR-XXX` -> Use `PRD.NN.SS.xxxx`
-- `F-XXX` -> Use `PRD.NN.SS.xxxx`
-- `US-XXX` -> Use `PRD.NN.SS.xxxx`
-
-### Feature ID Format (Simple Numeric)
-
-**Purpose**: Establish consistent Feature ID naming convention for traceability and cross-PRD references.
-
-**Pattern**: `NN` (variable-length sequential number, minimum 2 digits)
-
-| Component | Format | Description |
-|-----------|--------|-------------|
-| Feature ID | `NN` | 2+ digit sequential (01-99, then 100-999, 1000+) |
-| Document Context | `PRD-NN` | PRD number provides namespace |
-
-**Rationale**: Document context (PRD-01) already provides namespace. Embedding PRD number in feature ID is redundant. Feature IDs match document ID numbering convention.
-
-**Examples**:
-- `01`: First feature (in any PRD)
-- `15`: 15th feature
-- `99`: 99th feature
-- `100`: 100th feature (auto-expands)
-- `1000`: 1000th feature
-
-**Validation Regex**: `^\d{2,}$`
-
-**Cross-PRD Reference Format**:
-When referencing features from other PRDs, use the cross-reference format:
-
-```markdown
-@prd: PRD.22.09.4f1a
-```
-
-**Components**:
-- `@prd:` - Tag prefix
-- `22` - Document ID (PRD-22)
-- `.09` - Section ID (09 = User Stories)
-- `.4f1a` - 4-char hex content hash
-
-**Uniqueness**: `PRD.22.09.4f1a` is globally unique (PRD-22, section 09, hash 4f1a)
-
-**Invalid Formats** (Do NOT Use):
-| Invalid Format | Issue | Correct Format |
-|----------------|-------|----------------|
-| `Feature-022-001` | Deprecated format | `PRD.22.09.4f1a` |
-| `FR-AGENT-001` | Non-standard prefix | `PRD.NN.SS.xxxx` |
-| `Feature 3.1` | Text format | `PRD.25.01.5e2a` |
-| `PRD.1.1` | Legacy 3-segment / not zero-padded | `PRD.01.01.a7f3` |
-| `F-01` | Deprecated F- format | `PRD.NN.01.01` |
-
-## Cumulative Tagging Requirements
-
-**Layer 2 (PRD)**: Must include tags from Layer 1 (BRD)
-
-**Tag Count**: 1 tag (@brd)
-
-**Format**:
-```markdown
-## 18. Traceability
-
-### Traceability Tags
-
-**Required Tags** (Cumulative Tagging Hierarchy - Layer 2):
-```markdown
-@brd: BRD.01.07.a7f3, BRD.01.08.1dbc
-```
-
-- BRD.01.07.a7f3 - Business requirements driving this product
-- BRD.01.08.1dbc - Success criteria from business case
-
-**Upstream Sources**:
-- [BRD-01](../../../../framework/layers/01_BRD/README.md) - Parent business requirements
-
-**Downstream Artifacts**:
-- EARS-NN (to be created) - Formal requirements
-- BDD-NN (to be created) - Test scenarios
-```
+PRD requires an upstream BRD. Before writing, read:
+
+1. **Upstream BRD** — the BRD that drives this PRD. If it is split into section
+   files (`docs/01_BRD/BRD-NN_{slug}/`), read **all** files as one logical
+   document.
+2. **Template (source of truth):** `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+3. **Layer README:** `framework/layers/02_PRD/README.md`
+4. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+
+Confirm no ID collision: `ls docs/02_PRD/ 2>/dev/null`. Reference only BRD
+elements that exist; never invent placeholders like `BRD-XXX` or `TBD`. The PRD
+ID need not match the BRD ID (PRD-09 may implement BRD-16).
+
+## Layer Guidance
+
+### Content boundaries (decide what belongs here)
+
+PRD is the **Container** level. Keep product capabilities, user journeys, and
+error handling; push everything else downstream.
+
+| Content | Belongs in |
+|---------|-----------|
+| Product features, personas, KPIs, journeys | **PRD** (this layer) |
+| `WHEN-THE-SHALL-WITHIN` formal requirements | EARS (Layer 3) |
+| `Given-When-Then` executable scenarios | BDD (Layer 4) |
+| Architecture decisions | ADR (Layer 5) |
+| Schemas, endpoints, infra config | SPEC (Layer 6) |
+
+### Required structure (15 sections)
+
+`document_control` comes **first** (product name, version, status, dates,
+author/reviewer/approver, `@brd:` reference, EARS-Ready score, revision
+history). Then:
+
+2. Executive Summary (incl. MVP hypothesis) · 3. Problem Statement ·
+4. Target Audience & User Personas · 5. Success Metrics & KPIs ·
+6. Goals & Objectives · 7. Scope & Requirements · 8. User Stories & User Roles ·
+9. Functional Requirements (incl. **user journey** + diagram contract) ·
+10. **Customer-Facing Content & Messaging** · 11. Acceptance Criteria ·
+12. Constraints & Assumptions · 13. Risk Assessment · 14. Traceability
+(incl. **ADR topic elaboration**) · 15. Glossary.
+
+See `PRD-TEMPLATE.yaml` for per-section content and embedded `_guidance`.
+
+### Section 8 — User Stories (layer separation, mandatory note)
+
+Hold **role definitions and story summaries** (`As a [role], I want
+[capability] so that [benefit]`) with product-level acceptance criteria only.
+Include the note: *detailed behaviors live in EARS; executable scenarios live
+in BDD.* Do **not** write WHEN-THE-SHALL or Given-When-Then here.
+
+### Section 10 — Customer-Facing Content (mandatory, blocking)
+
+Must carry substantive content in **at least 3** categories: product
+positioning, key messaging, feature descriptions, documentation, help text,
+error messages, success confirmations, onboarding, release notes.
+Placeholder-only content is a blocking error.
+
+### Section 14 — ADR topic elaboration
+
+Elaborate BRD §7.2 topics with **technical options and evaluation criteria**.
+Layer separation: BRD = *what & why* · PRD = *how to evaluate* · ADR = *the
+decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
+
+### Element IDs and tags
+
+- Hierarchical element IDs: `PRD.{doc_id}.{section_id}.{hash}` (e.g.
+  `PRD.01.09.b3f2`; `hash` = first 4 hex of SHA256 of
+  `"{doc_id}:{section_id}:{title}:{description}"` from PRD content, extend to 8
+  on collision). `SS` is the **section the element lives in** — no numeric
+  type-codes.
+- PRD is Layer 2, so it carries cumulative **`@brd:`** tags (e.g.
+  `@brd: BRD.01.07.a7f3`). Downstream artifacts tag it: `@prd: PRD.01.09.b3f2`.
+- **Removed patterns** (do not use): `FR-XXX`, `US-XXX`, `AC-XXX`, `F-XXX`, and
+  the legacy 3-segment `PRD.NN.xxxx`.
+- Quantitative values that may change use `@threshold: PRD.NN.{category}.{key}`
+  (categories: quota, risk, perf, timeout, rate).
 
 ## Creation Process
 
-### Step 1: Read Parent BRD
+1. **Read the parent BRD** — all section files as one document; extract
+   objectives, stakeholders, success criteria, and §7.2 topics.
+2. **Reserve ID** — next free `PRD-NN` (two digits: `PRD-01`, `PRD-99`,
+   `PRD-102`).
+3. **Create the nested folder** — every PRD lives in
+   `docs/02_PRD/PRD-NN_{slug}/` regardless of size. Monolithic:
+   `PRD-NN_{slug}.md` inside it; section-based (>25 KB): `PRD-NN.S_{section}.md`
+   + index from `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`.
+4. **Document Control first**, then complete all 15 sections from the template.
+5. **Fill §10** (≥3 customer-facing categories); **elaborate §14** ADR topics
+   without ADR numbers.
+6. **Add cumulative `@brd:` tags** resolving to existing BRD elements.
+7. **Update the PRD index** `docs/02_PRD/PRD-00_index.md` and add this PRD to
+   the parent BRD's Downstream Artifacts in the same change.
+8. **Validate** (below) and commit the PRD, index, and BRD update together.
 
-Read and understand the BRD that drives this PRD.
+## Validation
 
-**Sectioned BRD Handling**:
-If BRD is split into multiple section files (folder structure `docs/01_BRD/BRD-NN_{slug}/`):
-1. Read ALL section files (BRD-NN.0 through BRD-NN.18)
-2. Treat as ONE logical document
-3. Extract information holistically (no section-to-section mapping)
+The framework ships no runtime code — **this skill is the validator**. Apply the
+checklist against `framework/layers/02_PRD/README.md` and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
-### Step 2: Reserve ID Number
+- [ ] Document Control is the first section, with `@brd:` reference and
+      EARS-Ready score.
+- [ ] All 15 sections present and non-empty.
+- [ ] §10 has substantive content in ≥3 categories (not placeholders).
+- [ ] §8 holds PRD-level summaries only, with the layer-separation note.
+- [ ] §14 elaborates ADR topics; no ADR numbers referenced.
+- [ ] Element IDs match `PRD.NN.SS.xxxx`; `SS` equals the host section; no
+      removed patterns.
+- [ ] Cumulative `@brd:` tags resolve to existing BRD elements.
+- [ ] Traceability / index updated; parent BRD updated; no broken links.
+- [ ] Diagram contract: `@diagram: c4-l2` and `@diagram: dfd-l2` present (use
+      `../charts-flow/SKILL.md`); sequence diagrams include `alt/else`.
 
-Check `docs/02_PRD/` for next available ID number (e.g., PRD-01, PRD-02).
+| Code | Meaning | Severity |
+|------|---------|----------|
+| XDOC-002 | Missing cumulative tag (`@brd`) | error |
+| XDOC-006 | Tag format invalid | error |
+| XDOC-008 | Broken internal link | error |
+| XDOC-009 | Missing traceability section | error |
 
-**ID Numbering Convention**: Start with 2 digits and expand only as needed.
-- ✅ Correct: PRD-01, PRD-99, PRD-102
-- ❌ Incorrect: PRD-001, PRD-009 (extra leading zero not required)
-
-**ID Matching**: PRD ID does NOT need to match BRD ID (PRD-09 may implement BRD-16).
-
-### Step 3: Create PRD Folder and Files
-
-**Nested Folder Rule (MANDATORY)**: ALL PRDs MUST use nested folders regardless of document size.
-
-**Folder structure**:
-1. Create folder: `docs/02_PRD/PRD-NN_{slug}/`
-2. Create document file(s) inside the folder
-
-**Sectioned PRD** (for large documents >25KB):
-```
-docs/02_PRD/PRD-01_user_authentication/
-  PRD-01.md
-  PRD-01.1_executive_summary.md
-  PRD-01.2_problem_statement.md
-  ...
-```
-
-**Monolithic PRD** (for smaller documents ≤25KB):
-```
-docs/02_PRD/PRD-01_user_authentication/
-  PRD-01_user_authentication.md
-```
-
-**CRITICAL**: Even monolithic PRDs MUST be in a nested folder. Never create `docs/02_PRD/PRD-NN_{slug}.md` directly in the `02_PRD/` directory.
-
-### Step 4: Complete Document Control
-
-Fill all required metadata fields:
-- Status, Version, Dates, Author/Reviewer/Approver
-- BRD Reference with `@brd` tag
-- SPEC-Ready Score and EARS-Ready Score (both >=90%)
-- Template Variant
-- Document Revision History table
-
-### Step 5: Complete Core Sections (2-17)
-
-**Section 2-3**: Problem context and business impact
-**Section 4-6**: Users, KPIs, goals
-**Section 7-9**: Scope, user stories, functional requirements
-**Section 10**: Customer-facing content (MANDATORY)
-**Section 11-14**: Acceptance criteria, constraints, risks, success
-**Section 15-17**: Stakeholders, implementation, budget
-
-### Step 6: Complete Traceability (Section 18)
-
-- Add upstream BRD references
-- Document downstream artifact placeholders
-- Include Architecture Decision Requirements elaboration
-- Add bidirectional reference table if cross-PRD dependencies exist
-
-### Step 7: Complete References (Section 19)
-
-Internal documentation, external standards, domain and technology references.
-
-### Step 8: Complete EARS Enhancement Appendix (Section 20)
-
-- Timing Profile Matrix (p50/p95/p99)
-- Boundary Value Matrix (explicit operators)
-- State Transition Diagram (with error states)
-- Fallback Path Documentation
-- EARS-Ready Checklist
-
-### Step 9: Complete QA Strategy (Section 21)
-
-Quality standards and testing strategy (moved from BRD).
-
-### Step 10: Create/Update Traceability Matrix
-
-**MANDATORY**: Create or update `docs/02_PRD/PRD-00_TRACEABILITY_MATRIX.md`
-
-### Step 11: Update Upstream BRD Traceability (MANDATORY)
-
-**CRITICAL - Often Missed**: When creating a PRD, you MUST update the parent BRD's traceability section.
-
-**Process**:
-1. Open the upstream BRD (e.g., `docs/01_BRD/BRD-01_platform/BRD-01_platform.md`)
-2. Locate the `## Traceability` section
-3. Add this PRD to `Downstream Artifacts`:
-   ```markdown
-  - Downstream Artifacts: [PRD-01](../../02_PRD/PRD-01_slug/PRD-01_slug.yaml)
-   ```
-4. Commit BRD update with PRD creation (single commit)
-
-**Why This Matters**:
-- Enables bidirectional navigation between BRD and PRD
-- Impact analysis: BRD changes show affected PRDs
-- Audit compliance: Regulators require bidirectional traceability
-
-**Reference**: See `../doc-flow/SHARED_CONTENT.md` Section 4.3 "Bidirectional Traceability Update Workflow" for complete guidance.
-
-### Step 12: Validate PRD
-
-The framework is spec-only — there are no validation scripts to run. This skill
-*is* the validator: apply the declarative checklist below, using
-`framework/layers/02_PRD/README.md` and `framework/governance/` as authority.
-
-- Confirm all 21 numbered sections are present and ordered.
-- Confirm Document Control has all required fields, including both readiness scores >=90%.
-- Confirm every element ID uses the 4-segment `PRD.NN.SS.xxxx` format.
-- Confirm cumulative `@brd` tags resolve to existing BRD elements.
-- Confirm no forward references to ADR/SPEC document numbers.
-- Confirm no broken links to upstream BRD or downstream placeholders.
-
-## Validation Checklist
-
-**Structure (21 Sections)**:
-- [ ] All 21 numbered sections present (1-21)
-- [ ] Document Control (Section 1) at top with all required fields
-- [ ] Customer-Facing Content (Section 10) has substantive content
-- [ ] User Stories (Section 8) includes layer separation scope note
-- [ ] EARS Enhancement Appendix (Section 20) completed
-- [ ] Quality Assurance & Testing Strategy (Section 21) completed
-
-**Document Control Required Fields**:
-- [ ] Status, Version, Date Created, Last Updated
-- [ ] Author, Reviewer, Approver
-- [ ] BRD Reference with @brd tag
-- [ ] SPEC-Ready Score >=90%
-- [ ] EARS-Ready Score >=90%
-- [ ] Template Variant specified
-- [ ] Document Revision History table initialized
-
-**Content Quality**:
-- [ ] Parent BRD identified and referenced
-- [ ] Problem-Goals framework completed
-- [ ] User personas and user stories defined (PRD-level only)
-- [ ] Product features specified with priority levels
-- [ ] KPIs quantified (measurable metrics with targets)
-- [ ] Quality attributes quantified (performance, reliability)
-- [ ] Risk assessment with mitigation strategies
-- [ ] Architecture Decision Requirements listed (NO ADR numbers)
-- [ ] EARS Enhancement Appendix complete (timing, boundary, state, fallback)
-
-**Traceability**:
-- [ ] Cumulative tags: @brd included
-- [ ] Traceability matrix created/updated
-- [ ] Upstream BRD traceability section updated with this PRD
-- [ ] No ADR forward references
-- [ ] No broken links
-
-**Size Limits**:
-- [ ] File size <50,000 tokens (standard) or <100,000 tokens (maximum)
-
-## Post-Creation Validation (MANDATORY - NO CONFIRMATION)
-
-**CRITICAL**: Execute this validation loop IMMEDIATELY after document creation.
-The framework is spec-only — there are no scripts to run; this skill applies the
-checks declaratively.
-
-```
-LOOP:
-  1. Apply the Validation Checklist checks (above) to the document
-  2. IF errors found and auto-fixable: fix → GOTO LOOP (re-validate)
-  3. IF warnings auto-fixable: fix → GOTO LOOP (re-validate)
-  4. IF unfixable issues: Log for manual review, continue
-  5. IF clean: Mark VALIDATED, proceed
-```
-
-### Layer-Specific Upstream Requirements
-
-| This Layer | Required Upstream Tags | Count |
-|------------|------------------------|-------|
-| PRD (Layer 2) | @brd | 1 tag |
-
-### Validation Codes Reference
-
-| Code | Description | Severity |
-|------|-------------|----------|
-| XDOC-001 | Referenced requirement ID not found | ERROR |
-| XDOC-002 | Missing cumulative tag (@brd) | ERROR |
-| XDOC-003 | Upstream document not found | ERROR |
-| XDOC-006 | Tag format invalid | ERROR |
-| XDOC-009 | Missing traceability section | ERROR |
-| FWDREF-E001 | Forward reference to non-existent ADR | ERROR |
-
-### Quality Gate
-
-**Blocking**: YES - Cannot proceed to EARS creation until validation passes with 0 errors.
-
-## Common Pitfalls
-
-1. **Missing dual scores**: Both SPEC-Ready and EARS-Ready scores required
-2. **Incorrect section structure**: Must be exactly 21 sections (1-21) in order
-3. **Missing Section 10 content**: Customer-Facing Content is MANDATORY
-4. **User Stories scope violation**: Section 8 must stay at PRD-level (no EARS/BDD detail)
-5. **ADR forward references**: Don't write "See ADR-33" (ADRs don't exist yet)
-6. **Missing @brd tags**: Layer 2 must include Layer 1 tags
-7. **ID format errors**: Use unified format PRD.NN.SS.xxxx (not F-XXX, US-XXX, etc.)
-8. **Missing EARS Enhancement Appendix**: Section 20 required for EARS-Ready score
-9. **Missing upstream BRD update**: Must add PRD reference to parent BRD's Downstream Artifacts
-
-## Template Binding (MANDATORY)
-
-**When creating PRD documents, use EXACTLY these metadata values:**
-
-```yaml
-tags:
-  - prd                 # REQUIRED - Use 'prd' NOT 'product-prd', 'feature-prd'
-  - layer-2-artifact    # REQUIRED - Layer identifier
-
-custom_fields:
-  document_type: prd    # REQUIRED - Use 'prd' NOT 'product-requirements'
-  artifact_type: PRD    # REQUIRED - Uppercase
-  layer: 2              # REQUIRED - PRD is Layer 2
-  architecture_approaches: [ai-agent-based]  # REQUIRED - Array format
-```
-
-**FORBIDDEN Values**:
-- Tags: `product-prd`, `feature-prd`, `product-requirements`
-- document_type: `product-requirements`, `product_requirements`
-- `architecture_approach: value` (singular form)
-
-## Diagram Standards
-
-All diagrams MUST use Mermaid syntax. Text-based diagrams (ASCII art, box drawings) are prohibited.
-See the `mermaid-gen` skill.
-
----
+**Quality gate (blocking):** EARS-Ready score ≥ 90/100 before moving on. If
+issues are found, fix and re-check; if unfixable, log for manual review.
 
 ## Next Skill
 
-After creating PRD, use:
+`../doc-ears/SKILL.md` — the EARS references this PRD (`@prd: PRD.NN.SS.xxxx`),
+carries cumulative `@brd`/`@prd` tags, and formalizes PRD features into
+`WHEN-THE-SHALL-WITHIN` requirements.
 
-**`doc-ears`** - Create formal EARS requirements (Layer 3)
 
-The EARS will:
-- Reference this PRD as upstream source
-- Include `@brd` and `@prd` tags (cumulative)
-- Use WHEN-THE-SHALL-WITHIN format
-- Formalize PRD features into requirements
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (include or omit template-declared **optional** sections)
+and `glossary` (substitute preferred terms in generated prose). Ignore any
+unknown or out-of-surface key; absent a profile, use framework defaults.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- **PRD Template**: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
-- **PRD README**: `framework/layers/02_PRD/README.md`
-- **PRD Index template**: `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`
-- **ID & Tag Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
-- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
-- **doc-brd skill**: `../doc-brd/SKILL.md` (upstream BRD creation)
-- **doc-ears skill**: `../doc-ears/SKILL.md` (downstream formal requirements)
-
-**Section Templates** (DEFAULT for all PRD documents):
-- **Structure**: `docs/02_PRD/PRD-NN_{slug}/PRD-NN.S_{slug}.md`
-- Reference: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+- Layer README: `framework/layers/02_PRD/README.md`
+- Index template: `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`
+- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Upstream BRD: `../doc-brd/SKILL.md`
+- Quality gate: `../doc-prd-audit/SKILL.md` · Fixes: `../doc-prd-fixer/SKILL.md`
+- Generation pipeline: `../doc-prd-autopilot/SKILL.md`
 
 ## Quick Reference
 
-**PRD Purpose**: Define product features and user needs
-
-**Layer**: 2
-
-**Tags Required**: @brd (1 tag)
-
-**Key Sections**:
-- Section 1: Document Control with dual scoring (SPEC-Ready + EARS-Ready >=90%)
-- Section 8: User Stories (PRD-level only)
-- Section 10: Customer-Facing Content (MANDATORY)
-- Section 18: Traceability with Architecture Decision Requirements
-- Section 20: EARS Enhancement Appendix
-
-**Next**: doc-ears
-
----
-
-## Version History
-
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 2.0 | 2026-05-22 | **MAJOR**: Migrated to the 8-layer model. 4-segment element IDs (`PRD.NN.SS.xxxx`); removed legacy numeric element-type-code table. Downstream chain rebuilt to EARS, BDD, ADR, SPEC, TDD, IPLAN; SPEC=L6, TDD=L7, IPLAN=L8 (no SYS/REQ/CTR). Paths point at `framework/layers/02_PRD/`; SYS-Ready score renamed SPEC-Ready; validation is now this skill's declarative checklist (framework is spec-only). | System |
-| 1.3 | 2026-03-05 | Added cross-linking tags documentation (Section 6.1); Added quality gate validation reference; Added Feature ID format documentation; Verified Section 20.1 naming compliance | System |
-| 1.2 | 2026-02-26 | Migrated frontmatter to `metadata` schema; updated PRD template/rules references to `ai_dev_ssd_flow` and MVP rule filenames | System |
-| 1.1 | 2026-02-11 | **Nested Folder Enforcement**: Fixed all paths from `docs/PRD/` to `docs/02_PRD/` and `docs/BRD/` to `docs/01_BRD/`; Removed OPTIONAL monolithic path outside nested folder; All PRDs must now be in nested folders regardless of size | System |
-| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |
+| | |
+|---|---|
+| **Purpose** | Define product features, personas, and KPIs |
+| **Layer** | 2 (Container) |
+| **Upstream tags** | `@brd` (1 cumulative) |
+| **Key decision** | What stays PRD-level vs pushes downstream |
+| **Must include** | Document Control (first), §10 (≥3 categories), §14 ADR topics, 15 sections |
+| **Next** | `doc-ears` |

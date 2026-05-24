@@ -3,12 +3,115 @@
 Non-obvious decisions made during the migration, with rationale, so the "why"
 survives across ephemeral sessions. Newest first. Timestamps are ISO 8601 UTC.
 
-Decisions that affect the **shared spec** graduate into `framework/governance/`
-when change management returns post-Phase 5 (see `ROADMAP.md` CHG-D2).
+Decisions that affect the **shared spec** graduate into the spec's own register,
+`framework/governance/DECISIONS.md` (established by CHG-D2). D-0020 (CHG-D1) is
+graduated there as **GD-01**; D-0013 and D-0019 are listed there as pending
+graduation.
 
 ---
 
 ---
+
+## D-0020 — GATE-SPEC: the framework-spec change gate (CHG-D1)
+
+- **Date:** 2026-05-23T00:00:00Z
+- **Context:** ROADMAP CHG-D1 — re-introduce change management as **skills +
+  CI/CD**, both platforms. The five existing gates (GATE-01/03/06/08/CODE) all
+  govern a project's **artifact instances** along the BRD→Code chain; none
+  governed a change to the **`framework/` spec itself**. That gap was what
+  `knowledge-extractor`'s spec→CHG drafts were stamped *blocked* on (D-0019,
+  ADAPT-0). Full design + 2 review passes in `plans/CHG-D1-PLAN.md`.
+- **Decisions:**
+  1. **GATE-SPEC is a *meta* gate, orthogonal to the artifact cascade.** It
+     governs the shared contract that defines the layers (templates, governance,
+     registry, VERSION) — the `docs/PROJECT.md` §6 "Process" role. It has no
+     GATE-03/06/08 successor; a passed spec change instead obliges every platform
+     to re-declare `FRAMEWORK_SPEC_VERSION` and re-pass conformance. Selected by
+     **target** (the change edits `framework/`), not by artifact layer.
+  2. **Three-way enforcer split** (the ROADMAP CHG-D1 model). Record-level
+     E001–E004 (provenance, `semver_impact`+major⇒C3, never-C1, C3-approval) →
+     the platform's record validator (plugin `gate-check`/`doc-chg`, Hermes
+     `chg_rules.py`). Diff-aware E005 (VERSION bump) + E008 (CHANGELOG) → CI
+     (`tests/chg/spec_gate.py`). Static E006 (spec-version match) + E007 (suite
+     green) → the shared conformance suite. The **human** approval (E004) is
+     protected-branch review — **a skill never self-approves**.
+  3. **`major`⇒C3 is one-directional.** A breaking spec change must be C3;
+     `minor`/`patch` may be C2. An additive change (a new optional knob, a new
+     gate) reaches both platforms yet is not breaking — so it is not forced to
+     C3. (GATE-SPEC's own introduction is `minor`/C2.)
+  4. **New `change_source: spec` + `semver_impact` field** added to
+     CHG-TEMPLATE (additive, backward-compatible; Hermes validation is
+     `.get`-based, no strict key-schema to violate).
+  5. **CI tooling is engine-agnostic and lives under `tests/`**, not
+     `framework/` (the spec ships no runtime). The workflow stages at
+     `plans/workflows-pending/chg-gate.yml` — the in-container app can't push
+     `.github/workflows/**` (the standing `workflows`-permission restriction).
+  6. **GATE-SPEC's introduction lands under interim PR-review controls** — a gate
+     cannot gate its own introduction (mirrors how D-0019's spec doc landed).
+- **Status — DONE (2026-05-23):** landed across 5 commits on
+  `claude/skill-revision`. Framework spec **0.2.0 → 0.3.0** (minor; + both
+  `FRAMEWORK_SPEC_VERSION` + all 54 skills' `framework_spec_version`).
+  Conformance **38 → 43**; Hermes CHG unit tests 8/8 (full validation suite
+  green bar the pre-existing `mcp`-SDK-missing collection errors); `plm_lint`
+  clean. **Follow-up: CHG-D2** — record this as a formal `framework/governance/`
+  decision (now actionable). **User-only:** relocate `plans/workflows-pending/
+  chg-gate.yml` → `.github/workflows/`; configure branch protection on
+  `framework/**` (the human-approval half).
+
+## D-0019 — Project adaptation overlay + knowledge extractor (ADAPT)
+
+- **Date:** 2026-05-23T17:50:00Z
+- **Context:** Give a consuming project a bounded way to adapt the SDD flow
+  without forking, plus a manual path to promote proven adaptations upward.
+  Full design + review (Pass 1–4) in `plans/ADAPT-PLAN.md`.
+- **Decisions:**
+  1. **Promotion routes by governance owner** (corrects the original draft). Per
+     `docs/PROJECT.md` §6: `framework/` spec changes are CHG-governed; platform
+     (skill/tool) changes are ordinary PRs, *not* CHG. The knowledge-extractor
+     classifies each candidate and routes spec→CHG / tool→PR.
+  2. **ADAPT-0 — defer the spec→CHG path (option b).** The spec-change CHG gate
+     is unbuilt (ROADMAP CHG-D1). v1 ships the tool-PR promotion path
+     (plugin-only reach); spec-level candidates are drafted but flagged
+     "blocked — needs CHG-D1". Building CHG-D1 is an out-of-scope follow-up.
+  3. **Surface is closed + declarative** (`framework/governance/ADAPTATION.md`
+     + machine-readable `ADAPTATION_SURFACE.yaml`). **v1 = 4 knobs**
+     (`active_layers`, `section_toggles`, `audit_threshold`, `glossary`);
+     **`id_format` deferred** pending an `ID_NAMING_STANDARDS.md` review to
+     enumerate genuinely-selectable conventions (narrow-surface principle —
+     don't invent options).
+  4. **`audit_threshold` is raise-only** — a project may only make a layer's
+     quality gate stricter, never lower it (preserves CLAUDE.md "never weaken a
+     check"). The Tier-1 score (default 90) is the real model; the CHG
+     gate-approval model has no score and is untouched.
+  5. **Skippable layers = `[BDD, ADR]`** (the two non-C4 bridge layers);
+     `[BRD, PRD, EARS, SPEC, TDD, IPLAN]` mandatory. A **cascade rule** removes a
+     disabled layer from downstream `required_tags`/`can_reference` so
+     traceability stays consistent. Conservative + reviewable; lives in the
+     adaptation surface, not the core `LAYER_REGISTRY.yaml` (`optional` there is
+     a separate default-flow concern).
+  6. **User-global profile is an authoring-time seed, not a runtime input**
+     (reproducibility). Runtime (incl. audits) reads the version-controlled
+     project profile `.aidoc/profile.yaml` only; `~/.aidoc/profile.yaml` is
+     merged into it at authoring time. Same precedence semantics, merge moved
+     earlier so CI audits identically.
+  7. **The adapting set is wider than the base skills** — `-audit`/`-autopilot`
+     must honor the profile or they false-fail adapted docs; `trace-check`,
+     `project-init`, `project-adopt` consult `active_layers`. (Implemented in a
+     later ADAPT-A increment.)
+- **Status — ADAPT complete (2026-05-23):** landed across 7 commits on
+  `claude/skill-revision`. ADAPT-A: `framework/governance/ADAPTATION.md` +
+  `ADAPTATION_SURFACE.yaml` (4-knob closed surface); `adapts:` + consult-clause
+  wired into the 35-skill adapting set; `project-profile` skill; full doc
+  registration. ADAPT-B: `ADAPTATION.md` §7 learnings-log convention +
+  `knowledge-extractor` skill (owner-routing; spec→CHG draft stamped blocked on
+  the unbuilt CHG-D1 gate; guidance→PR). **Single feature-close version bump**
+  (sequencing refinement vs the plan's per-step bump): `framework/VERSION` +
+  both platform `FRAMEWORK_SPEC_VERSION` `0.1.0 → 0.2.0`, and all 54 plugin
+  skills' `framework_spec_version` (user decision: bump everything). Conformance
+  **33 → 37** (governance surface well-formedness, `adapts ⊆ surface` +
+  authority-ref + ≥35-wired, framework leakage guard); `plm_lint` clean.
+  **Deferred (CHG-D1):** the spec→CHG promotion gate — until built, spec-level
+  promotions are drafted but cannot be gated.
 
 ## D-0018 — Cut Claude Code plugin `v0.2.0`; add a repo-root plugin marketplace
 

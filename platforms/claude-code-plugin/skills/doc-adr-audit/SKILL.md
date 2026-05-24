@@ -1,176 +1,129 @@
 ---
 name: doc-adr-audit
-description: Unified ADR audit wrapper that runs validator then reviewer and produces a combined report for fixer consumption
-
+description: Audit an ADR - run declarative structural checks plus content review and produce a combined report for doc-adr-fixer. Use for ADR quality gating before SPEC.
 metadata:
   tags:
     - sdd-workflow
-    - quality-assurance
-    - adr-audit
     - layer-5-artifact
-    - shared-architecture
+    - quality-assurance
   custom_fields:
     layer: 5
     artifact_type: ADR
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [ADR]
-    downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.1"
-    last_updated: "2026-05-22"
-  versioning_policy: "tracks ADR-TEMPLATE schema_version"
-
+    upstream_artifacts: [BRD, PRD, EARS, BDD]
+    downstream_artifacts: [SPEC, TDD, IPLAN]
+    version: "0.2.0"
+    framework_spec_version: "0.3.1"
+    last_updated: "2026-05-23"
+    adapts: [section_toggles, active_layers, audit_threshold]
 ---
 
 # doc-adr-audit
 
 ## Purpose
 
-Run a **single ADR audit workflow** that executes:
+Run a **unified ADR audit** — declarative structural checks plus content-quality
+review — in one pass, producing a single combined report that
+`../doc-adr-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+ADR using the spec as the contract.
 
-1. `doc-adr-validator` (structural/schema gate)
-2. `doc-adr-reviewer` (semantic/content quality gate)
-
-Then emit one **combined report** optimized for `doc-adr-fixer` input.
-
-**Layer**: 5 (ADR Quality Gate Wrapper)
-
-**Upstream**: ADR file(s)
-
-**Downstream**:
-- Combined Audit Report: `ADR-NN.A_audit_report_vNNN.md`
-- Optional Fix Cycle trigger for `doc-adr-fixer`
-
----
-
-## Why This Skill Exists
-
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
-
-| Concern | Owner Skill |
-|---------|-------------|
-| Schema/template compliance | `doc-adr-validator` |
-| Content quality and decision completeness | `doc-adr-reviewer` |
-| Single user-facing audit command | `doc-adr-audit` |
-
----
+**Layer**: 5 (ADR quality gate). **Upstream**: an ADR file. **Downstream**:
+`ADR-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
-Use `doc-adr-audit` when:
-- You want one command for ADR quality checks
-- You need a combined report for `doc-adr-fixer`
-- You are running QA before SPEC generation
+Use after an ADR exists and before generating the SPEC, or inside the
+autopilot's audit↔fix cycle. Do **not** use to create an ADR (use
+`../doc-adr/SKILL.md` or `../doc-adr-autopilot/SKILL.md`).
 
-Do NOT use when:
-- ADR does not exist (use `doc-adr` / `doc-adr-autopilot` generation first)
-- You only need one specific check domain (use validator or reviewer directly)
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the SPEC-Ready score independently each run.
 
----
+**Report cleanup:** after writing the new report, delete superseded
+`ADR-NN.A_audit_report_v*.md`; keep `ADR-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
 ## Execution Contract
 
-### Input
-- ADR path (`docs/05_ADR/ADR-NN_*/...`)
-- Optional: threshold (default review threshold: 90)
+**Input:** ADR path (`docs/05_ADR/ADR-NN_*/...`); optional score threshold
+(default 90).
 
-### Sequence (Mandatory)
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write `ADR-NN.A_audit_report_vNNN.md`
+→ 6) if auto-fixable findings exist, hand off to `doc-adr-fixer`.
 
-```text
-1) Run doc-adr-validator
-2) Run doc-adr-reviewer
-3) Normalize and merge findings
-4) Write ADR-NN.A_audit_report_vNNN.md
-5) If auto-fixable findings exist, hand off to doc-adr-fixer
-```
+## Structural Checklist
 
-### Combined Status Rules
+Authority: `framework/layers/05_ADR/README.md`,
+`framework/layers/05_ADR/ADR-TEMPLATE.yaml` (embedded rules + `_antipatterns`),
+and `framework/governance/ID_NAMING_STANDARDS.md`.
 
-- `PASS`: Validator PASS AND Reviewer score >= threshold AND no blocking issues
-- `FAIL`: Validator FAIL OR Reviewer score < threshold OR blocking/manual-required issues present
+**Tier 1 — blocking (error):**
 
----
+| Check | Verifies |
+|-------|----------|
+| Element ID format | every internal ID matches `ADR.NN.SS.xxxx` (4-hex hash); document refs use dash `ADR-NN` |
+| Single decision | the ADR records exactly one decision |
+| Structure | all 10 required sections present and non-empty |
+| Cumulative tags | `@brd @prd @ears @bdd` all present and well-formed |
+| Quality gate | SPEC-Ready score ≥ threshold (default 90) for Accepted status |
 
-## Combined Report Format (for doc-adr-fixer)
+**Tier 2 — advisory (warning):** frontmatter metadata (below); alternatives
+include 2–3 options with cost/fit and rejection reasons; consequences cover
+trade-offs with severity; internal links and template/governance references
+resolve; no downstream (SPEC/TDD/IPLAN) numbers cited before they exist;
+architecture-flow diagram present (use `../charts-flow/SKILL.md`).
 
-Output file: `ADR-NN.A_audit_report_vNNN.md`
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-Required sections:
+## Metadata Checks
 
-1. `## Summary`
-   - ADR ID, timestamp (EST), overall status
-   - Validator status, reviewer score
-2. `## Score Calculation (Deduction-Based)`
-   - Formula: `100 - total_deductions`
-   - Threshold comparison (`>=90` pass gate)
-3. `## Validator Findings`
-   - List by severity/code
-4. `## Reviewer Findings`
-   - List by severity/code
-5. `## Coverage Findings`
-   - Decision completeness summary
-   - Architecture flow/diagram coverage summary
-   - Traceability/tag coverage summary
-6. `## Fix Queue for doc-adr-fixer`
-   - `auto_fixable`
-   - `manual_required`
-   - `blocked`
-7. `## Recommended Next Step`
-   - `run doc-adr-fixer`
-   - or `manual update required`
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `adr-document` (not `template`) |
+| `artifact_type` | yes | `ADR` |
+| `layer` | yes | `5` |
+| `status` | yes | `Proposed`, `Accepted`, `Deprecated`, `Superseded` |
+| `deliverable_type` | yes | `code`, `document`, `ux`, `risk`, `process` |
 
-### Fix Queue Normalization
+Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
+`VALID-M003` `document_type` not `adr-document`; `VALID-M004` invalid `status`.
 
-Each finding MUST include:
-- `source`: `validator` | `reviewer`
-- `code`: issue code
-- `severity`: `error|warning|info`
-- `file`: relative path
-- `section`: heading/anchor if known
-- `action_hint`: short imperative guidance
-- `confidence`: `high|medium|manual-required`
+## Combined Report Format
 
----
+Output: `ADR-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** · **Diagram Contract Findings** ·
+**Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
+Next Step** · **Cleanup Summary**.
 
-## Hand-off Contract to doc-adr-fixer
+## Hand-off to doc-adr-fixer
 
-`doc-adr-fixer` MUST accept combined audit report as equivalent upstream input:
-- `ADR-NN.A_audit_report_vNNN.md` (preferred)
-- `ADR-NN.R_review_report_vNNN.md` (legacy compatibility)
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-adr-fixer`
+consumes the latest `ADR-NN.A_audit_report_vNNN.md`.
 
-Precedence rule:
-1. Select newest timestamp.
-2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
 
----
+## Adaptation
 
-## Example Invocation
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (a toggled-off **optional** section is not a finding; a
+missing **required** section still is), `active_layers` (never flag the
+absence of — or a missing reference to — a layer the project disabled, per the
+cascade rule), and `audit_threshold` (use the project's quality-gate score
+only when it is **>=** the framework default; ignore any lower value). Ignore
+unknown keys.
+Authority: `framework/governance/ADAPTATION.md`.
 
-```bash
-/doc-adr-audit docs/05_ADR/ADR-01_f1_iam/
-```
+## Related Resources
 
-Expected outcome:
-1. validator runs
-2. reviewer runs
-3. combined audit report generated
-4. fixer can execute directly from combined report
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.1 | 2026-05-22 | Migrated to the framework 8-layer model: ADR downstream gate is now SPEC (Layer 6), not SYS; tracks `ADR-TEMPLATE` schema version |
-| 1.0 | 2026-02-27 | Initial ADR audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Create: `../doc-adr/SKILL.md` · Fix: `../doc-adr-fixer/SKILL.md` · Generate:
+  `../doc-adr-autopilot/SKILL.md`
+- Authority: `framework/layers/05_ADR/README.md`,
+  `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

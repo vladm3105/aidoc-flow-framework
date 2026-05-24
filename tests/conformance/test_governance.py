@@ -4,7 +4,7 @@ import unittest
 
 import yaml
 
-from _spec import FRAMEWORK
+from _spec import ARTIFACTS, FRAMEWORK
 
 GOVERNANCE = FRAMEWORK / "governance"
 
@@ -14,6 +14,9 @@ EXPECTED_FILES = [
     "TRACEABILITY.md",
     "DIAGRAM_STANDARDS.md",
     "THRESHOLD_NAMING_RULES.md",
+    "ADAPTATION.md",
+    "ADAPTATION_SURFACE.yaml",
+    "DECISIONS.md",
     "README.md",
     "chg/README.md",
     "chg/CHG-TEMPLATE.yaml",
@@ -23,6 +26,7 @@ EXPECTED_FILES = [
     "chg/gates/GATE-06_DESIGN_TEST.md",
     "chg/gates/GATE-08_IPLAN.md",
     "chg/gates/GATE-CODE_IMPLEMENTATION.md",
+    "chg/gates/GATE-SPEC_FRAMEWORK.md",
     "chg/gates/GATE_ERROR_CATALOG.md",
     "chg/gates/GATE_INTERACTION_DIAGRAM.md",
     "chg/templates/GATE_APPROVAL_FORM.md",
@@ -39,6 +43,18 @@ class GovernanceFiles(unittest.TestCase):
                     f"missing governance file: {relative}",
                 )
 
+    def test_no_project_adaptation_artifacts_in_framework(self):
+        """A consuming project's adaptation profile/learnings must never be
+        committed under framework/ — the spec ships the contract, not project
+        data (ADAPTATION.md; D-0013)."""
+        leaked = [
+            p.relative_to(FRAMEWORK).as_posix()
+            for p in FRAMEWORK.rglob("*")
+            if p.is_file()
+            and (".aidoc" in p.parts or p.name in ("profile.yaml", "learnings.md"))
+        ]
+        self.assertEqual(leaked, [], f"project adaptation artifacts under framework/: {leaked}")
+
     def test_no_unexpected_files(self):
         found = {
             p.relative_to(GOVERNANCE).as_posix()
@@ -50,6 +66,37 @@ class GovernanceFiles(unittest.TestCase):
     def test_chg_template_parses(self):
         with (GOVERNANCE / "chg" / "CHG-TEMPLATE.yaml").open(encoding="utf-8") as fh:
             self.assertIsNotNone(yaml.safe_load(fh))
+
+    def test_spec_gate_is_wired(self):
+        """GATE-SPEC (the framework-spec change gate, CHG-D1) is declared
+        consistently across the gate def, the error catalog, and the CHG
+        template enums."""
+        catalog = (GOVERNANCE / "chg" / "gates" / "GATE_ERROR_CATALOG.md").read_text(encoding="utf-8")
+        for code in ("GATE-SPEC-E001", "GATE-SPEC-E002", "GATE-SPEC-E003", "GATE-SPEC-E004"):
+            self.assertIn(code, catalog, f"error catalog missing {code}")
+
+        template = (GOVERNANCE / "chg" / "CHG-TEMPLATE.yaml").read_text(encoding="utf-8")
+        self.assertIn("GATE-SPEC", template, "CHG-TEMPLATE does not mention GATE-SPEC")
+        self.assertIn("spec", template, "CHG-TEMPLATE does not declare the 'spec' change_source")
+        self.assertIn("semver_impact", template, "CHG-TEMPLATE missing semver_impact field")
+
+    def test_adaptation_surface_is_well_formed(self):
+        """The adaptation surface parses, declares a closed unique knob set,
+        and the mandatory/skippable layer split partitions a subset of the 8
+        artifacts (ADAPTATION.md)."""
+        with (GOVERNANCE / "ADAPTATION_SURFACE.yaml").open(encoding="utf-8") as fh:
+            surface = yaml.safe_load(fh)
+        names = [k["name"] for k in surface["knobs"]]
+        self.assertTrue(names, "no knobs declared")
+        self.assertEqual(len(names), len(set(names)), f"duplicate knob names: {names}")
+
+        mandatory = set(surface["layers"]["mandatory"])
+        skippable = set(surface["layers"]["skippable"])
+        self.assertEqual(mandatory & skippable, set(), "layer is both mandatory and skippable")
+        self.assertLessEqual(
+            mandatory | skippable, set(ARTIFACTS),
+            "adaptation layer split references an unknown artifact",
+        )
 
 
 if __name__ == "__main__":

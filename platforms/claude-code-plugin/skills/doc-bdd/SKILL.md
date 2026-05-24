@@ -1,649 +1,200 @@
 ---
 name: doc-bdd
-description: Layer 4 artifact for Behavior-Driven Development test scenarios using Gherkin Given-When-Then format
+description: Create Behavior-Driven Development (BDD) scenarios - Layer 4 of the SDD flow, translating EARS requirements into executable Given-When-Then acceptance scenarios with req-to-SPEC trace links. Use after EARS, before ADR.
 metadata:
   tags:
     - sdd-workflow
     - layer-4-artifact
-    - shared-architecture
   custom_fields:
     layer: 4
     artifact_type: BDD
-    architecture_approaches: [ai-agent-based, traditional-8layer]
-    priority: shared
-    development_status: active
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "1.2"
-    last_updated: "2026-05-22"
-  versioning_policy: "tracks BDD-TEMPLATE schema_version"
+    version: "0.2.0"
+    framework_spec_version: "0.3.1"
+    last_updated: "2026-05-23"
+    adapts: [section_toggles, glossary]
 ---
 
 # doc-bdd
 
 ## Purpose
 
-Create **BDD (Behavior-Driven Development)** test scenarios - Layer 4 artifact in the SDD workflow that defines executable test scenarios using Gherkin syntax.
+Create **Behavior-Driven Development (BDD)** scenarios — Layer 4 of the SDD
+flow. A BDD suite translates EARS formal requirements into executable
+Given-When-Then (Gherkin) scenarios, each carrying cumulative trace tags and a
+`spec_trace` link forward to the SPEC sections it exercises.
 
-**Layer**: 4
+**Layer**: 4. **Upstream**: BRD → PRD → EARS.
+**Downstream**: ADR → SPEC → TDD → IPLAN → Code.
 
-**Upstream**: BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
+BDD scenarios are the acceptance source of truth that TDD (Layer 7) maps to
+concrete test cases. **Execution is QA-staging only — never run BDD in CI**
+(use TDD unit/integration tests for CI).
 
-**Downstream**: ADR (Layer 5), SPEC (Layer 6), TDD (Layer 7), IPLAN (Layer 8)
+## When to Use
 
-> BDD acceptance scenarios are the source of truth that TDD (Layer 7) maps to concrete test cases.
+Use `doc-bdd` when:
+- EARS (Layer 3) exists and you need executable acceptance scenarios.
+- Validating EARS requirements with concrete Given-When-Then behaviors.
+- Defining the req-to-SPEC trace bridge (`spec_trace`) before ADR/SPEC.
+
+For end-to-end generation from EARS, a prompt, or an IPLAN, use
+`../doc-bdd-autopilot/SKILL.md`. Create upstream artifacts first; never invent
+placeholders like `EARS-XXX` or reference documents that do not yet exist.
 
 ## Prerequisites
 
-### Upstream Artifact Verification (CRITICAL)
-
-**Before creating this document, you MUST:**
-
-1. **List existing upstream artifacts**:
-   ```bash
-   ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null
-   ```
-
-2. **Reference only existing documents** in traceability tags
-3. **Use `null`** only when upstream artifact type genuinely doesn't exist
-4. **NEVER use placeholders** like `BRD-XXX` or `TBD`
-5. **Do NOT create missing upstream artifacts** - skip functionality instead
-
-Before creating BDD, read:
-
-1. **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
-2. **Upstream BRD, PRD, EARS**: Read artifacts that drive these test scenarios
-3. **Template**: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
-4. **Creation & Validation Rules**: `framework/layers/04_BDD/README.md` and `framework/governance/`
-
-## When to Use This Skill
-
-Use `doc-bdd` when:
-- Have completed BRD (Layer 1), PRD (Layer 2), EARS (Layer 3)
-- Need to define executable test scenarios
-- Validating EARS formal requirements with Given-When-Then format
-- Creating acceptance criteria for features
-- You are at Layer 4 of the SDD workflow
-
-## Section-Based Structure (MANDATORY)
-
-**All BDD suites MUST use section-based structure.** No backward compatibility with legacy formats.
-
-### Directory Structure
-
-**Nested Folder Rule (MANDATORY)**: ALL BDD suites MUST use nested folders regardless of size.
-
-```
-docs/04_BDD/
-├── BDD-02_knowledge_engine/           # Suite folder (REQUIRED)
-│   ├── BDD-02.md              # Index file (MANDATORY)
-│   ├── BDD-02.1_ingest.feature        # Section 1
-│   ├── BDD-02.2_query.feature         # Section 2
-│   ├── BDD-02.3.00_learning.feature   # Aggregator (if 5+ subsections)
-│   ├── BDD-02.3.01_learning_path.feature    # Subsection 1
-│   ├── BDD-02.3.02_bias_detection.feature   # Subsection 2
-│   ├── BDD-02_README.md               # Optional companion
-│   └── BDD-02_TRACEABILITY.md         # Optional companion
-└── BDD-02_knowledge_engine.feature    # Redirect stub (0 scenarios)
-```
-
-**CRITICAL**: Never create BDD files directly in `docs/04_BDD/` without a nested folder structure.
-
-### Three Valid File Patterns (ONLY)
-
-| Pattern | Example | Use When |
-|---------|---------|----------|
-| Section-Only | `BDD-02.14_query_result_filtering.feature` | Standard section (≤800 lines, ≤12 scenarios) |
-| Subsection | `BDD-02.24.01_quality_performance.feature` | Section requires splitting |
-| Aggregator | `BDD-02.12.00_query_graph_traversal.feature` | Organizing multiple subsections (@redirect, 0 scenarios) |
-
-### Prohibited Patterns (ERROR)
-
-| Pattern | Example | Fix |
-|---------|---------|-----|
-| _partN suffix | `BDD-02_query_part1.feature` | Use `BDD-02.2.01_query.feature` |
-| Single-file | `BDD-02_knowledge_engine.feature` (with scenarios) | Use section-based format |
-| features/ subdirectory | `BDD-02_slug/features/` | Put `.feature` files at suite folder root |
-
-### Critical Rules
-
-1. **All `.feature` files in suite folder** - No `features/` subdirectory
-2. **Index file mandatory**: `BDD-NN.0_index.md` for all suites
-3. **Max 800 lines** per `.feature` file (soft limit: 600)
-4. **Max 12 scenarios** per Feature block
-5. **Section metadata tags required**: `@section`, `@parent_doc`, `@index`
-
-## Gherkin Syntax
-
-### Feature File Structure
-
-```gherkin
-# Traceability Tags (Gherkin-native, NOT in comments)
-@section: 2.14
-@parent_doc: BDD-02
-@index: BDD-02.md
-@brd:BRD.02.07.a7f3
-@prd:PRD.02.09.1dbc
-@ears:EARS.02.03.5e2a
-
-Feature: BDD-02.14: Query Result Filtering
-  As a data analyst
-  I want filtered query results
-  So that I can focus on relevant data
-
-  Background:
-    Given the system timezone is "America/New_York"
-    And the current time is "09:30:00" in "America/New_York"
-
-  @primary @functional
-  Scenario: Successful filter application
-    Given valid filter criteria
-    When user applies filter
-    Then filtered results are returned
-    And response time is less than @threshold:PRD.02.perf.api.p95_latency
-```
-
-### Tags Placement (CRITICAL - E041)
-
-**Tags MUST be Gherkin-native, NOT in comments.**
-
-```gherkin
-# INVALID (frameworks cannot parse comment-based tags):
-# @brd: BRD.01.07.a7f3
-# @prd: PRD.01.09.1dbc
-Feature: My Feature
-
-# VALID (Gherkin-native tags before Feature):
-@brd:BRD.01.07.a7f3
-@prd:PRD.01.09.1dbc
-@ears:EARS.01.03.5e2a
-Feature: My Feature
-```
-
-### Times and Timezones (MANDATORY)
-
-- All times include seconds: `HH:MM:SS`
-- Use IANA timezone format: `America/New_York`, `America/Los_Angeles`
-- Avoid ambiguous abbreviations (EST/EDT/PST/PDT)
-
-```gherkin
-Given the current time is "14:30:00" in "America/New_York"
-And the system timezone is "America/New_York"
-```
-
-## Unified Element ID Format (MANDATORY)
-
-**Pattern**: `BDD.{doc_id}.{section_id}.{hash}` (4 segments, dot-separated)
-
-- `doc_id` — two-digit document number (e.g., `02`)
-- `section_id` — two-digit section number (e.g., `03`)
-- `hash` — 4-character hex content hash (SHA256, first 4 chars)
-
-| Element | Example |
-|---------|---------|
-| Test Scenario | `BDD.02.03.8f4c` |
-| Step | `BDD.02.03.d7a2` |
-
-See `framework/governance/ID_NAMING_STANDARDS.md` for the authoritative format.
-
-> **REMOVED PATTERNS** - Do NOT use:
-> - Legacy 3-segment `BDD.NN.xxxx` or numeric type codes → Use 4-segment `BDD.NN.SS.xxxx`
-> - `SCENARIO-XXX`, `TS-XXX`, `TC-XXX` → Use `BDD.NN.SS.xxxx`
-> - `STEP-XXX` → Use `BDD.NN.SS.xxxx`
-
-## ADR-Ready Scoring System
-
-**Purpose**: Measures BDD maturity and readiness for ADR progression.
-
-**Format in Document Control**:
-```markdown
-| **ADR-Ready Score** | ✅ 95% (Target: ≥90%) |
-```
-
-### Status and ADR-Ready Score Mapping
-
-| ADR-Ready Score | Required Status |
-|-----------------|-----------------|
-| ≥90% | Approved |
-| 70-89% | In Review |
-| <70% | Draft |
-
-### Scoring Criteria
-
-**Scenario Completeness (35%)**:
-- All EARS statements translated to BDD scenarios: 15%
-- Comprehensive coverage (success/error/edge): 15%
-- Observable verification methods specified: 5%
-
-**Testability (30%)**:
-- Scenarios are automatable: 15%
-- Data-driven Examples tables used: 10%
-- Performance benchmarks quantifiable: 5%
-
-**Architecture Requirements Clarity (25%)**:
-- Performance, security, scalability quality attributes specified: 15%
-- Integration points and external dependencies defined: 10%
-
-**Business Validation (10%)**:
-- Business acceptance criteria traceable: 5%
-- Measurable success outcomes defined: 5%
-
-**Quality Gate**: Score <90% blocks ADR artifact creation.
-
-## Threshold Registry Integration (MANDATORY)
-
-**All quantitative values MUST use `@threshold:` keys.** No hardcoded magic numbers.
-
-### Inline Step Format
-
-```gherkin
-# INVALID (hardcoded):
-Then response time is less than 200ms
-
-# VALID (threshold reference):
-Then response time is less than @threshold:PRD.035.perf.api.p95_latency
-```
-
-### Scenario Tag Format
-
-```gherkin
-@threshold:PRD.NN.perf.api.p95_latency
-Scenario: API responds within performance threshold
-```
-
-### Common Threshold Categories
-
-| Category | BDD Usage | Example Key |
-|----------|-----------|-------------|
-| `perf.*` | Performance validation | `perf.api.p95_latency` |
-| `sla.*` | SLA validation | `sla.uptime.target` |
-| `limit.*` | Rate limit testing | `limit.api.requests_per_second` |
-| `timeout.*` | Timeout validation | `timeout.request.sync` |
-
-## Cumulative Tagging Requirements
-
-**Layer 4 (BDD)**: Must include tags from Layers 1-3 (BRD, PRD, EARS)
-
-**Tag Count**: 3+ tags (@brd, @prd, @ears)
-
-**Format** (Gherkin-native tags before Feature):
-```gherkin
-@brd:BRD.01.07.a7f3
-@prd:PRD.01.09.1dbc
-@ears:EARS.01.03.5e2a
-Feature: Feature Name
-```
-
-## Tag Format Convention
-
-| Notation | Format | Artifacts | Purpose |
-|----------|--------|-----------|---------|
-| Dash | TYPE-NN | SPEC, IPLAN | Document-level references (e.g., SPEC-01, IPLAN-01) |
-| Dot | TYPE.NN.SS.xxxx | BRD, PRD, EARS, BDD, ADR, TDD | Hierarchical element references |
-
-## Scenario Types
-
-**All 8 categories should be represented:**
-
-| Category | Tag | Description |
-|----------|-----|-------------|
-| Success Path | `@primary` | Happy path scenarios |
-| Alternative Path | `@alternative` | Optional parameters, different workflows |
-| Error Conditions | `@negative` | Invalid inputs, error handling |
-| Edge Cases | `@edge_case`, `@boundary` | Boundary conditions, limits |
-| Data-Driven | `@data_driven` | Parameterized with Examples tables |
-| Integration | `@integration` | External system interactions |
-| Quality Attributes | `@quality_attribute` | Performance, security, reliability |
-| Failure Recovery | `@failure_recovery` | Error recovery, circuit breakers |
-
-### Success Path Example
-
-```gherkin
-@primary @functional
-Scenario: User logs in successfully
-  Given valid credentials
-  When user submits login
-  Then user is authenticated
-```
-
-### Error Conditions Example
-
-```gherkin
-@negative @error_handling
-Scenario: Trade rejected due to insufficient funds
-  Given account balance is $1000
-  When trade requires $5000
-  Then trade is rejected
-  And error code "INSUFFICIENT_FUNDS" is returned
-```
-
-### Edge Cases Example
-
-```gherkin
-@edge_case @boundary
-Scenario: Trade at exact position limit
-  Given current delta is 0.499
-  And position limit is 0.50
-  When trade increases delta to 0.50
-  Then trade is accepted
-```
-
-### Data-Driven Example
-
-```gherkin
-@data_driven
-Scenario Outline: Validate price precision
-  Given instrument <symbol>
-  When price is <price>
-  Then precision should be <decimals> decimal places
-  Examples:
-    | symbol | price  | decimals |
-    | SPY    | 450.25 | 2        |
-    | AMZN   | 3250.5 | 1        |
-```
-
-## Section Metadata Requirements
-
-All `.feature` files MUST include section metadata tags:
-
-```gherkin
-@section: NN.SS              # Section number (e.g., 2.1, 2.14)
-@parent_doc: BDD-NN          # Parent BDD suite (e.g., BDD-02)
-@index: BDD-NN.0_index.md    # Index file reference
-@brd:BRD.NN.SS.xxxx          # Upstream BRD element
-@prd:PRD.NN.SS.xxxx          # Upstream PRD element
-@ears:EARS.NN.SS.xxxx        # Upstream EARS requirement
-```
-
-**For subsections, add**:
-```gherkin
-@parent_section: NN.SS       # Parent section number
-```
-
-**Feature Title Format**:
-```gherkin
-Feature: BDD-NN.SS: Domain Description
-```
-
-## Aggregator Files
-
-**Use when**: Section has 5+ subsections
-
-**Requirements**:
-- `@redirect` tag MUST be present
-- 0 scenarios (redirect stub only)
-- List subsections in Feature description
-
-```gherkin
-@redirect
-@section: 2.12.00
-@parent_doc: BDD-02
-@index: BDD-02.md
-
-Feature: BDD-02.12: Query Graph Traversal (Aggregator)
-
-  This is a redirect stub. Test scenarios are in subsections:
-  - BDD-02.12.01_depth_first.feature - Depth-first traversal tests
-  - BDD-02.12.02_breadth_first.feature - Breadth-first traversal tests
-
-Background:
-  Given the system timezone is "America/New_York"
-  # No scenarios in aggregator - redirect only
-```
-
-## Index File Template
-
-**Mandatory**: `BDD-NN.0_index.md` for each suite
-
-```markdown
-# BDD-02.0: Knowledge Engine Test Suite Index
-
-## Suite Overview
-**Purpose**: Test scenarios for Knowledge Engine functionality
-**Scope**: Ingest, Query, Learning, Performance Monitoring
-
-## Section File Map
-| Section | File | Scenarios | Lines | Status | Description |
-|---------|------|-----------|-------|--------|-------------|
-| 02.1 | BDD-02.1_ingest.feature | 8 | 350 | Active | Ingest tests |
-| 02.2 | BDD-02.2_query.feature | 10 | 420 | Active | Query tests |
-
-## Traceability Matrix
-| BDD Section | Upstream Source | Description |
-|-------------|----------------|-------------|
-| BDD-02.1 | EARS-02 (Ingest reqs) | Ingest requirements |
-| BDD-02.2 | EARS-02 (Query reqs) | Query requirements |
-```
+BDD is Layer 4, so upstream artifacts must already exist. Confirm them and read
+the spec before writing:
+
+1. **Template (source of truth):** `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+2. **Layer README:** `framework/layers/04_BDD/README.md`
+3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+
+Verify upstream and check for ID collision:
+`ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null`. Reference
+only existing BRD/PRD/EARS elements in trace tags.
+
+## Layer Guidance
+
+### Required structure (5 sections)
+
+Per `BDD-TEMPLATE.yaml`, every BDD document carries:
+
+1. **Document Control** — version, status, dates, author, priority, the
+   cumulative references `@ears`, `@prd`, `@brd`, plus the ADR-Ready score.
+2. **Feature Definition** — feature name matching the EARS requirement, an
+   `As a / I want / So that` description, and a `Background` (system state +
+   IANA timezone, default `America/New_York`).
+3. **Scenario Structure** — the Given-When-Then scenarios across the five
+   categories (below).
+4. **Traceability** — cumulative upstream tags, downstream expectations, and the
+   health/coverage score.
+5. **Glossary** — flat list of project-specific terms.
+
+See `BDD-TEMPLATE.yaml` for per-section content and scenario conventions.
+
+### Scenario categories (Section 3)
+
+Every scenario carries `@scenario-type:{category}`, a priority tag
+(`@p0-critical` … `@p3-low`), a `@scenario-id:BDD.NN.03.xxxx` tag, executable
+Given-When-Then steps, threshold references for timing, and a `spec_trace` list.
+
+| Category | Tag | Min | Priority |
+|----------|-----|-----|----------|
+| success | `@scenario-type:success` | 1 / EARS | P0–P1 |
+| error | `@scenario-type:error` | 1 / error | P1–P2 |
+| recovery | `@scenario-type:recovery` | 1 / circuit-breaker | P1 |
+| parameterized | `@scenario-type:parameterized` | 1 / multi-value | P1–P2 |
+| optional | `@scenario-type:optional` | 1 / optional param | P2–P3 |
+
+### Gherkin and threshold rules
+
+- Tags are **Gherkin-native**, on separate lines **before** `Feature:` — never
+  in comments. No spaces after the colon in tags: `@ears:EARS.01.03.5e2a`.
+- Times include seconds (`HH:MM:SS`) with IANA timezones (`America/New_York`),
+  never abbreviations like `EST`.
+- Quantitative values use `@threshold:` keys (e.g.
+  `WITHIN @threshold:PRD.NN.perf.api.p95`) — no hardcoded magic numbers.
+- Keep scenarios atomic (one behavior each). Single `.feature` per module up to
+  ~50,000 tokens; beyond that, start a new self-contained BDD document — do not
+  split into sectioned files.
+
+### Element IDs and cumulative tags
+
+- Hierarchical element IDs: `BDD.{doc_id}.{section_id}.{hash}` (e.g.
+  `BDD.01.03.d7a2`; `hash` = first 4 hex of SHA256 of
+  `"{doc_id}:{section_id}:{title}:{description}"` from BDD content, extend to 8
+  on collision). Scenarios live in section `03`.
+- BDD is Layer 4, so it carries **cumulative upstream tags** `@brd @prd @ears`
+  (all three mandatory). Downstream artifacts tag it: `@bdd: BDD.01.03.8f4c`.
+- **Removed patterns** (do not use): `SCENARIO-XXX`, `SCEN-XXX`, `TS-XXX`,
+  `STEP-XXX`, numeric type-codes, and the legacy 3-segment `BDD.NN.xxxx`.
+
+### Downstream trace (spec_trace)
+
+Each scenario records the SPEC sections it maps to, e.g.
+`spec_trace: ["SPEC Section 3 (Interfaces)", "SPEC Section 5 (Behavior)"]`.
+This is the req-to-SPEC bridge that downstream layers consume.
 
 ## Creation Process
 
-### Step 1: Read Upstream Artifacts
-
-Read BRD, PRD, and EARS to understand requirements to test.
-
-### Step 2: Reserve Suite ID
-
-Check `docs/04_BDD/` for next available ID (e.g., BDD-01, BDD-02).
-
-**ID Numbering Convention**: Start with 2 digits and expand only as needed.
-- ✅ Correct: BDD-01, BDD-99, BDD-102
-- ❌ Incorrect: BDD-001, BDD-009 (extra leading zero not required)
-
-### Step 3: Create Suite Folder
-
-```bash
-mkdir -p docs/04_BDD/BDD-02_knowledge_engine/
-```
-
-### Step 4: Create Index File
-
-```bash
-cp framework/layers/04_BDD/BDD-00_index.TEMPLATE.md docs/04_BDD/BDD-02_knowledge_engine/BDD-02.md
-```
-
-### Step 5: Design Section Split
-
-- Identify logical domains or EARS groupings
-- Estimate scenarios per section (target: 6-10)
-- Plan for subsections if needed (>800 lines)
-
-### Step 6: Create Section Files
-
-```bash
-cp framework/layers/04_BDD/BDD-TEMPLATE.yaml docs/04_BDD/BDD-02_knowledge_engine/BDD-02.1_ingest.feature
-```
-
-### Step 7: Add Section Metadata Tags
-
-- `@section`, `@parent_doc`, `@index`
-- Upstream traceability: `@brd`, `@prd`, `@ears`
-
-### Step 8: Write Scenarios
-
-For each requirement from EARS/PRD:
-1. Success path scenario
-2. Error condition scenarios (2-3)
-3. Edge case scenarios (1-2)
-4. Scenario outlines for parameterized tests
-
-### Step 9: Replace Magic Numbers with Thresholds
-
-- Add to PRD threshold registry first if key missing
-- Use `@threshold:PRD.NN.category.key` format
-
-### Step 10: Create Redirect Stub
-
-```bash
-# Create redirect stub at docs/04_BDD/ root
-touch docs/04_BDD/BDD-02_knowledge_engine.feature
-```
-
-Add minimal content with `@redirect` tag and 0 scenarios.
-
-### Step 11: Update Index File
-
-- List all section files with scenario counts
-- Add traceability matrix
-
-### Step 12: Validate BDD Suite
-
-Work through the **Manual Checklist** in the Validation section below. This
-skill *is* the validator — apply every check declaratively against the suite,
-then cross-check against `framework/layers/04_BDD/README.md` and
-`framework/governance/`.
-
-### Step 13: Commit Changes
-
-Commit suite folder and redirect stub together.
+1. **Read upstream** — BRD, PRD, EARS to understand the behaviors to test.
+2. **Reserve ID** — next free `BDD-NN` (two digits, no extra leading zero:
+   `BDD-01`, `BDD-99`, `BDD-102`).
+3. **Create the document** from `framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
+   complete all 5 sections, Document Control first.
+4. **Write scenarios** per EARS requirement across the five categories; add
+   Background, threshold references, and `spec_trace` for each.
+5. **Add cumulative tags** `@brd @prd @ears` (Gherkin-native, before `Feature:`)
+   and `@scenario-id` per scenario.
+6. **Update the BDD index** `docs/04_BDD/BDD-00_index.md` in the same change.
+7. **Validate** (below) and commit the BDD and index together.
 
 ## Validation
 
-### Validation Error Codes Reference
+The framework ships no runtime code — **this skill is the validator**. Apply the
+checklist against `framework/layers/04_BDD/README.md` and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
-| Code | Description | Severity |
-|------|-------------|----------|
-| E001 | Document Control fields missing | ERROR |
-| E002 | Gherkin syntax invalid | ERROR |
-| E003 | ADR-Ready Score format invalid | ERROR |
-| E004 | Upstream traceability tags missing | ERROR |
-| E041 | Tags in comments (not Gherkin-native) | ERROR |
-| E008 | Element ID format invalid | ERROR |
-| CHECK 9.1 | File naming pattern invalid | ERROR |
-| CHECK 9.2 | Prohibited pattern detected | ERROR |
-| CHECK 9.3 | Aggregator requirements not met | ERROR |
-| CHECK 9.4 | File size exceeds limits | ERROR |
-| CHECK 9.5 | Section metadata tags missing | ERROR |
-| CHECK 9.6 | Index file missing | ERROR |
-| CHECK 9.7 | Non-Gherkin content in .feature file | ERROR |
+- [ ] Document Control is the first section; all 5 sections present and non-empty.
+- [ ] Cumulative tags `@brd @prd @ears` present, Gherkin-native, no spaces after
+      colon.
+- [ ] Every scenario has `@scenario-type`, a priority tag, `@scenario-id`,
+      Given-When-Then steps, and a `spec_trace`.
+- [ ] All five scenario categories represented; scenarios atomic and executable.
+- [ ] Quantitative values use `@threshold:` keys; times are `HH:MM:SS` with IANA
+      timezones.
+- [ ] Element IDs match `BDD.NN.SS.xxxx`; no removed patterns.
+- [ ] Traceability section / index updated; no broken links.
+- [ ] Diagram contract: sequence-diagram tag present if a scenario flow is
+      illustrated (use `../charts-flow/SKILL.md`).
 
-### Manual Checklist
+| Code | Meaning | Severity |
+|------|---------|----------|
+| XDOC-006 | Tag format invalid | error |
+| XDOC-008 | Broken internal link | error |
+| XDOC-009 | Missing traceability section | error |
 
-**File Structure**:
-- [ ] All `.feature` files in suite folder (no `features/` subdirectory)
-- [ ] Index file exists: `BDD-NN.0_index.md`
-- [ ] Redirect stub at `docs/BDD/BDD-NN_slug.feature` (0 scenarios)
-- [ ] No file exceeds 800 lines
-- [ ] No Feature block exceeds 12 scenarios
-
-**File Naming**:
-- [ ] All files match one of 3 valid patterns
-- [ ] No prohibited patterns (_partN, single-file)
-
-**Tags and Metadata**:
-- [ ] Tags are Gherkin-native (NOT in comments)
-- [ ] Section metadata: `@section`, `@parent_doc`, `@index`
-- [ ] Cumulative tags: `@brd`, `@prd`, `@ears`
-- [ ] All quantitative values use `@threshold:` keys
-- [ ] Times include seconds (HH:MM:SS) with IANA timezone
-
-**Scenarios**:
-- [ ] All 8 scenario categories represented
-- [ ] Given-When-Then structure
-- [ ] No subjective language ("fast", "reliable")
-- [ ] Observable outcomes in Then steps
-
-**Aggregators** (if applicable):
-- [ ] Has `@redirect` tag
-- [ ] Has 0 scenarios
-- [ ] Lists subsections in Feature description
-
-## Common Pitfalls
-
-| Mistake | Correction |
-|---------|------------|
-| Tags in comments `# @brd:` | Use Gherkin-native `@brd:` before Feature |
-| `ADR-Ready Score: 95%` | Use `✅ 95% (Target: ≥90%)` |
-| `response time < 200ms` (hardcoded) | Use `@threshold:PRD.NN.perf.api.p95_latency` |
-| `.feature` in `features/` subdir | Put at suite folder root |
-| `BDD-02_query_part1.feature` | Use `BDD-02.2.01_query.feature` |
-| Missing @ears tag | All 3 upstream tags are MANDATORY |
-| Only success scenarios | Include all 8 scenario categories |
-| `Status: Approved` (with <90% score) | Use `Status: In Review` or `Draft` |
-| File >800 lines | Split into subsections |
-| `09:30` (no seconds) | Use `09:30:00` |
-| `EST` timezone | Use `America/New_York` |
-
-## Post-Creation Validation (MANDATORY)
-
-**CRITICAL**: Execute validation loop IMMEDIATELY after document creation.
-
-### Validation Loop
-
-```
-LOOP:
-  1. Apply the Manual Checklist (above) to every .feature file in the suite.
-  2. IF errors fixed: GOTO LOOP (re-check)
-  3. IF warnings fixed: GOTO LOOP (re-check)
-  4. IF unfixable issues: Log for manual review
-  5. IF clean: Mark VALIDATED, proceed
-```
-
-Authoritative checks live in `framework/layers/04_BDD/README.md` and
-`framework/governance/`.
-
-### Quality Gate
-
-**Blocking**: YES - Cannot proceed to ADR creation until validation passes with 0 errors.
-
----
-
-## Reserved ID Exemption
-
-**Pattern**: `BDD-00_*.md` or `BDD-00_*.feature`
-
-**Scope**: Documents with reserved ID `000` are FULLY EXEMPT from validation.
-
-**Document Types**:
-- Index documents (`BDD-00_index.md`)
-- Traceability matrix templates
-- Glossaries, registries, checklists
-
----
+**Quality gate (blocking):** ADR-Ready score ≥ 90/100 before moving on. If
+issues are found, fix and re-check; if unfixable, log for manual review.
 
 ## Next Skill
 
-After creating BDD, use:
+`../doc-adr/SKILL.md` — the ADR references this BDD (`@bdd: BDD.NN.SS.xxxx`)
+along with `@brd @prd @ears`, records architecture decisions in
+Context-Decision-Consequences form, and cites the BDD scenarios that validate
+each decision.
 
-**`doc-adr`** - Create Architecture Decision Records (Layer 5)
 
-The ADR will:
-- Document architectural decisions for topics identified in BRD/PRD
-- Include `@brd`, `@prd`, `@ears`, `@bdd` tags (cumulative)
-- Use Context-Decision-Consequences format
-- Reference BDD scenarios that validate the architecture
+## Adaptation
+
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (include or omit template-declared **optional** sections)
+and `glossary` (substitute preferred terms in generated prose). Ignore any
+unknown or out-of-surface key; absent a profile, use framework defaults.
+Authority: `framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- **Template**: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
-- **Index Template**: `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
-- **Creation & Validation Rules**: `framework/layers/04_BDD/README.md`
-- **Governance**: `framework/governance/`
-- **Shared Standards**: `../doc-flow/SHARED_CONTENT.md`
-- **ID Standards**: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+- Layer README: `framework/layers/04_BDD/README.md`
+- Index template: `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
+- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Quality gate: `../doc-bdd-audit/SKILL.md` · Fixes: `../doc-bdd-fixer/SKILL.md`
+- Generation pipeline: `../doc-bdd-autopilot/SKILL.md`
 
 ## Quick Reference
 
-| Item | Value |
-|------|-------|
-| **Purpose** | Define executable test scenarios |
+| | |
+|---|---|
+| **Purpose** | Executable Given-When-Then acceptance scenarios |
 | **Layer** | 4 |
-| **Tags Required** | @brd, @prd, @ears (3 tags) |
-| **ADR-Ready Score** | ≥90% required for "Approved" status |
-| **Element ID Format** | `BDD.NN.SS.xxxx` (4-segment, scenarios and steps) |
-| **File Structure** | Nested suite folder: `docs/04_BDD/BDD-NN_{slug}/` |
-| **Max File Size** | 800 lines (soft: 600) |
-| **Max Scenarios** | 12 per Feature block |
-| **Time Format** | HH:MM:SS with IANA timezone |
-| **Quantitative Values** | Use `@threshold:PRD.NN.category.key` |
-| **Next Skill** | doc-adr |
-
----
-
-## Version History
-
-| Version | Date | Changes | Author |
-|---------|------|---------|--------|
-| 1.2 | 2026-05-22 | Migrated to 8-layer model: downstream chain ADR/SPEC/TDD/IPLAN; 4-segment element IDs; `framework/layers/` paths; removed dead validation-script refs | System |
-| 1.1 | 2026-02-27 | Migrated frontmatter to `metadata` | System |
-| 1.0 | 2026-02-08 | Initial skill definition with YAML frontmatter standardization | System |
+| **Upstream tags** | `@brd @prd @ears` (cumulative, all mandatory) |
+| **Key idea** | EARS → Gherkin scenarios with `spec_trace` to SPEC |
+| **Must include** | Document Control (first), 5 scenario categories, thresholds |
+| **Execution** | QA staging only — never CI |
+| **Next** | `doc-adr` |

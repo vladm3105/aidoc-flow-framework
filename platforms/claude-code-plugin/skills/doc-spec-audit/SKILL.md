@@ -1,176 +1,129 @@
 ---
 name: doc-spec-audit
-description: Unified SPEC audit wrapper that runs validator then reviewer and produces a combined report for fixer consumption
-
+description: Audit a SPEC - run declarative structural checks plus content review and produce a combined report for doc-spec-fixer. Use for SPEC quality gating before TDD.
 metadata:
   tags:
     - sdd-workflow
-    - quality-assurance
-    - spec-audit
     - layer-6-artifact
-    - shared-architecture
+    - quality-assurance
   custom_fields:
     layer: 6
     artifact_type: SPEC
-    architecture_approaches: [ai-agent-based]
-    priority: primary
-    development_status: active
     skill_category: quality-assurance
-    upstream_artifacts: [SPEC]
-    downstream_artifacts: [Audit Report, Fix Cycle]
-    version: "1.1"
-    last_updated: "2026-05-22"
-  versioning_policy: "tracks SPEC-TEMPLATE schema_version"
-
+    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    downstream_artifacts: [TDD, IPLAN]
+    version: "0.2.0"
+    framework_spec_version: "0.3.1"
+    last_updated: "2026-05-23"
+    adapts: [section_toggles, active_layers, audit_threshold]
 ---
 
 # doc-spec-audit
 
 ## Purpose
 
-Run a **single SPEC audit workflow** that executes:
+Run a **unified SPEC audit** — declarative structural checks plus content-quality
+review — in one pass, producing a single combined report that
+`../doc-spec-fixer/SKILL.md` consumes. The framework ships no runtime code, so
+**this skill is the validator**: Claude performs each check directly against the
+SPEC using the spec as the contract.
 
-1. `doc-spec-validator` (structural/schema gate)
-2. `doc-spec-reviewer` (semantic/content quality gate)
-
-Then emit one **combined report** optimized for `doc-spec-fixer` input.
-
-**Layer**: 6 (SPEC Quality Gate Wrapper)
-
-**Upstream**: SPEC file(s)
-
-**Downstream**:
-- Combined Audit Report: `SPEC-NN.A_audit_report_vNNN.md`
-- Optional Fix Cycle trigger for `doc-spec-fixer`
-
----
-
-## Why This Skill Exists
-
-Use this wrapper to avoid user confusion between validator and reviewer while preserving separation of concerns.
-
-| Concern | Owner Skill |
-|---------|-------------|
-| Schema/template compliance | `doc-spec-validator` |
-| Content quality and implementation readiness | `doc-spec-reviewer` |
-| Single user-facing audit command | `doc-spec-audit` |
-
----
+**Layer**: 6 (SPEC quality gate). **Upstream**: a SPEC file. **Downstream**:
+`SPEC-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
-Use `doc-spec-audit` when:
-- You want one command for SPEC quality checks
-- You need a combined report for `doc-spec-fixer`
-- You are running QA before TDD/IPLAN generation
+Use after a SPEC exists and before generating the TDD, or inside the autopilot's
+audit↔fix cycle. Do **not** use to create a SPEC (use `../doc-spec/SKILL.md` or
+`../doc-spec-autopilot/SKILL.md`).
 
-Do NOT use when:
-- SPEC does not exist (use `doc-spec` / `doc-spec-autopilot` generation first)
-- You only need one specific check domain (use validator or reviewer directly)
+**Fresh-audit policy:** always audit from scratch — never reuse prior scores or
+cached results; compute the TDD-Ready score independently each run.
 
----
+**Report cleanup:** after writing the new report, delete superseded
+`SPEC-NN.A_audit_report_v*.md`; keep `SPEC-NN.F_fix_report_v*.md` and
+`.drift_cache.json`. Record a cleanup summary in the report.
 
 ## Execution Contract
 
-### Input
-- SPEC path (`docs/06_SPEC/SPEC-NN_*/...`)
-- Optional: threshold (default review threshold: 90)
+**Input:** SPEC path (`docs/06_SPEC/SPEC-NN_*/...`); optional score threshold
+(default 90).
 
-### Sequence (Mandatory)
+**Sequence:** 1) run structural checks → 2) record findings → 3) run content
+review → 4) merge/normalize findings → 5) write `SPEC-NN.A_audit_report_vNNN.md`
+→ 6) if auto-fixable findings exist, hand off to `doc-spec-fixer`.
 
-```text
-1) Run doc-spec-validator
-2) Run doc-spec-reviewer
-3) Normalize and merge findings
-4) Write SPEC-NN.A_audit_report_vNNN.md
-5) If auto-fixable findings exist, hand off to doc-spec-fixer
-```
+## Structural Checklist
 
-### Combined Status Rules
+Authority: `framework/layers/06_SPEC/README.md`,
+`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (embedded rules), and
+`framework/governance/ID_NAMING_STANDARDS.md`.
 
-- `PASS`: Validator PASS AND Reviewer score >= threshold AND no blocking issues
-- `FAIL`: Validator FAIL OR Reviewer score < threshold OR blocking/manual-required issues present
+**Tier 1 — blocking (error):**
 
----
+| Check | Verifies |
+|-------|----------|
+| YAML syntax | the SPEC parses as valid YAML |
+| Document ID | dash form `SPEC-NN`; no dotted SPEC element IDs; no removed patterns |
+| Structure | all 8 required template sections present and non-empty |
+| Cumulative tags | upstream chain complete (`@brd @prd @ears @bdd @adr`); no gaps |
+| Quality gate | TDD-Ready score ≥ threshold (default 90) |
 
-## Combined Report Format (for doc-spec-fixer)
+**Tier 2 — advisory (warning):** frontmatter metadata (below); C4-L3 scope holds
+(interfaces/data/behavior only, no code/SQL/deployment detail); internal links
+and template/governance references resolve; quantitative values use `@threshold:`
+references; downstream `@tdd: TDD-NN` contract present; diagram contract tags
+present (`@diagram: c4-l3`, `@diagram: dfd-l3` — use `../charts-flow/SKILL.md`).
 
-Output file: `SPEC-NN.A_audit_report_vNNN.md`
+**Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
+threshold **and** no blocking issues; otherwise `FAIL`.
 
-Required sections:
+## Metadata Checks
 
-1. `## Summary`
-   - SPEC ID, timestamp (EST), overall status
-   - Validator status, reviewer score
-2. `## Score Calculation (Deduction-Based)`
-   - Formula: `100 - total_deductions`
-   - Threshold comparison (`>=90` pass gate)
-3. `## Validator Findings`
-   - List by severity/code
-4. `## Reviewer Findings`
-   - List by severity/code
-5. `## Coverage Findings`
-   - Requirement implementation coverage summary
-   - Traceability/tag coverage summary
-   - Interface and error-handling coverage summary
-6. `## Fix Queue for doc-spec-fixer`
-   - `auto_fixable`
-   - `manual_required`
-   - `blocked`
-7. `## Recommended Next Step`
-   - `run doc-spec-fixer`
-   - or `manual update required`
+| Field | Required | Valid values |
+|-------|----------|--------------|
+| `document_type` | yes | `spec-document` (not `template`) |
+| `artifact_type` | yes | `SPEC` |
+| `layer` | yes | `6` |
+| `deliverable_type` | yes | `code`, `document`, `ux`, `risk`, `process` |
 
-### Fix Queue Normalization
+Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
+`VALID-M003` `document_type` not `spec-document`.
 
-Each finding MUST include:
-- `source`: `validator` | `reviewer`
-- `code`: issue code
-- `severity`: `error|warning|info`
-- `file`: relative path
-- `section`: heading/anchor if known
-- `action_hint`: short imperative guidance
-- `confidence`: `high|medium|manual-required`
+## Combined Report Format
 
----
+Output: `SPEC-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+timestamp, overall status, structural status, content score) · **Score
+Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
+**Structural Findings** · **Content Findings** (interface/data-model/behavior
+coverage, cumulative-tag coverage) · **Diagram Contract Findings** · **Fix
+Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended Next
+Step** · **Cleanup Summary**.
 
-## Hand-off Contract to doc-spec-fixer
+## Hand-off to doc-spec-fixer
 
-`doc-spec-fixer` MUST accept combined audit report as equivalent upstream input:
-- `SPEC-NN.A_audit_report_vNNN.md` (preferred)
-- `SPEC-NN.R_review_report_vNNN.md` (legacy compatibility)
+Normalize every finding to: `source` (`structural`|`content`), `code`,
+`severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
+`confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-spec-fixer`
+consumes the latest `SPEC-NN.A_audit_report_vNNN.md`.
 
-Precedence rule:
-1. Select newest timestamp.
-2. If timestamps are equal, prefer `.A_audit_report` over `.R_review_report`.
 
----
+## Adaptation
 
-## Example Invocation
+Before applying defaults, read the project adaptation profile
+(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
+`section_toggles` (a toggled-off **optional** section is not a finding; a
+missing **required** section still is), `active_layers` (never flag the
+absence of — or a missing reference to — a layer the project disabled, per the
+cascade rule), and `audit_threshold` (use the project's quality-gate score
+only when it is **>=** the framework default; ignore any lower value). Ignore
+unknown keys.
+Authority: `framework/governance/ADAPTATION.md`.
 
-```bash
-/doc-spec-audit docs/06_SPEC/SPEC-01_f1_iam/
-```
+## Related Resources
 
-Expected outcome:
-1. validator runs
-2. reviewer runs
-3. combined audit report generated
-4. fixer can execute directly from combined report
-
----
-
-## Version History
-
-| Version | Date | Changes |
-|---------|------|---------|
-| 1.1 | 2026-05-22 | Migrated to the framework 8-layer model: SPEC renumbered to Layer 6; QA gate now precedes TDD (Layer 7)/IPLAN (Layer 8), not TSPEC/TASKS; SPEC paths under `docs/06_SPEC/`; tracks `SPEC-TEMPLATE` schema version |
-| 1.0 | 2026-02-27 | Initial SPEC audit wrapper; validator→reviewer orchestration; combined report contract for fixer with `.A_` preferred and `.R_` legacy compatibility |
-
-## Implementation Plan Consistency (IPLAN-004)
-
-- Treat plan-derived outputs as valid source mode and verify intent preservation from implementation plan scope/objectives.
-- Validate upstream autopilot precedence assumption: `--iplan > --ref > --prompt`.
-- Flag objective/scope conflicts between plan context and artifact output as blocking issues requiring clarification.
-- Do not introduce legacy fallback paths such as `docs-v2.0/00_REF`.
-
+- Create: `../doc-spec/SKILL.md` · Fix: `../doc-spec-fixer/SKILL.md` · Generate:
+  `../doc-spec-autopilot/SKILL.md`
+- Authority: `framework/layers/06_SPEC/README.md`,
+  `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`,
+  `framework/governance/ID_NAMING_STANDARDS.md`

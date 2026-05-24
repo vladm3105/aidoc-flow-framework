@@ -36,7 +36,7 @@ custom_fields:
 ## Templates
 
 - [CHG-TEMPLATE.yaml](./CHG-TEMPLATE.yaml): Unified template (all change levels C1/C2/C3/Emergency)
-- [gates/](./gates/): Gate definitions (GATE-01, 03, 06, 08, CODE)
+- [gates/](./gates/): Gate definitions (GATE-01, 03, 06, 08, CODE, SPEC)
 - [templates/GATE_APPROVAL_FORM.md](./templates/GATE_APPROVAL_FORM.md): Gate approval companion
 - [templates/POST_MORTEM-TEMPLATE.md](./templates/POST_MORTEM-TEMPLATE.md): Emergency post-mortem
 
@@ -49,6 +49,7 @@ custom_fields:
 | **GATE-06** | L6-L7 | SPEC, TDD | [gates/GATE-06_DESIGN_TEST.md](./gates/GATE-06_DESIGN_TEST.md) |
 | **GATE-08** | L8 | IPLAN | [gates/GATE-08_IPLAN.md](./gates/GATE-08_IPLAN.md) |
 | **GATE-CODE** | Code | Source Code | [gates/GATE-CODE_IMPLEMENTATION.md](./gates/GATE-CODE_IMPLEMENTATION.md) |
+| **GATE-SPEC** | meta | `framework/` spec | [gates/GATE-SPEC_FRAMEWORK.md](./gates/GATE-SPEC_FRAMEWORK.md) |
 
 ## Reference
 
