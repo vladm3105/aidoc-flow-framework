@@ -93,7 +93,7 @@ def run_cross_section_checks_md(
     passes: list[str],
 ) -> None:
     """Cross-section checks for MD-format documents (regex-based, limited).
-    
+
     Only SDD-XS-001 (traceability ID existence) is feasible via regex.
     Others skip with info: 'Structured validation requires YAML format'.
     """
@@ -152,7 +152,7 @@ def run_brd_cross_section_checks_md(
     passes: list[str],
 ) -> None:
     """BRD cross-section checks for MD-format BRDs (regex-based, limited).
-    
+
     Only BRD-XS-002 (phase count via heading matching) is feasible.
     Others skip with info: 'Structured BRD validation requires YAML format'.
     """
@@ -176,7 +176,7 @@ def run_brd_cross_section_checks_md(
        # YAML path: structured validation
        yaml_data = yaml.safe_load(yaml_files[0].read_text(encoding="utf-8"))
        _validate_yaml_metadata(yaml_data, template, errors, warnings, passes)
-       
+
        # Tier 1: Generic cross-section (all layers)
        run_cross_section_checks(
            yaml_data=yaml_data, doc_type=doc_type,

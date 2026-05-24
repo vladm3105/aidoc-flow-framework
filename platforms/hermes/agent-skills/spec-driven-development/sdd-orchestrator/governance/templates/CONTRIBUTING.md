@@ -100,12 +100,12 @@ def calculate_cost(
     currency: str = "USD"
 ) -> dict:
     \"\"\"Calculate cost for a given usage amount.
-    
+
     Args:
         usage_amount: Amount of resource used
         rate_per_unit: Cost per unit of resource
         currency: Currency code (default: USD)
-        
+
     Returns:
         Dictionary with cost breakdown
     \"\"\"
@@ -157,7 +157,7 @@ export function calculateTotalCost(metrics: CostMetric[]): number {
 **Example:**
 
 ```sql
-SELECT 
+SELECT
   date,
   cloud_provider,
   SUM(cost_usd) AS total_cost

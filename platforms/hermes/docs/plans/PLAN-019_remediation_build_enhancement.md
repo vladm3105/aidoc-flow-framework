@@ -114,7 +114,7 @@ class ReviewFinding:
 
 def parse_review_report(report_path: Path) -> tuple[ReviewSummary | None, list[ReviewFinding]]:
     """Parse a UCR review report and extract structured findings.
-    
+
     Returns (summary, findings). If parsing fails completely,
     returns (None, []) — caller should keep fallback finding.
     """
@@ -135,7 +135,7 @@ _review_summary_data: dict[str, object] | None = None  # stored for report dict
 if review_report is not None and review_report.exists():
     from mcp_server.remediation.review_parser import parse_review_report
     review_summary, review_findings = parse_review_report(review_report)
-    
+
     if review_findings:
         # Cap at 50 findings to avoid prompt inflation
         capped = review_findings[:50]

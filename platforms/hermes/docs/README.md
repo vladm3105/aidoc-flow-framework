@@ -41,14 +41,14 @@ This directory (`ucx_hermes/`) is now the **sole active runtime** for the UCX MC
 Active document flow for SDD v3.2 (8 layers):
 
 ```
-BRD (L1: Context/C4-L1) 
-  → PRD (L2: Container/C4-L2) 
-  → EARS (L3: Decision Bridge) 
-  → BDD (L4: Decision Bridge) 
-  → ADR (L5: Decision Bridge) 
-  → SPEC (L6: Component/C4-L3) 
-  → TDD (L7: Implementation Bridge) 
-  → IPLAN (L8: Implementation Bridge) 
+BRD (L1: Context/C4-L1)
+  → PRD (L2: Container/C4-L2)
+  → EARS (L3: Decision Bridge)
+  → BDD (L4: Decision Bridge)
+  → ADR (L5: Decision Bridge)
+  → SPEC (L6: Component/C4-L3)
+  → TDD (L7: Implementation Bridge)
+  → IPLAN (L8: Implementation Bridge)
   → Code
 ```
 

@@ -24,6 +24,7 @@ assignees: ''
 - [ ] Team familiarity
 
 ## Deliverable
+
 - [ ] Summary document or ADR (if decision is significant)
 - [ ] Recommendation with rationale
 

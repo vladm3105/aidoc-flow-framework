@@ -18,26 +18,26 @@ GHES does not provide hosted runners. Unlike github.com, `runs-on: ubuntu-latest
 
 ```
 
-  GHES ({GITHUB_HOST})                     
-      
-    8 Workflows     Project Board #{PROJECT_BOARD_NUMBER}         
-    (queued)        (status sync blocked)     
-      
-          job dispatch                           
-                                                 
-                              
-    Runner Registry    registration token   
-                              
+  GHES ({GITHUB_HOST})
+
+    8 Workflows     Project Board #{PROJECT_BOARD_NUMBER}
+    (queued)        (status sync blocked)
+
+          job dispatch
+
+
+    Runner Registry    registration token
+
 
            long-poll (HTTPS)
-          
 
-  Self-Hosted Runner                  
-  (host process or Docker container)  
-                                      
-  Labels: ubuntu-latest               
-  Mode:   persistent (long-running)   
-  Auth:   registration token via PAT  
+
+  Self-Hosted Runner
+  (host process or Docker container)
+
+  Labels: ubuntu-latest
+  Mode:   persistent (long-running)
+  Auth:   registration token via PAT
 
 ```
 

@@ -1400,17 +1400,17 @@ Control-plane/execution-plane gate:
 Development (ai:development) → PR merge
      → Deployment (ai:deployment)     → staging deploy
      → QA Testing (ai:qa-testing)     → execute tests
-                                              
-                                         
+
+
                                         Pass     Fail
-                                                  
+
                                     ai:qa-passed   Create Bug Issue
                                                   (ai:development + bug)
                                                   iteration:1-3
-                                                       
+
                                                   Loop back (max 3x)
-                                                       
-                                    PRODUCTION 
+
+                                    PRODUCTION
 ```
 
 **Additional Labels for QA Loop:**

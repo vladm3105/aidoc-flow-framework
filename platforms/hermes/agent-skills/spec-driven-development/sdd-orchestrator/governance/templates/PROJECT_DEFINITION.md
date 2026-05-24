@@ -54,20 +54,20 @@ This project definition describes {PROJECT_DESCRIPTION_SHORT}. Replace this sect
 
 ```
 
-                              USER INTERFACE                                  
-                          {UI_TECHNOLOGY_STACK}                              
+                              USER INTERFACE
+                          {UI_TECHNOLOGY_STACK}
 
-                                      
-                                      
 
-                         APPLICATION LAYER                                    
-                      {APP_TECHNOLOGY_STACK}                                 
 
-                                      
-                                      
 
-                           DATA LAYER                                         
-                      {DATA_TECHNOLOGY_STACK}                                
+                         APPLICATION LAYER
+                      {APP_TECHNOLOGY_STACK}
+
+
+
+
+                           DATA LAYER
+                      {DATA_TECHNOLOGY_STACK}
 
 ```
 

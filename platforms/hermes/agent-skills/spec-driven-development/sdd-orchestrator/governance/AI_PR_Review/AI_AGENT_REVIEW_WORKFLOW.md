@@ -46,23 +46,23 @@ This document defines the workflow for **on-demand AI agent PR reviews** — dis
 ## 3. Review Lifecycle State Machine
 
 ```
-                  
-                                                                                          
-                                                                                          
+
+
+
   [1. READ PR] → [2. VERIFY LINKED ISSUE] → [3. ANALYZE] → [4. POST REVIEW]
-                                                                                         
-                                                                  
-                                                                                       
-                                                     APPROVE      COMMENT  REQ_CHG        
-                                                                                       
-                                                                         [5. FIX]       
-                                                   [CONCLUSION]  [CONCLUSION]            
-                                                                        [6. PUSH]       
-                                                      (done)        (done)               
+
+
+
+                                                     APPROVE      COMMENT  REQ_CHG
+
+                                                                         [5. FIX]
+                                                   [CONCLUSION]  [CONCLUSION]
+                                                                        [6. PUSH]
+                                                      (done)        (done)
                                                                          [7. RE-REVIEW]
-                                                                               
+
                                                                          [CONCLUSION]
-                                                                               
+
                                                                      (max 3 iterations,
                                                                       then escalate)
 ```

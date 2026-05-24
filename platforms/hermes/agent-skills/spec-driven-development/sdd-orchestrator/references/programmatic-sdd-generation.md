@@ -96,7 +96,7 @@ with open(output_path, 'w') as f:
 Always verify YAML validity immediately after writing:
 
 ```python
-r = subprocess.run(["python3", "-c", f"import yaml; d=yaml.safe_load(open('{output_path}')); print('YAML valid')"], 
+r = subprocess.run(["python3", "-c", f"import yaml; d=yaml.safe_load(open('{output_path}')); print('YAML valid')"],
                    capture_output=True, text=True)
 if r.returncode != 0:
     print(f"YAML ERROR: {r.stderr}")

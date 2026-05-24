@@ -66,83 +66,83 @@ This diagram shows how workflows trigger each other and their dependencies:
 
 ```
 
-                           DEVELOPMENT PHASE                                   
-
-                                                                               
-   Issue Created           PR Created/Updated          PR Merged               
-                                                                            
-                                                                            
-  auto-add-to-project     ai-review.yml          create-deployment-issue       
-                                                create-qa-testing-issue      
-                                                                            
-  issue-label-sync              CI                                            
-  (labeled/assigned)                             pr-merge-cleanup             
-                                                                              
-                        (must pass)                                            
-                                                                               
+                           DEVELOPMENT PHASE
 
 
+   Issue Created           PR Created/Updated          PR Merged
 
-                           DEPLOYMENT PIPELINE                                 
 
-                                                                               
-  check-phase-completion (hourly)                                              
-                                                                              
-         (phase N issues all closed)                                          
-  deploy-dev.yml (phase N)                                                     
-                                                                              
-         [REQUIRES] phases 1..N-1 dev_deployed                              
-         Build → Push → Deploy → Smoke Test                                 
-                                                                              
-         (success)                                                            
-  check-all-phases-dev.yml                                                     
-                                                                              
-         [REQUIRES] ALL 8 phases dev_deployed                               
-                                                                              
-         (all complete)                                                       
-  deploy-staging.yml (Phase 8 image)                                           
-                                                                              
-         Copy image from dev → staging                                      
-         Deploy → Health Check → Acceptance Tests                           
-                                                                              
-         (staging verified)                                                   
-  deploy-prod.yml [MANUAL]                                                     
-                                                                              
-         [REQUIRES] staging verified, deployment window, 2 approvers        
-         Gradual rollout: 10% → 50% → 100%                                  
-                                                                               
+  auto-add-to-project     ai-review.yml          create-deployment-issue
+                                                create-qa-testing-issue
+
+  issue-label-sync              CI
+  (labeled/assigned)                             pr-merge-cleanup
+
+                        (must pass)
 
 
 
-                              QA PIPELINE                                      
 
-                                                                               
-  execute-qa-testing.yml (after staging deploy OR scheduled)                   
-                                                                              
-         [REQUIRES] deployment complete                                     
-                                                                              
-         PASS → Close QA issue, board status → Done                         
-                                                                              
-         FAIL  create-bug-issue.yml                                      
-                                                                              
-                            iteration < 3 → Create bug issue (ai:ready candidate)     
-                                                                              
-                            iteration ≥ 3 → Create escalation (needs-human) 
-                                                                               
+                           DEPLOYMENT PIPELINE
 
 
+  check-phase-completion (hourly)
 
-                           RECOVERY WORKFLOWS                                  
+         (phase N issues all closed)
+  deploy-dev.yml (phase N)
 
-                                                                               
-  rollback-prod.yml [MANUAL]                                                   
-                                                                              
-         Traffic shift to previous revision → Health check                  
-                                                                               
-  phase-transition.yml [MANUAL]                                                
-                                                                              
-         Bulk move phase issues: Backlog ↔ Todo                             
-                                                                               
+         [REQUIRES] phases 1..N-1 dev_deployed
+         Build → Push → Deploy → Smoke Test
+
+         (success)
+  check-all-phases-dev.yml
+
+         [REQUIRES] ALL 8 phases dev_deployed
+
+         (all complete)
+  deploy-staging.yml (Phase 8 image)
+
+         Copy image from dev → staging
+         Deploy → Health Check → Acceptance Tests
+
+         (staging verified)
+  deploy-prod.yml [MANUAL]
+
+         [REQUIRES] staging verified, deployment window, 2 approvers
+         Gradual rollout: 10% → 50% → 100%
+
+
+
+
+                              QA PIPELINE
+
+
+  execute-qa-testing.yml (after staging deploy OR scheduled)
+
+         [REQUIRES] deployment complete
+
+         PASS → Close QA issue, board status → Done
+
+         FAIL  create-bug-issue.yml
+
+                            iteration < 3 → Create bug issue (ai:ready candidate)
+
+                            iteration ≥ 3 → Create escalation (needs-human)
+
+
+
+
+                           RECOVERY WORKFLOWS
+
+
+  rollback-prod.yml [MANUAL]
+
+         Traffic shift to previous revision → Health check
+
+  phase-transition.yml [MANUAL]
+
+         Bulk move phase issues: Backlog ↔ Todo
+
 
 ```
 
@@ -597,17 +597,17 @@ Called by `check-phase-completion.yml` when a phase's issues are all closed.
 
 ```
 check-phase-completion.yml (phase N complete)
-        
-        
+
+
 deploy-dev.yml (phase N)
-        
+
          Verify prerequisites (phases 1..N-1 dev_deployed)
          Build and push image (phase-N-{sha})
          Deploy to Cloud Run (dev)
          Run smoke tests
          Update phase tracking (dev_deployed or dev_failed)
-        
-        
+
+
 check-all-phases-dev.yml (triggered on success)
 ```
 
@@ -708,18 +708,18 @@ Called by `check-all-phases-dev.yml` when all phases are complete.
 
 ```
 check-all-phases-dev.yml (all phases complete)
-        
-        
+
+
 deploy-staging.yml (Phase 8 image)
-        
+
          Copy image from dev registry to staging registry
          Deploy to Cloud Run (staging)
          Health check with retry
          Run full acceptance tests (all phases)
          Update staging tracking (deployed or failed)
          Close deployment issues on success
-        
-        
+
+
 Ready for production (manual dispatch)
 ```
 
@@ -729,9 +729,9 @@ Staging receives the exact same image that was validated on dev:
 
 ```
 Dev Registry:  {GCP_REGION}-docker.pkg.dev/{GCP_PROJECT_DEV}/{PROJECT_PREFIX}/{PROJECT_PREFIX}-{SERVICE_NAME}:phase-8-{sha}
-        
+
          docker pull → docker tag → docker push
-        
+
 Staging Registry: {GCP_REGION}-docker.pkg.dev/{GCP_PROJECT_STAGING}/{PROJECT_PREFIX}/{PROJECT_PREFIX}-{SERVICE_NAME}:phase-8-{sha}
 ```
 
@@ -882,30 +882,30 @@ The `WIF_CREDENTIALS_*` and `GCP_PROJECT_*` secrets enable keyless authenticatio
 
 ```
 GitHub Actions Workflow
-        
-        
 
-  1. Read WIF_CREDENTIALS_STAGING        
-     (Workload Identity Federation JSON) 
 
-        
-        
 
-  2. gcloud auth login --cred-file       
-     Exchange GitHub OIDC token for      
-     short-lived GCP access token        
+  1. Read WIF_CREDENTIALS_STAGING
+     (Workload Identity Federation JSON)
 
-        
-        
 
-  3. gcloud config set project           
-     Target GCP_PROJECT_STAGING          
 
-        
-        
 
-  4. docker push / gcloud run deploy     
-     Authenticated to correct project    
+  2. gcloud auth login --cred-file
+     Exchange GitHub OIDC token for
+     short-lived GCP access token
+
+
+
+
+  3. gcloud config set project
+     Target GCP_PROJECT_STAGING
+
+
+
+
+  4. docker push / gcloud run deploy
+     Authenticated to correct project
 
 ```
 

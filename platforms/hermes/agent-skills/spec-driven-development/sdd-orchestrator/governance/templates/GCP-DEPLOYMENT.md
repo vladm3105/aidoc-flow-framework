@@ -410,7 +410,7 @@ jobs:
         with:
           workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
           service_account: ${{ secrets.GCP_WIF_SERVICE_ACCOUNT }}
-      
+
       - name: Deploy Backend
         run: |
           gcloud builds submit --tag gcr.io/${{ secrets.GCP_PROJECT_ID }}/backend ./backend

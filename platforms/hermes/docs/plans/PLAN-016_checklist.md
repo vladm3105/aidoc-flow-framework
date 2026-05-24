@@ -255,7 +255,7 @@
 
     ```python
     yaml_files = _collect_yaml_files(document_path)
-    
+
     if yaml_files:
         # --- YAML validation path ---
         yaml_text = yaml_files[0].read_text(encoding="utf-8")
@@ -265,10 +265,10 @@
             yaml_data = {}
         else:
             passes.append(f"yaml_parsed: {yaml_files[0].name}")
-        
+
         files = yaml_files  # for report
         _validate_yaml_metadata(yaml_data, template, errors, warnings, passes)
-        
+
         # Tier 1: Generic cross-section (all layers)
         run_cross_section_checks(
             yaml_data=yaml_data,
@@ -291,25 +291,25 @@
         files = _collect_markdown_files(document_path)
         if not files:
             errors.append("No markdown or YAML files found to validate")
-        
+
         frontmatter: dict[str, object] = {}
         if files:
             frontmatter = _parse_frontmatter(files[0].read_text(encoding="utf-8"))
             if not frontmatter:
                 errors.append("Missing or invalid YAML frontmatter")
-        
+
         # ... existing custom_fields, tags, sections validation (lines 271-312) ...
         # (keep all existing MD validation logic exactly as-is)
-        
+
         combined_content = "\n\n".join(
             path.read_text(encoding="utf-8") for path in files
         ) if files else ""
-        
+
         _run_doc_type_parity_checks(
             doc_type=doc_type, content=combined_content,
             errors=errors, passes=passes,
         )
-        
+
         # Tier 1: Generic cross-section (degraded MD)
         run_cross_section_checks_md(
             content=combined_content, doc_type=doc_type,
@@ -331,11 +331,11 @@
 
   ```python
   """Script-based document validation helpers."""
-  
+
   from .runner import ValidationRunResult, run_project_validation_build
   from .cross_section import run_cross_section_checks, run_cross_section_checks_md
   from .brd_rules import run_brd_cross_section_checks, run_brd_cross_section_checks_md
-  
+
   __all__ = [
       "ValidationRunResult",
       "run_project_validation_build",
@@ -593,13 +593,13 @@
 
   ```
   feat(mcp_ucx): add cross-section validation rules (PLAN-016)
-  
+
   Tier 1 (all layers): traceability ID existence (SDD-XS-001),
   readiness score plausibility (SDD-XS-002), diagram registry (SDD-XS-003).
-  
+
   Tier 2 (BRD-specific): ADT propagation (BRD-XS-001), phase alignment
   (BRD-XS-002), entity consistency (BRD-XS-004), currency scope (BRD-XS-005).
-  
+
   YAML document support in sdd_validate pipeline. BRD template updates
   (diagrams section, cross_section_rules). BRD-MD-TEMPLATE.md for
   YAML-to-MD rendering. DIAGRAM_STANDARDS.md BRD diagram list.

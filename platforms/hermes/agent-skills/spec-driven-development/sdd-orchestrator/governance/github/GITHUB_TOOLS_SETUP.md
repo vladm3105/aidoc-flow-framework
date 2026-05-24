@@ -617,34 +617,34 @@ All 6 servers configured in `.mcp.json` are open source and active.
 
 ```
 
-              AI ASSISTANT - 6 ACTIVE MCP SERVERS                  
-              (All using -tt-{PROJECT_PREFIX} suffix)                        
+              AI ASSISTANT - 6 ACTIVE MCP SERVERS
+              (All using -tt-{PROJECT_PREFIX} suffix)
 
-                                                                   
-  CORE DEVELOPMENT (4)                                            
-   github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)                                   
-      Issues, PRs, branches, files, workflows                 
-   filesystem-tt-{PROJECT_PREFIX}                                        
-      File operations                                         
-   memory-tt-{PROJECT_PREFIX}                                            
-      Knowledge graph                                         
-   sequential-thinking-tt-{PROJECT_PREFIX}                               
-       Problem decomposition                                   
-                                                                   
-  DOCUMENTATION (1)                                               
-   context7-tt-{PROJECT_PREFIX}                                          
-       Library docs lookup                                     
-                                                                   
-  BROWSER AUTOMATION (1)                                          
-   playwright-tt-{PROJECT_PREFIX}                                        
-       E2E tests, web scraping                                 
-                                                                   
 
-  gh CLI (Fallback - only when MCP lacks support)                 
-   Projects V2, Labels, Milestones, GraphQL                    
+  CORE DEVELOPMENT (4)
+   github-{PROJECT_PREFIX}-{PROJECT_PREFIX} (Docker)
+      Issues, PRs, branches, files, workflows
+   filesystem-tt-{PROJECT_PREFIX}
+      File operations
+   memory-tt-{PROJECT_PREFIX}
+      Knowledge graph
+   sequential-thinking-tt-{PROJECT_PREFIX}
+       Problem decomposition
 
-  Local git (Workspace operations)                                
-   git add, commit, push                                       
+  DOCUMENTATION (1)
+   context7-tt-{PROJECT_PREFIX}
+       Library docs lookup
+
+  BROWSER AUTOMATION (1)
+   playwright-tt-{PROJECT_PREFIX}
+       E2E tests, web scraping
+
+
+  gh CLI (Fallback - only when MCP lacks support)
+   Projects V2, Labels, Milestones, GraphQL
+
+  Local git (Workspace operations)
+   git add, commit, push
 
 ```
 

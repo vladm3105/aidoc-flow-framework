@@ -52,7 +52,7 @@ Structure:
 | Aspect | Assessment |
 Architecture soundness, C4-level check, interface clarity, cross-BRD links
 
-### 2. THE AUDITOR — Security & Compliance  
+### 2. THE AUDITOR — Security & Compliance
 **Verdict: PASS/PASS with gaps/FAIL**
 Credential management, isolation guarantees, audit trail, regulatory refs
 

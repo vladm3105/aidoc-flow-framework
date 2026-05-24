@@ -218,7 +218,7 @@ A test is **flaky** if it:
 
 ```
 Flaky detected → Quarantine → Investigate → Fix or Remove
-                                 
+
       Track in issue
 ```
 

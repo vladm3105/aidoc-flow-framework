@@ -246,41 +246,41 @@ Control-plane and execution-plane model:
 
 ```
 
-                    GITHUB ECOSYSTEM                            
+                    GITHUB ECOSYSTEM
 
-                                                                
-  REPOSITORY LAYER (AI + Human)                                 
-   
-                                                             
-    Issues  Labels  Branches  PRs    
-                                                         
-                                 
-             AI ACCESS (MCP)                            
-             - list_issues                              
-             - issue_write                              
-             - create_branch                            
-             - push_files                               
-             - create_pull_req                          
-                                 
-                                                           
-   
-                                                             
-                 
-                                                              
-  PROJECT LAYER (Human Only)                                    
-    
-                                                             
-    Board  Views  Custom Fields  Roadmap   
-                                                             
-             
-         HUMAN ACCESS ONLY                                
-         - gh CLI (GraphQL)                               
-         - GitHub Web UI                                  
-         - No MCP tools available                         
-             
-                                                             
-    
-                                                                
+
+  REPOSITORY LAYER (AI + Human)
+
+
+    Issues  Labels  Branches  PRs
+
+
+             AI ACCESS (MCP)
+             - list_issues
+             - issue_write
+             - create_branch
+             - push_files
+             - create_pull_req
+
+
+
+
+
+
+  PROJECT LAYER (Human Only)
+
+
+    Board  Views  Custom Fields  Roadmap
+
+
+         HUMAN ACCESS ONLY
+         - gh CLI (GraphQL)
+         - GitHub Web UI
+         - No MCP tools available
+
+
+
+
 
 ```
 
@@ -288,31 +288,31 @@ Control-plane and execution-plane model:
 
 ```
 
-                      GCP ECOSYSTEM                             
+                      GCP ECOSYSTEM
 
-                                                                
-  INFRASTRUCTURE AS CODE (AI + Human)                           
-   
-                                                             
-    Terraform  Python Code  Config Files             
-                                                             
-    AI can WRITE these files, but CANNOT APPLY them          
-                                                             
-   
-                                                               
-                                                               
-  GCP CONSOLE / CLI (Human Only)                                
-   
-                                                             
-    Billing  IAM  APIs  Resources                
-                                                             
-    - Create budgets (Console)                               
-    - Enable billing export (Console)                        
-    - terraform apply (CLI)                                  
-    - gcloud commands (CLI)                                  
-                                                             
-   
-                                                                
+
+  INFRASTRUCTURE AS CODE (AI + Human)
+
+
+    Terraform  Python Code  Config Files
+
+    AI can WRITE these files, but CANNOT APPLY them
+
+
+
+
+  GCP CONSOLE / CLI (Human Only)
+
+
+    Billing  IAM  APIs  Resources
+
+    - Create budgets (Console)
+    - Enable billing export (Console)
+    - terraform apply (CLI)
+    - gcloud commands (CLI)
+
+
+
 
 ```
 
@@ -443,22 +443,22 @@ These labels track AI code review outcomes on PRs, not issue workflow state. See
 
 ```
 
-                    TRUST BOUNDARY                           
+                    TRUST BOUNDARY
 
-                                                             
-  AI CAN ACCESS:                                             
-   Public repository code                                 
-   Issue content (non-secret)                             
-   Documentation                                          
-   Test fixtures (non-production data)                    
-                                                             
-  AI CANNOT ACCESS:                                          
-   GCP service account keys                               
-   API tokens (except via environment)                    
-   Production databases                                   
-   Customer data                                          
-   Billing account credentials                            
-                                                             
+
+  AI CAN ACCESS:
+   Public repository code
+   Issue content (non-secret)
+   Documentation
+   Test fixtures (non-production data)
+
+  AI CANNOT ACCESS:
+   GCP service account keys
+   API tokens (except via environment)
+   Production databases
+   Customer data
+   Billing account credentials
+
 
 ```
 

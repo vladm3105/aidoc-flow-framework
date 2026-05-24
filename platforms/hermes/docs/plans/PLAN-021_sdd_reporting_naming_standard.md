@@ -153,7 +153,7 @@ Runners need `doc_id` to construct report filenames. Strategy:
 ```python
 def extract_doc_id(path: Path) -> str:
     """Extract document ID (e.g., 'BRD-03') from filename or parent folder.
-    
+
     Handles:
     - BRD-03_security_compliance.yaml → BRD-03
     - BRD-03_security_compliance/ (directory) → BRD-03

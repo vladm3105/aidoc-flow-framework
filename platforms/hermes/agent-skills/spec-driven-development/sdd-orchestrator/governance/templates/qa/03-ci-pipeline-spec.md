@@ -9,12 +9,12 @@
 ## Pipeline Overview
 
 ```
-                
-  Lint     Unit     Integration  Security  Build 
-               Tests           Tests           Scan              
-                
-                                                                   
-                                                                   
+
+  Lint     Unit     Integration  Security  Build
+               Tests           Tests           Scan
+
+
+
    ~1min          ~3min             ~5min            ~2min          ~3min
 ```
 

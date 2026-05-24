@@ -157,7 +157,7 @@ def collect_source_files(
     extensions: tuple[str, ...] = (".md", ".yaml", ".yml"),
 ) -> list[Path]:
     """Collect source document files, excluding templates and derived copies.
-    
+
     Handles both file and directory inputs. Excludes:
     - *_validation.* (derived validation copies)
     - *_remediated.* (derived remediated copies)

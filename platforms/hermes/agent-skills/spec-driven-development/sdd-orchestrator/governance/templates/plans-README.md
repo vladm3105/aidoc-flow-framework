@@ -81,7 +81,7 @@ Every permanent development plan starts with these fields:
 
 ```
 Draft → Approved → In Progress → Complete
-                                         
+
                  → Superseded ←
                      (by PLAN-NNN)
 ```
@@ -141,11 +141,11 @@ Track your project's permanent development plans here. Copy the template row and
 
 ```
 ROADMAP.md          ← What to build (phases, timeline)
-  
+
 PROJECT_PLAN.md     ← How to build it (tasks, specs, schedule)
-  
+
 governance/plans/   ← Permanent development planning history (this directory)
-  
+
 GitHub Issues       ← Tracking units (updated per plan checklists)
 ```
 
