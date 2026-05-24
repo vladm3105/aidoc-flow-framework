@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.4.0 → 0.5.0** (minor) — FRWK-REVIEW pre-production audit,
+  batch 3 (THRESHOLD de-bloat, #12). Trimmed `framework/governance/THRESHOLD_NAMING_RULES.md`
+  to its engine-agnostic naming/tag/boundary core: **genericized** the
+  domain-specific financial examples (KYC verification tiers, B2B/B2C scaling,
+  AML/CTR/SAR abbreviations, USD framing) to neutral `quota`/tier placeholders in
+  place, and **removed** the runtime/operational machinery that is out-of-charter
+  for a spec that ships no runtime — the §8 *Environment Override Rules*
+  (override permission matrix, prod override workflow, environment scaling), the
+  §12 governance *configuration-propagation* SLAs ("within 60 seconds") and the
+  *approver-role* matrix. Condensed the duplicated per-layer usage examples (§1.3.3
+  now points to §6). Replaced the stale "UCX Flow Team" / 2025-12-16 document
+  history with a neutral provenance note. No programmatic consumer parses the
+  file (verified across both platforms); references to it are documentation
+  links, which still resolve.
+
+  > **Deprecation note.** Threshold *runtime/override/operational* policy is no
+  > longer specified by the framework. A consuming project that relied on the
+  > removed §8/§12 operational guidance should define environment-override and
+  > rollout policy in its own configuration governance; the framework standard
+  > now covers only naming, `@threshold:` referencing, and boundary semantics.
+
 - Framework spec **0.3.2 → 0.4.0** (minor) — FRWK-REVIEW pre-production audit,
   batches 1 (correctness) + 2 (security). **Correctness:** corrected malformed
   trace-tag examples in the SPEC/TDD templates to the registry's element form
