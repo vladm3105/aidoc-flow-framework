@@ -1,0 +1,20 @@
+name: Labeler
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  label:
+    name: Auto-label by path
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@v5
+        # Reads .github/labeler.yml. Labels must already exist in the repo.
