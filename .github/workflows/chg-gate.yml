@@ -1,19 +1,13 @@
-# GATE-SPEC enforcement (CHG-D1).
+# GATE-SPEC enforcement (CHG-D1) — the CI half of the framework-spec change gate.
 #
-# STAGED — relocate to .github/workflows/chg-gate.yml from a local clone.
-# The in-container GitHub App lacks the `workflows` permission, so pushes to
-# .github/workflows/** are rejected (same restriction as the other workflows;
-# see docs/TAGGING.md "In-container push restrictions" and plans/P4-T3-PLAN.md).
-#
-# This is the CI half of GATE-SPEC: it runs the diff-aware guard (E005/E008) and
-# the shared conformance suite (E006 FRAMEWORK_SPEC_VERSION match + E007 suite
-# green). The human-approval half (E004 sign-off) is NOT a workflow — configure
-# GitHub branch protection / required reviewers on framework/** so a spec change
-# cannot merge without a human approver. A skill never self-approves.
+# Runs on pull_request so the whole PR diff (base...HEAD) is the unit of
+# enforcement — a spec change must bump VERSION + CHANGELOG across the PR, not in
+# each incremental commit. The human-approval half (E004 sign-off) is NOT a
+# workflow: configure branch protection / required reviewers on framework/** so a
+# spec change cannot merge without a human. A skill never self-approves.
 name: GATE-SPEC
 
 on:
-  push:
   pull_request:
 
 permissions:
@@ -43,10 +37,7 @@ jobs:
       # E005 (framework/VERSION bumped) + E008 (CHANGELOG updated) — diff-aware.
       - name: GATE-SPEC diff-aware checks
         env:
-          GATE_SPEC_BASE: >-
-            ${{ github.event_name == 'pull_request'
-                && format('origin/{0}', github.base_ref)
-                || github.event.before }}
+          GATE_SPEC_BASE: origin/${{ github.base_ref }}
         run: python tests/chg/spec_gate.py
 
       # E006 (FRAMEWORK_SPEC_VERSION match) + E007 (suite green) — static.
