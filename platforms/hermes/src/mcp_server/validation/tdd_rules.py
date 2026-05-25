@@ -78,7 +78,7 @@ def check_test_pyramid(
         return
 
     for test_type, pct in [("unit", unit_pct), ("integration", integration_pct), ("e2e", e2e_pct)]:
-        if not isinstance(pct, (int, float)):
+        if not isinstance(pct, int | float):
             errors.append(f"TDD-002: {test_type} percentage not a number: {pct}")
             return
 

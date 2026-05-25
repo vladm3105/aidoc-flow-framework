@@ -755,7 +755,7 @@ def _serialize_result(result: object) -> dict:
             val = getattr(result, f.name)
             if isinstance(val, Path):
                 data[f.name] = str(val)
-            elif isinstance(val, (list, tuple)):
+            elif isinstance(val, list | tuple):
                 data[f.name] = [str(v) if isinstance(v, Path) else v for v in val]
             else:
                 data[f.name] = val

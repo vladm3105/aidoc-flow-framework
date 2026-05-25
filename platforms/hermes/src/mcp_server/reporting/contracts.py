@@ -386,7 +386,7 @@ def _normalize_identity_value(value: object) -> object:
             str(key): _normalize_identity_value(val)
             for key, val in sorted(value.items(), key=lambda item: str(item[0]))
         }
-    if isinstance(value, (list, tuple)):
+    if isinstance(value, list | tuple):
         return [_normalize_identity_value(item) for item in value]
     return value
 
