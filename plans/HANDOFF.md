@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🔵 DOC-CHECK PHASE 0 READY — review/remediation/gate loop in the spec (2026-05-25).**
+> Branch **`claude/doc-check-automation`**. Plan: `plans/DOC-CHECK-PLAN.md`
+> (framework-first; decisions: light contract + spec/hook/CI). **Phase 0** models
+> the quality loop in the spec — new `framework/governance/REVIEW_REMEDIATION_FLOW.md`
+> naming `Draft→Review→Remediate→Gate→Approved` + four trigger points
+> (`on_author`, `on_gate_fail`, `pre_promotion`, `pre_merge`) with a light
+> conformance contract (engine surfaces findings/score/remediation path at each
+> supported point; *how* is the engine's choice). Doesn't change gate thresholds.
+> Spec **`0.6.0 → 0.7.0`** (+ both FSV + 54 skills + CHANGELOG); registered in the
+> governance README + `test_governance` EXPECTED_FILES; conformance **49**;
+> `spec_gate` green. **Next:** open Phase 0 PR; after it merges, **Phases 1–4**
+> (cut from `main`) — the shared stdlib check `tools/sdd_doc_lint/`, the plugin
+> `on_author` advisory hook (#1), the `pre_merge` blocking CI (#2), and Hermes
+> trigger-point mapping/parity. The deterministic check is the *platform-tier*
+> implementation of the spec's trigger points, not the centerpiece.
+>
 > **🔵 HERMES EARS ALIGNMENT READY — deferred #4b follow-up (2026-05-25).** Branch
 > **`claude/hermes-ears-align`** (cut from `main`). Closed the one item deferred
 > from FRWK-REVIEW #4b: aligned the Hermes **vendored** EARS pattern surfaces to
