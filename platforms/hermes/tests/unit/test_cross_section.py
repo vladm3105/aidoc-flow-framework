@@ -188,7 +188,7 @@ def test_diagram_registry_skips_non_diagram_layer():
 
 def test_md_fallback_runs_without_crash():
     """run_cross_section_checks_md completes without exception."""
-    md_content = "---\ntitle: Test\n---\n\n" "## Traceability\n\n" "Maps to BRD.01.aaaa\n"
+    md_content = "---\ntitle: Test\n---\n\n## Traceability\n\nMaps to BRD.01.aaaa\n"
     errors, warnings, passes = _make_lists()
     run_cross_section_checks_md(
         content=md_content, doc_type="brd", errors=errors, warnings=warnings, passes=passes

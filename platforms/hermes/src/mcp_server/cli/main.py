@@ -47,9 +47,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "Project root (default: $SDD_DEFAULT_PROJECT)" if _default_project else "Project root"
     )
 
-    subparsers.add_parser(
-        "get-project", help="Show resolved default project from environment"
-    )
+    subparsers.add_parser("get-project", help="Show resolved default project from environment")
 
     init_parser = subparsers.add_parser("init", help="Scaffold project-specific UCX assets")
     init_parser.add_argument(

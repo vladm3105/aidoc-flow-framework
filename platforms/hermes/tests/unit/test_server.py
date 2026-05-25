@@ -28,9 +28,9 @@ class TestToolRegistry:
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]
-        assert len(names) == len(
-            set(names)
-        ), f"Duplicate tool names: {[n for n in names if names.count(n) > 1]}"
+        assert len(names) == len(set(names)), (
+            f"Duplicate tool names: {[n for n in names if names.count(n) > 1]}"
+        )
 
     def test_all_tools_have_input_schema(self):
         for tool in TOOLS:

@@ -67,9 +67,7 @@ class TestApiKeyResolution:
                 from mcp_server.executor.api_runner import run_api_executor
 
                 config = _api_config()
-                asyncio.get_event_loop().run_until_complete(
-                    run_api_executor(config, "test prompt")
-                )
+                asyncio.get_event_loop().run_until_complete(run_api_executor(config, "test prompt"))
                 call_kwargs = mock_lit.acompletion.call_args[1]
                 assert call_kwargs["api_key"] == "env_key"
 

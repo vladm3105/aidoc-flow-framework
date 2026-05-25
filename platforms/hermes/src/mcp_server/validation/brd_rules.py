@@ -217,8 +217,7 @@ def _check_phase_alignment(
 
     if scope_normalized == impl_normalized:
         passes.append(
-            f"BRD-XS-002: {len(scope_phase_ids)} scope phase(s) aligned "
-            f"with implementation phases"
+            f"BRD-XS-002: {len(scope_phase_ids)} scope phase(s) aligned with implementation phases"
         )
         return
 
@@ -232,8 +231,7 @@ def _check_phase_alignment(
         )
     if extra_in_impl:
         errors.append(
-            f"BRD-XS-002: Phases in implementation but missing from "
-            f"scope: {sorted(extra_in_impl)}"
+            f"BRD-XS-002: Phases in implementation but missing from scope: {sorted(extra_in_impl)}"
         )
     if len(scope_phase_ids) != len(impl_phase_ids):
         errors.append(
@@ -353,7 +351,7 @@ def _check_entity_consistency(
             )
     else:
         passes.append(
-            f"BRD-XS-004: All {len(entities)} entity reference(s) " f"found in downstream sections"
+            f"BRD-XS-004: All {len(entities)} entity reference(s) found in downstream sections"
         )
 
 
@@ -455,7 +453,7 @@ def _check_fr_acceptance_criteria(
         warnings.append(
             f"BRD-XS-006: {len(frs_missing_ac)}/{total_frs} FRs have no "
             f"acceptance_criteria items: {frs_missing_ac[:5]}"
-            + (f" (+{len(frs_missing_ac)-5} more)" if len(frs_missing_ac) > 5 else "")
+            + (f" (+{len(frs_missing_ac) - 5} more)" if len(frs_missing_ac) > 5 else "")
         )
     else:
         passes.append(f"BRD-XS-006: All {total_frs} FRs have acceptance_criteria items")
@@ -510,10 +508,10 @@ def _check_traceability_link_completeness(
         warnings.append(
             f"BRD-XS-007: {len(empty_links)}/{total} objective→requirement "
             f"mappings have empty related_frs: {empty_links[:5]}"
-            + (f" (+{len(empty_links)-5} more)" if len(empty_links) > 5 else "")
+            + (f" (+{len(empty_links) - 5} more)" if len(empty_links) > 5 else "")
         )
     else:
-        passes.append(f"BRD-XS-007: All {total} objective→requirement mappings " f"have linked FRs")
+        passes.append(f"BRD-XS-007: All {total} objective→requirement mappings have linked FRs")
 
 
 # ── Public API ───────────────────────────────────────────────────────
@@ -567,9 +565,7 @@ def run_brd_cross_section_checks_md(
         impl_section = impl_split[1] + impl_split[2]
     else:
         # Cannot reliably separate sections.
-        passes.append(
-            "BRD-XS-002: Cannot identify scope/implementation " "sections in MD (skipped)"
-        )
+        passes.append("BRD-XS-002: Cannot identify scope/implementation sections in MD (skipped)")
         return
 
     scope_phase_count = len(re.findall(r"Phase\s+\d+", scope_section))
