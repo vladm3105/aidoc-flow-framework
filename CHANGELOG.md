@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.7.0 → 0.7.1** (patch) — documentation consistency pass
+  (post-EARS-changes review). Corrected three 3-segment element-ID examples in
+  `EARS-TEMPLATE.yaml` to the canonical 4-segment form (`TYPE.NN.SS.xxxx`): the
+  `id_standard` example (`EARS.01.c4d8` → `EARS.01.03.c4d8`, which had contradicted
+  its own stated format) and two `_antipatterns` (`PRD.01.1dbc`/`BRD.02.f1de` →
+  4-segment, so each shows only its named flaw). Added `SECURITY_REVIEW.md` and
+  `REVIEW_REMEDIATION_FLOW.md` to the `QUICK_REFERENCE.md` Key Files table (they
+  were missing since their introduction). Both `FRAMEWORK_SPEC_VERSION` files and
+  the plugin skills' `framework_spec_version` re-synced. No schema/rule change.
+
 - Framework spec **0.6.0 → 0.7.0** (minor) — DOC-CHECK Phase 0: model the
   **review→remediation→gate quality loop** and its **trigger points** in the spec
   (new `framework/governance/REVIEW_REMEDIATION_FLOW.md`). Previously review and

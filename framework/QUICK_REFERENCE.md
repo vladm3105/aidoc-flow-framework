@@ -29,6 +29,8 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | [TRACEABILITY.md](governance/TRACEABILITY.md) | Cross-layer traceability rules |
 | [DIAGRAM_STANDARDS.md](governance/DIAGRAM_STANDARDS.md) | Mermaid diagram conventions |
 | [THRESHOLD_NAMING_RULES.md](governance/THRESHOLD_NAMING_RULES.md) | Threshold key naming |
+| [SECURITY_REVIEW.md](governance/SECURITY_REVIEW.md) | Safety checks for agent-authored artifacts |
+| [REVIEW_REMEDIATION_FLOW.md](governance/REVIEW_REMEDIATION_FLOW.md) | Review→remediation→gate loop + trigger points |
 | [TESTING_STRATEGY_TDD.md](TESTING_STRATEGY_TDD.md) | TDD integration |
 
 ## Readiness Gates

@@ -1,5 +1,17 @@
 # Session Handoff
 
+> **🔵 FRAMEWORK DOC-CONSISTENCY (post-EARS review) READY (2026-05-25).** Branch
+> **`claude/framework-doc-consistency`**. Reviewed the framework docs/README for
+> inconsistencies after the EARS + ID changes. Findings + fixes: `EARS-TEMPLATE.yaml`
+> had **3 three-segment element-ID examples** (the `id_standard` example
+> `EARS.01.c4d8` contradicted its own 4-segment format; two `_antipatterns`) →
+> corrected to 4-segment `TYPE.NN.SS.xxxx`; `QUICK_REFERENCE.md` Key Files table was
+> missing `SECURITY_REVIEW.md` + `REVIEW_REMEDIATION_FLOW.md` → added. Everything
+> else consistent (the `WHEN-THE-SHALL-WITHIN` tagline is uniform shorthand; the
+> 5-pattern detail + 4-seg `ID_NAMING_STANDARDS` are correct). Spec **0.7.0 → 0.7.1**
+> (patch; + both FSV + 54 skills + CHANGELOG); conformance **50**; `spec_gate` green.
+> **Next:** open the PR.
+>
 > **🔵 PLATFORM-ALIGN B3 TAIL — persona-profile legacy scrub (2026-05-25).** Branch
 > **`claude/hermes-persona-legacy-cleanup`** (B3 PR #21 merged). On "fix remaining
 > tasks", scrubbed the **descriptive** SYS/REQ/CTR/TSPEC residue from the 10 vendored

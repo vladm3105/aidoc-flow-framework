@@ -89,7 +89,7 @@ metadata:
     _guidance: |
       All element IDs use content-derived hashes scoped to EARS content.
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
-      Example: EARS.01.c4d8
+      Example: EARS.01.03.c4d8
 
       Hash algorithm (SHA256, 4-char hex):
         1. Build input: "{doc_id}:{section_id}:{title}:{description}"
@@ -336,9 +336,9 @@ traceability:
     Use @threshold: convention for timing/performance values (no PRD section numbers).
 
   _antipatterns:
-    - "FAIL: ranges '@prd: PRD.01.1dbc - PRD.01.a6ce' — list separately"
+    - "FAIL: ranges '@prd: PRD.01.09.1dbc - PRD.01.09.a6ce' — list separately"
     - "FAIL: commas '@brd: X, @prd: Y' — use pipes ' | '"
-    - "FAIL: missing prefix 'BRD.02.f1de' — must be '@brd: BRD.02.f1de'"
+    - "FAIL: missing prefix 'BRD.02.07.f1de' — must be '@brd: BRD.02.07.f1de'"
     - "FAIL: multiple @prd in Document Control — one only, extras in per-requirement tags"
 
   tags:
