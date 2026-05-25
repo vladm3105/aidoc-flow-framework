@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | DOC-CHECK                      |
 | Depends on | framework spec `0.6.0`; the per-layer `-audit`/`-fixer` skills + Hermes validation runtime (both exist) |
-| Status     | IN PROGRESS — Phase 0 (spec loop model, `0.7.0`) implemented on `claude/doc-check-automation`; Phases 1–4 (tooling/hook/CI) follow after it merges |
+| Status     | IN PROGRESS — Phase 0 merged (PR #17, spec `0.7.0`); Phases 1–4 (linter/hook/CI/parity) implemented on `claude/doc-check-triggers` |
 | Feeds      | an engine-agnostic review→remediation→gate loop in the spec, with write-time (#1) + PR-time (#2) triggers, both platforms |
 
 ## Objective
@@ -175,3 +175,40 @@ four trigger points (low cost, prevents silent omission).
   (same pattern as `SECURITY_REVIEW.md` in PR #12); optional trigger-point-name
   guard noted as low-cost. No change.
 + No further findings — implementable.
+
+## Implementation log
+
+### Phase 0 — merged (PR #17, 2026-05-25)
+
+`framework/governance/REVIEW_REMEDIATION_FLOW.md` (light contract: loop + four
+trigger points), spec `0.6.0 → 0.7.0`, registered in governance README +
+`test_governance` `EXPECTED_FILES`.
+
+### Phases 1–4 — 2026-05-25 (branch `claude/doc-check-triggers`)
+
++ **Phase 1** — `tools/sdd_doc_lint/` stdlib linter (PyYAML to read the registry):
+  trace-tag/ID forms, required cumulative tags, `@threshold:` format, EARS
+  `THE…SHALL` grammar, placeholder leakage. Valid + broken fixtures; 3-test
+  unit suite. Fixed a false-positive (threshold keys vs element IDs). Fixtures
+  excluded from markdownlint.
++ **Phase 2** — plugin `on_author` hook: `hooks/hooks.json` (PostToolUse
+  Write|Edit) + `hooks/sdd-doc-review.sh` (advisory nudge to `doc-<layer>-audit`,
+  best-effort `sdd_doc_lint` findings, always exit 0). Verified across non-SDD /
+  no-linter / linter-present cases. Hook schema confirmed via the
+  `claude-code-guide` agent (`hooks/hooks.json`, `${CLAUDE_PLUGIN_ROOT}`,
+  `tool_input.file_path`, `hookSpecificOutput.additionalContext`).
++ **Phase 3** — `.github/workflows/doc-review.yml` (`pre_merge`): unit-tests the
+  linter, smoke-passes valid fixtures, asserts broken fixtures fail the gate,
+  lints `docs/` (none here → no-op). All steps simulated green locally.
++ **Phase 4** — `docs/PARITY.md` per-trigger mapping table; plugin + Hermes
+  READMEs document their trigger-point bindings; Hermes adopts the shared
+  `doc-review.yml` for `pre_merge` parity.
++ **Design note (consumer runtime):** the deterministic linter runs cleanly in
+  **CI** (repo checked out) — that is the reliable `pre_merge` gate. The
+  **write-time hook is advisory** (nudge always works; linter findings are
+  best-effort when importable) because reliably running a deterministic linter
+  inside an arbitrary consumer's live session would need bundling/duplication.
+  This matches D3 (hook advisory, CI blocking). Bundling the linter into the
+  plugin / a consumer-install story is a possible follow-up.
++ **Verification:** conformance still **49/49** (platform/tooling changes don't
+  touch `framework/`); no spec bump; `pre-commit` clean on changed files.

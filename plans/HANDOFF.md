@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🔵 DOC-CHECK PHASES 1–4 READY — automated review triggers (2026-05-25).**
+> Branch **`claude/doc-check-triggers`** (cut from `main` after Phase 0 / PR #17
+> merged). Plan: `plans/DOC-CHECK-PLAN.md`. Implements the platform automation
+> over the spec's trigger points: **Phase 1** `tools/sdd_doc_lint/` (stdlib
+> structural linter — IDs/tags/threshold/EARS-grammar/placeholders, registry-driven;
+> valid+broken fixtures + 3 unit tests); **Phase 2** plugin `on_author` advisory
+> hook (`hooks/hooks.json` + `sdd-doc-review.sh`, nudges `doc-<layer>-audit` +
+> best-effort linter, never blocks); **Phase 3** `.github/workflows/doc-review.yml`
+> blocking `pre_merge` gate (self-tested via fixtures); **Phase 4** PARITY +
+> plugin/Hermes README trigger mappings. **Platform/tooling only — no `framework/`
+> change, no spec bump** (stays `0.7.0`); conformance **49**; pre-commit clean.
+> **Design note:** the deterministic gate is reliable in **CI**; the **write-time
+> hook is advisory** (linter best-effort) since running a linter in an arbitrary
+> consumer's live session would need bundling — a possible follow-up. **Next:**
+> open the Phases 1–4 PR.
+>
 > **🔵 DOC-CHECK PHASE 0 READY — review/remediation/gate loop in the spec (2026-05-25).**
 > Branch **`claude/doc-check-automation`**. Plan: `plans/DOC-CHECK-PLAN.md`
 > (framework-first; decisions: light contract + spec/hook/CI). **Phase 0** models
