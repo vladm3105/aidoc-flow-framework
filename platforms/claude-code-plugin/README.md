@@ -25,11 +25,18 @@ the manifest.
 
 `hooks/hooks.json` registers a `PostToolUse` hook on `Write`/`Edit`. When an SDD
 instance document (`docs/<NN>_<X>/…` or a `<TYPE>-NN` file) is written, it nudges
-you to run the matching `doc-<layer>-audit` (and, if `sdd_doc_lint` is importable,
-appends deterministic structural findings). It is **advisory** — it never blocks
-the edit. This is the plugin's binding of the framework's `on_author` trigger
-point (`framework/governance/REVIEW_REMEDIATION_FLOW.md`); the blocking `pre_merge`
-gate is the shared `doc-review.yml` workflow running `tools/sdd_doc_lint`.
+you to run the matching `doc-<layer>-audit` and appends deterministic structural
+findings from the **vendored `sdd_doc_lint/`** (shipped at the plugin root; the
+hook puts it on `PYTHONPATH`, so it runs without any consumer setup — it finds the
+project's `framework/registry/` by upward search, and silently skips if none is
+present). It is **advisory** — it never blocks the edit. This is the plugin's
+binding of the framework's `on_author` trigger point
+(`framework/governance/REVIEW_REMEDIATION_FLOW.md`); the blocking `pre_merge`
+gate is the shared `doc-review.yml` workflow running the same linter.
+
+The vendored `sdd_doc_lint/` is a byte-identical copy of the canonical
+`tools/sdd_doc_lint/` (kept in sync by `tools/sdd_doc_lint/sync-vendored.sh`, a
+conformance guard enforces the match).
 
 ## Install
 
