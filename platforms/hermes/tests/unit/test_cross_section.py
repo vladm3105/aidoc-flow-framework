@@ -39,8 +39,8 @@ def _make_lists() -> tuple[list[str], list[str], list[str]]:
 def test_traceability_id_passes_when_all_exist():
     """Traceability referencing an ID present in the document passes."""
     yaml_data = {
-        "quality_expectations": [{"id": "BRD.04.cfab", "text": "perf"}],
-        "traceability": {"upstream": "BRD.04.cfab"},
+        "quality_expectations": [{"id": "BRD.04.07.cfab", "text": "perf"}],
+        "traceability": {"upstream": "BRD.04.07.cfab"},
     }
     errors, warnings, passes = _make_lists()
     run_cross_section_checks(
@@ -53,14 +53,14 @@ def test_traceability_id_passes_when_all_exist():
 def test_traceability_id_errors_on_phantom():
     """Traceability referencing a non-existent ID produces an error."""
     yaml_data = {
-        "quality_expectations": [{"id": "BRD.04.cfab", "text": "perf"}],
-        "traceability": {"upstream": "BRD.04.dead"},
+        "quality_expectations": [{"id": "BRD.04.07.cfab", "text": "perf"}],
+        "traceability": {"upstream": "BRD.04.07.dead"},
     }
     errors, warnings, passes = _make_lists()
     run_cross_section_checks(
         yaml_data=yaml_data, doc_type="brd", errors=errors, warnings=warnings, passes=passes
     )
-    assert any("BRD.04.dead" in e for e in errors)
+    assert any("BRD.04.07.dead" in e for e in errors)
 
 
 def test_traceability_id_works_for_prd():
@@ -79,7 +79,7 @@ def test_traceability_id_works_for_prd():
 
 def test_traceability_id_skips_when_no_traceability():
     """YAML without a traceability key results in a pass (skipped)."""
-    yaml_data = {"quality_expectations": [{"id": "BRD.04.cfab"}]}
+    yaml_data = {"quality_expectations": [{"id": "BRD.04.07.cfab"}]}
     errors, warnings, passes = _make_lists()
     run_cross_section_checks(
         yaml_data=yaml_data, doc_type="brd", errors=errors, warnings=warnings, passes=passes
