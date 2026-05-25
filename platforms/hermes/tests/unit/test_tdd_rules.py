@@ -18,7 +18,7 @@ def test_tdd_rules_pass_with_minimal_valid_payload() -> None:
         "test_mapping": {
             "scenarios": [
                 {
-                    "bdd_scenario": "@bdd: BDD.01.abcd",
+                    "bdd_scenario": "@bdd: BDD.01.03.abcd",
                     "tests": [
                         {"type": "unit"},
                         {"type": "integration"},
@@ -56,7 +56,7 @@ def test_tdd_rules_fail_when_readiness_below_threshold() -> None:
         "document_control": {"iplan_ready_score": "89/100"},
         "test_pyramid": {"distribution": {"unit": 70, "integration": 20, "e2e": 10}},
         "test_mapping": {
-            "scenarios": [{"bdd_scenario": "@bdd: BDD.01.abcd", "tests": [{"type": "unit"}]}]
+            "scenarios": [{"bdd_scenario": "@bdd: BDD.01.03.abcd", "tests": [{"type": "unit"}]}]
         },
         "thresholds": {
             "unit": {"coverage_target": ">=90%", "pass_criteria": ["All pass"]},
