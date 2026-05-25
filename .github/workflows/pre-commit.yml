@@ -29,3 +29,9 @@ jobs:
 
       - name: Run hooks
         run: pre-commit run --all-files --show-diff-on-failure
+
+      - name: Install pip-audit
+        run: pip install pip-audit
+
+      - name: Dependency audit (pip-audit)
+        run: pre-commit run --all-files --hook-stage manual pip-audit
