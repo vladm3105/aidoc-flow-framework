@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | FRWK-REVIEW                    |
 | Depends on | GATE-SPEC / CHG-D1 (D-0020); framework spec `0.3.2` |
-| Status     | IN PROGRESS — Batches 1+2 merged (PR #12, spec `0.4.0`); Batch 3 implemented (spec `0.5.0`, branch `claude/framework-review-threshold`), PR-2 pending |
+| Status     | COMPLETE — Batches 1+2 merged (PR #12, spec `0.4.0`); Batch 3 merged (PR #13, spec `0.5.0`). Deferred: #4b (EARS index model). |
 | Feeds      | a cleaner, security-hardened `framework/` spec; possible `framework/v0.4.0` |
 
 ## Objective
@@ -260,4 +260,4 @@ post-mortem SLA value is identical across the CHG docs (catches #3).
 - **Bump:** spec `0.4.0 → 0.5.0` (minor, per D3/D5) + both FSV + 54 skills +
   CHANGELOG with a deprecation note for the removed runtime/override policy.
   **Verification:** conformance 46/46; `spec_gate` green vs `origin/main`;
-  versions aligned at `0.5.0`. **Pending:** open PR-2.
+  versions aligned at `0.5.0`. **Merged as PR #13** — FRWK-REVIEW plan complete.
