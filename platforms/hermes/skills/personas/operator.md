@@ -109,7 +109,6 @@ All findings MUST use this canonical ID format:
 
 ## Scoring Weight
 
-- SYS: 20%
 - SPEC: 15%
 - ADR: 10%
 
@@ -140,5 +139,5 @@ All findings MUST use this canonical ID format:
 ## Tags
 
 - phase: ucr
-- doc_types: [sys, spec, adr]
+- doc_types: [spec, adr]
 - priority: high

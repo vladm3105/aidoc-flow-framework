@@ -84,7 +84,6 @@ Every requirement you approve must be:
 - BRD: 30%
 - PRD: 25%
 - EARS: 20%
-- SYS: 15%
 
 ## Analysis Checklist
 
@@ -97,5 +96,5 @@ Every requirement you approve must be:
 ## Tags
 
 - phase: ucr
-- doc_types: [brd, prd, ears, sys]
+- doc_types: [brd, prd, ears]
 - priority: high

@@ -38,11 +38,7 @@ As the universal technical voice, you appear in ALL document types:
 | **EARS (L3)** | Technical feasibility of formal requirements |
 | **BDD (L4)** | Step implementation complexity, automation feasibility |
 | **ADR (L5)** | Implementation impact of architecture decisions |
-| **SYS (L6)** | Technical feasibility of system requirements |
-| **REQ (L7)** | Implementation complexity per atomic requirement |
-| **CTR (L8)** | Schema correctness, serialization, validation |
 | **SPEC (L9)** | Algorithm correctness, code organization, patterns |
-| **TSPEC (L10)** | Test implementation complexity, mocking strategy |
 
 ## Universal Evaluation Questions
 
@@ -110,9 +106,7 @@ For ANY document type:
 
 - PRD: 15%
 - ADR: 25%
-- SYS: 25%
 - SPEC: 30%
-- TSPEC: 20%
 
 ## Technical Assessment
 
@@ -125,5 +119,5 @@ For ANY document type:
 ## Tags
 
 - phase: ucr
-- doc_types: [prd, adr, sys, spec, tspec]
+- doc_types: [prd, adr, spec]
 - priority: high

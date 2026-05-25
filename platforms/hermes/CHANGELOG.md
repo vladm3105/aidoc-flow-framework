@@ -25,10 +25,14 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   (creation + review), the `ctr` structure branch in `validation/runner.py`, and
   the `skills/README.md` mention; the legacy-layer tests in `test_validation_runner.py`
   were dropped/trimmed. `tasks` (the IPLAN rename-alias) is retained.
-  *Residual (descriptive, not operative):* some vendored persona profiles
-  (`skills/personas/*.md` `doc_types`/allocation tables) and `agent-skills/`
-  historical notes still mention these layers — left in place (the notes that
-  document the layers as "cut from v3"/"deprecated" remain accurate).
+  Also scrubbed the **descriptive** legacy-layer references from the vendored
+  persona profiles (`skills/personas/*.md`): dropped the dead `SYS/REQ/CTR/TSPEC`
+  scoring-weight lines, removed those tokens from each persona's `doc_types`
+  list, and removed the dedicated layer rows + sections (e.g. integration_lead's
+  "CTR Expertise", qa_lead's "TSPEC Quality Metrics"). *Deliberately retained:*
+  the `agent-skills/` historical notes documenting the layers as "cut from
+  v3"/"deprecated" (accurate history) and the threshold-rules `req`/`ctr` tokens
+  (unrelated meanings — rate/Currency-Transaction-Report).
 
 ### Changed
 

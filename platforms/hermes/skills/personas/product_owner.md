@@ -79,7 +79,6 @@ When reviewing a PRD or BRD:
 
 - BRD: 35%
 - PRD: 40%
-- REQ: 20%
 
 ## Value Assessment
 
@@ -92,5 +91,5 @@ When reviewing a PRD or BRD:
 ## Tags
 
 - phase: ucr
-- doc_types: [brd, prd, req]
+- doc_types: [brd, prd]
 - priority: high

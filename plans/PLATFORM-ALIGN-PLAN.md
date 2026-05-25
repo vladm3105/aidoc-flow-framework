@@ -258,8 +258,12 @@ templates; `registry.py` `LAYER_PREFIXES` sys/req/ctr/tspec (kept `tasks`);
 `test_validation_runner.py` (dropped/trimmed). Local suite **382**; conformance
 **50**; the registry alias self-consistency test stays green (count derived from
 `LAYER_PREFIXES`); the mcp-gated tests carry no legacy-layer assertion (CI gate).
-**Deliberately retained:** vendored persona-profile `doc_types`/allocation
-mentions + `agent-skills/` historical notes ("cut from v3"/"deprecated") — these
-are descriptive (not the operative router) and the history is accurate; a
-percentage-table rewrite of 10 vendored persona docs was out of proportion.
-`tasks` (IPLAN rename-alias) kept by design.
+**Descriptive residue — also cleaned (B3 tail, branch `claude/hermes-persona-legacy-cleanup`):**
+on the user's "fix remaining tasks", the 10 vendored persona profiles
+(`skills/personas/*.md`) were scrubbed of the legacy layers — dead scoring-weight
+lines dropped, `doc_types` tokens removed, and the dedicated legacy-layer
+rows/sections removed (integration_lead "CTR Expertise", qa_lead "TSPEC Quality
+Metrics", evaluation-table rows). Doc-only (no runtime/VERSION change; part of the
+unreleased 0.3.0). **Deliberately retained:** the `agent-skills/` historical notes
+("cut from v3"/"deprecated" — accurate) and the threshold-rules `req`/`ctr` tokens
+(unrelated meanings). `tasks` (IPLAN rename-alias) kept by design.
