@@ -64,7 +64,7 @@ repos:
     rev: v1.35.1
     hooks:
       - id: yamllint
-        args: [--strict]
+        args: [-c, .yamllint.yaml]
 
   # ---- secrets ---------------------------------------------------------------
   - repo: https://github.com/Yelp/detect-secrets
@@ -72,6 +72,11 @@ repos:
     hooks:
       - id: detect-secrets
         args: [--baseline, .secrets.baseline]
+
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks  # git-aware secret scan; config in .gitleaks.toml
 
   # ---- dependency vulnerability audit ----------------------------------------
   # Heavy / network-bound — runs in the `manual` stage (CI) + pre-push, not on

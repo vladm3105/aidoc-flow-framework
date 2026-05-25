@@ -10,6 +10,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- **gitleaks** secret-scanning wired into `.pre-commit-config.yaml` (with
+  `.gitleaks.toml` allowlisting the `.secrets.baseline`) — a git-aware scan
+  alongside the existing `detect-secrets` baseline check. Added a project
+  `.yamllint.yaml` config (line-length 120 as a *warning*; tolerate
+  missing document-start and non-bool truthy keys common in our templates) and
+  pointed the yamllint hook at it (dropping `--strict` so the configured
+  warnings stay non-blocking). Tooling-only; no framework spec change.
+
 ### Changed
 
 - Framework spec **0.7.0 → 0.7.1** (patch) — documentation consistency pass

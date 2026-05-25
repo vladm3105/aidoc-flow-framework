@@ -1,0 +1,11 @@
+# gitleaks configuration. Extends the default rule set; the allowlist below
+# keeps gitleaks from flagging the detect-secrets baseline (which intentionally
+# records secret *hashes*, not secrets).
+[extend]
+  useDefault = true
+
+[allowlist]
+  description = "Files allowed to contain secret-like tokens"
+  paths = [
+    '''\.secrets\.baseline$''',
+  ]
