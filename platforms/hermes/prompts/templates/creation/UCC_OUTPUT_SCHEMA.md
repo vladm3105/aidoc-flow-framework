@@ -132,7 +132,7 @@ custom_fields:
 - Event-Driven: "When [event], the [system] shall [action]"
 - State-Driven: "While [state], the [system] shall [action]"
 - Optional: "Where [feature included], the [system] shall [action]"
-- Unwanted: "If [condition], then the [system] shall [action]"
+- Unwanted: "If [condition], the [system] shall [action]"
 
 ---
 

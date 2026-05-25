@@ -44,8 +44,12 @@ Valid EARS patterns:
 | **Event-Driven** | When [event], the [system] shall [action] | Triggered behavior |
 | **State-Driven** | While [state], the [system] shall [action] | Conditional behavior |
 | **Optional** | Where [feature], the [system] shall [action] | Feature-dependent |
-| **Unwanted** | If [condition], then the [system] shall [action] | Exception handling |
-| **Complex** | Combination of above patterns | Multi-condition |
+| **Unwanted** | If [condition], the [system] shall [action] | Exception handling |
+
+> Multi-condition ("complex") requirements *compose* the base patterns
+> (e.g. `While [state], when [event], the [system] shall [action]`) — composition,
+> not a separate pattern. This framework uses `the [system] shall …` uniformly
+> (no `then` connective).
 
 ---
 

@@ -1,5 +1,20 @@
 # Session Handoff
 
+> **🔵 HERMES EARS ALIGNMENT READY — deferred #4b follow-up (2026-05-25).** Branch
+> **`claude/hermes-ears-align`** (cut from `main`). Closed the one item deferred
+> from FRWK-REVIEW #4b: aligned the Hermes **vendored** EARS pattern surfaces to
+> the framework's canonical 5-pattern / `the [system] shall` model (no `THEN`;
+> "complex" = composition). Edited 6 files — the two persona docs
+> (`requirements_specialist`, `sdd-review-personas`) and the EARS prompt templates
+> (`UCC_PROMPT_EARS`, `UCC_OUTPUT_SCHEMA`, `UCR_PROMPT_EARS`, `UCRem_PROMPT_EARS`):
+> tables → 5 rows + composition note; `IF…THEN`/`IF-THEN` → `IF … the system
+> shall`; dropped the standalone `Complex` row + `CX` type code. **Platform-only**
+> — no `framework/` change, no spec bump (spec stays `0.6.0`); recorded in
+> `platforms/hermes/CHANGELOG.md`. Conformance **49/49**; lint clean (vendored
+> content skips markdownlint). **Still separate (not done):** the prompts' legacy
+> type-code element-ID scheme (`EARS.NN.<code>.<seq>`) vs the framework hash IDs —
+> a larger, distinct cleanup. **Next:** open the PR.
+>
 > **🔵 FRWK-REVIEW #4b READY — EARS statement-model reconciliation (2026-05-25).**
 > The deferred EARS finding, implemented on branch **`claude/frwk-review-4b-ears-model`**
 > (pushed, cut from `main` after the FRWK-REVIEW PRs). Plan:

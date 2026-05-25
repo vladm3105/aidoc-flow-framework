@@ -217,3 +217,17 @@ statement model — which is how the drift accumulated).
 - **Deferred (tracked):** Hermes vendored `agent-skills`/`prompts` EARS tables
   (6-pattern, mixed `THEN`) — a platform follow-up, not a framework-spec change.
 - **Pending:** open PR.
+
+### 2026-05-25 — deferred Hermes follow-up done (branch `claude/hermes-ears-align`)
+
+- Aligned the Hermes vendored EARS pattern surfaces to the framework's canonical
+  5-pattern / `the [system] shall` model (no `THEN`; "complex" = composition):
+  `skills/personas/requirements_specialist.md`,
+  `agent-skills/.../sdd-review-personas/SKILL.md`, and the EARS prompt templates
+  `prompts/templates/{creation/UCC_PROMPT_EARS, creation/UCC_OUTPUT_SCHEMA,
+  review/UCR_PROMPT_EARS, remediation/UCRem_PROMPT_EARS}.md` (tables → 5 rows +
+  composition note; `IF…THEN`/`IF-THEN` → `IF … the system shall`; dropped the
+  `Complex` row + `CX` type code). Platform-only — no `framework/` change, no spec
+  bump; recorded in `platforms/hermes/CHANGELOG.md`. Conformance still 49/49.
+  **Still separate:** the prompts' legacy type-code element-ID scheme
+  (`EARS.NN.<code>.<seq>`) vs the framework hash IDs — a larger, distinct cleanup.
