@@ -14,6 +14,23 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- **EARS pattern alignment** — brought the Hermes vendored EARS pattern tables
+  into line with the framework's canonical statement model (framework spec
+  `0.6.0`, FRWK-REVIEW #4b). The persona docs (`skills/personas/requirements_specialist.md`,
+  `agent-skills/.../sdd-review-personas/SKILL.md`) and the EARS prompt templates
+  (`prompts/templates/{creation/UCC_PROMPT_EARS,creation/UCC_OUTPUT_SCHEMA,
+  review/UCR_PROMPT_EARS,remediation/UCRem_PROMPT_EARS}.md`) had drifted to a
+  6-pattern model with a mixed `IF…THEN` connective. Now: the five canonical
+  patterns (Ubiquitous, Event/`WHEN`, State/`WHILE`, Optional/`WHERE`,
+  Unwanted/`IF`) in the uniform `the [system] shall …` form (no `THEN`); "complex"
+  reframed as *composition* of the base patterns (the standalone `Complex` row +
+  the `CX` type code removed). Doc-only; no runtime behavior change.
+  *(Note: the prompts' legacy type-code element-ID scheme — `EARS.NN.<code>.<seq>`
+  vs the framework's hash-based `EARS.NN.SS.xxxx` — is a separate, pre-existing
+  divergence, out of scope here.)*
+
 ## [0.1.1] — 2026-05-21
 
 Patch — corrects a stale install instruction. Conforms to framework

@@ -25,7 +25,7 @@ You are an AI Expert Board conducting a Unified Context Review (UCR) of an EARS 
 
 Before claiming an item is PRESENT, verify it meets ALL criteria:
 
-1. **Syntactically correct** - Follows EARS pattern exactly (WHEN/WHILE/WHERE/IF-THEN)
+1. **Syntactically correct** - Follows EARS pattern exactly (WHEN/WHILE/WHERE/IF + THE…SHALL)
 2. **Atomic** - One requirement per statement, no compound requirements
 3. **Unambiguous** - No vague terms ("quickly", "efficiently", "user-friendly")
 4. **Measurable** - Verifiable criteria present
@@ -69,8 +69,12 @@ Every finding MUST include:
 | **Event-Driven** | WHEN [event], the [system] shall [action] | WHEN user submits form, the system shall validate inputs |
 | **State-Driven** | WHILE [state], the [system] shall [action] | WHILE transaction pending, the system shall display status |
 | **Optional** | WHERE [condition], the [system] shall [action] | WHERE user is admin, the system shall display audit logs |
-| **Unwanted** | IF [condition], THEN the [system] shall NOT [action] | IF session expired, THEN the system shall NOT process request |
-| **Complex** | WHILE [state], WHEN [event], the [system] shall [action] | WHILE logged in, WHEN timeout occurs, the system shall prompt reauthentication |
+| **Unwanted** | IF [condition], the [system] shall [response] | IF session expired, the system shall reject the request |
+
+> Multi-condition ("complex") requirements *compose* the base patterns
+> (e.g. `WHILE [state], WHEN [event], the [system] shall [action]`) — composition,
+> not a separate pattern. This framework uses `the [system] shall …` uniformly
+> (no `THEN` connective).
 
 ---
 
@@ -82,7 +86,7 @@ Every finding MUST include:
 
 Focus on:
 
-- **Pattern compliance**: Is WHEN/WHILE/WHERE/IF-THEN used CORRECTLY?
+- **Pattern compliance**: Is WHEN/WHILE/WHERE/IF used CORRECTLY?
 - **Atomicity**: Is there EXACTLY one requirement per statement?
 - **Language precision**: Are "shall" (not "should/may/might") used CONSISTENTLY?
 - **Measurability**: Is EVERY requirement verifiable with a specific test?
@@ -199,7 +203,7 @@ Output format:
 
 Focus on:
 
-- **UNWANTED patterns**: Are IF-THEN negative requirements PRESENT?
+- **UNWANTED patterns**: Are IF (unwanted-behavior) requirements PRESENT?
 - **Boundary conditions**: Are edge cases SPECIFIED as requirements?
 - **Error states**: Are failure behaviors DEFINED?
 - **Concurrency**: Are race conditions ADDRESSED?

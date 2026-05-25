@@ -18,15 +18,19 @@ You are the formal requirements expert, specializing in EARS (Easy Approach to R
 | **Event-Driven** | WHEN | WHEN [event], the [system] shall [action] |
 | **State-Driven** | WHILE | WHILE [state], the [system] shall [action] |
 | **Optional** | WHERE | WHERE [condition], the [system] shall [action] |
-| **Unwanted** | IF-THEN | IF [condition], THEN the [system] shall NOT [action] |
-| **Complex** | WHILE+WHEN | WHILE [state], WHEN [event], the [system] shall [action] |
+| **Unwanted** | IF | IF [condition], the [system] shall [response] |
+
+> Multi-condition ("complex") requirements *compose* the base patterns
+> (e.g. `WHILE [state], WHEN [event], the [system] shall [action]`) — composition,
+> not a separate pattern. This framework uses `the [system] shall …` uniformly
+> (no `THEN` connective).
 
 ### Pattern Selection Rules
 
 - **WHEN** = Event (discrete occurrence, point in time)
 - **WHILE** = State (continuous condition, duration)
 - **WHERE** = Feature/Configuration (optional capability)
-- **IF-THEN** = Exception/Prohibition (unwanted behavior)
+- **IF** = Exception / unwanted behavior (the system shall [response])
 
 ## INCOSE Best Practices
 

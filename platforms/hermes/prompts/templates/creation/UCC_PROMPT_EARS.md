@@ -51,10 +51,14 @@ Where {feature is enabled}, the {system} shall {action}.
 ### Unwanted Behavior Requirements
 
 ```
-If {unwanted condition}, then the {system} shall {response}.
+If {unwanted condition}, the {system} shall {response}.
 ```
 
-### Complex Requirements
+### Complex (Composed) Requirements
+
+Multi-condition requirements *compose* the base patterns — this is composition,
+not a separate pattern. Keep each statement atomic; type a composed requirement
+by its primary pattern code (e.g. `EV` or `ST`).
 
 ```
 While {state}, when {event}, the {system} shall {action}.
@@ -75,7 +79,6 @@ Categories:
 - `ST` = State-driven
 - `OP` = Optional
 - `UW` = Unwanted behavior
-- `CX` = Complex
 
 Example: `EARS.01.EV.15` = EARS-01, Event-driven requirement #15
 
