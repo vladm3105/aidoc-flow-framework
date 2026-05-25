@@ -13,14 +13,34 @@ authored as Markdown or YAML.
 
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-REGISTRY = REPO_ROOT / "framework" / "registry" / "LAYER_REGISTRY.yaml"
+_REGISTRY_REL = Path("framework") / "registry" / "LAYER_REGISTRY.yaml"
+
+
+def find_registry(start: Path | None = None) -> Path:
+    """Locate ``framework/registry/LAYER_REGISTRY.yaml`` without assuming the
+    package's location, so a vendored copy works from any platform.
+
+    Order: ``$SDD_REGISTRY`` → search upward from the CWD → search upward from
+    this module → the canonical repo layout (``parents[2]``).
+    """
+    env = os.environ.get("SDD_REGISTRY")
+    if env:
+        return Path(env)
+    seeds = [start or Path.cwd(), Path(__file__).resolve().parent]
+    for seed in seeds:
+        for base in [seed, *seed.resolve().parents]:
+            candidate = base / _REGISTRY_REL
+            if candidate.is_file():
+                return candidate
+    return Path(__file__).resolve().parents[2] / _REGISTRY_REL
+
 
 LAYER_TAGS = ("brd", "prd", "ears", "bdd", "adr", "spec", "tdd", "iplan")
 
@@ -52,8 +72,9 @@ class Finding:
         return f"{self.path}:{self.line}: [{self.severity.upper()} {self.code}] {self.message}"
 
 
-def _load_registry():
-    data = yaml.safe_load(REGISTRY.read_text(encoding="utf-8"))
+def _load_registry(registry: Path | None = None):
+    registry = registry or find_registry()
+    data = yaml.safe_load(registry.read_text(encoding="utf-8"))
     layers = {layer["artifact"]: layer for layer in data["layers"]}
     pats = data["id_patterns"]
     return layers, re.compile(pats["document"]), re.compile(pats["element"])
@@ -153,15 +174,15 @@ def lint_file(path: Path, layers, doc_re, elem_re) -> list[Finding]:
     if artifact is None:
         return []
     try:
-        rel = path.relative_to(REPO_ROOT).as_posix()
+        rel = path.resolve().relative_to(Path.cwd().resolve()).as_posix()
     except ValueError:
         rel = path.as_posix()
     return lint_text(path.read_text(encoding="utf-8"), artifact, rel, layers, doc_re, elem_re)
 
 
-def lint_path(target: Path) -> list[Finding]:
+def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     """Lint a file or recurse a directory; returns all findings."""
-    layers, doc_re, elem_re = _load_registry()
+    layers, doc_re, elem_re = _load_registry(registry)
     findings: list[Finding] = []
     if target.is_dir():
         for p in sorted(target.rglob("*")):

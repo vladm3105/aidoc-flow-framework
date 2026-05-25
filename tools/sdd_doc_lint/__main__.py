@@ -1,13 +1,16 @@
-"""CLI: python -m sdd_doc_lint <path> [<path> ...]
+"""CLI: python -m sdd_doc_lint [--registry PATH] <path> [<path> ...]
 
 Exit 0 = no error-level findings; 1 = error findings; 2 = usage error.
-Run from the repository root (it resolves the framework registry relative to the
-package). Intended to back the `on_author` (advisory) and `pre_merge` (blocking)
-trigger points — see framework/governance/REVIEW_REMEDIATION_FLOW.md.
+The framework registry is located automatically (upward search for
+``framework/registry/LAYER_REGISTRY.yaml``, or ``$SDD_REGISTRY`` / ``--registry``),
+so the same code runs from the canonical repo or a vendored platform copy.
+Backs the ``on_author`` (advisory) and ``pre_merge`` (blocking) trigger points —
+see framework/governance/REVIEW_REMEDIATION_FLOW.md.
 """
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 
@@ -15,14 +18,25 @@ from . import lint_path
 
 
 def main(argv: list[str] | None = None) -> int:
-    argv = sys.argv[1:] if argv is None else argv
-    if not argv:
-        print("usage: python -m sdd_doc_lint <path> [<path> ...]", file=sys.stderr)
-        return 2
+    parser = argparse.ArgumentParser(prog="sdd_doc_lint")
+    parser.add_argument("paths", nargs="+", help="file(s) or directory(ies) to lint")
+    parser.add_argument(
+        "--registry",
+        type=Path,
+        default=None,
+        help="path to LAYER_REGISTRY.yaml (else $SDD_REGISTRY or an upward search)",
+    )
+    args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     findings = []
-    for arg in argv:
-        findings.extend(lint_path(Path(arg)))
+    try:
+        for arg in args.paths:
+            findings.extend(lint_path(Path(arg), registry=args.registry))
+    except OSError as exc:
+        # Registry not found/readable (e.g. run outside a framework/ project).
+        # Exit 2 (not 1) so callers can tell "could not run" from "found errors".
+        print(f"sdd-doc-lint: registry unavailable ({exc}); skipping.", file=sys.stderr)
+        return 2
 
     errors = [f for f in findings if f.severity == "error"]
     for f in sorted(findings, key=lambda x: (x.path, x.line, x.code)):
