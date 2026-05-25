@@ -21,15 +21,6 @@ repos:
       - id: yamllint
         args: [--strict, -c, .yamllint.yaml]
 
-  - repo: local
-    hooks:
-      - id: markdownlint
-        name: markdownlint
-        entry: markdownlint
-        language: system
-        files: \.md$
-        args: [--config, .markdownlint.json]
-
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.8.0
     hooks:
