@@ -40,9 +40,9 @@ After initialization, each project owns its UCX assets independently. Teams can 
 Location (framework scaffold source): `ucx_hermes/skills/persona_mappings.yaml`
 Location (project runtime): `{project}/UCX/skills/persona_mappings.yaml`
 
-`persona_mappings.yaml` includes active v3.2 doc-types (`brd`, `prd`, `ears`,
-`bdd`, `adr`, `spec`, `tdd`, `iplan`) and legacy compatibility doc-types
-(`sys`, `req`, `ctr`, `tspec`).
+`persona_mappings.yaml` covers the 8-layer SDD doc-types (`brd`, `prd`, `ears`,
+`bdd`, `adr`, `spec`, `tdd`, `iplan`). The legacy SYS/REQ/CTR/TSPEC doc-types
+were removed — they are not part of the 8-layer framework.
 
 ## Available Skills (12 Core Personas)
 

@@ -1,5 +1,18 @@
 # Session Handoff
 
+> **🔵 PLATFORM-ALIGN B3 READY — legacy-layer removal (2026-05-25).** Branch
+> **`claude/hermes-legacy-layer-removal`** (B1+B2 merged as PR #20, Hermes `0.2.0`).
+> Per the user's "full removal" decision, removed the **operative** SYS/REQ/CTR/TSPEC
+> compat surface: 12 prompt templates; `registry.py` `LAYER_PREFIXES` entries (kept
+> `tasks`); `persona_mappings.yaml` creation+review entries; the `ctr` branch in
+> `validation/runner.py`; the README mention; legacy-layer tests in
+> `test_validation_runner.py`. Hermes `0.2.0 → 0.3.0`; local suite **382**;
+> conformance **50**; lint clean. **Deliberately retained** (descriptive, accurate
+> history): vendored persona-profile `doc_types`/percentage mentions +
+> `agent-skills/` "cut from v3"/"deprecated" notes. **Next:** open PR-3; the
+> mcp-gated tests (test_server/test_yaml_parity) are the CI gate. **This closes
+> PLATFORM-ALIGN** (A vendored linter; B1+B2 hash IDs; B3 legacy removal).
+>
 > **🔵 PLATFORM-ALIGN PART B (B1+B2) READY; B3 ESCALATED (2026-05-25).** Branch
 > **`claude/platform-align-b`** (Part A merged as PR #19). **B1+B2 done:** Hermes
 > element-IDs migrated to the framework **4-segment hash** form — runtime

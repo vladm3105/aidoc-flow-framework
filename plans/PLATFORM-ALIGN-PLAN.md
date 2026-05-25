@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | PLATFORM-ALIGN                 |
 | Depends on | DOC-CHECK (PRs #17/#18 merged); framework spec `0.7.0`; the 4-segment element-ID standard (`LAYER_REGISTRY.yaml` `id_patterns`) |
-| Status     | IN PROGRESS — Part A merged (PR #19); Part B1+B2 implemented (PR-2, branch `claude/platform-align-b`, Hermes `0.2.0`); **B3 escalated** (legacy layers are an intentional documented compat surface — B3.4 trigger) |
+| Status     | COMPLETE (pending PR-3 merge) — Part A merged (PR #19); B1+B2 merged (PR #20, Hermes `0.2.0`); B3 full-removal implemented (PR-3, branch `claude/hermes-legacy-layer-removal`, Hermes `0.3.0`) per user decision |
 | Feeds      | a consumer-runnable doc-linter on both platforms (Part A); Hermes element-IDs aligned to the framework hash form + legacy-layer prompts handled (Part B) |
 
 ## Objective
@@ -249,3 +249,17 @@ locally). Per B3.4 ("if a legacy layer still backs a currently-advertised
 capability, stop and escalate"), removal is **paused for an explicit decision** —
 full removal would tear out a deliberate compat feature and is CI-only verifiable.
 Options surfaced to the user: full-remove / deprecate-in-place / leave.
+
+**Resolution: full-remove (user decision).** PR-3 (`claude/hermes-legacy-layer-removal`,
+Hermes `0.2.0 → 0.3.0`) removed the **operative** compat surface: 12 prompt
+templates; `registry.py` `LAYER_PREFIXES` sys/req/ctr/tspec (kept `tasks`);
+`persona_mappings.yaml` creation+review entries; the `ctr` branch in
+`validation/runner.py`; the `skills/README.md` mention; the legacy-layer tests in
+`test_validation_runner.py` (dropped/trimmed). Local suite **382**; conformance
+**50**; the registry alias self-consistency test stays green (count derived from
+`LAYER_PREFIXES`); the mcp-gated tests carry no legacy-layer assertion (CI gate).
+**Deliberately retained:** vendored persona-profile `doc_types`/allocation
+mentions + `agent-skills/` historical notes ("cut from v3"/"deprecated") — these
+are descriptive (not the operative router) and the history is accurate; a
+percentage-table rewrite of 10 vendored persona docs was out of proportion.
+`tasks` (IPLAN rename-alias) kept by design.

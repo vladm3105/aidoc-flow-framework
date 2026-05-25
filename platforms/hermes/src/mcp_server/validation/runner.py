@@ -331,13 +331,6 @@ def _run_doc_type_parity_checks(
             errors.append("Missing TASKS structure: markdown checkbox list item")
         return
 
-    if normalized == "ctr":
-        if re.search(r"\b(openapi\s*:|endpoint\b|contract\b)", content, re.IGNORECASE):
-            passes.append("ctr structure present: contract token")
-        else:
-            errors.append("Missing CTR structure: openapi/endpoint/contract token")
-        return
-
 
 def run_project_validation_build(
     *,
