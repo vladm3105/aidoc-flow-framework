@@ -1,5 +1,17 @@
 # Session Handoff
 
+> **🔵 PLATFORM-ALIGN B3 TAIL — persona-profile legacy scrub (2026-05-25).** Branch
+> **`claude/hermes-persona-legacy-cleanup`** (B3 PR #21 merged). On "fix remaining
+> tasks", scrubbed the **descriptive** SYS/REQ/CTR/TSPEC residue from the 10 vendored
+> persona profiles (`skills/personas/*.md`): dead scoring-weight lines, `doc_types`
+> tokens, and the dedicated legacy rows/sections (CTR Expertise, TSPEC Quality
+> Metrics, eval-table rows). Doc-only — no runtime/VERSION change (part of unreleased
+> Hermes `0.3.0`); local suite **382**, conformance **50**. **Retained by design:**
+> `agent-skills/` "cut from v3"/"deprecated" history (accurate) + threshold `req`/`ctr`
+> (unrelated). **Next:** open the PR. That fully closes PLATFORM-ALIGN + the flagged
+> residue. **Remaining are user-only:** branch protection on `framework/**`; push
+> `framework/v0.x` + `hermes/v0.x` tags from a local clone.
+>
 > **🔵 PLATFORM-ALIGN B3 READY — legacy-layer removal (2026-05-25).** Branch
 > **`claude/hermes-legacy-layer-removal`** (B1+B2 merged as PR #20, Hermes `0.2.0`).
 > Per the user's "full removal" decision, removed the **operative** SYS/REQ/CTR/TSPEC
