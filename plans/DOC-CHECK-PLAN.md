@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | DOC-CHECK                      |
 | Depends on | framework spec `0.6.0`; the per-layer `-audit`/`-fixer` skills + Hermes validation runtime (both exist) |
-| Status     | PLANNED — 2026-05-25 (framework-first rewrite; decisions resolved) |
+| Status     | IN PROGRESS — Phase 0 (spec loop model, `0.7.0`) implemented on `claude/doc-check-automation`; Phases 1–4 (tooling/hook/CI) follow after it merges |
 | Feeds      | an engine-agnostic review→remediation→gate loop in the spec, with write-time (#1) + PR-time (#2) triggers, both platforms |
 
 ## Objective
