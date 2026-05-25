@@ -36,8 +36,15 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 |---------|---------|--------|
 | Event-Driven | External event | WHEN [trigger], THE [component] SHALL [action] WITHIN [timing] |
 | State-Driven | System state | WHILE [state], THE [component] SHALL [behavior] WITHIN [context] |
+| Optional | Feature/config present | WHERE [feature enabled], THE [component] SHALL [behavior] |
 | Unwanted | Error condition | IF [error], THE [component] SHALL [recovery] WITHIN [timing] |
 | Ubiquitous | Always applies | THE [component] SHALL [behavior] for [scope] |
+
+Every pattern uses the canonical EARS response clause `THE [component] SHALL …`
+— never a `THEN` connective. `WITHIN [timing]` is a framework extension (not
+stock EARS) supporting quantifiability. A genuinely multi-condition requirement
+*composes* these patterns (e.g. `WHILE [state], WHEN [event], THE … SHALL …`) —
+that is composition, not a sixth pattern.
 
 ## Element IDs
 

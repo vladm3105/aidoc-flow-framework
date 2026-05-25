@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.5.0"
+    framework_spec_version: "0.6.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -40,7 +40,7 @@ Use `doc-ears` when:
 
 - BRD (Layer 1) and PRD (Layer 2) exist and you need formal requirements.
 - Translating product features into precise behavioral statements.
-- Establishing event-driven, state-driven, error-handling, or system-wide rules.
+- Establishing event-driven, state-driven, optional/feature-gated, error-handling, or system-wide rules.
 
 For end-to-end generation from a PRD, a prompt, or an IPLAN, use
 `../doc-ears-autopilot/SKILL.md`.
@@ -65,19 +65,24 @@ documents that exist; never invent placeholders like `PRD-XXX` or `TBD`.
 priority, single `@prd:` source, `@brd:` reference, BDD-Ready score,
 revision-history table). Then:
 
-1. Purpose & Context · 2. Requirements (the four patterns) · 3. Quality
+1. Purpose & Context · 2. Requirements (the five patterns) · 3. Quality
 Attributes (tabular) · 4. Traceability · 5. Glossary.
 
 See `EARS-TEMPLATE.yaml` for per-section content and embedded authoring guidance.
 
-### The four EARS patterns (Section 3)
+### The five EARS patterns (Section 3)
 
 | Pattern | Syntax | Use for |
 |---------|--------|---------|
 | **Event-Driven** | `WHEN [trigger], THE [component] SHALL [action] WITHIN [timing].` | user/API/timer events |
 | **State-Driven** | `WHILE [state], THE [component] SHALL [behavior] WITHIN [context].` | continuous / mode-dependent behavior |
+| **Optional** | `WHERE [feature enabled], THE [component] SHALL [behavior].` | feature-flagged / config-gated behavior |
 | **Unwanted** | `IF [error], THE [component] SHALL [recovery] WITHIN [timing].` | failures, edge cases, fallbacks |
 | **Ubiquitous** | `THE [component] SHALL [behavior] for [scope].` | global invariants, logging, audit |
+
+A genuinely multi-condition requirement *composes* these (e.g.
+`WHILE [state], WHEN [event], THE … SHALL …`) — composition, not a sixth pattern.
+EARS uses `THE … SHALL …` as the response clause, never a `THEN` connective.
 
 Each requirement is **atomic** (one testable concept) and carries an element ID
 plus a per-requirement `@brd: … | @prd: …` traceability line. Use the
@@ -116,8 +121,9 @@ timing uses p50/p95/p99 notation. Carry changeable values as
    `EARS-NN_{slug}.md` inside it; section-based (>25 KB): `EARS-NN.S_{section}.md`
    - index from `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 5 sections from the template.
-5. **Categorize requirements** into the four patterns; write atomic
-   WHEN-THE-SHALL-WITHIN statements with `@threshold:` constraints.
+5. **Categorize requirements** into the five patterns; write atomic
+   `THE … SHALL …` statements (WITHIN timing where applicable) with
+   `@threshold:` constraints.
 6. **Fill Quality Attributes** (tabular, percentile timing) and **Traceability**
    (cumulative `@brd`/`@prd`).
 7. **Update the EARS index** `docs/03_EARS/EARS-00_index.md` in the same change.
@@ -132,7 +138,7 @@ checklist against `framework/layers/03_EARS/README.md` and
 - [ ] Document Control is the first section.
 - [ ] All 5 sections present and non-empty.
 - [ ] Every statement uses WHEN-THE-SHALL-WITHIN syntax; SHALL/SHOULD/MAY correct.
-- [ ] Requirements categorized (Event, State, Unwanted, Ubiquitous) and atomic.
+- [ ] Requirements categorized (Event, State, Optional, Unwanted, Ubiquitous) and atomic.
 - [ ] Element IDs match `EARS.NN.SS.xxxx`; no removed patterns.
 - [ ] Cumulative tags present: `@brd` and `@prd`, pipe-separated, no ranges.
 - [ ] Single `@prd:` in Document Control; quantifiable constraints (no "fast").
@@ -181,6 +187,6 @@ Authority: `framework/governance/ADAPTATION.md`.
 | **Layer** | 3 (refinement; no C4 level) |
 | **Upstream tags** | `@brd`, `@prd` (2, cumulative) |
 | **Key rule** | One atomic, testable, quantifiable statement each |
-| **Must include** | Document Control (first), four patterns, 5 sections |
+| **Must include** | Document Control (first), five patterns, 5 sections |
 | **Quality gate** | BDD-Ready ≥ 90/100 |
 | **Next** | `doc-bdd` |

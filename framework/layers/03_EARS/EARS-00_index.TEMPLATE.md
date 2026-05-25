@@ -68,11 +68,15 @@ flowchart LR
 
 | Type | Pattern | Example | Usage |
 |------|---------|---------|-------|
-| **Event-driven** | WHEN [trigger] THEN [response] | WHEN user clicks submit THEN validate form | Triggered actions |
-| **State-driven** | WHILE [state] THEN [response] | WHILE system is offline THEN queue requests | Continuous conditions |
-| **Unwanted** | IF [condition] THEN [prevention] | IF invalid input THEN reject with error | Error handling |
-| **Optional** | WHERE [feature enabled] THEN [response] | WHERE premium enabled THEN show analytics | Feature flags |
+| **Event-driven** | WHEN [trigger], THE [system] SHALL [response] WITHIN [timing] | WHEN a user submits the form, THE system SHALL validate it WITHIN 200ms | Triggered actions |
+| **State-driven** | WHILE [state], THE [system] SHALL [behavior] | WHILE the system is offline, THE system SHALL queue requests | Continuous conditions |
+| **Optional** | WHERE [feature enabled], THE [system] SHALL [behavior] | WHERE premium is enabled, THE system SHALL show analytics | Feature/config-gated |
+| **Unwanted** | IF [condition], THE [system] SHALL [recovery] WITHIN [timing] | IF input is invalid, THE system SHALL reject it with an error | Error handling |
 | **Ubiquitous** | THE [system] SHALL [requirement] | THE system SHALL log all transactions | Always-on requirements |
+
+> Every pattern uses the canonical EARS response clause `THE [system] SHALL …`
+> (no `THEN`). `WITHIN [timing]` is a framework extension. Multi-condition
+> requirements *compose* these patterns rather than adding a sixth type.
 
 ## Adding New EARS Requirements
 
@@ -105,7 +109,7 @@ EARS must achieve **BDD-Ready score >=90/100** before downstream BDD generation.
 ## Maintenance Guidelines
 
 Before marking EARS as "Approved":
-- [PASS] All requirements follow EARS patterns (WHEN/THEN, WHILE/THEN, etc.)
+- [PASS] All requirements follow EARS patterns (WHEN/WHILE/WHERE/IF + THE-SHALL, or ubiquitous THE-SHALL)
 - [PASS] Requirements are atomic and independently testable
 - [PASS] Measurable acceptance criteria defined
 - [PASS] Cross-references to PRD use hash-based element IDs

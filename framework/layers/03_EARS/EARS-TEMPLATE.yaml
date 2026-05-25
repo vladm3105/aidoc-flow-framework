@@ -165,7 +165,10 @@ purpose_and_context:
 
 requirements:
   _guidance: |
-    Four EARS syntax patterns. Each requirement MUST be atomic (one testable concept).
+    Five EARS syntax patterns. Each requirement MUST be atomic (one testable concept).
+    Every pattern uses the canonical EARS response clause THE [component] SHALL
+    [response] — never a "THEN" connective. WITHIN [timing] is a framework
+    extension (not stock EARS) that backs the layer's quantifiability mandate.
 
     WHEN-THE-SHALL-WITHIN (Event-Driven):
       WHEN [trigger condition],
@@ -179,6 +182,11 @@ requirements:
       WITHIN [operational context].
       Use for: continuous behaviors, persistent conditions, mode-dependent features.
 
+    WHERE-THE-SHALL (Optional / Feature):
+      WHERE [feature/configuration is present],
+      THE [system component] SHALL [feature behavior].
+      Use for: feature-flagged, configuration-gated, or tier-gated behavior.
+
     IF-THE-SHALL-WITHIN (Unwanted Behavior / Error Handling):
       IF [error condition],
       THE [system component] SHALL [recovery action]
@@ -189,6 +197,11 @@ requirements:
       THE [system component] SHALL [universal behavior]
       for [scope/context].
       Use for: global invariants, logging, auditing, universal constraints.
+
+    Composition ("complex" requirements): the five patterns may be combined when
+    a requirement is genuinely multi-condition (e.g. WHILE [state], WHEN [event],
+    THE [component] SHALL [response]). This is composition of the base patterns,
+    not a sixth pattern — keep each composed requirement atomic and testable.
 
     Boundary Value Matrix pattern:
       | Threshold | Operator | Value     | At Boundary | Above  | Below  |
@@ -211,7 +224,8 @@ requirements:
 
   _antipatterns:
     - "FAIL: vague timing ('real-time', 'immediately', 'fast') — use percentiles"
-    - "FAIL: missing trigger clause (WHEN|IF|WHILE) — every event/state requirement needs one"
+    - "FAIL: missing trigger clause (WHEN|WHILE|WHERE|IF) — every non-ubiquitous requirement needs one"
+    - "FAIL: 'THEN' as the response connective — EARS uses THE [component] SHALL [response]"
     - "FAIL: compound requirements (multiple AND clauses) — split into atomic statements"
     - "FAIL: non-measurable constraints ('efficient', 'reliable') — quantify with metrics"
     - "FAIL: old ID format (Event-XXX, State-XXX, UB-XXX) — use EARS.NN.03.xxxx"
@@ -241,6 +255,14 @@ requirements:
         IF [error condition],
         THE [system component] SHALL [recovery action]
         WITHIN [timing constraint].
+      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+
+  optional_feature:
+    - id: "EARS.NN.03.xxxx"
+      name: "[Feature-Gated Behavior]"
+      statement: |
+        WHERE [feature/configuration is present],
+        THE [system component] SHALL [feature behavior].
       traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
 
   ubiquitous:

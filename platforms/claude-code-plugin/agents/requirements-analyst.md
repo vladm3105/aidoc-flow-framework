@@ -78,8 +78,8 @@ Source: [Upstream artifact reference]
 
 **EARS Syntax**:
 
-- WHEN [trigger] THE [system] SHALL [response] WITHIN [constraint]
-- Supports: Ubiquitous, Event-Driven, State-Driven, Optional, Complex patterns
+- WHEN [trigger], THE [system] SHALL [response] WITHIN [constraint]
+- Five patterns: Ubiquitous, Event-Driven (WHEN), State-Driven (WHILE), Optional (WHERE), Unwanted (IF) — all `THE … SHALL …`; multi-condition requirements compose them ("complex"), not a sixth pattern
 
 **Acceptance Criteria Structure**:
 
