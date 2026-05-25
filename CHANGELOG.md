@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.6.0 → 0.7.0** (minor) — DOC-CHECK Phase 0: model the
+  **review→remediation→gate quality loop** and its **trigger points** in the spec
+  (new `framework/governance/REVIEW_REMEDIATION_FLOW.md`). Previously review and
+  remediation existed only as platform capabilities; the spec now names the loop
+  (`Draft → Review → Remediate → Gate → Approved`) and four engine-agnostic
+  trigger points — `on_author`, `on_gate_fail`, `pre_promotion`, `pre_merge` —
+  with a **light conformance contract**: at each point an engine supports, it
+  surfaces findings, the readiness score vs the gate, and the remediation path;
+  *how* (deterministic vs LLM, hook vs CI) is the engine's choice, and each engine
+  documents its own trigger-point → capability mapping. Does not change the
+  readiness-gate threshold or the CHG gates. Additive/backward-compatible.
+  Registered in the governance README + `test_governance` `EXPECTED_FILES`; both
+  `FRAMEWORK_SPEC_VERSION` files and the 54 plugin skills' `framework_spec_version`
+  re-synced. *(Platform triggers — the write-time hook (#1) and PR-time CI (#2) —
+  follow as a separate platform/tooling change.)*
 - Framework spec **0.5.0 → 0.6.0** (minor) — FRWK-REVIEW finding **#4b**: EARS
   statement-model reconciliation. The EARS layer described its own model four
   different ways (template/README: 4 patterns in `THE…SHALL` form; index: 5 types

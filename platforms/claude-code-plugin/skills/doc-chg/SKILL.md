@@ -9,7 +9,7 @@ metadata:
     artifact_type: CHG
     skill_category: core-workflow
     version: "0.2.0"
-    framework_spec_version: "0.6.0"
+    framework_spec_version: "0.7.0"
     last_updated: "2026-05-23"
 ---
 
