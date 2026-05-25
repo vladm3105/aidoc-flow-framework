@@ -89,8 +89,12 @@ runtime: server-side `validation/` + scoring covers `on_author` (on-demand
 validate/score) and `pre_promotion` (the readiness gate before the next layer);
 the `UCRem_*` remediation prompts cover `on_gate_fail`. For the `pre_merge`
 (PR-time) point, a Hermes-based project uses the shared `doc-review.yml`
-workflow running `tools/sdd_doc_lint` — the same deterministic structural gate
-the plugin uses — so both platforms gate documents identically in CI.
+workflow running the deterministic `sdd_doc_lint` — the same structural gate the
+plugin uses — so both platforms gate documents identically in CI. A
+byte-identical copy of the linter is vendored at `sdd_doc_lint/` (kept in sync
+with the canonical `tools/sdd_doc_lint/` by `sync-vendored.sh`, enforced by a
+conformance guard); run it from the platform root with
+`PYTHONPATH=. python -m sdd_doc_lint <docs-path>`.
 
 ## Platform info
 

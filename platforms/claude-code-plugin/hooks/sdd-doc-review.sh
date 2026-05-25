@@ -33,9 +33,15 @@ esac
 layer="$(printf '%s' "$artifact" | tr '[:upper:]' '[:lower:]')"
 msg="Edited a ${artifact} document (${base}). Per the framework review→remediation→gate loop (on_author): run /aidoc-flow:doc-${layer}-audit to score readiness before promoting downstream; if it scores below the gate, /aidoc-flow:doc-${layer}-fixer remediates."
 
-# Best-effort deterministic structural check (only if the linter is importable).
-if command -v python3 >/dev/null 2>&1 && python3 -c "import sdd_doc_lint" >/dev/null 2>&1; then
-  if ! findings="$(python3 -m sdd_doc_lint "$file_path" 2>&1)"; then
+# Deterministic structural check via the vendored linter. The plugin ships
+# sdd_doc_lint at its root, so derive the plugin root from this script's path
+# and put it on PYTHONPATH (works regardless of the CLAUDE_PLUGIN_ROOT env var).
+# Exit codes: 1 = structural findings (append); 0 = clean; 2 = registry not
+# found (e.g. no framework/ in the project) → skip silently.
+plugin_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd)"
+if command -v python3 >/dev/null 2>&1 && [ -n "$plugin_root" ]; then
+  findings="$(PYTHONPATH="${plugin_root}${PYTHONPATH:+:$PYTHONPATH}" python3 -m sdd_doc_lint "$file_path" 2>&1)"
+  if [ "$?" -eq 1 ]; then
     msg="${msg}"$'\n\nStructural findings (sdd_doc_lint):\n'"${findings}"
   fi
 fi
