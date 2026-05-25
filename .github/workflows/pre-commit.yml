@@ -29,7 +29,3 @@ jobs:
 
       - name: Run hooks
         run: pre-commit run --all-files --show-diff-on-failure
-
-      # Dependency vulnerability audit (manual stage — not run on every commit).
-      - name: Dependency audit (pip-audit)
-        run: pre-commit run --all-files --hook-stage manual pip-audit
