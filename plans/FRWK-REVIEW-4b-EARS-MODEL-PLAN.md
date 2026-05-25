@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | FRWK-REVIEW-4b                 |
 | Depends on | FRWK-REVIEW (PRs #12/#13 merged); framework spec `0.5.0` |
-| Status     | PLANNED — 2026-05-25 (D1 = A canonical-5 confirmed; awaiting go-ahead to implement) |
+| Status     | IMPLEMENTED — 2026-05-25 (D1 = A canonical-5; branch `claude/frwk-review-4b-ears-model`, spec `0.6.0`); PR pending |
 | Feeds      | a single coherent EARS statement model across the spec + platforms; `framework/v0.6.0` |
 
 ## Objective
@@ -193,3 +193,27 @@ statement model — which is how the drift accumulated).
   C reduced-4) are spelled out with their concrete consequences, so the user can
   flip it without re-planning. No change.
 - No further findings — plan is implementable pending D1 confirmation.
+
+## Implementation log
+
+### 2026-05-25 — implemented (branch `claude/frwk-review-4b-ears-model`)
+
+- D1 = A confirmed (canonical-5 + `SHALL`; `WITHIN` extension; Complex as
+  composition). All edits per the source→target table:
+  - `EARS-TEMPLATE.yaml` — guidance "four"→"five"; added the WHERE/Optional
+    pattern + a structured `optional_feature` block; composition + `WITHIN`-extension
+    notes; antipatterns extended (WHERE trigger; banned `THEN` connective).
+  - `README.md` — Optional row + composition/extension note.
+  - `EARS-00_index.TEMPLATE.md` — table corrected from `[trigger] THEN [response]`
+    to the `SHALL` form across all five types; quality-check line updated.
+  - plugin `doc-ears/SKILL.md` (four→five, Optional row, categorize/checklist) +
+    `requirements-analyst.md` (regained Unwanted; Complex reframed as composition).
+  - `tests/conformance/test_ears_model.py` — three guards (five template blocks;
+    README/index name all five + carry `WHERE [`; no `THEN [` connective).
+    Guard precision spot-checked (matches old `… THEN [response]`, ignores the
+    descriptive `'THEN'` mentions).
+- **Verification:** conformance **49/49**; `spec_gate` green vs `origin/main`;
+  spec `0.5.0 → 0.6.0` (+ both FSV + 54 skills + CHANGELOG); pre-commit clean.
+- **Deferred (tracked):** Hermes vendored `agent-skills`/`prompts` EARS tables
+  (6-pattern, mixed `THEN`) — a platform follow-up, not a framework-spec change.
+- **Pending:** open PR.

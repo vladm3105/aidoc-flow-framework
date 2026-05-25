@@ -1,5 +1,20 @@
 # Session Handoff
 
+> **🔵 FRWK-REVIEW #4b READY — EARS statement-model reconciliation (2026-05-25).**
+> The deferred EARS finding, implemented on branch **`claude/frwk-review-4b-ears-model`**
+> (pushed, cut from `main` after the FRWK-REVIEW PRs). Plan:
+> `plans/FRWK-REVIEW-4b-EARS-MODEL-PLAN.md` (D1 = A, canonical-5, user-confirmed).
+> The EARS layer was described four ways; standardized on **canonical EARS** —
+> five patterns (Ubiquitous, Event/WHEN, State/WHILE, Optional/WHERE, Unwanted/IF),
+> all `THE … SHALL …` (the non-EARS `THEN` connective removed); `WITHIN` kept as a
+> framework extension; "complex" documented as composition, not a 6th type. Added
+> the Optional/`WHERE` pattern to the template (guidance + `optional_feature`
+> block), README, and index; aligned plugin `doc-ears` + `requirements-analyst`;
+> new `tests/conformance/test_ears_model.py` (suite **49**). Spec **`0.5.0 → 0.6.0`**
+> (+ both FSV + 54 skills + CHANGELOG); `spec_gate` green. **Deferred:** Hermes
+> vendored `agent-skills`/`prompts` EARS tables (platform follow-up). **Next:** open
+> the PR; that fully closes the FRWK-REVIEW review (incl. its one deferred item).
+>
 > **✅ FRWK-REVIEW COMPLETE — framework pre-production audit fixes (2026-05-24).**
 > Both PRs **merged** to `main`; framework spec **`0.3.2 → 0.5.0`**. Plan:
 > `plans/FRAMEWORK-REVIEW-FIXES-PLAN.md` (13 findings, decisions D1–D6, 2 review
