@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | PLATFORM-ALIGN                 |
 | Depends on | DOC-CHECK (PRs #17/#18 merged); framework spec `0.7.0`; the 4-segment element-ID standard (`LAYER_REGISTRY.yaml` `id_patterns`) |
-| Status     | PLANNED — 2026-05-25 (awaiting approval) |
+| Status     | APPROVED — 2026-05-25 (implement ALL parts: A vendor+location-independence+guard; B1 prompts; B2 runtime regex+tests; B3 **remove** legacy-layer prompts; 2-PR sequence) |
 | Feeds      | a consumer-runnable doc-linter on both platforms (Part A); Hermes element-IDs aligned to the framework hash form + legacy-layer prompts handled (Part B) |
 
 ## Objective
@@ -105,21 +105,32 @@ Change the Hermes element-ID validators from 3-segment to 4-segment:
   fixtures/assertions to the 4-segment form;
 - run the full Hermes pytest suite — it must stay green (this is the risk gate).
 
-### B3 — legacy-layer prompts (SYS/REQ/CTR/TSPEC) — "handle them too"
+### B3 — legacy-layer prompts (SYS/REQ/CTR/TSPEC) — **remove** (B-D1 resolved)
 
-Investigate runtime coupling first (the `validation/runner.py` `ctr` branch, the
-per-layer prompt loader, `tool_registry`), then **remove** the 12 off-model prompt
-files **and** their runtime handling — *only* if nothing in the 8-layer flow
-depends on them. If a clean removal isn't safe (hidden coupling), **deprecate**
-in place (a header note that the layer is not part of the 8-layer framework) and
-record the residual coupling as a tracked item. Decision **B-D1** resolved at
-implementation time from the coupling check.
+**Decision: remove.** Delete the 12 off-model prompt files (SYS/REQ/CTR/TSPEC ×
+creation/review/remediation) **and** their runtime coupling — they are not part of
+the 8-layer framework (the framework absorbed SYS→SPEC, REQ→EARS, CTR→SPEC,
+TSPEC→TDD; the plugin already retired them). Method:
+
+1. Map the coupling first: the `validation/runner.py` `ctr` branch + any
+   SYS/REQ/CTR/TSPEC arms in the per-layer prompt loader / `tool_registry` /
+   layer-name allowlists.
+2. Remove the prompt files + the dead runtime arms together, so the layer→prompt
+   loader only resolves the 8 framework layers.
+3. Update/trim any Hermes tests that assert the legacy layers.
+4. If the coupling check reveals a legacy layer still backs a *currently
+   advertised* Hermes capability (not expected), stop and escalate rather than
+   break it — but the default is full removal.
 
 ### Versioning
 
-Part B changes Hermes runtime behavior + removes prompts ⇒ bump
-`platforms/hermes/VERSION` (minor or major per the removal's blast radius) +
-Hermes CHANGELOG. No framework/spec change.
+Part B changes Hermes runtime behavior + removes the off-model legacy-layer
+prompts ⇒ **bump `platforms/hermes/VERSION` (minor)** + a Hermes CHANGELOG
+`Removed`/`Changed` entry. Minor (not major): the removed layers were never part
+of the conformant 8-layer surface, so no 8-layer consumer capability is lost; the
+4-segment ID move aligns Hermes to the framework it already declares conformance
+to. (Escalate to major only if step B3.4 finds an advertised dependency.) No
+framework/spec change.
 
 ## Sequencing
 
@@ -179,5 +190,18 @@ Hermes CHANGELOG. No framework/spec change.
 - **Prose-rewrite guard.** B1 is strictly element-ID-form + legend; the EARS
   pattern prose was already aligned in the prior Hermes PR, so B1 won't re-touch it
   (R6). No change.
-- No further findings — implementable pending approval (B-D1 resolved at impl time
-  from the coupling check).
+- No further findings — implementable pending approval.
+
+### Pass 3 — 2026-05-25 (decisions firmed for implementation)
+
+- **All parts in scope, no deferrals.** Per the go-ahead: Part A (vendor +
+  location-independence + drift guard + hook wiring), Part B1 (prompt IDs), B2
+  (runtime regex 3→4 segment + tests), and B3 (**remove** legacy-layer prompts +
+  coupling) are all in scope.
+- **B-D1 resolved = remove** (was "remove-or-deprecate"). Default is full removal
+  of the 12 SYS/REQ/CTR/TSPEC prompts + their runtime arms; escalate only if a
+  legacy layer is found to back a currently-advertised capability.
+- **Hermes semver fixed = minor** + a `Removed`/`Changed` CHANGELOG entry
+  (rationale recorded under Versioning).
+- **Sequencing unchanged:** PR-1 = Part A, PR-2 = Part B (cut after A merges).
+- No further findings — proceeding to implement Part A.
