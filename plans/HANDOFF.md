@@ -1,37 +1,25 @@
 # Session Handoff
 
-> **🔵 FRWK-REVIEW PR-2 READY — THRESHOLD de-bloat (2026-05-24).** PR #12
-> (Batches 1+2) **merged** to `main` (spec `0.4.0`). Batch 3 implemented on
-> branch **`claude/framework-review-threshold`** (pushed, cut from updated
-> `main`): `THRESHOLD_NAMING_RULES.md` trimmed 909 → 734 — financial examples
-> genericized in place; off-charter runtime/ops machinery removed (§8 Environment
-> Override Rules + §12 propagation-SLA/approver-matrix); stale "UCX Flow Team"
-> provenance replaced. Safety gate passed (no programmatic consumer; refs are doc
-> links). Spec **`0.4.0 → 0.5.0`** (minor + CHANGELOG deprecation note) + both FSV
->
-> + 54 skills. Conformance **46**; `spec_gate` green. #13 found N/A for this file.
-> **Next:** open PR-2 (awaiting user OK). That closes the FRWK-REVIEW plan.
->
-> **🔵 FRWK-REVIEW PR-1 READY — framework pre-production audit fixes (2026-05-24).**
-> Branch **`claude/framework-review-fixes`** (pushed; 9 commits ahead of `main`).
-> Plan: `plans/FRAMEWORK-REVIEW-FIXES-PLAN.md` (13 findings, decisions D1–D6,
-> 2 review passes). **Batches 1 (correctness) + 2 (security) are complete** and
-> land together as **framework spec `0.3.2 → 0.4.0`** (minor; PR-1 per decision
-> D5). Highlights: corrected SPEC/TDD trace-tag element forms + `id_standard`
-> notes on L6–L8; BDD downstream framing; BRD-XS numbering gap; PRD-index enum;
-> registry index-split doc; retired "5-Gate" branding (GATE-SPEC is the 6th);
-> emergency SLA unified to 48h; GATE-SPEC surfaced on the approval form +
-> post-mortem template. **Security:** new engine-agnostic
-> `framework/governance/SECURITY_REVIEW.md`; blocking `GATE-03-E008` (external
-> change cites a CVE/advisory or an explicit N/A escape); `DIAGRAM_STANDARDS.md`
-> click-handler/inline-HTML sanitization rule; `GATE-SPEC-W003` security review
-> for agent-facing spec changes. New `tests/conformance/test_framework_review_guards.py`
-> (3 guards); `test_governance` EXPECTED_FILES += `SECURITY_REVIEW.md`. **Suite 46
-> green; `spec_gate` passes vs origin/main; FSV aligned at 0.4.0 (+ 54 skills
-> rippled).** **Next:** open PR-1 (awaiting user OK — PRs aren't auto-created),
-> merge, then cut **Batch 3** (THRESHOLD de-bloat, PR-2) from `main` *after* PR-1
-> merges (decision D5/R7 — shares the version/CHANGELOG/skill files). Deferred:
-> finding #4b (EARS index statement-type/syntax model decision).
+> **✅ FRWK-REVIEW COMPLETE — framework pre-production audit fixes (2026-05-24).**
+> Both PRs **merged** to `main`; framework spec **`0.3.2 → 0.5.0`**. Plan:
+> `plans/FRAMEWORK-REVIEW-FIXES-PLAN.md` (13 findings, decisions D1–D6, 2 review
+> passes). **PR #12 — Batches 1 (correctness) + 2 (security), spec `0.4.0`:**
+> SPEC/TDD trace-tag element forms + `id_standard` notes on L6–L8; BDD downstream
+> framing; BRD-XS numbering gap; PRD-index enum; registry index-split doc; "5-Gate"
+> branding retired (GATE-SPEC is the 6th); emergency SLA unified to 48h; GATE-SPEC
+> surfaced on the approval form + post-mortem template; new engine-agnostic
+> `governance/SECURITY_REVIEW.md`; blocking `GATE-03-E008` (external-change
+> CVE/advisory-or-N/A); `DIAGRAM_STANDARDS.md` click-handler/inline-HTML
+> sanitization; `GATE-SPEC-W003` agent-facing security review. **PR #13 — Batch 3
+> (THRESHOLD de-bloat), spec `0.5.0`:** `THRESHOLD_NAMING_RULES.md` trimmed 909 →
+> 734 (financial examples genericized in place; off-charter §8 Environment
+> Override + §12 propagation-SLA/approver matrix removed; stale "UCX Flow Team"
+> provenance replaced); safety gate passed (no programmatic consumer). New
+> `tests/conformance/test_framework_review_guards.py` (3 guards); suite **46**,
+> green throughout; each PR passed GATE-SPEC by construction. #13 (total_sections/
+> P0-P1) found N/A; **deferred:** finding #4b (EARS index statement-type/syntax
+> model decision). **User-only carry-overs (standing):** branch protection on
+> `framework/**`; push the `framework/v0.x` release tags from a local clone.
 >
 > **✅ PRE-COMMIT HOOKS — (2026-05-24, D-0021).** Added `.pre-commit-config.yaml`
 >
@@ -231,10 +219,10 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 | Field         | Value                                      |
 |---------------|--------------------------------------------|
-| Last updated  | 2026-05-24T12:00:00Z                       |
-| Working branch| `claude/framework-review-fixes` (FRWK-REVIEW PR-1; pushed, 9 commits ahead of `main`) |
-| Current phase | **FRWK-REVIEW** — framework pre-production audit fixes. Batches 1+2 done at framework spec **0.4.0**; conformance **46**; `spec_gate` green. PR-1 ready to open. |
-| Next task     | Open **PR-1** (Batches 1+2) once user confirms; after it merges, cut **Batch 3** (THRESHOLD de-bloat, PR-2) from `main`. **User-only carry-overs:** branch protection on `framework/**`; push framework `v0.2.0/v0.3.0/v0.3.1` (+ optional `v1.1.0`) tags from a local clone. |
+| Last updated  | 2026-05-24T22:00:00Z                       |
+| Working branch| `main` (FRWK-REVIEW PRs #12 + #13 merged) |
+| Current phase | **FRWK-REVIEW complete** — framework pre-production audit landed in two PRs; framework spec **0.5.0**; conformance **46**; GATE-SPEC enforcing on PRs. |
+| Next task     | **None pending in-container.** **User-only:** branch protection / required reviewers on `framework/**` (GATE-SPEC human half); push framework `v0.2.0/v0.3.0/v0.3.1` (+ optional `v0.4.0/v0.5.0`, `v1.1.0`) tags from a local clone. **Deferred:** finding #4b (EARS index statement-type/syntax model decision). |
 
 ## Progress
 
