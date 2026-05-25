@@ -16,5 +16,5 @@ jobs:
     name: Auto-label by path
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v6
         # Reads .github/labeler.yml. Labels must already exist in the repo.
