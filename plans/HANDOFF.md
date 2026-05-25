@@ -11,7 +11,7 @@
 > 5-pattern detail + 4-seg `ID_NAMING_STANDARDS` are correct). Spec **0.7.0 → 0.7.1**
 > (patch; + both FSV + 54 skills + CHANGELOG); conformance **50**; `spec_gate` green.
 > **Next:** open the PR.
-
+>
 > **🔵 PLATFORM-ALIGN B3 TAIL — persona-profile legacy scrub (2026-05-25).** Branch
 > **`claude/hermes-persona-legacy-cleanup`** (B3 PR #21 merged). On "fix remaining
 > tasks", scrubbed the **descriptive** SYS/REQ/CTR/TSPEC residue from the 10 vendored
