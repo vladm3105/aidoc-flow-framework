@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.5.0 → 0.6.0** (minor) — FRWK-REVIEW finding **#4b**: EARS
+  statement-model reconciliation. The EARS layer described its own model four
+  different ways (template/README: 4 patterns in `THE…SHALL` form; index: 5 types
+  in a non-EARS `…THEN…` form; plugin `requirements-analyst`: 5 patterns dropping
+  Unwanted; Hermes personas: 6). Standardized on **canonical EARS** (decision
+  D1=A): the five patterns **Ubiquitous, Event-driven (WHEN), State-driven
+  (WHILE), Optional (WHERE), Unwanted (IF)**, all using the canonical response
+  clause `THE [component] SHALL …` — the non-EARS `THEN` connective is removed.
+  Added the missing **Optional / `WHERE`** pattern (guidance + structured
+  `optional_feature` block) to `EARS-TEMPLATE.yaml`; added the Optional row to the
+  README and corrected the index table to the `SHALL` form; documented "complex"
+  as *composition* of the base patterns (not a sixth type) and `WITHIN` as a
+  framework timing extension. Aligned the first-class plugin docs (`doc-ears`,
+  `requirements-analyst`). New `tests/conformance/test_ears_model.py` locks the
+  five-pattern set + `SHALL` grammar so the files can't re-diverge (suite now 49).
+  Backward-compatible (existing documents stay valid). Both `FRAMEWORK_SPEC_VERSION`
+  files and the plugin skills' `framework_spec_version` re-synced. *Deferred:*
+  aligning the Hermes vendored `agent-skills`/`prompts` EARS tables (platform
+  follow-up, not a framework-spec change).
 - Framework spec **0.4.0 → 0.5.0** (minor) — FRWK-REVIEW pre-production audit,
   batch 3 (THRESHOLD de-bloat, #12). Trimmed `framework/governance/THRESHOLD_NAMING_RULES.md`
   to its engine-agnostic naming/tag/boundary core: **genericized** the
