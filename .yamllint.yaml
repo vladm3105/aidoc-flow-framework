@@ -1,0 +1,19 @@
+# yamllint configuration. Extends the default rules with project-appropriate
+# relaxations (wider line length as a warning; tolerate missing document-start
+# and non-bool truthy keys common in our YAML templates).
+extends: default
+
+rules:
+  line-length:
+    max: 120
+    level: warning
+  document-start:
+    present: false
+  truthy:
+    check-keys: false
+  comments:
+    min-spaces-from-content: 1
+  braces:
+    max-spaces-inside: 1
+  brackets:
+    max-spaces-inside: 1
