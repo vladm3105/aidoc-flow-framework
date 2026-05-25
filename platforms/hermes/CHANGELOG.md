@@ -14,6 +14,22 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Removed
+
+- **Legacy SYS/REQ/CTR/TSPEC layers** (PLATFORM-ALIGN Part B3, `0.2.0 → 0.3.0`).
+  These layers are not part of the 8-layer SDD framework (the framework absorbed
+  SYS→SPEC, REQ→EARS, CTR→SPEC, TSPEC→TDD); they were retained only as a "legacy
+  compatibility" surface. Removed the **operative** surface: the 12 prompt
+  templates (`UC{C,R,Rem}_PROMPT_{SYS,REQ,CTR,TSPEC}.md`), the `sys/req/ctr/tspec`
+  entries from `skills/registry.py` `LAYER_PREFIXES` and `skills/persona_mappings.yaml`
+  (creation + review), the `ctr` structure branch in `validation/runner.py`, and
+  the `skills/README.md` mention; the legacy-layer tests in `test_validation_runner.py`
+  were dropped/trimmed. `tasks` (the IPLAN rename-alias) is retained.
+  *Residual (descriptive, not operative):* some vendored persona profiles
+  (`skills/personas/*.md` `doc_types`/allocation tables) and `agent-skills/`
+  historical notes still mention these layers — left in place (the notes that
+  document the layers as "cut from v3"/"deprecated" remain accurate).
+
 ### Changed
 
 - **Element-ID alignment to the framework 4-segment hash form** (PLATFORM-ALIGN

@@ -3,20 +3,18 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import cast
 
-# Active SDD v3.2 flow prefixes plus legacy compatibility prefixes.
+# The 8-layer SDD flow prefixes (BRD → IPLAN). The legacy SYS/REQ/CTR/TSPEC
+# layers were removed (they are not part of the 8-layer framework); `tasks`
+# remains as the IPLAN rename-alias.
 LAYER_PREFIXES: tuple[str, ...] = (
     "brd",
     "prd",
     "ears",
     "bdd",
     "adr",
+    "spec",
     "tdd",
     "iplan",
-    "sys",
-    "req",
-    "ctr",
-    "spec",
-    "tspec",
     "tasks",
 )
 
