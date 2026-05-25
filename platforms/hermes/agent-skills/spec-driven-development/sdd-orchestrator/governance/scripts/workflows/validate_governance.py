@@ -120,7 +120,6 @@ def validate_iplan_references(issues: list[dict]) -> list[str]:
         iplan_refs = re.findall(r"IPLAN-(\d+)", body, re.IGNORECASE)
 
         for ref in iplan_refs:
-            iplan_path = f"governance/plans/IPLAN-{ref}_*.md"
             # This would need glob expansion in real implementation
             if not os.path.exists("governance/plans"):
                 continue

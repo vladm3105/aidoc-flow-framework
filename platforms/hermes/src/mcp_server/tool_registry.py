@@ -23,6 +23,7 @@ from mcp_server.logging_config import (
     log_tool_call,
     log_tool_result,
 )
+from mcp_server.project_context import ProjectContext
 
 # ── Tool definitions ────────────────────────────────────────────────────────
 
@@ -957,7 +958,6 @@ async def handle_tool(name: str, arguments: dict) -> list[TextContent]:
 
 async def _dispatch(name: str, arguments: dict) -> dict:
     """Dispatch to the appropriate handler."""
-    from mcp_server.project_context import ProjectContext
 
     ctx = ProjectContext.resolve(arguments.get("project"))
 

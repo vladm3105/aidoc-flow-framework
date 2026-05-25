@@ -47,7 +47,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "Project root (default: $SDD_DEFAULT_PROJECT)" if _default_project else "Project root"
     )
 
-    get_project_parser = subparsers.add_parser(
+    subparsers.add_parser(
         "get-project", help="Show resolved default project from environment"
     )
 
