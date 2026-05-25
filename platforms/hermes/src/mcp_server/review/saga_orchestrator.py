@@ -531,7 +531,7 @@ def run_project_review_build_saga(
                 f"Cannot resume terminal saga run: review_run_id={review_run_id}, status={run.status}"
             )
         compensation_count = len(run.compensation_actions)
-        attempts: dict[str, int] = dict.fromkeys(personas, 0)
+        attempts: dict[str, int] = {persona: 0 for persona in personas}
         for branch in run.branches.values():
             attempts[branch.persona] = max(attempts.get(branch.persona, 0), int(branch.attempt))
     else:
@@ -543,7 +543,7 @@ def run_project_review_build_saga(
         )
         journal_path = create_saga_journal(output_dir=output_dir, run=run)
         compensation_count = 0
-        attempts = dict.fromkeys(personas, 0)
+        attempts = {persona: 0 for persona in personas}
 
     _safe_transition(journal_path=journal_path, target="FANOUT_STARTED")
     _safe_transition(journal_path=journal_path, target="BRANCH_RUNNING")

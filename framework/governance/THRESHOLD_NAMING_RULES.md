@@ -4,10 +4,12 @@ tags:
   - reference
   - standards
   - shared-architecture
+  - required-both-approaches
 custom_fields:
   document_type: REF
   artifact_type: REF
   layer: null
+  architecture_approaches: [ai-agent-based, traditional-8layer]
   priority: shared
   development_status: active
 ---
@@ -16,55 +18,42 @@ custom_fields:
 
 ## 1. Overview
 
-This document defines the naming conventions and usage rules for thresholds,
-limits, and timing parameters. Projects using this framework follow these
-standards so that quantitative values stay consistent, traceable, and
-maintainable across documents and teams.
+This document defines the naming conventions and usage rules for platform thresholds, limits, and timing parameters. All projects using this framework MUST follow these standards to ensure consistency, traceability, and maintainability across different projects and teams.
 
-> **Scope.** This is an engine-agnostic *naming and traceability* standard. It
-> defines how thresholds are keyed, referenced, and bounded — not how a runtime
-> stores, overrides, or deploys them. Runtime configuration, environment
-> overrides, and operational rollout policy belong to a consuming project's own
-> config, not to this spec.
+### 1.1 Scope
 
-### 1.1 What this standard provides
+This framework provides:
 
-- **Universal rules** for threshold key naming.
-- **Predefined categories** applicable to all projects.
-- **Guidelines** for creating domain-specific categories.
-- **Standards** for boundary specification and `@threshold:` reference format.
+- **Universal rules** for threshold key naming
+- **Predefined categories** applicable to all projects
+- **Guidelines** for creating domain-specific categories
+- **Standards** for boundary specification, reference formats, and environment overrides
 
 ### 1.2 Threshold Definition Strategy
 
-Thresholds are defined in **source documents** (BRD / PRD / ADR) and referenced
-via **`@threshold:` tags** in downstream artifacts:
+Thresholds are defined in **source documents** (01_BRD/02_PRD/ADR) and referenced via **`@threshold:` tags** in downstream artifacts:
 
-**Source documents** (define thresholds in YAML blocks):
+**Source Documents** (define thresholds in YAML blocks):
 
-- **BRD**: Business-level thresholds (compliance limits, risk scores, SLAs).
-- **PRD**: Product-level thresholds (feature limits, user quotas, tiers).
-- **ADR**: Technical thresholds (circuit breakers, pool sizes, performance
-  targets, timeouts).
+- **BRD**: Business-level thresholds (compliance limits, risk scores, SLAs)
+- **PRD**: Product-level thresholds (feature limits, user quotas, pricing tiers)
+- **ADR**: Technical thresholds (circuit breakers, pool sizes, performance targets, timeouts)
 
-**Consumer documents** (reference thresholds using `@threshold:` tags):
+**Consumer Documents** (reference thresholds using `@threshold:` tags):
 
-- **EARS, BDD, SPEC, TDD, IPLAN**: reference thresholds from BRD / PRD / ADR.
-- **ADR**: may also reference BRD / PRD thresholds when satisfying a
-  business/product requirement.
-- **Code/Config**: reference source-document thresholds for implementation.
+- **EARS, BDD, SPEC, TDD, IPLAN**: Reference thresholds from 01_BRD/02_PRD/ADR
+- **ADR**: May also reference 01_BRD/PRD thresholds when satisfying business/product requirements
+- **Code/Config**: Reference source document thresholds for implementation
 
-> **Note**: ADR has a dual role — it can define technical thresholds AND
-> reference business/product thresholds from BRD/PRD.
+> **Note**: ADR has a dual role - it can define technical thresholds AND reference business/product thresholds from 01_BRD/PRD.
 
-This approach eliminates separate registry documents while maintaining full
-traceability.
+This approach eliminates separate registry documents while maintaining full traceability.
 
 ### 1.3 Defining Thresholds in Source Documents
 
 #### 1.3.1 YAML Block Format in Source Documents
 
-Define thresholds in a dedicated section using YAML code blocks. The examples
-below use a neutral `quota` domain; replace it with your project's categories.
+Define thresholds in a dedicated section using YAML code blocks:
 
 ```markdown
 ## Thresholds
@@ -72,10 +61,10 @@ below use a neutral `quota` domain; replace it with your project's categories.
 ```yaml
 # BRD-01, PRD-01, or ADR-01 Thresholds
 thresholds:
-  quota:
+  kyc:
     l1:
-      daily: 1000          # units, single-operation max
-      monthly: 5000        # units, cumulative
+      daily: 1000          # USD, single transaction max
+      monthly: 5000        # USD, cumulative
     l2:
       daily: 5000
       monthly: 25000
@@ -100,13 +89,13 @@ thresholds:
 ```
 ```
 
-**Required metadata per threshold**:
+**Required Metadata per Threshold**:
 
 | Element | Required | Description | Example |
 |---------|----------|-------------|---------|
-| Key | Yes | Follows naming convention | `quota.l1.daily` |
+| Key | Yes | Follows naming convention | `kyc.l1.daily` |
 | Value | Yes | Numeric value | `1000` |
-| Unit (comment) | Yes | Unit specification | `# units`, `# ms`, `# score` |
+| Unit (comment) | Yes | Unit specification | `# USD`, `# ms`, `# score` |
 | Boundary (comment) | Conditional | For ranges | `# inclusive`, `# cumulative` |
 
 #### 1.3.2 @threshold: Tag Format
@@ -117,11 +106,13 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 @threshold: {DOC_TYPE}.{DOC_NUM}.{threshold_key}
 ```
 
+**Components**:
+
 | Component | Description | Example |
 |-----------|-------------|---------|
 | `DOC_TYPE` | Source document type | `BRD`, `PRD`, `ADR` |
 | `DOC_NUM` | Document number (2+ digits, starts at 01) | `01`, `35`, `100` |
-| `threshold_key` | Full threshold key | `quota.l1.daily`, `circuit.failure.count` |
+| `threshold_key` | Full threshold key | `kyc.l1.daily`, `circuit.failure.count` |
 
 **Examples**:
 
@@ -135,23 +126,94 @@ Downstream documents reference thresholds using the `@threshold:` tag:
 
 #### 1.3.3 Usage in Downstream Documents
 
-Downstream documents cite a defined threshold with an `@threshold:` tag rather
-than hardcoding its value. A representative example (EARS):
+**In EARS Requirements**:
 
 ```markdown
 ## Thresholds Referenced
 
-@threshold: PRD.01.quota.l1.daily
+@threshold: PRD.01.kyc.l1.daily
+@threshold: PRD.01.kyc.l1.monthly
 
-EARS-01: WHEN an L1 user initiates an operation,
-THE system SHALL validate the amount against @threshold: PRD.01.quota.l1.daily
+EARS-01: WHEN a L1 user initiates a transaction,
+THE system SHALL validate the amount against @threshold: PRD.01.kyc.l1.daily
 WITHIN 100ms.
 ```
 
-The same pattern applies in BDD (comment tags above the scenario), SPEC/TDD
-(inline `# per @threshold: …` beside the value), ADR (which both defines and
-references), and code (a module docstring tag + a `config.get("thresholds.…")`
-lookup). See §6 for the full per-context format table.
+**In BDD Scenarios**:
+
+```gherkin
+# @threshold: PRD.01.kyc.l1.daily
+# @threshold: PRD.01.risk.high.min
+
+Scenario: L1 user exceeds daily limit
+  Given a L1 verified user
+  And the daily limit is $1,000 per @threshold: PRD.01.kyc.l1.daily
+  When the user attempts a $1,500 transaction
+  Then the transaction is blocked
+```
+
+**In SPEC Documents**:
+
+```yaml
+# @threshold: PRD.01.perf.api.p95
+# @threshold: PRD.01.timeout.partner.default
+
+performance:
+  response_time:
+    p95_ms: 200  # per @threshold: PRD.01.perf.api.p95
+  timeouts:
+    partner_api: 30  # per @threshold: PRD.01.timeout.partner.default
+```
+
+**In ADR Documents** (defining AND referencing thresholds):
+
+```markdown
+# ADR-NN: Circuit Breaker Architecture (example)
+
+## Thresholds Referenced
+
+@threshold: PRD.01.perf.api.p95
+@threshold: BRD.02.timeout.partner.max
+
+## Thresholds Defined
+
+```yaml
+thresholds:
+  circuit:
+    failure:
+      count: 5             # failures before open
+      window: 60           # seconds
+    reset:
+      timeout: 30          # seconds before half-open
+  pool:
+    db:
+      min: 5               # connections
+      max: 20              # connections
+      idle: 300            # seconds before reclaim
+`` `
+
+## Decision
+
+To meet the p95 latency requirement of 200ms (per @threshold: PRD.01.perf.api.p95),
+we implement circuit breakers with @threshold: ADR.15.circuit.failure.count = 5.
+```
+
+**In Code**:
+
+```python
+"""Transaction validation service.
+
+@brd: BRD.01.b21c
+@prd: PRD.01.7a0a
+@adr: ADR-NN
+@threshold: PRD.01.kyc.l1.daily
+@threshold: ADR.15.circuit.failure.count
+"""
+
+# Values loaded from configuration
+QUOTA_L1_DAILY = config.get("thresholds.quota.l1.daily")  # e.g., 1000 USD
+CIRCUIT_FAILURE_COUNT = config.get("thresholds.circuit.failure.count")  # 5
+```
 
 #### 1.3.4 Threshold Traceability Chain
 
@@ -172,10 +234,7 @@ Consumer Documents (reference via @threshold: tags):
 Code (implements with config reference)
 ```
 
-> **ADR dual role**: an ADR can define its own technical thresholds (e.g.
-> `ADR.15.circuit.failure.count`) while also referencing business/product
-> thresholds from BRD/PRD (e.g. `@threshold: PRD.01.perf.api.p95`) that the
-> architecture must satisfy.
+> **ADR Dual Role**: An ADR can define its own technical thresholds (e.g., `ADR.15.circuit.failure.count`) while also referencing business/product thresholds from 01_BRD/PRD (e.g., `@threshold: PRD.01.perf.api.p95`) that the architecture must satisfy.
 
 ---
 
@@ -202,7 +261,7 @@ Code (implements with config reference)
 |---------|------|---------|-----------|
 | CR-01 | Use 3-12 lowercase characters | `perf`, `auth`, `cache` | `p`, `performancemetrics` |
 | CR-02 | Use domain nouns, not verbs | `rate`, `timeout` | `limiting`, `waiting` |
-| CR-03 | Avoid generic terms | `auth`, `quota` | `data`, `config`, `setting` |
+| CR-03 | Avoid generic terms | `auth`, `payment` | `data`, `config`, `setting` |
 | CR-04 | One category per domain | `cache` for all caching | `memcache`, `rediscache` |
 | CR-05 | No overlapping scope | Separate `rate` and `quota` | Both limiting same resource |
 
@@ -222,43 +281,44 @@ These categories apply to ALL projects and SHOULD be used when applicable:
 | `pool` | Connection/resource pools | Pool sizes, timeouts | `pool.db.max`, `pool.http.idle` |
 | `queue` | Queue configuration | Sizes, delays | `queue.size.max`, `queue.retry.delay` |
 | `batch` | Batch processing | Sizes, intervals | `batch.size.max`, `batch.interval` |
-| `quota` | Tiered usage/velocity limits | Per-tier ceilings | `quota.l1.daily`, `quota.l2.monthly` |
 
 #### 2.2.3 Domain-Specific Categories (Project-Defined)
 
-Projects define domain-specific categories in the BRD/PRD Thresholds section.
-Document each new category with a YAML comment:
+Projects define domain-specific categories in the 01_BRD/PRD Thresholds section. Document new categories with a comment:
 
 ```yaml
 thresholds:
-  # Domain: <project domain> - Category: quota
-  # Purpose: tiered usage limits
-  # Owner: <owning team>
-  quota:
+  # Domain: Financial - Category: kyc
+  # Purpose: Verification tier limits (quota)
+  # Owner: Compliance Team
+  kyc:
     l1:
       daily: 1000
 ```
 
-**Examples by domain** (illustrative — projects choose their own):
+**Examples by Domain**:
 
 | Domain | Suggested Categories | Example Keys |
 |--------|---------------------|--------------|
 | Authentication | `auth`, `session`, `token` | `auth.attempts.max`, `session.idle.timeout` |
+| Financial | `amount`, `fee`, `limit` | `amount.tx.max`, `fee.tier1.flat` |
 | ML/AI | `ml`, `model`, `inference` | `ml.confidence.min`, `model.drift.threshold` |
+| Compliance | `compliance`, `audit` | `compliance.report.retention` |
 | Risk | `risk`, `score`, `velocity` | `risk.high.min`, `velocity.tx.hourly` |
 | Storage | `storage`, `file`, `upload` | `storage.file.maxsize`, `upload.chunk.size` |
 | Messaging | `msg`, `notification` | `msg.retry.max`, `notification.batch.size` |
 
 #### 2.2.4 Category Registration Process
 
-1. **Check universal categories** — use a predefined one if applicable.
-2. **Check existing project categories** — review BRD/PRD threshold sections for
-   duplicates.
-3. **Define the new category** — add to the appropriate BRD/PRD with YAML
-   comment metadata: name (3-12 chars, lowercase), purpose (one sentence),
-   domain scope, owner (team responsible).
-4. **Review** — ensure no overlap with an existing category.
-5. **Document** — add threshold keys under the new category in the YAML block.
+1. **Check Universal Categories** - Use predefined if applicable
+2. **Check Existing Project Categories** - Review 01_BRD/PRD threshold sections for duplicates
+3. **Define New Category** - Add to appropriate 01_BRD/PRD with YAML comment metadata:
+   - Name (3-12 chars, lowercase)
+   - Purpose (one sentence)
+   - Domain scope
+   - Owner (team responsible)
+4. **Review** - Ensure no overlap with existing categories
+5. **Document** - Add threshold keys under the new category in YAML block
 
 ---
 
@@ -282,7 +342,7 @@ thresholds:
 | Abbreviation | Meaning | Usage Context |
 |--------------|---------|---------------|
 | `p50`, `p95`, `p99`, `p999` | Percentiles | Performance metrics |
-| `l1`, `l2`, `l3` | Level/Tier 1, 2, 3 | Tiered limits |
+| `l1`, `l2`, `l3` | Level/Tier 1, 2, 3 | Tiered limits, verification levels |
 | `api` | API endpoint | Performance, rate limits |
 | `db` | Database | Database operations |
 | `http` | HTTP operations | Timeouts, retries |
@@ -298,20 +358,33 @@ thresholds:
 
 #### 3.2.2 Domain-Specific Abbreviations (Define Per Project)
 
-Projects MAY define additional abbreviations in BRD/PRD threshold sections using
-YAML comments. Each abbreviation: maximum 5 characters, lowercase only,
-documented in the BRD/PRD threshold-section comments, and not in conflict with a
-universal abbreviation.
+Projects MAY define additional abbreviations in 01_BRD/PRD threshold sections using YAML comments:
 
 ```yaml
 thresholds:
-  # Project abbreviations:
-  # - inf: inference (ML/AI domain)
-  ml:
-    inf:
-      confidence:
-        min: 0.85
+  # Project Abbreviations:
+  # - aml: Anti-Money Laundering (Compliance domain)
+  # - ctr: Currency Transaction Report (Compliance domain)
+  aml:
+    threshold:
+      daily: 10000
 ```
+
+**Abbreviation Rules**:
+
+- Maximum 5 characters
+- Lowercase only
+- Must be documented in 01_BRD/PRD threshold section comments
+- Avoid conflicts with universal abbreviations
+
+**Common Domain Abbreviations** (examples):
+
+| Domain | Common Abbreviations |
+|--------|---------------------|
+| Authentication | `auth`, `otp`, `mfa`, `jwt` |
+| Financial | `fx`, `amt`, `fee` |
+| ML/AI | `ml`, `inf`, `conf` |
+| Compliance | `aml`, `ctr`, `sar` |
 
 ### 3.3 Time Period Qualifiers
 
@@ -356,7 +429,7 @@ thresholds:
 | Time (short) | `ms` (milliseconds) | 1000ms = 1s |
 | Time (medium) | `seconds` | 60s = 1min |
 | Time (long) | `hours` | 3600s = 1h |
-| Currency | project base currency | Declared per project |
+| Currency | `USD` | Base currency |
 | Count | `count` | Dimensionless |
 | Rate | `req/sec`, `req/min`, `tx/hour` | Composite |
 | Percentage | `percent` | 0-100 scale |
@@ -369,12 +442,11 @@ thresholds:
 
 ### 5.1 Default Boundary Convention
 
-**Default**: all ranges use `[inclusive, exclusive)` unless explicitly noted in
-threshold documentation.
+**Default**: All ranges use `[inclusive, exclusive)` unless explicitly noted in threshold documentation.
 
 | Boundary Type | Symbol | Meaning | When to Use |
 |---------------|--------|---------|-------------|
-| Inclusive-Inclusive | `[a, b]` | Both endpoints included | Score ranges, tier levels |
+| Inclusive-Inclusive | `[a, b]` | Both endpoints included | Score ranges, risk levels |
 | Inclusive-Exclusive | `[a, b)` | Start included, end excluded | **Default convention** |
 | Exclusive-Inclusive | `(a, b]` | Start excluded, end included | Must be explicitly stated |
 | Exclusive-Exclusive | `(a, b)` | Neither endpoint included | Must be explicitly stated |
@@ -383,30 +455,31 @@ threshold documentation.
 
 Every threshold with range semantics MUST include explicit boundary clarification:
 
+**Required Documentation Format**:
+
 ```markdown
 **Boundary Specification**:
 - {period} limit: Resets at {reset_time} {timezone}
 - Inclusive boundary: {action} at exactly {boundary_value} is {ALLOWED|BLOCKED}
 - Exceeds boundary: {action} causing cumulative total > limit is {BLOCKED|FLAGGED}
+
 ```
 
-**Example — velocity limits**:
+**Example - Velocity Limits**:
 
 ```markdown
 **Boundary Specification**:
 - Daily limit: Resets at 00:00:00 UTC
 - Monthly limit: Resets at 00:00:00 UTC on 1st of month
-- Inclusive boundary: An operation at exactly the L1 daily limit is ALLOWED
-- Exceeds boundary: An operation causing cumulative total > limit is BLOCKED
+- Inclusive boundary: Transaction at exactly $1,000 is ALLOWED for L1
+- Exceeds boundary: Transaction causing cumulative total > limit is BLOCKED
+
 ```
 
-### 5.3 Score Boundary Rules
+### 5.3 Risk Score Boundary Rules
 
-Tiered score ranges use inclusive-inclusive boundaries. Example (a 3-tier risk
-score):
-
-| Score | Tier | Boundary Type | Action (project-defined) |
-|-------|------|---------------|--------------------------|
+| Score | Category | Boundary Type | Action |
+|-------|----------|---------------|--------|
 | 0 | Low | Minimum (inclusive) | Auto-approve |
 | 39 | Low | Maximum (inclusive) | Auto-approve |
 | 40 | Medium | Minimum (inclusive) | Manual review |
@@ -414,24 +487,28 @@ score):
 | 75 | High | Minimum (inclusive) | Escalate |
 | 100 | High | Maximum (inclusive) | Block + escalate |
 
+**Boundary Clarification Example**:
+
 ```text
-risk.low: [0, 39] → Score 39 = LOW
-risk.medium: [40, 74] → Score 40 = MEDIUM
-risk.high: [75, 100] → Score 75 = HIGH
+risk.low: [0, 39] → Score 39 = LOW (auto-approve)
+risk.medium: [40, 74] → Score 40 = MEDIUM (manual review)
+risk.high: [75, 100] → Score 75 = HIGH (escalate)
 ```
 
-### 5.4 Cumulative vs. Single-Operation Boundaries
+### 5.4 Cumulative vs. Single Transaction Boundaries
 
 | Boundary Type | Key Suffix | Behavior |
 |---------------|------------|----------|
-| Single operation | `.daily`, `.max` | Maximum per individual operation |
-| Cumulative period | `.monthly`, `.yearly` | Sum of all operations in period |
+| Single transaction | `.daily`, `.max` | Maximum per individual transaction |
+| Cumulative period | `.monthly`, `.yearly` | Sum of all transactions in period |
 | Rolling window | `.velocity`, `.window` | Sum within sliding time window |
 
+**Example**:
+
 ```yaml
-quota.l1.daily: 1000      # Single-operation max
-quota.l1.monthly: 5000    # Cumulative monthly total
-rate.tx.user.velocity: 5  # Rolling: 5 operations per window
+kyc.l1.daily: 1000      # Single transaction max: $1,000
+kyc.l1.monthly: 5000    # Cumulative monthly: $5,000 total
+rate.tx.user.velocity: 5  # Rolling: 5 transactions per 5-minute window
 ```
 
 ### 5.5 Reset Boundary Rules
@@ -451,25 +528,29 @@ rate.tx.user.velocity: 5  # Rolling: 5 operations per window
 
 ### 6.1 Tag Format
 
+**Standard @threshold: Tag**:
+
 ```text
 @threshold: {DOC_TYPE}.{DOC_NUM}.{threshold_key}
 ```
+
+**Components**:
 
 | Component | Format | Example |
 |-----------|--------|---------|
 | `DOC_TYPE` | BRD, PRD, or ADR | `PRD`, `ADR` |
 | `DOC_NUM` | 2+ digit number (starts at 01) | `01`, `15`, `100` |
-| `threshold_key` | Dot-separated key | `quota.l1.daily`, `circuit.failure.count` |
+| `threshold_key` | Dot-separated key | `kyc.l1.daily`, `circuit.failure.count` |
 
 ### 6.2 Reference Formats by Context
 
 | Context | Format | Example |
 |---------|--------|---------|
-| @threshold: tag | `@threshold: {TYPE}.{NUM}.{key}` | `@threshold: PRD.01.quota.l1.daily` |
-| Inline citation | `per @threshold: {TYPE}.{NUM}.{key}` | `the daily limit per @threshold: PRD.01.quota.l1.daily` |
-| Code constant | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_QUOTA_L1_DAILY` |
-| Config path | `thresholds.{key}` | `thresholds.quota.l1.daily` |
-| Environment var | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_QUOTA_L1_DAILY=1000` |
+| @threshold: tag | `@threshold: {TYPE}.{NUM}.{key}` | `@threshold: PRD.01.kyc.l1.daily` |
+| Inline citation | `per @threshold: {TYPE}.{NUM}.{key}` | `1,000 USD per @threshold: PRD.01.kyc.l1.daily` |
+| Code constant | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_KYC_L1_DAILY` |
+| Config path | `thresholds.{key}` | `thresholds.kyc.l1.daily` |
+| Environment var | `THRESHOLD_{CATEGORY}_{KEY}` | `THRESHOLD_KYC_L1_DAILY=1000` |
 
 ### 6.3 Consumer Document Requirements
 
@@ -480,38 +561,37 @@ All downstream documents referencing thresholds MUST:
    ```markdown
    ## Thresholds Referenced
 
-   @threshold: PRD.01.quota.l1.daily
-   @threshold: PRD.01.quota.l1.monthly
+   @threshold: PRD.01.kyc.l1.daily
+   @threshold: PRD.01.kyc.l1.monthly
    @threshold: BRD.02.risk.high.min
    ```
 
-2. **Reference values inline** with the tag:
+2. **Reference values inline** with tag:
 
    ```markdown
-   L1 users limited to the L1 daily ceiling (per @threshold: PRD.01.quota.l1.daily)
+   L1 users limited to 1,000 USD daily (per @threshold: PRD.01.kyc.l1.daily)
    ```
 
-3. **Never hardcode values** — always use `@threshold:` tags.
+3. **Never hardcode values** - always use @threshold: tags
 
 ### 6.4 Source Resolution
 
-When multiple documents could define similar thresholds, establish clear
-ownership:
+When multiple documents could define similar thresholds, establish clear ownership:
 
 | Threshold Domain | Source Document | Rationale |
 |------------------|-----------------|-----------|
-| Compliance/business limits | BRD | Regulatory/business authority |
+| Compliance limits (verification/AML) | BRD | Regulatory/business authority |
 | Product feature limits | PRD | Product-level decisions |
 | Risk scores | BRD | Platform-level risk framework |
 | Circuit breakers, pools | ADR | Technical architecture decisions |
 | Performance SLAs (p95/p99) | ADR | Technical performance targets |
-| API rate limits | PRD or ADR | Product (user quotas) or technical (system protection) |
+| API rate limits | PRD or ADR | Product (user quotas) or Technical (system protection) |
 
-**Conflict resolution rules**:
+**Conflict Resolution Rules**:
 
-1. **Business vs technical**: BRD/PRD own business thresholds; ADR owns technical thresholds.
-2. **Platform vs product**: BRD takes precedence over PRD for platform-level thresholds.
-3. **When unclear**: the document where the threshold is first justified owns it.
+1. **Business vs Technical**: 01_BRD/PRD own business thresholds; ADR owns technical thresholds
+2. **Platform vs Product**: BRD takes precedence over PRD for platform-level thresholds
+3. **When unclear**: The document where the threshold is first justified owns it
 
 ---
 
@@ -521,39 +601,47 @@ ownership:
 
 | Qualifier | Percentile | Statistical Definition | Operational Purpose |
 |-----------|------------|------------------------|---------------------|
-| `p50` | 50th | Median — 50% of requests faster | Typical/expected performance |
-| `p90` | 90th | 90% of requests faster | Near-worst-case baseline |
+| `p50` | 50th | Median - 50% of requests faster | Typical/expected performance |
+| `p90` | 90th | 90% of requests faster | Near-worst case baseline |
 | `p95` | 95th | 95% of requests faster | **Performance target (SLO)** |
 | `p99` | 99th | 99% of requests faster | **Alert threshold** |
 | `p999` | 99.9th | 99.9% of requests faster | SLA boundary / critical |
 
-### 7.2 Tiered Level Definitions
+**Usage Rules**:
 
-Tier qualifiers (`low`/`medium`/`high`, or `l1`/`l2`/`l3`) name escalating
-levels of a score, limit, or capability. The number of tiers, their numeric
-ranges, and the action each triggers are **project-defined** in the source
-document. Example (a 3-tier risk score):
+- `p50`: Use for capacity planning and baseline monitoring
+- `p95`: Use for SLO definitions and performance targets
+- `p99`: Use for alerting thresholds
+- `p999`: Use for SLA commitments (rarely needed)
 
-| Level | Score Range | Required Action (project-defined) |
-|-------|-------------|-----------------------------------|
-| Low | 0-39 | Auto-approve |
-| Medium | 40-74 | Manual review |
-| High | 75-100 | Block + escalate |
+### 7.2 Risk Level Definitions
 
-Tiered limits (`l1`/`l2`/`l3`) follow the same shape — higher tiers carry higher
-ceilings; the scaling factor between tiers is a project decision documented in
-the source YAML.
+| Level | Score Range | Definition | Required Action |
+|-------|-------------|------------|-----------------|
+| Low | 0-39 | Minimal risk indicators | Auto-approve |
+| Medium | 40-74 | Some risk indicators present | Manual review required |
+| High | 75-100 | Significant risk indicators | Block + escalate to compliance |
 
-### 7.3 Alert Severity Definitions
+### 7.3 Verification Tier Definitions
+
+| Tier | Individual (B2C) | Business (B2B) | Requirements |
+|------|-----------|-----------|--------------|
+| L1 (Basic) | Name, DOB, Address | Business name, Registration | Self-declaration |
+| L2 (Verified) | + ID verification | + Director verification | Document verification |
+| L3 (Enhanced) | + Source of funds | + UBO verification (>25%) | Enhanced due diligence |
+
+**Scaling Convention**: B2B limits are typically 10x B2C limits at each tier.
+
+### 7.4 Alert Severity Definitions
 
 | Severity | Definition | Response Time | Escalation |
 |----------|------------|---------------|------------|
 | `info` | Informational, no action | None | None |
-| `warning` | Approaching threshold | 1 hour | On-call |
+| `warning` | Approaching threshold | 1 hour | On-call engineer |
 | `critical` | Threshold exceeded | 15 minutes | Incident manager |
 | `emergency` | System-wide impact | Immediate | Executive escalation |
 
-### 7.4 Timeout Category Definitions
+### 7.5 Timeout Category Definitions
 
 | Category | Typical Range | Use Case |
 |----------|---------------|----------|
@@ -562,7 +650,7 @@ the source YAML.
 | `job.*` | 1800-7200 seconds | Background batch processing |
 | `validity.*` | 60-300 seconds | Token/quote expiration |
 
-### 7.5 Rate Limit Window Definitions
+### 7.6 Rate Limit Window Definitions
 
 | Window Type | Duration | Reset Behavior |
 |-------------|----------|----------------|
@@ -573,30 +661,101 @@ the source YAML.
 
 ---
 
-## 8. Weight Factor Rules
+## 8. Environment Override Rules
 
-### 8.1 Sum Constraint Rules
+### 8.1 Override Permission Matrix
+
+| Environment | Override Allowed | Scope | Approval Required |
+|-------------|------------------|-------|-------------------|
+| Development | **Yes** | All thresholds | None |
+| Testing | **Yes** | All thresholds | None |
+| Staging | **Limited** | Non-compliance only | Engineering lead |
+| Production | **Controlled** | Emergency only | Multi-party approval |
+
+### 8.2 Override Categories
+
+| Category | Dev Override | Staging Override | Prod Override |
+|----------|--------------|------------------|---------------|
+| `kyc.*`, `kyb.*` | Yes | Yes (match prod for testing) | Requires Compliance |
+| `risk.*` | Yes | Yes | Requires Risk + Compliance |
+| `compliance.*` | Yes | **No** | Requires Legal + Compliance |
+| `perf.*` | Yes | Yes | Requires Engineering |
+| `timeout.*` | Yes | Yes | Requires Engineering |
+| `rate.*` | Yes | Yes | Requires Product |
+| `alert.*` | Yes | Yes | Requires SRE |
+
+### 8.3 Override Documentation Requirements
+
+All environment overrides MUST be documented:
+
+```yaml
+# config/thresholds.{env}.yaml
+overrides:
+  kyc.l1.daily:
+    value: 500            # Override value
+    reason: "Testing low-limit flows"
+    ticket: "JIRA-1234"
+    expires: "2025-12-31T00:00:00"
+    approver: "jane.doe@company.com"
+```
+
+### 8.4 Production Override Workflow
+
+1. **Request**: Create change request with justification
+2. **Risk Assessment**: Document impact analysis
+3. **Approval**: Obtain required approvals per category
+4. **Implementation**: Apply via configuration management
+5. **Monitoring**: Enable enhanced monitoring for 24 hours
+6. **Rollback Plan**: Document rollback procedure
+
+### 8.5 Override Constraints
+
+| Constraint | Rule |
+|------------|------|
+| **No compliance relaxation in prod** | `compliance.*` thresholds cannot be increased in production |
+| **Staging matches production** | Staging should mirror production for integration testing |
+| **Expiration required** | All overrides MUST have expiration date |
+| **Audit trail mandatory** | All overrides logged with approver, timestamp, reason |
+
+### 8.6 Environment-Specific Scaling
+
+| Threshold Type | Dev Scale | Staging Scale | Prod Scale |
+|----------------|-----------|---------------|------------|
+| Rate limits | 10x higher | 1x (match prod) | Baseline |
+| Timeouts | 2x longer | 1x (match prod) | Baseline |
+| Alert thresholds | Disabled | 1x (match prod) | Baseline |
+| Velocity limits | Unrestricted | 1x (match prod) | Baseline |
+
+---
+
+## 9. Weight Factor Rules
+
+### 9.1 Sum Constraint Rules
 
 | Rule | Requirement |
 |------|-------------|
 | Sum constraint | All weights in a category MUST sum to 1.0 |
-| Precision | Use a maximum of 2 decimal places (0.25, not 0.2534) |
-| Documentation | Document percentage contribution alongside the ratio |
+| Precision | Use maximum 2 decimal places (0.25, not 0.2534) |
+| Documentation | Document percentage contribution alongside ratio |
+
+**Example**:
 
 ```yaml
 risk.weight:
-  factor_a: 0.25   # 25% contribution
-  factor_b: 0.20   # 20% contribution
-  factor_c: 0.20   # 20% contribution
-  factor_d: 0.15   # 15% contribution
-  factor_e: 0.10   # 10% contribution
-  factor_f: 0.10   # 10% contribution
+  velocity: 0.25   # 25% contribution
+  amount: 0.20     # 20% contribution
+  geography: 0.20  # 20% contribution
+  recipient: 0.15  # 15% contribution
+  behavior: 0.10   # 10% contribution
+  device: 0.10     # 10% contribution
   # Total: 1.00
 ```
 
 ---
 
-## 9. Configuration Structure
+## 10. Configuration Structure
+
+### 10.1 YAML Format
 
 ```yaml
 thresholds:
@@ -609,7 +768,7 @@ thresholds:
 
 ```yaml
 thresholds:
-  quota:
+  kyc:
     l1:
       daily: 1000
       monthly: 5000
@@ -630,105 +789,121 @@ thresholds:
 
 ---
 
-## 10. Validation Rules
+## 11. Validation Rules
 
-### 10.1 Required Validations
+### 11.1 Required Validations
 
 | Validation | Rule |
 |------------|------|
 | Type safety | Value MUST match declared type |
 | Range validation | Value MUST be within min/max bounds |
-| Unit consistency | All values in a category MUST use the same unit |
+| Unit consistency | All values in a category MUST use same unit |
 | Reference integrity | Cross-references MUST point to valid keys |
 | Sum constraints | Weight factors MUST sum to 1.0 |
 
-### 10.2 Logical Consistency
+### 11.2 Logical Consistency
 
 | Constraint | Example |
 |------------|---------|
 | Range ordering | `risk.low.max` < `risk.medium.min` |
-| Tier progression | `quota.l1.daily` < `quota.l2.daily` < `quota.l3.daily` |
+| Tier progression | `kyc.l1.daily` < `kyc.l2.daily` < `kyc.l3.daily` |
 | Alert ordering | `alert.*.warning` < `alert.*.critical` |
 | Percentile ordering | `perf.*.p50` < `perf.*.p95` < `perf.*.p99` |
 
 ---
 
-## 11. Governance
+## 12. Governance
 
-Thresholds are governed as part of the source document that defines them. A
-change to a threshold value is a change to its BRD/PRD/ADR, and follows the
-normal readiness gates and (post-cutover) change-management process for that
-document — including its audit trail and approver set.
+### 12.1 Change Management
 
-> **Out of scope.** Runtime concerns — how fast a configuration change
-> propagates, environment-specific overrides, rollback timing, and operational
-> approval workflows — are a consuming project's deployment/config policy, not
-> part of this naming standard. Define them in the project's own configuration
-> governance, not here.
+| Aspect | Requirement |
+|--------|-------------|
+| Update latency | Configuration changes propagate within 60 seconds |
+| Rollback capability | Previous configuration restorable within 30 seconds |
+| Audit trail | All changes logged with user, timestamp, before/after values |
+| Versioning | Semantic versioning (MAJOR.MINOR.PATCH) |
+
+### 12.2 Approval Matrix
+
+| Change Type | Approvers |
+|-------------|-----------|
+| New threshold | Product + Engineering |
+| Value adjustment | Product + Risk |
+| Compliance threshold | Product + Risk + Compliance |
+| Category addition | Product + Engineering + Architecture |
 
 ---
 
-## 12. Anti-Patterns
+## 13. Anti-Patterns
 
-### 12.1 Naming Anti-Patterns
+### 13.1 Naming Anti-Patterns
 
 | Anti-Pattern | Problem | Correct Approach |
 |--------------|---------|------------------|
-| `maxDailyLimit` | CamelCase, redundant | `quota.l1.daily` |
+| `maxDailyLimit` | CamelCase, redundant | `kyc.l1.daily` |
 | `threshold_1` | Meaningless identifier | `risk.low.max` |
-| `QUOTA_DAILY_L1` | Wrong case, wrong separator | `quota.l1.daily` |
+| `KYC_DAILY_L1` | Wrong case, wrong separator | `kyc.l1.daily` |
 | `perf.api.response.time.milliseconds.p95` | Too verbose | `perf.api.standard.p95` |
 | `limit` | No context | `rate.api.user.standard` |
 
-### 12.2 Usage Anti-Patterns
+### 13.2 Usage Anti-Patterns
 
 | Anti-Pattern | Problem | Correct Approach |
 |--------------|---------|------------------|
 | Hardcoded values | No single source of truth | Use `@threshold:` tag |
 | Inline magic numbers | Unmaintainable | Use `@threshold:` tag with key |
-| Duplicate definitions | Conflicts | Single BRD/PRD definition |
+| Duplicate definitions | Conflicts | Single 01_BRD/PRD definition |
 | Missing units | Ambiguous | Comment with unit in YAML |
-| No @threshold: tags | Broken traceability | Always reference the source doc |
+| No @threshold: tags | Broken traceability | Always reference source doc |
 
 ---
 
-## 13. Quick Reference
+## 14. Quick Reference
 
-### 13.1 Key Construction Template
+### 14.1 Key Construction Template
 
 ```text
 {category}.{scope}.{metric}[.{qualifier}]
-                             │
-                             └─ Optional: min/max/p50/p95/warning/critical
-                     └──────── Required: daily/monthly/timeout/rate
-              └─────────────── Required: l1/l2/l3/api/partner/user/session
-      └────────────────────── Required: quota/risk/perf/timeout/rate/alert
+
+                              Optional: min/max/p50/p95/warning/critical
+                     Required: daily/monthly/timeout/threshold/rate
+              Required: l1/l2/l3/api/partner/user/session
+      Required: kyc/kyb/risk/perf/timeout/rate/amount/compliance/alert
 ```
 
-### 13.2 Common Patterns
+### 14.2 Common Patterns
 
 | Pattern | Use Case | Example |
 |---------|----------|---------|
-| `{domain}.l{n}.{period}` | Tiered velocity limits | `quota.l1.daily` |
+| `{domain}.l{n}.{period}` | Tiered velocity limits | `kyc.l1.daily` |
 | `{domain}.{scope}.p{nn}` | Percentile metrics | `perf.api.standard.p95` |
-| `{domain}.{target}.{action}` | External service config | `timeout.partner.default` |
+| `{domain}.{target}.{action}` | External service config | `timeout.partner.bridge` |
 | `{domain}.{level}.{boundary}` | Risk/alert ranges | `risk.medium.max` |
+| `{domain}.{type}.{tier}` | Fee structures | `fee.flat.tier1` |
 
-### 13.3 Checklist for New Thresholds
+### 14.3 Checklist for New Thresholds
 
 - [ ] Key follows `category.subcategory.attribute` format
 - [ ] Uses lowercase with dot separators
-- [ ] Defined in the appropriate BRD/PRD/ADR with a YAML block
+- [ ] Defined in appropriate 01_BRD/PRD with YAML block
 - [ ] Type specified (integer/decimal/ratio/percent/score)
-- [ ] Unit specified in a YAML comment
-- [ ] Boundary behavior documented in a comment
+- [ ] Unit specified in YAML comment
+- [ ] Boundary behavior documented in comment
 - [ ] `@threshold:` tags added to downstream documents
 - [ ] Logical consistency validated
+- [ ] Approval obtained per governance matrix
 
 ---
 
-*Provenance: extracted into the engine-agnostic framework spec from the
-pre-migration SDD governance set; domain-specific (financial) examples were
-genericized and runtime/operational override policy removed during the
-pre-production review. Versioned with the framework spec (`framework/VERSION`);
-changes are tracked in the project `CHANGELOG.md` under GATE-SPEC.*
+## Document History
+
+| Version | Date | Author | Changes |
+|---------|------|--------|---------|
+| 1.0 | 2025-12-16T00:00:00 | UCX Flow Team | Initial creation based on PRD-NN analysis |
+| 1.1 | 2025-12-16T00:00:00 | UCX Flow Team | Added detailed Boundary Specification, Reference Format, Definition, and Environment Override rules |
+| 1.2 | 2025-12-16T00:00:00 | UCX Flow Team | Converted to framework: replaced fixed categories with category creation rules; added universal vs domain-specific categories and abbreviations |
+| 1.3 | 2025-12-16T00:00:00 | UCX Flow Team | Removed Threshold Registry requirement; thresholds now defined in 01_BRD/02_PRD/ADR YAML blocks; introduced `@threshold:` tags for traceability; ADR added as source for technical thresholds (circuit breakers, pools, performance SLAs) |
+
+---
+
+## End of Document

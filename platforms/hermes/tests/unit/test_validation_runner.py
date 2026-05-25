@@ -579,7 +579,7 @@ WHEN request payload is accepted THE SYSTEM SHALL persist the record.
     assert checked[0].endswith("EARS-03.1_requirement.md")
 
 
-def test_run_project_validation_build_spec_tasks_parity(tmp_path: Path) -> None:
+def test_run_project_validation_build_spec_tasks_ctr_parity(tmp_path: Path) -> None:
     main(["init", "--project", str(tmp_path)])
 
     _write_minimal_generic_layer_assets(
@@ -587,6 +587,9 @@ def test_run_project_validation_build_spec_tasks_parity(tmp_path: Path) -> None:
     )
     _write_minimal_generic_layer_assets(
         tmp_path, layer="11_TASKS", artifact_prefix="TASKS", required_tag="tasks"
+    )
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr"
     )
 
     spec_doc = tmp_path / "docs/09_SPEC/SPEC-01_sample.md"
@@ -628,6 +631,24 @@ custom_fields:
         encoding="utf-8",
     )
 
+    ctr_doc = tmp_path / "docs/08_CTR/CTR-01_sample.md"
+    ctr_doc.parent.mkdir(parents=True, exist_ok=True)
+    ctr_doc.write_text(
+        """---
+title: "Contract"
+tags: [ctr]
+custom_fields:
+  document_type: ctr
+  status: draft
+---
+
+# CTR-01: Sample
+
+openapi: 3.0.0
+""",
+        encoding="utf-8",
+    )
+
     spec_result = run_project_validation_build(
         project_root=tmp_path,
         doc_type="spec",
@@ -642,8 +663,17 @@ custom_fields:
         document_path=tasks_doc,
         output_dir=None,
     )
+    ctr_result = run_project_validation_build(
+        project_root=tmp_path,
+        doc_type="ctr",
+        layer="08_CTR",
+        document_path=ctr_doc,
+        output_dir=None,
+    )
+
     assert spec_result.is_valid
     assert tasks_result.is_valid
+    assert ctr_result.is_valid
 
 
 def test_run_project_validation_build_spec_parity_fail_without_yaml_block(tmp_path: Path) -> None:
@@ -722,6 +752,45 @@ custom_fields:
     assert any("Missing TASKS structure" in error for error in payload["errors"])
 
 
+def test_run_project_validation_build_ctr_parity_fail_without_contract_token(
+    tmp_path: Path,
+) -> None:
+    main(["init", "--project", str(tmp_path)])
+    _write_minimal_generic_layer_assets(
+        tmp_path, layer="08_CTR", artifact_prefix="CTR", required_tag="ctr"
+    )
+
+    ctr_doc = tmp_path / "docs/08_CTR/CTR-02_sample.md"
+    ctr_doc.parent.mkdir(parents=True, exist_ok=True)
+    ctr_doc.write_text(
+        """---
+title: "Interface"
+tags: [ctr]
+custom_fields:
+  document_type: ctr
+  status: draft
+---
+
+# CTR-02: Interface
+
+This file documents integration context only.
+""",
+        encoding="utf-8",
+    )
+
+    result = run_project_validation_build(
+        project_root=tmp_path,
+        doc_type="ctr",
+        layer="08_CTR",
+        document_path=ctr_doc,
+        output_dir=None,
+    )
+
+    assert not result.is_valid
+    payload = json.loads(result.report_json)
+    assert any("Missing CTR structure" in error for error in payload["errors"])
+
+
 def test_run_project_validation_build_file_section_redirects_to_source_artifact_across_layers(
     tmp_path: Path,
 ) -> None:
@@ -729,6 +798,7 @@ def test_run_project_validation_build_file_section_redirects_to_source_artifact_
 
     layer_cases = [
         ("02_PRD", "PRD", "prd", "PRD-22_product_flow"),
+        ("06_SYS", "SYS", "sys", "SYS-17_runtime_controls"),
     ]
 
     for layer, artifact_prefix, required_tag, stem in layer_cases:

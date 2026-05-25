@@ -637,7 +637,7 @@ def run_remediation_build(
         # Validate element ID format
         import re as _re
 
-        _ID_PATTERN = _re.compile(r"^[A-Z]{2,8}\.\d{2,}\.\d{2,}\.[0-9a-f]{4,8}$")
+        _ID_PATTERN = _re.compile(r"^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$")
         _bad_ids: list[str] = []
 
         def _check_ids(obj: object, path: str = "") -> None:

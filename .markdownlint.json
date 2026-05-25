@@ -1,18 +1,10 @@
 {
   "default": true,
-  "MD013": false,
+  "MD013": { "line_length": 120, "tables": false, "code_blocks": false },
+  "MD024": { "siblings_only": true },
   "MD033": false,
   "MD041": false,
-  "MD040": false,
-  "MD036": false,
-  "MD026": false,
-  "MD029": false,
-  "MD046": false,
-  "MD060": false,
-  "MD024": {
-    "siblings_only": true
-  },
-  "MD025": {
-    "front_matter_title": ""
-  }
+  "MD007": { "indent": 2 },
+  "MD004": { "style": "dash" },
+  "MD046": { "style": "fenced" }
 }

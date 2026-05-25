@@ -46,5 +46,5 @@ class PlatformVersionDeclarationTests(unittest.TestCase):
                 self.assertEqual(
                     declared,
                     fwk,
-                    f"{platform.name} declares spec {declared!r}; framework/VERSION is {fwk!r}",
+                    f"{platform.name} declares spec {declared!r}; " f"framework/VERSION is {fwk!r}",
                 )

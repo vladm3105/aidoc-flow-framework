@@ -172,6 +172,7 @@ def extract_plan_approval_mode(body: str) -> str:
 
 def generate_iplan(issue_number: int, title: str, body: str, labels: list[str], author: str) -> str:
     """Generate IPLAN content from issue data."""
+    slug = slugify(title)
     phase = extract_phase(title, labels)
     description = extract_description(body)
     criteria = extract_acceptance_criteria(body)
@@ -224,7 +225,7 @@ def generate_iplan(issue_number: int, title: str, body: str, labels: list[str], 
     if criteria:
         lines.append("| # | Criterion | Task ID | Type | Complexity |")
         lines.append("|---|-----------|---------|------|------------|")
-        for i, (criterion, task) in enumerate(zip(criteria, tasks), 1):
+        for i, (criterion, task) in enumerate(zip(criteria, tasks, strict=False), 1):
             lines.append(
                 f"| {i} | {criterion[:50]}{'...' if len(criterion) > 50 else ''} | "
                 f"{task['id']} | {task['type']} | {task['estimated_complexity']}/5 |"

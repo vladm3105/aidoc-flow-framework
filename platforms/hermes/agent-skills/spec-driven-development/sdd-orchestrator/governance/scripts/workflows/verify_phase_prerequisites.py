@@ -61,6 +61,8 @@ def main():
     print("can_deploy=true", file=sys.stdout)
 
     # Write to GITHUB_OUTPUT if available
+    import os
+
     github_output = os.environ.get("GITHUB_OUTPUT")
     if github_output:
         with open(github_output, "a") as f:

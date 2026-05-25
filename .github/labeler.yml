@@ -1,54 +1,86 @@
-# Configuration for actions/labeler (v5 format: changed-files / any-glob-to-any-file).
-#
-# Path -> label map for the multi-platform layout. Run by .github/workflows/labeler.yml.
-# The labels below must exist in the repo (actions/labeler does not create them).
+# Configuration for actions/labeler
 
+# Documentation
 documentation:
   - changed-files:
-      - any-glob-to-any-file:
-          - "docs/**"
-          - "**/*.md"
+    - any-glob-to-any-file:
+      - '**/*.md'
+      - 'docs/**/*'
 
-framework:
+# Infrastructure
+type:infra:
   - changed-files:
-      - any-glob-to-any-file:
-          - "framework/**"
+    - any-glob-to-any-file:
+      - 'terraform/**/*'
+      - 'infrastructure/**/*'
+      - '.github/workflows/**/*'
+      - 'Dockerfile*'
+      - 'docker-compose*.yml'
 
-governance:
+# MCP Servers
+component:mcp:
   - changed-files:
-      - any-glob-to-any-file:
-          - "framework/governance/**"
-          - "CLAUDE.md"
-          - "docs/PROJECT.md"
+    - any-glob-to-any-file:
+      - 'components/mcp-servers/**/*'
+      - '**/mcp_*.py'
 
-"platform: hermes":
+# SDK
+component:sdk:
   - changed-files:
-      - any-glob-to-any-file:
-          - "platforms/hermes/**"
+    - any-glob-to-any-file:
+      - 'sdk/**/*'
+      - '**/telemetry*.py'
 
-"platform: claude":
+# Agents
+component:agents:
   - changed-files:
-      - any-glob-to-any-file:
-          - "platforms/claude-code-plugin/**"
+    - any-glob-to-any-file:
+      - 'agents/**/*'
+      - '**/agent*.py'
 
-conformance:
+# UI/Frontend
+component:ui:
   - changed-files:
-      - any-glob-to-any-file:
-          - "tests/**"
+    - any-glob-to-any-file:
+      - 'frontend/**/*'
+      - 'ui/**/*'
+      - '**/*.tsx'
+      - '**/*.jsx'
 
-ci:
+# GCP
+cloud:gcp:
   - changed-files:
-      - any-glob-to-any-file:
-          - ".github/workflows/**"
-          - ".pre-commit-config.yaml"
+    - any-glob-to-any-file:
+      - '**/gcp/**/*'
+      - '**/google/**/*'
+      - '**/bigquery*'
 
+# AWS
+cloud:aws:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/aws/**/*'
+      - '**/s3*'
+      - '**/lambda*'
+
+# Azure
+cloud:azure:
+  - changed-files:
+    - any-glob-to-any-file:
+      - '**/azure/**/*'
+
+# Tests
+needs-tests:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'src/**/*.py'
+      - '!tests/**/*'
+
+# Dependencies
 dependencies:
   - changed-files:
-      - any-glob-to-any-file:
-          - "**/requirements*.txt"
-          - "**/pyproject.toml"
-
-plans:
-  - changed-files:
-      - any-glob-to-any-file:
-          - "plans/**"
+    - any-glob-to-any-file:
+      - 'requirements*.txt'
+      - 'pyproject.toml'
+      - 'setup.py'
+      - 'package*.json'

@@ -16,13 +16,13 @@ def main():
     args = parser.parse_args()
 
     # Query Cloud Monitoring
-    mql = f'''
+    mql = f"""
     fetch cloud_run_revision
     | metric 'run.googleapis.com/request_count'
     | filter resource.service_name == "{args.service}"
     | group_by [response_code_class], [sum(value.request_count)]
     | within {args.window}s
-    '''
+    """
 
     result = subprocess.run(
         ["gcloud", "monitoring", "read", mql, f"--project={args.project}", "--format=json"],

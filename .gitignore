@@ -1,31 +1,17 @@
-# Temporary files
-tmp/
+# pre-commit
+.cache/
 
-# Work plans (local planning documents)
-work_plans/
-
-# BMAD commands (external module)
-.claude/commands/bmad/
-
-# Python bytecode
-*.pyc
+# Python
 __pycache__/
-*.pyo
-*.pyd
-ai_dev_flow/scripts/__pycache__
+*.py[cod]
+*.egg-info/
+.eggs/
 
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-tests/coverage_html/
-tests/results/*.json
-!tests/results/baseline_*.json
-tests/results/archive/
-*.pytest_cache
+# IDE
+.idea/
+.vscode/
+*.swp
 
-# Coverage reports
-coverage.xml
-*.cover
-.hypothesis/
-.venv/
+# Temporary
+tmp/
+*.log

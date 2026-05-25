@@ -92,10 +92,10 @@ Before entering GATE-01, the change request must satisfy:
 
 ```
 C1 (Self-approved)
-      
+
        (if scope expands)
 C2 (PO + TL)
-      
+
        (if breaking change detected)
 C3 (Full Board)
 ```
@@ -148,23 +148,23 @@ After passing GATE-01:
 
 ```
                     GATE-01 PASSED
-                           
+
              Does change affect
              L3-L5 (EARS/BDD/ADR)?
-             
-          
+
+
            Yes                         No
-                                      
-                     
+
+
       GATE-03                   SPEC/TDD only?
-                     
-                                         
-                              
+
+
+
                                Yes                 No
-                                                  
-      (no EARS/BDD/ADR)                             
+
+      (no EARS/BDD/ADR)
                            GATE-06           GATE-08
-                                                  
+
                                                (IPLAN)
 ```
 

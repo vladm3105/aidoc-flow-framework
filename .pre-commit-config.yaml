@@ -1,18 +1,4 @@
-# Pre-commit hooks — https://pre-commit.com
-#
-# Setup:   pip install pre-commit && pre-commit install
-# Run now: pre-commit run --all-files
-# Update pins to current: pre-commit autoupdate
-#
-# Scope notes: Python lives only in platforms/hermes + tests; the plugin is
-# markdown/YAML. legacy/ is the frozen pre-migration archive. framework/ is the
-# GATE-SPEC-governed spec — no auto-fixing hook may modify it (a style edit there
-# would trip GATE-SPEC); its validation is the conformance suite's job. Both are
-# excluded from all hooks.
-exclude: '^(legacy/|framework/|.*\.pytest_cache/|.*/__pycache__/)'
-
 repos:
-  # ---- general hygiene -------------------------------------------------------
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
@@ -21,74 +7,44 @@ repos:
       - id: check-yaml
         args: [--allow-multiple-documents]
       - id: check-json
-      - id: check-toml
       - id: check-merge-conflict
-      - id: check-case-conflict
-      - id: check-added-large-files
-        args: [--maxkb=1024]
+      - id: detect-private-key
       - id: mixed-line-ending
         args: [--fix=lf]
-      - id: detect-private-key
+      - id: check-added-large-files
+        args: [--maxkb=500]
+      - id: check-case-conflict
 
-  # ---- Python: lint + format -------------------------------------------------
-  - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.15.8
-    hooks:
-      - id: ruff
-        args: [--fix]
-      - id: ruff-format
-
-  # ---- Python: security (SAST), gate on medium+ severity ---------------------
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.8.0
-    hooks:
-      - id: bandit
-        args: ["--severity-level", "medium", "--confidence-level", "medium"]
-        files: '^(platforms/hermes/src/|tests/).*\.py$'
-
-  # ---- Markdown --------------------------------------------------------------
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.43.0
-    hooks:
-      - id: markdownlint
-        args: [--fix]
-        # Hermes agent-skills/prompts/skills are vendored/parsed content — exclude
-        # from style-linting (framework/ is already excluded globally). Done via
-        # pre-commit exclude because markdownlint-cli ignores .markdownlintignore
-        # when pre-commit passes file paths explicitly. sdd_doc_lint fixtures are
-        # deliberately-malformed sample docs for the doc-linter's own tests.
-        exclude: '^(platforms/hermes/(agent-skills|prompts|skills)|tools/sdd_doc_lint/fixtures)/'
-
-  # ---- YAML ------------------------------------------------------------------
   - repo: https://github.com/adrienverge/yamllint
     rev: v1.35.1
     hooks:
       - id: yamllint
-        args: [--strict]
+        args: [--strict, -c, .yamllint.yaml]
 
-  # ---- secrets ---------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: markdownlint
+        name: markdownlint
+        entry: markdownlint
+        language: system
+        files: \.md$
+        args: [--config, .markdownlint.json]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.0
+    hooks:
+      - id: ruff
+        args: [--fix, --exit-non-zero-on-fix]
+      - id: ruff-format
+
+  - repo: https://github.com/PyCQA/bandit
+    rev: 1.8.3
+    hooks:
+      - id: bandit
+        args: [--config, pyproject.toml]
+
   - repo: https://github.com/Yelp/detect-secrets
     rev: v1.5.0
     hooks:
       - id: detect-secrets
         args: [--baseline, .secrets.baseline]
-
-  # ---- dependency vulnerability audit ----------------------------------------
-  # Heavy / network-bound — runs in the `manual` stage (CI) + pre-push, not on
-  # every commit. Invoke: pre-commit run --hook-stage manual pip-audit
-  - repo: https://github.com/pypa/pip-audit
-    rev: v2.7.3
-    hooks:
-      - id: pip-audit
-        stages: [manual]
-        args: [-r, tests/conformance/requirements.txt]
-
-  # ---- project gate: the shared conformance suite ----------------------------
-  - repo: local
-    hooks:
-      - id: conformance
-        name: framework/platform conformance suite
-        entry: python3 -m unittest discover -s tests/conformance
-        language: system
-        pass_filenames: false
-        always_run: true

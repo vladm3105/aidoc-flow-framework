@@ -65,7 +65,7 @@ def main():
         body = f"""## Test Failure
 
 **Phase**: {args.phase}
-**Test**: `{f["classname"]}::{f["name"]}`
+**Test**: `{f['classname']}::{f['name']}`
 
 ## Planning Package (Required Before `ai:ready`)
 
@@ -79,12 +79,12 @@ def main():
 
 ### Error
 ```
-{f["message"]}
+{f['message']}
 ```
 
 ### Details
 ```
-{f["text"]}
+{f['text']}
 ```
 """
         run_gh_command(

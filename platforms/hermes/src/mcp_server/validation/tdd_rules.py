@@ -41,6 +41,7 @@ def check_tdd_readiness_score(
         return
 
     numerator = int(match.group(1))
+    denominator = int(match.group(2))
 
     if numerator < 90:
         errors.append(

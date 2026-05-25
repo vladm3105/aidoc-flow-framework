@@ -122,7 +122,11 @@ def test_load_persona_mapping_valid(tmp_path: Path) -> None:
     create_runtime_ucx_tree(tmp_path)
     (tmp_path / "UCX/skills/personas/architect.md").write_text("Architect", encoding="utf-8")
     mapping_content = (
-        'version: "1.0"\ncreation:\n  brd:\n    personas: [architect]\n    mode: sequential\n'
+        'version: "1.0"\n'
+        "creation:\n"
+        "  brd:\n"
+        "    personas: [architect]\n"
+        "    mode: sequential\n"
     )
     (tmp_path / "UCX/skills/persona_mappings.yaml").write_text(mapping_content, encoding="utf-8")
 
