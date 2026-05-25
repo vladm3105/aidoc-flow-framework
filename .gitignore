@@ -15,3 +15,4 @@ __pycache__/
 # Temporary
 tmp/
 *.log
+.secrets.baseline
