@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | PLATFORM-ALIGN                 |
 | Depends on | DOC-CHECK (PRs #17/#18 merged); framework spec `0.7.0`; the 4-segment element-ID standard (`LAYER_REGISTRY.yaml` `id_patterns`) |
-| Status     | IN PROGRESS — Part A implemented (PR-1, branch `claude/platform-align`); Part B (Hermes IDs + legacy-prompt removal) pending, cut after PR-1 merges |
+| Status     | IN PROGRESS — Part A merged (PR #19); Part B1+B2 implemented (PR-2, branch `claude/platform-align-b`, Hermes `0.2.0`); **B3 escalated** (legacy layers are an intentional documented compat surface — B3.4 trigger) |
 | Feeds      | a consumer-runnable doc-linter on both platforms (Part A); Hermes element-IDs aligned to the framework hash form + legacy-layer prompts handled (Part B) |
 
 ## Objective
@@ -224,3 +224,28 @@ framework/spec change.
   no traceback); hook end-to-end emits nudge + findings; `pre-commit` clean.
 - **Next:** Part B (B1 prompt IDs, B2 runtime regex 3→4 + tests, B3 remove
   legacy-layer prompts + coupling, Hermes VERSION bump) — PR-2 after PR-1 merges.
+
+### Part B1 + B2 — 2026-05-25 (PR-2, branch `claude/platform-align-b`)
+
+- **B2 (runtime):** `validation/cross_section.py` (`_ELEMENT_ID_RE`,
+  `_ELEMENT_ID_INLINE_RE`) + `remediation/runner.py` (`_ID_PATTERN`) changed from
+  3-segment `TYPE.NN.xxxx` → 4-segment `TYPE.NN.SS.xxxx`; the 12 three-segment ID
+  literals in `test_cross_section.py`/`test_tdd_rules.py` (+ one docstring)
+  migrated. Local suite **383 passed** (mcp-gated files excluded; CI runs them).
+- **B1 (prompts):** EARS/BDD creation+remediation prompts' type-code IDs
+  (`EARS.NN.<CODE>.<seq>`, `PRD.NN.US.NN`, 3-seg refs) → 4-segment hash; rewrote
+  the `UCC_PROMPT_EARS` ID-convention legend. Hermes `VERSION 0.1.0 → 0.2.0` +
+  CHANGELOG. Conformance **50**; `pre-commit` clean.
+
+### B3 — ESCALATED (not implemented)
+
+The coupling check (B3.4) found the legacy layers are **not orphan files** but an
+**intentional, documented "legacy compatibility" surface**:
+`src/mcp_server/skills/registry.py` `LAYER_PREFIXES` lists `sys/req/ctr/tspec/tasks`
+with the comment *"plus legacy compatibility prefixes"*; `skills/persona_mappings.yaml`
+maps them (create/review/remediation); several persona docs + `skills/README.md`
+describe them. That coupling is covered only by **mcp-gated tests** (not runnable
+locally). Per B3.4 ("if a legacy layer still backs a currently-advertised
+capability, stop and escalate"), removal is **paused for an explicit decision** —
+full removal would tear out a deliberate compat feature and is CI-only verifiable.
+Options surfaced to the user: full-remove / deprecate-in-place / leave.

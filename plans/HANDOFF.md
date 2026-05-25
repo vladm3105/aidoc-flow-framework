@@ -1,5 +1,18 @@
 # Session Handoff
 
+> **🔵 PLATFORM-ALIGN PART B (B1+B2) READY; B3 ESCALATED (2026-05-25).** Branch
+> **`claude/platform-align-b`** (Part A merged as PR #19). **B1+B2 done:** Hermes
+> element-IDs migrated to the framework **4-segment hash** form — runtime
+> validators (`cross_section.py`, `remediation/runner.py`) 3-seg→4-seg + tests
+> (local suite 383 green), and the 8-layer EARS/BDD prompt IDs + `UCC_PROMPT_EARS`
+> legend off the legacy type-code scheme. Hermes `VERSION 0.1.0 → 0.2.0` +
+> CHANGELOG; conformance **50**. **B3 ESCALATED (not done):** the legacy layers
+> (SYS/REQ/CTR/TSPEC) are an *intentional documented "legacy compatibility"
+> surface* (`registry.py` `LAYER_PREFIXES` + comment; `persona_mappings.yaml`;
+> persona docs) covered only by mcp-gated tests — per plan B3.4 I paused removal for
+> a user decision (full-remove / deprecate / leave). **Next:** open PR-2 for B1+B2;
+> resolve B3 with the user.
+>
 > **🔵 PLATFORM-ALIGN PART A READY — vendor the doc-linter (2026-05-25).** Branch
 > **`claude/platform-align`**. Plan: `plans/PLATFORM-ALIGN-PLAN.md` (all parts
 > approved). **Part A done:** `tools/sdd_doc_lint` made location-independent

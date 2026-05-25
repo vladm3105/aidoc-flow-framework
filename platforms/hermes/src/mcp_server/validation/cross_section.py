@@ -15,8 +15,8 @@ from typing import Any
 # Constants
 # ---------------------------------------------------------------------------
 
-_ELEMENT_ID_RE = re.compile(r"^[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}$")
-_ELEMENT_ID_INLINE_RE = re.compile(r"[A-Z]{2,8}\.\d{2,}\.[0-9a-f]{4,8}")
+_ELEMENT_ID_RE = re.compile(r"^[A-Z]{2,8}\.\d{2,}\.\d{2,}\.[0-9a-f]{4,8}$")
+_ELEMENT_ID_INLINE_RE = re.compile(r"[A-Z]{2,8}\.\d{2,}\.\d{2,}\.[0-9a-f]{4,8}")
 _SCORE_RE = re.compile(r"(\d+)\s*/\s*(\d+)")
 
 READINESS_SCORE_FIELDS: dict[str, str] = {
@@ -273,7 +273,7 @@ def _check_traceability_id_existence_md(
     passes: list[str],
 ) -> None:
     """Regex-based traceability check for Markdown documents."""
-    # Collect IDs from lines that look like ``id: SOME.01.abcd`` or in YAML
+    # Collect IDs from lines that look like ``id: SOME.01.03.abcd`` or in YAML
     # frontmatter blocks.
     id_registry: set[str] = set()
     for line in content.splitlines():

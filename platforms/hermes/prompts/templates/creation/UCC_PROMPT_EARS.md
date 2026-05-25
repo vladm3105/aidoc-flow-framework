@@ -68,19 +68,17 @@ While {state}, when {event}, the {system} shall {action}.
 
 ## Element ID Convention
 
-```
-EARS.{doc_num}.{category}.{sequence}
-```
+EARS elements use hash-based IDs: `EARS.{doc_id}.{section_id}.{hash}`
 
-Categories:
+- Section IDs match the EARS-TEMPLATE.yaml section structure
+- Hash: SHA256 of content, first 4 hex chars (extend to 8 on collision)
+- Example: `EARS.01.03.7b21` (doc 01, section 03 = Requirements, hash 7b21)
 
-- `UB` = Ubiquitous
-- `EV` = Event-driven
-- `ST` = State-driven
-- `OP` = Optional
-- `UW` = Unwanted behavior
+Common section IDs:
 
-Example: `EARS.01.EV.15` = EARS-01, Event-driven requirement #15
+- `03` = Requirements (all EARS syntax patterns)
+- `04` = Quality Attributes
+- `05` = Traceability
 
 ---
 
@@ -111,10 +109,10 @@ custom_fields:
 Every EARS requirement traces to PRD:
 
 ```
-EARS.01.EV.05 - Login Event
+EARS.01.03.c4d8 - Login Event
   When the user submits valid credentials, the system shall authenticate
   the user and create a session.
-  @prd: PRD.01.910c
+  @prd: PRD.01.09.910c
   @bdd: BDD-01/login.feature
 ```
 

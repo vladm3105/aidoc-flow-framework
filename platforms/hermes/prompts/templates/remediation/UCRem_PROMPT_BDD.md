@@ -131,7 +131,7 @@ fix_action:
   position: after
   anchor: "@happy-path"
   text: |
-    @edge-case @EARS.01.EV.03
+    @edge-case @EARS.01.03.e2b9
     Scenario: Handle invalid input gracefully
       Given the user is on the login page
       When the user enters invalid credentials
@@ -161,7 +161,7 @@ fix_action:
   anchor: "Scenario: Successful login"
   text: |
 
-    @error-handling @EARS.01.UW.02
+    @error-handling @EARS.01.03.f10a
     Scenario: Failed login with locked account
       Given the user account is locked
       When the user attempts to login with valid credentials
@@ -180,7 +180,7 @@ fix_action:
       When they register
       Then success
   new_text: |
-    @registration @EARS.01.EV.05
+    @registration @EARS.01.03.c4d8
     Scenario: User registration with valid data
       Given a new user with email "test@example.com"
       And the email is not already registered
@@ -213,7 +213,7 @@ fix_type: add_text
 fix_action:
   position: before
   anchor: "Scenario: Process payment"
-  text: "@payment @EARS.01.EV.08 "
+  text: "@payment @EARS.01.03.b8c2 "
 ```
 
 ---
