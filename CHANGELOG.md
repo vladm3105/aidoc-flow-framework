@@ -12,6 +12,9 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.7.0 → 0.7.1** (patch) — Updated governance CHG gates (GATE-01 through GATE-CODE_IMPLEMENTATION) and threshold naming rules.
+- Added pre-commit hook configuration (yamllint, ruff, bandit, detect-secrets).
+
 - Framework spec **0.6.0 → 0.7.0** (minor) — DOC-CHECK Phase 0: model the
   **review→remediation→gate quality loop** and its **trigger points** in the spec
   (new `framework/governance/REVIEW_REMEDIATION_FLOW.md`). Previously review and
