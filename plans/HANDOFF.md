@@ -1,5 +1,18 @@
 # Session Handoff
 
+> **🔵 PLATFORM-ALIGN PART A READY — vendor the doc-linter (2026-05-25).** Branch
+> **`claude/platform-align`**. Plan: `plans/PLATFORM-ALIGN-PLAN.md` (all parts
+> approved). **Part A done:** `tools/sdd_doc_lint` made location-independent
+> (upward-search for `framework/registry/` + `--registry`/`$SDD_REGISTRY`; CLI exit
+> 2 when no registry); **byte-identical copies vendored** into both platforms
+> (`platforms/*/sdd_doc_lint/`), kept in sync by `sync-vendored.sh` + a conformance
+> drift-guard (suite **50**); the plugin `on_author` hook now runs the vendored
+> linter reliably (advisory, exit-0, skips with no `framework/`). Platform/tooling
+> only — no spec bump. `pre-commit` clean. **Next:** open PR-1; after it merges,
+> **Part B** (cut from `main`): B1 prompt IDs type-code→4-seg hash, B2 Hermes
+> runtime regex 3→4-seg + tests, B3 **remove** the 12 SYS/REQ/CTR/TSPEC legacy-layer
+> prompts + their runtime coupling, Hermes `VERSION` bump.
+>
 > **🔵 DOC-CHECK PHASES 1–4 READY — automated review triggers (2026-05-25).**
 > Branch **`claude/doc-check-triggers`** (cut from `main` after Phase 0 / PR #17
 > merged). Plan: `plans/DOC-CHECK-PLAN.md`. Implements the platform automation

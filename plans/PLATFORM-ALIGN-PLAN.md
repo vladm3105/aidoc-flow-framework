@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | PLATFORM-ALIGN                 |
 | Depends on | DOC-CHECK (PRs #17/#18 merged); framework spec `0.7.0`; the 4-segment element-ID standard (`LAYER_REGISTRY.yaml` `id_patterns`) |
-| Status     | APPROVED — 2026-05-25 (implement ALL parts: A vendor+location-independence+guard; B1 prompts; B2 runtime regex+tests; B3 **remove** legacy-layer prompts; 2-PR sequence) |
+| Status     | IN PROGRESS — Part A implemented (PR-1, branch `claude/platform-align`); Part B (Hermes IDs + legacy-prompt removal) pending, cut after PR-1 merges |
 | Feeds      | a consumer-runnable doc-linter on both platforms (Part A); Hermes element-IDs aligned to the framework hash form + legacy-layer prompts handled (Part B) |
 
 ## Objective
@@ -205,3 +205,22 @@ framework/spec change.
   (rationale recorded under Versioning).
 - **Sequencing unchanged:** PR-1 = Part A, PR-2 = Part B (cut after A merges).
 - No further findings — proceeding to implement Part A.
+
+## Implementation log
+
+### Part A — 2026-05-25 (PR-1, branch `claude/platform-align`)
+
+- Made `tools/sdd_doc_lint` **location-independent** (upward-search for
+  `framework/registry/` + `$SDD_REGISTRY`/`--registry`; CLI exits 2 when the
+  registry is unavailable). Vendored **byte-identical** copies into
+  `platforms/claude-code-plugin/sdd_doc_lint/` and `platforms/hermes/sdd_doc_lint/`;
+  `tools/sdd_doc_lint/sync-vendored.sh` re-syncs them; a conformance guard
+  (`tests/conformance/platforms/test_doc_lint_vendoring.py`) enforces the match
+  (suite **49 → 50**). The plugin `on_author` hook now derives its plugin root and
+  runs the vendored linter on `PYTHONPATH` — deterministic findings are reliable
+  (not best-effort), still advisory/exit-0, and skip silently with no `framework/`.
+  Both platform READMEs document the vendoring. Verified: linter tests + fixtures
+  pass from canonical and vendored locations; registry-unavailable → exit 2 (clean,
+  no traceback); hook end-to-end emits nudge + findings; `pre-commit` clean.
+- **Next:** Part B (B1 prompt IDs, B2 runtime regex 3→4 + tests, B3 remove
+  legacy-layer prompts + coupling, Hermes VERSION bump) — PR-2 after PR-1 merges.
