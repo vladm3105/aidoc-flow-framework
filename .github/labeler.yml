@@ -1,86 +1,75 @@
 # Configuration for actions/labeler
 
-# Documentation
 documentation:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/*.md'
-      - 'docs/**/*'
+      - any-glob-to-any-file:
+          - '**/*.md'
+          - 'docs/**/*'
 
-# Infrastructure
 type:infra:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'terraform/**/*'
-      - 'infrastructure/**/*'
-      - '.github/workflows/**/*'
-      - 'Dockerfile*'
-      - 'docker-compose*.yml'
+      - any-glob-to-any-file:
+          - 'terraform/**/*'
+          - 'infrastructure/**/*'
+          - '.github/workflows/**/*'
+          - 'Dockerfile*'
+          - 'docker-compose*.yml'
 
-# MCP Servers
 component:mcp:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'components/mcp-servers/**/*'
-      - '**/mcp_*.py'
+      - any-glob-to-any-file:
+          - 'components/mcp-servers/**/*'
+          - '**/mcp_*.py'
 
-# SDK
 component:sdk:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'sdk/**/*'
-      - '**/telemetry*.py'
+      - any-glob-to-any-file:
+          - 'sdk/**/*'
+          - '**/telemetry*.py'
 
-# Agents
 component:agents:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'agents/**/*'
-      - '**/agent*.py'
+      - any-glob-to-any-file:
+          - 'agents/**/*'
+          - '**/agent*.py'
 
-# UI/Frontend
 component:ui:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'frontend/**/*'
-      - 'ui/**/*'
-      - '**/*.tsx'
-      - '**/*.jsx'
+      - any-glob-to-any-file:
+          - 'frontend/**/*'
+          - 'ui/**/*'
+          - '**/*.tsx'
+          - '**/*.jsx'
 
-# GCP
 cloud:gcp:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/gcp/**/*'
-      - '**/google/**/*'
-      - '**/bigquery*'
+      - any-glob-to-any-file:
+          - '**/gcp/**/*'
+          - '**/google/**/*'
+          - '**/bigquery*'
 
-# AWS
 cloud:aws:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/aws/**/*'
-      - '**/s3*'
-      - '**/lambda*'
+      - any-glob-to-any-file:
+          - '**/aws/**/*'
+          - '**/s3*'
+          - '**/lambda*'
 
-# Azure
 cloud:azure:
   - changed-files:
-    - any-glob-to-any-file:
-      - '**/azure/**/*'
+      - any-glob-to-any-file:
+          - '**/azure/**/*'
 
-# Tests
 needs-tests:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'src/**/*.py'
-      - '!tests/**/*'
+      - any-glob-to-any-file:
+          - 'src/**/*.py'
+          - '!tests/**/*'
 
-# Dependencies
 dependencies:
   - changed-files:
-    - any-glob-to-any-file:
-      - 'requirements*.txt'
-      - 'pyproject.toml'
-      - 'setup.py'
-      - 'package*.json'
+      - any-glob-to-any-file:
+          - 'requirements*.txt'
+          - 'pyproject.toml'
+          - 'setup.py'
+          - 'package*.json'
