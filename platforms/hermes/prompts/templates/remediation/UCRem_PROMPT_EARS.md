@@ -140,12 +140,12 @@ fix_type: modify_text
 fix_action:
   old_text: "The system must authenticate users when they log in"
   new_text: |
-    **EARS.01.EV.05**: When the user submits login credentials, the system shall authenticate the user against the identity provider.
+    **EARS.01.03.c4d8**: When the user submits login credentials, the system shall authenticate the user against the identity provider.
 
     - **Pattern**: Event-Driven
     - **Trigger**: User submits login credentials
     - **Response**: Authenticate against identity provider
-    - **Traces**: @prd: PRD.01.US.03
+    - **Traces**: @prd: PRD.01.09.a1b2
 ```
 
 ### Missing Constraint Fix
@@ -167,10 +167,10 @@ rationale: |
 fix_type: add_text
 fix_action:
   position: after
-  anchor: "**EARS.01.UB.03**:"
+  anchor: "**EARS.01.03.a3f1**:"
   text: |
 
-    - **Traces**: @prd: PRD.01.US.07
+    - **Traces**: @prd: PRD.01.09.c3d4
 rationale: |
   Missing upstream traceability to PRD.
   Added explicit trace reference.

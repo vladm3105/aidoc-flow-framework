@@ -16,6 +16,19 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Element-ID alignment to the framework 4-segment hash form** (PLATFORM-ALIGN
+  Part B, `0.1.0 → 0.2.0`). The runtime element-ID validators in
+  `validation/cross_section.py` (`_ELEMENT_ID_RE`, `_ELEMENT_ID_INLINE_RE`) and
+  `remediation/runner.py` (`_ID_PATTERN`) accepted the **3-segment** form
+  `TYPE.NN.xxxx`; they now require the framework's canonical **4-segment** form
+  `TYPE.NN.SS.xxxx` (adding the section segment), matching
+  `LAYER_REGISTRY.yaml` `id_patterns.element`. Tests updated accordingly. The
+  8-layer EARS/BDD prompt templates' element-ID examples + the `UCC_PROMPT_EARS`
+  ID-convention legend were migrated off the legacy type-code scheme
+  (`EARS.NN.<CODE>.<seq>`, `PRD.NN.US.NN`, 3-segment refs) to the 4-segment hash
+  form. *Stricter validation:* a previously-accepted 3-segment ID now fails —
+  intended (the 3-segment form was the legacy variant the framework retired).
+
 - **EARS pattern alignment** — brought the Hermes vendored EARS pattern tables
   into line with the framework's canonical statement model (framework spec
   `0.6.0`, FRWK-REVIEW #4b). The persona docs (`skills/personas/requirements_specialist.md`,
