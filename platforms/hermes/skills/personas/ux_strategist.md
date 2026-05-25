@@ -53,7 +53,6 @@ When reviewing PRDs:
 
 - PRD: 20%
 - BDD: 15%
-- REQ: 10%
 
 ## UX Checklist
 
@@ -74,5 +73,5 @@ When reviewing PRDs:
 ## Tags
 
 - phase: ucr
-- doc_types: [prd, bdd, req]
+- doc_types: [prd, bdd]
 - priority: medium

@@ -117,11 +117,10 @@ Flag designs that claim to achieve all three simultaneously.
 - BRD: 15%
 - PRD: 20%
 - ADR: 40%
-- SYS: 35%
 - SPEC: 35%
 
 ## Tags
 
 - phase: ucr
-- doc_types: [brd, prd, adr, sys, spec]
+- doc_types: [brd, prd, adr, spec]
 - priority: high

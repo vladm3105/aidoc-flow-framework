@@ -70,7 +70,6 @@ For each requirement, verify:
 | Layer | Your Focus |
 |-------|------------|
 | **EARS (L3)** | EARS pattern compliance, syntax correctness |
-| **REQ (L7)** | INCOSE atomicity, traceability, verification criteria |
 
 ## Evaluation Checkpoint Questions
 
@@ -107,8 +106,6 @@ For each requirement, verify:
 ## Scoring Weight
 
 - EARS: 35%
-- REQ: 35%
-- SYS: 25%
 
 ## EARS Validation
 
@@ -129,5 +126,5 @@ For each requirement, verify:
 ## Tags
 
 - phase: ucr
-- doc_types: [ears, req, sys]
+- doc_types: [ears]
 - priority: critical

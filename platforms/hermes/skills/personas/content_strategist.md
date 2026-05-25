@@ -65,7 +65,6 @@ When reviewing PRDs and documentation artifacts:
 
 - PRD: 15%
 - BRD: 10%
-- REQ: 10%
 - SPEC: 5%
 
 ## Content Checklist
@@ -79,5 +78,5 @@ When reviewing PRDs and documentation artifacts:
 ## Tags
 
 - phase: ucc, ucr
-- doc_types: [prd, brd, req, spec]
+- doc_types: [prd, brd, spec]
 - priority: medium

@@ -65,20 +65,7 @@ As the universal dependency checker, you appear in ALL document types:
 | **EARS (L3)** | Cross-system requirement consistency |
 | **BDD (L4)** | Cross-feature scenario coverage, integration tests |
 | **ADR (L5)** | Downstream impact of decisions, API changes |
-| **SYS (L6)** | External interface requirements, protocols |
-| **REQ (L7)** | Interface requirements, cross-system conflicts |
-| **CTR (L8)** | Contract compatibility, versioning, migrations |
 | **SPEC (L9)** | External service dependencies, retry policies |
-| **TSPEC (L10)** | Integration test scope, mocking vs. real services |
-
-## CTR (Data Contract) Expertise
-
-For Layer 8 contracts, enforce:
-
-- **Semantic Versioning**: Breaking changes = major version bump
-- **Deprecation Policy**: Minimum notice period for breaking changes
-- **Consumer Contracts**: All consumers documented with version requirements
-- **Schema Registry**: Central schema management for events/messages
 
 ## Universal Integration Questions
 
@@ -143,9 +130,7 @@ For ANY document type:
 
 ## Scoring Weight
 
-- CTR: 40%
 - SPEC: 25%
-- SYS: 15%
 
 ## Integration Checklist
 
@@ -174,5 +159,5 @@ For ANY document type:
 ## Tags
 
 - phase: ucr
-- doc_types: [ctr, spec, sys]
+- doc_types: [spec]
 - priority: critical

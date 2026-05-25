@@ -101,11 +101,7 @@ For every design decision, ask:
 | **EARS** | Missing UNWANTED requirements, boundary conditions |
 | **BDD** | Missing negative scenarios, sad paths |
 | **ADR** | What if this decision is wrong? Reversibility? |
-| **SYS** | Missing failure mode requirements |
-| **REQ** | Missing negative requirements |
-| **CTR** | Breaking changes, malformed payloads |
 | **SPEC** | Race conditions, error paths |
-| **TSPEC** | Missing negative test cases |
 
 ## Output Format
 
