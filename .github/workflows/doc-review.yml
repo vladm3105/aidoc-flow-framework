@@ -1,0 +1,63 @@
+name: Document review gate
+
+# pre_merge trigger point (framework/governance/REVIEW_REMEDIATION_FLOW.md):
+# the deterministic structural gate for SDD instance documents. Runs the
+# sdd_doc_lint unit tests, smoke-checks the fixtures, and lints any docs/ tree.
+# A consuming project uses this same workflow to gate its own docs/ on PRs;
+# here it self-tests against the linter's fixtures (this repo has no docs/ tree).
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+      - 'tools/sdd_doc_lint/**'
+      - '.github/workflows/doc-review.yml'
+  pull_request:
+    paths:
+      - 'docs/**'
+      - 'tools/sdd_doc_lint/**'
+      - '.github/workflows/doc-review.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  doc-review:
+    name: SDD document structural gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r tests/conformance/requirements.txt
+
+      - name: Unit-test the linter
+        run: PYTHONPATH=tools python -m unittest discover -s tools/sdd_doc_lint/tests -v
+
+      - name: Smoke — valid fixtures must lint clean
+        run: PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/valid
+
+      - name: Negative — broken fixtures must fail the gate
+        run: |
+          if PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/broken; then
+            echo "::error::broken fixtures unexpectedly passed the gate"; exit 1
+          else
+            echo "broken fixtures failed as expected — gate works"
+          fi
+
+      - name: Gate SDD documents under docs/
+        run: |
+          if [ -d docs ]; then
+            PYTHONPATH=tools python -m sdd_doc_lint docs
+          else
+            echo "no docs/ tree in this repo — nothing to gate (consumers point this at their docs/)"
+          fi

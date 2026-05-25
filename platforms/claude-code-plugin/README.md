@@ -14,11 +14,22 @@ no MCP backend.
 | Skills (utilities) | 18 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
 | Agents | 9 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor` (SDD lifecycle: spec lane → execution lane → read-only quality gates). See `agents/README.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture current conversation plan to a timestamped file. |
+| Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
 | **Total skills** | **54** | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
 the manifest.
+
+### Review trigger (`on_author`)
+
+`hooks/hooks.json` registers a `PostToolUse` hook on `Write`/`Edit`. When an SDD
+instance document (`docs/<NN>_<X>/…` or a `<TYPE>-NN` file) is written, it nudges
+you to run the matching `doc-<layer>-audit` (and, if `sdd_doc_lint` is importable,
+appends deterministic structural findings). It is **advisory** — it never blocks
+the edit. This is the plugin's binding of the framework's `on_author` trigger
+point (`framework/governance/REVIEW_REMEDIATION_FLOW.md`); the blocking `pre_merge`
+gate is the shared `doc-review.yml` workflow running `tools/sdd_doc_lint`.
 
 ## Install
 

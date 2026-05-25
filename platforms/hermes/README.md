@@ -81,6 +81,17 @@ Hermes declares conformance to framework spec `0.1.0`; the
 framework's own version is at `../../framework/VERSION`. The Phase 4
 conformance suite enforces this declaration matches.
 
+### Review / remediation / gate triggers
+
+Hermes binds the spec's review→remediation→gate trigger points
+(`../../framework/governance/REVIEW_REMEDIATION_FLOW.md`) to its existing
+runtime: server-side `validation/` + scoring covers `on_author` (on-demand
+validate/score) and `pre_promotion` (the readiness gate before the next layer);
+the `UCRem_*` remediation prompts cover `on_gate_fail`. For the `pre_merge`
+(PR-time) point, a Hermes-based project uses the shared `doc-review.yml`
+workflow running `tools/sdd_doc_lint` — the same deterministic structural gate
+the plugin uses — so both platforms gate documents identically in CI.
+
 ## Platform info
 
 | Field | Value |

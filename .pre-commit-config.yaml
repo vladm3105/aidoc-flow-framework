@@ -55,8 +55,9 @@ repos:
         # Hermes agent-skills/prompts/skills are vendored/parsed content — exclude
         # from style-linting (framework/ is already excluded globally). Done via
         # pre-commit exclude because markdownlint-cli ignores .markdownlintignore
-        # when pre-commit passes file paths explicitly.
-        exclude: '^platforms/hermes/(agent-skills|prompts|skills)/'
+        # when pre-commit passes file paths explicitly. sdd_doc_lint fixtures are
+        # deliberately-malformed sample docs for the doc-linter's own tests.
+        exclude: '^(platforms/hermes/(agent-skills|prompts|skills)|tools/sdd_doc_lint/fixtures)/'
 
   # ---- YAML ------------------------------------------------------------------
   - repo: https://github.com/adrienverge/yamllint

@@ -86,6 +86,26 @@ shared spec (D-0020), with the same three-way enforcer split:
 | Static checks (E006, E007) | shared conformance suite | shared conformance suite |
 | Human approval (E004 sign-off) | branch protection on `framework/**` | branch protection on `framework/**` |
 
+## Review / remediation / gate triggers (both platforms)
+
+Both platforms implement the spec's review→remediation→gate loop and its
+trigger points (`framework/governance/REVIEW_REMEDIATION_FLOW.md`). Each binds
+the engine-agnostic points to its own capabilities; *how* a point is checked is
+the platform's choice (the spec only requires that findings, the readiness score,
+and the remediation path are surfaced).
+
+| Trigger point | Plugin | Hermes |
+|---------------|--------|--------|
+| `on_author` (write-time) | `PostToolUse` hook (`hooks/sdd-doc-review.sh`) — advisory nudge to `doc-<layer>-audit` + best-effort `sdd_doc_lint` findings | server-side `validation/` + scoring tool on demand |
+| `on_gate_fail` | `doc-<layer>-fixer` skill | `UCRem_*` remediation prompts |
+| `pre_promotion` | `gate-check` / the readiness ≥90 gate before the next `doc-<layer>` | scoring gate before the next layer |
+| `pre_merge` (PR-time) | `doc-review.yml` running `tools/sdd_doc_lint` (blocking, deterministic) | same `doc-review.yml` shared check |
+
+The **write-time** point is advisory (a nudge, never blocks the edit); the
+**PR-time** point is the blocking deterministic gate. The full semantic
+readiness *score* stays the LLM `-audit` skill / Hermes scorer — `sdd_doc_lint`
+is the fast structural subset beneath it.
+
 ## Platform-specific extras
 
 ### Hermes-only
