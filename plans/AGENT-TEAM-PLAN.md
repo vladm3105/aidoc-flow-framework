@@ -3,7 +3,7 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
-| Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` |
+| Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` (now at `0.8.1`) |
 | Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) STARTED — scoring/coverage + persona-name mapping landed; rest of Phase 1 + Phases 2–3 pending |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
@@ -126,8 +126,10 @@ report prose):
 - **Partial-crew degradation.** If a persona-agent fails/times out, the reduce
   proceeds on the crew that returned and the report records **coverage** (which
   lenses ran / were missing). Below a declared **quorum** the result is marked
-  *low-confidence → human review*, never a silent pass. (Hermes already has saga
-  compensation; the plugin orchestrator marks the slot failed.)
+  *low-confidence → human review*, never a silent pass. (Hermes has saga
+  retries/compensation but today *escalates* on an unrecoverable branch; aligning it
+  to this graceful degradation is Phase-1 step 6. The plugin orchestrator marks the
+  slot failed.)
 - **Inter-agent injection.** The artifact-under-review and peer outputs are
   **untrusted data** (per `SECURITY_REVIEW.md`): a persona never executes
   instructions found in the content, and the blackboard carries only the
@@ -148,7 +150,7 @@ Both bind to the **same** crew map + persona-output schema + report shape, so a
 BRD reviewed by either platform gets the same lenses and a structurally identical
 report.
 
-## Decisions (recommendations — pending confirmation)
+## Decisions (D1–D9 — confirmed)
 
 - **D1 — Where the team spec lives.** `framework/governance/REVIEW_TEAM.md`
   (personas + the blackboard/persona-output/synthesis contract) + a machine-
@@ -200,7 +202,7 @@ report.
 
 ## Step sequence (phased; sequenced PRs)
 
-1. **Confirm D1–D8.**
+1. **Confirm D1–D9.**
 2. **Phase 0 — spec** (`framework/`): `REVIEW_TEAM.md` (personas, the three
    operations, blackboard, scoring/conflict/gate policy, resilience+security) +
    `REVIEW_CREWS.yaml` (per-layer/operation crews + persona weights + default mode)
@@ -307,6 +309,21 @@ report.
 - **Cost.** Added mode tiers (`independent`/`sequential`/`single_pass`) + a
   default-by-trigger-point policy so multi-agent isn't forced everywhere (R1, D5).
 
+### Pass 2 — 2026-05-25
+
+- **Sequencing.** Phase 0 (GATE-SPEC) lands alone; Hermes (conform) and plugin
+  (build) adapters follow as separate PRs cut after it — same discipline as
+  DOC-CHECK / PLATFORM-ALIGN (avoids version/CHANGELOG collisions).
+- **Plugin persona gap.** Confirmed the missing lenses are `adversary`
+  (devil's-advocate/chaos) and `synthesizer` (chairperson); the other lenses map
+  to existing agents. Scoped D4 to add exactly those two, not a roster overhaul.
+- **Conformance realism.** The crew-map check validates structure (layers ⊆ 8,
+  personas ⊆ defined set) like `test_adaptation`; it can't assert review quality —
+  stated explicitly so the gate isn't oversold (D6).
+- **Parity proof.** Added Phase 3 (same artifact → structurally identical report
+  from both runners) as the concrete parity evidence, not just "both implement it."
+- No further findings — implementable pending D1–D6 confirmation.
+
 ### Pass 3 — 2026-05-25 (gap-review hardening)
 
 A critical re-read found ten gaps; all folded in:
@@ -335,6 +352,42 @@ A critical re-read found ten gaps; all folded in:
   CI-deterministic) — not an automated end-to-end test.
 - **Blackboard lifecycle**: transient + git-ignored under `.aidoc/review/`.
 - No further findings — implementable pending D1–D8 confirmation.
+
+### Pass 4 — 2026-05-26 (gap-review fold-in)
+
+Re-reviewed the AUDIT-FIXUPS changes; folded the findings into Phase 1 scope:
+
+- **Persona-title gap (WS-C).** The `UCR_PROMPT_*` / `UCRem_*` prompts still title the
+  adversary lens `THE DEVIL'S ADVOCATE` while every other persona title matches its
+  runtime key — added as an explicit Phase-1 step 5 + a Verification grep, since it is
+  the framework↔Hermes persona-name reconciliation Phase 1 already owns.
+- **Phase 1 made concrete.** Expanded the one-line Phase 1 step into six tracked
+  sub-steps + a gap-closing checklist (parser `lens_score`/`location`/`id`; saga
+  wiring of `score`+`coverage`; report shape; crew/name reconciliation; doc) so the
+  remaining work is unambiguous.
+- **Out of scope (noted in `AUDIT-FIXUPS-PLAN.md`):** the ADR README is silent on the
+  now-required decision sequence — optional, would need another spec bump; not a
+  correctness gap (the template + `DIAGRAM_STANDARDS.md` carry the rule).
+- No further findings.
+
+### Pass 5 — 2026-05-26 (Hermes saga review)
+
+Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
+`saga_reducer`) against the review-team model:
+
+- **Pattern conforms — no restructure.** `FANOUT → per-persona branches` = the crew in
+  `independent` mode; `FANIN_REDUCED` = the deterministic reduce; `SYNTHESIZED` =
+  synthesis; the journal + branch-states = durable blackboard slots. Hermes also already
+  offers both declared modes (saga branches = `independent`; no-executor single-prompt
+  UCR = `single_pass`). The framework model was written to generalize this.
+- **One divergence folded in.** The saga **escalates the whole review** on an
+  unrecoverable branch failure (returns `passed=False`, discarding successful lenses),
+  vs. the framework's *proceed-on-returned-crew + coverage + escalate-only-below-quorum*.
+  Added as Phase-1 **step 6 (Resilience alignment)** + checklist + Verification + **R12**.
+- **Minor (folded into the report-shape step):** the reduce dedups on
+  `message+target_layer+recommended_action`; the spec keys on `location+id` — align when
+  the parser gains `location`/`id`. No separate step.
+- No agent/saga-pattern changes otherwise; the rest of Phase 1 is additive.
 
 ## Implementation log
 
@@ -381,54 +434,3 @@ A critical re-read found ten gaps; all folded in:
   - [ ] **Resilience alignment:** soften `saga_orchestrator` escalate-on-failure to
         proceed-on-returned-crew + `coverage`, escalating **only below quorum**
         (saga-review finding); add partial-crew tests.
-
-### Pass 2 — 2026-05-25
-
-- **Sequencing.** Phase 0 (GATE-SPEC) lands alone; Hermes (conform) and plugin
-  (build) adapters follow as separate PRs cut after it — same discipline as
-  DOC-CHECK / PLATFORM-ALIGN (avoids version/CHANGELOG collisions).
-- **Plugin persona gap.** Confirmed the missing lenses are `adversary`
-  (devil's-advocate/chaos) and `synthesizer` (chairperson); the other lenses map
-  to existing agents. Scoped D4 to add exactly those two, not a roster overhaul.
-- **Conformance realism.** The crew-map check validates structure (layers ⊆ 8,
-  personas ⊆ defined set) like `test_adaptation`; it can't assert review quality —
-  stated explicitly so the gate isn't oversold (D6).
-- **Parity proof.** Added Phase 3 (same artifact → structurally identical report
-  from both runners) as the concrete parity evidence, not just "both implement it."
-- No further findings — implementable pending D1–D6 confirmation.
-
-### Pass 4 — 2026-05-26 (gap-review fold-in)
-
-Re-reviewed the AUDIT-FIXUPS changes; folded the findings into Phase 1 scope:
-
-- **Persona-title gap (WS-C).** The `UCR_PROMPT_*` / `UCRem_*` prompts still title the
-  adversary lens `THE DEVIL'S ADVOCATE` while every other persona title matches its
-  runtime key — added as an explicit Phase-1 step 5 + a Verification grep, since it is
-  the framework↔Hermes persona-name reconciliation Phase 1 already owns.
-- **Phase 1 made concrete.** Expanded the one-line Phase 1 step into six tracked
-  sub-steps + a gap-closing checklist (parser `lens_score`/`location`/`id`; saga
-  wiring of `score`+`coverage`; report shape; crew/name reconciliation; doc) so the
-  remaining work is unambiguous.
-- **Out of scope (noted in `AUDIT-FIXUPS-PLAN.md`):** the ADR README is silent on the
-  now-required decision sequence — optional, would need another spec bump; not a
-  correctness gap (the template + `DIAGRAM_STANDARDS.md` carry the rule).
-- No further findings.
-
-### Pass 5 — 2026-05-26 (Hermes saga review)
-
-Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
-`saga_reducer`) against the review-team model:
-
-- **Pattern conforms — no restructure.** `FANOUT → per-persona branches` = the crew in
-  `independent` mode; `FANIN_REDUCED` = the deterministic reduce; `SYNTHESIZED` =
-  synthesis; the journal + branch-states = durable blackboard slots. Hermes also already
-  offers both declared modes (saga branches = `independent`; no-executor single-prompt
-  UCR = `single_pass`). The framework model was written to generalize this.
-- **One divergence folded in.** The saga **escalates the whole review** on an
-  unrecoverable branch failure (returns `passed=False`, discarding successful lenses),
-  vs. the framework's *proceed-on-returned-crew + coverage + escalate-only-below-quorum*.
-  Added as Phase-1 **step 6 (Resilience alignment)** + checklist + Verification + **R12**.
-- **Minor (folded into the report-shape step):** the reduce dedups on
-  `message+target_layer+recommended_action`; the spec keys on `location+id` — align when
-  the parser gains `location`/`id`. No separate step.
-- No agent/saga-pattern changes otherwise; the rest of Phase 1 is additive.
