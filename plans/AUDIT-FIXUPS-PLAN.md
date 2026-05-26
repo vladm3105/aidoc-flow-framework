@@ -196,3 +196,18 @@ Per source of truth, the framework is **8 layers only**; there is no available
 - **Verification:** conformance 54 green throughout; spec_gate green (WS-A);
   Hermes prompt/persona tests 52 passed; no residual legacy taxonomy / persona-name
   drift in the agent-facing files.
+
+### Gap-review follow-ups (2026-05-26)
+
+A post-implementation gap review found two items, both routed rather than fixed here:
+
+- **WS-C residual (→ AGENT-TEAM Phase 1):** the `UCR_PROMPT_*` / `UCRem_*` review
+  prompts still title the adversary lens `THE DEVIL'S ADVOCATE` (11 spots) while every
+  other persona title matches its runtime key. This is the framework↔Hermes
+  persona-name reconciliation that **Phase 1** owns — added there as an explicit step
+  - Verification grep (`plans/AGENT-TEAM-PLAN.md`).
+- **WS-A optional (deferred):** `framework/layers/05_ADR/README.md` is silent on the
+  now-required decision sequence. Not a correctness gap (the template +
+  `DIAGRAM_STANDARDS.md` carry the rule); fixing it would mean another framework spec
+  bump for a prose line, so it is deferred unless a future ADR-layer spec change makes
+  it free to include.

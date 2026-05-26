@@ -196,10 +196,27 @@ report.
    `review_mode` knob to `ADAPTATION_SURFACE.yaml`; register in governance README +
    `test_governance`; add the crew-map + adaptation-knob conformance checks; version
    bump + CHANGELOG. *(Own PR.)*
-3. **Phase 1 — Hermes adapter** (after Phase 0): align `persona_mappings.yaml`,
-   `persona_output_parser`, `saga_reducer`, and the `UCR_*`/`UCRem_*` report shape
-   to the framework schema (incl. coverage + the weighted/capped score); document
-   the mapping. Mostly *conform existing code*.
+3. **Phase 1 — Hermes adapter** (after Phase 0; *conform existing code*, don't
+   rebuild the working saga). Concrete steps:
+   1. **Scoring + coverage + persona mapping** — `review_scoring.py` (weighted/capped
+      score from `REVIEW_CREWS.yaml`, `CoverageReport`, framework↔Hermes alias).
+      *Landed 2026-05-26.*
+   2. **Parser conformance** — extend `persona_output_parser` to capture `lens_score`
+      (per persona), `location`, and a stable `id`; keep `recommended_action` as the
+      engine's name for `recommendation`. Additive; existing tests stay green.
+   3. **Wire scoring into the saga** — `saga_orchestrator` collects the per-persona
+      `lens_score`s + doc-type, calls `score_review`, and puts `score` + `coverage`
+      on `SagaReviewResult` + the reducer/synthesis summary.
+   4. **Report-shape conformance** — surface `score` + `coverage` + the per-finding
+      framework fields in the `PERSONA_REVIEW_REPORT` / `UCR_OUTPUT_UNIFIED` shape the
+      review→remediation→gate loop reads.
+   5. **Crew + name reconciliation** — align `persona_mappings.yaml` *review* crews
+      with the framework `REVIEW_CREWS.yaml` crews (membership/weights, bridged by the
+      alias map — the framework keeps its engine-agnostic names), and **retitle the
+      `THE DEVIL'S ADVOCATE` lens** in the `UCR_PROMPT_*` / `UCRem_*` prompts to the
+      canonical persona title (gap-review finding — 11 spots), so every persona title
+      matches its runtime key.
+   6. **Document** the mapping in `REVIEW_TEAM_CONFORMANCE.md` (started).
 4. **Phase 2 — plugin adapter** (after Phase 0): a `review-team` mechanism —
    `pm-orchestrator`/`doc-<layer>-audit` fans out the crew as subagents writing to
    the git-ignored `.aidoc/review/` blackboard; deterministic reduce + score; add
@@ -219,9 +236,12 @@ report.
 - Phase 0: conformance green incl. the crew-map + `review_mode`-knob checks;
   `spec_gate` green; the spec names personas/blackboard/synthesis without engine
   tokens (`test_spec_hygiene`).
-- Phase 1: Hermes pytest green; a saga review emits findings + `coverage` matching
-  the framework persona-output schema; `saga_reducer` score follows the weighted/
-  capped + P0/P1 policy; report maps to the spec report shape.
+- Phase 1: Hermes pytest green; the parser captures `lens_score`/`location`/`id`; a
+  saga review emits findings + `coverage` matching the framework persona-output
+  schema; the `score` follows the weighted/capped + P0/P1 policy; the report shape
+  carries `score` + `coverage`; **no `UCR_PROMPT_*` persona title uses a non-key
+  descriptor** (`grep -ri "devil's advocate" platforms/hermes/prompts` returns
+  nothing).
 - Phase 2: a plugin `doc-<layer>-audit` run dispatches the crew, writes per-persona
   blackboard slots, the deterministic reduce produces the scored unified report;
   partial-crew degradation flags coverage; `single_pass` fallback works;
@@ -325,9 +345,17 @@ A critical re-read found ten gaps; all folded in:
   `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. Additive; the working
   saga/reducer/parser untouched. Conformance 54; ruff clean; reducer/parser/scoring
   tests green (14).
-- **Remaining Phase 1:** capture `lens_score` in `persona_output_parser`; surface
-  `score` + `coverage` in the saga result + `PERSONA_REVIEW_REPORT`/`UCR_*` shape;
-  reconcile `persona_mappings.yaml` review crews with the framework crews.
+- **Remaining Phase 1 (gap-closing checklist):**
+  - [ ] **Parser:** capture `lens_score` + `location` + stable `id` in
+        `persona_output_parser` (additive; keep existing tests green).
+  - [ ] **Saga wiring:** collect per-persona `lens_score`s and call `score_review`;
+        put `score` + `coverage` on `SagaReviewResult` + the reducer/synthesis summary.
+  - [ ] **Report:** surface `score` + `coverage` + the framework finding fields in the
+        `PERSONA_REVIEW_REPORT` / `UCR_OUTPUT_UNIFIED` shape.
+  - [ ] **Crew/name reconciliation:** align `persona_mappings.yaml` review crews with
+        `REVIEW_CREWS.yaml`; **retitle `THE DEVIL'S ADVOCATE` → the canonical persona
+        title** across the `UCR_PROMPT_*` / `UCRem_*` prompts (gap-review finding, 11
+        spots) so every persona title matches its runtime key.
 
 ### Pass 2 — 2026-05-25
 
@@ -343,3 +371,20 @@ A critical re-read found ten gaps; all folded in:
 - **Parity proof.** Added Phase 3 (same artifact → structurally identical report
   from both runners) as the concrete parity evidence, not just "both implement it."
 - No further findings — implementable pending D1–D6 confirmation.
+
+### Pass 4 — 2026-05-26 (gap-review fold-in)
+
+Re-reviewed the AUDIT-FIXUPS changes; folded the findings into Phase 1 scope:
+
+- **Persona-title gap (WS-C).** The `UCR_PROMPT_*` / `UCRem_*` prompts still title the
+  adversary lens `THE DEVIL'S ADVOCATE` while every other persona title matches its
+  runtime key — added as an explicit Phase-1 step 5 + a Verification grep, since it is
+  the framework↔Hermes persona-name reconciliation Phase 1 already owns.
+- **Phase 1 made concrete.** Expanded the one-line Phase 1 step into six tracked
+  sub-steps + a gap-closing checklist (parser `lens_score`/`location`/`id`; saga
+  wiring of `score`+`coverage`; report shape; crew/name reconciliation; doc) so the
+  remaining work is unambiguous.
+- **Out of scope (noted in `AUDIT-FIXUPS-PLAN.md`):** the ADR README is silent on the
+  now-required decision sequence — optional, would need another spec bump; not a
+  correctness gap (the template + `DIAGRAM_STANDARDS.md` carry the rule).
+- No further findings.
