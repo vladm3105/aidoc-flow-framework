@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` |
-| Status     | PLANNED — 2026-05-25 (awaiting decisions D1–D6) |
+| Status     | PLANNED — 2026-05-25 (Pass 3 gap-hardened; awaiting decisions D1–D8) |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -71,12 +71,75 @@ A **review team** = a **crew** of persona-agents + a **synthesizer** + a shared
      prompt (today's plugin audit / Hermes' no-executor `UCR_*` mode) — for cost-
      constrained or no-subagent environments.
 
+### Operations — the team works in three shapes
+
+The team runs the same crew + blackboard + persona-output contract for all three
+operations of the review→remediation→gate loop; only the roles differ:
+
+- **Review** — the crew reviews the artifact in parallel; synthesis produces the
+  unified findings report + score (the shape described above).
+- **Create** — **one drafter** persona authors the artifact from the template +
+  upstream artifacts, then the **review crew** reviews the draft and the drafter
+  revises (an internal create→review→revise loop) until the gate passes. *Not* N
+  parallel drafts (incoherent to merge) — one author, many reviewers. This is how
+  a created document reaches review-grade quality, addressing the headline ask.
+- **Remediate** — a **fixer** persona proposes a concrete patch per blocking
+  finding from the review report; the relevant lens(es) **validate** each patch
+  doesn't regress; synthesis emits the proposed fix set. (Generalizes
+  Hermes' `*Fixer` personas + `UCRem_*`.)
+
+### Scoring, conflicts & the gate
+
+- **Per-lens score + findings.** Each persona emits a `lens_score` (0–100) and
+  `findings` (with `priority` P0–P3).
+- **Aggregate score = deterministic.** The overall readiness score is a
+  **weighted average of the lens scores**, using per-layer persona weights declared
+  in the crew map (generalizing the "Scoring Weight" tables already in the Hermes
+  persona docs), **then capped**: any unresolved **P0 ⇒ fail** and **P1 ⇒ capped
+  below the gate**, regardless of the average. The math is reproducible given the
+  persona outputs.
+- **Conflict resolution (defined, not ad hoc).** When personas disagree on the
+  same location, the reduce step takes the **max severity** and **unions**
+  recommendations (deduped by `location`+`code`); a genuine either/or judgment is
+  surfaced to the synthesizer/chairperson as an explicit "contested" finding for a
+  human/lead call — never silently dropped.
+- **Gate stability (the reproducibility answer).** The **gate decision is
+  deterministic**: it is the structural `sdd_doc_lint` check (the `pre_merge`
+  gate) **plus** "no unresolved P0/P1". The stochastic *numeric* score and the
+  prose findings are **advisory enrichment above** that floor — so a borderline
+  document can't flap pass/fail run-to-run on LLM variance; only the
+  deterministic floor gates.
+
+### Synthesis = deterministic reduce + optional narrative
+
+Split the synthesizer into two parts (generalizing Hermes' `saga_reducer` +
+report prose):
+
+1. **Reduce (deterministic, gating):** merge/dedup findings by `location`+`code`,
+   take max severity, compute the weighted+capped score, mark coverage. Pure code,
+   reproducible — this is what the gate reads.
+2. **Narrative (LLM, advisory):** an executive-summary chairperson pass over the
+   reduced findings. Non-gating; it explains, it doesn't decide.
+
+### Resilience & security
+
+- **Partial-crew degradation.** If a persona-agent fails/times out, the reduce
+  proceeds on the crew that returned and the report records **coverage** (which
+  lenses ran / were missing). Below a declared **quorum** the result is marked
+  *low-confidence → human review*, never a silent pass. (Hermes already has saga
+  compensation; the plugin orchestrator marks the slot failed.)
+- **Inter-agent injection.** The artifact-under-review and peer outputs are
+  **untrusted data** (per `SECURITY_REVIEW.md`): a persona never executes
+  instructions found in the content, and the blackboard carries only the
+  **structured persona-output schema** (findings), not free-form instructions —
+  bounding injection propagation to/from the synthesizer.
+
 ## Platform adapters (the "how")
 
 | Concern | Plugin runner | Hermes runner |
 |---------|---------------|---------------|
 | Agent runtime | `Task` subagents (map framework personas → the 9 `agents/`; add missing lenses) | executor API-agents via `saga_orchestrator` branches |
-| Blackboard | files under `.aidoc/review/<artifact-id>/<persona>.json` (+ `report.md`) — subagents return to the orchestrator, which writes the slots | the saga **journal** + branch summaries |
+| Blackboard | **transient, git-ignored** files under `.aidoc/review/<artifact-id>/<persona>.json` (aligns with the existing `.aidoc/` project-runtime convention) — subagents return to the orchestrator, which writes the slots; the *unified report* may persist into the doc folder per existing audit convention, the per-persona slots do not | the saga **journal** + branch summaries |
 | Dispatch | `pm-orchestrator` (or upgraded `doc-<layer>-audit`) fans out the crew, then runs the `synthesizer` subagent | `saga_orchestrator` (already per-persona) |
 | Synthesis | `synthesizer`/chairperson subagent reduces the blackboard | `saga_reducer` |
 | Output | unified review report → `doc-<layer>-fixer` | `PERSONA_REVIEW_REPORT` → `UCRem_*` |
@@ -103,41 +166,68 @@ report.
   to the plugin's existing agents where they fit, and **add the missing lenses**
   (`adversary`, `synthesizer`) as plugin agents. Don't force a 1:1 rename of the
   plugin's lifecycle agents.
-- **D5 — Cost/perf.** Default crews 3–5 personas; `single_pass` fallback always
-  available; document the token/latency cost; make multi-agent the default only
-  for `pre_promotion`/`pre_merge` gates, advisory `single_pass` for `on_author`.
+- **D5 — Cost/perf + migration.** Default crews 3–5 personas; `single_pass`
+  fallback always available; document the token/latency cost. **Default by trigger
+  point:** multi-agent team at `pre_promotion`/`pre_merge` gates; **`single_pass`
+  (advisory) at `on_author`** — so existing plugin users see no write-time cost
+  surprise, and the richer review kicks in only at gates. The plugin behavior
+  change (single-pass audit → team-at-gates) is documented in its CHANGELOG.
 - **D6 — Conformance.** The framework owns *structure* (crew map valid against the
   8 layers; persona-output + report schema). It does **not** assert LLM output
   content. A conformance check validates `REVIEW_CREWS.yaml` (layers ⊆ the 8;
   personas ⊆ the defined set) — mirrors `test_adaptation`.
+- **D7 — Scoring / conflict / gate policy** (see "Scoring, conflicts & the gate").
+  Weighted-average lens scores with per-layer persona weights; unresolved P0 ⇒
+  fail, P1 ⇒ capped below gate; conflicts → max-severity + union, contested items
+  surfaced. The **gate decision is the deterministic `sdd_doc_lint` floor + no
+  unresolved P0/P1**; the LLM score is advisory (reproducibility answer).
+- **D8 — Adaptation knob.** Add a `review_mode` knob (`team` | `single_pass`) to
+  `ADAPTATION_SURFACE.yaml` so a consuming project tunes review depth/cost without
+  forking. Extending the closed knob set is a deliberate spec change (updates
+  `test_adaptation`). *(Recommend; folds into Phase 0.)*
 
 ## Step sequence (phased; sequenced PRs)
 
-1. **Confirm D1–D6.**
-2. **Phase 0 — spec** (`framework/`): `REVIEW_TEAM.md` + `REVIEW_CREWS.yaml` +
-   persona-output/report schema; register in governance README + `test_governance`;
-   add the crew-map conformance check; version bump + CHANGELOG. *(Own PR.)*
+1. **Confirm D1–D8.**
+2. **Phase 0 — spec** (`framework/`): `REVIEW_TEAM.md` (personas, the three
+   operations, blackboard, scoring/conflict/gate policy, resilience+security) +
+   `REVIEW_CREWS.yaml` (per-layer/operation crews + persona weights + default mode)
+   - the persona-output/report **JSON schema** (incl. `coverage`); add the
+   `review_mode` knob to `ADAPTATION_SURFACE.yaml`; register in governance README +
+   `test_governance`; add the crew-map + adaptation-knob conformance checks; version
+   bump + CHANGELOG. *(Own PR.)*
 3. **Phase 1 — Hermes adapter** (after Phase 0): align `persona_mappings.yaml`,
    `persona_output_parser`, `saga_reducer`, and the `UCR_*`/`UCRem_*` report shape
-   to the framework schema; document the mapping. Mostly *conform existing code*.
+   to the framework schema (incl. coverage + the weighted/capped score); document
+   the mapping. Mostly *conform existing code*.
 4. **Phase 2 — plugin adapter** (after Phase 0): a `review-team` mechanism —
    `pm-orchestrator`/`doc-<layer>-audit` fans out the crew as subagents writing to
-   the `.aidoc/review/` blackboard; add the `adversary` + `synthesizer` agents;
-   wire `-audit`/`-fixer`/`-autopilot` to use it (with the `single_pass` fallback).
-5. **Phase 3 — parity check + docs**: a fixture-based check that both runners emit
-   the same report schema for a sample artifact; update `docs/PARITY.md`.
+   the git-ignored `.aidoc/review/` blackboard; deterministic reduce + score; add
+   the `adversary` + `synthesizer` agents; wire `-audit` (review), `-fixer`
+   (remediate-team), `-autopilot` (create-team: drafter + review loop), with the
+   `single_pass` fallback and the trigger-point default (team at gates).
+5. **Phase 3 — parity proof + docs**: (a) a deterministic **CI check** that the
+   committed sample **report fixtures** from both runners validate against the
+   framework JSON schema; (b) a **documented manual live-run** comparison (same
+   artifact → both runners → structurally identical report) — live LLM runs are
+   not deterministic, so this is manual, not an automated end-to-end test. Update
+   `docs/PARITY.md`.
 6. **Land** each phase; update CHANGELOG / platform changelogs / HANDOFF.
 
 ## Verification
 
-- Phase 0: conformance green incl. the crew-map check; `spec_gate` green; the spec
-  names personas/blackboard/synthesis without engine tokens (`test_spec_hygiene`).
-- Phase 1: Hermes pytest green; a saga review emits findings matching the
-  framework persona-output schema; `saga_reducer` report maps to the spec report.
+- Phase 0: conformance green incl. the crew-map + `review_mode`-knob checks;
+  `spec_gate` green; the spec names personas/blackboard/synthesis without engine
+  tokens (`test_spec_hygiene`).
+- Phase 1: Hermes pytest green; a saga review emits findings + `coverage` matching
+  the framework persona-output schema; `saga_reducer` score follows the weighted/
+  capped + P0/P1 policy; report maps to the spec report shape.
 - Phase 2: a plugin `doc-<layer>-audit` run dispatches the crew, writes per-persona
-  blackboard slots, and the synthesizer produces the unified report; `single_pass`
-  fallback still works; conformance unaffected (platform change).
-- Phase 3: same sample artifact → structurally identical report from both runners.
+  blackboard slots, the deterministic reduce produces the scored unified report;
+  partial-crew degradation flags coverage; `single_pass` fallback works;
+  conformance unaffected (platform change).
+- Phase 3: report fixtures from both runners pass the framework schema check (CI);
+  manual: same sample artifact → structurally identical report from both runners.
 
 ## Risks
 
@@ -150,6 +240,10 @@ report.
 | R5 | Plugin scope creep (audit+fixer+autopilot × 8 layers) | One shared `review-team` mechanism invoked by the skills, not 24 bespoke rewrites; add lenses once. |
 | R6 | Engine tokens leak into the spec | No `subagent`/`Task`/`mcp`/`saga`/platform names in `framework/`; describe abstractly; run `test_spec_hygiene`. |
 | R7 | GATE-SPEC self-gate (Phase 0) | VERSION + CHANGELOG by construction; FSV match; suite green. |
+| R8 | Non-deterministic panel → flapping gate | Gate = deterministic `sdd_doc_lint` floor + no unresolved P0/P1; LLM score is advisory only (Scoring section, D7). |
+| R9 | Inter-agent prompt injection via the blackboard | Artifact + peer outputs are untrusted data (`SECURITY_REVIEW.md`); blackboard carries only the structured findings schema, not instructions (Resilience & security). |
+| R10 | A persona-agent fails / times out | Reduce proceeds on the returned crew + records `coverage`; below quorum → low-confidence/human-review, never a silent pass (Resilience & security). |
+| R11 | Create/remediate ill-defined (the headline ask) | Explicit team shapes: create = one drafter + review loop; remediate = fixer proposes + lens validates (Operations). |
 
 ## Review log
 
@@ -170,6 +264,35 @@ report.
   checks structure, not LLM content (R3, R6, D6).
 - **Cost.** Added mode tiers (`independent`/`sequential`/`single_pass`) + a
   default-by-trigger-point policy so multi-agent isn't forced everywhere (R1, D5).
+
+### Pass 3 — 2026-05-25 (gap-review hardening)
+
+A critical re-read found ten gaps; all folded in:
+
+- **Create & remediate were unmodeled** (the headline ask was *creation* quality).
+  Added the **Operations** section: create = one **drafter** + the review crew in a
+  draft→review→revise loop; remediate = a **fixer** proposes patches that lenses
+  **validate** — both over the same blackboard (R11).
+- **Scoring/conflict/gate were hand-waved.** Added the **Scoring** section: a
+  deterministic **weighted-average** of lens scores (per-layer persona weights, from
+  the existing Hermes scoring tables), **P0 ⇒ fail / P1 ⇒ capped**; conflicts →
+  **max-severity + union**, contested items surfaced; the **gate is the
+  deterministic `sdd_doc_lint` floor + no unresolved P0/P1**, LLM score advisory —
+  which is also the **reproducibility** answer for a stochastic panel (D7, R8).
+- **Synthesizer conflated reduce vs LLM.** Split into a deterministic **reduce**
+  (gating) + an **advisory narrative** (non-gating), generalizing `saga_reducer`.
+- **No adaptation integration.** Added **D8** — a `review_mode` knob on
+  `ADAPTATION_SURFACE.yaml` so a project tunes review depth/cost.
+- **Partial-failure + injection.** Added **Resilience & security**: coverage +
+  quorum degradation (R10); blackboard-as-untrusted-data per `SECURITY_REVIEW.md`
+  (R9).
+- **Migration.** D5 now pins the trigger-point default (team at gates,
+  `single_pass` advisory at `on_author`) so existing plugin users aren't surprised.
+- **Phase 3 verification** clarified: a deterministic **schema check on report
+  fixtures** (CI) + a **manual live-run** parity comparison (LLM output isn't
+  CI-deterministic) — not an automated end-to-end test.
+- **Blackboard lifecycle**: transient + git-ignored under `.aidoc/review/`.
+- No further findings — implementable pending D1–D8 confirmation.
 
 ### Pass 2 — 2026-05-25
 
