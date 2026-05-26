@@ -185,6 +185,18 @@ report.
   `ADAPTATION_SURFACE.yaml` so a consuming project tunes review depth/cost without
   forking. Extending the closed knob set is a deliberate spec change (updates
   `test_adaptation`). *(Recommend; folds into Phase 0.)*
+- **D9 — No saga for the plugin runner.** The plugin does **not** port Hermes'
+  saga (journal / compensation / retry state-machine). The saga is Hermes'
+  engine-specific durability layer for coordinating its *external* LLM-API fan-out;
+  the plugin's `Task` subagents are managed by the Claude Code harness, so there is
+  nothing to journal or compensate. The plugin instead gets the saga's *guarantees*
+  from the planned `.aidoc/review/<artifact>/<persona>.json` **blackboard** (durable
+  per-persona slots → resume by re-dispatching only missing lenses) + the
+  `coverage`/`quorum` policy (partial-crew degradation → low-confidence/human-review).
+  Forcing a saga onto the plugin would be over-engineering and would fight the
+  runtime; the spec is engine-agnostic (shared contract, per-engine "how").
+  *(Confirmed 2026-05-26; see `plans/DECISIONS.md` D-0005. Locks the Phase 2
+  direction.)*
 
 ## Step sequence (phased; sequenced PRs)
 

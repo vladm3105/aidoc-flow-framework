@@ -10,6 +10,25 @@ graduation.
 
 ---
 
+## D-0005 — No saga for the plugin review runner
+
+- **Date:** 2026-05-26T00:00:00Z
+- **Decision:** The Claude Code plugin's review-team runner will **not** port
+  Hermes' saga (journal / compensation / retry state-machine). It instead relies on
+  the git-ignored `.aidoc/review/<artifact>/<persona>.json` blackboard for durable
+  per-persona slots (resume = re-dispatch only the missing lenses) and the
+  `coverage`/`quorum` policy for partial-crew degradation
+  (→ low-confidence / human-review).
+- **Why:** The saga exists to coordinate Hermes' *external* LLM-API fan-out, which
+  can fail/timeout mid-flight and needs durable orchestration + compensation. The
+  plugin's agents are Claude Code `Task` subagents whose lifecycle the harness
+  manages — there is nothing to journal or compensate. The blackboard already gives
+  the durable-slot/resume property and coverage/quorum gives graceful degradation,
+  so a saga would be over-engineering and would fight the runtime.
+- **Notes:** Consistent with the engine-agnostic spec (shared contract, per-engine
+  "how") and AGENT-TEAM plan **D9**. Locks the Phase 2 direction
+  (blackboard-with-coverage, not a saga port).
+
 ---
 
 ## D-0021 — pre-commit hooks (lint / format / security / pip-audit) + repo cleanup
