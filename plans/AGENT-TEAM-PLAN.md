@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` |
-| Status     | PLANNED — 2026-05-25 (Pass 3 gap-hardened; awaiting decisions D1–D8) |
+| Status     | IN PROGRESS — D1–D8 confirmed; Phase 0 (spec) implemented (spec `0.8.0`, branch `claude/agent-team-plan`); Phases 1–2 (platform adapters) pending |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -293,6 +293,26 @@ A critical re-read found ten gaps; all folded in:
   CI-deterministic) — not an automated end-to-end test.
 - **Blackboard lifecycle**: transient + git-ignored under `.aidoc/review/`.
 - No further findings — implementable pending D1–D8 confirmation.
+
+## Implementation log
+
+### Phase 0 — spec — 2026-05-25 (branch `claude/agent-team-plan`, spec `0.8.0`)
+
+- `framework/governance/REVIEW_TEAM.md` — the engine-agnostic model: personas,
+  blackboard + persona-output contract, modes, the three operations
+  (create/review/remediate), the deterministic weighted/capped scoring + conflict
+  policy with the structural gate as the reproducible floor, synthesis
+  reduce+narrative, resilience (coverage/quorum) + security (untrusted blackboard).
+- `framework/governance/REVIEW_CREWS.yaml` — closed persona set + per-layer
+  `author` + `review` crews with weights (sum 100) + `default_mode: independent`.
+- `ADAPTATION_SURFACE.yaml` — new `review_mode` (`team`|`single_pass`) knob (D8).
+- `tests/conformance/test_review_team.py` — crews ⊆ 8 layers, personas ⊆ set,
+  weights sum 100, modes valid; both governance files in `test_governance`
+  EXPECTED_FILES + the README. Suite **50 → 54**. `spec_gate` green; hygiene clean
+  (no engine tokens). Spec `0.7.1 → 0.8.0` (+ both FSV + 54 skills + CHANGELOG).
+- **Next:** Phase 1 (Hermes *conform* to the schema) then Phase 2 (plugin *build*
+  the review-team mechanism), each cut from `main` after this merges; Phase 3
+  parity proof.
 
 ### Pass 2 — 2026-05-25
 
