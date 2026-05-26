@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` |
-| Status     | IN PROGRESS — D1–D8 confirmed; Phase 0 (spec) implemented (spec `0.8.0`, branch `claude/agent-team-plan`); Phases 1–2 (platform adapters) pending |
+| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) STARTED — scoring/coverage + persona-name mapping landed; rest of Phase 1 + Phases 2–3 pending |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -313,6 +313,21 @@ A critical re-read found ten gaps; all folded in:
 - **Next:** Phase 1 (Hermes *conform* to the schema) then Phase 2 (plugin *build*
   the review-team mechanism), each cut from `main` after this merges; Phase 3
   parity proof.
+
+### Phase 1 — Hermes conform — 2026-05-26 (started, branch `claude/multi-platform-migration-AamWB`)
+
+- **Scoring + coverage + persona-name mapping** (`mcp_server/review/review_scoring.py`
+  - `tests/unit/test_review_scoring.py`, 10 tests): the deterministic weighted/capped
+  readiness score (per-layer `REVIEW_CREWS.yaml` weights, renormalised over lenses
+  that ran; unresolved P0 ⇒ 0, P1 ⇒ capped below gate) + `CoverageReport`
+  (expected/ran/missing, quorum → low-confidence) + the framework↔Hermes persona
+  alias (`chaos_engineer`→`adversary`, `chairperson`→`synthesizer`). Documented in
+  `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. Additive; the working
+  saga/reducer/parser untouched. Conformance 54; ruff clean; reducer/parser/scoring
+  tests green (14).
+- **Remaining Phase 1:** capture `lens_score` in `persona_output_parser`; surface
+  `score` + `coverage` in the saga result + `PERSONA_REVIEW_REPORT`/`UCR_*` shape;
+  reconcile `persona_mappings.yaml` review crews with the framework crews.
 
 ### Pass 2 — 2026-05-25
 

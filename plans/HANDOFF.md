@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 AGENT-TEAM PHASE 1 STARTED (Hermes conform) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. First Phase-1 increment: the
+> deterministic **scoring + coverage** conformance + the **framework↔Hermes
+> persona-name mapping**. New `platforms/hermes/src/mcp_server/review/review_scoring.py`
+> (weighted/capped readiness score from `REVIEW_CREWS.yaml` weights, renormalised
+> over lenses that ran; unresolved P0 ⇒ 0, P1 ⇒ capped below gate; `CoverageReport`
+> with quorum → low-confidence; `FRAMEWORK_PERSONA_ALIASES` `chaos_engineer`→`adversary`,
+> `chairperson`→`synthesizer`) + `tests/unit/test_review_scoring.py` (10) +
+> `docs/architecture/REVIEW_TEAM_CONFORMANCE.md` (persona-output field map + status).
+> Additive — the working saga/reducer/parser untouched. Conformance **54**; ruff clean;
+> reducer/parser/scoring tests green (14); no framework change. **Remaining Phase 1:**
+> capture `lens_score` in `persona_output_parser`; surface `score`+`coverage` in the
+> saga result + `PERSONA_REVIEW_REPORT`/`UCR_*` shape; reconcile `persona_mappings.yaml`
+> review crews with the framework crews (this also resolves the gap-review finding that
+> UCR prompts still title the lens "THE DEVIL'S ADVOCATE"). **Next:** continue Phase 1.
+>
 > **🟢 AUDIT-FIXUPS (WS-A/B/C) DONE — 2026-05-26.** Branch
 > **`claude/multi-platform-migration-AamWB`**. Plan: `plans/AUDIT-FIXUPS-PLAN.md`
 > (2 review passes). Closed the 3 residual findings from the C4 + ID_NAMING audits.
