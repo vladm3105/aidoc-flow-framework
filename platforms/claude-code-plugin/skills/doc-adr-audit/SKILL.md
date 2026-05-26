@@ -73,7 +73,9 @@ and `framework/governance/ID_NAMING_STANDARDS.md`.
 include 2–3 options with cost/fit and rejection reasons; consequences cover
 trade-offs with severity; internal links and template/governance references
 resolve; no downstream (SPEC/TDD/IPLAN) numbers cited before they exist;
-architecture-flow diagram present (use `../charts-flow/SKILL.md`).
+Architecture-Flow section carries the decision/interaction **sequence** diagram
+(`@diagram: sequence-*`, no C4 level) per `DIAGRAM_STANDARDS.md` (use
+`../charts-flow/SKILL.md`).
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.

@@ -141,8 +141,10 @@ checklist against `framework/layers/05_ADR/README.md` and
       removed patterns.
 - [ ] Cumulative tags `@brd @prd @ears @bdd` present; `@adr: ADR-NN` self-tag.
 - [ ] SPEC-Ready score ≥ 90 if status is Accepted.
-- [ ] Diagram contract: architecture-flow diagram present (use
-      `../charts-flow/SKILL.md`); index updated; no broken links.
+- [ ] Diagram contract: the Architecture-Flow section carries the decision /
+      interaction **sequence** diagram (`@diagram: sequence-*`) per
+      `framework/governance/DIAGRAM_STANDARDS.md` — ADR is the decision bridge, so
+      no C4 level (use `../charts-flow/SKILL.md`); index updated; no broken links.
 
 | Code | Meaning | Severity |
 |------|---------|----------|
