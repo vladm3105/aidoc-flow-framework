@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AUDIT-FIXUPS                   |
 | Depends on | The diagram-conformance + legacy-naming-purge commits on `claude/multi-platform-migration-AamWB`; source of truth `legacy-ucx-v3.2-read-only/ucx_flow_v3` (8 layers; element IDs `{TYPE}.{doc}.{section}.{hash}`) |
-| Status     | PLANNED — 2026-05-26 |
+| Status     | DONE — 2026-05-26 (WS-A/B/C implemented; see Implementation log) |
 | Feeds      | Full agent conformance to the C4 diagram model + the v3.2 ID_NAMING convention across both platforms; unblocks AGENT-TEAM Phase 1 |
 
 ## Objective
@@ -174,3 +174,25 @@ Per source of truth, the framework is **8 layers only**; there is no available
   excluded, so WS-B has no lint gate — but internal links/anchors must still
   resolve; added to verification.
 - No further findings — implementable.
+
+## Implementation log
+
+### 2026-05-26 — all three workstreams landed (branch `claude/multi-platform-migration-AamWB`)
+
+- **WS-A** (`feat(framework):`): `ADR-TEMPLATE.yaml` now requires the decision
+  `sequenceDiagram` (intent header + `@diagram: sequence-*`), flowchart optional;
+  quality criteria updated. GATE-SPEC ripple: `framework/VERSION` + both
+  `FRAMEWORK_SPEC_VERSION` + 54 skill `framework_spec_version` → `0.8.1`; CHANGELOG.
+  `spec_gate` green ("VERSION + CHANGELOG updated, OK"); conformance 54.
+- **WS-B** (`docs(hermes):`): purged the v2/14-layer "available" narrative from the
+  3 `sdd-orchestrator/root-docs` (README + 2 MULTI_PROJECT guides) — removed the
+  legacy workflow, `SYS/REQ/CTR/TSPEC/TASKS`, duplicate `framework/` rows, and
+  `07_REQ`/`docs/REQ` setup; kept a one-line "superseded" note + the accurate
+  migration changelog. Verified by grep.
+- **WS-C** (`docs(hermes):`): `UCC_PERSONAS.md` #9 `DEVILS_ADVOCATE`→`CHAOS_ENGINEER`,
+  #11 `INTEGRATION_EXPERT`→`INTEGRATION_LEAD` + collaboration/UCRem fixer-crew refs,
+  matching the runtime persona keys. Conformance 54; Hermes prompt/persona tests
+  green (52). The `skills/README` rename-changelog left as history.
+- **Verification:** conformance 54 green throughout; spec_gate green (WS-A);
+  Hermes prompt/persona tests 52 passed; no residual legacy taxonomy / persona-name
+  drift in the agent-facing files.

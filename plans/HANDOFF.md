@@ -1,5 +1,22 @@
 # Session Handoff
 
+> **🟢 AUDIT-FIXUPS (WS-A/B/C) DONE — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. Plan: `plans/AUDIT-FIXUPS-PLAN.md`
+> (2 review passes). Closed the 3 residual findings from the C4 + ID_NAMING audits.
+> **WS-A** (framework GATE-SPEC, spec **0.8.0→0.8.1**): `ADR-TEMPLATE.yaml` now
+> *requires* the decision `sequenceDiagram` (`@diagram: sequence-*`; flowchart
+> optional), matching `DIAGRAM_STANDARDS.md`; bumped both FSV + 54 skills + CHANGELOG;
+> `spec_gate` green. **WS-B** (platform docs): purged the v2/14-layer "available"
+> narrative (`SYS/REQ/CTR/TSPEC/TASKS`, legacy workflow, `07_REQ` setup) from the 3
+> `sdd-orchestrator/root-docs`, leaving a one-line "superseded" note + accurate
+> migration changelog. **WS-C** (platform docs): `UCC_PERSONAS.md`
+> `DEVILS_ADVOCATE→CHAOS_ENGINEER`, `INTEGRATION_EXPERT→INTEGRATION_LEAD` (+ UCRem
+> fixer crew) to match runtime persona keys. Conformance **54**; Hermes prompt/persona
+> tests green; no residual legacy. **Deferred by design:** the framework
+> `adversary`/`synthesizer` ↔ Hermes `chaos_engineer`/`chairperson` name mapping is
+> **AGENT-TEAM Phase 1**. **Next:** AGENT-TEAM Phase 1 (Hermes persona-output /
+> saga_reducer schema conform).
+>
 > **🟢 HERMES PROMPT LEGACY-NAMING PURGE (ID_NAMING / traceability) — 2026-05-26.**
 > Branch **`claude/multi-platform-migration-AamWB`**. On the directive "agents must
 > use the `ID_NAMING_STANDARDS` convention; no mix with legacy naming" — with v3.2
