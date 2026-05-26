@@ -91,6 +91,9 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 - **`../doc-naming/SKILL.md`** — ID / naming authority (`TYPE-NN`, `TYPE.NN.SS.xxxx`).
 - **`../doc-ref/SKILL.md`** — free-format reference documents (BRD-REF / ADR-REF).
 - **`../doc-review/SKILL.md`** — cross-cutting quality review (typos, links, terms).
+- **`../review-team/SKILL.md`** — multi-persona review-team mode for the
+  `-audit`/`-fixer`/`-autopilot` operations at gates (crew → blackboard → scored
+  report); `single_pass` fallback otherwise.
 - **`../doc-validator/SKILL.md`** — cross-document validation & traceability gaps.
 - **`../trace-check/SKILL.md`** — bidirectional traceability validation.
 - **`../charts-flow/SKILL.md`** — Mermaid diagrams and file management.

@@ -16,6 +16,20 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Review-team mode (AGENT-TEAM Phase 2)** — a shared `review-team` skill plus
+  two review-lens agents (`adversary`, `synthesizer`): the plugin's binding of the
+  engine-agnostic `framework/governance/REVIEW_TEAM.md` model. The crew fans out as
+  `Task` subagents that deposit findings to a **git-ignored `.aidoc/review/`
+  blackboard**; the `synthesizer` reduces the slots (dedup by `location`+`id`, max
+  severity, weighted/capped score from `REVIEW_CREWS.yaml`, coverage/quorum) into one
+  report. Per `../../plans/DECISIONS.md` **D-0005** the plugin uses the blackboard +
+  coverage (durable per-persona slots), **not** a saga. The gate stays the
+  deterministic structural floor + "no unresolved P0/P1"; the score is advisory.
+  **Behavior:** the `doc-*-audit`/`-fixer`/`-autopilot` skills gain a *team* mode
+  (dispatched by `pm-orchestrator` via `review-team`) at gates
+  (`pre_promotion`/`pre_merge`); `single_pass` — today's single-pass audit — stays
+  the advisory `on_author` default and the no-subagent fallback, selected by the
+  `review_mode` knob.
 - **CHG change-management skills + onboarding/gate utilities (task P3-T7)** —
   six new skills, bringing the set to **52**:
   - `doc-chg` family (base + `-autopilot` + `-audit` + `-fixer`) — author and

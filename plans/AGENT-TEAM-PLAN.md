@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` (now at `0.8.1`) |
-| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) COMPLETE; Phases 2 (plugin build) + 3 (parity) pending |
+| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) + Phase 2 (plugin build) COMPLETE; Phase 3 (parity proof) pending |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -437,3 +437,23 @@ Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
         tests.
   - Verification: 49 review unit tests green; conformance 54; ruff clean. Documented
     in `platforms/hermes/docs/architecture/REVIEW_TEAM_CONFORMANCE.md`.
+
+### Phase 2 — plugin build — 2026-05-26 (branch `claude/multi-platform-migration-AamWB`)
+
+- **review-team mechanism** (`skills/review-team/SKILL.md`) + two review-lens agents
+  (`agents/adversary.md`, `agents/synthesizer.md`): the plugin's binding of
+  `REVIEW_TEAM.md`. The crew fans out as `Task` subagents → git-ignored
+  `.aidoc/review/` blackboard slots → `synthesizer` reduces (dedup `location`+`id`,
+  max severity, weighted/capped score from `REVIEW_CREWS.yaml`, coverage/quorum) →
+  one report. Lens→agent mapping table; `independent` default + `single_pass`
+  fallback; trigger-point default (team at gates, `single_pass` advisory at
+  `on_author`); partial-crew degradation + untrusted-blackboard security. D-0005:
+  blackboard, not a saga.
+- **Wiring:** `pm-orchestrator` dispatches the team at gates; `doc-flow` lists it;
+  the skill documents the `-audit`/`-fixer`/`-autopilot` team mode (one shared
+  mechanism, not 24 rewrites — R5). `.gitignore` ignores `.aidoc/review/`; plugin
+  CHANGELOG noted.
+- Verification: `plm_lint` clean corpus-wide; markdownlint clean; conformance 54;
+  no framework change.
+- **Next:** Phase 3 — parity proof (report-fixture schema check + manual live-run;
+  `docs/PARITY.md`).

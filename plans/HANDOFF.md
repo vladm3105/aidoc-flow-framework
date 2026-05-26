@@ -1,5 +1,22 @@
 # Session Handoff
 
+> **🟢 AGENT-TEAM PHASE 2 COMPLETE (plugin build) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. Built the plugin's **review-team**
+> mechanism (the plugin's binding of `framework/governance/REVIEW_TEAM.md`):
+> `skills/review-team/SKILL.md` + two review-lens agents `agents/adversary.md` &
+> `agents/synthesizer.md`. The crew fans out as Claude Code `Task` subagents writing
+> to the **git-ignored `.aidoc/review/` blackboard**; the `synthesizer` reduces the
+> slots (dedup `location`+`id`, max severity, weighted/capped score from
+> `REVIEW_CREWS.yaml`, coverage/quorum) into one report. `independent` default +
+> `single_pass` fallback; team-at-gates / `single_pass`-advisory-at-`on_author`
+> (`review_mode` knob). **D-0005: blackboard + coverage, no saga port.** Wiring:
+> `pm-orchestrator` dispatches the team, `doc-flow` lists it, the skill documents the
+> `-audit`/`-fixer`/`-autopilot` team mode (one shared mechanism, not 24 rewrites);
+> `.gitignore` ignores `.aidoc/review/`; plugin CHANGELOG noted; lens→agent mapping
+> table covers the framework crews. `plm_lint` clean corpus-wide; markdownlint clean;
+> conformance 54; no framework change. **Next:** Phase 3 — parity proof (report-fixture
+> schema check from both runners + a documented manual live-run; update `docs/PARITY.md`).
+>
 > **🟢 AGENT-TEAM PHASE 1 COMPLETE (Hermes conform) — 2026-05-26.** Branch
 > **`claude/multi-platform-migration-AamWB`**. All 5 Phase-1 steps landed (commits
 > `4578e63` scoring, `6e5c957` parser+saga+resilience, + report/crew/retitle):
