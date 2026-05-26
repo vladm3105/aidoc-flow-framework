@@ -12,6 +12,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.7.1 → 0.8.0** (minor) — AGENT-TEAM Phase 0: the
+  engine-agnostic **review-team** model. New `framework/governance/REVIEW_TEAM.md`
+  (multi-persona crews + a hub blackboard + the persona-output contract + a
+  deterministic weighted/capped scoring & conflict policy with the structural gate
+  as the reproducible floor + create/review/remediate shapes + resilience/security)
+  and `framework/governance/REVIEW_CREWS.yaml` (per-layer crews + scoring weights +
+  default mode). Adds a `review_mode` (`team`|`single_pass`) knob to
+  `ADAPTATION_SURFACE.yaml`. New `tests/conformance/test_review_team.py` validates
+  the crews (layers ⊆ 8, personas ⊆ the closed set, weights sum to 100); both new
+  governance files registered in the README + `test_governance` (suite now 54).
+  Engine-agnostic — each platform binds the personas to its own agent runtime
+  (Phase 1 Hermes conform, Phase 2 plugin build). Both `FRAMEWORK_SPEC_VERSION`
+  files + the 54 plugin skills' `framework_spec_version` re-synced.
 - Framework spec **0.7.0 → 0.7.1** (patch) — documentation consistency pass
   (post-EARS-changes review). Corrected three 3-segment element-ID examples in
   `EARS-TEMPLATE.yaml` to the canonical 4-segment form (`TYPE.NN.SS.xxxx`): the

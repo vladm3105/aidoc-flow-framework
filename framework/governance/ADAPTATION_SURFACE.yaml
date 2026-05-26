@@ -30,7 +30,7 @@ consumer_roles:
   scaffolding: "creates the project structure"
 
 # -----------------------------------------------------------------------------
-# Knobs (v1 = 4). `id_format` is deferred — see ADAPTATION.md §8.
+# Knobs (5). `id_format` is deferred — see ADAPTATION.md §8.
 # -----------------------------------------------------------------------------
 knobs:
   - name: active_layers
@@ -63,6 +63,16 @@ knobs:
     constraint: >
       Applied to generated prose only. Audits do not enforce terminology in v1.
     default: "{}"
+
+  - name: review_mode
+    type: "enum(team, single_pass)"
+    consumers: [authoring, audit]
+    constraint: >
+      Selects review/remediation depth (see REVIEW_TEAM.md): `team` runs the
+      multi-persona crew; `single_pass` runs one agent applying every lens. Never
+      weakens the gate — the deterministic structural floor plus no-unresolved-
+      P0/P1 holds in either mode.
+    default: "team"
 
 # -----------------------------------------------------------------------------
 # Layer split — which layers a project may opt out of.
