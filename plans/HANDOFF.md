@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 AGENT-TEAM PHASE 3 COMPLETE — parity proof; ALL PHASES DONE — 2026-05-26.**
+> Branch **`claude/multi-platform-migration-AamWB`**. Added the deterministic parity
+> check: a shared unified-report schema
+> (`tests/conformance/fixtures/review/review_report.schema.json`), sample report
+> fixtures from **both** runners (`hermes_BRD-01_report.json`,
+> `plugin_BRD-01_report.json`), and `tests/conformance/test_review_report_parity.py`
+> (dependency-free validator: each fixture validates against the schema; the two share
+> the report shape; `passed == structural_pass AND no_blocking`). Conformance **54 →
+> 57**. `docs/PARITY.md` gains a review-team comparison + the parity proof (CI +
+> documented **manual live-run** procedure, since live LLM output isn't
+> CI-deterministic). **AGENT-TEAM Phases 0–3 are all complete** (spec → Hermes conform
+> → plugin build → parity). Platform/test-only; no framework spec change.
+> **Standing user-only carry-overs:** branch protection on `framework/**`; push
+> `framework/v0.x` + `hermes/v0.x` + `claude-code-plugin/v0.x` release tags from a
+> local clone. **Open:** land this branch (PR) when ready.
+>
 > **🟢 AGENT-TEAM PHASE 2 COMPLETE (plugin build) — 2026-05-26.** Branch
 > **`claude/multi-platform-migration-AamWB`**. Built the plugin's **review-team**
 > mechanism (the plugin's binding of `framework/governance/REVIEW_TEAM.md`):

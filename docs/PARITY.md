@@ -106,6 +106,44 @@ The **write-time** point is advisory (a nudge, never blocks the edit); the
 readiness *score* stays the LLM `-audit` skill / Hermes scorer — `sdd_doc_lint`
 is the fast structural subset beneath it.
 
+## Review team (multi-persona review)
+
+Both platforms run the engine-agnostic **review-team** model
+(`framework/governance/REVIEW_TEAM.md` + `REVIEW_CREWS.yaml`): a per-layer crew of
+persona-lenses + a synthesizer over a shared blackboard, producing one **unified
+review report** (advisory weighted/capped readiness score, coverage, the
+deterministic gate, and reduced findings).
+
+| Concern | Plugin | Hermes |
+|---------|--------|--------|
+| Crew runtime | `Task` subagents (`review-team` skill; lenses incl. `adversary`, `synthesizer`) | `saga_orchestrator` per-persona executor branches |
+| Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
+| Persona names | framework names natively (`adversary`, `synthesizer`) | runtime names (`chaos_engineer`, `chairperson`) + alias map |
+| Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
+| Resilience | partial-crew → coverage; below quorum → low-confidence (D-0005: blackboard, no saga) | saga retries/compensation; degrade above quorum, escalate below |
+| Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
+
+Both bind to the **same** crew map, persona-output contract, scoring/gate policy,
+and report shape — so a BRD reviewed by either gets the same lenses and a
+structurally identical report.
+
+### Parity proof
+
+- **Deterministic (CI):** `tests/conformance/test_review_report_parity.py` validates
+  committed sample report fixtures from **both** runners
+  (`tests/conformance/fixtures/review/{hermes,plugin}_BRD-01_report.json`) against the
+  shared `review_report.schema.json`, and asserts they share the report structure plus
+  the deterministic-gate invariant (`passed == structural_pass AND no_blocking`).
+- **Manual (live run):** the end-to-end "same artifact → identical report" check is
+  manual, since live LLM output is not CI-deterministic. Procedure:
+  1. Pick one artifact (e.g. a real `BRD-01`).
+  2. Run it through the plugin review-team (`review-team` at a gate) and through the
+     Hermes saga review.
+  3. Normalise each output to the unified report shape; validate both against
+     `review_report.schema.json` (both must pass).
+  4. Confirm structural identity (same keys, coverage shape, gate fields) and that
+     the high-severity findings substantively overlap. Record the run.
+
 ## Platform-specific extras
 
 ### Hermes-only

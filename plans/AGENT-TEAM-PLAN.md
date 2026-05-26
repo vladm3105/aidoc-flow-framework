@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` (now at `0.8.1`) |
-| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) + Phase 2 (plugin build) COMPLETE; Phase 3 (parity proof) pending |
+| Status     | COMPLETE — Phase 0 (spec, `0.8.x`) merged; Phase 1 (Hermes conform), Phase 2 (plugin build), Phase 3 (parity proof) all landed. Deterministic parity in CI; live-run is a documented manual step (`docs/PARITY.md`). |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -457,3 +457,20 @@ Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
   no framework change.
 - **Next:** Phase 3 — parity proof (report-fixture schema check + manual live-run;
   `docs/PARITY.md`).
+
+### Phase 3 — parity proof — 2026-05-26 (branch `claude/multi-platform-migration-AamWB`)
+
+- **Shared report schema** `tests/conformance/fixtures/review/review_report.schema.json`
+  — the unified review-report contract (target, `review_mode`, advisory
+  `readiness_score`, `coverage`, deterministic `gate`, reduced `findings`).
+- **Both-runner fixtures** `hermes_BRD-01_report.json` + `plugin_BRD-01_report.json`
+  — independent sample reports in the shared shape.
+- **Deterministic CI** `tests/conformance/test_review_report_parity.py` (3 tests,
+  dependency-free validator): each runner fixture validates against the schema; the
+  two share the report structure; `passed == structural_pass AND no_blocking` (score
+  never gates). Conformance **54 → 57**.
+- **`docs/PARITY.md`** — added the review-team row-by-row comparison + the parity
+  proof (deterministic CI + the manual live-run procedure, since live LLM output is
+  not CI-deterministic).
+- AGENT-TEAM Phases 0–3 complete. Standing user-only carry-overs unchanged
+  (branch protection; pushing release tags from a local clone).

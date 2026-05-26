@@ -1,0 +1,22 @@
+{
+  "target_artifact_id": "BRD-01",
+  "review_mode": "team",
+  "readiness_score": 94.0,
+  "coverage": {
+    "ran": ["adversary", "architect", "auditor", "business_analyst"],
+    "missing": [],
+    "coverage_ratio": 1.0,
+    "low_confidence": false
+  },
+  "gate": {"structural_pass": true, "no_blocking": true, "passed": true},
+  "findings": [
+    {
+      "id": "b4d8",
+      "priority": "P2",
+      "location": "BRD.01.06.1dbc",
+      "message": "A risk row omits its mitigation owner",
+      "recommendation": "Assign an owner to each risk row",
+      "personas": ["auditor"]
+    }
+  ]
+}
