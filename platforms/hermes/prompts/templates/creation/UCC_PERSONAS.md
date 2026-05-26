@@ -186,7 +186,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 
 ---
 
-### 9. DEVILS_ADVOCATE
+### 9. CHAOS_ENGINEER
 
 **Focus**: Edge cases, failure modes, assumptions
 
@@ -230,7 +230,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 
 ---
 
-### 11. INTEGRATION_EXPERT
+### 11. INTEGRATION_LEAD
 
 **Focus**: Dependencies, contracts, interfaces
 
@@ -274,7 +274,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 1. **Lead Persona First**: The primary persona for the layer initiates content
 2. **Expert Review**: Each persona reviews sections in their domain
 3. **Cross-Validation**: Chaos Engineer challenges all assumptions
-4. **Integration Check**: Integration Expert validates cross-references
+4. **Integration Check**: Integration Lead validates cross-references
 5. **Final Synthesis**: All personas approve final content
 
 ### Quality Gates

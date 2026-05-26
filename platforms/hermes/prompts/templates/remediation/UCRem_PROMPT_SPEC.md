@@ -89,7 +89,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Expert Fixer, Chaos Engineer, Chairperson]
+  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Lead Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
