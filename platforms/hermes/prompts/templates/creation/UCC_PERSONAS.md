@@ -28,7 +28,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Non-functional requirements are addressed
 - Architecture decisions are justified
 
-**Layer Assignments**: L1 BRD, L2 PRD, L5 ADR, L6 SYS, L8 CTR, L9 SPEC
+**Layer Assignments**: L1 BRD, L2 PRD, L5 ADR, L6 SPEC, L8 IPLAN
 
 ---
 
@@ -94,7 +94,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Dependencies are documented
 - Risks have mitigations
 
-**Layer Assignments**: L1 BRD, L2 PRD, L3 EARS, L4 BDD, L5 ADR, L6 SYS, L7 REQ, L8 CTR, L9 SPEC, L10 TSPEC
+**Layer Assignments**: L1 BRD, L2 PRD, L3 EARS, L4 BDD, L5 ADR, L6 SPEC, L7 TDD, L8 IPLAN
 
 ---
 
@@ -138,7 +138,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Test coverage is comprehensive
 - Quality metrics are defined
 
-**Layer Assignments**: L2 PRD, L3 EARS, L4 BDD, L6 SYS, L7 REQ, L10 TSPEC
+**Layer Assignments**: L2 PRD, L3 EARS, L4 BDD, L6 SPEC, L7 TDD
 
 ---
 
@@ -204,7 +204,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Edge cases are documented
 - Gaps are flagged
 
-**Layer Assignments**: L3 EARS, L4 BDD, L5 ADR, L6 SYS
+**Layer Assignments**: L3 EARS, L4 BDD, L5 ADR, L6 SPEC
 
 ---
 
@@ -226,7 +226,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Operations are considered
 - SLIs/SLOs are defined
 
-**Layer Assignments**: L4 BDD, L5 ADR, L6 SYS, L9 SPEC, L10 TSPEC
+**Layer Assignments**: L4 BDD, L5 ADR, L6 SPEC, L7 TDD, L8 IPLAN
 
 ---
 
@@ -248,7 +248,7 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 - Interfaces are versioned
 - Coupling is minimized
 
-**Layer Assignments**: L6 SYS, L7 REQ, L8 CTR, L9 SPEC
+**Layer Assignments**: L6 SPEC, L8 IPLAN
 
 ---
 
@@ -261,11 +261,9 @@ The **Unified Context Creation (UCC)** system uses multiple expert personas to c
 | L3 | EARS | requirements_specialist, tech_lead, qa_lead, chaos_engineer |
 | L4 | BDD | qa_lead, tech_lead, chaos_engineer, operator |
 | L5 | ADR | architect, tech_lead, strategist, chaos_engineer, operator |
-| L6 | SYS | architect, tech_lead, operator, integration_expert |
-| L7 | REQ | requirements_specialist, tech_lead, integration_expert |
-| L8 | CTR | architect, tech_lead, integration_expert |
-| L9 | SPEC | tech_lead, architect, operator, integration_expert |
-| L10 | TSPEC | qa_lead, tech_lead, operator |
+| L6 | SPEC | architect, tech_lead, operator, integration_lead |
+| L7 | TDD | qa_lead, tech_lead, operator |
+| L8 | IPLAN | tech_lead, architect, operator, integration_lead, qa_lead |
 
 ---
 

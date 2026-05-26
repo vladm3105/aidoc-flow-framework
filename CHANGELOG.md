@@ -10,6 +10,20 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+
+- Purged the pre-migration legacy taxonomy from the Hermes prompt templates so
+  the creation/review/remediation agents follow the v3.2 source-of-truth naming
+  convention (`ucx_flow_v3`). Removed the 10/12-layer `SYS / REQ / CTR / TSPEC /
+  TASKS` model (the framework is the 8 layers BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
+  from `UCC_OUTPUT_SCHEMA.md`, `UCC_PERSONAS.md`, and the `UCC_/UCR_/UCRem_`
+  prompts; corrected `SPEC` from Layer 9 → 6 and the upstream/downstream chains;
+  and converted legacy element-ID forms to the canonical 4-segment
+  `{TYPE}.{doc}.{section}.{hash}` (`TYPE.NN.SS.xxxx`) — dropping the type-code +
+  sequence variant (`NN.TT.SS`) and 3-segment forms (`ADR.{doc}.{seq}`). Renamed
+  PRD's legacy `SYS-Ready` score to `SPEC-Ready`. Platform-only; no framework
+  spec change.
+
 ### Changed
 
 - Platform agents now apply the framework's **C4 + DFD + sequence** diagram model

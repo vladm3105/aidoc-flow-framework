@@ -60,7 +60,7 @@ dependencies:
     - "@spec: SPEC.01.XX"
   external:
     - name: "{External Service}"
-      contract: "@ctr: CTR-XX"
+      contract: "{interface / data contract}"
 
 configuration:
   - name: "{Config Name}"
@@ -93,13 +93,13 @@ version: "1.0.0"
 status: draft
 tags:
   - spec
-  - layer-9
+  - layer-6
 custom_fields:
   document_type: spec
   artifact_type: SPEC
-  layer: 9
-  upstream_artifacts: [REQ-XX, CTR-XX]
-  downstream_artifacts: [TSPEC-XX, TASKS-XX]
+  layer: 6
+  upstream_artifacts: [ADR-XX]
+  downstream_artifacts: [TDD-XX]
 ---
 ```
 
@@ -139,7 +139,7 @@ algorithm: |
 
 ## Quality Checklist
 
-- [ ] All REQ requirements have specs
+- [ ] All upstream requirements (EARS) have specs
 - [ ] Algorithms are step-by-step
 - [ ] Error handling is comprehensive
 - [ ] Dependencies are documented
@@ -151,7 +151,7 @@ algorithm: |
 
 ## BEGIN CREATION
 
-Create technical specifications from REQ and CTR.
+Create technical specifications from the ADR (and cumulative EARS/BDD).
 
 **CRITICAL REMINDERS**:
 
@@ -164,4 +164,4 @@ Create technical specifications from REQ and CTR.
 
 ## DOCUMENT CONTENT FOLLOWS
 
-[Template, REQ/CTR upstream will be appended here]
+[Template, ADR upstream will be appended here]

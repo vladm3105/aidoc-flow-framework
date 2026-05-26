@@ -1,5 +1,30 @@
 # Session Handoff
 
+> **🟢 HERMES PROMPT LEGACY-NAMING PURGE (ID_NAMING / traceability) — 2026-05-26.**
+> Branch **`claude/multi-platform-migration-AamWB`**. On the directive "agents must
+> use the `ID_NAMING_STANDARDS` convention; no mix with legacy naming" — with v3.2
+> `legacy-ucx-v3.2-read-only/ucx_flow_v3` confirmed as the **source of truth** (it
+> is the migration source; the migration changed *tooling* UCX→plugin+Hermes, not
+> the spec; verified `ucx_flow_v3` = the 8 layers `01_BRD…08_IPLAN`, no
+> `SYS/REQ/CTR/TSPEC`, element IDs `{TYPE}.{doc}.{section}.{hash}`). **Audit:** plugin
+> agents/skills clean (legacy mentions are intentional *banned/removed* refs); Hermes
+> personas clean; **Hermes prompt templates were heavily contaminated** with the
+> pre-migration 10/12-layer `SYS→REQ→CTR→SPEC→TSPEC→TASKS` taxonomy + legacy
+> element-ID forms. **Fixed (11 prompt files, platform-only, no spec change):**
+> `UCC_OUTPUT_SCHEMA.md` (rewrote L6–L10 → L6 SPEC / L7 TDD / L8 IPLAN), `UCC_PERSONAS.md`
+> (layer→persona map + assignments), `UCC_PROMPT_{BRD,PRD,ADR,SPEC}`, `UCR_PROMPT_ADR`,
+> `UCRem_PROMPT_{BRD,PRD,ADR,SPEC}`: SPEC L9→L6, upstream/downstream chains,
+> `@sys/@ctr`→`@spec`, `SYS-Ready`→`SPEC-Ready`, and the **type-code+sequence**
+> element-ID scheme (`PRD.NN.TT.SS`, `BRD.{doc}.{type_code}.{seq}`, 3-segment
+> `ADR.{doc}.{seq}`) → canonical `{TYPE}.{doc}.{section}.{hash}` (hash, not seq —
+> per CM "no sequential numbering"). Conformance **54**; Hermes prompt/persona tests
+> green (52+19). **Flagged (not fixed — lower-priority docs):** `sdd-orchestrator/root-docs/README.md`
+> ("v2 14-layer … remain available" + a legacy workflow line) and `MULTI_PROJECT_*`
+> guides still carry legacy layer references; persona display-name drift
+> (`integration_expert`→`integration_lead`, `devils_advocate`→`chaos_engineer/adversary`).
+> The `sdd-orchestrator` "What Was Cut from v2" table + `references/*` ban-guards are
+> **correct** (document removals) — leave. **Next:** AGENT-TEAM Phase 1.
+>
 > **🟢 AGENT DIAGRAM-CONFORMANCE (C4 + DFD + sequence) — 2026-05-26.** Branch
 > **`claude/multi-platform-migration-AamWB`**. On the directive "make sure agents
 > use the framework's C4/sequence/dataflow model — nothing missed, plugin + Hermes":

@@ -68,22 +68,24 @@ custom_fields:
 
 ## Element ID Convention
 
-Assign IDs to all requirements using this format:
+Assign IDs to all requirements using the canonical 4-segment format
+(per `ID_NAMING_STANDARDS.md`):
 
 ```
-BRD.{doc_num}.{type_code}.{sequence}
+BRD.{doc_num}.{section_id}.{hash}
 ```
 
-Type codes:
+Where `section_id` is the two-digit section the element lives in and `hash` is
+the first 4 hex of SHA256. Requirement types map to their sections:
 
-- `01` = Functional requirement
-- `02` = Non-functional requirement
-- `03` = Constraint
-- `04` = Assumption
-- `05` = Security requirement
-- `06` = Integration requirement
+- Functional requirement → section 04 (Business Requirements)
+- Non-functional requirement → section 04
+- Constraint → section 05 (Constraints & Assumptions)
+- Assumption → section 05
+- Security requirement → section 04
+- Integration requirement → section 04
 
-Example: `BRD.01.110d` = BRD-01, functional requirement #15
+Example: `BRD.01.04.110d` = a functional requirement element in section 04 of BRD-01
 
 ---
 
@@ -92,8 +94,8 @@ Example: `BRD.01.110d` = BRD-01, functional requirement #15
 Use these tags for traceability:
 
 ```
-@brd: BRD.01.110d      # Reference to this BRD element
-@prd: PRD.01.01.XX      # Forward reference to PRD
+@brd: BRD.01.04.110d   # Reference to this BRD element
+@prd: PRD.01.09.1dbc   # Forward reference to a PRD element
 @adr: ADR-XX            # Architecture decision reference
 @ref: REF-XX            # Reference document
 ```
