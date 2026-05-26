@@ -84,6 +84,32 @@ Flag designs that claim to achieve all three simultaneously.
 - Documented trade-offs
 - Alignment with ADR decisions
 
+## Diagram Review — C4, DFD & Sequence
+
+Per `framework/governance/DIAGRAM_STANDARDS.md` you own the visual-model review.
+All diagrams are **Mermaid-only**; each required diagram block carries an intent
+header and an `@diagram:` machine tag. Verify the required model is present and
+**correctly leveled** for the layer under review (C4 level = DFD level):
+
+| Layer | Required model | Tags |
+|-------|----------------|------|
+| **BRD (L1)** | C4 Context + DFD L1 | `@diagram: c4-l1`, `@diagram: dfd-l1` |
+| **PRD (L2)** | C4 Container + DFD L2 + key sequence (explicit error path) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync` |
+| **ADR (L5)** | Decision sequence (no C4 level — decision bridge) | `@diagram: sequence-*` |
+| **SPEC (L6)** | C4 Component + DFD L3 + Component Diagram Contract + sequence paths for critical integrations/error handling | `@diagram: c4-l3`, `@diagram: dfd-l3`, `@diagram: sequence-*` |
+| **Code** | C4 L4 ownership declarations aligned with the SPEC's C4-L3 references | `@diagram: c4-l4` |
+
+Flag as findings:
+
+- A mandatory diagram for the layer is missing or **mis-leveled** (e.g. a
+  Container view where a Context view is required) — **P0/P1**.
+- A diagram block missing its intent header or `@diagram:` tag — **P1**.
+- A missing trust-boundary annotation, or a sequence with no exception-path
+  branch — **P1/P2**.
+- SPEC embedding C4-L4 code/class diagrams as mandatory content — SPEC stays at
+  C4-L3 and references the downstream TDD/IPLAN where C4-L4 is implemented.
+- Any non-Mermaid diagram (ASCII art, manual arrows) — **P1** (Mermaid-only rule).
+
 ## Category Tagging (UCX v1.12.0)
 
 **Primary Categories**: architecture, quality, integration

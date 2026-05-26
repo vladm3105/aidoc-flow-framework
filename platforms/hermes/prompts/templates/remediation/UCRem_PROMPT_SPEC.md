@@ -19,10 +19,10 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 
 ## SPEC-Specific Context
 
-SPEC is Layer 9 in the SDD workflow:
+SPEC is Layer 6 in the SDD workflow:
 
-- **Upstream**: REQ (Atomic Requirements), CTR (Data Contracts)
-- **Downstream**: TSPEC (Test Specification), TASKS (Task Breakdown)
+- **Upstream**: ADR (architecture decisions); cumulative EARS/BDD
+- **Downstream**: TDD (test definitions), IPLAN (implementation plan)
 
 Common SPEC issues to remediate:
 

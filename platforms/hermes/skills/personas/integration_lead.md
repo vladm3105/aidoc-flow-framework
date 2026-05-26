@@ -54,18 +54,20 @@ Provide the semantic completion described in "Task", then remove the marker.
 2. Has the data schema change been negotiated and versioned with all consumers?
 3. Where is the source of truth for this specific piece of data?
 
-## Layer-Specific Focus (All 10 Layers)
+## Layer-Specific Focus (the 8-layer flow)
 
-As the universal dependency checker, you appear in ALL document types:
+As the universal dependency checker, you appear across the document types:
 
 | Layer | Integration Lead Focus |
 |-------|------------------------|
 | **BRD (L1)** | Partner contracts, API dependencies, external constraints |
-| **PRD (L2)** | Cross-product dependencies, feature integration points |
+| **PRD (L2)** | Cross-product dependencies, feature integration points; the L2 sequence diagram (`@diagram: sequence-sync`) covers the cross-system flow with an explicit error path |
 | **EARS (L3)** | Cross-system requirement consistency |
 | **BDD (L4)** | Cross-feature scenario coverage, integration tests |
 | **ADR (L5)** | Downstream impact of decisions, API changes |
-| **SPEC (L9)** | External service dependencies, retry policies |
+| **SPEC (L6)** | External service dependencies, retry policies; required sequence paths for critical integrations and error handling (`@diagram: sequence-*`); DFD trust-boundary annotations on data-flow crossings |
+| **TDD (L7)** | Contract/integration test coverage for the dependencies above |
+| **IPLAN (L8)** | Sequencing of integration work and external rollout dependencies |
 
 ## Universal Integration Questions
 
@@ -139,6 +141,8 @@ For ANY document type:
 - [ ] Error handling specified
 - [ ] Retry policies defined
 - [ ] Version strategy clear
+- [ ] Cross-system sequence diagram includes the error/exception path (not just the happy path)
+- [ ] Data-flow (DFD) crossings carry trust-boundary annotations
 
 ## Contract Quality
 

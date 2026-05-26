@@ -15,6 +15,11 @@ custom_fields:
 
 # Diagram Standards
 
+> **Authority:** `framework/governance/DIAGRAM_STANDARDS.md` is the source of
+> truth. This reference mirrors it for the orchestrator skill bundle; diagram
+> generation, validation, and SVG embedding are performed by the platform's own
+> diagram tooling.
+
 ## Mandatory Format: Mermaid Only
 
 All diagrams, charts, workflows, and visual representations in SDD framework artifacts MUST use Mermaid syntax.
@@ -25,8 +30,8 @@ All diagrams, charts, workflows, and visual representations in SDD framework art
 |-------------|-------------|
 | **Format** | Mermaid syntax (fenced code blocks with `mermaid` language tag) |
 | **Validation** | Diagrams must render without parse errors |
-| **Style** | Follow `mermaid-gen` skill guidelines for syntax correctness |
-| **File Management** | Use `charts-flow` skill for SVG generation and embedding |
+| **Style** | Follow the platform's diagram tooling guidelines for syntax correctness |
+| **File Management** | Use the platform's diagram tooling for SVG generation and embedding |
 
 ### Prohibited Formats
 
@@ -52,15 +57,15 @@ The following diagram formats are NOT permitted in any SDD artifact:
 
 Use appropriate Mermaid diagram type for the content:
 
-| Content Type | Mermaid Diagram | Skill Reference |
-|--------------|-----------------|-----------------|
-| Process flows | `flowchart TD/LR` | `mermaid-gen` |
-| Sequences/interactions | `sequenceDiagram` | `mermaid-gen` |
-| State transitions | `stateDiagram-v2` | `mermaid-gen` |
-| Class relationships | `classDiagram` | `mermaid-gen` |
-| Entity relationships | `erDiagram` | `mermaid-gen` |
-| Timelines | `timeline` | `mermaid-gen` |
-| Mind maps | `mindmap` | `mermaid-gen` |
+| Content Type | Mermaid Diagram |
+|--------------|-----------------|
+| Process flows | `flowchart TD/LR` |
+| Sequences/interactions | `sequenceDiagram` |
+| State transitions | `stateDiagram-v2` |
+| Class relationships | `classDiagram` |
+| Entity relationships | `erDiagram` |
+| Timelines | `timeline` |
+| Mind maps | `mindmap` |
 
 ## C4 + DFD + Sequence Ownership Model
 
@@ -218,18 +223,17 @@ flowchart LR
 | **Navigation** | [FAIL] Manual | [PASS] One-click | [PASS] One-click |
 | **Recommended For** | Conceptual diagrams | Published traceability | In-document navigation |
 
-### Related Skills
+### Diagram Tooling
 
-| Skill | Purpose |
-|-------|---------|
-| `mermaid-gen` | Syntax generation, error prevention, best practices |
-| `charts-flow` | File management, SVG conversion, document embedding |
+The platform supplies its own diagram tooling for Mermaid syntax generation,
+error prevention, SVG conversion, and document embedding. This standard defines
+the Mermaid-only requirement; the platform supplies the tools that enforce it.
 
 ### Enforcement
 
 1. **Pre-commit validation**: Quality gates check for text-based diagram patterns
-2. **Skill enforcement**: All doc-* skills include Mermaid-only requirement
-3. **Review checklist**: Diagram format verification in code review
+2. **Workflow enforcement**: All document-generation workflows include the Mermaid-only requirement
+3. **Review checklist**: Diagram format verification during review
 
 ### Traceability
 
@@ -237,6 +241,4 @@ This standard applies to all SDD artifacts across Layers 1-8.
 
 **Cross-references**:
 
-- `mermaid-gen` skill: `.claude/skills/mermaid-gen/SKILL.md`
-- `charts-flow` skill: `.claude/skills/charts-flow/SKILL.md`
-- Framework guide: `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Authority: `framework/governance/DIAGRAM_STANDARDS.md`

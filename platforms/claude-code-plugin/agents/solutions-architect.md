@@ -48,9 +48,13 @@ SPEC-Ready architecture to the **Test Architect** (for TDD/test specs) and the
 
 - **Architecture decisions**: capture every significant choice as an ADR with
   Context → Decision → Consequences, alternatives considered, and trade-offs.
-- **C4 modeling**: maintain Context (L1), Container (L2), and Component (L3)
-  views as Mermaid diagrams per `framework/governance/DIAGRAM_STANDARDS.md`
-  (Mermaid only).
+- **C4 + DFD + sequence modeling**: maintain Context (L1), Container (L2), and
+  Component (L3) views with their aligned DFD levels, plus the required sequence
+  diagrams (PRD `sequence-sync` with an explicit error path; ADR decision
+  sequence; SPEC sequence paths for critical integrations/error handling) — all
+  Mermaid-only per `framework/governance/DIAGRAM_STANDARDS.md`, each block
+  carrying its intent header and `@diagram:` tag. SPEC stays at C4-L3 and defers
+  C4-L4 to the downstream TDD/IPLAN.
 - **Technical specification**: produce SPEC artifacts with explicit interfaces,
   data models, and component boundaries that an implementation agent can build
   without further architectural judgement.

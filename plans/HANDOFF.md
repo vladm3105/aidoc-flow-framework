@@ -1,5 +1,26 @@
 # Session Handoff
 
+> **🟢 AGENT DIAGRAM-CONFORMANCE (C4 + DFD + sequence) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. On the directive "make sure agents
+> use the framework's C4/sequence/dataflow model — nothing missed, plugin + Hermes":
+> audited both platforms against `framework/governance/DIAGRAM_STANDARDS.md`. The
+> **Hermes review side missed diagrams entirely** (no persona referenced
+> C4/DFD/sequence; PRD/SPEC/ADR review prompts had no diagram checks) while the
+> **plugin creation/audit side already enforced** them. Fixes (platform-only, no
+> spec change): Hermes personas `architect` (new C4/DFD/sequence per-layer lens),
+> `integration_lead` (sequence/dataflow + DFD trust boundaries), `auditor`
+> (`@diagram:` tag checks) — these inject into every creation+review crew;
+> `references/diagram-standards.md` de-contaminated (dropped `mermaid-gen` /
+> `.claude/skills` tokens, points to the framework authority); `UCR_PROMPT_SPEC`
+> now verifies the C4-L3/DFD-L3 contract. Plugin `solutions-architect` /
+> `traceability-auditor` / `code-reviewer` made the diagram + `@diagram:`-tag +
+> C4-L4-ownership checks explicit. Also fixed a residual legacy **SPEC `L9 → L6`**
+> numbering in `tech_lead`/`integration_lead` + the SPEC review/remediation prompts.
+> Conformance **54**; markdownlint clean; Hermes persona/reducer tests green.
+> **Flagged (not fixed):** deeper legacy *TSPEC-as-Layer-10* divergence in
+> `UCC_OUTPUT_SCHEMA.md` + `MULTI_PROJECT_*` / `docs/plans` (separate cleanup).
+> **Next:** AGENT-TEAM Phase 1 (Hermes persona-output / saga_reducer schema conform).
+>
 > **🔵 AGENT-TEAM PHASE 0 READY — review-team spec (2026-05-25).** Branch
 > **`claude/agent-team-plan`** (plan + Phase 0). Plan: `plans/AGENT-TEAM-PLAN.md`
 > (D1–D8 confirmed, Pass-3 gap-hardened). **Phase 0** adds the engine-agnostic

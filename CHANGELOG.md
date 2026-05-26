@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Platform agents now apply the framework's **C4 + DFD + sequence** diagram model
+  (`framework/governance/DIAGRAM_STANDARDS.md`) in review and creation.
+  Hermes review personas (`architect`, `integration_lead`, `auditor`) gained
+  per-layer diagram-review lenses (injected into every crew); the SPEC review
+  prompt now verifies the C4-L3/DFD-L3 diagram contract; the orchestrator's
+  `references/diagram-standards.md` was de-contaminated of plugin-only tokens
+  (`mermaid-gen`, `.claude/skills/…`) and now points to the framework as
+  authority. Plugin agents (`solutions-architect`, `traceability-auditor`,
+  `code-reviewer`) make the C4/DFD/sequence + `@diagram:` tag + C4-L4 ownership
+  checks explicit. Also corrected a residual legacy layer number (SPEC
+  **L9 → L6**) in the `tech_lead`/`integration_lead` personas and the SPEC
+  review/remediation prompts. Platform-only — no framework spec change.
 - Framework spec **0.7.1 → 0.8.0** (minor) — AGENT-TEAM Phase 0: the
   engine-agnostic **review-team** model. New `framework/governance/REVIEW_TEAM.md`
   (multi-persona crews + a hub blackboard + the persona-output contract + a
