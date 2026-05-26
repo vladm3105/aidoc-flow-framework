@@ -26,6 +26,13 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.8.0 → 0.8.1** (patch) — AUDIT-FIXUPS WS-A: the ADR (L5)
+  template now **requires** a decision/interaction `sequenceDiagram` (carrying its
+  intent header + `@diagram: sequence-*` tag), with `flowchart` demoted to an
+  optional supplement — matching `DIAGRAM_STANDARDS.md` ("Required decision
+  sequence"). Previously `ADR-TEMPLATE.yaml` offered sequence/flowchart as equals
+  and never required the sequence. Both `FRAMEWORK_SPEC_VERSION` files + the 54
+  plugin skills' `framework_spec_version` re-synced to 0.8.1.
 - Platform agents now apply the framework's **C4 + DFD + sequence** diagram model
   (`framework/governance/DIAGRAM_STANDARDS.md`) in review and creation.
   Hermes review personas (`architect`, `integration_lead`, `auditor`) gained

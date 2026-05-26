@@ -38,7 +38,7 @@ metadata:
 
       SPEC-Ready scoring criteria:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
-        Architecture clarity (25%): diagrams present, integration points defined
+        Architecture clarity (25%): required decision sequenceDiagram (@diagram: sequence-*) present, integration points defined
         Consequence analysis (20%): positive outcomes, trade-offs, costs documented
         Traceability (15%): upstream PRD/EARS/BDD/BRD tags complete
         Verification (10%): success criteria defined, BDD cross-refs present
@@ -71,8 +71,11 @@ metadata:
   diagram_standard:
     _guidance: |
       ADR uses architecture decision diagrams (no C4 level — bridge layer):
-        - sequenceDiagram: architecture interaction flows
-        - flowchart: decision logic, rollback paths, alternative comparison
+        - REQUIRED: a decision/interaction `sequenceDiagram`, carrying its intent
+          header and the `@diagram: sequence-*` machine tag (per
+          framework/governance/DIAGRAM_STANDARDS.md — ADR's mandatory diagram).
+        - OPTIONAL: a `flowchart` to supplement decision logic, rollback paths,
+          or alternative comparison.
 
       ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SPEC (Layer 6).
       ADR diagrams show the decision's impact, not the system structure itself.
@@ -283,7 +286,30 @@ architecture_flow:
     Include MVP scope boundary and external system integrations.
     Show decision impact, not system internals (SPEC owns C4-L3 detail).
 
-  high_level_flow:
+    REQUIRED: a decision/interaction sequenceDiagram (ADR's mandatory diagram per
+    DIAGRAM_STANDARDS.md). Each diagram block carries an intent header and the
+    @diagram machine tag immediately above it. The flowchart below is OPTIONAL.
+
+  decision_sequence:           # REQUIRED
+    intent:
+      diagram_type: sequence
+      scope_boundary: "[decision interaction boundary]"
+      upstream_refs: "[BDD/PRD refs driving the decision]"
+      downstream_refs: "[SPEC components affected]"
+    tag: "@diagram: sequence-sync"   # sequence-sync | sequence-async | sequence-error
+    diagram:
+      type: sequenceDiagram
+      content: |
+        sequenceDiagram
+            participant U as Caller
+            participant A as Component A
+            participant E as External System
+            U->>A: request
+            A->>E: dependency call
+            E-->>A: response
+            A-->>U: result
+
+  high_level_flow:             # OPTIONAL supplement (decision logic / rollback / alternatives)
     diagram:
       type: flowchart
       content: |
