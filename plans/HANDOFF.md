@@ -13,7 +13,7 @@
 > merges, **Phase 1** (Hermes *conform* its persona_output/saga_reducer to the
 > schema) then **Phase 2** (plugin *build* the review-team via subagents + the
 > `.aidoc/review/` blackboard), then **Phase 3** parity proof.
-
+>
 > **🔵 FRAMEWORK DOC-CONSISTENCY (post-EARS review) READY (2026-05-25).** Branch
 > **`claude/framework-doc-consistency`**. Reviewed the framework docs/README for
 > inconsistencies after the EARS + ID changes. Findings + fixes: `EARS-TEMPLATE.yaml`
