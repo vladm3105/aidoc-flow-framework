@@ -228,7 +228,14 @@ report.
       `THE DEVIL'S ADVOCATE` lens** in the `UCR_PROMPT_*` / `UCRem_*` prompts to the
       canonical persona title (gap-review finding — 11 spots), so every persona title
       matches its runtime key.
-   6. **Document** the mapping in `REVIEW_TEAM_CONFORMANCE.md` (started).
+   6. **Resilience alignment** — soften the saga's escalate-on-unrecoverable-branch
+      (`saga_orchestrator` returns `ESCALATED` / `passed=False`, discarding the lenses
+      that succeeded) to the framework's graceful degradation: proceed on the returned
+      crew, record `coverage`, and **escalate only below quorum** (otherwise mark
+      low-confidence). Behavior change to a working system — guard with the existing
+      saga tests + new partial-crew tests.
+   7. **Document** the mapping + the resilience policy in `REVIEW_TEAM_CONFORMANCE.md`
+      (started).
 4. **Phase 2 — plugin adapter** (after Phase 0): a `review-team` mechanism —
    `pm-orchestrator`/`doc-<layer>-audit` fans out the crew as subagents writing to
    the git-ignored `.aidoc/review/` blackboard; deterministic reduce + score; add
@@ -251,9 +258,11 @@ report.
 - Phase 1: Hermes pytest green; the parser captures `lens_score`/`location`/`id`; a
   saga review emits findings + `coverage` matching the framework persona-output
   schema; the `score` follows the weighted/capped + P0/P1 policy; the report shape
-  carries `score` + `coverage`; **no `UCR_PROMPT_*` persona title uses a non-key
-  descriptor** (`grep -ri "devil's advocate" platforms/hermes/prompts` returns
-  nothing).
+  carries `score` + `coverage`; a **partial-crew review** (one branch fails after
+  retries) **degrades** — proceeds on the returned crew + records coverage — and
+  escalates **only below quorum**, not on any single failure; **no `UCR_PROMPT_*`
+  persona title uses a non-key descriptor** (`grep -ri "devil's advocate"
+  platforms/hermes/prompts` returns nothing).
 - Phase 2: a plugin `doc-<layer>-audit` run dispatches the crew, writes per-persona
   blackboard slots, the deterministic reduce produces the scored unified report;
   partial-crew degradation flags coverage; `single_pass` fallback works;
@@ -276,6 +285,7 @@ report.
 | R9 | Inter-agent prompt injection via the blackboard | Artifact + peer outputs are untrusted data (`SECURITY_REVIEW.md`); blackboard carries only the structured findings schema, not instructions (Resilience & security). |
 | R10 | A persona-agent fails / times out | Reduce proceeds on the returned crew + records `coverage`; below quorum → low-confidence/human-review, never a silent pass (Resilience & security). |
 | R11 | Create/remediate ill-defined (the headline ask) | Explicit team shapes: create = one drafter + review loop; remediate = fixer proposes + lens validates (Operations). |
+| R12 | Softening the saga escalation masks a systemic failure (all branches failing) | Escalate **below quorum** (too few lenses to trust); only degrade gracefully above it; keep branch telemetry + the `low_confidence` flag so a thin crew is never a silent pass. |
 
 ## Review log
 
@@ -368,6 +378,9 @@ A critical re-read found ten gaps; all folded in:
         `REVIEW_CREWS.yaml`; **retitle `THE DEVIL'S ADVOCATE` → the canonical persona
         title** across the `UCR_PROMPT_*` / `UCRem_*` prompts (gap-review finding, 11
         spots) so every persona title matches its runtime key.
+  - [ ] **Resilience alignment:** soften `saga_orchestrator` escalate-on-failure to
+        proceed-on-returned-crew + `coverage`, escalating **only below quorum**
+        (saga-review finding); add partial-crew tests.
 
 ### Pass 2 — 2026-05-25
 
@@ -400,3 +413,22 @@ Re-reviewed the AUDIT-FIXUPS changes; folded the findings into Phase 1 scope:
   now-required decision sequence — optional, would need another spec bump; not a
   correctness gap (the template + `DIAGRAM_STANDARDS.md` carry the rule).
 - No further findings.
+
+### Pass 5 — 2026-05-26 (Hermes saga review)
+
+Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
+`saga_reducer`) against the review-team model:
+
+- **Pattern conforms — no restructure.** `FANOUT → per-persona branches` = the crew in
+  `independent` mode; `FANIN_REDUCED` = the deterministic reduce; `SYNTHESIZED` =
+  synthesis; the journal + branch-states = durable blackboard slots. Hermes also already
+  offers both declared modes (saga branches = `independent`; no-executor single-prompt
+  UCR = `single_pass`). The framework model was written to generalize this.
+- **One divergence folded in.** The saga **escalates the whole review** on an
+  unrecoverable branch failure (returns `passed=False`, discarding successful lenses),
+  vs. the framework's *proceed-on-returned-crew + coverage + escalate-only-below-quorum*.
+  Added as Phase-1 **step 6 (Resilience alignment)** + checklist + Verification + **R12**.
+- **Minor (folded into the report-shape step):** the reduce dedups on
+  `message+target_layer+recommended_action`; the spec keys on `location+id` — align when
+  the parser gains `location`/`id`. No separate step.
+- No agent/saga-pattern changes otherwise; the rest of Phase 1 is additive.
