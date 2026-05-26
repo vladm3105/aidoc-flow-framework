@@ -1,0 +1,64 @@
+# =============================================================================
+#  REVIEW_CREWS.yaml — engine-agnostic per-layer review-team crews
+# =============================================================================
+#  Authority: framework/governance/REVIEW_TEAM.md
+#  Engine-agnostic: each engine binds these personas to its own agent runtime.
+#  The conformance suite parses this file.
+#
+#  Per layer:
+#    author  — the persona that drafts (create) and proposes fixes (remediate)
+#    review  — the review crew as {persona: weight}; weights sum to 100;
+#              the readiness score is their weighted average (see REVIEW_TEAM.md)
+#  The `synthesizer` persona always performs the reduce + narrative; it is not
+#  listed in a review crew.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  description: "Per-layer review-team crews + scoring weights for the SDD flow"
+  authority: "framework/governance/REVIEW_TEAM.md"
+
+# Default collaboration mode when a crew/operation does not override it.
+default_mode: independent          # independent | sequential | single_pass
+
+# Closed persona set (review lenses + role slots). Crews reference only these.
+personas:
+  - requirements_specialist        # EARS syntax, atomicity, measurability
+  - tech_lead                      # technical feasibility, implementability
+  - qa_lead                        # testability, coverage, verification
+  - adversary                      # devil's-advocate / failure modes / edge cases
+  - integration_lead               # cross-system, contracts, dependencies
+  - architect                      # structure, decisions, boundaries
+  - product_owner                  # product scope, user value, priorities
+  - business_analyst               # business objectives, requirements clarity
+  - operator                       # operability, runtime, observability
+  - auditor                        # compliance, traceability, completeness
+  - drafter                        # generic author (used where no specialist fits)
+  - fixer                          # generic remediation author
+  - synthesizer                    # chairperson: deterministic reduce + narrative
+
+crews:
+  BRD:
+    author: business_analyst
+    review: {architect: 30, business_analyst: 30, auditor: 20, adversary: 20}
+  PRD:
+    author: product_owner
+    review: {product_owner: 30, architect: 25, tech_lead: 20, adversary: 15, auditor: 10}
+  EARS:
+    author: requirements_specialist
+    review: {requirements_specialist: 35, tech_lead: 25, qa_lead: 20, adversary: 20}
+  BDD:
+    author: qa_lead
+    review: {qa_lead: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+  ADR:
+    author: architect
+    review: {architect: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+  SPEC:
+    author: architect
+    review: {architect: 30, tech_lead: 30, integration_lead: 20, adversary: 20}
+  TDD:
+    author: qa_lead
+    review: {qa_lead: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+  IPLAN:
+    author: tech_lead
+    review: {tech_lead: 30, architect: 25, operator: 20, integration_lead: 15, auditor: 10}

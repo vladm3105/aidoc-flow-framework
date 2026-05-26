@@ -1,5 +1,19 @@
 # Session Handoff
 
+> **🔵 AGENT-TEAM PHASE 0 READY — review-team spec (2026-05-25).** Branch
+> **`claude/agent-team-plan`** (plan + Phase 0). Plan: `plans/AGENT-TEAM-PLAN.md`
+> (D1–D8 confirmed, Pass-3 gap-hardened). **Phase 0** adds the engine-agnostic
+> multi-persona **review-team** model: `framework/governance/REVIEW_TEAM.md`
+> (crews + hub blackboard + persona-output contract + deterministic weighted/capped
+> scoring & conflict policy with the structural gate as the reproducible floor +
+> create/review/remediate shapes + resilience/security) and `REVIEW_CREWS.yaml`
+> (per-layer crews + weights + default mode); a `review_mode` knob on
+> `ADAPTATION_SURFACE.yaml`; `test_review_team.py` (suite **54**). Spec
+> **`0.7.1 → 0.8.0`**; `spec_gate` green. **Next:** open the Phase 0 PR; after it
+> merges, **Phase 1** (Hermes *conform* its persona_output/saga_reducer to the
+> schema) then **Phase 2** (plugin *build* the review-team via subagents + the
+> `.aidoc/review/` blackboard), then **Phase 3** parity proof.
+>
 > **🔵 FRAMEWORK DOC-CONSISTENCY (post-EARS review) READY (2026-05-25).** Branch
 > **`claude/framework-doc-consistency`**. Reviewed the framework docs/README for
 > inconsistencies after the EARS + ID changes. Findings + fixes: `EARS-TEMPLATE.yaml`
