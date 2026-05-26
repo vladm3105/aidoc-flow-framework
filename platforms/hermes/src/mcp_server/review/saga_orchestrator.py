@@ -17,6 +17,7 @@ from mcp_server.prompts import ContractValidationError, SourceSection
 from mcp_server.skills.project_ucx_loader import load_persona_mapping, load_project_persona_file
 
 from .persona_output_parser import parse_persona_output
+from .review_scoring import score_review
 from .runner import run_project_review_build
 from .saga_journal import (
     append_compensation_event,
@@ -51,6 +52,8 @@ class SagaReviewResult:
     synthesis_summary_path: Path | None
     passed: bool
     reduced_findings: list[dict[str, object]] | None = None
+    review_score: dict[str, object] | None = None
+    coverage: dict[str, object] | None = None
 
 
 def _time_bucket() -> str:
@@ -453,6 +456,7 @@ def _branch_llm_findings(
     return {
         "findings": parsed.findings,
         "parse_status": parsed.parse_status,
+        "lens_score": parsed.lens_score,
         "raw_output_redacted": redacted_output,
         "telemetry": {
             "persona": persona,
@@ -479,6 +483,46 @@ def _safe_transition(*, journal_path: Path, target: str) -> None:
         return
 
 
+def _compute_review_score(
+    *,
+    doc_type: str,
+    lens_scores: dict[str, float],
+    reduced: list,
+) -> dict[str, object] | None:
+    """Framework weighted/capped score + coverage from per-persona lens scores.
+
+    Advisory; only computed when LLM branches supplied ``lens_score``s and the
+    doc-type maps to a framework crew (``REVIEW_CREWS.yaml``). Returns ``None``
+    otherwise (e.g. deterministic-fallback mode, or a non-layer doc-type).
+    """
+    if not lens_scores:
+        return None
+    try:
+        rs = score_review(
+            layer=doc_type,
+            lens_scores=lens_scores,
+            findings=[{"priority": item.priority} for item in reduced],
+        )
+    except KeyError:
+        return None
+    return {
+        "score": rs.score,
+        "raw_weighted": rs.raw_weighted,
+        "no_blocking": rs.no_blocking,
+        "has_unresolved_p0": rs.has_unresolved_p0,
+        "has_unresolved_p1": rs.has_unresolved_p1,
+        "gate_threshold": rs.gate_threshold,
+        "coverage": {
+            "expected": rs.coverage.expected,
+            "ran": rs.coverage.ran,
+            "missing": rs.coverage.missing,
+            "coverage_ratio": rs.coverage.coverage_ratio,
+            "quorum_met": rs.coverage.quorum_met,
+            "low_confidence": rs.coverage.low_confidence,
+        },
+    }
+
+
 def run_project_review_build_saga(
     *,
     project_root: Path,
@@ -499,6 +543,7 @@ def run_project_review_build_saga(
     project_overrides: dict[str, ExecutorConfig] | None = None,
     generation_params: dict[str, object] | None = None,
     saga_branch_llm_enabled: bool | None = None,
+    branch_quorum: float = 0.5,
 ) -> SagaReviewResult:
     if output_dir is None:
         raise ValueError("output_dir is required for saga orchestration")
@@ -568,9 +613,13 @@ def run_project_review_build_saga(
         executor_name = "api/openrouter"
 
     completed_personas: set[str] = set()
+    failed_personas: set[str] = set()
+    lens_scores: dict[str, float] = {}
 
-    while len(completed_personas) < len(personas):
-        pending_personas = [p for p in personas if p not in completed_personas]
+    while len(completed_personas) + len(failed_personas) < len(personas):
+        pending_personas = [
+            p for p in personas if p not in completed_personas and p not in failed_personas
+        ]
         with ThreadPoolExecutor(max_workers=max_workers) as pool:
             future_map = {}
             for persona in pending_personas:
@@ -643,6 +692,9 @@ def run_project_review_build_saga(
                         branch_findings = result.get("findings", [])
                         telemetry = result.get("telemetry", {})
                         raw_output_redacted = result.get("raw_output_redacted")
+                        lens_score_value = result.get("lens_score")
+                        if isinstance(lens_score_value, (int, float)):
+                            lens_scores[persona] = float(lens_score_value)
                         if isinstance(branch_findings, list):
                             findings.extend([f for f in branch_findings if isinstance(f, dict)])
                         if isinstance(telemetry, dict):
@@ -713,67 +765,89 @@ def run_project_review_build_saga(
                         compensation_count += 1
                         retries_scheduled += 1
                     else:
-                        _safe_transition(journal_path=journal_path, target="ESCALATED")
-                        return SagaReviewResult(
-                            review_mode="saga_parallel",
-                            review_run_id=review_run_id,
-                            saga_status="ESCALATED",
-                            journal_path=journal_path,
-                            prompt_path=None,
-                            sidecar_path=None,
-                            inspection_path=None,
-                            branch_summary={
-                                "total": len(personas),
-                                "completed": len(completed_personas),
-                                "failed": 1,
-                                "branch_llm_enabled": branch_llm_enabled,
-                                "rollout_phase": rollout_phase,
-                                "debug_raw_outputs": debug_raw_outputs,
-                                "branches": branch_telemetry,
-                                "raw_outputs": branch_raw_outputs,
-                            },
-                            branch_summary_path=_write_versioned_json(
-                                output_dir=output_dir,
-                                stem_prefix=f"{doc_id}_{source_stage}_saga_branch_summary",
-                                payload={
-                                    "review_run_id": review_run_id,
-                                    "saga_status": "ESCALATED",
-                                    "total": len(personas),
-                                    "completed": len(completed_personas),
-                                    "failed": 1,
-                                    "branch_llm_enabled": branch_llm_enabled,
-                                    "rollout_phase": rollout_phase,
-                                    "debug_raw_outputs": debug_raw_outputs,
-                                    "branches": branch_telemetry,
-                                    "raw_outputs": branch_raw_outputs,
-                                },
-                            ),
-                            compensation_summary={
-                                "count": compensation_count,
-                                "max_branch_retries": max_branch_retries,
-                                "retry_backoff_seconds": backoff,
-                                "saga_resume": saga_resume,
-                            },
-                            reducer_summary={"reduced_count": 0},
-                            reducer_summary_path=None,
-                            synthesis_summary_path=None,
-                            reduced_findings=None,
-                            passed=False,
-                        )
+                        # Retries exhausted for this lens: degrade gracefully —
+                        # record the failed lens and proceed. The post-fan-out quorum
+                        # check decides whether to escalate (REVIEW_TEAM.md resilience).
+                        failed_personas.add(persona)
 
         if retries_scheduled > 0:
             if backoff > 0:
                 time.sleep(backoff)
             _safe_transition(journal_path=journal_path, target="BRANCH_RUNNING")
 
+    requested_total = len(personas)
+    ran_total = len(completed_personas)
+    branch_coverage_ratio = (ran_total / requested_total) if requested_total else 0.0
+    quorum_met = ran_total > 0 and branch_coverage_ratio >= branch_quorum
+    low_confidence = len(failed_personas) > 0
+    coverage: dict[str, object] = {
+        "requested": sorted(personas),
+        "completed": sorted(completed_personas),
+        "failed": sorted(failed_personas),
+        "coverage_ratio": round(branch_coverage_ratio, 4),
+        "quorum": branch_quorum,
+        "quorum_met": quorum_met,
+        "low_confidence": low_confidence,
+    }
+
+    # Resilience (REVIEW_TEAM.md): proceed on the returned crew + coverage; escalate
+    # only below quorum — never a silent pass, never fail for one missing lens.
+    if not quorum_met:
+        _safe_transition(journal_path=journal_path, target="ESCALATED")
+        escalated_summary: dict[str, object] = {
+            "total": requested_total,
+            "completed": ran_total,
+            "failed": len(failed_personas),
+            "branch_llm_enabled": branch_llm_enabled,
+            "rollout_phase": rollout_phase,
+            "debug_raw_outputs": debug_raw_outputs,
+            "branches": branch_telemetry,
+            "raw_outputs": branch_raw_outputs,
+            "coverage": coverage,
+        }
+        return SagaReviewResult(
+            review_mode="saga_parallel",
+            review_run_id=review_run_id,
+            saga_status="ESCALATED",
+            journal_path=journal_path,
+            prompt_path=None,
+            sidecar_path=None,
+            inspection_path=None,
+            branch_summary=escalated_summary,
+            branch_summary_path=_write_versioned_json(
+                output_dir=output_dir,
+                stem_prefix=f"{doc_id}_{source_stage}_saga_branch_summary",
+                payload={
+                    "review_run_id": review_run_id,
+                    "saga_status": "ESCALATED",
+                    **escalated_summary,
+                },
+            ),
+            compensation_summary={
+                "count": compensation_count,
+                "max_branch_retries": max_branch_retries,
+                "retry_backoff_seconds": backoff,
+                "saga_resume": saga_resume,
+            },
+            reducer_summary={"reduced_count": 0},
+            reducer_summary_path=None,
+            synthesis_summary_path=None,
+            reduced_findings=None,
+            passed=False,
+            coverage=coverage,
+        )
+
     _safe_transition(journal_path=journal_path, target="BRANCH_COMPLETED")
     _safe_transition(journal_path=journal_path, target="FANIN_REDUCED")
     reduced = reduce_persona_findings(findings)
+    review_score = _compute_review_score(
+        doc_type=doc_type, lens_scores=lens_scores, reduced=reduced
+    )
     _safe_transition(journal_path=journal_path, target="SYNTHESIZED")
 
     aggregate = run_project_review_build(
         project_root=project_root,
-        personas=personas,
+        personas=sorted(completed_personas),
         doc_type=doc_type,
         template_name=template_name,
         sections=sections,
@@ -782,12 +856,18 @@ def run_project_review_build_saga(
     )
     _safe_transition(journal_path=journal_path, target="CLOSED")
 
-    branch_summary = {"total": len(personas), "completed": len(personas), "failed": 0}
+    branch_summary = {
+        "total": requested_total,
+        "completed": ran_total,
+        "failed": len(failed_personas),
+    }
     branch_summary["branch_llm_enabled"] = branch_llm_enabled
     branch_summary["rollout_phase"] = rollout_phase
     branch_summary["debug_raw_outputs"] = debug_raw_outputs
     branch_summary["branches"] = branch_telemetry
     branch_summary["raw_outputs"] = branch_raw_outputs
+    branch_summary["coverage"] = coverage
+    branch_summary["low_confidence"] = low_confidence
     reducer_summary = {
         "reduced_count": len(reduced),
         "branch_llm_enabled": branch_llm_enabled,
@@ -800,6 +880,8 @@ def run_project_review_build_saga(
         "persona_count": len(personas),
         "branch_llm_enabled": branch_llm_enabled,
         "rollout_phase": rollout_phase,
+        "review_score": review_score,
+        "coverage": coverage,
     }
 
     branch_summary_path = _write_versioned_json(
@@ -861,4 +943,6 @@ def run_project_review_build_saga(
             for item in reduced
         ],
         passed=True,
+        review_score=review_score,
+        coverage=coverage,
     )
