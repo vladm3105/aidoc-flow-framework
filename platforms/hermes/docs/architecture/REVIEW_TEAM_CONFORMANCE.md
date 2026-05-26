@@ -55,11 +55,27 @@ engine-specific enrichment above the framework contract.
   elsewhere) **plus** `no_blocking` (no unresolved P0/P1). The numeric score is
   **advisory** — so a borderline artifact cannot flap pass/fail on model variance.
 
-## Conformance status
+## Conformance status (Phase 1 complete)
 
-- **Done:** the persona-name mapping + the deterministic weighted/capped score +
-  coverage (`review_scoring.py`, unit-tested in `tests/unit/test_review_scoring.py`).
-- **Remaining (Phase 1 cont.):** capture `lens_score` in `persona_output_parser`;
-  surface `score` + `coverage` in the saga result and the `PERSONA_REVIEW_REPORT` /
-  `UCR_*` report shape; align `persona_mappings.yaml` review crews with the framework
-  crews where they differ.
+- **Scoring + coverage + persona mapping** — `review_scoring.py` (weighted/capped
+  score, `CoverageReport`, alias), unit-tested.
+- **Parser** — `persona_output_parser` captures `lens_score`, `location`, a stable
+  `id`, and accepts `recommendation` (alias of `recommended_action`).
+- **Saga wiring** — `saga_orchestrator` collects per-persona `lens_score`s, computes
+  `review_score` + `coverage` via `score_review`, and surfaces them on
+  `SagaReviewResult`, the synthesis summary, and the branch summary.
+- **Resilience** — the saga degrades on an unrecoverable branch (proceeds on the
+  returned crew + records `coverage`), escalating **only below quorum** (was: escalate
+  the whole review on any single failure). New `BRANCH_FAILED → BRANCH_COMPLETED`
+  transition; the aggregate prompt build uses only the completed lenses.
+- **Report shape** — `UCR_OUTPUT_UNIFIED.md` carries the advisory readiness score +
+  coverage (+ the gate/quorum note).
+- **Crew + name reconciliation** — every framework review-crew lens is covered by the
+  Hermes review mapping via the alias (guarded by
+  `test_review_scoring::test_hermes_review_crews_cover_framework_crews`); the
+  `UCR_PROMPT_*` / `UCRem_*` prompts retitle the lens `THE DEVIL'S ADVOCATE →
+  THE CHAOS ENGINEER` to match the runtime persona key. (The `devil_advocate_note`
+  report-schema field is retained — it is a field key, not a persona title.)
+
+The numeric score stays **advisory**; the gate is the deterministic structural
+floor combined with the "no unresolved P0/P1" rule (`REVIEW_TEAM.md`).

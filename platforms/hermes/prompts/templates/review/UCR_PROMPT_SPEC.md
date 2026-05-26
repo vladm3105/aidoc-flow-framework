@@ -132,7 +132,7 @@ Output:
 
 ---
 
-### 3. THE DEVIL'S ADVOCATE (Error & Edge Cases)
+### 3. THE CHAOS ENGINEER (Error & Edge Cases)
 
 Focus on:
 

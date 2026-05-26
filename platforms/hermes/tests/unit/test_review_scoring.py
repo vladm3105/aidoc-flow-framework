@@ -127,3 +127,22 @@ def test_below_quorum_is_low_confidence() -> None:
 def test_unknown_layer_raises() -> None:
     with pytest.raises(KeyError):
         score_review(layer="NOPE", lens_scores={}, findings=[])
+
+
+def test_hermes_review_crews_cover_framework_crews() -> None:
+    """Every framework review-crew persona is covered by the Hermes review mapping
+    (after the framework<->Hermes alias). Locks the Phase-1 crew reconciliation."""
+    import yaml
+    from mcp_server.review.review_scoring import _default_crews_path, _load_crews
+
+    crews = _load_crews(_default_crews_path())
+    pm = yaml.safe_load((ROOT / "skills" / "persona_mappings.yaml").read_text(encoding="utf-8"))
+    review = pm.get("review", {})
+
+    for layer, weights in crews.items():
+        expected = set(weights)
+        doc_map = review.get(layer.lower(), {})
+        hermes = doc_map.get("personas", []) if isinstance(doc_map, dict) else []
+        mapped = {canonical_persona(p) for p in hermes}
+        missing = expected - mapped
+        assert missing == set(), f"{layer}: framework lenses not covered by Hermes crew: {missing}"

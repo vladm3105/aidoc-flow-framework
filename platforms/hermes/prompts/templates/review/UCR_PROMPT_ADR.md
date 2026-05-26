@@ -268,7 +268,7 @@ Output format:
 
 ---
 
-### 6. THE DEVIL'S ADVOCATE (Decision Risks)
+### 6. THE CHAOS ENGINEER (Decision Risks)
 
 **Your stance**: If failure modes aren't documented, they WILL happen. Unacknowledged risks are P0.
 
@@ -293,7 +293,7 @@ Focus on:
 Output format:
 
 ```
-### 6. THE DEVIL'S ADVOCATE
+### 6. THE CHAOS ENGINEER
 
 **P0 Unacknowledged Risks**:
 | Risk Scenario | Gap | Required Addition |

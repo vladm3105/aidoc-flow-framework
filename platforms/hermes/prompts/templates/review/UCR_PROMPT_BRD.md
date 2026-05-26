@@ -275,7 +275,7 @@ Output format:
 
 ---
 
-### 5. THE DEVIL'S ADVOCATE (Edge-Cases & Failures)
+### 5. THE CHAOS ENGINEER (Edge-Cases & Failures)
 
 **Your stance**: If a failure mode isn't documented, it WILL happen in production.
 
@@ -304,7 +304,7 @@ Focus on:
 Output format:
 
 ```
-### 5. THE DEVIL'S ADVOCATE
+### 5. THE CHAOS ENGINEER
 
 **P0 Unhandled Failures**:
 | Failure Scenario | Section Checked | Gap | Required Specification |

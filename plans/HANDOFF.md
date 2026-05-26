@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 AGENT-TEAM PHASE 1 COMPLETE (Hermes conform) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. All 5 Phase-1 steps landed (commits
+> `4578e63` scoring, `6e5c957` parser+saga+resilience, + report/crew/retitle):
+> **parser** captures `lens_score`/`location`/`id` (+`recommendation` alias);
+> **saga_orchestrator** computes `review_score`+`coverage` (via `review_scoring`)
+> and surfaces them on the result/summaries; **resilience** — degrades on a failed
+> branch (proceed + coverage), escalates **only below quorum** (new
+> `BRANCH_FAILED→BRANCH_COMPLETED`); **report** `UCR_OUTPUT_UNIFIED` carries
+> score+coverage; **crew/name** — Hermes review crews cover every framework crew via
+> the alias (new guard test), `THE DEVIL'S ADVOCATE → THE CHAOS ENGINEER` retitled
+> (11 prompts). Documented in `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. 49
+> review unit tests green; conformance 54; ruff clean; platform-only (no spec change).
+> The 2 `test_saga_review_pipeline` failures are the pre-existing missing-`mcp`-package
+> import (reproduced on base). **Next:** Phase 2 (plugin build the review-team via
+> subagents + `.aidoc/review/` blackboard; D9 — no saga port) then Phase 3 parity.
+>
 > **🟢 AGENT-TEAM PHASE 1 STARTED (Hermes conform) — 2026-05-26.** Branch
 > **`claude/multi-platform-migration-AamWB`**. First Phase-1 increment: the
 > deterministic **scoring + coverage** conformance + the **framework↔Hermes

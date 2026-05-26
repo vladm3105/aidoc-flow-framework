@@ -40,6 +40,16 @@ custom_fields:
     p0_findings: {N}
     p1_findings: {N}
     p2_findings: {N}
+  # Review-team scoring + coverage (framework REVIEW_TEAM.md). The score is
+  # ADVISORY (weighted average of per-lens scores, capped: unresolved P0 -> 0,
+  # P1 -> below gate). The gate is the deterministic structural floor + no
+  # unresolved P0/P1, NOT this number.
+  readiness_score: {SCORE}          # 0-100, advisory
+  coverage:
+    ran: [{LENSES_RUN}]
+    missing: [{LENSES_MISSING}]
+    coverage_ratio: {RATIO}         # ran crew-weight / total
+    low_confidence: {true|false}    # below quorum -> human review
 ---
 
 # UCR Report: {DOC_ID}
@@ -54,7 +64,15 @@ custom_fields:
 | P0 Findings | {N} |
 | P1 Findings | {N} |
 | P2 Findings | {N} |
+| Readiness Score (advisory) | {SCORE}/100 (weighted, capped) |
+| Coverage | {RAN}/{EXPECTED} lenses ({coverage_ratio}); low-confidence: {true/false} |
 | Overall Status | {BLOCKING/WARNING/CLEAN} |
+
+> The **Readiness Score** is advisory (weighted average of per-lens scores; an
+> unresolved P0 caps it to 0, an unresolved P1 caps it below the gate). The
+> **gate** decision is the deterministic structural check **plus** "no unresolved
+> P0/P1" — not this number. Below the crew **quorum** the review is
+> **low-confidence → human review**, never a silent pass.
 
 ---
 

@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
 | Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` (now at `0.8.1`) |
-| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) STARTED — scoring/coverage + persona-name mapping landed; rest of Phase 1 + Phases 2–3 pending |
+| Status     | IN PROGRESS — Phase 0 (spec) merged (spec `0.8.x`); Phase 1 (Hermes conform) COMPLETE; Phases 2 (plugin build) + 3 (parity) pending |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -420,17 +420,20 @@ Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
   `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. Additive; the working
   saga/reducer/parser untouched. Conformance 54; ruff clean; reducer/parser/scoring
   tests green (14).
-- **Remaining Phase 1 (gap-closing checklist):**
-  - [ ] **Parser:** capture `lens_score` + `location` + stable `id` in
-        `persona_output_parser` (additive; keep existing tests green).
-  - [ ] **Saga wiring:** collect per-persona `lens_score`s and call `score_review`;
-        put `score` + `coverage` on `SagaReviewResult` + the reducer/synthesis summary.
-  - [ ] **Report:** surface `score` + `coverage` + the framework finding fields in the
-        `PERSONA_REVIEW_REPORT` / `UCR_OUTPUT_UNIFIED` shape.
-  - [ ] **Crew/name reconciliation:** align `persona_mappings.yaml` review crews with
-        `REVIEW_CREWS.yaml`; **retitle `THE DEVIL'S ADVOCATE` → the canonical persona
-        title** across the `UCR_PROMPT_*` / `UCRem_*` prompts (gap-review finding, 11
-        spots) so every persona title matches its runtime key.
-  - [ ] **Resilience alignment:** soften `saga_orchestrator` escalate-on-failure to
-        proceed-on-returned-crew + `coverage`, escalating **only below quorum**
-        (saga-review finding); add partial-crew tests.
+- **Phase 1 checklist — DONE 2026-05-26:**
+  - [x] **Parser:** `persona_output_parser` captures `lens_score` + `location` +
+        stable `id`; accepts `recommendation` (alias). Additive; existing tests green.
+  - [x] **Saga wiring:** `saga_orchestrator` collects per-persona `lens_score`s, calls
+        `score_review`, and surfaces `score` + `coverage` on `SagaReviewResult` + the
+        synthesis/branch summaries.
+  - [x] **Report:** `UCR_OUTPUT_UNIFIED` carries the advisory readiness score +
+        coverage (+ gate/quorum note).
+  - [x] **Crew/name reconciliation:** Hermes review crews cover every framework crew
+        via the alias (guarded by a new test); retitled `THE DEVIL'S ADVOCATE → THE
+        CHAOS ENGINEER` across the `UCR_PROMPT_*` / `UCRem_*` prompts (11 spots).
+  - [x] **Resilience alignment:** the saga degrades on an unrecoverable branch
+        (proceeds + `coverage`), escalating **only below quorum** (was: escalate the
+        whole review); new `BRANCH_FAILED → BRANCH_COMPLETED` transition + partial-crew
+        tests.
+  - Verification: 49 review unit tests green; conformance 54; ruff clean. Documented
+    in `platforms/hermes/docs/architecture/REVIEW_TEAM_CONFORMANCE.md`.
