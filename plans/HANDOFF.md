@@ -1,5 +1,23 @@
 # Session Handoff
 
+> **🟢 CONSOLIDATION REVIEW FIXES — 2026-05-27.** A code review of the 55→50
+> consolidation (3 finder passes) caught a real **correctness regression** and
+> some capability flattening; all fixed on `claude/multi-platform-migration-AamWB`.
+> **#1 (correctness):** `doc-validator` lost `trace-check`'s `adapts: [active_layers]`
+> → on adapted projects it would false-fail disabled-layer traceability; restored
+> `adapts` + an `## Adaptation` consult-clause. **Capability restore:** put the
+> folded procedural detail back — `doc-flow` regained the intent-keyword→skill map,
+> status-taxonomy position scan + progress %, P0/P1/P2 prioritization over the
+> critical path, and upstream-ranking/vocabulary context scan; `doc-validator`
+> regained `auto_fix` safety (backup/rollback/no-placeholder) and the four-class
+> prose review (DATA/REF/TYPO/TERM + dictionary). **Refs:** `code-reviewer.md` no
+> longer routes the code/PR dimension to `doc-validator` (reviews code natively;
+> `doc-validator` only for spec/traceability). **Polish:** trimmed `doc-validator`
+> description, distinguished `doc-flow`'s two routing sections (by-layer vs
+> by-action), stamped `last_updated`. Cross-file consistency pass found **0**
+> dangling refs / count mismatches. Conformance 66 green; pre-commit clean. The
+> mechanical consolidation (counts/repoints/deletions) was already sound.
+>
 > **🟢 PLUGIN SKILL CONSOLIDATION — 55 → 50, redundancy audit (2026-05-27).**
 > Branch **`claude/multi-platform-migration-AamWB`**. Audited the 55 plugin skills
 > for redundancy; folded five overlapping utilities into two homes with **no

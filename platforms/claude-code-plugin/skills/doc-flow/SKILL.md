@@ -11,7 +11,7 @@ metadata:
     downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
     framework_spec_version: "0.8.1"
-    last_updated: "2026-05-23"
+    last_updated: "2026-05-27"
 ---
 
 # doc-flow
@@ -86,21 +86,49 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 
 ### Find the right skill, and where you are
 
-`doc-flow` answers "what should I do next?" directly — no separate helper skill:
+`doc-flow` answers "what should I do next?" directly — no separate helper skill.
+The table above routes **by layer**; this routes **by action/intent** and reports
+position.
 
-- **Intent → skill.** Map the request: *create/draft X* → that layer's base or
-  `-autopilot`; *check/score X* → `-audit`; *fix X* → `-fixer`; *validate
-  links/traceability or review prose* → `../doc-validator/SKILL.md`; *edit a
-  published artifact* → `../doc-chg/SKILL.md`. When the user names a skill, run it.
-- **Where am I.** Scan `docs/<NN>_<X>/` for existing artifacts and their status,
-  map them to layers 1–8, and report the current position, the completed / ready /
-  blocked layers, and a progress summary.
-- **What's next.** Recommend the next artifact per the cumulative chain (each layer
-  needs its single-layer prerequisite), surface work that can proceed in parallel,
-  and name the skill to run.
-- **Context scan.** Before authoring in an existing project, inventory the corpus
-  and the traceability snapshot (upstream candidates for the new artifact) so the
-  new document references real IDs.
+**Intent → skill.** Classify the request by action keyword, then target:
+
+| Action keyword | Skill |
+|----------------|-------|
+| create / draft / write | that layer's base (`doc-<x>`) or `-autopilot` |
+| check / score / audit | that layer's `-audit` |
+| fix / remediate | that layer's `-fixer` |
+| validate / trace / links / orphans / repair | `../doc-validator/SKILL.md` |
+| review prose / typos / terms | `../doc-validator/SKILL.md` (`scope: prose`) |
+| change / edit a published artifact | `../doc-chg/SKILL.md` + `../gate-check/SKILL.md` |
+| roadmap / phasing | `../adr-roadmap/SKILL.md` |
+| scaffold / new project | `../project-init/SKILL.md` |
+| adopt / brownfield / reverse-engineer | `../project-adopt/SKILL.md` |
+| tailor / profile | `../project-profile/SKILL.md` |
+| security / threats | `../security-audit/SKILL.md` |
+
+When the user names a skill, run it directly.
+
+**Where am I.** Scan `docs/<NN>_<X>/` for existing artifacts; read each Document
+Control `Status` (Draft / In Review / Approved / Superseded / Deprecated); map
+artifacts to layers 1–8, mark each layer completed / in-progress / ready /
+blocked, and report position plus a progress percentage (approved layers ÷ 8).
+
+**What's next.** Recommend the next artifact per the cumulative chain (each layer
+needs its single-layer prerequisite), prioritized:
+
+- **P0** — a *required* upstream is missing, or the next step is on the critical
+  path `BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN`.
+- **P1** — the next ready layer once the critical path is unblocked.
+- **P2** — optional / parallel work (`doc-ref` supplements, additional ADRs).
+
+Surface parallel-work opportunities (independent tracks with no shared
+prerequisite) and name the skill to run for each.
+
+**Context scan.** Before authoring in an existing project, inventory the corpus
+and build a traceability snapshot: rank candidate upstream documents for the
+target type by directness, topic match, recency, and `Approved` status, and
+collect project vocabulary (titles, section headers, glossary terms) so the new
+document reuses real IDs and consistent terminology.
 
 ### Utility skills
 

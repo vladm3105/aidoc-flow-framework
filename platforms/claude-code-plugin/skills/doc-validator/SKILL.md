@@ -1,6 +1,6 @@
 ---
 name: doc-validator
-description: Cross-document validation for the SDD flow - broken cross-references, orphaned artifacts, cumulative-tag gaps, duplicate IDs, traceability-matrix completeness, bidirectional traceability with optional link repair, and prose/terminology review across the corpus. Use before releases, after batch generation, or to validate and repair traceability.
+description: Validate the SDD corpus - cross-document references, orphans, cumulative-tag gaps, duplicate IDs, and full bidirectional traceability (with optional repair), plus a prose/terminology pass. Use before releases, after batch generation, or to validate and repair the corpus.
 metadata:
   tags:
     - sdd-workflow
@@ -12,7 +12,8 @@ metadata:
     downstream_artifacts: []
     version: "0.2.0"
     framework_spec_version: "0.8.1"
-    last_updated: "2026-05-23"
+    last_updated: "2026-05-27"
+    adapts: [active_layers]
 ---
 
 # doc-validator
@@ -41,8 +42,9 @@ separate skills.
 
 - single-document structure/metadata/content — use that layer's
   `../doc-<layer>-audit/SKILL.md`;
-- the canonical ID-format rules/reference — see `../doc-naming/SKILL.md`
-  (this skill enforces them; `doc-naming` is the authority that defines them).
+- the *definition* of the ID-format rules — that authority is
+  `../doc-naming/SKILL.md`. (This skill **enforces** ID format and emits
+  `XDOC-E007`; use it to *check* IDs — `doc-naming` is where the rules live.)
 
 Inputs: `docs_path` (required), `scope` (`cross-document` default /
 `traceability` / `prose` / `full`), `strictness` (`strict` / `permissive`),
@@ -78,15 +80,26 @@ Beyond the cross-document checks, run the full bidirectional traceability pass:
 - **Coverage + orphans** — upstream is required for every artifact except BRD;
   downstream is optional; flag mid-chain artifacts with no downstream and
   unexpected orphans; report coverage by type.
-- **Repair (`auto_fix`)** — when enabled, repair safely-fixable issues: add a
-  missing reciprocal link, regenerate section/COUNT metadata, normalize
-  terminology. Structural/content gaps stay reported for the relevant `-fixer`.
+- **Repair (`auto_fix`)** — when enabled, repair only safely-fixable issues: add
+  a missing reciprocal link, regenerate section/COUNT metadata, normalize
+  terminology. **Write a timestamped backup first and print a rollback command;
+  never invent placeholder IDs** to satisfy a check. Structural/content gaps stay
+  reported for the relevant `-fixer`.
 
 ### Prose review (`scope: prose`)
 
-Review a single file or a folder for prose quality independent of traceability:
-typos, inconsistent terminology/acronyms, broken inline links, and unclear
-wording. Use before publishing or committing documentation.
+Review a single file or a folder for prose quality independent of traceability,
+across four classes:
+
+- **DATA** — stated counts / status / date logic vs. content (e.g. "5 features"
+  but 4 listed; `last_updated` earlier than `created`).
+- **REF** — inline link / anchor / tag-format resolution.
+- **TYPO** — misspellings, doubled words, broken markdown.
+- **TERM** — undefined acronyms, inconsistent or subjective terminology.
+
+Severity gates by depth: `quick` ≤ 10 warnings, `full` ≤ 5, `deep` 0. An
+optional project dictionary (`.aidoc/doc-review.yaml`) suppresses domain-term
+false positives. Use before publishing or committing documentation.
 
 ### Cumulative-tag hierarchy
 
@@ -119,6 +132,16 @@ flag each with XDOC-E007. See `../doc-naming/SKILL.md`.
 orphans, 100% bidirectional and 100% cumulative-tag compliance, zero duplicate
 IDs. Output is a consolidated report (markdown/json/text) listing each finding,
 its code, and a fix hint.
+
+## Adaptation
+
+Read the project adaptation profile (`.aidoc/profile.yaml`) before validating.
+Honor this skill's declared knob `active_layers`: when a skippable layer
+(BDD / ADR) is disabled, treat it as absent **by design** — apply the cascade
+(drop it from downstream `required_tags` / `can_reference`) so the cumulative-tag,
+orphan, and bidirectional checks do **not** flag the intentional gap as an error.
+Ignore unknown / out-of-surface keys; absent a profile, use framework defaults.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

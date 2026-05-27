@@ -19,14 +19,19 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Changed
 
 - **Skill set consolidated 55 → 50 (redundancy audit).** Folded five
-  overlapping utilities into two homes — no capability lost:
-  - `skill-recommender` + `workflow-optimizer` + `context-analyzer` → **`doc-flow`**
-    (it now does intent→skill mapping, current-position/next-step detection, and
-    the pre-authoring context scan; `skill-recommender` also duplicated Claude
-    Code's native skill dispatch).
-  - `trace-check` + `doc-review` → **`doc-validator`** (now covers bidirectional
-    traceability with optional repair, and prose/terminology review, via
-    `scope`/`auto_fix`).
+  overlapping utilities into two homes, carrying their procedural detail:
+  - `skill-recommender` + `workflow-optimizer` + `context-analyzer` → **`doc-flow`**,
+    which now carries the intent-keyword → skill map, the `where am I` position
+    scan (status taxonomy + progress %), `what's next` P0/P1/P2 prioritization over
+    the critical path with parallel-work detection, and the context scan
+    (upstream-candidate ranking + vocabulary). `skill-recommender` also duplicated
+    Claude Code's native skill dispatch.
+  - `trace-check` + `doc-review` → **`doc-validator`**, which now covers full
+    bidirectional traceability with `auto_fix` repair (backup / rollback /
+    no-placeholder safety), the four-class prose review (DATA/REF/TYPO/TERM with
+    severity gates + a custom-dictionary), and **inherits `trace-check`'s
+    `adapts: [active_layers]`** so traceability honors a project's disabled-layer
+    profile instead of false-failing it.
   Utilities 19 → 14. All cross-references across skills, agents, README, and
   `docs/SKILL_AUTHORING.md` were repointed; `plm_lint`'s enforced set updated.
   `doc-naming` stays the ID-format authority; the per-layer 4-variant skills are
