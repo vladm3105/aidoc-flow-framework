@@ -300,6 +300,17 @@ graduation.
 - **Follow-up (review later):** decide whether `project-mngt` is reworked into
   an IPLAN-layer (Layer 8) helper, kept as an out-of-band methodology doc, or
   retired. Tracked in `plans/MIGRATION_TODO.md`.
+- **Resolution — RETIRED (2026-05-27):** removed `legacy/claude-code-plugin/project-mngt/`.
+  Rationale: it is a generic **MVP/MMP/MMR product/release-planning methodology**
+  (`layer: null`), not an SDD-layer artifact; its phased-roadmap function overlaps
+  `adr-roadmap` and its execution-planning overlaps the terminal `doc-iplan`, so the
+  in-scope slices are already covered; reviving it as-is would reintroduce the banned
+  sequential `PLAN-NNN`/`REQ-NN`/`TASK-NNN` IDs; and release-staging is out of v1's
+  software/devops scope (D-0012). The methodology is a candidate for a **post-v1.0
+  domain/methodology profile** (ROADMAP "Domain profiles") and remains recoverable
+  from git history + the `legacy-ucx-v3.2-read-only` branch if revived. No shipped
+  surface referenced it (its inbound refs were neutralized when parked), so
+  conformance is unaffected.
 
 ## D-0016 — Post-migration gap audit: fix plugin-surface residue + harden the gate (not bare-token/prose patterns)
 

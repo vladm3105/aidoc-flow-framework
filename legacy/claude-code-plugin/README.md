@@ -5,9 +5,11 @@ Skills moved out of the shipped plugin surface
 Anything under this directory is **not discovered or shipped** by the plugin
 (Claude Code auto-loads only `skills/<name>/SKILL.md`).
 
+**No skills are currently parked.** History:
+
 | Skill | Parked | Reason | Status |
 |-------|--------|--------|--------|
-| `project-mngt` | 2026-05-22 | MVP/MMP/MMR planning methodology skill; not SDD-layer-specific (uses domain-generic `REQ-NN` IDs). Pulled from the plugin to be re-evaluated for fit/placement. | Legacy — review later |
+| `project-mngt` | 2026-05-22 | MVP/MMP/MMR planning methodology skill; not SDD-layer-specific (uses domain-generic `REQ-NN` IDs). Pulled from the plugin to be re-evaluated for fit/placement. | **Retired 2026-05-27** — out of v1 scope; overlaps `adr-roadmap`/`doc-iplan`; candidate for a post-v1.0 domain profile. See `plans/DECISIONS.md` (D-0017 resolution). Recoverable from git history + `legacy-ucx-v3.2-read-only`. |
 
 ## Reviewing a parked skill
 
