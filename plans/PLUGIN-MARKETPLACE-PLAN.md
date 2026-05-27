@@ -337,14 +337,18 @@ CLI, GitHub scope is the monorepo only, tag pushes 403):**
 4. **Install smoke test** — `/plugin marketplace add vladm3105/aidoc-flow-framework`
    then `/plugin install aidoc-flow@aidoc-flow-framework`; run a skill end-to-end
    from the installed copy. **Only after 2–4 pass is "tested/ready" true.**
-5. **Public mirror** — pick the GitHub org/slug; `MIRROR_REPO_SLUG=<org>/aidoc-flow-plugin
-   bash tools/build-plugin-mirror.sh`; create the repo; push the `dist/plugin-mirror`
-   tree to its root; `claude plugin validate` it; `/plugin marketplace add
-   <org>/aidoc-flow-plugin`. (Polish the mirror README's monorepo-relative links to
-   absolute/standalone form before publishing.)
+5. **Public mirror** — `bash tools/build-plugin-mirror.sh` (defaults to slug
+   `vladm3105/aidoc-flow-plugin`; override `MIRROR_REPO_SLUG` once the org exists).
+   It refreshes the bundle and writes a **standalone** mirror README (no monorepo
+   `../../` links) + the `source "."` marketplace.json. Create the repo, push the
+   `dist/plugin-mirror` tree to its root, `claude plugin validate` it, then
+   `/plugin marketplace add vladm3105/aidoc-flow-plugin`.
 6. **Submit** to the community marketplace; **push the tag**
    `claude-code-plugin/v0.3.0` from a local clone.
 
-**One open input for the agent:** the GitHub **org/namespace** for the mirror (and
-confirm separate-mirror vs. publish-from-monorepo). Once set, the agent can finalize
-the mirror README + stage a release/sync workflow.
+**Namespace decision (resolved):** test under the personal namespace
+`vladm3105/aidoc-flow-plugin` now; migrate to a brand GitHub **org** later (just
+override `MIRROR_REPO_SLUG` + the mirror `owner`/`marketplace.json`). A release/sync
+workflow (CI pushes the mirror on a version bump) is **deferred** until the mirror
+repo + a push-scoped deploy secret exist — manual `build-plugin-mirror.sh` + push
+covers it until then.

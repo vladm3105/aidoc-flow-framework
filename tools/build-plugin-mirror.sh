@@ -22,7 +22,8 @@ out="$repo_root/dist/plugin-mirror"
 if [ "${1:-}" = "--out" ] && [ -n "${2:-}" ]; then
   out="$2"
 fi
-repo_slug="${MIRROR_REPO_SLUG:-<org>/aidoc-flow-plugin}"
+# Personal namespace for now; override when the GitHub org exists (D-0023).
+repo_slug="${MIRROR_REPO_SLUG:-vladm3105/aidoc-flow-plugin}"
 
 # 1. Refresh the vendored framework bundle so the mirror is self-contained + current.
 bash "$here/sync-plugin-framework.sh" >/dev/null
@@ -35,17 +36,21 @@ mkdir -p "$out"
 #    to the mirror root.
 cp -R "$plugin/." "$out/"
 
-# 4. Write the mirror marketplace.json: plugin at repo root => source "."; owner is
-#    the aidoc-flow.com identity. Description/version are read from plugin.json so the
-#    two manifests never drift.
-python3 - "$plugin/.claude-plugin/plugin.json" "$out/.claude-plugin/marketplace.json" <<'PY'
+# 4. Write the mirror marketplace.json (plugin at repo root => source ".", owner is
+#    the aidoc-flow.com identity) AND a standalone mirror README, overwriting the
+#    copied monorepo README (whose ../../ links would dangle in a standalone repo).
+#    Description/version are read from plugin.json so the manifests never drift.
+python3 - "$plugin/.claude-plugin/plugin.json" "$out" "$repo_slug" <<'PY'
 import json
 import sys
 
-plugin_json, out_path = sys.argv[1], sys.argv[2]
+plugin_json, out_dir, repo_slug = sys.argv[1], sys.argv[2], sys.argv[3]
 p = json.load(open(plugin_json, encoding="utf-8"))
+market_name = "aidoc-flow"
+plugin_name = p["name"]
+
 market = {
-    "name": "aidoc-flow",
+    "name": market_name,
     "owner": {
         "name": "AI Doc Flow",
         "email": "plugins@aidoc-flow.com",
@@ -53,16 +58,52 @@ market = {
     },
     "plugins": [
         {
-            "name": p["name"],
+            "name": plugin_name,
             "source": ".",
             "description": p.get("description", ""),
             "version": p.get("version", ""),
         }
     ],
 }
-with open(out_path, "w", encoding="utf-8") as fh:
+with open(f"{out_dir}/.claude-plugin/marketplace.json", "w", encoding="utf-8") as fh:
     json.dump(market, fh, indent=2, ensure_ascii=False)
     fh.write("\n")
+
+readme = f"""# {plugin_name} — Claude Code plugin
+
+{p.get("description", "")}
+
+> **One-way generated mirror.** This repository is a published mirror of the
+> plugin, built from the source monorepo for marketplace install — do not edit it
+> directly. Source of truth, issues, and contributions:
+> <{p.get("repository", "")}>. Project home: <https://aidoc-flow.com/claude-code>.
+
+## Install
+
+```
+/plugin marketplace add {repo_slug}
+/plugin install {plugin_name}@{market_name}
+```
+
+## Quickstart
+
+```
+/{plugin_name}:doc-flow                # "which skill do I need?" — start here
+/{plugin_name}:project-init            # scaffold the docs/ layer tree
+/{plugin_name}:doc-brd-autopilot       # draft the first layer (BRD)
+/{plugin_name}:doc-brd-audit           # score it against the layer gate
+/{plugin_name}:trace-check             # verify traceability across artifacts
+```
+
+Work down the layers (`doc-prd` … `doc-iplan`), running each layer's `-audit`
+before promoting. Full docs and guides: <https://aidoc-flow.com/claude-code>.
+
+## License
+
+{p.get("license", "MIT")} — see the source repository.
+"""
+with open(f"{out_dir}/README.md", "w", encoding="utf-8") as fh:
+    fh.write(readme)
 PY
 
 count="$(find "$out" -type f | wc -l | tr -d ' ')"
