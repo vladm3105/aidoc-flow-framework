@@ -311,3 +311,40 @@ P1 Steps 1–8 done on `claude/multi-platform-migration-AamWB`:
 **P2 (user, deferred):** live `claude plugin validate` + a skill run + install
 smoke test (confirms R2); then the mirror repo + `marketplace.json` + identity +
 submission. The release tag `claude-code-plugin/v0.3.0` is also user-pushed.
+
+## P2 execution runbook
+
+**Prepared in-container (done):** identity decided + applied (D-0023); a
+`marketplace.json` validation gate added to `test_plugin_manifest.py` (valid JSON,
+owner, plugin sources safe + resolvable; conformance **65 → 66**); the one-way
+mirror generator `tools/build-plugin-mirror.sh` (refreshes the bundle, lays the
+plugin at the mirror root with `source "."`, writes the `aidoc-flow.com`-owned
+marketplace.json from `plugin.json`). Output goes to `dist/` (git-ignored).
+
+**User steps (Claude Code CLI + GitHub; the container can do none of these — no
+CLI, GitHub scope is the monorepo only, tag pushes 403):**
+
+1. **Stand up identity** — `aidoc-flow.com/claude-code` resolves and the
+   `plugins@aidoc-flow.com` mailbox receives mail (the committed `homepage`/`author`).
+2. **Live validate** — from a clone: `cd platforms/claude-code-plugin && claude
+   plugin validate .`. Fix anything it flags.
+3. **Live skill run (the R2 check)** — run a layer skill (e.g.
+   `/aidoc-flow:doc-brd-autopilot`) against `examples/url-shortener/seed/` and
+   confirm the model **reads the bundled framework files** referenced as
+   `${CLAUDE_PLUGIN_ROOT}/framework/…`. If it cannot resolve the variable in prose,
+   apply the R2 fallback (a resolution note in the orchestrator skill, or a
+   hook-injected root) and re-run.
+4. **Install smoke test** — `/plugin marketplace add vladm3105/aidoc-flow-framework`
+   then `/plugin install aidoc-flow@aidoc-flow-framework`; run a skill end-to-end
+   from the installed copy. **Only after 2–4 pass is "tested/ready" true.**
+5. **Public mirror** — pick the GitHub org/slug; `MIRROR_REPO_SLUG=<org>/aidoc-flow-plugin
+   bash tools/build-plugin-mirror.sh`; create the repo; push the `dist/plugin-mirror`
+   tree to its root; `claude plugin validate` it; `/plugin marketplace add
+   <org>/aidoc-flow-plugin`. (Polish the mirror README's monorepo-relative links to
+   absolute/standalone form before publishing.)
+6. **Submit** to the community marketplace; **push the tag**
+   `claude-code-plugin/v0.3.0` from a local clone.
+
+**One open input for the agent:** the GitHub **org/namespace** for the mirror (and
+confirm separate-mirror vs. publish-from-monorepo). Once set, the agent can finalize
+the mirror README + stage a release/sync workflow.

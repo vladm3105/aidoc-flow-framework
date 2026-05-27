@@ -1,5 +1,23 @@
 # Session Handoff
 
+> **🔵 PLUGIN-MARKETPLACE P2 PREP — identity + mirror tooling (2026-05-27).**
+> Branch **`claude/multi-platform-migration-AamWB`**. Did the in-container half of
+> P2: **identity decided + applied** (D-0023 — one brand `aidoc-flow.com`,
+> path-based per-integration pages `/claude-code` `/codex` `/vscode` `/hermes`;
+> `.ai` reserved for agents/cloud; plugin `author`/`homepage` set, root
+> `marketplace.json` counts/version fixed). Added a **`marketplace.json` validation
+> gate** (`test_plugin_manifest.py`: owner + safe/resolvable sources; conformance
+> **65 → 66**) and the **one-way mirror generator** `tools/build-plugin-mirror.sh`
+> (refreshes the bundle, lays the plugin at mirror root with `source "."`, writes
+> the `aidoc-flow.com`-owned marketplace.json; output to git-ignored `dist/`). Plan
+> has a full **P2 execution runbook**. **All remaining P2 is user-only** (no CLI in
+> sandbox; GitHub scope = monorepo; tag push 403s): stand up site+mailbox →
+> `claude plugin validate` → live skill run (the R2 `${CLAUDE_PLUGIN_ROOT}`-in-prose
+> check, against `examples/url-shortener/seed/`) → `/plugin install` smoke →
+> ("tested/ready" true only after these) → create the mirror repo + push `dist/`
+> tree → submit → push tag `claude-code-plugin/v0.3.0`. **One open input for the
+> agent:** the GitHub **org/namespace** for the mirror.
+>
 > **🟢 PLUGIN-MARKETPLACE P1 DONE — plugin is self-contained + validated — 2026-05-27.**
 > Branch **`claude/multi-platform-migration-AamWB`**. Plan:
 > `plans/PLUGIN-MARKETPLACE-PLAN.md` (3 review passes + impl log). Made the Claude

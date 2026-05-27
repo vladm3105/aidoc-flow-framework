@@ -25,6 +25,7 @@ PLUGIN = REPO_ROOT / "platforms" / "claude-code-plugin"
 MANIFEST = PLUGIN / ".claude-plugin" / "plugin.json"
 HOOKS = PLUGIN / "hooks" / "hooks.json"
 BUNDLE = PLUGIN / "framework"
+MARKETPLACE = REPO_ROOT / ".claude-plugin" / "marketplace.json"
 
 KEBAB = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 PLUGIN_ROOT_REF = re.compile(r"\$\{CLAUDE_PLUGIN_ROOT\}/(framework/[^\s`)\]]+)")
@@ -70,6 +71,33 @@ class PluginManifest(unittest.TestCase):
         self.assertTrue(HOOKS.is_file(), f"missing {HOOKS}")
         data = json.loads(HOOKS.read_text(encoding="utf-8"))
         self.assertIsInstance(data.get("hooks"), dict, "hooks.json needs a 'hooks' object")
+
+    def test_marketplace_valid(self):
+        """When a marketplace manifest is present, it must be well-formed and its
+        plugin sources must be safe + resolvable (PLUGIN-MARKETPLACE gate, P2)."""
+        if not MARKETPLACE.is_file():
+            self.skipTest("no marketplace.json")
+        data = json.loads(MARKETPLACE.read_text(encoding="utf-8"))
+        self.assertTrue(str(data.get("name", "")).strip(), "marketplace.json needs a name")
+        owner = data.get("owner")
+        self.assertIsInstance(owner, dict, "marketplace.json needs an 'owner' object")
+        self.assertTrue(str(owner.get("name", "")).strip(), "marketplace owner needs a name")
+        plugins = data.get("plugins")
+        self.assertIsInstance(plugins, list, "marketplace.json needs a 'plugins' list")
+        self.assertTrue(plugins, "marketplace.json lists no plugins")
+        for entry in plugins:
+            name = entry.get("name", "<unnamed>")
+            with self.subTest(plugin=name):
+                self.assertTrue(str(name).strip(), "plugin entry needs a name")
+                source = entry.get("source")
+                self.assertTrue(isinstance(source, str) and source, "plugin entry needs a source")
+                self.assertNotIn("..", source, f"plugin source must not contain '..': {source}")
+                # Relative sources resolve from the marketplace repo root.
+                if not source.startswith(("http://", "https://", "git@")):
+                    target = (MARKETPLACE.parent.parent / source).resolve()
+                    self.assertTrue(
+                        target.is_dir(), f"plugin source does not resolve to a dir: {source}"
+                    )
 
     def test_skills_have_description(self):
         skill_files = sorted((PLUGIN / "skills").glob("*/SKILL.md"))
