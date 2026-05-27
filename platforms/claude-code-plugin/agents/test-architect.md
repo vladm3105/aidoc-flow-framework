@@ -44,7 +44,7 @@ attribute on the test cases you author via `doc-tdd*`.
 
 Security-type test cases are co-owned with the **Security Engineer**; contract
 conformance and test-execution scaffolding are captured as test definitions in
-`doc-tdd` and reviewed via `doc-review`.
+`doc-tdd` and reviewed via `doc-validator`.
 
 You receive SPEC from the **Solutions Architect** and hand a complete test
 design to the **Software Engineer** (who implements tests + code) and the

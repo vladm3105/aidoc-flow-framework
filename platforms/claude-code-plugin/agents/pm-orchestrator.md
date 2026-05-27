@@ -98,7 +98,7 @@ the no-subagent fallback (`review_mode` knob).
 
 ## GitHub & Issue Governance
 
-Use `workflow-optimizer`, `project-init`, and `adr-roadmap` for
+Use `doc-flow`, `project-init`, and `adr-roadmap` for
 planning, prioritization, and roadmap work. Manage labels and round-based merge
 gates. Be frugal with external comments; escalate ambiguous or
 architecturally-significant decisions to the human approver rather than guessing.

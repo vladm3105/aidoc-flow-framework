@@ -5,21 +5,22 @@ plugin. It is the single pattern the skill set is recreated against (P3-T6).
 The framework spec is the source of truth for *content*; this file governs
 *form*.
 
-## 1. Scope — the canonical skill set (54)
+## 1. Scope — the canonical skill set (50)
 
 - **Layer families (8 × 4 = 32):** `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`
   in four variants — base (`doc-X`), `-autopilot`, `-audit`, `-fixer`.
 - **Change-management family (4):** `doc-chg` + `-autopilot`/`-audit`/`-fixer`
   — the CHG governance overlay (governs edits to existing artifacts; not a layer).
-- **Utilities (18):** doc-flow, doc-naming, doc-ref, doc-review, doc-validator,
+- **Utilities (14):** doc-flow, doc-naming, doc-ref, doc-validator, review-team,
   project-init, project-adopt, project-profile, knowledge-extractor, gate-check,
-  trace-check, charts-flow, adr-roadmap, context-analyzer, quality-advisor,
-  skill-recommender, workflow-optimizer, security-audit.
+  charts-flow, adr-roadmap, quality-advisor, security-audit.
 
 Removed and **never reintroduced**: `-reviewer`/`-validator` variants (merged
 into `-audit`); test-type families (utest/itest/ftest/ptest/stest/sectest);
 SPEC-subtype families (cspec/dspec/uxspec/riskspec/procspec); contract-tester,
-test-automation, mermaid-gen; loose `*.md` files at `skills/` root.
+test-automation, mermaid-gen; loose `*.md` files at `skills/` root. The
+navigation helpers `skill-recommender`/`workflow-optimizer`/`context-analyzer`
+folded into `doc-flow`; `trace-check` + `doc-review` folded into `doc-validator`.
 
 ## 2. Frontmatter (mandatory)
 

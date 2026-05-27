@@ -61,7 +61,7 @@ Effective precedence: `framework defaults < user-global seed < project answers`.
 
 ### 2. Infer the starting point
 
-Lean on `../context-analyzer/SKILL.md` rather than re-scanning: use its
+Lean on `../doc-flow/SKILL.md`'s context scan rather than re-scanning: use its
 inventory to propose `active_layers` (which layers the project already uses),
 spot recurring optional sections, and collect domain terms as `glossary`
 candidates. Do not duplicate its scan.
@@ -114,7 +114,7 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 
 - Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`
 - Surface registry: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml`
-- Context model: `../context-analyzer/SKILL.md`
+- Context scan: `../doc-flow/SKILL.md`
 - Scaffolding: `../project-init/SKILL.md`, `../project-adopt/SKILL.md`
 - Promote adaptations upward: `../knowledge-extractor/SKILL.md`
 - Next: `../doc-flow/SKILL.md`
@@ -124,7 +124,7 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 | Step | Action |
 |------|--------|
 | 1 | Resolve project profile + user-global seed |
-| 2 | Infer starting point via `context-analyzer` |
+| 2 | Infer starting point via `doc-flow`'s context scan |
 | 3 | Interview across the 4 knobs |
 | 4 | Validate against `ADAPTATION_SURFACE.yaml` |
 | 5 | Materialize + write `.aidoc/profile.yaml` (commit it) |

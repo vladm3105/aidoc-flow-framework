@@ -14,6 +14,24 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.4.0] — 2026-05-27
+
+### Changed
+
+- **Skill set consolidated 55 → 50 (redundancy audit).** Folded five
+  overlapping utilities into two homes — no capability lost:
+  - `skill-recommender` + `workflow-optimizer` + `context-analyzer` → **`doc-flow`**
+    (it now does intent→skill mapping, current-position/next-step detection, and
+    the pre-authoring context scan; `skill-recommender` also duplicated Claude
+    Code's native skill dispatch).
+  - `trace-check` + `doc-review` → **`doc-validator`** (now covers bidirectional
+    traceability with optional repair, and prose/terminology review, via
+    `scope`/`auto_fix`).
+  Utilities 19 → 14. All cross-references across skills, agents, README, and
+  `docs/SKILL_AUTHORING.md` were repointed; `plm_lint`'s enforced set updated.
+  `doc-naming` stays the ID-format authority; the per-layer 4-variant skills are
+  unchanged.
+
 ## [0.3.0] — 2026-05-27
 
 ### Added

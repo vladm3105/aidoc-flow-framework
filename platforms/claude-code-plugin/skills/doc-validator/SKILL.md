@@ -1,6 +1,6 @@
 ---
 name: doc-validator
-description: Cross-document validation for the SDD flow - broken cross-references, orphaned artifacts, cumulative-tag gaps, duplicate IDs, and traceability-matrix completeness across the corpus. Use before releases or after batch generation.
+description: Cross-document validation for the SDD flow - broken cross-references, orphaned artifacts, cumulative-tag gaps, duplicate IDs, traceability-matrix completeness, bidirectional traceability with optional link repair, and prose/terminology review across the corpus. Use before releases, after batch generation, or to validate and repair traceability.
 metadata:
   tags:
     - sdd-workflow
@@ -31,20 +31,22 @@ layer `README.md` files.
 ## When to Use
 
 **Use** for project-wide checks: relationships between documents, cumulative
-tagging, orphan detection, bidirectional-link consistency, duplicate IDs, and
-before major releases.
+tagging, orphan detection, bidirectional-link consistency, duplicate IDs,
+deep traceability (with optional link repair), prose/terminology review, and
+before major releases. It is the single corpus-level validator — it also covers
+the traceability depth + repair and the prose review that were previously
+separate skills.
 
 **Do NOT use** for:
 
 - single-document structure/metadata/content — use that layer's
   `../doc-<layer>-audit/SKILL.md`;
-- ID-format compliance — use `../doc-naming/SKILL.md`;
-- detailed traceability analysis — use `../trace-check/SKILL.md`;
-- prose quality (typos, terms) — use `../doc-review/SKILL.md`.
+- the canonical ID-format rules/reference — see `../doc-naming/SKILL.md`
+  (this skill enforces them; `doc-naming` is the authority that defines them).
 
 Inputs: `docs_path` (required), `scope` (`cross-document` default /
-`traceability` / `full`), `strictness` (`strict` / `permissive`),
-`report_format`.
+`traceability` / `prose` / `full`), `strictness` (`strict` / `permissive`),
+`auto_fix` (repair broken links / regenerate counts where safe), `report_format`.
 
 ## Behavior
 
@@ -66,6 +68,25 @@ Inputs: `docs_path` (required), `scope` (`cross-document` default /
 
 SECTION / TERM / COUNT findings are typically auto-fixable (regenerate
 counts/sections, normalize terms); the rest are reported for manual fix.
+
+### Traceability depth + repair
+
+Beyond the cross-document checks, run the full bidirectional traceability pass:
+
+- **Bidirectional symmetry** — for each A→B link confirm B→A exists; score
+  `(matched pairs / total) × 100` (target ≥ 95%).
+- **Coverage + orphans** — upstream is required for every artifact except BRD;
+  downstream is optional; flag mid-chain artifacts with no downstream and
+  unexpected orphans; report coverage by type.
+- **Repair (`auto_fix`)** — when enabled, repair safely-fixable issues: add a
+  missing reciprocal link, regenerate section/COUNT metadata, normalize
+  terminology. Structural/content gaps stay reported for the relevant `-fixer`.
+
+### Prose review (`scope: prose`)
+
+Review a single file or a folder for prose quality independent of traceability:
+typos, inconsistent terminology/acronyms, broken inline links, and unclear
+wording. Use before publishing or committing documentation.
 
 ### Cumulative-tag hierarchy
 
@@ -106,7 +127,6 @@ its code, and a fix hint.
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
 - Per-layer authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/README.md`
-- ID formats: `../doc-naming/SKILL.md` · Traceability: `../trace-check/SKILL.md`
+- ID-format authority: `../doc-naming/SKILL.md`
 - Single-document gates: `../doc-brd-audit/SKILL.md` … `../doc-iplan-audit/SKILL.md`
-- Prose review: `../doc-review/SKILL.md` · Workflow routing: `../doc-flow/SKILL.md`
-- Diagrams: `../charts-flow/SKILL.md`
+- Workflow routing: `../doc-flow/SKILL.md` · Diagrams: `../charts-flow/SKILL.md`

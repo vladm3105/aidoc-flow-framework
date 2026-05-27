@@ -115,7 +115,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Drives** the lifecycle through the native `doc-flow` orchestrator plus the `doc-*` skill families.
 - **Delegates to** all eight specialists via the `Task` tool, giving each a self-contained brief; runs independent work in parallel and sequences dependent work; never lets an author gate its own work.
 - **Governance:** Enforces *analyze → roadmap → planning index → changelog plan → gap review → IPLAN → approval → implementation*. Approval authority is a human reviewer or independent LLM-as-judge — never self-approval. Only `ai:ready` issues are eligible for autonomous execution.
-- **Skills:** `workflow-optimizer`, `project-init`, `adr-roadmap`.
+- **Skills:** `doc-flow`, `project-init`, `adr-roadmap`.
 - **Model:** opus.
 
 ### `requirements-analyst` — Requirements Analyst
@@ -139,7 +139,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Purpose:** Design the test strategy and author every test specification layer; own coverage targets and readiness scoring.
 - **Owns:** the TDD guide (Layer 7) and all test cases, tagged by `type` — unit, integration, smoke, functional, performance, security (security-type cases co-owned with Security Engineer).
 - **Discipline:** chooses the right test type per obligation (avoids redundant coverage), maps every case to a requirement/scenario, enforces threshold rules, flags untested requirements.
-- **Skills:** `doc-tdd-*` (base/autopilot/audit/fixer); contract conformance and test-execution scaffolding are captured as `doc-tdd` test definitions reviewed via `doc-review`.
+- **Skills:** `doc-tdd-*` (base/autopilot/audit/fixer); contract conformance and test-execution scaffolding are captured as `doc-tdd` test definitions reviewed via `doc-validator`.
 - **Handoff:** test design + coverage matrix → Software Engineer + Code Reviewer.
 - **Model:** sonnet.
 
@@ -148,7 +148,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Purpose:** Implement source code and tests from an approved IPLAN.
 - **Planning-first rule:** implements only `ai:ready` scope with an approved IPLAN; routes unplanned work back to PM + Architect rather than free-styling architecture.
 - **Owns:** the execution lane — small verifiable increments, runs the suite, opens PRs with traceability tags, test evidence, and risk flags; applies fixes from the read-only gates.
-- **Skills:** `doc-iplan*`, `doc-flow`; consumes `doc-tdd` test definitions and uses `doc-review` when applying gate findings.
+- **Skills:** `doc-iplan*`, `doc-flow`; consumes `doc-tdd` test definitions and uses `doc-validator` when applying gate findings.
 - **Model:** sonnet.
 
 ### `devops-release-engineer` — DevOps / Release Engineer
@@ -164,7 +164,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Purpose:** Review PRs/code for correctness, acceptance-criteria conformance, spec/test alignment, standards, and security hygiene.
 - **Read-only gate:** reports findings and a verdict (Approve / Approve-with-nits / Request-changes / Block); never edits. Findings carry severity (P0–P3) and `file:line`.
 - **Verifies:** acceptance criteria explicitly (met/unmet/unverifiable) and coverage against the Test Architect's bar.
-- **Skills:** `doc-review` (including contract conformance against SPEC interfaces and `doc-tdd` test definitions); `trace-check`/`doc-validator` for conformance.
+- **Skills:** `doc-validator` (including contract conformance against SPEC interfaces and `doc-tdd` test definitions, plus spec/traceability conformance).
 - **Model:** opus.
 
 ### `security-engineer` — Security Engineer (read-only)
@@ -179,7 +179,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Purpose:** Verify cross-layer traceability and project-wide document integrity; a mechanical, high-frequency gate.
 - **Read-only gate:** runs the validation tooling and reports gaps, broken links, ID/naming violations, and orphaned artifacts; routes fixes to the owning author agent or the relevant `doc-*-fixer` skill.
 - **Audits:** cumulative upstream tags, link/anchor resolution, ID and threshold naming, coverage/orphans, readiness scores.
-- **Skills:** `trace-check`, `doc-validator`, `doc-naming`, `quality-advisor`; routes layer-specific findings to the per-layer `doc-*-audit` skills.
+- **Skills:** `doc-validator`, `doc-naming`, `quality-advisor`; routes layer-specific findings to the per-layer `doc-*-audit` skills.
 - **Model:** haiku.
 
 ---

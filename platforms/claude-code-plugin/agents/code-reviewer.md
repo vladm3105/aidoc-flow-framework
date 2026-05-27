@@ -39,10 +39,9 @@ A reviewer that fixes its own findings cannot be trusted as a gate.
 ## Review skills
 
 Drive the document/spec dimension through the plugin's native `doc-*` skills:
-use `doc-review` for the code/PR dimension (including contract conformance
+use `doc-validator` for the code/PR dimension (including contract conformance
 against the interface contracts in the SPEC and the test definitions in
-`doc-tdd`), and `trace-check` / `doc-validator` to confirm spec and
-traceability conformance.
+`doc-tdd`) and to confirm spec and traceability conformance.
 
 ## What You Review
 

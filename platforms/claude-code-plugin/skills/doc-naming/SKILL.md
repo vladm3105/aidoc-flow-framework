@@ -34,9 +34,8 @@ framework ships no runtime code).
 - check a `@threshold:` tag, or
 - detect removed/legacy ID patterns and get the migration target.
 
-**Do NOT use** for cross-document traceability (`../doc-validator/SKILL.md`,
-`../trace-check/SKILL.md`) or single-document content review
-(`../doc-review/SKILL.md`).
+**Do NOT use** for cross-document traceability or content review — use
+`../doc-validator/SKILL.md`.
 
 ## Behavior
 
@@ -128,6 +127,6 @@ detection. Date-only values are deprecated.
 - Threshold rules: `${CLAUDE_PLUGIN_ROOT}/framework/governance/THRESHOLD_NAMING_RULES.md`
 - Layer registry (roster, chains, folders): `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
 - Per-layer templates & READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`
-- Cross-document validation: `../doc-validator/SKILL.md` · `../trace-check/SKILL.md`
+- Cross-document validation: `../doc-validator/SKILL.md`
 - Workflow routing: `../doc-flow/SKILL.md`
 - Diagrams: `../charts-flow/SKILL.md`

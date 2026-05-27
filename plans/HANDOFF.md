@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 PLUGIN SKILL CONSOLIDATION — 55 → 50, redundancy audit (2026-05-27).**
+> Branch **`claude/multi-platform-migration-AamWB`**. Audited the 55 plugin skills
+> for redundancy; folded five overlapping utilities into two homes with **no
+> capability lost**: `skill-recommender` + `workflow-optimizer` + `context-analyzer`
+> → **`doc-flow`** (now does intent→skill mapping, position/next-step detection, and
+> the pre-authoring context scan; `skill-recommender` also duplicated Claude Code's
+> native skill dispatch); `trace-check` + `doc-review` → **`doc-validator`** (now
+> covers bidirectional traceability + optional repair and prose review via
+> `scope`/`auto_fix`). `doc-naming` kept as the ID authority; the 32 per-layer
+> 4-variant skills untouched (deliberate granularity, per `docs/PARITY.md`).
+> Repointed every cross-ref across skills/agents/README/`SKILL_AUTHORING.md`
+> (~28 files), updated `plm_lint`'s set, counts (utilities 19→14, total 55→50), and
+> the root `marketplace.json`. Plugin **`0.3.0 → 0.4.0`**; CHANGELOG `[0.4.0]`.
+> **Verify:** 0 dangling refs; `plm_lint --all` clean; conformance 66 green;
+> `pre-commit` all Passed. **User-only:** push tag `claude-code-plugin/v0.4.0`.
+>
 > **🔵 PLUGIN-MARKETPLACE P2 PREP — identity + mirror tooling (2026-05-27).**
 > Branch **`claude/multi-platform-migration-AamWB`**. Did the in-container half of
 > P2: **identity decided + applied** (D-0023 — one brand `aidoc-flow.com`,

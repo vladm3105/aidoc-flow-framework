@@ -27,7 +27,7 @@ Published through the repo-root marketplace manifest
 /aidoc-flow:project-init            # scaffold the docs/ layer tree for a project
 /aidoc-flow:doc-brd-autopilot       # draft the first layer (BRD) end-to-end
 /aidoc-flow:doc-brd-audit           # score it against the layer's quality gate
-/aidoc-flow:trace-check             # verify traceability across all artifacts
+/aidoc-flow:doc-validator           # validate cross-doc references & traceability
 ```
 
 Work down the layers (`doc-prd`, `doc-ears`, … `doc-iplan`), running each
@@ -45,11 +45,11 @@ right skill. The deeper authoring guidance is in
 |-----------|------:|--------|
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
-| Skills (utilities) | 19 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-review`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`, `quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`. |
+| Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `adversary` and `synthesizer`. See `agents/README.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
-| **Total skills** | **55** | |
+| **Total skills** | **50** | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
@@ -92,7 +92,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.3.0
+0.4.0
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.8.1
@@ -108,7 +108,7 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.3.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Version | `0.4.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.8.1` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |

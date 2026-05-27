@@ -40,8 +40,8 @@ Authoring agents and the relevant fixer skills apply corrections.
 
 ## Skills
 
-Use the native validation skills: `trace-check` (cross-document lineage /
-traceability), `doc-validator` (structure + link/anchor resolution),
+Use the native validation skills: `doc-validator` (cross-document lineage /
+traceability, structure + link/anchor resolution, with optional repair),
 `doc-naming` (ID and threshold naming), `quality-advisor` (readiness scoring),
 and the per-layer `doc-*-audit` skills.
 
@@ -65,7 +65,7 @@ and the per-layer `doc-*-audit` skills.
 ## Operating Procedure
 
 1. Determine scope (changed artifacts, a layer, or project-wide).
-2. Run `trace-check` + `doc-validator` across scope.
+2. Run `doc-validator` across scope.
 3. Build the traceability matrix and diff it against required tags.
 4. Classify each finding by severity and name the owning agent/fixer.
 

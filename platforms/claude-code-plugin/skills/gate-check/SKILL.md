@@ -45,7 +45,7 @@ Do **not** use it for:
 
 - C1 changes (typo/formatting) — no gate applies; fix and commit.
 - Creating fresh artifacts in a clean flow — use the layer skills and
-  `../trace-check/SKILL.md`.
+  `../doc-validator/SKILL.md`.
 - Authoring the CHG record itself — use `../doc-chg/SKILL.md`.
 
 ## Behavior
@@ -127,4 +127,4 @@ the change level's matrix. The change proceeds only after a human signs.
 - Error codes: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE_ERROR_CATALOG.md`
 - Approval form: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/GATE_APPROVAL_FORM.md`
 - CHG authoring: `../doc-chg/SKILL.md`
-- Traceability after a change: `../trace-check/SKILL.md`
+- Traceability after a change: `../doc-validator/SKILL.md`

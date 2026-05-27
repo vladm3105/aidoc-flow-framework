@@ -1,6 +1,6 @@
 ---
 name: doc-flow
-description: Orchestrate the 8-layer SDD workflow - guide skill selection, explain the BRD→…→Code flow, and enforce the upstream-artifact policy. Use when unsure which skill to run next.
+description: Orchestrate the 8-layer SDD workflow - recommend the right skill for an intent, detect the current position and next steps, explain the BRD→…→Code flow, and enforce the upstream-artifact policy. Use when unsure what to do or which skill to run next.
 metadata:
   tags:
     - sdd-workflow
@@ -41,7 +41,8 @@ Authoritative spec: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUI
   (`../doc-chg/SKILL.md`), not the linear flow (see *Change management* below).
 
 For end-to-end generation of a single layer, use that layer's `-autopilot`
-skill. For intent-based suggestions, use `../skill-recommender/SKILL.md`.
+skill. For "which skill / where am I / what's next", stay here — see *Find the
+right skill, and where you are* below.
 
 ## Behavior
 
@@ -83,6 +84,24 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 | Any stage | Supplementary docs (overview, glossary) | `doc-ref` |
 | General guidance | Routing | stay on `doc-flow` |
 
+### Find the right skill, and where you are
+
+`doc-flow` answers "what should I do next?" directly — no separate helper skill:
+
+- **Intent → skill.** Map the request: *create/draft X* → that layer's base or
+  `-autopilot`; *check/score X* → `-audit`; *fix X* → `-fixer`; *validate
+  links/traceability or review prose* → `../doc-validator/SKILL.md`; *edit a
+  published artifact* → `../doc-chg/SKILL.md`. When the user names a skill, run it.
+- **Where am I.** Scan `docs/<NN>_<X>/` for existing artifacts and their status,
+  map them to layers 1–8, and report the current position, the completed / ready /
+  blocked layers, and a progress summary.
+- **What's next.** Recommend the next artifact per the cumulative chain (each layer
+  needs its single-layer prerequisite), surface work that can proceed in parallel,
+  and name the skill to run.
+- **Context scan.** Before authoring in an existing project, inventory the corpus
+  and the traceability snapshot (upstream candidates for the new artifact) so the
+  new document references real IDs.
+
 ### Utility skills
 
 - **`../project-init/SKILL.md`** — scaffold a new project (run before any layer).
@@ -90,17 +109,15 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 - **`../project-profile/SKILL.md`** — tailor the flow to this project (optional; sets `.aidoc/profile.yaml`).
 - **`../doc-naming/SKILL.md`** — ID / naming authority (`TYPE-NN`, `TYPE.NN.SS.xxxx`).
 - **`../doc-ref/SKILL.md`** — free-format reference documents (BRD-REF / ADR-REF).
-- **`../doc-review/SKILL.md`** — cross-cutting quality review (typos, links, terms).
+- **`../doc-validator/SKILL.md`** — cross-document validation, bidirectional
+  traceability (with optional repair), and prose/terminology review.
 - **`../review-team/SKILL.md`** — multi-persona review-team mode for the
   `-audit`/`-fixer`/`-autopilot` operations at gates (crew → blackboard → scored
   report); `single_pass` fallback otherwise.
-- **`../doc-validator/SKILL.md`** — cross-document validation & traceability gaps.
-- **`../trace-check/SKILL.md`** — bidirectional traceability validation.
+- **`../quality-advisor/SKILL.md`** — real-time authoring guidance for a single document.
 - **`../charts-flow/SKILL.md`** — Mermaid diagrams and file management.
 - **`../adr-roadmap/SKILL.md`** — implementation roadmaps from ADRs.
-- **`../context-analyzer/SKILL.md`** · **`../quality-advisor/SKILL.md`** ·
-  **`../skill-recommender/SKILL.md`** · **`../workflow-optimizer/SKILL.md`** ·
-  **`../security-audit/SKILL.md`** — analysis and advisory helpers.
+- **`../security-audit/SKILL.md`** — security review (OWASP/CWE, STRIDE).
 
 ### Change management (editing existing artifacts)
 

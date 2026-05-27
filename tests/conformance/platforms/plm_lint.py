@@ -61,18 +61,13 @@ MIGRATED: set[str] = {
     "doc-flow",
     "doc-naming",
     "doc-ref",
-    "doc-review",
     "doc-validator",
     "project-init",
     "project-adopt",
     "gate-check",
-    "trace-check",
     "charts-flow",
     "adr-roadmap",
-    "context-analyzer",
     "quality-advisor",
-    "skill-recommender",
-    "workflow-optimizer",
     "security-audit",
 }
 

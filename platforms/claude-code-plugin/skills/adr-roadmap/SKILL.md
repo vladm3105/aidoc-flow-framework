@@ -79,4 +79,4 @@ tokens.
 - Diagrams: `../charts-flow/SKILL.md`
 - Downstream generation: `../doc-spec/SKILL.md` · `../doc-tdd/SKILL.md` ·
   `../doc-iplan/SKILL.md`
-- Traceability check: `../trace-check/SKILL.md`
+- Traceability check: `../doc-validator/SKILL.md`

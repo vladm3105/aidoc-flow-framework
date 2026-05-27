@@ -119,7 +119,7 @@ direct the user to:
   for the matching `-fixer` skills,
 
 so the drafts close their gaps and rise from `draft` to ready. Run
-`../trace-check/SKILL.md` once baselines link up to confirm traceability.
+`../doc-validator/SKILL.md` once baselines link up to confirm traceability.
 
 ## Adaptation
 
@@ -136,5 +136,5 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
   `../doc-spec-audit/SKILL.md`)
 - Layer registry (the 8 artifacts): `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
 - Templates & READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`
-- Traceability check: `../trace-check/SKILL.md`
+- Traceability check: `../doc-validator/SKILL.md`
 - Diagrams: `../charts-flow/SKILL.md`
