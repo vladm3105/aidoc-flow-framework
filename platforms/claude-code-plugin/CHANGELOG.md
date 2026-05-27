@@ -14,6 +14,15 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed
+
+- **`doc-flow` — bundled-path resolution guidance.** Added a "Reading bundled
+  files" note clarifying that `${CLAUDE_PLUGIN_ROOT}` is an environment variable
+  (it does not auto-expand in skill prose) and how to resolve a
+  `${CLAUDE_PLUGIN_ROOT}/framework/…` reference — read it via the shell (where the
+  variable expands) or relative to the plugin root. Proactively de-risks the P2
+  live-run / install smoke test (plan risk R2).
+
 ## [0.4.0] — 2026-05-27
 
 ### Changed

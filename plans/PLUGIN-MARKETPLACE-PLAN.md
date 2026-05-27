@@ -296,11 +296,16 @@ P1 Steps 1–8 done on `claude/multi-platform-migration-AamWB`:
 
 **Two findings worth carrying forward:**
 
-- **`${CLAUDE_PLUGIN_ROOT}` in prose (R2, sharpened).** claude-code-guide
-  confirmed the variable auto-expands only in config `command` fields, **not**
-  skill/agent body prose. P1's deliverable (self-containment — the files now
-  ship at that anchor) stands; whether the model resolves the variable in prose
-  is the **P2 live-test** question, with documented fallbacks (R2).
+- **`${CLAUDE_PLUGIN_ROOT}` in prose (R2, sharpened — guidance added).**
+  claude-code-guide confirmed the variable auto-expands only in config `command`
+  fields, **not** skill/agent body prose. P1's deliverable (self-containment — the
+  files now ship at that anchor) stands. **Proactive mitigation (2026-05-27):**
+  added a "Reading bundled files" note to `doc-flow` (the orchestrator/entry point)
+  telling the model to resolve `CLAUDE_PLUGIN_ROOT` via the shell (it expands in
+  Bash) or relative to the plugin root, and never to open the literal-text path.
+  The **P2 live run** confirms whether that orchestrator-level note suffices or
+  whether it must be broadcast to the directly-invokable per-layer skills (or moved
+  to a hook). Deferred the broadcast to avoid ~50 speculative edits before the run.
 - **Linter exclusions for the bundle.** Canonical `framework/` markdown is *not*
   style-clean — it is deliberately excluded from markdownlint/pre-commit because
   it is GATE-SPEC-governed. The byte-identical bundle inherits that: added
@@ -331,9 +336,10 @@ CLI, GitHub scope is the monorepo only, tag pushes 403):**
 3. **Live skill run (the R2 check)** — run a layer skill (e.g.
    `/aidoc-flow:doc-brd-autopilot`) against `examples/url-shortener/seed/` and
    confirm the model **reads the bundled framework files** referenced as
-   `${CLAUDE_PLUGIN_ROOT}/framework/…`. If it cannot resolve the variable in prose,
-   apply the R2 fallback (a resolution note in the orchestrator skill, or a
-   hook-injected root) and re-run.
+   `${CLAUDE_PLUGIN_ROOT}/framework/…`. `doc-flow` now carries a "Reading bundled
+   files" resolution note; if a *directly-invoked* layer skill still can't resolve
+   the path, broadcast that note to the per-layer skills (or move it to a hook) and
+   re-run.
 4. **Install smoke test** — `/plugin marketplace add vladm3105/aidoc-flow-framework`
    then `/plugin install aidoc-flow@aidoc-flow-framework`; run a skill end-to-end
    from the installed copy. **Only after 2–4 pass is "tested/ready" true.**
