@@ -446,9 +446,10 @@ closed. Both platforms now implement the 8-layer model.
 
 ## Review-later backlog
 
-- [ ] **`project-mngt` (parked legacy 2026-05-22, D-0017).** Generic MVP/MMP/MMR
-  planning methodology, pulled from the shipped plugin to
-  `legacy/claude-code-plugin/project-mngt/` (skill count 125 → 124). Decide its
-  fate: rework into an IPLAN-layer (Layer 8) helper, keep as an out-of-band
-  methodology doc, or retire. If un-parked, restore the inbound references that
-  were neutralized (see D-0017) and re-run conformance.
+- [x] **`project-mngt` (parked legacy 2026-05-22, D-0017) — RETIRED 2026-05-27.**
+  Generic MVP/MMP/MMR product/release-planning methodology (`layer: null`); not an
+  SDD-layer artifact, overlaps `adr-roadmap`/`doc-iplan`, would reintroduce banned
+  sequential IDs, and is out of v1's software/devops scope (D-0012). Removed
+  `legacy/claude-code-plugin/project-mngt/`; flagged as a post-v1.0 domain-profile
+  candidate. Conformance unaffected (no shipped surface referenced it). See the
+  D-0017 resolution in `plans/DECISIONS.md`.
