@@ -64,11 +64,11 @@ The model is consumed by `../skill-recommender/SKILL.md`,
 ## Related Resources
 
 - Layer registry (layers, `can_reference`):
-  `framework/registry/LAYER_REGISTRY.yaml`
-- Traceability: `framework/governance/TRACEABILITY.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
-- Layer READMEs: `framework/layers/02_PRD/README.md` ·
-  `framework/layers/05_ADR/README.md`
+  `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Traceability: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Layer READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
 - Related skills: `../skill-recommender/SKILL.md` ·
   `../workflow-optimizer/SKILL.md` · `../quality-advisor/SKILL.md` ·
   `../trace-check/SKILL.md`

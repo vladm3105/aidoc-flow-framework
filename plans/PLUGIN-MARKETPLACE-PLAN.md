@@ -4,7 +4,7 @@
 |------------|--------------------------------|
 | Task       | PLUGIN-MARKETPLACE             |
 | Depends on | The plugin at `platforms/claude-code-plugin/`; the `sdd_doc_lint` vendoring precedent (`tools/sdd_doc_lint/sync-vendored.sh` + `tests/conformance/platforms/test_doc_lint_vendoring.py`); the claude-code-guide marketplace checklist; D-0013 (single-source-of-truth for templates) |
-| Status     | PLANNED — 2026-05-27 |
+| Status     | P1 IMPLEMENTED — 2026-05-27 (P2 pending: user CLI live-run + publish) |
 | Feeds      | A self-contained, validated, documented Claude Code plugin that installs and runs from a marketplace; a path to a public storefront + open-core commercialization |
 
 ## Objective
@@ -177,7 +177,7 @@ fine — kebab, non-reserved).
 | # | Risk | Mitigation |
 |---|------|------------|
 | R1 | Vendoring contradicts D-0013 (single source of truth) | Drift-guard + decision record; monorepo `framework/` stays canonical; bundle is generated. Precedent: `sdd_doc_lint`. |
-| R2 | `${CLAUDE_PLUGIN_ROOT}` may not expand inside SKILL.md *prose* (vs hooks) | It is the documented mechanism for plugin file refs; confirm in the P2 live run. The bundle ships regardless, so worst case is adjusting the reference form, not re-bundling. |
+| R2 | `${CLAUDE_PLUGIN_ROOT}` does **not** auto-expand inside SKILL.md/agent *body prose* (confirmed via claude-code-guide: it expands only in hooks.json / .mcp.json / .lsp.json / monitors.json `command` fields) | **The P1 win is self-containment** — the files now *ship* at that anchor (the old bare `framework/…` resolved nowhere on install). Whether the running model resolves the variable in prose is the **P2 live-test gate**. Documented fallbacks if the live run shows it doesn't resolve: (a) a short "paths are under `${CLAUDE_PLUGIN_ROOT}` — resolve via the env / `echo`" note in the orchestrator skill, or (b) inject the resolved root via a hook. The bundle ships regardless, so the fix is reference-form only, never re-bundling. |
 | R3 | 64-file repoint introduces mechanical errors | Scripted (sed) + the bundled-reference-resolution gate catches any dangling/typo ref. |
 | R4 | `plm_lint` flags content in the vendored framework docs | Run after vendoring; the framework docs are already legacy-clean, but handle any teaching-example/`Layer` hits (extend exceptions or adjust). |
 | R5 | Bundle inflates plugin size / duplicates the spec | Vendor only the consumed subtrees; it is generated, not maintained by hand. |
@@ -252,3 +252,54 @@ A critical re-read found gaps; all folded in:
   `tools` frontmatter form; description *quality* is a manual (non-deterministic)
   check (R10).
 - No further findings — implementable.
+
+## Implementation log (P1 — 2026-05-27)
+
+P1 Steps 1–8 done on `claude/multi-platform-migration-AamWB`:
+
+1. **D-0022** recorded in `plans/DECISIONS.md` (vendoring exception to D-0013).
+   Used number `D-0022` (max+1), not `D-0006` — the latter (and `D-0005`) are
+   already taken; the log has a pre-existing duplicate-`D-0005` collision left
+   untouched.
+2. **Sync script** `tools/sync-plugin-framework.sh` — vendors
+   `framework/{layers,governance,registry}` **+ the one root doc**
+   `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (a `doc-flow` hard-dep, the only ref
+   outside the three subtrees) → `platforms/claude-code-plugin/framework/`
+   (53 files). Regenerates from scratch so upstream deletions propagate.
+3. **Repoint** — 380 refs across 66 files rewritten to
+   `${CLAUDE_PLUGIN_ROOT}/framework/…` via guarded `sed` (preserved bare
+   conceptual `framework/` prose, the `framework/NN_X/` teaching example, the
+   GitHub URL, and historical CHANGELOG mentions; excluded the bundle itself).
+4. **Drift guard + gate** — `test_plugin_framework_bundle.py` (fileset +
+   byte-identity) and `test_plugin_manifest.py` (manifest + frontmatter + hooks
+   - **bundled-reference resolution**). Conformance **57 → 65**, all green. The
+   resolution check passes → the 380 refs all resolve in the bundle.
+5. **Manifest + README** — `plugin.json` gained `$schema`
+   (`json.schemastore.org/claude-code-plugin-manifest.json`, confirmed real) and
+   a neutral-placeholder `author`; README rewritten (install-first + quickstart +
+   bundle section; counts → 55 skills / 11 agents).
+6. **Re-sync wired** — `docs/PROJECT.md` §6 records the obligation; `spec_gate.py`
+   prints a re-sync reminder on a framework change.
+7. **Verify** — sdd_doc_lint on the example chain clean; `plm_lint --all` clean;
+   drift-guard + manifest green; full conformance 65 green; ruff + ruff-format
+   clean; **`pre-commit run --files` all hooks Passed**.
+8. **Land** — plugin `VERSION`/`plugin.json` `0.2.0 → 0.3.0`; CHANGELOG `[0.3.0]`;
+   release tag deferred to the user (per D-0018, container can't push tags).
+
+**Two findings worth carrying forward:**
+
+- **`${CLAUDE_PLUGIN_ROOT}` in prose (R2, sharpened).** claude-code-guide
+  confirmed the variable auto-expands only in config `command` fields, **not**
+  skill/agent body prose. P1's deliverable (self-containment — the files now
+  ship at that anchor) stands; whether the model resolves the variable in prose
+  is the **P2 live-test** question, with documented fallbacks (R2).
+- **Linter exclusions for the bundle.** Canonical `framework/` markdown is *not*
+  style-clean — it is deliberately excluded from markdownlint/pre-commit because
+  it is GATE-SPEC-governed. The byte-identical bundle inherits that: added
+  `platforms/claude-code-plugin/framework/` to the pre-commit global `exclude`
+  (so no auto-fixer mutates it and breaks the drift guard) and to
+  `.markdownlintignore`.
+
+**P2 (user, deferred):** live `claude plugin validate` + a skill run + install
+smoke test (confirms R2); then the mirror repo + `marketplace.json` + identity +
+submission. The release tag `claude-code-plugin/v0.3.0` is also user-pushed.

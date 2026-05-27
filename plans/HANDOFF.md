@@ -1,5 +1,33 @@
 # Session Handoff
 
+> **🟢 PLUGIN-MARKETPLACE P1 DONE — plugin is self-contained + validated — 2026-05-27.**
+> Branch **`claude/multi-platform-migration-AamWB`**. Plan:
+> `plans/PLUGIN-MARKETPLACE-PLAN.md` (3 review passes + impl log). Made the Claude
+> Code plugin **installable self-contained**: vendored a byte-identical copy of
+> `framework/{layers,governance,registry}` + the SDD guide into
+> `platforms/claude-code-plugin/framework/` (53 files) via the new
+> `tools/sync-plugin-framework.sh`, and repointed **380 refs across 66 files** from
+> `framework/…` (broke on install — Claude Code caches only the plugin dir) to
+> `${CLAUDE_PLUGIN_ROOT}/framework/…`. Single source of truth stays the monorepo
+> spec (**D-0022**, the vendoring exception to D-0013), enforced by a **drift-guard**
+>
+> + a **manifest/bundled-reference-resolution gate** (new
+> `test_plugin_framework_bundle.py` + `test_plugin_manifest.py`; conformance **57 →
+> 65**). `plugin.json` gained `$schema` + placeholder `author`; README rewritten
+> (install-first + bundle section; 55 skills / 11 agents). Re-sync wired into
+> `docs/PROJECT.md` §6 + a `spec_gate.py` reminder; bundle excluded from
+> markdownlint/pre-commit (it inherits canonical `framework/`'s GATE-SPEC exemption,
+> and no auto-fixer may break byte-identity). Plugin **`0.2.0 → 0.3.0`**; CHANGELOG
+> `[0.3.0]`. **Verify:** sdd_doc_lint example chain clean; `plm_lint --all` clean;
+> full conformance 65 green; ruff/format clean; `pre-commit run --files` all Passed.
+> **KEY FINDING (carry to P2):** claude-code-guide confirmed `${CLAUDE_PLUGIN_ROOT}`
+> auto-expands only in hooks/MCP/LSP/monitor `command` fields, **not** skill/agent
+> body prose — so P1 delivers *self-containment* (files now ship at the anchor), but
+> whether the running model resolves the variable in prose is the **P2 live-test**
+> gate (fallbacks documented in plan R2). **P2 (user CLI, deferred):** `claude plugin
+> validate` + live skill run + install smoke; then mirror repo + `marketplace.json` +
+> identity + submission. **User-only:** push tag `claude-code-plugin/v0.3.0`.
+>
 > **🟢 AGENT-TEAM PHASE 3 COMPLETE — parity proof; ALL PHASES DONE — 2026-05-26.**
 > Branch **`claude/multi-platform-migration-AamWB`**. Added the deterministic parity
 > check: a shared unified-report schema

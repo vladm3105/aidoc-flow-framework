@@ -55,7 +55,7 @@ Given a `project_root` (default `{project_root}/docs/`) and optional
    legacy 3-segment IDs and placeholders (TBD/XXX/NNN).
 4. **Validate cumulative tagging** — confirm each artifact carries exactly the
    upstream tag families its layer requires (BRD 0 → … → IPLAN 7) per the
-   `can_reference` set in `framework/registry/LAYER_REGISTRY.yaml`; report gaps
+   `can_reference` set in `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`; report gaps
    and any downstream-tag leakage.
 5. **Resolve links** — confirm every markdown link path and `#anchor` resolves
    (markdown H1, YAML `id:`, feature `Scenario:`).
@@ -82,14 +82,14 @@ Before checking references, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `active_layers`: treat a disabled skippable
 layer as absent by design — do not report a missing reference to it (apply
 the cascade rule). Ignore any unknown or out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Traceability & cumulative tagging: `framework/governance/TRACEABILITY.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Traceability & cumulative tagging: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Layer registry (`can_reference`/`downstream`):
-  `framework/registry/LAYER_REGISTRY.yaml`
-- Governance core: `framework/governance/DOC_GOVERNANCE_CORE.md`
+  `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Governance core: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DOC_GOVERNANCE_CORE.md`
 - Related skills: `../doc-flow/SKILL.md` · `../adr-roadmap/SKILL.md` ·
   `../quality-advisor/SKILL.md` · `../context-analyzer/SKILL.md`

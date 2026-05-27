@@ -88,5 +88,5 @@ A project may add a custom dictionary and severity overrides (e.g. a
 - Naming authority (tag/ID formats): `../doc-naming/SKILL.md`
 - Quality advice: `../quality-advisor/SKILL.md`
 - Workflow routing: `../doc-flow/SKILL.md`
-- Governance: `framework/governance/DOC_GOVERNANCE_CORE.md`
+- Governance: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DOC_GOVERNANCE_CORE.md`
 - Diagrams: `../charts-flow/SKILL.md`

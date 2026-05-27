@@ -53,7 +53,7 @@ traceability conformance.
 3. **Spec & test conformance**: does it match the SPEC; does it meet the Test
    Architect's coverage bar; are new tests meaningful (not assertion-free)? Does
    the code's structure carry the C4-L4 ownership declarations aligned with the
-   SPEC's C4-L3 component references (`framework/governance/DIAGRAM_STANDARDS.md`)?
+   SPEC's C4-L3 component references (`${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md`)?
 4. **Standards & security hygiene**: repo conventions, no injection/XSS/secret
    leakage, no dead/duplicated code, no unrequested scope creep.
 5. **Traceability**: PR carries correct upstream tags and links.

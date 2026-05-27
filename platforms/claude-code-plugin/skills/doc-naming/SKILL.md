@@ -20,7 +20,7 @@ metadata:
 
 The naming authority for the 8-layer SDD flow. `doc-naming` validates document
 IDs, element IDs, threshold tags, and file names against
-`framework/governance/ID_NAMING_STANDARDS.md`, and flags removed/legacy
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`, and flags removed/legacy
 patterns. It produces no artifacts — it is the declarative ID validator (the
 framework ships no runtime code).
 
@@ -124,10 +124,10 @@ detection. Date-only values are deprecated.
 
 ## Related Resources
 
-- ID & tag authority: `framework/governance/ID_NAMING_STANDARDS.md`
-- Threshold rules: `framework/governance/THRESHOLD_NAMING_RULES.md`
-- Layer registry (roster, chains, folders): `framework/registry/LAYER_REGISTRY.yaml`
-- Per-layer templates & READMEs: `framework/layers/NN_<X>/`
+- ID & tag authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Threshold rules: `${CLAUDE_PLUGIN_ROOT}/framework/governance/THRESHOLD_NAMING_RULES.md`
+- Layer registry (roster, chains, folders): `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Per-layer templates & READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`
 - Cross-document validation: `../doc-validator/SKILL.md` · `../trace-check/SKILL.md`
 - Workflow routing: `../doc-flow/SKILL.md`
 - Diagrams: `../charts-flow/SKILL.md`

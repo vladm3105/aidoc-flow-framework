@@ -50,9 +50,9 @@ placeholders like `EARS-XXX` or reference documents that do not yet exist.
 BDD is Layer 4, so upstream artifacts must already exist. Confirm them and read
 the spec before writing:
 
-1. **Template (source of truth):** `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
-2. **Layer README:** `framework/layers/04_BDD/README.md`
-3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`
+3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 Verify upstream and check for ID collision:
 `ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null`. Reference
@@ -125,7 +125,7 @@ This is the req-to-SPEC bridge that downstream layers consume.
 1. **Read upstream** — BRD, PRD, EARS to understand the behaviors to test.
 2. **Reserve ID** — next free `BDD-NN` (two digits, no extra leading zero:
    `BDD-01`, `BDD-99`, `BDD-102`).
-3. **Create the document** from `framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
+3. **Create the document** from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
    complete all 5 sections, Document Control first.
 4. **Write scenarios** per EARS requirement across the five categories; add
    Background, threshold references, and `spec_trace` for each.
@@ -137,8 +137,8 @@ This is the req-to-SPEC bridge that downstream layers consume.
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/04_BDD/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section; all 5 sections present and non-empty.
 - [ ] Cumulative tags `@brd @prd @ears` present, Gherkin-native, no spaces after
@@ -176,14 +176,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`
-- Layer README: `framework/layers/04_BDD/README.md`
-- Index template: `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-bdd-audit/SKILL.md` · Fixes: `../doc-bdd-fixer/SKILL.md`
 - Generation pipeline: `../doc-bdd-autopilot/SKILL.md`
 

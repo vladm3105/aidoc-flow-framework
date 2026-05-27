@@ -53,7 +53,7 @@ skills.
 |----------|-----------------|
 | CI/CD, MLOps, DevSecOps (GCP/Azure/AWS) | native (Bash, pipeline config) |
 | Smoke validation gates | coordinate with Test Architect's `doc-tdd*` (TDD `type: smoke`) |
-| Governance scripts | `framework/governance/` CI/CD scripts |
+| Governance scripts | `${CLAUDE_PLUGIN_ROOT}/framework/governance/` CI/CD scripts |
 
 You receive green PRs from the **Code Reviewer** / **Security Engineer** and
 drive: merge gates → deploy → observe → feed incidents back to the **PM /

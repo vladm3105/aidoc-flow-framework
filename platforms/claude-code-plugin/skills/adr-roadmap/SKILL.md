@@ -72,10 +72,10 @@ tokens.
 
 ## Related Resources
 
-- ADR layer: `framework/layers/05_ADR/README.md` ·
-  `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
-- Traceability: `framework/governance/TRACEABILITY.md`
+- ADR layer: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Traceability: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
 - Diagrams: `../charts-flow/SKILL.md`
 - Downstream generation: `../doc-spec/SKILL.md` · `../doc-tdd/SKILL.md` ·
   `../doc-iplan/SKILL.md`

@@ -62,8 +62,8 @@ filter), the skill:
 ## Related Resources
 
 - Layer registry (layers & prerequisites):
-  `framework/registry/LAYER_REGISTRY.yaml`
-- Traceability: `framework/governance/TRACEABILITY.md`
+  `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Traceability: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
 - Layer skills: `../doc-brd/SKILL.md` … `../doc-iplan/SKILL.md`
 - Related skills: `../context-analyzer/SKILL.md` ·
   `../skill-recommender/SKILL.md` · `../doc-flow/SKILL.md`

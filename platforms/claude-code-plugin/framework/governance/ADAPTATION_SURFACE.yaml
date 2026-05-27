@@ -1,0 +1,88 @@
+# =============================================================================
+#  ADAPTATION_SURFACE.yaml — closed knob registry for project adaptation
+# =============================================================================
+#  Authority: PRIMARY STANDARD for the adaptation surface (see ADAPTATION.md).
+#  Engine-agnostic. Tools and the conformance suite parse this file; the prose
+#  contract lives in ADAPTATION.md.
+#
+#  Closed set: only knobs listed under `knobs` are honored. Anything else is
+#  ignored by a conforming engine.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
+  authority: "framework/governance/ADAPTATION.md"
+
+# The single input an engine reads at runtime. The user-global file is an
+# authoring-time seed only (merged into the project profile, not read at
+# runtime) — see ADAPTATION.md §3.
+profile:
+  runtime_input: ".aidoc/profile.yaml"
+  user_global_seed: "~/.aidoc/profile.yaml"
+  schema_version_field: "schema_version"
+
+# Consumer roles are engine-agnostic; each engine maps its own tools to them.
+consumer_roles:
+  authoring: "creates an artifact"
+  audit: "runs a quality gate over an artifact"
+  traceability: "checks cross-references between artifacts"
+  scaffolding: "creates the project structure"
+
+# -----------------------------------------------------------------------------
+# Knobs (5). `id_format` is deferred — see ADAPTATION.md §8.
+# -----------------------------------------------------------------------------
+knobs:
+  - name: active_layers
+    type: "list[layer]"
+    consumers: [scaffolding, traceability, audit]
+    constraint: >
+      May disable only layers in layers.skippable; mandatory layers cannot be
+      disabled. Disabling a skippable layer applies the cascade_rule.
+    default: "all 8 layers active"
+
+  - name: section_toggles
+    type: "map[layer, map[section, bool]]"
+    consumers: [authoring, audit]
+    constraint: >
+      Applies only to template-declared OPTIONAL sections. Required sections are
+      not toggleable (out of surface, ignored).
+    default: "template defaults"
+
+  - name: audit_threshold
+    type: "map[layer, integer]"
+    consumers: [audit]
+    constraint: >
+      Raise-only: a value must be >= the framework default for that layer.
+      A lower value is out of surface and ignored (never weakens a gate).
+    default: "each layer's framework-defined default"
+
+  - name: glossary
+    type: "map[string, string]"
+    consumers: [authoring]
+    constraint: >
+      Applied to generated prose only. Audits do not enforce terminology in v1.
+    default: "{}"
+
+  - name: review_mode
+    type: "enum(team, single_pass)"
+    consumers: [authoring, audit]
+    constraint: >
+      Selects review/remediation depth (see REVIEW_TEAM.md): `team` runs the
+      multi-persona crew; `single_pass` runs one agent applying every lens. Never
+      weakens the gate — the deterministic structural floor plus no-unresolved-
+      P0/P1 holds in either mode.
+    default: "team"
+
+# -----------------------------------------------------------------------------
+# Layer split — which layers a project may opt out of.
+# -----------------------------------------------------------------------------
+layers:
+  mandatory: [BRD, PRD, EARS, SPEC, TDD, IPLAN]
+  skippable: [BDD, ADR]
+
+cascade_rule: >
+  Disabling a skippable layer removes it from the required upstream tags
+  (required_tags) and the can_reference set of every downstream layer, so
+  traceability stays internally consistent. Traceability and audit consumers
+  must not demand a reference to, or flag the absence of, a disabled layer.

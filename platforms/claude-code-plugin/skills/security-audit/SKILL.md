@@ -73,11 +73,11 @@ databases.
 
 ## Related Resources
 
-- SPEC layer: `framework/layers/06_SPEC/README.md` ·
-  `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
-- Upstream security topics: `framework/layers/03_EARS/README.md` ·
-  `framework/layers/05_ADR/README.md`
-- Governance: `framework/governance/` (ID, tagging, traceability standards)
+- SPEC layer: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Upstream security topics: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
+- Governance: `${CLAUDE_PLUGIN_ROOT}/framework/governance/` (ID, tagging, traceability standards)
 - Related skills: `../quality-advisor/SKILL.md` · `../trace-check/SKILL.md` ·
   `../doc-spec/SKILL.md`
 - References: OWASP Top 10 (2021), CWE, OWASP ASVS

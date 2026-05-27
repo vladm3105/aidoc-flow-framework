@@ -111,13 +111,13 @@ Before applying defaults, read the project adaptation profile
 audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
 (raise-only — stricter only), and `glossary`. Ignore any unknown or
 out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-adr/SKILL.md` · Audit: `../doc-adr-audit/SKILL.md` · Fix:
   `../doc-adr-fixer/SKILL.md`
 - Decision planning: `../adr-roadmap/SKILL.md`
-- Authority: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
-  `framework/layers/05_ADR/README.md`,
-  `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`

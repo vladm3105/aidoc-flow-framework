@@ -22,8 +22,8 @@ Author and maintain a project's **adaptation profile** — the version-controlle
 `.aidoc/profile.yaml` that tailors how the SDD skills author and audit
 artifacts, without forking the framework. The profile is a *closed, declarative*
 set of preferences; the authority for what may appear in it is
-`framework/governance/ADAPTATION.md` and its machine-readable companion
-`framework/governance/ADAPTATION_SURFACE.yaml`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` and its machine-readable companion
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml`.
 
 **Layer**: cross-cutting utility (precedes and informs the layer skills).
 
@@ -79,7 +79,7 @@ Confirm or adjust each of the four v1 knobs:
 
 ### 4. Validate against the surface
 
-Parse `framework/governance/ADAPTATION_SURFACE.yaml` and enforce it:
+Parse `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml` and enforce it:
 
 - drop any key not in `knobs`;
 - reject disabling a mandatory layer; apply the `cascade_rule` for any disabled
@@ -112,8 +112,8 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 
 ## Related Resources
 
-- Authority: `framework/governance/ADAPTATION.md`
-- Surface registry: `framework/governance/ADAPTATION_SURFACE.yaml`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`
+- Surface registry: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml`
 - Context model: `../context-analyzer/SKILL.md`
 - Scaffolding: `../project-init/SKILL.md`, `../project-adopt/SKILL.md`
 - Promote adaptations upward: `../knowledge-extractor/SKILL.md`

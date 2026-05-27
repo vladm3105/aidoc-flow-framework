@@ -60,9 +60,9 @@ auto-fixable findings exist, hand off to `doc-chg-fixer`.
 
 ## Structural Checklist
 
-Authority: `framework/governance/chg/CHG-TEMPLATE.yaml`,
-`framework/governance/chg/README.md`, and the gate definitions under
-`framework/governance/chg/gates/`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`, and the gate definitions under
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`.
 
 **Tier 1 — blocking (error):**
 
@@ -118,6 +118,6 @@ Normalize every finding to: `source` (`schema`|`routing`|`impact`|`metadata`),
 
 - Create: `../doc-chg/SKILL.md` · Fix: `../doc-chg-fixer/SKILL.md` · Generate:
   `../doc-chg-autopilot/SKILL.md` · Gate: `../gate-check/SKILL.md`
-- Authority: `framework/governance/chg/CHG-TEMPLATE.yaml`,
-  `framework/governance/chg/README.md`,
-  `framework/governance/chg/gates/`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`

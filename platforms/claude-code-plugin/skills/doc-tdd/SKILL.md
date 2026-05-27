@@ -53,9 +53,9 @@ For end-to-end generation from a SPEC, a prompt, or an IPLAN, use
 Before writing, verify upstream artifacts exist and read the contracts:
 
 1. **List upstream:** `ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ docs/05_ADR/ docs/06_SPEC/ 2>/dev/null`
-2. **Template (source of truth):** `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
-3. **Layer README:** `framework/layers/07_TDD/README.md`
-4. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+2. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`
+4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 The **primary source is SPEC** (the component contract); **BDD is the source of
 truth for behavior** — TDD maps BDD scenarios to tests, it does not duplicate
@@ -144,8 +144,8 @@ files are generated **before** implementation files.
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/07_TDD/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control complete; all 7 sections present and non-empty.
 - [ ] Test pyramid set; BDD→test mapping complete (Section 3).
@@ -179,14 +179,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
-- Layer README: `framework/layers/07_TDD/README.md`
-- Index template: `framework/layers/07_TDD/TDD-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-tdd-audit/SKILL.md` · Fixes: `../doc-tdd-fixer/SKILL.md`
 - Generation pipeline: `../doc-tdd-autopilot/SKILL.md`
 - Upstream: `../doc-spec/SKILL.md` · Downstream: `../doc-iplan/SKILL.md`

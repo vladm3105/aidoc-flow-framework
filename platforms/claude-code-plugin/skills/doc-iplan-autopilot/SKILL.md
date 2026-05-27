@@ -112,12 +112,12 @@ Before applying defaults, read the project adaptation profile
 audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
 (raise-only — stricter only), and `glossary`. Ignore any unknown or
 out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-iplan/SKILL.md` · Audit: `../doc-iplan-audit/SKILL.md` · Fix:
   `../doc-iplan-fixer/SKILL.md`
-- Authority: `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`,
-  `framework/layers/08_IPLAN/README.md`,
-  `framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`

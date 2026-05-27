@@ -23,7 +23,7 @@ Validate relationships and consistency **across** documents in the SDD corpus:
 broken cross-references, orphaned artifacts, one-way links, cumulative-tag
 gaps, duplicate or malformed IDs, and traceability-matrix completeness across
 the 8 layers. This skill **is** the validator — the framework ships no runtime
-code; it applies declarative checks against `framework/governance/` and the
+code; it applies declarative checks against `${CLAUDE_PLUGIN_ROOT}/framework/governance/` and the
 layer `README.md` files.
 
 **Layer**: cross-cutting utility (reads all 8 layers; produces no artifacts).
@@ -80,8 +80,8 @@ counts/sections, normalize terms); the rest are reported for manual fix.
 | 7 | TDD | + @spec (6) |
 | 8 | IPLAN | + @tdd (7) |
 
-Authority: `framework/registry/LAYER_REGISTRY.yaml` (`required_tags`) and
-`framework/governance/TRACEABILITY.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml` (`required_tags`) and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`.
 
 ### ID-format enforcement (IDS)
 
@@ -101,11 +101,11 @@ its code, and a fix hint.
 
 ## Related Resources
 
-- Governance: `framework/governance/DOC_GOVERNANCE_CORE.md` ·
-  `framework/governance/TRACEABILITY.md` ·
-  `framework/governance/ID_NAMING_STANDARDS.md`
-- Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
-- Per-layer authority: `framework/layers/NN_<X>/README.md`
+- Governance: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DOC_GOVERNANCE_CORE.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Per-layer authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/README.md`
 - ID formats: `../doc-naming/SKILL.md` · Traceability: `../trace-check/SKILL.md`
 - Single-document gates: `../doc-brd-audit/SKILL.md` … `../doc-iplan-audit/SKILL.md`
 - Prose review: `../doc-review/SKILL.md` · Workflow routing: `../doc-flow/SKILL.md`

@@ -50,10 +50,10 @@ For end-to-end generation from a SPEC/TDD, a prompt, or an existing IPLAN, use
 
 Before writing, read:
 
-1. **Template (source of truth):** `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
-2. **Index template:** `framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
-3. **Layer README:** `framework/layers/08_IPLAN/README.md`
-4. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
+2. **Index template:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
+3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`
+4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 Read the upstream **TDD** (primary source for the file manifest and test-first
 order) and the **SPEC** it derives from. Reference only documents that exist;
@@ -140,8 +140,8 @@ completed work → 5) update file status → 6) append a session with a
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/08_IPLAN/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] `metadata.layer: 8`, `document_type: iplan-document`.
 - [ ] Document Control complete (`iplan_id`, `source_spec`, status, dates).
@@ -180,14 +180,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
-- Index template: `framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
-- Layer README: `framework/layers/08_IPLAN/README.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-iplan-audit/SKILL.md` · Fixes: `../doc-iplan-fixer/SKILL.md`
 - Generation pipeline: `../doc-iplan-autopilot/SKILL.md`
 

@@ -42,9 +42,9 @@ gate approval (that is a human decision via `../gate-check/SKILL.md`).
 
 Consume the latest `CHG-NN.A_audit_report_vNNN.md`. Back up the CHG before
 editing (`tmp/backup/CHG-NN_<ts>/`); on error, restore. Schema and routing rules
-come from `framework/governance/chg/CHG-TEMPLATE.yaml` and
-`framework/governance/chg/README.md`; gate definitions from
-`framework/governance/chg/gates/`.
+come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`; gate definitions from
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`.
 
 ## Fix Phases
 
@@ -100,6 +100,6 @@ iterations reached.
 
 - Audit (input): `../doc-chg-audit/SKILL.md` · Create: `../doc-chg/SKILL.md`
 - Orchestration: `../doc-chg-autopilot/SKILL.md` · Gate: `../gate-check/SKILL.md`
-- Authority: `framework/governance/chg/CHG-TEMPLATE.yaml`,
-  `framework/governance/chg/README.md`,
-  `framework/governance/chg/gates/`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`

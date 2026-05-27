@@ -67,7 +67,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 └── requirements-analyst ──┘   └── solutions-architect ──┘  └ test-arch ┘ └ software-engineer ┘
 ```
 
-> The canonical model is exactly the 8 layers above (see `framework/layers/`), each with four skill variants — base, `-autopilot`, `-audit`, `-fixer`. Test types (unit, integration, smoke, functional, performance, security) are `type` attributes of test cases authored via the TDD layer (`doc-tdd*`), not separate skills. SPEC subtypes (component, data, UX, risk, process) are unified into the SPEC layer (`doc-spec*`).
+> The canonical model is exactly the 8 layers above (see `${CLAUDE_PLUGIN_ROOT}/framework/layers/`), each with four skill variants — base, `-autopilot`, `-audit`, `-fixer`. Test types (unit, integration, smoke, functional, performance, security) are `type` attributes of test cases authored via the TDD layer (`doc-tdd*`), not separate skills. SPEC subtypes (component, data, UX, risk, process) are unified into the SPEC layer (`doc-spec*`).
 
 ---
 
@@ -91,7 +91,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 Beyond the nine lifecycle agents, two **review lenses** support the multi-persona
 **review-team** mode (`../skills/review-team/SKILL.md`) — the plugin's binding of
-`framework/governance/REVIEW_TEAM.md`:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`:
 
 | Lens | Model | Access | Role |
 |------|-------|--------|------|
@@ -156,7 +156,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Purpose:** CI/CD, build/test pipelines, deployment governance, and release readiness.
 - **Owns:** the path from merged code to verified production release — staging→prod gates, smoke (STEST) validation, observability loop, tested rollback paths, post-deploy evidence.
 - **Risk posture:** confirms shared/irreversible actions (prod deploys, tag/secret changes, force ops) with the human approver unless pre-authorized; never skips hooks/signing.
-- **Skills:** native (Bash, pipeline config); coordinates STEST with the Test Architect; uses `framework/governance/` CI/CD scripts.
+- **Skills:** native (Bash, pipeline config); coordinates STEST with the Test Architect; uses `${CLAUDE_PLUGIN_ROOT}/framework/governance/` CI/CD scripts.
 - **Model:** sonnet.
 
 ### `code-reviewer` — Code Reviewer ★ (read-only)

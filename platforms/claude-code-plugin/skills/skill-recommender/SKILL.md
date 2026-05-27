@@ -141,4 +141,4 @@ clarification_needed: false
 - Workflow routing: `../doc-flow/SKILL.md`
 - Project context input: `../context-analyzer/SKILL.md`
 - Workflow position awareness: `../workflow-optimizer/SKILL.md`
-- Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
+- Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`

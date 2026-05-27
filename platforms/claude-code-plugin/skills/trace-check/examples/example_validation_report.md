@@ -70,7 +70,7 @@ No broken links detected.
 ## ID Format Compliance (8/8 PASS)
 
 All SPEC artifacts follow correct ID naming conventions (document refs are
-`SPEC-NN`, two-digit, per `framework/governance/ID_NAMING_STANDARDS.md`):
+`SPEC-NN`, two-digit, per `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`):
 
 | Artifact | ID Format | H1 Header | Zero-Padding | Status |
 |----------|-----------|-----------|--------------|--------|

@@ -110,12 +110,12 @@ Before applying defaults, read the project adaptation profile
 audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
 (raise-only — stricter only), and `glossary`. Ignore any unknown or
 out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-tdd/SKILL.md` · Audit: `../doc-tdd-audit/SKILL.md` · Fix:
   `../doc-tdd-fixer/SKILL.md`
-- Authority: `framework/layers/07_TDD/TDD-TEMPLATE.yaml`,
-  `framework/layers/07_TDD/README.md`,
-  `framework/layers/07_TDD/TDD-00_index.TEMPLATE.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-00_index.TEMPLATE.md`

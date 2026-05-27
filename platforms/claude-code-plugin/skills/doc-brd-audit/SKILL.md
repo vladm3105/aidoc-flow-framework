@@ -55,9 +55,9 @@ review → 4) merge/normalize findings → 5) write `BRD-NN.A_audit_report_vNNN.
 
 ## Structural Checklist
 
-Authority: `framework/layers/01_BRD/README.md`,
-`framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded rules +
-`cross_section_rules`), and `framework/governance/ID_NAMING_STANDARDS.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`,
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded rules +
+`cross_section_rules`), and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Tier 1 — blocking (error):**
 
@@ -114,12 +114,12 @@ absence of — or a missing reference to — a layer the project disabled, per t
 cascade rule), and `audit_threshold` (use the project's quality-gate score
 only when it is **>=** the framework default; ignore any lower value). Ignore
 unknown keys.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-brd/SKILL.md` · Fix: `../doc-brd-fixer/SKILL.md` · Generate:
   `../doc-brd-autopilot/SKILL.md`
-- Authority: `framework/layers/01_BRD/README.md`,
-  `framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

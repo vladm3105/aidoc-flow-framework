@@ -55,9 +55,9 @@ review → 4) merge/normalize findings → 5) write `ADR-NN.A_audit_report_vNNN.
 
 ## Structural Checklist
 
-Authority: `framework/layers/05_ADR/README.md`,
-`framework/layers/05_ADR/ADR-TEMPLATE.yaml` (embedded rules + `_antipatterns`),
-and `framework/governance/ID_NAMING_STANDARDS.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`,
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` (embedded rules + `_antipatterns`),
+and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Tier 1 — blocking (error):**
 
@@ -119,12 +119,12 @@ absence of — or a missing reference to — a layer the project disabled, per t
 cascade rule), and `audit_threshold` (use the project's quality-gate score
 only when it is **>=** the framework default; ignore any lower value). Ignore
 unknown keys.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-adr/SKILL.md` · Fix: `../doc-adr-fixer/SKILL.md` · Generate:
   `../doc-adr-autopilot/SKILL.md`
-- Authority: `framework/layers/05_ADR/README.md`,
-  `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

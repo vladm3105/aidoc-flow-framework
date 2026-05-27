@@ -26,8 +26,8 @@ how the layers connect, and enforces the rules that keep the chain coherent.
 **Use the artifact skills for creation** — `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`,
 plus `../doc-ref/SKILL.md` for supplementary docs.
 
-Authoritative spec: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
-`framework/registry/LAYER_REGISTRY.yaml`.
+Authoritative spec: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`.
 
 ## When to Use
 
@@ -132,14 +132,14 @@ to a real business/product justification.
 
 The framework is spec-only — it ships no runtime scripts. Each skill **is** the
 validator: it applies a declarative checklist against the layer `README.md` and
-`framework/governance/`. After each artifact, run that layer's `-audit`; before
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/`. After each artifact, run that layer's `-audit`; before
 moving on, confirm the cumulative upstream tags are present (PRD→1 … IPLAN→7).
 
 ## Related Resources
 
-- Spec guide: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
-- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`
-- Traceability: `framework/governance/TRACEABILITY.md`
-- Governance core: `framework/governance/DOC_GOVERNANCE_CORE.md`
-- Per-layer guidance: `framework/layers/NN_<X>/README.md`
+- Spec guide: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- ID standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Traceability: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
+- Governance core: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DOC_GOVERNANCE_CORE.md`
+- Per-layer guidance: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/README.md`

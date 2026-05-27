@@ -41,7 +41,7 @@ Given the artifact content, its type, and an optional check level (quick /
 standard / strict), the skill:
 
 1. **Loads template requirements** for the artifact's layer from
-   `framework/registry/LAYER_REGISTRY.yaml` — required sections, minimum tag
+   `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml` — required sections, minimum tag
    count, and special rules (e.g. PRD KPIs must be quantitative, EARS
    WHEN-THE-SHALL syntax, SPEC YAML form). Code is the downstream execution
    target of IPLAN, not a documentation artifact.
@@ -57,7 +57,7 @@ standard / strict), the skill:
    and no downstream tags.
 5. **Checks naming** — document IDs `TYPE-NN`, element IDs `TYPE.NN.SS.xxxx`,
    threshold tags, and filename slugs, deferring to `../doc-naming/SKILL.md` and
-   `framework/governance/ID_NAMING_STANDARDS.md`; flags legacy patterns.
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; flags legacy patterns.
 6. **Generates a quality report** — overall status and score, error/warning/info
    counts, per-area results, and prioritized recommendations plus next steps
    (typically: fix errors, then run `../trace-check/SKILL.md`).
@@ -67,10 +67,10 @@ declarative checks above against the spec.
 
 ## Related Resources
 
-- Layer registry & tag rules: `framework/registry/LAYER_REGISTRY.yaml`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
-- Layer READMEs: `framework/layers/02_PRD/README.md` ·
-  `framework/layers/05_ADR/README.md`
+- Layer registry & tag rules: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Layer READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md` ·
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
 - Naming: `../doc-naming/SKILL.md`
 - Post-creation validation: `../doc-validator/SKILL.md` ·
   `../doc-review/SKILL.md` · layer `-audit` skills (e.g. `../doc-prd-audit/SKILL.md`)

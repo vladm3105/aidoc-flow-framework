@@ -76,8 +76,8 @@ mkdir -p docs/08_IPLAN/tmp plans
 
 Derive a baseline for each of the 8 artifacts from the existing system, working
 **from the code upward and downward**, all at `draft` status. Use the layer
-registry (`framework/registry/LAYER_REGISTRY.yaml`) for the artifact set and
-each template under `framework/layers/NN_<X>/`:
+registry (`${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`) for the artifact set and
+each template under `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`:
 
 | Layer | Artifact | Reverse-engineered from |
 |-------|----------|-------------------------|
@@ -127,14 +127,14 @@ Before scaffolding, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `active_layers`: create structure for the
 active layers only — do not scaffold a disabled skippable layer. Ignore any
 unknown or out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Greenfield counterpart: `../project-init/SKILL.md`
 - Next: `../doc-flow/SKILL.md` · per-layer `-audit` skills (e.g.
   `../doc-spec-audit/SKILL.md`)
-- Layer registry (the 8 artifacts): `framework/registry/LAYER_REGISTRY.yaml`
-- Templates & READMEs: `framework/layers/NN_<X>/`
+- Layer registry (the 8 artifacts): `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Templates & READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`
 - Traceability check: `../trace-check/SKILL.md`
 - Diagrams: `../charts-flow/SKILL.md`

@@ -40,8 +40,8 @@ ADR (use `../doc-adr/SKILL.md` / `../doc-adr-autopilot/SKILL.md`).
 
 Consume the latest `ADR-NN.A_audit_report_vNNN.md`. Back up the ADR before
 editing (`tmp/backup/ADR-NN_<ts>/`); on error, restore. Element-ID standards
-come from `framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
-`framework/layers/05_ADR/ADR-TEMPLATE.yaml` and `README.md`.
+come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` and `README.md`.
 
 ## Fix Phases
 
@@ -102,11 +102,11 @@ Before applying fixes, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `section_toggles`: do not reintroduce an
 **optional** section the project has toggled off. Ignore any unknown or
 out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Audit (input): `../doc-adr-audit/SKILL.md` · Create: `../doc-adr/SKILL.md`
 - Orchestration: `../doc-adr-autopilot/SKILL.md` · IDs: `../doc-naming/SKILL.md`
-- Authority: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

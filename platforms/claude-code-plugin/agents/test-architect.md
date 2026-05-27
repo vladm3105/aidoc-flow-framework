@@ -40,7 +40,7 @@ attribute on the test cases you author via `doc-tdd*`.
 
 | Layer | Artifact | Your skills |
 |-------|----------|-------------|
-| Layer 7 | TDD guide + all test cases (`type`: unit / integration / smoke / functional / performance / security) | `doc-tdd`, `doc-tdd-autopilot`, `doc-tdd-audit`, `doc-tdd-fixer`; `framework/layers/07_TDD` |
+| Layer 7 | TDD guide + all test cases (`type`: unit / integration / smoke / functional / performance / security) | `doc-tdd`, `doc-tdd-autopilot`, `doc-tdd-audit`, `doc-tdd-fixer`; `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD` |
 
 Security-type test cases are co-owned with the **Security Engineer**; contract
 conformance and test-execution scaffolding are captured as test definitions in
@@ -58,7 +58,7 @@ design to the **Software Engineer** (who implements tests + code) and the
 - **Traceability**: every test case maps to a requirement/scenario
   (`@bdd`/`@spec`). No requirement ships untested; flag orphans.
 - **Coverage targets**: enforce the thresholds in
-  `framework/governance/THRESHOLD_NAMING_RULES.md` (e.g. SPEC→Tests ≥85%,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/THRESHOLD_NAMING_RULES.md` (e.g. SPEC→Tests ≥85%,
   recommended ≥95%) and name thresholds correctly.
 - **Performance & security depth**: define PTEST load/stress/endurance/spike
   scenarios with explicit thresholds; co-author SECTEST with Security Engineer.

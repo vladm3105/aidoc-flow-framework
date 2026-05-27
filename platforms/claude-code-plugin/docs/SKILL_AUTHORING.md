@@ -58,14 +58,14 @@ Dropped legacy fields: `architecture_approaches`, `priority`,
 ## 4. Reference & content conventions
 
 - Template / README / governance links point into the framework spec using the
-  **`framework/layers/NN_<X>/`** form (e.g. `framework/layers/01_BRD/README.md`).
+  **`${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`** form (e.g. `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`).
   Never `framework/NN_X/` (legacy; tripped by the conformance lint).
 - Sibling skills are linked as `../<skill>/SKILL.md`.
 - Diagrams: reference the **`charts-flow`** skill — never `mermaid-gen`.
 - Element IDs (hierarchical artifacts BRD/PRD/EARS/BDD/TDD): 4-segment
   `TYPE.NN.SS.xxxx` (`xxxx` = 4-hex content hash). Document-level refs
   (ADR/SPEC/IPLAN and `@adr:` etc.): dash form `TYPE-NN`. Authority:
-  `framework/governance/ID_NAMING_STANDARDS.md`.
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 - No legacy fingerprints (enforced by `tests/conformance/platforms/plm_lint.py`):
   no `layer: 9-12`, no `SYS/REQ/CTR/TSPEC/TASKS`, no 3-segment IDs presented as
   valid, no legacy paths.
@@ -79,7 +79,7 @@ upstream/downstream). Close with `## Related Resources`. No footer.
 
 **base (`doc-X`)** — *create the layer artifact*
 `Purpose · When to Use · Prerequisites · Layer Guidance (distilled from
-framework/layers/NN_X/*-TEMPLATE.yaml + README) · Creation Process ·
+${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/*-TEMPLATE.yaml + README) · Creation Process ·
 Validation (checklist + codes + quality gate) · Next Skill · Related Resources ·
 Quick Reference`
 
@@ -109,6 +109,6 @@ Format · Related Resources`
 - [ ] `version: "0.2.0"`, `framework_spec_version: "0.1.0"` present.
 - [ ] No `## Version History`; no `mermaid-gen`; no `-reviewer`/`-validator`
       references; no removed-family references.
-- [ ] Template/README/governance links use `framework/layers/NN_X/`.
+- [ ] Template/README/governance links use `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/`.
 - [ ] Frontmatter parses as YAML; body follows the variant structure above.
 - [ ] `python3 tests/conformance/platforms/plm_lint.py --all` clean.
