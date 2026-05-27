@@ -196,6 +196,23 @@ next-step recommendations (never suggest authoring it, and don't count it
 against completion). Ignore unknown / out-of-surface keys; absent a profile, use
 the full 8-layer flow. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
+## Reading bundled files
+
+Skills reference the plugin's vendored spec as `${CLAUDE_PLUGIN_ROOT}/framework/…`.
+`CLAUDE_PLUGIN_ROOT` is an **environment variable** Claude Code sets to the
+plugin's install directory — it is **not** a literal folder named
+`${CLAUDE_PLUGIN_ROOT}`, and it does not auto-expand inside this prose. To open a
+bundled file, resolve it first:
+
+- In a shell the variable expands, so read it directly, e.g.
+  `cat "$CLAUDE_PLUGIN_ROOT/framework/registry/LAYER_REGISTRY.yaml"`; or run
+  `echo "$CLAUDE_PLUGIN_ROOT"` to get the path and then read it.
+- If the variable is unset in the current context, the `framework/` bundle ships
+  at the plugin root **beside `skills/`** — locate the plugin install directory
+  and read `framework/…` relative to it.
+
+Never try to open the path with the literal `${CLAUDE_PLUGIN_ROOT}` text in it.
+
 ## Related Resources
 
 - Spec guide: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
