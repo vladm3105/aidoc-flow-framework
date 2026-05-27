@@ -135,9 +135,17 @@ fine — kebab, non-reserved).
   carrying `.claude-plugin/marketplace.json` (`owner.name` = org/product,
   `source: .`). A release workflow pushes the mirror on a plugin version bump.
 - Keep the plugin **MIT** (adoption) and license Hermes / any paid tier
-  separately (open-core). `homepage` → a domain you control.
-- The user runs `claude plugin validate`, a live skill run, and an install smoke
-  test, then submits.
+  separately (open-core). **Identity decided in D-0023:** one canonical brand
+  domain `aidoc-flow.com` with **path-based per-integration pages**
+  (`/claude-code`, `/codex`, `/vscode`, `/hermes`; docs under
+  `docs.aidoc-flow.com`); `aidoc-flow.ai` reserved for the agents/A2A/cloud
+  product. Plugin `homepage = https://aidoc-flow.com/claude-code`, `author` =
+  the `aidoc-flow.com` role identity (already applied to `plugin.json`); the
+  mirror's `marketplace.json` `owner` uses the same company/role identity.
+- **Publish gate:** before submission, verify `homepage` resolves and the
+  `plugins@aidoc-flow.com` mailbox is live (both are committed targets, not yet
+  stood up). Then the user runs `claude plugin validate`, a live skill run, and
+  an install smoke test, and submits.
 
 ## Step sequence
 

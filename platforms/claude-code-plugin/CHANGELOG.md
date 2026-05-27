@@ -35,8 +35,10 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   resolves to a real bundled file/dir — the check that catches a broken ref) and
   `test_plugin_framework_bundle.py` (the drift-guard). Conformance 57 → 65.
 - **`plugin.json` metadata** — added `$schema`
-  (`json.schemastore.org/claude-code-plugin-manifest.json`) and `author`
-  (neutral placeholder; finalized with the commercial identity in P2).
+  (`json.schemastore.org/claude-code-plugin-manifest.json`); set `author` to the
+  `aidoc-flow.com` identity and `homepage` to `https://aidoc-flow.com/claude-code`
+  (**D-0023** — one brand, path-based per-integration pages). Publish-time URL +
+  mailbox verification is the P2 gate.
 - **Review-team mode (AGENT-TEAM Phase 2)** — a shared `review-team` skill plus
   two review-lens agents (`adversary`, `synthesizer`): the plugin's binding of the
   engine-agnostic `framework/governance/REVIEW_TEAM.md` model. The crew fans out as

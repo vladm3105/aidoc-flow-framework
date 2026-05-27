@@ -4,11 +4,12 @@
   "description": "AI-Driven Specification-Driven Development (SDD) workflow — skills, agents, and commands for the 8-layer doc flow (BRD → IPLAN). Consumes the aidoc-flow framework spec.",
   "version": "0.3.0",
   "author": {
-    "name": "aidoc-flow-framework maintainers",
-    "url": "https://github.com/vladm3105/aidoc-flow-framework"
+    "name": "AI Doc Flow",
+    "email": "plugins@aidoc-flow.com",
+    "url": "https://aidoc-flow.com"
   },
   "license": "MIT",
   "repository": "https://github.com/vladm3105/aidoc-flow-framework",
-  "homepage": "https://github.com/vladm3105/aidoc-flow-framework",
+  "homepage": "https://aidoc-flow.com/claude-code",
   "keywords": ["sdd", "spec-driven-development", "documentation", "brd", "prd", "ears", "bdd", "adr", "iplan"]
 }
