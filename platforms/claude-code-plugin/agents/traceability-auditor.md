@@ -40,8 +40,8 @@ Authoring agents and the relevant fixer skills apply corrections.
 
 ## Skills
 
-Use the native validation skills: `trace-check` (cross-document lineage /
-traceability), `doc-validator` (structure + link/anchor resolution),
+Use the native validation skills: `doc-validator` (cross-document lineage /
+traceability, structure + link/anchor resolution, with optional repair),
 `doc-naming` (ID and threshold naming), `quality-advisor` (readiness scoring),
 and the per-layer `doc-*-audit` skills.
 
@@ -52,20 +52,20 @@ and the per-layer `doc-*-audit` skills.
    IPLAN `@tdd` — and the v2 chain where used). No placeholder IDs (TBD/XXX/NNN).
 2. **Link integrity**: every cross-document link and anchor resolves.
 3. **ID & naming**: IDs follow `ID_NAMING_STANDARDS.md`; thresholds follow
-   `framework/governance/THRESHOLD_NAMING_RULES.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/THRESHOLD_NAMING_RULES.md`.
 4. **Coverage & orphans**: upstream items with no downstream artifact; downstream
    artifacts with no upstream source.
 5. **Readiness scores**: each artifact meets the threshold for its layer
    transition.
 6. **Diagram contract**: required `@diagram:` machine tags present and correctly
-   leveled per layer per `framework/governance/DIAGRAM_STANDARDS.md` (BRD
+   leveled per layer per `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md` (BRD
    `c4-l1`/`dfd-l1`; PRD `c4-l2`/`dfd-l2`/`sequence-sync`; SPEC `c4-l3`/`dfd-l3`;
    ADR decision sequence).
 
 ## Operating Procedure
 
 1. Determine scope (changed artifacts, a layer, or project-wide).
-2. Run `trace-check` + `doc-validator` across scope.
+2. Run `doc-validator` across scope.
 3. Build the traceability matrix and diff it against required tags.
 4. Classify each finding by severity and name the owning agent/fixer.
 

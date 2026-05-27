@@ -45,7 +45,7 @@ Do **not** use it for:
 
 - C1 changes (typo/formatting) — no gate applies; fix and commit.
 - Creating fresh artifacts in a clean flow — use the layer skills and
-  `../trace-check/SKILL.md`.
+  `../doc-validator/SKILL.md`.
 - Authoring the CHG record itself — use `../doc-chg/SKILL.md`.
 
 ## Behavior
@@ -73,7 +73,7 @@ A change entering upstream cascades to each downstream gate in sequence
 (GATE-01 → GATE-03 → GATE-06 → GATE-08 → GATE-CODE); run every gate its layers
 span. Source-to-entry routing (Upstream/External → GATE-01, Midstream →
 GATE-03, Design → GATE-06, Execution → GATE-08, Feedback → GATE-CODE) is in
-`framework/governance/chg/README.md`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`.
 
 **GATE-SPEC is selected by *target*, not by layer.** If the change edits the
 `framework/` spec itself (`change_source: spec`), it is a meta change — run
@@ -85,7 +85,7 @@ not a spec change and does not enter GATE-SPEC.
 
 For each selected gate, run its **entry criteria**, **blocking error checks
 (E)**, and **warning checks (W)** from that gate's definition file, applying the
-codes from `framework/governance/chg/gates/GATE_ERROR_CATALOG.md`. Examples:
+codes from `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE_ERROR_CATALOG.md`. Examples:
 GATE-03 verifies EARS/BDD/ADR upstream-tag counts and syntax; GATE-06 verifies
 SPEC TDD-Ready ≥ 90% and SPEC↔TDD coverage; GATE-CODE requires a root-cause
 analysis. Also apply cross-gate ROUTE-E*checks (no skipped gate, correct
@@ -108,7 +108,7 @@ catalog resolution for each. Do not soften a failing check.
 
 ### 5. Prepare the approval form
 
-Populate `framework/governance/chg/templates/GATE_APPROVAL_FORM.md` from the
+Populate `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/GATE_APPROVAL_FORM.md` from the
 report: change summary, scope (layers/artifacts), per-gate validation results,
 risk and rollback sections, and the required-approver rows for the change
 level. Leave **all signature, decision, and final-approval fields blank** for
@@ -119,12 +119,12 @@ the change level's matrix. The change proceeds only after a human signs.
 
 ## Related Resources
 
-- CHG overview & source routing: `framework/governance/chg/README.md`
-- Gate definitions: `framework/governance/chg/gates/GATE-01_BUSINESS_PRODUCT.md`
+- CHG overview & source routing: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`
+- Gate definitions: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE-01_BUSINESS_PRODUCT.md`
   · `GATE-03_REQUIREMENTS_ARCHITECTURE.md` · `GATE-06_DESIGN_TEST.md` ·
   `GATE-08_IPLAN.md` · `GATE-CODE_IMPLEMENTATION.md` ·
   `GATE-SPEC_FRAMEWORK.md` (framework-spec change — meta)
-- Error codes: `framework/governance/chg/gates/GATE_ERROR_CATALOG.md`
-- Approval form: `framework/governance/chg/templates/GATE_APPROVAL_FORM.md`
+- Error codes: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE_ERROR_CATALOG.md`
+- Approval form: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/GATE_APPROVAL_FORM.md`
 - CHG authoring: `../doc-chg/SKILL.md`
-- Traceability after a change: `../trace-check/SKILL.md`
+- Traceability after a change: `../doc-validator/SKILL.md`

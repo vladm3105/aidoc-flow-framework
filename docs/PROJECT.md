@@ -129,3 +129,12 @@ Implemented twice against the same `framework/` spec — the Claude Code plugin
 (skills + CI workflow) and Hermes (server-side `validation/chg_rules.py`) —
 validated by the shared conformance suite. **CHG-D2** is done: the model is
 recorded as **GD-01** in `framework/governance/DECISIONS.md`.
+
+**Spec change → re-sync the plugin's vendored bundle.** The Claude Code plugin
+ships a byte-identical copy of `framework/{layers,governance,registry}` (+ the
+SDD guide) so it installs self-contained (D-0022). A spec change therefore has
+one more obligation: run `bash tools/sync-plugin-framework.sh` to regenerate
+`platforms/claude-code-plugin/framework/` and commit it in the same change. The
+conformance drift-guard (`test_plugin_framework_bundle.py`) fails CI if the
+bundle drifts from canonical — it is the backstop, not a surprise; the bundle is
+a snapshot pinned to the plugin's `FRAMEWORK_SPEC_VERSION`.

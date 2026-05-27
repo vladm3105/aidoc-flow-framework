@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# on_author trigger point (framework/governance/REVIEW_REMEDIATION_FLOW.md).
+# on_author trigger point (${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_REMEDIATION_FLOW.md).
 #
 # PostToolUse(Write|Edit) advisory hook: when an SDD instance document is
 # written/edited, nudge the matching review skill (and, best-effort, surface

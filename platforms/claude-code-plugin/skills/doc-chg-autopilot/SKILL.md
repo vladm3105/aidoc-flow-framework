@@ -62,7 +62,7 @@ trigger.
    `../doc-chg/SKILL.md`; select the entry gate (GATE-01/03/06/08/CODE, or
    GATE-SPEC for a `framework/`-spec change — set `semver_impact`, ≥C2);
    reserve the next `CHG-NN` (or `CHG-EMG-YYYYMMDD-HHMM` for Emergency).
-3. **Generation** — populate `framework/governance/chg/CHG-TEMPLATE.yaml`:
+3. **Generation** — populate `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`:
    metadata, change_control, description (what/why/trigger), implementation,
    verification. **Impact assessment** is mandatory — trace the cascade along
    `BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code` (downstream for upstream/external,
@@ -76,7 +76,7 @@ trigger.
 6. **Gate prep** — C1 commits directly; C2 routes to peer review; **C3/Emergency
    hand off to `../gate-check/SKILL.md`** to run the formal/post-hoc gate and
    complete `GATE_APPROVAL_FORM`. For Emergency, schedule the post-mortem
-   (`framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`) within 48h of
+   (`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`) within 48h of
    the fix deploy.
 
 ## Execution Modes
@@ -109,7 +109,7 @@ trigger.
 
 - Create: `../doc-chg/SKILL.md` · Audit: `../doc-chg-audit/SKILL.md` · Fix:
   `../doc-chg-fixer/SKILL.md` · Gate: `../gate-check/SKILL.md`
-- Authority: `framework/governance/chg/CHG-TEMPLATE.yaml`,
-  `framework/governance/chg/README.md`,
-  `framework/governance/chg/CHG-00_index.TEMPLATE.md`,
-  `framework/governance/chg/gates/`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`

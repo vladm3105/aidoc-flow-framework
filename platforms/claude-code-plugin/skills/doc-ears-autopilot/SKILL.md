@@ -107,12 +107,12 @@ Before applying defaults, read the project adaptation profile
 audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
 (raise-only — stricter only), and `glossary`. Ignore any unknown or
 out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-ears/SKILL.md` · Audit: `../doc-ears-audit/SKILL.md` · Fix:
   `../doc-ears-fixer/SKILL.md`
-- Authority: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
-  `framework/layers/03_EARS/README.md`,
-  `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`

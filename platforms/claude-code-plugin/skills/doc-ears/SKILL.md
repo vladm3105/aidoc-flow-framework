@@ -49,9 +49,9 @@ For end-to-end generation from a PRD, a prompt, or an IPLAN, use
 
 Before writing, read:
 
-1. **Template (source of truth):** `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
-2. **Layer README:** `framework/layers/03_EARS/README.md`
-3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md`
+3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 4. **Upstream BRD and PRD** that drive this EARS.
 
 Confirm no ID collision: `ls docs/03_EARS/ 2>/dev/null`. Reference only upstream
@@ -119,7 +119,7 @@ timing uses p50/p95/p99 notation. Carry changeable values as
 3. **Create the nested folder** — every EARS lives in
    `docs/03_EARS/EARS-NN_{slug}/` regardless of size. Monolithic:
    `EARS-NN_{slug}.md` inside it; section-based (>25 KB): `EARS-NN.S_{section}.md`
-   - index from `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
+   - index from `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 5 sections from the template.
 5. **Categorize requirements** into the five patterns; write atomic
    `THE … SHALL …` statements (WITHIN timing where applicable) with
@@ -132,8 +132,8 @@ timing uses p50/p95/p99 notation. Carry changeable values as
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/03_EARS/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section.
 - [ ] All 5 sections present and non-empty.
@@ -167,14 +167,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`
-- Layer README: `framework/layers/03_EARS/README.md`
-- Index template: `framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-ears-audit/SKILL.md` · Fixes: `../doc-ears-fixer/SKILL.md`
 - Generation pipeline: `../doc-ears-autopilot/SKILL.md`
 - Diagrams (state/sequence): `../charts-flow/SKILL.md`

@@ -45,11 +45,11 @@ with minimal prompts, use `../doc-chg-autopilot/SKILL.md`.
 
 Before writing, read:
 
-1. **Template (source of truth):** `framework/governance/chg/CHG-TEMPLATE.yaml`
-2. **CHG overview:** `framework/governance/chg/README.md`
-3. **Index template:** `framework/governance/chg/CHG-00_index.TEMPLATE.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`
+2. **CHG overview:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`
+3. **Index template:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`
 4. **The entry gate** for the change source (see routing below), under
-   `framework/governance/chg/gates/`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`.
 
 Confirm no ID collision: `ls docs/governance/chg/ 2>/dev/null`. Reserve the next
 free `CHG-NN` (dash form — CHG carries no hierarchical 4-segment element IDs).
@@ -57,7 +57,7 @@ free `CHG-NN` (dash form — CHG carries no hierarchical 4-segment element IDs).
 ## Change-Level Classification (decide first)
 
 Classification drives the entire process. Authority:
-`framework/governance/chg/CHG-TEMPLATE.yaml` (`metadata.change_level`).
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` (`metadata.change_level`).
 
 | Level | Scope | Gate | Process |
 |-------|-------|------|---------|
@@ -74,13 +74,13 @@ Classification drives the entire process. Authority:
   `../gate-check/SKILL.md`.
 - **Emergency** uses ID format `CHG-EMG-YYYYMMDD-HHMM`, populates the
   `emergency_change` block, deploys the fix, then completes a post-mortem
-  (`framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`) and a **post-hoc
+  (`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`) and a **post-hoc
   gate** within 48 hours. All normal CHG sections are still filled retroactively.
 
 ## Source → Gate Routing
 
 Where the change originates determines the **entry gate**. Authority:
-`framework/governance/chg/README.md` and `CHG-TEMPLATE.yaml`
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md` and `CHG-TEMPLATE.yaml`
 (`metadata.change_source`).
 
 | Source | Trigger | Entry Gate | Cascade direction |
@@ -93,7 +93,7 @@ Where the change originates determines the **entry gate**. Authority:
 | **Feedback** | Production feedback, user/defect issues | GATE-CODE | bubble-up |
 | **Spec** | Change to the `framework/` spec (template/governance/registry/VERSION) | GATE-SPEC | meta — no cascade |
 
-Gate definitions live in `framework/governance/chg/gates/`
+Gate definitions live in `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
 (`GATE-01_BUSINESS_PRODUCT.md`, `GATE-03_REQUIREMENTS_ARCHITECTURE.md`,
 `GATE-06_DESIGN_TEST.md`, `GATE-08_IPLAN.md`, `GATE-CODE_IMPLEMENTATION.md`,
 `GATE-SPEC_FRAMEWORK.md`). Running a gate is the job of `../gate-check/SKILL.md`;
@@ -138,7 +138,7 @@ ADR/BDD, or changing BRD without cascading the full chain).
    `implementation`, `verification`. Add `rollback_plan` for C2/C3,
    `gate_approval` for C3, and `emergency_change` for Emergency.
 5. **Register** the change in `CHG-00_index.md` (from
-   `framework/governance/chg/CHG-00_index.TEMPLATE.md`) in the same change.
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`) in the same change.
 6. **For C3/Emergency**, hand off to `../gate-check/SKILL.md` to run the formal
    gate and complete `GATE_APPROVAL_FORM`. For Emergency, also schedule the
    post-mortem.
@@ -147,8 +147,8 @@ ADR/BDD, or changing BRD without cascading the full chain).
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/governance/chg/CHG-TEMPLATE.yaml` and
-`framework/governance/chg/README.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`.
 
 - [ ] `change_level` is one of C1/C2/C3/Emergency and matches the actual scope.
 - [ ] `change_source` set and `entry_gate` matches the routing table.
@@ -180,11 +180,11 @@ formal/post-hoc gate via `../gate-check/SKILL.md`.
 
 ## Related Resources
 
-- Template: `framework/governance/chg/CHG-TEMPLATE.yaml`
-- Overview: `framework/governance/chg/README.md`
-- Index template: `framework/governance/chg/CHG-00_index.TEMPLATE.md`
-- Gates: `framework/governance/chg/gates/`
-- Post-mortem: `framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`
+- Template: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`
+- Overview: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`
+- Gates: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
+- Post-mortem: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/templates/POST_MORTEM-TEMPLATE.md`
 - Gate runner: `../gate-check/SKILL.md`
 - End-to-end: `../doc-chg-autopilot/SKILL.md` · Audit:
   `../doc-chg-audit/SKILL.md` · Fix: `../doc-chg-fixer/SKILL.md`

@@ -65,7 +65,7 @@ structure so cross-references resolve in both directions.
 **Diagram contract (per layer)**: diagrams attach to the layers that own visual
 models — BRD (C4 L1 + DFD L1), PRD (C4 L2 + DFD L2 + key sequence), ADR
 (decision sequences), SPEC (C4 L3 + DFD L3). Use the `@diagram:` tags the layer
-template specifies and follow `framework/governance/DIAGRAM_STANDARDS.md`.
+template specifies and follow `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md`.
 
 **Quality gates**: diagram file in the correct `diagrams/` folder; name matches
 `{PARENT-ID}-diag_{description}.md`; Document Control with parent back-link;
@@ -73,12 +73,12 @@ valid Mermaid syntax; SVG embedded; all cross-references resolve; SVG < 1 MB.
 
 ## Related Resources
 
-- Diagram standards: `framework/governance/DIAGRAM_STANDARDS.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Diagram standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Layer templates that own diagrams:
-  `framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
-  `framework/layers/02_PRD/PRD-TEMPLATE.yaml`,
-  `framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
-  `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
 - Roadmap visuals: `../adr-roadmap/SKILL.md`
 - Mermaid: <https://mermaid.js.org/> · <https://mermaid.live>

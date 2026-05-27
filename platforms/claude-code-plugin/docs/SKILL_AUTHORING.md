@@ -5,21 +5,22 @@ plugin. It is the single pattern the skill set is recreated against (P3-T6).
 The framework spec is the source of truth for *content*; this file governs
 *form*.
 
-## 1. Scope — the canonical skill set (54)
+## 1. Scope — the canonical skill set (50)
 
 - **Layer families (8 × 4 = 32):** `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`
   in four variants — base (`doc-X`), `-autopilot`, `-audit`, `-fixer`.
 - **Change-management family (4):** `doc-chg` + `-autopilot`/`-audit`/`-fixer`
   — the CHG governance overlay (governs edits to existing artifacts; not a layer).
-- **Utilities (18):** doc-flow, doc-naming, doc-ref, doc-review, doc-validator,
+- **Utilities (14):** doc-flow, doc-naming, doc-ref, doc-validator, review-team,
   project-init, project-adopt, project-profile, knowledge-extractor, gate-check,
-  trace-check, charts-flow, adr-roadmap, context-analyzer, quality-advisor,
-  skill-recommender, workflow-optimizer, security-audit.
+  charts-flow, adr-roadmap, quality-advisor, security-audit.
 
 Removed and **never reintroduced**: `-reviewer`/`-validator` variants (merged
 into `-audit`); test-type families (utest/itest/ftest/ptest/stest/sectest);
 SPEC-subtype families (cspec/dspec/uxspec/riskspec/procspec); contract-tester,
-test-automation, mermaid-gen; loose `*.md` files at `skills/` root.
+test-automation, mermaid-gen; loose `*.md` files at `skills/` root. The
+navigation helpers `skill-recommender`/`workflow-optimizer`/`context-analyzer`
+folded into `doc-flow`; `trace-check` + `doc-review` folded into `doc-validator`.
 
 ## 2. Frontmatter (mandatory)
 
@@ -58,14 +59,14 @@ Dropped legacy fields: `architecture_approaches`, `priority`,
 ## 4. Reference & content conventions
 
 - Template / README / governance links point into the framework spec using the
-  **`framework/layers/NN_<X>/`** form (e.g. `framework/layers/01_BRD/README.md`).
+  **`${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`** form (e.g. `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`).
   Never `framework/NN_X/` (legacy; tripped by the conformance lint).
 - Sibling skills are linked as `../<skill>/SKILL.md`.
 - Diagrams: reference the **`charts-flow`** skill — never `mermaid-gen`.
 - Element IDs (hierarchical artifacts BRD/PRD/EARS/BDD/TDD): 4-segment
   `TYPE.NN.SS.xxxx` (`xxxx` = 4-hex content hash). Document-level refs
   (ADR/SPEC/IPLAN and `@adr:` etc.): dash form `TYPE-NN`. Authority:
-  `framework/governance/ID_NAMING_STANDARDS.md`.
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 - No legacy fingerprints (enforced by `tests/conformance/platforms/plm_lint.py`):
   no `layer: 9-12`, no `SYS/REQ/CTR/TSPEC/TASKS`, no 3-segment IDs presented as
   valid, no legacy paths.
@@ -79,7 +80,7 @@ upstream/downstream). Close with `## Related Resources`. No footer.
 
 **base (`doc-X`)** — *create the layer artifact*
 `Purpose · When to Use · Prerequisites · Layer Guidance (distilled from
-framework/layers/NN_X/*-TEMPLATE.yaml + README) · Creation Process ·
+${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/*-TEMPLATE.yaml + README) · Creation Process ·
 Validation (checklist + codes + quality gate) · Next Skill · Related Resources ·
 Quick Reference`
 
@@ -109,6 +110,6 @@ Format · Related Resources`
 - [ ] `version: "0.2.0"`, `framework_spec_version: "0.1.0"` present.
 - [ ] No `## Version History`; no `mermaid-gen`; no `-reviewer`/`-validator`
       references; no removed-family references.
-- [ ] Template/README/governance links use `framework/layers/NN_X/`.
+- [ ] Template/README/governance links use `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/`.
 - [ ] Frontmatter parses as YAML; body follows the variant structure above.
 - [ ] `python3 tests/conformance/platforms/plm_lint.py --all` clean.

@@ -1,6 +1,6 @@
 ---
 name: doc-flow
-description: Orchestrate the 8-layer SDD workflow - guide skill selection, explain the BRD→…→Code flow, and enforce the upstream-artifact policy. Use when unsure which skill to run next.
+description: Orchestrate the 8-layer SDD workflow - recommend the right skill for an intent, detect the current position and next steps, explain the BRD→…→Code flow, and enforce the upstream-artifact policy. Use when unsure what to do or which skill to run next.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,8 @@ metadata:
     downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
     framework_spec_version: "0.8.1"
-    last_updated: "2026-05-23"
+    last_updated: "2026-05-27"
+    adapts: [active_layers]
 ---
 
 # doc-flow
@@ -26,8 +27,8 @@ how the layers connect, and enforces the rules that keep the chain coherent.
 **Use the artifact skills for creation** — `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`,
 plus `../doc-ref/SKILL.md` for supplementary docs.
 
-Authoritative spec: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
-`framework/registry/LAYER_REGISTRY.yaml`.
+Authoritative spec: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`.
 
 ## When to Use
 
@@ -41,7 +42,8 @@ Authoritative spec: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` and
   (`../doc-chg/SKILL.md`), not the linear flow (see *Change management* below).
 
 For end-to-end generation of a single layer, use that layer's `-autopilot`
-skill. For intent-based suggestions, use `../skill-recommender/SKILL.md`.
+skill. For "which skill / where am I / what's next", stay here — see *Find the
+right skill, and where you are* below.
 
 ## Behavior
 
@@ -83,6 +85,57 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 | Any stage | Supplementary docs (overview, glossary) | `doc-ref` |
 | General guidance | Routing | stay on `doc-flow` |
 
+### Find the right skill, and where you are
+
+`doc-flow` answers "what should I do next?" directly — no separate helper skill.
+The table above routes **by layer**; this routes **by action/intent** and reports
+position.
+
+**Intent → skill.** Classify the request by action keyword, then target:
+
+| Action keyword | Skill |
+|----------------|-------|
+| create / draft / write | that layer's base or `-autopilot` (pick the layer from the table above) |
+| check / score / audit | that layer's `-audit` |
+| fix / remediate | that layer's `-fixer` |
+| validate / trace / links / orphans / repair | `../doc-validator/SKILL.md` |
+| review prose / typos / terms | `../doc-validator/SKILL.md` (`scope: prose`) |
+| change / edit a published artifact | `../doc-chg/SKILL.md` + `../gate-check/SKILL.md` |
+| roadmap / phasing | `../adr-roadmap/SKILL.md` |
+| scaffold / new project | `../project-init/SKILL.md` |
+| adopt / brownfield / reverse-engineer | `../project-adopt/SKILL.md` |
+| tailor / profile | `../project-profile/SKILL.md` |
+| security / threats | `../security-audit/SKILL.md` |
+
+When the user names a skill, run it directly.
+
+**Where am I.** Scan `docs/<NN>_<X>/` for existing artifacts; read each Document
+Control `Status` (most layers `Draft → In Review → Approved`; IPLAN
+`Draft → In Progress → Completed`). Map artifacts to the project's **active**
+layers (see *Adaptation*), mark each completed / in-progress / ready / blocked,
+and report position plus a progress percentage — layers at their terminal status
+(`Approved`, or `Completed` for IPLAN) ÷ **active** layers.
+
+**What's next.** Recommend the next artifact per the cumulative chain (each layer
+needs its single-layer prerequisite), over the project's **active** layers only —
+never recommend a layer the profile disabled. Prioritize:
+
+- **P0** — a *required* upstream is missing, or the next step is on the critical
+  path (the active-layer spine `BRD → PRD → EARS → BDD → ADR → SPEC → TDD →
+  IPLAN`, minus any disabled skippable layer).
+- **P1** — the next ready layer once the critical path is unblocked.
+- **P2** — optional / parallel work (`doc-ref` supplements, extra ADRs beyond the
+  decisions already captured).
+
+Surface parallel-work opportunities (independent tracks with no shared
+prerequisite) and name the skill to run for each.
+
+**Context scan.** Before authoring in an existing project, inventory the corpus
+and build a traceability snapshot: rank candidate upstream documents for the
+target type by directness, topic match, recency, and `Approved` status, and
+collect project vocabulary (titles, section headers, glossary terms) so the new
+document reuses real IDs and consistent terminology.
+
 ### Utility skills
 
 - **`../project-init/SKILL.md`** — scaffold a new project (run before any layer).
@@ -90,17 +143,15 @@ Each layer family ships four skills: the **base** (create), `-autopilot`
 - **`../project-profile/SKILL.md`** — tailor the flow to this project (optional; sets `.aidoc/profile.yaml`).
 - **`../doc-naming/SKILL.md`** — ID / naming authority (`TYPE-NN`, `TYPE.NN.SS.xxxx`).
 - **`../doc-ref/SKILL.md`** — free-format reference documents (BRD-REF / ADR-REF).
-- **`../doc-review/SKILL.md`** — cross-cutting quality review (typos, links, terms).
+- **`../doc-validator/SKILL.md`** — cross-document validation, bidirectional
+  traceability (with optional repair), and prose/terminology review.
 - **`../review-team/SKILL.md`** — multi-persona review-team mode for the
   `-audit`/`-fixer`/`-autopilot` operations at gates (crew → blackboard → scored
   report); `single_pass` fallback otherwise.
-- **`../doc-validator/SKILL.md`** — cross-document validation & traceability gaps.
-- **`../trace-check/SKILL.md`** — bidirectional traceability validation.
+- **`../quality-advisor/SKILL.md`** — real-time authoring guidance for a single document.
 - **`../charts-flow/SKILL.md`** — Mermaid diagrams and file management.
 - **`../adr-roadmap/SKILL.md`** — implementation roadmaps from ADRs.
-- **`../context-analyzer/SKILL.md`** · **`../quality-advisor/SKILL.md`** ·
-  **`../skill-recommender/SKILL.md`** · **`../workflow-optimizer/SKILL.md`** ·
-  **`../security-audit/SKILL.md`** — analysis and advisory helpers.
+- **`../security-audit/SKILL.md`** — security review (OWASP/CWE, STRIDE).
 
 ### Change management (editing existing artifacts)
 
@@ -132,14 +183,24 @@ to a real business/product justification.
 
 The framework is spec-only — it ships no runtime scripts. Each skill **is** the
 validator: it applies a declarative checklist against the layer `README.md` and
-`framework/governance/`. After each artifact, run that layer's `-audit`; before
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/`. After each artifact, run that layer's `-audit`; before
 moving on, confirm the cumulative upstream tags are present (PRD→1 … IPLAN→7).
+
+## Adaptation
+
+Read the project adaptation profile (`.aidoc/profile.yaml`) before reporting
+position or recommending next steps. Honor this skill's declared knob
+`active_layers`: treat a disabled skippable layer (BDD / ADR) as **not part of
+the flow** — exclude it from the critical path, the progress denominator, and
+next-step recommendations (never suggest authoring it, and don't count it
+against completion). Ignore unknown / out-of-surface keys; absent a profile, use
+the full 8-layer flow. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Spec guide: `framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
-- Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
-- ID standards: `framework/governance/ID_NAMING_STANDARDS.md`
-- Traceability: `framework/governance/TRACEABILITY.md`
-- Governance core: `framework/governance/DOC_GOVERNANCE_CORE.md`
-- Per-layer guidance: `framework/layers/NN_<X>/README.md`
+- Spec guide: `${CLAUDE_PLUGIN_ROOT}/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`
+- Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- ID standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+- Traceability: `${CLAUDE_PLUGIN_ROOT}/framework/governance/TRACEABILITY.md`
+- Governance core: `${CLAUDE_PLUGIN_ROOT}/framework/governance/DOC_GOVERNANCE_CORE.md`
+- Per-layer guidance: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/README.md`

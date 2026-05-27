@@ -90,7 +90,7 @@ Confirm all 8 directories, the index files, the domain subdirectories, and
 ### 6. Hand off
 
 Report initialization complete and direct the user to `../doc-flow/SKILL.md`
-to begin with `doc-brd`. Templates are referenced from `framework/layers/NN_<X>/`;
+to begin with `doc-brd`. Templates are referenced from `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`;
 copying them into the project is optional.
 
 ## Adaptation
@@ -99,11 +99,11 @@ Before scaffolding, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `active_layers`: create structure for the
 active layers only — do not scaffold a disabled skippable layer. Ignore any
 unknown or out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Next: `../doc-flow/SKILL.md` (start with `doc-brd`)
-- Layer registry: `framework/registry/LAYER_REGISTRY.yaml`
-- Templates & READMEs: `framework/layers/NN_<X>/`
+- Layer registry: `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml`
+- Templates & READMEs: `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/`
 - Diagrams: `../charts-flow/SKILL.md`

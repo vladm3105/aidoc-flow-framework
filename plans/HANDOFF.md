@@ -1,5 +1,85 @@
 # Session Handoff
 
+> **🟢 CONSOLIDATION REVIEW FIXES — 2026-05-27.** A code review of the 55→50
+> consolidation (3 finder passes) caught a real **correctness regression** and
+> some capability flattening; all fixed on `claude/multi-platform-migration-AamWB`.
+> **#1 (correctness):** `doc-validator` lost `trace-check`'s `adapts: [active_layers]`
+> → on adapted projects it would false-fail disabled-layer traceability; restored
+> `adapts` + an `## Adaptation` consult-clause. **Capability restore:** put the
+> folded procedural detail back — `doc-flow` regained the intent-keyword→skill map,
+> status-taxonomy position scan + progress %, P0/P1/P2 prioritization over the
+> critical path, and upstream-ranking/vocabulary context scan; `doc-validator`
+> regained `auto_fix` safety (backup/rollback/no-placeholder) and the four-class
+> prose review (DATA/REF/TYPO/TERM + dictionary). **Refs:** `code-reviewer.md` no
+> longer routes the code/PR dimension to `doc-validator` (reviews code natively;
+> `doc-validator` only for spec/traceability). **Polish:** trimmed `doc-validator`
+> description, distinguished `doc-flow`'s two routing sections (by-layer vs
+> by-action), stamped `last_updated`. Cross-file consistency pass found **0**
+> dangling refs / count mismatches. Conformance 66 green; pre-commit clean. The
+> mechanical consolidation (counts/repoints/deletions) was already sound.
+>
+> **🟢 PLUGIN SKILL CONSOLIDATION — 55 → 50, redundancy audit (2026-05-27).**
+> Branch **`claude/multi-platform-migration-AamWB`**. Audited the 55 plugin skills
+> for redundancy; folded five overlapping utilities into two homes with **no
+> capability lost**: `skill-recommender` + `workflow-optimizer` + `context-analyzer`
+> → **`doc-flow`** (now does intent→skill mapping, position/next-step detection, and
+> the pre-authoring context scan; `skill-recommender` also duplicated Claude Code's
+> native skill dispatch); `trace-check` + `doc-review` → **`doc-validator`** (now
+> covers bidirectional traceability + optional repair and prose review via
+> `scope`/`auto_fix`). `doc-naming` kept as the ID authority; the 32 per-layer
+> 4-variant skills untouched (deliberate granularity, per `docs/PARITY.md`).
+> Repointed every cross-ref across skills/agents/README/`SKILL_AUTHORING.md`
+> (~28 files), updated `plm_lint`'s set, counts (utilities 19→14, total 55→50), and
+> the root `marketplace.json`. Plugin **`0.3.0 → 0.4.0`**; CHANGELOG `[0.4.0]`.
+> **Verify:** 0 dangling refs; `plm_lint --all` clean; conformance 66 green;
+> `pre-commit` all Passed. **User-only:** push tag `claude-code-plugin/v0.4.0`.
+>
+> **🔵 PLUGIN-MARKETPLACE P2 PREP — identity + mirror tooling (2026-05-27).**
+> Branch **`claude/multi-platform-migration-AamWB`**. Did the in-container half of
+> P2: **identity decided + applied** (D-0023 — one brand `aidoc-flow.com`,
+> path-based per-integration pages `/claude-code` `/codex` `/vscode` `/hermes`;
+> `.ai` reserved for agents/cloud; plugin `author`/`homepage` set, root
+> `marketplace.json` counts/version fixed). Added a **`marketplace.json` validation
+> gate** (`test_plugin_manifest.py`: owner + safe/resolvable sources; conformance
+> **65 → 66**) and the **one-way mirror generator** `tools/build-plugin-mirror.sh`
+> (refreshes the bundle, lays the plugin at mirror root with `source "."`, writes
+> the `aidoc-flow.com`-owned marketplace.json; output to git-ignored `dist/`). Plan
+> has a full **P2 execution runbook**. **All remaining P2 is user-only** (no CLI in
+> sandbox; GitHub scope = monorepo; tag push 403s): stand up site+mailbox →
+> `claude plugin validate` → live skill run (the R2 `${CLAUDE_PLUGIN_ROOT}`-in-prose
+> check, against `examples/url-shortener/seed/`) → `/plugin install` smoke →
+> ("tested/ready" true only after these) → create the mirror repo + push `dist/`
+> tree → submit → push tag `claude-code-plugin/v0.3.0`. **One open input for the
+> agent:** the GitHub **org/namespace** for the mirror.
+>
+> **🟢 PLUGIN-MARKETPLACE P1 DONE — plugin is self-contained + validated — 2026-05-27.**
+> Branch **`claude/multi-platform-migration-AamWB`**. Plan:
+> `plans/PLUGIN-MARKETPLACE-PLAN.md` (3 review passes + impl log). Made the Claude
+> Code plugin **installable self-contained**: vendored a byte-identical copy of
+> `framework/{layers,governance,registry}` + the SDD guide into
+> `platforms/claude-code-plugin/framework/` (53 files) via the new
+> `tools/sync-plugin-framework.sh`, and repointed **380 refs across 66 files** from
+> `framework/…` (broke on install — Claude Code caches only the plugin dir) to
+> `${CLAUDE_PLUGIN_ROOT}/framework/…`. Single source of truth stays the monorepo
+> spec (**D-0022**, the vendoring exception to D-0013), enforced by a **drift-guard**
+>
+> + a **manifest/bundled-reference-resolution gate** (new
+> `test_plugin_framework_bundle.py` + `test_plugin_manifest.py`; conformance **57 →
+> 65**). `plugin.json` gained `$schema` + placeholder `author`; README rewritten
+> (install-first + bundle section; 55 skills / 11 agents). Re-sync wired into
+> `docs/PROJECT.md` §6 + a `spec_gate.py` reminder; bundle excluded from
+> markdownlint/pre-commit (it inherits canonical `framework/`'s GATE-SPEC exemption,
+> and no auto-fixer may break byte-identity). Plugin **`0.2.0 → 0.3.0`**; CHANGELOG
+> `[0.3.0]`. **Verify:** sdd_doc_lint example chain clean; `plm_lint --all` clean;
+> full conformance 65 green; ruff/format clean; `pre-commit run --files` all Passed.
+> **KEY FINDING (carry to P2):** claude-code-guide confirmed `${CLAUDE_PLUGIN_ROOT}`
+> auto-expands only in hooks/MCP/LSP/monitor `command` fields, **not** skill/agent
+> body prose — so P1 delivers *self-containment* (files now ship at the anchor), but
+> whether the running model resolves the variable in prose is the **P2 live-test**
+> gate (fallbacks documented in plan R2). **P2 (user CLI, deferred):** `claude plugin
+> validate` + live skill run + install smoke; then mirror repo + `marketplace.json` +
+> identity + submission. **User-only:** push tag `claude-code-plugin/v0.3.0`.
+>
 > **🟢 AGENT-TEAM PHASE 3 COMPLETE — parity proof; ALL PHASES DONE — 2026-05-26.**
 > Branch **`claude/multi-platform-migration-AamWB`**. Added the deterministic parity
 > check: a shared unified-report schema

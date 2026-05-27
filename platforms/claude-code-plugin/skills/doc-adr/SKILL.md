@@ -52,9 +52,9 @@ For end-to-end generation from an upstream artifact or a prompt, use
 ADR is Layer 5, so verify the upstream chain exists and read the spec before
 writing:
 
-1. **Template (source of truth):** `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
-2. **Layer README:** `framework/layers/05_ADR/README.md`
-3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
+3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 Confirm upstream artifacts: `ls docs/0{1,2,3,4}_*/ 2>/dev/null`. Reference only
 documents that already exist; never invent placeholders like `ADR-XXX` or cite
@@ -117,7 +117,7 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 3. **Create the nested folder** — every ADR lives in
    `docs/05_ADR/ADR-NN_{slug}/`. Monolithic: `ADR-NN_{slug}.md` inside it;
    section-based (>25 KB): `ADR-NN.S_{section}.md` + index from
-   `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 10 sections from the template.
 5. **Evaluate 2–3 alternatives** with cost and fit; give every rejected option
    a rejection reason. State the decision decisively with rationale.
@@ -129,8 +129,8 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/05_ADR/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section; status is one of
       Proposed/Accepted/Deprecated/Superseded.
@@ -143,7 +143,7 @@ checklist against `framework/layers/05_ADR/README.md` and
 - [ ] SPEC-Ready score ≥ 90 if status is Accepted.
 - [ ] Diagram contract: the Architecture-Flow section carries the decision /
       interaction **sequence** diagram (`@diagram: sequence-*`) per
-      `framework/governance/DIAGRAM_STANDARDS.md` — ADR is the decision bridge, so
+      `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md` — ADR is the decision bridge, so
       no C4 level (use `../charts-flow/SKILL.md`); index updated; no broken links.
 
 | Code | Meaning | Severity |
@@ -173,14 +173,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
-- Layer README: `framework/layers/05_ADR/README.md`
-- Index template: `framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-adr-audit/SKILL.md` · Fixes: `../doc-adr-fixer/SKILL.md`
 - Generation pipeline: `../doc-adr-autopilot/SKILL.md`
 - Decision planning: `../adr-roadmap/SKILL.md`

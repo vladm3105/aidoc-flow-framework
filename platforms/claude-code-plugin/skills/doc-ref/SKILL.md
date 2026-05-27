@@ -60,8 +60,8 @@ any parent type other than BRD or ADR.
 2. **Allocate the next number** — `ls docs/01_BRD/*-REF-* 2>/dev/null` (or
    `05_ADR`) and take the next free `NN`.
 3. **Draft from the parent template, stripped to REF essentials** — start from
-   `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (BRD-REF) or
-   `framework/layers/05_ADR/ADR-TEMPLATE.yaml` (ADR-REF) and keep only the four
+   `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` (BRD-REF) or
+   `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` (ADR-REF) and keep only the four
    mandatory sections, dropping the traceability scaffolding.
 4. **Place** the file in the parent type directory with the correct H1.
 
@@ -84,12 +84,12 @@ REF documents do not participate in the chain. No element IDs apply.
 
 ## Related Resources
 
-- Parent templates: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
-  `framework/layers/05_ADR/ADR-TEMPLATE.yaml`
-- Naming authority: `framework/governance/ID_NAMING_STANDARDS.md` ·
+- Parent templates: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
+- Naming authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md` ·
   `../doc-naming/SKILL.md`
-- Governance & per-layer authority: `framework/governance/` and each
-  `framework/layers/NN_<X>/README.md`
+- Governance & per-layer authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/` and each
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_<X>/README.md`
 - Parent skills: `../doc-brd/SKILL.md` · `../doc-adr/SKILL.md`
 - Workflow routing: `../doc-flow/SKILL.md`
 - Diagrams: `../charts-flow/SKILL.md`

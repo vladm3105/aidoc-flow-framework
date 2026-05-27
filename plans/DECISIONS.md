@@ -10,6 +10,84 @@ graduation.
 
 ---
 
+## D-0023 — Domain & product identity: one brand, path-based per-integration pages
+
+- **Date:** 2026-05-27T00:00:00Z
+- **Context:** Three registered domains (`aidoc-flow.com`, `.ai`, `.io`) and an
+  open question of how to host the Claude Code plugin's "home" — plus the
+  realization that the plugin is **one of a family** of integrations (a Claude
+  Code plugin, possibly a Codex plugin, a VS Code extension, …) all consuming the
+  one engine-agnostic framework spec, alongside Hermes (the MCP surface).
+- **Decision:**
+  1. **One canonical brand domain — `aidoc-flow.com`** (company + product +
+     marketing). The other TLDs are defensive assets: `aidoc-flow.io` and a
+     non-canonical `.ai` **301-redirect** to it.
+  2. **Integrations are a category, addressed path-based** — `aidoc-flow.com/claude-code`,
+     `/codex`, `/vscode`, `/hermes` (framework docs + install guides under
+     `docs.aidoc-flow.com`). **No dedicated domain or top-level subdomain per
+     integration** (`claude.`/`plugin.` were rejected — engine-coupling + the
+     "Claude" trademark, and there will be several integrations). A subdomain is
+     promoted for a single integration only if it grows into a standalone property.
+  3. **`aidoc-flow.ai` is reserved for the agents / A2A-protocol / cloud-hosting
+     product** — not spent on a dev-tool plugin (mismatched fit + brand
+     fragmentation).
+  4. **Plugin identity** (applied to `platforms/claude-code-plugin/.claude-plugin/plugin.json`):
+     `author = { name: "AI Doc Flow", email: plugins@aidoc-flow.com, url:
+     https://aidoc-flow.com }`; `homepage = https://aidoc-flow.com/claude-code`;
+     `repository` stays the GitHub monorepo (source ≠ product page). Replaces the
+     P1 neutral placeholder.
+- **Why:** Consolidating brand/SEO/trust + cross-property auth on one registrable
+  domain beats fragmenting across three TLDs or minting a subdomain per surface;
+  path-based integration pages scale to N integrations with zero new DNS/TLS and
+  one SEO surface. Distribution channels still differ (Claude Code marketplace /
+  VS Code Marketplace / Codex), but the *website* is unified and an
+  `/integrations` hub links out to each.
+- **Notes / P2 publish gate:** the site and the `plugins@aidoc-flow.com` mailbox
+  are **not yet live** — before marketplace **submission** (P2), verify `homepage`
+  resolves and the role mailbox receives mail. The public mirror's
+  `marketplace.json` `owner` uses this company/role identity; the monorepo-root
+  `.claude-plugin/marketplace.json` owner is left as the personal dev identity
+  until the mirror is created.
+
+---
+
+## D-0022 — Vendor the framework spec into the plugin (shippability exception to D-0013)
+
+- **Date:** 2026-05-27T00:00:00Z
+- **Context:** The Claude Code plugin references **47 distinct `framework/…`
+  paths across 64 files**, but Claude Code copies **only the plugin directory**
+  to its cache on install — so every literal `framework/<path>` reference (which
+  only ever resolved from the monorepo root) breaks for every installed user.
+  The plugin is therefore not installable as shipped. Full design + 3 review
+  passes in `plans/PLUGIN-MARKETPLACE-PLAN.md`.
+- **Decision:** The plugin **vendors** the spec subtrees it consumes —
+  `framework/{layers,governance,registry}` → `platforms/claude-code-plugin/framework/{…}`,
+  **byte-identical, generated** by a sync script that extends the existing
+  `tools/sdd_doc_lint/sync-vendored.sh` pattern. Plugin references are repointed
+  to `${CLAUDE_PLUGIN_ROOT}/framework/…` (the documented runtime anchor for a
+  plugin's own cached files). This is the sanctioned **shippability exception**
+  to D-0013: the monorepo `framework/` stays the **single source of truth**; the
+  plugin's bundled `framework/` is **generated and never hand-edited**.
+- **Why:** Identical rationale to the already-vendored `sdd_doc_lint` — a plugin
+  must be self-contained to install/run from a marketplace cache, but the spec
+  must stay singly-owned to avoid the dual-ownership drift D-0013 was written to
+  prevent. A **drift guard** (a conformance test mirroring
+  `test_doc_lint_vendoring.py`) asserts the vendored bundle is byte-identical to
+  canonical, so the copy can never silently diverge; a future `framework/` edit
+  re-syncs the bundle (wired into the GATE-SPEC / spec-change checklist) and the
+  drift guard is the backstop. The bundle is a snapshot pinned to the plugin's
+  `FRAMEWORK_SPEC_VERSION`.
+- **Notes:** Vendored docs' *own* internal cross-references stay
+  monorepo-relative (repointing them would break byte-identity) and are treated
+  as **advisory** — the resolution gate enforces only the *plugin's* refs
+  (skills/agents/commands/docs/README), not the links inside vendored docs. A
+  bundled doc that *hard-depends* on a framework file outside
+  `{layers,governance,registry}` adds that file to the vendored set rather than
+  repointing it. Repo-root `framework/` and the dev tooling that reads it are
+  unaffected.
+
+---
+
 ## D-0005 — No saga for the plugin review runner
 
 - **Date:** 2026-05-26T00:00:00Z

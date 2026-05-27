@@ -50,9 +50,9 @@ SPEC sits at Layer 6, so verify the upstream chain exists before writing.
 Reference only documents that already exist; never invent placeholders like
 `SPEC-XXX` or `ADR-XXX`. Before writing, read:
 
-1. **Template (source of truth):** `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
-2. **Layer README:** `framework/layers/06_SPEC/README.md`
-3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md`
+3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 4. **Upstream ADR (primary)** plus the BDD/EARS acceptance contracts the
    component must satisfy.
 
@@ -124,8 +124,8 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/06_SPEC/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] YAML parses; Document Control is the first section.
 - [ ] All 8 sections present and non-empty; format is YAML (not markdown).
@@ -162,14 +162,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
-- Layer README: `framework/layers/06_SPEC/README.md`
-- Index template: `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Upstream decisions: `../doc-adr/SKILL.md` · Downstream tests: `../doc-tdd/SKILL.md`
 - Quality gate: `../doc-spec-audit/SKILL.md` · Fixes: `../doc-spec-fixer/SKILL.md`
 - Generation pipeline: `../doc-spec-autopilot/SKILL.md`

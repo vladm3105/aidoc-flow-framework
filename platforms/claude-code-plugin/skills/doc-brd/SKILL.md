@@ -49,9 +49,9 @@ For end-to-end generation from reference docs, a prompt, or an IPLAN, use
 BRD is the entry point, so there are no upstream artifacts to verify. Before
 writing, read:
 
-1. **Template (source of truth):** `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
-2. **Layer README:** `framework/layers/01_BRD/README.md`
-3. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`
+3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 Confirm no ID collision: `ls docs/01_BRD/ 2>/dev/null`. Never invent
 placeholders like `BRD-XXX` or reference documents that do not yet exist.
@@ -134,7 +134,7 @@ Most BRDs are authored from stakeholder input — keep the default
 3. **Create the nested folder** — every BRD lives in `docs/01_BRD/BRD-NN_{slug}/`
    regardless of size. Monolithic: `BRD-NN_{slug}.md` inside it; section-based
    (>25 KB): `BRD-NN.S_{section}.md` + index from
-   `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 18 sections from the template.
 5. **Handle 3.6/3.7** per type; **fill §7.2** across the 7 categories.
 6. **Configure upstream mode** (`none` default; `ref` if from `docs/00_REF/`).
@@ -144,8 +144,8 @@ Most BRDs are authored from stakeholder input — keep the default
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/01_BRD/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section.
 - [ ] All 18 sections present and non-empty; 3.6/3.7 correct for the BRD type.
@@ -181,14 +181,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`
-- Layer README: `framework/layers/01_BRD/README.md`
-- Index template: `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Quality gate: `../doc-brd-audit/SKILL.md` · Fixes: `../doc-brd-fixer/SKILL.md`
 - Generation pipeline: `../doc-brd-autopilot/SKILL.md`
 

@@ -56,9 +56,9 @@ to `doc-iplan-fixer`.
 
 ## Structural Checklist
 
-Authority: `framework/layers/08_IPLAN/README.md`,
-`framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Tier 1 — blocking (error):**
 
@@ -120,12 +120,12 @@ absence of — or a missing reference to — a layer the project disabled, per t
 cascade rule), and `audit_threshold` (use the project's quality-gate score
 only when it is **>=** the framework default; ignore any lower value). Ignore
 unknown keys.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-iplan/SKILL.md` · Fix: `../doc-iplan-fixer/SKILL.md` ·
   Generate: `../doc-iplan-autopilot/SKILL.md`
-- Authority: `framework/layers/08_IPLAN/README.md`,
-  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

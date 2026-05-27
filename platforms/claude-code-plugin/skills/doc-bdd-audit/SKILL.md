@@ -55,9 +55,9 @@ review → 4) merge/normalize findings → 5) write `BDD-NN.A_audit_report_vNNN.
 
 ## Structural Checklist
 
-Authority: `framework/layers/04_BDD/README.md`,
-`framework/layers/04_BDD/BDD-TEMPLATE.yaml` (embedded rules + scenario
-conventions), and `framework/governance/ID_NAMING_STANDARDS.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`,
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml` (embedded rules + scenario
+conventions), and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 **Tier 1 — blocking (error):**
 
@@ -119,12 +119,12 @@ absence of — or a missing reference to — a layer the project disabled, per t
 cascade rule), and `audit_threshold` (use the project's quality-gate score
 only when it is **>=** the framework default; ignore any lower value). Ignore
 unknown keys.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-bdd/SKILL.md` · Fix: `../doc-bdd-fixer/SKILL.md` · Generate:
   `../doc-bdd-autopilot/SKILL.md`
-- Authority: `framework/layers/04_BDD/README.md`,
-  `framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

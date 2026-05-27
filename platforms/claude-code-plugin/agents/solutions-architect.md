@@ -52,7 +52,7 @@ SPEC-Ready architecture to the **Test Architect** (for TDD/test specs) and the
   Component (L3) views with their aligned DFD levels, plus the required sequence
   diagrams (PRD `sequence-sync` with an explicit error path; ADR decision
   sequence; SPEC sequence paths for critical integrations/error handling) — all
-  Mermaid-only per `framework/governance/DIAGRAM_STANDARDS.md`, each block
+  Mermaid-only per `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md`, each block
   carrying its intent header and `@diagram:` tag. SPEC stays at C4-L3 and defers
   C4-L4 to the downstream TDD/IPLAN.
 - **Technical specification**: produce SPEC artifacts with explicit interfaces,
@@ -67,7 +67,7 @@ SPEC-Ready architecture to the **Test Architect** (for TDD/test specs) and the
 ## Operating Procedure
 
 1. Read upstream BRD/PRD/EARS and the relevant
-   `framework/registry/LAYER_REGISTRY.yaml` definitions before authoring.
+   `${CLAUDE_PLUGIN_ROOT}/framework/registry/LAYER_REGISTRY.yaml` definitions before authoring.
 2. Identify architecturally significant requirements and open an ADR for each
    genuine decision (not for trivial choices).
 3. Author/refresh C4 diagrams so structure and specs stay in sync.

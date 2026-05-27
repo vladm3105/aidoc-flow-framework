@@ -40,8 +40,8 @@ EARS (use `../doc-ears/SKILL.md` / `../doc-ears-autopilot/SKILL.md`).
 
 Consume the latest `EARS-NN.A_audit_report_vNNN.md`. Back up the EARS before
 editing (`tmp/backup/EARS-NN_<ts>/`); on error, restore. Element-ID standards
-come from `framework/governance/ID_NAMING_STANDARDS.md`; structure and syntax
-rules from `framework/layers/03_EARS/EARS-TEMPLATE.yaml` and `README.md`.
+come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure and syntax
+rules from `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml` and `README.md`.
 
 ## Fix Phases
 
@@ -102,11 +102,11 @@ Before applying fixes, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `section_toggles`: do not reintroduce an
 **optional** section the project has toggled off. Ignore any unknown or
 out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Audit (input): `../doc-ears-audit/SKILL.md` · Create: `../doc-ears/SKILL.md`
 - Orchestration: `../doc-ears-autopilot/SKILL.md` · IDs: `../doc-naming/SKILL.md`
-- Authority: `framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

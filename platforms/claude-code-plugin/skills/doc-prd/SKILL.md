@@ -52,9 +52,9 @@ PRD requires an upstream BRD. Before writing, read:
 1. **Upstream BRD** — the BRD that drives this PRD. If it is split into section
    files (`docs/01_BRD/BRD-NN_{slug}/`), read **all** files as one logical
    document.
-2. **Template (source of truth):** `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
-3. **Layer README:** `framework/layers/02_PRD/README.md`
-4. **ID & tag standards:** `framework/governance/ID_NAMING_STANDARDS.md`
+2. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md`
+4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 
 Confirm no ID collision: `ls docs/02_PRD/ 2>/dev/null`. Reference only BRD
 elements that exist; never invent placeholders like `BRD-XXX` or `TBD`. The PRD
@@ -134,7 +134,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 3. **Create the nested folder** — every PRD lives in
    `docs/02_PRD/PRD-NN_{slug}/` regardless of size. Monolithic:
    `PRD-NN_{slug}.md` inside it; section-based (>25 KB): `PRD-NN.S_{section}.md`
-   - index from `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`.
+   - index from `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`.
 4. **Document Control first**, then complete all 15 sections from the template.
 5. **Fill §10** (≥3 customer-facing categories); **elaborate §14** ADR topics
    without ADR numbers.
@@ -146,8 +146,8 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 ## Validation
 
 The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `framework/layers/02_PRD/README.md` and
-`framework/governance/ID_NAMING_STANDARDS.md`.
+checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md` and
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section, with `@brd:` reference and
       EARS-Ready score.
@@ -185,14 +185,14 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (include or omit template-declared **optional** sections)
 and `glossary` (substitute preferred terms in generated prose). Ignore any
 unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
-- Template / authoring rules: `framework/layers/02_PRD/PRD-TEMPLATE.yaml`
-- Layer README: `framework/layers/02_PRD/README.md`
-- Index template: `framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`
-- ID & tag standards: `framework/governance/ID_NAMING_STANDARDS.md`
+- Template / authoring rules: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml`
+- Layer README: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md`
+- Index template: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-00_index.TEMPLATE.md`
+- ID & tag standards: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 - Upstream BRD: `../doc-brd/SKILL.md`
 - Quality gate: `../doc-prd-audit/SKILL.md` · Fixes: `../doc-prd-fixer/SKILL.md`
 - Generation pipeline: `../doc-prd-autopilot/SKILL.md`

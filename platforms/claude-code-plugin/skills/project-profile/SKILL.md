@@ -22,8 +22,8 @@ Author and maintain a project's **adaptation profile** — the version-controlle
 `.aidoc/profile.yaml` that tailors how the SDD skills author and audit
 artifacts, without forking the framework. The profile is a *closed, declarative*
 set of preferences; the authority for what may appear in it is
-`framework/governance/ADAPTATION.md` and its machine-readable companion
-`framework/governance/ADAPTATION_SURFACE.yaml`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` and its machine-readable companion
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml`.
 
 **Layer**: cross-cutting utility (precedes and informs the layer skills).
 
@@ -61,7 +61,7 @@ Effective precedence: `framework defaults < user-global seed < project answers`.
 
 ### 2. Infer the starting point
 
-Lean on `../context-analyzer/SKILL.md` rather than re-scanning: use its
+Lean on `../doc-flow/SKILL.md`'s context scan rather than re-scanning: use its
 inventory to propose `active_layers` (which layers the project already uses),
 spot recurring optional sections, and collect domain terms as `glossary`
 candidates. Do not duplicate its scan.
@@ -79,7 +79,7 @@ Confirm or adjust each of the four v1 knobs:
 
 ### 4. Validate against the surface
 
-Parse `framework/governance/ADAPTATION_SURFACE.yaml` and enforce it:
+Parse `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml` and enforce it:
 
 - drop any key not in `knobs`;
 - reject disabling a mandatory layer; apply the `cascade_rule` for any disabled
@@ -112,9 +112,9 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 
 ## Related Resources
 
-- Authority: `framework/governance/ADAPTATION.md`
-- Surface registry: `framework/governance/ADAPTATION_SURFACE.yaml`
-- Context model: `../context-analyzer/SKILL.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`
+- Surface registry: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION_SURFACE.yaml`
+- Context scan: `../doc-flow/SKILL.md`
 - Scaffolding: `../project-init/SKILL.md`, `../project-adopt/SKILL.md`
 - Promote adaptations upward: `../knowledge-extractor/SKILL.md`
 - Next: `../doc-flow/SKILL.md`
@@ -124,7 +124,7 @@ and `../project-adopt/SKILL.md` scaffold only the active layers.
 | Step | Action |
 |------|--------|
 | 1 | Resolve project profile + user-global seed |
-| 2 | Infer starting point via `context-analyzer` |
+| 2 | Infer starting point via `doc-flow`'s context scan |
 | 3 | Interview across the 4 knobs |
 | 4 | Validate against `ADAPTATION_SURFACE.yaml` |
 | 5 | Materialize + write `.aidoc/profile.yaml` (commit it) |

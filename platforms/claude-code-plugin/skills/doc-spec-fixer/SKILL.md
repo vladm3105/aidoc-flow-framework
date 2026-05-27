@@ -40,8 +40,8 @@ SPEC (use `../doc-spec/SKILL.md` / `../doc-spec-autopilot/SKILL.md`).
 
 Consume the latest `SPEC-NN.A_audit_report_vNNN.md`. Back up the SPEC before
 editing (`tmp/backup/SPEC-NN_<ts>/`); on error, restore. ID standards come from
-`framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
-`framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` and `README.md`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` and `README.md`.
 
 ## Fix Phases
 
@@ -104,11 +104,11 @@ Before applying fixes, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `section_toggles`: do not reintroduce an
 **optional** section the project has toggled off. Ignore any unknown or
 out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Audit (input): `../doc-spec-audit/SKILL.md` · Create: `../doc-spec/SKILL.md`
 - Orchestration: `../doc-spec-autopilot/SKILL.md` · IDs: `../doc-naming/SKILL.md`
-- Authority: `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

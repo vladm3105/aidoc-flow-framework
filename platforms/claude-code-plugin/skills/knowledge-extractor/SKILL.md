@@ -48,7 +48,7 @@ classifies, and drafts; a human takes each draft into the right path.
 ### 1. Read the signal
 
 Load `.aidoc/profile.yaml` and `.aidoc/learnings.md` (entry shape:
-`framework/governance/ADAPTATION.md` §7). Diff the profile against framework
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` §7). Diff the profile against framework
 defaults to list the project's active deviations.
 
 ### 2. Judge generalizability (manual)
@@ -75,17 +75,17 @@ For each generalizable item, decide what it would actually change:
 ### 4. Route and draft
 
 - **Spec target → a CHG record.** Shape it to
-  `framework/governance/chg/CHG-TEMPLATE.yaml` with `change_source: spec`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` with `change_source: spec`,
   `entry_gate: GATE-SPEC`, and a `semver_impact` (additive → `minor`, breaking →
   `major`); carry **provenance** (the learnings entries + profile keys that
   motivated it) in `change_description.why` / `.trigger`. Hand it to
   `../doc-chg/SKILL.md` to complete the record and `../gate-check/SKILL.md` to
   run **GATE-SPEC**, the framework-spec change gate
-  (`framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`). A human approves;
+  (`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`). A human approves;
   the extractor never opens a PR or grants approval.
 - **Engine-guidance target → a PR-ready change description.** Name the file, give
   a before/after, and carry the same provenance. This is an ordinary platform
-  change, **not** a CHG record (per `framework/governance/ADAPTATION.md` §7).
+  change, **not** a CHG record (per `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` §7).
 
 ### 5. Hand off
 
@@ -102,9 +102,9 @@ Present the drafts grouped by path, with the idiosyncratic items listed as
 
 ## Related Resources
 
-- Signal source: `../project-profile/SKILL.md`, `framework/governance/ADAPTATION.md` (§7 learnings log)
-- CHG authoring: `../doc-chg/SKILL.md`; template `framework/governance/chg/CHG-TEMPLATE.yaml`
-- Spec gate: `../gate-check/SKILL.md` → `framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`
+- Signal source: `../project-profile/SKILL.md`, `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` (§7 learnings log)
+- CHG authoring: `../doc-chg/SKILL.md`; template `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`
+- Spec gate: `../gate-check/SKILL.md` → `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/GATE-SPEC_FRAMEWORK.md`
 
 ## Quick Reference
 

@@ -40,8 +40,8 @@ BRD (use `../doc-brd/SKILL.md` / `../doc-brd-autopilot/SKILL.md`).
 
 Consume the latest `BRD-NN.A_audit_report_vNNN.md`. Back up the BRD before
 editing (`tmp/backup/BRD-NN_<ts>/`); on error, restore. Element-ID standards
-come from `framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
-`framework/layers/01_BRD/BRD-TEMPLATE.yaml` and `README.md`.
+come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` and `README.md`.
 
 ## Fix Phases
 
@@ -101,11 +101,11 @@ Before applying fixes, read the project adaptation profile
 (`.aidoc/profile.yaml`). Honor `section_toggles`: do not reintroduce an
 **optional** section the project has toggled off. Ignore any unknown or
 out-of-surface key.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Audit (input): `../doc-brd-audit/SKILL.md` · Create: `../doc-brd/SKILL.md`
 - Orchestration: `../doc-brd-autopilot/SKILL.md` · IDs: `../doc-naming/SKILL.md`
-- Authority: `framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
-  `framework/governance/ID_NAMING_STANDARDS.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`

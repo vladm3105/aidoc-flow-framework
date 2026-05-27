@@ -38,11 +38,11 @@ A reviewer that fixes its own findings cannot be trusted as a gate.
 
 ## Review skills
 
-Drive the document/spec dimension through the plugin's native `doc-*` skills:
-use `doc-review` for the code/PR dimension (including contract conformance
-against the interface contracts in the SPEC and the test definitions in
-`doc-tdd`), and `trace-check` / `doc-validator` to confirm spec and
-traceability conformance.
+Review the **code/PR dimension natively** — correctness, standards, security
+hygiene, and contract conformance against the SPEC interface contracts and the
+`doc-tdd` test definitions. For the **document/spec dimension**, use the plugin's
+`doc-*` skills: `doc-validator` to confirm spec and traceability conformance of
+the SDD corpus.
 
 ## What You Review
 
@@ -53,7 +53,7 @@ traceability conformance.
 3. **Spec & test conformance**: does it match the SPEC; does it meet the Test
    Architect's coverage bar; are new tests meaningful (not assertion-free)? Does
    the code's structure carry the C4-L4 ownership declarations aligned with the
-   SPEC's C4-L3 component references (`framework/governance/DIAGRAM_STANDARDS.md`)?
+   SPEC's C4-L3 component references (`${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md`)?
 4. **Standards & security hygiene**: repo conventions, no injection/XSS/secret
    leakage, no dead/duplicated code, no unrequested scope creep.
 5. **Traceability**: PR carries correct upstream tags and links.

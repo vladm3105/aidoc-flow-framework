@@ -106,12 +106,12 @@ Before applying defaults, read the project adaptation profile
 audit/fix phases. Honor `section_toggles`, `active_layers`, `audit_threshold`
 (raise-only — stricter only), and `glossary`. Ignore any unknown or
 out-of-surface key; absent a profile, use framework defaults.
-Authority: `framework/governance/ADAPTATION.md`.
+Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
 - Create: `../doc-bdd/SKILL.md` · Audit: `../doc-bdd-audit/SKILL.md` · Fix:
   `../doc-bdd-fixer/SKILL.md`
-- Authority: `framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
-  `framework/layers/04_BDD/README.md`,
-  `framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
+- Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`
