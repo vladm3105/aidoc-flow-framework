@@ -13,7 +13,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.8.1"
     last_updated: "2026-05-27"
-    adapts: [active_layers]
+    adapts: [active_layers, glossary]
 ---
 
 # doc-validator
@@ -97,8 +97,9 @@ across four classes:
 - **TYPO** — misspellings, doubled words, broken markdown.
 - **TERM** — undefined acronyms, inconsistent or subjective terminology.
 
-Severity gates by depth: `quick` ≤ 10 warnings, `full` ≤ 5, `deep` 0. An
-optional project dictionary (`.aidoc/doc-review.yaml`) suppresses domain-term
+Severity follows `strictness`: under `strict`, any DATA/REF/TYPO/TERM finding is
+an error (blocks); under `permissive`, they are warnings. Honor the project
+`glossary` (`.aidoc/profile.yaml`; see *Adaptation*) to suppress domain-term TERM
 false positives. Use before publishing or committing documentation.
 
 ### Cumulative-tag hierarchy
@@ -136,10 +137,16 @@ its code, and a fix hint.
 ## Adaptation
 
 Read the project adaptation profile (`.aidoc/profile.yaml`) before validating.
-Honor this skill's declared knob `active_layers`: when a skippable layer
-(BDD / ADR) is disabled, treat it as absent **by design** — apply the cascade
-(drop it from downstream `required_tags` / `can_reference`) so the cumulative-tag,
-orphan, and bidirectional checks do **not** flag the intentional gap as an error.
+Honor this skill's declared knobs:
+
+- `active_layers` — when a skippable layer (BDD / ADR) is disabled, treat it as
+  absent **by design**: apply the cascade (drop it from downstream
+  `required_tags` / `can_reference`) so the cumulative-tag, orphan, and
+  bidirectional checks do **not** flag the intentional gap as an error.
+- `glossary` — use the project's preferred terms to normalize and suppress
+  domain-term `TERM` findings in the prose pass (no false positives on accepted
+  vocabulary).
+
 Ignore unknown / out-of-surface keys; absent a profile, use framework defaults.
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 

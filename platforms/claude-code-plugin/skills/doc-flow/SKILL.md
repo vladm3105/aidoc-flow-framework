@@ -12,6 +12,7 @@ metadata:
     version: "0.2.0"
     framework_spec_version: "0.8.1"
     last_updated: "2026-05-27"
+    adapts: [active_layers]
 ---
 
 # doc-flow
@@ -94,7 +95,7 @@ position.
 
 | Action keyword | Skill |
 |----------------|-------|
-| create / draft / write | that layer's base (`doc-<x>`) or `-autopilot` |
+| create / draft / write | that layer's base or `-autopilot` (pick the layer from the table above) |
 | check / score / audit | that layer's `-audit` |
 | fix / remediate | that layer's `-fixer` |
 | validate / trace / links / orphans / repair | `../doc-validator/SKILL.md` |
@@ -109,17 +110,22 @@ position.
 When the user names a skill, run it directly.
 
 **Where am I.** Scan `docs/<NN>_<X>/` for existing artifacts; read each Document
-Control `Status` (Draft / In Review / Approved / Superseded / Deprecated); map
-artifacts to layers 1–8, mark each layer completed / in-progress / ready /
-blocked, and report position plus a progress percentage (approved layers ÷ 8).
+Control `Status` (most layers `Draft → In Review → Approved`; IPLAN
+`Draft → In Progress → Completed`). Map artifacts to the project's **active**
+layers (see *Adaptation*), mark each completed / in-progress / ready / blocked,
+and report position plus a progress percentage — layers at their terminal status
+(`Approved`, or `Completed` for IPLAN) ÷ **active** layers.
 
 **What's next.** Recommend the next artifact per the cumulative chain (each layer
-needs its single-layer prerequisite), prioritized:
+needs its single-layer prerequisite), over the project's **active** layers only —
+never recommend a layer the profile disabled. Prioritize:
 
 - **P0** — a *required* upstream is missing, or the next step is on the critical
-  path `BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN`.
+  path (the active-layer spine `BRD → PRD → EARS → BDD → ADR → SPEC → TDD →
+  IPLAN`, minus any disabled skippable layer).
 - **P1** — the next ready layer once the critical path is unblocked.
-- **P2** — optional / parallel work (`doc-ref` supplements, additional ADRs).
+- **P2** — optional / parallel work (`doc-ref` supplements, extra ADRs beyond the
+  decisions already captured).
 
 Surface parallel-work opportunities (independent tracks with no shared
 prerequisite) and name the skill to run for each.
@@ -179,6 +185,16 @@ The framework is spec-only — it ships no runtime scripts. Each skill **is** th
 validator: it applies a declarative checklist against the layer `README.md` and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/`. After each artifact, run that layer's `-audit`; before
 moving on, confirm the cumulative upstream tags are present (PRD→1 … IPLAN→7).
+
+## Adaptation
+
+Read the project adaptation profile (`.aidoc/profile.yaml`) before reporting
+position or recommending next steps. Honor this skill's declared knob
+`active_layers`: treat a disabled skippable layer (BDD / ADR) as **not part of
+the flow** — exclude it from the critical path, the progress denominator, and
+next-step recommendations (never suggest authoring it, and don't count it
+against completion). Ignore unknown / out-of-surface keys; absent a profile, use
+the full 8-layer flow. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

@@ -24,14 +24,17 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
     which now carries the intent-keyword → skill map, the `where am I` position
     scan (status taxonomy + progress %), `what's next` P0/P1/P2 prioritization over
     the critical path with parallel-work detection, and the context scan
-    (upstream-candidate ranking + vocabulary). `skill-recommender` also duplicated
-    Claude Code's native skill dispatch.
+    (upstream-candidate ranking + vocabulary). It is **adaptation-aware**
+    (`adapts: [active_layers]`): the critical path, progress denominator, and
+    next-step recommendations honor a project's disabled skippable layers.
+    `skill-recommender` also duplicated Claude Code's native skill dispatch.
   - `trace-check` + `doc-review` → **`doc-validator`**, which now covers full
     bidirectional traceability with `auto_fix` repair (backup / rollback /
-    no-placeholder safety), the four-class prose review (DATA/REF/TYPO/TERM with
-    severity gates + a custom-dictionary), and **inherits `trace-check`'s
-    `adapts: [active_layers]`** so traceability honors a project's disabled-layer
-    profile instead of false-failing it.
+    no-placeholder safety) and the four-class prose review (DATA/REF/TYPO/TERM,
+    severity by `strictness`). It is **adaptation-aware**
+    (`adapts: [active_layers, glossary]`): traceability honors a project's
+    disabled-layer profile instead of false-failing it, and the prose pass uses
+    the project `glossary` to suppress domain-term false positives.
   Utilities 19 → 14. All cross-references across skills, agents, README, and
   `docs/SKILL_AUTHORING.md` were repointed; `plm_lint`'s enforced set updated.
   `doc-naming` stays the ID-format authority; the per-layer 4-variant skills are
