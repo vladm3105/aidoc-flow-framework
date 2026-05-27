@@ -1,4 +1,4 @@
-# UCR Prompt: Technical Specification Document (SPEC) - Layer 9
+# UCR Prompt: Technical Specification Document (SPEC) - Layer 6
 
 ## Instructions
 
@@ -29,8 +29,9 @@ Before claiming a specification is COMPLETE, verify it meets ALL criteria:
 2. **Error handling complete** - All error paths with recovery specified
 3. **Dependencies enumerated** - External services with circuit breakers
 4. **Configuration documented** - Env vars, feature flags, defaults listed
+5. **Diagram contract present** - C4-L3 component + DFD-L3 data-flow diagrams with `@diagram: c4-l3` / `@diagram: dfd-l3` tags, required sequence paths for critical integrations and error handling, and the downstream TDD ownership link (per `DIAGRAM_STANDARDS.md`); SPEC must NOT embed C4-L4 code/class diagrams.
 
-**IMPORTANT**: Even if a spec exists, if it lacks error handling or operational hooks, FLAG IT AS A GAP.
+**IMPORTANT**: Even if a spec exists, if it lacks error handling, operational hooks, or its mandatory C4-L3/DFD-L3 diagrams, FLAG IT AS A GAP.
 
 ---
 
@@ -131,7 +132,7 @@ Output:
 
 ---
 
-### 3. THE DEVIL'S ADVOCATE (Error & Edge Cases)
+### 3. THE CHAOS ENGINEER (Error & Edge Cases)
 
 Focus on:
 

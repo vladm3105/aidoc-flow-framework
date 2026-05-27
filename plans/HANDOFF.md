@@ -1,5 +1,133 @@
 # Session Handoff
 
+> **🟢 AGENT-TEAM PHASE 3 COMPLETE — parity proof; ALL PHASES DONE — 2026-05-26.**
+> Branch **`claude/multi-platform-migration-AamWB`**. Added the deterministic parity
+> check: a shared unified-report schema
+> (`tests/conformance/fixtures/review/review_report.schema.json`), sample report
+> fixtures from **both** runners (`hermes_BRD-01_report.json`,
+> `plugin_BRD-01_report.json`), and `tests/conformance/test_review_report_parity.py`
+> (dependency-free validator: each fixture validates against the schema; the two share
+> the report shape; `passed == structural_pass AND no_blocking`). Conformance **54 →
+> 57**. `docs/PARITY.md` gains a review-team comparison + the parity proof (CI +
+> documented **manual live-run** procedure, since live LLM output isn't
+> CI-deterministic). **AGENT-TEAM Phases 0–3 are all complete** (spec → Hermes conform
+> → plugin build → parity). Platform/test-only; no framework spec change.
+> **Standing user-only carry-overs:** branch protection on `framework/**`; push
+> `framework/v0.x` + `hermes/v0.x` + `claude-code-plugin/v0.x` release tags from a
+> local clone. **Open:** land this branch (PR) when ready.
+>
+> **🟢 AGENT-TEAM PHASE 2 COMPLETE (plugin build) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. Built the plugin's **review-team**
+> mechanism (the plugin's binding of `framework/governance/REVIEW_TEAM.md`):
+> `skills/review-team/SKILL.md` + two review-lens agents `agents/adversary.md` &
+> `agents/synthesizer.md`. The crew fans out as Claude Code `Task` subagents writing
+> to the **git-ignored `.aidoc/review/` blackboard**; the `synthesizer` reduces the
+> slots (dedup `location`+`id`, max severity, weighted/capped score from
+> `REVIEW_CREWS.yaml`, coverage/quorum) into one report. `independent` default +
+> `single_pass` fallback; team-at-gates / `single_pass`-advisory-at-`on_author`
+> (`review_mode` knob). **D-0005: blackboard + coverage, no saga port.** Wiring:
+> `pm-orchestrator` dispatches the team, `doc-flow` lists it, the skill documents the
+> `-audit`/`-fixer`/`-autopilot` team mode (one shared mechanism, not 24 rewrites);
+> `.gitignore` ignores `.aidoc/review/`; plugin CHANGELOG noted; lens→agent mapping
+> table covers the framework crews. `plm_lint` clean corpus-wide; markdownlint clean;
+> conformance 54; no framework change. **Next:** Phase 3 — parity proof (report-fixture
+> schema check from both runners + a documented manual live-run; update `docs/PARITY.md`).
+>
+> **🟢 AGENT-TEAM PHASE 1 COMPLETE (Hermes conform) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. All 5 Phase-1 steps landed (commits
+> `4578e63` scoring, `6e5c957` parser+saga+resilience, + report/crew/retitle):
+> **parser** captures `lens_score`/`location`/`id` (+`recommendation` alias);
+> **saga_orchestrator** computes `review_score`+`coverage` (via `review_scoring`)
+> and surfaces them on the result/summaries; **resilience** — degrades on a failed
+> branch (proceed + coverage), escalates **only below quorum** (new
+> `BRANCH_FAILED→BRANCH_COMPLETED`); **report** `UCR_OUTPUT_UNIFIED` carries
+> score+coverage; **crew/name** — Hermes review crews cover every framework crew via
+> the alias (new guard test), `THE DEVIL'S ADVOCATE → THE CHAOS ENGINEER` retitled
+> (11 prompts). Documented in `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. 49
+> review unit tests green; conformance 54; ruff clean; platform-only (no spec change).
+> The 2 `test_saga_review_pipeline` failures are the pre-existing missing-`mcp`-package
+> import (reproduced on base). **Next:** Phase 2 (plugin build the review-team via
+> subagents + `.aidoc/review/` blackboard; D9 — no saga port) then Phase 3 parity.
+>
+> **🟢 AGENT-TEAM PHASE 1 STARTED (Hermes conform) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. First Phase-1 increment: the
+> deterministic **scoring + coverage** conformance + the **framework↔Hermes
+> persona-name mapping**. New `platforms/hermes/src/mcp_server/review/review_scoring.py`
+> (weighted/capped readiness score from `REVIEW_CREWS.yaml` weights, renormalised
+> over lenses that ran; unresolved P0 ⇒ 0, P1 ⇒ capped below gate; `CoverageReport`
+> with quorum → low-confidence; `FRAMEWORK_PERSONA_ALIASES` `chaos_engineer`→`adversary`,
+> `chairperson`→`synthesizer`) + `tests/unit/test_review_scoring.py` (10) +
+> `docs/architecture/REVIEW_TEAM_CONFORMANCE.md` (persona-output field map + status).
+> Additive — the working saga/reducer/parser untouched. Conformance **54**; ruff clean;
+> reducer/parser/scoring tests green (14); no framework change. **Remaining Phase 1:**
+> capture `lens_score` in `persona_output_parser`; surface `score`+`coverage` in the
+> saga result + `PERSONA_REVIEW_REPORT`/`UCR_*` shape; reconcile `persona_mappings.yaml`
+> review crews with the framework crews (this also resolves the gap-review finding that
+> UCR prompts still title the lens "THE DEVIL'S ADVOCATE"). **Next:** continue Phase 1.
+>
+> **🟢 AUDIT-FIXUPS (WS-A/B/C) DONE — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. Plan: `plans/AUDIT-FIXUPS-PLAN.md`
+> (2 review passes). Closed the 3 residual findings from the C4 + ID_NAMING audits.
+> **WS-A** (framework GATE-SPEC, spec **0.8.0→0.8.1**): `ADR-TEMPLATE.yaml` now
+> *requires* the decision `sequenceDiagram` (`@diagram: sequence-*`; flowchart
+> optional), matching `DIAGRAM_STANDARDS.md`; bumped both FSV + 54 skills + CHANGELOG;
+> `spec_gate` green. **WS-B** (platform docs): purged the v2/14-layer "available"
+> narrative (`SYS/REQ/CTR/TSPEC/TASKS`, legacy workflow, `07_REQ` setup) from the 3
+> `sdd-orchestrator/root-docs`, leaving a one-line "superseded" note + accurate
+> migration changelog. **WS-C** (platform docs): `UCC_PERSONAS.md`
+> `DEVILS_ADVOCATE→CHAOS_ENGINEER`, `INTEGRATION_EXPERT→INTEGRATION_LEAD` (+ UCRem
+> fixer crew) to match runtime persona keys. Conformance **54**; Hermes prompt/persona
+> tests green; no residual legacy. **Deferred by design:** the framework
+> `adversary`/`synthesizer` ↔ Hermes `chaos_engineer`/`chairperson` name mapping is
+> **AGENT-TEAM Phase 1**. **Next:** AGENT-TEAM Phase 1 (Hermes persona-output /
+> saga_reducer schema conform).
+>
+> **🟢 HERMES PROMPT LEGACY-NAMING PURGE (ID_NAMING / traceability) — 2026-05-26.**
+> Branch **`claude/multi-platform-migration-AamWB`**. On the directive "agents must
+> use the `ID_NAMING_STANDARDS` convention; no mix with legacy naming" — with v3.2
+> `legacy-ucx-v3.2-read-only/ucx_flow_v3` confirmed as the **source of truth** (it
+> is the migration source; the migration changed *tooling* UCX→plugin+Hermes, not
+> the spec; verified `ucx_flow_v3` = the 8 layers `01_BRD…08_IPLAN`, no
+> `SYS/REQ/CTR/TSPEC`, element IDs `{TYPE}.{doc}.{section}.{hash}`). **Audit:** plugin
+> agents/skills clean (legacy mentions are intentional *banned/removed* refs); Hermes
+> personas clean; **Hermes prompt templates were heavily contaminated** with the
+> pre-migration 10/12-layer `SYS→REQ→CTR→SPEC→TSPEC→TASKS` taxonomy + legacy
+> element-ID forms. **Fixed (11 prompt files, platform-only, no spec change):**
+> `UCC_OUTPUT_SCHEMA.md` (rewrote L6–L10 → L6 SPEC / L7 TDD / L8 IPLAN), `UCC_PERSONAS.md`
+> (layer→persona map + assignments), `UCC_PROMPT_{BRD,PRD,ADR,SPEC}`, `UCR_PROMPT_ADR`,
+> `UCRem_PROMPT_{BRD,PRD,ADR,SPEC}`: SPEC L9→L6, upstream/downstream chains,
+> `@sys/@ctr`→`@spec`, `SYS-Ready`→`SPEC-Ready`, and the **type-code+sequence**
+> element-ID scheme (`PRD.NN.TT.SS`, `BRD.{doc}.{type_code}.{seq}`, 3-segment
+> `ADR.{doc}.{seq}`) → canonical `{TYPE}.{doc}.{section}.{hash}` (hash, not seq —
+> per CM "no sequential numbering"). Conformance **54**; Hermes prompt/persona tests
+> green (52+19). **Flagged (not fixed — lower-priority docs):** `sdd-orchestrator/root-docs/README.md`
+> ("v2 14-layer … remain available" + a legacy workflow line) and `MULTI_PROJECT_*`
+> guides still carry legacy layer references; persona display-name drift
+> (`integration_expert`→`integration_lead`, `devils_advocate`→`chaos_engineer/adversary`).
+> The `sdd-orchestrator` "What Was Cut from v2" table + `references/*` ban-guards are
+> **correct** (document removals) — leave. **Next:** AGENT-TEAM Phase 1.
+>
+> **🟢 AGENT DIAGRAM-CONFORMANCE (C4 + DFD + sequence) — 2026-05-26.** Branch
+> **`claude/multi-platform-migration-AamWB`**. On the directive "make sure agents
+> use the framework's C4/sequence/dataflow model — nothing missed, plugin + Hermes":
+> audited both platforms against `framework/governance/DIAGRAM_STANDARDS.md`. The
+> **Hermes review side missed diagrams entirely** (no persona referenced
+> C4/DFD/sequence; PRD/SPEC/ADR review prompts had no diagram checks) while the
+> **plugin creation/audit side already enforced** them. Fixes (platform-only, no
+> spec change): Hermes personas `architect` (new C4/DFD/sequence per-layer lens),
+> `integration_lead` (sequence/dataflow + DFD trust boundaries), `auditor`
+> (`@diagram:` tag checks) — these inject into every creation+review crew;
+> `references/diagram-standards.md` de-contaminated (dropped `mermaid-gen` /
+> `.claude/skills` tokens, points to the framework authority); `UCR_PROMPT_SPEC`
+> now verifies the C4-L3/DFD-L3 contract. Plugin `solutions-architect` /
+> `traceability-auditor` / `code-reviewer` made the diagram + `@diagram:`-tag +
+> C4-L4-ownership checks explicit. Also fixed a residual legacy **SPEC `L9 → L6`**
+> numbering in `tech_lead`/`integration_lead` + the SPEC review/remediation prompts.
+> Conformance **54**; markdownlint clean; Hermes persona/reducer tests green.
+> **Flagged (not fixed):** deeper legacy *TSPEC-as-Layer-10* divergence in
+> `UCC_OUTPUT_SCHEMA.md` + `MULTI_PROJECT_*` / `docs/plans` (separate cleanup).
+> **Next:** AGENT-TEAM Phase 1 (Hermes persona-output / saga_reducer schema conform).
+>
 > **🔵 AGENT-TEAM PHASE 0 READY — review-team spec (2026-05-25).** Branch
 > **`claude/agent-team-plan`** (plan + Phase 0). Plan: `plans/AGENT-TEAM-PLAN.md`
 > (D1–D8 confirmed, Pass-3 gap-hardened). **Phase 0** adds the engine-agnostic

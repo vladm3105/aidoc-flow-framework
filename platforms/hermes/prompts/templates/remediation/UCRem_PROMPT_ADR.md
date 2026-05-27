@@ -226,17 +226,17 @@ fix_action:
     - @bdd: Feature: System handles peak load
 
     ### Downstream
-    - @sys: SYS.01.CP.01 (API Gateway component)
-    - @sys: SYS.01.CP.02 (Service mesh configuration)
+    - @spec: SPEC.01.03.a1b2 (API Gateway component)
+    - @spec: SPEC.01.03.c3d4 (Service mesh configuration)
 ```
 
 ---
 
 ## Element ID Convention
 
-ADR elements follow: `ADR.{doc_num}.{seq}`
+ADR elements follow: `ADR.{doc_num}.{section_id}.{hash}`
 
-Example: `ADR.01.01` - First decision in ADR-01
+Example: `ADR.01.03.e5b1` - a decision element in section 03 of ADR-01
 
 ---
 

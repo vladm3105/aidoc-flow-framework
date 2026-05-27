@@ -80,7 +80,7 @@ custom_fields:
 6. Success Metrics
 7. Risk Assessment
 
-**Element ID Format**: `BRD.{doc}.{type}.{seq}`
+**Element ID Format**: `BRD.{doc}.{section}.{hash}`
 
 ---
 
@@ -104,7 +104,7 @@ custom_fields:
 5. Acceptance Criteria
 6. Non-Functional Requirements
 
-**Element ID Format**: `PRD.{doc}.{type}.{seq}`
+**Element ID Format**: `PRD.{doc}.{section}.{hash}`
 
 ---
 
@@ -185,8 +185,8 @@ custom_fields:
   artifact_type: ADR
   layer: 5
   upstream_artifacts: [BDD-XX, BRD-XX]
-  downstream_artifacts: [SYS-XX]
-  personas_applied: [Architect, Tech Lead, Integration Expert, Operator]
+  downstream_artifacts: [SPEC-XX]
+  personas_applied: [Architect, Tech Lead, Integration Lead, Operator]
 ```
 
 **Required Sections**:
@@ -195,120 +195,21 @@ custom_fields:
 2. Decision
 3. Consequences
 4. Alternatives Considered
-5. Implementation Notes
+5. Architecture Flow (decision / interaction sequence; no C4 level)
 
-**Element ID Format**: `ADR.{doc}.{seq}`
-
----
-
-### Layer 6: SYS (System Requirements)
-
-```yaml
-custom_fields:
-  artifact_type: SYS
-  layer: 6
-  upstream_artifacts: [ADR-XX]
-  downstream_artifacts: [REQ-XX]
-  personas_applied: [Architect, Tech Lead, Operator, Integration Expert]
-```
-
-**Required Sections**:
-
-1. System Overview
-2. Component Specifications
-3. Interface Definitions
-4. Performance Requirements
-5. Operational Requirements
-
-**Element ID Format**: `SYS.{doc}.{type}.{seq}`
-
-- Types: CP (Component), IF (Interface), DT (Data), PF (Performance), SC (Security), OP (Operational)
+**Element ID Format**: `ADR.{doc}.{section}.{hash}`
 
 ---
 
-### Layer 7: REQ (Atomic Requirements)
-
-```yaml
-custom_fields:
-  artifact_type: REQ
-  layer: 7
-  upstream_artifacts: [SYS-XX]
-  downstream_artifacts: [CTR-XX, SPEC-XX]
-  personas_applied: [Requirements Specialist, Tech Lead, Integration Expert]
-```
-
-**Required Format**: YAML requirement blocks
-
-```yaml
-req_id: REQ.{doc}.{type}.{seq}
-title: "{Concise title}"
-statement: |
-  The system shall {single atomic requirement}.
-type: functional|interface|performance|security
-priority: P0|P1|P2
-verification:
-  method: test|inspection|analysis|demonstration
-  criteria: "{How to verify}"
-traces:
-  upstream:
-    - "@sys: SYS.XX.XX.XX"
-  downstream:
-    - "@spec: SPEC.XX.XX.XX"
-rationale: "{Why this requirement exists}"
-```
-
----
-
-### Layer 8: CTR (Data Contracts)
-
-```yaml
-custom_fields:
-  artifact_type: CTR
-  layer: 8
-  upstream_artifacts: [REQ-XX]
-  downstream_artifacts: [SPEC-XX]
-  personas_applied: [Architect, Tech Lead, Integration Expert]
-```
-
-**Required Format**: Dual-file (YAML schema + MD documentation)
-
-**CTR-XX.yaml**:
-
-```yaml
-contract_id: CTR-{NN}
-name: "{Contract Name}"
-version: "1.0.0"
-status: active
-owner: "{Team/Service}"
-
-schema:
-  type: object
-  required: [field1]
-  properties:
-    field1:
-      type: string
-      validation:
-        pattern: "^[a-z]+$"
-
-versioning:
-  strategy: semantic
-  breaking_changes: []
-
-consumers: []
-producers: []
-```
-
----
-
-### Layer 9: SPEC (Technical Specification)
+### Layer 6: SPEC (Technical Specification)
 
 ```yaml
 custom_fields:
   artifact_type: SPEC
-  layer: 9
-  upstream_artifacts: [REQ-XX, CTR-XX]
-  downstream_artifacts: [TSPEC-XX, TASKS-XX]
-  personas_applied: [Tech Lead, Architect, Operator, Integration Expert]
+  layer: 6
+  upstream_artifacts: [ADR-XX]            # cumulative: BRD, PRD, EARS, BDD, ADR
+  downstream_artifacts: [TDD-XX]
+  personas_applied: [Tech Lead, Architect, Operator, Integration Lead]
 ```
 
 **Required Format**: YAML specification
@@ -338,42 +239,72 @@ monitoring:
   alerts: []
 ```
 
+**Element ID Format**: `SPEC.{doc}.{section}.{hash}`. Diagram contract: `@diagram: c4-l3` + `@diagram: dfd-l3` (per `DIAGRAM_STANDARDS.md`); C4-L4 deferred to downstream TDD/IPLAN.
+
 ---
 
-### Layer 10: TSPEC (Test Specification)
+### Layer 7: TDD (Test-Driven Development Guide)
 
 ```yaml
 custom_fields:
-  artifact_type: TSPEC
-  layer: 10
-  upstream_artifacts: [SPEC-XX]
-  downstream_artifacts: []
+  artifact_type: TDD
+  layer: 7
+  upstream_artifacts: [SPEC-XX]           # cumulative through SPEC
+  downstream_artifacts: [IPLAN-XX]
   personas_applied: [QA Lead, Tech Lead, Operator]
 ```
 
-**Required Format**: YAML test specification
+**Required Format**: YAML test-case definitions derived from the SPEC component contracts
 
 ```yaml
-tspec_id: TSPEC-{NN}
-title: "{Test Specification Title}"
+tdd_id: TDD-{NN}
+title: "{Test Guide Title}"
 version: "1.0.0"
 
-coverage:
-  spec_reference: "@spec: SPEC-XX"
-  requirements_tested: []
+test_cases:
+  - id: TDD.{doc}.{section}.{hash}
+    spec_trace: "@spec: SPEC-XX"
+    bdd_trace: "@bdd: BDD.XX.XX.xxxx"
+    inputs: []
+    expected_outputs: []
+    edge_cases: []
 
-test_categories:
-  unit: []
-  integration: []
-  e2e: []
+quality_thresholds:
+  coverage_target: "{pct}"
 
-test_data:
-  fixtures: []
-  factories: []
-
-metrics:
-  coverage_target: 80%
+execution_order: []
 ```
+
+**Element ID Format**: `TDD.{doc}.{section}.{hash}` (test-case level).
+
+---
+
+### Layer 8: IPLAN (Implementation Plan)
+
+```yaml
+custom_fields:
+  artifact_type: IPLAN
+  layer: 8
+  upstream_artifacts: [TDD-XX]            # cumulative through TDD
+  downstream_artifacts: [Code]
+  personas_applied: [Tech Lead, Architect, Operator, Integration Lead]
+```
+
+**Required Format**: YAML execution bridge (one IPLAN per SPEC component)
+
+```yaml
+iplan_id: IPLAN-{NN}
+title: "{Implementation Plan Title}"
+version: "1.0.0"
+
+file_manifest: []          # files to create / modify
+commands: []               # bash commands to run
+session_handoff: |
+  {context for resuming implementation}
+audit_trail: []            # code audit checkpoints
+```
+
+**Document-level reference**: `@iplan: IPLAN-NN`.
 
 ---
 

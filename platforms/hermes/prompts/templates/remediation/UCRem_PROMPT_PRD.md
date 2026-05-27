@@ -24,7 +24,7 @@ PRD is Layer 2 (Container level) in the SDD workflow:
 - **Upstream**: BRD (Business Requirements) — linked via `@brd: BRD.NN.07.xxxx` tags
 - **Downstream**: EARS (Formal Requirements), BDD (Test Scenarios), ADR (Architecture Decisions)
 - **Template**: PRD-TEMPLATE.yaml (15 sections)
-- **Workflow**: BRD → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS → Code
+- **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 Common PRD issues to remediate:
 

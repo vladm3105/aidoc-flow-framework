@@ -10,8 +10,41 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed
+
+- Purged the pre-migration legacy taxonomy from the Hermes prompt templates so
+  the creation/review/remediation agents follow the v3.2 source-of-truth naming
+  convention (`ucx_flow_v3`). Removed the 10/12-layer `SYS / REQ / CTR / TSPEC /
+  TASKS` model (the framework is the 8 layers BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
+  from `UCC_OUTPUT_SCHEMA.md`, `UCC_PERSONAS.md`, and the `UCC_/UCR_/UCRem_`
+  prompts; corrected `SPEC` from Layer 9 → 6 and the upstream/downstream chains;
+  and converted legacy element-ID forms to the canonical 4-segment
+  `{TYPE}.{doc}.{section}.{hash}` (`TYPE.NN.SS.xxxx`) — dropping the type-code +
+  sequence variant (`NN.TT.SS`) and 3-segment forms (`ADR.{doc}.{seq}`). Renamed
+  PRD's legacy `SYS-Ready` score to `SPEC-Ready`. Platform-only; no framework
+  spec change.
+
 ### Changed
 
+- Framework spec **0.8.0 → 0.8.1** (patch) — AUDIT-FIXUPS WS-A: the ADR (L5)
+  template now **requires** a decision/interaction `sequenceDiagram` (carrying its
+  intent header + `@diagram: sequence-*` tag), with `flowchart` demoted to an
+  optional supplement — matching `DIAGRAM_STANDARDS.md` ("Required decision
+  sequence"). Previously `ADR-TEMPLATE.yaml` offered sequence/flowchart as equals
+  and never required the sequence. Both `FRAMEWORK_SPEC_VERSION` files + the 54
+  plugin skills' `framework_spec_version` re-synced to 0.8.1.
+- Platform agents now apply the framework's **C4 + DFD + sequence** diagram model
+  (`framework/governance/DIAGRAM_STANDARDS.md`) in review and creation.
+  Hermes review personas (`architect`, `integration_lead`, `auditor`) gained
+  per-layer diagram-review lenses (injected into every crew); the SPEC review
+  prompt now verifies the C4-L3/DFD-L3 diagram contract; the orchestrator's
+  `references/diagram-standards.md` was de-contaminated of plugin-only tokens
+  (`mermaid-gen`, `.claude/skills/…`) and now points to the framework as
+  authority. Plugin agents (`solutions-architect`, `traceability-auditor`,
+  `code-reviewer`) make the C4/DFD/sequence + `@diagram:` tag + C4-L4 ownership
+  checks explicit. Also corrected a residual legacy layer number (SPEC
+  **L9 → L6**) in the `tech_lead`/`integration_lead` personas and the SPEC
+  review/remediation prompts. Platform-only — no framework spec change.
 - Framework spec **0.7.1 → 0.8.0** (minor) — AGENT-TEAM Phase 0: the
   engine-agnostic **review-team** model. New `framework/governance/REVIEW_TEAM.md`
   (multi-persona crews + a hub blackboard + the persona-output contract + a

@@ -57,6 +57,10 @@ and the per-layer `doc-*-audit` skills.
    artifacts with no upstream source.
 5. **Readiness scores**: each artifact meets the threshold for its layer
    transition.
+6. **Diagram contract**: required `@diagram:` machine tags present and correctly
+   leveled per layer per `framework/governance/DIAGRAM_STANDARDS.md` (BRD
+   `c4-l1`/`dfd-l1`; PRD `c4-l2`/`dfd-l2`/`sequence-sync`; SPEC `c4-l3`/`dfd-l3`;
+   ADR decision sequence).
 
 ## Operating Procedure
 

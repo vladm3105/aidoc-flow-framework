@@ -16,15 +16,13 @@
 
 ## SDD Depth Selection
 
-This repository provides a **unified SDD framework** with scalable depth. v3 (8 layers, recommended) and v2 (14 layers, legacy) are both available.
+This repository provides a **unified SDD framework** with scalable depth. It uses the **8-layer** flow (the pre-migration 14-layer model is superseded).
 
-| Depth | Layers (v3) | Best For |
+| Depth | Layers | Best For |
 |:------|:---------|:---------|
 | **SDD-Lite** | REF → BRD → PRD → IPLAN | MVPs, prototypes, solo + AI, 1-3 months |
 | **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams, 3-6 months |
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team, 6+ months |
-
-The original v2 (14-layer) variant is preserved in `framework/` for existing projects.
 
 ## Hermes Skills (UCX V3)
 
@@ -45,8 +43,7 @@ KB policy references:
 
 | Directory | Purpose |
 |:----------|:--------|
-| `framework/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| `framework/` | **SDD v2** (legacy): 14-layer documentation and templates (BRD, PRD, EARS, ADR, etc.) |
+| `framework/` | **SDD** (current): 8-layer framework with C4 mapping, CHG governance overlay |
 | `governance/` | Project governance, setup guides, scripts, CI/CD templates |
 | `governance/shared/` | Shared governance (PR review, branching, releases) |
 | `ucx_kb/` | Standalone RAG + Graph knowledge base package |
@@ -73,8 +70,7 @@ KB policy references:
 │   │   ├── bin/                      # CLI entry points
 │   │   └── docs/                     # UCX documentation
 │   │
-|   ├── framework/              # SDD v3 templates (8 layers, recommended)
-│   ├── framework/              # SDD v2 templates (14 layers, legacy)
+│   ├── framework/              # SDD templates (8 layers)
 │   │   ├── 01_BRD/                   # Business Requirements
 │   │   ├── 02_PRD/                   # Product Requirements
 │   │   ├── ...                       # (layers 03-11)
@@ -103,7 +99,7 @@ KB policy references:
     │   ├── src/                      # Source code
     │   ├── framework/              # Symlink → SDD templates (optional)
     │   ├── .templates/
-    │   │   ├── framework/      # Symlink → SDD v2 templates (legacy)
+    │   │   ├── framework/      # Symlink → SDD templates (8 layers)
     │   │   └── governance/           # Symlink → SDD governance
     │   └── .claude/
     │       ├── skills/               # Symlink → shared skills
@@ -412,7 +408,7 @@ ls -la /opt/data/ucx_framework/.claude/
 # Expected: skills/, commands/, agents/
 
 ls -la framework/
-# Expected: BRD/, PRD/, ADR/, REQ/, etc.
+# Expected: BRD/, PRD/, EARS/, BDD/, ADR/, SPEC/, TDD/, IPLAN/
 ```
 
 ### 2. Project Setup Script
@@ -550,7 +546,6 @@ cd /opt/data/project_name
 
 # OR manually create folder structure
 mkdir -p docs/{BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN}
-mkdir -p docs/REQ/{api,auth,data,core,integration,monitoring,reporting,security,ui}
 mkdir -p plans
 mkdir -p scripts
 
@@ -711,7 +706,7 @@ When using `--with-github`, the following resources are symlinked:
 │   └── PULL_REQUEST_TEMPLATE.md
 │
 ├── .templates/
-│   ├── framework/             # Symlink → SDD v2 templates (14 layers, legacy)
+│   ├── framework/             # Symlink → SDD templates (8 layers)
 │   └── governance/                  # Symlink → SDD governance templates
 │
 ├── framework/                     # Optional: Symlink → SDD templates (convenience)
@@ -720,7 +715,7 @@ When using `--with-github`, the following resources are symlinked:
 │   ├── 01_BRD/
 │   ├── 02_PRD/
 │   ├── 05_ADR/
-│   ├── 07_REQ/
+│   ├── 06_SPEC/
 │   └── generated/
 │       └── matrices/
 │
@@ -1250,9 +1245,9 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 - [Layer Registry](./framework/registry/LAYER_REGISTRY.yaml) - Authoritative layer definitions
 - [CHG Governance Overlay](./framework/governance/chg/README.md) - 5-gate change management
 
-**SDD v2 Framework (framework — legacy)**:
+**SDD Framework (framework)**:
 
-- [SDD Methodology Guide](./framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 14-layer workflow
+- [SDD Methodology Guide](./framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) - 8-layer workflow
 - [ID Naming Standards](./framework/ID_NAMING_STANDARDS.md) - Document naming conventions
 - [Traceability Setup](./framework/TRACEABILITY_SETUP.md) - Tag-based traceability
 

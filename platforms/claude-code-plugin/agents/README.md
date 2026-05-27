@@ -87,6 +87,26 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ---
 
+## Review-Team Lenses
+
+Beyond the nine lifecycle agents, two **review lenses** support the multi-persona
+**review-team** mode (`../skills/review-team/SKILL.md`) — the plugin's binding of
+`framework/governance/REVIEW_TEAM.md`:
+
+| Lens | Model | Access | Role |
+|------|-------|--------|------|
+| `adversary` | opus | read-only | devil's-advocate / chaos — failure modes, edge cases, unstated assumptions |
+| `synthesizer` | sonnet | read-only | chairperson — reduces the crew's blackboard slots into one scored, coverage-aware report |
+
+The remaining framework lenses map onto the lifecycle agents (e.g. `qa_lead` →
+`test-architect`; `architect`/`tech_lead`/`integration_lead` → `solutions-architect`;
+`auditor` → `traceability-auditor`/`security-engineer`); see the full mapping in
+`../skills/review-team/SKILL.md`. The crew fans out as `Task` subagents writing to
+the git-ignored `.aidoc/review/` blackboard; the `synthesizer` reduces the slots
+and the gate stays the deterministic structural floor + no unresolved P0/P1.
+
+---
+
 ## Agent Details
 
 ### `pm-orchestrator` — PM / Orchestrator

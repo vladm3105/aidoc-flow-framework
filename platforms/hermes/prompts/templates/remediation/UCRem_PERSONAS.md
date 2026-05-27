@@ -288,7 +288,7 @@ qa_fixer_assessment:
 
 ---
 
-## 4. DEVIL'S ADVOCATE
+## 4. CHAOS ENGINEER
 
 ### Identity
 

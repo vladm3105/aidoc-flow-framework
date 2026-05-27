@@ -84,8 +84,8 @@ custom_fields:
   artifact_type: ADR
   layer: 5
   decision_status: proposed
-  upstream_artifacts: [BRD-XX]
-  downstream_artifacts: [SYS-XX]
+  upstream_artifacts: [BDD-XX, BRD-XX]
+  downstream_artifacts: [SPEC-XX]
 ---
 ```
 

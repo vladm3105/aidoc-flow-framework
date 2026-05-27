@@ -1,0 +1,30 @@
+{
+  "target_artifact_id": "BRD-01",
+  "review_mode": "team",
+  "readiness_score": 88.0,
+  "coverage": {
+    "ran": ["adversary", "architect", "auditor", "business_analyst"],
+    "missing": [],
+    "coverage_ratio": 1.0,
+    "low_confidence": false
+  },
+  "gate": {"structural_pass": true, "no_blocking": false, "passed": false},
+  "findings": [
+    {
+      "id": "3a1f",
+      "priority": "P1",
+      "location": "BRD.01.04.0a13",
+      "message": "Success metric lacks a measurable target",
+      "recommendation": "Add a quantified KPI with a baseline and a target",
+      "personas": ["business_analyst", "adversary"]
+    },
+    {
+      "id": "9c2e",
+      "priority": "P2",
+      "location": "BRD.01.05.7ce7",
+      "message": "A peak-load assumption is unstated",
+      "recommendation": "Record the peak-load assumption and its source",
+      "personas": ["adversary"]
+    }
+  ]
+}

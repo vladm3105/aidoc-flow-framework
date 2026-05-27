@@ -16,7 +16,7 @@
 | **SDD-Standard** | Production apps, small teams | + EARS, BDD, ADR |
 | **SDD-Full** | Enterprise, regulated, multi-team | All 8 layers + CHG governance overlay |
 
-v2 (14-layer) variant preserved in `framework/` for existing projects.
+The pre-migration 14-layer model is superseded by the 8-layer flow.
 
 ## Hermes Skills (UCX V3)
 
@@ -83,7 +83,7 @@ python ucx_kb/scripts/pilot_validate.py
 # ✓ Symlinks .claude/skills/ → framework
 # ✓ Symlinks .claude/commands/ → framework
 # ✓ Symlinks .claude/agents/ → framework
-# ✓ Symlinks .templates/framework/ → SDD v2 templates (14 layers, legacy)
+# ✓ Symlinks .templates/framework/ → SDD templates (8 layers)
 # ✓ Symlinks .templates/governance/ → SDD governance templates
 # ✓ Symlinks scripts/validate/ → framework scripts
 # ✓ Configures .gitignore
@@ -313,12 +313,11 @@ ls framework/
 # Template directories:
 # 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SPEC/, 07_TDD/, 08_IPLAN/, CHG/
 
-# View SDD v2 templates (14 layers - legacy)
+# View SDD templates (8 layers)
 ls framework/
 
 # Template directories:
-# 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SYS/,
-# 07_REQ/, 08_CTR/, 09_SPEC/, 10_TSPEC/, 11_TASKS/, AUTOPILOT/
+# 01_BRD/, 02_PRD/, 03_EARS/, 04_BDD/, 05_ADR/, 06_SPEC/, 07_TDD/, 08_IPLAN/, CHG/
 
 # View SDD governance templates (lightweight - small projects)
 ls /opt/data/ucx_framework/governance/
@@ -394,7 +393,7 @@ vim /opt/data/ucx_framework/.claude/skills/new-skill/SKILL.md
 
 ```bash
 # Edit SDD template in framework
-vim framework/07_REQ/REQ-MVP-TEMPLATE.md
+vim framework/07_TDD/TDD-TEMPLATE.yaml
 
 # Edit SDD governance template in framework
 vim /opt/data/ucx_framework/governance/PROJECT_PLAN.md
@@ -580,7 +579,7 @@ cp framework/layers/01_BRD/BRD-TEMPLATE.yaml \
 vim docs/BRD/BRD-01.yaml
 ```
 
-### Pattern 3b: Template Usage (SDD v2 — Legacy)
+### Pattern 3b: Template Usage (copy + edit)
 
 ```bash
 # 1. Access SDD template via symlink
@@ -627,8 +626,7 @@ vim docs/PROJECT_PLAN.md
 
 | Framework | README | Key Docs |
 |-----------|--------|----------|
-| **framework** | `framework/README.md` | 8-layer SDD v3 methodology (recommended) |
-| **framework** | `framework/README.md` | 14-layer SDD v2 methodology (legacy) |
+| **framework** | `framework/README.md` | 8-layer SDD methodology |
 | **governance** | `governance/README.md` | Governance, CI/CD, Issues |
 
 ---
@@ -660,11 +658,11 @@ python3 framework/AUTOPILOT/scripts/mvp_autopilot.py \
   --validate-gates
 ```
 
-**Key v6.0 Features** (v2 only):
+**Key Features**:
 
-- **TSPEC** (Layer 10): Test Specifications (UTEST, ITEST, STEST, FTEST)
-- **TDD Mode**: Test-first development with Red→Green validation
-- **CHG Integration**: 4-Gate change management system (v2; v3 uses 5-gate CHG overlay)
+- **TDD (Layer 7)**: test case definitions derived from SPEC component contracts
+- **TDD Mode**: test-first development with Red→Green validation
+- **CHG Integration**: 5-gate change-management governance overlay
 
 ---
 

@@ -3,8 +3,8 @@
 | Field      | Value                          |
 |------------|--------------------------------|
 | Task       | AGENT-TEAM                     |
-| Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` |
-| Status     | IN PROGRESS — D1–D8 confirmed; Phase 0 (spec) implemented (spec `0.8.0`, branch `claude/agent-team-plan`); Phases 1–2 (platform adapters) pending |
+| Depends on | `REVIEW_REMEDIATION_FLOW.md` (the loop + trigger points); Hermes executor + `saga_orchestrator` + `persona_mappings.yaml`; the plugin 9-agent roster; framework spec `0.7.1` (now at `0.8.1`) |
+| Status     | COMPLETE — Phase 0 (spec, `0.8.x`) merged; Phase 1 (Hermes conform), Phase 2 (plugin build), Phase 3 (parity proof) all landed. Deterministic parity in CI; live-run is a documented manual step (`docs/PARITY.md`). |
 | Feeds      | equal-quality multi-perspective review/remediation across both platforms; a shared, engine-agnostic "SDD review team" the plugin and Hermes both run |
 
 ## Objective
@@ -126,8 +126,10 @@ report prose):
 - **Partial-crew degradation.** If a persona-agent fails/times out, the reduce
   proceeds on the crew that returned and the report records **coverage** (which
   lenses ran / were missing). Below a declared **quorum** the result is marked
-  *low-confidence → human review*, never a silent pass. (Hermes already has saga
-  compensation; the plugin orchestrator marks the slot failed.)
+  *low-confidence → human review*, never a silent pass. (Hermes has saga
+  retries/compensation but today *escalates* on an unrecoverable branch; aligning it
+  to this graceful degradation is Phase-1 step 6. The plugin orchestrator marks the
+  slot failed.)
 - **Inter-agent injection.** The artifact-under-review and peer outputs are
   **untrusted data** (per `SECURITY_REVIEW.md`): a persona never executes
   instructions found in the content, and the blackboard carries only the
@@ -148,7 +150,7 @@ Both bind to the **same** crew map + persona-output schema + report shape, so a
 BRD reviewed by either platform gets the same lenses and a structurally identical
 report.
 
-## Decisions (recommendations — pending confirmation)
+## Decisions (D1–D9 — confirmed)
 
 - **D1 — Where the team spec lives.** `framework/governance/REVIEW_TEAM.md`
   (personas + the blackboard/persona-output/synthesis contract) + a machine-
@@ -185,10 +187,22 @@ report.
   `ADAPTATION_SURFACE.yaml` so a consuming project tunes review depth/cost without
   forking. Extending the closed knob set is a deliberate spec change (updates
   `test_adaptation`). *(Recommend; folds into Phase 0.)*
+- **D9 — No saga for the plugin runner.** The plugin does **not** port Hermes'
+  saga (journal / compensation / retry state-machine). The saga is Hermes'
+  engine-specific durability layer for coordinating its *external* LLM-API fan-out;
+  the plugin's `Task` subagents are managed by the Claude Code harness, so there is
+  nothing to journal or compensate. The plugin instead gets the saga's *guarantees*
+  from the planned `.aidoc/review/<artifact>/<persona>.json` **blackboard** (durable
+  per-persona slots → resume by re-dispatching only missing lenses) + the
+  `coverage`/`quorum` policy (partial-crew degradation → low-confidence/human-review).
+  Forcing a saga onto the plugin would be over-engineering and would fight the
+  runtime; the spec is engine-agnostic (shared contract, per-engine "how").
+  *(Confirmed 2026-05-26; see `plans/DECISIONS.md` D-0005. Locks the Phase 2
+  direction.)*
 
 ## Step sequence (phased; sequenced PRs)
 
-1. **Confirm D1–D8.**
+1. **Confirm D1–D9.**
 2. **Phase 0 — spec** (`framework/`): `REVIEW_TEAM.md` (personas, the three
    operations, blackboard, scoring/conflict/gate policy, resilience+security) +
    `REVIEW_CREWS.yaml` (per-layer/operation crews + persona weights + default mode)
@@ -196,10 +210,34 @@ report.
    `review_mode` knob to `ADAPTATION_SURFACE.yaml`; register in governance README +
    `test_governance`; add the crew-map + adaptation-knob conformance checks; version
    bump + CHANGELOG. *(Own PR.)*
-3. **Phase 1 — Hermes adapter** (after Phase 0): align `persona_mappings.yaml`,
-   `persona_output_parser`, `saga_reducer`, and the `UCR_*`/`UCRem_*` report shape
-   to the framework schema (incl. coverage + the weighted/capped score); document
-   the mapping. Mostly *conform existing code*.
+3. **Phase 1 — Hermes adapter** (after Phase 0; *conform existing code*, don't
+   rebuild the working saga). Concrete steps:
+   1. **Scoring + coverage + persona mapping** — `review_scoring.py` (weighted/capped
+      score from `REVIEW_CREWS.yaml`, `CoverageReport`, framework↔Hermes alias).
+      *Landed 2026-05-26.*
+   2. **Parser conformance** — extend `persona_output_parser` to capture `lens_score`
+      (per persona), `location`, and a stable `id`; keep `recommended_action` as the
+      engine's name for `recommendation`. Additive; existing tests stay green.
+   3. **Wire scoring into the saga** — `saga_orchestrator` collects the per-persona
+      `lens_score`s + doc-type, calls `score_review`, and puts `score` + `coverage`
+      on `SagaReviewResult` + the reducer/synthesis summary.
+   4. **Report-shape conformance** — surface `score` + `coverage` + the per-finding
+      framework fields in the `PERSONA_REVIEW_REPORT` / `UCR_OUTPUT_UNIFIED` shape the
+      review→remediation→gate loop reads.
+   5. **Crew + name reconciliation** — align `persona_mappings.yaml` *review* crews
+      with the framework `REVIEW_CREWS.yaml` crews (membership/weights, bridged by the
+      alias map — the framework keeps its engine-agnostic names), and **retitle the
+      `THE DEVIL'S ADVOCATE` lens** in the `UCR_PROMPT_*` / `UCRem_*` prompts to the
+      canonical persona title (gap-review finding — 11 spots), so every persona title
+      matches its runtime key.
+   6. **Resilience alignment** — soften the saga's escalate-on-unrecoverable-branch
+      (`saga_orchestrator` returns `ESCALATED` / `passed=False`, discarding the lenses
+      that succeeded) to the framework's graceful degradation: proceed on the returned
+      crew, record `coverage`, and **escalate only below quorum** (otherwise mark
+      low-confidence). Behavior change to a working system — guard with the existing
+      saga tests + new partial-crew tests.
+   7. **Document** the mapping + the resilience policy in `REVIEW_TEAM_CONFORMANCE.md`
+      (started).
 4. **Phase 2 — plugin adapter** (after Phase 0): a `review-team` mechanism —
    `pm-orchestrator`/`doc-<layer>-audit` fans out the crew as subagents writing to
    the git-ignored `.aidoc/review/` blackboard; deterministic reduce + score; add
@@ -219,9 +257,14 @@ report.
 - Phase 0: conformance green incl. the crew-map + `review_mode`-knob checks;
   `spec_gate` green; the spec names personas/blackboard/synthesis without engine
   tokens (`test_spec_hygiene`).
-- Phase 1: Hermes pytest green; a saga review emits findings + `coverage` matching
-  the framework persona-output schema; `saga_reducer` score follows the weighted/
-  capped + P0/P1 policy; report maps to the spec report shape.
+- Phase 1: Hermes pytest green; the parser captures `lens_score`/`location`/`id`; a
+  saga review emits findings + `coverage` matching the framework persona-output
+  schema; the `score` follows the weighted/capped + P0/P1 policy; the report shape
+  carries `score` + `coverage`; a **partial-crew review** (one branch fails after
+  retries) **degrades** — proceeds on the returned crew + records coverage — and
+  escalates **only below quorum**, not on any single failure; **no `UCR_PROMPT_*`
+  persona title uses a non-key descriptor** (`grep -ri "devil's advocate"
+  platforms/hermes/prompts` returns nothing).
 - Phase 2: a plugin `doc-<layer>-audit` run dispatches the crew, writes per-persona
   blackboard slots, the deterministic reduce produces the scored unified report;
   partial-crew degradation flags coverage; `single_pass` fallback works;
@@ -244,6 +287,7 @@ report.
 | R9 | Inter-agent prompt injection via the blackboard | Artifact + peer outputs are untrusted data (`SECURITY_REVIEW.md`); blackboard carries only the structured findings schema, not instructions (Resilience & security). |
 | R10 | A persona-agent fails / times out | Reduce proceeds on the returned crew + records `coverage`; below quorum → low-confidence/human-review, never a silent pass (Resilience & security). |
 | R11 | Create/remediate ill-defined (the headline ask) | Explicit team shapes: create = one drafter + review loop; remediate = fixer proposes + lens validates (Operations). |
+| R12 | Softening the saga escalation masks a systemic failure (all branches failing) | Escalate **below quorum** (too few lenses to trust); only degrade gracefully above it; keep branch telemetry + the `low_confidence` flag so a thin crew is never a silent pass. |
 
 ## Review log
 
@@ -264,6 +308,21 @@ report.
   checks structure, not LLM content (R3, R6, D6).
 - **Cost.** Added mode tiers (`independent`/`sequential`/`single_pass`) + a
   default-by-trigger-point policy so multi-agent isn't forced everywhere (R1, D5).
+
+### Pass 2 — 2026-05-25
+
+- **Sequencing.** Phase 0 (GATE-SPEC) lands alone; Hermes (conform) and plugin
+  (build) adapters follow as separate PRs cut after it — same discipline as
+  DOC-CHECK / PLATFORM-ALIGN (avoids version/CHANGELOG collisions).
+- **Plugin persona gap.** Confirmed the missing lenses are `adversary`
+  (devil's-advocate/chaos) and `synthesizer` (chairperson); the other lenses map
+  to existing agents. Scoped D4 to add exactly those two, not a roster overhaul.
+- **Conformance realism.** The crew-map check validates structure (layers ⊆ 8,
+  personas ⊆ defined set) like `test_adaptation`; it can't assert review quality —
+  stated explicitly so the gate isn't oversold (D6).
+- **Parity proof.** Added Phase 3 (same artifact → structurally identical report
+  from both runners) as the concrete parity evidence, not just "both implement it."
+- No further findings — implementable pending D1–D6 confirmation.
 
 ### Pass 3 — 2026-05-25 (gap-review hardening)
 
@@ -294,6 +353,42 @@ A critical re-read found ten gaps; all folded in:
 - **Blackboard lifecycle**: transient + git-ignored under `.aidoc/review/`.
 - No further findings — implementable pending D1–D8 confirmation.
 
+### Pass 4 — 2026-05-26 (gap-review fold-in)
+
+Re-reviewed the AUDIT-FIXUPS changes; folded the findings into Phase 1 scope:
+
+- **Persona-title gap (WS-C).** The `UCR_PROMPT_*` / `UCRem_*` prompts still title the
+  adversary lens `THE DEVIL'S ADVOCATE` while every other persona title matches its
+  runtime key — added as an explicit Phase-1 step 5 + a Verification grep, since it is
+  the framework↔Hermes persona-name reconciliation Phase 1 already owns.
+- **Phase 1 made concrete.** Expanded the one-line Phase 1 step into six tracked
+  sub-steps + a gap-closing checklist (parser `lens_score`/`location`/`id`; saga
+  wiring of `score`+`coverage`; report shape; crew/name reconciliation; doc) so the
+  remaining work is unambiguous.
+- **Out of scope (noted in `AUDIT-FIXUPS-PLAN.md`):** the ADR README is silent on the
+  now-required decision sequence — optional, would need another spec bump; not a
+  correctness gap (the template + `DIAGRAM_STANDARDS.md` carry the rule).
+- No further findings.
+
+### Pass 5 — 2026-05-26 (Hermes saga review)
+
+Reviewed the saga (`saga_orchestrator` / `saga_models` / `saga_journal` /
+`saga_reducer`) against the review-team model:
+
+- **Pattern conforms — no restructure.** `FANOUT → per-persona branches` = the crew in
+  `independent` mode; `FANIN_REDUCED` = the deterministic reduce; `SYNTHESIZED` =
+  synthesis; the journal + branch-states = durable blackboard slots. Hermes also already
+  offers both declared modes (saga branches = `independent`; no-executor single-prompt
+  UCR = `single_pass`). The framework model was written to generalize this.
+- **One divergence folded in.** The saga **escalates the whole review** on an
+  unrecoverable branch failure (returns `passed=False`, discarding successful lenses),
+  vs. the framework's *proceed-on-returned-crew + coverage + escalate-only-below-quorum*.
+  Added as Phase-1 **step 6 (Resilience alignment)** + checklist + Verification + **R12**.
+- **Minor (folded into the report-shape step):** the reduce dedups on
+  `message+target_layer+recommended_action`; the spec keys on `location+id` — align when
+  the parser gains `location`/`id`. No separate step.
+- No agent/saga-pattern changes otherwise; the rest of Phase 1 is additive.
+
 ## Implementation log
 
 ### Phase 0 — spec — 2026-05-25 (branch `claude/agent-team-plan`, spec `0.8.0`)
@@ -314,17 +409,68 @@ A critical re-read found ten gaps; all folded in:
   the review-team mechanism), each cut from `main` after this merges; Phase 3
   parity proof.
 
-### Pass 2 — 2026-05-25
+### Phase 1 — Hermes conform — 2026-05-26 (started, branch `claude/multi-platform-migration-AamWB`)
 
-- **Sequencing.** Phase 0 (GATE-SPEC) lands alone; Hermes (conform) and plugin
-  (build) adapters follow as separate PRs cut after it — same discipline as
-  DOC-CHECK / PLATFORM-ALIGN (avoids version/CHANGELOG collisions).
-- **Plugin persona gap.** Confirmed the missing lenses are `adversary`
-  (devil's-advocate/chaos) and `synthesizer` (chairperson); the other lenses map
-  to existing agents. Scoped D4 to add exactly those two, not a roster overhaul.
-- **Conformance realism.** The crew-map check validates structure (layers ⊆ 8,
-  personas ⊆ defined set) like `test_adaptation`; it can't assert review quality —
-  stated explicitly so the gate isn't oversold (D6).
-- **Parity proof.** Added Phase 3 (same artifact → structurally identical report
-  from both runners) as the concrete parity evidence, not just "both implement it."
-- No further findings — implementable pending D1–D6 confirmation.
+- **Scoring + coverage + persona-name mapping** (`mcp_server/review/review_scoring.py`
+  - `tests/unit/test_review_scoring.py`, 10 tests): the deterministic weighted/capped
+  readiness score (per-layer `REVIEW_CREWS.yaml` weights, renormalised over lenses
+  that ran; unresolved P0 ⇒ 0, P1 ⇒ capped below gate) + `CoverageReport`
+  (expected/ran/missing, quorum → low-confidence) + the framework↔Hermes persona
+  alias (`chaos_engineer`→`adversary`, `chairperson`→`synthesizer`). Documented in
+  `docs/architecture/REVIEW_TEAM_CONFORMANCE.md`. Additive; the working
+  saga/reducer/parser untouched. Conformance 54; ruff clean; reducer/parser/scoring
+  tests green (14).
+- **Phase 1 checklist — DONE 2026-05-26:**
+  - [x] **Parser:** `persona_output_parser` captures `lens_score` + `location` +
+        stable `id`; accepts `recommendation` (alias). Additive; existing tests green.
+  - [x] **Saga wiring:** `saga_orchestrator` collects per-persona `lens_score`s, calls
+        `score_review`, and surfaces `score` + `coverage` on `SagaReviewResult` + the
+        synthesis/branch summaries.
+  - [x] **Report:** `UCR_OUTPUT_UNIFIED` carries the advisory readiness score +
+        coverage (+ gate/quorum note).
+  - [x] **Crew/name reconciliation:** Hermes review crews cover every framework crew
+        via the alias (guarded by a new test); retitled `THE DEVIL'S ADVOCATE → THE
+        CHAOS ENGINEER` across the `UCR_PROMPT_*` / `UCRem_*` prompts (11 spots).
+  - [x] **Resilience alignment:** the saga degrades on an unrecoverable branch
+        (proceeds + `coverage`), escalating **only below quorum** (was: escalate the
+        whole review); new `BRANCH_FAILED → BRANCH_COMPLETED` transition + partial-crew
+        tests.
+  - Verification: 49 review unit tests green; conformance 54; ruff clean. Documented
+    in `platforms/hermes/docs/architecture/REVIEW_TEAM_CONFORMANCE.md`.
+
+### Phase 2 — plugin build — 2026-05-26 (branch `claude/multi-platform-migration-AamWB`)
+
+- **review-team mechanism** (`skills/review-team/SKILL.md`) + two review-lens agents
+  (`agents/adversary.md`, `agents/synthesizer.md`): the plugin's binding of
+  `REVIEW_TEAM.md`. The crew fans out as `Task` subagents → git-ignored
+  `.aidoc/review/` blackboard slots → `synthesizer` reduces (dedup `location`+`id`,
+  max severity, weighted/capped score from `REVIEW_CREWS.yaml`, coverage/quorum) →
+  one report. Lens→agent mapping table; `independent` default + `single_pass`
+  fallback; trigger-point default (team at gates, `single_pass` advisory at
+  `on_author`); partial-crew degradation + untrusted-blackboard security. D-0005:
+  blackboard, not a saga.
+- **Wiring:** `pm-orchestrator` dispatches the team at gates; `doc-flow` lists it;
+  the skill documents the `-audit`/`-fixer`/`-autopilot` team mode (one shared
+  mechanism, not 24 rewrites — R5). `.gitignore` ignores `.aidoc/review/`; plugin
+  CHANGELOG noted.
+- Verification: `plm_lint` clean corpus-wide; markdownlint clean; conformance 54;
+  no framework change.
+- **Next:** Phase 3 — parity proof (report-fixture schema check + manual live-run;
+  `docs/PARITY.md`).
+
+### Phase 3 — parity proof — 2026-05-26 (branch `claude/multi-platform-migration-AamWB`)
+
+- **Shared report schema** `tests/conformance/fixtures/review/review_report.schema.json`
+  — the unified review-report contract (target, `review_mode`, advisory
+  `readiness_score`, `coverage`, deterministic `gate`, reduced `findings`).
+- **Both-runner fixtures** `hermes_BRD-01_report.json` + `plugin_BRD-01_report.json`
+  — independent sample reports in the shared shape.
+- **Deterministic CI** `tests/conformance/test_review_report_parity.py` (3 tests,
+  dependency-free validator): each runner fixture validates against the schema; the
+  two share the report structure; `passed == structural_pass AND no_blocking` (score
+  never gates). Conformance **54 → 57**.
+- **`docs/PARITY.md`** — added the review-team row-by-row comparison + the parity
+  proof (deterministic CI + the manual live-run procedure, since live LLM output is
+  not CI-deterministic).
+- AGENT-TEAM Phases 0–3 complete. Standing user-only carry-overs unchanged
+  (branch protection; pushing release tags from a local clone).

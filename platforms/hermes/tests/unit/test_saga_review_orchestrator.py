@@ -303,3 +303,115 @@ def test_saga_debug_raw_outputs_are_redacted(
     redacted = str(raw_outputs[0].get("raw_output_redacted", ""))
     assert "sk-abcdefghijklmnopqrstuv123456" not in redacted
     assert "[REDACTED]" in redacted
+
+
+def test_saga_partial_crew_degrades_above_quorum(tmp_path: Path) -> None:
+    # 1 of 2 lenses fails (missing persona). 1/2 == quorum 0.5 -> proceed, degraded.
+    _create_project_ucx(tmp_path)
+    out = tmp_path / "tmp/evidence-degrade"
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect", "missing_persona"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture", content="system architecture")
+        ],
+        layer="01_BRD",
+        output_dir=out,
+        max_branch_retries=0,
+    )
+
+    assert result.saga_status == "CLOSED"
+    assert result.passed is True
+    assert result.coverage is not None
+    assert result.coverage["completed"] == ["architect"]
+    assert result.coverage["failed"] == ["missing_persona"]
+    assert result.coverage["quorum_met"] is True
+    assert result.coverage["low_confidence"] is True
+    assert result.reducer_summary_path is not None
+
+
+def test_saga_review_score_from_lens_scores(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    _create_project_ucx(tmp_path)
+    out = tmp_path / "tmp/evidence-score"
+
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        _ = kwargs
+        return ExecutorResult(
+            stdout=(
+                '{"lens_score": 90, "findings":[{"priority":"P2","category":"quality",'
+                '"message":"minor polish","recommended_action":"tidy","location":"section 3",'
+                '"target_layer":"01_BRD"}]}'
+            ),
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto", "usage": {"total_tokens": 30}},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+
+    # architect (30) + auditor (20) are both in the framework BRD review crew.
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect", "auditor"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(section_id="1.0", title="Architecture", content="system architecture")
+        ],
+        layer="01_BRD",
+        output_dir=out,
+        executor_name="api/openrouter",
+        saga_branch_llm_enabled=True,
+    )
+
+    # Wiring check: lens_score from the executor flows into a computed review_score.
+    assert result.saga_status == "CLOSED"
+    assert result.review_score is not None
+    assert isinstance(result.review_score["score"], float)
+    assert "architect" in result.review_score["coverage"]["ran"]
+
+
+def test_compute_review_score_helper() -> None:
+    from mcp_server.review.saga_orchestrator import _compute_review_score
+
+    class _Reduced:
+        def __init__(self, priority: str) -> None:
+            self.priority = priority
+
+    # Full EARS crew, all 100, P2 finding -> weighted 100, no cap.
+    full = _compute_review_score(
+        doc_type="ears",
+        lens_scores={
+            "requirements_specialist": 100.0,
+            "tech_lead": 100.0,
+            "qa_lead": 100.0,
+            "adversary": 100.0,
+        },
+        reduced=[_Reduced("P2")],
+    )
+    assert full is not None
+    assert full["score"] == 100.0
+    assert full["no_blocking"] is True
+
+    # Unresolved P1 caps the score below the gate.
+    capped = _compute_review_score(
+        doc_type="ears",
+        lens_scores={"requirements_specialist": 100.0},
+        reduced=[_Reduced("P1")],
+    )
+    assert capped is not None
+    assert capped["score"] == 89.0
+
+    # No lens scores (e.g. deterministic mode) -> None; non-layer doc-type -> None.
+    assert _compute_review_score(doc_type="ears", lens_scores={}, reduced=[]) is None
+    assert (
+        _compute_review_score(doc_type="tasks", lens_scores={"tech_lead": 80.0}, reduced=[]) is None
+    )

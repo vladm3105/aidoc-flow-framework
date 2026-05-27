@@ -43,3 +43,48 @@ def test_parse_persona_output_fallback_on_malformed() -> None:
     assert len(result.findings) == 1
     assert result.findings[0]["category"] == "parser"
     assert result.findings[0]["target_layer"] == "01_BRD"
+
+
+def test_parser_captures_lens_score_location_id() -> None:
+    raw = (
+        '{"lens_score": 82, "findings":[{"priority":"P1","message":"x",'
+        '"recommended_action":"y","location":"section 3","target_layer":"spec"}]}'
+    )
+    result = parse_persona_output(
+        output_text=raw, persona="qa_lead", branch_id="b1", attempt=1, default_layer="spec"
+    )
+    assert result.lens_score == 82.0
+    f = result.findings[0]
+    assert f["location"] == "section 3"
+    assert f["id"]  # stable id captured/derived
+
+
+def test_parser_recommendation_alias_and_stable_id() -> None:
+    raw = '{"findings":[{"priority":"P2","message":"gap","recommendation":"fix it"}]}'
+    first = parse_persona_output(
+        output_text=raw, persona="architect", branch_id="b1", attempt=1, default_layer="spec"
+    )
+    second = parse_persona_output(
+        output_text=raw, persona="architect", branch_id="b9", attempt=2, default_layer="spec"
+    )
+    assert first.findings[0]["recommended_action"] == "fix it"
+    # id is stable across runs (persona|location|message), independent of branch/attempt
+    assert first.findings[0]["id"] == second.findings[0]["id"]
+    assert first.lens_score is None  # absent -> None
+
+
+def test_parser_invalid_lens_score_is_none() -> None:
+    raw = '{"lens_score":"high","findings":[{"priority":"P3","message":"m"}]}'
+    result = parse_persona_output(
+        output_text=raw, persona="tech_lead", branch_id="b1", attempt=1, default_layer="spec"
+    )
+    assert result.lens_score is None
+
+
+def test_fallback_finding_has_location_and_id() -> None:
+    result = parse_persona_output(
+        output_text="not json", persona="auditor", branch_id="b2", attempt=1, default_layer="spec"
+    )
+    assert result.parse_status == "fallback"
+    assert result.findings[0]["location"] == ""
+    assert result.findings[0]["id"]

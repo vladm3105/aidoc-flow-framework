@@ -21,7 +21,7 @@ flowchart LR
 | **PROD** | 30-90 days | Operate, measure metrics, collect user feedback |
 | **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set, repeat cycle |
 
-Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. Both **v2 (14-layer)** and **v3 (8-layer)** workflows are available — v3 is the recommended path for new projects.
+Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. The framework is the **8-layer** flow above (the pre-migration 14-layer model is superseded).
 
 ## Recommended Agent Operating Model
 
@@ -105,7 +105,7 @@ Review/remediation runtime controls in UCX Hermes:
 | **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams | 3-6 months |
 | **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team | 6+ months |
 
-See [framework/README.md](./framework/README.md) for detailed layer mappings. The original v2 14-layer variant is preserved in [framework/](./framework/).
+See [framework/README.md](./framework/README.md) for detailed layer mappings.
 
 ---
 
@@ -128,9 +128,8 @@ Streamlined 8-layer framework with C4 architecture model mapping. All layers use
 
 CHG (Change Management) is a governance overlay with 5 gates (GATE-01 through GATE-CODE). See `framework/governance/chg/`.
 
-### v2 (Legacy — 14 Layers)
-
-The original 14-layer framework is preserved in `framework/` for existing projects. SYS, REQ, CTR, TSPEC subtypes, and TASKS remain available.
+> The pre-migration 14-layer model (with `SYS`/`REQ`/`CTR`/`TSPEC`/`TASKS`) is
+> **superseded** by the 8-layer flow above and is no longer used.
 
 ---
 
@@ -138,8 +137,7 @@ The original 14-layer framework is preserved in `framework/` for existing projec
 
 | Directory | Purpose |
 |:----------|:--------|
-| `framework/` | **SDD v3** (current): 8-layer streamlined framework with C4 mapping, CHG governance overlay |
-| `framework/` | **SDD v2** (legacy): 14-layer framework templates, standards, and guides |
+| `framework/` | **SDD** (current): 8-layer framework with C4 mapping, CHG governance overlay |
 | `ucx_hermes/` | **UCX Hermes** — Primary AI agent orchestration platform: 25 MCP tools for SDD lifecycle. Creates per-project context for Hermes and other AI agents. This is the canonical active runtime. |
 | `mcp_ucx/` | **DEPRECATED** — Historical UCX package directory. Frozen at v1.22.0. Use `ucx_hermes/` for all new work. See [mcp_ucx/docs/README.md](mcp_ucx/docs/README.md) for archive status. |
 | `governance/` | Project governance templates, setup guides, CI/CD scripts |
@@ -264,12 +262,6 @@ BRD (0 tags) → PRD (@brd) → EARS (+@prd) → BDD (+@ears) → ADR (+@bdd) �
 
 See [framework/TRACEABILITY.md](./framework/TRACEABILITY.md).
 
-**v2 (14 layers):**
-
-```
-BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC → TSPEC → TASKS
-```
-
 ---
 
 ## Key References
@@ -279,8 +271,7 @@ BRD (0 tags) → PRD → EARS → BDD → ADR → SYS → REQ → CTR → SPEC �
 | Document | Purpose |
 |----------|---------|
 | [framework/README.md](./framework/README.md) | SDD v3 framework overview (current, recommended) |
-| [framework/registry/LAYER_REGISTRY.yaml](./framework/registry/LAYER_REGISTRY.yaml) | Authoritative v3 layer definitions with C4 mapping |
-| [framework/README.md](./framework/README.md) | SDD v2 framework overview (legacy, maintained) |
+| [framework/registry/LAYER_REGISTRY.yaml](./framework/registry/LAYER_REGISTRY.yaml) | Authoritative layer definitions with C4 mapping |
 | [framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md](./framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md) | Complete SDD v3 methodology |
 | [framework/ID_NAMING_STANDARDS.md](./framework/ID_NAMING_STANDARDS.md) | Document and element ID formats |
 | [framework/TRACEABILITY.md](./framework/TRACEABILITY.md) | Cross-layer traceability rules |

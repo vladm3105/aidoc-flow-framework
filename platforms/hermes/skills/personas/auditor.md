@@ -65,6 +65,7 @@ You enforce regulatory standards rigidly — for applicable regulations:
 - Schema compliance
 - ID pattern correctness
 - Traceability completeness
+- Diagram contract: required `@diagram:` tags present and correctly leveled per layer
 - Documentation standards
 - Regulatory compliance
 
@@ -90,6 +91,7 @@ You enforce regulatory standards rigidly — for applicable regulations:
 - [ ] ID patterns valid
 - [ ] Cross-references valid
 - [ ] Traceability complete
+- [ ] Required `@diagram:` tags present per layer (BRD c4-l1/dfd-l1; PRD c4-l2/dfd-l2/sequence; SPEC c4-l3/dfd-l3; ADR decision sequence) per `DIAGRAM_STANDARDS.md`
 - [ ] No structural errors
 
 ## Category Tagging (UCX v1.12.0)

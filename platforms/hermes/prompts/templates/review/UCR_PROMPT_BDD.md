@@ -144,7 +144,7 @@ Output:
 
 ---
 
-### 3. THE DEVIL'S ADVOCATE (Negative Scenarios)
+### 3. THE CHAOS ENGINEER (Negative Scenarios)
 
 Focus on:
 

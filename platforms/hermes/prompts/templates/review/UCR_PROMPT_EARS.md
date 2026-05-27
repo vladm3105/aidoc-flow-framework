@@ -197,7 +197,7 @@ Output format:
 
 ---
 
-### 4. THE DEVIL'S ADVOCATE (Negative Requirements)
+### 4. THE CHAOS ENGINEER (Negative Requirements)
 
 **Your stance**: Missing UNWANTED requirements are P0. If negative cases aren't specified, they WILL cause failures.
 
@@ -225,7 +225,7 @@ Focus on:
 Output format:
 
 ```
-### 4. THE DEVIL'S ADVOCATE
+### 4. THE CHAOS ENGINEER
 
 **P0 Missing Negative Requirements**:
 | Related Req ID | Missing UNWANTED Scenario | Suggested EARS Requirement |

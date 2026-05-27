@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import re
 from dataclasses import dataclass
+from hashlib import sha256
 
 _REQUIRED_FINDING_FIELDS: tuple[str, ...] = (
     "priority",
@@ -30,12 +31,19 @@ def _coerce_findings(raw: object) -> list[dict[str, str]]:
     for item in raw:
         if not isinstance(item, dict):
             continue
+        # `recommendation` is the framework field name; `recommended_action` the engine's.
+        recommended_action = str(
+            item.get("recommended_action") or item.get("recommendation") or ""
+        ).strip()
         finding = {
             "priority": _normalize_priority(item.get("priority")),
             "category": str(item.get("category", "general")).strip() or "general",
             "message": str(item.get("message", "")).strip(),
-            "recommended_action": str(item.get("recommended_action", "")).strip(),
+            "recommended_action": recommended_action,
             "target_layer": str(item.get("target_layer", "spec")).strip() or "spec",
+            # Framework persona-output fields (REVIEW_TEAM.md):
+            "location": str(item.get("location", "")).strip(),
+            "id": str(item.get("id", "")).strip(),
         }
         if not finding["message"]:
             continue
@@ -62,10 +70,26 @@ def _extract_json_block(text: str) -> str | None:
     return None
 
 
+def _coerce_lens_score(payload: object) -> float | None:
+    """Extract the persona's top-level ``lens_score`` (0-100) if present."""
+    if not isinstance(payload, dict) or "lens_score" not in payload:
+        return None
+    try:
+        value = float(payload["lens_score"])
+    except (TypeError, ValueError):
+        return None
+    return max(0.0, min(100.0, value))
+
+
+def _stable_finding_id(persona: str, location: str, message: str) -> str:
+    return sha256(f"{persona}|{location}|{message}".encode()).hexdigest()[:8]
+
+
 @dataclass(frozen=True)
 class PersonaParseResult:
     findings: list[dict[str, str]]
     parse_status: str
+    lens_score: float | None = None
 
 
 def parse_persona_output(
@@ -91,6 +115,7 @@ def parse_persona_output(
         except json.JSONDecodeError:
             continue
 
+        lens_score = _coerce_lens_score(payload)
         if isinstance(payload, dict):
             candidate_findings = payload.get("findings", payload)
         else:
@@ -100,27 +125,38 @@ def parse_persona_output(
         if findings:
             normalized: list[dict[str, str]] = []
             for finding in findings:
+                location = finding.get("location", "")
+                finding_id = finding.get("id") or _stable_finding_id(
+                    persona, location, finding.get("message", "")
+                )
                 normalized.append(
                     {
                         **finding,
                         "target_layer": finding.get("target_layer", default_layer) or default_layer,
+                        "location": location,
+                        "id": finding_id,
                         "persona": persona,
                         "branch_id": branch_id,
                         "attempt": str(attempt),
                         "parse_status": parse_status,
                     }
                 )
-            return PersonaParseResult(findings=normalized, parse_status=parse_status)
+            return PersonaParseResult(
+                findings=normalized, parse_status=parse_status, lens_score=lens_score
+            )
 
+    fallback_message = "Branch output was not machine-parseable JSON; fallback finding emitted"
     fallback = {
         "priority": "P1",
         "category": "parser",
-        "message": "Branch output was not machine-parseable JSON; fallback finding emitted",
+        "message": fallback_message,
         "recommended_action": "Return strict JSON with required finding fields for persona branch outputs.",
         "target_layer": default_layer,
+        "location": "",
+        "id": _stable_finding_id(persona, "", fallback_message),
         "persona": persona,
         "branch_id": branch_id,
         "attempt": str(attempt),
         "parse_status": "fallback",
     }
-    return PersonaParseResult(findings=[fallback], parse_status="fallback")
+    return PersonaParseResult(findings=[fallback], parse_status="fallback", lens_score=None)

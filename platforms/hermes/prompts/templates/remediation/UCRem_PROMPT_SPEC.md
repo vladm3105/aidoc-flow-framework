@@ -19,10 +19,10 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 
 ## SPEC-Specific Context
 
-SPEC is Layer 9 in the SDD workflow:
+SPEC is Layer 6 in the SDD workflow:
 
-- **Upstream**: REQ (Atomic Requirements), CTR (Data Contracts)
-- **Downstream**: TSPEC (Test Specification), TASKS (Task Breakdown)
+- **Upstream**: ADR (architecture decisions); cumulative EARS/BDD
+- **Downstream**: TDD (test definitions), IPLAN (implementation plan)
 
 Common SPEC issues to remediate:
 
@@ -89,7 +89,7 @@ custom_fields:
   target_artifact_id: "{TARGET_DOC_ID}"
   source_review: "{UCR_REVIEW_FILE}"
   method: UCRem
-  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Expert Fixer, Chaos Engineer, Chairperson]
+  personas_applied: [Tech Lead Fixer, Architect Fixer, Operator Fixer, Integration Lead Fixer, Chaos Engineer, Chairperson]
 ---
 ```
 
@@ -144,7 +144,7 @@ fix_action:
     algorithm: |
       1. Validate input parameters
          a. Check required fields are present
-         b. Validate field types against schema CTR-01
+         b. Validate field types against the SPEC data contract
          c. If invalid, return 400 Bad Request with field errors
       2. Authenticate request
          a. Extract bearer token from Authorization header
@@ -159,7 +159,7 @@ fix_action:
          b. Apply pagination (default: 20, max: 100)
          c. If not found, return 404 Not Found
       5. Transform response
-         a. Map internal model to API contract CTR-02
+         a. Map internal model to the API contract defined in this SPEC
          b. Add pagination metadata
       6. Return 200 OK with data
 ```

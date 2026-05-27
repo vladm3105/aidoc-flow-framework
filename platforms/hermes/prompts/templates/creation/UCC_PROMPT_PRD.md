@@ -8,7 +8,7 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author a co
 
 **IMPLEMENTATION CLARITY IS NON-NEGOTIABLE.** A PRD bridges business requirements to technical implementation. Ambiguity here causes development delays.
 
-**SSD Layer-2 scope rule (mandatory):** PRD defines product intent (what/why), not implementation design (how). Keep architecture, contracts, and code-level details in downstream ADR/SYS/REQ/CTR/SPEC artifacts.
+**SSD Layer-2 scope rule (mandatory):** PRD defines product intent (what/why), not implementation design (how). Keep architecture, contracts, and code-level details in downstream ADR/SPEC artifacts.
 
 | Error Type | Risk Level | Consequence |
 |------------|------------|-------------|
@@ -52,33 +52,35 @@ MVP format constraints:
 
 ## ELEMENT ID FORMAT
 
-Use ONLY the unified 4-segment format:
+Use ONLY the canonical 4-segment element ID format (per `ID_NAMING_STANDARDS.md`):
 
 ```
-PRD.NN.TT.SS
+PRD.NN.SS.xxxx
 ```
 
 Where:
 
 - `NN` = PRD document number (e.g., 01)
-- `TT` = element type code (e.g., 09 for User Story)
-- `SS` = sequence number within that type (e.g., 01)
+- `SS` = section number where the element lives (e.g., 09)
+- `xxxx` = 4-char content hash (first 4 hex of SHA256)
 
-| Code | Type | Primary Section |
-|------|------|-----------------|
-| 01 | Functional Requirement | 9 |
-| 02 | Quality Attribute | 21 |
-| 03 | Constraint | 12 |
-| 04 | Assumption | 12 |
-| 05 | Dependency | 7 |
-| 06 | Acceptance Criteria | 11 |
-| 07 | Risk | 13 |
-| 08 | Metric/KPI | 5 |
-| 09 | User Story | 8 |
-| 11 | Use Case | 9 |
-| 22 | Feature Item | 7, 9 |
-| 23 | Goal | 6 |
-| 24 | Stakeholder Need | 4, 15 |
+The `SS` segment is the element's section. Element types map to their sections:
+
+| Element Type | Section (SS) |
+|--------------|--------------|
+| Functional Requirement | 09 |
+| Quality Attribute | 21 |
+| Constraint | 12 |
+| Assumption | 12 |
+| Dependency | 07 |
+| Acceptance Criteria | 11 |
+| Risk | 13 |
+| Metric/KPI | 05 |
+| User Story | 08 |
+| Use Case | 09 |
+| Feature Item | 07, 09 |
+| Goal | 06 |
+| Stakeholder Need | 04, 15 |
 
 **FORBIDDEN PATTERNS** (legacy - DO NOT USE):
 
@@ -95,7 +97,7 @@ The document ID must be internally consistent across filename, frontmatter, H1, 
   - H1 title prefix
   - `Document ID` in Section 1
 - Use `PRD-NN` only for document-level identity.
-- Use `PRD.NN.TT.SS` only for element-level IDs, with `NN` matching the same document number.
+- Use `PRD.NN.SS.xxxx` only for element-level IDs, with `NN` matching the same document number.
 
 ## PRIORITY NOTATION CONTRACT (MANDATORY)
 
@@ -265,7 +267,7 @@ Section 1 **MUST** include dual readiness scores:
 
 | Field | Format |
 |-------|--------|
-| SYS-Ready Score | `[Score]/100 (Target: ≥90)` |
+| SPEC-Ready Score | `[Score]/100 (Target: ≥90)` |
 | EARS-Ready Score | `[Score]/100 (Target: ≥90)` |
 
 Initial creation should estimate scores based on content completeness.
@@ -276,7 +278,7 @@ Initial creation should estimate scores based on content completeness.
 - 70-89%: Review
 - <70%: Draft
 
-### SYS-Ready Components (40%/30%/20%/10%)
+### SPEC-Ready Components (40%/30%/20%/10%)
 
 | Component | Weight | Focus |
 |-----------|--------|-------|
@@ -342,7 +344,7 @@ Before completing PRD creation, verify:
 - [ ] Section 10 has substantive content (not placeholders)
 - [ ] Section 8 includes layer separation note
 - [ ] Section 8 has NO Given-When-Then or WHEN-THE-SHALL patterns
-- [ ] All element IDs use PRD.NN.TT.SS format
+- [ ] All element IDs use PRD.NN.SS.xxxx format
 - [ ] All @brd: references use 4-segment format
 - [ ] No ADR-NN forward references (use topic table instead)
 - [ ] Dual scores included in Document Control
@@ -363,10 +365,10 @@ Create a complete PRD from the upstream BRD artifact.
 3. Section 10 is BLOCKING - no placeholders
 4. Section 8 must have layer separation note
 5. NO Given-When-Then patterns (that's BDD, Layer 4)
-6. Use PRD.NN.TT.SS element IDs only
+6. Use PRD.NN.SS.xxxx element IDs only
 7. Include dual scoring in Document Control
 8. Generate a single monolithic PRD file
-9. Meet the minimum ID-family coverage needed for SYS-Ready scoring
+9. Meet the minimum ID-family coverage needed for SPEC-Ready scoring
 10. Use exact frontmatter values for `document_type`, `artifact_type`, and `layer`
 11. Do not use `(TBD)` or similar placeholders anywhere in the PRD
 
