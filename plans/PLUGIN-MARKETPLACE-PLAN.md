@@ -20,6 +20,25 @@ plugin ships everything it references.
 > user. The plugin is **not installable** and **not "tested"** beyond static
 > checks. Closing that is the gating work, ahead of any manifest/publish step.
 
+## Recommendation & readiness order
+
+**Recommendation: do not publish, and do not treat the plugin as tested yet.**
+The honest order to reach a *true* "tested / ready" statement:
+
+1. **Fix self-containment** — the 47 broken `framework/…` references. In-repo,
+   safe. *(Agent — P1.)*
+2. **Add the deterministic validation gate** — manifest + component frontmatter +
+   bundled-reference resolution. *(Agent — P1.)*
+3. **Live run + install smoke test** — install the plugin via the Claude Code
+   CLI, run the skills against a seed requirement, and `claude plugin validate`.
+   *(User — P2; cannot run from the dev sandbox, which has no Claude Code CLI and
+   does not load the plugin's skills as executable.)*
+
+**"tested / ready" becomes true only after step 3.** Steps 1–2 make the plugin
+*installable and statically validated* — they do **not** prove the skills behave
+when an LLM runs them. Publishing (the marketplace mirror + submission) follows
+step 3. The agent can do **(1) and (2) now**; **(3) needs the user's CLI**.
+
 ## Scope
 
 **In — Phase 1 (monorepo, no external dependencies):**
