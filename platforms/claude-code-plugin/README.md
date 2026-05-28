@@ -46,7 +46,7 @@ right skill. The deeper authoring guidance is in
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
 | Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
-| Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `adversary` and `synthesizer`. See `agents/README.md`. |
+| Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `adversary` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
 | **Total skills** | **50** | |
