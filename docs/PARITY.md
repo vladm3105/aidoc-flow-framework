@@ -176,7 +176,7 @@ structurally identical report.
   quality gates (`code-reviewer`, `security-engineer`,
   `traceability-auditor`). Subagents are a Claude Code construct;
   Hermes has no equivalent (it is the MCP tool-server such agents
-  call). See `platforms/claude-code-plugin/agents/README.md`.
+  call). See `platforms/claude-code-plugin/docs/AGENTS.md`.
 - **`save-plan`** slash command (in `commands/`) — captures the
   current conversation plan to a timestamped file.
 - **Per-skill operation granularity** — the plugin user picks the
