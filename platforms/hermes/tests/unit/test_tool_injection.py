@@ -67,7 +67,7 @@ class TestHandleToolInjection:
         # Patch _dispatch to capture what arguments it receives
         with patch("mcp_server.tool_registry._dispatch", new_callable=AsyncMock) as mock_dispatch:
             mock_dispatch.return_value = {"status": "ready"}
-            asyncio.get_event_loop().run_until_complete(handle_tool("sdd_preflight", arguments))
+            asyncio.run(handle_tool("sdd_preflight", arguments))
             # After injection, arguments should have "project"
             assert arguments.get("project") == str(tmp_path)
 
@@ -77,7 +77,7 @@ class TestHandleToolInjection:
 
         with patch("mcp_server.tool_registry._dispatch", new_callable=AsyncMock) as mock_dispatch:
             mock_dispatch.return_value = {"count": 0}
-            asyncio.get_event_loop().run_until_complete(handle_tool("sdd_scan", arguments))
+            asyncio.run(handle_tool("sdd_scan", arguments))
             assert "project" not in arguments
 
     def test_does_not_override_explicit_project(self, tmp_path: Path) -> None:
@@ -90,6 +90,6 @@ class TestHandleToolInjection:
 
         with patch("mcp_server.tool_registry._dispatch", new_callable=AsyncMock) as mock_dispatch:
             mock_dispatch.return_value = {"status": "ready"}
-            asyncio.get_event_loop().run_until_complete(handle_tool("sdd_preflight", arguments))
+            asyncio.run(handle_tool("sdd_preflight", arguments))
             # Should keep explicit, not replace with session
             assert arguments["project"] == str(explicit)

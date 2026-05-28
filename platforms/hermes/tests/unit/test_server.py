@@ -24,7 +24,8 @@ from mcp_server.tool_registry import TOOLS, _inspect_document_folder, handle_too
 
 class TestToolRegistry:
     def test_tool_count(self):
-        assert len(TOOLS) == 26  # +3 persona, +1 env_show, +2 project mgmt, +1 chg validate
+        # +3 persona, +1 env_show, +2 project mgmt, +1 chg validate, +1 team plan
+        assert len(TOOLS) == 27
 
     def test_tool_names_unique(self):
         names = [t.name for t in TOOLS]

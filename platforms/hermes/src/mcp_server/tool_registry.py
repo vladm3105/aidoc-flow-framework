@@ -441,6 +441,49 @@ TOOLS: list[Tool] = [
         },
     ),
     Tool(
+        name="sdd_team_plan",
+        description="Run a lightweight AI employee planning council and write team simulation artifacts for supervisor approval.",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "project": {
+                    "type": "string",
+                    "description": "Project root path. Resolved from session/config default when omitted.",
+                },
+                "supervisor_request": {
+                    "type": "string",
+                    "description": "Task or desired outcome from the human supervisor.",
+                },
+                "slug": {
+                    "type": "string",
+                    "description": "Short slug for ops/team-simulations/YYYY-MM-DD_<slug>/",
+                },
+                "roles_dir": {
+                    "type": "string",
+                    "description": "Optional path to role profiles. Defaults to <project>/.claude/agents.",
+                },
+                "context": {
+                    "type": "string",
+                    "description": "Optional context source or brief.",
+                    "default": "",
+                },
+                "constraints": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Known constraints or approval concerns.",
+                    "default": [],
+                },
+                "requested_roles": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Optional explicit role ids. ceo is always included.",
+                    "default": [],
+                },
+            },
+            "required": ["project", "supervisor_request", "slug"],
+        },
+    ),
+    Tool(
         name="sdd_run_lifecycle",
         description="Run multiple SDD lifecycle stages in sequence on a document. Stages feed output to the next. Stops on failure.",
         inputSchema={
@@ -1328,6 +1371,37 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         return {"registered": config.name, "executor_type": config.executor_type.value}
 
     # ── Orchestration tools ──────────────────────────────────────────────
+
+    if name == "sdd_team_plan":
+        from mcp_server.team_emulator.models import TeamPlanRequest
+        from mcp_server.team_emulator.runner import run_team_plan
+
+        project_root = _path(arguments, "project")
+        artifacts = run_team_plan(
+            TeamPlanRequest(
+                project_root=project_root,
+                supervisor_request=str(arguments["supervisor_request"]),
+                slug=str(arguments["slug"]),
+                roles_dir=_opt_path(arguments, "roles_dir"),
+                context=str(arguments.get("context") or ""),
+                constraints=tuple(arguments.get("constraints") or ()),
+                requested_roles=tuple(arguments.get("requested_roles") or ()),
+            )
+        )
+        return {
+            "passed": True,
+            "status": "Awaiting supervisor approval",
+            "folder": str(artifacts.folder),
+            "selected_roles": list(artifacts.selected_roles),
+            "artifacts": {
+                "intake": str(artifacts.intake_path),
+                "council_transcript": str(artifacts.transcript_path),
+                "conflicts_and_risks": str(artifacts.conflicts_path),
+                "implementation_plan": str(artifacts.implementation_plan_path),
+                "approval_request": str(artifacts.approval_request_path),
+            },
+            "message": "Status: Awaiting supervisor approval",
+        }
 
     if name == "sdd_next_action":
         document_dir = _path(arguments, "document")
