@@ -54,6 +54,48 @@ _PLACEHOLDERS = [
     re.compile(r"\b[A-Z]{2,8}-XXX\b"),
     re.compile(r"\bXX+\b"),
 ]
+
+# AS3 — authoring-style check (governance/AUTHORING_STYLE.md).
+# Banned-phrase regexes. Tuned for low false-positive rate: only patterns whose
+# fix is mechanical and unambiguous. Less-clear-cut superlatives (robust,
+# powerful, comprehensive, optimal, best) are left to LLM Tier-2 review.
+_STYLE_BANNED = [
+    (re.compile(r"\bin order to\b", re.IGNORECASE), "filler — use 'to'"),
+    (re.compile(r"\bthe fact that\b", re.IGNORECASE), "filler — drop"),
+    (re.compile(r"\bit should be noted that\b", re.IGNORECASE), "filler — drop"),
+    (re.compile(r"\bplease note\b", re.IGNORECASE), "filler — drop"),
+    (re.compile(r"\bas a matter of fact\b", re.IGNORECASE), "filler — drop"),
+    (re.compile(r"\bsimply\b", re.IGNORECASE), "ease-of-use claim"),
+    (re.compile(r"\beasily\b", re.IGNORECASE), "ease-of-use claim"),
+    (re.compile(r"\bstraightforwardly\b", re.IGNORECASE), "ease-of-use claim"),
+    (re.compile(r"\bamazing\b", re.IGNORECASE), "superlative"),
+    (re.compile(r"\bseamless(?:ly)?\b", re.IGNORECASE), "superlative"),
+    (re.compile(r"\bcutting[- ]edge\b", re.IGNORECASE), "superlative"),
+    (re.compile(r"\bstate[- ]of[- ]the[- ]art\b", re.IGNORECASE), "superlative"),
+    (re.compile(r"\bwill be able to\b", re.IGNORECASE), "future-oriented promise"),
+    (re.compile(r"\byou'?ll be able to\b", re.IGNORECASE), "future-oriented promise"),
+]
+
+# AS3 — per-section / per-document size targets. Defaults from
+# AUTHORING_STYLE.md; "blocking" threshold = +50% over default.
+_SECTION_TARGET_WORDS = 200
+_SECTION_BLOCKING_WORDS = 300  # 200 × 1.5
+_DOC_TARGET_WORDS = {
+    "BRD": 3000,
+    "PRD": 3000,
+    "EARS": 1500,
+    "BDD": 1500,
+    "ADR": 1500,
+    "SPEC": 1500,
+    "TDD": 1500,
+    "IPLAN": 1500,
+}
+# Sections that legitimately carry mostly tabular metadata; exempt from the
+# section-size warning.
+_SIZE_EXEMPT_HEADINGS = {"document control", "traceability", "glossary", "revision history"}
+
+_FRONTMATTER_FENCE = re.compile(r"^---\s*$")
+_SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
 # Candidate IDs whose prefix is a known artifact (avoids flagging unrelated tokens).
 _KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN"
 _DOC_ID = re.compile(rf"\b({_KNOWN})-([A-Za-z0-9]+)\b")
@@ -93,6 +135,107 @@ def detect_layer(path: Path, layers: dict) -> str | None:
     if m and m.group(1) in layers:
         return m.group(1)
     return None
+
+
+def _split_frontmatter(lines: list[str]) -> tuple[list[str], list[str]]:
+    """Return (frontmatter_lines, body_lines). Frontmatter is the YAML fenced
+    by ``---`` at the top; body is everything after the closing fence (or the
+    whole file if no frontmatter is present)."""
+    if not lines or not _FRONTMATTER_FENCE.match(lines[0]):
+        return [], lines
+    for i in range(1, len(lines)):
+        if _FRONTMATTER_FENCE.match(lines[i]):
+            return lines[1:i], lines[i + 1 :]
+    return [], lines
+
+
+def _section_word_counts(body: list[str]) -> list[tuple[str, int, int]]:
+    """Return [(heading, start_line_in_body, word_count), ...] for each
+    ``## …`` section in the body. Word count excludes the heading line and any
+    code-fenced blocks (``` … ```).
+    """
+    sections: list[tuple[str, int, int]] = []
+    current_head: str | None = None
+    current_start = 0
+    current_words = 0
+    in_fence = False
+    for i, raw in enumerate(body):
+        if raw.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        head = _SECTION_HEADING.match(raw)
+        if head:
+            if current_head is not None:
+                sections.append((current_head, current_start, current_words))
+            current_head = head.group(1)
+            current_start = i + 1
+            current_words = 0
+            continue
+        if current_head is not None:
+            current_words += len(raw.split())
+    if current_head is not None:
+        sections.append((current_head, current_start, current_words))
+    return sections
+
+
+def _check_style(text: str, artifact: str, rel: str, body_offset: int) -> list[Finding]:
+    """AS3 — authoring-style check. Banned phrases (per-line warning),
+    oversized section body (warning), oversized whole-document body (error
+    only when over by ≥50% — the AUTHORING_STYLE.md blocking threshold)."""
+    findings: list[Finding] = []
+    lines = text.splitlines()
+    _, body = _split_frontmatter(lines)
+    # STY01 — banned phrases (per-line). Scan body only so frontmatter YAML
+    # keys (e.g. `simply: true`) don't trip.
+    for offset, raw in enumerate(body):
+        # Skip headings and table separator lines.
+        if raw.lstrip().startswith("#") or set(raw.strip()) <= set("|-: "):
+            continue
+        for pat, label in _STYLE_BANNED:
+            m = pat.search(raw)
+            if m:
+                findings.append(
+                    Finding(
+                        rel,
+                        body_offset + offset + 1,
+                        "STY01",
+                        f"authoring-style: {label} ('{m.group(0)}')",
+                        severity="warning",
+                    )
+                )
+    # STY02 — section body over the +50% blocking threshold.
+    for heading, start, words in _section_word_counts(body):
+        if heading.strip().lower() in _SIZE_EXEMPT_HEADINGS:
+            continue
+        if words > _SECTION_BLOCKING_WORDS:
+            findings.append(
+                Finding(
+                    rel,
+                    body_offset + start,
+                    "STY02",
+                    f"section '{heading}' is {words} words; target ≤{_SECTION_TARGET_WORDS}"
+                    f" (blocking >{_SECTION_BLOCKING_WORDS})",
+                    severity="warning",
+                )
+            )
+    # STY03 — document body over the +50% target (blocking).
+    target = _DOC_TARGET_WORDS.get(artifact)
+    if target is not None:
+        words = sum(len(line.split()) for line in body)
+        if words > target * 3 // 2:
+            findings.append(
+                Finding(
+                    rel,
+                    body_offset,
+                    "STY03",
+                    f"document body is {words} words; {artifact} target ≤{target}"
+                    f" (blocking >{target * 3 // 2})",
+                    severity="error",
+                )
+            )
+    return findings
 
 
 def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> list[Finding]:
@@ -166,6 +309,8 @@ def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> li
                     f"{artifact} requires upstream tag '@{tag}:' (cumulative traceability)",
                 )
             )
+    # AS3 — authoring-style check (banned phrases + size targets).
+    findings.extend(_check_style(text, artifact, rel, body_offset=0))
     return findings
 
 
