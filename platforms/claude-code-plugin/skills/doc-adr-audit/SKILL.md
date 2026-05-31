@@ -59,13 +59,22 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` (embedded rules + `_antipatterns`),
 and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`ADR-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Element ID format | every internal ID matches `ADR.NN.SS.xxxx` (4-hex hash); document refs use dash `ADR-NN` |
 | Single decision | the ADR records exactly one decision |
-| Structure | all 10 required sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Cumulative tags | `@brd @prd @ears @bdd` all present and well-formed |
 | Quality gate | SPEC-Ready score ≥ threshold (default 90) for Accepted status |
 

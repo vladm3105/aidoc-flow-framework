@@ -59,12 +59,21 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml` (embedded rules), and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`EARS-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Element ID format | every ID matches `EARS.NN.SS.xxxx` (4-hex hash) |
-| Structure | all 5 template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | EARS syntax | every requirement has a trigger (WHEN/IF/WHILE) + `THE … SHALL`; statements atomic |
 | Quantifiable constraints | timing uses p50/p95/p99; no vague terms ("fast", "real-time") |
 | Quality gate | BDD-Ready score ≥ threshold (default 90) |

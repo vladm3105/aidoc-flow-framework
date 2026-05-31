@@ -60,12 +60,21 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`IPLAN-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Document ID format | IPLAN referenced as `IPLAN-NN` (dash form); no dotted `IPLAN.NN.SS.xxxx`; `@tdd` uses `TDD.NN.SS.xxxx`, `@spec` uses `SPEC-NN` |
-| Structure | all 6 template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Test-first order | `file_manifest` lists tests before implementation files |
 | Session handoff | `session_handoff.sessions` present with a `next_session_directive` |
 | Upstream references | parent SPEC/TDD references resolve to existing docs |

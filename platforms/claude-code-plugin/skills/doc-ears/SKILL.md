@@ -59,14 +59,18 @@ documents that exist; never invent placeholders like `PRD-XXX` or `TBD`.
 
 ## Layer Guidance
 
-### Required structure (5 sections)
+### Required structure (5 numbered sections + glossary backmatter)
 
-`## Document Control` comes **first** (status, version, dates `YYYY-MM-DD`,
+`document_control` is **Section 1** (status, version, dates `YYYY-MM-DD`,
 priority, single `@prd:` source, `@brd:` reference, BDD-Ready score,
 revision-history table). Then:
 
-1. Purpose & Context · 2. Requirements (the five patterns) · 3. Quality
-Attributes (tabular) · 4. Traceability · 5. Glossary.
+2. Purpose & Context · 3. Requirements (the five patterns) · 4. Quality
+Attributes (tabular) · 5. Traceability.
+
+Plus a **Glossary** backmatter section (`glossary:` template key — required,
+unnumbered). Section numbers and identifiers come from `EARS-TEMPLATE.yaml`'s
+own `# Section N:` numbering — **the template is the source of truth**.
 
 See `EARS-TEMPLATE.yaml` for per-section content and embedded authoring guidance.
 
@@ -120,7 +124,8 @@ timing uses p50/p95/p99 notation. Carry changeable values as
    `docs/03_EARS/EARS-NN_{slug}/` regardless of size. Monolithic:
    `EARS-NN_{slug}.md` inside it; section-based (>25 KB): `EARS-NN.S_{section}.md`
    - index from `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-00_index.TEMPLATE.md`.
-4. **Document Control first**, then complete all 5 sections from the template.
+4. **Document Control (Section 1) first**, then complete §2–§5 plus the
+   glossary backmatter from the template.
 5. **Categorize requirements** into the five patterns; write atomic
    `THE … SHALL …` statements (WITHIN timing where applicable) with
    `@threshold:` constraints.

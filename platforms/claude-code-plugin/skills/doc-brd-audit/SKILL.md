@@ -59,12 +59,21 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` (embedded rules +
 `cross_section_rules`), and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`BRD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Element ID format | every ID matches `BRD.NN.SS.xxxx` (4-hex hash) |
-| Structure | all required template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Cross-section rules | `cross_section_rules` from the template hold |
 | Quality gate | PRD-Ready score ≥ threshold (default 90) |
 

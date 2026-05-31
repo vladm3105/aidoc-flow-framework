@@ -116,6 +116,20 @@ layers (see *Adaptation*), mark each completed / in-progress / ready / blocked,
 and report position plus a progress percentage — layers at their terminal status
 (`Approved`, or `Completed` for IPLAN) ÷ **active** layers.
 
+**Template-conformance check (mandatory).** For every artifact found, compare it
+to its layer's canonical `${CLAUDE_PLUGIN_ROOT}/framework/layers/<NN>_<X>/<TYPE>-TEMPLATE.yaml`:
+load the template's top-level section keys, then check the artifact's `##` headings
+contain every required section. Report any missing required sections as a
+**drift finding** (artifact `Status` notwithstanding), e.g. *"BRD-01 missing 6 of
+18 required sections: Implementation Approach, Support & Maintenance, …"*.
+
+Drift findings are first-class — **do not** rationalise them as a "compact"
+variant, "documented walkthrough format", or "pinned to lint" exception. There
+is **one** template per layer and one canonical section list. Lint passing
+(structural subset) does not imply template conformance (full section set). When
+drift is found, recommend `doc-<layer>-fixer` (or `doc-<layer>-autopilot` for a
+full re-author) to close the gap.
+
 **What's next.** Recommend the next artifact per the cumulative chain (each layer
 needs its single-layer prerequisite), over the project's **active** layers only —
 never recommend a layer the profile disabled. Prioritize:

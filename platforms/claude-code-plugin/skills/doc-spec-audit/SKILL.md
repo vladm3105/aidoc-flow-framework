@@ -59,13 +59,22 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` (embedded rules), and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`SPEC-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | YAML syntax | the SPEC parses as valid YAML |
 | Document ID | dash form `SPEC-NN`; no dotted SPEC element IDs; no removed patterns |
-| Structure | all 8 required template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Cumulative tags | upstream chain complete (`@brd @prd @ears @bdd @adr`); no gaps |
 | Quality gate | TDD-Ready score ≥ threshold (default 90) |
 

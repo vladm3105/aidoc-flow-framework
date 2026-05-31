@@ -59,12 +59,21 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml` (embedded rules), and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`PRD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Element ID format | every ID matches `PRD.NN.SS.xxxx` (4-hex hash); `SS` = host section |
-| Structure | all 15 template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Cumulative tags | `@brd:` tags present and resolving to existing BRD elements |
 | Customer-facing content | §10 substantive in ≥3 categories (not placeholders) |
 | Quality gate | EARS-Ready score ≥ threshold (default 90) |
