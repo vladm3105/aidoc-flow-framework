@@ -180,6 +180,111 @@ def _section_word_counts(body: list[str]) -> list[tuple[str, int, int]]:
     return sections
 
 
+def _parse_doc_control(body: list[str]) -> tuple[int | None, dict[str, str], dict[str, str] | None]:
+    """Locate the Document Control section in a markdown body and return
+    ``(section_line, dc_table, latest_revision)`` where ``dc_table`` maps the
+    Document Control key-value table's first column (lowercase) to its second
+    column, and ``latest_revision`` is the first data row of the
+    revision-history table (header Version|Date|Author|Change). Either may be
+    empty if not found.
+    """
+    dc_idx = None
+    for i, line in enumerate(body):
+        if line.strip().lower().rstrip(":") == "## document control":
+            dc_idx = i
+            break
+    if dc_idx is None:
+        return None, {}, None
+    dc_table: dict[str, str] = {}
+    rev_latest: dict[str, str] | None = None
+    j = dc_idx + 1
+    while j < len(body):
+        line = body[j].rstrip()
+        if line.startswith("## ") and "Document Control" not in line:
+            break
+        if line.startswith("|"):
+            cells = [c.strip() for c in line.strip("|").split("|")]
+            if len(cells) >= 4 and cells[0].lower() == "version" and cells[1].lower() == "date":
+                # revision-history header → next non-separator data row
+                k = j + 1
+                while k < len(body):
+                    row = body[k].rstrip()
+                    if not row.startswith("|"):
+                        break
+                    row_cells = [c.strip() for c in row.strip("|").split("|")]
+                    sep_chars = set("".join(row_cells))
+                    if sep_chars and sep_chars <= set("-: "):
+                        k += 1
+                        continue
+                    if len(row_cells) >= 2:
+                        rev_latest = {"version": row_cells[0], "date": row_cells[1]}
+                        break
+                    k += 1
+                j = k + 1
+                continue
+            if len(cells) >= 2:
+                key = cells[0].lower()
+                val = cells[1]
+                if key and key != "field" and set(key) - set("-: "):
+                    dc_table[key] = val
+        j += 1
+    return dc_idx, dc_table, rev_latest
+
+
+def _check_frontmatter_consistency(text: str, rel: str) -> list[Finding]:
+    """AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
+    Compares ``status``, ``version``, ``last_updated`` across the three
+    parallel statements of artifact identity. Single finding code FM01.
+    """
+    findings: list[Finding] = []
+    lines = text.splitlines()
+    fm_lines, body = _split_frontmatter(lines)
+    if not fm_lines:
+        return findings
+    try:
+        fm = yaml.safe_load("\n".join(fm_lines)) or {}
+    except yaml.YAMLError:
+        return findings
+    if not isinstance(fm, dict):
+        return findings
+    dc_idx, dc_table, rev = _parse_doc_control(body)
+    if dc_idx is None:
+        return findings
+    body_offset = len(fm_lines) + 2  # both --- fences
+    anchor = body_offset + dc_idx + 1
+
+    def _emit(message: str) -> None:
+        findings.append(Finding(rel, anchor, "FM01", message, severity="error"))
+
+    def _norm(v: object) -> str:
+        return str(v).strip().strip('"').strip("'") if v is not None else ""
+
+    fm_status = _norm(fm.get("status"))
+    dc_status = dc_table.get("status", "").strip()
+    if fm_status and dc_status and fm_status != dc_status:
+        _emit(f"frontmatter status='{fm_status}' ≠ Document Control Status='{dc_status}'")
+
+    fm_version = _norm(fm.get("version"))
+    dc_version = dc_table.get("version", "").strip()
+    if fm_version and dc_version and fm_version != dc_version:
+        _emit(f"frontmatter version='{fm_version}' ≠ Document Control Version='{dc_version}'")
+
+    if rev:
+        if fm_version and rev["version"] and fm_version != rev["version"]:
+            _emit(
+                f"frontmatter version='{fm_version}' ≠ latest revision-history "
+                f"version='{rev['version']}'"
+            )
+        fm_last_updated = _norm(fm.get("last_updated"))
+        if fm_last_updated and rev["date"] and fm_last_updated != rev["date"]:
+            _emit(
+                f"frontmatter last_updated='{fm_last_updated}' ≠ latest revision-history "
+                f"date='{rev['date']}'"
+            )
+
+    return findings
+
+
 def _check_style(text: str, artifact: str, rel: str, body_offset: int) -> list[Finding]:
     """AS3 — authoring-style check. Banned phrases (per-line warning),
     oversized section body (warning), oversized whole-document body (error
@@ -311,6 +416,8 @@ def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> li
             )
     # AS3 — authoring-style check (banned phrases + size targets).
     findings.extend(_check_style(text, artifact, rel, body_offset=0))
+    # AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
+    findings.extend(_check_frontmatter_consistency(text, rel))
     return findings
 
 
