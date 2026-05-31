@@ -1,0 +1,59 @@
+---
+metadata:
+  artifact_id: IPLAN-01
+  document_type: iplan-document
+  layer: 8
+  deliverable_type: code
+
+## Document Control
+document_control:
+  iplan_id: IPLAN-01
+  source_spec: SPEC-01
+  status: In Progress
+  version: 1.0
+  author: Platform team
+  complexity: 3
+
+## File Manifest
+file_manifest:
+  files:
+    - path: tests/unit/test_auth_service.py
+      order: 1
+      status: DONE
+      verified: true
+    - path: src/auth/auth_service.py
+      order: 2
+      status: IN_PROGRESS
+      verified: false
+
+## Execution Commands
+execution_commands:
+  setup:
+    - python -m venv .venv && source .venv/bin/activate
+  implementation:
+    - python -m pytest tests/unit/test_auth_service.py
+  validation:
+    - python -m pytest tests/ --cov=src/auth
+
+## Session Handoff
+session_handoff:
+  sessions:
+    - date: 2026-05-30
+      agent: coder-agent
+      files_touched:
+        - path: src/auth/auth_service.py
+          action: created
+          status: IN_PROGRESS
+      partial_work: Token signing path implemented.
+      blockers: None
+      next_session_directive: Wire KMSClient stub into AuthService.issueToken.
+
+## Traceability
+traceability: |
+  - @brd: BRD.01.07.aaaa
+  - @prd: PRD.01.09.aaaa
+  - @ears: EARS.01.03.aaaa
+  - @bdd: BDD.01.04.aaaa
+  - @adr: ADR-01
+  - @spec: SPEC-01
+  - @tdd: TDD-01
