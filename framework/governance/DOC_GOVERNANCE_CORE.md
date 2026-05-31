@@ -8,6 +8,7 @@
 4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
 6. **Separation of development and deployment** — Development plans produce source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, and shipped through version control. Deployment plans handle operator-only execution of those artifacts. A development plan is complete when its artifacts are authored, committed, and green — it does NOT wait for deployment.
+7. **Token-efficient authoring** — Documents must be **precise and complete**, not **detailed and exhaustive**. Completeness comes from covering every required template section, not from prose volume. Authoring voice, form preferences, and size targets are defined in [`AUTHORING_STYLE.md`](AUTHORING_STYLE.md); every creation and audit skill loads it alongside the layer template.
 
 ### Development vs Deployment Plans
 

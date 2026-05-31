@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.8.1"
+    framework_spec_version: "0.9.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -56,6 +56,7 @@ Before writing, verify upstream artifacts exist and read the contracts:
 2. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml`
 3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`
 4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+5. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 The **primary source is SPEC** (the component contract); **BDD is the source of
 truth for behavior** — TDD maps BDD scenarios to tests, it does not duplicate

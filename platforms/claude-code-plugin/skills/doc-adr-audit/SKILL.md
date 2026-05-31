@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.8.1"
+    framework_spec_version: "0.9.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
 ---
@@ -57,7 +57,7 @@ review → 4) merge/normalize findings → 5) write `ADR-NN.A_audit_report_vNNN.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` (embedded rules + `_antipatterns`),
-and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. Style: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
 `ADR-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
@@ -85,6 +85,13 @@ resolve; no downstream (SPEC/TDD/IPLAN) numbers cited before they exist;
 Architecture-Flow section carries the decision/interaction **sequence** diagram
 (`@diagram: sequence-*`, no C4 level) per `DIAGRAM_STANDARDS.md` (use
 `../charts-flow/SKILL.md`).
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the document
+complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50%. **Promote to blocking** when ≥3
+banned phrases occur in one section OR the document exceeds its size target by
+>50%.
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.

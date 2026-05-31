@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.8.1"
+    framework_spec_version: "0.9.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
 ---
@@ -57,7 +57,7 @@ review → 4) merge/normalize findings → 5) write `BDD-NN.A_audit_report_vNNN.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml` (embedded rules + scenario
-conventions), and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+conventions), and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. Style: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
 `BDD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
@@ -85,6 +85,13 @@ and template/governance references resolve; no downstream numbers cited before
 they exist; five scenario categories represented; times `HH:MM:SS` with IANA
 timezones; sequence-diagram tag present if a flow is illustrated (use
 `../charts-flow/SKILL.md`).
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the document
+complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50%. **Promote to blocking** when ≥3
+banned phrases occur in one section OR the document exceeds its size target by
+>50%.
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.

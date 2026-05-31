@@ -48,6 +48,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.8.1 → 0.9.0** (minor) — additive governance change:
+  adds principle 7 ("token-efficient authoring") to `DOC_GOVERNANCE_CORE.md`
+  and the new `AUTHORING_STYLE.md` governance doc. Both
+  `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 50 plugin skills'
+  `framework_spec_version` re-synced to 0.9.0.
 - Framework spec **0.8.0 → 0.8.1** (patch) — AUDIT-FIXUPS WS-A: the ADR (L5)
   template now **requires** a decision/interaction `sequenceDiagram` (carrying its
   intent header + `@diagram: sequence-*` tag), with `flowchart` demoted to an
@@ -176,6 +181,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Token-efficient authoring governance** — new
+  `framework/governance/AUTHORING_STYLE.md` canonicalises the writing voice
+  the SDD corpus expects: elimination list (benefit statements, efficiency
+  claims, ease-of-use claims, future-oriented promises, superlatives, filler
+  phrases, verbose introductions, redundant restatement), form enforcement
+  (imperative verbs for procedures, conditional statements for error
+  handling, tables for parameter specs, bullets for options, one-sentence
+  element descriptions, ≤ 3-sentence rationale, `@threshold:` keys for
+  quantitative values, precise data types), form-preference order
+  (table → bullet → diagram → prose), per-section size defaults (≤ 200 words
+  or one table/diagram; ≤ 3 000 words for BRD/PRD bodies; ≤ 1 500 for the
+  other layers + CHG), and an audit hook (Tier 2 advisory by default,
+  promoted to Tier 1 blocking when ≥ 3 banned phrases occur in one section
+  or the document exceeds its size target by > 50%). Promoted to canonical
+  governance via `DOC_GOVERNANCE_CORE.md` principle 7. Wired into every
+  `doc-<layer>` (creation) and `doc-<layer>-audit` skill as an authority
+  reference, and into the audit Structural Checklist as the new
+  Authoring-style check block. New conformance test
+  `tests/conformance/platforms/test_authoring_style_referenced.py` (5
+  checks) guarantees the rule cannot be forgotten when new skills land.
+  Follow-up TODOs (linter, CHG-family extension, per-section
+  `_size_target`, `_guidance` tightening, fixer auto-fix, skill-body
+  retrofit) are tracked in `plans/AUTHORING-STYLE-FOLLOWUP.md`.
 - **gitleaks** secret-scanning wired into `.pre-commit-config.yaml` (with
   `.gitleaks.toml` allowlisting the `.secrets.baseline`) — a git-aware scan
   alongside the existing `detect-secrets` baseline check. Added a project

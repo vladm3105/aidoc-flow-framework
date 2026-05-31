@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.8.1"
+    framework_spec_version: "0.9.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -52,7 +52,8 @@ Before writing, read:
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
-4. **Upstream BRD and PRD** that drive this EARS.
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
+5. **Upstream BRD and PRD** that drive this EARS.
 
 Confirm no ID collision: `ls docs/03_EARS/ 2>/dev/null`. Reference only upstream
 documents that exist; never invent placeholders like `PRD-XXX` or `TBD`.

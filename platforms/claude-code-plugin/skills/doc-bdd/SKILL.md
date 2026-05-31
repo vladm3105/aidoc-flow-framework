@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.8.1"
+    framework_spec_version: "0.9.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -53,6 +53,7 @@ the spec before writing:
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Verify upstream and check for ID collision:
 `ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null`. Reference
