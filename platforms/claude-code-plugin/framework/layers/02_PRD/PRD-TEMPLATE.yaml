@@ -120,6 +120,7 @@ metadata:
 # =============================================================================
 
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     EARS-Ready Score: >=90/100 required before EARS generation.
     BRD Reference: link to upstream BRD using hash-based IDs.
@@ -147,6 +148,7 @@ document_control:
 # =============================================================================
 
 executive_summary:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     2-3 sentences: What problem does this MVP solve? Who benefits?
     What's the expected business impact?
@@ -179,6 +181,7 @@ executive_summary:
 # =============================================================================
 
 problem_statement:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   current_state:
     - "[Pain point 1]: [Impact]"
     - "[Pain point 2]: [Impact]"
@@ -197,6 +200,7 @@ problem_statement:
 # =============================================================================
 
 target_audience:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     PRD owns detailed personas. BRD only has high-level target_users.
     Define primary persona with key characteristics, pain points, success criteria.
@@ -219,6 +223,7 @@ target_audience:
 # =============================================================================
 
 success_metrics:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Product-level metrics with baselines and targets.
     Absorbs old Section 14 (Success Definition) post-launch validation.
@@ -260,6 +265,7 @@ success_metrics:
 # =============================================================================
 
 goals_and_objectives:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   primary:
     - id: "PRD.NN.06.xxxx"
       goal: "[Primary goal]"
@@ -288,6 +294,7 @@ goals_and_objectives:
 # =============================================================================
 
 scope_and_requirements:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   in_scope:
     _guidance: "List 5-15 must-have features for MVP, prioritized."
     features:
@@ -318,6 +325,7 @@ scope_and_requirements:
 # =============================================================================
 
 user_stories:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     PRD holds role definitions and story summaries.
     Detailed behaviors live in EARS (Layer 3).
@@ -360,6 +368,7 @@ user_stories:
 # =============================================================================
 
 functional_requirements:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Product-level FRs that expand BRD business capabilities with technical context.
     Each FR must be atomic and testable.
@@ -429,6 +438,7 @@ functional_requirements:
 # =============================================================================
 
 customer_facing_content:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     MANDATORY section. Must contain substantive content addressing
     at least 3 of the following categories. Placeholder-only content
@@ -462,6 +472,7 @@ customer_facing_content:
 # =============================================================================
 
 acceptance_criteria:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Product acceptance criteria verifiable by business stakeholders.
     Absorbs old Section 14.1 (Go-Live Criteria) as launch_gates.
@@ -499,6 +510,7 @@ acceptance_criteria:
 # =============================================================================
 
 constraints_and_assumptions:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   constraints:
     - id: "PRD.NN.12.xxxx"
       category: "[Technical | Business | Regulatory | Timeline]"
@@ -516,6 +528,7 @@ constraints_and_assumptions:
 # =============================================================================
 
 risk_assessment:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   risks:
     - id: "PRD.NN.13.xxxx"
       description: "[Risk description]"
@@ -529,6 +542,7 @@ risk_assessment:
 # =============================================================================
 
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Upstream: REQUIRED — all PRDs must reference at least one BRD element.
     Downstream: OPTIONAL — only add links to artifacts that exist.
@@ -586,6 +600,7 @@ traceability:
 # =============================================================================
 
 glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Flat list of project-specific terms. Keep concise."
 
   terms:

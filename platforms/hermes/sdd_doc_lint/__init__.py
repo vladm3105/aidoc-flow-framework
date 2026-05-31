@@ -77,9 +77,11 @@ _STYLE_BANNED = [
 ]
 
 # AS3 — per-section / per-document size targets. Defaults from
-# AUTHORING_STYLE.md; "blocking" threshold = +50% over default.
+# AUTHORING_STYLE.md; "blocking" threshold = +50% over default. AS2: each
+# template section can declare a `_size_target: <words>` key to override.
 _SECTION_TARGET_WORDS = 200
 _SECTION_BLOCKING_WORDS = 300  # 200 × 1.5
+_BLOCKING_FACTOR = 1.5
 _DOC_TARGET_WORDS = {
     "BRD": 3000,
     "PRD": 3000,
@@ -96,6 +98,7 @@ _SIZE_EXEMPT_HEADINGS = {"document control", "traceability", "glossary", "revisi
 
 _FRONTMATTER_FENCE = re.compile(r"^---\s*$")
 _SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
+_HEADING_NUMBER_PREFIX = re.compile(r"^\d+(?:\.\d+)*\.?\s*")
 # Candidate IDs whose prefix is a known artifact (avoids flagging unrelated tokens).
 _KNOWN = "BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN"
 _DOC_ID = re.compile(rf"\b({_KNOWN})-([A-Za-z0-9]+)\b")
@@ -285,7 +288,51 @@ def _check_frontmatter_consistency(text: str, rel: str) -> list[Finding]:
     return findings
 
 
-def _check_style(text: str, artifact: str, rel: str, body_offset: int) -> list[Finding]:
+def _normalise_heading(heading: str) -> str:
+    """Convert a markdown heading to a candidate template-key form.
+
+    Examples:
+      '3. Introduction'             -> 'introduction'
+      'Document Control'            -> 'document_control'
+      '7.2 Architecture Decisions'  -> 'architecture_decisions'
+      'Constraints & Assumptions'   -> 'constraints_and_assumptions'
+    """
+    h = _HEADING_NUMBER_PREFIX.sub("", heading.strip()).lower()
+    h = h.replace("&", "and")
+    return re.sub(r"[^a-z0-9]+", "_", h).strip("_")
+
+
+def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[str, int]:
+    """Return ``{section_key: _size_target}`` from the layer's TEMPLATE.yaml.
+    Returns ``{}`` when the template cannot be loaded — callers fall back to
+    the flat default.
+    """
+    try:
+        registry = registry or find_registry()
+        layer_folder = next(
+            entry["folder"]
+            for entry in yaml.safe_load(registry.read_text(encoding="utf-8"))["layers"]
+            if entry["artifact"] == artifact
+        )
+    except (OSError, StopIteration, KeyError, yaml.YAMLError):
+        return {}
+    tpl = registry.parent.parent / layer_folder / f"{artifact}-TEMPLATE.yaml"
+    try:
+        doc = yaml.safe_load(tpl.read_text(encoding="utf-8"))
+    except (OSError, yaml.YAMLError):
+        return {}
+    if not isinstance(doc, dict):
+        return {}
+    out: dict[str, int] = {}
+    for key, body in doc.items():
+        if isinstance(body, dict) and isinstance(body.get("_size_target"), int):
+            out[key] = body["_size_target"]
+    return out
+
+
+def _check_style(
+    text: str, artifact: str, rel: str, body_offset: int, *, registry: Path | None = None
+) -> list[Finding]:
     """AS3 — authoring-style check. Banned phrases (per-line warning),
     oversized section body (warning), oversized whole-document body (error
     only when over by ≥50% — the AUTHORING_STYLE.md blocking threshold)."""
@@ -310,18 +357,24 @@ def _check_style(text: str, artifact: str, rel: str, body_offset: int) -> list[F
                         severity="warning",
                     )
                 )
-    # STY02 — section body over the +50% blocking threshold.
+    # STY02 — section body over the +50% blocking threshold. Per-section
+    # target comes from the template's `_size_target` (AS2); falls back to
+    # the flat 200-word default when no template entry matches.
+    section_targets = _load_section_targets(artifact, registry)
     for heading, start, words in _section_word_counts(body):
         if heading.strip().lower() in _SIZE_EXEMPT_HEADINGS:
             continue
-        if words > _SECTION_BLOCKING_WORDS:
+        key = _normalise_heading(heading)
+        target = section_targets.get(key, _SECTION_TARGET_WORDS)
+        blocking = int(target * _BLOCKING_FACTOR)
+        if words > blocking:
             findings.append(
                 Finding(
                     rel,
                     body_offset + start,
                     "STY02",
-                    f"section '{heading}' is {words} words; target ≤{_SECTION_TARGET_WORDS}"
-                    f" (blocking >{_SECTION_BLOCKING_WORDS})",
+                    f"section '{heading}' is {words} words; target ≤{target}"
+                    f" (blocking >{blocking})",
                     severity="warning",
                 )
             )
@@ -343,7 +396,16 @@ def _check_style(text: str, artifact: str, rel: str, body_offset: int) -> list[F
     return findings
 
 
-def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> list[Finding]:
+def lint_text(
+    text: str,
+    artifact: str,
+    rel: str,
+    layers,
+    doc_re,
+    elem_re,
+    *,
+    registry: Path | None = None,
+) -> list[Finding]:
     findings: list[Finding] = []
     lines = text.splitlines()
     seen_tags: set[str] = set()
@@ -415,7 +477,7 @@ def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> li
                 )
             )
     # AS3 — authoring-style check (banned phrases + size targets).
-    findings.extend(_check_style(text, artifact, rel, body_offset=0))
+    findings.extend(_check_style(text, artifact, rel, body_offset=0, registry=registry))
     # AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
     findings.extend(_check_frontmatter_consistency(text, rel))
     # AS10 — @diagram tag level cascade vs DIAGRAM_STANDARDS.md.
@@ -752,7 +814,7 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
             rel = p.as_posix()
         text = p.read_text(encoding="utf-8")
         corpus.append((rel, text))
-        findings.extend(lint_text(text, artifact, rel, layers, doc_re, elem_re))
+        findings.extend(lint_text(text, artifact, rel, layers, doc_re, elem_re, registry=registry))
 
     if target.is_dir():
         for p in sorted(target.rglob("*")):

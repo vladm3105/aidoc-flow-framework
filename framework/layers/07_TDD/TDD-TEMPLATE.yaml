@@ -33,6 +33,7 @@ metadata:
 # Section 1: Document Control
 # =============================================================================
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   status: Draft
   version: "1.0"
   date_created: "YYYY-MM-DDTHH:MM:SS"
@@ -49,6 +50,7 @@ document_control:
 # Section 2: Test Pyramid
 # =============================================================================
 test_pyramid:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define distribution of test effort across types.
     Percentages are targets, not strict quotas.
@@ -73,6 +75,7 @@ test_pyramid:
 # Section 3: BDD Scenario to Test Mapping
 # =============================================================================
 test_mapping:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Each BDD scenario maps to one or more test types.
     Test file paths declare where tests will be written.
@@ -103,6 +106,7 @@ test_mapping:
 # Section 4: Test Case Definitions
 # =============================================================================
 test_cases:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Detailed test case specifications derived from SPEC interfaces,
     data models, and behavior contracts. Each test case defines inputs,
@@ -192,6 +196,7 @@ test_cases:
 # Section 5: Test Thresholds
 # =============================================================================
 thresholds:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Quality gates per test type. CI must enforce these.
   unit:
@@ -224,6 +229,7 @@ thresholds:
 # Section 6: TDD Execution Order
 # =============================================================================
 tdd_order:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Declares the order AI must follow when generating code.
     Test files are generated FIRST, implementation files SECOND.
@@ -254,6 +260,7 @@ tdd_order:
 # Section 7: Traceability
 # =============================================================================
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   tags:
     - "@tdd: TDD-NN"
   upstream:

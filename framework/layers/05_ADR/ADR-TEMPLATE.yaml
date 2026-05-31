@@ -115,6 +115,7 @@ metadata:
 # =============================================================================
 
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     ADR uses a DIFFERENT status lifecycle from other layers:
       Proposed → Accepted → Deprecated → Superseded
@@ -145,6 +146,7 @@ document_control:
 # =============================================================================
 
 context:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Describe WHY this decision is needed. Include business driver from BRD,
     technical constraints from PRD/EARS, and current system state.
@@ -170,6 +172,7 @@ context:
 # =============================================================================
 
 decision:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     State the chosen solution clearly. Be decisive — the decision rationale
     must explain WHY this option was selected, not just WHAT it is.
@@ -203,6 +206,7 @@ decision:
 # =============================================================================
 
 alternatives:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Evaluate 2-3 viable alternatives. Each must have pros, cons, estimated cost,
     and fit rating. Non-selected options must include a rejection reason.
@@ -255,6 +259,7 @@ alternatives:
 # =============================================================================
 
 consequences:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Document the full impact of the decision: positive outcomes,
     trade-offs/risks with severity, and cost breakdown.
@@ -281,6 +286,7 @@ consequences:
 # =============================================================================
 
 architecture_flow:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Provide Mermaid diagrams showing the decision's impact on architecture.
     Include MVP scope boundary and external system integrations.
@@ -330,6 +336,7 @@ architecture_flow:
 # =============================================================================
 
 implementation_assessment:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Decision-level assessment only — NOT detailed implementation plans.
     IPLAN (Layer 8) owns implementation details.
@@ -355,6 +362,7 @@ implementation_assessment:
 # =============================================================================
 
 verification:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define success criteria for this decision. Cross-reference BDD scenarios
     that validate the architecture. Lightweight — full tests are in TDD (Layer 7).
@@ -374,6 +382,7 @@ verification:
 # =============================================================================
 
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     ADR synthesizes inputs from all upstream layers.
     Originating topic comes from PRD Section 14 (ADR topic elaboration).
@@ -414,6 +423,7 @@ traceability:
 # =============================================================================
 
 related_decisions:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Document dependencies on other ADRs, related decisions, and
     supersedes relationships. Each ADR = one decision.
@@ -432,6 +442,7 @@ related_decisions:
 # =============================================================================
 
 glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Flat list of project-specific terms. Keep concise."
 
   terms:
@@ -447,6 +458,7 @@ glossary:
 # =============================================================================
 
 appendix:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   lifecycle:
     _guidance: |
       Each ADR represents ONE architecture decision in the MVP → PROD → NEW MVP cycle.

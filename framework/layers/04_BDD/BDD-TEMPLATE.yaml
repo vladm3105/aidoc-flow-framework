@@ -105,6 +105,7 @@ metadata:
 # =============================================================================
 
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     ADR-Ready Score: >=90/100 required before ADR generation.
     Source Document: link to upstream EARS using hash-based IDs.
@@ -136,6 +137,7 @@ document_control:
 # =============================================================================
 
 feature_definition:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define the feature under test with required Gherkin tags.
     Feature name should match the EARS requirement being tested.
@@ -185,6 +187,7 @@ feature_definition:
 # =============================================================================
 
 scenario_structure:
+  _size_target: 800  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Five scenario categories with required tag and priority conventions.
 
@@ -298,6 +301,7 @@ scenario_structure:
 # =============================================================================
 
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Cumulative Tagging Hierarchy — Layer 4 requires @brd + @prd + @ears tags.
     Upstream: REQUIRED — all BDD must reference EARS, PRD, and BRD elements.
@@ -345,6 +349,7 @@ traceability:
 # =============================================================================
 
 glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Flat list of project-specific terms. Keep concise."
 
   terms:

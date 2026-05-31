@@ -110,6 +110,7 @@ metadata:
 # =============================================================================
 
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     BDD-Ready Score: >=90/100 required before BDD generation.
     Source Document: link to upstream PRD using hash-based IDs.
@@ -135,6 +136,7 @@ document_control:
 # =============================================================================
 
 purpose_and_context:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Convert PRD features into formal EARS statements using WHEN-THE-SHALL-WITHIN
     format for clarity and unambiguousness. Provide precise timing and performance
@@ -164,6 +166,7 @@ purpose_and_context:
 # =============================================================================
 
 requirements:
+  _size_target: 800  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Five EARS syntax patterns. Each requirement MUST be atomic (one testable concept).
     Every pattern uses the canonical EARS response clause THE [component] SHALL
@@ -278,6 +281,7 @@ requirements:
 # =============================================================================
 
 quality_attributes:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Quality attributes in EARS format with measurable targets.
     All timing constraints MUST use percentile notation.
@@ -324,6 +328,7 @@ quality_attributes:
 # =============================================================================
 
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Cumulative Tagging Hierarchy — Layer 3 requires both @brd and @prd tags.
     Upstream: REQUIRED — all EARS must reference PRD and BRD elements.
@@ -378,6 +383,7 @@ traceability:
 # =============================================================================
 
 glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Flat list of project-specific terms. Keep concise."
 
   terms:
