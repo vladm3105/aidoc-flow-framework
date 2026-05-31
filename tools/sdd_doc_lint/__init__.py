@@ -539,6 +539,98 @@ def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
     return findings
 
 
+_DOC_ID_FROM_ELEMENT = re.compile(r"^([A-Z]+)\.([0-9]+)\.")
+
+
+def _extract_frontmatter(text: str) -> dict | None:
+    lines = text.splitlines()
+    fm_lines, _ = _split_frontmatter(lines)
+    if not fm_lines:
+        return None
+    try:
+        fm = yaml.safe_load("\n".join(fm_lines))
+    except yaml.YAMLError:
+        return None
+    return fm if isinstance(fm, dict) else None
+
+
+def _check_cascade(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """AS12 — ``deliverable_type`` / ``brd_type`` cascade.
+
+    Each artifact downstream of a BRD inherits the BRD's ``deliverable_type``
+    (code / document / ux / risk / process) unchanged. ``brd_type`` (platform /
+    feature) cascades the same way. Audit skills require this in prose;
+    sdd_doc_lint enforces it deterministically.
+
+    Algorithm:
+      1. Walk corpus; build ``brd_meta[doc_id]`` = ``{deliverable_type,
+         brd_type}`` for every BRD found.
+      2. For each non-BRD artifact, find its first ``@brd:`` reference in
+         frontmatter or body; resolve the BRD-NN doc ID; look up brd_meta;
+         compare ``deliverable_type``.
+      3. Emit CSC01 on mismatch.
+    """
+    brd_meta: dict[str, dict[str, str]] = {}
+    non_brd: list[tuple[str, str, dict, str | None]] = []
+
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if not fm:
+            continue
+        doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        artifact_type = str(fm.get("artifact_type") or "").strip()
+        if not doc_id:
+            continue
+        if artifact_type == "BRD":
+            brd_meta[doc_id] = {
+                "deliverable_type": str(fm.get("deliverable_type", "")).strip(),
+                "brd_type": str(fm.get("brd_type", "")).strip(),
+            }
+            continue
+        # Find @brd: BRD.NN.SS.xxxx reference (frontmatter tags or body).
+        brd_ref: str | None = None
+        for m in _TAG.finditer(text):
+            if m.group(1) == "brd":
+                em = _DOC_ID_FROM_ELEMENT.match(m.group(2))
+                if em and em.group(1) == "BRD":
+                    brd_ref = f"BRD-{em.group(2).zfill(2)}"
+                    break
+        non_brd.append((rel, doc_id, fm, brd_ref))
+
+    findings: list[Finding] = []
+    for rel, doc_id, fm, brd_ref in non_brd:
+        if not brd_ref or brd_ref not in brd_meta:
+            continue
+        parent = brd_meta[brd_ref]
+        child_dt = str(fm.get("deliverable_type", "")).strip()
+        if parent["deliverable_type"] and child_dt and child_dt != parent["deliverable_type"]:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "CSC01",
+                    f"{doc_id} deliverable_type='{child_dt}' ≠ parent {brd_ref} "
+                    f"deliverable_type='{parent['deliverable_type']}'",
+                    severity="error",
+                )
+            )
+        # brd_type only meaningful on PRD (which inherits it from the
+        # parent BRD); ADRs and below normally do not declare it.
+        child_bt = str(fm.get("brd_type", "")).strip()
+        if parent["brd_type"] and child_bt and child_bt != parent["brd_type"]:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "CSC01",
+                    f"{doc_id} brd_type='{child_bt}' ≠ parent {brd_ref} "
+                    f"brd_type='{parent['brd_type']}'",
+                    severity="error",
+                )
+            )
+    return findings
+
+
 def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]:
     """AS7 — corpus-level: when the same threshold key suffix (the part after
     ``TYPE.NN.``) is referenced in ≥ 2 artifacts with different inline numeric
@@ -605,4 +697,5 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
 
     findings.extend(_check_threshold_consistency(corpus))
     findings.extend(_check_id_uniqueness(corpus))
+    findings.extend(_check_cascade(corpus))
     return findings
