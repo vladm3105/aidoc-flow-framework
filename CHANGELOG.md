@@ -48,6 +48,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.9.0 → 0.9.1** (patch) — AUTHORING-STYLE follow-up AS6:
+  PRD-TEMPLATE.yaml `_guidance` blocks normalised to imperative voice
+  ("Specify" replaces "Elaborate" in three places). No spec semantics
+  change. Both `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 50
+  plugin skills' `framework_spec_version` re-synced to 0.9.1.
 - Framework spec **0.8.1 → 0.9.0** (minor) — additive governance change:
   adds principle 7 ("token-efficient authoring") to `DOC_GOVERNANCE_CORE.md`
   and the new `AUTHORING_STYLE.md` governance doc. Both

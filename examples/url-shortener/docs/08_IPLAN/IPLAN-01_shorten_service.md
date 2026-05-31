@@ -3,7 +3,7 @@ title: "IPLAN: Shorten Service"
 doc_id: "IPLAN-01"
 artifact_type: IPLAN
 layer: 8
-status: Approved
+status: Completed
 version: "1.0.0"
 created: "2026-05-27"
 last_updated: "2026-05-27"
@@ -23,7 +23,7 @@ custom_fields:
 | Field | Value |
 |-------|-------|
 | Document ID | IPLAN-01 |
-| Status | Approved |
+| Status | Completed |
 | Version | 1.0.0 |
 | Readiness score | 91 / 100 |
 | Self | @iplan: IPLAN-01 |
