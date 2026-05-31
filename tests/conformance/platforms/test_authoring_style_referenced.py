@@ -91,5 +91,32 @@ class AuditSkillsCiteStyleAndCheckIt(unittest.TestCase):
                 )
 
 
+class ChgFamilyCitesStyleDoc(unittest.TestCase):
+    """The CHG family (`doc-chg`, `doc-chg-audit`, `doc-chg-fixer`,
+    `doc-chg-autopilot`) is a governance overlay alongside the 8 layer
+    families and must apply the same authoring-style rule (AS5)."""
+
+    CHG_SKILLS = ("doc-chg", "doc-chg-audit", "doc-chg-fixer", "doc-chg-autopilot")
+
+    def test_every_chg_skill_references_style(self):
+        for name in self.CHG_SKILLS:
+            skill = PLUGIN_SKILLS / name / "SKILL.md"
+            with self.subTest(skill=name):
+                self.assertTrue(skill.is_file(), f"missing {skill}")
+                self.assertIn(
+                    "AUTHORING_STYLE.md",
+                    skill.read_text(encoding="utf-8"),
+                    f"{name}/SKILL.md must reference AUTHORING_STYLE.md",
+                )
+
+    def test_chg_audit_carries_style_check_block(self):
+        skill = PLUGIN_SKILLS / "doc-chg-audit" / "SKILL.md"
+        self.assertIn(
+            "Authoring-style check",
+            skill.read_text(encoding="utf-8"),
+            "doc-chg-audit must carry the Authoring-style check block in the Structural Checklist",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

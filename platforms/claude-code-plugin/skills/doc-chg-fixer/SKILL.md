@@ -102,4 +102,5 @@ iterations reached.
 - Orchestration: `../doc-chg-autopilot/SKILL.md` · Gate: `../gate-check/SKILL.md`
 - Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
-  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`

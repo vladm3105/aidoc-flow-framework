@@ -112,4 +112,5 @@ trigger.
 - Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`,
-  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
