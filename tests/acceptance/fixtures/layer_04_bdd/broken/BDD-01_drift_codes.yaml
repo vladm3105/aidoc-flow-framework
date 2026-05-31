@@ -1,0 +1,5 @@
+file: BDD-01_missing_section.md
+expected_findings:
+  - code: STRUCT01
+    section: scenario_structure
+    message_match: "missing required section: scenario_structure"
