@@ -1,0 +1,5 @@
+file: ADR-01_missing_section.md
+expected_findings:
+  - code: STRUCT01
+    section: consequences
+    message_match: "missing required section: consequences"
