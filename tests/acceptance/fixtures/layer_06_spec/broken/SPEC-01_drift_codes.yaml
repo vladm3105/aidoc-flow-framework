@@ -1,0 +1,5 @@
+file: SPEC-01_missing_section.yaml
+expected_findings:
+  - code: STRUCT01
+    section: interfaces
+    message_match: "missing required section: interfaces"
