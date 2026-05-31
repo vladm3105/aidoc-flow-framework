@@ -31,6 +31,7 @@ class DocLint(unittest.TestCase):
             "STY02",
             "TH02",
             "FM01",
+            "DG02",
         ):
             self.assertIn(
                 expected, codes, f"broken fixtures should trip {expected}; got {sorted(codes)}"

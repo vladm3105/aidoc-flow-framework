@@ -418,6 +418,8 @@ def lint_text(text: str, artifact: str, rel: str, layers, doc_re, elem_re) -> li
     findings.extend(_check_style(text, artifact, rel, body_offset=0))
     # AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
     findings.extend(_check_frontmatter_consistency(text, rel))
+    # AS10 — @diagram tag level cascade vs DIAGRAM_STANDARDS.md.
+    findings.extend(_check_diagram_level(text, artifact, rel))
     return findings
 
 
@@ -434,6 +436,57 @@ def lint_file(path: Path, layers, doc_re, elem_re) -> list[Finding]:
 
 _THRESHOLD_PARSED = re.compile(r"@threshold:\s*([A-Z]+)\.([0-9]+)\.([A-Za-z0-9_.]+)")
 _THRESHOLD_VALUE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|s|min|h|%|MB|GB|KB|req/s|rpm)\b")
+
+# AS10 — @diagram level cascade per framework/governance/DIAGRAM_STANDARDS.md.
+# Per-layer allowed diagram-tag types: each artifact may only carry the level
+# associated with its own layer (BRD=L1, PRD=L2, SPEC=L3); ADR has no C4/DFD
+# level (decision bridge). 'sequence-*' tags are allowed on every layer.
+_DIAGRAM_TAG = re.compile(r"@diagram:\s*([a-z][a-z0-9]*(?:-[a-z0-9]+)+)")
+_DIAGRAM_ALLOWED = {
+    "BRD": {"c4-l1", "dfd-l1"},
+    "PRD": {"c4-l2", "dfd-l2"},
+    "EARS": set(),
+    "BDD": set(),
+    "ADR": set(),
+    "SPEC": {"c4-l3", "dfd-l3"},
+    "TDD": set(),
+    "IPLAN": set(),
+}
+_DIAGRAM_SEQUENCE = re.compile(r"^sequence-(sync|async|error|[a-z0-9-]+)$")
+
+
+def _check_diagram_level(text: str, artifact: str, rel: str) -> list[Finding]:
+    """AS10 — verify each ``@diagram: <type>`` tag uses a type permitted on
+    this artifact's layer (per ``framework/governance/DIAGRAM_STANDARDS.md``).
+    ``sequence-*`` tags are universally allowed; C4/DFD tags must match the
+    layer's level (BRD→L1, PRD→L2, SPEC→L3); ADR has no C4/DFD level.
+    """
+    findings: list[Finding] = []
+    allowed = _DIAGRAM_ALLOWED.get(artifact, set())
+    for i, line in enumerate(text.splitlines(), 1):
+        for m in _DIAGRAM_TAG.finditer(line):
+            tag = m.group(1)
+            if _DIAGRAM_SEQUENCE.match(tag):
+                continue
+            if tag in allowed:
+                continue
+            # If the artifact has no allowed C4/DFD level but a c4/dfd tag is
+            # present, that is also a mismatch.
+            findings.append(
+                Finding(
+                    rel,
+                    i,
+                    "DG02",
+                    f"@diagram '{tag}' is not valid for layer {artifact}"
+                    + (
+                        f" (expected {sorted(allowed)})"
+                        if allowed
+                        else " (no C4/DFD level on this layer)"
+                    ),
+                    severity="error",
+                )
+            )
+    return findings
 
 
 def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]:

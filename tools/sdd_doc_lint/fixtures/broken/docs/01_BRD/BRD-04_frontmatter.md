@@ -27,4 +27,7 @@ last_updated: "2026-06-01"
 
 ## Diagrams
 
-(intentional)
+`@diagram: c4-l3` — wrong level: BRD is L1, not L3.
+`@diagram: dfd-l2` — wrong level: BRD is L1, not L2.
+`@diagram: c4-l1` — correct.
+`@diagram: sequence-sync` — allowed on any layer.
