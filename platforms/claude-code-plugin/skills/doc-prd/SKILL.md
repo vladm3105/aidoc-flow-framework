@@ -55,6 +55,7 @@ PRD requires an upstream BRD. Before writing, read:
 2. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml`
 3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md`
 4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+5. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Confirm no ID collision: `ls docs/02_PRD/ 2>/dev/null`. Reference only BRD
 elements that exist; never invent placeholders like `BRD-XXX` or `TBD`. The PRD

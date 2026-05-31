@@ -52,6 +52,7 @@ writing, read:
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Confirm no ID collision: `ls docs/01_BRD/ 2>/dev/null`. Never invent
 placeholders like `BRD-XXX` or reference documents that do not yet exist.

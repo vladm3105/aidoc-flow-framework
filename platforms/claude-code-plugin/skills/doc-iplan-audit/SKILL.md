@@ -58,7 +58,8 @@ to `doc-iplan-fixer`.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. Style:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
 `IPLAN-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
@@ -86,6 +87,13 @@ when 3+ files share interfaces; `code_inventory` populated for each
 created/modified file; `validation_results` recorded per session; internal links
 and template/governance references resolve; permanent plan registered in
 `IPLAN-00_index.yaml`; any dependency diagram uses `../charts-flow/SKILL.md`.
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the document
+complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50%. **Promote to blocking** when ≥3
+banned phrases occur in one section OR the document exceeds its size target by
+>50%.
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.

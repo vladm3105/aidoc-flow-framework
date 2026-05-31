@@ -54,6 +54,7 @@ Before writing, read:
 2. **Index template:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml`
 3. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`
 4. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+5. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Read the upstream **TDD** (primary source for the file manifest and test-first
 order) and the **SPEC** it derives from. Reference only documents that exist;

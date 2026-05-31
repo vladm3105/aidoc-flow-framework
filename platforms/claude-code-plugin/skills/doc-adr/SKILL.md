@@ -55,6 +55,7 @@ writing:
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Confirm upstream artifacts: `ls docs/0{1,2,3,4}_*/ 2>/dev/null`. Reference only
 documents that already exist; never invent placeholders like `ADR-XXX` or cite

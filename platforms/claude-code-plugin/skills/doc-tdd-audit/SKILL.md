@@ -57,7 +57,8 @@ review → 4) merge/normalize findings → 5) write `TDD-NN.A_audit_report_vNNN.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml` (embedded rules), and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. Style:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
 `TDD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
@@ -84,6 +85,13 @@ canonical required-section set.
 cases/error paths documented; e2e cases carry a `bdd_ref`; thresholds set per
 type; frontmatter metadata (below); internal links and template/governance
 references resolve; diagram tags present (use `../charts-flow/SKILL.md`).
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the document
+complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50%. **Promote to blocking** when ≥3
+banned phrases occur in one section OR the document exceeds its size target by
+>50%.
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.

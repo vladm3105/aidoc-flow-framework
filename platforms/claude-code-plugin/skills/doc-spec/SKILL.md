@@ -53,7 +53,8 @@ Reference only documents that already exist; never invent placeholders like
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
-4. **Upstream ADR (primary)** plus the BDD/EARS acceptance contracts the
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
+5. **Upstream ADR (primary)** plus the BDD/EARS acceptance contracts the
    component must satisfy.
 
 Confirm existing upstream artifacts and no ID collision:

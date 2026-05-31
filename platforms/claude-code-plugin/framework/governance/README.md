@@ -19,6 +19,7 @@ of which engine executes the workflow.
 | `REVIEW_CREWS.yaml` | Machine-readable per-layer review crews + scoring weights behind `REVIEW_TEAM.md`. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
+| `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
 
 ## CHG Overlay (`chg/`)

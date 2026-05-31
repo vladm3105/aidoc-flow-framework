@@ -57,7 +57,8 @@ review → 4) merge/normalize findings → 5) write `PRD-NN.A_audit_report_vNNN.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml` (embedded rules), and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. Style:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
 `PRD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
@@ -84,6 +85,13 @@ template/governance references resolve; no ADR numbers cited before they exist;
 thresholds consistent across sections and with the BRD source; diagram contract
 tags present (`@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`
 with `alt/else` — use `../charts-flow/SKILL.md`).
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the document
+complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50%. **Promote to blocking** when ≥3
+banned phrases occur in one section OR the document exceeds its size target by
+>50%.
 
 **Combined status:** `PASS` only if all Tier 1 pass **and** content score ≥
 threshold **and** no blocking issues; otherwise `FAIL`.
