@@ -489,6 +489,56 @@ def _check_diagram_level(text: str, artifact: str, rel: str) -> list[Finding]:
     return findings
 
 
+_ELEM_DEF_BULLET = re.compile(
+    r"^\s*-\s+\*\*([A-Z]+\.[0-9]+\.[A-Za-z0-9]+\.[a-z0-9]+)\*\*", re.MULTILINE
+)
+_ELEM_DEF_HEADING = re.compile(
+    r"^#{2,4}\s+([A-Z]+\.[0-9]+\.[A-Za-z0-9]+\.[a-z0-9]+)\b", re.MULTILINE
+)
+_ELEM_DEF_YAML = re.compile(
+    r"^\s*[-]?\s*id:\s*[\"']?([A-Z]+\.[0-9]+\.[A-Za-z0-9]+\.[a-z0-9]+)[\"']?", re.MULTILINE
+)
+
+
+def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """AS11 — element-ID hash integrity (definition uniqueness).
+
+    Each element ID ``TYPE.NN.SS.xxxx`` carries a 4-hex-char SHA256-prefix of
+    its ``{doc_id}:{section_id}:{title}:{description}`` content. A canonical
+    invariant is that any given hash defines **one** element — so the same ID
+    must not be *defined* in two different files (citations via
+    ``@<lower>:`` tags are fine; only standalone definitions count).
+
+    A definition matches one of three shapes:
+      ``- **ID** — …``                        (markdown bullet)
+      ``## ID …`` / ``### ID …`` etc.         (markdown heading)
+      ``  - id: "ID"`` or ``id: ID``          (YAML key)
+    """
+    by_id: dict[str, list[tuple[str, int]]] = {}
+    for rel, text in corpus:
+        for pattern in (_ELEM_DEF_BULLET, _ELEM_DEF_HEADING, _ELEM_DEF_YAML):
+            for m in pattern.finditer(text):
+                eid = m.group(1)
+                line = text[: m.start()].count("\n") + 1
+                by_id.setdefault(eid, []).append((rel, line))
+    findings: list[Finding] = []
+    for eid, locs in by_id.items():
+        if len(locs) > 1:
+            paths = "; ".join(f"{p}:{ln}" for p, ln in locs)
+            for rel, line in locs:
+                findings.append(
+                    Finding(
+                        rel,
+                        line,
+                        "HASH01",
+                        f"element id '{eid}' is defined in {len(locs)} places — each "
+                        f"4-hex hash must identify exactly one element ({paths})",
+                        severity="error",
+                    )
+                )
+    return findings
+
+
 def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]:
     """AS7 — corpus-level: when the same threshold key suffix (the part after
     ``TYPE.NN.``) is referenced in ≥ 2 artifacts with different inline numeric
@@ -554,4 +604,5 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
         _collect(target)
 
     findings.extend(_check_threshold_consistency(corpus))
+    findings.extend(_check_id_uniqueness(corpus))
     return findings
