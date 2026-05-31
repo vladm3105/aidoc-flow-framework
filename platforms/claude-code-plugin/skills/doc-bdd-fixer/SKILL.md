@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -56,6 +56,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Content | placeholders, tags, thresholds | fill template dates; move comment tags to Gherkin-native; add `@scenario-type`/priority/`WITHIN` thresholds; flag `[TODO]`/`[TBD]` and missing Given-When-Then for manual completion |
 | 5 — References | traceability | add missing cumulative `@brd @prd @ears` tags; fix cross-doc paths; add/repair `spec_trace`; update the traceability matrix |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`upstream_mode`; when upstream EARS drifts, apply tiered drift merge (below) |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Scenario blocks at category boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **Element ID re-derivation:** `key = "{doc_id}:{section_id}:{title}:{description}"`;
 ID = `BDD.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on

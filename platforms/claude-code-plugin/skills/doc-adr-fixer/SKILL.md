@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -56,6 +56,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Content | placeholders, missing subsections | fill template dates; default missing status to `Proposed`; normalize subsection headings in place; flag `[TODO]`/`[TBD]` for manual completion |
 | 5 — References | traceability | add missing cumulative tags `@brd @prd @ears @bdd`; add the `@adr: ADR-NN` self-tag and `@depends:` cross-links; update the ADR index |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`status`; apply tiered drift merge against changed upstream (BRD/PRD/EARS/BDD) |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Context / Decision / Consequences sections at the next natural boundary, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **Element ID re-derivation:** `key = "{doc_id}:{section_id}:{title}:{description}"`;
 ID = `ADR.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on

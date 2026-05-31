@@ -9,7 +9,7 @@ metadata:
     artifact_type: CHG
     skill_category: core-workflow
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
 ---
 
@@ -48,7 +48,8 @@ Before writing, read:
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`
 2. **CHG overview:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`
 3. **Index template:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`
-4. **The entry gate** for the change source (see routing below), under
+4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
+5. **The entry gate** for the change source (see routing below), under
    `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`.
 
 Confirm no ID collision: `ls docs/governance/chg/ 2>/dev/null`. Reserve the next

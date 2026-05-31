@@ -10,7 +10,7 @@ metadata:
     artifact_type: CHG
     skill_category: quality-assurance
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
 ---
 
@@ -62,7 +62,8 @@ auto-fixable findings exist, hand off to `doc-chg-fixer`.
 
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`, and the gate definitions under
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`.
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`. Style:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Tier 1 — blocking (error):**
 
@@ -79,6 +80,13 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
 `CHG-EMG-YYYYMMDD-HHMM`; no hierarchical 4-segment IDs); internal links and
 template/gate references resolve; registry entry exists; `supersedes` lists
 valid artifact IDs; verification checks cover each affected layer.
+
+**Authoring-style check (Tier 2 → Tier 1 at threshold).** Verify the CHG
+record complies with `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`:
+no banned phrases, form preferences observed (tables/bullets over prose where
+homogeneous), size targets met within +50% (CHG body ≤ 1500 words). **Promote
+to blocking** when ≥3 banned phrases occur in one section OR the record
+exceeds its size target by >50%.
 
 **Combined status:** `PASS` (gate-ready) only if all Tier 1 checks pass and no
 blocking issues remain; otherwise `FAIL`. There is **no numeric score** — the

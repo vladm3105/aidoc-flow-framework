@@ -10,7 +10,7 @@ metadata:
     artifact_type: CHG
     skill_category: automation-workflow
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
 ---
 
@@ -112,4 +112,5 @@ trigger.
 - Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml`,
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`,
   `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-00_index.TEMPLATE.md`,
-  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`,
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`

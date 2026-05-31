@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -57,6 +57,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 5 — Content | placeholders, thresholds | fill template dates; replace hardcoded numbers with `@threshold:` references; flag `[TODO]`/`[TBD]` for manual completion |
 | 6 — References | traceability | add missing cumulative tags (`@brd @prd @ears @bdd @adr`) and the downstream `@tdd: TDD-NN`; fix upstream paths; update the traceability matrix |
 | 7 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; apply tiered drift merge against upstream ADR/BDD (below) |
+| 8 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Behavior / Interfaces sections at the next contract boundary, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **ID rules:** SPEC is referenced at the **document level** in dash form
 `SPEC-NN` — never a dotted SPEC element ID. Upstream hierarchical refs use the

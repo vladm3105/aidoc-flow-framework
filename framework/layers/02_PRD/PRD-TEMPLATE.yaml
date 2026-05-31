@@ -535,10 +535,10 @@ traceability:
     Do NOT reference specific ADR numbers — ADRs don't exist yet.
     Do NOT use placeholder IDs (TBD, XXX, NNN).
 
-    ADR topic elaboration: PRD Section 14 elaborates BRD Section 8
-    (ADR topics) with technical options for ADR evaluation.
-    BRD identifies WHAT decisions are needed.
-    PRD elaborates HOW to evaluate options.
+    ADR topic specification: PRD Section 14 specifies technical options for
+    each BRD Section 8 (ADR topic) so ADR can evaluate them.
+    BRD names WHAT decisions are needed.
+    PRD specifies HOW to evaluate options.
     ADR records WHICH option was chosen and WHY.
 
   tags:
@@ -556,8 +556,8 @@ traceability:
 
   adr_topic_elaboration:
     _guidance: |
-      Elaborate BRD Section 8 topics with technical options for ADR evaluation.
-      Do NOT reference specific ADR numbers (ADR-01, etc.).
+      Specify technical options for each BRD Section 8 topic so ADR can
+      evaluate them. Do NOT reference specific ADR numbers (ADR-01, etc.).
     topics:
       - topic: "[Topic from BRD Section 8]"
         brd_reference: "@brd: BRD.NN.08.xxxx"

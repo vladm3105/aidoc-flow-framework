@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -56,6 +56,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Content & manifest | placeholders, ordering | fill template dates; reorder manifest to test-first; add missing `status`/`verified` markers; flag `[TODO]`/`[TBD]` for manual completion |
 | 5 — References | traceability | add missing `@spec:`/`@tdd:` upstream tags; complete the cumulative chain (`@brd @prd @ears @bdd @adr @spec @tdd`); add missing `code_inventory` entries |
 | 6 — Upstream | drift | when SPEC/TDD changed since creation, apply tiered drift merge (below) |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized session-handoff narrative at session boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **ID re-derivation:** IPLAN is document-level — always `IPLAN-NN` (dash form),
 never a dotted element ID. Document-level upstreams (`SPEC-NN`, `ADR-NN`) stay

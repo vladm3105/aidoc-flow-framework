@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
     version: "0.2.0"
-    framework_spec_version: "0.9.0"
+    framework_spec_version: "0.9.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -56,6 +56,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Content | placeholders, malformed cases | fill template dates; add missing inputs/expected output/edge cases; set a `type` attribute; repair the BDD→test mapping; flag `[TODO]`/`[TBD]` for manual completion |
 | 5 — References | traceability | add missing `@spec:`/`@bdd:` tags; fix cross-doc paths; update Section 7 traceability and the coverage table |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; when the parent SPEC has changed, apply tiered drift merge (below) |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Test Case sections at type/category boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **Element ID re-derivation:** `ID = TDD.{doc_id}.04.<first 4 hex of
 SHA256(case content)>` (extend to 8 on collision). Test type stays a `type`
