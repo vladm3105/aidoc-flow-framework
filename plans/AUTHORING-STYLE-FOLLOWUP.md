@@ -244,3 +244,67 @@ audit Tier 1 picks them up automatically via the lint shell.
 `sdd_doc_lint` is the implementation centre of gravity: AS3, AS7, AS8, AS10,
 AS11, AS12 are all new passes inside the same tool, all deterministic, all
 shippable in a single PR or sequenced as the priority dictates.
+
+## Explicit non-goals
+
+Two classes of drift are out of scope for **all** AS items above and should
+not be re-proposed as future TODOs. They are recorded here so the boundary
+of "what drift detection can do" is unambiguous.
+
+### NON-GOAL-1 — Pure cross-document semantic drift
+
+Contradictions between artifacts where **no element-ID link exists** to
+follow.
+
+Examples:
+
+- BRD prose says feature X is "P1 critical"; PRD prose treats X as "nice-to-
+  have" — both reference X by name but neither tags the other.
+- EARS quality attribute "≤ 500 ms p99" sits in §4; BDD background says
+  "system must respond instantly" — semantically inconsistent, no shared key.
+- ADR `Context` cites a market constraint that BRD §1 never mentioned.
+
+**Why out of scope.** Detecting this deterministically requires natural-
+language understanding of when two prose passages contradict — there is no
+oracle a linter can consult. The framework's chosen mechanism is the
+**review-team** crew (per-layer persona lenses + synthesizer) plus
+`doc-<layer>-audit` Tier 2 content checks; both are LLM-judgement and
+non-deterministic by design. Do not propose a deterministic detector for
+this class.
+
+**Where the responsibility lands.** Audit Tier 2 content review · review-
+team adversary persona · human review at `pre_merge`.
+
+### NON-GOAL-2 — External-reality drift
+
+The artifact accurately reflects what was written, but the **world has
+moved**.
+
+Examples:
+
+- BRD claims iOS 12 is the lowest supported version; product reality
+  shipped iOS 16 last quarter.
+- PRD KPI target ("MAU > 100 k by Q2") set 18 months ago, never refreshed.
+- ADR cites GCP regional pricing that has changed.
+- Compliance reference (`@regulation: GDPR Art. 32`) when the regulation
+  text has been amended.
+
+**Why out of scope.** Detection requires an oracle outside the corpus —
+production telemetry, the App Store, GCP pricing pages, the EUR-Lex
+gazette. The framework is deliberately self-contained; integrating
+external feeds is a separate platform concern (could live in a future
+Hermes plugin, not in `framework/`).
+
+**Where the responsibility lands.** CHG flow (an external change becomes a
+C1–C3 record that re-validates downstream) · periodic human review · the
+audit `last_audited_spec` staleness signal (see **AS9**) is the closest
+in-framework proxy and intentionally stops at *spec* staleness, not
+*world* staleness.
+
+### How to tell a proposed TODO is a non-goal
+
+If a proposed detector requires either (a) natural-language semantic
+comparison between two un-linked passages, or (b) data the corpus itself
+does not contain, it falls into one of the two non-goals and belongs in
+the CHG / review-team / human-review layers, not in `sdd_doc_lint` or the
+skill checks.
