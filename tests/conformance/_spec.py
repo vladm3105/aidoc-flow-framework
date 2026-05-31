@@ -54,3 +54,35 @@ def platform_framework_spec_version_file(platform: Path) -> Path:
 def framework_version() -> str:
     """Return the bare-SemVer string from ``framework/VERSION``."""
     return (FRAMEWORK / "VERSION").read_text(encoding="utf-8").strip()
+
+
+LAYER_DIR_BY_NAME = {
+    "BRD": FRAMEWORK / "layers" / "01_BRD",
+    "PRD": FRAMEWORK / "layers" / "02_PRD",
+    "EARS": FRAMEWORK / "layers" / "03_EARS",
+    "BDD": FRAMEWORK / "layers" / "04_BDD",
+    "ADR": FRAMEWORK / "layers" / "05_ADR",
+    "SPEC": FRAMEWORK / "layers" / "06_SPEC",
+    "TDD": FRAMEWORK / "layers" / "07_TDD",
+    "IPLAN": FRAMEWORK / "layers" / "08_IPLAN",
+}
+
+
+def layer_root(name: str) -> Path:
+    """Return the framework/layers/NN_<X>/ directory for an artifact name."""
+    return LAYER_DIR_BY_NAME[name]
+
+
+def template_path(name: str) -> Path:
+    """Return the canonical TYPE-TEMPLATE.yaml for an artifact name."""
+    return layer_root(name) / f"{name}-TEMPLATE.yaml"
+
+
+def plugin_bundle_root() -> Path:
+    """Return the claude-code-plugin bundle root."""
+    return PLATFORMS_ROOT / "claude-code-plugin"
+
+
+def skill_dirs() -> list[Path]:
+    """Return sorted list of every SKILL.md-bearing skill directory in the plugin."""
+    return sorted((plugin_bundle_root() / "skills").iterdir())
