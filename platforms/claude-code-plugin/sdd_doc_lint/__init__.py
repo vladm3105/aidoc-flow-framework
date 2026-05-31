@@ -542,6 +542,72 @@ def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
 _DOC_ID_FROM_ELEMENT = re.compile(r"^([A-Z]+)\.([0-9]+)\.")
 
 
+def _framework_version(registry_path: Path) -> str | None:
+    """Read ``framework/VERSION`` co-located with the registry. Returns None
+    if the file isn't readable (so the staleness check no-ops gracefully)."""
+    version_file = registry_path.parent.parent / "VERSION"
+    try:
+        return version_file.read_text(encoding="utf-8").strip()
+    except OSError:
+        return None
+
+
+def _parse_minor(v: str) -> tuple[int, int]:
+    parts = v.strip().split(".")
+    try:
+        return int(parts[0]), int(parts[1])
+    except (ValueError, IndexError):
+        return 0, 0
+
+
+def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | None) -> list[Finding]:
+    """AS9 — staleness detection.
+
+    Approved artifacts must carry a ``last_audited_spec`` frontmatter field
+    naming the ``framework/VERSION`` they were audited against. When that
+    field is missing OR has a smaller major.minor than the current
+    ``framework/VERSION``, the artifact's approval is potentially stale —
+    the spec has grown since the audit. Warning-only; recommends re-audit.
+    """
+    if not framework_version:
+        return []
+    current = _parse_minor(framework_version)
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if not fm:
+            continue
+        status = str(fm.get("status", "")).strip()
+        if status != "Approved":
+            continue
+        raw_last = fm.get("last_audited_spec")
+        if not raw_last:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "STALE01",
+                    f"status=Approved but no last_audited_spec frontmatter field — "
+                    f'add `last_audited_spec: "{framework_version}"` after re-audit',
+                    severity="warning",
+                )
+            )
+            continue
+        last = str(raw_last).strip().strip('"').strip("'")
+        if _parse_minor(last) < current:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "STALE01",
+                    f"last_audited_spec={last} < current framework/VERSION={framework_version}"
+                    f" — re-audit before relying on the Approved status",
+                    severity="warning",
+                )
+            )
+    return findings
+
+
 def _extract_frontmatter(text: str) -> dict | None:
     lines = text.splitlines()
     fm_lines, _ = _split_frontmatter(lines)
@@ -698,4 +764,5 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     findings.extend(_check_threshold_consistency(corpus))
     findings.extend(_check_id_uniqueness(corpus))
     findings.extend(_check_cascade(corpus))
+    findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     return findings
