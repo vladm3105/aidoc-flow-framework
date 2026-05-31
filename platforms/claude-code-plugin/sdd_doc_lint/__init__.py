@@ -112,6 +112,7 @@ class Finding:
     code: str
     message: str
     severity: str = "error"
+    section: str | None = None
 
     def __str__(self) -> str:
         return f"{self.path}:{self.line}: [{self.severity.upper()} {self.code}] {self.message}"
@@ -482,6 +483,8 @@ def lint_text(
     findings.extend(_check_frontmatter_consistency(text, rel))
     # AS10 — @diagram tag level cascade vs DIAGRAM_STANDARDS.md.
     findings.extend(_check_diagram_level(text, artifact, rel))
+    # STRUCT01 — required template sections present.
+    findings.extend(_check_required_template_sections(rel, text, artifact, registry))
     return findings
 
 
@@ -754,6 +757,37 @@ def _check_cascade(corpus: list[tuple[str, str]]) -> list[Finding]:
                     f"{doc_id} brd_type='{child_bt}' ≠ parent {brd_ref} "
                     f"brd_type='{parent['brd_type']}'",
                     severity="error",
+                )
+            )
+    return findings
+
+
+def _check_required_template_sections(
+    rel: str,
+    text: str,
+    artifact: str | None,
+    registry: Path | None,
+) -> list[Finding]:
+    """STRUCT01: every required <TYPE>-TEMPLATE.yaml section must appear as a ## heading."""
+    findings: list[Finding] = []
+    if not artifact:
+        return findings
+    targets = _load_section_targets(artifact, registry)
+    if not targets:
+        return findings
+    _, body = _split_frontmatter(text.splitlines())
+    # _section_word_counts() already returns only ## (level-2) headings.
+    present = {_normalise_heading(h) for h, _start, _wc in _section_word_counts(body)}
+    for key in targets:
+        if key not in present:
+            findings.append(
+                Finding(
+                    code="STRUCT01",
+                    severity="error",
+                    path=rel,
+                    line=1,
+                    section=key,
+                    message=f"missing required section: {key}",
                 )
             )
     return findings
