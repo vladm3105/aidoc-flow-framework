@@ -56,6 +56,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Content | placeholders, missing subsections | fill template dates; normalize MVP subsection headings in place; safe sibling renumbering; flag `[TODO]`/`[TBD]` for manual completion |
 | 5 — References | traceability | add missing `@ref:` tags; fix cross-BRD paths; update the traceability matrix |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`upstream_mode`; when `upstream_mode: "ref"`, apply tiered drift merge (below) |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler (`in order to` → `to`; drop `the fact that`, `it should be noted`, `please note`, `as a matter of fact`); replace flagged superlatives (`amazing`, `seamless`, `cutting-edge`, `state-of-the-art`); collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control ↔ revision-history rows (mirror frontmatter as the source of truth); STY02/03 — auto-split sections > 300 words at the first natural subheading, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **Element ID re-derivation:** `key = "{doc_id}:{section_id}:{title}:{description}"`;
 ID = `BRD.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on

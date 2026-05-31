@@ -59,6 +59,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 4 — Conditional blocks | level-required blocks (CHG-E004) | scaffold `rollback_plan` for C2/C3; `gate_approval` for C3; `emergency_change` for Emergency (`emergency_id`, `incident_severity`, `fix_deployed`, `post_mortem_due` = deploy + 48h) |
 | 5 — Links & registry | references | recompute relative paths; convert absolute → relative; add/update the entry in `CHG-00_index.md`; validate `supersedes` IDs |
 | 6 — IDs & metadata | ID form | normalize to dash `CHG-NN` (or `CHG-EMG-YYYYMMDD-HHMM`); drop any hierarchical 4-segment IDs; fix `change_level`/`change_source` enum values |
+| 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized impact_assessment / rollback_plan blocks at the next list item, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
 **Routing re-derivation:** `entry_gate = f(change_source)` per the README table;
 never invent a gate not in {GATE-01, GATE-03, GATE-06, GATE-08, GATE-CODE,
