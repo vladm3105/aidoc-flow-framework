@@ -40,7 +40,7 @@ Use `doc-prd` when:
 
 - A BRD exists and you need to define product features and user requirements.
 - Translating business needs into product capabilities, personas, and KPIs.
-- Elaborating BRD §7.2 architecture topics into technical options for ADR.
+- Elaborating BRD §8 architecture topics into technical options for ADR.
 
 For end-to-end generation from a BRD, a prompt, or an IPLAN, use
 `../doc-prd-autopilot/SKILL.md`.
@@ -107,7 +107,7 @@ Placeholder-only content is a blocking error.
 
 ### Section 14 — ADR topic elaboration
 
-Elaborate BRD §7.2 topics with **technical options and evaluation criteria**.
+Elaborate BRD §8 topics with **technical options and evaluation criteria**.
 Layer separation: BRD = *what & why* · PRD = *how to evaluate* · ADR = *the
 decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 
@@ -128,7 +128,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 ## Creation Process
 
 1. **Read the parent BRD** — all section files as one document; extract
-   objectives, stakeholders, success criteria, and §7.2 topics.
+   objectives, stakeholders, success criteria, and §8 topics.
 2. **Reserve ID** — next free `PRD-NN` (two digits: `PRD-01`, `PRD-99`,
    `PRD-102`).
 3. **Create the nested folder** — every PRD lives in

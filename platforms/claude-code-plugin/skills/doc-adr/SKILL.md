@@ -39,7 +39,7 @@ them with `@depends: ADR-NN`.
 
 Use `doc-adr` when:
 
-- An architectural topic from BRD §7.2 / PRD §14 needs a recorded decision.
+- An architectural topic from BRD §8 / PRD §14 needs a recorded decision.
 - Choosing a technology, pattern, or integration approach with alternatives.
 - Capturing rationale and consequences for a long-lived architectural choice.
 
@@ -75,20 +75,25 @@ Draft/In Review/Approved. The status tracks the SPEC-Ready score:
 | Deprecated | — | No longer relevant (kept for history) |
 | Superseded | — | Replaced by a newer ADR (link it) |
 
-### Required structure (10 sections)
+### Required structure (10 numbered sections + glossary + appendix backmatter)
 
-`## Document Control` comes **first** (status, date, decision-makers, author,
+`document_control` is **Section 1** (status, date, decision-makers, author,
 `originating_topic` → PRD §14, `brd_reference`, SPEC-Ready score, revision
 history). Then:
 
-1. Context (problem statement, business driver, constraints, technical
-context) · 2. Decision (chosen solution, key components, MVP/next-cycle scope) ·
-3. Alternatives Considered (2–3 options, each with pros/cons, cost, fit;
-rejected options carry a rejection reason) · 4. Consequences (positive
-outcomes, trade-offs/risks with severity, cost estimate) · 5. Architecture
-Flow (diagrams + integration points) · 6. Implementation Assessment (phases,
-rollback, monitoring baseline) · 7. Verification (success criteria, BDD
-cross-refs) · 8. Traceability · 9. Related Decisions · 10. Glossary.
+2. Context (problem statement, business driver, constraints, technical
+context) · 3. Decision (chosen solution, key components, MVP/next-cycle scope) ·
+4. Alternatives Considered (2–3 options, each with pros/cons, cost, fit;
+rejected options carry a rejection reason) · 5. Consequences (positive
+outcomes, trade-offs/risks with severity, cost estimate) · 6. Architecture
+Flow (diagrams + integration points) · 7. Implementation Assessment (phases,
+rollback, monitoring baseline) · 8. Verification (success criteria, BDD
+cross-refs) · 9. Traceability · 10. Related Decisions.
+
+Plus a **Glossary** (`glossary:` key) and **Appendix** (`appendix:` key) as
+required backmatter (unnumbered). Section numbers and identifiers come from
+`ADR-TEMPLATE.yaml`'s own `# Section N:` numbering — **the template is the
+source of truth**.
 
 See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 
@@ -111,14 +116,15 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 ## Creation Process
 
 1. **Confirm the topic** — one decision, traced to its PRD §14 originating
-   topic and BRD §7.2 driver.
+   topic and BRD §8 driver.
 2. **Reserve ID** — next free `ADR-NN` (two digits, expand only as needed:
    `ADR-01`, `ADR-99`, `ADR-102`).
 3. **Create the nested folder** — every ADR lives in
    `docs/05_ADR/ADR-NN_{slug}/`. Monolithic: `ADR-NN_{slug}.md` inside it;
    section-based (>25 KB): `ADR-NN.S_{section}.md` + index from
    `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
-4. **Document Control first**, then complete all 10 sections from the template.
+4. **Document Control (Section 1) first**, then complete §2–§10 plus the
+   glossary and appendix backmatter from the template.
 5. **Evaluate 2–3 alternatives** with cost and fit; give every rejected option
    a rejection reason. State the decision decisively with rationale.
 6. **Add cumulative tags** `@brd @prd @ears @bdd`; add the `@adr: ADR-NN`

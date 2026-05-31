@@ -12,6 +12,28 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- Closed a confabulation hole in the Claude Code plugin's read-time/audit
+  skills: `doc-flow` and every `doc-<layer>-audit` skill now explicitly require
+  the auditor to load the corresponding `*-TEMPLATE.yaml` and enumerate the
+  required sections from it before running the structural check, with a
+  written ban on rationalising drift as a "compact" / "walkthrough" / "lint-
+  pinned" variant. The audit Structure cells now defer to that enumeration
+  instead of hard-coding "all N template sections", which was a brittle parallel
+  source of truth. Also realigned three creation skills with their templates:
+  `doc-brd` (replaced an 18-section list containing phantom sections — User
+  Stories, Implementation Approach, Support & Maintenance, Cost-Benefit, Quality
+  Assurance — with the template's actual 15 numbered sections plus the diagrams
+  registry and appendix backmatter; remapped `§7.2 ADR Requirements` → `§8
+  adr_topics` everywhere it was cross-referenced; dropped stale `§3.6/§3.7`
+  Platform-vs-Feature cross-refs that never existed in the template), `doc-ears`
+  and `doc-adr` (renumbered to count `document_control` as Section 1, matching
+  the template's own `# Section N:` numbering and the PRD-style convention).
+  New conformance test `tests/conformance/platforms/test_skill_template_alignment.py`
+  prevents the drift class from recurring: audit skills must carry the explicit
+  enumeration block and no hard-coded count; creation skills' `Required structure
+  (N sections)` heading must match the template's numbered count; and creation
+  skill section lists must use only template-derived vocabulary (no phantoms).
+  Template is the single source of truth (D-0013).
 - Purged the pre-migration legacy taxonomy from the Hermes prompt templates so
   the creation/review/remediation agents follow the v3.2 source-of-truth naming
   convention (`ucx_flow_v3`). Removed the 10/12-layer `SYS / REQ / CTR / TSPEC /

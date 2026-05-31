@@ -64,8 +64,9 @@ type (Platform vs Feature) from the source content.
 2. **Type & scope** — Platform vs Feature; for a Feature BRD, verify the
    referenced Platform BRD exists; reserve the next `BRD-NN`.
 3. **Generation** — produce the BRD per `../doc-brd/SKILL.md`: Document Control
-   first, all 18 sections, §7.2 across the 7 categories, element IDs
-   `BRD.NN.SS.xxxx`, diagram tags via `../charts-flow/SKILL.md`.
+   (Section 1) first, §3–§15 required sections (toggle §2 Executive Summary per
+   `section_toggles`), diagrams registry, appendix, §8 across the 7 categories,
+   element IDs `BRD.NN.SS.xxxx`, diagram tags via `../charts-flow/SKILL.md`.
 4. **Validation** — run `../doc-brd-audit/SKILL.md` from scratch.
 5. **Audit ↔ fix cycle** — while score < threshold and iterations < max: run
    `../doc-brd-fixer/SKILL.md`, then re-audit. On pass, update

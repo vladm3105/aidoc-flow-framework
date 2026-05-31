@@ -23,7 +23,7 @@ metadata:
 ## Purpose
 
 Automated **ADR generation pipeline**. From an upstream artifact
-(BRD §7.2 / PRD §14 / EARS / BDD), a user prompt, or an implementation plan
+(BRD §8 / PRD §14 / EARS / BDD), a user prompt, or an implementation plan
 (`IPLAN-*`), it analyzes the source, scopes the decision, generates a complete
 Context-Decision-Consequences record, validates readiness, maintains
 `ADR-00_index.md`, and drives the audit↔fix cycle to a passing score — for one
@@ -59,17 +59,17 @@ For each target, check whether the ADR already exists (nested folder
 
 Determine `deliverable_type` (`code`/`document`/`ux`/`risk`/`process`,
 inherited from upstream) and the originating topic (PRD §14, tracing back to
-BRD §7.2) from the source content. One ADR records **one** decision.
+BRD §8) from the source content. One ADR records **one** decision.
 
 ## Workflow
 
 1. **Input analysis** — classify the input (upstream id / prompt / IPLAN),
-   locate the originating topic (PRD §14 → BRD §7.2), and decide generate vs
+   locate the originating topic (PRD §14 → BRD §8), and decide generate vs
    review-and-fix.
 2. **Decision scope** — confirm exactly one decision; reserve the next
    `ADR-NN`; verify the cited upstream artifacts exist.
 3. **Generation** — produce the ADR per `../doc-adr/SKILL.md`: Document Control
-   first (status `Proposed`/`Accepted`), all 10 sections, 2–3 alternatives with
+   first (status `Proposed`/`Accepted`), §2–§10 + glossary + appendix, 2–3 alternatives with
    cost/fit, internal element IDs `ADR.NN.SS.xxxx`, cumulative tags
    `@brd @prd @ears @bdd`, the `@adr: ADR-NN` self-tag, architecture-flow
    diagram via `../charts-flow/SKILL.md`.

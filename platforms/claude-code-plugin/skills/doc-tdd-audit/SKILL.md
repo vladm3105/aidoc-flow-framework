@@ -59,12 +59,21 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/TDD-TEMPLATE.yaml` (embedded rules), and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
+**Template-conformance enumeration (mandatory first step).** Load
+`TDD-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
+key that is not explicitly `required: false`). The Structure check below is
+satisfied **only** when every enumerated required section appears as a `##`
+heading in the artifact. Any missing required section is a **blocking finding**
+— never rationalise it as a "compact" variant, "documented walkthrough",
+"lint-pinned", or any other exception. There is one template per layer and one
+canonical required-section set.
+
 **Tier 1 — blocking (error):**
 
 | Check | Verifies |
 |-------|----------|
 | Element ID format | every test-case ID matches `TDD.NN.04.xxxx` (4-hex hash); no removed patterns |
-| Structure | all 7 template sections present and non-empty |
+| Structure | every section enumerated above is present and non-empty |
 | Test types | each case carries a valid `type` (unit/integration/e2e/security) |
 | BDD mapping | each BDD scenario maps to tests (Section 3) |
 | Cumulative tags | upstream @brd @prd @ears @bdd @adr @spec all present |
