@@ -124,9 +124,7 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] YAML parses; Document Control is the first section.
 - [ ] All 8 sections present and non-empty; format is YAML (not markdown).
@@ -158,12 +156,10 @@ expected outputs, and thresholds for the SPEC contracts.
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

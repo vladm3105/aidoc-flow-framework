@@ -18,15 +18,13 @@ metadata:
 ## Purpose
 
 Author a **Change Management (CHG)** record — the governance overlay for
-modifying existing SDD artifacts. CHG is **NOT a lifecycle layer**: it has no
-layer number, no place in the BRD→IPLAN→Code template chain, and no readiness
-score. It triggers on-demand whenever an existing artifact must change, and it
-uses **gate approval** (not a numeric score) as its quality bar.
+modifying existing SDD artifacts. CHG is **NOT a lifecycle layer**: no layer
+number, no readiness score. Triggered on-demand when an artifact must change;
+quality bar is **gate approval**, not a numeric score.
 
 **Cross-layer scope**: a CHG can touch any artifact along
-`BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code`. Its job is to
-classify the change, route it to the correct gate, trace the cascade, and keep
-the change registry honest.
+`BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code`. Job: classify,
+route to the correct gate, trace the cascade, keep the registry honest.
 
 ## When to Use
 
@@ -100,16 +98,15 @@ Gate definitions live in `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/gates/`
 `GATE-SPEC_FRAMEWORK.md`). Running a gate is the job of `../gate-check/SKILL.md`;
 `doc-chg` only selects the entry gate and records it.
 
-**`Spec` is target-based, not layer-based.** When the change edits the
-`framework/` spec itself, set `change_source: spec`, `entry_gate: GATE-SPEC`, and
-a `semver_impact` (`major` → C3; `minor`/`patch` may be C2 — a spec change is
-never C1). It does **not** cascade into the artifact gates. A change to an
-engine's own authoring guidance or runtime is *not* a spec change — it is an
-ordinary platform PR.
+**`Spec` is target-based, not layer-based.** A change to the `framework/`
+spec itself sets `change_source: spec`, `entry_gate: GATE-SPEC`, and a
+`semver_impact` (`major` → C3; `minor`/`patch` may be C2; spec change is
+never C1). It does **not** cascade into artifact gates. A platform's own
+authoring guidance / runtime is *not* a spec change — ordinary platform PR.
 
 ## Cross-Layer Cascade Assessment
 
-The most common CHG failure is an incomplete impact assessment. Trace the change
+The most common CHG failure is incomplete impact assessment. Trace the change
 along the chain:
 
 ```
@@ -122,10 +119,10 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
   root cause (the defect may live in TDD, SPEC, ADR, or higher).
 - **Midstream** changes are **lateral** (EARS↔BDD↔ADR) plus downstream.
 
-For every affected artifact, record it in `impact_assessment.affected_layers`
-with the artifact ID, what changes, and the `cascade_direction`. Avoid the
-template's listed anti-patterns (e.g. changing SPEC without checking upstream
-ADR/BDD, or changing BRD without cascading the full chain).
+For every affected artifact, record in `impact_assessment.affected_layers`:
+artifact ID, what changes, `cascade_direction`. Avoid the template's listed
+anti-patterns (e.g. SPEC change without checking upstream ADR/BDD; BRD change
+without cascading the full chain).
 
 ## Creation Process
 
@@ -147,9 +144,7 @@ ADR/BDD, or changing BRD without cascading the full chain).
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`.
 
 - [ ] `change_level` is one of C1/C2/C3/Emergency and matches the actual scope.
 - [ ] `change_source` set and `entry_gate` matches the routing table.

@@ -22,18 +22,15 @@ metadata:
 ## Purpose
 
 Create a **Test-Driven Development guide (TDD)** — Layer 7 of the SDD flow.
-A TDD defines test cases that validate the SPEC component contract: it maps BDD
-acceptance scenarios to concrete tests (inputs, expected outputs, edge cases),
-sets per-type quality thresholds, and declares the Red → Green → Refactor
-execution order. It subsumes what were once separate unit/integration/
-functional/perf/security test artifacts — those are now `type` attributes on
-test cases inside a single TDD.
+A TDD defines test cases validating the SPEC component contract: maps BDD
+scenarios to concrete tests (inputs, expected outputs, edge cases), sets
+per-type quality thresholds, declares Red → Green → Refactor order. Test type
+(unit / integration / functional / perf / security) is a `type` attribute on
+each case — no separate artifacts.
 
-**Layer**: 7 — after SPEC (the component contract), before IPLAN.
-**Downstream**: IPLAN (Layer 8) → Code; IPLAN enforces test-first file order.
+**Layer**: 7 (after SPEC, before IPLAN). **Downstream**: IPLAN → Code.
 
-One TDD document per SPEC component — same granularity as SPEC for minimal
-maintenance.
+One TDD per SPEC component.
 
 ## When to Use
 
@@ -144,9 +141,7 @@ files are generated **before** implementation files.
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control complete; all 7 sections present and non-empty.
 - [ ] Test pyramid set; BDD→test mapping complete (Section 3).
@@ -158,14 +153,9 @@ checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/07_TDD/README.md` and
 - [ ] Cumulative tags @brd through @spec plus @tdd self-tag; parent SPEC exists.
 - [ ] Index updated; no broken links. Diagrams via `../charts-flow/SKILL.md`.
 
-| Code | Meaning | Severity |
-|------|---------|----------|
-| XDOC-006 | Tag format invalid | error |
-| XDOC-008 | Broken internal link | error |
-| XDOC-009 | Missing traceability section | error |
+**Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.
 
-**Quality gate (blocking):** IPLAN-Ready score ≥ 90/100 before moving on. If
-issues are found, fix and re-check; if unfixable, log for manual review.
+**Quality gate (blocking):** IPLAN-Ready score ≥ 90/100 before moving on.
 
 ## Next Skill
 
@@ -175,12 +165,10 @@ files before implementation files.
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

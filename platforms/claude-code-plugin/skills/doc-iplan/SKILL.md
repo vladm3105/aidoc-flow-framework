@@ -21,19 +21,16 @@ metadata:
 
 ## Purpose
 
-Create an **Implementation Plan (IPLAN)** — Layer 8 of the SDD flow, the
-mandatory execution bridge from SPEC and TDD to source code. An IPLAN declares
-the file creation order (test-first, inherited from TDD), provides executable
-bash commands, tracks session progress across stateless executor calls, and
-keeps an audit trail from specification to delivered files.
+Create an **Implementation Plan (IPLAN)** — Layer 8 of the SDD flow. An IPLAN
+bridges SPEC + TDD to source code: declares test-first file order (inherited
+from TDD), executable bash commands, session progress for stateless executors,
+and an audit trail from spec to delivered files.
 
-**Layer**: 8 — the final documentation layer; downstream is Code, not another
-doc layer.
+**Layer**: 8 (final doc layer; downstream is Code).
 **Upstream**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD.
 
-Each IPLAN implements **one SPEC component** (one IPLAN per SPEC, normally
-matching the TDD that derives from it). Bugfixes and corrections that introduce
-no new functionality use a temporary plan in `docs/08_IPLAN/tmp/` instead.
+One IPLAN per SPEC component (matching its TDD). Bugfixes with no new
+functionality use a temporary plan in `docs/08_IPLAN/tmp/` instead.
 
 ## When to Use
 
@@ -140,9 +137,7 @@ completed work → 5) update file status → 6) append a session with a
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] `metadata.layer: 8`, `document_type: iplan-document`.
 - [ ] Document Control complete (`iplan_id`, `source_spec`, status, dates).
@@ -157,11 +152,7 @@ checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md` an
 - [ ] `code_inventory` ready to record created/modified files.
 - [ ] Permanent plan registered in `IPLAN-00_index.yaml`; temporary under `tmp/`.
 
-| Code | Meaning | Severity |
-|------|---------|----------|
-| XDOC-006 | Tag format invalid | error |
-| XDOC-008 | Broken internal link | error |
-| XDOC-009 | Missing traceability section | error |
+**Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.
 
 **Quality gate (blocking):** CODE-Ready score ≥ 90/100 with 0 Tier-1 errors
 before implementation begins. If issues are found, fix and re-check; if
@@ -170,18 +161,15 @@ unfixable, log for manual review.
 ## Next Skill
 
 IPLAN is the last documentation layer. Proceed to **Code**: execute the file
-manifest test-first, updating each file's `status`/`verified`, the
-`session_handoff` sessions, and the `code_inventory` as you go — so any later
-stateless session can resume exactly where the previous one stopped.
+manifest test-first, updating `status`/`verified`, `session_handoff`, and
+`code_inventory` so any later stateless session can resume.
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
@@ -201,6 +189,6 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 | **Upstream tags** | `@brd @prd @ears @bdd @adr @spec @tdd` |
 | **Key decision** | Permanent vs Temporary |
 | **Document ID** | `IPLAN-NN` (dash form; no dotted element ID) |
-| **Six sections** | Document Control · File Manifest · Execution Commands · Implementation Contracts · Session Handoff · Traceability |
+| **Six sections** | doc_control · file_manifest · execution_commands · implementation_contracts · session_handoff · traceability |
 | **Handoff markers** | NOT_STARTED · IN_PROGRESS · DONE · PARTIAL |
 | **Next** | Code (implementation) |
