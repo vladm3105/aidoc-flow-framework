@@ -48,6 +48,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.9.1 → 0.10.0** (minor) — AUTHORING-STYLE follow-up
+  AS2: every section in every layer template (8 × ~10 sections = 76
+  sections) gains a `_size_target` key with an explicit per-section word
+  count drawn from AUTHORING_STYLE.md tiers (100 / 200 / 300 / 500 / 800
+  per section purpose). `sdd_doc_lint` STY02 now reads this per-section
+  target via heading-to-key normalisation (with `_BLOCKING_FACTOR = 1.5`
+  applied) instead of the flat 200-word default; behaviour identical for
+  sections without a `_size_target` key. Both `FRAMEWORK_SPEC_VERSION`
+  files (Hermes + plugin) and the 50 plugin skills' `framework_spec_version`
+  re-synced to 0.10.0.
 - Framework spec **0.9.0 → 0.9.1** (patch) — AUTHORING-STYLE follow-up AS6:
   PRD-TEMPLATE.yaml `_guidance` blocks normalised to imperative voice
   ("Specify" replaces "Elaborate" in three places). No spec semantics

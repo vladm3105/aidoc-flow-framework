@@ -168,6 +168,7 @@ metadata:
 # =============================================================================
 
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Provide project identification and document tracking information.
     PRD-Ready Score: >=90/100 required before downstream PRD generation.
@@ -201,6 +202,7 @@ document_control:
 # =============================================================================
 
 executive_summary:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   required: false
   _guidance: |
     OPTIONAL — derived section. Can be generated on demand by an AI assistant
@@ -233,6 +235,7 @@ executive_summary:
 # Diagrams Registry
 # =============================================================================
 diagrams:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   id: "{doc_type}.{doc_id}.xxxx"
   directory: "diagrams/"
   format: "SVG rendered from Mermaid sources (.mmd)"
@@ -260,6 +263,7 @@ diagrams:
 # =============================================================================
 
 introduction:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Provide business context and document scope.
     Keep concise — detailed requirements belong in later sections.
@@ -290,6 +294,7 @@ introduction:
 # =============================================================================
 
 business_objectives:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define the core hypothesis, problem statement, goals, measurable success
     metrics, and cost-benefit estimate. This is the heart of the BRD.
@@ -365,6 +370,7 @@ business_objectives:
 # =============================================================================
 
 project_scope:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define minimum feature set to deliver value and validate hypothesis.
     Be explicit about included vs deferred features.
@@ -432,6 +438,7 @@ project_scope:
 # =============================================================================
 
 stakeholders:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     MVP focuses on minimal approval chain. Expand in subsequent cycles.
     Detailed stakeholder analysis and communication plans belong in PRD.
@@ -460,6 +467,7 @@ stakeholders:
 # =============================================================================
 
 functional_requirements:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Business-level capabilities, NOT technical implementation details.
     Aim for 5-15 requirements total per MVP cycle.
@@ -595,6 +603,7 @@ functional_requirements:
 # =============================================================================
 
 adr_topics:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Identify decisions needed — BRD does NOT resolve them.
     ADR (Layer 5) owns the actual decisions.
@@ -690,6 +699,7 @@ adr_topics:
 # =============================================================================
 
 quality_expectations:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     State business-level quality expectations as categorized statements.
     SPEC (Layer 6) owns the detailed metrics, IDs, and validation methods.
@@ -723,6 +733,7 @@ quality_expectations:
 # =============================================================================
 
 constraints_and_assumptions:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   constraints:
     items:
       - id: "BRD.NN.10.xxxx"
@@ -758,6 +769,7 @@ constraints_and_assumptions:
 # =============================================================================
 
 acceptance_criteria:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Launch gates and post-launch decision criteria.
     Per-requirement acceptance criteria live in Section 7 (functional requirements).
@@ -792,6 +804,7 @@ acceptance_criteria:
 # =============================================================================
 
 risk_management:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     MVP accepts higher risk tolerance than full product.
     Focus on critical user experience and data security risks only.
@@ -821,6 +834,7 @@ risk_management:
 # =============================================================================
 
 approval:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Minimal approval chain for MVP. Governance process details belong in project management artifacts."
 
   approvers:
@@ -853,6 +867,7 @@ approval:
 # =============================================================================
 
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Do NOT create numeric downstream references until artifacts exist.
     Use placeholders. Test coverage traceability belongs in TDD (Layer 7).
@@ -905,6 +920,7 @@ traceability:
 # =============================================================================
 
 glossary:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "Flat list of project-specific terms. Keep concise."
 
   terms:
@@ -922,6 +938,7 @@ glossary:
 # =============================================================================
 
 appendix:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   lifecycle:
     _guidance: |
       Each BRD represents ONE iteration cycle: MVP → PROD → NEW MVP.

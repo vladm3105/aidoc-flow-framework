@@ -67,6 +67,7 @@ _antipatterns:
 # Section 1: Document Control
 # =============================================================================
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   status: Draft
   version: "1.0"
   date_created: "YYYY-MM-DDTHH:MM:SS"
@@ -79,6 +80,7 @@ document_control:
 # Section 2: Component Overview
 # =============================================================================
 component_overview:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     One paragraph describing what this component does and its role
     in the system architecture (from ADR decisions).
@@ -101,6 +103,7 @@ component_overview:
 # Section 3: Interfaces
 # =============================================================================
 interfaces:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define the public API of this component: classes, functions, method signatures.
     Use type annotations. No implementation — this is the contract.
@@ -118,6 +121,7 @@ interfaces:
 # Section 4: Data Models
 # =============================================================================
 data_models:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define data structures passed through component interfaces.
     Use typed field definitions, not SQL/ORM.
@@ -134,6 +138,7 @@ data_models:
 # Section 5: Behavior
 # =============================================================================
 behavior:
+  _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Describe component logic: validation rules, state transitions,
     business rules inherited from EARS/BDD. No implementation code —
@@ -155,6 +160,7 @@ behavior:
 # Section 6: Implementation Notes
 # =============================================================================
 implementation_notes:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Constraints, patterns, and considerations for implementation.
     NOT implementation code — guidance for the AI/coder.
@@ -169,6 +175,7 @@ implementation_notes:
 # Section 7: Downstream TDD Contracts
 # =============================================================================
 tdd_contracts:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Reference the TDD document that will define test cases for this SPEC component.
     TDD (Layer 7) defines test inputs, expected outputs, edge cases, and thresholds.
@@ -185,6 +192,7 @@ tdd_contracts:
 # Section 8: Traceability
 # =============================================================================
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   tags:
     - "@spec: SPEC-NN"
   upstream:

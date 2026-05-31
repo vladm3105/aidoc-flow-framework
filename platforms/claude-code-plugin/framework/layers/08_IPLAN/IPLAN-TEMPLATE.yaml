@@ -37,6 +37,7 @@ metadata:
 # Section 1: Document Control
 # =============================================================================
 document_control:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: "One IPLAN per TDD component. Created when TDD reaches IPLAN-Ready >=90/100."
   iplan_id: "IPLAN-NN"
   source_spec: "@spec: SPEC-NN"
@@ -53,6 +54,7 @@ document_control:
 # Section 2: File Manifest
 # =============================================================================
 file_manifest:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
@@ -78,6 +80,7 @@ file_manifest:
 # Section 3: Execution Commands
 # =============================================================================
 execution_commands:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Runnable bash commands. The actual bridge from specification to code.
     Three categories matching the implementation workflow.
@@ -97,6 +100,7 @@ execution_commands:
 # Section 4: Implementation Contracts
 # =============================================================================
 implementation_contracts:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Optional. Required when 3+ files depend on shared interfaces.
     Contract types: Protocol Interface, Exception Hierarchy, State Machine,
@@ -114,6 +118,7 @@ implementation_contracts:
 # Section 5: Session Handoff
 # =============================================================================
 session_handoff:
+  _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Critical for stateless executor calls. Each AI agent session is
     independent — no memory across invocations. This section is the bridge.
@@ -148,6 +153,7 @@ session_handoff:
 # Section 6: Traceability
 # =============================================================================
 traceability:
+  _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   upstream:
     spec_references:
       - "@spec: SPEC-NN"
