@@ -22,17 +22,14 @@ metadata:
 ## Purpose
 
 Create a **Product Requirements Document (PRD)** — Layer 2 of the SDD flow.
-A PRD defines product features, user personas, success metrics, and acceptance
-criteria at the **C4 Container** level — what the product does, not how it is
-built.
+A PRD defines product features, personas, success metrics, and acceptance
+criteria at the **C4 Container** level (what the product does, not how).
 
-**Layer**: 2 — Container level (product features and functional blocks).
-**Upstream**: BRD (Layer 1).
+**Layer**: 2 (Container level). **Upstream**: BRD.
 **Downstream**: EARS → BDD → ADR → SPEC → TDD → IPLAN → Code.
 
-Each PRD corresponds to **one BRD iteration cycle** (MVP → PROD → new MVP). New
-scope gets a new PRD (PRD-02, PRD-03) rather than expanding an existing one;
-link cycles with `@depends: PRD-NN`.
+One PRD per BRD iteration cycle (MVP → PROD → new MVP). New scope gets a new
+PRD; link cycles with `@depends: PRD-NN`.
 
 ## When to Use
 
@@ -146,9 +143,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section, with `@brd:` reference and
       EARS-Ready score.
@@ -181,12 +176,10 @@ carries cumulative `@brd`/`@prd` tags, and formalizes PRD features into
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

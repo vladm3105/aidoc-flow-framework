@@ -137,9 +137,7 @@ This is the req-to-SPEC bridge that downstream layers consume.
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section; all 5 sections present and non-empty.
 - [ ] Cumulative tags `@brd @prd @ears` present, Gherkin-native, no spaces after
@@ -154,11 +152,7 @@ checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and
 - [ ] Diagram contract: sequence-diagram tag present if a scenario flow is
       illustrated (use `../charts-flow/SKILL.md`).
 
-| Code | Meaning | Severity |
-|------|---------|----------|
-| XDOC-006 | Tag format invalid | error |
-| XDOC-008 | Broken internal link | error |
-| XDOC-009 | Missing traceability section | error |
+**Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.
 
 **Quality gate (blocking):** ADR-Ready score ≥ 90/100 before moving on. If
 issues are found, fix and re-check; if unfixable, log for manual review.
@@ -172,12 +166,10 @@ each decision.
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 

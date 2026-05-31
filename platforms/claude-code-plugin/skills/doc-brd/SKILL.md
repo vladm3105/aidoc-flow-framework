@@ -22,15 +22,14 @@ metadata:
 ## Purpose
 
 Create a **Business Requirements Document (BRD)** — Layer 1 of the SDD flow.
-A BRD captures business objectives, stakeholder needs, scope, and success
-criteria in business language, before any product or technical detail.
+A BRD captures business objectives, stakeholders, scope, and success criteria
+in business language, before any product or technical detail.
 
-**Layer**: 1 — entry point, no upstream artifacts.
+**Layer**: 1 (entry point, no upstream).
 **Downstream**: PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code.
 
-Each BRD represents **one MVP iteration** (5–15 focused requirements). New
-features get a new BRD rather than expanding an existing one; link cycles with
-`@depends: BRD-NN`.
+One BRD = one MVP iteration (5–15 focused requirements). New features get a
+new BRD; link cycles with `@depends: BRD-NN`.
 
 ## When to Use
 
@@ -54,8 +53,8 @@ writing, read:
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
-Confirm no ID collision: `ls docs/01_BRD/ 2>/dev/null`. Never invent
-placeholders like `BRD-XXX` or reference documents that do not yet exist.
+Confirm no ID collision: `ls docs/01_BRD/`. Never invent placeholders like
+`BRD-XXX` or reference non-existent documents.
 
 ## Layer Guidance
 
@@ -120,13 +119,10 @@ BRD §8 = *what & why & how much*; PRD = *how to evaluate*; ADR = *the decision*
 
 ### Element IDs and tags
 
-- Hierarchical element IDs: `BRD.{doc_id}.{section_id}.{hash}` (e.g.
-  `BRD.01.07.a7f3`; `hash` = first 4 hex of SHA256 of
-  `"{doc_id}:{section_id}:{title}:{description}"`, extend to 8 on collision).
-- BRD is Layer 1, so it carries **no `@` upstream tags**. Downstream artifacts
-  tag it: `@brd: BRD.01.06.a7f3`.
-- **Removed patterns** (do not use): `AC-XXX`, `FR-XXX`, `BO-XXX`, `BC-XXX`,
-  and the legacy 3-segment `BRD.NN.xxxx`.
+- Element IDs: `BRD.{doc_id}.{section_id}.{hash}` — hash = first 4 hex of
+  SHA256(`{doc_id}:{section_id}:{title}:{description}`), extend to 8 on collision.
+- Layer 1 carries **no `@` upstream tags**; downstream tags it (`@brd: BRD.01.06.a7f3`).
+- **Removed patterns**: `AC-XXX`, `FR-XXX`, `BO-XXX`, `BC-XXX`, legacy 3-segment `BRD.NN.xxxx`.
 
 ### Upstream source configuration
 
@@ -153,9 +149,7 @@ Most BRDs are authored from stakeholder input — keep the default
 
 ## Validation
 
-The framework ships no runtime code — **this skill is the validator**. Apply the
-checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md` and
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
+**This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control (Section 1) is the first section.
 - [ ] All required template sections present and non-empty: §1, §3–§15, plus
@@ -168,18 +162,12 @@ checklist against `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md` and
       `../charts-flow/SKILL.md`); add a sequence tag if a sequence diagram
       exists.
 
-| Code | Meaning | Severity |
-|------|---------|----------|
-| XDOC-006 | Tag format invalid | error |
-| XDOC-008 | Broken internal link | error |
-| XDOC-009 | Missing traceability section | error |
+**Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.
 
-**Quality gate (blocking):** PRD-Ready score ≥ 90/100 before moving on. If
-issues are found, fix and re-check; if unfixable, log for manual review.
+**Quality gate (blocking):** PRD-Ready score ≥ 90/100 before moving on.
 
-> **BRD-REF documents** (`BRD-REF-NNN_{slug}.md`, via `../doc-ref/SKILL.md`) are
-> free-format reference targets — exempt from ready-scores, cumulative tags, and
-> quality gates.
+> **BRD-REF documents** (via `../doc-ref/SKILL.md`) are free-format references
+> — exempt from ready-scores, cumulative tags, and quality gates.
 
 ## Next Skill
 
@@ -188,12 +176,10 @@ defines product features and KPIs, and inherits the §8 architecture topics.
 
 ## Adaptation
 
-Before applying defaults, read the project adaptation profile
-(`.aidoc/profile.yaml`). Honor only this skill's declared knobs:
-`section_toggles` (include or omit template-declared **optional** sections)
-and `glossary` (substitute preferred terms in generated prose). Ignore any
-unknown or out-of-surface key; absent a profile, use framework defaults.
-Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
+Read `.aidoc/profile.yaml`; honor only this skill's knobs
+(`section_toggles`, `glossary`). Ignore unknown keys; absent a profile, use
+framework defaults. Authority:
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
 
