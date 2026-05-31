@@ -48,6 +48,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.8.1 → 0.9.0** (minor) — additive governance change:
+  adds principle 7 ("token-efficient authoring") to `DOC_GOVERNANCE_CORE.md`
+  and the new `AUTHORING_STYLE.md` governance doc. Both
+  `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 50 plugin skills'
+  `framework_spec_version` re-synced to 0.9.0.
 - Framework spec **0.8.0 → 0.8.1** (patch) — AUDIT-FIXUPS WS-A: the ADR (L5)
   template now **requires** a decision/interaction `sequenceDiagram` (carrying its
   intent header + `@diagram: sequence-*` tag), with `flowchart` demoted to an
