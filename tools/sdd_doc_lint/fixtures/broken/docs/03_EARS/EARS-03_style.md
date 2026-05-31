@@ -13,8 +13,13 @@ It should be noted that the cutting-edge architecture is amazing and seamless.
 You'll be able to log in simply by tapping the icon — the fact that authentication
 is easily achieved is a state-of-the-art outcome.
 
-EARS.03.03.a7f4 — Event-driven:
-WHEN a user submits credentials, THE system SHALL establish a session WITHIN 200ms.
+EARS.03.03.a7f4 — Session establishment under 200ms.
+Tracked as @threshold: EARS.03.perf.sessionEstablishMs
+@brd: BRD.01.07.a7f3 | @prd: PRD.01.09.1dbc
+
+EARS.03.03.b1c2 — Drift case (same suffix, conflicting value):
+Session establishment under 800ms.
+Tracked as @threshold: BRD.01.perf.sessionEstablishMs
 @brd: BRD.01.07.a7f3 | @prd: PRD.01.09.1dbc
 
 ## Quality Attributes

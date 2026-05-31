@@ -325,14 +325,73 @@ def lint_file(path: Path, layers, doc_re, elem_re) -> list[Finding]:
     return lint_text(path.read_text(encoding="utf-8"), artifact, rel, layers, doc_re, elem_re)
 
 
+_THRESHOLD_PARSED = re.compile(r"@threshold:\s*([A-Z]+)\.([0-9]+)\.([A-Za-z0-9_.]+)")
+_THRESHOLD_VALUE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|s|min|h|%|MB|GB|KB|req/s|rpm)\b")
+
+
+def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """AS7 — corpus-level: when the same threshold key suffix (the part after
+    ``TYPE.NN.``) is referenced in ≥ 2 artifacts with different inline numeric
+    values, flag drift. Values are read from the same line as the
+    ``@threshold:`` reference or the previous line (the canonical "X under N
+    ms\\nTracked as @threshold: …" pattern). Warning-only; deterministic.
+    """
+    by_suffix: dict[str, dict[str, list[tuple[str, int]]]] = {}
+    for rel, text in corpus:
+        lines = text.splitlines()
+        for i, line in enumerate(lines, 1):
+            m = _THRESHOLD_PARSED.search(line)
+            if not m:
+                continue
+            suffix = m.group(3)
+            ctx_prev = lines[i - 2] if i >= 2 else ""
+            ctx = ctx_prev + " " + line
+            vm = _THRESHOLD_VALUE.search(ctx)
+            if vm:
+                value = f"{vm.group(1)} {vm.group(2)}"
+                by_suffix.setdefault(suffix, {}).setdefault(value, []).append((rel, i))
+    findings: list[Finding] = []
+    for suffix, values in by_suffix.items():
+        if len(values) > 1:
+            sample = ", ".join(sorted(values.keys()))
+            for value, locs in values.items():
+                for rel, line in locs:
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "TH02",
+                            f"threshold suffix '{suffix}' = {value} here; corpus has [{sample}]",
+                            severity="warning",
+                        )
+                    )
+    return findings
+
+
 def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     """Lint a file or recurse a directory; returns all findings."""
     layers, doc_re, elem_re = _load_registry(registry)
     findings: list[Finding] = []
+    corpus: list[tuple[str, str]] = []  # (rel_path, text) — for corpus-level passes
+
+    def _collect(p: Path):
+        artifact = detect_layer(p, layers)
+        if artifact is None:
+            return
+        try:
+            rel = p.resolve().relative_to(Path.cwd().resolve()).as_posix()
+        except ValueError:
+            rel = p.as_posix()
+        text = p.read_text(encoding="utf-8")
+        corpus.append((rel, text))
+        findings.extend(lint_text(text, artifact, rel, layers, doc_re, elem_re))
+
     if target.is_dir():
         for p in sorted(target.rglob("*")):
             if p.is_file() and p.suffix.lower() in (".md", ".yaml", ".yml"):
-                findings.extend(lint_file(p, layers, doc_re, elem_re))
+                _collect(p)
     elif target.is_file():
-        findings.extend(lint_file(target, layers, doc_re, elem_re))
+        _collect(target)
+
+    findings.extend(_check_threshold_consistency(corpus))
     return findings
