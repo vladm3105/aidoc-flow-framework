@@ -106,14 +106,141 @@ size targets.
 Acceptance: no template `_guidance` block exceeds 5 sentences; no `_guidance`
 contains a banned phrase from `AUTHORING_STYLE.md`.
 
+## Document drift-detection gaps
+
+Surfaced during a follow-on review of the framework's document drift detection
+posture. Each item below is a gap where document-side drift can slip past the
+current five-layer defense (authoring skill → audit skill → `doc-flow` →
+`sdd_doc_lint` → conformance tests). Scope shifts here from authoring style
+to drift detection broadly; items kept in this plan to avoid scattering.
+
+### TODO-AS7 — `@threshold:` cross-layer value consistency
+
+Threshold values appear in multiple layers (EARS quality attributes → BDD
+scenarios → SPEC behavior → TDD test thresholds). The same `@threshold:` key
+should resolve to the same numeric value everywhere it is cited. Today this
+is enforced only by `doc-<layer>-audit` Tier 2 prose ("thresholds consistent
+across sections and with the BRD source") — LLM judgement, not deterministic,
+and silently misses cross-layer inconsistencies.
+
+Suggested approach: extend `tools/sdd_doc_lint/` with a `thresholds` pass —
+walk every artifact, collect `@threshold: TYPE.NN.{category}.{key}` declarations
+and resolutions, fail when one key resolves to ≥ 2 distinct numeric values
+across the corpus, or when a numeric value appears inline in prose without a
+matching `@threshold:` key (the "duplicated inline" case in
+`THRESHOLD_NAMING_RULES.md`).
+
+Acceptance: `python3 -m sdd_doc_lint --thresholds <docs/>` reports per-key
+value tables and flags every cross-layer mismatch; wired into the existing
+`doc-review.yml` CI as a blocking check.
+
+### TODO-AS8 — Frontmatter ↔ Document Control ↔ revision-history consistency
+
+Every artifact carries three parallel statements of status/version/dates:
+YAML frontmatter, the Document Control table, and the revision-history block.
+They drift trivially (frontmatter says `Approved`, table says `Draft`;
+frontmatter `version: 1.0.0`, latest revision-history row `1.1.0`).
+Detectable deterministically.
+
+Suggested approach: extend `sdd_doc_lint` with a `frontmatter-consistency`
+pass — parse the three sources, fail on any mismatch. Specifically: frontmatter
+`status`/`version`/`last_updated` must match the Document Control table row;
+Document Control `Version` must match the most recent revision-history
+`Version` cell.
+
+Acceptance: structural lint catches frontmatter↔body drift; existing audit
+skills' Tier 2 "frontmatter metadata" check is upgraded from advisory to
+blocking-via-lint.
+
+### TODO-AS9 — Staleness detection (last-audited + template-version-at-audit)
+
+Audit reports (`<TYPE>-NN.A_audit_report_v*.md`) are generated against the
+*current* template, but artifacts can carry an `Approved` status from an audit
+run six months ago against a template that has since grown sections.
+`doc-flow` cannot tell the artifact is "approved against an older spec." No
+deterministic check exists.
+
+Suggested approach: have each audit report record the
+`framework_spec_version` and template hash it ran against; have the artifact's
+frontmatter carry a `last_audited_spec: 0.8.1` field; `doc-flow` and a new
+conformance lint pass flag `Approved` artifacts whose `last_audited_spec` is
+older than the current `framework/VERSION` minor — recommending a re-audit.
+
+Acceptance: artifacts approved under an older framework spec surface as a
+"re-audit due" finding; CHG flow recognises template-version drift as a C2
+trigger (re-validates against newer spec).
+
+### TODO-AS10 — `@diagram:` asset existence + per-layer level cascade
+
+Templates declare diagram contracts (`@diagram: c4-l1` for BRD,
+`@diagram: c4-l2` for PRD, etc., per `DIAGRAM_STANDARDS.md`). Two failure
+modes are currently undetected: the diagram tag is present but no diagram
+file exists in the artifact's `diagrams/` directory; the diagram level is
+wrong for the layer (e.g., `@diagram: c4-l2` in a BRD).
+
+Suggested approach: extend `sdd_doc_lint` with a `diagrams` pass — collect
+every `@diagram:` tag, resolve the expected `diagrams/` path, fail when the
+file is missing; cross-check the level against the layer (BRD = L1, PRD = L2,
+SPEC = L3) per `DIAGRAM_STANDARDS.md`'s per-layer map.
+
+Acceptance: missing or mis-levelled diagram tags surface as blocking lint
+findings; audit Tier 2 diagram check is upgraded.
+
+### TODO-AS11 — Element-ID hash integrity
+
+Element IDs use a 4-hex hash of `"{doc_id}:{section_id}:{title}:{description}"`
+(per `ID_NAMING_STANDARDS.md`). If a section title or description is edited
+without recomputing the hash, the existing ID becomes stale — downstream
+references still resolve syntactically but no longer match the canonical hash
+that should be computed from the current content. Today undetected.
+
+Suggested approach: `sdd_doc_lint --hashes` pass — for every element ID,
+recompute the SHA256 prefix from current `{doc_id}:{section_id}:{title}:
+{description}` and verify it matches the ID's hash segment. Mismatch =
+finding (either fix the ID or restore the content).
+
+Acceptance: stale-hash IDs surface as findings with the expected vs actual
+hash and a one-line `action_hint` ("rename ID to TYPE.NN.SS.<newhash>"); fixer
+skills auto-apply when confidence = `auto-safe`.
+
+### TODO-AS12 — `deliverable_type` / `brd_type` cascade enforcement
+
+`BRD.deliverable_type` (`code` / `document` / `ux` / `risk` / `process`)
+cascades to every downstream artifact unchanged (per template guidance), as
+does `brd_type` (`platform` / `feature`). Today the audit skills cite "must
+match upstream" in prose but no deterministic check verifies it across the
+chain.
+
+Suggested approach: `sdd_doc_lint --cascade` pass — walk the
+`@brd → @prd → @ears → @bdd → @adr → @spec → @tdd → @iplan` chain for each
+artifact, verify `deliverable_type` and (where applicable) `brd_type` are
+identical to the parent BRD's values. Fail on divergence.
+
+Acceptance: cascade mismatches surface as blocking lint findings; PRD/ADR/etc.
+audit Tier 1 picks them up automatically via the lint shell.
+
 ## Priority order
 
 1. **TODO-AS3** — automated linter (highest leverage; catches violations
    deterministically across the whole corpus on every commit)
-2. **TODO-AS5** — CHG extension (closes the symmetry gap)
-3. **TODO-AS2** — per-section `_size_target` (gives the linter and audit
+2. **TODO-AS7** — threshold cross-layer consistency (also a linter pass;
+   bundles cleanly with AS3's authoring-style pass)
+3. **TODO-AS8** — frontmatter ↔ body consistency (linter pass; one of the
+   highest false-confidence bug classes today)
+4. **TODO-AS5** — CHG extension (closes the symmetry gap)
+5. **TODO-AS9** — staleness detection (requires audit-report metadata
+   capture; coordinates with AS5)
+6. **TODO-AS2** — per-section `_size_target` (gives the linter and audit
    precise per-section bounds)
-4. **TODO-AS6** — template `_guidance` tightening
-5. **TODO-AS4** — auto-fix for style violations
-6. **TODO-AS1** — skill-body retrofit (lowest urgency; current skills are
-   already reasonable)
+7. **TODO-AS10** — `@diagram:` asset + level cascade (linter pass)
+8. **TODO-AS11** — element-ID hash integrity (linter pass; relatively rare
+   but a correctness invariant)
+9. **TODO-AS12** — `deliverable_type` / `brd_type` cascade (linter pass)
+10. **TODO-AS6** — template `_guidance` tightening
+11. **TODO-AS4** — auto-fix for style violations
+12. **TODO-AS1** — skill-body retrofit (lowest urgency; current skills are
+    already reasonable)
+
+`sdd_doc_lint` is the implementation centre of gravity: AS3, AS7, AS8, AS10,
+AS11, AS12 are all new passes inside the same tool, all deterministic, all
+shippable in a single PR or sequenced as the priority dictates.
