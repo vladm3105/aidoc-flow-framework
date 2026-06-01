@@ -26,7 +26,7 @@ conformance suite at `tests/conformance/`.
 | Platform | Engine | Release |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.1.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.2.0` (`platforms/claude-code-plugin/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.4.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
@@ -45,9 +45,11 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** — latest project release `v1.1.0`, framework spec
-`0.3.x`. Post-v1.0 work to date: the project adaptation overlay, the GATE-SPEC
-change-management gate (`framework/governance/chg/`), and the pre-commit + CI
-security tooling (CodeQL, bandit, detect-secrets, pip-audit, Dependabot).
+`0.11.0`. Post-v1.0 work to date: the project adaptation overlay, the
+GATE-SPEC change-management gate (`framework/governance/chg/`), the
+authoring-style/spec quality updates through framework `0.11.0`, and the
+pre-commit + CI security tooling (CodeQL, bandit, detect-secrets, pip-audit,
+Dependabot).
 
 ## Contributing
 
