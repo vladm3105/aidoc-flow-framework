@@ -21,15 +21,11 @@ def frontmatter(skill_dir: Path) -> dict:
 
 
 class NonLayerSkillContractTests(unittest.TestCase):
-    def test_each_non_layer_skill_exists_or_is_acceptably_absent(self):
+    def test_every_non_layer_skill_exists(self):
         missing = [
             name for name in NON_LAYER_SKILLS if not (SKILLS_DIR / name / "SKILL.md").exists()
         ]
-        self.assertLessEqual(
-            len(missing),
-            2,
-            f"More than 2 non-layer skills missing: {missing}",
-        )
+        self.assertEqual(missing, [], f"non-layer skills missing: {missing}")
 
     def test_each_present_non_layer_skill_carries_skill_category(self):
         for name in NON_LAYER_SKILLS:

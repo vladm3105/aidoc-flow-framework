@@ -123,7 +123,7 @@ class LayerHarness:
           BRD, PRD, EARS, BDD       — element refs in DOT form: TYPE.NN.SS.xxxx
           ADR, SPEC                 — refs allowed in either DOT or DASH form
           TDD                       — refs allowed in either DOT or DASH form
-          IPLAN                     — DASH form only (no dotted element form)
+          IPLAN                     — accepts dash-or-dot; never appears upstream in practice
         """
         if self.LAYER_INDEX == 1:
             return  # BRD has no upstream

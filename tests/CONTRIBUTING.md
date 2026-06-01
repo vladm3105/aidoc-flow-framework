@@ -22,7 +22,7 @@ How to add tests to the suite.
 ## Adding a new lint code
 
 1. Implement the check in `framework/tools/sdd_doc_lint/__init__.py`.
-2. Re-sync: `bash framework/tools/sdd_doc_lint/sync-vendored.sh`.
+2. Re-sync (from framework/ submodule root): `bash tools/sdd_doc_lint/sync-vendored.sh`.
 3. Add a fixture under `tests/unit/lint_fixtures/<CODE>/`.
 4. Add to CASES in `test_sdd_doc_lint_checks.py`.
 5. Update `SCENARIOS.md` (T1.NN).
