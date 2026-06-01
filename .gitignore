@@ -1,6 +1,12 @@
 # Temporary files
 tmp/
 
+# Test-run log directories (per-run dirs keyed by ISO timestamp).
+# Fixture-driven suites land here:
+tests/logs/
+# Example-driven suites land under each example:
+examples/*/logs/
+
 # Work plans (local planning documents)
 work_plans/
 

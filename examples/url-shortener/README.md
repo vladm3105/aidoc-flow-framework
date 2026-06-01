@@ -12,7 +12,7 @@ from a Claude Code session by driving the seed through every
 committed under `docs/` once it passes both `sdd_doc_lint` and each
 layer's `-audit` quality gate.
 
-The test-suite live tier (`LIVE=1 bash scripts/test-plugin.sh
+The test-suite live tier (`LIVE=1 bash tests/scripts/test-plugin.sh
 --suite=fullpath --live`) exercises the same end-to-end path for
 **regression validation** — it asserts the autopilot skills can produce a
 structurally-conformant chain — but its outputs are test-instrumented

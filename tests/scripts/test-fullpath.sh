@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# scripts/test-fullpath.sh — deterministic + optional live full-path acceptance
+# tests/scripts/test-fullpath.sh — deterministic + optional live full-path acceptance
 set -uo pipefail
 
 LIVE_FLAG=0
@@ -11,7 +11,7 @@ for arg in "$@"; do
   esac
 done
 
-FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$FRAMEWORK"
 
 python3 -m unittest tests.acceptance.deterministic.test_fullpath -v

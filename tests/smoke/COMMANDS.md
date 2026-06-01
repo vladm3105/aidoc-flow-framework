@@ -26,7 +26,7 @@ Multiple `--plugin-dir` flags may be passed.
 Source: <https://code.claude.com/docs/en/plugins> (verified 2026-05-31).
 
 This works against any local checkout (e.g. `framework/platforms/claude-code-plugin/`)
-and requires no marketplace endpoint. It is the path `scripts/test-plugin.sh`
+and requires no marketplace endpoint. It is the path `tests/scripts/test-plugin.sh`
 uses today.
 
 ## Install plugin from a marketplace (current state)
@@ -66,6 +66,6 @@ is documented but is interactive, not automatable from a smoke script.
 | Date | Channel | Verified | Notes |
 |------|---------|----------|-------|
 | 2026-05-31 | context7 (`/websites/code_claude`) → <https://code.claude.com/docs/en/setup> | `npm install -g @anthropic-ai/claude-code` | Canonical install path. |
-| 2026-05-31 | context7 (`/websites/code_claude`) → <https://code.claude.com/docs/en/plugins> | `claude --plugin-dir <path>` | Local-bundle path used by `scripts/test-plugin.sh`. |
+| 2026-05-31 | context7 (`/websites/code_claude`) → <https://code.claude.com/docs/en/plugins> | `claude --plugin-dir <path>` | Local-bundle path used by `tests/scripts/test-plugin.sh`. |
 | 2026-05-31 | context7 (`/websites/code_claude`) → <https://code.claude.com/docs/en/plugins-reference> | `claude plugin install <plugin>[@<marketplace>]` | CLI subcommand; argument is plugin name, not a URL. |
 | 2026-05-31 | context7 (`/websites/code_claude`) → <https://code.claude.com/docs/en/plugin-marketplaces> | `claude plugin marketplace add <path-or-url>` | Marketplace must be added before `install`. |

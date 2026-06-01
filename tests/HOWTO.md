@@ -8,7 +8,7 @@ Quick paths for common workflows. For strategy, see
 ### "Run everything deterministic before I push"
 
 ```bash
-bash scripts/test-plugin.sh --suite=pre-deploy
+bash tests/scripts/test-plugin.sh --suite=pre-deploy
 ```
 
 Runs Tiers 1, 2, 3 (det), 4 (det), 5. Under 5 min on a laptop.
@@ -16,14 +16,14 @@ Runs Tiers 1, 2, 3 (det), 4 (det), 5. Under 5 min on a laptop.
 ### "Run just one layer"
 
 ```bash
-bash scripts/test-layer.sh brd          # or prd, ears, bdd, adr, spec, tdd, iplan
+bash tests/scripts/test-layer.sh brd          # or prd, ears, bdd, adr, spec, tdd, iplan
 ```
 
 ### "Run the full BRD → IPLAN chain"
 
 ```bash
-bash scripts/test-fullpath.sh            # deterministic
-bash scripts/test-fullpath.sh --live     # include live autopilot chain (expensive)
+bash tests/scripts/test-fullpath.sh            # deterministic
+bash tests/scripts/test-fullpath.sh --live     # include live autopilot chain (expensive)
 ```
 
 ### "Include live LLM probes"
@@ -33,13 +33,13 @@ Append `--live` to any suite. Requires `claude` CLI on PATH and authenticated.
 ### "Run the LLM code reviewer on my diff"
 
 ```bash
-REVIEW=1 bash scripts/test-plugin.sh --suite=review
+REVIEW=1 bash tests/scripts/test-plugin.sh --suite=review
 ```
 
 ### "Run the marketplace pre-deploy gate locally"
 
 ```bash
-LIVE=1 bash scripts/test-plugin.sh --suite=pre-deploy --live
+LIVE=1 bash tests/scripts/test-plugin.sh --suite=pre-deploy --live
 ```
 
 This is what `release.yml` runs in CI.
