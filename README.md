@@ -1,8 +1,32 @@
 # AI Doc Flow Framework
 
-A specification-driven document-flow framework for AI-assisted software
-development, delivered as **one engine-agnostic specification with two
-independent platforms**.
+**AI Doc Flow Framework** is a structured workflow for
+**Specification-Driven Development (SDD)** with AI coding assistants. It
+guides a project through an 8-layer documentation chain — from business
+intent down to executable implementation plans — so AI tools read, audit,
+and act on a verifiable spec rather than ad-hoc prompts.
+
+```text
+BRD  →  PRD  →  EARS  →  BDD  →  ADR  →  SPEC  →  TDD  →  IPLAN  →  Code
+business  product  formal  executable  decision  component  test    impl
+intent    reqs     reqs    scenarios   record    contract   suite   plan
+```
+
+Each layer has its own template, contract, and quality gate. The framework
+owns the engine-agnostic specification; two independent platforms (Hermes
+MCP server, Claude Code plugin) each implement it. Both pass the same
+conformance suite.
+
+**What you get:**
+
+- Templates + schemas for every layer.
+- Cumulative `@upstream:` traceability tags from BRD all the way to code.
+- Deterministic lint (`sdd_doc_lint`) for structural correctness.
+- Conformance-tested outputs across both platforms.
+
+**Use it when** you want AI-assisted development backed by a verifiable
+specification trail, not ad-hoc prompts that produce inconsistent or
+hard-to-audit output.
 
 ## Architecture
 
