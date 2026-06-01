@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 #
-# scripts/test-plugin.sh — Automated end-to-end verification of the
+# tests/scripts/test-plugin.sh — Automated end-to-end verification of the
 # aidoc-flow Claude Code plugin.
 #
-# Runs from framework root (this script lives at framework/scripts/).
+# Runs from framework root (this script lives at framework/tests/scripts/).
+#
+# Log layout (per-run directory keyed by ISO timestamp):
+#   - Example-driven suite (default — Phase 3 lint + Phase 4 live probe target
+#     a specific example):
+#       examples/<NAME>/logs/<LOG_TIMESTAMP>/plugin-test.log
+#       examples/<NAME>/logs/<LOG_TIMESTAMP>/probe-doc-flow.txt
+#   - Fixture-driven suites (unit / layer / fullpath / pre-deploy / packaging /
+#     release / smoke / review — none of them touch examples/):
+#       tests/logs/<LOG_TIMESTAMP>/plugin-test.log
 #
 # Default suite (legacy 4-phase harness, LIVE on by default):
 #   1. Static plugin validation       — `claude plugin validate` (+ `--strict`)
@@ -20,10 +29,10 @@
 #                                       "pinned to lint", "enterprise template").
 #
 # Usage:
-#   bash scripts/test-plugin.sh [--no-live]
+#   bash tests/scripts/test-plugin.sh [--no-live]
 #       — legacy 4-phase run (live ON by default; --no-live skips Phase 4)
 #
-#   bash scripts/test-plugin.sh --suite=<name> [--layer=<x>] [--live|--no-live] [--review]
+#   bash tests/scripts/test-plugin.sh --suite=<name> [--layer=<x>] [--live|--no-live] [--review]
 #       Suites:
 #         default     same as legacy 4-phase (live ON unless --no-live)
 #         unit        tests/unit
@@ -37,21 +46,21 @@
 #         review      tests/review (REVIEW=1)
 #         all         recursive `$0 --suite=pre-deploy --live`
 #
-# Output:  stdout (live) + tmp/plugin-test-<timestamp>.log
+# Output:  stdout (live) + per-run log directory (see "Log layout" above)
 #          summary table of per-phase PASS/FAIL/SKIP at end
 
 set -uo pipefail
 
-FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+FRAMEWORK="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$FRAMEWORK"
 
 PLUGIN_DIR="$FRAMEWORK/platforms/claude-code-plugin"
 EXAMPLE_DIR="$FRAMEWORK/examples/url-shortener"
 EXAMPLE_DOCS="$EXAMPLE_DIR/docs"
-LOG_DIR="$FRAMEWORK/tmp"
-mkdir -p "$LOG_DIR"
-TS="$(date +%Y-%m-%dT%H%M%S)"
-LOG="$LOG_DIR/plugin-test-${TS}.log"
+LOG_TIMESTAMP="$(date +%Y-%m-%dT%H%M%S)"
+# LOG_DIR + LOG are resolved per-suite after argument parsing below.
+LOG_DIR=""
+LOG=""
 
 # -----------------------------------------------------------------------------
 # Argument parsing (two-pass: --suite first so --live defaults can be resolved)
@@ -69,7 +78,7 @@ for arg in "$@"; do
     --live)    LIVE_FLAG="1" ;;
     --no-live) LIVE_FLAG="0"; SKIP_LIVE=1 ;;
     --review)  REVIEW=1 ;;
-    -h|--help) sed -n '2,42p' "$0"; exit 0 ;;
+    -h|--help) sed -n '2,50p' "$0"; exit 0 ;;
     *) echo "unknown flag: $arg"; exit 2 ;;
   esac
 done
@@ -86,6 +95,17 @@ if [[ -z "$LIVE_FLAG" ]]; then
     *)       LIVE_FLAG="0" ;;   # all other suites default OFF
   esac
 fi
+
+# Resolve per-run log directory.
+# The default suite is example-driven (Phase 3 lints examples/<NAME>/docs;
+# Phase 4 probes against examples/<NAME>); its log goes under that example.
+# All other suites operate on fixtures or shared spec — log under tests/logs/.
+case "$SUITE" in
+  default) LOG_DIR="$EXAMPLE_DIR/logs/$LOG_TIMESTAMP" ;;
+  *)       LOG_DIR="$FRAMEWORK/tests/logs/$LOG_TIMESTAMP" ;;
+esac
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/plugin-test.log"
 
 # Banned confabulation patterns — the fix landed in framework PR #35 is
 # specifically supposed to keep these out of doc-flow / doc-*-audit output.
@@ -135,10 +155,10 @@ phase_check() {
 # Tee everything to log
 exec > >(tee -a "$LOG") 2>&1
 
-echo "aidoc-flow plugin test run — $TS"
+echo "aidoc-flow plugin test run — $LOG_TIMESTAMP"
 echo "Framework: $FRAMEWORK"
 echo "Plugin:    $PLUGIN_DIR"
-echo "Log:       $LOG"
+echo "Log dir:   $LOG_DIR"
 echo "Suite:     $SUITE"
 echo "Live:      $([[ "$LIVE_FLAG" == "1" ]] && echo 'enabled' || echo 'disabled')"
 [[ -n "$LAYER" ]] && echo "Layer:     $LAYER"
@@ -190,7 +210,7 @@ run_phase_1_to_4() {
     echo "  WARN: 'claude' CLI not on PATH — skipping Phase 4"
     phase_record "Phase 4 — Live skill probe" "SKIP"
   else
-    local PROBE="$LOG_DIR/probe-doc-flow-${TS}.txt"
+    local PROBE="$LOG_DIR/probe-doc-flow.txt"
     echo
     echo "▸ /aidoc-flow:doc-flow against $EXAMPLE_DIR"
     echo "  $ (cd $EXAMPLE_DIR; claude --plugin-dir $PLUGIN_DIR -p '/aidoc-flow:doc-flow ...')"

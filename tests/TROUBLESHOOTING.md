@@ -28,7 +28,7 @@ Common failures and resolutions.
 
 - Default per-test timeout is 420 s. Most layers complete in 60–180 s.
 - A 420 s timeout usually means model in a long thinking loop.
-- Inspect `tmp/probe-*.txt` if run via `scripts/test-plugin.sh`.
+- Inspect the run's `probe-doc-flow.txt` (under `examples/<NAME>/logs/<TS>/` for the default suite) if run via `tests/scripts/test-plugin.sh`.
 - Retry once; if it times out again, refine the prompt.
 
 ## Tier 5: `test_bundle_framework_subtree_matches_source` reports drift

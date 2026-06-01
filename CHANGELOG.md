@@ -50,6 +50,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Test runners co-located under `tests/scripts/`.** Moved `test-plugin.sh`,
+  `test-layer.sh`, and `test-fullpath.sh` from the parent repo's `scripts/`
+  into `framework/tests/scripts/`. The framework is now fully self-testable
+  with no parent-repo dependency; `tests/` becomes the single boundary for
+  everything related to verifying the spec. Run-log layout reorganised into
+  per-run directories keyed by ISO timestamp:
+  - Example-driven default suite (Phase 3 `sdd_doc_lint` + Phase 4 live
+    probe target a specific example) → `examples/<NAME>/logs/<TS>/`
+    (`plugin-test.log` + `probe-doc-flow.txt`).
+  - Fixture-driven suites (unit / layer / fullpath / pre-deploy / packaging /
+    release / smoke / review — none touch `examples/`) →
+    `tests/logs/<TS>/plugin-test.log`.
+
+  `.gitignore` updated to cover both. Default-suite Phase 3 now SKIPs cleanly
+  when the targeted example's `docs/` is missing or empty (post-demo-reset
+  state) instead of silently passing on zero files. Internal doc references
+  (`tests/README.md`, `tests/HOWTO.md`, `tests/TROUBLESHOOTING.md`,
+  `tests/smoke/COMMANDS.md`, `examples/url-shortener/README.md`) updated to
+  the new path. Companion parent-repo PR drops the obsolete copies and
+  updates `release.yml` to call `framework/tests/scripts/test-plugin.sh`.
 - Framework spec **0.9.1 → 0.10.0** (minor) — AUTHORING-STYLE follow-up
   AS2: every section in every layer template (8 × ~10 sections = 76
   sections) gains a `_size_target` key with an explicit per-section word

@@ -34,11 +34,11 @@ companion docs below.
 
 | Goal | Command |
 |------|---------|
-| Run everything deterministic | `bash scripts/test-plugin.sh --suite=pre-deploy` |
-| Run one layer | `bash scripts/test-layer.sh brd` |
-| Full BRD→IPLAN chain | `bash scripts/test-fullpath.sh` |
+| Run everything deterministic | `bash tests/scripts/test-plugin.sh --suite=pre-deploy` |
+| Run one layer | `bash tests/scripts/test-layer.sh brd` |
+| Full BRD→IPLAN chain | `bash tests/scripts/test-fullpath.sh` |
 | Include LLM probes | append `--live` |
-| Run LLM code review | `REVIEW=1 bash scripts/test-plugin.sh --suite=review` |
+| Run LLM code review | `REVIEW=1 bash tests/scripts/test-plugin.sh --suite=review` |
 
 ## Conventions
 
