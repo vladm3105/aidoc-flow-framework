@@ -102,9 +102,7 @@ Post-migration, the gated CHG process returns in two roles:
 2. **Feature** — the CHG overlay ships inside `framework/governance/` as a
    capability both platforms expose to their end users.
 
-Per-platform internal development continues under ordinary SemVer + changelog
-
-- PR review — the gated process is not applied to a platform's own commits.
+Per-platform internal development continues under ordinary SemVer + changelog; PR review applies, the gated process is not.
 
 ### CHG implementation model (implemented — CHG-D1, D-0020)
 

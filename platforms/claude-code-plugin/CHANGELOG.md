@@ -22,12 +22,20 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   `${CLAUDE_PLUGIN_ROOT}/framework/…` reference — read it via the shell (where the
   variable expands) or relative to the plugin root. Proactively de-risks the P2
   live-run / install smoke test (plan risk R2).
+- Manifest metadata polished for pre-1.0 preview (PR #44). Plugin description and marketplace description prefixed "Pre-1.0 preview." with explicit "APIs and surfaces may change before 1.0" note.
+- Plugin manifest `homepage` repointed from placeholder `https://aidoc-flow.com/claude-code` to the working install-section anchor at `https://github.com/vladm3105/aidoc-flow-framework#install-the-claude-code-plugin`.
+- Plugin manifest `author` cleaned up: dropped non-resolving `aidoc-flow.com` email + url; left `name` and added GitHub repo URL.
+- Framework spec dependency bumped to `0.11.0` (was `0.10.0`).
+
+### Documentation
+
+- IPLAN ↔ iplanic integration explicitly deferred — see framework `plans/IPLAN-IPLANIC-DEFERRED.md`.
 
 ## [0.4.0] — 2026-05-27
 
 ### Changed
 
-- **Skill set consolidated 55 → 50 (redundancy audit).** Folded five
+- **Skill set consolidated 55 → 50 active (+ 2 deprecated stubs = 52 total, redundancy audit).** Folded five
   overlapping utilities into two homes, carrying their procedural detail:
   - `skill-recommender` + `workflow-optimizer` + `context-analyzer` → **`doc-flow`**,
     which now carries the intent-keyword → skill map, the `where am I` position
@@ -74,6 +82,8 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   `aidoc-flow.com` identity and `homepage` to `https://aidoc-flow.com/claude-code`
   (**D-0023** — one brand, path-based per-integration pages). Publish-time URL +
   mailbox verification is the P2 gate.
+
+  > Note: in `v0.4.0` the homepage was repointed to <https://github.com/vladm3105/aidoc-flow-framework#install-the-claude-code-plugin> until the aidoc-flow.com identity is live.
 - **Review-team mode (AGENT-TEAM Phase 2)** — a shared `review-team` skill plus
   two review-lens agents (`adversary`, `synthesizer`): the plugin's binding of the
   engine-agnostic `framework/governance/REVIEW_TEAM.md` model. The crew fans out as

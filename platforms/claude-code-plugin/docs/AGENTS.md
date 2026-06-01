@@ -2,7 +2,7 @@
 
 **Specialist Claude Code subagents for the AI Doc Flow Framework's Specification-Driven Development (SDD) flow.**
 
-This directory defines a team of nine specialist Claude Code subagents that mirror the SDD lifecycle. They are the **Claude Code plugin's** native team: each agent owns a function and orchestrates the relevant plugin `doc-*` skills. Agents auto-register via Claude Code's `agents/` directory convention.
+This directory defines a team of nine lifecycle subagents plus two review-team lenses (eleven agent files total) that mirror the SDD lifecycle. They are the **Claude Code plugin's** native team: each agent owns a function and orchestrates the relevant plugin `doc-*` skills. Agents auto-register via Claude Code's `agents/` directory convention.
 
 > This framework is "one specification, two platforms." This roster is the Claude Code plugin's native team, driving the lifecycle through the plugin's `doc-*` skills. The framework's separate MCP-server platform implements the same spec independently; both satisfy the same conformance suite.
 

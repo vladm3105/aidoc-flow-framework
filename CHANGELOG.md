@@ -7,6 +7,8 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 > Scope: this is the **project-level** changelog tracking the multi-platform
 > migration. Once scaffolded, each platform keeps its own changelog at
 > `platforms/<name>/CHANGELOG.md`, and `framework/` versions independently.
+>
+> This file logs both project releases (`v1.x.y`) and framework-spec releases (`Framework Spec 0.x.y`). Per-stream details for the Claude Code plugin live in [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
 
 ## [Unreleased]
 
@@ -236,7 +238,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   hand-fixed genuine findings) so `pre-commit run --all-files` is green; the stale
   `ucx_hermes` placeholder config was replaced.
 
-## [0.11.0] — 2026-05-31
+## [0.11.0] — Framework Spec — 2026-05-31
 
 ### Added
 
@@ -253,6 +255,9 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed
 
 - 5 stale skills bumped to align with framework spec.
+- Plugin (`claude-code-plugin/v0.4.0`) ships a consolidated canonical skill set: **52 skills = 50 active + 2 deprecated stubs**. Hard-deleted 3 redundant skills (`context-analyzer`, `skill-recommender`, `workflow-optimizer`) — folded into `doc-flow`. Deprecated 2 skills (`doc-review`, `trace-check`) — retained as redirect stubs until v0.5.0, folded into `doc-validator`.
+- Plugin marketplace + manifest metadata updated for pre-1.0 preview posture (see `platforms/claude-code-plugin/CHANGELOG.md`).
+- IPLAN ↔ iplanic integration explicitly deferred — see [`plans/IPLAN-IPLANIC-DEFERRED.md`](plans/IPLAN-IPLANIC-DEFERRED.md).
 
 ## [1.1.0] — 2026-05-24
 

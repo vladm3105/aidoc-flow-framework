@@ -16,6 +16,8 @@ The platforms share the `framework/` spec and nothing else. Both pass the same
 shared conformance suite (`tests/conformance/`). The `framework/` spec defines
 the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
+**Current state (as of 2026-06-01):** framework spec `0.11.0`, Claude Code plugin `0.4.0` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+
 ## Durable conventions
 
 - **The framework spec is the contract.** Engine-agnostic; carries no platform

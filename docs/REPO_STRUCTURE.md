@@ -59,6 +59,8 @@ aidoc-flow-framework/
 │   ├── conformance/                 Shared suite both platforms must pass
 │   └── chg/                         GATE-SPEC diff-aware guard (spec_gate.py)
 │
+├── tools/                 # sync-plugin-framework.sh, build-plugin-mirror.sh, sdd_doc_lint/
+├── examples/              # url-shortener/ end-to-end demo chain (BRD → IPLAN)
 └── plans/                           Migration record: per-task plans, DECISIONS.md, HANDOFF.md, …
 ```
 
