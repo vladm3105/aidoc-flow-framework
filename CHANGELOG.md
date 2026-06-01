@@ -50,6 +50,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Test runners co-located with the framework.** Moved `test-plugin.sh`,
+  `test-layer.sh`, and `test-fullpath.sh` from the parent repo's `scripts/`
+  into `framework/scripts/`. Path resolution now anchors on each script's
+  own location; log directory is `framework/tmp/` (already gitignored).
+  The framework is now fully self-testable: a clone of just the framework
+  can run all deterministic tiers with no parent-repo dependency.
+  Incidental fix: default-suite Phase 3 (`sdd_doc_lint` on the demo
+  corpus) now SKIPs cleanly when the corpus is missing or empty
+  (post-demo-reset state) instead of silently passing on zero files.
+  Companion parent-repo PR deleted the obsolete copies, updated
+  `release.yml` to call `framework/scripts/test-plugin.sh`, and bumped
+  the framework submodule pointer.
 - Framework spec **0.9.1 → 0.10.0** (minor) — AUTHORING-STYLE follow-up
   AS2: every section in every layer template (8 × ~10 sections = 76
   sections) gains a `_size_target` key with an explicit per-section word
