@@ -33,7 +33,13 @@ Published through the repo-root marketplace manifest
 ```
 
 Work down the layers (`doc-prd`, `doc-ears`, … `doc-iplan`), running each
-layer's `-audit` before promoting to the next. A worked example chain — initial requirements through to an IPLAN — lives in [`../../examples/url-shortener/`](../../examples/url-shortener/). (Note: this corpus predates the STRUCT01 lint check and currently emits structural findings; a regeneration is planned for v0.5.0.)
+layer's `-audit` before promoting to the next. A seed prompt that drives
+this flow lives at
+[`../../examples/url-shortener/seed/initial-requirements.md`](../../examples/url-shortener/seed/initial-requirements.md);
+the worked output chain it produces is regenerated for each plugin release
+by driving the `doc-{layer}-autopilot` skills from a Claude Code session.
+See [`../../examples/url-shortener/README.md`](../../examples/url-shortener/README.md)
+for the walkthrough.
 
 `doc-flow` is the orchestrator: describe your goal and it routes you to the
 right skill. The deeper authoring guidance is in
