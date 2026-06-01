@@ -7,10 +7,7 @@ shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.1.1` /
 > `claude-code-plugin/v0.4.0` (framework spec `0.11.0`; both platforms on the
-> 8-layer model; plugin skill set is the canonical 52 (50 active + 2 deprecated)
-> — 32 layer-family skills, 4 CHG skills, 14 utilities, and 2 deprecated
-> redirect stubs (`doc-review`, `trace-check`) scheduled for removal in
-> `v0.5.0`). Updates land when a platform ships a structurally different
+> 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.5.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
@@ -174,7 +171,7 @@ structurally identical report.
   registration block in the manifest.
 - **Slash-prefix invocation** — `/aidoc-flow:doc-brd-autopilot`,
   `/aidoc-flow:doc-flow`, etc.
-- **AI Team subagent roster** (9 agents in `agents/`) — a specialist
+- **AI Team subagent roster** (11 agents in `agents/` — 9 lifecycle + 2 review lenses) — a specialist
   team mirroring the SDD lifecycle: `pm-orchestrator` (delegates via
   the `Task` tool) plus the spec lane (`requirements-analyst`,
   `solutions-architect`, `test-architect`), execution lane

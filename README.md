@@ -45,7 +45,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** — latest project release `v1.1.0`, framework spec
-`0.11.0`. Post-v1.0 work to date: the project adaptation overlay, the
+`0.11.0`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.4.0); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.0`. Post-v1.0 work to date: the project adaptation overlay, the
 GATE-SPEC change-management gate (`framework/governance/chg/`), the
 authoring-style/spec quality updates through framework `0.11.0`, and the
 pre-commit + CI security tooling (CodeQL, bandit, detect-secrets, pip-audit,
@@ -72,6 +72,7 @@ for the vulnerability-reporting policy.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - `docs/PARITY.md` — Hermes ↔ plugin capability comparison.
 - `framework/README.md` — the engine-agnostic SDD specification.
+- [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
 
 ## Pre-migration history
 

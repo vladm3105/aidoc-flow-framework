@@ -104,8 +104,7 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
 0.3.1`):
 
 - **Canonical plugin skill set** — the corpus was pruned/recreated to one
-  standard (P3-T6/T7) and grew to **54 skills** with the CHG family,
-  `gate-check`, `project-adopt`, `project-profile`, and `knowledge-extractor`.
+  standard (P3-T6/T7) and settled at **52 skills (50 active + 2 deprecated stubs)** in plugin v0.4.0, after `skill-recommender`/`workflow-optimizer`/`context-analyzer` folded into `doc-flow` and `doc-review`/`trace-check` were folded into `doc-validator` (the latter two retained as deprecation redirects through v0.5.0).
 - **Project adaptation overlay** (ADAPT, D-0019) — `framework/governance/
   ADAPTATION.md` + `ADAPTATION_SURFACE.yaml` (a closed knob set) and the
   `project-profile` / `knowledge-extractor` skills.

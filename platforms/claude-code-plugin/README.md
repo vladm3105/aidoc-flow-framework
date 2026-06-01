@@ -1,5 +1,7 @@
 # aidoc-flow — Claude Code plugin
 
+> **Status: Pre-1.0 preview.** APIs and surfaces may change before 1.0.
+
 The native **Claude Code** delivery of the AI Doc Flow framework: a
 Specification-Driven Development (SDD) engine that drives a project from a
 Business Requirements Document down to an implementation plan through eight
@@ -31,9 +33,7 @@ Published through the repo-root marketplace manifest
 ```
 
 Work down the layers (`doc-prd`, `doc-ears`, … `doc-iplan`), running each
-layer's `-audit` before promoting to the next. A complete, gate-clean example
-chain — initial requirements through to an IPLAN — lives in
-[`../../examples/url-shortener/`](../../examples/url-shortener/).
+layer's `-audit` before promoting to the next. A worked example chain — initial requirements through to an IPLAN — lives in [`../../examples/url-shortener/`](../../examples/url-shortener/). (Note: this corpus predates the STRUCT01 lint check and currently emits structural findings; a regeneration is planned for v0.5.0.)
 
 `doc-flow` is the orchestrator: describe your goal and it routes you to the
 right skill. The deeper authoring guidance is in
@@ -49,7 +49,7 @@ right skill. The deeper authoring guidance is in
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `adversary` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
-| **Total skills** | **50** | |
+| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.5.0) | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
@@ -126,3 +126,18 @@ engine; pick Hermes if you want an MCP server.
 
 Both platforms pass the same shared conformance suite at
 `../../tests/conformance/`.
+
+## Contributing
+
+Hooks and workflow live in the framework repo. From the repo root:
+
+```bash
+pip install pre-commit && pre-commit install
+```
+
+Open issues and pull requests at <https://github.com/vladm3105/aidoc-flow-framework/issues>.
+
+## Reporting bugs and security issues
+
+- Functional bugs: file an issue at <https://github.com/vladm3105/aidoc-flow-framework/issues>.
+- Security vulnerabilities: see [`../../SECURITY.md`](../../SECURITY.md) for the disclosure protocol.

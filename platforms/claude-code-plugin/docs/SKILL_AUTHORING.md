@@ -5,7 +5,7 @@ plugin. It is the single pattern the skill set is recreated against (P3-T6).
 The framework spec is the source of truth for *content*; this file governs
 *form*.
 
-## 1. Scope — the canonical skill set (50)
+## 1. Scope — the canonical skill set (52 = 50 active + 2 deprecated stubs)
 
 - **Layer families (8 × 4 = 32):** `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`
   in four variants — base (`doc-X`), `-autopilot`, `-audit`, `-fixer`.
@@ -18,9 +18,11 @@ The framework spec is the source of truth for *content*; this file governs
 Removed and **never reintroduced**: `-reviewer`/`-validator` variants (merged
 into `-audit`); test-type families (utest/itest/ftest/ptest/stest/sectest);
 SPEC-subtype families (cspec/dspec/uxspec/riskspec/procspec); contract-tester,
-test-automation, mermaid-gen; loose `*.md` files at `skills/` root. The
-navigation helpers `skill-recommender`/`workflow-optimizer`/`context-analyzer`
-folded into `doc-flow`; `trace-check` + `doc-review` folded into `doc-validator`.
+test-automation, mermaid-gen; loose `*.md` files at `skills/` root.
+
+Hard-deleted in v0.4.0 (will not exist under `skills/`): the navigation helpers `skill-recommender`, `workflow-optimizer`, `context-analyzer` — folded into `doc-flow`.
+
+Deprecated in v0.4.0 but still ship as redirect stubs under `skills/` (marked `deprecated: true`, scheduled for hard removal in v0.5.0): `doc-review`, `trace-check` — folded into `doc-validator` (scope=prose and traceability pass respectively).
 
 ## 2. Frontmatter (mandatory)
 
