@@ -16,6 +16,19 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Demo corpus cleared.** `examples/url-shortener/docs/` (8 layer artifacts:
+  BRD-01 through IPLAN-01) removed. The corpus predated the `STRUCT01` lint
+  and the v0.4.0 skill consolidation and was emitting 43 structural findings.
+  The `seed/initial-requirements.md` is retained as the regeneration input.
+  The new demo chain will be authored from a Claude Code session by driving
+  the seed through `doc-{layer}-autopilot` skills against current templates
+  and committed under `docs/` once it passes `sdd_doc_lint` + each layer's
+  `-audit` gate. The test-suite live tier exercises the same path for
+  regression validation but produces test-instrumented output unsuitable as
+  production demo content.
+- Updated `examples/url-shortener/README.md`, the seed file, and the plugin
+  `README.md` Quickstart to point at the seed-based regeneration walkthrough
+  (was: "complete, gate-clean example chain").
 - **`doc-flow` — bundled-path resolution guidance.** Added a "Reading bundled
   files" note clarifying that `${CLAUDE_PLUGIN_ROOT}` is an environment variable
   (it does not auto-expand in skill prose) and how to resolve a
@@ -30,6 +43,9 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 ### Documentation
 
 - IPLAN ↔ iplanic integration explicitly deferred — see framework `plans/IPLAN-IPLANIC-DEFERRED.md`.
+- Plugin README opens with a substantive description block under the H1
+  (8-layer flow visualization + "What you get" + "Use it when") — framework
+  PR #46.
 
 ## [0.4.0] — 2026-05-27
 
