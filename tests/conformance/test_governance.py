@@ -101,5 +101,19 @@ class GovernanceFiles(unittest.TestCase):
         )
 
 
+class GovernanceFilesNoOrphans(unittest.TestCase):
+    """Any new file under framework/governance/ must be added to EXPECTED_FILES."""
+
+    def test_no_orphan_governance_files(self):
+        actual = {p.name for p in GOVERNANCE.iterdir() if p.is_file()}
+        expected = set(EXPECTED_FILES)
+        new_in_dir = actual - expected
+        self.assertFalse(
+            new_in_dir,
+            "Governance file(s) on disk but not in EXPECTED_FILES: "
+            f"{sorted(new_in_dir)}. Add them to the list (and document in CHANGELOG).",
+        )
+
+
 if __name__ == "__main__":
     unittest.main()

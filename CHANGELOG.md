@@ -236,6 +236,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   hand-fixed genuine findings) so `pre-commit run --all-files` is green; the stale
   `ucx_hermes` placeholder config was replaced.
 
+## [0.11.0] — 2026-05-31
+
+### Added
+
+- Tiered test suite for the plugin (`tests/unit`, `tests/acceptance`,
+  `tests/packaging`, `tests/release`, `tests/smoke`, `tests/review`).
+- `STRUCT01` lint check (missing required template section).
+- `sdd_doc_lint --format=json` structured output mode.
+- Per-layer + full-path test runners (`scripts/test-layer.sh`, `scripts/test-fullpath.sh`).
+- GitHub Actions: PR gate, release gate, nightly live tier, post-deploy smoke.
+- Suite documentation: `tests/README.md`, `SCENARIOS.md`, `HOWTO.md`,
+  `ENVIRONMENT.md`, `TROUBLESHOOTING.md`, `CONTRIBUTING.md`, per-tier READMEs.
+- `tools/bump_version.py` portable VERSION bumper.
+
+### Changed
+
+- 5 stale skills bumped to align with framework spec.
+
 ## [1.1.0] — 2026-05-24
 
 First post-cutover feature release. Tagged `v1.1.0` at the PR #2 merge; bundles

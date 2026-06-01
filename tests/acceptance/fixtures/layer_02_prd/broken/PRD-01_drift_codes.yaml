@@ -1,0 +1,5 @@
+file: PRD-01_missing_section.md
+expected_findings:
+  - code: STRUCT01
+    section: customer_facing_content
+    message_match: "missing required section: customer_facing_content"

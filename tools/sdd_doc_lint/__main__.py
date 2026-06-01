@@ -26,6 +26,12 @@ def main(argv: list[str] | None = None) -> int:
         default=None,
         help="path to LAYER_REGISTRY.yaml (else $SDD_REGISTRY or an upward search)",
     )
+    parser.add_argument(
+        "--format",
+        choices=("text", "json"),
+        default="text",
+        help="output format (text = human-readable; json = single array of findings)",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     findings = []
@@ -33,24 +39,39 @@ def main(argv: list[str] | None = None) -> int:
         for arg in args.paths:
             findings.extend(lint_path(Path(arg), registry=args.registry))
     except OSError as exc:
-        # Registry not found/readable (e.g. run outside a framework/ project).
-        # Exit 2 (not 1) so callers can tell "could not run" from "found errors".
         print(f"sdd-doc-lint: registry unavailable ({exc}); skipping.", file=sys.stderr)
         return 2
 
-    errors = [f for f in findings if f.severity == "error"]
-    for f in sorted(findings, key=lambda x: (x.path, x.line, x.code)):
-        stream = sys.stderr if f.severity == "error" else sys.stdout
-        print(str(f), file=stream)
+    if args.format == "json":
+        import json
 
-    if errors:
-        print(
-            f"\nsdd-doc-lint: {len(errors)} error(s) across {len({f.path for f in errors})} file(s).",
-            file=sys.stderr,
-        )
-        return 1
-    print("sdd-doc-lint: no structural findings.")
-    return 0
+        payload = [
+            {
+                "code": f.code,
+                "severity": f.severity,
+                "file": str(f.path),
+                "line": f.line,
+                "section": getattr(f, "section", None),
+                "message": f.message,
+            }
+            for f in sorted(findings, key=lambda x: (x.path, x.line, x.code))
+        ]
+        print(json.dumps(payload))
+    else:
+        errors = [f for f in findings if f.severity == "error"]
+        for f in sorted(findings, key=lambda x: (x.path, x.line, x.code)):
+            stream = sys.stderr if f.severity == "error" else sys.stdout
+            print(str(f), file=stream)
+        if errors:
+            print(
+                f"\nsdd-doc-lint: {len(errors)} error(s) across "
+                f"{len({f.path for f in errors})} file(s).",
+                file=sys.stderr,
+            )
+        elif not findings:
+            print("sdd-doc-lint: no structural findings.")
+
+    return 1 if any(f.severity == "error" for f in findings) else 0
 
 
 if __name__ == "__main__":

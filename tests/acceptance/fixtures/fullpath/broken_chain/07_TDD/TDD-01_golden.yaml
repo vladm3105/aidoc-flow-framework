@@ -1,0 +1,70 @@
+---
+metadata:
+  artifact_id: TDD-01
+  document_type: tdd-document
+  layer: 7
+  deliverable_type: code
+
+## Document Control
+document_control:
+  status: Approved
+  owner: Platform QA
+  version: 1.0
+  component: AuthService
+
+## Test Pyramid
+test_pyramid:
+  distribution:
+    unit: 70
+    integration: 20
+    e2e: 10
+
+## Test Mapping
+test_mapping:
+  coverage_table:
+    columns:
+      - bdd_scenario
+      - unit
+      - integration
+      - e2e
+
+## Test Cases
+test_cases:
+  cases:
+    - id: TDD.01.04.aaaa
+      type: unit
+      spec_ref: SPEC-01
+      target: AuthService.issueToken
+      test_file: tests/unit/test_auth.py
+    - id: TDD.01.04.bbbb
+      type: integration
+      spec_ref: SPEC-01
+      contract: AuthService issues tokens against KMS-backed key
+      test_file: tests/integration/test_auth_kms.py
+    - id: TDD.01.04.cccc
+      type: e2e
+      spec_ref: SPEC-01
+      bdd_ref: BDD.01.04.bbbb
+      test_file: tests/e2e/test_auth_flow.py
+
+## Thresholds
+thresholds:
+  auth_p95: 300ms
+  catalog_p95: 500ms
+
+## Tdd Order
+tdd_order:
+  steps:
+    - Write unit test for AuthService.issueToken
+    - Implement AuthService.issueToken to pass the unit test
+    - Add integration test against KMS adapter
+    - Add e2e test driving BDD.01.04.bbbb scenario
+
+## Traceability
+traceability: |
+  - @brd: BRD.01.07.aaaa
+  - @prd: PRD.01.09.aaaa
+  - @ears: EARS.01.03.aaaa
+  - @bdd: BDD.01.04.aaaa
+  - @adr: ADR-01
+  - @spec: SPEC-01

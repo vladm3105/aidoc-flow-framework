@@ -1,0 +1,86 @@
+---
+metadata:
+  artifact_id: IPLAN-01
+  document_type: iplan-document
+  layer: 8
+  deliverable_type: code
+
+## Document Control
+document_control:
+  iplan_id: IPLAN-01
+  source_spec: SPEC-01
+  status: In Progress
+  version: 1.0
+  author: Platform team
+  complexity: 3
+
+## File Manifest
+file_manifest:
+  files:
+    - path: tests/unit/test_auth_service.py
+      order: 1
+      status: DONE
+      verified: true
+    - path: tests/integration/test_auth_kms.py
+      order: 2
+      status: IN_PROGRESS
+      verified: false
+    - path: tests/e2e/test_auth_flow.py
+      order: 3
+      status: NOT_STARTED
+      verified: false
+    - path: src/auth/auth_service.py
+      order: 4
+      status: IN_PROGRESS
+      verified: false
+    - path: src/auth/kms_adapter.py
+      order: 5
+      status: NOT_STARTED
+      verified: false
+
+## Execution Commands
+execution_commands:
+  setup:
+    - python -m venv .venv && source .venv/bin/activate
+    - pip install -r requirements.txt
+  implementation:
+    - python -m pytest tests/unit/test_auth_service.py
+    - python -m pytest tests/integration/test_auth_kms.py
+  validation:
+    - python -m pytest tests/ --cov=src/auth
+
+## Implementation Contracts
+implementation_contracts:
+  provided:
+    contracts:
+      - name: AuthService
+        kind: protocol
+        operations:
+          - issueToken(AuthRequest) returns AuthResponse
+  consumed:
+    dependencies:
+      - name: KMSClient
+        kind: protocol
+
+## Session Handoff
+session_handoff:
+  sessions:
+    - date: 2026-05-30
+      agent: coder-agent
+      files_touched:
+        - path: src/auth/auth_service.py
+          action: created
+          status: IN_PROGRESS
+      partial_work: Token signing path implemented; KMS adapter integration pending.
+      blockers: None
+      next_session_directive: Wire KMSClient stub into AuthService.issueToken and re-run tests/integration/test_auth_kms.py.
+
+## Traceability
+traceability: |
+  - @brd: BRD.01.07.aaaa
+  - @prd: PRD.01.09.aaaa
+  - @ears: EARS.01.03.aaaa
+  - @bdd: BDD.01.04.aaaa
+  - @adr: ADR-01
+  - @spec: SPEC-01
+  - @tdd: TDD-01

@@ -1,0 +1,5 @@
+file: BRD-01_missing_section.md
+expected_findings:
+  - code: STRUCT01
+    section: project_scope
+    message_match: "missing required section: project_scope"

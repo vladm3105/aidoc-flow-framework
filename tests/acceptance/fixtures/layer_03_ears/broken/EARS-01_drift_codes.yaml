@@ -1,0 +1,5 @@
+file: EARS-01_missing_section.md
+expected_findings:
+  - code: STRUCT01
+    section: requirements
+    message_match: "missing required section: requirements"

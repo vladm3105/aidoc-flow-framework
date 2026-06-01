@@ -1,0 +1,48 @@
+---
+metadata:
+  artifact_id: TDD-01
+  document_type: tdd-document
+  layer: 7
+  deliverable_type: code
+
+## Document Control
+document_control:
+  status: Approved
+  owner: Platform QA
+  version: 1.0
+  component: AuthService
+
+## Test Mapping
+test_mapping:
+  coverage_table:
+    columns:
+      - bdd_scenario
+      - unit
+      - integration
+      - e2e
+
+## Test Cases
+test_cases:
+  cases:
+    - id: TDD.01.04.aaaa
+      type: unit
+      spec_ref: SPEC-01
+      target: AuthService.issueToken
+
+## Thresholds
+thresholds:
+  auth_p95: 300ms
+
+## Tdd Order
+tdd_order:
+  steps:
+    - Write unit test for AuthService.issueToken
+
+## Traceability
+traceability: |
+  - @brd: BRD.01.07.aaaa
+  - @prd: PRD.01.09.aaaa
+  - @ears: EARS.01.03.aaaa
+  - @bdd: BDD.01.04.aaaa
+  - @adr: ADR-01
+  - @spec: SPEC-01

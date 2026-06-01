@@ -1,0 +1,50 @@
+---
+metadata:
+  artifact_id: SPEC-01
+  document_type: spec-document
+  layer: 6
+  deliverable_type: code
+
+## Document Control
+document_control:
+  status: Approved
+  owner: Platform team
+  version: 1.0
+
+## Component Overview
+component_overview:
+  description: Stateless authentication and catalog services for the MVP.
+  trace: |
+    - @brd: BRD.01.07.aaaa
+    - @prd: PRD.01.09.aaaa
+    - @ears: EARS.01.03.aaaa
+    - @bdd: BDD.01.04.aaaa
+    - @adr: ADR-01
+
+## Data Models
+data_models:
+  - name: AuthRequest
+    fields:
+      - name: email
+        type: string
+
+## Behavior
+behavior:
+  - id: auth_flow
+    description: Validate credentials and emit token within 300 ms p95.
+
+## Implementation Notes
+implementation_notes:
+  - Token signing uses an external KMS key alias.
+
+## Tdd Contracts
+tdd_contracts:
+  - contract: AuthService.issueToken returns AuthResponse for valid credentials
+
+## Traceability
+traceability: |
+  - @brd: BRD.01.07.aaaa
+  - @prd: PRD.01.09.aaaa
+  - @ears: EARS.01.03.aaaa
+  - @bdd: BDD.01.04.aaaa
+  - @adr: ADR-01

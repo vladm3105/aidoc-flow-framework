@@ -1,0 +1,5 @@
+file: IPLAN-01_missing_section.yaml
+expected_findings:
+  - code: STRUCT01
+    section: implementation_contracts
+    message_match: "missing required section: implementation_contracts"
