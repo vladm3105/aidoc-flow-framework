@@ -1,5 +1,6 @@
 {
   "name": "aidoc-flow-framework",
+  "description": "BYO marketplace hosting the aidoc-flow Claude Code plugin (pre-1.0 preview). Spec-driven development for the 8-layer doc flow (BRD → IPLAN).",
   "owner": {
     "name": "vladm3105",
     "email": "vla.myakota@gmail.com"
@@ -8,7 +9,7 @@
     {
       "name": "aidoc-flow",
       "source": "./platforms/claude-code-plugin",
-      "description": "AI-Driven Specification-Driven Development (SDD) workflow — 50 active skills + 2 deprecated stubs (52 total), 11 agents, and 1 command for the 8-layer doc flow (BRD → IPLAN). Consumes the engine-agnostic aidoc-flow framework spec.",
+      "description": "Pre-1.0 preview. AI-Driven Specification-Driven Development (SDD) workflow — 50 active skills + 2 deprecated stubs (52 total), 11 agents, and 1 command for the 8-layer doc flow (BRD → IPLAN). Consumes the engine-agnostic aidoc-flow framework spec. APIs and surfaces may change before 1.0.",
       "version": "0.4.0"
     }
   ]
