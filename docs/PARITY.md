@@ -6,11 +6,12 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.1.1` /
-> `claude-code-plugin/v0.2.0` (2026-05-24; both platforms on the
-> 8-layer model; plugin skill set is the canonical **54** — the P3-T6
-> base plus the CHG family + `gate-check` + `project-adopt` (P3-T7) and
-> `project-profile` + `knowledge-extractor` (ADAPT)). Updates land when
-> a platform ships a structurally different capability, not per-PR.
+> `claude-code-plugin/v0.4.0` (framework spec `0.11.0`; both platforms on the
+> 8-layer model; plugin skill set is the canonical 52 (50 active + 2 deprecated)
+> — 32 layer-family skills, 4 CHG skills, 14 utilities, and 2 deprecated
+> redirect stubs (`doc-review`, `trace-check`) scheduled for removal in
+> `v0.5.0`). Updates land when a platform ships a structurally different
+> capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
@@ -63,16 +64,21 @@ specifies):
 
 The 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) cover all 8
 SDD layers, plus the `doc-chg` change-management family (4 variants — the CHG
-governance overlay) and 18 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
-`doc-review`, `doc-validator`, `project-init`, `project-adopt`, `project-profile`,
-`gate-check`, `trace-check`, `charts-flow`, `adr-roadmap`, `context-analyzer`,
-`quality-advisor`, `skill-recommender`, `workflow-optimizer`, `security-audit`,
-`knowledge-extractor`) — **54 skills** total. The `-reviewer` and `-validator`
-variants were merged into `-audit`; the former SPEC-subtype and test-type
-families were folded into the unified SPEC (L6) and TDD (L7) skills (task P3-T6,
-reversing D-0015). `project-profile` + `knowledge-extractor` were added in ADAPT
-(D-0019). The CHG family, `gate-check`, and `project-adopt` were added in P3-T7 (see
-`plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`).
+governance overlay) and 14 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
+`doc-validator`, `review-team`, `project-init`, `project-adopt`,
+`project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`,
+`adr-roadmap`, `quality-advisor`, `security-audit`) — 52 (50 active + 2 deprecated)
+skills total. The `-reviewer` and `-validator` variants were
+merged into `-audit`; the former SPEC-subtype and test-type families were
+folded into the unified SPEC (L6) and TDD (L7) skills (task P3-T6, reversing
+D-0015). `project-profile` + `knowledge-extractor` were added in ADAPT
+(D-0019). The CHG family, `gate-check`, and `project-adopt` were added in
+P3-T7. In plugin `v0.4.0`, `skill-recommender`, `workflow-optimizer`, and
+`context-analyzer` were folded into `doc-flow` (hard-deleted); `doc-review`
+and `trace-check` were folded into `doc-validator` and retained as deprecated
+redirect stubs (scheduled for removal in `v0.5.0`). See
+`plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`, and
+`platforms/claude-code-plugin/CHANGELOG.md`.
 
 ## Change management — GATE-SPEC (CHG-D1, both platforms)
 
@@ -195,8 +201,9 @@ families retired, and all layer numbers, element IDs (now 4-segment
 `TYPE.NN.SS.xxxx`), paths, and traceability chains realigned. The
 plugin's former SPEC-subtype and test-type families were subsequently
 folded into the unified SPEC (L6) and TDD (L7) skills, and the corpus
-pruned and recreated to a canonical **46 skills** (task P3-T6,
-reversing D-0015). Conformance test
+pruned and recreated to the P3-T6 46-skill baseline (reversing D-0015),
+then extended and consolidated to the current canonical 52-skill release
+(50 active + 2 deprecated stubs) described above. Conformance test
 `tests/conformance/platforms/test_plm_lint.py` enforces that the plugin
 carries no legacy-model fingerprints, so the alignment cannot regress.
 

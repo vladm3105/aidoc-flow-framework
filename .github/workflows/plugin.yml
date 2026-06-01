@@ -40,9 +40,9 @@ jobs:
 
       - name: Plugin structural sanity
         run: |
-          dirs=$(find platforms/claude-code-plugin/skills -mindepth 1 -maxdepth 1 -type d | wc -l)
-          if [ "$dirs" -lt 40 ]; then
-            echo "::error::Plugin skill count $dirs is suspiciously low (canonical set is ~54 since P3-T6)"
+          skills=$(find platforms/claude-code-plugin/skills -mindepth 2 -maxdepth 2 -name SKILL.md | wc -l)
+          if [ "$skills" -ne 52 ]; then
+            echo "::error::Plugin skill count $skills does not match canonical set of 52 (50 active + 2 deprecated stubs)"
             exit 1
           fi
-          echo "ok: $dirs skill dirs"
+          echo "ok: $skills skills"
