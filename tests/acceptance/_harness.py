@@ -33,7 +33,11 @@ def template_sections(name: str) -> list[str]:
 
 
 def run_lint(target: Path) -> tuple[int, list[dict]]:
-    """Run sdd_doc_lint in JSON mode (Task 1.3) and return (returncode, findings)."""
+    """Run sdd_doc_lint in JSON mode (Task 1.3) and return (returncode, findings).
+
+    Re-raises with diagnostics on JSON decode failure rather than silently
+    returning empty findings (which would hide linter bugs).
+    """
     result = subprocess.run(
         [sys.executable, "-m", "sdd_doc_lint", str(target), "--format=json"],
         env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
@@ -43,8 +47,12 @@ def run_lint(target: Path) -> tuple[int, list[dict]]:
     )
     try:
         findings = json.loads(result.stdout or "[]")
-    except json.JSONDecodeError:
-        findings = []
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(
+            f"sdd_doc_lint produced non-JSON output (exit {result.returncode}):\n"
+            f"--- STDOUT ---\n{result.stdout!r}\n"
+            f"--- STDERR ---\n{result.stderr!r}"
+        ) from exc
     return result.returncode, findings
 
 
