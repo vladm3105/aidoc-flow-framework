@@ -7,10 +7,10 @@ metadata:
     - quality-assurance
     - review-team
   custom_fields:
-    skill_category: quality
+    skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.1.0"
+    version: "0.4.0"
     framework_spec_version: "0.10.0"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]

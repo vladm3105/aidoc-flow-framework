@@ -104,6 +104,7 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `v0.5.0` | Phase 4 close | Conformance & Independence milestone |
 | `v1.0.0` | Phase 5 close | Cutover milestone — multi-platform project complete |
 | `claude-code-plugin/v0.2.0` | Plugin 8-layer migration close | Claude Code plugin — full 8-layer SDD model (46 skills, 9-agent roster) + marketplace install |
+| `claude-code-plugin/v0.4.0` | Plugin release `0.4.0` close | Claude Code plugin — canonical 50 skills, bundled framework spec `0.10.0`, marketplace metadata aligned |
 | `framework/v0.2.0` | ADAPT close (`f22fe6a`) | Framework spec — project adaptation overlay (ADAPTATION surface, D-0019) |
 | `framework/v0.3.0` | CHG-D1 close (`f8e8bf5`) | Framework spec — GATE-SPEC framework-spec change gate (D-0020) |
 | `framework/v0.3.1` | CHG-D2 (`3753de2`) | Framework spec — governance decision register, GD-01 |
