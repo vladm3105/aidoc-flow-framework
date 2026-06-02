@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/vladm3105/aidoc-flow-framework/tests/scripts/test-acceptance.schema.json",
-  "title": "Acceptance test summary + per-element schemas (v1.1)",
-  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. v1.1 reflects the three-tier output separation: per-element YAML front-matter is combined with raw skill output in a single `.log` file under logs/<TS>/elements/. See examples/url-shortener/ACCEPTANCE_TEST_PLAN.md §3.",
+  "title": "Acceptance test summary + per-element schemas (v1.2)",
+  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. v1.2 adds RUNNING (in-flight) and INTERRUPTED (kill/abort before terminal) outcomes for resume support. v1.1 introduced the combined YAML front-matter + raw stdout layout. See examples/url-shortener/ACCEPTANCE_TEST_PLAN.md §3.",
   "definitions": {
     "outcome": {
       "type": "string",
-      "enum": ["PASS", "FAIL", "SKIP"]
+      "enum": ["PASS", "FAIL", "SKIP", "RUNNING", "INTERRUPTED"]
     },
     "kind": {
       "type": "string",
@@ -20,7 +20,7 @@
       "type": "object",
       "required": ["schema_version", "name", "kind", "phase", "outcome"],
       "properties": {
-        "schema_version": {"type": "string", "const": "1.1"},
+        "schema_version": {"type": "string", "const": "1.2"},
         "name": {"type": "string"},
         "kind": {"$ref": "#/definitions/kind"},
         "phase": {"$ref": "#/definitions/phase"},
@@ -39,7 +39,7 @@
       "type": "object",
       "required": ["schema_version", "run_id", "example", "outcome", "elements"],
       "properties": {
-        "schema_version": {"type": "string", "const": "1.1"},
+        "schema_version": {"type": "string", "const": "1.2"},
         "run_id": {"type": "string", "description": "LOG_TIMESTAMP keying logs/<TS>/"},
         "example": {"type": "string"},
         "plugin_version": {"type": ["string", "null"]},
