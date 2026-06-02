@@ -312,22 +312,29 @@ phase_0_bootstrap() {
     fi
   fi
 
-  # 0.5 API auth check (live mode only)
+  # 0.5 API auth check (live mode only).
+  # The claude CLI can authenticate via either ANTHROPIC_API_KEY (headless CI)
+  # or its own interactive login (local dev). Require the CLI present; require
+  # at least one usable auth path.
   if [[ "$LIVE_FLAG" == "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
-    if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
-      log_err "ANTHROPIC_API_KEY is unset; required for --live mode"
-      record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "ANTHROPIC_API_KEY unset"
-      _write_bootstrap_metas
-      return 1
-    fi
     if ! command -v claude >/dev/null 2>&1; then
       log_err "claude CLI not on PATH; required for --live mode"
       record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "claude CLI missing"
       _write_bootstrap_metas
       return 1
     fi
-    log_info "API auth check: PASS"
-    record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+      log_info "API auth check: ANTHROPIC_API_KEY set"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    elif claude -p "respond with the single word OK" 2>/dev/null | grep -qi 'OK'; then
+      log_info "API auth check: claude CLI interactive login OK"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    else
+      log_err "claude CLI returned non-OK on probe; ANTHROPIC_API_KEY unset and no interactive login"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "no usable auth path"
+      _write_bootstrap_metas
+      return 1
+    fi
   else
     log_info "live mode disabled; skipping API auth check"
     record_outcome "api-auth-check" "fixture" "bootstrap" "SKIP" 0
