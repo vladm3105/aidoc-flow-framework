@@ -2,4 +2,4 @@
 # The suite itself runs on the Python 3.11+ standard library (`unittest`);
 # only YAML parsing and JSON-schema validation need external packages.
 PyYAML>=6.0.3
-jsonschema>=4.20
+jsonschema>=4.26.0
