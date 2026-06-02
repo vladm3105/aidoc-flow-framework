@@ -60,7 +60,14 @@ aidoc-flow-framework/
 │   └── chg/                         GATE-SPEC diff-aware guard (spec_gate.py)
 │
 ├── tools/                 # sync-plugin-framework.sh, build-plugin-mirror.sh, sdd_doc_lint/
-├── examples/              # url-shortener/ end-to-end demo chain (BRD → IPLAN)
+├── examples/              # url-shortener/ — acceptance-test example
+│   └── url-shortener/
+│       ├── seed/                    Human input — the acceptance-test seed
+│       ├── chg/                     Human input — change request for Phase 2
+│       ├── docs/                    AI output — produced 8-layer chain (committed)
+│       ├── .aidoc/                  AI provenance — audit/review/remediation/validation
+│       │                            reports (committed). See framework/docs/AIDOC.md
+│       └── logs/<TS>/               Tool internals — gitignored, ephemeral
 └── plans/                           Migration record: per-task plans, DECISIONS.md, HANDOFF.md, …
 ```
 
