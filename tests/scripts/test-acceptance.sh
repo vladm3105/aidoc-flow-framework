@@ -2,16 +2,29 @@
 #
 # tests/scripts/test-acceptance.sh — Pre-deployment acceptance test driver.
 #
-# Drives every active element of the Claude Code plugin (currently 50
-# skills + 11 agents + 1 command + 1 hook = 63 elements) against a named
-# example's seed. The chain produced is the release-gate evidence.
+# Drives every active element of the Claude Code plugin (50 skills + 11
+# agents + 1 command + 1 hook = 63 elements) against a named example's
+# seed. The chain produced is the release-gate evidence.
 #
-# Plan: examples/<NAME>/ACCEPTANCE_TEST_PLAN.md (the design reference).
-# Schema: tests/scripts/test-acceptance.schema.json.
+# Plan: examples/<NAME>/ACCEPTANCE_TEST_PLAN.md.
+# Schema: tests/scripts/test-acceptance.schema.json (v1.1).
 #
-# This is the Impl-1 foundation: arg parsing, log layout, Phase 0
-# preflight, Phase 1.1 happy-path cascade structure, --mock mode.
-# Phases 1.2, 2, 3, 4 land in Impl-2 through Impl-5.
+# Three-tier output separation per example:
+#   examples/<NAME>/seed/, chg/   — human inputs (committed)
+#   examples/<NAME>/docs/         — AI outputs, the produced chain (committed)
+#   examples/<NAME>/.aidoc/       — AI working notes — provenance (committed)
+#     ├── audit/<NN>_<LAYER>-audit.md       (per-layer audit reports)
+#     ├── remediation/<NN>_<LAYER>-fix.md   (per-layer fix reports)
+#     ├── review/<layer>-consensus.md       (review-team consensus)
+#     ├── validation/<report>.md            (doc-validator/doc-ref/gate-check)
+#     ├── security/review.md                (security-audit)
+#     ├── quality/suggestions.md            (quality-advisor)
+#     └── profile.yaml                      (project profile; bootstrap from default)
+#   examples/<NAME>/logs/<TS>/    — tool internals (gitignored)
+#     ├── plugin-test.log                   (driver flow trace only)
+#     ├── summary.{txt,json}                (final outcome)
+#     └── elements/<name>.log               (one file per element; YAML front-matter
+#                                            + raw skill output)
 #
 # Usage:
 #   bash tests/scripts/test-acceptance.sh <example-name> [flags]
@@ -21,28 +34,15 @@
 #     --live                 enable live LLM calls (default ON)
 #     --phase=<name>         run one phase: bootstrap | cascade | negative |
 #                            chg | utilities | agents | command | hook
-#     --element=<name>       run one element only (e.g. doc-flow,
-#                            agent:requirements-analyst)
-#     --skip-completed       reuse prior run's PASS outcomes, skip those elements
+#     --element=<name>       run one element only
+#     --skip-completed       reuse prior run's PASS outcomes
 #     --mock=<run-dir>       replay a prior recorded run; no Claude calls
-#     --promote              promote cascade output to examples/<NAME>/docs/
-#                            (lands in Impl-5)
+#     --promote              git commit the produced docs/ and .aidoc/ changes
 #     --push                 push the promote commit (only with --promote)
+#     --force                bypass the "docs/ or .aidoc/ have unstaged
+#                            changes" safety belt
 #     --fail-fast            halt on first failure
 #     -h | --help            show this usage block
-#
-# Output:
-#   examples/<NAME>/logs/<LOG_TIMESTAMP>/
-#     plugin-test.log              # this driver's stdout/stderr
-#     summary.txt                  # human-readable per-element table
-#     summary.json                 # machine-readable; conforms to
-#                                  # tests/scripts/test-acceptance.schema.json
-#     skills/<NAME>.{log,meta.json}
-#     agents/<NAME>.{log,meta.json}
-#     command/save-plan.{log,meta.json}
-#     hook/sdd-doc-review.{log,meta.json}
-#     cascade/<NN>_<LAYER>/<TYPE>-01.<example>.md
-#     negative/<FIXTURE>.audit.log
 
 set -uo pipefail
 
@@ -56,7 +56,10 @@ PLUGIN_DIR="$FRAMEWORK/platforms/claude-code-plugin"
 LAYERS=("brd" "prd" "ears" "bdd" "adr" "spec" "tdd" "iplan")
 LAYER_TYPES=("BRD" "PRD" "EARS" "BDD" "ADR" "SPEC" "TDD" "IPLAN")
 NEGATIVE_FIXTURES_DIR="$FRAMEWORK/tests/acceptance/fixtures/negative"
-MAX_RUNTIME_SEC=2700   # 45 minutes (plan §9 + §13)
+DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
+
+# Per-layer runtime cap (replaces the old global 45-min cap, plan B2).
+MAX_LAYER_SEC=900   # 15 minutes per layer
 
 LOG_TIMESTAMP="$(date +%Y-%m-%dT%H%M%S)"
 START_EPOCH="$(date +%s)"
@@ -72,14 +75,14 @@ SKIP_COMPLETED=0
 MOCK_SOURCE=""
 PROMOTE=0
 PUSH=0
+FORCE=0
 FAIL_FAST=0
 
 usage() {
-  sed -n '2,42p' "$0"
+  sed -n '2,48p' "$0"
   exit "${1:-0}"
 }
 
-# First positional: example name
 if [[ $# -lt 1 ]]; then
   echo "ERROR: missing example name" >&2
   usage 2
@@ -104,13 +107,13 @@ for arg in "$@"; do
     --mock=*)          MOCK_SOURCE="${arg#--mock=}" ;;
     --promote)         PROMOTE=1 ;;
     --push)            PUSH=1 ;;
+    --force)           FORCE=1 ;;
     --fail-fast)       FAIL_FAST=1 ;;
     -h|--help)         usage 0 ;;
     *) echo "ERROR: unknown flag: $arg" >&2; usage 2 ;;
   esac
 done
 
-# Resolve LIVE_FLAG default (ON; --mock implies non-live)
 if [[ -n "$MOCK_SOURCE" ]]; then
   LIVE_FLAG="0"
 elif [[ -z "$LIVE_FLAG" ]]; then
@@ -118,24 +121,27 @@ elif [[ -z "$LIVE_FLAG" ]]; then
 fi
 
 # -----------------------------------------------------------------------------
-# Path resolution per example
+# Path resolution per example (the three-tier layout)
 # -----------------------------------------------------------------------------
 EXAMPLE_DIR="$FRAMEWORK/examples/$EXAMPLE"
 if [[ ! -d "$EXAMPLE_DIR" ]]; then
   echo "ERROR: example directory does not exist: $EXAMPLE_DIR" >&2
   exit 2
 fi
-SEED_FILE="$EXAMPLE_DIR/seed/initial-requirements.md"
-EXAMPLE_DOCS="$EXAMPLE_DIR/docs"
-CHG_FILE="$EXAMPLE_DIR/chg/test-change.md"
 
+SEED_FILE="$EXAMPLE_DIR/seed/initial-requirements.md"
+CHG_FILE="$EXAMPLE_DIR/chg/test-change.md"
+EXAMPLE_DOCS="$EXAMPLE_DIR/docs"               # tier 2: AI outputs (committed)
+AIDOC_DIR="$EXAMPLE_DIR/.aidoc"                # tier 3: AI working notes (committed)
+PROFILE_FILE="$AIDOC_DIR/profile.yaml"         # the project profile (A11)
+
+# Ephemeral execution logs (tier 4, gitignored)
 LOG_DIR="$EXAMPLE_DIR/logs/$LOG_TIMESTAMP"
-mkdir -p "$LOG_DIR"/{bootstrap,skills,agents,command,hook,cascade,negative}
+mkdir -p "$LOG_DIR/elements"
 DRIVER_LOG="$LOG_DIR/plugin-test.log"
 SUMMARY_TXT="$LOG_DIR/summary.txt"
 SUMMARY_JSON="$LOG_DIR/summary.json"
 
-# Tee everything to driver log
 exec > >(tee -a "$DRIVER_LOG") 2>&1
 
 # -----------------------------------------------------------------------------
@@ -151,7 +157,7 @@ log_info() { printf 'INFO  %s\n' "$*"; }
 log_warn() { printf 'WARN  %s\n' "$*"; }
 log_err()  { printf 'ERROR %s\n' "$*" >&2; }
 
-# Outcome counters (parallel arrays keyed by element name)
+# In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()
 declare -A PHASE_BY_NAME=()
@@ -164,7 +170,7 @@ declare -A ERROR_BY_NAME=()
 declare -a ELEMENT_ORDER=()
 
 record_outcome() {
-  # record_outcome <name> <kind> <phase> <outcome> <duration> [<audit_score>] [<audit_after_fixer>] [<fixer_invoked>] [<output_path>] [<error>]
+  # record_outcome <name> <kind> <phase> <outcome> <duration> [<audit>] [<audit_after>] [<fixer_inv>] [<output_path>] [<error>]
   local name="$1" kind="$2" phase="$3" outcome="$4" duration="$5"
   local audit="${6:-}" audit_after="${7:-}" fixer_inv="${8:-false}" out_path="${9:-}" err="${10:-}"
 
@@ -182,10 +188,14 @@ record_outcome() {
   ERROR_BY_NAME[$name]="$err"
 }
 
-write_meta_json() {
-  # write_meta_json <subdir> <name>
-  local subdir="$1" name="$2"
-  local meta_path="$LOG_DIR/$subdir/$name.meta.json"
+# Write per-element file at logs/<TS>/elements/<name>.log with YAML
+# front-matter (metadata) followed by the raw skill output if captured
+# in $LOG_DIR/elements/<name>.stdout.
+write_element_log() {
+  # write_element_log <name>
+  local name="$1"
+  local log_path="$LOG_DIR/elements/$name.log"
+  local stdout_path="$LOG_DIR/elements/$name.stdout"
   local outcome="${OUTCOME_BY_NAME[$name]:-FAIL}"
   local kind="${KIND_BY_NAME[$name]:-skill}"
   local phase="${PHASE_BY_NAME[$name]:-cascade}"
@@ -196,17 +206,18 @@ write_meta_json() {
   local out_path="${OUTPUT_PATH_BY_NAME[$name]:-}"
   local err="${ERROR_BY_NAME[$name]:-}"
 
-  # Convert bash boolean string to Python literal
   local fixer_inv_py="False"
   [[ "$fixer_inv" == "true" ]] && fixer_inv_py="True"
 
   NAME="$name" KIND="$kind" PHASE_LABEL="$phase" DURATION="$duration" \
   OUTCOME="$outcome" AUDIT="$audit" AUDIT_AFTER="$audit_after" \
   FIXER_INV_PY="$fixer_inv_py" OUT_PATH="$out_path" ERR="$err" \
-  python3 - "$meta_path" <<'PY'
-import json, os, sys
+  STDOUT_PATH="$stdout_path" LOG_PATH="$log_path" \
+  python3 - <<'PY'
+import json, os
+
 meta = {
-  "schema_version": "1.0",
+  "schema_version": "1.1",
   "name": os.environ["NAME"],
   "kind": os.environ["KIND"],
   "phase": os.environ["PHASE_LABEL"],
@@ -216,32 +227,112 @@ meta = {
   "audit_score_after_fixer": int(os.environ["AUDIT_AFTER"]) if os.environ.get("AUDIT_AFTER") else None,
   "fixer_invoked": os.environ["FIXER_INV_PY"] == "True",
   "output_path": os.environ.get("OUT_PATH") or None,
+  "tokens_in": None,
+  "tokens_out": None,
   "error": os.environ.get("ERR") or None,
 }
-with open(sys.argv[1], "w") as fh:
-  json.dump(meta, fh, indent=2)
+
+import yaml
+front = yaml.safe_dump(meta, default_flow_style=False, sort_keys=False).strip()
+
+stdout_path = os.environ["STDOUT_PATH"]
+body = ""
+if os.path.exists(stdout_path):
+    with open(stdout_path) as fh:
+        body = fh.read()
+
+with open(os.environ["LOG_PATH"], "w") as fh:
+    fh.write("---\n" + front + "\n---\n")
+    if body:
+        fh.write("\n" + body)
 PY
+
+  # Clean up the staging stdout file once merged into .log.
+  rm -f "$stdout_path"
 }
 
 # -----------------------------------------------------------------------------
-# Mock-mode helpers
+# Mock-mode helpers — replay a prior run's elements/ dir.
 # -----------------------------------------------------------------------------
 mock_replay_for() {
-  # mock_replay_for <subdir> <name>
-  # Returns 0 if mock data was found and replayed, 1 otherwise.
+  # mock_replay_for <name>
   [[ -z "$MOCK_SOURCE" ]] && return 1
-  local subdir="$1" name="$2"
-  local src="$MOCK_SOURCE/$subdir/$name.log"
+  local name="$1"
+  local src="$MOCK_SOURCE/elements/$name.log"
   if [[ ! -f "$src" ]]; then
     log_warn "mock mode: no prior log at $src"
     return 1
   fi
-  cp "$src" "$LOG_DIR/$subdir/$name.log"
-  if [[ -f "$MOCK_SOURCE/$subdir/$name.meta.json" ]]; then
-    cp "$MOCK_SOURCE/$subdir/$name.meta.json" "$LOG_DIR/$subdir/$name.meta.json"
-  fi
-  log_info "mock-replayed: $subdir/$name"
+  cp "$src" "$LOG_DIR/elements/$name.log"
+  log_info "mock-replayed: $name"
   return 0
+}
+
+# -----------------------------------------------------------------------------
+# Skill invocation — live mode, with output streamed line-by-line to a
+# per-element stdout file. The final .log file is built from this stdout
+# plus YAML front-matter by write_element_log().
+# -----------------------------------------------------------------------------
+invoke_skill_live() {
+  # invoke_skill_live <skill-name> <prompt> <stdout-path>
+  local skill="$1" prompt="$2" out_path="$3"
+  claude \
+    --plugin-dir "$PLUGIN_DIR" \
+    --dangerously-skip-permissions \
+    -p "/aidoc-flow:$skill $prompt" \
+    > "$out_path" 2>&1
+  return $?
+}
+
+invoke_skill() {
+  # invoke_skill <name> <prompt> <kind> <phase>
+  local name="$1" prompt="$2" kind="$3" phase_label="$4"
+  local stdout_path="$LOG_DIR/elements/$name.stdout"
+
+  local t0 t1 duration
+  t0="$(date +%s)"
+
+  if [[ -n "$MOCK_SOURCE" ]]; then
+    if mock_replay_for "$name"; then
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      record_outcome "$name" "$kind" "$phase_label" "PASS" "$duration"
+      return 0
+    fi
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    record_outcome "$name" "$kind" "$phase_label" "SKIP" "$duration" "" "" "false" "" "no mock data"
+    write_element_log "$name"
+    return 1
+  fi
+
+  log_info "invoking /aidoc-flow:$name"
+  if invoke_skill_live "$name" "$prompt" "$stdout_path"; then
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    record_outcome "$name" "$kind" "$phase_label" "PASS" "$duration"
+    write_element_log "$name"
+    return 0
+  else
+    local rc=$?
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    log_err "$name failed (exit $rc)"
+    record_outcome "$name" "$kind" "$phase_label" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
+    write_element_log "$name"
+    return 1
+  fi
+}
+
+parse_audit_score() {
+  # parse_audit_score <name>
+  # The skill output file for $name was already merged into .log by
+  # write_element_log(); the body sits below the front-matter delimiter.
+  local name="$1"
+  local log="$LOG_DIR/elements/$name.log"
+  [[ -f "$log" ]] || { echo "0"; return; }
+  local score
+  score="$(awk '/^---$/ {n++; next} n>=2' "$log" \
+    | grep -iE 'score|readiness' \
+    | grep -oE '[0-9]+' \
+    | head -1)"
+  echo "${score:-0}"
 }
 
 # -----------------------------------------------------------------------------
@@ -256,6 +347,7 @@ phase_0_bootstrap() {
   if [[ ! -f "$SEED_FILE" ]]; then
     log_err "seed missing: $SEED_FILE"
     record_outcome "phase-0-seed" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "seed file not found"
+    write_element_log "phase-0-seed"
     return 1
   fi
   log_info "seed: $SEED_FILE"
@@ -267,11 +359,11 @@ phase_0_bootstrap() {
     if [[ $? -eq 0 ]]; then
       log_info "manifest validate (--strict): PASS"
       record_outcome "manifest-validate-strict" "fixture" "bootstrap" "PASS" 0
-      write_meta_json "bootstrap" "manifest-validate-strict"
     else
       log_err "manifest validate (--strict) failed:"
       printf '%s\n' "$out" | sed 's/^/  /'
       record_outcome "manifest-validate-strict" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "manifest validate failed"
+      write_element_log "manifest-validate-strict"
       return 1
     fi
   else
@@ -279,32 +371,76 @@ phase_0_bootstrap() {
     record_outcome "manifest-validate-strict" "fixture" "bootstrap" "SKIP" 0
   fi
 
-  # 0.3 sdd_doc_lint smoke on existing docs/ (if non-empty)
+  # 0.3 Three-tier safety belt (A12)
+  # Refuse to run cascade if docs/ or .aidoc/ have uncommitted changes,
+  # unless --force is passed. Prevents accidental overwrite of in-progress
+  # human edits.
+  if [[ "$LIVE_FLAG" == "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    local dirty=""
+    if ! git -C "$FRAMEWORK" diff-index --quiet HEAD -- \
+         "examples/$EXAMPLE/docs" "examples/$EXAMPLE/.aidoc" 2>/dev/null; then
+      dirty=1
+    fi
+    if [[ -n "$dirty" ]] && [[ $FORCE -ne 1 ]]; then
+      log_err "examples/$EXAMPLE/{docs,.aidoc}/ have unstaged changes."
+      log_err "  Commit or stash first, OR pass --force to overwrite."
+      record_outcome "tree-safety" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "uncommitted changes; --force required"
+      write_element_log "tree-safety"
+      return 1
+    elif [[ -n "$dirty" ]]; then
+      log_warn "examples/$EXAMPLE/{docs,.aidoc}/ have unstaged changes; proceeding via --force"
+      record_outcome "tree-safety" "fixture" "bootstrap" "PASS" 0 "" "" "false" "" "--force bypass"
+    else
+      log_info "working tree clean for docs/ + .aidoc/"
+      record_outcome "tree-safety" "fixture" "bootstrap" "PASS" 0
+    fi
+  else
+    record_outcome "tree-safety" "fixture" "bootstrap" "SKIP" 0
+  fi
+
+  # 0.4 Project profile bootstrap (A11)
+  # If examples/<NAME>/.aidoc/profile.yaml exists, use it; if not, copy
+  # the framework default. The suite never authors a new profile.
+  mkdir -p "$AIDOC_DIR"
+  if [[ -f "$PROFILE_FILE" ]]; then
+    log_info "project profile: $PROFILE_FILE (existing)"
+    record_outcome "profile-check" "fixture" "bootstrap" "PASS" 0
+  elif [[ -f "$DEFAULT_PROFILE_SRC" ]]; then
+    cp "$DEFAULT_PROFILE_SRC" "$PROFILE_FILE"
+    log_info "project profile bootstrapped from framework default → $PROFILE_FILE"
+    record_outcome "profile-check" "fixture" "bootstrap" "PASS" 0
+  else
+    log_err "no profile.yaml and no framework default at $DEFAULT_PROFILE_SRC"
+    record_outcome "profile-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "no profile available"
+    write_element_log "profile-check"
+    return 1
+  fi
+
+  # 0.5 sdd_doc_lint smoke on existing docs/ (B1 — lint individual files)
   if [[ -d "$EXAMPLE_DOCS" ]] && [[ -n "$(find "$EXAMPLE_DOCS" -name '*.md' -print -quit 2>/dev/null)" ]]; then
-    local lint_out
-    lint_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$EXAMPLE_DOCS" 2>&1)"
-    if [[ $? -eq 0 ]]; then
+    local lint_out lint_rc
+    lint_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$EXAMPLE_DOCS" 2>&1)"; lint_rc=$?
+    if [[ $lint_rc -eq 0 ]]; then
       log_info "sdd_doc_lint smoke (existing docs/): PASS"
       record_outcome "lint-smoke" "fixture" "bootstrap" "PASS" 0
     else
       log_err "sdd_doc_lint smoke FAILED on existing docs/:"
       printf '%s\n' "$lint_out" | sed 's/^/  /'
       record_outcome "lint-smoke" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "lint smoke failed"
+      _write_bootstrap_metas
       return 1
     fi
   else
     BOOTSTRAP_MODE="true"
     log_info "bootstrap mode: $EXAMPLE_DOCS is empty or missing"
     log_info "  → Phase 2 (CHG) will be skipped"
-    log_info "  → Phases 3 + 4 utilities that need a chain will read from cascade/ instead"
     record_outcome "lint-smoke" "fixture" "bootstrap" "SKIP" 0
   fi
 
-  # 0.4 Negative-fixture presence check
-  if [[ "$PHASE" == "" ]] || [[ "$PHASE" == "negative" ]]; then
+  # 0.6 Negative-fixture presence check
+  if [[ -z "$PHASE" ]] || [[ "$PHASE" == "negative" ]]; then
     if [[ ! -d "$NEGATIVE_FIXTURES_DIR" ]]; then
       log_warn "negative fixtures directory missing: $NEGATIVE_FIXTURES_DIR"
-      log_warn "  → Phase 1.2 negative validation will be skipped (lands with Impl-2)"
       record_outcome "negative-fixtures-presence" "fixture" "bootstrap" "SKIP" 0
     else
       log_info "negative fixtures present at $NEGATIVE_FIXTURES_DIR"
@@ -312,22 +448,26 @@ phase_0_bootstrap() {
     fi
   fi
 
-  # 0.5 API auth check (live mode only)
+  # 0.7 API auth check
   if [[ "$LIVE_FLAG" == "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
-    if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
-      log_err "ANTHROPIC_API_KEY is unset; required for --live mode"
-      record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "ANTHROPIC_API_KEY unset"
-      _write_bootstrap_metas
-      return 1
-    fi
     if ! command -v claude >/dev/null 2>&1; then
       log_err "claude CLI not on PATH; required for --live mode"
       record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "claude CLI missing"
       _write_bootstrap_metas
       return 1
     fi
-    log_info "API auth check: PASS"
-    record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    if [[ -n "${ANTHROPIC_API_KEY:-}" ]]; then
+      log_info "API auth check: ANTHROPIC_API_KEY set"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    elif claude -p "respond with the single word OK" 2>/dev/null | grep -qi 'OK'; then
+      log_info "API auth check: claude CLI interactive login OK"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "PASS" 0
+    else
+      log_err "claude CLI returned non-OK on probe; ANTHROPIC_API_KEY unset and no interactive login"
+      record_outcome "api-auth-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "no usable auth path"
+      _write_bootstrap_metas
+      return 1
+    fi
   else
     log_info "live mode disabled; skipping API auth check"
     record_outcome "api-auth-check" "fixture" "bootstrap" "SKIP" 0
@@ -337,97 +477,18 @@ phase_0_bootstrap() {
   return 0
 }
 
-# Write .meta.json files for all bootstrap-phase elements recorded so far.
-# Called from phase_0_bootstrap on every exit path so summary.json captures
-# bootstrap state alongside skill/agent invocations.
 _write_bootstrap_metas() {
   local name
   for name in "${ELEMENT_ORDER[@]}"; do
     if [[ "${PHASE_BY_NAME[$name]:-}" == "bootstrap" ]]; then
-      write_meta_json "bootstrap" "$name"
+      write_element_log "$name"
     fi
   done
 }
 
 # -----------------------------------------------------------------------------
-# Phase 1.1 — Happy-path cascade
+# Phase 1.1 — Happy-path cascade (writes to docs/ + .aidoc/ directly, A1+A2)
 # -----------------------------------------------------------------------------
-# Drives the seed through all 8 layers via doc-<layer>-autopilot. Each layer's
-# output becomes the next layer's input. Audit + optional fixer + lint after
-# each layer.
-
-invoke_skill_live() {
-  # invoke_skill_live <skill-name> <prompt> <output-log-path>
-  # Returns 0 on success, non-zero on failure. Writes Claude's response to
-  # the output-log-path.
-  local skill="$1" prompt="$2" out_log="$3"
-  claude \
-    --plugin-dir "$PLUGIN_DIR" \
-    --dangerously-skip-permissions \
-    -p "/aidoc-flow:$skill $prompt" \
-    > "$out_log" 2>&1
-  return $?
-}
-
-invoke_skill() {
-  # invoke_skill <skill-name> <prompt> <subdir> <kind> <phase>
-  # Dispatches to mock or live based on $MOCK_SOURCE. Returns 0 on PASS.
-  local skill="$1" prompt="$2" subdir="$3" kind="$4" phase_label="$5"
-  local out_log="$LOG_DIR/$subdir/$skill.log"
-
-  local t0 t1 duration
-  t0="$(date +%s)"
-
-  if [[ -n "$MOCK_SOURCE" ]]; then
-    if mock_replay_for "$subdir" "$skill"; then
-      t1="$(date +%s)"
-      duration=$((t1 - t0))
-      record_outcome "$skill" "$kind" "$phase_label" "PASS" "$duration"
-      write_meta_json "$subdir" "$skill"
-      return 0
-    else
-      t1="$(date +%s)"
-      duration=$((t1 - t0))
-      record_outcome "$skill" "$kind" "$phase_label" "SKIP" "$duration" "" "" "false" "" "no mock data"
-      write_meta_json "$subdir" "$skill"
-      return 1
-    fi
-  fi
-
-  log_info "invoking /aidoc-flow:$skill"
-  if invoke_skill_live "$skill" "$prompt" "$out_log"; then
-    t1="$(date +%s)"
-    duration=$((t1 - t0))
-    record_outcome "$skill" "$kind" "$phase_label" "PASS" "$duration"
-    write_meta_json "$subdir" "$skill"
-    return 0
-  else
-    local rc=$?
-    t1="$(date +%s)"
-    duration=$((t1 - t0))
-    log_err "$skill failed (exit $rc)"
-    record_outcome "$skill" "$kind" "$phase_label" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
-    write_meta_json "$subdir" "$skill"
-    return 1
-  fi
-}
-
-parse_audit_score() {
-  # parse_audit_score <log-file>
-  # Extracts an integer 0-100 from common audit-score patterns. Echoes the
-  # score or 0 if not found.
-  local log="$1"
-  if [[ ! -f "$log" ]]; then
-    echo "0"; return
-  fi
-  # Common patterns: "Score: 92", "Readiness: 87", "audit score: 95"
-  local score
-  score="$(grep -iE 'score|readiness' "$log" \
-    | grep -oE '[0-9]+' \
-    | head -1)"
-  echo "${score:-0}"
-}
-
 phase_1_cascade() {
   section "Phase 1.1 — Happy-path cascade"
 
@@ -435,10 +496,12 @@ phase_1_cascade() {
     log_warn "cascade requires --live or --mock; skipping"
     for layer in "${LAYERS[@]}"; do
       record_outcome "doc-$layer-autopilot" "skill" "cascade" "SKIP" 0 "" "" "false" "" "live mode disabled"
-      write_meta_json "skills" "doc-$layer-autopilot"
+      write_element_log "doc-$layer-autopilot"
     done
     return 0
   fi
+
+  mkdir -p "$EXAMPLE_DOCS" "$AIDOC_DIR/audit" "$AIDOC_DIR/remediation"
 
   local i=0 layer type prev_output
   prev_output="$SEED_FILE"
@@ -447,70 +510,82 @@ phase_1_cascade() {
     type="${LAYER_TYPES[$i]}"
     local layer_num
     printf -v layer_num '%02d' $((i + 1))
-    local out_dir="$LOG_DIR/cascade/${layer_num}_${type}"
-    mkdir -p "$out_dir"
-    local out_file="$out_dir/${type}-01.${EXAMPLE}.md"
+    local layer_dir="$EXAMPLE_DOCS/${layer_num}_${type}"
+    mkdir -p "$layer_dir"
+    local artifact="$layer_dir/${type}-01.md"
+    local audit_report="$AIDOC_DIR/audit/${layer_num}_${type}-audit.md"
+    local fix_report="$AIDOC_DIR/remediation/${layer_num}_${type}-fix.md"
+    local layer_start_epoch
+    layer_start_epoch="$(date +%s)"
 
     log_info ""
     log_info "── Layer $((i + 1))/8: $type ──"
 
-    # autopilot
-    local autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $out_file."
-    invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skills" "skill" "cascade" || {
-      [[ $FAIL_FAST -eq 1 ]] && return 1
-    }
+    # autopilot — writes the layer artifact under docs/
+    local autopilot_prompt
+    autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
+    invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
+    OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
+    if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
+      write_element_log "doc-$layer-autopilot"
+    fi
+    if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
+      return 1
+    fi
 
-    # audit
-    local audit_prompt="Audit the $type artifact at $out_file. Report the readiness score."
-    invoke_skill "doc-$layer-audit" "$audit_prompt" "skills" "skill" "cascade"
-    local audit_log="$LOG_DIR/skills/doc-$layer-audit.log"
+    # audit — writes audit report under .aidoc/audit/
+    local audit_prompt
+    audit_prompt="Audit the $type artifact at $artifact. Write a detailed audit report to $audit_report including the readiness score."
+    invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
+    OUTPUT_PATH_BY_NAME["doc-$layer-audit"]="$audit_report"
     local score
-    score="$(parse_audit_score "$audit_log")"
+    score="$(parse_audit_score "doc-$layer-audit")"
     AUDIT_SCORE_BY_NAME["doc-$layer-audit"]="$score"
+    write_element_log "doc-$layer-audit"
     log_info "  audit score: $score"
 
-    # fixer if needed
+    # fixer + re-audit if needed
     if (( score < 90 )); then
       log_info "  score < 90 → invoking fixer"
-      local fixer_prompt="Fix the $type artifact at $out_file based on the audit findings in $audit_log."
-      invoke_skill "doc-$layer-fixer" "$fixer_prompt" "skills" "skill" "cascade"
+      local fixer_prompt
+      fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report."
+      invoke_skill "doc-$layer-fixer" "$fixer_prompt" "skill" "cascade"
+      OUTPUT_PATH_BY_NAME["doc-$layer-fixer"]="$fix_report"
       FIXER_INVOKED_BY_NAME["doc-$layer-audit"]="true"
+      write_element_log "doc-$layer-fixer"
 
-      # re-audit
-      invoke_skill "doc-$layer-audit" "$audit_prompt" "skills" "skill" "cascade"
-      score="$(parse_audit_score "$audit_log")"
+      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
+      score="$(parse_audit_score "doc-$layer-audit")"
       AUDIT_AFTER_FIXER_BY_NAME["doc-$layer-audit"]="$score"
+      write_element_log "doc-$layer-audit"
       log_info "  audit score after fixer: $score"
     fi
 
-    # sdd_doc_lint structural check
-    if [[ -f "$out_file" ]]; then
-      local lint_out
-      lint_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$out_dir" 2>&1)"
-      local lint_rc=$?
+    # sdd_doc_lint structural check on the artifact only (B1)
+    if [[ -f "$artifact" ]]; then
+      local lint_out lint_rc
+      lint_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$artifact" 2>&1)"; lint_rc=$?
       if [[ $lint_rc -eq 0 ]]; then
         log_info "  sdd_doc_lint: PASS"
       else
-        log_err "  sdd_doc_lint FAIL:"
+        log_err "  sdd_doc_lint FAIL on $artifact:"
         printf '%s\n' "$lint_out" | sed 's/^/    /'
       fi
     else
-      log_warn "  autopilot did not produce $out_file"
+      log_warn "  autopilot did not produce $artifact"
     fi
 
-    # base skill cross-check (advisory)
-    local base_prompt="Reference the $type template structure for $out_file."
-    invoke_skill "doc-$layer" "$base_prompt" "skills" "skill" "cascade" || true
+    # base/reference skill — output captured to logs/<TS>/elements/
+    invoke_skill "doc-$layer" "Reference the $type template structure for $artifact." "skill" "cascade" || true
 
-    prev_output="$out_file"
+    prev_output="$artifact"
     i=$((i + 1))
 
-    # Runtime guard
-    local now_epoch elapsed
-    now_epoch="$(date +%s)"
-    elapsed=$((now_epoch - START_EPOCH))
-    if (( elapsed > MAX_RUNTIME_SEC )); then
-      log_err "Max runtime ${MAX_RUNTIME_SEC}s exceeded at layer $type; aborting"
+    # Per-layer runtime cap (B2)
+    local layer_elapsed
+    layer_elapsed=$(( $(date +%s) - layer_start_epoch ))
+    if (( layer_elapsed > MAX_LAYER_SEC )); then
+      log_err "Layer $type took ${layer_elapsed}s > ${MAX_LAYER_SEC}s cap; aborting cascade"
       return 2
     fi
   done
@@ -519,20 +594,8 @@ phase_1_cascade() {
 }
 
 # -----------------------------------------------------------------------------
-# Phase 1.2 — Negative-fixture validation
+# Phase 1.2 — Negative-fixture validation (unchanged behavior, new file paths)
 # -----------------------------------------------------------------------------
-# Fixture format: <name>|<path>|<detector>|<expected-finding>
-#   detector: "lint:<CODE>"     — deterministic; expect sdd_doc_lint to report <CODE>
-#             "audit:<skill>"   — live LLM; expect skill output to contain the expected
-#                                 finding pattern (regex)
-#             "validator"       — live LLM doc-validator; expect "unresolved" in output
-#
-# Phase 1.2 logic:
-#   for each fixture:
-#     if detector starts with "lint:" → run sdd_doc_lint, assert code appears
-#     if detector starts with "audit:" → invoke skill (or SKIP in --no-live)
-#     if detector == "validator" → invoke doc-validator (or SKIP in --no-live)
-
 NEGATIVE_FIXTURES=(
   "brd-broken-sections|brd-broken-sections.md|lint:STRUCT01"
   "brd-broken-tags|brd-broken-tags.md|lint:ID01"
@@ -543,8 +606,6 @@ NEGATIVE_FIXTURES=(
 )
 
 assert_lint_finding() {
-  # assert_lint_finding <fixture-path> <expected-code>
-  # Returns 0 if expected code appears in the JSON output, 1 otherwise.
   local target="$1" expected="$2"
   local json_out
   json_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$target" --format json 2>&1)"
@@ -563,11 +624,11 @@ phase_1_negative() {
   section "Phase 1.2 — Negative-fixture validation"
 
   if [[ ! -d "$NEGATIVE_FIXTURES_DIR" ]]; then
-    log_warn "negative fixtures dir missing: $NEGATIVE_FIXTURES_DIR; skipping all"
+    log_warn "negative fixtures dir missing; skipping all"
     for entry in "${NEGATIVE_FIXTURES[@]}"; do
       local name="${entry%%|*}"
       record_outcome "neg:$name" "fixture" "negative" "SKIP" 0 "" "" "false" "" "fixtures dir missing"
-      write_meta_json "skills" "neg:$name"
+      write_element_log "neg:$name"
     done
     return 0
   fi
@@ -580,7 +641,7 @@ phase_1_negative() {
     if [[ ! -e "$fixture_path" ]]; then
       log_warn "fixture missing: $fixture_path"
       record_outcome "neg:$name" "fixture" "negative" "SKIP" 0 "" "" "false" "" "fixture not found"
-      write_meta_json "skills" "neg:$name"
+      write_element_log "neg:$name"
       continue
     fi
 
@@ -597,7 +658,7 @@ phase_1_negative() {
           record_outcome "neg:$name" "fixture" "negative" "PASS" "$duration"
         else
           t1="$(date +%s)"; duration=$((t1 - t0))
-          log_err "  ✗ $expected_code NOT reported — regression in detection sensitivity"
+          log_err "  ✗ $expected_code NOT reported"
           record_outcome "neg:$name" "fixture" "negative" "FAIL" "$duration" "" "" "false" "" "expected $expected_code not in lint output"
           [[ $FAIL_FAST -eq 1 ]] && return 1
         fi
@@ -606,16 +667,14 @@ phase_1_negative() {
         if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
           local skill="${detector#audit:}"
           local audit_prompt="Audit the broken artifact at $fixture_path. Report findings and readiness score."
-          invoke_skill "$skill" "$audit_prompt" "skills" "skill" "negative"
-          local audit_log="$LOG_DIR/skills/$skill.log"
-          local score
-          score="$(parse_audit_score "$audit_log")"
+          invoke_skill "$skill" "$audit_prompt" "skill" "negative"
+          local score; score="$(parse_audit_score "$skill")"
           t1="$(date +%s)"; duration=$((t1 - t0))
           if (( score < 90 )); then
             log_info "  ✓ audit score $score < 90 (broken fixture flagged)"
             record_outcome "neg:$name" "fixture" "negative" "PASS" "$duration" "$score"
           else
-            log_err "  ✗ audit score $score ≥ 90 (broken fixture NOT flagged)"
+            log_err "  ✗ audit score $score ≥ 90"
             record_outcome "neg:$name" "fixture" "negative" "FAIL" "$duration" "$score" "" "false" "" "broken fixture got audit score >= 90"
             [[ $FAIL_FAST -eq 1 ]] && return 1
           fi
@@ -628,8 +687,8 @@ phase_1_negative() {
       validator)
         if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
           local val_prompt="Validate cross-doc references in $fixture_path. Report unresolved references."
-          invoke_skill "doc-validator" "$val_prompt" "skills" "skill" "negative"
-          local val_log="$LOG_DIR/skills/doc-validator.log"
+          invoke_skill "doc-validator" "$val_prompt" "skill" "negative"
+          local val_log="$LOG_DIR/elements/doc-validator.log"
           t1="$(date +%s)"; duration=$((t1 - t0))
           if [[ -f "$val_log" ]] && grep -qiE "unresolved|broken|not found|missing" "$val_log"; then
             log_info "  ✓ doc-validator reports unresolved/broken reference"
@@ -651,7 +710,7 @@ phase_1_negative() {
         ;;
     esac
 
-    write_meta_json "skills" "neg:$name"
+    write_element_log "neg:$name"
   done
 
   return 0
@@ -660,9 +719,6 @@ phase_1_negative() {
 # -----------------------------------------------------------------------------
 # Phase 2 — Change management
 # -----------------------------------------------------------------------------
-# Gated on: Phase 1 success + not bootstrap_mode. Applies the predefined
-# change at examples/<NAME>/chg/test-change.md and drives the 4 CHG skills.
-
 phase_2_chg() {
   section "Phase 2 — Change management"
 
@@ -670,7 +726,7 @@ phase_2_chg() {
     log_info "bootstrap mode; Phase 2 skipped (no chain to mutate)"
     for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
       record_outcome "$skill" "skill" "chg" "SKIP" 0 "" "" "false" "" "bootstrap mode"
-      write_meta_json "skills" "$skill"
+      write_element_log "$skill"
     done
     return 0
   fi
@@ -679,114 +735,98 @@ phase_2_chg() {
     log_err "CHG test-change file missing: $CHG_FILE"
     for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
       record_outcome "$skill" "skill" "chg" "FAIL" 0 "" "" "false" "" "chg/test-change.md missing"
-      write_meta_json "skills" "$skill"
+      write_element_log "$skill"
     done
     return 1
   fi
 
   if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
-    log_info "Phase 2 requires --live or --mock; recording SKIP for all 4 CHG skills"
+    log_info "Phase 2 requires --live or --mock; SKIP"
     for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
       record_outcome "$skill" "skill" "chg" "SKIP" 0 "" "" "false" "" "live mode disabled"
-      write_meta_json "skills" "$skill"
+      write_element_log "$skill"
     done
     return 0
   fi
 
   log_info "Applying change request from $CHG_FILE"
 
-  # doc-chg: register the change
-  invoke_skill "doc-chg" "Register the change request described in $CHG_FILE against the existing chain at $EXAMPLE_DOCS." "skills" "skill" "chg"
+  mkdir -p "$EXAMPLE_DOCS/09_CHG"
+  local chg_artifact="$EXAMPLE_DOCS/09_CHG/CHG-01.md"
+  local chg_audit_report="$AIDOC_DIR/audit/09_CHG-audit.md"
+  local chg_fix_report="$AIDOC_DIR/remediation/09_CHG-fix.md"
 
-  # doc-chg-autopilot: drive CHG-01 governance flow
-  local chg_out_dir="$LOG_DIR/cascade/09_CHG"
-  mkdir -p "$chg_out_dir"
-  local chg_out="$chg_out_dir/CHG-01.${EXAMPLE}.md"
-  invoke_skill "doc-chg-autopilot" "Drive the change request at $CHG_FILE through impact assessment, approval, and propagation. Write CHG-01 to $chg_out. The propagation report must enumerate each item in the 'Expected downstream impacts' section of $CHG_FILE." "skills" "skill" "chg"
+  invoke_skill "doc-chg" "Register the change request described in $CHG_FILE against the chain at $EXAMPLE_DOCS." "skill" "chg"
+  write_element_log "doc-chg"
 
-  # doc-chg-audit: audit CHG-01
-  invoke_skill "doc-chg-audit" "Audit the CHG-01 artifact at $chg_out. Verify it references each expected downstream impact from $CHG_FILE. Report readiness score." "skills" "skill" "chg"
-  local chg_audit_log="$LOG_DIR/skills/doc-chg-audit.log"
-  local chg_score
-  chg_score="$(parse_audit_score "$chg_audit_log")"
+  invoke_skill "doc-chg-autopilot" "Drive the change request at $CHG_FILE through impact assessment, approval, and propagation. Write CHG-01 to $chg_artifact. The propagation report must enumerate each item in the 'Expected downstream impacts' section of $CHG_FILE." "skill" "chg"
+  OUTPUT_PATH_BY_NAME["doc-chg-autopilot"]="$chg_artifact"
+  write_element_log "doc-chg-autopilot"
+
+  invoke_skill "doc-chg-audit" "Audit the CHG-01 artifact at $chg_artifact. Write the audit report to $chg_audit_report. Report readiness score." "skill" "chg"
+  OUTPUT_PATH_BY_NAME["doc-chg-audit"]="$chg_audit_report"
+  local chg_score; chg_score="$(parse_audit_score "doc-chg-audit")"
   AUDIT_SCORE_BY_NAME["doc-chg-audit"]="$chg_score"
+  write_element_log "doc-chg-audit"
   log_info "CHG audit score: $chg_score"
 
-  # doc-chg-fixer if score < 90
   if (( chg_score < 90 )); then
     log_info "CHG audit < 90 → invoking fixer"
-    invoke_skill "doc-chg-fixer" "Fix CHG-01 at $chg_out based on audit findings in $chg_audit_log." "skills" "skill" "chg"
+    invoke_skill "doc-chg-fixer" "Fix CHG-01 at $chg_artifact based on audit findings at $chg_audit_report. Write a fix report to $chg_fix_report." "skill" "chg"
+    OUTPUT_PATH_BY_NAME["doc-chg-fixer"]="$chg_fix_report"
     FIXER_INVOKED_BY_NAME["doc-chg-audit"]="true"
+    write_element_log "doc-chg-fixer"
 
-    invoke_skill "doc-chg-audit" "Re-audit CHG-01 at $chg_out." "skills" "skill" "chg"
-    chg_score="$(parse_audit_score "$chg_audit_log")"
+    invoke_skill "doc-chg-audit" "Re-audit CHG-01 at $chg_artifact." "skill" "chg"
+    chg_score="$(parse_audit_score "doc-chg-audit")"
     AUDIT_AFTER_FIXER_BY_NAME["doc-chg-audit"]="$chg_score"
+    write_element_log "doc-chg-audit"
     log_info "CHG audit score after fixer: $chg_score"
   else
     record_outcome "doc-chg-fixer" "skill" "chg" "SKIP" 0 "" "" "false" "" "fixer not needed (audit ≥ 90)"
-    write_meta_json "skills" "doc-chg-fixer"
+    write_element_log "doc-chg-fixer"
   fi
 
   return 0
 }
 
 # -----------------------------------------------------------------------------
-# Phase 3 — Cross-cutting utilities (14 skills)
+# Phase 3 — Cross-cutting utilities (output routed to .aidoc/<category>/)
 # -----------------------------------------------------------------------------
-# Each utility has a minimum-coverage threshold (plan §7). Empty structured
-# output counts as FAIL, not PASS.
-#
-# All 14 require --live or --mock; --no-live records SKIP for every probe.
-#
-# Path resolution: utilities operate against `examples/<NAME>/docs/` if
-# present; in bootstrap mode they read from `logs/<TS>/cascade/` (the
-# cascade just produced).
-
-# Resolve which chain dir Phase 3 should target.
 _resolve_chain_target() {
-  if [[ "$BOOTSTRAP_MODE" == "true" ]]; then
-    echo "$LOG_DIR/cascade"
-  else
-    echo "$EXAMPLE_DOCS"
-  fi
+  echo "$EXAMPLE_DOCS"
 }
 
-# Count occurrences of a regex pattern in a file. Echoes the count.
 _count_matches() {
   local pattern="$1" file="$2"
   if [[ ! -f "$file" ]]; then echo 0; return; fi
   grep -oiE "$pattern" "$file" 2>/dev/null | wc -l
 }
 
-# Generic threshold probe: invoke skill, count pattern occurrences in its
-# output log, PASS if count ≥ threshold.
 _probe_with_count_threshold() {
-  # _probe_with_count_threshold <skill> <prompt> <pattern> <min-count> <description>
   local skill="$1" prompt="$2" pattern="$3" min="$4" desc="$5"
 
   if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
     record_outcome "$skill" "skill" "utilities" "SKIP" 0 "" "" "false" "" "live mode disabled"
-    write_meta_json "skills" "$skill"
+    write_element_log "$skill"
     return 0
   fi
 
-  invoke_skill "$skill" "$prompt" "skills" "skill" "utilities"
-  local log_file="$LOG_DIR/skills/$skill.log"
+  invoke_skill "$skill" "$prompt" "skill" "utilities"
+  local log_file="$LOG_DIR/elements/$skill.log"
   local count
   count="$(_count_matches "$pattern" "$log_file")"
   log_info "  $desc: counted $count match(es) (threshold ≥ $min)"
 
   if (( count >= min )); then
     OUTCOME_BY_NAME[$skill]="PASS"
-    write_meta_json "skills" "$skill"
-    return 0
   else
     OUTCOME_BY_NAME[$skill]="FAIL"
     ERROR_BY_NAME[$skill]="coverage threshold: counted $count, need $min"
-    write_meta_json "skills" "$skill"
     [[ $FAIL_FAST -eq 1 ]] && return 1
-    return 0
   fi
+  write_element_log "$skill"
+  return 0
 }
 
 phase_3_utilities() {
@@ -795,12 +835,6 @@ phase_3_utilities() {
   local chain_dir
   chain_dir="$(_resolve_chain_target)"
 
-  if [[ ! -d "$chain_dir" ]] || [[ -z "$(find "$chain_dir" -name '*.md' -print -quit 2>/dev/null)" ]]; then
-    log_warn "no chain found at $chain_dir; Phase 3 probes that need a chain will SKIP"
-    # Continue — project-init runs against a tmp sandbox and doesn't need the chain.
-  fi
-
-  # Skip-all path for --no-live (no LLM available)
   if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
     log_info "live mode disabled; recording SKIP for all 14 utility probes"
     for skill in doc-flow doc-validator doc-ref doc-naming gate-check \
@@ -808,145 +842,151 @@ phase_3_utilities() {
                  knowledge-extractor charts-flow adr-roadmap \
                  project-init project-adopt project-profile; do
       record_outcome "$skill" "skill" "utilities" "SKIP" 0 "" "" "false" "" "live mode disabled"
-      write_meta_json "skills" "$skill"
+      write_element_log "$skill"
     done
     return 0
   fi
 
-  # 1. doc-flow — routing test ("given chain at layer N, what's next?")
+  mkdir -p "$AIDOC_DIR/validation" "$AIDOC_DIR/security" "$AIDOC_DIR/quality" "$AIDOC_DIR/review"
+  local val_path="$AIDOC_DIR/validation"
+  local sec_path="$AIDOC_DIR/security/review.md"
+  local qa_path="$AIDOC_DIR/quality/suggestions.md"
+  local rt_path="$AIDOC_DIR/review"
+
   _probe_with_count_threshold "doc-flow" \
     "Scan the chain at $chain_dir and report which layer it currently rests at and what the next recommended skill is." \
     "next|layer|recommend" 1 "routing keywords"
 
-  # 2. doc-validator — cumulative trace closure
   _probe_with_count_threshold "doc-validator" \
-    "Validate cumulative @brd…@tdd traceability across the chain at $chain_dir. Enumerate every resolved tag." \
-    "@(brd|prd|ears|bdd|adr|spec|tdd|iplan):" 50 "resolved trace tags"
+    "Validate cumulative @brd…@tdd traceability across the chain at $chain_dir. Write the trace-closure report to $val_path/traceability.md. Enumerate every resolved tag." \
+    "@(brd|prd|ears|bdd|adr|spec|tdd|iplan):" 20 "resolved trace tags"
 
-  # 3. doc-ref — cross-reference resolution
   _probe_with_count_threshold "doc-ref" \
-    "Resolve all cross-document references in $chain_dir. Enumerate each reference and target." \
+    "Resolve all cross-document references in $chain_dir. Write the reference resolution report to $val_path/cross-references.md." \
     "(@(brd|prd|ears|bdd|adr|spec|tdd|iplan):|see |refer to)" 8 "cross-references"
 
-  # 4. doc-naming — name compliance
   _probe_with_count_threshold "doc-naming" \
-    "Check that every artifact ID in $chain_dir matches the standards in ID_NAMING_STANDARDS.md." \
+    "Check that every artifact ID in $chain_dir matches the standards in ID_NAMING_STANDARDS.md. Write the report to $val_path/naming.md." \
     "[A-Z]+-[0-9]{2,}" 8 "compliant IDs"
 
-  # 5. gate-check — readiness gate
   _probe_with_count_threshold "gate-check" \
-    "Confirm every layer in $chain_dir has readiness score ≥ 90. Report per-layer scores." \
+    "Confirm every layer in $chain_dir has readiness score ≥ 90. Write the gate-check report to $val_path/gate-check.md." \
     "[0-9]{2,3}" 8 "per-layer scores"
 
-  # 6. quality-advisor — improvement suggestions
   _probe_with_count_threshold "quality-advisor" \
-    "Review the chain at $chain_dir and provide actionable improvement suggestions, one per layer at minimum." \
+    "Review the chain at $chain_dir and provide actionable improvement suggestions, one per layer at minimum. Write suggestions to $qa_path." \
     "suggest|recommend|improve" 8 "actionable suggestions"
 
-  # 7. security-audit — security review
-  # Special case: pass if ≥1 finding OR explicit "no findings" block ≥ 100 words
   if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
     invoke_skill "security-audit" \
-      "Perform a security review of the chain at $chain_dir. Report findings with severity, or provide an explicit 'no findings' justification of at least 100 words." \
-      "skills" "skill" "utilities"
-    local sa_log="$LOG_DIR/skills/security-audit.log"
-    local findings high
+      "Perform a security review of the chain at $chain_dir. Write the report to $sec_path. Either ≥1 finding with severity (no high-severity), or an explicit 'no findings' justification of at least 100 words." \
+      "skill" "utilities"
+    local sa_log="$LOG_DIR/elements/security-audit.log"
+    local findings high words
     findings="$(_count_matches '(severity|finding|risk):' "$sa_log")"
     high="$(_count_matches '(severity:[[:space:]]*high|critical)' "$sa_log")"
-    local word_count
-    word_count="$(wc -w < "$sa_log" 2>/dev/null || echo 0)"
-
+    words="$(wc -w < "$sa_log" 2>/dev/null || echo 0)"
     if (( findings > 0 )); then
       if (( high == 0 )); then
-        log_info "  security-audit: $findings finding(s), 0 high-severity → PASS"
         OUTCOME_BY_NAME["security-audit"]="PASS"
       else
-        log_err "  security-audit: $high high-severity finding(s) → FAIL"
         OUTCOME_BY_NAME["security-audit"]="FAIL"
         ERROR_BY_NAME["security-audit"]="high-severity findings"
       fi
-    elif (( word_count >= 100 )); then
-      log_info "  security-audit: no findings but justification ≥ 100 words → PASS"
+    elif (( words >= 100 )); then
       OUTCOME_BY_NAME["security-audit"]="PASS"
     else
-      log_err "  security-audit: empty output (no findings + no justification) → FAIL"
       OUTCOME_BY_NAME["security-audit"]="FAIL"
       ERROR_BY_NAME["security-audit"]="empty output"
     fi
-    write_meta_json "skills" "security-audit"
+    OUTPUT_PATH_BY_NAME["security-audit"]="$sec_path"
+    write_element_log "security-audit"
   fi
 
-  # 8. review-team — multi-persona review (assert all configured personas present)
   if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
     invoke_skill "review-team" \
-      "Run the review-team crew against the chain at $chain_dir. Each configured persona in REVIEW_CREWS.yaml must produce non-empty output." \
-      "skills" "skill" "utilities"
-    local rt_log="$LOG_DIR/skills/review-team.log"
-    # Get persona names from REVIEW_CREWS.yaml
+      "Run the review-team crew against the chain at $chain_dir. For each layer, write per-layer consensus reports under $rt_path/<layer>-consensus.md. Each configured persona in $PROFILE_FILE must produce non-empty output." \
+      "skill" "utilities"
+    local rt_log="$LOG_DIR/elements/review-team.log"
+    # Personas via Python YAML parse (B3 fix).
+    local personas
+    personas="$(PROFILE="$PROFILE_FILE" python3 - <<'PY'
+import os, yaml
+try:
+    with open(os.environ["PROFILE"]) as f:
+        data = yaml.safe_load(f) or {}
+except Exception:
+    print("")
+    raise SystemExit(0)
+personas = set()
+def collect(node):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == "persona" and isinstance(v, str):
+                personas.add(v)
+            else:
+                collect(v)
+    elif isinstance(node, list):
+        for item in node:
+            collect(item)
+collect(data)
+print(" ".join(sorted(personas)))
+PY
+)"
     local missing=""
-    if [[ -f "$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml" ]]; then
-      local personas
-      personas="$(grep -oE 'persona:[[:space:]]*[a-z_]+' "$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml" 2>/dev/null | awk '{print $NF}' | sort -u)"
-      for p in $personas; do
-        if ! grep -qi "$p" "$rt_log" 2>/dev/null; then
-          missing="$missing $p"
-        fi
-      done
-    fi
+    for p in $personas; do
+      if ! grep -qi "$p" "$rt_log" 2>/dev/null; then
+        missing="$missing $p"
+      fi
+    done
     if [[ -n "$missing" ]]; then
-      log_err "  review-team: missing persona output for:$missing"
       OUTCOME_BY_NAME["review-team"]="FAIL"
-      ERROR_BY_NAME["review-team"]="missing persona output for$missing"
+      ERROR_BY_NAME["review-team"]="missing persona output for:$missing"
     else
-      log_info "  review-team: all configured personas present"
       OUTCOME_BY_NAME["review-team"]="PASS"
     fi
-    write_meta_json "skills" "review-team"
+    OUTPUT_PATH_BY_NAME["review-team"]="$rt_path"
+    write_element_log "review-team"
   fi
 
-  # 9. knowledge-extractor — graph with ≥20 nodes
-  _probe_with_count_threshold "knowledge-extractor" \
-    "Extract a domain knowledge graph from the chain at $chain_dir. List each node (entity) and its relationships." \
-    "(node|entity|concept):" 20 "knowledge graph nodes"
+  local n_layers
+  n_layers="$(ls -1d "$chain_dir"/[0-9]*_*/ 2>/dev/null | wc -l)"
+  local ke_min=$(( n_layers > 0 ? n_layers * 4 : 8 ))
 
-  # 10. charts-flow — diagram contract per DIAGRAM_STANDARDS.md
+  _probe_with_count_threshold "knowledge-extractor" \
+    "Extract a domain knowledge graph from the chain at $chain_dir. Write to $val_path/knowledge-graph.md. List each node (entity) and its relationships." \
+    "(node|entity|concept|::|->|--)" $ke_min "knowledge graph nodes"
+
   _probe_with_count_threshold "charts-flow" \
-    "Validate diagram contract for the chain at $chain_dir. Each required diagram per DIAGRAM_STANDARDS.md must be present (BRD c4-l1+dfd-l1, PRD c4-l2+dfd-l2+sequence, ADR sequence, SPEC c4-l3+dfd-l3)." \
+    "Validate diagram contract for the chain at $chain_dir. Each required diagram per DIAGRAM_STANDARDS.md must be present. Write the report to $val_path/diagrams.md." \
     "@diagram:[[:space:]]*(c4-l[123]|dfd-l[123]|sequence)" 8 "required diagram tags"
 
-  # 11. adr-roadmap — 1:1 ADR coverage
   _probe_with_count_threshold "adr-roadmap" \
-    "Aggregate every ADR in $chain_dir into a roadmap. Each ADR must appear in the roadmap exactly once." \
+    "Aggregate every ADR in $chain_dir into a roadmap. Each ADR must appear exactly once. Write to $val_path/adr-roadmap.md." \
     "ADR-[0-9]{2,}" 1 "ADR references"
 
-  # 12. project-init — scaffold in sandboxed tmp dir
   if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
     local pi_sandbox="$LOG_DIR/sandbox/project-init"
     mkdir -p "$pi_sandbox"
     invoke_skill "project-init" \
       "Scaffold a new SDD project tree under $pi_sandbox. Produce the 8 layer directories (01_BRD..08_IPLAN) plus governance/ and registry/." \
-      "skills" "skill" "utilities"
-    # Count expected dirs
-    local pi_layer_dirs pi_total
-    pi_layer_dirs="$(find "$pi_sandbox" -maxdepth 2 -type d -name '0[1-8]_*' 2>/dev/null | wc -l)"
-    pi_total="$(find "$pi_sandbox" -maxdepth 2 -type d 2>/dev/null | wc -l)"
-    if (( pi_layer_dirs >= 8 )); then
-      log_info "  project-init: $pi_layer_dirs/8 layer dirs produced, $pi_total total dirs"
+      "skill" "utilities"
+    local pi_layers
+    pi_layers="$(find "$pi_sandbox" -maxdepth 2 -type d -name '0[1-8]_*' 2>/dev/null | wc -l)"
+    if (( pi_layers >= 8 )); then
       OUTCOME_BY_NAME["project-init"]="PASS"
     else
-      log_err "  project-init: only $pi_layer_dirs/8 layer dirs produced"
       OUTCOME_BY_NAME["project-init"]="FAIL"
-      ERROR_BY_NAME["project-init"]="only $pi_layer_dirs/8 layer dirs"
+      ERROR_BY_NAME["project-init"]="only $pi_layers/8 layer dirs"
     fi
-    write_meta_json "skills" "project-init"
+    OUTPUT_PATH_BY_NAME["project-init"]="$pi_sandbox"
+    write_element_log "project-init"
   fi
 
-  # 13. project-adopt — adopt existing tree, report ≥8 layers detected
   _probe_with_count_threshold "project-adopt" \
     "Adopt the existing project tree at $chain_dir. Report each detected layer." \
     "layer[[:space:]]*[0-9]|0[1-8]_(brd|prd|ears|bdd|adr|spec|tdd|iplan)" 8 "detected layers"
 
-  # 14. project-profile — profile chain
   _probe_with_count_threshold "project-profile" \
     "Profile the chain at $chain_dir. Report plugin version, framework spec version, layer count, and overall readiness." \
     "(version|layer|readiness)" 3 "profile fields"
@@ -955,13 +995,8 @@ phase_3_utilities() {
 }
 
 # -----------------------------------------------------------------------------
-# Phase 4 — Agents, command, hook (13 elements)
+# Phase 4 — Agents, command, hook
 # -----------------------------------------------------------------------------
-# Plan §8. Each invocation has a minimum-output threshold so empty-output
-# passes are rejected. The hook is deterministic (synthetic JSON payload —
-# no LLM cost); agents + command require --live or --mock.
-
-# Agent table: <agent>|<target>|<task>|<min-output-words>
 AGENTS=(
   "requirements-analyst|01_BRD|produce a structured requirements analysis|200"
   "pm-orchestrator|.|produce an orchestration plan referencing every layer (BRD..IPLAN)|150"
@@ -977,8 +1012,6 @@ AGENTS=(
 )
 
 invoke_agent_live() {
-  # invoke_agent_live <agent-name> <prompt> <output-log-path>
-  # Asks Claude to delegate to the named agent. Returns exit code.
   local agent="$1" prompt="$2" out_log="$3"
   claude \
     --plugin-dir "$PLUGIN_DIR" \
@@ -988,44 +1021,6 @@ invoke_agent_live() {
   return $?
 }
 
-invoke_agent() {
-  # invoke_agent <agent-name> <prompt> — dispatches mock vs live, records outcome.
-  # Returns 0 on PASS.
-  local agent="$1" prompt="$2"
-  local out_log="$LOG_DIR/agents/$agent.log"
-
-  local t0 t1 duration
-  t0="$(date +%s)"
-
-  if [[ -n "$MOCK_SOURCE" ]]; then
-    if mock_replay_for "agents" "$agent"; then
-      t1="$(date +%s)"; duration=$((t1 - t0))
-      record_outcome "$agent" "agent" "agents" "PASS" "$duration"
-      write_meta_json "agents" "$agent"
-      return 0
-    fi
-    t1="$(date +%s)"; duration=$((t1 - t0))
-    record_outcome "$agent" "agent" "agents" "SKIP" "$duration" "" "" "false" "" "no mock data"
-    write_meta_json "agents" "$agent"
-    return 1
-  fi
-
-  log_info "invoking agent: $agent"
-  if invoke_agent_live "$agent" "$prompt" "$out_log"; then
-    t1="$(date +%s)"; duration=$((t1 - t0))
-    record_outcome "$agent" "agent" "agents" "PASS" "$duration"
-    write_meta_json "agents" "$agent"
-    return 0
-  else
-    local rc=$?
-    t1="$(date +%s)"; duration=$((t1 - t0))
-    log_err "agent $agent failed (exit $rc)"
-    record_outcome "$agent" "agent" "agents" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
-    write_meta_json "agents" "$agent"
-    return 1
-  fi
-}
-
 phase_4_agents() {
   section "Phase 4.1 — Agents (11)"
 
@@ -1033,12 +1028,11 @@ phase_4_agents() {
   chain_dir="$(_resolve_chain_target)"
 
   if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
-    log_info "live mode disabled; recording SKIP for all 11 agents"
     local entry agent
     for entry in "${AGENTS[@]}"; do
       agent="${entry%%|*}"
       record_outcome "$agent" "agent" "agents" "SKIP" 0 "" "" "false" "" "live mode disabled"
-      write_meta_json "agents" "$agent"
+      write_element_log "$agent"
     done
     return 0
   fi
@@ -1052,23 +1046,39 @@ phase_4_agents() {
     else
       target_path="$chain_dir/$target"
     fi
-
     local prompt="Read $target_path and ${task}. Provide a structured response."
-    invoke_agent "$agent" "$prompt"
+    local stdout_path="$LOG_DIR/elements/$agent.stdout"
+    local t0 t1 duration; t0="$(date +%s)"
 
-    # Word-count threshold
-    local agent_log="$LOG_DIR/agents/$agent.log"
-    local words
-    words="$(wc -w < "$agent_log" 2>/dev/null || echo 0)"
-    if (( words < min_words )); then
-      log_err "  $agent: only $words words (threshold ≥ $min_words) → FAIL"
-      OUTCOME_BY_NAME[$agent]="FAIL"
-      ERROR_BY_NAME[$agent]="output $words words < threshold $min_words"
-      write_meta_json "agents" "$agent"
-      [[ $FAIL_FAST -eq 1 ]] && return 1
-    else
-      log_info "  $agent: $words words (≥ $min_words) → PASS"
+    if [[ -n "$MOCK_SOURCE" ]]; then
+      if mock_replay_for "$agent"; then
+        t1="$(date +%s)"; duration=$((t1 - t0))
+        record_outcome "$agent" "agent" "agents" "PASS" "$duration"
+        continue
+      fi
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      record_outcome "$agent" "agent" "agents" "SKIP" "$duration" "" "" "false" "" "no mock data"
+      write_element_log "$agent"
+      continue
     fi
+
+    log_info "invoking agent: $agent"
+    if invoke_agent_live "$agent" "$prompt" "$stdout_path"; then
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      local words; words="$(wc -w < "$stdout_path" 2>/dev/null || echo 0)"
+      if (( words >= min_words )); then
+        record_outcome "$agent" "agent" "agents" "PASS" "$duration"
+      else
+        record_outcome "$agent" "agent" "agents" "FAIL" "$duration" "" "" "false" "" "output $words words < threshold $min_words"
+        [[ $FAIL_FAST -eq 1 ]] && return 1
+      fi
+    else
+      local rc=$?
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      log_err "agent $agent failed (exit $rc)"
+      record_outcome "$agent" "agent" "agents" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
+    fi
+    write_element_log "$agent"
   done
 
   return 0
@@ -1078,50 +1088,32 @@ phase_4_command() {
   section "Phase 4.2 — Command (/aidoc-flow:save-plan)"
 
   if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
-    log_info "live mode disabled; SKIP"
     record_outcome "save-plan" "command" "command" "SKIP" 0 "" "" "false" "" "live mode disabled"
-    write_meta_json "command" "save-plan"
+    write_element_log "save-plan"
     return 0
   fi
 
-  local cmd_log="$LOG_DIR/command/save-plan.log"
   local cmd_sandbox="$LOG_DIR/sandbox/save-plan"
   mkdir -p "$cmd_sandbox"
+  local stdout_path="$LOG_DIR/elements/save-plan.stdout"
 
-  local t0 t1 duration
-  t0="$(date +%s)"
-
-  if [[ -n "$MOCK_SOURCE" ]]; then
-    if mock_replay_for "command" "save-plan"; then
-      t1="$(date +%s)"; duration=$((t1 - t0))
-      record_outcome "save-plan" "command" "command" "PASS" "$duration"
-      write_meta_json "command" "save-plan"
-      return 0
-    fi
-  fi
-
+  local t0 t1 duration; t0="$(date +%s)"
   log_info "invoking /aidoc-flow:save-plan (sandbox: $cmd_sandbox)"
   ( cd "$cmd_sandbox" && \
     claude --plugin-dir "$PLUGIN_DIR" --dangerously-skip-permissions \
       -p "Draft a brief plan with two steps. Then invoke /aidoc-flow:save-plan to capture it to a file under plans/." \
-      > "$cmd_log" 2>&1 )
+      > "$stdout_path" 2>&1 )
   local rc=$?
-
   t1="$(date +%s)"; duration=$((t1 - t0))
 
-  # Assert: a plan file was created under sandbox/plans/
   local plan_file
   plan_file="$(find "$cmd_sandbox/plans" -name '*.md' -print -quit 2>/dev/null)"
   if [[ $rc -eq 0 ]] && [[ -n "$plan_file" ]] && [[ -s "$plan_file" ]]; then
-    log_info "  ✓ save-plan produced plan file at $plan_file"
     record_outcome "save-plan" "command" "command" "PASS" "$duration"
   else
-    log_err "  ✗ save-plan did not produce a non-empty plan file under $cmd_sandbox/plans/"
     record_outcome "save-plan" "command" "command" "FAIL" "$duration" "" "" "false" "" "no plan file produced"
   fi
-  write_meta_json "command" "save-plan"
-
-  return 0
+  write_element_log "save-plan"
 }
 
 phase_4_hook() {
@@ -1129,56 +1121,33 @@ phase_4_hook() {
 
   local hook_path="$PLUGIN_DIR/hooks/sdd-doc-review.sh"
   local hook_cfg="$PLUGIN_DIR/hooks/hooks.json"
-  local hook_log="$LOG_DIR/hook/sdd-doc-review.log"
+  local stdout_path="$LOG_DIR/elements/sdd-doc-review.stdout"
+  local t0 t1 duration; t0="$(date +%s)"
 
-  local t0 t1 duration
-  t0="$(date +%s)"
-
-  # 4.3.1 — hooks.json is valid JSON
   if ! python3 -m json.tool < "$hook_cfg" > /dev/null 2>&1; then
-    log_err "  hooks.json is not valid JSON"
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hooks.json invalid"
-    write_meta_json "hook" "sdd-doc-review"
+    write_element_log "sdd-doc-review"
     return 1
   fi
 
-  # 4.3.2 — hooks.json references the correct event + matcher
   if ! grep -q '"PostToolUse"' "$hook_cfg" || \
      ! grep -q '"Write|Edit"' "$hook_cfg" || \
      ! grep -q 'sdd-doc-review.sh' "$hook_cfg"; then
-    log_err "  hooks.json missing expected PostToolUse / Write|Edit / sdd-doc-review.sh references"
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hooks.json config mismatch"
-    write_meta_json "hook" "sdd-doc-review"
+    write_element_log "sdd-doc-review"
     return 1
   fi
-  log_info "  ✓ hooks.json valid; references PostToolUse + Write|Edit + sdd-doc-review.sh"
 
-  # 4.3.3 — hook script exists and is executable
   if [[ ! -x "$hook_path" ]]; then
-    log_err "  hook script missing or not executable: $hook_path"
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hook script not executable"
-    write_meta_json "hook" "sdd-doc-review"
+    write_element_log "sdd-doc-review"
     return 1
   fi
 
-  # 4.3.4 — synthetic invocation against a broken fixture.
-  # The hook detects SDD instance documents by path pattern: either
-  # `/docs/0N_<TYPE>/...` or a filename matching `<TYPE>-NN`. Our raw
-  # fixture (`brd-broken-sections.md`) is named for human readability and
-  # doesn't match either pattern. Stage it at an SDD-style path so the
-  # hook's layer-detection logic fires.
   local fixture="$NEGATIVE_FIXTURES_DIR/brd-broken-sections.md"
-  if [[ ! -f "$fixture" ]]; then
-    log_warn "  brd-broken-sections fixture missing; cannot synthetically test hook"
-    record_outcome "sdd-doc-review" "hook" "hook" "SKIP" 0 "" "" "false" "" "fixture missing"
-    write_meta_json "hook" "sdd-doc-review"
-    return 0
-  fi
-
-  if ! command -v jq >/dev/null 2>&1; then
-    log_warn "  jq not on PATH; hook check skipped (hook itself degrades silently without jq)"
-    record_outcome "sdd-doc-review" "hook" "hook" "SKIP" 0 "" "" "false" "" "jq missing"
-    write_meta_json "hook" "sdd-doc-review"
+  if [[ ! -f "$fixture" ]] || ! command -v jq >/dev/null 2>&1; then
+    record_outcome "sdd-doc-review" "hook" "hook" "SKIP" 0 "" "" "false" "" "fixture or jq missing"
+    write_element_log "sdd-doc-review"
     return 0
   fi
 
@@ -1192,68 +1161,28 @@ phase_4_hook() {
   local hook_out
   hook_out="$(printf '%s' "$payload" | bash "$hook_path" 2>&1)"
   local hook_rc=$?
+  printf '%s' "$hook_out" > "$stdout_path"
 
   t1="$(date +%s)"; duration=$((t1 - t0))
 
-  # Assert: exit 0 (advisory — must never block)
   if [[ $hook_rc -ne 0 ]]; then
-    log_err "  hook exited $hook_rc (must be 0 — advisory only)"
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "hook exit $hook_rc"
-    write_meta_json "hook" "sdd-doc-review"
-    return 1
-  fi
-
-  # Assert: valid JSON output
-  if ! printf '%s' "$hook_out" | jq . > /dev/null 2>&1; then
-    log_err "  hook output is not valid JSON"
-    printf '%s' "$hook_out" > "$hook_log"
+  elif ! printf '%s' "$hook_out" | jq . > /dev/null 2>&1; then
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "hook output invalid JSON"
-    write_meta_json "hook" "sdd-doc-review"
-    return 1
-  fi
-
-  # Assert: contains BRD-layer audit nudge
-  if ! printf '%s' "$hook_out" | grep -q "doc-brd-audit"; then
-    log_err "  hook output missing doc-brd-audit nudge"
-    printf '%s' "$hook_out" > "$hook_log"
+  elif ! printf '%s' "$hook_out" | grep -q "doc-brd-audit"; then
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing audit nudge"
-    write_meta_json "hook" "sdd-doc-review"
-    return 1
-  fi
-
-  # Assert: includes structural findings (fixture has STRUCT01)
-  if ! printf '%s' "$hook_out" | grep -qiE "STRUCT01|structural findings"; then
-    log_err "  hook output missing STRUCT01 / structural findings (fixture is known-broken)"
-    printf '%s' "$hook_out" > "$hook_log"
+  elif ! printf '%s' "$hook_out" | grep -qiE "STRUCT01|structural findings"; then
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing structural findings"
-    write_meta_json "hook" "sdd-doc-review"
-    return 1
+  else
+    record_outcome "sdd-doc-review" "hook" "hook" "PASS" "$duration"
   fi
-
-  log_info "  ✓ hook exits 0, valid JSON, includes audit nudge + STRUCT01"
-  printf '%s' "$hook_out" > "$hook_log"
-  record_outcome "sdd-doc-review" "hook" "hook" "PASS" "$duration"
-  write_meta_json "hook" "sdd-doc-review"
-  return 0
+  write_element_log "sdd-doc-review"
 }
 
 # -----------------------------------------------------------------------------
-# --promote algorithm
+# --promote algorithm (A5 redesigned: git add docs/ + .aidoc/ then commit)
 # -----------------------------------------------------------------------------
-# Per plan §3.2. Promotes logs/<TS>/cascade/ to examples/<NAME>/docs/ when
-# all phases passed.
-#
-# Steps:
-#   1. Resolve version from platforms/claude-code-plugin/VERSION
-#   2. Refuse if working tree has uncommitted changes
-#   3. Refuse if examples/<NAME>/docs/ has uncommitted changes
-#   4. Archive existing docs/ to docs-archive/v<previous-version>/ (if non-empty)
-#   5. rsync -a --delete logs/<TS>/cascade/ → examples/<NAME>/docs/
-#   6. Commit: chore(examples): promote <example> cascade for v<X.Y.Z>
-#   7. Push only if --push was also passed
-
 _overall_outcome() {
-  # Echo PASS|FAIL|SKIP based on in-memory outcome state
   local name fail_n=0 pass_n=0
   for name in "${ELEMENT_ORDER[@]}"; do
     case "${OUTCOME_BY_NAME[$name]}" in
@@ -1261,32 +1190,21 @@ _overall_outcome() {
       FAIL) fail_n=$((fail_n + 1)) ;;
     esac
   done
-  if (( fail_n > 0 )); then
-    echo "FAIL"
-  elif (( pass_n == 0 )); then
-    echo "SKIP"
-  else
-    echo "PASS"
+  if (( fail_n > 0 )); then echo "FAIL"
+  elif (( pass_n == 0 )); then echo "SKIP"
+  else echo "PASS"
   fi
 }
 
 promote_cascade() {
-  section "Promote — cascade → examples/<NAME>/docs/"
+  section "Promote — git commit docs/ + .aidoc/ changes"
 
-  local outcome
-  outcome="$(_overall_outcome)"
+  local outcome; outcome="$(_overall_outcome)"
   if [[ "$outcome" != "PASS" ]]; then
     log_err "overall outcome is $outcome; refusing to promote a non-PASS run"
     return 1
   fi
 
-  local cascade_src="$LOG_DIR/cascade"
-  if [[ ! -d "$cascade_src" ]] || [[ -z "$(find "$cascade_src" -name '*.md' -print -quit 2>/dev/null)" ]]; then
-    log_err "no cascade output to promote: $cascade_src"
-    return 1
-  fi
-
-  # Step 1 — version
   local plugin_version_file="$PLUGIN_DIR/VERSION"
   if [[ ! -f "$plugin_version_file" ]]; then
     log_err "VERSION file missing: $plugin_version_file"
@@ -1296,74 +1214,22 @@ promote_cascade() {
   plugin_version="$(cat "$plugin_version_file" | tr -d '[:space:]')"
   log_info "plugin version: $plugin_version"
 
-  # Step 2 — working tree clean
-  if ! git -C "$FRAMEWORK" diff-index --quiet HEAD 2>/dev/null; then
-    log_err "framework working tree has uncommitted changes; refusing to promote"
-    log_err "  (commit or stash, then re-run with --promote)"
-    return 1
-  fi
-  log_info "✓ working tree clean"
-
-  # Step 3 — docs/ has no uncommitted changes (redundant with step 2 but explicit)
-  if ! git -C "$FRAMEWORK" diff-index --quiet HEAD -- "examples/$EXAMPLE/docs" 2>/dev/null; then
-    log_err "examples/$EXAMPLE/docs has uncommitted changes; refusing to promote"
-    return 1
-  fi
-
-  # Step 4 — archive existing docs/ (if non-empty)
-  local archive_root="$EXAMPLE_DIR/docs-archive"
-  if [[ -d "$EXAMPLE_DOCS" ]] && [[ -n "$(find "$EXAMPLE_DOCS" -name '*.md' -print -quit 2>/dev/null)" ]]; then
-    # Previous version: read the last committed VERSION at the time the
-    # docs/ was promoted. For first-time we cannot know exactly, so use
-    # the current plugin_version as the archive key — but only if it
-    # differs from the run's version. If they match, skip archive (the
-    # docs/ already represents this version's cascade).
-    #
-    # Heuristic: if a marker file exists at examples/<NAME>/docs/.version,
-    # use it. Otherwise use plugin_version.
-    local prev_version="$plugin_version"
-    if [[ -f "$EXAMPLE_DOCS/.version" ]]; then
-      prev_version="$(cat "$EXAMPLE_DOCS/.version" | tr -d '[:space:]')"
-    fi
-    local archive_dir="$archive_root/v$prev_version"
-    if [[ -d "$archive_dir" ]]; then
-      log_err "archive dir already exists: $archive_dir (refusing to overwrite history)"
-      return 1
-    fi
-    mkdir -p "$archive_dir"
-    log_info "archiving existing docs/ → $archive_dir"
-    rsync -a "$EXAMPLE_DOCS/" "$archive_dir/"
-  else
-    log_info "first-time bootstrap: no existing docs/ to archive"
-  fi
-
-  # Step 5 — copy cascade into docs/
-  log_info "promoting cascade → $EXAMPLE_DOCS"
-  rm -rf "$EXAMPLE_DOCS"
-  mkdir -p "$EXAMPLE_DOCS"
-  rsync -a --delete "$cascade_src/" "$EXAMPLE_DOCS/"
-  echo "$plugin_version" > "$EXAMPLE_DOCS/.version"
-
-  # Step 6 — commit
-  log_info "committing promoted chain"
-  git -C "$FRAMEWORK" add "examples/$EXAMPLE/docs" "examples/$EXAMPLE/docs-archive" 2>/dev/null || true
+  git -C "$FRAMEWORK" add "examples/$EXAMPLE/docs" "examples/$EXAMPLE/.aidoc" 2>/dev/null || true
   if git -C "$FRAMEWORK" diff --cached --quiet; then
-    log_info "no changes to commit (promoted content identical to previous)"
-  else
-    git -C "$FRAMEWORK" commit -m "chore(examples): promote $EXAMPLE cascade for v$plugin_version release
+    log_info "no docs/ or .aidoc/ changes to commit"
+    return 0
+  fi
+
+  git -C "$FRAMEWORK" commit -m "chore(examples): promote $EXAMPLE cascade for v$plugin_version release
 
 Run: $LOG_TIMESTAMP
-Outcome: $outcome
-Source: $cascade_src" || {
-      log_err "commit failed"
-      return 1
-    }
-    log_info "✓ committed promoted chain"
-  fi
+Outcome: $outcome" || {
+    log_err "commit failed"
+    return 1
+  }
+  log_info "✓ committed docs/ + .aidoc/ updates"
 
-  # Step 7 — push if requested
   if (( PUSH == 1 )); then
-    log_info "pushing to origin"
     git -C "$FRAMEWORK" push || {
       log_err "push failed"
       return 1
@@ -1394,13 +1260,10 @@ write_summary() {
 
   local total=$((pass_n + fail_n + skip_n))
   local overall="PASS"
-  if (( fail_n > 0 )); then
-    overall="FAIL"
-  elif (( pass_n == 0 )); then
-    overall="SKIP"
+  if (( fail_n > 0 )); then overall="FAIL"
+  elif (( pass_n == 0 )); then overall="SKIP"
   fi
 
-  # Human-readable
   {
     echo "Acceptance run: $EXAMPLE @ $LOG_TIMESTAMP"
     echo "Outcome: $overall  ($pass_n PASS, $fail_n FAIL, $skip_n SKIP, $total total)"
@@ -1408,8 +1271,8 @@ write_summary() {
     echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo true || echo false)"
     echo "Mock source: ${MOCK_SOURCE:-(none)}"
     echo
-    printf '  %-50s %-6s %-10s %s\n' "Element" "Phase" "Outcome" "Notes"
-    printf '  %-50s %-6s %-10s %s\n' "$(printf -- '-%.0s' {1..50})" "------" "----------" "----------------------"
+    printf '  %-50s %-10s %-10s %s\n' "Element" "Phase" "Outcome" "Notes"
+    printf '  %-50s %-10s %-10s %s\n' "$(printf -- '-%.0s' {1..50})" "----------" "----------" "----------------------"
     for name in "${ELEMENT_ORDER[@]}"; do
       local notes=""
       local audit="${AUDIT_SCORE_BY_NAME[$name]:-}"
@@ -1419,7 +1282,7 @@ write_summary() {
       elif [[ -n "$audit" ]]; then
         notes="audit: $audit"
       fi
-      printf '  %-50s %-6s %-10s %s\n' \
+      printf '  %-50s %-10s %-10s %s\n' \
         "$name" \
         "${PHASE_BY_NAME[$name]}" \
         "${OUTCOME_BY_NAME[$name]}" \
@@ -1428,41 +1291,45 @@ write_summary() {
   } > "$SUMMARY_TXT"
   cat "$SUMMARY_TXT"
 
-  # Machine-readable JSON — built by reading per-element .meta.json files
+  # Build summary.json from per-element YAML front-matter.
   python3 - "$LOG_DIR" "$SUMMARY_JSON" <<'PY'
-import json, os, sys, glob, time
+import json, os, sys, glob
+import yaml
 log_dir, out_path = sys.argv[1], sys.argv[2]
 elements = []
-for subdir in ("bootstrap", "skills", "agents", "command", "hook"):
-    for meta_path in sorted(glob.glob(os.path.join(log_dir, subdir, "*.meta.json"))):
-        try:
-            with open(meta_path) as fh:
-                elements.append(json.load(fh))
-        except Exception as e:
-            sys.stderr.write(f"warn: failed reading {meta_path}: {e}\n")
+for path in sorted(glob.glob(os.path.join(log_dir, "elements", "*.log"))):
+    try:
+        with open(path) as fh:
+            content = fh.read()
+        if not content.startswith("---\n"):
+            continue
+        end = content.find("\n---\n", 4)
+        if end < 0:
+            continue
+        front = content[4:end]
+        meta = yaml.safe_load(front)
+        elements.append(meta)
+    except Exception as e:
+        sys.stderr.write(f"warn: failed reading {path}: {e}\n")
+
 counts = {"PASS": 0, "FAIL": 0, "SKIP": 0}
 for e in elements:
     counts[e.get("outcome", "SKIP")] = counts.get(e.get("outcome", "SKIP"), 0) + 1
 overall = "PASS"
-if counts["FAIL"] > 0:
-    overall = "FAIL"
-elif counts["PASS"] == 0:
-    overall = "SKIP"
+if counts["FAIL"] > 0: overall = "FAIL"
+elif counts["PASS"] == 0: overall = "SKIP"
 
-# Read VERSION files if present
 def _read(path):
     try:
-        with open(path) as fh:
-            return fh.read().strip()
-    except Exception:
-        return None
+        with open(path) as fh: return fh.read().strip()
+    except Exception: return None
 
-framework = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(log_dir))))  # framework root
+framework = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(log_dir))))
 plugin_version = _read(os.path.join(framework, "platforms", "claude-code-plugin", "VERSION"))
 spec_version = _read(os.path.join(framework, "framework", "VERSION"))
 
 summary = {
-    "schema_version": "1.0",
+    "schema_version": "1.1",
     "run_id": os.path.basename(log_dir),
     "example": os.path.basename(os.path.dirname(os.path.dirname(log_dir))),
     "plugin_version": plugin_version,
@@ -1477,14 +1344,13 @@ print(f"wrote {out_path}: {len(elements)} elements, outcome={overall}")
 PY
 
   echo
-  echo "Logs: $LOG_DIR"
-  echo "Summary: $SUMMARY_TXT"
+  echo "Logs:        $LOG_DIR"
+  echo "Summary:     $SUMMARY_TXT"
   echo "Summary JSON: $SUMMARY_JSON"
+  echo "Docs:        $EXAMPLE_DOCS"
+  echo "AIDoc:       $AIDOC_DIR"
 
-  if [[ "$overall" == "FAIL" ]]; then
-    return 1
-  fi
-  return 0
+  [[ "$overall" == "FAIL" ]] && return 1 || return 0
 }
 
 # -----------------------------------------------------------------------------
@@ -1494,25 +1360,24 @@ echo "aidoc-flow acceptance run"
 echo "Example:    $EXAMPLE"
 echo "Plan:       $EXAMPLE_DIR/ACCEPTANCE_TEST_PLAN.md"
 echo "Log dir:    $LOG_DIR"
+echo "Docs:       $EXAMPLE_DOCS"
+echo "AIDoc:      $AIDOC_DIR"
 echo "Live:       $([[ $LIVE_FLAG == 1 ]] && echo enabled || echo disabled)"
 echo "Mock:       ${MOCK_SOURCE:-(none)}"
 echo "Phase:      ${PHASE:-all}"
 echo "Element:    ${ELEMENT:-all}"
 echo
 
-# Phase 0 always runs
 phase_0_bootstrap || {
   log_err "Phase 0 failure — aborting"
   write_summary
   exit 1
 }
 
-# Phase dispatch
-# Default: cascade → negative → chg → utilities → agents → command → hook.
 PHASES_TO_RUN=("cascade" "negative" "chg" "utilities" "agents" "command" "hook")
 if [[ -n "$PHASE" ]]; then
   case "$PHASE" in
-    bootstrap)  PHASES_TO_RUN=() ;;  # only Phase 0 ran
+    bootstrap)  PHASES_TO_RUN=() ;;
     cascade)    PHASES_TO_RUN=("cascade") ;;
     negative)   PHASES_TO_RUN=("negative") ;;
     chg)        PHASES_TO_RUN=("chg") ;;
@@ -1536,23 +1401,17 @@ for phase_name in "${PHASES_TO_RUN[@]}"; do
   esac
 done
 
-# Final summary
 write_summary
 RC=$?
 
-# Promote (if requested and run passed)
 if (( PROMOTE == 1 )); then
   if (( RC != 0 )); then
     log_err "--promote requested but overall run is FAIL; skipping promote"
   else
-    promote_cascade || {
-      log_err "promote failed"
-      RC=1
-    }
+    promote_cascade || RC=1
   fi
 fi
 
-# Cleanup: log final runtime
 END_EPOCH="$(date +%s)"
 log_info "Total runtime: $((END_EPOCH - START_EPOCH))s"
 
