@@ -5,16 +5,20 @@ plugin surface element against the `url-shortener` seed. The chain it
 produces is the release-gate evidence that the plugin works end-to-end
 across its full surface.
 
-**Status**: proposed, not yet implemented. Approval required before building
-the driver script.
+**Status**: approved for implementation. Driver script lands in a follow-up
+PR; this document is the design reference.
 
 **Revision history**:
 
 - v1 — initial plan (50 skills only, happy path).
-- **v2 — current**: gap-closure pass. Adds agents/command/hook coverage,
-  negative-fixture validation, schema definitions, `--promote` algorithm,
-  bootstrap path, API-layer retry policy, run-duration cap, CI artifact
-  upload. See §15 for gap-resolution log.
+- v2 — gap-closure pass. Added agents/command/hook coverage, negative-fixture
+  validation, schema definitions, `--promote` algorithm, bootstrap path,
+  API-layer retry policy, run-duration cap, CI artifact upload.
+- **v3 — current**: closes the 5 open questions from v2. Decisions:
+  archive-first `docs/` policy with retention rule; first-arg
+  `<example-name>` (no auto-discover); raise `T4L` ledger 500K → 1M;
+  hand-curated CHG change-sets per example with a documented file
+  format; negative fixtures shared under `tests/acceptance/fixtures/negative/`.
 
 ## 1. Purpose
 
@@ -56,6 +60,10 @@ because the acceptance run has a fundamentally different shape (63
 individual invocations, per-element logging, real seed→chain cascade).
 
 ### Usage
+
+First positional argument is always the example name. To run multiple
+examples, invoke the script once per example (a future `--all` flag is
+tracked as Phase B work).
 
 ```bash
 # Full run against url-shortener (release-candidate gate)
@@ -119,7 +127,7 @@ negative/
 The `cascade/` and `negative/` outputs are ephemeral (`.gitignored` via
 the existing `examples/*/logs/` rule). The release evidence gets promoted
 to `examples/<NAME>/docs/` only when invoked with `--promote` (or when
-the script is invoked from `release.yml` on a tag push). See §3.4 for
+the script is invoked from `release.yml` on a tag push). See §3.2 for
 the promote algorithm.
 
 ### 3.1 `summary.json` schema (v1.0)
@@ -210,12 +218,20 @@ tag push) and **all phases passed**:
 
 First-time bootstrap (destination empty): skip step 4, proceed.
 
+#### Retention policy
+
+- **Pre-1.0 plugin releases**: keep every archive uncompressed. History
+  is short and the comparison value is high.
+- **Post-1.0**: if `docs-archive/` exceeds 5 MB, compress archives older
+  than the most recent 5 releases into `docs-archive/legacy.tar.gz`.
+  Never delete; the archived chains are the regression baseline.
+
 ### 3.3 Tier placement
 
 This is a **Tier 6 — Release gate** test in the pyramid (see
 [`tests/README.md`](../../tests/README.md)). It runs only with `LIVE=1`
 and is wired into `release.yml`, not into `pr-checks.yml`. CI artifact
-upload step in §14.
+upload step in §13.
 
 ## 4. Phase 0 — Bootstrap & preflight
 
@@ -235,8 +251,10 @@ Runs first; gates whether subsequent phases can run.
      `project-profile`) run against `logs/<TS>/cascade/` *after* Phase 1
      completes, not against `examples/<NAME>/docs/`.
 4. **Negative-fixture presence check**: confirm
-   `examples/<NAME>/negative-fixtures/` exists (curated broken
-   artifacts; see §5.2). Required for Phase 1 negative validation.
+   `tests/acceptance/fixtures/negative/` exists with the six fixtures
+   in §5.2. Required for Phase 1 negative validation. Per-example
+   additions under `examples/<NAME>/negative-fixtures/` are optional
+   and are merged on top of the shared base set when present.
 5. **API auth check** (live mode only): `claude --version` returns 0
    and `ANTHROPIC_API_KEY` is non-empty. Fail-fast with clear message
    if missing.
@@ -273,7 +291,10 @@ Pass criteria for happy-path cascade:
 
 ### 5.2 Negative-fixture validation
 
-Curated broken artifacts live at `examples/<NAME>/negative-fixtures/`:
+Curated broken artifacts live at `tests/acceptance/fixtures/negative/`
+(shared across all examples — these are structural defects, not
+domain-specific). Per-example additions, if any, live under
+`examples/<NAME>/negative-fixtures/` and are merged in at run time.
 
 | Fixture | What's broken | Expected detection |
 |---|---|---|
@@ -303,8 +324,10 @@ fails.
 After the cascade completes successfully:
 
 1. **Apply the predefined change** committed at
-   `examples/<NAME>/chg/test-change.md` — e.g. for url-shortener: move
-   "analytics dashboards" from out-of-scope to in-scope.
+   `examples/<NAME>/chg/test-change.md` — e.g. for url-shortener: add a
+   visit-rate analytics dashboard (a non-trivial scope expansion that
+   forces re-scoping of analytics, a new ADR for storage choice, and
+   downstream impacts on TDD coverage).
 2. **Invoke `doc-chg`** to register the change request.
 3. **Invoke `doc-chg-autopilot`** to drive the CHG-01 artifact through
    its governance flow (impact assessment, approval, propagation).
@@ -312,7 +335,38 @@ After the cascade completes successfully:
 5. **Invoke `doc-chg-fixer`** if audit score < 90.
 
 Pass criteria: CHG-01 artifact passes audit, propagation surfaces the
-affected downstream layers.
+affected downstream layers, and the propagation report enumerates each
+"Expected downstream impacts" item from `chg/test-change.md` (or
+explicitly flags why an item was rejected).
+
+### `chg/test-change.md` file format
+
+Hand-curated per example. Required structure:
+
+```markdown
+# Test change request — <one-line summary>
+
+## Motivation
+<why the change is being requested — 2–3 sentences from a stakeholder POV>
+
+## Scope
+<what's being added/removed/modified — bullet list>
+
+## Expected downstream impacts
+<which layers should propagate, predicted by the human author>
+
+- BRD: <section/item updated>
+- PRD: <section/item updated>
+- EARS: <requirement updated>
+- BDD: <scenario added/changed>
+- ADR: ADR-NN required for <decision>
+- SPEC: <component impact>
+- TDD: <test coverage delta>
+- IPLAN: <task delta>
+```
+
+The "Expected downstream impacts" list is what the audit phase compares
+against `doc-chg-autopilot`'s actual propagation report.
 
 ## 7. Phase 3 — Cross-cutting utilities (14 skills)
 
@@ -398,6 +452,7 @@ Pass criteria:
 | Driver location | `tests/scripts/test-acceptance.sh` | Sibling to existing test runners; tier-6 release gate, not a tier-suite |
 | Output location during run | `examples/<NAME>/logs/<TS>/cascade/` | Ephemeral, gitignored; isolates the run-as-test from the curated release evidence |
 | Output location after promote | `examples/<NAME>/docs/` (latest) + `examples/<NAME>/docs-archive/v<X.Y.Z>/` (per-release snapshot) | Latest doubles as discoverable example; archive is audit trail |
+| Archive retention | Pre-1.0: keep every archive uncompressed. Post-1.0: compress beyond 5 most recent if `docs-archive/` exceeds 5 MB; never delete | History is the regression baseline; the cost is trivial |
 | Skip strategy for non-cascade skills | Sandboxed tmp dirs with minimal corpus per skill; no element silently skipped | Every release-gate run exercises all 63 elements; coverage is the point |
 | Per-element failure isolation | One failure logs FAIL but doesn't halt subsequent elements within the phase | Diagnosable single-pass run; failures don't mask other failures |
 | Phase gating | Phase 0 failure stops; Phase 1 failure skips Phase 2; Phase 1 failure does NOT skip Phases 3 + 4 (utilities + agents can still exercise) | Maximises diagnostic surface area |
@@ -407,12 +462,14 @@ Pass criteria:
 | Re-run cost mitigation | `--skip-completed` flag reads prior run's `summary.json`, skips PASSed elements | Speeds iteration when fixing a single failing element |
 | Promotion to release evidence | Manual `--promote` flag (or auto when invoked from `release.yml` on tag push); algorithm in §3.2 | Local runs don't pollute `examples/<NAME>/docs/`; tagged releases do |
 | API-layer retry policy | **Retry network/HTTP errors up to 3× with exponential backoff**; **no retries on non-zero exit with structured skill output** | Distinguishes transient infra failures from skill instability |
-| CHG phase scope | One predefined change committed at `examples/<NAME>/chg/test-change.md` | Exercises CHG skills against a realistic delta |
+| CHG phase scope | One hand-curated change committed at `examples/<NAME>/chg/test-change.md` (format defined in §6) | Realistic stakeholder-style change request; per-example tailoring |
+| Negative-fixture location | Shared at `tests/acceptance/fixtures/negative/`; per-example additions optional at `examples/<NAME>/negative-fixtures/` | Fixtures are structural defects, not domain-specific; DRY across examples |
 | Failure budget per layer | One auto-`fixer` attempt, then fail | Real release behavior |
-| Token budget enforcement | Existing `T4L: 500_000` ceiling in `release.yml` token ledger | Matches existing budget infrastructure |
+| Token budget enforcement | `T4L: 1_000_000` ceiling in `release.yml` token ledger (raised from 500K in this revision) | Accommodates the 4-phase acceptance run with ~25% headroom |
 | Max wall-clock runtime | 45 minutes (hard-fail at 45m; GHA job timeout 60m) | Prevents indefinite hangs; allows generous overhead |
 | First-bootstrap behavior | Phase 0 detects empty `examples/<NAME>/docs/`; Phases 3 + 4 run against `cascade/` output instead | Bootstrap run can populate the docs/ tree from nothing |
 | Advisory-skill thresholds | Per-skill minimum coverage values in §7 + §8 | Prevents empty-output false-PASS |
+| Argument pattern | First positional arg is `<example-name>`; one example per invocation. `--all` deferred to Phase B | Explicit is safer than auto-discovery; multi-example invocation can be added later cheaply |
 
 ## 10. Token cost ballpark
 
@@ -426,35 +483,19 @@ Pass criteria:
 | 4 — Agents + command + hook (13) | 80 000 – 120 000 | 11 agents × moderate; command + hook deterministic |
 | **Total per `--live` run** | **~565 000 – 805 000** | **≈ $11 – 20** |
 
-Acceptable as a release gate. Budget overrun beyond `T4L: 500K` triggers
-the existing release.yml token-ledger enforcement; the threshold will
-need to be raised to `T4L: 1_000_000` for this run shape.
+Acceptable as a release gate. The `T4L` token-ledger ceiling in
+`release.yml` is raised from 500K to **1M** in this revision (§13)
+to accommodate this run shape with ~25% headroom for skill evolution.
 
-## 11. Open questions (still need user decision)
-
-1. **`examples/<NAME>/docs/` policy on each release**: archive current
-   to `docs-archive/v<previous>/` (current default), or overwrite
-   without archiving (lighter history)?
-2. **Multi-example readiness**: confirm first arg pattern stays
-   `<example-name>` (so `examples/payment-gateway/` requires only the
-   seed + chg + negative-fixtures files, no script changes).
-3. **Token budget for `T4L`**: raise from 500K to 1M to accommodate
-   the new phases, or split into per-phase budgets?
-4. **CHG change-set source per example**: hand-curate one per example
-   (recommended), or use a default mutation generator?
-5. **Negative fixtures: who owns them?**: hand-curated per example, or
-   shared base set under `tests/acceptance/fixtures/negative/` reused
-   by every example?
-
-## 12. Implementation plan
+## 11. Implementation plan
 
 | Step | Description | Effort |
 |---|---|---|
 | 1 | Add `tests/scripts/test-acceptance.sh` skeleton: arg parsing, log layout, phase dispatch, summary aggregation | 1.5 h |
 | 2 | Implement Phase 0 — bootstrap detection, manifest validate, lint smoke, API auth check | 1 h |
 | 3 | Implement Phase 1.1 — happy-path cascade (autopilot + audit + fixer loop, lint, score parsing) | 2 h |
-| 4 | Author negative fixtures + implement Phase 1.2 negative validation | 1.5 h |
-| 5 | Implement Phase 2 — CHG cycle | 1 h |
+| 4 | Author shared negative fixtures under `tests/acceptance/fixtures/negative/` + implement Phase 1.2 validation | 1.5 h |
+| 5 | Commit `examples/url-shortener/chg/test-change.md` in §6 format; implement Phase 2 CHG cycle | 1 h |
 | 6 | Implement Phase 3 — 14 utility probes with minimum-coverage thresholds | 2.5 h |
 | 7 | Implement Phase 4 — 11 agents + 1 command + 1 hook | 2 h |
 | 8 | Commit `test-acceptance.schema.json` for `summary.json` + per-element `.meta.json` | 0.5 h |
@@ -468,15 +509,16 @@ need to be raised to `T4L: 1_000_000` for this run shape.
 
 Token cost for the first cascade run: ~$11–20.
 
-## 13. Subsequent example additions
+## 12. Subsequent example additions
 
 Adding a new example seed (e.g. `payment-gateway`) after this script
 exists:
 
 1. Create `examples/<NEW-NAME>/seed/initial-requirements.md`.
-2. Create `examples/<NEW-NAME>/chg/test-change.md`.
-3. Create `examples/<NEW-NAME>/negative-fixtures/` (or reuse the shared
-   base set if that's the decided ownership model).
+2. Create `examples/<NEW-NAME>/chg/test-change.md` in the §6 format.
+3. (Optional) Create `examples/<NEW-NAME>/negative-fixtures/` for
+   domain-specific failure modes; the shared base set at
+   `tests/acceptance/fixtures/negative/` covers all structural defects.
 4. Run `bash tests/scripts/test-acceptance.sh <NEW-NAME>` to verify the
    acceptance suite passes against the new seed.
 5. Wire the new example name into `release.yml` if it should gate
@@ -484,7 +526,7 @@ exists:
 
 No script changes required.
 
-## 14. CI integration (`release.yml`)
+## 13. CI integration (`release.yml`)
 
 On tag push (`v*` or `claude-code-plugin/v*`):
 
@@ -504,34 +546,54 @@ On tag push (`v*` or `claude-code-plugin/v*`):
     retention-days: 30
 ```
 
+Token-ledger ceiling raised in the same step's Python block:
+
+```python
+HARD = {"T3L": 50_000, "T4L": 1_000_000, "review": 200_000, "smoke": 20_000}
+```
+
 On `--promote` success, the workflow also commits the promoted chain
 back to the release branch (separate job, behind a manual approval to
 avoid auto-pushes from CI).
 
-## 15. Phase B — deferred work
+## 14. Phase B — deferred work
 
 Not blocking initial implementation; tracked for future passes.
 
 | ID | Description |
 |---|---|
-| B1 | **Multi-example acceptance config**: `examples/<NAME>/acceptance-config.yaml` with per-skill weights/thresholds (relevant when 2nd example lands; uniform algorithm fits one example) |
-| B2 | **Skill-version drift tracking**: archive skill-manifest hashes alongside the chain; produce a hash-diff report between consecutive release archives |
-| B3 | **Variance quantification**: collect element-ID overlap (Jaccard) between consecutive runs of the same seed; flag drops below threshold (e.g. 0.6) |
-| B4 | **Phase 3 parallelism**: utility probes are independent; parallelize for ~3× speedup |
-| B5 | **Mid-run abort/resume**: SIGINT/SIGTERM handler; partial `.meta.json` writes use `.partial` suffix until completion |
-| B6 | **Performance benchmarking**: token cost trend per release; flag regressions where the same seed costs significantly more |
+| B1 | **`--all` flag for multi-example runs**: invoke the suite across every directory under `examples/` in one command (current behavior is one example per invocation) |
+| B2 | **Multi-example acceptance config**: `examples/<NAME>/acceptance-config.yaml` with per-skill weights/thresholds (relevant when 2nd example lands; uniform algorithm fits one example) |
+| B3 | **Skill-version drift tracking**: archive skill-manifest hashes alongside the chain; produce a hash-diff report between consecutive release archives |
+| B4 | **Variance quantification**: collect element-ID overlap (Jaccard) between consecutive runs of the same seed; flag drops below threshold (e.g. 0.6) |
+| B5 | **Phase 3 parallelism**: utility probes are independent; parallelize for ~3× speedup |
+| B6 | **Mid-run abort/resume**: SIGINT/SIGTERM handler; partial `.meta.json` writes use `.partial` suffix until completion |
+| B7 | **Performance benchmarking**: token cost trend per release; flag regressions where the same seed costs significantly more |
+| B8 | **Per-phase token budget split**: replace single `T4L` ceiling with per-phase budgets (`T4L_CASCADE`, `T4L_CHG`, `T4L_UTILITIES`, `T4L_AGENTS`) for finer-grained cost regression signal |
 
-## 16. Gap-resolution log (this revision)
+## 15. Gap- and question-resolution log
+
+### v2 — gap closure
 
 | Gap | What was added |
 |---|---|
 | G1 — Agents/command/hook | New Phase 4 (§8); scope table includes 13 additional elements |
-| G2 — Negative fixtures | New §5.2 with 6-fixture coverage table; new `negative-fixtures/` directory |
+| G2 — Negative fixtures | New §5.2 with 6-fixture coverage table |
 | G3 — Schemas | New §3.1 with `summary.json` + `.meta.json` v1.0 schemas; commit at `tests/scripts/test-acceptance.schema.json` |
 | G4 — Promote semantics | New §3.2 with the 7-step algorithm |
 | G5 — Advisory thresholds | Minimum-coverage column added to §7 + §8 probes |
 | G6 — API retry policy | Layered retry: 3× backoff on network/HTTP; no retry on skill instability (§9) |
-| G7 — CI artifact upload | New §14 with `upload-artifact@v4` step |
-| G8 — Run duration cap | Max 45m wall-clock; GHA `timeout-minutes: 60` (§9 + §14) |
+| G7 — CI artifact upload | New §13 with `upload-artifact@v4` step |
+| G8 — Run duration cap | Max 45m wall-clock; GHA `timeout-minutes: 60` (§9 + §13) |
 | G9 — Bootstrap behavior | New Phase 0 (§4) with `bootstrap_mode` detection; Phases 2 + 3 gating |
-| G10–G15 | Logged as Phase B deferred work (§15) |
+| G10–G15 | Logged as Phase B deferred work (§14) |
+
+### v3 — open question closure
+
+| Question | Decision |
+|---|---|
+| `docs/` policy each release | **Archive-first** with retention rule (§3.2 + §9). Pre-1.0 keep all uncompressed; post-1.0 compress beyond 5 most recent if `docs-archive/` > 5 MB |
+| Multi-example arg pattern | **First positional arg = `<example-name>`**, one example per invocation (§3 usage + §9). `--all` deferred to Phase B (B1) |
+| `T4L` token budget | **Raise 500K → 1M** in `release.yml` token ledger (§10 + §13). Per-phase split deferred to Phase B (B8) |
+| CHG change-set source | **Hand-curated per example** at `examples/<NAME>/chg/test-change.md` with documented format (§6) |
+| Negative-fixtures location | **Shared base set** at `tests/acceptance/fixtures/negative/`; per-example additions optional (§5.2 + §9). Bootstrap presence check updated (§4 step 4) |
