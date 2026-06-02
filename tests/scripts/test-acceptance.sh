@@ -519,6 +519,218 @@ phase_1_cascade() {
 }
 
 # -----------------------------------------------------------------------------
+# Phase 1.2 — Negative-fixture validation
+# -----------------------------------------------------------------------------
+# Fixture format: <name>|<path>|<detector>|<expected-finding>
+#   detector: "lint:<CODE>"     — deterministic; expect sdd_doc_lint to report <CODE>
+#             "audit:<skill>"   — live LLM; expect skill output to contain the expected
+#                                 finding pattern (regex)
+#             "validator"       — live LLM doc-validator; expect "unresolved" in output
+#
+# Phase 1.2 logic:
+#   for each fixture:
+#     if detector starts with "lint:" → run sdd_doc_lint, assert code appears
+#     if detector starts with "audit:" → invoke skill (or SKIP in --no-live)
+#     if detector == "validator" → invoke doc-validator (or SKIP in --no-live)
+
+NEGATIVE_FIXTURES=(
+  "brd-broken-sections|brd-broken-sections.md|lint:STRUCT01"
+  "brd-broken-tags|brd-broken-tags.md|lint:ID01"
+  "prd-broken-upstream-ref|prd-broken-upstream-ref.md|validator"
+  "ears-score-7|ears-score-7.md|audit:doc-ears-audit"
+  "adr-missing-sequence-diagram|adr-missing-sequence-diagram.md|lint:STRUCT01"
+  "chain-trace-broken|chain-trace-broken|validator"
+)
+
+assert_lint_finding() {
+  # assert_lint_finding <fixture-path> <expected-code>
+  # Returns 0 if expected code appears in the JSON output, 1 otherwise.
+  local target="$1" expected="$2"
+  local json_out
+  json_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$target" --format json 2>&1)"
+  python3 - "$expected" <<PY
+import json, sys
+try:
+    data = json.loads('''$json_out''')
+except Exception:
+    sys.exit(2)
+codes = {f.get("code") for f in data}
+sys.exit(0 if sys.argv[1] in codes else 1)
+PY
+}
+
+phase_1_negative() {
+  section "Phase 1.2 — Negative-fixture validation"
+
+  if [[ ! -d "$NEGATIVE_FIXTURES_DIR" ]]; then
+    log_warn "negative fixtures dir missing: $NEGATIVE_FIXTURES_DIR; skipping all"
+    for entry in "${NEGATIVE_FIXTURES[@]}"; do
+      local name="${entry%%|*}"
+      record_outcome "neg:$name" "fixture" "negative" "SKIP" 0 "" "" "false" "" "fixtures dir missing"
+      write_meta_json "skills" "neg:$name"
+    done
+    return 0
+  fi
+
+  local entry name rel detector
+  for entry in "${NEGATIVE_FIXTURES[@]}"; do
+    IFS='|' read -r name rel detector <<< "$entry"
+    local fixture_path="$NEGATIVE_FIXTURES_DIR/$rel"
+
+    if [[ ! -e "$fixture_path" ]]; then
+      log_warn "fixture missing: $fixture_path"
+      record_outcome "neg:$name" "fixture" "negative" "SKIP" 0 "" "" "false" "" "fixture not found"
+      write_meta_json "skills" "neg:$name"
+      continue
+    fi
+
+    log_info "── fixture: $name ($detector) ──"
+    local t0 t1 duration
+    t0="$(date +%s)"
+
+    case "$detector" in
+      lint:*)
+        local expected_code="${detector#lint:}"
+        if assert_lint_finding "$fixture_path" "$expected_code"; then
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          log_info "  ✓ $expected_code reported as expected"
+          record_outcome "neg:$name" "fixture" "negative" "PASS" "$duration"
+        else
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          log_err "  ✗ $expected_code NOT reported — regression in detection sensitivity"
+          record_outcome "neg:$name" "fixture" "negative" "FAIL" "$duration" "" "" "false" "" "expected $expected_code not in lint output"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+        fi
+        ;;
+      audit:*)
+        if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
+          local skill="${detector#audit:}"
+          local audit_prompt="Audit the broken artifact at $fixture_path. Report findings and readiness score."
+          invoke_skill "$skill" "$audit_prompt" "skills" "skill" "negative"
+          local audit_log="$LOG_DIR/skills/$skill.log"
+          local score
+          score="$(parse_audit_score "$audit_log")"
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          if (( score < 90 )); then
+            log_info "  ✓ audit score $score < 90 (broken fixture flagged)"
+            record_outcome "neg:$name" "fixture" "negative" "PASS" "$duration" "$score"
+          else
+            log_err "  ✗ audit score $score ≥ 90 (broken fixture NOT flagged)"
+            record_outcome "neg:$name" "fixture" "negative" "FAIL" "$duration" "$score" "" "false" "" "broken fixture got audit score >= 90"
+            [[ $FAIL_FAST -eq 1 ]] && return 1
+          fi
+        else
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          log_info "  SKIP (audit-based check requires --live or --mock)"
+          record_outcome "neg:$name" "fixture" "negative" "SKIP" "$duration" "" "" "false" "" "live mode disabled"
+        fi
+        ;;
+      validator)
+        if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
+          local val_prompt="Validate cross-doc references in $fixture_path. Report unresolved references."
+          invoke_skill "doc-validator" "$val_prompt" "skills" "skill" "negative"
+          local val_log="$LOG_DIR/skills/doc-validator.log"
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          if [[ -f "$val_log" ]] && grep -qiE "unresolved|broken|not found|missing" "$val_log"; then
+            log_info "  ✓ doc-validator reports unresolved/broken reference"
+            record_outcome "neg:$name" "fixture" "negative" "PASS" "$duration"
+          else
+            log_err "  ✗ doc-validator did not flag the broken reference"
+            record_outcome "neg:$name" "fixture" "negative" "FAIL" "$duration" "" "" "false" "" "doc-validator missed broken reference"
+            [[ $FAIL_FAST -eq 1 ]] && return 1
+          fi
+        else
+          t1="$(date +%s)"; duration=$((t1 - t0))
+          log_info "  SKIP (validator-based check requires --live or --mock)"
+          record_outcome "neg:$name" "fixture" "negative" "SKIP" "$duration" "" "" "false" "" "live mode disabled"
+        fi
+        ;;
+      *)
+        log_err "  unknown detector type: $detector"
+        record_outcome "neg:$name" "fixture" "negative" "FAIL" 0 "" "" "false" "" "unknown detector type"
+        ;;
+    esac
+
+    write_meta_json "skills" "neg:$name"
+  done
+
+  return 0
+}
+
+# -----------------------------------------------------------------------------
+# Phase 2 — Change management
+# -----------------------------------------------------------------------------
+# Gated on: Phase 1 success + not bootstrap_mode. Applies the predefined
+# change at examples/<NAME>/chg/test-change.md and drives the 4 CHG skills.
+
+phase_2_chg() {
+  section "Phase 2 — Change management"
+
+  if [[ "$BOOTSTRAP_MODE" == "true" ]]; then
+    log_info "bootstrap mode; Phase 2 skipped (no chain to mutate)"
+    for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
+      record_outcome "$skill" "skill" "chg" "SKIP" 0 "" "" "false" "" "bootstrap mode"
+      write_meta_json "skills" "$skill"
+    done
+    return 0
+  fi
+
+  if [[ ! -f "$CHG_FILE" ]]; then
+    log_err "CHG test-change file missing: $CHG_FILE"
+    for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
+      record_outcome "$skill" "skill" "chg" "FAIL" 0 "" "" "false" "" "chg/test-change.md missing"
+      write_meta_json "skills" "$skill"
+    done
+    return 1
+  fi
+
+  if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    log_info "Phase 2 requires --live or --mock; recording SKIP for all 4 CHG skills"
+    for skill in doc-chg doc-chg-autopilot doc-chg-audit doc-chg-fixer; do
+      record_outcome "$skill" "skill" "chg" "SKIP" 0 "" "" "false" "" "live mode disabled"
+      write_meta_json "skills" "$skill"
+    done
+    return 0
+  fi
+
+  log_info "Applying change request from $CHG_FILE"
+
+  # doc-chg: register the change
+  invoke_skill "doc-chg" "Register the change request described in $CHG_FILE against the existing chain at $EXAMPLE_DOCS." "skills" "skill" "chg"
+
+  # doc-chg-autopilot: drive CHG-01 governance flow
+  local chg_out_dir="$LOG_DIR/cascade/09_CHG"
+  mkdir -p "$chg_out_dir"
+  local chg_out="$chg_out_dir/CHG-01.${EXAMPLE}.md"
+  invoke_skill "doc-chg-autopilot" "Drive the change request at $CHG_FILE through impact assessment, approval, and propagation. Write CHG-01 to $chg_out. The propagation report must enumerate each item in the 'Expected downstream impacts' section of $CHG_FILE." "skills" "skill" "chg"
+
+  # doc-chg-audit: audit CHG-01
+  invoke_skill "doc-chg-audit" "Audit the CHG-01 artifact at $chg_out. Verify it references each expected downstream impact from $CHG_FILE. Report readiness score." "skills" "skill" "chg"
+  local chg_audit_log="$LOG_DIR/skills/doc-chg-audit.log"
+  local chg_score
+  chg_score="$(parse_audit_score "$chg_audit_log")"
+  AUDIT_SCORE_BY_NAME["doc-chg-audit"]="$chg_score"
+  log_info "CHG audit score: $chg_score"
+
+  # doc-chg-fixer if score < 90
+  if (( chg_score < 90 )); then
+    log_info "CHG audit < 90 → invoking fixer"
+    invoke_skill "doc-chg-fixer" "Fix CHG-01 at $chg_out based on audit findings in $chg_audit_log." "skills" "skill" "chg"
+    FIXER_INVOKED_BY_NAME["doc-chg-audit"]="true"
+
+    invoke_skill "doc-chg-audit" "Re-audit CHG-01 at $chg_out." "skills" "skill" "chg"
+    chg_score="$(parse_audit_score "$chg_audit_log")"
+    AUDIT_AFTER_FIXER_BY_NAME["doc-chg-audit"]="$chg_score"
+    log_info "CHG audit score after fixer: $chg_score"
+  else
+    record_outcome "doc-chg-fixer" "skill" "chg" "SKIP" 0 "" "" "false" "" "fixer not needed (audit ≥ 90)"
+    write_meta_json "skills" "doc-chg-fixer"
+  fi
+
+  return 0
+}
+
+# -----------------------------------------------------------------------------
 # Summary writers
 # -----------------------------------------------------------------------------
 write_summary() {
@@ -650,14 +862,17 @@ phase_0_bootstrap || {
 }
 
 # Phase dispatch
-PHASES_TO_RUN=("cascade")  # Impl-1 only implements bootstrap + cascade
+# Default: cascade → negative → chg. Phases 3+4 land in Impl-3/4.
+PHASES_TO_RUN=("cascade" "negative" "chg")
 if [[ -n "$PHASE" ]]; then
   case "$PHASE" in
     bootstrap)  PHASES_TO_RUN=() ;;  # only Phase 0 ran
     cascade)    PHASES_TO_RUN=("cascade") ;;
-    negative|chg|utilities|agents|command|hook)
-      log_warn "phase=$PHASE not yet implemented (Impl-2+); running cascade if --live"
-      PHASES_TO_RUN=("cascade")
+    negative)   PHASES_TO_RUN=("negative") ;;
+    chg)        PHASES_TO_RUN=("chg") ;;
+    utilities|agents|command|hook)
+      log_warn "phase=$PHASE not yet implemented (Impl-3/4); skipping"
+      PHASES_TO_RUN=()
       ;;
     *) log_err "unknown phase: $PHASE"; exit 2 ;;
   esac
@@ -665,7 +880,9 @@ fi
 
 for phase_name in "${PHASES_TO_RUN[@]}"; do
   case "$phase_name" in
-    cascade) phase_1_cascade ;;
+    cascade)  phase_1_cascade ;;
+    negative) phase_1_negative ;;
+    chg)      phase_2_chg ;;
   esac
 done
 
