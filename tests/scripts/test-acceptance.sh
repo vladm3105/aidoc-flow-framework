@@ -955,6 +955,289 @@ phase_3_utilities() {
 }
 
 # -----------------------------------------------------------------------------
+# Phase 4 — Agents, command, hook (13 elements)
+# -----------------------------------------------------------------------------
+# Plan §8. Each invocation has a minimum-output threshold so empty-output
+# passes are rejected. The hook is deterministic (synthetic JSON payload —
+# no LLM cost); agents + command require --live or --mock.
+
+# Agent table: <agent>|<target>|<task>|<min-output-words>
+AGENTS=(
+  "requirements-analyst|01_BRD|produce a structured requirements analysis|200"
+  "pm-orchestrator|.|produce an orchestration plan referencing every layer (BRD..IPLAN)|150"
+  "solutions-architect|06_SPEC|review the architecture; reference C4/DFD diagram tags|150"
+  "test-architect|07_TDD|review the test strategy|100"
+  "software-engineer|08_IPLAN|review the implementation plan|100"
+  "devops-release-engineer|08_IPLAN|produce a deployment plan|100"
+  "code-reviewer|08_IPLAN|review the code-block examples in the IPLAN|100"
+  "security-engineer|.|produce a security review of the chain|100"
+  "traceability-auditor|.|confirm every 4-segment element-ID resolves|100"
+  "adversary|.|produce adversarial findings via the review-team crew|50"
+  "synthesizer|.|produce a synthesis combining persona outputs via the review-team crew|50"
+)
+
+invoke_agent_live() {
+  # invoke_agent_live <agent-name> <prompt> <output-log-path>
+  # Asks Claude to delegate to the named agent. Returns exit code.
+  local agent="$1" prompt="$2" out_log="$3"
+  claude \
+    --plugin-dir "$PLUGIN_DIR" \
+    --dangerously-skip-permissions \
+    -p "Use the $agent agent to: $prompt" \
+    > "$out_log" 2>&1
+  return $?
+}
+
+invoke_agent() {
+  # invoke_agent <agent-name> <prompt> — dispatches mock vs live, records outcome.
+  # Returns 0 on PASS.
+  local agent="$1" prompt="$2"
+  local out_log="$LOG_DIR/agents/$agent.log"
+
+  local t0 t1 duration
+  t0="$(date +%s)"
+
+  if [[ -n "$MOCK_SOURCE" ]]; then
+    if mock_replay_for "agents" "$agent"; then
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      record_outcome "$agent" "agent" "agents" "PASS" "$duration"
+      write_meta_json "agents" "$agent"
+      return 0
+    fi
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    record_outcome "$agent" "agent" "agents" "SKIP" "$duration" "" "" "false" "" "no mock data"
+    write_meta_json "agents" "$agent"
+    return 1
+  fi
+
+  log_info "invoking agent: $agent"
+  if invoke_agent_live "$agent" "$prompt" "$out_log"; then
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    record_outcome "$agent" "agent" "agents" "PASS" "$duration"
+    write_meta_json "agents" "$agent"
+    return 0
+  else
+    local rc=$?
+    t1="$(date +%s)"; duration=$((t1 - t0))
+    log_err "agent $agent failed (exit $rc)"
+    record_outcome "$agent" "agent" "agents" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
+    write_meta_json "agents" "$agent"
+    return 1
+  fi
+}
+
+phase_4_agents() {
+  section "Phase 4.1 — Agents (11)"
+
+  local chain_dir
+  chain_dir="$(_resolve_chain_target)"
+
+  if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    log_info "live mode disabled; recording SKIP for all 11 agents"
+    local entry agent
+    for entry in "${AGENTS[@]}"; do
+      agent="${entry%%|*}"
+      record_outcome "$agent" "agent" "agents" "SKIP" 0 "" "" "false" "" "live mode disabled"
+      write_meta_json "agents" "$agent"
+    done
+    return 0
+  fi
+
+  local entry agent target task min_words
+  for entry in "${AGENTS[@]}"; do
+    IFS='|' read -r agent target task min_words <<< "$entry"
+    local target_path
+    if [[ "$target" == "." ]]; then
+      target_path="$chain_dir"
+    else
+      target_path="$chain_dir/$target"
+    fi
+
+    local prompt="Read $target_path and ${task}. Provide a structured response."
+    invoke_agent "$agent" "$prompt"
+
+    # Word-count threshold
+    local agent_log="$LOG_DIR/agents/$agent.log"
+    local words
+    words="$(wc -w < "$agent_log" 2>/dev/null || echo 0)"
+    if (( words < min_words )); then
+      log_err "  $agent: only $words words (threshold ≥ $min_words) → FAIL"
+      OUTCOME_BY_NAME[$agent]="FAIL"
+      ERROR_BY_NAME[$agent]="output $words words < threshold $min_words"
+      write_meta_json "agents" "$agent"
+      [[ $FAIL_FAST -eq 1 ]] && return 1
+    else
+      log_info "  $agent: $words words (≥ $min_words) → PASS"
+    fi
+  done
+
+  return 0
+}
+
+phase_4_command() {
+  section "Phase 4.2 — Command (/aidoc-flow:save-plan)"
+
+  if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    log_info "live mode disabled; SKIP"
+    record_outcome "save-plan" "command" "command" "SKIP" 0 "" "" "false" "" "live mode disabled"
+    write_meta_json "command" "save-plan"
+    return 0
+  fi
+
+  local cmd_log="$LOG_DIR/command/save-plan.log"
+  local cmd_sandbox="$LOG_DIR/sandbox/save-plan"
+  mkdir -p "$cmd_sandbox"
+
+  local t0 t1 duration
+  t0="$(date +%s)"
+
+  if [[ -n "$MOCK_SOURCE" ]]; then
+    if mock_replay_for "command" "save-plan"; then
+      t1="$(date +%s)"; duration=$((t1 - t0))
+      record_outcome "save-plan" "command" "command" "PASS" "$duration"
+      write_meta_json "command" "save-plan"
+      return 0
+    fi
+  fi
+
+  log_info "invoking /aidoc-flow:save-plan (sandbox: $cmd_sandbox)"
+  ( cd "$cmd_sandbox" && \
+    claude --plugin-dir "$PLUGIN_DIR" --dangerously-skip-permissions \
+      -p "Draft a brief plan with two steps. Then invoke /aidoc-flow:save-plan to capture it to a file under plans/." \
+      > "$cmd_log" 2>&1 )
+  local rc=$?
+
+  t1="$(date +%s)"; duration=$((t1 - t0))
+
+  # Assert: a plan file was created under sandbox/plans/
+  local plan_file
+  plan_file="$(find "$cmd_sandbox/plans" -name '*.md' -print -quit 2>/dev/null)"
+  if [[ $rc -eq 0 ]] && [[ -n "$plan_file" ]] && [[ -s "$plan_file" ]]; then
+    log_info "  ✓ save-plan produced plan file at $plan_file"
+    record_outcome "save-plan" "command" "command" "PASS" "$duration"
+  else
+    log_err "  ✗ save-plan did not produce a non-empty plan file under $cmd_sandbox/plans/"
+    record_outcome "save-plan" "command" "command" "FAIL" "$duration" "" "" "false" "" "no plan file produced"
+  fi
+  write_meta_json "command" "save-plan"
+
+  return 0
+}
+
+phase_4_hook() {
+  section "Phase 4.3 — Hook (sdd-doc-review.sh)"
+
+  local hook_path="$PLUGIN_DIR/hooks/sdd-doc-review.sh"
+  local hook_cfg="$PLUGIN_DIR/hooks/hooks.json"
+  local hook_log="$LOG_DIR/hook/sdd-doc-review.log"
+
+  local t0 t1 duration
+  t0="$(date +%s)"
+
+  # 4.3.1 — hooks.json is valid JSON
+  if ! python3 -m json.tool < "$hook_cfg" > /dev/null 2>&1; then
+    log_err "  hooks.json is not valid JSON"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hooks.json invalid"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  # 4.3.2 — hooks.json references the correct event + matcher
+  if ! grep -q '"PostToolUse"' "$hook_cfg" || \
+     ! grep -q '"Write|Edit"' "$hook_cfg" || \
+     ! grep -q 'sdd-doc-review.sh' "$hook_cfg"; then
+    log_err "  hooks.json missing expected PostToolUse / Write|Edit / sdd-doc-review.sh references"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hooks.json config mismatch"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+  log_info "  ✓ hooks.json valid; references PostToolUse + Write|Edit + sdd-doc-review.sh"
+
+  # 4.3.3 — hook script exists and is executable
+  if [[ ! -x "$hook_path" ]]; then
+    log_err "  hook script missing or not executable: $hook_path"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" 0 "" "" "false" "" "hook script not executable"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  # 4.3.4 — synthetic invocation against a broken fixture.
+  # The hook detects SDD instance documents by path pattern: either
+  # `/docs/0N_<TYPE>/...` or a filename matching `<TYPE>-NN`. Our raw
+  # fixture (`brd-broken-sections.md`) is named for human readability and
+  # doesn't match either pattern. Stage it at an SDD-style path so the
+  # hook's layer-detection logic fires.
+  local fixture="$NEGATIVE_FIXTURES_DIR/brd-broken-sections.md"
+  if [[ ! -f "$fixture" ]]; then
+    log_warn "  brd-broken-sections fixture missing; cannot synthetically test hook"
+    record_outcome "sdd-doc-review" "hook" "hook" "SKIP" 0 "" "" "false" "" "fixture missing"
+    write_meta_json "hook" "sdd-doc-review"
+    return 0
+  fi
+
+  if ! command -v jq >/dev/null 2>&1; then
+    log_warn "  jq not on PATH; hook check skipped (hook itself degrades silently without jq)"
+    record_outcome "sdd-doc-review" "hook" "hook" "SKIP" 0 "" "" "false" "" "jq missing"
+    write_meta_json "hook" "sdd-doc-review"
+    return 0
+  fi
+
+  local hook_sandbox="$LOG_DIR/sandbox/hook/docs/01_BRD"
+  mkdir -p "$hook_sandbox"
+  local staged="$hook_sandbox/BRD-01.md"
+  cp "$fixture" "$staged"
+
+  local payload
+  payload="$(jq -n --arg path "$staged" '{tool_input: {file_path: $path}}')"
+  local hook_out
+  hook_out="$(printf '%s' "$payload" | bash "$hook_path" 2>&1)"
+  local hook_rc=$?
+
+  t1="$(date +%s)"; duration=$((t1 - t0))
+
+  # Assert: exit 0 (advisory — must never block)
+  if [[ $hook_rc -ne 0 ]]; then
+    log_err "  hook exited $hook_rc (must be 0 — advisory only)"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "hook exit $hook_rc"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  # Assert: valid JSON output
+  if ! printf '%s' "$hook_out" | jq . > /dev/null 2>&1; then
+    log_err "  hook output is not valid JSON"
+    printf '%s' "$hook_out" > "$hook_log"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "hook output invalid JSON"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  # Assert: contains BRD-layer audit nudge
+  if ! printf '%s' "$hook_out" | grep -q "doc-brd-audit"; then
+    log_err "  hook output missing doc-brd-audit nudge"
+    printf '%s' "$hook_out" > "$hook_log"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing audit nudge"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  # Assert: includes structural findings (fixture has STRUCT01)
+  if ! printf '%s' "$hook_out" | grep -qiE "STRUCT01|structural findings"; then
+    log_err "  hook output missing STRUCT01 / structural findings (fixture is known-broken)"
+    printf '%s' "$hook_out" > "$hook_log"
+    record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing structural findings"
+    write_meta_json "hook" "sdd-doc-review"
+    return 1
+  fi
+
+  log_info "  ✓ hook exits 0, valid JSON, includes audit nudge + STRUCT01"
+  printf '%s' "$hook_out" > "$hook_log"
+  record_outcome "sdd-doc-review" "hook" "hook" "PASS" "$duration"
+  write_meta_json "hook" "sdd-doc-review"
+  return 0
+}
+
+# -----------------------------------------------------------------------------
 # Summary writers
 # -----------------------------------------------------------------------------
 write_summary() {
@@ -1086,8 +1369,8 @@ phase_0_bootstrap || {
 }
 
 # Phase dispatch
-# Default: cascade → negative → chg → utilities. Phase 4 lands in Impl-4.
-PHASES_TO_RUN=("cascade" "negative" "chg" "utilities")
+# Default: cascade → negative → chg → utilities → agents → command → hook.
+PHASES_TO_RUN=("cascade" "negative" "chg" "utilities" "agents" "command" "hook")
 if [[ -n "$PHASE" ]]; then
   case "$PHASE" in
     bootstrap)  PHASES_TO_RUN=() ;;  # only Phase 0 ran
@@ -1095,10 +1378,9 @@ if [[ -n "$PHASE" ]]; then
     negative)   PHASES_TO_RUN=("negative") ;;
     chg)        PHASES_TO_RUN=("chg") ;;
     utilities)  PHASES_TO_RUN=("utilities") ;;
-    agents|command|hook)
-      log_warn "phase=$PHASE not yet implemented (Impl-4); skipping"
-      PHASES_TO_RUN=()
-      ;;
+    agents)     PHASES_TO_RUN=("agents") ;;
+    command)    PHASES_TO_RUN=("command") ;;
+    hook)       PHASES_TO_RUN=("hook") ;;
     *) log_err "unknown phase: $PHASE"; exit 2 ;;
   esac
 fi
@@ -1109,6 +1391,9 @@ for phase_name in "${PHASES_TO_RUN[@]}"; do
     negative)  phase_1_negative ;;
     chg)       phase_2_chg ;;
     utilities) phase_3_utilities ;;
+    agents)    phase_4_agents ;;
+    command)   phase_4_command ;;
+    hook)      phase_4_hook ;;
   esac
 done
 
