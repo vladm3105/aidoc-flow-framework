@@ -89,12 +89,15 @@ LIVE_FLAG=""
 PHASE=""
 ELEMENT=""
 SKIP_COMPLETED=0
+SKIP_COMPLETED_PATH=""   # R5 — explicit prior-run directory
 MOCK_SOURCE=""
 PROMOTE=0
 PUSH=0
 FORCE=0
 FAIL_FAST=0
 FROM_LAYER=""     # A7 — resume cascade from this layer name (e.g. "spec")
+TO_LAYER=""       # P2 — stop cascade after this layer name
+DRY_RUN=0         # P5 — print planned execution and exit
 
 usage() {
   sed -n '2,48p' "$0"
@@ -122,12 +125,15 @@ for arg in "$@"; do
     --phase=*)         PHASE="${arg#--phase=}" ;;
     --element=*)       ELEMENT="${arg#--element=}" ;;
     --skip-completed)  SKIP_COMPLETED=1 ;;
+    --skip-completed=*) SKIP_COMPLETED=1; SKIP_COMPLETED_PATH="${arg#--skip-completed=}" ;;
     --mock=*)          MOCK_SOURCE="${arg#--mock=}" ;;
     --promote)         PROMOTE=1 ;;
     --push)            PUSH=1 ;;
     --force)           FORCE=1 ;;
     --fail-fast)       FAIL_FAST=1 ;;
     --from-layer=*)    FROM_LAYER="${arg#--from-layer=}" ;;
+    --to-layer=*)      TO_LAYER="${arg#--to-layer=}" ;;
+    --dry-run)         DRY_RUN=1; LIVE_FLAG="0" ;;
     -h|--help)         usage 0 ;;
     *) echo "ERROR: unknown flag: $arg" >&2; usage 2 ;;
   esac
@@ -162,6 +168,34 @@ SUMMARY_TXT="$LOG_DIR/summary.txt"
 SUMMARY_JSON="$LOG_DIR/summary.json"
 
 exec > >(tee -a "$DRIVER_LOG") 2>&1
+
+# R2 — SIGINT/SIGTERM trap. Ensures a usable summary.json + summary.txt
+# exist even when the user kills mid-run. In-flight RUNNING elements
+# are rewritten as INTERRUPTED so --skip-completed knows what to retry.
+INTERRUPTED=0
+_on_interrupt() {
+  INTERRUPTED=1
+  # Subsequent code paths check $INTERRUPTED and exit cleanly.
+  printf '\n!! interrupted — finalizing state...\n' >&2
+}
+trap _on_interrupt INT TERM
+
+_on_exit() {
+  local rc=$?
+  # Mark any RUNNING elements as INTERRUPTED.
+  if [[ -d "$LOG_DIR/elements" ]]; then
+    local stub
+    for stub in "$LOG_DIR"/elements/*.log; do
+      [[ -f "$stub" ]] || continue
+      if grep -q '^outcome: RUNNING$' "$stub" 2>/dev/null; then
+        sed -i 's/^outcome: RUNNING$/outcome: INTERRUPTED/' "$stub"
+      fi
+    done
+    _rebuild_summary_json 2>/dev/null || true
+  fi
+  exit "$rc"
+}
+trap _on_exit EXIT
 
 # -----------------------------------------------------------------------------
 # Output helpers
@@ -239,7 +273,7 @@ write_element_log() {
 import json, os
 
 meta = {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "name": os.environ["NAME"],
   "kind": os.environ["KIND"],
   "phase": os.environ["PHASE_LABEL"],
@@ -271,6 +305,10 @@ PY
 
   # Clean up the staging stdout file once merged into .log.
   rm -f "$stdout_path"
+
+  # R1 — Refresh summary.json incrementally so an interrupted run still
+  # leaves a usable checkpoint that --skip-completed can read.
+  _rebuild_summary_json
 }
 
 # -----------------------------------------------------------------------------
@@ -318,7 +356,9 @@ _estimate_tokens_out() {
 }
 
 # B6 — Maintain a process-wide cumulative token counter and trigger A8
-# cost cap when exceeded.
+# cost cap when exceeded. R4 — sets a global flag so the dispatch loop
+# stops, not just the current element.
+COST_CAP_EXCEEDED=0
 _record_tokens_out() {
   local name="$1" tokens="$2"
   TOKENS_OUT_BY_NAME["$name"]="$tokens"
@@ -326,6 +366,7 @@ _record_tokens_out() {
   if (( TOTAL_TOKENS_OUT > MAX_TOTAL_OUTPUT_TOKENS )); then
     log_err "Cost cap exceeded: ${TOTAL_TOKENS_OUT} tokens out > ${MAX_TOTAL_OUTPUT_TOKENS} cap"
     log_err "  Aborting to prevent runaway spend. Set MAX_TOTAL_OUTPUT_TOKENS to raise."
+    COST_CAP_EXCEEDED=1
     return 1
   fi
   return 0
@@ -407,6 +448,13 @@ invoke_skill() {
   fi
 
   log_info "invoking /aidoc-flow:$name"
+
+  # R3 — write a RUNNING stub before invoking, so an interrupted run
+  # (Ctrl-C, kill, network drop, OOM) leaves a visible marker that the
+  # trap handler can rewrite as INTERRUPTED.
+  record_outcome "$name" "$kind" "$phase_label" "RUNNING" 0
+  write_element_log "$name"
+
   if invoke_skill_live "$name" "$prompt" "$stdout_path" "$kind"; then
     t1="$(date +%s)"; duration=$((t1 - t0))
     local tokens; tokens="$(_estimate_tokens_out "$stdout_path")"
@@ -430,14 +478,19 @@ invoke_skill() {
   fi
 }
 
-# A6 helper — peek at the most-recently-created prior run's summary.json
-# and skip elements that were PASS there.
+# A6 helper — peek at a prior run's summary.json and skip elements
+# that were PASS there. R5 — explicit path via $SKIP_COMPLETED_PATH;
+# otherwise default to the most-recent prior run.
 _try_skip_completed() {
   local name="$1" kind="$2" phase_label="$3"
   local prior
-  prior="$(ls -td "$EXAMPLE_DIR"/logs/*/ 2>/dev/null \
-           | grep -v "$LOG_TIMESTAMP" \
-           | head -1)"
+  if [[ -n "$SKIP_COMPLETED_PATH" ]]; then
+    prior="$SKIP_COMPLETED_PATH"
+  else
+    prior="$(ls -td "$EXAMPLE_DIR"/logs/*/ 2>/dev/null \
+             | grep -v "$LOG_TIMESTAMP" \
+             | head -1)"
+  fi
   [[ -z "$prior" ]] && return 1
   local prior_summary="${prior%/}/summary.json"
   [[ -f "$prior_summary" ]] || return 1
@@ -620,8 +673,58 @@ phase_0_bootstrap() {
     record_outcome "api-auth-check" "fixture" "bootstrap" "SKIP" 0
   fi
 
+  # 0.8 P3 — Upstream presence check. If --from-layer or --element
+  # implies a non-BRD layer, the previous layer's artifact in docs/
+  # must already exist. Fail fast with a clear hint.
+  local _resume_layer=""
+  if [[ -n "$FROM_LAYER" ]]; then
+    _resume_layer="$FROM_LAYER"
+  elif [[ -n "$ELEMENT" ]]; then
+    # Extract <layer> from doc-<layer>-<variant>.
+    if [[ "$ELEMENT" =~ ^doc-([a-z]+)(-[a-z]+)?$ ]]; then
+      local _l="${BASH_REMATCH[1]}"
+      case "$_l" in
+        brd|prd|ears|bdd|adr|spec|tdd|iplan) _resume_layer="$_l" ;;
+      esac
+    fi
+  fi
+  if [[ -n "$_resume_layer" ]] && [[ "$_resume_layer" != "brd" ]]; then
+    local _idx=0 _prev_layer="" _prev_type=""
+    for _l in "${LAYERS[@]}"; do
+      if [[ "$_l" == "$_resume_layer" ]] && (( _idx > 0 )); then
+        _prev_layer="${LAYERS[$((_idx - 1))]}"
+        _prev_type="${LAYER_TYPES[$((_idx - 1))]}"
+        break
+      fi
+      _idx=$((_idx + 1))
+    done
+    local _prev_num
+    printf -v _prev_num '%02d' "$_idx"
+    local _upstream="$EXAMPLE_DOCS/${_prev_num}_${_prev_type}/${_prev_type}-01.md"
+    if [[ ! -f "$_upstream" ]]; then
+      log_err "upstream artifact missing: $_upstream"
+      log_err "  --from-layer=$_resume_layer / --element=$ELEMENT requires the previous layer ($_prev_type) to exist in docs/"
+      log_err "  hint: run \`--from-layer=brd --to-layer=$_prev_layer\` first, or remove --from-layer/--element"
+      record_outcome "upstream-check" "fixture" "bootstrap" "FAIL" 0 "" "" "false" "" "upstream $_upstream missing"
+      _write_bootstrap_metas
+      return 1
+    fi
+    log_info "upstream check: $_upstream exists"
+    record_outcome "upstream-check" "fixture" "bootstrap" "PASS" 0
+  fi
+
   _write_bootstrap_metas
   return 0
+}
+
+# P1 helper — given the active --element filter and a candidate
+# invocation name, decide whether to run it (return 0) or skip it
+# (return 1). When ELEMENT is empty, everything runs.
+_should_invoke() {
+  local candidate="$1"
+  [[ -z "$ELEMENT" ]] && return 0
+  [[ "$candidate" == "$ELEMENT" ]] && return 0
+  return 1
 }
 
 _write_bootstrap_metas() {
@@ -682,10 +785,31 @@ phase_1_cascade() {
     fi
   fi
 
+  # P2 — resolve TO_LAYER → stop_idx (inclusive)
+  local stop_idx=$((${#LAYERS[@]} - 1))
+  if [[ -n "$TO_LAYER" ]]; then
+    local idx=0
+    for l in "${LAYERS[@]}"; do
+      if [[ "$l" == "$TO_LAYER" ]]; then
+        stop_idx=$idx
+        break
+      fi
+      idx=$((idx + 1))
+    done
+    log_info "--to-layer=$TO_LAYER (stop after layer index $stop_idx)"
+  fi
+
   for layer in "${LAYERS[@]}"; do
     if (( i < resume_idx )); then
       log_info "skipping layer ${LAYER_TYPES[$i]} (--from-layer=$FROM_LAYER)"
       record_outcome "doc-$layer-autopilot" "skill" "cascade" "SKIP" 0 "" "" "false" "" "skipped via --from-layer"
+      write_element_log "doc-$layer-autopilot"
+      i=$((i + 1))
+      continue
+    fi
+    if (( i > stop_idx )); then
+      log_info "skipping layer ${LAYER_TYPES[$i]} (--to-layer=$TO_LAYER)"
+      record_outcome "doc-$layer-autopilot" "skill" "cascade" "SKIP" 0 "" "" "false" "" "skipped via --to-layer"
       write_element_log "doc-$layer-autopilot"
       i=$((i + 1))
       continue
@@ -705,30 +829,34 @@ phase_1_cascade() {
     log_info "── Layer $((i + 1))/8: $type ──"
 
     # autopilot — writes the layer artifact under docs/
-    local autopilot_prompt
-    autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
-    invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
-    OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
-    if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
-      write_element_log "doc-$layer-autopilot"
-    fi
-    if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
-      return 1
+    if _should_invoke "doc-$layer-autopilot"; then
+      local autopilot_prompt
+      autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
+      invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
+      OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
+      if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
+        write_element_log "doc-$layer-autopilot"
+      fi
+      if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
+        return 1
+      fi
     fi
 
     # audit — writes audit report under .aidoc/audit/
-    local audit_prompt
-    audit_prompt="Audit the $type artifact at $artifact. Write a detailed audit report to $audit_report including the readiness score."
-    invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
-    OUTPUT_PATH_BY_NAME["doc-$layer-audit"]="$audit_report"
-    local score
-    score="$(parse_audit_score "doc-$layer-audit")"
-    AUDIT_SCORE_BY_NAME["doc-$layer-audit"]="$score"
-    write_element_log "doc-$layer-audit"
-    log_info "  audit score: $score"
+    local score=0
+    if _should_invoke "doc-$layer-audit"; then
+      local audit_prompt
+      audit_prompt="Audit the $type artifact at $artifact. Write a detailed audit report to $audit_report including the readiness score."
+      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
+      OUTPUT_PATH_BY_NAME["doc-$layer-audit"]="$audit_report"
+      score="$(parse_audit_score "doc-$layer-audit")"
+      AUDIT_SCORE_BY_NAME["doc-$layer-audit"]="$score"
+      write_element_log "doc-$layer-audit"
+      log_info "  audit score: $score"
+    fi
 
     # fixer + re-audit if needed
-    if (( score < 90 )); then
+    if (( score < 90 )) && _should_invoke "doc-$layer-fixer"; then
       log_info "  score < 90 → invoking fixer"
       local fixer_prompt
       fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report. Do not create tmp/ or backup/ directories under the layer dir; if you need a backup, write it to $AIDOC_DIR/remediation/."
@@ -764,7 +892,9 @@ phase_1_cascade() {
     fi
 
     # base/reference skill — output captured to logs/<TS>/elements/
-    invoke_skill "doc-$layer" "Reference the $type template structure for $artifact." "skill" "cascade" || true
+    if _should_invoke "doc-$layer"; then
+      invoke_skill "doc-$layer" "Reference the $type template structure for $artifact." "skill" "cascade" || true
+    fi
 
     prev_output="$artifact"
     i=$((i + 1))
@@ -1442,6 +1572,67 @@ Outcome: $outcome" || {
 # -----------------------------------------------------------------------------
 # Summary writers
 # -----------------------------------------------------------------------------
+# R1 — Incremental summary.json rebuild. Called after every element
+# completes (via write_element_log) and once more at the end of the run.
+# Idempotent; reads logs/<TS>/elements/*.log and aggregates YAML
+# front-matter into summary.json. Cheap (~50ms).
+_rebuild_summary_json() {
+  [[ -d "$LOG_DIR/elements" ]] || return 0
+  python3 - "$LOG_DIR" "$SUMMARY_JSON" <<'PY' 2>/dev/null || true
+import json, os, sys, glob
+import yaml
+log_dir, out_path = sys.argv[1], sys.argv[2]
+elements = []
+for path in sorted(glob.glob(os.path.join(log_dir, "elements", "*.log"))):
+    try:
+        with open(path) as fh:
+            content = fh.read()
+        if not content.startswith("---\n"):
+            continue
+        end = content.find("\n---\n", 4)
+        if end < 0:
+            continue
+        front = content[4:end]
+        meta = yaml.safe_load(front)
+        elements.append(meta)
+    except Exception as e:
+        sys.stderr.write(f"warn: failed reading {path}: {e}\n")
+
+counts = {"PASS": 0, "FAIL": 0, "SKIP": 0, "RUNNING": 0, "INTERRUPTED": 0}
+for e in elements:
+    counts[e.get("outcome", "SKIP")] = counts.get(e.get("outcome", "SKIP"), 0) + 1
+# Overall outcome reflects terminal states; in-flight RUNNING is treated
+# as not-yet-terminal.
+overall = "PASS"
+if counts.get("FAIL", 0) > 0 or counts.get("INTERRUPTED", 0) > 0:
+    overall = "FAIL"
+elif counts.get("PASS", 0) == 0:
+    overall = "SKIP"
+
+def _read(path):
+    try:
+        with open(path) as fh: return fh.read().strip()
+    except Exception: return None
+
+framework = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(log_dir))))
+plugin_version = _read(os.path.join(framework, "platforms", "claude-code-plugin", "VERSION"))
+spec_version = _read(os.path.join(framework, "framework", "VERSION"))
+
+summary = {
+    "schema_version": "1.2",
+    "run_id": os.path.basename(log_dir),
+    "example": os.path.basename(os.path.dirname(os.path.dirname(log_dir))),
+    "plugin_version": plugin_version,
+    "framework_spec_version": spec_version,
+    "outcome": overall,
+    "counts": counts,
+    "elements": elements,
+}
+with open(out_path, "w") as fh:
+    json.dump(summary, fh, indent=2)
+PY
+}
+
 write_summary() {
   section "Writing summary"
 
@@ -1488,57 +1679,10 @@ write_summary() {
   } > "$SUMMARY_TXT"
   cat "$SUMMARY_TXT"
 
-  # Build summary.json from per-element YAML front-matter.
-  python3 - "$LOG_DIR" "$SUMMARY_JSON" <<'PY'
-import json, os, sys, glob
-import yaml
-log_dir, out_path = sys.argv[1], sys.argv[2]
-elements = []
-for path in sorted(glob.glob(os.path.join(log_dir, "elements", "*.log"))):
-    try:
-        with open(path) as fh:
-            content = fh.read()
-        if not content.startswith("---\n"):
-            continue
-        end = content.find("\n---\n", 4)
-        if end < 0:
-            continue
-        front = content[4:end]
-        meta = yaml.safe_load(front)
-        elements.append(meta)
-    except Exception as e:
-        sys.stderr.write(f"warn: failed reading {path}: {e}\n")
-
-counts = {"PASS": 0, "FAIL": 0, "SKIP": 0}
-for e in elements:
-    counts[e.get("outcome", "SKIP")] = counts.get(e.get("outcome", "SKIP"), 0) + 1
-overall = "PASS"
-if counts["FAIL"] > 0: overall = "FAIL"
-elif counts["PASS"] == 0: overall = "SKIP"
-
-def _read(path):
-    try:
-        with open(path) as fh: return fh.read().strip()
-    except Exception: return None
-
-framework = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(log_dir))))
-plugin_version = _read(os.path.join(framework, "platforms", "claude-code-plugin", "VERSION"))
-spec_version = _read(os.path.join(framework, "framework", "VERSION"))
-
-summary = {
-    "schema_version": "1.1",
-    "run_id": os.path.basename(log_dir),
-    "example": os.path.basename(os.path.dirname(os.path.dirname(log_dir))),
-    "plugin_version": plugin_version,
-    "framework_spec_version": spec_version,
-    "outcome": overall,
-    "counts": counts,
-    "elements": elements,
-}
-with open(out_path, "w") as fh:
-    json.dump(summary, fh, indent=2)
-print(f"wrote {out_path}: {len(elements)} elements, outcome={overall}")
-PY
+  # Build summary.json via the shared helper (also called incrementally
+  # after each element completes).
+  _rebuild_summary_json
+  echo "wrote $SUMMARY_JSON"
 
   echo
   echo "Logs:        $LOG_DIR"
@@ -1563,7 +1707,32 @@ echo "Live:       $([[ $LIVE_FLAG == 1 ]] && echo enabled || echo disabled)"
 echo "Mock:       ${MOCK_SOURCE:-(none)}"
 echo "Phase:      ${PHASE:-all}"
 echo "Element:    ${ELEMENT:-all}"
+[[ -n "${FROM_LAYER:-}" ]] && echo "From layer: $FROM_LAYER"
+[[ -n "${TO_LAYER:-}" ]] && echo "To layer:   $TO_LAYER"
 echo
+
+# R6 — When --skip-completed is in effect, surface any elements that
+# were INTERRUPTED in the prior run so the operator knows what's about
+# to be re-attempted.
+if (( SKIP_COMPLETED == 1 )); then
+  _prior_dir="$SKIP_COMPLETED_PATH"
+  [[ -z "$_prior_dir" ]] && _prior_dir="$(ls -td "$EXAMPLE_DIR"/logs/*/ 2>/dev/null \
+                                          | grep -v "$LOG_TIMESTAMP" | head -1)"
+  if [[ -n "$_prior_dir" ]] && [[ -f "${_prior_dir%/}/summary.json" ]]; then
+    log_info "--skip-completed: reading prior run at ${_prior_dir%/}"
+    _interrupted="$(python3 - "${_prior_dir%/}/summary.json" <<'PY'
+import json, sys
+with open(sys.argv[1]) as fh:
+    d = json.load(fh)
+names = [e["name"] for e in d.get("elements", []) if e.get("outcome") in ("RUNNING", "INTERRUPTED")]
+print(" ".join(names))
+PY
+)"
+    if [[ -n "$_interrupted" ]]; then
+      log_warn "prior run had interrupted elements (will retry): $_interrupted"
+    fi
+  fi
+fi
 
 phase_0_bootstrap || {
   log_err "Phase 0 failure — aborting"
@@ -1586,7 +1755,69 @@ if [[ -n "$PHASE" ]]; then
   esac
 fi
 
+# P1 — Single-element mode: --element=<name> runs only that element,
+# resolves its phase + upstream, and skips everything else. Useful for
+# "generate just the PRD against the existing BRD" iteration.
+#
+# Element naming:
+#   doc-<layer>-{base,autopilot,audit,fixer} → cascade phase
+#   doc-chg, doc-chg-{autopilot,audit,fixer}  → chg phase
+#   doc-flow, doc-validator, doc-ref, doc-naming, gate-check,
+#   quality-advisor, security-audit, review-team, knowledge-extractor,
+#   charts-flow, adr-roadmap, project-init, project-adopt,
+#   project-profile                            → utilities phase
+#   <agent name>                               → agents phase
+#   save-plan                                  → command phase
+#   sdd-doc-review                             → hook phase
+_element_phase() {
+  local n="$1"
+  case "$n" in
+    doc-chg|doc-chg-*) echo "chg" ;;
+    doc-*-autopilot|doc-*-audit|doc-*-fixer|doc-brd|doc-prd|doc-ears|doc-bdd|doc-adr|doc-spec|doc-tdd|doc-iplan) echo "cascade" ;;
+    doc-flow|doc-validator|doc-ref|doc-naming|gate-check|quality-advisor|security-audit|review-team|knowledge-extractor|charts-flow|adr-roadmap|project-init|project-adopt|project-profile) echo "utilities" ;;
+    save-plan) echo "command" ;;
+    sdd-doc-review) echo "hook" ;;
+    requirements-analyst|pm-orchestrator|solutions-architect|test-architect|software-engineer|devops-release-engineer|code-reviewer|security-engineer|traceability-auditor|adversary|synthesizer) echo "agents" ;;
+    *) echo "" ;;
+  esac
+}
+
+if [[ -n "$ELEMENT" ]]; then
+  _elem_phase="$(_element_phase "$ELEMENT")"
+  if [[ -z "$_elem_phase" ]]; then
+    log_err "unknown element name: $ELEMENT"
+    exit 2
+  fi
+  log_info "--element=$ELEMENT → routing through phase '$_elem_phase'"
+  PHASES_TO_RUN=("$_elem_phase")
+fi
+
+# P5 — Dry-run: print planned execution without invoking anything.
+if (( DRY_RUN == 1 )); then
+  echo
+  echo "=== DRY RUN — planned execution ==="
+  echo "Phases: ${PHASES_TO_RUN[*]}"
+  [[ -n "$ELEMENT" ]] && echo "Element filter: $ELEMENT"
+  [[ -n "$FROM_LAYER" ]] && echo "From layer: $FROM_LAYER"
+  [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
+  echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
+  echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
+  echo "Per-skill timeout: ${SKILL_TIMEOUT}s (review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
+  echo "(No LLM calls will be made.)"
+  exit 0
+fi
+
 for phase_name in "${PHASES_TO_RUN[@]}"; do
+  # R4 — bail out of remaining phases if cost cap fired or user
+  # interrupted. EXIT trap will still flush state.
+  if (( COST_CAP_EXCEEDED == 1 )); then
+    log_warn "skipping phase $phase_name — cost cap exceeded"
+    continue
+  fi
+  if (( INTERRUPTED == 1 )); then
+    log_warn "skipping phase $phase_name — interrupted"
+    continue
+  fi
   case "$phase_name" in
     cascade)   phase_1_cascade ;;
     negative)  phase_1_negative ;;
