@@ -731,6 +731,230 @@ phase_2_chg() {
 }
 
 # -----------------------------------------------------------------------------
+# Phase 3 — Cross-cutting utilities (14 skills)
+# -----------------------------------------------------------------------------
+# Each utility has a minimum-coverage threshold (plan §7). Empty structured
+# output counts as FAIL, not PASS.
+#
+# All 14 require --live or --mock; --no-live records SKIP for every probe.
+#
+# Path resolution: utilities operate against `examples/<NAME>/docs/` if
+# present; in bootstrap mode they read from `logs/<TS>/cascade/` (the
+# cascade just produced).
+
+# Resolve which chain dir Phase 3 should target.
+_resolve_chain_target() {
+  if [[ "$BOOTSTRAP_MODE" == "true" ]]; then
+    echo "$LOG_DIR/cascade"
+  else
+    echo "$EXAMPLE_DOCS"
+  fi
+}
+
+# Count occurrences of a regex pattern in a file. Echoes the count.
+_count_matches() {
+  local pattern="$1" file="$2"
+  if [[ ! -f "$file" ]]; then echo 0; return; fi
+  grep -oiE "$pattern" "$file" 2>/dev/null | wc -l
+}
+
+# Generic threshold probe: invoke skill, count pattern occurrences in its
+# output log, PASS if count ≥ threshold.
+_probe_with_count_threshold() {
+  # _probe_with_count_threshold <skill> <prompt> <pattern> <min-count> <description>
+  local skill="$1" prompt="$2" pattern="$3" min="$4" desc="$5"
+
+  if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    record_outcome "$skill" "skill" "utilities" "SKIP" 0 "" "" "false" "" "live mode disabled"
+    write_meta_json "skills" "$skill"
+    return 0
+  fi
+
+  invoke_skill "$skill" "$prompt" "skills" "skill" "utilities"
+  local log_file="$LOG_DIR/skills/$skill.log"
+  local count
+  count="$(_count_matches "$pattern" "$log_file")"
+  log_info "  $desc: counted $count match(es) (threshold ≥ $min)"
+
+  if (( count >= min )); then
+    OUTCOME_BY_NAME[$skill]="PASS"
+    write_meta_json "skills" "$skill"
+    return 0
+  else
+    OUTCOME_BY_NAME[$skill]="FAIL"
+    ERROR_BY_NAME[$skill]="coverage threshold: counted $count, need $min"
+    write_meta_json "skills" "$skill"
+    [[ $FAIL_FAST -eq 1 ]] && return 1
+    return 0
+  fi
+}
+
+phase_3_utilities() {
+  section "Phase 3 — Cross-cutting utilities (14 skills)"
+
+  local chain_dir
+  chain_dir="$(_resolve_chain_target)"
+
+  if [[ ! -d "$chain_dir" ]] || [[ -z "$(find "$chain_dir" -name '*.md' -print -quit 2>/dev/null)" ]]; then
+    log_warn "no chain found at $chain_dir; Phase 3 probes that need a chain will SKIP"
+    # Continue — project-init runs against a tmp sandbox and doesn't need the chain.
+  fi
+
+  # Skip-all path for --no-live (no LLM available)
+  if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+    log_info "live mode disabled; recording SKIP for all 14 utility probes"
+    for skill in doc-flow doc-validator doc-ref doc-naming gate-check \
+                 quality-advisor security-audit review-team \
+                 knowledge-extractor charts-flow adr-roadmap \
+                 project-init project-adopt project-profile; do
+      record_outcome "$skill" "skill" "utilities" "SKIP" 0 "" "" "false" "" "live mode disabled"
+      write_meta_json "skills" "$skill"
+    done
+    return 0
+  fi
+
+  # 1. doc-flow — routing test ("given chain at layer N, what's next?")
+  _probe_with_count_threshold "doc-flow" \
+    "Scan the chain at $chain_dir and report which layer it currently rests at and what the next recommended skill is." \
+    "next|layer|recommend" 1 "routing keywords"
+
+  # 2. doc-validator — cumulative trace closure
+  _probe_with_count_threshold "doc-validator" \
+    "Validate cumulative @brd…@tdd traceability across the chain at $chain_dir. Enumerate every resolved tag." \
+    "@(brd|prd|ears|bdd|adr|spec|tdd|iplan):" 50 "resolved trace tags"
+
+  # 3. doc-ref — cross-reference resolution
+  _probe_with_count_threshold "doc-ref" \
+    "Resolve all cross-document references in $chain_dir. Enumerate each reference and target." \
+    "(@(brd|prd|ears|bdd|adr|spec|tdd|iplan):|see |refer to)" 8 "cross-references"
+
+  # 4. doc-naming — name compliance
+  _probe_with_count_threshold "doc-naming" \
+    "Check that every artifact ID in $chain_dir matches the standards in ID_NAMING_STANDARDS.md." \
+    "[A-Z]+-[0-9]{2,}" 8 "compliant IDs"
+
+  # 5. gate-check — readiness gate
+  _probe_with_count_threshold "gate-check" \
+    "Confirm every layer in $chain_dir has readiness score ≥ 90. Report per-layer scores." \
+    "[0-9]{2,3}" 8 "per-layer scores"
+
+  # 6. quality-advisor — improvement suggestions
+  _probe_with_count_threshold "quality-advisor" \
+    "Review the chain at $chain_dir and provide actionable improvement suggestions, one per layer at minimum." \
+    "suggest|recommend|improve" 8 "actionable suggestions"
+
+  # 7. security-audit — security review
+  # Special case: pass if ≥1 finding OR explicit "no findings" block ≥ 100 words
+  if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
+    invoke_skill "security-audit" \
+      "Perform a security review of the chain at $chain_dir. Report findings with severity, or provide an explicit 'no findings' justification of at least 100 words." \
+      "skills" "skill" "utilities"
+    local sa_log="$LOG_DIR/skills/security-audit.log"
+    local findings high
+    findings="$(_count_matches '(severity|finding|risk):' "$sa_log")"
+    high="$(_count_matches '(severity:[[:space:]]*high|critical)' "$sa_log")"
+    local word_count
+    word_count="$(wc -w < "$sa_log" 2>/dev/null || echo 0)"
+
+    if (( findings > 0 )); then
+      if (( high == 0 )); then
+        log_info "  security-audit: $findings finding(s), 0 high-severity → PASS"
+        OUTCOME_BY_NAME["security-audit"]="PASS"
+      else
+        log_err "  security-audit: $high high-severity finding(s) → FAIL"
+        OUTCOME_BY_NAME["security-audit"]="FAIL"
+        ERROR_BY_NAME["security-audit"]="high-severity findings"
+      fi
+    elif (( word_count >= 100 )); then
+      log_info "  security-audit: no findings but justification ≥ 100 words → PASS"
+      OUTCOME_BY_NAME["security-audit"]="PASS"
+    else
+      log_err "  security-audit: empty output (no findings + no justification) → FAIL"
+      OUTCOME_BY_NAME["security-audit"]="FAIL"
+      ERROR_BY_NAME["security-audit"]="empty output"
+    fi
+    write_meta_json "skills" "security-audit"
+  fi
+
+  # 8. review-team — multi-persona review (assert all configured personas present)
+  if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
+    invoke_skill "review-team" \
+      "Run the review-team crew against the chain at $chain_dir. Each configured persona in REVIEW_CREWS.yaml must produce non-empty output." \
+      "skills" "skill" "utilities"
+    local rt_log="$LOG_DIR/skills/review-team.log"
+    # Get persona names from REVIEW_CREWS.yaml
+    local missing=""
+    if [[ -f "$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml" ]]; then
+      local personas
+      personas="$(grep -oE 'persona:[[:space:]]*[a-z_]+' "$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml" 2>/dev/null | awk '{print $NF}' | sort -u)"
+      for p in $personas; do
+        if ! grep -qi "$p" "$rt_log" 2>/dev/null; then
+          missing="$missing $p"
+        fi
+      done
+    fi
+    if [[ -n "$missing" ]]; then
+      log_err "  review-team: missing persona output for:$missing"
+      OUTCOME_BY_NAME["review-team"]="FAIL"
+      ERROR_BY_NAME["review-team"]="missing persona output for$missing"
+    else
+      log_info "  review-team: all configured personas present"
+      OUTCOME_BY_NAME["review-team"]="PASS"
+    fi
+    write_meta_json "skills" "review-team"
+  fi
+
+  # 9. knowledge-extractor — graph with ≥20 nodes
+  _probe_with_count_threshold "knowledge-extractor" \
+    "Extract a domain knowledge graph from the chain at $chain_dir. List each node (entity) and its relationships." \
+    "(node|entity|concept):" 20 "knowledge graph nodes"
+
+  # 10. charts-flow — diagram contract per DIAGRAM_STANDARDS.md
+  _probe_with_count_threshold "charts-flow" \
+    "Validate diagram contract for the chain at $chain_dir. Each required diagram per DIAGRAM_STANDARDS.md must be present (BRD c4-l1+dfd-l1, PRD c4-l2+dfd-l2+sequence, ADR sequence, SPEC c4-l3+dfd-l3)." \
+    "@diagram:[[:space:]]*(c4-l[123]|dfd-l[123]|sequence)" 8 "required diagram tags"
+
+  # 11. adr-roadmap — 1:1 ADR coverage
+  _probe_with_count_threshold "adr-roadmap" \
+    "Aggregate every ADR in $chain_dir into a roadmap. Each ADR must appear in the roadmap exactly once." \
+    "ADR-[0-9]{2,}" 1 "ADR references"
+
+  # 12. project-init — scaffold in sandboxed tmp dir
+  if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
+    local pi_sandbox="$LOG_DIR/sandbox/project-init"
+    mkdir -p "$pi_sandbox"
+    invoke_skill "project-init" \
+      "Scaffold a new SDD project tree under $pi_sandbox. Produce the 8 layer directories (01_BRD..08_IPLAN) plus governance/ and registry/." \
+      "skills" "skill" "utilities"
+    # Count expected dirs
+    local pi_layer_dirs pi_total
+    pi_layer_dirs="$(find "$pi_sandbox" -maxdepth 2 -type d -name '0[1-8]_*' 2>/dev/null | wc -l)"
+    pi_total="$(find "$pi_sandbox" -maxdepth 2 -type d 2>/dev/null | wc -l)"
+    if (( pi_layer_dirs >= 8 )); then
+      log_info "  project-init: $pi_layer_dirs/8 layer dirs produced, $pi_total total dirs"
+      OUTCOME_BY_NAME["project-init"]="PASS"
+    else
+      log_err "  project-init: only $pi_layer_dirs/8 layer dirs produced"
+      OUTCOME_BY_NAME["project-init"]="FAIL"
+      ERROR_BY_NAME["project-init"]="only $pi_layer_dirs/8 layer dirs"
+    fi
+    write_meta_json "skills" "project-init"
+  fi
+
+  # 13. project-adopt — adopt existing tree, report ≥8 layers detected
+  _probe_with_count_threshold "project-adopt" \
+    "Adopt the existing project tree at $chain_dir. Report each detected layer." \
+    "layer[[:space:]]*[0-9]|0[1-8]_(brd|prd|ears|bdd|adr|spec|tdd|iplan)" 8 "detected layers"
+
+  # 14. project-profile — profile chain
+  _probe_with_count_threshold "project-profile" \
+    "Profile the chain at $chain_dir. Report plugin version, framework spec version, layer count, and overall readiness." \
+    "(version|layer|readiness)" 3 "profile fields"
+
+  return 0
+}
+
+# -----------------------------------------------------------------------------
 # Summary writers
 # -----------------------------------------------------------------------------
 write_summary() {
@@ -862,16 +1086,17 @@ phase_0_bootstrap || {
 }
 
 # Phase dispatch
-# Default: cascade → negative → chg. Phases 3+4 land in Impl-3/4.
-PHASES_TO_RUN=("cascade" "negative" "chg")
+# Default: cascade → negative → chg → utilities. Phase 4 lands in Impl-4.
+PHASES_TO_RUN=("cascade" "negative" "chg" "utilities")
 if [[ -n "$PHASE" ]]; then
   case "$PHASE" in
     bootstrap)  PHASES_TO_RUN=() ;;  # only Phase 0 ran
     cascade)    PHASES_TO_RUN=("cascade") ;;
     negative)   PHASES_TO_RUN=("negative") ;;
     chg)        PHASES_TO_RUN=("chg") ;;
-    utilities|agents|command|hook)
-      log_warn "phase=$PHASE not yet implemented (Impl-3/4); skipping"
+    utilities)  PHASES_TO_RUN=("utilities") ;;
+    agents|command|hook)
+      log_warn "phase=$PHASE not yet implemented (Impl-4); skipping"
       PHASES_TO_RUN=()
       ;;
     *) log_err "unknown phase: $PHASE"; exit 2 ;;
@@ -880,9 +1105,10 @@ fi
 
 for phase_name in "${PHASES_TO_RUN[@]}"; do
   case "$phase_name" in
-    cascade)  phase_1_cascade ;;
-    negative) phase_1_negative ;;
-    chg)      phase_2_chg ;;
+    cascade)   phase_1_cascade ;;
+    negative)  phase_1_negative ;;
+    chg)       phase_2_chg ;;
+    utilities) phase_3_utilities ;;
   esac
 done
 
