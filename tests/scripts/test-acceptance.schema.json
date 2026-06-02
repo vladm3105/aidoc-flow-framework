@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/vladm3105/aidoc-flow-framework/tests/scripts/test-acceptance.schema.json",
-  "title": "Acceptance test summary + per-element metadata schemas (v1.0)",
-  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. See examples/url-shortener/ACCEPTANCE_TEST_PLAN.md §3.1.",
+  "title": "Acceptance test summary + per-element schemas (v1.1)",
+  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. v1.1 reflects the three-tier output separation: per-element YAML front-matter is combined with raw skill output in a single `.log` file under logs/<TS>/elements/. See examples/url-shortener/ACCEPTANCE_TEST_PLAN.md §3.",
   "definitions": {
     "outcome": {
       "type": "string",
@@ -20,21 +20,18 @@
       "type": "object",
       "required": ["schema_version", "name", "kind", "phase", "outcome"],
       "properties": {
-        "schema_version": {"type": "string", "const": "1.0"},
+        "schema_version": {"type": "string", "const": "1.1"},
         "name": {"type": "string"},
         "kind": {"$ref": "#/definitions/kind"},
         "phase": {"$ref": "#/definitions/phase"},
-        "started_at": {"type": "string", "format": "date-time"},
-        "finished_at": {"type": "string", "format": "date-time"},
         "duration_sec": {"type": "number", "minimum": 0},
-        "exit_code": {"type": "integer"},
         "outcome": {"$ref": "#/definitions/outcome"},
-        "tokens_in": {"type": ["integer", "null"], "minimum": 0},
-        "tokens_out": {"type": ["integer", "null"], "minimum": 0},
-        "output_path": {"type": ["string", "null"]},
         "audit_score": {"type": ["integer", "null"], "minimum": 0, "maximum": 100},
         "audit_score_after_fixer": {"type": ["integer", "null"], "minimum": 0, "maximum": 100},
         "fixer_invoked": {"type": "boolean"},
+        "output_path": {"type": ["string", "null"], "description": "Path to the artifact this element produced: docs/ for layer artifacts, .aidoc/<category>/ for provenance reports, logs/<TS>/sandbox/ for tmp work."},
+        "tokens_in": {"type": ["integer", "null"], "minimum": 0},
+        "tokens_out": {"type": ["integer", "null"], "minimum": 0},
         "error": {"type": ["string", "null"]}
       }
     },
@@ -42,21 +39,20 @@
       "type": "object",
       "required": ["schema_version", "run_id", "example", "outcome", "elements"],
       "properties": {
-        "schema_version": {"type": "string", "const": "1.0"},
+        "schema_version": {"type": "string", "const": "1.1"},
         "run_id": {"type": "string", "description": "LOG_TIMESTAMP keying logs/<TS>/"},
-        "example": {"type": "string", "description": "Example name (e.g. url-shortener)"},
-        "plugin_version": {"type": "string"},
-        "framework_spec_version": {"type": "string"},
-        "started_at": {"type": "string", "format": "date-time"},
-        "finished_at": {"type": "string", "format": "date-time"},
-        "duration_sec": {"type": "number", "minimum": 0},
-        "live": {"type": "boolean"},
-        "mock_source": {"type": ["string", "null"], "description": "Path to logs/<TS>/ being replayed; null if not in --mock mode"},
-        "bootstrap_mode": {"type": "boolean", "description": "True if examples/<NAME>/docs/ was empty at run start"},
-        "promoted": {"type": "boolean"},
+        "example": {"type": "string"},
+        "plugin_version": {"type": ["string", "null"]},
+        "framework_spec_version": {"type": ["string", "null"]},
         "outcome": {"$ref": "#/definitions/outcome"},
-        "tokens_in_total": {"type": "integer", "minimum": 0},
-        "tokens_out_total": {"type": "integer", "minimum": 0},
+        "counts": {
+          "type": "object",
+          "properties": {
+            "PASS": {"type": "integer", "minimum": 0},
+            "FAIL": {"type": "integer", "minimum": 0},
+            "SKIP": {"type": "integer", "minimum": 0}
+          }
+        },
         "elements": {
           "type": "array",
           "items": {"$ref": "#/definitions/element"}

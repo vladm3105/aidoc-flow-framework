@@ -38,7 +38,10 @@ coverage.xml
 
 # Review-team blackboard — transient per-persona slots (plans/DECISIONS.md D-0005).
 # The committed adaptation profile (.aidoc/profile.yaml) is NOT ignored.
-.aidoc/review/
+# Per ACCEPTANCE-SUITE-FIXES-PLAN.md §2: only the transient blackboard is
+# gitignored; final consensus reports under .aidoc/review/ are committed
+# as part of the AI provenance documentation tier.
+.aidoc/review/.blackboard/
 
 # Generated publish artifacts — the plugin mirror is a one-way build output
 # (tools/build-plugin-mirror.sh, PLUGIN-MARKETPLACE P2), never committed here.
