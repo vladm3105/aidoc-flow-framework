@@ -327,10 +327,51 @@ bash tests/scripts/test-acceptance.sh url-shortener --live \
     --skip-completed=examples/url-shortener/logs/2026-06-02T120000
 ```
 
+#### Framework-side audit (P6 — preflight before P1-P5)
+
+Plan-C is mostly harness work, but a few framework-side checks are needed
+because partial-mode execution exposes implicit assumptions the cascade
+masks. Audit and adjust as needed:
+
+| ID | Skill / file to inspect | What to check |
+|---|---|---|
+| **P6.1** | `doc-<layer>-autopilot/SKILL.md` (×8) | Does the autopilot tolerate an unaudited upstream? (the PRD autopilot today requires `doc-brd-audit` to have run with PRD-Ready ≥ threshold first). Either: (a) document the workflow (run upstream audit first), or (b) add a `--skip-upstream-audit` harness flag that adjusts the prompt |
+| **P6.2** | `doc-<layer>-autopilot/SKILL.md` (×8) | Does the autopilot create the layer's `<TYPE>-00_index.md` index gracefully when it doesn't exist? (likely yes — index maintenance is part of the autopilot's job. Verify) |
+| **P6.3** | `gate-check`, `adr-roadmap`, `doc-validator` | These assume the full chain exists. In single-element / single-layer mode, the harness must **skip** them, not run them against a partial chain (they'd produce noise FAILs). P1 should encode this routing |
+| **P6.4** | `review-team` | Orchestrates per-layer review against `REVIEW_CREWS.yaml`. With a partial chain (e.g. BRD + PRD only), should review only existing layers. Likely already correct — verify by `--mock` against a partial run dir |
+| **P6.5** | `doc-flow` (orchestrator) | "What skill do I need given the chain at state X?" — should suggest the NEXT layer's autopilot when X is partial. Verify with a partial-chain corpus in `--mock` mode |
+| **P6.6** | `doc-validator`, `doc-ref` | Validates `@brd…@tdd` cross-references. In single-layer mode, only layers ≤ the current one need validation. Phase 3 routing in P1 must reflect this |
+
+**Estimated framework-side adjustments**: ~5-10 lines per affected
+skill prompt (if any), or zero changes if the skills already handle
+these cases naturally. P6 is a **preflight audit** — most outcomes
+will be "no change needed; document the workflow." Real fixes (if
+any) are tiny.
+
+**How the audit happens**:
+
+1. Implement P1-P5 (harness wiring) first.
+2. Run `--element=doc-prd-autopilot --mock=examples/url-shortener/logs/<TS>`
+   against the partial run from 2026-06-01T231324 (which has BRD-EARS
+   completed). Observe what the skill does in isolation.
+3. If the skill fails / produces unexpected output: minimal fix in the
+   skill prompt (preferred) or harness compensation.
+4. Repeat for `--from-layer=prd --to-layer=prd` to exercise the
+   "single layer set" path.
+5. Repeat for `--phase=utilities --element=doc-flow` and similar.
+
+Worst case: a few skill prompts get a 1-2 sentence addition like "if
+the upstream audit hasn't been run, proceed with best-effort and note
+this in the output." Best case: no framework changes — Plan-C is pure
+harness.
+
 ### Phase-C effort & cost
 
 - Code: ~120-150 LoC additions to `test-acceptance.sh`
 - Schema: add `outcome: RUNNING | INTERRUPTED` to v1.1 (back-compat — old runs without these values still parse)
+- Framework audit (P6): ~30 min reading + worst-case 1-2 hours of
+  skill prompt adjustments. Bundled into the Plan-C PR if changes
+  needed; otherwise a brief note in the PR description.
 - Tests: extend `--no-live` smoke to validate `--dry-run` and `--element` flag parsing
 - Effort: ~3-4 hours
 - Token cost: $0 (no live re-run required to validate; the smoke regression covers it)
