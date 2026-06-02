@@ -50,6 +50,11 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.11.0 → 0.11.1** (patch) — doc-only addition of
+  `framework/docs/AIDOC.md` formalising the `.aidoc/` provenance tier
+  as part of the engine-agnostic spec. No schema or rule change. Both
+  `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 52 plugin
+  skills' `framework_spec_version` re-synced to 0.11.1.
 - **Test runners co-located under `tests/scripts/`.** Moved `test-plugin.sh`,
   `test-layer.sh`, and `test-fullpath.sh` from the parent repo's `scripts/`
   into `framework/tests/scripts/`. The framework is now fully self-testable
