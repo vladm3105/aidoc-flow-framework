@@ -5,20 +5,39 @@ plugin surface element against the `url-shortener` seed. The chain it
 produces is the release-gate evidence that the plugin works end-to-end
 across its full surface.
 
-**Status**: approved for implementation. Driver script lands in a follow-up
-PR; this document is the design reference.
+**Status**: **implemented and ready for live execution.** The driver script,
+schemas, fixtures, profile bootstrap, output routing, and CI wiring are
+all in place. The first `--live` cascade run is the only outstanding
+operational step — the suite itself is production-ready.
+
+**Quick start** (post-PR-A/B):
+
+```bash
+cd framework
+bash tests/scripts/test-acceptance.sh url-shortener --no-live   # smoke
+bash tests/scripts/test-acceptance.sh url-shortener --live      # full run
+bash tests/scripts/test-acceptance.sh url-shortener --live --promote --skip-completed
+```
 
 **Revision history**:
 
 - v1 — initial plan (50 skills only, happy path).
-- v2 — gap-closure pass. Added agents/command/hook coverage, negative-fixture
+- v2 — gap-closure pass: agents/command/hook coverage, negative-fixture
   validation, schema definitions, `--promote` algorithm, bootstrap path,
   API-layer retry policy, run-duration cap, CI artifact upload.
-- **v3 — current**: closes the 5 open questions from v2. Decisions:
-  archive-first `docs/` policy with retention rule; first-arg
-  `<example-name>` (no auto-discover); raise `T4L` ledger 500K → 1M;
-  hand-curated CHG change-sets per example with a documented file
-  format; negative fixtures shared under `tests/acceptance/fixtures/negative/`.
+- v3 — closed the 5 open questions: archive-first `docs/` policy;
+  first-arg `<example-name>`; raise `T4L` ledger 500K → 1M; hand-curated
+  CHG change-sets per example; negative fixtures shared under
+  `tests/acceptance/fixtures/negative/`.
+- **v4 — current (post-implementation, 2026-06-02)**: three-tier output
+  separation landed (`docs/` + `.aidoc/` + `logs/`); cascade writes
+  directly to `docs/` (no intermediate); audit/review/remediation/
+  validation/security/quality route to `.aidoc/<category>/`; logs
+  collapsed to flat `logs/<TS>/elements/<name>.log` with YAML
+  front-matter; profile bootstrap; `--force` safety belt; per-skill
+  timeout; cost cap; retry on transient errors; `--from-layer` resume;
+  `--skip-completed` iteration; framework spec bumped 0.11.0 → 0.11.1
+  for the `framework/docs/AIDOC.md` addition. Schema bumped to v1.1.
 
 ## 1. Purpose
 
@@ -66,101 +85,106 @@ examples, invoke the script once per example (a future `--all` flag is
 tracked as Phase B work).
 
 ```bash
-# Full run against url-shortener (release-candidate gate)
+# Full run against url-shortener (release-candidate gate; --live is the default)
 bash tests/scripts/test-acceptance.sh url-shortener
 
-# Skip live LLM calls (cheap structural-only mode, ~30 seconds)
+# Skip live LLM calls (cheap structural-only mode, ~5 seconds)
 bash tests/scripts/test-acceptance.sh url-shortener --no-live
 
 # Exercise one element only
 bash tests/scripts/test-acceptance.sh url-shortener --element=doc-flow
-bash tests/scripts/test-acceptance.sh url-shortener --element=agent:requirements-analyst
 
 # Exercise one phase only
 bash tests/scripts/test-acceptance.sh url-shortener --phase=cascade
 
-# Re-use prior run's results for already-passed elements (iteration mode)
+# Resume cascade from a specific layer (e.g. after partial run)
+bash tests/scripts/test-acceptance.sh url-shortener --from-layer=spec
+
+# Re-use prior run's PASS outcomes (iteration mode; reads prior summary.json)
 bash tests/scripts/test-acceptance.sh url-shortener --skip-completed
 
-# Replay a recorded run instead of calling Claude (dev-iteration mode, free)
+# Replay a recorded run (dev-iteration; no Claude calls)
 bash tests/scripts/test-acceptance.sh url-shortener --mock=logs/2026-06-01T120000
 
-# Promote run's chain output to examples/<NAME>/docs/ (release tagging)
+# Bypass --force safety belt (allow overwrite when docs/ has unstaged changes)
+bash tests/scripts/test-acceptance.sh url-shortener --live --force
+
+# Promote: git add docs/ .aidoc/ + commit (release tagging)
 bash tests/scripts/test-acceptance.sh url-shortener --live --promote
+
+# CI-style: promote and push back to origin
+bash tests/scripts/test-acceptance.sh url-shortener --live --promote --push
 ```
 
-### Per-run log layout
+### Three-tier output layout (as implemented)
 
-Under `examples/<NAME>/logs/<LOG_TIMESTAMP>/`:
+The acceptance suite writes outputs to three explicit tiers, plus
+ephemeral logs:
 
 ```text
-plugin-test.log                  # overall driver flow
-summary.txt                      # human-readable per-element table
-summary.json                     # machine-readable per-element results
-                                 # (validates against tests/scripts/test-acceptance.schema.json)
-skills/
-  doc-brd-autopilot.log          # captured stdout/stderr
-  doc-brd-autopilot.meta.json    # see schema below
-  doc-brd-audit.log
-  doc-brd-audit.meta.json
-  …                              # one .log + .meta.json per skill invocation
-agents/
-  requirements-analyst.log
-  requirements-analyst.meta.json
-  …                              # one .log + .meta.json per agent invocation
-command/
-  save-plan.log
-  save-plan.meta.json
-hook/
-  sdd-doc-review.log
-  sdd-doc-review.meta.json
-cascade/
-  01_BRD/BRD-01.url-shortener.md # the produced chain (sandbox copy, gitignored)
-  02_PRD/PRD-01.url-shortener.md
-  …
-negative/
-  brd-broken-sections.audit.log  # audit run against deliberately broken artifact
-  brd-broken-tags.audit.log
-  …                              # one per negative fixture
+examples/<NAME>/
+├── seed/, chg/                  # human inputs (committed)
+├── docs/                        # AI outputs — the produced chain
+│   ├── 01_BRD/BRD-01.md         (cascade autopilot writes here directly)
+│   ├── 02_PRD/PRD-01.md
+│   ├── …
+│   └── .version                 (records the plugin version of this chain)
+├── .aidoc/                      # AI provenance (committed; see framework/docs/AIDOC.md)
+│   ├── profile.yaml             (project profile — bootstrapped from framework default)
+│   ├── audit/<NN>_<LAYER>-audit.md      (doc-<layer>-audit outputs)
+│   ├── remediation/<NN>_<LAYER>-fix.md  (doc-<layer>-fixer outputs)
+│   ├── review/<layer>-consensus.md      (review-team consensus per layer)
+│   ├── review/.blackboard/              (transient per-persona scratch; gitignored)
+│   ├── validation/<report>.md           (doc-validator / doc-ref / gate-check)
+│   ├── security/review.md               (security-audit)
+│   └── quality/suggestions.md           (quality-advisor)
+└── logs/<TS>/                   # tool internals (gitignored, ephemeral)
+    ├── plugin-test.log          # driver flow trace only
+    ├── summary.txt              # human-readable per-element table
+    ├── summary.json             # machine-readable (validates against schema v1.1)
+    ├── elements/                # one file per element (skills, agents, command,
+    │   ├── <name>.log           # hook, fixtures, negatives): YAML front-matter
+    │   └── …                    # + raw skill/agent stdout
+    └── sandbox/                 # tmp work for project-init, save-plan, hook test
 ```
 
-The `cascade/` and `negative/` outputs are ephemeral (`.gitignored` via
-the existing `examples/*/logs/` rule). The release evidence gets promoted
-to `examples/<NAME>/docs/` only when invoked with `--promote` (or when
-the script is invoked from `release.yml` on a tag push). See §3.2 for
-the promote algorithm.
+The flat `elements/` directory replaces the old phase-subdir layout
+(`bootstrap/skills/agents/command/hook/negative/`). Element metadata
+(name, kind, phase, outcome, duration, audit_score, tokens_out, …) is
+encoded as YAML front-matter at the top of each `<name>.log` file.
 
-### 3.1 `summary.json` schema (v1.0)
+`logs/<TS>/` is ephemeral (`.gitignored`); `docs/` and `.aidoc/` are
+committed and become the release evidence. `--promote` runs `git add` +
+`git commit` to record them; see §3.2.
 
-Committed at `tests/scripts/test-acceptance.schema.json`. Top-level shape:
+### 3.1 `summary.json` schema (v1.1)
+
+Committed at `tests/scripts/test-acceptance.schema.json`. Top-level
+shape:
 
 ```json
 {
-  "schema_version": "1.0",
-  "run_id": "2026-06-01T120000",
+  "schema_version": "1.1",
+  "run_id": "2026-06-02T180052",
   "example": "url-shortener",
   "plugin_version": "0.4.0",
-  "framework_spec_version": "0.11.0",
-  "started_at": "2026-06-01T12:00:00Z",
-  "finished_at": "2026-06-01T12:18:42Z",
-  "duration_sec": 1122,
-  "live": true,
-  "promoted": false,
+  "framework_spec_version": "0.11.1",
   "outcome": "PASS",
-  "tokens_in_total": 482103,
-  "tokens_out_total": 318952,
+  "counts": { "PASS": 51, "FAIL": 0, "SKIP": 0 },
   "elements": [
     {
-      "kind": "skill",
+      "schema_version": "1.1",
       "name": "doc-brd-autopilot",
+      "kind": "skill",
       "phase": "cascade",
-      "outcome": "PASS",
       "duration_sec": 84,
-      "tokens_in": 12404,
-      "tokens_out": 9821,
-      "output_path": "cascade/01_BRD/BRD-01.url-shortener.md",
+      "outcome": "PASS",
       "audit_score": 94,
       "audit_score_after_fixer": null,
+      "fixer_invoked": false,
+      "output_path": "docs/01_BRD/BRD-01.md",
+      "tokens_in": null,
+      "tokens_out": 9821,
       "error": null
     },
     ...
@@ -168,63 +192,83 @@ Committed at `tests/scripts/test-acceptance.schema.json`. Top-level shape:
 }
 ```
 
-Per-element `.meta.json` schema (v1.0):
+Per-element metadata is the same shape, embedded as YAML front-matter
+at the top of `logs/<TS>/elements/<name>.log`:
 
-```json
-{
-  "schema_version": "1.0",
-  "name": "doc-brd-autopilot",
-  "kind": "skill",
-  "phase": "cascade",
-  "started_at": "...",
-  "finished_at": "...",
-  "duration_sec": 84,
-  "exit_code": 0,
-  "outcome": "PASS",
-  "tokens_in": 12404,
-  "tokens_out": 9821,
-  "output_path": "cascade/01_BRD/BRD-01.url-shortener.md",
-  "audit_score": 94,
-  "audit_score_after_fixer": null,
-  "fixer_invoked": false,
-  "error": null
-}
+```text
+---
+schema_version: "1.1"
+name: doc-brd-autopilot
+kind: skill
+phase: cascade
+duration_sec: 84
+outcome: PASS
+audit_score: 94
+audit_score_after_fixer: null
+fixer_invoked: false
+output_path: docs/01_BRD/BRD-01.md
+tokens_in: null
+tokens_out: 9821
+error: null
+---
+
+<captured skill stdout follows here>
 ```
 
-`audit_score` is the initial audit. `audit_score_after_fixer` is non-null
-only when the fixer was invoked; the final gating value is whichever is
-non-null and later.
+Field semantics:
+
+- `audit_score` — initial audit score
+- `audit_score_after_fixer` — non-null only when the fixer was
+  invoked; the final gating value is whichever is non-null and later
+- `tokens_in` — exact input-token count (deferred; populated once
+  `--output-format=json` wiring lands in a follow-up)
+- `tokens_out` — estimated output-token count (bytes / 4 approximation
+  during PR B; exact deferred)
+- `output_path` — relative path under `examples/<NAME>/` (typically
+  under `docs/`, `.aidoc/<category>/`, or `logs/<TS>/sandbox/`)
 
 ### 3.2 `--promote` algorithm
 
 When `--promote` is set (or the script is invoked from `release.yml` on a
 tag push) and **all phases passed**:
 
-1. Resolve version from `framework/platforms/claude-code-plugin/VERSION`
-   (e.g. `0.4.0`).
-2. Refuse to run if the working tree has uncommitted changes (`git
-   diff-index --quiet HEAD`).
-3. Refuse to run if `examples/<NAME>/docs/` has uncommitted changes
-   pending in the working tree (would conflict with the copy).
-4. Archive existing `examples/<NAME>/docs/` (if non-empty) to
-   `examples/<NAME>/docs-archive/v<previous-version>/`. If the archive
-   dir already exists for that version, fail with a clear message
-   (don't overwrite history).
-5. `rsync -a --delete logs/<TS>/cascade/ examples/<NAME>/docs/`.
-6. Commit: `chore(examples): promote url-shortener cascade for v<X.Y.Z>
-   release` with the run's `LOG_TIMESTAMP` in the commit body.
-7. Push only if `--push` was also passed; otherwise leave for human
-   review.
+1. Resolve plugin version from
+   `framework/platforms/claude-code-plugin/VERSION` (e.g. `0.4.0`).
+2. `git add examples/<NAME>/docs examples/<NAME>/.aidoc` —
+   cascade already wrote there directly (no copy step).
+3. If `git diff --cached --quiet` (no staged changes), no-op exit 0
+   (a re-run produced byte-identical content).
+4. `git commit -m "chore(examples): promote <NAME> cascade for v<X.Y.Z>
+   release"` with the run timestamp in the body.
+5. If `--push` was also passed, `git push`.
 
-First-time bootstrap (destination empty): skip step 4, proceed.
+The cascade writes to `docs/` directly during the run, so promote is a
+single git transaction rather than a copy operation. The legacy
+"archive previous to docs-archive/" step is deferred — for now, git
+history serves as the archive. If formal per-release archiving is
+needed later, add a separate `--archive` flag (Phase B item).
 
-#### Retention policy
+⚠️ Pre-cascade safety belt (the `--force` flag, §A12 in the
+implementation plan): the suite refuses to start a live cascade if
+`docs/` or `.aidoc/` have unstaged changes, unless `--force` is
+passed. Prevents accidental overwrite of in-progress human edits.
 
-- **Pre-1.0 plugin releases**: keep every archive uncompressed. History
-  is short and the comparison value is high.
-- **Post-1.0**: if `docs-archive/` exceeds 5 MB, compress archives older
-  than the most recent 5 releases into `docs-archive/legacy.tar.gz`.
-  Never delete; the archived chains are the regression baseline.
+---
+
+#### Legacy promote algorithm (pre-PR-A — superseded)
+
+The original design used a two-stage model: cascade wrote to
+`logs/<TS>/cascade/`, then `--promote` did `rsync -a --delete` from
+there into `examples/<NAME>/docs/`, archiving the previous `docs/` to
+`docs-archive/v<previous-version>/`. PR A eliminated the intermediate
+— cascade writes directly to `docs/`, so promote is just `git
+add` + `git commit` (above).
+
+Archive-to-`docs-archive/` is deferred as Phase B work; git history
+serves as the regression baseline. If formal per-release archiving
+becomes important (e.g. post-1.0 with longer release cadence), add a
+separate `--archive` flag that tars `docs/` into
+`docs-archive/v<X.Y.Z>.tar.gz` before next run overwrites.
 
 ### 3.3 Tier placement
 
@@ -235,26 +279,36 @@ upload step in §13.
 
 ## 4. Phase 0 — Bootstrap & preflight
 
-Runs first; gates whether subsequent phases can run.
+Runs first; gates whether subsequent phases can run. As implemented
+this is 7 sequential checks (records 6 fixtures + 1 internal):
 
-1. **Manifest validate**: `claude plugin validate <plugin-dir> --strict`
-   must pass. Same check Phase 1 of `test-plugin.sh` runs.
-2. **`sdd_doc_lint` smoke**: lint the existing `examples/<NAME>/docs/` if
-   non-empty. Must report zero findings if present. Acceptable to be
-   empty (first-run bootstrap state).
-3. **Bootstrap detection**: if `examples/<NAME>/docs/` is empty:
-   - Set `bootstrap_mode=true` in run metadata.
-   - Phase 2 (CHG) is **skipped** (no chain to mutate).
-   - Phase 3 utilities that need a chain (`doc-validator`, `doc-ref`,
-     `gate-check`, `quality-advisor`, `security-audit`, `review-team`,
-     `knowledge-extractor`, `charts-flow`, `adr-roadmap`,
-     `project-profile`) run against `logs/<TS>/cascade/` *after* Phase 1
-     completes, not against `examples/<NAME>/docs/`.
-4. **Negative-fixture presence check**: confirm
+1. **Seed presence**: `examples/<NAME>/seed/initial-requirements.md`
+   must exist.
+2. **Manifest validate**: `claude plugin validate <plugin-dir> --strict`
+   must pass.
+3. **`--force` safety belt** (A12): refuse to run live cascade if
+   `examples/<NAME>/{docs,.aidoc}/` have unstaged changes, unless
+   `--force` is passed. Prevents accidental overwrite of in-progress
+   human edits.
+4. **Project profile** (A11): if `examples/<NAME>/.aidoc/profile.yaml`
+   exists, use it as-is. If missing, copy
+   `framework/governance/REVIEW_CREWS.yaml` as the framework default.
+   The suite never authors a non-default profile. If both are missing,
+   fail-fast.
+5. **`sdd_doc_lint` smoke**: lint the existing `examples/<NAME>/docs/`
+   if non-empty. Must report zero findings if present. Acceptable to
+   be empty (first-run bootstrap state — sets `bootstrap_mode=true`
+   for downstream phases).
+6. **Negative-fixture presence check**: confirm
    `tests/acceptance/fixtures/negative/` exists with the six fixtures
-   in §5.2. Required for Phase 1 negative validation. Per-example
-   additions under `examples/<NAME>/negative-fixtures/` are optional
-   and are merged on top of the shared base set when present.
+   in §5.2. Required for Phase 1 negative validation.
+7. **API auth check** (live mode only): `claude` CLI on PATH and
+   either `ANTHROPIC_API_KEY` set OR `claude -p` interactive login
+   responding. Fail-fast if neither works.
+
+Bootstrap mode (`docs/` empty): Phase 2 (CHG) is skipped; Phase 3
+utilities and Phase 4 agents run against the freshly-produced `docs/`
+content from Phase 1.
 5. **API auth check** (live mode only): `claude --version` returns 0
    and `ANTHROPIC_API_KEY` is non-empty. Fail-fast with clear message
    if missing.
@@ -450,25 +504,29 @@ Pass criteria:
 | Decision | Choice | Rationale |
 |---|---|---|
 | Driver location | `tests/scripts/test-acceptance.sh` | Sibling to existing test runners; tier-6 release gate, not a tier-suite |
-| Output location during run | `examples/<NAME>/logs/<TS>/cascade/` | Ephemeral, gitignored; isolates the run-as-test from the curated release evidence |
-| Output location after promote | `examples/<NAME>/docs/` (latest) + `examples/<NAME>/docs-archive/v<X.Y.Z>/` (per-release snapshot) | Latest doubles as discoverable example; archive is audit trail |
-| Archive retention | Pre-1.0: keep every archive uncompressed. Post-1.0: compress beyond 5 most recent if `docs-archive/` exceeds 5 MB; never delete | History is the regression baseline; the cost is trivial |
-| Skip strategy for non-cascade skills | Sandboxed tmp dirs with minimal corpus per skill; no element silently skipped | Every release-gate run exercises all 63 elements; coverage is the point |
+| Output routing (A1+A2) | Cascade autopilot → `docs/<NN>_<LAYER>/`. Audit → `.aidoc/audit/`. Fixer → `.aidoc/remediation/`. review-team → `.aidoc/review/`. doc-validator/doc-ref/gate-check → `.aidoc/validation/`. security-audit → `.aidoc/security/`. quality-advisor → `.aidoc/quality/`. Utility/agent/command output → `logs/<TS>/elements/` | Three-tier separation: `docs/` is the chain, `.aidoc/` is the AI provenance, `logs/` is the tool internals |
+| Log layout (A3+A4) | Flat `logs/<TS>/elements/<name>.log`; YAML front-matter (meta) + raw stdout in a single file | Halves file count vs the old phase-subdir + separate `.meta.json` layout |
+| Archive policy | Deferred (Phase B). Git history serves as the regression baseline | Pre-1.0 release cadence is short; formal archiving with `--archive` flag if/when post-1.0 needs it |
 | Per-element failure isolation | One failure logs FAIL but doesn't halt subsequent elements within the phase | Diagnosable single-pass run; failures don't mask other failures |
 | Phase gating | Phase 0 failure stops; Phase 1 failure skips Phase 2; Phase 1 failure does NOT skip Phases 3 + 4 (utilities + agents can still exercise) | Maximises diagnostic surface area |
 | Fail-fast override | `--fail-fast` flag halts on first failure | Useful when debugging a single failing element |
-| `--live` mode default | ON when invoked from `release.yml`; the CLI default is also ON | This is a release gate; deterministic-only is for local development |
-| `--mock=<run-dir>` mode | Replays a prior recorded run's `.log` outputs without calling Claude | Zero-cost iteration when developing the script itself |
-| Re-run cost mitigation | `--skip-completed` flag reads prior run's `summary.json`, skips PASSed elements | Speeds iteration when fixing a single failing element |
-| Promotion to release evidence | Manual `--promote` flag (or auto when invoked from `release.yml` on tag push); algorithm in §3.2 | Local runs don't pollute `examples/<NAME>/docs/`; tagged releases do |
-| API-layer retry policy | **Retry network/HTTP errors up to 3× with exponential backoff**; **no retries on non-zero exit with structured skill output** | Distinguishes transient infra failures from skill instability |
+| `--live` mode default | ON when invoked from `release.yml`; CLI default also ON | Release gate; deterministic-only is for local dev |
+| `--mock=<run-dir>` mode | Replays a prior recorded run's `elements/<name>.log` files | Zero-cost iteration during script development |
+| `--skip-completed` (A6) | Reads prior run's `summary.json`, reuses PASSed elements | Cheap iteration on a single failing skill |
+| `--from-layer=<name>` (A7) | Resume cascade from named layer; previous layer in `docs/` becomes upstream | After partial cascade aborts, resume without re-running passed layers |
+| `--force` safety belt (A12) | Refuses cascade if `docs/` or `.aidoc/` have unstaged changes; bypass with `--force` | Prevents accidental overwrite of in-progress human edits |
+| Per-skill timeout (B4) | `SKILL_TIMEOUT=600` default, `REVIEW_TEAM_TIMEOUT=1800`, `AGENT_TIMEOUT=600`. Wrapped via `timeout` | Single stuck skill no longer hangs the run indefinitely (review-team observed 32 min in prior run) |
+| Per-layer runtime cap (B2) | `MAX_LAYER_SEC=900` (15 min). Cascade aborts if a layer exceeds | Detects stuck-skill scenarios early without aborting healthy long cascades |
+| Cost cap (A8) | `MAX_TOTAL_OUTPUT_TOKENS=1500000` (~$25). Cumulative tokens_out tracked; aborts if exceeded | Prevents runaway spend |
+| Retry policy (A9) | 3× exponential backoff (5s, 10s, 20s) on transient HTTP errors: rate limit / 5xx / overloaded / temporarily | Distinguishes transient infra failures from skill instability |
+| Promotion to release evidence | Manual `--promote` flag (or auto when invoked from `release.yml` on tag push); algorithm in §3.2 | Local runs don't pollute `docs/`/`.aidoc/`; tagged releases do |
 | CHG phase scope | One hand-curated change committed at `examples/<NAME>/chg/test-change.md` (format defined in §6) | Realistic stakeholder-style change request; per-example tailoring |
 | Negative-fixture location | Shared at `tests/acceptance/fixtures/negative/`; per-example additions optional at `examples/<NAME>/negative-fixtures/` | Fixtures are structural defects, not domain-specific; DRY across examples |
 | Failure budget per layer | One auto-`fixer` attempt, then fail | Real release behavior |
-| Token budget enforcement | `T4L: 1_000_000` ceiling in `release.yml` token ledger (raised from 500K in this revision) | Accommodates the 4-phase acceptance run with ~25% headroom |
-| Max wall-clock runtime | 45 minutes (hard-fail at 45m; GHA job timeout 60m) | Prevents indefinite hangs; allows generous overhead |
-| First-bootstrap behavior | Phase 0 detects empty `examples/<NAME>/docs/`; Phases 3 + 4 run against `cascade/` output instead | Bootstrap run can populate the docs/ tree from nothing |
-| Advisory-skill thresholds | Per-skill minimum coverage values in §7 + §8 | Prevents empty-output false-PASS |
+| Token budget enforcement | `T4L: 1_000_000` ceiling in `release.yml` token ledger | Accommodates the 4-phase acceptance run with ~25% headroom |
+| First-bootstrap behavior | Phase 0 detects empty `examples/<NAME>/docs/`; cascade writes there directly so Phases 3 + 4 have a chain to exercise | The first run populates `docs/` from scratch |
+| Project profile bootstrap (A11) | If `.aidoc/profile.yaml` missing, copy `framework/governance/REVIEW_CREWS.yaml` as default; suite never authors a non-default profile | Honours `framework/governance/ADAPTATION.md` ("the single input an engine reads") |
+| Advisory-skill thresholds | Per-skill minimum coverage values in §7 + §8 (calibrated against first partial-run output) | Prevents empty-output false-PASS |
 | Argument pattern | First positional arg is `<example-name>`; one example per invocation. `--all` deferred to Phase B | Explicit is safer than auto-discovery; multi-example invocation can be added later cheaply |
 
 ## 10. Token cost ballpark
@@ -487,27 +545,67 @@ Acceptable as a release gate. The `T4L` token-ledger ceiling in
 `release.yml` is raised from 500K to **1M** in this revision (§13)
 to accommodate this run shape with ~25% headroom for skill evolution.
 
-## 11. Implementation plan
+## 11. Implementation status
 
-| Step | Description | Effort |
-|---|---|---|
-| 1 | Add `tests/scripts/test-acceptance.sh` skeleton: arg parsing, log layout, phase dispatch, summary aggregation | 1.5 h |
-| 2 | Implement Phase 0 — bootstrap detection, manifest validate, lint smoke, API auth check | 1 h |
-| 3 | Implement Phase 1.1 — happy-path cascade (autopilot + audit + fixer loop, lint, score parsing) | 2 h |
-| 4 | Author shared negative fixtures under `tests/acceptance/fixtures/negative/` + implement Phase 1.2 validation | 1.5 h |
-| 5 | Commit `examples/url-shortener/chg/test-change.md` in §6 format; implement Phase 2 CHG cycle | 1 h |
-| 6 | Implement Phase 3 — 14 utility probes with minimum-coverage thresholds | 2.5 h |
-| 7 | Implement Phase 4 — 11 agents + 1 command + 1 hook | 2 h |
-| 8 | Commit `test-acceptance.schema.json` for `summary.json` + per-element `.meta.json` | 0.5 h |
-| 9 | Implement `--promote` algorithm with bootstrap handling | 1 h |
-| 10 | Implement `--mock` mode (replay recorded run) | 1 h |
-| 11 | Wire `release.yml`: invoke acceptance on tag push, upload artifact on failure, raise `T4L` to 1M | 0.5 h |
-| 12 | First successful `--live` run on url-shortener; commit `examples/url-shortener/docs/` + `examples/url-shortener/docs-archive/v0.4.0/` | 1 h |
-| 13 | Update `examples/url-shortener/README.md`: reframe + per-release archive index | 0.5 h |
-| 14 | CHANGELOG entry under `[Unreleased] → Added` | 0.25 h |
-| **Total** | | **≈ 15.75 h** |
+All implementation work is **complete and merged**. The suite is ready
+for live execution. Status table:
 
-Token cost for the first cascade run: ~$11–20.
+| # | Item | PR | Status |
+|---:|---|:---:|:---:|
+| 1 | Driver skeleton + Phase 0 + Phase 1.1 + schemas + `--mock` | #53 | ✅ merged |
+| 2 | Phase 1.2 negative validation + shared fixtures + `chg/test-change.md` + Phase 2 CHG | #54 | ✅ merged |
+| 3 | Phase 3 — 14 utility probes | #55 | ✅ merged |
+| 4 | Phase 4 — 11 agents + command + hook | #56 | ✅ merged |
+| 5 | `--promote` + README + CHANGELOG (Impl-5) | #57 | ✅ merged |
+| 6 | Plan restructure (this doc, v3) | #59 | ✅ merged |
+| 7 | Three-tier output separation + flat logs + Phase 0 + redesigned `--promote` (PR A) | #60 | ✅ merged |
+| 8 | Script tightening: B4-B6 + A6-A9 + C2/C3 calibrations + doc pass + AIDOC.md + spec 0.11.1 (PR B) | #61 | ✅ merged |
+| 9 | Parent `release.yml` acceptance wiring | (parent #7) | ✅ merged |
+
+**Only outstanding step: first live cascade run** — a one-command
+operational step the user kicks off when ready. Token cost ~$15-25,
+wall-clock 60-120 min.
+
+### Reproducing the smoke verification
+
+```bash
+cd framework
+bash tests/scripts/test-acceptance.sh url-shortener --no-live
+# Expected: PASS (8 PASS, 0 FAIL, 43 SKIP, 51 total)
+#   by phase: bootstrap=6, cascade=8, negative=6, chg=4,
+#             utilities=14, agents=11, command=1, hook=1
+```
+
+### Kicking off the first live cascade
+
+```bash
+cd framework
+
+# Conservative: review output before committing
+bash tests/scripts/test-acceptance.sh url-shortener --live
+
+# Or: promote on success (commits docs/ + .aidoc/ to current branch)
+bash tests/scripts/test-acceptance.sh url-shortener --live --promote
+
+# Or: promote + push back to origin (CI-style)
+bash tests/scripts/test-acceptance.sh url-shortener --live --promote --push
+```
+
+Iteration helpers (after a partial or failing run):
+
+```bash
+# Resume after the cascade aborted at layer 6
+bash tests/scripts/test-acceptance.sh url-shortener --live --from-layer=spec
+
+# Re-run only the elements that didn't PASS last time
+bash tests/scripts/test-acceptance.sh url-shortener --live --skip-completed
+
+# Override the safety belt when intentionally overwriting in-progress work
+bash tests/scripts/test-acceptance.sh url-shortener --live --force
+```
+
+Token cost cap (default 1.5M output ≈ $25) and per-skill timeouts
+(10 min / 30 min review-team) prevent runaway runs.
 
 ## 12. Subsequent example additions
 
@@ -528,6 +626,7 @@ No script changes required.
 
 ## 13. CI integration (`release.yml`)
 
+Already wired in the parent repo's `release.yml` (see aidoc-flow#7).
 On tag push (`v*` or `claude-code-plugin/v*`):
 
 ```yaml
@@ -535,7 +634,7 @@ On tag push (`v*` or `claude-code-plugin/v*`):
   timeout-minutes: 60
   env:
     ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-  run: bash framework/tests/scripts/test-acceptance.sh url-shortener --live --promote
+  run: bash framework/tests/scripts/test-acceptance.sh url-shortener --live --promote --push
 
 - name: Upload acceptance logs
   if: always()  # upload on PASS and FAIL
@@ -545,6 +644,12 @@ On tag push (`v*` or `claude-code-plugin/v*`):
     path: framework/examples/*/logs/
     retention-days: 30
 ```
+
+⚠️ `--push` from CI requires write access to the framework repo (the
+default `GITHUB_TOKEN` only has write access to the parent repo). See
+PR #7's discussion — currently the workflow assumes a future PAT
+secret. Until that's configured, run the cascade locally (`--promote`
+without `--push`), then push manually.
 
 Token-ledger ceiling raised in the same step's Python block:
 
@@ -597,3 +702,32 @@ Not blocking initial implementation; tracked for future passes.
 | `T4L` token budget | **Raise 500K → 1M** in `release.yml` token ledger (§10 + §13). Per-phase split deferred to Phase B (B8) |
 | CHG change-set source | **Hand-curated per example** at `examples/<NAME>/chg/test-change.md` with documented format (§6) |
 | Negative-fixtures location | **Shared base set** at `tests/acceptance/fixtures/negative/`; per-example additions optional (§5.2 + §9). Bootstrap presence check updated (§4 step 4) |
+
+### v4 — post-implementation reconciliation (2026-06-02)
+
+After the first partial live run (cancelled at ~110 min, 5/8 layers
+done) surfaced concrete design issues, the restructure plan
+(`plans/ACCEPTANCE-SUITE-FIXES-PLAN.md`) landed in two PRs.
+
+| Change | Where addressed |
+|---|---|
+| Cascade output ended up in `logs/` instead of `docs/` (the two-stage promote design conflated working state with canonical state) | A1 — cascade writes to `docs/` directly. `--promote` becomes `git commit`. PR #60 |
+| Audit/fix/review reports polluted cascade dirs | A2 — routed to `.aidoc/<category>/`. PR #60 |
+| Log layout was phase-subdir + separate `.meta.json` per element | A3 + A4 — flat `logs/<TS>/elements/`; YAML front-matter combined with raw stdout. PR #60 |
+| `.aidoc/` was treated as gitignored "blackboard"; should be the third committed tier | Three-tier separation; `.gitignore` split (`.aidoc/review/.blackboard/` only). New `framework/docs/AIDOC.md`. PR #60 + #61 |
+| Project profile not honoured by the suite | A11 — Phase 0 bootstraps `.aidoc/profile.yaml` from `framework/governance/REVIEW_CREWS.yaml` if missing. PR #60 |
+| Cascade silently overwrote `docs/` even with uncommitted edits | A12 — `--force` safety belt. PR #60 |
+| Lint ran against whole layer dir (audit reports + tmp/backup polluted output) | B1 — lint targets `$artifact` only. PR #60 |
+| Global 45-min runtime cap aborted healthy long cascades | B2 — per-layer 15-min cap. PR #60 |
+| review-team persona-extraction grep picked up `weight:` lines | B3 — Python YAML parse of `profile.yaml`. PR #60 |
+| No per-skill timeout — review-team ran 32 min unbounded | B4 — `timeout` wrapper (600s default / 1800s review-team / 600s agents). PR #61 |
+| Fixer left `tmp/backup/` dirs tripping HASH01 lint check | B5 — `rm -rf $layer_dir/tmp` post-fixer + prompt instructs skill. PR #61 |
+| `tokens_in`/`tokens_out` always null | B6 — output-bytes ÷ 4 estimation (exact via `--output-format=json` deferred). PR #61 |
+| No iteration mode after partial run | A6 `--skip-completed` reads prior `summary.json` + A7 `--from-layer=<name>` resume. PR #61 |
+| No cost cap | A8 `MAX_TOTAL_OUTPUT_TOKENS` (default 1.5M ≈ $25). PR #61 |
+| No retry on transient HTTP errors | A9 — 3× exponential backoff on rate-limit / 5xx / overloaded patterns. PR #61 |
+| `doc-validator` threshold ≥50 sized for 8-layer chain (failed on 5-layer partial) | C1 — `n_layers × 4` scale. PR #60 |
+| `quality-advisor` regex `suggest\|recommend\|improve` undercounted ~5× | C2 — broader regex matching `### Layer N` + arrows + numbered/bullets. Prompt requests structured headings. PR #61 |
+| `knowledge-extractor` asked for clarification instead of producing graph | C3 — directive prompt "do not ask for clarification — produce Mermaid"; regex matches Mermaid syntax. PR #61 |
+| Framework spec needed bump for `framework/docs/AIDOC.md` addition | Spec **0.11.0 → 0.11.1** (patch); 52 plugin skills' `framework_spec_version` resynced. PR #61 |
+| Schema bumped to reflect new combined log layout | `tests/scripts/test-acceptance.schema.json` v1.0 → v1.1. PR #60 |
