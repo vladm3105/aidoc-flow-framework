@@ -96,3 +96,19 @@ the platforms and the overall project layout.
 layer schema, the registry model, or a governance rule is a major bump;
 backward-compatible additions are minor; clarifications are patch. Platforms
 pin the spec version they implement.
+
+## Project layout — four tiers
+
+Every project that uses the framework structures its outputs into four
+explicit tiers:
+
+| Tier | Where | Committed? |
+|---|---|:---:|
+| Inputs | `<project>/seed/`, `<project>/chg/` | ✅ |
+| AI outputs (chain) | `<project>/docs/` | ✅ |
+| AI provenance | `<project>/.aidoc/` — audit, review, remediation, validation, security, quality reports | ✅ |
+| Tool internals | `<project>/logs/<TS>/` — execution metadata, raw stdout | ❌ |
+
+`.aidoc/` answers *"how did the AI arrive at the output?"* without
+requiring a re-run. See [`docs/AIDOC.md`](docs/AIDOC.md) for the
+canonical reference.

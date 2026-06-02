@@ -46,3 +46,14 @@ companion docs below.
 - Live tests live under `tests/acceptance/live/` and skip unless `LIVE=1`.
 - LLM-review tests live under `tests/review/` and skip unless `REVIEW=1`.
 - Fixtures under `tests/acceptance/fixtures/` are committed; never generate on the fly.
+
+## Three-tier acceptance-suite output
+
+`tests/scripts/test-acceptance.sh` writes its outputs across three tiers per example:
+
+- `examples/<NAME>/docs/` — produced 8-layer chain (committed)
+- `examples/<NAME>/.aidoc/` — audit, review, remediation, validation, security, quality reports (committed; AI provenance documentation)
+- `examples/<NAME>/logs/<TS>/` — execution metadata + raw stdout (gitignored)
+
+See [`../framework/docs/AIDOC.md`](../framework/docs/AIDOC.md) for the canonical
+description of `.aidoc/`.

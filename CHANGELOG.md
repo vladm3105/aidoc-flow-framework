@@ -218,6 +218,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **`.aidoc/` — third committed documentation tier formalized.** Per
+  every project, four tiers now: inputs (`seed/`, `chg/`, committed),
+  outputs (`docs/`, committed), provenance (`.aidoc/`, committed),
+  tool internals (`logs/<TS>/`, gitignored). `.aidoc/` holds the audit
+  reports, review consensus, remediation logs, validation reports,
+  security reviews, and quality suggestions that AI personas produced
+  while authoring the project's chain — answering "how did the AI
+  arrive at the output in `docs/`?" without needing to re-run the
+  suite. New `framework/docs/AIDOC.md` is the canonical reference.
+  Acceptance suite (`tests/scripts/test-acceptance.sh`) restructured
+  to route skill outputs accordingly: `doc-<layer>-autopilot` → `docs/`,
+  `doc-<layer>-audit` → `.aidoc/audit/`, `doc-<layer>-fixer` →
+  `.aidoc/remediation/`, `review-team` → `.aidoc/review/`,
+  `doc-validator`/`doc-ref`/`gate-check` → `.aidoc/validation/`,
+  `security-audit` → `.aidoc/security/`, `quality-advisor` →
+  `.aidoc/quality/`. Log layout flattened into single
+  `logs/<TS>/elements/<name>.log` per element with YAML front-matter
+  plus raw stdout. `.gitignore` rule for `.aidoc/review/` split: only
+  `.aidoc/review/.blackboard/` (per-persona scratch) stays ignored;
+  consensus reports under `.aidoc/review/<layer>-consensus.md` are
+  committed. Acceptance suite includes per-skill timeout (`B4`),
+  fixer `tmp/backup/` cleanup (`B5`), token estimation + cost cap
+  (`B6` + `A8`), `--skip-completed` (`A6`), `--from-layer=<N>`
+  resume (`A7`), retry-on-transient-HTTP-error (`A9`), and per-layer
+  runtime cap (`B2`). Schema bumped to v1.1
+  (`tests/scripts/test-acceptance.schema.json`).
+
 - **Pre-deployment acceptance test suite** — new
   `tests/scripts/test-acceptance.sh` (~1500 lines) drives every active
   plugin surface element (50 skills + 11 agents + 1 command + 1 hook =

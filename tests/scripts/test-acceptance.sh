@@ -61,6 +61,23 @@ DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 # Per-layer runtime cap (replaces the old global 45-min cap, plan B2).
 MAX_LAYER_SEC=900   # 15 minutes per layer
 
+# Per-skill timeout (B4). review-team gets its own larger budget because
+# it orchestrates multi-persona work and legitimately runs longer.
+SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"             # 10 min default
+REVIEW_TEAM_TIMEOUT="${REVIEW_TEAM_TIMEOUT:-1800}" # 30 min
+AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"             # 10 min for agents
+
+# Total token budget for the whole run (A8). When the cumulative
+# tokens_out across all elements exceeds this, abort with FAIL.
+# Token counts are estimated from output byte size / 4 (rough char/token
+# ratio) until B6's --output-format=json wiring lands in PR C.
+MAX_TOTAL_OUTPUT_TOKENS="${MAX_TOTAL_OUTPUT_TOKENS:-1500000}"
+TOTAL_TOKENS_OUT=0
+
+# Retry policy for transient HTTP errors (A9).
+RETRY_MAX="${RETRY_MAX:-3}"
+RETRY_BACKOFF_BASE="${RETRY_BACKOFF_BASE:-5}"  # seconds; exponential 5, 10, 20
+
 LOG_TIMESTAMP="$(date +%Y-%m-%dT%H%M%S)"
 START_EPOCH="$(date +%s)"
 
@@ -77,6 +94,7 @@ PROMOTE=0
 PUSH=0
 FORCE=0
 FAIL_FAST=0
+FROM_LAYER=""     # A7 — resume cascade from this layer name (e.g. "spec")
 
 usage() {
   sed -n '2,48p' "$0"
@@ -109,6 +127,7 @@ for arg in "$@"; do
     --push)            PUSH=1 ;;
     --force)           FORCE=1 ;;
     --fail-fast)       FAIL_FAST=1 ;;
+    --from-layer=*)    FROM_LAYER="${arg#--from-layer=}" ;;
     -h|--help)         usage 0 ;;
     *) echo "ERROR: unknown flag: $arg" >&2; usage 2 ;;
   esac
@@ -209,9 +228,12 @@ write_element_log() {
   local fixer_inv_py="False"
   [[ "$fixer_inv" == "true" ]] && fixer_inv_py="True"
 
+  local tokens_out="${TOKENS_OUT_BY_NAME[$name]:-}"
+
   NAME="$name" KIND="$kind" PHASE_LABEL="$phase" DURATION="$duration" \
   OUTCOME="$outcome" AUDIT="$audit" AUDIT_AFTER="$audit_after" \
   FIXER_INV_PY="$fixer_inv_py" OUT_PATH="$out_path" ERR="$err" \
+  TOKENS_OUT="$tokens_out" \
   STDOUT_PATH="$stdout_path" LOG_PATH="$log_path" \
   python3 - <<'PY'
 import json, os
@@ -228,7 +250,7 @@ meta = {
   "fixer_invoked": os.environ["FIXER_INV_PY"] == "True",
   "output_path": os.environ.get("OUT_PATH") or None,
   "tokens_in": None,
-  "tokens_out": None,
+  "tokens_out": int(os.environ["TOKENS_OUT"]) if os.environ.get("TOKENS_OUT") else None,
   "error": os.environ.get("ERR") or None,
 }
 
@@ -269,25 +291,105 @@ mock_replay_for() {
 }
 
 # -----------------------------------------------------------------------------
-# Skill invocation — live mode, with output streamed line-by-line to a
-# per-element stdout file. The final .log file is built from this stdout
-# plus YAML front-matter by write_element_log().
+# Skill invocation — live mode, with timeout (B4), retry on transient
+# errors (A9), and token estimation (B6 approximate; exact via
+# --output-format=json deferred to PR C).
 # -----------------------------------------------------------------------------
+_pick_timeout_for() {
+  # _pick_timeout_for <kind> <name> → seconds
+  local kind="$1" name="$2"
+  if [[ "$kind" == "agent" ]]; then
+    echo "$AGENT_TIMEOUT"
+  elif [[ "$name" == "review-team" ]]; then
+    echo "$REVIEW_TEAM_TIMEOUT"
+  else
+    echo "$SKILL_TIMEOUT"
+  fi
+}
+
+# Estimate output tokens from a captured stdout file. Crude: bytes / 4.
+# Returns 0 if file missing.
+_estimate_tokens_out() {
+  local path="$1"
+  [[ -f "$path" ]] || { echo 0; return; }
+  local bytes
+  bytes="$(wc -c < "$path" 2>/dev/null || echo 0)"
+  echo $((bytes / 4))
+}
+
+# B6 — Maintain a process-wide cumulative token counter and trigger A8
+# cost cap when exceeded.
+_record_tokens_out() {
+  local name="$1" tokens="$2"
+  TOKENS_OUT_BY_NAME["$name"]="$tokens"
+  TOTAL_TOKENS_OUT=$((TOTAL_TOKENS_OUT + tokens))
+  if (( TOTAL_TOKENS_OUT > MAX_TOTAL_OUTPUT_TOKENS )); then
+    log_err "Cost cap exceeded: ${TOTAL_TOKENS_OUT} tokens out > ${MAX_TOTAL_OUTPUT_TOKENS} cap"
+    log_err "  Aborting to prevent runaway spend. Set MAX_TOTAL_OUTPUT_TOKENS to raise."
+    return 1
+  fi
+  return 0
+}
+
+declare -A TOKENS_OUT_BY_NAME=()
+
 invoke_skill_live() {
-  # invoke_skill_live <skill-name> <prompt> <stdout-path>
-  local skill="$1" prompt="$2" out_path="$3"
-  claude \
-    --plugin-dir "$PLUGIN_DIR" \
-    --dangerously-skip-permissions \
-    -p "/aidoc-flow:$skill $prompt" \
-    > "$out_path" 2>&1
-  return $?
+  # invoke_skill_live <name> <prompt> <stdout-path> <kind>
+  # Runs claude -p with per-skill timeout and retry-on-transient-error.
+  # Returns 0 on success, non-zero otherwise. Caller checks output via
+  # the stdout file.
+  local name="$1" prompt="$2" out_path="$3" kind="${4:-skill}"
+  local t_sec; t_sec="$(_pick_timeout_for "$kind" "$name")"
+
+  local attempt rc
+  for attempt in $(seq 1 "$RETRY_MAX"); do
+    if [[ "$kind" == "agent" ]]; then
+      timeout "$t_sec" claude \
+        --plugin-dir "$PLUGIN_DIR" \
+        --dangerously-skip-permissions \
+        -p "Use the $name agent to: $prompt" \
+        > "$out_path" 2>&1
+    else
+      timeout "$t_sec" claude \
+        --plugin-dir "$PLUGIN_DIR" \
+        --dangerously-skip-permissions \
+        -p "/aidoc-flow:$name $prompt" \
+        > "$out_path" 2>&1
+    fi
+    rc=$?
+
+    case $rc in
+      0) return 0 ;;
+      124) echo "TIMEOUT after ${t_sec}s" >> "$out_path"; return $rc ;;
+      *)
+        # Retry on what look like transient errors: 5xx wording, "rate",
+        # "overloaded", "service unavailable". Non-retryable: exit 124
+        # (timeout, handled above) and any structured non-zero with
+        # actual output that doesn't match transient patterns.
+        if grep -qiE 'rate limit|overloaded|503|502|service unavailable|temporarily' "$out_path" 2>/dev/null \
+           && (( attempt < RETRY_MAX )); then
+          local backoff=$((RETRY_BACKOFF_BASE * (2 ** (attempt - 1))))
+          log_warn "$name attempt $attempt failed (transient); retry in ${backoff}s"
+          sleep "$backoff"
+          continue
+        fi
+        return $rc
+        ;;
+    esac
+  done
+  return $rc
 }
 
 invoke_skill() {
   # invoke_skill <name> <prompt> <kind> <phase>
   local name="$1" prompt="$2" kind="$3" phase_label="$4"
   local stdout_path="$LOG_DIR/elements/$name.stdout"
+
+  # A6 — --skip-completed: if a prior run's summary marks this element
+  # PASS, copy that element's log over and skip the call.
+  if (( SKIP_COMPLETED == 1 )) && _try_skip_completed "$name" "$kind" "$phase_label"; then
+    return 0
+  fi
 
   local t0 t1 duration
   t0="$(date +%s)"
@@ -305,8 +407,14 @@ invoke_skill() {
   fi
 
   log_info "invoking /aidoc-flow:$name"
-  if invoke_skill_live "$name" "$prompt" "$stdout_path"; then
+  if invoke_skill_live "$name" "$prompt" "$stdout_path" "$kind"; then
     t1="$(date +%s)"; duration=$((t1 - t0))
+    local tokens; tokens="$(_estimate_tokens_out "$stdout_path")"
+    if ! _record_tokens_out "$name" "$tokens"; then
+      record_outcome "$name" "$kind" "$phase_label" "FAIL" "$duration" "" "" "false" "" "cost cap exceeded"
+      write_element_log "$name"
+      return 1
+    fi
     record_outcome "$name" "$kind" "$phase_label" "PASS" "$duration"
     write_element_log "$name"
     return 0
@@ -314,10 +422,49 @@ invoke_skill() {
     local rc=$?
     t1="$(date +%s)"; duration=$((t1 - t0))
     log_err "$name failed (exit $rc)"
+    local tokens; tokens="$(_estimate_tokens_out "$stdout_path")"
+    _record_tokens_out "$name" "$tokens" || true   # don't double-fail
     record_outcome "$name" "$kind" "$phase_label" "FAIL" "$duration" "" "" "false" "" "claude -p exit $rc"
     write_element_log "$name"
     return 1
   fi
+}
+
+# A6 helper — peek at the most-recently-created prior run's summary.json
+# and skip elements that were PASS there.
+_try_skip_completed() {
+  local name="$1" kind="$2" phase_label="$3"
+  local prior
+  prior="$(ls -td "$EXAMPLE_DIR"/logs/*/ 2>/dev/null \
+           | grep -v "$LOG_TIMESTAMP" \
+           | head -1)"
+  [[ -z "$prior" ]] && return 1
+  local prior_summary="${prior%/}/summary.json"
+  [[ -f "$prior_summary" ]] || return 1
+
+  local outcome
+  outcome="$(NAME="$name" SUMMARY="$prior_summary" python3 - <<'PY'
+import json, os, sys
+with open(os.environ["SUMMARY"]) as fh:
+    d = json.load(fh)
+for e in d.get("elements", []):
+    if e.get("name") == os.environ["NAME"]:
+        print(e.get("outcome", ""))
+        sys.exit(0)
+print("")
+PY
+)"
+  [[ "$outcome" != "PASS" ]] && return 1
+
+  # Copy the prior element log into the new run
+  local prior_log="${prior%/}/elements/$name.log"
+  if [[ -f "$prior_log" ]]; then
+    cp "$prior_log" "$LOG_DIR/elements/$name.log"
+    log_info "skip-completed: reusing prior PASS for $name"
+    record_outcome "$name" "$kind" "$phase_label" "PASS" 0
+    return 0
+  fi
+  return 1
 }
 
 parse_audit_score() {
@@ -506,7 +653,43 @@ phase_1_cascade() {
   local i=0 layer type prev_output
   prev_output="$SEED_FILE"
 
+  # A7 — --from-layer: skip layers before the resume point. The
+  # previous layer's artifact in docs/ becomes the upstream context.
+  local resume_idx=0
+  if [[ -n "$FROM_LAYER" ]]; then
+    local idx=0
+    for l in "${LAYERS[@]}"; do
+      if [[ "$l" == "$FROM_LAYER" ]]; then
+        resume_idx=$idx
+        break
+      fi
+      idx=$((idx + 1))
+    done
+    if (( resume_idx > 0 )); then
+      local prev_idx=$((resume_idx - 1))
+      local prev_layer="${LAYERS[$prev_idx]}"
+      local prev_type="${LAYER_TYPES[$prev_idx]}"
+      local prev_num
+      printf -v prev_num '%02d' "$resume_idx"
+      prev_output="$EXAMPLE_DOCS/${prev_num}_${prev_type}/${prev_type}-01.md"
+      if [[ ! -f "$prev_output" ]]; then
+        log_err "--from-layer=$FROM_LAYER but upstream $prev_output does not exist"
+        return 1
+      fi
+      log_info "--from-layer=$FROM_LAYER (resuming with upstream $prev_output)"
+    else
+      log_warn "--from-layer=$FROM_LAYER not found in LAYERS list; running full cascade"
+    fi
+  fi
+
   for layer in "${LAYERS[@]}"; do
+    if (( i < resume_idx )); then
+      log_info "skipping layer ${LAYER_TYPES[$i]} (--from-layer=$FROM_LAYER)"
+      record_outcome "doc-$layer-autopilot" "skill" "cascade" "SKIP" 0 "" "" "false" "" "skipped via --from-layer"
+      write_element_log "doc-$layer-autopilot"
+      i=$((i + 1))
+      continue
+    fi
     type="${LAYER_TYPES[$i]}"
     local layer_num
     printf -v layer_num '%02d' $((i + 1))
@@ -548,11 +731,16 @@ phase_1_cascade() {
     if (( score < 90 )); then
       log_info "  score < 90 → invoking fixer"
       local fixer_prompt
-      fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report."
+      fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report. Do not create tmp/ or backup/ directories under the layer dir; if you need a backup, write it to $AIDOC_DIR/remediation/."
       invoke_skill "doc-$layer-fixer" "$fixer_prompt" "skill" "cascade"
       OUTPUT_PATH_BY_NAME["doc-$layer-fixer"]="$fix_report"
       FIXER_INVOKED_BY_NAME["doc-$layer-audit"]="true"
       write_element_log "doc-$layer-fixer"
+
+      # B5 — Clean up any tmp/backup dirs the fixer may have left behind
+      # in the layer directory. These would otherwise trip lint's HASH01
+      # check (duplicate element IDs).
+      rm -rf "$layer_dir/tmp" 2>/dev/null
 
       invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
       score="$(parse_audit_score "doc-$layer-audit")"
@@ -873,9 +1061,13 @@ phase_3_utilities() {
     "Confirm every layer in $chain_dir has readiness score ≥ 90. Write the gate-check report to $val_path/gate-check.md." \
     "[0-9]{2,3}" 8 "per-layer scores"
 
+  # C2 — Calibrated against actual quality-advisor output (structured
+  # prose with `### Layer N` headings, `→` arrow markers, priority
+  # lists). The original `suggest|recommend|improve` regex undercounted
+  # by ~5×.
   _probe_with_count_threshold "quality-advisor" \
-    "Review the chain at $chain_dir and provide actionable improvement suggestions, one per layer at minimum. Write suggestions to $qa_path." \
-    "suggest|recommend|improve" 8 "actionable suggestions"
+    "Review the chain at $chain_dir and provide actionable improvement suggestions, one per layer at minimum. Write the full suggestions document to $qa_path with per-layer sections (### Layer N) and actionable items prefixed with → or numbered." \
+    "^### Layer|^→ |^- \*\*Fix|^[0-9]+\.[[:space:]]|suggest|recommend|improve" 8 "actionable suggestions"
 
   if [[ "$LIVE_FLAG" == "1" ]] || [[ -n "$MOCK_SOURCE" ]]; then
     invoke_skill "security-audit" \
@@ -953,9 +1145,14 @@ PY
   n_layers="$(ls -1d "$chain_dir"/[0-9]*_*/ 2>/dev/null | wc -l)"
   local ke_min=$(( n_layers > 0 ? n_layers * 4 : 8 ))
 
+  # C3 — Calibrated: in the prior run knowledge-extractor asked
+  # follow-up questions instead of producing output. New prompt is
+  # directive ("do not ask for clarification") and asks for Mermaid
+  # syntax. Regex now matches Mermaid node/edge syntax + bullet
+  # entities + JSON keys.
   _probe_with_count_threshold "knowledge-extractor" \
-    "Extract a domain knowledge graph from the chain at $chain_dir. Write to $val_path/knowledge-graph.md. List each node (entity) and its relationships." \
-    "(node|entity|concept|::|->|--)" $ke_min "knowledge graph nodes"
+    "Extract a domain knowledge graph from the chain at $chain_dir. Write the full graph to $val_path/knowledge-graph.md as a Mermaid \`graph TD\` block followed by a bullet list of entities. Do not ask for clarification or offer alternatives — produce the graph directly. Include at least $ke_min distinct entities/nodes." \
+    "-->|---|::|^[A-Z_][a-zA-Z0-9_]+\\s*\\[|^[*-][[:space:]]+\\*\\*[A-Z]|node|entity|concept" $ke_min "knowledge graph nodes"
 
   _probe_with_count_threshold "charts-flow" \
     "Validate diagram contract for the chain at $chain_dir. Each required diagram per DIAGRAM_STANDARDS.md must be present. Write the report to $val_path/diagrams.md." \
