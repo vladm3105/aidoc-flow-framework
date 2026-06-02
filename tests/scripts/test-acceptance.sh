@@ -1238,6 +1238,145 @@ phase_4_hook() {
 }
 
 # -----------------------------------------------------------------------------
+# --promote algorithm
+# -----------------------------------------------------------------------------
+# Per plan §3.2. Promotes logs/<TS>/cascade/ to examples/<NAME>/docs/ when
+# all phases passed.
+#
+# Steps:
+#   1. Resolve version from platforms/claude-code-plugin/VERSION
+#   2. Refuse if working tree has uncommitted changes
+#   3. Refuse if examples/<NAME>/docs/ has uncommitted changes
+#   4. Archive existing docs/ to docs-archive/v<previous-version>/ (if non-empty)
+#   5. rsync -a --delete logs/<TS>/cascade/ → examples/<NAME>/docs/
+#   6. Commit: chore(examples): promote <example> cascade for v<X.Y.Z>
+#   7. Push only if --push was also passed
+
+_overall_outcome() {
+  # Echo PASS|FAIL|SKIP based on in-memory outcome state
+  local name fail_n=0 pass_n=0
+  for name in "${ELEMENT_ORDER[@]}"; do
+    case "${OUTCOME_BY_NAME[$name]}" in
+      PASS) pass_n=$((pass_n + 1)) ;;
+      FAIL) fail_n=$((fail_n + 1)) ;;
+    esac
+  done
+  if (( fail_n > 0 )); then
+    echo "FAIL"
+  elif (( pass_n == 0 )); then
+    echo "SKIP"
+  else
+    echo "PASS"
+  fi
+}
+
+promote_cascade() {
+  section "Promote — cascade → examples/<NAME>/docs/"
+
+  local outcome
+  outcome="$(_overall_outcome)"
+  if [[ "$outcome" != "PASS" ]]; then
+    log_err "overall outcome is $outcome; refusing to promote a non-PASS run"
+    return 1
+  fi
+
+  local cascade_src="$LOG_DIR/cascade"
+  if [[ ! -d "$cascade_src" ]] || [[ -z "$(find "$cascade_src" -name '*.md' -print -quit 2>/dev/null)" ]]; then
+    log_err "no cascade output to promote: $cascade_src"
+    return 1
+  fi
+
+  # Step 1 — version
+  local plugin_version_file="$PLUGIN_DIR/VERSION"
+  if [[ ! -f "$plugin_version_file" ]]; then
+    log_err "VERSION file missing: $plugin_version_file"
+    return 1
+  fi
+  local plugin_version
+  plugin_version="$(cat "$plugin_version_file" | tr -d '[:space:]')"
+  log_info "plugin version: $plugin_version"
+
+  # Step 2 — working tree clean
+  if ! git -C "$FRAMEWORK" diff-index --quiet HEAD 2>/dev/null; then
+    log_err "framework working tree has uncommitted changes; refusing to promote"
+    log_err "  (commit or stash, then re-run with --promote)"
+    return 1
+  fi
+  log_info "✓ working tree clean"
+
+  # Step 3 — docs/ has no uncommitted changes (redundant with step 2 but explicit)
+  if ! git -C "$FRAMEWORK" diff-index --quiet HEAD -- "examples/$EXAMPLE/docs" 2>/dev/null; then
+    log_err "examples/$EXAMPLE/docs has uncommitted changes; refusing to promote"
+    return 1
+  fi
+
+  # Step 4 — archive existing docs/ (if non-empty)
+  local archive_root="$EXAMPLE_DIR/docs-archive"
+  if [[ -d "$EXAMPLE_DOCS" ]] && [[ -n "$(find "$EXAMPLE_DOCS" -name '*.md' -print -quit 2>/dev/null)" ]]; then
+    # Previous version: read the last committed VERSION at the time the
+    # docs/ was promoted. For first-time we cannot know exactly, so use
+    # the current plugin_version as the archive key — but only if it
+    # differs from the run's version. If they match, skip archive (the
+    # docs/ already represents this version's cascade).
+    #
+    # Heuristic: if a marker file exists at examples/<NAME>/docs/.version,
+    # use it. Otherwise use plugin_version.
+    local prev_version="$plugin_version"
+    if [[ -f "$EXAMPLE_DOCS/.version" ]]; then
+      prev_version="$(cat "$EXAMPLE_DOCS/.version" | tr -d '[:space:]')"
+    fi
+    local archive_dir="$archive_root/v$prev_version"
+    if [[ -d "$archive_dir" ]]; then
+      log_err "archive dir already exists: $archive_dir (refusing to overwrite history)"
+      return 1
+    fi
+    mkdir -p "$archive_dir"
+    log_info "archiving existing docs/ → $archive_dir"
+    rsync -a "$EXAMPLE_DOCS/" "$archive_dir/"
+  else
+    log_info "first-time bootstrap: no existing docs/ to archive"
+  fi
+
+  # Step 5 — copy cascade into docs/
+  log_info "promoting cascade → $EXAMPLE_DOCS"
+  rm -rf "$EXAMPLE_DOCS"
+  mkdir -p "$EXAMPLE_DOCS"
+  rsync -a --delete "$cascade_src/" "$EXAMPLE_DOCS/"
+  echo "$plugin_version" > "$EXAMPLE_DOCS/.version"
+
+  # Step 6 — commit
+  log_info "committing promoted chain"
+  git -C "$FRAMEWORK" add "examples/$EXAMPLE/docs" "examples/$EXAMPLE/docs-archive" 2>/dev/null || true
+  if git -C "$FRAMEWORK" diff --cached --quiet; then
+    log_info "no changes to commit (promoted content identical to previous)"
+  else
+    git -C "$FRAMEWORK" commit -m "chore(examples): promote $EXAMPLE cascade for v$plugin_version release
+
+Run: $LOG_TIMESTAMP
+Outcome: $outcome
+Source: $cascade_src" || {
+      log_err "commit failed"
+      return 1
+    }
+    log_info "✓ committed promoted chain"
+  fi
+
+  # Step 7 — push if requested
+  if (( PUSH == 1 )); then
+    log_info "pushing to origin"
+    git -C "$FRAMEWORK" push || {
+      log_err "push failed"
+      return 1
+    }
+    log_info "✓ pushed"
+  else
+    log_info "skipping push (use --push to push)"
+  fi
+
+  return 0
+}
+
+# -----------------------------------------------------------------------------
 # Summary writers
 # -----------------------------------------------------------------------------
 write_summary() {
@@ -1400,6 +1539,18 @@ done
 # Final summary
 write_summary
 RC=$?
+
+# Promote (if requested and run passed)
+if (( PROMOTE == 1 )); then
+  if (( RC != 0 )); then
+    log_err "--promote requested but overall run is FAIL; skipping promote"
+  else
+    promote_cascade || {
+      log_err "promote failed"
+      RC=1
+    }
+  fi
+fi
 
 # Cleanup: log final runtime
 END_EPOCH="$(date +%s)"

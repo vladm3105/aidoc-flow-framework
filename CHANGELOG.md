@@ -218,6 +218,52 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Pre-deployment acceptance test suite** — new
+  `tests/scripts/test-acceptance.sh` (~1500 lines) drives every active
+  plugin surface element (50 skills + 11 agents + 1 command + 1 hook =
+  63 total) against a named example's seed; the produced chain is the
+  release-gate evidence that the plugin works end-to-end.
+
+  Driver structure (per
+  [`examples/url-shortener/ACCEPTANCE_TEST_PLAN.md`](examples/url-shortener/ACCEPTANCE_TEST_PLAN.md)):
+  Phase 0 (bootstrap + preflight: manifest validate, lint smoke, state
+  detection, API auth) → Phase 1.1 (happy-path BRD→IPLAN cascade with
+  autopilot + audit + optional fixer + lint per layer) → Phase 1.2
+  (6-fixture negative validation at
+  `tests/acceptance/fixtures/negative/`) → Phase 2 (CHG cycle driven by
+  per-example `chg/test-change.md`) → Phase 3 (14 utility probes with
+  minimum-coverage thresholds preventing empty-output false-PASS) →
+  Phase 4 (11 agents + `/aidoc-flow:save-plan` command + deterministic
+  `hooks/sdd-doc-review.sh` test).
+
+  Per-run log layout under `examples/<NAME>/logs/<TS>/` with
+  human-readable `summary.txt`, machine-readable `summary.json`
+  validating against
+  `tests/scripts/test-acceptance.schema.json` (v1.0), and per-element
+  `.log` + `.meta.json` under `bootstrap/`, `skills/`, `agents/`,
+  `command/`, `hook/`, `cascade/`, `negative/`, `sandbox/`.
+
+  `--mock=<run-dir>` replays a prior recorded run without LLM cost for
+  script-development iteration. `--promote` archives the previous
+  `examples/<NAME>/docs/` to `docs-archive/v<X.Y.Z>/` and replaces it
+  with the freshly-produced cascade output; `--push` pushes the promote
+  commit. 45-minute hard wall-clock cap. Token cost per `--live` run:
+  ~$11–20.
+
+  First example: `examples/url-shortener/` with seed at
+  `seed/initial-requirements.md` and CHG change-set at
+  `chg/test-change.md` (visit-rate analytics dashboard).
+
+  Six shared negative fixtures at `tests/acceptance/fixtures/negative/`
+  exercise structural-defect detection: missing required sections
+  (STRUCT01), malformed trace-tags (ID01), non-existent upstream refs,
+  low audit-score content, missing required diagrams, broken chain
+  traces. 4 of 6 verifiable deterministically; 2 require live LLM.
+
+  Companion parent-repo PR wires `release.yml` to invoke the acceptance
+  suite on tag push with `actions/upload-artifact@v4` and raises the
+  `T4L` token-ledger ceiling from 500K to 1M.
+
 - **Token-efficient authoring governance** — new
   `framework/governance/AUTHORING_STYLE.md` canonicalises the writing voice
   the SDD corpus expects: elimination list (benefit statements, efficiency
