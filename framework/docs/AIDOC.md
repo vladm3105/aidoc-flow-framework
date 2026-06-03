@@ -110,4 +110,5 @@ working notes side-by-side.
 - [`framework/governance/ADAPTATION.md`](../governance/ADAPTATION.md) — profile semantics
 - [`framework/governance/REVIEW_TEAM.md`](../governance/REVIEW_TEAM.md) — multi-persona review model
 - [`framework/governance/REVIEW_REMEDIATION_FLOW.md`](../governance/REVIEW_REMEDIATION_FLOW.md) — review/remediation gate flow
-- [`examples/url-shortener/ACCEPTANCE_TEST_PLAN.md`](../../examples/url-shortener/ACCEPTANCE_TEST_PLAN.md) — example acceptance test using `.aidoc/`
+- [`tests/ACCEPTANCE.md`](../../tests/ACCEPTANCE.md) — the acceptance-test methodology that populates `.aidoc/`
+- [`examples/url-shortener/README.md`](../../examples/url-shortener/README.md) — canonical example using `.aidoc/`

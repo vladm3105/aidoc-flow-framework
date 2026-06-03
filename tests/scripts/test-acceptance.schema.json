@@ -2,7 +2,7 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://github.com/vladm3105/aidoc-flow-framework/tests/scripts/test-acceptance.schema.json",
   "title": "Acceptance test summary + per-element schemas (v1.2)",
-  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. v1.2 adds RUNNING (in-flight) and INTERRUPTED (kill/abort before terminal) outcomes for resume support. v1.1 introduced the combined YAML front-matter + raw stdout layout. See examples/url-shortener/ACCEPTANCE_TEST_PLAN.md §3.",
+  "description": "Schemas for the artifacts produced by tests/scripts/test-acceptance.sh. v1.2 adds RUNNING (in-flight) and INTERRUPTED (kill/abort before terminal) outcomes for resume support. v1.1 introduced the combined YAML front-matter + raw stdout layout. See tests/ACCEPTANCE.md §3.",
   "definitions": {
     "outcome": {
       "type": "string",

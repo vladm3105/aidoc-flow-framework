@@ -6,8 +6,9 @@
 # agents + 1 command + 1 hook = 63 elements) against a named example's
 # seed. The chain produced is the release-gate evidence.
 #
-# Plan: examples/<NAME>/ACCEPTANCE_TEST_PLAN.md.
-# Schema: tests/scripts/test-acceptance.schema.json (v1.1).
+# Methodology: tests/ACCEPTANCE.md.
+# Per-example specifics: examples/<NAME>/README.md.
+# Schema: tests/scripts/test-acceptance.schema.json (v1.2).
 #
 # Three-tier output separation per example:
 #   examples/<NAME>/seed/, chg/   — human inputs (committed)
@@ -1698,9 +1699,10 @@ write_summary() {
 # Main dispatch
 # -----------------------------------------------------------------------------
 echo "aidoc-flow acceptance run"
-echo "Example:    $EXAMPLE"
-echo "Plan:       $EXAMPLE_DIR/ACCEPTANCE_TEST_PLAN.md"
-echo "Log dir:    $LOG_DIR"
+echo "Example:     $EXAMPLE"
+echo "Methodology: tests/ACCEPTANCE.md"
+echo "Example doc: $EXAMPLE_DIR/README.md"
+echo "Log dir:     $LOG_DIR"
 echo "Docs:       $EXAMPLE_DOCS"
 echo "AIDoc:      $AIDOC_DIR"
 echo "Live:       $([[ $LIVE_FLAG == 1 ]] && echo enabled || echo disabled)"

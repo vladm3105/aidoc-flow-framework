@@ -111,4 +111,7 @@ explicit tiers:
 
 `.aidoc/` answers *"how did the AI arrive at the output?"* without
 requiring a re-run. See [`docs/AIDOC.md`](docs/AIDOC.md) for the
-canonical reference.
+canonical reference. The pre-deployment acceptance-test methodology
+that populates these tiers lives at
+[`../tests/ACCEPTANCE.md`](../tests/ACCEPTANCE.md) (test-suite
+documentation; outside the engine-agnostic spec).
