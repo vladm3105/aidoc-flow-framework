@@ -101,7 +101,7 @@ Change Management for the full policy.
 ## Post-v1.0 — Shipped
 
 Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
-0.3.1`):
+0.11.2`):
 
 - **Canonical plugin skill set** — the corpus was pruned/recreated to one
   standard (P3-T6/T7) and settled at **52 skills (50 active + 2 deprecated stubs)** in plugin v0.4.0, after `skill-recommender`/`workflow-optimizer`/`context-analyzer` folded into `doc-flow` and `doc-review`/`trace-check` were folded into `doc-validator` (the latter two retained as deprecation redirects through v0.5.0).
@@ -111,8 +111,14 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
 - **Change management returned** (CHG-D1/D2 above) — **GATE-SPEC**, the
   framework-spec change gate, enforced by skills + CI + branch protection;
   recorded as **GD-01** in `framework/governance/DECISIONS.md`.
+- **Review-team model** (framework `0.8.0`) — `framework/governance/REVIEW_TEAM.md` defines the multi-persona review crews, the hub blackboard, the deterministic weighted/capped scoring + conflict policy with the structural gate as a reproducible floor, and the create/review/remediate shapes; `REVIEW_CREWS.yaml` declares the per-layer crews + weights. `ADAPTATION_SURFACE.yaml` gains the `review_mode` knob (`team`|`single_pass`).
+- **C4 + DFD + sequence diagram standards** (framework `0.8.1`) — `framework/governance/DIAGRAM_STANDARDS.md` is the authority for per-layer diagrams: BRD c4-l1/dfd-l1, PRD c4-l2/dfd-l2/sequence, ADR decision sequence (now required, not optional), SPEC c4-l3/dfd-l3. Both platforms' review and creation agents wired to the standard.
+- **Token-efficient authoring governance** (framework `0.9.0` → `0.10.0`) — `framework/governance/AUTHORING_STYLE.md` canonicalises the elimination list, form enforcement, form-preference order, and per-section size targets; promoted to canonical via `DOC_GOVERNANCE_CORE.md` principle 7. Every section in every layer template (76 sections) gains a `_size_target` key; `sdd_doc_lint` STY02 reads the per-section target instead of a flat default. Wired into every `doc-<layer>` (creation) and `doc-<layer>-audit` skill.
+- **`.aidoc/` provenance tier** (framework `0.11.1`) — `framework/docs/AIDOC.md` formalises a third committed documentation tier per project: audit, review consensus, remediation, validation, security, and quality reports — the AI's working notes that answer *"how did the AI arrive at the output in `docs/`?"* without a re-run. Four-tier layout: `seed/`+`chg/` (inputs), `docs/` (outputs), `.aidoc/` (provenance), `logs/<TS>/` (tool internals, gitignored).
+- **Pre-deployment acceptance test suite** — `tests/scripts/test-acceptance.sh` drives every active plugin surface element (50 skills + 11 agents + 1 command + 1 hook = 63 total) against a named example's seed as the release gate. Methodology lives at `tests/ACCEPTANCE.md` (engine-agnostic, applies to any future example). Driver supports `--mock`/`--no-live`/`--dry-run`/`--live`, `--promote` (archives prior chain to `docs-archive/v<X.Y.Z>/` and commits the freshly-produced chain), `--push`, resume on SIGINT/TERM with incremental `summary.json` + RUNNING stubs, partial execution via `--element=<name>` / `--from-layer=<N>` / `--to-layer=<N>`, retry-on-transient-HTTP, per-skill timeout, per-layer runtime cap, `--cost-cap=<USD>`, and `--skip-completed=<path>`. Schema v1.2 (`tests/scripts/test-acceptance.schema.json`) covers the combined summary + per-element shape. First seed: `examples/url-shortener/` (URL-shortener service + visit-rate analytics dashboard CHG). Adding a sibling example is a `seed/` + `chg/` + thin README — no script changes. Wired into `release.yml` on tag push.
+- **Test runners co-located under `tests/scripts/`** — `test-plugin.sh`, `test-layer.sh`, `test-fullpath.sh`, `test-acceptance.sh` all live inside the framework; the framework is fully self-testable with no parent-repo dependency.
 - **Pre-commit + security tooling** — `.pre-commit-config.yaml` (ruff, bandit,
-  markdownlint, yamllint, detect-secrets, pip-audit, conformance) and CI
+  markdownlint, yamllint, detect-secrets, **gitleaks**, pip-audit, conformance) and CI
   workflows for pre-commit, **CodeQL**, and the GATE-SPEC gate; `SECURITY.md`;
   refreshed `.github/` metadata (CODEOWNERS, dependabot, labeler — INFRA-1).
 
