@@ -767,14 +767,18 @@ phase_1_cascade() {
   local resume_idx=0
   if [[ -n "$FROM_LAYER" ]]; then
     local idx=0
+    local found=0
     for l in "${LAYERS[@]}"; do
       if [[ "$l" == "$FROM_LAYER" ]]; then
         resume_idx=$idx
+        found=1
         break
       fi
       idx=$((idx + 1))
     done
-    if (( resume_idx > 0 )); then
+    if (( found == 0 )); then
+      log_warn "--from-layer=$FROM_LAYER not found in LAYERS list; running full cascade"
+    elif (( resume_idx > 0 )); then
       local prev_idx=$((resume_idx - 1))
       local prev_layer="${LAYERS[$prev_idx]}"
       local prev_type="${LAYER_TYPES[$prev_idx]}"
@@ -787,7 +791,7 @@ phase_1_cascade() {
       fi
       log_info "--from-layer=$FROM_LAYER (resuming with upstream $prev_output)"
     else
-      log_warn "--from-layer=$FROM_LAYER not found in LAYERS list; running full cascade"
+      log_info "--from-layer=$FROM_LAYER (first layer; no upstream required)"
     fi
   fi
 
