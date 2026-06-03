@@ -12,10 +12,10 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.0"
+    version: "0.4.1"
     framework_spec_version: "0.11.2"
     last_updated: "2026-05-23"
-    adapts: [section_toggles]
+    adapts: [section_toggles, review_mode]
 ---
 
 # doc-brd-fixer
@@ -38,10 +38,56 @@ BRD (use `../doc-brd/SKILL.md` / `../doc-brd-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `BRD-NN.A_audit_report_vNNN.md`. Back up the BRD before
-editing (`tmp/backup/BRD-NN_<ts>/`); on error, restore. Element-ID standards
-come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
-`${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` and `README.md`.
+Consume the latest audit report from `.aidoc/audit/01_BRD-audit.md` (the
+`.aidoc/` provenance tier). Back up the BRD before editing
+(`tmp/backup/BRD-NN_<ts>/`); on error, restore. Element-ID standards come
+from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`;
+structure rules from
+`${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/BRD-TEMPLATE.yaml` and
+`README.md`.
+
+## Remediate Mode
+
+Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team`.
+
+### team mode (per REVIEW_TEAM.md §Operations §Remediate)
+
+1. **Read the audit report** at `.aidoc/audit/01_BRD-audit.md` AND, when
+   present, the per-persona slots at
+   `.aidoc/review/01_BRD/<BRD-id>/<persona>.json`. The slots carry
+   structured findings with stable ids, priorities, and locations the
+   fixer needs. **Slots are optional** — fixer must work from the audit
+   report alone if slots are missing (e.g. single_pass run produced no
+   slots).
+2. **Group blocking findings** (P0 + P1) by responsible lens via the
+   lens → agent mapping in `../review-team/SKILL.md`. P2/P3 are
+   advisory — apply deterministically without lens validation.
+3. **Propose and apply a patch** per blocking finding. Fix Phases 0–7
+   below describe the patch shapes; the catalogue is the same in both
+   modes. Back up first per the existing Input Contract.
+4. **Validate non-regression.** Dispatch the responsible lens as a
+   `Task` subagent in patch-validation mode: subagent_type=<mapped
+   agent>; brief = the patched region + the original finding + the
+   patch diff; output = a fresh persona-output record (lens_score for
+   that region + any new findings). Persist as
+   `.aidoc/review/01_BRD/<BRD-id>/<persona>.fix_<N>.json`.
+5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
+   revert that patch and flag `manual_required` for the original
+   finding. **Never silently keep a regressing fix.**
+6. **Dispatch the synthesizer once**, after all patches are validated,
+   to emit the unified fix report. Persist
+   `.aidoc/remediation/01_BRD-fix.md` with both the Fixes Applied table
+   AND a Validation Slots index.
+
+### single_pass mode (fallback)
+
+Apply Phase 0–7 directly, single-handed, no lens validation. Unchanged
+legacy behaviour — required when the profile says so, when `Task` subagent
+dispatch is unavailable, or when no slots are present.
+
+In both modes, P2/P3 advisory findings are applied without lens
+validation; only blocking findings (P0/P1) go through the
+patch-validation loop in team mode.
 
 ## Fix Phases
 

@@ -10,6 +10,51 @@ graduation.
 
 ---
 
+## D-0024 — BRD-layer team-mode dispatcher placement: at `doc-*-audit`, not at a higher orchestrator
+
+- **Date:** 2026-06-03T13:30:51Z
+- **Context:** The framework spec
+  (`framework/governance/REVIEW_TEAM.md`,
+  `framework/governance/REVIEW_CREWS.yaml`) endorses `independent`
+  parallel-subagent review as the default mode at gates. The plugin's
+  `platforms/claude-code-plugin/skills/review-team/SKILL.md` correctly
+  describes Claude Code `Task`-tool fan-out as the mechanism, but the
+  per-layer `doc-*-audit` skills did not invoke it — they ran
+  single-pass content reviews in one model context. BRD-RT-001 (see
+  `plans/BRD-REVIEW-TEAM-PLAN.md`) wires the fan-out at the BRD layer
+  as a proof-of-concept; a design decision is needed on **which skill
+  owns the dispatcher**.
+- **Decision:** The dispatcher of the persona crew lives in
+  `doc-<layer>-audit` (for review/gate) and `doc-<layer>-autopilot`
+  (for the create→review→revise loop). **Not** in a higher orchestrator
+  skill, **not** in `pm-orchestrator`, **not** as a separate
+  pre-cascade phase in the acceptance suite.
+- **Why:**
+  - `review-team/SKILL.md:108` already designates this:
+    "`pm-orchestrator` (or the invoking `doc-<layer>-audit`) is the
+    dispatcher." This codifies that the audit skill is one valid owner;
+    we pick it as **the** owner for per-layer gate-time review.
+  - Per-layer dispatch at the gate matches `REVIEW_REMEDIATION_FLOW.md`
+    trigger points (`on_gate_fail`, `pre_promotion`, `pre_merge`). A
+    chain-wide orchestrator can't catch errors at the per-layer gate
+    they originated at — the create→review→revise loop only converges
+    when the review happens at the layer being authored.
+  - The Phase 3 chain-wide `review-team` invocation in
+    `tests/scripts/test-acceptance.sh:1239` continues to exist for
+    cross-cutting review across the produced 8-layer chain. The two are
+    complementary, not duplicative.
+  - Keeping the dispatcher local to the audit skill preserves the
+    "structured slots, never peer-to-peer" rule from `REVIEW_TEAM.md`
+    §Blackboard — every contract between skills is the slot path +
+    persona-output schema, not skill-internal logic.
+- **Scope:** This decision is the rule for **every layer**'s team-mode
+  wiring. BRD-RT-001 implements it for BRD; PRD-RT, EARS-RT, BDD-RT,
+  ADR-RT, SPEC-RT, TDD-RT, IPLAN-RT will copy the pattern verbatim.
+- **Notes:** This is a plugin-platform decision; it does not change the
+  framework spec. The plugin-spec contract (consume `framework/`
+  templates + governance, no platform names in `framework/**`) is
+  preserved. Plugin v0.4.0 → v0.4.1.
+
 ## D-0023 — Domain & product identity: one brand, path-based per-integration pages
 
 - **Date:** 2026-05-27T00:00:00Z

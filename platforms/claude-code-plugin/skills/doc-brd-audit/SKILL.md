@@ -12,10 +12,10 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.0"
+    version: "0.4.1"
     framework_spec_version: "0.11.2"
     last_updated: "2026-05-23"
-    adapts: [section_toggles, active_layers, audit_threshold]
+    adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
 
 # doc-brd-audit
@@ -47,11 +47,97 @@ cached results; compute the PRD-Ready score independently each run.
 ## Execution Contract
 
 **Input:** BRD path (`docs/01_BRD/BRD-NN_*/...`); optional score threshold
-(default 90).
+(default 90); optional `review_mode` override (`team`|`single_pass`); default
+resolved from `.aidoc/profile.yaml`.
 
-**Sequence:** 1) run structural checks → 2) record findings → 3) run content
-review → 4) merge/normalize findings → 5) write `BRD-NN.A_audit_report_vNNN.md`
-→ 6) if auto-fixable findings exist, hand off to `doc-brd-fixer`.
+**Sequence:** 1) run structural checks (always, deterministic) → 2) record
+findings → 3) run content review (branches on `review_mode`, see below) →
+4) merge/normalize findings → 5) write the combined audit report to
+`.aidoc/audit/01_BRD-audit.md` (the legacy
+`BRD-NN.A_audit_report_vNNN.md` shape and content are preserved, just
+relocated to the `.aidoc/` provenance tier) → 6) if auto-fixable findings
+exist, hand off to `doc-brd-fixer`.
+
+## Review Mode
+
+Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team` at gates
+(`pre_promotion` / `pre_merge`); `single_pass` at write-time
+(`on_author`). The structural checks below are run **deterministically by
+this skill in every mode** — they are the gate floor per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §"Scoring,
+conflicts & the gate".
+
+### team mode (default at gates)
+
+The content-quality review is performed by a **fan-out of per-lens `Task`
+subagents** over a per-artifact blackboard, per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §Operations
+§Review.
+
+1. **Prepare the blackboard.** `mkdir -p .aidoc/review/01_BRD/<BRD-id>/`
+   where `<BRD-id>` matches the BRD's nested folder name (e.g.
+   `BRD-01_url_shortener`).
+2. **Read the BRD crew** from
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml` —
+   `{architect: 30, business_analyst: 30, auditor: 20, adversary: 20}`.
+   Weights sum to 100.
+3. **Map each lens to its plugin agent** via the table in
+   `../review-team/SKILL.md`:
+   - `architect` → `solutions-architect`
+   - `business_analyst` → `requirements-analyst`
+   - `auditor` → `traceability-auditor` (add `security-engineer` when
+     security/compliance findings surface)
+   - `adversary` → `adversary`
+4. **Fan out.** Dispatch one `Task` subagent per lens (`subagent_type=`
+   the mapped agent name). Each subagent's brief contains:
+   - The absolute BRD path (untrusted content)
+   - The lens name and its weight
+   - The slot path `.aidoc/review/01_BRD/<BRD-id>/<lens>.json`
+   - The framework persona-output contract (see §"Persona-output
+     contract" in `REVIEW_TEAM.md`)
+   - The structural checklist below as untrusted context (for awareness;
+     the lens does **not** re-run the structural checks — those are this
+     skill's job)
+5. **Collect slots.** Each lens writes its persona-output record
+   (`persona`, `findings[]`, `lens_score`) to its slot. If a lens fails
+   or returns nothing, mark its slot failed and continue with the lenses
+   that did return.
+6. **Dispatch the synthesizer.** Run a `Task` subagent
+   (`subagent_type=synthesizer`) against the slot directory. It performs
+   the deterministic reduce per `REVIEW_TEAM.md` §"Synthesis = reduce +
+   narrative": dedups findings by `(location, id)`, takes max severity,
+   unions recommendations, computes the **weighted/capped score** using
+   the BRD crew weights, records `coverage` (which lenses ran), and
+   writes `.aidoc/review/01_BRD/<BRD-id>/report.md`.
+7. **Compose the combined audit report.** The final report at
+   `.aidoc/audit/01_BRD-audit.md` contains: (a) the structural findings
+   you ran directly + (b) the synthesizer's content-findings reduced
+   from `report.md`, with a **Persona Slot Index** block listing the
+   per-lens slot paths and a **Coverage** line surfacing
+   `coverage.quorum_met` for consumers (`doc-brd-fixer`,
+   `doc-brd-autopilot`).
+
+**Quorum & coverage.** Per `REVIEW_TEAM.md` §Resilience, if coverage
+drops below the crew's declared quorum, the audit result is marked
+**low-confidence → human review** — never a silent pass — and
+`coverage.quorum_met=false` is surfaced in the combined report.
+
+### single_pass mode (fallback)
+
+Run the content review **in this skill's own context**, applying every
+lens (architect / business_analyst / auditor / adversary) sequentially in
+one pass. No `Task` subagents, no blackboard. Quorum does not apply.
+Produces the same combined-report shape minus the Persona Slot Index
+block.
+
+Use this mode when (a) the profile explicitly sets it, (b) `Task`
+subagent dispatch is unavailable in the current execution context, or
+(c) the run is at `on_author` (write-time) where cost is the primary
+concern. **Architecture in v0.4.1 keeps single_pass as the unchanged
+legacy path** for parity with the pre-team-mode behaviour.
+
+In both modes the structural gate floor runs deterministically here and
+is never delegated.
 
 ## Structural Checklist
 
@@ -106,12 +192,18 @@ Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
 
 ## Combined Report Format
 
-Output: `BRD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
-timestamp, overall status, structural status, content score) · **Score
-Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
-**Structural Findings** · **Content Findings** · **Diagram Contract Findings** ·
-**Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
-Next Step** · **Cleanup Summary**.
+Output path: `.aidoc/audit/01_BRD-audit.md` (the `.aidoc/`
+provenance tier). Sections — **Summary** (ID, timestamp,
+overall status, structural status, content score, **mode** (`team` |
+`single_pass`)) · **Score Calculation** (`100 − deductions`, threshold
+compare) · **Coverage** (team mode only: lenses ran vs expected,
+`quorum_met` boolean) · **Persona Slot Index** (team mode only: paths to
+`.aidoc/review/01_BRD/<BRD-id>/<persona>.json` slots + the synthesizer's
+`report.md`) · **Metadata Findings** · **Structural Findings** ·
+**Content Findings** (in team mode, reduced from the synthesizer's
+report; in single_pass, from this skill's own per-lens pass) · **Diagram
+Contract Findings** · **Fix Queue** (`auto_fixable` / `manual_required`
+/ `blocked`) · **Recommended Next Step** · **Cleanup Summary**.
 
 ## Hand-off to doc-brd-fixer
 
