@@ -61,7 +61,8 @@ PLUGIN_DIR="$FRAMEWORK/platforms/claude-code-plugin"
 LAYERS=("brd" "prd" "ears" "bdd" "adr" "spec" "tdd" "iplan")
 LAYER_TYPES=("BRD" "PRD" "EARS" "BDD" "ADR" "SPEC" "TDD" "IPLAN")
 NEGATIVE_FIXTURES_DIR="$FRAMEWORK/tests/acceptance/fixtures/negative"
-DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
+DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/PROFILE-TEMPLATE.yaml"
+FRAMEWORK_CREWS_FALLBACK="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 
 # Per-layer runtime cap (replaces the old global 45-min cap, plan B2).
 MAX_LAYER_SEC=900   # 15 minutes per layer
@@ -1241,28 +1242,38 @@ phase_3_utilities() {
       "skill" "utilities"
     local rt_log="$LOG_DIR/elements/review-team.log"
     # Personas via Python YAML parse (B3 fix).
+    # Fallback chain (PROFILE-DELTA-001): the project profile is an
+    # override-only delta. If it does not declare crews/personas, fall
+    # back to the framework default at $FRAMEWORK_CREWS_FALLBACK.
     local personas
-    personas="$(PROFILE="$PROFILE_FILE" python3 - <<'PY'
+    personas="$(PROFILE="$PROFILE_FILE" FALLBACK="$FRAMEWORK_CREWS_FALLBACK" python3 - <<'PY'
 import os, yaml
-try:
-    with open(os.environ["PROFILE"]) as f:
-        data = yaml.safe_load(f) or {}
-except Exception:
-    print("")
-    raise SystemExit(0)
-personas = set()
-def collect(node):
+
+def load(path):
+    try:
+        with open(path) as f:
+            return yaml.safe_load(f) or {}
+    except Exception:
+        return {}
+
+def collect(node, acc):
     if isinstance(node, dict):
         for k, v in node.items():
             if k == "persona" and isinstance(v, str):
-                personas.add(v)
+                acc.add(v)
             else:
-                collect(v)
+                collect(v, acc)
     elif isinstance(node, list):
         for item in node:
-            collect(item)
-collect(data)
-print(" ".join(sorted(personas)))
+            collect(item, acc)
+
+acc = set()
+collect(load(os.environ["PROFILE"]), acc)
+if not acc:
+    # Project profile carries no crew/persona overrides — fall back to
+    # the framework default (REVIEW_CREWS.yaml).
+    collect(load(os.environ["FALLBACK"]), acc)
+print(" ".join(sorted(acc)))
 PY
 )"
     local missing=""

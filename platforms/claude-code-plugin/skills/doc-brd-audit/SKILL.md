@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.1"
-    framework_spec_version: "0.11.2"
+    version: "0.4.2"
+    framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -60,9 +60,15 @@ exist, hand off to `doc-brd-fixer`.
 
 ## Review Mode
 
-Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team` at gates
-(`pre_promotion` / `pre_merge`); `single_pass` at write-time
-(`on_author`). The structural checks below are run **deterministically by
+Resolve `review_mode` from `.aidoc/profile.yaml`; if the key is unset
+(the project profile is an override-only delta — most knobs are absent),
+fall through to the framework default per the precedence chain in
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` (`framework
+defaults < user-global seed < project profile`). The framework default
+is `team` at gates (`pre_promotion` / `pre_merge`) and `single_pass` at
+write-time (`on_author`). The same fallback rule applies to every other
+adaptation knob (`audit_threshold`, `section_toggles`, `active_layers`,
+`glossary`). The structural checks below are run **deterministically by
 this skill in every mode** — they are the gate floor per
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §"Scoring,
 conflicts & the gate".
