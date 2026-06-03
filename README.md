@@ -69,11 +69,16 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** — latest project release `v1.1.0`, framework spec
-`0.11.0`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.4.0); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.0`. Post-v1.0 work to date: the project adaptation overlay, the
-GATE-SPEC change-management gate (`framework/governance/chg/`), the
-authoring-style/spec quality updates through framework `0.11.0`, and the
-pre-commit + CI security tooling (CodeQL, bandit, detect-secrets, pip-audit,
-Dependabot).
+`0.11.2`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.4.0); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.2`. Post-v1.0 work to date:
+
+- the project adaptation overlay (`framework/governance/ADAPTATION.md` + the closed-knob `ADAPTATION_SURFACE.yaml`);
+- the **GATE-SPEC** change-management gate (`framework/governance/chg/`);
+- the **review-team** model (multi-persona crews + scoring/conflict policy — `framework/governance/REVIEW_TEAM.md` / `REVIEW_CREWS.yaml`);
+- the **C4 + DFD + sequence** diagram standards (`framework/governance/DIAGRAM_STANDARDS.md`);
+- the **token-efficient authoring** governance (`framework/governance/AUTHORING_STYLE.md`) wired into every layer's `_size_target` and into every audit skill;
+- the **`.aidoc/` provenance tier** — committed audit/review/remediation/validation/security/quality reports (`framework/docs/AIDOC.md`);
+- the **pre-deployment acceptance test suite** (`tests/scripts/test-acceptance.sh` + [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md)) that drives every active plugin surface element (50 skills + 11 agents + 1 command + 1 hook) against a named example's seed as the release gate, with resume on interrupt, partial-execution flags (`--element`, `--from-layer`, `--to-layer`, `--dry-run`), and `--promote` to commit the produced chain;
+- pre-commit + CI security tooling (CodeQL, bandit, detect-secrets, pip-audit, gitleaks, Dependabot).
 
 ## Contributing
 
@@ -96,6 +101,10 @@ for the vulnerability-reporting policy.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
 - `docs/PARITY.md` — Hermes ↔ plugin capability comparison.
 - `framework/README.md` — the engine-agnostic SDD specification.
+- [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
+- [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).
+- [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
+- [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md) — per-PR implementation timeline + design evolution + lessons learned for the acceptance suite.
 - [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
 
 ## Pre-migration history

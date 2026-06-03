@@ -50,6 +50,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Acceptance methodology consolidated into permanent docs.** The
+  example-scoped `examples/url-shortener/ACCEPTANCE_TEST_PLAN.md`
+  (733 lines) was split into framework-wide permanent locations so
+  future examples (`payment-gateway`, etc.) reuse a single source of
+  methodology truth: [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) —
+  the engine-agnostic methodology (driver, log layout, schema,
+  `--promote` algorithm, phase definitions, design decisions, cost
+  ballpark, CI integration); [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md)
+  — per-PR implementation timeline + v1→v4 plan evolution + lessons
+  learned; and a thin
+  [`examples/url-shortener/README.md`](examples/url-shortener/README.md)
+  (~120 lines) covering only what is unique about that seed. Adding a
+  sibling example is now just `seed/` + `chg/` + a ~50-line README
+  pointing at the methodology — no duplication of phase definitions,
+  schema docs, or design decisions. Framework spec **0.11.1 → 0.11.2**
+  (patch) covers the engine-agnostic doc-link relocations (see
+  immediately below).
 - Framework spec **0.11.1 → 0.11.2** (patch) — doc-only refs in
   `framework/README.md` and `framework/docs/AIDOC.md` updated to
   point at `tests/ACCEPTANCE.md` (relocated from
@@ -230,6 +247,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **Acceptance suite: resume + partial-execution support.** The driver
+  (`tests/scripts/test-acceptance.sh`) now survives long-running
+  interruptions and supports targeted re-runs without re-spending the
+  full $15–25 of a cascade. **Resume** (R1–R6): SIGINT/TERM trap saves
+  an incremental `summary.json` and marks in-flight elements
+  `INTERRUPTED`; `RUNNING` stubs distinguish in-progress from
+  PASS/FAIL/SKIP; `--skip-completed=<path>` resumes against a prior
+  run's summary, replaying only `FAIL` / `INTERRUPTED` / `RUNNING`
+  elements; schema bumped v1.1 → v1.2 to add the `RUNNING` and
+  `INTERRUPTED` outcomes. **Partial execution** (P1–P5): `--element=<name>`
+  runs a single named element (skill, agent, command, or hook);
+  `--from-layer=<N>` / `--to-layer=<N>` constrain the cascade range
+  (e.g. *"generate only the PRD against the existing BRD"*); `--dry-run`
+  previews which elements would invoke without spending tokens;
+  `--cost-cap=<USD>` halts the run when the running token estimate
+  reaches the cap. The companion `summary.json` is the single source of
+  truth — `_should_invoke()` consults it before every skill call, so a
+  resumed or partial run re-uses prior-PASS outputs as upstream inputs
+  for downstream layers.
 - **`.aidoc/` — third committed documentation tier formalized.** Per
   every project, four tiers now: inputs (`seed/`, `chg/`, committed),
   outputs (`docs/`, committed), provenance (`.aidoc/`, committed),
