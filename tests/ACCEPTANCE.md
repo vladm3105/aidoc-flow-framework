@@ -57,11 +57,11 @@ tracked as Phase B work).
 # Full live run against a named example
 bash tests/scripts/test-acceptance.sh <example> --live
 
-# Cheap deterministic smoke (~5s, no LLM)
+# Cheap deterministic smoke (~9s, no LLM). Prints the planned execution
+# at the top, then runs the deterministic phases (Phase 0 preflight,
+# negative fixtures, hook). LLM-dependent elements record SKIP.
+# `--dry-run` is a clean alias.
 bash tests/scripts/test-acceptance.sh <example> --no-live
-
-# Preview the planned execution without spending tokens
-bash tests/scripts/test-acceptance.sh <example> --dry-run
 
 # Generate a single element only (e.g. only the PRD against existing BRD)
 bash tests/scripts/test-acceptance.sh <example> --live --element=doc-prd-autopilot
@@ -382,7 +382,7 @@ This is the only Phase-4 check that runs in `--no-live` mode.
 | `--from-layer=<name>` | Resume cascade from named layer; previous layer in `docs/` becomes upstream | Resume after partial cascade aborts |
 | `--to-layer=<name>` | Cascade stops after the named layer | With `--from-layer` gives single-layer-only |
 | `--element=<name>` | Run only the named element; infer phase; resolve upstream | "Generate just the PRD" iteration |
-| `--dry-run` | Prints planned execution table and exits | Preview before spending tokens |
+| `--no-live` / `--dry-run` | Prints the planned-execution summary, then runs the full deterministic suite (Phase 0 preflight + 3 of 6 negative fixtures + hook). Any element requiring LLM records SKIP. `--dry-run` is a clean alias kept for the conventional name. | Preview + infrastructure check before spending tokens |
 | `--force` | Bypass docs/`.aidoc/` unstaged-changes safety belt | Allow intentional overwrites |
 | Per-skill timeout | `SKILL_TIMEOUT=600` default, `REVIEW_TEAM_TIMEOUT=1800`, `AGENT_TIMEOUT=600`; wrapped via `timeout` | Single stuck skill no longer hangs the run |
 | Per-layer runtime cap | `MAX_LAYER_SEC=900` (15 min). Cascade aborts if a layer exceeds | Detects stuck-skill scenarios early |

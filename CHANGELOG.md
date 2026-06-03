@@ -50,6 +50,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Acceptance suite: `--dry-run` and `--no-live` consolidated into a
+  single behaviour.** The two modes overlapped on Phase 0 preflight
+  (manifest validate, profile check, fixtures presence) — running
+  both back-to-back wasted a Phase 0 pass. `--no-live` now prints the
+  planned-execution summary (phases, cost cap, timeouts, live status)
+  at the top of every run, *then* continues into the full
+  deterministic suite (negative fixtures + hook). `--dry-run` is kept
+  as a clean alias of `--no-live` (the conventional name is widely
+  expected). One mode is now sufficient for both "preview before
+  spending" and "verify deterministic infrastructure" — strictly more
+  coverage than the old `--dry-run` (which exited after Phase 0).
 - **Acceptance methodology consolidated into permanent docs.** The
   example-scoped `examples/url-shortener/ACCEPTANCE_TEST_PLAN.md`
   (733 lines) was split into framework-wide permanent locations so

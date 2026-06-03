@@ -31,7 +31,10 @@
 #   bash tests/scripts/test-acceptance.sh <example-name> [flags]
 #
 #   Flags:
-#     --no-live              skip live LLM calls (Phase 0 only effectively)
+#     --no-live              skip live LLM calls; prints plan summary, then
+#                            runs the full deterministic suite (Phase 0
+#                            preflight + Phase 1.2 negative fixtures that
+#                            don't require LLM + Phase 4.3 hook). ~9s, $0.
 #     --live                 enable live LLM calls (default ON)
 #     --phase=<name>         run one phase: bootstrap | cascade | negative |
 #                            chg | utilities | agents | command | hook
@@ -43,6 +46,7 @@
 #     --force                bypass the "docs/ or .aidoc/ have unstaged
 #                            changes" safety belt
 #     --fail-fast            halt on first failure
+#     --dry-run              alias for --no-live (common convention)
 #     -h | --help            show this usage block
 
 set -uo pipefail
@@ -98,7 +102,8 @@ FORCE=0
 FAIL_FAST=0
 FROM_LAYER=""     # A7 — resume cascade from this layer name (e.g. "spec")
 TO_LAYER=""       # P2 — stop cascade after this layer name
-DRY_RUN=0         # P5 — print planned execution and exit
+# --dry-run is a clean alias of --no-live (both set LIVE_FLAG=0). Kept as
+# a separate flag because the name is conventional in CLI tooling.
 
 usage() {
   sed -n '2,48p' "$0"
@@ -134,7 +139,7 @@ for arg in "$@"; do
     --fail-fast)       FAIL_FAST=1 ;;
     --from-layer=*)    FROM_LAYER="${arg#--from-layer=}" ;;
     --to-layer=*)      TO_LAYER="${arg#--to-layer=}" ;;
-    --dry-run)         DRY_RUN=1; LIVE_FLAG="0" ;;
+    --dry-run)         LIVE_FLAG="0" ;;  # alias for --no-live
     -h|--help)         usage 0 ;;
     *) echo "ERROR: unknown flag: $arg" >&2; usage 2 ;;
   esac
@@ -1794,20 +1799,22 @@ if [[ -n "$ELEMENT" ]]; then
   PHASES_TO_RUN=("$_elem_phase")
 fi
 
-# P5 — Dry-run: print planned execution without invoking anything.
-if (( DRY_RUN == 1 )); then
-  echo
-  echo "=== DRY RUN — planned execution ==="
-  echo "Phases: ${PHASES_TO_RUN[*]}"
-  [[ -n "$ELEMENT" ]] && echo "Element filter: $ELEMENT"
-  [[ -n "$FROM_LAYER" ]] && echo "From layer: $FROM_LAYER"
-  [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
-  echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
-  echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
-  echo "Per-skill timeout: ${SKILL_TIMEOUT}s (review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
-  echo "(No LLM calls will be made.)"
-  exit 0
+# Plan summary — printed on every run after Phase 0 + planning so the user
+# sees what will execute before the first LLM call (if any) is made.
+echo
+echo "=== Acceptance plan ==="
+echo "Phases: ${PHASES_TO_RUN[*]}"
+[[ -n "$ELEMENT" ]] && echo "Element filter: $ELEMENT"
+[[ -n "$FROM_LAYER" ]] && echo "From layer: $FROM_LAYER"
+[[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
+echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
+echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
+echo "Per-skill timeout: ${SKILL_TIMEOUT}s (review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
+if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
+  echo "(No LLM calls will be made; LLM-dependent elements will SKIP.)"
 fi
+echo "======================="
+echo
 
 for phase_name in "${PHASES_TO_RUN[@]}"; do
   # R4 — bail out of remaining phases if cost cap fired or user

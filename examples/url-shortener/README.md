@@ -92,11 +92,10 @@ Quick reference; for the full flag inventory see
 ```bash
 cd framework
 
-# Smoke (no LLM cost, ~5s)
+# Smoke + plan preview (no LLM cost, ~9s).
+# Prints the planned execution at the top, then runs the deterministic
+# phases. LLM-dependent elements record SKIP. `--dry-run` is an alias.
 bash tests/scripts/test-acceptance.sh url-shortener --no-live
-
-# Preview before spending
-bash tests/scripts/test-acceptance.sh url-shortener --dry-run
 
 # Full live run (60-120 min, ~$15-25)
 bash tests/scripts/test-acceptance.sh url-shortener --live
