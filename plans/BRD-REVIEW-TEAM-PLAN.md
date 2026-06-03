@@ -54,6 +54,20 @@ unchanged as the fallback. No `framework/**` content is touched.
   existing per-persona name grep in `review-team.log` (lines 1238-1276) is
   insufficient for proper team-mode verification, but tightening it is a
   separate concern; this plan adds explicit verification commands instead
+- **Prompt caching for review-team subagent fan-out** — Claude Code's
+  `Task` tool does not currently expose `cache_control` markers to the
+  caller, so the ~3× cost characteristic of team mode (see "Performance
+  characteristics" below) is a known property of this PR. The follow-up
+  optimization lands as v0.4.2 in a separate plan
+  (`plans/REVIEW-TEAM-RUNNER-CACHING-001.md`, to be opened after this PR
+  verifies).
+- **Document compaction or feature extraction for lens inputs** — analysed
+  during this plan's Pass 4 review and ruled out for BRD-layer team mode:
+  generic compaction loses signal the `adversary` lens needs (it must see
+  what's absent), the structural gate floor still needs the full BRD
+  anyway, and the cost savings vs caching are marginal (~$0.03 per audit).
+  May revisit for downstream-layer review crews where accumulated upstream
+  content is large — that's a separate optimisation shape.
 
 ## Approach
 
@@ -404,6 +418,125 @@ Cheap-to-expensive ladder. Steps 1-3 are non-LLM; step 4 spends ~$5-8.
 | R6 | Audit-report path change (legacy `docs/.../BRD-NN.A_audit_report_vNNN.md` → `.aidoc/audit/01_BRD-audit.md`) breaks anything reading the legacy path | Audit suite already writes to the `.aidoc/` path; no other consumer found. doc-brd-fixer's input contract still reads "the latest audit report" — updated to read from new path |
 | R7 | Task tool dispatch unavailable at runtime (e.g. nested skill invocation context) | `single_pass` fallback handles this; mode resolution explicitly tests for dispatch availability before fan-out |
 
+## Performance characteristics & v0.4.2 caching follow-up
+
+### Cost model (per BRD audit at Sonnet rates: $3/M input, $15/M output)
+
+| Mode | LLM calls | Input (K tokens) | Output (K tokens) | Cost | vs single-pass |
+|---|:---:|:---:|:---:|---|:---:|
+| Single-pass (current) | 1 | ~30 | ~7 | ~$0.19 | 1.0× |
+| Team mode (this PR, v0.4.1) | 6 | ~150 | ~11 | ~$0.62 | **3.3×** |
+| Team mode + caching (v0.4.2 target) | 6 | ~150 (with cache hits) | ~11 | ~$0.25 | **1.3×** |
+
+The 3.3× cost in v0.4.1 is real and intentional:
+
+- The BRD itself is read 4 times across 4 independent Task subagent
+  contexts (no shared cache between siblings)
+- Each subagent re-pays the ~17K-token overhead of (system prompt + tool
+  definitions + persona brief)
+- 4 structured lens outputs + 1 synthesizer report + 1 orchestrator final
+  report = ~5× the output volume vs single-pass
+
+This buys real properties — **true lens independence** (no anchoring
+bias from other lenses' reasoning in the same context),
+**auditable per-lens slots** in `.aidoc/review/`, **quorum and coverage
+tracking** per `REVIEW_TEAM.md` §Resilience, and **wall-clock parity**
+with single-pass (the 4 reviews fan out concurrently).
+
+Cost stays bounded by:
+
+1. The autopilot's max-3-iteration cap (already in `doc-brd-autopilot/SKILL.md`)
+2. `--cost-cap=$22` in `tests/scripts/test-acceptance.sh`
+3. Per-skill timeout (`REVIEW_TEAM_TIMEOUT=1800s`)
+
+### Why prompt caching is the right v0.4.2 optimisation
+
+Anthropic's prompt caching can re-use a marked prefix at ~10% of the
+original input cost when the next call hits the same exact prefix bytes
+within the cache TTL (5 min ephemeral, up to 1 hour on premium). For our
+4-lens fan-out, the BRD content + framework reference docs are
+**byte-identical across the 4 calls** — exactly the cache target.
+
+Realised savings on the 4 review subagents:
+
+```
+Per-lens input today:   ~27K (cold, no cache)
+Per-lens input cached:  1× cold (27K) + 3× cache hits (~27K @ 10%) ≈ 35K equivalent across the 4 calls
+                        — a 76% reduction in billable input on the review fan-out
+```
+
+Combined with two smaller optimisations that ride along:
+
+- **Synthesiser's deterministic reduce becomes Python**, not an LLM call
+  (per `REVIEW_TEAM.md` §"Synthesis = reduce + narrative" the reduce is
+  spec'd as deterministic anyway — the only stochastic part is the
+  optional narrative pass)
+- **Narrative pass can use Haiku** instead of Sonnet (~3-4× cheaper) for
+  the chairperson summary, since it's structured aggregation not analysis
+
+Estimated v0.4.2 cost per audit: **~$0.25**, vs v0.4.1 ~$0.62 — a 60%
+reduction while preserving every architectural property of v0.4.1.
+
+### Why this can't ride along in v0.4.1 (the constraint)
+
+Claude Code's `Task` tool does not expose `cache_control` markers to the
+dispatching skill. The orchestrating model writes a Task invocation; the
+subagent runs in a fresh process with its own API call to which we have
+no `cache_control` access from the skill author's vantage point. Practical
+caching requires either:
+
+- A direct Anthropic SDK runner that bypasses `Task` (see below), or
+- Anthropic adding cross-Task cache inheritance to Claude Code itself
+  (speculative, not on a roadmap we control)
+
+### Why compaction / feature extraction was ruled out
+
+Considered and rejected for BRD-layer team mode (Pass 4 of the Review
+log captures the full analysis):
+
+- **Generic compaction loses signal**. The `adversary` lens reviews for
+  what's *absent* — it must see the full BRD, by definition.
+- **Structural gate floor needs the full text anyway**. Element-ID format
+  checks, structure-completeness checks, and cross-section rules read
+  every section character-by-character; a summary cannot satisfy them.
+- **Per-lens compactors defeat the purpose** — 4 compactors + 4 lens
+  calls = 8 LLM calls, worse than 6.
+- **Net savings vs caching are marginal** (~$0.03 per audit) and trade
+  signal for cost.
+
+**Feature extraction** (a deterministic Python pre-pass that produces a
+structured metadata sidecar — element-ID inventory, section-presence
+map, traceability tag inventory) is a separate, neutral-cost idea that
+may land as a v0.4.3 optimisation if structural checks become a
+bottleneck. Tracked as a future enhancement, not this plan.
+
+**Upstream compaction** (compacting BRD when read as upstream by PRD's
+review crew) has favourable math for downstream layers — distinct
+optimisation shape, separate plan (`PRD-RT-001` + cross-layer compactor).
+
+### Follow-up: `plans/REVIEW-TEAM-RUNNER-CACHING-001.md` (v0.4.2)
+
+After this PR (BRD-RT-001 / v0.4.1) lands and verifies, open a follow-up
+plan covering:
+
+1. New `tests/scripts/review_team_runner.py` (or
+   `platforms/claude-code-plugin/scripts/`) — Python orchestrator that
+   calls the Anthropic SDK directly with `cache_control` markers on the
+   shared prefix (framework refs + BRD content), dispatches the 4 lens
+   calls in parallel via `asyncio.gather`, writes per-lens slot JSONs.
+2. Deterministic Python reduce (replaces synthesiser LLM call for the
+   reduce step; preserves narrative-only LLM call optionally on Haiku).
+3. Update `doc-brd-audit/SKILL.md` team-mode branch to invoke the runner
+   instead of fanning out via `Task`. Same lens contract, same blackboard
+   layout — drop-in replacement.
+4. Add a `caching: enabled|disabled` knob in `.aidoc/profile.yaml` to let
+   projects opt back into the `Task`-fan-out path if the runner is
+   unavailable (e.g., no Anthropic SDK installed, no API key).
+5. Plugin version bump 0.4.1 → 0.4.2.
+
+The architecture in BRD-RT-001 is the contract; v0.4.2 is a transparent
+implementation optimisation behind it.
+
 ## Review log
 
 ### Pass 1 — 2026-06-03T03:54:28Z
@@ -523,5 +656,43 @@ predecessor — as an additional historical reference point. Findings
   gate" line 82-86. The plan's §"Mode resolution" reflects this
   correctly.
 
-Plan is ready for implementation. Three passes complete, last pass found
-no actionable changes.
+Plan is ready for implementation as of Pass 3. Pass 4 follows for a
+separate amendment.
+
+### Pass 4 — 2026-06-03T13:30:51Z
+
+User asked how prompt caching would apply to team mode, and whether
+document compaction or feature extraction would be worth doing alongside.
+Findings folded into the new `## Performance characteristics & v0.4.2
+caching follow-up` section above:
+
+- **Cost model quantified**: single-pass ~$0.19, team mode v0.4.1 ~$0.62
+  (3.3×), team mode v0.4.2 with caching ~$0.25 (1.3×). The 3.3× cost in
+  v0.4.1 is intentional architectural cost — it buys true lens
+  independence, auditable per-lens slots, and quorum/coverage tracking.
+- **Claude Code `Task` tool does not expose `cache_control`** to skill
+  authors. So caching cannot ride along in v0.4.1. Constraint
+  documented; v0.4.2 path via a direct-SDK runner laid out as
+  follow-up plan reference `plans/REVIEW-TEAM-RUNNER-CACHING-001.md`.
+- **Document compaction analysed and ruled out** for BRD-layer team
+  mode: the `adversary` lens needs full text (it reviews for absences),
+  the deterministic structural gate floor needs full text anyway,
+  per-lens compactors create more calls not fewer, and net savings vs
+  caching are marginal (~$0.03/audit) traded against signal loss.
+- **Feature extraction** (deterministic Python sidecar with element-ID
+  inventory, section-presence map, etc.) noted as a possible v0.4.3
+  enhancement — neutral cost, no signal loss — but not for this PR.
+- **Upstream compaction** (compacting BRD when read by PRD's crew as
+  upstream) noted as a separate optimisation shape for `PRD-RT-001` and
+  downstream layers — out of BRD-layer scope.
+- Scope > Out: added explicit deferral bullets for "Prompt caching" and
+  "Document compaction / feature extraction" pointing at the v0.4.2 /
+  v0.4.3 follow-ups so future readers don't propose them as in-scope.
+
+No changes to the Step sequence, Verification, or Risks sections — the
+architecture being landed in v0.4.1 is unchanged. v0.4.2 will be a
+transparent perf optimisation behind the same lens contract and
+blackboard layout.
+
+Plan remains ready for implementation. Four passes complete; last pass
+amended the cost-characterisation framing only.
