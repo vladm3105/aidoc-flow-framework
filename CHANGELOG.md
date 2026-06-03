@@ -50,6 +50,13 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.11.1 → 0.11.2** (patch) — doc-only refs in
+  `framework/README.md` and `framework/docs/AIDOC.md` updated to
+  point at `tests/ACCEPTANCE.md` (relocated from
+  `framework/docs/ACCEPTANCE_TESTING.md` so the framework spec stays
+  engine-agnostic). No schema or rule change. Both
+  `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 52 plugin
+  skills' `framework_spec_version` re-synced to 0.11.2.
 - Framework spec **0.11.0 → 0.11.1** (patch) — doc-only addition of
   `framework/docs/AIDOC.md` formalising the `.aidoc/` provenance tier
   as part of the engine-agnostic spec. No schema or rule change. Both
