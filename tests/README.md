@@ -49,6 +49,11 @@ companion docs below.
 
 ## Three-tier acceptance-suite output
 
+The pre-deployment acceptance test (`tests/scripts/test-acceptance.sh`)
+exercises every active plugin surface element against a named example's
+seed. **Methodology**:
+[`tests/ACCEPTANCE.md`](../tests/ACCEPTANCE.md).
+
 `tests/scripts/test-acceptance.sh` writes its outputs across three tiers per example:
 
 - `examples/<NAME>/docs/` — produced 8-layer chain (committed)

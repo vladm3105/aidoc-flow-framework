@@ -9,7 +9,7 @@ structural defects, not domain-specific failure modes. Per-example
 additions (e.g. domain-specific business-rule violations) belong under
 `examples/<NAME>/negative-fixtures/` and are merged on top at run time.
 
-See `examples/url-shortener/ACCEPTANCE_TEST_PLAN.md` §5.2 for the
+See `tests/ACCEPTANCE.md` §5.2 for the
 detection contract.
 
 ## Fixture index
