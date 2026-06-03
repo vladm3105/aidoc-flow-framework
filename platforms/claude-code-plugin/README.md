@@ -98,13 +98,13 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.4.1
+0.4.2
 
 $ cat FRAMEWORK_SPEC_VERSION
-0.11.2
+0.11.3
 ```
 
-The plugin declares conformance to framework spec `0.11.2`; the bundled spec's
+The plugin declares conformance to framework spec `0.11.3`; the bundled spec's
 own version is at `framework/VERSION` (byte-identical to `../../framework/VERSION`).
 A conformance test enforces that `FRAMEWORK_SPEC_VERSION` matches the framework's
 published version.
@@ -114,8 +114,8 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.4.1` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
-| Conforms to | framework spec `0.11.2` (declared in `FRAMEWORK_SPEC_VERSION`) |
+| Version | `0.4.2` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Conforms to | framework spec `0.11.3` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Project changelog | [../../CHANGELOG.md](../../CHANGELOG.md) |

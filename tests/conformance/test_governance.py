@@ -19,6 +19,7 @@ EXPECTED_FILES = [
     "REVIEW_CREWS.yaml",
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
+    "PROFILE-TEMPLATE.yaml",
     "AUTHORING_STYLE.md",
     "DECISIONS.md",
     "README.md",

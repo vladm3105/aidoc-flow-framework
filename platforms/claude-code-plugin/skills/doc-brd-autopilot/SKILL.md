@@ -12,8 +12,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.1"
-    framework_spec_version: "0.11.2"
+    version: "0.4.2"
+    framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
@@ -65,7 +65,11 @@ type (Platform vs Feature) from the source content.
 
 ## Workflow
 
-Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team` at gates.
+Resolve `review_mode` from `.aidoc/profile.yaml`; if unset, fall through
+to the framework default `team` at gates per the precedence chain in
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`. Same
+fallback applies to `audit_threshold`, `section_toggles`,
+`active_layers`, and `glossary`.
 The workflow has two shapes — the team-mode create→review→revise loop
 (default at gates) and the single_pass linear pipeline (fallback).
 

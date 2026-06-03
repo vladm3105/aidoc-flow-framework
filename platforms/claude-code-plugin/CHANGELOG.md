@@ -16,6 +16,31 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Project profile is an override-only delta (PROFILE-DELTA-001, D-0025).**
+  The acceptance suite's profile bootstrap source moved from
+  `framework/governance/REVIEW_CREWS.yaml` to a new dedicated
+  `framework/governance/PROFILE-TEMPLATE.yaml` skeleton. A bootstrapped
+  `.aidoc/profile.yaml` now carries no hardcoded overrides — every
+  adaptation knob is commented out, falling through to framework
+  defaults via the `framework defaults < user-global seed < project
+  profile` precedence chain documented in
+  `framework/governance/ADAPTATION.md`. Persona-list extraction in the
+  acceptance suite (`tests/scripts/test-acceptance.sh:1244-1280`) gains
+  a fallback chain that reads from
+  `framework/governance/REVIEW_CREWS.yaml` when the project profile
+  declares no crews/personas. The four BRD-layer skills'
+  mode-resolution prompts explicitly cite the fallback to the framework
+  default. Result: the framework can safely evolve crew/persona
+  defaults without breaking existing projects, and profile readers see
+  only what the project chose to override. Plugin v0.4.1 → v0.4.2;
+  framework spec **0.11.2 → 0.11.3** (additive — new template file). New
+  conformance test `tests/conformance/platforms/test_profile_schema.py`
+  validates that committed project profiles use only top-level keys
+  defined in the closed `ADAPTATION_SURFACE.yaml` (out-of-surface keys
+  would be silently ignored by a conforming engine, so flagging them
+  is an authoring-mistake guard). See
+  `plans/PROFILE-DELTA-OVERRIDE-PLAN.md` for the full design.
+
 - **BRD-layer review-team subagent fan-out wired (BRD-RT-001).** The four
   BRD-layer skills (`doc-brd`, `doc-brd-audit`, `doc-brd-fixer`,
   `doc-brd-autopilot`) and the `requirements-analyst` agent now follow

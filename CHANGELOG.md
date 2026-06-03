@@ -50,6 +50,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- Framework spec **0.11.2 → 0.11.3** (patch, additive) — new
+  `framework/governance/PROFILE-TEMPLATE.yaml` skeleton ships as the
+  bootstrap source for project profiles. Operationalises the precedence
+  chain (`framework defaults < user-global seed < project profile`)
+  documented in `framework/governance/ADAPTATION.md` since v0.11.0:
+  bootstrapped `.aidoc/profile.yaml` now carries no hardcoded overrides
+  — every adaptation knob is commented out, falling through to
+  framework defaults. Frees the framework to evolve crew/persona
+  defaults without breaking existing projects (which was foreclosed by
+  the previous bootstrap-as-byte-copy behaviour). No schema or rule
+  change; no existing key removed; every existing profile continues to
+  parse. Plugin v0.4.1 → v0.4.2 binds the new mechanism. New
+  conformance test
+  `tests/conformance/platforms/test_profile_schema.py` validates the
+  closed-surface contract for project profiles. Both
+  `FRAMEWORK_SPEC_VERSION` files (Hermes + plugin) and the 52 plugin
+  skills' `framework_spec_version` re-synced to 0.11.3. See
+  `plans/PROFILE-DELTA-OVERRIDE-PLAN.md` and DECISIONS.md D-0025.
 - **Acceptance suite: `--dry-run` and `--no-live` consolidated into a
   single behaviour.** The two modes overlapped on Phase 0 preflight
   (manifest validate, profile check, fixtures presence) — running

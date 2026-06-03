@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.1"
-    framework_spec_version: "0.11.2"
+    version: "0.4.2"
+    framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
 ---
@@ -48,7 +48,10 @@ structure rules from
 
 ## Remediate Mode
 
-Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team`.
+Resolve `review_mode` from `.aidoc/profile.yaml`; if unset, fall through
+to the framework default `team` per the precedence chain in
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`. Same
+fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 

@@ -10,6 +10,50 @@ graduation.
 
 ---
 
+## D-0025 — Project profile is a delta, not a snapshot
+
+- **Date:** 2026-06-03T14:14:42Z
+- **Context:** In BRD-RT-001 (D-0024), the acceptance suite's profile
+  bootstrap copied `framework/governance/REVIEW_CREWS.yaml` byte-for-byte
+  into `.aidoc/profile.yaml`. That produced a 60-line file where every
+  line was potentially an override or a stale default, with no way to
+  distinguish them. Two problems followed: the framework couldn't evolve
+  crew/persona defaults without breaking older projects (frozen
+  snapshots), and profile readers couldn't tell what was customised.
+- **Decision:** Project profiles are **override-only deltas**.
+  `framework/governance/PROFILE-TEMPLATE.yaml` is the new bootstrap
+  skeleton — a metadata-only file with every adaptation knob commented
+  out. Unset keys fall through to framework defaults via the precedence
+  chain `framework defaults < user-global seed < project profile`
+  documented in `framework/governance/ADAPTATION.md` since v0.11.0.
+- **Why:**
+  - **Safe framework evolution.** If `REVIEW_CREWS.yaml` re-weights a
+    crew in v0.12, existing projects pick up the change automatically —
+    no migration required.
+  - **Readable profiles.** A reader of `.aidoc/profile.yaml` sees only
+    what the project chose to override; framework defaults stay where
+    they belong.
+  - **Operationalises the spec.** `ADAPTATION.md` already documents the
+    precedence chain since the ADAPT work (D-0019); this decision wires
+    it into the engine.
+  - **Closed-surface conformance.** Out-of-surface keys in a profile
+    would be silently ignored by a conforming engine — flagging them as
+    a conformance violation is an authoring-mistake guard. New test
+    `tests/conformance/platforms/test_profile_schema.py`.
+- **Scope:** Plugin v0.4.1 → v0.4.2 binds the new mechanism. Framework
+  spec **0.11.2 → 0.11.3** (additive — new template file). No existing
+  key removed; every existing profile continues to parse. Backward-compat
+  for projects with populated profiles: any present key is honored as an
+  override; fallback only kicks in for absent keys.
+- **Notes:** A full layered config-merge engine with a user-global seed
+  file (the ADAPTATION.md "middle" precedence layer) is deferred until
+  the override-only delta proves insufficient — YAGNI for current scale.
+  Per-layer review-team wiring beyond BRD will consume the resolved
+  profile transparently in PRD-RT-001 etc. The crews/persona definitions
+  themselves remain framework-level only (not in the closed adaptation
+  surface), so projects can't override the crew composition — they can
+  only choose `team` vs `single_pass` and tune thresholds/toggles.
+
 ## D-0024 — BRD-layer team-mode dispatcher placement: at `doc-*-audit`, not at a higher orchestrator
 
 - **Date:** 2026-06-03T13:30:51Z
