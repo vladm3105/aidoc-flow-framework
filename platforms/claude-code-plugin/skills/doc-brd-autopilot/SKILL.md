@@ -12,10 +12,10 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.0"
+    version: "0.4.1"
     framework_spec_version: "0.11.2"
     last_updated: "2026-05-23"
-    adapts: [section_toggles, active_layers, audit_threshold, glossary]
+    adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
 
 # doc-brd-autopilot
@@ -39,6 +39,12 @@ validated BRD + index entry.
 | `../doc-brd-audit/SKILL.md` | quality gate (scoring + findings) |
 | `../doc-brd-fixer/SKILL.md` | applies fixes from the audit report |
 | `../doc-naming/SKILL.md` | element-ID standards |
+| `../review-team/SKILL.md` | team-mode dispatcher (parallel persona subagent fan-out) |
+| `../charts-flow/SKILL.md` | diagram contract tags (C4-L1, DFD-L1) |
+
+Authoring style for the produced BRD is governed by
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` (inherited
+via `doc-brd` and `doc-brd-audit`).
 
 ## Input Contract
 
@@ -59,19 +65,60 @@ type (Platform vs Feature) from the source content.
 
 ## Workflow
 
+Resolve `review_mode` from `.aidoc/profile.yaml`. Default `team` at gates.
+The workflow has two shapes — the team-mode create→review→revise loop
+(default at gates) and the single_pass linear pipeline (fallback).
+
 1. **Input analysis** — classify the input (REF / prompt / IPLAN), locate
    reference material, and decide generate vs review-and-fix.
 2. **Type & scope** — Platform vs Feature; for a Feature BRD, verify the
    referenced Platform BRD exists; reserve the next `BRD-NN`.
-3. **Generation** — produce the BRD per `../doc-brd/SKILL.md`: Document Control
-   (Section 1) first, §3–§15 required sections (toggle §2 Executive Summary per
-   `section_toggles`), diagrams registry, appendix, §8 across the 7 categories,
-   element IDs `BRD.NN.SS.xxxx`, diagram tags via `../charts-flow/SKILL.md`.
-4. **Validation** — run `../doc-brd-audit/SKILL.md` from scratch.
-5. **Audit ↔ fix cycle** — while score < threshold and iterations < max: run
-   `../doc-brd-fixer/SKILL.md`, then re-audit. On pass, update
-   `docs/01_BRD/BRD-00_index.md`; on exhausting iterations, flag for manual
-   review.
+
+### Generation Loop (`review_mode: team`)
+
+Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §Operations
+§Create: **one drafter, many reviewers** — parallel drafts do not merge
+coherently.
+
+3. **Draft** — dispatch ONE `Task` subagent (`subagent_type=requirements-analyst`,
+   acting as the `business_analyst` lens / BRD author per the
+   lens → agent mapping in `../review-team/SKILL.md`). Brief:
+   `BRD-TEMPLATE.yaml`, the source input (REF/prompt/IPLAN),
+   `../doc-brd/SKILL.md` as authoring rules. The author writes the BRD
+   to its nested folder `docs/01_BRD/BRD-NN_{slug}/`.
+4. **Review** — invoke `../doc-brd-audit/SKILL.md` (default pass-through
+   `review_mode`); the audit fans out the BRD crew
+   (`architect`/`business_analyst`/`auditor`/`adversary`) via `Task`
+   subagents and synthesizes a combined report at
+   `.aidoc/audit/01_BRD-audit.md`.
+5. **Revise** — if `combined_status: FAIL` (or `coverage.quorum_met:
+   false`) and iterations < max, invoke `../doc-brd-fixer/SKILL.md` in
+   team mode. The fixer consumes the slot index, dispatches lens
+   validators per blocking finding, persists patch-validation records.
+   Then **GOTO step 4** for a fresh audit. Max iterations is 3 by
+   default.
+6. **Converge or escalate** — on PASS update
+   `docs/01_BRD/BRD-00_index.md` and finish; on max iterations with
+   FAIL or quorum failure, write the manual-review flag and stop the
+   batch item (continue with other items if any).
+
+### Linear Pipeline (`review_mode: single_pass`)
+
+Unchanged legacy behaviour — used when the profile says so, when `Task`
+subagent dispatch is unavailable, or at write-time (`on_author`) where
+cost is the primary concern.
+
+3. **Generation** — produce the BRD per `../doc-brd/SKILL.md`: Document
+   Control (Section 1) first, §3–§15 required sections (toggle §2
+   Executive Summary per `section_toggles`), diagrams registry,
+   appendix, §8 across the 7 categories, element IDs `BRD.NN.SS.xxxx`,
+   diagram tags via `../charts-flow/SKILL.md`.
+4. **Validation** — run `../doc-brd-audit/SKILL.md` from scratch in
+   single_pass mode.
+5. **Audit ↔ fix cycle** — while score < threshold and iterations < max:
+   run `../doc-brd-fixer/SKILL.md` in single_pass mode, then re-audit.
+   On pass, update `docs/01_BRD/BRD-00_index.md`; on exhausting
+   iterations, flag for manual review.
 
 ## Execution Modes
 

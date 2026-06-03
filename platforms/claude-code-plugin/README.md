@@ -98,7 +98,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.4.0
+0.4.1
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.11.2
@@ -114,13 +114,100 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.4.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Version | `0.4.1` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.11.2` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Project changelog | [../../CHANGELOG.md](../../CHANGELOG.md) |
 | Project roadmap | [../../ROADMAP.md](../../ROADMAP.md) |
 | Tagging policy | [../../docs/TAGGING.md](../../docs/TAGGING.md) |
+
+## Review crews & lens → agent mapping
+
+The framework spec defines a closed set of **review lenses** (e.g.
+`architect`, `business_analyst`, `auditor`, `adversary`). Each lens is a
+viewpoint a reviewer applies to an artifact. The plugin binds these
+engine-agnostic lenses to its own Claude Code agents in `agents/` via the
+table below.
+
+In `team` mode (default at gates), the layer's audit skill (`doc-<layer>-audit`)
+reads the per-layer crew from `framework/governance/REVIEW_CREWS.yaml`,
+maps each lens to its agent via this table, then dispatches one `Task`
+subagent per lens in parallel. Each subagent writes its persona-output
+record (`persona`, `findings[]`, `lens_score`) to a slot on the
+blackboard at `.aidoc/review/<NN>_<LAYER>/<artifact-id>/<lens>.json`;
+the `synthesizer` agent then reduces the slots deterministically per
+`framework/governance/REVIEW_TEAM.md`.
+
+### Lens → agent mapping
+
+| Framework lens | Plugin agent (`subagent_type=`) | Agent file |
+|---|---|---|
+| `business_analyst`, `requirements_specialist`, `product_owner` | `requirements-analyst` | [`agents/requirements-analyst.md`](agents/requirements-analyst.md) |
+| `architect`, `tech_lead`, `integration_lead` | `solutions-architect` | [`agents/solutions-architect.md`](agents/solutions-architect.md) |
+| `qa_lead` | `test-architect` | [`agents/test-architect.md`](agents/test-architect.md) |
+| `operator` | `devops-release-engineer` | [`agents/devops-release-engineer.md`](agents/devops-release-engineer.md) |
+| `auditor` (general) | `traceability-auditor` | [`agents/traceability-auditor.md`](agents/traceability-auditor.md) |
+| `auditor` (security / compliance) | `security-engineer` | [`agents/security-engineer.md`](agents/security-engineer.md) |
+| `adversary` | `adversary` | [`agents/adversary.md`](agents/adversary.md) |
+| `synthesizer` (deterministic reduce + narrative) | `synthesizer` | [`agents/synthesizer.md`](agents/synthesizer.md) |
+| `drafter` (Create operation; per-layer) | the layer's author agent — for BRD/PRD/EARS that is `requirements-analyst`; for ADR/SPEC, `solutions-architect`; etc. | (see Create assignments below) |
+| `fixer` (Remediate operation) | `software-engineer` and/or the layer's `doc-<layer>-fixer` skill | [`agents/software-engineer.md`](agents/software-engineer.md) |
+
+Some lenses share an agent because the agent carries multiple
+review-lens briefs and switches role based on which lens the dispatcher
+asks it to apply. The conformance test
+`tests/conformance/test_review_team.py` enforces that every lens in
+`REVIEW_CREWS.yaml` has a binding here.
+
+### Per-layer review crews (weights from `REVIEW_CREWS.yaml`)
+
+Weights sum to 100 per crew; the readiness score is the weighted
+average of `lens_score`s, capped per `REVIEW_TEAM.md` §"Scoring,
+conflicts & the gate".
+
+| Layer | Author lens | Review crew (lens → weight) |
+|---|---|---|
+| BRD | `business_analyst` | `architect: 30`, `business_analyst: 30`, `auditor: 20`, `adversary: 20` |
+| PRD | `product_owner` | `product_owner: 30`, `architect: 25`, `tech_lead: 20`, `adversary: 15`, `auditor: 10` |
+| EARS | `requirements_specialist` | `requirements_specialist: 35`, `tech_lead: 25`, `qa_lead: 20`, `adversary: 20` |
+| BDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
+| ADR | `architect` | `architect: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
+| SPEC | `architect` | `architect: 30`, `tech_lead: 30`, `integration_lead: 20`, `adversary: 20` |
+| TDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
+| IPLAN | `tech_lead` | `tech_lead: 30`, `architect: 25`, `operator: 20`, `integration_lead: 15`, `auditor: 10` |
+
+### Project overrides via `.aidoc/profile.yaml`
+
+A consuming project can override review behaviour by editing its own
+`.aidoc/profile.yaml`:
+
+- `review_mode: team | single_pass` — `team` fans out per-lens `Task`
+  subagents; `single_pass` runs one model context applying every lens.
+  Defaults to `team` at gates.
+- `audit_threshold: <int>` — raise the gate score floor (raise-only —
+  cannot lower below the framework default of 90).
+- `section_toggles: {<section>: <bool>}` — toggle optional template
+  sections (e.g. BRD §2 Executive Summary).
+- `active_layers: [<layer>, …]` — restrict the cascade to a subset of
+  the 8 layers.
+
+The acceptance suite (`tests/scripts/test-acceptance.sh`) bootstraps an
+empty project's `.aidoc/profile.yaml` from `REVIEW_CREWS.yaml` as the
+default. The closed adaptation surface is defined in
+`framework/governance/ADAPTATION_SURFACE.yaml`.
+
+### Single source of truth
+
+- Engine-agnostic: `framework/governance/REVIEW_CREWS.yaml` (crews +
+  weights), `framework/governance/REVIEW_TEAM.md` (model contract).
+- Plugin binding: `skills/review-team/SKILL.md` (lens → agent table —
+  this README mirrors it for discoverability; the SKILL is authoritative).
+- Per-layer wiring: each `doc-<layer>-audit` / `-fixer` /
+  `-autopilot` SKILL has a `## Review Mode` / `## Remediate Mode`
+  branch that dispatches the crew. Currently wired for BRD only
+  (BRD-RT-001); PRD-RT, EARS-RT, BDD-RT, ADR-RT, SPEC-RT, TDD-RT,
+  IPLAN-RT will follow.
 
 ## Relationship to the Hermes platform
 

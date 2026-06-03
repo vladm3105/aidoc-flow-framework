@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.0"
+    version: "0.4.1"
     framework_spec_version: "0.11.2"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

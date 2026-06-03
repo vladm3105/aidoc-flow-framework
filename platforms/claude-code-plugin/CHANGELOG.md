@@ -16,6 +16,37 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **BRD-layer review-team subagent fan-out wired (BRD-RT-001).** The four
+  BRD-layer skills (`doc-brd`, `doc-brd-audit`, `doc-brd-fixer`,
+  `doc-brd-autopilot`) and the `requirements-analyst` agent now follow
+  the framework spec's multi-persona review-team model
+  (`framework/governance/REVIEW_TEAM.md`, `REVIEW_CREWS.yaml`). The audit
+  and autopilot get a `## Review Mode` branch: in **team mode** (default
+  at gates per `REVIEW_CREWS.yaml` `default_mode: independent`) they
+  dispatch the BRD crew
+  (`{architect: 30, business_analyst: 30, auditor: 20, adversary: 20}`)
+  as parallel `Task` subagents over the per-artifact blackboard at
+  `.aidoc/review/01_BRD/<BRD-id>/`, then run the `synthesizer` for the
+  deterministic reduce + narrative; **single_pass mode** stays as the
+  unchanged legacy fallback. The autopilot's audit↔fix cycle becomes the
+  framework spec's create→review→revise loop. The audit-report output
+  path moves from `docs/01_BRD/.../BRD-NN.A_audit_report_vNNN.md` to
+  `.aidoc/audit/01_BRD-audit.md` per `framework/docs/AIDOC.md`. The
+  `requirements-analyst` agent gains an explicit `## Review-Team Lens
+  Role` section declaring its `business_analyst`/`requirements_specialist`/
+  `product_owner` lens bindings per the lens→agent table in
+  `review-team/SKILL.md`. Five legacy bugs in `requirements-analyst.md`
+  fixed: layer chain extended to include TDD/IPLAN, coverage threshold
+  table gains `TDD → IPLAN` + `IPLAN → Code` rows, `@adr` dash-vs-dot
+  notation clarified, FR/QA/IR classification labels distinguished from
+  the removed `FR-XXX` element-ID prefix pattern. Framework spec
+  unchanged; this is a plugin-only behaviour change. See
+  `plans/BRD-REVIEW-TEAM-PLAN.md` for the full design + verification
+  ladder. Cost characteristic: team mode is ~3.3× single-pass per audit
+  (intentional architectural cost for true lens independence); the
+  follow-up `REVIEW-TEAM-RUNNER-CACHING-001` (v0.4.2) brings that to
+  ~1.3× via prompt caching.
+
 - **Demo corpus cleared.** `examples/url-shortener/docs/` (8 layer artifacts:
   BRD-01 through IPLAN-01) removed. The corpus predated the `STRUCT01` lint
   and the v0.4.0 skill consolidation and was emitting 43 structural findings.
