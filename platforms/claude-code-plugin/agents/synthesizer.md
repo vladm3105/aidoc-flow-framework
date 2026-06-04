@@ -65,14 +65,83 @@ The pass/fail **gate is deterministic**: the structural `../doc-validator/SKILL.
 narrative sit **above** that floor — a borderline artifact cannot flap pass/fail
 on model variance.
 
-## Output — the unified review report
+## Output — two companion artifacts
 
-Emit the report in the shared shape (`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`;
-the report template is `doc-<layer>` audit-report convention): executive summary,
-readiness score (advisory), coverage (ran / missing / low-confidence), findings
-by priority, contested items, and the deterministic gate decision. The unified
-report may persist into the artifact's doc folder per audit convention; the
-per-persona blackboard slots are transient and git-ignored.
+Write **both** files into the per-artifact blackboard directory
+`.aidoc/review/<NN>_<LAYER>/<artifact-id>/` (e.g.
+`.aidoc/review/01_BRD/BRD-01/`):
+
+### 1. `verdict.json` — the machine-readable verdict
+
+**Authoritative for every downstream consumer** (audit-skill stdout,
+driver script, autopilot revise loop, fixer). Flat schema, strictly
+parseable. Do not invent fields; do not nest beyond what is shown.
+
+```json
+{
+  "combined_status": "PASS",
+  "content_score": 83,
+  "structural_status": "PASS",
+  "coverage": {
+    "expected": 4,
+    "ran": 4,
+    "quorum_met": true
+  },
+  "blocking_findings_count": 2,
+  "lens_scores": {
+    "architect": 93,
+    "business_analyst": 82,
+    "auditor": 92,
+    "adversary": 62
+  }
+}
+```
+
+Field semantics:
+
+- `combined_status` — `"PASS"` or `"FAIL"`. PASS only when **all of**:
+  structural floor passed, no unresolved P0, no unresolved P1, and the
+  capped weighted-average score is ≥ the gate threshold. Otherwise
+  `"FAIL"`.
+- `content_score` — the post-cap weighted-average integer in
+  `[0, 100]`. Cap rules: any unresolved P0 ⇒ 0; any unresolved P1 ⇒
+  capped below the gate threshold (default 90).
+- `structural_status` — `"PASS"` or `"FAIL"` for the deterministic
+  structural floor (this synthesizer doesn't recompute it; the audit
+  skill that invoked you passes it in via the slot context or you
+  read it from the audit report's structural section). When absent,
+  set `"PASS"` (synthesizer never overrides the structural floor).
+- `coverage.expected` — count of lenses in the per-layer crew per
+  `REVIEW_CREWS.yaml`.
+- `coverage.ran` — count of slot files that returned a non-failed
+  persona-output record.
+- `coverage.quorum_met` — `ran >= ceil(expected * 0.5)` (single-fail
+  tolerance); `false` triggers low-confidence + human review.
+- `blocking_findings_count` — total P0 + P1 across the merged
+  finding set (post dedup).
+- `lens_scores` — flat map of `{<lens_name>: <integer_score>}` for
+  every lens that ran; absent for lenses that failed.
+
+This JSON is the contract. Every key must be present; every value must
+parse as the declared type. The audit skill's stdout response and the
+driver's score capture both read from this file.
+
+### 2. `report.md` — the human narrative
+
+Emit the unified report in the shared shape
+(`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`; the report
+template is `doc-<layer>` audit-report convention): executive summary,
+readiness score (mirroring `verdict.json:content_score`), coverage
+(ran / missing / low-confidence, mirroring
+`verdict.json:coverage.*`), findings by priority, contested items, and
+the deterministic gate decision (mirroring
+`verdict.json:combined_status`). The unified report may persist into
+the artifact's doc folder per audit convention; the per-persona
+blackboard slots are transient and git-ignored.
+
+**Both files agree.** If they ever diverge, the JSON wins (it is what
+machine consumers parse); a human reader notices the prose drift in
+the report and files a bug.
 
 ## Hard Constraints
 

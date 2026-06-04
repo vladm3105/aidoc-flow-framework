@@ -9,7 +9,7 @@ metadata:
     skill_category: utility
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.4.2"
+    version: "0.4.3"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
 ---

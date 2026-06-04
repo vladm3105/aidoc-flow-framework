@@ -16,6 +16,33 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Verdict-chain consistency wired through written reports (BRD-RT-002, D-0026).**
+  Closes five gaps surfaced by the BRD-RT-001 live verification runs.
+  The synthesizer agent (`agents/synthesizer.md`) now writes a
+  deterministic **`verdict.json`** companion next to `report.md` —
+  flat schema with `combined_status`, `content_score`,
+  `structural_status`, `coverage.*`, `blocking_findings_count`, and
+  `lens_scores`. Every downstream consumer (audit-skill stdout,
+  driver script's `parse_audit_score`, autopilot's revise loop,
+  fixer's blocking-findings list) reads from `verdict.json` instead
+  of scraping Markdown prose or echoing the BRD's self-claimed
+  PRD-Ready score. `doc-brd-audit/SKILL.md` adds an explicit Output
+  Contract subsection mirroring the JSON values; `doc-brd-autopilot/SKILL.md`
+  Workflow §5 reads `verdict.combined_status` for the gate decision;
+  `doc-brd-fixer/SKILL.md` prefers `verdict.json` for blocking-finding
+  counts and slot paths. `tests/scripts/test-acceptance.sh` raises
+  `MAX_LAYER_SEC` 900 → 1800 (team-mode legitimately runs 17-25
+  min/layer); introduces `AUDIT_TIMEOUT=1200` applied via name-match
+  to any `doc-*-audit` skill (uniform across all 8 layers); and
+  `parse_audit_score` now prefers `verdict.json:content_score` over
+  the audit skill's stdout, logging a warning on drift.
+  `<BRD-id>` codified as the short artifact ID (`BRD-01`), not the
+  nested folder name. Always-on `single_pass` advisory note included
+  in the audit report whenever single_pass is the resolved mode
+  (the skill cannot reliably know its trigger context). Plugin v0.4.2
+  → v0.4.3. See `plans/BRD-RT-002-VERDICT-CHAIN-PLAN.md` for the full
+  design (10 gaps, 3 review passes).
+
 - **Project profile is an override-only delta (PROFILE-DELTA-001, D-0025).**
   The acceptance suite's profile bootstrap source moved from
   `framework/governance/REVIEW_CREWS.yaml` to a new dedicated
