@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.2"
+    version: "0.4.3"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -55,13 +55,18 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `.aidoc/audit/01_BRD-audit.md` AND, when
-   present, the per-persona slots at
-   `.aidoc/review/01_BRD/<BRD-id>/<persona>.json`. The slots carry
-   structured findings with stable ids, priorities, and locations the
-   fixer needs. **Slots are optional** — fixer must work from the audit
-   report alone if slots are missing (e.g. single_pass run produced no
-   slots).
+1. **Read the audit report** at `.aidoc/audit/01_BRD-audit.md` AND,
+   when present, the synthesizer's `verdict.json` + per-persona slots
+   at `.aidoc/review/01_BRD/<BRD-id>/` (where `<BRD-id>` is the short
+   artifact ID, e.g. `BRD-01`).
+   - **Prefer `verdict.json`** for the blocking-findings count and
+     coverage summary — it is the deterministic JSON written by the
+     synthesizer (`agents/synthesizer.md`).
+   - **Prefer the per-persona slots** for the structured findings —
+     stable ids, priorities, locations, recommendations.
+   - **Slots and verdict.json are optional** — when absent (e.g.
+     single_pass run produced no synthesizer output), fall back to
+     parsing the audit report's Findings sections directly.
 2. **Group blocking findings** (P0 + P1) by responsible lens via the
    lens → agent mapping in `../review-team/SKILL.md`. P2/P3 are
    advisory — apply deterministically without lens validation.

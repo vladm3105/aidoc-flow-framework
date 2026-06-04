@@ -98,7 +98,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.4.2
+0.4.3
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.11.3
@@ -114,7 +114,7 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.4.2` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Version | `0.4.3` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.11.3` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |

@@ -64,12 +64,19 @@ NEGATIVE_FIXTURES_DIR="$FRAMEWORK/tests/acceptance/fixtures/negative"
 DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/PROFILE-TEMPLATE.yaml"
 FRAMEWORK_CREWS_FALLBACK="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 
-# Per-layer runtime cap (replaces the old global 45-min cap, plan B2).
-MAX_LAYER_SEC=900   # 15 minutes per layer
+# Per-layer runtime cap. Raised from 900s (BRD-RT-001) to 1800s
+# (BRD-RT-002 / D-0026) because team-mode audits internally dispatch
+# a 4-lens crew + synthesizer; one layer with one fix iteration
+# legitimately runs 17-25 minutes.
+MAX_LAYER_SEC=1800   # 30 minutes per layer
 
 # Per-skill timeout (B4). review-team gets its own larger budget because
 # it orchestrates multi-persona work and legitimately runs longer.
+# Audit skills (BRD-RT-002): doc-*-audit in team mode also orchestrates
+# a sub-team (4 review subagents + synthesizer), so it gets AUDIT_TIMEOUT
+# instead of the default SKILL_TIMEOUT.
 SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"             # 10 min default
+AUDIT_TIMEOUT="${AUDIT_TIMEOUT:-1200}"             # 20 min for doc-*-audit
 REVIEW_TEAM_TIMEOUT="${REVIEW_TEAM_TIMEOUT:-1800}" # 30 min
 AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"             # 10 min for agents
 
@@ -347,6 +354,12 @@ _pick_timeout_for() {
     echo "$AGENT_TIMEOUT"
   elif [[ "$name" == "review-team" ]]; then
     echo "$REVIEW_TEAM_TIMEOUT"
+  elif [[ "$name" == *-audit ]]; then
+    # BRD-RT-002: doc-*-audit in team mode internally orchestrates a
+    # sub-team (4 review subagents + synthesizer), so it needs more
+    # than the default per-skill timeout. Applied uniformly across
+    # layers so the pattern propagates cleanly to PRD..IPLAN.
+    echo "$AUDIT_TIMEOUT"
   else
     echo "$SKILL_TIMEOUT"
   fi
@@ -529,17 +542,71 @@ PY
 
 parse_audit_score() {
   # parse_audit_score <name>
-  # The skill output file for $name was already merged into .log by
-  # write_element_log(); the body sits below the front-matter delimiter.
+  # Source of truth (BRD-RT-002 / D-0026): the synthesizer's verdict.json
+  # at .aidoc/review/<NN>_<LAYER>/<artifact-id>/verdict.json. Falls back
+  # to scraping the audit skill's stdout log when verdict.json is absent
+  # (e.g. single_pass runs — no synthesizer dispatched).
+  #
+  # If both are present and disagree, prefer verdict.json and log a
+  # warning. Model output drift in the audit skill's stdout response
+  # vs the synthesizer's deterministic JSON is exactly what this
+  # cross-check catches.
   local name="$1"
   local log="$LOG_DIR/elements/$name.log"
-  [[ -f "$log" ]] || { echo "0"; return; }
-  local score
-  score="$(awk '/^---$/ {n++; next} n>=2' "$log" \
-    | grep -iE 'score|readiness' \
-    | grep -oE '[0-9]+' \
-    | head -1)"
-  echo "${score:-0}"
+  local stdout_score=""
+  local json_score=""
+
+  # 1. Scrape the audit skill's stdout (legacy path).
+  if [[ -f "$log" ]]; then
+    stdout_score="$(awk '/^---$/ {n++; next} n>=2' "$log" \
+      | grep -iE 'score|readiness' \
+      | grep -oE '[0-9]+' \
+      | head -1)"
+  fi
+
+  # 2. Find the matching verdict.json. Skill names look like
+  # "doc-brd-audit"; extract the layer token (e.g. "brd") and resolve
+  # the per-artifact blackboard dir.
+  if [[ "$name" =~ ^doc-([a-z]+)-audit$ ]]; then
+    local layer="${BASH_REMATCH[1]}"
+    local layer_upper="${layer^^}"
+    local layer_num=""
+    case "$layer" in
+      brd)   layer_num="01" ;;
+      prd)   layer_num="02" ;;
+      ears)  layer_num="03" ;;
+      bdd)   layer_num="04" ;;
+      adr)   layer_num="05" ;;
+      spec)  layer_num="06" ;;
+      tdd)   layer_num="07" ;;
+      iplan) layer_num="08" ;;
+    esac
+    if [[ -n "$layer_num" ]]; then
+      local verdict
+      verdict="$(ls "$AIDOC_DIR/review/${layer_num}_${layer_upper}"/*/verdict.json 2>/dev/null | head -1)"
+      if [[ -n "$verdict" && -f "$verdict" ]]; then
+        json_score="$(python3 -c "
+import json, sys
+try:
+    with open('$verdict') as f:
+        print(json.load(f).get('content_score', ''))
+except Exception:
+    print('')
+" 2>/dev/null)"
+      fi
+    fi
+  fi
+
+  # 3. Decide. verdict.json wins; warn on mismatch.
+  if [[ -n "$json_score" ]]; then
+    if [[ -n "$stdout_score" && "$stdout_score" != "$json_score" ]]; then
+      log_warn "  audit score drift: stdout reported $stdout_score, verdict.json says $json_score; preferring verdict.json"
+    fi
+    echo "$json_score"
+    return
+  fi
+
+  echo "${stdout_score:-0}"
 }
 
 # -----------------------------------------------------------------------------
@@ -1824,7 +1891,7 @@ echo "Phases: ${PHASES_TO_RUN[*]}"
 [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
 echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
 echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
-echo "Per-skill timeout: ${SKILL_TIMEOUT}s (review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
+echo "Per-skill timeout: ${SKILL_TIMEOUT}s (doc-*-audit ${AUDIT_TIMEOUT}s, review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
 if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
   echo "(No LLM calls will be made; LLM-dependent elements will SKIP.)"
 fi

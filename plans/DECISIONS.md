@@ -10,6 +10,58 @@ graduation.
 
 ---
 
+## D-0026 — Synthesizer writes a structured `verdict.json`; consumers parse JSON, not Markdown
+
+- **Date:** 2026-06-03T18:25:00Z
+- **Context:** BRD-RT-001's live verification runs surfaced a critical
+  consistency bug: the doc-brd-audit skill's stdout response
+  (audit_score: 92, PASS) diverged from the .aidoc/audit/01_BRD-audit.md
+  it wrote to disk (Content score: 83, FAIL). Same invocation, two
+  verdicts. Every downstream consumer (driver script, autopilot's revise
+  loop) read stdout, not the written report — so team-mode FAIL
+  verdicts never triggered fixer cycles. The autopilot's create→review→
+  revise loop was structurally broken by the wrong source-of-truth
+  read.
+- **Decision:** The synthesizer subagent writes a flat, deterministic
+  `verdict.json` companion alongside `report.md` at
+  `.aidoc/review/<NN>_<LAYER>/<artifact-id>/verdict.json`. Every
+  downstream verdict consumer — `doc-*-audit` SKILL's stdout response,
+  `tests/scripts/test-acceptance.sh:parse_audit_score`, the
+  autopilot's revise loop, `doc-*-fixer`'s blocking-findings list —
+  reads from this JSON. Markdown `report.md` remains the human
+  narrative; it is **never the machine parse target**. When the two
+  files disagree, the JSON wins (it is what consumers parse).
+- **Why:**
+  - **Markdown is fragile.** Heading text, table format, value
+    placement can drift between runs. Asking a model to extract values
+    from prose shifts fragility from one place to another.
+  - **JSON is deterministic.** Schema-checkable, parseable by
+    `json.loads()`, and the synthesizer's reduce already produces the
+    underlying values per `REVIEW_TEAM.md` §"Synthesis = reduce +
+    narrative".
+  - **Verdict-chain consistency at every consumer.** With one
+    authoritative source (verdict.json), the driver, audit skill,
+    autopilot, and fixer cannot disagree about gate state. The
+    audit's stdout response mirrors the JSON key-for-key.
+  - **Belt-and-suspenders.** Driver script's `parse_audit_score`
+    cross-checks stdout against verdict.json; logs a warning and
+    prefers JSON on drift. Catches future model-output divergence
+    without depending on perfect prompt compliance.
+- **Scope:** Plugin v0.4.2 → v0.4.3 binds the new mechanism at the BRD
+  layer (BRD-RT-002). Per-layer follow-ups (PRD-RT, EARS-RT, etc.)
+  copy the pattern verbatim. No framework spec change — `REVIEW_TEAM.md`
+  already specifies the synthesizer's deterministic reduce; this is
+  the plugin's binding catching up to the spec.
+- **Notes:** The `<BRD-id>` path segment is codified as the **short
+  artifact ID** (`BRD-01`), not the nested folder name
+  (`BRD-01_url_shortener`) — BRD-RT-001's implementation already chose
+  the short form. The `MAX_LAYER_SEC` cap rose 900s → 1800s to fit
+  team-mode runs; a new `AUDIT_TIMEOUT=1200s` applies via name-match
+  to any `doc-*-audit` skill. The always-on `single_pass` advisory
+  note in audit reports is informational; it doesn't change PASS/FAIL
+  outcome — projects making the cost-vs-rigor tradeoff via
+  `ADAPTATION_SURFACE.yaml` are honored.
+
 ## D-0025 — Project profile is a delta, not a snapshot
 
 - **Date:** 2026-06-03T14:14:42Z

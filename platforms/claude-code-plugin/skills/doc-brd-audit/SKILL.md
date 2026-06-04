@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.2"
+    version: "0.4.3"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -81,8 +81,9 @@ subagents** over a per-artifact blackboard, per
 §Review.
 
 1. **Prepare the blackboard.** `mkdir -p .aidoc/review/01_BRD/<BRD-id>/`
-   where `<BRD-id>` matches the BRD's nested folder name (e.g.
-   `BRD-01_url_shortener`).
+   where `<BRD-id>` is the BRD's short artifact ID (e.g. `BRD-01`), not
+   the nested folder name. This keeps blackboard paths stable when
+   slugs change.
 2. **Read the BRD crew** from
    `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml` —
    `{architect: 30, business_analyst: 30, auditor: 20, adversary: 20}`.
@@ -109,24 +110,46 @@ subagents** over a per-artifact blackboard, per
    or returns nothing, mark its slot failed and continue with the lenses
    that did return.
 6. **Dispatch the synthesizer.** Run a `Task` subagent
-   (`subagent_type=synthesizer`) against the slot directory. It performs
-   the deterministic reduce per `REVIEW_TEAM.md` §"Synthesis = reduce +
-   narrative": dedups findings by `(location, id)`, takes max severity,
-   unions recommendations, computes the **weighted/capped score** using
-   the BRD crew weights, records `coverage` (which lenses ran), and
-   writes `.aidoc/review/01_BRD/<BRD-id>/report.md`.
-7. **Compose the combined audit report.** The final report at
-   `.aidoc/audit/01_BRD-audit.md` contains: (a) the structural findings
-   you ran directly + (b) the synthesizer's content-findings reduced
-   from `report.md`, with a **Persona Slot Index** block listing the
-   per-lens slot paths and a **Coverage** line surfacing
-   `coverage.quorum_met` for consumers (`doc-brd-fixer`,
+   (`subagent_type=synthesizer`) against the slot directory. It writes
+   **both** companion files (per `agents/synthesizer.md` §"Output"):
+   - `.aidoc/review/01_BRD/<BRD-id>/verdict.json` — the authoritative
+     machine-readable verdict (`combined_status`, `content_score`,
+     `structural_status`, `coverage.*`, `blocking_findings_count`,
+     `lens_scores`).
+   - `.aidoc/review/01_BRD/<BRD-id>/report.md` — the human narrative
+     (mirrors verdict.json values).
+7. **Compose the combined audit report.** Read
+   `.aidoc/review/01_BRD/<BRD-id>/verdict.json` and `report.md`. The
+   final audit report at `.aidoc/audit/01_BRD-audit.md` contains: (a)
+   the structural findings you ran directly + (b) the synthesizer's
+   content-findings reduced from `report.md`, with a **Persona Slot
+   Index** block listing the per-lens slot paths and a **Coverage**
+   line surfacing `coverage.quorum_met` for consumers (`doc-brd-fixer`,
    `doc-brd-autopilot`).
 
-**Quorum & coverage.** Per `REVIEW_TEAM.md` §Resilience, if coverage
-drops below the crew's declared quorum, the audit result is marked
-**low-confidence → human review** — never a silent pass — and
-`coverage.quorum_met=false` is surfaced in the combined report.
+**Quorum & coverage.** Per `REVIEW_TEAM.md` §Resilience, if
+`verdict.coverage.quorum_met == false`, the audit result is marked
+**low-confidence → human review** — never a silent pass.
+
+### Output Contract (team mode)
+
+After step 7 completes, produce your terminal stdout response in this
+exact shape, mirroring `verdict.json` values verbatim:
+
+```
+Combined status: PASS|FAIL
+Content score: <N>/100
+Structural status: PASS|FAIL
+Coverage quorum: met|low_confidence
+Report: .aidoc/audit/01_BRD-audit.md
+```
+
+Read `combined_status`, `content_score`, `structural_status`, and
+`coverage.quorum_met` from `verdict.json`. **Do NOT echo the BRD's
+self-claimed PRD-Ready score** (the value the BRD document writes into
+its own Document Control / Traceability sections is stale data the
+audit must overwrite). The synthesizer's `verdict.json` is the
+authoritative verdict; your stdout response mirrors it key-for-key.
 
 ### single_pass mode (fallback)
 
@@ -203,13 +226,27 @@ provenance tier). Sections — **Summary** (ID, timestamp,
 overall status, structural status, content score, **mode** (`team` |
 `single_pass`)) · **Score Calculation** (`100 − deductions`, threshold
 compare) · **Coverage** (team mode only: lenses ran vs expected,
-`quorum_met` boolean) · **Persona Slot Index** (team mode only: paths to
-`.aidoc/review/01_BRD/<BRD-id>/<persona>.json` slots + the synthesizer's
-`report.md`) · **Metadata Findings** · **Structural Findings** ·
-**Content Findings** (in team mode, reduced from the synthesizer's
-report; in single_pass, from this skill's own per-lens pass) · **Diagram
-Contract Findings** · **Fix Queue** (`auto_fixable` / `manual_required`
-/ `blocked`) · **Recommended Next Step** · **Cleanup Summary**.
+`quorum_met` boolean) · **Persona Slot Index** (team mode only: paths
+to `.aidoc/review/01_BRD/<BRD-id>/<persona>.json` slots, the
+synthesizer's `verdict.json` and `report.md`) · **Metadata Findings**
+· **Structural Findings** · **Content Findings** (in team mode,
+reduced from the synthesizer's report; in single_pass, from this
+skill's own per-lens pass) · **Diagram Contract Findings** · **Fix
+Queue** (`auto_fixable` / `manual_required` / `blocked`) ·
+**Recommended Next Step** · **Cleanup Summary**.
+
+**Always include the `single_pass` advisory** whenever the resolved
+`review_mode` is `single_pass` (regardless of trigger context — this
+skill does not reliably know whether it is at a gate). Place the
+advisory in the Summary section as a callout blockquote:
+
+> **Advisory mode.** This audit ran in `single_pass` — one model
+> applying every lens in one context. Per
+> `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`
+> §"Scoring, conflicts & the gate", `team` mode is the canonical
+> gate review; `single_pass` is a cost-constrained fallback whose
+> lens independence is reduced. Score 0-100 here is informational; a
+> production gate run should re-audit in `team` mode.
 
 ## Hand-off to doc-brd-fixer
 

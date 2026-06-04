@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.2"
+    version: "0.4.3"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -95,12 +95,25 @@ coherently.
    (`architect`/`business_analyst`/`auditor`/`adversary`) via `Task`
    subagents and synthesizes a combined report at
    `.aidoc/audit/01_BRD-audit.md`.
-5. **Revise** — if `combined_status: FAIL` (or `coverage.quorum_met:
-   false`) and iterations < max, invoke `../doc-brd-fixer/SKILL.md` in
-   team mode. The fixer consumes the slot index, dispatches lens
-   validators per blocking finding, persists patch-validation records.
-   Then **GOTO step 4** for a fresh audit. Max iterations is 3 by
-   default.
+5. **Revise** — decide pass/fail by **reading the synthesizer's
+   `verdict.json`** at `.aidoc/review/01_BRD/<BRD-id>/verdict.json`
+   (where `<BRD-id>` is the short artifact ID, e.g. `BRD-01`):
+
+   - `verdict.combined_status == "FAIL"` AND iterations < max →
+     invoke `../doc-brd-fixer/SKILL.md` in team mode (it consumes the
+     slot index, dispatches lens validators per blocking finding,
+     persists patch-validation records). Then **GOTO step 4** for a
+     fresh audit. Max iterations is 3 by default.
+   - `verdict.coverage.quorum_met == false` → flag manual-review,
+     halt (low-confidence outcome per `REVIEW_TEAM.md` §Resilience).
+   - `verdict.combined_status == "PASS"` → finalize (go to step 6).
+
+   When `verdict.json` is absent (e.g. single_pass run — synthesizer
+   doesn't run in that mode), fall back to parsing the
+   **Combined status** line in `.aidoc/audit/01_BRD-audit.md`. Never
+   make this decision from the audit subagent's stdout summary or
+   from the BRD's self-claimed PRD-Ready score. The written verdict
+   is the gate; everything else is advisory.
 6. **Converge or escalate** — on PASS update
    `docs/01_BRD/BRD-00_index.md` and finish; on max iterations with
    FAIL or quorum failure, write the manual-review flag and stop the

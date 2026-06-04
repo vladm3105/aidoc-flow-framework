@@ -6,7 +6,7 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.1.1` /
-> `claude-code-plugin/v0.4.2` (framework spec `0.11.3`; both platforms on the
+> `claude-code-plugin/v0.4.3` (framework spec `0.11.3`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.5.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
