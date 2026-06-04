@@ -116,9 +116,10 @@ sketched in PR #69's caching-analysis discussion.
   (0.4.3 → 0.4.4) + plan PR + impl PR + live verification (~$5-7).
 - **Plugin version:** plugin v0.4.3 → v0.4.4. Framework spec unchanged.
   No GATE-SPEC.
-- **Decision register:** new D-0027 — "PRD-RT-001 inherits BRD-RT-002
+- **Decision register:** new D-0028 — "PRD-RT-001 inherits BRD-RT-002
   verdict-chain pattern; per-layer follow-ups for EARS-RT, BDD-RT,
   ADR-RT, SPEC-RT, TDD-RT, IPLAN-RT chain through the same pattern."
+  (D-0027 is reserved for BRD-RT-003 per TODO-RT0 above.)
 - **Next steps:** open plan PR `plans/PRD-RT-001-PLAN.md` covering the
   per-layer translation; verify against the BRD-RT-002 verification
   template; land impl PR.
