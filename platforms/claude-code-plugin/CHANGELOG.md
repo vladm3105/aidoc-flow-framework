@@ -16,6 +16,26 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Generalised orchestrator timeout policy (BRD-RT-004, D-0028).**
+  Collapses the previously-separate `AUDIT_TIMEOUT` (BRD-RT-002),
+  `AUTOPILOT_TIMEOUT` (BRD-RT-003), and `REVIEW_TEAM_TIMEOUT` into a
+  single **`ORCHESTRATOR_TIMEOUT=1800s`** applied to every skill that
+  internally dispatches a sub-team in team mode. Name-match in
+  `tests/scripts/test-acceptance.sh:_pick_timeout_for` covers
+  `review-team`, `*-audit`, `*-autopilot`, and now also **`*-fixer`** —
+  closing **G15**: live re-verification on 2026-06-04 (after
+  BRD-RT-003) showed `doc-brd-fixer` hit the default 600s
+  `SKILL_TIMEOUT` (exit 124) mid-dispatch of its multi-lens validators
+  for the BA-001 finding (`[architect, business_analyst]`).
+  Generalising the budget closes the gap and prevents the same shape
+  from recurring at PRD..IPLAN's fixers. Leaf skills (no sub-team
+  dispatch) keep the 600s `SKILL_TIMEOUT`; Phase 4.1 agents keep the
+  600s `AGENT_TIMEOUT`. Plan banner display tightened to show one
+  orchestrator budget instead of three separate values. Plugin v0.4.4
+  → v0.4.5. Framework spec unchanged (0.11.3). No GATE-SPEC. The
+  consolidation also makes per-layer follow-ups (PRD-RT-001 etc.)
+  inherit the corrected ops uniformly via the same name-match.
+
 - **Operational fixes from BRD-RT-002 live verification (BRD-RT-003, D-0027).**
   Closes three operational gaps surfaced by the 2026-06-04 BRD-RT-002 live
   verification (Run #1 team mode hit 4/6 pass criteria; the 2 FAILs were

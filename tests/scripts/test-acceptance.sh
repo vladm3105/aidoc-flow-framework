@@ -71,20 +71,26 @@ FRAMEWORK_CREWS_FALLBACK="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 # Lineage: 900s (BRD-RT-001) → 1800s (BRD-RT-002) → 3600s (BRD-RT-003).
 MAX_LAYER_SEC=3600   # 60 minutes per layer
 
-# Per-skill timeout (B4). review-team gets its own larger budget because
-# it orchestrates multi-persona work and legitimately runs longer.
-# Audit skills (BRD-RT-002): doc-*-audit in team mode also orchestrates
-# a sub-team (4 review subagents + synthesizer), so it gets AUDIT_TIMEOUT.
-# Autopilot skills (BRD-RT-003): doc-*-autopilot in team mode runs the
-# whole create→review→revise loop (drafter + audit + fixer + re-audit)
-# inside one outer claude process, so it needs AUTOPILOT_TIMEOUT — the
-# longest per-skill cap. Live verification on 2026-06-04 showed Run #1's
-# doc-brd-autopilot hit the 600s SKILL_TIMEOUT and was killed (exit 124).
-SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                 # 10 min default
-AUDIT_TIMEOUT="${AUDIT_TIMEOUT:-1200}"                 # 20 min for doc-*-audit
-AUTOPILOT_TIMEOUT="${AUTOPILOT_TIMEOUT:-1800}"         # 30 min for doc-*-autopilot
-REVIEW_TEAM_TIMEOUT="${REVIEW_TEAM_TIMEOUT:-1800}"     # 30 min
-AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                 # 10 min for agents
+# Per-skill timeout. Generalised in BRD-RT-004 / D-0028: collapse the
+# previously-separate AUDIT_TIMEOUT / AUTOPILOT_TIMEOUT / REVIEW_TEAM_TIMEOUT
+# into a single ORCHESTRATOR_TIMEOUT applied to every skill that
+# internally dispatches a sub-team in team mode (review-team, plus
+# doc-*-audit, doc-*-autopilot, doc-*-fixer). Leaf skills (no sub-team
+# dispatch) keep the default SKILL_TIMEOUT. Agents (Phase 4.1) keep the
+# AGENT_TIMEOUT.
+#
+# Lineage of the orchestrator budget:
+#   BRD-RT-002: AUDIT_TIMEOUT=1200 for doc-*-audit only
+#     (Gap A — audit's lens-fan-out + synthesizer dispatch)
+#   BRD-RT-003: AUTOPILOT_TIMEOUT=1800 added for doc-*-autopilot
+#     (G11 — autopilot's create→review→revise outer loop)
+#   BRD-RT-004: doc-*-fixer also hit 600s SKILL_TIMEOUT on a multi-lens
+#     dispatch (G15 — fixer's parallel lens-validation Task subagents
+#     + synthesizer). Generalised to one ORCHESTRATOR_TIMEOUT covering
+#     all three (audit, autopilot, fixer) + review-team itself.
+SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                       # 10 min — leaf skills
+ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-1800}"         # 30 min — sub-team dispatchers
+AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                       # 10 min for agents
 
 # Total token budget for the whole run (A8). When the cumulative
 # tokens_out across all elements exceeds this, abort with FAIL.
@@ -355,24 +361,21 @@ mock_replay_for() {
 # -----------------------------------------------------------------------------
 _pick_timeout_for() {
   # _pick_timeout_for <kind> <name> → seconds
+  #
+  # BRD-RT-004 / D-0028: orchestrator skills (anything that internally
+  # dispatches a sub-team in team mode) get ORCHESTRATOR_TIMEOUT.
+  # Identified by name pattern:
+  #   review-team           — the dispatch primitive itself
+  #   *-audit               — fans out N review-lens Task subagents + synthesizer
+  #   *-autopilot           — runs create→review→revise loop inside one process
+  #   *-fixer               — dispatches N lens-validator Task subagents on
+  #                           multi-lens findings (G15, BRD-RT-002 Run #1)
+  # Pattern reusable for PRD..IPLAN — name-match applies uniformly.
   local kind="$1" name="$2"
   if [[ "$kind" == "agent" ]]; then
     echo "$AGENT_TIMEOUT"
-  elif [[ "$name" == "review-team" ]]; then
-    echo "$REVIEW_TEAM_TIMEOUT"
-  elif [[ "$name" == *-audit ]]; then
-    # BRD-RT-002: doc-*-audit in team mode internally orchestrates a
-    # sub-team (4 review subagents + synthesizer), so it needs more
-    # than the default per-skill timeout. Applied uniformly across
-    # layers so the pattern propagates cleanly to PRD..IPLAN.
-    echo "$AUDIT_TIMEOUT"
-  elif [[ "$name" == *-autopilot ]]; then
-    # BRD-RT-003: doc-*-autopilot in team mode runs the entire
-    # create→review→revise loop (drafter + audit + fixer + re-audit)
-    # inside one outer claude process. Live verification on 2026-06-04
-    # showed the default 600s SKILL_TIMEOUT killed doc-brd-autopilot
-    # mid-iteration (exit 124). 30 min budget tolerates one fix cycle.
-    echo "$AUTOPILOT_TIMEOUT"
+  elif [[ "$name" == "review-team" || "$name" == *-audit || "$name" == *-autopilot || "$name" == *-fixer ]]; then
+    echo "$ORCHESTRATOR_TIMEOUT"
   else
     echo "$SKILL_TIMEOUT"
   fi
@@ -1904,7 +1907,7 @@ echo "Phases: ${PHASES_TO_RUN[*]}"
 [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
 echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
 echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
-echo "Per-skill timeout: ${SKILL_TIMEOUT}s (doc-*-audit ${AUDIT_TIMEOUT}s, doc-*-autopilot ${AUTOPILOT_TIMEOUT}s, review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
+echo "Per-skill timeout: ${SKILL_TIMEOUT}s (orchestrators ${ORCHESTRATOR_TIMEOUT}s [review-team, doc-*-{audit,autopilot,fixer}], agents ${AGENT_TIMEOUT}s)"
 if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
   echo "(No LLM calls will be made; LLM-dependent elements will SKIP.)"
 fi

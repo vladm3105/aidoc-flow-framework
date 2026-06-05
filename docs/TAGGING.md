@@ -109,6 +109,7 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `claude-code-plugin/v0.4.2` | Plugin release `0.4.2` close | Claude Code plugin — project profile as override-only delta (PROFILE-DELTA-001, D-0025); framework spec `0.11.3` |
 | `claude-code-plugin/v0.4.3` | Plugin release `0.4.3` close | Claude Code plugin — verdict-chain consistency (BRD-RT-002, D-0026): synthesizer writes `verdict.json` companion; audit/autopilot/fixer read from it; per-layer cap 1800s; per-audit-skill timeout 1200s |
 | `claude-code-plugin/v0.4.4` | Plugin release `0.4.4` close | Claude Code plugin — operational fixes from BRD-RT-002 live verification (BRD-RT-003, D-0027): AUTOPILOT_TIMEOUT=1800s for doc-*-autopilot; per-layer cap 3600s; doc-*-fixer explicit multi-lens dispatch rules |
+| `claude-code-plugin/v0.4.5` | Plugin release `0.4.5` close | Claude Code plugin — generalised orchestrator timeout (BRD-RT-004, D-0028): collapsed `AUDIT_TIMEOUT` / `AUTOPILOT_TIMEOUT` / `REVIEW_TEAM_TIMEOUT` into single `ORCHESTRATOR_TIMEOUT=1800s`; closes G15 (`doc-*-fixer` 600s timeout) by extending name-match to `*-fixer` |
 | `framework/v0.11.3` | PROFILE-DELTA-001 close | Framework spec — new `PROFILE-TEMPLATE.yaml` skeleton + project profile delta semantics |
 | `framework/v0.2.0` | ADAPT close (`f22fe6a`) | Framework spec — project adaptation overlay (ADAPTATION surface, D-0019) |
 | `framework/v0.3.0` | CHG-D1 close (`f8e8bf5`) | Framework spec — GATE-SPEC framework-spec change gate (D-0020) |

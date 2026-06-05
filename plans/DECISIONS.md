@@ -10,6 +10,60 @@ graduation.
 
 ---
 
+## D-0028 — One ORCHESTRATOR_TIMEOUT for every sub-team-dispatching skill
+
+- **Date:** 2026-06-04T21:50:00Z
+- **Context:** Three separate live re-verifications across BRD-RT-001 →
+  002 → 003 revealed the same operational gap iteratively: any skill
+  that internally dispatches a sub-team in team mode needs more than
+  the default 600s `SKILL_TIMEOUT`. Each PR fixed one skill type at a
+  time:
+  - BRD-RT-002 (D-0026): `AUDIT_TIMEOUT=1200` for `doc-*-audit`
+  - BRD-RT-003 (D-0027): `AUTOPILOT_TIMEOUT=1800` for `doc-*-autopilot`
+  - BRD-RT-003 live re-verify exposed **G15**: `doc-*-fixer` also
+    times out — same pattern, third skill class. Adding
+    `FIXER_TIMEOUT` would have continued the per-skill-type
+    proliferation.
+- **Decision:** Generalise the three separate timeout variables into
+  a single **`ORCHESTRATOR_TIMEOUT=1800s`** applied uniformly to every
+  skill that dispatches a sub-team in team mode. Identified by name
+  pattern in `tests/scripts/test-acceptance.sh:_pick_timeout_for`:
+    `review-team` ∨ `*-audit` ∨ `*-autopilot` ∨ `*-fixer`
+  Leaf skills (no sub-team dispatch) keep the 600s `SKILL_TIMEOUT`.
+  Phase 4.1 agents keep `AGENT_TIMEOUT=600s`. The per-layer outer cap
+  (`MAX_LAYER_SEC=3600s`, from BRD-RT-003) remains as the wall-clock
+  guard for cascades.
+- **Why:**
+  - **One concept, one knob.** All three orchestrator skills do the
+    same kind of work (Task fan-out + synthesizer). They deserve the
+    same budget. Live evidence: audit ~580-900s, autopilot ~1200-1500s,
+    fixer ~500-700s. 1800s comfortably covers each.
+  - **Pattern matches the architecture.** REVIEW_TEAM.md frames these
+    as "operations on the blackboard" (Review, Create, Remediate).
+    The plugin's binding has three skill types implementing those
+    operations; they share orchestration shape, they should share
+    timeout policy.
+  - **Future-proofs PRD..IPLAN.** When PRD-RT-001 etc. propagate, the
+    name-match catches their `doc-prd-audit` / `doc-prd-fixer` /
+    `doc-prd-autopilot` automatically. No per-layer config changes
+    needed.
+  - **Closes G15** without adding another per-type variable. The
+    iterative timeout-extension pattern (BRD-RT-002 → 003 → 004)
+    stops here.
+- **Scope:** Plugin v0.4.4 → v0.4.5. Framework spec unchanged. Three
+  env vars removed (`AUDIT_TIMEOUT`, `AUTOPILOT_TIMEOUT`,
+  `REVIEW_TEAM_TIMEOUT`); one introduced (`ORCHESTRATOR_TIMEOUT`).
+  The change is backward-compat at the script's command-line surface:
+  no flags or args change, only internal variable names. Operators
+  who set these env vars externally need to migrate; live grep
+  confirms no CI config references them.
+- **Notes:** This is the architectural endpoint of the
+  audit→autopilot→fixer timeout sequence. After BRD-RT-004,
+  per-layer follow-ups land without inheriting any timeout-shape
+  gaps — they only need the same name-pattern in their layer's
+  SKILL.md text. The next BRD-RT verification run is expected to
+  reach 6/6 pass criteria.
+
 ## D-0027 — Autopilot timeout matches its sub-team orchestration; multi-lens fixer findings dispatch all responsible lenses
 
 - **Date:** 2026-06-04T13:30:00Z
