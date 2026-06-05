@@ -17,6 +17,8 @@ EXPECTED_FILES = [
     "REVIEW_REMEDIATION_FLOW.md",
     "REVIEW_TEAM.md",
     "REVIEW_CREWS.yaml",
+    "REVIEW_SAGA.md",
+    "saga.schema.json",
     "ADAPTATION.md",
     "ADAPTATION_SURFACE.yaml",
     "PROFILE-TEMPLATE.yaml",

@@ -10,7 +10,7 @@ metadata:
     artifact_type: CHG
     skill_category: automation-workflow
     version: "0.5.0"
-    framework_spec_version: "0.12.0"
+    framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
 ---
 

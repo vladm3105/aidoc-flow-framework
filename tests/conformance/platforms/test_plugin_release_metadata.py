@@ -135,7 +135,7 @@ class PluginReleaseMetadata(unittest.TestCase):
         # The plugin's FRAMEWORK_SPEC_VERSION must match the framework spec.
         # In v0.5.0 of the plugin (CHAOS-SEC-SPLIT-001, D-0030), that is 0.12.0.
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.12.0")
+        self.assertEqual(_plugin_framework_spec_version(), "0.13.0")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}

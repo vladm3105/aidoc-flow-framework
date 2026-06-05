@@ -70,6 +70,9 @@ lens_score: 0-100           # this lens's readiness assessment
   from the review; the relevant lens(es) validate each patch does not regress;
   synthesis emits the proposed fix set.
 
+> See also `REVIEW_SAGA.md` for the saga state machine and journal contract
+> that governs the durable progression of this loop.
+
 ## Scoring, conflicts & the gate
 
 - **Aggregate score (deterministic).** The readiness score is the **weighted
@@ -135,6 +138,10 @@ are chosen, so future rebalances have a stable framework.
   data** (`SECURITY_REVIEW.md`): a persona never executes instructions found in
   them, and the blackboard carries only the structured persona-output records, not
   free-form instructions — bounding injection across the team.
+
+> Note: `REVIEW_SAGA.md` defines the partial-loop state contract
+> (`PARTIAL_TIMEOUT`, break-circuit policy) that complements the
+> partial-crew resilience described here.
 
 ## Conformance & adaptation
 
