@@ -300,25 +300,60 @@ break-circuit can trip during any phase). It cannot fire after
 ```
 
 This is the minimal schema that captures every observable state needed for
-lifecycle parity. Hermes' existing `SagaRunState` is structurally identical
-(its `compensation_actions` field already matches the schema). The plugin
-will write this exact JSON shape.
+lifecycle parity. Hermes' existing `SagaRunState` is structurally similar
+(its `compensation_actions` field matches the schema) but **lacks a top-level
+`transitions: []` array** — that field is introduced by this plan and Phase 3
+adds it to Hermes (see G15 in the Pass 4 review log).
+
+**Field requirement matrix (formal — saga.schema.json `required` list)** — G24:
+
+| Field | Required? | Notes |
+|---|---|---|
+| `review_run_id` | required | platforms MAY use deterministic IDs (Hermes does via `deterministic_review_run_id`); SHA256-prefix or UUID acceptable |
+| `artifact_id` | required | short form (`BRD-01`, `PRD-02`, …) |
+| `layer` | required | one of the 8 framework layers |
+| `personas_requested` | required | array of strings from REVIEW_CREWS.yaml personas registry |
+| `status` | required | one of the state-machine states |
+| `iteration` | required | starts at 1; increments on each create→review→revise iteration |
+| `created_at` | required | ISO 8601 UTC |
+| `updated_at` | required | ISO 8601 UTC |
+| `branches` | required | dict keyed by persona; per-branch sub-object schema applies |
+| `transitions` | **required (G19)** | append-only array; both platforms populate on every state change |
+| `compensation_actions` | required | append-only array; may be empty |
+| `document_fingerprint` | optional | Hermes populates; plugin optional |
+| `document_path` | optional | Hermes populates; plugin optional |
+| `current_phase` | optional | plugin-specific enrichment (`draft` / `review` / `fixer` / `re-review` / `reduce` / `synthesize`); Hermes may omit |
+| `retry_count` | optional | useful for resumable retries; default 0 |
+
+`additionalProperties: true` — platforms may add extension fields beyond the
+schema (Hermes' Phase 3 audit may surface more candidates for the optional
+column). Required fields are the minimum-viable lifecycle-parity contract.
 
 #### Break-circuit policy contract
 
-Every orchestrator SKILL (`doc-*-{audit,autopilot,fixer}`, 28 skills) MUST
-include a `## Break-circuit policy` section with this behavioral contract:
+Every orchestrator SKILL (`doc-*-{audit,autopilot,fixer}` — 27 doc-layer
+skills plus `review-team` = 28 per BRD-RT-004's name-match) MUST include a
+`## Break-circuit policy` section with this behavioral contract. The
+**checkpoint granularity differs by skill type** (G20):
+
+| Skill type | Checkpoint boundaries (where break-circuit fires) |
+|---|---|
+| `doc-*-autopilot` | Between the create / review / fixer / re-review **phases** of the outer loop. State at fire: `current_phase` + iteration count. |
+| `doc-*-audit` | After all lens `Task` subagents return, **before** invoking the synthesizer (so partial-coverage findings are durable even if synthesis can't complete). |
+| `doc-*-fixer` | Between **multi-lens validation dispatches** (each blocking finding's per-lens validation is one checkpoint boundary). |
+| `review-team` | After each crew **fan-out completes**, before the reduce step. |
+
+Common policy text (applies to all four skill types):
 
 ```text
 At skill start, record the start epoch:
   Bash: date +%s > <saga_dir>/.skill-start
 
-Before each phase boundary (between Task subagent dispatches or before
-each `claude -p` subprocess invocation), check elapsed time:
+At each checkpoint boundary (per the table above), check elapsed time:
   Bash: echo $(( $(date +%s) - $(cat <saga_dir>/.skill-start) ))
 
 If elapsed exceeds the platform's SOFT_DEADLINE (≤ OS timeout − 300s buffer):
-  1. Do NOT dispatch the next phase.
+  1. Do NOT dispatch the next phase / lens / fix-validation.
   2. Append a transition entry to saga.json: from <current_state> → PARTIAL_TIMEOUT.
   3. Update saga.json status to PARTIAL_TIMEOUT with `current_phase` set
      to where the break-circuit fired.
@@ -326,7 +361,9 @@ If elapsed exceeds the platform's SOFT_DEADLINE (≤ OS timeout − 300s buffer)
      and decide to resume, retry, or escalate.
 
 If the LLM ignores the break-circuit and the OS sends SIGTERM, the
-subprocess exits 124 and saga.json reflects the last successful checkpoint.
+subprocess exits 124 and saga.json reflects the last successful checkpoint
+(NOT PARTIAL_TIMEOUT). Both outcomes are valid graceful-degradation states;
+conformance accepts either as evidence the journal captured useful state.
 The journal is best-effort durable; the OS timeout is the hard floor.
 ```
 
@@ -334,6 +371,62 @@ The spec does NOT prescribe specific deadline values — platforms pick
 numbers appropriate to their runtime. Plugin's ORCHESTRATOR_TIMEOUT=1800s
 implies SOFT_DEADLINE ≈ 1500s; Hermes' per-branch timeouts come from
 `persona_mappings.yaml` and have their own buffer.
+
+#### REVIEW_TEAM.md ↔ REVIEW_SAGA.md content boundary (G23)
+
+Decision: **REVIEW_TEAM.md keeps the loop semantics; REVIEW_SAGA.md
+adds the state machine details**.
+
+- `REVIEW_TEAM.md` retains §"Operations §Create" (the create→review→revise
+  loop description), §"Operations §Review", §"Operations §Remediate". The
+  loop *behavior* belongs there.
+- `REVIEW_SAGA.md` (new) contains: the state machine, the transition
+  table, the journal schema, the break-circuit contract, the
+  enforcement-asymmetry caveat.
+- REVIEW_TEAM.md gains one `> See also REVIEW_SAGA.md for the lifecycle
+  state machine that governs the loop's durable state.` reference; it does
+  NOT duplicate REVIEW_SAGA.md content. REVIEW_SAGA.md cites REVIEW_TEAM.md
+  for the operational semantics.
+
+Phase 1 implements both files conforming to this split. The
+`tools/sync-plugin-framework.sh` re-sync ships both to the plugin's
+bundled framework copy.
+
+#### FRAMEWORK_SPEC_VERSION semantics — "declares intent to conform" (G18 + G21)
+
+The plugin and Hermes each carry two version files:
+
+| File | Semantics |
+|---|---|
+| `platforms/<name>/VERSION` | the platform's OWN SemVer (independent stream — plugin v0.5.x, Hermes v0.1.x) |
+| `platforms/<name>/FRAMEWORK_SPEC_VERSION` | the framework spec version the platform **declares intent to conform to** — NOT necessarily the version it has fully implemented mid-delivery |
+
+The current conformance tests (`test_FRAMEWORK_SPEC_VERSION_matches_framework_VERSION`)
+only enforce string equality between `framework/VERSION` and each platform's
+`FRAMEWORK_SPEC_VERSION`. They do NOT verify implementation completeness —
+that's the job of behavior-specific conformance tests (e.g., the new
+`test_saga_lifecycle_parity.py` in Phase 3).
+
+**Implication for SAGA-PARITY-001**: Phase 1 bumps `framework/VERSION` to
+0.13.0 AND bumps both platforms' `FRAMEWORK_SPEC_VERSION` to 0.13.0 in the
+same PR. The platforms claim intent to conform to spec 0.13.0; full
+implementation arrives in Phase 2 (plugin) and Phase 3 (Hermes). This is
+**not dishonest**: the project's versioning model is declaration-based,
+documented in `docs/PROJECT.md` §2 (independent version streams). Phase 1's
+REVIEW_SAGA.md gets a one-paragraph note codifying this semantic so future
+readers don't confuse the two version files.
+
+**Plugin VERSION vs FRAMEWORK_SPEC_VERSION** specifically:
+
+- Phase 1: plugin VERSION stays at 0.5.x (no implementation change yet);
+  FRAMEWORK_SPEC_VERSION bumps to 0.13.0 (declares intent).
+- Phase 2: plugin VERSION bumps to 0.6.0 (saga.json + subprocess refactor
+  implements the contract for BRD layer); FRAMEWORK_SPEC_VERSION stays at
+  0.13.0 (no spec change).
+- Phase 4: plugin VERSION patch-bumps as each per-layer PR lands.
+
+Hermes follows the same model: Phase 1 declares 0.13.0 intent (VERSION
+unchanged); Phase 3 patch-bumps Hermes VERSION (0.1.1 → 0.1.2 per G26).
 
 #### Enforcement asymmetry (honest caveat in the spec)
 
@@ -384,11 +477,21 @@ for outer-loop lifecycle.
 1. Draft `framework/governance/REVIEW_SAGA.md` with the state machine,
    transition table (adopted verbatim from `saga_models.py:_ALLOWED_TRANSITIONS`
    plus the PARTIAL_TIMEOUT additions), journal schema description, and
-   break-circuit policy contract.
-2. Draft `framework/governance/saga.schema.json` formally.
+   break-circuit policy contract. Per §Approach §"REVIEW_TEAM.md ↔
+   REVIEW_SAGA.md content boundary" (G23): REVIEW_SAGA.md owns the state
+   machine details; REVIEW_TEAM.md keeps the operational semantics.
+   REVIEW_SAGA.md includes the §"FRAMEWORK_SPEC_VERSION semantics"
+   paragraph from this plan (G18) so future readers understand the
+   declaration-vs-implementation distinction.
+2. Draft `framework/governance/saga.schema.json` formally per the
+   §"Field requirement matrix" (G24) — explicit `required: [...]` list
+   covering the 10 minimum-viable fields; `additionalProperties: true` so
+   platforms may add extension fields.
 3. Update `framework/governance/REVIEW_TEAM.md` to cross-reference
    REVIEW_SAGA.md from §Operations §Create (the loop that consumes the
-   saga) and §Resilience (partial-crew vs partial-loop distinction).
+   saga) and §Resilience (partial-crew vs partial-loop distinction). Do
+   NOT duplicate REVIEW_SAGA.md content; one-line `> See also` reference
+   only.
 4. Bump `framework/VERSION` 0.12.0 → 0.13.0.
 5. Add D-0031 entry to `plans/DECISIONS.md`, preserving D-0005's text
    unchanged (just adding the supersession note pointing to D-0031).
@@ -401,12 +504,23 @@ for outer-loop lifecycle.
      new lifecycle/saga-schema check (will be implemented in Phase 3).
    - Add a one-paragraph **Enforcement asymmetry** note (LLM cooperative
      vs Python preemptive).
-7. Bump both platforms' `FRAMEWORK_SPEC_VERSION` to 0.13.0 (Phase 1's spec
-   is the new contract; platforms declare intent to conform; full
-   implementation arrives in Phases 2 and 3).
+7. Bump both platforms' `FRAMEWORK_SPEC_VERSION` to 0.13.0 (per G18/G21:
+   this is the **declaration of intent to conform**; full implementation
+   arrives in Phase 2 plugin / Phase 3 Hermes). Platforms' OWN VERSION
+   files (`platforms/<name>/VERSION`) stay unchanged in Phase 1 — they
+   bump when their respective implementation phases land. Specifically:
+   - `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` → `0.13.0`
+   - `platforms/claude-code-plugin/VERSION` stays at `0.5.x`
+   - `platforms/hermes/FRAMEWORK_SPEC_VERSION` → `0.13.0`
+   - `platforms/hermes/VERSION` stays at `0.1.1`
+   - The conformance test `test_FRAMEWORK_SPEC_VERSION_matches_framework_VERSION`
+     stays green because both platforms declare matching spec versions.
 8. Project-level `CHANGELOG.md` and `platforms/claude-code-plugin/CHANGELOG.md`
    entries documenting the spec change.
 9. Pass GATE-SPEC (CHG-D1) — verified by the spec-change CI workflow.
+10. Re-run `tools/sync-plugin-framework.sh` so the plugin's bundled
+    `framework/` copy includes REVIEW_SAGA.md + saga.schema.json (per
+    D-0022's vendor-the-spec contract).
 
 ### Phase 2 — Plugin BRD-layer proof of concept
 
@@ -428,47 +542,167 @@ for outer-loop lifecycle.
 4. `review-team/SKILL.md` — describe the saga.json layout next to the
    blackboard layout; the orchestrator-mediated hub now writes a saga
    journal too.
-5. Bump plugin `VERSION` 0.5.x → 0.6.0 (new contract introduced).
-6. 9-place fanout for 0.6.0 (per CHAOS-SEC-SPLIT-001 pattern: plugin.json,
-   marketplace.json, READMEs, docs, 52 skills' frontmatter version).
+5. Bump plugin `VERSION` 0.5.x → 0.6.0 (new contract introduced; minor
+   bump because the contract is additive — saga.json is a new file,
+   doesn't break existing blackboard consumers).
+6. **9-place version fanout** (G25 — enumerated explicitly):
+   - `platforms/claude-code-plugin/VERSION`
+   - `platforms/claude-code-plugin/.claude-plugin/plugin.json`
+     (`"version"` field)
+   - `.claude-plugin/marketplace.json` (`"version"` field for the
+     plugin entry)
+   - `platforms/claude-code-plugin/README.md`
+   - root `README.md`
+   - `docs/PARITY.md` (status line)
+   - `docs/TAGGING.md` (new release row for `claude-code-plugin/v0.6.0`)
+   - `platforms/claude-code-plugin/docs/SKILL_AUTHORING.md` (version
+     references in example frontmatter)
+   - 52 skills' `version:` frontmatter via sed one-liner:
+
+     ```sh
+     grep -rl '^    version: "0.5.0"' platforms/claude-code-plugin/skills/ \
+       | xargs sed -i 's/^    version: "0.5.0"/    version: "0.6.0"/'
+     ```
+
+   Verify with `grep -rc '^    version: "0.6.0"' platforms/claude-code-plugin/skills/`
+   showing 52 matches before commit.
 7. Plugin CHANGELOG entry.
 8. Live BRD verification (next).
 
 ### Phase 3 — Hermes alignment + cross-platform conformance
 
-1. Audit `platforms/hermes/src/mcp_server/review/saga_models.py` against
-   the new spec; confirm every state name + transition matches. If any
-   drift exists, decide spec-side adjustment or Hermes-side rename; pick
-   one and apply it.
-2. Add `PARTIAL_TIMEOUT` to Hermes' `_ALLOWED_TRANSITIONS` and to
-   `SagaRunState` (it's a valid status string).
-3. Verify `saga_journal.py` produces JSON matching
-   `framework/governance/saga.schema.json` exactly; adjust field names if
-   needed.
-4. `platforms/hermes/docs/architecture/REVIEW_TEAM_CONFORMANCE.md` —
-   update to cite REVIEW_SAGA.md as the source of truth for the
-   lifecycle; remove or update any text that previously described the
-   Hermes implementation as the canonical source.
-5. New conformance test `tests/conformance/test_saga_lifecycle_parity.py`:
+Pass-4 amendment (G15 + G16): Phase 3's Hermes work is **larger than the
+original draft implied**. The plan understated three real changes; they are
+now scoped explicitly below.
+
+1. **Audit Hermes' state machine for naming drift.** Verify
+   `platforms/hermes/src/mcp_server/review/saga_models.py`'s 10 existing
+   states (`PREPARED`, `FANOUT_STARTED`, `BRANCH_RUNNING`,
+   `BRANCH_COMPLETED`, `BRANCH_FAILED`, `BRANCH_COMPENSATING`,
+   `FANIN_REDUCED`, `SYNTHESIZED`, `ESCALATED`, `CLOSED`) match the spec
+   verbatim. Expected outcome: zero drift (the spec adopted Hermes' names
+   in Phase 1). **Decision policy if drift is found**: prefer spec-side
+   adjustment over Hermes refactor unless the Hermes name is demonstrably
+   misleading. Document the decision in D-0031 update or Phase 3's commit
+   message.
+
+2. **Add `PARTIAL_TIMEOUT` to Hermes** (the only new state). Concrete
+   changes:
+   - `saga_models.py:_ALLOWED_TRANSITIONS`: add entries for
+     `PREPARED → PARTIAL_TIMEOUT`, `FANOUT_STARTED → PARTIAL_TIMEOUT`,
+     `BRANCH_RUNNING → PARTIAL_TIMEOUT`, `BRANCH_COMPLETED →
+     PARTIAL_TIMEOUT`, `FANIN_REDUCED → PARTIAL_TIMEOUT`. Add
+     `"PARTIAL_TIMEOUT": set()` as a new terminal state.
+   - `SagaRunState.status` typing/validation already accepts arbitrary
+     status strings — no dataclass change needed there, but the
+     transition validation now accepts the new state.
+
+3. **Add `transitions: list[dict]` field to Hermes' `SagaRunState`**
+   (G15 — non-trivial schema addition). Concrete changes:
+   - `saga_models.py:SagaRunState`: add
+     `transitions: list[dict[str, object]] = field(default_factory=list)`.
+   - `saga_journal.py:update_run_status` + `set_branch_state`: append a
+     transition entry on every state change (timestamp, from_state,
+     to_state, scope: `"run"` or `"branch:<persona>"`).
+   - Existing journal-write helpers (`_write_json`) need no change beyond
+     serializing the new field.
+
+4. **Enumerate Hermes downstream consumers of saga status** (G16). The
+   following files reference status values and need review for
+   `PARTIAL_TIMEOUT` handling:
+   - `platforms/hermes/src/mcp_server/review/saga_reducer.py` — verify
+     the reducer treats `PARTIAL_TIMEOUT` as an incomplete-run signal
+     (skip reduce or produce a partial-coverage report; do NOT fail).
+   - `platforms/hermes/src/mcp_server/review/saga_orchestrator.py` — any
+     status-based branching in `run_project_review_build_saga` must
+     handle `PARTIAL_TIMEOUT` (likely: terminate gracefully with the
+     partial output; signal the caller to resume later).
+   - `platforms/hermes/tests/unit/test_saga_review_orchestrator.py` and
+     `test_saga_reducer.py` (if it exists) — may have status equality
+     assertions; verify they don't accidentally fail on PARTIAL_TIMEOUT
+     test fixtures.
+   - `platforms/hermes/src/mcp_server/review/review_scoring.py` — read
+     to confirm it does not branch on status (it scores; doesn't gate).
+
+5. **Verify `saga_journal.py` writes schema-conformant JSON.** Spec-side
+   `saga.schema.json` (Phase 1) defines required vs optional fields per
+   §"Field requirement matrix". Hermes' existing JSON-write shape should
+   conform after the `transitions` field is added. Adjust field names
+   only if drift is found.
+
+6. **Update `platforms/hermes/docs/architecture/REVIEW_TEAM_CONFORMANCE.md`**
+   to cite REVIEW_SAGA.md as the source of truth for the lifecycle.
+   Remove or update any text that previously described the Hermes
+   implementation as the canonical source.
+
+7. **New conformance test `tests/conformance/test_saga_lifecycle_parity.py`**:
    - Parse `framework/governance/saga.schema.json`.
-   - Validate sample fixtures from both platforms (`fixtures/saga/{hermes,plugin}_BRD-01_saga.json`)
-     against the schema.
-   - Assert state machine + transitions in REVIEW_SAGA.md
-     match Hermes' `_ALLOWED_TRANSITIONS` exactly.
+   - Validate sample fixtures from both platforms
+     (`tests/conformance/fixtures/saga/{hermes,plugin}_BRD-01_saga.json`,
+     created in Phase 3 — fixtures directory does not exist today) against
+     the schema.
+   - Assert state machine + transitions in REVIEW_SAGA.md match Hermes'
+     `_ALLOWED_TRANSITIONS` exactly (including `PARTIAL_TIMEOUT` added in
+     step 2).
    - Grep-assert that every `doc-*-{audit,autopilot,fixer}` SKILL.md
-     contains the `## Break-circuit policy` section (28 skills).
-6. Hermes `VERSION` patch bump.
-7. Hermes platform CHANGELOG (if maintained).
+     contains the `## Break-circuit policy` section (28 skills: 27
+     doc-* skills + `review-team`).
+
+8. **Hermes `VERSION` patch bump 0.1.1 → 0.1.2** (G26). Hermes is on the
+   patch stream because the additions are backward-compatible in shape
+   (`PARTIAL_TIMEOUT` is a new value the downstream consumers will treat
+   as a no-op partial-completion signal; existing consumers don't break).
+
+9. **Hermes platform CHANGELOG entry** documenting the saga additions
+   (PARTIAL_TIMEOUT state, transitions[] field, conformance test).
 
 ### Phase 4 — Plugin propagation (PRD..IPLAN)
 
-1. Apply Phase 2's refactor pattern to the remaining 7 layer-autopilots
-   and their audit/fixer companions. Each layer can be its own PR.
-2. Conformance test from Phase 3 expands to cover all 8 layers.
-3. PRD-RT-001 (currently on todo) is implemented as part of Phase 4 PRD
-   work, adopting the saga contract from the start.
-4. Per-layer live verifications (BRD has already happened in Phase 2; PRD,
-   EARS, BDD, ADR, SPEC, TDD, IPLAN each get their own).
+Pass-4 amendment (G17): Phase 4 is **not "mechanical propagation"** as the
+original draft framed it. Each per-layer PR bundles the team-mode-wiring
+work that BRD-RT-001 → BRD-RT-004 did for BRD (multi-lens dispatch,
+verdict.json, fixer multi-lens validation, lens→agent mapping enrichment,
+etc.) **plus** the SAGA-PARITY-001 saga contract (saga.json + subprocess +
+break-circuit). Each layer therefore touches **~10-15 files** and costs
+**~$3-15 in live verification spend** — comparable to a full per-layer
+plan, not a mechanical port.
+
+The folded-in scope per per-layer PR:
+
+| Layer | Crew size | Per-layer team-mode work (BRD-RT pattern) | Saga work | Files (approx) | Live verify cost |
+|---|---:|---|---|---:|---:|
+| PRD   | 6 | All of PRD-RT-001 (currently on todo) — 4 PRD SKILLs + verdict.json + multi-lens fixer + multi-agent-same-lens rule for `architect` + `tech_lead` both → `solutions-architect` | saga.json + break-circuit | ~12 | ~$15 (BRD upstream required) |
+| EARS  | 5 | 4 EARS SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~10 | ~$10 |
+| BDD   | 6 | 4 BDD SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~12 | ~$10 |
+| ADR   | 6 | 4 ADR SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~12 | ~$10 |
+| SPEC  | 5 | 4 SPEC SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~10 | ~$10 |
+| TDD   | 6 | 4 TDD SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~12 | ~$10 |
+| IPLAN | 6 | 4 IPLAN SKILLs + verdict.json + multi-lens fixer | saga.json + break-circuit | ~12 | ~$10 |
+
+Total Phase 4 spend at full live verification: **~$75** (8 layers × ~$10 mean).
+The full cascade live run (`--from-layer=brd --to-layer=iplan`) is a separate
+~$50-80 spend recommended after Phase 4 lands.
+
+Phase 4 ordering recommendation: **PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN**
+(natural cascade order; each layer's downstream pickup verifies upstream
+quality). PRD-RT-001 (uncommitted plan) is the first per-layer plan; its
+plan file gets revised to fold the saga contract in, then proceeds as
+PRD-RT-001 impl PR.
+
+1. Per-layer PR sequence:
+   - PRD-RT-001 (plan + impl) — first per-layer proof of the combined
+     pattern.
+   - EARS-RT-001 (plan + impl).
+   - BDD-RT-001 (plan + impl).
+   - ADR-RT-001 (plan + impl).
+   - SPEC-RT-001 (plan + impl).
+   - TDD-RT-001 (plan + impl).
+   - IPLAN-RT-001 (plan + impl).
+2. Conformance test from Phase 3 expands to cover all 8 layers as each
+   layer lands (the greppable break-circuit invariant + saga schema
+   validation grows its sweep coverage).
+3. Optional full cascade live verification after all 8 layers land,
+   confirming end-to-end behavior under the saga contract.
 
 ## Verification
 
@@ -488,21 +722,43 @@ for outer-loop lifecycle.
   (mock-mode regression check).
 - Live BRD cascade — `bash tests/scripts/test-acceptance.sh url-shortener
   --live --phase=cascade --from-layer=brd --to-layer=brd --force`.
-- **Pass criteria (8/8 mirroring BRD-RT-004 + new saga checks):**
-  - `saga.json` present at `.aidoc/review/01_BRD/<BRD-id>/saga.json`,
-    schema-conformant.
-  - Final `status: CLOSED`, `iteration` ≤ 3, all transitions logged.
-  - All 5 lens slots + verdict.json present (CHAOS-SEC-SPLIT-001 pass
-    criteria still pass).
-  - Driver-vs-synthesizer score agreement.
-  - **Autopilot completes within budget this time** — because each phase is
-    a fresh subprocess, the cumulative wall-clock can exceed 1800s
-    without any single subprocess timing out.
-  - If autopilot's outer process *does* time out (e.g., extended fix
-    cycles), saga.json has `status: PARTIAL_TIMEOUT` (not the previous
-    behavior of `error: claude -p exit 124` with no journal).
-  - Re-invoking autopilot reads the PARTIAL_TIMEOUT saga.json and resumes
-    from the documented `current_phase`.
+**Pass criteria — happy path** (autopilot completes within budget):
+
+- `saga.json` present at `.aidoc/review/01_BRD/<BRD-id>/saga.json`,
+  schema-conformant (required fields per §"Field requirement matrix"
+  present; transitions[] non-empty).
+- Final `status: CLOSED`, `iteration` ≤ 3, all transitions logged.
+- All 5 lens slots + `verdict.json` present (CHAOS-SEC-SPLIT-001 pass
+  criteria still pass).
+- Driver-vs-synthesizer score agreement.
+- Total runtime ≤ MAX_LAYER_SEC (3600s).
+- Each subprocess phase ≤ ORCHESTRATOR_TIMEOUT (1800s).
+
+**Pass criteria — break-circuit graceful degradation** (G22: explicit
+split):
+
+- **Soft-deadline case** (LLM honors break-circuit before SIGTERM):
+  - subprocess exits with code 0 (clean exit).
+  - saga.json's `status: PARTIAL_TIMEOUT`.
+  - `transitions[]` has a trailing entry recording the
+    `<some_state> → PARTIAL_TIMEOUT` transition with timestamp.
+  - `current_phase` reflects where the break-circuit fired.
+  - On re-invocation, autopilot reads the PARTIAL_TIMEOUT saga.json and
+    resumes from `current_phase` (verifies resumability).
+- **Hard-timeout case** (OS SIGTERM fires before LLM checks break-circuit):
+  - subprocess exits with code 124 (SIGTERM).
+  - saga.json's `status` is the **last successful checkpoint** (e.g.,
+    `FANOUT_STARTED` or `BRANCH_RUNNING` for the persona that was in
+    flight) — NOT `PARTIAL_TIMEOUT`.
+  - `transitions[]` reflects the last transition before SIGTERM.
+  - The driver/harness logs the exit 124 + the last saga state for
+    diagnosis.
+  - On re-invocation, autopilot reads the last-checkpoint saga.json and
+    decides: resume the in-flight phase OR escalate.
+
+Both break-circuit cases are valid graceful-degradation outcomes; the
+journal captures useful state in either case. The Pass-2 verification
+asserts both code paths produce schema-conformant saga.json.
 
 ### Phase 3 verification
 
@@ -624,6 +880,95 @@ Cross-checked critical assumptions.
 
 Plan ready for implementation. Phase 1 (plan-only-then-impl) is the
 starting line; Phases 2, 3, 4 follow.
+
+### Pass 4 — 2026-06-05T12:30:00Z (post-merge gap-review)
+
+After PR #81 (the original plan) merged, a fresh cross-check against the
+codebase surfaced 12 gaps. All folded in place via this Pass-4 amendment
+PR (no separate plan; gaps are scope/clarity holes in *this* plan, not
+new work).
+
+**Critical gaps fixed (4):**
+
+- **G15 — Hermes needs a `transitions: list[dict]` field on `SagaRunState`**.
+  Phase 3's original draft described "verify byte-equality" but the field
+  doesn't exist on Hermes today. Phase 3 step 3 now explicitly scopes
+  this as a structural addition: dataclass field + populate on every
+  `update_run_status` / `set_branch_state`. The schema marks
+  `transitions` as **required** (G19); both platforms populate it.
+- **G16 — Hermes downstream consumers of `PARTIAL_TIMEOUT` not
+  enumerated**. Phase 3 step 4 now lists the specific files needing
+  review: `saga_reducer.py`, `saga_orchestrator.py`,
+  `test_saga_review_orchestrator.py`, `review_scoring.py`. The expected
+  behavior: treat PARTIAL_TIMEOUT as incomplete-run signal (skip reduce
+  or produce partial-coverage report; don't fail).
+- **G17 — Phase 4 per-layer cost not "mechanical propagation"**. Each
+  per-layer PR bundles BRD-RT pattern work (multi-lens dispatch,
+  verdict.json, fixer multi-lens validation, lens→agent mapping) PLUS
+  the saga contract. Each PR is ~10-15 files + ~$3-15 live spend. Phase
+  4 now has an honest cost table (8 layers × ~$10 mean = ~$75 plus
+  optional full cascade ~$50-80).
+- **G18 — FRAMEWORK_SPEC_VERSION declaration vs implementation
+  semantics**. Phase 1 bumps both platforms' FRAMEWORK_SPEC_VERSION to
+  0.13.0 before implementation lands; the plan now codifies this as
+  **declaration of intent to conform**, with platforms' OWN VERSION
+  files (`platforms/<name>/VERSION`) bumping when their respective
+  implementation phases land. REVIEW_SAGA.md gets a paragraph
+  documenting this versioning semantic so future readers don't get
+  confused.
+
+**Medium gaps fixed (5):**
+
+- **G19 — `transitions` required vs optional**. Decided: **required**
+  on both platforms. Phase 3 adds it to Hermes.
+- **G20 — Break-circuit checkpoint boundaries differ by skill type**.
+  §"Break-circuit policy contract" now has a per-skill-type checkpoint
+  table: autopilot fires between phases; audit fires after fan-out
+  before synthesis; fixer fires between multi-lens validation
+  dispatches; review-team fires after fan-out before reduce.
+- **G21 — Plugin VERSION vs FRAMEWORK_SPEC_VERSION distinction**.
+  §Approach now has §"FRAMEWORK_SPEC_VERSION semantics" enumerating per
+  phase which version file changes and which stays.
+- **G22 — Phase 2 verification pass criteria split**. Verification now
+  distinguishes the **happy-path case**, the **soft-deadline /
+  break-circuit case** (clean exit 0, status PARTIAL_TIMEOUT), and the
+  **hard-timeout / SIGTERM case** (exit 124, status = last successful
+  checkpoint, NOT PARTIAL_TIMEOUT). Both timeout cases are valid
+  graceful-degradation outcomes.
+- **G23 — REVIEW_SAGA.md ↔ REVIEW_TEAM.md content boundary**. Decided
+  in §Approach: REVIEW_TEAM.md keeps the loop semantics; REVIEW_SAGA.md
+  owns the state machine. REVIEW_TEAM.md gets a one-line `> See also`
+  cross-reference; no content duplication.
+
+**Cosmetic gaps fixed (3):**
+
+- **G24 — saga.schema.json required vs optional fields**. §Approach
+  §"Journal schema" now has an explicit field-requirement table; Phase 1
+  step 2 references it.
+- **G25 — Phase 2's 9-place version fanout not enumerated**. Phase 2
+  step 6 now lists all 9 places + the sed one-liner for the 52-skill
+  frontmatter bump, with a verification count check.
+- **G26 — Hermes VERSION transition unspecified**. Phase 3 step 8 now
+  specifies `0.1.1 → 0.1.2` patch bump.
+
+**Net plan delta**:
+
+- Phase 1 step list 9 → 10 entries (added bundle re-sync step).
+- Phase 3 step list 7 → 9 entries (transitions field, consumer
+  enumeration).
+- Phase 4 step list 4 entries → narrative + cost table + per-layer
+  sequence.
+- Phase 2 verification: pass criteria expanded from one block into three
+  cases.
+- §Approach gained §"REVIEW_TEAM.md ↔ REVIEW_SAGA.md content boundary",
+  §"FRAMEWORK_SPEC_VERSION semantics", and a per-skill-type break-circuit
+  table.
+- §"Journal schema" gained the field-requirement matrix.
+
+No new risks added — the gap fixes are scope-clarification, not
+architectural changes. Existing risks R1-R10 still hold.
+
+Plan ready for implementation (this time for real).
 
 ## Cross-references
 
