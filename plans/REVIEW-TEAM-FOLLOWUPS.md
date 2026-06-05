@@ -30,9 +30,23 @@ sketched in PR #69's caching-analysis discussion.
 
 ## Follow-up items
 
-### TODO-RT0 — BRD-RT-003: operational fixes from BRD-RT-002 live verification
+### TODO-RT0 — BRD-RT-003 + BRD-RT-004: operational fixes from live verification (now generalised)
 
-- **Status:** PENDING — 2026-06-04T12:30:00Z
+- **Status:** PARTIALLY DONE — 2026-06-04T22:00:00Z
+  - **BRD-RT-003 (PR #76, D-0027): MERGED** — closed G11 (autopilot
+    timeout), G12 (per-layer cap raise), G13 (fixer multi-lens
+    dispatch rules in SKILL text).
+  - **BRD-RT-004 (this PR, D-0028): OPEN** — live re-verification of
+    BRD-RT-003 on 2026-06-04 (`logs/2026-06-04T205318/`) revealed
+    **G15**: `doc-brd-fixer` hit 600s SKILL_TIMEOUT during the
+    multi-lens parallel dispatch BRD-RT-003 introduced. Closes G15
+    by generalising the three per-type timeout variables
+    (`AUDIT_TIMEOUT`, `AUTOPILOT_TIMEOUT`, `REVIEW_TEAM_TIMEOUT`)
+    into one `ORCHESTRATOR_TIMEOUT=1800s` applied via name-match to
+    `review-team`, `*-audit`, `*-autopilot`, `*-fixer`. Pattern
+    propagates uniformly to PRD..IPLAN.
+  - **Pending: BRD-layer live re-verification** under BRD-RT-004 —
+    expected to reach 6/6 pass criteria.
 - **Source:** BRD-RT-002 live verification (Run #1 team mode + Run #2
   single_pass) on 2026-06-04. Verification confirmed verdict-chain
   consistency end-to-end (the architectural contract works) but
@@ -116,10 +130,11 @@ sketched in PR #69's caching-analysis discussion.
   (0.4.3 → 0.4.4) + plan PR + impl PR + live verification (~$5-7).
 - **Plugin version:** plugin v0.4.3 → v0.4.4. Framework spec unchanged.
   No GATE-SPEC.
-- **Decision register:** new D-0028 — "PRD-RT-001 inherits BRD-RT-002
+- **Decision register:** new D-0029 — "PRD-RT-001 inherits BRD-RT-002
   verdict-chain pattern; per-layer follow-ups for EARS-RT, BDD-RT,
   ADR-RT, SPEC-RT, TDD-RT, IPLAN-RT chain through the same pattern."
-  (D-0027 is reserved for BRD-RT-003 per TODO-RT0 above.)
+  (D-0027 was used by BRD-RT-003; D-0028 by BRD-RT-004 — see
+  `plans/DECISIONS.md`.)
 - **Next steps:** open plan PR `plans/PRD-RT-001-PLAN.md` covering the
   per-layer translation; verify against the BRD-RT-002 verification
   template; land impl PR.

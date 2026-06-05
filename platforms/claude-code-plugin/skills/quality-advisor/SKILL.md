@@ -8,7 +8,7 @@ metadata:
     - quality-assurance
   custom_fields:
     skill_category: utility
-    version: "0.4.4"
+    version: "0.4.5"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
 ---
