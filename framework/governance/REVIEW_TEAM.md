@@ -17,8 +17,10 @@ live in `REVIEW_CREWS.yaml`.
 A **review team** for a layer is:
 
 - a **crew** of **personas** (review lenses) — each a named expert viewpoint with
-  a focus and checklist (e.g. requirements, technical feasibility, testability, an
-  adversarial "what breaks this", cross-system integration);
+  a focus and checklist (e.g. requirements, technical feasibility, testability,
+  *internal stability* / "what breaks this by accident" via `chaos_engineer`,
+  *external threats* / "what does an attacker exploit on purpose" via
+  `security_engineer`, cross-system integration);
 - an **author** persona — drafts the artifact (create) and proposes fixes
   (remediate);
 - a **synthesizer** — reduces the crew's outputs into one result;
@@ -84,6 +86,37 @@ lens_score: 0-100           # this lens's readiness assessment
   "no unresolved P0/P1". The stochastic numeric score and the narrative are
   **advisory enrichment above** that floor — so a borderline artifact cannot flap
   pass/fail across runs on model variance.
+
+## Weight allocation rules
+
+For each layer's review crew, the `chaos_engineer` and `security_engineer`
+weights are biased by where each concern naturally lands at that layer.
+Four categories:
+
+- **Chaos-heavy** (chaos > security): layers where the dominant risk is
+  *accidental failure under normal operation* — reliability NFRs,
+  failure-mode acceptance criteria, deploy/rollback procedures. Examples:
+  BRD (12:8), EARS (12:8), BDD (14:6).
+- **Security-heavy** (security > chaos): layers where the dominant risk is
+  *exploitable design* — architectural trust boundaries, authn/authz
+  choices, crypto. Examples: ADR (8:12).
+- **Equal split**: layers where both axes matter equally — cross-functional
+  specifications, test design. Examples: PRD (8:7), SPEC (10:10), TDD
+  (10:10).
+- **Chaos-only**: layers where the security concern lives strictly
+  upstream — procedural deploy steps whose threat surface was decided in
+  ADR/SPEC. Examples: IPLAN (chaos 8 only).
+
+**Invariants.** Author lens weight is preserved. Auditor lens weight stays
+untouched (its prior "+security" sub-role moves out to the dedicated
+`security_engineer` lens). Total weights sum to 100 per crew. Rebalancing
+happens through a follow-up CHG, not silently. Conformance asserts the
+weights in `REVIEW_CREWS.yaml` are mirrored exactly in the agent briefs'
+per-layer tables; drift between the two is a test failure.
+
+The numeric allocations themselves live in `REVIEW_CREWS.yaml` (the single
+source of truth); this section codifies the *rules* by which those numbers
+are chosen, so future rebalances have a stable framework.
 
 ## Synthesis = reduce + narrative
 

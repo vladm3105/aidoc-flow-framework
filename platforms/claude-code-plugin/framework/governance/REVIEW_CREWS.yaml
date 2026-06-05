@@ -11,6 +11,11 @@
 #              the readiness score is their weighted average (see REVIEW_TEAM.md)
 #  The `synthesizer` persona always performs the reduce + narrative; it is not
 #  listed in a review crew.
+#
+#  Each crew carries a `# rationale:` comment explaining its chaos_engineer vs
+#  security_engineer bias. The full allocation rules are in REVIEW_TEAM.md
+#  §"Weight allocation rules". This file is the single source of truth for the
+#  numbers; agent briefs and skill pseudo-text cite it (see CHAOS-SEC-SPLIT-001).
 # =============================================================================
 
 metadata:
@@ -26,7 +31,8 @@ personas:
   - requirements_specialist        # EARS syntax, atomicity, measurability
   - tech_lead                      # technical feasibility, implementability
   - qa_lead                        # testability, coverage, verification
-  - adversary                      # devil's-advocate / failure modes / edge cases
+  - chaos_engineer                 # internal stability — failure paths, edge cases, resource exhaustion, recovery
+  - security_engineer              # external threats — threat model, trust boundaries, abuse cases, controls
   - integration_lead               # cross-system, contracts, dependencies
   - architect                      # structure, decisions, boundaries
   - product_owner                  # product scope, user value, priorities
@@ -40,25 +46,41 @@ personas:
 crews:
   BRD:
     author: business_analyst
-    review: {architect: 30, business_analyst: 30, auditor: 20, adversary: 20}
+    # rationale: Chaos-heavy at BRD (12 > 8) — reliability NFRs outweigh
+    # threat-modeling at the business-requirements level. Auditor untouched.
+    review: {architect: 30, business_analyst: 30, auditor: 20, chaos_engineer: 12, security_engineer: 8}
   PRD:
     author: product_owner
-    review: {product_owner: 30, architect: 25, tech_lead: 20, adversary: 15, auditor: 10}
+    # rationale: Equal split (8 / 7) — PRD carries both reliability and security
+    # NFRs; neither dominates. Auditor untouched.
+    review: {product_owner: 30, architect: 25, tech_lead: 20, chaos_engineer: 8, security_engineer: 7, auditor: 10}
   EARS:
     author: requirements_specialist
-    review: {requirements_specialist: 35, tech_lead: 25, qa_lead: 20, adversary: 20}
+    # rationale: Chaos-heavy at EARS (12 > 8) — failure-mode acceptance criteria
+    # are more common than abuse-case ACs.
+    review: {requirements_specialist: 35, tech_lead: 25, qa_lead: 20, chaos_engineer: 12, security_engineer: 8}
   BDD:
     author: qa_lead
-    review: {qa_lead: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+    # rationale: Chaos-heavy at BDD (14 > 6) — failure scenarios dominate Gherkin
+    # coverage; abuse-case scenarios are secondary.
+    review: {qa_lead: 35, tech_lead: 25, chaos_engineer: 14, security_engineer: 6, operator: 10, auditor: 10}
   ADR:
     author: architect
-    review: {architect: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+    # rationale: Security-heavy at ADR (12 > 8) — ADRs encode trust boundaries,
+    # authn/authz choices, and crypto decisions; security is the dominant axis.
+    review: {architect: 35, tech_lead: 25, chaos_engineer: 8, security_engineer: 12, operator: 10, auditor: 10}
   SPEC:
     author: architect
-    review: {architect: 30, tech_lead: 30, integration_lead: 20, adversary: 20}
+    # rationale: Equal split (10 / 10) — SPEC specifies both performance/
+    # resilience and security controls; both axes carry equal weight.
+    review: {architect: 30, tech_lead: 30, integration_lead: 20, chaos_engineer: 10, security_engineer: 10}
   TDD:
     author: qa_lead
-    review: {qa_lead: 35, tech_lead: 25, adversary: 20, operator: 10, auditor: 10}
+    # rationale: Equal split (10 / 10) — security_engineer co-owns SECTEST per
+    # its agent brief; failure-test cases balance security-test cases.
+    review: {qa_lead: 35, tech_lead: 25, chaos_engineer: 10, security_engineer: 10, operator: 10, auditor: 10}
   IPLAN:
     author: tech_lead
-    review: {tech_lead: 30, architect: 25, operator: 20, integration_lead: 15, auditor: 10}
+    # rationale: Chaos-only (8) — IPLAN is procedural deploy/rollback; threat
+    # model lives upstream in ADR/SPEC. Chaos covers rollback/recovery scenarios.
+    review: {tech_lead: 30, architect: 25, operator: 15, integration_lead: 12, auditor: 10, chaos_engineer: 8}
