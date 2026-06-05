@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.11.3 → 0.12.0 (CHG-gated)
+
+- **Adversary review-lens partitioned into `chaos_engineer` + `security_engineer`
+  (CHAOS-SEC-SPLIT-001, D-0030; plan in #78, impl in #79).**
+  - `framework/governance/REVIEW_CREWS.yaml`: removed `adversary` from the
+    personas registry; added `chaos_engineer` (internal stability) and
+    `security_engineer` (external threats). All 8 crews rewritten with new
+    per-layer weights (all sums = 100) and `# rationale:` comments per crew.
+    Bias: BRD/EARS chaos-heavy (12:8), BDD chaos-heavy (14:6), ADR
+    security-heavy (8:12), PRD/SPEC/TDD equal split, IPLAN chaos-only.
+  - `framework/governance/REVIEW_TEAM.md`: prose mention of `adversary`
+    updated to reference both new lenses; new `## Weight allocation rules`
+    subsection codifies the four-category allocation protocol
+    (chaos-heavy / security-heavy / equal / chaos-only).
+  - `framework/VERSION`: 0.11.3 → 0.12.0.
+  - Per-platform impact: Claude Code plugin bumped to v0.5.0 (BREAKING —
+    blackboard slot filenames change: `adversary.json` →
+    `chaos_engineer.json` + new `security_engineer.json`). Hermes
+    FRAMEWORK_SPEC_VERSION bumped to 0.12.0; Hermes' runtime persona was
+    already `chaos_engineer` so the migration was minimal (translation
+    layer removed, new persona file added). Per-platform changelogs
+    document the breaking-surface details.
+
 ### Fixed
 
 - Closed a confabulation hole in the Claude Code plugin's read-time/audit
