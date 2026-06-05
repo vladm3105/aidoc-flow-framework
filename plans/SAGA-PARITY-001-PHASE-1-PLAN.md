@@ -49,15 +49,29 @@ happens in Phase 2 (plugin) and Phase 3 (Hermes), gated on Phase 1.
    PR #81; this finishes the parts that depended on REVIEW_SAGA.md
    existing.)
 7. **Edit** `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` —
-   `0.11.3` (current local snapshot) is already `0.12.0`; set to
-   `0.13.0`.
+   `0.12.0 → 0.13.0`.
 8. **Edit** `platforms/hermes/FRAMEWORK_SPEC_VERSION` — `0.12.0 → 0.13.0`.
 9. **Edit** project `CHANGELOG.md` — entry under `[Unreleased]`
    documenting framework `0.13.0` and the lifecycle-parity goal.
 10. **Edit** `platforms/claude-code-plugin/CHANGELOG.md` — short
     entry noting `FRAMEWORK_SPEC_VERSION` bump and intent to conform.
 11. **Edit** `docs/TAGGING.md` — add a `framework/v0.13.0` release row.
-12. **Run** `tools/sync-plugin-framework.sh` — re-sync the plugin's
+12. **Edit downstream live cites of D-0005** (G-P17). The grep
+    `grep -rln 'D-0005' --include='*.md' .` finds 10 references. Two
+    are **live docs that need amendment**:
+    - `platforms/claude-code-plugin/skills/review-team/SKILL.md` — any
+      D-0005 cite should mention both D-0005 (blackboard for crew state)
+      AND D-0031 (saga.json for outer-loop state).
+    - `docs/PARITY.md` — the comparison-table cell text reading
+      `(D-0005: blackboard, no saga)` should read
+      `(D-0005 blackboard + D-0031 saga.json)` or equivalent.
+
+    The other 8 references are **frozen-history docs** (older plans:
+    `PLUGIN-MARKETPLACE-PLAN.md`, `AGENT-TEAM-PLAN.md`, `P1-*-PLAN.md`,
+    `P1-AUDIT-ucx_flow_v3.md`; historical CHANGELOG entries) — leave
+    untouched; the supersession-pointer in DECISIONS.md is enough to
+    direct future readers.
+13. **Run** `tools/sync-plugin-framework.sh` — re-sync the plugin's
     bundled `framework/` copy to include REVIEW_SAGA.md + saga.schema.json.
 
 ### Out (deferred to later phases)
@@ -171,8 +185,15 @@ verification. Both platforms must produce a journal matching
 | `current_phase` | string | Plugin enrichment: `draft` / `review` / `fixer` / `re-review` / `reduce` / `synthesize`. Helps resumability after `PARTIAL_TIMEOUT`. |
 | `retry_count` | integer | Defaults to 0; useful for resumable retries. |
 
-Platforms MAY add additional extension fields beyond these. The schema
-declares `additionalProperties: true`.
+Platforms MAY add additional extension fields beyond these at the **top
+level** and within `branches[<persona>]` / `compensation_actions[]`
+entries (the schema declares `additionalProperties: true` for those). The
+`transitions[]` entries are the **load-bearing parity artifact** — the
+schema declares `additionalProperties: false` for transition entries to
+prevent platforms from drifting on the journal's audit trail. If a
+platform genuinely needs to extend transitions (e.g., to carry a saga
+correlation ID across distributed branches), that extension goes through
+a follow-up CHG to the schema, not a unilateral platform addition.
 
 ### `branches[<persona>]` sub-object
 
@@ -304,7 +325,7 @@ Proposed full content (impl-ready):
 ```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://aidoc-flow/framework/governance/saga.schema.json",
+  "$id": "https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/saga.schema.json",
   "title": "Review Saga Journal",
   "description": "Engine-agnostic schema for the per-run review saga journal. Spec authority: framework/governance/REVIEW_SAGA.md.",
   "type": "object",
@@ -331,7 +352,7 @@ Proposed full content (impl-ready):
     "artifact_id": {
       "type": "string",
       "pattern": "^[A-Z]+-[0-9]{2}$",
-      "description": "Short artifact ID like BRD-01, PRD-02."
+      "description": "Short artifact ID like BRD-01, PRD-02. Pattern matches the 2-digit NN format mandated by framework/governance/ID_NAMING_STANDARDS.md §'Format'. If ID_NAMING_STANDARDS is ever revised to allow 3+ digits, this pattern must change in lockstep."
     },
     "layer": {
       "type": "string",
@@ -452,10 +473,19 @@ existing D-0030 entry):
      verification (CHAOS-SEC-SPLIT-001, D-0030) revealed a failure class
      D-0005 did not contemplate: **partial outer-loop state** when
      `doc-brd-autopilot` times out mid-iteration with a 5-lens crew +
-     multi-lens fixer validation. There IS something to journal at the
-     outer-loop level — phase progression, iteration count, transitions
-     between phases. D-0005's "nothing to journal" assertion is now
-     factually incomplete.
+     multi-lens fixer validation. Concrete evidence:
+     `examples/url-shortener/logs/2026-06-05T103311/elements/doc-brd-autopilot.log`
+     shows `outcome: FAIL`, `duration_sec: 1802.0`, `error: claude -p exit
+     124`, and no saga journal produced. The dual-dispatch path
+     (acceptance script's standalone audit → fixer → re-audit) succeeded
+     at total runtime 3535s — proof that the create→review→revise loop
+     *did* have intermediate state worth preserving across phase
+     boundaries, but the plugin had no place to durably record it.
+     D-0005's "nothing to journal" assertion is factually incomplete: at
+     the outer-loop level (phase progression, iteration count,
+     transitions between phases) there *is* something to journal. The
+     blackboard captured per-lens slot state correctly; what was missing
+     was per-phase state.
   2. **Lifecycle-behavior parity requirement.** The project's parity goal
      is now lifecycle-behavior parity (per `docs/PARITY.md`), not just
      output-shape parity. Achieving it requires both platforms to expose
@@ -599,9 +629,16 @@ verifiable.
 2. **Create** `framework/governance/saga.schema.json` with the schema
    from Design 2.
 3. **Edit** `plans/DECISIONS.md`:
-   - Insert D-0031 entry from Design 3 above D-0030.
+   - Insert D-0031 entry from Design 3 **above the existing D-0030 heading**
+     (newest-first ordering).
    - Append the supersession-pointer line from Design 4 to the existing
-     D-0005 entry (line 394).
+     D-0005 entry (the 2026-05-26 entry at line ≈394, "No saga for the
+     plugin review runner" — NOT the duplicate-numbered 2026-05-18 entry
+     at line ≈884). Exact insertion point: **after D-0005's `**Notes:**`
+     bullet, before the `---` separator that introduces D-0021** (current
+     layout: D-0005 lines 394-411, separator line 413, D-0021 starts line
+     415; verify by greping `^## D-0005 — No saga` and the next `^---`
+     before commit).
 4. **Edit** `framework/governance/REVIEW_TEAM.md` per Design 6 (two
    one-line cross-references).
 5. **Edit** `framework/VERSION`: `0.12.0` → `0.13.0`.
@@ -612,15 +649,28 @@ verifiable.
 8. **Edit** `docs/PARITY.md` per Design 5 (status line spec version,
    link verification).
 9. **Edit** project `CHANGELOG.md` `[Unreleased]` block with Design 7
-   project-side entry.
+   project-side entry. **Insertion order: newest-first** — the new
+   "Framework Spec 0.12.0 → 0.13.0" entry goes **above** the existing
+   CHAOS-SEC-SPLIT-001 "Framework Spec 0.11.3 → 0.12.0" entry (G-P19).
 10. **Edit** `platforms/claude-code-plugin/CHANGELOG.md` `[Unreleased]`
-    block with Design 7 plugin-side entry.
+    block with Design 7 plugin-side entry. Newest-first ordering: the
+    new `FRAMEWORK_SPEC_VERSION` bump entry goes **above** any existing
+    `[Unreleased]` content (currently the CHAOS-SEC-SPLIT-001 entries).
 11. **Edit** `docs/TAGGING.md` with Design 8 release row.
-12. **Run** `tools/sync-plugin-framework.sh` — re-syncs the plugin's
+12. **Edit live downstream D-0005 cites** (per Scope item 12, G-P17):
+    - `platforms/claude-code-plugin/skills/review-team/SKILL.md`:
+      anywhere D-0005 is cited, expand to `D-0005 (blackboard for
+      crew-state) + D-0031 (saga.json for outer-loop state)` per the
+      partition documented in REVIEW_SAGA.md.
+    - `docs/PARITY.md` comparison table cell `(D-0005: blackboard, no
+      saga)` → `(D-0005 blackboard + D-0031 saga.json)`.
+    - Frozen-history docs (older plans, historical CHANGELOG entries):
+      leave untouched.
+13. **Run** `tools/sync-plugin-framework.sh` — re-syncs the plugin's
     `framework/` bundle so REVIEW_SAGA.md + saga.schema.json + updated
     REVIEW_TEAM.md are byte-identical with the canonical framework copy.
     Commits the resulting bundle changes.
-13. **Verify** GATE-SPEC locally: `python3 tests/chg/spec_gate.py`
+14. **Verify** GATE-SPEC locally: `python3 tests/chg/spec_gate.py`
     should report green (`framework/VERSION` + `CHANGELOG.md` both
     updated).
 
@@ -690,13 +740,88 @@ print('saga.schema.json: schema-self-validation OK')
 
 Pass criteria: schema parses + has expected required fields.
 
-### Step E — Plugin bundle byte-equality
+### Step D2 — Schema fixture smoke test (G-P22)
 
-```sh
-diff -r framework/ platforms/claude-code-plugin/framework/ | head -5
+Beyond syntax self-validation, smoke-test the schema's intent: a
+minimal-valid example accepts; a minimal-invalid example rejects. Phase 3
+will add full cross-platform fixture validation; Phase 1's smoke test
+catches design errors before Phase 2/3 build on the schema.
+
+```python
+import json
+from pathlib import Path
+
+# Minimal-valid saga.json — should accept (all required fields present,
+# all enums valid). No external dependency: hand-validated against the
+# required-fields list, not a full JSON Schema validator.
+valid = {
+    "review_run_id": "abc1234567890def",
+    "artifact_id": "BRD-01",
+    "layer": "01_BRD",
+    "personas_requested": ["business_analyst"],
+    "status": "PREPARED",
+    "iteration": 1,
+    "created_at": "2026-06-05T13:00:00+00:00",
+    "updated_at": "2026-06-05T13:00:00+00:00",
+    "branches": {},
+    "transitions": [],
+    "compensation_actions": [],
+}
+
+# Minimal-invalid saga.json — missing the required `status` field; also
+# uses an invalid layer name. A future jsonschema-based validation in
+# Phase 3 will reject this; Phase 1 hand-asserts shape mismatch.
+invalid = {
+    "review_run_id": "abc1234567890def",
+    "artifact_id": "BRD-01",
+    "layer": "99_FOO",          # not in the layer enum
+    "personas_requested": [],
+    # status missing
+    "iteration": 0,             # below minimum
+    "created_at": "not-a-date",
+    "updated_at": "not-a-date",
+    "branches": {},
+    "transitions": [],
+    "compensation_actions": [],
+}
+
+schema = json.loads(Path("framework/governance/saga.schema.json").read_text())
+for key in schema["required"]:
+    assert key in valid, f"valid example missing required field: {key}"
+# The invalid example must trip at least 2 schema rules (layer enum + status missing)
+assert invalid["layer"] not in schema["properties"]["layer"]["enum"]
+assert "status" not in invalid
+print("saga.schema.json: smoke test OK")
 ```
 
-Pass criteria: zero output (the bundle equals canonical post-sync).
+Pass criteria: both prints produce OK; no AssertionError. (If a Python
+JSON Schema validator like `jsonschema` is available in the project,
+prefer it over the hand-assert; current project doesn't seem to ship one
+as a hard dep, so this smoke test stays dependency-free.)
+
+### Step E — Plugin bundle byte-equality (G-P18 — per-subtree)
+
+The sync only copies `SUBTREES=(layers governance registry)` + the single
+root file `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` (verified via reading
+`tools/sync-plugin-framework.sh`). A naïve `diff -r framework/
+platforms/claude-code-plugin/framework/` would show false positives
+(e.g., `framework/VERSION` is not in the bundle's synced subtrees). Use
+per-subtree comparison:
+
+```sh
+for sub in layers governance registry; do
+  diff -r "framework/$sub" "platforms/claude-code-plugin/framework/$sub" \
+    || echo "DRIFT in $sub"
+done
+diff framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md \
+     platforms/claude-code-plugin/framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md \
+  || echo "DRIFT in root file"
+```
+
+Pass criteria: zero `DRIFT` lines AND zero `diff` output. Alternatively,
+rely on the existing conformance test
+`test_plugin_framework_bundle.test_bundle_is_byte_identical` (which Step B
+already runs) — it performs the canonical per-subtree comparison.
 
 ### Step F — Inspection invariants
 
@@ -799,6 +924,83 @@ Pass criteria: cross-references resolve; D-0031 entry includes
   exactly this field name. ✓
 
 Plan ready for impl.
+
+### Pass 4 — 2026-06-05T13:45:00Z (post-draft gap-review)
+
+After the initial PR #83 was opened, a fresh cross-check against the
+codebase surfaced 9 gaps. All folded in place via patches before merge
+(this Pass-4 amendment is included in PR #83 itself, not a separate PR).
+
+**Critical gaps fixed (3):**
+
+- **G-P15 — Scope item 7 wording corrected**. Old text said
+  `0.11.3 (current local snapshot) is already 0.12.0; set to 0.13.0`
+  (confusing leftover from an earlier draft). New text reads simply
+  `0.12.0 → 0.13.0`. Verified via `cat platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION`
+  showing the actual current value is 0.12.0.
+- **G-P16 — `artifact_id` regex constraint documented**. The pattern
+  `^[A-Z]+-[0-9]{2}$` matches exactly 2 digits, per
+  `framework/governance/ID_NAMING_STANDARDS.md:5` ("NN is a sequential
+  two-digit number"). The schema's `description` field now spells this
+  out and notes that any future change to ID_NAMING_STANDARDS allowing
+  3+ digits must change this regex in lockstep.
+- **G-P17 — Downstream D-0005 cite updates added as Step 12**. The
+  grep found 10 D-0005 references across the repo. Two live docs
+  amend in Phase 1:
+  - `platforms/claude-code-plugin/skills/review-team/SKILL.md`
+  - `docs/PARITY.md` comparison-table cell
+  Frozen-history docs (older plans, historical CHANGELOG entries) stay
+  untouched; the supersession-pointer in DECISIONS.md is sufficient for
+  future readers.
+
+**Medium gaps fixed (5):**
+
+- **G-P18 — Verification Step E now uses per-subtree comparison**
+  matching the actual sync script's `SUBTREES=(layers governance
+  registry)` set, avoiding false positives from comparing
+  `framework/VERSION` (which isn't synced).
+- **G-P19 — CHANGELOG insertion ordering explicit**. Step 9/10 now
+  specify "newest-first" — new entries go ABOVE prior `[Unreleased]`
+  content (above the CHAOS-SEC-SPLIT-001 entries).
+- **G-P20 — D-0031 evidence strengthened with concrete log artifact
+  and runtime numbers**. The "Why" bullet now cites
+  `examples/url-shortener/logs/2026-06-05T103311/elements/doc-brd-autopilot.log`
+  (`outcome: FAIL`, `duration_sec: 1802.0`, `exit 124`) and the
+  contrast with the dual-dispatch path's 3535s success.
+- **G-P21 — D-0005 supersession-pointer insertion location precise**.
+  Step 3 now says "after D-0005's `**Notes:**` bullet, before the `---`
+  separator that introduces D-0021", with line-range guidance (394-411,
+  separator at 413, D-0021 at 415).
+- **G-P22 — Schema fixture smoke test added as Verification Step D2**.
+  Minimal-valid and minimal-invalid saga.json examples; hand-asserts
+  required-field presence + enum violations to catch design errors in
+  Phase 1 before Phase 3 builds on the schema.
+
+**Cosmetic gaps fixed (2):**
+
+- **G-P23 — `additionalProperties: false` on `transitions[]` noted as
+  a deliberate parity-tightening choice**. REVIEW_SAGA.md content gains
+  a paragraph explaining that the transitions log is the load-bearing
+  parity artifact and platforms cannot add extension fields
+  unilaterally (CHG required).
+- **G-P24 — JSON Schema `$id` URL replaced with resolvable form**:
+  `https://github.com/vladm3105/aidoc-flow-framework/blob/main/framework/governance/saga.schema.json`.
+
+**Net plan delta**:
+
+- Step sequence 13 → 14 entries (added downstream cite step).
+- Scope items 12 → 13 entries (added downstream cite scope).
+- Verification 6 → 7 steps (added schema fixture smoke test D2).
+- REVIEW_SAGA.md content (Design 1) gains a paragraph on transitions
+  extension policy + artifact_id format constraint.
+- saga.schema.json content (Design 2) updates: artifact_id description,
+  $id URL.
+- D-0031 entry (Design 3) gains concrete log artifact citations.
+
+No new risks added — the gap fixes are documentation precision and
+correctness, not architectural changes. R1-R8 still hold.
+
+Plan ready for impl (Pass-4 amendments folded in).
 
 ## Cross-references
 
