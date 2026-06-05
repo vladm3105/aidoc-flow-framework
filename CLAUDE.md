@@ -42,8 +42,19 @@ verify → land:
 
 1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
    code.
-2. **Review (≥2 passes)** — record findings in the plan's `## Review log`;
-   harden until a pass finds nothing.
+2. **Two-cycle gap review (mandatory)** — once a plan is created, it MUST
+   complete at least **two full review cycles** before implementation begins.
+   Each cycle = *review to identify gaps → patch the plan to address every
+   gap → re-review the patched plan*. The plan is ready for impl only when
+   the second cycle's re-review surfaces no new substantive gaps (or all
+   surfaced gaps have been folded into the plan via further patches).
+   Record every cycle in the plan's `## Review log` with an ISO-stamped
+   `Pass N` entry that lists the gaps found and how each was resolved.
+   Cycle N+1 must always re-validate that cycle N's patches did not
+   introduce new inconsistencies. Continue cycling until a review surfaces
+   nothing; minimum is two cycles. Skipping the second cycle is forbidden
+   — the rule exists because every plan touched in this repo so far has
+   surfaced material gaps in the second pass that the first pass missed.
 3. **Implement**, updating the plan with ISO-stamped progress.
 4. **Verify** — run the conformance suite + the platform's own tests; nothing
    is "done" until they pass.
