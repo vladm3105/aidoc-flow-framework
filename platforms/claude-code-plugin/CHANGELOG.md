@@ -16,6 +16,43 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **Operational fixes from BRD-RT-002 live verification (BRD-RT-003, D-0027).**
+  Closes three operational gaps surfaced by the 2026-06-04 BRD-RT-002 live
+  verification (Run #1 team mode hit 4/6 pass criteria; the 2 FAILs were
+  operational, not architectural). Fixes:
+  - **G11 — Autopilot timeout extended.** `doc-*-autopilot` in team mode
+    runs the entire `create→review→revise` loop (drafter, audit, fixer,
+    re-audit) inside one outer claude process. Run #1's
+    `doc-brd-autopilot` hit the default 600s SKILL_TIMEOUT (exit 124).
+    `tests/scripts/test-acceptance.sh` introduces `AUTOPILOT_TIMEOUT=1800`
+    applied via name-match (`*-autopilot`) in `_pick_timeout_for`. Plan
+    summary banner updated.
+  - **G12 — Per-layer cap raised 1800s → 3600s.** Even with the autopilot
+    timeout fixed, a multi-iteration fix cycle (3 iterations × ~25 min)
+    pushes layer wall-clock past 60 minutes. Lineage: 900s (BRD-RT-001) →
+    1800s (BRD-RT-002) → 3600s (BRD-RT-003). Existing inner backstops
+    (per-skill timeouts, `--cost-cap`, the framework's
+    `MAX_TOTAL_OUTPUT_TOKENS`) remain.
+  - **G13 — Fixer multi-lens dispatch made explicit.** Run #1's fixer ran
+    487s and produced no `<persona>.fix_<N>.json` slots because the
+    BRD-RT-001 SKILL text said "dispatch *the* responsible lens" — but
+    the single P1 finding spanned `architect + business_analyst`. The
+    model bailed on lens validation. `doc-brd-fixer/SKILL.md` Remediate
+    Mode §2 now codifies dispatch-decision rules: single-lens → dispatch
+    that one; multi-lens → dispatch **all** in parallel; orphan finding
+    → dispatch the layer's author lens as default. §4 updates the slot
+    naming and persistence guarantees per dispatched lens.
+  - **Synthesizer schema clarification.** `agents/synthesizer.md`
+    documents the `findings[].personas` field (consumed by `doc-*-fixer`
+    for multi-lens dispatch) — Run #1's data already had this; the
+    SKILL spec catches up.
+
+  Plugin v0.4.3 → v0.4.4. Framework spec unchanged (0.11.3). No
+  GATE-SPEC. See `plans/REVIEW-TEAM-FOLLOWUPS.md` TODO-RT0 for the gap
+  history. Live re-verification (~$7, ~25-30 min) should reach 6/6 pass
+  criteria on the BRD layer; the same name-match + cap apply to PRD..IPLAN
+  once propagated.
+
 - **Verdict-chain consistency wired through written reports (BRD-RT-002, D-0026).**
   Closes five gaps surfaced by the BRD-RT-001 live verification runs.
   The synthesizer agent (`agents/synthesizer.md`) now writes a

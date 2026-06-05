@@ -64,21 +64,27 @@ NEGATIVE_FIXTURES_DIR="$FRAMEWORK/tests/acceptance/fixtures/negative"
 DEFAULT_PROFILE_SRC="$FRAMEWORK/framework/governance/PROFILE-TEMPLATE.yaml"
 FRAMEWORK_CREWS_FALLBACK="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 
-# Per-layer runtime cap. Raised from 900s (BRD-RT-001) to 1800s
-# (BRD-RT-002 / D-0026) because team-mode audits internally dispatch
-# a 4-lens crew + synthesizer; one layer with one fix iteration
-# legitimately runs 17-25 minutes.
-MAX_LAYER_SEC=1800   # 30 minutes per layer
+# Per-layer runtime cap. Raised again in BRD-RT-003 / D-0027 from 1800s
+# to 3600s: an autopilot that orchestrates a create→review→revise loop
+# (audit + fixer + re-audit) legitimately runs 30-45 min per layer in
+# team mode, and a multi-iteration fix cycle pushes that to ~60 min.
+# Lineage: 900s (BRD-RT-001) → 1800s (BRD-RT-002) → 3600s (BRD-RT-003).
+MAX_LAYER_SEC=3600   # 60 minutes per layer
 
 # Per-skill timeout (B4). review-team gets its own larger budget because
 # it orchestrates multi-persona work and legitimately runs longer.
 # Audit skills (BRD-RT-002): doc-*-audit in team mode also orchestrates
-# a sub-team (4 review subagents + synthesizer), so it gets AUDIT_TIMEOUT
-# instead of the default SKILL_TIMEOUT.
-SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"             # 10 min default
-AUDIT_TIMEOUT="${AUDIT_TIMEOUT:-1200}"             # 20 min for doc-*-audit
-REVIEW_TEAM_TIMEOUT="${REVIEW_TEAM_TIMEOUT:-1800}" # 30 min
-AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"             # 10 min for agents
+# a sub-team (4 review subagents + synthesizer), so it gets AUDIT_TIMEOUT.
+# Autopilot skills (BRD-RT-003): doc-*-autopilot in team mode runs the
+# whole create→review→revise loop (drafter + audit + fixer + re-audit)
+# inside one outer claude process, so it needs AUTOPILOT_TIMEOUT — the
+# longest per-skill cap. Live verification on 2026-06-04 showed Run #1's
+# doc-brd-autopilot hit the 600s SKILL_TIMEOUT and was killed (exit 124).
+SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                 # 10 min default
+AUDIT_TIMEOUT="${AUDIT_TIMEOUT:-1200}"                 # 20 min for doc-*-audit
+AUTOPILOT_TIMEOUT="${AUTOPILOT_TIMEOUT:-1800}"         # 30 min for doc-*-autopilot
+REVIEW_TEAM_TIMEOUT="${REVIEW_TEAM_TIMEOUT:-1800}"     # 30 min
+AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                 # 10 min for agents
 
 # Total token budget for the whole run (A8). When the cumulative
 # tokens_out across all elements exceeds this, abort with FAIL.
@@ -360,6 +366,13 @@ _pick_timeout_for() {
     # than the default per-skill timeout. Applied uniformly across
     # layers so the pattern propagates cleanly to PRD..IPLAN.
     echo "$AUDIT_TIMEOUT"
+  elif [[ "$name" == *-autopilot ]]; then
+    # BRD-RT-003: doc-*-autopilot in team mode runs the entire
+    # create→review→revise loop (drafter + audit + fixer + re-audit)
+    # inside one outer claude process. Live verification on 2026-06-04
+    # showed the default 600s SKILL_TIMEOUT killed doc-brd-autopilot
+    # mid-iteration (exit 124). 30 min budget tolerates one fix cycle.
+    echo "$AUTOPILOT_TIMEOUT"
   else
     echo "$SKILL_TIMEOUT"
   fi
@@ -1891,7 +1904,7 @@ echo "Phases: ${PHASES_TO_RUN[*]}"
 [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
 echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
 echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
-echo "Per-skill timeout: ${SKILL_TIMEOUT}s (doc-*-audit ${AUDIT_TIMEOUT}s, review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
+echo "Per-skill timeout: ${SKILL_TIMEOUT}s (doc-*-audit ${AUDIT_TIMEOUT}s, doc-*-autopilot ${AUTOPILOT_TIMEOUT}s, review-team ${REVIEW_TEAM_TIMEOUT}s, agents ${AGENT_TIMEOUT}s)"
 if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
   echo "(No LLM calls will be made; LLM-dependent elements will SKIP.)"
 fi

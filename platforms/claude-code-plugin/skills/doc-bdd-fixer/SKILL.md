@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.4.3"
+    version: "0.4.4"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
