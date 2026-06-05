@@ -28,7 +28,14 @@ graduation.
   a single **`ORCHESTRATOR_TIMEOUT=1800s`** applied uniformly to every
   skill that dispatches a sub-team in team mode. Identified by name
   pattern in `tests/scripts/test-acceptance.sh:_pick_timeout_for`:
-    `review-team` ∨ `*-audit` ∨ `*-autopilot` ∨ `*-fixer`
+    `review-team` ∨ `doc-*-audit` ∨ `doc-*-autopilot` ∨ `doc-*-fixer`
+  The globs are **anchored to the `doc-*-` prefix** (not bare
+  `*-audit` etc.) so non-orchestrator utility skills with similar
+  suffixes — notably `security-audit`, a single-pass leaf skill —
+  keep the default `SKILL_TIMEOUT`. Inspection-confirmed: the
+  intended set is exactly the 9 layer + CHG skills per pattern
+  (BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN/CHG × 3 operations + 1
+  `review-team` = 28 orchestrator skills total).
   Leaf skills (no sub-team dispatch) keep the 600s `SKILL_TIMEOUT`.
   Phase 4.1 agents keep `AGENT_TIMEOUT=600s`. The per-layer outer cap
   (`MAX_LAYER_SEC=3600s`, from BRD-RT-003) remains as the wall-clock

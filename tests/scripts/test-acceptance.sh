@@ -365,16 +365,23 @@ _pick_timeout_for() {
   # BRD-RT-004 / D-0028: orchestrator skills (anything that internally
   # dispatches a sub-team in team mode) get ORCHESTRATOR_TIMEOUT.
   # Identified by name pattern:
-  #   review-team           — the dispatch primitive itself
-  #   *-audit               — fans out N review-lens Task subagents + synthesizer
-  #   *-autopilot           — runs create→review→revise loop inside one process
-  #   *-fixer               — dispatches N lens-validator Task subagents on
-  #                           multi-lens findings (G15, BRD-RT-002 Run #1)
+  #   review-team             — the dispatch primitive itself
+  #   doc-*-audit             — fans out N review-lens Task subagents + synthesizer
+  #   doc-*-autopilot         — runs create→review→revise loop inside one process
+  #   doc-*-fixer             — dispatches N lens-validator Task subagents on
+  #                             multi-lens findings (G15, BRD-RT-002 Run #1)
+  #
+  # Globs are anchored to the `doc-*-` prefix (not bare `*-audit` etc.)
+  # to avoid catching non-orchestrator utilities like `security-audit`,
+  # which is a single-pass leaf skill — confirmed by inspection: its
+  # SKILL.md does not dispatch Task subagents (G18, gap analysis of
+  # PR #77). The 9 layer + CHG skills per pattern are the intended set.
+  #
   # Pattern reusable for PRD..IPLAN — name-match applies uniformly.
   local kind="$1" name="$2"
   if [[ "$kind" == "agent" ]]; then
     echo "$AGENT_TIMEOUT"
-  elif [[ "$name" == "review-team" || "$name" == *-audit || "$name" == *-autopilot || "$name" == *-fixer ]]; then
+  elif [[ "$name" == "review-team" || "$name" == doc-*-audit || "$name" == doc-*-autopilot || "$name" == doc-*-fixer ]]; then
     echo "$ORCHESTRATOR_TIMEOUT"
   else
     echo "$SKILL_TIMEOUT"
@@ -1907,7 +1914,7 @@ echo "Phases: ${PHASES_TO_RUN[*]}"
 [[ -n "$TO_LAYER" ]] && echo "To layer: $TO_LAYER"
 echo "Live: $([[ $LIVE_FLAG == 1 ]] && echo yes || echo no)"
 echo "Cost cap: $MAX_TOTAL_OUTPUT_TOKENS tokens output"
-echo "Per-skill timeout: ${SKILL_TIMEOUT}s (orchestrators ${ORCHESTRATOR_TIMEOUT}s [review-team, doc-*-{audit,autopilot,fixer}], agents ${AGENT_TIMEOUT}s)"
+echo "Per-skill timeout: ${SKILL_TIMEOUT}s | orchestrators ${ORCHESTRATOR_TIMEOUT}s (review-team, doc-*-{audit,autopilot,fixer}) | agents ${AGENT_TIMEOUT}s"
 if [[ "$LIVE_FLAG" != "1" ]] && [[ -z "$MOCK_SOURCE" ]]; then
   echo "(No LLM calls will be made; LLM-dependent elements will SKIP.)"
 fi
