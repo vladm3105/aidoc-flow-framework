@@ -3,7 +3,7 @@
   "review_mode": "team",
   "readiness_score": 88.0,
   "coverage": {
-    "ran": ["adversary", "architect", "auditor", "business_analyst"],
+    "ran": ["architect", "auditor", "business_analyst", "chaos_engineer", "security_engineer"],
     "missing": [],
     "coverage_ratio": 1.0,
     "low_confidence": false
@@ -16,7 +16,7 @@
       "location": "BRD.01.04.0a13",
       "message": "Success metric lacks a measurable target",
       "recommendation": "Add a quantified KPI with a baseline and a target",
-      "personas": ["business_analyst", "adversary"]
+      "personas": ["business_analyst", "chaos_engineer"]
     },
     {
       "id": "9c2e",
@@ -24,7 +24,7 @@
       "location": "BRD.01.05.7ce7",
       "message": "A peak-load assumption is unstated",
       "recommendation": "Record the peak-load assumption and its source",
-      "personas": ["adversary"]
+      "personas": ["chaos_engineer"]
     }
   ]
 }

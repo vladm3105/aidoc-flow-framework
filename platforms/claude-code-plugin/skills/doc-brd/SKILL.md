@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.5"
-    framework_spec_version: "0.11.3"
+    version: "0.5.0"
+    framework_spec_version: "0.12.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
 ---
@@ -149,7 +149,7 @@ Most BRDs are authored from stakeholder input — keep the default
 
 ## Validation
 
-**Validator framing (`review_mode`-aware).** The structural checks below are the **deterministic floor** and run in every mode. In `team` mode the *content-quality* review is performed by `../doc-brd-audit/SKILL.md` fanning out the BRD crew (`architect`/`business_analyst`/`auditor`/`adversary`); in `single_pass` mode the audit applies every lens in one pass. Either way this skill (the author) does not score the artifact — it produces it.
+**Validator framing (`review_mode`-aware).** The structural checks below are the **deterministic floor** and run in every mode. In `team` mode the *content-quality* review is performed by `../doc-brd-audit/SKILL.md` fanning out the BRD crew (`architect`/`business_analyst`/`auditor`/`chaos_engineer`/`security_engineer`); in `single_pass` mode the audit applies every lens in one pass. Either way this skill (the author) does not score the artifact — it produces it.
 
 **This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/01_BRD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 

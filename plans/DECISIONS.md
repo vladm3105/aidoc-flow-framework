@@ -10,6 +10,53 @@ graduation.
 
 ---
 
+## D-0030 — Partition `adversary` lens into `chaos_engineer` + `security_engineer`
+
+- **Date:** 2026-06-05T10:00:00Z
+- **PR:** CHAOS-SEC-SPLIT-001 (plan: `plans/CHAOS-SEC-SPLIT-001-PLAN.md`,
+  merged PR #78; impl: this PR).
+- **Decision:** Split the single `adversary` review-lens into two
+  narrowly-scoped lenses aligned with intent — `chaos_engineer` (internal
+  stability: failure paths, edge cases, race conditions, resource
+  exhaustion, recovery) and `security_engineer` (external threats: trust
+  boundaries, abuse cases, missing authn/authz/integrity controls,
+  attack surface). Promote `agents/security-engineer.md` from transitive
+  auditor sub-role to first-class crew lens; rename
+  `agents/adversary.md` → `agents/chaos-engineer.md`. Per-layer crew
+  weights redistributed in `REVIEW_CREWS.yaml` across 8 crews (all sums
+  still 100). Plugin SemVer-major 0.4.5 → 0.5.0 (BREAKING — slot
+  filenames change).
+- **Why:** The single `adversary` lens conflated two structurally
+  different review intents — what breaks the system *by accident*
+  (chaos engineering) vs what an actor exploits *on purpose* (external
+  threat modeling). Even the agent's own description called itself
+  "devil's-advocate / chaos lens" while explicitly deferring half its
+  scope ("deep security") to the `security_engineer` agent — which
+  itself existed but wasn't a crew lens. Splitting gives: (a)
+  traceable findings (verdict.json's `lens_scores` exposes which axis
+  is failing), (b) targeted fixer dispatch (chaos validates with stress
+  scenarios; security validates with threat models), (c) focused
+  persona prompts instead of the 5-bucket grab-bag that deferred half
+  its own scope.
+- **Weight allocation method** (codified in `REVIEW_TEAM.md` §"Weight
+  allocation rules"): chaos-heavy at BRD/EARS/BDD (reliability NFRs +
+  failure scenarios dominate); security-heavy at ADR (architectural
+  decisions encode trust boundaries); equal split at PRD/SPEC/TDD;
+  chaos-only at IPLAN (security lives upstream in ADR/SPEC). Author and
+  auditor weights untouched (auditor's "+security" sub-role moves out
+  to the dedicated security_engineer lens).
+- **Rationale propagation** — five places (REVIEW_CREWS.yaml comments,
+  REVIEW_TEAM.md §Weight allocation rules, agent briefs' per-layer
+  tables, audit-skill pseudo-text, CHANGELOG). Single source of truth
+  is REVIEW_CREWS.yaml; conformance test enforces drift detection.
+- **Hermes platform** (separate PR) already uses `chaos_engineer` as
+  its internal runtime persona name with a translation layer back to
+  framework's `adversary`. This spec change removes the translation;
+  Hermes' migration is dropping the translation + adding the new
+  `security_engineer` lens.
+
+---
+
 ## D-0028 — One ORCHESTRATOR_TIMEOUT for every sub-team-dispatching skill
 
 - **Date:** 2026-06-04T21:50:00Z

@@ -41,28 +41,28 @@ creation:
 
 review:
   brd:
-    personas: [architect, auditor, business_analyst, chaos_engineer, fact_checker, chairperson]
+    personas: [architect, auditor, business_analyst, chaos_engineer, security_engineer, fact_checker, chairperson]
     mode: sequential
   prd:
-    personas: [architect, auditor, tech_lead, product_owner, chaos_engineer]
+    personas: [architect, auditor, tech_lead, product_owner, chaos_engineer, security_engineer]
     mode: sequential
   ears:
-    personas: [requirements_specialist, tech_lead, qa_lead, chaos_engineer, integration_lead]
+    personas: [requirements_specialist, tech_lead, qa_lead, chaos_engineer, security_engineer, integration_lead]
     mode: sequential
   bdd:
-    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
+    personas: [qa_lead, tech_lead, chaos_engineer, security_engineer, operator, auditor]
     mode: sequential
   adr:
-    personas: [architect, tech_lead, operator, auditor, chaos_engineer]
+    personas: [architect, tech_lead, operator, auditor, chaos_engineer, security_engineer]
     mode: sequential
   spec:
-    personas: [tech_lead, architect, chaos_engineer, operator, integration_lead]
+    personas: [tech_lead, architect, chaos_engineer, security_engineer, operator, integration_lead]
     mode: sequential
   tdd:
-    personas: [qa_lead, tech_lead, chaos_engineer, operator, auditor]
+    personas: [qa_lead, tech_lead, chaos_engineer, security_engineer, operator, auditor]
     mode: sequential
   iplan:
-    personas: [tech_lead, architect, operator, integration_lead, auditor]
+    personas: [tech_lead, architect, operator, integration_lead, auditor, chaos_engineer]
     mode: sequential
 
 remediation:

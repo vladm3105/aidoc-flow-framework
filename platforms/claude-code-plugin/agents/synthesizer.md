@@ -83,8 +83,8 @@ parseable. Do not invent fields; do not nest beyond what is shown.
   "content_score": 83,
   "structural_status": "PASS",
   "coverage": {
-    "expected": 4,
-    "ran": 4,
+    "expected": 5,
+    "ran": 5,
     "quorum_met": true
   },
   "blocking_findings_count": 2,
@@ -92,7 +92,8 @@ parseable. Do not invent fields; do not nest beyond what is shown.
     "architect": 93,
     "business_analyst": 82,
     "auditor": 92,
-    "adversary": 62
+    "chaos_engineer": 71,
+    "security_engineer": 68
   },
   "findings": [
     {

@@ -95,12 +95,13 @@ Beyond the nine lifecycle agents, two **review lenses** support the multi-person
 
 | Lens | Model | Access | Role |
 |------|-------|--------|------|
-| `adversary` | opus | read-only | devil's-advocate / chaos — failure modes, edge cases, unstated assumptions |
+| `chaos-engineer` | opus | read-only | internal-stability lens — failure modes, edge cases, race conditions, resource exhaustion, recovery |
+| `security-engineer` | opus | read-only | external-threat lens — threat model, trust boundaries, abuse cases, missing authn/authz/integrity controls |
 | `synthesizer` | sonnet | read-only | chairperson — reduces the crew's blackboard slots into one scored, coverage-aware report |
 
 The remaining framework lenses map onto the lifecycle agents (e.g. `qa_lead` →
 `test-architect`; `architect`/`tech_lead`/`integration_lead` → `solutions-architect`;
-`auditor` → `traceability-auditor`/`security-engineer`); see the full mapping in
+`auditor` → `traceability-auditor`); see the full mapping in
 `../skills/review-team/SKILL.md`. The crew fans out as `Task` subagents writing to
 the git-ignored `.aidoc/review/` blackboard; the `synthesizer` reduces the slots
 and the gate stays the deterministic structural floor + no unresolved P0/P1.

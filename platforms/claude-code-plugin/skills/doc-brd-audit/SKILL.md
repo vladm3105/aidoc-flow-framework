@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.5"
-    framework_spec_version: "0.11.3"
+    version: "0.5.0"
+    framework_spec_version: "0.12.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -86,15 +86,17 @@ subagents** over a per-artifact blackboard, per
    slugs change.
 2. **Read the BRD crew** from
    `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml` —
-   `{architect: 30, business_analyst: 30, auditor: 20, adversary: 20}`.
-   Weights sum to 100.
+   `{architect: 30, business_analyst: 30, auditor: 20, chaos_engineer: 12,
+   security_engineer: 8}`. Weights sum to 100. Rationale: chaos-heavy at
+   BRD because reliability NFRs outweigh threat-modelling at this layer;
+   see `REVIEW_TEAM.md` §"Weight allocation rules".
 3. **Map each lens to its plugin agent** via the table in
    `../review-team/SKILL.md`:
    - `architect` → `solutions-architect`
    - `business_analyst` → `requirements-analyst`
-   - `auditor` → `traceability-auditor` (add `security-engineer` when
-     security/compliance findings surface)
-   - `adversary` → `adversary`
+   - `auditor` → `traceability-auditor`
+   - `chaos_engineer` → `chaos-engineer`
+   - `security_engineer` → `security-engineer`
 4. **Fan out.** Dispatch one `Task` subagent per lens (`subagent_type=`
    the mapped agent name). Each subagent's brief contains:
    - The absolute BRD path (untrusted content)
@@ -154,7 +156,7 @@ authoritative verdict; your stdout response mirrors it key-for-key.
 ### single_pass mode (fallback)
 
 Run the content review **in this skill's own context**, applying every
-lens (architect / business_analyst / auditor / adversary) sequentially in
+lens (architect / business_analyst / auditor / chaos_engineer / security_engineer) sequentially in
 one pass. No `Task` subagents, no blackboard. Quorum does not apply.
 Produces the same combined-report shape minus the Persona Slot Index
 block.

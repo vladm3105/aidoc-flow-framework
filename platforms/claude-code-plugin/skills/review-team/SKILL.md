@@ -10,8 +10,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.4.5"
-    framework_spec_version: "0.11.3"
+    version: "0.5.0"
+    framework_spec_version: "0.12.0"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
 ---
@@ -57,8 +57,9 @@ the closest agent with that lens brief):
 | `architect`, `tech_lead`, `integration_lead` | `solutions-architect` |
 | `qa_lead` | `test-architect` |
 | `operator` | `devops-release-engineer` |
-| `auditor` | `traceability-auditor` (+ `security-engineer` for security/compliance) |
-| `adversary` | `adversary` |
+| `auditor` | `traceability-auditor` |
+| `chaos_engineer` | `chaos-engineer` |
+| `security_engineer` | `security-engineer` |
 | `synthesizer` | `synthesizer` |
 | `drafter` (create) | the layer's author agent |
 | `fixer` (remediate) | `software-engineer` / `../doc-<layer>-fixer/SKILL.md` |
@@ -77,7 +78,7 @@ Each slot is the framework **persona-output contract**:
 
 ```json
 {
-  "persona": "adversary",
+  "persona": "chaos_engineer",
   "findings": [
     {"id": "<stable id>", "priority": "P0|P1|P2|P3",
      "location": "<section / element id>", "message": "<what is wrong>",
@@ -150,7 +151,7 @@ framework defaults. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPT
 
 - Model + scoring/gate contract: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`
 - Per-layer crews + weights: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml`
-- Lens agents: `adversary`, `synthesizer` (+ the lifecycle agents in `agents/`)
+- Lens agents: `chaos-engineer`, `security-engineer`, `synthesizer` (+ the lifecycle agents in `agents/`)
 - Structural gate: `../doc-validator/SKILL.md`, `../doc-<layer>-audit/SKILL.md`
 - Remediation loop: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_REMEDIATION_FLOW.md`
 - Untrusted-input handling: `${CLAUDE_PLUGIN_ROOT}/framework/governance/SECURITY_REVIEW.md`
