@@ -119,9 +119,9 @@ deterministic gate, and reduced findings).
 
 | Concern | Plugin | Hermes |
 |---------|--------|--------|
-| Crew runtime | `Task` subagents (`review-team` skill; lenses incl. `adversary`, `synthesizer`) | `saga_orchestrator` per-persona executor branches |
+| Crew runtime | `Task` subagents (`review-team` skill; lenses incl. `chaos_engineer`, `security_engineer`, `synthesizer`) | `saga_orchestrator` per-persona executor branches |
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
-| Persona names | framework names natively (`adversary`, `synthesizer`) | runtime names (`chaos_engineer`, `chairperson`) + alias map |
+| Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
 | Resilience | partial-crew → coverage; below quorum → low-confidence (D-0005: blackboard, no saga) | saga retries/compensation; degrade above quorum, escalate below |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
