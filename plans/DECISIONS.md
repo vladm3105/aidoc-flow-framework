@@ -10,6 +10,68 @@ graduation.
 
 ---
 
+## D-0031 — Promote the review-saga lifecycle into the framework spec (supersedes D-0005's scope)
+
+- **Date:** 2026-06-05T13:00:00Z
+- **Decision:** Promote the review-team saga lifecycle (state machine,
+  transitions, journal schema, compensation events, break-circuit policy)
+  from a Hermes-internal implementation detail to an engine-agnostic
+  framework-spec contract at `framework/governance/REVIEW_SAGA.md` +
+  `framework/governance/saga.schema.json`. Both platforms (Hermes Python
+  runtime and Claude Code plugin via SKILL prompts + saga.json + Bash
+  subprocesses) implement the same observable lifecycle. Framework spec
+  bumps `0.12.0 → 0.13.0` (CHG-gated).
+- **Why:** Two converging pressures:
+  1. **New failure-class evidence.** D-0005 (2026-05-26) decided "no saga
+     in plugin" on the premise that "there is nothing to journal" — the
+     plugin's Task subagents are harness-managed and the blackboard +
+     coverage/quorum handles partial-crew state. The 2026-06-05 live BRD
+     verification (CHAOS-SEC-SPLIT-001, D-0030) revealed a failure class
+     D-0005 did not contemplate: **partial outer-loop state** when
+     `doc-brd-autopilot` times out mid-iteration with a 5-lens crew +
+     multi-lens fixer validation. Concrete evidence:
+     `examples/url-shortener/logs/2026-06-05T103311/elements/doc-brd-autopilot.log`
+     shows `outcome: FAIL`, `duration_sec: 1802.0`, `error: claude -p exit
+     124`, and no saga journal produced. The dual-dispatch path
+     (acceptance script's standalone audit → fixer → re-audit) succeeded
+     at total runtime 3535s — proof that the create→review→revise loop
+     *did* have intermediate state worth preserving across phase
+     boundaries, but the plugin had no place to durably record it.
+     D-0005's "nothing to journal" assertion is factually incomplete: at
+     the outer-loop level (phase progression, iteration count,
+     transitions between phases) there *is* something to journal. The
+     blackboard captured per-lens slot state correctly; what was missing
+     was per-phase state.
+  2. **Lifecycle-behavior parity requirement.** The project's parity goal
+     is now lifecycle-behavior parity (per `docs/PARITY.md`), not just
+     output-shape parity. Achieving it requires both platforms to expose
+     the same observable saga lifecycle. The framework spec is the only
+     durable place to define that lifecycle without locking platforms
+     into a single implementation.
+- **Supersession scope:** D-0031 **supersedes D-0005's scope-narrowing
+  premise** ("the plugin needs no saga"), NOT D-0005's reasoning about
+  partial-crew state. The blackboard remains the durable medium for
+  per-lens slot state; D-0031 adds a parallel saga.json journal for
+  outer-loop phase state. D-0005's text is preserved verbatim with a
+  trailing pointer to D-0031.
+- **Notes:** Adopts Hermes' existing state names + transitions verbatim
+  (PREPARED, FANOUT_STARTED, BRANCH_RUNNING, etc.) as the spec source —
+  cheaper than renaming a working implementation; the names are general,
+  not Hermes-coined. Adds `PARTIAL_TIMEOUT` as the only new state
+  (covers break-circuit + SIGTERM cases on both platforms). Adds a
+  top-level `transitions: list[dict]` field that Hermes does not have
+  today; Phase 3 of SAGA-PARITY-001 adds it to Hermes' `SagaRunState`.
+  The plugin implementation is cooperative (LLM honors the contract);
+  Hermes' is preemptive (Python runtime enforces). Same observable
+  lifecycle, different enforcement — documented as a known platform
+  asymmetry in REVIEW_SAGA.md.
+- **Implementation:** SAGA-PARITY-001 plan (`plans/SAGA-PARITY-001-PLAN.md`)
+  organizes 4 phases. This decision lands in Phase 1
+  (`plans/SAGA-PARITY-001-PHASE-1-PLAN.md`). Phases 2-4 implement the
+  contract on each platform.
+
+---
+
 ## D-0030 — Partition `adversary` lens into `chaos_engineer` + `security_engineer`
 
 - **Date:** 2026-06-05T10:00:00Z
@@ -409,6 +471,11 @@ graduation.
 - **Notes:** Consistent with the engine-agnostic spec (shared contract, per-engine
   "how") and AGENT-TEAM plan **D9**. Locks the Phase 2 direction
   (blackboard-with-coverage, not a saga port).
+- **Superseded in scope** by **D-0031** (2026-06-05). D-0005's
+  blackboard-for-crew-state reasoning remains authoritative; D-0031
+  extends the contract with an outer-loop saga.json journal to cover
+  partial outer-loop state. See `framework/governance/REVIEW_SAGA.md`
+  for the lifecycle contract.
 
 ---
 

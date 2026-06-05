@@ -4,7 +4,7 @@ description: "DEPRECATED in v0.4.0. Use `/aidoc-flow:doc-validator` with scope=p
 metadata:
   custom_fields:
     version: "0.5.0"
-    framework_spec_version: "0.12.0"
+    framework_spec_version: "0.13.0"
     last_updated: "2026-05-31"
     skill_category: quality-assurance
     deprecated: true

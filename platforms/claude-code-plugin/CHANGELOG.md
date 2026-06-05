@@ -14,6 +14,16 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated, declaration only)
+
+- **`FRAMEWORK_SPEC_VERSION` bumped `0.12.0 → 0.13.0`
+  (SAGA-PARITY-001 Phase 1, D-0031).** Plugin declares intent to
+  conform to the new review-saga lifecycle contract introduced by the
+  framework spec; full implementation (saga.json + Bash subprocess
+  refactor + break-circuit policy in BRD-layer SKILLs) arrives in
+  Phase 2 of SAGA-PARITY-001 with plugin v0.6.0. No plugin behavior
+  change in this version.
+
 ### Changed (BREAKING)
 
 - **Adversary lens partitioned into `chaos_engineer` + `security_engineer`

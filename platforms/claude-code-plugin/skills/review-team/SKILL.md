@@ -11,7 +11,7 @@ metadata:
     upstream_artifacts: []
     downstream_artifacts: []
     version: "0.5.0"
-    framework_spec_version: "0.12.0"
+    framework_spec_version: "0.13.0"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
 ---
@@ -28,9 +28,15 @@ is the plugin's binding of the engine-agnostic review-team model
 one team definition, run here as Claude Code `Task` subagents over a shared
 **review blackboard**.
 
-Per `plans/DECISIONS.md` **D-0005**, the plugin uses the blackboard (durable
-per-persona slots) + coverage/quorum for resilience — **not** a saga
-journal/compensation engine (that is the MCP platform's mechanism).
+Per `plans/DECISIONS.md` **D-0005** (blackboard for crew-state) + **D-0031**
+(saga.json for outer-loop state), the plugin uses the blackboard (durable
+per-persona slots) + coverage/quorum for crew-state resilience, **and** a
+minimal saga.json journal for outer-loop phase state per the framework
+saga lifecycle contract (`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`).
+D-0031 supersedes D-0005's scope-narrowing premise; D-0005's blackboard
+reasoning remains authoritative. The plugin does not implement Hermes'
+full saga runtime (compensation/retry state-machine in Python) — its
+implementation is cooperative via SKILL prompts.
 
 ## When to Use
 

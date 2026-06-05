@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated)
+
+- **Review-saga lifecycle promoted to framework spec
+  (SAGA-PARITY-001-PHASE-1, D-0031).**
+  - New: `framework/governance/REVIEW_SAGA.md` — engine-agnostic saga
+    lifecycle contract (state machine, transitions, journal schema,
+    break-circuit policy, FRAMEWORK_SPEC_VERSION semantics,
+    enforcement-asymmetry caveat).
+  - New: `framework/governance/saga.schema.json` — formal JSON Schema
+    for the per-run saga journal.
+  - Edit: `REVIEW_TEAM.md` adds two one-line `> See also`
+    cross-references to REVIEW_SAGA.md (no content duplication).
+  - D-0031 supersedes D-0005's scope-narrowing premise. D-0005's
+    blackboard-for-crew-state reasoning remains authoritative.
+  - `framework/VERSION`: `0.12.0 → 0.13.0`.
+  - Both platforms declare `FRAMEWORK_SPEC_VERSION = 0.13.0` (intent
+    to conform; implementation arrives in Phases 2 and 3 of
+    SAGA-PARITY-001).
+
 ### Changed — Framework Spec 0.11.3 → 0.12.0 (CHG-gated)
 
 - **Adversary review-lens partitioned into `chaos_engineer` + `security_engineer`
