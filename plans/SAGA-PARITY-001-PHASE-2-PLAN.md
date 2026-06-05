@@ -7,7 +7,7 @@
 | Depends on | Phase 1 (D-0031; merged via PR #84) — REVIEW_SAGA.md + saga.schema.json are the contract this phase implements |
 | Status     | PLANNED — 2026-06-05T14:30:00Z                            |
 | Feeds      | Phase 3 (Hermes alignment; will compare against plugin's saga.json fixtures), Phase 4 (PRD..IPLAN propagation; reuses this BRD reference impl) |
-| Scope flag | **Plugin breaking change** — plugin VERSION 0.5.0 → 0.6.0; SemVer-major because saga.json is a new public artifact in `.aidoc/review/<NN>_<LAYER>/<id>/` and consumers downstream may have come to expect the current shape |
+| Scope flag | **Plugin minor bump** — plugin VERSION 0.5.0 → 0.6.0; MINOR (not BREAKING) per Pass-4 G-R8: `saga.json` is a purely additive artifact, no existing file shapes change. The 0.6 vs 0.5.1 bump signals "meaningful new capability". |
 
 ## Objective
 
@@ -43,6 +43,13 @@ mode. Phase 4 propagates the same pattern verbatim to PRD..IPLAN.
    — full refactor per Design 1 (saga.json read/initialize, per-phase
    subprocess dispatch via `Bash`, break-circuit checkpoint, resume
    logic, transition validation).
+1a. **Edit** `platforms/claude-code-plugin/skills/doc-brd/SKILL.md`
+   — append §"Draft mode (saga-driven)" section per Design 1 §3a
+   (G-R2). The draft subprocess invokes `doc-brd`, which dispatches
+   `requirements-analyst` as a Task subagent with the
+   `business_analyst` lens brief. Preserves the persona binding lost
+   in the move from in-session Task dispatch to subprocess
+   invocation.
 2. **Edit** `platforms/claude-code-plugin/skills/doc-brd-audit/SKILL.md`
    — append §"Saga interaction" + §"Break-circuit policy" sections
    (Design 2). When invoked standalone OR via autopilot, the audit
@@ -54,9 +61,10 @@ mode. Phase 4 propagates the same pattern verbatim to PRD..IPLAN.
    — append a §"Saga journal" subsection (Design 4) describing the
    saga.json layout next to the existing blackboard layout
    description. The review-team dispatcher updates branch states.
-5. **Bump plugin VERSION** 0.5.0 → 0.6.0 (SemVer-major; saga.json is a
-   new public artifact, downstream consumers may have come to expect
-   the prior shape).
+5. **Bump plugin VERSION** 0.5.0 → 0.6.0 (MINOR per Pass-4 G-R8;
+   `saga.json` is a purely additive artifact, no existing file shapes
+   change; the 0.6 bump signals "meaningful new capability" without
+   the BREAKING flag).
 6. **9-place version fanout** for 0.6.0 (per CHAOS-SEC-SPLIT-001
    pattern; full enumeration in Step 6 of Step Sequence).
 7. **Edit** `platforms/claude-code-plugin/CHANGELOG.md` with the
@@ -121,8 +129,24 @@ autopilot's parent budget).
 
 `SAGA_DIR=.aidoc/review/01_BRD/<BRD-id>/`
 `SAGA_FILE=$SAGA_DIR/saga.json`
-`START_EPOCH_FILE=$SAGA_DIR/.skill-start`
+`START_EPOCH_FILE=$SAGA_DIR/.skill-start.autopilot`
 `SOFT_DEADLINE=1500`  # seconds; OS-level timeout = 1800s; 300s buffer
+
+**Per-skill start epoch (G-R3)**. Each subprocess invoked from
+autopilot's loop starts with its own fresh OS-level timeout (1800s).
+Each skill therefore tracks elapsed time against its OWN start epoch,
+not autopilot's. The naming convention:
+
+| Skill | Start epoch file |
+|---|---|
+| `doc-brd-autopilot` | `$SAGA_DIR/.skill-start.autopilot` |
+| `doc-brd-audit` | `$SAGA_DIR/.skill-start.audit` |
+| `doc-brd-fixer` | `$SAGA_DIR/.skill-start.fixer` |
+| `review-team` | `$SAGA_DIR/.skill-start.review-team` |
+
+Each skill writes its own file at entry and reads its own file at
+break-circuit checks. Files are gitignored as part of `.aidoc/`
+runtime state.
 
 If `$SAGA_FILE` exists and `status` is not `CLOSED` or `ESCALATED`,
 this invocation is a **resume**. Read the existing saga and continue
@@ -147,6 +171,34 @@ from `current_phase`. Otherwise initialize a fresh saga:
 
 Then write start epoch:
 `Bash: date +%s > $START_EPOCH_FILE`
+
+### 1a. Pre-Phase-2 blackboard migration (G-R6)
+
+If `$SAGA_DIR` exists with **slot files but no saga.json**
+(`.aidoc/review/01_BRD/<BRD-id>/<persona>.json` files present from a
+pre-Phase-2 run, no `saga.json`), autopilot detects this and
+scaffolds a saga.json reflecting the existing state instead of
+treating it as fresh:
+
+  - Walk `$SAGA_DIR/*.json`. For each `<persona>.json` slot file:
+    - Add a `branches[<persona>]` entry with
+      `status: BRANCH_COMPLETED`, `attempt: 0`,
+      `started_at: <slot file mtime>`, `ended_at: <slot file mtime>`.
+  - Set saga `status: BRANCH_COMPLETED` (all crew slots present
+    means fan-in is the next phase).
+  - Set `iteration: 1`, `current_phase: re-review` (we don't know
+    if the existing slots are post-audit or post-fixer, so we
+    re-audit defensively).
+  - Append a single backfill transition entry:
+    `null → BRANCH_COMPLETED, scope: "run", reason: "pre-saga
+    migration backfill"` (this is a non-standard transition;
+    document with a `migration: true` extension field in that
+    entry).
+  - Continue from §2 phase dispatch loop.
+
+This preserves work-in-progress from pre-Phase-2 sessions. If a user
+prefers a clean re-run, they can `rm $SAGA_DIR/*.json` before
+invoking autopilot.
 
 ### 2. Phase dispatch loop
 
@@ -181,19 +233,39 @@ Until `status ∈ {CLOSED, ESCALATED, PARTIAL_TIMEOUT}`:
 
 ### 3. Phase briefs (subprocess inputs)
 
-#### 3a. Drafter
+#### 3a. Drafter (G-R2)
 
-Dispatch via `Bash`:
+The current autopilot dispatches `requirements-analyst` as a `Task`
+subagent for the draft phase (with `business_analyst` lens brief per
+the lens→agent mapping). The Phase 2 refactor moves this dispatch
+into a **subprocess** via `Bash → claude -p /aidoc-flow:doc-brd ...`.
+A subprocess invocation cannot pass `subagent_type` directly (that's
+a Task-tool parameter, not a CLI argument), so the persona binding
+must move INTO the `doc-brd/SKILL.md` prompt itself.
+
+**Plan scope addition (G-R2)**: `platforms/claude-code-plugin/skills/doc-brd/SKILL.md`
+gains a `## Draft mode (saga-driven)` section telling the LLM:
+
+> When invoked via `claude -p /aidoc-flow:doc-brd Draft BRD-<id> ...`
+> (the subprocess pattern from the autopilot saga loop), dispatch ONE
+> `Task` subagent with `subagent_type=requirements-analyst` and the
+> `business_analyst` lens brief per the BRD crew. The subagent
+> authors the BRD; this skill's role is to brief it and write the
+> result to `docs/01_BRD/BRD-<id>_<slug>/`.
+
+The subprocess command remains:
 
 ```sh
 timeout 1800 claude --plugin-dir "$PLUGIN_DIR" -p \
-  "/aidoc-flow:doc-brd Draft BRD-<id> at <path>; use BRD-TEMPLATE.yaml + the source input at <seed-path> + doc-brd/SKILL.md as authoring rules. Write to docs/01_BRD/BRD-<id>_<slug>/."
+  "/aidoc-flow:doc-brd Draft BRD-<id> at <path>; use BRD-TEMPLATE.yaml + the source input at <seed-path>. Write to docs/01_BRD/BRD-<id>_<slug>/."
 ```
 
-The drafter is `requirements-analyst` invoked indirectly via the
-`/aidoc-flow:doc-brd` slash — the SKILL prompt handles dispatch to
-the appropriate author agent for the BRD layer (`business_analyst` lens
-per `framework/governance/REVIEW_CREWS.yaml`).
+The child claude session reads doc-brd/SKILL.md's new `## Draft mode
+(saga-driven)` section and dispatches the Task subagent. The
+persona binding is preserved via the SKILL prompt's instruction, not
+via a CLI parameter.
+
+Updated **scope** (add to §"In" item list): doc-brd/SKILL.md edit.
 
 #### 3b. Audit (review and re-review phases)
 
@@ -213,25 +285,67 @@ timeout 1800 claude --plugin-dir "$PLUGIN_DIR" -p \
   "/aidoc-flow:doc-brd-fixer Fix BRD-<id> at <path> based on audit findings at <audit-report-path>. Update saga.json (multi-lens validation dispatches transition branches BRANCH_COMPENSATING)."
 ```
 
-### 4. Resume logic
+### 4. Resume logic (G-R1)
 
-If on entry `status == PARTIAL_TIMEOUT`, do NOT initialize fresh. Instead:
+PARTIAL_TIMEOUT is terminal-this-process per
+`framework/governance/REVIEW_SAGA.md`'s transition table — it has no
+allowed-next transitions. The resume mechanism is therefore NOT a
+direct `PARTIAL_TIMEOUT → X` transition. Instead, a resumed run
+treats the PARTIAL_TIMEOUT entry in `transitions[]` as a **checkpoint
+marker** and appends **the next legal transition from the state that
+was active immediately before PARTIAL_TIMEOUT fired**.
+
+Concretely:
 
   1. Read the existing saga.json.
   2. Identify `current_phase` from the journal.
-  3. Re-record start epoch (this invocation's clock starts fresh).
-  4. Append transition: `PARTIAL_TIMEOUT → <last-current_phase's natural state>`
-     (e.g., if current_phase was `fixer` and the prior run hit
-     PARTIAL_TIMEOUT in BRANCH_COMPLETED, transition back to
-     BRANCH_COMPLETED to resume from there).
-  5. Continue from §2 phase dispatch loop.
+  3. Re-record start epoch (this invocation's clock starts fresh; see
+     §"Per-skill start epoch" below for the file naming).
+  4. **Identify the pre-PARTIAL_TIMEOUT state**: walk backward through
+     `transitions[]` to find the most recent transition whose `to`
+     is NOT `PARTIAL_TIMEOUT`. That state is the resume point.
+  5. **Append the next legal transition** from that state per the
+     REVIEW_SAGA.md transition table. For example:
+     - If the pre-PARTIAL_TIMEOUT state was `BRANCH_COMPLETED` (all
+       branches done but synthesizer didn't get to dispatch),
+       append `BRANCH_COMPLETED → FANIN_REDUCED` once synthesizer
+       runs.
+     - If it was `BRANCH_RUNNING` (some branches were mid-flight),
+       continue running those branches (their per-branch state
+       transitions resume independently).
+     - If it was `FANOUT_STARTED` (fan-out had begun but no branch
+       completed), pick up dispatching remaining lenses.
+  6. Continue from §2 phase dispatch loop.
 
-The transition table in REVIEW_SAGA.md doesn't have an explicit
-`PARTIAL_TIMEOUT → X` arrow — the spec says PARTIAL_TIMEOUT is
-"terminal-this-process; future invocations resume by re-entering one
-of the allowed source states." This SKILL implements that re-entry
-by appending a fresh transition from PARTIAL_TIMEOUT to the resume
-state, treating PARTIAL_TIMEOUT as a checkpointing fence.
+Do NOT write a transition with `from: PARTIAL_TIMEOUT` — that would
+violate the spec's transition table and the conformance suite (when
+the cross-platform parity test arrives in Phase 3) would flag it.
+The PARTIAL_TIMEOUT entry remains in `transitions[]` as a permanent
+record that this run was checkpointed and resumed; subsequent
+transitions continue the lifecycle from where the checkpoint was
+laid down.
+
+### 4a. Edge cases on entry (G-R4)
+
+- **`status == CLOSED`** on entry: the saga already completed
+  successfully. Log "saga already CLOSED for BRD-<id>; iteration N
+  complete" and exit cleanly (exit code 0). Do NOT re-run unless
+  the user explicitly requests a fresh iteration (e.g., by removing
+  saga.json or invoking with a `--force-fresh` flag — out of scope
+  for Phase 2; treat CLOSED as terminal).
+- **`status == ESCALATED`** on entry: the prior run was escalated
+  for human review. Do NOT auto-restart. Log "saga ESCALATED for
+  BRD-<id>; human review required" and exit cleanly. Only a manual
+  saga.json deletion + fresh autopilot invocation should bypass
+  ESCALATED.
+- **`status == PARTIAL_TIMEOUT`**: resume per §4 above.
+- **All other in-flight states** (`PREPARED`, `FANOUT_STARTED`,
+  `BRANCH_RUNNING`, etc.): the prior run was interrupted before
+  reaching a terminal state but did NOT fire the break-circuit
+  (e.g., the parent process was SIGKILLed externally). Treat as
+  resume: read saga.json, continue from `current_phase`. Append
+  the next legal transition based on the prior state. Do NOT
+  re-initialize (that would lose work).
 
 ### 5. Single_pass fallback
 
@@ -294,10 +408,19 @@ For each lens dispatched as a `Task` subagent:
 ### Before synthesizer dispatch
 
 This is the break-circuit checkpoint (per REVIEW_SAGA.md's
-"Layer audit" checkpoint boundary). Run:
+"Layer audit" checkpoint boundary). At skill entry the audit writes
+its own start epoch:
+
 ```
-Bash: echo $(( $(date +%s) - $(cat $START_EPOCH_FILE) ))
+Bash: date +%s > $SAGA_DIR/.skill-start.audit
 ```
+
+At checkpoint:
+
+```
+Bash: echo $(( $(date +%s) - $(cat $SAGA_DIR/.skill-start.audit) ))
+```
+
 If elapsed > `SOFT_DEADLINE` (1500s):
   - Append transition: `BRANCH_COMPLETED → PARTIAL_TIMEOUT`.
   - Set saga status to PARTIAL_TIMEOUT; preserve any reduced
@@ -312,10 +435,30 @@ If elapsed > `SOFT_DEADLINE` (1500s):
   - This skill's exit returns control to the caller (autopilot or
     the user); the caller decides next phase based on the verdict.
 
-### When invoked standalone (single_pass mode)
+### When invoked standalone (no saga.json on entry) — G-R5
+
+If saga.json does NOT exist (e.g., the audit is invoked outside the
+autopilot's lifecycle, by a user running `/aidoc-flow:doc-brd-audit`
+directly), do NOT initialize the full saga schema. The audit is not
+the lifecycle owner; initializing a saga would write inconsistent
+state. Instead:
+
+  - Log "saga.json not present; running audit without saga journal
+    (standalone mode)."
+  - Run the audit's lens fan-out + synthesizer as normal.
+  - Write blackboard slot files + verdict.json + audit report as
+    usual.
+  - Skip all saga.json transitions.
+
+This preserves backward compatibility with direct skill invocation
+and keeps the audit's standalone use case unchanged. Only autopilot-
+driven runs produce saga.json.
+
+### When invoked standalone in single_pass mode
 
 If `review_mode: single_pass` is active, the audit does not produce
-saga.json. Existing behavior preserved.
+saga.json (same as standalone above — saga is a team-mode artifact).
+Existing behavior preserved.
 ````
 
 #### §"Break-circuit policy"
@@ -398,7 +541,19 @@ conformance tests validate runtime saga.json files against it.
 Append under `[Unreleased]`:
 
 ````markdown
-### Changed (BREAKING) — Plugin v0.5.0 → v0.6.0
+### Changed — Plugin v0.5.0 → v0.6.0
+
+> **SemVer classification rationale (G-R8)**: this release is
+> labelled as a MINOR bump (0.5.0 → 0.6.0) rather than BREAKING. The
+> primary surface change — adding `saga.json` to
+> `.aidoc/review/<NN>_<LAYER>/<id>/` — is purely **additive**: no
+> existing files (blackboard slots, verdict.json, report.md) change
+> shape, and no existing CLI / skill invocation breaks. Consumers
+> that strictly enumerate the contents of `.aidoc/review/` may see a
+> new file, but the shape of every other file is preserved. Under
+> pre-1.0 SemVer the project uses MINOR for additive changes; the
+> 0.6 bump (vs a patch 0.5.1) signals "meaningful new capability"
+> while avoiding the ⛔ BREAKING flag.
 
 - **BRD-layer saga implementation (SAGA-PARITY-001 Phase 2, D-0031).**
   The plugin's BRD-layer orchestrator skills (`doc-brd-autopilot`,
@@ -529,13 +684,43 @@ with the new saga checks):
      for BRD (PRD..IPLAN deferred to Phase 4).
 9. **Edit** `docs/TAGGING.md`: add `claude-code-plugin/v0.6.0`
    release row.
-10. **Optional harness change** to
-    `tests/scripts/test-acceptance.sh`: if Scenario B (resume path)
-    is needed to drive the live verification to CLOSED, add a
-    conditional re-invocation when autopilot returns with saga
-    status PARTIAL_TIMEOUT. Decision deferred to live verification:
-    if Scenario A passes, no harness change needed; if Scenario B
-    is observed, add the re-invocation logic.
+10. **Conditional harness change** to
+    `tests/scripts/test-acceptance.sh` (G-R7). Concrete spec (apply
+    only if Scenario B is observed in live verification):
+
+    Insert a saga-aware resume loop after the existing
+    `invoke_skill "doc-$layer-autopilot"` call in the cascade loop
+    (search for `invoking /aidoc-flow:doc-$layer-autopilot` to
+    locate; near line ~950 of test-acceptance.sh). Diff sketch:
+
+    ```diff
+       invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" ...
+    +
+    +  # Saga resume loop (SAGA-PARITY-001 Phase 2, G-R7). If the
+    +  # autopilot exited cleanly but saga.json shows PARTIAL_TIMEOUT,
+    +  # re-invoke up to MAX_RESUMES=2 times to drive it to a terminal
+    +  # state (CLOSED or ESCALATED).
+    +  local saga_file=".aidoc/review/01_BRD/BRD-01/saga.json"
+    +  local resume_count=0
+    +  while [[ -f "$saga_file" ]] && [[ $resume_count -lt 2 ]]; do
+    +    local status
+    +    status=$(python3 -c "import json; print(json.loads(open('$saga_file').read()).get('status',''))")
+    +    [[ "$status" == "PARTIAL_TIMEOUT" ]] || break
+    +    log_info "  saga PARTIAL_TIMEOUT — resuming autopilot (attempt $((resume_count+1)))"
+    +    invoke_skill "doc-$layer-autopilot" "Resume autopilot for $layer; saga.json exists at $saga_file" "skill" "cascade"
+    +    resume_count=$((resume_count+1))
+    +  done
+    ```
+
+    `MAX_RESUMES=2` bounds the resume loop (prevents infinite
+    re-invocation if the saga somehow stays at PARTIAL_TIMEOUT).
+    Phase 2 verification Step F covers this case; if it fails after
+    2 resumes, the run is marked degraded but not blocking.
+
+    **Decision rule**: apply Step 10 only if Step D's live verification
+    observes Scenario B (autopilot exits with status PARTIAL_TIMEOUT
+    on first invocation). Otherwise the harness stays unchanged and
+    autopilot's first invocation reaches CLOSED in one go.
 11. **Pre-commit lint** on all changed files.
 12. **Full conformance suite** — 101/101 still pass; saga.json is
     not validated by an existing test in Phase 2 (the cross-platform
@@ -597,14 +782,48 @@ Per Design 6. Two scenarios, both acceptable. ~$3-5 cost. ~30-90 min
 wall-clock (Scenario A: ~50 min; Scenario B: two invocations totaling
 ~60 min).
 
-### Step E — saga.json inspection
+### Step E — saga.json inspection (G-R9)
 
-After live run, inspect `.aidoc/review/01_BRD/<BRD-id>/saga.json`:
+After live run, validate `.aidoc/review/01_BRD/<BRD-id>/saga.json`
+against the schema. Reuse Phase 1's smoke-test pattern (Phase 1 plan
+Step D2) with live-run-specific assertions:
 
-- File exists, schema-conformant.
-- `transitions[]` shows the lifecycle path.
-- `branches{}` contains entries for each of the 5 BRD-crew personas.
-- Final `status` is CLOSED or PARTIAL_TIMEOUT.
+```python
+import json
+from pathlib import Path
+
+saga = json.loads(Path(".aidoc/review/01_BRD/BRD-01/saga.json").read_text())
+schema = json.loads(Path("framework/governance/saga.schema.json").read_text())
+
+# All required fields present
+for key in schema["required"]:
+    assert key in saga, f"saga.json missing required field: {key}"
+
+# Status in valid enum
+assert saga["status"] in schema["properties"]["status"]["enum"]
+
+# All 5 BRD-crew personas have branch entries
+expected_personas = {"business_analyst", "architect", "auditor",
+                     "chaos_engineer", "security_engineer"}
+got = set(saga["branches"].keys())
+assert got >= expected_personas, f"missing branches: {expected_personas - got}"
+
+# transitions[] non-empty and ordered
+assert len(saga["transitions"]) >= 5, "transitions[] too short"
+
+# Final status is terminal
+assert saga["status"] in {"CLOSED", "PARTIAL_TIMEOUT", "ESCALATED"}, \
+    f"non-terminal final status: {saga['status']}"
+
+# G-R1 invariant: no `from: PARTIAL_TIMEOUT` transitions
+for t in saga["transitions"]:
+    assert t.get("from") != "PARTIAL_TIMEOUT", \
+        f"invalid transition from PARTIAL_TIMEOUT detected: {t}"
+
+print("saga.json: live-run validation OK")
+```
+
+Pass criteria: all assertions pass.
 
 ### Step F — Resume verification (if Scenario B observed)
 
@@ -633,6 +852,7 @@ phases, final saga `status: CLOSED`.
 | R8 | Live verification cost ~$3-5 is wasted if a bug is found mid-run | The plan front-loads static + conformance verification (Steps A-C, all free). Live verification (Step D) runs only after the cheap checks pass. Cost is bounded by `--cost-cap=$22` in test-acceptance.sh. |
 | R9 | The current `doc-brd-autopilot` SKILL's existing single_pass linear pipeline interferes with the new saga-driven loop | The saga loop is gated on `review_mode: team`; single_pass falls through to the existing linear pipeline unchanged. Both code paths coexist. |
 | R10 | Resume logic creates a hard-to-test edge case (PARTIAL_TIMEOUT → resume → CLOSED) | Live verification Step F covers this when applicable. The deterministic mock mode does not exercise it. A unit-test-style fixture for the resume case may be a follow-up. |
+| R11 | Run-vs-branch state ambiguity in REVIEW_SAGA.md transition table (G-R10) — the transitions table mixes per-run states (PREPARED, FANOUT_STARTED, FANIN_REDUCED, SYNTHESIZED, CLOSED) with per-branch states (BRANCH_RUNNING, BRANCH_COMPLETED, etc.). The actual transition from run-level FANOUT_STARTED to run-level FANIN_REDUCED isn't explicit; it's mediated by per-branch transitions. | Phase 2 implements the ambiguity verbatim (transitions[] entries carry `scope: "run"` or `"branch:<persona>"`, disambiguating at the journal level). Phase 3's cross-platform conformance test may surface the ambiguity as a parity issue between the two platforms' interpretations; the resolution is a follow-up amendment to REVIEW_SAGA.md (e.g., add explicit run-level transitions BRANCH_COMPLETED → FANIN_REDUCED only when all per-branch entries are BRANCH_COMPLETED). Flagged for Phase 3 review; not blocking Phase 2 impl. |
 
 ## Review log
 
@@ -739,6 +959,144 @@ phases, final saga `status: CLOSED`.
   arrows. Flag for review.
 
 Plan ready for impl.
+
+### Pass 4 — 2026-06-05T15:30:00Z (post-merge gap-review, per CLAUDE.md two-cycle rule)
+
+After PR #85 merged, applied the freshly-merged
+`CLAUDE.md §"Development workflow" item 2` two-cycle plan review rule
+to this plan: read it with fresh eyes against the codebase. Surfaced
+**10 gaps** that the inline Pass 1-3 missed. The Pass 3 G-Q14
+self-flag about PARTIAL_TIMEOUT transitions was technically known
+but inadequately resolved; this pass folds the resolution in
+concretely. All 10 gaps folded in place via this amendment commit.
+
+**Critical (4):**
+
+- **G-R1 — Resume transition logic violates the spec.** Pass 3's
+  G-Q14 noted the issue; Pass 4 resolves it: PARTIAL_TIMEOUT is
+  terminal-this-process per `framework/governance/REVIEW_SAGA.md`'s
+  transition table. The resume mechanism does NOT append a
+  `from: PARTIAL_TIMEOUT` transition (which would be illegal).
+  Instead, the resumed run walks backward through `transitions[]`
+  to find the pre-PARTIAL_TIMEOUT state and appends the next legal
+  transition from THAT state. The PARTIAL_TIMEOUT entry remains in
+  `transitions[]` as a checkpoint marker only. Design 1 §4 rewritten
+  to reflect this; Step E (saga.json inspection) gains an explicit
+  invariant check (no `from: PARTIAL_TIMEOUT` allowed).
+- **G-R2 — Draft phase loses persona binding under subprocess
+  invocation.** Subprocess pattern (`claude -p /aidoc-flow:doc-brd`)
+  has no `subagent_type` CLI parameter, so the requirements-analyst
+  binding moves INTO `doc-brd/SKILL.md`. Added new scope item 1a:
+  edit `doc-brd/SKILL.md` to add a `## Draft mode (saga-driven)`
+  section that dispatches `requirements-analyst` as a Task subagent
+  for draft invocations.
+- **G-R3 — Per-skill start epoch, not shared.** Each subprocess
+  gets its own fresh 1800s timeout; checking elapsed against
+  autopilot's start epoch would mis-fire. Renamed
+  `$SAGA_DIR/.skill-start` to a per-skill convention:
+  `.skill-start.autopilot`, `.skill-start.audit`, `.skill-start.fixer`,
+  `.skill-start.review-team`. Updated Design 1 §1 (with table) and
+  Design 2 break-circuit invocations.
+- **G-R4 — Edge cases on entry undefined.** Plan now explicitly
+  handles `status == CLOSED` (exit cleanly, "already done"),
+  `status == ESCALATED` (do NOT auto-restart), and other in-flight
+  states (treat as resume). Added §"4a. Edge cases on entry" to
+  Design 1.
+
+**Medium (3):**
+
+- **G-R5 — Standalone audit/fixer behavior without saga.json**.
+  Plan now specifies: standalone invocation (no saga.json present)
+  SKIPS saga.json writes entirely (the audit/fixer is not the
+  lifecycle owner; initializing one standalone would write
+  inconsistent state). Existing blackboard slots + verdict.json +
+  audit report behavior unchanged. Documented in Design 2.
+- **G-R6 — Pre-Phase-2 leftover blackboard.** Added §"1a. Pre-Phase-2
+  blackboard migration" to Design 1: if `$SAGA_DIR` has slot files
+  but no saga.json (a pre-Phase-2 run), autopilot scaffolds a
+  saga.json reflecting the existing slot state instead of treating
+  as fresh.
+- **G-R7 — Optional harness change concrete spec.** Replaced
+  Step 10's vague "add re-invocation logic" with a concrete
+  bash diff sketch: a `while [[ -f $saga_file ]] && status ==
+  PARTIAL_TIMEOUT && resume_count < 2 ]]; do ... done` loop after
+  the autopilot invoke in test-acceptance.sh's cascade dispatcher.
+
+**Cosmetic / clarification (3):**
+
+- **G-R8 — SemVer classification rewording.** Plan and CHANGELOG
+  draft now classify v0.5.0 → v0.6.0 as **MINOR** (not BREAKING).
+  Rationale: `saga.json` is purely additive; no existing file
+  shapes change. Pre-1.0 SemVer MINOR is appropriate for "meaningful
+  new capability" additions. Header metadata "Scope flag" updated;
+  Design 5 CHANGELOG draft now begins with a rationale paragraph.
+- **G-R9 — Verification Step E references Phase 1's smoke test
+  pattern.** Step E replaced vague "inspect" with a concrete
+  Python validation script (~20 lines) using the same shape as
+  Phase 1's smoke test, plus live-run-specific assertions
+  (5 BRD personas present in `branches`, no `from: PARTIAL_TIMEOUT`
+  transitions per G-R1).
+- **G-R10 — Run-vs-branch state ambiguity** in REVIEW_SAGA.md's
+  transition table noted as R11 (new risk) and flagged for Phase 3
+  review. Not blocking Phase 2 impl; the journal's `scope` field
+  disambiguates at runtime.
+
+**Net plan delta:**
+
+- Scope items: 10 → 11 entries (added 1a for doc-brd/SKILL.md).
+- Design 1: §1 gains per-skill start epoch table; §1a (pre-Phase-2
+  migration); §3a (draft persona binding); §4 (resume logic
+  rewritten); §4a (edge cases).
+- Design 2: §"Before synthesizer dispatch" uses own start epoch;
+  §"When invoked standalone" clarified.
+- Design 5 (CHANGELOG): SemVer rationale prepended; classification
+  is now MINOR.
+- Step 10 (conditional harness): vague description replaced with
+  concrete bash diff.
+- Step E (verification): Python script with G-R1 invariant check.
+- Risks: 10 → 11 entries (added R11 for run-vs-branch ambiguity).
+
+No new spec-level changes needed for Phase 2 impl. The run-vs-branch
+ambiguity (G-R10/R11) is flagged for potential Phase 3 spec
+amendment but doesn't block Phase 2.
+
+Plan ready for impl (Pass-4 amendments folded in).
+
+### Pass 5 — 2026-06-05T15:45:00Z (re-review of patched plan, per CLAUDE.md two-cycle rule)
+
+The new `CLAUDE.md §"Development workflow" item 2` requires a
+second cycle: re-review the patched plan after Pass 4's gap fixes to
+verify the patches didn't introduce new inconsistencies. This is the
+mandated re-validation.
+
+**P5-A — Scope item 5 was inconsistent with G-R8's new MINOR
+classification.** The header metadata Scope flag + Design 5 CHANGELOG
+were updated to MINOR in Pass 4, but the Scope-list item 5 (line 64)
+still said "SemVer-major". Patched in this Pass 5 to read "MINOR per
+Pass-4 G-R8" with a one-line rationale. Pass-1 review log entry on
+line 870 also references "SemVer-major" — that's historical narrative
+(documents what was believed at draft time) and is intentionally not
+edited (would erase history).
+
+**Other Pass-5 sanity checks** (all green):
+
+- Scope item numbering convention (1, 1a, 2, 3, ...) is consistent —
+  `1a` explicitly marks a sub-step of 1 (the doc-brd/SKILL.md edit
+  added in Pass 4). Same pattern as prior plans.
+- Per-skill start epoch files are correctly referenced throughout —
+  `$START_EPOCH_FILE` is only used inside Design 1 (autopilot
+  context), where it correctly resolves to `.skill-start.autopilot`.
+  Designs 2 + 3 use their own per-skill epoch files directly.
+- No remaining `from: PARTIAL_TIMEOUT` transition references in the
+  plan (G-R1 fully addressed).
+- All Pass-4 risk additions (R11) cross-reference cleanly to spec
+  follow-ups; no orphaned references.
+
+Pass 5 surfaced 1 cosmetic issue (P5-A), no new structural concerns.
+The two-cycle rule's purpose ("verify cycle N's patches didn't
+introduce new inconsistencies") is satisfied — only the single MINOR-
+classification straggler in Scope item 5 was found, and it's now
+fixed. The plan is ready for impl.
 
 ## Cross-references
 
