@@ -16,9 +16,14 @@ is the structural ``sdd_doc_lint`` floor **plus** "no unresolved P0/P1" — this
 module computes the second component (``no_blocking``) and the advisory score, not
 the structural floor.
 
-The framework crews use engine-agnostic persona names (e.g. ``adversary``,
-``synthesizer``); Hermes' runtime personas (``chaos_engineer``, ``chairperson``)
-are mapped to them here so a Hermes review scores against the framework weights.
+The framework crews use engine-agnostic persona names (e.g.
+``chaos_engineer``, ``security_engineer``, ``synthesizer``); Hermes' runtime
+personas (``chaos_engineer``, ``chairperson``) are mapped to them here so a
+Hermes review scores against the framework weights. As of framework spec 0.12.0
+(CHAOS-SEC-SPLIT-001, D-0030) the framework public name ``chaos_engineer``
+matches Hermes' runtime name — the prior translation layer is removed.
+``security_engineer`` is the new first-class lens; Hermes runtime adopts the
+identity binding for it.
 """
 
 from __future__ import annotations
@@ -31,8 +36,8 @@ import yaml
 
 # Hermes runtime persona name -> framework REVIEW_CREWS persona name.
 # Only non-identity mappings are listed; everything else maps to itself.
+# `chaos_engineer` now maps identity-to-identity (framework spec 0.12.0).
 FRAMEWORK_PERSONA_ALIASES: dict[str, str] = {
-    "chaos_engineer": "adversary",
     "chairperson": "synthesizer",
 }
 

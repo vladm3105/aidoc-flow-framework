@@ -393,7 +393,8 @@ def test_compute_review_score_helper() -> None:
             "requirements_specialist": 100.0,
             "tech_lead": 100.0,
             "qa_lead": 100.0,
-            "adversary": 100.0,
+            "chaos_engineer": 100.0,
+            "security_engineer": 100.0,
         },
         reduced=[_Reduced("P2")],
     )

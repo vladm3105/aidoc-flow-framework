@@ -14,6 +14,59 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed (BREAKING)
+
+- **Adversary lens partitioned into `chaos_engineer` + `security_engineer`
+  (CHAOS-SEC-SPLIT-001, D-0030).** The single `adversary` review lens —
+  which conflated *internal stability* concerns (failure modes, edge
+  cases, race conditions, resource exhaustion) with *external threat*
+  concerns (trust boundaries, abuse cases, controls) — is partitioned
+  into two narrowly-scoped lenses aligned with intent. `agents/adversary.md`
+  is renamed to `agents/chaos-engineer.md` (color `orange` →
+  `cyan`); the existing `agents/security-engineer.md` is promoted from
+  a transitive `auditor` sub-role to a first-class crew lens (color
+  unchanged `red`). The framework spec bumps `0.11.3 → 0.12.0`
+  (CHG-gated).
+
+  **Per-layer weight redistribution** (all sums still = 100;
+  authoritative in `REVIEW_CREWS.yaml`):
+  - **BRD**: chaos 12 / security 8 — chaos-heavy (reliability NFRs >
+    threat-modeling at business-requirements level).
+  - **PRD**: chaos 8 / security 7 — equal split (both NFRs matter).
+  - **EARS**: chaos 12 / security 8 — chaos-heavy (failure-mode ACs >
+    abuse-case ACs).
+  - **BDD**: chaos 14 / security 6 — chaos-heavy (failure scenarios
+    dominate Gherkin).
+  - **ADR**: chaos 8 / security 12 — **security-heavy** (trust
+    boundaries, authn/authz, crypto choices).
+  - **SPEC**: chaos 10 / security 10 — equal split (perf + controls).
+  - **TDD**: chaos 10 / security 10 — equal split (`security_engineer`
+    co-owns SECTEST).
+  - **IPLAN**: chaos 8 / (no security) — **chaos-only** (security
+    lives upstream in ADR/SPEC; chaos covers rollback/recovery).
+
+  **Breaking surface** (consumers parsing the blackboard or
+  `verdict.json` must migrate):
+  - Slot filenames change: `adversary.json` → `chaos_engineer.json` and
+    `security_engineer.json` (new).
+  - `verdict.json:lens_scores` keys change: `"adversary"` →
+    `"chaos_engineer"` + `"security_engineer"`.
+  - `personas` arrays in `findings[].personas` may now contain both
+    new lens names (overlap zone for rate-limits, TOCTOU, resource-DoS
+    — synthesizer dedupes by `(location, id)`).
+  - Personas registry in `REVIEW_CREWS.yaml`: `adversary` removed;
+    `chaos_engineer` + `security_engineer` added.
+
+  **Migration**: regenerate `.aidoc/review/` on first run — `rm -rf
+  .aidoc/review/` is the one-step migration. No backward-compat shim is
+  planned (per project policy "no backwards-compatibility hacks").
+
+  Plugin v0.4.5 → v0.5.0 (SemVer-major because slot filenames are part
+  of the public contract). FRAMEWORK_SPEC_VERSION `0.11.3 → 0.12.0`.
+  Deprecation timeline for `doc-review` and `trace-check` redirect
+  stubs pushed from v0.5.0 → v0.6.0 (those stubs are tangential to
+  this lens partition).
+
 ### Changed
 
 - **Generalised orchestrator timeout policy (BRD-RT-004, D-0028).**
@@ -32,7 +85,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   dispatch) keep the 600s `SKILL_TIMEOUT`; Phase 4.1 agents keep the
   600s `AGENT_TIMEOUT`. Plan banner display tightened to show one
   orchestrator budget instead of three separate values. Plugin v0.4.4
-  → v0.4.5. Framework spec unchanged (0.11.3). No GATE-SPEC. The
+  → v0.5.0. Framework spec unchanged (0.11.3). No GATE-SPEC. The
   consolidation also makes per-layer follow-ups (PRD-RT-001 etc.)
   inherit the corrected ops uniformly via the same name-match.
 

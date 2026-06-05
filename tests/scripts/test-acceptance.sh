@@ -1443,9 +1443,9 @@ AGENTS=(
   "software-engineer|08_IPLAN|review the implementation plan|100"
   "devops-release-engineer|08_IPLAN|produce a deployment plan|100"
   "code-reviewer|08_IPLAN|review the code-block examples in the IPLAN|100"
-  "security-engineer|.|produce a security review of the chain|100"
+  "security-engineer|.|produce external-threat findings (threat model, trust boundaries, abuse cases, controls) — first-class crew lens + standalone security review of the chain|100"
   "traceability-auditor|.|confirm every 4-segment element-ID resolves|100"
-  "adversary|.|produce adversarial findings via the review-team crew|50"
+  "chaos-engineer|.|produce internal-stability findings (failure paths, edge cases, race conditions, recovery) via the review-team crew|50"
   "synthesizer|.|produce a synthesis combining persona outputs via the review-team crew|50"
 )
 
@@ -1889,7 +1889,7 @@ _element_phase() {
     doc-flow|doc-validator|doc-ref|doc-naming|gate-check|quality-advisor|security-audit|review-team|knowledge-extractor|charts-flow|adr-roadmap|project-init|project-adopt|project-profile) echo "utilities" ;;
     save-plan) echo "command" ;;
     sdd-doc-review) echo "hook" ;;
-    requirements-analyst|pm-orchestrator|solutions-architect|test-architect|software-engineer|devops-release-engineer|code-reviewer|security-engineer|traceability-auditor|adversary|synthesizer) echo "agents" ;;
+    requirements-analyst|pm-orchestrator|solutions-architect|test-architect|software-engineer|devops-release-engineer|code-reviewer|security-engineer|traceability-auditor|chaos-engineer|synthesizer) echo "agents" ;;
     *) echo "" ;;
   esac
 }

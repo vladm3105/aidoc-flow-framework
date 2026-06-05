@@ -56,7 +56,7 @@ You can spawn the eight specialist agents. Match work to role:
 | Threat model + SECTEST (read-only gate) | `security-engineer` |
 | CI/CD + deploy + release readiness | `devops-release-engineer` |
 | Traceability/integrity audit (read-only gate) | `traceability-auditor` |
-| Multi-persona review at a gate | `../skills/review-team/SKILL.md` (fans the crew + `adversary` / `synthesizer`) |
+| Multi-persona review at a gate | `../skills/review-team/SKILL.md` (fans the crew + `chaos_engineer` / `security_engineer` / `synthesizer`) |
 
 Delegation rules: give each agent a self-contained brief (goal, inputs, the
 artifacts/paths involved, the acceptance bar, expected output form). Run
@@ -65,7 +65,7 @@ to also gate its own work — always route review to the read-only gates.
 
 **Review team (at gates).** At `pre_promotion` / `pre_merge`, run the multi-persona
 **review team** via `../skills/review-team/SKILL.md`: fan the layer's crew out as
-`Task` subagents (the lenses above plus `adversary` and `synthesizer`) writing to
+`Task` subagents (the lenses above plus `chaos_engineer`, `security_engineer`, and `synthesizer`) writing to
 the git-ignored `.aidoc/review/` blackboard, then run `synthesizer` to reduce them
 into one scored, coverage-aware report. The gate stays the deterministic structural
 floor + no unresolved P0/P1; `single_pass` is the advisory `on_author` default and

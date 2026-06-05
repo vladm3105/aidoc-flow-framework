@@ -13,9 +13,13 @@ use its own. The mapping (in `mcp_server/review/review_scoring.py`,
 
 | Hermes runtime persona | Framework crew persona |
 |------------------------|------------------------|
-| `chaos_engineer`       | `adversary`            |
 | `chairperson`          | `synthesizer`          |
-| `requirements_specialist`, `tech_lead`, `qa_lead`, `architect`, `product_owner`, `business_analyst`, `operator`, `auditor`, `integration_lead` | identity (same name) |
+| `chaos_engineer`, `security_engineer`, `requirements_specialist`, `tech_lead`, `qa_lead`, `architect`, `product_owner`, `business_analyst`, `operator`, `auditor`, `integration_lead` | identity (same name) |
+
+> As of framework spec 0.12.0 (CHAOS-SEC-SPLIT-001, D-0030), the framework's
+> public name `chaos_engineer` matches Hermes' runtime name — the prior
+> `chaos_engineer → adversary` translation is removed. `security_engineer` is
+> the new first-class lens; Hermes adopts the identity binding.
 
 Hermes also defines creation-only personas (`strategist`, `ux_strategist`,
 `content_strategist`, `fact_checker`) that are **not** framework review-crew

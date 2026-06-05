@@ -3,7 +3,7 @@
   "review_mode": "team",
   "readiness_score": 94.0,
   "coverage": {
-    "ran": ["adversary", "architect", "auditor", "business_analyst"],
+    "ran": ["architect", "auditor", "business_analyst", "chaos_engineer", "security_engineer"],
     "missing": [],
     "coverage_ratio": 1.0,
     "low_confidence": false

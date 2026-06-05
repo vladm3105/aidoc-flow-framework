@@ -52,10 +52,10 @@ right skill. The deeper authoring guidance is in
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
 | Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
-| Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `adversary` and `synthesizer`. See `docs/AGENTS.md`. |
+| Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `chaos-engineer` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
-| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.5.0) | |
+| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.6.0) | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
@@ -98,13 +98,13 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.4.5
+0.5.0
 
 $ cat FRAMEWORK_SPEC_VERSION
-0.11.3
+0.12.0
 ```
 
-The plugin declares conformance to framework spec `0.11.3`; the bundled spec's
+The plugin declares conformance to framework spec `0.12.0`; the bundled spec's
 own version is at `framework/VERSION` (byte-identical to `../../framework/VERSION`).
 A conformance test enforces that `FRAMEWORK_SPEC_VERSION` matches the framework's
 published version.
@@ -114,8 +114,8 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.4.5` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
-| Conforms to | framework spec `0.11.3` (declared in `FRAMEWORK_SPEC_VERSION`) |
+| Version | `0.5.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Conforms to | framework spec `0.12.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Project changelog | [../../CHANGELOG.md](../../CHANGELOG.md) |
@@ -125,7 +125,8 @@ published version.
 ## Review crews & lens → agent mapping
 
 The framework spec defines a closed set of **review lenses** (e.g.
-`architect`, `business_analyst`, `auditor`, `adversary`). Each lens is a
+`architect`, `business_analyst`, `auditor`, `chaos_engineer`,
+`security_engineer`). Each lens is a
 viewpoint a reviewer applies to an artifact. The plugin binds these
 engine-agnostic lenses to its own Claude Code agents in `agents/` via the
 table below.
@@ -147,9 +148,9 @@ the `synthesizer` agent then reduces the slots deterministically per
 | `architect`, `tech_lead`, `integration_lead` | `solutions-architect` | [`agents/solutions-architect.md`](agents/solutions-architect.md) |
 | `qa_lead` | `test-architect` | [`agents/test-architect.md`](agents/test-architect.md) |
 | `operator` | `devops-release-engineer` | [`agents/devops-release-engineer.md`](agents/devops-release-engineer.md) |
-| `auditor` (general) | `traceability-auditor` | [`agents/traceability-auditor.md`](agents/traceability-auditor.md) |
-| `auditor` (security / compliance) | `security-engineer` | [`agents/security-engineer.md`](agents/security-engineer.md) |
-| `adversary` | `adversary` | [`agents/adversary.md`](agents/adversary.md) |
+| `auditor` | `traceability-auditor` | [`agents/traceability-auditor.md`](agents/traceability-auditor.md) |
+| `chaos_engineer` (internal stability) | `chaos-engineer` | [`agents/chaos-engineer.md`](agents/chaos-engineer.md) |
+| `security_engineer` (external threats) | `security-engineer` | [`agents/security-engineer.md`](agents/security-engineer.md) |
 | `synthesizer` (deterministic reduce + narrative) | `synthesizer` | [`agents/synthesizer.md`](agents/synthesizer.md) |
 | `drafter` (Create operation; per-layer) | the layer's author agent — for BRD/PRD/EARS that is `requirements-analyst`; for ADR/SPEC, `solutions-architect`; etc. | (see Create assignments below) |
 | `fixer` (Remediate operation) | `software-engineer` and/or the layer's `doc-<layer>-fixer` skill | [`agents/software-engineer.md`](agents/software-engineer.md) |
@@ -168,14 +169,14 @@ conflicts & the gate".
 
 | Layer | Author lens | Review crew (lens → weight) |
 |---|---|---|
-| BRD | `business_analyst` | `architect: 30`, `business_analyst: 30`, `auditor: 20`, `adversary: 20` |
-| PRD | `product_owner` | `product_owner: 30`, `architect: 25`, `tech_lead: 20`, `adversary: 15`, `auditor: 10` |
-| EARS | `requirements_specialist` | `requirements_specialist: 35`, `tech_lead: 25`, `qa_lead: 20`, `adversary: 20` |
-| BDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
-| ADR | `architect` | `architect: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
-| SPEC | `architect` | `architect: 30`, `tech_lead: 30`, `integration_lead: 20`, `adversary: 20` |
-| TDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `adversary: 20`, `operator: 10`, `auditor: 10` |
-| IPLAN | `tech_lead` | `tech_lead: 30`, `architect: 25`, `operator: 20`, `integration_lead: 15`, `auditor: 10` |
+| BRD | `business_analyst` | `architect: 30`, `business_analyst: 30`, `auditor: 20`, `chaos_engineer: 12`, `security_engineer: 8` |
+| PRD | `product_owner` | `product_owner: 30`, `architect: 25`, `tech_lead: 20`, `chaos_engineer: 8`, `security_engineer: 7`, `auditor: 10` |
+| EARS | `requirements_specialist` | `requirements_specialist: 35`, `tech_lead: 25`, `qa_lead: 20`, `chaos_engineer: 12`, `security_engineer: 8` |
+| BDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `chaos_engineer: 14`, `security_engineer: 6`, `operator: 10`, `auditor: 10` |
+| ADR | `architect` | `architect: 35`, `tech_lead: 25`, `chaos_engineer: 8`, `security_engineer: 12`, `operator: 10`, `auditor: 10` |
+| SPEC | `architect` | `architect: 30`, `tech_lead: 30`, `integration_lead: 20`, `chaos_engineer: 10`, `security_engineer: 10` |
+| TDD | `qa_lead` | `qa_lead: 35`, `tech_lead: 25`, `chaos_engineer: 10`, `security_engineer: 10`, `operator: 10`, `auditor: 10` |
+| IPLAN | `tech_lead` | `tech_lead: 30`, `architect: 25`, `operator: 15`, `integration_lead: 12`, `auditor: 10`, `chaos_engineer: 8` |
 
 ### Project overrides via `.aidoc/profile.yaml`
 

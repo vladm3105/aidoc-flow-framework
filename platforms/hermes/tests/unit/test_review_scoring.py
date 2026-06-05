@@ -16,18 +16,24 @@ from mcp_server.review.review_scoring import (  # noqa: E402
     score_review,
 )
 
-# EARS crew (framework/governance/REVIEW_CREWS.yaml):
-#   requirements_specialist 35, tech_lead 25, qa_lead 20, adversary 20  (sum 100)
+# EARS crew (framework/governance/REVIEW_CREWS.yaml; framework spec 0.12.0):
+#   requirements_specialist 35, tech_lead 25, qa_lead 20,
+#   chaos_engineer 12, security_engineer 8  (sum 100)
 _FULL_EARS = {
     "requirements_specialist": 100.0,
     "tech_lead": 100.0,
     "qa_lead": 100.0,
-    "adversary": 100.0,
+    "chaos_engineer": 100.0,
+    "security_engineer": 100.0,
 }
 
 
 def test_persona_alias_maps_hermes_to_framework() -> None:
-    assert canonical_persona("chaos_engineer") == "adversary"
+    # Framework spec 0.12.0 (CHAOS-SEC-SPLIT-001, D-0030) — `chaos_engineer`
+    # is now the framework's public name (identity binding); only the
+    # `chairperson` → `synthesizer` alias remains non-identity.
+    assert canonical_persona("chaos_engineer") == "chaos_engineer"
+    assert canonical_persona("security_engineer") == "security_engineer"
     assert canonical_persona("chairperson") == "synthesizer"
     assert canonical_persona("tech_lead") == "tech_lead"
 
@@ -36,7 +42,8 @@ def test_crew_weights_load_and_sum_to_100() -> None:
     weights = load_crew_weights("ears")  # doc-type form, case-insensitive
     assert weights == load_crew_weights("EARS")
     assert sum(weights.values()) == 100
-    assert "adversary" in weights
+    assert "chaos_engineer" in weights
+    assert "security_engineer" in weights
 
 
 def test_full_crew_weighted_average() -> None:
@@ -50,16 +57,19 @@ def test_full_crew_weighted_average() -> None:
     assert r.coverage.low_confidence is False
 
 
-def test_hermes_persona_name_is_mapped_for_weighting() -> None:
-    # chaos_engineer must count as the crew's `adversary` lens.
+def test_hermes_persona_names_count_in_framework_crew() -> None:
+    # `chaos_engineer` and `security_engineer` are now identity-bound to
+    # the framework crew names; verify coverage is recognised under those.
     scores = {
         "requirements_specialist": 100.0,
         "tech_lead": 100.0,
         "qa_lead": 100.0,
         "chaos_engineer": 100.0,
+        "security_engineer": 100.0,
     }
     r = score_review(layer="EARS", lens_scores=scores, findings=[])
-    assert "adversary" in r.coverage.ran
+    assert "chaos_engineer" in r.coverage.ran
+    assert "security_engineer" in r.coverage.ran
     assert r.coverage.missing == []
     assert r.score == 100.0
 
@@ -109,7 +119,7 @@ def test_partial_crew_renormalises_and_flags_quorum() -> None:
     assert r.raw_weighted == 88.33
     assert r.coverage.coverage_ratio == 0.6
     assert r.coverage.quorum_met is True
-    assert set(r.coverage.missing) == {"qa_lead", "adversary"}
+    assert set(r.coverage.missing) == {"qa_lead", "chaos_engineer", "security_engineer"}
 
 
 def test_below_quorum_is_low_confidence() -> None:

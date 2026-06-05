@@ -12,8 +12,8 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.5"
-    framework_spec_version: "0.11.3"
+    version: "0.5.0"
+    framework_spec_version: "0.12.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
@@ -92,7 +92,7 @@ coherently.
    to its nested folder `docs/01_BRD/BRD-NN_{slug}/`.
 4. **Review** — invoke `../doc-brd-audit/SKILL.md` (default pass-through
    `review_mode`); the audit fans out the BRD crew
-   (`architect`/`business_analyst`/`auditor`/`adversary`) via `Task`
+   (`architect`/`business_analyst`/`auditor`/`chaos_engineer`/`security_engineer`) via `Task`
    subagents and synthesizes a combined report at
    `.aidoc/audit/01_BRD-audit.md`.
 5. **Revise** — decide pass/fail by **reading the synthesizer's
