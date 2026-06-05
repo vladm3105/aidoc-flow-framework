@@ -14,6 +14,34 @@ Both platforms pass the shared conformance suite at
 [`../tests/conformance/`](../tests/conformance/) and consume the
 framework specification at [`../framework/`](../framework/).
 
+## Parity contract — lifecycle-behavior parity (not just output-shape)
+
+The framework spec defines **lifecycle-behavior parity** between the two
+platforms: both expose the same observable saga lifecycle (state machine,
+transition table, journal schema, break-circuit policy) over the
+create→review→revise loop, while keeping their own runtime mechanisms
+(Hermes: Python saga runtime; plugin: SKILL prompts + JSON journal + Bash
+subprocesses). The contract lives in
+[`../framework/governance/REVIEW_SAGA.md`](../framework/governance/REVIEW_SAGA.md)
+(arriving with framework spec `0.13.0` via SAGA-PARITY-001, D-0031, which
+extends D-0005's blackboard contract with an outer-loop journal).
+
+Earlier states of this document described **output-shape parity** —
+"both produce schema-conformant unified reports." That terminal-state
+parity remains (enforced by
+[`../tests/conformance/test_review_report_parity.py`](../tests/conformance/test_review_report_parity.py)),
+but it is now one component of the broader lifecycle-behavior parity
+contract.
+
+**Enforcement asymmetry (honest caveat).** Hermes enforces the state
+machine preemptively in Python (`can_transition` raises on invalid
+transitions; runtime owns the journal). The plugin enforces it
+cooperatively (SKILL.md prompts instruct the LLM to validate transitions
+before writing saga.json; OS-level `timeout` is the hard floor). Same
+observable lifecycle, different enforcement. Conformance tests check the
+observable artifact (saga.json shape + state machine + break-circuit policy
+greppable invariants), not the enforcement mechanism.
+
 ## Capability matrix — 8-layer SDD coverage
 
 | # | Layer | Hermes | Plugin |
@@ -123,29 +151,47 @@ deterministic gate, and reduced findings).
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
 | Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
-| Resilience | partial-crew → coverage; below quorum → low-confidence (D-0005: blackboard, no saga) | saga retries/compensation; degrade above quorum, escalate below |
+| Saga lifecycle (D-0031 / framework spec `0.13.0`) | `saga.json` written by autopilot SKILLs; same state machine + journal schema as Hermes (cooperative enforcement via SKILL prompts) | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement |
+| Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 still authoritative for crew state) | saga retries/compensation; degrade above quorum, escalate below |
+| Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | same — saga PARTIAL_TIMEOUT state; preemptive transition |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
 
-Both bind to the **same** crew map, persona-output contract, scoring/gate policy,
-and report shape — so a BRD reviewed by either gets the same lenses and a
-structurally identical report.
+Both bind to the **same** crew map, persona-output contract, scoring/gate
+policy, saga state machine, and report shape — so a BRD reviewed by either
+exposes the same observable lifecycle (states + transitions + journal
+shape) and produces a structurally identical report.
 
-### Parity proof
+### Parity proof — two layers
 
-- **Deterministic (CI):** `tests/conformance/test_review_report_parity.py` validates
-  committed sample report fixtures from **both** runners
-  (`tests/conformance/fixtures/review/{hermes,plugin}_BRD-01_report.json`) against the
-  shared `review_report.schema.json`, and asserts they share the report structure plus
-  the deterministic-gate invariant (`passed == structural_pass AND no_blocking`).
-- **Manual (live run):** the end-to-end "same artifact → identical report" check is
-  manual, since live LLM output is not CI-deterministic. Procedure:
+Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
+
+- **Output-shape (terminal-state) parity:**
+  `tests/conformance/test_review_report_parity.py` validates committed
+  sample report fixtures from **both** runners
+  (`tests/conformance/fixtures/review/{hermes,plugin}_BRD-01_report.json`)
+  against the shared `review_report.schema.json`, and asserts they share
+  the report structure plus the deterministic-gate invariant
+  (`passed == structural_pass AND no_blocking`).
+- **Saga-lifecycle parity (added by SAGA-PARITY-001, D-0031):**
+  `tests/conformance/test_saga_lifecycle_parity.py` validates committed
+  sample saga journals from both runners
+  (`tests/conformance/fixtures/saga/{hermes,plugin}_BRD-01_saga.json`)
+  against the shared `framework/governance/saga.schema.json`, asserts the
+  state machine + transition table in `REVIEW_SAGA.md` matches Hermes'
+  `_ALLOWED_TRANSITIONS` exactly, and asserts the `## Break-circuit
+  policy` section is present in every plugin orchestrator SKILL.md (28
+  orchestrator skills per BRD-RT-004's name-match).
+- **Manual end-to-end (live run):** the "same artifact → identical
+  lifecycle and report" check is manual, since live LLM output is not
+  CI-deterministic. Procedure:
   1. Pick one artifact (e.g. a real `BRD-01`).
-  2. Run it through the plugin review-team (`review-team` at a gate) and through the
-     Hermes saga review.
-  3. Normalise each output to the unified report shape; validate both against
-     `review_report.schema.json` (both must pass).
-  4. Confirm structural identity (same keys, coverage shape, gate fields) and that
-     the high-severity findings substantively overlap. Record the run.
+  2. Run it through the plugin review-team (`review-team` at a gate)
+     and through the Hermes saga review.
+  3. Validate both saga journals against `saga.schema.json` AND both
+     unified reports against `review_report.schema.json`.
+  4. Confirm same observable terminal state (`CLOSED` or `ESCALATED`)
+     and that the high-severity findings substantively overlap. Record
+     the run.
 
 ## Platform-specific extras
 
