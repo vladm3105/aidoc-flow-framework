@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -169,6 +169,113 @@ legacy path** for parity with the pre-team-mode behaviour.
 
 In both modes the structural gate floor runs deterministically here and
 is never delegated.
+
+## Saga interaction
+
+When invoked by `doc-brd-autopilot` (or directly), this skill reads
+and updates the saga journal at
+`.aidoc/review/01_BRD/<BRD-id>/saga.json` per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`. The audit
+acts as the **fan-out + fan-in stage** of the saga.
+
+### On entry
+
+At entry, write the audit's start epoch:
+
+```sh
+Bash: mkdir -p .aidoc/review/01_BRD/<BRD-id>/ && date +%s > .aidoc/review/01_BRD/<BRD-id>/.skill-start.audit
+```
+
+If `.aidoc/review/01_BRD/<BRD-id>/saga.json` exists, read it. Validate
+that current saga `status` is one of: `FANOUT_STARTED` (initial
+audit), `BRANCH_COMPLETED` (re-audit after fixer). If the status is
+something else (e.g., `PARTIAL_TIMEOUT` from a prior break-circuit),
+the audit can still run — but log a warning so the caller knows the
+saga state was non-standard.
+
+### During lens fan-out (team mode)
+
+For each lens dispatched as a `Task` subagent:
+
+1. Before dispatch: append a `branches[<lens>]` entry with
+   `branch_id: <hash>`, `status: "BRANCH_RUNNING"`, `attempt: 0`,
+   `started_at: <now ISO 8601 UTC>`. Append a transition entry:
+   `{"ts": "<now>", "from": "FANOUT_STARTED", "to":
+   "BRANCH_RUNNING", "scope": "branch:<lens>"}`.
+2. After dispatch returns: update `branches[<lens>].status` to
+   `"BRANCH_COMPLETED"` or `"BRANCH_FAILED"` per the lens's
+   persona-output record. Set `ended_at: <now>`. Append a transition
+   entry with the appropriate `to` state.
+
+### Before synthesizer dispatch (break-circuit checkpoint)
+
+Per `REVIEW_SAGA.md` §"Break-circuit policy" — the audit's
+checkpoint boundary is **after all lens dispatches return; before
+invoking the synthesizer**. Check elapsed time:
+
+```sh
+Bash: echo $(( $(date +%s) - $(cat .aidoc/review/01_BRD/<BRD-id>/.skill-start.audit) ))
+```
+
+If elapsed > `SOFT_DEADLINE` (1500s; 300s buffer below the 1800s
+OS-level timeout):
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPLETED",
+  "to": "PARTIAL_TIMEOUT", "scope": "run"}`.
+- Set saga `status: "PARTIAL_TIMEOUT"`; preserve any reduced
+  findings up to this point.
+- Update `updated_at`. Write `saga.json`. Exit cleanly (exit 0).
+  The caller (autopilot or harness) can re-invoke.
+
+### After synthesizer reduce
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPLETED",
+  "to": "FANIN_REDUCED", "scope": "run"}`.
+- Update saga `status: "FANIN_REDUCED"`. Update `updated_at`. Write
+  `saga.json`.
+- Synthesizer also writes `verdict.json` (per BRD-RT-002,
+  unchanged).
+- Exit returns control to the caller; the caller decides next phase
+  based on the verdict.
+
+### When invoked standalone (no saga.json on entry)
+
+If `.aidoc/review/01_BRD/<BRD-id>/saga.json` does NOT exist (e.g., a
+user runs `/aidoc-flow:doc-brd-audit` directly outside the autopilot
+loop), do NOT initialize the full saga schema. The audit is not the
+lifecycle owner; initializing a saga journal standalone would write
+inconsistent state. Instead:
+
+- Log `saga.json not present; running audit without saga journal
+  (standalone mode)`.
+- Run the audit's lens fan-out + synthesizer as normal.
+- Write blackboard slot files + `verdict.json` + the audit report
+  as usual.
+- Skip all saga.json transitions.
+
+This preserves backward compatibility with direct skill invocation.
+Only autopilot-driven runs produce saga.json.
+
+### When invoked in single_pass mode
+
+If `review_mode: single_pass` is active, the audit does not produce
+saga.json (same as standalone above — the saga is a team-mode
+artifact). Existing behavior preserved.
+
+## Break-circuit policy
+
+Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`
+§"Break-circuit policy", this skill checks elapsed wall-clock at one
+checkpoint boundary: **after all lens dispatches return; before
+invoking the synthesizer**. The SOFT_DEADLINE is 1500s
+(`ORCHESTRATOR_TIMEOUT=1800s` minus 300s buffer).
+
+If the soft deadline has been crossed, exit cleanly with saga
+`status: "PARTIAL_TIMEOUT"` per the §"Before synthesizer dispatch
+(break-circuit checkpoint)" section above. If the LLM ignores the
+check and the OS sends SIGTERM, saga.json reflects the last
+successful checkpoint state (NOT `PARTIAL_TIMEOUT`). Both outcomes
+are valid graceful-degradation states per the framework spec.
 
 ## Structural Checklist
 

@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
@@ -146,6 +146,50 @@ Most BRDs are authored from stakeholder input — keep the default
 6. **Configure upstream mode** (`none` default; `ref` if from `docs/00_REF/`).
 7. **Update the BRD index** `docs/01_BRD/BRD-00_index.md` in the same change.
 8. **Validate** (below) and commit the BRD and index together.
+
+## Draft mode (saga-driven)
+
+When invoked via the saga-driven autopilot subprocess pattern (per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md` and the
+saga loop in `../doc-brd-autopilot/SKILL.md`), this skill is the entry
+point for the **draft phase** of the create→review→revise loop. The
+invocation looks like:
+
+```sh
+claude --plugin-dir "$PLUGIN_DIR" -p \
+  "/aidoc-flow:doc-brd Draft BRD-<id> at <path>; use BRD-TEMPLATE.yaml + the source input at <seed-path>. Write to docs/01_BRD/BRD-<id>_<slug>/."
+```
+
+Because `claude -p` has no `subagent_type` CLI parameter, the
+persona binding (`business_analyst` lens → `requirements-analyst`
+agent per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml`
+plus the lens-to-agent table in `../review-team/SKILL.md`) moves
+INTO this SKILL's prompt. When the invocation brief contains the word
+`Draft` (case-insensitive) — indicating a saga-driven draft phase —
+dispatch the author this way:
+
+1. Dispatch ONE `Task` subagent with `subagent_type=requirements-analyst`,
+   acting as the `business_analyst` lens (BRD author per
+   `REVIEW_CREWS.yaml`'s BRD crew).
+2. Brief: the BRD-TEMPLATE.yaml + the source input (REF / prompt /
+   IPLAN seed file at the path passed in) + this SKILL's
+   `## Creation Process` (above) as authoring rules.
+3. The subagent writes the BRD to the nested folder
+   `docs/01_BRD/BRD-<id>_<slug>/` per the standard layout.
+4. After the subagent returns, write the saga.json transition
+   recording the draft completion: append `{"ts": "<now>", "from":
+   "FANOUT_STARTED", "to": "BRANCH_COMPLETED", "scope":
+   "branch:business_analyst"}` to `transitions[]` if a saga.json
+   exists at `.aidoc/review/01_BRD/<BRD-id>/saga.json`. (If no
+   saga.json exists, this is a standalone invocation — skip the saga
+   write per `REVIEW_SAGA.md` §"FRAMEWORK_SPEC_VERSION semantics"
+   declaration-vs-implementation rule.)
+
+When invoked outside the saga loop (a user runs `/aidoc-flow:doc-brd`
+directly to author a BRD), follow the `## Creation Process` above
+without dispatching the Task subagent (the user is the author in
+that case). The two modes coexist; the trigger is the presence of
+`Draft` in the brief AND an existing `<path>` argument.
 
 ## Validation
 
