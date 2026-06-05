@@ -93,7 +93,17 @@ parseable. Do not invent fields; do not nest beyond what is shown.
     "business_analyst": 82,
     "auditor": 92,
     "adversary": 62
-  }
+  },
+  "findings": [
+    {
+      "id": "MERGED-P1-001",
+      "priority": "P1",
+      "location": "Project Scope > Core features",
+      "message": "<finding text>",
+      "recommendation": "<fix recommendation>",
+      "personas": ["architect", "business_analyst"]
+    }
+  ]
 }
 ```
 
@@ -121,10 +131,22 @@ Field semantics:
   finding set (post dedup).
 - `lens_scores` — flat map of `{<lens_name>: <integer_score>}` for
   every lens that ran; absent for lenses that failed.
+- `findings[]` (recommended; consumed by `doc-*-fixer`) — the reduced
+  finding set. Each entry carries `id`, `priority` (P0|P1|P2|P3),
+  `location`, `message`, `recommendation`, and a **`personas`** array
+  listing which lens(es) surfaced or co-owned the finding. The
+  `personas` array is what `doc-*-fixer` reads to know which lens(es)
+  to dispatch for patch validation:
+  - 1 entry → single-lens finding; fixer dispatches that lens.
+  - 2+ entries → multi-lens finding; fixer dispatches **all** listed
+    lenses in parallel and only accepts the patch when every lens
+    returns clean.
+  - Empty / missing → orphan finding; fixer falls back to the layer's
+    author lens (per `REVIEW_CREWS.yaml`).
 
-This JSON is the contract. Every key must be present; every value must
-parse as the declared type. The audit skill's stdout response and the
-driver's score capture both read from this file.
+This JSON is the contract. Every required key must be present; every
+value must parse as the declared type. The audit skill's stdout
+response and the driver's score capture both read from this file.
 
 ### 2. `report.md` — the human narrative
 

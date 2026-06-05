@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.4.3"
+    version: "0.4.4"
     framework_spec_version: "0.11.3"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -67,18 +67,38 @@ fallback applies to other adaptation knobs (`section_toggles`).
    - **Slots and verdict.json are optional** — when absent (e.g.
      single_pass run produced no synthesizer output), fall back to
      parsing the audit report's Findings sections directly.
-2. **Group blocking findings** (P0 + P1) by responsible lens via the
-   lens → agent mapping in `../review-team/SKILL.md`. P2/P3 are
-   advisory — apply deterministically without lens validation.
+2. **Resolve responsible lenses per finding.** Each blocking finding
+   (P0 + P1) carries a `personas` array in the synthesizer's reduced
+   form (see `verdict.json:findings[*].personas`) OR can be inferred
+   from per-lens slot membership. Dispatch rules:
+   - **Single-lens finding** (1 persona): dispatch that lens.
+   - **Multi-lens finding** (2+ personas, e.g. an
+     architect+business_analyst contradiction): dispatch **all**
+     listed lenses in parallel. Each writes its own
+     `<persona>.fix_<N>.json` slot. The fix is accepted only when
+     **every** dispatched lens returns no new P0/P1 (any one lens
+     regressing reverts the patch).
+   - **No-persona / orphan finding** (empty or missing `personas`):
+     dispatch the BRD crew's **author** lens (per
+     `REVIEW_CREWS.yaml`: `business_analyst` for BRD) as the default
+     responsible reviewer. Falling back to author-lens rather than
+     skipping ensures every blocking finding gets at least one
+     validation pass.
+   P2/P3 are advisory — apply deterministically without lens
+   validation.
 3. **Propose and apply a patch** per blocking finding. Fix Phases 0–7
    below describe the patch shapes; the catalogue is the same in both
    modes. Back up first per the existing Input Contract.
-4. **Validate non-regression.** Dispatch the responsible lens as a
-   `Task` subagent in patch-validation mode: subagent_type=<mapped
-   agent>; brief = the patched region + the original finding + the
-   patch diff; output = a fresh persona-output record (lens_score for
-   that region + any new findings). Persist as
-   `.aidoc/review/01_BRD/<BRD-id>/<persona>.fix_<N>.json`.
+4. **Validate non-regression.** For each responsible lens identified
+   in step 2, dispatch one `Task` subagent in patch-validation mode:
+   `subagent_type=<mapped agent>`; brief = the patched region + the
+   original finding + the patch diff; output = a fresh persona-output
+   record (lens_score for the patched region + any new findings).
+   Persist each lens's output as
+   `.aidoc/review/01_BRD/<BRD-id>/<persona>.fix_<N>.json` (`<N>` =
+   sequential fix-iteration counter, starting at 1). Multi-lens
+   findings produce one slot file per responsible lens for the same
+   `<N>`.
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**

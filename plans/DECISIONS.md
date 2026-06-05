@@ -10,6 +10,60 @@ graduation.
 
 ---
 
+## D-0027 — Autopilot timeout matches its sub-team orchestration; multi-lens fixer findings dispatch all responsible lenses
+
+- **Date:** 2026-06-04T13:30:00Z
+- **Context:** BRD-RT-002's live verification (2026-06-04) produced 4 of
+  6 pass criteria on the team-mode run. The 2 FAILs were operational —
+  the architectural contract (verdict.json + cross-consumer consistency)
+  verified end-to-end. Three gaps:
+  - **G11**: `doc-brd-autopilot` in team mode now orchestrates a full
+    `create → review → revise` loop inside one outer `claude -p`
+    process. The default 600s `SKILL_TIMEOUT` killed it mid-iteration
+    (exit 124). BRD-RT-002's `AUDIT_TIMEOUT=1200` name-match only
+    covered `*-audit`.
+  - **G12**: even with G11 fixed, a multi-iteration fix cycle (3 ×
+    ~25 min) pushes a single layer's wall-clock past the 1800s
+    per-layer cap.
+  - **G13**: BRD-RT-001's fixer SKILL text said "dispatch *the*
+    responsible lens" (singular). When a finding's `personas` array
+    listed 2+ lenses (e.g. `[architect, business_analyst]`), the
+    model bailed on lens validation instead of dispatching both.
+    Result: fixer ran but wrote no `<persona>.fix_<N>.json` slots,
+    leaving the team-mode patch-validation loop unverified.
+- **Decision:**
+  - Extend `_pick_timeout_for` in `tests/scripts/test-acceptance.sh` to
+    match `*-autopilot` skills → new `AUTOPILOT_TIMEOUT=1800` (30 min).
+  - Raise `MAX_LAYER_SEC` from 1800s to 3600s. Existing inner
+    backstops (per-skill timeouts, `--cost-cap`, framework's
+    `MAX_TOTAL_OUTPUT_TOKENS`) remain.
+  - Codify `doc-brd-fixer/SKILL.md` Remediate Mode dispatch rules:
+    single-lens finding → that lens; multi-lens finding → **all**
+    listed lenses in parallel; orphan finding → layer's author lens
+    as fallback.
+  - Document `findings[].personas` field in `agents/synthesizer.md`
+    schema (the synthesizer already writes it; the SKILL catches up).
+- **Why:**
+  - **G11/G12 are arithmetic.** The autopilot's nested loop has more
+    work to do than a single audit, so it needs a longer timeout.
+    Per-layer cap matches the worst-case ceiling (3 fix iterations at
+    ~20 min each).
+  - **G13 is prompt-correctness.** Singular "the responsible lens" is
+    ambiguous when 2+ lenses co-own a finding. Explicit branching
+    rules let the model dispatch correctly without inferring intent.
+  - **Fallback-to-author** keeps every blocking finding validated
+    even when synthesizer doesn't populate `personas` — avoiding
+    silent skips while preserving lens-independence properties.
+- **Scope:** Plugin v0.4.3 → v0.4.4. Framework spec unchanged. The
+  fixer pattern + autopilot-timeout name-match are reusable verbatim
+  for PRD-RT, EARS-RT, BDD-RT, ADR-RT, SPEC-RT, TDD-RT, IPLAN-RT —
+  per-layer follow-ups inherit the corrected ops.
+- **Notes:** Live re-verification (~$7, 25-30 min) is expected to take
+  Run #1's pass-criteria from 4/6 to 6/6 on the BRD layer. The
+  url-shortener BRD's BA-001 finding (visit-count contradiction, P1
+  with `[architect, business_analyst]` personas) is now the live test
+  case for multi-lens dispatch.
+
 ## D-0026 — Synthesizer writes a structured `verdict.json`; consumers parse JSON, not Markdown
 
 - **Date:** 2026-06-03T18:25:00Z
