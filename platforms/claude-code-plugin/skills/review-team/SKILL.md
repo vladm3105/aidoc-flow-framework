@@ -10,7 +10,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
@@ -98,6 +98,51 @@ The blackboard is a **hub** (orchestrator-mediated): subagents return their
 record to the orchestrator, which writes the slot. It is **not** a peer-to-peer
 mesh — subagents do not share live memory. Slots are **transient + git-ignored**
 (`.aidoc/review/`); only the unified report may persist into the doc folder.
+
+## The saga journal
+
+Alongside the blackboard, the orchestrator maintains a **saga journal**
+at `.aidoc/review/<NN>_<LAYER>/<artifact-id>/saga.json` per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`. The saga
+journal records:
+
+- run-level **state machine** progression (PREPARED → FANOUT_STARTED
+  → BRANCH_RUNNING → BRANCH_COMPLETED → FANIN_REDUCED → SYNTHESIZED →
+  CLOSED, with `PARTIAL_TIMEOUT` and `ESCALATED` failure paths)
+- per-branch **status** (one entry per persona dispatched)
+- a **transitions[]** append-only log (every state change)
+- a **compensation_actions[]** append-only log (compensation events
+  during the fixer's multi-lens validation phase)
+
+The blackboard (slot files) captures **persona findings**; the saga
+journal captures **lifecycle progression**. The two artifacts
+complement each other:
+
+```text
+.aidoc/review/<NN>_<LAYER>/<artifact-id>/
+  <persona>.json        # blackboard slot — persona-output record
+  saga.json             # saga journal — lifecycle state + transitions
+  report.md             # synthesizer's unified report
+  verdict.json          # synthesizer's combined-status companion (per BRD-RT-002)
+```
+
+The dispatcher (this skill) is responsible for transitioning the
+saga `status` and per-branch states as it fans out and reduces.
+Specifically: it updates `branches[<lens>].status` to
+`BRANCH_RUNNING` before each dispatch and to `BRANCH_COMPLETED` /
+`BRANCH_FAILED` after each return, and transitions the run-level
+`status` from `FANOUT_STARTED` → `FANIN_REDUCED` once all branches
+have reached terminal states.
+
+The schema lives at
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/saga.schema.json`;
+conformance tests (arriving in SAGA-PARITY-001 Phase 3) validate
+runtime saga.json files against it.
+
+Saga writes are skipped in `single_pass` mode and in standalone
+audit/fixer invocations that lack a pre-existing saga.json (the
+orchestrator is the lifecycle owner; standalone skills do not
+initialize the saga from scratch).
 
 ## How it runs
 

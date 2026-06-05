@@ -3,7 +3,7 @@ name: doc-review
 description: "DEPRECATED in v0.4.0. Use `/aidoc-flow:doc-validator` with scope=prose. This skill is a redirect stub and will be removed in v0.6.0."
 metadata:
   custom_fields:
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-31"
     skill_category: quality-assurance
@@ -20,4 +20,4 @@ preserved verbatim under `doc-validator` Mode: prose.
 **Migration**: replace any `doc-review <target>` invocation with
 `/aidoc-flow:doc-validator scope=prose <target>`.
 
-This stub will be removed in plugin v0.5.0.
+This stub will be removed in plugin v0.6.0.

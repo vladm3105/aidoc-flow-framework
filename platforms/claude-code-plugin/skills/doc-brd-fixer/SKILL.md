@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -116,6 +116,113 @@ dispatch is unavailable, or when no slots are present.
 In both modes, P2/P3 advisory findings are applied without lens
 validation; only blocking findings (P0/P1) go through the
 patch-validation loop in team mode.
+
+## Saga interaction
+
+When invoked by `doc-brd-autopilot` (or directly), this skill reads
+and updates the saga journal at
+`.aidoc/review/01_BRD/<BRD-id>/saga.json` per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`. The fixer
+acts as the **remediation stage** of the saga: it transitions
+branches to `BRANCH_COMPENSATING` during patch validation, then back
+to `BRANCH_COMPLETED` (validated) or `BRANCH_FAILED` (regression
+detected).
+
+### On entry
+
+At entry, write the fixer's start epoch:
+
+```sh
+Bash: mkdir -p .aidoc/review/01_BRD/<BRD-id>/ && date +%s > .aidoc/review/01_BRD/<BRD-id>/.skill-start.fixer
+```
+
+If `.aidoc/review/01_BRD/<BRD-id>/saga.json` exists, read it. Validate
+that current saga `status` is `FANIN_REDUCED` (post-audit) or
+`BRANCH_FAILED` (re-entering after a prior fixer regression). If
+status is something else, log a warning and proceed.
+
+### During multi-lens validation (team mode)
+
+For each blocking finding (P0/P1) that requires lens validation:
+
+1. Before dispatching the responsible lens validator(s): for each
+   lens in the finding's `personas[]` list, append a transition:
+   `{"ts": "<now>", "from": "BRANCH_COMPLETED", "to":
+   "BRANCH_COMPENSATING", "scope": "branch:<lens>"}`. Update
+   `branches[<lens>].status` to `"BRANCH_COMPENSATING"`. Append an
+   entry to `compensation_actions[]`:
+   `{"ts": "<now>", "branch": "<lens>", "reason": "<finding_id>:
+   <message>", "action": "retry"}`.
+2. After the validation Task subagent returns:
+   - If patch validated (no regression): transition back to
+     `BRANCH_COMPLETED`. Update `compensation_actions[]` last entry
+     with the validation result.
+   - If patch regresses (lens flags new P0/P1 on patched region):
+     transition to `BRANCH_FAILED`. Set
+     `compensation_actions[]` last entry's `action` to `"escalate"`.
+     The finding becomes `manual_required`.
+
+### Break-circuit checkpoint (between multi-lens validation dispatches)
+
+Per `REVIEW_SAGA.md` §"Break-circuit policy" — the fixer's
+checkpoint boundary is **between multi-lens validation dispatches**
+(each blocking finding's per-lens validation is one boundary).
+Before dispatching the next validation:
+
+```sh
+Bash: echo $(( $(date +%s) - $(cat .aidoc/review/01_BRD/<BRD-id>/.skill-start.fixer) ))
+```
+
+If elapsed > `SOFT_DEADLINE` (1500s):
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPENSATING",
+  "to": "PARTIAL_TIMEOUT", "scope": "run"}`.
+- Set saga `status: "PARTIAL_TIMEOUT"`. Preserve all completed
+  validations (their `fix_N.json` slots remain durable). Set
+  `current_phase: "fixer"` so the resume invocation knows to
+  continue the remaining validations.
+- Update `updated_at`. Write `saga.json`. Exit cleanly.
+
+The remaining validations resume on next invocation per
+`doc-brd-autopilot`'s §3.4 resume logic.
+
+### After all blocking-finding patches validated
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPENSATING",
+  "to": "BRANCH_COMPLETED", "scope": "run"}` (run-level: fixer
+  pass complete).
+- Update saga `status: "BRANCH_COMPLETED"` (autopilot's next phase
+  will be `re-review`).
+- Update `updated_at`. Write `saga.json`.
+
+### When invoked standalone (no saga.json on entry)
+
+If `.aidoc/review/01_BRD/<BRD-id>/saga.json` does NOT exist (user
+runs `/aidoc-flow:doc-brd-fixer` directly outside the autopilot
+loop), do NOT initialize the full saga schema. Log `saga.json not
+present; running fixer without saga journal (standalone mode)`. Run
+the fix phases as usual; write the fix report; skip all saga.json
+transitions. Backward-compatible with direct skill invocation.
+
+### When invoked in single_pass mode
+
+If `review_mode: single_pass` is active, the fixer applies patches
+deterministically without lens validation and without writing
+saga.json. Existing behavior preserved.
+
+## Break-circuit policy
+
+Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`
+§"Break-circuit policy", this skill checks elapsed wall-clock at one
+checkpoint boundary: **between multi-lens validation dispatches**
+(per the table in REVIEW_SAGA.md). The SOFT_DEADLINE is 1500s
+(`ORCHESTRATOR_TIMEOUT=1800s` minus 300s buffer).
+
+If the soft deadline has been crossed, exit cleanly with saga
+`status: "PARTIAL_TIMEOUT"` per §"Break-circuit checkpoint" above.
+The fixer's partial progress (`fix_N.json` slots already written) is
+durable; resumed invocation continues from where the break-circuit
+fired.
 
 ## Fix Phases
 

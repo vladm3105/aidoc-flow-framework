@@ -14,6 +14,66 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.5.0 → v0.6.0
+
+> **SemVer classification rationale**: this release is labelled as a
+> MINOR bump (0.5.0 → 0.6.0) rather than BREAKING. The primary surface
+> change — adding `saga.json` to `.aidoc/review/<NN>_<LAYER>/<id>/` —
+> is purely **additive**: no existing files (blackboard slots,
+> verdict.json, report.md) change shape, and no existing CLI / skill
+> invocation breaks. Consumers that strictly enumerate the contents of
+> `.aidoc/review/` may see a new file, but the shape of every other
+> file is preserved. Under pre-1.0 SemVer the project uses MINOR for
+> additive changes.
+
+- **BRD-layer saga implementation (SAGA-PARITY-001 Phase 2, D-0031).**
+  The plugin's BRD-layer orchestrator skills (`doc-brd-autopilot`,
+  `doc-brd-audit`, `doc-brd-fixer`, plus the supporting `doc-brd` +
+  shared `review-team`) now maintain a saga journal at
+  `.aidoc/review/01_BRD/<BRD-id>/saga.json` per the framework
+  saga lifecycle contract (`framework/governance/REVIEW_SAGA.md`).
+  - **Autopilot refactor**: the create→review→revise loop now
+    dispatches each phase (draft, review, fixer, re-review) via
+    `Bash → claude -p` subprocesses. Each phase gets its own fresh
+    `ORCHESTRATOR_TIMEOUT=1800s` budget. The autopilot's outer loop
+    reads/writes saga.json between phases, validates transitions
+    against the spec table, and exits cleanly with status
+    `PARTIAL_TIMEOUT` if its `SOFT_DEADLINE=1500s` is crossed.
+  - **Resumable runs**: an autopilot invocation that returns with
+    `status: PARTIAL_TIMEOUT` can be re-invoked; the resumed
+    session reads saga.json, identifies `current_phase`, and
+    continues from the recorded checkpoint. The CHAOS-SEC-SPLIT-001
+    verification scenario (5-lens BRD with multi-lens fixer hitting
+    1802s in a single autopilot invocation) becomes recoverable
+    instead of fatal.
+  - **Break-circuit policy** with per-skill checkpoint boundaries:
+    autopilot fires between phases; audit before synthesizer; fixer
+    between multi-lens validations; each skill tracks its own
+    elapsed time via per-skill `.skill-start.<skill>` epoch files.
+  - **Pre-Phase-2 blackboard migration**: if `.aidoc/review/01_BRD/
+    <BRD-id>/` has slot files but no saga.json (a pre-Phase-2 run),
+    the autopilot scaffolds a saga.json reflecting the existing
+    state instead of treating it as fresh.
+  - **Standalone audit/fixer behavior**: when invoked directly
+    outside the autopilot loop without a pre-existing saga.json,
+    the audit/fixer skip saga.json writes entirely (backward
+    compatible with direct skill invocation).
+  - **`doc-brd` gains a `## Draft mode (saga-driven)` section**:
+    when invoked via the autopilot subprocess pattern with `Draft`
+    in the brief, `doc-brd` dispatches `requirements-analyst` as a
+    Task subagent with the `business_analyst` lens (preserves the
+    persona binding lost in the move from in-session Task dispatch
+    to subprocess invocation).
+  - **`review-team` SKILL gains a `## The saga journal` section**
+    describing the saga.json layout alongside the existing
+    blackboard description.
+  - PRD..IPLAN propagation arrives in SAGA-PARITY-001 Phase 4.
+  - Hermes-side alignment (PARTIAL_TIMEOUT, `transitions[]` field)
+    arrives in Phase 3.
+  - **Net file changes**: 4 BRD SKILLs + doc-brd + review-team + 52
+    skills' frontmatter `version` bump + plugin VERSION + 9-place
+    fanout. No framework spec changes (Phase 1's 0.13.0 holds).
+
 ### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated, declaration only)
 
 - **`FRAMEWORK_SPEC_VERSION` bumped `0.12.0 → 0.13.0`

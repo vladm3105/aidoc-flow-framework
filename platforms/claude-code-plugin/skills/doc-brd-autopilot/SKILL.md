@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.5.0"
+    version: "0.6.0"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -78,46 +78,187 @@ The workflow has two shapes — the team-mode create→review→revise loop
 2. **Type & scope** — Platform vs Feature; for a Feature BRD, verify the
    referenced Platform BRD exists; reserve the next `BRD-NN`.
 
-### Generation Loop (`review_mode: team`)
+### Saga-driven generation loop (`review_mode: team`)
+
+Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`, the
+plugin uses cooperative enforcement: this SKILL prompt directs the LLM
+to read/write `saga.json`, validate transitions against the table in
+REVIEW_SAGA.md, and dispatch each phase as a fresh `claude -p`
+subprocess via the `Bash` tool. Each phase inherits its own
+`ORCHESTRATOR_TIMEOUT=1800s` budget rather than sharing the autopilot's
+parent budget; the saga.json journal preserves progress across
+invocations, so a run that hits the soft deadline (1500s) can be
+resumed by a subsequent invocation.
 
 Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §Operations
 §Create: **one drafter, many reviewers** — parallel drafts do not merge
 coherently.
 
-3. **Draft** — dispatch ONE `Task` subagent (`subagent_type=requirements-analyst`,
-   acting as the `business_analyst` lens / BRD author per the
-   lens → agent mapping in `../review-team/SKILL.md`). Brief:
-   `BRD-TEMPLATE.yaml`, the source input (REF/prompt/IPLAN),
-   `../doc-brd/SKILL.md` as authoring rules. The author writes the BRD
-   to its nested folder `docs/01_BRD/BRD-NN_{slug}/`.
-4. **Review** — invoke `../doc-brd-audit/SKILL.md` (default pass-through
-   `review_mode`); the audit fans out the BRD crew
-   (`architect`/`business_analyst`/`auditor`/`chaos_engineer`/`security_engineer`) via `Task`
-   subagents and synthesizes a combined report at
-   `.aidoc/audit/01_BRD-audit.md`.
-5. **Revise** — decide pass/fail by **reading the synthesizer's
-   `verdict.json`** at `.aidoc/review/01_BRD/<BRD-id>/verdict.json`
-   (where `<BRD-id>` is the short artifact ID, e.g. `BRD-01`):
+#### 3. Saga setup (entry / resume)
 
-   - `verdict.combined_status == "FAIL"` AND iterations < max →
-     invoke `../doc-brd-fixer/SKILL.md` in team mode (it consumes the
-     slot index, dispatches lens validators per blocking finding,
-     persists patch-validation records). Then **GOTO step 4** for a
-     fresh audit. Max iterations is 3 by default.
-   - `verdict.coverage.quorum_met == false` → flag manual-review,
-     halt (low-confidence outcome per `REVIEW_TEAM.md` §Resilience).
-   - `verdict.combined_status == "PASS"` → finalize (go to step 6).
+Variables for the rest of this section:
 
-   When `verdict.json` is absent (e.g. single_pass run — synthesizer
-   doesn't run in that mode), fall back to parsing the
-   **Combined status** line in `.aidoc/audit/01_BRD-audit.md`. Never
-   make this decision from the audit subagent's stdout summary or
-   from the BRD's self-claimed PRD-Ready score. The written verdict
-   is the gate; everything else is advisory.
-6. **Converge or escalate** — on PASS update
-   `docs/01_BRD/BRD-00_index.md` and finish; on max iterations with
-   FAIL or quorum failure, write the manual-review flag and stop the
-   batch item (continue with other items if any).
+- `SAGA_DIR=.aidoc/review/01_BRD/<BRD-id>/`
+- `SAGA_FILE=$SAGA_DIR/saga.json`
+- `START_EPOCH_FILE=$SAGA_DIR/.skill-start.autopilot`
+- `SOFT_DEADLINE=1500` seconds (OS-level timeout is 1800s; 300s buffer
+  per `REVIEW_SAGA.md` §"Break-circuit policy")
+
+`<BRD-id>` is the short artifact ID (e.g. `BRD-01`), not the nested
+folder name. The directory MUST exist before writing; create with
+`Bash: mkdir -p $SAGA_DIR`.
+
+**Per-skill start epoch** (per `REVIEW_SAGA.md`): every orchestrator
+SKILL tracks elapsed time against its OWN epoch file. Each subprocess
+that this autopilot spawns starts fresh, so it writes its own
+`.skill-start.<skill>` file. The naming convention:
+
+| Skill | Epoch file |
+|---|---|
+| `doc-brd-autopilot` | `$SAGA_DIR/.skill-start.autopilot` |
+| `doc-brd-audit` | `$SAGA_DIR/.skill-start.audit` |
+| `doc-brd-fixer` | `$SAGA_DIR/.skill-start.fixer` |
+
+##### 3.1 Resolve the saga state
+
+Inspect `$SAGA_FILE`. Possible cases:
+
+- **File does not exist**: this is a fresh run. Continue to §3.2
+  (initialize fresh).
+- **File exists with `status` ∈ {`PREPARED`, `FANOUT_STARTED`,
+  `BRANCH_RUNNING`, `BRANCH_COMPLETED`, `BRANCH_FAILED`,
+  `BRANCH_COMPENSATING`, `FANIN_REDUCED`, `SYNTHESIZED`}**: prior run
+  was interrupted before reaching a terminal state. Treat as resume
+  (§3.4 below).
+- **File exists with `status == "PARTIAL_TIMEOUT"`**: break-circuit
+  fired in a prior invocation. Resume from the checkpoint marker
+  (§3.4 below).
+- **File exists with `status == "CLOSED"`**: saga already completed.
+  Log `saga already CLOSED for <BRD-id>; iteration N complete` and
+  exit cleanly (exit 0). Do NOT re-run unless the user has explicitly
+  removed `$SAGA_FILE`.
+- **File exists with `status == "ESCALATED"`**: prior run was
+  escalated for human review. Do NOT auto-restart. Log `saga
+  ESCALATED for <BRD-id>; human review required` and exit cleanly.
+
+##### 3.2 Initialize fresh saga (when no saga.json present)
+
+Check for **pre-Phase-2 blackboard migration** first: walk
+`$SAGA_DIR/*.json`. If `<persona>.json` slot files are present (a
+pre-Phase-2 run without saga.json), build a saga.json reflecting
+the existing slot state:
+
+- For each `<persona>.json` slot, add a `branches[<persona>]` entry
+  with `status: "BRANCH_COMPLETED"`, `attempt: 0`,
+  `started_at: <slot file mtime>`, `ended_at: <slot file mtime>`,
+  and `branch_id: <12-char hash of "<run_id>|<persona>">`.
+- Set saga `status: "BRANCH_COMPLETED"` (all crew slots present
+  means fan-in is the next phase).
+- Set `iteration: 1`, `current_phase: "re-review"` (re-audit
+  defensively; we don't know if the existing slots are post-audit
+  or post-fixer).
+- Append a single backfill transition entry with `migration: true`
+  extension field: `{"ts": "<now>", "from": null, "to":
+  "BRANCH_COMPLETED", "scope": "run", "migration": true}`.
+
+Otherwise (no slot files), initialize a clean saga:
+
+```json
+{
+  "review_run_id": "<sha256-prefix-of: $artifact_path|$crew|$time_bucket>",
+  "artifact_id": "<BRD-id>",
+  "layer": "01_BRD",
+  "personas_requested": ["business_analyst", "architect", "auditor",
+                         "chaos_engineer", "security_engineer"],
+  "status": "PREPARED",
+  "iteration": 1,
+  "current_phase": "draft",
+  "created_at": "<now ISO 8601 UTC>",
+  "updated_at": "<now ISO 8601 UTC>",
+  "branches": {},
+  "transitions": [
+    {"ts": "<now>", "from": null, "to": "PREPARED", "scope": "run"}
+  ],
+  "compensation_actions": []
+}
+```
+
+Write `$SAGA_FILE`. Then record the autopilot's start epoch:
+
+```sh
+Bash: mkdir -p $SAGA_DIR && date +%s > $START_EPOCH_FILE
+```
+
+##### 3.3 Phase dispatch loop
+
+Until `status` reaches a terminal state (`CLOSED`, `ESCALATED`, or
+`PARTIAL_TIMEOUT`):
+
+**a. Break-circuit check** (before dispatching the next phase):
+
+```sh
+Bash: echo $(( $(date +%s) - $(cat $START_EPOCH_FILE) ))
+```
+
+If elapsed > `SOFT_DEADLINE` (1500s):
+
+- Append transition: `{"from": "<current_status>", "to":
+  "PARTIAL_TIMEOUT", "scope": "run", "ts": "<now>"}`.
+- Set `status: "PARTIAL_TIMEOUT"`; preserve `current_phase` for
+  resume.
+- Update `updated_at`. Write `$SAGA_FILE`. Exit cleanly.
+
+**b. Determine and dispatch next phase** based on `current_phase`:
+
+| current_phase | Subprocess command | After subprocess exit 0 |
+|---|---|---|
+| `draft` | `Bash: timeout 1800 claude --plugin-dir "$PLUGIN_DIR" -p "/aidoc-flow:doc-brd Draft BRD-<id> at <path>; use BRD-TEMPLATE.yaml + the source input at <seed-path>. Write to docs/01_BRD/BRD-<id>_<slug>/."` | Transition: `PREPARED → FANOUT_STARTED`; set `current_phase: "review"` |
+| `review` | `Bash: timeout 1800 claude --plugin-dir "$PLUGIN_DIR" -p "/aidoc-flow:doc-brd-audit Audit BRD-<id> at <path>. Iteration=<N>. saga.json at $SAGA_FILE."` | Read `verdict.json`; if PASS → `current_phase: "finalize"`; if FAIL → `current_phase: "fixer"` |
+| `fixer` | `Bash: timeout 1800 claude --plugin-dir "$PLUGIN_DIR" -p "/aidoc-flow:doc-brd-fixer Fix BRD-<id> at <path> based on findings at <audit-report-path>. saga.json at $SAGA_FILE."` | Increment `iteration`; set `current_phase: "re-review"` |
+| `re-review` | (same as `review` above) | If PASS → `current_phase: "finalize"`; if FAIL AND `iteration < 3` → `current_phase: "fixer"`; else set `status: "ESCALATED"` |
+| `finalize` | Update `docs/01_BRD/BRD-00_index.md`. Append transitions: `BRANCH_COMPLETED → FANIN_REDUCED → SYNTHESIZED → CLOSED`. Set `status: "CLOSED"`. | Exit loop |
+
+The audit and fixer subprocesses manage their own per-branch
+transitions and break-circuit; they MUST update `$SAGA_FILE` on entry
+and exit per their own SKILL.md `## Saga interaction` sections.
+
+**c. Update saga.json after each subprocess returns**. Re-read
+`$SAGA_FILE` to pick up any transitions the subprocess wrote. Validate
+the new `status` against `REVIEW_SAGA.md`'s transition table —
+invalid transitions are bugs to escalate, not to silently apply.
+
+##### 3.4 Resume logic (G-R1: PARTIAL_TIMEOUT is checkpoint-marker only)
+
+`PARTIAL_TIMEOUT` is terminal-this-process per `REVIEW_SAGA.md`'s
+transition table — it has no allowed-next transitions. The resume
+mechanism does NOT append a `from: PARTIAL_TIMEOUT` transition (which
+would violate the spec). Instead:
+
+1. Read the existing `$SAGA_FILE`.
+2. Identify `current_phase` from the journal.
+3. Re-record the autopilot's start epoch (`date +%s >
+   $START_EPOCH_FILE`); this invocation's clock starts fresh.
+4. Walk `transitions[]` backward to find the most recent transition
+   whose `to` is NOT `PARTIAL_TIMEOUT`. That state is the resume
+   point.
+5. Set `status` to the resume point (the run can continue from
+   here). Do NOT append a transition `from: PARTIAL_TIMEOUT`.
+6. Continue from §3.3 phase dispatch loop. The next legal transition
+   from the resume point is what gets appended.
+
+For example, if the prior journal was:
+
+```text
+PREPARED → FANOUT_STARTED → BRANCH_RUNNING → BRANCH_COMPLETED →
+PARTIAL_TIMEOUT (current_phase: fixer)
+```
+
+Resume sets `status: "BRANCH_COMPLETED"` and continues to the fixer
+phase. The next transition appended would be `BRANCH_COMPLETED →
+FANIN_REDUCED` (or similar) once the fixer completes.
+
+The PARTIAL_TIMEOUT entry remains in `transitions[]` as a permanent
+checkpoint record.
 
 ### Linear Pipeline (`review_mode: single_pass`)
 
