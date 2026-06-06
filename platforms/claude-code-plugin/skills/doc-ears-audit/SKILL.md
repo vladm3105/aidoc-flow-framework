@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.6.1"
+    version: "0.6.2"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
@@ -107,6 +107,128 @@ threshold **and** no blocking issues; otherwise `FAIL`.
 
 Findings: `VALID-M001` missing `deliverable_type`; `VALID-M002` invalid value;
 `VALID-M003` `document_type` not `ears-document`.
+
+## Content Sub-Checks
+
+These sub-checks supplement the structural / metadata gates with
+content-quality checks targeting failure modes the v0.6.1 review
+missed (REVIEW-CALIBRATION-001, plan PR #95). Section references
+use concept names (not § numbers) so the same wording applies across
+all 8 layer templates.
+
+### Sub-check A1 — Cell actionability (auditor lens)
+
+Every table cell must commit to an ACTIONABLE claim, not just be
+non-empty. Raise a finding when:
+
+- A quantitative column (budget cap, latency threshold, retention,
+  capacity, throughput, error rate, or any other measurable
+  dimension) holds prose without a number, a bound, or a
+  `[PROVISIONAL — confirm with business]` flag.
+- A status column reads `Pending`/`Approved` AND the parallel
+  content column (Recommended selection, Mitigation, …) is blank or
+  also reads `Pending`.
+- A cell cross-references another part of this artifact as if
+  quoting a commitment (e.g., "Within the budget cap stated in the
+  constraints section") but the referenced section states the
+  category without a measurable bound.
+
+Severity: P2 default; P1 if the non-actionable cell appears on a
+**launch-gate path** (the section the template labels "Acceptance
+Criteria", "Launch Gates", or equivalent).
+
+### Sub-check A2 — Assumption-capture discipline (auditor lens)
+
+Every assumption-like statement ("X holds for this cycle", "Y does
+not apply", "Z is fixed at value V") that downstream layers may
+rely on must be captured as a row in the artifact's **assumptions
+table** (the section the template labels "Constraints and
+Assumptions" or equivalent) with an
+`<artifact>.NN.<assumptions-section>.xxxx` ID. Assumption-shaped
+prose buried inside a functional requirement, risk, quality
+expectation, or other section without a corresponding
+assumptions-table row is a finding.
+
+Severity: P2.
+
+### Sub-check A3 — Cross-section pointer validity (auditor lens)
+
+For every cross-reference (a section pointer such as "the
+constraints section" or "§N", an artifact ID like
+`<artifact>.NN.SS.xxxx`, or a tag like `@threshold:`, `@diagram:`,
+`@brd:` / `@prd:` / `@ears:` etc.):
+
+1. Verify the target ID exists in the referenced section.
+2. Verify the referenced content matches the citing claim's shape
+   (e.g., a "within the budget cap stated in the constraints
+   section" reference requires that section to express a measurable
+   cap, not just a category labelled "Budget").
+
+Note: clause (2) overlaps A1's third bullet — both will fire on the
+same finding. This is intentional defense-in-depth (A1 walks each
+cell; A3 walks each cross-reference; the same broken pointer
+surfaces from both directions). The fixer treats them as one
+finding to resolve.
+
+Severity: P2 default; P1 if the broken pointer appears on a
+launch-gate path.
+
+### Sub-check BA1 — Acceptance criterion testability (business_analyst lens)
+
+Every Acceptance Criterion (in the artifact's **functional
+requirements section**, however the template labels it —
+"Functional Requirements", "Requirements", etc.) must be TESTABLE
+as written. Testable means one of:
+
+- A numeric threshold (e.g., `p95 < 50ms`, `≥ 99.9%`).
+- A binary outcome with a single observable definition (e.g.,
+  "redirect resolves to the originally submitted URL — 100%
+  correctness"; NOT "synchronous response on submit" without saying
+  what the response contains).
+- A fully enumerated outcome set (e.g., `{redirect, not_found}`).
+- A tolerance bound that converts a soft semantic into a
+  measurement (e.g., "best-effort within ±5% under sustained
+  load"; NOT "best-effort / eventually consistent" alone).
+
+Raise when an AC requires a tester to invent the success criterion.
+
+Severity: P2 default; P1 if the AC is the only criterion for a P1
+functional requirement.
+
+### Sub-check SE1 — Deferred-decision safety (security_engineer lens)
+
+For every risk with Likelihood ≥ Medium AND Impact ≥ High:
+
+1. Identify the mitigation.
+2. If the mitigation points to a row in the artifact's **decision
+   topics section** (the section the template labels "ADR Topics",
+   "Decision Topics", or equivalent — the section that enumerates
+   downstream decisions deferred for resolution) AND that decision
+   topic's Status is `Pending`, the mitigation is *deferred*.
+3. Check whether the artifact's **launch-gate section** names the
+   control category that resolves the risk before go-live (e.g.,
+   for an open-redirect risk: "destination screening / interstitial
+   / blocklist required pre-launch").
+4. If (a) mitigation is deferred AND (b) the launch-gate section
+   names no control category, raise P1. The artifact is committing
+   to ship an unmitigated high-severity risk.
+
+Severity: P1 (only this specific case). Other risk findings use the
+lens's normal persona-scoped scoring.
+
+### Excluded patterns — downstream-owned by design
+
+The above sub-checks must NOT fire on content the artifact's layer
+deliberately leaves at this abstraction level. Examples:
+
+- A BRD that says "PRD owns persona definitions" is not an
+  assumption-capture violation (A2) — it is a correct deferral.
+- An AC that says "specific outcome enumerated in PRD" is not a
+  testability violation (BA1) — the BRD-level AC is correct.
+
+Recognize these via explicit deferral phrases ("owned by X",
+"deferred to X", "specified in X", where X is the next-downstream
+layer) and skip the finding.
 
 ## Combined Report Format
 

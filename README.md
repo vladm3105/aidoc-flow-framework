@@ -50,7 +50,7 @@ conformance suite at `tests/conformance/`.
 | Platform | Engine | Release |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.1.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.6.1` (`platforms/claude-code-plugin/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.6.2` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
@@ -69,7 +69,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** — latest project release `v1.1.0`, framework spec
-`0.11.3`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.6.1); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.3`. Post-v1.0 work to date:
+`0.11.3`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.6.2); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.3`. Post-v1.0 work to date:
 
 - the project adaptation overlay (`framework/governance/ADAPTATION.md` + the closed-knob `ADAPTATION_SURFACE.yaml`);
 - the **GATE-SPEC** change-management gate (`framework/governance/chg/`);

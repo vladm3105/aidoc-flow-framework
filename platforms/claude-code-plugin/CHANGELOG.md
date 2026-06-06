@@ -14,6 +14,130 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.6.1 → v0.6.2
+
+> **SemVer classification**: PATCH bump (0.6.1 → 0.6.2) — content
+> sub-checks added to existing audit lens prompts. No public-surface
+> change (slash-command names unchanged, SKILL frontmatter unchanged,
+> generated artifact shape unchanged). Per REVIEW-CALIBRATION-001
+> (plan PR #95).
+
+#### Why
+
+A fresh re-read of the merged BRD-01 (the SAGA-PARITY-001 Phase 2
+Amendment 1 verification artifact) found 5 substantive issues that
+the v0.6.1 5-lens review passed at 94/100:
+
+- Visit-count AC `BRD.01.07.2ee0` — "best-effort / eventually
+  consistent" with no tolerance bound → not testable.
+- Sync-response AC `BRD.01.07.c1b6` — "Synchronous response on
+  submit" doesn't say what comes back → PRD must guess.
+- §10 budget cell `BRD.01.10.0b8f` — qualitative; referenced by
+  7 §8 cells as if quantitative → vacuous cross-reference.
+- "Short codes do not expire this cycle" — buried in FR prose, no
+  §10 assumption ID → lost downstream.
+- Open-redirect risk `BRD.01.12.40e7` — Med/High severity with
+  mitigation "deferred to ADR" + referenced ADR is `Pending` →
+  unmitigated abuse vector ships to launch.
+
+The 5-lens crew (`business_analyst`, `architect`, `auditor`,
+`chaos_engineer`, `security_engineer`) covers the right perspectives;
+three lens prompts simply lacked concrete sub-checks for the failure
+mode "non-empty cell / existing AC / named risk = accepted as
+adequate." This release adds those sub-checks.
+
+#### What changed
+
+Five content sub-checks added to all 8 layer audit SKILLs
+(`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}-audit/SKILL.md`), under
+a new top-level section titled `## Content Sub-Checks` inserted
+between the existing structural-checks block and the
+scoring/output-format section. Same wording for every layer
+(section references use concept names like "the constraints
+section" / "the launch-gate section" / "the decision-topics
+section" / "the functional-requirements section" / "the
+assumptions table" — not § numbers — so the same wording works
+across all 8 layer templates).
+
+- **A1 — Cell actionability** (auditor lens). Every table cell must
+  commit to an ACTIONABLE claim, not just be non-empty. Raises on
+  quantitative columns with prose instead of a number; status/content
+  column mismatches; cross-references quoting commitments the target
+  section doesn't make. P2 default; P1 on launch-gate path.
+- **A2 — Assumption-capture discipline** (auditor lens). Every
+  assumption-like statement that downstream layers may rely on must
+  be captured as a row in the assumptions table with an ID.
+  Assumption-shaped prose buried elsewhere is a finding. P2.
+- **A3 — Cross-section pointer validity** (auditor lens). For every
+  cross-reference (section pointer, artifact ID, `@threshold:` /
+  `@diagram:` / `@brd:` etc. tag): target exists AND referenced
+  content matches the citing claim's shape. Intentionally overlaps
+  A1 on broken cross-references — defense-in-depth. P2 default; P1
+  on launch-gate path.
+- **BA1 — Acceptance criterion testability** (business_analyst lens).
+  Every AC must be testable as written: numeric threshold, binary
+  outcome with a single observable definition, fully enumerated
+  outcome set, or tolerance bound on a soft semantic. P2 default;
+  P1 if the AC is the only criterion for a P1 functional
+  requirement.
+- **SE1 — Deferred-decision safety** (security_engineer lens). For
+  every risk with Likelihood ≥ Medium AND Impact ≥ High: if
+  mitigation points to a Pending decision topic AND the launch-gate
+  section doesn't name a control category, raise P1 (the artifact
+  is committing to ship an unmitigated high-severity risk).
+
+The sub-checks explicitly exclude "downstream-owned by design"
+content — phrases like "owned by PRD", "deferred to the next layer",
+"specified in EARS" mark legitimate deferrals that must not fire
+the checks.
+
+#### Scope
+
+- All 8 layer audit SKILLs uniformly. No layer-specific variants.
+- Lens-prompt additions only. No new lens, no new persona, no
+  weight changes in `REVIEW_CREWS.yaml`, no spec change.
+- Plugin VERSION fanout across the standard 9 places (VERSION,
+  plugin.json, marketplace.json, repo + plugin READMEs,
+  SKILL_AUTHORING.md, PARITY.md, TAGGING.md, 52 × SKILL.md
+  frontmatter).
+
+#### Why this is PATCH not MINOR
+
+- No public surface changes: same slash commands, same SKILL
+  frontmatter, same lens-output JSON schema (findings still have
+  `id` / `priority` / `location` / `message` / `personas` /
+  `recommendation`), same `verdict.json` shape.
+- Lens prompts grow internally; behaviour is strictly additive
+  (existing structural checks still run; sub-checks add findings).
+- An audit run against the merged BRD-01 produces ≥5 findings the
+  v0.6.1 audit missed; downstream fixer addresses them via the
+  normal iter loop.
+
+#### Out of scope (REVIEW-CALIBRATION-002 backlog)
+
+Speculative items considered for this plan and deferred (no design
+work; revisit only if future verification surfaces a need):
+
+- New outward-facing `consumer_simulator` lens.
+- `min(lens_scores) ≥ 85` per-lens-minimum PASS gate.
+- Iteration-stop-on-stability (replace score-only gate).
+- Author-isolation for `business_analyst` drafter-as-reviewer.
+- `sdd_doc_lint` cross-section pointer rule.
+- Hermes-side application of the same sub-checks.
+
+#### Files changed
+
+- 8 × `platforms/claude-code-plugin/skills/doc-*-audit/SKILL.md` —
+  new `## Content Sub-Checks` section.
+- `platforms/claude-code-plugin/VERSION` — 0.6.1 → 0.6.2.
+- 52 × `platforms/claude-code-plugin/skills/*/SKILL.md` — frontmatter
+  `version` 0.6.1 → 0.6.2.
+- `platforms/claude-code-plugin/.claude-plugin/plugin.json`,
+  `.claude-plugin/marketplace.json`, repo + plugin READMEs,
+  `docs/SKILL_AUTHORING.md` — version references.
+- `docs/PARITY.md` — current-state declaration v0.6.2.
+- `docs/TAGGING.md` — new `claude-code-plugin/v0.6.2` row.
+
 ### Changed — Plugin v0.6.0 → v0.6.1
 
 > **SemVer classification**: PATCH bump (0.6.0 → 0.6.1) — saga-driven
