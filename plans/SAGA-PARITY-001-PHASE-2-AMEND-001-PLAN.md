@@ -458,24 +458,80 @@ def dispatch_phase(ctx: SagaContext, phase: str, brief: str) -> int:
 
 
 def read_verdict_score(ctx: SagaContext) -> tuple[int, str]:
-    """Read .aidoc/review/<layer>/<id>/verdict.json. Returns (score, status)."""
+    """Read .aidoc/review/<layer>/<id>/verdict.json. Returns (score, status).
+
+    Returns (0, "MISSING") if verdict.json absent — caller treats this as
+    an AUDIT FAILURE (per Pass-4 A9), distinct from a low content score
+    (FAIL with score). Driver escalates rather than dispatching fixer.
+    """
     verdict_path = ctx.saga_dir / "verdict.json"
     if not verdict_path.exists():
-        return 0, "UNKNOWN"
+        return 0, "MISSING"
     v = json.loads(verdict_path.read_text())
     return v.get("content_score", 0), v.get("combined_status", "UNKNOWN")
+
+
+def validate_and_repair_branches(ctx: SagaContext, saga: dict) -> None:
+    """Per Pass-4 A8: after audit subprocess returns, validate that
+    every branches[<persona>] entry has required fields per saga.schema.json
+    (branch_id, status, attempt). If missing/malformed, repair from
+    existing blackboard slot file mtimes.
+
+    Per Pass-5 P5-2: if no slot file exists for a persona that's in the
+    crew, fall back to saga.created_at as both started_at and ended_at.
+    """
+    crew = _LAYER_CREWS[ctx.layer]
+    fallback_ts = saga.get("created_at", _utc_now_iso())
+    for persona in crew:
+        branch = saga.get("branches", {}).get(persona, {})
+        slot_path = ctx.saga_dir / f"{persona}.json"
+        slot_ts = (datetime.fromtimestamp(slot_path.stat().st_mtime, tz=timezone.utc)
+                   .isoformat() if slot_path.exists() else fallback_ts)
+        # Repair missing/malformed fields with deterministic values
+        if "branch_id" not in branch or not branch["branch_id"]:
+            branch["branch_id"] = _det_branch_id(
+                run_id=saga["review_run_id"], persona=persona)
+        if branch.get("status") not in {"BRANCH_RUNNING", "BRANCH_COMPLETED",
+                                         "BRANCH_FAILED", "BRANCH_COMPENSATING"}:
+            # Slot file presence implies completion; else mark FAILED
+            branch["status"] = "BRANCH_COMPLETED" if slot_path.exists() else "BRANCH_FAILED"
+        if "attempt" not in branch:
+            branch["attempt"] = 0
+        if not branch.get("started_at"):
+            branch["started_at"] = slot_ts
+        if not branch.get("ended_at"):
+            branch["ended_at"] = slot_ts
+        saga.setdefault("branches", {})[persona] = branch
 
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Saga driver for plugin autopilot")
     parser.add_argument("--layer", required=True, help="e.g. 01_BRD")
-    parser.add_argument("--artifact-id", required=True, help="e.g. BRD-01")
-    parser.add_argument("--artifact-path", required=True, help="output BRD path")
-    parser.add_argument("--seed", required=True, help="upstream seed path")
+    # Per Pass-4 A5/A6: env vars are the primary input channel
+    # (harness sets them before invoking the autopilot subprocess);
+    # CLI args are the explicit override for direct invocation.
+    parser.add_argument("--artifact-id", default=os.environ.get("ARTIFACT_ID"),
+                        help="e.g. BRD-01; falls back to $ARTIFACT_ID env var")
+    parser.add_argument("--artifact-path", default=os.environ.get("ARTIFACT_PATH"),
+                        help="output BRD path; falls back to $ARTIFACT_PATH env var")
+    parser.add_argument("--seed", default=os.environ.get("PREV_OUTPUT"),
+                        help="upstream seed path; falls back to $PREV_OUTPUT env var")
     parser.add_argument("--threshold", type=int, default=90)
+    # Per Pass-4 A4: CLAUDE_PLUGIN_ROOT is the canonical env var
+    # set when running inside an installed plugin session.
     parser.add_argument("--plugin-dir", default=os.environ.get(
-        "PLUGIN_DIR", "/opt/data/aidoc-flow/framework/platforms/claude-code-plugin"))
+        "CLAUDE_PLUGIN_ROOT",
+        os.environ.get("PLUGIN_DIR", "")))
     args = parser.parse_args(argv)
+
+    # Validate required fields (after env-var fallback)
+    for name in ("artifact_id", "artifact_path", "seed"):
+        if not getattr(args, name):
+            parser.error(f"--{name.replace('_', '-')} or its env var "
+                         f"({name.upper() if name != 'seed' else 'PREV_OUTPUT'}) "
+                         f"is required")
+    if not args.plugin_dir:
+        parser.error("--plugin-dir or CLAUDE_PLUGIN_ROOT/PLUGIN_DIR env var required")
 
     layer_type = args.layer.split("_", 1)[1]  # "01_BRD" -> "BRD"
     project_root = Path(args.artifact_path).parents[2]  # ../docs/<layer>/<file>
@@ -538,9 +594,26 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
         saga["status"] = "FANOUT_STARTED"
         saga["current_phase"] = "review"
     elif phase in ("review", "re-review"):
-        # The audit subprocess transitioned the branches per its SKILL.md;
-        # we just need to read the verdict and decide next phase.
+        # Pass-4 A8: the audit subprocess may produce malformed
+        # branches[] (live-verified 2026-06-05). Validate and repair
+        # before reading verdict.
+        validate_and_repair_branches(ctx, saga)
+
+        # Pass-4 A9: if verdict.json is missing, the audit subprocess
+        # itself failed — escalate rather than dispatching fixer.
         score, status = read_verdict_score(ctx)
+        if status == "MISSING":
+            saga["compensation_actions"].append({
+                "ts": _utc_now_iso(),
+                "branch": "*",
+                "reason": f"audit phase '{phase}' returned but verdict.json absent",
+                "action": "escalate",
+            })
+            append_transition(saga, from_state=saga["status"],
+                              to_state="ESCALATED")
+            saga["status"] = "ESCALATED"
+            return
+
         if status == "PASS":
             # Move toward finalize: BRANCH_COMPLETED → FANIN_REDUCED → SYNTHESIZED → CLOSED
             append_transition(saga, from_state=saga["status"],
@@ -591,14 +664,22 @@ originally embedded in this SKILL prompt (which empirically failed
 
 #### 3. Dispatch the saga driver
 
+The driver script is vendored alongside the plugin at
+`${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py` (per Pass-4 A4 — the
+existing framework bundle pattern from D-0022 is extended to include
+`tools/`). The harness sets `PREV_OUTPUT`, `ARTIFACT_ID`,
+`ARTIFACT_PATH` env vars before invoking this SKILL (per Pass-4
+A5/A6 — no LLM-cooperative prompt parsing); the driver reads them.
+
 ```sh
-Bash: python3 ${REPO_ROOT}/tools/saga_driver.py \
+Bash: python3 ${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py \
   --layer 01_BRD \
-  --artifact-id <BRD-id> \
-  --artifact-path docs/01_BRD/<BRD-id>_<slug>/<BRD-id>.md \
-  --seed <seed-path> \
   --threshold 90
 ```
+
+The driver picks up `--artifact-id`, `--artifact-path`, `--seed` from
+the env vars set by the harness. For direct user invocation (outside
+the harness), the CLI args are the explicit override.
 
 The driver:
 
@@ -669,6 +750,13 @@ shape:
      if _should_invoke "doc-$layer-autopilot"; then
        local autopilot_prompt
        autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
++      # Per Pass-4 A5/A6: pass paths via env vars (NOT via LLM-
++      # cooperative prompt parsing). The saga_driver.py reads
++      # PREV_OUTPUT, ARTIFACT_ID, ARTIFACT_PATH from the env. The
++      # `claude` subprocess inherits its parent's env.
++      export PREV_OUTPUT="$prev_output"
++      export ARTIFACT_ID="${type}-01"
++      export ARTIFACT_PATH="$artifact"
        invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
        OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
        if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
@@ -817,6 +905,29 @@ class ResumeLogic(unittest.TestCase):
         self.assertEqual(saga["status"], "FANOUT_STARTED")
 
 
+class LayerCrewsMatchYaml(unittest.TestCase):
+    """Pass-4 A7: assert saga_driver._LAYER_CREWS matches
+    framework/governance/REVIEW_CREWS.yaml so drift is caught in CI."""
+
+    def test_layer_crews_match_yaml(self):
+        import yaml  # PyYAML already a project dep (test_review_team.py)
+        crews_path = (Path(__file__).resolve().parents[2]
+                      / "framework" / "governance" / "REVIEW_CREWS.yaml")
+        data = yaml.safe_load(crews_path.read_text())
+        yaml_crews = {
+            f"{i+1:02d}_{layer}": set(data["crews"][layer]["review"].keys())
+            for i, layer in enumerate(
+                ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"])
+        }
+        for spec_layer, expected_crew in yaml_crews.items():
+            driver_crew = set(saga_driver._LAYER_CREWS[spec_layer])
+            self.assertEqual(
+                driver_crew, expected_crew,
+                f"saga_driver._LAYER_CREWS[{spec_layer!r}] drifted from "
+                f"REVIEW_CREWS.yaml: driver={driver_crew} yaml={expected_crew}",
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
 ```
@@ -934,32 +1045,56 @@ confirmation gate):
     should appear in the cascade phase (no `doc-brd-audit`,
     `doc-brd-fixer`, `doc-brd` invocations).
 
-Note: criterion 6 requires the harness to **capture the saga
-driver's stdout** to an element log file. The current harness only
-logs the YAML summary. A small `test-acceptance.sh` change captures
-the autopilot subprocess's stdout to `logs/<TS>/elements/doc-brd-autopilot.stdout`
-so post-run inspection can verify the driver actually dispatched
-subprocesses. Adding this stdout capture is part of Design 3.
+Note (Pass-4 A1 correction): the existing `invoke_skill_live` at
+`tests/scripts/test-acceptance.sh:420-466` already captures stdout
+(combined with stderr via `> "$out_path" 2>&1`) to
+`logs/<TS>/elements/<name>.stdout`. **No code change needed** for
+criterion 6 — the driver's `dispatch: ...` log lines appear in the
+autopilot subprocess's stdout file post-run. The original Pass 3
+G-V9 finding (claim that stdout capture needed adding) was wrong.
+
+Pass-4 A3 — CHG cascade out of scope. `tests/scripts/test-acceptance.sh`
+lines 1180-1200 dispatch a separate cascade for the CHG layer
+(`doc-chg-autopilot`, `doc-chg-audit`, `doc-chg-fixer`,
+`doc-chg-audit` re-audit). That dispatcher retains the dual-dispatch
+pattern unchanged in this amendment — CHG is a governance overlay
+outside the 8-layer SAGA-PARITY-001 scope. A future plan could apply
+the same autopilot-only pattern to CHG; not in this amendment.
 
 ## Step sequence
 
 1. **Create** `tools/saga_driver.py` per Design 1.
-2. **Edit** `platforms/claude-code-plugin/skills/doc-brd-autopilot/SKILL.md`
-   per Design 2 (slim the saga-driven loop section).
-3. **Edit** `tests/scripts/test-acceptance.sh` per Design 3 (cascade
-   dispatcher autopilot-only + stdout capture).
-4. **Create** `tests/conformance/test_saga_driver_invariants.py`
-   per Design 4.
-5. **Bump plugin VERSION** 0.6.0 → 0.6.1.
-6. **9-place fanout** for 0.6.1 (per CHAOS-SEC-SPLIT + Phase 2
+2. **Extend** `tools/sync-plugin-framework.sh` per Pass-4 A4 / Pass-5
+   P5-1: append `"tools"` to the `SUBTREES` array (or equivalent rsync
+   include) so `tools/saga_driver.py` lands at
+   `platforms/claude-code-plugin/tools/saga_driver.py` on every sync.
+   The plugin SKILL invokes the driver via
+   `${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py`, so the vendored copy
+   inside the plugin bundle is mandatory — Claude Code does not see the
+   repo-root `tools/` when the plugin is installed standalone.
+3. **Edit** `platforms/claude-code-plugin/skills/doc-brd-autopilot/SKILL.md`
+   per Design 2 (slim the saga-driven loop section to a thin entry
+   point that invokes the bundled `${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py`).
+4. **Edit** `tests/scripts/test-acceptance.sh` per Design 3 (cascade
+   dispatcher autopilot-only + env-var injection of `PREV_OUTPUT`,
+   `ARTIFACT_ID`, `ARTIFACT_PATH`; stdout capture is unchanged — it
+   already exists via `invoke_skill_live`).
+5. **Create** `tests/conformance/test_saga_driver_invariants.py`
+   per Design 4 (includes `test_layer_crews_match_yaml` from A7).
+6. **Bump plugin VERSION** 0.6.0 → 0.6.1.
+7. **9-place fanout** for 0.6.1 (per CHAOS-SEC-SPLIT + Phase 2
    pattern; 52-skill sed bump).
-7. **Edit** plugin CHANGELOG per Design 6.
-8. **Edit** `docs/PARITY.md` per Design 7.
-9. **Edit** `docs/TAGGING.md` — add `claude-code-plugin/v0.6.1` row.
-10. **Pre-commit lint** on all changed files.
-11. **Conformance suite** — 101 + 4 new tests in
-    `test_saga_driver_invariants.py` = 105 total.
-12. **Live BRD verification** per Design 8 — all 10 pass criteria
+8. **Edit** plugin CHANGELOG per Design 6.
+9. **Edit** `docs/PARITY.md` per Design 7.
+10. **Edit** `docs/TAGGING.md` — add `claude-code-plugin/v0.6.1` row.
+11. **Run** `tools/sync-plugin-framework.sh` to produce the vendored
+    copy of `tools/saga_driver.py` inside the plugin bundle; commit
+    the synced file alongside the source.
+12. **Pre-commit lint** on all changed files.
+13. **Conformance suite** — 101 + 5 new tests in
+    `test_saga_driver_invariants.py` (4 originally planned + 1
+    `LayerCrewsMatchYaml`) = 106 total.
+14. **Live BRD verification** per Design 8 — all 10 pass criteria
     must succeed. Per user instruction, **Phase 3 stays blocked**
     until this verifies bug-free.
 
@@ -1117,9 +1252,154 @@ The bug-free confirmation gate. 10 pass criteria, all must succeed.
 **Pass 3 patches folded into Design 1 (G-V11), Design 3 (G-V9, G-V12),
 and Design 8 (G-V5).**
 
-Plan ready for impl. Per CLAUDE.md two-cycle rule, Pass 4 (post-merge
-gap-review against the codebase) will happen after this plan PR
-merges, before impl starts.
+### Pass 4 — 2026-06-05T20:30:00Z (post-merge gap-review against codebase)
+
+> **Historical note**: this Pass 4 ran AFTER the plan PR (#89)
+> merged. That ordering is the anti-pattern the user spotted later
+> the same day; PR #90 amends CLAUDE.md to forbid it going forward
+> (all gap-reviews must run BEFORE the plan PR opens). This Pass 4
+> is the **last legitimate post-merge amendment** under the
+> clarified rule — preserved for traceability of the in-flight
+> SAGA-PARITY-001 work. Future plans run all cycles pre-PR.
+
+Post-merge codebase cross-check surfaced **7 gaps** the inline
+Pass 1-3 missed. All folded into Designs 1, 2, 3, and 8 via this
+amendment.
+
+**Critical (5)**:
+
+- **A1 — Design 3 incorrectly claims stdout capture needs adding.**
+  `invoke_skill_live` at `tests/scripts/test-acceptance.sh:420-466`
+  already uses `> "$out_path" 2>&1` to capture combined stdout+stderr
+  to `logs/<TS>/elements/<name>.stdout`. The Pass 3 G-V9 finding
+  was wrong about this. Pass criterion #6 (Design 8) is verifiable
+  today without code change. Design 3 amended to remove the "add
+  stdout capture" claim.
+
+- **A4 — `saga_driver.py` install-location strategy missing.**
+  Design 2's `Bash: python3 ${REPO_ROOT}/tools/saga_driver.py`
+  uses an undefined env var. When the plugin is installed standalone
+  (Claude Code marketplace), the repo's `tools/` directory is NOT
+  available. Resolution: **vendor the script** to
+  `platforms/claude-code-plugin/tools/saga_driver.py` (similar to
+  D-0022 framework bundle), sync via an extended
+  `tools/sync-plugin-framework.sh`. SKILL invocation becomes
+  `Bash: python3 ${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py ...`.
+  Design 1 + Design 2 amended; sync script extension added to
+  Step sequence.
+
+- **A5 / A6 — LLM-cooperative prompt parsing brings back the
+  failure mode.** Original Design 2 has the LLM parse the prompt
+  text to extract paths (seed, artifact). Same cooperative-
+  enforcement risk we're trying to escape. Resolution: **harness
+  passes paths via env vars** (`PREV_OUTPUT`, `ARTIFACT_PATH`,
+  `ARTIFACT_ID`); driver reads from env (CLI as fallback);
+  autopilot SKILL becomes one-line: `Bash:
+  PREV_OUTPUT="$PREV_OUTPUT" python3 ${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py
+  --layer 01_BRD`. Design 1 + 2 + 3 amended.
+
+- **A8 — Driver doesn't validate or fix audit subprocess's
+  `branches[]` writes.** The 2026-06-05 live verification showed
+  the audit subprocess wrote synthetic branches without
+  `branch_id` and with placeholder timestamps. The driver as
+  originally designed doesn't read or fix what the audit wrote.
+  Resolution: **driver re-reads saga.json after audit subprocess
+  returns** and validates each `branches[<persona>]` entry. If
+  malformed (missing `branch_id`, status not in branch-state enum,
+  malformed timestamps), the driver REPAIRS from existing slot
+  file mtimes (`branch_id` = deterministic hash;
+  `started_at` = `ended_at` = slot file mtime). Design 1 amended
+  with `validate_and_repair_branches()` helper.
+
+- **A9 — Missing `verdict.json` handling not specified.** Original
+  `read_verdict_score` returns `(0, "UNKNOWN")` if verdict.json
+  absent. State machine then treats UNKNOWN as FAIL → dispatches
+  fixer. But UNKNOWN really means the audit subprocess failed to
+  write verdict.json — that's an audit FAILURE, not content-quality
+  FAIL. Resolution: **driver ESCALATES if audit completes but
+  verdict.json is absent**. Design 1's `_advance_after_phase`
+  amended.
+
+**Medium (1)**:
+
+- **A3 — CHG cascade dispatcher (lines 1180-1200 of test-acceptance.sh)
+  retains dual-dispatch.** The amendment plan only touches the
+  BRD cascade. CHG is OUTSIDE the SAGA-PARITY-001 scope (CHG is a
+  governance overlay, not one of the 8 SDD layers). Resolution:
+  **document explicitly in Design 3** that CHG is out of scope;
+  CHG dispatcher keeps the dual-dispatch pattern unchanged. A
+  follow-up plan could apply the same autopilot-only pattern to
+  CHG, but that's a separate effort.
+
+**Cosmetic (1)**:
+
+- **A7 — `_LAYER_CREWS` hardcode drift risk not enforced by
+  test.** Amendment plan flags this as R6 but the new conformance
+  test (Design 4) doesn't actually check `_LAYER_CREWS` matches
+  `REVIEW_CREWS.yaml`. Resolution: **Design 4 amended** to add a
+  test (`test_layer_crews_match_yaml`) that parses
+  `framework/governance/REVIEW_CREWS.yaml` via PyYAML (already a
+  project dep per existing `test_review_team.py`) and asserts
+  `_LAYER_CREWS[layer]` == YAML's crew for each of the 8 layers.
+
+**Net delta after Pass 4 patches**:
+
+- Design 1 (`saga_driver.py`): adds `validate_and_repair_branches()`;
+  ESCALATE on missing verdict.json; reads env vars (PREV_OUTPUT,
+  ARTIFACT_PATH, ARTIFACT_ID) with CLI fallback.
+- Design 2 (`doc-brd-autopilot/SKILL.md`): invocation uses
+  `${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py` (not `${REPO_ROOT}`);
+  no LLM-cooperative prompt parsing.
+- Design 3 (`tests/scripts/test-acceptance.sh`): removes stale "add
+  stdout capture" claim (A1); passes env vars to autopilot
+  subprocess; explicitly documents CHG dispatcher unchanged.
+- Design 4 (`test_saga_driver_invariants.py`): adds
+  `test_layer_crews_match_yaml`.
+- Step sequence: adds extending `tools/sync-plugin-framework.sh`
+  for the new vendored `tools/saga_driver.py`.
+
+### Pass 5 — 2026-06-05T20:35:00Z (re-review of Pass 4 patches)
+
+Per the two-cycle rule's "Cycle N+1 must always re-validate cycle
+N's patches did not introduce new inconsistencies":
+
+- **P5-1**: A4's resolution (vendor script to plugin bundle)
+  requires extending `sync-plugin-framework.sh`. Currently the
+  sync script copies `framework/{layers,governance,registry}` +
+  one root file. Adding a NEW subtree (`tools/`) is structural.
+  Need to verify the sync script's `SUBTREES` array extension
+  is clean. Design 1's note now includes "extend sync script's
+  SUBTREES array to include `tools/`" as part of Step sequence.
+- **P5-2**: A8's `validate_and_repair_branches()` reads slot file
+  mtimes — but mtimes depend on filesystem and run order. If
+  slot files don't exist (e.g., the audit subprocess failed
+  before writing them), the repair has no data. Need fallback:
+  if no slot file exists, set
+  `started_at = ended_at = saga.created_at`. Design 1 amended.
+- **P5-3**: A9's resolution sets ESCALATED on missing
+  verdict.json. But what if it's a TRANSIENT failure (e.g., audit
+  subprocess SIGTERM mid-write)? Should driver retry the audit
+  phase before escalating? For Phase 2 Amendment 1, accept
+  "missing verdict.json = ESCALATE" as the simple rule; retry
+  logic is a follow-up. Documented as a risk (R-A9) in §Risks.
+- **P5-4**: A5/A6's env-var passing: confirmed that
+  `test-acceptance.sh`'s `invoke_skill_live` calls
+  `claude ... -p "..."` with NO env-var passthrough. The harness's
+  `claude` subprocess inherits its parent's env automatically.
+  So setting env vars in the harness BEFORE the `claude` call
+  works. Verified.
+- **P5-5**: A7's `test_layer_crews_match_yaml` requires PyYAML.
+  Confirmed `tests/conformance/test_review_team.py` already imports
+  `yaml` — PyYAML is available in CI. No new dependency.
+
+Pass 5 surfaced one substantive issue (P5-2) folded into Design 1.
+P5-1, P5-3, P5-4, P5-5 were verifications, no new patches.
+
+**Plan ready for impl** (this time for real, with Pass 4 + Pass 5
+folded in). Under the **clarified** two-cycle rule (PR #90), the
+remaining 7 gaps would have been caught pre-PR; this Pass 4
+remediation is preserved here as the last legitimate post-merge
+amendment for historical traceability.
 
 ## Cross-references
 
