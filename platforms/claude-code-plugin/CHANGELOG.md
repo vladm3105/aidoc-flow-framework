@@ -14,6 +14,250 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.6.0 → v0.6.1
+
+> **SemVer classification**: PATCH bump (0.6.0 → 0.6.1) — saga-driven
+> loop in the BRD layer's `doc-brd-autopilot` SKILL is fixed without
+> changing any public surface (slash-command names, frontmatter
+> contract, generated artifact shape). Phase 2's empirical failure
+> (2026-06-05 live BRD verification) is the bug being patched.
+
+#### Why
+
+Phase 2 wired up the cooperative-enforcement design from
+`framework/governance/REVIEW_SAGA.md` via prompt text embedded in
+`doc-brd-autopilot/SKILL.md` (~300 lines of state-machine rules,
+transition tables, subprocess dispatch instructions). The 2026-06-05
+url-shortener live BRD cascade demonstrated empirically that
+**cooperative enforcement is unreliable**: the autopilot synthesized
+an invalid `saga.json` (7 illegal transitions, final status
+`BRANCH_COMPLETED` not `CLOSED`, no actual subprocess dispatch, layer
+runtime 3656s > 3600s cap) instead of executing the
+create-review-revise loop subprocess-by-subprocess. The LLM's compliance
+with prompt-embedded protocol contracts is non-deterministic at the
+state-machine granularity required by REVIEW_SAGA.md.
+
+#### What changed
+
+- **New: `tools/saga_driver.py`** (vendored into the plugin bundle as
+  `platforms/claude-code-plugin/tools/saga_driver.py`). ~400 lines of
+  stdlib-only Python implementing **preemptive enforcement**: the
+  driver script reads/writes `saga.json`, validates every transition
+  against an embedded `_ALLOWED_TRANSITIONS` table (mirror of
+  REVIEW_SAGA.md), dispatches each phase (`draft`, `review`, `fixer`,
+  `re-review`) as a separate `claude -p /aidoc-flow:doc-<layer>[-...]`
+  subprocess with `timeout 1800s`, enforces the `SOFT_DEADLINE=1500s`
+  break-circuit against its own wall clock, and resumes from
+  `PARTIAL_TIMEOUT` per G-R1 (walks `transitions[]` backward to find
+  the pre-PARTIAL_TIMEOUT state; never writes `from: PARTIAL_TIMEOUT`).
+- **Slimmed `doc-brd-autopilot/SKILL.md`** — the ~180-line
+  cooperative-enforcement section becomes a ~30-line thin entry point
+  that invokes `${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py` with the
+  layer code; all state-machine knowledge moves to the driver. The
+  `single_pass` mode and the SKILL's outer responsibilities
+  (input-classification, type-and-scope, index-update) are unchanged.
+- **`tools/sync-plugin-framework.sh` extended** to vendor `tools/`
+  alongside `framework/`, so the driver script ships inside the plugin
+  bundle (`${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py`) and is
+  callable from an installed plugin session.
+- **`tests/scripts/test-acceptance.sh` cascade dispatcher** — the
+  per-layer block dispatches only the autopilot (which internally
+  drives audit + fixer + re-audit via subprocess). The harness sets
+  `PREV_OUTPUT`, `ARTIFACT_ID`, `ARTIFACT_PATH` env vars before
+  invocation so the driver reads them deterministically (no
+  LLM-cooperative prompt parsing — Pass-4 A5/A6).
+- **`tests/conformance/test_saga_driver_invariants.py`** (new, 10
+  tests) — asserts the driver's state-machine table contains all 11
+  spec states, PARTIAL_TIMEOUT/CLOSED/ESCALATED are terminal, invalid
+  transitions raise, resume logic walks backward correctly, and
+  `_LAYER_CREWS` matches `REVIEW_CREWS.yaml` (Pass-4 A7 drift defence).
+
+#### Why this is PATCH not MINOR
+
+- No public surface changes: same slash commands, same SKILL
+  frontmatter, same `saga.json` schema, same generated BRD shape.
+- Existing user prompts and workflows continue to work unchanged.
+- The substitution is purely internal: cooperative LLM-driven loop
+  becomes deterministic Python-driven loop, with the same observable
+  contract (CLOSED on PASS, ESCALATED on terminal FAIL,
+  PARTIAL_TIMEOUT on soft-deadline crossing).
+- Pre-Phase-2 blackboard migration path retained: if a directory has
+  slot files but no `saga.json`, the driver scaffolds one from the
+  slot mtimes.
+
+#### Scope: BRD layer only
+
+This release wires the saga driver for the **BRD layer only**. The
+remaining 7 layers (PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN) still use
+the (now-failing) cooperative-enforcement prompt pattern from Phase 2
+and will be migrated in a follow-up plan once BRD-layer verification
+demonstrates the preemptive pattern works end-to-end. Per
+SAGA-PARITY-001 Phase 4. Until then, those layers' autopilot skills
+remain at v0.6.1 but functionally unchanged from v0.6.0.
+
+#### In-flight bug fixes (2026-06-05 live verification)
+
+The first live verification of v0.6.1 surfaced three bugs in the
+initial impl that were fixed on the same branch before this release
+opens (per the submit-only-finalized-work principle):
+
+- **B1 — autopilot bypassed the driver.** The initial slim SKILL
+  text still had room for the LLM to dispatch Task subagents
+  cooperatively and produce the BRD in-session, without invoking
+  the saga driver. saga.json was never written. Fix: rewrote the
+  `team`-mode section with imperative one-shot direction —
+  "your FIRST tool call MUST be Bash python3
+  ${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py ..." — and removed
+  the verbose "Driver contracts" reference block that gave the
+  LLM enough emulation context to skip the dispatch.
+- **B2 — harness silently no-op'd on missing saga.json.** The
+  cascade dispatcher's saga-journal inspection used
+  `if [[ -f "$saga_file" ]]; then ... fi` and didn't fail when the
+  file was absent. The autopilot subprocess returned exit 0 (it
+  did produce a BRD in-session), so the harness reported PASS
+  despite the driver never running. Fix: hard-fail when
+  saga.json is missing or status is ESCALATED / PARTIAL_TIMEOUT /
+  any other non-CLOSED terminal.
+- **B3 — autopilot stdout was clobbered.** `invoke_skill` already
+  calls `write_element_log` internally on PASS, which merges the
+  staging stdout into the .log file and deletes the staging copy.
+  The cascade dispatcher then called `write_element_log` a second
+  time, which read an already-deleted file and re-wrote the .log
+  with an empty body. Fix: removed the redundant cascade-side
+  call.
+
+**B5 — driver SOFT_DEADLINE too tight for fixer cycles.** Initial
+budget of 1500s (25 min) covered draft+audit happy path but always
+fired break-circuit during the fixer + re-audit cycle. Bumped to
+3300s (55 min); harness `ORCHESTRATOR_TIMEOUT` aligned 1800s -> 3600s.
+
+**B6 — driver overwrote subprocess writes to saga.json.** The driver
+loaded saga.json once at startup, kept it in memory, and
+`write_saga()` after each phase. The audit subprocess writes its own
+per-branch transitions and advances run-scope status directly to
+saga.json on disk; the driver's stale in-memory copy then overwrote
+those writes (transitions list dropped from 13 to 2 in the live
+run). Fix: re-load saga.json from disk after `dispatch_phase`
+returns and before `_advance_after_phase` modifies it.
+
+**B6 follow-on — PASS path non-idempotent.** Because the audit
+synthesizer typically advances saga.status to FANIN_REDUCED before
+the driver picks back up, the driver's old PASS path
+(`append_transition(from=saga.status, to=FANIN_REDUCED)`) would emit
+a no-op transition that fails `_ALLOWED_TRANSITIONS`. Walk the
+terminal chain FANIN_REDUCED -> SYNTHESIZED -> CLOSED skipping
+states the saga is already at.
+
+**B7 — driver crashed on subprocess failure.** Per spec
+`_ALLOWED_TRANSITIONS`, `ESCALATED` is reachable only from
+`BRANCH_FAILED` or `BRANCH_COMPENSATING`. The driver's failure-
+handling code (subprocess exit != 0, max iterations exhausted) tried
+to `append_transition(from=saga.status, to=ESCALATED)` regardless of
+current state, which raised `ValueError` for the common cases
+(saga.status at `PREPARED` / `FANOUT_STARTED` / `BRANCH_COMPLETED` /
+`FANIN_REDUCED`). When a claude API session limit hit during the
+draft subprocess (live verification, 2026-06-05), the driver
+crashed with the ValueError and saga.json never recorded the
+failure. Fix: use `PARTIAL_TIMEOUT` (universally reachable from
+non-terminal states) for both subprocess-failure and max-iter-
+exhausted paths. `PARTIAL_TIMEOUT` connotes "non-CLOSED terminal,
+resumable on next invocation" — the right semantics for both
+cases. Harness treats `PARTIAL_TIMEOUT` and `ESCALATED` identically
+(both → layer FAIL). The driver's `while` loop also now exits on
+`PARTIAL_TIMEOUT` (previously only `CLOSED` / `ESCALATED`).
+
+These six fixes are part of the same v0.6.1 release; no separate
+amendment PR.
+
+#### Verification result (2026-06-06 fourth live cascade)
+
+Final live BRD cascade against `examples/url-shortener` (commit
+`3cf15ca4` with all B1-B7 fixes) reached **`saga.status: CLOSED`**
+in **2559s (42.6 min)** with score 94/100 PASS, quorum met, iter=2
+(one fixer cycle), all 5 lens slots populated, BRD-01.md lint
+clean, no `from: PARTIAL_TIMEOUT` transitions (G-R1 invariant
+holds). 10/10 load-bearing pass criteria met.
+
+#### Known limitation — fixer-cycle transitions are spec-non-conforming
+
+The audit/fixer SKILLs (cooperative-enforcement code path inherited
+from v0.6.0) emit run/branch-scope transitions during the fixer
+cycle that aren't in the spec's `_ALLOWED_TRANSITIONS` table:
+
+- `BRANCH_COMPLETED -> BRANCH_COMPENSATING` (fixer entry per branch)
+- `BRANCH_COMPENSATING -> BRANCH_COMPLETED` (fixer validation per
+  branch + once at run-scope)
+- `BRANCH_COMPLETED -> FANOUT_STARTED` (re-audit re-entry at
+  run-scope)
+
+These are semantically correct (a fixer-then-revisit IS the right
+shape for the loop) but the framework spec's transition table
+doesn't model them. The driver itself only writes spec-compliant
+transitions (run-scope entries around the cycle). The cooperative
+SKILL writes are the source of the non-conformance.
+
+Phase 4 will either:
+
+1. **Amend the framework spec** to add fixer-revisit transitions
+   (`BRANCH_COMPLETED -> BRANCH_COMPENSATING`, etc.), OR
+2. **Slim the audit/fixer SKILLs** so they don't write run/branch-
+   scope transitions to saga.json at all — the driver owns ALL
+   journal writes.
+
+Option 2 aligns with the SKILL prompt drift carry-forward (below)
+and is the cleaner architectural fix. Marked for the Phase 4 plan.
+
+#### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
+
+The doc-brd SKILL's prompt body still contains the v0.6.0
+cooperative-enforcement saga-interaction text (instructions telling the
+LLM to write to `saga.json` itself). The 2026-06-05 draft-only smoke
+test demonstrated the SKILL correctly **inferred** the new architecture
+from the driver-supplied brief and deliberately did NOT write to
+`saga.json` — preserving the driver's authoritative-writer position.
+This is the right architectural behaviour, but it relies on LLM
+inference rather than explicit prompt direction; the same class of
+non-determinism that motivated the cooperative → preemptive pivot
+applies. Phase 4 will slim doc-brd (and the PRD..IPLAN base SKILLs)
+to remove the cooperative-enforcement saga prose entirely, so the
+deferral becomes deterministic.
+
+#### Hermes parity
+
+Hermes already implements the same preemptive saga model
+(`saga_orchestrator.py`). This release brings the plugin to functional
+parity for the BRD layer; Hermes's behaviour is unchanged.
+SAGA-PARITY-001 Phase 3 will tighten the Hermes side's
+`PARTIAL_TIMEOUT` invariants (G-R1) so both implementations enforce
+the same `from: PARTIAL_TIMEOUT` ban.
+
+#### Files changed
+
+- `platforms/claude-code-plugin/VERSION`: `0.6.0` → `0.6.1`.
+- 52 × `platforms/claude-code-plugin/skills/<name>/SKILL.md`:
+  `version: "0.6.0"` → `"0.6.1"`.
+- `platforms/claude-code-plugin/.claude-plugin/plugin.json`: version
+  bump.
+- `platforms/claude-code-plugin/README.md`,
+  `platforms/claude-code-plugin/docs/SKILL_AUTHORING.md`: version
+  references updated; deprecated-stub removal milestone pushed
+  v0.6.0 → v0.7.0 (those stubs survived the 0.6.0 release
+  unchanged).
+- `platforms/claude-code-plugin/skills/doc-brd-autopilot/SKILL.md`:
+  slimmed cooperative-enforcement section to a thin driver-invocation
+  entry point.
+- `platforms/claude-code-plugin/skills/doc-review/SKILL.md`,
+  `platforms/claude-code-plugin/skills/trace-check/SKILL.md`:
+  deprecation removal milestone updated.
+- `tools/saga_driver.py`: NEW (source of truth for the bundled
+  copy).
+- `tools/sync-plugin-framework.sh`: extended to vendor `tools/`.
+- `platforms/claude-code-plugin/tools/saga_driver.py`: NEW (vendored,
+  byte-identical to source).
+- `tests/scripts/test-acceptance.sh`: cascade dispatcher refactored to
+  autopilot-only per layer; env-var injection added.
+- `tests/conformance/test_saga_driver_invariants.py`: NEW.
+
 ### Changed — Plugin v0.5.0 → v0.6.0
 
 > **SemVer classification rationale**: this release is labelled as a

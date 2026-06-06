@@ -89,7 +89,13 @@ MAX_LAYER_SEC=3600   # 60 minutes per layer
 #     + synthesizer). Generalised to one ORCHESTRATOR_TIMEOUT covering
 #     all three (audit, autopilot, fixer) + review-team itself.
 SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                       # 10 min — leaf skills
-ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-1800}"         # 30 min — sub-team dispatchers
+# Autopilot now wraps the saga driver, which itself dispatches up to 4
+# claude -p subprocesses per layer (draft, review, fixer, re-review).
+# A realistic BRD cycle with one fixer pass takes 40-55 min wall-clock,
+# so the autopilot subprocess needs ~60 min to outlive the driver's
+# break-circuit (SOFT_DEADLINE=3300s in saga_driver.py). See B5/B6 in
+# the SAGA-PARITY-001 Phase 2 Amendment 1 verification (2026-06-05).
+ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-3600}"         # 60 min — autopilot+driver chain
 AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                       # 10 min for agents
 
 # Total token budget for the whole run (A8). When the cumulative
@@ -929,53 +935,71 @@ phase_1_cascade() {
     log_info ""
     log_info "── Layer $((i + 1))/8: $type ──"
 
-    # autopilot — writes the layer artifact under docs/
+    # Autopilot is the sole entry point per layer. It internally drives
+    # the full create-review-revise loop via tools/saga_driver.py +
+    # subprocess dispatches of doc-<layer>-{audit,fixer} (per
+    # SAGA-PARITY-001 Phase 2 Amendment 1: autopilot-or-explicit-but-
+    # never-both).
     if _should_invoke "doc-$layer-autopilot"; then
       local autopilot_prompt
-      autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
+      autopilot_prompt="Run the saga-driven generation loop for the ${type} layer (review_mode: team). The harness has already set PREV_OUTPUT, ARTIFACT_ID, and ARTIFACT_PATH env vars. Per the SKILL contract, your FIRST tool call MUST be 'Bash: python3 \"\${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py\" --layer ${layer_num}_${type} --threshold 90'. Do NOT dispatch Task subagents, do NOT write the artifact in-session, do NOT pre-analyze. Invoke the driver and report its outcome."
+      # Pass-4 A5/A6: pass paths via env vars (NOT via LLM-cooperative
+      # prompt parsing). saga_driver.py reads PREV_OUTPUT, ARTIFACT_ID,
+      # ARTIFACT_PATH from the env. The `claude` subprocess inherits its
+      # parent's env.
+      export PREV_OUTPUT="$prev_output"
+      export ARTIFACT_ID="${type}-01"
+      export ARTIFACT_PATH="$artifact"
       invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
       OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
-      if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
-        write_element_log "doc-$layer-autopilot"
-      fi
+      # (write_element_log already runs inside invoke_skill on PASS;
+      # calling it again here previously clobbered the merged stdout.
+      # See Amendment 1 verification 2026-06-05 / B3.)
       if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
         return 1
       fi
     fi
 
-    # audit — writes audit report under .aidoc/audit/
+    # Read the autopilot's saga.json journal for the layer outcome.
+    # The autopilot's saga driver dispatched doc-<layer>-audit (+ fixer
+    # + re-audit as needed) internally; this is the post-hoc inspection.
+    #
+    # CRITICAL: saga.json MUST exist after a team-mode autopilot run.
+    # If it's absent, the autopilot bypassed the saga driver (the
+    # exact bug Amendment 1 fixes). FAIL the layer hard rather than
+    # silently passing on subprocess exit code.
+    local saga_file="$AIDOC_DIR/review/${layer_num}_${type}/${type}-01/saga.json"
     local score=0
-    if _should_invoke "doc-$layer-audit"; then
-      local audit_prompt
-      audit_prompt="Audit the $type artifact at $artifact. Write a detailed audit report to $audit_report including the readiness score."
-      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
-      OUTPUT_PATH_BY_NAME["doc-$layer-audit"]="$audit_report"
-      score="$(parse_audit_score "doc-$layer-audit")"
-      AUDIT_SCORE_BY_NAME["doc-$layer-audit"]="$score"
-      write_element_log "doc-$layer-audit"
-      log_info "  audit score: $score"
-    fi
-
-    # fixer + re-audit if needed
-    if (( score < 90 )) && _should_invoke "doc-$layer-fixer"; then
-      log_info "  score < 90 → invoking fixer"
-      local fixer_prompt
-      fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report. Do not create tmp/ or backup/ directories under the layer dir; if you need a backup, write it to $AIDOC_DIR/remediation/."
-      invoke_skill "doc-$layer-fixer" "$fixer_prompt" "skill" "cascade"
-      OUTPUT_PATH_BY_NAME["doc-$layer-fixer"]="$fix_report"
-      FIXER_INVOKED_BY_NAME["doc-$layer-audit"]="true"
-      write_element_log "doc-$layer-fixer"
-
-      # B5 — Clean up any tmp/backup dirs the fixer may have left behind
-      # in the layer directory. These would otherwise trip lint's HASH01
-      # check (duplicate element IDs).
-      rm -rf "$layer_dir/tmp" 2>/dev/null
-
-      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
-      score="$(parse_audit_score "doc-$layer-audit")"
-      AUDIT_AFTER_FIXER_BY_NAME["doc-$layer-audit"]="$score"
-      write_element_log "doc-$layer-audit"
-      log_info "  audit score after fixer: $score"
+    local saga_status="UNKNOWN"
+    if [[ -f "$saga_file" ]]; then
+      saga_status="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('status',''))" "$saga_file" 2>/dev/null || echo UNKNOWN)"
+      score="$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('result',{}).get('content_score', 0))" "$saga_file" 2>/dev/null || echo 0)"
+      log_info "  saga: status=$saga_status score=$score"
+      # Reject non-terminal status — the driver must complete the loop.
+      case "$saga_status" in
+        CLOSED) ;;  # happy path
+        ESCALATED)
+          log_err "  saga ESCALATED for ${type}-01 — human review required"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga ESCALATED"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+        PARTIAL_TIMEOUT)
+          log_warn "  saga PARTIAL_TIMEOUT for ${type}-01 — resume on next invocation"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga PARTIAL_TIMEOUT"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+        *)
+          log_err "  saga status=$saga_status for ${type}-01 — unexpected non-terminal state"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga non-terminal: $saga_status"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+      esac
+    else
+      log_err "  saga.json MISSING at $saga_file — autopilot bypassed the saga driver"
+      log_err "  (this is the v0.6.0 cooperative-enforcement failure mode;"
+      log_err "   v0.6.1 autopilot MUST invoke \${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py)"
+      record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga.json absent"
+      [[ $FAIL_FAST -eq 1 ]] && return 1
     fi
 
     # sdd_doc_lint structural check on the artifact only (B1)
@@ -992,10 +1016,9 @@ phase_1_cascade() {
       log_warn "  autopilot did not produce $artifact"
     fi
 
-    # base/reference skill — output captured to logs/<TS>/elements/
-    if _should_invoke "doc-$layer"; then
-      invoke_skill "doc-$layer" "Reference the $type template structure for $artifact." "skill" "cascade" || true
-    fi
+    # Note: doc-<layer>-{audit,fixer,base} are no longer dispatched by
+    # this cascade. The autopilot's saga driver invokes them internally
+    # via subprocess. They stay available for direct user invocation.
 
     prev_output="$artifact"
     i=$((i + 1))

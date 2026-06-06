@@ -1,9 +1,9 @@
 ---
 name: trace-check
-description: "DEPRECATED in v0.4.0. Use `/aidoc-flow:doc-validator` traceability pass. This skill is a redirect stub and will be removed in v0.6.0."
+description: "DEPRECATED in v0.4.0. Use `/aidoc-flow:doc-validator` traceability pass. This skill is a redirect stub and will be removed in v0.7.0."
 metadata:
   custom_fields:
-    version: "0.6.0"
+    version: "0.6.1"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-31"
     skill_category: quality-assurance
@@ -21,4 +21,4 @@ verbatim under `doc-validator`'s traceability pass.
 **Migration**: replace any `trace-check <target>` invocation with
 `/aidoc-flow:doc-validator <target>` (traceability pass runs by default).
 
-This stub will be removed in plugin v0.6.0.
+This stub will be removed in plugin v0.7.0.
