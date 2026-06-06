@@ -109,7 +109,13 @@ _LAYER_CREWS: dict[str, list[str]] = {
     ],
 }
 
-SOFT_DEADLINE_SECONDS = 1500
+# Bumped from 1500s -> 3300s in Amendment 1 verification (2026-06-05):
+# a realistic BRD cycle with one fixer pass takes ~40-55 min wall-clock
+# (draft ~10 min + audit ~15 min + fixer ~10 min + re-audit ~15 min).
+# 1500s only covered draft+audit happy path and PARTIAL_TIMEOUT'd on
+# every fixer cycle. 3300s gives the full 4-phase chain plus margin
+# below the harness orchestrator timeout (3600s).
+SOFT_DEADLINE_SECONDS = 3300
 SUBPROCESS_TIMEOUT_SECONDS = 1800
 MAX_ITERATIONS = 3
 
@@ -392,10 +398,23 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
             return
 
         if status == "PASS":
-            append_transition(saga, from_state=saga["status"], to_state="FANIN_REDUCED")
-            append_transition(saga, from_state="FANIN_REDUCED", to_state="SYNTHESIZED")
-            append_transition(saga, from_state="SYNTHESIZED", to_state="CLOSED")
-            saga["status"] = "CLOSED"
+            # Walk run-scope state to CLOSED. The audit subprocess's
+            # synthesizer typically advances status to FANIN_REDUCED via
+            # its own saga-interaction code path (B6 verification
+            # 2026-06-05 confirmed this), so we may already be partway
+            # along the chain. Append only the transitions still needed
+            # to reach CLOSED — appending a no-op (e.g. FANIN_REDUCED ->
+            # FANIN_REDUCED) would raise ValueError.
+            terminal_chain = ("FANIN_REDUCED", "SYNTHESIZED", "CLOSED")
+            if saga["status"] not in terminal_chain:
+                append_transition(saga, from_state=saga["status"], to_state="FANIN_REDUCED")
+                saga["status"] = "FANIN_REDUCED"
+            if saga["status"] == "FANIN_REDUCED":
+                append_transition(saga, from_state="FANIN_REDUCED", to_state="SYNTHESIZED")
+                saga["status"] = "SYNTHESIZED"
+            if saga["status"] == "SYNTHESIZED":
+                append_transition(saga, from_state="SYNTHESIZED", to_state="CLOSED")
+                saga["status"] = "CLOSED"
             saga["current_phase"] = "finalize"
         else:
             if saga["iteration"] < MAX_ITERATIONS:
@@ -470,6 +489,15 @@ def main(argv: list[str] | None = None) -> int:
             f"iteration {saga['iteration']}"
         )
         rc = dispatch_phase(ctx, phase, brief)
+
+        # B6 (2026-06-05 Amendment 1 verification): the dispatched
+        # subprocess (audit / fixer / re-audit) writes its own per-branch
+        # transitions and updates saga.status directly to saga.json on
+        # disk. The driver's in-memory `saga` dict is stale at this
+        # point — writing it back would overwrite the subprocess's work.
+        # Reload from disk before advancing the state machine.
+        if ctx.saga_file.exists():
+            saga = json.loads(ctx.saga_file.read_text())
 
         if rc == 0:
             _advance_after_phase(ctx, saga, phase)

@@ -89,7 +89,13 @@ MAX_LAYER_SEC=3600   # 60 minutes per layer
 #     + synthesizer). Generalised to one ORCHESTRATOR_TIMEOUT covering
 #     all three (audit, autopilot, fixer) + review-team itself.
 SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                       # 10 min — leaf skills
-ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-1800}"         # 30 min — sub-team dispatchers
+# Autopilot now wraps the saga driver, which itself dispatches up to 4
+# claude -p subprocesses per layer (draft, review, fixer, re-review).
+# A realistic BRD cycle with one fixer pass takes 40-55 min wall-clock,
+# so the autopilot subprocess needs ~60 min to outlive the driver's
+# break-circuit (SOFT_DEADLINE=3300s in saga_driver.py). See B5/B6 in
+# the SAGA-PARITY-001 Phase 2 Amendment 1 verification (2026-06-05).
+ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-3600}"         # 60 min — autopilot+driver chain
 AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                       # 10 min for agents
 
 # Total token budget for the whole run (A8). When the cumulative

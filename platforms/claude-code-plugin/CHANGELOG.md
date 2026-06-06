@@ -126,7 +126,29 @@ opens (per the submit-only-finalized-work principle):
   with an empty body. Fix: removed the redundant cascade-side
   call.
 
-These three fixes are part of the same v0.6.1 release; no separate
+**B5 — driver SOFT_DEADLINE too tight for fixer cycles.** Initial
+budget of 1500s (25 min) covered draft+audit happy path but always
+fired break-circuit during the fixer + re-audit cycle. Bumped to
+3300s (55 min); harness `ORCHESTRATOR_TIMEOUT` aligned 1800s -> 3600s.
+
+**B6 — driver overwrote subprocess writes to saga.json.** The driver
+loaded saga.json once at startup, kept it in memory, and
+`write_saga()` after each phase. The audit subprocess writes its own
+per-branch transitions and advances run-scope status directly to
+saga.json on disk; the driver's stale in-memory copy then overwrote
+those writes (transitions list dropped from 13 to 2 in the live
+run). Fix: re-load saga.json from disk after `dispatch_phase`
+returns and before `_advance_after_phase` modifies it.
+
+**B6 follow-on — PASS path non-idempotent.** Because the audit
+synthesizer typically advances saga.status to FANIN_REDUCED before
+the driver picks back up, the driver's old PASS path
+(`append_transition(from=saga.status, to=FANIN_REDUCED)`) would emit
+a no-op transition that fails `_ALLOWED_TRANSITIONS`. Walk the
+terminal chain FANIN_REDUCED -> SYNTHESIZED -> CLOSED skipping
+states the saga is already at.
+
+These five fixes are part of the same v0.6.1 release; no separate
 amendment PR.
 
 #### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
