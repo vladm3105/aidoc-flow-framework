@@ -29,6 +29,7 @@ Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per TDD co
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).
 - **Code inventory for audit trail** — every file created/modified is recorded with session attribution and verification status.
 - **Temporary plans** for bugfixes only — no TDD upstream, disposable, live in `tmp/`.
+- **Right-sized scope** — the `file_manifest` matches the upstream SPEC/TDD's actual scope: ~N steps for N test contracts. No speculative files, defensive scaffolding, or future placeholders. See `framework/governance/DOC_GOVERNANCE_CORE.md` §Principles ("Right-sized plans").
 
 ## IPLAN Baseline
 

@@ -50,6 +50,11 @@
 > intended output trips a check) and no false negative (a check misses
 > something a rule was meant to remove). Dry-run the verification commands
 > against the legacy source while planning, to calibrate them.
+>
+> **Right-size the plan.** A plan should be ~N fixes for N discovered issues,
+> not N speculative features. If Pass 1 surfaces more gaps than the original
+> problem had issues, the surplus is speculative scope — cut it before Pass 2.
+> (See `framework/governance/DOC_GOVERNANCE_CORE.md` §Principles.)
 
 ### Pass 1 — <YYYY-MM-DDThh:mm:ssZ>
 

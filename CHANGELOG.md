@@ -26,6 +26,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Changed
 
+- **Framework spec `0.8.1 → 0.8.2` (patch — GATE-SPEC).** Added the
+  **"Right-sized plans"** principle to `framework/governance/DOC_GOVERNANCE_CORE.md`:
+  a plan should be ~N fixes for N discovered issues, not N speculative features;
+  if a review pass surfaces more gaps than the original problem had issues, the
+  surplus is speculative scope — cut it. Applied IPLAN-side at
+  `framework/layers/08_IPLAN/README.md` (`file_manifest` matches the upstream
+  SPEC/TDD's actual scope; no speculative files / defensive scaffolding /
+  placeholders). Mirrored to `plans/PLAN-TEMPLATE.md`'s Review log where Pass 1 /
+  Pass 2 actually live. Both `FRAMEWORK_SPEC_VERSION` files re-declared `0.8.2`;
+  plugin's vendored framework bundle re-synced.
 - Framework spec **0.8.0 → 0.8.1** (patch) — AUDIT-FIXUPS WS-A: the ADR (L5)
   template now **requires** a decision/interaction `sequenceDiagram` (carrying its
   intent header + `@diagram: sequence-*` tag), with `flowchart` demoted to an

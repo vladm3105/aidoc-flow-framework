@@ -8,6 +8,7 @@
 4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
 6. **Separation of development and deployment** — Development plans produce source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, and shipped through version control. Deployment plans handle operator-only execution of those artifacts. A development plan is complete when its artifacts are authored, committed, and green — it does NOT wait for deployment.
+7. **Right-sized plans** — A plan should be sized to the problem: ~N fixes for N discovered issues, not N speculative features. If a review pass surfaces more gaps than the original problem had issues, the surplus is speculative scope — cut it. Applies at authoring AND at every review pass (`Pass 1`, `Pass 2`).
 
 ### Development vs Deployment Plans
 
