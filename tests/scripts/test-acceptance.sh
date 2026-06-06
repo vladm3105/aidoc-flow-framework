@@ -929,10 +929,21 @@ phase_1_cascade() {
     log_info ""
     log_info "── Layer $((i + 1))/8: $type ──"
 
-    # autopilot — writes the layer artifact under docs/
+    # Autopilot is the sole entry point per layer. It internally drives
+    # the full create-review-revise loop via tools/saga_driver.py +
+    # subprocess dispatches of doc-<layer>-{audit,fixer} (per
+    # SAGA-PARITY-001 Phase 2 Amendment 1: autopilot-or-explicit-but-
+    # never-both).
     if _should_invoke "doc-$layer-autopilot"; then
       local autopilot_prompt
       autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
+      # Pass-4 A5/A6: pass paths via env vars (NOT via LLM-cooperative
+      # prompt parsing). saga_driver.py reads PREV_OUTPUT, ARTIFACT_ID,
+      # ARTIFACT_PATH from the env. The `claude` subprocess inherits its
+      # parent's env.
+      export PREV_OUTPUT="$prev_output"
+      export ARTIFACT_ID="${type}-01"
+      export ARTIFACT_PATH="$artifact"
       invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
       OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
       if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
@@ -943,39 +954,16 @@ phase_1_cascade() {
       fi
     fi
 
-    # audit — writes audit report under .aidoc/audit/
+    # Read the autopilot's saga.json journal for the layer outcome.
+    # The autopilot dispatched doc-<layer>-audit (+ fixer + re-audit as
+    # needed) internally; this is the post-hoc inspection only.
+    local saga_file="$AIDOC_DIR/review/${layer_num}_${type}/${type}-01/saga.json"
     local score=0
-    if _should_invoke "doc-$layer-audit"; then
-      local audit_prompt
-      audit_prompt="Audit the $type artifact at $artifact. Write a detailed audit report to $audit_report including the readiness score."
-      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
-      OUTPUT_PATH_BY_NAME["doc-$layer-audit"]="$audit_report"
-      score="$(parse_audit_score "doc-$layer-audit")"
-      AUDIT_SCORE_BY_NAME["doc-$layer-audit"]="$score"
-      write_element_log "doc-$layer-audit"
-      log_info "  audit score: $score"
-    fi
-
-    # fixer + re-audit if needed
-    if (( score < 90 )) && _should_invoke "doc-$layer-fixer"; then
-      log_info "  score < 90 → invoking fixer"
-      local fixer_prompt
-      fixer_prompt="Fix the $type artifact at $artifact based on findings in $audit_report. Write a fix report to $fix_report. Do not create tmp/ or backup/ directories under the layer dir; if you need a backup, write it to $AIDOC_DIR/remediation/."
-      invoke_skill "doc-$layer-fixer" "$fixer_prompt" "skill" "cascade"
-      OUTPUT_PATH_BY_NAME["doc-$layer-fixer"]="$fix_report"
-      FIXER_INVOKED_BY_NAME["doc-$layer-audit"]="true"
-      write_element_log "doc-$layer-fixer"
-
-      # B5 — Clean up any tmp/backup dirs the fixer may have left behind
-      # in the layer directory. These would otherwise trip lint's HASH01
-      # check (duplicate element IDs).
-      rm -rf "$layer_dir/tmp" 2>/dev/null
-
-      invoke_skill "doc-$layer-audit" "$audit_prompt" "skill" "cascade"
-      score="$(parse_audit_score "doc-$layer-audit")"
-      AUDIT_AFTER_FIXER_BY_NAME["doc-$layer-audit"]="$score"
-      write_element_log "doc-$layer-audit"
-      log_info "  audit score after fixer: $score"
+    local saga_status="UNKNOWN"
+    if [[ -f "$saga_file" ]]; then
+      saga_status="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('status',''))" "$saga_file" 2>/dev/null || echo UNKNOWN)"
+      score="$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('result',{}).get('content_score', 0))" "$saga_file" 2>/dev/null || echo 0)"
+      log_info "  saga: status=$saga_status score=$score"
     fi
 
     # sdd_doc_lint structural check on the artifact only (B1)
@@ -992,10 +980,9 @@ phase_1_cascade() {
       log_warn "  autopilot did not produce $artifact"
     fi
 
-    # base/reference skill — output captured to logs/<TS>/elements/
-    if _should_invoke "doc-$layer"; then
-      invoke_skill "doc-$layer" "Reference the $type template structure for $artifact." "skill" "cascade" || true
-    fi
+    # Note: doc-<layer>-{audit,fixer,base} are no longer dispatched by
+    # this cascade. The autopilot's saga driver invokes them internally
+    # via subprocess. They stay available for direct user invocation.
 
     prev_output="$artifact"
     i=$((i + 1))

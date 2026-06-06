@@ -55,7 +55,7 @@ right skill. The deeper authoring guidance is in
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `chaos-engineer` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
-| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.6.0) | |
+| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.7.0) | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
@@ -98,7 +98,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.6.0
+0.6.1
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.13.0
@@ -114,7 +114,7 @@ published version.
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `0.6.0` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
+| Version | `0.6.1` (independent SemVer; tag namespace `claude-code-plugin/v*`) |
 | Conforms to | framework spec `0.13.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |

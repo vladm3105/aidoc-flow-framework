@@ -24,10 +24,22 @@ dest="$repo_root/platforms/claude-code-plugin/framework"
 SUBTREES=(layers governance registry)
 ROOT_FILES=(SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
+# Tools vendored alongside the framework bundle so plugin SKILLs can invoke
+# them as ${CLAUDE_PLUGIN_ROOT}/tools/<file>. The repo-root tools/ is the
+# single source of truth; the vendored copy is byte-identical.
+# (Per SAGA-PARITY-001 Phase 2 Amendment 1 / Pass-4 A4.)
+canonical_tools="$repo_root/tools"
+dest_tools="$repo_root/platforms/claude-code-plugin/tools"
+TOOLS_FILES=(saga_driver.py)
+
 # Safety: dest must be the plugin's framework bundle, nothing else.
 case "$dest" in
   */platforms/claude-code-plugin/framework) ;;
   *) echo "refusing to sync: unexpected dest '$dest'" >&2; exit 1 ;;
+esac
+case "$dest_tools" in
+  */platforms/claude-code-plugin/tools) ;;
+  *) echo "refusing to sync: unexpected dest_tools '$dest_tools'" >&2; exit 1 ;;
 esac
 
 # Regenerate from scratch so upstream deletions propagate to the bundle.
@@ -42,3 +54,14 @@ done
 
 count="$(find "$dest" -type f | wc -l | tr -d ' ')"
 echo "synced framework bundle -> ${dest#"$repo_root"/} (${count} files)"
+
+# Vendor tools/. Regenerate from scratch like the framework bundle so that
+# removals propagate.
+rm -rf "$dest_tools"
+mkdir -p "$dest_tools"
+for f in "${TOOLS_FILES[@]}"; do
+  cp "$canonical_tools/$f" "$dest_tools/$f"
+done
+
+tools_count="$(find "$dest_tools" -type f | wc -l | tr -d ' ')"
+echo "synced tools bundle -> ${dest_tools#"$repo_root"/} (${tools_count} files)"
