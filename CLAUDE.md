@@ -33,6 +33,24 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
   feature request that builds on the merged work, a follow-up phase)
   is legitimate as a NEW plan + impl pair — not as a retroactive
   "amendment" to plug gaps that should have been caught pre-PR.
+- **Minimal-and-realistic plans.** A plan should be sized to the
+  problem it addresses, not "a perfect plan to do everything." A plan
+  that addresses N substantive issues should propose ~N fixes, not N
+  speculative features bundled with them. **Signal that you've
+  over-engineered:** Pass 1 review surfaces more gaps than the original
+  problem had substantive issues, and most of those gaps trace to
+  speculative scope (designs without a named issue) rather than the
+  core fixes. When you catch this mid-draft, cut to the minimum
+  sufficient design that catches every discovered issue, and park the
+  speculative items as a one-line backlog enumeration in the plan's
+  "Out of scope" section. Do NOT draft those speculative items here.
+  The next iteration can build on this one if the deferred items
+  actually surface in practice. *Origin:* REVIEW-CALIBRATION-001
+  (2026-06-06) — 5 missed BRD review findings drafted as 9 designs
+  (532 lines); Pass 1 surfaced 18 gaps, 14 of which originated from
+  speculative scope; slim rewrite to 3 designs (315 lines) caught the
+  same 5 findings and eliminated 14 of 18 gaps, dropping plugin SemVer
+  from MINOR + framework MINOR (GATE-SPEC) to plugin PATCH alone.
 - **The framework spec is the contract.** Engine-agnostic; carries no platform
   names or runtime code. Each platform declares the spec version it conforms to
   in `platforms/<name>/FRAMEWORK_SPEC_VERSION`, which must match
