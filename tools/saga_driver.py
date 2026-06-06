@@ -420,8 +420,16 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
             if saga["iteration"] < MAX_ITERATIONS:
                 saga["current_phase"] = "fixer"
             else:
-                append_transition(saga, from_state=saga["status"], to_state="ESCALATED")
-                saga["status"] = "ESCALATED"
+                # B7 (2026-06-05 Amendment 1 verification): per spec
+                # _ALLOWED_TRANSITIONS, ESCALATED is reachable only from
+                # BRANCH_FAILED or BRANCH_COMPENSATING. At max iterations
+                # we're typically at BRANCH_COMPLETED or FANIN_REDUCED
+                # (audit completed but verdict FAIL), neither of which
+                # allows direct -> ESCALATED. Use PARTIAL_TIMEOUT
+                # (universally reachable from non-terminal states) as
+                # the non-CLOSED terminal. Harness treats both as FAIL.
+                append_transition(saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT")
+                saga["status"] = "PARTIAL_TIMEOUT"
     elif phase == "fixer":
         saga["iteration"] += 1
         saga["current_phase"] = "re-review"
@@ -478,7 +486,7 @@ def main(argv: list[str] | None = None) -> int:
     resume_from_partial_timeout(saga)
     write_saga(ctx, saga)
 
-    while saga["status"] not in {"CLOSED", "ESCALATED"}:
+    while saga["status"] not in {"CLOSED", "ESCALATED", "PARTIAL_TIMEOUT"}:
         if check_break_circuit(ctx, saga):
             return 0
 
@@ -502,16 +510,29 @@ def main(argv: list[str] | None = None) -> int:
         if rc == 0:
             _advance_after_phase(ctx, saga, phase)
         else:
+            # B7 (2026-06-05 Amendment 1 verification): per spec
+            # _ALLOWED_TRANSITIONS, ESCALATED is reachable only from
+            # BRANCH_FAILED or BRANCH_COMPENSATING. On a subprocess
+            # failure (claude API limit, network, timeout, etc.) the
+            # saga is usually at PREPARED / FANOUT_STARTED / BRANCH_RUNNING
+            # / BRANCH_COMPLETED, none of which allow direct -> ESCALATED.
+            # PARTIAL_TIMEOUT is universally reachable from non-terminal
+            # states and connotes "non-CLOSED terminal, resumable on
+            # next invocation" — the right semantics for a transient
+            # external failure. Harness treats both ESCALATED and
+            # PARTIAL_TIMEOUT as FAIL.
             saga["compensation_actions"].append(
                 {
                     "ts": _utc_now_iso(),
                     "branch": "*",
                     "reason": f"phase {phase} subprocess exit {rc}",
-                    "action": "escalate",
+                    "action": "partial_timeout",
                 }
             )
-            append_transition(saga, from_state=saga["status"], to_state="ESCALATED", scope="run")
-            saga["status"] = "ESCALATED"
+            append_transition(
+                saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT", scope="run"
+            )
+            saga["status"] = "PARTIAL_TIMEOUT"
 
         write_saga(ctx, saga)
 

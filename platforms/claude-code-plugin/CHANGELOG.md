@@ -148,7 +148,25 @@ a no-op transition that fails `_ALLOWED_TRANSITIONS`. Walk the
 terminal chain FANIN_REDUCED -> SYNTHESIZED -> CLOSED skipping
 states the saga is already at.
 
-These five fixes are part of the same v0.6.1 release; no separate
+**B7 — driver crashed on subprocess failure.** Per spec
+`_ALLOWED_TRANSITIONS`, `ESCALATED` is reachable only from
+`BRANCH_FAILED` or `BRANCH_COMPENSATING`. The driver's failure-
+handling code (subprocess exit != 0, max iterations exhausted) tried
+to `append_transition(from=saga.status, to=ESCALATED)` regardless of
+current state, which raised `ValueError` for the common cases
+(saga.status at `PREPARED` / `FANOUT_STARTED` / `BRANCH_COMPLETED` /
+`FANIN_REDUCED`). When a claude API session limit hit during the
+draft subprocess (live verification, 2026-06-05), the driver
+crashed with the ValueError and saga.json never recorded the
+failure. Fix: use `PARTIAL_TIMEOUT` (universally reachable from
+non-terminal states) for both subprocess-failure and max-iter-
+exhausted paths. `PARTIAL_TIMEOUT` connotes "non-CLOSED terminal,
+resumable on next invocation" — the right semantics for both
+cases. Harness treats `PARTIAL_TIMEOUT` and `ESCALATED` identically
+(both → layer FAIL). The driver's `while` loop also now exits on
+`PARTIAL_TIMEOUT` (previously only `CLOSED` / `ESCALATED`).
+
+These six fixes are part of the same v0.6.1 release; no separate
 amendment PR.
 
 #### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
