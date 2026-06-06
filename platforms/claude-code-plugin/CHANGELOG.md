@@ -169,6 +169,44 @@ cases. Harness treats `PARTIAL_TIMEOUT` and `ESCALATED` identically
 These six fixes are part of the same v0.6.1 release; no separate
 amendment PR.
 
+#### Verification result (2026-06-06 fourth live cascade)
+
+Final live BRD cascade against `examples/url-shortener` (commit
+`3cf15ca4` with all B1-B7 fixes) reached **`saga.status: CLOSED`**
+in **2559s (42.6 min)** with score 94/100 PASS, quorum met, iter=2
+(one fixer cycle), all 5 lens slots populated, BRD-01.md lint
+clean, no `from: PARTIAL_TIMEOUT` transitions (G-R1 invariant
+holds). 10/10 load-bearing pass criteria met.
+
+#### Known limitation — fixer-cycle transitions are spec-non-conforming
+
+The audit/fixer SKILLs (cooperative-enforcement code path inherited
+from v0.6.0) emit run/branch-scope transitions during the fixer
+cycle that aren't in the spec's `_ALLOWED_TRANSITIONS` table:
+
+- `BRANCH_COMPLETED -> BRANCH_COMPENSATING` (fixer entry per branch)
+- `BRANCH_COMPENSATING -> BRANCH_COMPLETED` (fixer validation per
+  branch + once at run-scope)
+- `BRANCH_COMPLETED -> FANOUT_STARTED` (re-audit re-entry at
+  run-scope)
+
+These are semantically correct (a fixer-then-revisit IS the right
+shape for the loop) but the framework spec's transition table
+doesn't model them. The driver itself only writes spec-compliant
+transitions (run-scope entries around the cycle). The cooperative
+SKILL writes are the source of the non-conformance.
+
+Phase 4 will either:
+
+1. **Amend the framework spec** to add fixer-revisit transitions
+   (`BRANCH_COMPLETED -> BRANCH_COMPENSATING`, etc.), OR
+2. **Slim the audit/fixer SKILLs** so they don't write run/branch-
+   scope transitions to saga.json at all — the driver owns ALL
+   journal writes.
+
+Option 2 aligns with the SKILL prompt drift carry-forward (below)
+and is the cleaner architectural fix. Marked for the Phase 4 plan.
+
 #### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
 
 The doc-brd SKILL's prompt body still contains the v0.6.0
