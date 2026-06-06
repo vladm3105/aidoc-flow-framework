@@ -44,6 +44,16 @@ attempt empirically failed in the 2026-06-05 live BRD verification —
 invalid transitions, non-terminal final status, no subprocess dispatch
 — motivating the v0.6.1 pivot to preemptive enforcement.)
 
+**Residual prompt drift (Phase 4 follow-up).** The `doc-brd/SKILL.md`
+base SKILL still contains v0.6.0 cooperative-enforcement saga-interaction
+prose (instructions telling the LLM to write to `saga.json` itself).
+The 2026-06-05 draft-only smoke test showed the SKILL correctly
+**inferred** the new driver-authoritative architecture and did not
+write to saga.json, but that deferral relies on LLM inference rather
+than explicit prompt direction. Phase 4 slims doc-brd (and the PRD..IPLAN
+base SKILLs that migrate at the same time) so the deferral becomes
+deterministic across all layers.
+
 **Enforcement asymmetry — PRD..IPLAN layers (still v0.6.0 cooperative).**
 The 7 layers PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN still use the v0.6.0
 cooperative-enforcement pattern (SKILL.md prompts instruct the LLM to

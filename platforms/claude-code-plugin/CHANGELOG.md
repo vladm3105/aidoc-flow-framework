@@ -95,6 +95,21 @@ demonstrates the preemptive pattern works end-to-end. Per
 SAGA-PARITY-001 Phase 4. Until then, those layers' autopilot skills
 remain at v0.6.1 but functionally unchanged from v0.6.0.
 
+#### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
+
+The doc-brd SKILL's prompt body still contains the v0.6.0
+cooperative-enforcement saga-interaction text (instructions telling the
+LLM to write to `saga.json` itself). The 2026-06-05 draft-only smoke
+test demonstrated the SKILL correctly **inferred** the new architecture
+from the driver-supplied brief and deliberately did NOT write to
+`saga.json` — preserving the driver's authoritative-writer position.
+This is the right architectural behaviour, but it relies on LLM
+inference rather than explicit prompt direction; the same class of
+non-determinism that motivated the cooperative → preemptive pivot
+applies. Phase 4 will slim doc-brd (and the PRD..IPLAN base SKILLs)
+to remove the cooperative-enforcement saga prose entirely, so the
+deferral becomes deterministic.
+
 #### Hermes parity
 
 Hermes already implements the same preemptive saga model
