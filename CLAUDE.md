@@ -20,6 +20,19 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
 
 ## Durable conventions
 
+- **Submit only finalized work.** Any PR (plan or impl) must already
+  have completed its review-and-fix cycles locally — what gets pushed
+  is the *final* version, not a draft awaiting later amendment. The
+  pattern of "submit, then review post-merge, then patch via amendment
+  PR" is explicitly forbidden (see §"Development workflow" item 2 for
+  plan-specific cycles; the same principle applies to impl PRs:
+  self-review locally, fix, re-review, only then push). Amendment PRs
+  to recently-merged work are a smell that the original PR was
+  submitted prematurely. **Exception**: real new work that emerges
+  AFTER a PR lands (a bug discovered during user-facing testing, a
+  feature request that builds on the merged work, a follow-up phase)
+  is legitimate as a NEW plan + impl pair — not as a retroactive
+  "amendment" to plug gaps that should have been caught pre-PR.
 - **The framework spec is the contract.** Engine-agnostic; carries no platform
   names or runtime code. Each platform declares the spec version it conforms to
   in `platforms/<name>/FRAMEWORK_SPEC_VERSION`, which must match
@@ -42,25 +55,55 @@ verify → land:
 
 1. **Plan** into `plans/` (start from `plans/PLAN-TEMPLATE.md`) before touching
    code.
-2. **Two-cycle gap review (mandatory)** — once a plan is created, it MUST
-   complete at least **two full review cycles** before implementation begins.
-   Each cycle = *review to identify gaps → patch the plan to address every
-   gap → re-review the patched plan*. The plan is ready for impl only when
-   the second cycle's re-review surfaces no new substantive gaps (or all
-   surfaced gaps have been folded into the plan via further patches).
+2. **Two-cycle gap review (mandatory, BEFORE the plan PR opens)** —
+   once a plan draft exists, it MUST complete at least **two full review
+   cycles BEFORE the plan PR is opened**. Each cycle =
+   *review to identify gaps → patch the plan to address every gap →
+   re-review the patched plan*. The plan PR opens ONLY when a review
+   pass has surfaced no new substantive gaps. Implementation begins
+   ONLY after the plan PR has been merged.
+
    Record every cycle in the plan's `## Review log` with an ISO-stamped
    `Pass N` entry that lists the gaps found and how each was resolved.
    Cycle N+1 must always re-validate that cycle N's patches did not
-   introduce new inconsistencies. Continue cycling until a review surfaces
-   nothing; minimum is two cycles. Skipping the second cycle is forbidden
-   — the rule exists because every plan touched in this repo so far has
-   surfaced material gaps in the second pass that the first pass missed.
+   introduce new inconsistencies. Continue cycling until a review
+   surfaces nothing; minimum is two cycles.
+
+   **What is forbidden:**
+   - Opening a plan PR with a draft that has not completed at least
+     two review cycles.
+   - Performing post-merge review of a plan and then opening
+     "amendment" PRs against that plan to patch gaps that should have
+     been caught pre-PR. Such amendments amount to merging unreviewed
+     plans, which defeats the rule's purpose.
+   - Starting implementation while gap-review cycles are still open.
+
+   **Worked sequence:**
+
+   ```
+   draft plan → Pass 1 (self-review, fold in gaps)
+              → Pass 2 (re-review, may surface new gaps from Pass 1 patches)
+              → Pass 3 (codebase cross-check, fold in)
+              → [continue if any pass surfaces gaps]
+              → final pass surfaces zero substantive gaps
+              → OPEN plan PR
+              → review/merge
+              → impl PR (with TodoWrite, code changes, verification)
+   ```
+
+   The rule exists because every plan touched in this repo so far has
+   surfaced material gaps in the second-or-later pass that the first
+   pass missed. Merging an under-reviewed plan and amending later
+   wastes PR overhead and obscures the design history. All cycles
+   happen against the draft, in the same branch, before PR submission.
 3. **Implement**, updating the plan with ISO-stamped progress.
 4. **Verify** — run the conformance suite + the platform's own tests; nothing
    is "done" until they pass.
 5. **Land** — one logical change per commit, conventional prefix (`docs:`,
    `feat:`, `fix:`, `refactor:`, `chore:`); update `CHANGELOG.md` / `ROADMAP.md`
-   as needed.
+   as needed. **Submit only the final, reviewed-and-fixed version**
+   (see §"Durable conventions" — no intermediate WIP submissions
+   awaiting follow-up amendment PRs).
 
 Record non-obvious choices in `plans/DECISIONS.md` (ISO-stamped).
 
