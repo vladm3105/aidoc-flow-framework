@@ -95,6 +95,40 @@ demonstrates the preemptive pattern works end-to-end. Per
 SAGA-PARITY-001 Phase 4. Until then, those layers' autopilot skills
 remain at v0.6.1 but functionally unchanged from v0.6.0.
 
+#### In-flight bug fixes (2026-06-05 live verification)
+
+The first live verification of v0.6.1 surfaced three bugs in the
+initial impl that were fixed on the same branch before this release
+opens (per the submit-only-finalized-work principle):
+
+- **B1 — autopilot bypassed the driver.** The initial slim SKILL
+  text still had room for the LLM to dispatch Task subagents
+  cooperatively and produce the BRD in-session, without invoking
+  the saga driver. saga.json was never written. Fix: rewrote the
+  `team`-mode section with imperative one-shot direction —
+  "your FIRST tool call MUST be Bash python3
+  ${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py ..." — and removed
+  the verbose "Driver contracts" reference block that gave the
+  LLM enough emulation context to skip the dispatch.
+- **B2 — harness silently no-op'd on missing saga.json.** The
+  cascade dispatcher's saga-journal inspection used
+  `if [[ -f "$saga_file" ]]; then ... fi` and didn't fail when the
+  file was absent. The autopilot subprocess returned exit 0 (it
+  did produce a BRD in-session), so the harness reported PASS
+  despite the driver never running. Fix: hard-fail when
+  saga.json is missing or status is ESCALATED / PARTIAL_TIMEOUT /
+  any other non-CLOSED terminal.
+- **B3 — autopilot stdout was clobbered.** `invoke_skill` already
+  calls `write_element_log` internally on PASS, which merges the
+  staging stdout into the .log file and deletes the staging copy.
+  The cascade dispatcher then called `write_element_log` a second
+  time, which read an already-deleted file and re-wrote the .log
+  with an empty body. Fix: removed the redundant cascade-side
+  call.
+
+These three fixes are part of the same v0.6.1 release; no separate
+amendment PR.
+
 #### Known limitation — doc-brd SKILL prompt drift (Phase 4 follow-up)
 
 The doc-brd SKILL's prompt body still contains the v0.6.0

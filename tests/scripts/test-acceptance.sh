@@ -936,7 +936,7 @@ phase_1_cascade() {
     # never-both).
     if _should_invoke "doc-$layer-autopilot"; then
       local autopilot_prompt
-      autopilot_prompt="From the seed/prior-layer document at $prev_output, produce the $type artifact for the $EXAMPLE example. Write the result to $artifact."
+      autopilot_prompt="Run the saga-driven generation loop for the ${type} layer (review_mode: team). The harness has already set PREV_OUTPUT, ARTIFACT_ID, and ARTIFACT_PATH env vars. Per the SKILL contract, your FIRST tool call MUST be 'Bash: python3 \"\${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py\" --layer ${layer_num}_${type} --threshold 90'. Do NOT dispatch Task subagents, do NOT write the artifact in-session, do NOT pre-analyze. Invoke the driver and report its outcome."
       # Pass-4 A5/A6: pass paths via env vars (NOT via LLM-cooperative
       # prompt parsing). saga_driver.py reads PREV_OUTPUT, ARTIFACT_ID,
       # ARTIFACT_PATH from the env. The `claude` subprocess inherits its
@@ -946,17 +946,22 @@ phase_1_cascade() {
       export ARTIFACT_PATH="$artifact"
       invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
       OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
-      if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" == "PASS" ]]; then
-        write_element_log "doc-$layer-autopilot"
-      fi
+      # (write_element_log already runs inside invoke_skill on PASS;
+      # calling it again here previously clobbered the merged stdout.
+      # See Amendment 1 verification 2026-06-05 / B3.)
       if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
         return 1
       fi
     fi
 
     # Read the autopilot's saga.json journal for the layer outcome.
-    # The autopilot dispatched doc-<layer>-audit (+ fixer + re-audit as
-    # needed) internally; this is the post-hoc inspection only.
+    # The autopilot's saga driver dispatched doc-<layer>-audit (+ fixer
+    # + re-audit as needed) internally; this is the post-hoc inspection.
+    #
+    # CRITICAL: saga.json MUST exist after a team-mode autopilot run.
+    # If it's absent, the autopilot bypassed the saga driver (the
+    # exact bug Amendment 1 fixes). FAIL the layer hard rather than
+    # silently passing on subprocess exit code.
     local saga_file="$AIDOC_DIR/review/${layer_num}_${type}/${type}-01/saga.json"
     local score=0
     local saga_status="UNKNOWN"
@@ -964,6 +969,31 @@ phase_1_cascade() {
       saga_status="$(python3 -c "import json,sys; print(json.load(open(sys.argv[1])).get('status',''))" "$saga_file" 2>/dev/null || echo UNKNOWN)"
       score="$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('result',{}).get('content_score', 0))" "$saga_file" 2>/dev/null || echo 0)"
       log_info "  saga: status=$saga_status score=$score"
+      # Reject non-terminal status — the driver must complete the loop.
+      case "$saga_status" in
+        CLOSED) ;;  # happy path
+        ESCALATED)
+          log_err "  saga ESCALATED for ${type}-01 — human review required"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga ESCALATED"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+        PARTIAL_TIMEOUT)
+          log_warn "  saga PARTIAL_TIMEOUT for ${type}-01 — resume on next invocation"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga PARTIAL_TIMEOUT"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+        *)
+          log_err "  saga status=$saga_status for ${type}-01 — unexpected non-terminal state"
+          record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga non-terminal: $saga_status"
+          [[ $FAIL_FAST -eq 1 ]] && return 1
+          ;;
+      esac
+    else
+      log_err "  saga.json MISSING at $saga_file — autopilot bypassed the saga driver"
+      log_err "  (this is the v0.6.0 cooperative-enforcement failure mode;"
+      log_err "   v0.6.1 autopilot MUST invoke \${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py)"
+      record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "" "" "" "false" "" "saga.json absent"
+      [[ $FAIL_FAST -eq 1 ]] && return 1
     fi
 
     # sdd_doc_lint structural check on the artifact only (B1)

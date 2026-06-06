@@ -65,101 +65,50 @@ type (Platform vs Feature) from the source content.
 
 ## Workflow
 
-Resolve `review_mode` from `.aidoc/profile.yaml`; if unset, fall through
-to the framework default `team` at gates per the precedence chain in
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`. Same
-fallback applies to `audit_threshold`, `section_toggles`,
-`active_layers`, and `glossary`.
-The workflow has two shapes — the team-mode create→review→revise loop
-(default at gates) and the single_pass linear pipeline (fallback).
-
-1. **Input analysis** — classify the input (REF / prompt / IPLAN), locate
-   reference material, and decide generate vs review-and-fix.
-2. **Type & scope** — Platform vs Feature; for a Feature BRD, verify the
-   referenced Platform BRD exists; reserve the next `BRD-NN`.
+> **MANDATORY — DO THIS FIRST.** Your first and only action when
+> `review_mode: team` (the framework default) is to invoke the saga
+> driver via the `Bash` tool. **You MUST NOT** dispatch `Task` subagents
+> directly, **MUST NOT** call `doc-brd`/`doc-brd-audit`/`doc-brd-fixer`
+> directly via `SlashCommand` or otherwise, and **MUST NOT** generate
+> the BRD in-session. The driver is the sole orchestration mechanism for
+> the create-review-revise loop. Bypassing it produces a BRD without
+> a saga.json journal — this empirically failed the 2026-06-05 BRD
+> verification and is the *exact* bug this SKILL slim-down fixes.
 
 ### Saga-driven generation loop (`review_mode: team`)
 
-This SKILL is a **thin entry point** over the bundled
-`${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py`, which drives the
-create-review-revise loop **deterministically** under preemptive
-enforcement per
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`. The driver
-script is the orchestration mechanism; this SKILL invokes it and
-reports the result.
-
-This SUPERSEDES the cooperative-enforcement loop that Phase 2 originally
-embedded in this SKILL prompt, which empirically failed
-(2026-06-05 verification: invalid transitions, non-terminal final
-status, no subprocess dispatch). Per SAGA-PARITY-001 Phase 2
-Amendment 1, all state-machine validation, transition enforcement,
-break-circuit handling, and subprocess dispatch are now in
-`saga_driver.py`.
-
-Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §Operations
-§Create: **one drafter, many reviewers** — the driver enforces this
-single-drafter contract on the dispatch sequence.
-
-#### 3. Dispatch the saga driver
-
-The harness sets `PREV_OUTPUT`, `ARTIFACT_ID`, `ARTIFACT_PATH` env
-vars before invoking this SKILL (per Pass-4 A5/A6: deterministic
-env-var contract, no LLM-cooperative prompt parsing). The driver
-reads them; this SKILL only invokes it:
+**Step 1 — Invoke the driver. Period.** The harness sets `PREV_OUTPUT`,
+`ARTIFACT_ID`, `ARTIFACT_PATH` env vars before invoking this SKILL.
+Your VERY FIRST tool call MUST be the `Bash` tool, running exactly:
 
 ```sh
-Bash: python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
+python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
   --layer 01_BRD \
   --threshold 90
 ```
 
-The driver writes `saga.json` to
-`.aidoc/review/01_BRD/<ARTIFACT_ID>/saga.json` and prints one
-`dispatch: <phase> ...` line per subprocess dispatched. Each phase
-(`draft`, `review`, `fixer`, `re-review`) runs as a separate
-`claude -p /aidoc-flow:doc-brd[-audit|-fixer]` subprocess with its
-own `ORCHESTRATOR_TIMEOUT=1800s` budget. The driver enforces
-`SOFT_DEADLINE=1500s` against its own wall clock and writes
-`PARTIAL_TIMEOUT` if exceeded — that exit is resumable by a
-subsequent invocation.
+Use a generous timeout (≥1800s). Do not pre-analyze the input. Do not
+read the seed. Do not classify type/scope. The driver and its
+dispatched subprocesses (`/aidoc-flow:doc-brd` for draft,
+`/aidoc-flow:doc-brd-audit` for review, `/aidoc-flow:doc-brd-fixer`
+for fixer) handle all of that. The driver enforces the state machine
+preemptively per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`; this
+SKILL's job is to invoke it and report.
 
-After the driver returns, post the final saga status (`CLOSED`,
-`ESCALATED`, or `PARTIAL_TIMEOUT`) as the autopilot's outcome. On
-`CLOSED`, also update `docs/01_BRD/BRD-00_index.md`.
+**Step 2 — After the driver returns, report.** Read
+`.aidoc/review/01_BRD/${ARTIFACT_ID}/saga.json`. Final status MUST be
+one of `CLOSED` (PASS), `ESCALATED` (terminal FAIL), or
+`PARTIAL_TIMEOUT` (soft-deadline; resumable). Print the status, the
+final score from `verdict.json` if present, and a 1-line summary.
 
-#### 3.1 Driver contracts (reference)
+**Step 3 — Index update (only on `CLOSED`).** Add a row to
+`docs/01_BRD/BRD-00_index.md` referencing the new BRD.
 
-The driver implements (see `${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py`
-for the canonical version):
-
-- **Entry / resume**: fresh saga.json init if absent;
-  pre-Phase-2 blackboard migration if slot files exist;
-  CLOSED/ESCALATED → exit; PARTIAL_TIMEOUT or in-flight → resume
-  from the journaled `current_phase`.
-- **Per-phase dispatch**: `draft` → `/aidoc-flow:doc-brd`;
-  `review`/`re-review` → `/aidoc-flow:doc-brd-audit`;
-  `fixer` → `/aidoc-flow:doc-brd-fixer`. Each runs as a separate
-  `claude -p` subprocess with `timeout 1800`.
-- **Transition validation**: every `from → to` is checked against
-  the `_ALLOWED_TRANSITIONS` table (mirror of
-  `framework/governance/REVIEW_SAGA.md`'s table). Invalid transitions
-  raise; the driver does not silently apply them.
-- **Break-circuit**: `SOFT_DEADLINE = 1500s` against the driver's own
-  wall clock; exceeding it writes `PARTIAL_TIMEOUT` and exits cleanly.
-- **Resume (G-R1)**: walks `transitions[]` backward to find the
-  pre-PARTIAL_TIMEOUT state. Does NOT append a `from: PARTIAL_TIMEOUT`
-  transition.
-- **Verdict reading (A9)**: after each audit subprocess, reads
-  `.aidoc/review/01_BRD/<id>/verdict.json`. Missing file →
-  `ESCALATED` (audit failure), not `FAIL → fixer`.
-- **Branch validation (A8)**: after each audit, repairs missing
-  `branches[<persona>]` fields from slot file mtimes.
-- **Iteration cap**: `MAX_ITERATIONS = 3`; if audit still FAIL after
-  three fix cycles, escalate.
-
-For the full state machine and journal schema see
-`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md` and
-`saga.schema.json`.
+That is the entire workflow in `team` mode. If you find yourself
+doing anything else here — drafting prose, dispatching Task subagents,
+invoking other slash commands — STOP, recognize that you are
+bypassing the driver, and invoke the Bash command above instead.
 
 ### Linear Pipeline (`review_mode: single_pass`)
 
