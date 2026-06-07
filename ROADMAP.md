@@ -120,7 +120,7 @@ Change Management for the full policy.
 ## Post-v1.0 — Shipped
 
 Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
-0.11.2`):
+0.13.0`):
 
 - **Canonical plugin skill set** — the corpus was pruned/recreated to one
   standard (P3-T6/T7) and settled at **52 skills (50 active + 2 deprecated stubs)** in plugin v0.4.0, after `skill-recommender`/`workflow-optimizer`/`context-analyzer` folded into `doc-flow` and `doc-review`/`trace-check` were folded into `doc-validator` (the latter two retained as deprecation redirects through v0.5.0).
@@ -140,6 +140,11 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
   markdownlint, yamllint, detect-secrets, **gitleaks**, pip-audit, conformance) and CI
   workflows for pre-commit, **CodeQL**, and the GATE-SPEC gate; `SECURITY.md`;
   refreshed `.github/` metadata (CODEOWNERS, dependabot, labeler — INFRA-1).
+- **`adversary` lens partition** (framework `0.12.0`, CHAOS-SEC-SPLIT-001, D-0030) — split the single `adversary` review lens into `chaos_engineer` (reliability / NFR / failure-mode) + `security_engineer` (threat-model / security-controls) with per-layer crew weight redistribution in `REVIEW_CREWS.yaml` (BRD: chaos 12 / security 8; ADR: chaos 8 / security 12; PRD/SPEC/TDD equal; IPLAN chaos-only). `REVIEW_TEAM.md` adds a `## Weight allocation rules` subsection codifying the four-category allocation protocol.
+- **Review-saga lifecycle promoted to framework spec** (framework `0.13.0`, SAGA-PARITY-001 Phase 1, D-0031) — `framework/governance/REVIEW_SAGA.md` codifies the engine-agnostic saga state machine (11 states), transition table, journal schema, break-circuit policy, and `FRAMEWORK_SPEC_VERSION` semantics; `framework/governance/saga.schema.json` is the formal JSON Schema for the per-run saga journal. Supersedes D-0005's scope-narrowing premise; both platforms declare intent to conform.
+- **Plugin BRD saga driver** (plugin `0.6.0` → `0.6.1`, SAGA-PARITY-001 Phase 2 + Amendment 1) — first plugin implementation of the saga lifecycle. v0.6.0 used cooperative enforcement (SKILL-prompt-driven) and empirically failed live verification. Amendment 1 (v0.6.1) replaced it with `tools/saga_driver.py` (Python stdlib-only, vendored alongside the framework bundle): preemptive script-driven enforcement; reads/writes `saga.json` directly; validates every transition against an embedded table; dispatches each phase as a separate `claude -p` subprocess with `timeout 1800s`. 7 in-flight bugs (B1-B7) fixed on the same branch per the submit-only-finalized-work principle. Verified end-to-end on the 4th live BRD cascade (`status: CLOSED`, score 96/100, 10/10 pass criteria). PRD..IPLAN propagation deferred to Phase 4.
+- **5 content sub-checks across 8 audit SKILLs** (plugin `0.6.2`, REVIEW-CALIBRATION-001) — adds A1 cell-actionability + A2 assumption-capture + A3 cross-section pointer-validity (auditor lens), BA1 acceptance-criterion testability (business_analyst lens), SE1 deferred-decision safety (security_engineer lens) uniformly across all 8 layer audit SKILLs. Catches 5 substantive content-quality issues that v0.6.1's review missed; before/after BRD comparison confirmed remediation. Section references use concept names not § numbers so wording is uniform across layer templates. No spec touch, no new lens.
+- **Project-level conventions** — "Submit only finalized work" + "Minimal-and-realistic plans" + "Two-cycle plan review" + "Plugin-first sequencing" — codified in CLAUDE.md and ROADMAP.md. Deferred Hermes work tracked in `plans/HERMES-BACKLOG.md`.
 
 ## Post-v1.0 — Planned Capabilities
 
