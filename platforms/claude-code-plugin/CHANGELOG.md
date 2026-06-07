@@ -65,11 +65,55 @@ works for PRD-shape content + PRD's specific lens crew
 (`product_owner: 30, architect: 25, tech_lead: 20, chaos_engineer:
 8, security_engineer: 7, auditor: 10`).
 
+#### B7-class follow-on fix (driver MISSING-verdict path)
+
+The 2026-06-07 live PRD cascade surfaced an extension of B7
+(Amendment 1's "driver crashes on illegal ESCALATED transition")
+that the original fix missed. When the audit subprocess returns
+without writing `verdict.json` — which happens when the audit SKILL
+is not yet team-mode-wired for the layer — `_advance_after_phase`
+tried `append_transition(from=saga.status, to=ESCALATED)`. From
+`FANOUT_STARTED` (the state after a non-fan-out audit), ESCALATED
+is illegal per spec; the driver crashed with ValueError and saga
+stayed at FANOUT_STARTED.
+
+Fix: use PARTIAL_TIMEOUT (universally reachable) for the MISSING-
+verdict path, with a compensation_actions entry naming the likely
+cause ("audit SKILL may not be team-mode-wired for layer"). Same
+class as the v0.6.1 B7 fix; same resolution. All ESCALATED-from-
+arbitrary-state sites in the driver are now PARTIAL_TIMEOUT.
+
+#### Known limitation — PRD audit/fixer SKILLs not team-mode-wired
+
+The 2026-06-07 PRD cascade verified the saga driver propagation
+works (driver invoked correctly, saga.json materialized, draft
+subprocess produced a 18.5KB PRD-01.md). **But the PRD audit ran in
+legacy single-pass mode** — it produced a single
+`PRD-01.A_audit_report_v001.md` (94/100, well-structured) but did
+NOT fan out 5 lens subagents and did NOT write `verdict.json` or
+lens slot files. Root cause: `doc-prd-audit/SKILL.md` lacks the
+`## Saga interaction` + `## Review Mode` + `## Break-circuit policy`
+sections that `doc-brd-audit/SKILL.md` got under BRD-RT-001. Same
+for `doc-prd-fixer`.
+
+Phase 4 per-layer work is therefore **3 SKILL edits, not 1**:
+
+1. Autopilot — wire saga driver (this release, ✓ done for PRD).
+2. Audit — wire team-mode fan-out (PRD-RT-001 follow-on PR).
+3. Fixer — wire team-mode remediation (PRD-RT-001 follow-on PR).
+
+EARS..IPLAN will follow the same 3-edit pattern. The next PR
+(PRD-RT-001) does the audit + fixer wiring for PRD and runs the
+PRD cascade again to verify end-to-end.
+
 #### Verification
 
 - Pre-commit + conformance suite green.
-- Live PRD cascade against the merged BRD-01 — pending (next step
-  after this release lands).
+- Live PRD cascade (2026-06-07): driver invocation + saga.json
+  init + draft dispatch + state-machine advance ALL ✓. Audit
+  subprocess ran but didn't team-mode-fan-out → PARTIAL_TIMEOUT
+  with compensation_actions entry. **The Phase 4 mechanical edit
+  is verified working; the team-mode wiring is the next PR.**
 
 ### Changed — Plugin v0.6.1 → v0.6.2
 

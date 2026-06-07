@@ -385,16 +385,31 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
 
         score, status = read_verdict_score(ctx)
         if status == "MISSING":
+            # B7-class fix (extended; 2026-06-07 Phase 4 PRD verification).
+            # Per spec _ALLOWED_TRANSITIONS, ESCALATED is reachable only from
+            # BRANCH_FAILED or BRANCH_COMPENSATING. At MISSING-verdict time the
+            # saga is typically still at FANOUT_STARTED (audit ran but did
+            # not fan out / write verdict.json — e.g., legacy single-pass
+            # audit subprocess that hasn't been team-mode-wired yet). From
+            # FANOUT_STARTED, ESCALATED is illegal; PARTIAL_TIMEOUT is the
+            # universally-reachable non-CLOSED terminal. Use PARTIAL_TIMEOUT
+            # so the harness B2 assertion reports FAIL with the right
+            # semantics ("resumable; needs human review / team-mode wiring
+            # for this layer") instead of the driver crashing.
             saga["compensation_actions"].append(
                 {
                     "ts": _utc_now_iso(),
                     "branch": "*",
-                    "reason": (f"audit phase '{phase}' returned but verdict.json absent"),
-                    "action": "escalate",
+                    "reason": (
+                        f"audit phase '{phase}' returned but verdict.json absent "
+                        f"(audit SKILL may not be team-mode-wired for layer "
+                        f"{ctx.layer})"
+                    ),
+                    "action": "partial_timeout",
                 }
             )
-            append_transition(saga, from_state=saga["status"], to_state="ESCALATED")
-            saga["status"] = "ESCALATED"
+            append_transition(saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT")
+            saga["status"] = "PARTIAL_TIMEOUT"
             return
 
         if status == "PASS":
