@@ -14,6 +14,80 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.6.4 → v0.6.5
+
+> **SemVer classification**: PATCH bump — harness change only;
+> no SKILL surface changes, no framework spec touch. The autopilot
+> SKILL is unmodified; only `tests/scripts/test-acceptance.sh` changes.
+
+#### Why
+
+The 2026-06-07 PRD-RT-001 verification (PR #101) surfaced an
+LLM-stochasticity issue in the harness's driver-invocation path. The
+autopilot SKILL has been the harness's entry point since v0.6.1
+(Amendment 1): the harness invokes `claude -p
+/aidoc-flow:doc-<layer>-autopilot ...`, the autopilot LLM then runs
+`Bash: python3 saga_driver.py ...`. Same SKILL prompt produced
+different LLM behavior across runs — BRD v0.6.1 worked, PRD v0.6.4
+failed (LLM chose `run_in_background=true` and exited before driver
+completed, relying on a notification that doesn't fire in `claude
+-p` mode).
+
+This is the same class of issue as B1 (cooperative-enforcement is
+non-deterministic at the protocol-contract granularity required by
+REVIEW_SAGA.md). Same fix shape: take the LLM out of the contract-
+enforcement path.
+
+#### What changed
+
+`tests/scripts/test-acceptance.sh` cascade dispatcher invokes
+`python3 saga_driver.py --layer NN_LAYER --threshold 90` DIRECTLY
+with the same env-var setup (`PREV_OUTPUT`, `ARTIFACT_ID`,
+`ARTIFACT_PATH`, `CLAUDE_PLUGIN_ROOT`). The autopilot LLM is no
+longer in the harness's driver-invocation path. The harness:
+
+- Tracks the driver subprocess as the `doc-<layer>-autopilot`
+  element in the run summary (for output continuity).
+- Records the subprocess stdout to
+  `logs/<TS>/elements/doc-<layer>-autopilot.stdout`.
+- Treats `timeout` (rc=124) as FAIL with an explicit "driver
+  timeout" note.
+- Honors `$ORCHESTRATOR_TIMEOUT` (currently 3600s) as the outer
+  wall-clock cap; the driver's own `SOFT_DEADLINE=3300s` is the
+  inner soft cap.
+
+#### What stays the same
+
+- The autopilot SKILL (`doc-<layer>-autopilot/SKILL.md`) is
+  unchanged — it remains the user-facing entry point for
+  `/aidoc-flow:doc-<layer>-autopilot` interactive invocation in a
+  Claude Code session. Users get the same behavior they had before.
+- The driver itself (`tools/saga_driver.py`) is unchanged.
+- Every other harness flow (mock mode, dry-run, single-element,
+  CHG cascade, utilities, agents) is unaffected.
+
+#### Why this is safe
+
+The driver is layer-agnostic: its `_LAYER_CREWS` covers all 8 layers
+(verified by `test_layer_crews_match_yaml`). The driver IS the saga-
+lifecycle implementation per `framework/governance/REVIEW_SAGA.md` —
+invoking it directly is invoking the same authoritative
+implementation that the autopilot SKILL used to invoke.
+
+#### Unblocks
+
+Live verification for EARS-RT-001 / BDD-RT-001 / ADR-RT-001 /
+SPEC-RT-001 / TDD-RT-001 / IPLAN-RT-001 propagation. Each per-layer
+RT PR can now run an end-to-end cascade without the
+LLM-stochasticity risk in the dispatch path.
+
+#### Verification
+
+- Pre-commit + conformance suite green.
+- Live BRD re-verification (regression check): pending.
+- Live PRD re-verification (the failure that motivated this change):
+  pending.
+
 ### Changed — Plugin v0.6.3 → v0.6.4
 
 > **SemVer classification**: PATCH bump — wires team-mode dispatch into the

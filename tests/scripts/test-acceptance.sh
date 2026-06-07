@@ -935,26 +935,60 @@ phase_1_cascade() {
     log_info ""
     log_info "── Layer $((i + 1))/8: $type ──"
 
-    # Autopilot is the sole entry point per layer. It internally drives
-    # the full create-review-revise loop via tools/saga_driver.py +
-    # subprocess dispatches of doc-<layer>-{audit,fixer} (per
-    # SAGA-PARITY-001 Phase 2 Amendment 1: autopilot-or-explicit-but-
-    # never-both).
+    # The cascade dispatcher invokes the saga driver DIRECTLY (Python),
+    # NOT through the `doc-<layer>-autopilot` SKILL. The autopilot SKILL
+    # remains available as a user-facing entry point for interactive use
+    # (`/aidoc-flow:doc-<layer>-autopilot` in a Claude Code session), but
+    # the HARNESS uses the driver directly to eliminate LLM-stochasticity
+    # from the dispatch path.
+    #
+    # Why this matters: in 2026-06-07 PRD-RT-001 verification (PR #101)
+    # the autopilot LLM chose `run_in_background=true` and exited before
+    # the driver completed, relying on a Claude Code notification that
+    # doesn't fire in `claude -p` non-interactive CLI mode. The same
+    # SKILL prompt that worked for BRD v0.6.1 failed for PRD v0.6.4 —
+    # same class as B1's "cooperative-enforcement is non-deterministic."
+    # The fix here removes the LLM from the harness's driver-invocation
+    # path entirely. The driver itself is layer-agnostic (its
+    # _LAYER_CREWS covers all 8 layers) and Python; deterministic.
+    #
+    # The autopilot SKILL is still recorded as a PASS element when the
+    # driver succeeds — for harness output / summary continuity. The
+    # SKILL just isn't invoked.
     if _should_invoke "doc-$layer-autopilot"; then
-      local autopilot_prompt
-      autopilot_prompt="Run the saga-driven generation loop for the ${type} layer (review_mode: team). The harness has already set PREV_OUTPUT, ARTIFACT_ID, and ARTIFACT_PATH env vars. Per the SKILL contract, your FIRST tool call MUST be 'Bash: python3 \"\${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py\" --layer ${layer_num}_${type} --threshold 90'. Do NOT dispatch Task subagents, do NOT write the artifact in-session, do NOT pre-analyze. Invoke the driver and report its outcome."
-      # Pass-4 A5/A6: pass paths via env vars (NOT via LLM-cooperative
-      # prompt parsing). saga_driver.py reads PREV_OUTPUT, ARTIFACT_ID,
-      # ARTIFACT_PATH from the env. The `claude` subprocess inherits its
-      # parent's env.
       export PREV_OUTPUT="$prev_output"
       export ARTIFACT_ID="${type}-01"
       export ARTIFACT_PATH="$artifact"
-      invoke_skill "doc-$layer-autopilot" "$autopilot_prompt" "skill" "cascade"
+      export CLAUDE_PLUGIN_ROOT="$PLUGIN_DIR"
+
+      log_info "invoking saga_driver.py directly (--layer ${layer_num}_${type})"
+      local driver_log="$LOG_DIR/elements/doc-$layer-autopilot.stdout"
+      local driver_t0 driver_t1 driver_dur driver_rc driver_timeout
+      driver_t0="$(date +%s)"
+      record_outcome "doc-$layer-autopilot" "skill" "cascade" "RUNNING" 0
+      write_element_log "doc-$layer-autopilot"
+
+      driver_timeout="$ORCHESTRATOR_TIMEOUT"
+      timeout "$driver_timeout" python3 \
+        "$PLUGIN_DIR/tools/saga_driver.py" \
+        --layer "${layer_num}_${type}" \
+        --threshold 90 \
+        > "$driver_log" 2>&1
+      driver_rc=$?
+      driver_t1="$(date +%s)"
+      driver_dur=$((driver_t1 - driver_t0))
+
       OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
-      # (write_element_log already runs inside invoke_skill on PASS;
-      # calling it again here previously clobbered the merged stdout.
-      # See Amendment 1 verification 2026-06-05 / B3.)
+      if (( driver_rc == 0 )); then
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "PASS" "$driver_dur"
+      elif (( driver_rc == 124 )); then
+        echo "TIMEOUT after ${driver_timeout}s" >> "$driver_log"
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "driver timeout"
+      else
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "driver exit $driver_rc"
+      fi
+      write_element_log "doc-$layer-autopilot"
+
       if [[ "${OUTCOME_BY_NAME[doc-$layer-autopilot]:-}" != "PASS" ]] && [[ $FAIL_FAST -eq 1 ]]; then
         return 1
       fi
