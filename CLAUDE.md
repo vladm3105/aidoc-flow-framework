@@ -16,7 +16,7 @@ The platforms share the `framework/` spec and nothing else. Both pass the same
 shared conformance suite (`tests/conformance/`). The `framework/` spec defines
 the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
-**Current state (as of 2026-06-06):** framework spec `0.13.0`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+**Current state (as of 2026-06-07):** framework spec `0.13.1`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8 with mechanical + warning hooks). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
 
 ## Durable conventions
 
@@ -51,6 +51,45 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
   speculative scope; slim rewrite to 3 designs (315 lines) caught the
   same 5 findings and eliminated 14 of 18 gaps, dropping plugin SemVer
   from MINOR + framework MINOR (GATE-SPEC) to plugin PATCH alone.
+- **Update docs of record per PR.** Every PR must keep the
+  documents-of-record in sync with the change it ships — do not let a
+  separate "doc-refresh" PR be the catch-up mechanism. The matrix of
+  which docs to touch lives in
+  [`CONTRIBUTING.md`](CONTRIBUTING.md#documentation-discipline-update-docs-of-record-per-pr).
+
+  The discipline is enforced by **two pre-commit hooks** (no manual
+  step required; both run automatically on `git commit`):
+
+  1. **Mechanical doc-sync** (`scripts/sync-version-refs.sh`) — runs
+     when a `VERSION` file changes (any of `framework/VERSION`,
+     `platforms/<name>/VERSION`). Auto-propagates the new version
+     string into the docs that quote it: `plugin.json`,
+     `marketplace.json`, 52 × SKILL.md frontmatter, `README.md`,
+     `platforms/<name>/README.md`, `docs/SKILL_AUTHORING.md`,
+     `docs/PARITY.md` current-state row. Re-stages on its own;
+     idempotent.
+  2. **Semantic doc-reminder** (`scripts/check-docs-updated.sh`) —
+     runs on every commit. When the staged change touches
+     code/spec/skills but does NOT touch any document-of-record
+     (CHANGELOG, ROADMAP, HANDOFF, HERMES-BACKLOG, …), prints a
+     checklist of likely-stale docs. Warning-only; never blocks the
+     commit. Contributor decides whether to update or proceed.
+
+  The mechanical sync handles every doc whose update is deterministic
+  (a version string changed; propagate). The semantic reminder
+  handles every doc whose update needs human authoring (changelog
+  entry text, handoff narrative, roadmap bullet). The framework spec
+  contract documenting this discipline at the project-wide level
+  lives in
+  [`framework/governance/DOC_GOVERNANCE_CORE.md`](framework/governance/DOC_GOVERNANCE_CORE.md)
+  Principle 8.
+
+  *Origin:* PR #98 was a "catch-up doc-refresh" needed because the
+  preceding 5 PRs did not each update CLAUDE.md / README.md /
+  ROADMAP.md / root CHANGELOG.md / HANDOFF.md inline. The two-hook
+  enforcement mechanism prevents that recurrence: mechanical sync
+  makes the cheap updates invisible, and the reminder hook flags
+  the expensive ones.
 - **The framework spec is the contract.** Engine-agnostic; carries no platform
   names or runtime code. Each platform declares the spec version it conforms to
   in `platforms/<name>/FRAMEWORK_SPEC_VERSION`, which must match

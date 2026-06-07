@@ -1,0 +1,213 @@
+#!/usr/bin/env bash
+# Mechanical doc-sync: propagate plugin/framework/hermes VERSION values into
+# the documents-of-record that quote those versions. Idempotent; safe to run
+# repeatedly; touches only files where a quoted version differs from the
+# authoritative VERSION file.
+#
+# Wired into .pre-commit-config.yaml so it runs automatically on every commit
+# that stages a VERSION change. Also safe to invoke manually:
+#
+#   bash scripts/sync-version-refs.sh
+#
+# What it propagates (deterministic; sed-style):
+#
+# Plugin VERSION (platforms/claude-code-plugin/VERSION):
+#   - platforms/claude-code-plugin/.claude-plugin/plugin.json
+#       "version": "<X.Y.Z>"
+#   - .claude-plugin/marketplace.json
+#       "version": "<X.Y.Z>"
+#   - All platforms/claude-code-plugin/skills/<name>/SKILL.md frontmatter
+#       version: "<X.Y.Z>"
+#   - README.md
+#       `claude-code-plugin/v<X.Y.Z>` references
+#   - platforms/claude-code-plugin/docs/SKILL_AUTHORING.md
+#       version: "<X.Y.Z>"
+#   - docs/PARITY.md
+#       claude-code-plugin/v<X.Y.Z> current-state row
+#
+# Framework VERSION (framework/VERSION):
+#   - CLAUDE.md "framework spec `<X.Y.Z>`" current-state line
+#   - README.md "framework spec `<X.Y.Z>`" Status block
+#   - docs/PARITY.md "framework spec `<X.Y.Z>`" current-state row
+#
+# Hermes VERSION (platforms/hermes/VERSION): same pattern for hermes/v<X.Y.Z>.
+#
+# What it does NOT do (semantic / human-authored content):
+#   - CHANGELOG entries (text)
+#   - ROADMAP "Shipped" bullets (text)
+#   - HANDOFF.md current-state header (narrative)
+#   - docs/TAGGING.md new release rows (human-authored)
+#
+# Exit code: always 0 (this is a sync hook; never blocks the commit).
+# Genuine failures (missing/malformed VERSION) print a warning to stderr but
+# still exit 0 so the commit proceeds.
+
+# Note: do NOT enable `set -e` here. The script does a lot of best-effort
+# detection (greps that may return no matches, files that may not exist).
+# Each step is individually defensive.
+
+set -u  # catch unset-variable bugs only
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
+cd "$repo_root"
+
+verbose=0
+if [[ "${1:-}" == "--verbose" ]]; then
+  verbose=1
+fi
+
+log() {
+  [[ "$verbose" == "1" ]] && printf '%s\n' "$*" >&2
+  return 0
+}
+
+warn() {
+  printf '[sync-version-refs] %s\n' "$*" >&2
+  return 0
+}
+
+# Read VERSION file; return empty (and warn) on missing/malformed.
+read_version() {
+  local f="$1"
+  if [[ ! -f "$f" ]]; then return 0; fi
+  local v
+  v="$(tr -d '[:space:]' < "$f" 2>/dev/null || true)"
+  if ! [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+    warn "skipping malformed VERSION in $f: '$v'"
+    return 0
+  fi
+  printf '%s' "$v"
+}
+
+# In-place replace a literal old-string with a literal new-string in $1 ($2/$3).
+# Skip silently if file doesn't exist, old==new, or pattern not present.
+replace_in_file() {
+  local file="$1" old="$2" new="$3"
+  [[ -f "$file" ]] || return 0
+  [[ "$old" != "$new" ]] || return 0
+  grep -qF "$old" "$file" 2>/dev/null || return 0
+  sed -i "s|${old}|${new}|g" "$file" 2>/dev/null || {
+    warn "sed failed on $file"
+    return 0
+  }
+  log "  updated $file: $old -> $new"
+  return 0
+}
+
+# Find current version reference in a file matching a regex; returns the
+# captured X.Y.Z group, or empty if not found. Never fails.
+detect_version_in() {
+  local file="$1" pattern="$2"
+  [[ -f "$file" ]] || return 0
+  local match
+  match="$(grep -oE "$pattern" "$file" 2>/dev/null | head -1 || true)"
+  [[ -n "$match" ]] || return 0
+  printf '%s' "$match" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
+}
+
+# --- plugin VERSION fanout ----------------------------------------------------
+
+plugin_ver="$(read_version platforms/claude-code-plugin/VERSION)"
+log "plugin VERSION: ${plugin_ver:-(missing)}"
+
+if [[ -n "$plugin_ver" ]]; then
+  plugin_prev="$(detect_version_in \
+    platforms/claude-code-plugin/.claude-plugin/plugin.json \
+    '"version": "[0-9]+\.[0-9]+\.[0-9]+"')"
+
+  if [[ -n "$plugin_prev" && "$plugin_prev" != "$plugin_ver" ]]; then
+    log "plugin sync $plugin_prev -> $plugin_ver"
+
+    replace_in_file platforms/claude-code-plugin/.claude-plugin/plugin.json \
+      "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
+    replace_in_file .claude-plugin/marketplace.json \
+      "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
+    for skill in platforms/claude-code-plugin/skills/*/SKILL.md; do
+      [[ -f "$skill" ]] || continue
+      replace_in_file "$skill" \
+        "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
+    done
+    replace_in_file README.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
+      "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
+      "(currently \`$plugin_prev\`)" "(currently \`$plugin_ver\`)"
+    replace_in_file docs/PARITY.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+  fi
+fi
+
+# --- framework VERSION fanout -------------------------------------------------
+
+fw_ver="$(read_version framework/VERSION)"
+log "framework VERSION: ${fw_ver:-(missing)}"
+
+if [[ -n "$fw_ver" ]]; then
+  fw_prev="$(detect_version_in CLAUDE.md \
+    'framework spec `[0-9]+\.[0-9]+\.[0-9]+`')"
+
+  if [[ -n "$fw_prev" && "$fw_prev" != "$fw_ver" ]]; then
+    log "framework sync $fw_prev -> $fw_ver"
+    replace_in_file CLAUDE.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file docs/PARITY.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+  fi
+
+  # Each platform declares its target framework spec via
+  # platforms/<name>/FRAMEWORK_SPEC_VERSION; this MUST equal framework/VERSION
+  # (asserted by tests/conformance). Sync them automatically.
+  for platform_fw_file in platforms/*/FRAMEWORK_SPEC_VERSION; do
+    [[ -f "$platform_fw_file" ]] || continue
+    local_prev="$(read_version "$platform_fw_file")"
+    if [[ -n "$local_prev" && "$local_prev" != "$fw_ver" ]]; then
+      echo "$fw_ver" > "$platform_fw_file"
+      log "  updated $platform_fw_file: $local_prev -> $fw_ver"
+    fi
+  done
+
+  # Plugin SKILL.md frontmatter declares framework_spec_version: "X.Y.Z" —
+  # fanout to the previous detected value if the SKILLs all agree on it.
+  skill_fw_prev="$(detect_version_in \
+    platforms/claude-code-plugin/skills/doc-brd-autopilot/SKILL.md \
+    'framework_spec_version: "[0-9]+\.[0-9]+\.[0-9]+"')"
+  if [[ -n "$skill_fw_prev" && "$skill_fw_prev" != "$fw_ver" ]]; then
+    log "  SKILL frontmatter sync $skill_fw_prev -> $fw_ver (52 files + SKILL_AUTHORING.md)"
+    for skill in platforms/claude-code-plugin/skills/*/SKILL.md; do
+      [[ -f "$skill" ]] || continue
+      replace_in_file "$skill" \
+        "framework_spec_version: \"$skill_fw_prev\"" \
+        "framework_spec_version: \"$fw_ver\""
+    done
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
+      "framework_spec_version: \"$skill_fw_prev\"" \
+      "framework_spec_version: \"$fw_ver\""
+  fi
+fi
+
+# --- hermes VERSION fanout ----------------------------------------------------
+
+hermes_ver="$(read_version platforms/hermes/VERSION)"
+log "hermes VERSION: ${hermes_ver:-(missing)}"
+
+if [[ -n "$hermes_ver" ]]; then
+  hermes_prev="$(detect_version_in README.md 'hermes/v[0-9]+\.[0-9]+\.[0-9]+')"
+  if [[ -n "$hermes_prev" && "$hermes_prev" != "$hermes_ver" ]]; then
+    log "hermes sync $hermes_prev -> $hermes_ver"
+    replace_in_file README.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
+    replace_in_file docs/PARITY.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
+  fi
+fi
+
+# Re-stage anything we touched (pre-commit reads from the staging area).
+if ! git diff --quiet 2>/dev/null; then
+  git add -u 2>/dev/null || true
+  warn "version-reference sync applied; restaged changed files"
+fi
+
+exit 0

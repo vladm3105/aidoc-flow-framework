@@ -12,12 +12,28 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.13.0 → 0.13.1 (CHG-gated)
+
+- **DOC_GOVERNANCE_CORE.md — new Principle 8: change-of-record discipline.**
+  - Edit: `framework/governance/DOC_GOVERNANCE_CORE.md` adds an 8th
+    principle requiring every change to keep its documents-of-record
+    in sync within the same PR. No catch-up "doc-refresh" PR may
+    follow a change.
+  - The principle is engine-agnostic: both platforms must honor it.
+  - Enforcement lives outside `framework/` (in
+    `scripts/sync-version-refs.sh` + `scripts/check-docs-updated.sh`,
+    wired via `.pre-commit-config.yaml`), so the framework spec
+    states the rule but doesn't ship the implementation — consistent
+    with `framework/` being engine-agnostic.
+  - SemVer: PATCH (`0.13.0 → 0.13.1`). Editorial / additive — no
+    template, schema, or transition-table changes; no behavior
+    contract changes for either platform's existing implementation.
+
 ### Changed — Claude Code plugin (plugin-only; no spec change)
 
-Plugin-side post-spec-0.13.0 work. The framework spec stays at `0.13.0`;
-the entries below describe how the plugin implements (and iterates on
-the implementation of) the saga-lifecycle contract codified in
-SAGA-PARITY-001 Phase 1. See
+Plugin-side post-spec-0.13.0 work. The entries below describe how the
+plugin implements (and iterates on the implementation of) the
+saga-lifecycle contract codified in SAGA-PARITY-001 Phase 1. See
 [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md)
 for the per-release plugin detail.
 
@@ -70,6 +86,14 @@ for the per-release plugin detail.
   (ROADMAP.md, [#97](https://github.com/vladm3105/aidoc-flow-framework/pull/97)) —
   features land on the plugin first; Hermes follow-on batches per
   `plans/HERMES-BACKLOG.md`.
+- **"Update docs of record per PR" durable convention + 2-tier hooks**
+  (CLAUDE.md / CONTRIBUTING.md / DOC_GOVERNANCE_CORE.md Principle 8 / PR #99) —
+  every PR keeps its docs-of-record in sync inline (no catch-up
+  doc-refresh PR). Enforcement: `scripts/sync-version-refs.sh`
+  (mechanical, auto-propagates VERSION changes) +
+  `scripts/check-docs-updated.sh` (semantic warning when code/spec
+  changes don't touch any doc-of-record). Both wired via
+  `.pre-commit-config.yaml`.
 
 ### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated)
 
