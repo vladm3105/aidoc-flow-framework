@@ -30,7 +30,7 @@ ROOT_FILES=(SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 # (Per SAGA-PARITY-001 Phase 2 Amendment 1 / Pass-4 A4.)
 canonical_tools="$repo_root/tools"
 dest_tools="$repo_root/platforms/claude-code-plugin/tools"
-TOOLS_FILES=(saga_driver.py finding_filter.py)
+TOOLS_FILES=(saga_driver.py finding_filter.py playbook_loader.py)
 
 # Safety: dest must be the plugin's framework bundle, nothing else.
 case "$dest" in
