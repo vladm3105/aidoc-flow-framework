@@ -1,5 +1,47 @@
 # Session Handoff
 
+> **🟢 PLUGIN BRD LAYER COMPLETE — 2026-06-06.** Framework spec `0.13.0` /
+> plugin `0.6.2` / project `v1.1.0`. The plugin's BRD-layer machinery is
+> shipped and end-to-end verified. **Five PRs landed this session:**
+> #92 (plugin v0.6.1 — SAGA-PARITY-001 Phase 2 Amendment 1: preemptive
+> `tools/saga_driver.py` replaces cooperative-enforcement SKILL prompts;
+> 7 in-flight bugs B1-B7 fixed on the same branch); #93 (CLAUDE.md
+> "Minimal-and-realistic plans" durable convention); #95 (plan PR for
+> REVIEW-CALIBRATION-001); #96 (plugin v0.6.2 — 5 content sub-checks
+> across 8 audit SKILLs; verified end-to-end against a saved
+> before-fix BRD-01); #97 (plugin-first development-sequencing policy
+>
+> + `plans/HERMES-BACKLOG.md`).
+>
+> **Three new auto-memory entries** (in
+> `~/.claude/projects/-opt-data-aidoc-flow/memory/`):
+> `feedback-skill-drift-under-preemptive-driver`,
+> `feedback-plans-minimal-and-realistic`,
+> `feedback-plugin-first-then-hermes`.
+>
+> **Plugin BRD layer is the testbed** — saga driver + sub-checks both
+> verified by the url-shortener acceptance cascade. The 5 sub-checks
+> already shipped to PRD..IPLAN audit SKILLs (same wording, generic
+> section concepts); only the autopilot SKILLs for those 7 layers
+> still need the saga-driver dispatch pattern.
+>
+> **Hermes work explicitly deferred** —
+> [`HERMES-BACKLOG.md`](HERMES-BACKLOG.md) is the single source of
+> truth for what Hermes needs to catch up on (currently H-1
+> SAGA-PARITY-001 Phase 3 G-R1 invariant; H-2 REVIEW-CALIBRATION-001
+> lens sub-checks). Hermes-side iteration batches later.
+>
+> **Natural next item:** SAGA-PARITY-001 Phase 4 — propagate the saga
+> driver from BRD to PRD..IPLAN (7 layer `doc-*-autopilot` SKILLs need
+> the same slim-and-dispatch pattern Amendment 1 brought to
+> `doc-brd-autopilot`).
+>
+> **Local branches remaining** (no remote): `plan/prd-rt-001-team-mode`
+> (older draft); `plan/saga-parity-001-phase-3` (predates Amendment 1,
+> needs refresh per HERMES-BACKLOG H-1 — do not open as-is).
+>
+> ---
+>
 > **🟢 CONSOLIDATION REVIEW FIXES — 2026-05-27.** A code review of the 55→50
 > consolidation (3 finder passes) caught a real **correctness regression** and
 > some capability flattening; all fixed on `claude/multi-platform-migration-AamWB`.

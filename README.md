@@ -69,7 +69,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** — latest project release `v1.1.0`, framework spec
-`0.11.3`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.6.2); APIs and surfaces may change before 1.0. The framework spec is stable at `0.11.3`. Post-v1.0 work to date:
+`0.13.0`. The Claude Code plugin (`platforms/claude-code-plugin/`) is currently a **pre-1.0 preview** (v0.6.2); APIs and surfaces may change before 1.0. The framework spec is at `0.13.0`. Post-v1.0 work to date:
 
 - the project adaptation overlay (`framework/governance/ADAPTATION.md` + the closed-knob `ADAPTATION_SURFACE.yaml`);
 - the **GATE-SPEC** change-management gate (`framework/governance/chg/`);
@@ -78,6 +78,11 @@ The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 - the **token-efficient authoring** governance (`framework/governance/AUTHORING_STYLE.md`) wired into every layer's `_size_target` and into every audit skill;
 - the **`.aidoc/` provenance tier** — committed audit/review/remediation/validation/security/quality reports (`framework/docs/AIDOC.md`);
 - the **pre-deployment acceptance test suite** (`tests/scripts/test-acceptance.sh` + [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md)) that drives every active plugin surface element (50 skills + 11 agents + 1 command + 1 hook) against a named example's seed as the release gate, with resume on interrupt, partial-execution flags (`--element`, `--from-layer`, `--to-layer`, `--dry-run`), and `--promote` to commit the produced chain;
+- the **`adversary` lens partition** (CHAOS-SEC-SPLIT-001, framework `0.12.0`) — split into `chaos_engineer` (reliability/NFR/failure-mode) + `security_engineer` (threat-model/security-controls) with per-layer crew weight redistribution in `REVIEW_CREWS.yaml`;
+- the **review-saga lifecycle promoted to spec** (SAGA-PARITY-001 Phase 1, framework `0.13.0`) — `REVIEW_SAGA.md` + `saga.schema.json` codify the engine-agnostic state machine + journal schema + break-circuit policy that both platforms align to;
+- the **plugin BRD saga driver** (SAGA-PARITY-001 Phase 2 + Amendment 1, plugin `0.6.1`) — `tools/saga_driver.py` (Python stdlib-only) replaces cooperative-enforcement SKILL-prompt loop with preemptive script-driven enforcement; vendored alongside the framework bundle in the plugin distribution;
+- the **content sub-checks** (REVIEW-CALIBRATION-001, plugin `0.6.2`) — A1 cell-actionability + A2 assumption-capture + A3 cross-section pointer-validity (auditor) + BA1 acceptance-criterion testability (business_analyst) + SE1 deferred-decision safety (security_engineer), applied uniformly across all 8 layer audit SKILLs;
+- the **plugin-first development sequencing** (2026-06-06) — features land on the plugin first; Hermes follow-on batches per [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md);
 - pre-commit + CI security tooling (CodeQL, bandit, detect-secrets, pip-audit, gitleaks, Dependabot).
 
 ## Contributing
