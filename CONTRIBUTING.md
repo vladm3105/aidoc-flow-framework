@@ -30,6 +30,47 @@ python3 -m unittest discover -s packaging -q
 python3 -m unittest discover -s release -q
 ```
 
+## Documentation discipline — update docs of record per PR
+
+**Every PR must keep the documents-of-record in sync with the change it ships.** Do not let a separate "doc-refresh" PR be the catch-up mechanism (PR #98 was that catch-up; the rule below prevents recurrence).
+
+Two pre-commit hooks automate the discipline:
+
+| Hook | Script | What it does |
+|---|---|---|
+| `sync-version-refs` | `scripts/sync-version-refs.sh` | **Mechanical auto-sync.** When a `VERSION` file changes, propagates the new version string into every doc-of-record that quotes it (`plugin.json`, `marketplace.json`, 52 × SKILL.md frontmatter, READMEs, PARITY.md current-state row, …). Re-stages on its own; idempotent. Silent on commits that don't bump a version. |
+| `check-docs-updated` | `scripts/check-docs-updated.sh` | **Semantic reminder.** Runs on every commit. When the staged change touches code/spec/skills but no document-of-record, prints a checklist of likely-stale docs. **Warning only — never blocks the commit.** Authors decide whether to update or proceed (false-positive friendly). |
+
+Together they handle: mechanical sync is invisible (just commit; the right files update); semantic reminder surfaces the prose-authoring docs (CHANGELOG entry, ROADMAP bullet, handoff narrative, Hermes-backlog entry) that the author must write themselves.
+
+### Documents of record — what to update for which change
+
+| Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
+|---|---|---|---|
+| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Post-v1.0 — Shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
+| **Platform change** (`platforms/<name>/**`) | `platforms/<name>/CHANGELOG.md` `[Unreleased]`; `platforms/<name>/VERSION` if bumping; `docs/PARITY.md` (release only); `docs/TAGGING.md` (release only) | plugin.json; marketplace.json; 52 × SKILL.md frontmatter; READMEs; PARITY current-state | CHANGELOG entry; new TAGGING row (on release) |
+| **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
+| **Hermes follow-on created** | `plans/HERMES-BACKLOG.md` new `H-N` entry in the same PR | — | backlog entry (Source / Plugin status / Substantive work / Dependency) |
+| **Session milestone reached** | `plans/HANDOFF.md` prepend new current-state header | — | handoff narrative (PRs landed, next item) |
+| **Trivial / typo / internal refactor** | (none) | — | — |
+
+If your change spans categories, do all the updates. The hooks above flag misses on commit; an explicit checklist in your PR description naming the touched docs helps reviewers.
+
+### When the warning hook fires
+
+`check-docs-updated` prints a WARNING when:
+
+- Any of `framework/**`, `platforms/**/{skills,agents,scripts,tools}/**`, `platforms/**/VERSION`, `tools/**` is staged
+- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `plans/HERMES-BACKLOG.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`, `platforms/*/CHANGELOG.md`) is staged
+
+Common false positives (warning is correct to ignore):
+
+- Typo / comment-only fix
+- Test-only change with no production-behavior impact
+- Internal refactor that's invisible to users
+
+The hook exits 0 regardless — it's a reminder, not a gate. If your change genuinely needs no doc update, commit and move on.
+
 ## How to add a test, a skill, a lint check
 
 See [`tests/CONTRIBUTING.md`](tests/CONTRIBUTING.md) (test-suite contribution guidance).

@@ -99,3 +99,31 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
+
+      # Mechanical doc-sync: when a VERSION file changes, auto-propagate the
+      # new version string into all the docs-of-record that quote it
+      # (plugin.json, marketplace.json, 52 SKILL.md frontmatter, READMEs,
+      # PARITY.md current-state row, etc.). Re-stages on its own; idempotent.
+      # See CLAUDE.md §"Durable conventions" — "Update docs of record per PR".
+      - id: sync-version-refs
+        name: auto-sync version references (CLAUDE.md / README / PARITY / SKILL frontmatter / ...)
+        entry: bash scripts/sync-version-refs.sh
+        language: system
+        pass_filenames: false
+        # Only run when one of the authoritative VERSION files changes — this
+        # keeps the hook silent on commits that don't bump a version.
+        files: '^(platforms/[^/]+/VERSION|framework/VERSION)$'
+
+      # Warning hook: when a commit changes code/spec/skills but does NOT
+      # touch any of the documents-of-record (CHANGELOG, ROADMAP, README,
+      # HANDOFF, HERMES-BACKLOG, …), print a checklist of likely-stale docs.
+      # Does NOT fail the commit; informational only. False-positive friendly.
+      # The mechanical sync above handles version-references; this hook
+      # handles the semantic content that can't be auto-generated.
+      - id: check-docs-updated
+        name: docs-of-record reminder (CHANGELOG / ROADMAP / HANDOFF / ...)
+        entry: bash scripts/check-docs-updated.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        verbose: true   # so the WARN block is visible in pre-commit's output
