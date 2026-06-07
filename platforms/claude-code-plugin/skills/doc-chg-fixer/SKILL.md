@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: quality-assurance
-    version: "0.6.1"
+    version: "0.6.2"
     framework_spec_version: "0.13.0"
     last_updated: "2026-05-23"
 ---
