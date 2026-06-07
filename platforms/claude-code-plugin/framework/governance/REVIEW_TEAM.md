@@ -159,17 +159,14 @@ Layer directory is `<NN>_<LAYER>` matching the `framework/layers/` convention. L
 layer: 02_PRD                          # matches directory name exactly
 lens: chaos_engineer                   # matches filename stem + REVIEW_CREWS.yaml persona name
 weight: 8                              # must match REVIEW_CREWS.yaml weight for this (layer, lens)
-agent: chaos-engineer                  # plugin agent name; lens→agent table: platforms/claude-code-plugin/skills/review-team/SKILL.md §"The crew"
+agent: chaos-engineer                  # plugin agent name; documented per-platform binding
 framework_spec_version: "0.14.0"       # must match framework/VERSION; auto-propagated by sync hook
 ---
 ```
 
 ### Required content sections
 
-1. **Reasoning frame** — 2-3 paragraphs covering three sub-requirements:
-   (a) what this lens uniquely sees at this layer altitude;
-   (b) how it differs from the same lens at adjacent layers;
-   (c) what this lens does NOT do (covered by other lenses in the same crew).
+1. **Reasoning frame** — 2-3 paragraphs: what this lens uniquely sees at this layer altitude; how it differs from the same lens at adjacent layers; what this lens does NOT do (covered by other lenses).
 2. **Required evidence checks** — finite list `C1`..`Cn` of deterministic checks. Each check states what to look for and the priority of a finding if the check fires.
 3. **Beyond-checklist** — escape hatch for layer-specific failure modes the checklist does not cover. Finding must cite `beyond-checklist:<principle-tag>` and reference the reasoning frame.
 4. **Scoring** — 0-100 rubric tied to checklist coverage and beyond-checklist density.
@@ -180,7 +177,7 @@ Every finding produced by a lens MUST cite either a checklist check (`check: "C1
 
 ### Coverage emission
 
-The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
+The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision.
 
 ## Resilience & security
 
@@ -210,6 +207,5 @@ The synthesizer emits `verdict.playbook_coverage` summarizing how many findings 
 
 - `REVIEW_REMEDIATION_FLOW.md` — the loop and trigger points this team serves.
 - `REVIEW_CREWS.yaml` — the machine-readable per-layer crews + weights.
-- `framework/playbooks/<NN>_<LAYER>/<lens>.md` — per-layer per-lens reasoning frames + evidence checklists (see §Playbooks above).
 - `SECURITY_REVIEW.md` — untrusted-input handling for agent-authored artifacts.
 - `ADAPTATION.md` / `ADAPTATION_SURFACE.yaml` — the `review_mode` knob.
