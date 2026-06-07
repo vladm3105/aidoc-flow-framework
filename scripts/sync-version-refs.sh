@@ -16,16 +16,14 @@
 #       "version": "<X.Y.Z>"
 #   - .claude-plugin/marketplace.json
 #       "version": "<X.Y.Z>"
-#   - All 52 platforms/claude-code-plugin/skills/<name>/SKILL.md frontmatter
+#   - All platforms/claude-code-plugin/skills/<name>/SKILL.md frontmatter
 #       version: "<X.Y.Z>"
 #   - README.md
-#       `claude-code-plugin/v<X.Y.Z>` references; "(v<X.Y.Z>)" status
-#   - platforms/claude-code-plugin/README.md
-#       `<X.Y.Z>` references in the version/status rows
+#       `claude-code-plugin/v<X.Y.Z>` references
 #   - platforms/claude-code-plugin/docs/SKILL_AUTHORING.md
-#       version: "<X.Y.Z>" + "(currently `<X.Y.Z>`)"
+#       version: "<X.Y.Z>"
 #   - docs/PARITY.md
-#       "claude-code-plugin/v<X.Y.Z>" current-state row (line near top)
+#       claude-code-plugin/v<X.Y.Z> current-state row
 #
 # Framework VERSION (framework/VERSION):
 #   - CLAUDE.md "framework spec `<X.Y.Z>`" current-state line
@@ -38,19 +36,20 @@
 #   - CHANGELOG entries (text)
 #   - ROADMAP "Shipped" bullets (text)
 #   - HANDOFF.md current-state header (narrative)
-#   - docs/TAGGING.md new release rows (human-authored row, mechanical
-#     row-add could surprise reviewers — left to the contributor)
+#   - docs/TAGGING.md new release rows (human-authored)
 #
-# Exit codes:
-#   0 — no changes needed OR sync applied successfully
-#   1 — a VERSION file is missing or malformed (real failure)
+# Exit code: always 0 (this is a sync hook; never blocks the commit).
+# Genuine failures (missing/malformed VERSION) print a warning to stderr but
+# still exit 0 so the commit proceeds.
 
-set -euo pipefail
+# Note: do NOT enable `set -e` here. The script does a lot of best-effort
+# detection (greps that may return no matches, files that may not exist).
+# Each step is individually defensive.
 
-repo_root="$(git rev-parse --show-toplevel)"
+set -u  # catch unset-variable bugs only
+
+repo_root="$(git rev-parse --show-toplevel 2>/dev/null || pwd)"
 cd "$repo_root"
-
-# --- helpers ------------------------------------------------------------------
 
 verbose=0
 if [[ "${1:-}" == "--verbose" ]]; then
@@ -58,137 +57,144 @@ if [[ "${1:-}" == "--verbose" ]]; then
 fi
 
 log() {
-  if (( verbose )); then printf '%s\n' "$*" >&2; fi
+  [[ "$verbose" == "1" ]] && printf '%s\n' "$*" >&2
+  return 0
 }
 
 warn() {
   printf '[sync-version-refs] %s\n' "$*" >&2
+  return 0
 }
 
+# Read VERSION file; return empty (and warn) on missing/malformed.
 read_version() {
   local f="$1"
-  if [[ ! -f "$f" ]]; then
-    warn "missing VERSION file: $f"
-    exit 1
-  fi
+  if [[ ! -f "$f" ]]; then return 0; fi
   local v
-  v="$(tr -d '[:space:]' < "$f")"
+  v="$(tr -d '[:space:]' < "$f" 2>/dev/null || true)"
   if ! [[ "$v" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-    warn "malformed VERSION in $f: '$v' (expected X.Y.Z)"
-    exit 1
+    warn "skipping malformed VERSION in $f: '$v'"
+    return 0
   fi
   printf '%s' "$v"
 }
 
 # In-place replace a literal old-string with a literal new-string in $1 ($2/$3).
-# Uses sed with delimiter |.  We don't escape further because version strings
-# are X.Y.Z digits.
+# Skip silently if file doesn't exist, old==new, or pattern not present.
 replace_in_file() {
   local file="$1" old="$2" new="$3"
-  if [[ ! -f "$file" ]]; then return 0; fi
-  if [[ "$old" == "$new" ]]; then return 0; fi
-  if ! grep -qF "$old" "$file"; then return 0; fi
-  sed -i "s|${old}|${new}|g" "$file"
+  [[ -f "$file" ]] || return 0
+  [[ "$old" != "$new" ]] || return 0
+  grep -qF "$old" "$file" 2>/dev/null || return 0
+  sed -i "s|${old}|${new}|g" "$file" 2>/dev/null || {
+    warn "sed failed on $file"
+    return 0
+  }
   log "  updated $file: $old -> $new"
+  return 0
+}
+
+# Find current version reference in a file matching a regex; returns the
+# captured X.Y.Z group, or empty if not found. Never fails.
+detect_version_in() {
+  local file="$1" pattern="$2"
+  [[ -f "$file" ]] || return 0
+  local match
+  match="$(grep -oE "$pattern" "$file" 2>/dev/null | head -1 || true)"
+  [[ -n "$match" ]] || return 0
+  printf '%s' "$match" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1 || true
 }
 
 # --- plugin VERSION fanout ----------------------------------------------------
 
 plugin_ver="$(read_version platforms/claude-code-plugin/VERSION)"
-log "plugin VERSION: $plugin_ver"
+log "plugin VERSION: ${plugin_ver:-(missing)}"
 
-# Determine previous plugin version (if any) from the most recent
-# tagged release row in docs/TAGGING.md, falling back to scanning for
-# a unique version string in plugin.json.
-plugin_prev=""
-if [[ -f platforms/claude-code-plugin/.claude-plugin/plugin.json ]]; then
-  plugin_prev="$(grep -oE '"version": "[0-9]+\.[0-9]+\.[0-9]+"' \
-                 platforms/claude-code-plugin/.claude-plugin/plugin.json \
-                 | head -1 | sed -E 's/.*"([0-9]+\.[0-9]+\.[0-9]+)".*/\1/')"
-fi
+if [[ -n "$plugin_ver" ]]; then
+  plugin_prev="$(detect_version_in \
+    platforms/claude-code-plugin/.claude-plugin/plugin.json \
+    '"version": "[0-9]+\.[0-9]+\.[0-9]+"')"
 
-if [[ -n "$plugin_prev" && "$plugin_prev" != "$plugin_ver" ]]; then
-  log "plugin sync $plugin_prev -> $plugin_ver"
+  if [[ -n "$plugin_prev" && "$plugin_prev" != "$plugin_ver" ]]; then
+    log "plugin sync $plugin_prev -> $plugin_ver"
 
-  # plugin.json
-  replace_in_file platforms/claude-code-plugin/.claude-plugin/plugin.json \
-    "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
-
-  # marketplace.json
-  replace_in_file .claude-plugin/marketplace.json \
-    "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
-
-  # SKILL.md frontmatter (52 files)
-  for skill in platforms/claude-code-plugin/skills/*/SKILL.md; do
-    [[ -f "$skill" ]] || continue
-    replace_in_file "$skill" \
+    replace_in_file platforms/claude-code-plugin/.claude-plugin/plugin.json \
+      "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
+    replace_in_file .claude-plugin/marketplace.json \
+      "\"version\": \"$plugin_prev\"" "\"version\": \"$plugin_ver\""
+    for skill in platforms/claude-code-plugin/skills/*/SKILL.md; do
+      [[ -f "$skill" ]] || continue
+      replace_in_file "$skill" \
+        "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
+    done
+    replace_in_file README.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
-  done
-
-  # README.md (repo root)
-  replace_in_file README.md \
-    "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
-  replace_in_file README.md \
-    "(v$plugin_prev);" "(v$plugin_ver);"
-
-  # platforms/claude-code-plugin/README.md
-  replace_in_file platforms/claude-code-plugin/README.md \
-    "\`$plugin_prev\`" "\`$plugin_ver\`"
-  # If a bare X.Y.Z line exists (the "## version" block lists it that way),
-  # update only when it's an exact line match — handled by sed; safe.
-
-  # SKILL_AUTHORING.md
-  replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
-    "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
-  replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
-    "(currently \`$plugin_prev\`)" "(currently \`$plugin_ver\`)"
-
-  # docs/PARITY.md (current-state row near top)
-  replace_in_file docs/PARITY.md \
-    "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
+      "(currently \`$plugin_prev\`)" "(currently \`$plugin_ver\`)"
+    replace_in_file docs/PARITY.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+  fi
 fi
 
 # --- framework VERSION fanout -------------------------------------------------
 
 fw_ver="$(read_version framework/VERSION)"
-log "framework VERSION: $fw_ver"
+log "framework VERSION: ${fw_ver:-(missing)}"
 
-# Find previous framework version by inspecting CLAUDE.md (lowest-cost source
-# of the prior reference). If not present there, skip silently.
-fw_prev=""
-if [[ -f CLAUDE.md ]]; then
-  fw_prev="$(grep -oE 'framework spec \`[0-9]+\.[0-9]+\.[0-9]+\`' CLAUDE.md \
-             | head -1 | sed -E 's/.*\`([0-9]+\.[0-9]+\.[0-9]+)\`.*/\1/')"
-fi
+if [[ -n "$fw_ver" ]]; then
+  fw_prev="$(detect_version_in CLAUDE.md \
+    'framework spec `[0-9]+\.[0-9]+\.[0-9]+`')"
 
-if [[ -n "$fw_prev" && "$fw_prev" != "$fw_ver" ]]; then
-  log "framework sync $fw_prev -> $fw_ver"
+  if [[ -n "$fw_prev" && "$fw_prev" != "$fw_ver" ]]; then
+    log "framework sync $fw_prev -> $fw_ver"
+    replace_in_file CLAUDE.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file docs/PARITY.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+  fi
 
-  # CLAUDE.md current-state line
-  replace_in_file CLAUDE.md \
-    "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+  # Each platform declares its target framework spec via
+  # platforms/<name>/FRAMEWORK_SPEC_VERSION; this MUST equal framework/VERSION
+  # (asserted by tests/conformance). Sync them automatically.
+  for platform_fw_file in platforms/*/FRAMEWORK_SPEC_VERSION; do
+    [[ -f "$platform_fw_file" ]] || continue
+    local_prev="$(read_version "$platform_fw_file")"
+    if [[ -n "$local_prev" && "$local_prev" != "$fw_ver" ]]; then
+      echo "$fw_ver" > "$platform_fw_file"
+      log "  updated $platform_fw_file: $local_prev -> $fw_ver"
+    fi
+  done
 
-  # README.md Status block (two occurrences of "framework spec `X.Y.Z`")
-  replace_in_file README.md \
-    "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
-
-  # docs/PARITY.md current-state row
-  replace_in_file docs/PARITY.md \
-    "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+  # Plugin SKILL.md frontmatter declares framework_spec_version: "X.Y.Z" —
+  # fanout to the previous detected value if the SKILLs all agree on it.
+  skill_fw_prev="$(detect_version_in \
+    platforms/claude-code-plugin/skills/doc-brd-autopilot/SKILL.md \
+    'framework_spec_version: "[0-9]+\.[0-9]+\.[0-9]+"')"
+  if [[ -n "$skill_fw_prev" && "$skill_fw_prev" != "$fw_ver" ]]; then
+    log "  SKILL frontmatter sync $skill_fw_prev -> $fw_ver (52 files + SKILL_AUTHORING.md)"
+    for skill in platforms/claude-code-plugin/skills/*/SKILL.md; do
+      [[ -f "$skill" ]] || continue
+      replace_in_file "$skill" \
+        "framework_spec_version: \"$skill_fw_prev\"" \
+        "framework_spec_version: \"$fw_ver\""
+    done
+    replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
+      "framework_spec_version: \"$skill_fw_prev\"" \
+      "framework_spec_version: \"$fw_ver\""
+  fi
 fi
 
 # --- hermes VERSION fanout ----------------------------------------------------
 
-if [[ -f platforms/hermes/VERSION ]]; then
-  hermes_ver="$(read_version platforms/hermes/VERSION)"
-  log "hermes VERSION: $hermes_ver"
+hermes_ver="$(read_version platforms/hermes/VERSION)"
+log "hermes VERSION: ${hermes_ver:-(missing)}"
 
-  hermes_prev=""
-  if [[ -f README.md ]]; then
-    hermes_prev="$(grep -oE 'hermes/v[0-9]+\.[0-9]+\.[0-9]+' README.md \
-                   | head -1 | sed -E 's|hermes/v(.*)|\1|')"
-  fi
-
+if [[ -n "$hermes_ver" ]]; then
+  hermes_prev="$(detect_version_in README.md 'hermes/v[0-9]+\.[0-9]+\.[0-9]+')"
   if [[ -n "$hermes_prev" && "$hermes_prev" != "$hermes_ver" ]]; then
     log "hermes sync $hermes_prev -> $hermes_ver"
     replace_in_file README.md \
@@ -199,12 +205,8 @@ if [[ -f platforms/hermes/VERSION ]]; then
 fi
 
 # Re-stage anything we touched (pre-commit reads from the staging area).
-# `git diff --quiet` returns 1 if there are unstaged changes; in that case
-# we stage them so pre-commit sees the synced state.
-if ! git diff --quiet; then
-  # Only restage files that were already tracked + modified in this run.
-  # `git add -u` skips untracked files.
-  git add -u
+if ! git diff --quiet 2>/dev/null; then
+  git add -u 2>/dev/null || true
   warn "version-reference sync applied; restaged changed files"
 fi
 

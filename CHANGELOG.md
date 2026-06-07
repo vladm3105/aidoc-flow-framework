@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.13.0 → 0.13.1 (CHG-gated)
+
+- **DOC_GOVERNANCE_CORE.md — new Principle 8: change-of-record discipline.**
+  - Edit: `framework/governance/DOC_GOVERNANCE_CORE.md` adds an 8th
+    principle requiring every change to keep its documents-of-record
+    in sync within the same PR. No catch-up "doc-refresh" PR may
+    follow a change.
+  - The principle is engine-agnostic: both platforms must honor it.
+  - Enforcement lives outside `framework/` (in
+    `scripts/sync-version-refs.sh` + `scripts/check-docs-updated.sh`,
+    wired via `.pre-commit-config.yaml`), so the framework spec
+    states the rule but doesn't ship the implementation — consistent
+    with `framework/` being engine-agnostic.
+  - SemVer: PATCH (`0.13.0 → 0.13.1`). Editorial / additive — no
+    template, schema, or transition-table changes; no behavior
+    contract changes for either platform's existing implementation.
+
 ### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated)
 
 - **Review-saga lifecycle promoted to framework spec
