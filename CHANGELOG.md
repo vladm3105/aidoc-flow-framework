@@ -29,6 +29,72 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
     template, schema, or transition-table changes; no behavior
     contract changes for either platform's existing implementation.
 
+### Changed — Claude Code plugin (plugin-only; no spec change)
+
+Plugin-side post-spec-0.13.0 work. The entries below describe how the
+plugin implements (and iterates on the implementation of) the
+saga-lifecycle contract codified in SAGA-PARITY-001 Phase 1. See
+[`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md)
+for the per-release plugin detail.
+
+- **Plugin v0.6.0 — BRD-layer saga via cooperative enforcement
+  (SAGA-PARITY-001 Phase 2).** First plugin implementation of the
+  framework saga lifecycle; SKILL-prompt-driven cooperative
+  enforcement of state-machine transitions. Empirically failed
+  end-to-end verification (invalid transitions, non-terminal final
+  status, no actual subprocess dispatch); fixed in Amendment 1
+  (below).
+- **Plugin v0.6.1 — preemptive saga driver
+  (SAGA-PARITY-001 Phase 2 Amendment 1).** New `tools/saga_driver.py`
+  (Python stdlib-only) replaces cooperative enforcement with
+  deterministic script-driven enforcement; vendored alongside the
+  framework bundle. 7 in-flight bugs (B1-B7) fixed on the same branch
+  per the submit-only-finalized-work principle. Verified end-to-end on
+  the 4th live BRD cascade: `status: CLOSED`, score 96/100, 10/10
+  pass criteria. PRD..IPLAN saga driver propagation deferred to
+  Phase 4.
+- **Plugin v0.6.2 — 5 content sub-checks across 8 audit SKILLs
+  (REVIEW-CALIBRATION-001).** Adds A1 cell-actionability + A2
+  assumption-capture + A3 cross-section pointer-validity (auditor
+  lens), BA1 acceptance-criterion testability (business_analyst
+  lens), SE1 deferred-decision safety (security_engineer lens) —
+  uniformly applied across all 8 layer audit SKILLs. Catches 5
+  substantive content-quality issues that v0.6.1's review missed
+  (visit-count AC untestable; sync-response content unspecified;
+  qualitative budget non-actionable; assumption-shaped prose buried
+  in FRs; Med/High risks with deferred mitigation). Verified
+  before/after on the saved BRD-01: all 5 issues remediated. No
+  spec touch, no new lens, no weight changes.
+
+### Added — Project-level conventions
+
+- **"Submit only finalized work" durable convention**
+  (CLAUDE.md, [#90](https://github.com/vladm3105/aidoc-flow-framework/pull/90)) —
+  every PR (plan or impl) must already have completed its
+  review-and-fix cycles locally; post-merge amendment PRs to recently-
+  merged work are forbidden.
+- **"Minimal-and-realistic plans" durable convention**
+  (CLAUDE.md, [#93](https://github.com/vladm3105/aidoc-flow-framework/pull/93)) —
+  a plan should be sized to the problem it addresses, not "a perfect
+  plan to do everything"; speculative scope gets parked as one-line
+  backlog enumeration, not drafted.
+- **Two-cycle plan review (mandatory)**
+  (CLAUDE.md, [#86](https://github.com/vladm3105/aidoc-flow-framework/pull/86) + [#90](https://github.com/vladm3105/aidoc-flow-framework/pull/90)) —
+  every plan must complete ≥2 full review→patch→re-review cycles
+  BEFORE the plan PR opens.
+- **Plugin-first development sequencing**
+  (ROADMAP.md, [#97](https://github.com/vladm3105/aidoc-flow-framework/pull/97)) —
+  features land on the plugin first; Hermes follow-on batches per
+  `plans/HERMES-BACKLOG.md`.
+- **"Update docs of record per PR" durable convention + 2-tier hooks**
+  (CLAUDE.md / CONTRIBUTING.md / DOC_GOVERNANCE_CORE.md Principle 8 / PR #99) —
+  every PR keeps its docs-of-record in sync inline (no catch-up
+  doc-refresh PR). Enforcement: `scripts/sync-version-refs.sh`
+  (mechanical, auto-propagates VERSION changes) +
+  `scripts/check-docs-updated.sh` (semantic warning when code/spec
+  changes don't touch any doc-of-record). Both wired via
+  `.pre-commit-config.yaml`.
+
 ### Changed — Framework Spec 0.12.0 → 0.13.0 (CHG-gated)
 
 - **Review-saga lifecycle promoted to framework spec
