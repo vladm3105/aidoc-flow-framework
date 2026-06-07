@@ -135,6 +135,19 @@ if [[ -n "$plugin_ver" ]]; then
       "(currently \`$plugin_prev\`)" "(currently \`$plugin_ver\`)"
     replace_in_file docs/PARITY.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+
+    # platforms/claude-code-plugin/README.md has a `$ cat VERSION` example
+    # block with the bare version on its own line. The bare X.Y.Z is too
+    # generic to grep+sed safely (would match version refs in prose); use
+    # awk to update only the literal `^prev$` lines.
+    if [[ -f platforms/claude-code-plugin/README.md ]]; then
+      awk -v prev="$plugin_prev" -v new="$plugin_ver" \
+        '{ if ($0 == prev) print new; else print }' \
+        platforms/claude-code-plugin/README.md > platforms/claude-code-plugin/README.md.tmp \
+        && mv platforms/claude-code-plugin/README.md.tmp \
+              platforms/claude-code-plugin/README.md \
+        && log "  updated platforms/claude-code-plugin/README.md: bare \`^$plugin_prev$\` line -> $plugin_ver"
+    fi
   fi
 fi
 

@@ -14,6 +14,63 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.6.2 → v0.6.3
+
+> **SemVer classification**: PATCH bump — wires the saga driver to the
+> PRD autopilot using the same mechanical pattern Amendment 1 brought
+> to the BRD autopilot in v0.6.1. No new code paths; the driver
+> (`tools/saga_driver.py`) already supported layer `02_PRD` (its
+> `_LAYER_CREWS` knew all 8 layers from v0.6.1). First of 7
+> incremental PRs propagating the saga driver to PRD..IPLAN per
+> SAGA-PARITY-001 Phase 4.
+
+#### Why
+
+PRD's autopilot was the older v0.5.x in-session 5-step pattern — it
+generated a PRD without `saga.json`, which the v0.6.1 cascade
+dispatcher (B2 harness assertion) FAILs as a missing-journal layer.
+Wiring the saga driver to PRD aligns it with BRD's v0.6.1 behavior:
+preemptive enforcement, schema-conformant `saga.json`, valid
+transitions, no `from: PARTIAL_TIMEOUT`.
+
+#### What changed
+
+- `platforms/claude-code-plugin/skills/doc-prd-autopilot/SKILL.md` —
+  same mechanical edit as v0.6.1 for BRD:
+  - Added `### Saga-driven generation loop (review_mode: team)`
+    section as the first sub-section of `## Workflow`. Three-step
+    imperative: invoke the driver, read saga.json, update PRD-00
+    index on CLOSED.
+  - Layer code: `--layer 02_PRD`.
+  - Existing 5-step in-session pattern preserved as
+    `### Linear Pipeline (review_mode: single_pass)` for `Task`-
+    subagent-unavailable scenarios.
+- Plugin VERSION 0.6.2 → 0.6.3.
+- 52 SKILL.md frontmatter version bump (auto-applied by
+  `scripts/sync-version-refs.sh` per CLAUDE.md §"Update docs of
+  record per PR").
+- `scripts/sync-version-refs.sh` extended to handle the bare
+  `^X.Y.Z$` line in `platforms/claude-code-plugin/README.md`'s
+  `$ cat VERSION` example block (was previously a manual edit;
+  now mechanical).
+- `docs/TAGGING.md` gains the `claude-code-plugin/v0.6.3` release row.
+
+#### Scope: PRD layer only
+
+This release wires the saga driver for the PRD layer only.
+`doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` still use the v0.5.x
+in-session pattern. Each will get the same mechanical edit in a
+follow-up incremental PR after PRD verification confirms the pattern
+works for PRD-shape content + PRD's specific lens crew
+(`product_owner: 30, architect: 25, tech_lead: 20, chaos_engineer:
+8, security_engineer: 7, auditor: 10`).
+
+#### Verification
+
+- Pre-commit + conformance suite green.
+- Live PRD cascade against the merged BRD-01 — pending (next step
+  after this release lands).
+
 ### Changed — Plugin v0.6.1 → v0.6.2
 
 > **SemVer classification**: PATCH bump (0.6.1 → 0.6.2) — content
