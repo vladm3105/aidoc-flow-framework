@@ -53,6 +53,32 @@ message, recommendation}]`, `lens_score`) plus the per-layer crew weights from
    **quorum** mark the result **low-confidence → human review**, never a silent
    pass.
 
+### Playbook check-citation enforcement (LAYER-PLAYBOOKS-001)
+
+After loading each lens slot's `findings[]`, run them through the
+finding-filter helper at `${CLAUDE_PLUGIN_ROOT}/tools/finding_filter.py`.
+Two-step filter:
+
+1. **Citation gate.** Each finding must have a `check` field that is
+   either (a) one of the playbook's `C1..Cn` ids for this lens, or
+   (b) prefixed `beyond-checklist:`. Findings without a check or with
+   a fabricated id are **discarded**.
+2. **Coverage emission.** Group surviving findings by `check` value;
+   emit `verdict.playbook_coverage` as `{<check_id>: <count>, ...,
+   beyond_checklist: <n>}`.
+
+The set of valid `Cn` ids for a (layer, lens) is derived from the
+playbook itself — parse `## Required evidence checks` headings and
+extract identifiers matching `^\*\*C\d+` (the canonical check-row
+shape; see `${CLAUDE_PLUGIN_ROOT}/../../framework/governance/REVIEW_TEAM.md`
+§Playbooks §"Required content sections").
+
+Discarded findings are reported in `report.md` under a `## Discarded
+findings` subsection: count by reason (`no_check_citation` /
+`unknown_check`), three example finding ids per reason. The
+synthesizer's narrative MUST surface the discard count if non-zero —
+this is a quality signal for the calibration loop.
+
 ## Narrative — advisory (non-gating)
 
 Write a short executive summary over the reduced findings. It **explains**; it
@@ -144,6 +170,22 @@ Field semantics:
     returns clean.
   - Empty / missing → orphan finding; fixer falls back to the layer's
     author lens (per `REVIEW_CREWS.yaml`).
+- `playbook_coverage` — object, optional but emitted when playbook
+  injection is active for this layer. Count of surviving findings per
+  playbook check id, plus a `beyond_checklist` aggregate. Example:
+
+  ```json
+  {
+    "C1": 2,
+    "C2": 1,
+    "beyond_checklist": 1
+  }
+  ```
+
+  Drift signal: if `beyond_checklist / total > 0.30`, the playbook
+  may need revision (see
+  `${CLAUDE_PLUGIN_ROOT}/../../framework/governance/REVIEW_TEAM.md`
+  §Playbooks §"Coverage emission").
 
 This JSON is the contract. Every required key must be present; every
 value must parse as the declared type. The audit skill's stdout
@@ -161,6 +203,22 @@ the deterministic gate decision (mirroring
 `verdict.json:combined_status`). The unified report may persist into
 the artifact's doc folder per audit convention; the per-persona
 blackboard slots are transient and git-ignored.
+
+**Discarded findings (when any).** A subsection listing findings the
+synthesizer rejected per the `check` citation rule (Reduce §Playbook
+check-citation enforcement). Format:
+
+> ### Discarded findings
+>
+> 3 findings discarded (synthesizer schema enforcement):
+>
+> - no_check_citation (2): `finding-id-1`, `finding-id-2`
+> - unknown_check (1): `finding-id-3` (cited `check: "C99"` not in playbook)
+>
+> *These findings did not cite a playbook check (`C1..Cn` or
+> `beyond-checklist:<tag>`) and are not part of the verdict.*
+
+If 0 findings were discarded, omit the subsection entirely.
 
 **Both files agree.** If they ever diverge, the JSON wins (it is what
 machine consumers parse); a human reader notices the prose drift in
