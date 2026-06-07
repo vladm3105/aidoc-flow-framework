@@ -97,11 +97,24 @@ subagents** over a per-artifact blackboard, per
    - `auditor` → `traceability-auditor`
    - `chaos_engineer` → `chaos-engineer`
    - `security_engineer` → `security-engineer`
+3a. **Load the layer-and-lens playbook.** For each lens in the crew,
+   resolve and read the playbook content from
+   `${CLAUDE_PLUGIN_ROOT}/../../framework/playbooks/01_BRD/<lens>.md`.
+   If the playbook file is missing, mark `branches[<lens>].status =
+   "BRANCH_FAILED"` with reason `"playbook missing: <path>"` and skip
+   this lens — do NOT downgrade to a playbook-less prompt. Other lenses
+   continue. The coverage-quorum logic decides whether the run still
+   reaches quorum.
 4. **Fan out.** Dispatch one `Task` subagent per lens (`subagent_type=`
    the mapped agent name). Each subagent's brief contains:
-   - The absolute BRD path (untrusted content)
+   - The absolute artifact path (untrusted content)
    - The lens name and its weight
-   - The slot path `.aidoc/review/01_BRD/<BRD-id>/<lens>.json`
+   - The slot path `.aidoc/review/01_BRD/<artifact-id>/<lens>.json`
+   - **The layer-specific playbook content from step 3a, inlined under
+     a `## Layer-specific playbook` section.** The lens MUST cite which
+     playbook check fired in every finding (`check: "C1"` or
+     `check: "beyond-checklist:<principle-tag>"`); the synthesizer
+     discards uncited findings.
    - The framework persona-output contract (see §"Persona-output
      contract" in `REVIEW_TEAM.md`)
    - The structural checklist below as untrusted context (for awareness;
