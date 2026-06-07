@@ -87,6 +87,25 @@ The *project-level* version below tracks migration milestones only.
   user-authorized local-clone actions (see `plans/MIGRATION_TODO.md`
   P5-T6).
 
+## Development sequencing — plugin-first
+
+**Policy (2026-06-06):** post-cutover development sequences
+**plugin-first, Hermes-second.** Each feature is developed and verified
+on the Claude Code plugin first (where the acceptance suite exercises
+it end-to-end against the url-shortener seed); the Hermes equivalent
+batches at a natural completion point — currently after Phase 4
+propagates the saga driver to PRD..IPLAN.
+
+Deferred Hermes work is tracked in
+[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md) — the single
+source of truth for "what Hermes still needs to catch up on." Current
+items: H-1 SAGA-PARITY-001 Phase 3 (G-R1 invariant), H-2
+REVIEW-CALIBRATION-001 lens sub-checks. New items get appended there
+when plugin features land.
+
+Plugin-first is a sequencing choice, not a permanent asymmetry. Both
+platforms still ship against every framework-spec change (GATE-SPEC).
+
 ## Post-Migration — Tracked TODOs
 
 Change management (the gated CHG process) is **deliberately deferred** during
