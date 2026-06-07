@@ -11,7 +11,7 @@ metadata:
     upstream_artifacts: [SPEC]
     downstream_artifacts: []
     version: "0.6.5"
-    framework_spec_version: "0.13.1"
+    framework_spec_version: "0.14.0"
     last_updated: "2026-05-23"
 ---
 
