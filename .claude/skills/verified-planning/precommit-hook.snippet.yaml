@@ -1,0 +1,11 @@
+# Paste this entry under `repos:` in a repo's .pre-commit-config.yaml.
+  - repo: local
+    hooks:
+      - id: check-plan
+        name: verified-planning gate (claim ledger + review log)
+        entry: python .claude/skills/verified-planning/check_plan.py
+        language: system
+        files: (^|/)PLAN-[^/]*\.md$
+        # the template + the skill's own snippet carry placeholder rows
+        exclude: (^|/)PLAN-TEMPLATE(\.snippet)?\.md$
+        pass_filenames: true

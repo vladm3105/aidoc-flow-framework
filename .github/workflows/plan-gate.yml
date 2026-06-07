@@ -1,0 +1,23 @@
+name: plan-gate
+on:
+  pull_request:
+    paths: ["**/PLAN-*.md", "PLAN-*.md"]   # nested AND top-level
+jobs:
+  check-plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Gate changed PLAN files
+        run: |
+          set -euo pipefail
+          base="${{ github.event.pull_request.base.sha }}"
+          # no pathspec on the diff (a '**/' pathspec would miss top-level files);
+          # filter with the same regex as the pre-commit hook, minus the template.
+          mapfile -t plans < <(git diff --name-only "$base"...HEAD \
+            | grep -E '(^|/)PLAN-[^/]*\.md$' | grep -vE '(^|/)PLAN-TEMPLATE(\.snippet)?\.md$' || true)
+          if [ "${#plans[@]}" -eq 0 ]; then echo "no gated PLAN files changed"; exit 0; fi
+          printf '%s\n' "${plans[@]}"
+          python .claude/skills/verified-planning/check_plan.py "${plans[@]}"

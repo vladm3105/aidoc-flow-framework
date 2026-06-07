@@ -127,3 +127,13 @@ repos:
         pass_filenames: false
         always_run: true
         verbose: true   # so the WARN block is visible in pre-commit's output
+
+  - repo: local
+    hooks:
+      - id: check-plan
+        name: verified-planning gate (claim ledger + review log)
+        entry: python .claude/skills/verified-planning/check_plan.py
+        language: system
+        files: (^|/)PLAN-[^/]*\.md$
+        exclude: (^|/)PLAN-TEMPLATE(\.snippet)?\.md$
+        pass_filenames: true
