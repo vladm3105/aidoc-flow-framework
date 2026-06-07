@@ -14,6 +14,59 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — Plugin v0.6.3 → v0.6.4
+
+> **SemVer classification**: PATCH bump — wires team-mode dispatch into the
+> PRD layer's audit + fixer SKILLs (PRD-RT-001), grafting the same
+> structure BRD got under BRD-RT-001 with PRD-specific lens crew
+> (`product_owner / architect / tech_lead / chaos_engineer /
+> security_engineer / auditor`). Second of the per-layer Phase 4 PRs.
+
+#### Why
+
+The v0.6.3 PRD increment wired the saga driver to `doc-prd-autopilot`
+but the live verification surfaced that `doc-prd-audit` (and
+`doc-prd-fixer`) had never received the team-mode fan-out wiring
+that BRD's audit/fixer got under BRD-RT-001. The audit ran in legacy
+single-pass mode → no `verdict.json`, no lens slots → driver hit the
+B7-followon PARTIAL_TIMEOUT escape. This release closes that gap.
+
+#### What changed
+
+- **`doc-prd-audit/SKILL.md`** — added three new top-level sections
+  (`## Review Mode` + `## Saga interaction` + `## Break-circuit
+  policy`) grafted from `doc-brd-audit/SKILL.md` with PRD-specific
+  substitutions:
+  - Blackboard path: `.aidoc/review/02_PRD/<PRD-id>/`
+  - PRD crew weights: `product_owner: 30, architect: 25, tech_lead:
+    20, chaos_engineer: 8, security_engineer: 7, auditor: 10`
+  - Lens → agent map: `product_owner → requirements-analyst`,
+    `tech_lead → solutions-architect`, others identical to BRD.
+  - Rationale text: "chaos / security split 8 / 7 — PRD carries
+    both reliability and security NFRs; neither dominates" (per
+    CHAOS-SEC-SPLIT-001).
+- **`doc-prd-fixer/SKILL.md`** — added `## Remediate Mode` +
+  `## Saga interaction` + `## Break-circuit policy` grafted from
+  `doc-brd-fixer/SKILL.md` with the same PRD-specific
+  substitutions.
+- Plugin VERSION 0.6.3 → 0.6.4 (mechanical sync hook propagates).
+
+#### Scope: PRD audit + fixer only
+
+EARS..IPLAN audit + fixer SKILLs still lack team-mode wiring (will
+get it via EARS-RT-001, BDD-RT-001, ADR-RT-001, SPEC-RT-001,
+TDD-RT-001, IPLAN-RT-001 in subsequent incremental PRs, after each
+layer's autopilot has been wired to the saga driver via Phase 4 per
+the verify-one-layer-before-propagating rule).
+
+#### Verification
+
+- Pre-commit + conformance suite green.
+- Live PRD cascade against the merged BRD-01 — expected to close
+  cleanly now (saga driver invoked, audit fans out 6 lens subagents,
+  verdict.json + lens slots materialize, fixer dispatched if needed,
+  status: CLOSED). Pending.
+
 ### Changed — Plugin v0.6.2 → v0.6.3
 
 > **SemVer classification**: PATCH bump — wires the saga driver to the
