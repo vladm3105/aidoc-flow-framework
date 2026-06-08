@@ -129,6 +129,59 @@ are chosen, so future rebalances have a stable framework.
 2. **Narrative (advisory).** An executive-summary chairperson pass over the reduced
    findings. It explains; it does not decide.
 
+## Playbooks
+
+Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; ~45 files total across the 8 layers).
+
+### Why
+
+The lens names in `REVIEW_CREWS.yaml` are layer-specialized by intent (e.g., `business_analyst` at BRD vs `product_owner` at PRD vs `requirements_specialist` at EARS are three distinct reasoning modes). Without a per-layer failure-mode catalog, a generic lens agent reasons about all layers identically and misses layer-specific gaps. Playbooks supply the catalog without forking the agent.
+
+### File location
+
+```
+framework/playbooks/
+  01_BRD/architect.md
+  01_BRD/business_analyst.md
+  ...
+  02_PRD/product_owner.md
+  02_PRD/architect.md
+  02_PRD/tech_lead.md
+  ...
+```
+
+Layer directory is `<NN>_<LAYER>` matching the `framework/layers/` convention. Lens filename matches the persona name in `REVIEW_CREWS.yaml` (snake_case, `.md` suffix).
+
+### Required frontmatter
+
+```yaml
+---
+layer: 02_PRD                          # matches directory name exactly
+lens: chaos_engineer                   # matches filename stem + REVIEW_CREWS.yaml persona name
+weight: 8                              # must match REVIEW_CREWS.yaml weight for this (layer, lens)
+agent: chaos-engineer                  # plugin agent name; lens→agent table: platforms/claude-code-plugin/skills/review-team/SKILL.md §"The crew"
+framework_spec_version: "0.14.0"       # must match framework/VERSION; auto-propagated by sync hook
+---
+```
+
+### Required content sections
+
+1. **Reasoning frame** — 2-3 paragraphs covering three sub-requirements:
+   (a) what this lens uniquely sees at this layer altitude;
+   (b) how it differs from the same lens at adjacent layers;
+   (c) what this lens does NOT do (covered by other lenses in the same crew).
+2. **Required evidence checks** — finite list `C1`..`Cn` of deterministic checks. Each check states what to look for and the priority of a finding if the check fires.
+3. **Beyond-checklist** — escape hatch for layer-specific failure modes the checklist does not cover. Finding must cite `beyond-checklist:<principle-tag>` and reference the reasoning frame.
+4. **Scoring** — 0-100 rubric tied to checklist coverage and beyond-checklist density.
+
+### Finding citation rule (binding contract)
+
+Every finding produced by a lens MUST cite either a checklist check (`check: "C1"`) or a beyond-checklist principle (`check: "beyond-checklist:<tag>"`). The synthesizer **discards** findings without a citation or with a fabricated check id, logging the discard in `report.md`. This is the deterministic floor of the playbook contract.
+
+### Coverage emission
+
+The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
+
 ## Resilience & security
 
 - **Partial crews.** If a persona does not return, the reduce proceeds on the crew
@@ -157,5 +210,6 @@ are chosen, so future rebalances have a stable framework.
 
 - `REVIEW_REMEDIATION_FLOW.md` — the loop and trigger points this team serves.
 - `REVIEW_CREWS.yaml` — the machine-readable per-layer crews + weights.
+- `framework/playbooks/<NN>_<LAYER>/<lens>.md` — per-layer per-lens reasoning frames + evidence checklists (see §Playbooks above).
 - `SECURITY_REVIEW.md` — untrusted-input handling for agent-authored artifacts.
 - `ADAPTATION.md` / `ADAPTATION_SURFACE.yaml` — the `review_mode` knob.

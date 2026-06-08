@@ -1071,3 +1071,24 @@ Verify the tag with `git ls-remote --tags origin`.
   runtime (`CANONICAL_SCAFFOLD_MAPPINGS`) to consume `framework/layers/`
   instead of the dropped `platforms/hermes/templates/`. Symmetric with
   P2-T8's skill-package rewire — could be merged.
+
+## 2026-06-07 — LAYER-PLAYBOOKS-001 (BRD + PRD scope) shipped
+
+Framework spec bumped to 0.14.0 (new artifact class: per-layer per-lens
+playbooks). 11 playbook files across BRD (5 lenses) + PRD (6 lenses)
+calibrate review-team findings; plugin v0.7.0 wires playbook injection
+into doc-brd-audit + doc-prd-audit SKILLs.
+
+Live BRD acceptance: PASS @ 93/100 with 5/7 (71%) findings citing
+playbook checks. Chaos_engineer lens (lowest score 84) surfaced 3 new
+gaps: capacity-exhaustion responses (C5), load-envelope completeness
+(C2). Beyond-checklist captured 2 layer-specific concerns
+(A2-assumption-capture, enumeration-abuse-case).
+
+PR scope intentionally narrowed mid-execution from all 8 layers to
+BRD + PRD only because 6 audit SKILLs (EARS/BDD/ADR/SPEC/TDD/IPLAN)
+lack team-mode wiring. Each layer's team-mode + playbook injection
+will land together in per-layer follow-up PRs.
+
+Next: EARS-RT-001 (team-mode + 5 EARS playbooks), then BDD-RT-001,
+ADR-RT-001, SPEC-RT-001, TDD-RT-001, IPLAN-RT-001 in sequence.

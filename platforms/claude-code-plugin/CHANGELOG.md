@@ -14,6 +14,33 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.7.0] — 2026-06-07
+
+### Added
+
+- Playbook injection in doc-brd-audit + doc-prd-audit SKILLs. Each
+  audit SKILL's team-mode flow now loads
+  `framework/playbooks/<NN>_<LAYER>/<lens>.md` and inlines the content
+  into each lens subagent's Task brief.
+- `tools/playbook_loader.py` — stdlib helper for path resolution +
+  missing-file handling.
+- `tools/finding_filter.py` — synthesizer's check-citation filter +
+  coverage-emission helper.
+- `agents/synthesizer.md` — schema-enforcement (`findings[].check`
+  required; discards uncited) + `verdict.playbook_coverage` emission
+  - `### Discarded findings` subsection in report.md.
+
+### Changed — Plugin 0.7.0
+
+- `FRAMEWORK_SPEC_VERSION` 0.13.1 → 0.14.0 (consumes new framework
+  spec containing §Playbooks contract).
+
+### Deferred
+
+- 6 audit SKILLs (EARS/BDD/ADR/SPEC/TDD/IPLAN) lack team-mode
+  wiring; playbook injection for those layers ships per-layer in
+  follow-up PRs.
+
 ### Changed — Plugin v0.6.4 → v0.6.5
 
 > **SemVer classification**: PATCH bump — harness change only;

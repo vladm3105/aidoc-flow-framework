@@ -1,0 +1,89 @@
+{
+  "combined_status": "PASS",
+  "content_score": 93,
+  "structural_status": "PASS",
+  "coverage": {
+    "expected": 5,
+    "ran": 5,
+    "quorum_met": true
+  },
+  "blocking_findings_count": 0,
+  "lens_scores": {
+    "architect": 90,
+    "business_analyst": 100,
+    "auditor": 92,
+    "chaos_engineer": 84,
+    "security_engineer": 97
+  },
+  "findings": [
+    {
+      "id": "MERGED-P2-001",
+      "priority": "P2",
+      "check": "C4",
+      "location": "Section 4 c4-l1 context diagram + ADR topic BRD.01.08.ff9a vs Section 11 BRD.01.11.341c / Section 12 BRD.01.12.de0a",
+      "message": "The capability boundary contradicts itself on external dependencies. The Section 4 system-context (c4-l1) diagram shows no external system, and ADR topic BRD.01.08.ff9a asserts the service 'is standalone this cycle and integrates with no external systems' (N/A). But the Abuse-Control Launch Gate (BRD.01.11.341c) makes 'destination screening against a reputation source' a go-live precondition and explicitly calls it 'an external upstream dependency' with a fail-closed stance that alters the shorten write path's failure behaviour. An external dependency that gates go-live and changes a core capability's degraded-mode behaviour is a capability-boundary fact, not a downstream-only detail; the context diagram and the Integration ADR topic must reflect it.",
+      "recommendation": "Reconcile the boundary: either (a) add the external reputation/screening source as an external system to the Section 4 context diagram and reclassify BRD.01.08.ff9a from N/A to Pending (Integration topic owning the reputation-source dependency), or (b) if screening is deferred out of this cycle, drop it as a go-live precondition in BRD.01.11.341c so the standalone boundary holds. Keep BRD.01.12.de0a's mitigation aligned with whichever boundary is chosen.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "MERGED-P2-002",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§9 Quality Expectations (load envelope) / BRD.01.07.6c3f",
+      "message": "The load envelope is redirect-centric only (100 redirects/sec, 20 concurrent visitors/link, 10^6 corpus). The shorten/write path carries no capacity bound: no submissions-per-second ceiling and no max link-creation rate are named or deferred. This matters because BRD.01.11.341c couples each shorten to a synchronous external reputation-source call, so the write path's load profile drives the dependency's sizing and fail-closed-rejection rate — yet that profile is unconstrained, leaving the write path's resilience posture undefined at business altitude.",
+      "recommendation": "Declare a business-altitude write-path capacity bound (e.g. peak shorten requests/sec and/or max new links/day) alongside the existing redirect envelope in §9, or explicitly defer it to a named ADR slot. Tie the bound to the reputation-source dependency so its fail-closed behaviour can be sized.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "MERGED-P2-003",
+      "priority": "P2",
+      "check": "beyond-checklist:A2-assumption-capture",
+      "location": "Section 7 (Functional Requirements), lines 168-169",
+      "message": "The assumption that the authorization mechanism for reporting access is 'deferred to PRD-01' is stated in prose within the Functional Requirements section but lacks a corresponding entry in the Constraints & Assumptions table (Section 10). This violates the assumption-capture discipline: assumption-shaped statements that downstream relies on must be captured in the table with a BRD ID.",
+      "recommendation": "Add a new row to Section 10 (Constraints & Assumptions) capturing this assumption: 'BRD.01.10.XXXX — Authorization Model (assumption): The concrete authorization mechanism for Service-Owner access to reporting is deferred to PRD-01; this BRD fixes only the access class (internal/privileged, Service-Owner role) and the absence of authentication on anonymous public paths.'",
+      "personas": ["auditor"]
+    },
+    {
+      "id": "MERGED-P3-001",
+      "priority": "P3",
+      "check": "C4",
+      "location": "Section 15 (Glossary)",
+      "message": "Term 'adoption' is used throughout the document (lines 94, 106, 109, 329) but is not defined in the Glossary. This is a project-specific metric term that should be included for clarity.",
+      "recommendation": "Add 'adoption' to the Glossary section with a definition such as 'The count of unique short links created and the count of visits to those links, used to measure service uptake and use.'",
+      "personas": ["auditor"]
+    },
+    {
+      "id": "MERGED-P3-002",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§9 Quality Expectations (10^6 corpus bound) / §12",
+      "message": "§9 names a target link corpus on the order of 10^6 links, but no capacity-exhaustion response is declared for storage-corpus saturation. The §12 BRD.01.12.8b9b response addresses short-code-space depletion, which is distinct from running out of link-record storage capacity. When the corpus bound is approached the business behaviour (alert ops / reject new creates / degrade) is unstated.",
+      "recommendation": "Add a corpus-saturation response to §9 or §12 mirroring the short-code-exhaustion pattern (utilization alert threshold, then reject-new-creates-with-clear-error while existing links stay resolvable), or explicitly state the corpus figure is a sizing target with response deferred to a named ADR slot.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "MERGED-P3-003",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§9 Quality Expectations (degraded-mode stance) / BRD.01.04.f439",
+      "message": "§9 declares throughput beyond the 100 redirects/sec envelope 'out of scope' but names no overload response when legitimate traffic exceeds it (a benign client retry storm or a viral link). With no shed/reject/degrade stance, behaviour above the envelope is silently undefined against the ≥99.9% availability and p95<50ms commitments — a cascade or latency-blowout under accidental legitimate load has no declared business stance.",
+      "recommendation": "Add a business-altitude over-envelope stance to §9 (e.g. when redirect load exceeds the envelope the business accepts shedding/queuing excess with the latency target suspended for the overage while existing-link resolvability is preserved), or explicitly defer the overload-response decision to the Redirect Performance ADR topic (BRD.01.08.66e2).",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "MERGED-P3-004",
+      "priority": "P3",
+      "check": "beyond-checklist:enumeration-abuse-case",
+      "location": "BRD.01.07.52c7 / §12",
+      "message": "The Resolve-Unknown-Short-Code path is reachable anonymously but no abuse case names short-code enumeration/scanning, where an adversary probes the namespace to harvest valid mappings or measure the corpus. Redirect Abuse and Metric Poisoning are named, but namespace-probing of the anonymous resolution surface is an unnamed capability-altitude threat against a may-contain-PII data store (BRD.01.10.c2e1).",
+      "recommendation": "Add a capability-altitude abuse case in §12 for enumeration/scanning of the short-code namespace (mapping harvest / corpus inference) so PRD/ADR can scope countermeasure selection (e.g. non-sequential code generation, anomaly detection). Threat identification only at BRD; control choice belongs downstream.",
+      "personas": ["security_engineer"]
+    }
+  ],
+  "playbook_coverage": {
+    "C2": 1,
+    "C4": 2,
+    "C5": 2,
+    "beyond_checklist": 2
+  }
+}

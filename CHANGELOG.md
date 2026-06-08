@@ -12,6 +12,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.14.0 + Plugin 0.7.0 (LAYER-PLAYBOOKS-001)
+
+- **Framework Spec 0.13.1 → 0.14.0 — Layer Playbooks artifact class.**
+  Per-layer per-lens playbooks at `framework/playbooks/<NN>_<LAYER>/<lens>.md`
+  calibrate the review-team's content-quality findings against each
+  layer's specific failure modes. Each playbook has a hybrid content
+  shape: principle frame + deterministic checklist (Cn checks) +
+  beyond-checklist escape hatch. Synthesizer enforces a new required
+  `findings[].check` field; uncited findings are discarded. Verdict
+  schema gains `playbook_coverage`. See REVIEW_TEAM.md §Playbooks
+  and `plans/LAYER-PLAYBOOKS-001-{DESIGN,PLAN}.md`.
+
+- **Claude Code plugin 0.6.5 → 0.7.0 — Playbook injection (BRD + PRD).**
+  doc-brd-audit + doc-prd-audit SKILLs load the (layer, lens) playbook
+  before fan-out and inline its content into the per-lens Task brief.
+  Synthesizer agent + new `finding_filter.py` + `playbook_loader.py`
+  helpers (stdlib-only) deliver the schema-enforcement + coverage
+  emission. Live BRD acceptance: PASS @ 93/100 with 71% findings
+  citing playbook checks.
+
+### Deferred
+
+- 6 audit SKILLs (EARS/BDD/ADR/SPEC/TDD/IPLAN) lack team-mode wiring;
+  playbook injection for those layers ships as part of per-layer
+  follow-up PRs (EARS-RT-001 through IPLAN-RT-001). Trackers: see
+  the project's task list.
+
 ### Changed — Framework Spec 0.13.0 → 0.13.1 (CHG-gated)
 
 - **DOC_GOVERNANCE_CORE.md — new Principle 8: change-of-record discipline.**
