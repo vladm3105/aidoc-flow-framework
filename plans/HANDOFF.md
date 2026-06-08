@@ -1092,3 +1092,34 @@ will land together in per-layer follow-up PRs.
 
 Next: EARS-RT-001 (team-mode + 5 EARS playbooks), then BDD-RT-001,
 ADR-RT-001, SPEC-RT-001, TDD-RT-001, IPLAN-RT-001 in sequence.
+
+## 2026-06-08 — EARS-RT-001 shipped
+
+Claude Code plugin 0.7.0 → 0.8.0 wires team-mode + playbook injection
+into doc-ears-audit + doc-ears-fixer SKILLs. 5 EARS playbook files
+landed (requirements_specialist 35, tech_lead 25, qa_lead 20,
+chaos_engineer 12, security_engineer 8 — chaos-heavy 12:8 split per
+REVIEW_CREWS.yaml).
+
+Live EARS cascade ran 5 iterations. Two hand-fixes applied between
+iterations to address P1 findings the playbook calibration surfaced:
+(1) abuse-case event-driven + unwanted-pattern rule pairs (4 rules)
+plus a metrics audit-log rule to satisfy security_engineer C1
+(SE-001 resolved); (2) element-ID format normalization (5391a/5391b
+→ 539a/539b) to satisfy the structural floor (STRUCT-001 resolved).
+
+iter-5 terminal: score 84/100, blocking=0, security_engineer perfect
+100/100, all P1s resolved. PARTIAL_TIMEOUT terminal at MAX_ITERATIONS;
+the harness `timeout 3600s` (NOT internal SOFT_DEADLINE) caused the
+initial iter-2 fixer to SIGKILL mid-execution; resumed manually via
+saga.json edit + direct driver invocation; iter-3..5 ran via the
+resumed driver. This validates the resume mechanism in two scenarios:
+PARTIAL_TIMEOUT (iter-3 → iter-4) and BRANCH_COMPLETED (iter-2-fixer
+SIGKILL recovery → iter-3 re-review).
+
+playbook_coverage emitted for the first time in iter-4 + iter-5
+verdicts: `{C1:2, C2:4, C3:1, C4:2, C5:6, beyond_checklist:1}`.
+
+Next: BDD-RT-001 (next per-layer rollout). 4 more layer-RT-001 PRs
+(ADR/SPEC/TDD/IPLAN) follow. Last one (likely IPLAN-RT-001) removes
+the `@unittest.skip` from test_playbook_coverage.py per #258.

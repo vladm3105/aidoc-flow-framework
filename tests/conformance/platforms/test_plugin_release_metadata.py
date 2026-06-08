@@ -133,9 +133,11 @@ class PluginReleaseMetadata(unittest.TestCase):
 
     def test_framework_spec_declaration_matches_framework_version(self):
         # The plugin's FRAMEWORK_SPEC_VERSION must match the framework spec.
-        # In v0.6.x of the plugin (LAYER-PLAYBOOKS-001 Phase A), that is 0.14.0.
+        # Bumped 0.14.0 → 0.14.1 in EARS-RT-001 when 5 EARS playbooks landed
+        # under framework/playbooks/03_EARS/ (PATCH: new content within
+        # existing §Playbooks artifact class from 0.14.0).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.14.0")
+        self.assertEqual(_plugin_framework_spec_version(), "0.14.1")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}
