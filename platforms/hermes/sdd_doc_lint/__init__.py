@@ -768,10 +768,24 @@ def _check_required_template_sections(
     artifact: str | None,
     registry: Path | None,
 ) -> list[Finding]:
-    """STRUCT01: every required <TYPE>-TEMPLATE.yaml section must appear as a ## heading."""
+    """STRUCT01: every required <TYPE>-TEMPLATE.yaml section must appear as a ## heading.
+
+    Frontmatter `artifact_type` overrides the path-inferred artifact when the
+    document declares an `<X>-INDEX` variant (e.g. `BRD-INDEX` for
+    `BRD-00_index.md`). Index docs have their own template
+    (`<X>-NN_index.TEMPLATE.md`) and intentionally diverge from the standard
+    `<X>-TEMPLATE.yaml` section set; applying the standard template's
+    required-sections check to an index would produce spurious STRUCT01
+    findings.
+    """
     findings: list[Finding] = []
     if not artifact:
         return findings
+    fm = _extract_frontmatter(text)
+    if fm:
+        declared = str(fm.get("artifact_type") or "").strip()
+        if declared.endswith("-INDEX"):
+            return findings
     targets = _load_section_targets(artifact, registry)
     if not targets:
         return findings
