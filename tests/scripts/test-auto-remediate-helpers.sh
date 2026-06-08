@@ -137,5 +137,121 @@ echo ""
 echo "=== extract_artifact_id ==="
 test_extract_artifact_id
 
+# ─── write_synthetic_verdict / write_synthetic_audit_report (inline) ─────────
+
+write_synthetic_verdict() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/review/$layer_dir/$art_id/verdict.json"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$out" "$message" "$art_id" "$layer_dir" <<'PY'
+import json, sys, datetime
+out, message, art_id, layer_dir = sys.argv[1:5]
+ts = datetime.datetime.utcnow().isoformat() + "Z"
+verdict = {
+    "combined_status": "FAIL",
+    "content_score": 0,
+    "structural_status": "FAIL",
+    "coverage": {"expected": 1, "ran": 1, "quorum_met": True},
+    "blocking_findings_count": 1,
+    "lens_scores": {},
+    "findings": [{
+        "id": "AUTO-REMEDIATE-STY03-001",
+        "code": "STY03",
+        "priority": "P1",
+        "location": f"{art_id} — document body",
+        "message": message,
+        "recommendation": "Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.",
+        "personas": [],
+    }],
+    "playbook_coverage": {},
+    "generated_at": ts,
+    "synthetic": True,
+    "synthetic_origin": "AUTO-REMEDIATE-001",
+}
+with open(out, "w") as f:
+    json.dump(verdict, f, indent=2)
+PY
+}
+
+write_synthetic_audit_report() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/audit/$layer_dir-audit.md"
+  mkdir -p "$(dirname "$out")"
+  cat > "$out" <<EOF
+# Audit report — $art_id (synthetic / AUTO-REMEDIATE-001)
+
+Combined status: FAIL
+Content score: 0/100
+Structural status: FAIL
+Coverage quorum: met
+Synthetic: true (origin AUTO-REMEDIATE-001 — cascade bootstrap auto-remediation)
+
+## Findings
+
+| ID | Priority | Code | Location | Message |
+|---|---|---|---|---|
+| AUTO-REMEDIATE-STY03-001 | P1 | STY03 | $art_id — document body | $message |
+
+## Recommendation
+
+Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.
+EOF
+}
+
+# ─── write_synthetic_verdict tests ───────────────────────────────────────────
+
+test_write_synthetic_verdict() {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  trap 'rm -rf "$tmpdir"' RETURN
+  local example_root="$tmpdir/example"
+  mkdir -p "$example_root/.aidoc/review/03_EARS/EARS-01"
+
+  write_synthetic_verdict "$example_root" "03_EARS" "EARS-01" \
+    "Document body is 2457 words; reduce to <=2250."
+
+  local verdict_file="$example_root/.aidoc/review/03_EARS/EARS-01/verdict.json"
+  [[ -f "$verdict_file" ]] || { echo "FAIL: verdict.json not written" >&2; exit 1; }
+  python3 -c "
+import json
+v = json.load(open('$verdict_file'))
+assert v['combined_status'] == 'FAIL', f'expected FAIL got {v[\"combined_status\"]}'
+assert v['blocking_findings_count'] == 1, f'expected 1 blocking got {v[\"blocking_findings_count\"]}'
+assert len(v['findings']) == 1, f'expected 1 finding got {len(v[\"findings\"])}'
+f = v['findings'][0]
+assert f['priority'] == 'P1', f'expected P1 got {f[\"priority\"]}'
+assert f['code'] == 'STY03', f'expected STY03 got {f[\"code\"]}'
+assert '2457 words' in f['message'], f'message missing word count: {f[\"message\"]}'
+print('  PASS: synthetic verdict.json shape valid')
+"
+}
+
+echo ""
+echo "=== write_synthetic_verdict ==="
+test_write_synthetic_verdict
+
+# ─── write_synthetic_audit_report tests ──────────────────────────────────────
+
+test_write_synthetic_audit_report() {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  trap 'rm -rf "$tmpdir"' RETURN
+  local example_root="$tmpdir/example"
+  mkdir -p "$example_root/.aidoc/audit"
+
+  write_synthetic_audit_report "$example_root" "03_EARS" "EARS-01" \
+    "Document body is 2457 words; reduce to <=2250."
+
+  local report_file="$example_root/.aidoc/audit/03_EARS-audit.md"
+  [[ -f "$report_file" ]] || { echo "FAIL: audit report not written" >&2; exit 1; }
+  grep -q 'STY03' "$report_file" || { echo "FAIL: report missing STY03" >&2; exit 1; }
+  grep -q '2457 words' "$report_file" || { echo "FAIL: report missing word count" >&2; exit 1; }
+  echo "  PASS: synthetic audit report content valid"
+}
+
+echo ""
+echo "=== write_synthetic_audit_report ==="
+test_write_synthetic_audit_report
+
 echo ""
 echo "All tests passed."

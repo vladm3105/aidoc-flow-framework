@@ -281,6 +281,72 @@ extract_artifact_id() {
   basename "$path" | grep -oE '^[A-Z]+-[0-9]+' | head -1
 }
 
+# AUTO-REMEDIATE-001: write a minimal synthetic audit verdict.json for the
+# fixer to consume. Schema matches what the synthesizer agent would emit but
+# contains a single STY03 P1 finding (the only finding the fixer needs to
+# address). Directory must exist (caller ensures via mkdir -p).
+write_synthetic_verdict() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/review/$layer_dir/$art_id/verdict.json"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$out" "$message" "$art_id" "$layer_dir" <<'PY'
+import json, sys, datetime
+out, message, art_id, layer_dir = sys.argv[1:5]
+ts = datetime.datetime.utcnow().isoformat() + "Z"
+verdict = {
+    "combined_status": "FAIL",
+    "content_score": 0,
+    "structural_status": "FAIL",
+    "coverage": {"expected": 1, "ran": 1, "quorum_met": True},
+    "blocking_findings_count": 1,
+    "lens_scores": {},
+    "findings": [{
+        "id": "AUTO-REMEDIATE-STY03-001",
+        "code": "STY03",
+        "priority": "P1",
+        "location": f"{art_id} — document body",
+        "message": message,
+        "recommendation": "Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.",
+        "personas": [],
+    }],
+    "playbook_coverage": {},
+    "generated_at": ts,
+    "synthetic": True,
+    "synthetic_origin": "AUTO-REMEDIATE-001",
+}
+with open(out, "w") as f:
+    json.dump(verdict, f, indent=2)
+PY
+}
+
+# AUTO-REMEDIATE-001: write a minimal synthetic audit report markdown
+# matching what doc-<layer>-fixer expects (Input Contract). Only contains the
+# single STY03 finding.
+write_synthetic_audit_report() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/audit/$layer_dir-audit.md"
+  mkdir -p "$(dirname "$out")"
+  cat > "$out" <<EOF
+# Audit report — $art_id (synthetic / AUTO-REMEDIATE-001)
+
+Combined status: FAIL
+Content score: 0/100
+Structural status: FAIL
+Coverage quorum: met
+Synthetic: true (origin AUTO-REMEDIATE-001 — cascade bootstrap auto-remediation)
+
+## Findings
+
+| ID | Priority | Code | Location | Message |
+|---|---|---|---|---|
+| AUTO-REMEDIATE-STY03-001 | P1 | STY03 | $art_id — document body | $message |
+
+## Recommendation
+
+Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.
+EOF
+}
+
 # In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()
