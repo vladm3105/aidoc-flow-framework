@@ -868,7 +868,11 @@ phase_0_bootstrap() {
       write_synthetic_audit_report "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
       write_synthetic_verdict "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
 
-      record_outcome "lint-smoke-auto-remediate" "fixture" "bootstrap" "RUNNING" 0
+      # NOTE: do not record lint-smoke-auto-remediate as a separate element —
+      # any non-terminal RUNNING record gets reported as INTERRUPTED by the
+      # end-of-run summary, polluting the outcome. The final lint-smoke
+      # record (PASS or FAIL) below carries the "auto-remediated" marker in
+      # its 8th argument for traceability.
 
       # Invoke fixer in single_pass mode via env var (per Review Mode resolution chain).
       local fixer_rc
