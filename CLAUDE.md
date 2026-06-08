@@ -90,6 +90,27 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
   enforcement mechanism prevents that recurrence: mechanical sync
   makes the cheap updates invisible, and the reminder hook flags
   the expensive ones.
+- **Never hand-edit example artifacts.** Files under `examples/<name>/docs/`
+  and `examples/<name>/.aidoc/` are test fixtures for the plugin + SDD
+  framework — the entire point of every cascade run is to prove the
+  framework can produce, audit, remediate, and converge on those
+  artifacts on its own. Hand-editing them (to fix STY03, add missing
+  rules, rename IDs, etc.) bypasses the system under test: the
+  artifact then represents a human-rescued output, not a framework
+  output. Any subsequent claim "the framework works end-to-end" is
+  invalid. When example artifacts need remediation, dispatch the
+  appropriate framework skill (`doc-<layer>-audit` to surface the
+  finding, `doc-<layer>-fixer` to apply a lens-validated patch). If
+  a framework skill can't handle a class of remediation (e.g., the
+  cascade bootstrap's lint-smoke gate blocks before the audit/fixer
+  cycle runs), that is a **framework workflow gap** — fix the skill
+  or the workflow, never the artifact. *Origin:* EARS-RT-001 +
+  BDD-RT-001 (2026-06-08): hand-edited EARS-01.md across three
+  iterations (SE-001 P1 abuse-case pairs, STRUCT-001 ID rename,
+  STY03 trims) before the user stopped the pattern. The hand-edits
+  contaminated the test fixture; the SE-001 + STRUCT-001 finds were
+  the framework's own playbook calibrations working correctly, and
+  the framework's fixer should have been the one applying patches.
 - **The framework spec is the contract.** Engine-agnostic; carries no platform
   names or runtime code. Each platform declares the spec version it conforms to
   in `platforms/<name>/FRAMEWORK_SPEC_VERSION`, which must match
