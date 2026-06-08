@@ -1,0 +1,3 @@
+examples/url-shortener/docs/03_EARS/EARS-01.md:50: [ERROR STRUCT01] missing required section: glossary
+
+sdd-doc-lint: 1 error(s) across 1 file(s).
