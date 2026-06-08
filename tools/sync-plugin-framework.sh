@@ -21,7 +21,7 @@ canonical="$repo_root/framework"
 dest="$repo_root/platforms/claude-code-plugin/framework"
 
 # The consumed subtrees + the single root doc the plugin's skills cite directly.
-SUBTREES=(layers governance registry)
+SUBTREES=(layers governance registry playbooks)
 ROOT_FILES=(SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
 # Tools vendored alongside the framework bundle so plugin SKILLs can invoke

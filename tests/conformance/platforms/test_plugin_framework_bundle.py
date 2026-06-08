@@ -20,7 +20,7 @@ CANONICAL = REPO_ROOT / "framework"
 BUNDLE = REPO_ROOT / "platforms" / "claude-code-plugin" / "framework"
 
 # Must match tools/sync-plugin-framework.sh.
-SUBTREES = ("layers", "governance", "registry")
+SUBTREES = ("layers", "governance", "registry", "playbooks")
 ROOT_FILES = ("SPEC_DRIVEN_DEVELOPMENT_GUIDE.md",)
 
 
