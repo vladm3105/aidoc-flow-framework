@@ -50,7 +50,7 @@ conformance suite at `tests/conformance/`.
 | Platform | Engine | Release |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.3.0` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.7.0` (`platforms/claude-code-plugin/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.8.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
