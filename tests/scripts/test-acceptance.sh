@@ -347,6 +347,26 @@ Trim the document body below the EARS blocking word-count threshold (2250 words)
 EOF
 }
 
+# AUTO-REMEDIATE-001: back up a doc to a paired .auto-remediate-backup file
+# alongside the original. Caller invokes restore_backup if auto-remediation
+# fails so the artifact is left unchanged.
+backup_doc() {
+  local path="$1"
+  cp "$path" "$path.auto-remediate-backup"
+}
+
+# AUTO-REMEDIATE-001: restore a previously backed-up doc, removing the backup.
+# Tolerant: if backup doesn't exist, no-op (informational warning).
+restore_backup() {
+  local path="$1"
+  local bak="$path.auto-remediate-backup"
+  if [[ -f "$bak" ]]; then
+    mv "$bak" "$path"
+  else
+    log_warn "restore_backup: no backup at $bak (already restored or never backed up)"
+  fi
+}
+
 # In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()

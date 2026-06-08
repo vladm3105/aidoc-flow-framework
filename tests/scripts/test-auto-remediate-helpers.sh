@@ -253,5 +253,44 @@ echo ""
 echo "=== write_synthetic_audit_report ==="
 test_write_synthetic_audit_report
 
+# ─── backup_doc / restore_backup (inline) ────────────────────────────────────
+
+backup_doc() {
+  local path="$1"
+  cp "$path" "$path.auto-remediate-backup"
+}
+
+restore_backup() {
+  local path="$1"
+  local bak="$path.auto-remediate-backup"
+  if [[ -f "$bak" ]]; then
+    mv "$bak" "$path"
+  else
+    log_warn() { echo "$@" >&2; }  # local stub if not sourced
+    log_warn "restore_backup: no backup at $bak (already restored or never backed up)"
+  fi
+}
+
+# ─── backup_doc / restore_backup tests ───────────────────────────────────────
+
+test_backup_restore_doc() {
+  local tmpdir
+  tmpdir="$(mktemp -d)"
+  trap 'rm -rf "$tmpdir"' RETURN
+  local doc="$tmpdir/test.md"
+  echo "ORIGINAL" > "$doc"
+
+  backup_doc "$doc"
+  echo "MODIFIED" > "$doc"
+  assert_eq "$(cat "$doc")" "MODIFIED" "modification took effect"
+
+  restore_backup "$doc"
+  assert_eq "$(cat "$doc")" "ORIGINAL" "restore_backup restored original"
+}
+
+echo ""
+echo "=== backup_doc / restore_backup ==="
+test_backup_restore_doc
+
 echo ""
 echo "All tests passed."
