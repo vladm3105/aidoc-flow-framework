@@ -10,8 +10,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.8.0"
-    framework_spec_version: "0.14.1"
+    version: "0.9.0"
+    framework_spec_version: "0.14.2"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
 ---
