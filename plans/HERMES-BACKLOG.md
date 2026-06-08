@@ -126,6 +126,21 @@ REVIEW-CALIBRATION-002 yet — they're a watch-list:
 v0.6.2 sub-checks miss something the deferred items would catch.
 Until then, no design work.
 
+### H-4. Layer Playbook Injection in Hermes Team-Mode (LAYER-PLAYBOOKS-001)
+
+**Source:** PR LAYER-PLAYBOOKS-001 (plugin) shipped per-layer per-lens
+playbooks at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (BRD + PRD
+to start; other 6 layers ship per-layer in follow-up PRs). Hermes
+does not yet consume them.
+
+**Scope:** When Hermes implements team-mode lens fan-out, the lens
+prompts must inline the (layer, lens) playbook content per the
+framework spec contract in REVIEW_TEAM.md §Playbooks. Synthesizer
+parity: enforce `findings[].check` citation; emit
+`verdict.playbook_coverage`.
+
+**Dependency:** Hermes team-mode (currently not implemented).
+
 ## What's NOT in this backlog
 
 - **Anything plugin-side.** Plugin TODOs live in normal places —
