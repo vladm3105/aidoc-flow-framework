@@ -1,0 +1,4 @@
+examples/url-shortener/docs/03_EARS/EARS-01.md:0: [ERROR STY03] document body is 2457 words; EARS target ≤1500 (blocking >2250)
+
+sdd-doc-lint: 1 error(s) across 1 file(s).
+examples/url-shortener/docs/03_EARS/EARS-01.md:41: [WARNING STY02] section '3. Requirements' is 1584 words; target ≤800 (blocking >1200)

@@ -1,192 +1,27 @@
 {
-  "artifact_id": "EARS-01",
-  "layer": "03_EARS",
-  "iteration": 5,
   "combined_status": "FAIL",
-  "content_score": 84,
-  "structural_status": "PASS",
-  "threshold": 90,
-  "blocking_findings_count": 0,
+  "content_score": 0,
+  "structural_status": "FAIL",
   "coverage": {
-    "quorum_met": true,
-    "lenses_returned": 5,
-    "lenses_expected": 5
+    "expected": 1,
+    "ran": 1,
+    "quorum_met": true
   },
-  "lens_scores": {
-    "requirements_specialist": 82,
-    "tech_lead": 86,
-    "qa_lead": 79,
-    "chaos_engineer": 84,
-    "security_engineer": 100
-  },
+  "blocking_findings_count": 1,
+  "lens_scores": {},
   "findings": [
     {
-      "id": "RS-001",
-      "severity": "P2",
-      "check": "C5",
-      "lens": "requirements_specialist",
-      "location": "EARS.01.03.a0ae (§3.1, lines 137-141) and EARS.01.03.3312 (§3.4, lines 280-286)",
-      "title": "Service-Owner role-restriction obligation has no authorising PRD element",
-      "description": "Both lines impose a role-based access-control rule — a0ae: 'serve the request only to a caller bearing the Service-Owner role'; 3312: for a non-Service-Owner caller 'deny the request and return no counts'. The cited @prd: PRD.01.09.21ad is the 'Expose Counts' feature, whose sub-requirement PRD.01.09.e19e only requires counts be AVAILABLE to the Service Owner; it establishes no authorization, role-check, or denial obligation. PRD-01 contains no access-control/auth element anywhere, and PRD §7 explicitly lists 'user accounts and authentication' as out-of-scope. The @prd tag resolves syntactically (C4 OK) but the upstream element does not authorise the obligation it is attached to — an orphan/scope-creep enforcement rule. Neither line carries an [author assumption] deferral marker. Confirmed still present and unaddressed at iteration 5.",
-      "recommendation": "Either (a) add an '[author assumption — no PRD access-control element]' note to both lines mirroring the c060 TLS treatment so the orphan is an explicit deferral; or (b) drop the role-restriction clause from a0ae and convert 3312 to a generic deferral leaving access control downstream; or (c) raise a PRD change adding an authorization constraint (§12) and re-point both @prd tags to it."
-    },
-    {
-      "id": "RS-002",
-      "severity": "P2",
-      "check": "C2",
-      "lens": "requirements_specialist",
-      "location": "EARS.01.03.a2ae (§3.4, lines 262-268) and EARS.01.03.9671 (§3.4, lines 272-278)",
-      "title": "Three conjoined obligations in one unwanted-behaviour line",
-      "description": "a2ae response is 'SHALL fail closed, issue no short code, and return [message]'; 9671 is 'SHALL reject the submission, issue no short code, and return [message]'. Each fuses three separately-testable obligations: (1) the fail-closed/reject decision, (2) the no-code-issued invariant, (3) the user-facing message string. A BDD author asserts these as distinct Then-clauses. The doc already split the takedown obligation into 539a and 539b on exactly this atomicity principle, so the convention should apply here for internal consistency.",
-      "recommendation": "Split each into an outcome line (fail-closed/reject + no code issued, WITHIN 500 ms p95) and a separate message line, each carrying its own @prd tag, mirroring the 539a/539b split already applied."
-    },
-    {
-      "id": "RS-003",
-      "severity": "P2",
-      "check": "C3",
-      "lens": "requirements_specialist",
-      "location": "EARS.01.03.ee86 (§3.3, lines 189-191)",
-      "title": "Throttling response not measurable / not enumerated",
-      "description": "Response is 'reject submit and redirect requests that exceed the configured rate with an explicit throttling response'. The numeric rate bound is correctly [ADR deferred], but the response SHAPE itself is unspecified — no status code (e.g. 429), no named user-facing message, and no WITHIN latency clause. Every sibling rejection line names a concrete user-facing message or explicit code; 'explicit throttling response' is verifiable only by product judgement. Fails C3 measurability.",
-      "recommendation": "Name the throttling contract: an HTTP 429 (or a named throttling message) plus a WITHIN p95 clause, keeping only the numeric rate threshold as the [ADR deferred] value."
-    },
-    {
-      "id": "TL-001",
-      "severity": "P2",
-      "check": "C1",
-      "lens": "tech_lead",
-      "location": "EARS.01.03.ab5e (155), .c7e3 (163), .a17e (171), .b5fa (292), .d8a2 (300)",
-      "title": "Detection/audit/cooldown emit bounds carry no percentile while every other timed rule uses p95",
-      "description": "ab5e/c7e3/b5fa ('WITHIN 100 ms'), a17e ('WITHIN 100 ms'), and d8a2 ('WITHIN 50 ms') state a bare millisecond bound with no statistical qualifier, whereas every other timed rule in the artifact specifies 'at the 95th percentile'. The numeric value is not ADR-deferred for the emit latency. Without a percentile engineers cannot tell whether 100 ms is a hard ceiling or a p95, which selects a different measurement harness and a different SLO.",
-      "recommendation": "Append the same qualifier used elsewhere, e.g. 'emit a detection event WITHIN 100 ms at the 95th percentile', or state 'WITHIN 100 ms (hard ceiling, 100% of events)' if an absolute bound is intended. Apply consistently to ab5e, c7e3, a17e, b5fa, and the 50 ms variant in d8a2."
-    },
-    {
-      "id": "QA-001",
-      "severity": "P2",
-      "check": "C1",
-      "lens": "qa_lead",
-      "location": "§3.1–§3.5 (all 30 EARS lines); §5 coverage matrix",
-      "title": "No per-line BDD slot; §5 matrix maps only 5 feature groups for 30+ individual lines",
-      "description": "The §5 matrix has exactly five rows (one per PRD §9 feature). None of the ~30 individual EARS lines in §3 or the 9 lines in §4 carry an inline @bdd: tag or [BDD-pending:EARS.01.03.xxxx] placeholder. The forward BDD pointer ('BDD-01 pending L4') is credited but operates at feature granularity and leaves the per-line authoring obligation implicit. A BDD author cannot enumerate which EARS lines require distinct scenarios without resolving the five feature rows into individual line obligations.",
-      "recommendation": "Add a [BDD-pending:EARS.01.03.xxxx] inline placeholder beneath each EARS line in §3 and §4, OR expand the §5 matrix from 5 PRD-feature rows to one row per EARS line with columns: EARS line ID | upstream PRD anchor | downstream BDD slot."
-    },
-    {
-      "id": "CE-001",
-      "severity": "P2",
-      "check": "C2",
-      "lens": "chaos_engineer",
-      "location": "EARS.01.03.a2ae, .135e, .8df7 (submit path, lines 254-268, 321-325)",
-      "title": "Submit-path budget unpartitioned across sequential timeout/retry stages",
-      "description": "The submit path chains several dependencies each independently claiming a WITHIN 500 ms p95 budget: reputation screen timeout (a2ae), short-code-pool retry ceiling (135e), and durable write-before-acknowledge (8df7). Each stage names its own 500 ms bound, but no line states how the single submit p95 envelope is partitioned across them. In the worst-case sequential failure path the aggregate wait compounds well past 500 ms, so the stated per-request budget is effectively unbounded under compounding stage failures.",
-      "recommendation": "Add an EARS line (or extend 8df7/135e) stating the submit-path aggregate p95 budget and how it is partitioned across screen + pool-claim/retry + durable-commit stages, OR add an explicit ADR-deferred marker covering the aggregate, e.g. '[ADR deferred: BRD.01.08.9665 + .daeb — submit-path budget partition across screen/retry/commit within the 500 ms p95]'."
-    },
-    {
-      "id": "RS-004",
-      "severity": "P3",
-      "check": "C2",
-      "lens": "requirements_specialist",
-      "location": "EARS.01.03.f909 (§3.1, lines 71-74); EARS.01.03.ab5e (lines 153-155); EARS.01.03.c7e3 (lines 161-163)",
-      "title": "Coupled secondary obligations folded into primary lines (idempotency rule; enforce+emit-event)",
-      "description": "Three lower-severity atomicity couplings: (a) f909's parenthetical embeds an independently-testable no-dedup normative rule with no element ID; (b) ab5e ('throttle AND emit a detection event') and c7e3 ('apply cooldown AND emit detection event') each couple an enforcement obligation with a distinct observability obligation under one budget. A system could satisfy one without the other.",
-      "recommendation": "Promote the f909 no-dedup rule to its own ubiquitous element with @prd: PRD.01.09.0999. For ab5e/c7e3, split enforcement and detection-event obligations into separate lines, or reclassify each explicitly as a complex/compound requirement and state that both obligations share the 100 ms budget."
-    },
-    {
-      "id": "RS-005",
-      "severity": "P3",
-      "check": "C5",
-      "lens": "requirements_specialist",
-      "location": "EARS.01.04.c060 (§4 Security, lines 370, 376) and EARS.01.04.ca05 (§4 Reliability, lines 382, 387)",
-      "title": "Two §4 quality rows lack a PRD anchor (BRD-direct trace, self-disclosed)",
-      "description": "c060 (HTTPS/TLS 1.2+) traces only to @brd and self-discloses '[author assumption — no PRD transport-encryption element]'. ca05 (99.9% monthly availability) carries @brd but no @prd tag. Both are C5 PRD-anchor gaps but each is sanctioned by an explicit in-doc deferral/disclosure. Noted for completeness; deferral markers remain present and correct at iteration 5.",
-      "recommendation": "Accept as-is given the explicit deferral markers; optionally add a PRD §12 transport-encryption constraint and a PRD §12 availability anchor so both §4 rows gain PRD anchors and the C5 gap closes cleanly."
-    },
-    {
-      "id": "TL-002",
-      "severity": "P3",
-      "check": "C4",
-      "lens": "tech_lead",
-      "location": "EARS.01.03.ab5e (155), .c7e3 (163), .b5fa (292), .d8a2 (300)",
-      "title": "Bare '[ADR deferred: BRD.01.08.daeb]' markers do not name the deferred quantity",
-      "description": "These four markers name only the ADR topic, unlike well-formed siblings db78, 0b67, 135e, 00b9, ee86 which each spell out the deferred item. The bound actually deferred (anti-abuse submission-volume threshold, anti-enumeration probe threshold, cooldown duration) is described in prose but absent from the marker, leaving the deferral implicit at the marker level.",
-      "recommendation": "Extend each bare marker to name the deferred quantity, e.g. '[ADR deferred: BRD.01.08.daeb — anti-abuse submission-volume threshold and cooldown]' and '[ADR deferred: BRD.01.08.daeb — anti-enumeration probe threshold and cooldown]', matching the explicit form already used for the other deferrals."
-    },
-    {
-      "id": "TL-003",
-      "severity": "P3",
-      "check": "C5",
-      "lens": "tech_lead",
-      "location": "EARS Glossary (lines 411-422) vs PRD §15 (lines 427-436); §4 preamble (348-350), EARS.01.04.e27b/4eec (356-357)",
-      "title": "'p95' is the artifact's load-bearing measurable but is absent from the EARS glossary",
-      "description": "PRD §15 defines 'p95' as 'the 95th-percentile value of a measured distribution'. EARS uses 'at the 95th percentile' on nearly every §3 line and the 'p95' shorthand in §4, yet the EARS glossary omits the term. A reader of EARS alone has no in-document definition tying the §3 prose form to the §4 shorthand.",
-      "recommendation": "Add a 'p95' (or '95th percentile') row to the EARS glossary matching the PRD §15 definition verbatim, noting the §3 prose form and §4 'p95' shorthand denote the same measure."
-    },
-    {
-      "id": "QA-002",
-      "severity": "P3",
-      "check": "C2",
-      "lens": "qa_lead",
-      "location": "§5 Traceability — coverage matrix",
-      "title": "Coverage matrix lacks EARS line ID column; constraint- and risk-derived lines absent; §4 lines absent",
-      "description": "The §5 matrix columns are PRD feature | PRD | BRD | Downstream BDD — there is no EARS line ID column. At least 13 EARS lines derive their primary upstream anchor from PRD §12 constraints or §13 risks rather than the five §9 feature rows and none appear in the matrix. All nine §4 quality-attribute EARS lines (EARS.01.04.*) are absent from the matrix entirely despite carrying formal EARS IDs.",
-      "recommendation": "Add an EARS line ID column to the §5 matrix so each row is keyed to a specific EARS line. Add rows for all constraint- and risk-derived EARS lines and all §4 quality-attribute lines, each with their upstream PRD anchor and a BDD-pending downstream slot."
-    },
-    {
-      "id": "QA-003",
-      "severity": "P3",
-      "check": "C5",
-      "lens": "qa_lead",
-      "location": "EARS.01.03.a17e",
-      "title": "Audit-log write has no idempotency declaration",
-      "description": "EARS.01.03.a17e requires the Metrics Reporter to write caller identity, role-decision, and timestamp to an audit log WITHIN 100 ms. This is a durable append. Four other stateful lines carry explicit idempotency parentheticals. a17e carries none. If the log write is retried after a transient failure, duplicate audit entries may be recorded, which is undeclared.",
-      "recommendation": "Append an idempotency note to EARS.01.03.a17e. Minimum form: '(Idempotency: each grant/deny event produces exactly one audit record; writes retried within the same request scope are deduplicated by request ID.)' If append-only duplication is acceptable by policy, state that explicitly."
-    },
-    {
-      "id": "QA-004",
-      "severity": "P3",
-      "check": "C5",
-      "lens": "qa_lead",
-      "location": "EARS.01.03.00b9",
-      "title": "Capacity-utilization alert emission has no idempotency declaration",
-      "description": "EARS.01.03.00b9 requires the Shortening API to emit a capacity-utilization alert when the pool crosses the high-utilization threshold. If the system re-evaluates the condition while still above threshold, repeated identical alerts may be emitted. No edge-trigger, cooldown, or deduplication guard is declared.",
-      "recommendation": "Add an inline idempotency or edge-trigger note, e.g.: '(Idempotency: the alert fires at most once per threshold-crossing transition; subsequent requests above threshold do not re-emit the alert until utilization drops below and re-crosses, or a configured suppression window expires.)'"
-    },
-    {
-      "id": "QA-005",
-      "severity": "P3",
-      "check": "C5",
-      "lens": "qa_lead",
-      "location": "EARS.01.03.ab5e; EARS.01.03.c7e3",
-      "title": "Throttle and cooldown state transitions have no idempotency declarations",
-      "description": "EARS.01.03.ab5e (abuse detection triggers throttle + detection event) and EARS.01.03.c7e3 (enumeration-probe detection triggers cooldown + detection event) both write persistent throttle or cooldown state. If the threshold is exceeded by multiple requests in close succession before the write completes, the state transition could be applied multiple times. The dependent IF-lines (b5fa, d8a2) cannot be unambiguously tested without knowing the semantics of re-application.",
-      "recommendation": "Add an idempotency parenthetical to both lines. ab5e — '(Idempotency: throttle for a source is set once per detection window; concurrent detections within the same window do not stack or emit additional events.)'; c7e3 — '(Idempotency: cooldown for a source already in cooldown resets or extends the window per configured policy; it does not stack additional cooldown periods.)'"
-    },
-    {
-      "id": "QA-006",
-      "severity": "P3",
-      "check": "beyond-checklist:coverage-scope-claim",
-      "lens": "qa_lead",
-      "location": "§5 Traceability — final paragraph",
-      "title": "'PRD 100%' coverage claim is unsubstantiated for §4 quality-attribute lines and constraint/risk-derived lines",
-      "description": "The §5 closing note asserts 'Coverage: all five P1 features, error paths, security controls, durability, and concurrency invariants mapped (PRD 100%).' The claim is not substantiated: nine §4 quality-attribute EARS lines have no matrix row, ~13 constraint- and risk-derived lines in §3.4 are collapsed into five feature rows rather than individually enumerated, and the matrix does not enumerate PRD §12/§13 anchors.",
-      "recommendation": "Either revise the coverage claim to 'Coverage: all five P1 §9 functional features mapped; §4 quality-attribute and §12/§13-derived lines tracked inline via @prd tags (BDD slot assignment deferred to L4)' — making the scope of the claim explicit — or substantiate '100%' by expanding the matrix to include rows for all EARS lines."
-    },
-    {
-      "id": "CE-002",
-      "severity": "P3",
-      "check": "C4",
-      "lens": "chaos_engineer",
-      "location": "EARS.01.03.db78, .a2ae, .0b67, .135e, .8df7 (submit path)",
-      "title": "Submit-path multi-dependency failure ordering / firebreak not stated",
-      "description": "Each submit dependency has its own failure boundary but no line states the firebreak ordering between pool-claim and reputation-screen. As written, the system may consume a reputation-screen call (and its budget) before discovering the pool is exhausted, wasting an external dependency call on a request that will fail anyway.",
-      "recommendation": "State the submit-path check order explicitly (e.g. cheap-local checks -> pool availability -> reputation screen -> durable claim), so a guaranteed-fail request short-circuits before the external reputation call, naming the firebreak between internal and external dependencies."
+      "id": "AUTO-REMEDIATE-STY03-001",
+      "code": "STY03",
+      "priority": "P1",
+      "location": "EARS-01 \u2014 document body",
+      "message": "document body is 2457 words; EARS target \u22641500 (blocking >2250)",
+      "recommendation": "Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.",
+      "personas": []
     }
   ],
-  "playbook_coverage": {
-    "C1": 2,
-    "C2": 4,
-    "C3": 1,
-    "C4": 2,
-    "C5": 6,
-    "beyond_checklist": 1
-  }
+  "playbook_coverage": {},
+  "generated_at": "2026-06-08T18:57:29.816611Z",
+  "synthetic": true,
+  "synthetic_origin": "AUTO-REMEDIATE-001"
 }

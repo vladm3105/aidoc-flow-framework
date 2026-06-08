@@ -1,0 +1,4 @@
+examples/url-shortener/docs/03_EARS/EARS-01.md:0: [ERROR STY03] document body is 2457 words; EARS target ≤1500 (blocking >2250)
+examples/url-shortener/docs/03_EARS/EARS-01.md:50: [ERROR STRUCT01] missing required section: glossary
+
+sdd-doc-lint: 2 error(s) across 1 file(s).

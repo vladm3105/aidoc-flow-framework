@@ -242,6 +242,131 @@ log_info() { printf 'INFO  %s\n' "$*"; }
 log_warn() { printf 'WARN  %s\n' "$*"; }
 log_err()  { printf 'ERROR %s\n' "$*" >&2; }
 
+# AUTO-REMEDIATE-001: detect if lint output contains STY03 error(s) and no
+# other ERROR-level findings. Returns 0 if the failure is STY03-only (eligible
+# for auto-remediation), non-zero otherwise. Lint warnings are ignored.
+has_STY03_only() {
+  local output="$1"
+  # Count ERROR-level lines that are NOT STY03
+  local other_errors
+  other_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR (STRUCT|AS|CSC|STY0[12]|STY[4-9])' || true)"
+  # Count STY03 ERROR lines
+  local sty03_errors
+  sty03_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR STY03\]' || true)"
+  # STY03-only iff at least one STY03 and zero other errors
+  [[ "$sty03_errors" -gt 0 && "$other_errors" -eq 0 ]]
+}
+
+# AUTO-REMEDIATE-001: extract the file path from STY03 lint error output.
+# Input is the full lint stdout; output is the first path matching
+# <path>:<line>: [ERROR STY03].
+extract_path() {
+  local output="$1"
+  printf '%s\n' "$output" | grep -oE '^[^:]+:[0-9]+: \[ERROR STY03\]' \
+    | head -1 \
+    | sed -E 's/^([^:]+):[0-9]+: \[ERROR STY03\]$/\1/'
+}
+
+# AUTO-REMEDIATE-001: extract the layer directory (e.g., "03_EARS") from a
+# docs/0N_LAYER/... path. Returns empty string on no match.
+extract_layer_dir() {
+  local path="$1"
+  printf '%s' "$path" | grep -oE '/[0-9]{2}_[A-Z]+/' | head -1 | tr -d /
+}
+
+# AUTO-REMEDIATE-001: extract the artifact ID (e.g., "EARS-01") from the
+# filename portion of a docs/.../LAYER-NN[_anything].md path.
+extract_artifact_id() {
+  local path="$1"
+  basename "$path" | grep -oE '^[A-Z]+-[0-9]+' | head -1
+}
+
+# AUTO-REMEDIATE-001: write a minimal synthetic audit verdict.json for the
+# fixer to consume. Schema matches what the synthesizer agent would emit but
+# contains a single STY03 P1 finding (the only finding the fixer needs to
+# address). Directory must exist (caller ensures via mkdir -p).
+write_synthetic_verdict() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/review/$layer_dir/$art_id/verdict.json"
+  mkdir -p "$(dirname "$out")"
+  python3 - "$out" "$message" "$art_id" "$layer_dir" <<'PY'
+import json, sys, datetime
+out, message, art_id, layer_dir = sys.argv[1:5]
+ts = datetime.datetime.utcnow().isoformat() + "Z"
+verdict = {
+    "combined_status": "FAIL",
+    "content_score": 0,
+    "structural_status": "FAIL",
+    "coverage": {"expected": 1, "ran": 1, "quorum_met": True},
+    "blocking_findings_count": 1,
+    "lens_scores": {},
+    "findings": [{
+        "id": "AUTO-REMEDIATE-STY03-001",
+        "code": "STY03",
+        "priority": "P1",
+        "location": f"{art_id} — document body",
+        "message": message,
+        "recommendation": "Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.",
+        "personas": [],
+    }],
+    "playbook_coverage": {},
+    "generated_at": ts,
+    "synthetic": True,
+    "synthetic_origin": "AUTO-REMEDIATE-001",
+}
+with open(out, "w") as f:
+    json.dump(verdict, f, indent=2)
+PY
+}
+
+# AUTO-REMEDIATE-001: write a minimal synthetic audit report markdown
+# matching what doc-<layer>-fixer expects (Input Contract). Only contains the
+# single STY03 finding.
+write_synthetic_audit_report() {
+  local example_root="$1" layer_dir="$2" art_id="$3" message="$4"
+  local out="$example_root/.aidoc/audit/$layer_dir-audit.md"
+  mkdir -p "$(dirname "$out")"
+  cat > "$out" <<EOF
+# Audit report — $art_id (synthetic / AUTO-REMEDIATE-001)
+
+Combined status: FAIL
+Content score: 0/100
+Structural status: FAIL
+Coverage quorum: met
+Synthetic: true (origin AUTO-REMEDIATE-001 — cascade bootstrap auto-remediation)
+
+## Findings
+
+| ID | Priority | Code | Location | Message |
+|---|---|---|---|---|
+| AUTO-REMEDIATE-STY03-001 | P1 | STY03 | $art_id — document body | $message |
+
+## Recommendation
+
+Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.
+EOF
+}
+
+# AUTO-REMEDIATE-001: back up a doc to a paired .auto-remediate-backup file
+# alongside the original. Caller invokes restore_backup if auto-remediation
+# fails so the artifact is left unchanged.
+backup_doc() {
+  local path="$1"
+  cp "$path" "$path.auto-remediate-backup"
+}
+
+# AUTO-REMEDIATE-001: restore a previously backed-up doc, removing the backup.
+# Tolerant: if backup doesn't exist, no-op (informational warning).
+restore_backup() {
+  local path="$1"
+  local bak="$path.auto-remediate-backup"
+  if [[ -f "$bak" ]]; then
+    mv "$bak" "$path"
+  else
+    log_warn "restore_backup: no backup at $bak (already restored or never backed up)"
+  fi
+}
+
 # In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()
@@ -726,6 +851,58 @@ phase_0_bootstrap() {
     if [[ $lint_rc -eq 0 ]]; then
       log_info "sdd_doc_lint smoke (existing docs/): PASS"
       record_outcome "lint-smoke" "fixture" "bootstrap" "PASS" 0
+    elif has_STY03_only "$lint_out"; then
+      # AUTO-REMEDIATE-001: STY03-only failure -> dispatch doc-<layer>-fixer
+      # in single_pass mode with a synthetic audit verdict.
+      local failing_path layer_dir layer_short art_id message
+      failing_path="$(extract_path "$lint_out")"
+      layer_dir="$(extract_layer_dir "$failing_path")"
+      art_id="$(extract_artifact_id "$failing_path")"
+      layer_short="$(printf '%s' "$layer_dir" | sed -E 's/^[0-9]+_//' | tr '[:upper:]' '[:lower:]')"
+      message="$(printf '%s' "$lint_out" | grep -oE 'STY03\] [^[:cntrl:]]+' | head -1 | sed 's/^STY03\] //')"
+
+      log_warn "lint-smoke: STY03-only failure on $failing_path"
+      log_info "auto-remediate: dispatching doc-${layer_short}-fixer (single_pass) on $art_id"
+
+      backup_doc "$failing_path"
+      write_synthetic_audit_report "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
+      write_synthetic_verdict "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
+
+      # NOTE: do not record lint-smoke-auto-remediate as a separate element —
+      # any non-terminal RUNNING record gets reported as INTERRUPTED by the
+      # end-of-run summary, polluting the outcome. The final lint-smoke
+      # record (PASS or FAIL) below carries the "auto-remediated" marker in
+      # its 8th argument for traceability.
+
+      # Invoke fixer in single_pass mode via env var (per Review Mode resolution chain).
+      local fixer_rc
+      REVIEW_MODE=single_pass \
+        ARTIFACT_ID="$art_id" \
+        ARTIFACT_PATH="$failing_path" \
+        timeout "$ORCHESTRATOR_TIMEOUT" \
+        claude --plugin-dir "$PLUGIN_DIR" --dangerously-skip-permissions \
+          -p "/aidoc-flow:doc-${layer_short}-fixer Artifact $art_id at $failing_path; audit at $EXAMPLE_DIR/.aidoc/audit/$layer_dir-audit.md; review_mode=single_pass; resolve STY03 only." \
+        > "$LOG_DIR/auto-remediate-fixer.log" 2>&1
+      fixer_rc=$?
+
+      log_info "auto-remediate: doc-${layer_short}-fixer exited with rc=$fixer_rc"
+
+      # Re-run lint to verify STY03 resolved
+      local lint_out2 lint_rc2
+      lint_out2="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$EXAMPLE_DOCS" 2>&1)"; lint_rc2=$?
+
+      if [[ $lint_rc2 -eq 0 ]]; then
+        log_info "auto-remediate: lint-smoke PASS after fixer cycle"
+        rm -f "$failing_path.auto-remediate-backup"
+        record_outcome "lint-smoke" "fixture" "bootstrap" "PASS" 0 "" "" "true" "" "auto-remediated"
+      else
+        log_err "auto-remediate: doc-${layer_short}-fixer cycle did NOT resolve STY03"
+        printf '%s\n' "$lint_out2" | sed 's/^/  /' >&2
+        restore_backup "$failing_path"
+        record_outcome "lint-smoke" "fixture" "bootstrap" "FAIL" 0 "" "" "true" "" "auto-remediate did not converge"
+        _write_bootstrap_metas
+        return 1
+      fi
     else
       log_err "sdd_doc_lint smoke FAILED on existing docs/:"
       printf '%s\n' "$lint_out" | sed 's/^/  /'

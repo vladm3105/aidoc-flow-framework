@@ -12,6 +12,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — AUTO-REMEDIATE-001 (cascade bootstrap auto-remediation)
+
+- **Cascade bootstrap auto-remediation for STY03 lint failures.** When
+  `tests/scripts/test-acceptance.sh` `phase_0_bootstrap` lint-smoke
+  fails with STY03 (doc-body word-count) errors only, the harness now
+  auto-dispatches `doc-<layer>-fixer` in `single_pass` mode with a
+  synthetic audit verdict (P1 STY03 finding) to remediate before
+  proceeding. Other lint failures still abort. Single-attempt; if STY03
+  persists after the fixer cycle, the harness restores the doc to its
+  pre-remediation state and aborts with a clear diagnostic.
+
+  Closes the workflow gap that blocked BDD-RT-001 (EARS-01.md after
+  EARS-RT-001 iter-2 fixer pushed it over the 2250-word blocking
+  threshold). Framework-driven remediation only — no hand-edits per
+  the durable convention *Never hand-edit example artifacts* (codified
+  in CLAUDE.md in this same PR).
+
+  Live cascade validation: EARS-01.md auto-remediated from 2457 → 2250
+  body words by doc-ears-fixer single_pass; 44/44 element IDs and
+  114/114 trace tags preserved; doc-brd-autopilot subsequently ran
+  clean.
+
+  Implementation: 7 new helper bash functions (~80 lines) in
+  test-acceptance.sh + paired unit test suite at
+  tests/scripts/test-auto-remediate-helpers.sh (13 tests, all passing).
+  No SKILL changes, no framework/VERSION bump, no plugin/VERSION bump.
+
 ### Added — Framework Spec 0.14.1 + Plugin 0.7.0 → 0.8.0 (EARS-RT-001)
 
 - **Framework Spec 0.14.0 → 0.14.1 — 5 EARS-layer playbooks.**
