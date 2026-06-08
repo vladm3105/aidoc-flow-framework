@@ -379,10 +379,22 @@ def _check_style(
                     severity="warning",
                 )
             )
-    # STY03 — document body over the +50% target (blocking).
+    # STY03 — document body over the +50% target (blocking). Word count
+    # excludes code-fenced blocks (``` … ```), mirroring STY02 / AS3. BDD
+    # bodies are mostly fenced Gherkin and the doc-bdd skill allows ~50k
+    # tokens of it before a split; counting fences here would block any real
+    # BDD suite far below that allowance.
     target = _DOC_TARGET_WORDS.get(artifact)
     if target is not None:
-        words = sum(len(line.split()) for line in body)
+        words = 0
+        in_fence = False
+        for line in body:
+            if line.lstrip().startswith("```"):
+                in_fence = not in_fence
+                continue
+            if in_fence:
+                continue
+            words += len(line.split())
         if words > target * 3 // 2:
             findings.append(
                 Finding(

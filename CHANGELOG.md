@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — sdd_doc_lint STY03 counted code-fenced content
+
+- **STY03 word-count now excludes code-fenced blocks**, mirroring STY02
+  and AS3 (`tools/sdd_doc_lint/__init__.py`, plus byte-identical
+  vendored copies under `platforms/{claude-code-plugin,hermes}/sdd_doc_lint/`).
+  Before this fix the whole-document body-size check counted every word
+  inside ``` … ``` blocks, which made any non-trivial BDD body trip the
+  blocking threshold: the `doc-bdd` SKILL allows ~50k tokens of fenced
+  Gherkin per artifact, while STY03's BDD target is 1500 words (blocking
+  at 2250). A prose-light, scenario-heavy BDD-01.md hit STY03 at 2977
+  words despite only ~1013 prose words.
+
+  Regression test at `tests/unit/test_sdd_doc_lint_sty03_fences.py`
+  (two cases: fenced-heavy doc must not trip STY03; prose-only doc over
+  the blocking threshold must still trip STY03). Surfaced during
+  BDD-RT-001 live cascade; the `doc-bdd-autopilot` orchestrator
+  correctly diagnosed the framework workflow gap and refused to
+  hand-edit the artifact. No SKILL changes, no VERSION bump (matches
+  precedent commit `b777c08f` for the BRD-INDEX STRUCT01 fix).
+
 ### Added — AUTO-REMEDIATE-001 (cascade bootstrap auto-remediation)
 
 - **Cascade bootstrap auto-remediation for STY03 lint failures.** When
