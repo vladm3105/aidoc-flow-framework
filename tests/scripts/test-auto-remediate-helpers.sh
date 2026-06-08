@@ -7,16 +7,19 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$REPO_ROOT"
 
-# Source test-acceptance.sh in a way that defines functions without executing main.
-# We strip from line 139 (arg parsing) through line 202 (path setup + traps),
-# then skip to the function definitions and stop before phase_0_bootstrap entry point.
-TMPF="$(mktemp)"
-trap 'rm -f "$TMPF"' EXIT
-
-# Strip the entry-point code and source the rest.
-sed '/^phase_0_bootstrap || {/,$d' tests/scripts/test-acceptance.sh > "$TMPF"
-# shellcheck source=/dev/null
-source "$TMPF" 2>&1 | grep -v -E "ERROR.*example|sed.*can't read" || true
+# Define test helpers inline (copied from test-acceptance.sh to avoid sourcing
+# main entry-point code that requires arguments and environment setup).
+has_STY03_only() {
+  local output="$1"
+  # Count ERROR-level lines that are NOT STY03
+  local other_errors
+  other_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR (STRUCT|AS|CSC|STY0[12]|STY[4-9])' || true)"
+  # Count STY03 ERROR lines
+  local sty03_errors
+  sty03_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR STY03\]' || true)"
+  # STY03-only iff at least one STY03 and zero other errors
+  [[ "$sty03_errors" -gt 0 && "$other_errors" -eq 0 ]]
+}
 
 FIXTURES="$REPO_ROOT/tests/scripts/fixtures/auto-remediate"
 

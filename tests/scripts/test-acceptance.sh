@@ -242,6 +242,21 @@ log_info() { printf 'INFO  %s\n' "$*"; }
 log_warn() { printf 'WARN  %s\n' "$*"; }
 log_err()  { printf 'ERROR %s\n' "$*" >&2; }
 
+# AUTO-REMEDIATE-001: detect if lint output contains STY03 error(s) and no
+# other ERROR-level findings. Returns 0 if the failure is STY03-only (eligible
+# for auto-remediation), non-zero otherwise. Lint warnings are ignored.
+has_STY03_only() {
+  local output="$1"
+  # Count ERROR-level lines that are NOT STY03
+  local other_errors
+  other_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR (STRUCT|AS|CSC|STY0[12]|STY[4-9])' || true)"
+  # Count STY03 ERROR lines
+  local sty03_errors
+  sty03_errors="$(printf '%s\n' "$output" | grep -cE '\[ERROR STY03\]' || true)"
+  # STY03-only iff at least one STY03 and zero other errors
+  [[ "$sty03_errors" -gt 0 && "$other_errors" -eq 0 ]]
+}
+
 # In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()
