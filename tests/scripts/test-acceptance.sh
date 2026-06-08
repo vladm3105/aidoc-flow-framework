@@ -851,6 +851,54 @@ phase_0_bootstrap() {
     if [[ $lint_rc -eq 0 ]]; then
       log_info "sdd_doc_lint smoke (existing docs/): PASS"
       record_outcome "lint-smoke" "fixture" "bootstrap" "PASS" 0
+    elif has_STY03_only "$lint_out"; then
+      # AUTO-REMEDIATE-001: STY03-only failure -> dispatch doc-<layer>-fixer
+      # in single_pass mode with a synthetic audit verdict.
+      local failing_path layer_dir layer_short art_id message
+      failing_path="$(extract_path "$lint_out")"
+      layer_dir="$(extract_layer_dir "$failing_path")"
+      art_id="$(extract_artifact_id "$failing_path")"
+      layer_short="$(printf '%s' "$layer_dir" | sed -E 's/^[0-9]+_//' | tr '[:upper:]' '[:lower:]')"
+      message="$(printf '%s' "$lint_out" | grep -oE 'STY03\] [^[:cntrl:]]+' | head -1 | sed 's/^STY03\] //')"
+
+      log_warn "lint-smoke: STY03-only failure on $failing_path"
+      log_info "auto-remediate: dispatching doc-${layer_short}-fixer (single_pass) on $art_id"
+
+      backup_doc "$failing_path"
+      write_synthetic_audit_report "$EXAMPLE_ROOT" "$layer_dir" "$art_id" "$message"
+      write_synthetic_verdict "$EXAMPLE_ROOT" "$layer_dir" "$art_id" "$message"
+
+      record_outcome "lint-smoke-auto-remediate" "fixture" "bootstrap" "RUNNING" 0
+
+      # Invoke fixer in single_pass mode via env var (per Review Mode resolution chain).
+      local fixer_rc
+      REVIEW_MODE=single_pass \
+        ARTIFACT_ID="$art_id" \
+        ARTIFACT_PATH="$failing_path" \
+        timeout "$ORCHESTRATOR_TIMEOUT" \
+        claude --plugin-dir "$PLUGIN_DIR" --dangerously-skip-permissions \
+          -p "/aidoc-flow:doc-${layer_short}-fixer Artifact $art_id at $failing_path; audit at $EXAMPLE_ROOT/.aidoc/audit/$layer_dir-audit.md; review_mode=single_pass; resolve STY03 only." \
+        > "$LOG_DIR/auto-remediate-fixer.log" 2>&1
+      fixer_rc=$?
+
+      log_info "auto-remediate: doc-${layer_short}-fixer exited with rc=$fixer_rc"
+
+      # Re-run lint to verify STY03 resolved
+      local lint_out2 lint_rc2
+      lint_out2="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$EXAMPLE_DOCS" 2>&1)"; lint_rc2=$?
+
+      if [[ $lint_rc2 -eq 0 ]]; then
+        log_info "auto-remediate: lint-smoke PASS after fixer cycle"
+        rm -f "$failing_path.auto-remediate-backup"
+        record_outcome "lint-smoke" "fixture" "bootstrap" "PASS" 0 "" "" "true" "" "auto-remediated"
+      else
+        log_err "auto-remediate: doc-${layer_short}-fixer cycle did NOT resolve STY03"
+        printf '%s\n' "$lint_out2" | sed 's/^/  /' >&2
+        restore_backup "$failing_path"
+        record_outcome "lint-smoke" "fixture" "bootstrap" "FAIL" 0 "" "" "true" "" "auto-remediate did not converge"
+        _write_bootstrap_metas
+        return 1
+      fi
     else
       log_err "sdd_doc_lint smoke FAILED on existing docs/:"
       printf '%s\n' "$lint_out" | sed 's/^/  /'
