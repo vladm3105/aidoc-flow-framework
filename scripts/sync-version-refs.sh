@@ -199,6 +199,23 @@ if [[ -n "$fw_ver" ]]; then
       "framework_spec_version: \"$skill_fw_prev\"" \
       "framework_spec_version: \"$fw_ver\""
   fi
+
+  # Playbook frontmatter declares framework_spec_version: "X.Y.Z" too —
+  # propagate via the same detected-prev pattern as SKILLs. Detect from
+  # the first BRD playbook (any layer playbook with the field works as
+  # the canonical detector).
+  pb_fw_prev="$(detect_version_in \
+    framework/playbooks/01_BRD/architect.md \
+    'framework_spec_version: "[0-9]+\.[0-9]+\.[0-9]+"')"
+  if [[ -n "$pb_fw_prev" && "$pb_fw_prev" != "$fw_ver" ]]; then
+    log "  playbook frontmatter sync $pb_fw_prev -> $fw_ver"
+    for pb in framework/playbooks/*/*.md; do
+      [[ -f "$pb" ]] || continue
+      replace_in_file "$pb" \
+        "framework_spec_version: \"$pb_fw_prev\"" \
+        "framework_spec_version: \"$fw_ver\""
+    done
+  fi
 fi
 
 # --- hermes VERSION fanout ----------------------------------------------------
