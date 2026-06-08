@@ -865,8 +865,8 @@ phase_0_bootstrap() {
       log_info "auto-remediate: dispatching doc-${layer_short}-fixer (single_pass) on $art_id"
 
       backup_doc "$failing_path"
-      write_synthetic_audit_report "$EXAMPLE_ROOT" "$layer_dir" "$art_id" "$message"
-      write_synthetic_verdict "$EXAMPLE_ROOT" "$layer_dir" "$art_id" "$message"
+      write_synthetic_audit_report "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
+      write_synthetic_verdict "$EXAMPLE_DIR" "$layer_dir" "$art_id" "$message"
 
       record_outcome "lint-smoke-auto-remediate" "fixture" "bootstrap" "RUNNING" 0
 
@@ -877,7 +877,7 @@ phase_0_bootstrap() {
         ARTIFACT_PATH="$failing_path" \
         timeout "$ORCHESTRATOR_TIMEOUT" \
         claude --plugin-dir "$PLUGIN_DIR" --dangerously-skip-permissions \
-          -p "/aidoc-flow:doc-${layer_short}-fixer Artifact $art_id at $failing_path; audit at $EXAMPLE_ROOT/.aidoc/audit/$layer_dir-audit.md; review_mode=single_pass; resolve STY03 only." \
+          -p "/aidoc-flow:doc-${layer_short}-fixer Artifact $art_id at $failing_path; audit at $EXAMPLE_DIR/.aidoc/audit/$layer_dir-audit.md; review_mode=single_pass; resolve STY03 only." \
         > "$LOG_DIR/auto-remediate-fixer.log" 2>&1
       fixer_rc=$?
 
