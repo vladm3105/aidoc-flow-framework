@@ -148,6 +148,12 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
 - ✅ Layer Playbooks (LAYER-PLAYBOOKS-001) — engine-agnostic playbook
   artifact class + BRD/PRD playbook injection. 11 playbooks landed
   (5 BRD + 6 PRD); 34 playbooks deferred to per-layer follow-up PRs.
+- ✅ EARS-RT-001 — EARS layer team-mode + playbook injection (plugin
+  0.7.0 → 0.8.0). doc-ears-audit (267 → 498 lines) + doc-ears-fixer
+  (113 → 298 lines) wired; 5 EARS playbooks (req_spec/tech_lead/qa_lead/
+  chaos/security; chaos-heavy 12:8 split). Live cascade: 5 iterations,
+  iter-5 terminal at blocking=0, all P1s resolved (SE-001 abuse-case
+  pair + STRUCT-001 ID format both fixed via hand-edits).
 
 ## Post-v1.0 — Planned Capabilities
 

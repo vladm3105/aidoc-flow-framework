@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Plugin 0.7.0 → 0.8.0 (EARS-RT-001)
+
+- **Claude Code plugin 0.7.0 → 0.8.0 — EARS layer team-mode + playbook injection.**
+  doc-ears-audit/SKILL.md (267 → 498 lines) gains `## Review Mode` (team
+  mode default at gates) + `## Saga interaction` + `## Break-circuit
+  policy` plus playbook injection (step 3a + augmented step 4);
+  doc-ears-fixer/SKILL.md (113 → 298 lines) gains `## Remediate Mode` +
+  `## Saga interaction` + `## Break-circuit policy` (mirrors PRD-RT-001
+  fixer pattern). 5 EARS playbook files: requirements_specialist 35 /
+  tech_lead 25 / qa_lead 20 / chaos_engineer 12 / security_engineer 8
+  = 100 (chaos-heavy split per REVIEW_CREWS.yaml — failure-mode ACs
+  dominate over abuse-case ACs at EARS layer). Live EARS acceptance:
+  FAIL terminal at iter=5 with score 84/100, blocking=0, all P1s
+  resolved (SE-001 abuse-case pair + STRUCT-001 ID format both
+  fixed by hand-edits between cascade iterations); security_engineer
+  perfect 100/100.
+
 ### Added — Framework Spec 0.14.0 + Plugin 0.7.0 (LAYER-PLAYBOOKS-001)
 
 - **Framework Spec 0.13.1 → 0.14.0 — Layer Playbooks artifact class.**
@@ -34,9 +51,9 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Deferred
 
-- 6 audit SKILLs (EARS/BDD/ADR/SPEC/TDD/IPLAN) lack team-mode wiring;
-  playbook injection for those layers ships as part of per-layer
-  follow-up PRs (EARS-RT-001 through IPLAN-RT-001). Trackers: see
+- 5 audit SKILLs (doc-{bdd,adr,spec,tdd,iplan}-audit) lack team-mode
+  wiring; playbook injection for those layers ships as part of per-layer
+  follow-up PRs (BDD-RT-001 through IPLAN-RT-001). Trackers: see
   the project's task list.
 
 ### Changed — Framework Spec 0.13.0 → 0.13.1 (CHG-gated)

@@ -181,7 +181,7 @@ deterministic gate, and reduced findings).
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | same — saga PARTIAL_TIMEOUT state; preemptive transition |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
-| Layer Playbooks (BRD/PRD) | ✅ active | ⏳ deferred (HERMES-BACKLOG H-4) |
+| Layer Playbooks (BRD/PRD/EARS) | ✅ active | ⏳ deferred (HERMES-BACKLOG H-4) |
 
 Both bind to the **same** crew map, persona-output contract, scoring/gate
 policy, saga state machine, and report shape — so a BRD reviewed by either

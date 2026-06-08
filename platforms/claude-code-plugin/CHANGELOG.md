@@ -14,6 +14,44 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-06-08
+
+### Added
+
+- Playbook injection wired into doc-ears-audit + doc-ears-fixer SKILLs.
+  doc-ears-audit (267 → 498 lines): `## Review Mode` (team mode default
+  at gates) + `## Saga interaction` + `## Break-circuit policy` + step
+  3a playbook load + augmented step 4 brief composition with
+  `## Layer-specific playbook` section.
+  doc-ears-fixer (113 → 298 lines): `## Remediate Mode` + `## Saga
+  interaction` + `## Break-circuit policy` (mirrors PRD-RT-001 fixer).
+- 5 EARS playbook files at framework/playbooks/03_EARS/: requirements_
+  specialist (35), tech_lead (25), qa_lead (20), chaos_engineer (12),
+  security_engineer (8). Each ~95-110 lines with hybrid content shape
+  (reasoning frame + Cn checks + beyond-checklist + scoring rubric).
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` 0.14.0 (unchanged — consumes existing
+  Playbooks spec from LAYER-PLAYBOOKS-001).
+
+### Verified
+
+- Live EARS cascade ran 5 iterations end-to-end: draft → audit
+  (iter-1) → fixer (iter-1) → re-audit (iter-2) → fixer (iter-2) →
+  re-audit (iter-3 with SE-001 P1) → hand-fix #1 (abuse-case pair) →
+  iter-4 re-audit (SE-001 resolved, STRUCT-001 P1 surfaced) →
+  hand-fix #2 (ID format) → iter-5 re-audit (terminal at MAX_ITERATIONS;
+  score 84/100, blocking=0, all P1s resolved). security_engineer
+  perfect 100/100. playbook_coverage populated for first time:
+  `{C1:2, C2:4, C3:1, C4:2, C5:6, beyond_checklist:1}`.
+
+### Deferred
+
+- 5 audit SKILLs (doc-{bdd,adr,spec,tdd,iplan}-audit) lack team-mode
+  wiring; per-layer follow-up PRs (BDD-RT-001 through IPLAN-RT-001)
+  will land team-mode + playbooks together.
+
 ## [0.7.0] — 2026-06-07
 
 ### Added
