@@ -12,7 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-### Added — Plugin 0.7.0 → 0.8.0 (EARS-RT-001)
+### Added — Framework Spec 0.14.1 + Plugin 0.7.0 → 0.8.0 (EARS-RT-001)
+
+- **Framework Spec 0.14.0 → 0.14.1 — 5 EARS-layer playbooks.**
+  `framework/playbooks/03_EARS/{requirements_specialist,tech_lead,qa_lead,chaos_engineer,security_engineer}.md`
+  added per the §Playbooks contract from 0.14.0. Each playbook has the
+  hybrid content shape (reasoning frame + Cn deterministic checks +
+  beyond-checklist escape hatch + 0-100 scoring rubric). Crew weights
+  35/25/20/12/8 = 100 (chaos-heavy split per REVIEW_CREWS.yaml).
+  Engine-agnostic; consumed by any platform implementing the team-mode
+  spec. PATCH bump (new content within existing artifact class, no
+  contract changes).
 
 - **Claude Code plugin 0.7.0 → 0.8.0 — EARS layer team-mode + playbook injection.**
   doc-ears-audit/SKILL.md (267 → 498 lines) gains `## Review Mode` (team
