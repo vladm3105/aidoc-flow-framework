@@ -154,6 +154,12 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
   chaos/security; chaos-heavy 12:8 split). Live cascade: 5 iterations,
   iter-5 terminal at blocking=0, all P1s resolved (SE-001 abuse-case
   pair + STRUCT-001 ID format both fixed via hand-edits).
+- ✅ AUTO-REMEDIATE-001 — cascade bootstrap auto-remediates STY03
+  lint-smoke failures via `doc-<layer>-fixer` in single_pass mode.
+  Unblocks BDD-RT-001 cascade + prevents the same blocker on
+  ADR/SPEC/TDD/IPLAN per-layer rollouts. Live-validated: EARS-01.md
+  trimmed 2457→2250 body words by the framework's own fixer (44/44
+  element IDs + 114/114 trace tags preserved).
 
 ## Post-v1.0 — Planned Capabilities
 

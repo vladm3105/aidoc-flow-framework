@@ -1123,3 +1123,34 @@ verdicts: `{C1:2, C2:4, C3:1, C4:2, C5:6, beyond_checklist:1}`.
 Next: BDD-RT-001 (next per-layer rollout). 4 more layer-RT-001 PRs
 (ADR/SPEC/TDD/IPLAN) follow. Last one (likely IPLAN-RT-001) removes
 the `@unittest.skip` from test_playbook_coverage.py per #258.
+
+## 2026-06-08 — AUTO-REMEDIATE-001 shipped
+
+`tests/scripts/test-acceptance.sh` extended to auto-remediate STY03
+lint-smoke failures via `doc-<layer>-fixer` (single_pass mode) with a
+synthetic audit verdict. 7 helper bash functions added (~80 lines),
+plus a paired `tests/scripts/test-auto-remediate-helpers.sh` unit
+test suite (13 tests, all passing).
+
+Live validated end-to-end: EARS-01.md (2457 body words on main,
+STY03-blocking) was auto-remediated by the framework's own fixer to
+2250 body words (at the threshold; lint exit 0); cascade proceeded;
+44/44 element IDs and 114/114 trace tags preserved per the fixer's
+diff report. Total cascade runtime: 1114s (~18.5 min).
+
+This work surfaced from BDD-RT-001 being blocked at lint-smoke
+bootstrap on the post-EARS-RT-001 EARS-01.md state. The deeper
+lesson — "Never hand-edit example artifacts; framework agents must
+do remediation" — was codified into CLAUDE.md durable conventions
+
++ memory entry `feedback_never_hand_edit_example_artifacts.md`.
+
+Two follow-up items noted by the fixer:
+
++ STY02 WARNING on EARS-01.md §3 Requirements (1420 words > 800
+  target, < 1200 blocking) — out of scope for STY03-only run.
++ `datetime.utcnow()` deprecation warning in `write_synthetic_verdict`
+  — cosmetic; should migrate to `datetime.now(datetime.UTC)`.
+
+BDD-RT-001 (#264) is now unblocked. Resuming: rebase `feat/bdd-rt-001`
+onto current main + re-run the BDD cascade.
