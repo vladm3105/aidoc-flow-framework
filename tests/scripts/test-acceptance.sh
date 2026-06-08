@@ -257,6 +257,30 @@ has_STY03_only() {
   [[ "$sty03_errors" -gt 0 && "$other_errors" -eq 0 ]]
 }
 
+# AUTO-REMEDIATE-001: extract the file path from STY03 lint error output.
+# Input is the full lint stdout; output is the first path matching
+# <path>:<line>: [ERROR STY03].
+extract_path() {
+  local output="$1"
+  printf '%s\n' "$output" | grep -oE '^[^:]+:[0-9]+: \[ERROR STY03\]' \
+    | head -1 \
+    | sed -E 's/^([^:]+):[0-9]+: \[ERROR STY03\]$/\1/'
+}
+
+# AUTO-REMEDIATE-001: extract the layer directory (e.g., "03_EARS") from a
+# docs/0N_LAYER/... path. Returns empty string on no match.
+extract_layer_dir() {
+  local path="$1"
+  printf '%s' "$path" | grep -oE '/[0-9]{2}_[A-Z]+/' | head -1 | tr -d /
+}
+
+# AUTO-REMEDIATE-001: extract the artifact ID (e.g., "EARS-01") from the
+# filename portion of a docs/.../LAYER-NN[_anything].md path.
+extract_artifact_id() {
+  local path="$1"
+  basename "$path" | grep -oE '^[A-Z]+-[0-9]+' | head -1
+}
+
 # In-memory outcome tracking (keyed by element name)
 declare -A OUTCOME_BY_NAME=()
 declare -A KIND_BY_NAME=()

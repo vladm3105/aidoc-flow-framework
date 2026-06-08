@@ -70,5 +70,72 @@ test_has_STY03_only_sty03_only
 test_has_STY03_only_mixed
 test_has_STY03_only_no_sty03
 
+# ─── extract_path / extract_layer_dir / extract_artifact_id (inline) ────────
+
+extract_path() {
+  local output="$1"
+  printf '%s\n' "$output" | grep -oE '^[^:]+:[0-9]+: \[ERROR STY03\]' \
+    | head -1 \
+    | sed -E 's/^([^:]+):[0-9]+: \[ERROR STY03\]$/\1/'
+}
+
+extract_layer_dir() {
+  local path="$1"
+  printf '%s' "$path" | grep -oE '/[0-9]{2}_[A-Z]+/' | head -1 | tr -d /
+}
+
+extract_artifact_id() {
+  local path="$1"
+  basename "$path" | grep -oE '^[A-Z]+-[0-9]+' | head -1
+}
+
+# ─── extract_path tests ──────────────────────────────────────────────────────
+
+test_extract_path() {
+  local input
+  input="$(cat "$FIXTURES/lint-sty03-only.txt")"
+  local actual
+  actual="$(extract_path "$input")"
+  assert_eq "$actual" "examples/url-shortener/docs/03_EARS/EARS-01.md" \
+    "extract_path returns the STY03-failing file path"
+}
+
+echo ""
+echo "=== extract_path ==="
+test_extract_path
+
+# ─── extract_layer_dir tests ─────────────────────────────────────────────────
+
+test_extract_layer_dir() {
+  local actual
+  actual="$(extract_layer_dir 'examples/url-shortener/docs/03_EARS/EARS-01.md')"
+  assert_eq "$actual" "03_EARS" "extract_layer_dir returns the 0N_LAYER segment"
+
+  actual="$(extract_layer_dir 'examples/url-shortener/docs/02_PRD/PRD-01.md')"
+  assert_eq "$actual" "02_PRD" "extract_layer_dir works for PRD"
+
+  actual="$(extract_layer_dir 'examples/url-shortener/docs/08_IPLAN/IPLAN-01.md')"
+  assert_eq "$actual" "08_IPLAN" "extract_layer_dir works for IPLAN"
+}
+
+echo ""
+echo "=== extract_layer_dir ==="
+test_extract_layer_dir
+
+# ─── extract_artifact_id tests ───────────────────────────────────────────────
+
+test_extract_artifact_id() {
+  local actual
+  actual="$(extract_artifact_id 'examples/url-shortener/docs/03_EARS/EARS-01.md')"
+  assert_eq "$actual" "EARS-01" "extract_artifact_id returns the LAYER-NN prefix"
+
+  actual="$(extract_artifact_id 'examples/url-shortener/docs/02_PRD/PRD-01.md')"
+  assert_eq "$actual" "PRD-01" "extract_artifact_id works for PRD"
+}
+
+echo ""
+echo "=== extract_artifact_id ==="
+test_extract_artifact_id
+
 echo ""
 echo "All tests passed."
