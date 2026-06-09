@@ -215,6 +215,7 @@ def load_or_init_saga(ctx: SagaContext, seed_path: Path) -> dict:
                 }
             ],
             "compensation_actions": [],
+            "events": [],
         }
 
     return {
@@ -237,6 +238,7 @@ def load_or_init_saga(ctx: SagaContext, seed_path: Path) -> dict:
             }
         ],
         "compensation_actions": [],
+        "events": [],
     }
 
 
@@ -262,6 +264,25 @@ def append_transition(
             "scope": scope,
         }
     )
+    saga["updated_at"] = _utc_now_iso()
+
+
+def append_event(saga: dict, kind: str, **extra) -> None:
+    """Append a non-state-changing diagnostic event to saga.events[].
+
+    Distinct from saga.transitions (which records state-machine moves
+    validated against _ALLOWED_TRANSITIONS) and from saga.compensation_actions
+    (which records compensation/error-handling actions). Events are pure
+    orchestration observability — fixer dispatch + completion, subprocess
+    exit codes, anything else worth diagnosing.
+
+    Surfaced as a gap in SPEC-RT-001 live cascade (2026-06-09): saga claimed
+    `iteration: 3` but the journal recorded only one audit cycle's transitions
+    because fixer dispatch+completion left no journal trace. With this field
+    populated, a journal reader can answer "how many fixer cycles ran and what
+    was the outcome of each" without guessing from elapsed-time math.
+    """
+    saga.setdefault("events", []).append({"ts": _utc_now_iso(), "kind": kind, **extra})
     saga["updated_at"] = _utc_now_iso()
 
 
@@ -302,10 +323,15 @@ def resume_from_partial_timeout(saga: dict) -> None:
     saga["status"] = "PREPARED"
 
 
-def dispatch_phase(ctx: SagaContext, phase: str, brief: str) -> int:
+def dispatch_phase(ctx: SagaContext, phase: str, brief: str, saga: dict | None = None) -> int:
     """Dispatch a phase subprocess. Returns the subprocess exit code.
 
     `phase` is one of: 'draft', 'review', 'fixer', 're-review'.
+
+    If `saga` is provided, stamps `dispatch:<phase>` and `complete:<phase>`
+    events to saga.events[] for orchestration observability (SPEC-RT-001
+    2026-06-09 gap — fixer dispatch + completion previously left no
+    journal trace).
     """
     slash = {
         "draft": f"/aidoc-flow:doc-{ctx.layer_type.lower()}",
@@ -324,7 +350,18 @@ def dispatch_phase(ctx: SagaContext, phase: str, brief: str) -> int:
         f"{slash} {brief}",
     ]
     print(f"dispatch: {phase} ({slash}) ...")
+    if saga is not None:
+        append_event(saga, f"dispatch:{phase}", iteration=saga.get("iteration"), slash=slash)
+        write_saga(ctx, saga)
     result = subprocess.run(cmd, capture_output=False, check=False)
+    if saga is not None:
+        append_event(
+            saga,
+            f"complete:{phase}",
+            iteration=saga.get("iteration"),
+            exit_code=result.returncode,
+        )
+        write_saga(ctx, saga)
     return result.returncode
 
 
@@ -516,7 +553,7 @@ def main(argv: list[str] | None = None) -> int:
             f"seed at {args.seed}; saga at {ctx.saga_file}; "
             f"iteration {saga['iteration']}"
         )
-        rc = dispatch_phase(ctx, phase, brief)
+        rc = dispatch_phase(ctx, phase, brief, saga=saga)
 
         # B6 (2026-06-05 Amendment 1 verification): the dispatched
         # subprocess (audit / fixer / re-audit) writes its own per-branch

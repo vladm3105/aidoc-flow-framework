@@ -12,6 +12,70 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Plugin 0.10.0 → 0.10.1 (synthesizer schema + saga observability)
+
+Two infrastructure tightenings surfaced by the SPEC-RT-001 live cascade
+(2026-06-09). Both are layer-agnostic; both ship as a single plugin
+PATCH bump.
+
+- **Synthesizer agent contract: `findings[*].check` is now required.**
+  `platforms/claude-code-plugin/agents/synthesizer.md` `findings[]`
+  Field semantics tightened: every finding in `verdict.json` MUST
+  carry the `check` field (canonical `C\d+` from the per-(layer, lens)
+  playbook OR `beyond-checklist:<principle-tag>` form), preserved
+  byte-identically from the lens slot's finding.
+
+  **Origin:** SPEC verdict.json findings array dropped the `check`
+  field on every finding while lens slot JSONs correctly carried it.
+  ADR + BDD verdicts happened to preserve `check` — that was
+  LLM-stochastic luck, not contract compliance. The previous schema
+  listed `id, priority, location, message, recommendation, personas`
+  but not `check`, so both preserving and dropping the field were
+  "valid" per the loose contract. Downstream consumers (fixers,
+  traceability matrices, observability dashboards) read
+  `findings[*].check` to roll up by playbook check; on SPEC they got
+  nothing.
+
+  **Test:** new conformance test
+  `tests/conformance/platforms/test_synthesizer_verdict_schema.py`
+  (3 tests) enforces the contract:
+  1. `agents/synthesizer.md` must list `check` in the findings[]
+     example JSON
+  2. Every committed `verdict.json` under
+     `examples/<name>/.aidoc/review/**/` finding must carry a
+     syntactically valid `check` value
+  3. The example JSON in the contract itself uses a canonical check
+     id
+
+  Synthetic verdicts (hand-rolled by the harness's AUTO-REMEDIATE-001
+  path; marked `synthetic: true`) are exempt — they bypass the
+  synthesizer agent entirely.
+
+- **Saga driver observability: `saga.events[]` populated on every
+  subprocess dispatch.** `tools/saga_driver.py` gains an
+  `append_event(saga, kind, **extra)` helper and a new `events: []`
+  field on saga.json. `dispatch_phase` now stamps `dispatch:<phase>`
+  before each `claude -p` subprocess invocation and `complete:<phase>`
+  after the subprocess returns, with `iteration`, `slash`, and
+  `exit_code` recorded.
+
+  **Origin:** SPEC saga claimed `iteration: 3` but the `transitions[]`
+  array recorded only ONE audit cycle's per-branch transitions. The
+  iter counter advanced silently inside fixer cycles because the
+  state machine doesn't have a "fixer-dispatched" state and the
+  driver wasn't appending non-state-changing events to the journal.
+  A journal reader couldn't answer "how many fixer cycles ran and
+  what was the outcome of each" without guessing from elapsed-time
+  math.
+
+  Strictly additive to the saga schema (existing consumers ignore
+  unknown fields); byte-parity holds across canonical and vendored
+  saga_driver.py via `tools/sync-plugin-framework.sh`.
+
+No SKILL changes, no framework/VERSION bump, no agent file behavior
+change beyond the contract tightening. `tests/unit` (26) + `tests/conformance` (118
+including the 3 new tests; was 115) all PASS.
+
 ### Changed — SAGA-BUDGET-001 (saga driver wall-clock budget 60 → 90 min)
 
 - **Cascade-harness saga wall-clock budget bumped from 60 min to 90 min**

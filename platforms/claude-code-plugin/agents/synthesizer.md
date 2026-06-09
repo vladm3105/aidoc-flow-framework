@@ -125,6 +125,7 @@ parseable. Do not invent fields; do not nest beyond what is shown.
     {
       "id": "MERGED-P1-001",
       "priority": "P1",
+      "check": "C2",
       "location": "Project Scope > Core features",
       "message": "<finding text>",
       "recommendation": "<fix recommendation>",
@@ -160,6 +161,10 @@ Field semantics:
   every lens that ran; absent for lenses that failed.
 - `findings[]` (recommended; consumed by `doc-*-fixer`) — the reduced
   finding set. Each entry carries `id`, `priority` (P0|P1|P2|P3),
+  **`check`** (the playbook citation the finding survived on — either
+  a canonical `C\d+` id from the per-(layer, lens) playbook or a
+  `beyond-checklist:<principle-tag>` form; mirrors the lens slot
+  finding's `check` value verbatim, never invented or dropped),
   `location`, `message`, `recommendation`, and a **`personas`** array
   listing which lens(es) surfaced or co-owned the finding. The
   `personas` array is what `doc-*-fixer` reads to know which lens(es)
@@ -170,6 +175,18 @@ Field semantics:
     returns clean.
   - Empty / missing → orphan finding; fixer falls back to the layer's
     author lens (per `REVIEW_CREWS.yaml`).
+
+  **`check` preservation is a hard contract.** The synthesizer filters
+  input findings on `check` citation (per the Reduce §"Playbook
+  check-citation enforcement" rule) and MUST preserve the surviving
+  finding's `check` field byte-identically in `verdict.json`.
+  Downstream consumers (fixers, traceability matrices, observability
+  dashboards) read `findings[*].check` to roll up by playbook check;
+  dropping the field breaks every consumer. For merged multi-lens
+  findings whose source slots cite different checks, the synthesizer
+  picks the most-severe lens's check value (the same lens whose
+  `priority` was elevated during dedup); if all citing lenses use the
+  same check id (the common case), no choice is needed.
 - `playbook_coverage` — object, optional but emitted when playbook
   injection is active for this layer. Count of surviving findings per
   playbook check id, plus a `beyond_checklist` aggregate. Example:
