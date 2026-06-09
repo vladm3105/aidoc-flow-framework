@@ -17,16 +17,63 @@ owns the engine-agnostic specification; two independent platforms (Hermes
 MCP server, Claude Code plugin) each implement it. Both pass the same
 conformance suite.
 
-**What you get:**
+## The problem
 
-- Templates + schemas for every layer.
-- Cumulative `@upstream:` traceability tags from BRD all the way to code.
-- Deterministic lint (`sdd_doc_lint`) for structural correctness.
-- Conformance-tested outputs across both platforms.
+Driving AI assistants from free-form prompts carries three recurring costs.
+Output varies between runs, because the prompt is not retained as a reviewable
+artifact. There is no recorded link from a business requirement to the code that
+implements it, so checking or auditing the result means re-reading everything.
+And nothing measures whether a step is complete enough to build on — "it looked
+right" is the only gate.
 
-**Use it when** outputs must stay consistent and auditable as work scales
+Specification-Driven Development replaces the free-form prompt with a fixed
+chain of documents. Each of the eight layers has a defined template, a set of
+required references to the layers above it, and a numeric quality gate that must
+be met before the next layer is generated. Each step is therefore reproducible
+(it is a committed artifact), traceable (each element cites the upstream
+elements it derives from), and checkable (each layer is scored against a rubric
+and structurally linted).
+
+## What the framework provides
+
+- **Eight layered artifacts** — BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN. Each
+  is a document type with a defined template and schema; a layer may reference
+  only the layers before it.
+- **Cumulative traceability** — `@upstream:` tags link every element to the
+  elements it derives from, from business intent down to code. Broken or missing
+  links are detectable, not silent.
+- **Per-layer quality gates** — each layer is scored against a rubric; downstream
+  generation is gated on a minimum score, so an underspecified layer is caught
+  before it propagates.
+- **Multi-persona review** — each layer is reviewed from a defined set of lenses
+  (for example architecture, security, traceability) with weighted scoring and a
+  recorded verdict (`framework/governance/REVIEW_TEAM.md`).
+- **Deterministic structural lint** — `sdd_doc_lint` checks required sections, ID
+  formats, and reference resolution the same way on every run.
+- **Committed provenance** — the `.aidoc/` tier keeps audit, review, remediation,
+  validation, and security records beside the output, so "how was this produced?"
+  is answerable without a re-run.
+- **Two engines, one contract** — the specification is engine-agnostic; a Hermes
+  MCP server and a Claude Code plugin each implement it, and both pass the same
+  conformance suite.
+
+## Spec-driven vs. ad-hoc prompting
+
+| Dimension | Ad-hoc prompting | This framework |
+|-----------|------------------|----------------|
+| Reproducibility | Output varies per run; the prompt is not kept as an artifact | Each layer is a committed document generated from a fixed template |
+| Traceability | No recorded link from requirement to code | `@upstream:` tags link every element to the ones it derives from |
+| Review | Re-read the whole output to judge it | Each layer is scored against a rubric before the next is generated |
+| Audit trail | None unless added by hand | `.aidoc/` keeps audit, review, and remediation records beside the output |
+| Structural correctness | Checked manually | `sdd_doc_lint` checks it deterministically |
+
+## When to use it
+
+Use the framework when outputs must stay consistent and auditable as work scales
 across a team or over time — where "it passed review" needs to mean something
-traceable to a spec, not a one-off prompt that happened to look right.
+traceable to a spec, not a one-off prompt that happened to look right. For a
+single throwaway script, the layered chain is more structure than the task
+needs.
 
 ## Architecture
 
