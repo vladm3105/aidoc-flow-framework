@@ -160,6 +160,14 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
   ADR/SPEC/TDD/IPLAN per-layer rollouts. Live-validated: EARS-01.md
   trimmed 2457→2250 body words by the framework's own fixer (44/44
   element IDs + 114/114 trace tags preserved).
+- ✅ PLANSTD-001 — unified development/work plan standard (framework spec
+  `0.14.3 → 0.15.0`). `framework/layers/08_IPLAN/PLAN_STANDARD.md` defines one
+  flexible plan template (applicability matrix over `feature` / `bugfix` /
+  `documentation` / `refactor` / `chore`; `[REQUIRED]` / `[CODE]` /
+  `[IF APPLICABLE]` section tags); `plans/PLAN-TEMPLATE.md` rewritten to
+  conform; IPLAN README cross-linked. A third, orthogonal concept distinct from
+  the Permanent + Temporary YAML IPLAN artifacts (neither changes). Plugin and
+  Hermes product versions unchanged.
 
 ## Post-v1.0 — Planned Capabilities
 

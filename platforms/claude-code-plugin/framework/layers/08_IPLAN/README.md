@@ -21,6 +21,12 @@ Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per TDD co
 
 **Rule of thumb**: Does the work implement a TDD test contract? → permanent. Does it restore intended behavior or fix a bug? → temporary.
 
+## Development/Work Plans (markdown)
+
+Distinct from BOTH YAML artifacts above is the **development/work plan** — the markdown plan-of-record an agent writes in a repository's `plans/` directory before a change, covering objective, scope, approach, task sequence, verification, and review trail. Its structure, the work-type applicability rules, and the review discipline are specified in [PLAN_STANDARD.md](PLAN_STANDARD.md); the copy-paste working instance is the repository's `plans/PLAN-TEMPLATE.md`.
+
+A development plan is a *design-and-review record* read by a reviewer to approve a change; the two YAML IPLAN artifacts are *execution manifests* consumed by an agent step-by-step. A development plan may spawn a Permanent or Temporary IPLAN as one of its tasks, but the three are not interchangeable. Adding this standard changes neither YAML artifact.
+
 ## Design Decisions
 
 - **Mandatory layer** — one IPLAN per TDD/SPEC component, created when TDD reaches IPLAN-Ready >=90/100.

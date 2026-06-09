@@ -1,5 +1,36 @@
 # Session Handoff
 
+> **🟢 PLANSTD-001 IMPLEMENTED — 2026-06-09.** Framework spec
+> `0.14.3 → 0.15.0` (MINOR). Plan PR #114 (plan-only) merged; this is the
+> follow-on impl. Shipped: `framework/layers/08_IPLAN/PLAN_STANDARD.md`
+> (new normative, engine-agnostic spec doc — unified development/work plan
+> standard with an applicability matrix over `feature`/`bugfix`/
+> `documentation`/`refactor`/`chore` + `[REQUIRED]`/`[CODE]`/`[IF APPLICABLE]`
+> section tags); `plans/PLAN-TEMPLATE.md` rewritten to conform; IPLAN
+> `README.md` cross-linked (third, orthogonal concept vs the Permanent +
+> Temporary YAML IPLANs — neither changes). Plugin framework bundle
+> re-vendored byte-identical; both `FRAMEWORK_SPEC_VERSION` pointers re-matched
+> to `0.15.0`; **plugin (`0.10.1`) + Hermes (`0.3.0`) product versions
+> unchanged** (independent streams). **Two pre-PR review gaps caught and
+> fixed in-impl** (not in the merged plan): (1) hand-edited the hardcoded
+> spec-version literal at `tests/conformance/platforms/test_plugin_release_metadata.py:140`
+> (`0.14.3 → 0.15.0`) — not auto-synced by any hook; (2) ran
+> `sync-version-refs.sh` **before** `sync-plugin-framework.sh` so canonical
+> playbook frontmatter propagated before vendoring (byte-identity). A third,
+> surfaced by V1: `sync-version-refs.sh` does not rewrite the plugin README's
+> `$ cat FRAMEWORK_SPEC_VERSION` block / "Conforms to" lines — updated by hand
+> (`platforms/claude-code-plugin/README.md`). Conformance: 118 pass / 1 skip.
+> **Decision:** D-0032 (`plans/DECISIONS.md`). Built off `origin/main`
+> (`feat/planstd-001-impl`), the 4-commits-ahead base — not the stale PR #114
+> head branch.
+>
+> **Pre-existing drift noted, left untouched (out of scope):**
+> `platforms/claude-code-plugin/README.md` "Version | `0.6.3`" table cell and
+> CLAUDE.md "Current state" plugin-version line are stale vs the actual plugin
+> product version (`0.10.1`); the `sync-version-refs.sh` awk only updates the
+> bare `$ cat VERSION` line and `claude-code-plugin/v<X>` refs, not these prose
+> cells. Not caused by this change; not conformance-tested.
+>
 > **🟢 PLUGIN BRD LAYER COMPLETE — 2026-06-06.** Framework spec `0.13.0` /
 > plugin `0.6.2` / project `v1.1.0`. The plugin's BRD-layer machinery is
 > shipped and end-to-end verified. **Five PRs landed this session:**

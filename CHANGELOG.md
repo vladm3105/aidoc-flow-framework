@@ -12,6 +12,32 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.14.3 → 0.15.0 (PLANSTD-001)
+
+- **Unified development/work plan standard.** New normative spec doc
+  `framework/layers/08_IPLAN/PLAN_STANDARD.md` defines a single,
+  flexible plan structure that scales from a one-commit bugfix to a
+  multi-phase feature. An execution agent reads an **applicability
+  matrix** for its work type (`feature` / `bugfix` / `documentation` /
+  `refactor` / `chore`) and keeps only the applicable chapters, via
+  inline `[REQUIRED]` / `[CODE]` / `[IF APPLICABLE]` section tags and a
+  "delete non-applicable chapters" rule. The standard is engine- and
+  repo-agnostic; the copy-paste working instance is
+  `plans/PLAN-TEMPLATE.md`, rewritten to conform.
+
+  The doc is a **third, orthogonal** concept distinct from BOTH formal
+  IPLAN artifacts: the Permanent per-SPEC `IPLAN-NN_{slug}.yaml` and the
+  Temporary `tmp/TMP-IPLAN-*.yaml`. `framework/layers/08_IPLAN/README.md`
+  gains a cross-link + scope note stating the distinction; neither YAML
+  artifact changes.
+
+  **MINOR bump (0.14.3 → 0.15.0):** a new spec doc under `framework/`
+  forces a `framework/VERSION` bump via GATE-SPEC-E005. Both
+  `FRAMEWORK_SPEC_VERSION` pointers re-matched; plugin and Hermes
+  **product** versions unchanged (independent streams per
+  `docs/PROJECT.md` §2). Plugin framework bundle re-vendored
+  byte-identically (D-0022).
+
 ### Changed — Plugin 0.10.0 → 0.10.1 (synthesizer schema + saga observability)
 
 Two infrastructure tightenings surfaced by the SPEC-RT-001 live cascade

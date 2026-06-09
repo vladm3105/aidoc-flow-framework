@@ -133,11 +133,11 @@ class PluginReleaseMetadata(unittest.TestCase):
 
     def test_framework_spec_declaration_matches_framework_version(self):
         # The plugin's FRAMEWORK_SPEC_VERSION must match the framework spec.
-        # Bumped 0.14.0 → 0.14.1 in EARS-RT-001 when 5 EARS playbooks landed
-        # under framework/playbooks/03_EARS/ (PATCH: new content within
-        # existing §Playbooks artifact class from 0.14.0).
+        # Bumped 0.14.3 → 0.15.0 in PLANSTD-001 when the unified plan standard
+        # (framework/layers/08_IPLAN/PLAN_STANDARD.md) landed (MINOR: new spec
+        # doc forces GATE-SPEC-E005 framework/VERSION bump).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.14.3")
+        self.assertEqual(_plugin_framework_spec_version(), "0.15.0")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}
