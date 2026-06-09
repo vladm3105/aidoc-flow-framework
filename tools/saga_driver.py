@@ -109,13 +109,18 @@ _LAYER_CREWS: dict[str, list[str]] = {
     ],
 }
 
-# Bumped from 1500s -> 3300s in Amendment 1 verification (2026-06-05):
-# a realistic BRD cycle with one fixer pass takes ~40-55 min wall-clock
+# Bumped 1500s -> 3300s (Amendment 1 verification, 2026-06-05): a
+# realistic BRD cycle with one fixer pass takes ~40-55 min wall-clock
 # (draft ~10 min + audit ~15 min + fixer ~10 min + re-audit ~15 min).
-# 1500s only covered draft+audit happy path and PARTIAL_TIMEOUT'd on
-# every fixer cycle. 3300s gives the full 4-phase chain plus margin
-# below the harness orchestrator timeout (3600s).
-SOFT_DEADLINE_SECONDS = 3300
+# 1500s only covered the draft+audit happy path and PARTIAL_TIMEOUT'd
+# on every fixer cycle.
+# Bumped 3300s -> 5100s (SAGA-BUDGET-001, 2026-06-08): BDD-RT-001's
+# 3-audit / 2-fixer convergence took 58:38 to PASS — within 1:22 of
+# the 3600s harness ceiling. 5100s gives the full ~5-phase chain plus
+# the 300s margin below the bumped ORCHESTRATOR_TIMEOUT (5400s) so
+# the driver can write its PARTIAL_TIMEOUT state gracefully before the
+# wrapper SIGTERMs.
+SOFT_DEADLINE_SECONDS = 5100
 SUBPROCESS_TIMEOUT_SECONDS = 1800
 MAX_ITERATIONS = 3
 
