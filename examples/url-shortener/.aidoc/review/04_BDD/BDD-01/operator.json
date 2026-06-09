@@ -1,0 +1,33 @@
+{
+  "persona": "operator",
+  "lens_score": 95,
+  "findings": [
+    {
+      "id": "operator-P3-001",
+      "priority": "P3",
+      "location": "§3.3 / BDD.01.03.ed21",
+      "check": "C1",
+      "message": "Scenario ed21 (issuance fail-closed when Link Store write path is degraded) asserts no-ack, no durable mapping, and no orphan code, but carries no observability assert (no log severity, no metric). This is a significant error-state transition that an operator needs to detect and diagnose at runtime. The gap is upstream-owned: EARS.01.03.8df7 (the parent ubiquitous requirement) mandates write-before-ack ordering but does not declare a log or metric signal on write-path failure. By contrast, the parallel redirect-path store failure (EARS.01.03.fab2, covered by BDD.01.03.f44a) does have an EARS-declared ERROR log mandate — creating an asymmetry. Adding an observability Then-step to ed21 without a matching EARS parent would create an orphan untraced scenario element; this requires an upstream EARS amendment before it can be addressed at BDD layer.",
+      "recommendation": "Requires upstream EARS amendment: add an unwanted-behavior EARS line — IF the Link Store write path fails or times out on the issuance path, THE Shortening API SHALL emit a log entry at ERROR severity carrying the fault type and a timestamp. Once that line exists, add a corresponding observability Then-step to BDD.01.03.ed21 and its recovery pair BDD.01.03.bcfb.",
+      "personas": ["operator"]
+    },
+    {
+      "id": "operator-P3-002",
+      "priority": "P3",
+      "location": "§3.2 / BDD.01.03.bcf8",
+      "check": "C1",
+      "message": "Scenario bcf8 (harmful destination rejected) asserts the user-facing rejection message and that no short code is issued, but carries no observability assert. A harmful-destination rejection is an operationally significant abuse-screening event; operators need audit-trail or metric coverage to monitor screening effectiveness and detect false-positive spikes. EARS.01.03.9671 does not declare a log or metric emission for harmful rejections; without a parent EARS line an observability Then-step cannot be added without creating an orphan untraced element.",
+      "recommendation": "Requires upstream EARS amendment: extend EARS.01.03.9671 (or add a companion line) declaring that the Shortening API SHALL emit a harmful-destination-rejected log entry at WARN severity carrying the destination hash, reputation verdict, and timestamp (or a named metric increment, e.g. harmful_destination_rejected_total). Once that line exists, add the corresponding Then-step to BDD.01.03.bcf8.",
+      "personas": ["operator"]
+    },
+    {
+      "id": "operator-P3-003",
+      "priority": "P3",
+      "location": "§4 quality attributes / EARS.01.04.e27b, EARS.01.04.ca05",
+      "check": "C5",
+      "message": "No scenario exercises a redirect p95 latency-SLO breach or a monthly availability-SLO breach and asserts an alert fires to an operator channel. EARS.01.04.e27b declares a p95<50ms latency target and EARS.01.04.ca05 declares 99.9% monthly availability, but neither EARS line includes an alert-emission clause (neither uses an event-driven or state-driven pattern naming an alert action). Adding BDD breach-alert scenarios without an upstream EARS parent would produce orphaned scenarios against the coverage matrix.",
+      "recommendation": "Requires upstream EARS amendment: add EARS lines declaring that when redirect latency p95 exceeds the threshold window the service SHALL emit a latency-SLO-breach alert, and that when availability drops below 99.9% projected monthly the service SHALL emit an availability-SLO alert with payload and channel. Once those lines exist, add corresponding BDD breach scenarios asserting alert payload and delivery channel.",
+      "personas": ["operator"]
+    }
+  ]
+}
