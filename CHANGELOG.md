@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.15.1 → 0.15.2 (docs)
+
+- **`framework/README.md` Layout section corrected.** The `framework/`
+  directory listing had drifted: it omitted the `playbooks/` artifact class
+  (vendored; the review-team audit checklists), the `docs/` directory (whose
+  `AIDOC.md` this README already links), and the root guide docs
+  (`SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`, `QUICK_REFERENCE.md`,
+  `TESTING_STRATEGY_TDD.md`, `AI_ASSISTANT_RULES.md`). Layout now lists all
+  top-level entries; the intro line names the playbooks artifact class. PATCH
+  (doc clarification; any `framework/**` change trips GATE-SPEC-E005, forcing
+  the `framework/VERSION` bump + both `FRAMEWORK_SPEC_VERSION` pointers).
+  Plugin + Hermes product versions unchanged.
+
+- **Root `README.md` Status section refreshed** (project doc, no spec impact).
+  Corrected stale versions (framework spec `0.13.0` → `0.15.2`, plugin
+  `v0.6.2` → `v0.11.0`); replaced the drift-prone hand-maintained feature
+  catalog with a concise version snapshot pointing to `ROADMAP.md` /
+  `CHANGELOG.md`.
+
 ### Added — Framework Spec 0.15.0 → 0.15.1 + Plugin 0.10.2 → 0.11.0 (SPEC-RT-001)
 
 - **Framework Spec 0.15.0 → 0.15.1 — 5 SPEC-layer playbooks.**
