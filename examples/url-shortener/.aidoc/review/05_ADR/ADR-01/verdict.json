@@ -1,0 +1,119 @@
+{
+  "combined_status": "PASS",
+  "content_score": 90,
+  "structural_status": "PASS",
+  "coverage": {
+    "expected": 6,
+    "ran": 6,
+    "quorum_met": true
+  },
+  "blocking_findings_count": 0,
+  "lens_scores": {
+    "architect": 95,
+    "tech_lead": 85,
+    "chaos_engineer": 82,
+    "security_engineer": 91,
+    "operator": 82,
+    "auditor": 100
+  },
+  "findings": [
+    {
+      "id": "MERGED-P2-001",
+      "priority": "P2",
+      "check": "C1",
+      "location": "§5 Consequences (ADR.01.05.9107) / §3 Decision semantics (referenced ADR.01.03.5536)",
+      "message": "The §5 coupling-risk mitigation anchors the write-path partitioning contract on element ADR.01.03.5536, which is cited at §5 line 202 but never defined anywhere in §3. The §3 Decision semantics block defines only ADR.01.03.{5c3c, f5f5, 3315, 1050}; §6 adds 0db1. This is a genuine dangling intra-document element pointer. The §5 prose describes the partitioning semantics inline ('written once, best-effort, reconciliation logged') but does not resolve whether the visit-count increment is at-most-once (drop-and-reconcile, undercount until reconciliation) or at-least-once (retry, risk double-count). A SPEC author following the ADR.01.03.5536 citation lands on nothing and must infer whether a formal partitioning commitment exists. This is the load-bearing element keeping a count-write fault off the redirect path (BDD.01.03.5f58/a7ad). Note: the auditor lens incorrectly assessed this as conformant in its A3 check — the element appears in its §3 ID inventory note but is never given a decision-semantics bullet in §3 body.",
+      "recommendation": "Either (a) promote the partitioning primitive to a real §3 decision element: add 'ADR.01.03.5536 — Write-path partitioning: the durable mapping (original_url, status) is written once on issuance and never rewritten by the off-path increment, which performs an isolated partial-field write' and declare the increment delivery semantic explicitly (at-most-once with reconciliation OR at-least-once with idempotent/dedup increment), then keep the §5 citation; or (b) drop the ID from §5 and let the inline prose stand alone, expanding it to declare the delivery semantic unambiguously. Do not leave a citation pointing to an undefined element. Resolving 5536 also closes the increment-semantics ambiguity raised by the chaos lens.",
+      "personas": ["tech_lead", "chaos_engineer"]
+    },
+    {
+      "id": "CHAOS-P2-1",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§7 Implementation Assessment / Monitoring baseline (ADR.01.05.d549)",
+      "message": "The §7 phase table assigns blast classes but never applies the data-loss-possible class to the highest-blast failure mode: a KV tier that acknowledges before durable commit, silently losing a confirmed mapping (RPO>0). The Phase 1 risk 'conditional-write semantics differ' is labelled cross-service, understating the worst case. Silent loss of an acknowledged mapping is a data-loss event — precisely what the ADR exists to prevent — yet the data-loss-possible blast class defined in the playbook is never applied to the scenario that warrants it.",
+      "recommendation": "Add a row or scenario in §7 that classifies durable-commit-without-quorum (ack-before-durable) as blast radius = data-loss-possible, distinct from the cross-service conditional-write-semantics risk, so the RPO=0 failure carries its true blast class at ADR altitude.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "CHAOS-P2-2",
+      "priority": "P2",
+      "check": "beyond-checklist:silent-durability-failure",
+      "location": "§3 Decision (ADR.01.03.5c3c) / §7 Monitoring baseline",
+      "message": "The decision rests entirely on 'durable-commit-before-acknowledge.' If the chosen managed KV tier acks on write-buffer rather than quorum/fsync durability (a known config-dependent behaviour of several managed KV tiers), confirmed mappings are lost silently. The §7 RPO monitor ('Confirmed-mapping loss = any loss') presumes loss is observable, but a store that lies about durability emits no signal until a crash reveals the gap — there is no detection path for the ack-before-durable case. This is the highest-blast accidental failure mode and its detection is unspecified.",
+      "recommendation": "State the required durability-acknowledgement contract the KV tier must satisfy (quorum/fsync-before-ack, not buffered-ack) as a §3 decision constraint, and add a §7 detection signal that exercises it (e.g., periodic post-commit read-back / durability audit), so silent durability failure is caught before a crash exposes it.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "OPS-P2-1",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§7 Implementation Assessment — Monitoring baseline",
+      "message": "The redirect read path is the highest-traffic path and the primary SLO (p95 < 50 ms, @threshold:PRD.01.perf.redirectp95), yet the monitoring baseline table contains no row for redirect read-path latency. The fixer added write-conflict and durable-commit rows but the read path remains invisible. A latency regression on the hot path would surface only through end-user complaints or an external synthetic monitor, not through an ADR-declared metric and alert.",
+      "recommendation": "Add a monitoring row: metric = redirect read-path latency (p95), target = < 50 ms (@threshold:PRD.01.perf.redirectp95), alert threshold = >= 50 ms sustained over a calibration window (e.g., 2 min). The same KV client instrumentation reporting commit latency can report read latency — no architectural change required.",
+      "personas": ["operator"]
+    },
+    {
+      "id": "OPS-P2-2",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§7 Implementation Assessment — Monitoring baseline",
+      "message": "Visit-count reconciliation lag has no monitoring row or alert threshold. BDD.01.03.a7ad establishes a 60 s reconciliation budget and the ADR acknowledges reconciliation logging as the durability backstop for off-path dropped increments (ADR.01.05.9107, §3 off-path increment). A stuck or lagging reconciliation process is silent under the current monitoring baseline: the only signal is confirmed-mapping loss (RPO) = any loss, which fires only after the failure has propagated to mapping durability — too late to act on a count-reconciliation fault. The consequence is undercounted visit metrics and a potential BRD.01.10.7d5a violation without alerting.",
+      "recommendation": "Add a monitoring row: metric = reconciliation lag (age of oldest unresolved dropped-increment log entry), target = < 60 s (aligned to BDD.01.03.a7ad reconciliation budget), alert threshold = >= 60 s -> WARN. The reconciliation log already exists per the decision; instrumenting its oldest-entry age closes the observability gap with no architectural change.",
+      "personas": ["operator"]
+    },
+    {
+      "id": "ARCH-P3-1",
+      "priority": "P3",
+      "check": "C1",
+      "location": "§3 Decision (ADR.01.03.5c3c)",
+      "message": "The lead decision sentence is a clean single-sentence imperative and satisfies C1, but it is immediately followed by four further imperative sentences (atomic conditional write, durable-commit-before-acknowledge, primary-key read, off-path increment) in the same paragraph. These are sound and in-scope but blur which clause is THE binding decision versus its consequent write semantics.",
+      "recommendation": "Keep the first imperative as the standalone bolded decision and demote the four elaborating imperatives to a 'Decision semantics' sub-list (the §3 Decision semantics block already does this for reversibility/idempotency/trust-boundary). Optional precision nicety; the decision is implementer-bindable as written.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "ARCH-P3-2",
+      "priority": "P3",
+      "check": "beyond-checklist:scope-bundling",
+      "location": "§3 Decision (ADR.01.03.1050 trust-boundary auth) and §6 (ADR.01.03.0db1 data-at-rest)",
+      "message": "§2 scopes this ADR to 'only the storage substrate and its write semantics — not the cache, code generator, or replication model.' The per-service-principal auth/TLS decision (1050) and provider-managed envelope-encryption decision (0db1) are adjacent security postures bound here. They are legitimately store-coupled and well-bounded (not P1/P2 scope creep), but a future reader could read them as decisions exceeding the stated 'storage substrate and write semantics' charter.",
+      "recommendation": "Add one clause to the §2 scope statement explicitly admitting the store's trust boundary and at-rest-encryption posture into scope (e.g. '...and the store's authentication and at-rest-encryption posture'), so the charter matches what §3/§6 actually decide. No decision change required.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "CHAOS-P3-1",
+      "priority": "P3",
+      "check": "C3",
+      "location": "§7 Monitoring baseline — Confirmed-mapping loss (RPO) row",
+      "message": "The write-conflict alert is time-bounded (>5/min over 5-min window) and commit latency has a p95 threshold, but the highest-blast metric — Confirmed-mapping loss (RPO) — states target 0 / alert 'any loss' with no detection-time bound and no concrete detection signal. 'Any loss' is a threshold, not a quantified time-to-detect; it also assumes the loss surfaces, which the silent-durability case does not.",
+      "recommendation": "Add a quantified detection-time bound and an explicit signal for RPO loss (e.g., 'durability audit read-back detects a missing confirmed mapping within N s'), matching the quantification already applied to the write-conflict and commit-latency rows.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "SEC-P3-001",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§3 Decision (ADR.01.03.0db1, ADR.01.03.1050) / §6 Integration points",
+      "message": "The two new security controls (envelope encryption-at-rest; per-service-principal + TLS API-to-store boundary) are introduced without an explicit in-scope vs out-of-scope threat statement. Envelope encryption-at-rest addresses store/disk compromise and snapshot exfiltration but not live-credential compromise or in-process plaintext; the trust-boundary control addresses credential theft / on-path tampering of the API-to-store link but not a compromised service principal. The §2/§10 scoping carries most of C4's intent (abuse/open-redirect/cache deferred), so this is a residual altitude gap, not a hole.",
+      "recommendation": "Add a one-line threat framing to the §6 data-at-rest / trust-boundary notes: name what each control covers (store-compromise, on-path tampering, credential theft) and what it explicitly does not (live-principal compromise, in-process plaintext), so SPEC inherits the threat envelope, not just the control.",
+      "personas": ["security_engineer"]
+    },
+    {
+      "id": "SEC-P3-002",
+      "priority": "P3",
+      "check": "beyond-checklist:audit-evidence",
+      "location": "§8 Verification / §7 Monitoring baseline",
+      "message": "The fail-closed-on-auth/TLS-failure commitment (ADR.01.03.1050) and the encryption-at-rest commitment (ADR.01.03.0db1) have no verification criterion or monitoring signal. §8 covers RPO=0, uniqueness, write-path fail-closed, and count isolation, but no success criterion confirms (a) an auth/TLS failure to the store fails the write closed, nor (b) at-rest encryption is enabled on the provisioned KV tier. The controls are asserted but not evidenced.",
+      "recommendation": "Add a §8 success criterion that an injected store-auth/TLS failure yields no acknowledged code and no orphan mapping (reuses BDD.01.03.f44a/ed21/5f58 fixtures), and a §7 provisioning/launch check that at-rest envelope encryption is confirmed enabled on the KV tier before go-live.",
+      "personas": ["security_engineer"]
+    }
+  ],
+  "playbook_coverage": {
+    "C1": 2,
+    "C2": 3,
+    "C3": 1,
+    "C4": 1,
+    "C5": 1,
+    "beyond_checklist": 3
+  }
+}

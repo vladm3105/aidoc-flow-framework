@@ -88,6 +88,62 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   tests/scripts/test-auto-remediate-helpers.sh (13 tests, all passing).
   No SKILL changes, no framework/VERSION bump, no plugin/VERSION bump.
 
+### Added — Framework Spec 0.14.3 + Plugin 0.9.0 → 0.10.0 (ADR-RT-001)
+
+- **Framework Spec 0.14.2 → 0.14.3 — 6 ADR-layer playbooks.**
+  `framework/playbooks/05_ADR/{architect,tech_lead,security_engineer,operator,auditor,chaos_engineer}.md`
+  added per the §Playbooks contract from 0.14.0. Hybrid content shape
+  (reasoning frame + Cn deterministic checks + beyond-checklist
+  escape hatch + 0-100 scoring rubric). Crew weights
+  35/25/12/10/10/8 = 100 per `REVIEW_CREWS.yaml`.
+
+  **First layer where security dominates over chaos** (12 > 8) —
+  ADRs encode trust boundaries, authn/authz choices, and crypto
+  decisions. PATCH bump (new content within existing artifact
+  class, no contract changes).
+
+- **Claude Code plugin 0.9.0 → 0.10.0 — ADR layer team-mode + playbook injection.**
+  `doc-adr-audit/SKILL.md` (268 → 500 lines) gains `## Review Mode`
+  (team mode default at gates) + `## Saga interaction` +
+  `## Break-circuit policy` + playbook injection (step 3a +
+  augmented step 4).
+  `doc-adr-fixer/SKILL.md` (113 → 299 lines) gains
+  `## Remediate Mode` (team-mode patch-validation for P0/P1;
+  deterministic for P2/P3) + `## Saga interaction` +
+  `## Break-circuit policy`. Mirrors EARS-RT-001 / BDD-RT-001
+  wiring pattern.
+
+  **Live ADR acceptance: PASS at score 90/100** (cascade-1
+  `verdict.json` `combined_status: PASS`). Score trajectory across
+  2 audit cycles: iter 1 → **90 at iter 2** with 1 fixer cycle.
+  Per-lens scores at iter 2: architect 95, tech_lead 85,
+  chaos_engineer 82, security_engineer 91, operator 82, auditor 100.
+  6/6 lens coverage quorum on every audit. Wall-clock **43:48**
+  (well within the SAGA-BUDGET-001 5400s ceiling — saga reached
+  `CLOSED` cleanly, no SIGTERM at the wire). Parallel lens
+  fan-out confirmed in every audit cycle by saga journal (all 6
+  `BRANCH_RUNNING` + `BRANCH_COMPLETED` transitions stamped
+  same-second × 2 iters = 12 same-second pairs).
+
+  **First observation of team-mode patch-validation firing.**
+  The iter 1 fixer dispatched `security_engineer` as a Task
+  subagent in patch-validation mode (per the SKILL's
+  `BRANCH_COMPENSATING` contract), producing
+  `security_engineer.fix_1.json` — the first such slot across
+  all per-layer rollouts. BDD-RT-001 had no P0/P1s so the fixer
+  ran fully deterministic; ADR-RT-001 surfaced at least one
+  P0/P1 and exercised the team-mode validation cycle end-to-end.
+
+  Implementation artifacts: `plans/ADR-RT-001-PLAN.md` (2-cycle
+  gap review, 9 Pass-1 findings folded inline + Pass-2 verdict
+  clean). Test evidence: `examples/url-shortener/docs/05_ADR/ADR-01.md`
+  (365 lines, lint-clean); `examples/url-shortener/.aidoc/review/05_ADR/ADR-01/`
+  (6 per-lens slots + 1 fix-validation slot + verdict.json +
+  report.md + saga.json with 35 transitions across 2 audit + 1
+  fixer cycles + F_fix_report_v001);
+  `examples/url-shortener/.aidoc/audit/05_ADR-audit.md` (combined
+  unified audit).
+
 ### Added — Framework Spec 0.14.2 + Plugin 0.8.0 → 0.9.0 (BDD-RT-001)
 
 - **Framework Spec 0.14.1 → 0.14.2 — 6 BDD-layer playbooks.**

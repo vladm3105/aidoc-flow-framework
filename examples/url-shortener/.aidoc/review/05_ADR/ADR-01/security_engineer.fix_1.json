@@ -1,0 +1,11 @@
+{
+  "persona": "security_engineer",
+  "mode": "patch_validation",
+  "fix_iteration": 1,
+  "finding_id": "MERGED-P1-001",
+  "resolved": true,
+  "new_findings": [],
+  "regression": false,
+  "lens_score": 92,
+  "note": "Patch resolves MERGED-P1-001: §3 ADR.01.03.1050 names the API<->store boundary with a per-service-principal credential model, TLS 1.2+ in-transit protection, fail-closed semantics tied to the BDD TLS scenarios, and §6 carries the same posture into the integration table plus an at-rest note (ADR.01.03.0db1) — all at correct ADR altitude with no new P0/P1 in the patched region."
+}
