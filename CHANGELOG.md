@@ -12,6 +12,64 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — SAGA-DETERMINISM-001 (Plugin 0.10.1 → 0.10.2)
+
+Saga driver now deterministically reconciles `saga.transitions[]` and
+walks `saga.status` after every audit subprocess returns, instead of
+trusting the audit SKILL's LLM to do the bookkeeping consistently.
+
+**Origin:** SPEC-RT-001 worktree cascade (2026-06-09) reached
+`verdict.json` `combined_status: PASS` at score 95 with 12 clean
+`saga.events[]` entries (PR #115 instrumentation) — but the harness
+B2 check reported `FAIL` because `saga.status` was stuck at
+`FANOUT_STARTED`. Investigation: the audit SKILL's prompt asks the
+LLM to do two writes per branch event — update `branches[<lens>]`
+dict + append a transition entry to `transitions[]`. The LLM
+stochastically does the first while skipping the second. On ADR's
+run the LLM stamped all 35 transitions; on SPEC's run (byte-identical
+prompt) it stamped 0 of the 15 expected per-branch transitions across
+3 audit cycles. After audit completed, the driver hit
+`FANOUT_STARTED → FANIN_REDUCED` which isn't in
+`_ALLOWED_TRANSITIONS`, raised, and `saga.status` stayed at
+`FANOUT_STARTED`.
+
+**Fix (`tools/saga_driver.py` + vendored copy):** new
+`reconcile_post_audit(ctx, saga)` helper called at the start of
+`_advance_after_phase`'s review/re-review branch. It:
+
+1. Iterates `saga.branches[<lens>]`; for each branch whose `status`
+   is terminal (`BRANCH_COMPLETED` / `BRANCH_FAILED`) but whose
+   matching `branch:<lens>` `BRANCH_RUNNING` / `<terminal>`
+   transition is absent from `transitions[]`, appends the missing
+   entries (marked `reconciled: true`) using the branch's
+   `started_at` / `ended_at` timestamps.
+2. If `saga.status == FANOUT_STARTED` and every branch is terminal,
+   walks `saga.status` `FANOUT_STARTED → BRANCH_RUNNING →
+   BRANCH_COMPLETED` at run scope through the allowed-transition
+   graph. The existing PASS code path
+   (`BRANCH_COMPLETED → FANIN_REDUCED → SYNTHESIZED → CLOSED`) then
+   fires correctly.
+
+**Idempotent:** when the audit SKILL stamps transitions completely
+(the ADR case), `reconcile_post_audit` is a no-op. Partial-stamp
+cases (SKILL stamps some lenses, skips others) are handled — only
+missing transitions are backfilled.
+
+**Architecturally:** completes the cooperative→preemptive migration
+started by SAGA-PARITY-001 Phase 2 Amendment 1. Saga-state-machine
+bookkeeping is now deterministic at the driver, not LLM-delegated.
+The audit SKILL's saga-interaction prompt is preserved as a
+fast-path but no longer load-bearing for correctness.
+
+**Tests:** 6 new unit tests at
+`tests/unit/test_saga_reconcile_post_audit.py`. Includes a
+regression test on the verbatim captured SPEC-RT-001 saga.json
+fixture (`tests/unit/fixtures/saga-reconcile/saga-skill-skipped-transitions.json`).
+
+No SKILL changes. No framework/VERSION bump. Plugin VERSION 0.10.1
+→ 0.10.2 (PATCH). Byte-parity holds across canonical and vendored
+`saga_driver.py` via `tools/sync-plugin-framework.sh`.
+
 ### Added — Framework Spec 0.14.3 → 0.15.0 (PLANSTD-001)
 
 - **Unified development/work plan standard.** New normative spec doc
