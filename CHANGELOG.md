@@ -12,6 +12,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — SAGA-BUDGET-001 (saga driver wall-clock budget 60 → 90 min)
+
+- **Cascade-harness saga wall-clock budget bumped from 60 min to 90 min**
+  to accommodate larger / more iteration-prone layers. Three coordinated
+  constants updated in lockstep so the existing graceful-exit invariant
+  (300s margin between `SOFT_DEADLINE_SECONDS` and the wrapping
+  `ORCHESTRATOR_TIMEOUT`) holds:
+
+  | Variable | Was | Now | Where |
+  |---|---:|---:|---|
+  | `ORCHESTRATOR_TIMEOUT` | 3600 | **5400** | `tests/scripts/test-acceptance.sh` |
+  | `SOFT_DEADLINE_SECONDS` | 3300 | **5100** | `platforms/claude-code-plugin/tools/saga_driver.py` |
+  | `MAX_LAYER_SEC` | 3600 | **5400** | `tests/scripts/test-acceptance.sh` |
+
+  Origin: BDD-RT-001 live cascade run #2 converged to PASS at score 95
+  (verdict.json `combined_status: PASS`) in **58:38 of wall-clock** —
+  within 1:22 of the 3600s saga ceiling. The wrapper SIGTERM killed the
+  saga driver before its terminal output could flush, so summary.json
+  recorded `doc-bdd-autopilot: FAIL` despite verdict.json reading PASS.
+  The 5400s budget gives ~50% headroom over the BDD case and the same
+  margin over expected ADR / SPEC / TDD / IPLAN cascade durations
+  (those layers carry larger per-artifact content than BDD).
+
+  No SKILL changes. Per-claude-subprocess timeout
+  (`SUBPROCESS_TIMEOUT_SECONDS=1800` in saga_driver.py) and per-skill
+  leaf timeout (`SKILL_TIMEOUT=600` in test-acceptance.sh) unchanged —
+  no individual subprocess came close to those caps. Cost-cap
+  (`--cost-cap`, ~$22) remains the dollar guard.
+
 ### Fixed — sdd_doc_lint STY03 counted code-fenced content
 
 - **STY03 word-count now excludes code-fenced blocks**, mirroring STY02

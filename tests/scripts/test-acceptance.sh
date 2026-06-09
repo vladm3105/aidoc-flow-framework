@@ -68,8 +68,13 @@ FRAMEWORK_CREWS_FALLBACK="$FRAMEWORK/framework/governance/REVIEW_CREWS.yaml"
 # to 3600s: an autopilot that orchestrates a create→review→revise loop
 # (audit + fixer + re-audit) legitimately runs 30-45 min per layer in
 # team mode, and a multi-iteration fix cycle pushes that to ~60 min.
-# Lineage: 900s (BRD-RT-001) → 1800s (BRD-RT-002) → 3600s (BRD-RT-003).
-MAX_LAYER_SEC=3600   # 60 minutes per layer
+# Lineage: 900s (BRD-RT-001) → 1800s (BRD-RT-002) → 3600s (BRD-RT-003)
+# → 5400s (BDD-RT-001): BDD draft + 3 audit cycles + 2 fixer cycles
+# converged to PASS at 58:38 (run-2 verdict.json content_score=95).
+# 3600s cap killed the saga driver before its terminal output flushed;
+# 5400s gives ~50% headroom for stochastic LLM latency + future ADR /
+# SPEC / TDD / IPLAN layers whose artifacts are larger than BDD.
+MAX_LAYER_SEC=5400   # 90 minutes per layer
 
 # Per-skill timeout. Generalised in BRD-RT-004 / D-0028: collapse the
 # previously-separate AUDIT_TIMEOUT / AUTOPILOT_TIMEOUT / REVIEW_TEAM_TIMEOUT
@@ -89,13 +94,17 @@ MAX_LAYER_SEC=3600   # 60 minutes per layer
 #     + synthesizer). Generalised to one ORCHESTRATOR_TIMEOUT covering
 #     all three (audit, autopilot, fixer) + review-team itself.
 SKILL_TIMEOUT="${SKILL_TIMEOUT:-600}"                       # 10 min — leaf skills
-# Autopilot now wraps the saga driver, which itself dispatches up to 4
-# claude -p subprocesses per layer (draft, review, fixer, re-review).
-# A realistic BRD cycle with one fixer pass takes 40-55 min wall-clock,
-# so the autopilot subprocess needs ~60 min to outlive the driver's
-# break-circuit (SOFT_DEADLINE=3300s in saga_driver.py). See B5/B6 in
-# the SAGA-PARITY-001 Phase 2 Amendment 1 verification (2026-06-05).
-ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-3600}"         # 60 min — autopilot+driver chain
+# Autopilot now wraps the saga driver, which itself dispatches up to 6
+# claude -p subprocesses per layer (draft, audit×N, fixer×N, re-audit×N).
+# A realistic BRD cycle with one fixer pass takes 40-55 min wall-clock;
+# the BDD-RT-001 cascade exercised the 2-fixer / 3-audit ceiling and
+# converged to PASS at 58:38 with score 95 — but the 3600s wrapper
+# killed the saga driver before its terminal output could flush, so
+# the harness recorded FAIL despite verdict.json reading PASS.
+# Bumped 3600 → 5400 in SAGA-BUDGET-001 (2026-06-08) to give ~50%
+# headroom and outlive the bumped driver SOFT_DEADLINE (5100s).
+# Original B5/B6 lineage: SAGA-PARITY-001 Phase 2 Amendment 1 (2026-06-05).
+ORCHESTRATOR_TIMEOUT="${ORCHESTRATOR_TIMEOUT:-5400}"         # 90 min — autopilot+driver chain
 AGENT_TIMEOUT="${AGENT_TIMEOUT:-600}"                       # 10 min for agents
 
 # Total token budget for the whole run (A8). When the cumulative
