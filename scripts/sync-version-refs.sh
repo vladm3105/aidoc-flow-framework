@@ -168,6 +168,35 @@ if [[ -n "$fw_ver" ]]; then
       "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
     replace_in_file docs/PARITY.md \
       "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+
+    # platforms/claude-code-plugin/README.md quotes the framework spec version
+    # in prose ("...framework spec `X`...") AND in a `$ cat FRAMEWORK_SPEC_VERSION`
+    # example block (bare X.Y.Z on its own line). Both were previously skipped,
+    # forcing a hand-edit every framework bump (a conformance test caught the
+    # drift after the fact). Sync prose via replace_in_file; sync the bare line
+    # via awk, anchored to the preceding `$ cat FRAMEWORK_SPEC_VERSION` marker so
+    # the generic X.Y.Z is only touched inside that block.
+    replace_in_file platforms/claude-code-plugin/README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    if [[ -f platforms/claude-code-plugin/README.md ]]; then
+      awk -v prev="$fw_prev" -v new="$fw_ver" '
+        marker { if ($0 == prev) $0 = new; marker = 0 }
+        /^\$ cat FRAMEWORK_SPEC_VERSION$/ { marker = 1 }
+        { print }
+      ' platforms/claude-code-plugin/README.md > platforms/claude-code-plugin/README.md.tmp \
+        && mv platforms/claude-code-plugin/README.md.tmp \
+              platforms/claude-code-plugin/README.md \
+        && log "  updated plugin README: \$ cat FRAMEWORK_SPEC_VERSION block -> $fw_ver"
+    fi
+
+    # The conformance test pins the expected spec version as a literal release
+    # tripwire; it must track framework/VERSION. Correctness is also guarded by
+    # the sibling assertEqual(..., framework_version()) and by GATE-SPEC-E008
+    # (CHANGELOG required), so syncing this literal removes recurring toil
+    # without weakening the gate.
+    replace_in_file tests/conformance/platforms/test_plugin_release_metadata.py \
+      "_plugin_framework_spec_version(), \"$fw_prev\"" \
+      "_plugin_framework_spec_version(), \"$fw_ver\""
   fi
 
   # Each platform declares its target framework spec via

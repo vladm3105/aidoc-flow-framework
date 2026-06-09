@@ -2,8 +2,8 @@
 
 The **engine-agnostic specification** of the document-flow framework: the
 single contract that every platform implements. It contains **no runtime
-code** — only the layer definitions, registry, governance rules, and templates
-that platforms consume.
+code** — only the layer definitions, registry, governance rules, templates,
+and review playbooks that platforms consume.
 
 ## What it specifies
 
@@ -53,8 +53,17 @@ transitions between C4 levels; they have no C4 zoom level of their own.
 framework/
   README.md              This file.
   VERSION                Framework spec version (SemVer).
-  layers/                The 8 layer definitions — one folder per layer,
-                         each with a template, a README, and an index template.
+  SPEC_DRIVEN_DEVELOPMENT_GUIDE.md  End-to-end SDD authoring guide (the one
+                         root doc platforms vendor alongside the spec subtrees).
+  QUICK_REFERENCE.md     Condensed layer / tag / ID cheat-sheet.
+  TESTING_STRATEGY_TDD.md  Test-strategy guidance feeding the TDD layer.
+  AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
+  layers/                The 8 layer definitions — one folder per layer, each
+                         with a template, a README, and an index template
+                         (08_IPLAN also carries PLAN_STANDARD.md).
+  playbooks/             Per-layer review playbooks — the lens-by-lens audit
+                         checklists the review-team crews apply, one folder per
+                         layer. A vendored artifact class.
   registry/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.
@@ -65,6 +74,8 @@ framework/
                          (ADAPTATION.md + ADAPTATION_SURFACE.yaml); and
                          DECISIONS.md, the spec-level decision register.
                          See governance/README.md.
+  docs/
+    AIDOC.md              Canonical reference for the .aidoc/ provenance tier.
 ```
 
 ## Conformance
