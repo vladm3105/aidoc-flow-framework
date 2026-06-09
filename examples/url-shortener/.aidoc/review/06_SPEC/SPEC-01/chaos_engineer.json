@@ -1,0 +1,24 @@
+{
+  "persona": "chaos_engineer",
+  "lens_score": 93,
+  "findings": [
+    {
+      "id": "CHAOS-002-R1",
+      "priority": "P3",
+      "check": "C2",
+      "location": "§6 Resilience envelope (reconciliation log bound)",
+      "message": "The reconciliation-log overflow policy is now characterized (CHAOS-004 resolved: 'at the bound oldest deltas drop with a reconciliation_overflow alert; post-fault drain rate-bounded'), but the bound itself is qualitative -- '(max retention)' with no ceiling magnitude (no entry count, byte ceiling, or time window). The drop-oldest behavior and alert are specified, so the resilience BEHAVIOR is defined; what is missing is a concrete bound magnitude. Consequence: the overflow-and-drop test the TDD owes cannot be constructed -- a fixture cannot drive the log to its bound and observe the drop + alert without knowing what the bound is. This is a testability gap, not an uncharacterized-resilience gap, hence P3.",
+      "recommendation": "Quantify the reconciliation-log bound as a concrete ceiling (e.g. max N entries OR max retention window OR max bytes) so the overflow/drop-oldest path is constructable as a TDD fixture. Pin the magnitude to the design-load increment-fault rate x worst-case outage duration the §6 envelope assumes, or mark it a TDD-owned threshold with a named source.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "CHAOS-002-R2",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§3 Boundary failure semantics / §6 Resilience envelope (circuit-break)",
+      "message": "Circuit-break OPEN semantics are defined on both synchronous boundaries (§3: 'open after a bounded failure count => fail closed'; 'open => fail-safe not-found'), and the contract asserts recovery ('recovers when the store returns', §5 error table). But the breaker RECLOSE / half-open reset semantics are implicit: no half-open probe interval, reset window, or success-count-to-close is stated. C4 (recovery) wants the MTTR after a transient fault bounded; with no reclose mechanism specified, the time from substrate-recovered to breaker-closed (traffic readmitted) is unbounded by the SPEC. Recovery is asserted at the outcome level but the mechanism that bounds it is missing. P3 because the SPEC does claim recovery and the breaker-trip side is defined -- only the reset side is implicit.",
+      "recommendation": "Specify the circuit-break reset contract: the half-open probe cadence (or cool-down window) and the success condition that recloses the breaker, so the post-fault readmission time is bounded and the reclose path is testable (trip -> substrate recovers -> half-open probe -> close within bounded window). Bind concrete values at TDD against a named recovery budget.",
+      "personas": ["chaos_engineer"]
+    }
+  ]
+}

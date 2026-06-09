@@ -1287,3 +1287,73 @@ report.md + saga.json + F_fix_report_v001),
 Next: SPEC-RT-001 (task #266) — SPEC layer crew is the
 equal-weight split (chaos 10 / security 10), continuing the
 per-layer rollout sequence.
+
+## 2026-06-09 — SPEC-RT-001 shipped (+ three infrastructure PRs)
+
+SPEC layer team-mode + playbook injection landed. Framework spec
+`0.15.0 → 0.15.1` (PATCH: 5 SPEC playbooks under
+`framework/playbooks/06_SPEC/`). Plugin `0.10.2 → 0.11.0` (MINOR:
+`doc-spec-{audit,fixer}/SKILL.md` wiring).
+
+SPEC crew is the smallest of any layer (5 lenses, no operator and no
+auditor) and the first equal-weight chaos/security split (10 / 10) —
+SPEC specifies both performance/resilience and security controls.
+`integration_lead` first appears at SPEC, binding to
+`solutions-architect` (third lens sharing that agent alongside
+architect + tech_lead).
+
+**Live SPEC acceptance: PASS at score 97/100** (cascade-4, iter 2).
+Wall-clock 3042s (50:42). Saga reached `CLOSED` cleanly.
+**Score trajectory 79 → 97 in one fixer cycle** (+18 points).
+Per-lens at iter 2: architect 100 / tech_lead 95 / integration_lead 96 /
+chaos_engineer 93 / security_engineer 100.
+
+### Three infrastructure PRs surfaced and resolved during SPEC-RT-001
+
++ **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 now excludes
+  code-fenced blocks, mirroring STY02 / AS3.
++ **PR #111 (SAGA-BUDGET-001)** — saga driver wall-clock budget
+  60 → 90 min (coordinated `ORCHESTRATOR_TIMEOUT` / `SOFT_DEADLINE_SECONDS` /
+  `MAX_LAYER_SEC` bump preserving the 300s graceful-exit margin).
++ **PR #115 (synthesizer check-schema + saga events)** — synthesizer
+  contract now requires `check` per finding (new conformance test
+  enforces); saga driver stamps `dispatch:<phase>` / `complete:<phase>`
+  events to a new `saga.events[]` field.
++ **PR #117 (SAGA-DETERMINISM-001)** — saga driver's new
+  `reconcile_post_audit` walks `saga.status` deterministically when
+  the audit SKILL's LLM stochastically skips per-branch transition
+  stamping. Architecturally completes the cooperative→preemptive
+  migration. 6 unit tests including regression on captured SPEC
+  saga.json fixture.
+
+All four PRs landed before the SPEC-RT-001 cascade-4 run, which
+converged to PASS @ 97 with 10 reconciled transitions (PR #117
+firing), 100% `findings[*].check` preservation (PR #115 contract),
+8 saga.events (PR #115 instrumentation), clean fixer + team-mode
+patch-validation slot (`chaos_engineer.fix_1.json` for the iter-1
+P1).
+
+### Worktree-isolation pattern
+
+Mid-cascade branch confusion from a concurrent session was
+hijacking SPEC cascade runs by switching the on-disk SKILL files.
+Mitigation: cascade runs in a `git worktree add` worktree pinned to
+`feat/spec-rt-001`. Git enforces the one-branch-one-worktree rule,
+so the worktree's files are immune to primary-checkout branch
+changes. Apply to all long-running cascade verifications going
+forward.
+
+### Test evidence committed
+
+`examples/url-shortener/docs/06_SPEC/SPEC-01.md` (lint-clean);
+`examples/url-shortener/.aidoc/review/06_SPEC/SPEC-01/` (5 per-lens
+slots + chaos_engineer.fix_1.json patch-validation slot +
+verdict.json + report.md + saga.json with 17 transitions including
+10 reconciled + F_fix_report_v001);
+`examples/url-shortener/.aidoc/audit/06_SPEC-audit.md`.
+
+Next: TDD-RT-001 (task #267). TDD's crew is qa_lead / tech_lead /
+chaos_engineer / security_engineer / operator / auditor (6 lenses,
+mirrors BDD/ADR layout). Should be the cleanest per-layer rollout
+yet — all the framework defects discovered during SPEC are now
+fixed on main.

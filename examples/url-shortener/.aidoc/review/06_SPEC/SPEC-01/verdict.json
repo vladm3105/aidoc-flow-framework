@@ -1,0 +1,68 @@
+{
+  "combined_status": "PASS",
+  "content_score": 97,
+  "structural_status": "PASS",
+  "coverage": {
+    "personas_requested": 5,
+    "personas_returned": 5,
+    "quorum_met": true
+  },
+  "blocking_findings_count": 0,
+  "lens_scores": {
+    "architect": 100,
+    "tech_lead": 95,
+    "integration_lead": 96,
+    "chaos_engineer": 93,
+    "security_engineer": 100
+  },
+  "findings": [
+    {
+      "id": "TL-005",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§4 Data Models / §5 Error handling (reconciliation row, delta_id)",
+      "message": "The reconciliation-log entry is declared an owned persistent resource (§2 'owns the reconciliation log') and §5 states each replayed delta 'carries a unique delta_id (commit marker)' so replay can skip an already-reflected delta. That entry shape is not modeled in §4: neither delta_id nor the reconciliation-entry record (short_code, delta, delta_id, ts) appears as a typed contract alongside LinkRecord/ClaimResult. The owned off-path resource therefore has its ownership declared (resolving prior TL-003) but its schema undeclared at the spec layer, leaving the no-double-count replay mechanism un-typed for TDD/IPLAN.",
+      "recommendation": "Add a minimal typed contract for the reconciliation-log entry in §4 (e.g. ReconciliationEntry: short_code: str, delta: int, delta_id: str, ts_utc: datetime) so the owned resource and its delta_id commit-marker have a declared shape, consistent with the other §4 data models.",
+      "personas": ["tech_lead"]
+    },
+    {
+      "id": "INT-006",
+      "priority": "P3",
+      "check": "C3",
+      "location": "§3 claim / §4 LinkRecord.idempotency_key / §6 Patterns",
+      "message": "The idempotency_key crosses the API -> Link Store boundary and drives the replay-collapse dedup contract, but the spec does not declare the key's uniqueness scope or a replay-match retention window. With the content-derived fallback (ADR.01.03.3315), two distinct submissions hashing to the same candidate could collapse onto one record, and a same-key retry is honored as replay over an unbounded horizon by spec. The replay guarantee across the boundary is thus time- and scope-unbounded. Iteration-1 INT-001/002/003/004/005 are independently re-verified as resolved in v1.0.1: §3 boundary table now states per-edge timeout/retry/circuit-break (INT-001 C3); §4 names a backward-compatible-within-MAJOR, append-only-LinkStatus evolution policy with migration-on-break (INT-002 C4); §2/§3 stamp LinkStore contract v1 + substrate contract v1 tracking SPEC MAJOR (INT-003 C1); §2 declares a KV minimum-capability matrix with non-conformance rule (INT-004 C2); §6 attributes per-boundary emitters and cross-edge span propagation (INT-005 C5).",
+      "recommendation": "State the idempotency_key uniqueness scope (per-submitter vs global) and the replay-match retention window (key honored for replay within N; beyond it a same-key submission is treated as a fresh claim), plus the content-derived fallback's collision domain. Bind concrete values at TDD against the EARS.01.03.f909 issuance budget.",
+      "personas": ["integration_lead"]
+    },
+    {
+      "id": "CHAOS-002-R1",
+      "priority": "P3",
+      "check": "C2",
+      "location": "§6 Resilience envelope (reconciliation log bound)",
+      "message": "The reconciliation-log overflow policy is now characterized (CHAOS-004 resolved: 'at the bound oldest deltas drop with a reconciliation_overflow alert; post-fault drain rate-bounded'), but the bound itself is qualitative -- '(max retention)' with no ceiling magnitude (no entry count, byte ceiling, or time window). The drop-oldest behavior and alert are specified, so the resilience BEHAVIOR is defined; what is missing is a concrete bound magnitude. Consequence: the overflow-and-drop test the TDD owes cannot be constructed -- a fixture cannot drive the log to its bound and observe the drop + alert without knowing what the bound is. This is a testability gap, not an uncharacterized-resilience gap, hence P3.",
+      "recommendation": "Quantify the reconciliation-log bound as a concrete ceiling (e.g. max N entries OR max retention window OR max bytes) so the overflow/drop-oldest path is constructable as a TDD fixture. Pin the magnitude to the design-load increment-fault rate x worst-case outage duration the §6 envelope assumes, or mark it a TDD-owned threshold with a named source.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "CHAOS-002-R2",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§3 Boundary failure semantics / §6 Resilience envelope (circuit-break)",
+      "message": "Circuit-break OPEN semantics are defined on both synchronous boundaries (§3: 'open after a bounded failure count => fail closed'; 'open => fail-safe not-found'), and the contract asserts recovery ('recovers when the store returns', §5 error table). But the breaker RECLOSE / half-open reset semantics are implicit: no half-open probe interval, reset window, or success-count-to-close is stated. C4 (recovery) wants the MTTR after a transient fault bounded; with no reclose mechanism specified, the time from substrate-recovered to breaker-closed (traffic readmitted) is unbounded by the SPEC. Recovery is asserted at the outcome level but the mechanism that bounds it is missing. P3 because the SPEC does claim recovery and the breaker-trip side is defined -- only the reset side is implicit.",
+      "recommendation": "Specify the circuit-break reset contract: the half-open probe cadence (or cool-down window) and the success condition that recloses the breaker, so the post-fault readmission time is bounded and the reclose path is testable (trip -> substrate recovers -> half-open probe -> close within bounded window). Bind concrete values at TDD against a named recovery budget.",
+      "personas": ["chaos_engineer"]
+    }
+  ],
+  "playbook_coverage": {
+    "C2": 1,
+    "C3": 1,
+    "C4": 1,
+    "C5": 1,
+    "beyond_checklist": 0
+  },
+  "score_calculation": {
+    "weighted_blend": 97.0,
+    "cap_applied": "none",
+    "iteration": 2
+  }
+}

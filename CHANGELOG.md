@@ -12,6 +12,72 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.15.0 → 0.15.1 + Plugin 0.10.2 → 0.11.0 (SPEC-RT-001)
+
+- **Framework Spec 0.15.0 → 0.15.1 — 5 SPEC-layer playbooks.**
+  `framework/playbooks/06_SPEC/{architect,tech_lead,integration_lead,chaos_engineer,security_engineer}.md`
+  added per the §Playbooks contract from 0.14.0. Hybrid content shape
+  (reasoning frame + Cn deterministic checks + beyond-checklist
+  escape hatch + 0-100 scoring rubric). Crew weights 30/30/20/10/10
+  = 100 per `REVIEW_CREWS.yaml`.
+
+  **Smallest crew of any layer** (5 lenses) — no operator (deployment
+  is IPLAN's altitude) and no auditor (no per-element tag-trace audit
+  at SPEC). **Equal chaos/security split** (10/10) — SPEC specifies
+  both performance/resilience and security controls at equal weight.
+  **`integration_lead` first appears at SPEC** — binds to
+  `solutions-architect` (third lens sharing this agent alongside
+  architect + tech_lead; brief specifies the lens at Task dispatch
+  time). PATCH bump (new content within existing artifact class).
+
+- **Claude Code plugin 0.10.2 → 0.11.0 — SPEC layer team-mode + playbook injection.**
+  `doc-spec-audit/SKILL.md` (267 → 502 lines) gains `## Review Mode`
+  (team mode default at gates) + `## Saga interaction` +
+  `## Break-circuit policy` + playbook injection (step 3a loads
+  `framework/playbooks/06_SPEC/<lens>.md`; step 4 inlines into
+  per-lens Task brief).
+  `doc-spec-fixer/SKILL.md` (115 → 305 lines) gains
+  `## Remediate Mode` (team-mode patch-validation for P0/P1;
+  deterministic for P2/P3) + `## Saga interaction` +
+  `## Break-circuit policy`. Mirrors EARS-RT-001 / BDD-RT-001 /
+  ADR-RT-001 wiring pattern.
+
+  **Live SPEC acceptance: PASS at score 97/100** (cascade-4
+  `verdict.json` `combined_status: PASS`, saga `CLOSED` cleanly).
+  Score trajectory across 2 audit cycles: **79 → 97 in one fixer
+  cycle** (+18 points). Per-lens scores at iter 2: architect 100
+  (perfect) / tech_lead 95 / integration_lead 96 / chaos_engineer 93 /
+  security_engineer 100 (perfect). 5/5 lens coverage quorum on every
+  audit. Wall-clock 3042s (50:42) — well within SAGA-BUDGET-001
+  5400s ceiling.
+
+  **Three infrastructure PRs surfaced and resolved during the
+  SPEC-RT-001 rollout** (all merged before this PR landed):
+  - PR #110 (STY03 fence-fix) — `sdd_doc_lint` STY03 now excludes
+    code-fenced blocks
+  - PR #111 (SAGA-BUDGET-001) — saga budget 60 → 90 min
+  - PR #115 (synthesizer schema + saga events) — `findings[*].check`
+    required + `saga.events[]` orchestration journal
+  - PR #117 (SAGA-DETERMINISM-001) — `reconcile_post_audit` walks
+    saga.status deterministically when SKILL skips per-branch
+    transition stamping
+
+  All four together resulted in the cleanest cascade evidence yet:
+  100% finding-check preservation (4/4 in final verdict + 19/19 in
+  iter 1), 10 reconciled transitions auto-backfilled, 8 saga.events
+  with full lifecycle, fix report v001 + `chaos_engineer.fix_1.json`
+  team-mode patch-validation slot (the P1 from iter 1 was a
+  chaos_engineer finding).
+
+  Implementation artifacts: `plans/SPEC-RT-001-PLAN.md` (2-cycle gap
+  review: 11 Pass-1 clarifications folded + Pass-2 verdict clean).
+  Test evidence: `examples/url-shortener/docs/06_SPEC/SPEC-01.md`
+  (lint-clean), `examples/url-shortener/.aidoc/review/06_SPEC/SPEC-01/`
+  (5 per-lens slots + 1 fix-validation slot + verdict.json +
+  report.md + saga.json with 17 transitions including 10 reconciled
+  - F_fix_report_v001),
+  `examples/url-shortener/.aidoc/audit/06_SPEC-audit.md`.
+
 ### Fixed — SAGA-DETERMINISM-001 (Plugin 0.10.1 → 0.10.2)
 
 Saga driver now deterministically reconciles `saga.transitions[]` and
