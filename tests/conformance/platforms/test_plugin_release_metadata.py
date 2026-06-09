@@ -137,7 +137,7 @@ class PluginReleaseMetadata(unittest.TestCase):
         # (framework/layers/08_IPLAN/PLAN_STANDARD.md) landed (MINOR: new spec
         # doc forces GATE-SPEC-E005 framework/VERSION bump).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.14.4")
+        self.assertEqual(_plugin_framework_spec_version(), "0.15.1")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}

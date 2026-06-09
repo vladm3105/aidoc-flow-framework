@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: tech_lead
 weight: 20
 agent: solutions-architect
-framework_spec_version: "0.14.4"
+framework_spec_version: "0.15.1"
 ---
 # tech_lead lens — PRD layer
 
