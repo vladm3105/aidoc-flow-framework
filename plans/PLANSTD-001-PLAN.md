@@ -124,6 +124,7 @@ Two artifacts, one source of truth:
 ## File structure
 
 ### Created
+
 - `framework/layers/08_IPLAN/PLAN_STANDARD.md` — normative standard for
   the unified plan template (spec layer; engine-agnostic).
 - `platforms/claude-code-plugin/framework/layers/08_IPLAN/PLAN_STANDARD.md`
@@ -131,6 +132,7 @@ Two artifacts, one source of truth:
   hand-authored).
 
 ### Modified
+
 - `plans/PLAN-TEMPLATE.md` — replaced with the unified template.
 - `framework/layers/08_IPLAN/README.md` — add a cross-link + scope note
   distinguishing the formal IPLAN YAML artifact from the unified plan standard.
@@ -146,6 +148,7 @@ Two artifacts, one source of truth:
 ## Implementation sequence
 
 ### Task 1: Author the standard doc
+
 - Create `framework/layers/08_IPLAN/PLAN_STANDARD.md`: scope boundary
   vs formal IPLAN YAML; section catalog with `[REQUIRED]`/`[CODE]`/
   `[IF APPLICABLE]` semantics; APPLICABILITY MATRIX (feature / bugfix /
@@ -153,16 +156,19 @@ Two artifacts, one source of truth:
 - Keep it engine-agnostic (D-PLANSTD-3); no hardcoded version string.
 
 ### Task 2: Rewrite the repo template
+
 - Replace `plans/PLAN-TEMPLATE.md` with the approved unified template; ensure it
   conforms to the standard authored in Task 1 (same section names + tags).
 
 ### Task 3: Cross-link the IPLAN README
+
 - Add a short scope note + link in `framework/layers/08_IPLAN/README.md` stating
   the new standard governs markdown `plans/*.md` dev/work plans, distinct from
   BOTH the YAML Permanent IPLAN and the YAML `tmp/` Temporary IPLAN (D-PLANSTD-1).
   This cross-link is load-bearing for the layer's coherence.
 
 ### Task 4: Bump versions, then re-vendor
+
 - Bump `framework/VERSION` (MINOR) and re-match both `FRAMEWORK_SPEC_VERSION`
   pointers to it. Leave `platforms/claude-code-plugin/VERSION` and
   `platforms/hermes/VERSION` (product streams) **unchanged** per D-PLANSTD-5.
@@ -172,10 +178,12 @@ Two artifacts, one source of truth:
   plugin bundle byte-identically.
 
 ### Task 5: Update docs of record
+
 - CHANGELOG entry, ROADMAP bullet, HANDOFF narrative, DECISIONS entries
   (D-PLANSTD-1..4), PARITY current-state row (handled by the version hook).
 
 ### Task 6: Verify and land
+
 - Run Verification (below); all checks green.
 - Commit (conventional prefixes; one logical change per commit); open the impl
   PR only after Verification passes.
@@ -311,6 +319,7 @@ both folded in; several citation-accuracy nits fixed.
 - Re-read the patched sections: no new inconsistency introduced. V7 maps to R7;
   V6 split matches the exclude reality; D-PLANSTD-3/6 align with the verified
   hygiene + hook behavior.
+
 ### Pass 4 — 2026-06-09 — independent (fresh-context subagent, final)
 
 - Second fresh-context adversarial pass swept the full `tests/conformance/`
