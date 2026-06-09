@@ -28,8 +28,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Root `README.md` Status section refreshed** (project doc, no spec impact).
   Corrected stale versions (framework spec `0.13.0` → `0.15.2`, plugin
   `v0.6.2` → `v0.11.0`); replaced the drift-prone hand-maintained feature
-  catalog with a concise version snapshot pointing to `ROADMAP.md` /
-  `CHANGELOG.md`.
+  catalog with a concise snapshot pointing to `ROADMAP.md` / `CHANGELOG.md`.
+  The framework-spec reference now uses an inline phrase the version-sync hook
+  already maintains (it had drifted because the prior table cell was unreachable
+  by the hook), and the redundant plugin/Hermes version copies were dropped
+  (those live, auto-synced, in the Platforms table).
+
+- **`scripts/sync-version-refs.sh` closes two framework-spec propagation gaps**
+  (tooling; no spec/product version change of its own). On a `framework/VERSION`
+  bump the hook now also rewrites the plugin `README.md` (both the prose
+  framework-spec lines and the `$ cat FRAMEWORK_SPEC_VERSION` example block) and
+  the conformance test's hardcoded spec-version literal
+  (`test_plugin_release_metadata.py`). Both previously required a hand-edit every
+  bump — caught only after the fact by a conformance failure (e.g. PLANSTD-001
+  and the 0.15.2 doc PATCH both hit this). Verified end-to-end by a simulated
+  bump.
 
 ### Added — Framework Spec 0.15.0 → 0.15.1 + Plugin 0.10.2 → 0.11.0 (SPEC-RT-001)
 

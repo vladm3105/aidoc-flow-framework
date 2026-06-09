@@ -68,13 +68,10 @@ From Claude Code:
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
-**post-cutover development** (latest project release `v1.1.0`). Current versions:
-
-| Stream | Version |
-|--------|---------|
-| Framework spec | `0.15.2` |
-| Claude Code plugin | `v0.11.0` — **pre-1.0 preview**; APIs and surfaces may change before 1.0 |
-| Hermes platform | `v0.3.0` |
+**post-cutover development** (latest project release `v1.1.0`), tracking
+framework spec `0.15.2`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+and surfaces may change before 1.0. Platform release versions are in the
+[Platforms](#platforms) table above.
 
 Post-v1.0 development — delivered and planned — is tracked in
 [`ROADMAP.md`](ROADMAP.md); per-release detail is in
