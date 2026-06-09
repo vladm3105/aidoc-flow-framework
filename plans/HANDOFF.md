@@ -1154,3 +1154,52 @@ Two follow-up items noted by the fixer:
 
 BDD-RT-001 (#264) is now unblocked. Resuming: rebase `feat/bdd-rt-001`
 onto current main + re-run the BDD cascade.
+
+## 2026-06-08 — BDD-RT-001 + supporting fixes shipped
+
+Three coordinated PRs landed in sequence:
+
++ **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 word-count now
+  excludes code-fenced blocks (mirroring STY02 / AS3). BDD bodies are
+  mostly fenced Gherkin (`doc-bdd` allows ~50k tokens of it) and would
+  trip the blocking 2250-word threshold otherwise. Surfaced by
+  `doc-bdd-autopilot` mid-cascade, which correctly diagnosed the
+  framework workflow gap per the *Never hand-edit example artifacts*
+  rule and refused to manually trim the BDD body.
++ **PR #111 (SAGA-BUDGET-001)** — three coordinated constants bumped
+  60 → 90 min: `ORCHESTRATOR_TIMEOUT` 3600→5400 (`test-acceptance.sh`),
+  `SOFT_DEADLINE_SECONDS` 3300→5100 (`tools/saga_driver.py`, byte-parity
+  synced via `tools/sync-plugin-framework.sh`), `MAX_LAYER_SEC`
+  3600→5400. Preserves the 300s graceful-exit margin. BDD-RT-001 run #2
+  converged to PASS in 58:38 — within 1:22 of the old 3600s ceiling —
+  so future ADR/SPEC/TDD/IPLAN cascades (larger artifacts) needed the
+  headroom.
++ **PR (BDD-RT-001 itself)** — framework `0.14.1 → 0.14.2` + plugin
+  `0.8.0 → 0.9.0`. 6 BDD playbooks at `framework/playbooks/04_BDD/`
+  (qa_lead 35 / tech_lead 25 / chaos_engineer 14 / operator 10 /
+  auditor 10 / security_engineer 6 = 100); `doc-bdd-audit` +
+  `doc-bdd-fixer` SKILLs wired for team-mode dispatch + playbook
+  injection + saga interaction (mirrors EARS-RT-001 / PRD-RT-001
+  pattern). **Live BDD acceptance: PASS at score 95/100** (cascade-2
+  verdict.json `combined_status: PASS`). Score trajectory: 80 → 88 →
+  95 across 3 audit cycles; 2 clean fixer cycles (no regression P1
+  introduced); 6/6 lens coverage quorum throughout; parallel
+  fan-out confirmed in every audit cycle by saga journal.
+
+Per-lens scores at iter 3:
+
+  qa_lead 95 · tech_lead 100 · chaos_engineer 86 · operator 95 ·
+  auditor 100 · security_engineer 92
+
+Test evidence committed:
+`examples/url-shortener/docs/04_BDD/BDD-01.md` (32 scenarios, 5 EARS
+categories), `examples/url-shortener/.aidoc/review/04_BDD/BDD-01/`
+(6 lens slots + verdict.json + report.md + saga.json with 44
+transitions across 3 audit + 2 fixer cycles + 2 fix reports),
+`examples/url-shortener/.aidoc/audit/04_BDD-audit.md` (combined
+unified audit).
+
+Next: per-layer rollouts ADR-RT-001, SPEC-RT-001, TDD-RT-001,
+IPLAN-RT-001 (tasks #265-268). After those land, the final per-layer
+PR removes the `@unittest.skip` from `test_playbook_coverage.py`
+(task #258) to assert all 45 playbooks present.

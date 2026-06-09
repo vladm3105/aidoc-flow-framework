@@ -1,0 +1,24 @@
+{
+  "persona": "auditor",
+  "lens_score": 87,
+  "findings": [
+    {
+      "id": "auditor-P2-001",
+      "priority": "P2",
+      "location": "§3.1 / BDD.01.03.2986",
+      "check": "C1",
+      "message": "Scenario BDD.01.03.2986 (All client connections are served over TLS) carries @ears:EARS.01.04.c060 and @brd:BRD.01.10.c2e1 but is missing @prd tag. Cumulative upstream traceability requires @brd, @prd, and @ears on every scenario. EARS-01 notes no PRD element exists for c060, but BDD layer contract still requires the tag for completeness.",
+      "recommendation": "Add @prd tag to BDD.01.03.2986. If no specific PRD line covers TLS, cite the broad feature PRD tag (PRD.01.09.7f20 or similar security/NFR line) or document the exception in EARS-01.",
+      "personas": ["doc-bdd-fixer"]
+    },
+    {
+      "id": "auditor-P2-002",
+      "priority": "P2",
+      "location": "§4.2 Traceability matrix",
+      "check": "beyond-checklist:coverage-matrix-incomplete",
+      "message": "Coverage matrix in §4.2 claims bidirectional mapping but 9 scenarios defined in §3 are missing from the grid: BDD.01.03.0759 (redirect recovery), 1a55 (load shedding), 40d7 (audit log), 4df6 (reputation fail-closed), 5f58 (degraded visit-count), 6f00 (pool exhausted), 8b97 (mapping durability), ed21 (issuance write-path failure), f44a (store degradation). The matrix lists only 26 EARS rows with BDD scenario mappings, understating actual coverage depth.",
+      "recommendation": "Expand §4.2 matrix to include all 35 scenarios, or regenerate it from the scenario @ears tags in §3. Ensure the matrix row for each EARS line lists ALL scenarios exercising it (not just the primary one).",
+      "personas": ["doc-bdd-fixer"]
+    }
+  ]
+}

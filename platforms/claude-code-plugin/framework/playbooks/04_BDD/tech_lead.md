@@ -1,0 +1,94 @@
+---
+layer: 04_BDD
+lens: tech_lead
+weight: 25
+agent: solutions-architect
+framework_spec_version: "0.14.2"
+---
+# tech_lead lens — BDD layer
+
+## Reasoning frame
+
+The tech_lead lens at BDD altitude evaluates scenario implementability. At
+EARS altitude this lens validated rule implementability: were the numeric
+bounds, timeout values, and state-transition obligations achievable given the
+system architecture? At BDD altitude the question is one layer more concrete:
+can a step-definition author translate each Gherkin step into a deterministic,
+automatable test implementation without guessing? A scenario that uses
+natural-language steps which cannot be expressed as a finite sequence of API
+calls, fixture operations, and assertions is not an executable specification
+— it is documentation with test syntax applied to it.
+
+Step-definition implementability has several failure modes. Implicit timing
+assumptions — a step that says "wait until the system responds" without a
+numeric timeout — produce tests that pass on fast infrastructure and time out
+on slow infrastructure, creating environment-sensitive flakiness. Cross-scenario
+dependencies — a scenario whose preconditions assume another scenario ran
+first — produce ordering-sensitive suites that cannot be parallelised and
+produce misleading failures when run in isolation. Non-idempotent fixture
+setup — teardown that does not fully reverse the state change setup produced
+— leaves test-database pollution that accumulates across runs.
+
+At SPEC downstream the tech_lead lens descends to component-level design
+concerns: module interfaces, dependency boundaries, data contracts. At BDD the
+lens does not reach into design — it asks only whether the scenario can be
+implemented as written by a developer who knows nothing beyond the Gherkin
+text. This lens does NOT evaluate: EARS coverage (qa_lead), failure-mode
+scenario completeness (chaos_engineer), abuse-case coverage (security_engineer),
+observability hooks (operator), or conformance to ID and lint rules (auditor).
+
+## Required evidence checks
+
+Every finding MUST cite which check fired. Findings without a check citation
+are out-of-scope and discarded by the synthesizer.
+
+**C1 — Step definitions implementable as written.** Each Gherkin step must
+be expressible as a bounded, deterministic sequence of operations against
+the system under test. Steps that rely on subjective human judgement
+("verify the response looks correct"), on conditions that cannot be observed
+programmatically, or on external systems with no documented test-double
+contract are not implementable. Missing → P2 citing C1.
+
+**C2 — Timeout and wait reasoning explicit.** Every scenario step that
+involves waiting for an asynchronous event, polling for a condition, or
+asserting on an eventually-consistent state must declare a numeric timeout
+or polling ceiling. Steps that say "eventually", "after some time", or
+"when ready" without a numeric bound produce environment-sensitive timing
+behaviour that is not reproducible. Missing → P2 citing C2.
+
+**C3 — Fixture setup and teardown idempotent.** The Background or Given
+steps that establish test preconditions must produce the same starting state
+regardless of whether they run against a clean environment or an environment
+partially modified by a prior test run. Teardown steps must fully reverse
+all state changes made during the scenario. Missing → P2 citing C3.
+
+**C4 — Cross-scenario dependencies absent.** No scenario may rely on state
+produced by a prior scenario as a precondition. Each scenario must be
+independently executable in any order, in isolation, and in parallel with
+other scenarios. Scenarios that share mutable state through a common
+fixture, database row, or file path without per-scenario isolation are
+ordering-dependent and parallelisation-unsafe. Missing → P1 citing C4.
+
+**C5 — Tag placement at scenario boundary.** Tags intended for a single
+scenario must appear immediately before the `Scenario:` or `Scenario Outline:`
+keyword they annotate. Tags placed at feature-file level unintentionally apply
+to all scenarios in the file. Tags placed mid-scenario or after a step are
+syntactically invalid in most Gherkin parsers. Missing → P3 citing C5.
+
+## Beyond-checklist
+
+If you find a layer-specific failure mode the checklist does not cover, raise
+it as a P2/P3 finding citing `beyond-checklist:<principle-tag>` and state
+which paragraph of the reasoning frame motivates it. Use sparingly. If
+more than 30% of your findings are beyond-checklist, the playbook needs
+revision (file a follow-up).
+
+## Scoring
+
+| Outcome | lens_score |
+|---|---|
+| No findings; every check ran clean | 100 |
+| P3 findings only; no checklist holes | 90-99 |
+| 1-2 P2 findings against checks; no P1 | 80-89 |
+| 3+ P2 against checks OR 1 P1 | 70-79 |
+| P0 present OR systemic checklist failure | < 70 |

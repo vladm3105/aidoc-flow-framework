@@ -16,7 +16,7 @@ The platforms share the `framework/` spec and nothing else. Both pass the same
 shared conformance suite (`tests/conformance/`). The `framework/` spec defines
 the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
-**Current state (as of 2026-06-07):** framework spec `0.14.1`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8 with mechanical + warning hooks). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+**Current state (as of 2026-06-07):** framework spec `0.14.2`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8 with mechanical + warning hooks). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
 
 ## Durable conventions
 

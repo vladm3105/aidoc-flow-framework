@@ -88,6 +88,49 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   tests/scripts/test-auto-remediate-helpers.sh (13 tests, all passing).
   No SKILL changes, no framework/VERSION bump, no plugin/VERSION bump.
 
+### Added — Framework Spec 0.14.2 + Plugin 0.8.0 → 0.9.0 (BDD-RT-001)
+
+- **Framework Spec 0.14.1 → 0.14.2 — 6 BDD-layer playbooks.**
+  `framework/playbooks/04_BDD/{qa_lead,tech_lead,chaos_engineer,security_engineer,operator,auditor}.md`
+  added per the §Playbooks contract from 0.14.0. Hybrid content shape
+  (reasoning frame + Cn deterministic checks + beyond-checklist escape
+  hatch + 0-100 scoring rubric). Crew weights 35/25/14/6/10/10 = 100
+  per `REVIEW_CREWS.yaml` (chaos-heavy split — failure-scenario ACs
+  dominate over abuse-case ACs at BDD layer; +`operator` lens for
+  SLO/observability concerns at the gherkin/Then-step level). PATCH
+  bump (new content within existing artifact class, no contract
+  changes).
+
+- **Claude Code plugin 0.8.0 → 0.9.0 — BDD layer team-mode + playbook injection.**
+  `doc-bdd-audit/SKILL.md` gains `## Review Mode` (team mode default
+  at gates) + `## Saga interaction` + `## Break-circuit policy` +
+  playbook injection (step 3a loads `framework/playbooks/04_BDD/<lens>.md`;
+  step 4 inlines into per-lens Task brief).
+  `doc-bdd-fixer/SKILL.md` gains `## Remediate Mode` (team-mode
+  patch-validation cycle for P0/P1; deterministic application for
+  P2/P3) + `## Saga interaction` + `## Break-circuit policy`. Mirrors
+  the EARS-RT-001 / PRD-RT-001 wiring pattern.
+
+  **Live BDD acceptance: PASS at score 95/100** (cascade-2,
+  `verdict.json` `combined_status: PASS`). Score trajectory across 3
+  audits: **80 → 88 → 95** with 2 clean fixer cycles (no regression
+  P1 introduced). Per-lens scores at iter 3: qa_lead 95, tech_lead
+  100, chaos_engineer 86, security_engineer 92, operator 95, auditor
+  100. 6/6 coverage quorum on every audit cycle. Wall-clock 58:38
+  (within 1:22 of the 3600s ceiling — triggered SAGA-BUDGET-001 bump
+  in the same PR series). Parallel lens fan-out confirmed in every
+  audit cycle by saga journal (all 6 `BRANCH_RUNNING` + `BRANCH_COMPLETED`
+  transitions stamped same-second).
+
+  Implementation artifacts: `plans/BDD-RT-001-PLAN.md` (2-cycle gap
+  review, 8 Pass-1 findings folded inline + Pass-2 verdict clean).
+  Test evidence: `examples/url-shortener/docs/04_BDD/BDD-01.md` (32
+  scenarios, 5 EARS categories covered, bidirectional `@ears:` matrix);
+  `examples/url-shortener/.aidoc/{review/04_BDD/BDD-01/,audit/04_BDD-audit.md}`
+  (6 per-lens slots + verdict.json + report.md + saga.json showing 44
+  transitions across 3 audit + 2 fixer cycles + combined unified
+  audit report).
+
 ### Added — Framework Spec 0.14.1 + Plugin 0.7.0 → 0.8.0 (EARS-RT-001)
 
 - **Framework Spec 0.14.0 → 0.14.1 — 5 EARS-layer playbooks.**
