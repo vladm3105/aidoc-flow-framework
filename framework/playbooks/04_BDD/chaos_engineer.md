@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: chaos_engineer
 weight: 14
 agent: chaos-engineer
-framework_spec_version: "0.15.0"
+framework_spec_version: "0.14.4"
 ---
 # chaos_engineer lens — BDD layer
 
