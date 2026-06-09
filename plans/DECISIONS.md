@@ -10,6 +10,37 @@ graduation.
 
 ---
 
+## D-0032 — Unified development/work plan standard in the IPLAN layer (PLANSTD-001)
+
+- **Date:** 2026-06-09T00:00:00Z
+- **Decision:** Anchor a single, flexible development/work plan template to a
+  normative spec doc at `framework/layers/08_IPLAN/PLAN_STANDARD.md`, and
+  rewrite `plans/PLAN-TEMPLATE.md` to conform. The standard:
+  - **(placement, D-PLANSTD-1)** lives in `08_IPLAN` as a **third, orthogonal**
+    concept governing markdown `plans/*.md` dev/work plans — explicitly distinct
+    from BOTH the Permanent per-SPEC `IPLAN-NN_{slug}.yaml` and the Temporary
+    `tmp/TMP-IPLAN-*.yaml`. Neither YAML artifact changes; the IPLAN `README.md`
+    cross-link is load-bearing for the layer's conceptual coherence.
+  - **(flexibility, D-PLANSTD-2)** expresses section applicability via inline
+    `[REQUIRED]` / `[CODE]` / `[IF APPLICABLE]` tags plus an applicability
+    matrix over the confirmed work-type set `feature` / `bugfix` /
+    `documentation` / `refactor` / `chore`; the agent keeps applicable chapters
+    and deletes the rest (no `N/A` stubs).
+  - **(engine-agnostic, D-PLANSTD-3)** carries no engine tokens and no literal
+    version string (passes `test_spec_hygiene.py`).
+  - **(verification, D-PLANSTD-4)** is `[REQUIRED]` for every work type; only
+    the kind varies (runnable commands for code; lint/link/render/review for
+    documentation).
+  - **(versioning, D-PLANSTD-5)** bumps `framework/VERSION` MINOR
+    (`0.14.3 → 0.15.0`, forced by GATE-SPEC-E005); re-matches both
+    `FRAMEWORK_SPEC_VERSION` pointers; leaves plugin + Hermes **product**
+    versions unchanged (independent streams, `docs/PROJECT.md` §2).
+- **Why:** The prior `plans/PLAN-TEMPLATE.md` was thin and migration-flavored;
+  real plans in this repo had outgrown it (File-structure / `### Task N` /
+  Claim-ledger / Review-log sections absent from the template). One standard,
+  reused across repos, replaces ad-hoc plan shapes. Full design, claim ledger,
+  and 6-pass review trail in `plans/PLANSTD-001-PLAN.md` (PR #114).
+
 ## D-0031 — Promote the review-saga lifecycle into the framework spec (supersedes D-0005's scope)
 
 - **Date:** 2026-06-05T13:00:00Z
