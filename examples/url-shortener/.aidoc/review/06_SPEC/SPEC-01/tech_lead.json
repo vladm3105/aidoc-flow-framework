@@ -1,0 +1,15 @@
+{
+  "persona": "tech_lead",
+  "lens_score": 95,
+  "findings": [
+    {
+      "id": "TL-005",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§4 Data Models / §5 Error handling (reconciliation row, delta_id)",
+      "message": "The reconciliation-log entry is declared an owned persistent resource (§2 'owns the reconciliation log') and §5 states each replayed delta 'carries a unique delta_id (commit marker)' so replay can skip an already-reflected delta. That entry shape is not modeled in §4: neither delta_id nor the reconciliation-entry record (short_code, delta, delta_id, ts) appears as a typed contract alongside LinkRecord/ClaimResult. The owned off-path resource therefore has its ownership declared (resolving prior TL-003) but its schema undeclared at the spec layer, leaving the no-double-count replay mechanism un-typed for TDD/IPLAN.",
+      "recommendation": "Add a minimal typed contract for the reconciliation-log entry in §4 (e.g. ReconciliationEntry: short_code: str, delta: int, delta_id: str, ts_utc: datetime) so the owned resource and its delta_id commit-marker have a declared shape, consistent with the other §4 data models.",
+      "personas": ["tech_lead"]
+    }
+  ]
+}
