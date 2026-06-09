@@ -415,6 +415,86 @@ def validate_and_repair_branches(ctx: SagaContext, saga: dict) -> None:
         saga.setdefault("branches", {})[persona] = branch
 
 
+def reconcile_post_audit(ctx: SagaContext, saga: dict) -> None:
+    """Backfill saga.transitions[] + walk saga.status when the audit SKILL's
+    LLM skipped per-branch transition stamping.
+
+    The audit SKILL prompt asks the LLM to do two writes per branch event:
+    (1) update branches[<lens>] dict, (2) append a transition entry to
+    saga.transitions[]. LLM stochasticity can produce (1) reliably while
+    skipping (2) — observed in SPEC-RT-001 live cascade (2026-06-09): 5
+    lenses transitioned to BRANCH_COMPLETED in the branches dict across 3
+    audit cycles, but 0 of the 15 expected per-branch transitions stamped
+    in transitions[]. Same byte-identical SKILL prompt worked correctly on
+    ADR (35 transitions stamped).
+
+    This function runs after every audit subprocess returns and reconciles
+    the journal: if branches[<lens>].status is a terminal branch state but
+    the matching `branch:<lens>` transition is absent from transitions[],
+    backfill it (marked `reconciled: true`). Then advance saga.status from
+    FANOUT_STARTED through BRANCH_RUNNING to BRANCH_COMPLETED at run scope
+    when all branches are terminal — using the allowed-transition graph,
+    so the existing PASS code path (line ~466: BRANCH_COMPLETED →
+    FANIN_REDUCED) can fire correctly instead of trying the illegal
+    FANOUT_STARTED → FANIN_REDUCED jump.
+
+    Architecturally: this moves saga-state-machine bookkeeping from
+    LLM-driven (cooperative; fragile under stochasticity) to driver-driven
+    (preemptive; deterministic) — the same principle SAGA-PARITY-001
+    Phase 2 Amendment 1 applied to the outer create-review-revise loop.
+    """
+    branches = saga.get("branches", {})
+    if not branches:
+        return  # nothing to reconcile
+
+    transitions = saga.setdefault("transitions", [])
+    seen_branch_transitions: set[tuple[str, str]] = {
+        (t["scope"], t["to"]) for t in transitions if t.get("scope", "").startswith("branch:")
+    }
+
+    for lens, branch in branches.items():
+        scope = f"branch:{lens}"
+        status = branch.get("status", "BRANCH_RUNNING")
+        # Backfill FANOUT_STARTED -> BRANCH_RUNNING if missing
+        if (scope, "BRANCH_RUNNING") not in seen_branch_transitions:
+            transitions.append(
+                {
+                    "ts": branch.get("started_at") or _utc_now_iso(),
+                    "from": "FANOUT_STARTED",
+                    "to": "BRANCH_RUNNING",
+                    "scope": scope,
+                    "reconciled": True,
+                }
+            )
+        # Backfill BRANCH_RUNNING -> <terminal> if missing
+        if status != "BRANCH_RUNNING" and (scope, status) not in seen_branch_transitions:
+            transitions.append(
+                {
+                    "ts": branch.get("ended_at") or _utc_now_iso(),
+                    "from": "BRANCH_RUNNING",
+                    "to": status,
+                    "scope": scope,
+                    "reconciled": True,
+                }
+            )
+
+    # Walk run-level status from FANOUT_STARTED through to BRANCH_COMPLETED
+    # via the allowed-transition graph, but only when every crew branch
+    # has reached a terminal state (BRANCH_COMPLETED or BRANCH_FAILED).
+    terminal_branch_states = {"BRANCH_COMPLETED", "BRANCH_FAILED"}
+    all_branches_terminal = bool(branches) and all(
+        b.get("status") in terminal_branch_states for b in branches.values()
+    )
+    if all_branches_terminal and saga["status"] == "FANOUT_STARTED":
+        append_transition(saga, from_state="FANOUT_STARTED", to_state="BRANCH_RUNNING", scope="run")
+        saga["status"] = "BRANCH_RUNNING"
+        append_transition(
+            saga, from_state="BRANCH_RUNNING", to_state="BRANCH_COMPLETED", scope="run"
+        )
+        saga["status"] = "BRANCH_COMPLETED"
+    saga["updated_at"] = _utc_now_iso()
+
+
 def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
     """Apply the state-machine transition for a completed phase + decide
     next phase based on verdict.json (for review/re-review phases)."""
@@ -424,6 +504,7 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
         saga["current_phase"] = "review"
     elif phase in ("review", "re-review"):
         validate_and_repair_branches(ctx, saga)
+        reconcile_post_audit(ctx, saga)
 
         score, status = read_verdict_score(ctx)
         if status == "MISSING":

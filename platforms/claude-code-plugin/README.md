@@ -98,7 +98,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.10.1
+0.10.2
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.15.0
