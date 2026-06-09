@@ -137,7 +137,7 @@ class PluginReleaseMetadata(unittest.TestCase):
         # under framework/playbooks/03_EARS/ (PATCH: new content within
         # existing §Playbooks artifact class from 0.14.0).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.14.2")
+        self.assertEqual(_plugin_framework_spec_version(), "0.14.3")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}

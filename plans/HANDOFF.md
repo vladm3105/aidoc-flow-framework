@@ -1203,3 +1203,56 @@ Next: per-layer rollouts ADR-RT-001, SPEC-RT-001, TDD-RT-001,
 IPLAN-RT-001 (tasks #265-268). After those land, the final per-layer
 PR removes the `@unittest.skip` from `test_playbook_coverage.py`
 (task #258) to assert all 45 playbooks present.
+
+## 2026-06-09 — ADR-RT-001 shipped
+
+ADR layer team-mode + playbook injection landed. Framework spec
+`0.14.2 → 0.14.3` (PATCH: 6 ADR playbooks under
+`framework/playbooks/05_ADR/`). Plugin `0.9.0 → 0.10.0` (MINOR:
+`doc-adr-{audit,fixer}/SKILL.md` wiring).
+
+ADR crew is the first to weight security over chaos (12 > 8) per
+the REVIEW_CREWS.yaml rationale — ADRs encode trust boundaries,
+authn/authz choices, and crypto decisions. Lens→agent map binds
+both `architect` and `tech_lead` to `solutions-architect`, with
+the brief specifying which lens to apply at dispatch time
+(established pattern from SPEC/TDD layers).
+
+**Live ADR acceptance: PASS at score 90/100** (cascade-1, iter 2).
+Wall-clock **43:48** — well within the SAGA-BUDGET-001 5400s
+ceiling; saga reached `CLOSED` cleanly (no SIGTERM at the wire,
+unlike BDD-RT-001 cascade-2 which finished mid-finalize). Faster
+convergence than BDD-RT-001 too (2 audit + 1 fixer vs 3 audit + 2
+fixer) — likely the security-heavy crew catches more on iter 1.
+
+Per-lens scores at iter 2:
+
++ architect 95
++ tech_lead 85
++ chaos_engineer 82
++ security_engineer 91
++ operator 82
++ auditor 100
+
+**First observed team-mode patch-validation cycle** across all
+per-layer rollouts: the iter 1 fixer dispatched `security_engineer`
+as a Task subagent in patch-validation mode, producing
+`security_engineer.fix_1.json` per the SKILL's `BRANCH_COMPENSATING`
+contract. BDD-RT-001 had no P0/P1s so the fixer ran fully
+deterministic; ADR exercised the team-mode validation cycle
+end-to-end.
+
+Saga journal: 35 transitions, all 12 per-branch
+`BRANCH_RUNNING`/`BRANCH_COMPLETED` pairs stamped same-second
+(parallel fan-out × 2 iters).
+
+Test evidence committed:
+`examples/url-shortener/docs/05_ADR/ADR-01.md` (365 lines,
+lint-clean), `examples/url-shortener/.aidoc/review/05_ADR/ADR-01/`
+(6 per-lens slots + 1 fix-validation slot + verdict.json +
+report.md + saga.json + F_fix_report_v001),
+`examples/url-shortener/.aidoc/audit/05_ADR-audit.md`.
+
+Next: SPEC-RT-001 (task #266) — SPEC layer crew is the
+equal-weight split (chaos 10 / security 10), continuing the
+per-layer rollout sequence.
