@@ -182,6 +182,32 @@ Every finding produced by a lens MUST cite either a checklist check (`check: "C1
 
 The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
 
+## Necessary upstream + transitive trace
+
+A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through `tools/trace_walk.py` for one-shot queries.
+
+The necessary-upstream set per layer:
+
+| Layer | `required_tags` | Reads from |
+|---|---|---|
+| BRD | `[]` | root |
+| PRD | `[brd]` | every PRD lens reads BRD context |
+| EARS | `[prd]` | EARS SHALLs derive from PRD features |
+| BDD | `[ears]` | scenarios encode EARS SHALLs |
+| ADR | `[ears, bdd]` | architecture decisions constrained by behaviour |
+| SPEC | `[ears, bdd, adr]` | specification grounded in requirements + decisions |
+| TDD | `[ears, bdd, adr, spec]` | tests bind to scenarios + interfaces + reversibility |
+| IPLAN | `[spec, tdd]` | implementation order from components + test sequence |
+
+Enforcement is split:
+
+- **`sdd_doc_lint` rule `TRACE-RES-001`** (deterministic structural floor, runs at every layer including those without an auditor lens) flags any emitted `@<layer>: <ID>` whose target file is missing OR whose element ID is not declared in the host document. Unresolvable tags at any depth are errors.
+- **Auditor C1** (content layer; lives at BRD, PRD, BDD, ADR, TDD where the crew carries the lens) verifies that the resolved element semantically supports the citation — not just that it exists.
+
+Tags above the necessary set (decorative lineage carried for human readability — e.g. an ADR that wants to show its `@brd:` origin even though `required_tags=[ears, bdd]`) are permitted; the lint rule still demands they resolve.
+
+*Origin:* NECESSARY-UPSTREAM-001 (framework spec `0.15.2` → `0.16.0`) replaced the cumulative-trace contract — every downstream layer redeclaring every upstream layer in `required_tags` — after a TDD-RT-001 cascade exposed trace fabrication when an upstream layer was genuinely absent from a project (`@prd:` tags emitted with no PRD layer authored).
+
 ## Resilience & security
 
 - **Partial crews.** If a persona does not return, the reduce proceeds on the crew
