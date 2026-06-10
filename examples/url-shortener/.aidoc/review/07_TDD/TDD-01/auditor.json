@@ -1,0 +1,14 @@
+{
+  "persona": "auditor",
+  "lens_score": 85,
+  "findings": [
+    {
+      "id": "AUD-001",
+      "priority": "P2",
+      "check": "C4",
+      "location": "§1 line 30 (cumulative upstream tags header) vs §3 lines 89-90 and §7 line 206",
+      "message": "Cumulative upstream tags header lists `@adr: ADR-01` only, but §3 matrix rows 89-90 cite `@adr: ADR.01.03.1050` and `@adr: ADR.01.03.f5f5`, and §7 line 206 expands to six ADR refs total: `ADR-01 | ADR.01.03.5c3c | ADR.01.03.1050 | ADR.01.03.f5f5 | ADR.01.05.3afa | ADR.01.05.9107`. The cumulative header is the artifact's traceability contract; it must enumerate every upstream element tag cited in the body.",
+      "recommendation": "Update line 30 cumulative upstream tags to include all element-level ADR refs: `@adr: ADR-01 | @adr: ADR.01.03.5c3c | @adr: ADR.01.03.1050 | @adr: ADR.01.03.f5f5 | @adr: ADR.01.05.3afa | @adr: ADR.01.05.9107`. Verify each tag resolves in the upstream ADR doc."
+    }
+  ]
+}

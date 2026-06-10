@@ -1,0 +1,248 @@
+{
+  "review_run_id": "81d2722db751549c",
+  "artifact_id": "TDD-01",
+  "layer": "07_TDD",
+  "personas_requested": [
+    "qa_lead",
+    "tech_lead",
+    "chaos_engineer",
+    "security_engineer",
+    "operator",
+    "auditor"
+  ],
+  "status": "PARTIAL_TIMEOUT",
+  "iteration": 2,
+  "current_phase": "fixer",
+  "created_at": "2026-06-10T13:02:12.734311+00:00",
+  "updated_at": "2026-06-10T14:13:17.408724+00:00",
+  "branches": {
+    "qa_lead": {
+      "branch_id": "fc8e9563ecca",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:15:22.337348+00:00",
+      "ended_at": "2026-06-10T13:15:22.337348+00:00"
+    },
+    "tech_lead": {
+      "branch_id": "b4687b07784c",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:14:16.549345+00:00",
+      "ended_at": "2026-06-10T13:14:16.549345+00:00"
+    },
+    "chaos_engineer": {
+      "branch_id": "8f8f3597048a",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:15:28.945348+00:00",
+      "ended_at": "2026-06-10T13:15:28.945348+00:00"
+    },
+    "security_engineer": {
+      "branch_id": "cc311d620886",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:15:27.249348+00:00",
+      "ended_at": "2026-06-10T13:15:27.249348+00:00"
+    },
+    "operator": {
+      "branch_id": "3b37d81effea",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:15:42.501349+00:00",
+      "ended_at": "2026-06-10T13:15:42.501349+00:00"
+    },
+    "auditor": {
+      "branch_id": "46a83bdda2b8",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-10T13:16:06.857350+00:00",
+      "ended_at": "2026-06-10T13:16:06.857350+00:00"
+    }
+  },
+  "transitions": [
+    {
+      "ts": "2026-06-10T13:02:12.734323+00:00",
+      "from": null,
+      "to": "PREPARED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T13:10:27.869777+00:00",
+      "from": "PREPARED",
+      "to": "FANOUT_STARTED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T13:15:22.337348+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:qa_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:22.337348+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:qa_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:14:16.549345+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:14:16.549345+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:28.945348+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:28.945348+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:27.249348+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:security_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:27.249348+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:security_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:42.501349+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:operator",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:15:42.501349+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:operator",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:16:06.857350+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:auditor",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:16:06.857350+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:auditor",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T13:25:54.422452+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T13:25:54.422473+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T14:13:17.408716+00:00",
+      "from": "BRANCH_COMPLETED",
+      "to": "PARTIAL_TIMEOUT",
+      "scope": "run"
+    }
+  ],
+  "compensation_actions": [
+    {
+      "ts": "2026-06-10T14:13:17.408678+00:00",
+      "branch": "*",
+      "reason": "phase fixer subprocess exit 1",
+      "action": "partial_timeout"
+    }
+  ],
+  "events": [
+    {
+      "ts": "2026-06-10T13:02:12.734517+00:00",
+      "kind": "dispatch:draft",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-tdd"
+    },
+    {
+      "ts": "2026-06-10T13:10:27.865431+00:00",
+      "kind": "complete:draft",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T13:10:27.870387+00:00",
+      "kind": "dispatch:review",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-tdd-audit"
+    },
+    {
+      "ts": "2026-06-10T13:25:54.420451+00:00",
+      "kind": "complete:review",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T13:25:54.424027+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-tdd-fixer"
+    },
+    {
+      "ts": "2026-06-10T13:44:41.695450+00:00",
+      "kind": "complete:fixer",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T13:44:41.698771+00:00",
+      "kind": "dispatch:re-review",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-tdd-audit"
+    },
+    {
+      "ts": "2026-06-10T14:01:06.819773+00:00",
+      "kind": "complete:re-review",
+      "iteration": 2,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T14:01:06.822099+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-tdd-fixer"
+    },
+    {
+      "ts": "2026-06-10T14:13:17.407067+00:00",
+      "kind": "complete:fixer",
+      "iteration": 2,
+      "exit_code": 1
+    }
+  ]
+}

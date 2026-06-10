@@ -1,0 +1,30 @@
+{
+  "persona": "operator",
+  "lens_score": 90,
+  "findings": [
+    {
+      "id": "OP-001",
+      "priority": "P2",
+      "check": "C2",
+      "location": "TDD-01 §4 test mapping row @adr: ADR.01.03.f5f5; ADR-01 §7 Rollback plan",
+      "message": "The one-way substrate decision ADR.01.03.f5f5 now has a deploy-gate smoke test (TDD.01.04.d5d7, type: smoke, timeout ≤30s, blocks all environments) — the forward deploy path is gated. However, no test exercises the rollback procedure in a non-prod environment. ADR §7 documents a seven-step runbook — halt traffic, drain writes, snapshot/export committed records, provision alternative store, import with uniqueness verification, atomically re-point the data-access layer, run an RPO = 0 smoke post-cutover — and step 7 explicitly requires an automated RPO = 0 smoke after the substrate re-point. TDD.01.04.d5d7 cannot serve as the post-rollback smoke: it commits a fresh code on the live substrate during the same run; it has no pre-imported records to verify as still-readable on the new substrate. The TDD suite therefore covers the forward deploy gate but leaves the post-rollback verification gate as an untested manual step. An on-call team executing the §7 runbook at 2am has no automated signal that step 7 passed.",
+      "recommendation": "Add a non-prod rollback-path integration test (e.g., TDD.01.04.rbXX, type: smoke, timeout ≤120s) that exercises at minimum steps 3, 5, and 7 of the ADR §7 runbook: (3) export a known set of committed records from the primary KV instance; (5) import them into a secondary KV instance with uniqueness-verification assertions (no duplicates, no data loss); (7) run an RPO = 0 probe against the secondary instance — claim a new code, then get verifies the pre-imported records still resolve. Tag it @adr: ADR.01.03.f5f5 and add it to the §5 smoke gate row alongside TDD.01.04.d5d7 so the rollback runbook can cite it as its automated post-cutover gate."
+    },
+    {
+      "id": "OP-002",
+      "priority": "P3",
+      "check": "C1",
+      "location": "TDD-01 §4 integration cases TDD.01.04.af07, TDD.01.04.840c; SPEC-01 §6 Observability paragraph",
+      "message": "SPEC §6 names four observability emission points: durable-commit latency, write-conflict rate, atomic-claim outcome, and increment-drop / reconciliation-depth. After the fixer pass: af07 asserts durable-commit latency metric and claim span (covered); 840c asserts write-conflict counter incremented (covered); 3e85 asserts increment-drop metric and reconciliation-depth gauge (covered); 7115 asserts StoreUnavailableError log at ERROR severity (covered). The remaining narrow gap is the atomic-claim outcome distribution metric — SPEC §6 names 'atomic-claim outcome' as a distinct emission point, distinct from the write-conflict rate. TDD.01.04.840c verifies the conflict counter on a race; it does not assert a per-outcome labelled metric (e.g., a counter keyed {outcome=COMMITTED} or {outcome=CODE_TAKEN}) as implied by 'atomic-claim outcome' in SPEC §6. A missing outcome metric means the COMMITTED / CODE_TAKEN distribution is dark in production, which removes a first-order SLO signal.",
+      "recommendation": "Extend TDD.01.04.af07 to assert the atomic-claim-outcome metric is emitted with label outcome=COMMITTED on a successful claim, and add a companion assertion in TDD.01.04.82ff (unit, CODE_TAKEN path) or TDD.01.04.840c (integration, race path) that the outcome=CODE_TAKEN label variant is emitted. Cite @spec: SPEC-01 §6 on both assertions."
+    },
+    {
+      "id": "OP-003",
+      "priority": "P3",
+      "check": "C5",
+      "location": "TDD-01 §4 all classes; §5 Thresholds",
+      "message": "The functional fault-injection cases (TDD.01.04.0340, TDD.01.04.7115, TDD.01.04.3e85) cover network blip and registry-timeout scenarios from the application adapter's perspective. The C5 gap remaining is CI infrastructure failure modes: (a) the KV substrate becomes unreachable during CI test-setup (not during a test operation) — the harness may silently skip or error the entire class rather than failing with an actionable message; (b) KMS / secrets-vault credential-fetch slowness during CI environment bootstrap exceeds the CI job timeout, producing a false timeout rather than a test failure. TDD.01.04.24ff now covers a slow KMS response during a claim operation (the fixer pass addressed the KMS-latency gap in OP-05). The remaining unaddressed mode is the pre-test-setup credential-fetch timeout, where the harness itself aborts before any test runs and the flake-budget accounting cannot attribute the failure correctly.",
+      "recommendation": "Add a CI pre-condition probe — a lightweight setup-phase check (not a test case) in the integration and e2e CI job configurations that asserts KV reachability and vault/KMS credential validity before the test runner starts. If the probe fails, the job exits non-zero with a structured error distinguishing 'infrastructure unavailable' from 'test failure'. Document this in a §5 note or CI appendix so the flake-budget accounting (already declared) can correctly classify CI-environment failures separately from application flakes."
+    }
+  ]
+}

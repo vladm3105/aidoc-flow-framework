@@ -1,0 +1,22 @@
+{
+  "persona": "qa_lead",
+  "lens_score": 84,
+  "findings": [
+    {
+      "id": "QL-001",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§4 Integration — TDD.01.04.af07",
+      "message": "Case TDD.01.04.af07 bundles two structurally distinct AAA flows under one case ID: (a) a success-path assertion — 'claim returns COMMITTED only after the durable commit is observed, no write-behind' — which requires a healthy KV adapter in the Arrange phase; and (b) a failure-path assertion — 'commit failure → StoreUnavailableError, no orphan' — which requires a faulting KV adapter in the Arrange phase. These two flows cannot share a single Arrange block; they represent separate scenarios with different fixture states. Additionally, a third concern is embedded: 'assert the durable-commit latency metric and a claim trace span (with status) emitted.' Combining two fixture states under one case ID means either the test function has multi-phase internal switching (reintroducing multi-behavior coupling the fixer pass eliminated from the unit layer) or the case ID implicitly covers two test functions with no ID-level distinguishability. Either form makes a failure non-diagnosable: a StoreUnavailableError assertion failure cannot be distinguished from an RPO assertion failure at the case-ID level.",
+      "recommendation": "Split TDD.01.04.af07 into two cases: (a) a success-path case asserting 'claim returns COMMITTED only after the durable commit is observed (RPO = 0), durable-commit latency metric and claim trace span emitted' — with a healthy KV adapter; (b) a failure-path case asserting 'commit failure → StoreUnavailableError, no orphan' — with a faulting KV adapter. Update §3 Test Mapping to list both new case IDs against the @bdd: BDD.01.03.8b97 row. The observability assertion (metric + trace span) belongs in the success-path case since it requires a completed commit to be observable."
+    },
+    {
+      "id": "QL-002",
+      "priority": "P2",
+      "check": "C3",
+      "location": "§4 Integration — TDD.01.04.24ff",
+      "message": "Case TDD.01.04.24ff asserts 'a KMS key-unwrap delay above the issuance budget (>200 ms) → claim completes within budget or raises StoreUnavailableError with no orphan.' The 200 ms threshold is stated as the KMS key-unwrap sub-component budget, but no upstream source (EARS, PRD, or SPEC) is cited for this specific value. SPEC §6 states the claim operation must complete 'within issuance budget EARS.01.03.f909 less commit headroom' but does not decompose that budget into a KMS-unwrap allocation. The 200 ms figure is unanchored: it may be an author assumption, a derived headroom estimate, or an implementation detail — but none of those origins are declared. Without a citation the number is untraceable and cannot be gate-checked against the upstream NFR chain.",
+      "recommendation": "Either (a) cite the upstream source for the 200 ms sub-budget (e.g., if it is an author assumption, annotate it as such with '# author assumption pending SPEC §6 KMS sub-budget element' and flag for IPLAN binding), or (b) express the threshold in terms of the traceable budget: 'a KMS key-unwrap delay that causes total claim latency to exceed the EARS.01.03.f909 issuance budget → claim raises StoreUnavailableError with no orphan; the concrete ms ceiling binds at IPLAN when the KV provider is selected.' The IPLAN-defer pattern is already established in the artifact for cipher-mode and KMS key-ARN assertions (same case) and should be applied consistently to the latency threshold."
+    }
+  ]
+}
