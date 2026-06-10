@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.16.0 → 0.16.1 + Claude Code plugin 0.12.0 → 0.13.0 (TDD-RT-001)
+
+- **TDD layer team-mode + playbook injection.** Mirror of the SPEC-RT-001
+  pattern applied to TDD (Layer 7).
+- **Framework**: 6 TDD playbooks added to `framework/playbooks/07_TDD/`
+  (`qa_lead` 35 / `tech_lead` 25 / `chaos_engineer` 10 / `security_engineer` 10 /
+  `operator` 10 / `auditor` 10 = 100). Six-lens crew (largest TDD-altitude
+  crew shape). Authored under the new necessary-upstream contract from
+  NECESSARY-UPSTREAM-001.
+- **Plugin**: `doc-tdd-audit/SKILL.md` (268 → 499 lines) gains `## Review Mode`
+  - `## Saga interaction` + `## Break-circuit policy` + playbook injection.
+  `doc-tdd-fixer/SKILL.md` (112 → 298 lines) gains `## Remediate Mode` +
+  `## Saga interaction` + `## Break-circuit policy`. Both SKILLs carry zero
+  cumulative-tag references (verified during NECESSARY-UPSTREAM-001 Pass 2,
+  confirmed on rebase).
+- **Live cascade verification**: `content_score 89` (threshold 90 — 1 point
+  short of CLOSED), 0 P0/P1, 6 P2 + 2 P3 content-refinement findings.
+  Saga ended `PARTIAL_TIMEOUT` in iter-2 (4273s of 5400s budget). Massive
+  improvement vs the pre-NECESSARY-UPSTREAM-001 cascade (76 score, 2× P1
+  trace fabrications) — the new contract eliminates trace fabrication.
+- **Migration bypass** `SDD_LINT_SKIP_TRACE_RES=1` added temporarily so the
+  TDD cascade can proceed past Phase 0 lint-smoke against the
+  pre-NECESSARY-UPSTREAM-001 url-shortener corpus (orphan `@prd:` tags from
+  the old cumulative-trace contract). Default behavior unchanged.
+- **Follow-up filed** in [`plans/TRACE-RES-FIXUP-001-PLAN.md`](plans/TRACE-RES-FIXUP-001-PLAN.md):
+  (1) TRACE-RES-001 downstream-tag skip (lint rule bug — fires on forward
+  pointers like `@tdd: TDD-01`), (2) url-shortener corpus regeneration,
+  (3) `doc-tdd/SKILL.md` still emits 1 decorative `@brd:` tag, (4) removal
+  of the temporary bypass.
+
 ### Changed — Framework Spec 0.15.2 → 0.16.0 + Claude Code plugin 0.11.0 → 0.12.0 (NECESSARY-UPSTREAM-001)
 
 - **Replaced cumulative-trace contract with necessary-upstream + transitive
