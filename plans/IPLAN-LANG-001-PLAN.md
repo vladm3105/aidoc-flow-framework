@@ -216,7 +216,7 @@ framework move (0.15.1 → 0.15.2), a doc-only PATCH that touched
   exactly one thing (Python hardcoding); scope now matches it.
 - **Propagation completeness:** confirmed the plugin `framework/` is a vendored
   *generated* bundle, not a symlink, so added Task 3 (`sync-plugin-framework.sh`)
-  + V4/V3 drift checks.
+  plus V4/V3 drift checks.
 - **Governance question resolved:** the user's "should IPLAN include governance?"
   is answered No in Out-of-scope with the layer-boundary rationale.
 
