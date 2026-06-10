@@ -31,7 +31,7 @@ scope
 
 ## Stakeholders
 
-sh
+BRD.01.07.abcd — referenced from PRD-01 cascade test.
 
 ## Functional Requirements
 
