@@ -877,7 +877,14 @@ def _check_trace_resolution(
       * Index documents (frontmatter ``artifact_type: <X>-INDEX``) — they
         intentionally carry no trace tags.
       * Placeholder / malformed tag values — covered by PH01 / ID01.
+      * Entire rule disabled when ``SDD_LINT_SKIP_TRACE_RES=1`` — temporary
+        bypass for migration of pre-NECESSARY-UPSTREAM-001 corpora that
+        carry orphan cumulative-trace tags. Tracked in
+        ``plans/TRACE-RES-FIXUP-001-PLAN.md`` (downstream-skip + url-shortener
+        corpus regen). Do NOT rely on this in production CI.
     """
+    if os.environ.get("SDD_LINT_SKIP_TRACE_RES") == "1":
+        return []
     doc_index: dict[str, str] = {}
     element_index: dict[str, str] = {}
     for rel, text in corpus:
