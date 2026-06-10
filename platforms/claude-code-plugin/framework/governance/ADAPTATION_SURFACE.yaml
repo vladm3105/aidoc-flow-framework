@@ -82,7 +82,15 @@ layers:
   skippable: [BDD, ADR]
 
 cascade_rule: >
-  Disabling a skippable layer removes it from the required upstream tags
-  (required_tags) and the can_reference set of every downstream layer, so
-  traceability stays internally consistent. Traceability and audit consumers
-  must not demand a reference to, or flag the absence of, a disabled layer.
+  The default required_tags baseline is the necessary-upstream set per
+  layer (declared in LAYER_REGISTRY.yaml; see REVIEW_TEAM.md §Necessary
+  upstream + transitive trace): BRD=[], PRD=[brd], EARS=[prd], BDD=[ears],
+  ADR=[ears, bdd], SPEC=[ears, bdd, adr], TDD=[ears, bdd, adr, spec],
+  IPLAN=[spec, tdd]. Lineage to layers above this set is discoverable
+  transitively via the @-tag chain, not via cumulative redeclaration.
+
+  Disabling a skippable layer further shrinks the baseline — removes the
+  layer from the required_tags + can_reference set of every downstream
+  layer that would otherwise read it, so traceability stays internally
+  consistent. Traceability and audit consumers must not demand a reference
+  to, or flag the absence of, a disabled layer.

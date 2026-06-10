@@ -202,10 +202,6 @@ traceability:
       - "@bdd: BDD.NN.03.xxxx"
     ears_references:
       - "@ears: EARS.NN.03.xxxx"
-    prd_references:
-      - "@prd: PRD.NN.09.xxxx"
-    brd_references:
-      - "@brd: BRD.NN.07.xxxx"
   downstream:
     - type: TDD
       layer: 7

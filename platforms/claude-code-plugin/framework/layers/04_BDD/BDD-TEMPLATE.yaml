@@ -320,10 +320,6 @@ traceability:
   upstream:
     ears_references:
       - "@ears: EARS.NN.03.xxxx"
-    prd_references:
-      - "@prd: PRD.NN.09.xxxx"
-    brd_references:
-      - "@brd: BRD.NN.07.xxxx"
 
   downstream_expected:
     - type: ADR

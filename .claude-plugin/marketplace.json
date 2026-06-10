@@ -10,7 +10,7 @@
       "name": "aidoc-flow",
       "source": "./platforms/claude-code-plugin",
       "description": "Pre-1.0 preview. AI-Driven Specification-Driven Development (SDD) workflow — 50 active skills + 2 deprecated stubs (52 total), 11 agents, and 1 command for the 8-layer doc flow (BRD → IPLAN). Consumes the engine-agnostic aidoc-flow framework spec. APIs and surfaces may change before 1.0.",
-      "version": "0.11.0"
+      "version": "0.12.0"
     }
   ]
 }

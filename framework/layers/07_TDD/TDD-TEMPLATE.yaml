@@ -270,6 +270,8 @@ traceability:
       - "@adr: ADR.NN.03.xxxx"
     bdd_references:
       - "@bdd: BDD.NN.03.xxxx"
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
   downstream:
     - type: IPLAN
       layer: 8

@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
 ---
@@ -245,7 +245,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 3 — Links | broken/abs paths | recompute relative paths; convert absolute → relative |
 | 4 — IDs | invalid/legacy IDs | enforce dash-form `SPEC-NN` at the document level; correct upstream element refs to `TYPE.NN.SS.xxxx`; drop legacy `STEP-XXX`/`IF-XXX`/`DM-XXX`, 3-digit `SPEC-NNN`, numeric type codes |
 | 5 — Content | placeholders, thresholds | fill template dates; replace hardcoded numbers with `@threshold:` references; flag `[TODO]`/`[TBD]` for manual completion |
-| 6 — References | traceability | add missing cumulative tags (`@brd @prd @ears @bdd @adr`) and the downstream `@tdd: TDD-NN`; fix upstream paths; update the traceability matrix |
+| 6 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — SPEC requires `@ears @bdd @adr`) and the downstream `@tdd: TDD-NN`; fix upstream paths; update the traceability matrix |
 | 7 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; apply tiered drift merge against upstream ADR/BDD (below) |
 | 8 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Behavior / Interfaces sections at the next contract boundary, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 

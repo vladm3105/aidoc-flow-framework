@@ -48,8 +48,8 @@ layers:
     name: "Easy Approach to Requirements Syntax"
     folder: layers/03_EARS/
     extensions: [.yaml]
-    required_tags: [brd, prd]
-    can_reference: [BRD, PRD]
+    required_tags: [prd]
+    can_reference: [PRD]
     error_prefix: EARS
     optional: false
     description: "Layer 3 — Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
@@ -61,8 +61,8 @@ layers:
     name: "Behavior-Driven Development"
     folder: layers/04_BDD/
     extensions: [.yaml]
-    required_tags: [brd, prd, ears]
-    can_reference: [BRD, PRD, EARS]
+    required_tags: [ears]
+    can_reference: [EARS]
     error_prefix: BDD
     optional: false
     description: "Layer 4 — Test scenarios using Given-When-Then format with req-to-SPEC trace links"
@@ -74,8 +74,8 @@ layers:
     name: "Architecture Decision Record"
     folder: layers/05_ADR/
     extensions: [.yaml]
-    required_tags: [brd, prd, ears, bdd]
-    can_reference: [BRD, PRD, EARS, BDD]
+    required_tags: [ears, bdd]
+    can_reference: [EARS, BDD]
     error_prefix: ADR
     optional: false
     description: "Layer 5 — Architectural decisions with Context-Decision-Consequences"
@@ -87,8 +87,8 @@ layers:
     name: "Technical Specification"
     folder: layers/06_SPEC/
     extensions: [.yaml]
-    required_tags: [brd, prd, ears, bdd, adr]
-    can_reference: [BRD, PRD, EARS, BDD, ADR]
+    required_tags: [ears, bdd, adr]
+    can_reference: [EARS, BDD, ADR]
     error_prefix: SPEC
     optional: false
     description: "Layer 6 — Implementation-ready technical specification: interfaces, data models, behavior contracts"
@@ -100,8 +100,8 @@ layers:
     name: "Test-Driven Development Guide"
     folder: layers/07_TDD/
     extensions: [.yaml]
-    required_tags: [brd, prd, ears, bdd, adr, spec]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    required_tags: [ears, bdd, adr, spec]
+    can_reference: [EARS, BDD, ADR, SPEC]
     error_prefix: TDD
     optional: false
     description: "Layer 7 — Test case definitions, BDD-to-test mapping, quality thresholds, TDD execution order — defined from SPEC component contracts"
@@ -113,8 +113,8 @@ layers:
     name: "Implementation Plan"
     folder: layers/08_IPLAN/
     extensions: [.yaml]
-    required_tags: [brd, prd, ears, bdd, adr, spec, tdd]
-    can_reference: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
+    required_tags: [spec, tdd]
+    can_reference: [SPEC, TDD]
     error_prefix: IPLAN
     optional: false
     description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in layers/08_IPLAN/tmp/."

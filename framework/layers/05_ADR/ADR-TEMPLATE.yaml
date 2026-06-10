@@ -398,10 +398,6 @@ traceability:
       - "@bdd: BDD.NN.03.xxxx"
     ears_references:
       - "@ears: EARS.NN.03.xxxx"
-    prd_references:
-      - "@prd: PRD.NN.14.xxxx"
-    brd_references:
-      - "@brd: BRD.NN.08.xxxx"
 
   downstream_expected:
     - type: SPEC

@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.15.2"
+framework_spec_version: "0.16.0"
 ---
 # auditor lens — ADR layer
 
@@ -48,12 +48,15 @@ to formal trace conformance and ID hygiene.
 Every finding MUST cite which check fired. Findings without a check citation
 are out-of-scope and discarded by the synthesizer.
 
-**C1 — Upstream tags resolve to existing IDs.** Every `@brd: BRD.NN…`,
-`@prd: PRD.NN…`, or `@ears: EARS.NN…` tag in the ADR (whether in the
-cumulative header or per-element) must resolve to an existing element ID
-in the corresponding upstream document. Broken tags produce orphan
-traceability — the ADR claims to satisfy an upstream constraint that
-does not exist. Broken tag → P1 citing C1.
+**C1 — Required-upstream tags resolve to existing IDs.** Every
+`@ears: EARS.NN…` and `@bdd: BDD.NN…` tag in the ADR (whether in the
+header or per-element) must resolve to an existing element ID in the
+corresponding upstream document. Per the necessary-upstream contract
+(NECESSARY-UPSTREAM-001), ADR's `required_tags` is `[ears, bdd]`; tags
+above the required set (e.g., decorative `@brd:` or `@prd:` lineage)
+are permitted but the structural lint floor (`sdd_doc_lint TRACE-RES-001`)
+enforces resolution on any emitted tag at any depth. Broken required
+tag → P1 citing C1.
 
 **C2 — Element IDs conform to `ADR.NN.SS.xxxx` 4-hex pattern.** Every
 decision element ID in the ADR body must follow the `ADR.NN.SS.xxxx`

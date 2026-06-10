@@ -858,6 +858,97 @@ def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]
     return findings
 
 
+def _check_trace_resolution(
+    corpus: list[tuple[str, str]],
+    layers: dict,
+    doc_re: re.Pattern,
+    elem_re: re.Pattern,
+) -> list[Finding]:
+    """TRACE-RES-001 — every emitted ``@<layer>: <ID>`` tag in the corpus
+    resolves on disk (the target document exists AND the cited element ID
+    is present in that document).
+
+    Backs the framework's necessary-upstream contract
+    (NECESSARY-UPSTREAM-001): the structural floor enforces resolution
+    uniformly at every layer regardless of whether the layer carries an
+    auditor lens.
+
+    Skipped:
+      * Index documents (frontmatter ``artifact_type: <X>-INDEX``) — they
+        intentionally carry no trace tags.
+      * Placeholder / malformed tag values — covered by PH01 / ID01.
+    """
+    doc_index: dict[str, str] = {}
+    element_index: dict[str, str] = {}
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = ""
+        if fm:
+            doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        doc_index[doc_id] = text
+        # Element IDs are added to the index only when declared in their own
+        # host document (citations in downstream docs are excluded so they
+        # cannot resolve themselves).
+        for m in _ELEM_ID.finditer(text):
+            elem = m.group(0)
+            if not elem_re.match(elem):
+                continue
+            parts = elem.split(".")
+            if len(parts) >= 2:
+                host = f"{parts[0]}-{parts[1]}"
+                if host == doc_id:
+                    element_index.setdefault(elem, doc_id)
+
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if fm and str(fm.get("artifact_type") or "").strip().endswith("-INDEX"):
+            continue
+        for i, line in enumerate(text.splitlines(), 1):
+            for m in _TAG.finditer(line):
+                value = m.group(2)
+                if not (doc_re.match(value) or elem_re.match(value)):
+                    continue
+                if doc_re.match(value):
+                    if value not in doc_index:
+                        findings.append(
+                            Finding(
+                                rel,
+                                i,
+                                "TRACE-RES-001",
+                                f"trace tag '@{m.group(1)}: {value}' "
+                                f"references unknown document "
+                                f"(no corpus member has doc_id '{value}')",
+                            )
+                        )
+                else:
+                    if value not in element_index:
+                        head = value.split(".", 2)
+                        host_doc = (
+                            f"{head[0]}-{head[1]}"
+                            if len(head) >= 2 and head[1].isdigit()
+                            else "<unknown>"
+                        )
+                        host_status = (
+                            "host document missing"
+                            if host_doc not in doc_index
+                            else "element id not declared in host document"
+                        )
+                        findings.append(
+                            Finding(
+                                rel,
+                                i,
+                                "TRACE-RES-001",
+                                f"trace tag '@{m.group(1)}: {value}' "
+                                f"unresolvable ({host_status}; expected host "
+                                f"'{host_doc}')",
+                            )
+                        )
+    return findings
+
+
 def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     """Lint a file or recurse a directory; returns all findings."""
     layers, doc_re, elem_re = _load_registry(registry)
@@ -887,4 +978,5 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     findings.extend(_check_id_uniqueness(corpus))
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
+    findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
     return findings

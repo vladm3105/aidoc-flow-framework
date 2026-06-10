@@ -12,6 +12,52 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.15.2 → 0.16.0 + Claude Code plugin 0.11.0 → 0.12.0 (NECESSARY-UPSTREAM-001)
+
+- **Replaced cumulative-trace contract with necessary-upstream + transitive
+  reachability.** Each layer declares only what its own evaluation reads;
+  lineage to layers further upstream is discoverable transitively through
+  the @-tag chain (one hop per layer) and via the new `tools/trace_walk.py`.
+  Per-layer `required_tags` shrunk: EARS `[brd, prd]` → `[prd]`, BDD
+  `[brd, prd, ears]` → `[ears]`, ADR `[brd, prd, ears, bdd]` → `[ears, bdd]`,
+  SPEC `[brd, prd, ears, bdd, adr]` → `[ears, bdd, adr]`, TDD
+  `[brd, prd, ears, bdd, adr, spec]` → `[ears, bdd, adr, spec]`, IPLAN
+  `[brd, prd, ears, bdd, adr, spec, tdd]` → `[spec, tdd]`. BRD `[]` and
+  PRD `[brd]` unchanged.
+- **Framework**: `LAYER_REGISTRY.yaml` updated; 7 layer templates' §7
+  Traceability `upstream:` blocks aligned with the new minimal set; ADR
+  auditor C1 wording rewritten to validate the new required set + reference
+  the `TRACE-RES-001` lint floor; `REVIEW_TEAM.md` gains §"Necessary
+  upstream + transitive trace"; `ADAPTATION_SURFACE.yaml` `cascade_rule`
+  restates the new default baseline explicitly.
+- **Plugin**: 15 SKILLs aligned with the new contract (7 layer-author SKILLs
+  drop "cumulative upstream tags" instructions; 8 audit/fixer SKILLs reword
+  cumulative-tag references). Acceptance harness `tests/scripts/test-acceptance.sh`
+  validator probe drops "cumulative" prompt and lowers expected-count
+  threshold 20 → 10. `doc-tdd-audit`/`doc-tdd-fixer` deferred to TDD-RT-001
+  rebase.
+- **New tooling**:
+  - `sdd_doc_lint TRACE-RES-001` corpus-level rule — every emitted
+    `@<layer>: <ID>` tag must resolve (host doc exists + element id declared
+    in host); element-index uses host-doc derivation so citations cannot
+    resolve themselves; index docs excluded. Runs at every layer regardless
+    of crew shape, providing deterministic structural-floor enforcement.
+  - `tools/trace_walk.py` (158 LOC, stdlib-only) — BFS DAG-closure walker;
+    `--to <LAYER>` filter; returns non-zero on any unresolvable tag.
+- **Conformance**: `test_required_tags_are_cumulative` renamed → `test_required_tags_match_necessary_upstream_table`;
+  new conformance file `test_layer_registry_necessary_upstream.py` (2 tests);
+  new unit tests `test_sdd_doc_lint_trace_resolution.py` (4 cases) +
+  `test_trace_walk.py` (4 cases). Total: 120/120 conformance + 40/40 unit.
+- **Backwards compatibility**: existing url-shortener artifacts remain valid
+  (declared tags still resolve). The contract change is a relaxation —
+  declaring extra upstream tags isn't forbidden by `TRACE-RES-001`, only
+  declaring upstream that doesn't resolve is.
+- **Origin**: TDD-RT-001 live cascade (2026-06-09) produced TDD-01 with
+  `@prd: PRD.01.13.7760` referencing a non-existent `docs/02_PRD/PRD-01.md`.
+  Saga ended at PARTIAL_TIMEOUT in iter-3; fixer reached fixed point at
+  iter-2 because the only blocking findings required either authoring
+  PRD-01.md or removing trace claims the doc itself asserted as required.
+
 ### Changed — Framework Spec 0.15.1 → 0.15.2 (docs)
 
 - **`framework/README.md` Layout section corrected.** The `framework/`

@@ -9,10 +9,10 @@ metadata:
     layer: 4
     artifact_type: BDD
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS]
+    upstream_artifacts: [EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -23,10 +23,12 @@ metadata:
 
 Create **Behavior-Driven Development (BDD)** scenarios — Layer 4 of the SDD
 flow. A BDD suite translates EARS formal requirements into executable
-Given-When-Then (Gherkin) scenarios, each carrying cumulative trace tags and a
-`spec_trace` link forward to the SPEC sections it exercises.
+Given-When-Then (Gherkin) scenarios, each carrying the required upstream
+trace tag (`@ears`) and a `spec_trace` link forward to the SPEC sections it
+exercises.
 
-**Layer**: 4. **Upstream**: BRD → PRD → EARS.
+**Layer**: 4. **Upstream**: EARS (per the necessary-upstream contract;
+upstream PRD/BRD lineage is reachable transitively via the @-tag chain).
 **Downstream**: ADR → SPEC → TDD → IPLAN → Code.
 
 BDD scenarios are the acceptance source of truth that TDD (Layer 7) maps to
@@ -47,8 +49,8 @@ placeholders like `EARS-XXX` or reference documents that do not yet exist.
 
 ## Prerequisites
 
-BDD is Layer 4, so upstream artifacts must already exist. Confirm them and read
-the spec before writing:
+BDD is Layer 4, so the required upstream EARS must already exist. Confirm it
+and read the spec before writing:
 
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md`
@@ -56,8 +58,9 @@ the spec before writing:
 4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
 Verify upstream and check for ID collision:
-`ls docs/01_BRD/ docs/02_PRD/ docs/03_EARS/ docs/04_BDD/ 2>/dev/null`. Reference
-only existing BRD/PRD/EARS elements in trace tags.
+`ls docs/03_EARS/ docs/04_BDD/ 2>/dev/null`. Reference only existing EARS
+elements in trace tags; upstream PRD/BRD lineage is reachable transitively
+via the EARS document's own @-tag chain.
 
 ## Layer Guidance
 
@@ -66,14 +69,14 @@ only existing BRD/PRD/EARS elements in trace tags.
 Per `BDD-TEMPLATE.yaml`, every BDD document carries:
 
 1. **Document Control** — version, status, dates, author, priority, the
-   cumulative references `@ears`, `@prd`, `@brd`, plus the ADR-Ready score.
+   required upstream reference `@ears`, plus the ADR-Ready score.
 2. **Feature Definition** — feature name matching the EARS requirement, an
    `As a / I want / So that` description, and a `Background` (system state +
    IANA timezone, default `America/New_York`).
 3. **Scenario Structure** — the Given-When-Then scenarios across the five
    categories (below).
-4. **Traceability** — cumulative upstream tags, downstream expectations, and the
-   health/coverage score.
+4. **Traceability** — required upstream tag (`@ears`), downstream expectations,
+   and the health/coverage score.
 5. **Glossary** — flat list of project-specific terms.
 
 See `BDD-TEMPLATE.yaml` for per-section content and scenario conventions.
@@ -104,14 +107,17 @@ Given-When-Then steps, threshold references for timing, and a `spec_trace` list.
   ~50,000 tokens; beyond that, start a new self-contained BDD document — do not
   split into sectioned files.
 
-### Element IDs and cumulative tags
+### Element IDs and upstream tags
 
 - Hierarchical element IDs: `BDD.{doc_id}.{section_id}.{hash}` (e.g.
   `BDD.01.03.d7a2`; `hash` = first 4 hex of SHA256 of
   `"{doc_id}:{section_id}:{title}:{description}"` from BDD content, extend to 8
   on collision). Scenarios live in section `03`.
-- BDD is Layer 4, so it carries **cumulative upstream tags** `@brd @prd @ears`
-  (all three mandatory). Downstream artifacts tag it: `@bdd: BDD.01.03.8f4c`.
+- BDD is Layer 4, so it carries the required upstream tag `@ears` (per the
+  necessary-upstream contract). Downstream artifacts tag it:
+  `@bdd: BDD.01.03.8f4c`. Upstream PRD/BRD lineage is reachable transitively
+  via the EARS document's own @-tag chain — do not emit `@brd:`/`@prd:` on
+  BDD elements.
 - **Removed patterns** (do not use): `SCENARIO-XXX`, `SCEN-XXX`, `TS-XXX`,
   `STEP-XXX`, numeric type-codes, and the legacy 3-segment `BDD.NN.xxxx`.
 
@@ -123,15 +129,16 @@ This is the req-to-SPEC bridge that downstream layers consume.
 
 ## Creation Process
 
-1. **Read upstream** — BRD, PRD, EARS to understand the behaviors to test.
+1. **Read upstream** — the EARS that drives this BDD (and, via its @-tag
+   chain, the PRD/BRD it derives from) to understand the behaviors to test.
 2. **Reserve ID** — next free `BDD-NN` (two digits, no extra leading zero:
    `BDD-01`, `BDD-99`, `BDD-102`).
 3. **Create the document** from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
    complete all 5 sections, Document Control first.
 4. **Write scenarios** per EARS requirement across the five categories; add
    Background, threshold references, and `spec_trace` for each.
-5. **Add cumulative tags** `@brd @prd @ears` (Gherkin-native, before `Feature:`)
-   and `@scenario-id` per scenario.
+5. **Add the required upstream tag** `@ears` (Gherkin-native, before
+   `Feature:`) and `@scenario-id` per scenario.
 6. **Update the BDD index** `docs/04_BDD/BDD-00_index.md` in the same change.
 7. **Validate** (below) and commit the BDD and index together.
 
@@ -140,8 +147,8 @@ This is the req-to-SPEC bridge that downstream layers consume.
 **This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section; all 5 sections present and non-empty.
-- [ ] Cumulative tags `@brd @prd @ears` present, Gherkin-native, no spaces after
-      colon.
+- [ ] Required upstream tag `@ears` present, Gherkin-native, no spaces after
+      colon (per necessary-upstream contract).
 - [ ] Every scenario has `@scenario-type`, a priority tag, `@scenario-id`,
       Given-When-Then steps, and a `spec_trace`.
 - [ ] All five scenario categories represented; scenarios atomic and executable.
@@ -160,7 +167,7 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 ## Next Skill
 
 `../doc-adr/SKILL.md` — the ADR references this BDD (`@bdd: BDD.NN.SS.xxxx`)
-along with `@brd @prd @ears`, records architecture decisions in
+along with its required `@ears`, records architecture decisions in
 Context-Decision-Consequences form, and cites the BDD scenarios that validate
 each decision.
 
@@ -186,7 +193,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Executable Given-When-Then acceptance scenarios |
 | **Layer** | 4 |
-| **Upstream tags** | `@brd @prd @ears` (cumulative, all mandatory) |
+| **Upstream tags** | `@ears` (per necessary-upstream contract) |
 | **Key idea** | EARS → Gherkin scenarios with `spec_trace` to SPEC |
 | **Must include** | Document Control (first), 5 scenario categories, thresholds |
 | **Execution** | QA staging only — never CI |

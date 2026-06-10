@@ -9,10 +9,10 @@ metadata:
     layer: 5
     artifact_type: ADR
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD]
+    upstream_artifacts: [EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -28,7 +28,8 @@ alternatives weighed, and the consequences accepted.
 
 **Layer**: 5 — the decision bridge between Container (PRD) and Component (SPEC);
 ADR is not itself a C4 level.
-**Upstream**: BRD → PRD → EARS → BDD.
+**Upstream**: EARS, BDD (per the necessary-upstream contract; upstream PRD/BRD
+lineage is reachable transitively via the @-tag chain).
 **Downstream**: SPEC → TDD → IPLAN → Code.
 
 Each ADR addresses **exactly one decision**. A new architectural choice gets a
@@ -49,18 +50,19 @@ For end-to-end generation from an upstream artifact or a prompt, use
 
 ## Prerequisites
 
-ADR is Layer 5, so verify the upstream chain exists and read the spec before
-writing:
+ADR is Layer 5, so verify the required upstream artifacts (EARS + BDD) exist
+and read the spec before writing:
 
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/README.md`
 3. **ID & tag standards:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`
 4. **Authoring style:** `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`
 
-Confirm upstream artifacts: `ls docs/0{1,2,3,4}_*/ 2>/dev/null`. Reference only
-documents that already exist; never invent placeholders like `ADR-XXX` or cite
-SPEC numbers that do not yet exist. Confirm no ID collision:
-`ls docs/05_ADR/ 2>/dev/null`.
+Confirm required upstream artifacts: `ls docs/0{3,4}_*/ 2>/dev/null` (EARS
+and BDD). Reference only documents that already exist; never invent placeholders
+like `ADR-XXX` or cite SPEC numbers that do not yet exist. Confirm no ID
+collision: `ls docs/05_ADR/ 2>/dev/null`. Upstream PRD/BRD lineage is reachable
+transitively via the EARS/BDD @-tag chain.
 
 ## Layer Guidance
 
@@ -108,9 +110,11 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
   `ADR-NN`, never as a dotted element ID. The self-tag is `@adr: ADR-NN`
   (e.g. `@adr: ADR-033`); cross-links use `@depends: ADR-NN` and
   `@discoverability: ADR-NN (rationale)`.
-- **Cumulative upstream tags (Layer 5):** `@brd @prd @ears @bdd` — all four
-  required, using each upstream's element-ID form (`@brd: BRD.01.08.0a13`,
-  `@prd: PRD.01.14.0702`, `@ears: EARS.01.03.5e2a`, `@bdd: BDD.01.03.8f4c`).
+- **Required upstream tags (Layer 5):** `@ears @bdd` — both required (per the
+  necessary-upstream contract), using each upstream's element-ID form
+  (`@ears: EARS.01.03.5e2a`, `@bdd: BDD.01.03.8f4c`). Upstream PRD/BRD lineage
+  is reachable transitively via the EARS/BDD @-tag chain — do not emit
+  `@brd:`/`@prd:` on ADR elements.
 - **Removed patterns** (do not use): `DEC-XXX`, `ALT-XXX`, `CON-XXX`, the legacy
   3-segment `ADR.NN.xxxx`, numeric type-code segments, and 3-digit `ADR-NNN`.
 
@@ -128,7 +132,7 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
    glossary and appendix backmatter from the template.
 5. **Evaluate 2–3 alternatives** with cost and fit; give every rejected option
    a rejection reason. State the decision decisively with rationale.
-6. **Add cumulative tags** `@brd @prd @ears @bdd`; add the `@adr: ADR-NN`
+6. **Add the required upstream tags** `@ears @bdd`; add the `@adr: ADR-NN`
    self-tag and any `@depends:` cross-links.
 7. **Update the ADR index** `docs/05_ADR/ADR-00_index.md` in the same change.
 8. **Validate** (below) and commit the ADR and index together.
@@ -144,7 +148,8 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 - [ ] Consequences cover positive outcomes, trade-offs (with severity), cost.
 - [ ] Element IDs match `ADR.NN.SS.xxxx`; document refs use dash `ADR-NN`; no
       removed patterns.
-- [ ] Cumulative tags `@brd @prd @ears @bdd` present; `@adr: ADR-NN` self-tag.
+- [ ] Required upstream tags `@ears @bdd` present (per necessary-upstream
+      contract); `@adr: ADR-NN` self-tag.
 - [ ] SPEC-Ready score ≥ 90 if status is Accepted.
 - [ ] Diagram contract: the Architecture-Flow section carries the decision /
       interaction **sequence** diagram (`@diagram: sequence-*`) per
@@ -153,7 +158,7 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 
 | Code | Meaning | Severity |
 |------|---------|----------|
-| XDOC-002 | Missing cumulative tag | error |
+| XDOC-002 | Missing required upstream tag | error |
 | XDOC-006 | Tag format invalid | error |
 | XDOC-008 | Broken internal link | error |
 | XDOC-009 | Missing traceability section | error |
@@ -162,14 +167,14 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 issues are found, fix and re-check; if unfixable, log for manual review.
 
 > **ADR-REF documents** (`ADR-REF-NN_{slug}.md`, via `../doc-ref/SKILL.md`) are
-> free-format reference targets — exempt from ready-scores, cumulative tags, and
-> quality gates.
+> free-format reference targets — exempt from ready-scores, required upstream
+> tags, and quality gates.
 
 ## Next Skill
 
-`../doc-spec/SKILL.md` — the SPEC references this ADR (`@adr: ADR-NN`), turns the
-decision into component interfaces, data models, and behavior contracts, and
-inherits the cumulative tag chain.
+`../doc-spec/SKILL.md` — the SPEC references this ADR (`@adr: ADR-NN`) along
+with its own required `@ears @bdd` upstream tags, turning the decision into
+component interfaces, data models, and behavior contracts.
 
 ## Adaptation
 
@@ -194,7 +199,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Record one architecture decision (Context-Decision-Consequences) |
 | **Layer** | 5 (decision bridge: PRD → SPEC) |
-| **Upstream tags** | `@brd @prd @ears @bdd` (all four required) |
+| **Upstream tags** | `@ears @bdd` (per necessary-upstream contract) |
 | **Self-reference** | dash form `@adr: ADR-NN` (document-level) |
 | **Element IDs** | `ADR.NN.SS.xxxx` (internal elements only) |
 | **Status** | Proposed → Accepted → Deprecated → Superseded |

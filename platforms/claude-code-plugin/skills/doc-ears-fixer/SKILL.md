@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
 ---
@@ -239,7 +239,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 2 — Links | broken/abs paths | recompute relative paths; convert absolute → relative; fix upstream BRD/PRD links |
 | 3 — Element IDs | legacy/invalid IDs | re-derive `EARS.NN.SS.xxxx` (section number + content hash); drop legacy `EARS.NN.xxxx`, numeric type-codes (`.25`/`.26`), `Event-XXX`/`State-XXX`/`UB-XXX`/`REQ-XXX` prefixes |
 | 4 — Content | placeholders, syntax | fill template dates; normalize headings in place; flag missing SHALL keyword, broken WHEN-THE-SHALL structure, missing trigger, vague timing, compound (non-atomic) statements for manual review; flag `[TODO]`/`[TBD]` |
-| 5 — References | traceability | add missing cumulative `@brd`/`@prd` tags; fix `@threshold:` format; convert comma separators → pipes; update the traceability matrix |
+| 5 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — EARS requires `@prd`); fix `@threshold:` format; convert comma separators → pipes; update the traceability matrix |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; when `upstream_mode: "ref"`, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split sections > 300 words at the next requirement boundary, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 

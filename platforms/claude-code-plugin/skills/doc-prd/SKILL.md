@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -116,7 +116,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
   `"{doc_id}:{section_id}:{title}:{description}"` from PRD content, extend to 8
   on collision). `SS` is the **section the element lives in** — no numeric
   type-codes.
-- PRD is Layer 2, so it carries cumulative **`@brd:`** tags (e.g.
+- PRD is Layer 2, so it carries **`@brd:`** tags (e.g.
   `@brd: BRD.01.07.a7f3`). Downstream artifacts tag it: `@prd: PRD.01.09.b3f2`.
 - **Removed patterns** (do not use): `FR-XXX`, `US-XXX`, `AC-XXX`, `F-XXX`, and
   the legacy 3-segment `PRD.NN.xxxx`.
@@ -136,7 +136,7 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 4. **Document Control first**, then complete all 15 sections from the template.
 5. **Fill §10** (≥3 customer-facing categories); **elaborate §14** ADR topics
    without ADR numbers.
-6. **Add cumulative `@brd:` tags** resolving to existing BRD elements.
+6. **Add `@brd:` tags** resolving to existing BRD elements.
 7. **Update the PRD index** `docs/02_PRD/PRD-00_index.md` and add this PRD to
    the parent BRD's Downstream Artifacts in the same change.
 8. **Validate** (below) and commit the PRD, index, and BRD update together.
@@ -153,14 +153,14 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 - [ ] §14 elaborates ADR topics; no ADR numbers referenced.
 - [ ] Element IDs match `PRD.NN.SS.xxxx`; `SS` equals the host section; no
       removed patterns.
-- [ ] Cumulative `@brd:` tags resolve to existing BRD elements.
+- [ ] `@brd:` tags resolve to existing BRD elements.
 - [ ] Traceability / index updated; parent BRD updated; no broken links.
 - [ ] Diagram contract: `@diagram: c4-l2` and `@diagram: dfd-l2` present (use
       `../charts-flow/SKILL.md`); sequence diagrams include `alt/else`.
 
 | Code | Meaning | Severity |
 |------|---------|----------|
-| XDOC-002 | Missing cumulative tag (`@brd`) | error |
+| XDOC-002 | Missing required upstream tag (`@brd`) | error |
 | XDOC-006 | Tag format invalid | error |
 | XDOC-008 | Broken internal link | error |
 | XDOC-009 | Missing traceability section | error |
@@ -170,9 +170,10 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 
 ## Next Skill
 
-`../doc-ears/SKILL.md` — the EARS references this PRD (`@prd: PRD.NN.SS.xxxx`),
-carries cumulative `@brd`/`@prd` tags, and formalizes PRD features into
-`WHEN-THE-SHALL-WITHIN` requirements.
+`../doc-ears/SKILL.md` — the EARS references this PRD (`@prd: PRD.NN.SS.xxxx`)
+and formalizes PRD features into `WHEN-THE-SHALL-WITHIN` requirements. (Per the
+necessary-upstream contract, EARS itself only requires `@prd`; upstream BRD
+lineage is reachable transitively via the @-tag chain.)
 
 ## Adaptation
 
@@ -197,7 +198,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Define product features, personas, and KPIs |
 | **Layer** | 2 (Container) |
-| **Upstream tags** | `@brd` (1 cumulative) |
+| **Upstream tags** | `@brd` (per necessary-upstream contract) |
 | **Key decision** | What stays PRD-level vs pushes downstream |
 | **Must include** | Document Control (first), §10 (≥3 categories), §14 ADR topics, 15 sections |
 | **Next** | `doc-ears` |

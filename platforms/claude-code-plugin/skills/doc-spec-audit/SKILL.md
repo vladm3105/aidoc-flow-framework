@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -470,7 +470,7 @@ Output: `SPEC-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** (interface/data-model/behavior
-coverage, cumulative-tag coverage) · **Diagram Contract Findings** · **Fix
+coverage, trace-resolution coverage) · **Diagram Contract Findings** · **Fix
 Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended Next
 Step** · **Cleanup Summary**.
 

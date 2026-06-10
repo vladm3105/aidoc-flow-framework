@@ -9,10 +9,10 @@ metadata:
     layer: 6
     artifact_type: SPEC
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
+    upstream_artifacts: [EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -29,7 +29,9 @@ downstream test or code.
 **Layer**: 6 — the unified specification. A SPEC subsumes what older revisions
 split into component/data/ux/risk/process specs; there is now **one** SPEC
 artifact per component.
-**Upstream**: BRD → PRD → EARS → BDD → ADR (ADR is the primary source).
+**Upstream**: EARS, BDD, ADR (per the necessary-upstream contract; ADR is the
+primary source. Upstream PRD/BRD lineage is reachable transitively via the
+@-tag chain).
 **Downstream**: TDD → IPLAN → Code.
 
 ## When to Use
@@ -46,9 +48,9 @@ For end-to-end generation from BDD/ADR, a prompt, or an IPLAN, use
 
 ## Prerequisites
 
-SPEC sits at Layer 6, so verify the upstream chain exists before writing.
-Reference only documents that already exist; never invent placeholders like
-`SPEC-XXX` or `ADR-XXX`. Before writing, read:
+SPEC sits at Layer 6, so verify the required upstream artifacts (EARS, BDD,
+ADR) exist before writing. Reference only documents that already exist; never
+invent placeholders like `SPEC-XXX` or `ADR-XXX`. Before writing, read:
 
 1. **Template (source of truth):** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml`
 2. **Layer README:** `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/README.md`
@@ -97,9 +99,11 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
   (two digits, no extra leading zero: `SPEC-01`, `SPEC-99`, `SPEC-102`).
   Downstream artifacts tag it `@spec: SPEC-12`. There is **no** dotted
   `SPEC.NN.SS.xxxx` element form for SPEC itself.
-- **Cumulative upstream tags** (the Layer 6 chain): hierarchical refs use the
-  4-segment element form — `@brd: BRD.NN.SS.xxxx`, `@prd: PRD.NN.SS.xxxx`,
-  `@ears: EARS.NN.SS.xxxx`, `@bdd: BDD.NN.SS.xxxx`; document-level `@adr: ADR-NN`.
+- **Required upstream tags** (per the necessary-upstream contract):
+  hierarchical refs use the 4-segment element form — `@ears: EARS.NN.SS.xxxx`,
+  `@bdd: BDD.NN.SS.xxxx`; document-level `@adr: ADR-NN`. Upstream PRD/BRD
+  lineage is reachable transitively via the EARS/BDD @-tag chain — do not
+  emit `@brd:`/`@prd:` on SPEC elements.
 - **Thresholds:** never hardcode performance/timeout/rate-limit values — use
   `@threshold:` registry references.
 - **Removed patterns** (do not use): `STEP-XXX`, `IF-XXX`, `INT-XXX`, `DM-XXX`,
@@ -117,8 +121,8 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
 4. **Document Control first**, then complete all 8 sections from the template.
 5. **Define interfaces and data models** with typed signatures; **specify
    behavior** with each rule sourced from `@ears`/`@bdd`.
-6. **Add the cumulative upstream tags** (`@brd @prd @ears @bdd @adr`) and the
-   downstream `@tdd: TDD-NN` contract.
+6. **Add the required upstream tags** (`@ears @bdd @adr` per the
+   necessary-upstream contract) and the downstream `@tdd: TDD-NN` contract.
 7. **Update the SPEC index** `docs/06_SPEC/SPEC-00_index.md` in the same change.
 8. **Validate** (below) and commit the SPEC and index together.
 
@@ -131,8 +135,8 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
 - [ ] Component-level only (no code/SQL/deployment detail; C4-L3 scope holds).
 - [ ] Document ID is dash form `SPEC-NN`; no dotted SPEC element IDs; no removed
       patterns.
-- [ ] Cumulative upstream tags present (`@brd @prd @ears @bdd @adr`); downstream
-      `@tdd: TDD-NN` contract present.
+- [ ] Required upstream tags present (`@ears @bdd @adr` per necessary-upstream
+      contract); downstream `@tdd: TDD-NN` contract present.
 - [ ] Quantitative values use `@threshold:` references (no magic numbers).
 - [ ] Diagram contract: `@diagram: c4-l3` and `@diagram: dfd-l3` present (use
       `../charts-flow/SKILL.md`).
@@ -141,7 +145,7 @@ See `SPEC-TEMPLATE.yaml` for per-section content. Format is **YAML**.
 | Code | Meaning | Severity |
 |------|---------|----------|
 | XDOC-006 | Tag format invalid | error |
-| XDOC-007 | Gap in cumulative tag chain | error |
+| XDOC-007 | Missing required upstream tag | error |
 | XDOC-008 | Broken internal link | error |
 | XDOC-009 | Missing traceability section | error |
 
@@ -150,9 +154,9 @@ issues are found, fix and re-check; if unfixable, log for manual review.
 
 ## Next Skill
 
-`../doc-tdd/SKILL.md` — the TDD references this SPEC (`@spec: SPEC-NN`), inherits
-the cumulative tags (`@brd` through `@spec`), and defines test cases, inputs,
-expected outputs, and thresholds for the SPEC contracts.
+`../doc-tdd/SKILL.md` — the TDD references this SPEC (`@spec: SPEC-NN`) along
+with its own required `@ears @bdd @adr` upstream tags, and defines test cases,
+inputs, expected outputs, and thresholds for the SPEC contracts.
 
 ## Adaptation
 
@@ -177,7 +181,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Specify a component: interfaces, data models, behavior |
 | **Layer** | 6 (C4-L3 Component) |
-| **Upstream tags** | `@brd @prd @ears @bdd @adr` |
+| **Upstream tags** | `@ears @bdd @adr` (per necessary-upstream contract) |
 | **Document ID** | Dash form `SPEC-NN` (document-level; no dotted element IDs) |
 | **Must include** | Document Control (first), 8 sections, `@threshold` for numbers |
 | **Format** | YAML |

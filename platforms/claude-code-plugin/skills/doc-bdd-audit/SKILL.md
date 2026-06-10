@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.11.0"
-    framework_spec_version: "0.15.2"
+    version: "0.12.0"
+    framework_spec_version: "0.16.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
 ---
@@ -468,7 +468,8 @@ Output: `BDD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** · **Coverage Findings** (Gherkin
-syntax, five-category coverage, cumulative-tag coverage, `spec_trace` presence) ·
+syntax, five-category coverage, trace-resolution coverage, `spec_trace`
+presence) ·
 **Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
 Next Step** · **Cleanup Summary**.
 
