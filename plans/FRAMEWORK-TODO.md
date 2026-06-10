@@ -96,6 +96,29 @@
   regenerated corpus surfaces. Treat as standard example-driven TODO
   pipeline.
 
+### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound
+
+- *Context:* `REVIEW_REMEDIATION_FLOW.md` defines the quality loop as
+  "Draft → Review → (Remediate → Re-review)* → Gate Pass" and states
+  *"the loop repeats until the gate passes"* — open-ended. But the cap
+  is hard-coded at `tools/saga_driver.py:125` `MAX_ITERATIONS = 3` (and
+  default threshold 90). No `ADAPTATION_SURFACE.yaml` knob exposes this;
+  the spec gives no guidance on default cap or how to tune it per layer
+  / project.
+- *Fix shape:* either (a) elevate the iteration cap to spec — declare a
+  default in `REVIEW_REMEDIATION_FLOW.md` or `REVIEW_SAGA.md` and expose
+  it via `ADAPTATION_SURFACE.yaml` (e.g. `quality_loop.max_iterations:
+  3`, tunable per project) — or (b) leave it as a platform implementation
+  detail but explicitly document that in the spec so consumers know to
+  consult their platform's docs for the cap. Either way, the framework
+  shouldn't have a silent implementation-bound cap that the spec is
+  unaware of. Discovered while observing the TRACE-RES-FIXUP-001 corpus
+  regen cascade (2026-06-10): PRD-01 converged in iter-2 (PASS 92),
+  EARS-01 in iter-2 (PASS 94); both ran the loop until gate passed,
+  consistent with spec — but the silent 3-iter ceiling means
+  near-convergent artifacts (89/90) end up `PARTIAL_TIMEOUT` instead of
+  one-more-cycle.
+
 ### `[plan-review]` 5-pass plan reviews are paying off; consider codifying minimum-pass count by plan-type
 
 - *Context:* TRACE-RES-FIXUP-001 plan took 5 passes to converge
