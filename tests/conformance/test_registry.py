@@ -60,11 +60,27 @@ class RegistryTraceability(unittest.TestCase):
             with self.subTest(layer=layer["number"]):
                 self.assertEqual(layer["downstream"], expected)
 
-    def test_required_tags_are_cumulative(self):
-        for i, layer in enumerate(LAYERS):
-            expected = [LAYERS[j]["artifact"].lower() for j in range(i)]
-            with self.subTest(layer=layer["number"]):
-                self.assertEqual(layer["required_tags"], expected)
+    def test_required_tags_match_necessary_upstream_table(self):
+        """Each layer declares ONLY the upstream layers its evaluation reads.
+
+        Under the necessary-upstream contract (NECESSARY-UPSTREAM-001),
+        lineage to layers further upstream is discoverable transitively
+        through the @-tag chain, not via cumulative redeclaration.
+        """
+        expected_required_tags = {
+            "BRD": [],
+            "PRD": ["brd"],
+            "EARS": ["prd"],
+            "BDD": ["ears"],
+            "ADR": ["ears", "bdd"],
+            "SPEC": ["ears", "bdd", "adr"],
+            "TDD": ["ears", "bdd", "adr", "spec"],
+            "IPLAN": ["spec", "tdd"],
+        }
+        for layer in LAYERS:
+            artifact = layer["artifact"]
+            with self.subTest(layer=layer["number"], artifact=artifact):
+                self.assertEqual(layer["required_tags"], expected_required_tags[artifact])
 
     def test_can_reference_matches_required_tags(self):
         for layer in LAYERS:

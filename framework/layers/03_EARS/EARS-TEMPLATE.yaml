@@ -352,8 +352,6 @@ traceability:
   upstream:
     prd_references:
       - "@prd: PRD.NN.09.xxxx"
-    brd_references:
-      - "@brd: BRD.NN.07.xxxx"
 
   downstream_expected:
     - type: BDD
