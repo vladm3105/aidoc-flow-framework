@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.16.1 → 0.17.0 (FRAMEWORK-FEEDBACK-LOG-001)
+
+- **New governance Principle 9** in `DOC_GOVERNANCE_CORE.md`:
+  example-driven / project-driven framework improvement. Friction
+  discovered while applying the framework is captured immediately via
+  a two-tier feedback pipeline; learning no longer evaporates between
+  sessions.
+- **New dedicated governance doc** `framework/governance/FRAMEWORK_FEEDBACK_LOG.md`
+  codifies the two-tier pipeline:
+  - **Tier 1 — Consumer project:** every project applying the framework
+    keeps `framework-feedback-log.md` at its root. Records lint-rule
+    misfires, harness flag absences, SKILL prose contradicting the
+    spec, sync-script gotchas, missing convenience features. Inline as
+    discovered. Periodically surfaced upstream via PR/issue.
+  - **Tier 2 — Framework repo:** the framework's own
+    `plans/FRAMEWORK-TODO.md` aggregates entries from the framework
+    team's example-driven testing AND from consumer-project logs.
+    Triage queue: entries → plans → PRs.
+- **New consumer-project template** `framework/templates/framework-feedback-log.template.md`
+  scaffolds the Tier-1 log (Open / Surfaced / Closed sections; entry
+  format guidance; tag taxonomy).
+- Framework spec MINOR (`0.16.1 → 0.17.0`) — adds a new governance
+  principle + new governance doc + new template directory; consumer
+  projects gain a documented capture path that didn't exist before.
+
 ### Changed — Framework Spec 0.16.0 → 0.16.1 + Claude Code plugin 0.12.0 → 0.13.0 (TDD-RT-001)
 
 - **TDD layer team-mode + playbook injection.** Mirror of the SPEC-RT-001
