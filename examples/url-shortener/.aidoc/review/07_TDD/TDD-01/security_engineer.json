@@ -1,0 +1,14 @@
+{
+  "persona": "security_engineer",
+  "lens_score": 86,
+  "findings": [
+    {
+      "id": "SE-001",
+      "priority": "P2",
+      "check": "C2",
+      "location": "TDD-01 §4 Test Cases — Unit/Integration; cases cf05/54b8/1bc0 (get), 74e8/9528/ab25 (increment_visits)",
+      "message": "Input-fuzzing now covers the claim (8504) and set_status (fc47) code arguments with encoding-edge/injection classes, but two public-interface boundary inputs remain unfuzzed. (1) get(code) is exercised only on known/unknown/taken_down equivalence classes — no malformed/oversized/encoding-edge code (unicode NFC/NFD, percent-encoded, embedded NUL/control char, base62 homoglyph). A code that normalizes differently on the read path than on the claim path is a lookup-bypass / key-confusion surface at the trust boundary. (2) increment_visits(code, delta) has no fuzz on either argument — notably delta (negative/zero/overflow-width int), which can silently violate the SPEC §4 monotonic visit_count contract, and code on the same encoding-edge classes. Both are public Protocol methods that cross the substrate trust boundary, so per C2 each needs >=1 fuzzing case.",
+      "recommendation": "Add a get-fuzz unit case (malformed/oversized/encoding-edge/homoglyph code -> ValueError before substrate read, or deterministic None, never a normalized-key collision with a claimed code) and an increment_visits-fuzz unit case (negative/zero/overflow delta rejected or no-op preserving monotonicity; encoding-edge code rejected before the native increment). Both belong in tests/unit/test_link_store.py, mirroring the 8504/fc47 input matrix."
+    }
+  ]
+}

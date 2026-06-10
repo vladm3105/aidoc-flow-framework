@@ -1,0 +1,14 @@
+{
+  "persona": "chaos_engineer",
+  "lens_score": 88,
+  "findings": [
+    {
+      "id": "CHAOS-001",
+      "priority": "P2",
+      "check": "C1",
+      "location": "TDD §3 row @bdd: BDD.01.03.f44a; case TDD.01.04.7115",
+      "message": "The `get`-path degradation scenario (BDD.01.03.f44a) is encoded detection-only at the Link-Store boundary. Case 7115 asserts the failure is detected (StoreUnavailableError within 1 s, structured ERROR log) but no Link-Store case asserts the store's own recovery after the read path is restored. SPEC-01 §5 states the read-path error response as 'Surface StoreUnavailableError; redirect degrades fail-safe AND recovers when the store returns' — the 'recovers when the store returns' half (get resolving the known record again once the read path is restored) is a Link-Store-level guarantee distinct from the Redirect Handler's own recovery (BDD.01.03.0759, out of scope). Detection-only encoding allows a store that latches into a permanently-failing read state (e.g. a stuck circuit breaker or cached unavailability) to pass the suite while never recovering, producing silent permanent degradation of the redirect hot path.",
+      "recommendation": "Add a paired recovery case in test_link_store_kv.py: inject the read-path fault, assert get raises StoreUnavailableError (detection, as 7115), then clear the injected fault via the controllable adapter/toxiproxy and assert a subsequent get resolves the known record within the p95 budget (recovery). This is the get-path analog of the ec06/4e51 detection+recovery pairs already present for the write paths."
+    }
+  ]
+}
