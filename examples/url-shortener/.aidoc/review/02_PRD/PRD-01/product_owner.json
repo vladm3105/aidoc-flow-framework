@@ -1,0 +1,14 @@
+{
+  "persona": "product_owner",
+  "lens_score": 96,
+  "findings": [
+    {
+      "id": "PO-001",
+      "priority": "P3",
+      "check": "C6",
+      "location": "§11 / Reliability — Link durability gate",
+      "message": "The 'Link durability' launch gate (RPO = 0; RTO ≤ 30 min) names its Validation method only as 'Recovery drill' — markedly thinner than every peer cell in §11, which each specify the named method plus what is exercised and asserted (e.g. 'Fault-injection test: with the counting path stalled … a redirect still resolves within the latency target', 'Capacity test: drive utilization past the alert threshold; confirm the alert fires …'). As written, 'Recovery drill' does not state what failure is injected, what is restored, or that the RPO/RTO numbers are the pass criteria, so it reads closer to a label than a falsifiable validation method.",
+      "recommendation": "Expand the Validation cell to a self-contained drill description naming the injected failure and the measured outcome, e.g. 'Recovery drill: induce a store-loss / restore event; confirm no confirmed-issued mapping is lost (RPO = 0) and resolvability is restored within 30 min (RTO ≤ 30 min) per BRD.01.10.3407.'"
+    }
+  ]
+}

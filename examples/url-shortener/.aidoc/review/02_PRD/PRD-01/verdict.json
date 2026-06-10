@@ -1,0 +1,91 @@
+{
+  "combined_status": "PASS",
+  "content_score": 92,
+  "structural_status": "PASS",
+  "coverage": {
+    "expected": 6,
+    "ran": 6,
+    "quorum_met": true
+  },
+  "blocking_findings_count": 0,
+  "lens_scores": {
+    "product_owner": 96,
+    "architect": 84,
+    "tech_lead": 95,
+    "chaos_engineer": 88,
+    "security_engineer": 100,
+    "auditor": 88
+  },
+  "findings": [
+    {
+      "id": "MERGED-P3-001",
+      "priority": "P3",
+      "check": "C6",
+      "location": "§11 / Reliability — Link durability gate / Validation cell",
+      "message": "The 'Link durability' launch gate (RPO = 0; RTO ≤ 30 min) names its Validation method only as 'Recovery drill' — markedly thinner than every peer cell in §11, which each specify the named method plus what is exercised and asserted. Unlike its sibling gates (fault-injection, dependency-outage, load, capacity), the Validation cell does not state the injection condition, what is restored, or that the RPO/RTO numbers are the pass criteria. A reviewer at validation time cannot determine what evidence the drill must demonstrate to pass.",
+      "recommendation": "Expand the Validation cell to a self-contained drill description naming the injected failure and the measured outcome, e.g. 'Recovery drill: induce a store-loss / restore event; confirm no confirmed-issued mapping is lost (RPO = 0) and redirect resolvability is restored within 30 min (RTO ≤ 30 min) per BRD.01.10.3407', matching the specificity of the adjacent fault-injection and dependency-outage gates.",
+      "personas": ["product_owner", "tech_lead"]
+    },
+    {
+      "id": "ARCH-001",
+      "priority": "P2",
+      "check": "C6",
+      "location": "§7 Dependencies (external reputation source) vs §9 c4-l2 and dfd-l2 diagrams",
+      "message": "§7 names a real container-boundary integration contract: the Shorten/Redirect API calls out synchronously to an external reputation source at create time, exchanging a candidate URL for a verdict, and this is a documented go-live precondition with a fail-closed stance. However the reputation source is absent from the c4-l2 container view, from the dfd-l2 data movement view, and from the create path generally. A downstream reader sees a create-time external synchronous call in prose that no structural diagram depicts, so the create-path boundary and its blocking external dependency edge are unmodeled. This is reinforced by §14 mapping abuse-protection to ADR topic BRD.01.08.daeb while BRD.01.08.ff9a (External System Integration) is still marked N/A — contradicted by the live reputation-source contract.",
+      "recommendation": "Add the external reputation source to the c4-l2 view as an external system with a synchronous request/response edge from the Shorten/Redirect API at create time, mirror the create-time verdict exchange in dfd-l2, and update the c4-l2 scope_boundary plus decomposition note to acknowledge the external dependency. Reconcile the §14 BRD.01.08.ff9a 'N/A external integration' note with §7's reputation-source precondition.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "ARCH-002",
+      "priority": "P3",
+      "check": "C1",
+      "location": "§9 sequence-sync participant `P as URL Shortener` vs c4-l2 / dfd-l2 `Shorten/Redirect API`",
+      "message": "C1 entity reconciliation: the same container is labeled 'URL Shortener' (participant P) in the sequence-sync but 'Shorten/Redirect API' in both the c4-l2 and dfd-l2 views. The decomposition notes now correctly assert cross-diagram Visit Counter ownership, but the primary API container itself carries an inconsistent label, weakening the one-to-one entity mapping a downstream reader relies on to trace the same container across the three views.",
+      "recommendation": "Rename the sequence-sync participant to 'Shorten/Redirect API' (or add a parenthetical alias) so the API container label is identical across all three diagrams.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "ARCH-003",
+      "priority": "P3",
+      "check": "C1",
+      "location": "§7 trust-boundary notes vs §9 all three diagrams",
+      "message": "C1 trust-boundary reconciliation: §7 fixes two distinct trust boundaries — the anonymous-public create/resolution surface and the internal/privileged Service-Owner reporting surface — and mandates two independent defense layers on the public resolution surface. None of the three diagrams annotate the public-vs-privileged boundary, even though the c4-l2 view places the Owner's privileged 'read counts' edge on the same containers as the anonymous Submitter/Visitor edges. The boundary is load-bearing for the public redirect surface (enumeration/scraping, rate-limiting) yet is structurally invisible.",
+      "recommendation": "Annotate the c4-l2 view (and dfd-l2 where the Owner read-path appears) with the anonymous-public vs internal/privileged trust boundary — e.g. a boundary grouping or edge label distinguishing the Owner's privileged read-counts edge from the anonymous public edges — and reference it in the c4-l2 decomposition note.",
+      "personas": ["architect"]
+    },
+    {
+      "id": "CE-001",
+      "priority": "P2",
+      "check": "C1",
+      "location": "§13 PRD.01.13.e661 (metric poisoning) / §10 / §11",
+      "message": "Of the three §13 risk rows that carry a real mitigation, PRD.01.13.e661 (automated repeat visits inflate adoption metrics) is the one that lacks two of the three C1 anchors. It has a §12/§14 ADR-deferral anchor (deferred to the adoption-metric-integrity / visit-observability ADR topic, §14 BRD.01.08.c478, now carrying 'lag (bounds per §12/§13)'), but there is NO §11 AC gate and NO §10 user-facing surface tied to it. The other three rows verify cleanly: 011a is anchored by the §11 'Destination-abuse control' + 'Screening fail-closed' gates, the §10 'shortening unavailable' message, and the §14 abuse-protection deferral; 385e is anchored by the §11 'Code-space capacity guard' gate, the §10 'Short-code space exhausted' message, and the §14 code-generation topic; d50d is anchored by the §11 'Data-protection deferral recorded' Compliance gate and the §12 PRD.01.12.04a7/59b7 constraints. e661 is the lone asymmetric row.",
+      "recommendation": "Either add a §11 AC confirming the metric-poisoning abuse case is recorded/owned for downstream resolution (mirroring the §11 'Data-protection deferral recorded' gate that anchors d50d), or accept e661 as a fully-deferred abuse case and document in the §13 row that the absence of a §10 surface and §11 gate is intentional for a deferred, no-user-facing-impact risk — so the asymmetry is a recorded decision rather than a structural omission.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "AUD-001",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§15 Glossary",
+      "message": "Domain-specific terms introduced in the PRD body are missing from the glossary: Service Owner, Link Submitter, Link Visitor (personas, central to §4/§6/§8), Conflict-free and Collision (scope/risk language, §2/§3/§10/§12), Fail-closed (security stance, §7/§9/§11/§13), RPO/RTO (durability targets, §11/§12), Reputation source (external dependency, §7/§9/§11/§13), Abuse case (risk model, §7/§13), Launch gate/promotion (acceptance workflow, §11), Capacity error (error message, §9/§10/§11), cold-start (measurement scope note, §5/§9), re-screening/re-screen (deferral, §7/§13). A PRD glossary must cover all domain terms introduced for product reader clarity.",
+      "recommendation": "Expand §15 Glossary to include all domain-specific terms and roles referenced in the PRD body. Include: persona definitions (Service Owner, Link Submitter, Link Visitor), technical design concepts (Conflict-free, Fail-closed, RPO/RTO, Reputation source, cold-start), product concepts (Visit count variants, Capacity error), and process terms (Launch gate, Abuse case). This ensures EARS/downstream consumers have a consistent reference for product terminology.",
+      "personas": ["auditor"]
+    },
+    {
+      "id": "AUD-002",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§1 Document Control, line 31 + frontmatter line 17",
+      "message": "Self-assessed EARS readiness score (92/100) appears in both the Document Control table and the YAML frontmatter (ears_ready_score: 92). Per C5 check rule, self-claimed scores must NOT be used as the audit verdict — the synthesizer determines the verdict from aggregated lens findings across all reviewers.",
+      "recommendation": "Confirm understanding: this self-assessed score is a metadata field documenting the author's confidence, not a binding quality gate. The final readiness verdict will be synthesized from the auditor, domain reviewer, and architect lens scores. The score entry may remain as historical record; it does not override the formal audit verdict.",
+      "personas": ["auditor"]
+    }
+  ],
+  "playbook_coverage": {
+    "C1": 3,
+    "C4": 1,
+    "C5": 1,
+    "C6": 2,
+    "beyond_checklist": 0
+  }
+}

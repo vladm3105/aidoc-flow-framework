@@ -1,27 +1,51 @@
 {
-  "combined_status": "FAIL",
-  "content_score": 0,
-  "structural_status": "FAIL",
+  "combined_status": "PASS",
+  "content_score": 94,
+  "structural_status": "PASS",
   "coverage": {
-    "expected": 1,
-    "ran": 1,
+    "expected": 5,
+    "ran": 5,
     "quorum_met": true
   },
-  "blocking_findings_count": 1,
-  "lens_scores": {},
+  "blocking_findings_count": 0,
+  "lens_scores": {
+    "requirements_specialist": 86,
+    "tech_lead": 96,
+    "qa_lead": 97,
+    "chaos_engineer": 100,
+    "security_engineer": 100
+  },
   "findings": [
     {
-      "id": "AUTO-REMEDIATE-STY03-001",
-      "code": "STY03",
-      "priority": "P1",
-      "location": "EARS-01 \u2014 document body",
-      "message": "document body is 2457 words; EARS target \u22641500 (blocking >2250)",
-      "recommendation": "Trim the document body below the EARS blocking word-count threshold (2250 words). Preserve all element IDs and the structural section set.",
-      "personas": []
+      "id": "RS-001",
+      "priority": "P2",
+      "check": "C2",
+      "location": "EARS.01.03.4425 — Increment visit count",
+      "message": "Line carries two distinct normative obligations under a single @prd: PRD.01.09.d101 tag: (1) the count-delta + timing obligation (increment by exactly one WITHIN the visit-count reconciliation window) and (2) an exactly-once / idempotency obligation (duplicate delivery of the same event SHALL NOT produce a second increment). These are independently testable rules and should each be a separate atomic line with its own @prd tag.",
+      "recommendation": "Split into two lines, both tagged @prd: PRD.01.09.d101: line A keeps the WHEN-served increment-by-exactly-one obligation with the reconciliation-window WITHIN; line B states the event-driven exactly-once / no-double-increment obligation (deduplication mechanism owned by the visit-observability ADR topic, BRD.01.08.c478). Retain the cross-reference to EARS.01.03.f766 for the concurrent-no-loss counterpart.",
+      "personas": ["requirements_specialist"]
+    },
+    {
+      "id": "RS-002",
+      "priority": "P3",
+      "check": "C2",
+      "location": "EARS.01.03.5066 — Create short link",
+      "message": "Primary obligation is atomic, but the line carries a trailing normative sentence ('A duplicate submission … MAY return … either outcome SHALL satisfy the code-to-URL uniqueness invariant (EARS.01.03.bca8)'). The embedded SHALL slightly muddies the single-rule-per-line boundary, though the clause explicitly defers ownership to the ubiquitous uniqueness rule bca8 and reads as a consistency restatement rather than an independent obligation.",
+      "recommendation": "Optional: demote the duplicate-submission sentence to a non-normative note (e.g., 'Note: a duplicate submission may reuse or reissue a code; uniqueness is owned by EARS.01.03.bca8') so the line carries exactly one SHALL obligation. No new @prd tag required since bca8 already owns the invariant.",
+      "personas": ["requirements_specialist"]
+    },
+    {
+      "id": "TL-001",
+      "priority": "P3",
+      "check": "C4",
+      "location": "EARS.01.03.eca5 — Capacity-utilization alert (WITHIN the capacity-monitoring envelope)",
+      "message": "The WITHIN timing bound 'the capacity-monitoring envelope' carries no @threshold tag or named-ADR deferral marker of its own. The present threshold governs the utilization level, not the alert-emit latency, so an engineer could read the alert-cadence bound as resolved when it is actually an unstated/deferred timing bound.",
+      "recommendation": "Attach an explicit threshold or named-ADR deferral marker for the alert-emit timing envelope (e.g., a @threshold for capacity-monitoring alert latency, or name the owning ADR topic for the alert cadence) so the timing bound is unambiguously deferred rather than implicitly resolved by the utilization-level threshold.",
+      "personas": ["tech_lead"]
     }
   ],
-  "playbook_coverage": {},
-  "generated_at": "2026-06-08T18:57:29.816611Z",
-  "synthetic": true,
-  "synthetic_origin": "AUTO-REMEDIATE-001"
+  "playbook_coverage": {
+    "C2": 2,
+    "C4": 1
+  }
 }

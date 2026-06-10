@@ -1,15 +1,5 @@
 {
   "persona": "integration_lead",
-  "lens_score": 96,
-  "findings": [
-    {
-      "id": "INT-006",
-      "priority": "P3",
-      "check": "C3",
-      "location": "§3 claim / §4 LinkRecord.idempotency_key / §6 Patterns",
-      "message": "The idempotency_key crosses the API -> Link Store boundary and drives the replay-collapse dedup contract, but the spec does not declare the key's uniqueness scope or a replay-match retention window. With the content-derived fallback (ADR.01.03.3315), two distinct submissions hashing to the same candidate could collapse onto one record, and a same-key retry is honored as replay over an unbounded horizon by spec. The replay guarantee across the boundary is thus time- and scope-unbounded. Iteration-1 INT-001/002/003/004/005 are independently re-verified as resolved in v1.0.1: §3 boundary table now states per-edge timeout/retry/circuit-break (INT-001 C3); §4 names a backward-compatible-within-MAJOR, append-only-LinkStatus evolution policy with migration-on-break (INT-002 C4); §2/§3 stamp LinkStore contract v1 + substrate contract v1 tracking SPEC MAJOR (INT-003 C1); §2 declares a KV minimum-capability matrix with non-conformance rule (INT-004 C2); §6 attributes per-boundary emitters and cross-edge span propagation (INT-005 C5).",
-      "recommendation": "State the idempotency_key uniqueness scope (per-submitter vs global) and the replay-match retention window (key honored for replay within N; beyond it a same-key submission is treated as a fresh claim), plus the content-derived fallback's collision domain. Bind concrete values at TDD against the EARS.01.03.f909 issuance budget.",
-      "personas": ["integration_lead"]
-    }
-  ]
+  "lens_score": 100,
+  "findings": []
 }

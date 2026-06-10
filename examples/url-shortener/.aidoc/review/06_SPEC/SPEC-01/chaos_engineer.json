@@ -3,21 +3,21 @@
   "lens_score": 93,
   "findings": [
     {
-      "id": "CHAOS-002-R1",
+      "id": "CHAO-001",
       "priority": "P3",
-      "check": "C2",
-      "location": "§6 Resilience envelope (reconciliation log bound)",
-      "message": "The reconciliation-log overflow policy is now characterized (CHAOS-004 resolved: 'at the bound oldest deltas drop with a reconciliation_overflow alert; post-fault drain rate-bounded'), but the bound itself is qualitative -- '(max retention)' with no ceiling magnitude (no entry count, byte ceiling, or time window). The drop-oldest behavior and alert are specified, so the resilience BEHAVIOR is defined; what is missing is a concrete bound magnitude. Consequence: the overflow-and-drop test the TDD owes cannot be constructed -- a fixture cannot drive the log to its bound and observe the drop + alert without knowing what the bound is. This is a testability gap, not an uncharacterized-resilience gap, hence P3.",
-      "recommendation": "Quantify the reconciliation-log bound as a concrete ceiling (e.g. max N entries OR max retention window OR max bytes) so the overflow/drop-oldest path is constructable as a TDD fixture. Pin the magnitude to the design-load increment-fault rate x worst-case outage duration the §6 envelope assumes, or mark it a TDD-owned threshold with a named source.",
+      "check": "C4",
+      "location": "Section 3 — increment_visit delivery contract / Section 6 — dead-letter recovery",
+      "message": "Dead-letter recovery (iteration-2 CHAO-002) closes the exactly-once loop via 'operator action' replay through the idempotent increment path, but the recovery time of that reconciliation tail is unbounded. The countstaleness window bounds WHEN an event is routed to dead-letter (and alerted), not WHEN a dead-lettered or out-of-window-skew event is reconciled — that step waits on an operator with no MTTR/RTO. RTO <= 30 min is scoped to store-loss recovery, not the dead-letter replay tail. A backlog of dead-lettered count events can therefore stay unreconciled indefinitely while still meeting every stated bound.",
+      "recommendation": "State a recovery-time bound (or explicit SLO/escalation target) for dead-letter reconciliation — e.g. dead-lettered events must be replayed within a named operator-response window, with the dead-letter counter feeding an SLA-bounded alert. Make the manual-reconciliation MTTR testable at TDD-01 alongside the RTO <= 30 min store-loss probe.",
       "personas": ["chaos_engineer"]
     },
     {
-      "id": "CHAOS-002-R2",
+      "id": "CHAO-002",
       "priority": "P3",
-      "check": "C4",
-      "location": "§3 Boundary failure semantics / §6 Resilience envelope (circuit-break)",
-      "message": "Circuit-break OPEN semantics are defined on both synchronous boundaries (§3: 'open after a bounded failure count => fail closed'; 'open => fail-safe not-found'), and the contract asserts recovery ('recovers when the store returns', §5 error table). But the breaker RECLOSE / half-open reset semantics are implicit: no half-open probe interval, reset window, or success-count-to-close is stated. C4 (recovery) wants the MTTR after a transient fault bounded; with no reclose mechanism specified, the time from substrate-recovered to breaker-closed (traffic readmitted) is unbounded by the SPEC. Recovery is asserted at the outcome level but the mechanism that bounds it is missing. P3 because the SPEC does claim recovery and the breaker-trip side is defined -- only the reset side is implicit.",
-      "recommendation": "Specify the circuit-break reset contract: the half-open probe cadence (or cool-down window) and the success condition that recloses the breaker, so the post-fault readmission time is bounded and the reclose path is testable (trip -> substrate recovers -> half-open probe -> close within bounded window). Bind concrete values at TDD against a named recovery budget.",
+      "check": "beyond-checklist:backpressure-policy-undefined",
+      "location": "Section 3 — Delivery channel (Visit-Counter-owned durable queue) / Section 6 — Read/create design-load",
+      "message": "Iteration-2 CHAO-001 characterizes read-pool and write-pool saturation well (design load, safe-overload margin, beyond-margin fast-fail/shed). The durable async dispatch queue that carries increment_visit off the redirect path has no characterized beyond-margin behavior of its own: when the reconciler sustainably lags the producer, queue depth grows on durable storage with no stated bound or shed/backpressure policy. The off-path design correctly protects redirects, and the queue is owned by the Visit Counter — but SPEC-01 binds the at-least-once contract to that transport, so its saturation policy is in-scope to reference. Unbounded durable-queue growth under sustained count load is the un-addressed tail.",
+      "recommendation": "Reference the queue's beyond-margin policy: bound the durable backlog (max depth / age) and state what happens at that bound (shed-with-alert vs. block producer vs. age-out to dead-letter), tying it to the existing reconciliation-lag metric. If the policy lives entirely in the Visit Counter component spec, cite that owner explicitly so the backpressure contract is traceable rather than absent.",
       "personas": ["chaos_engineer"]
     }
   ]

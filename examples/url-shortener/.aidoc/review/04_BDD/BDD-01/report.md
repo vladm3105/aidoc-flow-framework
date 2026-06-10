@@ -1,240 +1,173 @@
-# BDD-01 Review Report — Unified Synthesizer Output
+# BDD-01 Review Report — Iteration 3
 
-**Artifact:** BDD-01
+**Artifact:** BDD-01 (url-shortener BDD suite)
 **Layer:** 04_BDD
-**Date:** 2026-06-08
-**Synthesizer role:** Chairperson (runs last; aggregates 6 lens slots)
+**Review iteration:** 3 (saga re-review after iter-2 fixer)
+**Report date:** 2026-06-10
 
 ---
 
-## Gate Decision
+## Gate decision
 
-**PASS**
+| Field | Value |
+|---|---|
+| combined_status | **PASS** |
+| structural_status | PASS |
+| content_score | **91 / 100** |
+| blocking_findings_count (P0 + P1) | 0 |
+| coverage quorum met | yes (6 / 6 lenses ran) |
 
-All gate conditions satisfied:
-
-| Condition | Result |
-|-----------|--------|
-| Structural floor | PASS |
-| Blocking findings (P0/P1) | 0 |
-| Content score >= 90 | 95 >= 90 — PASS |
-| Coverage quorum | 6/6 lenses ran — PASS |
-
----
-
-## Executive Summary
-
-BDD-01 is a mature, well-structured suite of 35 scenarios across 5 scenario categories, with complete cumulative upstream traceability (@brd/@prd/@ears at feature level), conformant scenario IDs (BDD.01.03.xxxx 4-hex), and all required metadata. The structural floor passes cleanly on every declared check.
-
-The content review by 6 lenses produces a weighted content score of **95** (gate threshold: 90). No lens surfaced a P0 or P1 finding; the suite is not blocked. The finding set consists of one P2 warning (a missing recovery scenario for the abuse-throttle path, which lacks the paired restoration assertion every other failure-injection class carries) and seven P3 informational items (template-conformance advisory, audit-sink failure edge, redirect malformed-input gap, upstream-owned SSRF encoding bypass, and three operator observability gaps each requiring an upstream EARS amendment before a BDD fix is possible).
-
-Two auditor findings were floor-falsified as false positives (see §Floor-falsified findings below) and are excluded from the verdict. With those findings removed, the auditor lens recomputes to a clean score of 100.
-
-The `beyond_checklist` ratio for this layer is 3/8 = 37.5%, above the 30% drift threshold. This is a playbook calibration signal: the BDD playbook's C1–C5 checks do not fully cover the recovery-pairing, audit-sink failure, and SSRF encoding concerns that emerged from the chaos_engineer and security_engineer lenses. The playbook maintainer should review whether new check rows are warranted.
+The deterministic gate passes: structural floor is PASS, no unresolved P0 or P1, and content_score 91 meets the ≥ 90 threshold. This is the first PASS verdict for BDD-01 across the saga.
 
 ---
 
-## Readiness Score
+## Score calculation
 
-**Content score: 95 / 100**
+| Lens | Weight | Score (iter 3) | Contribution |
+|---|---|---|---|
+| qa_lead | 35 | 84 | 2940 |
+| tech_lead | 25 | 88 | 2200 |
+| chaos_engineer | 14 | 100 | 1400 |
+| security_engineer | 6 | 100 | 600 |
+| operator | 10 | 97 | 970 |
+| auditor | 10 | 100 | 1000 |
+| **Total** | **100** | — | **9110** |
 
-### Per-lens scores
+content_score = round(9110 / 100) = **91**
 
-| Lens | Score | Weight | Weighted contribution |
-|------|-------|--------|-----------------------|
-| qa_lead | 95 | 35 | 33.25 |
-| tech_lead | 100 | 25 | 25.00 |
-| chaos_engineer | 86 | 14 | 12.04 |
-| security_engineer | 92 | 6 | 5.52 |
-| operator | 95 | 10 | 9.50 |
-| auditor | 100 | 10 | 10.00 |
-| **Total** | | **100** | **95.31 → 95** |
+No caps applied (0 × P0, 0 × P1).
 
-Auditor score recomputed to 100 per floor adjudication (both auditor findings discarded as false positives; see §Floor-falsified findings).
+### Movement vs iteration 2
+
+| | Iter 2 | Iter 3 | Delta |
+|---|---|---|---|
+| combined_status | FAIL | PASS | +1 tier |
+| content_score | 89 | 91 | +2 |
+| blocking_findings_count | 0 | 0 | — |
+
+The iter-2 fixer resolved both prior P2s (§4 traceability matrix, BDD.01.03.5645 split) and TL-BDD-01/TL-BDD-02 plus 8 P3s. The score crossed the 90 gate threshold. However the crash-recovery rewrite of BDD.01.03.9b90 and the pre-existing entropy scenario BDD.01.03.e5ec surfaced three new non-blocking P2 atomicity/timeout findings this iteration (MERGED-P2-9b90 compound When + missing timeout, QA-BDD-01-F007 compound And-step), which the qa_lead and tech_lead lenses score at 84 and 88 respectively, anchoring the content_score at 91 rather than higher.
+
+---
+
+## Executive summary
+
+BDD-01 achieves its first PASS at iteration 3. The iter-2 fixer's most impactful work — restoring the §4 traceability matrix and atomically splitting BDD.01.03.5645 — eliminated all prior blocking P2s. The document now clears the gate.
+
+Three new P2 findings emerge this iteration, all non-blocking and all traceable to the fixer's crash-recovery rewrite of BDD.01.03.9b90. That scenario now attracts two co-located C2 findings (compound When block from qa_lead; missing numeric timeout from tech_lead) that are merged into MERGED-P2-9b90 for co-resolution in a single edit pass. The entropy scenario BDD.01.03.e5ec has a compound And-step (QA-BDD-01-F007) that is the only isolated P2.
+
+The two advisory operator findings (OP-I3-ADV-003, OP-I3-ADV-004) carry forward unchanged from iteration 2; both remain advisory with no upstream EARS obligation, and no action is required before downstream progression.
+
+The chaos_engineer, security_engineer, and auditor lenses score 100 with zero findings — confirming that fault-partition breadth, security assertions, and structural compliance are sound at this iteration.
 
 ---
 
 ## Coverage
 
-- Expected lenses: 6
-- Lenses that ran: 6
-- Quorum met: yes (6/6 >= ceil(6 * 0.5) = 3)
-- Confidence: full — no low-confidence flag
+| Metric | Value |
+|---|---|
+| Lenses expected | 6 |
+| Lenses ran | 6 |
+| Quorum required | ≥ 3 |
+| Quorum met | yes |
+| Low-confidence flag | no |
+
+No low-confidence flag. All six crew lenses returned non-failed persona-output records.
 
 ---
 
-## Structural Status
+## Content findings
 
-**PASS**
+### P2 — Non-blocking (resolve before next fixer pass recommended)
 
-The audit skill's deterministic structural checks confirmed:
+#### MERGED-P2-9b90 — Compound When + missing timeout on BDD.01.03.9b90
 
-- All 5 required sections present.
-- 35 scenario IDs all conform to BDD.01.03.xxxx 4-hex.
-- Cumulative @brd/@prd/@ears present at feature level applying to every scenario.
-- Every scenario carries @scenario-type, @priority, @scenario-id, spec_trace.
-- Five scenario categories represented: 11 success / 6 error / 12 recovery / 3 parameterized / 3 optional.
-- Metadata fields document_type=bdd-document, artifact_type=BDD, layer=4, deliverable_type=code all valid.
+- **Check:** C2
+- **Location:** §3.1 — BDD.01.03.9b90
+- **Personas:** qa_lead, tech_lead (co-owned; requires co-resolution in one edit)
+- **Message:** Two distinct C2 violations co-located in BDD.01.03.9b90. (1) The When block carries two distinct system-level triggers ('When the API acknowledges' and 'And the Mapping Store is hard-killed'), violating one-action-per-When atomicity. (2) The Then 'after the Mapping Store restarts the issued short code SHALL still resolve' declares an async wait with no numeric timeout or polling ceiling, leaving step-definition authors unable to bound the assertion duration.
+- **Recommendation:** Restructure in one pass: elevate the API acknowledgement and hard-kill to Given preconditions, leaving a single explicit When trigger (the restart), and attach a named threshold key to the post-restart resolution wait (e.g., @threshold referencing the RTO from EARS.01.04.5e5b or PRD.01.perf.redirectp95). The fixer should dispatch both qa_lead and tech_lead for patch validation.
 
----
+#### QA-BDD-01-F007 — Compound And-step on BDD.01.03.e5ec
 
-## Findings by Severity
+- **Check:** C2
+- **Location:** §3.1 — BDD.01.03.e5ec
+- **Persona:** qa_lead
+- **Message:** A single And-step bundles two independently falsifiable assertions: pairwise distinctness (uniqueness / collision property) and monobit frequency (statistical entropy property). A test failure cannot be attributed to one property without splitting the step.
+- **Recommendation:** Split into two step lines — one for pairwise distinctness, one for the monobit frequency test — so each maps to one independently reportable assertion.
 
-### P2 — Warning (1 finding)
+### P3 — Advisory / improvement (no gate impact)
 
-#### chaos_engineer-P2-001
+#### QA-BDD-01-F003 — Dual-plane Then on BDD.01.03.3c70
 
-**Location:** §3.4 BDD.01.03.6934 (abuse/enumeration throttle) — no paired recovery scenario
-**Check:** C3
-**Lenses:** chaos_engineer
+- **Check:** beyond-checklist:test-isolation
+- **Location:** §3.2 — BDD.01.03.3c70
+- **Persona:** qa_lead
+- **Recommendation:** Extract the 'link_takedown_applied' event assertion into a separate scenario, or accept the co-location with an explicit '@dual-plane-accepted' tag and decision reference.
 
-The anti-abuse/anti-enumeration failure path (6934, exercising EARS.01.03.b5fa mass-minting cooldown and EARS.01.03.d8a2 scraping block) injects the throttle/cooldown/block but has NO paired recovery scenario asserting return to normal mode. Both EARS lines describe a TRANSIENT cooldown — 'during it' bounds the window, so the source must resume normal service after the cooldown expires. Every other failure injection in §3.3 (reputation 4df6->c826, link-store-redirect f44a->0759, link-store-write ed21->bcfb, visit-count 5f58->a7ad, pool 6f00->b3fe, conn-pool-saturation 1a55->dd27) is paired with a discrete restoration assertion; the abuse-throttle path is the only failure-injection class with no recovery pair. A cooldown that is never tested as lifting silently degrades a legitimate source with no executable guarantee that throttling clears.
+#### QA-BDD-01-F004 — Repeated Given step across four scenarios
 
-**Recommendation:** Add a recovery scenario: Given a source was throttled/blocked under the EARS.01.03.ab5e/c7e3 cooldown per BDD.01.03.6934 and the cooldown window has elapsed, When the source issues a within-rate submit/lookup, Then the Shortening API / Redirect Handler SHALL serve it normally (no throttle, no cooldown denial) and SHALL emit a cooldown-cleared event carrying the source identity and timestamp. Assert fully-operational restoration, mirroring the c826/0759/dd27 recovery pattern.
+- **Check:** C4
+- **Location:** §3.1 BDD.01.03.613b, §3.3 BDD.01.03.1f90 / .44fe / .076f
+- **Persona:** qa_lead
+- **Recommendation:** Extract to a parameterized step-definition catalog entry or Background block, or document the deferral explicitly.
 
----
+#### QA-BDD-01-F005 — Repeated screening Given across three scenarios
 
-### P3 — Informational (7 findings)
+- **Check:** C4
+- **Location:** §3.3 BDD.01.03.41c7, §3.2 BDD.01.03.f0a5, §3.5 BDD.01.03.3708
+- **Persona:** qa_lead
+- **Recommendation:** Register as a named step or Background entry; document deferral alongside QA-BDD-01-F004 if deferred.
 
-#### qa_lead-P3-001 [template-conformance: INFO]
+#### OP-I3-ADV-003 — No SLO-breach + alert-fire scenario (advisory)
 
-**Location:** Section 2 — Feature Definition, Background
-**Check:** beyond-checklist:background-step-traceability
-**Lenses:** qa_lead
+- **Check:** C5
+- **Location:** §3 overall
+- **Persona:** operator
+- **Status:** Carried from OP-I2-ADV-003; no upstream EARS obligation; no action required until EARS is revised.
 
-INFO / template-conformance: **do NOT remove — required by BDD-TEMPLATE Background convention.** The Background step `And the current time is "09:30:00" in "America/New_York"` is prescribed by BDD-TEMPLATE.yaml's Background convention as a deterministic-clock fixture. It does not trace to an EARS requirement directly, but that is expected for template-mandated infrastructure steps. This finding does not lower the qa_lead score (score retained at 95).
+#### OP-I3-ADV-004 — No runtime gate-toggle scenario (advisory)
 
-**Recommendation:** No action required. The step is a required BDD-TEMPLATE Background fixture. Retain as-is. If time-of-day EARS requirements are added in future, consider whether a scenario-scoped Given is also needed alongside the Background step.
-
----
-
-#### chaos_engineer-P3-002
-
-**Location:** §3.1 BDD.01.03.40d7 / §3.2 BDD.01.03.842c (metrics audit-log write) — no audit-sink failure path
-**Check:** beyond-checklist:audit-sink-failure
-**Lenses:** chaos_engineer
-
-EARS.01.03.a17e mandates the Metrics Reporter write an audit record WITHIN 100 ms on every grant/deny. Scenarios 40d7 (granted) and 842c (denied) assert the audit WRITE on the happy path, but no scenario injects an audit-SINK failure (sink unreachable/slow beyond the 100 ms audit budget). Without a defined behaviour, an unstated assumption governs whether an authZ decision proceeds when its mandatory audit write fails (fail-open: serve without record, vs fail-closed: deny).
-
-**Recommendation:** Either add an audit-sink-degraded scenario (sink slow/unreachable beyond the 100 ms budget) asserting the contracted behaviour (e.g., decision still recorded via durable buffer, or decision-and-audit are atomic), or confirm during ADR/SPEC that audit-sink failure is explicitly out of scope for this layer and note it so the gap is a decision rather than an omission.
-
----
-
-#### security_engineer-P3-001
-
-**Location:** §3.2 BDD.01.03.4356 / §3.4 redirect path
-**Check:** C3
-**Lenses:** security_engineer
-
-The redirect endpoint accepts external input via the short-code path segment but has no input-fuzzing scenario for that segment. BDD.01.03.4356 covers a clean unknown code ('/zzz999') and 6934 covers enumeration-pattern abuse, but neither exercises a malformed/oversized/invalid-encoding short-code path (e.g. a 4096-char path segment, percent-encoded control chars, or a NUL in the code position) asserting graceful rejection with no server-side error disclosure. The submit path has this coverage (BDD.01.03.e8b9); the redirect-accepting endpoint does not have a parallel malformed-input case.
-
-**Recommendation:** Add an error/parameterized scenario on the Redirect Handler with malformed short-code path inputs (oversized segment, percent-encoded control char, NUL byte, path-traversal token) asserting it returns the standard 'No such short link exists.' contract WITHIN the redirect budget AND does not disclose any server-side error, stack trace, or dependency diagnostic — mirroring the no-disclosure clause used in BDD.01.03.842c / e8b9.
+- **Check:** C2
+- **Location:** §3.5 — BDD.01.03.3708
+- **Persona:** operator
+- **Status:** Carried from OP-I2-ADV-004; no upstream EARS obligation; no action required until EARS is revised.
 
 ---
 
-#### security_engineer-P3-002
+## Playbook coverage
 
-**Location:** §3.4 BDD.01.03.5599 (SSRF denylist)
-**Check:** beyond-checklist:ssrf-encoding-bypass
-**Lenses:** security_engineer
-
-The SSRF denylist scenario (5599) covers only the canonical host forms EARS.01.03.fa44 / EARS.01.04.1453 enumerate (loopback 127.0.0.1, RFC1918 10.0.0.5, link-local 169.254.169.254, cloud-metadata hostname). Common SSRF bypass classes are not exercised: decimal/octal/hex-encoded IPs (e.g. 2130706433 for 127.0.0.1), IPv6 forms ([::1], [::ffff:169.254.169.254]), 0.0.0.0, and DNS-rebinding hostnames resolving to private space. This gap is UPSTREAM-OWNED: the EARS denylist names only canonical forms, so an EARS amendment is required before the BDD can bind these rows as named requirements.
-
-**Recommendation:** Raise an EARS amendment extending EARS.01.03.fa44 / EARS.01.04.1453 to require denylist enforcement against encoded-IP, IPv6, 0.0.0.0, and resolved-address (DNS-rebinding) forms; then add the corresponding Examples rows to BDD.01.03.5599. No BDD-only fix is possible until the requirement is named upstream.
-
----
-
-#### operator-P3-001
-
-**Location:** §3.3 / BDD.01.03.ed21
-**Check:** C1
-**Lenses:** operator
-
-Scenario ed21 (issuance fail-closed when Link Store write path is degraded) asserts no-ack, no durable mapping, and no orphan code, but carries no observability assert (no log severity, no metric). EARS.01.03.8df7 mandates write-before-ack ordering but does not declare a log or metric signal on write-path failure. By contrast, the parallel redirect-path store failure (EARS.01.03.fab2, covered by BDD.01.03.f44a) does have an EARS-declared ERROR log mandate — creating an asymmetry. Adding an observability Then-step to ed21 without a matching EARS parent would create an orphan untraced scenario element.
-
-**Recommendation:** Requires upstream EARS amendment: add an unwanted-behavior EARS line — IF the Link Store write path fails or times out on the issuance path, THE Shortening API SHALL emit a log entry at ERROR severity carrying the fault type and a timestamp. Once that line exists, add a corresponding observability Then-step to BDD.01.03.ed21 and its recovery pair BDD.01.03.bcfb.
-
----
-
-#### operator-P3-002
-
-**Location:** §3.2 / BDD.01.03.bcf8
-**Check:** C1
-**Lenses:** operator
-
-Scenario bcf8 (harmful destination rejected) asserts the user-facing rejection message and that no short code is issued, but carries no observability assert. A harmful-destination rejection is an operationally significant abuse-screening event; operators need audit-trail or metric coverage to monitor screening effectiveness and detect false-positive spikes. EARS.01.03.9671 does not declare a log or metric emission for harmful rejections.
-
-**Recommendation:** Requires upstream EARS amendment: extend EARS.01.03.9671 (or add a companion line) declaring that the Shortening API SHALL emit a harmful-destination-rejected log entry at WARN severity carrying the destination hash, reputation verdict, and timestamp. Once that line exists, add the corresponding Then-step to BDD.01.03.bcf8.
-
----
-
-#### operator-P3-003
-
-**Location:** §4 quality attributes / EARS.01.04.e27b, EARS.01.04.ca05
-**Check:** C5
-**Lenses:** operator
-
-No scenario exercises a redirect p95 latency-SLO breach or a monthly availability-SLO breach and asserts an alert fires to an operator channel. EARS.01.04.e27b declares a p95<50ms latency target and EARS.01.04.ca05 declares 99.9% monthly availability, but neither EARS line includes an alert-emission clause. Adding BDD breach-alert scenarios without an upstream EARS parent would produce orphaned scenarios.
-
-**Recommendation:** Requires upstream EARS amendment: add EARS lines declaring that when redirect latency p95 exceeds the threshold window the service SHALL emit a latency-SLO-breach alert, and that when availability drops below 99.9% projected monthly the service SHALL emit an availability-SLO alert with payload and channel. Once those lines exist, add corresponding BDD breach scenarios asserting alert payload and delivery channel.
-
----
-
-## Contested Findings
-
-None. All lenses converged; no genuine either/or conflicts requiring a human/lead call.
-
----
-
-## Playbook Coverage
-
-| Check | Surviving finding count |
-|-------|------------------------|
-| C1 | 2 |
-| C3 | 2 |
+| Check | Surviving findings |
+|---|---|
+| C2 | 4 |
+| C4 | 2 |
 | C5 | 1 |
-| beyond_checklist | 3 |
-| **Total** | **8** |
+| beyond_checklist | 1 |
 
-Beyond-checklist ratio: 3/8 = **37.5%** — exceeds the 30% drift threshold. The BDD playbook's C1–C5 checks do not yet cover recovery-pairing gaps (chaos_engineer), audit-sink failure edges (chaos_engineer), or SSRF encoding bypass classes (security_engineer). Playbook maintainer should evaluate adding check rows for these concern classes.
-
----
-
-## Floor-falsified Findings
-
-The audit skill's deterministic traceability/coverage floor adjudicated two auditor findings as false positives. Both are excluded from the verdict and from the finding set above.
-
-### Discarded: auditor-P2-001
-
-**Cited check:** C1
-**Location:** §3.1 / BDD.01.03.2986 ("missing @prd")
-**Reason discarded:** FALSE POSITIVE — floor adjudication.
-
-The feature-level cumulative tag `@prd:PRD.01.09.7f20` applies to every scenario (established in §2). Scenario 2986 exercises EARS.01.04.c060, which EARS-01 records as an author assumption with NO PRD transport-encryption element. The scenario correctly carries no scenario-specific @prd; adding one would fabricate a false traceability link. The auditor misread the cumulative tagging model as requiring a scenario-specific @prd on every scenario.
-
-### Discarded: auditor-P2-002
-
-**Cited check:** beyond-checklist:coverage-matrix-incomplete
-**Location:** §4.2 Traceability matrix ("incomplete, 9 scenarios missing")
-**Reason discarded:** FALSE POSITIVE — floor adjudication.
-
-All 9 named scenarios (0759, 1a55, 40d7, 4df6, 5f58, 6f00, 8b97, ed21, f44a) ARE present in the §4.2 matrix as BDD-scenario column values (verified 1–3 occurrences each). The auditor misread the matrix orientation: the matrix is an EARS→BDD forward map where scenarios appear as values, not row keys. The matrix is not incomplete.
-
-**Effect on auditor score:** With both findings discarded, no valid findings remain for the auditor lens. Auditor lens_score recomputed to 100 (from raw self-score of 87).
+beyond_checklist share: 1 / 8 = 12.5% — below the 30% drift-signal threshold. No playbook revision indicated.
 
 ---
 
-## Summary Table
+## Discarded findings
 
-| Priority | Count | Blocking? |
-|----------|-------|-----------|
-| P0 | 0 | — |
-| P1 | 0 | — |
-| P2 | 1 | No |
-| P3 | 7 | No |
-| **Total** | **8** | **0 blocking** |
+None. All 7 surviving findings carry valid check citations (C2, C4, C5, or beyond-checklist:test-isolation). 0 findings were discarded by the citation gate.
 
-**Combined status: PASS**
-**Content score: 95**
-**Structural status: PASS**
-**Blocking findings: 0**
+---
+
+## Contested findings
+
+None. No lens disagreed on fix direction. MERGED-P2-9b90 consolidates two lenses on the same location under a unified recommendation; both lenses agree the fix is a single restructure pass.
+
+---
+
+## Recommended next step
+
+BDD-01 **passes the gate**; progression to the ADR layer (05_ADR) is unblocked.
+
+Before or during ADR authoring, a single follow-up fixer pass is recommended to address the two P2 findings:
+
+1. **MERGED-P2-9b90** — restructure BDD.01.03.9b90 (compound When → Given preconditions; add named threshold on Then). Both qa_lead and tech_lead must validate the patch.
+2. **QA-BDD-01-F007** — split BDD.01.03.e5ec compound And-step into two lines.
+
+These are non-blocking for gate purposes but will accumulate if left unaddressed before TDD review.
+
+The P3 step-catalog findings (QA-BDD-01-F004, QA-BDD-01-F005) may be deferred to a step-definition authoring pass at the Code/TDD layer, provided the deferral is documented in §3. The two advisory operator findings (OP-I3-ADV-003, OP-I3-ADV-004) require no action until upstream EARS adds corresponding obligations.

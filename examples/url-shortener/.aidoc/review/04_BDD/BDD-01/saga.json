@@ -1,5 +1,5 @@
 {
-  "review_run_id": "a9eb655083d49df8",
+  "review_run_id": "2845264bb950d1c3",
   "artifact_id": "BDD-01",
   "layer": "04_BDD",
   "personas_requested": [
@@ -10,328 +10,256 @@
     "operator",
     "auditor"
   ],
-  "status": "FANIN_REDUCED",
+  "status": "CLOSED",
   "iteration": 3,
-  "current_phase": "re-review",
-  "created_at": "2026-06-08T23:40:56.140509+00:00",
-  "updated_at": "2026-06-09T00:39:38.889750+00:00",
+  "current_phase": "finalize",
+  "created_at": "2026-06-10T18:37:49.396969+00:00",
+  "updated_at": "2026-06-10T19:56:26.911147+00:00",
   "branches": {
     "qa_lead": {
-      "branch_id": "dabb8eb7",
+      "branch_id": "911fef4db75c",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:54:10.470324+00:00",
+      "ended_at": "2026-06-10T18:54:10.470324+00:00"
     },
     "tech_lead": {
-      "branch_id": "c20d2a67",
+      "branch_id": "b8a60f1594fc",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:53:01.238321+00:00",
+      "ended_at": "2026-06-10T18:53:01.238321+00:00"
     },
     "chaos_engineer": {
-      "branch_id": "e0f31d8a",
+      "branch_id": "2fc0c38c3767",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:53:30.290322+00:00",
+      "ended_at": "2026-06-10T18:53:30.290322+00:00"
     },
     "security_engineer": {
-      "branch_id": "2b98c933",
+      "branch_id": "b40bcb7145f9",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:53:29.206322+00:00",
+      "ended_at": "2026-06-10T18:53:29.206322+00:00"
     },
     "operator": {
-      "branch_id": "b31f61ae",
+      "branch_id": "6eb5215e8d8c",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:55:05.338327+00:00",
+      "ended_at": "2026-06-10T18:55:05.338327+00:00"
     },
     "auditor": {
-      "branch_id": "ce962c36",
+      "branch_id": "0d56d3f6dfc7",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-09T00:30:31.412934+00:00",
-      "ended_at": "2026-06-09T00:36:07.165656+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:54:30.338325+00:00",
+      "ended_at": "2026-06-10T18:54:30.338325+00:00"
     }
   },
   "transitions": [
     {
-      "ts": "2026-06-08T23:40:56.140519+00:00",
+      "ts": "2026-06-10T18:37:49.396982+00:00",
       "from": null,
       "to": "PREPARED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T23:44:51.483427+00:00",
+      "ts": "2026-06-10T18:48:51.256810+00:00",
       "from": "PREPARED",
       "to": "FANOUT_STARTED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:54:10.470324+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
+      "scope": "branch:qa_lead",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:54:10.470324+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:qa_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:53:01.238321+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
+      "scope": "branch:tech_lead",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:53:01.238321+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:53:30.290322+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:53:30.290322+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:53:29.206322+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
+      "scope": "branch:security_engineer",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:53:29.206322+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:security_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:55:05.338327+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:operator"
+      "scope": "branch:operator",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:46:42.583298+00:00",
+      "ts": "2026-06-10T18:55:05.338327+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:operator",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:54:30.338325+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:auditor"
+      "scope": "branch:auditor",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
+      "ts": "2026-06-10T18:54:30.338325+00:00",
       "from": "BRANCH_RUNNING",
       "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
+      "scope": "branch:auditor",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
+      "ts": "2026-06-10T19:03:32.685920+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T19:03:32.685941+00:00",
       "from": "BRANCH_RUNNING",
       "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
+      "scope": "run"
     },
     {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:operator"
-    },
-    {
-      "ts": "2026-06-08T23:49:36.683577+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:auditor"
-    },
-    {
-      "ts": "2026-06-08T23:54:58.346410+00:00",
+      "ts": "2026-06-10T19:56:26.911103+00:00",
       "from": "BRANCH_COMPLETED",
       "to": "FANIN_REDUCED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-09T00:07:29.250342+00:00",
+      "ts": "2026-06-10T19:56:26.911127+00:00",
       "from": "FANIN_REDUCED",
-      "to": "BRANCH_COMPLETED",
+      "to": "SYNTHESIZED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:operator"
-    },
-    {
-      "ts": "2026-06-09T00:09:36.000000+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:auditor"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:operator"
-    },
-    {
-      "ts": "2026-06-09T00:14:29.000000+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:auditor"
-    },
-    {
-      "ts": "2026-06-09T00:19:07.000000+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-09T00:26:03.139118+00:00",
-      "from": "FANIN_REDUCED",
-      "to": "BRANCH_COMPLETED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:operator"
-    },
-    {
-      "ts": "2026-06-09T00:30:31.412934+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:auditor"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:operator"
-    },
-    {
-      "ts": "2026-06-09T00:36:07.165656+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:auditor"
-    },
-    {
-      "ts": "2026-06-09T00:39:38.889750+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
+      "ts": "2026-06-10T19:56:26.911141+00:00",
+      "from": "SYNTHESIZED",
+      "to": "CLOSED",
       "scope": "run"
     }
   ],
   "compensation_actions": [],
-  "document_path": "docs/04_BDD/BDD-01.md",
-  "document_fingerprint": "9f57c545e7b89abedf4257ff7eff7295a1d6ee60d92339c12e79cec2327a2563"
+  "events": [
+    {
+      "ts": "2026-06-10T18:37:49.397183+00:00",
+      "kind": "dispatch:draft",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-bdd"
+    },
+    {
+      "ts": "2026-06-10T18:48:51.252187+00:00",
+      "kind": "complete:draft",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T18:48:51.257402+00:00",
+      "kind": "dispatch:review",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-bdd-audit"
+    },
+    {
+      "ts": "2026-06-10T19:03:32.684071+00:00",
+      "kind": "complete:review",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T19:03:32.687367+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-bdd-fixer"
+    },
+    {
+      "ts": "2026-06-10T19:15:17.284485+00:00",
+      "kind": "complete:fixer",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T19:15:17.286973+00:00",
+      "kind": "dispatch:re-review",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-bdd-audit"
+    },
+    {
+      "ts": "2026-06-10T19:28:52.718124+00:00",
+      "kind": "complete:re-review",
+      "iteration": 2,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T19:28:52.721746+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-bdd-fixer"
+    },
+    {
+      "ts": "2026-06-10T19:42:18.240661+00:00",
+      "kind": "complete:fixer",
+      "iteration": 2,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T19:42:18.243221+00:00",
+      "kind": "dispatch:re-review",
+      "iteration": 3,
+      "slash": "/aidoc-flow:doc-bdd-audit"
+    },
+    {
+      "ts": "2026-06-10T19:56:26.908544+00:00",
+      "kind": "complete:re-review",
+      "iteration": 3,
+      "exit_code": 0
+    }
+  ]
 }

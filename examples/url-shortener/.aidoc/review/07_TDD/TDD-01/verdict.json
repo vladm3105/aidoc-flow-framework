@@ -1,112 +1,120 @@
 {
   "artifact_id": "TDD-01",
   "layer": "07_TDD",
-  "iteration": 2,
-  "combined_status": "FAIL",
-  "content_score": 89,
+  "combined_status": "PASS",
+  "content_score": 90,
   "structural_status": "PASS",
   "threshold": 90,
   "blocking_findings_count": 0,
   "coverage": {
-    "lenses_requested": 6,
-    "lenses_returned": 6,
+    "personas_requested": 6,
+    "personas_returned": 6,
     "quorum_met": true
   },
   "lens_scores": {
-    "qa_lead": 84,
+    "qa_lead": 83,
     "tech_lead": 100,
-    "chaos_engineer": 88,
-    "security_engineer": 86,
-    "operator": 90,
-    "auditor": 85
+    "chaos_engineer": 83,
+    "security_engineer": 84,
+    "operator": 91,
+    "auditor": 100
   },
-  "findings_by_severity": {
-    "P0": 0,
-    "P1": 0,
-    "P2": 6,
-    "P3": 2
+  "playbook_coverage": {
+    "C1": 1,
+    "C2": 5,
+    "C3": 2,
+    "beyond_checklist": 3
   },
   "findings": [
     {
-      "id": "QL-001",
-      "priority": "P2",
-      "check": "C2",
-      "location": "§4 Integration — TDD.01.04.af07",
-      "message": "Case TDD.01.04.af07 bundles two structurally distinct AAA flows under one case ID: (a) a success-path assertion — 'claim returns COMMITTED only after the durable commit is observed, no write-behind' — which requires a healthy KV adapter in the Arrange phase; and (b) a failure-path assertion — 'commit failure → StoreUnavailableError, no orphan' — which requires a faulting KV adapter in the Arrange phase. These two flows cannot share a single Arrange block; they represent separate scenarios with different fixture states. A third concern is embedded: 'assert the durable-commit latency metric and a claim trace span (with status) emitted.' Combining two fixture states under one case ID means either the test function has multi-phase internal switching or the case ID implicitly covers two test functions with no ID-level distinguishability. Either form makes a failure non-diagnosable: a StoreUnavailableError assertion failure cannot be distinguished from an RPO assertion failure at the case-ID level.",
-      "recommendation": "Split TDD.01.04.af07 into two cases: (a) a success-path case asserting 'claim returns COMMITTED only after the durable commit is observed (RPO = 0), durable-commit latency metric and claim trace span emitted' — with a healthy KV adapter; (b) a failure-path case asserting 'commit failure → StoreUnavailableError, no orphan' — with a faulting KV adapter. Update §3 Test Mapping to list both new case IDs against the @bdd: BDD.01.03.8b97 row. The observability assertion (metric + trace span) belongs in the success-path case since it requires a completed commit to be observable.",
-      "personas": ["qa_lead"]
-    },
-    {
-      "id": "QL-002",
+      "id": "QA-1",
       "priority": "P2",
       "check": "C3",
-      "location": "§4 Integration — TDD.01.04.24ff",
-      "message": "Case TDD.01.04.24ff asserts 'a KMS key-unwrap delay above the issuance budget (>200 ms) → claim completes within budget or raises StoreUnavailableError with no orphan.' The 200 ms threshold is stated as the KMS key-unwrap sub-component budget, but no upstream source (EARS, PRD, or SPEC) is cited for this specific value. SPEC §6 states the claim operation must complete 'within issuance budget EARS.01.03.f909 less commit headroom' but does not decompose that budget into a KMS-unwrap allocation. The 200 ms figure is unanchored: it may be an author assumption, a derived headroom estimate, or an implementation detail — none of those origins are declared. Without a citation the number is untraceable and cannot be gate-checked against the upstream NFR chain.",
-      "recommendation": "Either (a) cite the upstream source for the 200 ms sub-budget (e.g., if it is an author assumption, annotate it as such with '# author assumption pending SPEC §6 KMS sub-budget element' and flag for IPLAN binding), or (b) express the threshold in terms of the traceable budget: 'a KMS key-unwrap delay that causes total claim latency to exceed the EARS.01.03.f909 issuance budget → claim raises StoreUnavailableError with no orphan; the concrete ms ceiling binds at IPLAN when the KV provider is selected.' The IPLAN-defer pattern is already established in the artifact for cipher-mode and KMS key-ARN assertions (same case) and should be applied consistently to the latency threshold.",
+      "location": "§5 (per-operation latency gates) + TDD.01.04.1a5d + TDD.01.04.2b6e + TDD.01.04.c5f8",
+      "message": "All three performance/reliability gate thresholds in §5 are expressed solely as @threshold registry tags (PRD.01.perf.redirectp95, PRD.01.perf.screeningdeadline, PRD.01.reliability.countstaleness) with no concrete numeral anywhere in the TDD. Cases TDD.01.04.1a5d and TDD.01.04.2b6e assert threshold conditions without providing the millisecond values an implementer can code an assertion against. The @threshold deferral is acceptable as a named reference, but the TDD must also state the default/fallback concrete value (or explicitly note that the threshold file must be present for the test suite to run).",
+      "recommendation": "For each @threshold tag in §5 and each affected case, add a parenthetical concrete bound derived from PRD-01 (e.g., 'PRD.01.perf.redirectp95 = 200 ms per PRD-01 §X'). If PRD-01 has not yet resolved these, add a TDD-level assumption table in §5 that states the assumed values under which the performance gate is verified and note these as pending PRD confirmation. Cases TDD.01.04.1a5d and TDD.01.04.2b6e must carry an inline numeric timeout assertion seed so they are runnable from day one.",
       "personas": ["qa_lead"]
     },
     {
-      "id": "CHAOS-001",
+      "id": "CE-1",
       "priority": "P2",
-      "check": "C1",
-      "location": "TDD §3 row @bdd: BDD.01.03.f44a; case TDD.01.04.7115",
-      "message": "The get-path degradation scenario (BDD.01.03.f44a) is encoded detection-only at the Link-Store boundary. Case 7115 asserts the failure is detected (StoreUnavailableError within 1 s, structured ERROR log) but no Link-Store case asserts the store's own recovery after the read path is restored. SPEC-01 §5 states the read-path error response as 'Surface StoreUnavailableError; redirect degrades fail-safe AND recovers when the store returns' — the 'recovers when the store returns' half is a Link-Store-level guarantee distinct from the Redirect Handler's own recovery. Detection-only encoding allows a store that latches into a permanently-failing read state (e.g. a stuck circuit breaker or cached unavailability) to pass the suite while never recovering, producing silent permanent degradation of the redirect hot path.",
-      "recommendation": "Add a paired recovery case in test_link_store_kv.py: inject the read-path fault, assert get raises StoreUnavailableError (detection, as 7115), then clear the injected fault via the controllable adapter/toxiproxy and assert a subsequent get resolves the known record within the p95 budget (recovery). This is the get-path analog of the ec06/4e51 detection+recovery pairs already present for the write paths.",
+      "check": "C2",
+      "location": "§4 TDD.01.04.1a5d, TDD.01.04.2b6e / SPEC §6",
+      "message": "The overload-shed load tests (resolve read-load 1a5d, create-load 2b6e) assert 'beyond a safe-overload margin the path fast-fails and sheds', but the safe-overload margin is named only qualitatively — no concrete multiplier or absolute rate is defined. A test asserting 'sheds beyond the margin' with no defined margin is a tautology: any shed point passes, including one that sheds at design load (false-negative on capacity regression) or one that never sheds before pool exhaustion.",
+      "recommendation": "Quantify the safe-overload margin in SPEC §6 as a concrete factor of design load (e.g., shed engages at >= K x sustained rate) and have 1a5d/2b6e assert the bounded degraded/shed response at exactly that K, plus a paired assertion that p95 still holds AT design load (margin lower edge). Without the literal number these two type:performance cases cannot satisfy C2.",
       "personas": ["chaos_engineer"]
     },
     {
-      "id": "SE-001",
+      "id": "SE-1",
       "priority": "P2",
-      "check": "C2",
-      "location": "TDD-01 §4 Test Cases — Unit/Integration; cases cf05/54b8/1bc0 (get), 74e8/9528/ab25 (increment_visits)",
-      "message": "Input-fuzzing now covers the claim (8504) and set_status (fc47) code arguments with encoding-edge/injection classes, but two public-interface boundary inputs remain unfuzzed. (1) get(code) is exercised only on known/unknown/taken_down equivalence classes — no malformed/oversized/encoding-edge code (unicode NFC/NFD, percent-encoded, embedded NUL/control char, base62 homoglyph). A code that normalizes differently on the read path than on the claim path is a lookup-bypass / key-confusion surface at the trust boundary. (2) increment_visits(code, delta) has no fuzz on either argument — notably delta (negative/zero/overflow-width int), which can silently violate the SPEC §4 monotonic visit_count contract, and code on the same encoding-edge classes. Both are public Protocol methods that cross the substrate trust boundary, so per C2 each needs at least 1 fuzzing case.",
-      "recommendation": "Add a get-fuzz unit case (malformed/oversized/encoding-edge/homoglyph code -> ValueError before substrate read, or deterministic None, never a normalized-key collision with a claimed code) and an increment_visits-fuzz unit case (negative/zero/overflow delta rejected or no-op preserving monotonicity; encoding-edge code rejected before the native increment). Both belong in tests/unit/test_link_store.py, mirroring the 8504/fc47 input matrix.",
+      "check": "C3",
+      "location": "§4 TDD.01.04.f82b, TDD.01.04.093c",
+      "message": "Audit-emission tests for the read_counts deny path (f82b) and mark_taken_down takedown/re-mark (093c) assert only that an audit event is emitted, not the full field set. SPEC §5 'Audit events' requires every event carry {subject, action, resource, decision, timestamp, reason}; only the read_original_url test (e71a) asserts that field set. A test that checks emission but not field completeness passes even if the deny/takedown event omits subject, decision, or reason — defeating the traceability the SPEC names.",
+      "recommendation": "Promote f82b and 093c to type: security and assert the full {subject, action, resource, decision, timestamp, reason} field set on their audit events, matching e71a. For 093c, assert the takedown event identifies the acting subject and decision so an unauthorized takedown of a live code is attributable.",
       "personas": ["security_engineer"]
     },
     {
-      "id": "OP-001",
+      "id": "SE-2",
       "priority": "P2",
       "check": "C2",
-      "location": "TDD-01 §4 test mapping row @adr: ADR.01.03.f5f5; ADR-01 §7 Rollback plan",
-      "message": "The one-way substrate decision ADR.01.03.f5f5 now has a deploy-gate smoke test (TDD.01.04.d5d7, type: smoke, timeout ≤30s, blocks all environments) — the forward deploy path is gated. However, no test exercises the rollback procedure in a non-prod environment. ADR §7 documents a seven-step runbook and step 7 explicitly requires an automated RPO = 0 smoke after the substrate re-point. TDD.01.04.d5d7 cannot serve as the post-rollback smoke: it commits a fresh code on the live substrate during the same run; it has no pre-imported records to verify as still-readable on the new substrate. The TDD suite therefore covers the forward deploy gate but leaves the post-rollback verification gate as an untested manual step.",
-      "recommendation": "Add a non-prod rollback-path integration test (e.g., TDD.01.04.rbXX, type: smoke, timeout ≤120s) that exercises at minimum steps 3, 5, and 7 of the ADR §7 runbook: (3) export a known set of committed records from the primary KV instance; (5) import them into a secondary KV instance with uniqueness-verification assertions (no duplicates, no data loss); (7) run an RPO = 0 probe against the secondary instance — claim a new code, then get verifies the pre-imported records still resolve. Tag it @adr: ADR.01.03.f5f5 and add it to the §5 smoke gate row alongside TDD.01.04.d5d7.",
-      "personas": ["operator"]
+      "location": "§4 increment_visit (TDD.01.04.3c6f / 4d70 / d609); SPEC §3 delivery contract, DFD Count path",
+      "message": "The increment_visit operation crosses a trust boundary (SPEC DFD 'Count path': code + event_id arriving off a durable async dispatch queue) but has no input-fuzzing test. d609 covers only producer/consumer version-skew; 4d8f and 81c3 fuzz put_mapping URL and resolve/mark_taken_down ShortCode, but neither covers the event payload. A malformed/oversized/encoding-edge/injection event_id or code decoded from the transport is an un-fuzzed boundary input — the deserialization surface flagged by ADR-01's threat model is only tested for version skew, not for hostile payload content.",
+      "recommendation": "Add a type: security (CWE-20) fuzzing case on increment_visit: malformed/oversized/encoding-edge/injection event_id and code (and any decoded event field) are rejected to dead-letter before mutating VisitCountRecord, never best-effort decoded. Also fuzz put_mapping's ShortCode parameter (currently only resolve/mark_taken_down ShortCode is fuzzed by 81c3, though §5 names the allowlist as a precondition on put_mapping too).",
+      "personas": ["security_engineer"]
     },
     {
-      "id": "AUD-001",
-      "priority": "P2",
-      "check": "C4",
-      "location": "§1 line 30 (cumulative upstream tags header) vs §3 lines 89-90 and §7 line 206",
-      "message": "Cumulative upstream tags header lists @adr: ADR-01 only, but §3 matrix rows 89-90 cite @adr: ADR.01.03.1050 and @adr: ADR.01.03.f5f5, and §7 line 206 expands to six ADR refs total: ADR-01 | ADR.01.03.5c3c | ADR.01.03.1050 | ADR.01.03.f5f5 | ADR.01.05.3afa | ADR.01.05.9107. The cumulative header is the artifact's traceability contract; it must enumerate every upstream element tag cited in the body.",
-      "recommendation": "Update line 30 cumulative upstream tags to include all element-level ADR refs: @adr: ADR-01 | @adr: ADR.01.03.5c3c | @adr: ADR.01.03.1050 | @adr: ADR.01.03.f5f5 | @adr: ADR.01.05.3afa | @adr: ADR.01.05.9107. Verify each tag resolves in the upstream ADR doc.",
-      "personas": ["auditor"]
+      "id": "QA-2",
+      "priority": "P3",
+      "check": "beyond-checklist:orphan-trace",
+      "location": "TDD.01.04.2b4d + TDD.01.04.5e90 + TDD.01.04.f83a",
+      "message": "Three unit test cases appear in §4 but have no corresponding row in the §3 mapping table: TDD.01.04.2b4d (put_mapping idempotent same-(code,url) retry), TDD.01.04.5e90 (resolve of a known ACTIVE code), and TDD.01.04.f83a (mark_taken_down of a never-issued code -> UnknownCodeError). The §3 table — which is the traceability manifest — does not list them, so the coverage count of '35 cases' in §3 and the header 'files (test-first)' is inconsistent with the §4 body. Note: the auditor accepted these as legitimate SPEC-contract-completeness cases; this P3 surfaces the traceability-visibility gap only, not a substantive error.",
+      "recommendation": "Add a @spec: SPEC-01 §3 row to the §3 mapping table for each of the three orphan cases, citing the interface docstring clause each validates: TDD.01.04.2b4d traces to the 'identical (code,url) retry is idempotent' clause; TDD.01.04.5e90 traces to the basic resolve happy-path; TDD.01.04.f83a traces to the UnknownCodeError clause of mark_taken_down. Update the §3 coverage summary row and case count accordingly.",
+      "personas": ["qa_lead"]
     },
     {
-      "id": "OP-002",
+      "id": "QA-3",
+      "priority": "P3",
+      "check": "C2",
+      "location": "TDD.01.04.e71a",
+      "message": "TDD.01.04.e71a bundles the permit path and the deny path for read_original_url into a single integration case ('permit + deny verified together'). Combining two distinct outcomes in one case means a failure signal names the combined case rather than the failing path, reducing diagnostic precision. If the permit path regresses, the deny-path assertion also runs in the same case body, potentially masking the specific failure branch.",
+      "recommendation": "Split TDD.01.04.e71a into two sibling cases: one for the permit path (role translation + grant evaluation + audit event emitted) and one for the deny path (same role translation, no grant, AccessDenied raised, audit event emitted, no value disclosed). The DB-role translation assertion can be factored into a shared fixture or helper used by both.",
+      "personas": ["qa_lead"]
+    },
+    {
+      "id": "CE-2",
       "priority": "P3",
       "check": "C1",
-      "location": "TDD-01 §4 integration cases TDD.01.04.af07, TDD.01.04.840c; SPEC-01 §6 Observability paragraph",
-      "message": "SPEC §6 names 'atomic-claim outcome' as a distinct emission point, distinct from the write-conflict rate. TDD.01.04.840c verifies the conflict counter on a race; it does not assert a per-outcome labelled metric (e.g., a counter keyed {outcome=COMMITTED} or {outcome=CODE_TAKEN}) as implied by 'atomic-claim outcome' in SPEC §6. A missing outcome metric means the COMMITTED / CODE_TAKEN distribution is dark in production, which removes a first-order SLO signal.",
-      "recommendation": "Extend TDD.01.04.af07 to assert the atomic-claim-outcome metric is emitted with label outcome=COMMITTED on a successful claim, and add a companion assertion in TDD.01.04.82ff (unit, CODE_TAKEN path) or TDD.01.04.840c (integration, race path) that the outcome=CODE_TAKEN label variant is emitted. Cite @spec: SPEC-01 §6 on both assertions.",
+      "location": "§4 TDD.01.04.81b4 / ADR.01.05.5896",
+      "message": "Standby-loss durability halt (ADR.01.05.5896): 81b4 asserts DurabilityHaltError fail-closed (failure detected) and states 'the retry is retryable on standby recovery using bounded backoff' — but this is a property claim about retryability, not an executed recovery assertion. The test does not appear to restore the standby and assert put_mapping subsequently succeeds idempotently. The impl could stay permanently halted (never re-admitting writes after standby returns) undetected.",
+      "recommendation": "Extend 81b4 (or add a paired e2e) to: inject standby loss -> assert DurabilityHaltError -> restore standby -> assert the retried identical put_mapping succeeds and the durability-halt signal clears. Mirror the degrade->recover pattern already present in 4d80.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "CE-3",
+      "priority": "P3",
+      "check": "beyond-checklist:retry-storm-not-exercised",
+      "location": "§4 TDD.01.04.81b4 / SPEC §6 (backoff-with-jitter)",
+      "message": "SPEC §6 explicitly calls out 'bounded exponential backoff with jitter so a synchronized retry does not storm the recovering standby'. 81b4 asserts 'bounded backoff with jitter (no storm)' as a property of a single retry, but does not exercise the actual cascade: many DurabilityHalt'd writers retrying concurrently the moment the standby recovers. An impl with backoff-without-jitter (or insufficient jitter) would pass 81b4 as written while still storming the recovering standby in production.",
+      "recommendation": "Add an integration case that halts N concurrent writers on standby loss, restores the standby, and asserts the retry arrival distribution is spread (no synchronized thundering herd) and the standby is not re-saturated on recovery — turning the jitter claim into an exercised assertion.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "OP-1",
+      "priority": "P3",
+      "check": "C2",
+      "location": "§4 TDD.01.04.3c7f, TDD.01.04.92c5; §6 TDD Order",
+      "message": "Rollback path for ADR-named one-way decisions is not exercised at TDD layer. The two one-way decisions (synchronous commit-before-ack, declarative unique constraint) have behavioral smoke coverage but no test validates the deployment rollback path — i.e., that the schema migration introducing the unique constraint can be rolled back non-destructively, or that the replication-mode configuration can be reverted. This gap is appropriately deferred to the IPLAN/DPLAN layer.",
+      "recommendation": "Record an explicit IPLAN-layer action item for the declarative-constraint migration rollback: (1) verify the constraint drop is non-destructive on a non-prod copy before promoting to prod; (2) verify synchronous_commit can be reverted without dropping committed rows. Reference this TDD in the rollback runbook so the ADR traceability is maintained.",
       "personas": ["operator"]
     },
     {
-      "id": "OP-003",
+      "id": "OP-2",
       "priority": "P3",
-      "check": "C5",
-      "location": "TDD-01 §4 all classes; §5 Thresholds",
-      "message": "The functional fault-injection cases cover network blip and registry-timeout scenarios from the application adapter's perspective. The remaining CI infrastructure failure mode is uncovered: (a) the KV substrate becomes unreachable during CI test-setup (not during a test operation) — the harness may silently skip or error the entire class rather than failing with an actionable message; (b) KMS / secrets-vault credential-fetch slowness during CI environment bootstrap exceeds the CI job timeout, producing a false timeout rather than a test failure. TDD.01.04.24ff covers a slow KMS response during a claim operation; the pre-test-setup credential-fetch timeout is a distinct unaddressed mode.",
-      "recommendation": "Add a CI pre-condition probe — a lightweight setup-phase check (not a test case) in the integration and e2e CI job configurations that asserts KV reachability and vault/KMS credential validity before the test runner starts. If the probe fails, the job exits non-zero with a structured error distinguishing 'infrastructure unavailable' from 'test failure'. Document this in a §5 note or CI appendix so the flake-budget accounting can correctly classify CI-environment failures separately from application flakes.",
+      "check": "beyond-checklist:metric-cardinality-explosion",
+      "location": "§4 TDD.01.04.a3d6; SPEC-01 §6",
+      "message": "The mapping_store_degraded counter is labelled by degradation_type in both SPEC §6 and case a3d6, but neither document enumerates the allowed values of that label. If degradation_type is derived from raw exception class names, network error strings, or any other unbounded source, the label cardinality is unbounded and will cause metric series explosion in any time-series backend with high-cardinality label costs (Prometheus, Datadog, etc.).",
+      "recommendation": "Enumerate the allowed degradation_type label values in SPEC §6 (e.g., unreachable, dns, tls, timeout) and enforce in the implementation that only those values are emitted. Add a TDD assertion to case a3d6 that the emitted degradation_type value is a member of the declared allowlist.",
       "personas": ["operator"]
     }
-  ],
-  "playbook_coverage": {
-    "C1": 2,
-    "C2": 3,
-    "C3": 1,
-    "C4": 1,
-    "C5": 1,
-    "beyond_checklist": 0,
-    "discarded": 0
-  }
+  ]
 }

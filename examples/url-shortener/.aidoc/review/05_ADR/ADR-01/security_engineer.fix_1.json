@@ -1,11 +1,13 @@
 {
   "persona": "security_engineer",
-  "mode": "patch_validation",
+  "lens": "security_engineer",
+  "weight": 12,
+  "lens_score": 88,
+  "status": "BRANCH_COMPLETED",
   "fix_iteration": 1,
-  "finding_id": "MERGED-P1-001",
-  "resolved": true,
-  "new_findings": [],
-  "regression": false,
-  "lens_score": 92,
-  "note": "Patch resolves MERGED-P1-001: §3 ADR.01.03.1050 names the API<->store boundary with a per-service-principal credential model, TLS 1.2+ in-transit protection, fail-closed semantics tied to the BDD TLS scenarios, and §6 carries the same posture into the integration table plus an at-rest note (ADR.01.03.0db1) — all at correct ADR altitude with no new P0/P1 in the patched region."
+  "validates": [
+    {"finding_id": "SE-ADR-01-001", "resolved": true, "rationale": "§3 now names the authN axis (the API authenticates the caller) and states the identity-translation mechanism — the authenticated caller is mapped at the app tier to a per-call-path least-privilege DB role against which the column/row grant is evaluated, satisfying the named-mechanism requirement at decision level."},
+    {"finding_id": "SE-ADR-01-002", "resolved": true, "rationale": "The API->Store boundary identity translation is now explicit (end-principal identity mapped to a per-call-path DB principal rather than one shared service principal), with fail-closed semantics and a §8 deny-on-grant-unavailable verification row, making the BDD permit/deny pair realizable against a named mechanism."}
+  ],
+  "new_findings": []
 }

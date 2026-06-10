@@ -1,9 +1,8 @@
-# EARS-01 Fix Report — v001
+# EARS-01 Fix Report — v001 (saga iteration 1)
 
-**Artifact:** `docs/03_EARS/EARS-01.md`
-**Layer:** 03_EARS · **Mode:** team (per `.aidoc/profile.yaml` → framework default)
-**Date:** 2026-06-08 · **Fix iteration:** 1
-**Input audit:** `.aidoc/review/03_EARS/EARS-01/report.md` + `verdict.json` (combined FAIL, content 82/100, 1 blocking P1)
+**Artifact:** EARS-01 (URL Shortener — EARS Requirements)
+**Layer:** 03_EARS · **Mode:** team (lens-validated remediation)
+**Date:** 2026-06-10 · **Audit input:** report.md (gate FAIL, content score 84)
 
 ---
 
@@ -11,83 +10,94 @@
 
 | Metric | Value |
 |--------|-------|
-| Findings in (structured) | 17 — 1 P1 · 8 P2 · 8 P3 |
-| Fixed / partially fixed | 13 |
-| Deferred to manual queue | 4 |
-| Files modified | `docs/03_EARS/EARS-01.md` |
-| Files created | this report; 3 × `<persona>.fix_1.json` validation slots |
-| Backup | `tmp/backup/EARS-01_20260608T073116Z/EARS-01.md` |
-| New element IDs | db78, 00b9, 5391, a0ae, 3312 (§3.1); 9671, e606, 135e (§3.4); ee3f (§4) |
-| Structural lint | PASS — STY03 blocker cleared (body 2221 w); residual STY02 §3 **warning** only |
+| Findings in (audit) | 16 — 1 P1, 6 P2, 9 P3 |
+| Fixed | 16 |
+| Remaining (blocking) | 0 |
+| Files created | 3 — this report; `security_engineer.fix_1.json`; `chaos_engineer.fix_1.json` |
+| Files modified | 1 — `docs/03_EARS/EARS-01.md` |
+| New EARS §3 lines | 8 (`fa0b`, `eca5`, `6811`, `4400`, `f62a`, `ac68`, `9903`, `4ebf`) |
+| §3 lines retired (split) | 2 (`e8a5` → `ac68`+`9903`; `8650` → `6811`+`4400`) |
 
-The blocking **P1 (MERGED-P1-001)** was remediated and **validated by all three responsible lenses** (security_engineer, chaos_engineer, qa_lead) with **no new P0/P1** — patch accepted. The eight P2 test-blocking findings were resolved except the TLS-orphan (needs an upstream PRD change) and the a2ae/eeaf rejection-idiom split (house-style, queued). P3 advisories were applied except two idempotency declarations deferred under the EARS word ceiling.
+The one blocking finding (MERGED-P1-001) was patched and **non-regression
+validated by both responsible lenses** (security_engineer, chaos_engineer) —
+each returned `resolved: true`, no new P0/P1, lens_score 91. P2/P3 findings were
+applied deterministically per the remediate contract (advisory findings take no
+lens validation).
 
 ---
 
 ## Fixes Applied
 
-| Code | Severity | Issue | Fix | Element(s) | Confidence |
-|------|----------|-------|-----|-----------|------------|
-| MERGED-P1-001 | P1 | Harmful-destination screening absent (no screen-and-reject, no takedown) | Added screen-before-issue line, IF-harmful-reject line, takedown override line, and §4 control row; hardened a2ae (slow-source → fail-closed), 187c (takedown cross-ref), 5391 (actor + WITHIN bound) | +db78, +9671, +5391, +ee3f; a2ae, 187c | manual-required (3-lens PASS) |
-| requirements_specialist-002 | P2 | Code-issuance p95<500 ms unsourced | §4 provenance note marks issuance/visit-count timings `[ADR assumed]` pending PRD ratification | §4 preamble | auto-assisted |
-| requirements_specialist-003 | P2 | Non-atomic compounds | Split negative obligations: 5821 → +e606 (no-redirect); 0b67 → +135e (retry bound) | 5821, +e606, 0b67, +135e | auto-assisted |
-| tech_lead-001 | P2 | URL-length bound had no value | Stated "2,048 characters" inline | eeaf | auto-assisted |
-| qa_lead-001 | P2 | "otherwise unresolvable" catch-all | Removed hedge; trigger now "never issued or is mistyped" | 5821 | auto-safe |
-| qa_lead-002 | P2 | Trigger "is slow" unbounded | Replaced with "exceeds 1 s at the 95th percentile (the EARS.01.03.8f70 budget)" | d808 | auto-safe |
-| security_engineer-002 | P2 | Rate-limit rules unbounded | Added `[ADR deferred: BRD.01.08.daeb — numeric rate bound]` | ee86, b1aa | auto-assisted |
-| security_engineer-003 | P2 | Metrics path no access control | Added access-control WHEN line + denied-caller IF line | +a0ae, +3312 | auto-assisted |
-| tech_lead-002 | P3 | 0b67 ADR-dependency unmarked | Added `[ADR deferred: BRD.01.08.9665 — code-space sizing]` | 0b67 | auto-assisted |
-| tech_lead-003 | P3 | "SHALL NOT retry unboundedly" untestable | Replaced with bounded "at most the configured retry ceiling" `[ADR deferred]` | +135e | auto-assisted |
-| chaos_engineer-002 | P3 | Pool exhaustion: no detection | Added utilization-alert line `[ADR deferred]` | +00b9 | auto-assisted |
-| qa_lead-005 | P3 | Coverage matrix upstream-only | Added "Downstream BDD (expected)" column | §5 table | auto-safe |
-| qa_lead-004 | P3 | No per-line BDD slot | §5 now states per-line scenario IDs are assigned at BDD authoring (layer-level deferral made explicit; per-line `@bdd` IDs withheld per template "don't reference BDD numbers before they exist") | §5 | auto-assisted (partial) |
-
-### Hardening edits (from lens-validator advisories on the P1 patch)
-
-- **chaos_engineer:** a2ae trigger widened to "unreachable **or does not respond within the screening budget**" — binds the slow-but-reachable screen to the fail-closed sink.
-- **qa_lead:** 5391 takedown given a defined actor ("**WHEN a Service Owner** marks…") and a `WITHIN 1 s at the 95th percentile` propagation bound.
-- **security_engineer:** 187c carries a reciprocal cross-reference ("**except links taken down per EARS.01.03.5391**").
+| Code | Pri | Issue | Fix | Confidence |
+|------|-----|-------|-----|------------|
+| MERGED-P1-001 | P1 | PRD abuse case `PRD.01.13.e661` (automated repeat-visit metric inflation) had no EARS line pair | Added IF line `EARS.01.03.fa0b` (Visit Counter applies adoption-integrity treatment, mitigation deferred to `BRD.01.08.c478`); added §5 PRD-§13 risk-coverage matrix mapping e661 → .fa0b | auto-assisted |
+| RS-001 | P2 | `EARS.01.03.e8a5` conjoined two independent defense layers | Split into `EARS.01.03.ac68` (non-walkable keyspace) + `EARS.01.03.9903` (per-source rate-limiting), each `@prd: PRD.01.09.dd8d` | auto-safe |
+| RS-002 | P2 | `EARS.01.03.8650` conjoined screen-at-create + non-issuance | Split into `EARS.01.03.6811` (screen at create) + `EARS.01.03.4400` (withhold code), each WHERE-gated `@prd: PRD.01.09.b6cb` | auto-safe |
+| QL-001 | P2 | No per-line downstream BDD slot on any requirement | Added inline `@bdd: BDD-01` slot to all 20 §3 requirement lines (downstream-tag form; lint-clean) | auto-safe |
+| SE-002 | P2 | No access-control rule for confidential/PII original-URL in Mapping Store | Added ubiquitous line `EARS.01.03.4ebf` (least-privilege read access per classification; access/erasure parameters deferred to `BRD.01.08.daeb`) | auto-assisted |
+| CE-001 | P2 | No post-issue takedown removal obligation (risk 011a reactive half) | Added IF line `EARS.01.03.f62a` (flagged/taken-down code returns not-found within takedown SLA, deferred to `BRD.01.08.daeb`) | auto-assisted |
+| CE-002 | P2 | Capacity recovery (`.5442`) had no paired detection rule | Added state-driven line `EARS.01.03.eca5` (capacity-utilization alert; threshold deferred); cross-linked to `.5442` | auto-assisted |
+| TL-001 | P3 | `.5442` carried no `@threshold` deferral marker | Added `@threshold: PRD.01.quota.codespacecapacity` to `.5442` and `.eca5` | auto-safe |
+| TL-002 | P3 | `.50d1`/`.5442` capacity-error wording ambiguous; no precedence | `.50d1` → retryable §10 "Shortening unavailable"; `.5442` → non-retryable §10 "at capacity"; added precedence note for simultaneous conditions | auto-safe |
+| RS-003 | P3 | `.5442` §13 provenance indirect | Annotated `.5442` with capacity-guard origin `PRD.01.13.385e` | auto-safe |
+| QL-002 | P3 | §5 matrix unidirectional (EARS→PRD only) | Added downstream column to the §5 rollup matrix (bidirectional) | auto-safe |
+| QL-003 | P3 | `.4425` no idempotency declaration | Added exactly-once / no-double-increment clause, dedup deferred to `BRD.01.08.c478` | auto-assisted |
+| QL-004 | P3 | `.f766` no dedup semantic | Added exactly-once-under-concurrency clause, consistent with `.4425` | auto-assisted |
+| QL-005 | P3 | `.5066` no safe-retry/idempotency clause | Added duplicate-submission clause tied to uniqueness invariant `.bca8`; generation strategy deferred to `BRD.01.08.9665` | auto-assisted |
+| CE-004 | P3 | `.5e5b` RTO had no paired detection obligation | Noted store-loss detection deferred to availability ADR topic `BRD.01.08.5b91` | auto-assisted |
+| SE-003 | P3 | `.aa59` privileged owner-access had no audit-log obligation | Noted owner-access audit-logging deferred to ops/observability ADR topic `BRD.01.08.c478` | auto-assisted |
 
 ---
 
 ## Manual-Review Queue
 
-| Code | Sev | Why deferred |
-|------|-----|--------------|
-| requirements_specialist-001 | P2 | **TLS orphan** `EARS.01.04.c060` has no upstream source; `@prd` mis-points to SSRF `PRD.01.12.6f96`. Resolution requires an upstream PRD §12 TLS constraint (then re-point) or removal if out of MVP — both outside the EARS fixer surface; content-preservation forbids silent deletion. |
-| requirements_specialist-003 (residual) | P2 | a2ae / eeaf conjoin reject + no-code + message. Retained as the document's established rejection idiom (qa_lead validator confirmed this is house-style, not a new defect). Split into atomic lines if strict atomicity is later required. |
-| requirements_specialist-004 | P3 | a132 load envelope traces through BRD only; needs a PRD §12 non-functional load element (or re-point `@brd` to a BRD §9 quality row) — upstream change. |
-| qa_lead-006 / qa_lead-007 | P3 | Idempotency declarations for issuance (f909) and visit-count (8f70) deferred under the EARS STY03 word ceiling (body 2221/2250). Add when §3 is split into per-section files. |
-| STY02 (structural) | warn | §3 Requirements is 1251 words (target ≤800; warning >1200). Inherent to +10 requirement lines in a single-file EARS. Recommend splitting §3 into per-EARS-type section files (Phase 0 nested-folder). Warning-only — does not fail the structural gate. |
+None blocking. Two non-fixer items noted for transparency:
+
+- **STY02 (advisory, non-blocking):** §5 Traceability is 239 words (warning
+  threshold 150; Phase-7 split threshold 300). Below the split line; left intact
+  to preserve the per-source + risk-coverage rollups. No action required.
+- **TRACE-RES-001 (out of fixer scope):** 21 `@prd:` host-resolution errors.
+  This is the pre-existing single-file corpus-resolution condition owned by the
+  `trace-res-fixup-001` branch (the pre-edit artifact already carried 20 of the
+  same class; the audit's structural floor passed with them present). The `@prd`
+  tags reference real PRD-01 §9 elements and are correct — **not** remediated
+  here, per the "never hand-edit a correct tag to mask a framework/linter gap"
+  convention.
 
 ---
 
 ## Validation After Fix
 
-| Dimension | Before | After |
-|-----------|--------|-------|
-| Combined status | FAIL | re-audit pending (iteration 2) |
-| Content score | 82 | recomputed by re-audit |
-| Structural floor | PASS | **PASS** (STY03 ERROR cleared; STY02 §3 warning only) |
-| Unresolved P1 | 1 (MERGED-P1-001) | **0** — resolved, 3-lens PASS |
-| Blocking lint errors | 0 | 0 (transient ID02/TH01/STY03 introduced during editing were all cleared) |
+| Check | Before | After |
+|-------|--------|-------|
+| Structural floor (sdd_doc_lint) | PASS (20 × TRACE-RES-001 pre-existing) | PASS (21 × TRACE-RES-001 same class; **0** malformed-ID / new structural errors introduced) |
+| Malformed-tag errors (ID01/ID02) | 0 | 0 (intermediate `[BDD-pending:]` placeholder + `ADR-deferred` token errors caught and reworked to lint-clean forms before completion) |
+| MERGED-P1-001 (security lens) | P1 open | resolved, lens_score 91, no regression |
+| MERGED-P1-001 (chaos lens) | P3→merged | resolved, lens_score 91, no regression |
+| PRD §13 risk coverage | 3/4 (e661 unanchored) | 4/4 |
 
-> The frontmatter `bdd_ready_score: 94` and the Document Control "94/100" row are pre-fix values; the re-audit refreshes them.
+Authoritative content re-score is produced by the next `doc-ears-audit` pass.
+Lens-region scores moved up on the patched regions (security 76→91, chaos
+85→91); the P2/P3 applications target the requirements_specialist (84) and
+qa_lead (83) deficits (atomicity splits, per-line BDD slots, idempotency,
+precedence).
 
-## Validation Slots index
+### Validation Slots index
 
-| Lens | Agent | Slot | lens_score | verdict |
-|------|-------|------|-----------|---------|
-| security_engineer | security-engineer | `.aidoc/review/03_EARS/EARS-01/security_engineer.fix_1.json` | 93 | PASS |
-| chaos_engineer | chaos-engineer | `.aidoc/review/03_EARS/EARS-01/chaos_engineer.fix_1.json` | 86 | PASS |
-| qa_lead | test-architect | `.aidoc/review/03_EARS/EARS-01/qa_lead.fix_1.json` | 85 | PASS |
+| Slot | Lens | Finding | Result |
+|------|------|---------|--------|
+| `security_engineer.fix_1.json` | security_engineer | MERGED-P1-001 | resolved=true, no new P0/P1, score 91 |
+| `chaos_engineer.fix_1.json` | chaos_engineer | MERGED-P1-001 | resolved=true, no new P0/P1, score 91 |
 
-All three returned `resolves_finding: true`, `new_blocking_findings: []`. No regression → patch retained.
+---
 
 ## Cleanup Summary
 
-No superseded fix reports (this is v001). Backup retained at `tmp/backup/EARS-01_20260608T073116Z/`.
+No superseded fix reports to delete (this is v001 for iteration 1).
 
 ## Next Steps
 
-Re-run `/aidoc-flow:doc-ears-audit` (iteration 2) to recompute the content score and confirm the gate. If score ≥ 90 and structural PASS, promote to BDD (Layer 4). The four queued items above are author/upstream decisions, not blockers to re-audit.
+Re-run `/aidoc-flow:doc-ears-audit` on EARS-01 to confirm the gate passes
+(content score ≥ 90, no unresolved P0/P1). On PASS, the autopilot advances to
+the BDD layer. The TRACE-RES-001 class is tracked separately on the
+`trace-res-fixup-001` branch and is not a re-audit blocker.

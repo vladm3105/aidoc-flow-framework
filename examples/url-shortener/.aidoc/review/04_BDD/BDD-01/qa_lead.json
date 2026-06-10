@@ -1,15 +1,46 @@
 {
   "persona": "qa_lead",
-  "lens_score": 95,
   "findings": [
     {
-      "id": "qa_lead-P3-001",
+      "id": "QA-BDD-01-F006",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§3.1 — BDD.01.03.9b90",
+      "message": "Compound When block: two When-phase actions are present in the same scenario. 'When the Shorten/Redirect API acknowledges the issued short code' is the first action; 'And the Mapping Store is hard-killed before any post-acknowledgement flush' is a second distinct system action appended via 'And', which in Gherkin is a second When-level step. These are two independent triggers — an API response event and a host-level crash event — on different system components. Bundling them violates the one-action-per-When atomicity rule and makes it impossible to isolate a failure to either the acknowledgement path or the crash-recovery path.",
+      "recommendation": "Restructure the scenario to separate the two actions. One valid form: Given the API has already acknowledged the issued short code (treating the acknowledgement as an established precondition) / And the Mapping Store has been hard-killed before any post-acknowledgement flush / When the Mapping Store restarts / Then the issued short code SHALL still resolve to the original URL. This keeps one explicit When trigger (the restart) and elevates the acknowledgement and hard-kill to Given preconditions."
+    },
+    {
+      "id": "QA-BDD-01-F007",
+      "priority": "P2",
+      "check": "C2",
+      "location": "§3.1 — BDD.01.03.e5ec",
+      "message": "Compound And-step bundles two independently falsifiable assertions in one step line: 'the 1,000 issued codes SHALL be pairwise distinct AND SHALL pass a monobit frequency test over their concatenated bit-string at the significance level @threshold:PRD.01.security.codeentropy'. Pairwise distinctness (a uniqueness / collision property) and monobit frequency (a statistical entropy property) are separate, independently testable observables. A collision failure cannot be distinguished from an entropy-distribution failure when both are asserted in the same step. The 'AND' conjunction within a single step line is a direct C2 violation.",
+      "recommendation": "Split the compound And-step into two separate step lines: 'And the 1,000 issued codes SHALL be pairwise distinct' (uniqueness assertion) followed by 'And the 1,000 issued codes SHALL pass a monobit frequency test over their concatenated bit-string at the significance level @threshold:PRD.01.security.codeentropy' (entropy assertion). Each step then maps to one independently reportable test assertion."
+    },
+    {
+      "id": "QA-BDD-01-F003",
       "priority": "P3",
-      "location": "Section 2 — Feature Definition, Background",
-      "check": "beyond-checklist:background-step-traceability",
-      "message": "The Background step 'And the current time is \"09:30:00\" in \"America/New_York\"' is inherited by every scenario in the feature but corresponds to no EARS trigger, quality attribute, or scenario that exercises time-of-day logic. No EARS line in EARS-01 §3 or §4 specifies a time-of-day precondition, and no scenario's Given/When/Then references the fixed-clock value. An unreferenced setup step in a shared Background implies a requirement that does not exist in the upstream spec, adds a spurious precondition to all 35 scenarios, and will produce an unbound step definition in any harness that enforces strict step matching. The reasoning-frame paragraph is 'structural soundness — each step atomic (one trigger Given, one action When, one observable outcome Then)': a Background Given that exercises no observable outcome and traces to no upstream requirement is structurally extraneous.",
-      "recommendation": "Remove the 'And the current time is \"09:30:00\" in \"America/New_York\"' step from the Background unless a time-of-day EARS requirement is added. If a future scenario requires a fixed-clock precondition, scope the time-injection step to that scenario's own Given block rather than the shared Background.",
-      "personas": ["qa_lead"]
+      "check": "beyond-checklist:test-isolation",
+      "location": "§3.2 — BDD.01.03.3c70",
+      "message": "Dual-plane outcome co-location impairs failure attribution. The Then block asserts three outcomes spanning two distinct observability planes: (1) behavioral — return 'No such short link exists.' WITHIN the takedown SLA, (2) behavioral — SHALL NOT redirect, and (3) instrumentation — SHALL emit a 'link_takedown_applied' event. If the instrumentation assertion (3) fails independently (e.g., the event bus is not yet wired), the test runner marks the entire scenario failed, masking whether the behavioral outcomes (1) and (2) passed. The scenario comment acknowledges this as a 'documented dual-plane verification trade-off' but does not record an explicit acceptance tag or decision reference.",
+      "recommendation": "Either (a) extract the 'link_takedown_applied' event assertion into a separate scenario tagged @scenario-type:success covering the observability facet of EARS.01.03.f62a, or (b) accept the co-location by adding a scenario-level tag such as '@dual-plane-accepted' with a decision reference, enabling downstream reviewers at the TDD and Code Review layers to trace the trade-off."
+    },
+    {
+      "id": "QA-BDD-01-F004",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§3.1 BDD.01.03.613b, §3.3 BDD.01.03.1f90 / BDD.01.03.44fe / BDD.01.03.076f",
+      "message": "The step 'Given an issued short code \"/abc123\" mapping to \"https://example.com/page\"' appears verbatim or near-verbatim in four scenarios (BDD.01.03.613b, BDD.01.03.1f90 Outline body, BDD.01.03.44fe, BDD.01.03.076f). Per C4, steps present verbatim in three or more scenarios are candidates for extraction to a shared step-definition catalog. NOTE: this project ships no step-definition catalog file; the catalog mechanism is documented as potentially framework-deferred at this single-file BDD scope.",
+      "recommendation": "If the step-definition catalog mechanism is confirmed as framework-deferred for this scope, record the deferral explicitly in a note at the top of §3. If not deferred, register a parameterized step definition, e.g. 'an issued short code {code} mapping to {url}', and reference it consistently. Alternatively, if these four scenarios are grouped into a sub-feature, promote the step to a Background block."
+    },
+    {
+      "id": "QA-BDD-01-F005",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§3.3 BDD.01.03.41c7, §3.2 BDD.01.03.f0a5, §3.5 BDD.01.03.3708",
+      "message": "The step 'Given destination-reputation screening is enabled' appears verbatim in three scenarios (BDD.01.03.41c7 Outline, BDD.01.03.f0a5, BDD.01.03.3708). Per C4, verbatim recurrence in three or more scenarios warrants extraction to a step-definition catalog entry. NOTE: same framework-deferral caveat applies as in QA-BDD-01-F004.",
+      "recommendation": "Register 'destination-reputation screening is enabled' as a named step in the step-definition catalog, or promote it to the Background block of a dedicated 'Destination Screening' sub-feature grouping these three scenarios. If deferred, document the deferral alongside QA-BDD-01-F004."
     }
-  ]
+  ],
+  "lens_score": 84
 }

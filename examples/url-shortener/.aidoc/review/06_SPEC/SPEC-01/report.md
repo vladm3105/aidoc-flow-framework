@@ -1,153 +1,118 @@
-# SPEC-01 Review Report — Iteration 2
+# SPEC-01 Review — Iteration 3 Unified Report
 
-**Artifact:** SPEC-01 (URL Shortener Technical Specification v1.0.1)
-**Layer:** 06_SPEC
-**Review cycle:** Iteration 2 (re-audit after doc-spec-fixer pass)
-**Date:** 2026-06-09
+**Artifact:** SPEC-01 (Mapping Store component spec)
+**Iteration:** 3 (re-review after iteration-2 fixer)
+**Date:** 2026-06-10
 
 ---
 
 ## Executive Summary
 
-All five iteration-1 blocking and high-priority findings have been independently verified as resolved in SPEC-01 v1.0.1. The fixer correctly addressed every P0/P1/P2 item raised by the iteration-1 crew. The artifact passes the deterministic gate: structural floor holds, no unresolved P0 or P1, and the weighted content score (97) clears the 90-point threshold. Four residual P3 advisory findings survive — none blocking, all deferred to TDD or IPLAN for concrete value binding.
+SPEC-01 passes the iteration-3 gate. Combined status: **PASS**. Content score: **97 / 100** (threshold 90). Structural status: **PASS**. All 5 requested personas returned slots (quorum met). Blocking findings (P0 + P1): **0**. The five remaining findings are all P3 (advisory); none block release.
+
+All five lenses confirmed that the iteration-2 fixer changes resolved the prior P2 findings — no P2 issues carry forward into this iteration.
 
 ---
 
-## Summary Table
+## Gate Decision
 
-| Field | Value |
+| Dimension | Result |
 |---|---|
-| combined_status | **PASS** |
-| content_score | **97** |
-| structural_status | **PASS** |
-| personas requested | 5 |
-| personas returned | 5 |
-| quorum_met | true |
-| blocking findings (P0+P1) | **0** |
-| advisory findings (P2+P3) | **4** (all P3) |
+| Combined status | **PASS** |
+| Content score | **97** (threshold 90) |
+| Structural status | **PASS** |
+| Blocking findings (P0 + P1) | **0** |
+| Coverage quorum | **met (5 / 5)** |
 
 ---
 
-## Score Calculation
+## Per-Lens Score Table
 
-| Lens | Weight | Score | Contribution |
+| Lens | Weight | Score | Weighted contribution |
 |---|---|---|---|
-| architect | 30 | 100 | 30.0 |
-| tech_lead | 30 | 95 | 28.5 |
-| integration_lead | 20 | 96 | 19.2 |
-| chaos_engineer | 10 | 93 | 9.3 |
-| security_engineer | 10 | 100 | 10.0 |
-| **Weighted blend** | **100** | — | **97.0** |
-
-Cap applied: **none** (no unresolved P0 or P1).
-content_score: **97** (rounded from 97.0).
+| architect | 30% | 96 | 28.80 |
+| tech_lead | 30% | 100 | 30.00 |
+| integration_lead | 20% | 100 | 20.00 |
+| chaos_engineer | 10% | 93 | 9.30 |
+| security_engineer | 10% | 93 | 9.30 |
+| **Weighted total** | | | **97.40 → 97** |
 
 ---
 
 ## Coverage
 
-All 5 expected lenses returned valid persona-output records. Quorum met (5/5 ≥ ceil(5 × 0.5) = 3).
-
-| Lens | Status | Score |
-|---|---|---|
-| architect | ran | 100 |
-| tech_lead | ran | 95 |
-| integration_lead | ran | 96 |
-| chaos_engineer | ran | 93 |
-| security_engineer | ran | 100 |
+- Personas requested: 5
+- Personas returned: 5
+- Quorum met: yes
+- Missing slots: none
+- Confidence: full
 
 ---
 
-## Iteration-1 Finding Resolution
+## Reduced Findings
 
-The following findings from iteration 1 were independently re-verified as resolved by the crew in this pass:
+### P3 — Advisory (5 findings; no gate impact)
 
-| Iteration-1 ID | Priority | Resolved by | Verification |
-|---|---|---|---|
-| INT-001 | P1 | fixer | §3 boundary table now states per-edge timeout/retry/circuit-break |
-| INT-002 | P1 | fixer | §4 names backward-compatible-within-MAJOR LinkStatus evolution policy with migration-on-break |
-| INT-003 | P1 | fixer | §2/§3 stamp LinkStore contract v1 + substrate contract v1 tracking SPEC MAJOR |
-| INT-004 | P2 | fixer | §2 declares KV minimum-capability matrix with non-conformance rule |
-| INT-005 | P2 | fixer | §6 attributes per-boundary emitters and cross-edge span propagation |
-| TL-003 | P1 | fixer | §2 declares ownership of reconciliation log |
-| CHAOS-004 | P2 | fixer | §6 characterizes overflow policy: drop-oldest with reconciliation_overflow alert, post-fault drain rate-bounded |
-
-No contested findings. No iteration-1 findings carried forward at P0/P1/P2.
+**ARCH-001** (architect) — check C5
+Location: Section 8 Upstream ADR tag line; Section 5 degraded→recovered state transition; Section 7 recovery contract.
+Message: The RTO-bounded recovery behavior in Sections 5 and 7 traces to ADR-01 consequence ADR.01.05.cb92 (PITR + standby promotion, RTO ≤ 30 min), but that consequence is absent from the Section 8 Upstream ADR tag line. The sibling consequences (.47a1, .454a, .5896, .7dde, .2740) are all cited; only the recovery consequence is missing. No behavioral contradiction exists — the linkage gap is traceability-only.
+Recommendation: Add @adr: ADR.01.05.cb92 to the Section 8 Upstream ADR list.
 
 ---
 
-## Findings — Iteration 2
-
-### P3 Advisory Findings (non-blocking, deferred to TDD/IPLAN)
-
-#### TL-005
-
-- **Check:** C5
-- **Priority:** P3
-- **Lens:** tech_lead
-- **Location:** §4 Data Models / §5 Error handling (reconciliation row, delta_id)
-- **Message:** The reconciliation-log entry is declared an owned persistent resource (§2 'owns the reconciliation log') and §5 states each replayed delta 'carries a unique delta_id (commit marker)' so replay can skip an already-reflected delta. That entry shape is not modeled in §4: neither delta_id nor the reconciliation-entry record (short_code, delta, delta_id, ts) appears as a typed contract alongside LinkRecord/ClaimResult. The owned off-path resource therefore has its ownership declared (resolving prior TL-003) but its schema undeclared at the spec layer, leaving the no-double-count replay mechanism un-typed for TDD/IPLAN.
-- **Recommendation:** Add a minimal typed contract for the reconciliation-log entry in §4 (e.g. ReconciliationEntry: short_code: str, delta: int, delta_id: str, ts_utc: datetime) so the owned resource and its delta_id commit-marker have a declared shape, consistent with the other §4 data models.
-
-#### INT-006
-
-- **Check:** C3
-- **Priority:** P3
-- **Lens:** integration_lead
-- **Location:** §3 claim / §4 LinkRecord.idempotency_key / §6 Patterns
-- **Message:** The idempotency_key crosses the API -> Link Store boundary and drives the replay-collapse dedup contract, but the spec does not declare the key's uniqueness scope or a replay-match retention window. With the content-derived fallback (ADR.01.03.3315), two distinct submissions hashing to the same candidate could collapse onto one record, and a same-key retry is honored as replay over an unbounded horizon by spec. The replay guarantee across the boundary is thus time- and scope-unbounded.
-- **Recommendation:** State the idempotency_key uniqueness scope (per-submitter vs global) and the replay-match retention window (key honored for replay within N; beyond it a same-key submission is treated as a fresh claim), plus the content-derived fallback's collision domain. Bind concrete values at TDD against the EARS.01.03.f909 issuance budget.
-
-#### CHAOS-002-R1
-
-- **Check:** C2
-- **Priority:** P3
-- **Lens:** chaos_engineer
-- **Location:** §6 Resilience envelope (reconciliation log bound)
-- **Message:** The reconciliation-log overflow policy is now characterized (CHAOS-004 resolved: 'at the bound oldest deltas drop with a reconciliation_overflow alert; post-fault drain rate-bounded'), but the bound itself is qualitative -- '(max retention)' with no ceiling magnitude (no entry count, byte ceiling, or time window). The drop-oldest behavior and alert are specified; what is missing is a concrete bound magnitude. A TDD fixture cannot drive the log to its bound and observe the drop + alert without knowing what the bound is. This is a testability gap, not an uncharacterized-resilience gap, hence P3.
-- **Recommendation:** Quantify the reconciliation-log bound as a concrete ceiling (e.g. max N entries OR max retention window OR max bytes) so the overflow/drop-oldest path is constructable as a TDD fixture. Pin the magnitude to the design-load increment-fault rate x worst-case outage duration the §6 envelope assumes, or mark it a TDD-owned threshold with a named source.
-
-#### CHAOS-002-R2
-
-- **Check:** C4
-- **Priority:** P3
-- **Lens:** chaos_engineer
-- **Location:** §3 Boundary failure semantics / §6 Resilience envelope (circuit-break)
-- **Message:** Circuit-break OPEN semantics are defined on both synchronous boundaries (§3: 'open after a bounded failure count => fail closed'; 'open => fail-safe not-found'), and the contract asserts recovery ('recovers when the store returns', §5 error table). But the breaker RECLOSE / half-open reset semantics are implicit: no half-open probe interval, reset window, or success-count-to-close is stated. With no reclose mechanism specified, the time from substrate-recovered to breaker-closed is unbounded by the SPEC. Recovery is asserted at the outcome level but the mechanism that bounds it is missing.
-- **Recommendation:** Specify the circuit-break reset contract: the half-open probe cadence (or cool-down window) and the success condition that recloses the breaker, so the post-fault readmission time is bounded and the reclose path is testable. Bind concrete values at TDD against a named recovery budget.
+**CHAO-001** (chaos_engineer) — check C4
+Location: Section 3 increment_visit delivery contract / Section 6 dead-letter recovery.
+Message: Dead-letter reconciliation is operator-driven with no stated MTTR or RTO. The count-staleness window governs when an event routes to dead-letter and triggers an alert; it does not bound when a dead-lettered event is actually replayed. The RTO ≤ 30 min applies to store-loss recovery only. A backlog of dead-lettered count events can remain unreconciled indefinitely while all stated bounds are met.
+Recommendation: State a reconciliation MTTR target or escalation window for the dead-letter replay path, and make that target testable at TDD-01 alongside the store-loss RTO probe.
 
 ---
 
-## Playbook Coverage
+**CHAO-002** (chaos_engineer) — check beyond-checklist:backpressure-policy-undefined
+Location: Section 3 delivery channel (Visit-Counter-owned durable queue) / Section 6 read/create design-load.
+Message: The durable async queue carrying increment_visit off the redirect path has no stated beyond-margin behavior. When the reconciler lags the producer sustainably, queue depth grows without bound or shed/backpressure policy. SPEC-01 binds the at-least-once delivery contract to this transport, so its saturation policy is in scope to reference, even though the queue is owned by the Visit Counter component.
+Recommendation: Reference the queue's beyond-margin policy (max depth / age bound, and the behavior at that bound: shed-with-alert, block producer, or age-out to dead-letter). If the policy is fully specified in the Visit Counter component spec, cite that owner explicitly for traceability.
 
-| Check | Findings |
-|---|---|
-| C1 | 0 |
-| C2 | 1 |
-| C3 | 1 |
-| C4 | 1 |
-| C5 | 1 |
-| beyond_checklist | 0 |
+---
 
-beyond_checklist / total = 0/4 = 0.0 — within calibration norm (threshold 0.30).
+**SECU-003** (security_engineer) — check C3
+Location: Section 5 validation rules / read_original_url.
+Message: The ShortCode charset/length allowlist precondition covers resolve and mark_taken_down but not read_original_url. read_original_url accepts an attacker-influenceable ShortCode and is guarded only by the parameterized PK lookup. The SPEC's stated defense-in-depth parity principle applies to all classified-read interfaces; read_original_url is the highest-sensitivity read and currently has weaker boundary validation than the unprivileged resolve.
+Recommendation: Extend the Section 5 ShortCode allowlist rule to name read_original_url alongside resolve and mark_taken_down.
+
+---
+
+**SECU-004** (security_engineer) — check C3
+Location: Section 5 validation rules / increment_visit event_id.
+Message: increment_visit accepts an EventId (the dedup/idempotency key) with no stated format or length constraint at the store boundary. An unbounded or malformed EventId is attacker-influenceable and could bloat the dedup index or attempt collisions against the idempotency gate. Risk is bounded by the off-path, idempotent consumer, but no typed-parse or length rule is specified.
+Recommendation: Add a Section 5 validation rule constraining increment_visit's EventId to a typed-parsed, bounded-length format, paralleling the put_mapping OriginalUrl and resolve ShortCode allowlist rules.
 
 ---
 
 ## Contested Findings
 
-None. All lenses reached independent conclusions with no either/or disagreement on any finding.
+None. All lenses converged; no either/or judgment surfaced.
 
 ---
 
-## Deterministic Gate Decision
+## Iteration-2 Fixer Verification
 
-```
-structural_status = PASS   (sdd_doc_lint exit 0; all 8 required sections present)
-blocking_findings = 0      (no P0, no P1)
-content_score     = 97     (weighted blend 97.0, no cap)
-gate_threshold    = 90
+All five lenses (architect, tech_lead, integration_lead, chaos_engineer, security_engineer) confirmed that the iteration-2 fixer changes fully resolved the prior P2 findings; no P2 issues carry forward.
 
-combined_status = PASS
-```
+---
 
-The artifact is cleared for progression to Layer 7 (TDD). The four P3 advisories are non-blocking deferred items; the TDD author should address the concrete bound values for reconciliation-log ceiling, circuit-breaker reclose, idempotency-key retention window, and ReconciliationEntry schema as part of TDD fixture design.
+## Playbook Coverage
+
+| Check | Surviving findings |
+|---|---|
+| C3 | 2 |
+| C4 | 1 |
+| C5 | 1 |
+| beyond-checklist | 1 |
+
+Beyond-checklist ratio: 1 / 5 = 20% (below the 30% drift-signal threshold — no playbook revision signal).
+
+---
+
+## Discarded Findings
+
+None. All findings carried valid playbook check citations (C3, C4, C5, or beyond-checklist form); zero findings were discarded.

@@ -3,66 +3,77 @@
   "content_score": 97,
   "structural_status": "PASS",
   "coverage": {
+    "quorum_met": true,
     "personas_requested": 5,
-    "personas_returned": 5,
-    "quorum_met": true
+    "personas_returned": 5
   },
   "blocking_findings_count": 0,
   "lens_scores": {
-    "architect": 100,
-    "tech_lead": 95,
-    "integration_lead": 96,
+    "architect": 96,
+    "tech_lead": 100,
+    "integration_lead": 100,
     "chaos_engineer": 93,
-    "security_engineer": 100
+    "security_engineer": 93
   },
-  "findings": [
+  "findings_summary": {
+    "P0": 0,
+    "P1": 0,
+    "P2": 0,
+    "P3": 5
+  },
+  "reduced_findings": [
     {
-      "id": "TL-005",
+      "id": "ARCH-001",
       "priority": "P3",
       "check": "C5",
-      "location": "§4 Data Models / §5 Error handling (reconciliation row, delta_id)",
-      "message": "The reconciliation-log entry is declared an owned persistent resource (§2 'owns the reconciliation log') and §5 states each replayed delta 'carries a unique delta_id (commit marker)' so replay can skip an already-reflected delta. That entry shape is not modeled in §4: neither delta_id nor the reconciliation-entry record (short_code, delta, delta_id, ts) appears as a typed contract alongside LinkRecord/ClaimResult. The owned off-path resource therefore has its ownership declared (resolving prior TL-003) but its schema undeclared at the spec layer, leaving the no-double-count replay mechanism un-typed for TDD/IPLAN.",
-      "recommendation": "Add a minimal typed contract for the reconciliation-log entry in §4 (e.g. ReconciliationEntry: short_code: str, delta: int, delta_id: str, ts_utc: datetime) so the owned resource and its delta_id commit-marker have a declared shape, consistent with the other §4 data models.",
-      "personas": ["tech_lead"]
+      "location": "Section 8 — Upstream ADR tag line; recovery behavior asserted in Section 5 (degraded→recovered, RTO ≤ 30 min) and Section 7 (degraded-mode and recovery contract)",
+      "message": "The SPEC asserts RTO-bounded recovery (Section 5 state transition 'from degraded to recovered — resolves resume within RTO ≤ 30 min'; Section 7 contract 'Store degradation returns a bounded error, then recovers within RTO'), which traces to ADR-01 consequence ADR.01.05.cb92 (mature recovery tooling — PITR + standby promotion meeting RTO ≤ 30 min, BDD.01.03.44fe). That ADR element is the named upstream commitment for the recovery claim, but it is not carried in the Section 8 Upstream ADR tag line, whereas the sibling consequences (.47a1, .454a, .5896, .7dde, .2740) are. The section-level trace for the recovery behavior is therefore thinner than for the other inherited commitments. No contradiction — the behavior is consistent with ADR-01; only the explicit upstream linkage is absent.",
+      "recommendation": "Add @adr: ADR.01.05.cb92 to the Section 8 Upstream ADR list so the RTO-recovery behavior in Section 5 and the recovery contract in Section 7 trace explicitly to the ADR consequence that committed PITR + standby promotion for RTO ≤ 30 min.",
+      "personas": ["architect"]
     },
     {
-      "id": "INT-006",
-      "priority": "P3",
-      "check": "C3",
-      "location": "§3 claim / §4 LinkRecord.idempotency_key / §6 Patterns",
-      "message": "The idempotency_key crosses the API -> Link Store boundary and drives the replay-collapse dedup contract, but the spec does not declare the key's uniqueness scope or a replay-match retention window. With the content-derived fallback (ADR.01.03.3315), two distinct submissions hashing to the same candidate could collapse onto one record, and a same-key retry is honored as replay over an unbounded horizon by spec. The replay guarantee across the boundary is thus time- and scope-unbounded. Iteration-1 INT-001/002/003/004/005 are independently re-verified as resolved in v1.0.1: §3 boundary table now states per-edge timeout/retry/circuit-break (INT-001 C3); §4 names a backward-compatible-within-MAJOR, append-only-LinkStatus evolution policy with migration-on-break (INT-002 C4); §2/§3 stamp LinkStore contract v1 + substrate contract v1 tracking SPEC MAJOR (INT-003 C1); §2 declares a KV minimum-capability matrix with non-conformance rule (INT-004 C2); §6 attributes per-boundary emitters and cross-edge span propagation (INT-005 C5).",
-      "recommendation": "State the idempotency_key uniqueness scope (per-submitter vs global) and the replay-match retention window (key honored for replay within N; beyond it a same-key submission is treated as a fresh claim), plus the content-derived fallback's collision domain. Bind concrete values at TDD against the EARS.01.03.f909 issuance budget.",
-      "personas": ["integration_lead"]
-    },
-    {
-      "id": "CHAOS-002-R1",
-      "priority": "P3",
-      "check": "C2",
-      "location": "§6 Resilience envelope (reconciliation log bound)",
-      "message": "The reconciliation-log overflow policy is now characterized (CHAOS-004 resolved: 'at the bound oldest deltas drop with a reconciliation_overflow alert; post-fault drain rate-bounded'), but the bound itself is qualitative -- '(max retention)' with no ceiling magnitude (no entry count, byte ceiling, or time window). The drop-oldest behavior and alert are specified, so the resilience BEHAVIOR is defined; what is missing is a concrete bound magnitude. Consequence: the overflow-and-drop test the TDD owes cannot be constructed -- a fixture cannot drive the log to its bound and observe the drop + alert without knowing what the bound is. This is a testability gap, not an uncharacterized-resilience gap, hence P3.",
-      "recommendation": "Quantify the reconciliation-log bound as a concrete ceiling (e.g. max N entries OR max retention window OR max bytes) so the overflow/drop-oldest path is constructable as a TDD fixture. Pin the magnitude to the design-load increment-fault rate x worst-case outage duration the §6 envelope assumes, or mark it a TDD-owned threshold with a named source.",
-      "personas": ["chaos_engineer"]
-    },
-    {
-      "id": "CHAOS-002-R2",
+      "id": "CHAO-001",
       "priority": "P3",
       "check": "C4",
-      "location": "§3 Boundary failure semantics / §6 Resilience envelope (circuit-break)",
-      "message": "Circuit-break OPEN semantics are defined on both synchronous boundaries (§3: 'open after a bounded failure count => fail closed'; 'open => fail-safe not-found'), and the contract asserts recovery ('recovers when the store returns', §5 error table). But the breaker RECLOSE / half-open reset semantics are implicit: no half-open probe interval, reset window, or success-count-to-close is stated. C4 (recovery) wants the MTTR after a transient fault bounded; with no reclose mechanism specified, the time from substrate-recovered to breaker-closed (traffic readmitted) is unbounded by the SPEC. Recovery is asserted at the outcome level but the mechanism that bounds it is missing. P3 because the SPEC does claim recovery and the breaker-trip side is defined -- only the reset side is implicit.",
-      "recommendation": "Specify the circuit-break reset contract: the half-open probe cadence (or cool-down window) and the success condition that recloses the breaker, so the post-fault readmission time is bounded and the reclose path is testable (trip -> substrate recovers -> half-open probe -> close within bounded window). Bind concrete values at TDD against a named recovery budget.",
+      "location": "Section 3 — increment_visit delivery contract / Section 6 — dead-letter recovery",
+      "message": "Dead-letter recovery closes the exactly-once loop via 'operator action' replay through the idempotent increment path, but the recovery time of that reconciliation tail is unbounded. The count-staleness window bounds WHEN an event is routed to dead-letter (and alerted), not WHEN a dead-lettered or out-of-window-skew event is reconciled — that step waits on an operator with no MTTR/RTO. RTO ≤ 30 min is scoped to store-loss recovery, not the dead-letter replay tail. A backlog of dead-lettered count events can therefore stay unreconciled indefinitely while still meeting every stated bound.",
+      "recommendation": "State a recovery-time bound (or explicit SLO/escalation target) for dead-letter reconciliation — e.g. dead-lettered events must be replayed within a named operator-response window, with the dead-letter counter feeding an SLA-bounded alert. Make the manual-reconciliation MTTR testable at TDD-01 alongside the RTO ≤ 30 min store-loss probe.",
       "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "CHAO-002",
+      "priority": "P3",
+      "check": "beyond-checklist:backpressure-policy-undefined",
+      "location": "Section 3 — Delivery channel (Visit-Counter-owned durable queue) / Section 6 — Read/create design-load",
+      "message": "The durable async dispatch queue that carries increment_visit off the redirect path has no characterized beyond-margin behavior: when the reconciler sustainably lags the producer, queue depth grows on durable storage with no stated bound or shed/backpressure policy. The off-path design correctly protects redirects, and the queue is owned by the Visit Counter — but SPEC-01 binds the at-least-once contract to that transport, so its saturation policy is in-scope to reference. Unbounded durable-queue growth under sustained count load is the un-addressed tail.",
+      "recommendation": "Reference the queue's beyond-margin policy: bound the durable backlog (max depth / age) and state what happens at that bound (shed-with-alert vs. block producer vs. age-out to dead-letter), tying it to the existing reconciliation-lag metric. If the policy lives entirely in the Visit Counter component spec, cite that owner explicitly so the backpressure contract is traceable rather than absent.",
+      "personas": ["chaos_engineer"]
+    },
+    {
+      "id": "SECU-003",
+      "priority": "P3",
+      "check": "C3",
+      "location": "Section 5 — Validation rules / read_original_url",
+      "message": "The ShortCode charset/length allowlist precondition names only resolve and mark_taken_down. read_original_url also accepts an attacker-influenceable ShortCode but is not listed under the defense-in-depth re-validation rule, so it is the one classified-read interface whose code argument is guarded solely by the parameterized PK lookup. By the SPEC's own stated defense-in-depth parity principle, the classified PII read deserves at least the same store-boundary code validation as the unprivileged resolve.",
+      "recommendation": "Extend the Section 5 ShortCode allowlist validation rule to include read_original_url (i.e., 'resolve, read_original_url, and mark_taken_down accept only a ShortCode matching the code-generation charset/length allowlist'), giving the highest-sensitivity read the same boundary precondition as the others.",
+      "personas": ["security_engineer"]
+    },
+    {
+      "id": "SECU-004",
+      "priority": "P3",
+      "check": "C3",
+      "location": "Section 5 — Validation rules / increment_visit event_id",
+      "message": "increment_visit accepts an EventId (event_id) that serves as the dedup/idempotency key, but no input-validation rule constrains its format/length. The dedup key is attacker-influenceable on the visit edge; an unbounded or malformed EventId could be used to bloat the dedup index or craft collisions against the idempotency gate. Risk is bounded because the consumer is idempotent and off the synchronous path, but no typed-parse/length rule is specified at the store boundary for this security-relevant key.",
+      "recommendation": "Add a Section 5 validation rule that increment_visit accepts only a typed/parsed EventId of bounded length/format (typed-parse or schema-validate) as a store-boundary precondition, paralleling the put_mapping OriginalUrl and resolve ShortCode allowlist rules.",
+      "personas": ["security_engineer"]
     }
   ],
   "playbook_coverage": {
-    "C2": 1,
-    "C3": 1,
+    "C3": 2,
     "C4": 1,
     "C5": 1,
-    "beyond_checklist": 0
+    "beyond_checklist": 1
   },
-  "score_calculation": {
-    "weighted_blend": 97.0,
-    "cap_applied": "none",
-    "iteration": 2
-  }
+  "iteration": 3,
+  "threshold": 90
 }

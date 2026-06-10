@@ -1,292 +1,175 @@
-# ADR-01 Review Report — Iteration 2 (Re-audit)
+# ADR-01 Review — Unified Report (Iteration 2)
 
-**Artifact:** ADR-01 (URL Shortener — Durable KV Storage Decision)
-**Layer:** 05_ADR
-**Iteration:** 2 (post-fixer pass)
-**Date:** 2026-06-08
-**Synthesizer:** chairperson reduce pass
-
----
-
-## Gate decision
-
-**PASS**
-
-Structural floor: PASS (sdd_doc_lint clean, all element IDs conform, all upstream
-tags resolve, all 10 required template sections + Glossary + Appendix present and
-non-empty, diagram contract satisfied, metadata valid).
-
-Content score: **90** (weighted blend = 90.18, floored to 90; no P0/P1 findings,
-no blocking cap applied).
-
-Gate threshold: 90. Score meets threshold exactly. No unresolved P0 or P1 findings.
-Combined status: **PASS**.
+**Artifact:** ADR-01 — URL Shortener Data-Store Decision
+**Iteration:** 2 (post-fixer pass on iteration-1 blockers)
+**Date:** 2026-06-10
+**Synthesizer:** Chairperson reduce pass
 
 ---
 
-## Readiness score
+## Executive Summary
 
-| Lens              | Weight | Score | Contribution |
-|-------------------|--------|-------|--------------|
-| architect         | 35     | 95    | 33.25        |
-| tech_lead         | 25     | 85    | 21.25        |
-| chaos_engineer    | 8      | 82    | 6.56         |
-| security_engineer | 12     | 91    | 10.92        |
-| operator          | 10     | 82    | 8.20         |
-| auditor           | 10     | 100   | 10.00        |
-| **Weighted blend**|        |       | **90.18**    |
-| **Content score** |        |       | **90**       |
+The ADR-01 artifact passes the quality gate at iteration 2. All iteration-1 blocking findings (one P1 from chaos_engineer, two coupled P1s from security_engineer, eight P2s, six P3s) were addressed by the fixer pass and are confirmed resolved by their respective lenses. No structural defects were found: all 12 required sections are present and non-empty, element IDs conform to the ADR.NN.SS.xxxx 4-hex pattern, the single decision element ADR.01.03.4226 is correctly scoped, required upstream tags for [ears, bdd] are verified to resolve directly against their host documents, and the @diagram: sequence-sync declaration is present.
 
-No P0 or P1 findings exist in the merged set; no cap applied beyond integer floor.
+Eight new P3 advisory findings were surfaced by five lenses (tech_lead x3, chaos_engineer x3, security_engineer x1, operator x1). Architect and auditor returned zero findings. No findings are gate-blocking: all eight are P3 clarity or completeness gaps that enrich the artifact but do not represent missing primitives.
+
+The content score is **96** (weighted average, post-cap). The gate threshold is 90. Combined status is **PASS**.
+
+---
+
+## Score Calculation
+
+| Lens | Score | Weight | Contribution |
+|---|---|---|---|
+| architect | 100 | 35 | 3500 |
+| tech_lead | 94 | 25 | 2350 |
+| chaos_engineer | 93 | 8 | 744 |
+| security_engineer | 94 | 12 | 1128 |
+| operator | 93 | 10 | 930 |
+| auditor | 100 | 10 | 1000 |
+| **Total** | | **100** | **9652** |
+
+Weighted average = 9652 / 100 = **96.52 → content_score = 96**
+
+Cap rules applied: zero unresolved P0, zero unresolved P1, zero unresolved P2. No cap triggered. Score stands at 96.
+
+Gate threshold = 90 (framework default; no ADR-layer project-profile override). 96 >= 90: **PASS**.
 
 ---
 
 ## Coverage
 
-| Metric         | Value |
-|----------------|-------|
-| Expected lenses| 6     |
-| Ran            | 6     |
-| Quorum met     | true  |
-| Confidence     | Full  |
-
-All six crew lenses returned valid persona-output records. No low-confidence flag.
-
----
-
-## Executive summary
-
-The ADR-01 fixer pass resolved the material blocking findings from iteration 1:
-the reversibility classification (§3 ADR.01.03.f5f5 one-way with rationale), the
-API-to-store trust-boundary decision (ADR.01.03.1050 per-service-principal + TLS +
-fail-closed), and the at-rest encryption decision (ADR.01.03.0db1 AES-256 envelope +
-provider KMS + rotation cadence). The architect, security_engineer, and auditor
-lenses confirm these are substantively resolved. The decision is implementer-bindable
-and upstream-consistent (BRD/PRD/EARS/BDD tag chains verified).
-
-The fixer introduced one new defect: it anchored the §5 write-path partitioning
-mitigation on element ID ADR.01.03.5536, which is referenced in prose but never
-defined as a §3 decision element. This dangling pointer is the most structurally
-significant open item (P2, merged from two lenses). It is not blocking under the
-gate rules (no P1), but it must be resolved before downstream SPEC authors can
-trace the write-partitioning commitment.
-
-Five additional P2 findings surface observability gaps: the monitoring baseline is
-missing the primary SLO (redirect read-path p95 latency), the reconciliation-lag
-age signal, the data-loss-possible blast classification for the ack-before-durable
-failure, and an explicit detection path for silent durability failure. These are
-well-scoped additions to §7 that require no architectural change.
-
-Five P3 findings are precision improvements: two from the architect (decision
-trailing imperatives, §2 scope statement narrower than §3/§6), two from security
-(threat-framing altitude gap, missing §8 audit evidence for the new controls), and
-one from chaos (RPO detection-time unquantified).
-
-**Note on auditor lens accuracy.** The auditor scored 100 with no findings and
-stated in its notes that ADR.01.03.5536 was among the five new conformant element
-IDs added to §3. This is factually incorrect: ADR.01.03.5536 appears only in a
-single back-reference in §5 and is not defined anywhere in §3. The auditor missed
-a genuine dangling reference on its A3 traceability check. The finding is carried
-from tech_lead and chaos_engineer; the auditor score is taken as submitted but the
-miss is noted for calibration.
+| Metric | Value |
+|---|---|
+| Lenses requested | 6 |
+| Lenses returned | 6 |
+| Quorum threshold | ceil(6 * 0.5) = 3 |
+| Quorum met | Yes (6/6) |
+| Confidence | Full — no low-confidence flag |
 
 ---
 
-## Findings by priority
+## Gate Decision
 
-### P2 — Non-blocking; resolve before SPEC layer
-
-#### MERGED-P2-001 — Dangling element reference ADR.01.03.5536
-
-**Lenses:** tech_lead (C1), chaos_engineer (C5)
-**Location:** §5 Consequences (ADR.01.05.9107) / §3 Decision semantics (referenced ADR.01.03.5536)
-**Message:** The §5 coupling-risk mitigation anchors the write-path partitioning
-contract on element ADR.01.03.5536, which is cited at §5 but never defined anywhere
-in §3. The §3 Decision semantics block defines only ADR.01.03.{5c3c, f5f5, 3315,
-1050}; §6 adds 0db1. This is a genuine dangling intra-document element pointer. The
-inline prose describes partitioning semantics ('written once, best-effort,
-reconciliation logged') but does not resolve whether the visit-count increment is
-at-most-once or at-least-once — the increment delivery semantic is ambiguous. A SPEC
-author following the citation lands on nothing. This element is the load-bearing
-primitive keeping a count-write fault off the redirect path (BDD.01.03.5f58/a7ad).
-
-**Recommendation:** Either (a) promote to a real §3 decision element: add
-'ADR.01.03.5536 — Write-path partitioning: the durable mapping (original_url,
-status) is written once on issuance and never rewritten by the off-path increment,
-which performs an isolated partial-field write' and declare the increment delivery
-semantic explicitly (at-most-once with reconciliation OR at-least-once with
-idempotent/dedup increment), then keep the §5 citation; or (b) drop the ID from §5
-and let the inline prose stand alone, expanding it to declare the delivery semantic
-unambiguously. Resolving 5536 also closes the increment-semantics ambiguity.
+| Gate dimension | Result |
+|---|---|
+| Structural floor (deterministic) | PASS |
+| Unresolved P0 findings | 0 |
+| Unresolved P1 findings | 0 |
+| Content score (96) >= threshold (90) | Yes |
+| **Combined status** | **PASS** |
 
 ---
 
-#### CHAOS-P2-1 — Data-loss-possible blast class never applied to RPO>0 scenario
+## Iteration-1 Blocker Resolution
 
-**Lens:** chaos_engineer (C2)
-**Location:** §7 Implementation Assessment / Monitoring baseline (ADR.01.05.d549)
-**Message:** The §7 phase table assigns blast classes but never applies
-data-loss-possible to the highest-blast failure: a KV tier that acks before durable
-commit, silently losing a confirmed mapping. Phase 1 risk 'conditional-write
-semantics differ' is labelled cross-service, understating the worst case.
-**Recommendation:** Add a §7 row classifying durable-commit-without-quorum
-(ack-before-durable) as blast radius = data-loss-possible.
+The following findings were raised as blocking (P1/P2) at iteration 1. The fixer pass applied patches; each originating lens confirmed resolution at iteration 2.
 
----
-
-#### CHAOS-P2-2 — No detection path for silent durability failure
-
-**Lens:** chaos_engineer (beyond-checklist:silent-durability-failure)
-**Location:** §3 Decision (ADR.01.03.5c3c) / §7 Monitoring baseline
-**Message:** If the managed KV tier acks on write-buffer rather than quorum/fsync,
-confirmed mappings are lost silently with no detection signal until a crash. The §7
-RPO monitor presumes loss is observable; it is not in this failure mode.
-**Recommendation:** State the required durability-acknowledgement contract (quorum/
-fsync-before-ack) as a §3 decision constraint and add a §7 detection signal (e.g.,
-periodic post-commit read-back / durability audit).
+| Iter-1 ID | Severity | Lens | Resolution |
+|---|---|---|---|
+| CHAOS-ADR-01-001 | P1 | chaos_engineer | Resolved — §3 Failure semantics added; chaos lens C1–C5 pass |
+| SE-ADR-01-001 | P1 (coupled) | security_engineer | Resolved — §3 Access-control identity model added; security lens C1/C2/C4/C5 pass |
+| SE-ADR-01-002 | P1 (coupled) | security_engineer | Resolved — coupled with SE-ADR-01-001; confirmed by security lens |
+| 8 × P2 findings | P2 | various | All confirmed applied by originating lenses |
+| 6 × P3 findings | P3 | various | All confirmed applied by originating lenses |
 
 ---
 
-#### OPS-P2-1 — Redirect read-path latency absent from monitoring baseline
+## Reduced Findings — Iteration 2 (all P3 advisory)
 
-**Lens:** operator (C2)
-**Location:** §7 Implementation Assessment — Monitoring baseline
-**Message:** The redirect read path is the highest-traffic path and the primary SLO
-(p95 < 50 ms, @threshold:PRD.01.perf.redirectp95), yet no monitoring row exists for
-it. A latency regression surfaces only through end-user complaints or an external
-synthetic monitor.
-**Recommendation:** Add monitoring row: redirect read-path latency (p95), target
-< 50 ms, alert >= 50 ms sustained over calibration window (e.g., 2 min).
+### tech_lead — 3 findings
 
----
+**TL-ADR-01-003** | P3 | Check C3 | §9 Traceability / §8 Verification
+Downstream TDD obligations not explicitly enumerated. SPEC inheritance is well-documented in §3/§6/§9. The TDD layer is only seeded implicitly via §8 verification table and BDD cross-references; the specific TDD tests (durability-at-ack crash probe, unique-constraint property test, fail-closed deny-on-grant-unavailable test, synchronous_commit config-drift assertion) are not named.
+*Recommendation:* Add one line in §9 (Downstream) naming the TDD obligations so the Test Architect inherits an explicit test surface.
 
-#### OPS-P2-2 — Reconciliation-lag age absent from monitoring baseline
+**TL-ADR-01-002** | P3 | Check C5 | §10 Related Decisions
+Sibling cross-references use BRD-topic proxies for not-yet-authored sibling ADR IDs (carried from iteration 1; acceptable). When siblings are authored the proxies must be replaced with @adr:/@depends: references; no mechanical obligation currently pins that replacement.
+*Recommendation:* When sibling ADRs land, replace each BRD proxy with a concrete @depends:/@adr: reference. No change required at this iteration.
 
-**Lens:** operator (C2)
-**Location:** §7 Implementation Assessment — Monitoring baseline
-**Message:** Visit-count reconciliation lag has no monitoring row. BDD.01.03.a7ad
-establishes a 60 s reconciliation budget. A stuck reconciliation process is silent
-under the current baseline; the RPO loss signal fires too late.
-**Recommendation:** Add monitoring row: reconciliation lag (age of oldest unresolved
-dropped-increment log entry), target < 60 s, alert >= 60 s -> WARN.
+**TL-ADR-01-004** | P3 | Check C1 | §8 Verification
+Re-scoped §8 p95 criterion resolves the prior P2 implementability concern. Residual: the no-cache MVP load envelope budget for PK reads is not quantified at ADR altitude (appropriate), but a pointer to where that number lives (SPEC/TDD downstream) would assist the downstream author.
+*Recommendation:* Optionally add a parenthetical noting the no-cache PK-read budget value is set at SPEC/TDD, distinct from the cache-gated p95 < 50 ms. No P1/P2 remains.
 
 ---
 
-### P3 — Advisory; address at the layer's discretion
+### chaos_engineer — 3 findings
 
-#### ARCH-P3-1 — Decision trailing imperatives blur binding clause (C1)
+**CHAOS-ADR-01-002** | P3 | Check beyond-checklist:saturation-curve-unknown | §3 Decision / §7 Implementation Assessment
+Halt-clear / resume transition undecided — standby-flap write-availability oscillation unbounded. §3 specifies the fail-closed entry condition but not the exit. Auto-resume vs operator-gated resume is undecided; no guard against standby flapping driving repeated halt/resume churn that can present as a retry-storm.
+*Recommendation:* Decide resume semantics in §3 (auto-resume on confirmed standby re-sync vs operator-gated). If auto, add a debounce/hysteresis bound (e.g., N seconds of healthy replica-lag-0). Add a §7 'standby recovered / writes resumed' signal with a time bound mirroring the <=30s loss alert.
 
-**Lens:** architect
-**Location:** §3 Decision (ADR.01.03.5c3c)
-Four elaborating imperatives follow the lead decision sentence in the same paragraph,
-blurring which clause is THE binding decision. Optional precision nicety; decision is
-implementer-bindable as written. Demote to 'Decision semantics' sub-list.
+**CHAOS-ADR-01-003** | P3 | Check C3 | §3 Decision / §2 Context
+Create-path halt duration is unbounded for a sustained single-standby outage. RTO <= 30 min (§2) covers store loss via promotion — a different failure scenario. Detection is bounded (<=30s), but the create-path outage envelope on the sustained-standby-down branch has no stated bound and no relationship drawn to the 99.9% availability target.
+*Recommendation:* State the recovery escalation for a sustained standby outage (how long the halt is tolerated before action — re-provision, promote/reseed). Relate to the availability budget with even one line.
 
-#### ARCH-P3-2 — §2 scope statement narrower than §3/§6 security decisions (beyond-checklist:scope-bundling)
-
-**Lens:** architect
-**Location:** §3 Decision (ADR.01.03.1050) / §6 (ADR.01.03.0db1)
-§2 scope excludes cache/code-generator/replication; per-service-principal auth/TLS
-and envelope-encryption are legitimately store-coupled but not named in the charter.
-Add one clause to §2 scope admitting the store's trust boundary and at-rest-encryption
-posture. No decision change required.
-
-#### CHAOS-P3-1 — RPO detection-time unquantified (C3)
-
-**Lens:** chaos_engineer
-**Location:** §7 Monitoring baseline — Confirmed-mapping loss (RPO) row
-'Any loss' is a threshold, not a quantified time-to-detect; the RPO row lacks a
-detection-time bound or concrete detection signal, unlike the write-conflict and
-commit-latency rows. Add a quantified detection-time bound and explicit signal (e.g.,
-'durability audit read-back detects within N s').
-
-#### SEC-P3-001 — Threat-framing absent for new security controls (C4)
-
-**Lens:** security_engineer
-**Location:** §3 Decision (ADR.01.03.0db1, ADR.01.03.1050) / §6 Integration points
-New controls introduced without explicit in-scope vs out-of-scope threat statement.
-Residual altitude gap; add a one-line threat framing to §6 notes naming what each
-control covers and what it does not.
-
-#### SEC-P3-002 — No §8 verification criterion or §7 signal for new security commitments (beyond-checklist:audit-evidence)
-
-**Lens:** security_engineer
-**Location:** §8 Verification / §7 Monitoring baseline
-ADR.01.03.1050 (fail-closed) and ADR.01.03.0db1 (encryption-at-rest) are asserted
-but not evidenced. Add §8 success criterion for injected store-auth/TLS failure and
-a §7 provisioning check that at-rest encryption is enabled before go-live.
+**CHAOS-ADR-01-004** | P3 | Check C1 | §3 Decision / §7 Implementation Assessment
+Planned standby maintenance trips the create-path halt under the MVP single-standby topology. Any planned operation (patching, restart, version upgrade) produces the same fail-closed halt as an unplanned loss. The ADR does not acknowledge this accepted ops cost.
+*Recommendation:* Acknowledge in §7 that planned standby maintenance trips the halt and state the operational handling (maintenance window with shorten degraded-mode advertised, or note that the next-cycle standby fan-out provides a maintenance-without-halt path).
 
 ---
 
-## Contested findings
+### security_engineer — 1 finding
 
-None. No genuine either/or judgment exists across lenses at the same location.
-The MERGED-P2-001 dedup is a max-severity merge, not a conflict.
-
----
-
-## Auditor lens miss — calibration note
-
-The auditor lens scored 100/100 with zero findings and stated in notes that
-ADR.01.03.5536 was among five new conformant IDs added to §3. This is factually
-incorrect. ADR.01.03.5536 appears only as a back-reference in §5 and is never
-defined as a §3 decision element — it is a dangling pointer. The auditor's A3
-traceability check passed it as conformant. The finding is carried from tech_lead
-and chaos_engineer (MERGED-P2-001). The auditor score is taken as submitted (it
-reviewed other compliance dimensions correctly); the A3 miss is flagged here as a
-calibration signal for the auditor playbook.
+**SE-ADR-01-003** | P3 | Check C3 | §7 Rollback plan (vs §5 ADR.01.05.98ff)
+Rollback export asserts at-rest 'encrypted' control that §5 explicitly defers to the data-protection sibling ADR (BRD.01.08.daeb). The wording is a delegation note, not an uncovered control, but the rollback export of a may-contain-PII column is precisely the moment the deferred at-rest control becomes load-bearing, and §5 alone does not make this visible.
+*Recommendation:* State that the rollback export is gated on the data-protection ADR at-rest controls being in place, or that interim managed-tier volume encryption is the operative at-rest control. Keeps §7 and §5 consistent on what 'encrypted' means pre-sibling-ADR.
 
 ---
 
-## Playbook coverage
+### operator — 1 finding
 
-| Check          | Findings count |
-|----------------|----------------|
-| C1             | 2              |
-| C2             | 3              |
-| C3             | 1              |
-| C4             | 1              |
-| C5             | 1              |
-| beyond_checklist | 3            |
-| **Total**      | **11**         |
-
-(MERGED-P2-001 spans C1 and C5; counted once under each for histogram purposes,
-contributing to both rows above.)
-
-Beyond-checklist ratio: 3/11 = 27%. Below the 30% drift-signal threshold. Playbook
-revision not indicated.
-
-No findings were discarded (all 10 unique findings carried valid check citations;
-the merged finding's two source records both had valid citations).
+**OP-ADR-01-006** | P3 | Check C5 | §7 Implementation Assessment — Monitoring baseline / Phase 1
+synchronous_commit config-knob declaration still incomplete after fixer pass. The fixer added a monitoring hook naming the parameter but did not supply the expected value ('on'), the default value (off in many managed tiers), or the configuration location (postgresql.conf or managed-service parameter group). An operator cannot confirm the parameter is set correctly at provisioning time without consulting external documentation.
+*Recommendation:* Expand the monitoring baseline entry to a full C5 config-knob declaration: parameter name, expected value (on), default (off in many managed tiers — note the divergence), and configuration location. This anchors the config-drift alert to a named expected value.
 
 ---
 
-## Per-lens summary
+### architect — 0 findings
 
-| Lens              | Score | Findings | Notes |
-|-------------------|-------|----------|-------|
-| architect         | 95    | 2 × P3   | C4 reversibility (iter-1 P2) resolved; 2 precision nits |
-| tech_lead         | 85    | 1 × P2   | Dangling 5536 (fixer-introduced); write-ordering gap resolved |
-| chaos_engineer    | 82    | 2 × P2, 2 × P3 | C1/C4 pass; C5 issuance pass; blast-class + silent-durability open |
-| security_engineer | 91    | 2 × P3   | Both iter-1 blocking (trust boundary, at-rest crypto) resolved; 2 residuals |
-| operator          | 82    | 2 × P2   | Runbook resolved; write-conflict threshold resolved; 2 SLO monitoring gaps remain |
-| auditor           | 100   | 0        | All IDs/traceability pass; MISSED dangling 5536 (noted above) |
+Architect lens passed all C1–C5 checks. Structural composition, decision boundaries, alternatives evaluation, and rationale quality are all at the threshold; lens_score = 100.
+
+### auditor — 0 findings
+
+Auditor lens passed all C1–C5 checks. Traceability, element IDs, coverage parity, and cross-section consistency are confirmed; lens_score = 100. See the trace-tag note below for TRACE-RES-001 false-positive context.
 
 ---
 
-## Summary table
+## Playbook Coverage
 
-| Category            | Count |
-|---------------------|-------|
-| Blocking (P0 + P1)  | 0     |
-| P2 findings         | 5     |
-| P3 findings         | 5     |
-| Total findings      | 10    |
-| Lenses ran          | 6/6   |
-| Content score       | 90    |
-| Gate                | PASS  |
+| Check | Findings |
+|---|---|
+| C1 | 2 (TL-ADR-01-004, CHAOS-ADR-01-004) |
+| C3 | 3 (TL-ADR-01-003, CHAOS-ADR-01-003, SE-ADR-01-003) |
+| C5 | 2 (TL-ADR-01-002, OP-ADR-01-006) |
+| beyond_checklist | 1 (CHAOS-ADR-01-002) |
+| **Total surviving** | **8** |
+
+beyond_checklist fraction = 1/8 = 12.5%. Below the 30% drift-signal threshold; no playbook revision signal.
 
 ---
 
-*Synthesizer: chairperson reduce pass. This report mirrors `verdict.json`; if any
-value diverges, the JSON is authoritative.*
+## Trace-Tag Note — TRACE-RES-001 Lint False-Positive (Out of Scope)
+
+The repository lint tool (sdd_doc_lint) on this branch emits 32x [ERROR TRACE-RES-001] claiming EARS-01 and BDD-01 host documents are unresolvable. This is a **known defect in the lint rule** under active repair on the TRACE-RES-FIXUP-001 branch — not an ADR artifact defect.
+
+The auditor lens performed direct resolution verification per audit playbook:
+
+- All 6 upstream EARS tags confirmed present in EARS-01.md: EARS.01.04.5e5b, EARS.01.03.bca8, EARS.01.03.4ebf, EARS.01.03.c4c9, EARS.01.04.cea3, EARS.01.04.1898.
+- All 8 upstream BDD tags confirmed present in BDD-01.md: BDD.01.03.9b90, BDD.01.03.a688, BDD.01.03.c8a6, BDD.01.03.167e, BDD.01.03.613b, BDD.01.03.1f90, BDD.01.03.44fe, BDD.01.03.02c1.
+
+Structural status is **PASS** on this dimension. The lint errors are out of scope for this ADR audit and are excluded from the verdict.
+
+---
+
+## Verdict Summary
+
+| Field | Value |
+|---|---|
+| combined_status | **PASS** |
+| content_score | **96** |
+| structural_status | **PASS** |
+| threshold | 90 |
+| blocking_findings_count | 0 |
+| coverage | 6/6 lenses, quorum met |
+| iteration | 2 |

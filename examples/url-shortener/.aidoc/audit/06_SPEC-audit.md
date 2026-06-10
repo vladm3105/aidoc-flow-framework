@@ -1,181 +1,202 @@
-# SPEC-01 — Combined Audit Report
-
-> Unified SPEC audit (structural gate floor + team-mode content review).
-> Consumed by `doc-spec-fixer` / `doc-spec-autopilot`.
+# SPEC-01 Combined Audit Report — Iteration 3 (re-review)
 
 ## Summary
 
 | Field | Value |
 |-------|-------|
-| Artifact | `docs/06_SPEC/SPEC-01.md` — Link Store (v1.0.1) |
-| Layer | 6 (SPEC) |
-| Saga iteration | 2 (re-review after fixer iteration 1) |
-| Audit timestamp | 2026-06-09T19:06Z |
-| Review mode | team (profile `review_mode` unset → framework default `team` at gate) |
+| Artifact | SPEC-01 — Mapping Store (Layer 6) |
+| File | `docs/06_SPEC/SPEC-01.md` |
+| Seed (upstream ADR) | `docs/05_ADR/ADR-01.md` |
+| Timestamp | 2026-06-10 (saga iteration 3) |
+| Review mode | team (profile knobs unset → framework default at gate) |
 | **Combined status** | **PASS** |
 | Structural status | PASS |
 | Content score | **97 / 100** (threshold 90) |
-| Coverage | quorum **met** (5/5 lenses ran) |
-| Blocking findings (P0/P1) | 0 |
-| Advisory findings | 4 × P3 |
+| Coverage quorum | met (5 / 5 personas returned) |
+| Blocking findings (P0 + P1) | 0 |
+| Advisory findings (P2 / P3) | P2 = 0 · P3 = 5 |
 
-**Verdict source:** `.aidoc/review/06_SPEC/SPEC-01/verdict.json` (synthesizer-authoritative).
-The SPEC's self-claimed TDD-readiness (`tdd_ready_score: 92`, frontmatter) is stale
-and is overwritten by this audit's computed score of **97**. The §1 Document Control
-row already reads "recomputed by doc-spec-audit" (fixer-applied) — no FM01.
+SPEC-01 clears the binding gate. The iteration-2 fixer resolved all eight prior
+advisory findings (3 × P2 score-drag + 5 × P3); the content score moved from
+89 → 97, crossing the threshold. All five remaining findings are P3 (advisory)
+and do not block promotion to TDD.
 
 ## Score Calculation
 
-Deterministic weighted blend of per-lens scores (REVIEW_CREWS.yaml SPEC weights),
-then capped per REVIEW_TEAM.md §"Scoring, conflicts & the gate" (an unresolved
-P0 ⇒ fail; an unresolved P1 ⇒ cap below threshold; **no P2-cap and no P3-cap**):
+Weighted content score = Σ (lens_score × weight / 100):
 
-| Lens | Weight | lens_score | Contribution |
-|------|-------:|-----------:|-------------:|
-| architect | 30 | 100 | 30.00 |
-| tech_lead | 30 | 95 | 28.50 |
-| integration_lead | 20 | 96 | 19.20 |
+| Lens | Weight | Score | Weighted |
+|------|--------|-------|----------|
+| architect | 30 | 96 | 28.80 |
+| tech_lead | 30 | 100 | 30.00 |
+| integration_lead | 20 | 100 | 20.00 |
 | chaos_engineer | 10 | 93 | 9.30 |
-| security_engineer | 10 | 100 | 10.00 |
-| **Weighted blend** | **100** | | **97.00 → 97** |
+| security_engineer | 10 | 93 | 9.30 |
+| **Total** | **100** | | **97.40 → 97** |
 
-No cap applied (0 blocking findings; the 4 surviving findings are all P3, which
-do not cap). `content_score = 97`. Gate = structural PASS **and** content_score
-(97) ≥ threshold (90) **and** 0 blocking ⇒ **PASS**.
-
-**Movement vs iteration 1:** content 79 → 97 (+18). Per-lens: architect 84 → 100,
-tech_lead 84 → 95, integration_lead 82 → 96, chaos_engineer 74 → 93 (the prior
-score-cap driver; the P1 cleared), security_engineer 83 → 100. All 19 iteration-1
-findings (1 P1 + 9 P2 + 9 P3) were **independently re-verified resolved** by the
-re-review lenses — not assumed from the fixer's claim.
+97 ≥ 90 threshold → content gate PASS. No P0/P1 → no blocking override.
 
 ## Metadata Findings
 
-None. `document_type=spec-document`, `artifact_type=SPEC`, `layer=6`,
-`deliverable_type=code` — all valid (no VALID-M001/M002/M003).
+None. `document_type: spec-document`, `artifact_type: SPEC`, `layer: 6`,
+`deliverable_type: code` — all present and valid. No VALID-M001/M002/M003.
 
 ## Structural Findings
 
-**Structural gate floor: PASS.** Run deterministically by this skill (never delegated).
-`sdd_doc_lint` exit 0 — no structural findings.
+None (gate floor PASS). Verified deterministically by this skill:
 
-| Check | Result | Evidence |
-|-------|--------|----------|
-| Template-section enumeration | PASS | All 8 required sections present and non-empty: Document Control, Component Overview, Interfaces, Data Models, Behavior, Implementation Notes, TDD Contracts, Traceability. |
-| YAML syntax | PASS | Frontmatter parses; required `custom_fields` present. |
-| Document ID | PASS | `SPEC-01` dash form; no dotted SPEC element IDs; no removed patterns. |
-| Cumulative tags | PASS | `@brd @prd @ears @bdd @adr` chain present in header (line 30) and §8; no gaps. |
-| Diagram contract tags | PASS | `@diagram: c4-l3` + `@diagram: dfd-l3` present (§2); §5 sequence diagram carries `alt`/`else` error branches. |
-| Downstream contract | PASS | `@tdd: TDD-01` present (§7). |
-| Quality gate (Tier 1) | PASS | Computed content score 97 ≥ threshold 90. |
+- **YAML syntax** — frontmatter parses. PASS.
+- **Document ID** — `SPEC-01` dash form; no dotted SPEC element IDs; no removed
+  patterns. PASS.
+- **Structure** — all 8 required template sections present and non-empty
+  (Document Control, Component Overview, Interfaces, Data Models, Behavior,
+  Implementation Notes, TDD Contracts, Traceability). PASS.
+- **Cumulative tags** — necessary-upstream `@ears @bdd @adr` complete; all
+  trace tags resolve to host documents under the full corpus
+  (`sdd_doc_lint examples/url-shortener/docs/` → 0 errors / 0 warnings on
+  SPEC-01). PASS.
+- **Authoring style (STY03)** — prose body = 2250 words, exactly at the +50%
+  blocking ceiling for SPEC (base 1500). PASS (boundary).
+- **Diagram contract tags** — `@diagram: c4-l3`, `@diagram: dfd-l3`, plus a
+  `sequence-error` alt/else error path. PASS.
 
-Tier-2 advisory (authoring style, C4-L3 scope hold, threshold-tag usage): no
-banned-phrase clusters; document body 2249/2250 words (within size targets, no
->50% breach); SPEC holds C4-L3 altitude (interfaces/data/behavior, no
-code/SQL/deployment detail). No structural Tier-2 findings.
+> **Single-file-isolation note.** Linting SPEC-01.md alone (without the corpus)
+> emits `TRACE-RES-001` errors for every `@adr`/`@ears`/`@bdd` tag because the
+> host documents are not loaded in single-file mode. These are an isolation
+> artifact, not SPEC-01 defects — they resolve to **0** when the lint runs over
+> `docs/`. They are the subject of the separate `TRACE-RES-FIXUP-001` branch
+> work and are neither introduced nor addressed by this audit.
 
 ## Content Findings
 
-Reduced from the synthesizer report (`.aidoc/review/06_SPEC/SPEC-01/report.md`).
-5/5 lenses returned valid slots. All findings carry a valid C1–C5 (or SE1)
-playbook citation; 0 beyond-checklist (no playbook-drift signal). 0 contested
-findings. **0 blocking; 4 P3 advisories.**
+Five P3 advisory findings reduced from the persona slots (deduped by
+location+check, max severity, unioned recommendations). None block the gate.
 
-No P0, P1, or P2 findings survive this re-review.
+### P3 — Advisory
 
-### P3 — Advisory (non-blocking; do not gate promotion to TDD)
+**ARCH-001** (architect · check C5) — *Section 8 Upstream ADR tag line;
+recovery behavior in §5 (degraded→recovered, RTO ≤ 30 min) and §7.*
+The RTO-bounded recovery behavior traces to ADR-01 consequence
+`ADR.01.05.cb92` (PITR + standby promotion, RTO ≤ 30 min, BDD.01.03.44fe), but
+that consequence is absent from the §8 Upstream ADR tag line while its sibling
+consequences (.47a1, .454a, .5896, .7dde, .2740) are all cited. No
+contradiction — the linkage is traceability-thin only.
+*Fix hint:* add `@adr: ADR.01.05.cb92` to the §8 Upstream ADR list.
 
-| ID | Check | Location | Lens | Issue |
-|----|-------|----------|------|-------|
-| TL-005 | C5 | §4 / §5 reconciliation row | tech_lead | The owned reconciliation-log entry (carrying `delta_id`) is named in §5 but not modeled as a typed contract in §4 alongside `LinkRecord`/`ClaimResult`. Ownership is declared (resolves prior TL-003) but the entry shape is un-typed at SPEC altitude. |
-| INT-006 | C3 | §3 claim / §4 idempotency_key / §6 | integration_lead | `idempotency_key` crosses the API→Link Store boundary and drives replay-collapse, but its uniqueness scope (per-submitter vs global) and replay-match retention window are undeclared → the replay guarantee is time- and scope-unbounded by spec; content-derived-fallback collision domain unstated. |
-| CHAOS-002-R1 | C2 | §6 Resilience envelope | chaos_engineer | Reconciliation-log overflow *behavior* is defined (drop-oldest + `reconciliation_overflow` alert + bounded drain), but the bound *magnitude* is qualitative ("max retention") — no entry/byte/time ceiling, so the overflow-drop TDD fixture is not constructable. Testability gap, not a resilience gap. |
-| CHAOS-002-R2 | C4 | §3 boundary semantics / §6 | chaos_engineer | Circuit-break OPEN (trip) semantics are defined on both boundaries and recovery is asserted, but the RECLOSE / half-open reset mechanism (probe cadence, reset window, success-to-close) is implicit → post-fault readmission time unbounded by spec. |
+**CHAO-001** (chaos_engineer · check C4) — *§3 increment_visit delivery
+contract / §6 dead-letter recovery.* Dead-letter reconciliation is
+operator-driven with no MTTR/RTO. The count-staleness window bounds *when* an
+event is routed to dead-letter, not *when* it is replayed; RTO ≤ 30 min is
+scoped to store-loss recovery. A dead-letter backlog can stay unreconciled
+indefinitely while meeting every stated bound.
+*Fix hint:* state a reconciliation MTTR / escalation window for the dead-letter
+replay path, testable at TDD-01 alongside the store-loss RTO probe.
 
-CHAOS-002-R1 and CHAOS-002-R2 are the two advisories the iteration-1 fixer
-explicitly deferred (Manual-Review Queue, fix report v001); the re-review
-confirms both are real and correctly P3 against the v1.0.1 text.
+**CHAO-002** (chaos_engineer · check beyond-checklist:backpressure-policy-undefined)
+— *§3 Visit-Counter-owned durable queue / §6 design-load.* The durable async
+queue carrying `increment_visit` off the redirect path has no characterized
+beyond-margin behavior: sustained reconciler lag grows queue depth on durable
+storage with no bound or shed/backpressure policy. SPEC-01 binds the
+at-least-once contract to that transport, so its saturation policy is in scope
+to reference even though the Visit Counter owns the queue.
+*Fix hint:* reference a max depth/age bound and the behavior at that bound
+(shed-with-alert / block-producer / age-out-to-dead-letter), tied to the
+reconciliation-lag metric; or cite the Visit Counter spec as the owner of that
+policy.
 
-**Skill-owned content sub-checks (A1–A3 auditor lens, BA1 business_analyst lens —
-neither lens is in the SPEC crew, so run here):** no additional findings.
-A1 (cell actionability): the only un-magnituded quantitative cell is the
-reconciliation "max retention" bound, already surfaced as CHAOS-002-R1 (intended
-A1↔chaos overlap). A2 (assumption capture): assumption-shaped statements (e.g.
-`CODE_TAKEN` retry cap "N from the code-generation contract", base62 alphabet
-width) are correct deferrals to named downstream contracts — excluded per the
-downstream-owned rule. A3 (cross-section pointer validity): all `@threshold:` /
-`@ears:` / `@adr:` / `@bdd:` / §N pointers resolve and match the citing claim's
-shape. BA1 (AC testability): §5 validation rules and §6 NFR targets are testable
-as written.
+**SECU-003** (security_engineer · check C3) — *§5 Validation rules /
+read_original_url.* The ShortCode charset/length allowlist precondition names
+`resolve` and `mark_taken_down` but not `read_original_url` — the one
+classified PII read whose attacker-influenceable `code` argument is guarded
+solely by the parameterized PK lookup. By the SPEC's own defense-in-depth
+parity principle, the highest-sensitivity read deserves at least the same
+boundary validation.
+*Fix hint:* extend the §5 ShortCode allowlist rule to include
+`read_original_url`.
+
+**SECU-004** (security_engineer · check C3) — *§5 Validation rules /
+increment_visit event_id.* `increment_visit` accepts an `EventId` (the
+dedup/idempotency key) with no format/length rule at the store boundary. An
+unbounded or malformed EventId is attacker-influenceable and could bloat the
+dedup index or attempt collisions against the idempotency gate. Risk is bounded
+by the off-path idempotent consumer, but no typed-parse/length rule is stated.
+*Fix hint:* add a §5 rule constraining `increment_visit`'s EventId to a
+typed-parsed, bounded-length format, paralleling the `put_mapping` OriginalUrl
+and `resolve` ShortCode rules.
+
+**Interface / data-model / behavior coverage.** All six interfaces
+(`put_mapping`, `resolve`, `read_original_url`, `increment_visit`,
+`read_counts`, `mark_taken_down`) carry (name, inputs, outputs, errors,
+semantics); data models typed (not storage schemas); behavior rules, state
+transitions, error handling, and audit events all present and trace to
+EARS/BDD/ADR. **Trace-resolution coverage:** 7 ADR + 10 EARS + 15 BDD + 1 TDD
+tags, all corpus-resolvable.
 
 ## Diagram Contract Findings
 
-None. `@diagram: c4-l3` and `@diagram: dfd-l3` present (§2); the §5 issuance
-sequence diagram carries `alt`/`else` error branches per the SPEC diagram
-standard; diagrams hold C4-L3 altitude (components + interfaces, no code/class
-detail). The prior advisory note that the off-path `increment_visits` fault
-branch is absent from a sequence diagram (TL-004, iteration 1) was resolved by
-the fixer's §5 reconciliation-log fault contract; no diagram-contract violation.
+None. `@diagram: c4-l3` (component), `@diagram: dfd-l3` (data flow), and a
+`sequence-error` diagram with an alt/else error path are all present and at
+C4-L3 altitude (components + interfaces, no code/SQL/deployment detail).
 
 ## Fix Queue
 
-Normalized for `doc-spec-fixer` (`source`, `code`, `severity`, `file`, `section`,
-`action_hint`, `confidence`). `file` = `docs/06_SPEC/SPEC-01.md` for all.
+| Bucket | Findings |
+|--------|----------|
+| `auto_fixable` | ARCH-001 (add one `@adr` tag), SECU-003 (extend one validation rule to name `read_original_url`) |
+| `auto_assisted` | CHAO-001 (author MTTR bound), CHAO-002 (author backpressure reference), SECU-004 (author EventId validation rule) |
+| `manual_required` | none |
+| `blocked` | none |
 
-**auto_fixable / auto_assisted:** none required to clear the gate. The SPEC is
-**PASS**; the 4 P3 advisories below are *optional* polish, not gate blockers.
+All five are **advisory (P3)** — the gate already PASSES. Applying them is
+optional polish, not a gate requirement. Each fix is grounded in the existing
+ADR-01 seed and EARS/BDD/threshold trace set; none requires inventing new
+domain content or a new threshold key.
 
-| code | severity | section | action_hint | confidence |
-|------|----------|---------|-------------|------------|
-| TL-005 | info | §4 | Add a typed `ReconciliationEntry` contract (`short_code`, `delta`, `delta_id`, `ts_utc`) alongside `LinkRecord`/`ClaimResult`. | auto-assisted |
-| INT-006 | info | §3 / §6 | State `idempotency_key` uniqueness scope (per-submitter vs global) + replay-match retention window; note the content-derived-fallback collision domain; bind values at TDD. | auto-assisted |
-| CHAOS-002-R1 | info | §6 | Quantify the reconciliation-log bound (max entries / bytes / age) or mark it a named TDD-owned threshold, so the overflow fixture is constructable. | auto-assisted |
-| CHAOS-002-R2 | info | §3 / §6 | Specify the circuit-break reset contract (half-open probe cadence / cool-down + success-to-close) so post-fault readmission is bounded and testable. | auto-assisted |
+**Normalized hand-off records for `doc-spec-fixer`:**
 
-**manual_required / blocked:** none.
-
-> **Note on body-size headroom.** The document is at 2249/2250 words against the
-> SPEC ceiling. Folding all four P3 advisories in will exceed the ceiling unless
-> accompanied by trimming, or unless the bound magnitudes are added as terse
-> table cells. A fixer pass that applies these should budget for net-zero word
-> growth (replace prose with quantified cells) or defer to a SPEC MINOR that
-> revisits the size target.
-
-## Recommended Next Step
-
-**PASS → promote SPEC-01 toward TDD authoring** (`doc-tdd` / `doc-tdd-autopilot`).
-The gate is cleared: structural floor green, content 97 ≥ 90, 0 blocking findings,
-quorum met (full confidence). The 4 P3 advisories are non-blocking and may be
-folded into a later patch iteration if a follow-up opens — they do **not** hold
-the promotion. The four TDD contract rows (§7) already enumerate the test surface
-that will absorb the CHAOS-002-R1/R2 thresholds when bound.
+| source | code | severity | file | section | confidence |
+|--------|------|----------|------|---------|------------|
+| content | ARCH-001 | info | SPEC-01.md | §8 Traceability | auto-safe |
+| content | CHAO-001 | info | SPEC-01.md | §3 / §6 | auto-assisted |
+| content | CHAO-002 | info | SPEC-01.md | §3 / §6 | auto-assisted |
+| content | SECU-003 | info | SPEC-01.md | §5 Validation rules | auto-safe |
+| content | SECU-004 | info | SPEC-01.md | §5 Validation rules | auto-assisted |
 
 ## Persona Slot Index
 
-| Lens | Weight | Slot | lens_score |
-|------|-------:|------|-----------:|
-| architect | 30 | `.aidoc/review/06_SPEC/SPEC-01/architect.json` | 100 |
-| tech_lead | 30 | `.aidoc/review/06_SPEC/SPEC-01/tech_lead.json` | 95 |
-| integration_lead | 20 | `.aidoc/review/06_SPEC/SPEC-01/integration_lead.json` | 96 |
-| chaos_engineer | 10 | `.aidoc/review/06_SPEC/SPEC-01/chaos_engineer.json` | 93 |
-| security_engineer | 10 | `.aidoc/review/06_SPEC/SPEC-01/security_engineer.json` | 100 |
+| Lens | Agent | Weight | Slot | Score | Findings |
+|------|-------|--------|------|-------|----------|
+| architect | solutions-architect | 30 | `.aidoc/review/06_SPEC/SPEC-01/architect.json` | 96 | 1 (P3) |
+| tech_lead | solutions-architect | 30 | `.aidoc/review/06_SPEC/SPEC-01/tech_lead.json` | 100 | 0 |
+| integration_lead | solutions-architect | 20 | `.aidoc/review/06_SPEC/SPEC-01/integration_lead.json` | 100 | 0 |
+| chaos_engineer | chaos-engineer | 10 | `.aidoc/review/06_SPEC/SPEC-01/chaos_engineer.json` | 93 | 2 (P3) |
+| security_engineer | security-engineer | 10 | `.aidoc/review/06_SPEC/SPEC-01/security_engineer.json` | 93 | 2 (P3) |
 
-Verdict: `.aidoc/review/06_SPEC/SPEC-01/verdict.json` · Narrative:
-`.aidoc/review/06_SPEC/SPEC-01/report.md`
+Synthesizer verdict: `.aidoc/review/06_SPEC/SPEC-01/verdict.json` ·
+narrative: `.aidoc/review/06_SPEC/SPEC-01/report.md`.
 
 ## Coverage
 
-`coverage.quorum_met = true` (5/5 requested lenses returned valid slots).
-Confidence: **full** — not a low-confidence run.
+`coverage.quorum_met = true` — all 5 requested personas returned slots
+(5 / 5). Result confidence: **full** (not low-confidence; no human-review
+escalation). Beyond-checklist ratio 1/5 = 20% (< 30% drift threshold; no
+playbook-revision signal). No findings discarded — every finding cited a valid
+playbook check (C3 ×2, C4 ×1, C5 ×1, beyond-checklist ×1).
+
+## Recommended Next Step
+
+**Promote.** Content score 97 ≥ 90, structural PASS, zero blocking findings,
+quorum met → SPEC-01 is TDD-ready. The autopilot loop terminates on this PASS
+(threshold met). The five P3 advisories may optionally be applied by
+`doc-spec-fixer` as polish, but are not required for the gate. Proceed to
+`doc-tdd` (Layer 7) for TDD-01.
 
 ## Cleanup Summary
 
-No versioned `SPEC-01.A_audit_report_v*.md` exist to supersede — this layer's
-combined report lives at the fixed path `.aidoc/audit/06_SPEC-audit.md` and was
-overwritten in place (iteration 1 → iteration 2). Preserved per policy:
-`SPEC-01.F_fix_report_v001.md` (fixer record), all per-lens slots, `verdict.json`,
-`report.md`, `saga.json`. No `.drift_cache.json` present (no upstream re-merge
-this cycle). The prior fixer-validation slot `chaos_engineer.fix_1.json` is
-retained as fixer evidence; it was excluded from this re-review's reduction.
-Saga journal advanced (iteration 2): `BRANCH_COMPLETED → FANOUT_STARTED →
-BRANCH_RUNNING ×5 → BRANCH_COMPLETED → FANIN_REDUCED`.
+- No superseded `SPEC-01.A_audit_report_v*.md` per-document copies existed to
+  remove (this plugin variant writes the combined report to
+  `.aidoc/audit/06_SPEC-audit.md`, overwritten in place each run).
+- The prior `.aidoc/audit/06_SPEC-audit.md` (iteration 2) was overwritten by
+  this iteration-3 report.
+- Retained per policy: `SPEC-01.F_fix_report_v002.md` (fix report of record),
+  the five persona slots, `verdict.json`, `report.md`, and `saga.json`.
