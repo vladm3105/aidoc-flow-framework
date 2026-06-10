@@ -468,7 +468,8 @@ Output: `BDD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** · **Coverage Findings** (Gherkin
-syntax, five-category coverage, cumulative-tag coverage, `spec_trace` presence) ·
+syntax, five-category coverage, trace-resolution coverage, `spec_trace`
+presence) ·
 **Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
 Next Step** · **Cleanup Summary**.
 

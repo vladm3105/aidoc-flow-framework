@@ -240,7 +240,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 2 — Links | broken/abs paths | recompute relative paths; convert absolute → relative |
 | 3 — Element IDs | legacy/invalid IDs | re-derive `BDD.NN.SS.xxxx` (section + content hash); drop legacy `BDD.NN.xxxx`, numeric type-codes, `SCEN-XXX`/`STEP-XXX` prefixes |
 | 4 — Content | placeholders, tags, thresholds | fill template dates; move comment tags to Gherkin-native; add `@scenario-type`/priority/`WITHIN` thresholds; flag `[TODO]`/`[TBD]` and missing Given-When-Then for manual completion |
-| 5 — References | traceability | add missing cumulative `@brd @prd @ears` tags; fix cross-doc paths; add/repair `spec_trace`; update the traceability matrix |
+| 5 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — BDD requires `@ears`); fix cross-doc paths; add/repair `spec_trace`; update the traceability matrix |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`upstream_mode`; when upstream EARS drifts, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Scenario blocks at category boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 

@@ -311,8 +311,10 @@ canonical required-section set.
 | Quality gate | BDD-Ready score ≥ threshold (default 90) |
 
 **Tier 2 — advisory (warning):** frontmatter metadata (below); single `@prd:` in
-Document Control; cumulative `@brd`/`@prd` tags pipe-separated, no ranges,
-correct prefixes; `@threshold:` tags well-formed; internal links and
+Document Control; required upstream `@prd` tags well-formed, no ranges,
+correct prefixes (per necessary-upstream contract; upstream BRD lineage is
+reachable transitively via the PRD's @-tag chain); `@threshold:` tags
+well-formed; internal links and
 template/governance references resolve; no downstream numbers cited before they
 exist; diagram tags present where state/sequence diagrams apply (use
 `../charts-flow/SKILL.md`).

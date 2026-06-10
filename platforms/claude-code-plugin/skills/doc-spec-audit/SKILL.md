@@ -470,7 +470,7 @@ Output: `SPEC-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** (interface/data-model/behavior
-coverage, cumulative-tag coverage) · **Diagram Contract Findings** · **Fix
+coverage, trace-resolution coverage) · **Diagram Contract Findings** · **Fix
 Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended Next
 Step** · **Cleanup Summary**.
 

@@ -9,7 +9,7 @@ metadata:
     layer: 8
     artifact_type: IPLAN
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
+    upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.11.0"
     framework_spec_version: "0.15.2"
@@ -27,7 +27,8 @@ from TDD), executable bash commands, session progress for stateless executors,
 and an audit trail from spec to delivered files.
 
 **Layer**: 8 (final doc layer; downstream is Code).
-**Upstream**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD.
+**Upstream**: SPEC, TDD (per the necessary-upstream contract; the rest of
+the chain is reachable transitively via SPEC/TDD's own @-tag references).
 
 One IPLAN per SPEC component (matching its TDD). Bugfixes with no new
 functionality use a temporary plan in `docs/08_IPLAN/tmp/` instead.
@@ -93,9 +94,9 @@ The IPLAN is a YAML document with `metadata` (`document_type: iplan-document`,
    contracts".
 5. **Session Handoff** — the stateless-executor bridge; `sessions[]` with
    `partial_work`, `blockers`, `next_session_directive`, `validation_results`.
-6. **Traceability** — cumulative upstream tags, downstream `code_paths` /
-   `test_paths`, and `code_inventory` (audit trail of every file
-   created/modified with session attribution and `verified` status).
+6. **Traceability** — required upstream tags (`@spec`, `@tdd`), downstream
+   `code_paths` / `test_paths`, and `code_inventory` (audit trail of every
+   file created/modified with session attribution and `verified` status).
 
 ### Session handoff protocol
 
@@ -110,10 +111,12 @@ completed work → 5) update file status → 6) append a session with a
 - **IPLAN is a DOCUMENT-level artifact** — referenced in dash form `IPLAN-NN`
   (e.g. `@iplan: IPLAN-01`). There is **no** hierarchical dotted element ID for
   an IPLAN; never write `IPLAN.NN.SS.xxxx`.
-- IPLAN is Layer 8, so it carries the full cumulative chain of upstream tags
-  that genuinely exist: `@brd @prd @ears @bdd @adr @spec @tdd`. Hierarchical
-  upstreams use the dotted form (`@tdd: TDD.01.04.a3c1`); document-level
-  upstreams use dash form (`@spec: SPEC-01`, `@adr: ADR-03`).
+- IPLAN is Layer 8, so it carries the **required upstream tags** (per the
+  necessary-upstream contract): `@spec @tdd`. Hierarchical upstreams use the
+  dotted form (`@tdd: TDD.01.04.a3c1`); document-level upstreams use dash
+  form (`@spec: SPEC-01`). Upstream BRD/PRD/EARS/BDD/ADR lineage is reachable
+  transitively via SPEC/TDD's own @-tag references — do not emit
+  `@brd:`/`@prd:`/`@ears:`/`@bdd:`/`@adr:` on IPLAN elements.
 - **Removed patterns** (do not use): `TASK-XXX`, `TODO-XXX`, `TI-XXX`,
   `ITEM-XXX`, and any `IPLAN.NN.SS.xxxx` hierarchical ID.
 
@@ -147,8 +150,9 @@ completed work → 5) update file status → 6) append a session with a
 - [ ] Execution commands cover setup / implementation / validation.
 - [ ] Implementation Contracts declared (or "No implementation contracts").
 - [ ] Session Handoff seeded with a `next_session_directive`.
-- [ ] Upstream tags (`@brd @prd @ears @bdd @adr @spec @tdd`) reference existing
-      docs; document ID is `IPLAN-NN` (no dotted IPLAN element ID).
+- [ ] Required upstream tags (`@spec @tdd`, per necessary-upstream contract)
+      reference existing docs; document ID is `IPLAN-NN` (no dotted IPLAN
+      element ID).
 - [ ] `code_inventory` ready to record created/modified files.
 - [ ] Permanent plan registered in `IPLAN-00_index.yaml`; temporary under `tmp/`.
 
@@ -186,7 +190,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Bridge a SPEC/TDD component into source code |
 | **Layer** | 8 (final doc layer; downstream = Code) |
-| **Upstream tags** | `@brd @prd @ears @bdd @adr @spec @tdd` |
+| **Upstream tags** | `@spec @tdd` (per necessary-upstream contract) |
 | **Key decision** | Permanent vs Temporary |
 | **Document ID** | `IPLAN-NN` (dash form; no dotted element ID) |
 | **Six sections** | doc_control · file_manifest · execution_commands · implementation_contracts · session_handoff · traceability |

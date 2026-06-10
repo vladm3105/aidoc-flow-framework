@@ -1520,8 +1520,8 @@ phase_3_utilities() {
     "next|layer|recommend" 1 "routing keywords"
 
   _probe_with_count_threshold "doc-validator" \
-    "Validate cumulative @brd…@tdd traceability across the chain at $chain_dir. Write the trace-closure report to $val_path/traceability.md. Enumerate every resolved tag." \
-    "@(brd|prd|ears|bdd|adr|spec|tdd|iplan):" 20 "resolved trace tags"
+    "Validate every emitted @-tag resolves to an existing element on disk across the chain at $chain_dir. Write the trace-closure report to $val_path/traceability.md. Enumerate every resolved tag." \
+    "@(brd|prd|ears|bdd|adr|spec|tdd|iplan):" 10 "resolved trace tags"
 
   _probe_with_count_threshold "doc-ref" \
     "Resolve all cross-document references in $chain_dir. Write the reference resolution report to $val_path/cross-references.md." \

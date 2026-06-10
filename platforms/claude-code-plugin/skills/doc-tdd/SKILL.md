@@ -9,7 +9,7 @@ metadata:
     layer: 7
     artifact_type: TDD
     skill_category: core-workflow
-    upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
+    upstream_artifacts: [EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
     version: "0.11.0"
     framework_spec_version: "0.15.2"
@@ -77,7 +77,7 @@ artifacts. Per `TDD-TEMPLATE.yaml`:
    `type` attribute.
 5. **Test Thresholds** — coverage targets and pass/fail criteria per type.
 6. **TDD Execution Order** — Red → Green → Refactor phases.
-7. **Traceability** — cumulative upstream tags + downstream IPLAN.
+7. **Traceability** — required upstream tags + downstream IPLAN.
 
 ### Test types (content categories, not subtypes)
 
@@ -119,9 +119,11 @@ files are generated **before** implementation files.
 - Test-case element IDs: `TDD.{doc_id}.{section_id}.{hash}` (4-segment) — test
   cases live in Section 4, so `TDD.NN.04.xxxx` (e.g. `TDD.01.04.a3c1`; `hash` =
   first 4 hex of SHA256 of the case content, extend to 8 on collision).
-- TDD is Layer 7, so it carries **cumulative upstream tags**: `@brd @prd @ears
-  @bdd @adr @spec`. BRD/PRD/EARS/BDD/ADR use dot element form; `@spec: SPEC-NN`
-  is document-level dash form. Self-tag: `@tdd: TDD-NN`.
+- TDD is Layer 7, so it carries the **required upstream tags** (per the
+  necessary-upstream contract): `@ears @bdd @adr @spec`. EARS/BDD use dot
+  element form; ADR and `@spec: SPEC-NN` are document-level dash form.
+  Self-tag: `@tdd: TDD-NN`. Upstream PRD/BRD lineage is reachable transitively
+  via the EARS/BDD @-tag chain — do not emit `@brd:`/`@prd:` on TDD elements.
 - **Removed patterns** (do not use): `TC-XXX`, `UT-XXX`, `IT-XXX`, `ST-XXX`,
   `FT-XXX`, and the legacy 3-segment `TDD.NN.xxxx`.
 
@@ -135,7 +137,8 @@ files are generated **before** implementation files.
 5. **Write test cases** — element ID `TDD.NN.04.xxxx`, `type`, `spec_ref` (and
    `bdd_ref` for e2e), inputs/outputs, edge cases/error paths.
 6. **Set thresholds**; **confirm Red → Green → Refactor** order.
-7. **Add cumulative tags** (@brd…@spec) + @tdd self-tag + downstream IPLAN.
+7. **Add required upstream tags** (@ears @bdd @adr @spec) + @tdd self-tag +
+   downstream IPLAN.
 8. **Update the TDD index** `docs/07_TDD/TDD-00_index.md` in the same change.
 9. **Validate** (below) and commit the TDD and index together.
 
@@ -150,7 +153,8 @@ files are generated **before** implementation files.
 - [ ] Inputs/expected outputs present per case; edge cases / error paths
       documented; e2e cases carry a `bdd_ref`.
 - [ ] Thresholds set per type (Section 5); execution order present (Section 6).
-- [ ] Cumulative tags @brd through @spec plus @tdd self-tag; parent SPEC exists.
+- [ ] Required upstream tags @ears @bdd @adr @spec plus @tdd self-tag
+      (per necessary-upstream contract); parent SPEC exists.
 - [ ] Index updated; no broken links. Diagrams via `../charts-flow/SKILL.md`.
 
 **Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.
@@ -186,7 +190,7 @@ framework defaults. Authority:
 |---|---|
 | **Purpose** | Define test cases from SPEC contracts |
 | **Layer** | 7 (after SPEC, before IPLAN) |
-| **Upstream tags** | @brd @prd @ears @bdd @adr @spec |
+| **Upstream tags** | @ears @bdd @adr @spec (per necessary-upstream contract) |
 | **Element ID** | `TDD.NN.04.xxxx` (test cases live in Section 4) |
 | **Test types** | unit · integration · e2e · security (a `type` attribute) |
 | **Must include** | Document Control (first), 7 sections, BDD→test mapping |
