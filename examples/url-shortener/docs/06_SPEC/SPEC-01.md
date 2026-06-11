@@ -1,242 +1,376 @@
 ---
-title: "SPEC: Link Store"
+title: "SPEC: URL Shortener — Mapping Store"
 doc_id: "SPEC-01"
 artifact_type: SPEC
 layer: 6
 status: Draft
-version: "1.0.1"
+version: "1.0.0"
 author: flow-walkthrough
-created: "2026-06-09"
-last_updated: "2026-06-09"
+created: "2026-06-10"
+last_updated: "2026-06-10"
 custom_fields:
   document_type: spec-document
   artifact_type: SPEC
   layer: 6
-  component: Link Store
   deliverable_type: code
-  upstream_artifacts: [BRD-01, PRD-01, EARS-01, BDD-01, ADR-01]
+  upstream_artifacts: [EARS-01, BDD-01, ADR-01]
   downstream_artifacts: [TDD-01]
-  tdd_ready_score: 92
-tags:
-  - spec-document
-  - layer-6-artifact
-  - shared-architecture
+  tdd_ready_score: 90
 ---
 
-# SPEC-01: Link Store
-
-Self-tag: @spec: SPEC-01
-
-Cumulative upstream tags (Layer 6): @brd: BRD.01.08.a63d | @prd: PRD.01.09.7f20 | @ears: EARS.01.03.8df7 | @bdd: BDD.01.03.8b97 | @adr: ADR-01
+# SPEC-01: Mapping Store
 
 ## 1. Document Control
 
 | Field | Value |
 |-------|-------|
 | Document ID | SPEC-01 |
-| Title | Link Store |
-| Component | Link Store |
+| Component | Mapping Store |
 | Status | Draft |
-| Version | 1.0.1 |
+| Version | 1.0.0 |
+| Architecture decision | @adr: ADR-01 @adr: ADR.01.03.4226 |
+| Language | Python |
+| TDD readiness score | 90/100 (provisional — binding gate is doc-spec-audit) |
+| Created / Updated | 2026-06-10 |
 | Author | flow-walkthrough |
-| Architecture decision | @adr: ADR-01 |
-| TDD readiness score | recomputed by doc-spec-audit |
-| Created | 2026-06-09 |
-| Last updated | 2026-06-09 |
 
 | Version | Date | Author | Change |
 |---------|------|--------|--------|
-| 1.0.0 | 2026-06-09 | flow-walkthrough | Initial SPEC draft from ADR-01 v1.0.0. |
-| 1.0.1 | 2026-06-09 | flow-walkthrough | Audit remediation (iteration 1): 1 P1 + 9 P2 + 9 P3 from `06_SPEC-audit`. |
+| 1.0.0 | 2026-06-10 | flow-walkthrough | Initial component specification for the Mapping Store, derived from ADR-01 (saga iteration 1). |
+
+SPEC (Layer 6) carries the necessary-upstream tags `@ears @bdd @adr`; PRD/BRD
+lineage is transitive via the EARS/BDD chain (§8). The TDD readiness score is
+provisional — the binding gate is doc-spec-audit.
 
 ## 2. Component Overview
 
-The Link Store is the authoritative persistence component for short-link
-records, holding one aggregate per short code
-(`short_code -> {original_url, status, visit_count}`) in a durable,
-transactional key-value substrate (ADR.01.03.5c3c). It exposes an atomic-claim
-write committing durably before a code is acknowledged — RPO = 0 for confirmed
-mappings (EARS.01.03.8df7); a primary-key redirect read (EARS.01.03.e2e9); an
-off-path best-effort visit-count increment that never blocks a resolvable
-redirect (EARS.01.03.d808); and a takedown status transition (EARS.01.03.539a).
-It owns persistence and write ordering only — code generation, the redirect
-cache, and replication are separate components per ADR-01 §10. It also **owns
-the reconciliation log** — a durable, append-only off-path sink
-`increment_visits` writes on a count fault (§5), never on the redirect path.
+The **Mapping Store** is the authoritative C4-L3 component for two record kinds:
+the short-code→URL mapping and the per-code visit count. It is the single store
+named by PRD-01's container view, behind the Shorten/Redirect API and the Visit
+Counter. It owns four contracts ADR-01 resolved to native, declarative database
+guarantees rather than app-side logic:
 
-Component view (`@diagram: c4-l3`):
+- **Durability before acknowledgement** — a confirmed mapping survives a crash
+  immediately after ack (RPO = 0), via synchronous commit-before-ack replication
+  (ADR.01.03.4226, ADR.01.05.47a1).
+- **Code-to-URL uniqueness** — every issued code maps to exactly one URL, via a
+  declarative unique constraint on the code (ADR.01.05.47a1).
+- **Classified read control** — the may-contain-PII original-URL is readable only
+  by a least-privilege principal, fail-closed (ADR.01.05.454a).
+- **At-least-once visit-count durability** — confirmed increments are not lost,
+  reconciled to exactly-once via an idempotency/dedup key (ADR-01 §5).
+
+The component does not own caching, failover topology, code generation, or the
+numeric durability/at-rest parameters — sibling ADR topics (ADR.01.05.7dde
+read-cache dependency; ADR.01.05.98ff deferred at-rest encryption).
+
+Architecture decision: @adr: ADR-01
+
+### Diagrams
+
+@diagram: c4-l3
 
 ```mermaid
 flowchart LR
-    API[Shortening API] -->|claim / set_status| LS[Link Store]
-    RH[Redirect Handler] -->|get| LS
-    RH -. increment_visits .-> LS
-    LS -->|conditional put / read over TLS 1.2+| KV[Durable KV substrate]
+  API["Shorten/Redirect API"] -->|put_mapping / resolve / read_original_url| MS["Mapping Store (component)"]
+  VC["Visit Counter"] -->|increment_visit / read_counts| MS
+  MS --> Primary["Relational primary"]
+  Primary -->|synchronous commit-before-ack| Standby["Synchronous standby"]
 ```
 
-Data-flow view (`@diagram: dfd-l3`):
+@diagram: dfd-l3
 
 ```mermaid
 flowchart LR
-    claim[claim] --> W{atomic conditional write}
-    W -->|committed| R[LinkRecord]
-    get[get] --> R
-    inc[increment_visits] -. partial-field write .-> R
-    set[set_status] --> R
-    inc -. on fault .-> LOG[Reconciliation log]
+  subgraph MappingStore["Mapping Store"]
+    Write["Write path (create)"]
+    Read["Read path (resolve / read_original_url)"]
+    Count["Count path (increment / reconcile)"]
+  end
+  CreateReq[/"code + original_url"/] --> Write --> MappingRec[("MappingRecord")]
+  ResolveReq[/"code"/] --> Read --> MappingRec
+  Read --> Resolution[/"MappingResolution"/]
+  VisitEvent[/"code + event_id"/] --> Count --> CountRec[("VisitCountRecord")]
 ```
 
-**Language.** Python (typed contracts; KV adapter bound at IPLAN, Layer 8).
-
-**Dependencies.**
+### Dependencies
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| Managed durable KV client | provider-pinned at IPLAN; **substrate contract v1** (tracks SPEC MAJOR) | Conditional-put / unique-key write with durable-commit acknowledgement. |
-
-**`LinkStore` contract version.** The port (§3) is **contract v1**, tracking the
-SPEC MAJOR: a breaking interface or §4 field change bumps both in lockstep, and
-downstream TDD/IPLAN and every KV adapter pin `LinkStore v1` as the drift anchor.
-
-**KV substrate minimum-capability matrix.** The pluggable KV adapter MUST
-provide every *required* capability below; an adapter lacking one is
-**non-conformant** — no application-lock or read-modify-write fallback is
-permitted (ADR.01.05.3afa).
-
-| Capability | Requirement |
-|------------|-------------|
-| Atomic conditional-put OR unique-key constraint on `short_code` (`claim`) | required |
-| Durable-commit-before-acknowledge (`claim`, RPO = 0) | required |
-| Native atomic field increment / ADD/INCR (`increment_visits`) | required |
-| Partial-field write (`increment_visits`) | required |
-| TLS 1.2+ + per-service-principal auth (ADR.01.03.1050) | required |
-| Multi-key transactions / secondary-index query | not required — deferred (ADR.01.05.0f1f) |
+| Managed relational store (primary + synchronous standby) | per ADR-01 MVP tier | Authoritative records; RPO = 0 via synchronous commit; PITR recovery. |
+| Database column/row access control | engine-native | Enforces the may-contain-PII original-URL classification grant (ADR.01.05.454a). |
 
 ## 3. Interfaces
 
-`LinkStore` is the public port (**contract v1**, tracks SPEC MAJOR — see §2),
-adapting the ADR-01 KV substrate to this contract. Signatures are typed; no
-implementation.
+The operations below are the component contract (the repository boundary ADR-01
+§7 defines for reversibility) — typed signatures, not implementations; no SQL or
+storage detail is exposed.
+
+**Contract version.** The `MappingStore` interface tracks the SPEC document
+version (1.0.0); a breaking signature change increments it on a MAJOR bump per
+the §4 schema-evolution policy. **Delivery channel.** `increment_visit` is
+carried off the synchronous redirect path by a durable async dispatch queue
+**owned by the Visit Counter**, which provisions, persists (on durable storage,
+not in-memory), and replays the queue and its dead-letter destination after a
+crash. At-least-once and reconciliation depend on that durable transport; the
+idempotent `event_id`-keyed consumer makes replay safe.
 
 ```python
-class LinkStore(Protocol):
-    async def claim(
-        self, code: str, record: LinkRecord, idempotency_key: str | None = None
-    ) -> ClaimResult: ...
+class MappingStore:
+    def put_mapping(self, code: ShortCode, original_url: OriginalUrl) -> MappingRecord:
+        """Durably store a code->URL mapping, acknowledging only after the
+        record is committed on more than one replica (RPO = 0). The unique
+        constraint on `code` enforces the code-to-URL uniqueness invariant
+        declaratively. A retry of an identical (same code, same URL) create is
+        idempotent — the unique constraint makes the re-INSERT a no-op success,
+        not a duplicate. Sourced: EARS.01.04.5e5b, EARS.01.03.bca8.
+        Errors:
+          - DuplicateCodeError: `code` already maps to a *different* URL.
+            Not-retryable (terminal — re-issuing the same code for a different
+            URL will never succeed).
+          - DurabilityHaltError: synchronous standby unavailable — the write
+            path halts fail-closed rather than degrading to async
+            (ADR.01.05.5896). Retryable once the standby recovers; the retry is
+            idempotent for an identical code->URL.
+        """
 
-    async def get(self, code: str) -> LinkRecord | None: ...
+    def resolve(self, code: ShortCode) -> MappingResolution:
+        """Resolve an issued code to its mapping via a primary-key lookup,
+        within the redirect read budget. Returns a not-found resolution for an
+        unknown or taken-down code (never raises for those). The call is
+        budget-bounded by a fail-fast read timeout tied to
+        @threshold: PRD.01.perf.redirectp95 so StoreDegradedError is raised
+        within the redirect budget rather than the call hanging past it.
+        Sourced: EARS.01.03.c4c9, EARS.01.03.e4db.
+        Errors:
+          - StoreDegradedError: store unreachable/slow beyond budget — the
+            caller returns a bounded degraded response (BDD.01.03.1f90).
+            Not-retryable inline on the synchronous redirect path (the caller
+            degrades rather than retrying within the budget).
+        """
 
-    async def increment_visits(self, code: str, delta: int = 1) -> None: ...
+    def read_original_url(self, code: ShortCode, principal: Principal) -> OriginalUrl:
+        """Read the may-contain-PII original-URL value. The caller's identity is
+        translated at the API->Store boundary to a per-call-path least-privilege
+        database role (ADR-01 §3 access-control identity model); the column/row
+        grant is evaluated against that translated DB role, never a shared
+        service account. Permitted only when the resolved role holds the
+        least-privilege read grant; fails closed when the access decision cannot
+        be made (grant down, classification missing, or role-lookup error).
+        Sourced: EARS.01.03.4ebf.
+        Errors:
+          - AccessDenied: the translated principal lacks the grant, or the
+            grant/classification decision is unavailable (fail-closed,
+            BDD.01.03.c8a6). Not-retryable (a deterministic deny).
+        """
 
-    async def set_status(self, code: str, status: LinkStatus) -> LinkRecord: ...
+    def increment_visit(self, code: ShortCode, event_id: EventId) -> None:
+        """Record a confirmed visit at-least-once, dispatched off the
+        synchronous redirect path, idempotent on `event_id` (a re-delivered event
+        does not double-count). It also satisfies the no-lost-update invariant —
+        concurrent confirmed visits to the same code lose no increment
+        (BDD.01.03.02c1) — as an obligation inherited from ADR-01 §5; the
+        concurrency-control primitive (atomic upsert, single-writer queue, or a
+        serialized transaction) is deferred to TDD-01/IPLAN, not bound to a named
+        isolation level here. That obligation is distinct from the `dedup_key`
+        gate, which gives idempotency against re-delivery, not concurrency safety.
+        Sourced: EARS.01.04.1898, EARS.01.03.4425. A stalled count path never
+        blocks a redirect (EARS.01.03.9425).
+        Delivery contract: bounded redelivery with exponential backoff. The
+        dead-letter trip is time-driven, not retry-count-driven — an event still
+        unreconciled when the @threshold: PRD.01.reliability.countstaleness window
+        elapses is routed to a dead-letter destination and alerted, never silently
+        dropped; the §6 reconciliation-lag metric and dead-letter counter fire on
+        that same condition. Recovery: dead-lettered events are replayed through
+        the idempotent (`event_id`-keyed) increment path on operator action — a
+        bounded manual reconciliation closing the exactly-once loop for the failure
+        tail. No error is raised on the redirect path.
+        """
+
+    def read_counts(self, principal: Principal) -> Counts:
+        """Return the created-link count and per-link visit counts to a
+        Service-Owner principal. Sourced: EARS.01.03.aa59.
+        Errors:
+          - AccessDenied: principal does not bear the Service-Owner role
+            (BDD.01.03.6921). Not-retryable (a deterministic deny).
+        """
+
+    def mark_taken_down(self, code: ShortCode) -> MappingRecord:
+        """Transition an issued code to the taken_down state so subsequent
+        resolves return not-found. Idempotent: re-marking an already taken-down
+        code is a no-op success (a retried takedown converges), not an error.
+        Sourced: EARS.01.03.f62a, BDD.01.03.3c70.
+        Errors:
+          - UnknownCodeError: `code` was never issued. Not-retryable.
+        """
 ```
-
-| Export | Description | Errors |
-|--------|-------------|--------|
-| `claim` | Atomically claim `code` for `record` and commit durably before returning `COMMITTED`. A retried submission carrying the same `idempotency_key` collapses onto the existing record (replay) rather than failing (ADR.01.03.3315, BDD.01.03.bcfb). **Retry-safety:** `claim` is idempotent — safe to retry after `StoreUnavailableError` — **only** with a non-`None` `idempotency_key` (submitter-supplied, or the content-derived fallback per ADR.01.03.3315); a no-key retry has no dedup guarantee and MUST NOT be issued. | `StoreUnavailableError` — write path degraded; fail closed, no orphan code (BDD.01.03.ed21). `ValueError` — `code`/`record` violate the §4 field contract. |
-| `get` | Primary-key read on the redirect hot path; returns the record or `None` for an unknown code. Read latency leaves headroom under @threshold: PRD.01.perf.redirectp95 — component allocation quantified in §6 (ADR.01.05.e35b). | `StoreUnavailableError` — read path unavailable; caller maps to a fail-safe not-found / 5xx per EARS.01.03.fab2 (BDD.01.03.f44a). |
-| `increment_visits` | Off-path best-effort increment of `visit_count`, implemented as a **native atomic field-increment (KV ADD/INCR)** — never a read-modify-write, which would lose concurrent increments and break the monotonic contract (ADR.01.05.9107). MUST NOT raise onto the redirect path; on failure records a reconciliation log entry and returns (BDD.01.03.5f58, BDD.01.03.a7ad). | none surfaced — faults swallowed and logged for reconciliation. |
-| `set_status` | Transition a record's status (e.g. `active -> taken_down`) so the redirect path can refuse a taken-down code (EARS.01.03.539b). **Idempotent** — safe to retry after `StoreUnavailableError` (§5). | `KeyError` — no record for `code`. `StoreUnavailableError` — write path unavailable. |
-
-**Boundary failure semantics.** Each synchronous boundary carries an explicit
-timeout / retry / circuit-break contract so a degraded substrate is shed
-deterministically; concrete values bind at TDD against the cited budgets.
-
-| Boundary | Operation(s) | Timeout | Retry | Circuit-break |
-|----------|--------------|---------|-------|---------------|
-| API → Link Store | `claim`, `set_status` | issuance budget EARS.01.03.f909 less commit headroom | only with a stable `idempotency_key`, bounded attempts (§6); no key ⇒ none | open after a bounded failure count ⇒ fail closed |
-| Redirect → Link Store | `get` | « redirect budget @threshold: PRD.01.perf.redirectp95 | one fast retry within budget | open ⇒ fail-safe not-found (EARS.01.03.fab2) |
-| Redirect → Link Store | `increment_visits` | off-path; never charged to redirect | none; fault → reconciliation log | n/a — best-effort |
 
 ## 4. Data Models
 
-Typed contracts passed through the interface — not storage schemas.
+Typed field contracts passed through the interfaces above. These are component
+data models, not storage schemas; physical table/column shape is owned by the
+implementation (IPLAN/Code).
 
 ```python
-class LinkStatus(str, Enum):
-    active = "active"          # code resolves to its destination
-    taken_down = "taken_down"  # code suppressed; redirect returns not-found
+class MappingState(Enum):
+    ACTIVE = "active"          # resolves to its original URL
+    TAKEN_DOWN = "taken_down"  # resolves to not-found (EARS.01.03.f62a)
+
+
+class MappingRecord:           # the authoritative code->URL record
+    code: ShortCode            # required — unique across all records (invariant)
+    original_url: OriginalUrl  # required — classification: may-contain-PII
+    state: MappingState        # required — defaults to ACTIVE on create
+    created_at: Timestamp      # required — durable-commit timestamp
+    classification: str        # required — "may-contain-PII" (gates read access)
+
+
+class MappingResolution:       # result of resolve()
+    code: ShortCode            # required
+    original_url: OriginalUrl  # present only when found and ACTIVE; else absent
+    found: bool                # required — false for unknown or taken_down
+
+
+class VisitCountRecord:        # the per-code count record
+    code: ShortCode            # required
+    count: int                 # required — monotonic, exactly-once reconciled
+    dedup_key: EventId         # required — last applied event id; idempotency key
+
+
+class Counts:                  # result of read_counts()
+    created_link_count: int    # required — total issued links
+    per_link: dict[ShortCode, int]  # required — visit count per code
 ```
 
-**`LinkRecord`** (dataclass)
+**Invariants.**
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `short_code` | `str` | yes | Primary key; collision-free under concurrent issuance (EARS.01.03.97c4). |
-| `original_url` | `str` | yes | Destination; screened upstream, not re-validated here (§5). |
-| `status` | `LinkStatus` | yes | Defaults to `active` on claim; `taken_down` via `set_status`. |
-| `visit_count` | `int` | yes | Monotonic, best-effort; written only by `increment_visits` off-path. |
-| `idempotency_key` | `str \| None` | no | Collapses a retried submission onto one record (ADR.01.03.3315). |
-| `created_at` | `datetime` (UTC) | yes | Durable-commit timestamp of the claim. |
+- Uniqueness: `MappingRecord.code` is unique across all records — exactly one
+  original_url per code for its lifetime (EARS.01.03.bca8; BDD.01.03.a688).
+  Enforced as a declarative unique constraint (ADR.01.05.47a1), verified as a
+  property/contract test at the TDD layer.
+- Durability: a record returned by `put_mapping` is committed on more than one
+  replica before acknowledgement — RPO = 0 (EARS.01.04.5e5b; BDD.01.03.9b90).
+- Count durability: `count` reflects every confirmed visit without loss under
+  concurrency, reconciled exactly-once via dedup_key (EARS.01.04.1898;
+  BDD.01.03.02c1, BDD.01.03.976e).
+- Classification: original_url carries may-contain-PII; reads are gated by
+  `read_original_url` (EARS.01.03.4ebf).
 
-**`ClaimResult`** (dataclass)
+**Schema evolution.** The shared request/response shapes (`MappingResolution`,
+`Counts`), the `increment_visit` event payload (`code` + `event_id`), and the
+persisted records (`MappingRecord`, `VisitCountRecord`) follow an
+additive-backward-compatible policy within a MAJOR version: new optional fields
+may be added without breaking in-flight events or persisted rows; a field removal
+or a `dedup_key`/`event_id` format change is breaking and ships only on a MAJOR
+bump (tracked by the §3 interface contract version).
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `outcome` | `Enum[COMMITTED, CODE_TAKEN]` | yes | `COMMITTED` = durably written; `CODE_TAKEN` = code already claimed, caller retries a distinct code. |
-| `record` | `LinkRecord \| None` | no | The committed record when `outcome == COMMITTED`; **`None` on `CODE_TAKEN`** — the loser never receives the winner's record. |
-| `replay` | `bool` | yes | `True` only in conjunction with `COMMITTED`, when an `idempotency_key` matched an existing record (no new write); `False` on `CODE_TAKEN`. |
+**Compatibility window (increment_visit event / VisitCountRecord).** Because
+reconciliation may straddle a deploy, the producer (emitter) and consumer
+(reconciler) are guaranteed to interoperate across **N-1 in both directions**
+during a rolling deploy — maximum tolerated skew is a single MAJOR version.
+Multi-step skew (v1↔v3, skipping v2) is **out of window**, not guaranteed
+decodable.
 
-The `(outcome, record, replay)` triple is total: `COMMITTED → (record set,
-replay ∈ {true,false})`; `CODE_TAKEN → (record None, replay false)`.
+| Producer \ Consumer | vN-1 | vN | vN+1 |
+|---------------------|------|-----|------|
+| vN-1 | decode | decode | dead-letter |
+| vN | decode | decode | decode |
+| vN+1 | dead-letter | decode | decode |
 
-**Schema evolution.** `LinkRecord` and `ClaimResult` evolve
-**backward-compatibly within a SPEC MAJOR**: new fields optional with defaults,
-`LinkStatus` **append-only**. A breaking change to a persisted field bumps the
-SPEC MAJOR + `LinkStore` contract version (§2) and triggers the ADR-01 §7
-migration runbook; prior-shape records stay readable, removed fields retained as
-`[DEPRECATED]`.
+An event whose payload version falls outside this window is **rejected to the
+dead-letter destination** (§3 delivery contract), never best-effort decoded, so a
+skew beyond N-1 is observed rather than silently mis-applied. The window is the
+contract the MAJOR-bump policy above must preserve: a MAJOR bump may move the
+edge by one version per rollout but never widen the supported skew, keeping the
+straddle guarantee verifiable at TDD-01.
 
 ## 5. Behavior
 
-**Validation rules.**
+### Validation rules
 
-| Rule | Source |
-|------|--------|
-| `short_code` is the unique primary key; a second claim on a live code yields `CODE_TAKEN`, never an overwrite. | @ears: EARS.01.03.97c4 |
-| `short_code` MUST conform to the code-generation alphabet — base62 `[A-Za-z0-9]` allowlist, length within the generator's fixed width (owned by the deferred code-generation contract) — validated **before** the conditional-put; a non-conforming code yields `ValueError`. | @brd: BRD.01.08.9665 |
-| `original_url` is screened for public http/https form **upstream by the Shortening API ingress** (the owning interface); the Link Store trusts records only from that per-service principal (ADR.01.03.1050) and does not re-screen. | @adr: ADR.01.03.1050 |
-| `claim` commits durably before returning `COMMITTED` — an acknowledged code always resolves. | @ears: EARS.01.03.8df7 |
-| A claim whose `idempotency_key` matches an existing record returns `COMMITTED`, `replay=true`, no new write. | @bdd: BDD.01.03.bcfb |
-| `increment_visits` is best-effort and isolated; never rewrites mapping fields, never blocks `get`. | @ears: EARS.01.03.d808 |
+- rule: A new mapping is acknowledged only after durable commit on more than one
+  replica (RPO = 0). Source: @ears: EARS.01.04.5e5b
+- rule: Every issued code maps to exactly one original URL for its lifetime,
+  enforced by the unique constraint. Source: @ears: EARS.01.03.bca8
+- rule: An original-URL read is permitted only for a least-privilege principal;
+  the caller is translated to a per-call-path least-privilege DB role at the
+  API->Store boundary and the grant is evaluated against that translated role,
+  not a shared service account (ADR-01 §3). Source: @ears: EARS.01.03.4ebf
+- rule: `put_mapping` accepts only a typed/parsed `OriginalUrl` — an http/https
+  scheme allowlist plus a maximum length per @threshold: PRD.01.quota.urlmaxlen
+  characters — as a store-boundary precondition. The Shorten/Redirect API owns
+  primary screening; the store re-validates as defense in depth.
+  Source: @bdd: BDD.01.03.588f
+- rule: A confirmed visit increments the count exactly once; re-delivery of the
+  same event id does not produce a second increment. Source: @ears: EARS.01.04.1898
+- rule: `resolve` and `mark_taken_down` accept only a `ShortCode` matching the
+  code-generation charset/length allowlist (alphabet owned by BRD.01.08.9665) as
+  a store-boundary precondition — the same defense-in-depth re-validation
+  `put_mapping` applies, so the parameterized PK lookup is not the sole guard on
+  an attacker-controllable code. Source: @ears: EARS.01.03.c4c9
 
-**State transitions.**
+### State transitions
 
-| From | To | Trigger | Source |
-|------|----|---------|--------|
-| (absent) | active | `claim` conditional write commits durably | @bdd: BDD.01.03.8b97 |
-| active | taken_down | `set_status(code, taken_down)` | @ears: EARS.01.03.539a |
-| visit_count = n | visit_count = n + delta | `increment_visits` partial-field write succeeds | @bdd: BDD.01.03.1664 |
+- from ACTIVE to TAKEN_DOWN — trigger: destination flagged or taken down via
+  `mark_taken_down`. Source: @bdd: BDD.01.03.3c70
+- from TAKEN_DOWN to a not-found resolution — trigger: `resolve` of a taken-down
+  code returns found = false. Source: @ears: EARS.01.03.f62a
+- from degraded (store unreachable/slow) to recovered — trigger: store restored;
+  resolves resume within RTO ≤ 30 min. Source: @bdd: BDD.01.03.44fe
 
-**Error handling.**
+### Error handling
 
-| Condition | Response | Source |
-|-----------|----------|--------|
-| Concurrent claims race on the same candidate code. | Exactly one `COMMITTED`; the loser gets `CODE_TAKEN` and retries a distinct code — no orphan. | @bdd: BDD.01.03.bdae |
-| Write path degraded / timing out during `claim`. | Raise `StoreUnavailableError`; fail closed, no code committed, no orphan. | @bdd: BDD.01.03.ed21 |
-| Write path restored; submitter retries with the same `idempotency_key`. | Idempotent re-claim resolves to the same record (`replay=true`). | @bdd: BDD.01.03.bcfb |
-| Read path unavailable during `get`. | Surface `StoreUnavailableError`; redirect degrades fail-safe and recovers when the store returns. | @bdd: BDD.01.03.f44a |
-| `increment_visits` fault. | Swallow, emit a reconciliation log entry, return; redirect still resolves. The log write is itself off-path best-effort — if it faults the delta drops silently (count is best-effort), drop metric emitted (§6). | @bdd: BDD.01.03.5f58 |
-| A logged dropped increment is reconciled into the recorded count. | Replay logged deltas into `visit_count` without double-counting: each delta carries a unique `delta_id` (commit marker) and replay skips a `delta_id` already reflected, making "no double-count" enforceable. | @bdd: BDD.01.03.a7ad |
-| Write path restored; takedown retried via `set_status`. | Idempotent re-apply converges to the same terminal status (last-writer-wins). | @ears: EARS.01.03.539a |
+- condition: `put_mapping` cannot reach the synchronous standby. Response: halt
+  the create write fail-closed (DurabilityHaltError); preserve RPO = 0 over create
+  availability; the read path is unaffected. Source: @adr: ADR.01.05.5896
+- condition: `resolve` of a code never issued or taken down. Response: return a
+  not-found resolution within the redirect budget; never a 5xx.
+  Source: @ears: EARS.01.03.e4db
+- condition: Mapping Store unreachable/slow during a read. Response: the caller
+  returns a bounded degraded response within the redirect budget and emits a
+  degraded-mode signal; no 5xx, no hang. Source: @bdd: BDD.01.03.1f90
+- condition: `read_original_url` by a principal without the grant, or the access
+  decision is unavailable. Response: deny (AccessDenied), fail-closed. The
+  permit/deny pair is verified together. Source: @bdd: BDD.01.03.c8a6
+- condition: the count path is stalled or lagging. Response: never block the
+  redirect; defer or buffer the increment off the synchronous path and reconcile
+  exactly-once on recovery. Source: @bdd: BDD.01.03.976e
+- condition: `read_counts` by a non-Service-Owner principal. Response: deny;
+  disclose no counts. Source: @bdd: BDD.01.03.6921
 
-Issuance write path (error branches shown with `alt`/`else`):
+### Audit events
+
+The security-relevant authorization decisions and state mutations emit an audit
+event on both the permit and the deny path, separate from the operational
+degraded-mode signals. Each event carries
+`{subject, action, resource, decision, timestamp, reason}`:
+
+- `read_original_url` — the classified may-contain-PII read. `subject` is the
+  translated DB principal (§3), `resource` the `code`, `decision` permit or deny.
+  This trail makes the ADR-01 threat-model concern (over-broad principal read /
+  lateral movement) detectable; without it a PII read is untraceable.
+  Source: @ears: EARS.01.03.4ebf
+- `read_counts` — emitted on the Service-Owner deny path so a denied count read
+  is auditable. Source: @bdd: BDD.01.03.6921
+- `mark_taken_down` — the takedown state mutation that suppresses resolution
+  (the abuse-protection sibling BRD.01.08.daeb depends on this state). Emitted on
+  takedown and re-mark so an unauthorized or erroneous takedown of a live code is
+  independently traceable. Source: @bdd: BDD.01.03.3c70
+
+### Degraded-read sequence (error path)
+
+@diagram: sequence-error
 
 ```mermaid
 sequenceDiagram
-    participant API as Shortening API
-    participant LS as Link Store
-    API->>LS: claim(code, record, idempotency_key)
-    alt code free and commit durable
-        LS-->>API: ClaimResult(COMMITTED) [RPO = 0]
-    else code already claimed (concurrent race)
-        LS-->>API: ClaimResult(CODE_TAKEN)
-        API->>LS: claim(distinct_code, record, idempotency_key)
-        LS-->>API: ClaimResult(COMMITTED)
-    else idempotent replay (same idempotency_key)
-        LS-->>API: ClaimResult(COMMITTED, replay=true)
-    else write path degraded
-        LS-->>API: raise StoreUnavailableError (fail closed, no orphan)
+    participant A as Shorten/Redirect API
+    participant MS as Mapping Store
+    A->>MS: resolve(code)
+    alt store healthy
+        MS-->>A: MappingResolution(found)
+    else store unreachable / slow beyond budget
+        MS-->>A: StoreDegradedError
+        A-->>A: bounded degraded response + mapping_store_degraded signal
     end
 ```
 
@@ -244,78 +378,115 @@ sequenceDiagram
 
 **Constraints.**
 
-- Stateless: no in-memory authoritative state; the durable KV substrate is the single source of truth (ADR-01 §3).
-- `claim` MUST use a native atomic conditional-put / unique-key constraint on `short_code` — never an application lock (ADR.01.05.3afa).
-- Durable commit MUST precede the `COMMITTED` acknowledgement; no write-behind on the issue path.
-- Authenticate to the substrate with a per-service principal (least-privilege, never shared) over TLS 1.2+; an auth/TLS failure fails the write closed (ADR.01.03.1050).
+- The component is accessed only through the `MappingStore` interface, so the
+  engine is substitutable without changing callers (ADR.01.05.47a1).
+- The unique constraint on `code` must be declarative (database-enforced), not
+  re-checked in application code (EARS.01.03.bca8).
+- Write acknowledgement must be gated on synchronous commit; synchronous_commit
+  drift is a monitored failure mode (ADR-01 §7).
+- Interim compensating control for the deferred at-rest encryption
+  (ADR.01.05.98ff): the least-privilege column grant plus managed-tier volume
+  encryption remain in force until the data-protection ADR (BRD.01.08.daeb)
+  lands column-level at-rest encryption. IPLAN/Code keeps volume encryption
+  enabled as the pre-go-live mitigation.
 
 **Patterns.**
 
-- Repository / port pattern: `LinkStore` is a Protocol; the KV adapter binds at IPLAN.
-- Idempotency key (submitter-supplied, content-derived fallback) as the claim de-duplication key (ADR.01.03.3315).
-- Off-path write isolation: `increment_visits` runs outside the redirect hot path so a count fault cannot fail a redirect (ADR.01.05.9107).
+- Repository pattern at the `MappingStore` boundary for engine substitutability.
+- At-least-once plus idempotency-key (dedup_key) for visit counting, off the
+  redirect path (EARS.01.04.1898).
+- Fail-closed on both durability (standby loss, ADR.01.05.5896) and classified
+  reads (grant unavailable, ADR.01.05.454a).
 
-**Performance & at-rest.**
+**Performance considerations.**
 
-- `get` is an O(1) primary-key read — no scans, no secondary-index reads on the hot path.
-- Records persist at rest under provider-managed AES-256 envelope encryption with a provider-managed KMS key on the provider-default rotation cadence; a customer-managed key (CMK) is deferred hardening (ADR.01.03.0db1). Encryption + key binding are a TDD contract (§7).
+- Resolution uses a primary-key lookup; the read-latency headroom to meet p95
+  depends on the read cache owned by the sibling topic, not specified here
+  (ADR.01.05.7dde).
+- Synchronous replication adds create-path latency (write amplification) inside
+  the create/screening budget, not the redirect budget (ADR.01.05.2740); that
+  target is the screening deadline @threshold: PRD.01.perf.screeningdeadline so
+  TDD-01 has a testable anchor.
+- Write and read connection pools are isolated with a fail-fast create-path
+  timeout so a stalled standby cannot starve reads (BDD.01.03.1f90): the read
+  timeout derives from @threshold: PRD.01.perf.redirectp95 and the create timeout
+  from @threshold: PRD.01.perf.screeningdeadline so both trip points are
+  reproducible.
+- Read design-load envelope (ADR-01 §2): ~10^6 links at a sustained
+  @threshold: PRD.01.rate.redirectsustained rate. The read pool is bounded; beyond
+  a safe-overload margin `resolve` fast-fails to the bounded degraded response
+  (BDD.01.03.1f90) rather than exhausting the pool — saturation maps to the
+  degraded response, not a hang.
+- Create design-load (write pool): bounded by the sync-commit tier's sustainable
+  throughput. The PRD commits no create rate, so the write design-load point is
+  that tier capacity, not a named threshold. Beyond a safe-overload margin the
+  create path **fast-fails with a bounded create error and sheds** (mirroring the
+  code-space capacity error @threshold: PRD.01.quota.codespacecapacity in shape)
+  rather than queueing unboundedly; the fail-fast timeout
+  @threshold: PRD.01.perf.screeningdeadline caps how long a create holds a write
+  connection. `DurabilityHaltError` retries (retryable once the standby recovers,
+  ADR.01.05.5896) use bounded exponential backoff with jitter so a synchronized
+  retry does not storm the recovering standby (detected by the §7 standby-health
+  alert).
 
-**NFR targets** (per operation, independently testable at the boundary):
-
-| Op | Latency (component allocation) | Throughput | Error budget |
-|----|--------------------------------|------------|--------------|
-| `get` | ≤ 10 ms p95 — the store's slice of the 50 ms redirect budget @threshold: PRD.01.perf.redirectp95 (≥ 40 ms for handler/network) | ≥ 500 read/s | ≥ 99.9%; `StoreUnavailableError` ≤ 0.1% |
-| `claim` | within issuance budget EARS.01.03.f909 (issue path only) | ≥ 50 write/s | ≥ 99.9% durable-commit; RPO = 0 |
-| `increment_visits` | off-path, best-effort; no budget | ≥ 500/s | best-effort; deltas reconciled (§5) |
-
-Percentiles observed server-side over a rolling 5-min window at design load;
-error budget = `StoreUnavailableError`/timeout fraction. TDD owns the fixtures.
-
-**Resilience envelope.**
-
-- Safe-overload margin 1.5× design load; beyond it the store sheds fail-fast (`StoreUnavailableError`, no unbounded queuing). "Throttled" (retry within budget) is distinct from "unavailable" (circuit-break, fail closed/safe per §3).
-- Shed order under saturation: `increment_visits`, then `claim`; `get` preserved last.
-- `CODE_TAKEN` retry bounded: ≤ N distinct-code retries with backoff (N from the code-generation contract, default 5); exhaustion → terminal issuance error.
-- Reconciliation log bounded (max retention); at the bound oldest deltas drop with a `reconciliation_overflow` alert; post-fault drain rate-bounded.
-
-**Observability** (per boundary): the Link Store emits durable-commit latency,
-write-conflict rate, atomic-claim outcome, and increment-drop / reconciliation
-depth; the caller emits the `StoreUnavailableError` log and propagates a trace
-span across the edge.
-
-**Audit events.** Emit `{event_type, actor_principal, target_code, outcome,
-ts_utc}` for `claim`, `set_status`/takedown (old→new status), and authn
-success/failure incl. the fail-closed auth/TLS path (ADR.01.03.1050) — not the
-§5 reconciliation log.
+**Observability.** Per crossed boundary the Mapping Store names a signal:
+`mapping_store_degraded` on the degraded read path (§5, BDD.01.03.1f90); a
+reconciliation-lag metric and dead-letter counter on the `increment_visit` edge
+so count-staleness or a poisoned event stays visible; and a durability-halt
+signal when `DurabilityHaltError` trips on standby loss (ADR.01.05.5896) —
+mirroring the store-tier alerts in ADR-01 §7.
 
 ## 7. TDD Contracts
 
-The downstream TDD defines test inputs, expected outputs, and thresholds.
+TDD document: @tdd: TDD-01 — defines test inputs, expected outputs, edge cases,
+and thresholds for the contracts below.
 
-TDD document: @tdd: TDD-01
+| Contract | Verifies | Source |
+|----------|----------|--------|
+| `put_mapping` acknowledges only after durable commit; mapping survives a hard kill after ack | RPO = 0 durability | @bdd: BDD.01.03.9b90 |
+| `put_mapping` enforces one-URL-per-code (unique-constraint property) | uniqueness invariant | @bdd: BDD.01.03.a688 |
+| `read_original_url` denies without grant, permits with grant, denies on grant-unavailable | classified read control fail-closed | @bdd: BDD.01.03.c8a6 @bdd: BDD.01.03.167e |
+| `resolve` of unknown or taken-down code returns not-found within budget | not-found path | @bdd: BDD.01.03.5ab2 @bdd: BDD.01.03.3c70 |
+| `increment_visit` counts once; re-delivery does not double-count; concurrent visits lose none | count durability and idempotency | @bdd: BDD.01.03.5645 @bdd: BDD.01.03.1365 @bdd: BDD.01.03.02c1 |
+| Store degradation returns a bounded error, then recovers within RTO | degraded-mode and recovery | @bdd: BDD.01.03.1f90 @bdd: BDD.01.03.44fe |
+| `read_counts` returns counts to Service Owner, denies others | count authorization | @bdd: BDD.01.03.cb64 @bdd: BDD.01.03.6921 |
 
 | Test file | Covers |
 |-----------|--------|
-| `tests/unit/test_link_store.py` | `claim` / `get` / `increment_visits` / `set_status` contracts; `LinkRecord` + `ClaimResult` field validation; idempotent-replay outcome. |
-| `tests/integration/test_link_store_kv.py` | Atomic conditional write under concurrent claims; durable-commit-before-acknowledge; per-service-principal + TLS auth failure fails closed. |
-| `tests/e2e/test_durability_and_recovery.py` | Crash/restart RPO = 0 (BDD.01.03.8b97); fail-closed degraded write (BDD.01.03.ed21); idempotent recovery (BDD.01.03.bcfb); count-fault isolation + reconciliation (BDD.01.03.5f58, BDD.01.03.a7ad). |
-| `tests/integration/test_security_and_audit.py` | At-rest AES-256 envelope encryption + provider-managed KMS key binding; audit-event emission with the `{event_type, actor, code, outcome, ts}` schema on `claim`, takedown (`set_status`), and authn success/failure. |
+| tests/unit/test_mapping_store.py | `put_mapping`, `resolve`, `mark_taken_down`, data-model invariants |
+| tests/unit/test_visit_count.py | `increment_visit` idempotency and reconciliation |
+| tests/integration/test_mapping_store_durability.py | crash-recovery (RPO = 0), standby-loss halt, degraded-mode and recovery |
+| tests/integration/test_mapping_store_access.py | classified original-URL read control; count authorization |
 
 ## 8. Traceability
 
-Document tag: @spec: SPEC-01
+@spec: SPEC-01
 
-**Cumulative upstream tags (Layer 6 — all five required).**
+SPEC carries the necessary-upstream tags `@ears @bdd @adr`; PRD/BRD lineage is
+transitive via the EARS/BDD chain.
 
-- @brd: BRD.01.08.a63d | @brd: BRD.01.08.9665 | @brd: BRD.01.10.3407 | @brd: BRD.01.10.e118
-- @prd: PRD.01.09.7f20 | @prd: PRD.01.13.7760
-- @ears: EARS.01.03.8df7 | @ears: EARS.01.03.97c4 | @ears: EARS.01.03.d808 | @ears: EARS.01.03.e2e9 | @ears: EARS.01.03.539a
-- @bdd: BDD.01.03.8b97 | @bdd: BDD.01.03.bdae | @bdd: BDD.01.03.ed21 | @bdd: BDD.01.03.bcfb | @bdd: BDD.01.03.f44a | @bdd: BDD.01.03.1664 | @bdd: BDD.01.03.5f58 | @bdd: BDD.01.03.a7ad
-- @adr: ADR-01 | @adr: ADR.01.03.5c3c | @adr: ADR.01.03.1050 | @adr: ADR.01.05.3afa
+Upstream ADR:
+@adr: ADR-01 @adr: ADR.01.03.4226 @adr: ADR.01.05.47a1 @adr: ADR.01.05.454a @adr: ADR.01.05.5896 @adr: ADR.01.05.7dde @adr: ADR.01.05.2740
 
-**Downstream (expected).**
+Upstream EARS:
+@ears: EARS.01.04.5e5b @ears: EARS.01.03.bca8 @ears: EARS.01.03.4ebf @ears: EARS.01.04.1898 @ears: EARS.01.03.c4c9 @ears: EARS.01.03.e4db @ears: EARS.01.03.f62a @ears: EARS.01.03.4425 @ears: EARS.01.03.9425 @ears: EARS.01.03.aa59
 
-| Consumer | Layer | Relationship |
-|----------|-------|--------------|
-| TDD-01 | 7 | Test cases validating the contracts. |
-| IPLAN | 8 | Binds KV provider + file manifest. |
+Upstream BDD:
+@bdd: BDD.01.03.9b90 @bdd: BDD.01.03.a688 @bdd: BDD.01.03.c8a6 @bdd: BDD.01.03.167e @bdd: BDD.01.03.5ab2 @bdd: BDD.01.03.3c70 @bdd: BDD.01.03.5645 @bdd: BDD.01.03.1365 @bdd: BDD.01.03.02c1 @bdd: BDD.01.03.976e @bdd: BDD.01.03.1f90 @bdd: BDD.01.03.44fe @bdd: BDD.01.03.cb64 @bdd: BDD.01.03.6921 @bdd: BDD.01.03.588f
+
+Downstream: @tdd: TDD-01 then IPLAN then Code.
+
+Thresholds:
+@threshold: PRD.01.perf.redirectp95
+@threshold: PRD.01.reliability.countstaleness
+
+## Glossary
+
+| Term | Definition |
+|------|------------|
+| SPEC | Technical Specification (Layer 6 — one component's contract). |
+| Mapping Store | The C4-L3 component holding code→URL mappings and visit counts. |
+| TDD readiness | Score measuring SPEC maturity for TDD transition (≥ 90/100). |
+| RPO | Recovery Point Objective; RPO = 0 means no committed data lost on failure. |
+| Idempotency key | The dedup_key that reconciles at-least-once delivery to exactly-once. |
+| Fail-closed | On a durability or access-decision failure, deny rather than proceed unsafely. |

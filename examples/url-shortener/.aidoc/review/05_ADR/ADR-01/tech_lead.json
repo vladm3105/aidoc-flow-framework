@@ -1,3 +1,36 @@
-{"persona":"tech_lead","lens":"tech_lead","weight":25,"lens_score":85,
- "findings":[{"id":"TECH-P2-1","priority":"P2","check":"C1","location":"§5 Consequences (ADR.01.05.9107)","message":"The Medium-severity coupling-risk mitigation now states the write-partitioning contract in prose (mapping written once, never rewritten by the increment path, which uses an isolated partial-field write) — the substance the iteration-1 finding asked for — but anchors it on decision element ADR.01.03.5536 (\"Write paths are partitioned per ADR.01.03.5536\") that is never defined anywhere in the record. §3 Decision semantics define only ADR.01.03.5c3c, f5f5, 3315, 1050, and §6 adds 0db1. This dangling element reference is the load-bearing primitive that keeps a count-write fault off the redirect path (BDD.01.03.5f58/a7ad); a SPEC author following the citation to find the partitioning decision lands on nothing and must infer whether a formal partitioning commitment exists beyond the inline prose.","recommendation":"Either promote the partitioning primitive to a real decision element in §3 Decision (e.g., add 'ADR.01.03.5536 — Write-path partitioning: the durable mapping (original_url, status) is written once on issuance and never rewritten by the off-path increment, which performs an isolated partial-field write') and keep the §5 citation, or drop the ID from §5 and let the inline prose stand alone. Do not leave a citation pointing to an undefined element."}],
- "notes":"Iter-1 write-ordering gap resolved in prose; fixer introduced a dangling ADR.01.03.5536 reference on the key coupling mitigation. Decision otherwise implementable, upstream-consistent, and cross-ADR-consistent (one-way exemption satisfies C4)."}
+{
+  "persona": "tech_lead",
+  "lens": "tech_lead",
+  "weight": 25,
+  "lens_score": 94,
+  "status": "BRANCH_COMPLETED",
+  "findings": [
+    {
+      "id": "TL-ADR-01-003",
+      "check": "C3",
+      "severity": "P3",
+      "section": "9. Traceability / 8. Verification",
+      "title": "Downstream TDD impact not separately enumerated",
+      "detail": "C3 asks that downstream impact on SPEC AND TDD be enumerated. SPEC impact is well-enumerated (§3 'SPEC-01 inherits this contract', §6 downstream_refs name SPEC-01 interface/data-model/write-ordering, §9 downstream mapping). The TDD layer is only seeded implicitly via the §8 verification table and §8 BDD cross-references; there is no explicit statement of what the downstream TDD must prove (durability-at-ack crash probe, unique-constraint property test, fail-closed deny-on-grant-unavailable test, synchronous_commit config-drift assertion). The §8 verification table is an adequate test surface, so this is a clarity gap rather than a missing primitive.",
+      "recommendation": "Add one line in §9 (Downstream) naming the TDD obligations this ADR seeds so the Test Architect inherits an explicit test surface rather than inferring it from §8."
+    },
+    {
+      "id": "TL-ADR-01-002",
+      "check": "C5",
+      "severity": "P3",
+      "section": "10. Related Decisions",
+      "title": "Sibling cross-references use BRD-topic refs as proxies for not-yet-authored ADR IDs (carried from iter 1; acceptable)",
+      "detail": "The §10 relationship table references siblings by BRD origin (BRD.01.08.66e2, .5b91, .c478, .9665, .daeb) rather than @adr:/@depends: form, because those sibling ADRs are not yet authored. The note 'Depends-on cross-links resolve once those siblings are authored' and the Appendix @depends: future-form note make the deferred linkage explicit, so the form is acceptable for forward references to unauthored siblings. Residual risk is drift: when siblings are authored these BRD proxies must be replaced with @adr:/@depends: references, and nothing pins that obligation to a specific cross-ADR ID. Retained as P3 from iteration 1 since it remains a deferred-linkage note, not a defect to block on now.",
+      "recommendation": "When the sibling ADRs land, replace each BRD proxy in §10 with the concrete @depends:/@adr: reference (e.g., the cache topic becomes @depends: ADR-NN), keeping BRD origin as the secondary anchor. No change required at this iteration."
+    },
+    {
+      "id": "TL-ADR-01-004",
+      "check": "C1",
+      "severity": "P3",
+      "section": "8. Verification",
+      "title": "Re-scoped §8 p95 criterion resolves the prior implementability concern; no-cache envelope budget left to SPEC/TDD",
+      "detail": "Verifying the prior-iteration P2 (TL-ADR-01-001): §8 now reads 'PK read path within budget under the no-cache MVP load envelope (p95 < 50 ms jointly owned with BRD.01.08.66e2, verifiable once the cache lands)'. This re-scopes the in-ADR commitment to PK-read-within-envelope and explicitly defers the binding p95 < 50 ms to the cache topic, so the ADR no longer binds itself to a criterion unverifiable within its own no-cache decided scope. The C1/hidden-coupling implementability concern from iteration 1 is RESOLVED. Residual (P3): the 'no-cache MVP load envelope' budget the PK read must hit is not given a number here; acceptable at ADR altitude (a numeric PK-read budget is a SPEC/TDD concern), worth only a pointer so the downstream test author knows that envelope target is theirs to fix.",
+      "recommendation": "Optionally add a parenthetical in the §8 row noting the no-cache PK-read budget value is set at SPEC/TDD (downstream), distinct from the cache-gated p95 < 50 ms jointly owned with BRD.01.08.66e2. The re-scope as written already clears the implementability bar; no P1/P2 remains."
+    }
+  ]
+}

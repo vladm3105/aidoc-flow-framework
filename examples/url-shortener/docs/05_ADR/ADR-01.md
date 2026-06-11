@@ -1,300 +1,277 @@
 ---
-title: "ADR: Link Record Storage"
+title: "ADR: URL Shortener — Link Record Storage"
 doc_id: "ADR-01"
 artifact_type: ADR
 layer: 5
 status: Proposed
 version: "1.0.0"
 author: flow-walkthrough
-created: "2026-06-09"
-last_updated: "2026-06-09"
+created: "2026-06-10"
+last_updated: "2026-06-10"
 custom_fields:
   document_type: adr-document
   artifact_type: ADR
   layer: 5
-  category: Data Architecture
   deliverable_type: code
-  upstream_artifacts: [BRD-01, PRD-01, EARS-01, BDD-01]
+  upstream_artifacts: [EARS-01, BDD-01]
   downstream_artifacts: [SPEC-01]
-  spec_ready_score: 88
-tags:
-  - adr-document
-  - layer-5-artifact
-  - shared-architecture
+  spec_ready_score: 89
 ---
 
 # ADR-01: Link Record Storage
-
-Self-tag: @adr: ADR-01
-
-Cumulative upstream tags (Layer 5): @brd: BRD.01.08.a63d | @prd: PRD.01.09.7f20 | @ears: EARS.01.03.8df7 | @bdd: BDD.01.03.8b97
 
 ## 1. Document Control
 
 | Field | Value |
 |-------|-------|
 | Document ID | ADR-01 |
-| Title | Link Record Storage |
 | Status | Proposed |
 | Version | 1.0.0 |
-| Category | Data Architecture |
-| Decision makers | Architect, Tech Lead (flow-walkthrough) |
+| Decision | The Mapping Store engine for code→URL records and visit counts |
+| Originating topic | PRD-01 §14 "Link storage" (BRD origin BRD.01.08.a63d) |
+| Decision-makers | flow-walkthrough (Architect, Tech Lead) |
 | Author | flow-walkthrough |
-| Originating topic | PRD-01 §14 Link record storage @brd: BRD.01.08.a63d |
-| BRD reference | @brd: BRD.01.08.a63d |
-| SPEC readiness score | 88/100 provisional |
-| Created | 2026-06-09 |
-| Last updated | 2026-06-09 |
+| SPEC readiness score | 89/100 (provisional — binding gate is doc-adr-audit) |
+| Created / Updated | 2026-06-10 |
 
 | Version | Date | Author | Change |
 |---------|------|--------|--------|
-| 1.0.0 | 2026-06-09 | flow-walkthrough | Initial proposal from BDD-01 v1.0.2 (saga iteration 1). |
-
-One decision: the storage substrate for link records. The score is provisional;
-the binding gate is the doc-adr-audit pass, and promotion to Accepted needs SPEC
-readiness >= 90.
+| 1.0.0 | 2026-06-10 | flow-walkthrough | Initial proposal — Link Record Storage decision (saga iteration 1). |
 
 ## 2. Context
 
-**Problem statement.** The service must durably retain short-code-to-URL
-mappings and per-link visit counts so an issued short link resolves for its
-committed lifetime. The originating topic is PRD-01 §14 *Link record storage*
-(BRD.01.08.a63d), which leaves the substrate open as "durable key-value store
-vs relational table." A substrate must be chosen before the SPEC can define
-component interfaces and data models.
+**Problem statement.** The service needs a durable home for two record kinds:
+the short-code→URL mapping and the per-code visit count (originating topic
+PRD-01 §14 "Link storage", BRD origin BRD.01.08.a63d). The store choice
+determines whether the system meets zero-data-loss durability, the code-to-URL
+uniqueness invariant, confidential read control over a may-contain-PII original
+URL, and the redirect read-latency budget. It is the foundational
+data-architecture decision the other topics build on, so it is recorded first.
 
-**Business driver.** BRD-01 makes conflict-free redirection a launch objective
-(BRD.01.04.f439) and fixes RPO = 0 for confirmed-issued links as a hard
-constraint — loss is a business failure (BRD.01.10.3407). Visit counts are
-confirmed-write durable (BRD.01.10.7d5a); codes must be collision-free
-(BRD.01.10.e118).
+**Business driver.** A short link that silently loses or mis-resolves its
+destination destroys product trust (BRD.01.08.a63d); durable, correct,
+low-latency resolution is the core value.
 
 **Key constraints.**
 
-- RPO = 0 for confirmed mappings; an acknowledged code always resolves
-  (EARS.01.04.93f7, PRD.01.13.ebf9).
-- Code uniqueness holds under concurrent issuance, not only in isolation
-  (EARS.01.03.86ae, PRD.01.13.7760).
-- The redirect read path leaves headroom under the p95 redirect budget
-  @threshold: PRD.01.perf.redirectp95 (p95 < 50 ms); analytical query
-  capability is not required this cycle.
+- RPO = 0 — a confirmed-issued link survives a crash immediately after ack
+  (EARS.01.04.5e5b; BDD.01.03.9b90); RTO ≤ 30 min on store loss.
+- Redirect reads hold p95 < 50 ms (EARS.01.03.c4c9, EARS.01.04.cea3;
+  BDD.01.03.613b).
+- The original-URL value is may-contain-PII; readable only by least-privilege
+  principals (EARS.01.03.4ebf; BDD.01.03.c8a6, BDD.01.03.167e).
+- MVP scale ~10⁶ links at 100 redirects/sec sustained; cost-sensitive.
 
-**Technical context.** Per PRD §9 the Link Store is a single aggregate
-(mapping, status, visit count); count-splitting is deferred to Visit
-Observability (BRD.01.08.c478) and caching to Redirect Performance
-(BRD.01.08.66e2). This ADR owns only the storage substrate and its write
-semantics — not the cache, code generator, or replication model. BDD-01 fixes
-the behaviours it must support: write-before-acknowledge (BDD.01.03.8b97),
-concurrent-issuance collision (BDD.01.03.bdae), fail-closed issuance on a
-degraded write path (BDD.01.03.ed21), and idempotent recovery (BDD.01.03.bcfb).
+**Technical context.** PRD-01 names a single **Mapping Store** behind the
+**Shorten/Redirect API** and **Visit Counter**. Code-to-URL uniqueness is a
+system-wide invariant (EARS.01.03.bca8; BDD.01.03.a688); confirmed visit
+increments must not be lost (EARS.01.04.1898; BDD.01.03.02c1); the store must
+degrade to a bounded error (BDD.01.03.1f90) and recover within RTO
+(BDD.01.03.44fe). Caching and failover topology are owned by sibling topics
+(§10) and are out of scope here.
+
+**Threat model (scope).** The column/row access control here mitigates
+**over-broad principal read** of the PII original URL (insider / lateral-movement
+read beyond the least-privilege reader). **Out of scope here** — owned by the
+data-protection ADR (BRD.01.08.daeb) — are at-rest encryption, backup/export
+confidentiality, and erasure.
 
 ## 3. Decision
 
-**Chosen solution — ADR.01.03.5c3c — Durable transactional key-value Link
-Store.** Persist link records in a single durable, transactional key-value
-store keyed by short code. Each record holds the original URL, link status, and
-visit count. Issuance performs an **atomic conditional write** (compare-and-set
-or unique-key constraint on the short code) and **commits durably before the
-short code is acknowledged** to the submitter. The redirect path reads the
-record by its primary key. Visit-count increments are applied off the hot path
-and are best-effort relative to redirect availability.
+@ears: EARS.01.04.5e5b @ears: EARS.01.03.bca8 @ears: EARS.01.03.4ebf @bdd: BDD.01.03.9b90 @bdd: BDD.01.03.a688
 
-Selected because its native primary-key access matches the only shapes this
-cycle requires — point lookup on redirect, point write on issuance — while its
-atomic conditional-write resolves the concurrent-issuance race (PRD.01.13.7760)
-without an application lock, and durable-commit-before-acknowledge delivers
-RPO = 0 (EARS.01.03.8df7).
+**ADR.01.03.4226 — Adopt a managed relational store with synchronous
+replication as the Mapping Store.**
 
-**Key components.**
+Writes use synchronous commit-before-acknowledge replication to a standby, so
+the create path acknowledges only after the record is durable on more than one
+replica (RPO = 0). The mapping table carries a **unique constraint on the short
+code**, enforcing the uniqueness invariant declaratively rather than in
+application code. The may-contain-PII original-URL column is governed by
+database column/row access control. Recovery uses point-in-time recovery plus
+standby promotion to meet RTO ≤ 30 min.
 
-| Component | Role |
-|-----------|------|
-| Link Store (durable KV) | Authoritative persistence of `short_code -> {original_url, status, visit_count}`. |
-| Atomic claim primitive | Conditional-put / unique-key write enforcing collision-free issuance under concurrency. |
-| Off-path increment | Best-effort visit-count update that never blocks an otherwise-resolvable redirect. |
+This is chosen because every hard correctness obligation —
+durability-before-ack, one-URL-per-code, classified read control, bounded
+recovery — maps to a **native, declarative database guarantee** instead of
+app-side logic re-proven per call path. The redirect budget is met by
+primary-key lookups; the read cache that gives latency headroom is owned by the
+redirect-performance topic (BRD.01.08.66e2) and is deliberately not decided
+here.
 
-**Implementation approach.**
+**Failure semantics — synchronous-standby loss.** On loss or partition of the
+synchronous standby, the primary **halts create-path writes** rather than
+auto-degrading to async: durability (RPO = 0) is preserved at the cost of
+create-path availability, and the store emits a degraded-mode signal so the
+shorten path returns a bounded error (BDD.01.03.1f90). This is fail-closed on
+durability, not fail-open on availability. The redirect read path is
+independent and unaffected by the halt.
 
-- *MVP scope:* single-aggregate KV record; synchronous durable commit on the
-  issue path; atomic conditional claim; primary-key read on redirect; off-path
-  best-effort increment with reconciliation logging.
-- *Next-cycle scope:* splitting the count into an append-and-aggregate store
-  (deferred to BRD.01.08.c478) and any read-replica or caching strategy
-  (deferred to BRD.01.08.66e2 and BRD.01.08.5b91).
+**Access-control identity model (authN + identity translation).** The
+may-contain-PII original-URL column is read only via an **app-tier identity
+mapped to a least-privilege database role**. The API authenticates the caller
+(authN); the authZ decision is made in the app tier, which connects to the store
+as the least-privilege reader principal for that call path — so the column/row
+grant is evaluated against a per-call-path DB role, not one shared service
+principal. End-principal identity is thus translated to a DB principal at the
+API→Store boundary, making the paired checks (BDD.01.03.c8a6 permit /
+BDD.01.03.167e deny) realizable against a named mechanism. The read **fails
+closed** when the decision cannot be made (grant down, classification missing, or
+role-lookup error).
 
-**Decision semantics.**
+**Key components.** Mapping Store (relational primary) — authoritative records,
+unique constraint, classification access control. Synchronous standby —
+receives the commit before ack; source for RTO-bounded promotion.
 
-- ADR.01.03.f5f5 — *Reversibility:* **one-way** (foundational substrate;
-  reversal migrates every committed record, one cycle, blast radius confined by
-  the storage interface — §7 Rollback plan).
-- ADR.01.03.3315 — *Issuance:* **at-most-once per logical submission**; the
-  atomic-claim primitive keys idempotency on a submitter idempotency key
-  (fallback: deterministic content-derived candidate), collapsing a retried
-  submission onto the same record (BDD.01.03.bcfb).
-- ADR.01.03.1050 — *Trust boundary (API ↔ store):* the API/redirect services
-  authenticate to the KV store with a **per-service principal** (provider IAM
-  role / scoped least-privilege key, never a shared credential) over
-  **TLS 1.2+**; an auth/TLS failure fails the write closed (§6,
-  BDD.01.03.f44a/ed21/5f58).
+**Implementation approach.** *MVP:* one primary + one synchronous standby;
+unique constraint; column grant on original-URL; PITR; PK read path.
+*Next cycle:* read-replica fan-out and sharding once the corpus outgrows one
+primary (a separate future decision).
 
 ## 4. Alternatives
 
-### ADR.01.04.1e7b — Durable transactional key-value store *(selected)*
+@ears: EARS.01.03.c4c9 @bdd: BDD.01.03.1f90
 
-Primary-key store on the short code with an atomic conditional-put and durable
-commit before acknowledge.
+- **ADR.01.04.0478 — Managed relational store (synchronous replica)** —
+  *selected.* Managed relational DB with a synchronous standby; PK-lookup reads;
+  declarative unique constraint; column/row access control; PITR.
+  - Pros: RPO = 0 from commit-before-ack; uniqueness and access control are
+    native guarantees; mature recovery tooling; predictable PK-read p95.
+  - Cons: synchronous replication adds create-path latency; one write primary
+    has a vertical-scale ceiling.
+  - Estimated cost: ~$300/month (primary + standby, MVP tier). Fit: Best.
 
-- **Pros:** O(1) primary-key lookup leaves headroom under the redirect budget;
-  native conditional-write gives collision-free issuance under concurrency;
-  single-aggregate model maps directly onto the PRD §9 Link Store.
-- **Cons:** weak ad-hoc / analytical query capability; multi-key transactions
-  are limited.
-- **Estimated cost:** ~$30/month (managed single-region KV at MVP volume).
-- **Fit:** Best — the only required access patterns are point read and point
-  write; no relational query need exists this cycle.
+- **ADR.01.04.8909 — Distributed key-value store** — *rejected.* Distributed
+  wide-column / persisted in-memory store keyed by short code.
+  - Pros: very low read latency; horizontal scale.
+  - Cons: uniqueness and classification read control become app-side concerns;
+    RPO = 0 depends on fragile per-write durability config; exactly-once count
+    durability needs extra reconciliation.
+  - Rejection reason: pushes three hard correctness obligations into application
+    code; latency headroom does not justify that correctness cost at MVP scale.
+  - Estimated cost: ~$250/month. Fit: Good.
 
-### ADR.01.04.fef7 — Relational table *(rejected)*
-
-A single relational table with a unique index on the short-code column.
-
-- **Pros:** unique index gives an atomic claim; mature ACID semantics and
-  tooling.
-- **Cons:** heavier per-request overhead (SQL parse plus connection pool) on a
-  pure primary-key access pattern; schema and migration overhead with no
-  relational query requirement this cycle.
-- **Rejection reason:** no relational or analytical query requirement exists for
-  the MVP; the KV substrate matches the single-aggregate, primary-key-only
-  access pattern and the latency budget more directly. Reconsider if a later
-  cycle introduces cross-entity queries.
-- **Estimated cost:** ~$50/month (managed single-instance relational).
-- **Fit:** Good.
-
-### ADR.01.04.89b7 — In-memory store with periodic snapshot *(rejected)*
-
-An in-process map persisted by periodic background snapshots.
-
-- **Pros:** lowest read latency; trivial to implement.
-- **Cons:** confirmed mappings written between snapshots are lost on a crash.
-- **Rejection reason:** cannot satisfy RPO = 0 for confirmed-issued links
-  (BRD.01.10.3407) or write-before-acknowledge durability (EARS.01.03.8df7) — an
-  acknowledged code could fail to resolve after a restart, the exact failure
-  BDD.01.03.8b97 forbids.
-- **Estimated cost:** ~$10/month (compute only).
-- **Fit:** Poor.
+- **ADR.01.04.5ee2 — Embedded single-node store** — *rejected.* Embedded engine
+  (e.g. SQLite/LMDB) co-located on the app node.
+  - Pros: lowest read latency and cost; no network hop.
+  - Cons: durability and availability bounded by one node; no synchronous
+    replica.
+  - Rejection reason: cannot meet RPO = 0, RTO ≤ 30 min, and ≥ 99.9% on node
+    loss — fails the survives-crash obligation (BDD.01.03.9b90) outright.
+  - Estimated cost: ~$0/month. Fit: Poor.
 
 ## 5. Consequences
 
+@bdd: BDD.01.03.c8a6 @bdd: BDD.01.03.167e @ears: EARS.01.04.1898
+
 **Positive outcomes.**
 
-- ADR.01.05.e35b — Primary-key lookup leaves latency headroom under the 50 ms
-  redirect budget @threshold: PRD.01.perf.redirectp95 (p95 < 50 ms).
-- ADR.01.05.3afa — Atomic conditional write guarantees collision-free issuance
-  under concurrency without application-level locks (EARS.01.03.86ae,
-  EARS.01.03.97c4).
-- ADR.01.05.d549 — A single durably-committed aggregate makes RPO = 0 for
-  confirmed mappings achievable (EARS.01.04.93f7).
+- **ADR.01.05.47a1 — Declarative durability and uniqueness.** RPO = 0 from
+  synchronous commit and one-URL-per-code from a unique constraint remove the
+  app-side correctness burden (EARS.01.03.bca8, EARS.01.04.5e5b).
+- **ADR.01.05.454a — Native classification access control.** Column/row grants
+  satisfy the may-contain-PII least-privilege requirement without bespoke code
+  (EARS.01.03.4ebf).
+- **ADR.01.05.cb92 — Mature recovery tooling.** PITR and standby promotion meet
+  RTO ≤ 30 min with proven mechanisms (BDD.01.03.44fe).
 
-**Trade-offs and risks.**
+**Trade-offs and risks.** *Impact* = severity; *Blast radius* = single-service
+/ cross-service / data-loss-possible (so SPEC/BDD can size defenses).
 
-| ID | Trade-off / risk | Severity | Mitigation |
-|----|------------------|----------|------------|
-| ADR.01.05.0f1f | Key-value access limits ad-hoc analytical queries over link records. | Low | No analytical query is required this cycle; richer reporting is deferred to Visit Observability (BRD.01.08.c478). |
-| ADR.01.05.9107 | A single mapping+count aggregate couples two write paths with different durability needs. | Medium | Write paths are partitioned per ADR.01.03.5536 — the mapping is written once and never rewritten by the increment path, which uses an isolated partial-field write; the increment is off-path and best-effort (EARS.01.03.d808), so a count-write fault cannot fail a redirect; reconciliation is logged (BDD.01.03.a7ad). |
-| ADR.01.05.7158 | Synchronous durable commit on the issue path adds submission latency. | Low | Commit stays on the issue path only, not the redirect path; the 500 ms issue budget (EARS.01.04.4eec) absorbs it while the redirect budget is unaffected. |
+- **ADR.01.05.5896 — Create-path halt on standby loss.** *Impact: High; blast
+  radius: cross-service* (shorten stalls; reads continue). The §3 halt precludes
+  the data-loss outcome (silent RPO breach), trading it for a bounded write
+  outage (BDD.01.03.1f90); §7 pool isolation averts a retry storm.
+- **ADR.01.05.7dde — Read-latency headroom dependency.** *Impact: Medium; blast
+  radius: single-service.* PK reads meet p95 only with pooling and a cache.
+  *Mitigation:* the cache is owned by BRD.01.08.66e2.
+- **ADR.01.05.2740 — Write amplification under sync replication.** *Impact:
+  Medium; blast radius: single-service.* Commit-before-ack adds create-path
+  latency. *Mitigation:* it lands inside the screening budget, not the redirect
+  budget.
+- **ADR.01.05.3adb — Vertical-scale ceiling.** *Impact: Low; blast radius:
+  single-service.* One write primary scales vertically. *Mitigation:* the MVP
+  corpus fits one node; re-shard is a follow-on.
+- **ADR.01.05.98ff — At-rest encryption of the PII column deferred.** *Impact:
+  Medium; blast radius: data-loss-possible* (backup/media exposure). The grant is
+  access control, not at-rest encryption. *Accepted risk:* encryption,
+  key-management, and rotation are deferred to the data-protection ADR
+  (BRD.01.08.daeb); the interim compensating control is the least-privilege grant
+  plus managed-tier volume encryption.
 
-**Cost estimate.**
+**Side-effect contract — visit-count increment.** Delivered **at-least-once**
+with an idempotency/dedup key in the count table (EARS.01.04.1898;
+BDD.01.03.02c1, BDD.01.03.44fe) so a retry cannot drop it; dedup of
+double-applies is owned by BRD.01.08.c478. SPEC-01 inherits this contract.
 
-| Item | Value |
-|------|-------|
-| MVP cost | ~$0 (MVP-tier managed KV within free / low tier) |
-| Ongoing monthly | ~$30/month (single-region managed KV at MVP volume) |
-| Notes | Excludes caching / replication infrastructure, owned by Redirect Performance (BRD.01.08.66e2) and Availability (BRD.01.08.5b91). |
+**Reversibility: two-way** — reversible at days-scale cost behind the Mapping
+Store interface; requires a two-table migration and re-proof of RPO = 0.
+
+**Cost estimate.** MVP setup ~$500 one-time (provisioning + PITR); ongoing
+~$300/month (primary + synchronous standby, MVP tier). Excludes the read cache
+(BRD.01.08.66e2) and any multi-region cost (BRD.01.08.5b91).
 
 ## 6. Architecture Flow
 
-Intent: show how the issuance write path enforces atomic claim and durable
-commit before acknowledgement — the decision's load-bearing interaction.
-Scope boundary: Shortening API to Link Store on the issue path.
-Upstream refs: BDD.01.03.8b97, BDD.01.03.bdae.
-Downstream refs: SPEC-01 (Shortening API, Link Store interfaces).
+Mandatory interaction sequence — the create-and-durably-commit-before-ack path
+that realizes RPO = 0.
+
+Intent header — `diagram_type`: sequence · `level`: n/a (decision bridge, no C4
+level) · `scope_boundary`: Submitter → Shorten/Redirect API → Mapping Store
+(primary + synchronous standby) · `upstream_refs`: EARS.01.04.5e5b,
+BDD.01.03.9b90 · `downstream_refs`: SPEC-01 (interface, data model, write
+ordering).
 
 @diagram: sequence-sync
 
 ```mermaid
 sequenceDiagram
     participant S as Link Submitter
-    participant API as Shortening API
-    participant Store as Link Store (durable KV)
-
-    S->>API: submit well-formed public URL
-    API->>Store: atomic conditional write (claim short_code, durable)
-    alt code free and commit durable
-        Store-->>API: committed (RPO = 0)
-        API-->>S: short code acknowledged
-    else code already claimed (concurrent race)
-        Store-->>API: claim rejected
-        API->>Store: retry atomic claim with a distinct code
-        Store-->>API: committed
-        API-->>S: distinct short code acknowledged
-    else write path degraded
-        Store-->>API: error or timeout
-        API-->>S: fail closed — no code, no orphan mapping
-    end
+    participant A as Shorten/Redirect API
+    participant P as Mapping Store (primary)
+    participant R as Synchronous standby
+    S->>A: POST URL (screened, valid)
+    A->>P: INSERT code→URL (unique constraint)
+    P->>R: replicate commit (synchronous)
+    R-->>P: durable on standby
+    P-->>A: write acknowledged (RPO=0)
+    A-->>S: short code + "ready"
+    Note over P,R: ack returns only after the record is durable on >1 replica
 ```
 
-Supplementary decision view (optional flowchart):
-
-```mermaid
-flowchart TD
-    subgraph MVP Scope
-        A[Shortening API] -->|atomic claim + durable commit| B[(Link Store — durable KV)]
-        C[Redirect Handler] -->|primary-key read| B
-        C -. off-path best-effort increment .-> B
-    end
-```
-
-**Integration points.**
-
-| System | Integration type | Purpose |
-|--------|------------------|---------|
-| Link Store (durable KV) | Synchronous write / read over TLS 1.2+, authenticated by a per-service principal (ADR.01.03.1050) | Durable mapping persistence; atomic claim on issuance; primary-key resolution on redirect. |
-
-*Data-at-rest (ADR.01.03.0db1):* records persist under provider-managed
-envelope encryption (AES-256) with a provider-managed KMS key on the provider
-default rotation cadence; a customer-managed key is a deferred hardening option.
+**Integration points.** Mapping Store (relational) — synchronous DB connection,
+authoritative read/write. Synchronous standby — DB replication for
+commit-before-ack durability and RTO-bounded promotion.
 
 ## 7. Implementation Assessment
 
-Decision-level assessment only; file-level execution belongs to IPLAN (Layer 8).
+Decision-level only; IPLAN (Layer 8) owns implementation detail.
 
 **MVP phases.**
 
-| Phase | Scope | Key risk | Blast radius |
-|-------|-------|----------|--------------|
-| 1 | Provision managed KV; define the `short_code` record schema and the atomic-claim write primitive. | The chosen KV tier's conditional-write semantics differ from assumed compare-and-set. | Cross-service — breaks collision-free issuance system-wide. |
-| 2 | Wire write-before-acknowledge on the issue path and primary-key read on the redirect path. | Commit latency pushes the issue path toward the 500 ms budget. | Single-service — issue-path latency only. |
-| 3 | Off-path best-effort increment with reconciliation logging. | Increment coupling leaks back onto the hot path. | Single-service — redirect latency degradation only. |
+| Phase | Scope | Key risk |
+|-------|-------|----------|
+| 1 Provision | Primary + synchronous standby; PITR on | Synchronous mode silently degrades to async (breaks RPO=0) |
+| 2 Schema | Unique constraint on code; visit-count table; original-URL column grant | Missing constraint lets a duplicate code violate the invariant |
+| 3 Read path | PK lookup on the resolution surface | Unindexed lookup misses the p95 budget |
 
-**Rollback plan.**
+**Rollback plan.** The engine sits behind the Mapping Store interface, so an
+alternative can be substituted without changing callers. *Trigger:* synchronous
+replication is unreliable, or PK-read p95 exceeds budget after caching. *Ordered
+steps:* (1) drain the write path; (2) export+verify the two tables onto the
+replacement, confirming its sync-replica + unique-constraint posture; (3)
+re-point the interface and confirm RPO = 0. The export carries the PII column,
+so it inherits the access/at-rest controls (encrypted, least-privilege,
+secure-deleted; params owned by BRD.01.08.daeb). Write/read pools are isolated
+with a fail-fast create-path timeout (BDD.01.03.1f90) so a stalled standby
+cannot starve reads. *Effort:* days.
 
-- *Strategy:* reversal is one-way and interface-confined (ADR.01.03.f5f5); all
-  access stays behind the storage interface. Runbook: (1) halt new issuance
-  traffic; (2) drain in-flight writes; (3) snapshot/export committed records;
-  (4) provision and validate the alternative store; (5) import records with
-  uniqueness verification; (6) atomically re-point the data-access layer;
-  (7) run an RPO = 0 smoke test post-cutover.
-- *Trigger:* the KV tier cannot meet RPO = 0 or atomic-claim semantics under
-  load test.
-- *Estimated effort:* ~2–4 hours at MVP volume (interface stable; data
-  migration dominates).
-
-**Monitoring baseline.**
-
-| Metric | Target | Alert threshold |
-|--------|--------|-----------------|
-| Durable-commit latency (issue path, p95) | < 500 ms | >= 500 ms |
-| Atomic-claim write-conflict rate | low, bounded | > 5 conflicts/min sustained over a 5-min window -> WARN (code-space pressure, BRD.01.08.9665; provisional pending load-test calibration) |
-| Confirmed-mapping loss (RPO) | 0 | any loss |
+**Monitoring baseline.** Each signal carries a detection-time bound (fraction of
+the 30-min RTO). Replica commit lag — target 0, alert on non-zero within ≤ 60 s.
+Redirect read p95 — alert ≥ 45 ms over a 5-min window. Standby health — alert on
+unavailable within ≤ 30 s. PITR backup recency — alert when the last WAL is > 1 h
+or base backup > 24 h, plus a periodic restore-probe signal; the RTO claim (§2)
+depends on this chain. Config drift — alert if `synchronous_commit` deviates.
 
 ## 8. Verification
 
@@ -302,64 +279,67 @@ Decision-level assessment only; file-level execution belongs to IPLAN (Layer 8).
 
 | Criterion | Measurement |
 |-----------|-------------|
-| An acknowledged short code always resolves (RPO = 0). | Crash / restart durability test (BDD.01.03.8b97). |
-| Concurrent issuance preserves uniqueness. | Forced same-candidate race (BDD.01.03.bdae). |
-| A degraded write path leaves no orphan code and recovers idempotently. | Fault injection on the write path (BDD.01.03.ed21, BDD.01.03.bcfb). |
-| A count-write fault never fails a redirect. | Visit-count fault injection (BDD.01.03.5f58, BDD.01.03.a7ad). |
+| Link survives a hard kill immediately after ack | Crash-recovery probe; code still resolves after restart (BDD.01.03.9b90) |
+| Each issued code maps to exactly one URL | Resubmission assertion + constraint property check (BDD.01.03.a688) |
+| Original-URL read denied without grant, permitted with it | Paired access checks (BDD.01.03.c8a6, BDD.01.03.167e) |
+| Original-URL read denies when the access-control decision is unavailable (fail-closed) | Deny-on-grant-unavailable probe; mirrors the deny/permit pair |
+| PK read path within budget under the no-cache MVP load envelope (p95 < 50 ms jointly owned with BRD.01.08.66e2, verifiable once the cache lands) | Sustained-load read test (BDD.01.03.613b) |
+| Degradation returns a bounded error, then recovers | Degradation + restoration probes (BDD.01.03.1f90, BDD.01.03.44fe) |
 
-**BDD scenario cross-references.**
-
-@bdd: BDD.01.03.8b97 | @bdd: BDD.01.03.bdae | @bdd: BDD.01.03.ed21 | @bdd: BDD.01.03.bcfb | @bdd: BDD.01.03.f44a | @bdd: BDD.01.03.0759 | @bdd: BDD.01.03.5f58 | @bdd: BDD.01.03.a7ad
+**BDD cross-references.**
+@bdd: BDD.01.03.9b90 @bdd: BDD.01.03.a688 @bdd: BDD.01.03.c8a6 @bdd: BDD.01.03.167e @bdd: BDD.01.03.613b @bdd: BDD.01.03.1f90 @bdd: BDD.01.03.44fe @bdd: BDD.01.03.02c1
 
 ## 9. Traceability
 
-Document tag: @adr: ADR-01 (originating topic PRD-01 §14, see §1).
+@adr: ADR-01
 
-**Cumulative upstream tags (Layer 5 — all four required).**
+Originating topic: PRD-01 §14 "Link storage" (BRD origin BRD.01.08.a63d). Per
+the necessary-upstream contract, ADR carries `@ears` and `@bdd` element tags;
+PRD/BRD lineage is transitive via that chain.
 
-- @brd: BRD.01.08.a63d | @brd: BRD.01.10.3407 | @brd: BRD.01.10.7d5a | @brd: BRD.01.10.e118 | @brd: BRD.01.07.6c3f | @brd: BRD.01.07.882c
-- @prd: PRD.01.09.7f20 | @prd: PRD.01.12.8500 | @prd: PRD.01.12.11be | @prd: PRD.01.13.ebf9 | @prd: PRD.01.13.7760 | @prd: PRD.01.13.15a3
-- @ears: EARS.01.03.8df7 | @ears: EARS.01.03.97c4 | @ears: EARS.01.03.86ae | @ears: EARS.01.03.19ec | @ears: EARS.01.03.d808 | @ears: EARS.01.03.fab2 | @ears: EARS.01.04.93f7 | @ears: EARS.01.04.7934 | @ears: EARS.01.04.8e22
-- @bdd: BDD.01.03.8b97 | @bdd: BDD.01.03.bdae | @bdd: BDD.01.03.ed21 | @bdd: BDD.01.03.bcfb | @bdd: BDD.01.03.f44a | @bdd: BDD.01.03.0759 | @bdd: BDD.01.03.5f58 | @bdd: BDD.01.03.a7ad
+Upstream EARS:
+@ears: EARS.01.04.5e5b @ears: EARS.01.03.bca8 @ears: EARS.01.03.4ebf @ears: EARS.01.03.c4c9 @ears: EARS.01.04.cea3 @ears: EARS.01.04.1898
 
-**Downstream (expected).**
+Upstream BDD:
+@bdd: BDD.01.03.9b90 @bdd: BDD.01.03.a688 @bdd: BDD.01.03.c8a6 @bdd: BDD.01.03.167e @bdd: BDD.01.03.613b @bdd: BDD.01.03.1f90 @bdd: BDD.01.03.44fe @bdd: BDD.01.03.02c1
 
-| Consumer | Layer | Relationship |
-|----------|-------|--------------|
-| SPEC-01 | 6 | Turns this storage decision into Link Store interfaces, the record data model, and write-ordering contracts. |
-
-**Health score.** SPEC readiness 88/100 provisional; target >= 90/100
-(see §1 Document Control).
+Downstream (expected): SPEC-01 implements this as the Mapping Store component —
+interface, data model, durability behavior contract.
 
 ## 10. Related Decisions
 
-These topics are recorded for downstream decision records; each is a distinct,
-not-yet-authored ADR and is **not** decided here. No ADR is superseded by this
-record.
+This decision is the data-architecture foundation; the following PRD-01 §14
+topics are separate ADRs:
 
-| Topic (future ADR) | Relationship | Rationale |
-|--------------------|--------------|-----------|
-| Code Generation (BRD.01.08.9665) | Constrains | The code generator must produce candidates the atomic-claim primitive can uniquely commit; write-conflict rate signals code-space pressure. |
-| Redirect Performance (BRD.01.08.66e2) | Extended by | Any read cache layers over this substrate's primary-key read; this ADR owns persistence, not the hot-path cache. |
-| Visit Observability (BRD.01.08.c478) | Extended by | Splitting the visit count into an append-and-aggregate store builds on this single-aggregate baseline. |
-| Availability (BRD.01.08.5b91) | Depended on by | The replication / recovery model that meets RTO <= 30 min layers onto this store's RPO = 0 commit semantics. |
+| Topic | BRD ref | Relationship |
+|-------|---------|--------------|
+| Redirect performance (cache) | BRD.01.08.66e2 | Extends — owns the read cache (ADR.01.05.7dde) |
+| Availability / failover | BRD.01.08.5b91 | Extends — owns multi-AZ/region + store-loss detection |
+| Visit observability | BRD.01.08.c478 | Depends on — persists counts here; owns dedup |
+| Code generation | BRD.01.08.9665 | Constrains — supplies the codes the constraint stores |
+| Abuse protection | BRD.01.08.daeb | Depends on — takedown state recorded here |
+
+Depends-on cross-links resolve once those siblings are authored. **Deployment
+ordering:** this store's provisioning (Phase 1–2) and its health checks (replica
+lag, standby, PITR) gate all five sibling ADR deployments. Supersedes: none.
 
 ## Glossary
 
 | Term | Definition |
 |------|------------|
-| ADR | Architecture Decision Record. |
-| SPEC readiness | Score measuring ADR maturity for the SPEC transition (90 or above required). |
-| Link Store | The durable store of short-code-to-URL records and visit counts. |
-| Atomic claim | A conditional write that grants a short code to exactly one issuance. |
-| RPO | Recovery Point Objective — tolerated data loss; zero for confirmed mappings. |
-| Hot path | The synchronous redirect path the 50 ms latency budget measures. |
-| Off-path | Work (such as the visit-count increment) done outside the redirect hot path. |
+| ADR | Architecture Decision Record (Layer 5 — one decision). |
+| SPEC readiness | Score measuring ADR maturity for SPEC transition (≥ 90/100). |
+| RPO | Recovery Point Objective; RPO = 0 means no committed data lost on failure. |
+| RTO | Recovery Time Objective; bound on time-to-restore after store loss. |
+| Mapping Store | The store holding code→URL mappings and visit counts. |
+| Synchronous replication | Commit acknowledged only after durable on > 1 replica. |
+| PITR | Point-in-time recovery from continuous backups. |
 
 ## Appendix
 
-MVP lifecycle: this record holds one decision in the MVP -> PROD -> NEW MVP
-cycle. New substrates, caches, or count splits are authored as new ADRs and
-related back in §10. Update in place only to clarify the decision (patch) or
-change status (Proposed -> Accepted at SPEC readiness >= 90); deprecate or
-supersede it when a later decision replaces the durable-KV substrate.
+This ADR records ONE decision (Link Record Storage). A new architectural choice
+gets a new ADR rather than expanding this one. Update it for clarifications
+(patch) or a status change (Proposed → Accepted once the doc-adr-audit gate
+passes). Deprecate or supersede only if the store strategy is replaced — e.g.
+when the vertical-scale ceiling (ADR.01.05.3adb) forces a sharding decision,
+recorded as a new ADR that this one `@depends:` on.

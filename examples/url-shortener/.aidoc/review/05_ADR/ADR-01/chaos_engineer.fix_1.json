@@ -1,0 +1,12 @@
+{
+  "persona": "chaos_engineer",
+  "lens": "chaos_engineer",
+  "weight": 8,
+  "lens_score": 91,
+  "status": "BRANCH_COMPLETED",
+  "fix_iteration": 1,
+  "validates": [
+    {"finding_id": "CHAOS-ADR-01-001", "resolved": true, "rationale": "The §3 failure-semantics clause makes the previously-undecided running-system behavior explicit — primary halts create-path writes (fail-closed on durability, RPO=0 preserved), rejects silent async-degrade, emits a degraded-mode signal returning a bounded error tied to BDD.01.03.1f90, with read-path independence backed by §7 pool isolation and a §5 cross-service blast-radius risk entry."}
+  ],
+  "new_findings": []
+}

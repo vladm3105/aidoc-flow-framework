@@ -3,6 +3,16 @@
   "lens": "auditor",
   "weight": 10,
   "lens_score": 100,
+  "status": "BRANCH_COMPLETED",
   "findings": [],
-  "notes": "Iteration 2 audit: 5 new element IDs added to §3 (ADR.01.03.{f5f5, 3315, 1050, 5536, 0db1}) all conform to ADR.NN.SS.xxxx 4-hex standard; upstream tags resolve; no orphans; traceability complete. Full conformance — no P1/P2/P3 issues."
+  "observations": [
+    "TRACE-RES-001 lint false-positive context noted: the lint tool (sdd_doc_lint) on this branch emits 32x [ERROR TRACE-RES-001] claiming EARS-01 and BDD-01 host documents are unresolvable. This is a known defect in the lint rule under repair (TRACE-RES-FIXUP-001 branch). Direct resolution verification performed as per audit playbook.",
+    "DIRECT VERIFICATION RESULT: All 6 upstream EARS tags resolved — EARS.01.04.5e5b, EARS.01.03.bca8, EARS.01.03.4ebf, EARS.01.03.c4c9, EARS.01.04.cea3, EARS.01.04.1898 all present in EARS-01.md. All 8 upstream BDD tags resolved — BDD.01.03.9b90, BDD.01.03.a688, BDD.01.03.c8a6, BDD.01.03.167e, BDD.01.03.613b, BDD.01.03.1f90, BDD.01.03.44fe, BDD.01.03.02c1 all present in BDD-01.md. C1 PASSES despite lint tool false-positive.",
+    "All element IDs conform to ADR.01.SS.xxxx 4-hex pattern (C2 PASSES): 1 in section 03, 3 in section 04, 8 in section 05.",
+    "Summary/body parity verified (C3 PASSES): §3 Decision header names ADR.01.03.4226 (the main decision); §4 Alternatives header names three alternatives (ADR.01.04.0478, .8909, .5ee2); §5 Consequences section contains all 8 consequence elements; no orphan rows.",
+    "Cumulative trace header §9 present and resolves (C4 PASSES): @adr: ADR-01 self-tag, 6 @ears tags in header roll-up match body occurrences, 8 @bdd tags in header roll-up match body occurrences.",
+    "Cross-ADR references in §10 use BRD sibling anchors (BRD.01.08.66e2, .5b91, .c478, .9665, .daeb) rather than @adr: element tags. This is per-design: the five sibling ADRs are not yet authored; the forward references resolve once those siblings exist. Previously flagged as P3/TL-ADR-01-002 and deferred; consistency maintained (C5 advisory, not binding).",
+    "Diagram declaration present: @diagram: sequence-sync (line 225). Diagram type aligns with DIAGRAM_STANDARDS.md §5.2 requirement for ADR (decision sequence, no C4 level). Intent header above Mermaid block includes diagram_type, scope_boundary, upstream_refs, downstream_refs.",
+    "Iteration 2 (re-audit post-fixer): artifact unchanged from iteration 1. No new issues introduced by fixer pass. Zero findings carry forward."
+  ]
 }

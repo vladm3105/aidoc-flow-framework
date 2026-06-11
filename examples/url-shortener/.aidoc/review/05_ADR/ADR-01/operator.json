@@ -1,12 +1,18 @@
-{"persona":"operator","lens":"operator","weight":10,"lens_score":82,
- "findings":[
-   {"id":"OPS-P2-1","priority":"P2","check":"C2",
-    "location":"§7 Implementation Assessment — Monitoring baseline",
-    "message":"The redirect read path is the highest-traffic path and the primary SLO (p95 < 50 ms, @threshold:PRD.01.perf.redirectp95), yet the monitoring baseline table contains no row for redirect read-path latency. An on-call engineer reading §7 cannot see the signal for the most latency-sensitive operation. The fixer added the write-conflict threshold and the durable-commit row, but the read path remains invisible in the monitoring table — meaning a latency regression on the hot path would surface only through end-user complaints or an external synthetic monitor, not through an ADR-declared metric and alert.",
-    "recommendation":"Add a monitoring row: metric = redirect read-path latency (p95), target = < 50 ms (@threshold:PRD.01.perf.redirectp95), alert threshold = >= 50 ms sustained over a calibration window (e.g., 2 min). This closes the observability gap on the primary SLO without requiring a new system — the same KV client instrumentation that reports commit latency can report read latency."},
-   {"id":"OPS-P2-2","priority":"P2","check":"C2",
-    "location":"§7 Implementation Assessment — Monitoring baseline",
-    "message":"Visit-count reconciliation lag has no monitoring row or alert threshold. BDD.01.03.a7ad establishes a 60 s reconciliation budget and the ADR acknowledges reconciliation logging as the durability backstop for off-path dropped increments (ADR.01.05.9107, §3 off-path increment). A stuck or lagging reconciliation process would be silent under the current monitoring baseline: the only signal is confirmed-mapping loss (RPO) = any loss, which fires only after the failure has propagated to mapping durability — too late to act on a count-reconciliation fault. The consequence is undercounted visit metrics and a potential BRD.01.10.7d5a (visit count confirmed-write durable) violation without alerting.",
-    "recommendation":"Add a monitoring row: metric = reconciliation lag (age of oldest unresolved dropped-increment log entry), target = < 60 s (aligned to BDD.01.03.a7ad reconciliation budget), alert threshold = >= 60 s -> WARN. The reconciliation log already exists per the decision; instrumenting its oldest-entry age closes the observability gap with no architectural change."}
- ],
- "notes":"C1 satisfied by one-way exemption; voluntary 7-step runbook is present and operationally sound (fixer resolved OPS-P3-001). Write-conflict alert threshold is now quantified at > 5 conflicts/min over 5 min (fixer resolved OPS-P3-002). C3 satisfied by the 3-phase MVP sequencing with explicit ordering rationale. C4 satisfied by order-of-magnitude cost in §4 and §5. C5 N/A (non-toggleable one-way decision). Two P2 gaps remain: redirect read-path latency (primary SLO) and reconciliation-lag age are absent from the monitoring baseline."}
+{
+  "persona": "operator",
+  "lens": "operator",
+  "weight": 10,
+  "lens_score": 93,
+  "status": "BRANCH_COMPLETED",
+  "findings": [
+    {
+      "id": "OP-ADR-01-006",
+      "check": "C5",
+      "severity": "P3",
+      "section": "§7 Implementation Assessment — Monitoring baseline / MVP phases Phase 1",
+      "title": "synchronous_commit config-knob declaration still incomplete after fixer pass",
+      "detail": "The iteration-1 finding OP-ADR-01-003 (C5) asked for a full runtime-config declaration: parameter name, expected value(s), default, and configuration location. The fixer pass added a monitoring hook ('Config drift — alert if synchronous_commit deviates') which surfaces the parameter name but does not supply the expected value (e.g., on or remote_write), the default value, or the configuration location (e.g., postgresql.conf, or the managed-service parameter group path). C5 requires the full knob tuple so an operator can confirm the parameter is set correctly post-provisioning without consulting external documentation. The Phase 1 risk row still notes 'Synchronous mode silently degrades to async (breaks RPO=0)' — the monitoring hook catches drift after the fact, but no authoritative expected value is declared to anchor the alert threshold.",
+      "recommendation": "Expand the monitoring baseline entry for synchronous_commit to a C5 config-knob declaration inline: parameter name (synchronous_commit), expected value (on), default (off in many managed tiers — note the divergence), and configuration location (postgresql.conf or managed-service parameter group, as appropriate for the chosen platform). This lets an operator verify correctness at provisioning time, and anchors the config-drift alert to a named expected value rather than an implicit one."
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "persona": "chaos_engineer",
+  "lens_score": 88,
+  "findings": [
+    {
+      "id": "CE-001",
+      "priority": "P2",
+      "check": "C1",
+      "location": "§13 PRD.01.13.e661 (metric poisoning) / §10 / §11",
+      "message": "Of the three §13 risk rows that carry a real mitigation, PRD.01.13.e661 (automated repeat visits inflate adoption metrics) is the one that lacks two of the three C1 anchors. It has a §12/§14 ADR-deferral anchor (deferred to the adoption-metric-integrity / visit-observability ADR topic, §14 BRD.01.08.c478, now carrying 'lag (bounds per §12/§13)'), but there is NO §11 AC gate and NO §10 user-facing surface tied to it. The other three rows verify cleanly: 011a is anchored by the §11 'Destination-abuse control' + 'Screening fail-closed' gates, the §10 'shortening unavailable' message, and the §14 abuse-protection deferral; 385e is anchored by the §11 'Code-space capacity guard' gate, the §10 'Short-code space exhausted' message, and the §14 code-generation topic; d50d is anchored by the §11 'Data-protection deferral recorded' Compliance gate and the §12 PRD.01.12.04a7/59b7 constraints. e661 is the lone asymmetric row.",
+      "recommendation": "Either add a §11 AC confirming the metric-poisoning abuse case is recorded/owned for downstream resolution (mirroring the §11 'Data-protection deferral recorded' gate that anchors d50d), or accept e661 as a fully-deferred abuse case and document in the §13 row that the absence of a §10 surface and §11 gate is intentional for a deferred, no-user-facing-impact risk — so the asymmetry is a recorded decision rather than a structural omission."
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "review_run_id": "96b6555ca91c0559",
+  "review_run_id": "8354f093ce259948",
   "artifact_id": "EARS-01",
   "layer": "03_EARS",
   "personas_requested": [
@@ -9,552 +9,211 @@
     "chaos_engineer",
     "security_engineer"
   ],
-  "status": "PARTIAL_TIMEOUT",
-  "iteration": 5,
-  "current_phase": "re-review",
-  "created_at": "2026-06-08T11:06:30.221424+00:00",
-  "updated_at": "2026-06-08T13:53:25.337694+00:00",
+  "status": "CLOSED",
+  "iteration": 2,
+  "current_phase": "finalize",
+  "created_at": "2026-06-10T17:50:28.856166+00:00",
+  "updated_at": "2026-06-10T18:37:48.764581+00:00",
   "branches": {
     "requirements_specialist": {
-      "branch_id": "95de8a",
+      "branch_id": "87f3311026d0",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-08T13:44:30+00:00",
-      "lens_score": 82,
-      "findings_count": 5,
-      "ended_at": "2026-06-08T13:48:30+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:08:28.230192+00:00",
+      "ended_at": "2026-06-10T18:08:28.230192+00:00"
     },
     "tech_lead": {
-      "branch_id": "b52702",
+      "branch_id": "2581ef8ddc09",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-08T13:44:30+00:00",
-      "lens_score": 86,
-      "findings_count": 3,
-      "ended_at": "2026-06-08T13:48:30+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:08:46.318193+00:00",
+      "ended_at": "2026-06-10T18:08:46.318193+00:00"
     },
     "qa_lead": {
-      "branch_id": "eca8f9",
+      "branch_id": "889ca5de4db6",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-08T13:44:30+00:00",
-      "lens_score": 79,
-      "findings_count": 6,
-      "ended_at": "2026-06-08T13:48:30+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:09:16.622195+00:00",
+      "ended_at": "2026-06-10T18:09:16.622195+00:00"
     },
     "chaos_engineer": {
-      "branch_id": "3eb389",
+      "branch_id": "f06b68950438",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-08T13:44:30+00:00",
-      "lens_score": 84,
-      "findings_count": 2,
-      "ended_at": "2026-06-08T13:48:30+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:09:08.738194+00:00",
+      "ended_at": "2026-06-10T18:09:08.738194+00:00"
     },
     "security_engineer": {
-      "branch_id": "36a97c",
+      "branch_id": "a1d2e364966e",
       "status": "BRANCH_COMPLETED",
-      "attempt": 1,
-      "started_at": "2026-06-08T13:44:30+00:00",
-      "lens_score": 100,
-      "findings_count": 0,
-      "ended_at": "2026-06-08T13:48:30+00:00"
+      "attempt": 0,
+      "started_at": "2026-06-10T18:09:16.230195+00:00",
+      "ended_at": "2026-06-10T18:09:16.230195+00:00"
     }
   },
   "transitions": [
     {
-      "ts": "2026-06-08T11:06:30.221435+00:00",
+      "ts": "2026-06-10T17:50:28.856176+00:00",
       "from": null,
       "to": "PREPARED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T11:15:52.275233+00:00",
+      "ts": "2026-06-10T18:05:38.183278+00:00",
       "from": "PREPARED",
       "to": "FANOUT_STARTED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T11:18:00.340333+00:00",
+      "ts": "2026-06-10T18:08:28.230192+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:requirements_specialist"
+      "scope": "branch:requirements_specialist",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:18:00.340333+00:00",
+      "ts": "2026-06-10T18:08:28.230192+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:requirements_specialist",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:08:46.318193+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
+      "scope": "branch:tech_lead",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:18:00.340333+00:00",
+      "ts": "2026-06-10T18:08:46.318193+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:09:16.622195+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
+      "scope": "branch:qa_lead",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:18:00.340333+00:00",
+      "ts": "2026-06-10T18:09:16.622195+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:qa_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:09:08.738194+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:18:00.340333+00:00",
+      "ts": "2026-06-10T18:09:08.738194+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-10T18:09:16.230195+00:00",
       "from": "FANOUT_STARTED",
       "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
+      "scope": "branch:security_engineer",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:21:55.253795+00:00",
+      "ts": "2026-06-10T18:09:16.230195+00:00",
       "from": "BRANCH_RUNNING",
       "to": "BRANCH_COMPLETED",
-      "scope": "branch:requirements_specialist"
+      "scope": "branch:security_engineer",
+      "reconciled": true
     },
     {
-      "ts": "2026-06-08T11:21:55.253795+00:00",
+      "ts": "2026-06-10T18:16:11.338147+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-10T18:16:11.338168+00:00",
       "from": "BRANCH_RUNNING",
       "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
+      "scope": "run"
     },
     {
-      "ts": "2026-06-08T11:21:55.253795+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T11:21:55.253795+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:21:55.253795+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:27:19.252520+00:00",
+      "ts": "2026-06-10T18:37:48.764536+00:00",
       "from": "BRANCH_COMPLETED",
       "to": "FANIN_REDUCED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "BRANCH_COMPENSATING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "BRANCH_COMPENSATING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "BRANCH_COMPENSATING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T11:36:28.052577+00:00",
-      "from": "BRANCH_COMPENSATING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:36:28.052577+00:00",
-      "from": "BRANCH_COMPENSATING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:36:28.052577+00:00",
-      "from": "BRANCH_COMPENSATING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T11:45:55.851318+00:00",
-      "from": "BRANCH_COMPENSATING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:48:29.715649+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:52:02.707061+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T11:52:02.707061+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T11:52:02.707061+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T11:52:02.707061+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:52:02.707061+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T11:56:23.529350+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-08T12:13:59.000000+00:00",
+      "ts": "2026-06-10T18:37:48.764559+00:00",
       "from": "FANIN_REDUCED",
-      "to": "BRANCH_COMPLETED",
-      "scope": "run",
-      "note": "fixer iteration 2 complete (advisory-only): 0 P0/P1, so P2/P3 applied deterministically without lens validation; 6 findings fixed, 8 queued (STY03 word-ceiling). No BRANCH_COMPENSATING \u2014 no blocking patches to validate."
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run",
-      "note": "iteration 3 re-audit fan-out (fresh-audit policy: scores recomputed independently)"
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T12:59:16+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "PRE_SYNTH_CHECKPOINT",
-      "scope": "run",
-      "note": "break-circuit checkpoint: elapsed 327s < SOFT_DEADLINE 1500s; proceed to synthesizer"
-    },
-    {
-      "ts": "2026-06-08T13:01:00+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
-      "scope": "run",
-      "note": "iteration 3 synthesizer reduce: combined FAIL; structural FAIL (STRUCT-001 malformed 5391a/5391b IDs) + content 82<90 + 1 P1 (MERGED-P1-001 abuse-case line pair). 15 content findings (1 P1 / 7 P2 / 7 P3), 3 structural. Quorum met (5/5)."
-    },
-    {
-      "ts": "2026-06-08T13:11:11.415026+00:00",
-      "from": "FANIN_REDUCED",
-      "to": "PARTIAL_TIMEOUT",
+      "to": "SYNTHESIZED",
       "scope": "run"
     },
     {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run",
-      "note": "iteration 4 re-audit fan-out (fresh-audit policy: scores recomputed independently; non-standard entry status logged)"
-    },
-    {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:19:57.267757+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:23:41.102439+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "PRE_SYNTH_CHECKPOINT",
-      "scope": "run",
-      "note": "break-circuit checkpoint: elapsed 224s < SOFT_DEADLINE 1500s; proceed to synthesizer"
-    },
-    {
-      "ts": "2026-06-08T13:29:34.852296+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
-      "scope": "run",
-      "note": "iteration 4 synthesizer reduce: combined FAIL; structural FAIL (STRUCT-001 malformed 5391a/5391b IDs, unresolved from it3) + content 83<90; blocking_findings_count=1 (structural only, no content P1 this iteration \u2014 prior MERGED-P1-001 abuse-pair RESOLVED). 16 reduced findings (1 P1 structural / 1 advisory / 9 P2 / 6 P3). Quorum 5/5."
-    },
-    {
-      "ts": "2026-06-08T13:31:30.035295+00:00",
-      "from": "FANIN_REDUCED",
-      "to": "PARTIAL_TIMEOUT",
-      "scope": "run"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANOUT_STARTED",
-      "scope": "run",
-      "note": "iteration 5 re-audit fan-out (fresh-audit policy: scores recomputed independently; entry status BRANCH_COMPLETED \u2014 standard re-audit-after-fixer)"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:44:30+00:00",
-      "from": "FANOUT_STARTED",
-      "to": "BRANCH_RUNNING",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:requirements_specialist"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:tech_lead"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:qa_lead"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:chaos_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_RUNNING",
-      "to": "BRANCH_COMPLETED",
-      "scope": "branch:security_engineer"
-    },
-    {
-      "ts": "2026-06-08T13:48:30+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "PRE_SYNTH_CHECKPOINT",
-      "scope": "run",
-      "note": "break-circuit checkpoint: elapsed 499s < SOFT_DEADLINE 1500s; proceed to synthesizer"
-    },
-    {
-      "ts": "2026-06-08T13:52:29+00:00",
-      "from": "BRANCH_COMPLETED",
-      "to": "FANIN_REDUCED",
-      "scope": "run",
-      "note": "iteration 5 synthesizer reduce: combined FAIL; structural PASS (STRUCT-001 malformed 539a/539b IDs RESOLVED) + content 84<90; blocking_findings_count=0 (no P0/P1 this iteration \u2014 prior MERGED-P1-001 abuse-pair remains RESOLVED). 16 reduced findings (6 P2 / 10 P3). Quorum met (5/5)."
-    },
-    {
-      "ts": "2026-06-08T13:53:25.337677+00:00",
-      "from": "FANIN_REDUCED",
-      "to": "PARTIAL_TIMEOUT",
+      "ts": "2026-06-10T18:37:48.764574+00:00",
+      "from": "SYNTHESIZED",
+      "to": "CLOSED",
       "scope": "run"
     }
   ],
-  "fanin": {
-    "iteration": 5,
-    "combined_status": "FAIL",
-    "content_score": 84,
-    "structural_status": "PASS",
-    "blocking_findings_count": 0,
-    "quorum_met": true,
-    "verdict_path": ".aidoc/review/03_EARS/EARS-01/verdict.json",
-    "report_path": ".aidoc/audit/03_EARS-audit.md"
-  },
-  "compensation_actions": [
+  "compensation_actions": [],
+  "events": [
     {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "branch": "security_engineer",
-      "reason": "MERGED-P1-001: harmful-destination screening absent \u2014 patch added db78/9671/5391/ee3f",
-      "action": "retry",
-      "result": "validated \u2014 no new P0/P1 (PASS)"
+      "ts": "2026-06-10T17:50:28.856357+00:00",
+      "kind": "dispatch:draft",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-ears"
     },
     {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "branch": "chaos_engineer",
-      "reason": "MERGED-P1-001: harmful-destination screening absent \u2014 patch added db78/9671/5391/ee3f",
-      "action": "retry",
-      "result": "validated \u2014 no new P0/P1 (PASS)"
+      "ts": "2026-06-10T18:05:38.179218+00:00",
+      "kind": "complete:draft",
+      "iteration": 1,
+      "exit_code": 0
     },
     {
-      "ts": "2026-06-08T11:34:12.988693+00:00",
-      "branch": "qa_lead",
-      "reason": "MERGED-P1-001: harmful-destination screening absent \u2014 patch added db78/9671/5391/ee3f",
-      "action": "retry",
-      "result": "validated \u2014 no new P0/P1 (PASS)"
+      "ts": "2026-06-10T18:05:38.183863+00:00",
+      "kind": "dispatch:review",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-ears-audit"
+    },
+    {
+      "ts": "2026-06-10T18:16:11.336445+00:00",
+      "kind": "complete:review",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T18:16:11.339511+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-ears-fixer"
+    },
+    {
+      "ts": "2026-06-10T18:30:15.483727+00:00",
+      "kind": "complete:fixer",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-10T18:30:15.486867+00:00",
+      "kind": "dispatch:re-review",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-ears-audit"
+    },
+    {
+      "ts": "2026-06-10T18:37:48.762327+00:00",
+      "kind": "complete:re-review",
+      "iteration": 2,
+      "exit_code": 0
     }
-  ],
-  "fix_iteration": 2
+  ]
 }

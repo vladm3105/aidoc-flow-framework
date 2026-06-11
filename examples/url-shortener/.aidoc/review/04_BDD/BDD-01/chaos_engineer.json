@@ -1,24 +1,5 @@
 {
   "persona": "chaos_engineer",
-  "lens_score": 86,
-  "findings": [
-    {
-      "id": "chaos_engineer-P2-001",
-      "priority": "P2",
-      "location": "§3.4 BDD.01.03.6934 (abuse/enumeration throttle) — no paired recovery scenario",
-      "check": "C3",
-      "message": "The anti-abuse/anti-enumeration failure path (6934, exercising EARS.01.03.b5fa mass-minting cooldown and EARS.01.03.d8a2 scraping block) injects the throttle/cooldown/block but has NO paired recovery scenario asserting return to normal mode. Both EARS lines describe a TRANSIENT cooldown ('deny further submissions under the cooldown ... during it'; 'block that source ... during it') — 'during it' bounds the window, so the source must resume normal service after the cooldown expires. Every other failure injection in §3.3 (reputation 4df6->c826, link-store-redirect f44a->0759, link-store-write ed21->bcfb, visit-count 5f58->a7ad, pool 6f00->b3fe, conn-pool-saturation 1a55->dd27) is paired with a discrete restoration assertion; the abuse-throttle path is the only failure-injection class with no recovery pair. A cooldown that never lifts (or that is never tested as lifting) silently degrades a legitimate source that tripped a threshold, with no executable guarantee that throttling clears.",
-      "recommendation": "Add a recovery scenario: Given a source was throttled/blocked under the EARS.01.03.ab5e/c7e3 cooldown per BDD.01.03.6934 and the cooldown window has elapsed, When the source issues a within-rate submit/lookup, Then the Shortening API / Redirect Handler SHALL serve it normally (no throttle, no cooldown denial) and SHALL emit a cooldown-cleared event carrying the source identity and timestamp. Assert fully-operational restoration, mirroring the c826/0759/dd27 recovery pattern.",
-      "personas": ["chaos_engineer"]
-    },
-    {
-      "id": "chaos_engineer-P3-002",
-      "priority": "P3",
-      "location": "§3.1 BDD.01.03.40d7 / §3.2 BDD.01.03.842c (metrics audit-log write) — no audit-sink failure path",
-      "check": "beyond-checklist:audit-sink-failure",
-      "message": "Reasoning-frame paragraph: 'failure scenarios must be paired with recovery scenarios.' EARS.01.03.a17e mandates the Metrics Reporter write an audit record (caller identity, role-decision, timestamp) WITHIN 100 ms on every grant/deny. Scenarios 40d7 (granted) and 842c (denied) assert the audit WRITE on the happy path, but no scenario injects an audit-SINK failure (sink unreachable/slow beyond the 100 ms audit budget). The audit sink is an implicit managed dependency in the authorization path; without a defined behaviour, an unstated assumption governs whether an authZ decision proceeds when its mandatory audit write fails (fail-open: serve without record, vs fail-closed: deny). This is a residual unhandled-dependency-failure edge, raised P3 (beyond the C1-C5 EARS-line checklist; EARS.01.03.a17e is an event line, not an IF-unwanted line, so it carries no C1 obligation).",
-      "recommendation": "Either add an audit-sink-degraded scenario (sink slow/unreachable beyond the 100 ms budget) asserting the contracted behaviour (e.g., decision still recorded via durable buffer, or decision-and-audit are atomic), or confirm during ADR/SPEC that audit-sink failure is explicitly out of scope for this layer and note it so the gap is a decision rather than an omission.",
-      "personas": ["chaos_engineer"]
-    }
-  ]
+  "findings": [],
+  "lens_score": 100
 }

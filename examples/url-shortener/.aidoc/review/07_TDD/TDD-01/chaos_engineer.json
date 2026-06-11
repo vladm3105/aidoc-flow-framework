@@ -1,14 +1,30 @@
 {
   "persona": "chaos_engineer",
-  "lens_score": 88,
+  "lens_score": 83,
   "findings": [
     {
-      "id": "CHAOS-001",
-      "priority": "P2",
+      "id": "CE-1",
+      "severity": "P2",
+      "check": "C2",
+      "location": "§4 TDD.01.04.1a5d, TDD.01.04.2b6e / SPEC §6",
+      "summary": "The overload-shed load tests (resolve read-load `1a5d`, create-load `2b6e`) assert 'beyond a safe-overload margin the path fast-fails and sheds', but the 'safe-overload margin' is named only qualitatively in both SPEC §6 and TDD §4 — no concrete multiplier or absolute rate is defined. The read design-load anchors to ~10^6 links and @threshold:PRD.01.rate.redirectsustained, but the shed trip point (the margin above design load at which fast-fail must engage) has no number a test can target. A test asserting 'sheds beyond the margin' with no defined margin is a tautology: any shed point passes, including one that sheds at design load (false-negative on capacity regression) or one that never sheds before pool exhaustion.",
+      "recommendation": "Quantify the safe-overload margin in SPEC §6 as a concrete factor of design load (e.g., shed engages at >= K x sustained rate) and have `1a5d`/`2b6e` assert the bounded degraded/shed response at exactly that K, plus a paired assertion that p95 still holds AT design load (margin lower edge). Without the literal number these two type:performance cases cannot satisfy C2."
+    },
+    {
+      "id": "CE-2",
+      "severity": "P3",
       "check": "C1",
-      "location": "TDD §3 row @bdd: BDD.01.03.f44a; case TDD.01.04.7115",
-      "message": "The `get`-path degradation scenario (BDD.01.03.f44a) is encoded detection-only at the Link-Store boundary. Case 7115 asserts the failure is detected (StoreUnavailableError within 1 s, structured ERROR log) but no Link-Store case asserts the store's own recovery after the read path is restored. SPEC-01 §5 states the read-path error response as 'Surface StoreUnavailableError; redirect degrades fail-safe AND recovers when the store returns' — the 'recovers when the store returns' half (get resolving the known record again once the read path is restored) is a Link-Store-level guarantee distinct from the Redirect Handler's own recovery (BDD.01.03.0759, out of scope). Detection-only encoding allows a store that latches into a permanently-failing read state (e.g. a stuck circuit breaker or cached unavailability) to pass the suite while never recovering, producing silent permanent degradation of the redirect hot path.",
-      "recommendation": "Add a paired recovery case in test_link_store_kv.py: inject the read-path fault, assert get raises StoreUnavailableError (detection, as 7115), then clear the injected fault via the controllable adapter/toxiproxy and assert a subsequent get resolves the known record within the p95 budget (recovery). This is the get-path analog of the ec06/4e51 detection+recovery pairs already present for the write paths."
+      "location": "§4 TDD.01.04.81b4 / ADR.01.05.5896",
+      "summary": "Standby-loss durability halt (ADR.01.05.5896): `81b4` asserts DurabilityHaltError fail-closed (failure detected) and states 'the retry is retryable on standby recovery using bounded backoff' — but this is a property claim about retryability, not an executed recovery assertion. The test does not appear to restore the standby and assert put_mapping subsequently succeeds idempotently. Per C1 a chaos scenario needs both (a) failure detected AND (b) recovery when the failure clears actually exercised; here recovery is asserted by description, not by a restore-then-succeed step, so the impl could stay permanently halted (never re-admitting writes after standby returns) undetected.",
+      "recommendation": "Extend `81b4` (or add a paired e2e) to: inject standby loss -> assert DurabilityHaltError -> restore standby -> assert the retried identical put_mapping succeeds and the durability-halt signal clears. Mirror the degrade->recover pattern already present in `4d80`."
+    },
+    {
+      "id": "CE-3",
+      "severity": "P3",
+      "check": "beyond-checklist:retry-storm-not-exercised",
+      "location": "§4 TDD.01.04.81b4 / SPEC §6 (backoff-with-jitter)",
+      "summary": "SPEC §6 explicitly calls out 'bounded exponential backoff with jitter so a synchronized retry does not storm the recovering standby'. `81b4` asserts 'bounded backoff with jitter (no storm)' as a property of a single retry, but does not exercise the actual cascade: many DurabilityHalt'd writers retrying concurrently the moment the standby recovers. The retry-storm path (legitimate clients all backing off and re-firing in sync) is the named reliability risk and is the one condition the jitter exists to defend — yet it is asserted, not load-driven. An impl with backoff-without-jitter (or insufficient jitter) would pass `81b4` as written while still storming the recovering standby in production.",
+      "recommendation": "Add an integration case that halts N concurrent writers on standby loss, restores the standby, and asserts the retry arrival distribution is spread (no synchronized thundering herd) and the standby is not re-saturated on recovery — turning the jitter claim into an exercised assertion."
     }
   ]
 }

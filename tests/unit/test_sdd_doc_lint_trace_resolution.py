@@ -127,6 +127,109 @@ class TraceResolutionFloor(unittest.TestCase):
         )
         self.assertIn("BRD.01.07.ffff", trace_findings[0]["message"])
 
+    def test_downstream_tag_skipped(self):
+        """Downstream pointer (e.g. SPEC-01 → @tdd: TDD-01) skipped.
+
+        Forward references to layers further downstream are informational
+        tooling pointers, not upstream lineage. The necessary-upstream
+        contract is about UPSTREAM resolution; downstream tags may legitimately
+        point at artifacts that don't exist yet (cascade may not have run
+        the downstream layer). TRACE-RES-FIXUP-001 Bug 1.
+        """
+        spec_with_downstream_ref = textwrap.dedent(
+            """
+            ---
+            doc_id: "SPEC-01"
+            artifact_type: SPEC
+            layer: 6
+            ---
+            # SPEC-01
+
+            @spec: SPEC-01
+
+            ## §6 Downstream
+            TDD document: @tdd: TDD-01 (forward pointer; TDD layer not yet generated).
+            """
+        ).strip()
+        corpus = {
+            "docs/06_SPEC/SPEC-01.md": spec_with_downstream_ref,
+        }
+        findings = _run_lint(corpus)
+        trace_findings = [
+            f for f in findings if f["code"] == "TRACE-RES-001" and "@tdd:" in f["message"]
+        ]
+        self.assertFalse(
+            trace_findings,
+            f"downstream @tdd tag should be skipped, got {trace_findings}",
+        )
+
+    def test_self_tag_skipped(self):
+        """Self-tag (artifact citing its own doc id) skipped.
+
+        E.g. SPEC-01 emits `@spec: SPEC-01` as a self-identification marker;
+        this is not an upstream citation and doesn't need resolution.
+        TRACE-RES-FIXUP-001 Bug 1.
+        """
+        spec_with_only_self_tag = textwrap.dedent(
+            """
+            ---
+            doc_id: "SPEC-01"
+            artifact_type: SPEC
+            layer: 6
+            ---
+            # SPEC-01
+
+            Self-tag: @spec: SPEC-01
+
+            ## §1 Document Control
+            """
+        ).strip()
+        corpus = {
+            "docs/06_SPEC/SPEC-01.md": spec_with_only_self_tag,
+        }
+        findings = _run_lint(corpus)
+        trace_findings = [f for f in findings if f["code"] == "TRACE-RES-001"]
+        self.assertFalse(
+            trace_findings,
+            f"self-tag should be skipped, got {trace_findings}",
+        )
+
+    def test_sibling_reference_not_skipped(self):
+        """Same-layer cross-doc reference (e.g. SPEC-02 → @spec: SPEC-01) still resolves.
+
+        Sibling references are real upstream lineage within a layer (a SPEC
+        amending or building on another SPEC), not self-tags. The skip rule
+        must use doc_id equality (exact match), not layer equality.
+        TRACE-RES-FIXUP-001 Bug 1 / Fix 1 sibling-NOT-skipped case.
+        """
+        spec_02_referencing_missing_sibling = textwrap.dedent(
+            """
+            ---
+            doc_id: "SPEC-02"
+            artifact_type: SPEC
+            layer: 6
+            ---
+            # SPEC-02
+
+            @spec: SPEC-02
+
+            ## §4 Builds on
+            Extends @spec: SPEC-01 (sibling — must resolve to an existing SPEC-01 doc).
+            """
+        ).strip()
+        corpus = {
+            "docs/06_SPEC/SPEC-02.md": spec_02_referencing_missing_sibling,
+            # SPEC-01 intentionally absent → sibling reference should fire TRACE-RES-001
+        }
+        findings = _run_lint(corpus)
+        trace_findings = [
+            f for f in findings if f["code"] == "TRACE-RES-001" and "SPEC-01" in f["message"]
+        ]
+        self.assertTrue(
+            trace_findings,
+            f"sibling reference to missing SPEC-01 should fire TRACE-RES-001, got {findings}",
+        )
+
     def test_index_document_skipped(self):
         """Index docs (artifact_type ending '-INDEX') are excluded from TRACE-RES."""
         index_doc = textwrap.dedent(

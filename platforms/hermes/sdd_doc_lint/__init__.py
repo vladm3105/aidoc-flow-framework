@@ -864,9 +864,9 @@ def _check_trace_resolution(
     doc_re: re.Pattern,
     elem_re: re.Pattern,
 ) -> list[Finding]:
-    """TRACE-RES-001 — every emitted ``@<layer>: <ID>`` tag in the corpus
-    resolves on disk (the target document exists AND the cited element ID
-    is present in that document).
+    """TRACE-RES-001 — every emitted UPSTREAM ``@<layer>: <ID>`` tag in
+    the corpus resolves on disk (the target document exists AND the cited
+    element ID is present in that document).
 
     Backs the framework's necessary-upstream contract
     (NECESSARY-UPSTREAM-001): the structural floor enforces resolution
@@ -877,14 +877,19 @@ def _check_trace_resolution(
       * Index documents (frontmatter ``artifact_type: <X>-INDEX``) — they
         intentionally carry no trace tags.
       * Placeholder / malformed tag values — covered by PH01 / ID01.
-      * Entire rule disabled when ``SDD_LINT_SKIP_TRACE_RES=1`` — temporary
-        bypass for migration of pre-NECESSARY-UPSTREAM-001 corpora that
-        carry orphan cumulative-trace tags. Tracked in
-        ``plans/TRACE-RES-FIXUP-001-PLAN.md`` (downstream-skip + url-shortener
-        corpus regen). Do NOT rely on this in production CI.
+      * Downstream tags (tags whose layer-number is greater than the
+        artifact's own layer-number). The necessary-upstream contract is
+        about UPSTREAM lineage; downstream pointers are informational
+        forward references that may point at layers the cascade hasn't
+        produced yet. Per TRACE-RES-FIXUP-001 Fix 1.
+        Self-tags (same layer as artifact, doc_id matches artifact's own
+        doc_id) resolve naturally via doc_index — no explicit skip needed.
+        Sibling references (same layer, different doc_id) still resolve
+        against doc_index — they are real upstream lineage within a layer.
     """
-    if os.environ.get("SDD_LINT_SKIP_TRACE_RES") == "1":
-        return []
+    # Map artifact code → layer number for upstream/downstream comparison.
+    layer_number = {code: layer["number"] for code, layer in layers.items()}
+
     doc_index: dict[str, str] = {}
     element_index: dict[str, str] = {}
     for rel, text in corpus:
@@ -913,8 +918,25 @@ def _check_trace_resolution(
         fm = _extract_frontmatter(text)
         if fm and str(fm.get("artifact_type") or "").strip().endswith("-INDEX"):
             continue
+        # Derive artifact's own layer-number for downstream-skip comparison.
+        artifact_code = ""
+        if fm:
+            artifact_code = str(fm.get("artifact_type") or "").strip().upper()
+        if not artifact_code:
+            doc_id_str = str(fm.get("doc_id") or "").strip().strip('"').strip("'") if fm else ""
+            m_pfx = re.match(r"^([A-Z]+)-", doc_id_str)
+            if m_pfx:
+                artifact_code = m_pfx.group(1)
+        my_layer_n = layer_number.get(artifact_code, 0)
+
         for i, line in enumerate(text.splitlines(), 1):
             for m in _TAG.finditer(line):
+                tag_layer = m.group(1).upper()
+                tag_layer_n = layer_number.get(tag_layer, 0)
+                # Skip downstream tags: forward pointers to layers below the
+                # artifact's own layer. Per TRACE-RES-FIXUP-001 Fix 1.
+                if my_layer_n and tag_layer_n and tag_layer_n > my_layer_n:
+                    continue
                 value = m.group(2)
                 if not (doc_re.match(value) or elem_re.match(value)):
                     continue

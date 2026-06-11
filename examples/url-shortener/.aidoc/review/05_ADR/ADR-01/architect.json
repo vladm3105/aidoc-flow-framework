@@ -2,24 +2,7 @@
   "persona": "architect",
   "lens": "architect",
   "weight": 35,
-  "lens_score": 95,
-  "findings": [
-    {
-      "id": "ARCH-P3-1",
-      "priority": "P3",
-      "check": "C1",
-      "location": "§3 Decision (ADR.01.03.5c3c)",
-      "message": "The lead decision sentence ('Persist link records in a single durable, transactional key-value store keyed by short code.') is a clean single-sentence imperative and satisfies C1, but it is immediately followed by four further imperative sentences (atomic conditional write, durable-commit-before-acknowledge, primary-key read, off-path increment) in the same paragraph. These are sound and in-scope but blur which clause is THE binding decision versus its consequent write semantics.",
-      "recommendation": "Keep the first imperative as the standalone bolded decision and demote the four elaborating imperatives to a 'Decision semantics' sub-list (the §3 'Decision semantics' block already does this for reversibility/idempotency/trust-boundary). Optional precision nicety; the decision is already implementer-bindable as written."
-    },
-    {
-      "id": "ARCH-P3-2",
-      "priority": "P3",
-      "check": "beyond-checklist:scope-bundling",
-      "location": "§3 Decision (ADR.01.03.1050 trust-boundary auth) and §6 (ADR.01.03.0db1 data-at-rest)",
-      "message": "§2 scopes this ADR to 'only the storage substrate and its write semantics — not the cache, code generator, or replication model.' The per-service-principal auth/TLS decision (1050) and provider-managed envelope-encryption decision (0db1) are adjacent security postures bound here. They are legitimately store-coupled and well-bounded, so this is not P1/P2 scope creep, but a future reader could read them as decisions exceeding the stated 'storage substrate and write semantics' charter.",
-      "recommendation": "Add one clause to the §2 scope statement explicitly admitting the store's trust boundary and at-rest-encryption posture into scope (e.g. '...and the store's authentication and at-rest-encryption posture'), so the charter matches what §3/§6 actually decide. No decision change required."
-    }
-  ],
-  "notes": "Re-audit it.2: prior C4 P2 (missing reversibility) is RESOLVED — §3 ADR.01.03.f5f5 now classifies one-way with rationale. C1-C5 all pass; 3 alternatives with concrete reject rationales; gains+gives-up explicit; KV-conditional-write assumption surfaced in §7 Phase-1 risk. Two P3 precision nits only."
+  "lens_score": 100,
+  "status": "BRANCH_COMPLETED",
+  "findings": []
 }

@@ -12,6 +12,39 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Claude Code plugin 0.13.0 → 0.13.1 (TRACE-RES-FIXUP-001)
+
+- **Lint rule semantic fix (Fix 1).** `_check_trace_resolution` in
+  `tools/sdd_doc_lint/__init__.py` now skips downstream tags (tags whose
+  layer-number is greater than the artifact's own layer-number).
+  Downstream pointers are informational forward references (e.g. SPEC-01
+  emitting `@tdd: TDD-01` before TDD-01 exists); they are not part of
+  the necessary-upstream lineage being enforced. Self-tags resolve
+  naturally via `doc_index`; sibling references (same layer, different
+  doc_id) still resolve. Synced to both vendored copies
+  (`platforms/claude-code-plugin/sdd_doc_lint/` + `platforms/hermes/sdd_doc_lint/`).
+- **url-shortener example corpus regenerated (Fix 2).** Six layers
+  re-authored under the post-NECESSARY-UPSTREAM-001 contract via cascade
+  `--from-layer=prd --to-layer=tdd --force` (5h 1m wall clock,
+  18,072s). Final scores all PASS: PRD-01 92, EARS-01 94, BDD-01 91
+  (iter-3), ADR-01 96, SPEC-01 97 (iter-3 lifted from 89), TDD-01 90
+  (iter-1). The regenerated corpus passes
+  `python3 -m sdd_doc_lint examples/url-shortener/docs/` with zero
+  `TRACE-RES-001` findings (4 pre-existing STY02 size warnings remain
+  but are non-blocking).
+- **Temporary `SDD_LINT_SKIP_TRACE_RES=1` bypass removed (Fix 3).** The
+  env-var early-return added during TDD-RT-001 to unblock live cascade
+  verification is gone. The new lint-rule semantics (Fix 1) + the
+  regenerated corpus (Fix 2) together eliminate the need for the
+  bypass.
+- New `plans/FRAMEWORK-TODO.md` (seeded as Tier 2 of the
+  example-driven feedback pipeline introduced by FRAMEWORK-FEEDBACK-LOG-001
+  / PR #124): captures 8 framework-improvement items discovered during
+  the NECESSARY-UPSTREAM-001 → TDD-RT-001 → TRACE-RES-FIXUP-001 sequence.
+- Plugin PATCH (`0.13.0 → 0.13.1`) — lint-rule semantic fix.
+- No `framework/**` change — the example corpus regeneration is data,
+  not spec; no GATE-SPEC trigger.
+
 ### Changed — Framework Spec 0.16.1 → 0.17.0 (FRAMEWORK-FEEDBACK-LOG-001)
 
 - **New governance Principle 9** in `DOC_GOVERNANCE_CORE.md`:

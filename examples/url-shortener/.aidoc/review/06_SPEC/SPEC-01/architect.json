@@ -1,5 +1,15 @@
 {
   "persona": "architect",
-  "lens_score": 100,
-  "findings": []
+  "lens_score": 96,
+  "findings": [
+    {
+      "id": "ARCH-001",
+      "priority": "P3",
+      "check": "C5",
+      "location": "Section 8 — Upstream ADR tag line; recovery behavior asserted in Section 5 (degraded→recovered, RTO ≤ 30 min) and Section 7 (degraded-mode and recovery contract)",
+      "message": "The SPEC asserts RTO-bounded recovery (Section 5 state transition 'from degraded to recovered — resolves resume within RTO ≤ 30 min'; Section 7 contract 'Store degradation returns a bounded error, then recovers within RTO'), which traces to ADR-01 consequence ADR.01.05.cb92 (mature recovery tooling — PITR + standby promotion meeting RTO ≤ 30 min, BDD.01.03.44fe). That ADR element is the named upstream commitment for the recovery claim, but it is not carried in the Section 8 Upstream ADR tag line, whereas the sibling consequences (.47a1, .454a, .5896, .7dde, .2740) are. The section-level trace for the recovery behavior is therefore thinner than for the other inherited commitments. No contradiction — the behavior is consistent with ADR-01; only the explicit upstream linkage is absent.",
+      "recommendation": "Add @adr: ADR.01.05.cb92 to the Section 8 Upstream ADR list so the RTO-recovery behavior in Section 5 and the recovery contract in Section 7 trace explicitly to the ADR consequence that committed PITR + standby promotion for RTO ≤ 30 min.",
+      "personas": ["architect"]
+    }
+  ]
 }

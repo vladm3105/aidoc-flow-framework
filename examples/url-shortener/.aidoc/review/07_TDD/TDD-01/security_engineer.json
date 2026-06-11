@@ -1,14 +1,22 @@
 {
   "persona": "security_engineer",
-  "lens_score": 86,
+  "lens_score": 84,
   "findings": [
     {
-      "id": "SE-001",
-      "priority": "P2",
+      "id": "SE-1",
+      "severity": "P2",
+      "check": "C3",
+      "location": "§4 TDD.01.04.f82b, TDD.01.04.093c",
+      "summary": "Audit-emission tests for the read_counts deny path (f82b) and mark_taken_down takedown/re-mark (093c) assert only that an audit event is emitted, not the full field set. SPEC §5 'Audit events' requires every event carry {subject, action, resource, decision, timestamp, reason}; only the read_original_url test (e71a) asserts that field set. A test that checks emission but not field completeness passes even if the deny/takedown event omits subject, decision, or reason — defeating the traceability the SPEC names (detecting unauthorized takedown / denied count read).",
+      "recommendation": "Promote f82b and 093c to type: security and assert the full {subject, action, resource, decision, timestamp, reason} field set on their audit events, matching e71a. For 093c, assert the takedown event identifies the acting subject and decision so an unauthorized takedown of a live code is attributable."
+    },
+    {
+      "id": "SE-2",
+      "severity": "P2",
       "check": "C2",
-      "location": "TDD-01 §4 Test Cases — Unit/Integration; cases cf05/54b8/1bc0 (get), 74e8/9528/ab25 (increment_visits)",
-      "message": "Input-fuzzing now covers the claim (8504) and set_status (fc47) code arguments with encoding-edge/injection classes, but two public-interface boundary inputs remain unfuzzed. (1) get(code) is exercised only on known/unknown/taken_down equivalence classes — no malformed/oversized/encoding-edge code (unicode NFC/NFD, percent-encoded, embedded NUL/control char, base62 homoglyph). A code that normalizes differently on the read path than on the claim path is a lookup-bypass / key-confusion surface at the trust boundary. (2) increment_visits(code, delta) has no fuzz on either argument — notably delta (negative/zero/overflow-width int), which can silently violate the SPEC §4 monotonic visit_count contract, and code on the same encoding-edge classes. Both are public Protocol methods that cross the substrate trust boundary, so per C2 each needs >=1 fuzzing case.",
-      "recommendation": "Add a get-fuzz unit case (malformed/oversized/encoding-edge/homoglyph code -> ValueError before substrate read, or deterministic None, never a normalized-key collision with a claimed code) and an increment_visits-fuzz unit case (negative/zero/overflow delta rejected or no-op preserving monotonicity; encoding-edge code rejected before the native increment). Both belong in tests/unit/test_link_store.py, mirroring the 8504/fc47 input matrix."
+      "location": "§4 increment_visit (TDD.01.04.3c6f / 4d70 / d609); SPEC §3 delivery contract, DFD Count path",
+      "summary": "The increment_visit operation crosses a trust boundary (SPEC DFD 'Count path': code + event_id arriving off a durable async dispatch queue) but has no input-fuzzing test. d609 covers only producer/consumer version-skew (in-window vs out-of-window dead-letter); 4d8f and 81c3 fuzz the put_mapping URL and resolve/mark_taken_down ShortCode, but neither covers the event payload. A malformed/oversized/encoding-edge/injection event_id or code decoded from the transport is an un-fuzzed boundary input — the deserialization surface flagged by ADR-01's threat model is only tested for version skew, not for hostile payload content.",
+      "recommendation": "Add a type: security (CWE-20) fuzzing case on increment_visit: malformed/oversized/encoding-edge/injection event_id and code (and any decoded event field) are rejected to dead-letter before mutating VisitCountRecord, never best-effort decoded. Also fuzz put_mapping's ShortCode parameter (currently only resolve/mark_taken_down ShortCode is fuzzed by 81c3, though §5 names the allowlist as a precondition on put_mapping too)."
     }
   ]
 }

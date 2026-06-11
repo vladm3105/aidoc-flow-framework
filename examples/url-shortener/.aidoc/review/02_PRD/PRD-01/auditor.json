@@ -1,0 +1,22 @@
+{
+  "persona": "auditor",
+  "lens_score": 88,
+  "findings": [
+    {
+      "id": "AUD-001",
+      "priority": "P3",
+      "check": "C4",
+      "location": "§15 Glossary",
+      "message": "Domain-specific terms introduced in the PRD body are missing from the glossary: Service Owner, Link Submitter, Link Visitor (personas, central to §4/§6/§8), Conflict-free and Collision (scope/risk language, §2/§3/§10/§12), Fail-closed (security stance, §7/§9/§11/§13), RPO/RTO (durability targets, §11/§12), Reputation source (external dependency, §7/§9/§11/§13), Abuse case (risk model, §7/§13), Launch gate/promotion (acceptance workflow, §11), Capacity error (error message, §9/§10/§11), cold-start (measurement scope note, §5/§9), re-screening/re-screen (deferral, §7/§13). A PRD glossary must cover all domain terms introduced for product reader clarity.",
+      "recommendation": "Expand §15 Glossary to include all domain-specific terms and roles referenced in the PRD body. Include: persona definitions (Service Owner, Link Submitter, Link Visitor), technical design concepts (Conflict-free, Fail-closed, RPO/RTO, Reputation source, cold-start), product concepts (Visit count variants, Capacity error), and process terms (Launch gate, Abuse case). This ensures EARS/downstream consumers have a consistent reference for product terminology."
+    },
+    {
+      "id": "AUD-002",
+      "priority": "P3",
+      "check": "C5",
+      "location": "§1 Document Control, line 31 + frontmatter line 17",
+      "message": "Self-assessed EARS readiness score (92/100) appears in both the Document Control table and the YAML frontmatter (ears_ready_score: 92). Per C5 check rule, self-claimed scores must NOT be used as the audit verdict — the synthesizer determines the verdict from aggregated lens findings across all reviewers.",
+      "recommendation": "Confirm understanding: this self-assessed score is a metadata field documenting the author's confidence, not a binding quality gate. The final readiness verdict will be synthesized from the auditor, domain reviewer, and architect lens scores. The score entry may remain as historical record; it does not override the formal audit verdict."
+    }
+  ]
+}
