@@ -65,7 +65,7 @@ Tag legend:
 
 ## Cluster design — 5 child PRs
 
-### PR-A — Harness + lint workflow hygiene (4 items, smallest, ships first)
+### PR-A — Harness + lint workflow hygiene (4 items, medium, ships first)
 
 **Theme:** plumbing fixes; no spec change.
 
@@ -76,7 +76,7 @@ Tag legend:
 - Add `--skip-lint-smoke` flag to `tests/scripts/test-acceptance.sh` (closes item 1, retires the `SDD_LINT_SKIP_TRACE_RES=1` pattern).
 - Document the cleanup-then-`--force` pattern in `tests/ACCEPTANCE.md` or surface in the harness output when tree-safety FAILs after `rm -rf` (closes item 2).
 - Consolidate `sync-vendored.sh` + `sync-plugin-framework.sh` into one sync-direction-aware script; or add `DO NOT EDIT — synced from canonical` banner to each vendored module (closes item 3).
-- Patch audit + fixer SKILL prompts to escape `|` inside code spans within markdown table cells; or move shell-pipe content out of cells (closes item 4 — currently masked by `examples/<*>/.aidoc/` markdownlint exclude).
+- Patch audit + fixer SKILL prompts to escape `|` inside code spans within markdown table cells; or move shell-pipe content out of cells (closes item 4 — currently masked by `examples/<*>/.aidoc/` markdownlint exclude). **Scope reality:** 8 audit + 8 fixer SKILL prompts in the plugin = 16 file edits (plus any Hermes mirrors). This dominates PR-A's effort; the other 3 items are quick.
 
 **Touches:** `tests/scripts/test-acceptance.sh`, `tests/ACCEPTANCE.md`, `tools/sync-*.sh`, vendored modules' top-of-file comments, audit/fixer SKILL prompts.
 
@@ -162,12 +162,13 @@ Tag legend:
 - Default (PRD subsection) is MINOR but the §scope_this_cycle field becomes a mandatory part of every future PRD; existing PRDs need backfill. Mitigation: ADR auditor only checks the field if it exists (graceful fallback for legacy PRDs); url-shortener PRD gets backfill in PR-D itself.
 - THRESHOLD-RES-001 rule may surface many findings in legacy corpora (7 unbound in url-shortener already). Mitigation: same env-var bypass pattern used by TRACE-RES-001 (`SDD_LINT_SKIP_THRESHOLD_RES=1`) during migration; remove after corpora regen.
 - Alternative 02b_DECOMP layer needs user approval and a precursor design-doc PR before plan-drafting. **Do NOT default to this**; needs explicit user opt-in.
+- **Cascade-noise risk from PR-B recalibration:** if PR-B lands before PR-D, the PR-D verification cascade runs under PR-B's stricter audit rules. The threshold-gate findings (intended signal) may mix with recalibration noise (collateral). Mitigation: PR-D's verification cascade uses `--from-layer=bdd --to-layer=tdd` only — narrows the cascade to the layers where threshold gates fire, isolating PR-D's signal from PR-B's full-cascade behaviour.
 
 **Recommendation:** brainstorm subsection-shape with the user BEFORE drafting the impl plan; confirm subsection approach is acceptable; if user prefers the 02b layer, escalate to a precursor design PR.
 
 ---
 
-### PR-E — IPLAN sub-types (code-build vs deploy) (1 item)
+### PR-E — IPLAN sub-types (code-build vs deploy) (1 item, smallest)
 
 **Theme:** IPLAN template variant + auditor section-set dispatch.
 
@@ -196,13 +197,25 @@ Tag legend:
 PR-A (harness/lint hygiene)         ← independent; ships first
 PR-C (spec/registry hygiene)        ← independent; ships parallel with PR-A
 PR-B (review-quality calibration)   ← independent of A+C; ships after either
-PR-D (decomp + threshold gates)     ← REQUIRES PR-C (threshold ID pattern)
+DECISION-GATE-D                     ← user explicitly approves subsection-vs-02b before PR-D plan opens
+PR-D (decomp + threshold gates)     ← REQUIRES PR-C (threshold ID pattern); REQUIRES decision gate
 PR-E (IPLAN subtypes)               ← independent; ships any time (weak benefit from PR-B's recalibrated playbooks but no hard dependency)
 ```
 
-**Recommended order:** PR-A → PR-C → PR-B → PR-D → PR-E. Each PR is independently testable + revertible; the master plan ensures dependency-correct sequencing.
+**Recommended order:** PR-A → PR-C → PR-B → DECISION-GATE-D → PR-D → PR-E. Each PR is independently testable + revertible; the master plan ensures dependency-correct sequencing.
 
-## Child PR naming convention
+### DECISION-GATE-D (mandatory checkpoint before PR-D plan opens)
+
+PR-D's component-decomposition gate has two design alternatives with very different blast radii:
+
+| Option | Framework version impact | Touches | Recommendation |
+|---|---|---|---|
+| **A (default)**: PRD `§scope_this_cycle` subsection | MINOR | `PRD-TEMPLATE.yaml` + ADR-author/auditor SKILLs | **Default** — recommended unless user prefers B |
+| **B (alternative)**: new `02b_DECOMP` layer artifact class | **MAJOR** | New layer + all 45 playbooks need re-eval + conformance tests + ID_NAMING_STANDARDS + REPO_STRUCTURE | Requires precursor design-doc PR + brainstorming before plan |
+
+**Procedure:** before PR-D's branch opens, the user is asked to confirm A or B explicitly. If A: PR-D's plan proceeds directly. If B: a precursor design PR (`feat/cleanup-pr-d-decomp-design`) opens first to brainstorm + spec the 02b layer; PR-D's impl waits on that design landing.
+
+## Child PR naming convention + branching basis
 
 Branch names: `feat/cleanup-pr-{a|b|c|d|e}-<theme-slug>`. Concrete branches:
 
@@ -212,11 +225,29 @@ Branch names: `feat/cleanup-pr-{a|b|c|d|e}-<theme-slug>`. Concrete branches:
 - `feat/cleanup-pr-d-decomp-threshold-gates`
 - `feat/cleanup-pr-e-iplan-subtypes`
 
+**Branching basis: each child branches from `origin/main`, NOT from this branch.** Each PR is independently testable + revertible; chaining child branches off the cleanup-001 branch would couple them through git history even when the impl is conceptually independent. After this master plan PR (#128) merges, child PRs see the merged plan as part of main.
+
 Each child plan: `plans/CLEANUP-PR-{A..E}-<slug>-PLAN.md`. Each gets its own 2-cycle review per CLAUDE.md.
+
+## Cascade-cost budget
+
+The cleanup workstream's dominant cost is **live cascade re-runs**, not code edits. Each cascade against `examples/url-shortener/` takes 30 min (single-layer probe) to 5h (full PRD→IPLAN regen). Plan-level forecast:
+
+| PR | Cascade scope | Wall clock estimate |
+|----|--------------|---------------------|
+| PR-A | Smoke re-run, single layer (`--from-layer=brd --to-layer=brd` or equivalent) | ~30-60 min |
+| PR-B | Full cascade (`--from-layer=prd --to-layer=tdd`) to surface recalibrated audit behavior | ~5-6 h |
+| PR-C | EARS cascade (`--from-layer=ears --to-layer=ears`) to verify `@bdd:` slot removal | ~30-60 min |
+| PR-D | BDD + TDD cascade (`--from-layer=bdd --to-layer=tdd`) to surface threshold-gate findings without recalibration noise (per G6 above) | ~2-3 h |
+| PR-E | IPLAN cascade (`--from-layer=iplan --to-layer=iplan`) for subtype dispatch verification | ~30-60 min |
+| **Workstream gate** | Full cascade (`--from-layer=prd --to-layer=iplan`) to prove the system holds together post-cleanup | ~5-6 h |
+| **Total** | | **~13-18 hours cumulative wall clock** |
+
+Cascades run in background; the wall clock doesn't compete for active development time. But the budget should be acknowledged.
 
 ## Out of scope
 
-- Hermes parity catch-up — tracked in `plans/HERMES-BACKLOG.md` (H-4).
+- **Hermes parity catch-up — tracked in `plans/HERMES-BACKLOG.md` (H-4).** Forecast: each of the 5 cleanup PRs widens the plugin-Hermes gap by 1 MINOR-bump worth of spec change. Post-cleanup, Hermes will be ~5 MINOR-bumps behind plugin. A dedicated `HERMES-CATCHUP-001` PR (or staged set of PRs) follows this workstream — estimate 2-3 weeks of focused Hermes work to mirror PR-A through PR-E's spec changes + a fresh shared conformance run. The accumulated gap is deliberate per [[feedback_plugin_first_then_hermes]]; this plan accepts the gap as the cost of plugin-first sequencing.
 - New layer additions beyond IPLAN subtypes (item 17).
 - Sub-framework registry changes (UCX/gov/kb per CLAUDE.md user-global) — separate concern.
 - The `[skill]` doc-tdd C4 investigation (item 7) may close as wontfix during PR-B if the diagnostic shows no real issue.
@@ -356,12 +387,76 @@ Some items (#2, #6, #7, #11, #13) are LOW-priority and could close as wontfix-wi
 - **Findings:** 0 substantive. The plan is internally consistent;
   the 5-PR cluster design holds; dependencies are explicit; risks
   are documented per-PR; the workstream gate criteria are concrete.
-- **Verdict: CONVERGENCE.** Plan READY-FOR-PR.
+- **Verdict (Pass 3):** CONVERGENCE claimed at Pass 3. Subsequently overturned by Pass 4 — see below.
+
+### Pass 4 — user-prompted adversarial gap-review (post-PR-open)
+
+- **Date:** 2026-06-11T20:30:00Z
+- **Method:** user prompted "review the plan to identify any gaps" after
+  PR #128 opened. Adversarial cross-checks on Hermes debt accumulation,
+  cascade re-run cost, PR-A sizing reality (16 SKILL prompts), branch
+  basis for child PRs, decision-gate-D formalization, and PR-D
+  recalibration-noise risk.
+- **Findings (6 substantive — 0 MAJOR, 3 HIGH, 3 MED + 4 minor low-prio):**
+  - **G1 (HIGH):** Hermes debt accumulation not budgeted. 5 framework
+    PRs widen the plugin-Hermes gap by ~5 MINOR-bumps. *Patch:* Out of
+    scope section expanded — forecasts post-cleanup `HERMES-CATCHUP-001`
+    PR (or staged set) at 2-3 weeks; accepts the gap as plugin-first
+    sequencing cost per [[feedback_plugin_first_then_hermes]].
+  - **G2 (HIGH):** Cascade re-run cost not budgeted. 5 cascades × 30
+    min to 5h each = 13-18h cumulative wall clock. *Patch:* New
+    "Cascade-cost budget" section with per-PR scope + estimate table.
+  - **G3 (HIGH):** No formal decision gate before PR-D opens (subsection
+    vs 02b layer). *Patch:* PR sequence diagram updated with explicit
+    `DECISION-GATE-D` step + new sub-section formalizing the gate
+    procedure (user confirms A or B before child plan opens; if B, a
+    precursor design PR opens first).
+  - **G4 (MED):** MD056 fix scope undercounted. Plan called PR-A
+    "smallest" but the MD056 SKILL-prompt fix alone is 16 file edits.
+    *Patch:* PR-A re-labeled "medium"; PR-E re-labeled "smallest";
+    PR-A scope item 4 augmented with "Scope reality" sub-bullet
+    citing the 16-file count.
+  - **G5 (MED):** Branch basis for child PRs unclear (from main vs
+    from cleanup-001 branch). *Patch:* Section renamed to "Child PR
+    naming convention + branching basis"; explicit statement that
+    each child branches from `origin/main`, not from this branch.
+  - **G6 (MED):** PR-D recalibration-noise risk — if PR-B lands first,
+    PR-D's verification cascade runs under stricter audit rules; the
+    threshold-gate signal may mix with recalibration noise. *Patch:*
+    New risk row in PR-D's Risks section; mitigation = narrow
+    PR-D's verification cascade to `--from-layer=bdd --to-layer=tdd`
+    only.
+- **Minor gaps deferred (G7-G10):** strip-self-claimed-scores exhaustive
+  field list (defer to PR-B child plan); MD056 verification mechanic
+  (defer to PR-A child plan); master plan closure marker (cosmetic);
+  HANDOFF.md ownership in workstream gate (cosmetic — likely PR-E or
+  final cascade PR).
+- **Net structural change:** 6 in-place patches + new "Cascade-cost
+  budget" section + new "DECISION-GATE-D" procedure.
+- **Status:** Patches folded in pre-merge per "submit only final
+  versions" discipline. Plan PR #128 amended on the same branch.
 
 **Convergence trend:**
 
-| Pass | Found | MAJOR | MED | MIN |
-|---|---|---|---|---|
-| 1 | 5 | 0 | 4 | 1 |
-| 2 | 2 | 0 | 2 | 0 |
-| 3 | 0 | 0 | 0 | 0 |
+| Pass | Found | MAJOR | HIGH | MED | MIN |
+|---|---|---|---|---|---|
+| 1 | 5 | 0 | — | 4 | 1 |
+| 2 | 2 | 0 | — | 2 | 0 |
+| 3 | 0 | 0 | — | 0 | 0 |
+| 4 | 6 | 0 | **3** | **3** | (+4 deferred LOW) |
+
+**Lesson:** Pass 3's "CONVERGENCE" verdict was premature. A genuine
+adversarial Pass 4 (user-prompted) found 3 HIGH issues. The convergence
+indicator should be "user-prompted Pass-N surfaces zero substantive
+issues," not "self-Pass-N surfaces zero." Recorded in
+`plans/FRAMEWORK-TODO.md` for future plan-review skill update.
+
+### Pass 5 — convergence re-check after Pass 4 patches
+
+- **Date:** 2026-06-11T20:45:00Z
+- **Method:** re-read plan after Pass 4 patches; verify no new
+  contradictions introduced.
+- **Findings:** 0 substantive. The G1-G6 patches are additive (new
+  sections + augmentations to existing text); the cluster/dependency
+  graph is internally consistent post-patches.
+- **Verdict: CONVERGENCE (genuine this time).** Plan READY-FOR-MERGE.
