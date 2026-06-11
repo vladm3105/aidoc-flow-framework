@@ -215,7 +215,9 @@ id_patterns:
   document: "^[A-Z]+-\\d{2,}$"
   element: "^[A-Z]+\\.\\d{2,}\\.\\d{2,}\\.[a-f0-9]{4,8}$"
   # CLEANUP-PR-C item 12 — threshold keys distinct from element IDs.
-  # Format: TYPE.NN.<lowercase_category>.<lowercase_key> (e.g.
-  # PRD.01.perf.redirectp95). Lowercase categories distinguish from
-  # element IDs which carry a 4-hex hash.
-  threshold: "^[A-Z]+\\.\\d{2,}\\.[a-z_]+\\.[a-z0-9_]+$"
+  # Format: TYPE.NN.<lowercase_category>(.<lowercase_subkey>)+ — at
+  # minimum 4 dotted segments, optionally more for nested subkeys
+  # (e.g. PRD.01.perf.redirectp95 = 4 segments; PRD.01.auth.attempts.max
+  # = 5 segments). Lowercase category distinguishes from element IDs
+  # which carry digits in the section_id position.
+  threshold: "^[A-Z]+\\.\\d{2,}\\.[a-z_]+(?:\\.[a-z0-9_]+)+$"

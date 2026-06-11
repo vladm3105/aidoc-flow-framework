@@ -132,13 +132,16 @@ def _load_registry(registry: Path | None = None):
     return layers, re.compile(pats["document"]), re.compile(pats["element"])
 
 
-# CLEANUP-PR-C item 12: threshold pattern matches `TYPE.NN.<lowercase_category>.<lowercase_key>`
-# (e.g. `PRD.01.perf.redirectp95`). Lowercase categories distinguish thresholds
-# from 4-segment hex-hash element IDs. Mirrors `id_patterns.threshold` in
-# `framework/registry/LAYER_REGISTRY.yaml`; kept in sync there via the spec
-# contract. Stricter than the pre-0.18.0 inline pattern (which permitted
-# mixed-case categories).
-_THRESHOLD_FORM = re.compile(r"^[A-Z]+\.\d{2,}\.[a-z_]+\.[a-z0-9_]+$")
+# CLEANUP-PR-C item 12: threshold pattern matches
+# `TYPE.NN.<lowercase_category>(.<lowercase_subkey>)+` — at minimum 4 dotted
+# segments, optionally more for nested subkeys (e.g.
+# `PRD.01.auth.attempts.max` is 5 segments). Lowercase category
+# distinguishes thresholds from 4-segment hex-hash element IDs (which use
+# digits in the section_id position). Mirrors `id_patterns.threshold` in
+# `framework/registry/LAYER_REGISTRY.yaml`; kept in sync there via the
+# spec contract. Stricter than the pre-0.18.0 inline pattern (which
+# permitted mixed-case categories) but accepts N-segment subkeys.
+_THRESHOLD_FORM = re.compile(r"^[A-Z]+\.\d{2,}\.[a-z_]+(?:\.[a-z0-9_]+)+$")
 
 
 def detect_layer(path: Path, layers: dict) -> str | None:
