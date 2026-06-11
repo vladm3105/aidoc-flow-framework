@@ -3,8 +3,8 @@ name: trace-check
 description: "DEPRECATED in v0.4.0. Use `/aidoc-flow:doc-validator` traceability pass. This skill is a redirect stub and will be removed in v0.7.0."
 metadata:
   custom_fields:
-    version: "0.16.1"
-    framework_spec_version: "0.19.1"
+    version: "0.17.0"
+    framework_spec_version: "0.20.0"
     last_updated: "2026-05-31"
     skill_category: quality-assurance
     deprecated: true

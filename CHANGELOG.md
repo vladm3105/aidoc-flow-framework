@@ -12,6 +12,39 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.19.1 → 0.20.0 + Claude Code plugin 0.16.1 → 0.17.0 (CLEANUP-PR-D)
+
+Fifth and final child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128).
+Closes `plans/FRAMEWORK-TODO.md` items #15-16. Opens item #19 (Option B
+future). Resolves DECISION-GATE-D as Option A — subsection in PRD.
+
+- **Item 15** — `PRD-TEMPLATE.yaml` gains new OPTIONAL section §7b
+  `component_decomposition` between `scope_and_requirements` and
+  `user_stories`. Each component declares responsibility + named
+  thresholds (`full_id: PRD.NN.<cat>.<key>` per PR-C's threshold
+  regex). Section is `_required: false` — present only when downstream
+  cites `@threshold:`.
+- **Item 16** — new `sdd_doc_lint` TH-RES-001 rule (corpus-level,
+  citation-driven). Validates every downstream `@threshold:` citation
+  resolves to a `full_id:` entry in the host PRD's
+  `component_decomposition` section. P2 (missing section) and P1
+  (missing key) severities. New `tests/unit/test_threshold_resolution.py`
+  covers 4 cases.
+- **REVIEW_TEAM.md** §Operations gains a new "Threshold-resolution
+  gate" subsection documenting the rule + 4-downstream-audit-SKILL
+  ingest.
+- **Backward compat** — TH-RES-001 fires P2 on url-shortener PRD-01
+  (which has inline threshold definitions but no formal
+  `component_decomposition` section); this is **expected backward-
+  compat behavior**, not a regression. A future cascade re-run
+  populates the section.
+- **Item #19 (NEW, OPENED, DEFERRED)** — Option B promotion to a
+  first-class `02b_DECOMP` layer. Cataloged with "when to revisit"
+  criteria; impl waits until complex projects show Option A is
+  insufficient.
+- Framework MINOR (`0.19.1 → 0.20.0`) — new lint rule + new template
+  section + spec subsection. Plugin MINOR (`0.16.1 → 0.17.0`).
+
 ### Changed — Framework Spec 0.19.0 → 0.19.1 + Claude Code plugin 0.16.0 → 0.16.1 (CLEANUP-PR-E)
 
 Fourth child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128). Closes

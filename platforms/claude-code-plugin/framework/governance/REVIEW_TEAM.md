@@ -106,6 +106,29 @@ genuinely cleared the artifact must say *what* it cleared, otherwise
 the score is unsubstantiated. Filing any finding (P3 included)
 bypasses the rationale requirement — findings ARE the rationale.
 
+### Threshold-resolution gate (CLEANUP-PR-D item 16 / TH-RES-001)
+
+Every downstream `@threshold: PRD.NN.<category>.<key>` citation MUST
+resolve to a `full_id:` entry in the host PRD's
+`component_decomposition.components[].thresholds[]` section
+(PRD-TEMPLATE.yaml §7b). The doc-lint rule TH-RES-001 enforces this
+corpus-level invariant:
+
+- **P2 advisory** — host PRD has no `component_decomposition` section
+  but downstream cites `@threshold:` to it.
+- **P1 blocking** — host PRD has the section but the cited `full_id`
+  isn't declared.
+
+The rule is **citation-driven**: PRDs with no downstream threshold
+cites pass automatically (the section is OPTIONAL). The 4 downstream
+audit SKILLs (BDD/TDD/SPEC/ADR) ingest TH-RES-001 findings as
+blocking-findings sources via the structural-lint floor (per
+`REVIEW_REMEDIATION_FLOW.md` §"Structural floor checks").
+
+Component decomposition is currently a PRD subsection (Option A,
+2026-06-11). A future promotion to a first-class `02b_DECOMP` layer
+is tracked as Option B in `plans/FRAMEWORK-TODO.md` item #19.
+
 ### Fixer-introduced regressions (CLEANUP-PR-B item 10)
 
 A finding whose **location** matches a row in the previous iteration's

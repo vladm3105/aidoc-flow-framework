@@ -345,6 +345,13 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
     out: dict[str, int] = {}
     for key, body in doc.items():
         if isinstance(body, dict) and isinstance(body.get("_size_target"), int):
+            # CLEANUP-PR-D item 15: respect `_required: false` markers
+            # (e.g. PRD's component_decomposition is OPTIONAL — present
+            # only when downstream cites @threshold). Sections marked
+            # `_required: false` are excluded from STRUCT01 enforcement
+            # but still get STY02 size-budget enforcement.
+            if body.get("_required") is False:
+                continue
             out[key] = body["_size_target"]
     return out
 
@@ -1030,8 +1037,119 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
         _collect(target)
 
     findings.extend(_check_threshold_consistency(corpus))
+    findings.extend(_check_threshold_resolution(corpus))
     findings.extend(_check_id_uniqueness(corpus))
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
+    return findings
+
+
+def _check_threshold_resolution(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """TH-RES-001 (CLEANUP-PR-D item 16) — every downstream ``@threshold:
+    PRD.NN.<category>.<key>`` citation MUST resolve to a `full_id` entry
+    in the host PRD's `component_decomposition.components[].thresholds[]`
+    section.
+
+    The check is **citation-driven**: it scans for `@threshold:` citations
+    only; PRDs with no downstream threshold-cites pass the gate
+    automatically (the `component_decomposition` section is OPTIONAL per
+    PRD template).
+
+    Severity policy:
+      - PRD has NO `component_decomposition` section AND downstream cites
+        a threshold to that PRD → P2 finding on the host PRD
+        ("component_decomposition section missing; downstream cites
+        @threshold").
+      - PRD has the section BUT the cited threshold's full_id isn't in
+        it → P1 finding on the citing artifact ("@threshold: <full_id>
+        unresolved; not declared in PRD-NN").
+    """
+    import yaml as _yaml  # local alias avoids shadowing in caller
+
+    findings: list[Finding] = []
+
+    # 1. Collect every @threshold: PRD.NN.<cat>.<key> citation by host PRD.
+    cite_re = re.compile(r"@threshold:\s*(PRD)\.(\d+)\.([a-z_]+(?:\.[a-z0-9_]+)+)")
+    citations: dict[tuple[str, str], list[tuple[str, int]]] = {}
+    # key: (PRD-id, full_id_after_PRD.NN.); value: list of (citing_rel, line)
+    for rel, text in corpus:
+        # Skip the PRDs themselves — citations only count from downstream.
+        if "/02_PRD/" in rel:
+            continue
+        for i, line in enumerate(text.splitlines(), start=1):
+            for m in cite_re.finditer(line):
+                prd_id = f"PRD-{m.group(2).zfill(2)}"
+                full_id = f"PRD.{m.group(2)}.{m.group(3)}"
+                citations.setdefault((prd_id, full_id), []).append((rel, i))
+
+    if not citations:
+        return findings
+
+    # 2. Index each PRD's declared thresholds.
+    declared: dict[str, set[str]] = {}  # prd_id -> set of full_ids
+    has_section: dict[str, bool] = {}
+    for rel, text in corpus:
+        if "/02_PRD/" not in rel:
+            continue
+        m = re.search(r"PRD-(\d+)", Path(rel).name)
+        if not m:
+            continue
+        prd_id = f"PRD-{m.group(1).zfill(2)}"
+        # The PRD may be markdown (with embedded YAML frontmatter or a YAML
+        # ## Component Decomposition section); to keep the rule simple, look
+        # for the `component_decomposition` key + harvest `full_id:` values.
+        if "component_decomposition" not in text:
+            has_section[prd_id] = False
+            continue
+        has_section[prd_id] = True
+        declared.setdefault(prd_id, set())
+        # Harvest `full_id: PRD.NN.x.y` entries verbatim. Robust to either
+        # YAML or markdown surface; we just want the value.
+        for m2 in re.finditer(r"full_id:\s*[\"']?(PRD\.\d+\.[a-z_]+(?:\.[a-z0-9_]+)+)[\"']?", text):
+            declared[prd_id].add(m2.group(1))
+
+    # 3. Emit findings. Group by PRD so the "missing section" case emits
+    # ONCE per PRD (not once per cited threshold), avoiding noise.
+    missing_section_thresholds: dict[str, list[str]] = {}
+    for (prd_id, full_id), cites in citations.items():
+        if not has_section.get(prd_id):
+            missing_section_thresholds.setdefault(prd_id, []).append(full_id)
+            continue
+        if full_id not in declared.get(prd_id, set()):
+            # Severity P1 — section exists but threshold key not declared.
+            for citing_rel, line in cites:
+                findings.append(
+                    Finding(
+                        citing_rel,
+                        line,
+                        "TH-RES-001",
+                        f"@threshold: {full_id} unresolved; not declared in {prd_id}'s "
+                        f"component_decomposition section",
+                        severity="error",
+                    )
+                )
+    # Emit one P2 advisory per PRD missing the section.
+    for prd_id, thresholds in missing_section_thresholds.items():
+        prd_rel = next(
+            (
+                rel
+                for rel, _ in corpus
+                if f"/02_PRD/{prd_id}" in rel or Path(rel).name.startswith(prd_id)
+            ),
+            prd_id,
+        )
+        examples = ", ".join(sorted(set(thresholds))[:3])
+        findings.append(
+            Finding(
+                str(prd_rel),
+                1,
+                "TH-RES-001",
+                f"{prd_id} missing `component_decomposition` section; "
+                f"{len(set(thresholds))} downstream @threshold citation(s) "
+                f"cannot resolve (e.g. {examples})",
+                severity="error",
+            )
+        )
+
     return findings

@@ -40,8 +40,8 @@ metadata:
     skill_category: core-workflow | automation-workflow | quality-assurance | utility
     upstream_artifacts: [<...>]      # cumulative chain; [] for BRD
     downstream_artifacts: [<...>]
-    version: "0.16.1"                  # DEFAULT = plugin VERSION (see §3)
-    framework_spec_version: "0.19.1"  # = FRAMEWORK_SPEC_VERSION
+    version: "0.17.0"                  # DEFAULT = plugin VERSION (see §3)
+    framework_spec_version: "0.20.0"  # = FRAMEWORK_SPEC_VERSION
     last_updated: "YYYY-MM-DD"
 ---
 ```
@@ -51,7 +51,7 @@ Dropped legacy fields: `architecture_approaches`, `priority`,
 
 ## 3. Versioning rule
 
-- A skill's `version` **defaults to the plugin `VERSION`** (currently `0.16.1`)
+- A skill's `version` **defaults to the plugin `VERSION`** (currently `0.17.0`)
   and moves with it. There is no per-skill version stream.
 - `framework_spec_version` records the spec the skill targets (the value in
   `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION`).
@@ -109,7 +109,7 @@ Format · Related Resources`
 ## 6. Acceptance checklist (per skill)
 
 - [ ] `name` equals the directory name.
-- [ ] `version: "0.16.1"`, `framework_spec_version: "0.19.1"` present.
+- [ ] `version: "0.17.0"`, `framework_spec_version: "0.20.0"` present.
 - [ ] No `## Version History`; no `mermaid-gen`; no `-reviewer`/`-validator`
       references; no removed-family references.
 - [ ] Template/README/governance links use `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/`.
