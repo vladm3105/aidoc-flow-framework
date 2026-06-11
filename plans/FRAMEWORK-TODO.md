@@ -84,18 +84,6 @@
   author needs to be tighter about section-level tag consistency. May
   result in a small `doc-tdd/SKILL.md` tightening.
 
-### `[example-corpus]` url-shortener corpus is in active regen; verify post-cascade artifact has no leftover surprises
-
-- *Context:* TRACE-RES-FIXUP-001 Fix 2 (in-flight 2026-06-10) regens
-  `examples/url-shortener/docs/02_PRD/` through `07_TDD/` under the
-  new necessary-upstream contract. Once the cascade lands, the
-  regenerated corpus may itself surface new SKILL / template /
-  playbook issues that the old corpus masked.
-- *Fix shape:* once Fix 2 completes, add focused entries here for any
-  audit findings, lint warnings, or harness oddities that the
-  regenerated corpus surfaces. Treat as standard example-driven TODO
-  pipeline.
-
 ### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound
 
 - *Context:* `REVIEW_REMEDIATION_FLOW.md` defines the quality loop as
@@ -131,10 +119,6 @@
   "minimum 2" floor is correct; an advisory upper-bound by plan-type
   would help future estimation.
 
-## Closed
-
-*(none yet — entries move here once their fix lands; include the merge-commit SHA)*
-
 ### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056)
 
 - *Context:* IPLAN-RT-001 live cascade (2026-06-10) produced
@@ -149,3 +133,132 @@
   span to a paragraph reference). Until then, `examples/<name>/.aidoc/`
   is excluded from the pre-commit markdownlint hook (workflow-gap fix
   landed in IPLAN-RT-001 commit).
+
+### `[gate]` Component-decomposition gate missing between PRD and ADR
+
+- *Context:* url-shortener review (2026-06-11) — BRD/PRD scoped the **whole
+  service** (shorten + redirect + counter + abuse screening); ADR-01 onward
+  silently narrowed to **one component** (Mapping Store). ADR §10 mentions
+  "five sibling ADRs as future work" but no scope-contraction artifact
+  records the decision. Downstream layers (SPEC/TDD/IPLAN) implement only
+  the Mapping Store, not the URL shortener.
+- *Fix shape:* introduce a `which-containers-from-PRD-§9-get-ADRs-this-cycle`
+  artifact (a CHG-like decision record) at the PRD↔ADR boundary. ADR
+  authoring SKILL must reference it; auditor must verify scope matches.
+  Without it, downstream layers silently shrink scope unobserved.
+
+### `[gate]` Threshold-binding gate missing before BDD/TDD PASS
+
+- *Context:* url-shortener review (2026-06-11) — 7 of 11 threshold keys
+  in PRD-01 are placeholders (`screeningdeadline`, `countstaleness`,
+  `codespacecapacity`, `takedownsla`, `codeentropy`, `resolutionpersource`,
+  `resolutionwindow`) with no numeric values bound. BDD scenarios cite
+  `WITHIN @threshold:PRD.01.perf.screeningdeadline` and TDD test cases
+  cite them too — neither is testable, both passed audit.
+- *Fix shape:* extend `sdd_doc_lint` with a `THRESHOLD-RES-001` rule
+  (mirror of TRACE-RES-001 for threshold keys): every `@threshold:KEY`
+  citation must resolve to a numeric-bound value in the host doc.
+  Unbound thresholds fire P1 at BDD/TDD audit.
+
+### `[template]` IPLAN sub-types: code-build vs deploy
+
+- *Context:* url-shortener review (2026-06-11) — IPLAN-01 covers Red/Green/
+  Refactor with pytest gates but has **no canary, no smoke endpoint, no
+  observability dashboard, no rollback procedure** (§5 explicitly defers
+  runbook/dashboard to "first to-production session"). It scored 100, but
+  it's a code-build plan, not a deploy plan. The crew (operator + chaos
+  - integration_lead lenses) is calibrated for deploy concerns; if the
+  artifact silently scopes out those concerns, the crew can't catch it.
+- *Fix shape:* `IPLAN-TEMPLATE.yaml` gains a `subtype` field with values
+  `code_build` | `deploy` | `combined`. Deploy IPLANs are gated on
+  rollback/smoke/observability sections; code-build IPLANs are exempt.
+  Audit dispatch selects the section set by subtype.
+
+### `[registry]` `@threshold:` 3-segment keys vs element-ID 4-segment pattern
+
+- *Context:* `LAYER_REGISTRY.yaml` `id_patterns.element` regex covers
+  the 4-segment hash form `TYPE.NN.SS.xxxx`. But threshold keys use a
+  3-segment form `PRD.01.perf.redirectp95`. The current `sdd_doc_lint`
+  cannot distinguish a legitimate threshold from a malformed 3-segment
+  element ID — a hand-edit introducing `PRD.01.perf.typo` would slip
+  past validation.
+- *Fix shape:* add a `threshold` ID pattern to `LAYER_REGISTRY.yaml`
+  `id_patterns:`; extend `sdd_doc_lint` to validate the new namespace.
+  Coordinate with the `[gate] Threshold-binding gate` entry above.
+
+### `[template]` SPEC + IPLAN declare no layer-local element IDs
+
+- *Context:* url-shortener review (2026-06-11) — `SPEC-01.md` and
+  `IPLAN-01.md` carry no `SPEC.NN.SS.xxxx` or `IPLAN.NN.SS.xxxx`
+  element IDs (only upstream `@adr`/`@tdd` refs + Protocol method
+  names). Templates `SPEC-TEMPLATE.yaml` / `IPLAN-TEMPLATE.yaml` do
+  not require any. If a downstream consumer ever needs to cite an
+  individual SPEC rule (e.g. "the §5 fail-closed rule") or an
+  individual IPLAN step, they have no element ID to bind to.
+- *Fix shape:* either (a) require element IDs at SPEC §5 rules and
+  IPLAN §4 contracts via template + auditor lens, or (b) document the
+  deliberate exemption in `ID_NAMING_STANDARDS.md` so future authors
+  know it's intentional.
+
+### `[template]` EARS emits per-line `@bdd:` downstream slots — direction-of-flow violation
+
+- *Context:* url-shortener review (2026-06-11) — `EARS-01.md:68, 73, 81 etc.`
+  emit per-line `@bdd: BDD-01` slots BEFORE the downstream BDD exists.
+  These work as downstream slots but bypass the necessary-upstream
+  contract direction (upstream-only).
+- *Fix shape:* either (a) drop per-line `@bdd:` slots from EARS and
+  rely on BDD's reverse `@ears:` tags for the trace (cleaner direction),
+  or (b) declare downstream-slot semantics officially in
+  `LAYER_REGISTRY.yaml` so the contract names them.
+
+### `[playbook]` `auditor` + `tech_lead` lens calibration — convergence theater
+
+- *Context:* url-shortener cascade audit trail (2026-06-11) — `auditor`
+  lens scored **100 on 4 of 5 cascaded layers** where it ran; `tech_lead`
+  scored **100 on 3 of 4** even when `chaos`+`security_engineer` found
+  multiple P2/P3 issues in the same sections. The synthesizer's weighted
+  mean still surfaces real findings (verdicts 91-97 honest), but 2 of 6
+  lenses are giving blank checks. IPLAN-01 scored 100 with 5/6 lenses
+  returning zero findings — the strongest convergence-theater signal.
+- *Fix shape:* refresh `framework/playbooks/<layer>/auditor.md` and
+  `tech_lead.md` for each layer with more falsifiable checks. Specifically
+  require tech_lead to cross-check the sections security/chaos flagged.
+  Add a "no-lens-scores-100-without-falsifiable-evidence" guard to the
+  synthesizer.
+
+### `[skill]` `doc-*-audit` must strip author's self-claimed scores before lens fan-out
+
+- *Context:* url-shortener cascade audit trail (2026-06-11) —
+  `02_PRD/PRD-01/verdict.json:AUD-002` flagged that the author's
+  `ears_ready_score: 92` self-claim survived into the artifact body
+  the lenses see. The synthesizer's final score was **also 92**.
+  Coincidence, or anchor-effect from lenses reading the author's claim?
+  Either way, the framework should not let author self-assessment leak
+  into the review surface.
+- *Fix shape:* `doc-*-audit/SKILL.md` step that prepares the lens brief
+  must strip fields like `ears_ready_score`, `prd_score`, etc. from the
+  artifact text before passing to each lens subagent. Document the
+  stripped-field list in `REVIEW_TEAM.md` §Operations.
+
+### `[saga]` Saga lifecycle — no `fixer_introduced_finding` tag
+
+- *Context:* `examples/url-shortener/.aidoc/review/04_BDD/BDD-01/saga.json`
+  shows iter-2 fixer rewrote scenario `.9b90`; iter-3 audit found the
+  rewrite introduced **two new P2s** at the same location (compound
+  `When` + unbounded timeout). The framework has no way to flag findings
+  that the fixer itself caused — they appear as "new findings" with no
+  link to the change set.
+- *Fix shape:* extend `REVIEW_SAGA.md` schema with a
+  `fixer_introduced_finding` tag on iter-N findings whose location
+  matches a iter-(N-1) "Fixes Applied" table row. Surface in the audit
+  report under `## Regressions` (new section in audit report format).
+
+## Closed
+
+### `[example-corpus]` url-shortener corpus regen → all 6 layers PASS (2026-06-10)
+
+- *Resolution:* TRACE-RES-FIXUP-001 (PR #125, merge `90f37002`) + IPLAN-RT-001
+  (PR #127, merge `c56c386f`). Cascade scores: PRD 92 / EARS 94 / BDD 91 /
+  ADR 96 / SPEC 97 / TDD 90 / IPLAN 100. Post-cascade review (2026-06-11)
+  surfaced 9 NEW framework-improvement items, captured above as Open
+  entries for FRAMEWORK-CLEANUP-001 triage.
