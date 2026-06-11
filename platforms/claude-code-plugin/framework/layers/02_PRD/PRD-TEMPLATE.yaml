@@ -321,6 +321,42 @@ scope_and_requirements:
     - "[Feature excluded — rationale]"
 
 # =============================================================================
+# Section 7b: Component Decomposition (OPTIONAL — CLEANUP-PR-D item 15)
+# =============================================================================
+
+component_decomposition:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
+  _required: false  # OPTIONAL — only required when downstream cites @threshold
+  _guidance: |
+    OPTIONAL section. Use when downstream layers (BDD, TDD, SPEC, ADR)
+    will cite `@threshold:` to anchor NFRs (latency, error rate,
+    capacity, durability, etc.). Each component declares its
+    responsibility + the named thresholds it owns; downstream layers
+    cite those thresholds by full-id (`PRD.NN.<category>.<key>`).
+
+    The doc-lint rule TH-RES-001 (CLEANUP-PR-D item 16) validates that
+    every downstream `@threshold:` citation resolves to an entry here.
+    If your project has no NFRs to bind to named components, omit the
+    section entirely — TH-RES-001 only fires when a downstream layer
+    cites a threshold, so a PRD with no downstream threshold-cites
+    passes the gate by definition.
+
+    Component IDs are SHORT KEBAB-CASE names (e.g. "redirect-handler",
+    "mapping-store") — descriptive labels scoped to this PRD, not
+    cross-layer trace targets. Future framework work may promote
+    component decomposition to a first-class `02b_DECOMP` layer (item
+    #19 in FRAMEWORK-TODO); for now this PRD subsection is the home.
+  components:
+    - id: "<short-kebab-component-name>"
+      responsibility: "<one-line description of what this component owns>"
+      thresholds:
+        - key: "<short_key>"  # e.g. "redirectp95"
+          full_id: "PRD.NN.<category>.<key>"  # canonical citation form, matches @threshold: regex
+          value: 200
+          unit: "ms"
+          source: "@brd: BRD-NN"  # OPTIONAL — which BRD constraint this binds
+
+# =============================================================================
 # Section 8: User Stories & User Roles
 # =============================================================================
 

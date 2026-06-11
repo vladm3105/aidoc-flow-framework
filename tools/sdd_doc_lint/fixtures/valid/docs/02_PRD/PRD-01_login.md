@@ -75,6 +75,20 @@ ca
 
 ra
 
+## 7b. Component Decomposition
+
+```yaml
+component_decomposition:
+  components:
+    - id: "auth-handler"
+      responsibility: "Validate credentials, enforce attempt cap"
+      thresholds:
+        - key: "attempts.max"
+          full_id: "PRD.01.auth.attempts.max"
+          value: 5
+          unit: "attempts"
+```
+
 ## Traceability
 
 @brd: BRD.01.07.a7f3

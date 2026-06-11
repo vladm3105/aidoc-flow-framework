@@ -1448,3 +1448,13 @@ FRAMEWORK-CLEANUP-001 backlog: 4 open / 15 closed. Next: PR-D (decomp + threshol
 Fourth child PR of FRAMEWORK-CLEANUP-001 (master PR #128). Closes item #17.
 Framework PATCH 0.19.0 → 0.19.1; plugin PATCH 0.16.0 → 0.16.1.
 FRAMEWORK-CLEANUP-001 backlog: 3 open / 16 closed. Next: PR-D (decomp+threshold gates; needs DECISION-GATE-D) and PR-F (#18 doc-num; user-deferred).
+
+### 2026-06-11 — CLEANUP-PR-D (decomp + threshold gates) — FINAL child PR
+
+Fifth and final child PR of FRAMEWORK-CLEANUP-001 (master PR #128).
+Closes items #15-16; opens #19 (Option B future). DECISION-GATE-D
+resolved as Option A (subsection in PRD). Framework MINOR 0.19.1 → 0.20.0;
+plugin MINOR 0.16.1 → 0.17.0.
+
+FRAMEWORK-CLEANUP-001 backlog after PR-D: 2 open (item #18 doc-num user-deferred + item #19 Option B future) / 18 closed.
+The workstream's planned 17 items are 100% addressed; items 18 + 19 are deferred follow-ups, not gaps in the original scope.

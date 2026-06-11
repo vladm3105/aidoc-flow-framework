@@ -24,31 +24,33 @@
 
 ## Open
 
-### `[gate]` Component-decomposition gate missing between PRD and ADR
+### `[layer-promotion]` Promote `component_decomposition` to a first-class `02b_DECOMP` layer (Option B from DECISION-GATE-D)
 
-- *Context:* url-shortener review (2026-06-11) — BRD/PRD scoped the **whole
-  service** (shorten + redirect + counter + abuse screening); ADR-01 onward
-  silently narrowed to **one component** (Mapping Store). ADR §10 mentions
-  "five sibling ADRs as future work" but no scope-contraction artifact
-  records the decision. Downstream layers (SPEC/TDD/IPLAN) implement only
-  the Mapping Store, not the URL shortener.
-- *Fix shape:* introduce a `which-containers-from-PRD-§9-get-ADRs-this-cycle`
-  artifact (a CHG-like decision record) at the PRD↔ADR boundary. ADR
-  authoring SKILL must reference it; auditor must verify scope matches.
-  Without it, downstream layers silently shrink scope unobserved.
-
-### `[gate]` Threshold-binding gate missing before BDD/TDD PASS
-
-- *Context:* url-shortener review (2026-06-11) — 7 of 11 threshold keys
-  in PRD-01 are placeholders (`screeningdeadline`, `countstaleness`,
-  `codespacecapacity`, `takedownsla`, `codeentropy`, `resolutionpersource`,
-  `resolutionwindow`) with no numeric values bound. BDD scenarios cite
-  `WITHIN @threshold:PRD.01.perf.screeningdeadline` and TDD test cases
-  cite them too — neither is testable, both passed audit.
-- *Fix shape:* extend `sdd_doc_lint` with a `THRESHOLD-RES-001` rule
-  (mirror of TRACE-RES-001 for threshold keys): every `@threshold:KEY`
-  citation must resolve to a numeric-bound value in the host doc.
-  Unbound thresholds fire P1 at BDD/TDD audit.
+- *Context:* DECISION-GATE-D (2026-06-11) resolved as Option A
+  (subsection in PRD). Option B (new layer between PRD and EARS) was
+  deferred because most aidoc-flow consumers will have ≤ 5-component
+  systems where buried decomp in PRD is sufficient. **User direction:
+  "We will have complex projects in the future — keep Option B as
+  further development for when Option A is not enough."**
+- *When to revisit:* signs that Option A is insufficient include:
+  (a) consumer PRDs growing past ~600 lines because component
+  decomp is bloating PRD §7b; (b) auditor lens unable to evaluate
+  decomp quality at PRD altitude because it competes with product
+  concerns; (c) `@decomp:` becoming a desired @-tag form for richer
+  downstream binding; (d) C4-L2 diagrams or component-level chaos
+  scenarios that don't fit cleanly in PRD §7b.
+- *Fix shape (when triggered):* new layer `02b_DECOMP` between PRD
+  (02) and EARS (03). `DECOMP-NN.yaml` artifact with components +
+  dataflow + threshold bindings. EARS pivots its `required_tags` from
+  `[prd]` → `[decomp]`. ADR + SPEC gain `decomp` in their
+  necessary-upstream sets. New 6-lens crew (architect, tech_lead,
+  integration_lead, chaos_engineer, security_engineer, auditor).
+  4 new SKILLs (doc-decomp / -audit / -fixer / -autopilot). Estimated
+  framework MINOR `0.20.x → 0.21.0`; 5-6h cascade re-run required.
+- *Effort estimate:* ~12-15h (vs. PR-D's ~3h). See
+  `plans/CLEANUP-PR-D-DECOMP-THRESHOLD-GATES-PLAN.md` §Option B
+  comparison for the full scope analysis preserved during the
+  decision gate.
 
 ### `[governance]` Doc-number independence across layers not codified anywhere
 
@@ -301,3 +303,31 @@
   rollback/smoke/observability sections; code-build IPLANs are exempt.
   Audit dispatch selects the section set by subtype.
   *Resolution:* CLEANUP-PR-E (PR #TBD, merge SHA TBD) — fourth child PR. See `plans/CLEANUP-PR-E-IPLAN-SUBTYPES-PLAN.md`.
+
+### `[gate]` Component-decomposition gate missing between PRD and ADR
+
+- *Context:* url-shortener review (2026-06-11) — BRD/PRD scoped the **whole
+  service** (shorten + redirect + counter + abuse screening); ADR-01 onward
+  silently narrowed to **one component** (Mapping Store). ADR §10 mentions
+  "five sibling ADRs as future work" but no scope-contraction artifact
+  records the decision. Downstream layers (SPEC/TDD/IPLAN) implement only
+  the Mapping Store, not the URL shortener.
+- *Fix shape:* introduce a `which-containers-from-PRD-§9-get-ADRs-this-cycle`
+  artifact (a CHG-like decision record) at the PRD↔ADR boundary. ADR
+  authoring SKILL must reference it; auditor must verify scope matches.
+  Without it, downstream layers silently shrink scope unobserved.
+  *Resolution:* CLEANUP-PR-D (PR #TBD, merge SHA TBD) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
+
+### `[gate]` Threshold-binding gate missing before BDD/TDD PASS
+
+- *Context:* url-shortener review (2026-06-11) — 7 of 11 threshold keys
+  in PRD-01 are placeholders (`screeningdeadline`, `countstaleness`,
+  `codespacecapacity`, `takedownsla`, `codeentropy`, `resolutionpersource`,
+  `resolutionwindow`) with no numeric values bound. BDD scenarios cite
+  `WITHIN @threshold:PRD.01.perf.screeningdeadline` and TDD test cases
+  cite them too — neither is testable, both passed audit.
+- *Fix shape:* extend `sdd_doc_lint` with a `THRESHOLD-RES-001` rule
+  (mirror of TRACE-RES-001 for threshold keys): every `@threshold:KEY`
+  citation must resolve to a numeric-bound value in the host doc.
+  Unbound thresholds fire P1 at BDD/TDD audit.
+  *Resolution:* CLEANUP-PR-D (PR #TBD, merge SHA TBD) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
