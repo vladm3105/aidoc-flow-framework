@@ -74,6 +74,18 @@ knobs:
       P0/P1 holds in either mode.
     default: "team"
 
+  - name: quality_loop_max_iterations
+    type: "integer"
+    consumers: [audit]
+    constraint: >
+      Default iteration cap (see REVIEW_REMEDIATION_FLOW.md §Iteration cap):
+      maximum review→remediate cycles before saga transitions to
+      PARTIAL_TIMEOUT. Range 1-10; values outside the range are treated as
+      malformed and fall back to the default. Engines reading from
+      `.aidoc/profile.yaml` must handle missing-file / missing-field /
+      malformed-value paths by falling back to the default.
+    default: 3
+
 # -----------------------------------------------------------------------------
 # Layer split — which layers a project may opt out of.
 # -----------------------------------------------------------------------------

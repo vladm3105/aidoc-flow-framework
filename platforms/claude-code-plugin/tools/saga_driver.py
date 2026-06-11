@@ -36,6 +36,8 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
+import yaml
+
 # Spec authority: framework/governance/REVIEW_SAGA.md "Transition table"
 # A conformance test asserts this matches the spec table exactly.
 _ALLOWED_TRANSITIONS: dict[str, set[str]] = {
@@ -127,7 +129,42 @@ _LAYER_CREWS: dict[str, list[str]] = {
 # wrapper SIGTERMs.
 SOFT_DEADLINE_SECONDS = 5100
 SUBPROCESS_TIMEOUT_SECONDS = 1800
+# Default for the quality-loop iteration cap (REVIEW_REMEDIATION_FLOW.md
+# §Iteration cap). Projects can override via the
+# `quality_loop_max_iterations` knob in `.aidoc/profile.yaml` (see
+# ADAPTATION_SURFACE.yaml). The actual cap used at runtime is computed
+# by `_resolve_max_iterations(profile_path)` which loads the profile,
+# reads the knob, and falls back to this default if the file is
+# missing, malformed, or the field is absent / out of range [1, 10].
 MAX_ITERATIONS = 3
+
+
+def _resolve_max_iterations(profile_path: str | Path | None = None) -> int:
+    """Resolve the quality-loop iteration cap.
+
+    Reads `.aidoc/profile.yaml` `quality_loop_max_iterations` if present
+    and valid (integer in range [1, 10]). Falls back to the
+    `MAX_ITERATIONS` default for missing-file / malformed-yaml /
+    missing-field / out-of-range values. Never raises — the fallback
+    preserves the current pre-CLEANUP-PR-C behavior exactly.
+    """
+    if profile_path is None:
+        profile_path = Path(".aidoc/profile.yaml")
+    else:
+        profile_path = Path(profile_path)
+    try:
+        if not profile_path.is_file():
+            return MAX_ITERATIONS
+        with profile_path.open("r", encoding="utf-8") as fh:
+            data = yaml.safe_load(fh)
+    except (OSError, yaml.YAMLError):
+        return MAX_ITERATIONS
+    if not isinstance(data, dict):
+        return MAX_ITERATIONS
+    value = data.get("quality_loop_max_iterations")
+    if not isinstance(value, int) or value < 1 or value > 10:
+        return MAX_ITERATIONS
+    return value
 
 
 def _utc_now_iso() -> str:
@@ -560,7 +597,7 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
                 saga["status"] = "CLOSED"
             saga["current_phase"] = "finalize"
         else:
-            if saga["iteration"] < MAX_ITERATIONS:
+            if saga["iteration"] < _resolve_max_iterations():
                 saga["current_phase"] = "fixer"
             else:
                 # B7 (2026-06-05 Amendment 1 verification): per spec

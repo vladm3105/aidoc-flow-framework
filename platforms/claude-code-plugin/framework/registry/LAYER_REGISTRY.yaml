@@ -55,6 +55,13 @@ layers:
     description: "Layer 3 — Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
     template: "EARS-TEMPLATE.yaml"
     downstream: [BDD]
+    # CLEANUP-PR-C item 14: EARS authors may optionally emit per-line
+    # `@bdd: BDD-NN` slots as forward-pointer navigation hints. Slots
+    # are non-canonical for trace (the canonical trace is BDD's reverse
+    # @ears: tags); TRACE-RES-001 skips downstream tags so unresolved
+    # slots at author-time don't fail lint. See REVIEW_TEAM.md
+    # §Optional downstream slots.
+    optional_downstream_slots: [BDD]
 
   - number: 4
     artifact: BDD
@@ -207,3 +214,10 @@ c4_mapping:
 id_patterns:
   document: "^[A-Z]+-\\d{2,}$"
   element: "^[A-Z]+\\.\\d{2,}\\.\\d{2,}\\.[a-f0-9]{4,8}$"
+  # CLEANUP-PR-C item 12 — threshold keys distinct from element IDs.
+  # Format: TYPE.NN.<lowercase_category>(.<lowercase_subkey>)+ — at
+  # minimum 4 dotted segments, optionally more for nested subkeys
+  # (e.g. PRD.01.perf.redirectp95 = 4 segments; PRD.01.auth.attempts.max
+  # = 5 segments). Lowercase category distinguishes from element IDs
+  # which carry digits in the section_id position.
+  threshold: "^[A-Z]+\\.\\d{2,}\\.[a-z_]+(?:\\.[a-z0-9_]+)+$"

@@ -12,6 +12,47 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.17.1 → 0.18.0 + Claude Code plugin 0.14.1 → 0.15.0 (CLEANUP-PR-C)
+
+Second child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged
+`528d6f23`). Closes `plans/FRAMEWORK-TODO.md` Open items #11-14.
+Spec / registry / template hygiene.
+
+- **Item 11 — Iteration cap to spec.** `REVIEW_REMEDIATION_FLOW.md` §The
+  quality loop gains a new "Iteration cap" subsection elevating the
+  previously-impl-bound `MAX_ITERATIONS=3` to spec. New
+  `ADAPTATION_SURFACE.yaml` knob `quality_loop_max_iterations` (range
+  1-10, default 3) makes the cap project-tunable. `tools/saga_driver.py`
+  gains `_resolve_max_iterations(profile_path)` that loads
+  `.aidoc/profile.yaml`, reads the knob, and falls back to the default
+  for missing-file / malformed / out-of-range. New `import yaml`. The
+  call site at the iteration-check uses the resolved value.
+- **Item 12 — `@threshold:` ID pattern in registry.**
+  `LAYER_REGISTRY.yaml` `id_patterns` gains a `threshold` entry
+  (`TYPE.NN.<lowercase_category>.<lowercase_key>`) that distinguishes
+  threshold keys from 4-segment hex-hash element IDs. `tools/sdd_doc_lint`
+  TH01 check upgraded to use the strict regex; rejects mixed-case
+  categories. Verified url-shortener thresholds all match (no regression).
+- **Item 13 — SPEC + IPLAN element ID exemption.** New "Element-ID
+  exemptions" subsection in `ID_NAMING_STANDARDS.md` formalizing that
+  SPEC §5 rules + IPLAN §4 contracts MAY but are not required to carry
+  layer-local `SPEC.NN.SS.xxxx` / `IPLAN.NN.SS.xxxx` element IDs.
+  Traceability surface for SPEC/IPLAN is the upstream `@<layer>:`
+  citation chain plus Protocol method names / file manifest entries.
+- **Item 14 — EARS `@bdd:` downstream slot formalized as optional.**
+  New "Optional downstream slots" subsection in `REVIEW_TEAM.md` +
+  new `optional_downstream_slots:` per-layer field in
+  `LAYER_REGISTRY.yaml`. Only EARS opts in (slots toward BDD); other
+  layers don't emit. Slots are non-canonical for trace (the canonical
+  is the upstream `required_tags` chain) and `TRACE-RES-001`'s
+  downstream-skip behavior (PR #125) means unresolved slots at
+  author-time don't fail lint.
+- Framework MINOR (`0.17.1 → 0.18.0`) — new spec subsection +
+  registry shape changes. Plugin MINOR (`0.14.1 → 0.15.0`) — saga
+  driver reads new knob; lint rule upgraded.
+- Sync hooks ran (sync-version-refs, sync-plugin-framework,
+  sync-vendored). Conformance 120/120 PASS; unit 43/43 PASS.
+
 ### Changed — Claude Code plugin 0.14.0 → 0.14.1 (CLEANUP-PR-A — harness + lint workflow hygiene)
 
 First child PR of the FRAMEWORK-CLEANUP-001 workstream (master plan PR #128).
