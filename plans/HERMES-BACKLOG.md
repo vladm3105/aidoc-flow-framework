@@ -4,7 +4,7 @@
 |-------|-------|
 | Status     | **DEFERRED** — pending completion of plugin-side work |
 | Owner      | vladm3105 |
-| Last update | 2026-06-06 |
+| Last update | 2026-06-11 |
 | Policy     | **Plugin-first development.** Hermes work is deferred until the corresponding plugin functionality is complete and verified end-to-end. This is the single source of truth for "what Hermes still needs to catch up on." |
 
 ## Why this exists
@@ -140,6 +140,113 @@ parity: enforce `findings[].check` citation; emit
 `verdict.playbook_coverage`.
 
 **Dependency:** Hermes team-mode (currently not implemented).
+
+### H-5 — LAYER-PLAYBOOKS-001 closing 6 layers (EARS/BDD/ADR/SPEC/TDD/IPLAN)
+
+**Source:** plugin PRs EARS-RT-001 / BDD-RT-001 / ADR-RT-001 /
+SPEC-RT-001 / TDD-RT-001 / IPLAN-RT-001 (plugin `0.8.0 → 0.14.0`).
+
+H-4 above only covered BRD+PRD. After plugin landed playbook injection
+across the remaining 6 layers (45 of 45 playbooks total, per the
+LAYER-PLAYBOOKS-001 design), Hermes still has zero playbook injection
+across any layer. Hermes catch-up here is per-layer + cumulative — and
+requires the H-4 review-team plumbing to land first.
+
+**Dependency:** H-4 (Hermes team-mode dispatch). H-5 is the per-layer
+fan-out once H-4 is in place.
+
+### H-6 — FRAMEWORK-CLEANUP-001 calibration deltas (PR-B heart)
+
+**Source:** plugin PR #131 (CLEANUP-PR-B, framework `0.19.0` + plugin
+`0.16.0`).
+
+The "heart" of FRAMEWORK-CLEANUP-001 — review-quality calibration.
+Three orthogonal items the Hermes review path must mirror:
+
+- **No-findings rationale** — a lens returning `lens_score: 100`
+  with `findings: []` MUST emit a `no_findings_rationale` field;
+  synthesizer caps the lens at 95 on missing rationale
+  (`STRUCTURE-RAT-001` advisory). Documented in REVIEW_TEAM.md
+  §Operations.
+- **Strip author self-claim before lens fan-out** — engines strip
+  `*_ready_score` / `*_score` / `readiness_score` / `audit_score`
+  from the artifact body before passing to each lens (anchor-effect
+  fix).
+- **Fixer-introduced regression detection** — synthesizer compares
+  iter-N finding locations to iter-(N-1) Fixes Applied entries;
+  sets `fixer_introduced: true`; caps affected lens at iter-(N-1)
+  value; renders findings in a `## Regressions` audit-report section.
+
+13 playbook files (6 × auditor + 7 × tech_lead) ship the
+"No-findings rationale" section on the framework side already (spec
+0.19.0); Hermes catches up by aligning its synthesizer + lens
+dispatch.
+
+**Dependency:** Hermes review-team plumbing (H-4).
+
+### H-7 — FRAMEWORK-CLEANUP-001 spec/registry deltas (PR-C + PR-D)
+
+**Source:** plugin PRs #130 (CLEANUP-PR-C, framework `0.18.0`) + #133
+(CLEANUP-PR-D, framework `0.20.0`).
+
+Spec changes the Hermes lint surface must mirror:
+
+- **Iteration cap** — `quality_loop_max_iterations` knob in
+  `ADAPTATION_SURFACE.yaml` (default 3, range 1-10);
+  REVIEW_REMEDIATION_FLOW.md §Iteration cap. Plugin's saga driver
+  reads it; Hermes's saga implementation must too.
+- **`@threshold:` ID pattern** — `LAYER_REGISTRY.yaml`
+  `id_patterns.threshold` regex
+  (`^[A-Z]+\.\d{2,}\.[a-z_]+(?:\.[a-z0-9_]+)+$`). Plugin's
+  `sdd_doc_lint` TH01 enforces it; Hermes's structural-lint floor
+  must too.
+- **TH-RES-001 (threshold-resolution gate)** — corpus-level lint
+  rule that resolves every downstream `@threshold:` citation to a
+  `full_id:` entry in the host PRD's `component_decomposition`
+  section (PR-D item 16). Citation-driven: P2 on missing section,
+  P1 on missing key.
+- **`optional_downstream_slots`** — per-layer LAYER_REGISTRY field
+  formalizing EARS's `@bdd:` slots as optional non-canonical
+  navigation (PR-C item 14).
+- **Element-ID exemption** — SPEC §5 + IPLAN §4 layer-local IDs
+  formalized as MAY-not-MUST in ID_NAMING_STANDARDS.md (PR-C
+  item 13).
+
+**Dependency:** none (all spec; Hermes lint must align).
+
+### H-8 — IPLAN sub-types (PR-E)
+
+**Source:** plugin PR #132 (CLEANUP-PR-E, framework `0.19.1` + plugin
+`0.16.1`).
+
+`IPLAN-TEMPLATE.yaml` gains `subtype: code_build | deploy | combined`
+field (default `combined`). 9 sections gain `_required_when_subtype:`
+markers (4 code-build + 5 new deploy sections). `doc-iplan-audit`
+SKILL gains subtype-aware Structural Checklist dispatch; 3 IPLAN
+playbooks (operator / chaos_engineer / integration_lead) gain
+`### Subtype awareness` subsection. Hermes must mirror the
+subtype-aware section dispatch + the same playbook awareness.
+
+**Dependency:** none (additive template field + backward-compat
+default `combined`).
+
+### H-9 — Harness + governance hygiene (PR-A + CLAUDE.md updates)
+
+**Source:** plugin PR #129 (CLEANUP-PR-A, plugin `0.14.1`) + PR-B's
+CLAUDE.md additions (PR #131).
+
+- **Vendored DO-NOT-EDIT banners** — Hermes's vendored `sdd_doc_lint`
+  - `saga_driver` mirrors should carry the same banners + `_VENDORED.md`
+  README pattern that the plugin uses.
+- **MD056 SKILL prompt fix** — `### Table-pipe escape` subsections
+  in audit/fixer SKILL prompts; Hermes equivalents should ship the
+  same prose addition.
+- **`_required: false` honored by STRUCT01** — sdd_doc_lint exempts
+  template sections marked `_required: false` from the
+  required-section check (lands in PR-D); Hermes lint mirror must
+  match.
+
+**Dependency:** none (per-platform polish; safely additive).
 
 ## What's NOT in this backlog
 

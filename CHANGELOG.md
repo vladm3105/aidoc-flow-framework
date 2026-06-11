@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Workstream — FRAMEWORK-CLEANUP-001 complete (2026-06-11, 5 child PRs)
+
+`plans/FRAMEWORK-TODO.md` drained — 18 of 19 items closed across PR-A
+through PR-D + PR-E; 2 deferred follow-ups (item #18 doc-num
+independence, item #19 Option B `02b_DECOMP` layer promotion for
+complex projects). Master plan PR #128 merged `528d6f23`; five child
+PRs landed:
+
+- **PR-A (#129, plugin 0.14.1)** — harness + lint workflow hygiene
+- **PR-C (#130, framework 0.18.0 + plugin 0.15.0)** —
+  spec/registry/template hygiene
+- **PR-B (#131, framework 0.19.0 + plugin 0.16.0) — heart** —
+  review-quality calibration; remediated the "convergence theater"
+  pattern in the auditor + tech_lead lenses
+- **PR-E (#132, framework 0.19.1 + plugin 0.16.1)** — IPLAN
+  sub-types (`code_build` / `deploy` / `combined`)
+- **PR-D (#133, framework 0.20.0 + plugin 0.17.0)** — decomposition
+  - threshold-resolution gates
+
+Cumulative framework `0.17.1 → 0.20.0`; plugin `0.14.1 → 0.17.0`. Per
+the FRAMEWORK-FEEDBACK-LOG-001 contract (governance Principle 9), this
+workstream converted accumulated example-driven feedback from the
+url-shortener corpus into durable spec + SKILL improvements. Per-PR
+entries below preserve the detail.
+
 ### Changed — Framework Spec 0.19.1 → 0.20.0 + Claude Code plugin 0.16.1 → 0.17.0 (CLEANUP-PR-D)
 
 Fifth and final child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128).

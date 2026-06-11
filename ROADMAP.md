@@ -168,6 +168,59 @@ Delivered after the cutover (project release `v1.1.0`; framework spec `0.1.0 →
   conform; IPLAN README cross-linked. A third, orthogonal concept distinct from
   the Permanent + Temporary YAML IPLAN artifacts (neither changes). Plugin and
   Hermes product versions unchanged.
+- ✅ **NECESSARY-UPSTREAM-001** (framework `0.15.2 → 0.16.0`, plugin
+  `0.11.x → 0.12.0`) — replaces the cumulative-trace dependency contract
+  (every downstream layer redeclares every upstream layer) with
+  **necessary upstream + transitive reachability**: each layer declares
+  only what its own evaluation reads; lineage to layers further upstream
+  is discoverable transitively. New `TRACE-RES-001` lint rule (corpus-
+  level) provides deterministic structural-floor enforcement.
+- ✅ **LAYER-PLAYBOOKS-001 — 45 of 45 playbooks across all 8 layers**
+  (framework `0.16.0 → 0.17.1`, plugin `0.12.0 → 0.14.0`). Per-layer
+  per-lens playbook artifact class formalized; 11 playbooks shipped in
+  the lead PR (BRD 5 + PRD 6), remaining 34 shipped via 6 per-layer
+  rollout PRs (EARS-RT-001 through IPLAN-RT-001). Layer-by-layer review-
+  team team-mode + playbook injection wired for all 8 layers; the BRD
+  saga driver pattern replicated layer-by-layer via the harness
+  cascade.
+- ✅ **FRAMEWORK-FEEDBACK-LOG-001** (framework `0.16.1 → 0.17.0`) —
+  governance Principle 9 (example-driven / project-driven framework
+  improvement); two-tier feedback pipeline (consumer-project
+  `framework-feedback-log.md` Tier 1 + framework-side `plans/FRAMEWORK-TODO.md`
+  Tier 2). Converts friction discovered across example-driven and
+  project-driven work into durable framework improvement.
+- ✅ **FRAMEWORK-CLEANUP-001 — workstream complete** (framework
+  `0.17.1 → 0.20.0`, plugin `0.14.1 → 0.17.0`). 5-PR cleanup workstream
+  draining accumulated example-driven feedback into shipped framework
+  improvements. 18/19 items closed; 2 user-deferred follow-ups (item
+  #18 doc-number independence, item #19 Option B `02b_DECOMP` layer
+  promotion for complex projects). Per-PR breakdown:
+  - **PR-A (#129, plugin `0.14.1`)** — harness + lint hygiene (4
+    items): `--skip-lint-smoke` flag replaces env-var bypass; cleanup-
+    then-cascade pattern documented; DO-NOT-EDIT banners on vendored
+    modules; MD056 SKILL prompt fix.
+  - **PR-C (#130, framework `0.18.0` + plugin `0.15.0`)** —
+    spec/registry/template hygiene (4 items): iteration cap to spec +
+    `quality_loop_max_iterations` knob; `@threshold:` ID pattern in
+    registry + strict TH01 lint; SPEC + IPLAN element-ID exemption;
+    EARS `@bdd:` downstream slot formalized as optional.
+  - **PR-B (#131, framework `0.19.0` + plugin `0.16.0`) — the
+    "heart"** — review-quality calibration (6 items): No-findings
+    rationale across 13 playbooks; strip author self-claim across 9
+    audit SKILLs; fixer-introduced regression detection + `##
+    Regressions` audit-report section; synthesizer cap-at-95;
+    CLAUDE.md corpus cross-check + empirical pass-count baseline; TDD
+    auditor C4/C1 aligned with necessary-upstream.
+  - **PR-E (#132, framework `0.19.1` + plugin `0.16.1`)** — IPLAN
+    sub-types (1 item): `subtype: code_build | deploy | combined`
+    field + 5 new deploy-only template sections + subtype-aware
+    audit dispatch + 3 playbook Subtype awareness paragraphs.
+  - **PR-D (#133, framework `0.20.0` + plugin `0.17.0`)** —
+    decomposition + threshold gates (2 items, opens 1 future):
+    optional `component_decomposition` PRD §7b; new TH-RES-001
+    citation-driven corpus lint rule; `_required: false` honored by
+    STRUCT01; opens item #19 (Option B `02b_DECOMP` layer promotion)
+    per user direction "complex projects in the future."
 
 ## Post-v1.0 — Planned Capabilities
 
