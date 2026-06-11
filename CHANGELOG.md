@@ -12,6 +12,38 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.19.0 → 0.19.1 + Claude Code plugin 0.16.0 → 0.16.1 (CLEANUP-PR-E)
+
+Fourth child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128). Closes
+`plans/FRAMEWORK-TODO.md` Open item #17 — IPLAN sub-types.
+
+- **Template** — `IPLAN-TEMPLATE.yaml` gains a `subtype` field
+  (`code_build | deploy | combined`, default `combined`) in
+  `document_control`. Existing 4 sections (file_manifest,
+  execution_commands, implementation_contracts, session_handoff) gain
+  `_required_when_subtype: [code_build, combined]` markers. 5 new
+  deploy-only sections (rollback_procedure, smoke_tests,
+  canary_metrics, observability_hooks, runbook_reference) marked
+  `_required_when_subtype: [deploy, combined]`.
+- **doc-iplan author SKILL** — new "Select subtype" step (4) in the
+  Creation Process; default `combined` if unsure.
+- **doc-iplan-audit SKILL** — Structural Checklist gains
+  subtype-aware dispatch; reads `document_control.subtype` and
+  selects the required-section set; missing field defaults to
+  `combined` (backward compat).
+- **IPLAN playbooks** — `operator.md`, `chaos_engineer.md`,
+  `integration_lead.md` gain a `### Subtype awareness` subsection
+  in the Reasoning frame. At `code_build` subtype, these lenses MAY
+  return `lens_score: 100` with the rationale
+  `"subtype: code_build — deploy concerns out of scope"` (composes
+  with CLEANUP-PR-B item 8's no-findings-rationale rule).
+- **Backward compat** — IPLANs pre-dating this PR have no `subtype`
+  field; auditor defaults to `combined`. url-shortener's IPLAN-01
+  untouched (never-hand-edit example artifacts); a future cascade
+  re-run picks up the new field via the author SKILL change.
+- Framework PATCH (`0.19.0 → 0.19.1`) — template field addition is
+  additive + backward-compat. Plugin PATCH (`0.16.0 → 0.16.1`).
+
 ### Changed — Framework Spec 0.18.0 → 0.19.0 + Claude Code plugin 0.15.0 → 0.16.0 (CLEANUP-PR-B)
 
 Third child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128). Closes

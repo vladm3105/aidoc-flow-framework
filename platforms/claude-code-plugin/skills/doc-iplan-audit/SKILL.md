@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.16.0"
-    framework_spec_version: "0.19.0"
+    version: "0.16.1"
+    framework_spec_version: "0.19.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -349,13 +349,33 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/README.md`,
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md`.
 
 **Template-conformance enumeration (mandatory first step).** Load
-`IPLAN-TEMPLATE.yaml` and enumerate every required section (each top-level YAML
-key that is not explicitly `required: false`). The Structure check below is
-satisfied **only** when every enumerated required section appears as a `##`
-heading in the artifact. Any missing required section is a **blocking finding**
-— never rationalise it as a "compact" variant, "documented walkthrough",
-"lint-pinned", or any other exception. There is one template per layer and one
-canonical required-section set.
+`IPLAN-TEMPLATE.yaml` and enumerate the required sections.
+
+**Subtype-aware dispatch (CLEANUP-PR-E item 17).** Before enumerating
+required sections, read the artifact's `document_control.subtype`
+field. Missing value defaults to `combined` (backward compat for
+pre-0.19.1 IPLANs). Select the required-section set per subtype:
+
+- `code_build`: sections where `_required_when_subtype:` includes
+  `code_build` (file_manifest, execution_commands,
+  implementation_contracts, session_handoff, traceability +
+  document_control + glossary).
+- `deploy`: sections where `_required_when_subtype:` includes
+  `deploy` (rollback_procedure, smoke_tests, canary_metrics,
+  observability_hooks, runbook_reference, traceability +
+  document_control + glossary).
+- `combined`: union of both (every section with any
+  `_required_when_subtype:` marker is required; this is the
+  pre-0.19.1 behavior).
+
+The Structure check below is satisfied **only** when every enumerated
+required section (for the artifact's subtype) appears as a `##`
+heading in the artifact. Any missing required section is a **blocking
+finding** — never rationalise it as a "compact" variant, "documented
+walkthrough", "lint-pinned", or any other exception. The subtype
+mechanism is the *only* way to legitimately omit sections; if the
+artifact wants different sections than its declared subtype expects,
+the subtype is wrong (not the section set).
 
 **Tier 1 — blocking (error):**
 
