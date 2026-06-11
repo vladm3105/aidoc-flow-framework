@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -133,6 +133,10 @@ This is the req-to-SPEC bridge that downstream layers consume.
    chain, the PRD/BRD it derives from) to understand the behaviors to test.
 2. **Reserve ID** — next free `BDD-NN` (two digits, no extra leading zero:
    `BDD-01`, `BDD-99`, `BDD-102`).
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the document** from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
    complete all 5 sections, Document Control first.
 4. **Write scenarios** per EARS requirement across the five categories; add

@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -129,6 +129,10 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
    objectives, stakeholders, success criteria, and §8 topics.
 2. **Reserve ID** — next free `PRD-NN` (two digits: `PRD-01`, `PRD-99`,
    `PRD-102`).
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the nested folder** — every PRD lives in
    `docs/02_PRD/PRD-NN_{slug}/` regardless of size. Monolithic:
    `PRD-NN_{slug}.md` inside it; section-based (>25 KB): `PRD-NN.S_{section}.md`

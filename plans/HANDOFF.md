@@ -1458,3 +1458,8 @@ plugin MINOR 0.16.1 → 0.17.0.
 
 FRAMEWORK-CLEANUP-001 backlog after PR-D: 2 open (item #18 doc-num user-deferred + item #19 Option B future) / 18 closed.
 The workstream's planned 17 items are 100% addressed; items 18 + 19 are deferred follow-ups, not gaps in the original scope.
+
+### 2026-06-11 — CLEANUP-PR-F (doc-number independence)
+
+Single-item follow-up PR closing item #18. Framework PATCH 0.20.0 → 0.20.1; plugin PATCH 0.17.0 → 0.17.1.
+FRAMEWORK-TODO state: 1 open (item #19 Option B 02b_DECOMP, user-deferred) / 19 closed.

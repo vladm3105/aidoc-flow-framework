@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -150,6 +150,10 @@ completed work → 5) update file status → 6) append a session with a
 1. **Determine type** — permanent vs temporary (table above).
 2. **Reserve ID** — next free `IPLAN-NN` (two digits, sequential, never reused);
    the ID typically matches its SPEC/TDD component.
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the file** — permanent: `docs/08_IPLAN/IPLAN-NN_{slug}.yaml`;
    temporary: `docs/08_IPLAN/tmp/TMP-IPLAN-YYYY-MM-DD_{slug}.yaml`.
 4. **Select subtype** (CLEANUP-PR-E item 17) — decide which subtype

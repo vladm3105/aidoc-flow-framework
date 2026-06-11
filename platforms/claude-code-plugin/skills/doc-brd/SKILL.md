@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
 ---
@@ -135,6 +135,10 @@ Most BRDs are authored from stakeholder input — keep the default
 1. **Determine type** — Platform vs Feature (table above).
 2. **Reserve ID** — next free `BRD-NN` (two digits, no leading zero beyond two:
    `BRD-01`, `BRD-99`, `BRD-102`).
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the nested folder** — every BRD lives in `docs/01_BRD/BRD-NN_{slug}/`
    regardless of size. Monolithic: `BRD-NN_{slug}.md` inside it; section-based
    (>25 KB): `BRD-NN.S_{section}.md` + index from
