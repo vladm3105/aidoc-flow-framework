@@ -475,6 +475,14 @@ def lint_text(
                         "(want TYPE.NN.<category>.<key> with lowercase category)",
                     )
                 )
+        # CLEANUP-PR-D item 15: `full_id:` lines declare threshold keys
+        # in PRD `component_decomposition` sections. Exempt the declared
+        # value from the element-id scan (the key is a threshold, not an
+        # element id).
+        for m in re.finditer(
+            r"full_id:\s*[\"\']?(PRD\.\d+\.[a-z_]+(?:\.[a-z0-9_]+)+)[\"\']?", line
+        ):
+            threshold_spans.append(m.span(1))
 
         def _in_threshold(span):
             return any(s[0] <= span[0] and span[1] <= s[1] for s in threshold_spans)
