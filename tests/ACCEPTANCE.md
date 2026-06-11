@@ -222,6 +222,48 @@ When `--from-layer=<name>` or `--element=<name>` implies a non-BRD
 layer, Phase 0 verifies the previous layer's artifact under `docs/`
 exists. Fails fast with a clear hint if missing.
 
+### Cleanup-then-cascade pattern (`rm -rf` → `--force`)
+
+A common migration scenario: re-run the cascade against an example
+whose existing artifacts pre-date a framework contract change (e.g.
+`TRACE-RES-FIXUP-001` regenerated the url-shortener corpus under the
+new necessary-upstream contract; `IPLAN-RT-001` regenerated only the
+IPLAN layer against post-migration upstream). The clean approach is
+to remove the to-be-regenerated layer directories + their `.aidoc/`
+state before re-running the cascade.
+
+This trips Phase 0's `--force` safety belt (item 3 above) because the
+`rm -rf` shows up as unstaged deletions. The fix is to add `--force`
+to the cascade invocation. Worked example (mirrors the IPLAN-RT-001
+PR #127 cascade):
+
+```sh
+# 1. Pre-cleanup — remove the layer(s) being regenerated + per-layer
+#    saga/audit state so the cascade starts deterministic.
+rm -rf examples/url-shortener/docs/08_IPLAN/
+rm -rf examples/url-shortener/.aidoc/review/08_IPLAN/
+rm -rf examples/url-shortener/.aidoc/audit/08_IPLAN-audit.md
+
+# 2. Run cascade with --force to bypass the unstaged-deletions safety
+#    belt. The cleanup is the explicit precondition for the re-run.
+bash tests/scripts/test-acceptance.sh url-shortener --live \
+     --phase=cascade --from-layer=iplan --to-layer=iplan --force
+```
+
+**When to use `--skip-lint-smoke` in addition:** if the corpus is
+mid-migration and the existing `docs/` carry artifacts that won't
+pass `sdd_doc_lint` until they're regenerated, add `--skip-lint-smoke`
+to bypass Phase 0's lint check + its auto-remediate fixer cycle. This
+replaces the deprecated `SDD_LINT_SKIP_TRACE_RES=1` env-var pattern
+that was used during the TRACE-RES-FIXUP-001 regen (PR #125). Use
+only for migration scenarios; never set on production CI.
+
+**Note on `.aidoc/remediation/`:** this directory holds per-document
+remediation history that is not invalidated by a layer re-run; do NOT
+clear it. Only `.aidoc/review/<NN_LAYER>/` (per-saga state) and
+`.aidoc/audit/<NN_LAYER>-audit.md` (per-layer audit report) need
+clearing for a deterministic re-run.
+
 ## 5. Phase 1 — Layer cascade
 
 ### 5.1 Happy-path cascade

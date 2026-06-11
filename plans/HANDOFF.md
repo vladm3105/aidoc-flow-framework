@@ -1402,3 +1402,16 @@ chaos_engineer / security_engineer / operator / auditor (6 lenses,
 mirrors BDD/ADR layout). Should be the cleanest per-layer rollout
 yet — all the framework defects discovered during SPEC are now
 fixed on main.
+
+### 2026-06-11 — CLEANUP-PR-A (harness + lint workflow hygiene)
+
+First child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`).
+Closes `plans/FRAMEWORK-TODO.md` items #1-4. Plugin PATCH 0.14.0 → 0.14.1.
+Plumbing only — no spec change.
+
+- Item 1: `--skip-lint-smoke` flag in `tests/scripts/test-acceptance.sh` (replaces deprecated env-var)
+- Item 2: "Cleanup-then-cascade pattern" subsection in `tests/ACCEPTANCE.md`
+- Item 3: DO-NOT-EDIT banners on canonical vendored Python modules + `_VENDORED.md` README
+- Item 4: 18 audit + fixer SKILL prompts gain MD056 table-pipe-escape guidance
+
+FRAMEWORK-CLEANUP-001 backlog: 13 open / 5 closed. Next: PR-C in parallel, then PR-B, then PR-D, then PR-E.

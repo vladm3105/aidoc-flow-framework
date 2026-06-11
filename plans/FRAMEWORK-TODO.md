@@ -24,41 +24,6 @@
 
 ## Open
 
-### `[harness]` Cascade harness lacks `--skip-lint-smoke` flag for migration scenarios
-
-- *Context:* TRACE-RES-FIXUP-001 cascade (2026-06-10) needed
-  `SDD_LINT_SKIP_TRACE_RES=1` env-var bypass to run against the legacy
-  url-shortener corpus before the new contract was applied.
-- *Fix shape:* add `--skip-lint-smoke` flag to `tests/scripts/test-acceptance.sh`
-  Phase 0 so migration runs can defer lint until after the corpus is
-  regenerated. Removes the need for per-rule env-var bypasses.
-
-### `[harness]` Tree-safety check requires `--force` after pre-cleanup; plan templates don't surface this
-
-- *Context:* TRACE-RES-FIXUP-001 first cascade attempt (2026-06-10) aborted
-  in 30s at Phase 0 "tree-safety FAIL" because `rm -rf` of legacy artifacts
-  created unstaged deletions. Five-pass plan review missed this. Re-run
-  with `--force` succeeded.
-- *Fix shape:* either (a) document the cleanup-then-`--force` pattern in
-  the cascade-rebuild section of plans that touch `examples/<NAME>/`,
-  or (b) auto-stage the cleanup in the harness so the safety check sees
-  a clean tree.
-
-### `[lint]` `sync-vendored.sh` and `sync-plugin-framework.sh` are two separate sync mechanisms; easy to confuse
-
-- *Context:* TRACE-RES-FIXUP-001 Task 2 (2026-06-10) and earlier
-  NECESSARY-UPSTREAM-001 (PR #121): I edited the vendored lint module,
-  ran `sync-plugin-framework.sh`, and the edit was overwritten because
-  that script syncs `tools/sdd_doc_lint/` → vendored copies (treating
-  `tools/` as canonical), not the reverse. The lint module's canonical
-  source is `tools/sdd_doc_lint/__init__.py`; the vendored copies under
-  `platforms/<name>/sdd_doc_lint/` are byte-identical mirrors.
-- *Fix shape:* either (a) consolidate to one sync script that knows the
-  direction per directory, or (b) add a top-of-file comment to each
-  vendored module declaring "DO NOT EDIT — synced from tools/...". A
-  brief CONTRIBUTING.md note next to the existing sync-script docs
-  would also help.
-
 ### `[plan-review]` Plan reviews should cross-check claims against the example corpus, not only test fixtures
 
 - *Context:* NECESSARY-UPSTREAM-001 (PR #121) Pass 4 verified
@@ -118,21 +83,6 @@
   in practice; per-layer rollout plans converge in 2. CLAUDE.md's
   "minimum 2" floor is correct; an advisory upper-bound by plan-type
   would help future estimation.
-
-### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056)
-
-- *Context:* IPLAN-RT-001 live cascade (2026-06-10) produced
-  `examples/url-shortener/.aidoc/audit/08_IPLAN-audit.md:105` and
-  `.aidoc/review/08_IPLAN/IPLAN-01/IPLAN-01.F_fix_report_v001.md:50`
-  containing rows where a `docker compose ps | grep 'Up'` code span
-  inside a table cell has its shell pipe treated by markdownlint as a
-  column separator, tripping MD056 (column-count mismatch). Pre-commit
-  hook blocked impl commits on cascade output.
-- *Fix shape:* update audit + fixer SKILL prompts to escape `|` inside
-  code spans within markdown table cells (use `\|` or move the code
-  span to a paragraph reference). Until then, `examples/<name>/.aidoc/`
-  is excluded from the pre-commit markdownlint hook (workflow-gap fix
-  landed in IPLAN-RT-001 commit).
 
 ### `[gate]` Component-decomposition gate missing between PRD and ADR
 
@@ -262,3 +212,57 @@
   ADR 96 / SPEC 97 / TDD 90 / IPLAN 100. Post-cascade review (2026-06-11)
   surfaced 9 NEW framework-improvement items, captured above as Open
   entries for FRAMEWORK-CLEANUP-001 triage.
+
+### `[harness]` Cascade harness lacks `--skip-lint-smoke` flag for migration scenarios
+
+- *Context:* TRACE-RES-FIXUP-001 cascade (2026-06-10) needed
+  `SDD_LINT_SKIP_TRACE_RES=1` env-var bypass to run against the legacy
+  url-shortener corpus before the new contract was applied.
+- *Fix shape:* add `--skip-lint-smoke` flag to `tests/scripts/test-acceptance.sh`
+  Phase 0 so migration runs can defer lint until after the corpus is
+  regenerated. Removes the need for per-rule env-var bypasses.
+  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+
+### `[harness]` Tree-safety check requires `--force` after pre-cleanup; plan templates don't surface this
+
+- *Context:* TRACE-RES-FIXUP-001 first cascade attempt (2026-06-10) aborted
+  in 30s at Phase 0 "tree-safety FAIL" because `rm -rf` of legacy artifacts
+  created unstaged deletions. Five-pass plan review missed this. Re-run
+  with `--force` succeeded.
+- *Fix shape:* either (a) document the cleanup-then-`--force` pattern in
+  the cascade-rebuild section of plans that touch `examples/<NAME>/`,
+  or (b) auto-stage the cleanup in the harness so the safety check sees
+  a clean tree.
+  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+
+### `[lint]` `sync-vendored.sh` and `sync-plugin-framework.sh` are two separate sync mechanisms; easy to confuse
+
+- *Context:* TRACE-RES-FIXUP-001 Task 2 (2026-06-10) and earlier
+  NECESSARY-UPSTREAM-001 (PR #121): I edited the vendored lint module,
+  ran `sync-plugin-framework.sh`, and the edit was overwritten because
+  that script syncs `tools/sdd_doc_lint/` → vendored copies (treating
+  `tools/` as canonical), not the reverse. The lint module's canonical
+  source is `tools/sdd_doc_lint/__init__.py`; the vendored copies under
+  `platforms/<name>/sdd_doc_lint/` are byte-identical mirrors.
+- *Fix shape:* either (a) consolidate to one sync script that knows the
+  direction per directory, or (b) add a top-of-file comment to each
+  vendored module declaring "DO NOT EDIT — synced from tools/...". A
+  brief CONTRIBUTING.md note next to the existing sync-script docs
+  would also help.
+  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+
+### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056)
+
+- *Context:* IPLAN-RT-001 live cascade (2026-06-10) produced
+  `examples/url-shortener/.aidoc/audit/08_IPLAN-audit.md:105` and
+  `.aidoc/review/08_IPLAN/IPLAN-01/IPLAN-01.F_fix_report_v001.md:50`
+  containing rows where a `docker compose ps | grep 'Up'` code span
+  inside a table cell has its shell pipe treated by markdownlint as a
+  column separator, tripping MD056 (column-count mismatch). Pre-commit
+  hook blocked impl commits on cascade output.
+- *Fix shape:* update audit + fixer SKILL prompts to escape `|` inside
+  code spans within markdown table cells (use `\|` or move the code
+  span to a paragraph reference). Until then, `examples/<name>/.aidoc/`
+  is excluded from the pre-commit markdownlint hook (workflow-gap fix
+  landed in IPLAN-RT-001 commit).
+  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.

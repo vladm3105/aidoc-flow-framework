@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.14.0"
+    version: "0.14.1"
     framework_spec_version: "0.17.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -464,6 +464,24 @@ Recognize these via explicit deferral phrases ("owned by X",
 layer) and skip the finding.
 
 ## Combined Report Format
+
+### Table-pipe escape (MD056)
+
+When emitting markdown table cells that contain code spans with shell
+pipes (e.g. `` `docker compose ps | grep 'Up'` ``), the unescaped `|`
+inside the code span is parsed by markdownlint as a column separator,
+tripping **MD056** (column-count mismatch). Two fixes:
+
+- **Preferred:** escape the pipe inside the code span as `\|` —
+  renders as `|` in markdown viewers but doesn't break the table.
+  Example row: `` | OP-02 | ... | `docker compose ps \| grep 'Up'` | ... | ``
+- **Alternative:** move the code span out of the table cell and
+  reference it as a footnote or paragraph below the table. The cell
+  then carries plain prose like "shell readiness gate (see below)".
+
+Apply to every report row that emits a shell-pipe code span inside a
+table cell. Cascade-output that trips MD056 is a SKILL bug, not a
+markdownlint over-strictness — fix here, not by lint-ignoring.
 
 Output path: `.aidoc/audit/01_BRD-audit.md` (the `.aidoc/`
 provenance tier). Sections — **Summary** (ID, timestamp,
