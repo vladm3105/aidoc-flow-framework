@@ -134,3 +134,18 @@
 ## Closed
 
 *(none yet — entries move here once their fix lands; include the merge-commit SHA)*
+
+### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056)
+
+- *Context:* IPLAN-RT-001 live cascade (2026-06-10) produced
+  `examples/url-shortener/.aidoc/audit/08_IPLAN-audit.md:105` and
+  `.aidoc/review/08_IPLAN/IPLAN-01/IPLAN-01.F_fix_report_v001.md:50`
+  containing rows where a `docker compose ps | grep 'Up'` code span
+  inside a table cell has its shell pipe treated by markdownlint as a
+  column separator, tripping MD056 (column-count mismatch). Pre-commit
+  hook blocked impl commits on cascade output.
+- *Fix shape:* update audit + fixer SKILL prompts to escape `|` inside
+  code spans within markdown table cells (use `\|` or move the code
+  span to a paragraph reference). Until then, `examples/<name>/.aidoc/`
+  is excluded from the pre-commit markdownlint hook (workflow-gap fix
+  landed in IPLAN-RT-001 commit).

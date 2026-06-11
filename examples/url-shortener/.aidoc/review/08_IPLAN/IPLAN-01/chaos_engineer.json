@@ -1,0 +1,15 @@
+{
+  "persona": "chaos_engineer",
+  "weight": 8,
+  "findings": [
+    {
+      "id": "CH-01",
+      "priority": "P3",
+      "location": "IPLAN-01 §3 Execution Commands (line 139, 145-148) — e2e timeout budgets",
+      "message": "The e2e per-test budgets sum to 270s (3c7f 60s + 4d80 120s + 5e91 90s) against a 300s aggregate suite ceiling (--timeout=300), leaving only 30s headroom. Each destructive-fault test carries container spin-up plus its own fixture restore (down -v/up -d cycling, line 113/119/142) as teardown overhead. Under realistic per-test fixture-reset cost, cumulative overhead can push the suite past 300s and trip the aggregate cap BEFORE the per-test pytest-timeout markers fire — defeating the stated attribution design (a breach attributable to the suite cap, not the offending test).",
+      "recommendation": "Either raise the suite --timeout to bound sum-of-per-test-budgets plus a named per-fixture setup/teardown allowance (e.g. 270s budgets + 3×30s fixture overhead = ~360s), or state explicitly that per-test markers are the authoritative gate and the suite cap is a generous backstop set well above the budget sum. Make the relationship between the two ceilings non-overlapping so attribution is deterministic.",
+      "check": "C3"
+    }
+  ],
+  "lens_score": 94
+}

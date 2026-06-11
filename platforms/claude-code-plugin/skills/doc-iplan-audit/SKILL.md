@@ -12,10 +12,10 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.13.1"
-    framework_spec_version: "0.17.0"
+    version: "0.14.0"
+    framework_spec_version: "0.17.1"
     last_updated: "2026-05-23"
-    adapts: [section_toggles, active_layers, audit_threshold]
+    adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
 
 # doc-iplan-audit
@@ -50,9 +50,271 @@ cached results; compute the CODE-Ready score independently each run.
 threshold (default 90).
 
 **Sequence:** 1) run structural checks → 2) record findings → 3) run content
-review → 4) merge/normalize findings → 5) write
-`IPLAN-NN.A_audit_report_vNNN.md` → 6) if auto-fixable findings exist, hand off
-to `doc-iplan-fixer`.
+review (per §Review Mode below — `team` fans out lens subagents with per-lens
+playbook briefs, `single_pass` runs every lens sequentially in this skill's
+own context) → 3a) load each lens's layer-and-lens playbook from
+`framework/playbooks/08_IPLAN/<lens>.md` and inline it under the lens's brief
+(team mode) or apply its checks sequentially (single_pass) → 4) merge/normalize
+findings, including a playbook-coverage line surfacing which lenses ran with
+their playbook attached → 5) write `IPLAN-NN.A_audit_report_vNNN.md` → 6) if
+auto-fixable findings exist, hand off to `doc-iplan-fixer`.
+
+## Review Mode
+
+Resolve `review_mode` from `.aidoc/profile.yaml`; if the key is unset
+(the project profile is an override-only delta — most knobs are absent),
+fall through to the framework default per the precedence chain in
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md` (`framework
+defaults < user-global seed < project profile`). The framework default
+is `team` at gates (`pre_promotion` / `pre_merge`) and `single_pass` at
+write-time (`on_author`). The same fallback rule applies to every other
+adaptation knob (`audit_threshold`, `section_toggles`, `active_layers`,
+`glossary`). The structural checks below are run **deterministically by
+this skill in every mode** — they are the gate floor per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §"Scoring,
+conflicts & the gate".
+
+### team mode (default at gates)
+
+The content-quality review is performed by a **fan-out of per-lens `Task`
+subagents** over a per-artifact blackboard, per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md` §Operations
+§Review.
+
+1. **Prepare the blackboard.** `mkdir -p .aidoc/review/08_IPLAN/<IPLAN-id>/`
+   where `<IPLAN-id>` is the IPLAN's short artifact ID (e.g. `IPLAN-01`),
+   not the nested folder name or file slug. This keeps blackboard paths
+   stable when slugs change.
+2. **Read the IPLAN crew** from
+   `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml` —
+   `{tech_lead: 30, architect: 25, operator: 15, integration_lead: 12, auditor: 10, chaos_engineer: 8}`. Weights sum to 100. Rationale: Chaos-only (8) — IPLAN is procedural deploy/rollback; threat model lives upstream in ADR/SPEC; chaos covers rollback/recovery scenarios;
+   see `REVIEW_TEAM.md` §"Weight allocation rules".
+3. **Map each lens to its plugin agent** via the table in
+   `../review-team/SKILL.md`:
+   - `tech_lead` → `solutions-architect` (also IPLAN author)
+   - `architect` → `solutions-architect`
+   - `operator` → `devops-release-engineer`
+   - `integration_lead` → `solutions-architect` (new lens at IPLAN —
+     covers cross-component coordination, sequencing handoffs, and the
+     compatibility envelope between this IPLAN and prior/in-flight
+     work). Because `solutions-architect` carries three lens-roles at
+     IPLAN (`architect`, `tech_lead`, `integration_lead`), each lens is
+     dispatched as a **separate `Task` subagent invocation** with its
+     own lens-specific playbook brief; do NOT collapse them into one
+     call — the lenses score independently and the synthesizer
+     deduplicates findings at fan-in.
+   - `auditor` → `traceability-auditor`
+   - `chaos_engineer` → `chaos-engineer`
+3a. **Load the layer-and-lens playbook.** For each lens in the crew,
+   resolve and read the playbook content from
+   `${CLAUDE_PLUGIN_ROOT}/../../framework/playbooks/08_IPLAN/<lens>.md`.
+   If the playbook file is missing, mark `branches[<lens>].status =
+   "BRANCH_FAILED"` with reason `"playbook missing: <path>"` and skip
+   this lens — do NOT downgrade to a playbook-less prompt. Other lenses
+   continue. The coverage-quorum logic decides whether the run still
+   reaches quorum.
+4. **Fan out.** Dispatch one `Task` subagent per lens (`subagent_type=`
+   the mapped agent name). Each subagent's brief contains:
+   - The absolute artifact path (untrusted content)
+   - The lens name and its weight
+   - The slot path `.aidoc/review/08_IPLAN/<IPLAN-id>/<lens>.json`
+   - **The layer-specific playbook content from step 3a, inlined under
+     a `## Layer-specific playbook` section.** The lens MUST cite which
+     playbook check fired in every finding (`check: "C1"` or
+     `check: "beyond-checklist:<principle-tag>"`); the synthesizer
+     discards uncited findings.
+   - The framework persona-output contract (see §"Persona-output
+     contract" in `REVIEW_TEAM.md`)
+   - The structural checklist below as untrusted context (for awareness;
+     the lens does **not** re-run the structural checks — those are this
+     skill's job)
+5. **Collect slots.** Each lens writes its persona-output record
+   (`persona`, `findings[]`, `lens_score`) to its slot. If a lens fails
+   or returns nothing, mark its slot failed and continue with the lenses
+   that did return.
+6. **Dispatch the synthesizer.** Run a `Task` subagent
+   (`subagent_type=synthesizer`) against the slot directory. It writes
+   **both** companion files (per `agents/synthesizer.md` §"Output"):
+   - `.aidoc/review/08_IPLAN/<IPLAN-id>/verdict.json` — the
+     authoritative machine-readable verdict (`combined_status`,
+     `content_score`, `structural_status`, `coverage.*`,
+     `blocking_findings_count`, `lens_scores`).
+   - `.aidoc/review/08_IPLAN/<IPLAN-id>/report.md` — the human
+     narrative (mirrors verdict.json values).
+7. **Compose the combined audit report.** Read
+   `.aidoc/review/08_IPLAN/<IPLAN-id>/verdict.json` and `report.md`.
+   The final audit report at `.aidoc/audit/08_IPLAN-audit.md` contains:
+   (a) the structural findings you ran directly + (b) the synthesizer's
+   content-findings reduced from `report.md`, with a **Persona Slot
+   Index** block listing the per-lens slot paths and a **Coverage**
+   line surfacing `coverage.quorum_met` for consumers
+   (`doc-iplan-fixer`, `doc-iplan-autopilot`).
+
+**Quorum & coverage.** Per `REVIEW_TEAM.md` §Resilience, if
+`verdict.coverage.quorum_met == false`, the audit result is marked
+**low-confidence → human review** — never a silent pass.
+
+### Output Contract (team mode)
+
+After step 7 completes, produce your terminal stdout response in this
+exact shape, mirroring `verdict.json` values verbatim:
+
+```
+Combined status: PASS|FAIL
+Content score: <N>/100
+Structural status: PASS|FAIL
+Coverage quorum: met|low_confidence
+Report: .aidoc/audit/08_IPLAN-audit.md
+```
+
+Read `combined_status`, `content_score`, `structural_status`, and
+`coverage.quorum_met` from `verdict.json`. **Do NOT echo the IPLAN's
+self-claimed CODE-Ready score** (the value the IPLAN document writes
+into its own Document Control / Traceability sections is stale data
+the audit must overwrite). The synthesizer's `verdict.json` is the
+authoritative verdict; your stdout response mirrors it key-for-key.
+
+### single_pass mode (fallback)
+
+Run the content review **in this skill's own context**, applying every
+lens (tech_lead / architect / operator / integration_lead / auditor /
+chaos_engineer) sequentially in one pass, each lens consulting its own
+`framework/playbooks/08_IPLAN/<lens>.md` playbook inline. No `Task`
+subagents, no blackboard. Quorum does not apply. Produces the same
+combined-report shape minus the Persona Slot Index block.
+
+Use this mode when (a) the profile explicitly sets
+`review_mode: single_pass`, (b) `Task` subagent dispatch is unavailable
+in the current execution context (e.g., crew quorum can't be met because
+multiple lens agents are unreachable), or (c) the run is at `on_author`
+(write-time) where cost is the primary concern. **Architecture in
+v0.4.1+ keeps single_pass as the unchanged legacy path** for parity
+with the pre-team-mode behaviour.
+
+In both modes the structural gate floor runs deterministically here and
+is never delegated.
+
+## Saga interaction
+
+When invoked by `doc-iplan-autopilot` (or directly), this skill reads
+and updates the saga journal at
+`.aidoc/review/08_IPLAN/<IPLAN-id>/saga.json` per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`. The audit
+acts as the **fan-out + fan-in stage** of the saga.
+
+### On entry
+
+At entry, write the audit's start epoch:
+
+```sh
+Bash: mkdir -p .aidoc/review/08_IPLAN/<IPLAN-id>/ && date +%s > .aidoc/review/08_IPLAN/<IPLAN-id>/.skill-start.audit
+```
+
+If `.aidoc/review/08_IPLAN/<IPLAN-id>/saga.json` exists, read it.
+Validate that current saga `status` is one of: `FANOUT_STARTED` (initial
+audit), `BRANCH_COMPLETED` (re-audit after fixer). If the status is
+something else (e.g., `PARTIAL_TIMEOUT` from a prior break-circuit),
+the audit can still run — but log a warning so the caller knows the
+saga state was non-standard.
+
+### During lens fan-out (team mode)
+
+For each lens dispatched as a `Task` subagent:
+
+1. Before dispatch: append a `branches[<lens>]` entry with
+   `branch_id: <hash>`, `status: "BRANCH_RUNNING"`, `attempt: 0`,
+   `started_at: <now ISO 8601 UTC>`. Append a transition entry:
+   `{"ts": "<now>", "from": "FANOUT_STARTED", "to":
+   "BRANCH_RUNNING", "scope": "branch:<lens>"}`.
+2. After dispatch returns: update `branches[<lens>].status` to
+   `"BRANCH_COMPLETED"` or `"BRANCH_FAILED"` per the lens's
+   persona-output record. Set `ended_at: <now>`. Append a transition
+   entry with the appropriate `to` state.
+
+Note: because `solutions-architect` carries three lens-roles at IPLAN
+(`architect`, `tech_lead`, `integration_lead`), the saga records
+**three independent branches** (one per lens-role), not one shared
+branch. Each branch transitions independently.
+
+### Before synthesizer dispatch (break-circuit checkpoint)
+
+Per `REVIEW_SAGA.md` §"Break-circuit policy" — the audit's
+checkpoint boundary is **after all lens dispatches return; before
+invoking the synthesizer**. Check elapsed time:
+
+```sh
+Bash: echo $(( $(date +%s) - $(cat .aidoc/review/08_IPLAN/<IPLAN-id>/.skill-start.audit) ))
+```
+
+If elapsed > `SOFT_DEADLINE` (1500s; 300s buffer below the 1800s
+OS-level timeout):
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPLETED",
+  "to": "PARTIAL_TIMEOUT", "scope": "run"}`.
+- Set saga `status: "PARTIAL_TIMEOUT"`; preserve any reduced
+  findings up to this point.
+- Update `updated_at`. Write `saga.json`. Exit cleanly (exit 0).
+  The caller (autopilot or harness) can re-invoke.
+
+### After synthesizer reduce
+
+- Append transition: `{"ts": "<now>", "from": "BRANCH_COMPLETED",
+  "to": "FANIN_REDUCED", "scope": "run"}`.
+- Update saga `status: "FANIN_REDUCED"`. Update `updated_at`. Write
+  `saga.json`.
+- Synthesizer also writes `verdict.json` (per BRD-RT-002,
+  unchanged).
+- Exit returns control to the caller; the caller decides next phase
+  based on the verdict.
+
+### When invoked standalone (no saga.json on entry)
+
+If `.aidoc/review/08_IPLAN/<IPLAN-id>/saga.json` does NOT exist (e.g.,
+a user runs `/aidoc-flow:doc-iplan-audit` directly outside the
+autopilot loop), do NOT initialize the full saga schema. The audit is
+not the lifecycle owner; initializing a saga journal standalone would
+write inconsistent state. Instead:
+
+- Log `saga.json not present; running audit without saga journal
+  (standalone mode)`.
+- Run the audit's lens fan-out + synthesizer as normal.
+- Write blackboard slot files + `verdict.json` + the audit report
+  as usual.
+- Skip all saga.json transitions.
+
+This preserves backward compatibility with direct skill invocation.
+Only autopilot-driven runs produce saga.json.
+
+### When invoked in single_pass mode
+
+If `review_mode: single_pass` is active, the audit does not produce
+saga.json (same as standalone above — the saga is a team-mode
+artifact). Existing behavior preserved.
+
+## Break-circuit policy
+
+Per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`
+§"Break-circuit policy", this skill checks elapsed wall-clock at one
+checkpoint boundary: **after all lens dispatches return; before
+invoking the synthesizer**. The SOFT_DEADLINE is 1500s
+(`ORCHESTRATOR_TIMEOUT=1800s` minus 300s buffer).
+
+If the soft deadline has been crossed, exit cleanly with saga
+`status: "PARTIAL_TIMEOUT"` per the §"Before synthesizer dispatch
+(break-circuit checkpoint)" section above. If the LLM ignores the
+check and the OS sends SIGTERM, saga.json reflects the last
+successful checkpoint state (NOT `PARTIAL_TIMEOUT`). Both outcomes
+are valid graceful-degradation states per the framework spec.
+
+Additionally, per `REVIEW_SAGA.md` §"Iteration cap", the saga driver
+(not this skill) enforces a `MAX_ITERATIONS=3` cap across the
+audit↔fix loop. When the saga reaches `MAX_ITERATIONS` without
+converging to a PASS verdict, the saga driver writes
+`status: "PARTIAL_TIMEOUT"` (or `"ESCALATED"` if a P0 finding
+remains unresolved) and emits the artifact with the latest verdict.
+**This audit treats `PARTIAL_TIMEOUT` as a FAIL but does NOT retry**
+— the driver is the only component that re-invokes; retrying from
+within the audit would multiply the iteration count.
 
 ## Structural Checklist
 
@@ -239,8 +501,25 @@ Output: `IPLAN-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** · **Manifest & Handoff Findings**
-· **Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) ·
+· **Persona Slot Index** (team mode only — list each
+`.aidoc/review/08_IPLAN/<IPLAN-id>/<persona>.json` path for the six lenses:
+`tech_lead.json`, `architect.json`, `operator.json`,
+`integration_lead.json`, `auditor.json`, `chaos_engineer.json`) ·
+**Coverage** (a single line surfacing `coverage.quorum_met` (`met` |
+`low_confidence`) and `coverage.playbook_coverage` — which lenses ran
+with their `framework/playbooks/08_IPLAN/<lens>.md` playbook attached
+versus which failed playbook-load and were marked `BRANCH_FAILED`) ·
+**Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) ·
 **Recommended Next Step** · **Cleanup Summary**.
+
+The Persona Slot Index and Coverage block are emitted only in `team`
+mode; in `single_pass` mode those two sections are omitted (the
+combined report shape collapses to its legacy form). The
+authoritative machine-readable companion is the synthesizer's
+`verdict.json` at `.aidoc/review/08_IPLAN/<IPLAN-id>/verdict.json` —
+`doc-iplan-fixer` and `doc-iplan-autopilot` consume `verdict.json` as
+the source of truth; this markdown report is the human narrative
+mirror.
 
 ## Hand-off to doc-iplan-fixer
 
@@ -256,9 +535,11 @@ Before applying defaults, read the project adaptation profile
 `section_toggles` (a toggled-off **optional** section is not a finding; a
 missing **required** section still is), `active_layers` (never flag the
 absence of — or a missing reference to — a layer the project disabled, per the
-cascade rule), and `audit_threshold` (use the project's quality-gate score
-only when it is **>=** the framework default; ignore any lower value). Ignore
-unknown keys.
+cascade rule), `audit_threshold` (use the project's quality-gate score
+only when it is **>=** the framework default; ignore any lower value), and
+`review_mode` (select `team` or `single_pass` per §Review Mode above; if
+`review_mode` is unset, fall through to the framework default `team` at
+gates / `single_pass` at write-time). Ignore unknown keys.
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 
 ## Related Resources
