@@ -29,10 +29,6 @@ class PlaybookCoverageTests(unittest.TestCase):
         with CREWS.open() as f:
             self.crews = yaml.safe_load(f)
 
-    # SKIP: Phase E will author the 45 playbook files.
-    # Remove this decorator (and the skip) once Phase E lands all playbooks
-    # under framework/playbooks/{prefix}/{lens}.md.
-    @unittest.skip("Phase E will land 45 playbooks — skip until then")
     def test_every_crew_lens_has_a_playbook_file(self):
         missing = []
         for layer_name, crew in self.crews["crews"].items():

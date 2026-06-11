@@ -1,0 +1,241 @@
+{
+  "review_run_id": "4b1921654ce7f617",
+  "artifact_id": "IPLAN-01",
+  "layer": "08_IPLAN",
+  "personas_requested": [
+    "tech_lead",
+    "architect",
+    "operator",
+    "integration_lead",
+    "auditor",
+    "chaos_engineer"
+  ],
+  "status": "CLOSED",
+  "iteration": 2,
+  "current_phase": "finalize",
+  "created_at": "2026-06-11T01:17:43.903613+00:00",
+  "updated_at": "2026-06-11T01:48:39.412436+00:00",
+  "branches": {
+    "tech_lead": {
+      "branch_id": "dd04044c6910",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:26:21.923454+00:00",
+      "ended_at": "2026-06-11T01:26:21.923454+00:00"
+    },
+    "architect": {
+      "branch_id": "33684190ea77",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:26:11.007453+00:00",
+      "ended_at": "2026-06-11T01:26:11.007453+00:00"
+    },
+    "operator": {
+      "branch_id": "c79dcadd406e",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:26:50.183455+00:00",
+      "ended_at": "2026-06-11T01:26:50.183455+00:00"
+    },
+    "integration_lead": {
+      "branch_id": "e1b3813c1b17",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:26:39.991455+00:00",
+      "ended_at": "2026-06-11T01:26:39.991455+00:00"
+    },
+    "auditor": {
+      "branch_id": "10239577c2e5",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:27:03.371456+00:00",
+      "ended_at": "2026-06-11T01:27:03.371456+00:00"
+    },
+    "chaos_engineer": {
+      "branch_id": "101900721c8d",
+      "status": "BRANCH_COMPLETED",
+      "attempt": 0,
+      "started_at": "2026-06-11T01:27:19.179456+00:00",
+      "ended_at": "2026-06-11T01:27:19.179456+00:00"
+    }
+  },
+  "transitions": [
+    {
+      "ts": "2026-06-11T01:17:43.903628+00:00",
+      "from": null,
+      "to": "PREPARED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:23:02.751956+00:00",
+      "from": "PREPARED",
+      "to": "FANOUT_STARTED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:26:21.923454+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:21.923454+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:tech_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:11.007453+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:architect",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:11.007453+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:architect",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:50.183455+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:operator",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:50.183455+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:operator",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:39.991455+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:integration_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:26:39.991455+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:integration_lead",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:27:03.371456+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:auditor",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:27:03.371456+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:auditor",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:27:19.179456+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:27:19.179456+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "branch:chaos_engineer",
+      "reconciled": true
+    },
+    {
+      "ts": "2026-06-11T01:33:41.767933+00:00",
+      "from": "FANOUT_STARTED",
+      "to": "BRANCH_RUNNING",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:33:41.767953+00:00",
+      "from": "BRANCH_RUNNING",
+      "to": "BRANCH_COMPLETED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:48:39.412390+00:00",
+      "from": "BRANCH_COMPLETED",
+      "to": "FANIN_REDUCED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:48:39.412414+00:00",
+      "from": "FANIN_REDUCED",
+      "to": "SYNTHESIZED",
+      "scope": "run"
+    },
+    {
+      "ts": "2026-06-11T01:48:39.412430+00:00",
+      "from": "SYNTHESIZED",
+      "to": "CLOSED",
+      "scope": "run"
+    }
+  ],
+  "compensation_actions": [],
+  "events": [
+    {
+      "ts": "2026-06-11T01:17:43.903920+00:00",
+      "kind": "dispatch:draft",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-iplan"
+    },
+    {
+      "ts": "2026-06-11T01:23:02.746351+00:00",
+      "kind": "complete:draft",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-11T01:23:02.752588+00:00",
+      "kind": "dispatch:review",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-iplan-audit"
+    },
+    {
+      "ts": "2026-06-11T01:33:41.765503+00:00",
+      "kind": "complete:review",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-11T01:33:41.769356+00:00",
+      "kind": "dispatch:fixer",
+      "iteration": 1,
+      "slash": "/aidoc-flow:doc-iplan-fixer"
+    },
+    {
+      "ts": "2026-06-11T01:40:55.855230+00:00",
+      "kind": "complete:fixer",
+      "iteration": 1,
+      "exit_code": 0
+    },
+    {
+      "ts": "2026-06-11T01:40:55.857666+00:00",
+      "kind": "dispatch:re-review",
+      "iteration": 2,
+      "slash": "/aidoc-flow:doc-iplan-audit"
+    },
+    {
+      "ts": "2026-06-11T01:48:39.410070+00:00",
+      "kind": "complete:re-review",
+      "iteration": 2,
+      "exit_code": 0
+    }
+  ]
+}

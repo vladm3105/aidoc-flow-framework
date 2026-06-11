@@ -59,7 +59,10 @@ repos:
         # pre-commit exclude because markdownlint-cli ignores .markdownlintignore
         # when pre-commit passes file paths explicitly. sdd_doc_lint fixtures are
         # deliberately-malformed sample docs for the doc-linter's own tests.
-        exclude: '^(platforms/hermes/(agent-skills|prompts|skills)|tools/sdd_doc_lint/fixtures)/'
+        # examples/<name>/.aidoc/ is cascade-output (auditor + fixer SKILL artifacts),
+        # not maintained docs. Underlying SKILL bug (unescaped `|` inside code spans
+        # in table cells) tracked in plans/FRAMEWORK-TODO.md as [skill] MD056 entry.
+        exclude: '^(platforms/hermes/(agent-skills|prompts|skills)|tools/sdd_doc_lint/fixtures|examples/[^/]+/\.aidoc)/'
 
   # ---- YAML ------------------------------------------------------------------
   - repo: https://github.com/adrienverge/yamllint

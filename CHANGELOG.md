@@ -12,6 +12,43 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.17.0 → 0.17.1 + Claude Code plugin 0.13.1 → 0.14.0 (IPLAN-RT-001)
+
+- **IPLAN layer team-mode + playbook injection — closes the 8/8 layer rollout.**
+  Mirror of the TDD-RT-001 pattern for the IPLAN layer (Layer 8). With
+  this PR, all 8 layers (BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN) wire the
+  multi-persona review fan-out + playbook injection. LAYER-PLAYBOOKS-001
+  workstream complete: **45 of 45 playbooks** across all 8 layers.
+- **6 IPLAN playbooks** at `framework/playbooks/08_IPLAN/`:
+  `tech_lead` 30 / `architect` 25 / `operator` 15 / `integration_lead` 12 /
+  `auditor` 10 / `chaos_engineer` 8 (sum 100). **No `security_engineer`** —
+  threat-model lives upstream in ADR/SPEC; IPLAN is procedural deploy/
+  rollback only. **New `integration_lead` lens** (cross-system contract
+  compatibility, dependency rollout order, feature-flag gating, backward-
+  compatible API window) — appears only at IPLAN.
+- **`doc-iplan-audit/SKILL.md`** (270 → 551 lines) gains `## Review Mode`,
+  `## Saga interaction`, `## Break-circuit policy`, and playbook injection
+  (step 3a + augmented step 4). Lens→agent map: tech_lead + architect +
+  integration_lead → solutions-architect (3 lens-roles via 3 separate
+  Task subagent invocations); operator → devops-release-engineer;
+  auditor → traceability-auditor; chaos_engineer → chaos-engineer.
+- **`doc-iplan-fixer/SKILL.md`** (112 → 310 lines) gains
+  `## Remediate Mode`, `## Saga interaction`, `## Break-circuit policy`.
+- **`@unittest.skip` removed** from
+  `tests/conformance/test_playbook_coverage.py:35` (task #258 closing
+  cleanup). The conformance suite gains its 121st active test:
+  `test_every_crew_lens_has_a_playbook_file` (now enforces all 45
+  playbooks).
+- **`docs/PARITY.md`** Layer Playbooks row title corrected from stale
+  `(BRD/PRD/EARS)` to `(all 8 layers)` — row went stale across 5 prior
+  per-layer PRs (EARS/BDD/ADR/SPEC/TDD-RT-001).
+- Framework spec PATCH (`0.17.0 → 0.17.1`) — IPLAN playbooks added under
+  the existing §Playbooks artifact class.
+- Plugin MINOR (`0.13.1 → 0.14.0`) — new layer wiring (8/8).
+- All 45 playbook frontmatter files re-synced to `framework_spec_version: "0.17.1"`
+  via the `scripts/sync-version-refs.sh` hook (LAYER-PLAYBOOKS-001 Phase F
+  Task 11 extension).
+
 ### Changed — Claude Code plugin 0.13.0 → 0.13.1 (TRACE-RES-FIXUP-001)
 
 - **Lint rule semantic fix (Fix 1).** `_check_trace_resolution` in
