@@ -1,5 +1,11 @@
 """sdd_doc_lint — deterministic structural check for SDD instance documents.
 
+CANONICAL SOURCE: tools/sdd_doc_lint/__init__.py (edit here).
+Vendored byte-identical mirrors at platforms/claude-code-plugin/sdd_doc_lint/
+and platforms/hermes/sdd_doc_lint/ are produced by
+tools/sdd_doc_lint/sync-vendored.sh — DO NOT EDIT the vendored copies; any
+direct edit there is overwritten on the next sync run. (CLEANUP-PR-A item 3.)
+
 The platform-tier implementation of the framework's `on_author` / `pre_merge`
 trigger-point check (see `framework/governance/REVIEW_REMEDIATION_FLOW.md`). It
 runs the *structural* subset of a review — ID/tag forms, required upstream tags,

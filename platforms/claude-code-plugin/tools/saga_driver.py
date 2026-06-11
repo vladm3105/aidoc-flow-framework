@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Deterministic preemptive orchestrator for the review-saga lifecycle.
 
+CANONICAL SOURCE: tools/saga_driver.py (edit here).
+Vendored byte-identical mirror at platforms/claude-code-plugin/tools/saga_driver.py
+is produced by tools/sync-plugin-framework.sh — DO NOT EDIT the vendored copy;
+any direct edit there is overwritten on the next sync run. (CLEANUP-PR-A item 3.)
+
 Plays the same role for the Claude Code plugin that `saga_orchestrator.py`
 plays for Hermes: drives the create-review-revise loop, validates state
 machine transitions against `framework/governance/REVIEW_SAGA.md`, manages

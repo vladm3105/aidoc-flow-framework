@@ -45,6 +45,11 @@
 #     --push                 push the promote commit (only with --promote)
 #     --force                bypass the "docs/ or .aidoc/ have unstaged
 #                            changes" safety belt
+#     --skip-lint-smoke      skip Phase 0 lint-smoke check + its
+#                            auto-remediate fixer cycle (for migration
+#                            cascades against a corpus in transition;
+#                            replaces the deprecated SDD_LINT_SKIP_TRACE_RES=1
+#                            env-var pattern)
 #     --fail-fast            halt on first failure
 #     --dry-run              alias for --no-live (common convention)
 #     -h | --help            show this usage block
@@ -134,6 +139,7 @@ MOCK_SOURCE=""
 PROMOTE=0
 PUSH=0
 FORCE=0
+SKIP_LINT_SMOKE=0
 FAIL_FAST=0
 FROM_LAYER=""     # A7 — resume cascade from this layer name (e.g. "spec")
 TO_LAYER=""       # P2 — stop cascade after this layer name
@@ -171,6 +177,7 @@ for arg in "$@"; do
     --promote)         PROMOTE=1 ;;
     --push)            PUSH=1 ;;
     --force)           FORCE=1 ;;
+    --skip-lint-smoke) SKIP_LINT_SMOKE=1 ;;
     --fail-fast)       FAIL_FAST=1 ;;
     --from-layer=*)    FROM_LAYER="${arg#--from-layer=}" ;;
     --to-layer=*)      TO_LAYER="${arg#--to-layer=}" ;;
@@ -854,7 +861,14 @@ phase_0_bootstrap() {
   fi
 
   # 0.5 sdd_doc_lint smoke on existing docs/ (B1 — lint individual files)
-  if [[ -d "$EXAMPLE_DOCS" ]] && [[ -n "$(find "$EXAMPLE_DOCS" -name '*.md' -print -quit 2>/dev/null)" ]]; then
+  # `--skip-lint-smoke` short-circuits BOTH the lint check AND the
+  # auto-remediate (CLEANUP-PR-A item 1); the documented forward-looking
+  # replacement for the ad-hoc `SDD_LINT_SKIP_TRACE_RES=1` env var used
+  # during the TRACE-RES-FIXUP-001 migration (PR #125).
+  if [[ "$SKIP_LINT_SMOKE" -eq 1 ]]; then
+    log_info "sdd_doc_lint smoke: SKIPPED (--skip-lint-smoke)"
+    record_outcome "lint-smoke" "fixture" "bootstrap" "SKIP" 0 "" "" "false" "" "skipped via --skip-lint-smoke"
+  elif [[ -d "$EXAMPLE_DOCS" ]] && [[ -n "$(find "$EXAMPLE_DOCS" -name '*.md' -print -quit 2>/dev/null)" ]]; then
     local lint_out lint_rc
     lint_out="$(PYTHONPATH="$PLUGIN_DIR" python3 -m sdd_doc_lint "$EXAMPLE_DOCS" 2>&1)"; lint_rc=$?
     if [[ $lint_rc -eq 0 ]]; then

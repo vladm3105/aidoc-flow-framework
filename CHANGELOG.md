@@ -12,6 +12,43 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Claude Code plugin 0.14.0 → 0.14.1 (CLEANUP-PR-A — harness + lint workflow hygiene)
+
+First child PR of the FRAMEWORK-CLEANUP-001 workstream (master plan PR #128).
+Closes `plans/FRAMEWORK-TODO.md` Open items #1-4. Plumbing fixes; no spec change.
+
+- **`--skip-lint-smoke` flag** (item 1): added to `tests/scripts/test-acceptance.sh`
+  Phase 0. When set, lint-smoke logs SKIPPED outcome and the auto-remediate
+  fixer cycle is bypassed (the flag wraps BOTH the check AND the remediation —
+  half-bypass would be incoherent). Documented forward-looking replacement for
+  the ad-hoc `SDD_LINT_SKIP_TRACE_RES=1` env-var pattern used during the
+  TRACE-RES-FIXUP-001 regen (PR #125).
+- **Cleanup-then-cascade pattern docs** (item 2): new subsection in
+  `tests/ACCEPTANCE.md` documenting the `rm -rf <layer-dir>` → `--force` cascade
+  sequence with a worked example mirroring the IPLAN-RT-001 PR #127 cascade.
+  Plus guidance on when to combine with `--skip-lint-smoke`. Pass 1 verified the
+  harness error message at `test-acceptance.sh:823` already correctly suggests
+  `--force`; the gap was purely docs (plan authors didn't know about the
+  pattern).
+- **DO-NOT-EDIT banners on vendored modules** (item 3): canonical Python
+  modules (`tools/sdd_doc_lint/__init__.py`, `tools/saga_driver.py`) gain a
+  top-of-docstring "CANONICAL SOURCE — vendored copies under platforms/<name>/
+  are byte-identical mirrors, DO NOT EDIT" banner. Banner propagates to the
+  vendored copies via the sync scripts. New `platforms/claude-code-plugin/framework/_VENDORED.md`
+  README explains the byte-identity contract for the vendored framework bundle
+  (markdown-friendly alternative to a per-file banner that would trip lint).
+- **MD056 SKILL prompt fix** (item 4): 18 audit + fixer SKILL prompts
+  (`doc-{adr,bdd,brd,chg,ears,iplan,prd,spec,tdd}-{audit,fixer}/SKILL.md`)
+  each gain a `### Table-pipe escape (MD056)` subsection in their Report Format
+  section, instructing the LLM author to escape `|` inside code spans within
+  markdown table cells (use `\|` or move the code span out of the cell). Per
+  IPLAN-RT-001 cascade evidence: cascade output tripped MD056 because shell
+  pipes inside backtick code spans were parsed as column separators. The
+  `examples/<*>/.aidoc/` markdownlint exclude added in PR #127 is a workaround;
+  this PR fixes the root cause in the SKILL prompts. Final exclude removal
+  deferred to PR-A verification cascade.
+- Plugin PATCH (`0.14.0 → 0.14.1`). No framework spec change.
+
 ### Changed — Framework Spec 0.17.0 → 0.17.1 + Claude Code plugin 0.13.1 → 0.14.0 (IPLAN-RT-001)
 
 - **IPLAN layer team-mode + playbook injection — closes the 8/8 layer rollout.**
