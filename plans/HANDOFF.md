@@ -1415,3 +1415,16 @@ Plumbing only — no spec change.
 - Item 4: 18 audit + fixer SKILL prompts gain MD056 table-pipe-escape guidance
 
 FRAMEWORK-CLEANUP-001 backlog: 13 open / 5 closed. Next: PR-C in parallel, then PR-B, then PR-D, then PR-E.
+
+### 2026-06-11 — CLEANUP-PR-C (spec / registry / template hygiene)
+
+Second child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`).
+Closes `plans/FRAMEWORK-TODO.md` items #11-14.
+Framework MINOR 0.17.1 → 0.18.0; plugin MINOR 0.14.1 → 0.15.0.
+
+- Item 11: iteration cap elevated to spec + project-tunable knob
+- Item 12: `@threshold:` ID pattern in registry + strict TH01 lint
+- Item 13: SPEC + IPLAN element-ID exemption formalized in ID_NAMING_STANDARDS
+- Item 14: EARS `@bdd:` downstream slot formalized as optional + non-canonical
+
+FRAMEWORK-CLEANUP-001 backlog: 9 open / 9 closed. Next: PR-B (review-quality calibration, 6 items) or PR-E (IPLAN subtypes, 1 item).

@@ -34,6 +34,31 @@ Draft ─▶ Review ─▶ (findings + readiness score)
 This loop is layer-agnostic: it applies identically to every artifact (BRD …
 IPLAN), using that layer's own template, required tags, and threshold.
 
+### Iteration cap
+
+The loop's *"repeats until the gate passes"* clause carries an implicit
+upper bound: a saga that never converges cannot run forever. The framework
+declares a **default iteration cap of 3** review→remediate cycles. At the
+cap, the saga transitions to `PARTIAL_TIMEOUT` (per `REVIEW_SAGA.md`),
+emits the artifact + saga journal as deliverables, and surfaces the
+unresolved findings in the audit report. The cap is **not** a quality
+gate (gate passage still requires the score), it is a non-convergence
+guard.
+
+The cap is **tunable per project** via the
+`quality_loop.max_iterations` knob in `ADAPTATION_SURFACE.yaml`. Range
+1-10; default 3. Engines reading the knob must:
+
+1. Load the runtime profile (`.aidoc/profile.yaml`).
+2. Read `quality_loop.max_iterations` if present.
+3. Fall back to the default (3) if the field is missing, malformed,
+   or the file is absent.
+4. Treat values outside the 1-10 range as malformed (use default).
+
+This cap is the documented stopping criterion that complements the
+gate threshold: gate decides *did we converge?*, cap decides *did we
+spend too long trying?*.
+
 ## Trigger points
 
 A trigger point is a named moment in a project's lifecycle where an engine may

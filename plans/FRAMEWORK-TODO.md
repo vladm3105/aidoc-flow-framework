@@ -49,29 +49,6 @@
   author needs to be tighter about section-level tag consistency. May
   result in a small `doc-tdd/SKILL.md` tightening.
 
-### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound
-
-- *Context:* `REVIEW_REMEDIATION_FLOW.md` defines the quality loop as
-  "Draft → Review → (Remediate → Re-review)* → Gate Pass" and states
-  *"the loop repeats until the gate passes"* — open-ended. But the cap
-  is hard-coded at `tools/saga_driver.py:125` `MAX_ITERATIONS = 3` (and
-  default threshold 90). No `ADAPTATION_SURFACE.yaml` knob exposes this;
-  the spec gives no guidance on default cap or how to tune it per layer
-  / project.
-- *Fix shape:* either (a) elevate the iteration cap to spec — declare a
-  default in `REVIEW_REMEDIATION_FLOW.md` or `REVIEW_SAGA.md` and expose
-  it via `ADAPTATION_SURFACE.yaml` (e.g. `quality_loop.max_iterations:
-  3`, tunable per project) — or (b) leave it as a platform implementation
-  detail but explicitly document that in the spec so consumers know to
-  consult their platform's docs for the cap. Either way, the framework
-  shouldn't have a silent implementation-bound cap that the spec is
-  unaware of. Discovered while observing the TRACE-RES-FIXUP-001 corpus
-  regen cascade (2026-06-10): PRD-01 converged in iter-2 (PASS 92),
-  EARS-01 in iter-2 (PASS 94); both ran the loop until gate passed,
-  consistent with spec — but the silent 3-iter ceiling means
-  near-convergent artifacts (89/90) end up `PARTIAL_TIMEOUT` instead of
-  one-more-cycle.
-
 ### `[plan-review]` 5-pass plan reviews are paying off; consider codifying minimum-pass count by plan-type
 
 - *Context:* TRACE-RES-FIXUP-001 plan took 5 passes to converge
@@ -123,43 +100,6 @@
   `code_build` | `deploy` | `combined`. Deploy IPLANs are gated on
   rollback/smoke/observability sections; code-build IPLANs are exempt.
   Audit dispatch selects the section set by subtype.
-
-### `[registry]` `@threshold:` 3-segment keys vs element-ID 4-segment pattern
-
-- *Context:* `LAYER_REGISTRY.yaml` `id_patterns.element` regex covers
-  the 4-segment hash form `TYPE.NN.SS.xxxx`. But threshold keys use a
-  3-segment form `PRD.01.perf.redirectp95`. The current `sdd_doc_lint`
-  cannot distinguish a legitimate threshold from a malformed 3-segment
-  element ID — a hand-edit introducing `PRD.01.perf.typo` would slip
-  past validation.
-- *Fix shape:* add a `threshold` ID pattern to `LAYER_REGISTRY.yaml`
-  `id_patterns:`; extend `sdd_doc_lint` to validate the new namespace.
-  Coordinate with the `[gate] Threshold-binding gate` entry above.
-
-### `[template]` SPEC + IPLAN declare no layer-local element IDs
-
-- *Context:* url-shortener review (2026-06-11) — `SPEC-01.md` and
-  `IPLAN-01.md` carry no `SPEC.NN.SS.xxxx` or `IPLAN.NN.SS.xxxx`
-  element IDs (only upstream `@adr`/`@tdd` refs + Protocol method
-  names). Templates `SPEC-TEMPLATE.yaml` / `IPLAN-TEMPLATE.yaml` do
-  not require any. If a downstream consumer ever needs to cite an
-  individual SPEC rule (e.g. "the §5 fail-closed rule") or an
-  individual IPLAN step, they have no element ID to bind to.
-- *Fix shape:* either (a) require element IDs at SPEC §5 rules and
-  IPLAN §4 contracts via template + auditor lens, or (b) document the
-  deliberate exemption in `ID_NAMING_STANDARDS.md` so future authors
-  know it's intentional.
-
-### `[template]` EARS emits per-line `@bdd:` downstream slots — direction-of-flow violation
-
-- *Context:* url-shortener review (2026-06-11) — `EARS-01.md:68, 73, 81 etc.`
-  emit per-line `@bdd: BDD-01` slots BEFORE the downstream BDD exists.
-  These work as downstream slots but bypass the necessary-upstream
-  contract direction (upstream-only).
-- *Fix shape:* either (a) drop per-line `@bdd:` slots from EARS and
-  rely on BDD's reverse `@ears:` tags for the trace (cleaner direction),
-  or (b) declare downstream-slot semantics officially in
-  `LAYER_REGISTRY.yaml` so the contract names them.
 
 ### `[playbook]` `auditor` + `tech_lead` lens calibration — convergence theater
 
@@ -266,3 +206,67 @@
   is excluded from the pre-commit markdownlint hook (workflow-gap fix
   landed in IPLAN-RT-001 commit).
   *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+
+### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound
+
+- *Context:* `REVIEW_REMEDIATION_FLOW.md` defines the quality loop as
+  "Draft → Review → (Remediate → Re-review)* → Gate Pass" and states
+  *"the loop repeats until the gate passes"* — open-ended. But the cap
+  is hard-coded at `tools/saga_driver.py:125` `MAX_ITERATIONS = 3` (and
+  default threshold 90). No `ADAPTATION_SURFACE.yaml` knob exposes this;
+  the spec gives no guidance on default cap or how to tune it per layer
+  / project.
+- *Fix shape:* either (a) elevate the iteration cap to spec — declare a
+  default in `REVIEW_REMEDIATION_FLOW.md` or `REVIEW_SAGA.md` and expose
+  it via `ADAPTATION_SURFACE.yaml` (e.g. `quality_loop.max_iterations:
+  3`, tunable per project) — or (b) leave it as a platform implementation
+  detail but explicitly document that in the spec so consumers know to
+  consult their platform's docs for the cap. Either way, the framework
+  shouldn't have a silent implementation-bound cap that the spec is
+  unaware of. Discovered while observing the TRACE-RES-FIXUP-001 corpus
+  regen cascade (2026-06-10): PRD-01 converged in iter-2 (PASS 92),
+  EARS-01 in iter-2 (PASS 94); both ran the loop until gate passed,
+  consistent with spec — but the silent 3-iter ceiling means
+  near-convergent artifacts (89/90) end up `PARTIAL_TIMEOUT` instead of
+  one-more-cycle.
+  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+
+### `[registry]` `@threshold:` 3-segment keys vs element-ID 4-segment pattern
+
+- *Context:* `LAYER_REGISTRY.yaml` `id_patterns.element` regex covers
+  the 4-segment hash form `TYPE.NN.SS.xxxx`. But threshold keys use a
+  3-segment form `PRD.01.perf.redirectp95`. The current `sdd_doc_lint`
+  cannot distinguish a legitimate threshold from a malformed 3-segment
+  element ID — a hand-edit introducing `PRD.01.perf.typo` would slip
+  past validation.
+- *Fix shape:* add a `threshold` ID pattern to `LAYER_REGISTRY.yaml`
+  `id_patterns:`; extend `sdd_doc_lint` to validate the new namespace.
+  Coordinate with the `[gate] Threshold-binding gate` entry above.
+  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+
+### `[template]` SPEC + IPLAN declare no layer-local element IDs
+
+- *Context:* url-shortener review (2026-06-11) — `SPEC-01.md` and
+  `IPLAN-01.md` carry no `SPEC.NN.SS.xxxx` or `IPLAN.NN.SS.xxxx`
+  element IDs (only upstream `@adr`/`@tdd` refs + Protocol method
+  names). Templates `SPEC-TEMPLATE.yaml` / `IPLAN-TEMPLATE.yaml` do
+  not require any. If a downstream consumer ever needs to cite an
+  individual SPEC rule (e.g. "the §5 fail-closed rule") or an
+  individual IPLAN step, they have no element ID to bind to.
+- *Fix shape:* either (a) require element IDs at SPEC §5 rules and
+  IPLAN §4 contracts via template + auditor lens, or (b) document the
+  deliberate exemption in `ID_NAMING_STANDARDS.md` so future authors
+  know it's intentional.
+  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+
+### `[template]` EARS emits per-line `@bdd:` downstream slots — direction-of-flow violation
+
+- *Context:* url-shortener review (2026-06-11) — `EARS-01.md:68, 73, 81 etc.`
+  emit per-line `@bdd: BDD-01` slots BEFORE the downstream BDD exists.
+  These work as downstream slots but bypass the necessary-upstream
+  contract direction (upstream-only).
+- *Fix shape:* either (a) drop per-line `@bdd:` slots from EARS and
+  rely on BDD's reverse `@ears:` tags for the trace (cleaner direction),
+  or (b) declare downstream-slot semantics officially in
+  `LAYER_REGISTRY.yaml` so the contract names them.
+  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.

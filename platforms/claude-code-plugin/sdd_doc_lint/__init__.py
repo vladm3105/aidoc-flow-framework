@@ -132,6 +132,15 @@ def _load_registry(registry: Path | None = None):
     return layers, re.compile(pats["document"]), re.compile(pats["element"])
 
 
+# CLEANUP-PR-C item 12: threshold pattern matches `TYPE.NN.<lowercase_category>.<lowercase_key>`
+# (e.g. `PRD.01.perf.redirectp95`). Lowercase categories distinguish thresholds
+# from 4-segment hex-hash element IDs. Mirrors `id_patterns.threshold` in
+# `framework/registry/LAYER_REGISTRY.yaml`; kept in sync there via the spec
+# contract. Stricter than the pre-0.18.0 inline pattern (which permitted
+# mixed-case categories).
+_THRESHOLD_FORM = re.compile(r"^[A-Z]+\.\d{2,}\.[a-z_]+\.[a-z0-9_]+$")
+
+
 def detect_layer(path: Path, layers: dict) -> str | None:
     """Return the artifact code for an SDD instance doc, or None if not one."""
     parts = [p.upper() for p in path.parts]
@@ -438,15 +447,23 @@ def lint_text(
                 findings.append(
                     Finding(rel, i, "ID01", f"malformed trace-tag id '@{m.group(1)}: {val}'")
                 )
-        # Threshold tags: TYPE.NUM.key dotted form. Record their spans so the
-        # element-id scan below does not mistake a threshold key for an element id.
+        # Threshold tags: TYPE.NN.<category>.<key> dotted form. Record their
+        # spans so the element-id scan below does not mistake a threshold key
+        # for an element id. CLEANUP-PR-C item 12 — uses the strict pattern
+        # matching `id_patterns.threshold` in LAYER_REGISTRY.yaml.
         threshold_spans = []
         for m in _THRESHOLD.finditer(line):
             threshold_spans.append(m.span(1))
             val = m.group(1)
-            if not re.match(r"^[A-Z]+\.[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)+$", val):
+            if not _THRESHOLD_FORM.match(val):
                 findings.append(
-                    Finding(rel, i, "TH01", f"malformed @threshold: '{val}' (want TYPE.NN.key)")
+                    Finding(
+                        rel,
+                        i,
+                        "TH01",
+                        f"malformed @threshold: '{val}' "
+                        "(want TYPE.NN.<category>.<key> with lowercase category)",
+                    )
                 )
 
         def _in_threshold(span):

@@ -206,7 +206,35 @@ Enforcement is split:
 
 Tags above the necessary set (decorative lineage carried for human readability — e.g. an ADR that wants to show its `@brd:` origin even though `required_tags=[ears, bdd]`) are permitted; the lint rule still demands they resolve.
 
-*Origin:* NECESSARY-UPSTREAM-001 (framework spec `0.15.2` → `0.16.0`) replaced the cumulative-trace contract — every downstream layer redeclaring every upstream layer in `required_tags` — after a TDD-RT-001 cascade exposed trace fabrication when an upstream layer was genuinely absent from a project (`@prd:` tags emitted with no PRD layer authored).
+### Optional downstream slots (CLEANUP-PR-C item 14)
+
+A layer **MAY** emit per-line `@<downstream>:` slots as forward-pointer
+navigation hints (e.g. EARS lines emit `@bdd: BDD-NN` indicating which
+BDD scenario will encode this SHALL). These slots are:
+
+- **Optional** — no spec rule mandates emission; a layer's author SKILL
+  decides whether they're useful for its content.
+- **Direction-of-flow-aware** — they point downstream, not upstream;
+  `TRACE-RES-001`'s downstream-skip behavior (PR #125 Fix 1) means the
+  lint rule does not require them to resolve at author-time (the
+  downstream layer may not exist yet).
+- **Non-canonical for trace** — the authoritative cross-layer trace
+  is the upstream `required_tags` chain. Downstream slots are
+  navigation cosmetics, not the trace surface.
+- **Declared per-layer** in `LAYER_REGISTRY.yaml`'s
+  `optional_downstream_slots:` field; absence means a layer doesn't
+  emit slots. Currently only EARS opts in (slots toward BDD).
+
+For auditors: do not penalize a layer for missing optional downstream
+slots; do not require them to be present when slots are emitted.
+
+*Origin:* CLEANUP-PR-C (post-LAYER-PLAYBOOKS-001 url-shortener review,
+2026-06-11) found that EARS emits per-line `@bdd:` slots in cascade-
+produced artifacts while no other layer does. Rather than removing the
+slots (which would require SKILL prompt changes + a cascade verification),
+the framework formalizes them as optional + non-canonical.
+
+*Origin (necessary-upstream contract):* NECESSARY-UPSTREAM-001 (framework spec `0.15.2` → `0.16.0`) replaced the cumulative-trace contract — every downstream layer redeclaring every upstream layer in `required_tags` — after a TDD-RT-001 cascade exposed trace fabrication when an upstream layer was genuinely absent from a project (`@prd:` tags emitted with no PRD layer authored).
 
 ## Resilience & security
 

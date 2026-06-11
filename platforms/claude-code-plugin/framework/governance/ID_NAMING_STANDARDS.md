@@ -26,6 +26,42 @@ Format: `{TYPE}.{doc_id}.{section_id}.{hash}`
 
 Example: `BRD.01.07.a7f3`
 
+### Element-ID exemptions (CLEANUP-PR-C item 13)
+
+Six of the eight layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
+element IDs on every distinct content unit per their template's required
+sections. The remaining two layers carry a documented exemption:
+
+- **SPEC layer:** §5 fail-closed rules, §3 Protocol method specifications,
+  and similar policy statements **MAY** carry `SPEC.NN.SS.xxxx` element
+  IDs but are not required to. The traceability surface for SPEC content
+  is provided by upstream `@ears: EARS.NN.SS.xxxx`, `@bdd: BDD.NN.SS.xxxx`,
+  and `@adr: ADR-NN` citations plus the Protocol method names declared
+  in the SPEC's typed contract.
+- **IPLAN layer:** §4 implementation contracts, §2 file manifest entries,
+  and step-level operations **MAY** carry `IPLAN.NN.SS.xxxx` element IDs
+  but are not required to. The traceability surface is provided by
+  upstream `@spec: SPEC-NN` and `@tdd: TDD.NN.SS.xxxx` citations plus the
+  per-step file-path declarations in the manifest table.
+
+**Rationale.** SPEC and IPLAN content is overwhelmingly already-bound to
+upstream content via mandatory `@<layer>:` citations. Adding layer-local
+element IDs would create a second naming surface for what is, in
+practice, a derived/translated view of upstream content. The other six
+layers introduce content not present upstream (business rules, scenarios,
+decisions, etc.), making layer-local IDs load-bearing for downstream
+traceability.
+
+**For authors:** when authoring SPEC or IPLAN content, prefer
+upstream-citation-based traceability. Only assign a layer-local element
+ID when a SPEC rule or IPLAN step has no clean upstream binding — then
+the ID gives downstream consumers a stable anchor.
+
+**For auditors:** do not penalize SPEC §5 / IPLAN §4 content for missing
+layer-local element IDs as long as upstream citations resolve cleanly.
+The `@<layer>:` chain plus method/file names is sufficient evidence of
+traceability.
+
 ## Tag Format
 
 | Tag | Usage | Example |
