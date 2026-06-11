@@ -12,8 +12,8 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.15.0"
-    framework_spec_version: "0.18.0"
+    version: "0.16.0"
+    framework_spec_version: "0.19.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -193,6 +193,31 @@ with the pre-team-mode behaviour.
 
 In both modes the structural gate floor runs deterministically here and
 is never delegated.
+
+### Strip author self-claim before lens dispatch (CLEANUP-PR-B item 9)
+
+Before passing the artifact body to each lens subagent (team mode) or
+to the single-pass review (single_pass mode), STRIP frontmatter and
+inline fields matching any of:
+
+- `*_ready_score` (e.g. `brd_ready_score`, `prd_ready_score`,
+  `ears_ready_score`, etc.)
+- `*_score` (e.g. `audit_score`, `readiness_score`)
+- `readiness_score`
+- `audit_score`
+
+These are author self-assessments. Leaving them in the artifact body
+creates an anchor effect — the lens output's `lens_score` tends toward
+the author's claim. The structural surface lenses evaluate is the
+artifact's CONTENT (sections, IDs, traceability, prose); a number the
+author wrote down for itself is not part of that surface.
+
+Stripped fields stay in the artifact frontmatter on disk (they're
+author metadata, not lens input). Stripping happens in-prompt only:
+the brief that goes to the lens subagent has the stripped body.
+
+Per `REVIEW_TEAM.md` §Operations, the canonical stripped-field list
+lives in the spec and tracks any future score-name additions.
 
 ## Saga interaction
 
@@ -538,6 +563,32 @@ authoritative machine-readable companion is the synthesizer's
 `doc-iplan-fixer` and `doc-iplan-autopilot` consume `verdict.json` as
 the source of truth; this markdown report is the human narrative
 mirror.
+
+### Regressions (CLEANUP-PR-B item 10)
+
+When iter-N audit finds a finding whose location matches a iter-(N-1)
+"Fixes Applied" row, the finding carries `fixer_introduced: true` in
+the persona-output record. The Combined Report renders these
+findings in a separate `## Regressions` section (not in the main
+findings list), with the format:
+
+```
+## Regressions
+
+| Finding ID | iter-(N-1) Fix | iter-N New Finding | Location | Priority |
+|---|---|---|---|---|
+| <id> | <fix description> | <new finding> | <file:line> | <P0/P1/P2/P3> |
+```
+
+A non-empty Regressions section signals that the previous iteration's
+fix introduced new problems. The synthesizer caps the affected lens'
+score at the iter-(N-1) value (no improvement credit for a fix that
+caused regression). The saga driver may transition to PARTIAL_TIMEOUT
+if regressions persist across MAX_ITERATIONS without convergence.
+
+Schema: see `framework/governance/saga.schema.json` `finding.fixer_introduced`.
+Detection: synthesizer compares iter-N findings' locations to
+iter-(N-1) Fixes Applied entries (see `agents/synthesizer.md`).
 
 ## Hand-off to doc-iplan-fixer
 

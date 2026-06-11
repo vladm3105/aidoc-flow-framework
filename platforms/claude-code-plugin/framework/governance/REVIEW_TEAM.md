@@ -73,6 +73,61 @@ lens_score: 0-100           # this lens's readiness assessment
 > See also `REVIEW_SAGA.md` for the saga state machine and journal contract
 > that governs the durable progression of this loop.
 
+### Strip author self-claim before lens fan-out (CLEANUP-PR-B item 9)
+
+Author-self-assessment fields in the artifact body create an anchor
+effect on the lens output (a lens reading "the author thinks this
+scored 92" tends to produce a score near 92). Engines MUST strip the
+following fields from the artifact body before passing to each lens
+subagent — both in `team` mode and `single_pass` mode:
+
+| Field pattern | Examples |
+|---|---|
+| `*_ready_score` | `brd_ready_score`, `prd_ready_score`, `ears_ready_score`, etc. |
+| `*_score` | `audit_score`, `readiness_score` |
+| `readiness_score` | self-explanatory |
+| `audit_score` | self-explanatory |
+
+Stripped fields stay in the artifact frontmatter ON DISK (they're
+author metadata); stripping happens in-prompt only — the brief that
+goes to the lens has the stripped body. This list is the canonical
+spec; extend it via PR when new self-claim field patterns appear.
+
+### No-findings rationale (CLEANUP-PR-B item 8)
+
+A lens returning `lens_score: 100` with `findings: []` (zero findings)
+MUST accompany its persona-output record with a `no_findings_rationale`
+field naming at least one specific section where the lens *did*
+examine and explicitly cleared. The synthesizer treats missing
+rationale on a 100/0 output as a structural error and caps the lens
+at 95 (with a `STRUCTURE-RAT-001` advisory in the verdict). The cap
+is a calibration nudge against "convergence theater": a lens that
+genuinely cleared the artifact must say *what* it cleared, otherwise
+the score is unsubstantiated. Filing any finding (P3 included)
+bypasses the rationale requirement — findings ARE the rationale.
+
+### Fixer-introduced regressions (CLEANUP-PR-B item 10)
+
+A finding whose **location** matches a row in the previous iteration's
+"Fixes Applied" table carries `fixer_introduced: true` in the
+persona-output record. The synthesizer renders these findings in a
+separate `## Regressions` section in the audit report (not the main
+findings list), with format:
+
+```
+## Regressions
+
+| Finding ID | iter-(N-1) Fix | iter-N New Finding | Location | Priority |
+|---|---|---|---|---|
+| <id> | <fix description> | <new finding> | <file:line> | <P0/P1/P2/P3> |
+```
+
+A non-empty Regressions section signals the previous iteration's fix
+introduced new problems. The affected lens' score is capped at the
+iter-(N-1) value (no improvement credit for a fix that regressed).
+Detection is the synthesizer's responsibility: it compares iter-N
+finding locations to iter-(N-1) Fixes Applied entries.
+
 ## Scoring, conflicts & the gate
 
 - **Aggregate score (deterministic).** The readiness score is the **weighted

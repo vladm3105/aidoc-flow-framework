@@ -16,7 +16,7 @@ The platforms share the `framework/` spec and nothing else. Both pass the same
 shared conformance suite (`tests/conformance/`). The `framework/` spec defines
 the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
-**Current state (as of 2026-06-07):** framework spec `0.18.0`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8 with mechanical + warning hooks). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+**Current state (as of 2026-06-07):** framework spec `0.19.0`, Claude Code plugin `0.6.2` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs). Plugin BRD layer ships preemptive saga driver (SAGA-PARITY-001 Phase 2 Amendment 1) + 5 content sub-checks across all 8 layer audit SKILLs (REVIEW-CALIBRATION-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8 with mechanical + warning hooks). Plugin-first development sequencing; Hermes follow-on tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
 
 ## Durable conventions
 
@@ -146,6 +146,22 @@ verify → land:
    Cycle N+1 must always re-validate that cycle N's patches did not
    introduce new inconsistencies. Continue cycling until a review
    surfaces nothing; minimum is two cycles.
+
+   **Corpus cross-check** (CLEANUP-PR-B item 5): if the plan changes a
+   lint rule, `@`-tag semantics, registry shape, or playbook content,
+   one of the review passes MUST run `python3 -m sdd_doc_lint
+   examples/<NAME>/docs/` against the example corpus and verify zero
+   *unexpected* findings (TH01/TRACE-RES-001/etc.). Catches drift
+   between the plan's claims and the regenerated corpus's reality —
+   the gap that bit NECESSARY-UPSTREAM-001 (PR #121 Pass 4 missed the
+   example corpus and shipped 107 orphan `@prd:` tags into the cascade).
+
+   **Empirical pass-count baseline** (CLEANUP-PR-B item 6, advisory):
+   framework-level / cross-cutting plans typically converge in 4-5
+   review cycles; per-layer rollout plans converge in 2-3. The "≥ 2"
+   floor stays the rule; the 4-5 figure is an *upper-bound estimate*
+   for cross-cutting work and is not normative — a plan that converges
+   in 2 cycles still ships even if it's framework-level.
 
    **What is forbidden:**
    - Opening a plan PR with a draft that has not completed at least

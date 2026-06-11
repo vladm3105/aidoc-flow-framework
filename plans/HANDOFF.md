@@ -1428,3 +1428,17 @@ Framework MINOR 0.17.1 → 0.18.0; plugin MINOR 0.14.1 → 0.15.0.
 - Item 14: EARS `@bdd:` downstream slot formalized as optional + non-canonical
 
 FRAMEWORK-CLEANUP-001 backlog: 9 open / 9 closed. Next: PR-B (review-quality calibration, 6 items) or PR-E (IPLAN subtypes, 1 item).
+
+### 2026-06-11 — CLEANUP-PR-B (review-quality calibration, the heart)
+
+Third child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`).
+Closes `plans/FRAMEWORK-TODO.md` items #5-10 — the highest-impact child PR.
+Framework MINOR 0.18.0 → 0.19.0; plugin MINOR 0.15.0 → 0.16.0.
+
+- Item 5/6: CLAUDE.md gains Corpus cross-check + Empirical pass-count guidance
+- Item 7: TDD auditor playbook C4/C1/Reasoning frame updated to necessary-upstream
+- Item 8 (HIGH): 13 playbooks gain No-findings rationale section (calibration fix)
+- Item 9: 9 audit SKILLs strip self-claimed scores before lens fan-out
+- Item 10: 9 audit SKILLs + synthesizer agent get fixer_introduced detection
+
+FRAMEWORK-CLEANUP-001 backlog: 4 open / 15 closed. Next: PR-D (decomp + threshold gates; needs DECISION-GATE-D) and PR-E (IPLAN subtypes, smallest) and PR-F (doc-number independence; deferred per user).

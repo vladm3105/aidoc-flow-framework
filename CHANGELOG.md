@@ -12,6 +12,57 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.18.0 → 0.19.0 + Claude Code plugin 0.15.0 → 0.16.0 (CLEANUP-PR-B)
+
+Third child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128). Closes
+`plans/FRAMEWORK-TODO.md` Open items #5-10. The **heart** of the
+cleanup workstream — review-quality calibration.
+
+- **Item 5** — `CLAUDE.md` §Development workflow item 2 gains a
+  "Corpus cross-check" paragraph requiring `sdd_doc_lint
+  examples/<NAME>/docs/` smoke when a plan changes lint rules,
+  `@`-tag semantics, registry shape, or playbook content. Catches the
+  NECESSARY-UPSTREAM-001 Pass 4 gap that shipped 107 orphan `@prd:`
+  tags into the cascade.
+- **Item 6** — `CLAUDE.md` "Empirical pass-count baseline" paragraph
+  (advisory): framework-level / cross-cutting plans typically need
+  4-5 review cycles; per-layer rollouts converge in 2-3. Floor stays
+  ≥ 2 cycles per CLAUDE.md.
+- **Item 7** — `framework/playbooks/07_TDD/auditor.md` C4 + Reasoning
+  frame + C1 updated from pre-NECESSARY-UPSTREAM-001 cumulative-trace
+  references (`@brd:`/`@prd:` in required-tag set) to the actual
+  necessary-upstream set (EARS/BDD/ADR/SPEC). PRD/BRD remain as
+  optional decorative tags. Closes a real spec-drift bug, not a
+  wontfix.
+- **Item 8 — HIGH** — 13 playbook files (6 × `auditor.md` + 7 ×
+  `tech_lead.md`) gain a new `## No-findings rationale` section
+  between `## Beyond-checklist` and `## Scoring`. A lens returning
+  `lens_score: 100 / findings: []` MUST emit a `no_findings_rationale`
+  field naming a section it examined and cleared. Synthesizer caps
+  the lens at 95 when rationale is missing (`STRUCTURE-RAT-001`
+  advisory). Calibration nudge against "convergence theater" surfaced
+  by the 2026-06-11 url-shortener review (auditor + tech_lead scored
+  100 across 4-6 layers with zero findings while chaos/security found
+  P2/P3 in the same sections).
+- **Item 9** — 9 audit SKILLs (8 layer + CHG) gain
+  `### Strip author self-claim before lens dispatch` subsection
+  instructing the engine to strip `*_ready_score` / `*_score` /
+  `readiness_score` / `audit_score` fields from the artifact body
+  before passing to each lens (anchor-effect fix). Stripped-field
+  list documented in `REVIEW_TEAM.md` §Operations.
+- **Item 10** — 9 audit SKILLs gain `### Regressions` subsection in
+  Combined Report Format. Synthesizer agent gains fixer-introduced
+  detection logic: compares iter-N finding locations to iter-(N-1)
+  Fixes Applied entries; sets `fixer_introduced: true` on matches;
+  caps affected lens score at iter-(N-1) value (no improvement credit
+  for a fix that regressed). New `## Regressions` audit-report section
+  format documented in `REVIEW_TEAM.md` §Operations.
+- Framework MINOR (`0.18.0 → 0.19.0`) — 3 new `REVIEW_TEAM.md`
+  §Operations subsections + 13 playbook content additions.
+- Plugin MINOR (`0.15.0 → 0.16.0`) — 9 audit SKILL extensions +
+  synthesizer agent new logic.
+- All sync hooks ran cleanly; vendored mirrors propagated.
+
 ### Changed — Framework Spec 0.17.1 → 0.18.0 + Claude Code plugin 0.14.1 → 0.15.0 (CLEANUP-PR-C)
 
 Second child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged
