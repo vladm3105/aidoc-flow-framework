@@ -34,8 +34,19 @@ dispatched by `../skills/review-team/SKILL.md`.
 
 All persona slots under `.aidoc/review/<artifact-id>/<persona>.json` (each a
 framework persona-output record: `persona`, `findings[{id, priority, location,
-message, recommendation}]`, `lens_score`) plus the per-layer crew weights from
+message, recommendation, check, fixer_introduced?}]`, `lens_score`,
+`no_findings_rationale?`) plus the per-layer crew weights from
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml`.
+
+CLEANUP-PR-B fields:
+
+- `no_findings_rationale` (optional, string) — REQUIRED when
+  `lens_score == 100 AND findings.length == 0` (per
+  `framework/governance/REVIEW_TEAM.md` §"No-findings rationale").
+- `fixer_introduced` (optional, bool, default false) per finding —
+  set true when the finding's `location` matches an iter-(N-1)
+  "Fixes Applied" entry (per REVIEW_TEAM.md §"Fixer-introduced
+  regressions").
 
 ## Reduce — deterministic, gating (do this by the rules, not by vibe)
 
@@ -52,6 +63,43 @@ message, recommendation}]`, `lens_score`) plus the per-layer crew weights from
 4. **Coverage** = which crew lenses ran vs. were expected; below the crew
    **quorum** mark the result **low-confidence → human review**, never a silent
    pass.
+
+### No-findings-rationale check (CLEANUP-PR-B item 8)
+
+For each persona slot whose output satisfies BOTH `lens_score == 100`
+AND `len(findings) == 0`:
+
+1. Read the `no_findings_rationale` field.
+2. If the field is absent or empty/whitespace-only:
+   - Cap `lens_score` at **95** (the maximum allowed for an
+     unsubstantiated 100/0 output).
+   - Emit a `STRUCTURE-RAT-001` advisory in `report.md`
+     (count + the persona name(s) capped).
+3. If the field is present + non-empty, the 100 stands.
+
+The cap is a calibration nudge against "convergence theater"
+(`framework/governance/REVIEW_TEAM.md` §"No-findings rationale").
+
+### Fixer-introduced regression detection (CLEANUP-PR-B item 10)
+
+Available only on iter-N ≥ 2 (no fix history at iter-1):
+
+1. Load the iter-(N-1) fixer report's "Fixes Applied" table from
+   `.aidoc/remediation/<NN_LAYER>-fix.md` (or `<artifact-id>.F_fix_report_v<N-1>.md`
+   in the per-doc remediation dir).
+2. Build a set of fixed-location strings.
+3. For each iter-N finding across all persona slots: if the
+   finding's `location` matches a fixed-location (string equality
+   or near-equality — same `<section> / <subsection>` shape), set
+   `fixer_introduced: true` on that finding.
+4. **Score impact** — for any persona whose findings include at least
+   one `fixer_introduced: true` finding, cap that persona's iter-N
+   `lens_score` at its iter-(N-1) value (no improvement credit for a
+   fix that regressed).
+5. **Report rendering** — render fixer_introduced findings in a new
+   `## Regressions` section in `report.md`, separate from the main
+   findings list (format per REVIEW_TEAM.md §"Fixer-introduced
+   regressions").
 
 ### Playbook check-citation enforcement (LAYER-PLAYBOOKS-001)
 

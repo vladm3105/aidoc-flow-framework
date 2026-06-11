@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: architect
 weight: 35
 agent: solutions-architect
-framework_spec_version: "0.18.0"
+framework_spec_version: "0.19.0"
 ---
 # architect lens — ADR layer
 

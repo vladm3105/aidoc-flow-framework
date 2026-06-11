@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: tech_lead
 weight: 20
 agent: solutions-architect
-framework_spec_version: "0.18.0"
+framework_spec_version: "0.19.0"
 ---
 # tech_lead lens — PRD layer
 
@@ -76,6 +76,27 @@ it as a P2/P3 finding citing `beyond-checklist:<principle-tag>` and state
 which paragraph of the reasoning frame above motivates it. Use sparingly. If
 more than 30% of your findings are beyond-checklist, the playbook needs
 revision (file a follow-up).
+
+## No-findings rationale
+
+A lens returning `lens_score: 100` with `findings: []` (zero findings)
+MUST accompany its persona-output record with a `no_findings_rationale`
+field naming at least one specific section where the lens *did* examine
+the artifact and explicitly cleared. Example for this lens:
+
+> `no_findings_rationale: "§<section-number> <topic> — examined and
+> verified clean against checks C1-C5; no deviation from upstream
+> required attributes."`
+
+The synthesizer treats a missing or empty `no_findings_rationale` on
+a `lens_score: 100 / findings: []` output as a structural error and
+caps the lens at 95 (with a `STRUCTURE-RAT-001` advisory in the
+verdict). The cap is a calibration nudge against "convergence theater"
+— a lens that genuinely cleared the artifact must say *what* it
+cleared, otherwise the score is unsubstantiated.
+
+Filing findings (any priority, including P3 nits) bypasses the
+rationale requirement — findings ARE the rationale.
 
 ## Scoring
 
