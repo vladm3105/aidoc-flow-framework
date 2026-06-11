@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.16.0"
-    framework_spec_version: "0.19.0"
+    version: "0.16.1"
+    framework_spec_version: "0.19.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -75,10 +75,22 @@ never invent placeholders like `IPLAN-XXX` or `TBD`. Confirm no ID collision:
 **Rule of thumb:** implements a TDD test contract → permanent; restores intended
 behavior or fixes a bug → temporary.
 
-### Required structure (6 sections)
+### Required structure (11 sections — subtype-dependent subset)
 
 The IPLAN is a YAML document with `metadata` (`document_type: iplan-document`,
-`layer: 8`) followed by six sections matching `IPLAN-TEMPLATE.yaml`:
+`layer: 8`) followed by the sections matching `IPLAN-TEMPLATE.yaml`. The
+required-section set depends on `document_control.subtype` (CLEANUP-PR-E
+item 17):
+
+- **`code_build`**: sections 1-6 below (document_control, file_manifest,
+  execution_commands, implementation_contracts, session_handoff,
+  traceability).
+- **`deploy`**: sections 1, 7-11 (document_control,
+  rollback_procedure, smoke_tests, canary_metrics,
+  observability_hooks, runbook_reference) + traceability.
+- **`combined`** (default): all 11 sections.
+
+Sections 1-6 (code_build set):
 
 1. **Document Control** — `iplan_id` (`IPLAN-NN`), `source_spec`
    (`@spec: SPEC-NN`), status (`Draft | In Progress | Completed`), version,
@@ -97,6 +109,19 @@ The IPLAN is a YAML document with `metadata` (`document_type: iplan-document`,
 6. **Traceability** — required upstream tags (`@spec`, `@tdd`), downstream
    `code_paths` / `test_paths`, and `code_inventory` (audit trail of every
    file created/modified with session attribution and `verified` status).
+
+Sections 7-11 (deploy set; required when subtype is `deploy` or `combined`):
+
+7. **Rollback Procedure** — step-by-step rollback with documented
+   reversal per cutover step + verification + reversible flag.
+8. **Smoke Tests** — post-cutover smoke checks with named pass criteria
+   per cutover step.
+9. **Canary Metrics** — explicit thresholds (latency, error rate,
+   saturation) per metric + canary window + action on breach.
+10. **Observability Hooks** — named signals emitted at deploy events
+    - dashboard URLs.
+11. **Runbook Reference** — pointer to on-call runbook + new
+    failure-mode entries this deploy adds.
 
 ### Session handoff protocol
 
@@ -127,16 +152,37 @@ completed work → 5) update file status → 6) append a session with a
    the ID typically matches its SPEC/TDD component.
 3. **Create the file** — permanent: `docs/08_IPLAN/IPLAN-NN_{slug}.yaml`;
    temporary: `docs/08_IPLAN/tmp/TMP-IPLAN-YYYY-MM-DD_{slug}.yaml`.
-4. **Document Control first**, then complete all 6 sections from the template.
-5. **Declare the file manifest** test-first, every file `status: NOT_STARTED`.
-6. **Write execution commands** (`setup` / `implementation` / `validation`).
-7. **Define implementation contracts** if 3+ files share interfaces; else state
-   "No implementation contracts".
-8. **Seed session handoff** so the first executor has a clear
-   `next_session_directive`; add an empty `code_inventory`.
-9. **Register in the index** (permanent only) — add to
-   `docs/08_IPLAN/IPLAN-00_index.yaml` and update `metadata.total_plans`.
-10. **Validate** (below) and commit the IPLAN and index together.
+4. **Select subtype** (CLEANUP-PR-E item 17) — decide which subtype
+   this IPLAN is and write it to `document_control.subtype`:
+   - `code_build`: file-manifest + Red/Green/Refactor + execution
+     commands. NO rollback/smoke/canary/observability sections. Use
+     when the IPLAN translates SPEC/TDD to source code only;
+     deployment is a separate plan.
+   - `deploy`: rollback + smoke + canary + observability + runbook
+     sections. NO file-manifest / execution-commands. Use when the
+     IPLAN executes a cutover of code that's already authored.
+   - `combined` (default): both sets required. Use when one IPLAN
+     covers code authoring AND deploy.
+   The auditor reads `subtype` and dispatches different required-section
+   sets. Missing field defaults to `combined`.
+5. **Document Control first**, then complete all sections required for
+   the chosen subtype (template marks each section with
+   `_required_when_subtype:`).
+6. **Declare the file manifest** (code_build / combined only)
+   test-first, every file `status: NOT_STARTED`.
+7. **Write execution commands** (code_build / combined only) —
+   `setup` / `implementation` / `validation`.
+8. **Define implementation contracts** (code_build / combined only)
+   if 3+ files share interfaces; else state "No implementation contracts".
+9. **Seed session handoff** (code_build / combined only) so the first
+   executor has a clear `next_session_directive`; add an empty
+   `code_inventory`.
+10. **For deploy subtype only**: complete rollback_procedure,
+    smoke_tests, canary_metrics, observability_hooks,
+    runbook_reference (sections 7-11).
+11. **Register in the index** (permanent only) — add to
+    `docs/08_IPLAN/IPLAN-00_index.yaml` and update `metadata.total_plans`.
+12. **Validate** (below) and commit the IPLAN and index together.
 
 ## Validation
 

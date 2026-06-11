@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: integration_lead
 weight: 12
 agent: solutions-architect
-framework_spec_version: "0.19.0"
+framework_spec_version: "0.19.1"
 ---
 # integration_lead lens — IPLAN layer
 
@@ -51,6 +51,25 @@ observability emission (operator), upstream-trace conformance
 (auditor), or rollback dress-rehearsal practice (chaos_engineer).
 The integration_lead lens is confined to cross-service
 compatibility across the cutover window.
+
+### Subtype awareness (CLEANUP-PR-E item 17)
+
+This lens reads `document_control.subtype` from the artifact and
+adapts:
+
+- **`code_build` subtype:** deploy concerns (rollback / smoke /
+  canary / observability) are explicitly out of scope. This lens
+  MAY return `lens_score: 100` with `findings: []` if every applicable
+  code-build check passes; the no-findings rationale takes the form:
+  `no_findings_rationale: "subtype: code_build — deploy concerns out
+  of scope per CLEANUP-PR-E IPLAN sub-types contract."` This satisfies
+  the no-findings-rationale rule (CLEANUP-PR-B item 8) — the rationale
+  is the subtype declaration itself.
+- **`deploy` or `combined` subtype:** all the checks below apply.
+  Missing rollback / smoke / canary / observability sections that
+  the subtype requires are blocking findings.
+- **Missing subtype** (pre-0.19.1 IPLAN): defaults to `combined`.
+  All checks apply.
 
 ## Required evidence checks
 

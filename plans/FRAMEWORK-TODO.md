@@ -50,20 +50,6 @@
   citation must resolve to a numeric-bound value in the host doc.
   Unbound thresholds fire P1 at BDD/TDD audit.
 
-### `[template]` IPLAN sub-types: code-build vs deploy
-
-- *Context:* url-shortener review (2026-06-11) — IPLAN-01 covers Red/Green/
-  Refactor with pytest gates but has **no canary, no smoke endpoint, no
-  observability dashboard, no rollback procedure** (§5 explicitly defers
-  runbook/dashboard to "first to-production session"). It scored 100, but
-  it's a code-build plan, not a deploy plan. The crew (operator + chaos
-  - integration_lead lenses) is calibrated for deploy concerns; if the
-  artifact silently scopes out those concerns, the crew can't catch it.
-- *Fix shape:* `IPLAN-TEMPLATE.yaml` gains a `subtype` field with values
-  `code_build` | `deploy` | `combined`. Deploy IPLANs are gated on
-  rollback/smoke/observability sections; code-build IPLANs are exempt.
-  Audit dispatch selects the section set by subtype.
-
 ### `[governance]` Doc-number independence across layers not codified anywhere
 
 - *Context:* User clarification (2026-06-11) — document numbers (the
@@ -300,3 +286,18 @@
   matches a iter-(N-1) "Fixes Applied" table row. Surface in the audit
   report under `## Regressions` (new section in audit report format).
   *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+
+### `[template]` IPLAN sub-types: code-build vs deploy
+
+- *Context:* url-shortener review (2026-06-11) — IPLAN-01 covers Red/Green/
+  Refactor with pytest gates but has **no canary, no smoke endpoint, no
+  observability dashboard, no rollback procedure** (§5 explicitly defers
+  runbook/dashboard to "first to-production session"). It scored 100, but
+  it's a code-build plan, not a deploy plan. The crew (operator + chaos
+  - integration_lead lenses) is calibrated for deploy concerns; if the
+  artifact silently scopes out those concerns, the crew can't catch it.
+- *Fix shape:* `IPLAN-TEMPLATE.yaml` gains a `subtype` field with values
+  `code_build` | `deploy` | `combined`. Deploy IPLANs are gated on
+  rollback/smoke/observability sections; code-build IPLANs are exempt.
+  Audit dispatch selects the section set by subtype.
+  *Resolution:* CLEANUP-PR-E (PR #TBD, merge SHA TBD) — fourth child PR. See `plans/CLEANUP-PR-E-IPLAN-SUBTYPES-PLAN.md`.

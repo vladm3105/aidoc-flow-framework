@@ -1442,3 +1442,9 @@ Framework MINOR 0.18.0 → 0.19.0; plugin MINOR 0.15.0 → 0.16.0.
 - Item 10: 9 audit SKILLs + synthesizer agent get fixer_introduced detection
 
 FRAMEWORK-CLEANUP-001 backlog: 4 open / 15 closed. Next: PR-D (decomp + threshold gates; needs DECISION-GATE-D) and PR-E (IPLAN subtypes, smallest) and PR-F (doc-number independence; deferred per user).
+
+### 2026-06-11 — CLEANUP-PR-E (IPLAN sub-types)
+
+Fourth child PR of FRAMEWORK-CLEANUP-001 (master PR #128). Closes item #17.
+Framework PATCH 0.19.0 → 0.19.1; plugin PATCH 0.16.0 → 0.16.1.
+FRAMEWORK-CLEANUP-001 backlog: 3 open / 16 closed. Next: PR-D (decomp+threshold gates; needs DECISION-GATE-D) and PR-F (#18 doc-num; user-deferred).

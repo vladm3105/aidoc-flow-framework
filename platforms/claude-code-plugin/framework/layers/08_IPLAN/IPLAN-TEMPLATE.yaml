@@ -38,8 +38,27 @@ metadata:
 # =============================================================================
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
-  _guidance: "One IPLAN per TDD component. Created when TDD reaches IPLAN-Ready >=90/100."
+  _guidance: |
+    One IPLAN per TDD component. Created when TDD reaches
+    IPLAN-Ready >=90/100.
+
+    `subtype` selects which sections this IPLAN must carry. Values
+    (CLEANUP-PR-E):
+      - code_build: file_manifest, execution_commands,
+        implementation_contracts, session_handoff, traceability
+        required; rollback/smoke/canary/observability NOT required.
+      - deploy: rollback_procedure, smoke_tests, canary_metrics,
+        observability_hooks, runbook_reference, traceability
+        required; file_manifest + execution_commands NOT required.
+      - combined (default): both sets required.
+
+    `_required_when_subtype:` markers on individual sections below
+    declare which subtype set the section belongs to. The
+    `doc-iplan-audit` SKILL reads `subtype` from authored
+    `document_control` and selects the section set. Missing subtype
+    defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"
+  subtype: combined  # code_build | deploy | combined
   source_spec: "@spec: SPEC-NN"
   status: Draft  # Draft | In Progress | Completed
   version: "1.0"
@@ -55,6 +74,7 @@ document_control:
 # =============================================================================
 file_manifest:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
+  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
   _guidance: |
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
@@ -81,6 +101,7 @@ file_manifest:
 # =============================================================================
 execution_commands:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
   _guidance: |
     Runnable bash commands. The actual bridge from specification to code.
     Three categories matching the implementation workflow.
@@ -101,6 +122,7 @@ execution_commands:
 # =============================================================================
 implementation_contracts:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
+  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
   _guidance: |
     Optional. Required when 3+ files depend on shared interfaces.
     Contract types: Protocol Interface, Exception Hierarchy, State Machine,
@@ -119,6 +141,7 @@ implementation_contracts:
 # =============================================================================
 session_handoff:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
+  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
   _guidance: |
     Critical for stateless executor calls. Each AI agent session is
     independent — no memory across invocations. This section is the bridge.
@@ -173,3 +196,89 @@ traceability:
         status: created  # created | modified
         session: 1
         verified: false  # true after tests pass + lint clean
+
+# =============================================================================
+# Section 8: Rollback Procedure (deploy / combined)
+# CLEANUP-PR-E item 17 — IPLAN sub-types
+# =============================================================================
+rollback_procedure:
+  _size_target: 300  # words
+  _required_when_subtype: [deploy, combined]  # CLEANUP-PR-E item 17
+  _guidance: |
+    Step-by-step rollback for the cutover this IPLAN executes. Each
+    step has a documented reversal: what was applied, the inverse
+    operation, and the verification step. Cite the SPEC-named
+    one-way decisions (ADR commitments) that constrain the rollback
+    surface — e.g., schema migrations that cannot be reversed must
+    name a forward-only mitigation instead.
+  steps:
+    - step: "[Step description]"
+      forward_action: "[Operation applied during cutover]"
+      reverse_action: "[Operation to undo]"
+      verification: "[How to confirm reversal succeeded]"
+      reversible: true  # true | false (forward-only)
+
+# =============================================================================
+# Section 9: Smoke Tests (deploy / combined)
+# =============================================================================
+smoke_tests:
+  _size_target: 250  # words
+  _required_when_subtype: [deploy, combined]
+  _guidance: |
+    Post-cutover smoke tests with named pass criteria. Each cutover
+    step has at least one smoke check that runs immediately after the
+    step lands. Pass criteria reference SPEC-named NFR bounds where
+    applicable.
+  tests:
+    - name: "[Smoke test name]"
+      runs_after: "[Cutover step name]"
+      pass_criterion: "[Named threshold / behavior]"
+      timeout_seconds: 60
+
+# =============================================================================
+# Section 10: Canary Metrics (deploy / combined)
+# =============================================================================
+canary_metrics:
+  _size_target: 250  # words
+  _required_when_subtype: [deploy, combined]
+  _guidance: |
+    Canary metrics with explicit thresholds (latency, error rate,
+    saturation). The canary window's pass condition is "all metrics
+    within bounds for N consecutive minutes."
+  metrics:
+    - name: "[Metric name]"
+      threshold: "[Numeric bound]"
+      window_minutes: 10
+      action_on_breach: "[Rollback | Pause | Alert]"
+
+# =============================================================================
+# Section 11: Observability Hooks (deploy / combined)
+# =============================================================================
+observability_hooks:
+  _size_target: 200  # words
+  _required_when_subtype: [deploy, combined]
+  _guidance: |
+    Deploy events emit named signals (logs, metrics, traces) with
+    version-pinned identifiers. Dashboards / alert routes name the
+    on-call playbook entry that reads them.
+  hooks:
+    - event: "[Deploy event name]"
+      signal_type: log  # log | metric | trace
+      signal_name: "[Named signal]"
+      dashboard_url: "[Dashboard URL]"
+
+# =============================================================================
+# Section 12: Runbook Reference (deploy / combined)
+# =============================================================================
+runbook_reference:
+  _size_target: 150  # words
+  _required_when_subtype: [deploy, combined]
+  _guidance: |
+    Pointer to the on-call runbook updated for this deploy. Names the
+    new failure-mode entries this deploy adds + the dashboard URL
+    on-call uses to verify post-cutover health.
+  runbook_url: "[Runbook URL]"
+  new_failure_modes:
+    - mode: "[Failure mode name]"
+      detection: "[Signal pattern]"
+      response: "[Operator action]"
