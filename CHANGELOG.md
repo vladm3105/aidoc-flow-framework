@@ -12,6 +12,56 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.20.1 → 0.21.0 + Claude Code plugin 0.17.1 → 0.18.0 (CHG-RT-001)
+
+CHG layer (Change Management overlay) brought to per-layer parity with
+the 8 SDD layers. Closes the long-standing gap that CHG was the only
+governance surface never exercised end-to-end despite being structurally
+mature.
+
+- **Framework spec**:
+  - New CHG crew entry in `REVIEW_CREWS.yaml`:
+    `integration_lead:30 / architect:20 / chaos_engineer:15 / operator:15 /
+    auditor:10 / security_engineer:10` (= 100). Rationale: CHG is
+    propagation-faithfulness primary; integration_lead leads (30); operator
+    and chaos_engineer get larger weight than typical because CHG sits at
+    the deploy boundary.
+  - 6 new playbook files under `framework/playbooks/09_CHG/` (one per
+    crew lens) matching the existing per-lens playbook contract.
+  - `REVIEW_TEAM.md` §Playbooks gains a CHG-RT-001 note documenting that
+    CHG is an overlay (not lifecycle layer) but uses the same playbook
+    contract.
+- **Claude Code plugin**:
+  - `doc-chg-audit/SKILL.md`: 200 → 693 lines. Adds `## Review Mode` +
+    `## Saga interaction` + `## Break-circuit policy` + `## Content
+    Sub-Checks` (A1/A2/A3/BA1/SE1) + playbook injection. Mirrors the
+    `doc-iplan-audit` shape post-IPLAN-RT-001 + post-PR-B.
+  - `doc-chg-fixer/SKILL.md`: 125 → 344 lines. Adds `## Remediate Mode`
+    - `## Saga interaction` + `## Break-circuit policy`.
+  - `doc-chg-autopilot/SKILL.md`: 116 → 191 lines. Adds saga-driven
+    generation loop invoking `python3 saga_driver.py --layer 09_CHG`;
+    existing 6-step Linear Pipeline preserved as `single_pass` fallback.
+  - `tools/saga_driver.py` `_LAYER_CREWS` gains `"09_CHG"` entry with
+    the 6 personas matching REVIEW_CREWS.yaml.
+- **Conformance**:
+  - `_spec.py`: new `OVERLAYS = ["CHG"]` constant + `ARTIFACTS_AND_OVERLAYS`
+    helper (ARTIFACTS stays 8 layers — CHG is overlay, not lifecycle layer).
+  - `test_playbook_coverage.py` `LAYER_PREFIX` map extended with
+    `"CHG": "09_CHG"`.
+  - `test_review_team.py` `test_crews_cover_exactly_the_artifacts`
+    compares to `ARTIFACTS_AND_OVERLAYS` (was `eight_layers`); also
+    `_parse_weight_table` extended to recognise CHG.
+  - `chaos-engineer.md` + `security-engineer.md` weight tables gain CHG
+    row (15 + 10 respectively).
+- Framework MINOR (`0.20.1 → 0.21.0`) — new crew + 6 playbooks +
+  REVIEW_TEAM §Playbooks update.
+- Plugin MINOR (`0.17.1 → 0.18.0`) — 3 CHG SKILLs gain ~900 cumulative
+  lines + new saga layer entry.
+- **Live CHG cascade verification PENDING** — Task 11 of plan; will
+  drive `examples/url-shortener/chg/test-change.md` end-to-end through
+  the 4 SKILLs to verify CHG-01.md is produced + propagation report
+  enumerates expected downstream impacts.
+
 ### Changed — Framework Spec 0.20.0 → 0.20.1 + Claude Code plugin 0.17.0 → 0.17.1 (CLEANUP-PR-F)
 
 Single-item follow-up PR closing `plans/FRAMEWORK-TODO.md` item #18.

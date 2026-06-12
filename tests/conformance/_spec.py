@@ -17,6 +17,10 @@ REGISTRY_PATH = FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml"
 
 # The 8 SDD document layers, in canonical order.
 ARTIFACTS = ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"]
+# Governance overlays — not lifecycle layers, but enumerated in REVIEW_CREWS
+# + playbook coverage + agent weight tables (CHG-RT-001).
+OVERLAYS = ["CHG"]
+ARTIFACTS_AND_OVERLAYS = ARTIFACTS + OVERLAYS
 
 
 def load_registry() -> dict:

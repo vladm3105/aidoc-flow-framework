@@ -113,6 +113,7 @@ rules"):
 | SPEC  | 10 | Equal split. SPEC specifies both performance/resilience and security controls. |
 | TDD   | 10 | Equal split. Failure-test cases balance security-test cases. |
 | IPLAN | 8  | Chaos-only layer. Covers rollback/recovery; security lives upstream in ADR/SPEC. |
+| CHG   | 15 | CHG governance overlay. Rollback + emergency-change paths + recovery scenarios. |
 
 When dispatched as a `Task` subagent by `review-team` (or by
 `doc-<layer>-audit` in team mode), the brief includes the current layer + your

@@ -114,6 +114,14 @@ _LAYER_CREWS: dict[str, list[str]] = {
         "auditor",
         "chaos_engineer",
     ],
+    "09_CHG": [
+        "integration_lead",
+        "architect",
+        "chaos_engineer",
+        "operator",
+        "auditor",
+        "security_engineer",
+    ],
 }
 
 # Bumped 1500s -> 3300s (Amendment 1 verification, 2026-06-05): a
