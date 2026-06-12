@@ -84,3 +84,12 @@ crews:
     # rationale: Chaos-only (8) — IPLAN is procedural deploy/rollback; threat
     # model lives upstream in ADR/SPEC. Chaos covers rollback/recovery scenarios.
     review: {tech_lead: 30, architect: 25, operator: 15, integration_lead: 12, auditor: 10, chaos_engineer: 8}
+  CHG:
+    author: integration_lead
+    # rationale: CHG is a governance overlay handling propagation + gate
+    # routing + blast-radius assessment. integration_lead is primary (30) —
+    # propagation completeness across affected layers is CHG's core value.
+    # operator + chaos_engineer get larger weight than typical (15 each)
+    # because CHG sits at the deploy boundary and covers emergency-change
+    # + rollback paths.
+    review: {integration_lead: 30, architect: 20, chaos_engineer: 15, operator: 15, auditor: 10, security_engineer: 10}

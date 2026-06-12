@@ -260,6 +260,9 @@ Every finding produced by a lens MUST cite either a checklist check (`check: "C1
 
 The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
 
+
+**CHG layer (CHG-RT-001, 2026-06-12)** — CHG is an overlay (not a lifecycle layer per `framework/governance/chg/README.md`) but uses the same playbook contract. Playbooks at `framework/playbooks/09_CHG/` cover the CHG crew (integration_lead/architect/chaos_engineer/operator/auditor/security_engineer with weights 30/20/15/15/10/10 summing to 100). `doc-chg-audit` SKILL injects them per the per-lens dispatch pattern.
+
 ## Necessary upstream + transitive trace
 
 A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through `tools/trace_walk.py` for one-shot queries.

@@ -1,0 +1,19 @@
+{
+  "persona": "operator",
+  "weight": 15,
+  "lens_score": 92,
+  "findings": [
+    {
+      "id": "OP-4",
+      "lens": "operator",
+      "check": "beyond-checklist:abort-quiesce-signal",
+      "severity": "P3",
+      "blocking": false,
+      "location": "CHG-01.md §7.2",
+      "title": "Async-buffer drain-complete has no named watchable signal for the abort sequence",
+      "detail": "Section 7.2 step 2 instructs the operator to 'flip the capture flag off and confirm in-flight async-buffer writes have drained' before proceeding to snapshot. The drain-confirmation has no named instrument at CHG altitude: no queue-depth metric, no drain-complete log event, no health endpoint. Section 4.1 signal (4) is a drop-rate counter — a lagging accumulator — and does not indicate buffer-empty. The reasoning-frame principle (paragraph 3) is that an abort step that depends on an observation the operator cannot make deterministically is inoperable under incident pressure. A CHG-altitude pointer such as 'drain-complete confirmed via buffer-depth metric or drain-complete log event, authored in SPEC-02' would close the gap without over-specifying thresholds. As written, the operator has no named instrument to determine when step 2 is satisfied before proceeding to steps 3-4.",
+      "fixer_introduced": true
+    }
+  ],
+  "no_findings_rationale": ""
+}

@@ -1,7 +1,7 @@
 """Conformance: ``REVIEW_CREWS.yaml`` is well-formed against the spec.
 
 The framework owns the *structure* of the review-team crews (REVIEW_TEAM.md), not
-any engine's LLM behaviour: every crew references one of the 8 layers and only the
+any engine's LLM behaviour: every crew references one of the 8 SDD layers + CHG overlay and only the
 declared persona set, each layer has an author + a review crew whose weights sum
 to 100, and the modes are from the closed set.
 
@@ -19,7 +19,7 @@ import unittest
 from pathlib import Path
 
 import yaml
-from _spec import ARTIFACTS, FRAMEWORK
+from _spec import ARTIFACTS_AND_OVERLAYS, FRAMEWORK
 
 CREWS = FRAMEWORK / "governance" / "REVIEW_CREWS.yaml"
 MODES = {"independent", "sequential", "single_pass"}
@@ -35,11 +35,12 @@ def _parse_weight_table(path: Path, lens_name: str) -> dict[str, int]:
     """Parse the per-layer weight table from an agent brief.
 
     Looks for a markdown table with rows shaped like ``| BRD | 12 | ... |`` where
-    the first column is a layer code (BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN) and the
-    second is the integer weight. Returns {layer: weight}.
+    the first column is a layer code (BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN) or an
+    overlay code (CHG, per CHG-RT-001) and the second is the integer weight.
+    Returns {layer: weight}.
     """
     text = path.read_text(encoding="utf-8")
-    layers = set(ARTIFACTS)
+    layers = set(ARTIFACTS_AND_OVERLAYS)
     weights: dict[str, int] = {}
     for line in text.splitlines():
         m = re.match(r"^\|\s*([A-Z]+)\s*\|\s*(\d+)\s*\|", line)
@@ -65,8 +66,12 @@ class ReviewCrews(unittest.TestCase):
     def test_default_mode_valid(self):
         self.assertIn(self.data["default_mode"], MODES)
 
-    def test_crews_cover_exactly_the_eight_layers(self):
-        self.assertEqual(set(self.crews), set(ARTIFACTS), "crews must map exactly the 8 layers")
+    def test_crews_cover_exactly_the_artifacts(self):
+        self.assertEqual(
+            set(self.crews),
+            set(ARTIFACTS_AND_OVERLAYS),
+            "crews must map exactly the declared ARTIFACTS + OVERLAYS (8 SDD layers + CHG overlay)",
+        )
 
     def test_each_crew_is_well_formed(self):
         for layer, crew in self.crews.items():

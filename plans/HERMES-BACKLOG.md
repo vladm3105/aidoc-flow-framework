@@ -248,6 +248,34 @@ CLAUDE.md additions (PR #131).
 
 **Dependency:** none (per-platform polish; safely additive).
 
+### H-10 — CHG layer team-mode + playbook injection (CHG-RT-001)
+
+**Source:** plugin PR #137 (CHG-RT-001, framework `0.20.1 → 0.21.0` +
+plugin `0.17.1 → 0.18.0`).
+
+CHG overlay brought to per-layer parity with the 8 SDD layers on the
+plugin side: 6 new playbooks at `framework/playbooks/09_CHG/`; 3 CHG
+SKILLs rewritten with team-mode + saga + Break-circuit + Content
+Sub-Checks; saga driver `_LAYER_CREWS` gains `"09_CHG"`. Live cascade
+against url-shortener converged to PASS @ iter 3 score 95.
+
+**Substantive work for Hermes:**
+
+- Add `chg` entry to `platforms/hermes/skills/persona_mappings.yaml`
+  `review:` map covering the 6 CHG lenses (integration_lead / architect
+  / chaos_engineer / operator / auditor / security_engineer)
+- Run the Hermes equivalent of doc-chg-audit team-mode dispatch (the
+  test `test_hermes_review_crews_cover_framework_crews` currently
+  skips `CHG` per the `HERMES_DEFERRED_LAYERS` whitelist — when CHG is
+  added to Hermes, remove `CHG` from that whitelist)
+- Live verification: run Hermes against the same url-shortener
+  `chg/test-change.md` seed; confirm CHG-01 propagation report
+  enumerates the same expected downstream impacts as plugin-side
+
+**Dependency:** none specific — Hermes catch-up can land independently
+once H-4 (team-mode) + H-5 (playbook injection) prerequisites are in
+place.
+
 ## What's NOT in this backlog
 
 - **Anything plugin-side.** Plugin TODOs live in normal places —

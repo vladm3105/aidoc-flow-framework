@@ -1,0 +1,85 @@
+{
+  "artifact": "docs/09_CHG/CHG-01.md",
+  "chg_id": "CHG-01",
+  "audit_timestamp": "2026-06-12",
+  "mode": "team",
+  "iteration": 3,
+  "combined_status": "PASS",
+  "gate_ready": true,
+  "structural_status": "PASS",
+  "change_level": "C3",
+  "entry_gate": "GATE-01",
+  "required_approver": "GATE-01 formal gate run + human sign-off via gate-check (C3)",
+  "content_score_advisory": 95,
+  "content_score_note": "CHG has no numeric readiness score by design; this weighted figure (sum of lens_score * weight / 100, rounded) is advisory only and is NOT the gate criterion. The gate criterion is combined_status + blocking_findings_count. Operator lens capped at 92 (its returned value) per fixer-introduced-regression rule (OP-4 introduced by CE-2 §7.2 step-2 patch; no improvement credit above iter-N-1 value).",
+  "blocking_findings_count": 0,
+  "blocking_findings": [],
+  "coverage": {
+    "quorum_met": true,
+    "lenses_ran": 6,
+    "lenses_total": 6,
+    "playbook_coverage": {
+      "C1": 1,
+      "beyond_checklist": 1
+    },
+    "playbook_failed": []
+  },
+  "lens_scores": {
+    "integration_lead": 86,
+    "architect": 100,
+    "chaos_engineer": 100,
+    "operator": 92,
+    "auditor": 100,
+    "security_engineer": 100
+  },
+  "weights": {
+    "integration_lead": 30,
+    "architect": 20,
+    "chaos_engineer": 15,
+    "operator": 15,
+    "auditor": 10,
+    "security_engineer": 10
+  },
+  "findings": [
+    {
+      "id": "IL-4",
+      "priority": "P2",
+      "check": "C1",
+      "location": "CHG-01.md §3 BRD (L1) row + §2 Why / Security-impact",
+      "message": "BRD-01 propagated diff reverses only the 'analytics dashboards' exclusion; the new per-link-owner authentication requirement (EARS req 3 / ADR-02 authn model) directly contradicts BRD-01's separate 'user accounts and authentication / end-user accounts' exclusion (BRD.01.10.b607), which the §3 BRD-01 diff neither reverses nor addresses — the named BRD-01 update is incomplete for what the change implies, so EARS req 3 lacks a BRD-layer capability anchor.",
+      "recommendation": "Either extend the §3 BRD-01 diff entry to also reverse or narrow the 'user accounts and authentication / end-user accounts' exclusion to the extent that per-link-owner authentication is required, or add an explicit note that owner-identity is a bounded capability distinct from general end-user accounts and does not reverse BRD.01.10.b607. The goal is that EARS req 3 (owner authentication) has a traceable BRD-layer capability anchor rather than standing in tension with an un-reversed exclusion clause.",
+      "personas": ["integration_lead"],
+      "fixer_introduced": false
+    }
+  ],
+  "regressions": [
+    {
+      "id": "OP-4",
+      "priority": "P3",
+      "check": "beyond-checklist:abort-quiesce-signal",
+      "location": "CHG-01.md §7.2",
+      "message": "Async-buffer drain-complete has no named watchable signal for the abort sequence. Section 7.2 step 2 instructs the operator to 'flip the capture flag off and confirm in-flight async-buffer writes have drained' before proceeding to snapshot. The drain-confirmation has no named instrument at CHG altitude: no queue-depth metric, no drain-complete log event, no health endpoint. Section 4.1 signal (4) is a drop-rate counter — a lagging accumulator — and does not indicate buffer-empty. An operator cannot make this determination deterministically under incident pressure.",
+      "recommendation": "Add a CHG-altitude pointer such as: 'drain-complete confirmed via buffer-depth metric or drain-complete log event, to be authored in SPEC-02.' This closes the operability gap without over-specifying thresholds at CHG altitude.",
+      "personas": ["operator"],
+      "fixer_introduced": true,
+      "introduced_by_fix": "CE-2 (§7.2 step-2 writer-drain patch, fix iteration 2)"
+    }
+  ],
+  "no_findings_rationale_check": {
+    "architect": "rationale present — 100 stands",
+    "chaos_engineer": "rationale present — 100 stands",
+    "auditor": "rationale present — 100 stands",
+    "security_engineer": "rationale present — 100 stands",
+    "STRUCTURE-RAT-001_caps_applied": []
+  },
+  "playbook_drift_signal": "beyond_checklist/total = 1/2 = 50% — exceeds the 30% drift signal threshold, but sample size is 2 (only 2 surviving findings across all 6 lenses). Not actionable at this sample size; playbook revision not indicated.",
+  "recommended_next_step": "Forward to gate-check (GATE-01, C3) for human sign-off. Before sign-off, route IL-4 (P2) and OP-4 (P3 regression) to doc-chg-fixer for advisory remediation, OR document human acceptance of these advisories at GATE-01 per C3 protocol. IPLAN-02 obligation (§4.1 operational-readiness collateral including async-write observability signal) must be authored and linked before GATE-01 is finalized.",
+  "persona_slot_index": {
+    "integration_lead": ".aidoc/review/09_CHG/CHG-01/integration_lead.json",
+    "architect": ".aidoc/review/09_CHG/CHG-01/architect.json",
+    "chaos_engineer": ".aidoc/review/09_CHG/CHG-01/chaos_engineer.json",
+    "operator": ".aidoc/review/09_CHG/CHG-01/operator.json",
+    "auditor": ".aidoc/review/09_CHG/CHG-01/auditor.json",
+    "security_engineer": ".aidoc/review/09_CHG/CHG-01/security_engineer.json"
+  }
+}

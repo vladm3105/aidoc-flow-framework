@@ -76,6 +76,7 @@ behind the choices are in `REVIEW_TEAM.md` §"Weight allocation rules"):
 | ADR   | 12 | **Security-heavy** layer. ADRs encode trust boundaries, authn/authz, crypto. |
 | SPEC  | 10 | Equal split. SPEC specifies both perf/resilience and security controls. |
 | TDD   | 10 | Equal split. Security-test cases (SECTEST co-ownership) balance failure tests. |
+| CHG   | 10 | CHG governance overlay. Security impact of proposed change; threat-model delta. |
 
 **Note**: IPLAN has no `security_engineer` lens — IPLAN is procedural deploy
 steps whose threat surface was decided upstream in ADR/SPEC.

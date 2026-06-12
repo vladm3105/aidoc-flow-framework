@@ -1463,3 +1463,12 @@ The workstream's planned 17 items are 100% addressed; items 18 + 19 are deferred
 
 Single-item follow-up PR closing item #18. Framework PATCH 0.20.0 → 0.20.1; plugin PATCH 0.17.0 → 0.17.1.
 FRAMEWORK-TODO state: 1 open (item #19 Option B 02b_DECOMP, user-deferred) / 19 closed.
+
+### 2026-06-12 — CHG-RT-001 (CHG layer to per-layer parity)
+
+CHG (Change Management overlay) brought to per-layer parity with the 8 SDD
+layers, mirroring the EARS-RT-001 through IPLAN-RT-001 pattern. Framework
+MINOR 0.20.1 → 0.21.0; plugin MINOR 0.17.1 → 0.18.0. Static work landed
+(crew + 6 playbooks + 3 SKILL rewrites + saga driver + conformance
+extensions); 120/120 conformance + 47/47 unit. Live CHG cascade
+verification next.

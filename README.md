@@ -1,227 +1,323 @@
-# AI Doc Flow Framework
+# aidoc-flow-framework
 
-> **Stop prompting. Start specifying.** An 8-layer specification chain that AI coding
-> assistants read, audit, and build from — instead of guessing from a one-off prompt.
+**AI-First, Specification-Driven Development for the agent era.**
 
-[![License](https://img.shields.io/github/license/vladm3105/aidoc-flow-framework)](LICENSE)
-[![Latest release](https://img.shields.io/github/v/release/vladm3105/aidoc-flow-framework?sort=semver)](https://github.com/vladm3105/aidoc-flow-framework/releases)
-[![Framework spec](https://img.shields.io/badge/spec-0.16.1-blue)](framework/README.md)
-[![Claude Code plugin](https://img.shields.io/badge/plugin-pre--1.0%20preview-orange)](platforms/claude-code-plugin/)
-[![Last commit](https://img.shields.io/github/last-commit/vladm3105/aidoc-flow-framework)](https://github.com/vladm3105/aidoc-flow-framework/commits/main)
+A framework whose artifacts are written **for AI agents to implement, deploy, and
+maintain** — not for humans to read. It turns a human's project seed into a
+structured, traceable, machine-verifiable chain that an agent can build from
+without drifting, and keeps that chain alive as reality changes.
 
-**AI Doc Flow Framework** is a structured workflow for **Specification-Driven Development
-(SDD)** with AI coding assistants. It guides a project through an 8-layer documentation
-chain — from business intent down to executable implementation plans — so AI tools act on
-a verifiable spec rather than ad-hoc prompts.
-
-Each layer has its own template, contract, and quality gate. The framework owns the
-engine-agnostic specification; two independent platforms (Hermes MCP server, Claude Code
-plugin) each implement it, and both pass the same conformance suite.
-
-**Who it's for:** teams shipping AI-generated code that has to stay consistent, traceable,
-and auditable as it scales across people and time.
+> A human never reads the whole chain. A human asks an agent to summarize, review,
+> or change it. The documents are the machine-readable contract; the natural-language
+> view is generated on demand.
 
 ---
 
-## Contents
+## Why this exists
 
-- [The 8-layer chain](#the-8-layer-chain)
-- [Quick start](#quick-start)
-- [The problem](#the-problem)
-- [What the framework provides](#what-the-framework-provides)
-- [What a layer looks like](#what-a-layer-looks-like)
-- [Spec-driven vs. ad-hoc prompting](#spec-driven-vs-ad-hoc-prompting)
-- [When to use it](#when-to-use-it)
-- [Architecture](#architecture)
-- [Platforms](#platforms)
-- [Status](#status)
-- [Contributing](#contributing)
-- [Documentation](#documentation)
+AI writes code fast. The problem isn't writing — it's that **AI-generated code
+without proper specification, plans, and traceability is unmaintainable**. An agent
+will happily produce nice-looking, plausible, *partially-wrong* code and silently
+drop a requirement it never noticed. And the next agent — fresh context, months
+later, modifying code it didn't write — reconstructs intent *from the code itself*,
+which is exactly how silent breakage compounds into a black box.
+
+This framework is the **anti-drift harness**. It gives every agent — the one that
+builds and every one that later maintains — the authoritative intent, the addressable
+contract, and the test oracle that proves nothing broke. Structured intent +
+traceability + test oracles is not bureaucracy in the agent era; it's the only thing
+that makes AI-generated code maintainable instead of disposable.
 
 ---
 
-## The 8-layer chain
+## The model: seed → chain → adaptive loop
 
-Each layer derives only from the layers above it, cites them explicitly, and must pass a
-quality gate before the next layer is generated.
+The framework does not invent the business and does not claim to know the world. It
+sits between a **human seed** and the **agents** that realize and maintain it.
 
-```mermaid
-flowchart LR
-    BRD["BRD<br/><sub>business intent</sub>"] --> PRD["PRD<br/><sub>product reqs</sub>"]
-    PRD --> EARS["EARS<br/><sub>formal reqs</sub>"]
-    EARS --> BDD["BDD<br/><sub>executable scenarios</sub>"]
-    BDD --> ADR["ADR<br/><sub>decision record</sub>"]
-    ADR --> SPEC["SPEC<br/><sub>component contract</sub>"]
-    SPEC --> TDD["TDD<br/><sub>test suite</sub>"]
-    TDD --> IPLAN["IPLAN<br/><sub>impl plan</sub>"]
-    IPLAN --> Code["Code"]
-
-    AIDOC[".aidoc/<br/><sub>provenance: audit · review ·<br/>remediation · validation</sub>"]
-    AIDOC -.records.-> BRD
-    AIDOC -.records.-> SPEC
-    AIDOC -.records.-> Code
-
-    classDef layer fill:#e8f0fe,stroke:#4285f4,color:#1a1a1a;
-    classDef prov fill:#fef7e8,stroke:#f4b400,color:#1a1a1a;
-    class BRD,PRD,EARS,BDD,ADR,SPEC,TDD,IPLAN layer;
-    class AIDOC prov;
+```
+   HUMAN (owner / architect)                  FRAMEWORK + AI                       WORLD
+   ─────────────────────────                  ──────────────                       ─────
+   vision · strategy · real-world   ──seed──▶  BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN  ◀─signal─ spikes
+   constraints (pre-framework docs)           (traceable, verifiable, buildable)            prod telemetry
+                                                        │                                    canary
+                                              PO review at EARS/BDD                          │
+                                              (right definition of done)                     │
+                                                        │                                    │
+                                                   CHG + lifecycle  ◀──────reality delta─────┘
+                                              MVP → PROD → New MVP → Updated PROD
 ```
 
-Lineage is carried by `@upstream:` tags and content-addressed element IDs — never by
-matching layer numbers. One upstream item may fan out to many downstream documents.
+1. **Human seeds the intent.** The business owner or architect creates the initial
+   project documents (vision, strategy, constraints, prior-art corpus). This is where
+   ground truth and real-world assumptions enter — the framework never originates them.
+2. **The chain transforms the seed** into eight cumulative layers, each addressable and
+   cross-linked, ending in code-ready implementation plans.
+3. **The product owner (human or AI-as-PO) validates the oracle early** — at the EARS/BDD
+   layer, *before* any architecture is committed (see "Why BDD before ADR").
+4. **The world produces the truth signal** — a sandbox spike, a canary, production
+   telemetry. No document can manufacture this; someone has to go observe reality.
+5. **CHG ingests reality as bounded, traceable deltas.** The chain is not frozen; it is a
+   living `MVP → PROD → New MVP → Updated PROD` loop.
 
 ---
 
-## Quick start
+## The layers
 
-This repo doubles as a Claude Code plugin marketplace
-(`.claude-plugin/marketplace.json`). From Claude Code:
+| Layer | Artifact | Answers |
+|------|----------|---------|
+| L1 | **BRD** — Business Requirements | Why are we building this? (C4 Context) |
+| L2 | **PRD** — Product Requirements | What product capability? (C4 Container) |
+| L3 | **EARS** — Formal Requirements | Precisely, what must it do? |
+| L4 | **BDD** — Acceptance Scenarios | What does "correct" look like? (the **oracle**) |
+| L5 | **ADR** — Architecture Decisions | How, and why this way? |
+| L6 | **SPEC** — Component Contracts | The buildable interface (C4 Component) |
+| L7 | **TDD** — Test Definitions | The tests that prove it, test-first |
+| L8 | **IPLAN** — Implementation Plan | The exact, resumable build manifest for an agent |
 
-```text
-/plugin marketplace add vladm3105/aidoc-flow-framework
-/plugin install aidoc-flow@aidoc-flow-framework
-```
+Overlays: **CHG** governance gates (adaptive change control with approval + re-gate),
+and markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
+plan-of-record for a single change.
 
-Prefer the MCP-server engine? See [`platforms/hermes/`](platforms/hermes/) and the
-[platform comparison](docs/PARITY.md) for a "which should I use?" guide.
-
----
-
-## The problem
-
-Driving AI assistants from free-form prompts carries three recurring costs:
-
-- **Reproducibility** — output varies between runs, because the prompt is not retained as
-  a reviewable artifact.
-- **Traceability** — there is no recorded link from a business requirement to the code
-  that implements it, so checking or auditing means re-reading everything.
-- **Completeness** — nothing measures whether a step is good enough to build on. *"It
-  looked right"* is the only gate.
-
-Specification-Driven Development replaces the free-form prompt with a fixed chain of
-documents. Each of the eight layers has a defined template, a set of required references
-to the layers above it, and a numeric quality gate that must be met before the next layer
-is generated. Each step is therefore **reproducible** (a committed artifact),
-**traceable** (each element cites the upstream elements it derives from), and
-**checkable** (each layer is scored against a rubric and structurally linted).
+Document numbers are **per-layer counters with no cross-layer alignment**; an upstream
+item may fan out to many downstream documents. Lineage is carried by `@`-tags and
+content-hash element IDs, never by matching numbers.
 
 ---
 
-## What the framework provides
+## What makes agents safe here
 
-- **Eight layered artifacts** — BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN. Each is a
-  document type with a defined template and schema; a layer may reference only the layers
-  before it.
-- **Cumulative traceability** — `@upstream:` tags link every element to the elements it
-  derives from, from business intent down to code. Broken or missing links are detectable,
-  not silent.
-- **Per-layer quality gates** — each layer is scored against a rubric; downstream
-  generation is gated on a minimum score, so an underspecified layer is caught before it
-  propagates.
-- **Multi-persona review** — each layer is reviewed from a defined set of lenses (for
-  example architecture, security, traceability) with weighted scoring and a recorded
-  verdict (`framework/governance/REVIEW_TEAM.md`).
-- **Deterministic structural lint** — `sdd_doc_lint` checks required sections, ID formats,
-  and reference resolution the same way on every run.
-- **Committed provenance** — the `.aidoc/` tier keeps audit, review, remediation,
-  validation, and security records beside the output, so *"how was this produced?"* is
-  answerable without a re-run.
-- **Two engines, one contract** — the specification is engine-agnostic; a Hermes MCP
-  server and a Claude Code plugin each implement it, and both pass the same conformance
-  suite.
+- **Content-hash element IDs + cumulative `@`-tags** — every requirement, decision, and
+  test has a stable address; a future agent cannot quietly reinterpret "this exact
+  requirement."
+- **Coverage checks** — every requirement/scenario must map to a component (or be
+  explicitly deferred); silently-missing functionality is detectable, not discovered in
+  production.
+- **Test-first manifests (TDD/IPLAN)** — the oracle exists before the code; an agent
+  cannot "finish" a component without the test that defines done.
+- **Deterministic gates** — resolution, ID format, required tags, and coverage are
+  mechanically checkable; "the chain verifies clean" is a fact, not an opinion.
+- **Maker-checker for change (CHG)** — reality-driven changes propagate with a computable
+  blast radius and a re-validation gate, not by code archaeology.
 
 ---
 
-## What a layer looks like
+## Division of labor (who owns what)
 
-<details>
-<summary>Example: an EARS requirement and its upstream trace (click to expand)</summary>
-
-```text
-EARS.01.03.7192  —  Agent-prepared money movement
-  WHEN an agent submits a transfer request
-  the system SHALL place it in WAITING_APPROVAL
-  and SHALL NOT execute it WITHIN the same call.
-
-  @upstream: PRD.01.09.05a4  (Approval Queue capability)
-  @upstream: BRD.01.07.b087  (Agent-prepared, user-approved money movement)
-```
-
-The same element ID (`EARS.01.03.7192`) is cited by the downstream BDD scenario, SPEC
-component, and TDD test — so a future agent has a stable address for *this exact
-requirement* and can't quietly reinterpret it. `sdd_doc_lint` fails the build if any
-`@upstream:` reference doesn't resolve.
-
-</details>
+| Owner | Responsibility |
+|---|---|
+| **Human (owner/architect)** | The **seed**: intent + real-world assumptions. The quality of the seed. |
+| **Framework + AI** | Faithful **transformation** of the seed into a traceable, verifiable, buildable chain. |
+| **Product owner (human or AI-PO)** | Validate the **oracle** at EARS/BDD: *is this the right definition of done?* |
+| **The world** | Produce the **truth signal** (spike, canary, prod) — the only source of "is this assumption true?" |
+| **CHG + lifecycle** | **Adapt** the chain to reality as bounded, traceable deltas. |
 
 ---
 
-## Spec-driven vs. ad-hoc prompting
+## Why BDD before ADR
 
-| Dimension | Ad-hoc prompting | This framework |
-|-----------|------------------|----------------|
-| **Reproducibility** | Output varies per run; the prompt is not kept as an artifact | Each layer is a committed document generated from a fixed template |
-| **Traceability** | No recorded link from requirement to code | `@upstream:` tags link every element to the ones it derives from |
-| **Review** | Re-read the whole output to judge it | Each layer is scored against a rubric before the next is generated |
-| **Audit trail** | None unless added by hand | `.aidoc/` keeps audit, review, and remediation records beside the output |
-| **Structural correctness** | Checked manually | `sdd_doc_lint` checks it deterministically |
+Acceptance scenarios (L4) are authored **before** architecture decisions (L5) on
+purpose. Two reasons:
 
----
-
-## When to use it
-
-Use the framework when outputs must stay consistent and auditable as work scales across a
-team or over time — where *"it passed review"* needs to mean something traceable to a
-spec, not a one-off prompt that happened to look right.
-
-For a single throwaway script, the layered chain is more structure than the task needs.
+1. **Review at the right altitude.** Plain Given/When/Then is exactly what a product
+   owner — human or an AI acting as PO — can validate, with no implementation noise, and
+   *before* a cent is spent on architecture.
+2. **The oracle is pinned independently of the implementer.** Deciding "what correct
+   means" before "how we'll build it" stops the common failure where the architecture
+   quietly redefines the acceptance criteria to whatever's convenient. That's anti-drift
+   at the *requirements* level, complementing the anti-drift at the code level.
 
 ---
 
-## Architecture
+## The correctness boundary
 
-```text
-framework/                  Engine-agnostic specification (the shared contract)
-platforms/
-  hermes/                   Platform A — Hermes AI (MCP-server engine)
-  claude-code-plugin/       Platform B — Claude Code plugin (native engine)
-tests/
-  conformance/              Shared suite both platforms must pass
-```
+The framework guarantees **internal consistency, completeness, and adaptability**. It
+does **not** guarantee the spec is true about the world — and it doesn't try to.
 
-The `framework/` spec defines the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC →
-TDD → IPLAN → Code), schemas, templates, and governance. Each platform is an independent
-implementation of that spec — they share the specification and nothing else, and both pass
-the same conformance suite at `tests/conformance/`.
+- An agent will faithfully implement a flawless spec of a **false assumption**. So the
+  human's irreducible job narrows to two things only a human (or the world) can own:
+  **is this assumption true**, and **is this the right definition of done**.
+- Garbage-in still gives garbage-out — but **legible, reviewable, correctable** garbage
+  that a PO catches at BDD and CHG fixes with a computable blast radius, instead of
+  silent garbage compounding inside code.
+- The framework's promise is to make a wrong idea's **consequences visible and its
+  corrections cheap** — not to make a wrong idea right.
+
+What used to look like "a gap inside the framework" is actually its **edge**: the seed
+(human) and the act of observing reality (world). Naming those as outside the
+framework's contract completes the model rather than exposing a weakness.
+
+---
+
+## Using it
+
+1. **Seed it.** Provide vision/strategy/constraints/prior-art as the pre-framework input.
+2. **Author the current cycle's set in full; stub the rest.** A cycle = a BRD *set*
+   (platform BRD + its feature BRDs). Don't over-author distant features that depreciate
+   before their cycle.
+3. **Traverse the chain** BRD → … → IPLAN, assigning content-hash IDs and cumulative tags;
+   keep references resolving and coverage complete.
+4. **Gate it** (CHG): deterministic floor (IDs, references, required tags, coverage) +
+   no unresolved P0/P1; the numeric readiness score is advisory.
+5. **Validate the oracle** at EARS/BDD with a PO before building.
+6. **Build test-first** from the IPLANs; sessions hand off via the IPLAN session-handoff.
+7. **Observe reality**, then **adapt** via CHG — the chain is a control loop, not a
+   blueprint.
+
+---
+
+## Issues this framework solves
+
+The framework targets a specific cluster of failures that show up when AI agents — not
+humans — write, ship, and maintain code. Grouped by what they actually break:
+
+### 1. The generated code is plausible but wrong or incomplete
+
+- **Silent requirement loss** — an agent produces a clean-looking module that quietly
+  omits a requirement nobody noticed was missing. → **Coverage checks** force every EARS
+  requirement and BDD scenario to map to a component or be explicitly deferred. On
+  BeeLocal this literally surfaced two whole missing components (compliance/resilience,
+  recipient management) that read as "done" until measured.
+- **No oracle, so "looks right" passes for "is right"** — agents are confident and
+  wrong. → **Test-first (BDD→TDD→IPLAN)**: the acceptance test exists before the code,
+  so an agent can't "finish" a component without satisfying the definition of done.
+
+### 2. Drift across agents, sessions, and time
+
+- **The second-agent problem** — a fresh-context agent months later modifies code it
+  didn't write and reconstructs intent from the code, which is how silent breakage
+  compounds. → **Content-hash IDs + cumulative `@`-tags** give every requirement a stable
+  address it can't quietly reinterpret; **IPLAN session-handoff** preserves state across
+  stateless agent calls so a resumed session doesn't regenerate or contradict prior work.
+- **"Why is this here / what breaks if I change it?"** — untraceable code. → **End-to-end
+  traceability** (component → ADR → BDD → EARS → PRD → BRD) makes the change blast-radius
+  computable instead of guessed.
+
+### 3. Building the wrong thing
+
+- **Architecture silently redefines "done"** to whatever's convenient to implement. →
+  **BDD-before-ADR** pins the oracle, reviewable by a product owner (human or AI-PO),
+  before a cent goes into architecture — "what correct means" decided independently of
+  "how we'll build it."
+- **No safe checkpoint before spending** — teams build, then discover it's wrong. →
+  **Deterministic gates** (structural floor + no unresolved P0/P1) give a mechanical
+  "ready to proceed" at each layer boundary.
+
+### 4. Verification is opinion, not fact
+
+- **"Is it complete/consistent?" is a judgment call.** → The framework makes it
+  mechanical: 0 unresolved references, 0 duplicate IDs, 100% coverage are **computed, not
+  asserted**. "The chain verifies clean" is a fact.
+
+### 5. Ambiguous human→agent instructions
+
+- **Vague specs make agents guess.** → **Formal EARS** (WHEN…SHALL…WITHIN), typed **SPEC
+  contracts**, and exact **IPLAN file manifests** give an agent unambiguous, addressable
+  instructions it can't misread.
+
+### 6. Documentation that rots / scope sprawl
+
+- **Frozen docs that drift from reality and start lying.** → **CHG governance** + the
+  MVP→PROD→New MVP lifecycle absorb reality as bounded, traceable, re-gated deltas — a
+  living chain, not a blueprint.
+- **Over-engineering distant features that depreciate before they're built.** → **"Author
+  the current cycle's BRD set in full; stub the rest"** — bounded authoring tied to cycles.
+
+### 7. Unmaintainable AI-built systems
+
+- **The overarching one:** AI code without spec/plan/traceability becomes a black box. →
+  The chain is the **durable intent + test oracle every future agent inherits**, so
+  maintenance is a bounded, traceable delta instead of archaeology — and onboarding
+  (human or agent) becomes "query the chain," not "reverse-engineer the code."
+
+**What it deliberately does *not* solve** — and shouldn't be expected to: it doesn't
+verify that your assumptions are *true about the world* (e.g., "Privy supports custodial
+USDC on Solana"), and it can't make a bad **seed** good. Those stay with the human
+(quality of the seed) and the world (the spike/canary/prod signal that tells you an
+assumption is false). The framework's job is to make a wrong idea's consequences
+**visible and cheap to correct** — caught at BDD, fixed via CHG — not to make a wrong
+idea right.
+
+**In one line:** it converts *"AI writes code fast but you can't trust, trace, or maintain
+it"* into *"AI writes code that is provably complete against an explicit oracle, fully
+traceable, and safely modifiable by the next agent."*
+
+---
+
+## Field note: why the volume isn't overhead
+
+If the consumer is an agent, then the volume and the rigid structure aren't overhead —
+they're the entire mechanism. A human skims; an agent needs an unambiguous, addressable,
+machine-checkable contract or it drifts. So "too much ceremony for a person to read" is
+a **category error**: nobody reads it, they query it.
+
+The core claim is the strongest argument for the whole approach: the documents are the
+**anti-drift harness**. The exact failure mode named here — an agent producing
+nice-looking, plausible, partially-wrong code and silently dropping a requirement — is
+precisely what the framework's machinery is built to prevent. On a real build it worked:
+the coverage check found genuine components that didn't exist yet (would've been silently
+missing); the reference resolver caught dangling links the moment they appeared; the
+test-first manifests mean an agent can't "finish" a component without the oracle that
+proves it. Content-hash IDs + cumulative tags give every future agent a stable address
+for "this exact requirement" so it can't quietly reinterpret it. That's not documentation
+theater — that's the leash.
+
+The place this pays off most is the one easiest to under-weight: **maintenance by a
+different agent, months later, in fresh context.** Writing the first version is the cheap
+part. The expensive, dangerous part is the second agent modifying code it never wrote —
+and without the spec + traceability + tests, that agent reconstructs intent from the code,
+which is exactly how silent breakage compounds. The framework hands every future agent the
+authoritative intent and the test that proves it didn't break the invariant. For an
+AI-maintained system over years, that's the difference between maintainable and a
+slowly-rotting black box.
+
+**Verdict:** for an AI-driven build-deploy-maintain loop, this is closer to **necessary**
+than merely worth it. The "is it worth the weight" question was a human-era question.
+
+---
+
+*This README captures the framework's design intent for the AI-agent era: a
+transformation-and-maintenance layer between a human's seed and the agents that build
+and keep a system alive — with its responsibilities drawn honestly.*
 
 ---
 
 ## Platforms
 
+The framework spec is engine-agnostic; two independent platforms implement it, each
+versioned independently. Both pass the same shared conformance suite.
+
 | Platform | Engine | Release |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.3.0` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.13.0` (`platforms/claude-code-plugin/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.18.0` (`platforms/claude-code-plugin/`) |
 
-See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a "which platform
-should I use?" guide.
+See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
+"which platform should I use?" guide.
 
----
+### Install the Claude Code plugin
+
+This repo doubles as a plugin marketplace (`.claude-plugin/marketplace.json`).
+From Claude Code:
+
+```
+/plugin marketplace add vladm3105/aidoc-flow-framework
+/plugin install aidoc-flow@aidoc-flow-framework
+```
 
 ## Status
 
-What you can rely on today:
+The migration is complete (cutover shipped as `v1.0.0`); the project is now in
+**post-cutover development** (latest project release `v1.1.0`), tracking
+framework spec `0.21.0`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+and surfaces may change before 1.0. Platform release versions are in the
+[Platforms](#platforms) table above.
 
-- **Framework spec `0.16.1`** — stable and conformance-tested; both engines implement it.
-- **Claude Code plugin `v0.13.0`** — usable now, but a **pre-1.0 preview**: commands and
-  surfaces may change before 1.0.
-- **Hermes (MCP server) `v0.3.0`** — independent engine, same conformance suite.
-
-New work lands on the Claude Code plugin first, with Hermes follow-on batches per
-[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). Delivered and planned work is in
-[`ROADMAP.md`](ROADMAP.md); per-release detail is in [`CHANGELOG.md`](CHANGELOG.md).
-
----
+Post-v1.0 development — delivered and planned — is tracked in
+[`ROADMAP.md`](ROADMAP.md); per-release detail is in
+[`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
+first, with Hermes follow-on batches per
+[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
 
 ## Contributing
 
@@ -231,33 +327,30 @@ Enable the pre-commit hooks before committing:
 pip install pre-commit && pre-commit install
 ```
 
-See `.pre-commit-config.yaml` for the hook set and [`SECURITY.md`](SECURITY.md) for the
-vulnerability-reporting policy.
-
----
+See `.pre-commit-config.yaml` for the hook set and [`SECURITY.md`](SECURITY.md)
+for the vulnerability-reporting policy.
 
 ## Documentation
 
-- [`ROADMAP.md`](ROADMAP.md) — delivery plan and planned work.
-- [`CHANGELOG.md`](CHANGELOG.md) — project-level changelog.
-- [`SECURITY.md`](SECURITY.md) — security policy and vulnerability reporting.
-- [`docs/REPO_STRUCTURE.md`](docs/REPO_STRUCTURE.md) — repository layout (as-built).
-- [`docs/PROJECT.md`](docs/PROJECT.md) — versioning, branching, milestones, conformance, change management.
-- [`docs/TAGGING.md`](docs/TAGGING.md) — git-tag policy (release + bookmark tags).
-- [`docs/PARITY.md`](docs/PARITY.md) — Hermes ↔ plugin capability comparison.
-- [`framework/README.md`](framework/README.md) — the engine-agnostic SDD specification.
+- `ROADMAP.md` — delivery plan and post-v1.0 work (migration complete at `v1.0.0`).
+- `CHANGELOG.md` — project-level changelog.
+- `SECURITY.md` — security policy and vulnerability reporting.
+- `docs/REPO_STRUCTURE.md` — repository layout (as-built).
+- `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
+- `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
+- `docs/PARITY.md` — Hermes ↔ plugin capability comparison.
+- `framework/README.md` — the engine-agnostic SDD specification.
 - [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
-- [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology.
+- [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).
 - [`tests/README.md`](tests/README.md) — tiered test-suite navigation hub.
-- [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md) — acceptance-suite implementation timeline + lessons learned.
+- [`plans/ACCEPTANCE-SUITE-HISTORY.md`](plans/ACCEPTANCE-SUITE-HISTORY.md) — per-PR implementation timeline + design evolution + lessons learned for the acceptance suite.
 - [`docs/STARTUP_HANDOFF.md`](docs/STARTUP_HANDOFF.md) — historical session brief from the Phase-3/4 migration period.
-
----
 
 ## Pre-migration history
 
-This project was migrated from the pre-migration `ucx_framework` (v0.20.4) into the
-multi-platform structure above. The **pristine pre-migration project** is preserved on the
-protected, read-only branch **`legacy-ucx-v3.2-read-only`**
-(`git checkout legacy-ucx-v3.2-read-only`). The full migration record — per-task plans,
-audits, verify records, and the decision log — lives under `plans/`.
+This project was migrated from the pre-migration `ucx_framework` (v0.20.4)
+into the multi-platform structure above. The **pristine pre-migration project**
+is preserved on the protected, read-only branch
+**`legacy-ucx-v3.2-read-only`** (`git checkout legacy-ucx-v3.2-read-only`).
+The full migration record — per-task plans, audits, verify records, and the
+decision log — lives under `plans/`.

@@ -149,7 +149,15 @@ def test_hermes_review_crews_cover_framework_crews() -> None:
     pm = yaml.safe_load((ROOT / "skills" / "persona_mappings.yaml").read_text(encoding="utf-8"))
     review = pm.get("review", {})
 
+    # Plugin-first sequencing (CLAUDE.md): Hermes catches up to plugin-side
+    # crews in batches. Overlays added to REVIEW_CREWS.yaml during plugin-side
+    # rollouts (CHG via CHG-RT-001) are deferred to Hermes via
+    # plans/HERMES-BACKLOG.md until the catch-up batch lands. Skip the
+    # overlay rows here; the 8 lifecycle layers must still be fully covered.
+    HERMES_DEFERRED_LAYERS = {"CHG"}  # CHG-RT-001 → HERMES-BACKLOG H-10
     for layer, weights in crews.items():
+        if layer in HERMES_DEFERRED_LAYERS:
+            continue
         expected = set(weights)
         doc_map = review.get(layer.lower(), {})
         hermes = doc_map.get("personas", []) if isinstance(doc_map, dict) else []
