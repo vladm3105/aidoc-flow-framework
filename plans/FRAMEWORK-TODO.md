@@ -24,24 +24,6 @@
 
 ## Open
 
-### `[legacy]` Scan for v3.2-era anachronisms across the codebase
-
-- *Context:* user-surfaced (2026-06-12) — the `sdd-orchestrator`
-  agent-skill still carried `sdd_depth: lite | standard | full` tiers
-  from the SDD v3.2 era. The current framework spec has settled on a
-  single SDD path (BRD..IPLAN, all 8 required per necessary-upstream)
-  with an adaptive loop (MVP → PROD → New MVP → Updated PROD). The
-  legacy-sdd-depth follow-up PR removed the depth references but
-  surfaced that the orchestrator's broader worldview (15-persona
-  model, ucx_hermes templates, SDD v3.2 versioning) is also stale.
-- *Fix shape:* dedicated v3.2-residue scan pass: grep across all
-  non-`legacy-ucx-v3.2-read-only` paths for: `SDD v3`, `v3.2`,
-  `sdd_depth`, `lite|standard|full` triples in SDD context, `15
-  personas`, `ucx_hermes/templates`, `sdd_create` / `sdd_validate`
-  CLI invocations. Hermes-side scope tracked separately in
-  HERMES-BACKLOG H-11.
-- *Status:* OPEN — file under `[legacy]` tag.
-
 ### `[layer-promotion]` Promote `component_decomposition` to a first-class `02b_DECOMP` layer (Option B from DECISION-GATE-D)
 
 - *Context:* DECISION-GATE-D (2026-06-11) resolved as Option A
@@ -350,3 +332,33 @@
   cataloged here per Tier-2 pipeline (FRAMEWORK-FEEDBACK-LOG-001
   Principle 9); impl waits until after current cleanup PRs settle.
   *Resolution:* CLEANUP-PR-F (PR #TBD, merge SHA TBD) — single-item follow-up after FRAMEWORK-CLEANUP-001 workstream closed; codified per-layer cardinality independence in ID_NAMING_STANDARDS.md.
+
+### `[legacy]` Scan for v3.2-era anachronisms across the codebase
+
+- *Context:* user-surfaced (2026-06-12) — the `sdd-orchestrator`
+  agent-skill still carried `sdd_depth: lite | standard | full` tiers
+  from the SDD v3.2 era. The current framework spec has settled on a
+  single SDD path (BRD..IPLAN, all 8 required per necessary-upstream)
+  with an adaptive loop (MVP → PROD → New MVP → Updated PROD). The
+  legacy-sdd-depth follow-up PR removed the depth references but
+  surfaced that the orchestrator's broader worldview (15-persona
+  model, ucx_hermes templates, SDD v3.2 versioning) is also stale.
+- *Fix shape:* dedicated v3.2-residue scan pass: grep across all
+  non-`legacy-ucx-v3.2-read-only` paths for: `SDD v3`, `v3.2`,
+  `sdd_depth`, `lite|standard|full` triples in SDD context, `15
+  personas`, `ucx_hermes/templates`, `sdd_create` / `sdd_validate`
+  CLI invocations. Hermes-side scope tracked separately in
+  HERMES-BACKLOG H-11.
+- *Status:* OPEN — file under `[legacy]` tag.
+  *Resolution:* v3.2-residue scan PR (2026-06-12) — scanned 7
+  target patterns across the codebase. One purely-dead file deleted:
+  `platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/governance/SDD_DEPTH_GUIDE.md`
+  (52 lines, entirely about the dead lite/standard/full depth concept).
+  The broader sdd-orchestrator v3.2 worldview (SKILL.md framing,
+  governance/README.md baseline references, 15-persona dispatch claim)
+  stays deferred to HERMES-BACKLOG H-11 — out of scope for the
+  bounded scan. References classified as legitimately-current
+  (Hermes 15-persona PERSONA_CATEGORY_MAP architecture, current
+  Hermes MCP tool names `sdd_create`/`sdd_validate`, CHANGELOG
+  historical entries, migration plans/P*-T* files) deliberately
+  not touched.
