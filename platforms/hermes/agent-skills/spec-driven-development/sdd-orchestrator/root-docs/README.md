@@ -223,10 +223,20 @@ Project UCX assets (personas, prompts, templates) scaffolded to `{project}/UCX/`
 
 ### For New Projects
 
-1. Choose your SDD depth (Lite / Standard / Full)
-2. Copy templates from `ucx_hermes/templates/` or layer directories
-3. Create documents using ucx_hermes `sdd_create`
-4. Validate with ucx_hermes `sdd_validate`
+The current framework runs a **single SDD path** with an adaptive
+loop — no `lite | standard | full` depth tiers (legacy SDD v3.2
+concept; removed 2026-06-12). All 8 layers are required per the
+**necessary-upstream contract** (NECESSARY-UPSTREAM-001).
+
+1. Author all 8 layer documents: BRD → PRD → EARS → BDD → ADR → SPEC
+   → TDD → IPLAN. Templates live in `framework/layers/<NN>_<LAYER>/`.
+2. Create documents using the framework's `doc-<layer>` SKILLs (e.g.
+   `doc-brd`, `doc-prd`, …).
+3. Validate with the layer audit SKILLs (`doc-<layer>-audit`) or run
+   the full `doc-<layer>-autopilot` cycle.
+4. The adaptive loop **MVP → PROD → New MVP → Updated PROD** absorbs
+   reality deltas via the CHG governance overlay
+   (`doc-chg-autopilot`, CHG-RT-001).
 
 ### Document Size Policy
 

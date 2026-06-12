@@ -24,6 +24,24 @@
 
 ## Open
 
+### `[legacy]` Scan for v3.2-era anachronisms across the codebase
+
+- *Context:* user-surfaced (2026-06-12) — the `sdd-orchestrator`
+  agent-skill still carried `sdd_depth: lite | standard | full` tiers
+  from the SDD v3.2 era. The current framework spec has settled on a
+  single SDD path (BRD..IPLAN, all 8 required per necessary-upstream)
+  with an adaptive loop (MVP → PROD → New MVP → Updated PROD). The
+  legacy-sdd-depth follow-up PR removed the depth references but
+  surfaced that the orchestrator's broader worldview (15-persona
+  model, ucx_hermes templates, SDD v3.2 versioning) is also stale.
+- *Fix shape:* dedicated v3.2-residue scan pass: grep across all
+  non-`legacy-ucx-v3.2-read-only` paths for: `SDD v3`, `v3.2`,
+  `sdd_depth`, `lite|standard|full` triples in SDD context, `15
+  personas`, `ucx_hermes/templates`, `sdd_create` / `sdd_validate`
+  CLI invocations. Hermes-side scope tracked separately in
+  HERMES-BACKLOG H-11.
+- *Status:* OPEN — file under `[legacy]` tag.
+
 ### `[layer-promotion]` Promote `component_decomposition` to a first-class `02b_DECOMP` layer (Option B from DECISION-GATE-D)
 
 - *Context:* DECISION-GATE-D (2026-06-11) resolved as Option A
