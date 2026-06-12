@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: auditor
 weight: 20
 agent: traceability-auditor
-framework_spec_version: "0.20.0"
+framework_spec_version: "0.20.1"
 ---
 # auditor lens — BRD layer
 
@@ -92,6 +92,13 @@ which paragraph of the reasoning frame above motivates it. Use sparingly. If
 more than 30% of your findings are beyond-checklist, the playbook needs
 revision (file a follow-up).
 
+
+*Cross-layer cardinality note (CLEANUP-PR-F item 18):* apparent-orphan
+downstream docs (e.g., `PRD-02` declaring `@brd: BRD-01` when `PRD-01`
+also exists with the same upstream) MAY be valid siblings of the same
+upstream, not actual orphans. Validate the trace by tag resolution, not
+by doc-number alignment. See `framework/governance/ID_NAMING_STANDARDS.md`
+§Cross-layer cardinality.
 ## No-findings rationale
 
 A lens returning `lens_score: 100` with `findings: []` (zero findings)

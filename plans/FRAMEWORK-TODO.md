@@ -52,30 +52,6 @@
   comparison for the full scope analysis preserved during the
   decision gate.
 
-### `[governance]` Doc-number independence across layers not codified anywhere
-
-- *Context:* User clarification (2026-06-11) — document numbers (the
-  `NN` in `BRD-01` / `PRD-01` / `EARS-01` / ...) are **per-layer
-  sequential and independent**; one BRD MAY drive multiple downstream
-  PRDs (PRD-01, PRD-02, ...), one PRD MAY cite multiple BRD upstream
-  docs. Framework currently has zero explicit mention of this:
-  `ID_NAMING_STANDARDS.md` says *"sequential two-digit number"* (per
-  layer, but doesn't say independent across); `TRACEABILITY.md` has
-  no cross-layer cardinality discussion; `REVIEW_TEAM.md` +
-  `REVIEW_REMEDIATION_FLOW.md` are silent on cardinality. The
-  url-shortener example's 1:1 numbering alignment (BRD-01 → PRD-01 →
-  ... → IPLAN-01) reinforces the wrong "numbers line up" mental model.
-- *Fix shape:* (a) add "Cross-layer cardinality" subsection to
-  `ID_NAMING_STANDARDS.md` (or `TRACEABILITY.md`) explicitly stating
-  doc numbers are per-layer independent + one-to-many + many-to-one
-  both supported; (b) update `doc-<layer>` author SKILL prompts:
-  *"the upstream's number is NOT your number — pick next-free in
-  YOUR layer's index"*; (c) auditor playbooks: clarify orphan-looking
-  downstream docs may be siblings of the same upstream, not actual
-  orphans. **Deferred to a follow-up CLEANUP-PR-F (single-item)** —
-  cataloged here per Tier-2 pipeline (FRAMEWORK-FEEDBACK-LOG-001
-  Principle 9); impl waits until after current cleanup PRs settle.
-
 ## Closed
 
 ### `[example-corpus]` url-shortener corpus regen → all 6 layers PASS (2026-06-10)
@@ -331,3 +307,28 @@
   citation must resolve to a numeric-bound value in the host doc.
   Unbound thresholds fire P1 at BDD/TDD audit.
   *Resolution:* CLEANUP-PR-D (PR #TBD, merge SHA TBD) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
+
+### `[governance]` Doc-number independence across layers not codified anywhere
+
+- *Context:* User clarification (2026-06-11) — document numbers (the
+  `NN` in `BRD-01` / `PRD-01` / `EARS-01` / ...) are **per-layer
+  sequential and independent**; one BRD MAY drive multiple downstream
+  PRDs (PRD-01, PRD-02, ...), one PRD MAY cite multiple BRD upstream
+  docs. Framework currently has zero explicit mention of this:
+  `ID_NAMING_STANDARDS.md` says *"sequential two-digit number"* (per
+  layer, but doesn't say independent across); `TRACEABILITY.md` has
+  no cross-layer cardinality discussion; `REVIEW_TEAM.md` +
+  `REVIEW_REMEDIATION_FLOW.md` are silent on cardinality. The
+  url-shortener example's 1:1 numbering alignment (BRD-01 → PRD-01 →
+  ... → IPLAN-01) reinforces the wrong "numbers line up" mental model.
+- *Fix shape:* (a) add "Cross-layer cardinality" subsection to
+  `ID_NAMING_STANDARDS.md` (or `TRACEABILITY.md`) explicitly stating
+  doc numbers are per-layer independent + one-to-many + many-to-one
+  both supported; (b) update `doc-<layer>` author SKILL prompts:
+  *"the upstream's number is NOT your number — pick next-free in
+  YOUR layer's index"*; (c) auditor playbooks: clarify orphan-looking
+  downstream docs may be siblings of the same upstream, not actual
+  orphans. **Deferred to a follow-up CLEANUP-PR-F (single-item)** —
+  cataloged here per Tier-2 pipeline (FRAMEWORK-FEEDBACK-LOG-001
+  Principle 9); impl waits until after current cleanup PRs settle.
+  *Resolution:* CLEANUP-PR-F (PR #TBD, merge SHA TBD) — single-item follow-up after FRAMEWORK-CLEANUP-001 workstream closed; codified per-layer cardinality independence in ID_NAMING_STANDARDS.md.

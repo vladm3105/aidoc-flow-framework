@@ -23,6 +23,12 @@ Layer 8 (IPLAN): @brd @prd @ears @bdd @adr @spec @tdd @iplan
 
 Maximum 8 cumulative tags at IPLAN layer.
 
+> **Cross-layer cardinality (CLEANUP-PR-F item 18):** doc numbers are
+> per-layer sequential and INDEPENDENT across layers. One BRD MAY drive
+> multiple PRDs; one PRD MAY cite multiple BRDs. The url-shortener
+> example's 1:1 numbering is coincidence, not contract. See
+> `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
+
 ## Upstream/Downstream Validation
 
 | Layer | Required Upstream Tags | Validated Downstream |

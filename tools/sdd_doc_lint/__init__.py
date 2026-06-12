@@ -352,6 +352,15 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
             # but still get STY02 size-budget enforcement.
             if body.get("_required") is False:
                 continue
+            # CLEANUP-PR-F: sections marked `_required_when_subtype: [...]`
+            # are conditionally required based on the artifact's
+            # `document_control.subtype` value (per CLEANUP-PR-E item 17).
+            # The corpus-level lint cannot determine the artifact's
+            # subtype without parsing every instance doc; defer the
+            # subtype-aware required-section check to the layer's
+            # `doc-<layer>-audit` SKILL (which does parse the artifact).
+            if isinstance(body.get("_required_when_subtype"), list):
+                continue
             out[key] = body["_size_target"]
     return out
 

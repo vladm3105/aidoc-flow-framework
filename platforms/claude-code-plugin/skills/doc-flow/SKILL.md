@@ -9,8 +9,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-27"
     adapts: [active_layers]
 ---

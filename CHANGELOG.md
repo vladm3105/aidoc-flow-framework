@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec 0.20.0 → 0.20.1 + Claude Code plugin 0.17.0 → 0.17.1 (CLEANUP-PR-F)
+
+Single-item follow-up PR closing `plans/FRAMEWORK-TODO.md` item #18.
+Documents doc-number independence across layers (the deferred item
+from the original 2026-06-11 PR-C cataloging).
+
+- **`ID_NAMING_STANDARDS.md`** gains new §"Cross-layer cardinality"
+  subsection (~35 lines) between §Document IDs and §Element IDs.
+  States explicitly: doc numbers are per-layer sequential and
+  INDEPENDENT across layers; one-to-many + many-to-one cross-layer
+  relationships both supported; the url-shortener example's 1:1
+  alignment is coincidence not contract.
+- 8 doc-<layer> author SKILLs gain one-line clarification in their
+  Reserve ID step pointing to the new subsection.
+- 6 auditor playbooks (BRD/PRD/BDD/ADR/TDD/IPLAN) gain an
+  orphan-vs-sibling note in Beyond-checklist: validate trace by tag
+  resolution, not number alignment.
+- `TRACEABILITY.md` gains a cross-reference in §Cumulative Tagging.
+- Framework PATCH (`0.20.0 → 0.20.1`) + plugin PATCH
+  (`0.17.0 → 0.17.1`).
+
 ### Workstream — FRAMEWORK-CLEANUP-001 complete (2026-06-11, 5 child PRs)
 
 `plans/FRAMEWORK-TODO.md` drained — 18 of 19 items closed across PR-A

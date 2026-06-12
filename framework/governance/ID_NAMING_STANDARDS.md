@@ -15,6 +15,41 @@ Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential t
 | TDD | TDD | TDD-01 |
 | IPLAN | IPLAN | IPLAN-01 |
 
+### Cross-layer cardinality (CLEANUP-PR-F item 18)
+
+**Document numbers are per-layer sequential and INDEPENDENT across
+layers.** `BRD-01` and `PRD-01` are *not* causally related — `PRD-01`
+is simply the first PRD authored, just as `BRD-01` is the first BRD.
+A PRD authored after `BRD-01` does **not** inherit `01` from its
+upstream; it picks the next-free number in the PRD layer.
+
+The framework supports both **one-to-many** and **many-to-one**
+cross-layer relationships:
+
+- **One-to-many** — one BRD MAY drive multiple downstream PRDs. A
+  single `BRD-01` covering a complex business need may decompose
+  into `PRD-01`, `PRD-02`, `PRD-03` — each PRD declares
+  `@brd: BRD-01` as its upstream citation. All three PRDs are
+  legitimate siblings of `BRD-01`, not duplicates or orphans.
+- **Many-to-one** — one PRD MAY cite multiple upstream BRDs via
+  multiple `@brd:` citations. A `PRD-01` synthesizing requirements
+  from `BRD-01` *and* `BRD-02` simply lists both upstream tags.
+
+The cascade harness's standard example (`examples/url-shortener/`)
+happens to use 1:1 numbering across all 8 layers (BRD-01 → PRD-01 →
+... → IPLAN-01). **That alignment is coincidence, not contract.** A
+reader inferring "doc numbers cascade across layers" from the
+example is reading a pattern that isn't there.
+
+**For authors:** when reserving an ID at any layer, pick the
+next-free number in *your* layer's index. The upstream's number is
+irrelevant to your choice.
+
+**For auditors:** apparent-orphan downstream docs (e.g., `PRD-02`
+declaring `@brd: BRD-01` when `PRD-01` already exists with the same
+upstream) MAY be valid siblings, not actual orphans. Validate the
+trace by tag resolution, not by number alignment.
+
 ## Element IDs
 
 Format: `{TYPE}.{doc_id}.{section_id}.{hash}`

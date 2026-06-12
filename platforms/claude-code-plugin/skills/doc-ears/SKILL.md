@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -127,6 +127,10 @@ timing uses p50/p95/p99 notation. Carry changeable values as
    `@brd` tags, the BRD it derives from).
 2. **Reserve ID** — next free `EARS-NN` (two digits: `EARS-01`, `EARS-99`,
    `EARS-102`).
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the nested folder** — every EARS lives in
    `docs/03_EARS/EARS-NN_{slug}/` regardless of size. Monolithic:
    `EARS-NN_{slug}.md` inside it; section-based (>25 KB): `EARS-NN.S_{section}.md`

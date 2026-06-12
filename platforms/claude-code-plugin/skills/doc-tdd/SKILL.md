@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -132,6 +132,10 @@ files are generated **before** implementation files.
 1. **Read upstream** — SPEC (component contract) + BDD (behavior scenarios).
 2. **Reserve ID** — next free `TDD-NN` (two digits: `TDD-01`, `TDD-99`); one TDD
    per SPEC component, `docs/07_TDD/TDD-NN_{component_slug}.yaml`.
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Document Control first**, then complete all 7 sections from the template.
 4. **Set the test pyramid**; **map each BDD scenario** to test types/files.
 5. **Write test cases** — element ID `TDD.NN.04.xxxx`, `type`, `spec_ref` (and

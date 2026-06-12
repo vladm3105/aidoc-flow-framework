@@ -11,8 +11,8 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.17.0"
-    framework_spec_version: "0.20.0"
+    version: "0.17.1"
+    framework_spec_version: "0.20.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -124,6 +124,10 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
    topic and BRD §8 driver.
 2. **Reserve ID** — next free `ADR-NN` (two digits, expand only as needed:
    `ADR-01`, `ADR-99`, `ADR-102`).
+   *Per-layer independence (CLEANUP-PR-F item 18):* pick the next-free
+   number in YOUR layer's index — the upstream's number is NOT your number
+   (doc numbers are per-layer sequential and independent; see
+   `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the nested folder** — every ADR lives in
    `docs/05_ADR/ADR-NN_{slug}/`. Monolithic: `ADR-NN_{slug}.md` inside it;
    section-based (>25 KB): `ADR-NN.S_{section}.md` + index from

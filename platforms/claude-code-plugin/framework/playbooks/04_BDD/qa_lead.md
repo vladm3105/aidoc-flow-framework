@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: qa_lead
 weight: 35
 agent: test-architect
-framework_spec_version: "0.20.0"
+framework_spec_version: "0.20.1"
 ---
 # qa_lead lens — BDD layer
 
