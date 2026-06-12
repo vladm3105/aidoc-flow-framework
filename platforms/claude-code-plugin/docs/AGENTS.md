@@ -60,14 +60,17 @@ Models are assigned to balance capability against cost:
 
 **Flow:** PM plans → Spec lane authors BRD→SPEC/TDD (integrity-checked by the Traceability Auditor) → Execution lane implements from approved IPLAN → Quality Gates review every change before merge → DevOps deploys and feeds evidence/incidents back to the PM.
 
-### SDD lifecycle mapping (v3, 8 layers)
+### SDD lifecycle mapping (8 layers + CHG overlay)
 
 ```
 BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 └── requirements-analyst ──┘   └── solutions-architect ──┘  └ test-arch ┘ └ software-engineer ┘
+
+CHG (governance overlay — triggered on-demand when modifying any layer)
+└── solutions-architect (integration_lead + architect) + chaos-engineer + devops-release-engineer (operator) + traceability-auditor + security-engineer
 ```
 
-> The canonical model is exactly the 8 layers above (see `${CLAUDE_PLUGIN_ROOT}/framework/layers/`), each with four skill variants — base, `-autopilot`, `-audit`, `-fixer`. Test types (unit, integration, smoke, functional, performance, security) are `type` attributes of test cases authored via the TDD layer (`doc-tdd*`), not separate skills. SPEC subtypes (component, data, UX, risk, process) are unified into the SPEC layer (`doc-spec*`).
+> The canonical model is exactly the 8 layers above (see `${CLAUDE_PLUGIN_ROOT}/framework/layers/`), each with four skill variants — base, `-autopilot`, `-audit`, `-fixer`. The **CHG governance overlay** (CHG-RT-001, framework spec `0.21.0`) sits across the chain and is triggered on-demand when modifying any of the 8 layers; it has its own 4 skill variants (`doc-chg`, `doc-chg-autopilot`, `doc-chg-audit`, `doc-chg-fixer`) and a dedicated 6-lens crew (see `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/09_CHG/`). Test types (unit, integration, smoke, functional, performance, security) are `type` attributes of test cases authored via the TDD layer (`doc-tdd*`), not separate skills. SPEC subtypes (component, data, UX, risk, process) are unified into the SPEC layer (`doc-spec*`).
 
 ---
 
