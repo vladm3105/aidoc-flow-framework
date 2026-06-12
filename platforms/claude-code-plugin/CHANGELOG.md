@@ -14,6 +14,164 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-06-12
+
+### Added
+
+- **CHG layer team-mode + playbook injection (CHG-RT-001).** `doc-chg-audit/SKILL.md` (200 → 693 lines) gains `## Review Mode` + `## Saga interaction` + `## Break-circuit policy` + `## Content Sub-Checks` (A1/A2/A3/BA1/SE1) + playbook injection. `doc-chg-fixer/SKILL.md` (125 → 344 lines) gains `## Remediate Mode` + `## Saga interaction` + `## Break-circuit policy`. `doc-chg-autopilot/SKILL.md` (116 → 191 lines) gains saga-driven generation loop invoking `python3 saga_driver.py --layer 09_CHG`.
+- `tools/saga_driver.py` `_LAYER_CREWS` gains `"09_CHG"` entry with the 6 personas matching `REVIEW_CREWS.yaml` CHG crew.
+- CHG-RT-001 live cascade against url-shortener: PASS @ iter 3 score 95, 0 blocking findings; `examples/url-shortener/docs/09_CHG/CHG-01.md` is the first end-to-end CHG cascade output in framework history.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.20.1` → `0.21.0` (consumes new CHG crew + 6 new playbooks under `framework/playbooks/09_CHG/`).
+
+## [0.17.1] — 2026-06-12
+
+### Changed
+
+- **Doc-number independence clarification (CLEANUP-PR-F).** 8 `doc-<layer>` author SKILLs gain a one-line clarification in the Reserve ID step pointing to the new `ID_NAMING_STANDARDS.md` §"Cross-layer cardinality" subsection — doc numbers are per-layer sequential and INDEPENDENT across layers; one-to-many + many-to-one cross-layer relationships both supported.
+- `FRAMEWORK_SPEC_VERSION` `0.20.0` → `0.20.1`.
+
+### Fixed
+
+- **PR-E STRUCT01 regression** caused by IPLAN sub-types' `_required_when_subtype:` markers — `tools/sdd_doc_lint/__init__.py` `_load_section_targets()` now honors the marker (skips conditionally-required sections; defers subtype-aware check to the layer's audit SKILL).
+
+## [0.17.0] — 2026-06-11
+
+### Added
+
+- **Threshold-resolution gate TH-RES-001 (CLEANUP-PR-D).** New `sdd_doc_lint` corpus-level rule (`tools/sdd_doc_lint/__init__.py`) — validates every downstream `@threshold: PRD.NN.<cat>.<key>` citation resolves to a `full_id:` entry in the host PRD's `component_decomposition` section. Citation-driven: PRDs with no downstream threshold cites pass automatically. P2 (host PRD missing section) + P1 (section present, key not declared).
+- `tests/unit/test_threshold_resolution.py` — 4 unit tests.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.19.1` → `0.20.0` (new optional `component_decomposition` section in PRD template).
+
+## [0.16.1] — 2026-06-11
+
+### Added
+
+- **IPLAN sub-types (CLEANUP-PR-E).** `doc-iplan/SKILL.md` Creation Process gains "Select subtype" step — `code_build` / `deploy` / `combined`. `doc-iplan-audit/SKILL.md` Structural Checklist gains subtype-aware section dispatch (reads `document_control.subtype`; defaults to `combined`).
+- IPLAN playbooks (operator, chaos_engineer, integration_lead) gain `### Subtype awareness` subsection — at `code_build` subtype, deploy concerns are explicit out of scope.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.19.0` → `0.19.1` (template `subtype` field + 5 new deploy-only sections).
+
+## [0.16.0] — 2026-06-11
+
+### Added
+
+- **Review-quality calibration (CLEANUP-PR-B — heart of FRAMEWORK-CLEANUP-001).** 9 audit SKILLs (BRD/PRD/EARS/BDD/ADR/SPEC/TDD/IPLAN/CHG) gain `### Strip author self-claim before lens dispatch` subsection (anchor-effect fix) + `### Regressions` subsection in Combined Report Format.
+- `agents/synthesizer.md` extended with:
+  - **No-findings-rationale check** — caps `lens_score` at 95 when 100/0 output lacks `no_findings_rationale` field; emits `STRUCTURE-RAT-001` advisory.
+  - **Fixer-introduced regression detection** — compares iter-N finding locations to iter-(N-1) "Fixes Applied" entries; sets `fixer_introduced: true`; caps affected lens score at iter-(N-1) value.
+- `CLAUDE.md` §Development workflow gains Corpus cross-check + Empirical pass-count baseline paragraphs.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.18.0` → `0.19.0` (new REVIEW_TEAM.md §Operations subsections + 13 playbook content additions + TDD auditor C4/C1/Reasoning frame aligned with necessary-upstream contract).
+
+## [0.15.0] — 2026-06-11
+
+### Added
+
+- **Spec / registry / template hygiene (CLEANUP-PR-C).** `tools/saga_driver.py` gains `_resolve_max_iterations(profile_path)` helper — loads `.aidoc/profile.yaml`, reads the new `quality_loop_max_iterations` knob (range 1-10, default 3); falls back to default for missing-file / malformed-yaml / missing-field / out-of-range.
+- `tools/sdd_doc_lint/__init__.py` TH01 check upgraded to use a strict threshold regex (rejects mixed-case categories).
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.17.1` → `0.18.0`.
+
+## [0.14.1] — 2026-06-11
+
+### Added
+
+- **Harness + lint workflow hygiene (CLEANUP-PR-A).** New `--skip-lint-smoke` flag in `tests/scripts/test-acceptance.sh` (replaces deprecated `SDD_LINT_SKIP_TRACE_RES=1` env-var pattern).
+- "Cleanup-then-cascade pattern" subsection in `tests/ACCEPTANCE.md` (`rm -rf <layer>` → `--force` sequence).
+- DO-NOT-EDIT banners on canonical vendored Python modules + new `framework/_VENDORED.md` README clarifying the byte-identity contract.
+- 18 audit + fixer SKILL prompts gain `### Table-pipe escape (MD056)` subsection (root-cause fix for cascade-output MD056 issue).
+
+## [0.14.0] — 2026-06-11
+
+### Added
+
+- **IPLAN layer team-mode + playbook injection (IPLAN-RT-001).** Final 8/8 layer rollout closing the LAYER-PLAYBOOKS-001 workstream. `doc-iplan-audit/SKILL.md` (270 → 551 lines) + `doc-iplan-fixer/SKILL.md` (112 → 310 lines) gain the team-mode + saga + playbook injection shape.
+- 6 IPLAN playbook files: tech_lead 30 / architect 25 / operator 15 / integration_lead 12 / auditor 10 / chaos_engineer 8 = 100 (no security_engineer per IPLAN crew — threat model upstream in ADR/SPEC).
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.17.0` → `0.17.1` (final IPLAN playbooks land within existing §Playbooks artifact class).
+- `@unittest.skip` removed from `tests/conformance/test_playbook_coverage.py` — conformance now actively enforces all 45 playbooks.
+
+## [0.13.1] — 2026-06-10
+
+### Fixed
+
+- **TRACE-RES-001 downstream-skip (TRACE-RES-FIXUP-001).** Lint rule now correctly skips downstream tags (e.g., SPEC-01 emitting `@tdd: TDD-01` before TDD-01 has been generated); downstream pointers are informational forward references, not upstream lineage.
+
+### Changed
+
+- `examples/url-shortener/docs/` regenerated end-to-end (PRD→TDD, 5h 1m wall clock): PRD 92 / EARS 94 / BDD 91 / ADR 96 / SPEC 97 / TDD 90 (all PASS).
+- Temporary `SDD_LINT_SKIP_TRACE_RES=1` env-var bypass removed.
+
+## [0.13.0] — 2026-06-10
+
+### Added
+
+- **TDD layer team-mode + playbook injection (TDD-RT-001).** `doc-tdd-audit/SKILL.md` (268 → ~500 lines) + `doc-tdd-fixer/SKILL.md` (112 → ~298 lines) gain the team-mode shape.
+- 6 TDD playbook files: qa_lead 35 / tech_lead 25 / chaos_engineer 10 / security_engineer 10 / operator 10 / auditor 10 = 100. Equal chaos/security split — security_engineer co-owns SECTEST.
+- Authored on top of NECESSARY-UPSTREAM-001; playbooks land under the new necessary-upstream contract from the start.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.16.0` → `0.16.1`.
+
+## [0.12.0] — 2026-06-09
+
+### Changed
+
+- **Necessary-upstream contract alignment (NECESSARY-UPSTREAM-001).** 15 SKILLs aligned with the new contract: 7 layer-author SKILLs drop "cumulative upstream tags" instructions; `upstream_artifacts:` frontmatter shrunk to the necessary set per layer (EARS [PRD], BDD [EARS], ADR [EARS, BDD], SPEC [EARS, BDD, ADR], TDD [EARS, BDD, ADR, SPEC], IPLAN [SPEC, TDD]; PRD [BRD] unchanged).
+- 8 layer audit/fixer SKILLs reword cumulative-tag references; fixer remediation tables now instruct adding tags missing from `required_tags`.
+- Acceptance harness validator probe drops "cumulative" from prompt; expected-count threshold reduced 20 → 10.
+- `FRAMEWORK_SPEC_VERSION` `0.15.2` → `0.16.0` (MINOR — necessary-upstream contract change in `LAYER_REGISTRY.yaml` + §7 templates + governance docs).
+
+## [0.11.0] — 2026-06-09
+
+### Added
+
+- **SPEC layer team-mode + playbook injection (SPEC-RT-001).** `doc-spec-audit/SKILL.md` (267 → 502 lines) + `doc-spec-fixer/SKILL.md` (115 → 305 lines) gain the team-mode shape.
+- 5 SPEC playbook files: architect 30 / tech_lead 30 / integration_lead 20 / chaos_engineer 10 / security_engineer 10 = 100. Equal chaos/security split. **Smallest crew of any layer** (5 lenses; no operator + no auditor at SPEC altitude).
+- `integration_lead` first appears at SPEC — binds to `solutions-architect` (third lens sharing this agent alongside architect + tech_lead).
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.14.3` → `0.14.4`.
+
+## [0.10.0] — 2026-06-08
+
+### Added
+
+- **ADR layer team-mode + playbook injection (ADR-RT-001).** `doc-adr-audit/SKILL.md` (268 → 500 lines) + `doc-adr-fixer/SKILL.md` (113 → 299 lines) gain the team-mode shape.
+- 6 ADR playbook files: architect 35 / tech_lead 25 / security_engineer 12 / operator 10 / auditor 10 / chaos_engineer 8 = 100. **Security-heavy** split (first layer where security dominates over chaos) — ADRs encode trust boundaries, authn/authz choices, crypto decisions.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.14.2` → `0.14.3`.
+
+## [0.9.0] — 2026-06-08
+
+### Added
+
+- **BDD layer team-mode + playbook injection (BDD-RT-001).** `doc-bdd-audit/SKILL.md` (268 → 500 lines) + `doc-bdd-fixer/SKILL.md` (118 → 304 lines) gain the team-mode shape.
+- 6 BDD playbook files: qa_lead 35 / tech_lead 25 / chaos_engineer 14 / security_engineer 6 / operator 10 / auditor 10 = 100. **Chaos-heavy** split (14 > 6, highest chaos weight of any layer) — reflects BDD failure-scenario emphasis.
+- `operator` lens first appears at BDD — maps to `devops-release-engineer` plugin agent.
+
+### Changed
+
+- `FRAMEWORK_SPEC_VERSION` `0.14.1` → `0.14.2`.
+
 ## [0.8.0] — 2026-06-08
 
 ### Added
