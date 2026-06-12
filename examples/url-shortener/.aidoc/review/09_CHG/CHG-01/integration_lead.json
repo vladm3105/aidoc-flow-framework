@@ -1,0 +1,18 @@
+{
+  "persona": "integration_lead",
+  "weight": 30,
+  "lens_score": 86,
+  "findings": [
+    {
+      "id": "IL-4",
+      "lens": "integration_lead",
+      "check": "C1",
+      "severity": "P2",
+      "blocking": false,
+      "location": "CHG-01.md §3 BRD (L1) row + §2 Why / Security-impact",
+      "title": "BRD-01 propagated diff reverses only the 'analytics dashboards' exclusion; the new per-link-owner authentication requirement (EARS req 3 / ADR-02 authn model) directly contradicts BRD-01's separate 'user accounts and authentication / end-user accounts' exclusion (BRD.01.10.b607), which the §3 BRD-01 diff neither reverses nor addresses — the named BRD-01 update is incomplete for what the change implies, so EARS req 3 lacks a BRD-layer capability anchor.",
+      "fixer_introduced": false
+    }
+  ],
+  "no_findings_rationale": ""
+}
