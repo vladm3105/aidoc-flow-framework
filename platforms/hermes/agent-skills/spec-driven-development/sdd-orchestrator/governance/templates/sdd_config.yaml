@@ -1,8 +1,20 @@
-# SDD v3 Project Configuration
+# SDD Project Configuration
 # Copy to project root and customize.
+#
+# NOTE (2026-06-12, legacy-sdd-depth cleanup): The framework no longer
+# supports the v3.2-era `sdd_depth: lite | standard | full` tiers. All
+# 8 SDD layers (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN) are
+# required by the **necessary-upstream contract** (NECESSARY-UPSTREAM-001,
+# framework spec `0.16.0`). Skipping a layer breaks the trace chain — a
+# downstream layer's `required_tags` cannot resolve to an absent upstream
+# document. The single SDD path is the adaptive loop
+# MVP → PROD → New MVP → Updated PROD; reality deltas enter via the CHG
+# overlay (CHG-RT-001, framework spec `0.21.0`).
+#
+# The broader sdd-orchestrator skill is still pre-LAYER-PLAYBOOKS-001
+# era; full Hermes-side modernization is tracked as HERMES-BACKLOG H-11.
 
-sdd_version: "3.2"
-sdd_depth: "standard"  # lite | standard | full
+sdd_version: "0.21.0"  # tracks framework spec version
 
 # v3 chain registry aliases
 layer_aliases:
@@ -15,28 +27,24 @@ layer_aliases:
   tdd: 7
   iplan: 8
 
+# All 8 layers are required per the necessary-upstream contract. A
+# layer's `required_tags` (declared in
+# `framework/registry/LAYER_REGISTRY.yaml`) cite the layers it consumes
+# directly; transitively the entire chain BRD..IPLAN must exist.
 required_artifacts:
-  lite:
-    - brd
-    - prd
-    - iplan
-  standard:
-    - brd
-    - prd
-    - ears
-    - adr
-    - spec
-    - tdd
-    - iplan
-  full:
-    - brd
-    - prd
-    - ears
-    - bdd
-    - adr
-    - spec
-    - tdd
-    - iplan
+  - brd
+  - prd
+  - ears
+  - bdd
+  - adr
+  - spec
+  - tdd
+  - iplan
+
+# CHG overlay (CHG-RT-001) sits across the chain — triggered on-demand
+# when modifying any of the 8 layers, not part of the cascade chain.
+overlays:
+  - chg
 
 change_management:
   chg_enabled: true
@@ -50,4 +58,3 @@ change_management:
 testing:
   unit_min_coverage: 80
   integration_min_coverage: 60
-  require_bdd_in_full: true

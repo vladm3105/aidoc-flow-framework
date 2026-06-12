@@ -276,6 +276,37 @@ against url-shortener converged to PASS @ iter 3 score 95.
 once H-4 (team-mode) + H-5 (playbook injection) prerequisites are in
 place.
 
+### H-11 — sdd-orchestrator agent-skill v3.2-era modernization (legacy-sdd-depth cleanup origin)
+
+**Source:** legacy-sdd-depth cleanup PR (2026-06-12) — user-surfaced
+legacy bug: the v3.2-era `sdd_depth: lite | standard | full` tiers had
+survived in `platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/`
+after the framework moved to the single-path adaptive-loop model
+(MVP → PROD → New MVP → Updated PROD). The legacy-sdd-depth PR removed
+the `sdd_depth` references from `sdd_config.yaml` + `root-docs/README.md`
+
+- added this entry. The orchestrator's broader v3.2-era worldview is
+deeper than this cleanup touched.
+
+**Substantive work for Hermes** (beyond the depth removal):
+
+- Modernize the orchestrator's persona model — the skill still
+  references "15 specialized review personas dispatched as parallel
+  subagents" from the v3.2 era. The current framework uses the closed
+  persona set in `REVIEW_CREWS.yaml` with per-layer crews of 5-6
+  lenses + per-lens playbooks at `framework/playbooks/<NN>_<LAYER>/`.
+- Cross-link the LAYER-PLAYBOOKS-001 contract.
+- Replace `sdd-review-personas` related-skill reference with the
+  current crew + playbook contract.
+- Update governance docs under the orchestrator's `governance/` for
+  the same v3.2-era anachronisms.
+- Live verification — confirm a Hermes user invoking
+  `sdd-orchestrator` against url-shortener follows the current 8-layer
+  path.
+
+**Dependency:** none specific. Independent of H-1..H-10. Can land
+incrementally.
+
 ## What's NOT in this backlog
 
 - **Anything plugin-side.** Plugin TODOs live in normal places —
