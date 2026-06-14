@@ -21,15 +21,66 @@ def fixtures_for(layer_index: int, kind: str) -> Path:
     return FIXTURES_ROOT / folder / kind
 
 
-def template_sections(name: str) -> list[str]:
-    """Return required section keys from <TYPE>-TEMPLATE.yaml, in order."""
+def template_sections(name: str, subtype: str | None = None) -> list[str]:
+    """Return required section keys from <TYPE>-TEMPLATE.yaml, in order.
+
+    Honors two template-side optional/conditional flags introduced by
+    CLEANUP-PR-D (PRD ``component_decomposition``) and CLEANUP-PR-E
+    (IPLAN sub-types):
+
+    * ``_required: false`` — unconditionally optional; excluded.
+    * ``_required_when_subtype: [list]`` — required only when ``subtype``
+      is in the list. When ``subtype`` is None, sections gated by subtype
+      are excluded (matches the BRD/PRD/EARS/BDD/ADR/SPEC/TDD case where
+      templates don't use the marker).
+
+    The legacy ``required: False`` (no underscore) is honored too, with
+    the same semantics as the underscore-prefixed form.
+    """
     with template_path(name).open(encoding="utf-8") as fh:
         data = yaml.safe_load(fh)
-    return [
-        key
-        for key, value in data.items()
-        if isinstance(value, dict) and value.get("required", True) and key != "metadata"
-    ]
+    out: list[str] = []
+    for key, value in data.items():
+        if not isinstance(value, dict) or key == "metadata":
+            continue
+        if value.get("_required") is False:
+            continue
+        gated = value.get("_required_when_subtype")
+        if isinstance(gated, list):
+            if subtype is None or subtype not in gated:
+                continue
+        if value.get("required") is False:
+            continue
+        out.append(key)
+    return out
+
+
+def subtype_of(golden: Path) -> str:
+    """Read ``document_control.subtype`` from a golden; default ``combined``.
+
+    IPLAN sub-types per CLEANUP-PR-E item 17. Goldens authored before the
+    sub-type system may omit the field; the template documents
+    ``combined`` as the backward-compat default. Honored here so legacy
+    goldens lint correctly without a fixture rewrite.
+
+    YAML goldens may carry an optional ``---``-fenced frontmatter block;
+    ``document_control`` lives in the body after the closing fence. This
+    helper strips an optional frontmatter before parsing so the body's
+    top-level keys are visible.
+    """
+    if golden.suffix == ".yaml":
+        text = golden.read_text(encoding="utf-8")
+        lines = text.splitlines()
+        if lines and lines[0].strip() == "---":
+            for i in range(1, len(lines)):
+                if lines[i].strip() == "---":
+                    text = "\n".join(lines[i + 1 :])
+                    break
+        data = yaml.safe_load(text) or {}
+        dc = data.get("document_control") or {}
+        return str(dc.get("subtype") or "combined")
+    # .md goldens: no subtype slot; treat as "combined" by default.
+    return "combined"
 
 
 def run_lint(target: Path) -> tuple[int, list[dict]]:
@@ -60,7 +111,11 @@ def headings(artifact: Path) -> list[str]:
     """Return canonical section identifiers from an artifact.
 
     For .md / .feature: H2 headings normalized like sdd_doc_lint does.
-    For .yaml: top-level keys (excluding `_*` and `metadata`).
+    For .yaml: top-level keys from the body (excluding `_*` and `metadata`).
+      Tolerates an optional `---` frontmatter fence — the body after the
+      closing fence is parsed as YAML for its top-level keys. Required
+      because some YAML goldens carry a `doc_id`-bearing frontmatter for
+      TRACE-RES-001 indexing.
     """
     text = artifact.read_text(encoding="utf-8")
     if artifact.suffix in {".md", ".feature"}:
@@ -71,6 +126,15 @@ def headings(artifact: Path) -> list[str]:
                 out.append(re.sub(r"[^a-z0-9]+", "_", raw).strip("_"))
         return out
     if artifact.suffix == ".yaml":
+        # Strip an optional frontmatter block (--- ... ---) so the body's
+        # top-level YAML keys are visible. Goldens that don't use the fence
+        # are unaffected (the whole file IS the body).
+        lines = text.splitlines()
+        if lines and lines[0].strip() == "---":
+            for i in range(1, len(lines)):
+                if lines[i].strip() == "---":
+                    text = "\n".join(lines[i + 1 :])
+                    break
         data = yaml.safe_load(text) or {}
         return [k for k in data if not k.startswith("_") and k != "metadata"]
     return []
@@ -116,7 +180,10 @@ class LayerHarness:
                 )
 
     def assert_template_sections_present_in_golden(self, golden: Path):
-        expected = template_sections(self.LAYER_NAME)
+        # Pass the golden's subtype so `_required_when_subtype:` sections
+        # (CLEANUP-PR-E item 17, IPLAN) are filtered correctly. Layers
+        # whose templates don't use the marker are unaffected by the value.
+        expected = template_sections(self.LAYER_NAME, subtype=subtype_of(golden))
         present = set(headings(golden))
         missing = [s for s in expected if s not in present]
         self.assertFalse(
