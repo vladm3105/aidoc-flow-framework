@@ -14,6 +14,38 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.20.0] — 2026-06-14
+
+### Changed
+
+- **`/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a
+  user prompt argument and draft a full GitHub issue from it.** The LLM
+  composes a concise title and a structured body using the user's
+  one-line input, the current conversation context (recent commands,
+  errors, files referenced), and the environment / version stamp. The
+  resulting title and body are URL-encoded into `?title=&body=` so the
+  GitHub `issues/new` form opens with both fields prefilled. The user
+  reviews on github.com and clicks Submit; the plugin never auto-submits.
+- **Preview step.** Both commands now print the drafted title + body in
+  chat before the URL, so the user can sanity-check the LLM's draft
+  before clicking through. Anything wrong gets edited on github.com.
+- **Refined GitHub issue templates** (`.github/ISSUE_TEMPLATE/bug_report.md`,
+  `.github/ISSUE_TEMPLATE/feedback.md`) — section structure aligned with
+  what the LLM drafts, so direct-on-GitHub fillers also benefit and the
+  prefilled body reads naturally inside the template.
+- **Secret-redaction guardrail.** Both commands explicitly do not include
+  log content, file contents, or paths that look like secrets (anything
+  matching `(token|secret|key|password|api[_-]?key)`); such fragments are
+  replaced with `(redacted)` in the drafted body.
+
+### Supersedes
+
+The unreleased `[0.19.1]` PATCH (URL-prefill of a static env block via
+`&body=`) is superseded by this MINOR release — same `&body=` machinery,
+but the body content is now LLM-drafted from the user's prompt, not a
+static four-line env stamp. Argument-accepting commands are new behaviour;
+hence MINOR rather than PATCH.
+
 ## [0.19.0] — 2026-06-14
 
 ### Added — PLUGIN-USER-COMMANDS

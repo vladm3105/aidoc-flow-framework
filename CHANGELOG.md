@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Claude Code plugin 0.19.0 → 0.20.0 (MINOR)
+
+- `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a user
+  prompt argument and draft a structured GitHub issue from it (title +
+  body) using the conversation context and the environment stamp. The
+  drafted title + body are URL-encoded into `?title=&body=` and the user
+  reviews on github.com before clicking Submit; the plugin never
+  auto-submits. Supersedes the unreleased v0.19.1 PATCH (which used the
+  same `&body=` machinery for a static four-line env block only).
+  GitHub issue templates refined to match. Per-platform detail in
+  [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Added — Claude Code plugin 0.18.0 → 0.19.0 (PLUGIN-USER-COMMANDS)
 
 - 11 user-facing commands (meta · workflow · lifecycle · config) on the Claude

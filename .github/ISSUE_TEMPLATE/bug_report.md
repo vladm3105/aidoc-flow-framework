@@ -1,39 +1,63 @@
 ---
 name: Bug Report
-about: Create a report to help us improve the project
+about: Something is broken — a command crashes, a skill produces wrong output, a hook misbehaves.
 title: "[BUG] "
 labels: bug
 assignees: ''
 
 ---
 
-## Describe the Bug
+<!--
+If you arrived here via /aidoc-flow:bug-report, the LLM has drafted the
+sections below from your prompt and conversation context. Review each section,
+edit anything that's wrong, then click Submit.
 
-A clear and concise description of what the bug is.
+If you arrived here directly on github.com, fill the sections in by hand.
+The environment block is required so triage can route the issue.
+-->
 
-## Steps to Reproduce
+## Summary
 
-Steps to reproduce the behavior:
+<!-- One paragraph: what is broken, on which surface. -->
 
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+## Steps to reproduce
 
-## Expected Behavior
+<!-- Exact commands or actions that trigger the bug. -->
 
-A clear and concise description of what you expected to happen.
+1.
+2.
+3.
 
-## Screenshots
+## Expected behaviour
 
-If applicable, add screenshots to help explain your problem.
+<!-- What should have happened. -->
+
+## Actual behaviour
+
+<!-- What happened. Paste the actual error message or output inside a fenced code block. -->
+
+```
+(error / unexpected output)
+```
 
 ## Environment
 
-- OS: [e.g. Ubuntu 22.04]
-- Browser: [e.g. Chrome, Firefox]
-- Version: [e.g. v1.0.0]
+<!--
+The /aidoc-flow:bug-report command auto-populates these from your install.
+If filling in manually, get the first two by running /aidoc-flow:about.
+-->
 
-## Additional Context
+- Plugin version:
+- Framework spec:
+- OS / arch:
+- Claude Code version:
 
-Add any other context about the problem here.
+## Additional context
+
+<!--
+Optional. File paths from the failure, what you were trying to accomplish,
+related issues. Omit if there's nothing genuinely useful to add.
+
+Please do not paste secrets (tokens, API keys, credentials). Redact before
+posting.
+-->

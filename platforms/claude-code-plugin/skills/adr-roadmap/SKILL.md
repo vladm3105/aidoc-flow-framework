@@ -9,7 +9,7 @@ metadata:
     skill_category: utility
     upstream_artifacts: [ADR]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.19.0"
+    version: "0.20.0"
     framework_spec_version: "0.21.1"
     last_updated: "2026-05-23"
 ---
