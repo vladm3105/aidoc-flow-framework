@@ -53,13 +53,35 @@ right skill. The deeper authoring guidance is in
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
 | Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `chaos-engineer` and `synthesizer`. See `docs/AGENTS.md`. |
-| Commands | 1 | `/aidoc-flow:save-plan` — capture the current conversation plan to a timestamped file. |
+| Commands | 12 | 11 user-facing commands (meta · workflow · lifecycle · config) + `/aidoc-flow:save-plan`. See the "User-facing commands" subsection below. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
 | **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.7.0) | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
 the manifest.
+
+## User-facing commands
+
+The plugin ships 12 slash commands, all namespaced `/aidoc-flow:<name>`:
+
+| Tier | Commands |
+|------|----------|
+| Meta | `about` · `help` · `bug-report` · `contact-us` · `feedback` |
+| Workflow | `status` · `next` |
+| Lifecycle | `uninstall` · `save-plan` |
+| Config | `configure` · `budget` · `model` |
+
+- `help` is the orientation surface (8-layer flow + entry skills + full
+  command index). `doc-flow` remains the skill-routing orchestrator-of-record.
+- `status` reports per-layer state of the current project; `next` recommends
+  one concrete next action.
+- `uninstall` is a guided exit — Claude Code's native
+  `/plugin uninstall aidoc-flow@aidoc-flow-framework` does the actual removal.
+- `configure` / `budget` / `model` read and write an optional project-local
+  `.claude/aidoc-flow.config.yaml`. The schema, defaults, and enums are in
+  [`docs/CONFIG.md`](docs/CONFIG.md). `/budget` is an effort knob (not a token
+  cap); `/model` is advisory (the plugin cannot switch the session model).
 
 ## Self-contained framework bundle
 
@@ -98,7 +120,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.18.0
+0.19.0
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.21.1

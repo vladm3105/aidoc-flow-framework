@@ -14,6 +14,43 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.19.0] — 2026-06-14
+
+### Added — PLUGIN-USER-COMMANDS
+
+- **11 user-facing commands** under `commands/`, all namespaced `/aidoc-flow:<name>`:
+  - Meta: `about`, `help`, `bug-report`, `contact-us`, `feedback`
+  - Workflow: `status`, `next`
+  - Lifecycle: `uninstall`
+  - Config: `configure`, `budget`, `model`
+- **Optional project-local config file** `.claude/aidoc-flow.config.yaml` —
+  read/written by `/configure`, `/budget`, `/model`; ignored by every other
+  skill. Schema, defaults, and enums documented in `docs/CONFIG.md`.
+- **`.github/ISSUE_TEMPLATE/feedback.md`** — backend for `/aidoc-flow:feedback`
+  (separate from the existing `bug_report.md`).
+- **Conformance test** `tests/conformance/platforms/test_plugin_config_schema.py`
+  — fails CI if `docs/CONFIG.md` and the three config command files drift on
+  schema keys, defaults, or enum values.
+
+### Honest caveats baked into the commands
+
+- `/aidoc-flow:budget` is a **behavior knob** (skips optional passes, terser
+  output), not a token-budget cap. The plugin has no token-meter hook.
+- `/aidoc-flow:model` is **advisory**. The plugin cannot switch the Claude
+  Code session model; the command records the per-layer recommendation and
+  prints copy-paste native `/model <id>` commands.
+- `/aidoc-flow:uninstall` is a **guided exit**. The native
+  `/plugin uninstall aidoc-flow@aidoc-flow-framework` does the actual removal.
+
+### Out of scope (tracked, deferred)
+
+- Per-skill model/budget preflight rollout — config keys are introduced;
+  wiring the preflight line into every `doc-*` SKILL is a follow-on
+  (`plans/FRAMEWORK-TODO.md` — `MODEL-PRECHECK-ROLLOUT`).
+- Cross-platform parity in Hermes (plugin-first; tracked in
+  `plans/HERMES-BACKLOG.md`).
+- GitHub Discussions backend for `/feedback` (Issues + template is v1).
+
 ## [0.18.0] — 2026-06-12
 
 ### Added

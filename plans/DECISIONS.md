@@ -10,6 +10,52 @@ graduation.
 
 ---
 
+## D-0033 — Claude Code plugin user-facing commands: shape, channels, and honesty boundaries (PLUGIN-USER-COMMANDS)
+
+- **Date:** 2026-06-14T00:00:00Z
+- **Plan:** `plans/PLUGIN-USER-COMMANDS-PLAN.md` (merged via PR #142, plan-only;
+  this PR delivers the implementation).
+- **SemVer impact:** Plugin MINOR `0.18.0 → 0.19.0`.
+
+Three sub-decisions, captured here so future contributors do not relitigate
+them when extending the command surface.
+
+### D-0033a — `/feedback` lands in GitHub Issues, not Discussions
+
+Issues + a dedicated `.github/ISSUE_TEMPLATE/feedback.md` template covers the
+v1 need (separate triage from bug reports, single backend that the maintainer
+already monitors). Discussions adds setup overhead and a second moderation
+surface for a channel that is empty today. Migration path: switching `/feedback`
+to Discussions later is a one-URL change in `commands/feedback.md`; deferred
+backlog only, no design debt.
+
+### D-0033b — Split `/budget` and `/model` rather than ship a single `/performance`
+
+A single command would collapse two orthogonal axes into one slider:
+*cognitive depth* (which model the user runs against) and *effort the skill
+spends* (how many passes, how verbose). Users genuinely want the four
+combinations (Opus + min for high-stakes terse work; Haiku + max for
+stress-tests; etc.). The split also makes each command's caveat sharper —
+budget is a behavior knob, model is advisory — versus a single command that
+would have to hedge both.
+
+### D-0033c — Advisory-not-enforcing posture for `/model` and `/budget`
+
+The plugin layer **cannot**:
+
+- switch the Claude Code session model (only the native `/model <id>` does),
+- enforce a hard token cap (no token-meter hook is available to plugins),
+- remove itself (only the native `/plugin uninstall` does).
+
+Rather than hide these limits or imply enforcement that doesn't exist, the
+command prose names them explicitly. `/aidoc-flow:model` prints copy-paste
+native `/model <id>` commands; `/aidoc-flow:budget` documents the empirical
+40–60% token reduction `min` profile delivers via skipped passes; `/aidoc-flow:uninstall`
+prints the exact native uninstall command and never claims to run it. The
+honesty is verified by conformance test V5 (`grep -F "advisory" commands/model.md`).
+
+---
+
 ## D-0032 — Unified development/work plan standard in the IPLAN layer (PLANSTD-001)
 
 - **Date:** 2026-06-09T00:00:00Z

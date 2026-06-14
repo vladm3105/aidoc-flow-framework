@@ -24,6 +24,23 @@
 
 ## Open
 
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — wire `model.precheck` into every `doc-*` SKILL
+
+- *Context:* PLUGIN-USER-COMMANDS (`plans/PLUGIN-USER-COMMANDS-PLAN.md`,
+  merged 2026-06-14) introduced the `model.per_layer` recommendation map and
+  the `model.precheck` mode (`warn | silent | block`) in the optional
+  `.claude/aidoc-flow.config.yaml`. The keys are introduced; **no `doc-*`
+  SKILL currently consults them**. Same applies to `budget.profile_per_layer`.
+- *Fix shape:* one SKILL touch per layer family (8 base skills + 4 variants
+  each = up to 32 SKILL preambles). Each SKILL reads the config (if present),
+  compares the recommended model against the current session model, and
+  emits a single-line preflight per the `precheck` mode. Acceptance: drive
+  the example corpus and confirm a `warn` precheck appears when the session
+  model doesn't match. Gate by the existing acceptance suite, not by a new
+  test.
+- *Out of scope here:* the implementation; PLUGIN-USER-COMMANDS only
+  introduces the keys honestly without claiming the SKILLs already read them.
+
 ### `[layer-promotion]` Promote `component_decomposition` to a first-class `02b_DECOMP` layer (Option B from DECISION-GATE-D)
 
 - *Context:* DECISION-GATE-D (2026-06-11) resolved as Option A
