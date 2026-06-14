@@ -88,6 +88,15 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Acceptance-fixtures drift fix (ACCEPTANCE-FIXTURES-DRIFT, no
+  VERSION change).** Closes 12 long-standing failures in
+  `tests/acceptance/deterministic/` (red on umbrella `PR Checks`
+  since 2026-06-02). Three coordinated fixes: `template_sections()`
+  honors `_required: false` and `_required_when_subtype: [list]`;
+  fullpath upstream goldens gain the element IDs downstream layers
+  cite (BRD.01.07.aaaa, PRD.01.09.aaaa) plus `doc_id` for
+  SPEC/TDD/IPLAN; per-layer fixture dirs gain 28 upstream sibling
+  goldens. Plan: PR #147.
 - **Support channels — framework slice (IPLAN-0008 steps 3 + 6, no
   VERSION change).** New public-facing `docs/SUPPORT.md` channel
   directory (four channels: in-product `/aidoc-flow:bug-report` and

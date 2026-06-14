@@ -1,5 +1,17 @@
 # Session Handoff
 
+> **🟢 ACCEPTANCE-FIXTURES-DRIFT IMPL READY FOR PR — 2026-06-14.** Closes
+> 12 long-standing deterministic-suite failures that were red on the
+> umbrella `PR Checks` workflow since 2026-06-02. Three coordinated
+> fixes: harness `template_sections()` honors `_required: false` +
+> `_required_when_subtype: [list]`; fullpath upstream goldens gain
+> the cited element IDs + `doc_id` for YAML goldens; per-layer fixture
+> dirs gain 28 upstream sibling copies. Verification: 58 deterministic
+> tests pass (was 43 passing + 12 failing); 129/129 conformance
+> unchanged. Branch `feat/acceptance-fixtures-drift`. Plan PR #147 merged.
+
+<!-- archive section below -->
+
 > **🟢 PLATFORM README VERSION-CELL DRIFT FIX (PATCH) — 2026-06-14.** Plugin
 > `0.20.0 → 0.20.1`. Root-cause fix for a long-standing drift bug in
 > `platforms/claude-code-plugin/README.md` Platform info table — the

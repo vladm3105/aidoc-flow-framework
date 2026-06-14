@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import FIXTURES_ROOT, headings, run_lint, template_sections  # noqa: E402
+from _harness import FIXTURES_ROOT, headings, run_lint, subtype_of, template_sections  # noqa: E402
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "conformance"))
 from _spec import ARTIFACTS  # noqa: E402
@@ -32,7 +32,10 @@ class FullpathChainTests(unittest.TestCase):
             with self.subTest(layer=name):
                 folder = CHAIN / f"{idx:02d}_{name}"
                 artifact = next(folder.glob(f"{name}-01*"))
-                missing = [s for s in template_sections(name) if s not in set(headings(artifact))]
+                # Pass the artifact's subtype so `_required_when_subtype:`
+                # sections (CLEANUP-PR-E item 17, IPLAN) filter correctly.
+                expected = template_sections(name, subtype=subtype_of(artifact))
+                missing = [s for s in expected if s not in set(headings(artifact))]
                 self.assertFalse(missing, f"{name}-01: missing required sections: {missing}")
 
     def test_forward_tag_closure(self):

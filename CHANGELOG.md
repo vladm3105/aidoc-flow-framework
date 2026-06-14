@@ -12,6 +12,51 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — ACCEPTANCE-FIXTURES-DRIFT (no plugin VERSION change)
+
+Closes 12 long-standing failures in
+`tests/acceptance/deterministic/` that were red on the umbrella `PR
+Checks` workflow since 2026-06-02 and on the umbrella nightly `Live
+Tier` since 2026-06-01. Framework's own CI didn't run the suite, so the
+failures stayed silent here; the umbrella CI catches them and recent
+umbrella PRs merged through the red check as a known background issue.
+
+Three coordinated fixes for three root causes:
+
+- **`tests/acceptance/_harness.py`** — `template_sections()` gains a
+  `subtype` parameter and respects `_required: false` (PRD
+  `component_decomposition`) and `_required_when_subtype: [list]`
+  (IPLAN sub-types per CLEANUP-PR-E item 17). New `subtype_of()`
+  helper reads `document_control.subtype` from a YAML golden (tolerant
+  of optional `---` frontmatter fence) and defaults to `combined` per
+  the IPLAN template's backward-compat note. New `headings()` parses
+  the YAML body after a `---` frontmatter fence so per-layer goldens
+  that carry a `doc_id`-bearing frontmatter still expose their body
+  sections. Closes 4 failures (PRD + IPLAN missing-sections + fullpath
+  PRD/IPLAN subtests).
+- **Fullpath upstream goldens** — `01_BRD/BRD-01_golden.md` gains the
+  `### BRD.01.07.aaaa` heading downstream layers cite;
+  `02_PRD/PRD-01_golden.md` gains `### PRD.01.09.aaaa`. SPEC/TDD/IPLAN
+  goldens gain top-level `doc_id:` + closing `---` frontmatter fence
+  so `@spec: SPEC-01`, `@tdd: TDD-01` doc-form references resolve.
+  IPLAN goldens (per-layer + fullpath) gain `subtype: code_build` to
+  match the existing fixture content (no deploy sections). Closes 1
+  failure (fullpath chain lint).
+- **Per-layer fixture sibling additions** — for each layer N ∈ {2..8},
+  copied upstream goldens (layers 1..N-1) from
+  `fullpath/golden_chain/` into `layer_NN_<NAME>/valid/`. 28 file
+  copies total. Closes 7 failures (per-layer lint, PRD through
+  IPLAN).
+
+New unit test
+`tests/acceptance/deterministic/test_harness_template_sections.py`
+covers the 5 cases for `template_sections()` (PRD optional section,
+IPLAN combined/code_build/None subtypes, BRD subtype-irrelevant).
+
+Verified-planning gate: 12 cited claims; Pass 1 + Pass 2 (independent
+Agent review) with 13 findings folded in; `check_plan.py: ok`. Plan
+merged via [PR #147](https://github.com/vladm3105/aidoc-flow-framework/pull/147).
+
 ### Added — IPLAN-0008 framework slice (no plugin VERSION change)
 
 - **`docs/SUPPORT.md`** — new public-facing channel directory for

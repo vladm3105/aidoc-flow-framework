@@ -9,6 +9,7 @@ metadata:
 document_control:
   iplan_id: IPLAN-01
   source_spec: SPEC-01
+  subtype: code_build  # CLEANUP-PR-E item 17: this fixture covers the code_build path
   status: In Progress
   version: 1.0
   author: Platform team

@@ -24,6 +24,29 @@
 
 ## Open
 
+### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
+
+- *Context:* ACCEPTANCE-FIXTURES-DRIFT (2026-06-14) closed 12
+  long-standing deterministic-test failures by copying upstream
+  goldens (layers 1..N-1) into each `tests/acceptance/fixtures/layer_NN_<NAME>/valid/`
+  dir — 28 files total. This is intentional duplication so each
+  per-layer fixture dir is self-contained; the per-layer
+  `assert_golden_passes_lint` runs `run_lint(golden.parent)` which
+  satisfies TRACE-RES-001 only when the cited upstream host docs are
+  present in the same directory.
+- *Fix shape (deferred):* extend `sdd_doc_lint` with a CLI flag
+  `--allow-unresolved-upstream` (or `--isolated-layer`) that
+  downgrades TRACE-RES-001 to a warning when the upstream host doc is
+  missing. The per-layer tests pass that flag; fullpath does not.
+  Eliminates the 28-file duplication; the per-layer dirs again
+  contain only the layer's own golden. Weakens the rule slightly but
+  the fullpath chain still enforces it strictly.
+- *Status:* Parked. Not a blocker — the duplication is small, the
+  fixtures are stable, and the rule remains strict where it matters
+  (fullpath integration). Pull when fixture maintenance becomes a
+  real burden, OR when adding a new layer makes the duplication
+  pattern obvious.
+
 ### `[sync]` `WEBSITE-VERSION-BADGE-DRIFT` — `web-site/src/pages/index.astro` `Pre-release v<X.Y.Z>` badge
 
 - *Context:* IPLAN-0008 step 6 closed the bug class for the web-site
