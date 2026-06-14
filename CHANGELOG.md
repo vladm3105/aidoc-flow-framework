@@ -12,6 +12,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Claude Code plugin 0.18.0 → 0.19.0 (PLUGIN-USER-COMMANDS)
+
+- 11 user-facing commands (meta · workflow · lifecycle · config) on the Claude
+  Code plugin; optional project-local `.claude/aidoc-flow.config.yaml` config
+  format; `feedback.md` issue template; conformance test for the config
+  schema. Per-platform detail in
+  [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Added — Framework Spec 0.21.0 → 0.21.1 (CHG-gated)
 
 - **`framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md` — cross-repo reference note.**

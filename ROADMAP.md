@@ -88,6 +88,16 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Claude Code plugin user-facing commands (`0.18.0 → 0.19.0`).** 11 commands
+  for meta, workflow, lifecycle, and config — `/about`, `/help`, `/bug-report`,
+  `/contact-us`, `/feedback`, `/status`, `/next`, `/uninstall`, `/configure`,
+  `/budget`, `/model`. Optional project-local `.claude/aidoc-flow.config.yaml`
+  config format with single-source-of-truth schema in `docs/CONFIG.md`. Closes
+  the first-time-user discoverability gap (was 1 command + 53 skills with no
+  meta/help/status surface). Honest caveats baked in: `/budget` is a behavior
+  knob (not a token cap), `/model` is advisory (cannot switch the session
+  model), `/uninstall` is a guided exit (native `/plugin uninstall` does the
+  removal). Plan: `plans/PLUGIN-USER-COMMANDS-PLAN.md`.
 - **Multi-persona review team** — per-layer review crews with deterministic
   weighted/capped scoring, a structural gate as a reproducible floor, and split
   `chaos_engineer` / `security_engineer` lenses.
