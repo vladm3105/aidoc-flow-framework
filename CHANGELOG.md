@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.13.1 → 0.13.2 (CHG-gated)
+
+- **`framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md` — cross-repo reference note.**
+  - Adds an engine-agnostic note describing how IPLAN spans three sibling
+    repos: `aidoc-flow-framework` authors (Layer 8), `aidoc-flow-iplanic`
+    manages (control plane + standard), `iplan-runner` executes (engineering
+    codename `iops-framework`). Captures the *intended pipeline*, the
+    *authoritative docs per repo*, the *contract divergence* between the
+    three (template shape, schema_version, identity, signing, …) and the
+    *open question / next step* (recommendation: option 2 — keep L8 as the
+    authoring format, make iplanic's import the formal bridge).
+  - Mirrored identically in `iplanic/docs/standards/IPLAN-ECOSYSTEM.md`
+    (carries iplanic's D-0020 forward-looking resolution; propagates to
+    this framework copy only when explicitly approved per iplanic D-0016)
+    and `iplan-runner/docs/IPLAN-ECOSYSTEM.md`.
+  - SemVer: PATCH (`0.13.1 → 0.13.2`). Content-only addition — no template,
+    schema, registry, or governance-rule changes; no behavior contract
+    changes for either platform.
+
 ### Changed — Framework Spec 0.13.0 → 0.13.1 (CHG-gated)
 
 - **DOC_GOVERNANCE_CORE.md — new Principle 8: change-of-record discipline.**
