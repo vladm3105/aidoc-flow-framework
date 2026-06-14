@@ -88,6 +88,14 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Platform README Version cell drift fix (`0.20.0 → 0.20.1`, PATCH).**
+  Fixed long-standing drift in `platforms/claude-code-plugin/README.md`
+  Platform info table (`Version` cell stuck at `0.6.3` since plugin v0.7.0)
+  by canonicalizing the cell to the tag form (`claude-code-plugin/v<X.Y.Z>`)
+  and extending `scripts/sync-version-refs.sh` to propagate the tag form
+  in platform READMEs. Bug class closed; same drift in
+  `platforms/hermes/README.md` flagged in `FRAMEWORK-TODO.md` for
+  Hermes's next bump.
 - **bug-report / feedback LLM-drafted issues (`0.19.0 → 0.20.0`, MINOR).**
   `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a user
   prompt argument (e.g. `/aidoc-flow:bug-report status crashes on empty

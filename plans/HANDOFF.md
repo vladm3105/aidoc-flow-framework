@@ -1,16 +1,22 @@
 # Session Handoff
 
-> **🟢 BUG-REPORT/FEEDBACK LLM-DRAFTED ISSUES (MINOR) — 2026-06-14.** Plugin
-> `0.19.0 → 0.20.0`. Both commands now accept a user prompt argument and
-> have the LLM draft a concise title + structured body from the prompt +
-> conversation context + env stamp, URL-encoded into `?title=&body=`.
-> Preview shown in chat before the URL; user reviews on github.com and
-> clicks Submit; plugin never auto-submits. Refined
-> `.github/ISSUE_TEMPLATE/bug_report.md` and `feedback.md` to match.
-> Secret-redaction guardrail in the command prose. Supersedes the in-flight
-> v0.19.1 PATCH (static `&body=` env block) in the same branch + PR.
-> Branch `feat/bug-report-feedback-prefill`; updating PR #144 in place
-> with new scope.
+> **🟢 PLATFORM README VERSION-CELL DRIFT FIX (PATCH) — 2026-06-14.** Plugin
+> `0.20.0 → 0.20.1`. Root-cause fix for a long-standing drift bug in
+> `platforms/claude-code-plugin/README.md` Platform info table — the
+> `Version` cell had been stuck at `0.6.3` since plugin v0.7.0 (~14 bumps
+> ago) because `scripts/sync-version-refs.sh` only awk'd bare `^X.Y.Z$`
+> lines, missing inline table cells. Canonicalized cell to the tag form
+> `claude-code-plugin/v<X.Y.Z>` and extended the sync script to propagate
+> the tag form in platform READMEs. Same drift exists in
+> `platforms/hermes/README.md` — flagged in `FRAMEWORK-TODO.md`
+> (`HERMES-README-VERSION-DRIFT`) for Hermes's next bump. Branch
+> `fix/plugin-readme-version-sync`.
+>
+> **Previously resolved (one-line summary):** Plugin `0.19.0 → 0.20.0`
+> shipped (PR #144) — `/aidoc-flow:bug-report` and `/aidoc-flow:feedback`
+> now accept a user prompt argument and have the LLM draft a complete
+> GitHub issue from it. Plugin `0.18.0 → 0.19.0` shipped (PR #142 plan +
+> PR #143 impl) — 11 user-facing commands.
 >
 > **Previously resolved (one-line summary):** PLUGIN-USER-COMMANDS shipped
 > `0.18.0 → 0.19.0` (PR #142 plan + PR #143 impl): 11 user-facing commands

@@ -9,7 +9,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [BRD]
-    version: "0.20.0"
+    version: "0.20.1"
     framework_spec_version: "0.21.1"
     last_updated: "2026-05-23"
     adapts: [active_layers]

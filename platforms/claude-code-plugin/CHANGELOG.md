@@ -14,6 +14,33 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.20.1] — 2026-06-14
+
+### Fixed
+
+- **`README.md` Platform info table — `Version` cell drift.** The cell had
+  been stuck at `0.6.3` since plugin v0.7.0 (~14 version bumps ago)
+  because `scripts/sync-version-refs.sh` only awk'd bare `^X.Y.Z$` lines
+  in this README (for the `$ cat VERSION` example block), missing the
+  inline table cell. This release canonicalizes the cell to the tag form
+  `claude-code-plugin/v0.20.1`.
+- **`scripts/sync-version-refs.sh` extended** to also propagate
+  `claude-code-plugin/v<X.Y.Z>` references in
+  `platforms/claude-code-plugin/README.md` and `hermes/v<X.Y.Z>` in
+  `platforms/hermes/README.md`. Closes the recurrence class — by
+  canonicalizing the Platform info cell to the tag form (which the
+  sync script already covered for root README.md / PARITY.md), future
+  bumps update the platform README automatically.
+
+### Surfaced (out of scope for this PATCH)
+
+- `platforms/hermes/README.md:107-108` carries the same drift bug
+  (`hermes/v0.1.0` vs actual `0.3.0`; `framework spec 0.1.0` vs actual
+  `0.21.1`). Tracked as `HERMES-README-VERSION-DRIFT` in
+  `plans/FRAMEWORK-TODO.md`. The extended sync script will auto-fix the
+  tag form at Hermes's next VERSION bump per the plugin-first rule.
+  The framework-spec cell needs a separate sync pattern (not added here).
+
 ## [0.20.0] — 2026-06-14
 
 ### Changed
