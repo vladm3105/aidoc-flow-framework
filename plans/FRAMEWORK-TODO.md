@@ -24,6 +24,28 @@
 
 ## Open
 
+### `[sync]` `WEBSITE-VERSION-BADGE-DRIFT` — `web-site/src/pages/index.astro` `Pre-release v<X.Y.Z>` badge
+
+- *Context:* IPLAN-0008 step 6 closed the bug class for the web-site
+  home-page badge by extending `scripts/sync-version-refs.sh` to
+  propagate `Pre-release v<X.Y.Z>` into the sibling
+  `../web-site/src/pages/index.astro` (cross-submodule write at the
+  umbrella layer). The script change ships in the framework PR;
+  the actual badge value is set in the web-site PR (also part of
+  IPLAN-0008, step 4-5-7). This entry exists so the cross-repo
+  coupling is discoverable from the framework side.
+- *Fix shape:* Same `replace_in_file "Pre-release v<old>" "Pre-release v<new>"` shape
+  as the v0.20.1 plugin-README fix used. The replace_in_file helper is
+  no-op if `../web-site/src/pages/index.astro` does not exist
+  (framework cloned standalone without the umbrella siblings). When
+  framework's plugin VERSION bumps next, the hook propagates to the
+  web-site working tree; the developer commits the change in
+  web-site's own PR.
+- *Status:* Closed by the framework PR for IPLAN-0008 step 3+6 — the
+  sync-script extension lands here; the cross-repo verification (bump
+  VERSION → run sync → observe web-site badge change) is the
+  Confirmation gate in IPLAN-0008.
+
 ### `[sync]` `HERMES-README-VERSION-DRIFT` — `platforms/hermes/README.md` Version + framework-spec cells stale
 
 - *Context:* Plugin `0.20.1` PATCH (2026-06-14) found and fixed the same

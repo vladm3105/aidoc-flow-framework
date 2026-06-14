@@ -12,6 +12,28 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — IPLAN-0008 framework slice (no plugin VERSION change)
+
+- **`docs/SUPPORT.md`** — new public-facing channel directory for
+  developers, evaluators, and contributors. Names the four channels
+  (in-product `/aidoc-flow:bug-report` and `/feedback`, GitHub Issues
+  direct, web-site `/support`), explains the AI Team intake architecture
+  for Phase 2 Contact-us, and documents what channels do NOT exist by
+  design (no public Slack, no public Telegram, no `mailto:`, no status
+  page). Cross-links to the operations and business sibling docs.
+- **`scripts/sync-version-refs.sh`** extended to propagate
+  `Pre-release v<X.Y.Z>` in `../web-site/src/pages/index.astro`
+  (cross-submodule write at the umbrella layer; no-op when the sibling
+  is not present). Closes the version-badge drift class for the web-site
+  home page — sibling fix to the plugin-README drift fixed in v0.20.1.
+  Per IPLAN-0008 step 6.
+- **`plans/FRAMEWORK-TODO.md`** carries the
+  `WEBSITE-VERSION-BADGE-DRIFT` entry documenting the cross-repo
+  coupling.
+
+Trace: this CHANGELOG entry covers the framework slice of
+`../operations/ops/iplans/IPLAN-0008_support-channels.md` (steps 3 + 6).
+
 ### Fixed — Claude Code plugin 0.20.0 → 0.20.1 (PATCH)
 
 - Long-standing drift in `platforms/claude-code-plugin/README.md` Platform

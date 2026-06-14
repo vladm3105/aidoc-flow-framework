@@ -88,6 +88,14 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Support channels — framework slice (IPLAN-0008 steps 3 + 6, no
+  VERSION change).** New public-facing `docs/SUPPORT.md` channel
+  directory (four channels: in-product `/aidoc-flow:bug-report` and
+  `/feedback`, GitHub Issues direct, web-site `/support`);
+  `scripts/sync-version-refs.sh` extended for the web-site home-page
+  version badge (sibling fix to the plugin-README drift fixed in
+  v0.20.1). Tracked in `plans/FRAMEWORK-TODO.md` as
+  `WEBSITE-VERSION-BADGE-DRIFT`.
 - **Platform README Version cell drift fix (`0.20.0 → 0.20.1`, PATCH).**
   Fixed long-standing drift in `platforms/claude-code-plugin/README.md`
   Platform info table (`Version` cell stuck at `0.6.3` since plugin v0.7.0)
