@@ -27,6 +27,13 @@
 #       (added 2026-06-14 to close the v0.6.3 → v0.20.0 drift bug — the
 #       prior awk pass only handled bare X.Y.Z lines in the `$ cat VERSION`
 #       example block, missing the table cell)
+#   - ../web-site/src/pages/index.astro
+#       `Pre-release v<X.Y.Z>` badge in the home page (cross-submodule write
+#       at the umbrella layer; added 2026-06-14 per IPLAN-0008 step 6 to
+#       close the v0.18.0 stale-badge drift bug). The sibling web-site/ is
+#       a separate git repo, so writes here land as unstaged changes in
+#       web-site's working tree — the developer commits them in web-site's
+#       own PR. Skipped silently if web-site/ is not present alongside.
 #   - docs/PARITY.md
 #       claude-code-plugin/v<X.Y.Z> current-state row
 #
@@ -136,6 +143,13 @@ if [[ -n "$plugin_ver" ]]; then
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    # Cross-submodule write: ../web-site/ is a sibling repo under the umbrella.
+    # The sync hook lands changes in its working tree; the developer commits
+    # them in the web-site PR. The replace_in_file helper is no-op if the file
+    # does not exist (e.g., the framework repo is cloned standalone without
+    # the umbrella siblings).
+    replace_in_file ../web-site/src/pages/index.astro \
+      "Pre-release v$plugin_prev" "Pre-release v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
