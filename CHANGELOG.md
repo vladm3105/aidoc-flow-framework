@@ -12,6 +12,15 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Claude Code plugin 0.19.0 → 0.19.1 (PATCH)
+
+- `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now URL-prefill the
+  GitHub Issues form body via the `&body=` query parameter — user clicks
+  the link, the form opens with the environment/version stamp already in
+  place. Eliminates the manual paste step the v0.19.0 commands required.
+  Per-platform detail in
+  [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Added — Claude Code plugin 0.18.0 → 0.19.0 (PLUGIN-USER-COMMANDS)
 
 - 11 user-facing commands (meta · workflow · lifecycle · config) on the Claude

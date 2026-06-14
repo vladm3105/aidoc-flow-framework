@@ -14,6 +14,22 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.19.1] — 2026-06-14
+
+### Changed
+
+- **`/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now use URL-prefill
+  via `&body=`**, not paste-the-block. Both commands construct a single
+  GitHub `issues/new` URL with the environment stamp / version stamp
+  already URL-encoded into the issue body. User clicks the link, the form
+  opens prefilled, adds the rest, submits. Eliminates the manual paste
+  step the v0.19.0 commands required. The plugin still does not auto-submit
+  issues — user clicks Submit on github.com.
+- Fallback path: if the encoded URL exceeds 6000 characters (a soft
+  browser/GitHub limit), the command falls back to the legacy paste flow.
+  In practice the four-line env block is well under the limit; the
+  fallback is a safety net.
+
 ## [0.19.0] — 2026-06-14
 
 ### Added — PLUGIN-USER-COMMANDS

@@ -1,22 +1,23 @@
 # Session Handoff
 
-> **🟢 PLUGIN-USER-COMMANDS IN-FLIGHT (impl PR) — 2026-06-14.** Plan PR #142
-> merged 2026-06-14 (24 cited claims, 2 review passes incl. 1 independent,
-> zero load-bearing findings). Implementation on `feat/plugin-user-commands`:
-> 11 new commands in `platforms/claude-code-plugin/commands/`, plus
-> `docs/CONFIG.md`, `tests/conformance/platforms/test_plugin_config_schema.py`,
-> `.github/ISSUE_TEMPLATE/feedback.md`, README "User-facing commands"
-> subsection, VERSION bump `0.18.0 → 0.19.0`, CHANGELOG (root + plugin),
-> ROADMAP, DECISIONS D-0033, FRAMEWORK-TODO `MODEL-PRECHECK-ROLLOUT`. Honest
-> caveats baked into `/budget` (behavior knob, not token cap), `/model`
-> (advisory; plugin cannot switch session model), `/uninstall` (guided exit;
-> native `/plugin uninstall` does removal). Next: V1-V8 verification +
-> pre-commit + impl PR.
+> **🟢 BUG-REPORT/FEEDBACK URL-PREFILL (PATCH) — 2026-06-14.** Plugin
+> `0.19.0 → 0.19.1`. Refines `/aidoc-flow:bug-report` and `/aidoc-flow:feedback`
+> to URL-encode the environment / version stamp into the GitHub
+> `issues/new?…&body=…` URL — the form opens prefilled, no manual paste
+> step. Falls back to the v0.19.0 paste flow if the encoded URL exceeds
+> 6000 chars (in practice it doesn't). Plugin still does not auto-submit
+> issues; user clicks Submit on github.com. Branch
+> `feat/bug-report-feedback-prefill`. CHANGELOG (root + plugin), TAGGING
+> updated inline.
 >
-> **Previously resolved (one-line summary):** NECESSARY-UPSTREAM-001 (spec
-> `0.15.2 → 0.16.0`, plugin `0.11.0 → 0.12.0`) shipped on the
-> necessary-upstream + transitive-reachability trace contract; details below
-> for archive.
+> **Previously resolved (one-line summary):** PLUGIN-USER-COMMANDS shipped
+> `0.18.0 → 0.19.0` (PR #142 plan + PR #143 impl): 11 user-facing commands
+> across meta/workflow/lifecycle/config, optional
+> `.claude/aidoc-flow.config.yaml` with `docs/CONFIG.md` schema,
+> `feedback.md` issue template, 9-assertion conformance test, D-0033 a/b/c.
+> NECESSARY-UPSTREAM-001 (spec `0.15.2 → 0.16.0`, plugin
+> `0.11.0 → 0.12.0`) shipped on the necessary-upstream +
+> transitive-reachability trace contract; details below for archive.
 
 <!-- archive section below -->
 
