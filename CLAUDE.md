@@ -211,6 +211,32 @@ Sessions run in ephemeral containers — preserve continuity in the repo:
 - **Only committed + pushed work survives.** Commit messages must not contain
   model identifiers.
 
+## Per-repo governance — this repo owns its own continuity
+
+The `aidoc-flow` workspace is **multi-repo**. Each repo governs its own
+activity tracking; cross-session continuity is per-repo. The durable
+surfaces for **this** repo:
+
+| Surface | Path (in this repo) |
+|---|---|
+| Live HANDOFF | `plans/HANDOFF.md` |
+| TODO / backlog | `plans/FRAMEWORK-TODO.md` |
+| Decisions log | `plans/DECISIONS.md` |
+| Plans | `plans/<NAME>-PLAN.md` |
+| Changelog | `CHANGELOG.md` |
+
+**Never put any of these in `tmp/`** — `tmp/` is for transient working
+files; nothing in it survives a context-clear or new session.
+**Never centralize in the umbrella `aidoc-flow/`** — the umbrella holds
+no dev; plans, decisions, and tracking live in the owning submodule (this
+rule predates this section and remains binding).
+
+A future session entered through **this** repo must find that repo's
+state here, without needing to read other repos. Cross-repo coordination
+(e.g., a multi-submodule initiative like IPLAN-0008) is captured in the
+most-affected repo's `plans/`, references sibling repos by path, and
+never relocates their state.
+
 ## Where things are
 
 - `framework/` — the engine-agnostic SDD specification (layers, registry,
