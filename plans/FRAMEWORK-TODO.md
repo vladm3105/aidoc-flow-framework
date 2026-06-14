@@ -24,6 +24,22 @@
 
 ## Open
 
+### `[sync]` `HERMES-README-VERSION-DRIFT` — `platforms/hermes/README.md` Version + framework-spec cells stale
+
+- *Context:* Plugin `0.20.1` PATCH (2026-06-14) found and fixed the same
+  drift class in `platforms/claude-code-plugin/README.md` (`0.6.3` →
+  `claude-code-plugin/v<X.Y.Z>` canonical form). `platforms/hermes/README.md`
+  lines 107-108 still carry the bug: `Version | hermes/v0.1.0` (actual
+  `0.3.0`) and `framework spec 0.1.0` (actual `0.21.1`).
+- *Fix shape:* (a) Canonicalize the hermes README Version cell to the
+  `hermes/v<X.Y.Z>` tag form — the v0.20.1 sync-script extension now
+  covers this pattern, so the next Hermes VERSION bump auto-propagates.
+  (b) The "Conforms to" cell uses a bare framework-spec X.Y.Z and needs
+  a separate sync pattern in `scripts/sync-version-refs.sh` (the
+  framework-VERSION fanout block) — add
+  `replace_in_file platforms/hermes/README.md "framework spec \`$fw_prev\`" ...`.
+  Out of scope for the plugin-first PATCH; pull when Hermes work resumes.
+
 ### `[skill]` `MODEL-PRECHECK-ROLLOUT` — wire `model.precheck` into every `doc-*` SKILL
 
 - *Context:* PLUGIN-USER-COMMANDS (`plans/PLUGIN-USER-COMMANDS-PLAN.md`,

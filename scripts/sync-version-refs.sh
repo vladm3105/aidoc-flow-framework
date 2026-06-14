@@ -22,6 +22,11 @@
 #       `claude-code-plugin/v<X.Y.Z>` references
 #   - platforms/claude-code-plugin/docs/SKILL_AUTHORING.md
 #       version: "<X.Y.Z>"
+#   - platforms/claude-code-plugin/README.md
+#       `claude-code-plugin/v<X.Y.Z>` references in the Platform info table
+#       (added 2026-06-14 to close the v0.6.3 → v0.20.0 drift bug — the
+#       prior awk pass only handled bare X.Y.Z lines in the `$ cat VERSION`
+#       example block, missing the table cell)
 #   - docs/PARITY.md
 #       claude-code-plugin/v<X.Y.Z> current-state row
 #
@@ -128,6 +133,8 @@ if [[ -n "$plugin_ver" ]]; then
         "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     done
     replace_in_file README.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    replace_in_file platforms/claude-code-plugin/README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
@@ -257,6 +264,8 @@ if [[ -n "$hermes_ver" ]]; then
   if [[ -n "$hermes_prev" && "$hermes_prev" != "$hermes_ver" ]]; then
     log "hermes sync $hermes_prev -> $hermes_ver"
     replace_in_file README.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
+    replace_in_file platforms/hermes/README.md \
       "hermes/v$hermes_prev" "hermes/v$hermes_ver"
     replace_in_file docs/PARITY.md \
       "hermes/v$hermes_prev" "hermes/v$hermes_ver"

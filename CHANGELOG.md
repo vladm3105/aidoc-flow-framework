@@ -12,6 +12,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Claude Code plugin 0.20.0 → 0.20.1 (PATCH)
+
+- Long-standing drift in `platforms/claude-code-plugin/README.md` Platform
+  info table — the `Version` cell had been stuck at `0.6.3` since plugin
+  v0.7.0 (~14 bumps ago) because `scripts/sync-version-refs.sh` only awk'd
+  bare lines, missing inline table cells. Canonicalized the cell to the
+  tag form (`claude-code-plugin/v<X.Y.Z>`) and extended the sync script
+  to also propagate the tag form in platform READMEs so the bug class
+  can't recur. Same drift exists in `platforms/hermes/README.md`
+  (out of scope per plugin-first); tracked in `plans/FRAMEWORK-TODO.md`.
+  Per-platform detail in
+  [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Changed — Claude Code plugin 0.19.0 → 0.20.0 (MINOR)
 
 - `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a user
