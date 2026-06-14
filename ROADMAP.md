@@ -88,12 +88,17 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
-- **bug-report / feedback URL-prefill (`0.19.0 → 0.19.1`, PATCH).**
-  `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now URL-encode the
-  environment / version stamp into the GitHub `issues/new?…&body=…` URL;
-  the issue form opens prefilled, no manual paste step. Plugin still
-  doesn't auto-submit; user clicks Submit on github.com. Encoded-URL
-  >6000-char fallback preserves the v0.19.0 paste flow.
+- **bug-report / feedback LLM-drafted issues (`0.19.0 → 0.20.0`, MINOR).**
+  `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a user
+  prompt argument (e.g. `/aidoc-flow:bug-report status crashes on empty
+  docs/`) and draft a structured GitHub issue from it — concise title +
+  sectioned body — using the conversation context (recent commands,
+  errors, files) and the environment stamp. Drafted title + body are
+  URL-encoded into `?title=&body=`, previewed in chat, then handed to the
+  user as a clickable URL. User reviews on github.com and clicks Submit;
+  plugin never auto-submits. Refined `.github/ISSUE_TEMPLATE/bug_report.md`
+  and `feedback.md` to match. Supersedes the in-flight v0.19.1 PATCH
+  (which used `&body=` for a static env block).
 - **Claude Code plugin user-facing commands (`0.18.0 → 0.19.0`).** 11 commands
   for meta, workflow, lifecycle, and config — `/about`, `/help`, `/bug-report`,
   `/contact-us`, `/feedback`, `/status`, `/next`, `/uninstall`, `/configure`,

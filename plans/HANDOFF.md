@@ -1,14 +1,16 @@
 # Session Handoff
 
-> **🟢 BUG-REPORT/FEEDBACK URL-PREFILL (PATCH) — 2026-06-14.** Plugin
-> `0.19.0 → 0.19.1`. Refines `/aidoc-flow:bug-report` and `/aidoc-flow:feedback`
-> to URL-encode the environment / version stamp into the GitHub
-> `issues/new?…&body=…` URL — the form opens prefilled, no manual paste
-> step. Falls back to the v0.19.0 paste flow if the encoded URL exceeds
-> 6000 chars (in practice it doesn't). Plugin still does not auto-submit
-> issues; user clicks Submit on github.com. Branch
-> `feat/bug-report-feedback-prefill`. CHANGELOG (root + plugin), TAGGING
-> updated inline.
+> **🟢 BUG-REPORT/FEEDBACK LLM-DRAFTED ISSUES (MINOR) — 2026-06-14.** Plugin
+> `0.19.0 → 0.20.0`. Both commands now accept a user prompt argument and
+> have the LLM draft a concise title + structured body from the prompt +
+> conversation context + env stamp, URL-encoded into `?title=&body=`.
+> Preview shown in chat before the URL; user reviews on github.com and
+> clicks Submit; plugin never auto-submits. Refined
+> `.github/ISSUE_TEMPLATE/bug_report.md` and `feedback.md` to match.
+> Secret-redaction guardrail in the command prose. Supersedes the in-flight
+> v0.19.1 PATCH (static `&body=` env block) in the same branch + PR.
+> Branch `feat/bug-report-feedback-prefill`; updating PR #144 in place
+> with new scope.
 >
 > **Previously resolved (one-line summary):** PLUGIN-USER-COMMANDS shipped
 > `0.18.0 → 0.19.0` (PR #142 plan + PR #143 impl): 11 user-facing commands
