@@ -27,7 +27,7 @@ trade-offs. Pick the one that matches what you're trying to do.
 | Plugin is installed; the problem is right in front of you | `/aidoc-flow:bug-report <one-line description>` | LLM drafts a complete GitHub issue from your prompt + recent conversation context; you click the printed URL and Submit on github.com |
 | Plugin is installed; you have an idea or comment | `/aidoc-flow:feedback <one-line summary>` | Same shape as `bug-report`, lands on the `feedback.md` template |
 | You're on GitHub already; you know what's broken | [GitHub Issues](https://github.com/vladm3105/aidoc-flow-framework/issues/new/choose) — pick the **Bug Report** or **Feedback** template directly | Issue lands in the repo's triage queue |
-| You're on the website; no GitHub account or you want to ask something open-ended | [`aidoc-flow.io/support`](https://aidoc-flow.io/support) — Bug-report and Feedback sections link out to GitHub; Contact-us is for everything else | Bug-report / Feedback → GitHub; Contact-us → AI Team intake (Phase 2) |
+| You're on the website; no GitHub account or you want to ask something open-ended | [`aidoc-flow.io/support`](https://aidoc-flow.io/support) — Bug-report and Feedback sections link out to GitHub; Contact-us is for everything else | Bug-report / Feedback → GitHub; Contact-us → AI Team intake (live; Google Forms → Sheet → Drive MCP poll) |
 
 ## Channel details
 
@@ -80,46 +80,57 @@ Three sections on one page:
   on the website; GitHub auth handles abuse).
 - **Share feedback** — clicks through to GitHub Issues, feedback template.
 - **Contact us** — for visitors who don't have a GitHub account or have
-  a question that doesn't fit a template. The Contact-us form is
-  active in Phase 2 (see "Where this is going" below); until then the
-  section explains the architecture and points back to the GitHub
-  channels.
+  a question that doesn't fit a template. The Contact-us form is a
+  Google Form; submissions land in a Google Sheet that the AI Team
+  polls via Google Drive MCP every ~15 minutes.
 
-The Contact-us channel, when active, routes through the AI Team's
-intake workflow — see
+The Contact-us channel routes through the AI Team's intake workflow —
+see
 [`../../operations/docs/SUPPORT_INTAKE.md`](../../operations/docs/SUPPORT_INTAKE.md)
-for the full design. Short version: the AI Team filters, classifies,
-auto-acknowledges, drafts a substantive reply for the maintainer to
-review, and notifies the maintainer via email + internal Slack +
-internal Telegram bot. No spam reaches the maintainer's IM. No reply
-goes out without human review (except a narrowly-scoped template ack).
+for the full design. Short version: a two-stage classifier (Python
+prefilter then Claude Haiku 4.5 LLM) drops spam, then the AI Team
+drafts a substantive reply for the maintainer to review and notifies
+the maintainer via internal Slack + internal Telegram bot + an
+optional Gmail draft. No spam reaches the maintainer's IM. No reply
+goes out without human review (the Google Forms confirmation page is
+the visitor's only auto-acknowledgment; founder composes a fresh
+Gmail per reply).
 
-## Where this is going (Phase 2)
+## Architecture (live since 2026-06)
 
-The Contact-us channel on `aidoc-flow.io/support` is **stubbed** today
-("AI Team intake coming in v2 — for now please use the GitHub channels
-above"). It is intentional, not a placeholder forgotten in production.
-Phase 2 activates the form once the AI Team intake workflow is built.
+The Contact-us channel on `aidoc-flow.io/support` is a Google Form;
+submissions auto-land in a linked Google Sheet that the AI Team's
+`customer-success-manager` seat polls via Google Drive MCP every ~15
+minutes. A two-stage classifier (Python prefilter → Claude Haiku 4.5
+LLM) drops spam without notifying the maintainer; non-spam classes
+produce a substantive-reply draft in `ops/inbox/` plus a notification
+fan-out to internal Slack, internal Telegram bot, and an optional
+Gmail draft for the maintainer to review.
 
-Phase 2 is tracked at:
+Design and implementation are documented at:
 
-- [`../../operations/ops/iplans/IPLAN-0008_support-channels.md`](../../operations/ops/iplans/IPLAN-0008_support-channels.md)
-  — the cross-repo coordination IPLAN.
 - [`../../operations/docs/SUPPORT_INTAKE.md`](../../operations/docs/SUPPORT_INTAKE.md)
-  — operations-side intake design.
+  — operations-side intake design (Forms→Sheet schema, classifier
+  cascade, per-class routing, escalation rules, notification fan-out).
+- [`../../operations/ops/iplans/IPLAN-0009_support-intake-implementation.md`](../../operations/ops/iplans/IPLAN-0009_support-intake-implementation.md)
+  — the implementation plan (steps A4–C3, claim ledger, review log).
+- [`../../operations/ops/iplans/IPLAN-0008_support-channels.md`](../../operations/ops/iplans/IPLAN-0008_support-channels.md)
+  — the original cross-repo coordination IPLAN (Phase 1 design;
+  superseded by IPLAN-0009 for Phase 2).
 - [`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md)
   — channel × audience × SLA × pricing-tier policy.
 
-There is no SLA promised on Phase 2 timing. If you need a contact
-channel and don't have GitHub, open an issue on a sibling project and
-mention this one — that's the fallback while Phase 2 is in flight.
+There are no contractual SLAs — the intent windows in
+[`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md)
+§3 are best-effort. If you need a contact channel and don't have
+GitHub, the form is the canonical path.
 
 ## What to expect after you submit
 
 | Channel | When you'll hear back |
 |---|---|
 | GitHub Issues (any of channels 1–3) | Triage queue; aiming for a substantive reply per the windows in [`../../business/docs/SUPPORT_STRATEGY.md`](../../business/docs/SUPPORT_STRATEGY.md) §3 (bug: 2 business days; feature: 5 business days; chat: 3 business days) |
-| Web-site Contact-us (Phase 2, when active) | Auto-acknowledgment within minutes (template); substantive reply per the same windows; commercial inquiries (`sales` class) targeted at 1 business day |
+| Web-site Contact-us (Google Form) | Google Forms confirmation page is the visitor's only ack; substantive reply per the same windows (commercial inquiries `sales` class targeted at 1 business day) |
 
 These are intent windows, not contractual SLAs. The OSS project runs
 on best-effort; paid-tier SLAs are documented separately when paid
