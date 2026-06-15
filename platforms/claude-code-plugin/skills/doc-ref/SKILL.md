@@ -10,7 +10,7 @@ metadata:
     upstream_artifacts: [BRD, ADR]
     downstream_artifacts: []
     version: "0.20.1"
-    framework_spec_version: "0.21.1"
+    framework_spec_version: "0.21.2"
     last_updated: "2026-05-23"
 ---
 

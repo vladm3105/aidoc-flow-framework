@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+## [0.21.2] — Framework Spec — 2026-06-15
+
+### Changed — `IPLAN-ECOSYSTEM.md`: standalone-mode clarification note (PATCH)
+
+- `framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md` gains an emphatic
+  blockquote right after the cascade diagram noting that **iplanic is
+  optional** — IOPS can run an approved IPLAN straight from the
+  framework with a fully local, signed, append-only ledger +
+  independent gate + handover (standalone mode, including fully
+  offline). iplanic dispatch (`intake --payload`) and evidence relay
+  (`emit-events`) are framed as additive (with-iplanic mode). The two
+  hops through iplanic in the cascade describe the with-iplanic mode;
+  standalone is just `framework (author) → IOPS (execute, local
+  ledger / gate / handover)`. Cross-links to iplan-runner's README
+  "Operating modes".
+- Clarification only — no change to layer schema, validation rules,
+  conformance vectors, or any consumer-visible contract; existing
+  IPLANs and integrations continue to work unchanged.
+- Plugin framework bundle re-synced (`tools/sync-plugin-framework.sh`)
+  so `platforms/claude-code-plugin/framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md`
+  stays byte-identical (drift-guarded by
+  `test_plugin_framework_bundle.py`).
+- `framework/VERSION` 0.21.1 → 0.21.2 (PATCH).
+  `platforms/{claude-code-plugin,hermes}/FRAMEWORK_SPEC_VERSION`
+  bumped to match per `test_version_declaration.py`. Mechanical
+  reference propagation handled by `scripts/sync-version-refs.sh`
+  pre-commit hook.
+
+Companion: iplan-runner PR #35.
+
 ### Fixed — plugin marketplace pre-publish doc-polish (plugin v0.20.1; no VERSION bump)
 
 Three doc-only corrections discovered during a marketplace-readiness

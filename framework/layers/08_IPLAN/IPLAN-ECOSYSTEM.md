@@ -22,6 +22,16 @@ framework (author) → iplanic (manage / version / dispatch / gate)
                    → IOPS (execute) → iplanic (record evidence, gate completion)
 ```
 
+> **iplanic is optional — the executor is local-first.** IOPS can run an approved
+> IPLAN straight from the framework (file intake) with a fully local, signed,
+> append-only ledger + independent gate + handover, and never contact iplanic
+> (**standalone** mode, including fully **offline**). iplanic dispatch
+> (`intake --payload`) and evidence relay (`emit-events`) are **additive** — used
+> when iplanic manages the lifecycle as the system-of-record. The two hops
+> through iplanic above describe the **with-iplanic** mode; standalone is just
+> `framework (author) → IOPS (execute, local ledger / gate / handover)`. See
+> iplan-runner's README "Operating modes".
+
 ## Authoritative IPLAN docs per repo
 
 - **framework:** `framework/layers/08_IPLAN/` — `README.md`, `IPLAN-TEMPLATE.yaml`,
