@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — `CLAUDE.md` current-state snapshot staleness + release-tag backfill (no VERSION bump)
+
+- `CLAUDE.md:19` "Current state (as of …)" snapshot bumped from
+  `2026-06-11` / plugin `0.17.0` to `2026-06-15` / plugin `0.20.1`.
+  The framework-themes paragraph below it (playbook injection, saga
+  driver, review-quality calibration, etc.) remains accurate at
+  `0.20.1`, so left intact per "size to the problem". The user-facing
+  additions between `0.17.0 → 0.20.1` (11 slash commands per
+  PLUGIN-USER-COMMANDS, prompt-driven `bug-report` / `feedback`, README
+  version-cell sync fix) are tracked in
+  `platforms/claude-code-plugin/CHANGELOG.md` and the release tags
+  below.
+- Pushed three previously-missing release tags so the
+  `claude-code-plugin` namespace is gap-free `v0.18.0 → v0.20.1`:
+  - `claude-code-plugin/v0.19.0` on `8f34b911` (Merge PR #143 —
+    11 user-facing commands, PLUGIN-USER-COMMANDS).
+  - `claude-code-plugin/v0.20.0` on `19d9f05f` (Merge PR #144 —
+    bug-report/feedback draft GitHub issues from prompt + context).
+  - `claude-code-plugin/v0.20.1` on `0ffa153c` (PR #145 README
+    version-cell sync fix + PR #154 marketplace pre-publish
+    doc-polish, cumulative).
+  All annotated, immutable, pushed per `docs/TAGGING.md`. The
+  intermediate `0.19.1` bump from a transient branch was never on
+  main's first-parent history and so does not get a tag.
+
 ## [0.21.2] — Framework Spec — 2026-06-15
 
 ### Changed — `IPLAN-ECOSYSTEM.md`: standalone-mode clarification note (PATCH)
