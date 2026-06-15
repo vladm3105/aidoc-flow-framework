@@ -260,3 +260,10 @@ The pristine pre-migration project is preserved on the protected, read-only
 branch **`legacy-ucx-v3.2-read-only`**. Change management (the gated CHG
 process) returns post-cutover to govern `framework/` spec changes — see
 `docs/PROJECT.md` §6.
+
+## GitHub operations
+
+Use the **GitHub CLI (`gh`)** as the default for all GitHub operations — PRs,
+issues, reviews, releases, repo queries — not the GitHub MCP servers
+(`github-tt`, `github-vl`) or raw API calls. If `gh` is unauthenticated, run
+`gh auth login` rather than falling back to MCP/API.
