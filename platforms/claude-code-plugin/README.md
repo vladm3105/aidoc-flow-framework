@@ -52,6 +52,7 @@ right skill. The deeper authoring guidance is in
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
 | Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
+| Skills (deprecated stubs) | 2 | `doc-review`, `trace-check` — redirect stubs for `doc-validator`; scheduled for removal in v0.7.0. |
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `chaos-engineer` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 12 | 11 user-facing commands (meta · workflow · lifecycle · config) + `/aidoc-flow:save-plan`. See the "User-facing commands" subsection below. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
@@ -126,10 +127,14 @@ $ cat FRAMEWORK_SPEC_VERSION
 0.21.1
 ```
 
-The plugin declares conformance to framework spec `0.21.1`; the bundled spec's
-own version is at `framework/VERSION` (byte-identical to `../../framework/VERSION`).
-A conformance test enforces that `FRAMEWORK_SPEC_VERSION` matches the framework's
-published version.
+The plugin declares conformance to framework spec `0.21.1`; the canonical
+spec ships its version at `../../framework/VERSION`. The bundle vendors
+only the subtrees the plugin consumes (`layers/`, `governance/`,
+`registry/`, `playbooks/`) plus `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` — not
+`VERSION` itself; see "Self-contained framework bundle" above. A
+conformance test (`tests/conformance/platforms/test_version_declaration.py`)
+enforces that `FRAMEWORK_SPEC_VERSION` matches the canonical
+`framework/VERSION`.
 
 ## Platform info
 

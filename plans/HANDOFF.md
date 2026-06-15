@@ -1,5 +1,19 @@
 # Session Handoff
 
+> **🟢 PLUGIN MARKETPLACE PRE-PUBLISH DOC-POLISH — 2026-06-15.** Three
+> doc-only fixes prior to publishing `claude-code-plugin/v0.20.1` to the
+> marketplace, discovered during a marketplace-readiness review.
+> (1) `.claude-plugin/marketplace.json` description: "1 command" →
+> "12 commands"; (2) plugin README "What's inside" enumerates the
+> 2 deprecated-stub skills (`doc-review`, `trace-check`) in a dedicated
+> row; (3) README "Framework spec conformance" section reworded to
+> remove the incorrect claim that the bundle ships its own
+> `framework/VERSION` (the bundle deliberately omits it per D-0022).
+> No plugin VERSION bump; 129/129 conformance unchanged. Branch
+> `docs/plugin-marketplace-polish`.
+
+---
+
 > **🟢 ACCEPTANCE-FIXTURES-DRIFT IMPL READY FOR PR — 2026-06-14.** Closes
 > 12 long-standing deterministic-suite failures that were red on the
 > umbrella `PR Checks` workflow since 2026-06-02. Three coordinated

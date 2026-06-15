@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — plugin marketplace pre-publish doc-polish (plugin v0.20.1; no VERSION bump)
+
+Three doc-only corrections discovered during a marketplace-readiness
+review of `claude-code-plugin/v0.20.1`. Code, framework spec, skills,
+agents, commands, and the vendored bundle all unchanged; conformance
+suite 129/129 before and after.
+
+- `.claude-plugin/marketplace.json` — description undercounted
+  commands ("1 command" → "12 commands"). The plugin has shipped 12
+  user-facing commands since plugin `v0.19.0` (PLUGIN-USER-COMMANDS).
+- `platforms/claude-code-plugin/README.md` "What's inside" — added a
+  dedicated row enumerating the 2 deprecated-stub skills (`doc-review`,
+  `trace-check`). The 50/52 totals already reconciled; only the named
+  utility list omitted them.
+- `platforms/claude-code-plugin/README.md` "Framework spec conformance"
+  — reworded to remove the incorrect claim that the bundle ships its
+  own `framework/VERSION`. The bundle deliberately vendors only the
+  subtrees the plugin consumes (`layers/`, `governance/`, `registry/`,
+  `playbooks/`) plus `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` per D-0022;
+  canonical `../../framework/VERSION` remains the single source of
+  truth, and `tests/conformance/platforms/test_version_declaration.py`
+  enforces the `FRAMEWORK_SPEC_VERSION` match.
+
 ### Changed — `docs/SUPPORT.md` go-live sync (operations IPLAN-0009 PR 3)
 
 - `docs/SUPPORT.md` updated to reflect that the Contact-us channel is
