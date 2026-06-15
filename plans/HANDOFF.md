@@ -1513,3 +1513,15 @@ MINOR 0.20.1 → 0.21.0; plugin MINOR 0.17.1 → 0.18.0. Static work landed
 (crew + 6 playbooks + 3 SKILL rewrites + saga driver + conformance
 extensions); 120/120 conformance + 47/47 unit. Live CHG cascade
 verification next.
+
+### 2026-06-14 — SUPPORT.md go-live sync (operations IPLAN-0009 PR 3)
+
+`docs/SUPPORT.md` updated to reflect that the Contact-us channel is **live**
+with a Google Form ↔ Sheet ↔ Drive MCP architecture (replacing the prior
+"stubbed / coming in v2" language). The simplified design — Forms + Sheet +
+Drive MCP poll + Python prefilter + Haiku 4.5 LLM classifier; no
+auto-acknowledgment; one-way form — is owned by the operations repo (PR
+[#23](https://github.com/vladm3105/aidoc-flow-operations/pull/23) plan +
+PR [#24](https://github.com/vladm3105/aidoc-flow-operations/pull/24) impl;
+OPS-0039). This framework PR is the docs-only sync. No VERSION change
+(documentation update only). No conformance impact.

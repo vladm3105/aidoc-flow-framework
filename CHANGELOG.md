@@ -12,7 +12,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-Nothing yet.
+### Changed — `docs/SUPPORT.md` go-live sync (operations IPLAN-0009 PR 3)
+
+- `docs/SUPPORT.md` updated to reflect that the Contact-us channel is
+  **live** (not "stubbed / coming in v2") with a Google Form ↔ Sheet ↔
+  Drive MCP architecture.
+- §"Where this is going (Phase 2)" renamed to §"Architecture (live since
+  2026-06)" and rewritten to describe the simplified design: form →
+  Sheet → AI Team polls via `mcp__claude_ai_Google_Drive__*`; two-stage
+  classifier (Python prefilter + Haiku 4.5 LLM); no auto-acknowledgment
+  email (the Google Forms confirmation page is the visitor's only ack);
+  notification fan-out to internal Slack + Telegram + optional Gmail draft.
+- The four-channel directory table (channel #4 row) and the "What to
+  expect" table updated to drop "Phase 2 / when active" qualifiers.
+- Cross-link table now references `operations/ops/iplans/IPLAN-0009`
+  (Phase 2 implementation) alongside IPLAN-0008 (Phase 1 historical
+  context) and the operations + business design docs.
+- Trace: operations OPS-0039 + `aidoc-flow-operations#23` (plan) +
+  `aidoc-flow-operations#24` (impl).
 
 ## [0.21.1] — Framework Spec — 2026-06-14
 
