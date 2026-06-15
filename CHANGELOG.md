@@ -12,6 +12,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [0.21.1] — Framework Spec — 2026-06-14
+
+### Fixed — release gate (umbrella `PR Checks`)
+
+- Cut this `## [0.21.1]` section from `[Unreleased]` so `tests/release`
+  (`test_changelog_has_entry_for_current_version`) matches `framework/VERSION`.
+- `platforms/claude-code-plugin/commands/status.md` — quoted the `description`
+  frontmatter value (an unquoted `:` made the YAML parse as a nested mapping),
+  so `claude plugin validate --strict` (`tests/packaging`) passes. At runtime
+  the unparsed frontmatter had been silently dropped.
+
 ### Fixed — ACCEPTANCE-FIXTURES-DRIFT (no plugin VERSION change)
 
 Closes 12 long-standing failures in

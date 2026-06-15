@@ -1,6 +1,6 @@
 ---
 title: "Status — where is this project in the SDD flow"
-description: Scan the project's `docs/` tree and report per-layer state: exists, last edited, audited.
+description: "Scan the project's `docs/` tree and report per-layer state: exists, last edited, audited."
 tags:
   - workflow
   - active
