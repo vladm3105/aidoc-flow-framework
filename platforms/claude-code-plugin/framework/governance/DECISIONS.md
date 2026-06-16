@@ -13,6 +13,41 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-02 — Independent automated review at `pre_merge`, with a tiered human-in-loop
+
+- **Status:** Proposed — 2026-06-15 (per `aidoc-flow-operations` IPLAN-0011;
+  ratified on merge — a validator never grants approval, only a human signs).
+- **Context:** The spec already names `pre_merge` as an automatable review
+  trigger (`REVIEW_REMEDIATION_FLOW.md`) and treats self-approval as failure code
+  **C1** across the CHG gates, but it did not define *how strong* an automated
+  `pre_merge` review must be, nor when it suffices vs. when a human must still
+  sign. As AI agents both generate and could review changes, an independent
+  (judge ≠ generator) gate is needed so routine changes move without a human
+  bottleneck while spec-shaping changes keep explicit human approval (GD-01 /
+  GATE-SPEC).
+- **Decision:** An automated `pre_merge` review gate, when used, MUST be
+  **independent of the generator** (reviewer ≠ author; different model/vendor
+  where available), **review-only** (remediation is a separate step), classify
+  findings by severity (`critical`/`medium` block; `low`/`acknowledged`
+  advisory), and run the **iteration-capped** remediation loop, **escalating to a
+  human at the cap**. Human sign-off is **tiered by risk**: routine changes are
+  cleared by the gate + escalation; **changes to the spec (`framework/**`) or any
+  governance standard always also require human approval** (GATE-SPEC / GD-01).
+  Pre-cutover, the automated gate + escalation is the operative enforcement for
+  routine work; the GATE-SPEC human-approval requirement for spec changes remains
+  in force and the heavier CHG ceremony returns post-cutover.
+- **Consequences:** The `pre_merge` trigger gains an engine-agnostic *strength*
+  contract (`REVIEW_REMEDIATION_FLOW.md` §"Independent review at `pre_merge`") and
+  a *completion* contract (`DEFINITION_OF_DONE.md`). Self-approval (C1) is
+  enforced at merge, not only at the CHG gates. Each platform binds the gate to
+  its own runtime (runner, model, protected-branch rules) — those bindings are
+  not part of this spec. The change is **additive**: SemVer **minor**,
+  change-level **C2**.
+- **Authority:** `REVIEW_REMEDIATION_FLOW.md`, `DEFINITION_OF_DONE.md`,
+  `chg/gates/GATE-SPEC_FRAMEWORK.md`, GD-01.
+
+---
+
 ## GD-01 — Change management is implemented as authoring/validation tooling + CI/CD
 
 - **Status:** Accepted — 2026-05-23. (Originated as the project's migration

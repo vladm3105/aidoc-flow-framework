@@ -14,7 +14,8 @@ of which engine executes the workflow.
 | `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement and the C4 + DFD + sequence ownership model. |
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |
 | `SECURITY_REVIEW.md` | Safety checks for agent-authored artifacts — secret leakage, prompt-injection, provenance, active-content sanitization. |
-| `REVIEW_REMEDIATION_FLOW.md` | The engine-agnostic review→remediation→gate quality loop and its trigger points (`on_author`, `on_gate_fail`, `pre_promotion`, `pre_merge`). |
+| `REVIEW_REMEDIATION_FLOW.md` | The engine-agnostic review→remediation→gate quality loop, its trigger points (`on_author`, `on_gate_fail`, `pre_promotion`, `pre_merge`), and the independent `pre_merge` review gate (judge≠generator, severity classes, escalation). |
+| `DEFINITION_OF_DONE.md` | Engine-agnostic completion criteria for an artifact and for a spec change, plus the risk-tiered human-in-loop. |
 | `REVIEW_TEAM.md` | The multi-persona review-team model — crews, the shared blackboard, scoring/conflict/gate rules, and create/review/remediate shapes. |
 | `REVIEW_CREWS.yaml` | Machine-readable per-layer review crews + scoring weights behind `REVIEW_TEAM.md`. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |

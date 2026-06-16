@@ -17,7 +17,8 @@ full index. Key documents:
   naming.
 - `TRACEABILITY.md` — the traceability chain and readiness gates.
 - `REVIEW_TEAM.md` + `REVIEW_CREWS.yaml` — the multi-persona review model.
-- `REVIEW_REMEDIATION_FLOW.md` — the review to remediation to gate quality loop.
+- `REVIEW_REMEDIATION_FLOW.md` — the review to remediation to gate quality loop + the independent `pre_merge` review gate.
+- `DEFINITION_OF_DONE.md` — completion criteria (artifact + spec change) and the risk-tiered human-in-loop.
 - `SECURITY_REVIEW.md` — safety checks for agent-authored artifacts.
 - `AUTHORING_STYLE.md` — token-efficient authoring rules.
 - `DIAGRAM_STANDARDS.md` + `THRESHOLD_NAMING_RULES.md` — diagram and threshold

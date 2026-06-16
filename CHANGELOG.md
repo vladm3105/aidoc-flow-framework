@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.21.2` → `0.22.0`: AI-review governance standard (GD-02)
+
+Engine-agnostic governance standard for an **independent automated review at
+`pre_merge`** (judge ≠ generator; severity classes; iteration-capped remediation
+→ escalate to a human) plus a **risk-tiered human-in-loop** (routine = gate +
+escalation; spec/governance = human approval always). Additive (SemVer **minor**,
+change-level **C2**); passes GATE-SPEC (VERSION + this entry + both platform
+`FRAMEWORK_SPEC_VERSION` re-declared + green conformance; human approval on merge).
+
+- `framework/governance/DECISIONS.md` — new **GD-02**.
+- `framework/governance/REVIEW_REMEDIATION_FLOW.md` — new §"Independent review at `pre_merge`".
+- `framework/governance/DEFINITION_OF_DONE.md` — new (completion criteria + tiered human-in-loop).
+- `framework/governance/README.md` + `GOVERNANCE.md` — index updated.
+- Proposed per `aidoc-flow-operations` IPLAN-0011; ratified on merge (human signs).
+
 ### Fixed — `CLAUDE.md` current-state snapshot staleness + release-tag backfill (no VERSION bump)
 
 - `CLAUDE.md:19` "Current state (as of …)" snapshot bumped from
