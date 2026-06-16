@@ -140,6 +140,20 @@ Provenance and untrusted-input integrity are checked per `SECURITY_REVIEW.md`;
 the verdict (decision + findings) is the gate's surfaced output (the Light
 conformance contract above).
 
+**Security of an automated gate.** When the `pre_merge` review is automated, four
+properties MUST hold (the *binding* — which trusted ref, which sandbox — is the
+platform's; the properties are not):
+
+- **Trusted source.** The gate's own logic and rubric come from a *trusted ref*,
+  **not** from the change under review — a change can never alter how it is
+  reviewed.
+- **Read, don't execute.** The reviewer *reads* the change and *never executes*
+  it; the change is **untrusted input** that cannot override the rubric.
+- **Fail-closed.** A missing or unparseable verdict **blocks** — the gate never
+  silently passes.
+- **Independent infrastructure.** Any standing reviewer infrastructure holds
+  credentials and MUST be isolated and least-privilege.
+
 > **Tiered human-in-loop.** For routine changes the automated gate + escalation
 > is sufficient. For a change to the spec or a governance standard, **human
 > approval is additionally required** (GATE-SPEC / GD-01) — the automated gate

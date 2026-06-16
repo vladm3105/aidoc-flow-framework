@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.22.0` → `0.23.0`: security of an automated `pre_merge` gate
+
+`REVIEW_REMEDIATION_FLOW.md` §"Independent review at `pre_merge`" gains four
+engine-agnostic security properties an automated gate MUST hold: **trusted source**
+(the gate's logic/rubric come from a trusted ref, not the change under review),
+**read-don't-execute** (the reviewer reads the change, never runs it), **fail-closed**
+(missing/unparseable verdict blocks), and **independent infrastructure** (isolated,
+least-privilege). Additive (SemVer **minor**, change-level **C2**); passes GATE-SPEC.
+Distilled from the operations binding's real findings (`aidoc-flow-operations`
+IPLAN-0011 P2: the gate, reviewing itself with a different vendor, flagged a
+runner-execution risk in the prior design).
+
 ### Added — Framework Spec `0.21.2` → `0.22.0`: AI-review governance standard (GD-02)
 
 Engine-agnostic governance standard for an **independent automated review at
