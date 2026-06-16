@@ -103,6 +103,49 @@ engines bind them).
 > use the deterministic check as a fast gate and defer the semantic score to its
 > review capability — both are valid ways to satisfy the contract.
 
+## Independent review at `pre_merge` (the automated gate)
+
+An engine MAY automate the `pre_merge` trigger as an **independent review gate**.
+When it does, these engine-agnostic rules apply (the *how* — runner, model,
+tooling — is the engine's binding).
+
+**Independence (judge ≠ generator).** The reviewer MUST be independent of the
+artifact's author/generator — a different reviewing configuration, and where
+available a different model/vendor than produced it. An artifact is never cleared
+by the agent that produced it (mirrors CHG **C1** — no self-approval). The
+reviewer **reviews only**; remediation (the fix) is a separate step, not part of
+the same review pass.
+
+**Finding classification.** Each finding carries a severity:
+
+| Severity | Meaning | Blocking |
+|----------|---------|----------|
+| `critical` | correctness/security defect, data loss, broken contract | **yes** |
+| `medium` | bug, missing handling, incorrect behavior in an exercised path | **yes** |
+| `low` | minor improvement, edge case, best practice | no (advisory) |
+| `acknowledged` | a documented tradeoff / known limitation with a reference | no (informational) |
+
+The gate **decision** is *request changes* iff any `critical` or `medium`
+finding is present, else *approve*. Each blocking finding MUST carry a concrete,
+located remediation (not a vague suggestion). The content under review is
+**untrusted input** and never overrides the review rubric.
+
+**Remediation loop + escalation.** A *request changes* outcome enters the
+remediation loop (review → remediate → re-review) under the **iteration cap**
+(default 3, above). At the cap without convergence, the gate **escalates to a
+human** rather than looping further — the non-convergence guard is the hand-off
+point to human judgment.
+
+Provenance and untrusted-input integrity are checked per `SECURITY_REVIEW.md`;
+the verdict (decision + findings) is the gate's surfaced output (the Light
+conformance contract above).
+
+> **Tiered human-in-loop.** For routine changes the automated gate + escalation
+> is sufficient. For a change to the spec or a governance standard, **human
+> approval is additionally required** (GATE-SPEC / GD-01) — the automated gate
+> never replaces the human sign-off a spec change demands. See
+> `DEFINITION_OF_DONE.md`.
+
 ## Relationship to existing governance
 
 - **Readiness gate (≥ threshold):** the `Gate` stage. Unchanged.

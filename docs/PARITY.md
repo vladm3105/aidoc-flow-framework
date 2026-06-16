@@ -6,7 +6,7 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.3.0` /
-> `claude-code-plugin/v0.20.1` (framework spec `0.21.2`; both platforms on the
+> `claude-code-plugin/v0.20.1` (framework spec `0.22.0`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.7.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
@@ -23,7 +23,7 @@ create→review→revise loop, while keeping their own runtime mechanisms
 (Hermes: Python saga runtime; plugin: SKILL prompts + JSON journal + Bash
 subprocesses). The contract lives in
 [`../framework/governance/REVIEW_SAGA.md`](../framework/governance/REVIEW_SAGA.md)
-(arriving with framework spec `0.21.2` via SAGA-PARITY-001, D-0031, which
+(arriving with framework spec `0.22.0` via SAGA-PARITY-001, D-0031, which
 extends D-0005's blackboard contract with an outer-loop journal).
 
 Earlier states of this document described **output-shape parity** —
@@ -177,7 +177,7 @@ deterministic gate, and reduced findings).
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
 | Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
-| Saga lifecycle (D-0031 / framework spec `0.21.2`) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **BRD layer (plugin v0.6.1)**: preemptive enforcement via `tools/saga_driver.py` invoked by `doc-brd-autopilot/SKILL.md`. **PRD..IPLAN (plugin v0.6.0)**: cooperative enforcement via SKILL prompts (Phase 4 migrates these to preemptive). | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement |
+| Saga lifecycle (D-0031 / framework spec `0.22.0`) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **BRD layer (plugin v0.6.1)**: preemptive enforcement via `tools/saga_driver.py` invoked by `doc-brd-autopilot/SKILL.md`. **PRD..IPLAN (plugin v0.6.0)**: cooperative enforcement via SKILL prompts (Phase 4 migrates these to preemptive). | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement |
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | same — saga PARTIAL_TIMEOUT state; preemptive transition |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
