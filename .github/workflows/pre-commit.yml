@@ -1,3 +1,6 @@
+# CI runs on GitHub-hosted runners — this is a PUBLIC repo. Do NOT switch to self-hosted:
+# no cost benefit (public-repo Actions minutes are free) + a fork PR could run code on the
+# host. The ephemeral self-hosted runner is for PRIVATE repos only. Ref: aidoc-flow-operations IPLAN-0012.
 name: pre-commit
 
 on:
