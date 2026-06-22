@@ -24,33 +24,7 @@
 
 ## Open
 
-### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots still legacy in-session (IMPLEMENTED on branch — pending #161 merge)
-
-- *Context:* Surfaced 2026-06-21 while reviewing MODEL-PRECHECK-ROLLOUT.
-  Only `doc-brd/prd/chg-autopilot` invoke `tools/saga_driver.py`; the
-  6 layer autopilots `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` still
-  describe **only** a legacy in-session numbered `## Workflow` (no saga
-  driver). The acceptance harness hides this — it shells `saga_driver.py`
-  directly per layer, explicitly "NOT through the autopilot SKILL"
-  (`tests/scripts/test-acceptance.sh:1139`). So what a human triggers via
-  `/aidoc-flow:doc-bdd-autopilot` diverges from the tested saga path, and
-  those 6 SKILLs are effectively untested. This is SAGA-PARITY-001 Phase 4
-  ("PRD..IPLAN propagation") — named as pending in `HERMES-BACKLOG.md:79`.
-- *Fix shape:* rewrite each of the 6 `## Workflow` sections to the proven
-  `doc-prd-autopilot` two-subsection shape (`### Saga-driven generation loop
-  (team)` invoking `saga_driver.py --layer <NN_TYPE>` + `### Linear Pipeline
-  (single_pass)` holding the existing steps verbatim); add a conformance test
-  asserting all 8 layer autopilots carry the saga block. Plugin MINOR
-  `0.20.1 → 0.21.0`; no framework-spec change. → `plans/SAGA-PARITY-001-PHASE-4-PLAN.md`
-- *Status:* **IMPLEMENTED on branch `plan/saga-parity-001-phase-4` (PR #161),
-  pending merge.** All 6 autopilots restructured + `review_mode` added to 7
-  `adapts:` + new `test_autopilot_saga_parity.py` (8×3 subtests green); plugin
-  bumped `0.20.1 → 0.21.0`. Local CI green (conformance 132, plm_lint,
-  markdownlint, pip-audit). Plan converged Pass 1-3. Move to **Closed** with
-  the merge SHA once #161 lands (GitHub Actions over-limit blocked the normal
-  gate; merged via admin/local-CI evidence).
-
-### `[skill]` `MODEL-PRECHECK-ROLLOUT` — PARKED behind Phase 4
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — PARKED (Phase 4 shipped; now unblocked)
 
 - *Context:* Plan drafted + reviewed (Pass 1-6 in
   `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`). Pass 4-6 found the original
@@ -58,12 +32,12 @@
   subprocesses) and the autopilot corpus mid-migration. User decisions
   (2026-06-21): mechanism = **print recommendation, no compare**; placement =
   **interactive entry points only**.
-- *Status:* **PARKED** until SAGA-PARITY-001 Phase 4 lands a uniform
-  autopilot corpus — then the precheck is one placement shape, not three.
-  Resume the plan against the migrated corpus; the scoping question
-  (autopilots-only vs +base) is the open decision recorded at the end of the
-  MODEL-PRECHECK plan. (Supersedes the older `MODEL-PRECHECK-ROLLOUT` framing
-  from PLUGIN-USER-COMMANDS.)
+- *Status:* **UNBLOCKED — ready to resume.** SAGA-PARITY-001 Phase 4 landed
+  (merge `f277ea1a`, plugin `0.21.0`), so the autopilot corpus is now uniform
+  and the precheck is one placement shape, not three. Next: resolve the open
+  scoping decision (**autopilots-only vs +base**, recorded at the end of
+  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`), then implement. (Supersedes the older
+  `MODEL-PRECHECK-ROLLOUT` framing from PLUGIN-USER-COMMANDS.)
 
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
@@ -165,6 +139,25 @@
   decision gate.
 
 ## Closed
+
+### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots now saga-driven (2026-06-22)
+
+- *Context:* Only `doc-brd/prd/chg-autopilot` invoked `tools/saga_driver.py`;
+  the 6 layer autopilots `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` still
+  described a legacy in-session `## Workflow`. The acceptance harness shells
+  the driver directly per layer (`test-acceptance.sh:1139`), masking the
+  divergence — a user-invoked `/aidoc-flow:doc-bdd-autopilot` ran an untested
+  path. Surfaced 2026-06-21 while reviewing MODEL-PRECHECK-ROLLOUT.
+- *Resolution:* SAGA-PARITY-001 Phase 4 (PR #161, merge `f277ea1a`). Each of
+  the 6 `## Workflow` sections rewritten to the proven `doc-prd-autopilot`
+  two-subsection shape (`### Saga-driven generation loop (team)` invoking
+  `saga_driver.py --layer <NN_TYPE>` + `### Linear Pipeline (single_pass)`
+  verbatim); `review_mode` added to the 6 SKILLs' `adapts:` + reconciled into
+  `doc-prd-autopilot`; new `tests/conformance/platforms/test_autopilot_saga_parity.py`
+  (8×3 subtests + a dangling-cross-ref guard). Plugin `0.20.1 → 0.21.0`; no
+  framework-spec change. Plan converged Pass 1-3 (independent Pass 2);
+  independent diff review caught + fixed a Step-3 dangling cross-reference.
+  See `plans/SAGA-PARITY-001-PHASE-4-PLAN.md`.
 
 ### `[example-corpus]` url-shortener corpus regen → all 6 layers PASS (2026-06-10)
 
