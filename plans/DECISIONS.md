@@ -10,6 +10,29 @@ graduation.
 
 ---
 
+## D-0034 — SAGA-PARITY-001 Phase 4: all 6 remaining layer autopilots driven by the saga driver
+
+- **Date:** 2026-06-22T00:00:00Z
+- **Decision:** Migrate `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` to the
+  proven `doc-prd-autopilot` two-subsection `## Workflow` shape — a
+  `### Saga-driven generation loop` (`review_mode: team`, default) invoking
+  `saga_driver.py --layer <NN_TYPE>`, plus the prior steps retained verbatim
+  under `### Linear Pipeline` (`review_mode: single_pass`). Use `doc-prd-autopilot`
+  as the byte-source (not `doc-brd-autopilot`, whose extra "MANDATORY" blockquote
+  is not propagated). Add `review_mode` to the 6 SKILLs' `adapts:` and reconcile
+  it into `doc-prd-autopilot` (it branched on the knob without declaring it).
+  Guard with `test_autopilot_saga_parity.py`. Plugin MINOR `0.20.1 → 0.21.0`;
+  no framework-spec change.
+- **Why:** Only `brd`/`prd`/`chg` invoked the driver; the 6 layer autopilots
+  described a legacy in-session loop. The acceptance harness shells the driver
+  directly per layer (`test-acceptance.sh:1139`), *not* through the autopilot
+  SKILL — so a user-invoked `/aidoc-flow:doc-bdd-autopilot` ran an untested path
+  that diverged from the one the suite proves. Uniformity also unblocks the
+  parked MODEL-PRECHECK-ROLLOUT (which needs a consistent autopilot corpus).
+- **Scope deferred:** re-pointing the harness at the SKILL (its direct-driver
+  call is AMEND-001's deliberate design); audit/fixer skills (review/fix, not
+  drafting).
+
 ## D-0033 — Claude Code plugin user-facing commands: shape, channels, and honesty boundaries (PLUGIN-USER-COMMANDS)
 
 - **Date:** 2026-06-14T00:00:00Z

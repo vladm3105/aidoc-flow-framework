@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: automation-workflow
-    version: "0.20.1"
+    version: "0.21.0"
     framework_spec_version: "0.23.0"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]

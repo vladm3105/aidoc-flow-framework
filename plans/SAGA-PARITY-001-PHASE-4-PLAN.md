@@ -4,7 +4,7 @@
 | -------------- | ----- |
 | Task           | SAGA-PARITY-001-PHASE-4 |
 | Type           | refactor |
-| Status         | READY FOR PLAN PR — 2026-06-21 (converged at Pass 3; see Review log) |
+| Status         | IMPLEMENTED — 2026-06-22 (on branch `plan/saga-parity-001-phase-4` / PR #161; local CI green; pending merge) |
 | Parent         | SAGA-PARITY-001 (`plans/SAGA-PARITY-001-PLAN.md`); pattern from Phase 2 Amendment 1 (`plans/SAGA-PARITY-001-PHASE-2-AMEND-001-PLAN.md`, PR #92) |
 | Depends on     | Phase 2 Amendment 1 (preemptive `tools/saga_driver.py`) — done. BRD + PRD autopilots already migrated. |
 | Feeds          | Unblocks MODEL-PRECHECK-ROLLOUT (parked — needs a uniform autopilot corpus). Hermes H-1/H-2 batch references "plugin Phase 4 should land first" (`HERMES-BACKLOG.md:79`). |

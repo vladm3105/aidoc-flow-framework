@@ -32,7 +32,22 @@
 > decided (print recommendation, no compare; interactive entry points only);
 > open scoping question (autopilots-only vs +base) at the plan's end.
 >
-> **Phase 4 plan: `plans/SAGA-PARITY-001-PHASE-4-PLAN.md` — CONVERGED (Pass 1-3), READY FOR PLAN PR.**
+> **UPDATE 2026-06-22 — Phase 4 IMPLEMENTED on this branch (plan + impl ride in
+> PR #161 together).** All 6 autopilots restructured to the saga shape;
+> `review_mode` added to 7 `adapts:`; new `test_autopilot_saga_parity.py`
+> (8×3 subtests green); plugin `0.20.1 → 0.21.0` (version-sync fanned out to 52
+> SKILL frontmatter + manifests + TAGGING.md current-tags row). **Local CI all
+> green** (conformance 132, plm_lint, markdownlint, pip-audit) — verified
+> locally because **GitHub Actions is over its usage/spending limit** (all runs
+> `startup_failure`; required checks pinned to the Actions app never report).
+> `main` has `enforce_admins: true`, so even `--admin` merge is blocked until
+> either the Actions billing limit is restored OR branch protection is
+> temporarily relaxed. **#161 is therefore NOT yet merged.** Next session:
+> restore Actions billing → re-trigger → checks report → merge #161; THEN move
+> the FRAMEWORK-TODO Phase-4 entry to Closed with the merge SHA, and resume the
+> parked MODEL-PRECHECK-ROLLOUT against the now-uniform autopilot corpus.
+>
+> **Phase 4 plan: `plans/SAGA-PARITY-001-PHASE-4-PLAN.md` — CONVERGED (Pass 1-3), IMPLEMENTED.**
 > Scope: rewrite the 6 legacy `## Workflow` sections to the proven
 > `doc-prd-autopilot` two-subsection shape (team saga loop + single_pass
 > fallback verbatim); add `review_mode` to the `adapts:` frontmatter of the 6

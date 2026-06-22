@@ -24,7 +24,7 @@
 
 ## Open
 
-### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots still legacy in-session (NEXT — plan drafted)
+### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots still legacy in-session (IMPLEMENTED on branch — pending #161 merge)
 
 - *Context:* Surfaced 2026-06-21 while reviewing MODEL-PRECHECK-ROLLOUT.
   Only `doc-brd/prd/chg-autopilot` invoke `tools/saga_driver.py`; the
@@ -42,11 +42,13 @@
   (single_pass)` holding the existing steps verbatim); add a conformance test
   asserting all 8 layer autopilots carry the saga block. Plugin MINOR
   `0.20.1 → 0.21.0`; no framework-spec change. → `plans/SAGA-PARITY-001-PHASE-4-PLAN.md`
-- *Status:* **OPEN — plan CONVERGED (Pass 1-3), READY FOR PLAN PR.** Pass 2
-  (independent) verified R1/R2/driver-support clean; folded R6.1 (`review_mode`
-  added to `adapts:` of the 6 + PRD reconcile) + R3 + R6.4. Next: open the
-  plan PR → merge → implement (test-first conformance test → restructure 6
-  SKILLs → version bump). See HANDOFF + the plan's Review log.
+- *Status:* **IMPLEMENTED on branch `plan/saga-parity-001-phase-4` (PR #161),
+  pending merge.** All 6 autopilots restructured + `review_mode` added to 7
+  `adapts:` + new `test_autopilot_saga_parity.py` (8×3 subtests green); plugin
+  bumped `0.20.1 → 0.21.0`. Local CI green (conformance 132, plm_lint,
+  markdownlint, pip-audit). Plan converged Pass 1-3. Move to **Closed** with
+  the merge SHA once #161 lands (GitHub Actions over-limit blocked the normal
+  gate; merged via admin/local-CI evidence).
 
 ### `[skill]` `MODEL-PRECHECK-ROLLOUT` — PARKED behind Phase 4
 
