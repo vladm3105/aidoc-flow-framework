@@ -12,10 +12,10 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.20.1"
+    version: "0.21.0"
     framework_spec_version: "0.23.0"
     last_updated: "2026-05-23"
-    adapts: [section_toggles, active_layers, audit_threshold, glossary]
+    adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
 
 # doc-tdd-autopilot
@@ -61,6 +61,51 @@ Determine the covered SPEC component and confirm `deliverable_type: code` from
 the source content.
 
 ## Workflow
+
+### Saga-driven generation loop (`review_mode: team`)
+
+**Step 1 — Invoke the driver. Period.** The harness sets `PREV_OUTPUT`,
+`ARTIFACT_ID`, `ARTIFACT_PATH` env vars before invoking this SKILL.
+Your VERY FIRST tool call MUST be the `Bash` tool, running exactly:
+
+```sh
+python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
+  --layer 07_TDD \
+  --threshold 90
+```
+
+Use a generous timeout (≥1800s). Do not pre-analyze the input. Do not
+read the upstream. Do not classify type/scope. The driver and its
+dispatched subprocesses (`/aidoc-flow:doc-tdd` for draft,
+`/aidoc-flow:doc-tdd-audit` for review, `/aidoc-flow:doc-tdd-fixer`
+for fixer) handle all of that. The driver enforces the state machine
+preemptively per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_SAGA.md`; this
+SKILL's job is to invoke it and report.
+
+**Step 2 — After the driver returns, report.** Read
+`.aidoc/review/07_TDD/${ARTIFACT_ID}/saga.json`. Final status MUST be
+one of `CLOSED` (PASS), `ESCALATED` (terminal FAIL), or
+`PARTIAL_TIMEOUT` (soft-deadline; resumable). Print the status, the
+final score from `verdict.json` if present, and a 1-line summary.
+
+**Step 3 — Index update (only on `CLOSED`).** Add a row to
+`docs/07_TDD/TDD-00_index.md` referencing the new TDD; update the upstream artifact's
+downstream entry.
+
+That is the entire workflow in `team` mode. If you find yourself
+doing anything else here — drafting prose, dispatching Task subagents,
+invoking other slash commands — STOP, recognize that you are
+bypassing the driver, and invoke the Bash command above instead.
+
+### Linear Pipeline (`review_mode: single_pass`)
+
+Unchanged legacy behaviour — used when the profile says so, when `Task`
+subagent dispatch is unavailable, or at write-time (`on_author`) where
+cost is the primary concern. The 5-step in-session pattern below
+produces the TDD without saga.json; the harness's saga-journal
+check will then fail the layer, so this mode is only appropriate for
+manual dry-runs.
 
 1. **Input analysis** — classify the input (SPEC / prompt / IPLAN), locate the
    SPEC contract and the BDD scenarios it covers, and decide generate vs

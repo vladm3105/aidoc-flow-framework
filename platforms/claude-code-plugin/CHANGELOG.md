@@ -14,6 +14,32 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.21.0] — 2026-06-22
+
+### Changed
+
+- **SAGA-PARITY-001 Phase 4 — the 6 remaining layer autopilots now drive the
+  saga driver.** `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` previously
+  described only a legacy in-session generation loop, while only `brd`/`prd`
+  invoked `tools/saga_driver.py`. The acceptance harness masked this — it
+  shells the driver directly per layer, *not* through the autopilot SKILL — so
+  a human running `/aidoc-flow:doc-bdd-autopilot` got an untested path that
+  diverged from the one the suite proves. Each of the 6 `## Workflow` sections
+  is now the proven two-subsection shape: a `### Saga-driven generation loop`
+  (`review_mode: team`, the default) that invokes
+  `saga_driver.py --layer <NN_TYPE>`, plus the existing steps retained verbatim
+  under `### Linear Pipeline` (`review_mode: single_pass`). All 8 layer
+  autopilots now behave identically.
+- **`review_mode` added to `adapts:` frontmatter** of the 6 migrated SKILLs and
+  reconciled into `doc-prd-autopilot` (it branched on `review_mode` without
+  declaring it; `doc-brd-autopilot` already declared it).
+
+### Added
+
+- `tests/conformance/platforms/test_autopilot_saga_parity.py` — asserts all 8
+  layer autopilots carry the saga block with the correct `--layer <NN_TYPE>`,
+  retain the `single_pass` fallback, and declare `review_mode` in `adapts:`.
+
 ## [0.20.1] — 2026-06-14
 
 ### Fixed
