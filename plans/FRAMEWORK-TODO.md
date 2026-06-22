@@ -24,6 +24,45 @@
 
 ## Open
 
+### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots still legacy in-session (NEXT — plan drafted)
+
+- *Context:* Surfaced 2026-06-21 while reviewing MODEL-PRECHECK-ROLLOUT.
+  Only `doc-brd/prd/chg-autopilot` invoke `tools/saga_driver.py`; the
+  6 layer autopilots `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` still
+  describe **only** a legacy in-session numbered `## Workflow` (no saga
+  driver). The acceptance harness hides this — it shells `saga_driver.py`
+  directly per layer, explicitly "NOT through the autopilot SKILL"
+  (`tests/scripts/test-acceptance.sh:1139`). So what a human triggers via
+  `/aidoc-flow:doc-bdd-autopilot` diverges from the tested saga path, and
+  those 6 SKILLs are effectively untested. This is SAGA-PARITY-001 Phase 4
+  ("PRD..IPLAN propagation") — named as pending in `HERMES-BACKLOG.md:79`.
+- *Fix shape:* rewrite each of the 6 `## Workflow` sections to the proven
+  `doc-prd-autopilot` two-subsection shape (`### Saga-driven generation loop
+  (team)` invoking `saga_driver.py --layer <NN_TYPE>` + `### Linear Pipeline
+  (single_pass)` holding the existing steps verbatim); add a conformance test
+  asserting all 8 layer autopilots carry the saga block. Plugin MINOR
+  `0.20.1 → 0.21.0`; no framework-spec change. → `plans/SAGA-PARITY-001-PHASE-4-PLAN.md`
+- *Status:* **OPEN — plan CONVERGED (Pass 1-3), READY FOR PLAN PR.** Pass 2
+  (independent) verified R1/R2/driver-support clean; folded R6.1 (`review_mode`
+  added to `adapts:` of the 6 + PRD reconcile) + R3 + R6.4. Next: open the
+  plan PR → merge → implement (test-first conformance test → restructure 6
+  SKILLs → version bump). See HANDOFF + the plan's Review log.
+
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — PARKED behind Phase 4
+
+- *Context:* Plan drafted + reviewed (Pass 1-6 in
+  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`). Pass 4-6 found the original
+  compare-and-warn design unworkable (no session-model read; headless saga
+  subprocesses) and the autopilot corpus mid-migration. User decisions
+  (2026-06-21): mechanism = **print recommendation, no compare**; placement =
+  **interactive entry points only**.
+- *Status:* **PARKED** until SAGA-PARITY-001 Phase 4 lands a uniform
+  autopilot corpus — then the precheck is one placement shape, not three.
+  Resume the plan against the migrated corpus; the scoping question
+  (autopilots-only vs +base) is the open decision recorded at the end of the
+  MODEL-PRECHECK plan. (Supersedes the older `MODEL-PRECHECK-ROLLOUT` framing
+  from PLUGIN-USER-COMMANDS.)
+
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
 - *Context:* ACCEPTANCE-FIXTURES-DRIFT (2026-06-14) closed 12
@@ -85,22 +124,15 @@
   `replace_in_file platforms/hermes/README.md "framework spec \`$fw_prev\`" ...`.
   Out of scope for the plugin-first PATCH; pull when Hermes work resumes.
 
-### `[skill]` `MODEL-PRECHECK-ROLLOUT` — wire `model.precheck` into every `doc-*` SKILL
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — original framing (superseded; see PARKED entry above)
 
-- *Context:* PLUGIN-USER-COMMANDS (`plans/PLUGIN-USER-COMMANDS-PLAN.md`,
-  merged 2026-06-14) introduced the `model.per_layer` recommendation map and
-  the `model.precheck` mode (`warn | silent | block`) in the optional
-  `.claude/aidoc-flow.config.yaml`. The keys are introduced; **no `doc-*`
-  SKILL currently consults them**. Same applies to `budget.profile_per_layer`.
-- *Fix shape:* one SKILL touch per layer family (8 base skills + 4 variants
-  each = up to 32 SKILL preambles). Each SKILL reads the config (if present),
-  compares the recommended model against the current session model, and
-  emits a single-line preflight per the `precheck` mode. Acceptance: drive
-  the example corpus and confirm a `warn` precheck appears when the session
-  model doesn't match. Gate by the existing acceptance suite, not by a new
-  test.
-- *Out of scope here:* the implementation; PLUGIN-USER-COMMANDS only
-  introduces the keys honestly without claiming the SKILLs already read them.
+- The original "wire `model.precheck` into every `doc-*` SKILL (up to 32),
+  compare against the session model, gate by the acceptance suite" framing
+  (introduced by PLUGIN-USER-COMMANDS, merged 2026-06-14) was **superseded**
+  by the 2026-06-21 review: a skill cannot read its own session model, so the
+  *compare* premise is unworkable; the redesign prints the recommendation
+  instead and scopes to interactive entry points. Tracked in the **PARKED**
+  entry near the top of this Open section + `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`.
 
 ### `[layer-promotion]` Promote `component_decomposition` to a first-class `02b_DECOMP` layer (Option B from DECISION-GATE-D)
 
