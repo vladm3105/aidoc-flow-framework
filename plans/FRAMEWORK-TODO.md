@@ -24,20 +24,6 @@
 
 ## Open
 
-### `[skill]` `MODEL-PRECHECK-ROLLOUT` — IMPLEMENTED on branch (pending merge)
-
-- *Context:* Closes the documented-but-unimplemented `model.precheck` behavior
-  (`commands/model.md`): the 8 layer autopilots now PRINT the per-layer model
-  recommendation at the entry point (no compare — a skill can't read its own
-  session model). Design converged Pass 1-7; scope locked **autopilots-only**
-  (D-0035); base/audit/fixer deferred (headless under the driver).
-- *Status:* **IMPLEMENTED on branch `feat/model-precheck-rollout`.** `## Model
-  precheck` added to all 8 autopilots + Step-1 directive reworded to "first
-  orchestration action"; new `test_model_precheck.py` (8×2 subtests); plugin
-  `0.21.0 → 0.22.0`. Local CI green (conformance 135, plm_lint, markdownlint).
-  Move to **Closed** with the merge SHA once the PR lands. See
-  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`.
-
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
 - *Context:* ACCEPTANCE-FIXTURES-DRIFT (2026-06-14) closed 12
@@ -138,6 +124,25 @@
   decision gate.
 
 ## Closed
+
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — autopilots print the per-layer model recommendation (2026-06-23)
+
+- *Context:* `commands/model.md` documented a `model.precheck` mode the
+  `doc-*` skills "consult," but no skill did — a documented-but-unimplemented
+  behavior introduced by PLUGIN-USER-COMMANDS.
+- *Resolution:* MODEL-PRECHECK-ROLLOUT (PR #164, merge `6700301f`). The 8 layer
+  autopilots gained a `## Model precheck` section (before `## Workflow`) that
+  reads `model.per_layer`/`model.default`/`model.precheck` from
+  `.claude/aidoc-flow.config.yaml` and **prints** the recommendation + the
+  `/model <rec>` command (no compare — a skill can't read its own session
+  model). `warn`/`silent`/`block` modes; Step-1 saga directive reworded to
+  "first orchestration action" so the notice runs before the driver. New
+  `tests/conformance/platforms/test_model_precheck.py`; `commands/model.md` +
+  `docs/CONFIG.md` mode descriptions corrected to print-not-compare. Plugin
+  `0.21.0 → 0.22.0`; no framework-spec change. Scope locked autopilots-only
+  (D-0035); base/audit/fixer deferred (headless under the driver). Converged
+  Pass 1-7 + independent diff review (caught the stale `commands/model.md`
+  wording). See `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`.
 
 ### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots now saga-driven (2026-06-22)
 
