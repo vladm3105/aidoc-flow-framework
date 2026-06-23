@@ -14,6 +14,38 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.22.0] — 2026-06-22
+
+### Added
+
+- **MODEL-PRECHECK-ROLLOUT — the 8 layer autopilots now surface the per-layer
+  model recommendation.** Each `doc-<layer>-autopilot` gains a `## Model
+  precheck` section (before `## Workflow`) that reads `model.per_layer` /
+  `model.default` / `model.precheck` from `.claude/aidoc-flow.config.yaml` and
+  **prints** the recommendation + the `/model <rec>` switch command before
+  invoking the driver. It does **not** compare against the session model (a
+  skill can't read its own model id) — it surfaces the recommendation and lets
+  the user decide. `precheck` modes: `warn` (print + proceed, default) ·
+  `silent` (nothing) · `block` (print + wait for confirmation). Closes the
+  documented-but-unimplemented `precheck` behavior described in
+  `commands/model.md`.
+- `tests/conformance/platforms/test_model_precheck.py` — asserts all 8
+  autopilots carry the section, reference the config keys, and place it before
+  the saga-driver invocation.
+
+### Changed
+
+- Each autopilot's Step-1 saga directive reworded from "VERY FIRST tool call"
+  to "first **orchestration** action MUST be Bash", so the precheck notice may
+  run before the driver without being read as bypassing it.
+
+### Notes
+
+- Scope is **autopilots-only**. Base/audit/fixer skills run headless under the
+  saga driver in the normal flow (where a notice is pointless and `block` can't
+  ask), so they're deferred. Advisory only — the plugin cannot switch the
+  session model.
+
 ## [0.21.0] — 2026-06-22
 
 ### Changed

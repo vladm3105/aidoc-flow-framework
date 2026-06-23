@@ -24,20 +24,19 @@
 
 ## Open
 
-### `[skill]` `MODEL-PRECHECK-ROLLOUT` — PARKED (Phase 4 shipped; now unblocked)
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — IMPLEMENTED on branch (pending merge)
 
-- *Context:* Plan drafted + reviewed (Pass 1-6 in
-  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`). Pass 4-6 found the original
-  compare-and-warn design unworkable (no session-model read; headless saga
-  subprocesses) and the autopilot corpus mid-migration. User decisions
-  (2026-06-21): mechanism = **print recommendation, no compare**; placement =
-  **interactive entry points only**.
-- *Status:* **UNBLOCKED — ready to resume.** SAGA-PARITY-001 Phase 4 landed
-  (merge `f277ea1a`, plugin `0.21.0`), so the autopilot corpus is now uniform
-  and the precheck is one placement shape, not three. Next: resolve the open
-  scoping decision (**autopilots-only vs +base**, recorded at the end of
-  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`), then implement. (Supersedes the older
-  `MODEL-PRECHECK-ROLLOUT` framing from PLUGIN-USER-COMMANDS.)
+- *Context:* Closes the documented-but-unimplemented `model.precheck` behavior
+  (`commands/model.md`): the 8 layer autopilots now PRINT the per-layer model
+  recommendation at the entry point (no compare — a skill can't read its own
+  session model). Design converged Pass 1-7; scope locked **autopilots-only**
+  (D-0035); base/audit/fixer deferred (headless under the driver).
+- *Status:* **IMPLEMENTED on branch `feat/model-precheck-rollout`.** `## Model
+  precheck` added to all 8 autopilots + Step-1 directive reworded to "first
+  orchestration action"; new `test_model_precheck.py` (8×2 subtests); plugin
+  `0.21.0 → 0.22.0`. Local CI green (conformance 135, plm_lint, markdownlint).
+  Move to **Closed** with the merge SHA once the PR lands. See
+  `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`.
 
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 

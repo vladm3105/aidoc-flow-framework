@@ -105,11 +105,12 @@ model:
   # Example: { BRD: claude-opus-4-7, IPLAN: claude-opus-4-7 }
   per_layer: {}
 
-  # How aggressively each doc-* skill warns when the current session model
-  # doesn't match the recommendation.
-  #   warn   — print a one-line warning, ask to proceed (default)
+  # How the layer autopilots surface the per-layer recommendation before
+  # drafting. Advisory: the plugin cannot read or switch the session model, so
+  # this PRINTS the recommendation (it does not compare) and lets you decide.
+  #   warn   — print a one-line recommendation, then proceed (default)
   #   silent — print nothing, just proceed
-  #   block  — refuse to start until the user switches model
+  #   block  — print, then wait for you to confirm or switch before drafting
   precheck: warn
 ```
 

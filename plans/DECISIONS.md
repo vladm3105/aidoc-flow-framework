@@ -10,6 +10,29 @@ graduation.
 
 ---
 
+## D-0035 — MODEL-PRECHECK-ROLLOUT: print the per-layer model recommendation at the autopilot entry point
+
+- **Date:** 2026-06-22T00:00:00Z
+- **Decision:** Implement `model.precheck` as a `## Model precheck` section in
+  the **8 layer autopilots only** that **prints** the per-layer recommendation
+  (`model.per_layer.<L>` → else `model.default`) + the `/model <rec>` command —
+  it does **not** compare against the session model. Modes: `warn` (print) /
+  `silent` / `block` (print + confirm). Reword the Step-1 saga directive to
+  "first orchestration action" so the notice runs before the driver. Plugin
+  MINOR `0.21.0 → 0.22.0`.
+- **Why (3 sub-decisions):**
+  - *Print, not compare* — a skill cannot reliably read its own session-model
+    id, so a compare-and-warn design is a near-permanent no-op (Pass-4 F3).
+  - *Autopilots only* — post-Phase-4 the autopilot is the single interactive
+    entry; base/audit/fixer run **headless** under the driver (no user for
+    `warn`/`block`), so covering them needs an `AIDOC_SAGA` guard for no gain.
+    Deferred.
+  - *SKILL, not driver* — the saga driver is a Bash subprocess that can't pause
+    for `block`'s acknowledgement; the autopilot SKILL runs in the live session
+    and can, keeping all three modes honest.
+- **Deferred:** standalone base-skill notice; any model *comparison*; auto-
+  switching (impossible). Builds on D-0034 (uniform saga-driven autopilots).
+
 ## D-0034 — SAGA-PARITY-001 Phase 4: all 6 remaining layer autopilots driven by the saga driver
 
 - **Date:** 2026-06-22T00:00:00Z
