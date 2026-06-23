@@ -25,19 +25,20 @@
 >
 > **NEXT (priority order):**
 >
-> 1. ~~**MODEL-PRECHECK-ROLLOUT**~~ — **IMPLEMENTED** on branch
->    `feat/model-precheck-rollout` (plugin `0.22.0`). Scope locked
->    autopilots-only (D-0035); all 8 autopilots print the per-layer model
->    recommendation; new `test_model_precheck.py`. Pending PR/merge.
+> 1. ✅ **MODEL-PRECHECK-ROLLOUT** — **SHIPPED** (PR #164, merge `6700301f`,
+>    plugin `0.22.0`). All 8 autopilots print the per-layer model recommendation
+>    (D-0035, autopilots-only). Closed in `FRAMEWORK-TODO.md`.
 > 2. **P2 plugin deploy-verification** — `plans/PLUGIN-P2-DEPLOY-RUNBOOK.md`;
 >    needs the user's local Claude Code CLI (live skill run proving
 >    `${CLAUDE_PLUGIN_ROOT}` resolves in SKILL prose). Flips the plugin from
 >    "release-ready" to "deploy-verified".
 > 3. **Hermes parity** — ROADMAP "Now" item; Hermes lags the plugin.
 >
-> **Plugin state:** `0.21.0`, release-ready (conformance green, `plm_lint`
-> clean, BYO-marketplace installable, tag `claude-code-plugin/v0.20.1` pushed —
-> bump the tag to `v0.21.0` next release). Not yet deploy-verified (item 2).
+> **Plugin state:** `0.22.0`, release-ready (conformance green, `plm_lint`
+> clean, BYO-marketplace installable). **Release tag lags:**
+> `claude-code-plugin/v0.20.1` is the latest pushed tag — push `v0.21.0` and
+> `v0.22.0` from a local clone (tag pushes are a local-clone action). Not yet
+> deploy-verified (item 2).
 >
 > **Phase 4 plan (historical detail): `plans/SAGA-PARITY-001-PHASE-4-PLAN.md` — CONVERGED (Pass 1-3), IMPLEMENTED.**
 > Scope: rewrite the 6 legacy `## Workflow` sections to the proven
