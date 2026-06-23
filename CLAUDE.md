@@ -267,3 +267,59 @@ Use the **GitHub CLI (`gh`)** as the default for all GitHub operations — PRs,
 issues, reviews, releases, repo queries — not the GitHub MCP servers
 (`github-tt`, `github-vl`) or raw API calls. If `gh` is unauthenticated, run
 `gh auth login` rather than falling back to MCP/API.
+
+## Unified CI — consume from `aidoc-flow-ci`
+
+This repo's CI workflows (ai-review, composition, doc-gate, secret-scan,
+markdown-lint, internal-links) **will consume reusable workflows** from the
+**`vladm3105/aidoc-flow-ci`** library repo. The library is the
+source-of-truth for CI logic shared across the aidoc-flow workspace and
+future company projects; it ships independently semver-tagged
+(`ci/v1.0.0`, `ci/v1.0.1`, …). Plan + charter live in
+**`aidoc-flow-operations`** at
+`ops/iplans/IPLAN-0017_unified-ci-flows.md` +
+`ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
+
+**Per-repo state (2026-06-22):** **public repo; GitHub-hosted runners
+(per "## CI host policy" — do not self-host).** Current standalone
+`.github/workflows/ai-review.yml` is LIVE (codex reviewer). Migrates
+to `uses: aidoc-flow-ci/...@ci/v1.0.0` in **Phase A** of IPLAN-0017
+rollout — the eat-our-own-dogfood proof point (smallest cost; public-repo
+iteration speed; fork-safe `pull_request` trigger). 🔴 Phase 0 (founder
+creates `aidoc-flow-ci` repo) is the prerequisite.
+
+### Local overrides shared — the foundational rule
+
+GitHub Actions runs whatever's in this repo's `.github/workflows/*.yml`.
+A shared workflow from `aidoc-flow-ci` only runs when this repo
+explicitly calls it via `uses:`. So **local always wins** — by GitHub's
+default, not by engineering.
+
+Three override modes (preferred order):
+
+| Mode | When | How |
+|---|---|---|
+| **Parameter override** | Change one knob (runner labels, label colors, human-approval count) | Edit `with:` block in the local workflow; keep the `uses:` call |
+| **Full replacement** | Local logic genuinely differs from canonical | Drop the `uses:` call; write the local jobs/steps |
+| **Add a custom workflow** | New check the shared CI doesn't have | Create a new `.github/workflows/<custom>.yml`; siblings the shared callers |
+
+There is no merge/inheritance/diamond pattern — GitHub doesn't support
+one. "Override" means this repo's workflow file is what runs.
+
+### Drift detection — warning-only, never blocks
+
+The `aidoc-flow-ci/sync/check-drift.sh` script (run as a pre-commit
+hook or periodic GitHub Action) compares each workflow file against
+the canonical template at the pinned `ci/vX.Y.Z` tag and reports any
+diff as a warning. **Never blocks the commit or the PR.** Same shape
+as the existing `scripts/check-docs-updated.sh` doc-currency
+reminder — see "## Durable conventions" item 3 above. Contributor
+decides: bring back to canonical, intentionally keep, or push the
+divergence upstream as a new shared default.
+
+### When this repo edits a shared workflow
+
+If a change is broadly useful (every consumer would want it): open a PR
+on `aidoc-flow-ci`, tag a new `ci/vX.Y.Z`, then bump this repo's `uses:`
+pin in a separate PR. If the change is genuinely local: keep it in
+this repo's `.github/workflows/` and accept the drift warning.
