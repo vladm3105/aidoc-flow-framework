@@ -29,9 +29,10 @@ What this command actually does:
 1. Records the user's preferred model **per layer** in the config file.
 2. Prints the **copy-paste `/model <id>` commands** so the user can switch
    manually when starting work on each layer.
-3. Sets the `precheck` mode that `doc-*` skills consult to decide how
-   loudly to warn when the current session model doesn't match the
-   recommendation for the layer they're about to draft.
+3. Sets the `precheck` mode the **layer autopilots** consult to decide how
+   prominently to surface the per-layer recommendation before drafting. (The
+   plugin cannot read or switch the session model, so the autopilots *print*
+   the recommendation — they do not compare against the current model.)
 
 Naming note: the user invokes this as `/aidoc-flow:model`, which is
 namespaced and **does not collide** with Claude Code's built-in `/model`.
@@ -66,10 +67,11 @@ namespaced and **does not collide** with Claude Code's built-in `/model`.
 
 5. **Prompt for `precheck` mode** — single-select:
 
-   - `warn` — print a one-line warning when current session model doesn't
-     match the layer recommendation, ask to proceed *(recommended)*
+   - `warn` — print a one-line recommendation (the layer's model + the
+     `/model <id>` command), then proceed *(recommended)*
    - `silent` — print nothing, just proceed
-   - `block` — refuse to start the skill until the user switches model
+   - `block` — print the recommendation, then wait for the user to confirm or
+     switch before drafting
 
 6. **Write back** — merge the new `model.*` keys into the existing config
    file (preserve every other key untouched). If the file does not exist,

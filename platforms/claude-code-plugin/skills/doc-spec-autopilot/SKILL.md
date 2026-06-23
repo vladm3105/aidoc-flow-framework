@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.21.0"
+    version: "0.22.0"
     framework_spec_version: "0.23.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -57,13 +57,30 @@ For each target, check whether the SPEC already exists (nested folder
 A `SPEC-NN` input is treated as the self type (review). A `BDD-NN`/`ADR-NN`
 input is the upstream source: generate the matching SPEC if missing, else review.
 
+## Model precheck
+
+Advisory, best-effort. Surfaces the model you recommended for this layer; it
+cannot switch the session model. Before invoking the driver:
+
+1. If `.claude/aidoc-flow.config.yaml` is absent, or has no `model.*` keys, skip
+   this section entirely (no output).
+2. Resolve the recommended model: `model.per_layer.SPEC` if set, else
+   `model.default`.
+3. Act on `model.precheck` (`warn` | `silent` | `block`):
+   - `warn` (default) — print one line, then continue to the driver:
+     `ℹ SPEC recommends model '<rec>'. If you're not on it, run /model <rec> (or set model.precheck: silent to hide this).`
+   - `silent` — print nothing; continue.
+   - `block` — print the line above plus `precheck=block: confirm you want to
+     draft on the current model, or run /model <rec> first.`, then wait for the
+     user to confirm before continuing.
+
 ## Workflow
 
 ### Saga-driven generation loop (`review_mode: team`)
 
 **Step 1 — Invoke the driver. Period.** The harness sets `PREV_OUTPUT`,
 `ARTIFACT_ID`, `ARTIFACT_PATH` env vars before invoking this SKILL.
-Your VERY FIRST tool call MUST be the `Bash` tool, running exactly:
+Your first **orchestration** action MUST be the `Bash` tool (the Model precheck above runs first), running exactly:
 
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \

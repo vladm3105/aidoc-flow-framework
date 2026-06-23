@@ -25,11 +25,10 @@
 >
 > **NEXT (priority order):**
 >
-> 1. **MODEL-PRECHECK-ROLLOUT** — now **UNBLOCKED** (Phase 4 gave the uniform
->    corpus it needed). Open decision before impl: scope = **autopilots-only
->    vs autopilots + base** (recorded at the end of
->    `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`; redesign already decided: print
->    recommendation, interactive entry points only).
+> 1. ~~**MODEL-PRECHECK-ROLLOUT**~~ — **IMPLEMENTED** on branch
+>    `feat/model-precheck-rollout` (plugin `0.22.0`). Scope locked
+>    autopilots-only (D-0035); all 8 autopilots print the per-layer model
+>    recommendation; new `test_model_precheck.py`. Pending PR/merge.
 > 2. **P2 plugin deploy-verification** — `plans/PLUGIN-P2-DEPLOY-RUNBOOK.md`;
 >    needs the user's local Claude Code CLI (live skill run proving
 >    `${CLAUDE_PLUGIN_ROOT}` resolves in SKILL prose). Flips the plugin from
