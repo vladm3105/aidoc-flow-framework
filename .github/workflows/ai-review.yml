@@ -8,8 +8,8 @@
 #
 # Secrets required (consumer adds to repo secrets):
 #   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
+#   ANTHROPIC_API_KEY                        if reviewer: claude (active)
 #   OPENAI_API_KEY                           if reviewer: codex
-#   ANTHROPIC_API_KEY                        if reviewer: claude
 #
 # `pull_request_target` (not `pull_request`) is required because the
 # trust gate needs write-capable credentials to apply labels/comments
@@ -27,7 +27,7 @@ jobs:
   call:
     uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.0.2
     with:
-      reviewer: codex
+      reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'
       runner_labels_review: '"ubuntu-latest"'
     secrets: inherit  # pragma: allowlist secret
