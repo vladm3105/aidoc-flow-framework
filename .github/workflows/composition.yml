@@ -6,6 +6,11 @@ on:
     types: [synchronize, labeled, unlabeled]
   pull_request_review:
     types: [submitted, dismissed, edited]
+# Caller-level permissions — see ai-review.yml header for rationale.
+# composition only needs read scopes.
+permissions:
+  pull-requests: read
+  contents: read
 jobs:
   call:
     uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.0.2
