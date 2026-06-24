@@ -1,0 +1,33 @@
+# v1.0.2: public consumers can use ubuntu-latest. The reusable
+# ai-review.yml installs codex + claude CLI at workflow start when
+# runner_labels_review contains "ubuntu-latest" (no-op on self-hosted
+# runners that have the CLI pre-baked). See ci/v1.0.2 CHANGELOG and
+# docs/troubleshooting.md §10 for context. Install commands are
+# **unverified-in-CI** as of v1.0.2 ship; first PUBLIC consumer
+# adoption will validate. Report issues at vladm3105/aidoc-flow-ci.
+#
+# Secrets required (consumer adds to repo secrets):
+#   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
+#   ANTHROPIC_API_KEY                        if reviewer: claude (active)
+#   OPENAI_API_KEY                           if reviewer: codex
+#
+# `pull_request_target` (not `pull_request`) is required because the
+# trust gate needs write-capable credentials to apply labels/comments
+# on fork PRs and the heavy review job needs secrets — both unavailable
+# under `pull_request` on fork PRs. The trust gate decides whether to
+# proceed; the heavy job runs only for trusted authors per the
+# allowlist in `.github/ai-review/config.json`.
+name: ai-review
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted]
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.0.2
+    with:
+      reviewer: claude
+      runner_labels_routine: '"ubuntu-latest"'
+      runner_labels_review: '"ubuntu-latest"'
+    secrets: inherit  # pragma: allowlist secret

@@ -1,0 +1,14 @@
+# v1.0.0 trigger shape per aidoc-flow-operations PR #111. See
+# composition-private.yml for the trigger-shape rationale.
+name: composition
+on:
+  pull_request_target:
+    types: [synchronize, labeled, unlabeled]
+  pull_request_review:
+    types: [submitted, dismissed, edited]
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.0.2
+    with:
+      runner_labels: '"ubuntu-latest"'
+    secrets: inherit  # pragma: allowlist secret
