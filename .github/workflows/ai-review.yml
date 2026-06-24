@@ -29,5 +29,5 @@ jobs:
     with:
       reviewer: codex
       runner_labels_routine: '"ubuntu-latest"'
-      runner_labels_review:  '"ubuntu-latest"'
-    secrets: inherit
+      runner_labels_review: '"ubuntu-latest"'
+    secrets: inherit  # pragma: allowlist secret
