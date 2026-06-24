@@ -23,6 +23,15 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
   pull_request_review:
     types: [submitted]
+# Caller-level permissions required because framework's repo-default workflow
+# permissions is `read` — the reusable workflow declares write-level
+# permissions but a callee cannot elevate above the caller. Mirror what
+# operations' standalone ai-review.yml declares (operations works today
+# because its standalone workflow declares these directly).
+permissions:
+  contents: write        # auto-merge
+  pull-requests: write   # review comment, labels, merge
+  issues: write          # labels
 jobs:
   call:
     uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.0.2
