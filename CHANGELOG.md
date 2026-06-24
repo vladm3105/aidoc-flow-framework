@@ -12,6 +12,45 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Adopted `aidoc-flow-ci@ci/v1.0.2` shared CI library (2026-06-24)
+
+Framework is the **first PUBLIC consumer of `aidoc-flow-ci`** per
+IPLAN-0017 §4 Phase A (revised 2026-06-24 (d) to put framework
+first; operations-side migration deferred). PR #168 bootstrapped:
+
+- `.github/workflows/ai-review.yml` — thin caller pinned to
+  `vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.0.2`;
+  reviewer set to `claude` (uses the `CLAUDE_CODE_OAUTH_TOKEN`
+  subscription-auth path, not `ANTHROPIC_API_KEY` pay-per-token).
+- `.github/workflows/composition.yml` — thin caller pinned to
+  `...composition.yml@ci/v1.0.2`.
+- `.github/ai-review/config.json` — trust allowlist (`vladm3105`
+  only initially).
+- 9 canonical labels added to the repo via `gh label create`
+  (`ai:*` state labels + `area: *` semantic labels).
+
+**Activation prerequisites done by founder:** `aidoc-reviewer`
+GitHub App installed on `vladm3105/aidoc-flow-framework`; secrets
+set (`APP_REVIEWER_1_ID`, `APP_REVIEWER_1_KEY`,
+`CLAUDE_CODE_OAUTH_TOKEN`).
+
+**Local fixes layered on top of `ci/v1.0.2` templates** (caught by
+framework's pre-commit on PR #168's first run; backport to
+aidoc-flow-ci templates deferred per the v1.0.4 misplacement
+decision):
+
+- `runner_labels_review:` alignment double-space removed (yamllint
+  `[colons] too many spaces after colon`).
+- `secrets: inherit` lines annotated with
+  `# pragma: allowlist secret` (detect-secrets false-positive on
+  the word "secrets").
+
+This PR is the first verification PR after PR #168 merged —
+exercises the v1.0.2 `Install codex + claude CLI` step on
+`ubuntu-latest` + the `claude` reviewer end-to-end (the load-bearing
+test of v1.0.2). Source runbook:
+[`aidoc-flow-operations/ops/inbox/2026-06-24_cto-platform_framework-phase-a-migration.md`](https://github.com/vladm3105/aidoc-flow-operations/blob/main/ops/inbox/2026-06-24_cto-platform_framework-phase-a-migration.md).
+
 ### Added — Governance PR discipline (mandatory) section in CLAUDE.md (2026-06-23)
 
 - **`CLAUDE.md` — new "Governance PR discipline (mandatory)" section.** Two
