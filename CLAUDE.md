@@ -323,3 +323,46 @@ If a change is broadly useful (every consumer would want it): open a PR
 on `aidoc-flow-ci`, tag a new `ci/vX.Y.Z`, then bump this repo's `uses:`
 pin in a separate PR. If the change is genuinely local: keep it in
 this repo's `.github/workflows/` and accept the drift warning.
+
+## Governance PR discipline (mandatory)
+
+A **governance PR** is any PR that touches `DECISIONS.md`, plan files
+(`plans/PLAN-*.md` or `ops/iplans/IPLAN-*.md` per this repo's convention),
+`CLAUDE.md`, `.github/ai-review/` or `.github/workflows/ai-review.yml`,
+or supersedes a locked decision. Two rules apply to every governance
+PR — no exceptions without explicit founder OK and an audit-trail
+note in the commit message.
+
+### Rule 1 — Small scope (≤3 doc surfaces per PR)
+
+A governance PR touches **at most 3 distinct doc surfaces** in one PR.
+If more surfaces need updating, **split into sequential PRs** — e.g.,
+DECISIONS first → plan citing it → CLAUDE.md propagation.
+
+**Reconciliation with the existing doc-currency rule:** Rule 1 does NOT
+supersede doc-currency; it scopes how the rule applies. Each split PR
+is a self-contained smaller change with its own affected docs fully
+updated within that PR. Doc-currency applies per-PR-scope, not
+per-overall-change.
+
+### Rule 2 — Mandatory adversarial self-review before every push
+
+Before `git push` on any governance PR, dispatch a code-reviewer agent
+on the diff. Required focus areas:
+
+- **Dead refs** — for every quoted path/file in the diff, grep and
+  verify the target exists (or qualify as a forward-reference)
+- **Supersession completeness** — when "supersedes X" appears, read
+  X end-to-end and name ALL parts superseded vs ALL parts carried
+  forward
+- **Internal consistency** — every DECIDED / open / Status status
+  matches across files in the diff
+
+Fix every load-bearing finding **BEFORE push**. Skip only with explicit
+founder OK + commit-message audit line (`Self-review skipped per founder
+OK <reason>`).
+
+**Origin:** operations 2026-06-23 (after 22+ ai-reviewer findings across
+operations PRs #107-109 in one session). Full reasoning + formal record
+in `aidoc-flow-operations` `CLAUDE.md` "Governance PR discipline" section,
+plus `ops/DECISIONS.md` `OPS-0061`.
