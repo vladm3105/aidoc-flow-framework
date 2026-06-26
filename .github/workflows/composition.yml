@@ -2,8 +2,13 @@
 # composition-private.yml for the trigger-shape rationale.
 name: composition
 on:
+  # `opened` + `reopened` added 2026-06-26: without them, freshly-opened PRs
+  # left composition pending (only ai-review fired) → merge blocked until
+  # label-cycle / push woke composition. Asymmetric trigger sets between
+  # ai-review (includes opened) + composition (didn't) was the repo-wide gap
+  # — root-cause fix per docs/troubleshooting §15 label-cycle pattern.
   pull_request_target:
-    types: [synchronize, labeled, unlabeled]
+    types: [opened, synchronize, reopened, labeled, unlabeled]
   pull_request_review:
     types: [submitted, dismissed, edited]
 # Caller-level permissions — see ai-review.yml header for rationale.

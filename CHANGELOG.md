@@ -12,6 +12,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — close 2 repo-wide CI gaps + CHANGELOG terminology (2026-06-26)
+
+- **`.github/workflows/ai-review.yml`** caller pin bumped
+  `@ci/v1.1.0` → `@ci/v1.1.1`. The prior pin had a sparse-checkout
+  pattern bug (aidoc-flow-ci PR #29 / `ci/v1.1.1`) that broke
+  ai-review on GitHub-hosted runners (worked on self-hosted only
+  due to cached state from prior `actions/checkout` invocations
+  masking the issue). Framework PR #173 ai-review failed with
+  `Append system prompt file not found` — exposed the bug.
+- **`CHANGELOG.md` line 27** terminology fix: "(ubuntu-latest
+  runner)" → "(GitHub-hosted runner)" per
+  [GitHub Actions docs](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners)
+  - the canonical reference at `aidoc-flow-ci/docs/runners.md §0`
+  (shipped in aidoc-flow-ci PR #30). Runners have two CLASSES
+  (GitHub-hosted vs self-hosted); `ubuntu-latest` is a LABEL
+  identifying a specific runner image within the GitHub-hosted
+  class. Class-first framing prevents conflation bugs.
+- **`.github/workflows/composition.yml`** triggers extended:
+  `[synchronize, labeled, unlabeled]` →
+  `[opened, synchronize, reopened, labeled, unlabeled]`.
+  **Gap 2 closed:** without `opened`, freshly-opened PRs left
+  composition pending (only ai-review fired on `opened`) → merge
+  blocked until label-cycle / push woke composition. Root-cause fix
+  per `aidoc-flow-ci/docs/troubleshooting §15` label-cycle pattern
+  (label-cycle was the workaround; this is the fix). Mirrors
+  operations PR #140 same-pattern fix.
+
 ### Changed — IPLAN-0022 PR-C: ai-review caller bumped @ci/v1.0.5 → @ci/v1.1.0 (2026-06-25)
 
 - **`.github/workflows/ai-review.yml`** caller pin bumped per
@@ -24,7 +51,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
   operations@main via a transitional sparse-checkout step.
 - **Validation:** next framework PR after this merges will fire
   the new asset-fetch path end-to-end on a PUBLIC consumer
-  (ubuntu-latest runner). Pairs with operations PR #138 (PRIVATE
+  (GitHub-hosted runner). Pairs with operations PR #138 (PRIVATE
   consumer; self-hosted) for cross-visibility coverage.
 - **What stays on operations** (until IPLAN-0022 PR-D): the legacy
   `.github/ai-review/review-prompt.md` + `verdict.schema.json` files
