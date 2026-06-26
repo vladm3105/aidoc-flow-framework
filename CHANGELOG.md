@@ -42,7 +42,7 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 ### Changed — IPLAN-0022 PR-C: ai-review caller bumped @ci/v1.0.5 → @ci/v1.1.0 (2026-06-25)
 
 - **`.github/workflows/ai-review.yml`** caller pin bumped per
-  IPLAN-0022 §3.7 P2 (second consumer after operations PR-B; both
+  IPLAN-0022 §4 P2 (second consumer after operations PR-B; both
   consume the new asset source on aidoc-flow-ci).
 - **What this changes for framework:** the reusable workflow now
   fetches `review-prompt.md` + `verdict.schema.json` from
