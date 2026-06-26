@@ -13,7 +13,7 @@
 | -------------- | ------------------------------------------------------------- |
 | Task           | CONSUMER-FEEDBACK-001                                          |
 | Type           | orchestration (documentation; no impl in this PR)             |
-| Status         | DRAFT — 2026-06-26T00:00:00Z                                   |
+| Status         | READY — 2026-06-26T00:00:00Z (converged: 3 independent + 3 self review passes) |
 | Depends on     | Triage commit `3e0d80c5`; the Tier-2 feedback pipeline (`framework/governance/FRAMEWORK_FEEDBACK_LOG.md`); `plans/IPLAN-LANG-001-PLAN.md` (pre-existing, feeds **PR-6**) |
 | Feeds          | Per-cluster child plans `CFB-PR-*-PLAN.md`                     |
 | Version impact | None for this orchestration PR. Cumulative across children: ≥1 framework MINOR (new template fields / spec gates) + plugin/tooling PATCH-to-MINOR. Each child finalizes its own arithmetic. |
@@ -84,7 +84,7 @@ duplicate-`Q2` ambiguity.
 
 ### Cluster design — 12 child PRs, grouped into 4 waves
 
-Wave order encodes dependency, not just priority. Two coupling facts the
+Wave order encodes dependency, not just priority. Coupling facts the
 naive "PR-1 first, linear" reading misses, made explicit here:
 
 - **PR-1 ↔ PR-2(e):** PR-1's corrected `TRACEABILITY.md` answers the reverse
@@ -98,6 +98,13 @@ naive "PR-1 first, linear" reading misses, made explicit here:
   in verification contexts; PR-3's granularity rule only *matters* because
   PR-2 computes coverage. Land them **together or back-to-back**, reviewed as
   a pair.
+- **PR-3 ↔ PR-7:** both mutate the `status`-enum contract. PR-3
+  (`BL-STATUS-SCOPE`) hardens per-context `status` enums + scope-aware
+  validation; PR-7 (`ENG-BRD-SKETCH-ROADMAP`) introduces a **new BRD
+  `status: Sketch` value**. If PR-3 lands first, PR-7's `Sketch` value must be
+  registered in PR-3's enum framework and its trace-inert/lint-deferred
+  exemption expressed in the scope-aware validation. Sequence PR-7 **after**
+  PR-3, or land the `Sketch` enum registration as part of PR-3.
 
 #### Wave 1 — Foundation (do first)
 
@@ -144,6 +151,10 @@ naive "PR-1 first, linear" reading misses, made explicit here:
 - Version floor: framework MINOR (new standards section) + tooling.
 - **3 surfaces (`ID_NAMING_STANDARDS.md`, `sdd_doc_lint`, tag-syntax page) —
   at the cap; child plan splits `BL-STATUS-SCOPE` out if a 4th surface appears.**
+- *Doc-boundary with PR-1:* PR-1 owns the `TRACEABILITY.md` chain diagram +
+  reverse-lookup prose; PR-3's **new tag-syntax page** owns per-layer
+  punctuation/cardinality. The child plan must draw that line so the two
+  trace-docs don't duplicate or contradict.
 
 **PR-4 — Provisional IDs** · `D54-F01-PROVISIONAL-IDS` · P1 · independent
 
@@ -152,7 +163,12 @@ naive "PR-1 first, linear" reading misses, made explicit here:
   lowercase-`xxxx` blind spot; lift the SHA-256 algorithm from
   `EARS-TEMPLATE.yaml:94-100` into `ID_NAMING_STANDARDS.md` as normative +
   a placeholders-until-canonical statement; `rehash` as an `sdd_doc_lint`
-  subcommand (reference-aware), NOT a new CLI. No coverage/trace dependency.
+  subcommand (reference-aware), NOT a new CLI.
+- *Independence caveat:* no hard sequencing dependency, but the child plan
+  must resolve one interaction with PR-2/PR-3 — whether a **provisional-state
+  element counts as "covered"** by PR-2's gate, and whether PR-3's taglint
+  accepts the ordinal-hex/`0000` placeholder form. Coordinate the answer; do
+  not assume full isolation.
 - Version floor: framework MINOR + tooling.
 
 **PR-5 — Reuse manifest** · `D54-F02-REUSE-MANIFEST` · P1 · **depends on PR-2**
@@ -270,6 +286,55 @@ PR-6 .. PR-12           ── parallelizable docs/standalone (PR-6 & PR-10 are 
    two-cycle gap review, implement, verify, land, then move the TODO entries
    to **Closed** with the merge SHA (per `FRAMEWORK-TODO.md` rules).
 
+## Cross-cutting child-PR contract
+
+Beyond its own scope, **every** child PR that changes a lint rule, `@`-tag
+semantics, the registry, a gate, a playbook, or a template inherits these
+done-criteria (named once here so the cluster blocks stay short). Each child
+plan must restate the ones that apply to it.
+
+- **C-1 Corpus re-lint + regen-via-skills.** Per CLAUDE.md (Corpus
+  cross-check + "never hand-edit example artifacts"): a child changing
+  lint/`@`-tag/registry/template content (PR-2, PR-3, PR-4, PR-7, PR-8, PR-9)
+  MUST run `python3 -m sdd_doc_lint examples/url-shortener/docs/` in one
+  review pass. New **blocking** gates (PR-2 forward-coverage + phase-leak;
+  PR-3 granularity) will fire fresh findings on the current corpus — the
+  corpus must be **regenerated via the framework skills (`doc-<layer>-audit`/
+  `-fixer`/cascade), never hand-edited**, and the child plan needs a
+  migration note (e.g. a `--skip-lint-smoke` / env-bypass) for the transient
+  pre-regen findings, mirroring the NECESSARY-UPSTREAM-001 / TRACE-RES-FIXUP
+  pattern.
+- **C-2 Platform-parity sync.** A child editing `tools/sdd_doc_lint/` (PR-2,
+  PR-3, PR-4) MUST run `tools/sync-plugin-framework.sh` to propagate the
+  canonical lint into the vendored platform copies; framework
+  template/registry changes reach the plugin + Hermes by the same D-0013
+  single-source rule (platforms consume `framework/layers/`, never copy). A
+  lint change that skips the sync drifts the platforms and breaks conformance.
+- **C-3 Conformance coverage.** Every new or changed gate ships
+  `tests/conformance/` coverage in the same PR (PR-1 GATE-08 correction;
+  PR-2 GATE-06 + phase-leak; PR-3 taglint/granularity; PR-4 provisional-ID
+  lint). "Conformance is the runnable contract" — green is a done-criterion,
+  and a new gate without a conformance test is incomplete.
+- **C-4 Version-pin parity.** A child that bumps `framework/VERSION`
+  (the framework-MINOR ones) MUST keep **both** `platforms/<name>/FRAMEWORK_SPEC_VERSION`
+  pins equal to it (conformance checks this) and let `sync-version-refs.sh`
+  fan the string into the docs. R3 covers collision; this names the parity.
+- **C-5 Child branch basis + revertibility.** Each child branches from
+  `origin/main` (NOT from this orchestration branch), is independently
+  testable and revertible, and its `CFB-PR-N` plan completes its own two-cycle
+  gap review before opening. PR-2 and PR-5 imply a multi-hour **live cascade
+  regen** — budget for it in those child plans.
+
+**Per-cluster `Done:`** = the cluster's own done line (where given) **+** the
+applicable C-1…C-4 above **+** the TODO entry moved to **Closed** with the
+merge SHA.
+
+**Workstream close-out.** CONSUMER-FEEDBACK-001 is complete when all **22**
+TODO entries are Closed-with-SHA and all 12 child PRs (PR-1…PR-12, with any
+7a/7b/9a/9b splits) have landed; at that point this orchestration plan moves
+to a done state and the three TODO banners can be archived to the Closed
+section.
+
 ## Verification
 
 | #  | Check (observable) | Expected | Maps to |
@@ -279,6 +344,7 @@ PR-6 .. PR-12           ── parallelizable docs/standalone (PR-6 & PR-10 are 
 | V3 | Dependency claims hold: PR-1 stands alone (matrix forward-ref non-blocking); PR-2⇄PR-3 co-dependent; PR-5 depends on PR-2's coverage semantics; PR-4 independent | consistent (DAG ⇄/► match the sequence + R-rows) | Approach |
 | V4 | Each cluster's one-liner matches the resolved fork-decision in `FRAMEWORK-TODO.md` (incl. disambiguated Eng-Q/BL-Q citations) | no contradiction | Approach |
 | V5 | `python3 -m sdd_doc_lint examples/url-shortener/docs/` still green (this PR changes no spec) | zero unexpected findings | Out-of-scope guard |
+| V6 | Every gate/lint/template-changing child (PR-2/3/4/7/8/9) inherits the applicable C-1…C-4 cross-cutting criteria | named in the Cross-cutting contract | Approach |
 
 ## Docs to update (this orchestration PR)
 
@@ -296,6 +362,9 @@ PR-6 .. PR-12           ── parallelizable docs/standalone (PR-6 & PR-10 are 
 | R3 | Multiple framework-MINOR child PRs collide on `VERSION` / docs sync | low | Sequential landing; `sync-version-refs.sh` handles version-string fanout. |
 | R4 | A child PR's fork-decision drifts from the triage record | low | V4 + each child re-reads its `FRAMEWORK-TODO.md` entry as the contract. |
 | R5 | A surface-cap-flagged PR (2/7/9/10) is implemented without splitting | med | V2 makes the split a done-criterion; the child plan's own review re-checks Rule 1. |
+| R6 | A lint/template child lands without corpus re-lint+regen → ships orphan findings into the cascade (the NECESSARY-UPSTREAM-001 trap) | **high** | C-1 makes corpus re-lint + regen-via-skills a per-child done-criterion; V6. |
+| R7 | A `tools/sdd_doc_lint/` change skips `sync-plugin-framework.sh` → vendored platform copies drift, conformance breaks | med | C-2 names the parity sync; C-3 requires conformance coverage in the same PR. |
+| R8 | A framework-MINOR child bumps `framework/VERSION` but not both `FRAMEWORK_SPEC_VERSION` pins | low | C-4 makes pin parity a done-criterion (conformance checks it). |
 
 ## Claim ledger
 
@@ -376,6 +445,42 @@ Six blocking + several minor findings; all folded:
   BeeLocal count is the 7 standalone entries).
 - **Verdict: READY.**
 
-**Result:** READY. Two independent fresh-context passes (Pass 2 + Pass 4)
-plus two self passes; Pass 4 confirmed convergence with zero blocking
-findings. Plan PR may open.
+### Pass 5 — 2026-06-26 — independent (fresh-context, `Plan` agent) — gap scan
+
+A deliberately different mandate from Pass 2/4: hunt for **omitted
+cross-cutting scope**, not internal consistency. Four blocking + six minor
+gaps; all folded:
+
+- **G-A (corpus regen/cross-check):** the plan named the example corpus only
+  as the orchestration PR's own out-of-scope guard (V5), never as a per-child
+  done-criterion — yet PR-2/3/4/7/8/9 change exactly the lint/`@`-tag/registry/
+  template content the CLAUDE.md Corpus rule governs, and the new blocking
+  gates will fire fresh findings requiring **regen-via-skills**. → Added
+  **C-1** + R6 + V6.
+- **G-B (platform-parity sync):** silent on `sync-plugin-framework.sh`
+  propagation of `tools/sdd_doc_lint/` changes to vendored platform copies.
+  → Added **C-2** + R7.
+- **G-C (conformance tests for new gates):** required conformance only for
+  PR-5; the new gates in PR-1/2/3/4 had none. → Added **C-3**.
+- **G-D (`FRAMEWORK_SPEC_VERSION` pin parity):** R3 covered VERSION collision
+  but not the two-platform spec-pin parity. → Added **C-4** + R8.
+- **G-F1 (PR-3⇄PR-7 status-enum collision):** PR-7's new `status: Sketch`
+  value collides with PR-3's status-enum hardening. → Added the PR-3⇄PR-7
+  coupling bullet + "sequence PR-7 after PR-3."
+- *Minors folded:* per-cluster `Done:` formula + workstream close-out
+  (close-out paragraph); child branch-basis from `origin/main` + cascade-cost
+  budget (**C-5**); PR-4 provisional-ID-vs-coverage independence caveat
+  (G-F3); PR-1↔PR-3 trace-doc boundary note (G-F4).
+
+### Pass 6 — 2026-06-26 — self re-validation (of Pass-5 edits)
+
+- The C-1…C-5 contract is named once and referenced by V6 / R6-R8 / the
+  per-cluster `Done:` formula — no per-PR duplication. ✓
+- New couplings (PR-3⇄PR-7, PR-4 caveat, PR-1↔PR-3 doc boundary) are
+  consistent with the DAG's existing edges; none contradict the sequence. ✓
+- No new load-bearing findings.
+
+**Result:** READY. Three independent fresh-context passes (Pass 2 internal,
+Pass 4 confirming, Pass 5 gap-scan) plus three self passes; the gap scan's
+four blocking omissions are folded into a single Cross-cutting child-PR
+contract (C-1…C-5). Plan PR may open.
