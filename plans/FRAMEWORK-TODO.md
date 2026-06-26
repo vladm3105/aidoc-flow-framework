@@ -132,6 +132,9 @@
 > F-03 (offline readiness score) and F-09 (MVP sizing) resolved-by-design
 > — see notes in `[lint] D54-F01` and below. Each entry below carries the
 > author's resolved fork-decision (clarified 2026-06-26).
+>
+> **Orchestration:** → `plans/CONSUMER-FEEDBACK-001-PLAN.md` sequences all
+> 22 items (D54 + Engramory + BeeLocal) into child PRs PR-1…PR-12.
 
 ### `[template]` `D54-F02-REUSE-MANIFEST` — no first-class reuse of an existing/external artifact
 
@@ -275,6 +278,8 @@
 > `D54-F13` — see `ENG-FWD-COVERAGE` below. Item #6's *premise is invalid*
 > (Lite/Standard/Full depth variants were removed 2026-06-12; the framework
 > is single-path) — only the stale-docs residue it exposed is logged.
+>
+> **Orchestration:** → `plans/CONSUMER-FEEDBACK-001-PLAN.md` (PR-2/5/6/7/10).
 
 ### `[lint]` `ENG-FWD-COVERAGE` — no full-chain FORWARD coverage gate; single-upstream EARS hides built requirements
 
@@ -436,6 +441,9 @@
 > **Folded**: #6/#40 → `ENG-PLATFORM-ADR-TIMING` (PRD-layer note added);
 > #8b/#52-pt2 (generated matrix) + #10/#54 (backward coverage) →
 > `ENG-FWD-COVERAGE` (d)/(e). Remaining open items below.
+>
+> **Orchestration:** → `plans/CONSUMER-FEEDBACK-001-PLAN.md` realizes the
+> sequencing below as child PRs PR-1…PR-12.
 >
 > **Suggested PR sequencing (author Q5 — small themed PRs, NOT one sweep;
 > each ≤3 doc surfaces per governance Rule 1):**
