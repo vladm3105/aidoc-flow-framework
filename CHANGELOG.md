@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — bump caller pin @ci/v1.1.2 → @ci/v1.1.3 (second-checkout clean: false; 2026-06-26)
+
+- **`.github/workflows/ai-review.yml`** caller pin bumped per
+  aidoc-flow-ci PR #33 / `ci/v1.1.3`. v1.1.2's full-clone fix WAS
+  correct — but a SEPARATE bug (the second `actions/checkout@v4`
+  step for operations@main config.json had default `clean: true`
+  which ran `git clean -ffdx` at workspace root, wiping the prior
+  step's `./reviewer-assets/` subdirectory). v1.1.3 adds
+  `clean: false` to the second checkout. End-to-end validated on
+  operations PR #142 (ai-review APPROVED clean on the v1.1.3
+  workflow body).
+- **End of the 4-cycle sparse-checkout saga** (v1.1.0 →
+  v1.1.1 → v1.1.2 → v1.1.3). Framework + operations both on
+  `@ci/v1.1.3`. Phase C onboarding can proceed.
+
 ### Fixed — bump caller pin @ci/v1.1.1 → @ci/v1.1.2 (full-clone sparse-checkout fix; 2026-06-26)
 
 - **`.github/workflows/ai-review.yml`** caller pin bumped per
