@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — IPLAN-0022 PR-C: ai-review caller bumped @ci/v1.0.5 → @ci/v1.1.0 (2026-06-25)
+
+- **`.github/workflows/ai-review.yml`** caller pin bumped per
+  IPLAN-0022 §3.7 P2 (second consumer after operations PR-B; both
+  consume the new asset source on aidoc-flow-ci).
+- **What this changes for framework:** the reusable workflow now
+  fetches `review-prompt.md` + `verdict.schema.json` from
+  `aidoc-flow-ci/ai-review/@ci/v1.1.0` (via sparse-checkout) instead
+  of `aidoc-flow-operations@main`. `config.json` still comes from
+  operations@main via a transitional sparse-checkout step.
+- **Validation:** next framework PR after this merges will fire
+  the new asset-fetch path end-to-end on a PUBLIC consumer
+  (ubuntu-latest runner). Pairs with operations PR #138 (PRIVATE
+  consumer; self-hosted) for cross-visibility coverage.
+- **What stays on operations** (until IPLAN-0022 PR-D): the legacy
+  `.github/ai-review/review-prompt.md` + `verdict.schema.json` files
+  remain for back-compat with consumers pinned at older `@ci/v1.0.X`
+  tags.
+- Source-of-truth migration plan: [`aidoc-flow-operations` IPLAN-0022](https://github.com/vladm3105/aidoc-flow-operations/blob/main/ops/iplans/IPLAN-0022_source-of-truth-migration.md).
+
 ### Added — Adopted `aidoc-flow-ci@ci/v1.0.2` shared CI library (2026-06-24)
 
 Framework is the **first PUBLIC consumer of `aidoc-flow-ci`** per

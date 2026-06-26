@@ -1,10 +1,15 @@
-# v1.0.2: public consumers can use ubuntu-latest. The reusable
-# ai-review.yml installs codex + claude CLI at workflow start when
-# runner_labels_review contains "ubuntu-latest" (no-op on self-hosted
-# runners that have the CLI pre-baked). See ci/v1.0.2 CHANGELOG and
-# docs/troubleshooting.md §10 for context. Install commands are
-# **unverified-in-CI** as of v1.0.2 ship; first PUBLIC consumer
-# adoption will validate. Report issues at vladm3105/aidoc-flow-ci.
+# Pinned at @ci/v1.1.0 — IPLAN-0022 PR-C: reviewer rubric + schema
+# now fetched from aidoc-flow-ci/ai-review/ at this pin (no longer
+# from operations@main; see IPLAN-0022 §3.7 P2). Per-consumer
+# config.json preservation via transitional sparse-checkout in the
+# reusable workflow (per-consumer-config improvement tracked as a
+# follow-up IPLAN).
+#
+# Prior @ci/v1.0.5 — first PUBLIC consumer of aidoc-flow-ci
+# (framework Phase A 2026-06-24). The reusable ai-review.yml installs
+# codex + claude CLI at workflow start when runner_labels_review
+# contains "ubuntu-latest" (no-op on self-hosted runners that have
+# the CLI pre-baked).
 #
 # Secrets required (consumer adds to repo secrets):
 #   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
@@ -34,7 +39,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.0.5
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.0
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'
