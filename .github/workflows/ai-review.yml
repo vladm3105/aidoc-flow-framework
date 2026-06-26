@@ -1,8 +1,8 @@
-# Pinned at @ci/v1.1.1 — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
+# Pinned at @ci/v1.1.2 — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
 # (aidoc-flow-ci PR #29; CLASS-aware terminology cleanup PR #30 also
 # in-flight on aidoc-flow-ci). Prior @ci/v1.1.0 had a sparse-checkout
 # pattern bug that broke ai-review on GitHub-hosted runners (worked on
-# self-hosted only due to cached state). @ci/v1.1.1 fixes that.
+# self-hosted only due to cached state). @ci/v1.1.2 fixes that.
 #
 # Pinned at @ci/v1.1.0 was — IPLAN-0022 PR-C: reviewer rubric + schema
 # now fetched from aidoc-flow-ci/ai-review/ at this pin (no longer
@@ -45,7 +45,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.2
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'

@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — bump caller pin @ci/v1.1.1 → @ci/v1.1.2 (full-clone sparse-checkout fix; 2026-06-26)
+
+- **`.github/workflows/ai-review.yml`** caller pin bumped per
+  aidoc-flow-ci PR #31 / `ci/v1.1.2`. v1.1.1's cone-mode sparse-checkout
+  STILL didn't populate `./reviewer-assets/ai-review/` on GitHub-hosted
+  runner fresh clones (broke framework PR #173 + operations PR #140
+  ai-review). v1.1.2 removes sparse-checkout entirely + does full
+  clone (reliable; a few seconds slower).
+- Chicken-and-egg: this PR's ai-review uses BASE main's v1.1.1
+  workflow (which has the bug) → ships via `skip-ai-review` label
+  - admin-merge.
+
 ### Fixed — close 2 repo-wide CI gaps + CHANGELOG terminology (2026-06-26)
 
 - **`.github/workflows/ai-review.yml`** caller pin bumped
