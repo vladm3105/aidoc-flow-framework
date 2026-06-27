@@ -725,7 +725,13 @@ def scan_fr_elements(text: str) -> list[FRElement]:
             # `**bold** (x)` inside the description is never read as the band.
             remainder = line[m.end() :]
             band_m = _FR_BAND.match(remainder)
-            rb_m = _FR_REALIZED_BY.search(remainder)
+            # Restrict the realized_by scan to the leading parenthetical (up to
+            # the first `)` or EOL) so a `realized_by:` mention in the
+            # description prose is never captured — the same discipline the
+            # anchored band parse uses (D-0037: the escape lives in the band
+            # parenthetical).
+            paren_m = re.match(r"\s*\(([^)]*)", remainder)
+            rb_m = _FR_REALIZED_BY.search(paren_m.group(1)) if paren_m else None
             out.append(
                 FRElement(
                     elem_id=m.group(1),

@@ -102,6 +102,20 @@ class ScannerCapturesRealizedBy(unittest.TestCase):
         self.assertIsNone(fr.realized_by)
         self.assertEqual(covered_state_of(fr), CoveredState.AUTHORED)
 
+    def test_realized_by_in_description_prose_is_not_captured(self):
+        # A `realized_by:` mention in the description tail (outside the band
+        # parenthetical) must NOT classify the FR as a REALIZED_BY escape — that
+        # would silently pass an uncovered FR.
+        body = (
+            "## 7. Functional Requirements\n\n"
+            "- **BRD.01.07.aaaa — Audit Trail** (P1, internal): the system records "
+            "events; this is not realized_by: ADR alone but needs a SPEC.\n"
+        )
+        (fr,) = scan_fr_elements(body)
+        self.assertEqual(fr.band, "P1")
+        self.assertIsNone(fr.realized_by)
+        self.assertEqual(covered_state_of(fr), CoveredState.AUTHORED)
+
 
 if __name__ == "__main__":
     unittest.main()
