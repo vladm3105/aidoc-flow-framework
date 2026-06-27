@@ -45,6 +45,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Next:** if ai-review on the next post-merge framework PR fires
   cleanly using v1.1.5 on ubuntu-latest, IPLAN-0024 closes successfully.
 
+### Fixed — `tools/bump_version.py`: bump playbooks + plugin README; decouple plugin VERSION (#182, 2026-06-27)
+
+- The `framework_spec_version` regex required `\s+` (indentation) so it
+  silently skipped all **51 playbooks** (column-0 frontmatter) — every
+  framework-spec bump left conformance red until hand-fixed. Now `\s*` matches
+  both; the bump set adds canonical playbooks + `SKILL_AUTHORING.md` + the
+  plugin README framework-spec strings; the plugin's own `VERSION` is **no
+  longer coupled** (independent stream). A framework bump now leaves conformance
+  with **1** failure (the deliberate hard-pin tripwire in
+  `test_plugin_release_metadata.py`, which the tool now reminds about) instead
+  of 54. Tool-only change (no `framework/**`).
+
+### In progress — CONSUMER-FEEDBACK-001 workstream (2026-06-27)
+
+- Triaged 3 consumer-feedback logs (D54 / Engramory / BeeLocal) → 22 items,
+  orchestrated by `plans/CONSUMER-FEEDBACK-001-PLAN.md` (12 child PRs).
+  Done: PR-1 (the 0.23.1 reconciliation below, #180/#181); the bump-tool fix
+  (#182); **PR-2 coverage-engine design of record** (#184, `58e27917`).
+  In flight: **sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`, step 1
+  — shared `sdd_trace_graph` primitives — landed; engine build continues).
+
 ### Fixed — Framework Spec 0.23.1: cumulative→necessary-upstream doc reconciliation (2026-06-27)
 
 - Completed the doc migration `NECESSARY-UPSTREAM-001` (spec 0.16.0) left

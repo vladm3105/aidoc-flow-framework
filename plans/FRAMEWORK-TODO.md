@@ -24,6 +24,29 @@
 
 ## Open
 
+> **CONSUMER-FEEDBACK-001 progress (2026-06-27):** 3 consumer logs triaged → 22
+> items (the 3 dated banners below), orchestrated by
+> `plans/CONSUMER-FEEDBACK-001-PLAN.md`. **Closed:** `BL-TAG-CHAIN-GATE-SYNC`
+> (PR #180/#181). **In flight:** `ENG-FWD-COVERAGE` + `D54-F13` + `D54-F05` are
+> being built together as **CFB-PR-2** (plan merged #184; sub-PR 2a-core started
+> on `feat/cfb-pr-2a-coverage-core`, step 1 `sdd_trace_graph` landed). The
+> remaining D54/ENG/BL items stay open until their PR ships.
+
+### `[template]` `INDEX-UPSTREAM-RESIDUE` — stale cumulative `Upstream:` enumerations in layer index templates / READMEs
+
+- *Context:* CFB-PR-1 (PR #180) migrated cumulative→necessary-upstream across
+  ~20 surfaces, but its V6 grep keyed on the literal "cumulative" and missed the
+  per-layer **`Upstream:` enumerations** in the layer index templates / READMEs.
+  Concrete: `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md:27` declares
+  `Upstream: BRD, PRD, EARS, BDD, ADR` (the old full chain) where SPEC's
+  `required_tags` is `[ears, bdd, adr]`; `:29` carries the full-chain line. The
+  other layer index templates likely carry the same.
+- *Fix shape:* sweep the `NN_*/<TYPE>-00_index.TEMPLATE.*` + layer READMEs;
+  correct each `Upstream:` line to the registry `required_tags`. Same class as
+  CFB-PR-1; doc-only. (CFB-PR-2 2b fixes the SPEC-00 two lines in-passing while
+  it's open; this entry tracks the cross-layer sweep.)
+- *Status:* OPEN — P3 (residual cumulative debt).
+
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
 - *Context:* ACCEPTANCE-FIXTURES-DRIFT (2026-06-14) closed 12
