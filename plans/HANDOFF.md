@@ -67,11 +67,22 @@
 >    DD-6 row 1 (escaped informational) + row 4 (phase leak). DD-9: corpus
 >    findings byte-identical to main (0 COV01). `test_forward_coverage.py` (9);
 >    231 green. Commit `0bdd12fc`.
-> 5. ⬜ **RESUME HERE** — `tools/sdd_coverage.py` → generated
->    `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md` cross-ref (DD-7).
->    Consumes the same `build_edge_graph` core; emits a regenerable matrix.
-> 6. ⬜ Conformance tests per gate; corpus green via DD-9; framework MINOR bump
->    - the BRD-template FR-annotation rule (DD-3/DD-4 normative formalization).
+> 5. ✅ **`tools/sdd_coverage.py` matrix emitter** (DD-7). Thin reporter over
+>    the shared `build_edge_graph` core; emits a GENERATED, deterministic
+>    `TRACEABILITY_MATRIX.md` (per gated FR: band, covered_state, reached
+>    downstream layers). Generated the example matrix (4 BRD-01 FRs, all reach
+>    SPEC+IPLAN); idempotent, 0 added linter findings, markdownlint clean.
+>    `test_sdd_coverage.py` (6); 240 green. Commit `19d95a1a`. **The
+>    `framework/governance/TRACEABILITY.md` cross-ref moved to step 6** (lands
+>    with the framework MINOR bump so the framework change is GATE-SPEC-grouped).
+> 6. ⬜ **RESUME HERE** — framework MINOR bump + the deferred spec changes, as
+>    ONE coordinated GATE-SPEC-compliant change: (a) the
+>    `governance/TRACEABILITY.md` reverse-lookup cross-ref to the generated
+>    matrix (DD-7); (b) the BRD-template FR-annotation rule (DD-3/DD-4 — every
+>    FR bullet MUST carry `(P1|P2|Future, …)` + the `Acceptance criteria:`
+>    label marker); (c) conformance tests per gate (COV01 fires/doesn't; matrix
+>    regenerate-and-diff = V5); (d) bump `framework/VERSION` MINOR + CHANGELOG +
+>    re-vendor + both `FRAMEWORK_SPEC_VERSION`. Then 2a-core is PR-ready.
 >
 > **Pre-existing corpus issue surfaced in step 4 (NOT a CFB-PR-2 regression):**
 > `TH-RES-001` errors on `examples/url-shortener/docs/02_PRD/PRD-01.md`

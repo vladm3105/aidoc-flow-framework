@@ -382,9 +382,38 @@ a corpus-level gate.
   for framework-fixer remediation (never hand-edit the example artifact).
 - `test_forward_coverage.py` (9); 231 unit+conformance green.
 
-### Step 5 — `sdd_coverage.py` matrix emitter + `TRACEABILITY.md` cross-ref (DD-7) — NEXT
+### Step 5 — `sdd_coverage.py` matrix emitter (DD-7) — DONE (`19d95a1a`)
 
-A thin reporter consuming the same `build_edge_graph` core; emits a regenerable
-`docs/TRACEABILITY_MATRIX.md` and adds the cross-ref into
-`governance/TRACEABILITY.md`. Then step 6 (conformance tests per gate; corpus
-green; framework MINOR bump + the BRD-template FR-annotation rule DD-3/DD-4).
+`tools/sdd_coverage.py` — a thin reporter over the shared engine (`tools/`
+script, not vendored, like `trace_walk.py`).
+
+- `render_matrix(corpus)` (pure, testable) consumes `build_edge_graph` +
+  `scan_fr_elements` + `covered_state_of` + `_doc_forward_reach` from
+  `sdd_doc_lint` — the SAME graph the forward gate reads, so the matrix and the
+  gate never disagree (DD-1). Emits a GENERATED, deterministic
+  `TRACEABILITY_MATRIX.md`: one row per gated FR (id, band, `covered_state`, a
+  ✓ per downstream layer reached) + a summary.
+- CLI `python tools/sdd_coverage.py <docs_root> [--output PATH|-]`; default
+  writes `<docs_root>/TRACEABILITY_MATRIX.md`.
+- Generated `examples/url-shortener/docs/TRACEABILITY_MATRIX.md` (all 4 BRD-01
+  FRs reach SPEC+IPLAN). Idempotent regeneration verified; 0 added linter
+  findings (the matrix file has no `doc_id`, inert to the graph/scanner);
+  markdownlint clean. Output sorted by FR id → deterministic (V5 regenerate-
+  and-diff is step 6's conformance test).
+- `test_sdd_coverage.py` (6); 240 unit+conformance green.
+
+**Resequencing note:** the `framework/governance/TRACEABILITY.md` reverse-lookup
+cross-ref (also DD-7) **moved to step 6**. Reason: it is a `framework/` spec
+change, which couples to GATE-SPEC (needs the VERSION bump + CHANGELOG). Grouping
+it with the framework MINOR bump keeps the framework change one coordinated,
+GATE-SPEC-compliant unit rather than a spec edit stranded ahead of its bump.
+
+### Step 6 — framework bump + deferred spec changes + conformance (DD-3/DD-4/DD-7/DD-9) — NEXT
+
+One coordinated GATE-SPEC-compliant framework change: (a) `TRACEABILITY.md`
+cross-ref to the generated matrix; (b) the BRD-template FR-annotation rule
+(every FR bullet MUST carry `(P1|P2|Future, …)` + the `Acceptance criteria:`
+label); (c) conformance tests per gate (COV01 fires/doesn't; matrix
+regenerate-and-diff); (d) bump `framework/VERSION` MINOR + CHANGELOG + re-vendor
+
+- both `FRAMEWORK_SPEC_VERSION`. Then 2a-core is PR-ready.
