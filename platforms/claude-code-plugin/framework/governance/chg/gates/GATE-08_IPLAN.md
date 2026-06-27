@@ -220,15 +220,12 @@ Ensure test-first ordering:
 3. Implementation files fill in the stubs
 
 ## GATE-08-E003 Resolution
-Add upstream traceability tags:
+Add the necessary upstream traceability tags. IPLAN requires only @spec + @tdd
+(per LAYER_REGISTRY.yaml required_tags); BRD/PRD/EARS/BDD/ADR are reached
+transitively through the chain, not cited locally:
 
 @spec: SPEC-XX (Component Definition)
 @tdd: TDD-XX (Test Cases)
-@brd: BRD-XX
-@prd: PRD-XX
-@ears: EARS-XX
-@bdd: BDD-XX
-@adr: ADR-XX
 ```
 
 ---
