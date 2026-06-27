@@ -12,7 +12,7 @@ framework_spec_version: "0.23.1"
 The auditor lens at IPLAN altitude (weight 10) validates the formal
 rules that govern IPLAN structure: ID conformance, upstream-trace
 resolution to SPEC and TDD, deployment-step matrix↔body parity, the
-cumulative trace header at the doc level, and cross-IPLAN reference
+necessary-upstream trace header at the doc level, and cross-IPLAN reference
 form. IPLAN is the final document layer before code touches a
 running environment; its auditor lens must keep the trace chain
 intact so that, when a deploy step fails or a rollback fires, the
@@ -34,10 +34,10 @@ so that incident reports, deploy logs, and post-mortems can
 reference steps unambiguously. A step ID that drifts from the
 pattern cannot be tracked across the toolchain.
 
-Matrix-body parity, cumulative trace header, and cross-IPLAN
+Matrix-body parity, the necessary-upstream trace header, and cross-IPLAN
 reference form round out the lens. The deployment-step matrix at
 the top of the IPLAN indexes every cutover step; matrix and body
-must stay in lockstep. The cumulative `@spec / @tdd` header at the
+must stay in lockstep. The necessary-upstream `@spec / @tdd` header at the
 doc level (declared once, applying to every step) must resolve
 cleanly — the necessary-upstream contract requires it. Cross-IPLAN
 references must use the right form: dash for doc-level
@@ -74,12 +74,11 @@ matrix has a paired body step carrying the matching ID. Conversely,
 every body step appears in the matrix. Orphan row / orphan body
 step → P2 citing C3.
 
-**C4 — Cumulative `@spec / @tdd` header at doc level resolves
-cleanly.** The cumulative header at the doc level (declared once,
-applying to every deploy step) resolves cleanly to existing
-upstream IDs. A broken cumulative header cascades into every body
-step — the necessary-upstream contract requires it. Missing or
-broken → P2 citing C4.
+**C4 — Necessary-upstream `@spec / @tdd` header at doc level resolves
+cleanly.** The header at the doc level (declared once, applying to every
+deploy step) resolves cleanly to existing upstream IDs. A broken header
+cascades into every body step — the necessary-upstream contract requires it.
+Missing or broken → P2 citing C4.
 
 **C5 — Cross-IPLAN `@iplan` references use correct form.**
 `@iplan:` references use the dash form (`@iplan: IPLAN-NN`) when

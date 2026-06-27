@@ -63,6 +63,6 @@ See template `metadata.id_standard` for details.
 Each EARS links to its source PRD via its necessary-upstream tag (BRD is reached transitively through the PRD):
 
 ```text
-@prd: PRD.NN.09.xxxx    (links to PRD functional requirement)
-@brd: BRD.NN.07.xxxx    (links to BRD functional requirement)
+@prd: PRD.NN.09.xxxx    (required — links to PRD functional requirement)
+@brd: BRD.NN.07.xxxx    (optional provenance; BRD is reached transitively via the PRD)
 ```
