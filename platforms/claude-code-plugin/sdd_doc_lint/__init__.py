@@ -627,6 +627,86 @@ _ELEM_DEF_YAML = re.compile(
 )
 
 
+# --- Heading-context FR scanner (CFB-PR-2 DD-3) ---------------------------------
+# The forward-coverage engine gates only *functional requirements*. R-a/R-b make
+# "scope by YAML path" impossible (the body is flat regex; authored artifacts are
+# markdown prose) and the bare `.07.` ordinal ambiguous (§7 mixes FR definitions
+# and an acceptance-criteria sub-block under the same ordinal). So an FR is
+# identified structurally: a definition bullet under a `## … Functional
+# Requirements` heading, before that section's `Acceptance criteria:` label line.
+
+#: An FR definition bullet: ``- **<ID> — <Title>** …``. Captures the element id
+#: only — the discriminators for "gated FR" are the heading context + the
+#: acceptance-criteria boundary (DD-3), NOT the band, so a bullet that is
+#: missing its band still classifies as an FR (DD-4's rule can then flag it).
+#: The em-dash is accepted as em (—), en (–), or hyphen (-) for author leniency.
+_FR_BULLET = re.compile(r"^\s*-\s+\*\*([A-Z]+\.[0-9]+\.[0-9]+\.[a-f0-9]+)\s+[—–-]\s+[^*]+\*\*")
+#: The leading parenthetical band token on an FR bullet, e.g. the ``P1`` in
+#: ``** (P1, anonymous public): …``. Matched on the bullet's first line only;
+#: the first token suffices even when the parenthetical wraps to the next line
+#: (corpus ``882c``: ``(P1, internal / privileged — Service-Owner\n  role)``).
+_FR_BAND = re.compile(r"\*\*\s*\(\s*([^\s,)]+)")
+#: The plain prose label that ends the FR definition sub-block and opens the
+#: acceptance-criteria sub-block (a label line, NOT a `##` heading — R-b).
+_ACCEPTANCE_LABEL = re.compile(r"^\s*Acceptance\s+criteria:\s*$", re.IGNORECASE)
+#: The normalised heading key that opens the gated FR section.
+_FR_SECTION_KEY = "functional_requirements"
+
+
+@dataclass(frozen=True)
+class FRElement:
+    """A gated functional-requirement element (CFB-PR-2 DD-3).
+
+    ``band`` is the raw leading parenthetical token on the FR bullet
+    (e.g. ``"P1"``, ``"Future"``), or ``None`` when the bullet carries no
+    parenthetical. DD-4's band rule validates it against ``priority_definitions``
+    and treats ``Future`` as the deferral signal. ``line`` is 1-based and points
+    at the FR bullet.
+    """
+
+    elem_id: str
+    line: int
+    band: str | None
+
+
+def scan_fr_elements(text: str) -> list[FRElement]:
+    """Return the gated functional-requirement elements declared in ``text``.
+
+    An element id is a gated FR iff its line is (a) under a ``## … Functional
+    Requirements`` heading, (b) before that section's ``Acceptance criteria:``
+    label line, and (c) authored as an FR *definition bullet*
+    ``- **<ID> — <Title>** …``. Prose citations of element ids inside the
+    section and the §7 acceptance-criteria sub-block elements are NOT gated
+    (the former lack the bullet form; the latter fall after the boundary).
+
+    Reuses the level-2 ``_SECTION_HEADING`` mechanism so a new ``##`` heading
+    ends the FR section. Pure structural scan — no YAML, no registry.
+    """
+    out: list[FRElement] = []
+    in_fr_section = False
+    past_acceptance = False
+    for i, line in enumerate(text.splitlines(), 1):
+        head = _SECTION_HEADING.match(line)
+        if head:
+            in_fr_section = _normalise_heading(head.group(1)) == _FR_SECTION_KEY
+            past_acceptance = False
+            continue
+        if not in_fr_section:
+            continue
+        if _ACCEPTANCE_LABEL.match(line):
+            past_acceptance = True
+            continue
+        if past_acceptance:
+            continue
+        m = _FR_BULLET.match(line)
+        if m:
+            band_m = _FR_BAND.search(line)
+            out.append(
+                FRElement(elem_id=m.group(1), line=i, band=band_m.group(1) if band_m else None)
+            )
+    return out
+
+
 def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
     """AS11 — element-ID hash integrity (definition uniqueness).
 
