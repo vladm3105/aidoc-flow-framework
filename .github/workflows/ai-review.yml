@@ -1,15 +1,27 @@
-# Pinned at @ci/v1.1.5 per IPLAN-0024 (operations PR #145 + aidoc-flow-ci
-# PR #36 + operations P3 PR #148) — the reusable workflow now uses `curl`
-# instead of `actions/checkout` for cross-repo rubric/schema/config
-# fetches, eliminating the v1.1.0→v1.1.3 sparse-checkout / clean-flag /
-# INIT-time-content-delete bug class. **Framework is the CRITICAL
-# validation:** GitHub-hosted runners (`ubuntu-latest`) are the bug-
-# class home that v1.1.0-v1.1.3 couldn't escape — every prior sparse-
-# checkout iteration failed here while passing on operations' self-
-# hosted. Per IPLAN-0022 PR-C reviewer rubric + schema live at
-# aidoc-flow-ci/ai-review/ (no longer in operations@main); per-consumer
-# config.json still comes from operations@main (transitional; per-
-# consumer-from-each-consumer-repo move tracked as a follow-up IPLAN).
+# Pinned at @ci/v1.1.6 — adds the auto-merge anti-recursion fix (aidoc-
+# flow-ci PR #37). Auto-merge now authenticated as the reviewer App
+# (APP_TOKEN) instead of the default GITHUB_TOKEN, so the App-authored
+# merge commit triggers downstream push: workflows on every routine
+# auto-merged PR. Discovered 2026-06-27 via IPLAN-0018 docs-sync
+# verification on operations PRs #149 + #150. v1.1.6 has a graceful
+# fallback to GITHUB_TOKEN if the App lacks `contents: write` (PR still
+# merges; push: workflows stay suppressed until permission is added;
+# operator-visible ::warning::). Framework currently has no push:
+# workflows depending on the fix — adopting v1.1.6 keeps framework in
+# version-lockstep with operations + readies the consumer for future
+# push: workflows.
+#
+# Prior @ci/v1.1.5 per IPLAN-0024 (operations PR #145 + aidoc-flow-ci
+# PR #36 + operations P3 PR #148) — replaced cross-repo `actions/
+# checkout` with `curl` for cross-repo rubric/schema/config fetches,
+# eliminating the v1.1.0→v1.1.3 sparse-checkout / clean-flag / INIT-
+# time-content-delete bug class. Framework P4 (PR #183) was the
+# CRITICAL validation on GitHub-hosted runners (ubuntu-latest) — the
+# bug-class home that v1.1.0-v1.1.3 couldn't escape. Per IPLAN-0022
+# PR-C reviewer rubric + schema live at aidoc-flow-ci/ai-review/ (no
+# longer in operations@main); per-consumer config.json still comes
+# from operations@main (transitional; per-consumer-from-each-consumer-
+# repo move tracked as a follow-up IPLAN).
 #
 # Prior @ci/v1.1.3 was — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
 # lineage (aidoc-flow-ci PR #29 + #33; cone-mode → full-clone →
@@ -49,7 +61,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.5
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.6
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'

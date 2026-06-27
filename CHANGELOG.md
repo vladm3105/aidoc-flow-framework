@@ -12,6 +12,41 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — `.github/workflows/ai-review.yml`: pin `@ci/v1.1.5` → `@ci/v1.1.6` (auto-merge App-token fix; version-lockstep with operations) (2026-06-27)
+
+- Framework caller pin bumped from `@ci/v1.1.5` to `@ci/v1.1.6` to
+  consume the auto-merge anti-recursion fix shipped on aidoc-flow-ci
+  PR #37. The reusable workflow at `@ci/v1.1.6` authenticates the
+  auto-merge as the reviewer App (`APP_TOKEN`) instead of the default
+  `GITHUB_TOKEN`, so the App-authored merge commit triggers downstream
+  `push:` workflows on every routine auto-merged PR.
+- **Why now (vs deferring):** framework currently has no `push:`
+  workflows that depend on the fix (no docs-sync.yml here yet), so
+  the direct functional impact on framework is minimal. Adopting
+  v1.1.6 keeps framework in version-lockstep with operations (the
+  consumer that DOES depend on the fix) + readies framework for any
+  future push: workflows. Per IPLAN-0024 the consumer-pin-bump
+  discipline is to bump both in close succession to avoid skew.
+- **Graceful fallback in v1.1.6:** if the reviewer App lacks
+  `contents: write`, falls back to `GITHUB_TOKEN` + emits a
+  `::warning::` with exact stderr. PR still merges (no regression).
+- **Backward compatibility:** identical to pre-v1.1.6 behavior on
+  framework today (no push: workflows depending on it). The merge-
+  author change (`github-actions[bot]` → `aidoc-reviewer[bot]`) is
+  visible in `git log` of future auto-merged PRs but otherwise inert
+  for framework.
+- **Plan:** discovered + fixed during IPLAN-0018 docs-sync verification
+  on operations PRs #149 + #150 (operations carries primary tracking).
+  Operations counterpart PR #151. Deeper structural fix is a future
+  AI-driven doc-maintainer IPLAN (formerly TODO matrix row 6, DEFERRED;
+  being promoted to active per founder direction this session).
+- **Chicken-and-egg:** this PR's ai-review fires using BASE main's
+  v1.1.5 workflow (not v1.1.6 yet); its own auto-merge will be by
+  `github-actions[bot]`. Expected. The fix activates for the NEXT
+  auto-merged PR after this one merges (but framework has no push:
+  workflow to make the change observable; verify via merge-author of
+  the next auto-merged PR).
+
 ### Changed — `.github/workflows/ai-review.yml`: pin `@ci/v1.1.3` → `@ci/v1.1.5` (IPLAN-0024 P4 — CRITICAL GitHub-hosted-runner validation) (2026-06-27)
 
 - Framework caller pin bumped from `@ci/v1.1.3` to `@ci/v1.1.5` to
