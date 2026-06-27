@@ -273,3 +273,56 @@ design-gaps, Pass 4 soundness, Pass 6 confirming) + four self passes. The
 false-premise class (assuming structure/fields/contracts the code & artifacts
 don't provide) is closed — every gate input is now a verified-present signal.
 Plan PR may open; implementation proceeds 2a→2d.
+
+## Implementation log — sub-PR 2a-core
+
+Branch `feat/cfb-pr-2a-coverage-core` (rebased onto main `169b43c5`). The
+engine half of 2a (split from 2a-ref / PR-3 per HANDOFF). Build order tracked
+in `plans/HANDOFF.md`.
+
+### Step 1 — shared trace primitives (DD-1 foundation) — DONE (`0da6f4de`)
+
+`sdd_trace_graph` extracted from `trace_walk.py` (layer order, `@`-tag regex,
+ID forms, `doc_id_from_token` / `locate_doc` / `emit_tags`). `trace_walk`
+repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
+
+### Step 2 — edge-graph + heading-context FR scanner (DD-1/R-c, DD-3) — DONE
+
+- **Module-location decision (the DD-1 placement question).** The shared core
+  **moved into the `sdd_doc_lint` package** as `tools/sdd_doc_lint/trace_graph.py`
+  (commit `113af0c0`), not a loose `tools/` sibling. Rationale: the **vendored**
+  linter copies (`platforms/*/sdd_doc_lint/`) must import it; a package submodule
+  resolves via package-relative `from .trace_graph import …` regardless of how
+  the package landed on `sys.path`, whereas a loose sibling relies on a fragile
+  parent-dir assumption. `sync-vendored.sh` carries the submodule; the
+  byte-identity drift-guard (`test_doc_lint_vendoring`) now guards it too.
+  `trace_graph` stays pure stdlib (`re` + `pathlib`); the unvendored `tools/`
+  scripts reach it via `from sdd_doc_lint.trace_graph import …`.
+- **Heading-context FR scanner (DD-3)** — `scan_fr_elements()` / `FRElement`
+  (commit `209bc62c`). A gated FR = an FR definition bullet
+  (`- **<ID> — <Title>** …`) under a `## … Functional Requirements` heading and
+  before that section's `Acceptance criteria:` label line. Reuses the level-2
+  `_SECTION_HEADING` + `_normalise_heading` mechanism. The heading + boundary
+  are the discriminators (not the band), so prose citations and the §7 AC
+  sub-block are excluded, and a bullet missing its band still classifies (DD-4
+  can then flag it). Band token captured from the bullet's first line only →
+  tolerant of a wrapping parenthetical (corpus `882c`).
+- **Bidirectional element edge-graph (DD-1/R-c)** — `build_edge_graph()` /
+  `EdgeGraph` / `TraceEdge` (commit `f3d9b8f2`). Net-new upstream-citation
+  adjacency (today's `element_index` discards downstream citations). Strictly-
+  downstream skip matches `_check_trace_resolution`; same-layer siblings kept,
+  self-refs / index docs dropped; multi-`@brd` per DD-8 via the shared regex.
+  Lookups: `citers_of` / `citers_of_doc` / `citers_in_layer`.
+- **Corpus grounding (V2 partial).** On `examples/url-shortener/docs/`: the 4
+  BRD-01 §7 FRs classify (band P1), the 4 acceptance-criteria elements are
+  excluded, and all 4 FRs are cited element-level by PRD-01 — the one-hop
+  necessary-upstream chain (BRD←PRD←EARS…) confirms transitive forward reach is
+  computable. `test_fr_scanner.py` (9) + `test_edge_graph.py` (9); 208
+  unit+conformance green.
+
+### Step 3 — `covered_state` enum + escapes + FR-band parser (DD-2/DD-4/DD-5) — NEXT
+
+The scanner exposes the raw band token; step 3 validates it against
+`priority_definitions` and wires the `covered_state` predicate (`Future` =
+deferral). Then steps 4-6 (forward gate + run-mode severity, matrix emitter,
+conformance + corpus green).

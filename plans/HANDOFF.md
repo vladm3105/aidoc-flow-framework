@@ -23,21 +23,34 @@
 >   4 self** review passes (Pass-4/6 caught that the design assumed code/artifact
 >   facts that don't hold — fixed; see its R-a…R-f "Implementation reality").
 >
-> **RESUME HERE → sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`,
-> pushed, no PR yet). Split: **2a-core** (engine) + **2a-ref** (PR-3
-> ref-granularity, separate). 2a-core build order:
+> **sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`, pushed, no PR
+> yet; rebased onto main `169b43c5`). Split: **2a-core** (engine) + **2a-ref**
+> (PR-3 ref-granularity, separate). 2a-core build order:
 >
-> 1. ✅ **`tools/sdd_trace_graph.py`** — shared @-tag primitives extracted from
+> 1. ✅ **`sdd_trace_graph`** — shared @-tag primitives extracted from
 >    `trace_walk.py` (DD-1 foundation); `test_sdd_trace_graph.py` (8 tests) +
->    `test_trace_walk` green. Commit `122a1c3b`.
-> 2. ⬜ **Bidirectional element edge-graph** in `sdd_doc_lint` + the **markdown
->    heading-context scanner** (DD-3, reuse `_SECTION_HEADING`) to classify
->    gated FRs vs the §7 acceptance-criteria sub-block. *Decide first:* where
->    the shared module lives so the **vendored** `sdd_doc_lint` can import it
->    (move into the package, or vendor alongside) — `trace_walk` isn't vendored
->    so step 1 was clean.
-> 3. ⬜ `covered_state` enum + escapes (DD-2/DD-5) + FR-band parser (DD-4: the
->    inline `(P1|P2|Future)` annotation).
+>    `test_trace_walk` green. Commit `0da6f4de`. **Relocated in step 2** →
+>    `tools/sdd_doc_lint/trace_graph.py` (package submodule).
+> 2. ✅ **Bidirectional element edge-graph + heading-context FR scanner**
+>    (DD-3, DD-1/R-c). *Decision (resolved):* the shared module **moved into
+>    the `sdd_doc_lint` package** as `trace_graph.py`, so the **vendored**
+>    copies import it via package-relative `from .trace_graph import …`
+>    (carried by `sync-vendored.sh`; byte-identity drift-guard extended).
+>    Shipped: `scan_fr_elements()`/`FRElement` (the `## … Functional
+>    Requirements` heading + the `Acceptance criteria:` boundary classify gated
+>    FRs; band token captured, parenthetical-wrap-tolerant) and
+>    `build_edge_graph()`/`EdgeGraph`/`TraceEdge` (net-new upstream-citation
+>    adjacency — `citers_of` / `citers_of_doc` / `citers_in_layer`; reuses the
+>    shared primitives so forward/backward agree, multi-`@brd` per DD-8).
+>    Grounded on the real corpus: all 4 BRD-01 §7 FRs classified (band P1), the
+>    AC sub-block excluded, all 4 cited element-level by PRD-01; one-hop
+>    necessary-upstream chain holds. `test_fr_scanner.py` (9) +
+>    `test_edge_graph.py` (9); 208 unit+conformance green. Commits
+>    `113af0c0` (relocate) → `209bc62c` (scanner) → `f3d9b8f2` (edge-graph).
+> 3. ⬜ **RESUME HERE** — `covered_state` enum + escapes (DD-2/DD-5) + FR-band
+>    parser (DD-4): validate the `scan_fr_elements` band token against
+>    `priority_definitions`; `Future` = the deferral signal. The scanner
+>    already extracts the band token — this step gives it meaning.
 > 4. ⬜ Forward gate + run-mode severity (DD-6) + net-new `--mode` /
 >    `--skip-coverage-gate` args in `__main__.py`.
 > 5. ⬜ `tools/sdd_coverage.py` → `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md`
