@@ -26,6 +26,15 @@ from pathlib import Path
 
 import yaml
 
+# Shared @-tag trace primitives (CFB-PR-2 DD-1). The forward coverage engine
+# reuses the SAME token→doc reduction, layer order, and `@`-tag regex as the
+# backward walker so the two directions of the trace graph agree byte-for-byte.
+# Package-relative import → resolves in the canonical tree and in every vendored
+# copy (the submodule is carried by sync-vendored.sh).
+from .trace_graph import LAYER_INDEX as _LAYER_INDEX
+from .trace_graph import TAG as _TRACE_TAG
+from .trace_graph import doc_id_from_token
+
 _REGISTRY_REL = Path("framework") / "registry" / "LAYER_REGISTRY.yaml"
 
 
@@ -986,6 +995,121 @@ def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]
                         )
                     )
     return findings
+
+
+# --- Bidirectional element edge-graph (CFB-PR-2 DD-1 / R-c) --------------------
+# `_check_trace_resolution` computes the citation adjacency per-line and
+# discards it; forward coverage needs it retained. `build_edge_graph` keeps
+# every UPSTREAM `@<layer>:` citation as a `TraceEdge`, so forward
+# (cited→citers) and backward (citer→cited) adjacency both derive from one
+# structure. The graph is NET-NEW: today's `element_index` is a declaration
+# presence map that excludes downstream citations, so this adjacency does not
+# exist yet.
+
+
+@dataclass(frozen=True)
+class TraceEdge:
+    """One UPSTREAM `@<layer>:` citation: ``citer_doc`` (downstream) cites
+    ``cited_token`` (an element id or doc id), whose host doc is ``cited_doc``.
+    ``line`` is 1-based in ``citer_doc``."""
+
+    citer_doc: str
+    citer_layer: str
+    cited_token: str
+    cited_doc: str
+    line: int
+
+
+@dataclass(frozen=True)
+class EdgeGraph:
+    """Corpus-wide upstream-citation adjacency (CFB-PR-2 DD-1).
+
+    ``element_host`` maps each element id to its *declaring* host doc
+    (citations excluded — R-c). ``doc_layer`` maps doc id → artifact code.
+    ``edges`` is every upstream citation edge.
+    """
+
+    element_host: dict[str, str]
+    doc_layer: dict[str, str]
+    edges: tuple[TraceEdge, ...]
+
+    def citers_of(self, token: str) -> set[str]:
+        """Doc ids that cite ``token`` (an element id or doc id) directly."""
+        return {e.citer_doc for e in self.edges if e.cited_token == token}
+
+    def citers_of_doc(self, doc_id: str) -> set[str]:
+        """Doc ids that cite ANY element of ``doc_id`` (or the doc id itself)."""
+        return {e.citer_doc for e in self.edges if e.cited_doc == doc_id}
+
+    def citers_in_layer(self, token: str, layer: str) -> set[str]:
+        """``citers_of(token)`` restricted to citers in the given layer."""
+        return {
+            e.citer_doc for e in self.edges if e.cited_token == token and e.citer_layer == layer
+        }
+
+
+def _artifact_code(fm: dict | None) -> str:
+    """Artifact code from frontmatter — ``artifact_type`` if present (keeping a
+    trailing ``-INDEX`` marker so callers can skip index docs), else the prefix
+    of ``doc_id``."""
+    if not fm:
+        return ""
+    code = str(fm.get("artifact_type") or "").strip().upper()
+    if code:
+        return code
+    doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+    m = re.match(r"^([A-Z]+)-", doc_id)
+    return m.group(1) if m else ""
+
+
+def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
+    """Build the net-new bidirectional element edge-graph (CFB-PR-2 DD-1 / R-c).
+
+    Retains every UPSTREAM `@<layer>:` citation. An edge is recorded only when
+    the cited token is strictly upstream of the citer (``cited_layer <
+    citer_layer``) — matching `_check_trace_resolution`'s strictly-downstream
+    skip (TRACE-RES-FIXUP-001 Fix 1); same-layer sibling lineage is kept,
+    self-references are dropped. Index docs (``*-INDEX``) emit no edges.
+    Multi-`@brd` pipe lines yield one edge per tag (DD-8, via the shared regex).
+    """
+    element_host: dict[str, str] = {}
+    doc_layer: dict[str, str] = {}
+    docs: list[tuple[str, str]] = []  # (doc_id, text) for docs with a doc_id
+    for _rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = ""
+        if fm:
+            doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        doc_layer[doc_id] = _artifact_code(fm)
+        docs.append((doc_id, text))
+        # Element declarations live only in their host doc (R-c: a cited element
+        # in a downstream doc must not declare itself).
+        for m in _ELEM_ID.finditer(text):
+            elem = m.group(0)
+            parts = elem.split(".")
+            if len(parts) >= 2 and f"{parts[0]}-{parts[1]}" == doc_id:
+                element_host.setdefault(elem, doc_id)
+
+    edges: list[TraceEdge] = []
+    for doc_id, text in docs:
+        citer_code = doc_layer.get(doc_id, "")
+        if citer_code.endswith("-INDEX"):
+            continue  # index docs intentionally carry no real lineage
+        citer_n = _LAYER_INDEX.get(citer_code, 0)
+        for i, line in enumerate(text.splitlines(), 1):
+            for m in _TRACE_TAG.finditer(line):
+                value = m.group(2)
+                cited_doc = doc_id_from_token(value)
+                if cited_doc is None or cited_doc == doc_id:
+                    continue  # malformed value, or a self-reference (no lineage)
+                cited_n = _LAYER_INDEX.get(cited_doc.split("-", 1)[0], 0)
+                # Strictly-downstream forward references are not upstream edges.
+                if citer_n and cited_n and cited_n > citer_n:
+                    continue
+                edges.append(TraceEdge(doc_id, citer_code, value, cited_doc, i))
+    return EdgeGraph(element_host, doc_layer, tuple(edges))
 
 
 def _check_trace_resolution(
