@@ -24,7 +24,7 @@ Central registry for all SPEC documents. Each SPEC defines the implementation co
 ## Position in Document Workflow
 
 **Layer**: 6 (Technical Specification Layer)
-**Upstream**: BRD, PRD, EARS, BDD, ADR
+**Upstream (necessary)**: EARS, BDD, ADR — BRD/PRD are reachable transitively (one hop per layer), not direct upstream (necessary-upstream contract, NECESSARY-UPSTREAM-001).
 **Downstream**: TDD (Test-Driven Development, Layer 7)
 **Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
@@ -61,6 +61,26 @@ SPEC requires **TDD-Ready score >=90/100** before downstream TDD generation:
 
 - **Upstream**: [05_ADR](../05_ADR/) — Architecture Decision Records
 - **Downstream**: [07_TDD](../07_TDD/) — Test-Driven Development Guide
+
+## Coverage
+
+Backward-coverage contract (CFB-PR-2b): every upstream EARS/BDD requirement must
+be **realized** by a downstream SPEC or TDD — a requirement or acceptance
+scenario that nothing designs or tests is a coverage gap. This is the backward
+dual of the BRD forward-coverage rule (the BRD-template `_authored_form` rule;
+`COV01`).
+
+- **Enforced deterministically** by `sdd_doc_lint` finding `COV02` (the
+  structural tier beneath GATE-06): an EARS/BDD requirement doc that reaches no
+  SPEC/TDD downstream is flagged — a **warning** in `build` mode, an **error**
+  in `gate-code`. Reviewed at **GATE-06** (Design & Test).
+- **Document-level binding** in this release: `COV02` asserts each EARS/BDD
+  *doc* reaches a SPEC/TDD. **Element-level** coverage (which specific
+  requirement/scenario is realized) + an explicit per-element deferral signal
+  arrive with PR-3 (ref-granularity).
+- The matching forward direction (BRD requirement → SPEC/IPLAN) is `COV01`; both
+  read the same `@`-tag graph (`tools/sdd_coverage.py` /
+  `governance/TRACEABILITY.md`).
 
 ## Maintenance Notes
 
