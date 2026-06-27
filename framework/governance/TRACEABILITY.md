@@ -6,22 +6,34 @@
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
 ```
 
-## Cumulative Tagging
+## Necessary-upstream tagging
 
-Each layer inherits and adds one tag:
+Each layer cites only its **necessary upstream** (`required_tags` in
+`LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
+layer. Deeper lineage is discoverable transitively (one hop per layer, or
+`tools/trace_walk.py` for a one-shot query).
 
 ```
-Layer 1 (BRD):   @brd
-Layer 2 (PRD):   @brd @prd
-Layer 3 (EARS):  @brd @prd @ears
-Layer 4 (BDD):   @brd @prd @ears @bdd
-Layer 5 (ADR):   @brd @prd @ears @bdd @adr
-Layer 6 (SPEC):  @brd @prd @ears @bdd @adr @spec
-Layer 7 (TDD):   @brd @prd @ears @bdd @adr @spec @tdd
-Layer 8 (IPLAN): @brd @prd @ears @bdd @adr @spec @tdd @iplan
+Layer 1 (BRD):   —
+Layer 2 (PRD):   @brd
+Layer 3 (EARS):  @prd
+Layer 4 (BDD):   @ears
+Layer 5 (ADR):   @ears @bdd
+Layer 6 (SPEC):  @ears @bdd @adr
+Layer 7 (TDD):   @ears @bdd @adr @spec
+Layer 8 (IPLAN): @spec @tdd
 ```
 
-Maximum 8 cumulative tags at IPLAN layer.
+`required_tags` is the **minimum trace-resolution set**: a layer MAY
+additionally carry provenance tags (e.g. a platform ADR recording `@brd`/`@prd`
+in its `context`) but is not required to. Reverse lookup ("which BRD does
+SPEC-07 trace to?") walks the chain transitively, not a local tag.
+
+> *Origin:* NECESSARY-UPSTREAM-001 (spec `0.15.2` → `0.16.0`) replaced the
+> former cumulative-trace contract — every downstream layer redeclaring every
+> upstream layer — after it caused trace fabrication when an upstream layer was
+> genuinely absent from a project. See `governance/REVIEW_TEAM.md`
+> §"Necessary upstream + transitive trace".
 
 > **Cross-layer cardinality (CLEANUP-PR-F item 18):** doc numbers are
 > per-layer sequential and INDEPENDENT across layers. One BRD MAY drive
@@ -35,12 +47,12 @@ Maximum 8 cumulative tags at IPLAN layer.
 |-------|----------------------|---------------------|
 | BRD | — | PRD |
 | PRD | @brd | EARS |
-| EARS | @brd, @prd | BDD |
-| BDD | @brd, @prd, @ears | ADR |
-| ADR | @brd, @prd, @ears, @bdd | SPEC |
-| SPEC | @brd, @prd, @ears, @bdd, @adr | TDD |
-| TDD | @brd, @prd, @ears, @bdd, @adr, @spec | IPLAN |
-| IPLAN | @brd, @prd, @ears, @bdd, @adr, @spec, @tdd | Code |
+| EARS | @prd | BDD |
+| BDD | @ears | ADR |
+| ADR | @ears, @bdd | SPEC |
+| SPEC | @ears, @bdd, @adr | TDD |
+| TDD | @ears, @bdd, @adr, @spec | IPLAN |
+| IPLAN | @spec, @tdd | Code |
 
 ## Layer Readiness Gates
 

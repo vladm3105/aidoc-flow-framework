@@ -172,6 +172,6 @@ platform's; the properties are not):
 ## Cross-references
 
 - `DOC_GOVERNANCE_CORE.md` — governance principles and the readiness-gate baseline.
-- `TRACEABILITY.md` — the cumulative-tag chain a review checks.
+- `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
 - `chg/` — the change-management overlay (the `pre_merge`/gate machinery for changes).
 - `../README.md` — the layer flow these artifacts are created in.

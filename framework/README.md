@@ -9,7 +9,7 @@ and review playbooks that platforms consume.
 
 Specification-Driven Development (SDD) is an **8-layer documentation-to-code
 flow** that produces implementation-ready technical specifications from
-business requirements. Each layer is a single document type with cumulative
+business requirements. Each layer is a single document type with end-to-end
 traceability:
 
 ```

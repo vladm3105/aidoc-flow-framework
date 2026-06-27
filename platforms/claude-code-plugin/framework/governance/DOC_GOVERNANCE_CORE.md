@@ -4,7 +4,7 @@
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
 2. **YAML-first** — All templates are `.yaml`. MD is for indexes and reference docs only.
-3. **Cumulative traceability** — Each layer inherits all upstream tags; adds one.
+3. **Necessary-upstream traceability** — Each layer cites only its `required_tags` (`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer; deeper lineage is transitive.
 4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
 6. **Separation of development and deployment** — Development plans produce source code, Terraform modules, Helm charts, CI/CD workflow files, schema DDL, scripts — anything authored, committed, and shipped through version control. Deployment plans handle operator-only execution of those artifacts. A development plan is complete when its artifacts are authored, committed, and green — it does NOT wait for deployment.

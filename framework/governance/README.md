@@ -10,7 +10,7 @@ of which engine executes the workflow.
 |------|--------|
 | `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, immutability, validation baseline. |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
-| `TRACEABILITY.md` | The 8-layer traceability chain, cumulative tagging, and readiness gates. |
+| `TRACEABILITY.md` | The 8-layer traceability chain, necessary-upstream tagging, and readiness gates. |
 | `DIAGRAM_STANDARDS.md` | Mermaid-only diagram requirement and the C4 + DFD + sequence ownership model. |
 | `THRESHOLD_NAMING_RULES.md` | Naming, boundary, and usage rules for thresholds, limits, and timing parameters. |
 | `SECURITY_REVIEW.md` | Safety checks for agent-authored artifacts — secret leakage, prompt-injection, provenance, active-content sanitization. |

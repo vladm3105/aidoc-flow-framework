@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.23.0"
+framework_spec_version: "0.23.1"
 ---
 # auditor lens — ADR layer
 
@@ -15,7 +15,7 @@ resolution, summary-table↔body parity, and cross-ADR reference form.
 At upstream layers the auditor lens examined different element types: at
 EARS it checked EARS-line IDs, at BDD it checked scenario IDs. At ADR
 altitude the element types change — the auditor now works on decision
-element IDs, supersession references, and cumulative trace headers —
+element IDs, supersession references, and necessary-upstream trace headers —
 but the principle is identical: formal correctness is a precondition for
 downstream tooling, traceability matrices, and audit evidence.
 
@@ -24,10 +24,11 @@ summary table at the top of the ADR must trace forward to a body section
 that elaborates it, and every body section must trace back to a summary
 row. An ADR with body sections lacking summary entries is incomplete
 from a traceability standpoint; the table that should serve as the
-index has missed rows. Cumulative trace headers (`@brd:` / `@prd:` /
-`@ears:` declared once at the doc level, applying to every element)
-must resolve cleanly to existing upstream IDs; broken trace headers
-cascade into every element-level finding downstream.
+index has missed rows. The necessary-upstream trace header (the ADR's
+`@ears:` / `@bdd:` tags declared once at the doc level, applying to every
+element) must resolve cleanly to existing upstream IDs; a broken trace header
+cascades into every element-level finding downstream. (`@brd`/`@prd`, if
+present, are optional provenance reached transitively — not required.)
 
 Cross-ADR reference form matters because the ID naming standard
 distinguishes doc-level refs (`@adr: ADR-NN`, dash form) from element-
@@ -73,12 +74,11 @@ ID. Conversely, every body decision section must trace back to a
 summary row. Orphan summary rows leave the table inaccurate; orphan
 body sections leave the index incomplete. Orphan row → P2 citing C3.
 
-**C4 — Cumulative trace header resolves.** The cumulative `@brd: / @prd:
-/ @ears:` header at the doc level (declared once and applying to every
-element) must resolve cleanly to existing upstream IDs. Element-level
-tags amplify the cumulative header; a broken cumulative header cascades
-into every element-level finding downstream. Missing or broken → P2
-citing C4.
+**C4 — Necessary-upstream trace header resolves.** The ADR's `@ears: / @bdd:`
+header at the doc level (declared once and applying to every element) must
+resolve cleanly to existing upstream IDs. Element-level tags amplify the
+header; a broken header cascades into every element-level finding downstream.
+Missing or broken → P2 citing C4.
 
 **C5 — Cross-ADR references use correct form.** `@adr:` references must
 use the dash form (`@adr: ADR-NN`) when pointing to a whole document

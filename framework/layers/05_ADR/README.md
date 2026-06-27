@@ -56,7 +56,7 @@ Example: ADR.01.03.e5b1
 
 ## Upstream Traceability
 
-ADR synthesizes inputs from all upstream layers (cumulative tags):
+ADR requires its necessary-upstream tags — @ears + @bdd (Layer 5 `required_tags`); @brd/@prd below are optional provenance, not required:
 
 ```text
 @brd: BRD.NN.08.xxxx    (business-level topic origin)

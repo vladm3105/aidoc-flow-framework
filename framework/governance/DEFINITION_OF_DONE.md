@@ -12,7 +12,7 @@ loop (`REVIEW_REMEDIATION_FLOW.md`), and the change gates (`chg/`).
 An artifact is **Done** when:
 
 - It conforms to its layer **template** and carries the required **traceability
-  tags** (`TRACEABILITY.md`) — the cumulative chain is intact upstream.
+  tags** (`TRACEABILITY.md`) — its necessary-upstream tags resolve (deeper lineage is transitive).
 - It has passed **review** with **no blocking findings** (severity *critical* or
   *medium*; see `REVIEW_REMEDIATION_FLOW.md`), or every blocking finding has been
   remediated and re-reviewed.
@@ -53,4 +53,4 @@ part of this contract.)*
   trigger, iteration cap, and severity classes.
 - `DOC_GOVERNANCE_CORE.md` — governance principles + the readiness-gate baseline.
 - `chg/gates/GATE-SPEC_FRAMEWORK.md` + `DECISIONS.md` (GD-01) — the spec-change gate.
-- `TRACEABILITY.md` — the cumulative-tag chain a review checks.
+- `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.

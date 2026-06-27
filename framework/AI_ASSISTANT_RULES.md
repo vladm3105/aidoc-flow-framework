@@ -9,7 +9,7 @@
 ## Traceability Rules
 
 - Every element must be traceable to an upstream artifact.
-- Use the cumulative tag hierarchy: `@brd` → `@prd` → `@ears` → `@bdd` → `@adr` → `@spec` → `@tdd` → `@iplan`.
+- Cite only the layer's **necessary upstream** (its `required_tags` in `LAYER_REGISTRY.yaml`) — NOT the full `@brd → … → @iplan` chain. Deeper lineage is transitive (one hop per layer). Emitting tags for absent upstream layers is trace fabrication (forbidden since NECESSARY-UPSTREAM-001).
 - Downstream references are declared as placeholders until artifacts exist.
 - Never create circular references.
 

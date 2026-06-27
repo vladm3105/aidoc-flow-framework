@@ -386,7 +386,8 @@ traceability:
   _guidance: |
     ADR synthesizes inputs from all upstream layers.
     Originating topic comes from PRD Section 14 (ADR topic elaboration).
-    Cumulative tags: @brd + @prd + @ears + @bdd required (Layer 5).
+    Necessary-upstream tags: @ears + @bdd required (Layer 5 required_tags).
+    @prd/@brd are optional provenance (recorded in context), not required.
 
   tags:
     - "@adr: ADR-NN"

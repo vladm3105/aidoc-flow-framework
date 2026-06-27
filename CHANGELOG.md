@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Framework Spec 0.23.1: cumulative→necessary-upstream doc reconciliation (2026-06-27)
+
+- Completed the doc migration `NECESSARY-UPSTREAM-001` (spec 0.16.0) left
+  unfinished: the obsolete **cumulative-tag model** ("each layer inherits all
+  upstream tags") survived in ~20 framework-core surfaces, several making
+  **false `required_tags` claims** that contradicted `LAYER_REGISTRY.yaml` +
+  the lint-passing corpus (e.g. `EARS-TEMPLATE` "requires @brd and @prd" → only
+  `@prd`; `BDD-TEMPLATE` "@brd+@prd+@ears" → only `@ears`; `GATE-03` "ADR needs
+  4 tags" → `@ears @bdd`). All corrected to **necessary-upstream** (each layer
+  cites only its `required_tags`; deeper lineage transitive). One live
+  author-facing bug fixed (`AI_ASSISTANT_RULES.md` told assistants to emit the
+  full cumulative chain — the exact trace fabrication 0.16.0 banned).
+- Surfaces: `TRACEABILITY.md`, `GATE-08`/`GATE-03`/`GATE_ERROR_CATALOG`,
+  `DOC_GOVERNANCE_CORE` (Principle 3), `AI_ASSISTANT_RULES`, `DEFINITION_OF_DONE`,
+  `REVIEW_REMEDIATION_FLOW`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE`, `QUICK_REFERENCE`,
+  `framework/README` + `governance/README`, EARS/BDD templates + 3 layer READMEs
+  - BDD-00 index + ADR template guidance + ADR auditor playbook. Structural tag
+  *fields* untouched (BL-Q1) — prose/guidance/gate-doc only.
+- Framework PATCH (`0.23.0 → 0.23.1`); `FRAMEWORK_SPEC_VERSION` pins + 52 skill
+  - 51 playbook `framework_spec_version` synced to 0.23.1; **plugin VERSION
+  stays 0.22.0** (independent stream — only its bundled spec docs changed, not
+  its code). CFB-PR-1 (CONSUMER-FEEDBACK-001), bundled per founder decision.
+
 ### Fixed — bump caller pin @ci/v1.1.1 → @ci/v1.1.2 (full-clone sparse-checkout fix; 2026-06-26)
 
 - **`.github/workflows/ai-review.yml`** caller pin bumped per
