@@ -31,18 +31,21 @@ from pathlib import Path
 
 # Shared trace primitives (CFB-PR-2 DD-1) — the single source for the layer
 # order, @-tag regex, ID forms, and token→doc-id / doc-id→path helpers, so the
-# backward walker (here) and the forward coverage engine agree exactly.
-from sdd_trace_graph import (  # sibling module; tools/ is sys.path[0] for a script run
+# backward walker (here) and the forward coverage engine agree exactly. The
+# module lives inside the `sdd_doc_lint` package (a package submodule) so the
+# vendored linter copies can import it via a package-relative path; `tools/` is
+# sys.path[0] for a script run, so the package is importable here too.
+from sdd_doc_lint.trace_graph import (
     DOC_FORM,
     LAYER_INDEX,
 )
-from sdd_trace_graph import (
+from sdd_doc_lint.trace_graph import (
     doc_id_from_token as _doc_id_from_token,
 )
-from sdd_trace_graph import (
+from sdd_doc_lint.trace_graph import (
     emit_tags as _emit_tags,
 )
-from sdd_trace_graph import (
+from sdd_doc_lint.trace_graph import (
     locate_doc as _locate_doc,
 )
 

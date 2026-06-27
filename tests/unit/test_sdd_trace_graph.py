@@ -1,4 +1,5 @@
-"""Unit: tools/sdd_trace_graph.py — shared @-tag trace primitives (CFB-PR-2 DD-1).
+"""Unit: tools/sdd_doc_lint/trace_graph.py — shared @-tag trace primitives
+(CFB-PR-2 DD-1).
 
 Locks in the parsing/locating contract that BOTH the backward walker
 (`trace_walk`) and the forward coverage engine depend on — notably the DD-8
@@ -12,7 +13,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
 
-from sdd_trace_graph import (  # noqa: E402
+from sdd_doc_lint.trace_graph import (  # noqa: E402
     doc_id_from_token,
     emit_tags,
     locate_doc,

@@ -6,9 +6,15 @@ Extracted from `trace_walk.py` per CFB-PR-2 DD-1 so the two directions of the
 trace graph agree byte-for-byte on: the layer order, the `@`-tag regex, the
 doc/element ID forms, and the token→doc-id / doc-id→path helpers.
 
-Pure stdlib; no framework imports — safe to import from a script run directly
-out of `tools/` (its directory is `sys.path[0]`) and from the `sdd_doc_lint`
-package.
+Lives as a submodule of the `sdd_doc_lint` package (rather than a loose
+`tools/` sibling) so the **vendored** linter copies — synced into each platform
+by `sync-vendored.sh` — can import it via a package-relative path
+(`from .trace_graph import …`) that resolves regardless of how the package was
+placed on `sys.path`. The two unvendored `tools/` scripts (`trace_walk.py`,
+`sdd_coverage.py`) reach it via `from sdd_doc_lint.trace_graph import …`.
+
+Pure stdlib (`re` + `pathlib` only); no framework or third-party imports — the
+module itself is importable standalone even where PyYAML is absent.
 """
 
 from __future__ import annotations
