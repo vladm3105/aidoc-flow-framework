@@ -12,6 +12,39 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — `.github/workflows/ai-review.yml`: pin `@ci/v1.1.3` → `@ci/v1.1.5` (IPLAN-0024 P4 — CRITICAL GitHub-hosted-runner validation) (2026-06-27)
+
+- Framework caller pin bumped from `@ci/v1.1.3` to `@ci/v1.1.5` to
+  consume the curl-replaces-`actions/checkout` fix shipped on aidoc-
+  flow-ci main (PR #36 merged + tag `ci/v1.1.5` pushed; operations P3
+  PR #148 merged earlier this session with all 9 checks green
+  including ai-review on self-hosted). The reusable workflow at
+  `@ci/v1.1.5` replaces 2 cross-repo `actions/checkout` steps with
+  `curl`, eliminating the v1.1.0→v1.1.3 sparse-checkout / clean-flag /
+  INIT-time-content-delete bug class. Header comment block refreshed
+  to reference IPLAN-0024 instead of the v1.1.x saga context.
+- **Framework is the CRITICAL validation:** GitHub-hosted runners
+  (`ubuntu-latest`) are the bug-class home that v1.1.0-v1.1.3 couldn't
+  escape — every prior sparse-checkout iteration failed here while
+  passing on operations' self-hosted runners. P3 (operations on self-
+  hosted) was the KNOWN-GOOD class. THIS PR is where curl's
+  effectiveness is actually proven.
+- **Chicken-and-egg:** BASE main still pins v1.1.3 → ai-review on this
+  PR fires using the still-buggy v1.1.3 workflow on `ubuntu-latest`.
+  Expected to fail or hang the same way prior framework PRs in the
+  v1.1.x lineage did; ship via `skip-ai-review` label + admin-merge.
+  After merge the new pin takes effect for all subsequent PRs and
+  curl's GitHub-hosted-runner behavior is the validation gate.
+- **R1 + R2 bundle from operations HANDOFF — BOTH DROPPED** in P1 (R1
+  would have broken `docs/troubleshooting.md §15` force-fresh-review
+  path; R2's bare 1-line `workflow_dispatch:` doesn't work without
+  reusable workflow inputs design). Both tracked for separate future
+  small IPLANs.
+- **Plan:** IPLAN-0024 (operations PR #145; approved + merged
+  2026-06-26).
+- **Next:** if ai-review on the next post-merge framework PR fires
+  cleanly using v1.1.5 on ubuntu-latest, IPLAN-0024 closes successfully.
+
 ### Fixed — Framework Spec 0.23.1: cumulative→necessary-upstream doc reconciliation (2026-06-27)
 
 - Completed the doc migration `NECESSARY-UPSTREAM-001` (spec 0.16.0) left

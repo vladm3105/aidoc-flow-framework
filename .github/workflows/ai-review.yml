@@ -1,15 +1,19 @@
-# Pinned at @ci/v1.1.3 — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
-# (aidoc-flow-ci PR #29; CLASS-aware terminology cleanup PR #30 also
-# in-flight on aidoc-flow-ci). Prior @ci/v1.1.0 had a sparse-checkout
-# pattern bug that broke ai-review on GitHub-hosted runners (worked on
-# self-hosted only due to cached state). @ci/v1.1.3 fixes that.
+# Pinned at @ci/v1.1.5 per IPLAN-0024 (operations PR #145 + aidoc-flow-ci
+# PR #36 + operations P3 PR #148) — the reusable workflow now uses `curl`
+# instead of `actions/checkout` for cross-repo rubric/schema/config
+# fetches, eliminating the v1.1.0→v1.1.3 sparse-checkout / clean-flag /
+# INIT-time-content-delete bug class. **Framework is the CRITICAL
+# validation:** GitHub-hosted runners (`ubuntu-latest`) are the bug-
+# class home that v1.1.0-v1.1.3 couldn't escape — every prior sparse-
+# checkout iteration failed here while passing on operations' self-
+# hosted. Per IPLAN-0022 PR-C reviewer rubric + schema live at
+# aidoc-flow-ci/ai-review/ (no longer in operations@main); per-consumer
+# config.json still comes from operations@main (transitional; per-
+# consumer-from-each-consumer-repo move tracked as a follow-up IPLAN).
 #
-# Pinned at @ci/v1.1.0 was — IPLAN-0022 PR-C: reviewer rubric + schema
-# now fetched from aidoc-flow-ci/ai-review/ at this pin (no longer
-# from operations@main; see IPLAN-0022 §3.7 P2). Per-consumer
-# config.json preservation via transitional sparse-checkout in the
-# reusable workflow (per-consumer-config improvement tracked as a
-# follow-up IPLAN).
+# Prior @ci/v1.1.3 was — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
+# lineage (aidoc-flow-ci PR #29 + #33; cone-mode → full-clone →
+# clean: false saga). Superseded by IPLAN-0024 mechanism-level fix.
 #
 # Prior @ci/v1.0.5 — first PUBLIC consumer of aidoc-flow-ci
 # (framework Phase A 2026-06-24). The reusable ai-review.yml installs
@@ -45,7 +49,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.3
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.5
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'

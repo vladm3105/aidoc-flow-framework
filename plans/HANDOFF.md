@@ -1,5 +1,19 @@
 # Session Handoff
 
+> **🟢 IPLAN-0024 P4 — `ai-review.yml` pin `@ci/v1.1.3` → `@ci/v1.1.5` (2026-06-27).**
+>
+> Consumes the curl-replaces-`actions/checkout` fix shipped on
+> aidoc-flow-ci main (PR #36) and validated on operations P3 (PR #148
+> merged earlier this session — all 9 checks green including ai-review
+> on operations' self-hosted runners). **This PR is the CRITICAL test**:
+> framework runs on `ubuntu-latest` (GitHub-hosted), the runner class
+> where every v1.1.0→v1.1.3 sparse-checkout iteration failed. If ai-
+> review fires cleanly post-merge using v1.1.5 here, IPLAN-0024 closes
+> successfully. Chicken-and-egg: BASE main pins v1.1.3 → ai-review on
+> this PR fires using the still-buggy v1.1.3 workflow; ship via
+> `skip-ai-review` label + admin-merge. Operations carries IPLAN-0024
+> primary tracking (`ops/iplans/IPLAN-0024_template-pattern.md`).
+>
 > **🟢 SAGA-PARITY-001 PHASE 4 SHIPPED + CI RESTORED (2026-06-22).**
 >
 > **Phase 4 merged** — PR #161, merge `f277ea1a`, plugin `0.20.1 → 0.21.0`.
