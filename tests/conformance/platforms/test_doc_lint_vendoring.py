@@ -5,7 +5,8 @@ The linter is deliberately vendored into each platform so the plugin's
 ``on_author`` hook (and a Hermes-side entry) can run it at consumer runtime
 without depending on the other platform. To keep that vendoring from drifting
 into divergent copies (the D-0013 single-source ethos), this guard asserts the
-vendored ``__init__.py`` / ``__main__.py`` match the canonical source byte-for-byte.
+vendored ``__init__.py`` / ``__main__.py`` / ``trace_graph.py`` (the shared
+@-tag trace primitives, CFB-PR-2 DD-1) match the canonical source byte-for-byte.
 
 Re-sync after editing the canonical linter:
     bash tools/sdd_doc_lint/sync-vendored.sh
@@ -20,7 +21,7 @@ VENDORED = [
     REPO_ROOT / "platforms" / "claude-code-plugin" / "sdd_doc_lint",
     REPO_ROOT / "platforms" / "hermes" / "sdd_doc_lint",
 ]
-MODULES = ("__init__.py", "__main__.py")
+MODULES = ("__init__.py", "__main__.py", "trace_graph.py")
 
 
 class DocLintVendoring(unittest.TestCase):

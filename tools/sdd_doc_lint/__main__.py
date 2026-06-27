@@ -1,4 +1,5 @@
-"""CLI: python -m sdd_doc_lint [--registry PATH] <path> [<path> ...]
+"""CLI: python -m sdd_doc_lint [--registry PATH] [--mode build|gate-code]
+       [--skip-coverage-gate] <path> [<path> ...]
 
 Exit 0 = no error-level findings; 1 = error findings; 2 = usage error.
 The framework registry is located automatically (upward search for
@@ -32,12 +33,32 @@ def main(argv: list[str] | None = None) -> int:
         default="text",
         help="output format (text = human-readable; json = single array of findings)",
     )
+    parser.add_argument(
+        "--mode",
+        choices=("build", "gate-code"),
+        default="build",
+        help="forward-coverage severity mode (CFB-PR-2 DD-6): 'build' warns when an "
+        "in-scope FR reaches a SPEC but no IPLAN; 'gate-code' blocks it",
+    )
+    parser.add_argument(
+        "--skip-coverage-gate",
+        action="store_true",
+        help="suppress the forward-coverage gate entirely (CFB-PR-2 DD-9 — the "
+        "transient-migration escape hatch)",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
 
     findings = []
     try:
         for arg in args.paths:
-            findings.extend(lint_path(Path(arg), registry=args.registry))
+            findings.extend(
+                lint_path(
+                    Path(arg),
+                    registry=args.registry,
+                    mode=args.mode,
+                    skip_coverage=args.skip_coverage_gate,
+                )
+            )
     except OSError as exc:
         print(f"sdd-doc-lint: registry unavailable ({exc}); skipping.", file=sys.stderr)
         return 2

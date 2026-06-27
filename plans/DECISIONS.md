@@ -10,6 +10,43 @@ graduation.
 
 ---
 
+## D-0037 — `realized_by` escape authored as an inline FR-bullet token (CFB-PR-2 DD-5)
+
+- **Date:** 2026-06-27T00:00:00Z
+- **Decision:** The `realized_by:<layer>` coverage escape (DD-5 — an FR realised
+  by a non-SPEC layer: ADR-only decision / NFR / infra) is authored as a
+  `realized_by: <LAYER>` token on the FR bullet's **first line**, canonically
+  inside the band parenthetical (e.g. `- **BRD.NN.07.xxxx — Title**
+  (P1, realized_by: ADR): …`). The scanner captures it into the additive
+  `FRElement.realized_by` field; `covered_state_of` maps its presence to
+  `CoveredState.REALIZED_BY`.
+- **Why:** No `realized_by` surface existed anywhere (registry, templates, or
+  corpus) — it had to be defined. A first-line inline token (a) needs no new
+  YAML field, (b) is single-line so it sidesteps the wrapping-parenthetical
+  parse problem (the band token already reads only the first line), and (c)
+  fits the existing authored FR-bullet form rather than introducing a parallel
+  structure. The BRD-template normative rule formalizing the annotation lands
+  with the forward gate (2a-core step 4), where the rule and the gate that
+  consumes it are coupled. `satisfied_by_reference` stays a stubbed enum member
+  (PR-5). See D-0036 for the sibling CFB-PR-2 placement decision.
+
+## D-0036 — Shared trace primitives live as a submodule of the `sdd_doc_lint` package (CFB-PR-2 DD-1)
+
+- **Date:** 2026-06-27T00:00:00Z
+- **Decision:** The shared `@`-tag trace primitives (CFB-PR-2 DD-1) live at
+  `tools/sdd_doc_lint/trace_graph.py` — a submodule of the `sdd_doc_lint`
+  package — not as a loose `tools/sdd_trace_graph.py` sibling (where step 1
+  first placed them). `sync-vendored.sh` carries the submodule into each
+  platform's vendored linter; the byte-identity drift-guard guards it.
+- **Why:** The forward-coverage engine and gate live in the **vendored**
+  `sdd_doc_lint` (the only whole-corpus tool, shipped byte-identical to both
+  platforms). A package submodule is importable via package-relative
+  `from .trace_graph import …` inside *any* copy regardless of how it landed on
+  `sys.path`; a loose sibling would rely on a fragile parent-dir assumption that
+  does not hold for the vendored copies. The two unvendored `tools/` scripts
+  (`trace_walk.py`, `sdd_coverage.py`) reach it via `from sdd_doc_lint.trace_graph
+  import …`. `trace_graph` itself stays pure stdlib (`re` + `pathlib`).
+
 ## D-0035 — MODEL-PRECHECK-ROLLOUT: print the per-layer model recommendation at the autopilot entry point
 
 - **Date:** 2026-06-22T00:00:00Z

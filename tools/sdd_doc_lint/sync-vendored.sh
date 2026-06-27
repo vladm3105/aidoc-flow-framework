@@ -15,5 +15,6 @@ for dest in \
   mkdir -p "$dest"
   cp "$canonical/__init__.py" "$dest/__init__.py"
   cp "$canonical/__main__.py" "$dest/__main__.py"
+  cp "$canonical/trace_graph.py" "$dest/trace_graph.py"
   echo "synced -> ${dest#"$repo_root"/}"
 done

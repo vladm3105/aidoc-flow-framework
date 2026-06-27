@@ -25,52 +25,29 @@ Exit codes:
 from __future__ import annotations
 
 import argparse
-import re
 import sys
 from collections import deque
 from pathlib import Path
 
-KNOWN_LAYERS = ("BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN")
-LAYER_INDEX = {name: i + 1 for i, name in enumerate(KNOWN_LAYERS)}
-TAG = re.compile(r"@(" + "|".join(t.lower() for t in KNOWN_LAYERS) + r")\s*:\s*([^\s|]+)")
-DOC_FORM = re.compile(r"^([A-Z]+)-\d+$")
-ELEM_FORM = re.compile(r"^([A-Z]+)\.\d+\.\d+\.[a-f0-9]+$")
-
-
-def _doc_id_from_token(token: str) -> str | None:
-    """Reduce an @-tag value to its host doc id (TYPE-NN).
-
-    ``BRD-01`` → ``BRD-01``; ``BRD.01.07.abcd`` → ``BRD-01``; else ``None``.
-    """
-    m = DOC_FORM.match(token)
-    if m:
-        return token
-    m = ELEM_FORM.match(token)
-    if m:
-        prefix, _, rest = token.partition(".")
-        first_segment = rest.split(".", 1)[0]
-        return f"{prefix}-{first_segment}"
-    return None
-
-
-def _locate_doc(doc_id: str, docs_root: Path) -> Path | None:
-    m = DOC_FORM.match(doc_id)
-    if not m:
-        return None
-    layer = m.group(1)
-    layer_n = LAYER_INDEX.get(layer)
-    if layer_n is None:
-        return None
-    folder = docs_root / f"{layer_n:02d}_{layer}"
-    for ext in (".md", ".yaml", ".yml"):
-        candidate = folder / f"{doc_id}{ext}"
-        if candidate.is_file():
-            return candidate
-    return None
-
-
-def _emit_tags(text: str) -> list[str]:
-    return [m.group(2) for m in TAG.finditer(text)]
+# Shared trace primitives (CFB-PR-2 DD-1) — the single source for the layer
+# order, @-tag regex, ID forms, and token→doc-id / doc-id→path helpers, so the
+# backward walker (here) and the forward coverage engine agree exactly. The
+# module lives inside the `sdd_doc_lint` package (a package submodule) so the
+# vendored linter copies can import it via a package-relative path; `tools/` is
+# sys.path[0] for a script run, so the package is importable here too.
+from sdd_doc_lint.trace_graph import (
+    DOC_FORM,
+    LAYER_INDEX,
+)
+from sdd_doc_lint.trace_graph import (
+    doc_id_from_token as _doc_id_from_token,
+)
+from sdd_doc_lint.trace_graph import (
+    emit_tags as _emit_tags,
+)
+from sdd_doc_lint.trace_graph import (
+    locate_doc as _locate_doc,
+)
 
 
 def walk(start_doc_id: str, docs_root: Path) -> tuple[dict[str, int], list[str]]:

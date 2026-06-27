@@ -273,3 +273,172 @@ design-gaps, Pass 4 soundness, Pass 6 confirming) + four self passes. The
 false-premise class (assuming structure/fields/contracts the code & artifacts
 don't provide) is closed — every gate input is now a verified-present signal.
 Plan PR may open; implementation proceeds 2a→2d.
+
+## Implementation log — sub-PR 2a-core
+
+Branch `feat/cfb-pr-2a-coverage-core` (rebased onto main `169b43c5`). The
+engine half of 2a (split from 2a-ref / PR-3 per HANDOFF). Build order tracked
+in `plans/HANDOFF.md`.
+
+### Step 1 — shared trace primitives (DD-1 foundation) — DONE (`e3377ac6`)
+
+`sdd_trace_graph` extracted from `trace_walk.py` (layer order, `@`-tag regex,
+ID forms, `doc_id_from_token` / `locate_doc` / `emit_tags`). `trace_walk`
+repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
+
+### Step 2 — edge-graph + heading-context FR scanner (DD-1/R-c, DD-3) — DONE
+
+- **Module-location decision (the DD-1 placement question).** The shared core
+  **moved into the `sdd_doc_lint` package** as `tools/sdd_doc_lint/trace_graph.py`
+  (commit `49614c3d`), not a loose `tools/` sibling. Rationale: the **vendored**
+  linter copies (`platforms/*/sdd_doc_lint/`) must import it; a package submodule
+  resolves via package-relative `from .trace_graph import …` regardless of how
+  the package landed on `sys.path`, whereas a loose sibling relies on a fragile
+  parent-dir assumption. `sync-vendored.sh` carries the submodule; the
+  byte-identity drift-guard (`test_doc_lint_vendoring`) now guards it too.
+  `trace_graph` stays pure stdlib (`re` + `pathlib`); the unvendored `tools/`
+  scripts reach it via `from sdd_doc_lint.trace_graph import …`.
+- **Heading-context FR scanner (DD-3)** — `scan_fr_elements()` / `FRElement`
+  (commit `5d742a72`). A gated FR = an FR definition bullet
+  (`- **<ID> — <Title>** …`) under a `## … Functional Requirements` heading and
+  before that section's `Acceptance criteria:` label line. Reuses the level-2
+  `_SECTION_HEADING` + `_normalise_heading` mechanism. The heading + boundary
+  are the discriminators (not the band), so prose citations and the §7 AC
+  sub-block are excluded, and a bullet missing its band still classifies (DD-4
+  can then flag it). Band token captured from the bullet's first line only →
+  tolerant of a wrapping parenthetical (corpus `882c`).
+- **Bidirectional element edge-graph (DD-1/R-c)** — `build_edge_graph()` /
+  `EdgeGraph` / `TraceEdge` (commit `c518d347`). Net-new upstream-citation
+  adjacency (today's `element_index` discards downstream citations). Strictly-
+  downstream skip matches `_check_trace_resolution`; same-layer siblings kept,
+  self-refs / index docs dropped; multi-`@brd` per DD-8 via the shared regex.
+  Lookups: `citers_of` / `citers_of_doc` / `citers_in_layer`.
+- **Corpus grounding (V2 partial).** On `examples/url-shortener/docs/`: the 4
+  BRD-01 §7 FRs classify (band P1), the 4 acceptance-criteria elements are
+  excluded, and all 4 FRs are cited element-level by PRD-01 — the one-hop
+  necessary-upstream chain (BRD←PRD←EARS…) confirms transitive forward reach is
+  computable. `test_fr_scanner.py` (9) + `test_edge_graph.py` (9); 208
+  unit+conformance green.
+
+### Step 3 — `covered_state` enum + band parser + escapes (DD-2/DD-4/DD-5) — DONE (`546458a7`)
+
+The classification layer the forward gate (step 4) dispatches on.
+
+- **`CoveredState` (StrEnum, DD-2)** — `AUTHORED` (success: must reach
+  downstream) + the non-blocking escapes `DEFERRED` / `REALIZED_BY` +
+  `SATISFIED_BY_REFERENCE` (enum member only; PR-5 adds its logic, never
+  produced here).
+- **`parse_band()` (DD-4)** — validates the FR-bullet band token against the
+  priority bands `{P1, P2, Future}`. These mirror `priority_definitions`
+  (`BRD-TEMPLATE.yaml:529-532`) in code with a source comment; the gate reads
+  the band by regex (per DD-4), and the *registry* phase-schema references that
+  single source in **2c-schema** (no re-enumeration). `Future` = deferral.
+- **`covered_state_of()` (DD-5)** — `realized_by` → `REALIZED_BY` (precedence);
+  `Future` band → `DEFERRED`; else (`P1`/`P2`, or a missing/invalid band) →
+  `AUTHORED`. A missing/invalid band never silently becomes an escape.
+- **`realized_by` authoring surface (net-new; D-0037).** None existed. Minimal
+  grounded surface: a `realized_by: <LAYER>` token on the FR bullet's first
+  line (canonically inside the band parenthetical, `(P1, realized_by: ADR)`),
+  captured by the scanner into the additive `FRElement.realized_by` field. No
+  new YAML field, single-line (no wrap-parsing). The BRD-template normative
+  rule formalizing the annotation rides with the **forward gate (step 4)**,
+  where the rule + gate are coupled.
+- Corpus: all 4 BRD-01 FRs (P1, no escape) → `AUTHORED`.
+  `test_covered_state.py` (11); 221 unit+conformance green.
+
+### Step 4 — forward coverage gate + run-mode severity + CLI args (DD-6/DD-9) — DONE (`54992250`)
+
+`_check_forward_coverage` (`COV01`) wires the graph + scanner + classifier into
+a corpus-level gate.
+
+- **Reach is document-level** from the FR's host BRD (`_doc_forward_reach`,
+  transitive over `citers_of_doc`). The plan's "document-level binding for
+  SPEC/TDD/IPLAN" — PR-3 refines reach to element granularity. *Granularity is
+  chosen to avoid false BLOCKS:* element-level reach would false-block an
+  AUTHORED FR that its downstream cites at the doc level (necessary-upstream
+  permits doc-level citation), so coverage uses doc-level reach. Under-detection
+  (a coarse miss) is acceptable; a false block is not.
+- **Severity (DD-6 rows 2-3):** AUTHORED FR, no SPEC → error (both modes);
+  AUTHORED FR, SPEC but no IPLAN → warning (`build`) / error (`gate-code`).
+  Escaped FRs (`deferred` / `realized_by`) are skipped entirely — the DD-5
+  suppression (they never block even with no SPEC).
+- **DD-1 gating:** runs only when the corpus has reached BOTH the SPEC and
+  IPLAN layers (`{SPEC, IPLAN} ⊆ present`). No-ops on the single-file
+  `on_author` case and partial-cascade fixtures (`valid/` has no SPEC,
+  `broken/` has no IPLAN — both unaffected; no test regressions).
+- **CLI (DD-6/DD-9):** net-new `--mode {build | gate-code}` (default `build`) +
+  `--skip-coverage-gate`, threaded through `lint_path(mode=, skip_coverage=)`.
+- **Deferred (need element granularity / 2c):** DD-6 row 1 (escaped-FR
+  informational warning — meaningless at doc-level) and row 4 (phase leak — its
+  per-FR correctness needs element reach to avoid false-blocking a `Future` FR
+  in a mixed-band BRD). Both land with 2c-gate / PR-3.
+- **DD-9 verified:** corpus findings are **byte-identical to main** (`--format
+  json` diff empty) — all 4 BRD-01 FRs reach SPEC+IPLAN, 0 `COV01`. No
+  `--skip-coverage-gate` / annotation needed for the corpus.
+- **Pre-existing corpus issue surfaced (out of scope):** `TH-RES-001` errors on
+  `02_PRD/PRD-01.md` (missing `component_decomposition`; 11 unresolvable
+  `@threshold:` citations) — confirmed identical under main's linter, unrelated
+  to coverage (CLEANUP-PR-D threshold-resolution). Flagged in `FRAMEWORK-TODO.md`
+  for framework-fixer remediation (never hand-edit the example artifact).
+- `test_forward_coverage.py` (9); 231 unit+conformance green.
+
+### Step 5 — `sdd_coverage.py` matrix emitter (DD-7) — DONE (`7ccd90ef`)
+
+`tools/sdd_coverage.py` — a thin reporter over the shared engine (`tools/`
+script, not vendored, like `trace_walk.py`).
+
+- `render_matrix(corpus)` (pure, testable) consumes `build_edge_graph` +
+  `scan_fr_elements` + `covered_state_of` + `_doc_forward_reach` from
+  `sdd_doc_lint` — the SAME graph the forward gate reads, so the matrix and the
+  gate never disagree (DD-1). Emits a GENERATED, deterministic
+  `TRACEABILITY_MATRIX.md`: one row per gated FR (id, band, `covered_state`, a
+  ✓ per downstream layer reached) + a summary.
+- CLI `python tools/sdd_coverage.py <docs_root> [--output PATH|-]`; default
+  writes `<docs_root>/TRACEABILITY_MATRIX.md`.
+- Generated `examples/url-shortener/docs/TRACEABILITY_MATRIX.md` (all 4 BRD-01
+  FRs reach SPEC+IPLAN). Idempotent regeneration verified; 0 added linter
+  findings (the matrix file has no `doc_id`, inert to the graph/scanner);
+  markdownlint clean. Output sorted by FR id → deterministic (V5 regenerate-
+  and-diff is step 6's conformance test).
+- `test_sdd_coverage.py` (6); 240 unit+conformance green.
+
+**Resequencing note:** the `framework/governance/TRACEABILITY.md` reverse-lookup
+cross-ref (also DD-7) **moved to step 6**. Reason: it is a `framework/` spec
+change, which couples to GATE-SPEC (needs the VERSION bump + CHANGELOG). Grouping
+it with the framework MINOR bump keeps the framework change one coordinated,
+GATE-SPEC-compliant unit rather than a spec edit stranded ahead of its bump.
+
+### Step 6 — framework spec changes + MINOR bump (DD-3/DD-4/DD-7) — DONE (`0d27c819`)
+
+One coordinated GATE-SPEC-compliant framework change (spec `0.23.1 → 0.24.0`):
+
+- **`governance/TRACEABILITY.md`** — the reverse-lookup note now cross-refs the
+  generated forward matrix (`docs/TRACEABILITY_MATRIX.md` / `sdd_coverage.py`)
+  and `trace_walk.py`, noting both read the same `@`-tag graph (DD-7).
+- **`layers/01_BRD/BRD-TEMPLATE.yaml`** — normative `_authored_form` rule
+  (DD-3/DD-4): every FR bullet MUST carry `(P1|P2|Future, …)`; the literal
+  `Acceptance criteria:` line bounds the gated FR sub-block; optional
+  `realized_by: <LAYER>` escape (D-0037). The authoring contract the scanner +
+  gate depend on.
+- **`tests/conformance/test_coverage_engine.py`** — V5 (the example matrix
+  regenerates byte-identical), the `COV01` forward-coverage contract (blocks an
+  in-scope FR with no SPEC; no-ops off a whole-corpus run), and the
+  BRD-template rule guard (canonical + vendored).
+- **Bump** via `tools/bump_version.py 0.24.0`: 104 `framework_spec_version`
+  declarations + both platform pins + re-vendored bundle (carries the
+  TRACEABILITY + BRD-TEMPLATE edits) + vendored lint + version-ref fanout
+  (CLAUDE.md / README / PARITY). Hard-pin in `test_plugin_release_metadata.py`
+  → `0.24.0`; CHANGELOG `[Unreleased]` entry. Plugin/Hermes product versions
+  unchanged (independent streams).
+- **Verify:** 248 unit+conformance green; framework + both FSV = `0.24.0`;
+  example corpus 0 `COV01`; vendored byte-identity intact.
+
+## 2a-core complete
+
+The forward-coverage engine is shipped (document-level binding) and the branch
+`feat/cfb-pr-2a-coverage-core` is PR-ready. **Co-dependent follow-on: 2a-ref /
+PR-3** (element granularity) refines reach to element level and unlocks the
+deferred DD-6 row 1 (escaped-informational) + row 4 (phase leak). The other
+sub-PRs remain: **2b** (backward leg — SPEC-00 `coverage` + GATE-06), **2c**
+(phase reconciliation — 2c-schema registry + 2c-gate phase-leak), **2d** (BDD
+doc-set roll-up).

@@ -23,26 +23,86 @@
 >   4 self** review passes (Pass-4/6 caught that the design assumed code/artifact
 >   facts that don't hold — fixed; see its R-a…R-f "Implementation reality").
 >
-> **RESUME HERE → sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`,
-> pushed, no PR yet). Split: **2a-core** (engine) + **2a-ref** (PR-3
-> ref-granularity, separate). 2a-core build order:
+> **sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`, pushed, no PR
+> yet; rebased onto main `81c6f05e`, incl. #186 CI bump). Split: **2a-core** (engine) + **2a-ref**
+> (PR-3 ref-granularity, separate). 2a-core build order:
 >
-> 1. ✅ **`tools/sdd_trace_graph.py`** — shared @-tag primitives extracted from
+> 1. ✅ **`sdd_trace_graph`** — shared @-tag primitives extracted from
 >    `trace_walk.py` (DD-1 foundation); `test_sdd_trace_graph.py` (8 tests) +
->    `test_trace_walk` green. Commit `122a1c3b`.
-> 2. ⬜ **Bidirectional element edge-graph** in `sdd_doc_lint` + the **markdown
->    heading-context scanner** (DD-3, reuse `_SECTION_HEADING`) to classify
->    gated FRs vs the §7 acceptance-criteria sub-block. *Decide first:* where
->    the shared module lives so the **vendored** `sdd_doc_lint` can import it
->    (move into the package, or vendor alongside) — `trace_walk` isn't vendored
->    so step 1 was clean.
-> 3. ⬜ `covered_state` enum + escapes (DD-2/DD-5) + FR-band parser (DD-4: the
->    inline `(P1|P2|Future)` annotation).
-> 4. ⬜ Forward gate + run-mode severity (DD-6) + net-new `--mode` /
->    `--skip-coverage-gate` args in `__main__.py`.
-> 5. ⬜ `tools/sdd_coverage.py` → `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md`
->    cross-ref (DD-7).
-> 6. ⬜ Conformance tests per gate; corpus green via DD-9; framework MINOR bump.
+>    `test_trace_walk` green. Commit `e3377ac6`. **Relocated in step 2** →
+>    `tools/sdd_doc_lint/trace_graph.py` (package submodule).
+> 2. ✅ **Bidirectional element edge-graph + heading-context FR scanner**
+>    (DD-3, DD-1/R-c). *Decision (resolved):* the shared module **moved into
+>    the `sdd_doc_lint` package** as `trace_graph.py`, so the **vendored**
+>    copies import it via package-relative `from .trace_graph import …`
+>    (carried by `sync-vendored.sh`; byte-identity drift-guard extended).
+>    Shipped: `scan_fr_elements()`/`FRElement` (the `## … Functional
+>    Requirements` heading + the `Acceptance criteria:` boundary classify gated
+>    FRs; band token captured, parenthetical-wrap-tolerant) and
+>    `build_edge_graph()`/`EdgeGraph`/`TraceEdge` (net-new upstream-citation
+>    adjacency — `citers_of` / `citers_of_doc` / `citers_in_layer`; reuses the
+>    shared primitives so forward/backward agree, multi-`@brd` per DD-8).
+>    Grounded on the real corpus: all 4 BRD-01 §7 FRs classified (band P1), the
+>    AC sub-block excluded, all 4 cited element-level by PRD-01; one-hop
+>    necessary-upstream chain holds. `test_fr_scanner.py` (9) +
+>    `test_edge_graph.py` (9); 208 unit+conformance green. Commits
+>    `49614c3d` (relocate) → `5d742a72` (scanner) → `c518d347` (edge-graph).
+> 3. ✅ **`covered_state` enum + band parser + escapes** (DD-2/DD-4/DD-5).
+>    `CoveredState` (StrEnum: AUTHORED / DEFERRED / REALIZED_BY /
+>    SATISFIED_BY_REFERENCE-stubbed), `parse_band()` (validates against the
+>    `priority_definitions` mirror {P1,P2,Future}; `Future`=deferral),
+>    `covered_state_of()` (realized_by → REALIZED_BY precedence; Future →
+>    DEFERRED; else AUTHORED). New escape surface (none existed): a
+>    `realized_by: <LAYER>` token on the FR bullet's first line, captured into
+>    `FRElement.realized_by` (D-0037). Corpus: 4 BRD-01 FRs → AUTHORED.
+>    `test_covered_state.py` (11); 221 green. Commit `546458a7`.
+> 4. ✅ **Forward coverage gate + run-mode severity + CLI args** (DD-6/DD-9).
+>    `_check_forward_coverage` (COV01): AUTHORED BRD FRs must reach ≥1 SPEC +
+>    ≥1 IPLAN (doc-level reach from host BRD; PR-3 refines to element);
+>    escapes never block. Severity: no-SPEC → error both modes; SPEC-but-no-
+>    IPLAN → warning(build)/error(gate-code). Gated to corpora with SPEC+IPLAN
+>    present (DD-1; no-ops on single-file + partial fixtures). New
+>    `--mode {build|gate-code}` + `--skip-coverage-gate` args, threaded through
+>    `lint_path(mode=, skip_coverage=)`. **Deferred** (element-granularity/2c):
+>    DD-6 row 1 (escaped informational) + row 4 (phase leak). DD-9: corpus
+>    findings byte-identical to main (0 COV01). `test_forward_coverage.py` (9);
+>    231 green. Commit `54992250`.
+> 5. ✅ **`tools/sdd_coverage.py` matrix emitter** (DD-7). Thin reporter over
+>    the shared `build_edge_graph` core; emits a GENERATED, deterministic
+>    `TRACEABILITY_MATRIX.md` (per gated FR: band, covered_state, reached
+>    downstream layers). Generated the example matrix (4 BRD-01 FRs, all reach
+>    SPEC+IPLAN); idempotent, 0 added linter findings, markdownlint clean.
+>    `test_sdd_coverage.py` (6); 240 green. Commit `7ccd90ef`. **The
+>    `framework/governance/TRACEABILITY.md` cross-ref moved to step 6** (lands
+>    with the framework MINOR bump so the framework change is GATE-SPEC-grouped).
+> 6. ✅ **Framework spec changes + MINOR bump 0.23.1 → 0.24.0** (DD-3/DD-4/DD-7).
+>    One GATE-SPEC-compliant change: (a) `governance/TRACEABILITY.md` cross-ref
+>    to the generated matrix + `trace_walk.py`; (b) `BRD-TEMPLATE.yaml`
+>    normative `_authored_form` rule (band + `Acceptance criteria:` boundary +
+>    `realized_by` escape); (c) `test_coverage_engine.py` (V5 matrix
+>    regenerate-and-diff + COV01 contract + template-rule guard); (d) bump via
+>    `bump_version.py` (104 FSV + both pins + re-vendor + version-ref fanout),
+>    hard-pin → 0.24.0, CHANGELOG [Unreleased] entry. 248 green; versions
+>    consistent; example corpus 0 COV01. Commit `0d27c819`.
+>
+> **🟢 2a-core COMPLETE — opening PR `feat/cfb-pr-2a-coverage-core` → main.**
+> Forward-coverage engine shipped: shared trace primitives + bidirectional
+> element edge-graph + heading-context FR scanner + `covered_state` classifier +
+> the `COV01` forward gate (run-mode severity) + the `sdd_coverage.py` matrix
+> emitter + the `TRACEABILITY.md` cross-ref + the BRD-template FR-annotation
+> rule. Framework spec **0.24.0**. Document-level binding; **2a-ref / PR-3
+> (element granularity)** is the co-dependent follow-on (refines reach +
+> enables DD-6 row 1/4 = escaped-informational + phase-leak). Sub-PRs 2b
+> (backward GATE-06), 2c (phase reconciliation), 2d (BDD roll-up) remain per
+> `plans/CFB-PR-2-COVERAGE-ENGINE-PLAN.md`.
+>
+> **Pre-existing corpus issue surfaced in step 4 (NOT a CFB-PR-2 regression):**
+> `TH-RES-001` errors on `examples/url-shortener/docs/02_PRD/PRD-01.md`
+> (missing `component_decomposition`; 11 downstream `@threshold:` citations
+> unresolvable) — confirmed identical under main's linter. Out of CFB-PR-2
+> scope (threshold-resolution, CLEANUP-PR-D). Flag for corpus remediation via
+> the framework fixer (never hand-edit the example artifact). Logged in
+> `FRAMEWORK-TODO.md`.
 >
 > **Open follow-ups** (logged in `FRAMEWORK-TODO.md`): the cumulative-residue
 > sweep missed the stale `Upstream:` enumerations in layer index templates /

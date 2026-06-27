@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: chaos_engineer
 weight: 8
 agent: chaos-engineer
-framework_spec_version: "0.23.1"
+framework_spec_version: "0.24.0"
 ---
 # chaos_engineer lens — PRD layer
 

@@ -22,9 +22,20 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
 
 import yaml
+
+# Shared @-tag trace primitives (CFB-PR-2 DD-1). The forward coverage engine
+# reuses the SAME token→doc reduction, layer order, and `@`-tag regex as the
+# backward walker so the two directions of the trace graph agree byte-for-byte.
+# Package-relative import → resolves in the canonical tree and in every vendored
+# copy (the submodule is carried by sync-vendored.sh).
+from .trace_graph import ELEM_FORM as _ELEM_FORM
+from .trace_graph import LAYER_INDEX as _LAYER_INDEX
+from .trace_graph import TAG as _TRACE_TAG
+from .trace_graph import doc_id_from_token
 
 _REGISTRY_REL = Path("framework") / "registry" / "LAYER_REGISTRY.yaml"
 
@@ -627,6 +638,175 @@ _ELEM_DEF_YAML = re.compile(
 )
 
 
+# --- Heading-context FR scanner (CFB-PR-2 DD-3) ---------------------------------
+# The forward-coverage engine gates only *functional requirements*. R-a/R-b make
+# "scope by YAML path" impossible (the body is flat regex; authored artifacts are
+# markdown prose) and the bare `.07.` ordinal ambiguous (§7 mixes FR definitions
+# and an acceptance-criteria sub-block under the same ordinal). So an FR is
+# identified structurally: a definition bullet under a `## … Functional
+# Requirements` heading, before that section's `Acceptance criteria:` label line.
+
+#: An FR definition bullet: ``- **<ID> — <Title>** …``. Captures the element id
+#: only — the discriminators for "gated FR" are the heading context + the
+#: acceptance-criteria boundary (DD-3), NOT the band, so a bullet that is
+#: missing its band still classifies as an FR (DD-4's rule can then flag it).
+#: The em-dash is accepted as em (—), en (–), or hyphen (-) for author leniency.
+_FR_BULLET = re.compile(r"^\s*-\s+\*\*([A-Z]+\.[0-9]+\.[0-9]+\.[a-f0-9]+)\s+[—–-]\s+[^*]+\*\*")
+#: The leading parenthetical band token on an FR bullet, e.g. the ``P1`` in
+#: ``** (P1, anonymous public): …``. Anchored (matched against the line
+#: remainder *immediately after* the FR bullet's title-close ``**``) so a
+#: ``**bold** (x)`` later in the description is never mistaken for the band; a
+#: bullet with no leading parenthetical yields ``None``. The first token
+#: suffices even when the parenthetical wraps to the next line (corpus ``882c``:
+#: ``(P1, internal / privileged — Service-Owner\n  role)``).
+_FR_BAND = re.compile(r"\s*\(\s*([^\s,)]+)")
+#: The `realized_by: <LAYER>` escape token on an FR bullet's first line
+#: (canonically inside the band parenthetical, e.g. ``(P1, realized_by: ADR)``).
+#: Marks an FR realised by a non-SPEC layer (ADR-only decision / NFR / infra),
+#: so the forward gate does not require a SPEC (CFB-PR-2 DD-5).
+_FR_REALIZED_BY = re.compile(r"realized_by:\s*([A-Za-z]+)")
+#: The plain prose label that ends the FR definition sub-block and opens the
+#: acceptance-criteria sub-block (a label line, NOT a `##` heading — R-b).
+_ACCEPTANCE_LABEL = re.compile(r"^\s*Acceptance\s+criteria:\s*$", re.IGNORECASE)
+#: The normalised heading key that opens the gated FR section.
+_FR_SECTION_KEY = "functional_requirements"
+
+
+@dataclass(frozen=True)
+class FRElement:
+    """A gated functional-requirement element (CFB-PR-2 DD-3).
+
+    ``band`` is the raw leading parenthetical token on the FR bullet
+    (e.g. ``"P1"``, ``"Future"``), or ``None`` when the bullet carries no
+    parenthetical. DD-4's band rule validates it against ``priority_definitions``
+    and treats ``Future`` as the deferral signal. ``realized_by`` is the layer
+    named in a ``realized_by: <LAYER>`` escape token (DD-5), uppercased, or
+    ``None``. ``line`` is 1-based and points at the FR bullet.
+    """
+
+    elem_id: str
+    line: int
+    band: str | None
+    realized_by: str | None = None
+
+
+def scan_fr_elements(text: str) -> list[FRElement]:
+    """Return the gated functional-requirement elements declared in ``text``.
+
+    An element id is a gated FR iff its line is (a) under a ``## … Functional
+    Requirements`` heading, (b) before that section's ``Acceptance criteria:``
+    label line, and (c) authored as an FR *definition bullet*
+    ``- **<ID> — <Title>** …``. Prose citations of element ids inside the
+    section and the §7 acceptance-criteria sub-block elements are NOT gated
+    (the former lack the bullet form; the latter fall after the boundary).
+
+    Reuses the level-2 ``_SECTION_HEADING`` mechanism so a new ``##`` heading
+    ends the FR section. Pure structural scan — no YAML, no registry.
+    """
+    out: list[FRElement] = []
+    in_fr_section = False
+    past_acceptance = False
+    for i, line in enumerate(text.splitlines(), 1):
+        head = _SECTION_HEADING.match(line)
+        if head:
+            in_fr_section = _normalise_heading(head.group(1)) == _FR_SECTION_KEY
+            past_acceptance = False
+            continue
+        if not in_fr_section:
+            continue
+        if _ACCEPTANCE_LABEL.match(line):
+            past_acceptance = True
+            continue
+        if past_acceptance:
+            continue
+        m = _FR_BULLET.match(line)
+        if m:
+            # Parse the band from the remainder AFTER the title-close `**`, so a
+            # `**bold** (x)` inside the description is never read as the band.
+            remainder = line[m.end() :]
+            band_m = _FR_BAND.match(remainder)
+            # Restrict the realized_by scan to the leading parenthetical (up to
+            # the first `)` or EOL) so a `realized_by:` mention in the
+            # description prose is never captured — the same discipline the
+            # anchored band parse uses (D-0037: the escape lives in the band
+            # parenthetical).
+            paren_m = re.match(r"\s*\(([^)]*)", remainder)
+            rb_m = _FR_REALIZED_BY.search(paren_m.group(1)) if paren_m else None
+            out.append(
+                FRElement(
+                    elem_id=m.group(1),
+                    line=i,
+                    band=band_m.group(1) if band_m else None,
+                    realized_by=rb_m.group(1).upper() if rb_m else None,
+                )
+            )
+    return out
+
+
+# --- covered_state + band parser + escape classifier (CFB-PR-2 DD-2/DD-4/DD-5) -
+
+
+class CoveredState(StrEnum):
+    """Coverage classification of a gated requirement (CFB-PR-2 DD-2).
+
+    ``AUTHORED`` is the success state — the element must reach ≥1 downstream
+    realising doc; the forward gate (step 4) blocks an ``AUTHORED`` FR that does
+    not. The others are non-blocking **escapes**: ``DEFERRED`` (a ``Future``
+    band — explicit deferral), ``REALIZED_BY`` (realised by a non-SPEC layer),
+    and ``SATISFIED_BY_REFERENCE`` (an enum member only — PR-5 adds its logic;
+    never produced by ``covered_state_of`` in PR-2). ``str``-valued
+    (``StrEnum``) so a finding can render the state directly.
+    """
+
+    AUTHORED = "authored"
+    DEFERRED = "deferred"
+    REALIZED_BY = "realized_by"
+    SATISFIED_BY_REFERENCE = "satisfied_by_reference"
+
+
+#: The priority bands. A code mirror of `priority_definitions`
+#: (`framework/layers/01_BRD/BRD-TEMPLATE.yaml`) — the single source of the
+#: enumeration; the registry phase-schema *references* that source (2c-schema),
+#: it does not re-enumerate. The gate reads the band by regex (DD-4), so the
+#: parser pattern-matches against this mirror rather than loading the template
+#: (which need not be present in a vendored consumer's tree).
+_PRIORITY_BANDS = ("P1", "P2", "Future")
+#: The band that signals explicit deferral (DD-4).
+_DEFERRAL_BAND = "Future"
+
+
+def parse_band(token: str | None) -> str | None:
+    """Return the canonical priority band for a raw FR-bullet band token, or
+    ``None`` if the token is absent or not one of ``priority_definitions``
+    (``P1`` / ``P2`` / ``Future``). Case-insensitive."""
+    if not token:
+        return None
+    t = token.strip().lower()
+    for band in _PRIORITY_BANDS:
+        if t == band.lower():
+            return band
+    return None
+
+
+def covered_state_of(fr: FRElement) -> CoveredState:
+    """Classify a gated FR's coverage requirement (CFB-PR-2 DD-2/DD-5).
+
+    - a ``realized_by: <layer>`` escape → ``REALIZED_BY`` (the more specific
+      positive claim; takes precedence over the band);
+    - else a ``Future`` band → ``DEFERRED``;
+    - else (``P1`` / ``P2``, or a missing/invalid band) → ``AUTHORED``. A
+      missing/invalid band never silently becomes an escape — it stays
+      ``AUTHORED`` and the gate reports the band finding separately.
+
+    ``SATISFIED_BY_REFERENCE`` is never returned here (PR-5).
+    """
+    if fr.realized_by:
+        return CoveredState.REALIZED_BY
+    if parse_band(fr.band) == _DEFERRAL_BAND:
+        return CoveredState.DEFERRED
+    return CoveredState.AUTHORED
+
+
 def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
     """AS11 — element-ID hash integrity (definition uniqueness).
 
@@ -908,6 +1088,127 @@ def _check_threshold_consistency(corpus: list[tuple[str, str]]) -> list[Finding]
     return findings
 
 
+# --- Bidirectional element edge-graph (CFB-PR-2 DD-1 / R-c) --------------------
+# `_check_trace_resolution` computes the citation adjacency per-line and
+# discards it; forward coverage needs it retained. `build_edge_graph` keeps
+# every UPSTREAM `@<layer>:` citation as a `TraceEdge`, so forward
+# (cited→citers) and backward (citer→cited) adjacency both derive from one
+# structure. The graph is NET-NEW: today's `element_index` is a declaration
+# presence map that excludes downstream citations, so this adjacency does not
+# exist yet.
+
+
+@dataclass(frozen=True)
+class TraceEdge:
+    """One UPSTREAM `@<layer>:` citation: ``citer_doc`` (downstream) cites
+    ``cited_token`` (an element id or doc id), whose host doc is ``cited_doc``.
+    ``line`` is 1-based in ``citer_doc``."""
+
+    citer_doc: str
+    citer_layer: str
+    cited_token: str
+    cited_doc: str
+    line: int
+
+
+@dataclass(frozen=True)
+class EdgeGraph:
+    """Corpus-wide upstream-citation adjacency (CFB-PR-2 DD-1).
+
+    ``element_host`` maps each element id to its *declaring* host doc
+    (citations excluded — R-c). ``doc_layer`` maps doc id → artifact code.
+    ``edges`` is every upstream citation edge.
+    """
+
+    element_host: dict[str, str]
+    doc_layer: dict[str, str]
+    edges: tuple[TraceEdge, ...]
+
+    def citers_of(self, token: str) -> set[str]:
+        """Doc ids that cite ``token`` (an element id or doc id) directly."""
+        return {e.citer_doc for e in self.edges if e.cited_token == token}
+
+    def citers_of_doc(self, doc_id: str) -> set[str]:
+        """Doc ids that cite ANY element of ``doc_id`` (or the doc id itself)."""
+        return {e.citer_doc for e in self.edges if e.cited_doc == doc_id}
+
+    def citers_in_layer(self, token: str, layer: str) -> set[str]:
+        """``citers_of(token)`` restricted to citers in the given layer."""
+        return {
+            e.citer_doc for e in self.edges if e.cited_token == token and e.citer_layer == layer
+        }
+
+
+def _artifact_code(fm: dict | None) -> str:
+    """Artifact code from frontmatter — ``artifact_type`` if present (keeping a
+    trailing ``-INDEX`` marker so callers can skip index docs), else the prefix
+    of ``doc_id``."""
+    if not fm:
+        return ""
+    code = str(fm.get("artifact_type") or "").strip().upper()
+    if code:
+        return code
+    doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+    m = re.match(r"^([A-Z]+)-", doc_id)
+    return m.group(1) if m else ""
+
+
+def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
+    """Build the net-new bidirectional element edge-graph (CFB-PR-2 DD-1 / R-c).
+
+    Retains every UPSTREAM `@<layer>:` citation. An edge is recorded only when
+    the cited token is strictly upstream of the citer (``cited_layer <
+    citer_layer``) — matching `_check_trace_resolution`'s strictly-downstream
+    skip (TRACE-RES-FIXUP-001 Fix 1); same-layer sibling lineage is kept,
+    self-references are dropped. Index docs (``*-INDEX``) emit no edges.
+    Multi-`@brd` pipe lines yield one edge per tag (DD-8, via the shared regex).
+    """
+    element_host: dict[str, str] = {}
+    doc_layer: dict[str, str] = {}
+    docs: list[tuple[str, str]] = []  # (doc_id, text) for docs with a doc_id
+    for _rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = ""
+        if fm:
+            doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        doc_layer[doc_id] = _artifact_code(fm)
+        docs.append((doc_id, text))
+        # Element declarations live only in their host doc (R-c: a cited element
+        # in a downstream doc must not declare itself). Filter through the strict
+        # element form so `@threshold:`-style keys (`PRD.NN.<category>.<key>`,
+        # which the lax `_ELEM_ID` also matches) are NOT registered as elements —
+        # matching the backward map's `elem_re` filter in
+        # `_check_trace_resolution`, so the two directions agree (DD-1).
+        for m in _ELEM_ID.finditer(text):
+            elem = m.group(0)
+            if not _ELEM_FORM.match(elem):
+                continue
+            parts = elem.split(".")
+            if len(parts) >= 2 and f"{parts[0]}-{parts[1]}" == doc_id:
+                element_host.setdefault(elem, doc_id)
+
+    edges: list[TraceEdge] = []
+    for doc_id, text in docs:
+        citer_code = doc_layer.get(doc_id, "")
+        if citer_code.endswith("-INDEX"):
+            continue  # index docs intentionally carry no real lineage
+        citer_n = _LAYER_INDEX.get(citer_code, 0)
+        for i, line in enumerate(text.splitlines(), 1):
+            for m in _TRACE_TAG.finditer(line):
+                value = m.group(2)
+                cited_doc = doc_id_from_token(value)
+                if cited_doc is None or cited_doc == doc_id:
+                    continue  # malformed value, or a self-reference (no lineage)
+                cited_n = _LAYER_INDEX.get(cited_doc.split("-", 1)[0], 0)
+                # Strictly-downstream forward references are not upstream edges.
+                if citer_n and cited_n and cited_n > citer_n:
+                    continue
+                edges.append(TraceEdge(doc_id, citer_code, value, cited_doc, i))
+    return EdgeGraph(element_host, doc_layer, tuple(edges))
+
+
 def _check_trace_resolution(
     corpus: list[tuple[str, str]],
     layers: dict,
@@ -1028,8 +1329,102 @@ def _check_trace_resolution(
     return findings
 
 
-def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
-    """Lint a file or recurse a directory; returns all findings."""
+# --- Forward coverage gate (CFB-PR-2 2a-core step 4, DD-6 rows 2-3) ------------
+
+
+def _doc_forward_reach(graph: EdgeGraph, start_doc: str) -> set[str]:
+    """The set of layer codes of docs transitively reachable FORWARD
+    (downstream) from ``start_doc``. Document-level binding (CFB-PR-2 2a-core
+    scope; PR-3 refines reach to element granularity). Traverses
+    ``citers_of_doc`` (who cites this doc) repeatedly — i.e. downstream."""
+    reached: set[str] = set()
+    frontier = {start_doc}
+    while frontier:
+        nxt: set[str] = set()
+        for d in frontier:
+            for citer in graph.citers_of_doc(d):
+                if citer not in reached:
+                    reached.add(citer)
+                    nxt.add(citer)
+        frontier = nxt
+    return {graph.doc_layer.get(d, "") for d in reached}
+
+
+def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """COV01 — forward coverage (CFB-PR-2 DD-6 rows 2-3).
+
+    Every in-scope (``AUTHORED``) BRD functional requirement must reach >=1 SPEC
+    and >=1 IPLAN downstream (document-level binding from the FR's host BRD).
+    Escaped FRs (``deferred`` / ``realized_by``) never block (DD-5). Run-mode
+    severity (DD-6):
+
+      - AUTHORED FR reaching no SPEC: error (block) in both modes.
+      - AUTHORED FR reaching a SPEC but no IPLAN: warning in ``build``, error in
+        ``gate-code``.
+
+    Gated to whole-corpus runs that have reached BOTH the SPEC and IPLAN layers
+    (DD-1) — returns ``[]`` if the corpus has no SPEC or no IPLAN doc, which also
+    covers the single-file ``on_author`` case (no SPEC in a one-file corpus).
+    The escaped-FR informational row (DD-6 row 1) and the phase-leak row (DD-6
+    row 4) need element granularity and land with 2c-gate / PR-3.
+    """
+    graph = build_edge_graph(corpus)
+    if not {"SPEC", "IPLAN"} <= set(graph.doc_layer.values()):
+        return []
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        # Identify the BRD the same way the graph does (artifact_type, else the
+        # doc_id prefix via _artifact_code) so a BRD authored without an explicit
+        # artifact_type still gets gated rather than silently escaping.
+        if _artifact_code(fm) != "BRD":
+            continue
+        doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        reach = _doc_forward_reach(graph, doc_id)
+        reaches_spec, reaches_iplan = "SPEC" in reach, "IPLAN" in reach
+        for fr in scan_fr_elements(text):
+            # Escaped FRs (deferred / realized_by) never block (DD-5).
+            if covered_state_of(fr) != CoveredState.AUTHORED:
+                continue
+            if not reaches_spec:
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV01",
+                        f"in-scope FR '{fr.elem_id}' (band {fr.band or '—'}) reaches no SPEC "
+                        f"in the corpus — a realized requirement needs a covering SPEC",
+                        severity="error",
+                    )
+                )
+            elif not reaches_iplan:
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV01",
+                        f"in-scope FR '{fr.elem_id}' reaches a SPEC but no IPLAN — "
+                        f"designed but not yet built",
+                        severity="error" if mode == "gate-code" else "warning",
+                    )
+                )
+    return findings
+
+
+def lint_path(
+    target: Path,
+    registry: Path | None = None,
+    *,
+    mode: str = "build",
+    skip_coverage: bool = False,
+) -> list[Finding]:
+    """Lint a file or recurse a directory; returns all findings.
+
+    ``mode`` (``build`` | ``gate-code``) sets the forward-coverage severity
+    (DD-6); ``skip_coverage`` suppresses the coverage gate entirely (DD-9 — the
+    transient-migration escape hatch)."""
     layers, doc_re, elem_re = _load_registry(registry)
     findings: list[Finding] = []
     corpus: list[tuple[str, str]] = []  # (rel_path, text) — for corpus-level passes
@@ -1059,6 +1454,8 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
+    if not skip_coverage:
+        findings.extend(_check_forward_coverage(corpus, mode))
     return findings
 
 
