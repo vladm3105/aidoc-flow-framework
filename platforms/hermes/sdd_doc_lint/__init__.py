@@ -22,6 +22,7 @@ from __future__ import annotations
 import os
 import re
 from dataclasses import dataclass
+from enum import StrEnum
 from pathlib import Path
 
 import yaml
@@ -659,6 +660,11 @@ _FR_BULLET = re.compile(r"^\s*-\s+\*\*([A-Z]+\.[0-9]+\.[0-9]+\.[a-f0-9]+)\s+[—
 #: suffices even when the parenthetical wraps to the next line (corpus ``882c``:
 #: ``(P1, internal / privileged — Service-Owner\n  role)``).
 _FR_BAND = re.compile(r"\s*\(\s*([^\s,)]+)")
+#: The `realized_by: <LAYER>` escape token on an FR bullet's first line
+#: (canonically inside the band parenthetical, e.g. ``(P1, realized_by: ADR)``).
+#: Marks an FR realised by a non-SPEC layer (ADR-only decision / NFR / infra),
+#: so the forward gate does not require a SPEC (CFB-PR-2 DD-5).
+_FR_REALIZED_BY = re.compile(r"realized_by:\s*([A-Za-z]+)")
 #: The plain prose label that ends the FR definition sub-block and opens the
 #: acceptance-criteria sub-block (a label line, NOT a `##` heading — R-b).
 _ACCEPTANCE_LABEL = re.compile(r"^\s*Acceptance\s+criteria:\s*$", re.IGNORECASE)
@@ -673,13 +679,15 @@ class FRElement:
     ``band`` is the raw leading parenthetical token on the FR bullet
     (e.g. ``"P1"``, ``"Future"``), or ``None`` when the bullet carries no
     parenthetical. DD-4's band rule validates it against ``priority_definitions``
-    and treats ``Future`` as the deferral signal. ``line`` is 1-based and points
-    at the FR bullet.
+    and treats ``Future`` as the deferral signal. ``realized_by`` is the layer
+    named in a ``realized_by: <LAYER>`` escape token (DD-5), uppercased, or
+    ``None``. ``line`` is 1-based and points at the FR bullet.
     """
 
     elem_id: str
     line: int
     band: str | None
+    realized_by: str | None = None
 
 
 def scan_fr_elements(text: str) -> list[FRElement]:
@@ -715,11 +723,82 @@ def scan_fr_elements(text: str) -> list[FRElement]:
         if m:
             # Parse the band from the remainder AFTER the title-close `**`, so a
             # `**bold** (x)` inside the description is never read as the band.
-            band_m = _FR_BAND.match(line[m.end() :])
+            remainder = line[m.end() :]
+            band_m = _FR_BAND.match(remainder)
+            rb_m = _FR_REALIZED_BY.search(remainder)
             out.append(
-                FRElement(elem_id=m.group(1), line=i, band=band_m.group(1) if band_m else None)
+                FRElement(
+                    elem_id=m.group(1),
+                    line=i,
+                    band=band_m.group(1) if band_m else None,
+                    realized_by=rb_m.group(1).upper() if rb_m else None,
+                )
             )
     return out
+
+
+# --- covered_state + band parser + escape classifier (CFB-PR-2 DD-2/DD-4/DD-5) -
+
+
+class CoveredState(StrEnum):
+    """Coverage classification of a gated requirement (CFB-PR-2 DD-2).
+
+    ``AUTHORED`` is the success state — the element must reach ≥1 downstream
+    realising doc; the forward gate (step 4) blocks an ``AUTHORED`` FR that does
+    not. The others are non-blocking **escapes**: ``DEFERRED`` (a ``Future``
+    band — explicit deferral), ``REALIZED_BY`` (realised by a non-SPEC layer),
+    and ``SATISFIED_BY_REFERENCE`` (an enum member only — PR-5 adds its logic;
+    never produced by ``covered_state_of`` in PR-2). ``str``-valued
+    (``StrEnum``) so a finding can render the state directly.
+    """
+
+    AUTHORED = "authored"
+    DEFERRED = "deferred"
+    REALIZED_BY = "realized_by"
+    SATISFIED_BY_REFERENCE = "satisfied_by_reference"
+
+
+#: The priority bands. A code mirror of `priority_definitions`
+#: (`framework/layers/01_BRD/BRD-TEMPLATE.yaml`) — the single source of the
+#: enumeration; the registry phase-schema *references* that source (2c-schema),
+#: it does not re-enumerate. The gate reads the band by regex (DD-4), so the
+#: parser pattern-matches against this mirror rather than loading the template
+#: (which need not be present in a vendored consumer's tree).
+_PRIORITY_BANDS = ("P1", "P2", "Future")
+#: The band that signals explicit deferral (DD-4).
+_DEFERRAL_BAND = "Future"
+
+
+def parse_band(token: str | None) -> str | None:
+    """Return the canonical priority band for a raw FR-bullet band token, or
+    ``None`` if the token is absent or not one of ``priority_definitions``
+    (``P1`` / ``P2`` / ``Future``). Case-insensitive."""
+    if not token:
+        return None
+    t = token.strip().lower()
+    for band in _PRIORITY_BANDS:
+        if t == band.lower():
+            return band
+    return None
+
+
+def covered_state_of(fr: FRElement) -> CoveredState:
+    """Classify a gated FR's coverage requirement (CFB-PR-2 DD-2/DD-5).
+
+    - a ``realized_by: <layer>`` escape → ``REALIZED_BY`` (the more specific
+      positive claim; takes precedence over the band);
+    - else a ``Future`` band → ``DEFERRED``;
+    - else (``P1`` / ``P2``, or a missing/invalid band) → ``AUTHORED``. A
+      missing/invalid band never silently becomes an escape — it stays
+      ``AUTHORED`` and the gate reports the band finding separately.
+
+    ``SATISFIED_BY_REFERENCE`` is never returned here (PR-5).
+    """
+    if fr.realized_by:
+        return CoveredState.REALIZED_BY
+    if parse_band(fr.band) == _DEFERRAL_BAND:
+        return CoveredState.DEFERRED
+    return CoveredState.AUTHORED
 
 
 def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
