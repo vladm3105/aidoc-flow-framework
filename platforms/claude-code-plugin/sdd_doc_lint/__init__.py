@@ -1329,8 +1329,99 @@ def _check_trace_resolution(
     return findings
 
 
-def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
-    """Lint a file or recurse a directory; returns all findings."""
+# --- Forward coverage gate (CFB-PR-2 2a-core step 4, DD-6 rows 2-3) ------------
+
+
+def _doc_forward_reach(graph: EdgeGraph, start_doc: str) -> set[str]:
+    """The set of layer codes of docs transitively reachable FORWARD
+    (downstream) from ``start_doc``. Document-level binding (CFB-PR-2 2a-core
+    scope; PR-3 refines reach to element granularity). Traverses
+    ``citers_of_doc`` (who cites this doc) repeatedly — i.e. downstream."""
+    reached: set[str] = set()
+    frontier = {start_doc}
+    while frontier:
+        nxt: set[str] = set()
+        for d in frontier:
+            for citer in graph.citers_of_doc(d):
+                if citer not in reached:
+                    reached.add(citer)
+                    nxt.add(citer)
+        frontier = nxt
+    return {graph.doc_layer.get(d, "") for d in reached}
+
+
+def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """COV01 — forward coverage (CFB-PR-2 DD-6 rows 2-3).
+
+    Every in-scope (``AUTHORED``) BRD functional requirement must reach >=1 SPEC
+    and >=1 IPLAN downstream (document-level binding from the FR's host BRD).
+    Escaped FRs (``deferred`` / ``realized_by``) never block (DD-5). Run-mode
+    severity (DD-6):
+
+      - AUTHORED FR reaching no SPEC: error (block) in both modes.
+      - AUTHORED FR reaching a SPEC but no IPLAN: warning in ``build``, error in
+        ``gate-code``.
+
+    Gated to whole-corpus runs that have reached BOTH the SPEC and IPLAN layers
+    (DD-1) — returns ``[]`` if the corpus has no SPEC or no IPLAN doc, which also
+    covers the single-file ``on_author`` case (no SPEC in a one-file corpus).
+    The escaped-FR informational row (DD-6 row 1) and the phase-leak row (DD-6
+    row 4) need element granularity and land with 2c-gate / PR-3.
+    """
+    graph = build_edge_graph(corpus)
+    if not {"SPEC", "IPLAN"} <= set(graph.doc_layer.values()):
+        return []
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if not fm or str(fm.get("artifact_type") or "").strip().upper() != "BRD":
+            continue
+        doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        reach = _doc_forward_reach(graph, doc_id)
+        reaches_spec, reaches_iplan = "SPEC" in reach, "IPLAN" in reach
+        for fr in scan_fr_elements(text):
+            # Escaped FRs (deferred / realized_by) never block (DD-5).
+            if covered_state_of(fr) != CoveredState.AUTHORED:
+                continue
+            if not reaches_spec:
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV01",
+                        f"in-scope FR '{fr.elem_id}' (band {fr.band or '—'}) reaches no SPEC "
+                        f"in the corpus — a realized requirement needs a covering SPEC",
+                        severity="error",
+                    )
+                )
+            elif not reaches_iplan:
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV01",
+                        f"in-scope FR '{fr.elem_id}' reaches a SPEC but no IPLAN — "
+                        f"designed but not yet built",
+                        severity="error" if mode == "gate-code" else "warning",
+                    )
+                )
+    return findings
+
+
+def lint_path(
+    target: Path,
+    registry: Path | None = None,
+    *,
+    mode: str = "build",
+    skip_coverage: bool = False,
+) -> list[Finding]:
+    """Lint a file or recurse a directory; returns all findings.
+
+    ``mode`` (``build`` | ``gate-code``) sets the forward-coverage severity
+    (DD-6); ``skip_coverage`` suppresses the coverage gate entirely (DD-9 — the
+    transient-migration escape hatch)."""
     layers, doc_re, elem_re = _load_registry(registry)
     findings: list[Finding] = []
     corpus: list[tuple[str, str]] = []  # (rel_path, text) — for corpus-level passes
@@ -1360,6 +1451,8 @@ def lint_path(target: Path, registry: Path | None = None) -> list[Finding]:
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
+    if not skip_coverage:
+        findings.extend(_check_forward_coverage(corpus, mode))
     return findings
 
 
