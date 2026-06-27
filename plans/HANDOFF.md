@@ -56,14 +56,30 @@
 >    `realized_by: <LAYER>` token on the FR bullet's first line, captured into
 >    `FRElement.realized_by` (D-0037). Corpus: 4 BRD-01 FRs → AUTHORED.
 >    `test_covered_state.py` (11); 221 green. Commit `216f9c94`.
-> 4. ⬜ **RESUME HERE** — Forward gate + run-mode severity (DD-6) + net-new
->    `--mode {build|gate-code}` / `--skip-coverage-gate` args in `__main__.py`.
->    Wire the graph + scanner + `covered_state_of` into a corpus-level check
->    (`build_edge_graph` reach for AUTHORED FRs → ≥1 SPEC/IPLAN; escapes never
->    block; the DD-6 severity table). Gate to whole-corpus runs (DD-1).
-> 5. ⬜ `tools/sdd_coverage.py` → `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md`
->    cross-ref (DD-7).
-> 6. ⬜ Conformance tests per gate; corpus green via DD-9; framework MINOR bump.
+> 4. ✅ **Forward coverage gate + run-mode severity + CLI args** (DD-6/DD-9).
+>    `_check_forward_coverage` (COV01): AUTHORED BRD FRs must reach ≥1 SPEC +
+>    ≥1 IPLAN (doc-level reach from host BRD; PR-3 refines to element);
+>    escapes never block. Severity: no-SPEC → error both modes; SPEC-but-no-
+>    IPLAN → warning(build)/error(gate-code). Gated to corpora with SPEC+IPLAN
+>    present (DD-1; no-ops on single-file + partial fixtures). New
+>    `--mode {build|gate-code}` + `--skip-coverage-gate` args, threaded through
+>    `lint_path(mode=, skip_coverage=)`. **Deferred** (element-granularity/2c):
+>    DD-6 row 1 (escaped informational) + row 4 (phase leak). DD-9: corpus
+>    findings byte-identical to main (0 COV01). `test_forward_coverage.py` (9);
+>    231 green. Commit `0bdd12fc`.
+> 5. ⬜ **RESUME HERE** — `tools/sdd_coverage.py` → generated
+>    `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md` cross-ref (DD-7).
+>    Consumes the same `build_edge_graph` core; emits a regenerable matrix.
+> 6. ⬜ Conformance tests per gate; corpus green via DD-9; framework MINOR bump
+>    - the BRD-template FR-annotation rule (DD-3/DD-4 normative formalization).
+>
+> **Pre-existing corpus issue surfaced in step 4 (NOT a CFB-PR-2 regression):**
+> `TH-RES-001` errors on `examples/url-shortener/docs/02_PRD/PRD-01.md`
+> (missing `component_decomposition`; 11 downstream `@threshold:` citations
+> unresolvable) — confirmed identical under main's linter. Out of CFB-PR-2
+> scope (threshold-resolution, CLEANUP-PR-D). Flag for corpus remediation via
+> the framework fixer (never hand-edit the example artifact). Logged in
+> `FRAMEWORK-TODO.md`.
 >
 > **Open follow-ups** (logged in `FRAMEWORK-TODO.md`): the cumulative-residue
 > sweep missed the stale `Upstream:` enumerations in layer index templates /

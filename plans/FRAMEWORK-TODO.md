@@ -32,6 +32,17 @@
 > on `feat/cfb-pr-2a-coverage-core`, step 1 `sdd_trace_graph` landed). The
 > remaining D54/ENG/BL items stay open until their PR ships.
 
+### `[example-corpus]` `CORPUS-PRD-TH-RES` — PRD-01 missing `component_decomposition` → 11 unresolvable `@threshold:` citations
+
+- *Context:* surfaced while verifying CFB-PR-2 2a-core step 4 (forward-coverage
+  gate) on `examples/url-shortener/docs/`. `02_PRD/PRD-01.md` trips `TH-RES-001`
+  (error): downstream docs cite `@threshold: PRD.01.perf.*` but PRD-01 declares
+  no `component_decomposition` thresholds. Pre-existing — identical under main's
+  linter; unrelated to coverage (CLEANUP-PR-D threshold-resolution).
+- *Fix shape:* dispatch `doc-prd-fixer` to add the `component_decomposition`
+  thresholds the downstream `@threshold:` tags expect, then re-cascade. Never
+  hand-edit the example artifact.
+
 ### `[template]` `INDEX-UPSTREAM-RESIDUE` — stale cumulative `Upstream:` enumerations in layer index templates / READMEs
 
 - *Context:* CFB-PR-1 (PR #180) migrated cumulative→necessary-upstream across

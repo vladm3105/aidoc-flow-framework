@@ -346,12 +346,45 @@ The classification layer the forward gate (step 4) dispatches on.
 - Corpus: all 4 BRD-01 FRs (P1, no escape) → `AUTHORED`.
   `test_covered_state.py` (11); 221 unit+conformance green.
 
-### Step 4 — forward gate + run-mode severity (DD-6/DD-9) — NEXT
+### Step 4 — forward coverage gate + run-mode severity + CLI args (DD-6/DD-9) — DONE (`0bdd12fc`)
 
-Wire `build_edge_graph` + `scan_fr_elements` + `covered_state_of` into a
-corpus-level coverage check: an `AUTHORED` FR must reach ≥1 SPEC + ≥1 IPLAN
-(transitively, via the graph); escapes never block; the DD-6 `--mode {build |
-gate-code}` severity table; `--skip-coverage-gate` (DD-9); gated to whole-corpus
-runs (DD-1). The BRD-template FR-annotation rule lands here. Then steps 5-6
-(matrix emitter + `TRACEABILITY.md` cross-ref; conformance + corpus green +
-framework MINOR bump).
+`_check_forward_coverage` (`COV01`) wires the graph + scanner + classifier into
+a corpus-level gate.
+
+- **Reach is document-level** from the FR's host BRD (`_doc_forward_reach`,
+  transitive over `citers_of_doc`). The plan's "document-level binding for
+  SPEC/TDD/IPLAN" — PR-3 refines reach to element granularity. *Granularity is
+  chosen to avoid false BLOCKS:* element-level reach would false-block an
+  AUTHORED FR that its downstream cites at the doc level (necessary-upstream
+  permits doc-level citation), so coverage uses doc-level reach. Under-detection
+  (a coarse miss) is acceptable; a false block is not.
+- **Severity (DD-6 rows 2-3):** AUTHORED FR, no SPEC → error (both modes);
+  AUTHORED FR, SPEC but no IPLAN → warning (`build`) / error (`gate-code`).
+  Escaped FRs (`deferred` / `realized_by`) are skipped entirely — the DD-5
+  suppression (they never block even with no SPEC).
+- **DD-1 gating:** runs only when the corpus has reached BOTH the SPEC and
+  IPLAN layers (`{SPEC, IPLAN} ⊆ present`). No-ops on the single-file
+  `on_author` case and partial-cascade fixtures (`valid/` has no SPEC,
+  `broken/` has no IPLAN — both unaffected; no test regressions).
+- **CLI (DD-6/DD-9):** net-new `--mode {build | gate-code}` (default `build`) +
+  `--skip-coverage-gate`, threaded through `lint_path(mode=, skip_coverage=)`.
+- **Deferred (need element granularity / 2c):** DD-6 row 1 (escaped-FR
+  informational warning — meaningless at doc-level) and row 4 (phase leak — its
+  per-FR correctness needs element reach to avoid false-blocking a `Future` FR
+  in a mixed-band BRD). Both land with 2c-gate / PR-3.
+- **DD-9 verified:** corpus findings are **byte-identical to main** (`--format
+  json` diff empty) — all 4 BRD-01 FRs reach SPEC+IPLAN, 0 `COV01`. No
+  `--skip-coverage-gate` / annotation needed for the corpus.
+- **Pre-existing corpus issue surfaced (out of scope):** `TH-RES-001` errors on
+  `02_PRD/PRD-01.md` (missing `component_decomposition`; 11 unresolvable
+  `@threshold:` citations) — confirmed identical under main's linter, unrelated
+  to coverage (CLEANUP-PR-D threshold-resolution). Flagged in `FRAMEWORK-TODO.md`
+  for framework-fixer remediation (never hand-edit the example artifact).
+- `test_forward_coverage.py` (9); 231 unit+conformance green.
+
+### Step 5 — `sdd_coverage.py` matrix emitter + `TRACEABILITY.md` cross-ref (DD-7) — NEXT
+
+A thin reporter consuming the same `build_edge_graph` core; emits a regenerable
+`docs/TRACEABILITY_MATRIX.md` and adds the cross-ref into
+`governance/TRACEABILITY.md`. Then step 6 (conformance tests per gate; corpus
+green; framework MINOR bump + the BRD-template FR-annotation rule DD-3/DD-4).
