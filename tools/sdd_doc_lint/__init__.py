@@ -1413,6 +1413,76 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     return findings
 
 
+#: The requirement ("oracle") layers the backward gate checks for downstream
+#: realization, and the realization layers they must reach (CFB-PR-2b).
+_BACKWARD_ORACLE_LAYERS = ("EARS", "BDD")
+_BACKWARD_REALIZED_LAYERS = ("SPEC", "TDD")
+
+
+def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """COV02 — backward coverage (CFB-PR-2b). The dual of `COV01`.
+
+    Every EARS/BDD requirement doc must be **realized** downstream — it must
+    transitively reach a SPEC or TDD doc; otherwise the requirements/scenarios it
+    declares are designed/tested by nothing. Document-level binding (PR-3 refines
+    to element granularity).
+
+    Gating (DD-2b-3): no-ops unless the corpus contains a **real** (non-`-00`)
+    SPEC or TDD doc — so single-file `on_author` runs and pre-design cascades are
+    unaffected. The presence test uses the `-00` index doc-id convention, NOT
+    element-declaration, because SPEC/IPLAN docs declare no canonical elements
+    (R2b-g): a real SPEC and a bare `SPEC-00` index both host zero own-layer
+    elements.
+
+    Enumeration (DD-2b-2): the requirement docs to check are the host docs of
+    declared EARS/BDD elements (`element_host`) — which excludes the element-less
+    `*-00` index docs.
+
+    Severity (DD-2b-3): an EARS/BDD doc reaching no SPEC/TDD is a **warning** in
+    `build`, **error** in `gate-code` — a deliberate softening of `COV01`'s
+    error-both-modes, because a doc-level backward gap occurs transiently during
+    multi-feature incremental design.
+    """
+    graph = build_edge_graph(corpus)
+    # DD-2b-3: activate only when a real (non-index) design/test doc exists.
+    if not any(
+        layer in _BACKWARD_REALIZED_LAYERS and not doc_id.endswith("-00")
+        for doc_id, layer in graph.doc_layer.items()
+    ):
+        return []
+    # DD-2b-2: enumerate the requirement docs = host docs of declared EARS/BDD
+    # elements (excludes element-less `*-00` index docs).
+    oracle_docs = {
+        host
+        for elem, host in graph.element_host.items()
+        if elem.split(".", 1)[0] in _BACKWARD_ORACLE_LAYERS
+    }
+    # Map doc_id → rel path for stable, file-anchored reporting.
+    rel_by_doc: dict[str, str] = {}
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
+        if doc_id:
+            rel_by_doc.setdefault(doc_id, rel)
+
+    severity = "error" if mode == "gate-code" else "warning"
+    findings: list[Finding] = []
+    for doc_id in sorted(oracle_docs):
+        reach = _doc_forward_reach(graph, doc_id)
+        if not (set(_BACKWARD_REALIZED_LAYERS) & reach):
+            findings.append(
+                Finding(
+                    rel_by_doc.get(doc_id, doc_id),
+                    0,
+                    "COV02",
+                    f"requirement doc '{doc_id}' reaches no SPEC/TDD downstream — "
+                    f"its requirements/scenarios are realized (designed/tested) by nothing",
+                    severity=severity,
+                )
+            )
+    return findings
+
+
 def lint_path(
     target: Path,
     registry: Path | None = None,
@@ -1456,6 +1526,7 @@ def lint_path(
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
+        findings.extend(_check_backward_coverage(corpus, mode))
     return findings
 
 
