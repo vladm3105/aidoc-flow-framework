@@ -10,10 +10,10 @@
 | -------------- | ---------------------------------------------------- |
 | Task           | CFB-PR-2 (coverage engine)                           |
 | Type           | feature (tooling + spec)                             |
-| Status         | READY — 2026-06-27 · converged Pass 1 (self) + Pass 2 (independent) + Pass 3 (self) |
+| Status         | READY — 2026-06-27 · 3 independent passes (P2 design-gaps, P4 soundness, P6 confirming) + 4 self; false-premise class closed |
 | Parent         | `plans/CONSUMER-FEEDBACK-001-PLAN.md` (PR-2)         |
 | Depends on     | PR-1 (merged); **PR-3 lands with sub-PR 2a** (ref-granularity) |
-| Version impact | framework **MINOR** (new `SPEC-00` coverage section, GATE-06, phase tag schema) + tooling. Bump via the now-fixed `bump_version.py` (PR #182). |
+| Version impact | framework **MINOR** (new `SPEC-00` coverage section, GATE-06, phase tag schema, BRD FR-annotation rule) + tooling. Bump via the fixed `bump_version.py` (#182). |
 
 ## Objective
 
@@ -22,170 +22,254 @@ Build the forward/completeness half of traceability the framework lacks:
 Nothing asserts forward that **every BRD functional requirement reaches ≥1 SPEC
 and ≥1 IPLAN**, that **every EARS/BDD element has a covering SPEC/TDD or an
 explicit deferral**, or that **no out-of-phase item leaked into an in-phase
-plan**. This engine adds those checks + the BDD doc-set roll-up + the generated
-trace matrix, surfacing gaps only caught by manual re-reading today.
+plan**. This engine adds those checks + the BDD doc-set roll-up + a generated
+trace matrix.
 
-## Resolved design decisions (folded from Pass-2 independent review)
+## Implementation reality (grounded — Pass-4 verified; every DD obeys these)
 
-**DD-1 — Engine host (Pass-2 #7).** Gate logic lives in **`sdd_doc_lint`**,
-reusing its existing full-corpus `doc_index` + **`element_index`** built in
-`_check_trace_resolution` (`__init__.py:943-964`) — forward coverage is the
-inverse traversal over that same edge set. **Do NOT extend `trace_walk.walk()`**
-(it is a single-start backward BFS that collapses tags to doc-ids at the door —
-wrong data model). Refactor `trace_walk`'s `_TAG` regex + `_locate_doc` into a
-shared helper module; the **matrix emitter is a new thin reporter
-`tools/sdd_coverage.py`** consuming that shared core.
+- **R-a — The linter parses frontmatter YAML only; the body is flat regex.**
+  `sdd_doc_lint` reads frontmatter via `_extract_frontmatter` (`__init__.py:738`)
+  and harvests element IDs + tags by **line-by-line regex** (`_ELEM_ID`/`_TAG`).
+  There is **no parsed body tree / YAML path** for an authored artifact.
+- **R-b — Authored artifacts are Markdown prose, not the template YAML.**
+  `examples/url-shortener/docs/01_BRD/BRD-01.md` has `## 7. Functional
+  Requirements` (`:158`) with FRs as bullets `**BRD.01.07.6c3f — Title**
+  (P1, …)` (`:172`). Priority is **inline prose `(P1|P2|Future, …)`**, not a
+  YAML `priority:` field. §7 ALSO contains an "Acceptance criteria:" sub-block
+  with its own element IDs under the same `.07.` ordinal (`:195-208`).
+- **R-c — No edge set is retained.** `element_index` (`:944,956-964`) is a
+  presence map `elem → host_doc` that **excludes downstream citations**
+  (`:954-955`); citation edges are computed per-line and discarded. The
+  bidirectional adjacency forward coverage needs is **net-new**.
+- **R-d — The CLI has no mode/skip surface.** `__main__.py` exposes only
+  `paths`, `--registry`, `--format`; `_check_trace_resolution` runs
+  unconditionally. `--mode`/`--skip-*` are **net-new args** (the only existing
+  skip/mode precedent lives in a *different* subsystem — the hermes
+  orchestrator `sdd_config.yaml` + plugin `gate-check` skill).
+- **R-e — PR-1 names no matrix.** Merged `governance/TRACEABILITY.md:29-30`
+  says reverse lookup "walks the chain transitively, **not a local tag**"
+  (i.e. `trace_walk.py`). There is no pre-existing matrix contract to honor.
 
-**DD-2 — "covered" is an extensible covered-state enum (Pass-2 #1, closes
-orchestration R2-HIGH).** Define `covered_state ∈ { authored | deferred |
-realized_by:<layer> | satisfied_by_reference }`. PR-2 implements `authored`,
-`deferred`, `realized_by`; **`satisfied_by_reference` is declared as an enum
-member but stubbed** (PR-5 implements it — adds a member, not a rewrite). The
-gate's "covered?" predicate dispatches on this enum so PR-5 extends, never
-re-defines.
+## Resolved design decisions (folded from Pass-2 + corrected by Pass-4)
 
-**DD-3 — FR identification (Pass-2 #2).** The forward gate gates **only BRD
-elements under `functional_requirements.requirements[]`** (form `BRD.NN.07.*`
-but identified by **YAML path, not the `.07.` ordinal**, which is per-doc and
-not guaranteed). Objectives / stakeholders / risks carry element IDs but are
-NOT gated. Mechanism: the lint resolves the element's owning section via the
-artifact's parsed structure; only `functional_requirements` elements enter the
-forward-coverage set.
+**DD-1 — Engine host + the graph is NET-NEW.** Host = **`sdd_doc_lint`** (the
+only whole-corpus tool). Reuse its frontmatter parse + `_ELEM_ID`/`_TAG`
+regexes + the doc/element **presence** indexes. **Build** a new bidirectional
+element-level **edge graph** (R-c: today's `element_index` excludes downstream
+citations — the adjacency does not exist yet; "inverse traversal of the existing
+edge set" was wrong). Refactor `trace_walk`'s `_TAG` + `_locate_doc` into a
+shared module; the matrix emitter is a new thin reporter `tools/sdd_coverage.py`
+consuming the shared core. **Gate the coverage check to whole-corpus runs** —
+skip on the single-file `on_author` invocation (else "FR reaches no SPEC"
+false-fires because no SPECs are in a one-file corpus).
 
-**DD-4 — Phase model (Pass-2 #3; reconciled with the EXISTING model).** Separate
-schema from value:
+**DD-2 — Extensible `covered_state` enum (PR-5 extension point; R2-HIGH).**
+`covered_state ∈ { authored | deferred | realized_by:<layer> |
+satisfied_by_reference }`. **`authored`** = the success state: the element
+reaches ≥1 downstream realizing doc. `deferred` / `realized_by` /
+`satisfied_by_reference` are the non-blocking **escapes**. The "covered?"
+predicate dispatches on this enum; the gate blocks only when state is `authored`
+AND the required downstream is absent. PR-2 ships `authored`/`deferred`/
+`realized_by`; **`satisfied_by_reference` is an enum member, stubbed** (PR-5
+adds the member's logic — not a rewrite).
 
-- *Schema:* register the phase concept in `LAYER_REGISTRY.yaml` +
-  `ID_NAMING_STANDARDS.md` (allowed values, "required on gated FR elements").
-- *Value:* **reuse the existing `priority: P1 | P2 | Future`** on FR elements
-  (`BRD-TEMPLATE.yaml:529-532`) as the cycle band; `priority: Future` IS the
-  **deferral signal** (resolves the missing-`deferred:`-field gap — no new
-  field). The authoritative current-phase / scope ledger is the existing BRD
-  `project_scope` / `acceptance_criteria` section + the `BRD-TEMPLATE.yaml:160`
-  rule ("phase names + count match between scope and implementation").
-- **Reject** the element-ID-segment option (IDs are content-hashed; encoding
-  phase would churn every `@`-ref and collide with PR-4/PR-9).
+**DD-3 — FR identification by markdown heading-context (not YAML path).** R-a/R-b
+make "scope by YAML path" impossible and the bare `.07.` ordinal ambiguous (§7
+mixes FRs and acceptance-criteria elements). Mechanism: **extend the line scanner
+to track the current `## N. <Heading>` context + in-section sub-block boundary.**
+An element ID is a gated **FR** iff its line is under `## … Functional
+Requirements` AND before that section's `Acceptance criteria:` **label line**
+(a plain prose boundary line, not a `##` heading — confirmed in `BRD-01.md:195`).
+The line scanner already tracks `## N.` heading context (`_SECTION_HEADING`,
+`:106`); this adds an in-section sub-block toggle on the literal
+`Acceptance criteria:` line. The BRD template formalizes both markers (the FR
+bullet form + the `Acceptance criteria:` label) so the boundary is reliable.
+Objectives / stakeholders / risks / acceptance-criteria elements are NOT gated.
 
-**DD-5 — Non-SPEC realization escape taxonomy (Pass-2 #4).** An FR / EARS / BDD
-element is NOT a false-block if its `covered_state` is `deferred`
-(`priority: Future`), `realized_by:<layer>` (e.g. an ADR-only decision, NFR, or
-infra with no dedicated SPEC component), or (PR-5) `satisfied_by_reference`. The
-gate blocks only on a `priority:P1/P2` FR with **none** of these and no SPEC/
-IPLAN. Enumerated now; `realized_by` ships, `satisfied_by_reference` stubbed.
+**DD-4 — Priority/phase band parsed from the FR-bullet annotation (R-b).** The
+band is the **inline `(P1 | P2 | Future[, <note>])`** on the FR bullet
+(`BRD-01.md:172`). PR-2 **formalizes this annotation in the BRD template** as the
+machine-readable band (the allowed values already live single-sourced in
+`priority_definitions`, `BRD-TEMPLATE.yaml:529-532`; the template gains a rule
+"every FR bullet MUST carry `(P1|P2|Future, …)`"). The gate parses it via a
+regex on the FR line. **`Future` = the deferral signal** (no new YAML field; no
+value duplication — the registry phase-schema entry *references*
+`priority_definitions`, it does not re-enumerate). Reject the element-ID-segment
+option. *Note (Pass-6):* the structured template schema also carries
+`requirements[].priority:` as a YAML field (`BRD-TEMPLATE.yaml:538`); that and
+the authored markdown `(P1, …)` annotation are two surfaces for the same value —
+the **annotation is the authored-artifact form the flat-token gate reads**;
+the template rule keeps them in sync (no third source). Integrates with the
+existing `BRD-XS-002` rule ("phase names + count match between scope and
+implementation", `BRD-TEMPLATE.yaml:159`).
 
-**DD-6 — Severity is run-mode-dependent (Pass-2 #6; reconciles ENG-FWD vs
-D54-F13).** The gate takes a **run-mode** input (`--mode {build | gate-code}`,
-default `build`). Same finding, two severities:
+**DD-5 — Escape taxonomy (reconciled with DD-6).** An FR/EARS/BDD element does
+NOT block if its `covered_state` is `deferred` (band `Future`),
+`realized_by:<layer>` (ADR-only decision / NFR / infra with no dedicated SPEC),
+or (PR-5) `satisfied_by_reference`. `realized_by` ships; `satisfied_by_reference`
+stubbed.
 
-| finding | `build` (mid-build) | `gate-code` |
+**DD-6 — Run-mode-dependent severity (the escapes carve out the NO-SPEC block).**
+The check takes a **run-mode** (`--mode {build | gate-code}`, default `build` —
+a net-new CLI arg per R-d). Same finding, two severities; **escaped FRs never
+block** (fixes the Pass-4 DD-5⊥DD-6 contradiction):
+
+| finding | `build` | `gate-code` |
 |---|---|---|
-| `deferred` FR (priority:Future) no IPLAN | warning | warning |
-| in-scope (P1/P2) FR no IPLAN | **warning** | **block** |
-| FR reaches NO SPEC at all | **block** | **block** |
-| out-of-phase item in an in-phase plan | **block** | **block** |
+| escaped FR (Future / realized_by / satisfied_by_reference), no SPEC/IPLAN | warning | warning |
+| in-scope (P1/P2, no escape) FR, no IPLAN | **warning** | **block** |
+| in-scope (P1/P2, no escape) FR reaching **NO SPEC** | **block** | **block** |
+| a deferred (`Future`-band) FR that **reaches an IPLAN** in the corpus — built despite deferral (the D54-F13 leak) | **block** | **block** |
 
-**DD-7 — Matrix deliverable (Pass-2 #5; the PR-1 reverse-lookup contract).**
-`sdd_coverage.py` emits a generated **`docs/TRACEABILITY-MATRIX.md`** (BRD→…→
-IPLAN, one row per gated FR with its realizing docs + `covered_state`) — this is
-the named artifact PR-1's `TRACEABILITY.md` reverse-lookup points at. Generated/
-regenerable; never hand-edited. BDD-rollup output is a section of the same.
+**Phase-leak grounding (Pass-6 fix — R-f).** The leak signal is **derived
+entirely from signals that exist**: the FR band (DD-4, from the `(Future, …)`
+annotation) + the forward trace (does that `Future` FR reach an IPLAN). **No
+separate IPLAN "cycle" field is invented** — none exists (registry, IPLAN
+template, and corpus carry no phase/cycle key; the only IPLAN "phase" is the
+TDD Red/Green/Refactor build phase, which is orthogonal). The rule is symmetric
+with row 1: a `Future` FR *without* an IPLAN is legitimate deferral (warning);
+*with* an IPLAN it is a leak (block). The richer **scope-ledger reconciliation**
+(BRD accepted-scope set vs the realized set) is a future enhancement, not v1.
 
-**DD-8 — Multi-`@brd` (Pass-2 #B-minor).** Parsing is ALREADY supported
-(`_TAG = ...([^\s|]+)` terminates on `|`, so `@brd: X | @brd: Z` already
-`finditer`s as two tags). New work is only: (a) **OR-group-by-layer** in the
-coverage predicate (the existing `required_tags` check is set-membership only,
-`:531`), and (b) the **zero-downstream lint**. PR-2 *consumes* multi-`@brd`;
-**PR-3 `taglint` owns enforcing** the per-layer punctuation — line drawn.
+**DD-7 — Matrix = a NEW generated artifact; create the cross-ref, don't fake it
+(R-e).** PR-1 names no matrix, so there is no contract to honor. `sdd_coverage.py`
+emits a generated **`docs/TRACEABILITY_MATRIX.md`** (underscore form, aligning to
+the hermes `*_TRACEABILITY_MATRIX.md` convention; distinct from the governance
+`TRACEABILITY.md`). **2a adds the cross-reference into `governance/TRACEABILITY.md`**
+— amend its reverse-lookup note to "…walks the chain transitively (or consult the
+generated `docs/TRACEABILITY_MATRIX.md` / `trace_walk.py`)" — turning a
+non-existent contract into a real one. Generated/regenerable; never hand-edited.
+BDD-rollup output is a section of the same file.
 
-**DD-9 — C-1 corpus path to green (Pass-2 #9).** New blocking gates WILL fire on
-`examples/url-shortener/`. Two distinct remedies: (a) a **`--skip-coverage-gate`
-flag** (mirroring `--skip-lint-smoke` / `SDD_LINT_SKIP_TRACE_RES`) for the
-transient migration window so the cascade bootstraps; (b) coverage gaps are
-**not regen-able** — they close by adding legitimate **`priority:Future` /
-`realized_by` annotations** (content, authored via the layer skills, not a
-re-cascade). The child plan's corpus step documents which annotations the
-url-shortener legitimately needs.
+**DD-8 — Multi-`@brd` already parses; new work is OR-group + lint.** `_TAG`'s
+`([^\s|]+)` terminates on `|`, so `@brd: X | @brd: Z` already `finditer`s as two
+tags. New: (a) **OR-group-by-layer** in the coverage predicate (the
+`required_tags` check at `:531` is set-membership only), and (b) the
+**zero-downstream lint**. PR-2 *consumes* multi-`@brd`; **PR-3 `taglint` owns
+enforcing** the punctuation.
+
+**DD-9 — Corpus path to green (R-d; flags are net-new).** New blocking gates fire
+on `examples/url-shortener/`. (a) Add **`--skip-coverage-gate`** as a net-new
+`__main__.py` arg (the skip *pattern* exists only in the hermes/plugin gate
+subsystem — model the behavior, not a sdd_doc_lint precedent) for the transient
+migration window. (b) Coverage gaps are **not regen-able**; they close by adding
+legitimate band annotations — the url-shortener FRs are all `P1`, so the corpus
+step either confirms genuine SPEC/IPLAN coverage or annotates the few legitimate
+gaps `(Future)` / `realized_by:` in the FR bullets (content authored via the BRD
+skill, then re-cascade downstream).
 
 ## Scope
 
-**In:** the forward gate + severity split (DD-6), backward leg (SPEC-00
-`coverage` section + GATE-06, BeeLocal #54), phase tag + scope reconciliation
-(D54-F13, DD-4), BDD doc-set roll-up (D54-F05), multi-`@brd` consume + zero-
-downstream lint (DD-8), the generated matrix (DD-7), the `covered_state` enum
-(DD-2). Document-level binding for SPEC/TDD/IPLAN (never depends on their exempt
-element IDs).
+**In:** forward gate with the DD-6 severity split; the backward leg (the SPEC-00
+`coverage` section and the GATE-06 check, BeeLocal #54); phase band + scope
+reconciliation (D54-F13, DD-4);
+BDD roll-up (D54-F05), multi-`@brd` consume + zero-downstream lint (DD-8),
+generated matrix + the `TRACEABILITY.md` cross-ref (DD-7), `covered_state` enum
+(DD-2), the **BRD FR-annotation formalization** (DD-3/DD-4), and the net-new
+`--mode`/`--skip-coverage-gate` CLI args (DD-6/DD-9). Document-level binding for
+SPEC/TDD/IPLAN.
 
 **Also in (Pass-2 #F):** fix the two stale `Upstream:` lines in
-`SPEC-00_index.TEMPLATE.md` (:27, :29) **while that file is open** for the
-coverage section — shipping a new coverage section into a template still
-advertising the cumulative upstream model is self-contradictory. (The broader
-multi-template `Upstream:` sweep stays the deferred follow-up.)
+`SPEC-00_index.TEMPLATE.md` (:27,:29) while that file is open for the coverage
+section.
 
-**Out of scope (deferred):** `satisfied_by_reference` *mechanism* → PR-5 (the
-enum member is defined here; PR-5 implements it). The cross-template `Upstream:`
-sweep → new follow-up TODO.
+**Out of scope:** `satisfied_by_reference` *mechanism* → PR-5 (enum member
+defined here). Cross-template `Upstream:` sweep → follow-up TODO. GATE-CODE's
+cross-subsystem invocation wiring (hermes orchestrator / plugin gate-check
+calling `--mode gate-code`) is *named* here as the contract but its
+implementation in those subsystems is a separate platform task.
 
-## Sub-PR split (Pass-2 #8 — corrected)
+## Sub-PR split (Pass-4 G — boundaries named)
 
-- **2a — graph core + forward gate** (with **PR-3 ref-granularity**, co-landed):
-  the shared **bidirectional element-level edge-graph** in `sdd_doc_lint` +
-  `tools/sdd_coverage.py` matrix emitter + the forward block/warning gate +
-  `covered_state` enum + multi-`@brd` OR-group. PR-3 lands here because element-
-  level forward coverage is undefined until doc-level verification refs are
-  forbidden.
-- **2b — backward leg:** `SPEC-00` `coverage` section + GATE-06 + the SPEC-00
-  `Upstream:` fix. Reuses 2a's core (inverse traversal).
-- **2c — phase tag + scope reconciliation:** **split for the cap** — *2c-schema*
-  (`LAYER_REGISTRY.yaml` + `ID_NAMING_STANDARDS.md`) and *2c-gate*
-  (`BRD-TEMPLATE.yaml` phase/priority wiring + `sdd_doc_lint` phase-leak gate),
-  each ≤3 surfaces.
+- **2a — graph core + forward gate** (largest; **split if > ~3 effective
+  surfaces**): the net-new bidirectional element-level edge graph + heading-
+  context scanner (DD-3) in `sdd_doc_lint`; `tools/sdd_coverage.py` matrix
+  emitter; `covered_state` enum + escapes; multi-`@brd` OR-group; `--mode`/
+  `--skip-coverage-gate` args; the BRD FR-annotation rule; the `TRACEABILITY.md`
+  cross-ref. **Co-lands PR-3 ref-granularity** — PR-3 touches
+  `ID_NAMING_STANDARDS.md` + the tag-syntax page + `sdd_doc_lint` taglint; name
+  those files so the 2a/PR-3 boundary is explicit. If 2a exceeds the cap, split
+  **2a-core** (engine) from **2a-ref** (PR-3).
+- **2b — backward leg:** SPEC-00 `coverage` section + GATE-06 + SPEC-00
+  `Upstream:` fix. Reuses 2a's graph.
+- **2c — phase reconciliation:** *2c-schema* (`LAYER_REGISTRY.yaml` +
+  `ID_NAMING_STANDARDS.md`, 2 surfaces) and *2c-gate* (`BRD-TEMPLATE.yaml`
+  FR-annotation rule + `sdd_doc_lint` phase-leak gate, 2 surfaces).
 - **2d — BDD doc-set EARS roll-up** + split-by-functional-block convention.
 
-Each sub-PR inherits C-1…C-5 (corpus via DD-9, vendored-lint sync, conformance
-tests per gate, framework MINOR via the fixed bumper, branch from `origin/main`).
+Each sub-PR inherits C-1…C-5 (corpus via DD-9; vendored-lint sync; conformance
+tests per gate; framework MINOR via the fixed bumper; branch from `origin/main`).
 
 ## Verification (per sub-PR; high-level)
 
 | #  | Check | Expected |
 | -- | ----- | -------- |
-| V1 | Forward gate on corpus, `--mode gate-code`: every P1/P2 FR → ≥1 SPEC + ≥1 IPLAN unless `deferred`/`realized_by` | matrix emitted; DD-6 severities correct |
-| V2 | GATE-06 flags an EARS/BDD element with no downstream SPEC/TDD; distinguishes deferred vs missed | true |
-| V3 | Out-of-phase (priority:Future) item inside a P1 plan → block | true |
-| V4 | Multi-`@brd` per EARS line OR-groups; zero-downstream BRD FR flagged | true |
-| V5 | `docs/TRACEABILITY-MATRIX.md` regenerates deterministically; matches PR-1 reverse-lookup contract | true |
-| V6 | Conformance + corpus green (via DD-9 annotations + bypass for the migration window) | green |
+| V1 | Forward gate `--mode gate-code` on corpus: every in-scope (non-escaped) FR → ≥1 SPEC + ≥1 IPLAN; escaped FRs never block | DD-6 severities exact |
+| V2 | Heading-context scanner classifies §7 FRs as gated but the §7 `Acceptance criteria:` sub-block as NOT gated | no AC false-blocks |
+| V3 | GATE-06 flags an EARS/BDD element with no downstream SPEC/TDD; distinguishes deferred vs missed | true |
+| V4 | Out-of-phase (`Future`) item inside a P1 plan → block; multi-`@brd` OR-groups; zero-downstream FR flagged | true |
+| V5 | `docs/TRACEABILITY_MATRIX.md` regenerates deterministically; `TRACEABILITY.md` cross-ref added | true |
+| V6 | Conformance + corpus green (DD-9 annotations + `--skip-coverage-gate` for the migration window) | green |
 
 ## Review log
 
-### Pass 1 — 2026-06-27 — self-review (design)
+### Pass 1 — 2026-06-27 — self (design). Pass 2 — independent — 9 blocking gaps folded as DD-1…DD-9. Pass 3 — self re-validation.
 
-- Grounded against `trace_walk.py` (backward/transitive-only), `SPEC-00_index`
-  (no coverage section), the orchestration plan's fork-decisions. Parked the
-  stale `Upstream:` finding.
+### Pass 4 — 2026-06-27 — independent (fresh-context, soundness)
 
-### Pass 2 — 2026-06-27 — independent (fresh-context, `Plan` agent)
+NOT-READY: the DD resolutions were plausible but ungrounded. Corrected:
 
-NOT-READY; 9 blocking design gaps — all folded as DD-1…DD-9:
+- **DD-3** "YAML-path scoping" impossible (R-a/R-b) → **markdown heading-context
+  scanner**, with the §7 FR-vs-acceptance-criteria boundary named.
+- **DD-4** "reuse YAML `priority:` field" unreadable (R-b) → **parse + formalize
+  the inline `(P1|P2|Future)` FR-bullet annotation**.
+- **DD-7** invented a PR-1 matrix contract (R-e) → matrix is a **new** artifact;
+  **this PR adds the cross-ref** to `TRACEABILITY.md`; name aligned to hermes
+  `*_TRACEABILITY_MATRIX.md`.
+- **DD-5⊥DD-6** deferred-no-SPEC contradiction → severity table now **carves out
+  escaped FRs** from the NO-SPEC block.
+- **DD-6/DD-9** fictional `--skip-lint-smoke` precedent (R-d) → `--mode`/
+  `--skip-coverage-gate` declared **net-new** `__main__.py` args; real precedent
+  located in the hermes/plugin subsystem.
+- **DD-1** "inverse traversal of existing edge set" overstated (R-c) → graph is
+  **net-new**; coverage gated to **whole-corpus** runs.
+- DD-2 `authored` role defined; DD-4 value single-sourced in `priority_definitions`;
+  2a/PR-3 file boundary named.
+- Added the **Implementation reality (R-a…R-e)** section so no future DD drifts
+  from the code again.
 
-- #1 "covered" extension point → **DD-2** (enum; closes R2-HIGH).
-- #2 FR identification → **DD-3** (YAML-path-scoped, not `.07.` ordinal).
-- #3 phase + deferral signal → **DD-4** (reuse `priority:Future`; schema vs value; reject ID-segment).
-- #4 non-SPEC escape taxonomy → **DD-5** (`realized_by`).
-- #5 matrix format/location → **DD-7** (`docs/TRACEABILITY-MATRIX.md`).
-- #6 severity ↔ D54-F13 → **DD-6** (run-mode `build|gate-code`).
-- #7 engine host → **DD-1** (sdd_doc_lint gate + sdd_coverage reporter; not trace_walk).
-- #8 sub-split → corrected (PR-3 with **2a**; 2c split for cap; 2a = shared graph core).
-- #9 C-1 corpus path → **DD-9** (bypass flag + annotations, not regen).
-- Plus #F minor: fix SPEC-00 local `Upstream:` lines in-PR (file already open).
+### Pass 5 — 2026-06-27 — self re-validation (of the Pass-4 corrections)
 
-### Pass 3 — 2026-06-27 — self re-validation (of the DD edits)
+- Every DD cites a verified R-fact/file:line; no DD assumes a parsed body tree,
+  a YAML `priority:` field, or a PR-1 matrix contract. (Pass 6 then caught one
+  residual — see below — confirming self-passes don't catch the deep class.)
 
-- Each of the 9 blocking items maps to a concrete DD with a named mechanism +
-  citation; no DD contradicts another (the `covered_state` enum DD-2 is the
-  hub the severity DD-6, escape DD-5, and FR-scope DD-3 all reference
-  consistently). Sub-split now: PR-3↔2a, 2c split, 2a graph-core — consistent
-  with the DAG. Matrix↔PR-1 contract pinned (DD-7). No new load-bearing gaps.
+### Pass 6 — 2026-06-27 — independent (fresh-context, confirming soundness)
 
-**Result:** READY. Converged over an independent Pass-2 that found 9 blocking
-gaps, all folded with concrete mechanisms. The plan PR may open; implementation
-proceeds as sub-PRs 2a→2d (2a is itself a substantial engine build).
+Verified 5 of 6 corrections genuinely grounded (DD-3 heading scanner — the
+`_SECTION_HEADING` mechanism already exists `:106`; DD-4 annotation present on
+all 4 corpus FRs; DD-7 `TRACEABILITY.md:29-30` names no matrix + no path
+collision; DD-5/DD-6 escape carve-out consistent; `--mode`/`--skip` confirmed
+net-new). Found **one residual ungrounded premise → fixed:**
+
+- **DD-6 row 4** compared the item band against "the plan's cycle" — a signal
+  with NO source (no phase/cycle field on IPLANs; the only IPLAN phase is TDD
+  R/G/R, orthogonal). → Re-grounded (**R-f**): the leak = a `Future`-band FR
+  that *reaches an IPLAN*, derived purely from the FR band (DD-4) + the forward
+  trace; **no invented IPLAN-cycle field**. Symmetric with the deferred-no-IPLAN
+  warning. Scope-ledger reconciliation noted as a future enhancement.
+- Minors folded: `Acceptance criteria:` is a prose label line (not a `##`
+  heading); dual priority surfaces (YAML field + markdown annotation) noted.
+
+### Pass 7 — 2026-06-27 — self re-validation (of the Pass-6 fix)
+
+- DD-6 row 4 now uses only grounded signals (band + trace); no new field
+  invented. Symmetric with row 1. The remaining phase work (2c-schema registers
+  the band *values* by reference; 2c-gate compares band→IPLAN-presence) needs no
+  un-sourced signal. No new load-bearing gaps.
+
+**Result:** READY. Converged over **three independent passes** (Pass 2
+design-gaps, Pass 4 soundness, Pass 6 confirming) + four self passes. The
+false-premise class (assuming structure/fields/contracts the code & artifacts
+don't provide) is closed — every gate input is now a verified-present signal.
+Plan PR may open; implementation proceeds 2a→2d.
