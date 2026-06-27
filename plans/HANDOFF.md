@@ -47,12 +47,20 @@
 >    necessary-upstream chain holds. `test_fr_scanner.py` (9) +
 >    `test_edge_graph.py` (9); 208 unit+conformance green. Commits
 >    `113af0c0` (relocate) → `209bc62c` (scanner) → `f3d9b8f2` (edge-graph).
-> 3. ⬜ **RESUME HERE** — `covered_state` enum + escapes (DD-2/DD-5) + FR-band
->    parser (DD-4): validate the `scan_fr_elements` band token against
->    `priority_definitions`; `Future` = the deferral signal. The scanner
->    already extracts the band token — this step gives it meaning.
-> 4. ⬜ Forward gate + run-mode severity (DD-6) + net-new `--mode` /
->    `--skip-coverage-gate` args in `__main__.py`.
+> 3. ✅ **`covered_state` enum + band parser + escapes** (DD-2/DD-4/DD-5).
+>    `CoveredState` (StrEnum: AUTHORED / DEFERRED / REALIZED_BY /
+>    SATISFIED_BY_REFERENCE-stubbed), `parse_band()` (validates against the
+>    `priority_definitions` mirror {P1,P2,Future}; `Future`=deferral),
+>    `covered_state_of()` (realized_by → REALIZED_BY precedence; Future →
+>    DEFERRED; else AUTHORED). New escape surface (none existed): a
+>    `realized_by: <LAYER>` token on the FR bullet's first line, captured into
+>    `FRElement.realized_by` (D-0037). Corpus: 4 BRD-01 FRs → AUTHORED.
+>    `test_covered_state.py` (11); 221 green. Commit `216f9c94`.
+> 4. ⬜ **RESUME HERE** — Forward gate + run-mode severity (DD-6) + net-new
+>    `--mode {build|gate-code}` / `--skip-coverage-gate` args in `__main__.py`.
+>    Wire the graph + scanner + `covered_state_of` into a corpus-level check
+>    (`build_edge_graph` reach for AUTHORED FRs → ≥1 SPEC/IPLAN; escapes never
+>    block; the DD-6 severity table). Gate to whole-corpus runs (DD-1).
 > 5. ⬜ `tools/sdd_coverage.py` → `docs/TRACEABILITY_MATRIX.md` + `TRACEABILITY.md`
 >    cross-ref (DD-7).
 > 6. ⬜ Conformance tests per gate; corpus green via DD-9; framework MINOR bump.

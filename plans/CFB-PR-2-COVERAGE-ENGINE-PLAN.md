@@ -320,9 +320,38 @@ repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
   computable. `test_fr_scanner.py` (9) + `test_edge_graph.py` (9); 208
   unit+conformance green.
 
-### Step 3 — `covered_state` enum + escapes + FR-band parser (DD-2/DD-4/DD-5) — NEXT
+### Step 3 — `covered_state` enum + band parser + escapes (DD-2/DD-4/DD-5) — DONE (`216f9c94`)
 
-The scanner exposes the raw band token; step 3 validates it against
-`priority_definitions` and wires the `covered_state` predicate (`Future` =
-deferral). Then steps 4-6 (forward gate + run-mode severity, matrix emitter,
-conformance + corpus green).
+The classification layer the forward gate (step 4) dispatches on.
+
+- **`CoveredState` (StrEnum, DD-2)** — `AUTHORED` (success: must reach
+  downstream) + the non-blocking escapes `DEFERRED` / `REALIZED_BY` +
+  `SATISFIED_BY_REFERENCE` (enum member only; PR-5 adds its logic, never
+  produced here).
+- **`parse_band()` (DD-4)** — validates the FR-bullet band token against the
+  priority bands `{P1, P2, Future}`. These mirror `priority_definitions`
+  (`BRD-TEMPLATE.yaml:529-532`) in code with a source comment; the gate reads
+  the band by regex (per DD-4), and the *registry* phase-schema references that
+  single source in **2c-schema** (no re-enumeration). `Future` = deferral.
+- **`covered_state_of()` (DD-5)** — `realized_by` → `REALIZED_BY` (precedence);
+  `Future` band → `DEFERRED`; else (`P1`/`P2`, or a missing/invalid band) →
+  `AUTHORED`. A missing/invalid band never silently becomes an escape.
+- **`realized_by` authoring surface (net-new; D-0037).** None existed. Minimal
+  grounded surface: a `realized_by: <LAYER>` token on the FR bullet's first
+  line (canonically inside the band parenthetical, `(P1, realized_by: ADR)`),
+  captured by the scanner into the additive `FRElement.realized_by` field. No
+  new YAML field, single-line (no wrap-parsing). The BRD-template normative
+  rule formalizing the annotation rides with the **forward gate (step 4)**,
+  where the rule + gate are coupled.
+- Corpus: all 4 BRD-01 FRs (P1, no escape) → `AUTHORED`.
+  `test_covered_state.py` (11); 221 unit+conformance green.
+
+### Step 4 — forward gate + run-mode severity (DD-6/DD-9) — NEXT
+
+Wire `build_edge_graph` + `scan_fr_elements` + `covered_state_of` into a
+corpus-level coverage check: an `AUTHORED` FR must reach ≥1 SPEC + ≥1 IPLAN
+(transitively, via the graph); escapes never block; the DD-6 `--mode {build |
+gate-code}` severity table; `--skip-coverage-gate` (DD-9); gated to whole-corpus
+runs (DD-1). The BRD-template FR-annotation rule lands here. Then steps 5-6
+(matrix emitter + `TRACEABILITY.md` cross-ref; conformance + corpus green +
+framework MINOR bump).

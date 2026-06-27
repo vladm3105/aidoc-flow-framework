@@ -10,6 +10,26 @@ graduation.
 
 ---
 
+## D-0037 — `realized_by` escape authored as an inline FR-bullet token (CFB-PR-2 DD-5)
+
+- **Date:** 2026-06-27T00:00:00Z
+- **Decision:** The `realized_by:<layer>` coverage escape (DD-5 — an FR realised
+  by a non-SPEC layer: ADR-only decision / NFR / infra) is authored as a
+  `realized_by: <LAYER>` token on the FR bullet's **first line**, canonically
+  inside the band parenthetical (e.g. `- **BRD.NN.07.xxxx — Title**
+  (P1, realized_by: ADR): …`). The scanner captures it into the additive
+  `FRElement.realized_by` field; `covered_state_of` maps its presence to
+  `CoveredState.REALIZED_BY`.
+- **Why:** No `realized_by` surface existed anywhere (registry, templates, or
+  corpus) — it had to be defined. A first-line inline token (a) needs no new
+  YAML field, (b) is single-line so it sidesteps the wrapping-parenthetical
+  parse problem (the band token already reads only the first line), and (c)
+  fits the existing authored FR-bullet form rather than introducing a parallel
+  structure. The BRD-template normative rule formalizing the annotation lands
+  with the forward gate (2a-core step 4), where the rule and the gate that
+  consumes it are coupled. `satisfied_by_reference` stays a stubbed enum member
+  (PR-5). See D-0036 for the sibling CFB-PR-2 placement decision.
+
 ## D-0036 — Shared trace primitives live as a submodule of the `sdd_doc_lint` package (CFB-PR-2 DD-1)
 
 - **Date:** 2026-06-27T00:00:00Z
