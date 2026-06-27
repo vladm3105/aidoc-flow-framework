@@ -32,6 +32,29 @@
 > on `feat/cfb-pr-2a-coverage-core`, step 1 `sdd_trace_graph` landed). The
 > remaining D54/ENG/BL items stay open until their PR ships.
 
+### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
+
+- *Context:* recurred in CFB-PR-2 2a-core step 6 (0.23.1→0.24.0) AND 2b step 3
+  (0.24.0→0.25.0). `SKILL_AUTHORING.md:112` (`- [ ] … framework_spec_version:
+  "X" present.`) is a backtick-wrapped checklist line, not the `^…
+  framework_spec_version: "…"` frontmatter form `bump_version.bump_fsv` matches,
+  so every framework bump leaves it stale (fixed by hand each time). Author-facing
+  (a skill author following the checklist asserts the wrong value).
+- *Fix shape:* extend `bump_version.py` (a `bump_plugin_readme`-style targeted
+  rewrite for the SKILL_AUTHORING checklist line), or add a conformance guard
+  asserting the checklist version == `framework/VERSION`.
+
+### `[harness]` `RELEASE-CHANGELOG-TEST-CONVENTION-GAP` — `tests/release/test_changelog_entry.py` doesn't match the `[Unreleased]` convention
+
+- *Context:* surfaced in CFB-PR-2b self-review. The test requires a top-level
+  `## [<version>]` heading, but the repo nests releases under `## [Unreleased]`
+  with `### Added — Framework Spec X → Y`. It is RED at HEAD for `0.25.0` (and on
+  `main` for `0.24.0`) — but **outside CI scope** (conformance.yml runs only
+  `tests/conformance`; hermes.yml runs pytest under `platforms/hermes`), so CI
+  stays green. Pre-existing, not a 2b regression.
+- *Fix shape:* update the test to recognize the `[Unreleased]` + `### … X → Y`
+  convention, or move release entries to top-level `## [X]` headings on release.
+
 ### `[sync]` `SYNC-VERSION-PROVENANCE-OVERBUMP` — `sync-version-refs.sh` global-sed rewrites historical version refs
 
 - *Context:* CFB-PR-2 2a-core step 6 (`a0cb426f`). The framework-spec bump
