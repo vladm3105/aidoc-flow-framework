@@ -32,6 +32,20 @@
 > on `feat/cfb-pr-2a-coverage-core`, step 1 `sdd_trace_graph` landed). The
 > remaining D54/ENG/BL items stay open until their PR ships.
 
+### `[sync]` `SYNC-VERSION-PROVENANCE-OVERBUMP` — `sync-version-refs.sh` global-sed rewrites historical version refs
+
+- *Context:* CFB-PR-2 2a-core step 6 (`a0cb426f`). The framework-spec bump
+  `0.23.1 → 0.24.0` swept two HISTORICAL provenance lines in `docs/PARITY.md`
+  (SAGA-PARITY-001 / D-0031 "arriving with framework spec 0.23.0") to 0.24.0 —
+  `scripts/sync-version-refs.sh` does a global `sed s|<old>|<new>|g` for the
+  framework-spec string, matching every occurrence, not just the current-state
+  row. (It only matched because the current-state rows were themselves stale at
+  0.23.0, so `fw_prev` resolved to 0.23.0.)
+- *Fix shape:* anchor the framework-spec replacement to the documented
+  current-state row only (drop the `/g`, or match the `claude-code-plugin/vX
+  (framework spec …)` line specifically) so future bumps stop rewriting
+  provenance. Restored the two lines by hand in `a0cb426f`.
+
 ### `[example-corpus]` `CORPUS-PRD-TH-RES` — PRD-01 missing `component_decomposition` → 11 unresolvable `@threshold:` citations
 
 - *Context:* surfaced while verifying CFB-PR-2 2a-core step 4 (forward-coverage
