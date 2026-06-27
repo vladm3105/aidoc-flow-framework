@@ -483,7 +483,15 @@
   contract — SPEC `@adr/@bdd/@ears`, TDD `@spec/@bdd/@ears`, IPLAN `@spec/@tdd`
   only, zero dangling refs. GATE-08-E003 requiring `@brd+@prd` is the bug,
   not the templates. Do NOT re-add cumulative tags.
-- *Status:* OPEN — P2 (live internal contradiction; doc-only correction).
+- *Status:* **CLOSED** — 2026-06-27, squash `8e001192` (PR #180), as
+  **CFB-PR-1** (CONSUMER-FEEDBACK-001). Expanded during implementation from the
+  2 named docs to the **full ~20-surface cumulative→necessary-upstream
+  reconciliation** (the V6 grep + independent review surfaced the stale model
+  across EARS/BDD templates, GATE-03 + error catalog with FALSE `required_tags`
+  claims, 3 layer READMEs, BDD-00 index, DEFINITION_OF_DONE, the ADR + IPLAN
+  auditor playbooks, the guides, and the `AI_ASSISTANT_RULES` live author-facing
+  bug). Framework spec 0.23.0 → 0.23.1; plugin VERSION unchanged. See
+  `plans/CFB-PR-1-TAG-CHAIN-GATE-SYNC-PLAN.md` Pass-4 log.
 
 ### `[lint]` `BL-REF-GRANULARITY` — doc-level vs element-level refs interchangeable, silently defeats coverage
 
