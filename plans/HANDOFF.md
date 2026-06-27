@@ -75,14 +75,26 @@
 >    `test_sdd_coverage.py` (6); 240 green. Commit `7ccd90ef`. **The
 >    `framework/governance/TRACEABILITY.md` cross-ref moved to step 6** (lands
 >    with the framework MINOR bump so the framework change is GATE-SPEC-grouped).
-> 6. ⬜ **RESUME HERE** — framework MINOR bump + the deferred spec changes, as
->    ONE coordinated GATE-SPEC-compliant change: (a) the
->    `governance/TRACEABILITY.md` reverse-lookup cross-ref to the generated
->    matrix (DD-7); (b) the BRD-template FR-annotation rule (DD-3/DD-4 — every
->    FR bullet MUST carry `(P1|P2|Future, …)` + the `Acceptance criteria:`
->    label marker); (c) conformance tests per gate (COV01 fires/doesn't; matrix
->    regenerate-and-diff = V5); (d) bump `framework/VERSION` MINOR + CHANGELOG +
->    re-vendor + both `FRAMEWORK_SPEC_VERSION`. Then 2a-core is PR-ready.
+> 6. ✅ **Framework spec changes + MINOR bump 0.23.1 → 0.24.0** (DD-3/DD-4/DD-7).
+>    One GATE-SPEC-compliant change: (a) `governance/TRACEABILITY.md` cross-ref
+>    to the generated matrix + `trace_walk.py`; (b) `BRD-TEMPLATE.yaml`
+>    normative `_authored_form` rule (band + `Acceptance criteria:` boundary +
+>    `realized_by` escape); (c) `test_coverage_engine.py` (V5 matrix
+>    regenerate-and-diff + COV01 contract + template-rule guard); (d) bump via
+>    `bump_version.py` (104 FSV + both pins + re-vendor + version-ref fanout),
+>    hard-pin → 0.24.0, CHANGELOG [Unreleased] entry. 248 green; versions
+>    consistent; example corpus 0 COV01. Commit `0d27c819`.
+>
+> **🟢 2a-core COMPLETE — opening PR `feat/cfb-pr-2a-coverage-core` → main.**
+> Forward-coverage engine shipped: shared trace primitives + bidirectional
+> element edge-graph + heading-context FR scanner + `covered_state` classifier +
+> the `COV01` forward gate (run-mode severity) + the `sdd_coverage.py` matrix
+> emitter + the `TRACEABILITY.md` cross-ref + the BRD-template FR-annotation
+> rule. Framework spec **0.24.0**. Document-level binding; **2a-ref / PR-3
+> (element granularity)** is the co-dependent follow-on (refines reach +
+> enables DD-6 row 1/4 = escaped-informational + phase-leak). Sub-PRs 2b
+> (backward GATE-06), 2c (phase reconciliation), 2d (BDD roll-up) remain per
+> `plans/CFB-PR-2-COVERAGE-ENGINE-PLAN.md`.
 >
 > **Pre-existing corpus issue surfaced in step 4 (NOT a CFB-PR-2 regression):**
 > `TH-RES-001` errors on `examples/url-shortener/docs/02_PRD/PRD-01.md`

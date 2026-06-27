@@ -408,12 +408,37 @@ change, which couples to GATE-SPEC (needs the VERSION bump + CHANGELOG). Groupin
 it with the framework MINOR bump keeps the framework change one coordinated,
 GATE-SPEC-compliant unit rather than a spec edit stranded ahead of its bump.
 
-### Step 6 — framework bump + deferred spec changes + conformance (DD-3/DD-4/DD-7/DD-9) — NEXT
+### Step 6 — framework spec changes + MINOR bump (DD-3/DD-4/DD-7) — DONE (`0d27c819`)
 
-One coordinated GATE-SPEC-compliant framework change: (a) `TRACEABILITY.md`
-cross-ref to the generated matrix; (b) the BRD-template FR-annotation rule
-(every FR bullet MUST carry `(P1|P2|Future, …)` + the `Acceptance criteria:`
-label); (c) conformance tests per gate (COV01 fires/doesn't; matrix
-regenerate-and-diff); (d) bump `framework/VERSION` MINOR + CHANGELOG + re-vendor
+One coordinated GATE-SPEC-compliant framework change (spec `0.23.1 → 0.24.0`):
 
-- both `FRAMEWORK_SPEC_VERSION`. Then 2a-core is PR-ready.
+- **`governance/TRACEABILITY.md`** — the reverse-lookup note now cross-refs the
+  generated forward matrix (`docs/TRACEABILITY_MATRIX.md` / `sdd_coverage.py`)
+  and `trace_walk.py`, noting both read the same `@`-tag graph (DD-7).
+- **`layers/01_BRD/BRD-TEMPLATE.yaml`** — normative `_authored_form` rule
+  (DD-3/DD-4): every FR bullet MUST carry `(P1|P2|Future, …)`; the literal
+  `Acceptance criteria:` line bounds the gated FR sub-block; optional
+  `realized_by: <LAYER>` escape (D-0037). The authoring contract the scanner +
+  gate depend on.
+- **`tests/conformance/test_coverage_engine.py`** — V5 (the example matrix
+  regenerates byte-identical), the `COV01` forward-coverage contract (blocks an
+  in-scope FR with no SPEC; no-ops off a whole-corpus run), and the
+  BRD-template rule guard (canonical + vendored).
+- **Bump** via `tools/bump_version.py 0.24.0`: 104 `framework_spec_version`
+  declarations + both platform pins + re-vendored bundle (carries the
+  TRACEABILITY + BRD-TEMPLATE edits) + vendored lint + version-ref fanout
+  (CLAUDE.md / README / PARITY). Hard-pin in `test_plugin_release_metadata.py`
+  → `0.24.0`; CHANGELOG `[Unreleased]` entry. Plugin/Hermes product versions
+  unchanged (independent streams).
+- **Verify:** 248 unit+conformance green; framework + both FSV = `0.24.0`;
+  example corpus 0 `COV01`; vendored byte-identity intact.
+
+## 2a-core complete
+
+The forward-coverage engine is shipped (document-level binding) and the branch
+`feat/cfb-pr-2a-coverage-core` is PR-ready. **Co-dependent follow-on: 2a-ref /
+PR-3** (element granularity) refines reach to element level and unlocks the
+deferred DD-6 row 1 (escaped-informational) + row 4 (phase leak). The other
+sub-PRs remain: **2b** (backward leg — SPEC-00 `coverage` + GATE-06), **2c**
+(phase reconciliation — 2c-schema registry + 2c-gate phase-leak), **2d** (BDD
+doc-set roll-up).
