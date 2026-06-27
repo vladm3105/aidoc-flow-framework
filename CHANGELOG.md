@@ -12,6 +12,44 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.23.1 → 0.24.0: forward-coverage engine (CFB-PR-2 2a-core) (2026-06-27)
+
+Adds the forward/completeness half of traceability the framework lacked
+(`trace_walk.py` is backward/transitive only). Engine-agnostic tooling + a
+normative BRD-template rule + a governance cross-ref; MINOR.
+
+- **Tooling (`tools/`, vendored linter):**
+  - `sdd_doc_lint/trace_graph.py` — shared `@`-tag trace primitives (relocated
+    from `tools/sdd_trace_graph.py` into the package so the vendored linter
+    imports them; D-0036).
+  - `sdd_doc_lint` gains the heading-context FR scanner (`scan_fr_elements`), the
+    net-new bidirectional element edge-graph (`build_edge_graph`), the
+    `covered_state` classifier + band parser (`CoveredState` / `parse_band` /
+    `covered_state_of`), and the forward-coverage gate `COV01`
+    (`_check_forward_coverage`) with run-mode severity (`--mode {build|gate-code}`)
+    - `--skip-coverage-gate` (DD-1/DD-2/DD-3/DD-4/DD-5/DD-6/DD-9).
+  - `tools/sdd_coverage.py` — generates a deterministic, regenerable
+    `TRACEABILITY_MATRIX.md` (DD-7); the forward companion to `trace_walk.py`,
+    reading the same graph.
+- **Spec / governance:**
+  - `governance/TRACEABILITY.md` — reverse-lookup note cross-refs the generated
+    forward matrix + `trace_walk.py` (DD-7).
+  - `layers/01_BRD/BRD-TEMPLATE.yaml` — normative `_authored_form` rule: every FR
+    bullet MUST carry a `(P1|P2|Future, …)` band; the literal `Acceptance
+    criteria:` line bounds the gated FR sub-block; optional `realized_by: <LAYER>`
+    escape (DD-3/DD-4/D-0037).
+- **Reach is document-level** for SPEC/TDD/IPLAN binding (PR-3 refines to element
+  granularity, co-lands with 2a-ref). Deferred to 2c/PR-3: the escaped-FR
+  informational row + the phase-leak row (DD-6 rows 1 & 4).
+- **Backward compatibility:** additive. The coverage gate no-ops unless the
+  corpus has reached both the SPEC and IPLAN layers (DD-1), so single-file
+  `on_author` runs and partial cascades are unaffected; the example corpus is
+  clean (0 `COV01`). New `covered_state` enum member `satisfied_by_reference` is
+  stubbed for PR-5.
+- **Validation:** 248 unit+conformance green (incl. `test_coverage_engine.py`
+  V5 matrix-determinism + `COV01` contract + the template-rule guard, and the
+  vendored byte-identity drift-guard). Example matrix regenerates byte-identical.
+
 ### Changed — `.github/workflows/ai-review.yml`: pin `@ci/v1.1.5` → `@ci/v1.1.6` (auto-merge App-token fix; version-lockstep with operations) (2026-06-27)
 
 - Framework caller pin bumped from `@ci/v1.1.5` to `@ci/v1.1.6` to

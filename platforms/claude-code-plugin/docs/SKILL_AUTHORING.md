@@ -41,7 +41,7 @@ metadata:
     upstream_artifacts: [<...>]      # cumulative chain; [] for BRD
     downstream_artifacts: [<...>]
     version: "0.22.0"                  # DEFAULT = plugin VERSION (see §3)
-    framework_spec_version: "0.23.1"  # = FRAMEWORK_SPEC_VERSION
+    framework_spec_version: "0.24.0"  # = FRAMEWORK_SPEC_VERSION
     last_updated: "YYYY-MM-DD"
 ---
 ```

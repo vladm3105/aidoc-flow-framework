@@ -27,7 +27,13 @@ Layer 8 (IPLAN): @spec @tdd
 `required_tags` is the **minimum trace-resolution set**: a layer MAY
 additionally carry provenance tags (e.g. a platform ADR recording `@brd`/`@prd`
 in its `context`) but is not required to. Reverse lookup ("which BRD does
-SPEC-07 trace to?") walks the chain transitively, not a local tag.
+SPEC-07 trace to?") walks the chain transitively, not a local tag — run
+`tools/trace_walk.py <ID>` for that one-shot backward query, or consult the
+generated **forward-coverage matrix** `docs/TRACEABILITY_MATRIX.md` (produced by
+`tools/sdd_coverage.py <docs_root>`; CFB-PR-2) for the forward direction — "which
+SPEC/IPLAN realizes this BRD requirement?". Both read the same `@`-tag graph, so
+the forward matrix and the backward walker never disagree. The matrix is
+**generated/regenerable — never hand-edited.**
 
 > *Origin:* NECESSARY-UPSTREAM-001 (spec `0.15.2` → `0.16.0`) replaced the
 > former cumulative-trace contract — every downstream layer redeclaring every

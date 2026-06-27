@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: architect
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.23.1"
+framework_spec_version: "0.24.0"
 ---
 # architect lens — SPEC layer
 
