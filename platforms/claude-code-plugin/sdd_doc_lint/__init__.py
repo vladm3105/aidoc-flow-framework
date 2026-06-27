@@ -31,6 +31,7 @@ import yaml
 # backward walker so the two directions of the trace graph agree byte-for-byte.
 # Package-relative import → resolves in the canonical tree and in every vendored
 # copy (the submodule is carried by sync-vendored.sh).
+from .trace_graph import ELEM_FORM as _ELEM_FORM
 from .trace_graph import LAYER_INDEX as _LAYER_INDEX
 from .trace_graph import TAG as _TRACE_TAG
 from .trace_graph import doc_id_from_token
@@ -651,10 +652,13 @@ _ELEM_DEF_YAML = re.compile(
 #: The em-dash is accepted as em (—), en (–), or hyphen (-) for author leniency.
 _FR_BULLET = re.compile(r"^\s*-\s+\*\*([A-Z]+\.[0-9]+\.[0-9]+\.[a-f0-9]+)\s+[—–-]\s+[^*]+\*\*")
 #: The leading parenthetical band token on an FR bullet, e.g. the ``P1`` in
-#: ``** (P1, anonymous public): …``. Matched on the bullet's first line only;
-#: the first token suffices even when the parenthetical wraps to the next line
-#: (corpus ``882c``: ``(P1, internal / privileged — Service-Owner\n  role)``).
-_FR_BAND = re.compile(r"\*\*\s*\(\s*([^\s,)]+)")
+#: ``** (P1, anonymous public): …``. Anchored (matched against the line
+#: remainder *immediately after* the FR bullet's title-close ``**``) so a
+#: ``**bold** (x)`` later in the description is never mistaken for the band; a
+#: bullet with no leading parenthetical yields ``None``. The first token
+#: suffices even when the parenthetical wraps to the next line (corpus ``882c``:
+#: ``(P1, internal / privileged — Service-Owner\n  role)``).
+_FR_BAND = re.compile(r"\s*\(\s*([^\s,)]+)")
 #: The plain prose label that ends the FR definition sub-block and opens the
 #: acceptance-criteria sub-block (a label line, NOT a `##` heading — R-b).
 _ACCEPTANCE_LABEL = re.compile(r"^\s*Acceptance\s+criteria:\s*$", re.IGNORECASE)
@@ -709,7 +713,9 @@ def scan_fr_elements(text: str) -> list[FRElement]:
             continue
         m = _FR_BULLET.match(line)
         if m:
-            band_m = _FR_BAND.search(line)
+            # Parse the band from the remainder AFTER the title-close `**`, so a
+            # `**bold** (x)` inside the description is never read as the band.
+            band_m = _FR_BAND.match(line[m.end() :])
             out.append(
                 FRElement(elem_id=m.group(1), line=i, band=band_m.group(1) if band_m else None)
             )
@@ -1085,9 +1091,15 @@ def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
         doc_layer[doc_id] = _artifact_code(fm)
         docs.append((doc_id, text))
         # Element declarations live only in their host doc (R-c: a cited element
-        # in a downstream doc must not declare itself).
+        # in a downstream doc must not declare itself). Filter through the strict
+        # element form so `@threshold:`-style keys (`PRD.NN.<category>.<key>`,
+        # which the lax `_ELEM_ID` also matches) are NOT registered as elements —
+        # matching the backward map's `elem_re` filter in
+        # `_check_trace_resolution`, so the two directions agree (DD-1).
         for m in _ELEM_ID.finditer(text):
             elem = m.group(0)
+            if not _ELEM_FORM.match(elem):
+                continue
             parts = elem.split(".")
             if len(parts) >= 2 and f"{parts[0]}-{parts[1]}" == doc_id:
                 element_host.setdefault(elem, doc_id)

@@ -57,9 +57,10 @@ class BuildEdgeGraph(unittest.TestCase):
         # FR declared in its host BRD.
         self.assertEqual(self.g.element_host.get("BRD.01.07.6c3f"), "BRD-01")
         self.assertEqual(self.g.element_host.get("PRD.01.09.aaaa"), "PRD-01")
-        # A *cited* element is not declared by the citer — PRD cites BRD's FR
-        # but does not host it.
-        self.assertNotIn("BRD-01", {self.g.element_host.get("BRD.01.07.6c3f")} - {"BRD-01"})
+        # R-c: PRD-01 *cites* BRD.01.07.6c3f but must not be recorded as its
+        # host — the declaring doc stays BRD-01, never the citer.
+        self.assertEqual(self.g.element_host["BRD.01.07.6c3f"], "BRD-01")
+        self.assertNotEqual(self.g.element_host["BRD.01.07.6c3f"], "PRD-01")
 
     def test_doc_layer_mapping(self):
         self.assertEqual(self.g.doc_layer["PRD-01"], "PRD")
@@ -100,6 +101,25 @@ class MultiBrdOrGroup(unittest.TestCase):
         g = build_edge_graph(corpus)
         self.assertEqual(g.citers_of("BRD.01.07.aaaa"), {"PRD-01"})
         self.assertEqual(g.citers_of("BRD.02.07.bbbb"), {"PRD-01"})
+
+
+class ElementHostStrictForm(unittest.TestCase):
+    def test_threshold_keys_are_not_registered_as_elements(self):
+        # `@threshold:`-style dotted keys (PRD.NN.<category>.<key>) also match
+        # the lax _ELEM_ID, but must NOT land in element_host — only canonical
+        # 4-segment hex element ids do (agreement with the backward map, DD-1).
+        corpus = [
+            _doc(
+                "PRD-01",
+                "PRD",
+                "Real element PRD.01.09.aaaa.\n"
+                "@threshold: PRD.01.perf.redirectp95 and PRD.01.quota.urlmaxlen.",
+            ),
+        ]
+        g = build_edge_graph(corpus)
+        self.assertIn("PRD.01.09.aaaa", g.element_host)
+        self.assertNotIn("PRD.01.perf.redirectp95", g.element_host)
+        self.assertNotIn("PRD.01.quota.urlmaxlen", g.element_host)
 
 
 class IndexAndEmpty(unittest.TestCase):

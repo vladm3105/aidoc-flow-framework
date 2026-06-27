@@ -101,6 +101,18 @@ class ScanFRElements(unittest.TestCase):
         frs = scan_fr_elements(body)
         self.assertEqual([(f.elem_id, f.band) for f in frs], [("BRD.01.07.abcd", None)])
 
+    def test_band_is_not_grabbed_from_a_later_bold_parenthetical(self):
+        # A band-less bullet whose DESCRIPTION contains `**bold** (x)` must not
+        # have `x` mis-read as the band — the band is parsed only from the
+        # remainder immediately after the title-close `**`.
+        body = (
+            "## 7. Functional Requirements\n\n"
+            "- **BRD.01.07.abcd — Submit URL**: must be a **well-formed** "
+            "(http/https) address.\n"
+        )
+        frs = scan_fr_elements(body)
+        self.assertEqual([(f.elem_id, f.band) for f in frs], [("BRD.01.07.abcd", None)])
+
     def test_line_numbers_point_at_the_bullet(self):
         first = next(fr for fr in self.frs if fr.elem_id == "BRD.01.07.6c3f")
         self.assertEqual(BRD_BODY.splitlines()[first.line - 1].lstrip()[:6], "- **BR")
