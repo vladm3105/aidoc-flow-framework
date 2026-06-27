@@ -73,9 +73,9 @@ Before entering GATE-03, the change request must satisfy:
 | GATE-03-E002 | Security review for external changes | ERROR | Security assessment present |
 | GATE-03-E003 | EARS must follow WHEN-THE-SHALL syntax | ERROR | Syntax validation |
 | GATE-03-E004 | BDD must have Given-When-Then format | ERROR | Scenario structure check |
-| GATE-03-E005 | EARS upstream tags: @brd @prd (2 tags) | ERROR | Traceability tag count |
-| GATE-03-E006 | BDD upstream tags: @brd @prd @ears (3 tags) | ERROR | Traceability tag count |
-| GATE-03-E007 | ADR upstream tags: @brd @prd @ears @bdd (4 tags) | ERROR | Traceability tag count |
+| GATE-03-E005 | EARS necessary-upstream tag: @prd (1 tag, per LAYER_REGISTRY required_tags) | ERROR | Traceability tag presence |
+| GATE-03-E006 | BDD necessary-upstream tag: @ears (1 tag, per LAYER_REGISTRY required_tags) | ERROR | Traceability tag presence |
+| GATE-03-E007 | ADR necessary-upstream tags: @ears @bdd (2 tags, per LAYER_REGISTRY required_tags) | ERROR | Traceability tag presence |
 | GATE-03-E008 | External-source change must cite a CVE/advisory or an explicit N/A | ERROR | A `CVE-YYYY-NNNN` / advisory reference, **or** an explicit `no advisory applies: <reason>` statement, is present |
 
 > **E008 vs W001.** E008 *blocks* an external-source change that records neither
@@ -190,9 +190,9 @@ After passing GATE-03:
 | GATE-03-E002 | Security | External change missing security review | Complete security assessment |
 | GATE-03-E003 | Syntax | EARS syntax violation | Fix WHEN-THE-SHALL-WITHIN format |
 | GATE-03-E004 | Syntax | BDD format violation | Fix Given-When-Then structure |
-| GATE-03-E005 | Traceability | EARS missing upstream tags | Add @brd and @prd tags |
-| GATE-03-E006 | Traceability | BDD missing upstream tags | Add @brd, @prd, @ears tags |
-| GATE-03-E007 | Traceability | ADR missing upstream tags | Add @brd, @prd, @ears, @bdd tags |
+| GATE-03-E005 | Traceability | EARS missing upstream tag | Add @prd (the required necessary-upstream tag) |
+| GATE-03-E006 | Traceability | BDD missing upstream tag | Add @ears (the required necessary-upstream tag) |
+| GATE-03-E007 | Traceability | ADR missing upstream tags | Add @ears, @bdd (the required necessary-upstream tags) |
 | GATE-03-E008 | Security | External change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 | GATE-03-W001 | Documentation | CVE reference missing | Add CVE-YYYY-NNNN to change document |
 | GATE-03-W002 | Completeness | ADR alternatives not documented | Add "Considered Alternatives" section |

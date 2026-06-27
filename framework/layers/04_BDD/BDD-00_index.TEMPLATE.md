@@ -54,7 +54,7 @@ BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 - **Keep numbers stable**: Never reuse or renumber
 - **Filename**: `BDD-NN_{descriptive_slug}.yaml`
 - **One feature per file**: Each BDD file covers one primary feature or capability
-- **Cumulative tags**: Include `@brd`, `@prd`, `@ears` tags as upstream traceability
+- **Necessary-upstream tag**: Include `@ears` (BDD's `required_tags`); `@brd`/`@prd` optional provenance only
 - **BDD-Ready score**: >=90/100 required before downstream ADR generation
 
 ---
@@ -79,7 +79,7 @@ BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 
 1. **Generate from template**: Copy `BDD-TEMPLATE.yaml` into a new `BDD-NN` file
 2. **Assign sequential ID**: `BDD-01`, `BDD-02`, etc.
-3. **Write tag section**: Include `@brd`, `@prd`, `@ears` cumulative traceability tags
+3. **Write tag section**: Include `@ears` (the required necessary-upstream tag)
 4. **Define scenarios**: Given/When/Then; include success path, error handling, edge cases
 5. **Update this index**: Add entry to the document registry
 
@@ -104,7 +104,7 @@ tags:
 ## Validation Checklist
 
 - [ ] All BDD files follow naming: `BDD-NN_{slug}.yaml`
-- [ ] All BDD files have cumulative traceability tags (`@brd`, `@prd`, `@ears`)
+- [ ] All BDD files have the necessary-upstream tag (`@ears`)
 - [ ] All BDD files have upstream links (EARS)
 - [ ] All BDD files have downstream links (ADR)
 - [ ] All requirements have corresponding BDD scenarios

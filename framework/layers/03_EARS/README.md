@@ -60,7 +60,7 @@ See template `metadata.id_standard` for details.
 
 ## Upstream Traceability
 
-Each EARS links to source PRD and BRD via cumulative tags:
+Each EARS links to its source PRD via its necessary-upstream tag (BRD is reached transitively through the PRD):
 
 ```text
 @prd: PRD.NN.09.xxxx    (links to PRD functional requirement)

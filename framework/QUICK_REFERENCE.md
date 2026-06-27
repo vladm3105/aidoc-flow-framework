@@ -12,12 +12,12 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 |-------|----------|---------------|
 | L1 BRD | [BRD-TEMPLATE.yaml](layers/01_BRD/BRD-TEMPLATE.yaml) | — |
 | L2 PRD | [PRD-TEMPLATE.yaml](layers/02_PRD/PRD-TEMPLATE.yaml) | @brd |
-| L3 EARS | [EARS-TEMPLATE.yaml](layers/03_EARS/EARS-TEMPLATE.yaml) | @brd @prd |
-| L4 BDD | [BDD-TEMPLATE.yaml](layers/04_BDD/BDD-TEMPLATE.yaml) | @brd @prd @ears |
-| L5 ADR | [ADR-TEMPLATE.yaml](layers/05_ADR/ADR-TEMPLATE.yaml) | @brd @prd @ears @bdd |
-| L6 SPEC | [SPEC-TEMPLATE.yaml](layers/06_SPEC/SPEC-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr |
-| L7 TDD | [TDD-TEMPLATE.yaml](layers/07_TDD/TDD-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr @spec |
-| L8 IPLAN | [IPLAN-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-TEMPLATE.yaml) | @brd @prd @ears @bdd @adr @spec @tdd |
+| L3 EARS | [EARS-TEMPLATE.yaml](layers/03_EARS/EARS-TEMPLATE.yaml) | @prd |
+| L4 BDD | [BDD-TEMPLATE.yaml](layers/04_BDD/BDD-TEMPLATE.yaml) | @ears |
+| L5 ADR | [ADR-TEMPLATE.yaml](layers/05_ADR/ADR-TEMPLATE.yaml) | @ears @bdd |
+| L6 SPEC | [SPEC-TEMPLATE.yaml](layers/06_SPEC/SPEC-TEMPLATE.yaml) | @ears @bdd @adr |
+| L7 TDD | [TDD-TEMPLATE.yaml](layers/07_TDD/TDD-TEMPLATE.yaml) | @ears @bdd @adr @spec |
+| L8 IPLAN | [IPLAN-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-TEMPLATE.yaml) | @spec @tdd |
 
 ## Key Files
 

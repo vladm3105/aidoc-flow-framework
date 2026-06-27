@@ -55,7 +55,7 @@ Example: BDD.01.03.d7a2
 
 ## Upstream Traceability
 
-BDD requires cumulative tags (Layer 4):
+BDD requires its necessary-upstream tag — @ears (Layer 4); EARS/PRD shown for context, PRD/BRD reached transitively:
 
 ```text
 @ears:EARS.NN.03.xxxx    (links to EARS requirement)

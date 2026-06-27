@@ -39,7 +39,7 @@ metadata:
       ADR-Ready scoring criteria:
         Scenario coverage (40%): all EARS requirements have scenarios
         Gherkin quality (25%): valid syntax, atomic scenarios, executable
-        Traceability (20%): cumulative tags (@brd + @prd + @ears) complete
+        Traceability (20%): necessary-upstream tag (@ears) present + resolves
         Edge case coverage (15%): error, recovery, parameterized scenarios
 
       Execution environment: QA STAGING ONLY — do NOT run in CI pipeline.
@@ -109,7 +109,7 @@ document_control:
   _guidance: |
     ADR-Ready Score: >=90/100 required before ADR generation.
     Source Document: link to upstream EARS using hash-based IDs.
-    Cumulative tags: BDD (Layer 4) requires @brd + @prd + @ears tags.
+    Necessary-upstream: BDD (Layer 4) requires @ears (its `required_tags`); PRD/BRD are transitive.
 
     Pre-generation checks:
       - Verify all upstream EARS requirements exist
@@ -303,8 +303,9 @@ scenario_structure:
 traceability:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Cumulative Tagging Hierarchy — Layer 4 requires @brd + @prd + @ears tags.
-    Upstream: REQUIRED — all BDD must reference EARS, PRD, and BRD elements.
+    Necessary-upstream tagging — Layer 4 requires @ears (its `required_tags`).
+    Upstream: REQUIRED — every BDD must reference its EARS element; PRD/BRD are
+    reached transitively (cite them only as optional provenance).
     Downstream: OPTIONAL — only add links to artifacts that exist.
 
     Gherkin tag format (NO spaces after colon):

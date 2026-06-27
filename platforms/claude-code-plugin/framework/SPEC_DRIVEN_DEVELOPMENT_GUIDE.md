@@ -2,7 +2,7 @@
 
 ## Overview
 
-SDD is a streamlined 8-layer documentation-to-code framework. Each layer produces one YAML document type, with cumulative traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
+SDD is a streamlined 8-layer documentation-to-code framework. Each layer produces one YAML document type, with end-to-end traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
 
 ```
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
@@ -14,29 +14,32 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 |-------|----------|---------|----------|------------|
 | L1 | BRD | Business requirements, objectives, scope | — | PRD |
 | L2 | PRD | Product features, user stories, ADR topics | BRD | EARS |
-| L3 | EARS | Formal requirements (WHEN-THE-SHALL-WITHIN) | BRD, PRD | BDD |
-| L4 | BDD | Executable acceptance scenarios (Given-When-Then) with spec_trace | BRD, PRD, EARS | ADR |
-| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | BRD, PRD, EARS, BDD | SPEC |
-| L6 | SPEC | Component interfaces, data models, behavior contracts | BRD, PRD, EARS, BDD, ADR | TDD |
-| L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | BRD, PRD, EARS, BDD, ADR, SPEC | IPLAN |
-| L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | BRD, PRD, EARS, BDD, ADR, SPEC, TDD | Code |
+| L3 | EARS | Formal requirements (WHEN-THE-SHALL-WITHIN) | PRD | BDD |
+| L4 | BDD | Executable acceptance scenarios (Given-When-Then) with spec_trace | EARS | ADR |
+| L5 | ADR | Architecture decisions (Context-Decision-Consequences) | EARS, BDD | SPEC |
+| L6 | SPEC | Component interfaces, data models, behavior contracts | EARS, BDD, ADR | TDD |
+| L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | EARS, BDD, ADR, SPEC | IPLAN |
+| L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | SPEC, TDD | Code |
 
-## Cumulative Traceability
+## Necessary-upstream traceability
 
-Each layer inherits tags from all upstream layers:
+Each layer cites only its **necessary upstream** (`required_tags` in
+`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer.
+Deeper lineage is transitive (one hop per layer, or `tools/trace_walk.py`):
 
 ```
-BRD:   @brd
-PRD:   @brd @prd
-EARS:  @brd @prd @ears
-BDD:   @brd @prd @ears @bdd
-ADR:   @brd @prd @ears @bdd @adr
-SPEC:  @brd @prd @ears @bdd @adr @spec
-TDD:   @brd @prd @ears @bdd @adr @spec @tdd
-IPLAN: @brd @prd @ears @bdd @adr @spec @tdd @iplan
+BRD:   —
+PRD:   @brd
+EARS:  @prd
+BDD:   @ears
+ADR:   @ears @bdd
+SPEC:  @ears @bdd @adr
+TDD:   @ears @bdd @adr @spec
+IPLAN: @spec @tdd
 ```
 
-Maximum 8 cumulative tags at IPLAN layer.
+`required_tags` is the minimum trace-resolution set; a layer MAY carry extra
+provenance tags (e.g. a platform ADR's `@brd`/`@prd`) but is not required to.
 
 ## Readiness Score Flow
 

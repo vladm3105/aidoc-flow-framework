@@ -330,8 +330,9 @@ quality_attributes:
 traceability:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Cumulative Tagging Hierarchy — Layer 3 requires both @brd and @prd tags.
-    Upstream: REQUIRED — all EARS must reference PRD and BRD elements.
+    Necessary-upstream tagging — Layer 3 requires @prd (its `required_tags`).
+    Upstream: REQUIRED — every EARS must reference its PRD element; BRD is
+    reached transitively via the PRD (cite @brd only as optional provenance).
     Downstream: OPTIONAL — only add links to artifacts that exist.
     Do NOT reference specific ADR/BDD numbers until they exist.
 

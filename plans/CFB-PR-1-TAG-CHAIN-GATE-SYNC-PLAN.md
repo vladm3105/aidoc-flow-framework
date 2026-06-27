@@ -13,7 +13,7 @@
 | -------------- | ---------------------------------------------------- |
 | Task           | CFB-PR-1 (`BL-TAG-CHAIN-GATE-SYNC`, expanded)        |
 | Type           | documentation                                        |
-| Status         | DRAFT — 2026-06-27T00:00:00Z                         |
+| Status         | IMPLEMENTED (bundled) — 2026-06-27 · ~20 surfaces, framework-spec-only PATCH 0.23.1 |
 | Parent         | `plans/CONSUMER-FEEDBACK-001-PLAN.md` (PR-1)         |
 | Depends on     | none (Wave-1 foundation)                             |
 | Feeds          | PR-2 (coverage engine reads the corrected chain); PR-3 |
@@ -157,5 +157,26 @@ sequenced-PR discipline).
   owners. Corrected language sourced from REVIEW_TEAM.md (consistent). Contract
   table re-checked against registry. No new load-bearing gaps.
 
-**Result:** READY for implementation (4 sub-PRs). Independent confirmation of
-the *implemented* PR-1a diff to run before its PR opens (per governance Rule 2).
+### Pass 4 — 2026-06-27 — implementation findings (folded; founder decisions)
+
+- **Bundled, not split (founder).** GATE-SPEC forces a `framework/VERSION` bump
+  on every framework PR, and the only bump tool is combined-by-design — so 4
+  sub-PRs = 4 version rituals. Bundled into ONE PR + one bump instead.
+- **Scope expanded 10 → ~20 surfaces (founder: full reconciliation).** The V6
+  repo-wide grep during implementation found the cumulative model also in the
+  EARS/BDD **templates**, **GATE-03** (+ error catalog), 3 layer READMEs, the
+  BDD-00 index, `DEFINITION_OF_DONE`, and the ADR auditor playbook — several
+  asserting **false `required_tags`** (EARS "@brd+@prd", BDD "@brd+@prd+@ears",
+  ADR "4 tags") that contradict the registry. GATE-03 counts confirmed
+  **doc-only** (not coded; `sdd_doc_lint` enforces via the registry), so safe to
+  correct. All folded into the bundle.
+- **Framework-spec-only bump (founder).** `framework/VERSION` 0.23.0 → 0.23.1;
+  `FRAMEWORK_SPEC_VERSION` pins + 52 skill + 51 playbook `framework_spec_version`
+  → 0.23.1; **plugin VERSION stays 0.22.0** (its code didn't change). Required
+  hand-completion beyond `bump_version.py` (it misses playbooks + `SKILL_AUTHORING`
+  - plugin README + a hardcoded conformance assertion).
+- **Verified:** V6 grep clean; conformance **135 tests OK**; corpus lint
+  unchanged. Structural tag *fields* untouched (BL-Q1).
+
+**Result:** IMPLEMENTED, conformance-green, bundled into one PR. CI ai-review
+(now functional) serves as the independent pre-merge review.
