@@ -96,19 +96,18 @@
 > (backward GATE-06), 2c (phase reconciliation), 2d (BDD roll-up) remain per
 > `plans/CFB-PR-2-COVERAGE-ENGINE-PLAN.md`. **2a-core merged `48d501d6` (PR #187).**
 >
-> **🟢 NEXT — sub-PR 2b (backward leg) PLAN is READY → plan PR open.** Per the
-> user's 2026-06-27 scope decision, 2b is **doc-level minimal**: a backward
-> coverage lint `COV02` (dual of `COV01`) asserting every EARS/BDD requirement
-> doc transitively reaches a SPEC/TDD; + a SPEC-00 `coverage` section + the
-> SPEC-00 `Upstream:` necessary-upstream fix; framework MINOR. `COV02` is a
-> structural lint code (NOT a formal GATE-06-E005 — symmetric with `COV01`).
-> Plan `plans/CFB-PR-2b-BACKWARD-LEG-PLAN.md`, converged over **2 independent
-> (P2, P5) + 4 self** passes (P3 caught SPEC-declares-no-elements → `-00` gating
-> signal; P5 caught the index-hazard mechanism + a vacuous V4 test). Grounding:
-> corpus is doc-level GREEN (EARS-01/BDD-01 reach SPEC/TDD); element-level
-> reveals 15 orphaned BDD scenarios → **deferred to PR-3** (element granularity)
->
-> - a corpus re-cascade. **Implementation begins only after the plan PR merges.**
+> **🟢 sub-PR 2b (backward leg) IMPLEMENTED → PR open.** Plan PR #189 merged
+> (`a446d512`). Shipped on `feat/cfb-pr-2b-backward-leg`: backward coverage lint
+> `COV02` (dual of `COV01`) — every EARS/BDD requirement doc must transitively
+> reach a SPEC/TDD, else flagged (warning/`build`, error/`gate-code`); gated to a
+> real (non-`-00`) SPEC/TDD present (the `-00` index signal, since SPEC/IPLAN
+> declare no canonical elements); behind `--skip-coverage-gate`. + SPEC-00
+> `## Coverage` section (the doc-of-record — `COV02` is a structural lint code,
+> not a formal gate-catalog entry) + the SPEC-00 necessary-upstream `Upstream:`
+> fix. **Framework spec `0.24.0 → 0.25.0`.** 260 green; corpus 0 COV01/0 COV02;
+> vendored byte-identity intact. Doc-level binding; **element-level + the EARS/BDD
+> deferral signal + the 15 orphaned BDD scenarios → PR-3.** Sub-PRs 2c (phase
+> reconciliation), 2d (BDD roll-up) remain.
 >
 > **Pre-existing corpus issue surfaced in step 4 (NOT a CFB-PR-2 regression):**
 > `TH-RES-001` errors on `examples/url-shortener/docs/02_PRD/PRD-01.md`

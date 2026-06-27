@@ -20,7 +20,7 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 sys.path.insert(0, str(plugin_bundle_root()))
 
 from sdd_coverage import _collect_corpus, render_matrix  # noqa: E402
-from sdd_doc_lint import _check_forward_coverage  # noqa: E402
+from sdd_doc_lint import _check_backward_coverage, _check_forward_coverage  # noqa: E402
 
 _EXAMPLE_DOCS = REPO_ROOT / "examples" / "url-shortener" / "docs"
 _MATRIX = _EXAMPLE_DOCS / "TRACEABILITY_MATRIX.md"
@@ -86,6 +86,43 @@ class ForwardCoverageContract(unittest.TestCase):
             "BRD-01", "BRD", "## 7. Functional Requirements\n\n- **BRD.01.07.aaaa — F** (P1): x."
         )
         self.assertEqual(_check_forward_coverage([brd]), [])
+
+
+class BackwardCoverageContract(unittest.TestCase):
+    def test_example_corpus_has_no_cov02(self):
+        # V6: every EARS/BDD doc in the corpus reaches a SPEC/TDD at doc level.
+        corpus = _collect_corpus(_EXAMPLE_DOCS)
+        cov2 = [f for f in _check_backward_coverage(corpus) if f.code == "COV02"]
+        self.assertEqual(cov2, [], [f.message for f in cov2])
+
+    def test_uncovered_requirement_doc_blocks_in_gate_code(self):
+        corpus = [
+            _doc("EARS-01", "EARS", "## 3. Requirements\n\n- EARS.01.03.aaaa: a req."),
+            _doc("SPEC-99", "SPEC", "real spec, cites nothing"),
+        ]
+        findings = _check_backward_coverage(corpus, "gate-code")
+        self.assertEqual([(f.code, f.severity) for f in findings], [("COV02", "error")])
+
+    def test_gated_to_real_design_test_present(self):
+        # No real (non-`-00`) SPEC/TDD → no-op (incl. a bare top-level-doc_id index).
+        only_reqs = [_doc("EARS-01", "EARS", "## 3. Requirements\n\n- EARS.01.03.aaaa: a req.")]
+        self.assertEqual(_check_backward_coverage(only_reqs), [])
+        with_bare_index = only_reqs + [_doc("SPEC-00", "SPEC", "bare index")]
+        self.assertEqual(_check_backward_coverage(with_bare_index), [])
+
+
+class SPEC00CoverageSection(unittest.TestCase):
+    def test_coverage_section_and_necessary_upstream_present(self):
+        for base in (FRAMEWORK, plugin_bundle_root() / "framework"):
+            tpl = (base / "layers" / "06_SPEC" / "SPEC-00_index.TEMPLATE.md").read_text(
+                encoding="utf-8"
+            )
+            with self.subTest(copy=str(base)):
+                self.assertIn("## Coverage", tpl)
+                self.assertIn("COV02", tpl)
+                self.assertIn("**Upstream (necessary)**: EARS, BDD, ADR", tpl)
+                # the stale cumulative form is gone from the necessary-upstream line
+                self.assertNotIn("**Upstream**: BRD, PRD, EARS, BDD, ADR", tpl)
 
 
 class BRDTemplateRule(unittest.TestCase):
