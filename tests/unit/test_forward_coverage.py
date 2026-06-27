@@ -109,6 +109,52 @@ class EscapesNeverBlock(unittest.TestCase):
         )
 
 
+class CorpusWideSemantics(unittest.TestCase):
+    def test_second_undesigned_brd_blocks_independently(self):
+        # DD-1 whole-corpus semantics: a fully-built feature (BRD-01) activates
+        # the gate; a second BRD whose FR reaches nothing is blocked on its own.
+        corpus = list(_chain("IPLAN"))  # BRD-01 fully covered
+        corpus.append(
+            _doc(
+                "BRD-02",
+                "BRD",
+                "## 7. Functional Requirements\n\n"
+                "- **BRD.02.07.bbbb — Undesigned** (P1): not yet realized.",
+            )
+        )
+        findings = _check_forward_coverage(corpus)
+        # Only BRD-02's FR is flagged; BRD-01's are covered.
+        self.assertEqual([(f.code, f.severity) for f in findings], [("COV01", "error")])
+        self.assertIn("BRD.02.07.bbbb", findings[0].message)
+
+    def test_brd_without_artifact_type_is_still_gated(self):
+        # Identified by doc_id prefix (no artifact_type field) — must not escape.
+        brd = (
+            "---\ndoc_id: BRD-01\n---\n\n"
+            "## 7. Functional Requirements\n\n"
+            "- **BRD.01.07.aaaa — Feature** (P1): a thing."
+        )
+        corpus = [
+            ("BRD-01.md", brd),
+            _doc("SPEC-99", "SPEC", "Standalone spec."),
+            _doc("IPLAN-99", "IPLAN", "Standalone iplan."),
+        ]
+        findings = _check_forward_coverage(corpus)
+        self.assertEqual([f.code for f in findings], ["COV01"])
+
+    def test_citation_cycle_terminates(self):
+        # A same-layer mutual-citation cycle must not hang the BFS; the BRD still
+        # reaches SPEC+IPLAN transitively through the cycle.
+        corpus = _chain("IPLAN")
+        corpus.append(_doc("SPEC-02", "SPEC", "Mutual @spec: SPEC-01 reference."))
+        # make SPEC-01 cite SPEC-02 too (cycle SPEC-01 <-> SPEC-02)
+        corpus = [
+            (rel, text + "\n@spec: SPEC-02 cross-ref." if rel == "SPEC-01.md" else text)
+            for rel, text in corpus
+        ]
+        self.assertEqual(_check_forward_coverage(corpus), [])
+
+
 class LintPathWiring(unittest.TestCase):
     """Integration: the gate is wired into lint_path on a directory run, honours
     --mode, and is suppressed by skip_coverage."""

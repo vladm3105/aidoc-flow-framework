@@ -1374,7 +1374,10 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text)
-        if not fm or str(fm.get("artifact_type") or "").strip().upper() != "BRD":
+        # Identify the BRD the same way the graph does (artifact_type, else the
+        # doc_id prefix via _artifact_code) so a BRD authored without an explicit
+        # artifact_type still gets gated rather than silently escaping.
+        if _artifact_code(fm) != "BRD":
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if not doc_id:
