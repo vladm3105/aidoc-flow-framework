@@ -24,12 +24,12 @@
 >   facts that don't hold — fixed; see its R-a…R-f "Implementation reality").
 >
 > **sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`, pushed, no PR
-> yet; rebased onto main `169b43c5`). Split: **2a-core** (engine) + **2a-ref**
+> yet; rebased onto main `81c6f05e`, incl. #186 CI bump). Split: **2a-core** (engine) + **2a-ref**
 > (PR-3 ref-granularity, separate). 2a-core build order:
 >
 > 1. ✅ **`sdd_trace_graph`** — shared @-tag primitives extracted from
 >    `trace_walk.py` (DD-1 foundation); `test_sdd_trace_graph.py` (8 tests) +
->    `test_trace_walk` green. Commit `0da6f4de`. **Relocated in step 2** →
+>    `test_trace_walk` green. Commit `e3377ac6`. **Relocated in step 2** →
 >    `tools/sdd_doc_lint/trace_graph.py` (package submodule).
 > 2. ✅ **Bidirectional element edge-graph + heading-context FR scanner**
 >    (DD-3, DD-1/R-c). *Decision (resolved):* the shared module **moved into
@@ -46,7 +46,7 @@
 >    AC sub-block excluded, all 4 cited element-level by PRD-01; one-hop
 >    necessary-upstream chain holds. `test_fr_scanner.py` (9) +
 >    `test_edge_graph.py` (9); 208 unit+conformance green. Commits
->    `113af0c0` (relocate) → `209bc62c` (scanner) → `f3d9b8f2` (edge-graph).
+>    `49614c3d` (relocate) → `5d742a72` (scanner) → `c518d347` (edge-graph).
 > 3. ✅ **`covered_state` enum + band parser + escapes** (DD-2/DD-4/DD-5).
 >    `CoveredState` (StrEnum: AUTHORED / DEFERRED / REALIZED_BY /
 >    SATISFIED_BY_REFERENCE-stubbed), `parse_band()` (validates against the
@@ -55,7 +55,7 @@
 >    DEFERRED; else AUTHORED). New escape surface (none existed): a
 >    `realized_by: <LAYER>` token on the FR bullet's first line, captured into
 >    `FRElement.realized_by` (D-0037). Corpus: 4 BRD-01 FRs → AUTHORED.
->    `test_covered_state.py` (11); 221 green. Commit `216f9c94`.
+>    `test_covered_state.py` (11); 221 green. Commit `546458a7`.
 > 4. ✅ **Forward coverage gate + run-mode severity + CLI args** (DD-6/DD-9).
 >    `_check_forward_coverage` (COV01): AUTHORED BRD FRs must reach ≥1 SPEC +
 >    ≥1 IPLAN (doc-level reach from host BRD; PR-3 refines to element);
@@ -66,13 +66,13 @@
 >    `lint_path(mode=, skip_coverage=)`. **Deferred** (element-granularity/2c):
 >    DD-6 row 1 (escaped informational) + row 4 (phase leak). DD-9: corpus
 >    findings byte-identical to main (0 COV01). `test_forward_coverage.py` (9);
->    231 green. Commit `0bdd12fc`.
+>    231 green. Commit `54992250`.
 > 5. ✅ **`tools/sdd_coverage.py` matrix emitter** (DD-7). Thin reporter over
 >    the shared `build_edge_graph` core; emits a GENERATED, deterministic
 >    `TRACEABILITY_MATRIX.md` (per gated FR: band, covered_state, reached
 >    downstream layers). Generated the example matrix (4 BRD-01 FRs, all reach
 >    SPEC+IPLAN); idempotent, 0 added linter findings, markdownlint clean.
->    `test_sdd_coverage.py` (6); 240 green. Commit `19d95a1a`. **The
+>    `test_sdd_coverage.py` (6); 240 green. Commit `7ccd90ef`. **The
 >    `framework/governance/TRACEABILITY.md` cross-ref moved to step 6** (lands
 >    with the framework MINOR bump so the framework change is GATE-SPEC-grouped).
 > 6. ⬜ **RESUME HERE** — framework MINOR bump + the deferred spec changes, as

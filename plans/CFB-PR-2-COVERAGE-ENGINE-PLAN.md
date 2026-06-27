@@ -280,7 +280,7 @@ Branch `feat/cfb-pr-2a-coverage-core` (rebased onto main `169b43c5`). The
 engine half of 2a (split from 2a-ref / PR-3 per HANDOFF). Build order tracked
 in `plans/HANDOFF.md`.
 
-### Step 1 — shared trace primitives (DD-1 foundation) — DONE (`0da6f4de`)
+### Step 1 — shared trace primitives (DD-1 foundation) — DONE (`e3377ac6`)
 
 `sdd_trace_graph` extracted from `trace_walk.py` (layer order, `@`-tag regex,
 ID forms, `doc_id_from_token` / `locate_doc` / `emit_tags`). `trace_walk`
@@ -290,7 +290,7 @@ repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
 
 - **Module-location decision (the DD-1 placement question).** The shared core
   **moved into the `sdd_doc_lint` package** as `tools/sdd_doc_lint/trace_graph.py`
-  (commit `113af0c0`), not a loose `tools/` sibling. Rationale: the **vendored**
+  (commit `49614c3d`), not a loose `tools/` sibling. Rationale: the **vendored**
   linter copies (`platforms/*/sdd_doc_lint/`) must import it; a package submodule
   resolves via package-relative `from .trace_graph import …` regardless of how
   the package landed on `sys.path`, whereas a loose sibling relies on a fragile
@@ -299,7 +299,7 @@ repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
   `trace_graph` stays pure stdlib (`re` + `pathlib`); the unvendored `tools/`
   scripts reach it via `from sdd_doc_lint.trace_graph import …`.
 - **Heading-context FR scanner (DD-3)** — `scan_fr_elements()` / `FRElement`
-  (commit `209bc62c`). A gated FR = an FR definition bullet
+  (commit `5d742a72`). A gated FR = an FR definition bullet
   (`- **<ID> — <Title>** …`) under a `## … Functional Requirements` heading and
   before that section's `Acceptance criteria:` label line. Reuses the level-2
   `_SECTION_HEADING` + `_normalise_heading` mechanism. The heading + boundary
@@ -308,7 +308,7 @@ repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
   can then flag it). Band token captured from the bullet's first line only →
   tolerant of a wrapping parenthetical (corpus `882c`).
 - **Bidirectional element edge-graph (DD-1/R-c)** — `build_edge_graph()` /
-  `EdgeGraph` / `TraceEdge` (commit `f3d9b8f2`). Net-new upstream-citation
+  `EdgeGraph` / `TraceEdge` (commit `c518d347`). Net-new upstream-citation
   adjacency (today's `element_index` discards downstream citations). Strictly-
   downstream skip matches `_check_trace_resolution`; same-layer siblings kept,
   self-refs / index docs dropped; multi-`@brd` per DD-8 via the shared regex.
@@ -320,7 +320,7 @@ repointed; `test_sdd_trace_graph.py` (8) + `test_trace_walk` green.
   computable. `test_fr_scanner.py` (9) + `test_edge_graph.py` (9); 208
   unit+conformance green.
 
-### Step 3 — `covered_state` enum + band parser + escapes (DD-2/DD-4/DD-5) — DONE (`216f9c94`)
+### Step 3 — `covered_state` enum + band parser + escapes (DD-2/DD-4/DD-5) — DONE (`546458a7`)
 
 The classification layer the forward gate (step 4) dispatches on.
 
@@ -346,7 +346,7 @@ The classification layer the forward gate (step 4) dispatches on.
 - Corpus: all 4 BRD-01 FRs (P1, no escape) → `AUTHORED`.
   `test_covered_state.py` (11); 221 unit+conformance green.
 
-### Step 4 — forward coverage gate + run-mode severity + CLI args (DD-6/DD-9) — DONE (`0bdd12fc`)
+### Step 4 — forward coverage gate + run-mode severity + CLI args (DD-6/DD-9) — DONE (`54992250`)
 
 `_check_forward_coverage` (`COV01`) wires the graph + scanner + classifier into
 a corpus-level gate.
@@ -382,7 +382,7 @@ a corpus-level gate.
   for framework-fixer remediation (never hand-edit the example artifact).
 - `test_forward_coverage.py` (9); 231 unit+conformance green.
 
-### Step 5 — `sdd_coverage.py` matrix emitter (DD-7) — DONE (`19d95a1a`)
+### Step 5 — `sdd_coverage.py` matrix emitter (DD-7) — DONE (`7ccd90ef`)
 
 `tools/sdd_coverage.py` — a thin reporter over the shared engine (`tools/`
 script, not vendored, like `trace_walk.py`).
