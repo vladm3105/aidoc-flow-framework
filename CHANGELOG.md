@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — CLAUDE.md: OPS-0062 AI agent auto-merge default rule (applies to ALL AI agents) (2026-06-27)
+
+- **`CLAUDE.md`** new top-level section **"AI agent auto-merge default
+  (OPS-0062)"** placed after the existing "Governance PR discipline
+  (mandatory)" section. AI agents (Claude, Codex, Gemini, GitHub
+  Copilot, etc.) opening PRs in this repository default to auto-watch
+  - auto-merge when green; escalate to human at 10 attempts.
+- **Canonical record** lives in operations `ops/DECISIONS.md` OPS-0062
+  (full reasoning, scope, exceptions, reconciliation with the
+  `auto_merge.repos` allowlist, session-boundary behavior, per-PR
+  cumulative counter, visibility requirement). This CLAUDE.md section
+  is the short-form rule + pointer.
+- **Rollout from operations OPS-0062 source PR** (#152, merged
+  2026-06-27 commit `dcc4692`). 7 sibling repos getting individual
+  CLAUDE.md update PRs (this is one of them — framework).
+- **Exceptions list** explicitly includes this repo's existing
+  governance PR list (CLAUDE.md / `plans/PLAN-*.md` /
+  `.github/ai-review/` / `.github/workflows/ai-review.yml`) so AI
+  never auto-merges PRs touching those — preserves existing Rule 1 +
+  Rule 2 discipline.
+
 ### Added — Framework Spec 0.23.1 → 0.24.0: forward-coverage engine (CFB-PR-2 2a-core) (2026-06-27)
 
 Adds the forward/completeness half of traceability the framework lacked

@@ -366,3 +366,64 @@ OK <reason>`).
 operations PRs #107-109 in one session). Full reasoning + formal record
 in `aidoc-flow-operations` `CLAUDE.md` "Governance PR discipline" section,
 plus `ops/DECISIONS.md` `OPS-0061`.
+
+## AI agent auto-merge default (OPS-0062)
+
+**Applies to ALL AI agents (Claude, Codex, Gemini, GitHub Copilot, etc.) —
+not just one model.** For PRs the AI agent opens itself in this repository:
+
+1. **Auto-watch + auto-merge when green.** After opening a PR, the AI
+   watches the PR's check rollup until all checks complete. If
+   `mergeStateStatus = CLEAN` AND all required checks are SUCCESS, the AI
+   attempts `gh pr merge --squash --delete-branch` without asking the human
+   for explicit per-PR authorization (the act of directing the AI to ship
+   the work constitutes the merge intent). Stale-check recovery uses the
+   documented patterns (label-cycle per `aidoc-flow-ci/docs/troubleshooting.md
+   §15`; `--admin` flag only when authorized).
+2. **Escalate to human at 10 attempts.** If the PR still hasn't merged
+   after 10 distinct merge-or-recovery actions, the AI STOPS and requests
+   human confirmation with a summary of what was tried, what's blocking,
+   and next-step options.
+
+**One attempt =** each distinct merge-or-recovery action: each `gh pr merge`
+invocation, each `skip-ai-review` label-cycle (add+remove = one logical
+action), each `gh run rerun`, each `gh workflow run` retrigger. Polling
+(`gh pr view`) does not count. **Counter is per-PR cumulative, not
+per-session.**
+
+**Visibility — AI announces each merge attempt in-session.** Before each
+`gh pr merge` / label-cycle / rerun, the AI emits a brief chat line
+("auto-merging PR #N now"; "label-cycling PR #N attempt 3/10"). The rule
+reduces per-PR PROMPT overhead, not VISIBILITY.
+
+**Session-boundary:** the AI watches checks only while in-session. If the
+session ends before checks settle, the PR stays OPEN; the next AI session
+resuming the work picks up the counter (per-PR cumulative).
+
+**Exceptions (AI never auto-merges these; always asks):**
+
+- **🟡 / 🔴 actions per autonomy tiers** (see operations CLAUDE.md for the
+  canonical autonomy-tier table; this repo inherits the same tiers via the
+  governance discipline rollout).
+- **Spec / governance tier PRs** (already excluded from auto-merge by the
+  reusable `ai-review.yml` workflow's `tier=spec` check; AI must not
+  bypass).
+- **Cross-repo coordinated changes** — synchronized merges across
+  repositories where ordering matters.
+- **PRs that touch this repo's CLAUDE.md / plans/PLAN-*.md /
+  `.github/ai-review/` / `.github/workflows/ai-review.yml`** (this repo's
+  governance PR list per the "Governance PR discipline" section above).
+
+**Human-opened PRs are unaffected** — the human controls merge timing for
+their own PRs.
+
+**Origin:** OPS-0062 (2026-06-27). Codified after a session shipping 12+
+AI-opened PRs on operations where the per-PR "merge if it is green" prompt
+added overhead without signal. Full reasoning + scope clauses + reconciliation
+with the `auto_merge.repos` allowlist (server-side action of `ai-review.yml`)
+in `aidoc-flow-operations` `ops/DECISIONS.md` OPS-0062.
+
+**Deferred companion (not in scope of OPS-0062):** a reusable
+`auto-merge-ai-prs.yml` GitHub Actions workflow on aidoc-flow-ci that serves
+as a server-side enforcer. To be tracked in operations HANDOFF backlog;
+queued post-current-tasks per founder direction.
