@@ -33,7 +33,9 @@ from pathlib import Path
 # read the SAME graph + classifier, so they never disagree. `tools/` is
 # sys.path[0] for a script run, so the package is importable here.
 from sdd_doc_lint import (
+    _artifact_code,
     _doc_forward_reach,
+    _extract_frontmatter,
     build_edge_graph,
     covered_state_of,
     scan_fr_elements,
@@ -49,12 +51,11 @@ _GENERATED_BANNER = (
 )
 
 
-def _extract_frontmatter(text: str) -> dict | None:
-    # Re-exported indirectly via sdd_doc_lint; import lazily to avoid widening
-    # the public surface. Kept local + tiny so the script stays dependency-light.
-    from sdd_doc_lint import _extract_frontmatter as _fm
-
-    return _fm(text)
+def _cell(value: str) -> str:
+    """Escape a value for a Markdown table cell (a literal ``|`` would corrupt
+    the row). FR ids / states cannot contain one; the band token theoretically
+    can — defend anyway."""
+    return value.replace("|", "\\|")
 
 
 def render_matrix(corpus: list[tuple[str, str]]) -> str:
@@ -62,22 +63,24 @@ def render_matrix(corpus: list[tuple[str, str]]) -> str:
     ``(rel_path, text)``) as a deterministic Markdown string."""
     graph = build_edge_graph(corpus)
 
-    rows: list[tuple[str, str, str, set[str]]] = []  # (fr_id, band, state, reached_layers)
+    rows: list[tuple[str, str, str, str, set[str]]] = []  # (fr_id, host, band, state, reached)
     for _rel, text in corpus:
         fm = _extract_frontmatter(text)
         if not fm:
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
-        code = str(fm.get("artifact_type") or "").strip().upper()
-        if not code and doc_id[:3] == "BRD":
-            code = "BRD"
-        if code != "BRD" or not doc_id:
+        # Identify the BRD exactly as the gate + graph do (_artifact_code), so
+        # the matrix and the forward-coverage gate never list a different BRD
+        # set — the shared-core invariant.
+        if _artifact_code(fm) != "BRD" or not doc_id:
             continue
         reach = _doc_forward_reach(graph, doc_id)
         for fr in scan_fr_elements(text):
-            rows.append((fr.elem_id, fr.band or "—", covered_state_of(fr).value, reach))
+            rows.append((fr.elem_id, doc_id, fr.band or "—", covered_state_of(fr).value, reach))
 
-    rows.sort(key=lambda r: r[0])
+    # Total order (fr_id, host) so duplicate fr ids across BRDs stay deterministic
+    # regardless of input order.
+    rows.sort(key=lambda r: (r[0], r[1]))
 
     out: list[str] = ["# Traceability Matrix — Forward Coverage", "", _GENERATED_BANNER, ""]
     out.append(
@@ -93,11 +96,11 @@ def render_matrix(corpus: list[tuple[str, str]]) -> str:
     header = ["FR", "Band", "State", *_DOWNSTREAM]
     out.append("| " + " | ".join(header) + " |")
     out.append("| " + " | ".join("---" for _ in header) + " |")
-    for fr_id, band, state, reach in rows:
+    for fr_id, _host, band, state, reach in rows:
         marks = ["✓" if layer in reach else "" for layer in _DOWNSTREAM]
-        out.append("| " + " | ".join([fr_id, band, state, *marks]) + " |")
+        out.append("| " + " | ".join([_cell(fr_id), _cell(band), _cell(state), *marks]) + " |")
 
-    full = sum(1 for _, _, _, reach in rows if {"SPEC", "IPLAN"} <= reach)
+    full = sum(1 for _, _, _, _, reach in rows if {"SPEC", "IPLAN"} <= reach)
     out.append("")
     out.append(
         f"**Summary:** {len(rows)} functional requirement(s); {full} reach both SPEC and IPLAN."

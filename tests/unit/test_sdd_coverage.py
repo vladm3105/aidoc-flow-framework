@@ -83,6 +83,26 @@ class RenderMatrix(unittest.TestCase):
         out = render_matrix([_doc("PRD-01", "PRD", "no requirements here")])
         self.assertIn("no functional requirements", out.lower())
 
+    def test_brd_identification_matches_the_gate_classifier(self):
+        # A doc whose id merely starts with "BRD" (BRDX-01) is NOT a BRD — the
+        # matrix must agree with the gate's _artifact_code classifier and skip
+        # it, never list its FR row.
+        corpus = _chain("IPLAN") + [
+            _doc(
+                "BRDX-01",
+                "",  # no artifact_type → _artifact_code falls back to the prefix
+                "## 7. Functional Requirements\n\n- **BRDX.01.07.abcd — X** (P1): x.",
+            ),
+        ]
+        out = render_matrix(corpus)
+        self.assertNotIn("BRDX.01.07.abcd", out)
+        self.assertIn("BRD.01.07.aaaa", out)  # the genuine BRD still listed
+
+    def test_band_with_pipe_is_escaped(self):
+        out = render_matrix([_brd(band="P1|x")] + _chain("IPLAN")[1:])
+        row = next(ln for ln in out.splitlines() if "BRD.01.07.aaaa" in ln)
+        self.assertIn("P1\\|x", row)  # escaped, table not corrupted
+
 
 if __name__ == "__main__":
     unittest.main()
