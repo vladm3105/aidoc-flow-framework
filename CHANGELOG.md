@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.24.0 → 0.25.0: backward coverage gate `COV02` (CFB-PR-2b) (2026-06-27)
+
+The backward half of the coverage engine (sub-PR 2b), the dual of 2a's forward
+`COV01`. MINOR.
+
+- **Tooling (`sdd_doc_lint`, vendored):** `_check_backward_coverage` (`COV02`) —
+  every EARS/BDD requirement doc must transitively reach a SPEC or TDD doc
+  downstream, else its requirements/scenarios are designed/tested by nothing.
+  Document-level binding (PR-3 refines to element granularity). Gated to corpora
+  with a real (non-`-00`) SPEC/TDD doc (the `-00` index signal, since SPEC/IPLAN
+  docs declare no canonical elements); run-mode severity (warning/`build`,
+  error/`gate-code`); wired into `lint_path` behind the existing
+  `--skip-coverage-gate`.
+- **Spec:** `layers/06_SPEC/SPEC-00_index.TEMPLATE.md` gains a normative
+  `## Coverage` section (the doc-of-record for the backward contract — `COV02`
+  is a structural lint code, not a formal gate-catalog entry, symmetric with
+  `COV01`), and its stale cumulative `**Upstream**: BRD, PRD, EARS, BDD, ADR`
+  line is corrected to the necessary-upstream form `EARS, BDD, ADR`
+  (INDEX-UPSTREAM-RESIDUE for SPEC-00).
+- **Deferred to PR-3:** element-level backward coverage, the EARS/BDD deferral
+  signal, and remediating the orphaned corpus BDD scenarios element-level
+  analysis surfaced.
+- **Backward compatibility:** additive. The gate no-ops unless the corpus has
+  reached a real design/test doc, so single-file `on_author` runs and
+  pre-design cascades are unaffected; the example corpus is clean (0 `COV02`).
+- **Validation:** 260 unit+conformance green (incl. `test_backward_coverage.py`
+  - `test_coverage_engine.py` COV02 contract + the SPEC-00 section/Upstream
+  guards in canonical + vendored). Plugin/Hermes product versions unchanged
+  (independent streams).
+
 ### Added — CLAUDE.md: OPS-0062 AI agent auto-merge default rule (applies to ALL AI agents) (2026-06-27)
 
 - **`CLAUDE.md`** new top-level section **"AI agent auto-merge default
