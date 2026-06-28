@@ -34,7 +34,7 @@
 >    supplemented not replaced (Pass-3 finding 1). 141 unit + 148 conformance;
 >    corpus == baseline; end-to-end smoke (transcoder → fork) on the real BDD-01.
 > 3. ✅ **PR-3 (SHIPPED this session) — BDD template + schema; spec 0.27.0 →
->    0.28.0.** `BDD-TEMPLATE.yaml` category-dict → flat `scenarios:` list +
+>    0.29.0 (re-bumped from 0.28.0 after a version collision with GD-04 #199).** `BDD-TEMPLATE.yaml` category-dict → flat `scenarios:` list +
 >    `type:` discriminator + `feature:` YAML block (no `ears`, D-3) +
 >    `document_control` drops reference rows; `BDD-00_index.TEMPLATE.md` →
 >    structured `ears:`/YAML schema; governance reconciled (`TAG_SYNTAX.md` BDD
@@ -46,7 +46,7 @@
 > 3b. **PR-3b (NEXT, PATCH bump) — deferred governance polish:** `QUICK_REFERENCE.md`
 >    + the `04_BDD/*.md` playbook **bodies** (Gherkin → YAML scenario references;
 >    PR-3 only bumped their version frontmatter, not content). framework/ change →
->    needs its own PATCH bump (0.28.0 → 0.28.1).
+>    needs its own PATCH bump (0.29.0 → 0.29.1).
 > 4. **PR-4** corpus + the 7 `BDD-01_golden` acceptance fixtures migration (run
 >    the PR-1 transcoder; `missing_section.md` is no-Gherkin/verify-only;
 >    `drift_codes.yaml` verify-only). Verify V4 ID-stability + V11 corpus. NOT a
@@ -56,7 +56,7 @@
 > 6. **PR-6** governance docs (GD-03 note, `TAG_SYNTAX.md` BDD row,
 >    `QUICK_REFERENCE`, 04_BDD playbooks).
 > 7. ~~**PR-7** standalone version bump~~ — **ABSORBED into PR-3** (GATE-SPEC
->    forces the bump to ride with each framework/ change; PR-3 did 0.28.0, PR-3b
+>    forces the bump to ride with each framework/ change; PR-3 did 0.29.0, PR-3b
 >    will do 0.28.1, PR-5/skills + any later framework/ change bump as needed).
 >    Only `ROADMAP.md` may still want a closing note at the end of the arc.
 >
