@@ -12,6 +12,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.25.0 → 0.26.0: ref-granularity policy GD-03 (CFB-PR-3 prep) (2026-06-27)
+
+Settles the tag-granularity policy that the CFB-PR-3 lint (`REFGRAN01`) will
+enforce — a focused standard clarification before the enforcement PR. MINOR.
+
+- **`governance/DECISIONS.md` — GD-03:** every `@<layer>:` **trace citation** to
+  an **element-declaring** layer (`@brd @prd @ears @bdd @adr @tdd`) MUST be
+  **element-level** (`TYPE.NN.SS.xxxx`), in all contexts — including the
+  necessary-upstream / feature-level tag, not only inline body citations. A unit
+  realizing multiple upstream elements pipe-delimits them; a whole-document
+  dependency is stated in prose, never as a doc-level trace tag. `@spec:`/
+  `@iplan:` stay document-level (element-ID-exempt); self-tags + downstream
+  forward-pointers are exempt.
+- **`governance/ID_NAMING_STANDARDS.md`** gains the normative "Reference
+  granularity" clause (rationale: functionality is defined in elements, the
+  document is a container; a doc-level ref discards that granularity).
+- **Why a standalone policy PR:** the existing Tag-Format table already showed
+  element-level forms, but did not state explicitly that the
+  necessary-upstream/feature tag is also element-level — the gap that let the
+  url-shortener BDD-01 Feature carry a coarse doc-level `@ears: EARS-01`, keeping
+  the coverage engine document-level. Settling the policy first lets CFB-PR-3's
+  `REFGRAN01` enforce a consistent, unambiguous rule.
+- **Deferred to CFB-PR-3:** the `REFGRAN01` enforcement, reconciling the
+  doc-form necessary-upstream examples in the layer templates, and the corpus
+  re-cascade (fan-out the feature tags). **Backward compatible** — a standard
+  clarification; no tooling behavior changes in this PR.
+- **Validation:** conformance green; framework + both `FRAMEWORK_SPEC_VERSION` =
+  `0.26.0`; vendored byte-identity intact.
+
 ### Changed — `.github/workflows/composition.yml`: pin `@ci/v1.0.5` → `@ci/v1.2.0` + add `workflow_run` trigger (IPLAN-0026 P5; Phase 1 mechanism only) (2026-06-27)
 
 - Framework composition caller pin bumped from `@ci/v1.0.5` to

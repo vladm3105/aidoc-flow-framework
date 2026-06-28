@@ -71,7 +71,7 @@ sections. The remaining two layers carry a documented exemption:
   and similar policy statements **MAY** carry `SPEC.NN.SS.xxxx` element
   IDs but are not required to. The traceability surface for SPEC content
   is provided by upstream `@ears: EARS.NN.SS.xxxx`, `@bdd: BDD.NN.SS.xxxx`,
-  and `@adr: ADR-NN` citations plus the Protocol method names declared
+  and `@adr: ADR.NN.SS.xxxx` citations plus the Protocol method names declared
   in the SPEC's typed contract.
 - **IPLAN layer:** §4 implementation contracts, §2 file manifest entries,
   and step-level operations **MAY** carry `IPLAN.NN.SS.xxxx` element IDs
@@ -112,6 +112,33 @@ traceability.
 | `@threshold: TYPE.NN.key` | Performance thresholds | `@threshold: BRD.01.perf.p95_latency` |
 | `@depends: TYPE-NN` | Hard prerequisite | `@depends: BRD-01` |
 | `@discoverability: TYPE-NN` | Related document | `@discoverability: BRD-02` |
+
+### Reference granularity (GD-03)
+
+Functionality is defined in **elements** (each functional requirement, EARS
+statement, BDD scenario, ADR decision, TDD case is a discrete unit); the document
+is a container. A trace citation must therefore name the **element**, not the
+document — a document-level ref discards the granularity at which the work is
+actually specified.
+
+- An `@<layer>:` **trace citation** to an **element-declaring** layer (`@brd`,
+  `@prd`, `@ears`, `@bdd`, `@adr`, `@tdd`) **MUST be element-level**
+  (`TYPE.NN.SS.xxxx`). This holds for **every** trace context — inline body
+  citations **and** the **necessary-upstream / feature-level** tag (e.g. a BDD
+  Feature's `@ears` tag, an IPLAN's `Source TDD` tag). A unit that realizes
+  **multiple** upstream elements pipe-delimits them
+  (`@ears: EARS.01.03.aaaa | @ears: EARS.01.03.bbbb`) — the union of the elements
+  its sub-units (scenarios / cases) realize. A genuine whole-document dependency
+  is recorded in **prose**, never as a document-level trace tag.
+- `@spec:` and `@iplan:` citations are **document-level** — those layers are
+  element-ID-exempt (they are not required to declare canonical elements; see the
+  SPEC §5 / IPLAN §4 exemption above).
+- **Self-tags** (a document citing its own id, e.g. `@bdd: BDD-01` on `BDD-01`)
+  and **downstream forward-pointers** (a higher layer naming a lower one for
+  navigation) are document-level and are **not** trace citations — they are
+  exempt from this rule.
+
+Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 
 ## File Naming
 

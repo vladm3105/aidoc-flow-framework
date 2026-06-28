@@ -13,6 +13,42 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-03 — Trace citations to element-declaring layers are element-level (ref-granularity)
+
+- **Status:** Proposed — 2026-06-27 (per CFB-PR-3 / `BL-REF-GRANULARITY`;
+  ratified on merge — a spec change, GATE-SPEC human sign-off).
+- **Context:** Functionality is specified in **elements** (each FR / EARS
+  statement / BDD scenario / ADR decision / TDD case has its own id); the
+  document is a container. The `ID_NAMING_STANDARDS.md` Tag-Format table already
+  shows element-level forms for the element-declaring layers, but it did NOT
+  state explicitly whether a layer's **necessary-upstream / feature-level** tag
+  (vs. an inline body citation) must also be element-level. That gap let an
+  instance author a **coarse document-level** feature tag (the url-shortener
+  BDD-01 Feature carries `@ears: EARS-01`) while its scenarios carry precise
+  element-level tags — which keeps the coverage engine (`COV01`/`COV02`)
+  document-level, because a doc-level edge makes the *whole* upstream document
+  look realized. Element-precise coverage is the goal of CFB-PR-2; it is only
+  computable once trace data is element-precise.
+- **Decision:** Every `@<layer>:` **trace citation** to an **element-declaring**
+  layer (`@brd @prd @ears @bdd @adr @tdd`) MUST be **element-level**
+  (`TYPE.NN.SS.xxxx`) — in **all** contexts, including the necessary-upstream /
+  feature-level tag, not only inline body citations. A unit realizing multiple
+  upstream elements **pipe-delimits** them (the union of its sub-units' element
+  citations); a true whole-document dependency is stated in **prose**, never as a
+  document-level trace tag. `@spec:`/`@iplan:` citations remain **document-level**
+  (those layers are element-ID-exempt). **Self-tags** and **downstream
+  forward-pointers** are document-level and exempt (not trace citations).
+- **Consequences:** `ID_NAMING_STANDARDS.md` gains the normative "Reference
+  granularity" clause; `sdd_doc_lint` gains the deterministic enforcement
+  `REFGRAN01` (CFB-PR-3); the doc-form necessary-upstream/feature examples in the
+  layer templates + the url-shortener corpus are reconciled to element-level
+  (fan-out) in CFB-PR-3. This unblocks the element-level `COV01`/`COV02` upgrade.
+  Additive standard clarification: SemVer **minor**, change-level **C2**.
+- **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity";
+  `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-02 — Independent automated review at `pre_merge`, with a tiered human-in-loop
 
 - **Status:** Proposed — 2026-06-15 (per `aidoc-flow-operations` IPLAN-0011;
