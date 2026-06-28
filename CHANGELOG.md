@@ -268,10 +268,16 @@ normative BRD-template rule + a governance cross-ref; MINOR.
 
 - Triaged 3 consumer-feedback logs (D54 / Engramory / BeeLocal) → 22 items,
   orchestrated by `plans/CONSUMER-FEEDBACK-001-PLAN.md` (12 child PRs).
-  Done: PR-1 (the 0.23.1 reconciliation below, #180/#181); the bump-tool fix
-  (#182); **PR-2 coverage-engine design of record** (#184, `58e27917`).
-  In flight: **sub-PR 2a-core** (branch `feat/cfb-pr-2a-coverage-core`, step 1
-  — shared `sdd_trace_graph` primitives — landed; engine build continues).
+  **Done:** PR-1 (the 0.23.1 reconciliation below, #180/#181); the bump-tool fix
+  (#182); **PR-2 coverage engine — the full arc:** design of record (#184),
+  **2a-core forward gate `COV01`** (#187, spec 0.24.0), **2b backward gate
+  `COV02`** (#189 plan / #190, 0.25.0), **GD-03 ref-granularity policy** (#192,
+  0.26.0), **PR-3 `REFGRAN01` enforcement** (#193 plan / #194, 0.27.0). The
+  coverage engine asserts both directions + enforces element-granular refs.
+  **Remaining (next session):** the corpus REFGRAN re-cascade
+  (`CORPUS-REFGRAN-RECASCADE`), the element-level `COV01`/`COV02` upgrade (the
+  payoff catching the 15 orphaned BDD scenarios), `BL-STATUS-SCOPE` (PR-3b), and
+  sub-PRs 2c (phase reconciliation) + 2d (BDD roll-up).
 
 ### Fixed — Framework Spec 0.23.1: cumulative→necessary-upstream doc reconciliation (2026-06-27)
 
