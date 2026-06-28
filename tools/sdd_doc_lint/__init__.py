@@ -544,6 +544,16 @@ def lint_text(
                 )
             )
 
+    # BDD YAML dual-mode (YAML-BDD-SCHEMA PR-2): a migrated BDD doc carries its
+    # upstream `@ears` trace as scenario `ears` lists (not `@ears:` tags), and
+    # gets the structural BDD-SCHEMA-001 check. Legacy Gherkin docs (no
+    # scenarios block) fall through to the `@`-tag path above unchanged.
+    if artifact == "BDD":
+        _bdd_scenarios, _bdd_malformed = _bdd_yaml_scenarios(text)
+        if _bdd_scenarios is not None and _bdd_ears_tokens(_bdd_scenarios):
+            seen_tags.add("ears")
+        findings.extend(_check_bdd_schema(rel, text, _bdd_scenarios, _bdd_malformed))
+
     # Required upstream tags present (document-level, reported at line 0).
     required = layers[artifact].get("required_tags", []) or []
     for tag in required:
@@ -1159,6 +1169,121 @@ def _artifact_code(fm: dict | None) -> str:
     return m.group(1) if m else ""
 
 
+# --- BDD YAML dual-mode parse (YAML-BDD-SCHEMA PR-2) ---------------------------
+# A migrated BDD doc carries scenarios as a ```yaml ``scenarios:`` block instead
+# of Gherkin ``@``-tag lines. These helpers extract its trace data so the
+# ``@``-tag-based machinery (build_edge_graph / TRACE-RES-001 / TAG01) keeps
+# working; a doc with no scenarios block falls back to the legacy Gherkin path
+# (dual-mode). ``ears`` granularity is enforced by REFGRAN01 (via the verbatim
+# synthetic edges build_edge_graph emits) — BDD-SCHEMA-001 owns structural faults
+# only, so the two never double-report (YAML-BDD-SCHEMA Pass-2 LB-3).
+_YAML_FENCE = re.compile(r"```yaml\n(.*?)\n```", re.DOTALL)
+_BDD_SCEN_TYPES = {"success", "error", "recovery", "parameterized", "optional"}
+_BDD_PRIORITIES = {"p0-critical", "p1-high", "p2-medium", "p3-low"}
+_BDD_REQUIRED_FIELDS = ("id", "name", "type", "priority", "ears", "given", "when", "then")
+
+
+def _bdd_yaml_scenarios(text: str) -> tuple[list | None, bool]:
+    """Return ``(scenarios, malformed)`` for a BDD doc.
+
+    ``scenarios`` is the parsed list when a ```yaml block declares ``scenarios:``
+    as a list; ``None`` when no scenarios block is present (legacy Gherkin →
+    dual-mode fallback). ``malformed`` is True when a block intends a
+    ``scenarios:`` mapping but fails to parse or has the wrong shape.
+    """
+    for m in _YAML_FENCE.finditer(text):
+        raw = m.group(1)
+        if not re.search(r"^\s*scenarios\s*:", raw, re.MULTILINE):
+            continue
+        try:
+            obj = yaml.safe_load(raw)
+        except yaml.YAMLError:
+            return None, True
+        if isinstance(obj, dict) and isinstance(obj.get("scenarios"), list):
+            return obj["scenarios"], False
+        return None, True
+    return None, False
+
+
+def _bdd_ears_tokens(scenarios: list) -> list[str]:
+    """Every ``ears`` token across scenarios, verbatim (doc-form included)."""
+    out: list[str] = []
+    for s in scenarios:
+        if not isinstance(s, dict):
+            continue
+        e = s.get("ears")
+        if isinstance(e, str):
+            out.append(e)
+        elif isinstance(e, list):
+            out.extend(x for x in e if isinstance(x, str))
+    return out
+
+
+def _bdd_line_of(text: str, token: str | None) -> int:
+    """1-based line of the first occurrence of ``token`` in ``text`` (else 1)."""
+    if token:
+        for i, line in enumerate(text.splitlines(), 1):
+            if token in line:
+                return i
+    return 1
+
+
+def _check_bdd_schema(
+    rel: str, text: str, scenarios: list | None, malformed: bool
+) -> list[Finding]:
+    """BDD-SCHEMA-001 — structural validation of the ``scenarios:`` YAML block.
+
+    Structural only: malformed block, non-mapping scenario, missing required
+    field, or invalid ``type``/``priority`` enum. Element-level ``ears``
+    granularity is REFGRAN01's job (Pass-2 LB-3), not this check.
+    """
+    findings: list[Finding] = []
+    if malformed:
+        return [
+            Finding(
+                rel,
+                _bdd_line_of(text, "scenarios:"),
+                "BDD-SCHEMA-001",
+                "BDD `scenarios:` YAML block is malformed or not a list",
+            )
+        ]
+    if scenarios is None:
+        return findings  # legacy Gherkin doc — dual-mode fallback
+    for idx, s in enumerate(scenarios, 1):
+        if not isinstance(s, dict):
+            findings.append(
+                Finding(rel, 1, "BDD-SCHEMA-001", f"BDD scenario #{idx} is not a mapping")
+            )
+            continue
+        sid = s.get("id") if isinstance(s.get("id"), str) else None
+        line = _bdd_line_of(text, sid)
+        label = sid or f"#{idx}"
+        for field in _BDD_REQUIRED_FIELDS:
+            v = s.get(field)
+            if v is None or v == "" or v == []:
+                findings.append(
+                    Finding(
+                        rel,
+                        line,
+                        "BDD-SCHEMA-001",
+                        f"BDD scenario '{label}' missing required field '{field}'",
+                    )
+                )
+        t = s.get("type")
+        if isinstance(t, str) and t not in _BDD_SCEN_TYPES:
+            findings.append(
+                Finding(rel, line, "BDD-SCHEMA-001", f"BDD scenario '{label}' invalid type '{t}'")
+            )
+        p = s.get("priority")
+        if isinstance(p, str) and p not in _BDD_PRIORITIES:
+            findings.append(
+                Finding(
+                    rel, line, "BDD-SCHEMA-001", f"BDD scenario '{label}' invalid priority '{p}'"
+                )
+            )
+    return findings
+
+
 def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
     """Build the net-new bidirectional element edge-graph (CFB-PR-2 DD-1 / R-c).
 
@@ -1212,6 +1337,23 @@ def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
                 if citer_n and cited_n and cited_n > citer_n:
                     continue
                 edges.append(TraceEdge(doc_id, citer_code, value, cited_doc, i))
+        # BDD YAML dual-mode: synthesize one upstream edge per scenario `ears`
+        # token, VERBATIM (doc-form included) so REFGRAN01 fires on a doc-form
+        # ears while COV01/COV02 see BDD↔EARS lineage identically (Pass-2 LB-3 /
+        # Pass-3 finding 2). Scenario ids self-register via `_ELEM_ID` above.
+        if citer_code == "BDD":
+            scenarios, _ = _bdd_yaml_scenarios(text)
+            if scenarios is not None:
+                for tok in _bdd_ears_tokens(scenarios):
+                    cited_doc = doc_id_from_token(tok)
+                    if cited_doc is None or cited_doc == doc_id:
+                        continue
+                    cited_n = _LAYER_INDEX.get(cited_doc.split("-", 1)[0], 0)
+                    if citer_n and cited_n and cited_n > citer_n:
+                        continue
+                    edges.append(
+                        TraceEdge(doc_id, citer_code, tok, cited_doc, _bdd_line_of(text, tok))
+                    )
     return EdgeGraph(element_host, doc_layer, tuple(edges))
 
 
@@ -1330,6 +1472,38 @@ def _check_trace_resolution(
                                 f"trace tag '@{m.group(1)}: {value}' "
                                 f"unresolvable ({host_status}; expected host "
                                 f"'{host_doc}')",
+                            )
+                        )
+        # BDD YAML dual-mode: resolve scenario `ears` tokens (no @-tags to scan).
+        if artifact_code == "BDD":
+            scenarios, _ = _bdd_yaml_scenarios(text)
+            if scenarios is not None:
+                for tok in _bdd_ears_tokens(scenarios):
+                    if doc_re.match(tok):
+                        if tok not in doc_index:
+                            findings.append(
+                                Finding(
+                                    rel,
+                                    _bdd_line_of(text, tok),
+                                    "TRACE-RES-001",
+                                    f"BDD scenario `ears: {tok}` references unknown "
+                                    f"document (no corpus member has doc_id '{tok}')",
+                                )
+                            )
+                    elif elem_re.match(tok) and tok not in element_index:
+                        head = tok.split(".", 2)
+                        host_doc = (
+                            f"{head[0]}-{head[1]}"
+                            if len(head) >= 2 and head[1].isdigit()
+                            else "<unknown>"
+                        )
+                        findings.append(
+                            Finding(
+                                rel,
+                                _bdd_line_of(text, tok),
+                                "TRACE-RES-001",
+                                f"BDD scenario `ears: {tok}` unresolvable "
+                                f"(element not declared in host '{host_doc}')",
                             )
                         )
     return findings

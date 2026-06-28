@@ -25,16 +25,17 @@
 >    comments) and copies each `@scenario-id:` **verbatim** into `id:` (keeps the
 >    16 downstream `@bdd:` citations stable). `tests/unit/test_gherkin_to_bdd_yaml.py`.
 >    Suite green: 130 unit + 148 conformance; corpus == baseline.
-> 2. **PR-2 (NEXT — the big one) — `sdd_doc_lint` dual-mode BDD parse path.** When
->    a `scenarios:` YAML block is present, parse it (synthetic **verbatim** `ears`
->    edges in `build_edge_graph` → REFGRAN/COV01/COV02/TRACE-RES/TAG01; new
->    `BDD-SCHEMA-001` structural check, structural-only — REFGRAN owns `ears`
->    granularity, no double-report); else fall back to the legacy `@`-tag path so
->    the still-Gherkin corpus stays green. Update `test_coverage_engine.py` +
->    `test_ref_granularity.py` BDD fixtures to the YAML form. (Plan §"Linter
->    changes" items 1-5 + the Pass-3 `cited_doc = doc_id_from_token` note.)
-> 3. **PR-3** template+schema (`BDD-TEMPLATE.yaml` category-dict → flat list +
->    `BDD-00_index.TEMPLATE.md`).
+> 2. ✅ **PR-2 (SHIPPED this session) — `sdd_doc_lint` dual-mode BDD parse path.**
+>    `build_edge_graph` synthesises verbatim `ears` edges (doc-form included →
+>    REFGRAN fires; `cited_doc = doc_id_from_token`); TRACE-RES-001 + TAG01 read
+>    scenario `ears`; new `BDD-SCHEMA-001` structural-only check (no double-report
+>    with REFGRAN); legacy Gherkin docs fall back to the `@`-tag path. Re-vendored
+>    byte-identical. `tests/unit/test_bdd_yaml_mode.py` (11); legacy fixtures
+>    supplemented not replaced (Pass-3 finding 1). 141 unit + 148 conformance;
+>    corpus == baseline; end-to-end smoke (transcoder → fork) on the real BDD-01.
+> 3. **PR-3 (NEXT) — template+schema** (`BDD-TEMPLATE.yaml` category-dict → flat
+>    list + `type:` discriminator; `BDD-00_index.TEMPLATE.md`). The normative
+>    schema + `_load_section_targets`/acceptance `.yaml` heading-parser impact.
 > 4. **PR-4** corpus + the 7 `BDD-01_golden` acceptance fixtures migration (run
 >    the PR-1 transcoder; `missing_section.md` is no-Gherkin/verify-only;
 >    `drift_codes.yaml` verify-only). Verify V4 ID-stability + V11 corpus.
