@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — `.github/workflows/composition.yml`: pin `@ci/v1.0.5` → `@ci/v1.2.0` + add `workflow_run` trigger (IPLAN-0026 P5; Phase 1 mechanism only) (2026-06-27)
+
+- Framework composition caller pin bumped from `@ci/v1.0.5` to
+  `@ci/v1.2.0` (the IPLAN-0026 Phase-1 release on aidoc-flow-ci).
+- **`workflow_run` trigger added** alongside existing
+  `pull_request_target` + `pull_request_review` (parallel transition
+  per IPLAN-0017 §3.4 + IPLAN-0026 §2.3 D2 migration discipline).
+- **Phase 1 ships MECHANISM only.** Friction relief NOT yet delivered;
+  Phase 2 (ci/v1.3.0, separate small IPLAN after empirical validation)
+  drops `pull_request_target` + delivers the relief.
+- **Chicken-and-egg:** BASE main pins v1.0.5; new `workflow_run`
+  trigger only activates AFTER merge.
+- **Plan:** [IPLAN-0026](https://github.com/vladm3105/aidoc-flow-operations/blob/main/ops/iplans/IPLAN-0026_composition-workflow-run-redesign.md)
+  (operations PR #156, merged 2026-06-27 commit `44f4b5b`).
+- **Next:** P6 empirical validation (1+ clean routine PR with new
+  triggers on EITHER operations or framework) → P7+P8 Phase 2 cleanup.
+
 ### Added — Framework Spec 0.24.0 → 0.25.0: backward coverage gate `COV02` (CFB-PR-2b) (2026-06-27)
 
 The backward half of the coverage engine (sub-PR 2b), the dual of 2a's forward

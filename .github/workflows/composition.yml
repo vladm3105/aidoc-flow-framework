@@ -1,16 +1,35 @@
-# v1.0.0 trigger shape per aidoc-flow-operations PR #111. See
-# composition-private.yml for the trigger-shape rationale.
+# Caller for vladm3105/aidoc-flow-ci/.github/workflows/composition.yml.
+# Pinned at @ci/v1.2.0 per IPLAN-0026 P5 (Phase 1 P5). The reusable now
+# handles BOTH event shapes (pull_request_review + workflow_run) via
+# ||-fallback expressions in its env block (aidoc-flow-ci PR #39 +
+# install templates updated in PR #40; tag ci/v1.2.0 pushed against
+# d339f6a). This caller adds the `workflow_run` trigger ALONGSIDE the
+# existing `pull_request_target` + `pull_request_review` triggers —
+# parallel-trigger transition for safety per IPLAN-0017 §3.4 + IPLAN-
+# 0026 §2.3 D2 migration discipline.
+#
+# Phase 1 ships MECHANISM only. The early-fire stale-red friction is
+# NOT yet eliminated — `pull_request_target` is kept in parallel during
+# Phase 1. Phase 2 (ci/v1.3.0, separate small IPLAN after empirical
+# validation) drops `pull_request_target` and delivers the friction
+# relief.
+#
+# Chicken-and-egg expected on THIS PR: BASE main pins v1.0.5 (pre-v1.2.0
+# caller-trigger shape); the new workflow_run trigger only activates AFTER
+# this PR merges. Same pattern as every prior v1.X.X bump.
 name: composition
 on:
-  # `opened` + `reopened` added 2026-06-26: without them, freshly-opened PRs
-  # left composition pending (only ai-review fired) → merge blocked until
-  # label-cycle / push woke composition. Asymmetric trigger sets between
-  # ai-review (includes opened) + composition (didn't) was the repo-wide gap
-  # — root-cause fix per docs/troubleshooting §15 label-cycle pattern.
+  # KEPT during Phase-1 transition for safety (drop in Phase 2 after 1+ clean cycle on workflow_run).
   pull_request_target:
     types: [opened, synchronize, reopened, labeled, unlabeled]
   pull_request_review:
     types: [submitted, dismissed, edited]
+  workflow_run:
+    # NEW per IPLAN-0026 P5: fires AFTER this repo's `ai-review` caller workflow completes (any
+    # conclusion — success / failure / skipped / cancelled via the default `types: [completed]`).
+    # Long-term path to eliminate the early-fire stale-red pattern; activates on Phase 2.
+    workflows: ["ai-review"]
+    types: [completed]
 # Caller-level permissions — see ai-review.yml header for rationale.
 # composition only needs read scopes.
 permissions:
@@ -18,7 +37,7 @@ permissions:
   contents: read
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.0.5
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.2.0
     with:
       runner_labels: '"ubuntu-latest"'
     secrets: inherit  # pragma: allowlist secret
