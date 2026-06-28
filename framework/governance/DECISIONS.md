@@ -13,6 +13,48 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-04 — IPLAN-ASSURANCE L1 is ratified as an aidoc-flow conformance requirement
+
+- **Status:** Proposed — 2026-06-28 (ratified on merge; a validator never grants
+  approval, only a human signs). Pins `iplan/v0.4.0`. **Merge precondition:** the
+  founder tags `iplan/v0.4.0` on `aidoc-flow-iplan-standard` first (PRs #4 §9, #5
+  envelope+vectors, #6 R3-amend are all merged to that repo's main).
+- **Context:** The IPLAN-ASSURANCE standard (verifiable provenance + transparency;
+  L0/L1/L2 — not a blockchain) lives in the neutral `aidoc-flow-iplan-standard`
+  repo. Its **L1** tier (signed-initiator provenance) is design-complete: §9
+  resolved (R1 inline-allowlist baseline / IdP-ready; R2 witness OPTIONAL /
+  REQUIRED-ready; R3 IPLAN-native in-toto predicate), the additive
+  `intake_control.provenance` envelope landed on `iplan-document` (no
+  `schema_version` bump, per the `dispatch_token_id` precedent), and L1 golden
+  vectors (`accept_ed25519` / `accept_hmac` / `reject_tampered`) pin schema-validity
+  + signature verification. Until ratified here, nothing in the standard is a
+  conformance requirement (the standard's own §0 gate clause). This is the GATE-SPEC
+  ratification the standard's `GOVERNANCE.md` points to.
+- **Decision:** Ratify **IPLAN-ASSURANCE L1 at `iplan/v0.4.0`** as a conformance
+  requirement for aidoc-flow consumers. A consumer that declares `assurance ≥ L1`
+  MUST verify the initiator signature over the canonical IPLAN (with
+  `intake_control` excluded) against an authorized-initiator keyring **before
+  approval/execution**, per §2 + the §9 resolutions. **L0** (byte integrity) stays
+  the default; **L1** is opt-in via the consumer's declared minimum-accept. The §3
+  evidence-attestation predicate is **IPLAN-native** (R3, amended) — not
+  `slsa.dev/provenance/v1` (SLSA provenance subject-inverts: its `subject` is the
+  build output, but §3's subject is the IPLAN input); the first conformant producer
+  is iplanic A4 / D-0109.
+- **Consequences:** Consumers (iplanic, iplan-runner) may pin `iplan/v0.4.0` and
+  build L1 (iplanic A1–A3: re-pin schema → initiator keyring → import verify;
+  iplan-runner intake gate). Recording this decision is itself a framework-spec
+  change and passes **GATE-SPEC** (its `VERSION`/`CHANGELOG` bump + both platforms'
+  `FRAMEWORK_SPEC_VERSION` + green conformance are the evidence). **L2** (transparency
+  log) and **REQUIRED** witness cosigning (R2) remain future higher-tier work, not
+  ratified here.
+- **Authority:** `aidoc-flow-iplan-standard` `docs/standards/IPLAN-ASSURANCE.md`
+  (§2 L1, §9 R1–R3), `schemas/iplan-document.schema.json`
+  (`intake_control.provenance`), `tests/contract/provenance/` (golden vectors);
+  `chg/gates/GATE-SPEC_FRAMEWORK.md`. Tracking: `aidoc-flow-operations`
+  `ops/iplans/IPLAN-0028`.
+
+---
+
 ## GD-03 — Trace citations to element-declaring layers are element-level (ref-granularity)
 
 - **Status:** Proposed — 2026-06-27 (per CFB-PR-3 / `BL-REF-GRANULARITY`;

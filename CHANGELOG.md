@@ -12,6 +12,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.27.0 → 0.28.0: GD-04 ratifies IPLAN-ASSURANCE L1 (2026-06-28)
+
+- **`governance/DECISIONS.md` — GD-04:** ratifies **IPLAN-ASSURANCE L1** at
+  `iplan/v0.4.0` as an aidoc-flow conformance requirement (the GATE-SPEC ratification
+  the standard's `GOVERNANCE.md` points to). A consumer declaring `assurance ≥ L1`
+  MUST verify the initiator signature over the canonical IPLAN (with `intake_control`
+  excluded) against an authorized-initiator keyring before approval/execution (§2 +
+  §9 R1–R3). L0 stays the default; L1 is opt-in. The §3 attestation predicate is
+  **IPLAN-native** (R3, amended — SLSA provenance subject-inverts the IPLAN); first
+  conformant producer is iplanic A4 / D-0109. L2 + REQUIRED witness are future tiers,
+  not ratified here.
+- **Bump:** `framework/VERSION` 0.27.0 → 0.28.0; both platforms'
+  `FRAMEWORK_SPEC_VERSION` = `0.28.0`; 104 `framework_spec_version` declarations
+  synced; plugin bundle re-vendored (byte-identity); conformance green. Recording a
+  `GD` is itself a framework-spec change → GATE-SPEC (per GD-01).
+- **Merge precondition:** founder tags `iplan/v0.4.0` on `aidoc-flow-iplan-standard`
+  first. Tracking: `aidoc-flow-operations` `ops/iplans/IPLAN-0028`.
+
 ### Added — YAML-BDD-SCHEMA PR-2: `sdd_doc_lint` dual-mode BDD parse path (2026-06-28)
 
 Second implementation increment. The linter now reads a migrated BDD doc's
