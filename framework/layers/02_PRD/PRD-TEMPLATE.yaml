@@ -354,7 +354,7 @@ component_decomposition:
           full_id: "PRD.NN.<category>.<key>"  # canonical citation form, matches @threshold: regex
           value: 200
           unit: "ms"
-          source: "@brd: BRD-NN"  # OPTIONAL — which BRD constraint this binds
+          source: "@brd: BRD.NN.SS.xxxx"  # OPTIONAL — which BRD constraint this binds (element-level, GD-03)
 
 # =============================================================================
 # Section 8: User Stories & User Roles

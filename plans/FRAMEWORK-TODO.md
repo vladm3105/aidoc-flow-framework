@@ -69,6 +69,22 @@
   (framework spec …)` line specifically) so future bumps stop rewriting
   provenance. Restored the two lines by hand in `a0cb426f`.
 
+### `[example-corpus]` `CORPUS-REFGRAN-RECASCADE` — 7 doc-level trace tags need element-level re-cascade (REFGRAN01)
+
+- *Context:* CFB-PR-3 shipped `REFGRAN01` (GD-03 enforcement). The corpus carries
+  **7 doc-level trace tags to element-declaring layers** (warnings in `build`,
+  errors in `gate-code`): `BDD-01:31,55`, `SPEC-01:31,67,469`, `TDD-01:204`,
+  `IPLAN-01:43`. 5 are redundant (drop — element-level sibling present); 2 need
+  conversion (`BDD-01:55` feature `@ears` → fan-out the union of its 26 scenarios'
+  elements per GD-03; `SPEC-01:67` prose → element-level).
+- *Fix shape:* re-cascade via the `doc-<layer>-fixer` skills (never hand-edit) —
+  **blocked in framework-dev sessions** (the plugin skills aren't invocable
+  here). Either run the fixers in a live plugin session, OR add a REFGRAN
+  `--fix` mechanical auto-fixer (drop-redundant + fan-out are deterministic;
+  aligns with PR-4's `rehash` subcommand direction). Until then `REFGRAN01` is
+  warnings-only in `build` mode (does not raise the exit code); gate-code-clean
+  (plan V7) lands with the re-cascade.
+
 ### `[example-corpus]` `CORPUS-PRD-TH-RES` — PRD-01 missing `component_decomposition` → 11 unresolvable `@threshold:` citations
 
 - *Context:* surfaced while verifying CFB-PR-2 2a-core step 4 (forward-coverage

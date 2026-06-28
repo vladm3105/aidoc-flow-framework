@@ -87,9 +87,10 @@ BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 
 ```yaml
 tags:
-  - "@brd: BRD-NN"
-  - "@prd: PRD-NN"
-  - "@ears: EARS-NN"
+  - "@brd: BRD.NN.SS.xxxx"
+  - "@prd: PRD.NN.SS.xxxx"
+  - "@ears: EARS.NN.SS.xxxx"  # element-level (GD-03); a Feature realizing several
+                              # EARS pipe-delimits them: "@ears: E… | @ears: E…"
 ```
 
 ### Scenario Organization

@@ -181,7 +181,7 @@ traceability:
     spec_references:
       - "@spec: SPEC-NN"
     tdd_references:
-      - "@tdd: TDD-NN"
+      - "@tdd: TDD.NN.SS.xxxx"  # element-level (GD-03); pipe-delimit several
   downstream:
     code_paths:
       - "@code: src/[module]/"
