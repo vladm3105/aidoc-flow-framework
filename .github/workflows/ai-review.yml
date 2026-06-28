@@ -1,4 +1,30 @@
-# Pinned at @ci/v1.1.6 — adds the auto-merge anti-recursion fix (aidoc-
+# Pinned at @ci/v1.3.0 per IPLAN-0027 P4 (bundled Phase-2 release with
+# IPLAN-0026 P8). v1.3.0's reusable adds an R3 early-exit step at the
+# top of the ai-review job: gh-api queries existing reviews; if the
+# reviewer App has already APPROVED the current HEAD SHA, sets
+# SKIP_REVIEW=1 + SKIP_REASON=r3 via $GITHUB_ENV so downstream heavy
+# steps skip via their existing if: env.SKIP_REVIEW != '1' guards.
+# Saves ~$0.10-0.20 + ~2-3 min per redundant re-fire (typical case:
+# label-cycle-retriggered ai-review after the App had already approved
+# the same HEAD). Fail-OPEN on persistent gh-api failure (7-retry x
+# backoff capped at 20s); HEAD-SHA-tied; INERT when App not armed.
+# Force-fresh-review path (when fresh review needed at the same HEAD):
+# dismiss the App's prior review via gh-api per
+# aidoc-flow-ci/docs/troubleshooting.md §15 (ci/v1.3.0+).
+# Consumer caller shape unchanged — R3 lives entirely inside the
+# reusable; pin bump activates it automatically.
+#
+# Prior @ci/v1.2.0 per IPLAN-0026 P5 — reusable's composition body
+# refactored to handle BOTH event shapes (pull_request_review +
+# workflow_run) via ||-fallback expressions (Phase 1 mechanism).
+#
+# Also inherits @ci/v1.1.7 — defensive `bash -e` + assignment-with-
+# failing-command-substitution guard around the App-token auto-merge
+# `merge_err` capture (aidoc-flow-ci PR #38; surfaced on operations
+# PR #152). Framework was carrying the same latent bug at v1.1.6;
+# the v1.1.6 → v1.3.0 jump silently activates this defensive fix.
+#
+# Prior @ci/v1.1.6 — adds the auto-merge anti-recursion fix (aidoc-
 # flow-ci PR #37). Auto-merge now authenticated as the reviewer App
 # (APP_TOKEN) instead of the default GITHUB_TOKEN, so the App-authored
 # merge commit triggers downstream push: workflows on every routine
@@ -61,7 +87,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.1.6
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.3.0
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'
