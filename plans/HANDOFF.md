@@ -1,5 +1,62 @@
 # Session Handoff
 
+> **🟢 YAML-BDD-SCHEMA plan MERGED — implementation starting (2026-06-28). `main`
+> at `dfb57309`.**
+>
+> A new design-of-record landed: **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197,
+> `dfb57309`) — migrate BDD scenarios from Gherkin-in-markdown to a structured
+> **YAML scenarios block inside `BDD-NN.md`** + an on-demand YAML→Gherkin
+> emitter. Converged over 3 independent gap-review passes; decision logged as
+> **D-0038** (plan D-1…D-6). This supersedes the BDD portion of
+> CFB-PR-3's REFGRAN fan-out — the Gherkin/GD-03 tag collision is dissolved at
+> the root (typed `ears` lists, no delimiter), feature coverage = union of
+> scenario `ears` (no fan-out), and it sets up the element-level COV02 upgrade.
+>
+> **▶ RESUME HERE — implementation is a ~7 PR sequence:**
+>
+> 1. ✅ **PR-1 (SHIPPED this session) — `_THRESHOLD` fix + transcoder.** The two
+>    self-contained, fully-verified pieces:
+>    (a) `_THRESHOLD` regex tightened to `([^\s|'"]+)` so an inline `@threshold:`
+>    ending a quoted YAML scalar doesn't false-fire TH01 (Pass-2 LB-1; all-layer,
+>    regression-free — verified zero quote-adjacent thresholds in the corpus).
+>    Vendored byte-identical to both platform copies. `tests/unit/test_threshold_quoted_scalar.py`.
+>    (b) `tools/gherkin_to_bdd_yaml.py` transcoder — parses the corpus's Gherkin
+>    constructs (feature/background/outline/examples/multi-step/inline-threshold/
+>    comments) and copies each `@scenario-id:` **verbatim** into `id:` (keeps the
+>    16 downstream `@bdd:` citations stable). `tests/unit/test_gherkin_to_bdd_yaml.py`.
+>    Suite green: 130 unit + 148 conformance; corpus == baseline.
+> 2. **PR-2 (NEXT — the big one) — `sdd_doc_lint` dual-mode BDD parse path.** When
+>    a `scenarios:` YAML block is present, parse it (synthetic **verbatim** `ears`
+>    edges in `build_edge_graph` → REFGRAN/COV01/COV02/TRACE-RES/TAG01; new
+>    `BDD-SCHEMA-001` structural check, structural-only — REFGRAN owns `ears`
+>    granularity, no double-report); else fall back to the legacy `@`-tag path so
+>    the still-Gherkin corpus stays green. Update `test_coverage_engine.py` +
+>    `test_ref_granularity.py` BDD fixtures to the YAML form. (Plan §"Linter
+>    changes" items 1-5 + the Pass-3 `cited_doc = doc_id_from_token` note.)
+> 3. **PR-3** template+schema (`BDD-TEMPLATE.yaml` category-dict → flat list +
+>    `BDD-00_index.TEMPLATE.md`).
+> 4. **PR-4** corpus + the 7 `BDD-01_golden` acceptance fixtures migration (run
+>    the PR-1 transcoder; `missing_section.md` is no-Gherkin/verify-only;
+>    `drift_codes.yaml` verify-only). Verify V4 ID-stability + V11 corpus.
+> 5. **PR-5** `doc-bdd*` skills rewrite (keep `test_skill_template_alignment` /
+>    `plm_lint` / `test_autopilot_saga_parity` green).
+> 6. **PR-6** governance docs (GD-03 note, `TAG_SYNTAX.md` BDD row,
+>    `QUICK_REFERENCE`, 04_BDD playbooks).
+> 7. **PR-7** framework MINOR version bump + re-vendor (incl. Hermes copy) +
+>    docs-of-record (CHANGELOG/ROADMAP/PARITY/README).
+>
+> **How to resume:** read this banner + `plans/YAML-BDD-SCHEMA-PLAN.md` (D-1…D-6,
+> the schema, the 5-function linter-fork contract, V1–V11). Linter lives in
+> `tools/sdd_doc_lint/__init__.py`; transcoder/emitter go in `tools/`; tests in
+> `tests/unit/`. Corpus baseline for the V11 cross-check: 1× TH-RES-001, 7×
+> REFGRAN01, 6× STY02 on `main`.
+>
+> **Note:** YAML-BDD resolves the **2 BDD** REFGRAN edges; the **5
+> SPEC/TDD/IPLAN `@adr`/`@tdd`** edges remain `CORPUS-REFGRAN-RECASCADE`'s job
+> (still open in `FRAMEWORK-TODO.md`).
+
+---
+
 > **🟢 CFB-PR-2 coverage engine — FULL ARC SHIPPED + MERGED (2026-06-27). `main`
 > is clean at framework spec `0.27.0`.**
 >

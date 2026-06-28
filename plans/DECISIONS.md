@@ -10,6 +10,39 @@ graduation.
 
 ---
 
+## D-0038 — YAML-native BDD scenarios replace Gherkin-in-markdown (YAML-BDD-SCHEMA, plan D-1…D-6)
+
+- **Date:** 2026-06-28T00:00:00Z
+- **Decision:** Migrate the BDD layer's produced artifact from Gherkin-embedded-
+  in-markdown to a structured **YAML scenarios block inside `BDD-NN.md`**. The
+  plan-local decisions (`plans/YAML-BDD-SCHEMA-PLAN.md`):
+  - **D-1 Carrier** — a fenced ` ```yaml ` block in §2/§3 of `BDD-NN.md`; the
+    doc stays markdown with the five `##` sections (STRUCT01 unchanged).
+  - **D-2 Step model** — `given/when/then` phase lists; thresholds stay **inline
+    `@threshold:` in step prose** (a bare `threshold:` field would fire ID03 and
+    bypass TH-RES-001). Requires the `_THRESHOLD` regex to exclude trailing
+    quotes (`([^\s|'"]+)`).
+  - **D-3 Coverage** — the Feature carries **no `ears`**; coverage = union of
+    scenario `ears` (kills the CFB-PR-3 fan-out).
+  - **D-4 Emitter** — on-demand, one-way `tools/bdd_to_gherkin.py` (git-ignored
+    output); these docs are QA-staging-only, not CI-executed.
+  - **D-5 Scope** — plugin skills/engine; Hermes skills/engine deferred; the
+    shared linter code still ships to the Hermes vendored copy (byte-identity).
+  - **D-6 Migration** — a deterministic `tools/gherkin_to_bdd_yaml.py` transcoder
+    (framework tool) that **copies each `@scenario-id:` verbatim** into `id:`,
+    keeping all 16 downstream `@bdd:` citations stable. NOT an LLM regeneration
+    (which would drift the content-hash IDs and break downstream).
+- **Why:** GD-03 mandates pipe-delimited multi-element trace tags, but `|` is
+  Gherkin's table delimiter and Gherkin tags cannot contain whitespace — so the
+  GD-03 form is physically illegal on a Gherkin tag line. Carrying trace as typed
+  YAML fields removes the collision at the root, makes REFGRAN a structural
+  check, and turns element-level COV02 into a direct set computation. The
+  framework is pre-1.0, so realigning the artifact with its own template's
+  already-YAML scenario model is low-cost.
+- **Review:** converged over 3 independent fresh-context passes (Pass 1: 10 gaps;
+  Pass 2: 3 load-bearing + 5 minor; Pass 3: READY). Plan PR #197 merged
+  (`dfb57309`, 2026-06-28). Implementation is a ~6–8 PR sequence.
+
 ## D-0037 — `realized_by` escape authored as an inline FR-bullet token (CFB-PR-2 DD-5)
 
 - **Date:** 2026-06-27T00:00:00Z
