@@ -20,7 +20,11 @@ sys.path.insert(0, str(REPO_ROOT / "tools"))
 sys.path.insert(0, str(plugin_bundle_root()))
 
 from sdd_coverage import _collect_corpus, render_matrix  # noqa: E402
-from sdd_doc_lint import _check_backward_coverage, _check_forward_coverage  # noqa: E402
+from sdd_doc_lint import (  # noqa: E402
+    _check_backward_coverage,
+    _check_forward_coverage,
+    _check_ref_granularity,
+)
 
 _EXAMPLE_DOCS = REPO_ROOT / "examples" / "url-shortener" / "docs"
 _MATRIX = _EXAMPLE_DOCS / "TRACEABILITY_MATRIX.md"
@@ -109,6 +113,38 @@ class BackwardCoverageContract(unittest.TestCase):
         self.assertEqual(_check_backward_coverage(only_reqs), [])
         with_bare_index = only_reqs + [_doc("SPEC-00", "SPEC", "bare index")]
         self.assertEqual(_check_backward_coverage(with_bare_index), [])
+
+
+class RefGranularityContract(unittest.TestCase):
+    def test_doc_level_ref_to_element_declaring_layer_blocks_in_gate_code(self):
+        corpus = [
+            _doc("EARS-01", "EARS", "- EARS.01.03.aaaa: a req."),
+            _doc("BDD-01", "BDD", "@ears: EARS-01\nScenario."),
+        ]
+        findings = _check_ref_granularity(corpus, "gate-code")
+        self.assertEqual([(f.code, f.severity) for f in findings], [("REFGRAN01", "error")])
+
+    def test_element_level_and_spec_iplan_targets_are_silent(self):
+        corpus = [
+            _doc("EARS-01", "EARS", "- EARS.01.03.aaaa: a req."),
+            _doc("BDD-01", "BDD", "@ears: EARS.01.03.aaaa\nScenario."),
+            _doc("SPEC-01", "SPEC", "a spec"),
+            _doc("TDD-01", "TDD", "@spec: SPEC-01\n- TDD.01.04.aaaa: a test."),
+        ]
+        self.assertEqual(_check_ref_granularity(corpus), [])
+
+
+class TagSyntaxPage(unittest.TestCase):
+    def test_tag_syntax_page_present_and_draws_the_boundary(self):
+        for base in (FRAMEWORK, plugin_bundle_root() / "framework"):
+            page = (base / "governance" / "TAG_SYNTAX.md").read_text(encoding="utf-8")
+            with self.subTest(copy=str(base)):
+                self.assertIn("REFGRAN01", page)
+                # cross-refs the granularity authority (GD-03 / ID_NAMING), not duplicates
+                self.assertIn("ID_NAMING_STANDARDS.md", page)
+                self.assertIn("GD-03", page)
+                # the carve-outs (self-tags + downstream pointers) are documented
+                self.assertIn("Self-tag", page)
 
 
 class SPEC00CoverageSection(unittest.TestCase):
