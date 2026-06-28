@@ -52,7 +52,7 @@ template + governance with the YAML-native scenario model (D-0038).
   pipe-container example updated) and `governance/ID_NAMING_STANDARDS.md` GD-03
   (new "BDD carrier" clause — element-level `ears` enforced by REFGRAN01 +
   BDD-SCHEMA-001; downstream still cites `@bdd:` element tags).
-- **Framework MINOR bump 0.27.0 → 0.28.0** via `bump_version.py` (both
+- **Framework MINOR bump 0.28.0 → 0.29.0** via `bump_version.py` (both
   `FRAMEWORK_SPEC_VERSION` pins, 104 skill/playbook frontmatter declarations,
   plugin README, bundle re-vendor, version-ref fanout). 148 conformance + 141
   unit green; example corpus unchanged vs baseline.
