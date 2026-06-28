@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 CFB-PR-2 coverage engine — full arc shipped this session (2026-06-27).**
+> Forward gate `COV01` (#187, spec 0.24.0) → backward gate `COV02` (#190, 0.25.0)
+> → ref-granularity policy GD-03 (#192, 0.26.0) → PR-3 plan (#193) → **PR-3
+> `REFGRAN01` enforcement (impl in progress, spec 0.27.0)**: the lint enforcing
+> GD-03 (doc-level trace tags to element-declaring layers are flagged) +
+> `governance/TAG_SYNTAX.md` + the BDD index reconciliation. **Deferred** (named):
+> the **corpus REFGRAN re-cascade** (`CORPUS-REFGRAN-RECASCADE` — needs the
+> `doc-<layer>-fixer` skills, not invocable in a framework-dev session;
+> `REFGRAN01` is warnings-only in `build` mode — does not raise the exit code),
+> the **element-level `COV01`/`COV02`
+> upgrade** (the payoff that catches the 15 orphaned BDD scenarios), and
+> **`BL-STATUS-SCOPE`** (PR-3b). Sub-PRs 2c (phase reconciliation), 2d (BDD
+> roll-up) remain.
+
+---
+
 > **🟢 CONSUMER-FEEDBACK-001 — 3 consumer-feedback logs triaged → workstream underway (2026-06-27).**
 >
 > Triaged three downstream-project feedback logs (D54 / Engramory / BeeLocal)

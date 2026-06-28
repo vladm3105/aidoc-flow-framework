@@ -12,6 +12,43 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec 0.26.0 → 0.27.0: REFGRAN01 ref-granularity enforcement (CFB-PR-3) (2026-06-27)
+
+Enforces GD-03 (0.26.0): the deterministic lint that makes the coverage engine
+element-precise. MINOR.
+
+- **`sdd_doc_lint` (vendored): `REFGRAN01`** — flags an `@<layer>:` trace
+  citation in document-level form (`TYPE-NN`) to an element-declaring layer
+  (`@brd @prd @ears @bdd @adr @tdd`); `@spec`/`@iplan` exempt (element-ID-exempt).
+  Reuses `build_edge_graph`'s edges (upstream-only; self-tags + downstream
+  pointers excluded), so it fires only on genuine upstream trace citations.
+  Run-mode severity (warning/`build`, error/`gate-code`); per-edge finding; runs
+  unconditionally (a form rule, not the corpus coverage gate). No double-fire
+  with `ID01`/`TRACE-RES-001`.
+- **Spec:** `governance/TAG_SYNTAX.md` (new) — the `@`-tag form reference
+  (per-layer punctuation, pipe-delimited cardinality, self-tag/downstream
+  carve-outs), cross-referencing GD-03 / `ID_NAMING` (granularity) and
+  `TRACEABILITY.md` (chain) without duplicating them. The layer templates that
+  taught the doc-form upstream ref are reconciled to element-level:
+  `BDD-00_index.TEMPLATE.md` (`@ears`), `SPEC-TEMPLATE.yaml` (`@adr`),
+  `IPLAN-TEMPLATE.yaml` (`@tdd`), `PRD-TEMPLATE.yaml` (`@brd`) — self-tags and
+  downstream references stay document-level (exempt).
+- **Deferred:** the **corpus re-cascade** of the 7 doc-level tags (5 drop +
+  2 convert, incl. the BDD Feature fan-out) needs the `doc-<layer>-fixer` skills,
+  which aren't invocable in a framework-dev session — flagged as
+  `CORPUS-REFGRAN-RECASCADE` (`FRAMEWORK-TODO.md`). `REFGRAN01` contributes
+  **warnings only** in `build` mode (it does not raise the lint exit code); the
+  corpus's pre-existing non-zero exit is the separately-tracked
+  `CORPUS-PRD-TH-RES` (`TH-RES-001`) error, unrelated to REFGRAN. The
+  element-level `COV01`/`COV02` upgrade + `BL-STATUS-SCOPE` remain named
+  follow-ons.
+- **Backward compatibility:** additive; `REFGRAN01` no-ops without upstream
+  edges (single-file runs); existing corpora are warned, not blocked, in
+  `build` mode.
+- **Validation:** 269 unit+conformance green (`test_ref_granularity.py` +
+  `test_coverage_engine` REFGRAN contract + the `TAG_SYNTAX` page guard);
+  framework + both `FRAMEWORK_SPEC_VERSION` = `0.27.0`; vendored byte-identity.
+
 ### Added — Framework Spec 0.25.0 → 0.26.0: ref-granularity policy GD-03 (CFB-PR-3 prep) (2026-06-27)
 
 Settles the tag-granularity policy that the CFB-PR-3 lint (`REFGRAN01`) will
