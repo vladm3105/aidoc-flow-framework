@@ -1,18 +1,50 @@
 # Session Handoff
 
-> **🟢 CFB-PR-2 coverage engine — full arc shipped this session (2026-06-27).**
-> Forward gate `COV01` (#187, spec 0.24.0) → backward gate `COV02` (#190, 0.25.0)
-> → ref-granularity policy GD-03 (#192, 0.26.0) → PR-3 plan (#193) → **PR-3
-> `REFGRAN01` enforcement (impl in progress, spec 0.27.0)**: the lint enforcing
-> GD-03 (doc-level trace tags to element-declaring layers are flagged) +
-> `governance/TAG_SYNTAX.md` + the BDD index reconciliation. **Deferred** (named):
-> the **corpus REFGRAN re-cascade** (`CORPUS-REFGRAN-RECASCADE` — needs the
-> `doc-<layer>-fixer` skills, not invocable in a framework-dev session;
-> `REFGRAN01` is warnings-only in `build` mode — does not raise the exit code),
-> the **element-level `COV01`/`COV02`
-> upgrade** (the payoff that catches the 15 orphaned BDD scenarios), and
-> **`BL-STATUS-SCOPE`** (PR-3b). Sub-PRs 2c (phase reconciliation), 2d (BDD
-> roll-up) remain.
+> **🟢 CFB-PR-2 coverage engine — FULL ARC SHIPPED + MERGED (2026-06-27). `main`
+> is clean at framework spec `0.27.0`.**
+>
+> Five PRs landed, each plan-reviewed (2-3 independent passes) + spec-tier
+> human-signed:
+> `COV01` forward gate (#187, 0.24.0) → `COV02` backward gate (#190, 0.25.0) →
+> GD-03 ref-granularity policy (#192, 0.26.0) → PR-3 plan (#193) → **`REFGRAN01`
+> enforcement (#194, 0.27.0)**. The engine computes the `@`-tag graph once and
+> asserts forward (`COV01`: BRD FR → SPEC/IPLAN) + backward (`COV02`: EARS/BDD →
+> SPEC/TDD) coverage, doc-level, and enforces element-granular refs (`REFGRAN01`,
+> GD-03). All backed by normative spec (BRD `_authored_form` rule, SPEC-00
+> `coverage` section, GD-03 + `governance/TAG_SYNTAX.md`).
+>
+> **▶ RESUME HERE — next session, priority order:**
+>
+> 1. **`CORPUS-REFGRAN-RECASCADE`** (`FRAMEWORK-TODO.md`) — re-cascade the **7**
+>    doc-level corpus tags to element-level (5 drop + 2 convert, incl. the
+>    BDD-01 Feature `@ears` fan-out to its 26 scenarios). Blocked on the
+>    `doc-<layer>-fixer` skills (not invocable in a framework-dev session) →
+>    **either** run them in a live plugin session **or** add a `REFGRAN --fix`
+>    mechanical auto-fixer (drop-redundant + fan-out are deterministic). Until
+>    then `REFGRAN01` is warnings-only in `build` (does not raise the exit code).
+>    Closing this gets the corpus gate-code-clean (plan V7).
+> 2. **Element-level `COV01`/`COV02` upgrade** — the *payoff*: now that refs are
+>    element-precise (REFGRAN01), upgrade the gates from doc-level to
+>    element-level reach. This finally catches the **15 orphaned BDD scenarios**
+>    `COV02` can't see at doc level. Needs the EARS/BDD deferral signal designed
+>    (the doc-of-record: `CFB-PR-2-COVERAGE-ENGINE-PLAN.md` DD-5/DD-6 + the 2b
+>    plan's deferral notes). A new plan → review → impl.
+> 3. **`BL-STATUS-SCOPE` (PR-3b)** — per-context `status` enum + scope-aware
+>    validation (resolve the PR-7 `Sketch` interaction). Split out of PR-3.
+> 4. **Sub-PRs 2c** (phase reconciliation — registry phase-schema + phase-leak
+>    gate, DD-6 row 4) and **2d** (BDD doc-set EARS roll-up). Plus the later
+>    CONSUMER-FEEDBACK waves (PR-4 provisional IDs, PR-5 reuse manifest, …).
+>
+> **Tooling backlog** (`FRAMEWORK-TODO.md`): `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER`
+> (recurs every bump), `SYNC-VERSION-PROVENANCE-OVERBUMP`,
+> `RELEASE-CHANGELOG-TEST-CONVENTION-GAP`, `CORPUS-PRD-TH-RES` (pre-existing
+> PRD-01 `@threshold:` gap — the corpus's only non-REFGRAN error).
+>
+> **How to resume:** read this banner + `plans/CFB-PR-2-COVERAGE-ENGINE-PLAN.md`
+> (the design-of-record) + the relevant sub-PR plan; the engine lives in
+> `tools/sdd_doc_lint/__init__.py` (`_check_forward_coverage` / `_check_backward_coverage`
+> / `_check_ref_granularity` / `build_edge_graph`), tests in
+> `tests/unit/test_{forward,backward}_coverage.py` + `test_ref_granularity.py`.
 
 ---
 

@@ -27,10 +27,14 @@
 > **CONSUMER-FEEDBACK-001 progress (2026-06-27):** 3 consumer logs triaged → 22
 > items (the 3 dated banners below), orchestrated by
 > `plans/CONSUMER-FEEDBACK-001-PLAN.md`. **Closed:** `BL-TAG-CHAIN-GATE-SYNC`
-> (PR #180/#181). **In flight:** `ENG-FWD-COVERAGE` + `D54-F13` + `D54-F05` are
-> being built together as **CFB-PR-2** (plan merged #184; sub-PR 2a-core started
-> on `feat/cfb-pr-2a-coverage-core`, step 1 `sdd_trace_graph` landed). The
-> remaining D54/ENG/BL items stay open until their PR ships.
+> (#180/#181). **CFB-PR-2 coverage engine — SHIPPED (full arc):**
+> `ENG-FWD-COVERAGE` forward gate `COV01` (#187, spec 0.24.0); `D54-F13`/`D54-F05`
+> backward gate `COV02` (#190, 0.25.0); GD-03 ref-granularity policy (#192,
+> 0.26.0); `BL-REF-GRANULARITY` + `D54-F07` enforcement `REFGRAN01` (#194,
+> 0.27.0). **Remaining open items** (in this file): `CORPUS-REFGRAN-RECASCADE`,
+> the element-level `COV01`/`COV02` upgrade (catches the 15 orphaned BDD
+> scenarios), `BL-STATUS-SCOPE` (PR-3b), sub-PRs 2c (phase reconciliation) + 2d
+> (BDD roll-up), and the D54/ENG/BL items for the later waves.
 
 ### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
 
