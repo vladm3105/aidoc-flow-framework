@@ -32,6 +32,7 @@ import yaml
 # backward walker so the two directions of the trace graph agree byte-for-byte.
 # Package-relative import → resolves in the canonical tree and in every vendored
 # copy (the submodule is carried by sync-vendored.sh).
+from .trace_graph import DOC_FORM as _DOC_FORM
 from .trace_graph import ELEM_FORM as _ELEM_FORM
 from .trace_graph import LAYER_INDEX as _LAYER_INDEX
 from .trace_graph import TAG as _TRACE_TAG
@@ -1483,6 +1484,68 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
     return findings
 
 
+# --- Ref-granularity lint (CFB-PR-3, GD-03) -----------------------------------
+#: Layers that declare canonical element IDs — a trace citation TO one of these
+#: must be element-level (GD-03). SPEC/IPLAN are element-ID-exempt → doc-level.
+_REFGRAN_ELEMENT_DECLARING = ("BRD", "PRD", "EARS", "BDD", "ADR", "TDD")
+
+
+def _check_ref_granularity(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """REFGRAN01 — trace citations to element-declaring layers must be element-level
+    (CFB-PR-3, GD-03).
+
+    Functionality is defined in elements; the document is a container. So an
+    `@<layer>:` **trace citation** to an **element-declaring** layer
+    (BRD/PRD/EARS/BDD/ADR/TDD) MUST name the element (`TYPE.NN.SS.xxxx`), not the
+    document (`TYPE-NN`) — a doc-level ref discards the granularity at which the
+    work is specified, and (the point) keeps the coverage engine document-level.
+    `@spec`/`@iplan` citations are exempt (those layers declare no canonical
+    elements).
+
+    Reuses the `build_edge_graph` edge set, which already keeps only UPSTREAM
+    citations and excludes self-tags + downstream forward-pointers — so REFGRAN01
+    fires only on a genuine upstream trace citation, never on a `@bdd: BDD-01`
+    self-tag or a downstream navigation pointer. It does not re-check resolution
+    (`TRACE-RES-001`) or form (`ID01-03`) — those pass on a doc-level tag, so
+    REFGRAN01 is the sole new finding.
+
+    Severity mirrors the coverage gates' run-mode: a doc-level ref is a **warning**
+    in `build`, an **error** in `gate-code` — the migration window / incremental
+    authoring is not hard-blocked. Runs unconditionally (a form rule, not the
+    corpus coverage gate); no-ops naturally when there are no upstream edges.
+    """
+    graph = build_edge_graph(corpus)
+    rel_by_doc: dict[str, str] = {}
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
+        if doc_id:
+            rel_by_doc.setdefault(doc_id, rel)
+
+    severity = "error" if mode == "gate-code" else "warning"
+    findings: list[Finding] = []
+    for e in graph.edges:
+        if not _DOC_FORM.match(e.cited_token):
+            continue  # already element-level (or malformed — ID03 owns that)
+        if e.cited_token.split("-", 1)[0] not in _REFGRAN_ELEMENT_DECLARING:
+            continue  # @spec / @iplan target — exempt (no canonical elements)
+        layer = e.cited_token.split("-", 1)[0].lower()
+        findings.append(
+            Finding(
+                rel_by_doc.get(e.citer_doc, e.citer_doc),
+                e.line,
+                "REFGRAN01",
+                f"document-level trace tag '@{layer}: {e.cited_token}' to an "
+                f"element-declaring layer — cite the specific element "
+                f"('@{layer}: {e.cited_token.split('-')[0]}.NN.SS.xxxx'); a doc-level "
+                f"ref discards element granularity (GD-03)",
+                severity=severity,
+            )
+        )
+    findings.sort(key=lambda f: (f.path, f.line, f.message))
+    return findings
+
+
 def lint_path(
     target: Path,
     registry: Path | None = None,
@@ -1524,6 +1587,9 @@ def lint_path(
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
+    # REFGRAN01 is a form rule (GD-03), not the corpus coverage gate — it runs
+    # unconditionally (not behind --skip-coverage-gate), with run-mode severity.
+    findings.extend(_check_ref_granularity(corpus, mode))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))
