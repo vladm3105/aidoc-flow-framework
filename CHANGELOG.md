@@ -12,6 +12,37 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — YAML-BDD-SCHEMA PR-2: `sdd_doc_lint` dual-mode BDD parse path (2026-06-28)
+
+Second implementation increment. The linter now reads a migrated BDD doc's
+trace from its structured ``scenarios:`` YAML block; a doc with no scenarios
+block falls back to the legacy Gherkin ``@``-tag path (dual-mode), so the
+still-Gherkin example corpus is byte-for-byte unaffected.
+
+- **`build_edge_graph`** — for a BDD doc with a ``scenarios:`` block, synthesises
+  one upstream edge per scenario ``ears`` token **verbatim** (doc-form included),
+  with ``cited_doc = doc_id_from_token(token)``. So **REFGRAN01** fires on a
+  doc-form ``ears`` while COV01/COV02 see BDD↔EARS lineage identically (Pass-2
+  LB-3 / Pass-3 finding 2). Scenario ``id`` declarations self-register via the
+  existing ``_ELEM_ID`` scan.
+- **`_check_trace_resolution` (TRACE-RES-001)** — resolves scenario ``ears``
+  tokens against the corpus (the ``ears:`` list carries no ``@`` for the legacy
+  scan to see).
+- **`lint_text` TAG01** — BDD ``required_tags: [ears]`` is satisfied from the
+  parsed scenario ``ears``.
+- **`BDD-SCHEMA-001`** (new) — structural validation only: malformed block,
+  non-mapping scenario, missing required field
+  (id/name/type/priority/ears/given/when/then), or invalid type/priority enum.
+  Element-level ``ears`` granularity stays REFGRAN01's job — no double-report.
+- Re-vendored byte-identical into both platform copies.
+- **Tests:** `tests/unit/test_bdd_yaml_mode.py` (11) — REFGRAN verbatim-edge
+  behaviour, TRACE-RES, TAG01, BDD-SCHEMA-001, no-double-report, and the legacy
+  dual-mode fallback. Existing `test_ref_granularity.py`/`test_coverage_engine.py`
+  legacy fixtures unchanged (supplemented, not replaced — Pass-3 finding 1).
+- **Verification:** 141 unit + 148 conformance green; example corpus unchanged
+  vs baseline; end-to-end smoke — the PR-1 transcoder converts the real BDD-01
+  (31 scenarios / 50 ears tokens) and this fork reads it with IDs verbatim.
+
 ### Added — YAML-BDD-SCHEMA PR-1: `_THRESHOLD` quote-fix + Gherkin→YAML transcoder (2026-06-28)
 
 First implementation increment of the merged YAML-BDD-SCHEMA design
