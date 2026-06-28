@@ -30,6 +30,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **Merge precondition:** founder tags `iplan/v0.4.0` on `aidoc-flow-iplan-standard`
   first. Tracking: `aidoc-flow-operations` `ops/iplans/IPLAN-0028`.
 
+### Changed — Framework Spec 0.28.0 → 0.29.0: YAML-BDD-SCHEMA PR-3 (BDD template + schema) (2026-06-28)
+
+Third implementation increment — the **framework-spec** change (GATE-SPEC: the
+template restructure carries the MINOR bump). Realigns the BDD layer's normative
+template + governance with the YAML-native scenario model (D-0038).
+
+- **`framework/layers/04_BDD/BDD-TEMPLATE.yaml`** — `scenario_structure.scenarios`
+  restructured from a **category-dict** (success/error/…) to a **flat list with a
+  `type:` discriminator** matching the normative schema; each scenario is a
+  structured mapping (id/name/type/priority/element-level `ears` list/given-when-
+  then phase lists/optional spec_trace+notes+outline+examples) — no Gherkin
+  `@`-tags. `feature_definition` → a `feature:` YAML block (name/description/
+  background) carrying **no `ears`** (coverage = union of scenarios, D-3).
+  `document_control` drops the `ears/prd/brd_reference` rows.
+- **`framework/layers/04_BDD/BDD-00_index.TEMPLATE.md`** — trace convention +
+  checklist + "create a BDD" steps updated from `@ears` tags / "valid Gherkin"
+  to the structured `ears:` list / YAML scenario schema.
+- **Governance reconciliation:** `governance/TAG_SYNTAX.md` (BDD carries `ears:`
+  as structured YAML, not an `@`-tag; the no-space Gherkin note + BDD row +
+  pipe-container example updated) and `governance/ID_NAMING_STANDARDS.md` GD-03
+  (new "BDD carrier" clause — element-level `ears` enforced by REFGRAN01 +
+  BDD-SCHEMA-001; downstream still cites `@bdd:` element tags).
+- **Framework MINOR bump 0.27.0 → 0.28.0** via `bump_version.py` (both
+  `FRAMEWORK_SPEC_VERSION` pins, 104 skill/playbook frontmatter declarations,
+  plugin README, bundle re-vendor, version-ref fanout). 148 conformance + 141
+  unit green; example corpus unchanged vs baseline.
+- **Deferred to PR-3b (PATCH bump):** `QUICK_REFERENCE.md` + the `04_BDD/*.md`
+  playbooks (peripheral guidance).
+
 ### Added — YAML-BDD-SCHEMA PR-2: `sdd_doc_lint` dual-mode BDD parse path (2026-06-28)
 
 Second implementation increment. The linter now reads a migrated BDD doc's

@@ -54,7 +54,7 @@ BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 - **Keep numbers stable**: Never reuse or renumber
 - **Filename**: `BDD-NN_{descriptive_slug}.yaml`
 - **One feature per file**: Each BDD file covers one primary feature or capability
-- **Necessary-upstream tag**: Include `@ears` (BDD's `required_tags`); `@brd`/`@prd` optional provenance only
+- **Necessary-upstream trace**: every scenario carries an element-level `ears:` list (BDD's `required_tags`); `@brd`/`@prd` lineage is transitive provenance only
 - **BDD-Ready score**: >=90/100 required before downstream ADR generation
 
 ---
@@ -79,19 +79,24 @@ BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 
 1. **Generate from template**: Copy `BDD-TEMPLATE.yaml` into a new `BDD-NN` file
 2. **Assign sequential ID**: `BDD-01`, `BDD-02`, etc.
-3. **Write tag section**: Include `@ears` (the required necessary-upstream tag)
-4. **Define scenarios**: Given/When/Then; include success path, error handling, edge cases
+3. **Define scenarios**: a flat `scenarios:` YAML list — each with an element-level `ears:` list (the required necessary-upstream trace), `type`, `priority`, and Given/When/Then phase lists; cover success path, error handling, edge cases
 5. **Update this index**: Add entry to the document registry
 
-### Tagging Convention
+### Trace Convention
+
+BDD carries its upstream trace as a structured `ears:` list on each scenario
+(YAML-BDD-SCHEMA D-2), NOT as `@`-tags — each entry element-level (GD-03,
+enforced by `REFGRAN01` + `BDD-SCHEMA-001`):
 
 ```yaml
-tags:
-  - "@brd: BRD.NN.SS.xxxx"
-  - "@prd: PRD.NN.SS.xxxx"
-  - "@ears: EARS.NN.SS.xxxx"  # element-level (GD-03); a Feature realizing several
-                              # EARS pipe-delimits them: "@ears: E… | @ears: E…"
+scenarios:
+  - id: BDD.NN.03.xxxx
+    ears: [EARS.NN.SS.xxxx, EARS.NN.SS.yyyy]   # element-level; >=1
 ```
+
+The feature carries NO `ears` field — its EARS coverage is the computed union of
+its scenarios' `ears`. Downstream layers still cite BDD scenarios via
+element-level `@bdd: BDD.NN.SS.xxxx` tags.
 
 ### Scenario Organization
 
@@ -105,11 +110,11 @@ tags:
 ## Validation Checklist
 
 - [ ] All BDD files follow naming: `BDD-NN_{slug}.yaml`
-- [ ] All BDD files have the necessary-upstream tag (`@ears`)
+- [ ] Every BDD scenario carries an element-level `ears:` list (necessary-upstream)
 - [ ] All BDD files have upstream links (EARS)
 - [ ] All BDD files have downstream links (ADR)
 - [ ] All requirements have corresponding BDD scenarios
-- [ ] All BDD scenarios are executable (valid Gherkin syntax)
+- [ ] All BDD scenarios conform to the YAML scenario schema (BDD-SCHEMA-001 clean)
 - [ ] This index is up-to-date with all BDD files
 - [ ] BDD-Ready score >=90/100 confirmed
 

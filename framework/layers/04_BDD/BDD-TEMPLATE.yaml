@@ -121,9 +121,9 @@ document_control:
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[QA Engineer]"
   priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
-  ears_reference: "@ears: EARS.NN.03.xxxx"
-  prd_reference: "@prd: PRD.NN.09.xxxx"
-  brd_reference: "@brd: BRD.NN.07.xxxx"
+  # No ears/prd/brd reference rows — upstream trace lives on each scenario's
+  # element-level `ears:` list (YAML-BDD-SCHEMA D-3); the feature's coverage is
+  # the computed union of its scenarios' `ears`.
   adr_ready_score: "[Score]/100"
 
   revision_history:
@@ -139,48 +139,44 @@ document_control:
 feature_definition:
   _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Define the feature under test with required Gherkin tags.
-    Feature name should match the EARS requirement being tested.
-
-    Required Gherkin tags (NO spaces after colon):
-      @brd:BRD.NN.07.xxxx
-      @prd:PRD.NN.09.xxxx
-      @ears:EARS.NN.03.xxxx
-
-    Tags appear on separate lines BEFORE the Feature: keyword.
-    All three traceability tags are MANDATORY for Layer 4.
+    Define the feature under test as a `feature:` YAML block (rendered inside a
+    ```yaml fence in §2 of the produced BDD-NN.md). The feature is a CONTAINER —
+    it carries NO `ears` field; its EARS coverage is the computed union of its
+    scenarios' element-level `ears` lists (YAML-BDD-SCHEMA D-3). Upstream trace
+    lives on each scenario, NOT as `@`-tags on the feature.
 
     File size rules:
-      - Single .feature file per module (default), monolithic up to 50,000 tokens
+      - Single BDD document per module (default), monolithic up to 50,000 tokens
       - If >50,000 tokens: create a new BDD document with its own scope
-      - Do NOT split into sectioned files — each document is self-contained
       - Keep scenarios atomic (one behavior per scenario)
 
   _example: |
-    @brd:BRD.01.07.a7f3
-    @prd:PRD.01.09.b3f2
-    @ears:EARS.01.03.c4d8
+    ```yaml
+    feature:
+      name: URL Shortener acceptance behaviour
+      description: |
+        As a Link Submitter
+        I want to shorten public URLs
+        So that long links become compact
+      background:
+        steps:
+          - "the system is in a ready state"
+          - 'the current time is "09:30:00" in "America/New_York"'
+    # no ears field — coverage = union(scenarios[].ears)
+    ```
 
-    Feature: User Authentication
-      As a registered user
-      I want to authenticate with the system
-      So that I can access protected resources
-
-      Background:
-        Given the system is in a ready state
-        And the current time is "09:30:00" in "America/New_York"
-
-  feature_name: "[Feature Name matching EARS requirement]"
-  description: |
-    [As a {role}, I want {capability}, So that {benefit}]
-
-  background:
-    _guidance: |
-      Background runs before each scenario. Include system state
-      and timezone. Default timezone: America/New_York (IANA format).
-    steps:
-      - "Given the system is in a ready state"
-      - 'And the current time is "HH:MM:SS" in "America/New_York"'
+  feature:
+    name: "[Feature Name matching the EARS requirement]"
+    description: |
+      [As a {role}, I want {capability}, So that {benefit}]
+    background:
+      _guidance: |
+        Background runs before each scenario. Store BARE step text (the optional
+        YAML→Gherkin emitter adds the Given/And keyword). Include system state +
+        timezone (IANA, default America/New_York).
+      steps:
+        - "the system is in a ready state"
+        - 'the current time is "HH:MM:SS" in "America/New_York"'
 
 # =============================================================================
 # Section 3: Scenario Structure
@@ -189,112 +185,96 @@ feature_definition:
 scenario_structure:
   _size_target: 800  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Five scenario categories with required tag and priority conventions.
+    Scenarios are a FLAT YAML list under `scenarios:`, each discriminated by a
+    `type:` field (YAML-BDD-SCHEMA D-1/D-2) — no Gherkin `@`-tags. Required
+    fields per scenario:
+      - id:       element id BDD.NN.03.xxxx (on migration, COPIED VERBATIM from
+                  the source @scenario-id — never recomputed; keeps downstream
+                  @bdd citations stable)
+      - name:     scenario title
+      - type:     success | error | recovery | parameterized | optional
+      - priority: p0-critical | p1-high | p2-medium | p3-low
+      - ears:     element-level list [EARS.NN.SS.xxxx, ...] (>=1). REFGRAN01
+                  rejects doc-form (EARS-NN). The feature's coverage is the
+                  union of all scenarios' ears (computed; no feature-level tag).
+      - given / when / then: phase lists; multiple entries = And continuations.
+                  Thresholds are written INLINE in the step prose as
+                  `@threshold:PRD.NN.cat.key` (any phase, any count).
+    Optional: spec_trace (list), notes (list — rationale), and for a
+    parameterized scenario `outline: true` + `examples: {headers, rows}`.
 
-    | Category      | Tag                          | Min Per | Priority |
-    | success       | @scenario-type:success       | 1/EARS  | P0-P1    |
-    | error         | @scenario-type:error         | 1/error | P1-P2    |
-    | recovery      | @scenario-type:recovery      | 1/CB    | P1       |
-    | parameterized | @scenario-type:parameterized | 1/multi | P1-P2    |
-    | optional      | @scenario-type:optional      | 1/opt   | P2-P3    |
-
-    Each scenario MUST have:
-      - @scenario-type:{category} tag
-      - @p{0-3}-{level} priority tag
-      - @scenario-id:BDD.NN.03.xxxx hash-based ID tag
-      - Given-When-Then steps (executable Gherkin)
-      - Threshold references for timing constraints
-      - spec_trace: list of SPEC sections this scenario maps to (req-to-SPEC bridge)
-
-    AI-Agent BDD patterns:
-      - Agent autonomy scenarios: Given agent has {capability}
-      - Multi-agent coordination: Given agents {A} and {B} are active
-      - Fallback scenarios: Given primary agent is unavailable
+    Minimum coverage: >=1 success per EARS requirement; >=1 error per error
+    condition; recovery per circuit-breaker; parameterized for multi-value.
+    BDD-SCHEMA-001 flags a missing required field / invalid type|priority.
 
   _example: |
-    @scenario-type:success @p0-critical @scenario-id:BDD.NN.03.xxxx
-    Scenario: User logs in with valid credentials
-      Given a registered user with email "user@example.com"
-      When the user submits valid credentials
-      Then the system SHALL authenticate the user
-      And a session token SHALL be returned WITHIN @threshold:PRD.NN.perf.auth.p95
-
-    @scenario-type:error @p1-high @scenario-id:BDD.NN.03.xxxx
-    Scenario: Invalid credentials return error
-      Given a registered user with email "user@example.com"
-      When the user submits invalid credentials
-      Then the system SHALL NOT authenticate the user
-      And error code "AUTH_INVALID" SHALL be returned
-
-    @scenario-type:parameterized @p2-medium @scenario-id:BDD.NN.03.xxxx
-    Scenario Outline: Validation accepts valid <input_type>
-      Given a valid <input_type> value "<value>"
-      When the value is validated
-      Then validation SHALL pass
-
-      Examples:
-        | input_type | value            |
-        | email      | user@example.com |
-        | phone      | +1-555-123-4567  |
-        | date       | 2026-03-29       |
+    ```yaml
+    scenarios:
+      - id: BDD.01.03.ccd6
+        name: Shorten a valid public URL
+        type: success
+        priority: p0-critical
+        ears: [EARS.01.03.5066, EARS.01.03.bca8]
+        spec_trace: ["SPEC §3 (Interfaces)", "SPEC §5 (Behavior)"]
+        given:
+          - 'a Link Submitter with the URL "https://example.com/page"'
+        when:
+          - 'the submitter posts the URL to the Shorten/Redirect API'
+        then:
+          - 'the API SHALL return a short code WITHIN @threshold:PRD.01.perf.screeningdeadline'
+          - 'the API SHALL present "Your short link is ready."'
+      - id: BDD.01.03.abcd
+        name: Validation accepts valid input
+        type: parameterized
+        priority: p2-medium
+        ears: [EARS.01.03.4400]
+        outline: true
+        given: ['a valid <input_type> value "<value>"']
+        when: ['the value is validated']
+        then: ['validation SHALL pass']
+        examples:
+          headers: [input_type, value]
+          rows:
+            - [email, "user@example.com"]
+            - [phone, "+1-555-123-4567"]
+    ```
 
   _antipatterns:
-    - "FAIL: non-executable scenario (vague 'Then it works') — must be specific and testable"
-    - "FAIL: missing Given step — every scenario needs preconditions"
-    - "FAIL: spaces after colon in tags '@brd: BRD.01' — use '@brd:BRD.01'"
+    - "FAIL: doc-level ears ('ears: [EARS-01]') — must be element-level (REFGRAN01)"
+    - "FAIL: an 'ears' field on the feature — coverage is the union of scenarios"
+    - "FAIL: missing a required scenario field (id/name/type/priority/ears/given/when/then) — BDD-SCHEMA-001"
+    - "FAIL: recomputing a scenario id on migration — copy @scenario-id verbatim"
+    - "FAIL: vague 'then' (e.g. 'it works') — must be specific and testable"
     - "FAIL: compound scenario (tests multiple things) — split into atomic scenarios"
     - "FAIL: running BDD in CI pipeline — QA staging only"
-    - "FAIL: >12 scenarios in single file without splitting"
 
   scenarios:
-    success:
-      - id: "BDD.NN.03.xxxx"
-        name: "[Primary success path]"
-        given: "[Precondition from EARS WHEN clause]"
-        when: "[Action from EARS trigger]"
-        then: "[Outcome from EARS SHALL clause]"
-        threshold: "@threshold:PRD.NN.perf.api.p95"
-        spec_trace:
-          - "[SPEC section — e.g., 3 (Interfaces), 5 (Behavior)]"
-
-    error:
-      - id: "BDD.NN.03.xxxx"
-        name: "[Error condition results in expected behavior]"
-        given: "[Error precondition from EARS IF clause]"
-        when: "[Action that triggers error]"
-        then: "[System SHALL NOT / error response]"
-        spec_trace:
-          - "[SPEC section — e.g., 3 (Interfaces), 5 (Behavior — error_handling)]"
-
-    recovery:
-      - id: "BDD.NN.03.xxxx"
-        name: "[System recovers from failure type]"
-        given: "[Failure condition]"
-        when: "[Recovery trigger]"
-        then: "[System SHALL recover WITHIN threshold]"
-        spec_trace:
-          - "[SPEC section — e.g., 5 (Behavior — state_transitions)]"
-
-    parameterized:
-      - id: "BDD.NN.03.xxxx"
-        name: "[Parameterized test description]"
-        outline: true
-        examples:
-          headers: ["variable", "input", "expected"]
-          rows:
-            - ["value1", "input1", "result1"]
-            - ["value2", "input2", "result2"]
-        spec_trace:
-          - "[SPEC section — e.g., 4 (Data Models)]"
-
-    optional:
-      - id: "BDD.NN.03.xxxx"
-        name: "[Feature with default behavior]"
-        given: "[Context without optional field]"
-        when: "[Action]"
-        then: "[System SHALL use default value]"
-        spec_trace:
-          - "[SPEC section — e.g., 2 (Component Overview)]"
+    - id: "BDD.NN.03.xxxx"
+      name: "[Primary success path]"
+      type: success
+      priority: p0-critical
+      ears: ["EARS.NN.SS.xxxx"]
+      spec_trace:
+        - "[SPEC section — e.g., 3 (Interfaces), 5 (Behavior)]"
+      given:
+        - "[Precondition from the EARS WHEN clause]"
+      when:
+        - "[Action from the EARS trigger]"
+      then:
+        - "[Outcome from the EARS SHALL clause; inline @threshold: if timed]"
+    - id: "BDD.NN.03.xxxx"
+      name: "[Error condition results in expected behavior]"
+      type: error
+      priority: p1-high
+      ears: ["EARS.NN.SS.xxxx"]
+      spec_trace:
+        - "[SPEC section — e.g., 5 (Behavior — error_handling)]"
+      given:
+        - "[Error precondition from the EARS IF clause]"
+      when:
+        - "[Action that triggers the error]"
+      then:
+        - "[System SHALL NOT … / error response]"
 
 # =============================================================================
 # Section 4: Traceability
