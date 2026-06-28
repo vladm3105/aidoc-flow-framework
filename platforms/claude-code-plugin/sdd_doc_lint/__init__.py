@@ -63,7 +63,12 @@ def find_registry(start: Path | None = None) -> Path:
 LAYER_TAGS = ("brd", "prd", "ears", "bdd", "adr", "spec", "tdd", "iplan")
 
 _TAG = re.compile(r"@(" + "|".join(LAYER_TAGS) + r")\s*:\s*([^\s|]+)")
-_THRESHOLD = re.compile(r"@threshold:\s*([^\s|]+)")
+#: A `@threshold:` value terminates on whitespace, a pipe, OR a quote — the
+#: quote-exclusion (YAML-BDD-SCHEMA Pass-2 LB-1) keeps the capture clean when an
+#: inline `@threshold:` ends a quoted YAML scalar (`'… @threshold:PRD.01.x'`),
+#: which would otherwise glom the closing quote into the value and false-fire
+#: TH01. All-layer + regression-free: threshold values never contain quotes.
+_THRESHOLD = re.compile(r"@threshold:\s*([^\s|'\"]+)")
 _THEN_CONNECTIVE = re.compile(r"THEN\s*\[")
 _PLACEHOLDERS = [
     re.compile(r"\bTBD\b"),

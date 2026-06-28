@@ -12,6 +12,30 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — YAML-BDD-SCHEMA PR-1: `_THRESHOLD` quote-fix + Gherkin→YAML transcoder (2026-06-28)
+
+First implementation increment of the merged YAML-BDD-SCHEMA design
+(`plans/YAML-BDD-SCHEMA-PLAN.md`, PR #197 / D-0038). Migrates BDD scenarios
+toward a structured YAML block; this PR ships the two self-contained pieces.
+
+- **`tools/sdd_doc_lint` `_THRESHOLD` regex** — tightened
+  `@threshold:\s*([^\s|]+)` → `([^\s|'"]+)` so an inline `@threshold:` ending a
+  quoted YAML scalar (`'… @threshold:PRD.01.x'`) no longer glues the closing
+  quote into the value and false-fires **TH01** (YAML-BDD-SCHEMA Pass-2 LB-1).
+  All-layer + regression-free (threshold values never contain quotes; corpus
+  verified). Re-vendored byte-identical to both platform copies.
+- **`tools/gherkin_to_bdd_yaml.py`** — new one-time migration transcoder
+  (YAML-BDD-SCHEMA D-6). Parses a BDD doc's embedded Gherkin
+  (feature/background/scenario outline/examples/multi-step/inline-threshold/
+  `#` comments) into the structured YAML scenario model, **copying each
+  `@scenario-id:` verbatim into `id:`** so the 16 downstream `@bdd:` citations
+  stay stable. `# spec_trace:` → `spec_trace:`, other `#` comments → `notes:`.
+- **Tests:** `tests/unit/test_threshold_quoted_scalar.py` (3),
+  `tests/unit/test_gherkin_to_bdd_yaml.py` (6). Suite green (130 unit / 148
+  conformance); example corpus unchanged vs baseline.
+- **Continuity:** `plans/DECISIONS.md` D-0038 (plan D-1…D-6);
+  `plans/HANDOFF.md` resume banner (PR-2 = the linter dual-mode fork is next).
+
 ### Changed — CI: pin callers to @ci/v1.3.0; drop pull_request_target from composition (IPLAN-0026 P8 + IPLAN-0027 P4; 2026-06-28)
 
 - **`.github/workflows/composition.yml`** — pin `@ci/v1.2.0` → `@ci/v1.3.0`;
