@@ -1,33 +1,31 @@
 # Caller for vladm3105/aidoc-flow-ci/.github/workflows/composition.yml.
-# Pinned at @ci/v1.2.0 per IPLAN-0026 P5 (Phase 1 P5). The reusable now
-# handles BOTH event shapes (pull_request_review + workflow_run) via
-# ||-fallback expressions in its env block (aidoc-flow-ci PR #39 +
-# install templates updated in PR #40; tag ci/v1.2.0 pushed against
-# d339f6a). This caller adds the `workflow_run` trigger ALONGSIDE the
-# existing `pull_request_target` + `pull_request_review` triggers —
-# parallel-trigger transition for safety per IPLAN-0017 §3.4 + IPLAN-
-# 0026 §2.3 D2 migration discipline.
+# Pinned at @ci/v1.3.0 per IPLAN-0026 P8 (Phase 2). The reusable handles
+# BOTH event shapes (pull_request_review + workflow_run) via ||-fallback
+# expressions in its env block (shipped in aidoc-flow-ci PR #39 / v1.2.0).
+# Phase 2 (ci/v1.3.0, aidoc-flow-ci PR #41) drops pull_request_target from
+# the install template; this caller mirrors the drop. Composition now
+# fires only on real state changes:
+#   - pull_request_review (submitted/dismissed/edited): App reviewer's
+#     APPROVED/REQUEST_CHANGES posted at HEAD.
+#   - workflow_run (ai-review completed, any conclusion): the consumer's
+#     ai-review caller workflow finished — success / failure / skipped /
+#     cancelled.
+# No more wasted early-fire `pull_request_target` run on PR open. The
+# stale-red FAILURE that branch-protection's rollup retained until a
+# `skip-ai-review` label-cycle is GONE.
 #
-# Phase 1 ships MECHANISM only. The early-fire stale-red friction is
-# NOT yet eliminated — `pull_request_target` is kept in parallel during
-# Phase 1. Phase 2 (ci/v1.3.0, separate small IPLAN after empirical
-# validation) drops `pull_request_target` and delivers the friction
-# relief.
-#
-# Chicken-and-egg expected on THIS PR: BASE main pins v1.0.5 (pre-v1.2.0
-# caller-trigger shape); the new workflow_run trigger only activates AFTER
-# this PR merges. Same pattern as every prior v1.X.X bump.
+# Force-fresh-review path (when the App approval should be re-evaluated
+# at the same HEAD): dismiss the App's prior review via gh-api per
+# aidoc-flow-ci/docs/troubleshooting.md §15 (ci/v1.3.0+).
 name: composition
 on:
-  # KEPT during Phase-1 transition for safety (drop in Phase 2 after 1+ clean cycle on workflow_run).
-  pull_request_target:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
   pull_request_review:
     types: [submitted, dismissed, edited]
   workflow_run:
-    # NEW per IPLAN-0026 P5: fires AFTER this repo's `ai-review` caller workflow completes (any
-    # conclusion — success / failure / skipped / cancelled via the default `types: [completed]`).
-    # Long-term path to eliminate the early-fire stale-red pattern; activates on Phase 2.
+    # Fires AFTER this repo's `ai-review` caller workflow completes (any
+    # conclusion — success / failure / skipped / cancelled via the default
+    # `types: [completed]`). The load-bearing trigger for Phase-2: every
+    # composition fire is now event-causal from ai-review, not from PR-open.
     workflows: ["ai-review"]
     types: [completed]
 # Caller-level permissions — see ai-review.yml header for rationale.
@@ -37,7 +35,7 @@ permissions:
   contents: read
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.2.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.3.0
     with:
       runner_labels: '"ubuntu-latest"'
     secrets: inherit  # pragma: allowlist secret

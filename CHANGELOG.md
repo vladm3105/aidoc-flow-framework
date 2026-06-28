@@ -12,6 +12,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI: pin callers to @ci/v1.3.0; drop pull_request_target from composition (IPLAN-0026 P8 + IPLAN-0027 P4; 2026-06-28)
+
+- **`.github/workflows/composition.yml`** — pin `@ci/v1.2.0` → `@ci/v1.3.0`;
+  trigger set reduced to `pull_request_review` + `workflow_run` only
+  (drop `pull_request_target`). Activates Phase 2's friction-relief benefit
+  on framework: composition no longer early-fires on PR open, and therefore
+  no longer creates the stale-red FAILURE that branch-protection's rollup
+  retained until a `skip-ai-review` label-cycle. Header refreshed
+  (drops Phase-1 chicken-and-egg admission; references new force-fresh path).
+- **`.github/workflows/ai-review.yml`** — pin `@ci/v1.1.6` → `@ci/v1.3.0`.
+  Activates the R3 early-exit step in the v1.3.0 reusable. Saves ~$0.10-
+  0.20 + ~2-3 min per redundant re-fire (label-cycle-retriggered ai-review
+  after the App has already APPROVED at HEAD). Consumer caller shape
+  unchanged.
+- **Bundled release**: ci/v1.3.0 was tagged on aidoc-flow-ci main commit
+  `3dcb0e8` after PRs #41 (IPLAN-0026 P7) + #42 (IPLAN-0027 P1) merged
+  earlier today. This framework PR is the public-runner activation of
+  both benefits in a single pin-bump cycle (operations PR #163 is the
+  self-hosted-runner activation).
+- **Chicken-and-egg on THIS PR**: BASE main's composition.yml caller
+  still has `pull_request_target` (Phase-1 parallel-trigger shape), so
+  this PR fires under the old triggers. After merge, every subsequent
+  framework PR uses the post-v1.3.0 trigger set (no `pull_request_target`
+  on composition). Same pattern as every prior v1.X.X bump per
+  IPLAN-0026 §3 P4/P5.
+- **Plans (in `aidoc-flow-operations`):**
+  `ops/iplans/IPLAN-0026_composition-workflow-run-redesign.md` P8 +
+  `ops/iplans/IPLAN-0027_r3-ai-review-early-exit.md` P4.
+
 ### Added — Framework Spec 0.26.0 → 0.27.0: REFGRAN01 ref-granularity enforcement (CFB-PR-3) (2026-06-27)
 
 Enforces GD-03 (0.26.0): the deterministic lint that makes the coverage engine
