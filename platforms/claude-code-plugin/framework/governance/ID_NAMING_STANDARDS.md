@@ -124,12 +124,19 @@ actually specified.
 - An `@<layer>:` **trace citation** to an **element-declaring** layer (`@brd`,
   `@prd`, `@ears`, `@bdd`, `@adr`, `@tdd`) **MUST be element-level**
   (`TYPE.NN.SS.xxxx`). This holds for **every** trace context — inline body
-  citations **and** the **necessary-upstream / feature-level** tag (e.g. a BDD
-  Feature's `@ears` tag, an IPLAN's `Source TDD` tag). A unit that realizes
-  **multiple** upstream elements pipe-delimits them
-  (`@ears: EARS.01.03.aaaa | @ears: EARS.01.03.bbbb`) — the union of the elements
-  its sub-units (scenarios / cases) realize. A genuine whole-document dependency
-  is recorded in **prose**, never as a document-level trace tag.
+  citations **and** the **necessary-upstream / feature-level** tag (e.g. an
+  IPLAN's `Source TDD` tag). A unit that realizes **multiple** upstream elements
+  pipe-delimits them (`@ears: EARS.01.03.aaaa | @ears: EARS.01.03.bbbb`) — the
+  union of the elements its sub-units (scenarios / cases) realize. A genuine
+  whole-document dependency is recorded in **prose**, never as a document-level
+  trace tag.
+- **BDD carrier (YAML-BDD-SCHEMA, D-0038):** a BDD doc carries its `@ears`
+  upstream trace as a structured `ears:` list on each scenario (YAML), not
+  `@ears` tags. Each entry is element-level — enforced by `REFGRAN01` (via the
+  linter's synthetic edges) + `BDD-SCHEMA-001` — and the Feature carries no
+  aggregate tag: its coverage is the computed union of its scenarios' `ears`.
+  Downstream layers still cite BDD scenarios via element-level
+  `@bdd: BDD.NN.SS.xxxx` tags.
 - `@spec:` and `@iplan:` citations are **document-level** — those layers are
   element-ID-exempt (they are not required to declare canonical elements; see the
   SPEC §5 / IPLAN §4 exemption above).

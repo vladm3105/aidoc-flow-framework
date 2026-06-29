@@ -10,7 +10,7 @@ metadata:
     artifact_type: CHG
     skill_category: quality-assurance
     version: "0.22.0"
-    framework_spec_version: "0.28.0"
+    framework_spec_version: "0.29.0"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---

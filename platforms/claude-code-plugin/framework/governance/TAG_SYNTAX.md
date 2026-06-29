@@ -12,8 +12,11 @@ and are cross-referenced, not duplicated:
 
 ## Tag forms
 
-A trace tag is `@<layer>: <id>` (one space after the colon; Gherkin BDD feature
-lines use the no-space `@ears:ID` form). The `<id>` is:
+A trace tag is `@<layer>: <id>` (one space after the colon). **BDD is the
+exception** — a BDD doc carries its own upstream `@ears` trace as a structured
+YAML `ears:` list per scenario (not an `@`-tag); see `BDD-TEMPLATE.yaml`. The
+`@`-tag forms below govern every other element-declaring citation, including
+downstream layers citing BDD scenarios via `@bdd:`. The `<id>` is:
 
 | Target layer | Form | Why |
 |---|---|---|
@@ -33,10 +36,11 @@ tag):
 ```
 
 This is the form for a **container** whose value is the **union of its
-sub-units' element citations** — e.g. a BDD `Feature` realizing several EARS
-requirements lists the union its scenarios cite (GD-03). A genuine
-whole-document dependency (no specific element) is stated in **prose**, never a
-document-level trace tag.
+sub-units' element citations** (GD-03). (BDD is the exception — a BDD scenario
+carries its `ears` as a structured YAML list, and a Feature's coverage is the
+computed union of its scenarios, not a written tag; see `BDD-TEMPLATE.yaml`.) A
+genuine whole-document dependency (no specific element) is stated in **prose**,
+never a document-level trace tag.
 
 ## Carve-outs — NOT trace citations (document-level is correct)
 
@@ -57,7 +61,7 @@ the element form when the target is element-declaring:
 |---|---|---|
 | PRD | `@brd` | `@brd: BRD.01.07.6c3f` |
 | EARS | `@prd` | `@prd: PRD.01.09.1dbc` |
-| BDD | `@ears` | `@ears: EARS.01.03.5e2a` (Feature: union of its scenarios) |
+| BDD | `ears:` (structured YAML list per scenario — not an `@`-tag) | `ears: [EARS.01.03.5e2a, …]`; Feature coverage = computed union |
 | ADR | `@ears @bdd` | `@bdd: BDD.01.03.8f4c` |
 | SPEC | `@ears @bdd @adr` | `@adr: ADR.01.03.e5b1` |
 | TDD | `@ears @bdd @adr @spec` | `@spec: SPEC-01` (doc-level — SPEC exempt) |
