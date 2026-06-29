@@ -109,7 +109,7 @@ Format · Related Resources`
 ## 6. Acceptance checklist (per skill)
 
 - [ ] `name` equals the directory name.
-- [ ] `version: "0.23.0"`, `framework_spec_version: "0.27.0"` present.
+- [ ] `version: "0.23.0"`, `framework_spec_version: "0.30.0"` present.
 - [ ] No `## Version History`; no `mermaid-gen`; no `-reviewer`/`-validator`
       references; no removed-family references.
 - [ ] Template/README/governance links use `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/`.

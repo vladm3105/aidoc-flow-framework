@@ -48,8 +48,12 @@
 > payoff — catches the 16 orphaned BDD scenarios);
 > (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
 
-### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
+### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — ✅ CLOSED (2026-06-29) — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
 
+- ✅ **Fixed:** `bump_version.py` now sweeps any unanchored
+  `framework_spec_version: "X"` in `SKILL_AUTHORING.md` (idempotent), catching
+  the backtick-wrapped §6 checklist line; the current stale `0.27.0` value
+  corrected to `0.30.0`.
 - *Context:* recurred in CFB-PR-2 2a-core step 6 (0.23.1→0.24.0) AND 2b step 3
   (0.24.0→0.25.0). `SKILL_AUTHORING.md:112` (`- [ ] … framework_spec_version:
   "X" present.`) is a backtick-wrapped checklist line, not the `^…
@@ -60,8 +64,12 @@
   rewrite for the SKILL_AUTHORING checklist line), or add a conformance guard
   asserting the checklist version == `framework/VERSION`.
 
-### `[harness]` `RELEASE-CHANGELOG-TEST-CONVENTION-GAP` — `tests/release/test_changelog_entry.py` doesn't match the `[Unreleased]` convention
+### `[harness]` `RELEASE-CHANGELOG-TEST-CONVENTION-GAP` — ✅ CLOSED (2026-06-29) — `tests/release/test_changelog_entry.py` doesn't match the `[Unreleased]` convention
 
+- ✅ **Fixed:** the test now accepts the current version in EITHER a released
+  `## [X.Y.Z]` heading OR an `[Unreleased]` `### … <version>` subsection heading
+  (matches the version in any level-2/3 heading, trailing-boundary guarded).
+  3/3 release tests green.
 - *Context:* surfaced in CFB-PR-2b self-review. The test requires a top-level
   `## [<version>]` heading, but the repo nests releases under `## [Unreleased]`
   with `### Added — Framework Spec X → Y`. It is RED at HEAD for `0.25.0` (and on
