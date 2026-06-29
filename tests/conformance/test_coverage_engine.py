@@ -55,6 +55,8 @@ class MatrixDeterminism(unittest.TestCase):
 
 class ForwardCoverageContract(unittest.TestCase):
     def _covered(self):
+        # ELEMENT-COVERAGE-001: the PRD cites the BRD FR **element** (not the doc)
+        # so element-level COV01 passes; the rest cite the upstream doc id.
         order = ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"]
         brd = _doc(
             "BRD-01",
@@ -63,26 +65,30 @@ class ForwardCoverageContract(unittest.TestCase):
         )
         corpus = [brd]
         for i in range(1, len(order)):
-            corpus.append(
-                _doc(f"{order[i]}-01", order[i], f"@{order[i - 1].lower()}: {order[i - 1]}-01")
-            )
+            up = order[i - 1]
+            cite = "BRD.01.07.aaaa" if up == "BRD" else f"{up}-01"
+            corpus.append(_doc(f"{order[i]}-01", order[i], f"@{up.lower()}: {cite}"))
         return corpus
 
     def test_fully_covered_cascade_has_no_cov01(self):
         self.assertEqual(_check_forward_coverage(self._covered()), [])
 
     def test_in_scope_fr_with_no_spec_blocks(self):
+        # FR cited element-level by PRD (precedence (1) passes) but host reaches
+        # no SPEC → the no-SPEC branch fires (ELEMENT-COVERAGE-001).
         corpus = [
             _doc(
                 "BRD-01",
                 "BRD",
                 "## 7. Functional Requirements\n\n- **BRD.01.07.aaaa — F** (P1): x.",
             ),
+            _doc("PRD-01", "PRD", "@brd: BRD.01.07.aaaa"),
             _doc("SPEC-99", "SPEC", "standalone"),
             _doc("IPLAN-99", "IPLAN", "standalone"),
         ]
         findings = _check_forward_coverage(corpus)
         self.assertEqual([(f.code, f.severity) for f in findings], [("COV01", "error")])
+        self.assertIn("no SPEC", findings[0].message)
 
     def test_gated_to_whole_corpus_runs(self):
         # No SPEC/IPLAN in the corpus → the check no-ops (DD-1).
@@ -93,11 +99,23 @@ class ForwardCoverageContract(unittest.TestCase):
 
 
 class BackwardCoverageContract(unittest.TestCase):
-    def test_example_corpus_has_no_cov02(self):
-        # V6: every EARS/BDD doc in the corpus reaches a SPEC/TDD at doc level.
+    def test_example_corpus_cov02_surfaces_16_orphan_scenarios(self):
+        # ELEMENT-COVERAGE-001: element-level COV02 surfaces the 16 orphaned BDD
+        # scenarios (declared in BDD-01 but cited by no SPEC/TDD element) that the
+        # prior doc-level gate could not see (the BDD doc reaches SPEC). They are
+        # WARNINGS in `build` (corpus lint exit code unchanged) and ERRORS in
+        # `gate-code`. All 26 EARS elements are realized (via BDD) so none are
+        # flagged. Remediation of the orphans is a separate corpus/skill follow-up;
+        # this codifies the known state so the gate stays meaningful.
         corpus = _collect_corpus(_EXAMPLE_DOCS)
-        cov2 = [f for f in _check_backward_coverage(corpus) if f.code == "COV02"]
-        self.assertEqual(cov2, [], [f.message for f in cov2])
+        build = [f for f in _check_backward_coverage(corpus) if f.code == "COV02"]
+        self.assertEqual(len(build), 16, [f.message for f in build])
+        self.assertTrue(all(f.severity == "warning" for f in build))
+        orphans = {f.message.split("'")[1] for f in build}
+        self.assertTrue(all(o.startswith("BDD.") for o in orphans), orphans)
+        gate = [f for f in _check_backward_coverage(corpus, "gate-code") if f.code == "COV02"]
+        self.assertEqual(len(gate), 16)
+        self.assertTrue(all(f.severity == "error" for f in gate))
 
     def test_uncovered_requirement_doc_blocks_in_gate_code(self):
         corpus = [

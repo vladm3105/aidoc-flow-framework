@@ -36,12 +36,16 @@ def _brd(band="P1", realized_by=None, elem="BRD.01.07.aaaa") -> tuple[str, str]:
 
 def _chain(last_layer: str, **brd_kw) -> list[tuple[str, str]]:
     """A connected cascade BRD..last_layer; each downstream cites its immediate
-    upstream's doc id. BRD-01 carries one FR (configurable band/escape)."""
+    upstream's doc id, EXCEPT the PRD, which cites the BRD FR **element** id
+    (element-level COV01, ELEMENT-COVERAGE-001 F9). BRD-01 carries one FR
+    (configurable band/escape)."""
     upto = _ORDER[: _ORDER.index(last_layer) + 1]
+    elem = brd_kw.get("elem", "BRD.01.07.aaaa")
     corpus = [_brd(**brd_kw)]
     for i in range(1, len(upto)):
         layer, up = upto[i], upto[i - 1]
-        corpus.append(_doc(f"{layer}-01", layer, f"Realises @{up.lower()}: {up}-01 here."))
+        cite = elem if up == "BRD" else f"{up}-01"
+        corpus.append(_doc(f"{layer}-01", layer, f"Realises @{up.lower()}: {cite} here."))
     return corpus
 
 
@@ -66,9 +70,13 @@ class AuthoredCoverage(unittest.TestCase):
         self.assertEqual(_check_forward_coverage(_chain("IPLAN")), [])
 
     def test_no_spec_reach_blocks_in_both_modes(self):
-        # BRD reaches nothing; SPEC + IPLAN exist but disconnected → gate runs.
+        # FR is picked up element-level by PRD (precedence (1) passes), but the
+        # host BRD reaches no SPEC → the "no SPEC" branch fires. SPEC + IPLAN
+        # exist but disconnected → gate runs. (ELEMENT-COVERAGE-001 F10: without
+        # the PRD the new precedence-(1) "no PRD" branch would fire instead.)
         corpus = [
             _brd(),
+            _doc("PRD-01", "PRD", "Realises @brd: BRD.01.07.aaaa here."),
             _doc("SPEC-99", "SPEC", "Standalone spec, cites nothing relevant."),
             _doc("IPLAN-99", "IPLAN", "Standalone iplan, cites nothing relevant."),
         ]
@@ -90,6 +98,43 @@ class AuthoredCoverage(unittest.TestCase):
         self.assertIn("no IPLAN", build[0].message)
         gate = _check_forward_coverage(corpus, "gate-code")
         self.assertEqual([(f.code, f.severity) for f in gate], [("COV01", "error")])
+
+
+class ElementLevelForwardCoverage(unittest.TestCase):
+    """ELEMENT-COVERAGE-001: COV01 binds on the FR ELEMENT being cited by a PRD."""
+
+    def test_fr_uncited_by_prd_flags_even_if_host_reaches_spec(self):
+        # Two FRs share the host BRD; only the first is cited element-level by
+        # PRD. The host BRD reaches SPEC+IPLAN (doc-level), so doc-level COV01
+        # would pass both — element-level flags the uncited sibling FR.
+        brd_body = (
+            "## 7. Functional Requirements\n\n"
+            "- **BRD.01.07.aaaa — Cited** (P1): traced.\n"
+            "- **BRD.01.07.bbbb — Untraced** (P1): never cited by a PRD."
+        )
+        corpus = [
+            _doc("BRD-01", "BRD", brd_body),
+            _doc("PRD-01", "PRD", "Realises @brd: BRD.01.07.aaaa here."),
+            _doc("SPEC-01", "SPEC", "@prd: PRD-01 design."),
+            _doc("IPLAN-01", "IPLAN", "@spec: SPEC-01 plan."),
+        ]
+        findings = _check_forward_coverage(corpus)
+        self.assertEqual([(f.code, f.severity) for f in findings], [("COV01", "error")])
+        self.assertIn("BRD.01.07.bbbb", findings[0].message)
+        self.assertIn("no PRD", findings[0].message)
+
+    def test_one_finding_per_fr_no_prd_preempts_no_spec(self):
+        # An FR cited by no PRD whose host also reaches no SPEC emits exactly one
+        # COV01 (the no-PRD precedence), not two.
+        corpus = [
+            _brd(),
+            _doc("SPEC-99", "SPEC", "disconnected."),
+            _doc("IPLAN-99", "IPLAN", "disconnected."),
+        ]
+        findings = _check_forward_coverage(corpus)
+        self.assertEqual(len(findings), 1)
+        self.assertEqual(findings[0].code, "COV01")
+        self.assertIn("no PRD", findings[0].message)
 
 
 class EscapesNeverBlock(unittest.TestCase):

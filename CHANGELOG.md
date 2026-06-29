@@ -12,6 +12,34 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — ELEMENT-COVERAGE-001: element-level COV01/COV02 coverage; framework spec 0.29.1 → 0.30.0 (2026-06-29)
+
+Upgrades the coverage lint gates from **document-level** to **element-level**
+reach (the deferred payoff of the CFB-PR-2 coverage engine, unblocked by
+REFGRAN01 + the YAML-BDD arc making citations element-precise). Plan
+[`plans/ELEMENT-COVERAGE-PLAN.md`](plans/ELEMENT-COVERAGE-PLAN.md) (5 review
+passes — 1 self + 4 independent).
+
+- **`COV02` (backward) now binds per element** — each declared EARS/BDD element
+  must be cited element-level by a doc in its **realizing set**, not merely have
+  its host doc reach the layer. This catches the **16 orphaned BDD scenarios**
+  in the example corpus (declared in BDD-01 but cited by no SPEC/TDD element)
+  that doc-level COV02 could not see. Warnings in `build` (corpus lint exit code
+  unchanged), errors in `gate-code`.
+- **`COV01` (forward) now binds per element** — each AUTHORED BRD FR element must
+  be cited by a PRD (then the host BRD's SPEC + IPLAN doc-reach is retained), one
+  finding per FR (precedence: no-PRD → no-SPEC → no-IPLAN). 0 new findings on the
+  real corpus (all 4 BRD-01 FRs are PRD-cited element-level).
+- **Curated `REALIZING_LAYERS` map** (`tools/sdd_doc_lint`): BDD→{SPEC,TDD},
+  EARS→{BDD,SPEC,TDD}, BRD-FR→{PRD} — deliberately NOT the registry single-hop
+  `downstream` (which routes BDD→ADR); ADR excluded (decides, doesn't realize).
+  The one-hop model avoids false-blocking EARS realized via BDD (D-0039).
+- SPEC-00 `## Coverage` section updated to the element-level contract; conformance
+  `test_coverage_engine.py` re-baselined to assert the 16 orphans; new unit cases
+  (orphan-sibling, EARS-via-orphan-passes, ADR-only-not-realized, FR-uncited-by-PRD).
+- Framework MINOR bump **0.29.1 → 0.30.0** (gate semantics change; GATE-SPEC).
+  295 conformance+unit green; vendored byte-identity intact.
+
 ### Changed — YAML-BDD-SCHEMA PR-3b: 04_BDD playbook bodies + QUICK_REFERENCE Gherkin → YAML; framework spec 0.29.0 → 0.29.1 (2026-06-29)
 
 Deferred governance polish completing the YAML-BDD arc. PR-3 bumped the six

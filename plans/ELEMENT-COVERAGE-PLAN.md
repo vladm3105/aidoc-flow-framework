@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | ELEMENT-COVERAGE-001                                         |
 | Type           | feature                                                      |
-| Status         | PLANNED — 2026-06-29T00:00:00Z                               |
+| Status         | IMPLEMENTED — 2026-06-29 (spec 0.30.0; 295 conformance+unit green; 16 COV02 orphans surfaced; impl PR open) |
 | Depends on     | CFB-PR-2 coverage engine (`COV01`/`COV02`, #187/#190), REFGRAN01 (#194), YAML-BDD-SCHEMA arc (#198–#206) — the corpus is now element-precise |
 | Feeds          | CORPUS-REFGRAN-RECASCADE (orthogonal); future phase-leak (DD-6 row 4) |
 | Version impact | framework MINOR (gate semantics change); plugin none         |

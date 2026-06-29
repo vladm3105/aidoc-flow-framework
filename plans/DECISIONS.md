@@ -10,6 +10,25 @@ graduation.
 
 ---
 
+## D-0039 — element-level coverage uses a curated one-hop realizing-layer map (ELEMENT-COVERAGE-001)
+
+**2026-06-29.** Element-level `COV01`/`COV02` realize an element via a **curated
+`REALIZING_LAYERS` constant** (BDD→{SPEC,TDD}, EARS→{BDD,SPEC,TDD}, BRD-FR→{PRD}),
+checked **one-hop / directly** on the `@`-tag edge graph — NOT a transitive
+doc-level reach and NOT the registry `downstream` list.
+
+*Why not registry `downstream`:* it is the single-hop cascade (`BDD→[ADR]`), so
+pinning to it would route realization through the **decision** layer ADR and mask
+orphaned scenarios. ADR is excluded from every realizing set (it decides, it does
+not realize). *Why EARS→{BDD,SPEC,TDD} (not {BDD}):* an EARS cited directly by
+SPEC must not false-flag, while an EARS cited only by BDD must pass — including
+all realization layers, checked one-hop, satisfies both (empirically all 26
+corpus EARS pass; 16 would have false-blocked under a "must reach SPEC/TDD"
+rule). *Accepted limitation:* an EARS realized only by an **orphan** BDD scenario
+passes COV02 — the orphan is surfaced independently at the BDD layer, so no defect
+is hidden; a transitive "is the realizer itself realized" check is out of scope.
+Supersedes the CFB-PR-2 doc-level binding for COV01/COV02. Builds on [[D-0038]].
+
 ## D-0038 — YAML-native BDD scenarios replace Gherkin-in-markdown (YAML-BDD-SCHEMA, plan D-1…D-6)
 
 - **Date:** 2026-06-28T00:00:00Z

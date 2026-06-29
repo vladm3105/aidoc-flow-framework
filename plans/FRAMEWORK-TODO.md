@@ -31,10 +31,11 @@
 > `ENG-FWD-COVERAGE` forward gate `COV01` (#187, spec 0.24.0); `D54-F13`/`D54-F05`
 > backward gate `COV02` (#190, 0.25.0); GD-03 ref-granularity policy (#192,
 > 0.26.0); `BL-REF-GRANULARITY` + `D54-F07` enforcement `REFGRAN01` (#194,
-> 0.27.0). **Remaining open items** (in this file): `CORPUS-REFGRAN-RECASCADE`,
-> the element-level `COV01`/`COV02` upgrade (catches the 15 orphaned BDD
-> scenarios), `BL-STATUS-SCOPE` (PR-3b), sub-PRs 2c (phase reconciliation) + 2d
-> (BDD roll-up), and the D54/ENG/BL items for the later waves.
+> 0.27.0); **element-level `COV01`/`COV02` — SHIPPED** (ELEMENT-COVERAGE-001,
+> spec 0.30.0; catches the 16 orphaned BDD scenarios). **Remaining open items**
+> (in this file): `CORPUS-REFGRAN-RECASCADE`, `BL-STATUS-SCOPE` (PR-3b), sub-PRs
+> 2c (phase reconciliation) + 2d (BDD roll-up), and the D54/ENG/BL items for the
+> later waves.
 >
 > **YAML-BDD-SCHEMA arc — CORE COMPLETE (2026-06-28):** migrated BDD off
 > Gherkin-in-markdown to structured YAML `scenarios:` blocks. Plan #197 (D-0038,
@@ -42,9 +43,9 @@
 > `sdd_doc_lint` dual-mode parse path + `BDD-SCHEMA-001` (#200); PR-3 template +
 > schema + GD-03/TAG_SYNTAX (framework `0.29.0`, #201); PR-4 corpus BDD-01
 > migration (REFGRAN 7→5, #202); PR-5 `doc-bdd*` skills (plugin `0.23.0`, #203).
-> **Remaining:** (a) **PR-3b** — `04_BDD/*.md` playbook bodies + `QUICK_REFERENCE.md`
-> Gherkin→YAML prose (PATCH `0.29.1`); (b) **element-level COV01/COV02 upgrade**
-> — the deferred payoff, now unblocked (catches the 15 orphaned BDD scenarios);
+> **Remaining:** (a) **PR-3b** — SHIPPED (#206, `0.29.1`); (b) **element-level
+> COV01/COV02 upgrade** — SHIPPED (ELEMENT-COVERAGE-001, `0.30.0`; the deferred
+> payoff — catches the 16 orphaned BDD scenarios);
 > (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
 
 ### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line

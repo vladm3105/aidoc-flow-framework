@@ -1568,7 +1568,24 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
             # Escaped FRs (deferred / realized_by) never block (DD-5).
             if covered_state_of(fr) != CoveredState.AUTHORED:
                 continue
-            if not reaches_spec:
+            # ELEMENT-COVERAGE-001 precedence (1): the FR ELEMENT must be picked up
+            # element-level by its realizing layer (PRD) — element granularity on
+            # the BRD side (the host-BRD doc-level SPEC+IPLAN reach below is kept).
+            # An untraced FR is the most upstream failure → reported alone (one
+            # COV01 finding per FR; preempts the SPEC/IPLAN checks).
+            if not _element_realizing_citers(graph, fr.elem_id, REALIZING_LAYERS.get("BRD", ())):
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV01",
+                        f"in-scope FR '{fr.elem_id}' (band {fr.band or '—'}) is cited by no PRD "
+                        f"— an unrealized requirement must be picked up element-level by a "
+                        f"downstream PRD",
+                        severity="error",
+                    )
+                )
+            elif not reaches_spec:
                 findings.append(
                     Finding(
                         rel,
@@ -1597,6 +1614,31 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
 #: realization, and the realization layers they must reach (CFB-PR-2b).
 _BACKWARD_ORACLE_LAYERS = ("EARS", "BDD")
 _BACKWARD_REALIZED_LAYERS = ("SPEC", "TDD")
+
+#: Element-level realization map (ELEMENT-COVERAGE-001). For each requirement
+#: layer, the set of downstream "realization" layers (acceptance/design/test)
+#: whose element-level citation realizes one of its elements. This is a CURATED
+#: constant, NOT `LAYER_REGISTRY.yaml` `downstream` — that list is the single-hop
+#: cascade (BDD→[ADR]), which would route realization through the decision layer
+#: ADR and mask orphans. ADR is deliberately excluded (it decides, it does not
+#: realize). EARS includes {BDD,SPEC,TDD} (not just BDD) so an EARS cited
+#: directly by SPEC is not false-flagged, while an EARS cited only by BDD still
+#: passes (one-hop, no transitive traversal).
+REALIZING_LAYERS: dict[str, tuple[str, ...]] = {
+    "BDD": _BACKWARD_REALIZED_LAYERS,  # ("SPEC", "TDD")
+    "EARS": ("BDD",) + _BACKWARD_REALIZED_LAYERS,  # ("BDD", "SPEC", "TDD")
+    "BRD": ("PRD",),
+}
+
+
+def _element_realizing_citers(graph: EdgeGraph, token: str, layers: tuple[str, ...]) -> set[str]:
+    """Citer docs of element ``token`` whose layer is in ``layers`` — the
+    element-level realization primitive (ELEMENT-COVERAGE-001). One-hop, built on
+    ``EdgeGraph.citers_in_layer``; an element is realized iff this is non-empty."""
+    citers: set[str] = set()
+    for layer in layers:
+        citers |= graph.citers_in_layer(token, layer)
+    return citers
 
 
 def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
@@ -1630,36 +1672,41 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
         for doc_id, layer in graph.doc_layer.items()
     ):
         return []
-    # DD-2b-2: enumerate the requirement docs = host docs of declared EARS/BDD
-    # elements (excludes element-less `*-00` index docs).
-    oracle_docs = {
-        host
-        for elem, host in graph.element_host.items()
-        if elem.split(".", 1)[0] in _BACKWARD_ORACLE_LAYERS
-    }
-    # Map doc_id → rel path for stable, file-anchored reporting.
+    # Map doc_id → (rel, text) for file- and element-line-anchored reporting.
     rel_by_doc: dict[str, str] = {}
+    text_by_doc: dict[str, str] = {}
     for rel, text in corpus:
         fm = _extract_frontmatter(text)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
+            text_by_doc.setdefault(doc_id, text)
 
     severity = "error" if mode == "gate-code" else "warning"
     findings: list[Finding] = []
-    for doc_id in sorted(oracle_docs):
-        reach = _doc_forward_reach(graph, doc_id)
-        if not (set(_BACKWARD_REALIZED_LAYERS) & reach):
-            findings.append(
-                Finding(
-                    rel_by_doc.get(doc_id, doc_id),
-                    0,
-                    "COV02",
-                    f"requirement doc '{doc_id}' reaches no SPEC/TDD downstream — "
-                    f"its requirements/scenarios are realized (designed/tested) by nothing",
-                    severity=severity,
-                )
+    # ELEMENT-COVERAGE-001: per-element realization. Each declared EARS/BDD
+    # element (excludes element-less `*-00` index docs via `element_host`) must
+    # be cited element-level by a doc in its realizing set (one-hop). This is the
+    # element-granular upgrade of the doc-level `_doc_forward_reach` check — a
+    # single cited sibling no longer covers an orphaned scenario.
+    for elem, host in sorted(graph.element_host.items()):
+        layer = elem.split(".", 1)[0]
+        if layer not in _BACKWARD_ORACLE_LAYERS:
+            continue
+        realizing = REALIZING_LAYERS.get(layer, ())
+        if _element_realizing_citers(graph, elem, realizing):
+            continue
+        findings.append(
+            Finding(
+                rel_by_doc.get(host, host),
+                _bdd_line_of(text_by_doc.get(host, ""), elem),
+                "COV02",
+                f"{layer} element '{elem}' (host {host}) is cited element-level by no "
+                f"{'/'.join(realizing)} — its requirement/scenario is realized "
+                f"(designed/tested) by nothing",
+                severity=severity,
             )
+        )
     return findings
 
 

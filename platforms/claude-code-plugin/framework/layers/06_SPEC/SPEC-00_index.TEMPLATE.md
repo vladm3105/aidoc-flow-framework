@@ -71,16 +71,21 @@ dual of the BRD forward-coverage rule (the BRD-template `_authored_form` rule;
 `COV01`).
 
 - **Enforced deterministically** by `sdd_doc_lint` finding `COV02` (the
-  structural tier beneath GATE-06): an EARS/BDD requirement doc that reaches no
-  SPEC/TDD downstream is flagged — a **warning** in `build` mode, an **error**
-  in `gate-code`. Reviewed at **GATE-06** (Design & Test).
-- **Document-level binding** in this release: `COV02` asserts each EARS/BDD
-  *doc* reaches a SPEC/TDD. **Element-level** coverage (which specific
-  requirement/scenario is realized) + an explicit per-element deferral signal
-  arrive with PR-3 (ref-granularity).
-- The matching forward direction (BRD requirement → SPEC/IPLAN) is `COV01`; both
-  read the same `@`-tag graph (`tools/sdd_coverage.py` /
-  `governance/TRACEABILITY.md`).
+  structural tier beneath GATE-06): an EARS/BDD requirement **element** that is
+  cited element-level by no realizing layer is flagged — a **warning** in
+  `build` mode, an **error** in `gate-code`. Reviewed at **GATE-06** (Design &
+  Test).
+- **Element-level binding** (ELEMENT-COVERAGE-001): `COV02` asserts each
+  declared EARS/BDD *element* (not just its host doc) is picked up by a doc in
+  its **realizing set** — a curated, one-hop downstream-realization map: a BDD
+  scenario is realized by **SPEC/TDD**; an EARS requirement by **BDD/SPEC/TDD**
+  (ADR is a decision layer and does not realize). This catches orphaned
+  scenarios a doc-level check misses (one cited sibling no longer covers the
+  whole doc).
+- The matching forward direction (BRD FR → SPEC/IPLAN) is `COV01`, also
+  element-level: each AUTHORED FR element must be cited by a **PRD** (then the
+  host BRD's SPEC + IPLAN reach is retained). Both read the same `@`-tag graph
+  (`tools/sdd_coverage.py` / `governance/TRACEABILITY.md`).
 
 ## Maintenance Notes
 
