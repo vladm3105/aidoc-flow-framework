@@ -1,9 +1,18 @@
 # Session Handoff
 
-> **🟢 YAML-BDD-SCHEMA arc — CORE COMPLETE (PR-1…PR-5 merged, 2026-06-28) +
-> PR-3b playbook-body polish (framework spec `0.29.1`, 2026-06-29 — PR open,
-> spec-tier human sign-off).**
-> `main` at `f31d114a`; framework spec `0.29.1`, plugin `0.23.0`.**
+> **🟢 YAML-BDD arc COMPLETE (PR-1…PR-5 + PR-3b #206) → element-level
+> COV01/COV02 SHIPPED (ELEMENT-COVERAGE-001, framework spec `0.30.0`,
+> 2026-06-29 — impl PR open, spec-tier human sign-off).**
+> `main` at `a82e88a2`; framework spec `0.30.0`, plugin `0.23.0`.**
+>
+> **ELEMENT-COVERAGE-001** (plan #208 merged → impl): COV01/COV02 now bind at
+> **element level** via a curated one-hop `REALIZING_LAYERS` map (BDD→{SPEC,TDD},
+> EARS→{BDD,SPEC,TDD}, BRD-FR→{PRD}; ADR excluded — D-0039). COV02 surfaces the
+> **16 orphaned BDD scenarios** (warning/`build`, error/`gate-code`); COV01 0 new
+> corpus findings. Plan converged over 5 passes (1 self + 4 independent). 295
+> conformance+unit green; vendored byte-identity intact; corpus exit code
+> unchanged (the 16 are warnings). Orphan **remediation** is the natural
+> follow-up (corpus/skill — never hand-edit the fixture).
 >
 > Design-of-record **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197, D-0038, 3-pass
 > converged) → migrate BDD off Gherkin-in-markdown to a structured **YAML
@@ -24,12 +33,11 @@
 >    chaos_engineer, security_engineer, tech_lead, operator — Gherkin→YAML
 >    scenario prose) + `framework/QUICK_REFERENCE.md`. 148 conformance + 142
 >    unit green; vendored byte-identity intact; corpus baseline unchanged.
-> 2. **Element-level COV01/COV02 upgrade** — the deferred PAYOFF, now unblocked by
->    element-precise YAML BDD: upgrade the coverage gates from doc-level to
->    element-level so they catch the **15 orphaned BDD scenarios** (31 declared −
->    16 cited downstream). New plan → 2-cycle review → impl. Design-of-record:
->    `CFB-PR-2-COVERAGE-ENGINE-PLAN.md` DD-5/DD-6 + the BDD `ears:` lists are now
->    the element-level signal the upgrade needs.
+> 2. ✅ **Element-level COV01/COV02 upgrade** — **SHIPPED (ELEMENT-COVERAGE-001,
+>    `0.30.0`, impl PR open).** Catches the 16 orphaned BDD scenarios. Plan
+>    `plans/ELEMENT-COVERAGE-PLAN.md` (5 passes). **NEXT follow-up:** remediate
+>    the 16 orphans — dispatch the framework skills to add the missing downstream
+>    SPEC/TDD element citations (never hand-edit `examples/.../BDD-01.md`).
 > 3. **`CORPUS-REFGRAN-RECASCADE`** (`FRAMEWORK-TODO.md`) — now just the **5
 >    SPEC/TDD/IPLAN `@adr`/`@tdd` doc-form edges** (PR-4 resolved the 2 BDD ones).
 >    3 same-line drops + 1 table-cell (IPLAN-01:43) + 1 prose (SPEC-01:67). Run

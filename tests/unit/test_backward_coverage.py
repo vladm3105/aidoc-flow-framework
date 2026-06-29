@@ -32,7 +32,12 @@ def _req(doc_id: str, artifact_type: str, elem: str) -> tuple[str, str]:
 
 
 def _real_spec(doc_id="SPEC-01", cites=None) -> tuple[str, str]:
-    body = "\n".join(f"@{c.split('-')[0].lower()}: {c}" for c in (cites or []))
+    # cites may be doc ids (EARS-01) or element ids (EARS.01.03.aaaa); derive the
+    # tag layer from the prefix before the first '.' or '-'.
+    def _layer(tok: str) -> str:
+        return (tok.split(".")[0] if "." in tok else tok.split("-")[0]).lower()
+
+    body = "\n".join(f"@{_layer(c)}: {c}" for c in (cites or []))
     return _doc(doc_id, "SPEC", body or "a spec.")
 
 
@@ -54,19 +59,21 @@ class GateRunsOnlyOnRealDesignTest(unittest.TestCase):
 
 class BackwardCoverage(unittest.TestCase):
     def test_covered_ears_doc_has_no_finding(self):
-        # SPEC-01 cites EARS-01 → EARS-01 reaches SPEC → covered.
+        # SPEC-01 cites the EARS ELEMENT → realized element-level → covered.
         corpus = [
             _req("EARS-01", "EARS", "EARS.01.03.aaaa"),
-            _real_spec("SPEC-01", cites=["EARS-01"]),
+            _real_spec("SPEC-01", cites=["EARS.01.03.aaaa"]),
         ]
         self.assertEqual(_check_backward_coverage(corpus), [])
 
-    def test_covered_transitively_through_bdd(self):
-        # EARS-01 ← BDD-01 ← SPEC-01: EARS reaches SPEC transitively.
+    def test_covered_via_bdd_then_spec_element_level(self):
+        # One-hop element-level (ELEMENT-COVERAGE-001): the EARS element is
+        # realized by a BDD scenario citing it, and that BDD scenario is itself
+        # realized by a SPEC citing the BDD element. Both pass.
         corpus = [
             _req("EARS-01", "EARS", "EARS.01.03.aaaa"),
-            _doc("BDD-01", "BDD", "@ears: EARS-01\nScenario.\n- BDD.01.03.bbbb: a scenario."),
-            _real_spec("SPEC-01", cites=["BDD-01"]),
+            _doc("BDD-01", "BDD", "@ears: EARS.01.03.aaaa\n- BDD.01.03.bbbb: a scenario."),
+            _real_spec("SPEC-01", cites=["BDD.01.03.bbbb"]),
         ]
         self.assertEqual(_check_backward_coverage(corpus), [])
 
@@ -98,6 +105,45 @@ class BackwardCoverage(unittest.TestCase):
             _real_spec("SPEC-01", cites=["EARS-00"]),
         ]
         self.assertEqual(_check_backward_coverage(corpus), [])
+
+
+class ElementLevelBackwardCoverage(unittest.TestCase):
+    """ELEMENT-COVERAGE-001: COV02 binds per-element on realizing-layer citation."""
+
+    def test_orphan_sibling_scenario_flagged(self):
+        # BDD-01 declares two scenarios; SPEC cites only one. Doc-level COV02
+        # would pass (the doc reaches SPEC) — element-level flags the orphan.
+        corpus = [
+            _doc("BDD-01", "BDD", "- BDD.01.03.aaaa: cited.\n- BDD.01.03.bbbb: orphan."),
+            _real_spec("SPEC-01", cites=["BDD.01.03.aaaa"]),
+        ]
+        findings = _check_backward_coverage(corpus, "gate-code")
+        self.assertEqual([(f.code, f.severity) for f in findings], [("COV02", "error")])
+        self.assertIn("BDD.01.03.bbbb", findings[0].message)
+
+    def test_ears_realized_only_via_orphan_bdd_still_passes(self):
+        # Accepted one-hop limitation (F8/V9): an EARS realized only by an orphan
+        # BDD scenario passes COV02 — the orphan is surfaced independently at the
+        # BDD layer, so no defect is hidden.
+        corpus = [
+            _req("EARS-01", "EARS", "EARS.01.03.eeee"),
+            _doc("BDD-01", "BDD", "@ears: EARS.01.03.eeee\n- BDD.01.03.bbbb: orphan."),
+            _real_spec("SPEC-99"),  # cites neither
+        ]
+        flagged = {f.message.split("'")[1] for f in _check_backward_coverage(corpus, "gate-code")}
+        self.assertNotIn("EARS.01.03.eeee", flagged)  # EARS passes (realized via BDD)
+        self.assertIn("BDD.01.03.bbbb", flagged)  # the orphan scenario is flagged
+
+    def test_adr_only_cited_scenario_not_realized(self):
+        # ADR ∉ realizing set: a scenario cited only by ADR is NOT realized.
+        corpus = [
+            _doc("BDD-01", "BDD", "- BDD.01.03.aaaa: a scenario."),
+            _doc("ADR-01", "ADR", "@bdd: BDD.01.03.aaaa decision."),
+            _real_spec("SPEC-99"),  # activates the gate; does not realize the scenario
+        ]
+        findings = _check_backward_coverage(corpus, "gate-code")
+        self.assertEqual([f.code for f in findings], ["COV02"])
+        self.assertIn("BDD.01.03.aaaa", findings[0].message)
 
 
 class LintPathWiring(unittest.TestCase):
