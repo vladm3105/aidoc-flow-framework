@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: security_engineer
 weight: 6
 agent: security-engineer
-framework_spec_version: "0.29.0"
+framework_spec_version: "0.29.1"
 ---
 # security_engineer lens — BDD layer
 
@@ -15,8 +15,8 @@ every abuse case discovered at PRD altitude had a corresponding pair of EARS
 lines: one specifying the system's detection or rejection behaviour, and one
 specifying normal behaviour under the same access path. At BDD altitude the
 obligation advances: each abuse-case EARS line must become at least one
-Gherkin scenario that exercises the abuse condition and asserts the specified
-security response.
+scenario (`type: error`) in the `scenarios:` block that exercises the abuse
+condition and asserts the specified security response.
 
 Security scenarios at BDD altitude have two planes. The first is access-control
 correctness: scenarios must cover both the authorised path (authenticated,
@@ -34,9 +34,9 @@ At PRD altitude this lens focused on abuse-case discovery: identifying the
 attack surfaces and threat actors. At EARS altitude it validated that each
 discovery produced a specification. At BDD altitude it validates that each
 specification has an executable test. This lens does NOT evaluate: EARS
-coverage completeness (qa_lead), step-definition implementability (tech_lead),
+coverage completeness (qa_lead), step implementability (tech_lead),
 failure-mode scenario coverage (chaos_engineer), observability hooks (operator),
-or ID and lint conformance (auditor).
+or schema and ID conformance (auditor).
 
 ## Required evidence checks
 
@@ -68,8 +68,8 @@ absence of server-side error disclosure. Missing → P3 citing C3.
 **C4 — Audit-log assertions present where rules require them.** For every
 EARS line that specifies an audit-log or event-recording obligation as part
 of a security response (access denial recorded, privilege escalation attempt
-logged, sensitive-data access noted), the corresponding BDD scenario must
-include a Then step that asserts the audit record was created with the
+logged, sensitive-data access noted), the corresponding scenario must
+include a `then:` step that asserts the audit record was created with the
 required fields. Missing → P3 citing C4.
 
 **C5 — Regulatory-compliance scenarios where applicable.** Where the EARS

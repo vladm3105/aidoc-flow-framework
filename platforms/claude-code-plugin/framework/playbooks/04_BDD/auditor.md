@@ -3,37 +3,40 @@ layer: 04_BDD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.29.0"
+framework_spec_version: "0.29.1"
 ---
 # auditor lens — BDD layer
 
 ## Reasoning frame
 
 The auditor lens at BDD altitude validates conformance to the formal rules
-that govern Gherkin document structure: ID naming, tag-to-EARS-line
-traceability, step-definition catalog membership, and Gherkin-lint
-compliance. At upstream layers the auditor lens examined different element
-types: at EARS it checked EARS-line IDs, at PRD it checked section-heading
-IDs and cross-reference integrity. At BDD altitude the element types change
-— the auditor now works on scenario IDs, feature-file Document Control
-blocks, and lint-rule compliance — but the principle is identical: formal
-correctness is a precondition for downstream tooling, traceability matrices,
-and regulatory evidence.
+that govern the structured BDD document: element-ID naming, element-level
+`ears` traceability, `scenarios:` schema conformance (`BDD-SCHEMA-001`), and a
+populated Document Control block. At upstream layers the auditor lens examined
+different element types: at EARS it checked EARS-line IDs, at PRD it checked
+section-heading IDs and cross-reference integrity. At BDD altitude the element
+types change — the auditor now works on scenario `id:` fields, the
+`document_control:` block, and the `scenarios:` YAML schema — but the principle
+is identical: formal correctness is a precondition for downstream tooling,
+traceability matrices, and regulatory evidence.
 
-Traceability at BDD altitude runs in both directions. Each scenario tag must
-resolve to a named upstream EARS line, confirming that the scenario exists
-because a requirement demands it. Each feature file must carry a Document
-Control block that names the EARS lines in scope, the author, the review
-status, and the version. Without these records a BDD layer cannot serve as
-audit evidence, cannot be linked to change management records, and cannot
+Traceability at BDD altitude runs in both directions. Each scenario's
+element-level `ears:` list must resolve to named upstream EARS elements,
+confirming that the scenario exists because a requirement demands it. The
+feature's EARS coverage is the computed union of its scenarios' `ears`; the
+`feature:` block itself carries no `ears` field (YAML-BDD-SCHEMA D-3). Each
+document must carry a `document_control:` block that names the author, the
+review status, and the version. Without these records a BDD layer cannot serve
+as audit evidence, cannot be linked to change management records, and cannot
 be navigated by tools that generate traceability reports from structured
 metadata.
 
-Gherkin-lint compliance is separately required. Linting catches structural
-defects — missing Feature: keyword, duplicate scenario titles, inconsistent
-indentation, trailing whitespace — that are not caught by content review
-but cause silent parser failures in automated BDD runners. A lint-clean
-feature file set is a precondition for reliable CI execution.
+Schema conformance is separately required. The `BDD-SCHEMA-001` structural
+check catches defects — a malformed `scenarios:` block, a non-mapping scenario,
+a missing required field, an invalid `type`/`priority` enum — that are not
+caught by content review but cause silent failures in the downstream
+edge-graph and coverage tooling. A schema-clean `scenarios:` block is a
+precondition for reliable traceability and coverage computation.
 
 This lens does NOT evaluate: EARS coverage completeness (qa_lead), scenario
 implementability (tech_lead), failure-mode coverage (chaos_engineer), abuse-case
@@ -45,41 +48,48 @@ lens is confined to formal document conformance and traceability integrity.
 Every finding MUST cite which check fired. Findings without a check citation
 are out-of-scope and discarded by the synthesizer.
 
-**C1 — Tags resolve to upstream EARS lines.** Every `@ears:` or equivalent
-traceability tag applied to a scenario or feature must resolve to a named
-EARS line ID in the upstream EARS document. Tags that reference non-existent
-EARS IDs produce orphan traceability — the scenario claims to test a
-requirement that does not exist in the specification. Tags that are absent
-leave the scenario with no declared upstream requirement. Missing → P1
-citing C1.
+**C1 — Element-level `ears` resolves to upstream EARS elements.** Every item in
+every scenario's `ears:` list must be an element-level EARS ID
+(`EARS.NN.SS.xxxx`) that resolves to a named element in the upstream EARS
+document. Doc-form items (`EARS-NN`) are rejected by REFGRAN01 and are not
+acceptable here. An `ears` item that references a non-existent EARS element
+produces orphan traceability — the scenario claims to test a requirement that
+does not exist. A scenario with an empty `ears` list has no declared upstream
+requirement. Missing → P1 citing C1.
 
-**C2 — Step-definition catalog conformance.** Every Gherkin step used across
-the feature file set must appear in the project's step-definition catalog
-with a matching regular expression and declared parameter types. Steps that
-have no catalog entry cannot be executed by the BDD runner and will produce
-an "undefined step" error at run time. Missing → P2 citing C2.
+**C2 — Required scenario fields present.** Every scenario in the `scenarios:`
+list must carry all required fields: `id`, `name`, `type`, `priority`, `ears`,
+`given`, `when`, `then` (each non-empty). A scenario missing any required field
+is flagged by `BDD-SCHEMA-001` and cannot be consumed by the edge-graph or
+coverage tooling. Missing → P2 citing C2.
 
 **C3 — Scenario IDs follow `BDD.NN.SS.xxxx` per ID_NAMING_STANDARDS.** Every
-scenario must carry a unique ID tag in the format `@id:BDD.NN.SS.xxxx` where
-`NN` is the two-digit feature number, `SS` is the two-digit scenario number
-within the feature, and `xxxx` is a four-character alphanumeric slug derived
-from the scenario title. IDs that deviate from this format cannot be reliably
-referenced in traceability matrices or change management records. Missing →
-P2 citing C3.
+scenario must carry a unique `id:` value in the format `BDD.NN.SS.xxxx` where
+`NN` is the two-digit feature number, `SS` is the two-digit section number, and
+`xxxx` is a four-character content-derived hash. On migration from a legacy
+Gherkin document the `id:` is COPIED VERBATIM from the source `@scenario-id` —
+never recomputed — so downstream `@bdd:` citations stay stable. IDs that
+deviate from this format, collide, or were recomputed on migration cannot be
+reliably referenced in traceability matrices or change management records.
+Missing → P2 citing C3.
 
-**C4 — Gherkin-lint clean.** The complete set of feature files must pass the
-project's configured Gherkin-lint ruleset with zero errors. Lint rules in
-scope include at minimum: no duplicate scenario titles within a feature,
-consistent indentation (2-space or 4-space, not mixed), no trailing whitespace,
-Feature keyword present in every file, and no empty scenario bodies. Missing
-→ P1 citing C4.
+**C4 — `scenarios:` block schema-clean (`BDD-SCHEMA-001`).** The `scenarios:`
+block must be a well-formed flat YAML list (not the deprecated category-dict),
+and every scenario must be a mapping carrying an `id:` field, a `type:` that is
+one of `success`/`error`/`recovery`/`parameterized`/`optional`, and a
+`priority:` that is one of `p0-critical`/`p1-high`/`p2-medium`/`p3-low`. Any
+such structural deviation is a `BDD-SCHEMA-001` finding and blocks reliable
+downstream consumption. (Element-`id` uniqueness is `HASH01`'s corpus-wide
+check, not BDD-SCHEMA-001; the `feature:`-block no-`ears` contract is the
+tech_lead lens's C5.) Missing → P1 citing C4.
 
-**C5 — Feature-file Document Control populated.** Every feature file must
-open with a Document Control comment block containing at minimum: EARS
-scope (list of EARS line IDs the file covers), author, review status
-(Draft / In-Review / Approved), and schema version. A feature file without
-a Document Control block cannot be linked to its upstream requirements in a
-traceability audit or change management review. Missing → P3 citing C5.
+**C5 — Document Control populated.** Every BDD document must carry a
+`document_control:` block containing at minimum: `version`, `status`
+(`Draft`/`In Review`/`Approved`), `author`, and `date_created`/`last_updated`.
+The block must NOT carry `ears`/`prd`/`brd` reference rows — upstream trace
+lives element-level on each scenario's `ears:` list (D-3). A document without a
+populated Document Control block cannot be linked to change management or audit
+records. Missing → P3 citing C5.
 
 ## Beyond-checklist
 

@@ -12,6 +12,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — YAML-BDD-SCHEMA PR-3b: 04_BDD playbook bodies + QUICK_REFERENCE Gherkin → YAML; framework spec 0.29.0 → 0.29.1 (2026-06-29)
+
+Deferred governance polish completing the YAML-BDD arc. PR-3 bumped the six
+`framework/playbooks/04_BDD/*.md` lens playbooks' version frontmatter but left
+their bodies describing Gherkin; this PR rewrites the bodies to the structured
+`scenarios:` YAML model.
+
+- **`framework/playbooks/04_BDD/{qa_lead,auditor,chaos_engineer,security_engineer,tech_lead,operator}.md`**
+  — reasoning frames + evidence checks re-expressed against the YAML model:
+  Gherkin steps → `given`/`when`/`then` phase-list entries; Gherkin tags →
+  element-level `ears:` lists (REFGRAN01); Gherkin-lint → `BDD-SCHEMA-001`
+  structural check (required fields, `type`/`priority` enums); feature-file
+  Document Control → the `document_control:` block. The auditor's
+  Gherkin-lint/step-catalog checks (C2/C4) recast to `BDD-SCHEMA-001`; the
+  tech_lead's Gherkin tag-placement check (C5) recast to scenario-scoped
+  attribute placement (`feature:` carries no `ears`, D-3). Each scenario's
+  `id:` copied verbatim on migration (downstream `@bdd:` stability).
+- **`framework/QUICK_REFERENCE.md`** — ADR-Ready gate criterion "Gherkin
+  quality" → "scenario quality".
+- **Spec bump 0.29.0 → 0.29.1** (PATCH — `framework/**` change trips
+  GATE-SPEC): `bump_version.py` propagated 104 `framework_spec_version`
+  declarations, both platform FSV pins, the plugin README spec strings, the
+  release-metadata hard-pin, and re-vendored the bundle byte-identical.
+- **Verification:** 148 conformance + 142 unit green; vendored byte-identity
+  intact; corpus baseline unchanged (1× TH-RES-001, 5× REFGRAN01, 6× STY02 —
+  no new findings). Spec-tier → human sign-off.
+
 ### Changed — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML form; plugin 0.22.0 → 0.23.0 (2026-06-28)
 
 Completes the YAML-BDD arc on the authoring side. The four `doc-bdd*` plugin

@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: operator
 weight: 10
 agent: devops-release-engineer
-framework_spec_version: "0.29.0"
+framework_spec_version: "0.29.1"
 ---
 # operator lens — BDD layer
 
@@ -34,7 +34,7 @@ deploy-during-traffic and gradual-rollout conditions.
 
 This lens does NOT evaluate: EARS coverage completeness (qa_lead), step
 implementability (tech_lead), failure-mode scenario coverage (chaos_engineer),
-abuse-case coverage (security_engineer), or ID and lint conformance (auditor).
+abuse-case coverage (security_engineer), or schema and ID conformance (auditor).
 The operator lens is confined to runtime observability, operator-action
 correctness, and deployment-safety coverage at the BDD scenario layer.
 
@@ -45,7 +45,7 @@ are out-of-scope and discarded by the synthesizer.
 
 **C1 — Observability hooks in scenarios.** For every scenario that exercises
 a significant state transition, error condition, or SLO-relevant event, at
-least one Then step must assert an observable signal: a log entry at the
+least one `then:` step must assert an observable signal: a log entry at the
 specified severity and with the specified structured fields, a named metric
 incremented to the expected value, or a distributed trace span with the
 expected tags. Scenarios that assert only functional outcomes without any
