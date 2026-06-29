@@ -35,6 +35,17 @@
 > the element-level `COV01`/`COV02` upgrade (catches the 15 orphaned BDD
 > scenarios), `BL-STATUS-SCOPE` (PR-3b), sub-PRs 2c (phase reconciliation) + 2d
 > (BDD roll-up), and the D54/ENG/BL items for the later waves.
+>
+> **YAML-BDD-SCHEMA arc — CORE COMPLETE (2026-06-28):** migrated BDD off
+> Gherkin-in-markdown to structured YAML `scenarios:` blocks. Plan #197 (D-0038,
+> 3-pass). **Shipped:** PR-1 transcoder + `_THRESHOLD` fix (#198); PR-2
+> `sdd_doc_lint` dual-mode parse path + `BDD-SCHEMA-001` (#200); PR-3 template +
+> schema + GD-03/TAG_SYNTAX (framework `0.29.0`, #201); PR-4 corpus BDD-01
+> migration (REFGRAN 7→5, #202); PR-5 `doc-bdd*` skills (plugin `0.23.0`, #203).
+> **Remaining:** (a) **PR-3b** — `04_BDD/*.md` playbook bodies + `QUICK_REFERENCE.md`
+> Gherkin→YAML prose (PATCH `0.29.1`); (b) **element-level COV01/COV02 upgrade**
+> — the deferred payoff, now unblocked (catches the 15 orphaned BDD scenarios);
+> (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
 
 ### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
 
@@ -73,21 +84,22 @@
   (framework spec …)` line specifically) so future bumps stop rewriting
   provenance. Restored the two lines by hand in `a0cb426f`.
 
-### `[example-corpus]` `CORPUS-REFGRAN-RECASCADE` — 7 doc-level trace tags need element-level re-cascade (REFGRAN01)
+### `[example-corpus]` `CORPUS-REFGRAN-RECASCADE` — 5 SPEC/TDD/IPLAN doc-level `@adr`/`@tdd` tags need element-level re-cascade (REFGRAN01)
 
-- *Context:* CFB-PR-3 shipped `REFGRAN01` (GD-03 enforcement). The corpus carries
-  **7 doc-level trace tags to element-declaring layers** (warnings in `build`,
-  errors in `gate-code`): `BDD-01:31,55`, `SPEC-01:31,67,469`, `TDD-01:204`,
-  `IPLAN-01:43`. 5 are redundant (drop — element-level sibling present); 2 need
-  conversion (`BDD-01:55` feature `@ears` → fan-out the union of its 26 scenarios'
-  elements per GD-03; `SPEC-01:67` prose → element-level).
-- *Fix shape:* re-cascade via the `doc-<layer>-fixer` skills (never hand-edit) —
-  **blocked in framework-dev sessions** (the plugin skills aren't invocable
-  here). Either run the fixers in a live plugin session, OR add a REFGRAN
-  `--fix` mechanical auto-fixer (drop-redundant + fan-out are deterministic;
-  aligns with PR-4's `rehash` subcommand direction). Until then `REFGRAN01` is
-  warnings-only in `build` mode (does not raise the exit code); gate-code-clean
-  (plan V7) lands with the re-cascade.
+- *Context:* CFB-PR-3 shipped `REFGRAN01` (GD-03 enforcement). Originally **7**
+  doc-level trace tags; **YAML-BDD-SCHEMA PR-4 (#202) resolved the 2 BDD edges**
+  (`BDD-01:31,55`) by migrating BDD-01 to YAML `ears:` lists. **5 remain** (all
+  non-BDD, warnings in `build` / errors in `gate-code`): `SPEC-01:31,67,469`,
+  `TDD-01:204`, `IPLAN-01:43` — doc-form `@adr: ADR-01` / `@tdd: TDD-01`. 3 are
+  same-line redundant drops (`SPEC-01:31,469`, `TDD-01:204`); 1 table-cell drop
+  (`IPLAN-01:43`); 1 prose convert/drop (`SPEC-01:67`). Same 3 cases also fail
+  the acceptance suite (pre-existing) on the `SPEC-01_golden` fixtures.
+- *Fix shape:* re-cascade via the `doc-<layer>-fixer` skills in a live plugin
+  session (now rewritten for YAML BDD but the SPEC/TDD/IPLAN fixers handle
+  markdown `@`-tags), OR a `REFGRAN --fix` mechanical auto-fixer (the 3 same-line
+  drops are deterministic; `SPEC-01:67` prose needs a judgment call). Until then
+  `REFGRAN01` is warnings-only in `build`; gate-code-clean lands with the
+  re-cascade. The Gherkin complexity that originally blocked this is gone.
 
 ### `[example-corpus]` `CORPUS-PRD-TH-RES` — PRD-01 missing `component_decomposition` → 11 unresolvable `@threshold:` citations
 

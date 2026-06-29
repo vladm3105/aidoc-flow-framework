@@ -1,18 +1,51 @@
 # Session Handoff
 
-> **🟢 YAML-BDD-SCHEMA plan MERGED — implementation starting (2026-06-28). `main`
-> at `dfb57309`.**
+> **🟢 YAML-BDD-SCHEMA arc — CORE COMPLETE (PR-1…PR-5 merged, 2026-06-28).
+> `main` at `1407f445`; framework spec `0.29.0`, plugin `0.23.0`.**
 >
-> A new design-of-record landed: **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197,
-> `dfb57309`) — migrate BDD scenarios from Gherkin-in-markdown to a structured
-> **YAML scenarios block inside `BDD-NN.md`** + an on-demand YAML→Gherkin
-> emitter. Converged over 3 independent gap-review passes; decision logged as
-> **D-0038** (plan D-1…D-6). This supersedes the BDD portion of
-> CFB-PR-3's REFGRAN fan-out — the Gherkin/GD-03 tag collision is dissolved at
-> the root (typed `ears` lists, no delimiter), feature coverage = union of
-> scenario `ears` (no fan-out), and it sets up the element-level COV02 upgrade.
+> Design-of-record **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197, D-0038, 3-pass
+> converged) → migrate BDD off Gherkin-in-markdown to a structured **YAML
+> `scenarios:` block inside `BDD-NN.md`**. The whole loop is now closed: spec
+> describes it (PR-3 template+GD-03+TAG_SYNTAX), linter reads it (PR-2 dual-mode),
+> transcoder + `doc-bdd*` skills produce it (PR-1/PR-5), corpus is it (PR-4
+> BDD-01). The Gherkin/GD-03 tag collision (the CFB-PR-3 26-element fan-out) is
+> dissolved at the root; IDs stable (16 downstream `@bdd:` resolve); coverage now
+> element-precise. **Merged:** #198 (PR-1) · #200 (PR-2) · #201 (PR-3, spec-tier
+> 0.29.0) · #202 (PR-4) · #203 (PR-5, plugin 0.23.0). (Note: GD-04 #199 landed
+> 0.28.0 mid-arc → PR-3 re-bumped to 0.29.0.)
 >
-> **▶ RESUME HERE — implementation is a ~7 PR sequence:**
+> **▶ RESUME HERE — next session, priority order:**
+>
+> 1. **PR-3b** (PATCH framework `0.29.0 → 0.29.1`) — the deferred governance
+>    polish: `framework/playbooks/04_BDD/*.md` **bodies** (qa_lead, auditor,
+>    chaos_engineer, security_engineer, tech_lead, operator — Gherkin→YAML
+>    scenario prose) + `framework/QUICK_REFERENCE.md`. PR-3 bumped their version
+>    frontmatter but NOT their content. framework/ change → carries the PATCH bump
+>    (GATE-SPEC). Spec-tier → human sign-off.
+> 2. **Element-level COV01/COV02 upgrade** — the deferred PAYOFF, now unblocked by
+>    element-precise YAML BDD: upgrade the coverage gates from doc-level to
+>    element-level so they catch the **15 orphaned BDD scenarios** (31 declared −
+>    16 cited downstream). New plan → 2-cycle review → impl. Design-of-record:
+>    `CFB-PR-2-COVERAGE-ENGINE-PLAN.md` DD-5/DD-6 + the BDD `ears:` lists are now
+>    the element-level signal the upgrade needs.
+> 3. **`CORPUS-REFGRAN-RECASCADE`** (`FRAMEWORK-TODO.md`) — now just the **5
+>    SPEC/TDD/IPLAN `@adr`/`@tdd` doc-form edges** (PR-4 resolved the 2 BDD ones).
+>    3 same-line drops + 1 table-cell (IPLAN-01:43) + 1 prose (SPEC-01:67). Run
+>    the `doc-<layer>-fixer` skills in a plugin session, OR a `REFGRAN --fix`.
+> 4. Tooling/backlog (`FRAMEWORK-TODO.md`): `RELEASE-CHANGELOG-TEST-CONVENTION-GAP`
+>    (keeps biting — we add `[Unreleased]` entries it doesn't recognize),
+>    `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER`, `CORPUS-PRD-TH-RES`,
+>    `INDEX-UPSTREAM-RESIDUE`.
+>
+> **How to resume:** read this banner + `plans/YAML-BDD-SCHEMA-PLAN.md`. The
+> transcoder is `tools/gherkin_to_bdd_yaml.py`; the linter BDD fork lives in
+> `tools/sdd_doc_lint/__init__.py` (`_bdd_yaml_scenarios` / `_check_bdd_schema` /
+> the `build_edge_graph` BDD synthetic-edge block). Corpus baseline (post-PR-4):
+> **1× TH-RES-001, 5× REFGRAN01, 6× STY02** on `main`.
+>
+> ---
+>
+> **Per-PR detail of the shipped arc (PR-1…PR-5) — historical:**
 >
 > 1. ✅ **PR-1 (SHIPPED this session) — `_THRESHOLD` fix + transcoder.** The two
 >    self-contained, fully-verified pieces:
