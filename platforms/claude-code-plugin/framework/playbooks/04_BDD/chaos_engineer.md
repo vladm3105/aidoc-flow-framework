@@ -3,7 +3,7 @@ layer: 04_BDD
 lens: chaos_engineer
 weight: 14
 agent: chaos-engineer
-framework_spec_version: "0.29.0"
+framework_spec_version: "0.29.1"
 ---
 # chaos_engineer lens — BDD layer
 
@@ -14,19 +14,21 @@ weight of any BDD lens (14 > 6 for security_engineer). At EARS altitude this
 lens validated that every PRD-declared failure mode had a corresponding
 unwanted-behaviour EARS line. At BDD altitude the obligation advances: every
 unwanted-behaviour EARS line must be translated into at least one executable
-failure-mode Gherkin scenario. The translation from EARS obligation to
-exerciseable scenario is the unique contribution of this lens at this layer.
+failure-mode scenario (`type: error`) in the `scenarios:` block. The
+translation from EARS obligation to exerciseable scenario is the unique
+contribution of this lens at this layer.
 
 The transition matters because EARS lines name failure conditions abstractly
 — "If the upstream service is unavailable, the system shall return a cached
 response within 200 ms" — while BDD scenarios must exercise that condition
 concretely: a specific integration endpoint that can be partitioned,
 rate-limited, or made to return 503 responses in a controlled test harness.
-A failure-mode EARS line with no BDD scenario behind it leaves the failure
+A failure-mode EARS line with no scenario behind it leaves the failure
 response untested until it fires in production. Equally important: failure
-scenarios must be paired with recovery scenarios. A scenario that verifies
-degraded-mode behaviour without a corresponding scenario that verifies
-restoration to normal-mode behaviour leaves the recovery path unexercised.
+scenarios (`type: error`) must be paired with recovery scenarios
+(`type: recovery`). A scenario that verifies degraded-mode behaviour without a
+corresponding scenario that verifies restoration to normal-mode behaviour
+leaves the recovery path unexercised.
 
 At SPEC downstream the chaos_engineer lens descends to component-level fault
 injection: which module owns detection, which owns isolation, what are the
@@ -34,9 +36,9 @@ injected fault parameters, and what are the observable side effects at the
 component boundary. At BDD the lens does not reach into component internals
 — it asks only whether each integration's failure modes and resource-exhaustion
 paths have exerciseable scenarios. This lens does NOT evaluate: EARS coverage
-completeness (qa_lead), step-definition implementability (tech_lead),
+completeness (qa_lead), step implementability (tech_lead),
 abuse-case scenarios (security_engineer), observability hooks (operator),
-or conformance to ID and lint rules (auditor).
+or schema and ID conformance (auditor).
 
 ## Required evidence checks
 
@@ -59,11 +61,11 @@ beyond the declared timeout). These two variants exercise different failure
 paths: partition exercises error detection; slow-response exercises timeout
 detection. Missing → P2 citing C2.
 
-**C3 — Recovery scenarios paired with failure scenarios.** Every scenario
-that exercises a failure mode (service unavailable, circuit breaker open,
-fallback active) must be paired with a recovery scenario that exercises
-restoration to normal operating mode (service restored, circuit breaker
-reset, fallback deactivated). Recovery scenarios must assert that the system
+**C3 — Recovery scenarios paired with failure scenarios.** Every `type: error`
+scenario that exercises a failure mode (service unavailable, circuit breaker
+open, fallback active) must be paired with a `type: recovery` scenario that
+exercises restoration to normal operating mode (service restored, circuit
+breaker reset, fallback deactivated). Recovery scenarios must assert that the system
 reaches a fully operational state, not merely that it stops returning errors.
 Missing → P2 citing C3.
 
@@ -75,10 +77,10 @@ failures produce different system behaviour from transient network failures
 and must be verified independently. Missing → P2 citing C4.
 
 **C5 — Negative-path coverage parity with positive-path.** The count of
-failure-mode and degraded-path scenarios must be proportionate to the count
-of happy-path scenarios in the same feature file. A feature file with ten
-happy-path scenarios and one failure scenario has not achieved scenario-level
-parity. The threshold for this check is: for every group of related happy-path
+`type: error`/`type: recovery` scenarios must be proportionate to the count
+of `type: success` scenarios in the same feature. A feature with ten
+success scenarios and one failure scenario has not achieved scenario-level
+parity. The threshold for this check is: for every group of related success
 scenarios, at least one corresponding failure-mode scenario must exist for
 the same feature scope. Missing → P3 citing C5.
 

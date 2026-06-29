@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
     version: "0.23.0"
-    framework_spec_version: "0.29.0"
+    framework_spec_version: "0.29.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
 ---

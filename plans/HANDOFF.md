@@ -1,7 +1,9 @@
 # Session Handoff
 
-> **🟢 YAML-BDD-SCHEMA arc — CORE COMPLETE (PR-1…PR-5 merged, 2026-06-28).
-> `main` at `1407f445`; framework spec `0.29.0`, plugin `0.23.0`.**
+> **🟢 YAML-BDD-SCHEMA arc — CORE COMPLETE (PR-1…PR-5 merged, 2026-06-28) +
+> PR-3b playbook-body polish (framework spec `0.29.1`, 2026-06-29 — PR open,
+> spec-tier human sign-off).**
+> `main` at `f31d114a`; framework spec `0.29.1`, plugin `0.23.0`.**
 >
 > Design-of-record **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197, D-0038, 3-pass
 > converged) → migrate BDD off Gherkin-in-markdown to a structured **YAML
@@ -16,12 +18,12 @@
 >
 > **▶ RESUME HERE — next session, priority order:**
 >
-> 1. **PR-3b** (PATCH framework `0.29.0 → 0.29.1`) — the deferred governance
->    polish: `framework/playbooks/04_BDD/*.md` **bodies** (qa_lead, auditor,
+> 1. ✅ **PR-3b** (PATCH framework `0.29.0 → 0.29.1`) — **DONE (PR open,
+>    spec-tier sign-off).** The deferred governance polish:
+>    `framework/playbooks/04_BDD/*.md` **bodies** (qa_lead, auditor,
 >    chaos_engineer, security_engineer, tech_lead, operator — Gherkin→YAML
->    scenario prose) + `framework/QUICK_REFERENCE.md`. PR-3 bumped their version
->    frontmatter but NOT their content. framework/ change → carries the PATCH bump
->    (GATE-SPEC). Spec-tier → human sign-off.
+>    scenario prose) + `framework/QUICK_REFERENCE.md`. 148 conformance + 142
+>    unit green; vendored byte-identity intact; corpus baseline unchanged.
 > 2. **Element-level COV01/COV02 upgrade** — the deferred PAYOFF, now unblocked by
 >    element-precise YAML BDD: upgrade the coverage gates from doc-level to
 >    element-level so they catch the **15 orphaned BDD scenarios** (31 declared −
