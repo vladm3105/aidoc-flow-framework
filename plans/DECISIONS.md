@@ -10,6 +10,22 @@ graduation.
 
 ---
 
+## D-0040 — provisional IDs: `id_state` frontmatter flag, advisory-only, not coverage-exempt (PROVISIONAL-IDS-001)
+
+**2026-06-29.** Manual-mode provisional element IDs are governed by an
+`id_state: provisional|canonical` **frontmatter** flag (default `canonical`) —
+NOT the template-only `metadata.id_standard.state` (produced `.md` docs carry no
+`id_standard` block). A `provisional` doc gets one doc-level `PROV01` **advisory**
+(warning), never a per-element error. **`id_state` governs ID stability only, not
+coverage** — provisional elements are still subject to COV01/COV02 and REFGRAN01
+(the ordinal-hex form `0001` is `ELEM_FORM`-valid + FR-scanner-visible, so it is
+gated like any canonical id; no exemption hole). "Canonical leaks" are NOT
+shape-detectable (`0001` is a valid hash); only non-hex `xxxx` is flagged
+(`PH01`, via `(?<!\.)\bx{3,}\b`), and full canonical-correctness verification is
+deferred to `rehash --check` (PROVISIONAL-IDS-002). The SHA-256 algorithm is now
+normative in `ID_NAMING_STANDARDS.md` (the by-hand ↔ plugin parity anchor).
+Builds on [[D-0039]].
+
 ## D-0039 — element-level coverage uses a curated one-hop realizing-layer map (ELEMENT-COVERAGE-001)
 
 **2026-06-29.** Element-level `COV01`/`COV02` realize an element via a **curated

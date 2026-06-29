@@ -23,6 +23,7 @@ metadata:
     value: none
 
   id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
       document DOC-NN, element DOC.NN.SS.xxxx. TDD validates a single SPEC

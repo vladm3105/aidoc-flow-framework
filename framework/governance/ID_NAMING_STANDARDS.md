@@ -61,6 +61,38 @@ Format: `{TYPE}.{doc_id}.{section_id}.{hash}`
 
 Example: `BRD.01.07.a7f3`
 
+### Hash algorithm (normative)
+
+The `hash` is computed deterministically so any tool — the plugin generator or a
+hand author — produces byte-identical IDs (PROVISIONAL-IDS-001):
+
+1. **Input string** (exact, colon-separated, from the element's OWN content — not
+   upstream): `"{doc_id}:{section_id}:{title}:{description}"`.
+2. **Compute**: `hashlib.sha256(input.encode("utf-8")).hexdigest()[:4]`.
+3. **Collision**: if two distinct elements in scope yield the same 4-char prefix,
+   extend BOTH to 8 chars (`[:8]`).
+
+The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored
+hash is just this algorithm applied by hand; it is byte-identical to the plugin's.
+
+### Provisional vs canonical IDs
+
+Hand-authored hashes are **placeholders until canonicalized**. A document declares
+its state once, in frontmatter:
+
+- `id_state: canonical` (default when omitted) — the IDs are content hashes.
+- `id_state: provisional` — the IDs are placeholders; canonicalize (recompute the
+  hashes per the algorithm above) before downstream layers cite them. The linter
+  emits one doc-level `PROV01` advisory.
+
+**Provisional ID form:** use **section-ordinal hex** — `BRD.01.07.0001`,
+`.0002`, … (distinct per element within a section). This is `ELEM_FORM`-valid
+(so the doc lints cleanly) and FR-scanner-visible, while clearly not yet a
+content hash. Do NOT use `xxxx` (non-hex — it fails `ELEM_FORM` and surfaces a
+confusing `ID03`). Element-ID uniqueness (`HASH01`) applies regardless of
+`id_state`, so distinct ordinals are required. `id_state` governs ID *stability*
+only — provisional elements are still subject to coverage and traceability gates.
+
 ### Element-ID exemptions (CLEANUP-PR-C item 13)
 
 Six of the eight layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry

@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — PROVISIONAL-IDS-001: manual-mode provisional IDs + normative hash algorithm; framework spec 0.30.0 → 0.31.0 (2026-06-29)
+
+Lets manual authors (no plugin generator) produce linter-valid element IDs and
+canonicalize them by hand (D54-F01, CONSUMER-FEEDBACK-001 PR-4). Plan
+[`plans/PROVISIONAL-IDS-PLAN.md`](plans/PROVISIONAL-IDS-PLAN.md) (3 review passes).
+
+- **Normative hash algorithm** in `ID_NAMING_STANDARDS.md` — the exact input
+  string `"{doc_id}:{section_id}:{title}:{description}"`, `[:4]` truncation, and
+  4→8 collision rule (previously only in template `_guidance`), so a by-hand hash
+  is byte-identical to the plugin's. Plus the provisional-vs-canonical convention.
+- **`id_state: provisional|canonical`** frontmatter flag (default canonical;
+  back-compatible) — a `provisional` doc gets one doc-level **`PROV01`** advisory
+  to canonicalize before downstream layers cite its IDs. `state` governs ID
+  stability, not coverage — provisional elements are still gated normally.
+- **Provisional ID form** — section-ordinal hex (`0001`); templates' placeholder
+  field is now `0000` (regex-valid) instead of the `ELEM_FORM`-invalid `xxxx`.
+- **`PH01` lowercase fix** — `(?<!\.)\bx{3,}\b` flags a bare lowercase `xxxx`
+  (the uppercase-only `\bXX+\b` blind spot) while leaving a full-element-id hash
+  segment to ID03 (no double-report).
+- All 8 layer templates gain `id_standard.state: canonical`. Framework MINOR
+  **0.30.0 → 0.31.0**. 306 conformance+unit green; corpus baseline unchanged;
+  vendored byte-identity intact.
+- **Deferred to PROVISIONAL-IDS-002:** the reference-aware `rehash` subcommand
+  (auto-canonicalization + `rehash --check`).
+
 ### Fixed — tooling backlog: changelog-entry test convention + SKILL_AUTHORING bump straggler (2026-06-29)
 
 Two recurring tooling papercuts (no version impact):

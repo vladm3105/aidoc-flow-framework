@@ -1,18 +1,29 @@
 # Session Handoff
 
-> **🟢 YAML-BDD arc COMPLETE (PR-1…PR-5 + PR-3b #206) → element-level
-> COV01/COV02 SHIPPED (ELEMENT-COVERAGE-001, framework spec `0.30.0`,
-> 2026-06-29 — impl PR open, spec-tier human sign-off).**
-> `main` at `a82e88a2`; framework spec `0.30.0`, plugin `0.23.0`.**
+> **🟢 CONSUMER-FEEDBACK wave underway: element-level COV01/COV02 (PR-2,
+> ELEMENT-COVERAGE-001 #209) merged → PROVISIONAL-IDS-001 (PR-4, D54-F01)
+> SHIPPED (framework spec `0.31.0`, 2026-06-29 — impl PR open, spec-tier
+> sign-off).**
+> `main` at `f7ba8777`; framework spec `0.31.0`, plugin `0.23.0`.**
 >
-> **ELEMENT-COVERAGE-001** (plan #208 merged → impl): COV01/COV02 now bind at
-> **element level** via a curated one-hop `REALIZING_LAYERS` map (BDD→{SPEC,TDD},
-> EARS→{BDD,SPEC,TDD}, BRD-FR→{PRD}; ADR excluded — D-0039). COV02 surfaces the
-> **16 orphaned BDD scenarios** (warning/`build`, error/`gate-code`); COV01 0 new
-> corpus findings. Plan converged over 5 passes (1 self + 4 independent). 295
-> conformance+unit green; vendored byte-identity intact; corpus exit code
-> unchanged (the 16 are warnings). Orphan **remediation** is the natural
-> follow-up (corpus/skill — never hand-edit the fixture).
+> **PROVISIONAL-IDS-001** (plan #211 merged → impl): manual-mode provisional IDs
+> — `id_state: provisional|canonical` frontmatter flag (default canonical) +
+> `PROV01` advisory; ordinal-hex provisional form + `0000` template literal
+> (regex-valid, replaces `xxxx`); `PH01` lowercase fix `(?<!\.)\bx{3,}\b`;
+> SHA-256 algorithm now normative in `ID_NAMING_STANDARDS.md` (D-0040). 3-pass
+> converged; 306 green; corpus baseline unchanged. **Two in-impl refinements**
+> (see plan "Implementation notes"): `state` lives in frontmatter `id_state`
+> (produced docs carry no `id_standard` block); HASH01 catches dup IDs only in
+> element-DEFINITION shapes, not BRD FR-bullets. **NEXT:** PROVISIONAL-IDS-002 —
+> the reference-aware `rehash` subcommand (+ `rehash --check`). Then
+> CONSUMER-FEEDBACK PR-5 (reuse manifest, `D54-F02`).
+>
+> **ELEMENT-COVERAGE-001** (plan #208 merged → #209 merged): COV01/COV02 now bind
+> at **element level** via a curated one-hop `REALIZING_LAYERS` map
+> (BDD→{SPEC,TDD}, EARS→{BDD,SPEC,TDD}, BRD-FR→{PRD}; ADR excluded — D-0039).
+> COV02 surfaces the **16 orphaned BDD scenarios**; COV01 0 new corpus findings.
+> (Orphan remediation deferred to corpus regeneration — see
+> [[project-examples-regenerated-wholesale]].)
 >
 > Design-of-record **`plans/YAML-BDD-SCHEMA-PLAN.md`** (PR #197, D-0038, 3-pass
 > converged) → migrate BDD off Gherkin-in-markdown to a structured **YAML
