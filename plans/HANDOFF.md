@@ -47,10 +47,15 @@
 >    + the `04_BDD/*.md` playbook **bodies** (Gherkin → YAML scenario references;
 >    PR-3 only bumped their version frontmatter, not content). framework/ change →
 >    needs its own PATCH bump (0.29.0 → 0.29.1).
-> 4. **PR-4** corpus + the 7 `BDD-01_golden` acceptance fixtures migration (run
->    the PR-1 transcoder; `missing_section.md` is no-Gherkin/verify-only;
->    `drift_codes.yaml` verify-only). Verify V4 ID-stability + V11 corpus. NOT a
->    framework/ change (examples/ + tests/) → no bump.
+> 4. ✅ **PR-4 (SHIPPED this session) — corpus BDD-01 migrated to YAML.** The
+>    transcoder (hardened: fence-classified placement + doc-control row strip +
+>    empty-subheading collapse) converted `examples/.../04_BDD/BDD-01.md` (31
+>    scenarios, ids verbatim → all 16 downstream `@bdd:` resolve, V4). **Corpus
+>    REFGRAN 7 → 5** (2 BDD edges gone; the 5 SPEC/TDD/IPLAN `@adr`/`@tdd` remain
+>    = `CORPUS-REFGRAN-RECASCADE`). The 7 `BDD-01_golden` fixtures were already
+>    non-Gherkin → no change. New corpus baseline: **1 TH-RES, 5 REFGRAN, 6 STY02**.
+>    290 unit/conformance green; acceptance unchanged (3 pre-existing SPEC `@adr`
+>    failures). Not framework/ → no bump.
 > 5. **PR-5** `doc-bdd*` skills rewrite (keep `test_skill_template_alignment` /
 >    `plm_lint` / `test_autopilot_saga_parity` green).
 > 6. **PR-6** governance docs (GD-03 note, `TAG_SYNTAX.md` BDD row,
@@ -63,7 +68,7 @@
 > **How to resume:** read this banner + `plans/YAML-BDD-SCHEMA-PLAN.md` (D-1…D-6,
 > the schema, the 5-function linter-fork contract, V1–V11). Linter lives in
 > `tools/sdd_doc_lint/__init__.py`; transcoder/emitter go in `tools/`; tests in
-> `tests/unit/`. Corpus baseline for the V11 cross-check: 1× TH-RES-001, 7×
+> `tests/unit/`. Corpus baseline for the V11 cross-check (post-PR-4): 1× TH-RES-001, 5×
 > REFGRAN01, 6× STY02 on `main`.
 >
 > **Note:** YAML-BDD resolves the **2 BDD** REFGRAN edges; the **5

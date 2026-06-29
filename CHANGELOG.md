@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — YAML-BDD-SCHEMA PR-4: example corpus BDD-01 migrated to YAML scenarios (2026-06-28)
+
+The corpus payoff — the framework migrates its own showcase artifact end-to-end
+(machine-produced by the transcoder; never hand-edited).
+
+- **`examples/url-shortener/docs/04_BDD/BDD-01.md`** — Gherkin → structured YAML
+  `scenarios:` block via the hardened transcoder. 31 scenarios; each
+  `@scenario-id` **copied verbatim** so all **16 downstream `@bdd:` citations
+  still resolve** (V4 ID-stability); inline `@threshold:` preserved; `#`
+  comments lifted to `spec_trace:`/`notes:`. **Drops the 2 BDD REFGRAN edges:
+  corpus REFGRAN 7 → 5** (the remaining 5 are SPEC/TDD/IPLAN `@adr`/`@tdd` —
+  `CORPUS-REFGRAN-RECASCADE`). New corpus baseline: 1 TH-RES, 5 REFGRAN, 6 STY02.
+- **`tools/gherkin_to_bdd_yaml.py`** — hardened for the real corpus:
+  fence-classified placement (feature → §2, scenarios → §3), Document Control
+  reference-row strip, empty category sub-heading collapse. +1 multi-fence test
+  (`tests/unit/test_gherkin_to_bdd_yaml.py`, now 7).
+- Acceptance `BDD-01_golden` fixtures are already non-Gherkin → no change.
+- **Verification:** 290 unit + conformance green; acceptance unchanged (the 3
+  failing SPEC `@adr` REFGRAN cases are pre-existing `CORPUS-REFGRAN-RECASCADE`,
+  not BDD). Not a `framework/` change → no version bump.
+
 ### Added — Framework Spec 0.27.0 → 0.28.0: GD-04 ratifies IPLAN-ASSURANCE L1 (2026-06-28)
 
 - **`governance/DECISIONS.md` — GD-04:** ratifies **IPLAN-ASSURANCE L1** at

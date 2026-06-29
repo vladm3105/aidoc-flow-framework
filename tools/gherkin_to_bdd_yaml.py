@@ -190,25 +190,63 @@ def render_feature_yaml(feature: dict) -> str:
 
 def transcode_markdown(md_text: str) -> str:
     """Rewrite a BDD doc's ``​```gherkin`` block(s) into ``​```yaml`` feature +
-    scenarios blocks. Non-Gherkin content is preserved verbatim."""
+    scenarios blocks, placing each where it belongs (fence-classified).
+
+    The real corpus splits Gherkin across multiple fences — the `Feature:` block
+    in §2 and scenarios across §3. So: the **feature** YAML replaces the fence
+    that declares `Feature:`; the **scenarios** YAML replaces the FIRST fence that
+    declares a `Scenario`; any further scenario fences are blanked (their content
+    is already folded into the single scenarios block). If a single fence holds
+    both, both YAML blocks land there. Non-Gherkin content is preserved verbatim.
+    """
+    # Drop the §1 Document Control upstream-reference rows — trace now lives on
+    # each scenario's `ears:` list, so a doc-level `@ears/@prd/@brd` here is an
+    # orphan doc-form tag (REFGRAN01). Matches the template, which removed them.
+    md_text = re.sub(
+        r"^\|\s*(?:EARS|PRD|BRD) reference\s*\|[^\n]*\|[ \t]*\n",
+        "",
+        md_text,
+        flags=re.MULTILINE | re.IGNORECASE,
+    )
+
     fence = re.compile(r"```gherkin\n(.*?)\n```", re.DOTALL)
-    blocks = fence.findall(md_text)
+    blocks = [m.group(1) for m in fence.finditer(md_text)]
     if not blocks:
         return md_text
     parsed = parse_gherkin_feature("\n\n".join(blocks))
     feature_yaml = "```yaml\n" + render_feature_yaml(parsed["feature"]) + "```"
     scenarios_yaml = "```yaml\n" + render_scenarios_yaml(parsed["scenarios"]) + "```"
 
-    first = True
+    feature_idx = next((i for i, b in enumerate(blocks) if "Feature:" in b), None)
+    scn_idxs = [i for i, b in enumerate(blocks) if re.search(r"^\s*Scenario", b, re.MULTILINE)]
+    first_scn = scn_idxs[0] if scn_idxs else None
+
+    replacement: dict[int, str] = {}
+    if feature_idx is not None:
+        replacement[feature_idx] = feature_yaml
+    if first_scn is not None:
+        if first_scn == feature_idx:
+            replacement[feature_idx] = feature_yaml + "\n\n" + scenarios_yaml
+        else:
+            replacement[first_scn] = scenarios_yaml
+    elif feature_idx is not None:
+        # No separate scenario fence — fold scenarios into the feature fence.
+        replacement[feature_idx] = feature_yaml + "\n\n" + scenarios_yaml
+
+    counter = {"i": -1}
 
     def _replace(_m: re.Match) -> str:
-        nonlocal first
-        if first:
-            first = False
-            return feature_yaml + "\n\n" + scenarios_yaml
-        return ""  # subsequent gherkin blocks folded into the first
+        counter["i"] += 1
+        return replacement.get(counter["i"], "")  # unlisted fences blanked
 
-    return fence.sub(_replace, md_text)
+    result = fence.sub(_replace, md_text)
+    # Collapse now-empty '### ...' scenario sub-headings: with the flat,
+    # type-discriminated `scenarios:` list, the per-category sub-sections
+    # (Error/Recovery/Parameterized/Optional) whose fences were folded into the
+    # single block are left empty. Drop a '### …' heading followed only by blank
+    # lines up to the next heading.
+    result = re.sub(r"^### [^\n]*\n(?:[ \t]*\n)+(?=#{2,3} )", "", result, flags=re.MULTILINE)
+    return result
 
 
 def main(argv: list[str] | None = None) -> int:

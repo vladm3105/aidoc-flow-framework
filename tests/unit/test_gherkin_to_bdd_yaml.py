@@ -98,6 +98,44 @@ class TranscoderEngine(unittest.TestCase):
         self.assertEqual(reloaded[0]["id"], "BDD.01.03.ccd6")
         self.assertEqual(reloaded[1]["examples"]["headers"], ["input_type", "value"])
 
+    def test_transcode_multifence_placement_and_cleanup(self) -> None:
+        # Realistic corpus shape: feature in one fence (§2), scenarios in a
+        # later fence (§3) under per-category sub-headings; a Document Control
+        # @ears reference row. The transcoder must: put feature yaml in §2,
+        # scenarios yaml in §3, drop the doc-control row, collapse the now-empty
+        # category sub-headings.
+        md = (
+            "---\ndoc_id: BDD-01\nartifact_type: BDD\n---\n\n"
+            "## 1. Document Control\n\n"
+            "| EARS reference | @ears: EARS-01 |\n"
+            "| Status | Draft |\n\n"
+            "## 2. Feature Definition\n\n"
+            "```gherkin\n@ears:EARS-01 @bdd:BDD-01\nFeature: F\n  As a user\n"
+            "  Background:\n    Given ready\n```\n\n"
+            "## 3. Scenario Structure\n\n"
+            "### 3.1 Success scenarios\n\n"
+            "```gherkin\n@scenario-type:success @p0-critical @scenario-id:BDD.01.03.ccd6\n"
+            "@ears:EARS.01.03.5066\nScenario: S1\n  Given g\n  When w\n  Then t\n```\n\n"
+            "### 3.2 Error scenarios\n\n"
+            "```gherkin\n@scenario-type:error @p1-high @scenario-id:BDD.01.03.eeee\n"
+            "@ears:EARS.01.03.bbbb\nScenario: S2\n  Given g\n  When w\n  Then t\n```\n\n"
+            "## 4. Traceability\n\n@bdd: BDD-01\n"
+        )
+        out = transcode_markdown(md)
+        # doc-control @ears row dropped
+        self.assertNotIn("| EARS reference |", out)
+        # both scenario ids present (verbatim), in one consolidated block
+        self.assertIn("id: BDD.01.03.ccd6", out)
+        self.assertIn("id: BDD.01.03.eeee", out)
+        self.assertEqual(out.count("```yaml"), 2)  # feature block + scenarios block
+        self.assertNotIn("```gherkin", out)
+        # empty '### 3.2 Error scenarios' collapsed; the one with content stays
+        self.assertNotIn("### 3.2 Error scenarios", out)
+        self.assertIn("### 3.1 Success scenarios", out)
+        # §3 heading + §4 heading preserved (STRUCT01)
+        self.assertIn("## 3. Scenario Structure", out)
+        self.assertIn("## 4. Traceability", out)
+
     def test_transcode_markdown_replaces_fence(self) -> None:
         md = (
             "---\ndoc_id: BDD-01\nartifact_type: BDD\n---\n\n## 3. Scenarios\n\n```gherkin\n"
