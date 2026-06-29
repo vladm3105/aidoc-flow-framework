@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | REUSE-MANIFEST-001 (D54-F02, CONSUMER-FEEDBACK-001 PR-5)     |
 | Type           | feature                                                      |
-| Status         | PLANNED — 2026-06-29T00:00:00Z                              |
+| Status         | IMPLEMENTED — 2026-06-29 (spec 0.32.0; 314 conformance+unit green; corpus baseline unchanged). Impl note: REUSE01/REUSE02 are emitted by a dedicated corpus-level `_check_reuse` (one per referenced doc, ALL layers — not just BRD/EARS/BDD), wired into `lint_path`; COV01/COV02 only *skip* referenced host docs. This is cleaner than emitting from each gate (no double-emit; a referenced PRD/ADR/SPEC is also surfaced) and faithful to the "one REUSE01 per referenced doc" intent. |
 | Depends on     | ELEMENT-COVERAGE-001 (#209, element-level COV01/COV02 — the "covered" definition this hooks into); the stubbed `CoveredState.SATISFIED_BY_REFERENCE` |
 | Feeds          | brownfield adoption (the make-or-break capability per the D54 triage) |
 | Version impact | framework MINOR (new reuse convention + coverage/trace recognition) |

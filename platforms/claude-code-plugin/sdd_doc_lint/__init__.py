@@ -1586,6 +1586,7 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     graph = build_edge_graph(corpus)
     if not {"SPEC", "IPLAN"} <= set(graph.doc_layer.values()):
         return []
+    reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text)
@@ -1596,6 +1597,11 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if not doc_id:
+            continue
+        # REUSE-MANIFEST-001: a `referenced` BRD is satisfied by reference — its
+        # FRs are reused as-is, not re-authored, so they escape the forward gate
+        # (the REUSE01 advisory + target contract are emitted by `_check_reuse`).
+        if reuse.get(doc_id, ("authored", ""))[0] == "referenced":
             continue
         reach = _doc_forward_reach(graph, doc_id)
         reaches_spec, reaches_iplan = "SPEC" in reach, "IPLAN" in reach
@@ -1676,6 +1682,130 @@ def _element_realizing_citers(graph: EdgeGraph, token: str, layers: tuple[str, .
     return citers
 
 
+# --- Reuse manifest (REUSE-MANIFEST-001, D54-F02) -----------------------------
+#: A `reuse.target` must be an in-repo doc_id or path, pinned to a commit:
+#: ``<ref>@<7-40 hex>``. Live URLs are `@discoverability` hints only, never the
+#: trace target.
+_REUSE_TARGET_RE = re.compile(r"^(?P<ref>[^@\s]+)@(?P<commit>[0-9a-f]{7,40})$")
+
+
+def _reuse_map(corpus: list[tuple[str, str]]) -> dict[str, tuple[str, str]]:
+    """``doc_id → (state, target)`` from each doc's ``reuse:`` frontmatter block.
+    State defaults to ``authored`` when the block is absent (back-compatible)."""
+    out: dict[str, tuple[str, str]] = {}
+    for _rel, text in corpus:
+        fm = _extract_frontmatter(text) or {}
+        doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        reuse = fm.get("reuse")
+        if isinstance(reuse, dict):
+            state = str(reuse.get("state") or "authored").strip().lower()
+            target = str(reuse.get("target") or "").strip()
+            out[doc_id] = (state, target)
+        else:
+            out[doc_id] = ("authored", "")
+    return out
+
+
+def _check_reuse(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """REUSE01 / REUSE02 (REUSE-MANIFEST-001). One advisory per `referenced` doc
+    (satisfied by reference — reuse, not re-audited), and target validation: the
+    `reuse.target` MUST be an in-repo doc_id/path pinned to a commit; a URL or an
+    unresolvable/unpinned target is a REUSE02 error.
+
+    Coverage exemption itself lives in COV01/COV02 (they skip a `referenced` host
+    doc); this check owns the visibility advisory + the target contract."""
+    rmap = _reuse_map(corpus)
+    doc_ids = set(rmap)
+    rels = {rel for rel, _ in corpus}
+    rel_by_doc: dict[str, str] = {}
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text) or {}
+        did = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if did:
+            rel_by_doc.setdefault(did, rel)
+
+    findings: list[Finding] = []
+    for doc_id, (state, target) in sorted(rmap.items()):
+        if state == "authored":
+            continue
+        rel = rel_by_doc.get(doc_id, doc_id)
+        if state != "referenced":
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REUSE02",
+                    f"unknown reuse.state '{state}' (want 'authored' or 'referenced')",
+                    severity="error",
+                )
+            )
+            continue
+        findings.append(
+            Finding(
+                rel,
+                1,
+                "REUSE01",
+                f"'{doc_id}' is satisfied by reference (reuse, not re-audited) — target '{target}'",
+                severity="warning",
+            )
+        )
+        # REUSE02 — target contract.
+        if not target:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REUSE02",
+                    "referenced doc must declare reuse.target (<doc_id|path>@<commit>)",
+                    severity="error",
+                )
+            )
+            continue
+        if re.match(r"^https?://", target):
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REUSE02",
+                    f"reuse.target '{target}' is a URL — the trace target must be "
+                    f"in-repo + pinned; live URLs are @discoverability hints only",
+                    severity="error",
+                )
+            )
+            continue
+        m = _REUSE_TARGET_RE.match(target)
+        if not m:
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REUSE02",
+                    f"reuse.target '{target}' is not '<doc_id|path>@<commit>' (commit = 7-40 hex)",
+                    severity="error",
+                )
+            )
+            continue
+        ref = m.group("ref")
+        if (
+            ref not in doc_ids
+            and ref not in rels
+            and Path(ref).name not in {Path(r).name for r in rels}
+        ):
+            findings.append(
+                Finding(
+                    rel,
+                    1,
+                    "REUSE02",
+                    f"reuse.target ref '{ref}' does not resolve in-repo "
+                    f"(no corpus doc_id or path matches)",
+                    severity="error",
+                )
+            )
+    return findings
+
+
 def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
     """COV02 — backward coverage (CFB-PR-2b). The dual of `COV01`.
 
@@ -1717,6 +1847,7 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
             rel_by_doc.setdefault(doc_id, rel)
             text_by_doc.setdefault(doc_id, text)
 
+    reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     severity = "error" if mode == "gate-code" else "warning"
     findings: list[Finding] = []
     # ELEMENT-COVERAGE-001: per-element realization. Each declared EARS/BDD
@@ -1727,6 +1858,11 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
     for elem, host in sorted(graph.element_host.items()):
         layer = elem.split(".", 1)[0]
         if layer not in _BACKWARD_ORACLE_LAYERS:
+            continue
+        # REUSE-MANIFEST-001: an element whose host doc is `referenced` is
+        # satisfied by reference (reused as-is) — exempt from backward coverage
+        # (REUSE01 advisory emitted by `_check_reuse`).
+        if reuse.get(host, ("authored", ""))[0] == "referenced":
             continue
         realizing = REALIZING_LAYERS.get(layer, ())
         if _element_realizing_citers(graph, elem, realizing):
@@ -1851,6 +1987,11 @@ def lint_path(
     # REFGRAN01 is a form rule (GD-03), not the corpus coverage gate — it runs
     # unconditionally (not behind --skip-coverage-gate), with run-mode severity.
     findings.extend(_check_ref_granularity(corpus, mode))
+    # REUSE-MANIFEST-001: REUSE01 advisory + REUSE02 target contract for
+    # `reuse: referenced` docs. Runs unconditionally — the coverage *exemption*
+    # for referenced docs lives in the gates below (behind --skip-coverage-gate),
+    # but the reuse visibility + target validation are always on.
+    findings.extend(_check_reuse(corpus))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))

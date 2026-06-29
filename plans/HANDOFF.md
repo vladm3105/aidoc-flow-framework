@@ -1,22 +1,26 @@
 # Session Handoff
 
-> **🟢 CONSUMER-FEEDBACK wave underway: element-level COV01/COV02 (PR-2,
-> ELEMENT-COVERAGE-001 #209) merged → PROVISIONAL-IDS-001 (PR-4, D54-F01)
-> SHIPPED (framework spec `0.31.0`, 2026-06-29 — impl PR open, spec-tier
-> sign-off).**
-> `main` at `f7ba8777`; framework spec `0.31.0`, plugin `0.23.0`.**
+> **🟢 CONSUMER-FEEDBACK wave: PR-2 element-level COV01/COV02 (#209) → PR-4
+> PROVISIONAL-IDS-001 (#212) → PR-5 REUSE-MANIFEST-001 (D54-F02) SHIPPED
+> (framework spec `0.32.0`, 2026-06-29 — impl PR open, spec-tier sign-off).**
+> `main` at `9cba3ec7`; framework spec `0.32.0`, plugin `0.23.0`.**
 >
-> **PROVISIONAL-IDS-001** (plan #211 merged → impl): manual-mode provisional IDs
-> — `id_state: provisional|canonical` frontmatter flag (default canonical) +
-> `PROV01` advisory; ordinal-hex provisional form + `0000` template literal
-> (regex-valid, replaces `xxxx`); `PH01` lowercase fix `(?<!\.)\bx{3,}\b`;
-> SHA-256 algorithm now normative in `ID_NAMING_STANDARDS.md` (D-0040). 3-pass
-> converged; 306 green; corpus baseline unchanged. **Two in-impl refinements**
-> (see plan "Implementation notes"): `state` lives in frontmatter `id_state`
-> (produced docs carry no `id_standard` block); HASH01 catches dup IDs only in
-> element-DEFINITION shapes, not BRD FR-bullets. **NEXT:** PROVISIONAL-IDS-002 —
-> the reference-aware `rehash` subcommand (+ `rehash --check`). Then
-> CONSUMER-FEEDBACK PR-5 (reuse manifest, `D54-F02`).
+> **REUSE-MANIFEST-001** (plan #213 merged → impl): satisfied-by-reference —
+> `reuse: {state: referenced, target: <doc_id|path>@<commit>}` frontmatter
+> exempts a referenced doc's elements from COV01/COV02 (reused as-is) + a
+> `REUSE01` advisory per referenced doc (dedicated `_check_reuse`, all layers);
+> `REUSE02` in-repo-pinned-target contract (URLs → @discoverability only);
+> full-prefix rule (upstream lineage also in-repo+referenced → `@`-tags resolve,
+> no trace change). D-0041. 3-pass converged; 314 green; corpus baseline
+> unchanged. **NEXT:** CONSUMER-FEEDBACK later waves (D54-F06 IPLAN
+> project-types, the Engramory/BeeLocal items); reuse follow-ons
+> (REUSE-MANIFEST-002 element-granular; audit-skill no-free-≥90 enforcement).
+>
+> **PROVISIONAL-IDS-001** (plan #211 → #212 merged): manual-mode provisional IDs
+> — `id_state` flag + `PROV01`; `0000` template literal; `PH01`
+> `(?<!\.)\bx{3,}\b`; normative SHA-256 in `ID_NAMING_STANDARDS.md` (D-0040).
+> **`rehash` (PROVISIONAL-IDS-002) DISCARDED** — premise broken (IDs are
+> LLM-generated, not deterministic; see [[project-element-ids-not-deterministic]]).
 >
 > **ELEMENT-COVERAGE-001** (plan #208 merged → #209 merged): COV01/COV02 now bind
 > at **element level** via a curated one-hop `REALIZING_LAYERS` map
