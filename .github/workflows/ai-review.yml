@@ -87,7 +87,7 @@ permissions:
   issues: write          # labels
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.4.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.4.2
     with:
       reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'
