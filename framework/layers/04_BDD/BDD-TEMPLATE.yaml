@@ -81,6 +81,7 @@ metadata:
     value: code  # code | document | ux | risk | process
 
   id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       All element IDs use content-derived hashes scoped to BDD content.
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
@@ -92,13 +93,13 @@ metadata:
         2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
         3. Collision: extend hash from 4 to 8 chars if duplicate detected
 
-      Template placeholder: "xxxx" represents the hash suffix.
+      Template placeholder: "0000" represents the hash suffix.
 
     format: "{doc_type}.{doc_id}.{section_id}.{hash}"
     hash_algorithm: SHA256
     hash_length: 4
     max_hash_length: 8
-    placeholder: "xxxx"
+    placeholder: "0000"
 
 # =============================================================================
 # Section 1: Document Control

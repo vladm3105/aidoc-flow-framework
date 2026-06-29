@@ -49,6 +49,7 @@ metadata:
       - "@diagram: dfd-l3"
 
   id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       Two ID forms (see framework/registry/LAYER_REGISTRY.yaml id_patterns):
         document  DOC-NN          (e.g. SPEC-01) — references a whole artifact

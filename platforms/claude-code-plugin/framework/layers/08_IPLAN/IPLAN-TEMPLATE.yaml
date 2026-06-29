@@ -28,6 +28,7 @@ metadata:
     value: none
 
   id_standard:
+    state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       IPLAN bridges a single SPEC *component* (one IPLAN per component), so its
       @spec / @tdd references are document-level (DOC-NN) by design, not element

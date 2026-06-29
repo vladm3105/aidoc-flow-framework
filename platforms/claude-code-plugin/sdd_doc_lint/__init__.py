@@ -76,6 +76,10 @@ _PLACEHOLDERS = [
     re.compile(r"\bFIXME\b"),
     re.compile(r"\b[A-Z]{2,8}-XXX\b"),
     re.compile(r"\bXX+\b"),
+    # PROVISIONAL-IDS-001: bare lowercase placeholder run (the uppercase `\bXX+\b`
+    # missed `xxxx`). The `(?<!\.)` look-behind leaves a full-element-id hash
+    # segment (`BRD.01.07.xxxx`, always `.`-preceded) to ID03 — no double-report.
+    re.compile(r"(?<!\.)\bx{3,}\b"),
 ]
 
 # AS3 — authoring-style check (governance/AUTHORING_STYLE.md).
@@ -473,6 +477,37 @@ def lint_text(
     findings: list[Finding] = []
     lines = text.splitlines()
     seen_tags: set[str] = set()
+
+    # PROVISIONAL-IDS-001: doc-level ID-state. Authored docs declare
+    # `id_state: provisional|canonical` in frontmatter (default `canonical` when
+    # omitted — back-compatible; the template `id_standard.state` documents the
+    # convention). A `provisional` doc gets ONE doc-level advisory (not a
+    # per-element error) reminding the author to canonicalize the placeholder IDs
+    # before downstream layers cite them. `state` governs ID *stability*, not
+    # coverage — provisional elements are still gated normally.
+    _fm = _extract_frontmatter(text)
+    _id_state = str((_fm or {}).get("id_state") or "").strip().lower()
+    if _id_state == "provisional":
+        findings.append(
+            Finding(
+                rel,
+                1,
+                "PROV01",
+                "id_state: provisional — element IDs here are placeholders; "
+                "canonicalize (rehash to content IDs) before downstream layers cite them",
+                severity="warning",
+            )
+        )
+    elif _id_state and _id_state != "canonical":
+        findings.append(
+            Finding(
+                rel,
+                1,
+                "PROV01",
+                f"unknown id_state '{_id_state}' (want 'provisional' or 'canonical')",
+                severity="warning",
+            )
+        )
 
     for i, line in enumerate(lines, 1):
         # Trace tags: collect which upstream layers are referenced + validate the id form.

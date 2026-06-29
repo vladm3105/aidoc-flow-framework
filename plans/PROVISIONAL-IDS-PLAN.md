@@ -4,10 +4,31 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | PROVISIONAL-IDS-001 (D54-F01, CONSUMER-FEEDBACK-001 PR-4)    |
 | Type           | feature                                                      |
-| Status         | PLANNED — 2026-06-29T00:00:00Z                              |
+| Status         | IMPLEMENTED — 2026-06-29 (spec 0.31.0; 306 conformance+unit green; corpus baseline unchanged) |
 | Depends on     | ELEMENT-COVERAGE-001 (#209, element-level COV01/COV02), REFGRAN01 (#194) — the independence caveat resolves against these |
 | Feeds          | PROVISIONAL-IDS-002 (`rehash` follow-on); CONSUMER-FEEDBACK-001 PR-5 (reuse manifest) coexists on the `state` field |
 | Version impact | framework MINOR (normative ID-standard change + template change) |
+
+## Implementation notes (2026-06-29 — refinements discovered during impl)
+
+Two design points the plan under-specified, resolved during implementation
+(both validated by the new `tests/unit/test_provisional_ids.py`, 11 tests):
+
+1. **`state` lives in produced-doc frontmatter as `id_state`, not
+   `metadata.id_standard.state`.** Produced `.md` docs carry NO `id_standard`
+   block (that's template-only scaffolding), so the keystone flag has no home
+   there. Implemented as a frontmatter key `id_state: provisional|canonical`
+   (default canonical) read by `_extract_frontmatter`; the linter emits a
+   doc-level `PROV01` advisory on `provisional` (and flags an unknown value).
+   Templates' `id_standard.state` documents the convention; the artifact-level
+   flag is `id_state`.
+2. **HASH01 catches duplicate IDs only in element-DEFINITION shapes** —
+   `- **ID**`, `## ID`, YAML `id:` (`_ELEM_DEF_*`) — NOT the BRD FR-bullet
+   `- **ID — title**`. So "duplicate `0000` → HASH01" (claim 6 / R3) holds for
+   the definition shapes (which cover BDD scenario `id:`, headings, etc.) but
+   NOT for BRD §7 FR-bullets (a pre-existing uniqueness-scope gap, not introduced
+   here). The convention relies on author discipline + the documented
+   ordinal-hex increment there; HASH01 backs the definition-shape layers.
 
 ## Objective
 

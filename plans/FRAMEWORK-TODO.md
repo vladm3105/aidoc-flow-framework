@@ -294,7 +294,11 @@
   `ID_NAMING_STANDARDS.md` as the normative source + add a
   "hand-authored hashes are placeholders until canonicalized" statement
   there (Engramory #2).
-- *Status:* OPEN — P1.
+- *Status:* CORE SHIPPED (PROVISIONAL-IDS-001, spec 0.31.0, 2026-06-29) —
+  `id_state` flag + `PROV01` advisory, ordinal-hex provisional form + `0000`
+  template literal, `PH01` lowercase fix, normative SHA-256 algorithm in
+  `ID_NAMING_STANDARDS.md`. **Remaining:** the reference-aware `rehash` subcommand
+  (+ `rehash --check`) → **PROVISIONAL-IDS-002** (follow-on).
 
 ### `[template]` `D54-F06-IPLAN-PROJECT-TYPES` — IPLAN hardcodes a Python source tree
 
