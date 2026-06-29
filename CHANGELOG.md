@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML form; plugin 0.22.0 → 0.23.0 (2026-06-28)
+
+Completes the YAML-BDD arc on the authoring side. The four `doc-bdd*` plugin
+skills (`doc-bdd`, `-audit`, `-fixer`, `-autopilot`) rewritten to author +
+validate the structured YAML scenario model instead of Gherkin `@`-tags
+(per-stream detail in [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md)).
+Plugin MINOR **0.22.0 → 0.23.0** (no framework change). 148 conformance +
+plm_lint clean + 142 unit green; the 5-section template-alignment contract
+preserved (content-only edits).
+
 ### Changed — YAML-BDD-SCHEMA PR-4: example corpus BDD-01 migrated to YAML scenarios (2026-06-28)
 
 The corpus payoff — the framework migrates its own showcase artifact end-to-end

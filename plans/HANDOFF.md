@@ -56,8 +56,12 @@
 >    non-Gherkin → no change. New corpus baseline: **1 TH-RES, 5 REFGRAN, 6 STY02**.
 >    290 unit/conformance green; acceptance unchanged (3 pre-existing SPEC `@adr`
 >    failures). Not framework/ → no bump.
-> 5. **PR-5** `doc-bdd*` skills rewrite (keep `test_skill_template_alignment` /
->    `plm_lint` / `test_autopilot_saga_parity` green).
+> 5. ✅ **PR-5 (SHIPPED this session) — `doc-bdd*` skills author the YAML form.**
+>    All four (`doc-bdd`/`-audit`/`-fixer`/`-autopilot`) rewritten off Gherkin
+>    `@`-tags to the structured `scenarios:` YAML model (`ears:` list as
+>    required-upstream; `BDD-SCHEMA-001`; `feature:` block no `ears`). 5-section
+>    template-alignment contract preserved (content-only). Plugin MINOR
+>    **0.22.0 → 0.23.0**; 148 conformance + plm_lint clean + 142 unit green.
 > 6. **PR-6** governance docs (GD-03 note, `TAG_SYNTAX.md` BDD row,
 >    `QUICK_REFERENCE`, 04_BDD playbooks).
 > 7. ~~**PR-7** standalone version bump~~ — **ABSORBED into PR-3** (GATE-SPEC

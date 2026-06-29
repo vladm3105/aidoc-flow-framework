@@ -1,6 +1,6 @@
 ---
 name: doc-bdd-autopilot
-description: Generate BDD scenarios end-to-end from EARS, a prompt, or an IPLAN - detect input, generate Gherkin scenarios, validate, and run the audit/fix cycle. Use to create or batch-create BDD suites.
+description: Generate BDD scenarios end-to-end from EARS, a prompt, or an IPLAN - detect input, generate YAML scenarios, validate, and run the audit/fix cycle. Use to create or batch-create BDD suites.
 metadata:
   tags:
     - sdd-workflow
@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.22.0"
+    version: "0.23.0"
     framework_spec_version: "0.29.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -35,7 +35,7 @@ passing ADR-Ready score — for one BDD or a batch.
 
 | Skill | Role |
 |-------|------|
-| `../doc-bdd/SKILL.md` | BDD structure, Gherkin syntax, and authoring rules (generation) |
+| `../doc-bdd/SKILL.md` | BDD structure, YAML scenario schema, and authoring rules (generation) |
 | `../doc-bdd-audit/SKILL.md` | quality gate (ADR-Ready scoring + findings) |
 | `../doc-bdd-fixer/SKILL.md` | applies fixes from the audit report |
 | `../doc-naming/SKILL.md` | element-ID standards |
@@ -127,10 +127,11 @@ manual dry-runs.
 2. **Type & scope** — confirm the referenced EARS (and its PRD/BRD elements)
    exist; map EARS statements to scenario categories; reserve the next `BDD-NN`.
 3. **Generation** — produce the BDD per `../doc-bdd/SKILL.md`: Document Control
-   first, all 5 sections, scenarios across the five categories with executable
-   Given-When-Then steps, cumulative tags `@brd @prd @ears` (Gherkin-native),
-   `@scenario-id` IDs `BDD.NN.03.xxxx`, `@threshold:` references, and a
-   `spec_trace` per scenario. Sequence diagrams via `../charts-flow/SKILL.md`.
+   first, all 5 sections, a `feature:` block, and a `scenarios:` YAML list across
+   the five categories — each scenario a mapping with `given`/`when`/`then` phase
+   lists, an element-level `ears:` list, `id` `BDD.NN.03.xxxx`, `type`/`priority`,
+   inline `@threshold:` references, and a `spec_trace`. Sequence diagrams via
+   `../charts-flow/SKILL.md`.
 4. **Validation** — run `../doc-bdd-audit/SKILL.md` from scratch.
 5. **Audit ↔ fix cycle** — while score < threshold and iterations < max: run
    `../doc-bdd-fixer/SKILL.md`, then re-audit. On pass, update

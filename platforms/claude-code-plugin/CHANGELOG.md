@@ -14,6 +14,30 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### [0.23.0] — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML scenario form (2026-06-28)
+
+The four BDD skills now author + validate the YAML-native scenario model
+(framework spec `0.29.0`; corpus migrated in PR-4), not Gherkin `@`-tags.
+
+- **`doc-bdd`** — Purpose/structure/categories/rules/creation/validation rewritten:
+  scenarios are a structured `scenarios:` YAML list (`id`/`type`/`priority`/
+  element-level `ears:` list/`given`-`when`-`then` phase lists/`spec_trace`); the
+  `feature:` block carries no `ears` (coverage = union of scenarios); thresholds
+  inline as `@threshold:`; the 5-section structure + section titles unchanged
+  (template-alignment conformance preserved).
+- **`doc-bdd-audit`** — audit dimensions: "Scenario quality / Upstream trace /
+  Scenario fields" replace the Gherkin-tag rows; coverage = scenario-schema
+  validity.
+- **`doc-bdd-fixer`** — content phase fixes scenario fields + inline thresholds;
+  migration note (copy `@scenario-id` verbatim into `id:`); `ears:`-list as the
+  required-upstream trace.
+- **`doc-bdd-autopilot`** — generation produces the `feature:` block + `scenarios:`
+  YAML list.
+- Plugin MINOR bump **0.22.0 → 0.23.0** (skill `version:` fanout, plugin.json,
+  marketplace.json, README, `docs/TAGGING.md` release row). 148 conformance
+  (incl. skill-template-alignment, plugin-release-metadata, autopilot-saga-parity)
+  - plm_lint clean + 142 unit green.
+
 ## [0.22.0] — 2026-06-22
 
 ### Added
