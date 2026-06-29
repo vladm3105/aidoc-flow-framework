@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.22.0"
+    version: "0.23.0"
     framework_spec_version: "0.29.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]

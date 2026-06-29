@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.22.0"
+    version: "0.23.0"
     framework_spec_version: "0.29.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
@@ -331,9 +331,9 @@ canonical required-section set.
 |-------|----------|
 | Element ID format | every ID matches `BDD.NN.SS.xxxx` (4-hex hash) |
 | Structure | every section enumerated above is present and non-empty |
-| Gherkin quality | scenarios are atomic, executable, valid Given-When-Then |
-| Cumulative tags | `@brd @prd @ears` present, Gherkin-native, no space after colon |
-| Scenario tags | each scenario has `@scenario-type`, priority, `@scenario-id`, `spec_trace` |
+| Scenario quality | scenarios are atomic, well-formed YAML, valid Given/When/Then phase lists |
+| Upstream trace | each scenario carries an element-level `ears:` list (BDD `required_tags`); the feature has no `ears` |
+| Scenario fields | each scenario has `id`, `type`, `priority`, `given`/`when`/`then`, `spec_trace` (BDD-SCHEMA-001 clean) |
 | Thresholds | quantitative values use `@threshold:` keys (no magic numbers) |
 | Quality gate | ADR-Ready score ≥ threshold (default 90) |
 
@@ -510,9 +510,9 @@ markdownlint over-strictness — fix here, not by lint-ignoring.
 Output: `BDD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
-**Structural Findings** · **Content Findings** · **Coverage Findings** (Gherkin
-syntax, five-category coverage, trace-resolution coverage, `spec_trace`
-presence) ·
+**Structural Findings** · **Content Findings** · **Coverage Findings**
+(scenario-schema validity, five-category coverage, trace-resolution coverage,
+`spec_trace` presence) ·
 **Fix Queue** (`auto_fixable` / `manual_required` / `blocked`) · **Recommended
 Next Step** · **Cleanup Summary**.
 

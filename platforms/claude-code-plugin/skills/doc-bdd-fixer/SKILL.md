@@ -1,6 +1,6 @@
 ---
 name: doc-bdd-fixer
-description: Apply fixes to a BDD suite from the latest doc-bdd-audit report - structure, links, element IDs, Gherkin content, references, and upstream drift. Use after an audit reports issues.
+description: Apply fixes to a BDD suite from the latest doc-bdd-audit report - structure, links, element IDs, YAML scenario content, references, and upstream drift. Use after an audit reports issues.
 metadata:
   tags:
     - sdd-workflow
@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.22.0"
+    version: "0.23.0"
     framework_spec_version: "0.29.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -40,8 +40,8 @@ BDD (use `../doc-bdd/SKILL.md` / `../doc-bdd-autopilot/SKILL.md`).
 
 Consume the latest `BDD-NN.A_audit_report_vNNN.md`. Back up the BDD before
 editing (`tmp/backup/BDD-NN_<ts>/`); on error, restore. Element-ID standards
-come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure and Gherkin
-rules from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml` and `README.md`.
+come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure and the YAML
+scenario schema from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml` and `README.md`.
 
 ## Remediate Mode
 
@@ -236,11 +236,11 @@ Run in order; later phases assume the earlier ones succeeded.
 | Phase | Scope | Representative actions |
 |-------|-------|------------------------|
 | 0 — Structure | folder/index rule | move BDD into `docs/04_BDD/BDD-NN_{slug}/`; rename folder to match ID; ensure index present; fix relative links after the move |
-| 1 — Missing files | referenced-but-absent | create glossary / index / `.feature` placeholders from templates |
+| 1 — Missing files | referenced-but-absent | create glossary / index placeholders from templates |
 | 2 — Links | broken/abs paths | recompute relative paths; convert absolute → relative |
 | 3 — Element IDs | legacy/invalid IDs | re-derive `BDD.NN.SS.xxxx` (section + content hash); drop legacy `BDD.NN.xxxx`, numeric type-codes, `SCEN-XXX`/`STEP-XXX` prefixes |
-| 4 — Content | placeholders, tags, thresholds | fill template dates; move comment tags to Gherkin-native; add `@scenario-type`/priority/`WITHIN` thresholds; flag `[TODO]`/`[TBD]` and missing Given-When-Then for manual completion |
-| 5 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — BDD requires `@ears`); fix cross-doc paths; add/repair `spec_trace`; update the traceability matrix |
+| 4 — Content | placeholders, fields, thresholds | fill template dates; add missing scenario fields (`type`/`priority`/`ears`/`id`); add inline `WITHIN @threshold:`; flag `[TODO]`/`[TBD]` and missing `given`/`when`/`then` phase lists (BDD-SCHEMA-001) for manual completion |
+| 5 — References | traceability | ensure each scenario carries an element-level `ears:` list (BDD's `required_tags` per `LAYER_REGISTRY.yaml` necessary-upstream contract); fix cross-doc paths; add/repair `spec_trace`; update the traceability matrix |
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`upstream_mode`; when upstream EARS drifts, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Scenario blocks at category boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
@@ -249,10 +249,11 @@ ID = `BDD.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on
 collision). Document-level refs (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) stay in dash
 form; scenarios live in section `03`.
 
-**Content-preservation in Gherkin:** never modify step text (Given/When/Then) or
-Examples-table data; only add missing tags/metadata and replace hardcoded values
-with `@threshold:` references. Missing keywords/structure are flagged, not
-invented.
+**Content-preservation:** never modify scenario step text (`given`/`when`/`then`)
+or `examples` data; only add missing fields/metadata and replace hardcoded values
+with inline `@threshold:` references. Missing fields/structure are flagged, not
+invented. On migration from Gherkin, copy each `@scenario-id` verbatim into the
+scenario `id:` — never recompute the hash (keeps downstream `@bdd:` stable).
 
 **Tiered upstream drift** (EARS changed since BDD): <5% change → Tier 1
 auto-merge new scenarios (patch bump); 5–15% → Tier 2 auto-merge + detailed
@@ -275,7 +276,7 @@ Tag every applied fix and surface counts in the report:
 
 - Never delete existing scenario content; insert template blocks only where a
   section or scenario is missing or below minimum structure.
-- Move equivalent tags to their Gherkin-native position rather than duplicating.
+- Carry scenario upstream trace as `ears:` list fields (not `@`-tags); never duplicate.
 - Renumber/restructure only within the same document; flag if a cross-reference
   anchor would break.
 

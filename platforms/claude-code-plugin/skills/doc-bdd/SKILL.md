@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.22.0"
+    version: "0.23.0"
     framework_spec_version: "0.29.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -22,10 +22,12 @@ metadata:
 ## Purpose
 
 Create **Behavior-Driven Development (BDD)** scenarios — Layer 4 of the SDD
-flow. A BDD suite translates EARS formal requirements into executable
-Given-When-Then (Gherkin) scenarios, each carrying the required upstream
-trace tag (`@ears`) and a `spec_trace` link forward to the SPEC sections it
-exercises.
+flow. A BDD suite translates EARS formal requirements into structured **YAML
+scenarios** (Given/When/Then phase lists carried in a ` ```yaml ` block, NOT
+Gherkin `@`-tags), each carrying an **element-level `ears:` trace list** and a
+`spec_trace` link forward to the SPEC sections it exercises. (An optional
+on-demand emitter, `tools/bdd_to_gherkin.py`, generates `.feature` files from the
+YAML if a runner ever needs them.)
 
 **Layer**: 4. **Upstream**: EARS (per the necessary-upstream contract;
 upstream PRD/BRD lineage is reachable transitively via the @-tag chain).
@@ -68,58 +70,63 @@ via the EARS document's own @-tag chain.
 
 Per `BDD-TEMPLATE.yaml`, every BDD document carries:
 
-1. **Document Control** — version, status, dates, author, priority, the
-   required upstream reference `@ears`, plus the ADR-Ready score.
-2. **Feature Definition** — feature name matching the EARS requirement, an
-   `As a / I want / So that` description, and a `Background` (system state +
-   IANA timezone, default `America/New_York`).
-3. **Scenario Structure** — the Given-When-Then scenarios across the five
-   categories (below).
-4. **Traceability** — required upstream tag (`@ears`), downstream expectations,
-   and the health/coverage score.
+1. **Document Control** — version, status, dates, author, priority, plus the
+   ADR-Ready score. (No `@ears`/`@prd`/`@brd` reference rows — upstream trace
+   lives on each scenario's `ears:` list.)
+2. **Feature Definition** — a ` ```yaml ` `feature:` block: name matching the
+   EARS requirement, an `As a / I want / So that` description, and a `background`
+   (bare step text + IANA timezone, default `America/New_York`). The feature
+   carries **no `ears`** — its EARS coverage is the union of its scenarios.
+3. **Scenario Structure** — a ` ```yaml ` `scenarios:` flat list (Given/When/Then
+   phase lists), each with a `type:` across the five categories (below).
+4. **Traceability** — the derived coverage summary + downstream expectations and
+   the health/coverage score.
 5. **Glossary** — flat list of project-specific terms.
 
-See `BDD-TEMPLATE.yaml` for per-section content and scenario conventions.
+See `BDD-TEMPLATE.yaml` for per-section content and the normative scenario schema.
 
 ### Scenario categories (Section 3)
 
-Every scenario carries `@scenario-type:{category}`, a priority tag
-(`@p0-critical` … `@p3-low`), a `@scenario-id:BDD.NN.03.xxxx` tag, executable
-Given-When-Then steps, threshold references for timing, and a `spec_trace` list.
+Every scenario is a YAML mapping with `id: BDD.NN.03.xxxx`, `name`, `type`,
+`priority` (`p0-critical` … `p3-low`), an element-level `ears:` list, `given` /
+`when` / `then` phase lists, and a `spec_trace` list (`notes` optional).
 
-| Category | Tag | Min | Priority |
-|----------|-----|-----|----------|
-| success | `@scenario-type:success` | 1 / EARS | P0–P1 |
-| error | `@scenario-type:error` | 1 / error | P1–P2 |
-| recovery | `@scenario-type:recovery` | 1 / circuit-breaker | P1 |
-| parameterized | `@scenario-type:parameterized` | 1 / multi-value | P1–P2 |
-| optional | `@scenario-type:optional` | 1 / optional param | P2–P3 |
+| Category | `type:` value | Min | Priority |
+|----------|---------------|-----|----------|
+| success | `success` | 1 / EARS | p0–p1 |
+| error | `error` | 1 / error | p1–p2 |
+| recovery | `recovery` | 1 / circuit-breaker | p1 |
+| parameterized | `parameterized` | 1 / multi-value | p1–p2 |
+| optional | `optional` | 1 / optional param | p2–p3 |
 
-### Gherkin and threshold rules
+A `parameterized` scenario adds `outline: true` + `examples: {headers, rows}`.
 
-- Tags are **Gherkin-native**, on separate lines **before** `Feature:` — never
-  in comments. No spaces after the colon in tags: `@ears:EARS.01.03.5e2a`.
+### Scenario YAML rules
+
+- Scenarios are **structured YAML**, not Gherkin `@`-tags. Trace is the
+  `ears:` list (element-level only — `REFGRAN01` rejects doc-form `EARS-NN`);
+  `id`/`type`/`priority` are fields, not tags.
 - Times include seconds (`HH:MM:SS`) with IANA timezones (`America/New_York`),
   never abbreviations like `EST`.
-- Quantitative values use `@threshold:` keys (e.g.
-  `WITHIN @threshold:PRD.NN.perf.api.p95`) — no hardcoded magic numbers.
-- Keep scenarios atomic (one behavior each). Single `.feature` per module up to
-  ~50,000 tokens; beyond that, start a new self-contained BDD document — do not
-  split into sectioned files.
+- Quantitative values use `@threshold:` keys written **inline in the step
+  prose** (e.g. `… WITHIN @threshold:PRD.NN.perf.api.p95`) — no magic numbers.
+- Keep scenarios atomic (one behavior each). One BDD document per module up to
+  ~50,000 tokens; beyond that, start a new self-contained BDD document.
 
-### Element IDs and upstream tags
+### Element IDs and upstream trace
 
 - Hierarchical element IDs: `BDD.{doc_id}.{section_id}.{hash}` (e.g.
   `BDD.01.03.d7a2`; `hash` = first 4 hex of SHA256 of
   `"{doc_id}:{section_id}:{title}:{description}"` from BDD content, extend to 8
-  on collision). Scenarios live in section `03`.
-- BDD is Layer 4, so it carries the required upstream tag `@ears` (per the
-  necessary-upstream contract). Downstream artifacts tag it:
-  `@bdd: BDD.01.03.8f4c`. Upstream PRD/BRD lineage is reachable transitively
-  via the EARS document's own @-tag chain — do not emit `@brd:`/`@prd:` on
-  BDD elements.
+  on collision). Scenarios live in section `03`, in each scenario's `id:` field.
+- BDD's required upstream trace is each scenario's element-level `ears:` list
+  (per the necessary-upstream contract — satisfies `required_tags: [ears]`).
+  Downstream artifacts cite BDD scenarios with `@bdd: BDD.01.03.8f4c` tags
+  (unchanged). Upstream PRD/BRD lineage is reachable transitively via the EARS
+  document's own @-tag chain — do not emit `@brd:`/`@prd:`/`@ears` tags on BDD.
 - **Removed patterns** (do not use): `SCENARIO-XXX`, `SCEN-XXX`, `TS-XXX`,
-  `STEP-XXX`, numeric type-codes, and the legacy 3-segment `BDD.NN.xxxx`.
+  `STEP-XXX`, numeric type-codes, the legacy 3-segment `BDD.NN.xxxx`, and
+  Gherkin `@ears`/`@scenario-type`/`@scenario-id` tags (now YAML fields).
 
 ### Downstream trace (spec_trace)
 
@@ -139,10 +146,12 @@ This is the req-to-SPEC bridge that downstream layers consume.
    `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality).
 3. **Create the document** from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml`;
    complete all 5 sections, Document Control first.
-4. **Write scenarios** per EARS requirement across the five categories; add
-   Background, threshold references, and `spec_trace` for each.
-5. **Add the required upstream tag** `@ears` (Gherkin-native, before
-   `Feature:`) and `@scenario-id` per scenario.
+4. **Write the `feature:` block + the `scenarios:` list** (YAML) per EARS
+   requirement across the five categories; each scenario carries `id`, `type`,
+   `priority`, an element-level `ears:` list, `given`/`when`/`then` phase lists,
+   inline `@threshold:`, and `spec_trace`. Add the feature `background`.
+5. **Set each scenario's element-level `ears:` list** (this is the required
+   upstream trace) and a unique `id:` — no Gherkin `@`-tags.
 6. **Update the BDD index** `docs/04_BDD/BDD-00_index.md` in the same change.
 7. **Validate** (below) and commit the BDD and index together.
 
@@ -151,14 +160,14 @@ This is the req-to-SPEC bridge that downstream layers consume.
 **This skill is the validator** (no runtime code). Apply against `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/README.md` and `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`.
 
 - [ ] Document Control is the first section; all 5 sections present and non-empty.
-- [ ] Required upstream tag `@ears` present, Gherkin-native, no spaces after
-      colon (per necessary-upstream contract).
-- [ ] Every scenario has `@scenario-type`, a priority tag, `@scenario-id`,
-      Given-When-Then steps, and a `spec_trace`.
-- [ ] All five scenario categories represented; scenarios atomic and executable.
-- [ ] Quantitative values use `@threshold:` keys; times are `HH:MM:SS` with IANA
-      timezones.
-- [ ] Element IDs match `BDD.NN.SS.xxxx`; no removed patterns.
+- [ ] Every scenario carries an element-level `ears:` list (satisfies the
+      necessary-upstream contract); the feature has **no** `ears`.
+- [ ] Every scenario has `id`, `type`, `priority`, `given`/`when`/`then` phase
+      lists, and a `spec_trace` (BDD-SCHEMA-001 clean).
+- [ ] All five scenario `type` categories represented; scenarios atomic.
+- [ ] Quantitative values use inline `@threshold:` keys; times are `HH:MM:SS`
+      with IANA timezones.
+- [ ] Element IDs match `BDD.NN.SS.xxxx`; no removed patterns / Gherkin tags.
 - [ ] Traceability section / index updated; no broken links.
 - [ ] Diagram contract: sequence-diagram tag present if a scenario flow is
       illustrated (use `../charts-flow/SKILL.md`).
@@ -195,10 +204,10 @@ framework defaults. Authority:
 
 | | |
 |---|---|
-| **Purpose** | Executable Given-When-Then acceptance scenarios |
+| **Purpose** | Structured YAML Given/When/Then acceptance scenarios |
 | **Layer** | 4 |
-| **Upstream tags** | `@ears` (per necessary-upstream contract) |
-| **Key idea** | EARS → Gherkin scenarios with `spec_trace` to SPEC |
+| **Upstream trace** | scenario `ears:` lists (per necessary-upstream contract) |
+| **Key idea** | EARS → YAML scenarios with `spec_trace` to SPEC |
 | **Must include** | Document Control (first), 5 scenario categories, thresholds |
 | **Execution** | QA staging only — never CI |
 | **Next** | `doc-adr` |
