@@ -12,6 +12,22 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — tooling backlog: changelog-entry test convention + SKILL_AUTHORING bump straggler (2026-06-29)
+
+Two recurring tooling papercuts (no version impact):
+
+- **`tests/release/test_changelog_entry.py`** (`RELEASE-CHANGELOG-TEST-CONVENTION-GAP`)
+  — was asserting a top-level `## [X.Y.Z]` heading while the repo nests the
+  current version under `## [Unreleased]` as a `### … framework spec X → Y`
+  subsection, so it was latently RED at HEAD (invisible only because CI doesn't
+  run `tests/release/`). Now accepts the version in either a released top-level
+  heading or an Unreleased subsection heading.
+- **`tools/bump_version.py`** (`BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER`) — now
+  sweeps the backtick-wrapped `framework_spec_version: "X"` in
+  `SKILL_AUTHORING.md`'s §6 checklist that the column-anchored `bump_fsv` regex
+  missed every bump (left stale at `0.27.0`, 3 bumps behind); corrected to
+  `0.30.0` and auto-maintained henceforth.
+
 ### Added — ELEMENT-COVERAGE-001: element-level COV01/COV02 coverage; framework spec 0.29.1 → 0.30.0 (2026-06-29)
 
 Upgrades the coverage lint gates from **document-level** to **element-level**

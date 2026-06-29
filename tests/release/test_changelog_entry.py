@@ -21,11 +21,20 @@ class ChangelogEntryTests(unittest.TestCase):
             self.skipTest("CHANGELOG.md not present")
         version = (FRAMEWORK / "VERSION").read_text(encoding="utf-8").strip()
         changelog = CHANGELOG.read_text(encoding="utf-8")
-        pattern = rf"^##\s*\[?{re.escape(version)}\]?"
+        # The current version's entry may appear in either form (RELEASE-CHANGELOG-
+        # TEST-CONVENTION-GAP):
+        #   * a released top-level heading — ``## [0.30.0]`` / ``## 0.30.0``; or
+        #   * an ``## [Unreleased]`` subsection heading naming the version, the
+        #     convention this repo uses — ``### Added — … framework spec X → 0.30.0``.
+        # Match the version in any level-2/3 heading line, not just a bracketed
+        # top-level one. The trailing lookahead avoids a prefix match (0.30.0 in
+        # 0.30.01).
+        pattern = rf"^#{{2,3}}\s+.*{re.escape(version)}(?![\d.])"
         self.assertRegex(
             changelog,
             re.compile(pattern, re.MULTILINE),
-            f"CHANGELOG.md has no '## {version}' section",
+            f"CHANGELOG.md has no heading naming the current version {version} "
+            f"(neither a released '## [{version}]' nor an '[Unreleased]' '### … {version}' entry)",
         )
 
     def test_no_placeholder_orphans(self):

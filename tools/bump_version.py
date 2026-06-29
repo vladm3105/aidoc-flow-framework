@@ -109,6 +109,20 @@ def main(argv: list[str]) -> int:
     skill_authoring = BUNDLE / "docs" / "SKILL_AUTHORING.md"
     if skill_authoring.exists():
         n += bump_fsv([skill_authoring], new)
+        # BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER: the §6 checklist line carries
+        # `framework_spec_version: "X"` INSIDE a backtick-wrapped list item, not
+        # the column-anchored frontmatter form `bump_fsv` matches — so it was
+        # missed every bump and went stale. Sweep any remaining occurrence with an
+        # unanchored rewrite (idempotent). Only touches `framework_spec_version`
+        # strings — never the plugin `version:` (independent stream).
+        sa = skill_authoring.read_text(encoding="utf-8")
+        patched = re.sub(
+            r'framework_spec_version:\s*"\d+\.\d+\.\d+"',
+            f'framework_spec_version: "{new}"',
+            sa,
+        )
+        if patched != sa:
+            skill_authoring.write_text(patched, encoding="utf-8")
     print(f"Updated {n} framework_spec_version declaration(s)")
 
     # Plugin README framework-spec strings (conformance-checked; must be fixed
