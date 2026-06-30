@@ -3,7 +3,9 @@
 ## Overview
 
 BRDs capture business objectives, stakeholder needs, and success criteria as the
-first step in the SDD workflow. Each BRD represents one MVP iteration cycle.
+first step in the SDD workflow. Each BRD *set* — a platform BRD plus its child
+feature BRDs (linked by `@depends:`) — represents one MVP iteration cycle; a
+cycle is not limited to a single BRD.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
@@ -31,10 +33,17 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 ## Lifecycle: MVP → PROD → NEW MVP
 
-Each BRD represents ONE iteration cycle (5-15 requirements):
+Each BRD *set* represents ONE iteration cycle (5-15 requirements per BRD). A set
+is one platform BRD + its feature BRDs (typed via `brd_type`, linked by
+`@depends:`); a single-BRD set is the common small case, not the only shape:
 
 ```text
-BRD-01 (MVP) → Production v1 → Feedback → BRD-02 (NEW MVP) → Production v2
+Cycle = BRD set:
+  BRD-01 (platform)
+    ├── BRD-02 (feature, @depends: BRD-01)
+    └── BRD-03 (feature, @depends: BRD-01)
+
+BRD set (MVP) → Production v1 → Feedback → next BRD set (NEW MVP) → Production v2
 ```
 
 - New features = New BRD (don't expand existing BRDs)

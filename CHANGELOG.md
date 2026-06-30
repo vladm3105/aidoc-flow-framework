@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — BeeLocal P3 docs-clarification sweep (BL-SIZE-UNITS, BL-BRD-SET-WORDING, BL-VENDOR-NAME-SCOPE); framework spec 0.32.2 → 0.32.3 (2026-06-29)
+
+Three small wording clarifications from BeeLocal consumer feedback, batched (no
+behavior change):
+
+- **BL-SIZE-UNITS** — `AUTHORING_STYLE.md` now states the words-vs-tokens
+  relationship: section/document targets are in **words** (style guidance); the
+  50 000-**token** figure is the document **split trigger**.
+- **BL-BRD-SET-WORDING** — `01_BRD/README.md` reworded "each BRD = one cycle" →
+  "each BRD **set** (platform + feature BRDs, linked by `@depends:`) = one
+  iteration cycle", with a parent/child tree example (the prior wording caused
+  real BeeLocal planning confusion).
+- **BL-VENDOR-NAME-SCOPE** — `BRD-TEMPLATE.yaml` `adr_topics` guidance clarifies
+  the "no vendor names" rule applies to the topic title/`business_driver`
+  (stay business-level); vendor names ARE allowed in `recommended_selection`
+  (the decision record).
+
+PATCH bump 0.32.2 → 0.32.3; 314 conformance+unit green; bundle re-vendored
+byte-identical.
+
 ### Changed — ENG-IPLAN-REGISTRY-README: document the IPLAN index-registry vs document schema; framework spec 0.32.1 → 0.32.2 (2026-06-29)
 
 The `IPLAN-00_index.yaml` (`iplan-registry`, no `document_control`) vs

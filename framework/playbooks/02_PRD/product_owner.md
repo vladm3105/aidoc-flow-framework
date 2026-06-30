@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: product_owner
 weight: 30
 agent: requirements-analyst
-framework_spec_version: "0.32.2"
+framework_spec_version: "0.32.3"
 ---
 # product_owner lens — PRD layer
 

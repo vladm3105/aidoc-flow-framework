@@ -677,7 +677,7 @@
 - *Fix shape:* reword to "each BRD *set* (platform + its feature BRDs) = one
   iteration cycle" + add a parent/child tree example. Docs-only; ties to
   `ENG-BRD-SKETCH-ROADMAP` (same BRD-00/cycle area).
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ### `[docs]` `BL-SIZE-UNITS` — section `_size_target` in words vs document cap in tokens
 
@@ -688,7 +688,7 @@
 - *Fix shape:* one clarifying note (in `AUTHORING_STYLE.md` or the template
   size guidance) stating the two units' relationship — section targets are
   authoring guidance in words; the 50k-token cap is the split trigger.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ### `[template]` `BL-VENDOR-NAME-SCOPE` — "no vendor names" rule collides with `recommended_selection`
 
@@ -699,7 +699,7 @@
 - *Fix shape:* clarify the rule applies to titles/`business_driver` (stay
   business-level) but vendor names ARE allowed in `recommended_selection`
   (the decision record). One-line template note.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
 

@@ -648,9 +648,15 @@ adr_topics:
 
     NEVER reference specific ADR numbers (ADR-012, ADR-033) in BRD.
     BRDs are created BEFORE ADRs in SDD workflow.
-    Use business capability descriptions, not technology vendor names.
+    Use business capability descriptions, not technology vendor names, in the
+    topic TITLE and business_driver (stay business-level so the BRD does not
+    pre-decide the ADR).
       PASS: "Platform requires scalable relational storage with ACID compliance"
       FAIL: "MUST use PostgreSQL"
+    Scope (BL-VENDOR-NAME-SCOPE): vendor names ARE allowed in
+    `recommended_selection` — that field IS the decision record / the chosen
+    option. The "no vendor names" rule constrains the capability framing, not the
+    selection.
 
   topics:
     - id: "BRD.NN.08.xxxx"
