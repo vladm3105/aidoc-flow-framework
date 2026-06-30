@@ -58,6 +58,28 @@
 > payoff — catches the 16 orphaned BDD scenarios);
 > (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
 
+### `[ci]` `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — required `call / composition` check never lands on a PR head → every PR needs `--admin` to merge
+
+- *Discovered:* 2026-06-29 (PR #219; confirmed byte-identical state on #218,
+  merged ~1h earlier by `vladm3105` via admin). Branch protection on `main`
+  requires the `call / composition` context, but it is **structurally
+  unsatisfiable on a PR head**: `ai-review.yml` runs on `pull_request_target`,
+  whose run `head_sha` is the **base** (main HEAD), not the PR head. The
+  `workflow_run`-triggered `composition.yml` keys off that `head_sha` and posts
+  `call / composition` to main's HEAD — never to the PR's head commit. The PR's
+  combined status therefore stays `pending` on that context indefinitely.
+- *Impact:* the OPS-0062 green-path `gh pr merge` is `BLOCKED` even when all real
+  checks are green; every PR (incl. doc-only) is closed via `--admin` override.
+  This defeats the auto-merge default's normal path for this repo. **A
+  `skip-ai-review` label-cycle does NOT help** — it re-fires the same
+  `pull_request_target` → main-SHA composition.
+- *Fix locus:* **aidoc-flow-ci** `composition.yml` reusable — post the
+  `call / composition` status to
+  `github.event.workflow_run.pull_requests[0].head.sha` (the PR head) instead of
+  the run `head_sha`; OR make the required context conditional. Cross-repo (CI
+  library + operations auto-merge enforcer backlog); track the fix upstream.
+  Logged here for next-session merge-flow awareness.
+
 ### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — ✅ CLOSED (2026-06-29) — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
 
 - ✅ **Fixed:** `bump_version.py` now sweeps any unanchored
