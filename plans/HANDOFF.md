@@ -73,10 +73,14 @@
 >    retires the deferred corpus-remediation items (16 COV02 orphans,
 >    CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES, INDEX-UPSTREAM-RESIDUE).
 >
-> **Loose end:** local branch `feat/cfb-pr-1a-trace-contract` has **1 unmerged
-> commit** (`git cherry` confirmed not in `main`) — a `docs(governance)` trace-
-> contract correction that may be superseded by NECESSARY-UPSTREAM-001. Decide:
-> revive or `git branch -D`.
+> **Loose end RESOLVED (2026-06-29):** branch `feat/cfb-pr-1a-trace-contract`
+> (commit `a770c4fb`) reviewed and **deleted (local + origin)** — fully
+> superseded. Every correction it carried (TRACEABILITY.md necessary-upstream
+> heading/per-layer list/validation table, GATE-08-E003 resolution,
+> governance/README.md wording) already lives on `main` via #180's
+> cumulative→necessary-upstream reconciliation, and `main` goes further
+> (CFB-PR-2 coverage-matrix paragraph; richer GATE-08-E003 transitive-reach
+> note). Reviving it would have regressed the docs.
 >
 > **Coverage engine map** (the session's core surface — for the Hermes port +
 > any coverage follow-on): `tools/sdd_doc_lint/__init__.py` —
