@@ -32,10 +32,20 @@
 > backward gate `COV02` (#190, 0.25.0); GD-03 ref-granularity policy (#192,
 > 0.26.0); `BL-REF-GRANULARITY` + `D54-F07` enforcement `REFGRAN01` (#194,
 > 0.27.0); **element-level `COV01`/`COV02` — SHIPPED** (ELEMENT-COVERAGE-001,
-> spec 0.30.0; catches the 16 orphaned BDD scenarios). **Remaining open items**
-> (in this file): `CORPUS-REFGRAN-RECASCADE`, `BL-STATUS-SCOPE` (PR-3b), sub-PRs
-> 2c (phase reconciliation) + 2d (BDD roll-up), and the D54/ENG/BL items for the
-> later waves.
+> spec 0.30.0; catches the 16 orphaned BDD scenarios).
+>
+> **Session-end status (2026-06-29, spec `0.32.3`) — the full P1 wave is
+> shipped:** PR-4 `D54-F01-PROVISIONAL-IDS` (#212, 0.31.0) and PR-5
+> `D54-F02-REUSE-MANIFEST` (#214, 0.32.0) both SHIPPED, plus the P3 docs sweep
+> (ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE #215, ENG-IPLAN-REGISTRY-README #216,
+> BL-SIZE-UNITS/BL-BRD-SET-WORDING/BL-VENDOR-NAME-SCOPE #217). **Remaining
+> (next-session, see `plans/HANDOFF.md` ▶ RESUME HERE):** Hermes parity (the
+> large arc); `BL-READY-SCORE-ADVISORY` (52-occurrence template sweep);
+> `ENG-BRD-SKETCH-ROADMAP` (new sub-form); assorted D54/ENG/BL P3 stragglers.
+> **Subsumed / retired:** sub-PR 2c (`D54-F13` phase-leak) — part (a) is COV01;
+> 2d (`D54-F05` BDD-rollup) — COV02 is already corpus-wide; the corpus-remediation
+> items (`CORPUS-REFGRAN-RECASCADE`, `CORPUS-PRD-TH-RES`, `INDEX-UPSTREAM-RESIDUE`,
+> the 16 COV02 orphans) are deferred to the wholesale corpus regeneration.
 >
 > **YAML-BDD-SCHEMA arc — CORE COMPLETE (2026-06-28):** migrated BDD off
 > Gherkin-in-markdown to structured YAML `scenarios:` blocks. Plan #197 (D-0038,
