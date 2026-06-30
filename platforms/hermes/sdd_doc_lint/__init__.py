@@ -551,7 +551,7 @@ def lint_text(
         # Inline document IDs (TYPE-NN) of known artifacts must match the doc form.
         for m in _DOC_ID.finditer(line):
             tok = m.group(0)
-            if not doc_re.match(tok):
+            if not doc_re.match(tok) and not tok.upper().endswith("-INDEX"):
                 findings.append(Finding(rel, i, "ID02", f"malformed document id '{tok}'"))
         # Inline element IDs (TYPE.a.b.c…) of known artifacts must match the element form.
         for m in _ELEM_ID.finditer(line):
@@ -1055,6 +1055,24 @@ def _check_cascade(corpus: list[tuple[str, str]]) -> list[Finding]:
     return findings
 
 
+_INDEX_FILENAME = re.compile(r"(?:^|/)[A-Z]+-00_index")
+
+
+def _is_index_doc(rel: str, fm: dict | None) -> bool:
+    """An index/registry doc, exempt from instance-doc structural checks.
+
+    Recognized by the ``<TYPE>-00_index`` filename (the registry naming
+    convention — reliable even for ``.yaml`` registries whose body does not
+    parse as ``---`` frontmatter), OR a top-level ``artifact_type`` ending in
+    ``-INDEX`` (kept for back-compat with docs that declare it that way).
+    """
+    if _INDEX_FILENAME.search(rel or ""):
+        return True
+    if fm and str(fm.get("artifact_type") or "").strip().endswith("-INDEX"):
+        return True
+    return False
+
+
 def _check_required_template_sections(
     rel: str,
     text: str,
@@ -1075,10 +1093,8 @@ def _check_required_template_sections(
     if not artifact:
         return findings
     fm = _extract_frontmatter(text)
-    if fm:
-        declared = str(fm.get("artifact_type") or "").strip()
-        if declared.endswith("-INDEX"):
-            return findings
+    if _is_index_doc(rel, fm):
+        return findings
     targets = _load_section_targets(artifact, registry)
     if not targets:
         return findings
@@ -1450,7 +1466,7 @@ def _check_trace_resolution(
     findings: list[Finding] = []
     for rel, text in corpus:
         fm = _extract_frontmatter(text)
-        if fm and str(fm.get("artifact_type") or "").strip().endswith("-INDEX"):
+        if _is_index_doc(rel, fm):
             continue
         # Derive artifact's own layer-number for downstream-skip comparison.
         artifact_code = ""

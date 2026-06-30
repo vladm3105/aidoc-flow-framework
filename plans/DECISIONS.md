@@ -10,6 +10,23 @@ graduation.
 
 ---
 
+## D-0043 — `sdd_doc_lint` detects index/registry docs by filename (STRUCT01-INDEX-EXEMPTION)
+
+**2026-06-30.** Index/registry docs (`<TYPE>-00_index`) are exempted from the
+instance-doc structural checks (STRUCT01 required-sections, trace-resolution skip)
+via a `_is_index_doc(rel, fm)` helper keyed primarily on the **`<TYPE>-00_index`
+filename**, not on a top-level `artifact_type: <X>-INDEX`. Rationale: the filename
+is the one signal reliably present on all 8 layer index templates and a consumer's
+copies regardless of frontmatter shape — the `.md` templates nest `artifact_type`
+under `custom_fields` (6 with a bare value) and the IPLAN-00 registry is a `.yaml`
+with no `---` frontmatter (so `_extract_frontmatter` returns `None`). A top-level
+`artifact_type` ending in `-INDEX` is still honored for back-compat. Separately, the
+ID02 doc-id scan now skips `-INDEX` tokens (an index artifact-type marker is not a
+malformed doc-id) — chosen over adding a top-level `artifact_type: <X>-INDEX` to the
+templates, which would have self-tripped ID02 (the original docs-only plan; rejected
+at independent review Pass 2). Pure linter fix; no `framework/` change, no spec bump.
+Unblocks [[ENG-BRD-SKETCH-ROADMAP]] (BRD-00 index as a lint-clean roadmap home).
+
 ## D-0042 — readiness scores are advisory: marked in-template, no rubric (BL-READY-SCORE-ADVISORY)
 
 **2026-06-30.** The `<next>_ready_score` (in `document_control`) and `target_score`

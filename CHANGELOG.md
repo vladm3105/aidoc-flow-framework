@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — STRUCT01-INDEX-EXEMPTION: `sdd_doc_lint` recognizes index/registry docs so they lint clean (tooling; no spec change) (2026-06-30)
+
+`sdd_doc_lint`'s index exemption (STRUCT01 required-sections + the trace-resolution
+skip) read a **top-level** `artifact_type` ending in `-INDEX`, but the 8 layer index
+templates declare `artifact_type` under `custom_fields` (6 with a bare value) and the
+IPLAN-00 registry is a `.yaml` with no `---` frontmatter — so the exemption never
+fired and a consumer's copied index threw STRUCT01 errors (BRD-00: 17). The `-INDEX`
+marker also self-tripped the ID02 doc-id scan. Fixed in the linter: a filename-based
+`_is_index_doc(rel, fm)` (`<TYPE>-00_index`, reliable for all 8 incl. the `.yaml`) used
+in both exemptions, plus the ID02 scan skips `-INDEX` tokens. No template/`framework/`
+change → no spec bump (precedent: #198/#200). Vendored copies re-synced byte-identical;
+new conformance guard `test_index_template_lint.py` (lints the 8 real templates → 0
+STRUCT01 / 0 `-INDEX` ID02); 316 conformance+unit green; example-corpus lint unchanged.
+D-0043.
+
 ### Changed — BL-READY-SCORE-ADVISORY: mark `*_ready_score` / `target_score` advisory in the 7 layer templates; framework spec 0.32.3 → 0.32.4 (2026-06-30)
 
 The `<next>_ready_score` (`document_control`) and `target_score` (`health_score`)

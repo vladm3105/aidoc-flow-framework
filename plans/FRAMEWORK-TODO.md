@@ -80,6 +80,21 @@
   library + operations auto-merge enforcer backlog); track the fix upstream.
   Logged here for next-session merge-flow awareness.
 
+### `[lint]` `STRUCT01-INDEX-EXEMPTION-NESTED` — ✅ CLOSED (2026-06-30) — index/registry templates never hit the STRUCT01/trace `-INDEX` exemption
+
+- *Discovered:* 2026-06-30 by the ENG-BRD-SKETCH-ROADMAP plan's independent review.
+  The STRUCT01 required-section exemption + the trace-resolution INDEX skip both read
+  a **top-level** `artifact_type` ending in `-INDEX`, but the 7 `.md` layer index
+  templates nest `artifact_type` under `custom_fields` (6 with a bare value) and the
+  IPLAN-00 registry is a `.yaml` with no `---` frontmatter — so the exemption never
+  fired and a consumer's copied index threw STRUCT01 errors (BRD-00: 17). The
+  `-INDEX` token also self-tripped the ID02 doc-id scan.
+- ✅ **Fixed** (STRUCT01-INDEX-EXEMPTION, D-0043): filename-based `_is_index_doc`
+  (`<TYPE>-00_index`) used in both exemptions + ID02 skips `-INDEX` tokens; all 8
+  index templates (incl. the `.yaml`) lint clean; new conformance guard
+  `test_index_template_lint.py`. Pure linter fix, no spec bump.
+  Plan: `plans/STRUCT01-INDEX-EXEMPTION-PLAN.md`.
+
 ### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — ✅ CLOSED (2026-06-29) — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
 
 - ✅ **Fixed:** `bump_version.py` now sweeps any unanchored
