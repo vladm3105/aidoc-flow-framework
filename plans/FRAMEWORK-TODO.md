@@ -510,8 +510,39 @@
   IDs + enters the graph. (d) Add a `SKETCH-001` lint (forbid downstream
   content / element IDs on a Sketch) **only if** over-authoring drift shows
   up in practice — deferred to keep this out of MINOR territory.
-- *Status:* OPEN — P3, docs-only. Collapses back toward the `BRD-00_index`
-  home (the original "stub the rest" practice); not a standalone plan.
+- *Status:* SHIPPED (spec 0.32.5, 2026-06-30 — `ENG-BRD-SKETCH-ROADMAP-PLAN.md`,
+  D-0044). The `BRD-00` index "Planned BRDs" table is the roadmap home (extended
+  with cycle/PROD/`@depends:`/status `Planned|Sketch`); `01_BRD/README.md` documents
+  the project-init enumeration step + the trace-inert Sketch concept; cross-ref in
+  `BRD-TEMPLATE.yaml`. Built on STRUCT01-INDEX-EXEMPTION (D-0043). **Deferred
+  follow-ons** logged below: standalone Sketch-file lint support; the `_DOC_ID`
+  header/filename false-positive.
+
+### `[lint]` `SKETCH-FILE-STANDALONE` — standalone scope-only `status: Sketch` BRD *file* support (deferred from ENG-BRD-SKETCH-ROADMAP)
+
+- *Context:* ENG-BRD-SKETCH-ROADMAP (D-0044) shipped the Sketch concept as a
+  Planned-BRDs **row**. A *standalone* scope-only `BRD-NN_*.md` Sketch file (only
+  document_control/introduction/project_scope) is NOT supported: STRUCT01 enforces
+  the full required-section set on any instance BRD, and the index exemption covers
+  only `<TYPE>-00_index` docs.
+- *Fix shape (when triggered):* a STRUCT01 under-authoring exemption keyed on
+  `status: Sketch` (relaxes required sections) + a `SKETCH-001` over-authoring guard
+  (forbid element IDs / downstream tags on a Sketch). Pull only if authors actually
+  want standalone Sketch files / over-authoring drift appears. Likely framework MINOR.
+- *Status:* OPEN — P3, deferred (author (d): "only if over-authoring drift shows up").
+
+### `[lint]` `LINT-DOCID-HEADER-FALSE-POSITIVE` — `_DOC_ID` scan flags `<TYPE>-<word>` header/filename tokens as ID02
+
+- *Context:* surfaced by ENG-BRD-SKETCH-ROADMAP Pass-4 review. The ID02 doc-id scan
+  matches any `<KNOWN-TYPE>-<token>` and flags it unless it is `TYPE-<digits>` (or,
+  post-D-0043, ends in `-INDEX`). So legitimate prose tokens trip it: e.g.
+  `BRD-00_index.TEMPLATE.md` carries ID02 on the `PRD-Ready` column header and the
+  `BRD-TEMPLATE` quick-link. Pre-existing; orthogonal to the roadmap rows; harmless
+  (templates aren't CI-linted) but a consumer's filled-in index keeps 2 standing ID02s.
+- *Fix shape:* narrow the `_DOC_ID` malformed-id check — skip tokens inside
+  inline-code / link targets / known header words, or require the doc-id to be a
+  standalone token in a trace context. Needs care not to mask real malformed ids.
+- *Status:* OPEN — P3.
 
 ### `[template]` `ENG-PLATFORM-ADR-TIMING` — "ADRs created BEFORE PRD" wording conflicts with cumulative-tag chain
 
