@@ -124,10 +124,10 @@ $ cat VERSION
 0.23.0
 
 $ cat FRAMEWORK_SPEC_VERSION
-0.32.0
+0.32.1
 ```
 
-The plugin declares conformance to framework spec `0.32.0`; the canonical
+The plugin declares conformance to framework spec `0.32.1`; the canonical
 spec ships its version at `../../framework/VERSION`. The bundle vendors
 only the subtrees the plugin consumes (`layers/`, `governance/`,
 `registry/`, `playbooks/`) plus `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md` — not
@@ -142,7 +142,7 @@ enforces that `FRAMEWORK_SPEC_VERSION` matches the canonical
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
 | Version | `claude-code-plugin/v0.23.0` (independent SemVer) |
-| Conforms to | framework spec `0.32.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
+| Conforms to | framework spec `0.32.1` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Project changelog | [../../CHANGELOG.md](../../CHANGELOG.md) |

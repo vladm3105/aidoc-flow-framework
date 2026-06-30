@@ -502,7 +502,7 @@
   Non-conflicting with `ENG-FWD-COVERAGE`: that gate binds SPEC/TDD/IPLAN at
   *document* level, so it never relied on their element IDs. Keep the
   standard authoritative; the template just cross-references it.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.1, 2026-06-29) — cross-ref `_note` added to SPEC §3/§5 + IPLAN §2/§4 template guidance; exemption unchanged.
 
 ### `[docs]` `ENG-IPLAN-REGISTRY-README` — registry-vs-document schema distinction undocumented in the layer README
 

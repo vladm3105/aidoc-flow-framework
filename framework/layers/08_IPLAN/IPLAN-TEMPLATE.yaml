@@ -80,6 +80,9 @@ file_manifest:
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
     One IPLAN per SPEC component — all files belong to the same component.
+    Element-ID exemption: §2 file-manifest entries MAY omit `IPLAN.NN.SS.xxxx`
+    element IDs — lineage comes from `@spec`/`@tdd` citations. Do NOT over-assign
+    IDs. See `governance/ID_NAMING_STANDARDS.md` §"Element-ID exemptions".
   files:
     - path: "tests/unit/test_[module].py"
       order: 1
@@ -129,6 +132,10 @@ implementation_contracts:
     Contract types: Protocol Interface, Exception Hierarchy, State Machine,
     Data Model, DI Interface.
     State "No implementation contracts" if not applicable.
+    Element-ID exemption: §4 implementation contracts MAY omit `IPLAN.NN.SS.xxxx`
+    element IDs — lineage via `@spec`/`@tdd` citations + the contract type names.
+    Do NOT over-assign IDs. See `governance/ID_NAMING_STANDARDS.md`
+    §"Element-ID exemptions".
   _antipatterns:
     - "FAIL: contracts present but file count <3 — unnecessary overhead"
     - "FAIL: contracts missing but file manifest has 5+ files — guaranteed integration failures"

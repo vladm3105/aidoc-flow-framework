@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE: cross-reference the element-ID exemption in the SPEC/IPLAN templates; framework spec 0.32.0 → 0.32.1 (2026-06-29)
+
+The element-ID exemption for SPEC (§3/§5) and IPLAN (§2/§4) was documented only
+in `governance/ID_NAMING_STANDARDS.md` — an author reading just the template
+might over-assign IDs (noise) or worry they're missing required ones (Engramory
+feedback item 4). Added a one-line cross-reference `_guidance` note to
+`SPEC-TEMPLATE.yaml` (interfaces/behavior) and `IPLAN-TEMPLATE.yaml`
+(file_manifest/implementation_contracts) pointing to the standard's
+"Element-ID exemptions" section. The exemption itself is unchanged (the standard
+stays authoritative). PATCH bump 0.32.0 → 0.32.1; 314 conformance+unit green;
+bundle re-vendored byte-identical.
+
 ### Added — REUSE-MANIFEST-001: first-class reuse / satisfied-by-reference; framework spec 0.31.0 → 0.32.0 (2026-06-29)
 
 Lets a brownfield project **reuse an existing upstream artifact** instead of
