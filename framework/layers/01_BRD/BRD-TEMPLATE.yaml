@@ -33,7 +33,7 @@ metadata:
       Validation is performed by the platform's conformance tooling.
       It covers four checks:
         structure      — required keys, element ID format, empty section detection
-        readiness score — quality gate (PRD-Ready score; >=90/100 to proceed)
+        readiness score — advisory readiness target (PRD-Ready score; >=90/100, auditor-lens computed)
         preflight      — environment / input readiness
         consistency    — cross-document traceability
   c4_level:
@@ -172,7 +172,7 @@ document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Provide project identification and document tracking information.
-    PRD-Ready Score: >=90/100 required before downstream PRD generation.
+    PRD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     PRD-Ready Score quantifies business-level content quality.
     Deductions for: code blocks, API/technical terms, UI implementation details.
   project_name: "[Project Name]"

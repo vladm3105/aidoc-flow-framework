@@ -32,9 +32,9 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (quality gate), a
+      It covers a structural check, a readiness score (advisory readiness target), a
       preflight check, and cross-document consistency.
-      SPEC-Ready Score: >=90/100 required before downstream SPEC generation.
+      SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
 
       SPEC-Ready scoring criteria:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
@@ -122,7 +122,7 @@ document_control:
       Proposed → Accepted → Deprecated → Superseded
       (NOT Draft/In Review/Approved)
 
-    SPEC-Ready Score: >=90/100 required before SPEC generation.
+    SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     Originating Topic: links to PRD Section 14 (ADR topic elaboration).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded

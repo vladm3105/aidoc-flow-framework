@@ -20,7 +20,11 @@ incomplete. Marked via two comment/guidance-only mechanisms (no new content data
 keys in `document_control`): an inline `#` comment on each of the 14 score lines
 (matching the existing `document_control` inline-comment house style, e.g.
 `status: … # …`), plus one `_note:` guidance key per `health_score` block carrying
-the fuller statement (`_note:` is an established template guidance key). **No offline
+the fuller statement (`_note:` is an established template guidance key). The same
+PR also reconciled **15 `_guidance` prose lines** in those templates that still
+framed the score as "required before generation" / a "quality gate" (ai-review
+caught the contradiction on the impl PR) — the field marker and the surrounding
+prose now agree. **No offline
 rubric/tool was built** (author Q4) — that would contradict [[D-0040]]'s sibling
 D54-F03 stance that the audit skill is the rubric and `sdd_doc_lint` is the floor.
 IPLAN/08 carries neither field, so "all 7" = layers 01–07. PATCH 0.32.3 → 0.32.4.

@@ -32,9 +32,9 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (quality gate), a
+      It covers a structural check, a readiness score (advisory readiness target), a
       preflight check, and cross-document consistency.
-      EARS-Ready Score: >=90/100 required before downstream EARS generation.
+      EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
       Scoring criteria:
         Business clarity (40%): SMART objectives, capability definitions, acceptance criteria
         Requirements maturity (35%): system boundaries, stakeholder requirements, problem statement
@@ -123,7 +123,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    EARS-Ready Score: >=90/100 required before EARS generation.
+    EARS-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     BRD Reference: link to upstream BRD using hash-based IDs.
   product_name: "[Product Name]"
   version: "1.0"
