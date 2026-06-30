@@ -515,7 +515,7 @@
 - *Fix shape:* one-line note in `08_IPLAN/README.md` that registry vs
   document are distinct schemas + how each is validated (lint exempts
   `artifact_type: *-INDEX`). Docs-only.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.2, 2026-06-29) — 'Index registry vs document schema' section added to 08_IPLAN/README.md.
 
 ### `[hermes-parity]` `ENG-STALE-DEPTH-DOCS` — dead Lite/Standard/Full tables still in Hermes orchestrator docs
 

@@ -21,6 +21,22 @@ Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per TDD co
 
 **Rule of thumb**: Does the work implement a TDD test contract? → permanent. Does it restore intended behavior or fix a bug? → temporary.
 
+## Index registry vs document schema
+
+The `08_IPLAN/` directory holds **two distinct schemas**, so a naive "validate
+every `IPLAN-*.yaml`" glob will misfire:
+
+- **`IPLAN-00_index.yaml`** — `document_type: iplan-registry`. A registry of the
+  permanent IPLANs; it carries **no `document_control`** and declares no element
+  IDs or trace tags.
+- **`IPLAN-NN_{slug}.yaml`** — `document_type: iplan-document`. The execution
+  manifests, with full `document_control` + `@spec`/`@tdd` lineage.
+
+**Validation:** `sdd_doc_lint` already special-cases index docs — it exempts
+`artifact_type: *-INDEX` from the document-schema, trace-resolution, and element
+checks. So the registry is validated as a registry, the documents as documents;
+do not apply the `iplan-document` schema to `IPLAN-00_index`.
+
 ## Development/Work Plans (markdown)
 
 Distinct from BOTH YAML artifacts above is the **development/work plan** — the markdown plan-of-record an agent writes in a repository's `plans/` directory before a change, covering objective, scope, approach, task sequence, verification, and review trail. Its structure, the work-type applicability rules, and the review discipline are specified in [PLAN_STANDARD.md](PLAN_STANDARD.md); the copy-paste working instance is the repository's `plans/PLAN-TEMPLATE.md`.
