@@ -1,9 +1,20 @@
 # Session Handoff
 
-> **🟢 CONSUMER-FEEDBACK wave: PR-2 element-level COV01/COV02 (#209) → PR-4
-> PROVISIONAL-IDS-001 (#212) → PR-5 REUSE-MANIFEST-001 (D54-F02) SHIPPED
-> (framework spec `0.32.0`, 2026-06-29 — impl PR open, spec-tier sign-off).**
-> `main` at `9cba3ec7`; framework spec `0.32.0`, plugin `0.23.0`.**
+> **🟢 SESSION COMPLETE (2026-06-29) — CONSUMER-FEEDBACK P1 wave shipped + P3
+> docs cleared. `main` clean; framework spec `0.32.3`, plugin `0.23.0`. No open
+> PRs; nothing in flight.**
+>
+> **Shipped this session (10 PRs; framework spec `0.29.0 → 0.32.3`):** PR-3b
+> (#206, 0.29.1) · ELEMENT-COVERAGE-001 (#209, 0.30.0) · tooling backlog (#210) ·
+> PROVISIONAL-IDS-001 (#212, 0.31.0) · REUSE-MANIFEST-001 (#214, 0.32.0) ·
+> SPEC/IPLAN ID-exemption note (#215, 0.32.1) · IPLAN registry-schema note (#216,
+> 0.32.2) · BeeLocal docs sweep (#217, 0.32.3) · framework ci/v1.4.2 pin (#207) ·
+> aidoc-flow-ci #46 (ci/v1.4.2). Plus 3 plan PRs (#208/#211/#213) and
+> **D-0039/40/41**. The whole CONSUMER-FEEDBACK P1 wave (coverage engine /
+> provisional IDs / reuse) is delivered; the P3 docs backlog is essentially clear.
+>
+> **Per-arc detail (this session's work) below; the ▶ RESUME HERE list is the
+> next-session start point.**
 >
 > **REUSE-MANIFEST-001** (plan #213 merged → impl): satisfied-by-reference —
 > `reuse: {state: referenced, target: <doc_id|path>@<commit>}` frontmatter
@@ -42,31 +53,40 @@
 >
 > **▶ RESUME HERE — next session, priority order:**
 >
-> 1. ✅ **PR-3b** (PATCH framework `0.29.0 → 0.29.1`) — **DONE (PR open,
->    spec-tier sign-off).** The deferred governance polish:
->    `framework/playbooks/04_BDD/*.md` **bodies** (qa_lead, auditor,
->    chaos_engineer, security_engineer, tech_lead, operator — Gherkin→YAML
->    scenario prose) + `framework/QUICK_REFERENCE.md`. 148 conformance + 142
->    unit green; vendored byte-identity intact; corpus baseline unchanged.
-> 2. ✅ **Element-level COV01/COV02 upgrade** — **SHIPPED (ELEMENT-COVERAGE-001,
->    `0.30.0`, impl PR open).** Catches the 16 orphaned BDD scenarios. Plan
->    `plans/ELEMENT-COVERAGE-PLAN.md` (5 passes). **NEXT follow-up:** remediate
->    the 16 orphans — dispatch the framework skills to add the missing downstream
->    SPEC/TDD element citations (never hand-edit `examples/.../BDD-01.md`).
-> 3. **`CORPUS-REFGRAN-RECASCADE`** (`FRAMEWORK-TODO.md`) — now just the **5
->    SPEC/TDD/IPLAN `@adr`/`@tdd` doc-form edges** (PR-4 resolved the 2 BDD ones).
->    3 same-line drops + 1 table-cell (IPLAN-01:43) + 1 prose (SPEC-01:67). Run
->    the `doc-<layer>-fixer` skills in a plugin session, OR a `REFGRAN --fix`.
-> 4. Tooling/backlog (`FRAMEWORK-TODO.md`): `RELEASE-CHANGELOG-TEST-CONVENTION-GAP`
->    (keeps biting — we add `[Unreleased]` entries it doesn't recognize),
->    `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER`, `CORPUS-PRD-TH-RES`,
->    `INDEX-UPSTREAM-RESIDUE`.
+> 1. **Hermes parity** — the one large outstanding arc. Hermes lags the plugin
+>    on the recent spec: element-level COV01/COV02 (D-0039), YAML-BDD scenarios,
+>    provisional IDs (D-0040), reuse/satisfied-by-reference (D-0041). Plugin-first
+>    sequencing held it until the framework settled; the framework has now had a
+>    big run (`0.29.0 → 0.32.3`), so it's ripe. Tracked in
+>    `plans/HERMES-BACKLOG.md`. **Multi-step — start fresh with full context;**
+>    plan → 2-cycle review → impl per the workflow.
+> 2. **`BL-READY-SCORE-ADVISORY`** (`FRAMEWORK-TODO.md`, P3) — mark the
+>    `*_ready_score` / `target_score` fields explicitly advisory across **all
+>    ADR/SPEC/TDD templates (~52 occurrences)** so a blank value doesn't read as
+>    incomplete. A template sweep (one PR), NOT small. Author Q4: mark-advisory,
+>    do NOT build a rubric.
+> 3. **`ENG-BRD-SKETCH-ROADMAP`** (`FRAMEWORK-TODO.md`, design item) — a BRD
+>    "sketch" sub-form + project-init roadmap. Plan-worthy (new sub-form).
+> 4. **Remaining small docs/template items** in `FRAMEWORK-TODO.md` (the D54/ENG/BL
+>    P3 stragglers); and **corpus regeneration** when ready — the example corpus is
+>    recreated wholesale (see [[project-examples-regenerated-wholesale]]), which
+>    retires the deferred corpus-remediation items (16 COV02 orphans,
+>    CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES, INDEX-UPSTREAM-RESIDUE).
 >
-> **How to resume:** read this banner + `plans/YAML-BDD-SCHEMA-PLAN.md`. The
-> transcoder is `tools/gherkin_to_bdd_yaml.py`; the linter BDD fork lives in
-> `tools/sdd_doc_lint/__init__.py` (`_bdd_yaml_scenarios` / `_check_bdd_schema` /
-> the `build_edge_graph` BDD synthetic-edge block). Corpus baseline (post-PR-4):
-> **1× TH-RES-001, 5× REFGRAN01, 6× STY02** on `main`.
+> **Loose end:** local branch `feat/cfb-pr-1a-trace-contract` has **1 unmerged
+> commit** (`git cherry` confirmed not in `main`) — a `docs(governance)` trace-
+> contract correction that may be superseded by NECESSARY-UPSTREAM-001. Decide:
+> revive or `git branch -D`.
+>
+> **Coverage engine map** (the session's core surface — for the Hermes port +
+> any coverage follow-on): `tools/sdd_doc_lint/__init__.py` —
+> `_check_forward_coverage`/`_check_backward_coverage` (COV01/COV02, element-level
+> via `REALIZING_LAYERS` + `_element_realizing_citers`), `_check_reuse`
+> (REUSE01/02), `_reuse_map`, `_check_bdd_schema`, `build_edge_graph`,
+> `_PLACEHOLDERS` (PROV/PH01), `_extract_frontmatter` (`id_state`/`reuse`).
+> Decisions: **D-0039** (element coverage), **D-0040** (provisional IDs),
+> **D-0041** (reuse). Don't re-attempt `rehash` — premise broken
+> ([[project-element-ids-not-deterministic]]).
 >
 > ---
 >

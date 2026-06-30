@@ -30,9 +30,17 @@ permanent asymmetry.
 
 Near-term, in-flight work.
 
-- **Hermes parity catch-up** — propagate the BRD saga driver through PRD…IPLAN and land
-  the review-calibration lens sub-checks, so Hermes matches the plugin's current surface.
-  Tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+- **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
+  (`0.32.3`). The saga driver across all 8 autopilots shipped; the open gap is the
+  CONSUMER-FEEDBACK / coverage-engine wave: element-level COV01/COV02 (D-0039),
+  YAML-BDD scenarios, provisional IDs (D-0040), and reuse/satisfied-by-reference
+  (D-0041). The largest outstanding arc; tracked in
+  [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+
+- **Delivered (2026-06-29):** the CONSUMER-FEEDBACK-001 P1 wave on the plugin/spec —
+  element-level coverage (ELEMENT-COVERAGE-001), provisional IDs (PROVISIONAL-IDS-001),
+  reuse manifest (REUSE-MANIFEST-001) — plus the YAML-BDD arc. Framework spec
+  `0.29.0 → 0.32.3`. See [`CHANGELOG.md`](CHANGELOG.md).
 
 ---
 
