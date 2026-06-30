@@ -10,7 +10,7 @@ metadata:
     upstream_artifacts: []
     downstream_artifacts: [BRD]
     version: "0.23.0"
-    framework_spec_version: "0.32.2"
+    framework_spec_version: "0.32.3"
     last_updated: "2026-05-23"
     adapts: [active_layers]
 ---

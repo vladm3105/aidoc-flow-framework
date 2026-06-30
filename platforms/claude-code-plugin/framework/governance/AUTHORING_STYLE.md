@@ -68,6 +68,13 @@ finding ("style-bloat").
 | Inline code block | ≤ 50 lines; reference an external file otherwise |
 | Whole document (markdown body, no front-matter) | ≤ 3 000 words for BRD/PRD; ≤ 1 500 for EARS/BDD/ADR/SPEC/TDD/IPLAN/CHG |
 
+**Units — words vs tokens (BL-SIZE-UNITS).** The targets above and a template's
+per-section `_size_target` are in **words** — authoring guidance, enforced as a
+style finding at ≥50% over. The separate **50 000-token** figure in the templates
+is the **document split trigger** (when a doc grows past it, split into a new
+document with its own scope), not a section target. The two are different units
+for different jobs: words guide section density; the token cap triggers a split.
+
 ## Abbreviations and references
 
 - Use canonical abbreviations where defined (HTTP status codes, RFC numbers,
