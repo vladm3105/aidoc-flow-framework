@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — ENG-IPLAN-REGISTRY-README: document the IPLAN index-registry vs document schema; framework spec 0.32.1 → 0.32.2 (2026-06-29)
+
+The `IPLAN-00_index.yaml` (`iplan-registry`, no `document_control`) vs
+`IPLAN-NN_*.yaml` (`iplan-document`) schema distinction was undocumented in the
+layer README, so a naive "validate every `IPLAN-*.yaml`" glob misfired on the
+registry (Engramory feedback item 3). Added an "Index registry vs document
+schema" section to `08_IPLAN/README.md` noting the two schemas and that
+`sdd_doc_lint` already exempts `artifact_type: *-INDEX`. Behavior unchanged —
+docs-only. PATCH bump 0.32.1 → 0.32.2; 314 conformance+unit green; bundle
+re-vendored byte-identical.
+
 ### Changed — ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE: cross-reference the element-ID exemption in the SPEC/IPLAN templates; framework spec 0.32.0 → 0.32.1 (2026-06-29)
 
 The element-ID exemption for SPEC (§3/§5) and IPLAN (§2/§4) was documented only
