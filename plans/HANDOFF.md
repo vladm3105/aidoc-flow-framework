@@ -12,11 +12,18 @@
 >   reviewed (independent pass 0 load-bearing findings). Note: the
 >   `test_plugin_release_metadata.py` hard-pin now **auto-updates** via
 >   `sync-version-refs.sh` (no longer the manual tripwire PLANSTD-001 hit).
-> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`:** grounded; next after item 2. Design
->   tension resolved-in-principle: roadmap lives as rows in the lint-exempt
->   **BRD-00 index** table; standalone `status: Sketch` BRD-file lint support
->   (STRUCT01 under-authoring exemption + the deferred SKETCH-001 over-authoring
->   guard) is **out of scope** (docs-only, author-scoped).
+> - **STRUCT01-INDEX-EXEMPTION (prerequisite bugfix, item-3-blocker): plan MERGED
+>   (#223), impl IN FLIGHT.** ENG-BRD-SKETCH-ROADMAP's independent review found a
+>   pre-existing bug: the linter's `*-INDEX` STRUCT01/trace exemption read top-level
+>   `artifact_type`, but the 8 index templates nest it under `custom_fields` (6 bare;
+>   IPLAN-00 `.yaml` has no `---` frontmatter) → a consumer's index threw STRUCT01
+>   (BRD-00: 17). Fix is a **pure linter change** (filename-based `_is_index_doc` +
+>   ID02 `-INDEX` skip) — no template/spec change, no bump. 3 review passes (Pass 2
+>   caught that the original docs-only fix would self-trip ID02 → pivoted). D-0043.
+> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`:** parked (plan preserved with the Pass-2
+>   finding) until the STRUCT01 bugfix lands, then re-scoped onto the now-lint-clean
+>   BRD-00 index as the roadmap home (docs-only; standalone `status: Sketch` BRD-file
+>   support stays deferred — STRUCT01 still enforces sections on instance BRDs).
 > - **Item 4 — P3 stragglers + corpus regen:** doc-only stragglers to be cleared;
 >   **wholesale corpus regen needs a live plugin CLI** (not runnable here) → I'll
 >   deliver a regen runbook for the founder to run.
