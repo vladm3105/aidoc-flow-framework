@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Corpus-regeneration runbook (docs; no spec change) (2026-06-30)
+
+`plans/CORPUS-REGEN-RUNBOOK.md` — founder-runnable procedure for the wholesale
+example-corpus regeneration after framework-spec changes (needs a live plugin CLI).
+Leverages `tests/ACCEPTANCE.md` (driver + `--promote`); adds the
+post-framework-change trigger, a G1–G5 verification gate, and the deferred
+corpus-remediation backlog it closes (16 COV02 orphans, `CORPUS-REFGRAN-RECASCADE`,
+`CORPUS-PRD-TH-RES`, `INDEX-UPSTREAM-RESIDUE` corpus-side). `plans/HANDOFF.md`
+updated to the session-wrap state (P3 items 2 & 3 + the STRUCT01-INDEX-EXEMPTION
+bugfix shipped; regen runbook delivered).
+
 ### Added — ENG-BRD-SKETCH-ROADMAP: project-init roadmap in the BRD-00 index + trace-inert sketch sub-form; framework spec 0.32.4 → 0.32.5 (2026-06-30)
 
 Authoring only `BRD-01` plus index one-liners left whole-project scope
