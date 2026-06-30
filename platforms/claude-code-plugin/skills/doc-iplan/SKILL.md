@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.23.0"
-    framework_spec_version: "0.31.0"
+    framework_spec_version: "0.32.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---

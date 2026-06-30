@@ -12,6 +12,28 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — REUSE-MANIFEST-001: first-class reuse / satisfied-by-reference; framework spec 0.31.0 → 0.32.0 (2026-06-29)
+
+Lets a brownfield project **reuse an existing upstream artifact** instead of
+re-authoring it (D54-F02, CONSUMER-FEEDBACK-001 PR-5 — the make-or-break
+brownfield capability). Plan [`plans/REUSE-MANIFEST-PLAN.md`](plans/REUSE-MANIFEST-PLAN.md)
+(3 review passes).
+
+- **`reuse: {state: referenced, target: <doc_id|path>@<commit>}`** frontmatter
+  wires the stubbed `CoveredState.SATISFIED_BY_REFERENCE`. A referenced doc's
+  elements are **exempt from `COV01`/`COV02`** (reused as-is, not realized here);
+  one **`REUSE01`** advisory per referenced doc keeps every reuse visible.
+- **`REUSE02`** target contract — the target must be in-repo + commit-pinned
+  (7–40 hex); a URL, unpinned, or unresolvable target is an error (live URLs are
+  `@discoverability` hints only).
+- **Full-prefix rule** — a referenced doc's upstream lineage must also be in-repo
+  - `referenced`, so its outbound `@`-tags resolve with no trace-engine change;
+  an absent upstream stays a (correct) `TRACE-RES-001` finding.
+- Reuse contract documented in `governance/TRACEABILITY.md` (incl. the no-free-≥90
+  readiness rule — skill enforcement is a follow-on). Framework MINOR
+  **0.31.0 → 0.32.0**; 314 conformance+unit green; corpus baseline unchanged;
+  vendored byte-identity intact.
+
 ### Added — PROVISIONAL-IDS-001: manual-mode provisional IDs + normative hash algorithm; framework spec 0.30.0 → 0.31.0 (2026-06-29)
 
 Lets manual authors (no plugin generator) produce linter-valid element IDs and

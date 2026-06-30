@@ -79,3 +79,34 @@ Each layer must achieve a readiness score >=90/100 before generating its immedia
 - `@depends: TYPE-NN` — Hard prerequisite. Downstream cannot exist without upstream.
 - `@discoverability: TYPE-NN` — Related document for AI search context.
 - `@threshold: TYPE.NN.key` — Performance or quality threshold reference.
+
+## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001
+
+A brownfield project may **reuse an existing upstream artifact** instead of
+re-authoring it. A reused doc declares, in frontmatter:
+
+```yaml
+reuse:
+  state: referenced            # default: authored
+  target: PRD-01@<commit>      # in-repo doc_id or path, pinned to a commit
+  rationale: "reuse the platform PRD"
+```
+
+Semantics:
+
+- **Satisfied by reference, not re-audited.** A `referenced` doc's elements are
+  exempt from the coverage gates (`COV01`/`COV02` skip them) — they are reused
+  as-is, not realized downstream. The linter emits one **`REUSE01`** advisory per
+  referenced doc to keep every reuse visible.
+- **Target must be in-repo + pinned** (`<doc_id|path>@<commit>`, commit = 7–40
+  hex). A live URL, an unpinned target, or a target that does not resolve in-repo
+  is a **`REUSE02`** error. Live external URLs belong in `@discoverability` only,
+  never as the trace target.
+- **Full-prefix rule.** A reused doc carries its own outbound upstream `@`-tags,
+  so its **entire upstream lineage must also be present in-repo and `referenced`**
+  — reuse the chain up to the boundary, not a single dangling doc. An upstream
+  tag to an absent doc is a (correct) `TRACE-RES-001` finding (incomplete reuse).
+- **No free readiness score.** A referenced layer is *present + linked* but was
+  not authored/audited here, so the authoring/audit flow MUST NOT grant it an
+  authored-quality (≥90) readiness score. (The deterministic lint records the
+  reuse; the audit-skill enforcement of this rule is a follow-on.)

@@ -263,7 +263,7 @@
   for free. Reference target MUST be in-repo / pinned (path + commit),
   deterministically verifiable; live external URLs allowed only as
   non-authoritative `@discoverability` hints, never the trace target.
-- *Status:* OPEN — P1. Promote to a plan; large enough to design.
+- *Status:* SHIPPED (REUSE-MANIFEST-001, spec 0.32.0, 2026-06-29) — `reuse: {state: referenced, target}` frontmatter; COV01/COV02 exempt referenced docs; REUSE01 advisory + REUSE02 in-repo-pinned-target contract; full-prefix rule; TRACEABILITY.md reuse contract. Deferred: element-granular per-element marking (REUSE-MANIFEST-002), commit-existence verification, audit-skill no-free-≥90 enforcement.
 
 ### `[lint]` `D54-F01-PROVISIONAL-IDS` — manual-mode placeholder-ID convention + hash-algo parity
 

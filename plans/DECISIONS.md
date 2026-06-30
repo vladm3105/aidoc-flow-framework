@@ -10,6 +10,21 @@ graduation.
 
 ---
 
+## D-0041 — reuse is satisfied-by-reference: coverage-exempt, in-repo-pinned, full-prefix (REUSE-MANIFEST-001)
+
+**2026-06-29.** A `reuse: {state: referenced, target: <doc_id|path>@<commit>}`
+frontmatter block marks a doc satisfied-by-reference: its elements are **exempt
+from COV01/COV02** (reused as-is), surfaced by one `REUSE01` advisory per doc
+(emitted by a dedicated corpus-level `_check_reuse`, all layers — NOT inside the
+gates, which only skip). The escape is keyed on the **host doc** (a
+`doc_id→reuse_state` map), never inside `covered_state_of` (which has no host-doc
+access). **Target must be in-repo + commit-pinned** (`REUSE02`); URLs are
+`@discoverability` only. **Full-prefix rule:** a referenced doc's upstream
+lineage must also be in-repo + referenced, so all `@`-tags resolve with no
+trace-engine change — an absent upstream stays a `TRACE-RES-001` finding. The
+no-free-≥90 readiness rule is a governance contract (skill enforcement deferred).
+Builds on [[D-0039]] (element-level coverage) + [[D-0040]].
+
 ## D-0040 — provisional IDs: `id_state` frontmatter flag, advisory-only, not coverage-exempt (PROVISIONAL-IDS-001)
 
 **2026-06-29.** Manual-mode provisional element IDs are governed by an
