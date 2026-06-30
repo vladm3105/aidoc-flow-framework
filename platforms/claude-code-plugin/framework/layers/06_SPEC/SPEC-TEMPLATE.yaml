@@ -108,6 +108,10 @@ interfaces:
   _guidance: |
     Define the public API of this component: classes, functions, method signatures.
     Use type annotations. No implementation — this is the contract.
+    Element-ID exemption: §3 Protocol/method specs MAY omit `SPEC.NN.SS.xxxx`
+    element IDs — lineage comes from `@ears`/`@bdd`/`@adr` citations + the method
+    names. Do NOT over-assign IDs here. See `governance/ID_NAMING_STANDARDS.md`
+    §"Element-ID exemptions".
     List EVERY public export (don't stop at one); for a versioned interface, note
     the version and its backward-compatibility contract.
   exports:
@@ -144,6 +148,9 @@ behavior:
     Describe component logic: validation rules, state transitions,
     business rules inherited from EARS/BDD. No implementation code —
     this is specification, not source.
+    Element-ID exemption: §5 fail-closed rules MAY omit `SPEC.NN.SS.xxxx`
+    element IDs (lineage via `@ears`/`@bdd`/`@adr` citations). Do NOT over-assign
+    IDs. See `governance/ID_NAMING_STANDARDS.md` §"Element-ID exemptions".
   validation_rules:
     - rule: "[Validation condition]"
       source: "@ears: EARS.NN.03.xxxx"
