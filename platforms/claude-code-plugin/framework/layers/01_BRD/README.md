@@ -50,6 +50,32 @@ BRD set (MVP) → Production v1 → Feedback → next BRD set (NEW MVP) → Prod
 - Link cycles via `@depends: BRD-01` in traceability section
 - Target: 200-400 lines per BRD instance
 
+### Project initiation: enumerate the roadmap
+
+Before authoring cycle 1, capture the whole-project scope so later cycles are not
+under-specified. The recommended (not mandated) home is the **`BRD-00` index
+"Planned BRDs" table** — its natural place, which avoids colliding with a
+consumer's top-level product-strategy `ROADMAP.md`:
+
+1. Enumerate **every** planned MVP cycle as a **Planned BRDs** row — cycle, target
+   PROD, and `@depends:` sequencing.
+2. Author only the **current** cycle's BRD set in full; leave the rest as
+   `Planned` / `Sketch` rows.
+
+A **Sketch** is a scope-only future-cycle entry — a hypothesis of what a later BRD
+will cover, captured as a Planned-BRDs row, not a separate file. A Sketch (and a
+Planned row) is **trace-inert**: it carries only its document-level `BRD-NN` id and
+`@depends:` for sequencing — **no element IDs, it is not in the `@`-tag graph, and
+forward-coverage checks ignore it** (they scan a BRD's `## Functional Requirements`
+elements, which a planned row has none of). Because `@depends:` is not a trace tag,
+an active BRD may point `@depends: BRD-05` at a not-yet-authored planned row with no
+traceability error. On **graduation** to a full BRD, the entry moves to the Document
+Registry, gains element IDs, and enters the trace graph.
+
+> A *standalone* scope-only BRD file (its own `BRD-NN_*.md` with only a few
+> sections) is **not** supported yet — it would fail the required-section lint as an
+> incomplete instance BRD. Until that form ships, keep sketches as Planned-BRDs rows.
+
 ## Document Formats
 
 BRDs are authored in YAML (`.yaml`). Documents are validated with cross-section

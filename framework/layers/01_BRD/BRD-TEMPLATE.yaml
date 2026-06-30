@@ -175,6 +175,9 @@ document_control:
     PRD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     PRD-Ready Score quantifies business-level content quality.
     Deductions for: code blocks, API/technical terms, UI implementation details.
+    Scope-only future-cycle BRDs are NOT authored as standalone files; capture them
+    as Sketch/Planned rows in the BRD-00 index "Planned BRDs" table (trace-inert
+    until graduated). See 01_BRD/README.md "Project initiation: enumerate the roadmap".
   project_name: "[Project Name]"
   version: "1.0"
   status: Draft  # Draft | In Review | Approved

@@ -57,9 +57,22 @@ below with the project's own module taxonomy.
 
 ## Planned BRDs
 
-| ID | Title | Priority | Target Date | Notes |
-|----|-------|----------|-------------|-------|
-| BRD-01 | [First module] | High | TBD | - |
+This table is the **project roadmap home**. At project initiation, enumerate every
+planned MVP cycle here (one row per planned BRD set), author only the current
+cycle's BRD(s) in full, and leave the rest as planned/sketch rows. See
+`README.md` → "Project initiation: enumerate the roadmap".
+
+- **Cycle** — the MVP iteration this BRD belongs to (e.g. `MVP-1`).
+- **Target PROD** — the production milestone the cycle targets.
+- **@depends** — sequencing across cycles (`@depends: BRD-01`).
+- **Status** — `Planned` (enumerated) or `Sketch` (scope hypothesis captured). A
+  Sketch/Planned row is **trace-inert**: it carries only its `BRD-NN` id +
+  `@depends:`, no element IDs, and is not in the `@`-tag graph. On graduation to a
+  full BRD it enters the Document Registry above and the trace graph.
+
+| ID | Title | Cycle | Priority | Target PROD | @depends | Status | Notes |
+|----|-------|-------|----------|-------------|----------|--------|-------|
+| BRD-01 | [First module] | MVP-1 | High | TBD | - | Planned | - |
 
 ---
 

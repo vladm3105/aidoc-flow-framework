@@ -10,6 +10,26 @@ graduation.
 
 ---
 
+## D-0044 — the project roadmap lives in the BRD-00 index "Planned BRDs" table; a sketch is a trace-inert planned row (ENG-BRD-SKETCH-ROADMAP)
+
+**2026-06-30.** Whole-project scope is captured at project init by enumerating
+every planned MVP cycle as a row in the **`BRD-00` index "Planned BRDs" table**
+(extended with cycle / target-PROD / `@depends:` / status columns) — the
+recommended (not mandated) home, chosen over a separate top-level `ROADMAP.md` to
+avoid colliding with a consumer's product-strategy file, and over a new artifact
+to keep the change docs-only. A **Sketch** (scope-only future-cycle entry) is a
+Planned-BRDs **row**, **trace-inert**: it carries only its `BRD-NN` id + `@depends:`,
+no element IDs, is not in the `@`-tag graph, and forward coverage ignores it
+(`scan_fr_elements` finds no FR section). `@depends:` is not a trace tag, so an
+active BRD referencing a not-yet-authored planned row never trips TRACE-RES-001.
+`Sketch` is a table-cell status, NOT added to the document `status` enum
+(`Draft|In Review|Approved`), so it does not collide with [[BL-STATUS-SCOPE]].
+A *standalone* scope-only `status: Sketch` BRD **file** is deferred — it would fail
+STRUCT01 as an instance BRD (the index exemption covers only `<TYPE>-00_index`
+docs); needs a STRUCT01 under-authoring exemption + a `SKETCH-001` over-authoring
+guard, pulled only if over-authoring drift appears. Builds on [[D-0043]] (the
+BRD-00 index is now STRUCT01-clean). Framework PATCH 0.32.4 → 0.32.5.
+
 ## D-0043 — `sdd_doc_lint` detects index/registry docs by filename (STRUCT01-INDEX-EXEMPTION)
 
 **2026-06-30.** Index/registry docs (`<TYPE>-00_index`) are exempted from the

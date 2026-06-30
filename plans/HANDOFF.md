@@ -20,10 +20,13 @@
 >   (BRD-00: 17). Fix is a **pure linter change** (filename-based `_is_index_doc` +
 >   ID02 `-INDEX` skip) — no template/spec change, no bump. 3 review passes (Pass 2
 >   caught that the original docs-only fix would self-trip ID02 → pivoted). D-0043.
-> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`:** parked (plan preserved with the Pass-2
->   finding) until the STRUCT01 bugfix lands, then re-scoped onto the now-lint-clean
->   BRD-00 index as the roadmap home (docs-only; standalone `status: Sketch` BRD-file
->   support stays deferred — STRUCT01 still enforces sections on instance BRDs).
+> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`: plan MERGED (#225), impl IN FLIGHT.**
+>   Re-scoped onto the now-STRUCT01-clean BRD-00 index (4 review passes, 3
+>   independent). Spec **0.32.4 → 0.32.5** (PATCH, docs-only): BRD-00 index "Planned
+>   BRDs" table is the roadmap home (cycle/PROD/`@depends:`/status columns);
+>   `01_BRD/README.md` documents project-init + the trace-inert Sketch concept;
+>   `BRD-TEMPLATE.yaml` cross-ref. D-0044. Standalone Sketch-*file* support +
+>   `_DOC_ID` header false-positive both deferred + logged in FRAMEWORK-TODO.
 > - **Item 4 — P3 stragglers + corpus regen:** doc-only stragglers to be cleared;
 >   **wholesale corpus regen needs a live plugin CLI** (not runnable here) → I'll
 >   deliver a regen runbook for the founder to run.

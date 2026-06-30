@@ -12,6 +12,22 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — ENG-BRD-SKETCH-ROADMAP: project-init roadmap in the BRD-00 index + trace-inert sketch sub-form; framework spec 0.32.4 → 0.32.5 (2026-06-30)
+
+Authoring only `BRD-01` plus index one-liners left whole-project scope
+under-specified before cycle 1 (Engramory #1). Made the `BRD-00` index "Planned
+BRDs" table the **roadmap home**: extended it with cycle / target-PROD / `@depends:`
+/ status (`Planned | Sketch`) columns and a usage preamble; added a "Project
+initiation: enumerate the roadmap" subsection to `01_BRD/README.md` defining a
+**Sketch** as a trace-inert planned row (carries only `BRD-NN` + `@depends:`; no
+element IDs; not in the `@`-tag graph; ignored by forward coverage — and `@depends:`
+is not a trace tag, so referencing a not-yet-authored planned row never trips
+TRACE-RES-001); cross-referenced from `BRD-TEMPLATE.yaml`'s `document_control`
+guidance. Docs-only. A *standalone* scope-only `status: Sketch` BRD **file** stays
+deferred (it would fail required-section lint as an instance BRD). Builds on
+STRUCT01-INDEX-EXEMPTION (D-0043) which made the BRD-00 index free of STRUCT01.
+PATCH 0.32.4 → 0.32.5; conformance green; bundle re-vendored. D-0044.
+
 ### Fixed — STRUCT01-INDEX-EXEMPTION: `sdd_doc_lint` recognizes index/registry docs so they lint clean (tooling; no spec change) (2026-06-30)
 
 `sdd_doc_lint`'s index exemption (STRUCT01 required-sections + the trace-resolution
