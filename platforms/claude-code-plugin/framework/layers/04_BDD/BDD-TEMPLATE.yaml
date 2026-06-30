@@ -32,9 +32,9 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (quality gate), a
+      It covers a structural check, a readiness score (advisory readiness target), a
       preflight check, and cross-document consistency.
-      ADR-Ready Score: >=90/100 required before downstream ADR generation.
+      ADR-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
 
       ADR-Ready scoring criteria:
         Scenario coverage (40%): all EARS requirements have scenarios
@@ -108,7 +108,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    ADR-Ready Score: >=90/100 required before ADR generation.
+    ADR-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     Source Document: link to upstream EARS using hash-based IDs.
     Necessary-upstream: BDD (Layer 4) requires @ears (its `required_tags`); PRD/BRD are transitive.
 
@@ -125,7 +125,7 @@ document_control:
   # No ears/prd/brd reference rows — upstream trace lives on each scenario's
   # element-level `ears:` list (YAML-BDD-SCHEMA D-3); the feature's coverage is
   # the computed union of its scenarios' `ears`.
-  adr_ready_score: "[Score]/100"
+  adr_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
 
   revision_history:
     - version: "1.0"
@@ -320,7 +320,8 @@ traceability:
   health_score:
     adr_ready: "[X]%"
     ears_coverage: "[X]%"
-    target_score: ">=90/100"
+    target_score: ">=90/100"  # advisory readability target, not a merge gate
+    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
 
 # =============================================================================
 # Section 5: Glossary

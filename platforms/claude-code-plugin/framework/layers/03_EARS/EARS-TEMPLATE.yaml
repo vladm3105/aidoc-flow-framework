@@ -32,9 +32,9 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (quality gate), a
+      It covers a structural check, a readiness score (advisory readiness target), a
       preflight check, and cross-document consistency.
-      BDD-Ready Score: >=90/100 required before downstream BDD generation.
+      BDD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
       EARS parity check: requires trigger clause (WHEN|IF|WHILE) and
       actor clause (THE SYSTEM SHALL) in document content.
 
@@ -113,7 +113,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    BDD-Ready Score: >=90/100 required before BDD generation.
+    BDD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     Source Document: link to upstream PRD using hash-based IDs.
     BRD Reference: link to upstream BRD using hash-based IDs.
   version: "1.0"
@@ -124,7 +124,7 @@ document_control:
   priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
   source_document: "@prd: PRD.NN.09.xxxx"
   brd_reference: "@brd: BRD.NN.07.xxxx"
-  bdd_ready_score: "[Score]/100"
+  bdd_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
 
   revision_history:
     - version: "1.0"
@@ -376,7 +376,8 @@ traceability:
   health_score:
     bdd_ready: "[X]%"
     prd_coverage: "[X]%"
-    target_score: ">=90/100"
+    target_score: ">=90/100"  # advisory readability target, not a merge gate
+    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
 
 # =============================================================================
 # Glossary

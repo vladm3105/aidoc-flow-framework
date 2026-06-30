@@ -236,3 +236,23 @@ folded in:
   not general semver — `>=90/100` was never at risk.
 
 **Result:** ready
+
+### Pass 3 — 2026-06-30T09:30:00-04:00 — ai-review (impl PR #222), folded in impl
+
+The CI `ai-review` reviewer caught a **load-bearing gap that Pass 1 + Pass 2 both
+missed**: marking the 14 score *fields* advisory left the **`_guidance` prose in
+the same templates still framing the score as a gate** — e.g.
+`TDD-TEMPLATE.yaml` `iplan_ready_score`'s `_guidance` read "IPLAN-Ready Score:
+>=90/100 **required** before IPLAN generation," directly contradicting the
+advisory marker one line above. The plan's scope ("mark the 14 fields") was too
+narrow — it should have reconciled *all* prose asserting the opposite within the
+same templates. **Fixed in the impl branch (not a separate PR):** reworded **15
+contradicting prose lines** across the 7 templates — 10 "X-Ready Score: >=90/100
+required before [downstream] X generation." → "…is the advisory readability target
+(auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic
+sdd_doc_lint floor is the actual gate." + 5 "readiness score (quality gate)" /
+"…to proceed" descriptors → "advisory readiness target". Re-vendored;
+148 conformance green. **Lesson:** an advisory-marking plan must grep the whole
+template for *every* gate-framing of the marked field, not just the field line.
+
+**Result (post-impl):** ready — ai-review finding resolved on-branch before merge.

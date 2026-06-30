@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — BL-READY-SCORE-ADVISORY: mark `*_ready_score` / `target_score` advisory in the 7 layer templates; framework spec 0.32.3 → 0.32.4 (2026-06-30)
+
+The `<next>_ready_score` (`document_control`) and `target_score` (`health_score`)
+fields shipped in every layer template (BRD…TDD) read as a **required gate**, but
+the score is **advisory** — auditor-lens-computed, never hand-authored; the
+deterministic `sdd_doc_lint` floor is the real gate. A blank score made a finished
+artifact look half-done (BeeLocal #56). Marked the **14 score fields** advisory via
+an inline `#` comment per score line plus one `_note:` per `health_score` block
+(D-0042), **and reworded 15 contradicting `_guidance` prose lines** across the same
+templates that still framed the score as "required before generation" / a "quality
+gate" (caught by ai-review on the impl PR — Pass 3). **No rubric / no offline
+scorer** (author Q4 — that would contradict D54-F03; the audit skill IS the rubric).
+All 7 layer templates reconciled uniformly (IPLAN/08 carries neither field). PATCH
+bump 0.32.3 → 0.32.4; conformance green; bundle re-vendored byte-identical.
+
 ### Changed — BeeLocal P3 docs-clarification sweep (BL-SIZE-UNITS, BL-BRD-SET-WORDING, BL-VENDOR-NAME-SCOPE); framework spec 0.32.2 → 0.32.3 (2026-06-29)
 
 Three small wording clarifications from BeeLocal consumer feedback, batched (no

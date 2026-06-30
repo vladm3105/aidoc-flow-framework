@@ -682,7 +682,14 @@
   threshold, not a gate. **No offline rubric/tool** — that would contradict
   `D54-F03` (the audit skill IS the rubric; the deterministic floor is
   `sdd_doc_lint`).
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.4, 2026-06-30 — `BL-READY-SCORE-ADVISORY-PLAN.md`,
+  D-0042). All 7 layer templates (BRD…TDD) marked: inline `#` comment on each of the
+  14 score lines + one `_note:` per `health_score` block + **15 reworded
+  `_guidance` prose lines** that still framed the score as "required"/a "quality
+  gate" (ai-review caught the contradiction on impl PR #222 — plan Pass 3); PATCH
+  0.32.3 → 0.32.4. No rubric (author Q4). The "52 occurrences" was BeeLocal's
+  per-artifact tally; the template fix is 14 field lines + 15 prose lines. IPLAN/08
+  carries neither field, so "all 7" = 01–07.
 
 ### `[template]` `BL-STATUS-SCOPE` — `status:` key overloaded across 3 scopes, unlintable
 

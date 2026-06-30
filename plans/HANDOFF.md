@@ -1,5 +1,32 @@
 # Session Handoff
 
+> **🟡 IN PROGRESS (2026-06-30) — P3 cleanup arc: items 2 → 3 → 4.** Completing
+> the three deferred ▶ RESUME-HERE items in order, each as a full plan→review→
+> plan-PR→impl-PR cycle (founder direction).
+>
+> - **Item 2 — `BL-READY-SCORE-ADVISORY`: plan MERGED (#221), impl IN FLIGHT.**
+>   Marks the 14 `*_ready_score` / `target_score` fields advisory across the 7
+>   layer templates (BRD…TDD) — inline `#` comment + one `health_score` `_note:`
+>   each (D-0042). Framework spec **0.32.3 → 0.32.4** (PATCH). The "52" headline
+>   was BeeLocal's per-artifact tally; the template fix is 14 lines. Plan 2-cycle
+>   reviewed (independent pass 0 load-bearing findings). Note: the
+>   `test_plugin_release_metadata.py` hard-pin now **auto-updates** via
+>   `sync-version-refs.sh` (no longer the manual tripwire PLANSTD-001 hit).
+> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`:** grounded; next after item 2. Design
+>   tension resolved-in-principle: roadmap lives as rows in the lint-exempt
+>   **BRD-00 index** table; standalone `status: Sketch` BRD-file lint support
+>   (STRUCT01 under-authoring exemption + the deferred SKETCH-001 over-authoring
+>   guard) is **out of scope** (docs-only, author-scoped).
+> - **Item 4 — P3 stragglers + corpus regen:** doc-only stragglers to be cleared;
+>   **wholesale corpus regen needs a live plugin CLI** (not runnable here) → I'll
+>   deliver a regen runbook for the founder to run.
+>
+> **Merge-flow:** founder gave a standing OK to admin-merge the green
+> governance-tier PRs in this arc (composition-CI gap forces `--admin` on every
+> PR here regardless).
+>
+> ---
+>
 > **🟢 FOLLOW-UP SESSION COMPLETE (2026-06-29, post-P1-wave) — loose end closed;
 > `main` clean at framework `0.32.3` / plugin `0.23.0`; no open PRs; nothing in
 > flight.** Reviewed and **deleted** the dangling `feat/cfb-pr-1a-trace-contract`
@@ -149,7 +176,7 @@
 >    spec_gate green. **Spec-tier → human sign-off (no auto-merge).** This
 >    absorbs the plan's old PR-7 (standalone bump).
 > 3b. **PR-3b (NEXT, PATCH bump) — deferred governance polish:** `QUICK_REFERENCE.md`
->    + the `04_BDD/*.md` playbook **bodies** (Gherkin → YAML scenario references;
+>    - the `04_BDD/*.md` playbook **bodies** (Gherkin → YAML scenario references;
 >    PR-3 only bumped their version frontmatter, not content). framework/ change →
 >    needs its own PATCH bump (0.29.0 → 0.29.1).
 > 4. ✅ **PR-4 (SHIPPED this session) — corpus BDD-01 migrated to YAML.** The
@@ -241,18 +268,18 @@
 > by the orchestration plan **`plans/CONSUMER-FEEDBACK-001-PLAN.md`** (12 child
 > PRs in 4 waves). **Shipped this session:**
 >
-> + **PR-1 `BL-TAG-CHAIN-GATE-SYNC`** → grew into the full **cumulative→
+> - **PR-1 `BL-TAG-CHAIN-GATE-SYNC`** → grew into the full **cumulative→
 >   necessary-upstream doc reconciliation** (~20 surfaces, incl. false
 >   `required_tags` claims in EARS/BDD templates + GATE-03, and a live
 >   author-facing bug in `AI_ASSISTANT_RULES.md`). Framework spec **0.23.1**.
 >   Merged **#180** (`8e001192`); closed **#181** (`6aad56bf`).
 >   Plan: `plans/CFB-PR-1-TAG-CHAIN-GATE-SYNC-PLAN.md`.
-> + **`bump_version.py` fix** (#182, `e77a743a`): it silently skipped all 51
+> - **`bump_version.py` fix** (#182, `e77a743a`): it silently skipped all 51
 >   playbooks (regex required indentation; playbook frontmatter is column-0) →
 >   every framework bump left conformance red. Now bumps playbooks +
 >   SKILL_AUTHORING + plugin README; decouples plugin VERSION. A framework bump
 >   now leaves **1** manual touch (the deliberate hard-pin tripwire) not 54.
-> + **PR-2 coverage engine — design of record** merged **#184** (`58e27917`).
+> - **PR-2 coverage engine — design of record** merged **#184** (`58e27917`).
 >   `plans/CFB-PR-2-COVERAGE-ENGINE-PLAN.md`, converged over **3 independent +
 >   4 self** review passes (Pass-4/6 caught that the design assumed code/artifact
 >   facts that don't hold — fixed; see its R-a…R-f "Implementation reality").
@@ -418,7 +445,7 @@
 > `doc-prd-autopilot` two-subsection shape (team saga loop + single_pass
 > fallback verbatim); add `review_mode` to the `adapts:` frontmatter of the 6
 >
-> + reconcile `doc-prd-autopilot` (Pass-2 R6.1 — they branch on `review_mode`
+> - reconcile `doc-prd-autopilot` (Pass-2 R6.1 — they branch on `review_mode`
 > but only brd declared it); + a conformance test asserting all 8 carry the
 > saga block AND `review_mode` in `adapts:`. Plugin MINOR `0.20.1 → 0.21.0`;
 > no spec change. Pass 2 (independent subagent) verified R1 no-detail-loss,
@@ -521,7 +548,7 @@
 >
 > **Paused work blocked by this PR:**
 >
-> + **TDD-RT-001** (worktree at `/opt/data/aidoc-flow/framework-tdd-rt-001/`,
+> - **TDD-RT-001** (worktree at `/opt/data/aidoc-flow/framework-tdd-rt-001/`,
 >   branch `feat/tdd-rt-001`, 5 commits ahead of main) — rebase after merge.
 >   Per plan Task 9: the TDD-RT-001 framework version-bump commit
 >   (`0.15.1 → 0.15.2`) conflicts with this PR's `0.15.2 → 0.16.0`; drop the
@@ -529,7 +556,7 @@
 >   playbooks. `doc-tdd-audit/SKILL.md` + `doc-tdd-fixer/SKILL.md` (added in
 >   TDD-RT-001) will need their own cumulative-tag scrub during rebase
 >   following the pattern in commit 43229908.
-> + **IPLAN-RT-001** (task #268, no branch yet) — authors IPLAN playbooks
+> - **IPLAN-RT-001** (task #268, no branch yet) — authors IPLAN playbooks
 >   to the new contract from the start.
 >
 > **Next steps:**
@@ -586,7 +613,7 @@
 > across 8 audit SKILLs; verified end-to-end against a saved
 > before-fix BRD-01); #97 (plugin-first development-sequencing policy
 >
-> + `plans/HERMES-BACKLOG.md`).
+> - `plans/HERMES-BACKLOG.md`).
 >
 > **Three new auto-memory entries** (in
 > `~/.claude/projects/-opt-data-aidoc-flow/memory/`):
@@ -680,7 +707,7 @@
 > `${CLAUDE_PLUGIN_ROOT}/framework/…`. Single source of truth stays the monorepo
 > spec (**D-0022**, the vendoring exception to D-0013), enforced by a **drift-guard**
 >
-> + a **manifest/bundled-reference-resolution gate** (new
+> - a **manifest/bundled-reference-resolution gate** (new
 > `test_plugin_framework_bundle.py` + `test_plugin_manifest.py`; conformance **57 →
 > 65**). `plugin.json` gained `$schema` + placeholder `author`; README rewritten
 > (install-first + bundle section; 55 skills / 11 agents). Re-sync wired into
@@ -987,7 +1014,7 @@
 >
 > **✅ PRE-COMMIT HOOKS — (2026-05-24, D-0021).** Added `.pre-commit-config.yaml`
 >
-> + a `pre-commit` CI workflow: hygiene, ruff + ruff-format, bandit (medium+),
+> - a `pre-commit` CI workflow: hygiene, ruff + ruff-format, bandit (medium+),
 > markdownlint, yamllint, detect-secrets, pip-audit (manual), and a local
 > conformance hook. Pragmatic rule sets; `legacy/` + Hermes vendored content
 > (`agent-skills/`, `prompts/`, `skills/`) excluded from markdownlint. Full
@@ -1008,10 +1035,10 @@
 >
 > **Remaining (user-only):**
 >
-> + **Branch protection on `framework/**`** (repo → Settings → Branches) — the
+> - **Branch protection on `framework/**`** (repo → Settings → Branches) — the
 >   human-approval half of GATE-SPEC. The automated half now enforces via the
 >   `chg-gate.yml` workflow; the human sign-off exists only once this rule is set.
-> + **Release tags** — annotated; tag pushes still 403 in-container (separate
+> - **Release tags** — annotated; tag pushes still 403 in-container (separate
 >   from the workflows scope, see `docs/TAGGING.md`), so push from a local clone:
 >
 >   ```sh
@@ -1022,7 +1049,7 @@
 >   ```
 >
 >   Optional project milestone tag: `git tag -a v1.1.0 3974daa -m "Post-cutover feature release — adaptation overlay + CHG GATE-SPEC" && git push origin v1.1.0`.
-> + Delete the merged `claude/skill-revision` branch.
+> - Delete the merged `claude/skill-revision` branch.
 >
 > **✅ CHG-D2 COMPLETE — framework governance decision register (2026-05-23).**
 > Established `framework/governance/DECISIONS.md` — the spec's own durable home
@@ -1121,7 +1148,7 @@
 > `doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}` × {base, `-autopilot`, `-audit`,
 > `-fixer`} = 32, plus 14 utilities. Removed (reversing D-0015): 25 SPEC-subtype
 >
-> + 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
+> - 36 test-type families (folded into SPEC L6 / TDD L7), 14 deprecated
 > `-reviewer`/`-validator` (merged into `-audit`), 3 legacy utils
 > (contract-tester/test-automation/mermaid-gen), 16 loose `.md`, and the orphaned
 > `doc-flow/SHARED_CONTENT.md` (D-0013). Each skill `version` now defaults to the
@@ -1190,45 +1217,45 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Progress
 
-+ Phase 0 (Planning & Scaffolding) — complete.
-+ Phase 1 Step 0 (P1-T0, legacy isolation) — complete.
-+ P1-T1 (audit of `legacy/ucx_flow_v3/`) — complete; see
+- Phase 0 (Planning & Scaffolding) — complete.
+- Phase 1 Step 0 (P1-T0, legacy isolation) — complete.
+- P1-T1 (audit of `legacy/ucx_flow_v3/`) — complete; see
   `plans/P1-AUDIT-ucx_flow_v3.md`.
-+ P1-T2 (layer extraction) — complete; `framework/layers/` holds 24 files;
+- P1-T2 (layer extraction) — complete; `framework/layers/` holds 24 files;
   see `plans/P1-T2-PLAN.md`.
-+ P1-T3 (registry extraction) — complete; `framework/registry/` holds
+- P1-T3 (registry extraction) — complete; `framework/registry/` holds
   `LAYER_REGISTRY.yaml` + `README.md`; see `plans/P1-T3-PLAN.md`.
-+ P1-T4 (governance + CHG extraction) — complete; `framework/governance/`
+- P1-T4 (governance + CHG extraction) — complete; `framework/governance/`
   holds 18 files; see `plans/P1-T4-PLAN.md`.
-+ P1-T5 (shared conformance suite) — complete; `tests/conformance/` holds the
+- P1-T5 (shared conformance suite) — complete; `tests/conformance/` holds the
   helper + 4 test modules (22 tests, all green); see `plans/P1-T5-PLAN.md`.
   The engine-agnostic `framework/README.md` was written here (pulled forward
   from P1-T7).
-+ P1-T6 (`framework/VERSION` + tag convention) — complete; `framework/VERSION`
+- P1-T6 (`framework/VERSION` + tag convention) — complete; `framework/VERSION`
   at `0.1.0`, tag namespaces in `docs/PROJECT.md` §3, suite at 24 tests; see
   `plans/P1-T6-PLAN.md`. The `framework/v0.1.0` git tag is deferred to Phase 1
   close (D-0009, tracked as P1-T8).
-+ P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
+- P1-T7 (framework root assembly) — complete; the 4 methodology docs extracted
   into `framework/`; suite at 25 tests; see `plans/P1-T7-PLAN.md`.
   **`framework/` is now fully assembled.**
-+ P1-T8 (Phase 1 close) — **complete.** Changelog cut into `[0.1.0]` /
+- P1-T8 (Phase 1 close) — **complete.** Changelog cut into `[0.1.0]` /
   `[0.2.0]`, ROADMAP marked, and the three annotated tags (`v0.1.0`,
   `framework/v0.1.0`, `v0.2.0`) published to the remote (pushed from a local
   clone after the in-container tag push was blocked by the git proxy). See
   `plans/P1-T8-PLAN.md`. **Phase 1 complete.**
-+ P2-T0 (Phase 2 audit & task breakdown) — **complete.** Paper-only audit
+- P2-T0 (Phase 2 audit & task breakdown) — **complete.** Paper-only audit
   resolved that `mcp_ucx` is the deprecated predecessor of `ucx_hermes` and
   is out of Phase 2 scope; Phase 2 input is 280 files. Mapped 4 code-level +
   prose-level framework-coupling sites; defined the audit-confirmed P2-T1…T6
   breakdown. See `plans/P2-T0-PLAN.md` / `plans/P2-AUDIT-hermes.md`.
-+ P2-T1 (Hermes design) — **complete.** Five design choices resolved
+- P2-T1 (Hermes design) — **complete.** Five design choices resolved
   (`plans/P2-T1-DESIGN.md`): keep `mcp_server` import path with
   `hermes-server` distribution (Q1 — Platform B is JS/MD, no Python
   collision); two plain-text VERSION files for spec declaration (Q2);
   **drop platform `templates/` — consume `framework/layers/`** (Q3, D-0013);
   `hermes-mcp` script entry (Q4); mirror legacy layout minus dropped
   paths (Q5). D-0013 logs the templates-source-of-truth decision.
-+ P2-T2 (port-verbatim) — **complete.** 64 files copied byte-identical
+- P2-T2 (port-verbatim) — **complete.** 64 files copied byte-identical
   from `legacy/ucx_hermes/` to `platforms/hermes/`: `examples/` (1),
   `prompts/` (46), `skills/layer_aliases/` (1), `skills/personas/` (15),
   `skills/persona_mappings.yaml` (1). All seven verify gates green —
@@ -1238,48 +1265,48 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
 
 ## Achievements
 
-+ 2026-05-18 — Isolated the pre-migration project into `legacy/` (frozen);
+- 2026-05-18 — Isolated the pre-migration project into `legacy/` (frozen);
   disabled legacy CI; rewrote root `README.md`; repointed `.mcp.json`.
-+ 2026-05-18 — Added `plans/` workspace, root `CLAUDE.md`, `DECISIONS.md`,
+- 2026-05-18 — Added `plans/` workspace, root `CLAUDE.md`, `DECISIONS.md`,
   and `PreCompact` / `SessionStart` continuity hooks.
-+ 2026-05-18 — Audited `legacy/ucx_flow_v3/` (49 files); resolved P1 open
+- 2026-05-18 — Audited `legacy/ucx_flow_v3/` (49 files); resolved P1 open
   questions (D-0005 index templates, D-0006 `framework/` v0.1.0).
-+ 2026-05-18 — Added the two-pass plan-review gate (D-0007): `CLAUDE.md`
+- 2026-05-18 — Added the two-pass plan-review gate (D-0007): `CLAUDE.md`
   rule, `plans/PLAN-TEMPLATE.md`, `PreToolUse(git commit)` warning hook.
-+ 2026-05-18 — Extracted the 8 SDD layers into `framework/layers/`
+- 2026-05-18 — Extracted the 8 SDD layers into `framework/layers/`
   (templates, READMEs, index templates — engine-neutral).
-+ 2026-05-18 — Extracted `LAYER_REGISTRY.yaml` into `framework/registry/`
+- 2026-05-18 — Extracted `LAYER_REGISTRY.yaml` into `framework/registry/`
   as the authoritative machine-readable layer model.
-+ 2026-05-18 — Extracted governance docs + CHG overlay into
+- 2026-05-18 — Extracted governance docs + CHG overlay into
   `framework/governance/` (18 files, engine-neutral; CHG spec-only).
-+ 2026-05-18 — Built the shared conformance suite (`tests/conformance/`,
+- 2026-05-18 — Built the shared conformance suite (`tests/conformance/`,
   22 tests) and wrote the engine-agnostic `framework/README.md`.
-+ 2026-05-19 — Created `framework/VERSION` (`0.1.0`) and the tag-namespace
+- 2026-05-19 — Created `framework/VERSION` (`0.1.0`) and the tag-namespace
   convention (D-0009); conformance suite at 24 tests.
-+ 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
+- 2026-05-19 — Extracted the 4 methodology docs into `framework/`;
   `framework/` fully assembled; conformance suite at 25 tests.
-+ 2026-05-19 — Closed Phase 1: changelog cut + ROADMAP marked; release tags
+- 2026-05-19 — Closed Phase 1: changelog cut + ROADMAP marked; release tags
   `v0.1.0`, `framework/v0.1.0`, `v0.2.0` published to the remote.
-+ 2026-05-19 — Added `docs/TAGGING.md` tagging policy (release + bookmark
+- 2026-05-19 — Added `docs/TAGGING.md` tagging policy (release + bookmark
   tags, D-0011).
-+ 2026-05-19 — Defined the framework's purpose: the IPLAN is the terminal
+- 2026-05-19 — Defined the framework's purpose: the IPLAN is the terminal
   product; code/deploy out of scope; v1 = software/devops; domain profiles
   post-v1.0 (D-0012, `ROADMAP.md`).
-+ 2026-05-19 — Completed P2-T0 (Phase 2 audit & task breakdown):
+- 2026-05-19 — Completed P2-T0 (Phase 2 audit & task breakdown):
   `legacy/mcp_ucx/` confirmed out of scope; Phase 2 input is 280 files;
   coupling sites mapped; P2-T1…T6 defined.
-+ 2026-05-19 — Completed P2-T1 (Hermes design): five design choices
+- 2026-05-19 — Completed P2-T1 (Hermes design): five design choices
   resolved; D-0013 records the templates-single-source-of-truth rule
   (platforms consume `framework/layers/`, never duplicate).
-+ 2026-05-20 — Completed P2-T2 (port-verbatim): 64 files copied
+- 2026-05-20 — Completed P2-T2 (port-verbatim): 64 files copied
   byte-identical into `platforms/hermes/`; verify gates all green.
-+ 2026-05-20 — Completed P2-T7 (port `hermes_agent_skills/` from main):
+- 2026-05-20 — Completed P2-T7 (port `hermes_agent_skills/` from main):
   181 files (was 187; 6 D-0013-obsolete sync files deleted) at
   `platforms/hermes/agent-skills/spec-driven-development/`; zero
   `ucx_flow|UCX_FLOW` hits; audit §5b updated; two plan deviations
   documented as Pass 3 retro (G11 deletion vs deprecation, G13 `/opt/data`
   verify softening).
-+ 2026-05-20 — Completed P2-T3 (port-with-repoint): 200 files +
+- 2026-05-20 — Completed P2-T3 (port-with-repoint): 200 files +
   VERSION/FRAMEWORK_SPEC_VERSION ported; pyproject migrated to
   `hermes-server` / `0.1.0` / `hermes-mcp` (P2-T1 Q1+Q4); path-map
   rewrote all current-behavior `ucx_flow_v3` references in 18 files;
@@ -1287,7 +1314,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   refreshed; .mcp.json repointed. Conformance 25/25; Hermes' own
   suite 397/447 (50 failures from D-0013 scaffold-runtime gap →
   deferred to new P2-T9 task).
-+ 2026-05-20 — Completed P2-T8 (drop skill's templates duplication):
+- 2026-05-20 — Completed P2-T8 (drop skill's templates duplication):
   deleted 8 drifted layer YAMLs at `agent-skills/.../sdd-orchestrator/
   templates/`; rewired 25 references in `SKILL.md` +
   `sdd-workflow-quickstart.md` to `framework/layers/0N_TYPE/
@@ -1297,7 +1324,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   D-0013 conformance for the skill package complete. Pass 3 retro
   records G17 (verify gate V6 was too coarse — corrected to scope
   the grep to `skill_view.*templates/`).
-+ 2026-05-20 — Completed P2-T9 (rewire MCP scaffold + validation
+- 2026-05-20 — Completed P2-T9 (rewire MCP scaffold + validation
   runtime to `framework/layers/`): removed the `templates/` row from
   `CANONICAL_SCAFFOLD_MAPPINGS`; rewrote `_default_ssd_root` to
   `framework/layers`; fixed `_default_repo_root` parents count
@@ -1309,14 +1336,14 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   lesson) + G17 (cross-module path-computer audit lesson). The 50
   P2-T3-deferred failures are all closed; D-0013 conformance for
   the MCP server complete.
-+ 2026-05-20 — Completed P2-T5 (Phase 2 verify): ran 14 consolidated
+- 2026-05-20 — Completed P2-T5 (Phase 2 verify): ran 14 consolidated
   gates — conformance 25/25, Hermes 447/447, zero coupling in
   current-behavior content, docs whitelist exact-match (11 files),
   VERSION files match `framework/VERSION`, smoke test scaffolds 71
   files end-to-end. Audit math reconciled (440 = 439 + 1 P0-scaffolded
   README). Verify record landed at `plans/P2-T5-VERIFY.md`. Phase 2
   is structurally complete; P2-T6 may cut the changelog and tags.
-+ 2026-05-20 — Completed P2-T6 (Phase 2 close): `CHANGELOG.md` cut to
+- 2026-05-20 — Completed P2-T6 (Phase 2 close): `CHANGELOG.md` cut to
   `[0.3.0] — 2026-05-20` (full Phase 2 cycle: Added / Changed /
   Removed, folding the 4 pre-existing `[Unreleased]` items);
   `ROADMAP.md` status `Phase 2 complete (v0.3.0) — Phase 3 next`;
@@ -1328,12 +1355,12 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   publication requires the user to run the local-clone workaround
   documented in `plans/P2-T6-PLAN.md` Implementation note. **Phase 2
   is structurally closed.**
-+ 2026-05-20T17:25:00Z — User published the two Phase 2 tags via the
+- 2026-05-20T17:25:00Z — User published the two Phase 2 tags via the
   local-clone workaround. `git ls-remote --tags origin` now returns
   all 5 tags; `v0.3.0` and `hermes/v0.1.0` both dereference to the
   close commit `20c061d`. **Phase 2 is formally closed.** Next: Phase 3
   (Platform B — Claude Code plugin).
-+ 2026-05-20T18:35:00Z — Completed P3-T0 (Phase 3 audit + task
+- 2026-05-20T18:35:00Z — Completed P3-T0 (Phase 3 audit + task
   breakdown). `plans/P3-AUDIT-claude-code-plugin.md` inventories
   `.claude/` (191 files), resolves the **copy-with-divergence**
   relationship (root stays in dev-time service until Phase 5), maps
@@ -1344,7 +1371,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   and the artifact is declarative (no Python package or test suite).
   6 open questions for P3-T1 design; see `plans/P3-T0-PLAN.md` for
   the full breakdown.
-+ 2026-05-20T19:10:00Z — Completed P3-T1 (design, paper-only).
+- 2026-05-20T19:10:00Z — Completed P3-T1 (design, paper-only).
   7 questions resolved in `plans/P3-T1-DESIGN.md`. Manifest is
   minimal (auto-discovery handles registration; confirmed via
   claude-code-guide agent — no published `$schema` URL,
@@ -1355,7 +1382,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   Pass 2 caught a Pass 1 skill-count miscount (144 → 142) and
   softened the manifest author block (populated from
   `git config user.name` at P3-T3, not hardcoded).
-+ 2026-05-20T20:20:00Z — Completed P3-T2 (port content). 3-stage
+- 2026-05-20T20:20:00Z — Completed P3-T2 (port content). 3-stage
   `cp -r` + `rm -rf` recipe landed 142 skills + 19 root files + 1
   agent + 1 command at `platforms/claude-code-plugin/` (168 total
   files). Basic sed cleared 211 line hits of `ai_dev_flow` across
@@ -1368,7 +1395,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   ~150 line hits across 30 stale segments; top item
   `framework/scripts/` with 60 refs; resolution deferred to a
   content-migration task per P3-T1 §Deferred R2).
-+ 2026-05-20T21:10:00Z — Completed P3-T3 (plugin scaffold).
+- 2026-05-20T21:10:00Z — Completed P3-T3 (plugin scaffold).
   `.claude-plugin/plugin.json` (7 fields, minimal manifest);
   `VERSION` + `FRAMEWORK_SPEC_VERSION` both `0.1.0`; `README.md`
   expanded from 27-line placeholder to 82-line user-facing doc.
@@ -1378,7 +1405,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   signaling); **Finding 2** (no platform `CHANGELOG.md` — following
   Hermes precedent for symmetry; retrofit deferred). All 11 verify
   gates green; conformance 25/25 unaffected.
-+ 2026-05-20T21:55:00Z — Completed P3-T4 (Phase 3 verify). 22 gates
+- 2026-05-20T21:55:00Z — Completed P3-T4 (Phase 3 verify). 22 gates
   ran across conformance, structure, content + coupling sweep,
   manifest validity, and integration-level checks. Mid-flight cleanup
   surfaced and removed **47 broken symlinks** the source `.claude/`
@@ -1389,7 +1416,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   Verify record at `plans/P3-T4-VERIFY.md`. Lesson for future port
   plans: add `find -type l` to the audit recon to surface symlinks
   upfront (P3-T0 + P2-T0/T2 audits missed this).
-+ 2026-05-20T22:40:00Z — Completed P3-T5 (Phase 3 close).
+- 2026-05-20T22:40:00Z — Completed P3-T5 (Phase 3 close).
   `CHANGELOG.md` cut to `[0.4.0] — 2026-05-20` (full Phase 3 cycle
   — Added / Changed / Removed, plus a carried-known-issue note for
   the ~150 Class D stale refs); `ROADMAP.md` status `Phase 3 complete
@@ -1402,12 +1429,12 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   publication requires the user to run the local-clone workaround
   documented in `plans/P3-T5-PLAN.md` Implementation note. **Phase 3
   is structurally closed.**
-+ 2026-05-20T22:55:00Z — User published the two Phase 3 tags via the
+- 2026-05-20T22:55:00Z — User published the two Phase 3 tags via the
   local-clone workaround. `git ls-remote --tags origin` now returns
   all 7 tags; `v0.4.0` and `claude-code-plugin/v0.1.0` both
   dereference to the close commit `087f7d5`. **Phase 3 is formally
   closed.** Next: Phase 4 (Conformance & Independence).
-+ 2026-05-20T23:45:00Z — Completed P4-T0 (Phase 4 audit + task
+- 2026-05-20T23:45:00Z — Completed P4-T0 (Phase 4 audit + task
   breakdown). `plans/P4-AUDIT-conformance.md` assesses the platform-
   conformance contract (4 bullets: PC1+PC4 statically testable
   today, PC2+PC3 deferred to runtime exercise), the CI gap (no
@@ -1420,14 +1447,14 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   sub-tasks (T1 design → T2 conformance tests → T3 CI → T4
   retrofits+parity → T5 verify+close). 6 open questions for P4-T1.
   See `plans/P4-T0-PLAN.md` for the full breakdown.
-+ 2026-05-20 — Added `docs/STARTUP_HANDOFF.md` — distills business /
+- 2026-05-20 — Added `docs/STARTUP_HANDOFF.md` — distills business /
   startup ideas from the architectural decisions of the multi-platform
   migration: IPLAN-as-product, IPLAN corpus (D-0012 R2), engine-
   agnostic spec, domain profiles (post-v1.0), CHG governance-as-code
   (CHG-D1), ephemeral-session workflow tooling, migration as case
   study. Does not affect the migration's technical scope; ideas
   surfaced organically and are filed for a future strategy session.
-+ 2026-05-21T00:35:00Z — Completed P4-T1 (design, paper-only).
+- 2026-05-21T00:35:00Z — Completed P4-T1 (design, paper-only).
   6 questions resolved in `plans/P4-T1-DESIGN.md`. New conformance
   sub-package `tests/conformance/platforms/` with two modules
   (`test_version_declaration.py` + `test_engine_isolation.py`);
@@ -1441,7 +1468,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   README: full mirror of P3-T3 plugin README. LICENSE: MIT (matches
   plugin manifest placeholder); copyright `vladm3105`. Q7
   confirmed no framework tag bump.
-+ 2026-05-21T01:20:00Z — Completed P4-T2 (platform conformance
+- 2026-05-21T01:20:00Z — Completed P4-T2 (platform conformance
   tests). New sub-package `tests/conformance/platforms/` with 6
   test methods across 2 modules: `test_version_declaration.py`
   (4 tests — PC1) + `test_engine_isolation.py` (2 tests — PC4
@@ -1453,7 +1480,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   in suite output; re-Read + re-Edit landed cleanly. Lesson: silent
   Edit failures are real; treat unexpected ImportErrors after
   "successful" Edits as suspect.
-+ 2026-05-21T02:15:00Z — Completed P4-T3 (CI workflows authored).
+- 2026-05-21T02:15:00Z — Completed P4-T3 (CI workflows authored).
   Three greenfield workflows (`conformance.yml`, `hermes.yml`,
   `plugin.yml`) — all `ubuntu-latest`, Python 3.12 via
   setup-python@v5, concurrency cancel-in-progress, minimal
@@ -1467,7 +1494,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   clone — exact commands in `plans/P4-T3-PLAN.md` Implementation
   note. (`docs/TAGGING.md` was extended in P4-T4 to document this
   restriction symmetrically with the tag-push restriction.)
-+ 2026-05-21T04:15:00Z — Completed P4-T5 (Phase 4 verify + close,
+- 2026-05-21T04:15:00Z — Completed P4-T5 (Phase 4 verify + close,
   combined per P4-T0 design). 13 gates ran green; one carried-
   known-issue surfaced (`api_runner.py:115` stale install
   instruction `pip install 'ucx_hermes[api]'`; correct is
@@ -1478,14 +1505,14 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   in-container tag push 403'd as expected (4th occurrence —
   P1-T8, P2-T6, P3-T5, P4-T5). Verify record at
   `plans/P4-T5-VERIFY.md`. **Phase 4 structurally closed.**
-+ 2026-05-21T04:30:00Z — User published `v0.5.0` from a local
+- 2026-05-21T04:30:00Z — User published `v0.5.0` from a local
   clone (initial push didn't land; the local tag existed and
   `git push origin v0.5.0` transmitted it). `git ls-remote --tags
   origin` now returns 8 tags; `v0.5.0^{}` dereferences to the
   close commit `954d8da`. **Phase 4 formally closed.** Project
   moves into Phase 5 (Cutover). Workflow relocation from P4-T3
   remains an independent pending user action.
-+ 2026-05-21T05:35:00Z — Completed P5-T0 (cutover audit + task
+- 2026-05-21T05:35:00Z — Completed P5-T0 (cutover audit + task
   breakdown). `plans/P5-AUDIT-cutover.md` inventories the two
   destructive removal targets (`legacy/` 28M/2275 files; root
   `.claude/` loader) and confirms **no runtime dependency** from
@@ -1499,7 +1526,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   late (it disables the session's own hooks). 6 open questions for
   P5-T1. **The destructive steps and the main replacement will each
   be surfaced for explicit confirmation when reached.**
-+ 2026-05-21T04:45:00Z — Closed one of the two pending items:
+- 2026-05-21T04:45:00Z — Closed one of the two pending items:
   fixed `api_runner.py:115` stale install string
   (`ucx_hermes[api]` → `hermes-server[api]`; commit `23ae664`);
   Hermes suite 447/447, conformance 31/31; recorded in CHANGELOG
@@ -1512,20 +1539,20 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
   legacy-vs-new layer model; ~150 stale `framework/<X>` refs)
   are post-v1.0 content migrations, not quick completions —
   scoped into Phase 5 / post-v1.0.
-+ 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
+- 2026-05-21T03:10:00Z — Completed P4-T4 (retrofits + parity
   report). Six artifacts landed:
-  + `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
+  - `platforms/hermes/CHANGELOG.md` — Hermes `[0.1.0]` mirroring
     project `[0.3.0]` scoped content.
-  + `platforms/claude-code-plugin/CHANGELOG.md` — plugin `[0.1.0]`
+  - `platforms/claude-code-plugin/CHANGELOG.md` — plugin `[0.1.0]`
     mirroring project `[0.4.0]` scoped content.
-  + `platforms/hermes/README.md` — expanded from 27-line
+  - `platforms/hermes/README.md` — expanded from 27-line
     placeholder to **113 lines** (mirrors P3-T3 plugin README
     structure: what's inside, install, MCP tool list, framework
     spec conformance section, platform info table, relationship-
     to-plugin section).
-  + `LICENSE` at repo root — MIT, copyright `vladm3105` (matches
+  - `LICENSE` at repo root — MIT, copyright `vladm3105` (matches
     plugin manifest `"license": "MIT"`).
-  + `docs/PARITY.md` — 5-section capability comparison (matrix /
+  - `docs/PARITY.md` — 5-section capability comparison (matrix /
     operations / extras / known parity gap / choosing between).
     Honest about the **legacy-vs-new layer model gap**: plugin
     lacks `doc-tdd` + `doc-iplan`; has `doc-sys` / `doc-req` /
@@ -1533,7 +1560,7 @@ Timestamps are ISO 8601 UTC (`YYYY-MM-DDThh:mm:ssZ`).
     11-layer model. Hermes covers all 8 new-model layers via
     its generic `sdd_*` tools. Resolution deferred post-v1.0
     per P3-T1 §Deferred R2.
-  + `docs/TAGGING.md` extended with an "In-container push
+  - `docs/TAGGING.md` extended with an "In-container push
     restrictions" section documenting the tag + workflow
     restrictions symmetrically (per P4-T3 G15 recommendation).
   All 9 verify gates green; conformance still 31/31.
@@ -1562,7 +1589,7 @@ hooks survive only in working-branch git history).
 
 **Independent pending user actions** (carry-overs, do anytime):
 
-+ Relocate workflows: `git mv plans/workflows-pending/*.yml
+- Relocate workflows: `git mv plans/workflows-pending/*.yml
   .github/workflows/` from a local clone (P4-T3; in-container
   can't push `.github/workflows/`).
 
@@ -1585,58 +1612,58 @@ Verify the tag with `git ls-remote --tags origin`.
 
 ## Open questions
 
-+ None outstanding.
+- None outstanding.
 
 ## Log
 
-+ 2026-05-18T00:00:00Z — Handoff record created.
-+ 2026-05-18T17:27:00Z — Added decision log + continuity hooks.
-+ 2026-05-18T17:45:00Z — Completed P1-T1 audit of `legacy/ucx_flow_v3/`.
-+ 2026-05-18T18:45:00Z — Added two-pass plan-review gate (D-0007).
-+ 2026-05-18T19:05:00Z — Completed P1-T2 layer extraction.
-+ 2026-05-18T19:40:00Z — Completed P1-T3 registry extraction.
-+ 2026-05-18T20:30:00Z — Completed P1-T4 governance + CHG extraction.
-+ 2026-05-18T21:25:00Z — Completed P1-T5 conformance suite; wrote
+- 2026-05-18T00:00:00Z — Handoff record created.
+- 2026-05-18T17:27:00Z — Added decision log + continuity hooks.
+- 2026-05-18T17:45:00Z — Completed P1-T1 audit of `legacy/ucx_flow_v3/`.
+- 2026-05-18T18:45:00Z — Added two-pass plan-review gate (D-0007).
+- 2026-05-18T19:05:00Z — Completed P1-T2 layer extraction.
+- 2026-05-18T19:40:00Z — Completed P1-T3 registry extraction.
+- 2026-05-18T20:30:00Z — Completed P1-T4 governance + CHG extraction.
+- 2026-05-18T21:25:00Z — Completed P1-T5 conformance suite; wrote
   `framework/README.md`.
-+ 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.
-+ 2026-05-19T10:00:00Z — Completed P1-T7 root assembly; `framework/` fully
+- 2026-05-19T09:20:00Z — Completed P1-T6 `framework/VERSION` + tag convention.
+- 2026-05-19T10:00:00Z — Completed P1-T7 root assembly; `framework/` fully
   assembled.
-+ 2026-05-19T10:45:00Z — P1-T8 Phase 1 close commit; release tags created
+- 2026-05-19T10:45:00Z — P1-T8 Phase 1 close commit; release tags created
   locally.
-+ 2026-05-19T11:35:00Z — Tag push blocked (HTTP 403, `refs/tags/*`); added
+- 2026-05-19T11:35:00Z — Tag push blocked (HTTP 403, `refs/tags/*`); added
   `docs/TAGGING.md`; corrected records — P1-T8/P0-T5 reopened.
-+ 2026-05-19T12:45:00Z — Recorded framework purpose + domain-profile
+- 2026-05-19T12:45:00Z — Recorded framework purpose + domain-profile
   direction (D-0012); project name set to `aidoc-flow`.
-+ 2026-05-19T13:10:00Z — Added D-0012 refinements R1 (IPLAN planned/executed
+- 2026-05-19T13:10:00Z — Added D-0012 refinements R1 (IPLAN planned/executed
   states; criticality-scaled audit) and R2 (curated corpus as the unit of
   value; library/composition/freshness as post-v1.0 destination).
-+ 2026-05-19T13:50:00Z — Release tags `v0.1.0`, `framework/v0.1.0`, `v0.2.0`
+- 2026-05-19T13:50:00Z — Release tags `v0.1.0`, `framework/v0.1.0`, `v0.2.0`
   published from a local clone; Phase 1 closed; P0-T5 and P1-T8 done.
-+ 2026-05-19T14:25:00Z — Completed P2-T0 audit; mcp_ucx out of scope; P2-T1…T6
+- 2026-05-19T14:25:00Z — Completed P2-T0 audit; mcp_ucx out of scope; P2-T1…T6
   defined and queued in `MIGRATION_TODO.md`.
-+ 2026-05-19T14:55:00Z — Completed P2-T1 design; D-0013 records the
+- 2026-05-19T14:55:00Z — Completed P2-T1 design; D-0013 records the
   templates-single-source-of-truth rule.
-+ 2026-05-20T09:10:00Z — Completed P2-T2 port-verbatim copy (64 files,
+- 2026-05-20T09:10:00Z — Completed P2-T2 port-verbatim copy (64 files,
   all verify gates green).
-+ 2026-05-20T09:25:00Z — P2-T0 audit scope-completeness correction (§5b):
+- 2026-05-20T09:25:00Z — P2-T0 audit scope-completeness correction (§5b):
   3 legacy-root Hermes files added to P2-T3 scope (`HERMES_UCX_RUNTIME_ENVIRONMENT.md`,
   `MULTI_PROJECT_QUICK_REFERENCE.md`, `MULTI_PROJECT_SETUP_GUIDE.md`);
   4 others classified drop / out-of-scope; Pass 4 retro recorded.
-+ 2026-05-20T10:15:00Z — Completed P2-T7: ported `hermes_agent_skills/`
+- 2026-05-20T10:15:00Z — Completed P2-T7: ported `hermes_agent_skills/`
   (181 files) into `platforms/hermes/agent-skills/`; §5b updated so the
   3 root-docs files are sourced via P2-T7, not double-ported via P2-T3;
   P2-T7 Pass 3 retro records implementation-time deviations.
-+ 2026-05-20T10:45:00Z — Remaining-tasks review: P2-T4 (spec-version
+- 2026-05-20T10:45:00Z — Remaining-tasks review: P2-T4 (spec-version
   declaration) folded into P2-T3; added P2-T8 (drop skill's template
   duplication, rewire to `framework/layers/`) to close D-0013 fully for
   the skill package. New order: T3 → T8 → T5 → T6.
-+ 2026-05-20T11:50:00Z — Drafted `plans/P2-T3-PLAN.md` (two review passes
+- 2026-05-20T11:50:00Z — Drafted `plans/P2-T3-PLAN.md` (two review passes
   done). Plan recon surfaced an audit gap: 3 test files + 17 docs files
   carry `ucx_flow_v3` references that §3a/§3b missed. P2-T3 absorbs the
   scope (§3a-extension for tests; new §3c for docs, classified historical
   vs current-behavior per the P2-T7 G13 lesson) and lands the audit-doc
   correction inside its own step sequence. Awaiting approval to implement.
-+ 2026-05-20T12:50:00Z — Completed P2-T3 port-with-repoint: 200 files
+- 2026-05-20T12:50:00Z — Completed P2-T3 port-with-repoint: 200 files
   ported + 2 VERSION files; path-map applied across 18 edit-list files;
   11 historical docs preserved verbatim; pyproject + .mcp.json updated;
   audit §3a renamed and new §3c added. Conformance 25/25; Hermes tests
@@ -1718,13 +1745,13 @@ bootstrap on the post-EARS-RT-001 EARS-01.md state. The deeper
 lesson — "Never hand-edit example artifacts; framework agents must
 do remediation" — was codified into CLAUDE.md durable conventions
 
-+ memory entry `feedback_never_hand_edit_example_artifacts.md`.
+- memory entry `feedback_never_hand_edit_example_artifacts.md`.
 
 Two follow-up items noted by the fixer:
 
-+ STY02 WARNING on EARS-01.md §3 Requirements (1420 words > 800
+- STY02 WARNING on EARS-01.md §3 Requirements (1420 words > 800
   target, < 1200 blocking) — out of scope for STY03-only run.
-+ `datetime.utcnow()` deprecation warning in `write_synthetic_verdict`
+- `datetime.utcnow()` deprecation warning in `write_synthetic_verdict`
   — cosmetic; should migrate to `datetime.now(datetime.UTC)`.
 
 BDD-RT-001 (#264) is now unblocked. Resuming: rebase `feat/bdd-rt-001`
@@ -1734,14 +1761,14 @@ onto current main + re-run the BDD cascade.
 
 Three coordinated PRs landed in sequence:
 
-+ **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 word-count now
+- **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 word-count now
   excludes code-fenced blocks (mirroring STY02 / AS3). BDD bodies are
   mostly fenced Gherkin (`doc-bdd` allows ~50k tokens of it) and would
   trip the blocking 2250-word threshold otherwise. Surfaced by
   `doc-bdd-autopilot` mid-cascade, which correctly diagnosed the
   framework workflow gap per the *Never hand-edit example artifacts*
   rule and refused to manually trim the BDD body.
-+ **PR #111 (SAGA-BUDGET-001)** — three coordinated constants bumped
+- **PR #111 (SAGA-BUDGET-001)** — three coordinated constants bumped
   60 → 90 min: `ORCHESTRATOR_TIMEOUT` 3600→5400 (`test-acceptance.sh`),
   `SOFT_DEADLINE_SECONDS` 3300→5100 (`tools/saga_driver.py`, byte-parity
   synced via `tools/sync-plugin-framework.sh`), `MAX_LAYER_SEC`
@@ -1749,7 +1776,7 @@ Three coordinated PRs landed in sequence:
   converged to PASS in 58:38 — within 1:22 of the old 3600s ceiling —
   so future ADR/SPEC/TDD/IPLAN cascades (larger artifacts) needed the
   headroom.
-+ **PR (BDD-RT-001 itself)** — framework `0.14.1 → 0.14.2` + plugin
+- **PR (BDD-RT-001 itself)** — framework `0.14.1 → 0.14.2` + plugin
   `0.8.0 → 0.9.0`. 6 BDD playbooks at `framework/playbooks/04_BDD/`
   (qa_lead 35 / tech_lead 25 / chaos_engineer 14 / operator 10 /
   auditor 10 / security_engineer 6 = 100); `doc-bdd-audit` +
@@ -1802,12 +1829,12 @@ fixer) — likely the security-heavy crew catches more on iter 1.
 
 Per-lens scores at iter 2:
 
-+ architect 95
-+ tech_lead 85
-+ chaos_engineer 82
-+ security_engineer 91
-+ operator 82
-+ auditor 100
+- architect 95
+- tech_lead 85
+- chaos_engineer 82
+- security_engineer 91
+- operator 82
+- auditor 100
 
 **First observed team-mode patch-validation cycle** across all
 per-layer rollouts: the iter 1 fixer dispatched `security_engineer`
@@ -1854,16 +1881,16 @@ chaos_engineer 93 / security_engineer 100.
 
 ### Three infrastructure PRs surfaced and resolved during SPEC-RT-001
 
-+ **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 now excludes
+- **PR #110 (STY03 fence-fix)** — `sdd_doc_lint` STY03 now excludes
   code-fenced blocks, mirroring STY02 / AS3.
-+ **PR #111 (SAGA-BUDGET-001)** — saga driver wall-clock budget
+- **PR #111 (SAGA-BUDGET-001)** — saga driver wall-clock budget
   60 → 90 min (coordinated `ORCHESTRATOR_TIMEOUT` / `SOFT_DEADLINE_SECONDS` /
   `MAX_LAYER_SEC` bump preserving the 300s graceful-exit margin).
-+ **PR #115 (synthesizer check-schema + saga events)** — synthesizer
+- **PR #115 (synthesizer check-schema + saga events)** — synthesizer
   contract now requires `check` per finding (new conformance test
   enforces); saga driver stamps `dispatch:<phase>` / `complete:<phase>`
   events to a new `saga.events[]` field.
-+ **PR #117 (SAGA-DETERMINISM-001)** — saga driver's new
+- **PR #117 (SAGA-DETERMINISM-001)** — saga driver's new
   `reconcile_post_audit` walks `saga.status` deterministically when
   the audit SKILL's LLM stochastically skips per-branch transition
   stamping. Architecturally completes the cooperative→preemptive
@@ -1908,10 +1935,10 @@ First child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`)
 Closes `plans/FRAMEWORK-TODO.md` items #1-4. Plugin PATCH 0.14.0 → 0.14.1.
 Plumbing only — no spec change.
 
-+ Item 1: `--skip-lint-smoke` flag in `tests/scripts/test-acceptance.sh` (replaces deprecated env-var)
-+ Item 2: "Cleanup-then-cascade pattern" subsection in `tests/ACCEPTANCE.md`
-+ Item 3: DO-NOT-EDIT banners on canonical vendored Python modules + `_VENDORED.md` README
-+ Item 4: 18 audit + fixer SKILL prompts gain MD056 table-pipe-escape guidance
+- Item 1: `--skip-lint-smoke` flag in `tests/scripts/test-acceptance.sh` (replaces deprecated env-var)
+- Item 2: "Cleanup-then-cascade pattern" subsection in `tests/ACCEPTANCE.md`
+- Item 3: DO-NOT-EDIT banners on canonical vendored Python modules + `_VENDORED.md` README
+- Item 4: 18 audit + fixer SKILL prompts gain MD056 table-pipe-escape guidance
 
 FRAMEWORK-CLEANUP-001 backlog: 13 open / 5 closed. Next: PR-C in parallel, then PR-B, then PR-D, then PR-E.
 
@@ -1921,10 +1948,10 @@ Second child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`
 Closes `plans/FRAMEWORK-TODO.md` items #11-14.
 Framework MINOR 0.17.1 → 0.18.0; plugin MINOR 0.14.1 → 0.15.0.
 
-+ Item 11: iteration cap elevated to spec + project-tunable knob
-+ Item 12: `@threshold:` ID pattern in registry + strict TH01 lint
-+ Item 13: SPEC + IPLAN element-ID exemption formalized in ID_NAMING_STANDARDS
-+ Item 14: EARS `@bdd:` downstream slot formalized as optional + non-canonical
+- Item 11: iteration cap elevated to spec + project-tunable knob
+- Item 12: `@threshold:` ID pattern in registry + strict TH01 lint
+- Item 13: SPEC + IPLAN element-ID exemption formalized in ID_NAMING_STANDARDS
+- Item 14: EARS `@bdd:` downstream slot formalized as optional + non-canonical
 
 FRAMEWORK-CLEANUP-001 backlog: 9 open / 9 closed. Next: PR-B (review-quality calibration, 6 items) or PR-E (IPLAN subtypes, 1 item).
 
@@ -1934,11 +1961,11 @@ Third child PR of FRAMEWORK-CLEANUP-001 (master plan PR #128, merged `528d6f23`)
 Closes `plans/FRAMEWORK-TODO.md` items #5-10 — the highest-impact child PR.
 Framework MINOR 0.18.0 → 0.19.0; plugin MINOR 0.15.0 → 0.16.0.
 
-+ Item 5/6: CLAUDE.md gains Corpus cross-check + Empirical pass-count guidance
-+ Item 7: TDD auditor playbook C4/C1/Reasoning frame updated to necessary-upstream
-+ Item 8 (HIGH): 13 playbooks gain No-findings rationale section (calibration fix)
-+ Item 9: 9 audit SKILLs strip self-claimed scores before lens fan-out
-+ Item 10: 9 audit SKILLs + synthesizer agent get fixer_introduced detection
+- Item 5/6: CLAUDE.md gains Corpus cross-check + Empirical pass-count guidance
+- Item 7: TDD auditor playbook C4/C1/Reasoning frame updated to necessary-upstream
+- Item 8 (HIGH): 13 playbooks gain No-findings rationale section (calibration fix)
+- Item 9: 9 audit SKILLs strip self-claimed scores before lens fan-out
+- Item 10: 9 audit SKILLs + synthesizer agent get fixer_introduced detection
 
 FRAMEWORK-CLEANUP-001 backlog: 4 open / 15 closed. Next: PR-D (decomp + threshold gates; needs DECISION-GATE-D) and PR-E (IPLAN subtypes, smallest) and PR-F (doc-number independence; deferred per user).
 

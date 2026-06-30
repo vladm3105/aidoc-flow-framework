@@ -32,9 +32,9 @@ metadata:
   validation:
     _guidance: |
       Validation is performed by the platform's conformance tooling.
-      It covers a structural check, a readiness score (quality gate), a
+      It covers a structural check, a readiness score (advisory readiness target), a
       preflight check, and cross-document consistency.
-      SPEC-Ready Score: >=90/100 required before downstream SPEC generation.
+      SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
 
       SPEC-Ready scoring criteria:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
@@ -122,7 +122,7 @@ document_control:
       Proposed → Accepted → Deprecated → Superseded
       (NOT Draft/In Review/Approved)
 
-    SPEC-Ready Score: >=90/100 required before SPEC generation.
+    SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     Originating Topic: links to PRD Section 14 (ADR topic elaboration).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded
@@ -134,7 +134,7 @@ document_control:
   version: "1.0"
   originating_topic: "@prd: PRD.NN.14.xxxx"
   brd_reference: "@brd: BRD.NN.08.xxxx"
-  spec_ready_score: "[Score]/100"
+  spec_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
 
   revision_history:
     - version: "1.0"
@@ -414,7 +414,8 @@ traceability:
 
   health_score:
     spec_ready: "[X]%"
-    target_score: ">=90/100"
+    target_score: ">=90/100"  # advisory readability target, not a merge gate
+    _note: "Scores are advisory — computed by the auditor review lens, not hand-authored. The deterministic sdd_doc_lint floor is the real gate; a blank score is NOT incomplete."
 
 # =============================================================================
 # Section 10: Related Decisions
