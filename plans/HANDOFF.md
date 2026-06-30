@@ -1,39 +1,50 @@
 # Session Handoff
 
-> **🟡 IN PROGRESS (2026-06-30) — P3 cleanup arc: items 2 → 3 → 4.** Completing
-> the three deferred ▶ RESUME-HERE items in order, each as a full plan→review→
-> plan-PR→impl-PR cycle (founder direction).
+> **🟢 P3 CLEANUP ARC — items 2 & 3 SHIPPED + prerequisite bugfix SHIPPED + regen
+> runbook delivered (2026-06-30).** `main` clean at framework spec **0.32.5**,
+> plugin `0.23.0`. Six PRs merged this session (all admin-merged — composition-CI
+> gap forces `--admin`; founder standing OK).
 >
-> - **Item 2 — `BL-READY-SCORE-ADVISORY`: plan MERGED (#221), impl IN FLIGHT.**
->   Marks the 14 `*_ready_score` / `target_score` fields advisory across the 7
->   layer templates (BRD…TDD) — inline `#` comment + one `health_score` `_note:`
->   each (D-0042). Framework spec **0.32.3 → 0.32.4** (PATCH). The "52" headline
->   was BeeLocal's per-artifact tally; the template fix is 14 lines. Plan 2-cycle
->   reviewed (independent pass 0 load-bearing findings). Note: the
->   `test_plugin_release_metadata.py` hard-pin now **auto-updates** via
->   `sync-version-refs.sh` (no longer the manual tripwire PLANSTD-001 hit).
-> - **STRUCT01-INDEX-EXEMPTION (prerequisite bugfix, item-3-blocker): plan MERGED
->   (#223), impl IN FLIGHT.** ENG-BRD-SKETCH-ROADMAP's independent review found a
->   pre-existing bug: the linter's `*-INDEX` STRUCT01/trace exemption read top-level
->   `artifact_type`, but the 8 index templates nest it under `custom_fields` (6 bare;
->   IPLAN-00 `.yaml` has no `---` frontmatter) → a consumer's index threw STRUCT01
->   (BRD-00: 17). Fix is a **pure linter change** (filename-based `_is_index_doc` +
->   ID02 `-INDEX` skip) — no template/spec change, no bump. 3 review passes (Pass 2
->   caught that the original docs-only fix would self-trip ID02 → pivoted). D-0043.
-> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP`: plan MERGED (#225), impl IN FLIGHT.**
->   Re-scoped onto the now-STRUCT01-clean BRD-00 index (4 review passes, 3
->   independent). Spec **0.32.4 → 0.32.5** (PATCH, docs-only): BRD-00 index "Planned
->   BRDs" table is the roadmap home (cycle/PROD/`@depends:`/status columns);
->   `01_BRD/README.md` documents project-init + the trace-inert Sketch concept;
->   `BRD-TEMPLATE.yaml` cross-ref. D-0044. Standalone Sketch-*file* support +
->   `_DOC_ID` header false-positive both deferred + logged in FRAMEWORK-TODO.
-> - **Item 4 — P3 stragglers + corpus regen:** doc-only stragglers to be cleared;
->   **wholesale corpus regen needs a live plugin CLI** (not runnable here) → I'll
->   deliver a regen runbook for the founder to run.
+> - **Item 2 — `BL-READY-SCORE-ADVISORY` ✅ SHIPPED** (#221 plan + #222 impl, spec
+>   `0.32.3 → 0.32.4`, D-0042). Marked the 14 `*_ready_score`/`target_score` fields
+>   advisory across the 7 layer templates + reworded 15 contradicting `_guidance`
+>   prose lines (ai-review caught the "required"/"quality gate" contradiction the
+>   2-cycle plan review missed → plan Pass 3).
+> - **`STRUCT01-INDEX-EXEMPTION` ✅ SHIPPED** (#223 plan + #224 impl, pure linter
+>   fix, no spec bump, D-0043). Prerequisite bug surfaced by item-3's review: the
+>   `*-INDEX` STRUCT01/trace exemption read top-level `artifact_type` but the 8
+>   index templates nest it under `custom_fields` → consumers' indexes threw
+>   STRUCT01. Fix: filename-based `_is_index_doc` + ID02 `-INDEX` skip. 3 passes
+>   (Pass 2 caught the original docs-only fix would self-trip ID02 → pivoted).
+> - **Item 3 — `ENG-BRD-SKETCH-ROADMAP` ✅ SHIPPED** (#225 plan + #226 impl, spec
+>   `0.32.4 → 0.32.5`, D-0044). BRD-00 index "Planned BRDs" table = roadmap home
+>   (cycle/PROD/`@depends:`/status); `01_BRD/README.md` project-init + trace-inert
+>   Sketch; `BRD-TEMPLATE.yaml` cross-ref. 4 passes, 3 independent.
+> - **Item 4 — regen runbook delivered; P3 content-stragglers remain.**
+>   `plans/CORPUS-REGEN-RUNBOOK.md` is the founder-runnable procedure for the
+>   **wholesale corpus regen** (needs a live plugin CLI; not runnable in this
+>   container) — it closes the deferred corpus-remediation backlog (16 COV02
+>   orphans, CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES, INDEX-UPSTREAM-RESIDUE
+>   corpus-side). **Doc-only P3 stragglers NOT yet cleared** (deferred to a focused
+>   session — see ▶ below).
 >
-> **Merge-flow:** founder gave a standing OK to admin-merge the green
-> governance-tier PRs in this arc (composition-CI gap forces `--admin` on every
-> PR here regardless).
+> **▶ RESUME HERE — next session:**
+>
+> 1. **Run the corpus regen** (`plans/CORPUS-REGEN-RUNBOOK.md`) on a live plugin
+>    CLI — the corpus lags spec `0.29.x → 0.32.5`. Closes the 4 corpus-remediation
+>    TODO items.
+> 2. **Doc-only P3 stragglers** (one themed sweep, à la #217): `D54-F12`
+>    (agentic antipatterns in BRD/PRD), `ENG-PLATFORM-ADR-TIMING` (ADR-timing
+>    wording in BRD+PRD templates), `INDEX-UPSTREAM-RESIDUE` (stale `Upstream:`
+>    enumerations in the 8 layer index templates/READMEs), `D54-F04` (EARS-Ready
+>    non-latency rubric — bigger, playbook work).
+> 3. **New follow-ons logged this session:** `SKETCH-FILE-STANDALONE` (standalone
+>    Sketch-file lint support), `LINT-DOCID-HEADER-FALSE-POSITIVE` (`_DOC_ID`
+>    flags `<TYPE>-<word>` header/link tokens).
+> 4. **Hermes parity** — still the one large outstanding arc (`HERMES-BACKLOG.md`).
+>
+> **Merge-flow:** every PR here needs `--admin` (composition-CI gap,
+> `AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — founder standing OK for this arc.
 >
 > ---
 >
