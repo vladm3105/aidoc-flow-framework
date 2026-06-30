@@ -1,5 +1,28 @@
 # Session Handoff
 
+> **🟢 FOLLOW-UP SESSION COMPLETE (2026-06-29, post-P1-wave) — loose end closed;
+> `main` clean at framework `0.32.3` / plugin `0.23.0`; no open PRs; nothing in
+> flight.** Reviewed and **deleted** the dangling `feat/cfb-pr-1a-trace-contract`
+> branch (fully superseded by #180 — detail in the "Loose end RESOLVED" note
+> below) and recorded the closure via **#219** (admin-merged; see CI finding
+> next). **The ▶ RESUME HERE list below is UNCHANGED and remains the
+> next-session start point — begin with Hermes parity.**
+>
+> **⚠️ CI finding — merge-flow gotcha** (now tracked as
+> `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` in `FRAMEWORK-TODO.md`): the
+> branch-protection-required **`call / composition`** check is **structurally
+> unsatisfiable on a PR head** in this repo. `ai-review.yml` runs on
+> `pull_request_target` (run `head_sha` = base = main HEAD), so the
+> `workflow_run`-triggered `composition.yml` posts `call / composition` to main's
+> HEAD, never to the PR's head commit. Every PR's combined status stays `pending`
+> on that context → the OPS-0062 green-path `gh pr merge` is `BLOCKED` and the PR
+> must be closed via `--admin` (as both #218 and #219 were). **`skip-ai-review`
+> label-cycling does NOT fix it.** Fix locus is the **aidoc-flow-ci** composition
+> reusable (post to the `workflow_run` PR-head SHA) — cross-repo, track upstream.
+> Next session: expect to admin-merge AI-opened PRs here until that lands.
+>
+> ---
+>
 > **🟢 SESSION COMPLETE (2026-06-29) — CONSUMER-FEEDBACK P1 wave shipped + P3
 > docs cleared. `main` clean; framework spec `0.32.3`, plugin `0.23.0`. No open
 > PRs; nothing in flight.**
