@@ -1,0 +1,34 @@
+{
+  "review_run_id": "hermes-brd01-9f8e7d6c",
+  "artifact_id": "BRD-01",
+  "layer": "01_BRD",
+  "personas_requested": [
+    "business_analyst",
+    "architect",
+    "chaos_engineer",
+    "security_engineer",
+    "auditor"
+  ],
+  "status": "CLOSED",
+  "iteration": 1,
+  "current_phase": "synthesize",
+  "created_at": "2026-06-11T09:00:00.000000+00:00",
+  "updated_at": "2026-06-11T09:12:30.000000+00:00",
+  "branches": {
+    "business_analyst": {"branch_id": "hba011223344", "status": "BRANCH_COMPLETED", "attempt": 0, "started_at": "2026-06-11T09:01:00.000000+00:00", "ended_at": "2026-06-11T09:03:00.000000+00:00"},
+    "architect": {"branch_id": "har011223344", "status": "BRANCH_COMPLETED", "attempt": 0, "started_at": "2026-06-11T09:01:00.000000+00:00", "ended_at": "2026-06-11T09:03:10.000000+00:00"},
+    "chaos_engineer": {"branch_id": "hch011223344", "status": "BRANCH_COMPLETED", "attempt": 0, "started_at": "2026-06-11T09:01:00.000000+00:00", "ended_at": "2026-06-11T09:03:20.000000+00:00"},
+    "security_engineer": {"branch_id": "hse011223344", "status": "BRANCH_COMPLETED", "attempt": 0, "started_at": "2026-06-11T09:01:00.000000+00:00", "ended_at": "2026-06-11T09:03:30.000000+00:00"},
+    "auditor": {"branch_id": "hau011223344", "status": "BRANCH_COMPLETED", "attempt": 0, "started_at": "2026-06-11T09:01:00.000000+00:00", "ended_at": "2026-06-11T09:03:40.000000+00:00"}
+  },
+  "transitions": [
+    {"ts": "2026-06-11T09:00:00.000000+00:00", "from": null, "to": "PREPARED", "scope": "run"},
+    {"ts": "2026-06-11T09:00:30.000000+00:00", "from": "PREPARED", "to": "FANOUT_STARTED", "scope": "run"},
+    {"ts": "2026-06-11T09:01:00.000000+00:00", "from": "FANOUT_STARTED", "to": "BRANCH_RUNNING", "scope": "branch:business_analyst"},
+    {"ts": "2026-06-11T09:03:00.000000+00:00", "from": "BRANCH_RUNNING", "to": "BRANCH_COMPLETED", "scope": "branch:business_analyst"},
+    {"ts": "2026-06-11T09:10:00.000000+00:00", "from": "BRANCH_COMPLETED", "to": "FANIN_REDUCED", "scope": "run"},
+    {"ts": "2026-06-11T09:11:00.000000+00:00", "from": "FANIN_REDUCED", "to": "SYNTHESIZED", "scope": "run"},
+    {"ts": "2026-06-11T09:12:30.000000+00:00", "from": "SYNTHESIZED", "to": "CLOSED", "scope": "run"}
+  ],
+  "compensation_actions": []
+}

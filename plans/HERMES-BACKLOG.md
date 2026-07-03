@@ -2,10 +2,34 @@
 
 | Field | Value |
 |-------|-------|
-| Status     | **DEFERRED** — pending completion of plugin-side work |
+| Status     | **ARC UNDERWAY** — Phase 1 shipped (saga conformance); playbook injection is the load-bearing next gap |
 | Owner      | vladm3105 |
-| Last update | 2026-06-11 |
+| Last update | 2026-07-02 |
 | Policy     | **Plugin-first development.** Hermes work is deferred until the corresponding plugin functionality is complete and verified end-to-end. This is the single source of truth for "what Hermes still needs to catch up on." |
+
+> **⚠️ CORRECTED ASSESSMENT (2026-07-02, D-0045) — read before implementing any
+> H-item below.** An evidence-backed re-assessment found this backlog's central
+> premise **wrong**: **Hermes already has team-mode** (a working saga orchestrator
+> with parallel per-persona fan-out — `saga_orchestrator.py:526`; crews reconciled to
+> `REVIEW_CREWS.yaml` — `review_scoring.py:54`; MCP-wired `sdd_review` `saga_parallel`
+> mode). H-4's "team-mode not implemented" is **FALSE**. And the **entire 0.32.x arc
+> (D-0038…D-0044) is AUTO-SATISFIED** for Hermes via its byte-identical vendored
+> `sdd_doc_lint` + shared `framework/layers/` templates — none needs Hermes-native
+> code. The **real gap is older engine debt: playbook injection + saga completeness.**
+> Re-sequenced (see `plans/HERMES-PARITY-PHASE-1-PLAN.md`):
+>
+> | Phase | Scope | Status |
+> |-------|-------|--------|
+> | 1 | saga state-machine conformance (`PARTIAL_TIMEOUT`) + enforced `test_saga_lifecycle_parity.py` | **✅ shipped** — partial H-1 (table); no Hermes bump |
+> | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | pending |
+> | 2 | **playbook injection** for BRD+PRD (H-4) + fold H-6 + H-2 — the load-bearing gap everything else needs | pending |
+> | 3 | playbook fan-out to 6 more layers (H-5) + CHG crew (H-10) | pending |
+> | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | pending |
+>
+> **Auto-satisfied (no action):** H-3 (dormant), H-7 lint rows / H-8 / H-9 lint+template
+> rows, and all of D-0038…D-0044 — Hermes gets these via vendored lint + shared
+> templates. The H-N entries below are retained as historical detail; the phase table
+> above is the live sequencing.
 
 ## Why this exists
 

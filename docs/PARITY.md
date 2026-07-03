@@ -179,7 +179,7 @@ deterministic gate, and reduced findings).
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
 | Saga lifecycle (D-0031 / framework spec `0.23.0`) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **BRD layer (plugin v0.6.1)**: preemptive enforcement via `tools/saga_driver.py` invoked by `doc-brd-autopilot/SKILL.md`. **PRD..IPLAN (plugin v0.6.0)**: cooperative enforcement via SKILL prompts (Phase 4 migrates these to preemptive). | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement |
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
-| Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | same — saga PARTIAL_TIMEOUT state; preemptive transition |
+| Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | saga state machine **accepts** `PARTIAL_TIMEOUT` (spec-conformant table, HERMES-PARITY Phase 1); the orchestrator does not yet *write* it — the break-circuit + resume path is Phase 1b |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
 | Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ⏳ deferred (HERMES-BACKLOG H-4) |
 
@@ -203,11 +203,12 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
   `tests/conformance/test_saga_lifecycle_parity.py` validates committed
   sample saga journals from both runners
   (`tests/conformance/fixtures/saga/{hermes,plugin}_BRD-01_saga.json`)
-  against the shared `framework/governance/saga.schema.json`, asserts the
-  state machine + transition table in `REVIEW_SAGA.md` matches Hermes'
-  `_ALLOWED_TRANSITIONS` exactly, and asserts the `## Break-circuit
-  policy` section is present in every plugin orchestrator SKILL.md (28
-  orchestrator skills per BRD-RT-004's name-match).
+  against the shared `framework/governance/saga.schema.json`, and asserts
+  **both** platforms' `_ALLOWED_TRANSITIONS` equal the `REVIEW_SAGA.md`
+  transition table exactly — including the `PARTIAL_TIMEOUT` break-circuit
+  state. (The `## Break-circuit policy` SKILL-prose is a separate
+  plugin-side concern — it lives in the ~18 `doc-*-audit` / `doc-*-fixer`
+  skills, not the autopilots — and is not asserted by this parity test.)
 - **Manual end-to-end (live run):** the "same artifact → identical
   lifecycle and report" check is manual, since live LLM output is not
   CI-deterministic. Procedure:
