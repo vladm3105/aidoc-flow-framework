@@ -377,6 +377,8 @@ user_stories:
     - "FAIL: Given-When-Then scenarios — belongs in BDD (Layer 4)"
     - "FAIL: Technical implementation details — belongs in SPEC (Layer 6)"
     - "FAIL: API endpoint specifications — belongs in SPEC (Layer 6)"
+    - "FAIL: Agent pipeline topology / orchestration / timeouts / retry policy — architecture, belongs in ADR (Layer 5) / SPEC (Layer 6)"
+    - "PASS: 'The review stage operates independently of authoring so a slow review never blocks new submissions' — product behavior at Container altitude"
 
   roles:
     - role: "[Primary user role]"
@@ -583,7 +585,7 @@ traceability:
   _guidance: |
     Upstream: REQUIRED — all PRDs must reference at least one BRD element.
     Downstream: OPTIONAL — only add links to artifacts that exist.
-    Do NOT reference specific ADR numbers — ADRs don't exist yet.
+    Do NOT reference specific ADR numbers — ADRs don't exist yet. (Platform-flow exception: a platform PRD whose ADRs are already decided MAY cite those existing ADR numbers — their decisions predate the PRD.)
     Do NOT use placeholder IDs (TBD, XXX, NNN).
 
     ADR topic specification: PRD Section 14 specifies technical options for
@@ -608,7 +610,7 @@ traceability:
   adr_topic_elaboration:
     _guidance: |
       Specify technical options for each BRD Section 8 topic so ADR can
-      evaluate them. Do NOT reference specific ADR numbers (ADR-01, etc.).
+      evaluate them. Do NOT reference specific ADR numbers (ADR-01, etc.) — except a platform PRD MAY cite ADRs already decided (see the traceability guidance above).
     topics:
       - topic: "[Topic from BRD Section 8]"
         brd_reference: "@brd: BRD.NN.08.xxxx"

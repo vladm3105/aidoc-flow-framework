@@ -1,9 +1,9 @@
 # Session Handoff
 
-> **🟢 P3 CLEANUP ARC — items 2 & 3 SHIPPED + prerequisite bugfix SHIPPED + regen
-> runbook delivered (2026-06-30).** `main` clean at framework spec **0.32.5**,
-> plugin `0.23.0`. Six PRs merged this session (all admin-merged — composition-CI
-> gap forces `--admin`; founder standing OK).
+> **🟢 P3 CLEANUP ARC — items 2 & 3 SHIPPED + prerequisite bugfix + regen runbook +
+> P3 docs sweep (2026-06-30).** `main` clean at framework spec **0.32.6**, plugin
+> `0.23.0`. Eight PRs merged this session (all admin-merged — composition-CI gap
+> forces `--admin`; founder standing OK).
 >
 > - **Item 2 — `BL-READY-SCORE-ADVISORY` ✅ SHIPPED** (#221 plan + #222 impl, spec
 >   `0.32.3 → 0.32.4`, D-0042). Marked the 14 `*_ready_score`/`target_score` fields
@@ -20,24 +20,26 @@
 >   `0.32.4 → 0.32.5`, D-0044). BRD-00 index "Planned BRDs" table = roadmap home
 >   (cycle/PROD/`@depends:`/status); `01_BRD/README.md` project-init + trace-inert
 >   Sketch; `BRD-TEMPLATE.yaml` cross-ref. 4 passes, 3 independent.
-> - **Item 4 — regen runbook delivered; P3 content-stragglers remain.**
+> - **Item 4 — regen runbook delivered + P3 docs sweep SHIPPED.**
 >   `plans/CORPUS-REGEN-RUNBOOK.md` is the founder-runnable procedure for the
 >   **wholesale corpus regen** (needs a live plugin CLI; not runnable in this
->   container) — it closes the deferred corpus-remediation backlog (16 COV02
->   orphans, CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES, INDEX-UPSTREAM-RESIDUE
->   corpus-side). **Doc-only P3 stragglers NOT yet cleared** (deferred to a focused
->   session — see ▶ below).
+>   container) — it closes the deferred **corpus-side** remediation backlog (16
+>   COV02 orphans, CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES). The **P3 docs
+>   sweep** (spec 0.32.6) shipped three template stragglers: `INDEX-UPSTREAM-RESIDUE`
+>   (5 stale `Upstream:` lines in the index templates → necessary-upstream —
+>   template-side, NOT a regen item), `ENG-PLATFORM-ADR-TIMING` (platform ADR-timing
+>   wording + PRD platform-flow exception), `D54-F12-AGENTIC-ANTIPATTERNS` (agentic
+>   FAIL/PASS pairs in BRD/PRD antipatterns).
 >
 > **▶ RESUME HERE — next session:**
 >
 > 1. **Run the corpus regen** (`plans/CORPUS-REGEN-RUNBOOK.md`) on a live plugin
->    CLI — the corpus lags spec `0.29.x → 0.32.5`. Closes the 4 corpus-remediation
->    TODO items.
-> 2. **Doc-only P3 stragglers** (one themed sweep, à la #217): `D54-F12`
->    (agentic antipatterns in BRD/PRD), `ENG-PLATFORM-ADR-TIMING` (ADR-timing
->    wording in BRD+PRD templates), `INDEX-UPSTREAM-RESIDUE` (stale `Upstream:`
->    enumerations in the 8 layer index templates/READMEs), `D54-F04` (EARS-Ready
->    non-latency rubric — bigger, playbook work).
+>    CLI — the corpus lags spec `0.29.x → 0.32.6`. Closes the 3 corpus-side
+>    remediation items (16 COV02 orphans, CORPUS-REFGRAN-RECASCADE, CORPUS-PRD-TH-RES).
+> 2. **Remaining P3/P2 items** (all `OPEN` in FRAMEWORK-TODO): `D54-F04` (EARS-Ready
+>    non-latency rubric — playbook work, not a trivial clarification), plus the P2s
+>    (`IPLAN-LANG-001`, `D54-F06/F13/F05/F07`, `ENG-STALE-DEPTH-DOCS`,
+>    `BL-REF-GRANULARITY`, `BL-STATUS-SCOPE`).
 > 3. **New follow-ons logged this session:** `SKETCH-FILE-STANDALONE` (standalone
 >    Sketch-file lint support), `LINT-DOCID-HEADER-FALSE-POSITIVE` (`_DOC_ID`
 >    flags `<TYPE>-<word>` header/link tokens).

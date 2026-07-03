@@ -30,11 +30,14 @@ These `FRAMEWORK-TODO.md` items are **closed by the regen**, not by hand:
   `@adr`/`@tdd` tags re-cascaded to element granularity (GD-03/REFGRAN01).
 - **`CORPUS-PRD-TH-RES`** — PRD-01's missing `component_decomposition` thresholds
   (11 unresolvable `@threshold:` citations).
-- **`INDEX-UPSTREAM-RESIDUE`** (corpus side) — stale cumulative `Upstream:`
-  enumerations in the corpus's layer index docs.
 
 After a clean regen these drop out of the corpus baseline; close each TODO entry
 with the regen commit ref.
+
+> **Not** closed by the regen: `INDEX-UPSTREAM-RESIDUE` was **template-side** (stale
+> `Upstream:` lines in the `framework/` index *templates*) and shipped separately in
+> the 0.32.6 P3 docs sweep — the example corpus has no layer index for the regen to
+> touch.
 
 ## Procedure
 

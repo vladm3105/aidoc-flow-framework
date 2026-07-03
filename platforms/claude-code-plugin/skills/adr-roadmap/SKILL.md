@@ -10,7 +10,7 @@ metadata:
     upstream_artifacts: [ADR]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.23.0"
-    framework_spec_version: "0.32.5"
+    framework_spec_version: "0.32.6"
     last_updated: "2026-05-23"
 ---
 

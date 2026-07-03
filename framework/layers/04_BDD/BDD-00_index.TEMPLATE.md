@@ -28,13 +28,13 @@ flowchart LR
 ```
 
 **Layer**: 4 (Behavior-Driven Development Layer)
-**Upstream**: BRD, PRD, EARS
+**Upstream (necessary)**: EARS — PRD/BRD are reachable transitively (one hop per layer), not direct upstream (necessary-upstream contract, NECESSARY-UPSTREAM-001).
 **Downstream**: ADR (Architecture Decision Records, Layer 5)
 **Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
 ### BDD Purpose
 
-- **Input**: BRD, PRD, EARS (formal requirements)
+- **Input**: EARS (formal requirements; PRD/BRD reachable transitively)
 - **Output**: YAML-structured Given-When-Then scenarios with spec_trace links to downstream SPEC
 - **Consumer**: All downstream artifacts (ADR, SPEC, TDD, Code) must satisfy BDD scenarios
 

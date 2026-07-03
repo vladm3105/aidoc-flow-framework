@@ -37,7 +37,7 @@ flowchart LR
 ```
 
 **Layer**: 3 (Formal Requirements Layer)
-**Upstream**: BRD, PRD
+**Upstream (necessary)**: PRD — BRD is reachable transitively (one hop per layer), not direct upstream (necessary-upstream contract, NECESSARY-UPSTREAM-001).
 **Downstream**: BDD (Behavior-Driven Development, Layer 4)
 **Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 

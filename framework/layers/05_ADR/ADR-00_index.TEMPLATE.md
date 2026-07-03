@@ -37,7 +37,7 @@ flowchart LR
 ```
 
 **Layer**: 5 (Architecture Decision Layer)
-**Upstream**: BRD, PRD, EARS, BDD
+**Upstream (necessary)**: EARS, BDD — PRD/BRD are reachable transitively (one hop per layer), not direct upstream (necessary-upstream contract, NECESSARY-UPSTREAM-001).
 **Downstream**: SPEC (Technical Specification, Layer 6)
 **Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
