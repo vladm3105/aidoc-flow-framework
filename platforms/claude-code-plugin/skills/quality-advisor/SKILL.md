@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     skill_category: utility
     version: "0.23.0"
-    framework_spec_version: "0.32.5"
+    framework_spec_version: "0.32.6"
     last_updated: "2026-05-23"
 ---
 

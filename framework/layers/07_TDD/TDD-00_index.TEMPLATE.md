@@ -33,7 +33,7 @@ SPEC (L6)  ──►  TDD (L7)  ──►  IPLAN (L8)  ──►  Code
 ```
 
 **Layer**: 7 (Test-Driven Development Layer)
-**Upstream**: BRD, PRD, EARS, BDD, ADR, SPEC
+**Upstream (necessary)**: EARS, BDD, ADR, SPEC — PRD/BRD are reachable transitively (one hop per layer), not direct upstream (necessary-upstream contract, NECESSARY-UPSTREAM-001).
 **Downstream**: IPLAN (Implementation Plan, Layer 8)
 **Traceability chain**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 

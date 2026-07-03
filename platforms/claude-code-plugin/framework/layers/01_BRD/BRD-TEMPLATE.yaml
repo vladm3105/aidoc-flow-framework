@@ -98,7 +98,7 @@ metadata:
 
       Platform BRDs: Define foundational capabilities, technology stacks, prerequisites.
         - Filename: BRD-NN_platform_{slug}.yaml
-        - ADR timing: ADRs created BEFORE PRD to validate architectural decisions.
+        - ADR timing: the architectural decisions are DECIDED before the PRD (provenance recorded in the ADR context/originating_topic); the ADR *documents* are still AUTHORED in sequence (after BDD) so they carry the full upstream @-tag chain.
         - Establishes foundation for Feature BRDs.
 
       Feature BRDs: Define business features and user workflows.
@@ -314,6 +314,8 @@ business_objectives:
     - "FAIL: 'Improve transaction speed' — no baseline or target"
     - "FAIL: 'Reduce costs' — no quantitative measure"
     - "PASS: 'Reduce delivery time from 24-48 hours to <15 minutes for 95% of transactions'"
+    - "FAIL: 'System runs a 3-stage agent pipeline with 30s timeouts and retries' — agent topology is architecture (ADR/SPEC), not business value"
+    - "PASS: 'Every submission gets an independent quality review before it is published' — a business outcome, agent-topology-agnostic"
 
   hypothesis:
     _example: "Users will pay for instant cross-border transfers if simpler than traditional methods."

@@ -34,18 +34,23 @@
 > 0.27.0); **element-level `COV01`/`COV02` — SHIPPED** (ELEMENT-COVERAGE-001,
 > spec 0.30.0; catches the 16 orphaned BDD scenarios).
 >
-> **Session-end status (2026-06-29, spec `0.32.3`) — the full P1 wave is
+> **Session-end status (2026-06-30, spec `0.32.6`) — P1 wave + the P3 cleanup arc
 > shipped:** PR-4 `D54-F01-PROVISIONAL-IDS` (#212, 0.31.0) and PR-5
-> `D54-F02-REUSE-MANIFEST` (#214, 0.32.0) both SHIPPED, plus the P3 docs sweep
-> (ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE #215, ENG-IPLAN-REGISTRY-README #216,
-> BL-SIZE-UNITS/BL-BRD-SET-WORDING/BL-VENDOR-NAME-SCOPE #217). **Remaining
-> (next-session, see `plans/HANDOFF.md` ▶ RESUME HERE):** Hermes parity (the
-> large arc); `BL-READY-SCORE-ADVISORY` (52-occurrence template sweep);
-> `ENG-BRD-SKETCH-ROADMAP` (new sub-form); assorted D54/ENG/BL P3 stragglers.
+> `D54-F02-REUSE-MANIFEST` (#214, 0.32.0), the earlier P3 docs sweep (#215/#216/#217),
+> then the **2026-06-30 arc**: `BL-READY-SCORE-ADVISORY` (#222, 0.32.4),
+> `STRUCT01-INDEX-EXEMPTION` bugfix (#224, no bump, D-0043),
+> `ENG-BRD-SKETCH-ROADMAP` (#226, 0.32.5, D-0044), the corpus-regen runbook (#227),
+> and the **P3 docs sweep** (`INDEX-UPSTREAM-RESIDUE` + `ENG-PLATFORM-ADR-TIMING` +
+> `D54-F12-AGENTIC-ANTIPATTERNS`, 0.32.6). **Remaining
+> (next-session, see `plans/HANDOFF.md` ▶ RESUME HERE):** the wholesale **corpus
+> regen** (run `plans/CORPUS-REGEN-RUNBOOK.md` on a live plugin CLI); Hermes parity
+> (the large arc); the P2/P3 items still marked OPEN below (`D54-F04`, `IPLAN-LANG`,
+> the D54/ENG P2s, etc.).
 > **Subsumed / retired:** sub-PR 2c (`D54-F13` phase-leak) — part (a) is COV01;
-> 2d (`D54-F05` BDD-rollup) — COV02 is already corpus-wide; the corpus-remediation
-> items (`CORPUS-REFGRAN-RECASCADE`, `CORPUS-PRD-TH-RES`, `INDEX-UPSTREAM-RESIDUE`,
-> the 16 COV02 orphans) are deferred to the wholesale corpus regeneration.
+> 2d (`D54-F05` BDD-rollup) — COV02 is already corpus-wide; the **corpus-side**
+> remediation items (`CORPUS-REFGRAN-RECASCADE`, `CORPUS-PRD-TH-RES`, the 16 COV02
+> orphans) are deferred to the wholesale corpus regen. (`INDEX-UPSTREAM-RESIDUE`
+> was **template-side**, NOT corpus-side — shipped in the 0.32.6 sweep, not via regen.)
 >
 > **YAML-BDD-SCHEMA arc — CORE COMPLETE (2026-06-28):** migrated BDD off
 > Gherkin-in-markdown to structured YAML `scenarios:` blocks. Plan #197 (D-0038,
@@ -181,7 +186,12 @@
   correct each `Upstream:` line to the registry `required_tags`. Same class as
   CFB-PR-1; doc-only. (CFB-PR-2 2b fixes the SPEC-00 two lines in-passing while
   it's open; this entry tracks the cross-layer sweep.)
-- *Status:* OPEN — P3 (residual cumulative debt).
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Corrected the 5
+  stale `Upstream:` lines in EARS/BDD/ADR/TDD-00 index templates to
+  necessary-upstream (SPEC-00/PRD-00 were already correct). **Template-side only** —
+  the example corpus has no layer index (only `09_CHG/CHG-00_index.md`), so the
+  wholesale corpus regen does NOT touch this (earlier banner/runbook mischaracterized
+  it as corpus-side — corrected).
 
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
@@ -420,7 +430,10 @@
 - *Fix shape:* add agentic/AI-system examples to the BRD/PRD
   `_antipatterns` business-vs-technical lists (resolve via C4 altitude).
   Cheap docs/template fix.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Added an agentic
+  FAIL/PASS pair to BRD `_antipatterns` (agent-topology = architecture, not business
+  value) and PRD `_antipatterns` (pipeline topology/timeouts = ADR/SPEC, not
+  Container product behavior).
 
 ### `[harness]` `D54-F08-SKELETON-EMIT` — no content-keys-only template emit
 
@@ -563,7 +576,11 @@
   evaluate" — backwards for a platform PRD whose ADRs are already decided.
   Add a platform-flow note to the PRD template too (a platform PRD MAY cite
   existing ADRs). Same clarification, second surface.
-- *Status:* OPEN — P3.
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Reworded the
+  platform-BRD ADR-timing line (decisions DECIDED before PRD = provenance; ADR
+  *documents* still AUTHORED in-sequence so they carry the full upstream chain) +
+  added the platform-flow exception to `PRD-TEMPLATE` traceability +
+  `adr_topic_elaboration` (a platform PRD MAY cite already-decided ADRs).
 
 ### `[template]` `ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE` — element-ID exemption lives only in the standard, not the templates
 

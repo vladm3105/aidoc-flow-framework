@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — P3 docs sweep: INDEX-UPSTREAM-RESIDUE + ENG-PLATFORM-ADR-TIMING + D54-F12-AGENTIC-ANTIPATTERNS; framework spec 0.32.5 → 0.32.6 (2026-06-30)
+
+Three template clarifications, batched (no behavior change):
+
+- **INDEX-UPSTREAM-RESIDUE** — corrected the 5 stale cumulative `Upstream:` lines in
+  the `EARS/BDD/ADR/TDD-00` index templates to the necessary-upstream contract
+  (matching the already-correct SPEC-00/PRD-00). Template-side only — the example
+  corpus has no layer index, so the wholesale regen does not touch this (an earlier
+  banner/runbook mischaracterized it as corpus-side; corrected).
+- **ENG-PLATFORM-ADR-TIMING** — reworded the platform-BRD ADR-timing guidance
+  (architectural decisions are *decided* before the PRD = provenance; the ADR
+  *documents* are still authored in-sequence so they carry the full upstream chain)
+  and added the platform-flow exception to `PRD-TEMPLATE` (a platform PRD MAY cite
+  already-decided ADR numbers).
+- **D54-F12-AGENTIC-ANTIPATTERNS** — added an agentic FAIL/PASS pair to BRD and PRD
+  `_antipatterns` distinguishing business/product value from agent-pipeline
+  architecture (belongs in ADR/SPEC).
+
+PATCH 0.32.5 → 0.32.6; conformance green; bundle re-vendored.
+
 ### Added — Corpus-regeneration runbook (docs; no spec change) (2026-06-30)
 
 `plans/CORPUS-REGEN-RUNBOOK.md` — founder-runnable procedure for the wholesale
