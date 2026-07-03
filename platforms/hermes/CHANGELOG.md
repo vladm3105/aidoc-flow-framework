@@ -14,6 +14,20 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed
+
+- **Saga state-machine conformance (HERMES-PARITY-PHASE-1, D-0045).** Hermes's
+  `saga_models._ALLOWED_TRANSITIONS` was missing the spec's `PARTIAL_TIMEOUT`
+  break-circuit state (`REVIEW_SAGA.md` requires it reachable from `PREPARED`,
+  `FANOUT_STARTED`, `BRANCH_RUNNING`, `BRANCH_COMPLETED`, `FANIN_REDUCED`, terminal).
+  Added it so Hermes's table equals the spec and the plugin's `tools/saga_driver.py`.
+  New shared conformance test `tests/conformance/test_saga_lifecycle_parity.py` now
+  enforces both platforms' tables against `REVIEW_SAGA.md` and validates a sample
+  journal from each runner against `saga.schema.json` (the test `docs/PARITY.md`
+  previously over-claimed already existed). **No version bump** — Phase 1 makes the
+  state machine *accept* the transition (parity contract); the orchestrator does not
+  yet *write* it (break-circuit exercise + resume is Phase 1b).
+
 ### Removed
 
 - **Legacy SYS/REQ/CTR/TSPEC layers** (PLATFORM-ALIGN Part B3, `0.2.0 → 0.3.0`).

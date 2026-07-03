@@ -35,17 +35,26 @@ class SagaRunState:
     compensation_actions: list[dict[str, object]] = field(default_factory=list)
 
 
+# Transition table — authority: framework/governance/REVIEW_SAGA.md.
+# `PARTIAL_TIMEOUT` is the break-circuit (or hard-timeout) terminal-this-process
+# state, reachable from every non-terminal run/branch state per the spec; a future
+# invocation resumes by re-entering an allowed source state (never `from:
+# PARTIAL_TIMEOUT` — G-R1). Matches the plugin reference tools/saga_driver.py.
+# NOTE: Phase 1 (HERMES-PARITY-PHASE-1) makes the state machine *accept* the
+# transition for spec conformance; the orchestrator does not yet *write* it —
+# wiring the break-circuit path + resume is Phase 1b.
 _ALLOWED_TRANSITIONS: dict[str, set[str]] = {
-    "PREPARED": {"FANOUT_STARTED"},
-    "FANOUT_STARTED": {"BRANCH_RUNNING"},
-    "BRANCH_RUNNING": {"BRANCH_COMPLETED", "BRANCH_FAILED"},
+    "PREPARED": {"FANOUT_STARTED", "PARTIAL_TIMEOUT"},
+    "FANOUT_STARTED": {"BRANCH_RUNNING", "PARTIAL_TIMEOUT"},
+    "BRANCH_RUNNING": {"BRANCH_COMPLETED", "BRANCH_FAILED", "PARTIAL_TIMEOUT"},
     "BRANCH_FAILED": {"BRANCH_COMPENSATING", "ESCALATED", "BRANCH_COMPLETED"},
     "BRANCH_COMPENSATING": {"BRANCH_RUNNING", "ESCALATED"},
-    "BRANCH_COMPLETED": {"FANIN_REDUCED"},
-    "FANIN_REDUCED": {"SYNTHESIZED"},
+    "BRANCH_COMPLETED": {"FANIN_REDUCED", "PARTIAL_TIMEOUT"},
+    "FANIN_REDUCED": {"SYNTHESIZED", "PARTIAL_TIMEOUT"},
     "SYNTHESIZED": {"CLOSED"},
     "ESCALATED": set(),
     "CLOSED": set(),
+    "PARTIAL_TIMEOUT": set(),
 }
 
 

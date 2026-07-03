@@ -10,6 +10,26 @@ graduation.
 
 ---
 
+## D-0045 — Hermes parity is engine debt (playbook injection + saga completeness), not the 0.32.x arc; phased, starting with saga conformance (HERMES-PARITY-PHASE-1)
+
+**2026-07-02.** An evidence-backed assessment corrected the stale
+`HERMES-BACKLOG.md` premise: **Hermes already has team-mode** (a working saga
+orchestrator with parallel per-persona fan-out + crew reconciliation to
+`REVIEW_CREWS.yaml`), and **the entire 0.32.x arc (D-0038…D-0044) is
+auto-satisfied** for Hermes via its byte-identical vendored `sdd_doc_lint` +
+shared `framework/layers/` templates — none of it needs Hermes-native code. The
+real gap is older engine debt: **playbook injection** (Hermes injects persona
+files, not the per-`(layer,lens)` `framework/playbooks/`) + **saga completeness**.
+Sequenced into phases (playbook plumbing gates the layer/CHG/calibration work);
+each phase gets its own minimal plan. **Phase 1** (this decision's shipped slice):
+add the spec-required `PARTIAL_TIMEOUT` state to Hermes `_ALLOWED_TRANSITIONS`
+(was missing) and ship `test_saga_lifecycle_parity.py` — which `docs/PARITY.md`
+over-claimed already existed — so *both* platforms' tables are enforced against
+`REVIEW_SAGA.md`. **No Hermes version bump:** Phase 1 makes the state machine
+*accept* `PARTIAL_TIMEOUT` (the parity contract); the orchestrator does not yet
+*write* it (break-circuit exercise + resume = Phase 1b). Plan:
+`plans/HERMES-PARITY-PHASE-1-PLAN.md`.
+
 ## D-0044 — the project roadmap lives in the BRD-00 index "Planned BRDs" table; a sketch is a trace-inert planned row (ENG-BRD-SKETCH-ROADMAP)
 
 **2026-06-30.** Whole-project scope is captured at project init by enumerating

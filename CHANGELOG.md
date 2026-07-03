@@ -12,6 +12,20 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — HERMES-PARITY-PHASE-1: Hermes saga state-machine conformance + enforced parity test (no version change) (2026-07-02)
+
+Hermes's saga `_ALLOWED_TRANSITIONS` was missing the spec's `PARTIAL_TIMEOUT`
+break-circuit state; added it so Hermes's table equals `REVIEW_SAGA.md` and the
+plugin's `saga_driver.py`. New shared conformance test
+`tests/conformance/test_saga_lifecycle_parity.py` (+ `fixtures/saga/`) enforces
+**both** platforms' transition tables against the spec and validates a sample
+journal from each runner against `saga.schema.json` — a test `docs/PARITY.md`
+previously over-claimed already existed. No framework spec change and no Hermes
+version bump (Phase 1 makes the state machine *accept* the transition; the
+orchestrator break-circuit *exercise* + resume is Phase 1b). Corrected the stale
+`HERMES-BACKLOG.md` premise (Hermes already has team-mode; the 0.32.x arc is
+auto-satisfied). D-0045.
+
 ### Changed — P3 docs sweep: INDEX-UPSTREAM-RESIDUE + ENG-PLATFORM-ADR-TIMING + D54-F12-AGENTIC-ANTIPATTERNS; framework spec 0.32.5 → 0.32.6 (2026-06-30)
 
 Three template clarifications, batched (no behavior change):

@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **🟢 HERMES-PARITY ARC STARTED — Phase 1 SHIPPED (2026-07-02).** The big
+> outstanding arc is underway. An evidence-backed assessment **corrected the stale
+> `HERMES-BACKLOG.md` premise**: Hermes already HAS team-mode (working saga
+> orchestrator + crew reconciliation), and the whole 0.32.x arc (D-0038…D-0044) is
+> **auto-satisfied** via vendored `sdd_doc_lint` + shared templates. The real gap is
+> older engine debt: **playbook injection + saga completeness**. **Phase 1 shipped**
+> (#229 plan + impl): added the spec-required `PARTIAL_TIMEOUT` state to Hermes's
+> saga table (was missing) + `test_saga_lifecycle_parity.py` enforcing both
+> platforms against `REVIEW_SAGA.md` (a test `PARITY.md` over-claimed existed). No
+> framework/Hermes version bump. D-0045; 4-phase roadmap in
+> `plans/HERMES-PARITY-PHASE-1-PLAN.md` + the refreshed `HERMES-BACKLOG.md`.
+> **▶ Next: Phase 1b** (orchestrator break-circuit exercise + `quality_loop_max_iterations`),
+> then **Phase 2 — playbook injection** (the load-bearing gap). Each is its own plan.
+>
+> ---
+>
 > **🟢 P3 CLEANUP ARC — items 2 & 3 SHIPPED + prerequisite bugfix + regen runbook +
 > P3 docs sweep (2026-06-30).** `main` clean at framework spec **0.32.6**, plugin
 > `0.23.0`. Eight PRs merged this session (all admin-merged — composition-CI gap
