@@ -88,3 +88,50 @@ def test_fallback_finding_has_location_and_id() -> None:
     assert result.parse_status == "fallback"
     assert result.findings[0]["location"] == ""
     assert result.findings[0]["id"]
+
+
+def test_parser_clean_empty_preserves_score_and_rationale() -> None:
+    # H-6.1 V1: a clean 100/0 output with a rationale is a successful empty result
+    # (not a fallback P1); lens_score is preserved so the cap is reachable.
+    raw = '{"lens_score": 100, "findings": [], "no_findings_rationale": "§2 examined, clean"}'
+    result = parse_persona_output(
+        output_text=raw, persona="auditor", branch_id="b1", attempt=1, default_layer="01_BRD"
+    )
+    assert result.parse_status != "fallback"
+    assert result.findings == []
+    assert result.lens_score == 100.0
+    assert result.no_findings_rationale == "§2 examined, clean"
+
+
+def test_parser_clean_empty_without_rationale_preserves_score() -> None:
+    # H-6.1 V2: 100/0 with no rationale -> empty, score preserved, rationale None.
+    raw = '{"lens_score": 100, "findings": []}'
+    result = parse_persona_output(
+        output_text=raw, persona="auditor", branch_id="b1", attempt=1, default_layer="01_BRD"
+    )
+    assert result.parse_status != "fallback"
+    assert result.findings == []
+    assert result.lens_score == 100.0
+    assert result.no_findings_rationale is None
+
+
+def test_parser_clean_empty_no_findings_key() -> None:
+    # H-6.1 M2: valid dict with a score but no `findings` key -> clean-empty, not fallback.
+    raw = '{"lens_score": 100}'
+    result = parse_persona_output(
+        output_text=raw, persona="auditor", branch_id="b1", attempt=1, default_layer="01_BRD"
+    )
+    assert result.parse_status != "fallback"
+    assert result.findings == []
+    assert result.lens_score == 100.0
+
+
+def test_parser_no_score_no_findings_still_fallback() -> None:
+    # H-6.1 V3: no lens_score AND no findings -> still the diagnostic fallback P1.
+    raw = '{"summary": "looks fine"}'
+    result = parse_persona_output(
+        output_text=raw, persona="auditor", branch_id="b1", attempt=1, default_layer="01_BRD"
+    )
+    assert result.parse_status == "fallback"
+    assert len(result.findings) == 1
+    assert result.findings[0]["category"] == "parser"

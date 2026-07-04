@@ -7,7 +7,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import datetime
 from pathlib import Path
 
@@ -77,6 +77,28 @@ def _extract_doc_id(*, document_path: Path | None, doc_type: str) -> str:
                 if match:
                     return match.group(1)
     return f"{doc_type.upper()}-00"
+
+
+# Author self-claim fields to strip before lens fan-out (REVIEW_TEAM.md §Strip
+# author self-claim, CLEANUP-PR-B item 9). Matches an assignment line whose key
+# ends `_ready_score`/`_score` or is literally `readiness_score`/`audit_score`.
+_SELF_CLAIM_RE = re.compile(
+    r"^[ \t]*(?:[a-z0-9_]*_(?:ready_)?score|readiness_score|audit_score)[ \t]*[:=].*$\n?",
+    re.IGNORECASE | re.MULTILINE,
+)
+
+
+def _strip_author_self_claim(sections: list[SourceSection]) -> list[SourceSection]:
+    """Redact author self-assessment score lines from each section body (in-prompt
+    only; the on-disk artifact keeps them). Anchor-effect fix — a lens must not see
+    the author's own score. Non-matching content is preserved verbatim."""
+    stripped: list[SourceSection] = []
+    for section in sections:
+        new_content = _SELF_CLAIM_RE.sub("", section.content)
+        stripped.append(
+            section if new_content == section.content else replace(section, content=new_content)
+        )
+    return stripped
 
 
 def _resolve_source_stage(*, document_path: Path | None) -> str:
@@ -477,6 +499,7 @@ def _branch_llm_findings(
         "findings": branch_findings,
         "parse_status": parsed.parse_status,
         "lens_score": parsed.lens_score,
+        "no_findings_rationale": parsed.no_findings_rationale,
         "raw_output_redacted": redacted_output,
         "telemetry": {
             "persona": persona,
@@ -508,6 +531,8 @@ def _compute_review_score(
     doc_type: str,
     lens_scores: dict[str, float],
     reduced: list,
+    lens_findings_count: dict[str, int] | None = None,
+    no_findings_rationales: dict[str, str | None] | None = None,
 ) -> dict[str, object] | None:
     """Framework weighted/capped score + coverage from per-persona lens scores.
 
@@ -522,10 +547,12 @@ def _compute_review_score(
             layer=doc_type,
             lens_scores=lens_scores,
             findings=[{"priority": item.priority} for item in reduced],
+            lens_findings_count=lens_findings_count,
+            no_findings_rationale=no_findings_rationales,
         )
     except KeyError:
         return None
-    return {
+    result: dict[str, object] = {
         "score": rs.score,
         "raw_weighted": rs.raw_weighted,
         "no_blocking": rs.no_blocking,
@@ -541,6 +568,20 @@ def _compute_review_score(
             "low_confidence": rs.coverage.low_confidence,
         },
     }
+    # STRUCTURE-RAT-001 advisories for each lens capped to 95 (REVIEW_TEAM.md).
+    if rs.rationale_capped:
+        result["advisories"] = [
+            {
+                "rule": "STRUCTURE-RAT-001",
+                "persona": persona,
+                "message": (
+                    f"Lens '{persona}' scored 100 with zero findings and no "
+                    "no_findings_rationale; capped to 95."
+                ),
+            }
+            for persona in rs.rationale_capped
+        ]
+    return result
 
 
 def run_project_review_build_saga(
@@ -567,6 +608,11 @@ def run_project_review_build_saga(
 ) -> SagaReviewResult:
     if output_dir is None:
         raise ValueError("output_dir is required for saga orchestration")
+
+    # Strip author self-claim scores once, before any branch sees the body
+    # (REVIEW_TEAM.md §Strip author self-claim). In-prompt only; reaches both the
+    # LLM and prompt-mode branches since both consume this `sections` list.
+    sections = _strip_author_self_claim(sections)
 
     if not personas:
         mapping = load_persona_mapping(project_root=project_root)
@@ -642,6 +688,10 @@ def run_project_review_build_saga(
     completed_personas: set[str] = set()
     failed_personas: set[str] = set()
     lens_scores: dict[str, float] = {}
+    # STRUCTURE-RAT-001 inputs (H-6.1): per-persona post-filter finding count + the
+    # lens's `no_findings_rationale` (if any), keyed by Hermes persona name.
+    lens_findings_count: dict[str, int] = {}
+    no_findings_rationales: dict[str, str | None] = {}
 
     while len(completed_personas) + len(failed_personas) < len(personas):
         pending_personas = [
@@ -723,7 +773,17 @@ def run_project_review_build_saga(
                         if isinstance(lens_score_value, (int, float)):
                             lens_scores[persona] = float(lens_score_value)
                         if isinstance(branch_findings, list):
-                            findings.extend([f for f in branch_findings if isinstance(f, dict)])
+                            branch_finding_dicts = [
+                                f for f in branch_findings if isinstance(f, dict)
+                            ]
+                            findings.extend(branch_finding_dicts)
+                            # STRUCTURE-RAT-001 (H-6.1): post-filter finding count +
+                            # rationale for this persona's branch.
+                            lens_findings_count[persona] = len(branch_finding_dicts)
+                            rationale_value = result.get("no_findings_rationale")
+                            no_findings_rationales[persona] = (
+                                str(rationale_value) if isinstance(rationale_value, str) else None
+                            )
                         if isinstance(telemetry, dict):
                             branch_telemetry.append(telemetry)
                         if debug_raw_outputs and isinstance(raw_output_redacted, str):
@@ -868,7 +928,11 @@ def run_project_review_build_saga(
     _safe_transition(journal_path=journal_path, target="FANIN_REDUCED")
     reduced = reduce_persona_findings(findings)
     review_score = _compute_review_score(
-        doc_type=doc_type, lens_scores=lens_scores, reduced=reduced
+        doc_type=doc_type,
+        lens_scores=lens_scores,
+        reduced=reduced,
+        lens_findings_count=lens_findings_count,
+        no_findings_rationales=no_findings_rationales,
     )
     _safe_transition(journal_path=journal_path, target="SYNTHESIZED")
 

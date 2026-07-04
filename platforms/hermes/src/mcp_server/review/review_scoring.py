@@ -28,7 +28,7 @@ identity binding for it.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
 
@@ -102,6 +102,9 @@ class ReviewScore:
     no_blocking: bool  # the "no unresolved P0/P1" gate component (advisory floor)
     gate_threshold: float
     coverage: CoverageReport
+    # Framework personas capped to 95 for a 100/0-findings output missing a
+    # `no_findings_rationale` (STRUCTURE-RAT-001, REVIEW_TEAM.md §No-findings rationale).
+    rationale_capped: list[str] = field(default_factory=list)
 
 
 def _is_unresolved_blocking(findings: list[dict[str, object]]) -> tuple[bool, bool]:
@@ -128,12 +131,19 @@ def score_review(
     gate_threshold: float = _GATE_THRESHOLD_DEFAULT,
     quorum: float = _QUORUM_DEFAULT,
     crews_path: Path | None = None,
+    lens_findings_count: dict[str, int] | None = None,
+    no_findings_rationale: dict[str, str | None] | None = None,
 ) -> ReviewScore:
     """Compute the deterministic weighted/capped score + coverage for a review.
 
     ``lens_scores`` maps persona name (Hermes or framework naming) to its
     ``lens_score`` (0-100). ``findings`` are the reduced findings; a finding
     counts as blocking unless it carries ``resolved: True``.
+
+    ``lens_findings_count`` / ``no_findings_rationale`` (persona-keyed, Hermes or
+    framework naming) drive the STRUCTURE-RAT-001 calibration nudge: a lens scoring
+    100 with zero findings and no rationale is capped to 95 before the weighted
+    average (REVIEW_TEAM.md §No-findings rationale). Absent ⇒ no cap (back-compat).
     """
     weights = load_crew_weights(layer, crews_path)
     total_weight = sum(weights.values())
@@ -144,6 +154,24 @@ def score_review(
         cname = canonical_persona(name)
         if cname in weights:
             canonical_scores[cname] = float(value)
+
+    # STRUCTURE-RAT-001: cap an unsubstantiated 100/0 lens to 95 (before weighting).
+    # Keys are canonicalized so a `chairperson`→`synthesizer` lens is not missed.
+    counts = {canonical_persona(k): v for k, v in (lens_findings_count or {}).items()}
+    rationales = {canonical_persona(k): v for k, v in (no_findings_rationale or {}).items()}
+    rationale_capped: list[str] = []
+    for cname in list(canonical_scores):
+        # Require an explicit count entry: an absent map (back-compat) or an
+        # unrecorded lens has unknown findings → never capped. A recorded lens with
+        # count 0 and score 100 and no rationale is the "unsubstantiated 100" case.
+        if (
+            canonical_scores[cname] == 100.0
+            and cname in counts
+            and counts[cname] == 0
+            and not rationales.get(cname)
+        ):
+            canonical_scores[cname] = 95.0
+            rationale_capped.append(cname)
 
     expected = sorted(weights)
     ran = sorted(canonical_scores)
@@ -182,4 +210,5 @@ def score_review(
         no_blocking=not (has_p0 or has_p1),
         gate_threshold=gate_threshold,
         coverage=coverage,
+        rationale_capped=sorted(rationale_capped),
     )

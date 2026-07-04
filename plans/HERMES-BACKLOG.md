@@ -223,7 +223,14 @@ requires the H-4 review-team plumbing to land first.
 **Dependency:** H-4 (Hermes team-mode dispatch). H-5 is the per-layer
 fan-out once H-4 is in place.
 
-### H-6 — FRAMEWORK-CLEANUP-001 calibration deltas (PR-B heart)
+### H-6 — FRAMEWORK-CLEANUP-001 calibration deltas (PR-B heart) — ⏳ PARTIAL (6.1+6.2 CLOSED 2026-07-04, D-0049, hermes 0.6.0; 6.3 blocked)
+
+**Status:** H-6.1 (no-findings rationale cap) + H-6.2 (strip author self-claim)
+**CLOSED** via HERMES-REVIEW-CALIBRATION (D-0049, `hermes/v0.6.0`) — consumer-side
+enforcement, no framework change. H-6.3 (fixer-introduced regression detection)
+**remains BLOCKED**: it needs an iter-N vs iter-(N-1) comparison and Hermes's saga is
+single-pass (`iteration=1`); it belongs to a future Hermes multi-iteration
+review-loop initiative, not this arc.
 
 **Source:** plugin PR #131 (CLEANUP-PR-B, framework `0.19.0` + plugin
 `0.16.0`).

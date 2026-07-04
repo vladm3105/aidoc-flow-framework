@@ -521,3 +521,38 @@ def test_saga_non_crew_persona_keeps_findings_without_floor(
         "uncited fc" in messages
     )  # branch completed (not failed) + no floor for a non-crew persona
     assert result.playbook_coverage == {}  # no cited findings -> empty coverage
+
+
+def test_strip_author_self_claim_redacts_scores() -> None:
+    # H-6.2 V8: self-claim score lines are removed from section content; other
+    # content (incl. a prose mention of "score") survives.
+    from mcp_server.prompts import SourceSection
+    from mcp_server.review.saga_orchestrator import _strip_author_self_claim
+
+    body = (
+        "brd_ready_score: 92\n"
+        "audit_score: 88\n"
+        "readiness_score = 90\n"
+        "## Overview\n"
+        "The system computes a risk profile; the score is advisory.\n"
+        "objective: ship it\n"
+    )
+    sections = [SourceSection(section_id="s1", title="T", content=body)]
+    out = _strip_author_self_claim(sections)
+    content = out[0].content
+    assert "brd_ready_score" not in content
+    assert "audit_score" not in content
+    assert "readiness_score" not in content
+    # Prose + unrelated keys survive.
+    assert "## Overview" in content
+    assert "the score is advisory" in content
+    assert "objective: ship it" in content
+
+
+def test_strip_author_self_claim_noop_preserves_identity() -> None:
+    from mcp_server.prompts import SourceSection
+    from mcp_server.review.saga_orchestrator import _strip_author_self_claim
+
+    sections = [SourceSection(section_id="s1", title="T", content="## Only prose here\n")]
+    out = _strip_author_self_claim(sections)
+    assert out[0] is sections[0]  # unchanged section returned as-is

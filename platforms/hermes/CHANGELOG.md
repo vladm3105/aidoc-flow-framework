@@ -16,6 +16,22 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Added
 
+- **Review calibration: no-findings rationale cap + strip author self-claim
+  (HERMES-REVIEW-CALIBRATION, H-6.1 + H-6.2, D-0049; `0.5.1 → 0.6.0`).** Two
+  FRAMEWORK-CLEANUP-001 review-quality deltas, as consumer-side enforcement of
+  contracts already in `REVIEW_TEAM.md` + the injected playbooks (no framework
+  change). **No-findings rationale (H-6.1):** the parser now captures a lens's
+  `no_findings_rationale`, and `score_review` caps a lens scoring 100 with zero
+  findings and no rationale to 95, emitting a `STRUCTURE-RAT-001` advisory in the
+  verdict — a calibration nudge against "convergence theater." This also fixes a
+  latent parser bug where a clean `findings: []` output fell through to a `fallback`
+  P1 with `lens_score=None`, silently dropping the lens from scoring. **Strip author
+  self-claim (H-6.2):** self-assessment score fields (`*_ready_score` / `*_score` /
+  `readiness_score` / `audit_score`) are redacted from each section body before lens
+  fan-out (in-prompt only; on-disk artifact untouched) to remove the anchor effect.
+  The third H-6 delta (fixer-introduced regression detection) remains deferred —
+  Hermes's saga is single-pass, so there is no prior iteration to compare.
+
 - **8-layer playbook coverage (verified) + CHG crew parity (HERMES-PARITY-PHASE-3,
   D-0047; `0.4.0 → 0.5.0`).** Phase 2's playbook injection is layer-agnostic, so all
   8 lifecycle layers (not just BRD+PRD) already inject their per-`(layer,lens)`
