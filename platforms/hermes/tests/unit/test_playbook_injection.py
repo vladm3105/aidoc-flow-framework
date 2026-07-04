@@ -96,3 +96,27 @@ class TestFindingFilterVendorDrift:
             _REPO_ROOT / "platforms" / "claude-code-plugin" / "tools" / "finding_filter.py"
         ).read_bytes()
         assert hermes == plugin, "vendored finding_filter.py drifted from the plugin canonical copy"
+
+
+class TestAllLayerPlaybookCoverage:
+    """HERMES-PARITY-PHASE-3 (H-5/H-10): every REVIEW_CREWS.yaml crew lens — all 8
+    lifecycle layers + the CHG overlay — resolves a playbook with Cn ids. Locks in
+    the Phase-2 layer-agnostic injection payoff."""
+
+    def _crews(self):
+        import yaml
+
+        data = yaml.safe_load((_REPO_ROOT / "framework/governance/REVIEW_CREWS.yaml").read_text())
+        return data["crews"]
+
+    def test_all_lifecycle_layers_plus_chg_resolve(self):
+        crews = self._crews()
+        expected_layers = {"BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN", "CHG"}
+        assert expected_layers <= set(crews), f"missing crews: {expected_layers - set(crews)}"
+        failures = []
+        for layer, crew in crews.items():
+            for lens in crew["review"]:
+                pb = load_playbook(layer, lens)
+                if pb is None or not pb.check_ids:
+                    failures.append(f"{layer}/{lens}")
+        assert not failures, f"crew lenses with no resolvable playbook: {failures}"

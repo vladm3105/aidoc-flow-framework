@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — HERMES-PARITY-PHASE-3: 8-layer playbook coverage (verified) + CHG crew parity (hermes 0.4.0 → 0.5.0; no framework change) (2026-07-03)
+
+Phase 2's playbook injection is layer-agnostic, so all 8 lifecycle layers already
+inject their playbooks — now locked in by a regression test over every crew lens.
+Added the `chg` review crew to `persona_mappings.yaml` + removed the
+`HERMES_DEFERRED_LAYERS` whitelist so the crew-coverage test enforces CHG. Crew-map
+parity only; a live/sanctioned CHG saga review (schema `09_CHG` + dispatch) is a
+deferred follow-on. Hermes MINOR; no framework spec change. D-0047; 497 Hermes + 157
+conformance tests green.
+
 ### Added — HERMES-PARITY-PHASE-2: Hermes playbook injection for BRD+PRD (hermes 0.3.0 → 0.4.0; no framework change) (2026-07-03)
 
 Hermes's review saga now injects the per-`(layer,lens)` playbook into each crew

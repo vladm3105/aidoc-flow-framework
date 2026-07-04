@@ -18,9 +18,19 @@
 > `chairperson` are exempt, not failed — the bug the plan review caught); byte-identical
 > `finding_filter` vendor; `check` threaded parser→reducer→verdict. 496 Hermes + 157
 > conformance green. H-4 CLOSED for BRD+PRD.
-> **▶ Next:** **Phase 3** — playbook fan-out to the other 6 layers (H-5) + CHG (H-10) +
-> fold the calibration deltas (H-6/H-2); **Phase 1b** (saga break-circuit exercise +
-> `quality_loop_max_iterations`); and the `prompt_only` review path. Each is its own plan.
+> **Phase 3 — 8-layer coverage + CHG crew parity ✅ SHIPPED** (#233 plan + impl,
+> `hermes/v0.5.0`, D-0047): H-5 was already delivered by Phase 2's layer-agnostic
+> injection (verified + regression-tested across all 8 lifecycle layers); H-10 added
+> the `chg` review crew to `persona_mappings.yaml` + removed the deferred-whitelist
+> so the crew-coverage test enforces CHG. Crew-map parity only. 497 Hermes + 157
+> conformance green.
+> **▶ Next (Hermes follow-ons, each its own plan):** **live/sanctioned CHG saga**
+> (add `09_CHG` to `saga.schema.json` + a dispatch path — the review found no runtime
+> schema wall, so an explicit `doc_type=chg` review is dispatchable-but-unsanctioned);
+> **H-6/H-2 calibration deltas** (no-findings rationale / author-self-claim strip /
+> fixer-regression); **Phase 1b** (saga break-circuit exercise +
+> `quality_loop_max_iterations`); **`prompt_only` playbook injection**. Also H-11
+> (agent-skill v3.2 modernization) + the broader items in `HERMES-BACKLOG.md`.
 >
 > ---
 >
