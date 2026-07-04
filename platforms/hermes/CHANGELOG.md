@@ -42,6 +42,19 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 
+- **Real saga journals conform to `saga.schema.json` (HERMES-SAGA-JOURNAL-CONFORMANCE,
+  H-12, D-0048; `0.5.0 → 0.5.1`).** The real journal (`asdict(SagaRunState)`) was
+  missing 4 schema-required fields — `artifact_id`, `layer`, `iteration`,
+  `transitions` — and never recorded `transitions`; the Phase-1 guard validated only
+  hand-authored fixtures, masking it. `SagaRunState` gains the 4 (defaulted →
+  backward-compatible); `saga_journal.py` records schema-shaped transitions on the
+  run seed, each successful `update_run_status`, and each branch status change (exactly
+  `{ts, from, to, scope}`); `_to_run_state` roundtrips them. The orchestrator derives
+  `layer` from the **required** `doc_type` via `normalize_layer(layer or doc_type)`
+  (not the optional `--layer`, default `None`), so the default invocation stays
+  schema-valid. Paired framework PATCH adds `09_CHG` to the schema enum so CHG review
+  journals validate. New `SagaRealJournalConformance` validates a real journal (not a
+  fixture) — the guard that would have caught H-12.
 - **Saga state-machine conformance (HERMES-PARITY-PHASE-1, D-0045).** Hermes's
   `saga_models._ALLOWED_TRANSITIONS` was missing the spec's `PARTIAL_TIMEOUT`
   break-circuit state (`REVIEW_SAGA.md` requires it reachable from `PREPARED`,

@@ -33,7 +33,8 @@
       "type": "string",
       "enum": [
         "01_BRD", "02_PRD", "03_EARS", "04_BDD",
-        "05_ADR", "06_SPEC", "07_TDD", "08_IPLAN"
+        "05_ADR", "06_SPEC", "07_TDD", "08_IPLAN",
+        "09_CHG"
       ]
     },
     "personas_requested": {

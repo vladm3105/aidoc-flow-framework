@@ -18,7 +18,7 @@ from mcp_server.skills.project_ucx_loader import load_persona_mapping, load_proj
 
 from .finding_filter import emit_coverage, filter_findings
 from .persona_output_parser import parse_persona_output
-from .playbook_loader import PlaybookMissing, load_playbook
+from .playbook_loader import PlaybookMissing, load_playbook, normalize_layer
 from .review_scoring import score_review
 from .runner import run_project_review_build
 from .saga_journal import (
@@ -600,11 +600,18 @@ def run_project_review_build_saga(
         for branch in run.branches.values():
             attempts[branch.persona] = max(attempts.get(branch.persona, 0), int(branch.attempt))
     else:
+        # Derive the schema-enum `layer` from the *required* doc_type when the
+        # *optional* --layer is omitted (H-12 F1). normalize_layer accepts either
+        # the doc-type form (`brd`) or the directory form (`01_BRD`).
+        _, layer_dir = normalize_layer(layer or doc_type)
         run = SagaRunState(
             review_run_id=review_run_id,
             document_path=str(document_path or project_root),
             document_fingerprint=document_fingerprint,
             personas_requested=list(personas),
+            artifact_id=doc_id,
+            layer=layer_dir,
+            iteration=1,
         )
         journal_path = create_saga_journal(output_dir=output_dir, run=run)
         compensation_count = 0

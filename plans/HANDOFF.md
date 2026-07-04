@@ -24,14 +24,21 @@
 > the `chg` review crew to `persona_mappings.yaml` + removed the deferred-whitelist
 > so the crew-coverage test enforces CHG. Crew-map parity only. 497 Hermes + 157
 > conformance green.
+> **H-12 — real saga-journal schema conformance ✅ SHIPPED** (#236 plan + impl,
+> framework `0.32.7` + `hermes/v0.5.1`, D-0048): the real journal missed 4
+> `saga.schema.json`-required fields (`artifact_id`/`layer`/`iteration`/`transitions`)
+> and never recorded `transitions`; the Phase-1 guard validated only hand-authored
+> fixtures, masking it. Added the 4 defaulted fields to `SagaRunState`, schema-shaped
+> transition recording (run seed + each successful status/branch change,
+> `{ts,from,to,scope}`), roundtrip in `_to_run_state`; the orchestrator derives
+> `layer` from the **required** `doc_type` via `normalize_layer(layer or doc_type)`
+> (F1 — not the optional `--layer`, caught by the independent plan review); added
+> `09_CHG` to the schema enum (framework PATCH, re-vendored) so CHG journals validate;
+> new `SagaRealJournalConformance` validates a real journal (lifecycle +
+> `--layer`-omitted + CHG). "Live CHG saga" also closed (a real CHG journal now
+> conforms). 160 conformance + Hermes saga tests green.
 > **▶ Next (Hermes follow-ons, each its own plan):**
-> **(1) `H-12` — real saga-journal schema conformance** (NEW, highest value — found
-> 2026-07-03): Hermes's *real* saga journals miss 4 `saga.schema.json`-required
-> fields (`artifact_id`/`layer`/`iteration`/`transitions`); the Phase-1 conformance
-> only validates hand-authored *fixtures*, masking it. Fix `SagaRunState` +
-> serialization + a real-journal conformance test. **NOTE: "live CHG saga" was
-> disproven — CHG review already works end-to-end (verified); fold its residue into
-> H-12.** **(2)** `H-6`/`H-2` calibration deltas (no-findings rationale /
+> **(1)** `H-6`/`H-2` calibration deltas (no-findings rationale /
 > author-self-claim strip / fixer-regression). **(3)** Phase 1b (saga break-circuit
 > exercise + `quality_loop_max_iterations`). **(4)** `prompt_only` playbook injection;
 > `H-11` agent-skill modernization. See `HERMES-BACKLOG.md`.

@@ -5,8 +5,8 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of project `v1.1.0` / `hermes/v0.5.0` /
-> `claude-code-plugin/v0.23.0` (framework spec `0.32.6`; both platforms on the
+> Status: as of project `v1.1.0` / `hermes/v0.5.1` /
+> `claude-code-plugin/v0.23.0` (framework spec `0.32.7`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.7.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
@@ -181,7 +181,7 @@ deterministic gate, and reduced findings).
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | saga state machine **accepts** `PARTIAL_TIMEOUT` (spec-conformant table, HERMES-PARITY Phase 1); the orchestrator does not yet *write* it — the break-circuit + resume path is Phase 1b |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
-| Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, `hermes/v0.5.0`): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
+| Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, `hermes/v0.5.1`): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
 
 Both bind to the **same** crew map, persona-output contract, scoring/gate
 policy, saga state machine, and report shape — so a BRD reviewed by either
@@ -206,7 +206,11 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
   against the shared `framework/governance/saga.schema.json`, and asserts
   **both** platforms' `_ALLOWED_TRANSITIONS` equal the `REVIEW_SAGA.md`
   transition table exactly — including the `PARTIAL_TIMEOUT` break-circuit
-  state. (The `## Break-circuit policy` SKILL-prose is a separate
+  state. **`SagaRealJournalConformance` (H-12, D-0048)** additionally
+  validates a **real** Hermes journal — driven through the actual journal
+  functions for a lifecycle layer, the `--layer`-omitted default path, and
+  a CHG run (`layer: 09_CHG`) — not just a hand-authored fixture, so the
+  Hermes journal-conformance claim is now enforced against real output. (The `## Break-circuit policy` SKILL-prose is a separate
   plugin-side concern — it lives in the ~18 `doc-*-audit` / `doc-*-fixer`
   skills, not the autopilots — and is not asserted by this parity test.)
 - **Manual end-to-end (live run):** the "same artifact → identical

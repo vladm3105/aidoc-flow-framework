@@ -10,6 +10,41 @@ graduation.
 
 ---
 
+## D-0048 — Hermes real saga journals conform to `saga.schema.json`; `layer` derives from `doc_type`; `09_CHG` added to the schema enum (HERMES-SAGA-JOURNAL-CONFORMANCE, H-12)
+
+**2026-07-03.** The **real** Hermes saga journal (`asdict(SagaRunState)`) was missing
+4 `saga.schema.json`-required fields (`artifact_id`, `layer`, `iteration`,
+`transitions`) and never recorded `transitions`. The Phase-1 conformance guard
+([[D-0045]]) validated only **hand-authored fixtures** — which carried those fields —
+so the cross-platform journal-conformance parity claim ([[D-0031]]) was aspirational
+for Hermes, not enforced against real output. Fixed by adding the 4 defaulted fields
+to `SagaRunState`, recording schema-shaped transitions (`{ts, from, to, scope}`) at
+the run seed / each successful `update_run_status` / each branch status change, and
+roundtripping them in `_to_run_state`.
+
+**Two non-obvious calls:**
+
+1. **`layer` derives from the required `doc_type`, not the optional `--layer`.** A
+   review's `--layer` is optional (`default=None`) and free-text, while `--doc-type`
+   is required. Setting `layer=layer` would emit `layer: null` on the default
+   invocation → schema failure, re-creating the exact "fixture passes, real output
+   doesn't" defect H-12 exists to kill. The orchestrator uses
+   `normalize_layer(layer or doc_type)` (the existing helper maps either the
+   doc-type form or the directory form to the enum-form dir), so the journal conforms
+   whether `--layer` is supplied or omitted.
+2. **`09_CHG` added to the schema `layer` enum (framework PATCH).** Phase 3 ([[D-0047]])
+   made CHG a review target; a real CHG review journal carries `layer: "09_CHG"`,
+   which the enum lacked. Adding it (additive; the plugin's `saga_driver` already
+   carries `09_CHG` in its layer-crew map) completes the CHG sanctioning the H-12
+   finding promised, and is guarded by a real CHG-journal conformance test.
+
+Framework spec PATCH `0.32.6 → 0.32.7`; Hermes PATCH `0.5.0 → 0.5.1`. GATE-SPEC
+applies (framework change); re-vendored to the plugin bundle. The new
+`SagaRealJournalConformance` test validates a real journal (not a fixture) — the
+guard that would have caught H-12. Closes H-12.
+
+---
+
 ## D-0047 — Hermes playbook coverage is 8-layer-complete (Phase-2 payoff, verified); CHG gets crew-map parity, live CHG saga deferred (HERMES-PARITY-PHASE-3)
 
 **2026-07-03.** Phase 2's playbook injection ([[D-0046]]) was written layer-agnostic,
