@@ -24,13 +24,17 @@
 > the `chg` review crew to `persona_mappings.yaml` + removed the deferred-whitelist
 > so the crew-coverage test enforces CHG. Crew-map parity only. 497 Hermes + 157
 > conformance green.
-> **▶ Next (Hermes follow-ons, each its own plan):** **live/sanctioned CHG saga**
-> (add `09_CHG` to `saga.schema.json` + a dispatch path — the review found no runtime
-> schema wall, so an explicit `doc_type=chg` review is dispatchable-but-unsanctioned);
-> **H-6/H-2 calibration deltas** (no-findings rationale / author-self-claim strip /
-> fixer-regression); **Phase 1b** (saga break-circuit exercise +
-> `quality_loop_max_iterations`); **`prompt_only` playbook injection**. Also H-11
-> (agent-skill v3.2 modernization) + the broader items in `HERMES-BACKLOG.md`.
+> **▶ Next (Hermes follow-ons, each its own plan):**
+> **(1) `H-12` — real saga-journal schema conformance** (NEW, highest value — found
+> 2026-07-03): Hermes's *real* saga journals miss 4 `saga.schema.json`-required
+> fields (`artifact_id`/`layer`/`iteration`/`transitions`); the Phase-1 conformance
+> only validates hand-authored *fixtures*, masking it. Fix `SagaRunState` +
+> serialization + a real-journal conformance test. **NOTE: "live CHG saga" was
+> disproven — CHG review already works end-to-end (verified); fold its residue into
+> H-12.** **(2)** `H-6`/`H-2` calibration deltas (no-findings rationale /
+> author-self-claim strip / fixer-regression). **(3)** Phase 1b (saga break-circuit
+> exercise + `quality_loop_max_iterations`). **(4)** `prompt_only` playbook injection;
+> `H-11` agent-skill modernization. See `HERMES-BACKLOG.md`.
 >
 > ---
 >
