@@ -54,6 +54,41 @@ the plugin has been the testbed for are batched here.
 
 ## Hermes-deferred items
 
+### H-12 — Hermes real saga journals don't conform to `saga.schema.json` (fixtures mask it)
+
+**Source:** discovered 2026-07-03 while grounding the "live CHG saga" follow-on
+after HERMES-PARITY-PHASE-3 (#234).
+
+**Finding (evidence-backed):** a **real** Hermes saga journal (serialized from
+`SagaRunState`, `platforms/hermes/src/mcp_server/review/saga_models.py`) is
+**missing 4 `saga.schema.json`-required fields**: `artifact_id`, `layer`,
+`iteration`, `transitions`. Verified by running `run_project_review_build_saga`
+end-to-end and dumping `journal_path` — keys were
+`{review_run_id, document_path, document_fingerprint, personas_requested, status,
+created_at, updated_at, retry_count, branches, compensation_actions}`. The
+`tests/conformance/test_saga_lifecycle_parity.py` guard (HERMES-PARITY-PHASE-1)
+only validates **hand-authored fixtures** (`fixtures/saga/hermes_BRD-01_saga.json`,
+which were written *with* those fields) — so the "both platforms' saga journals
+conform to the shared schema" parity claim is **aspirational for Hermes**, not
+enforced against real output.
+
+**Fix shape:** add `artifact_id` / `layer` / `iteration` to `SagaRunState` (populate
+from the saga call's `layer` + extracted doc id) and serialize the accumulated
+`transitions` into the journal; add a conformance/integration test that validates a
+**real** Hermes journal (not a fixture) against `saga.schema.json`. This also
+naturally sanctions CHG (a real CHG journal would carry `layer: "09_CHG"`, which
+then needs `09_CHG` added to the schema enum — a `framework/` change). Moderate
+(Hermes engine + a framework schema addition).
+
+**Related — "live CHG saga" is a NEAR-NO-OP:** CHG review already runs end-to-end
+today (verified: `saga_status=CLOSED`, uncited findings discarded, `playbook_coverage
+{C1:1}`) because the injection path is layer-agnostic (Phase 2) and CHG crew parity
+landed in Phase 3 (#234). The only thing "live CHG" adds beyond H-12 is documenting
+`sdd_review doc_type=chg` as a sanctioned target. Fold into H-12.
+
+**Dependency:** none. Independent of the other H-items. Higher value than the
+originally-planned "live CHG saga" (which grounding showed unnecessary).
+
 ### H-1 — SAGA-PARITY-001 Phase 3: G-R1 invariant alignment
 
 **Source:** [`docs/PARITY.md`](../docs/PARITY.md) §Enforcement parity;
