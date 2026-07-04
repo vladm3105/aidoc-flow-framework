@@ -24,6 +24,7 @@
 > | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | pending |
 > | 2 | **playbook injection** for BRD+PRD (H-4) — the load-bearing gap | **✅ shipped** (`hermes/v0.4.0`, D-0046) — H-4 CLOSED for BRD+PRD; H-2/H-6 fold into Phase 3 |
 > | 3 | 8-layer coverage (H-5, already delivered by Phase 2 — verified) + CHG crew (H-10) | **✅ shipped** (`hermes/v0.5.0`, D-0047) — H-5 CLOSED (all 8 lifecycle layers); H-10 crew-map parity CLOSED; live CHG saga = follow-on |
+> | 3b | real saga-journal conformance + `09_CHG` schema enum + live CHG (H-12) | **✅ shipped** (`hermes/v0.5.1` + framework `0.32.7`, D-0048) — H-12 CLOSED; real journals conform; live CHG sanctioned |
 > | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | pending |
 >
 > **Auto-satisfied (no action):** H-3 (dormant), H-7 lint rows / H-8 / H-9 lint+template
@@ -54,7 +55,15 @@ the plugin has been the testbed for are batched here.
 
 ## Hermes-deferred items
 
-### H-12 — Hermes real saga journals don't conform to `saga.schema.json` (fixtures mask it)
+### H-12 — Hermes real saga journals don't conform to `saga.schema.json` (fixtures mask it) — ✅ CLOSED (2026-07-03, D-0048, framework 0.32.7 + hermes 0.5.1)
+
+**Status:** CLOSED. `SagaRunState` gained the 4 defaulted fields; `saga_journal.py`
+records schema-shaped transitions (run seed + each successful status/branch change);
+the orchestrator derives `layer` from the required `doc_type` via
+`normalize_layer(layer or doc_type)` (F1 — not the optional `--layer`); `09_CHG`
+added to the schema enum; new `SagaRealJournalConformance` validates a **real**
+journal (lifecycle + `--layer`-omitted + CHG). This also closed the "live CHG saga"
+follow-on (a real CHG journal now validates). See D-0048.
 
 **Source:** discovered 2026-07-03 while grounding the "live CHG saga" follow-on
 after HERMES-PARITY-PHASE-3 (#234).

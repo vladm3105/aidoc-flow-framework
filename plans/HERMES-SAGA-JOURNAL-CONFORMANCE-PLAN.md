@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-SAGA-JOURNAL-CONFORMANCE (H-12)       |
 | Type           | bugfix                                       |
-| Status         | READY — 2026-07-03 (2 review passes, 1 independent) |
+| Status         | IMPLEMENTED — 2026-07-03 (3 review passes, 1 independent; all V-checks green) |
 | Depends on     | none (independent) |
 | Feeds          | closes the "saga journal parity" claim for real output; sanctions CHG review |
 | Version impact | **framework spec PATCH** (`0.32.6 → 0.32.7`, add `09_CHG` to `saga.schema.json`) + **Hermes PATCH** (`0.5.0 → 0.5.1`, journal now conforms). GATE-SPEC applies (framework change). |
@@ -315,3 +315,30 @@ CHG case resolves to `09_CHG`, consistent with the schema-enum addition (Task 3)
 V2b + V4 align. No new substantive gaps.
 
 **Result:** ready
+
+## Implementation record — 2026-07-03
+
+Implemented on `fix/hermes-saga-journal-conformance-h12` after the plan PR (#236)
+merged. All 8 V-checks green:
+
+- **Task 2 (journal conformance):** added `artifact_id`/`layer`/`iteration`/
+  `transitions` to `SagaRunState` (defaulted); `saga_journal.py` gains
+  `_transition_entry` helper + seeds/records schema-shaped transitions in
+  `create_saga_journal`/`update_run_status`/`set_branch_state` (branch entry only on
+  status change); `_to_run_state` reads the 4 fields. Orchestrator derives
+  `layer=normalize_layer(layer or doc_type)[1]` + `artifact_id=doc_id` + `iteration=1`.
+- **Task 1 (test-first):** `SagaRealJournalConformance` in
+  `test_saga_lifecycle_parity.py` drives a real journal through the actual functions
+  (real `_extract_doc_id`/`normalize_layer`) for a lifecycle layer, the
+  `--layer`-omitted path (V2b), and a CHG run (V4). **V1 confirmed:** reverting the
+  source fixes makes the class fail (`SagaRunState` has no `artifact_id`).
+- **Task 3 (`09_CHG` + bump):** added `"09_CHG"` to `saga.schema.json`;
+  `bump_version.py 0.32.7` re-vendored the plugin bundle + synced FSV pins + **auto-
+  rewrote the FSV hard-pin** to `0.32.7` (confirming F2's refutation — no manual
+  edit). Hermes `VERSION → 0.5.1` (manual, platform-independent stream).
+- **Task 4 (docs):** root `CHANGELOG.md` (framework-spec + Hermes entry), Hermes
+  `CHANGELOG.md`, `DECISIONS.md` (D-0048), `HERMES-BACKLOG.md` (H-12 CLOSED + table
+  row 3b), `PARITY.md` (real-journal conformance), `HANDOFF.md`.
+- **Verification:** V5 = 17 Hermes saga tests green; V6 = 160 conformance + 644
+  subtests green; V8 = FSV pins all `0.32.7`, vendored schema carries `09_CHG`.
+  `test_saga_review_journal.py` needed no change (as predicted).

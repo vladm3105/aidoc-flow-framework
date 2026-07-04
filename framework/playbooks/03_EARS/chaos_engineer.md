@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: chaos_engineer
 weight: 12
 agent: chaos-engineer
-framework_spec_version: "0.32.6"
+framework_spec_version: "0.32.7"
 ---
 # chaos_engineer lens — EARS layer
 

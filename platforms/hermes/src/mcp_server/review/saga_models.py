@@ -33,6 +33,14 @@ class SagaRunState:
     retry_count: int = 0
     branches: dict[str, SagaBranchState] = field(default_factory=dict)
     compensation_actions: list[dict[str, object]] = field(default_factory=list)
+    # saga.schema.json-required fields (H-12). All defaulted → backward-compatible.
+    # `artifact_id` = doc id (e.g. BRD-01); `layer` = enum-form dir (e.g. 01_BRD);
+    # `iteration` = review pass (single-pass → 1); `transitions` = state-machine
+    # history, each entry exactly {ts, from, to, scope} per the schema.
+    artifact_id: str = ""
+    layer: str = ""
+    iteration: int = 1
+    transitions: list[dict[str, object]] = field(default_factory=list)
 
 
 # Transition table — authority: framework/governance/REVIEW_SAGA.md.

@@ -12,6 +12,35 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — HERMES-SAGA-JOURNAL-CONFORMANCE (H-12): real Hermes saga journals conform to saga.schema.json; add `09_CHG` to the schema enum (framework spec 0.32.6 → 0.32.7; hermes 0.5.0 → 0.5.1) (2026-07-03)
+
+Hermes's **real** saga journal (serialized from `SagaRunState` via `asdict`) was
+missing 4 `saga.schema.json`-required fields — `artifact_id`, `layer`, `iteration`,
+`transitions` — and never recorded `transitions` at all. The Phase-1 conformance
+guard validated only hand-authored fixtures (written *with* those fields), so the
+"both platforms' saga journals conform to the shared schema" parity claim (D-0031)
+was aspirational for Hermes, not enforced against real output.
+
+- **`SagaRunState`** (`saga_models.py`) gains `artifact_id`/`layer`/`iteration`/
+  `transitions` (all defaulted → backward-compatible).
+- **`saga_journal.py`** now records schema-shaped transitions — `create_saga_journal`
+  seeds `{ts, from: null, to: PREPARED, scope: run}`; `update_run_status` appends a
+  `scope: run` entry on each successful status change; `set_branch_state` appends a
+  `scope: branch:<persona>` entry when a branch status changes. Each entry carries
+  exactly `{ts, from, to, scope}`. `_to_run_state` roundtrips the new fields.
+- **Orchestrator** derives `layer` from the **required** `doc_type` via
+  `normalize_layer(layer or doc_type)` (not the optional `--layer`, whose default is
+  `None`), so the default invocation still emits a schema-valid `layer` (H-12 F1).
+- **Framework:** added `"09_CHG"` to the `saga.schema.json` `layer` enum so CHG
+  review journals validate — a framework PATCH (GATE-SPEC applies; re-vendored to the
+  plugin bundle).
+- **Conformance:** new `SagaRealJournalConformance` validates a **real** Hermes
+  journal (driven through the actual journal functions, for a lifecycle layer, the
+  `--layer`-omitted path, and a CHG run) — the guard that would have caught H-12.
+
+Framework spec PATCH `0.32.6 → 0.32.7`; Hermes PATCH `0.5.0 → 0.5.1`. D-0048; closes
+H-12. 160 conformance + Hermes saga tests green.
+
 ### Added — HERMES-PARITY-PHASE-3: 8-layer playbook coverage (verified) + CHG crew parity (hermes 0.4.0 → 0.5.0; no framework change) (2026-07-03)
 
 Phase 2's playbook injection is layer-agnostic, so all 8 lifecycle layers already

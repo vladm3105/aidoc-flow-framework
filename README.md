@@ -289,7 +289,7 @@ versioned independently. Both pass the same shared conformance suite.
 
 | Platform | Engine | Release |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.5.0` (`platforms/hermes/`) |
+| **Hermes AI** | MCP server | `hermes/v0.5.1` (`platforms/hermes/`) |
 | **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.23.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
@@ -309,7 +309,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.32.6`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+framework spec `0.32.7`. The Claude Code plugin is a **pre-1.0 preview** — APIs
 and surfaces may change before 1.0. Platform release versions are in the
 [Platforms](#platforms) table above.
 
