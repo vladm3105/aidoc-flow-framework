@@ -83,7 +83,7 @@ def _extract_doc_id(*, document_path: Path | None, doc_type: str) -> str:
 # author self-claim, CLEANUP-PR-B item 9). Matches an assignment line whose key
 # ends `_ready_score`/`_score` or is literally `readiness_score`/`audit_score`.
 _SELF_CLAIM_RE = re.compile(
-    r"^\s*(?:[a-z0-9_]*_(?:ready_)?score|readiness_score|audit_score)\s*[:=].*$",
+    r"^[ \t]*(?:[a-z0-9_]*_(?:ready_)?score|readiness_score|audit_score)[ \t]*[:=].*$\n?",
     re.IGNORECASE | re.MULTILINE,
 )
 
