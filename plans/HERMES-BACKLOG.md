@@ -98,7 +98,34 @@ landed in Phase 3 (#234). The only thing "live CHG" adds beyond H-12 is document
 **Dependency:** none. Independent of the other H-items. Higher value than the
 originally-planned "live CHG saga" (which grounding showed unnecessary).
 
-### H-1 — SAGA-PARITY-001 Phase 3: G-R1 invariant alignment
+### H-1 — SAGA-PARITY-001 Phase 3: G-R1 invariant alignment — ⏸️ DEFERRED (architectural gate; D-0050, 2026-07-04)
+
+**Status:** DEFERRED pending a future Hermes **multi-iteration / wall-clock-bounded
+review-loop initiative** — the same gate as H-6.3. An evidence-based assessment
+(D-0050) found the two blockers this entry originally cited are **stale**:
+
+- *"Plugin Phase 4 should land first"* — **SATISFIED**: shipped in
+  `claude-code-plugin/v0.21.0` (all 8 autopilots drive `saga_driver.py`); the
+  `_ALLOWED_TRANSITIONS` table is stable + triple-enforced.
+- *"BRANCH_COMPENSATING spec gap"* — **still OPEN, but ORTHOGONAL** to this deferral.
+  The `BRANCH_COMPLETED→BRANCH_COMPENSATING` arrow IS still emitted (branch-scoped)
+  by all 9 `doc-*-fixer` skills (`doc-brd-fixer/SKILL.md:150`) and is not in the
+  run-scope table; whether that's a real gap is a separate branch-scope-validation
+  question, assessable independently — it does not gate Phase 1b (D-0050).
+
+The **real** reason to defer is architectural: Hermes's review saga is single-pass,
+in-process, wall-clock-unbounded, with no cross-invocation resume (`iteration=1`
+hardcoded). So a PARTIAL_TIMEOUT write-site is not required for conformance (Hermes's
+existing branch-timeout→`BRANCH_FAILED`→`ESCALATED` is a valid graceful degrade per
+`REVIEW_SAGA.md:150-154`, though `:120`'s SOFT_DEADLINE MUST is technically unmet), a
+G-R1 resume-walk would be dead code, and `quality_loop_max_iterations` is
+inapplicable. Building them now = speculative scope. The one unblocked sub-task (a
+saga-invariant conformance test) has its raise-on-invalid core already in Hermes's
+unit suite (`test_saga_review_journal.py`); a ~15-line conformance-level mirror of
+the plugin's `test_invalid_transition_raises` is the only net-new bit — optional,
+non-required. Revisit the deferred machinery only when Hermes gains the outer
+review-loop. **The stale detail below is retained for historical context; treat
+D-0050 as authoritative.**
 
 **Source:** [`docs/PARITY.md`](../docs/PARITY.md) §Enforcement parity;
 plugin commits `802d9b72` (Amendment 1 merge), `558ef6c8`
@@ -144,10 +171,11 @@ is the authoritative test — does it reject them? If so, the spec is
 right and the SKILLs need slimming (Phase 4 work); if not, the
 spec needs amendment to model the fixer-revisit transitions.
 
-**Dependency:** plugin Phase 4 (PRD..IPLAN saga driver propagation)
-should land first — Phase 4 may further refine the state machine
-based on per-layer differences, and Hermes should align to the
-final shape, not an intermediate one.
+**Dependency:** ~~plugin Phase 4 (PRD..IPLAN saga driver propagation)
+should land first~~ **(STALE — Phase 4 shipped in `claude-code-plugin/v0.21.0`;
+the state machine is stable. See the banner + D-0050.)** The original note read:
+Phase 4 may further refine the state machine based on per-layer differences, and
+Hermes should align to the final shape, not an intermediate one.
 
 ### H-2 — REVIEW-CALIBRATION-001 lens sub-checks for Hermes review
 
