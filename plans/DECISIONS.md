@@ -10,6 +10,76 @@ graduation.
 
 ---
 
+## D-0050 — Hermes Phase 1b (saga break-circuit / PARTIAL_TIMEOUT / G-R1 resume / `quality_loop_max_iterations`) deferred: architectural, not the stale reasons the backlog cited
+
+**2026-07-04.** An evidence-based assessment (grounded file:line against both
+platforms) re-scoped Hermes "Phase 1b / H-1." The backlog cited two blockers that
+are **both stale**, and surfaced the **real** reason the work should not proceed now.
+
+**Stale premises corrected:**
+
+- **"Plugin Phase 4 (PRD..IPLAN saga-driver propagation) should land first" —
+  SATISFIED.** Plugin Phase 4 shipped in `claude-code-plugin/v0.21.0` (2026-06-22):
+  all 8 layer autopilots now drive `tools/saga_driver.py`
+  (`platforms/claude-code-plugin/CHANGELOG.md:73-88`). The `_ALLOWED_TRANSITIONS`
+  table is **stable** — byte-identical in `saga_models.py` and `saga_driver.py`,
+  matching `REVIEW_SAGA.md`, and triple-enforced by conformance.
+- **"BRANCH_COMPENSATING spec gap" — OPEN but ORTHOGONAL (not a Phase-1b blocker).**
+  Correction (an earlier draft of this decision wrongly called it resolved on a
+  false-negative grep): the `BRANCH_COMPLETED→BRANCH_COMPENSATING` transition IS
+  still emitted — **branch-scoped** — by all 9 `doc-*-fixer` skills during the
+  remediation cycle (e.g. `doc-brd-fixer/SKILL.md:150`, line-wrapped in the JSON),
+  and it is NOT in the run-scope `_ALLOWED_TRANSITIONS` table (which permits
+  `BRANCH_COMPLETED→{FANIN_REDUCED, PARTIAL_TIMEOUT}` only). (`BRANCH_COMPLETED→
+  FANOUT_STARTED` is genuinely absent.) Whether the branch-scoped compensation arrow
+  is a real spec gap turns on whether branch-scope transitions must validate against
+  the run-scope table — an open question, assessable independently. It does **not**
+  gate this deferral: Phase 1b is deferred on the architectural reason alone.
+
+**The real reason to defer (architectural):** Hermes's review saga is a **single-pass,
+in-process fan-out/fan-in** of one already-existing document — `iteration=1` hardcoded
+(`saga_orchestrator.py`), no create→review→revise loop, no wall-clock soft deadline,
+no cross-invocation resume. The plugin's PARTIAL_TIMEOUT / `resume_from_partial_timeout`
+/ `quality_loop_max_iterations` are properties of an **outer, wall-clock-bounded,
+multi-iteration** loop Hermes does not have. Therefore, building them into Hermes now
+would be **speculative net-new machinery**, not "alignment":
+
+- A PARTIAL_TIMEOUT write-site + break-circuit is **not required for conformance**.
+  `REVIEW_SAGA.md:120` says an orchestrator MUST monitor a SOFT_DEADLINE (which
+  Hermes does not), but `:150-154` explicitly forgives ignoring the break-circuit as
+  a "cooperative failure" that is still a "valid graceful-degradation state;
+  conformance accepts either." Hermes reaches a legal terminal by an orderly
+  quorum-based escalation (branch timeout → `BRANCH_FAILED` → `ESCALATED`) — a
+  different degradation path from the spec's "hard timeout fires → last checkpoint"
+  example, but equally conformant. Adding a real SOFT_DEADLINE + PARTIAL_TIMEOUT is
+  the honest way to satisfy the `:120` MUST, but it is net-new machinery, deferred
+  with the rest.
+- A G-R1 resume-walk (`transitions[]` backward) would be **dead code** — Hermes never
+  writes PARTIAL_TIMEOUT and re-runs in-process, not across invocations.
+- `quality_loop_max_iterations` is **inapplicable** to a single-pass saga.
+
+**Decision:** the PARTIAL_TIMEOUT write-site, G-R1 resume-walk, and
+`quality_loop_max_iterations` items are **deferred pending a future Hermes
+multi-iteration / wall-clock-bounded review-loop initiative** — the same architectural
+gate that already blocks H-6.3 ([[D-0049]]). Building them earlier would violate the
+repo's "minimal-and-realistic / no speculative scope" convention. The one
+genuinely-unblocked H-1 sub-task is a Hermes saga-invariant conformance test — but
+its core (raise-on-invalid transition) is **already verified in Hermes's unit suite**
+(`test_saga_review_journal.py::test_saga_journal_rejects_invalid_transition`), and
+`test_saga_lifecycle_parity.py` asserts table-parity (`SagaTransitionTableParity`) +
+real-journal conformance (`SagaRealJournalConformance`, [[D-0048]]). The only net-new
+value is a ~15-line *conformance-level* mirror of the plugin's
+`test_saga_driver_invariants.py::test_invalid_transition_raises` (the raise-invariant
+lives in the shared conformance contract for the plugin but not yet for Hermes) —
+small, non-speculative, unblocked, noted as an optional residual in the backlog, but
+not required since the behavior is already tested, and needing none of the deferred
+break-circuit machinery. Next Hermes item is `prompt_only`
+playbook injection (architecturally unblocked, aligned with the single-pass fan-out).
+This decision also corrects the stale `docs/PARITY.md` enforcement-parity prose
+(which still described PRD..IPLAN as "v0.6.0 cooperative").
+
+---
+
 ## D-0049 — Hermes review calibration: no-findings rationale cap + strip author self-claim (H-6.1 + H-6.2); fixer-regression stays deferred (single-pass saga)
 
 **2026-07-04.** Two of the three FRAMEWORK-CLEANUP-001 "PR-B heart" review-quality
