@@ -33,6 +33,7 @@ def run_project_review_build(
     sections: list[SourceSection],
     layer: str | None = None,
     output_dir: Path | None = None,
+    playbook_text: str | None = None,
 ) -> ReviewRunResult:
     assembly = assemble_project_review_prompt(
         project_root=project_root,
@@ -41,6 +42,7 @@ def run_project_review_build(
         template_name=template_name,
         sections=sections,
         layer=layer,
+        playbook_text=playbook_text,
     )
     inspection = inspect_prompt_bundle(assembly.bundle)
     sidecar_json = serialize_prompt_metadata_sidecar(assembly.bundle.metadata)

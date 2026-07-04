@@ -10,6 +10,30 @@ graduation.
 
 ---
 
+## D-0046 — Hermes playbook injection (BRD+PRD): crew-membership-keyed, citation floor on the LLM path, byte-identical finding_filter vendor (HERMES-PARITY-PHASE-2)
+
+**2026-07-03.** Hermes's review saga now injects per-`(layer,lens)` playbooks +
+enforces the `check:` citation floor + emits `verdict.playbook_coverage`, for
+BRD+PRD (`hermes/v0.4.0`). Key design decisions:
+
+- **Keyed on framework crew membership, not file presence.** Branch personas come
+  from `persona_mappings.yaml` (a superset of `REVIEW_CREWS.yaml`); a persona that
+  is NOT a framework crew lens (`fact_checker`; `chairperson`→`synthesizer`) gets no
+  playbook + no floor and is **never** `BRANCH_FAILED`. Only a crew lens with an
+  absent playbook file fails. (A naive "missing file → fail" rule would have broken
+  every BRD review — its list carries `fact_checker`.)
+- **Absent `check` key, not `""`.** The parser omits `check` when the lens didn't
+  cite one, so the vendored `finding_filter.emit_coverage` (which counts any
+  non-`None` check) doesn't create a spurious `""` bucket.
+- **Coverage counted pre-reduce.** Dedup keeps only one branch's citation, so
+  post-reduce counting under-reports; `playbook_coverage` is computed from the kept
+  pre-reduce findings.
+- **Floor on the LLM path only.** The deterministic-fallback branch emits
+  inspection-derived findings with no citation; discarding there would empty it.
+- **`finding_filter.py` is a byte-identical vendor** of the plugin's (engine-agnostic,
+  stdlib) with a drift-guard test — not a divergent port. `prompt_only`/aggregate
+  builds + the other 6 layers + CHG are Phase 3. No framework spec change.
+
 ## D-0045 — Hermes parity is engine debt (playbook injection + saga completeness), not the 0.32.x arc; phased, starting with saga conformance (HERMES-PARITY-PHASE-1)
 
 **2026-07-02.** An evidence-backed assessment corrected the stale

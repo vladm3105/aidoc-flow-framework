@@ -14,6 +14,21 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Added
+
+- **Playbook injection for BRD + PRD (HERMES-PARITY-PHASE-2, D-0046; `0.3.0 → 0.4.0`).**
+  The review saga now injects the per-`(layer, lens)` playbook
+  (`framework/playbooks/{01_BRD,02_PRD}/<lens>.md`) into each crew lens's branch
+  prompt, enforces the framework citation floor (every finding cites `check:` — a
+  `Cn` id or `beyond-checklist:<tag>`; uncited findings are discarded on the LLM
+  path), and emits `verdict.playbook_coverage`. New `playbook_loader.py` (crew-lens
+  resolution via `REVIEW_CREWS.yaml`, keyed on crew membership so non-crew branch
+  personas `fact_checker`/`chairperson` get no playbook and are NOT failed) +
+  byte-identical vendor of the plugin's `finding_filter.py` (drift-guarded).
+  `check` threaded through the parser → reducer (`ReducedFinding`) → verdict.
+  Scope: the saga per-branch team-review path (BRD+PRD); other 6 layers + CHG and
+  the `prompt_only` mode are Phase 3 follow-ons. No framework spec change.
+
 ### Fixed
 
 - **Saga state-machine conformance (HERMES-PARITY-PHASE-1, D-0045).** Hermes's

@@ -12,6 +12,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — HERMES-PARITY-PHASE-2: Hermes playbook injection for BRD+PRD (hermes 0.3.0 → 0.4.0; no framework change) (2026-07-03)
+
+Hermes's review saga now injects the per-`(layer,lens)` playbook into each crew
+lens's branch prompt (BRD+PRD), enforces the `check:` citation floor (discard
+uncited on the LLM path), and emits `verdict.playbook_coverage` — closing the
+load-bearing playbook-injection gap (H-4) for the first two layers. New
+`playbook_loader.py` (crew-membership-keyed, so non-crew branch personas
+`fact_checker`/`chairperson` are exempt, not failed) + byte-identical vendor of the
+plugin's `finding_filter.py` (drift-guarded); `check` threaded parser → reducer →
+verdict. Hermes MINOR bump; no framework spec change (playbooks pre-exist). Other 6
+layers + CHG + `prompt_only` mode are Phase 3. D-0046; 496 Hermes + 157 conformance
+tests green.
+
 ### Fixed — HERMES-PARITY-PHASE-1: Hermes saga state-machine conformance + enforced parity test (no version change) (2026-07-02)
 
 Hermes's saga `_ALLOWED_TRANSITIONS` was missing the spec's `PARTIAL_TIMEOUT`

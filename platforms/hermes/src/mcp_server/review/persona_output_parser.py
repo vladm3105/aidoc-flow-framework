@@ -47,6 +47,12 @@ def _coerce_findings(raw: object) -> list[dict[str, str]]:
         }
         if not finding["message"]:
             continue
+        # Playbook check citation (HERMES-PARITY-PHASE-2). Included ONLY when the lens
+        # actually cited a check — an absent key (not "") is how the citation floor
+        # (`finding_filter`, `emit_coverage`) recognises an uncited finding.
+        check_val = str(item.get("check", "")).strip()
+        if check_val:
+            finding["check"] = check_val
         findings.append(finding)
     return findings
 
