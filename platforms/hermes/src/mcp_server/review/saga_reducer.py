@@ -16,6 +16,7 @@ class ReducedFinding:
     recommended_action: str
     provenance: list[dict[str, str]]
     content_hash: str
+    check: str = ""  # playbook check citation (HERMES-PARITY-PHASE-2); preserved verbatim
 
 
 def _stable_hash(value: str) -> str:
@@ -32,6 +33,7 @@ def _normalize_record(record: dict[str, object]) -> dict[str, str]:
         "recommended_action": str(record.get("recommended_action", "")).strip(),
         "branch_id": str(record.get("branch_id", "")),
         "parse_status": str(record.get("parse_status", "unknown")),
+        "check": str(record.get("check", "")).strip(),
     }
 
 
@@ -141,6 +143,7 @@ def reduce_persona_findings(records: list[dict[str, object]]) -> list[ReducedFin
                     for item in provenance
                 ],
                 content_hash=str(row["content_hash"]),
+                check=str(best.get("check", "")),
             )
         )
     return reduced

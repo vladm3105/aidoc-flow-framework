@@ -11,8 +11,16 @@
 > platforms against `REVIEW_SAGA.md` (a test `PARITY.md` over-claimed existed). No
 > framework/Hermes version bump. D-0045; 4-phase roadmap in
 > `plans/HERMES-PARITY-PHASE-1-PLAN.md` + the refreshed `HERMES-BACKLOG.md`.
-> **▶ Next: Phase 1b** (orchestrator break-circuit exercise + `quality_loop_max_iterations`),
-> then **Phase 2 — playbook injection** (the load-bearing gap). Each is its own plan.
+> **Phase 2 — playbook injection (BRD+PRD) ✅ SHIPPED** (#231 plan + impl,
+> `hermes/v0.4.0`, D-0046): the review saga injects per-`(layer,lens)` playbooks,
+> enforces the `check:` citation floor (discard uncited), emits
+> `verdict.playbook_coverage`. Keyed on crew membership (so `fact_checker`/
+> `chairperson` are exempt, not failed — the bug the plan review caught); byte-identical
+> `finding_filter` vendor; `check` threaded parser→reducer→verdict. 496 Hermes + 157
+> conformance green. H-4 CLOSED for BRD+PRD.
+> **▶ Next:** **Phase 3** — playbook fan-out to the other 6 layers (H-5) + CHG (H-10) +
+> fold the calibration deltas (H-6/H-2); **Phase 1b** (saga break-circuit exercise +
+> `quality_loop_max_iterations`); and the `prompt_only` review path. Each is its own plan.
 >
 > ---
 >
