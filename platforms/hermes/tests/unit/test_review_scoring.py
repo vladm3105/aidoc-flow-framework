@@ -162,3 +162,69 @@ def test_hermes_review_crews_cover_framework_crews() -> None:
         mapped = {canonical_persona(p) for p in hermes}
         missing = expected - mapped
         assert missing == set(), f"{layer}: framework lenses not covered by Hermes crew: {missing}"
+
+
+def test_rationale_cap_applies_on_unsubstantiated_100() -> None:
+    # H-6.1 V4: a lens scoring 100 with zero findings and no rationale -> capped 95.
+    rs = score_review(
+        layer="ears",
+        lens_scores=_FULL_EARS,
+        findings=[],
+        lens_findings_count={p: 0 for p in _FULL_EARS},
+        no_findings_rationale={p: None for p in _FULL_EARS},
+    )
+    assert set(rs.rationale_capped) == set(canonical_persona(p) for p in _FULL_EARS)
+    assert rs.score == 95.0
+
+
+def test_rationale_present_bypasses_cap() -> None:
+    # H-6.1 V5: a 100/0 lens WITH a rationale is not capped.
+    rs = score_review(
+        layer="ears",
+        lens_scores=_FULL_EARS,
+        findings=[],
+        lens_findings_count={p: 0 for p in _FULL_EARS},
+        no_findings_rationale={p: "examined §2, clean" for p in _FULL_EARS},
+    )
+    assert rs.rationale_capped == []
+    assert rs.score == 100.0
+
+
+def test_any_finding_bypasses_cap() -> None:
+    # H-6.1 V6: a lens that filed >=1 finding is never capped, regardless of score.
+    rs = score_review(
+        layer="ears",
+        lens_scores=_FULL_EARS,
+        findings=[{"priority": "P3"}],
+        lens_findings_count={**{p: 0 for p in _FULL_EARS}, "requirements_specialist": 1},
+        no_findings_rationale={p: None for p in _FULL_EARS},
+    )
+    assert "requirements_specialist" not in rs.rationale_capped
+    assert "tech_lead" in rs.rationale_capped  # still capped (0 findings, no rationale)
+
+
+def test_new_params_omitted_is_backcompat() -> None:
+    # H-6.1 V7: omitting the new maps caps nothing (identical to pre-change).
+    rs = score_review(layer="ears", lens_scores=_FULL_EARS, findings=[])
+    assert rs.rationale_capped == []
+    assert rs.score == 100.0
+
+
+def test_rationale_cap_canonicalizes_and_ignores_noncrew_alias() -> None:
+    # H-6.1 V7b / M5: the new maps are canonicalized (chairperson->synthesizer).
+    # synthesizer is the unscored reduce role — not a crew lens — so a chairperson
+    # entry is dropped from scoring and never spuriously capped. A real crew lens
+    # supplied alongside still caps correctly, proving key alignment.
+    assert canonical_persona("chairperson") == "synthesizer"
+    assert "synthesizer" not in load_crew_weights("ears")
+    rs = score_review(
+        layer="ears",
+        lens_scores={**_FULL_EARS, "chairperson": 100.0},
+        findings=[],
+        lens_findings_count={**{p: 0 for p in _FULL_EARS}, "chairperson": 0},
+        no_findings_rationale={**{p: None for p in _FULL_EARS}, "chairperson": None},
+    )
+    # chairperson/synthesizer is never scored -> not in rationale_capped; the real
+    # EARS crew lenses (identity-named, hence trivially canonical) are capped.
+    assert "synthesizer" not in rs.rationale_capped
+    assert set(rs.rationale_capped) == set(_FULL_EARS)

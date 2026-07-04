@@ -10,6 +10,42 @@ graduation.
 
 ---
 
+## D-0049 — Hermes review calibration: no-findings rationale cap + strip author self-claim (H-6.1 + H-6.2); fixer-regression stays deferred (single-pass saga)
+
+**2026-07-04.** Two of the three FRAMEWORK-CLEANUP-001 "PR-B heart" review-quality
+deltas (H-6) were consumer-side gaps in Hermes's team-mode review path — the
+contracts already existed in `REVIEW_TEAM.md` + the injected playbooks ([[D-0046]]),
+but Hermes didn't enforce them. Implemented both; Hermes MINOR `0.5.1 → 0.6.0`, **no
+framework change**.
+
+- **No-findings rationale (H-6.1).** Parser captures `no_findings_rationale`;
+  `score_review` caps a 100/zero-findings/no-rationale lens to 95 (`STRUCTURE-RAT-001`
+  advisory). The cap lives in `review_scoring.score_review` (the module that owns the
+  `REVIEW_TEAM.md` scoring policy) via optional params, so existing callers are
+  unaffected. **Non-obvious:** implementing this required fixing a latent parser bug —
+  a clean `findings: []` fell through to a `fallback` P1 with `lens_score=None`,
+  dropping the lens from scoring entirely (the cap was unreachable). The parser now
+  returns a successful empty result preserving the score.
+- **Strip author self-claim (H-6.2).** `_strip_author_self_claim` redacts the
+  canonical self-claim fields from section bodies once before fan-out, in-prompt only.
+
+**Two calls worth recording:**
+
+1. **`personas_with_findings` is measured post-citation-floor.** A lens that filed
+   only *uncited* findings (discarded by the playbook citation floor) counts as
+   zero-findings and is capped — a deliberate divergence from the spec's literal
+   "filing any finding bypasses," on the grounds that an all-discarded lens produced
+   nothing *substantiated*. The independent plan review endorsed this.
+2. **H-6.3 (fixer-introduced regression detection) stays deferred, not attempted.**
+   It requires an iter-N vs iter-(N-1) comparison; Hermes's saga is **single-pass**
+   (`iteration=1`), so there is no prior iteration. It belongs to a future Hermes
+   multi-iteration review-loop initiative. Likewise **H-2** (REVIEW-CALIBRATION-001
+   sub-checks) was NOT bundled here: those live only in the plugin's audit SKILLs, not
+   the shared playbooks, so reaching Hermes needs a framework-spec playbook port — a
+   separate review-team calibration decision.
+
+---
+
 ## D-0048 — Hermes real saga journals conform to `saga.schema.json`; `layer` derives from `doc_type`; `09_CHG` added to the schema enum (HERMES-SAGA-JOURNAL-CONFORMANCE, H-12)
 
 **2026-07-03.** The **real** Hermes saga journal (`asdict(SagaRunState)`) was missing

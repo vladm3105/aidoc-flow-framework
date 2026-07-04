@@ -87,6 +87,15 @@ def _coerce_lens_score(payload: object) -> float | None:
     return max(0.0, min(100.0, value))
 
 
+def _coerce_no_findings_rationale(payload: object) -> str | None:
+    """Extract the persona's top-level ``no_findings_rationale`` (REVIEW_TEAM.md
+    §No-findings rationale) if present and non-empty."""
+    if not isinstance(payload, dict):
+        return None
+    value = str(payload.get("no_findings_rationale", "")).strip()
+    return value or None
+
+
 def _stable_finding_id(persona: str, location: str, message: str) -> str:
     return sha256(f"{persona}|{location}|{message}".encode()).hexdigest()[:8]
 
@@ -96,6 +105,7 @@ class PersonaParseResult:
     findings: list[dict[str, str]]
     parse_status: str
     lens_score: float | None = None
+    no_findings_rationale: str | None = None
 
 
 def parse_persona_output(
@@ -149,6 +159,16 @@ def parse_persona_output(
                 )
             return PersonaParseResult(
                 findings=normalized, parse_status=parse_status, lens_score=lens_score
+            )
+        # Clean zero-findings result (H-6.1): a valid persona output with a score but
+        # no findings. Preserve the score (else it drops from `lens_scores`) + capture
+        # the no-findings rationale, instead of falling through to the `fallback` P1.
+        if isinstance(payload, dict) and lens_score is not None:
+            return PersonaParseResult(
+                findings=[],
+                parse_status=parse_status,
+                lens_score=lens_score,
+                no_findings_rationale=_coerce_no_findings_rationale(payload),
             )
 
     fallback_message = "Branch output was not machine-parseable JSON; fallback finding emitted"

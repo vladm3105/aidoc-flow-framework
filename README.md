@@ -289,7 +289,7 @@ versioned independently. Both pass the same shared conformance suite.
 
 | Platform | Engine | Release |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.5.1` (`platforms/hermes/`) |
+| **Hermes AI** | MCP server | `hermes/v0.6.0` (`platforms/hermes/`) |
 | **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.23.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a

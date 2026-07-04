@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-REVIEW-CALIBRATION (H-6.1 + H-6.2)   |
 | Type           | feature (reviewer-calibration parity)       |
-| Status         | READY — 2026-07-04 (3 review passes, 1 independent; 0 load-bearing) |
+| Status         | IMPLEMENTED — 2026-07-04 (3 review passes, 1 independent; all V-checks green) |
 | Depends on     | none (Phase-2 review-team plumbing already shipped) |
 | Feeds          | Hermes review-quality parity with the plugin (FRAMEWORK-CLEANUP-001 PR-B heart) |
 | Version impact | **Hermes MINOR** (`0.5.1 → 0.6.0`). **No framework change** — both contracts already exist in `REVIEW_TEAM.md` + the injected playbooks; this is pure consumer-side enforcement. No GATE-SPEC, no re-vendor. |
@@ -333,3 +333,33 @@ consistent (both hinge on "valid dict + `lens_score` present + zero findings"); 
 composition already empirically confirmed by Pass 2.
 
 **Result:** ready
+
+## Implementation record — 2026-07-04
+
+Implemented on `fix/hermes-review-calibration` after the plan PR (#238) merged. All
+V-checks green.
+
+- **Task 1 (parser):** added `_coerce_no_findings_rationale`;
+  `PersonaParseResult.no_findings_rationale`; a clean-empty branch (valid dict +
+  `lens_score` present + zero findings → successful empty result preserving the
+  score). V1-V3 + the no-`findings`-key case (M2) added to
+  `test_persona_output_parser.py`.
+- **Task 2 (scorer):** `score_review` gained `lens_findings_count` +
+  `no_findings_rationale` params + the 95-cap (keys canonicalized) +
+  `ReviewScore.rationale_capped`. **Back-compat guard (found during impl):** the cap
+  requires `cname in counts` — an absent map (existing callers) or an unrecorded lens
+  is never capped. Without this guard the pre-existing `test_compute_review_score_helper`
+  failed (all lenses capped when maps omitted) — V7 now enforces it. V4-V7b added to
+  `test_review_scoring.py`.
+- **Task 3 (orchestrator):** `_branch_llm_findings` returns the rationale; fan-out
+  tracks `lens_findings_count` + `no_findings_rationales` per persona;
+  `_compute_review_score` threads them + surfaces `STRUCTURE-RAT-001` advisories;
+  `_strip_author_self_claim` (regex over `SourceSection.content`) called once before
+  fan-out. V8 (strip + no-op identity) added to `test_saga_review_orchestrator.py`.
+- **V7b correction:** `synthesizer` is the unscored reduce role (never a crew lens),
+  so `chairperson`→`synthesizer` has no live scored case; V7b asserts the defensive
+  behavior (alias canonicalized + ignored, real crew lenses still cap).
+- **Task 4 (docs):** Hermes `VERSION → 0.6.0`; Hermes + root CHANGELOG; D-0049;
+  HERMES-BACKLOG H-6 partial-close; HANDOFF.
+- **Verification:** V9 = 508 Hermes tests green; V10 = 160 conformance + 644 subtests
+  green. No framework change → no GATE-SPEC, no re-vendor.

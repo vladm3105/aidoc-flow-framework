@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — HERMES-REVIEW-CALIBRATION (H-6.1 + H-6.2): no-findings rationale cap + strip author self-claim (hermes 0.5.1 → 0.6.0; no framework change) (2026-07-04)
+
+Two FRAMEWORK-CLEANUP-001 "PR-B heart" review-quality deltas brought to Hermes's
+team-mode review path as consumer-side enforcement — both contracts already exist in
+`framework/governance/REVIEW_TEAM.md` + the injected playbooks, so no framework
+change.
+
+- **No-findings rationale (H-6.1).** `persona_output_parser.py` captures a lens's
+  `no_findings_rationale`; `review_scoring.score_review` caps a lens scoring 100 with
+  zero findings and no rationale to 95, surfacing a `STRUCTURE-RAT-001` advisory.
+  Also fixes a latent parser bug: a clean `findings: []` output previously fell to a
+  `fallback` P1 with `lens_score=None`, dropping the lens from `lens_scores` (which
+  lowered coverage and made the cap unreachable). The parser now returns a successful
+  empty result that preserves the score.
+- **Strip author self-claim (H-6.2).** `_strip_author_self_claim` redacts
+  `*_ready_score` / `*_score` / `readiness_score` / `audit_score` assignment lines
+  from each `SourceSection.content` once before fan-out (in-prompt only; on-disk
+  artifact untouched) — the anchor-effect fix.
+
+H-6.3 (fixer-introduced regression detection) stays deferred: Hermes's saga is
+single-pass, so there is no iter-(N-1) to compare. Hermes MINOR `0.5.1 → 0.6.0`;
+D-0049; 508 Hermes + 160 conformance tests green.
+
 ### Fixed — HERMES-SAGA-JOURNAL-CONFORMANCE (H-12): real Hermes saga journals conform to saga.schema.json; add `09_CHG` to the schema enum (framework spec 0.32.6 → 0.32.7; hermes 0.5.0 → 0.5.1) (2026-07-03)
 
 Hermes's **real** saga journal (serialized from `SagaRunState` via `asdict`) was
