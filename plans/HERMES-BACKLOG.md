@@ -23,7 +23,7 @@
 > | 1 | saga state-machine conformance (`PARTIAL_TIMEOUT`) + enforced `test_saga_lifecycle_parity.py` | **✅ shipped** — partial H-1 (table); no Hermes bump |
 > | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | pending |
 > | 2 | **playbook injection** for BRD+PRD (H-4) — the load-bearing gap | **✅ shipped** (`hermes/v0.4.0`, D-0046) — H-4 CLOSED for BRD+PRD; H-2/H-6 fold into Phase 3 |
-> | 3 | playbook fan-out to 6 more layers (H-5) + CHG crew (H-10) | pending |
+> | 3 | 8-layer coverage (H-5, already delivered by Phase 2 — verified) + CHG crew (H-10) | **✅ shipped** (`hermes/v0.5.0`, D-0047) — H-5 CLOSED (all 8 lifecycle layers); H-10 crew-map parity CLOSED; live CHG saga = follow-on |
 > | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | pending |
 >
 > **Auto-satisfied (no action):** H-3 (dormant), H-7 lint rows / H-8 / H-9 lint+template

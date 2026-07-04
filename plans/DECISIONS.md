@@ -10,6 +10,22 @@ graduation.
 
 ---
 
+## D-0047 — Hermes playbook coverage is 8-layer-complete (Phase-2 payoff, verified); CHG gets crew-map parity, live CHG saga deferred (HERMES-PARITY-PHASE-3)
+
+**2026-07-03.** Phase 2's playbook injection ([[D-0046]]) was written layer-agnostic,
+so **all 8 lifecycle layers already inject** their per-`(layer,lens)` playbooks —
+verified empirically (every `REVIEW_CREWS.yaml` crew lens resolves) and locked in by
+a regression test. **CHG (H-10):** added the `chg` review crew to
+`persona_mappings.yaml` and removed the `HERMES_DEFERRED_LAYERS` whitelist, so the
+crew-coverage test now enforces CHG — **crew-map parity only**. A *live/sanctioned*
+CHG saga review is deferred: Hermes never loads `saga.schema.json` at runtime (so
+there is no runtime schema wall) and the crew resolver has no `doc_type` allowlist,
+so adding the crew map makes an *explicit* `doc_type=chg` review dispatchable
+(previously inert) — but its journal `layer` would be outside the schema enum. Making
+CHG a first-class review target (add `09_CHG` to the schema + a sanctioned dispatch)
+is the follow-on. `hermes/v0.5.0`; no framework spec change. (H-6/H-2 calibration
+deltas + `prompt_only` injection remain later phases.)
+
 ## D-0046 — Hermes playbook injection (BRD+PRD): crew-membership-keyed, citation floor on the LLM path, byte-identical finding_filter vendor (HERMES-PARITY-PHASE-2)
 
 **2026-07-03.** Hermes's review saga now injects per-`(layer,lens)` playbooks +

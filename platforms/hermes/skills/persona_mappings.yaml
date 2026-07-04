@@ -64,6 +64,11 @@ review:
   iplan:
     personas: [tech_lead, architect, operator, integration_lead, auditor, chaos_engineer]
     mode: sequential
+  # CHG overlay (HERMES-PARITY-PHASE-3, H-10): crew parity with REVIEW_CREWS.yaml CHG.
+  # Crew map only — no default flow dispatches a chg review (see the plan's Out of scope).
+  chg:
+    personas: [integration_lead, architect, chaos_engineer, operator, auditor, security_engineer]
+    mode: sequential
 
 remediation:
   _default:
