@@ -380,6 +380,17 @@ def _compute_token_warning(combined_text: str) -> tuple[int, str | None]:
     return token_est, warning
 
 
+#: Binding citation instruction inlined with a per-lens playbook (HERMES-PARITY-PHASE-2).
+#: Only emitted when a playbook is present, so non-crew personas (fact_checker) are
+#: never told to cite checks that do not apply to them.
+_PLAYBOOK_CITATION_RULE = (
+    "**Finding citation (binding contract):** every finding you produce MUST cite "
+    'which playbook check fired — `check: "C1"` (a checklist id from the playbook '
+    'above) or `check: "beyond-checklist:<principle-tag>"`. Findings without a valid '
+    "`check` citation are discarded by the synthesizer."
+)
+
+
 def assemble_project_review_prompt(
     *,
     project_root: Path,
@@ -388,6 +399,7 @@ def assemble_project_review_prompt(
     template_name: str,
     sections: list[SourceSection],
     layer: str | None = None,
+    playbook_text: str | None = None,
 ) -> PromptAssembly:
     persona_pairs = _resolve_personas(project_root, personas, doc_type, "review")
     persona_names = [name for name, _ in persona_pairs]
@@ -422,8 +434,15 @@ def assemble_project_review_prompt(
         phase="review",
         template_name=template_name,
     )
-    parts = [
-        combined_persona_text.strip(),
+    parts = [combined_persona_text.strip()]
+    if playbook_text:
+        parts.append(
+            "## Layer-specific playbook\n\n"
+            + playbook_text.strip()
+            + "\n\n"
+            + _PLAYBOOK_CITATION_RULE
+        )
+    parts += [
         prompt_template_text.strip(),
         MCP_REVIEW_ACTIONABLE_RULES.strip(),
     ]

@@ -416,3 +416,108 @@ def test_compute_review_score_helper() -> None:
     assert (
         _compute_review_score(doc_type="tasks", lens_scores={"tech_lead": 80.0}, reduced=[]) is None
     )
+
+
+def _fake_review_build(**kwargs):
+    """Bypass ContractValidationError so the LLM parse+filter path actually runs."""
+    from mcp_server.review.runner import ReviewRunResult
+
+    return ReviewRunResult(
+        prompt_text="review prompt " + str(kwargs.get("playbook_text") or ""),
+        sidecar_json="{}",
+        inspection={},
+        layer_asset_names=[],
+        prompt_path=None,
+        sidecar_path=None,
+        inspection_path=None,
+    )
+
+
+def test_saga_playbook_citation_floor_discards_uncited(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """HERMES-PARITY-PHASE-2: a BRD crew lens (architect) discards uncited findings
+    and emits verdict.playbook_coverage."""
+    _create_project_ucx(tmp_path)
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        return ExecutorResult(
+            stdout=(
+                '{"findings":['
+                '{"priority":"P1","category":"quality","message":"cited finding",'
+                '"recommended_action":"fix","target_layer":"01_BRD","check":"C1"},'
+                '{"priority":"P2","category":"quality","message":"uncited finding",'
+                '"recommended_action":"fix","target_layer":"01_BRD"}]}'
+            ),
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto"},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+    monkeypatch.setattr(so, "run_project_review_build", _fake_review_build)
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[SourceSection(section_id="1.0", title="Arch", content="architecture")],
+        layer="01_BRD",
+        output_dir=tmp_path / "tmp/evidence",
+        executor_name="api/openrouter",
+        saga_branch_llm_enabled=True,
+    )
+
+    assert result.saga_status == "CLOSED"
+    messages = [f["message"] for f in (result.reduced_findings or [])]
+    assert "cited finding" in messages
+    assert "uncited finding" not in messages  # discarded by the citation floor
+    assert result.playbook_coverage == {"C1": 1}
+    cited = next(f for f in result.reduced_findings if f["message"] == "cited finding")
+    assert cited["check"] == "C1"
+
+
+def test_saga_non_crew_persona_keeps_findings_without_floor(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """fact_checker is a BRD branch persona with no playbook: its uncited findings
+    survive (no floor) and the branch does NOT fail."""
+    _create_project_ucx(tmp_path)
+    (tmp_path / "UCX/skills/personas/fact_checker.md").write_text("Fact checker", encoding="utf-8")
+    from mcp_server.review import saga_orchestrator as so
+
+    async def _fake_run_executor(**kwargs):
+        return ExecutorResult(
+            stdout=(
+                '{"findings":[{"priority":"P1","category":"quality","message":"uncited fc",'
+                '"recommended_action":"fix","target_layer":"01_BRD"}]}'
+            ),
+            stderr="",
+            exit_code=0,
+            executor_name="api/openrouter",
+            metadata={"model": "openrouter/auto"},
+        )
+
+    monkeypatch.setattr(so, "run_executor", _fake_run_executor)
+    monkeypatch.setattr(so, "run_project_review_build", _fake_review_build)
+
+    result = run_project_review_build_saga(
+        project_root=tmp_path,
+        personas=["fact_checker"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[SourceSection(section_id="1.0", title="Arch", content="architecture")],
+        layer="01_BRD",
+        output_dir=tmp_path / "tmp/evidence",
+        executor_name="api/openrouter",
+        saga_branch_llm_enabled=True,
+    )
+
+    messages = [f["message"] for f in (result.reduced_findings or [])]
+    assert (
+        "uncited fc" in messages
+    )  # branch completed (not failed) + no floor for a non-crew persona
+    assert result.playbook_coverage == {}  # no cited findings -> empty coverage

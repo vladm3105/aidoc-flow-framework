@@ -22,7 +22,7 @@
 > |-------|-------|--------|
 > | 1 | saga state-machine conformance (`PARTIAL_TIMEOUT`) + enforced `test_saga_lifecycle_parity.py` | **✅ shipped** — partial H-1 (table); no Hermes bump |
 > | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | pending |
-> | 2 | **playbook injection** for BRD+PRD (H-4) + fold H-6 + H-2 — the load-bearing gap everything else needs | pending |
+> | 2 | **playbook injection** for BRD+PRD (H-4) — the load-bearing gap | **✅ shipped** (`hermes/v0.4.0`, D-0046) — H-4 CLOSED for BRD+PRD; H-2/H-6 fold into Phase 3 |
 > | 3 | playbook fan-out to 6 more layers (H-5) + CHG crew (H-10) | pending |
 > | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | pending |
 >

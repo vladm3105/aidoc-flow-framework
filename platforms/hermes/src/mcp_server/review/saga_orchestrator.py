@@ -16,7 +16,9 @@ from mcp_server.executor.registry import ExecutorConfig, ExecutorType, get_execu
 from mcp_server.prompts import ContractValidationError, SourceSection
 from mcp_server.skills.project_ucx_loader import load_persona_mapping, load_project_persona_file
 
+from .finding_filter import emit_coverage, filter_findings
 from .persona_output_parser import parse_persona_output
+from .playbook_loader import PlaybookMissing, load_playbook
 from .review_scoring import score_review
 from .runner import run_project_review_build
 from .saga_journal import (
@@ -54,6 +56,7 @@ class SagaReviewResult:
     reduced_findings: list[dict[str, object]] | None = None
     review_score: dict[str, object] | None = None
     coverage: dict[str, object] | None = None
+    playbook_coverage: dict[str, object] | None = None
 
 
 def _time_bucket() -> str:
@@ -384,6 +387,15 @@ def _branch_llm_findings(
     if executor_cfg.executor_type != ExecutorType.API:
         raise RuntimeError("ExecutorTypeNotAllowed")
 
+    # HERMES-PARITY-PHASE-2: resolve the per-(layer, lens) playbook for this branch.
+    # None → a non-crew branch persona (fact_checker / chairperson→synthesizer): no
+    # playbook, no citation floor, branch runs as before. PlaybookMissing → a crew
+    # lens whose file is unexpectedly absent: fail the branch (→ BRANCH_FAILED).
+    try:
+        playbook = load_playbook(layer, persona)
+    except PlaybookMissing as exc:
+        raise RuntimeError(f"PlaybookMissing: {exc}") from exc
+
     try:
         branch_review = run_project_review_build(
             project_root=project_root,
@@ -393,6 +405,7 @@ def _branch_llm_findings(
             sections=sections,
             layer=layer,
             output_dir=None,
+            playbook_text=playbook.content if playbook else None,
         )
     except ContractValidationError:
         return {
@@ -453,8 +466,15 @@ def _branch_llm_findings(
     model_name = metadata.get("model") if isinstance(metadata, dict) else None
     redacted_output = _redact_sensitive_text(exec_result.stdout)
 
+    # Citation floor (LLM path only): when a playbook applies, discard findings that
+    # do not cite a valid `check` id (or a beyond-checklist tag). Non-crew personas
+    # (playbook is None) keep all findings — they have no checklist to cite against.
+    branch_findings = parsed.findings
+    if playbook is not None:
+        branch_findings, _discarded = filter_findings(branch_findings, set(playbook.check_ids))
+
     return {
-        "findings": parsed.findings,
+        "findings": branch_findings,
         "parse_status": parsed.parse_status,
         "lens_score": parsed.lens_score,
         "raw_output_redacted": redacted_output,
@@ -873,6 +893,9 @@ def run_project_review_build_saga(
         "branch_llm_enabled": branch_llm_enabled,
         "rollout_phase": rollout_phase,
     }
+    # verdict.playbook_coverage (HERMES-PARITY-PHASE-2): counted from the kept,
+    # pre-reduce findings (post-dedup keeps only one branch's citation → under-reports).
+    playbook_coverage = emit_coverage(findings)
     synthesis_summary = {
         "review_run_id": review_run_id,
         "saga_status": "CLOSED",
@@ -882,6 +905,7 @@ def run_project_review_build_saga(
         "rollout_phase": rollout_phase,
         "review_score": review_score,
         "coverage": coverage,
+        "playbook_coverage": playbook_coverage,
     }
 
     branch_summary_path = _write_versioned_json(
@@ -939,10 +963,12 @@ def run_project_review_build_saga(
                 "recommended_action": item.recommended_action,
                 "provenance": item.provenance,
                 "content_hash": item.content_hash,
+                "check": item.check,
             }
             for item in reduced
         ],
         passed=True,
         review_score=review_score,
         coverage=coverage,
+        playbook_coverage=playbook_coverage,
     )
