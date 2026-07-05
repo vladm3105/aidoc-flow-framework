@@ -90,3 +90,33 @@ def test_run_project_review_build_includes_layer_assets_when_layer_provided(tmp_
     assert "MCP Actionable Review Rules" in result.prompt_text
     assert "BRD-MVP-TEMPLATE.md" in result.layer_asset_names
     assert "BRD_MVP_SCHEMA.yaml" in result.layer_asset_names
+
+
+def test_run_project_review_build_inlines_stripped_body(tmp_path: Path) -> None:
+    # HERMES-REVIEW-CONTENT-DELIVERY: the runner strips author self-claim, then the
+    # builder inlines the body — so the review lens sees the document WITHOUT the
+    # author's own score (the strip finally bites, on content the LLM actually reads).
+    _create_project_ucx(tmp_path)
+
+    result = run_project_review_build(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(
+                section_id="1.0",
+                title="Overview",
+                content=(
+                    "brd_ready_score: 92\nsystem architecture integration detail worth reviewing\n"
+                ),
+            ),
+        ],
+        output_dir=None,
+    )
+
+    # Body is delivered to the lens...
+    assert "## Document to Review" in result.prompt_text
+    assert "system architecture integration detail" in result.prompt_text
+    # ...but the author self-claim score is stripped from it.
+    assert "brd_ready_score" not in result.prompt_text

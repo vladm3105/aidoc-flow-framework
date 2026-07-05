@@ -253,12 +253,16 @@ fan-out once H-4 is in place.
 
 ### H-6 — FRAMEWORK-CLEANUP-001 calibration deltas (PR-B heart) — ⏳ PARTIAL (6.1+6.2 CLOSED 2026-07-04, D-0049, hermes 0.6.0; 6.3 blocked)
 
-**Status:** H-6.1 (no-findings rationale cap) + H-6.2 (strip author self-claim)
-**CLOSED** via HERMES-REVIEW-CALIBRATION (D-0049, `hermes/v0.6.0`) — consumer-side
-enforcement, no framework change. H-6.3 (fixer-introduced regression detection)
-**remains BLOCKED**: it needs an iter-N vs iter-(N-1) comparison and Hermes's saga is
-single-pass (`iteration=1`); it belongs to a future Hermes multi-iteration
-review-loop initiative, not this arc.
+**Status:** H-6.1 (no-findings rationale cap) CLOSED via HERMES-REVIEW-CALIBRATION
+(D-0049, `hermes/v0.6.0`). **H-6.2 (strip author self-claim)** — the `v0.6.0` strip was
+**inert** (Hermes review was content-blind — the body never reached the lens; see
+D-0051), so its `v0.6.0` CLOSED status was false. **Now genuinely CLOSED** via
+HERMES-REVIEW-CONTENT-DELIVERY (D-0051, `hermes/v0.7.0`), which inlines the body into
+the review prompt and folds the strip into the shared builder so it finally bites
+(covering the `single_pass` surfaces too). H-6.3 (fixer-introduced regression
+detection) **remains BLOCKED**: it needs an iter-N vs iter-(N-1) comparison and
+Hermes's saga is single-pass (`iteration=1`); it belongs to a future Hermes
+multi-iteration review-loop initiative, not this arc.
 
 **Source:** plugin PR #131 (CLEANUP-PR-B, framework `0.19.0` + plugin
 `0.16.0`).
@@ -409,6 +413,35 @@ deeper than this cleanup touched.
 
 **Dependency:** none specific. Independent of H-1..H-10. Can land
 incrementally.
+
+### H-13 — Large-artifact chunking for the review prompt (follow-on to D-0051)
+
+**Source:** HERMES-REVIEW-CONTENT-DELIVERY (D-0051, 2026-07-04).
+
+D-0051 inlines the artifact body into the review prompt so the lens actually reads it.
+For very large artifacts the inlined body can exceed the model context window. D-0051
+**warns** (via the existing `tokens_total` threshold) but deliberately does **not**
+truncate — a truncated body re-breaks content review. A chunking / map-reduce strategy
+(review the artifact in sections and reduce, or a summarize-then-review pass) is the
+follow-on that makes large-artifact review robust.
+
+**Dependency:** D-0051 (shipped). Independent otherwise.
+
+### H-14 — Plugin-side author-self-claim strip enforcement (cross-platform)
+
+**Source:** the D-0051 investigation flagged a secondary cross-platform gap.
+
+`REVIEW_TEAM.md:78-93` requires stripping author `*_ready_score`/etc. from the artifact
+body "before passing to each lens subagent" — in **both** platforms. The **plugin**
+lens is agentic: its brief passes the raw artifact **path** (`doc-brd-audit/SKILL.md:110`)
+and the Claude Code subagent **Reads the on-disk file**, which still contains the
+author's score. So the strip MUST may be **unfulfilled on the plugin** (the lens reads
+the unstripped file directly), just as it was on Hermes (where the body never arrived,
+now fixed by D-0051). Verify whether the plugin lens sees the score, and if so plan a
+plugin-side strip (e.g. brief a stripped copy, or instruct the lens to ignore
+self-claim fields). Cross-platform; verify before planning.
+
+**Dependency:** none. Platform-parity concern surfaced by D-0051.
 
 ## What's NOT in this backlog
 

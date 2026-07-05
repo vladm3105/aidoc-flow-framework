@@ -58,6 +58,20 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Fixed
 
+- **Review lens now receives the document body — Hermes review was content-blind
+  (HERMES-REVIEW-CONTENT-DELIVERY, D-0051; `0.6.0 → 0.7.0`).** The API-path LLM review
+  never received the artifact body: `assemble_project_review_prompt` built the prompt
+  from persona + template + rules + metadata-only JSON, the executor is a pure
+  completion (`working_dir` not forwarded), and `system_prompt` was `None` — so the
+  lens scored a document it had never read. Fixed at the single builder chokepoint:
+  `assemble_project_review_prompt` now inlines a `## Document to Review` block from the
+  per-persona `included_sections` (deduping the template's own placeholder), so every
+  review path (MCP `prompt_only`, CLI `single_pass`, saga branches/aggregate) delivers
+  the body. **Consequence:** the author-self-claim strip (H-6.2, shipped in `0.6.0`)
+  was **inert** — it mutated section content that never reached the LLM; folding the
+  strip into the shared builder (`run_project_review_build`) so the inlined body is
+  stripped makes it effective for the first time. No new token accounting (the body's
+  tokens were already counted). See D-0051; corrects D-0049.
 - **Real saga journals conform to `saga.schema.json` (HERMES-SAGA-JOURNAL-CONFORMANCE,
   H-12, D-0048; `0.5.0 → 0.5.1`).** The real journal (`asdict(SagaRunState)`) was
   missing 4 schema-required fields — `artifact_id`, `layer`, `iteration`,

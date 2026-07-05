@@ -1,5 +1,13 @@
 # HERMES-SINGLE-PASS-STRIP Plan — strip author self-claim for the `single_pass` review paths (REVIEW_TEAM.md:82 conformance fix)
 
+> **⚠️ SUPERSEDED (2026-07-04, by HERMES-REVIEW-CONTENT-DELIVERY / D-0051).** This
+> plan's premise — that the review paths "write the artifact body into the lens
+> prompt" — was **false**: impl-stage verification found Hermes's review lens never
+> received the document body at all, so the strip would have been inert. The strip is
+> folded into the content-delivery fix (which inlines the body and *then* strips it,
+> making it effective). Retained for history; the strip work lives in
+> [`HERMES-REVIEW-CONTENT-DELIVERY-PLAN.md`](HERMES-REVIEW-CONTENT-DELIVERY-PLAN.md).
+
 | Field          | Value                                       |
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-SINGLE-PASS-STRIP                     |

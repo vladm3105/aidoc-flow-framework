@@ -380,3 +380,66 @@ def test_resolve_personas_remediation_default_fallback(tmp_path: Path) -> None:
     assert len(result) == 2
     assert result[0][0] == "architect"
     assert result[1][0] == "chairperson"
+
+
+def _minimal_review_ucx(root: Path, template_body: str) -> None:
+    for relative in [
+        Path("UCX/skills/personas"),
+        Path("UCX/skills/layer_aliases"),
+        Path("UCX/prompts/templates/creation"),
+        Path("UCX/prompts/templates/review"),
+        Path("UCX/prompts/templates/remediation"),
+        Path("UCX/templates"),
+        Path("UCX/templates/layers"),
+    ]:
+        (root / relative).mkdir(parents=True, exist_ok=True)
+    (root / "UCX/skills/persona_mappings.yaml").write_text('version: "1.0"\n', encoding="utf-8")
+    (root / "UCX/skills/personas/architect.md").write_text("Architect", encoding="utf-8")
+    (root / "UCX/prompts/templates/review/UCR_PROMPT_BRD_PROJECT.md").write_text(
+        template_body, encoding="utf-8"
+    )
+
+
+def test_assemble_review_prompt_inlines_document_body(tmp_path: Path) -> None:
+    # HERMES-REVIEW-CONTENT-DELIVERY: the review lens must actually receive the body.
+    _minimal_review_ucx(tmp_path, "Review template body")
+    assembly = assemble_project_review_prompt(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(
+                section_id="1.0",
+                title="Overview",
+                content="UNIQUEBODYTOKEN system architecture integration detail",
+            ),
+        ],
+    )
+    assert "## Document to Review" in assembly.prompt_text
+    assert "UNIQUEBODYTOKEN" in assembly.prompt_text  # the body now reaches the lens
+
+
+def test_assemble_review_prompt_dedupes_template_placeholder(tmp_path: Path) -> None:
+    # A template that carries the `## Document to Review` / [PASTE …] placeholder must
+    # yield exactly ONE populated Document-to-Review block (no duplicate, no residue).
+    template = (
+        "Review the artifact.\n\n"
+        "## Document to Review\n\n"
+        "[PASTE BRD DOCUMENT CONTENT BELOW THIS LINE]\n"
+    )
+    _minimal_review_ucx(tmp_path, template)
+    assembly = assemble_project_review_prompt(
+        project_root=tmp_path,
+        personas=["architect"],
+        doc_type="brd",
+        template_name="UCR_PROMPT_BRD_PROJECT.md",
+        sections=[
+            SourceSection(
+                section_id="1.0", title="Overview", content="architecture integration content"
+            ),
+        ],
+    )
+    assert assembly.prompt_text.count("## Document to Review") == 1
+    assert "PASTE BRD DOCUMENT CONTENT" not in assembly.prompt_text
+    assert "architecture integration content" in assembly.prompt_text

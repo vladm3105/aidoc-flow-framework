@@ -11,6 +11,7 @@ from mcp_server.prompts import (
     assemble_project_review_prompt,
     inspect_prompt_bundle,
 )
+from mcp_server.review.section_hygiene import strip_author_self_claim
 
 
 @dataclass(frozen=True)
@@ -35,6 +36,10 @@ def run_project_review_build(
     output_dir: Path | None = None,
     playbook_text: str | None = None,
 ) -> ReviewRunResult:
+    # REVIEW_TEAM.md §Strip author self-claim (MUST, both team + single_pass): the
+    # shared builder is the single chokepoint every review-lens prompt flows through
+    # (saga branches/aggregate, MCP prompt_only, CLI single_pass), so strip here.
+    sections = strip_author_self_claim(sections)
     assembly = assemble_project_review_prompt(
         project_root=project_root,
         personas=personas,

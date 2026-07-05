@@ -527,7 +527,7 @@ def test_strip_author_self_claim_redacts_scores() -> None:
     # H-6.2 V8: self-claim score lines are removed from section content; other
     # content (incl. a prose mention of "score") survives.
     from mcp_server.prompts import SourceSection
-    from mcp_server.review.saga_orchestrator import _strip_author_self_claim
+    from mcp_server.review.section_hygiene import strip_author_self_claim
 
     body = (
         "brd_ready_score: 92\n"
@@ -538,7 +538,7 @@ def test_strip_author_self_claim_redacts_scores() -> None:
         "objective: ship it\n"
     )
     sections = [SourceSection(section_id="s1", title="T", content=body)]
-    out = _strip_author_self_claim(sections)
+    out = strip_author_self_claim(sections)
     content = out[0].content
     assert "brd_ready_score" not in content
     assert "audit_score" not in content
@@ -551,8 +551,8 @@ def test_strip_author_self_claim_redacts_scores() -> None:
 
 def test_strip_author_self_claim_noop_preserves_identity() -> None:
     from mcp_server.prompts import SourceSection
-    from mcp_server.review.saga_orchestrator import _strip_author_self_claim
+    from mcp_server.review.section_hygiene import strip_author_self_claim
 
     sections = [SourceSection(section_id="s1", title="T", content="## Only prose here\n")]
-    out = _strip_author_self_claim(sections)
+    out = strip_author_self_claim(sections)
     assert out[0] is sections[0]  # unchanged section returned as-is

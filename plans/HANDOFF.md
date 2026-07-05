@@ -46,6 +46,18 @@
 > premise empirically + returned 0 load-bearing. 508 Hermes + 160 conformance green.
 > **H-6.3 stays deferred** (single-pass saga → no iter-(N-1)); **H-2** not bundled
 > (sub-checks live only in plugin SKILLs — needs a shared-playbook port decision).
+> **HERMES-REVIEW-CONTENT-DELIVERY ✅ SHIPPED** (#243 plan + impl, `hermes/v0.7.0`,
+> D-0051): the big one. While implementing the `single_pass` strip (#242), impl-stage
+> end-to-end verification revealed **Hermes's LLM review was content-blind** — the
+> prompt is persona+template+rules+metadata only, the executor a pure completion
+> (`working_dir` not forwarded), `system_prompt=None`; the lens scored a document it
+> never read. Fixed at the shared builder: inline a `## Document to Review` block from
+> `included_sections` (dedupe the template placeholder), fold the runner-level strip so
+> the inlined body is stripped — **making the H-6.2 strip effective for the first time
+> (inert in 0.6.0)** + superseding #242. No new token accounting. 3-agent Pass 2 +
+> independent Pass 3; the *impl-stage verify* (not the plan reviews) caught the gap.
+> 511 Hermes + 160 conformance green. Deferred: H-13 large-artifact chunking, H-14
+> plugin-side strip gap.
 > **▶ Next (Hermes follow-ons, each its own plan):**
 > **(1)** ~~`H-6`/`H-2` calibration deltas~~ — H-6.1/6.2 done (above);
 > remaining calibration items (no-findings rationale /
