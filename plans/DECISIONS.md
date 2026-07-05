@@ -10,6 +10,52 @@ graduation.
 
 ---
 
+## D-0051 — Hermes review was content-blind (the document body never reached the lens); inline the body into the review prompt; the H-6.2 strip was inert until now
+
+**2026-07-04.** While implementing the single_pass author-self-claim strip
+([[HERMES-SINGLE-PASS-PARITY-PLAN]], PR #242), impl-stage end-to-end verification
+revealed that **Hermes's API-path LLM review never received the artifact body.**
+`assemble_project_review_prompt` composed the prompt from persona + optional playbook +
+template + actionable rules + optional layer assets + a **metadata-only JSON** block;
+`section.content` fed only categorization/token-math/snippets, which land in
+`bundle.context` and are never serialized into the prompt. The executor is a pure
+completion (`run_executor`'s `working_dir` is not forwarded to `run_api_executor`), and
+the review callers pass `system_prompt=None`. So the lens scored a document it had never
+read. A dispatched investigation confirmed this is a **gap, not a design**: the review
+templates carry an unfilled `## Document to Review` / `[PASTE … BELOW]` placeholder; the
+creation flow inlines substance; and `REVIEW_TEAM.md:78-93` presupposes the body reaches
+the lens.
+
+**Fix.** At the single builder chokepoint `assemble_project_review_prompt`, inline a
+`## Document to Review` block from the per-persona `included_sections` (falling back to
+all sections when empty — though the existing `validate_prompt_bundle_or_raise` already
+rejects an empty included set loudly), after removing the template's own placeholder so
+exactly one block is emitted. Every review path (MCP `prompt_only`, CLI `single_pass`,
+saga branches/aggregate) routes through this builder. **No new token accounting** —
+`tokens_total` already folds `included_sections` content, so the existing warning
+already reflects body size (adding accounting would double-count and spuriously trip the
+saga's P1 finding).
+
+**Two consequences worth recording:**
+
+1. **The H-6.2 author-self-claim strip ([[D-0049]]) was inert.** It mutated
+   `section.content`, which never reached the LLM. Folding the strip into
+   `run_project_review_build` (extracted to `section_hygiene`) so the inlined body is
+   stripped makes it effective **for the first time** — and closes the `single_pass`
+   surfaces the saga-only strip never covered. This **supersedes the strip-only premise
+   of [[HERMES-SINGLE-PASS-PARITY-PLAN]]** (#242), whose stated rationale ("both paths
+   write the artifact body into the lens prompt") was false.
+2. **Process:** the gap was invisible to planning and to three plan-review agents; only
+   *exercising the change end-to-end* at impl time (the `verify`/"drive the real flow"
+   discipline) surfaced it. A cosmetic conformance "fix" would otherwise have shipped.
+
+Hermes MINOR `0.6.0 → 0.7.0`; no `framework/` change (the spec already assumes the lens
+reads the body). Deferred (new backlog entries): large-artifact chunking (this fix
+warns, does not truncate) and the **plugin-side** strip gap (the plugin lens reads the
+raw on-disk file, so `REVIEW_TEAM.md:82` may be unfulfilled there too).
+
+---
+
 ## D-0050 — Hermes Phase 1b (saga break-circuit / PARTIAL_TIMEOUT / G-R1 resume / `quality_loop_max_iterations`) deferred: architectural, not the stale reasons the backlog cited
 
 **2026-07-04.** An evidence-based assessment (grounded file:line against both
@@ -81,6 +127,13 @@ This decision also corrects the stale `docs/PARITY.md` enforcement-parity prose
 ---
 
 ## D-0049 — Hermes review calibration: no-findings rationale cap + strip author self-claim (H-6.1 + H-6.2); fixer-regression stays deferred (single-pass saga)
+
+> **Correction (2026-07-04, [[D-0051]]):** the H-6.2 author-self-claim strip recorded
+> here as CLOSED/effective in `hermes/v0.6.0` was in fact **inert** — it mutated
+> `section.content`, which never reached the review LLM (Hermes review was
+> content-blind). D-0051 inlines the body into the review prompt and folds the strip
+> into the shared builder, making it effective for the first time. The H-6.1
+> no-findings cap is unaffected.
 
 **2026-07-04.** Two of the three FRAMEWORK-CLEANUP-001 "PR-B heart" review-quality
 deltas (H-6) were consumer-side gaps in Hermes's team-mode review path — the

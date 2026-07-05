@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -380,6 +381,15 @@ def _compute_token_warning(combined_text: str) -> tuple[int, str | None]:
     return token_est, warning
 
 
+#: The unfilled body placeholder some review templates carry (`## Document to Review`
+#: followed by `[PASTE … BELOW THIS LINE]`). Stripped before we inline the real body,
+#: so the assembled prompt has exactly one `## Document to Review` block.
+_DOC_REVIEW_PLACEHOLDER_RE = re.compile(
+    r"##\s+Document to Review\s*\n+\s*\[PASTE[^\]]*BELOW THIS LINE\]\s*",
+    re.IGNORECASE,
+)
+
+
 #: Binding citation instruction inlined with a per-lens playbook (HERMES-PARITY-PHASE-2).
 #: Only emitted when a playbook is present, so non-crew personas (fact_checker) are
 #: never told to cite checks that do not apply to them.
@@ -442,8 +452,11 @@ def assemble_project_review_prompt(
             + "\n\n"
             + _PLAYBOOK_CITATION_RULE
         )
+    # Drop the template's own "## Document to Review / [PASTE … BELOW THIS LINE]"
+    # placeholder (6 of 9 templates carry it) so we emit exactly one populated block.
+    template_clean = _DOC_REVIEW_PLACEHOLDER_RE.sub("", prompt_template_text).strip()
     parts += [
-        prompt_template_text.strip(),
+        template_clean,
         MCP_REVIEW_ACTIONABLE_RULES.strip(),
     ]
     if layer:
@@ -453,6 +466,16 @@ def assemble_project_review_prompt(
             for name, content in sorted(layer_assets.items())
         )
         parts.append("## Authoritative Layer Assets\n" + layer_section)
+    # Inline the artifact body so the review lens actually reads it (the API executor
+    # is a pure completion and cannot read files). Use the per-persona relevant set,
+    # falling back to all sections when the relevance map is empty (keyword-free doc).
+    review_sections = mapping.included_sections or sections
+    document_body = "\n\n".join(
+        f"### {section.section_id} {section.title}\n{section.content.strip()}"
+        for section in review_sections
+    )
+    if document_body:
+        parts.append("## Document to Review\n\n" + document_body)
     parts.append(json.dumps(inspect_prompt_bundle(bundle), sort_keys=True))
     parts.append(serialize_prompt_metadata_sidecar(bundle.metadata))
 

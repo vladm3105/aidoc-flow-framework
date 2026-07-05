@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-REVIEW-CONTENT-DELIVERY              |
 | Type           | fix (functional gap) + folds the paused single_pass strip |
-| Status         | READY — 2026-07-04 (Pass 2 = 3 independent agents, Pass 3 independent, Pass 4 self; 0 load-bearing) |
+| Status         | IMPLEMENTED — 2026-07-04 (Pass 2 = 3 independent agents, Pass 3 independent; all V-checks green) |
 | Depends on     | none                                         |
 | Supersedes     | the strip-only intent of `HERMES-SINGLE-PASS-PARITY-PLAN.md` (#242, merged) — its premise ("both paths write the artifact body into the lens prompt") was false; the strip folds into this |
 | Version impact | **Hermes MINOR** (`0.6.0 → 0.7.0`). **No framework change** — `REVIEW_TEAM.md` already presupposes the body reaches the lens; Hermes catches up. No GATE-SPEC, no re-vendor. |
@@ -366,3 +366,30 @@ the fallback, which delivers the full body (the correct outcome) at a slight,
 harmless token under-count. V3b exercises it. No new gaps.
 
 **Result:** ready
+
+## Implementation record — 2026-07-04
+
+Implemented on `fix/hermes-review-content-delivery` after the plan PR (#243) merged.
+
++ **Task 1 (content delivery):** `assemble_project_review_prompt` now strips the
+  template's `## Document to Review … [PASTE … BELOW]` placeholder (new
+  `_DOC_REVIEW_PLACEHOLDER_RE`) and inlines one `## Document to Review` block from
+  `mapping.included_sections or sections`, before the metadata dumps. Added `import re`.
++ **Task 2 (strip fold):** extracted `strip_author_self_claim` → `section_hygiene.py`;
+  called in `run_project_review_build`; removed the saga `:615` pre-strip + local def +
+  pruned the `replace` import; retargeted the 2 strip tests.
++ **Impl discovery (folds Pass-3 Finding 1 cleanly):** the empty-`included` case does
+  **not** reach the `or sections` fallback — `build_prompt_bundle`'s existing
+  `validate_prompt_bundle_or_raise` rejects an empty `included_sections` **loudly**
+  (`ContractValidationError`, caught by the branch fns as a coverage finding) *before*
+  body assembly. So the fallback is belt-and-suspenders; the empty-body edge is already
+  prevented. Kept the `or sections` guard (harmless) + `if document_body:`.
++ **Verification (end-to-end, the check that originally exposed the gap):** a review
+  build now yields `## Document to Review` + the body token in `prompt_text`, exactly
+  one header (dedupe), and `brd_ready_score` stripped from the inlined body — the strip
+  bites for the first time. V1/V3 in `test_prompt_context_builder.py`, V2 (strip via
+  the runner) in `test_review_runner.py`. **V6** ruff clean; **V7** 511 Hermes tests
+  (508 + 3); **V8** 160 conformance — all green; no existing prompt test hard-broke.
++ **Task 3 (docs):** Hermes `VERSION → 0.7.0`; both CHANGELOGs; D-0051 + D-0049
+  correction; superseded banner on #242; H-6.2 corrected + H-13/H-14 added in
+  HERMES-BACKLOG; HANDOFF; PARITY.

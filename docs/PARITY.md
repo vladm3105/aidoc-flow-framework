@@ -5,7 +5,7 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of project `v1.1.0` / `hermes/v0.6.0` /
+> Status: as of project `v1.1.0` / `hermes/v0.7.0` /
 > `claude-code-plugin/v0.23.0` (framework spec `0.32.7`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.7.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
@@ -160,6 +160,17 @@ the engine-agnostic points to its own capabilities; *how* a point is checked is
 the platform's choice (the spec only requires that findings, the readiness score,
 and the remediation path are surfaced).
 
+**Artifact-body delivery to the lens (`hermes/v0.7.0`, D-0051).** The two platforms
+deliver the artifact under review to the lens differently: the plugin lens is agentic
+and **reads the on-disk file** (via the artifact path in its brief); the Hermes lens
+is an API completion, so the review prompt now **inlines** the document body
+(`## Document to Review`, from the per-persona `included_sections`) directly into the
+prompt. Before `v0.7.0`, Hermes inlined *no* body — the API-path review was
+content-blind (it scored metadata only); D-0051 closed that gap. (Note the
+author-self-claim strip contract, `REVIEW_TEAM.md:82`, is now effective on Hermes;
+whether the plugin's file-reading lens honors it is tracked as a follow-on — see
+`plans/HERMES-BACKLOG.md` H-14.)
+
 | Trigger point | Plugin | Hermes |
 |---------------|--------|--------|
 | `on_author` (write-time) | `PostToolUse` hook (`hooks/sdd-doc-review.sh`) — advisory nudge to `doc-<layer>-audit` + best-effort `sdd_doc_lint` findings | server-side `validation/` + scoring tool on demand |
@@ -190,7 +201,7 @@ deterministic gate, and reduced findings).
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | saga state machine **accepts** `PARTIAL_TIMEOUT` (spec-conformant table, HERMES-PARITY Phase 1); the orchestrator does not yet *write* it — the break-circuit + resume path is Phase 1b |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
-| Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, `hermes/v0.6.0`): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
+| Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, `hermes/v0.7.0`): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
 
 Both bind to the **same** crew map, persona-output contract, scoring/gate
 policy, saga state machine, and report shape — so a BRD reviewed by either

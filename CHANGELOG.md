@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — HERMES-REVIEW-CONTENT-DELIVERY: the review lens now receives the document body (Hermes review was content-blind) (hermes 0.6.0 → 0.7.0; no framework change) (2026-07-04)
+
+Hermes's API-path LLM review never received the artifact body — the prompt was
+persona + template + rules + metadata only, the executor a pure completion, and no
+system prompt carried the body. The lens scored a document it had never read. Fixed at
+the shared builder (`assemble_project_review_prompt`): inline a `## Document to Review`
+block from the per-persona `included_sections`, deduping the template's own
+`[PASTE … CONTENT BELOW]` placeholder, so every review path delivers the body. Folded
+the author-self-claim strip into `run_project_review_build` — it was **inert** in
+`0.6.0` (it mutated section content that never reached the LLM) and only now, with the
+body inlined, actually removes the anchor. No new token accounting (the included body
+was already counted). Discovered while implementing the single_pass strip (#242, now
+superseded). Hermes MINOR `0.6.0 → 0.7.0`; D-0051 (corrects D-0049). 511 Hermes + 160
+conformance tests green.
+
 ### Added — HERMES-REVIEW-CALIBRATION (H-6.1 + H-6.2): no-findings rationale cap + strip author self-claim (hermes 0.5.1 → 0.6.0; no framework change) (2026-07-04)
 
 Two FRAMEWORK-CLEANUP-001 "PR-B heart" review-quality deltas brought to Hermes's

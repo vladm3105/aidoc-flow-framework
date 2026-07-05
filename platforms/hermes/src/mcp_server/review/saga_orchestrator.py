@@ -7,7 +7,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
-from dataclasses import dataclass, replace
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
@@ -77,28 +77,6 @@ def _extract_doc_id(*, document_path: Path | None, doc_type: str) -> str:
                 if match:
                     return match.group(1)
     return f"{doc_type.upper()}-00"
-
-
-# Author self-claim fields to strip before lens fan-out (REVIEW_TEAM.md §Strip
-# author self-claim, CLEANUP-PR-B item 9). Matches an assignment line whose key
-# ends `_ready_score`/`_score` or is literally `readiness_score`/`audit_score`.
-_SELF_CLAIM_RE = re.compile(
-    r"^[ \t]*(?:[a-z0-9_]*_(?:ready_)?score|readiness_score|audit_score)[ \t]*[:=].*$\n?",
-    re.IGNORECASE | re.MULTILINE,
-)
-
-
-def _strip_author_self_claim(sections: list[SourceSection]) -> list[SourceSection]:
-    """Redact author self-assessment score lines from each section body (in-prompt
-    only; the on-disk artifact keeps them). Anchor-effect fix — a lens must not see
-    the author's own score. Non-matching content is preserved verbatim."""
-    stripped: list[SourceSection] = []
-    for section in sections:
-        new_content = _SELF_CLAIM_RE.sub("", section.content)
-        stripped.append(
-            section if new_content == section.content else replace(section, content=new_content)
-        )
-    return stripped
 
 
 def _resolve_source_stage(*, document_path: Path | None) -> str:
@@ -609,10 +587,9 @@ def run_project_review_build_saga(
     if output_dir is None:
         raise ValueError("output_dir is required for saga orchestration")
 
-    # Strip author self-claim scores once, before any branch sees the body
-    # (REVIEW_TEAM.md §Strip author self-claim). In-prompt only; reaches both the
-    # LLM and prompt-mode branches since both consume this `sections` list.
-    sections = _strip_author_self_claim(sections)
+    # Author self-claim stripping (REVIEW_TEAM.md §Strip author self-claim) now
+    # happens at the shared chokepoint `run_project_review_build` (runner.py), which
+    # every saga branch + the aggregate call — so no per-fan-out strip is needed here.
 
     if not personas:
         mapping = load_persona_mapping(project_root=project_root)
