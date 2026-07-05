@@ -427,3 +427,42 @@ in `aidoc-flow-operations` `ops/DECISIONS.md` OPS-0062.
 `auto-merge-ai-prs.yml` GitHub Actions workflow on aidoc-flow-ci that serves
 as a server-side enforcer. To be tracked in operations HANDOFF backlog;
 queued post-current-tasks per founder direction.
+
+## Multi-agent automated review (aidoc-flow standard — OPS-0065 + OPS-0067)
+
+This repo follows the **aidoc-flow standard** for author-side AI-team multi-
+agent review BEFORE push/commit. Note: this is the **AI-employees standard**
+for internal review discipline; it is separate from the framework's own
+spec-governance via GATE-SPEC / GD-NN. The canonical rules + diff-class →
+agents table + parameterized prompt templates live in `aidoc-flow-operations`:
+
+- **Rules:** `aidoc-flow-operations/CLAUDE.md` → "Multi-agent automated review
+  (OPS-0065 — generalizes the CI ai-reviewer pattern to ALL internal flow)"
+  section.
+- **Prompt templates:** `aidoc-flow-operations/.claude/agents/review-prompts/`
+  — diff-class skeletons (`workflow-yaml.md` / `governance-docs.md` /
+  `docs.md` / `scripts.md` / `cross-repo.md` / `adversarial-judge.md` +
+  `INDEX.md`).
+- **Empirical default (OPS-0067):** 3-agent parallel dispatch + single fold
+  cycle for ≤300-line diffs. Re-dispatch only on NEW load-bearing surfaces
+  or structural pivots. Cap at 3 cycles per OPS-0066 circuit-breaker.
+- **Standard scope:** all aidoc-flow workspace repos — this one included.
+
+The CI `ai-review.yml` gate (merge-side) is unchanged; multi-agent review
+strengthens the author-side review pattern.
+
+**Skip discipline:** Stop using `SKIP_LOCAL_AI_REVIEW=1` indiscriminately
+per OPS-0065. Acceptable cases: (a) mechanical content (pin bumps with no
+logic edits); (b) AI-side review already done via dispatched agent (commit-
+message audit-trail line names the agents + verdict); (c) explicit founder
+OK per governance PR-discipline Rule 2.
+
+**Framework-vs-AI-employees separation:** framework spec-governance (GATE-
+SPEC ratifications, GD-NN framework decisions, etc.) has its own governance
+gate documented in `GOVERNANCE.md`. This OPS-0065/0067 section covers only
+AI-side dev-workflow review discipline (which agents are dispatched on a
+diff), not framework spec ratification.
+
+**Origin:** OPS-0065/0067 in `aidoc-flow-operations` `ops/DECISIONS.md`;
+cross-repo rollout runbook at
+`aidoc-flow-operations` `ops/inbox/2026-06-30_cto-platform_ops-0067-multi-agent-review-rollout.md`.
