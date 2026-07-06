@@ -55,8 +55,11 @@ and the per-layer `doc-*-audit` skills.
    `${CLAUDE_PLUGIN_ROOT}/framework/governance/THRESHOLD_NAMING_RULES.md`.
 4. **Coverage & orphans**: upstream items with no downstream artifact; downstream
    artifacts with no upstream source.
-5. **Readiness scores**: each artifact meets the threshold for its layer
-   transition.
+5. **Readiness scores**: each artifact's **recomputed** score (audited fresh, never
+   the author's self-claimed frontmatter number) meets the threshold for its layer
+   transition. *As a review-crew lens*, disregard the author's self-assessment score
+   entirely (`REVIEW_TEAM.md` GD-05); *as the standalone project-integrity gate*, check
+   the recomputed score — the two roles are distinct.
 6. **Diagram contract**: required `@diagram:` machine tags present and correctly
    leveled per layer per `${CLAUDE_PLUGIN_ROOT}/framework/governance/DIAGRAM_STANDARDS.md` (BRD
    `c4-l1`/`dfd-l1`; PRD `c4-l2`/`dfd-l2`/`sequence-sync`; SPEC `c4-l3`/`dfd-l3`;

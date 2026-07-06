@@ -14,6 +14,28 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### [0.23.1] — H-14: the review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05) (2026-07-06)
+
+The plugin's agentic review lens `Read`s the artifact directly (a `Task` subagent
+handed the artifact path, or `single_pass` reading the artifact into its own context),
+so it cannot physically strip the author's self-assessment score — the "strip the body"
+prose in the audit SKILLs was inert (the exact plugin-side analog of the Hermes
+content-blindness fixed by D-0051). Per the newly-ratified **GD-05** (framework
+`0.33.0`), a direct-read lens satisfies the strip MUST by an explicit **disregard
+instruction**. This adds that instruction across every anchored lens path:
+
+- the **9 `doc-*-audit`** SKILLs — the fan-out brief bullet + the strip section
+  replaced with the disregard framing (both modes; `doc-chg-audit` bespoke for its
+  `gate_ready` field);
+- the **9 `doc-*-fixer`** SKILLs — the inline patch-validation lens brief;
+- **`review-team`** — the shared lens fan-out;
+- **`traceability-auditor`** — the readiness line qualified (a lens disregards the
+  author's score; the standalone gate uses the recomputed score).
+
+The lens MUST NOT read, cite, or weight `*_ready_score`/`*_score`/`readiness_score`/
+`audit_score`/`gate_ready` when forming its `lens_score`. Plugin PATCH `0.23.0 →
+0.23.1`; framework `0.33.0` (GD-05). See D-0052.
+
 ### [0.23.0] — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML scenario form (2026-06-28)
 
 The four BDD skills now author + validate the YAML-native scenario model

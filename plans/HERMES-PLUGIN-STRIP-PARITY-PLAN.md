@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | PLUGIN-STRIP-PARITY (H-14)                    |
 | Type           | framework spec-governance (GD-05) + plugin conformance fix |
-| Status         | READY — 2026-07-04 (3-agent Pass 2 + independent Pass 3; founder ratification required for PR 1) |
+| Status         | IMPLEMENTED — 2026-07-06 (PR 1 #246 ratified + merged; PR 2 plugin impl done) |
 | Depends on     | none (D-0051 fixed the Hermes analog)        |
 | Feeds          | closes the `REVIEW_TEAM.md` strip MUST on the plugin (the last unfulfilled surface) |
 | Version impact | **Framework MINOR** (`0.32.7 → 0.33.0`, GD-05: sanction a disregard-instruction fallback for lenses that read the artifact directly; **change-level C2; requires human ratification on merge**; GATE-SPEC; re-vendor) + **plugin PATCH** (`0.23.0 → 0.23.1`, honor it). |

@@ -10,6 +10,31 @@ graduation.
 
 ---
 
+## D-0052 — The plugin review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05 fallback); implemented across the 9 audit + 9 fixer SKILLs + review-team + the auditor
+
+**2026-07-06.** H-14 PR 2 — the plugin-side implementation of [[GD-05]] (framework
+`0.33.0`, ratified in PR #246). The plugin's agentic review lens reads the artifact
+directly, so it cannot physically strip the author's self-assessment score (the
+"strip the body" prose was inert — the plugin analog of [[D-0051]]'s Hermes
+content-blindness). Per GD-05's constrained fallback (a direct-read lens de-anchors by
+instruction), every anchored lens path now instructs the lens to **not read, cite, or
+weight** `*_ready_score`/`*_score`/`readiness_score`/`audit_score`/`gate_ready` when
+forming its `lens_score`:
+
+- the **9 `doc-*-audit`** SKILLs (fan-out brief bullet + the strip section replaced with
+  the disregard framing, both modes; `doc-chg-audit` bespoke for `gate_ready`);
+- the **9 `doc-*-fixer`** SKILLs (the inline patch-validation lens brief — surfaced by
+  the H-14 plan Pass-3 as a missed surface `review-team` doesn't reach);
+- **`review-team`** (the shared fan-out) + **`traceability-auditor`** (the readiness
+  line qualified: lens disregards the author's score; the standalone gate uses the
+  recomputed score).
+
+Plugin PATCH `0.23.0 → 0.23.1`; no framework change (GD-05 landed in PR 1). Both
+platforms now satisfy the strip MUST — a curated-input engine (Hermes) by physical
+removal, a direct-read engine (the plugin) by the disregard instruction. Closes H-14.
+
+---
+
 ## D-0051 — Hermes review was content-blind (the document body never reached the lens); inline the body into the review prompt; the H-6.2 strip was inert until now
 
 **2026-07-04.** While implementing the single_pass author-self-claim strip

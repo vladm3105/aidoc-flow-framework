@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — H-14 PR 2: the plugin review lens honors the strip MUST via a disregard instruction (plugin 0.23.0 → 0.23.1; GD-05 fallback) (2026-07-06)
+
+The plugin's agentic review lens reads the artifact directly, so it de-anchors from the
+author self-assessment score by an explicit disregard instruction (GD-05's constrained
+fallback — it cannot physically strip). Added across every anchored lens path: the 9
+`doc-*-audit` fan-out briefs + strip sections (both modes; `doc-chg-audit` bespoke), the
+9 `doc-*-fixer` inline lens briefs, `review-team`, and `traceability-auditor`. Both
+platforms now satisfy the strip MUST (Hermes physical removal, plugin disregard
+instruction). Plugin PATCH `0.23.1`; D-0052 (implements GD-05); closes H-14. 160
+conformance green.
+
 ### Changed — GD-05: the author-self-claim strip MUST gains a disregard-instruction fallback for engines whose lens reads the artifact directly (framework spec 0.32.7 → 0.33.0) (2026-07-04)
 
 **Framework governance decision (GD-05), ratified on merge.** `REVIEW_TEAM.md`

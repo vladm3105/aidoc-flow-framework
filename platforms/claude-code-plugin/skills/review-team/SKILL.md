@@ -10,7 +10,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.23.0"
+    version: "0.23.1"
     framework_spec_version: "0.33.0"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
@@ -151,7 +151,11 @@ initialize the saga from scratch).
 2. **Fan out** (mode `independent`, the default): dispatch each lens as a `Task`
    subagent with the artifact + its lens brief; each returns its persona-output
    record, which the orchestrator writes to the lens's slot. (`sequential` mode:
-   pass prior slots to each lens in turn — richer, costlier.)
+   pass prior slots to each lens in turn — richer, costlier.) Each lens brief MUST
+   direct the lens to **disregard the author self-assessment score** (`*_ready_score`/
+   `*_score`/`readiness_score`/`audit_score`) — not read, cite, or weight it when
+   forming its `lens_score` (`REVIEW_TEAM.md` GD-05: the lens reads the artifact
+   directly, so the score is de-anchored by instruction).
 3. **Reduce + synthesize**: run the `synthesizer` subagent over all slots. It
    dedups by (`location`+`id`), takes max severity, **unions** recommendations,
    computes the weighted/capped score + coverage, and writes `report.md`.

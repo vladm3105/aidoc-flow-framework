@@ -56,8 +56,15 @@
 > the inlined body is stripped — **making the H-6.2 strip effective for the first time
 > (inert in 0.6.0)** + superseding #242. No new token accounting. 3-agent Pass 2 +
 > independent Pass 3; the *impl-stage verify* (not the plan reviews) caught the gap.
-> 511 Hermes + 160 conformance green. Deferred: H-13 large-artifact chunking, H-14
-> plugin-side strip gap.
+> 511 Hermes + 160 conformance green. Deferred: H-13 large-artifact chunking.
+> **H-14 plugin-side strip ✅ SHIPPED** (framework `0.33.0` + plugin `0.23.1`; GD-05 +
+> D-0052): verified the plugin's agentic lens reads the author score from disk (the
+> plugin analog of D-0051). Ratified **GD-05** (PR #246, founder-signed — the strip MUST
+> gains a disregard-instruction fallback for direct-read lenses) + implemented plugin-side
+> (9 audit + 9 fixer SKILLs + review-team + traceability-auditor). Both platforms now
+> satisfy the strip MUST (Hermes physical strip, plugin disregard). 4-pass review folded
+> 11 findings incl. the false "single_pass physically strips" claim + the missed 9-fixer
+> surface. 160 conformance green.
 > **▶ Next (Hermes follow-ons, each its own plan):**
 > **(1)** ~~`H-6`/`H-2` calibration deltas~~ — H-6.1/6.2 done (above);
 > remaining calibration items (no-findings rationale /

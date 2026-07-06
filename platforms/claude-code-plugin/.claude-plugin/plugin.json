@@ -2,7 +2,7 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "aidoc-flow",
   "description": "Pre-1.0 preview. AI-Driven Specification-Driven Development (SDD) workflow — skills, agents, and commands for the 8-layer doc flow (BRD → IPLAN). Consumes the aidoc-flow framework spec. APIs and surfaces may change before 1.0.",
-  "version": "0.23.0",
+  "version": "0.23.1",
   "author": {
     "name": "AI Doc Flow",
     "url": "https://github.com/vladm3105/aidoc-flow-framework"
