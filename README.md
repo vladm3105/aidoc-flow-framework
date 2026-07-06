@@ -309,7 +309,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.32.7`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+framework spec `0.33.0`. The Claude Code plugin is a **pre-1.0 preview** — APIs
 and surfaces may change before 1.0. Platform release versions are in the
 [Platforms](#platforms) table above.
 
