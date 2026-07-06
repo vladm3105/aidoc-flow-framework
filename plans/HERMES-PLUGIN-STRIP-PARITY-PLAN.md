@@ -249,13 +249,13 @@ bumped separately in PR 2.
 - [ ] `platforms/claude-code-plugin/CHANGELOG.md` — `[0.23.1]` (PR 2)
 - [ ] `plans/DECISIONS.md` — D-0052 (PR 2, references GD-05)
 - [ ] `plans/HERMES-BACKLOG.md` — H-14 closed (PR 2)
-- [ ] `plans/HANDOFF.md` + `docs/PARITY.md` — both platforms now satisfy the MUST (Hermes physical strip; plugin single_pass physical strip + team-mode disregard fallback)
+- [ ] `plans/HANDOFF.md` + `docs/PARITY.md` — both platforms now satisfy the MUST (Hermes: physical strip, curated input; plugin: disregard instruction in both modes, direct-read lens)
 
 ## Risks
 
 | #  | Risk | Likelihood | Mitigation |
 | -- | ---- | ---------- | ---------- |
-| R1 | The disregard fallback is weaker than physical removal | accepted | it is the **only** de-anchor for an FS-requiring lens (stripped copy is leaky); GD-05 frames it honestly as a constrained fallback + mandates strong wording; physical strip stays primary everywhere it's possible (incl. plugin single_pass) |
+| R1 | The disregard fallback is weaker than physical removal | accepted | it is the **only** de-anchor for a direct-read lens (the plugin is all-LLM, no strip step; a stripped copy is leaky); GD-05 frames it honestly as a constrained fallback + mandates strong wording; physical strip stays the primary MUST where the engine curates the lens input (Hermes) |
 | R2 | "FS-access constraint" is still self-declarable | med | GD-05 defines it as a lens that **requires** tool/FS access to the artifact for its function; the fallback is not a general option — reviewers gate the wording |
 | R3 | Splitting lets PR 1's spec land before PR 2 honors it | low | governance-first is the sanctioned pattern; brief inconsistency; PR 2 follows immediately |
 | R4 | `doc-chg-audit` bespoke edit drifts | med | V4 checks the `gate_ready` + subsection; edit chg distinctly, not via the uniform replacement |
@@ -270,7 +270,7 @@ bumped separately in PR 2.
 | 2  | The mechanism clause presumes the engine controls the brief ("stripped body") | `stripped body` | framework/governance/REVIEW_TEAM.md:93 |
 | 3  | The plugin team-mode lens brief passes the artifact PATH (not a body) | `absolute artifact path` | platforms/claude-code-plugin/skills/doc-brd-audit/SKILL.md:110 |
 | 4  | The plugin audit SKILL carries an inert "Strip author self-claim before lens dispatch" section | `Strip author self-claim before lens dispatch` | platforms/claude-code-plugin/skills/doc-brd-audit/SKILL.md:186 |
-| 5  | `single_pass` mode: the skill reads the artifact in its own context (physical strip IS available) | `single_pass mode (fallback)` | platforms/claude-code-plugin/skills/doc-brd-audit/SKILL.md:169 |
+| 5  | `single_pass` mode: the skill reads the artifact into its own review context (so the score is in-context → disregard instruction, not physical strip) | `single_pass mode (fallback)` | platforms/claude-code-plugin/skills/doc-brd-audit/SKILL.md:169 |
 | 6  | The lens agent has `Read` (it reads the on-disk artifact) | `Read` | platforms/claude-code-plugin/agents/traceability-auditor.md:10 |
 | 7  | The on-disk artifact carries the author score the lens reads | `brd_ready_score: 92` | examples/url-shortener/docs/01_BRD/BRD-01.md:18 |
 | 8  | `review-team/SKILL.md` is a shared fan-out with no strip guidance (defensive coverage) | `dispatch each lens as a` | platforms/claude-code-plugin/skills/review-team/SKILL.md:151 |
