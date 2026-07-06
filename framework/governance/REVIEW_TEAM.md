@@ -77,9 +77,9 @@ lens_score: 0-100           # this lens's readiness assessment
 
 Author-self-assessment fields in the artifact body create an anchor
 effect on the lens output (a lens reading "the author thinks this
-scored 92" tends to produce a score near 92). Engines MUST strip the
-following fields from the artifact body before passing to each lens
-subagent — both in `team` mode and `single_pass` mode:
+scored 92" tends to produce a score near 92). Engines MUST de-anchor
+each lens from the following fields — in **both** `team` mode and
+`single_pass` mode:
 
 | Field pattern | Examples |
 |---|---|
@@ -88,10 +88,29 @@ subagent — both in `team` mode and `single_pass` mode:
 | `readiness_score` | self-explanatory |
 | `audit_score` | self-explanatory |
 
-Stripped fields stay in the artifact frontmatter ON DISK (they're
-author metadata); stripping happens in-prompt only — the brief that
-goes to the lens has the stripped body. This list is the canonical
-spec; extend it via PR when new self-claim field patterns appear.
+This list is the canonical spec; extend it via PR when new self-claim
+field patterns appear.
+
+**Mechanism (GD-05).** The de-anchor requirement is satisfied by one of
+two mechanisms of unequal strength, selected by a structural fact about
+the engine — not the review mode, and not a self-declaration:
+
+1. **Primary — physical removal (strong).** An engine that **curates the
+   lens input** — a separate actor assembles the body the lens receives,
+   so the lens context never contained the score — MUST strip the fields
+   from that body. (Example: an API-completion engine strips the fields
+   in code, then a fresh completion reviews the stripped body.) Stripped
+   fields stay in the artifact frontmatter ON DISK (author metadata);
+   stripping is in-prompt only.
+2. **Constrained fallback — disregard instruction (weaker).** Where **the
+   lens reads the artifact directly** — it is handed a path, or shares the
+   reading context, so the engine cannot keep the score out of the lens
+   context (e.g. an all-LLM agentic reviewer) — the engine MUST instead
+   include, in the lens brief, an explicit, strong instruction: **the lens
+   MUST NOT read, cite, or weight the author self-assessment fields when
+   forming its `lens_score`.** This is weaker (a stochastic model can still
+   read the number) and is permitted **only** under the reads-directly
+   structural condition, never as a general escape from the primary strip.
 
 ### No-findings rationale (CLEANUP-PR-B item 8)
 

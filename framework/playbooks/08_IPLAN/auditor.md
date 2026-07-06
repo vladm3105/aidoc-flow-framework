@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.32.7"
+framework_spec_version: "0.33.0"
 ---
 # auditor lens — IPLAN layer
 

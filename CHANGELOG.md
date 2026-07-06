@@ -12,6 +12,29 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — GD-05: the author-self-claim strip MUST gains a disregard-instruction fallback for engines whose lens reads the artifact directly (framework spec 0.32.7 → 0.33.0) (2026-07-04)
+
+**Framework governance decision (GD-05), ratified on merge.** `REVIEW_TEAM.md`
+§"Strip author self-claim" previously named one mechanism ("the brief that goes to the
+lens has the stripped body"), which presumes the engine controls the lens input — true
+for Hermes (physical strip, D-0051) but not for the Claude Code plugin, an all-LLM
+engine whose lens reads the artifact directly (H-14). GD-05 keeps the de-anchor
+requirement unchanged and sanctions a **second, weaker compliance mechanism**, selected
+by a structural fact about the engine:
+
+- **Primary (physical removal):** an engine that **curates the lens input** MUST strip
+  the fields from the body the lens receives (Hermes — unchanged).
+- **Constrained fallback (disregard instruction):** where **the lens reads the artifact
+  directly** (handed a path / shares the reading context), the engine MUST include a
+  strong instruction in the lens brief that the lens not read, cite, or weight the
+  fields when forming its `lens_score`. Permitted **only** under that reads-directly
+  condition.
+
+Additive standard clarification: SemVer **minor** `0.32.7 → 0.33.0`, change-level
+**C2**. `REVIEW_TEAM.md` re-vendored to the plugin bundle; FSV pins → `0.33.0`. The
+plugin's implementation of the fallback (its lens briefs) follows in the H-14 plugin PR.
+See GD-05 in `framework/governance/DECISIONS.md`.
+
 ### Fixed — HERMES-REVIEW-CONTENT-DELIVERY: the review lens now receives the document body (Hermes review was content-blind) (hermes 0.6.0 → 0.7.0; no framework change) (2026-07-04)
 
 Hermes's API-path LLM review never received the artifact body — the prompt was

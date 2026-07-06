@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: auditor
 weight: 20
 agent: traceability-auditor
-framework_spec_version: "0.32.7"
+framework_spec_version: "0.33.0"
 ---
 # auditor lens — BRD layer
 

@@ -13,6 +13,52 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-05 — The author-self-claim strip MUST is satisfied by physical removal where the engine curates the lens input, or by a disregard instruction where the lens reads the artifact directly
+
+- **Status:** Proposed — 2026-07-04 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. The GD-05 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-01 precedent — no separate CHG artifact). SemVer **minor** (`0.32.7 →
+  0.33.0`), change-level **C2**.
+- **Context:** `REVIEW_TEAM.md` §"Strip author self-claim" requires engines to keep
+  author self-assessment fields (`*_ready_score`/`*_score`/`readiness_score`/
+  `audit_score`) out of a lens's view so the lens's `lens_score` is not anchored to the
+  author's claim. Its mechanism clause said "the brief that goes to the lens has the
+  stripped body" — which presumes the engine **controls the lens input**. That holds for
+  an engine whose lens is fed a separately-assembled body (a curated input). It does
+  **not** hold for an engine whose review lens **reads the artifact directly** (an
+  agentic reviewer handed the artifact path, or a reviewer that reads the artifact into
+  its own review context). Once the score is in the lens context there is no separate
+  actor to remove it — so a "strip the body" instruction is inert there. Such a lens
+  cannot be handed a stripped-only input (it needs filesystem access to resolve
+  cross-document links), and a stripped working copy is bypassable (the lens can locate
+  and read the original). The only de-anchor available to that engine class is an
+  explicit instruction to disregard the fields — materially **weaker** than physical
+  removal, so it must be a constrained fallback, not a general escape.
+- **Decision:** The de-anchor requirement is unchanged; a **second, weaker compliance
+  mechanism** is sanctioned, selected by a **structural fact about the engine**, not the
+  review mode and not a self-declaration:
+  1. **Primary (physical removal):** an engine that **curates the lens input** (a
+     separate actor assembles the body the lens receives, so the lens context never held
+     the score) MUST strip the fields.
+  2. **Constrained fallback (disregard instruction):** where **the lens reads the
+     artifact directly** (handed a path, or sharing the reading context — so the engine
+     cannot keep the score out of the lens context), the engine MUST instead include, in
+     the lens brief, an **explicit, strong instruction**: the lens MUST NOT read, cite,
+     or weight the author self-assessment fields when forming its `lens_score`. Permitted
+     **only** under the reads-directly condition. The canonical field list is unchanged.
+- **Consequences:** `REVIEW_TEAM.md` gains the two-mechanism clause. A curated-input
+  engine stays conformant unchanged (primary/physical). A direct-read engine becomes
+  conformant by issuing the disregard instruction in every lens brief. The change
+  injects agent-facing instruction text (advisory **GATE-SPEC-W003**) that is trivially
+  safe — it only tells a lens to ignore a numeric self-claim; no capability/tool/
+  permission change. Additive standard clarification: SemVer **minor**, change-level
+  **C2**. (Per-platform implementation is tracked in the project decision log.)
+- **Authority:** `REVIEW_TEAM.md` §"Strip author self-claim"; `chg/gates/
+  GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-04 — IPLAN-ASSURANCE L1 is ratified as an aidoc-flow conformance requirement
 
 - **Status:** Proposed — 2026-06-28 (ratified on merge; a validator never grants
