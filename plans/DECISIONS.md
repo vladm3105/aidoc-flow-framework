@@ -10,6 +10,45 @@ graduation.
 
 ---
 
+## D-0053 — Modernize the Hermes sdd-orchestrator skill from the v3.2 15-persona + Lite/Standard/Full depth-tier model to the weighted-crew + playbook + single-path model
+
+**2026-07-06.** H11-ORCHESTRATOR-CREW-MODEL. The `sdd-orchestrator` agent-skill described
+the **v3.2-era review + flow model the engine abandoned** — a flat pool of "15 specialized
+review personas" and a Lite/Standard/Full depth-tier selection. Both are gone from the
+framework: the review model is the closed **weighted crews** of
+`framework/governance/REVIEW_CREWS.yaml` (one per-layer crew of ~5-6 weighted lenses →
+weighted-average readiness, per `review/review_scoring.py`) with per-`(layer,lens)`
+playbook injection (LAYER-PLAYBOOKS-001); the flow is a **single path** over the 8 layers
+with CHG as a governance overlay and the **necessary-upstream** contract
+(NECESSARY-UPSTREAM-001) governing upstream realization — no depth tiers.
+
+**Scope = the files that would MISLEAD a user/agent:** `SKILL.md` (persona model → point at
+`REVIEW_CREWS.yaml` + one illustrative BRD crew, no second-source copy of weights; scoring
+formula → weighted-average; BRD section list → point at `BRD-TEMPLATE.yaml`; "4-persona"
+counts → 5-lens; stale `/opt/data/ucx_framework/.venv` MCP paths → `/path/to/python`; "v3.2"
+pins dropped) **plus the two LOADED governance files** carrying the behavioral depth-tier
+residue — `governance/GOVERNANCE_RULES.md` §7 (a fallback-loaded governance doc) and
+`references/governance-load-protocol.md` (the **primary** mandatory load per `SKILL.md:26`).
+
+**Point-at-authority, not copy** (the internal-consistency trap): the skill references
+`REVIEW_CREWS.yaml`/`BRD-TEMPLATE.yaml`/`framework/VERSION` as authorities and shows only
+one illustrative crew, applying the D-0006 single-source principle to a consuming skill so
+the weights cannot drift.
+
+**Versioning:** Hermes **PATCH** `0.7.0 → 0.7.1`, skill `2.0.0 → 2.1.0`. No `framework/`
+change — prose corrected to match already-shipped engine behavior (no GATE-SPEC, no
+re-vendor); backward-compat is prose-only, engine unchanged.
+
+**Deferred (backlog follow-ups, carved in `HERMES-BACKLOG.md`):** the ~25-file cosmetic
+"v3.2" string residue across the 72-file inherited governance scaffold + non-loaded
+references; the stale hand-vendored `references/` framework-doc copies (a [[D-0013]]
+delete-vs-resync decision); the element-ID SHA-256 residue (`SKILL.md` states IDs are
+SHA-256-derived; per [[D-0040]] element IDs are LLM-generated stable strings — the rehash
+is framework-gated by PROVISIONAL-IDS-002). Reviewed: 4 passes (Pass 2 = 3 independent
+agents; Pass 3 = fresh-context independent adversarial re-review; both clean). Closes H-11.
+
+---
+
 ## D-0052 — The plugin review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05 fallback); implemented across the 9 audit + 9 fixer SKILLs + review-team + the auditor
 
 **2026-07-06.** H-14 PR 2 — the plugin-side implementation of [[GD-05]] (framework

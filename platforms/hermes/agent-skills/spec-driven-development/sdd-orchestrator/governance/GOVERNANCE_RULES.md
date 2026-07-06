@@ -1,6 +1,6 @@
 # Governance Rules
 
-**Framework**: Specification-Driven Development (SDD v3.2)
+**Framework**: Specification-Driven Development (SDD)
 
 ## 1. Canonical Flow
 
@@ -137,13 +137,19 @@ Before coding, agents must:
 - Mark deprecated patterns explicitly and provide replacement guidance.
 - Validate links in context: framework docs in repo context, template docs in scaffolded project context.
 
-## 7. Depth Model
+## 7. Layer Model (single-path, no depth tiers)
 
-| Depth | Required Artifacts |
-|---|---|
-| Lite | BRD, PRD, IPLAN |
-| Standard | BRD, PRD, EARS, ADR, SPEC, TDD, IPLAN |
-| Full | BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN + CHG gates |
+There are **no** Lite/Standard/Full depth tiers. The flow is a single path over the
+8 layers — BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code — with **CHG** as a
+governance overlay applied to changes (not a tier). Every layer present is required to
+converge; the framework does not offer a reduced-artifact profile.
+
+Which upstream a given layer must realize is governed by the **necessary-upstream
+contract** (NECESSARY-UPSTREAM-001, framework spec `0.15.2` → `0.16.0`): a layer traces
+only the upstream layers that actually exist in the project — not a fixed tier and not a
+cumulative redeclaration of every upstream layer. See
+`framework/governance/TRACEABILITY.md` and `REVIEW_TEAM.md` §"Necessary upstream +
+transitive trace". The flow operates across the **MVP → PROD → NEW MVP** lifecycle.
 
 Legacy SYS/REQ/CTR/TSPEC/TASKS layers are deprecated for active governance.
 

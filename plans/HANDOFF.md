@@ -65,12 +65,25 @@
 > satisfy the strip MUST (Hermes physical strip, plugin disregard). 4-pass review folded
 > 11 findings incl. the false "single_pass physically strips" claim + the missed 9-fixer
 > surface. 160 conformance green.
+> **H-11 sdd-orchestrator modernization ✅ SHIPPED** (PR #248 plan; impl `hermes/v0.7.1`
+> + skill `2.1.0`, D-0053): the `sdd-orchestrator` skill described the obsolete v3.2
+> "15 parallel personas + Lite/Standard/Full depth-tier" model. `SKILL.md` corrected to
+> the weighted-crew + playbook + single-path model (persona model → point at
+> `REVIEW_CREWS.yaml` + one illustrative BRD crew; scoring → weighted-average of crew
+> `lens_score`s; BRD sections → point at `BRD-TEMPLATE.yaml`; 5-lens crews; MCP paths +
+> "v3.2" pins fixed) + the two **loaded** governance files carrying the depth-tier residue
+> (`GOVERNANCE_RULES.md` §7 + the primary-load `governance-load-protocol.md`) → single-path
+> model. Doc-accuracy only; no engine/framework change. 4-pass review (Pass 2 = 3 agents,
+> Pass 3 = fresh-context independent) expanded scope 1→3 files + 5 findings, MINOR→PATCH,
+> D-0052→D-0053. 3 follow-ups carved (H-11a cosmetic v3.2 sweep, H-11b vendored-copy
+> D-0013 decision, H-11c element-ID SHA-256 residue). H-11 CLOSED.
 > **▶ Next (Hermes follow-ons, each its own plan):**
 > **(1)** ~~`H-6`/`H-2` calibration deltas~~ — H-6.1/6.2 done (above);
 > remaining calibration items (no-findings rationale /
 > author-self-claim strip / fixer-regression). **(3)** Phase 1b (saga break-circuit
 > exercise + `quality_loop_max_iterations`). **(4)** `prompt_only` playbook injection;
-> `H-11` agent-skill modernization. See `HERMES-BACKLOG.md`.
+> H-13 large-artifact chunking. ~~`H-11` agent-skill modernization~~ ✅ done. See
+> `HERMES-BACKLOG.md`.
 >
 > ---
 >

@@ -12,6 +12,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — H11-ORCHESTRATOR-CREW-MODEL: modernize the Hermes sdd-orchestrator skill from the v3.2 15-persona + depth-tier model to the weighted-crew + playbook + single-path model (hermes 0.7.0 → 0.7.1; skill 2.0.0 → 2.1.0; no framework change) (2026-07-06)
+
+The `platforms/hermes/agent-skills/.../sdd-orchestrator` skill described the obsolete
+v3.2 review + flow model the engine abandoned. `SKILL.md` corrected: persona model →
+point at `framework/governance/REVIEW_CREWS.yaml` (9 weighted crews) + one illustrative
+BRD crew + `framework/playbooks/`/LAYER-PLAYBOOKS-001 cross-link; the superseded
+"8-category weighted-deduction" chairperson formula → the current weighted-average of
+crew `lens_score`s capped by unresolved P0/P1 (per `review/review_scoring.py`); the wrong
+"All 15 required BRD sections" list → point at `BRD-TEMPLATE.yaml`; the "4-persona" counts
+→ 5-lens crews; stale `/opt/data/ucx_framework/.venv` MCP paths → `/path/to/python`; "SDD
+v3.2" pins dropped. Two **loaded** governance files carrying the abandoned
+Lite/Standard/Full depth-tier model (`governance/GOVERNANCE_RULES.md` §7 + the primary-load
+`references/governance-load-protocol.md`) → the current single-path layer model
+(necessary-upstream contract; MVP → PROD → NEW MVP). Doc-accuracy only — no engine change,
+no `framework/` change (no GATE-SPEC, no re-vendor). D-0053. Deferred backlog: the
+cosmetic v3.2 string residue, the hand-vendored `references/` copies (D-0013), and the
+element-ID SHA-256 residue (PROVISIONAL-IDS-002).
+
 ### Fixed — H-14 PR 2: the plugin review lens honors the strip MUST via a disregard instruction (plugin 0.23.0 → 0.23.1; GD-05 fallback) (2026-07-06)
 
 The plugin's agentic review lens reads the artifact directly, so it de-anchors from the

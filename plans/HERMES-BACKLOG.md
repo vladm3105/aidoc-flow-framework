@@ -25,7 +25,7 @@
 > | 2 | **playbook injection** for BRD+PRD (H-4) — the load-bearing gap | **✅ shipped** (`hermes/v0.4.0`, D-0046) — H-4 CLOSED for BRD+PRD; H-2/H-6 fold into Phase 3 |
 > | 3 | 8-layer coverage (H-5, already delivered by Phase 2 — verified) + CHG crew (H-10) | **✅ shipped** (`hermes/v0.5.0`, D-0047) — H-5 CLOSED (all 8 lifecycle layers); H-10 crew-map parity CLOSED; live CHG saga = follow-on |
 > | 3b | real saga-journal conformance + `09_CHG` schema enum + live CHG (H-12) | **✅ shipped** (`hermes/v0.5.1` + framework `0.32.7`, D-0048) — H-12 CLOSED; real journals conform; live CHG sanctioned |
-> | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | pending |
+> | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | **✅ shipped** (`hermes/v0.7.1` + skill `2.1.0`, D-0053) — H-11 CLOSED; H-11a/b/c cosmetic follow-ups carved |
 >
 > **Auto-satisfied (no action):** H-3 (dormant), H-7 lint rows / H-8 / H-9 lint+template
 > rows, and all of D-0038…D-0044 — Hermes gets these via vendored lint + shared
@@ -383,7 +383,33 @@ against url-shortener converged to PASS @ iter 3 score 95.
 once H-4 (team-mode) + H-5 (playbook injection) prerequisites are in
 place.
 
-### H-11 — sdd-orchestrator agent-skill v3.2-era modernization (legacy-sdd-depth cleanup origin)
+### H-11 — sdd-orchestrator agent-skill v3.2-era modernization (legacy-sdd-depth cleanup origin) — ✅ CLOSED (2026-07-06, D-0053, hermes 0.7.1 + skill 2.1.0)
+
+**Closed by H11-ORCHESTRATOR-CREW-MODEL (D-0053).** `SKILL.md` modernized to the
+weighted-crew + playbook + single-path model (persona model → point at `REVIEW_CREWS.yaml`
+
+- one illustrative BRD crew + LAYER-PLAYBOOKS-001 / `framework/playbooks/` cross-link;
+scoring → weighted-average of crew `lens_score`s; BRD sections → point at `BRD-TEMPLATE.yaml`;
+5-lens crews; MCP paths + "v3.2" pins fixed). The two **loaded** governance files carrying
+the Lite/Standard/Full depth-tier residue (`governance/GOVERNANCE_RULES.md` §7 + the
+primary-load `references/governance-load-protocol.md`) replaced with the single-path layer
+model. Doc-accuracy only; no engine/framework change.
+
+**Deferred follow-ups (carved from H-11 scope — surface as their own items if they bite):**
+
+- **H-11a — cosmetic "v3.2" string sweep.** ~25 files across the 72-file inherited
+  `governance/` scaffold + non-loaded `references/`/`root-docs/` carry a stale baseline
+  "SDD v3.2" string but no behavioral error (only the 3 loaded governance files + the
+  primary reference were behavior-bearing; those are fixed). Optional bulk sweep.
+- **H-11b — hand-vendored `references/` framework-doc copies** (`ucx-readme.md`,
+  `doc-governance-core.md`, `id-naming-standards.md`, `layer-registry.yaml`,
+  `data-consistency-report.json`) — a [[D-0013]] delete-vs-resync decision (Hermes reads
+  `framework/` directly; these local copies are orphaned). Separate follow-up.
+- **H-11c — element-ID SHA-256 residue** (`SKILL.md` states element IDs are SHA-256-derived;
+  per D-0040/`PROV01` they are LLM-generated stable strings, NOT content-hashes).
+  Framework-gated by PROVISIONAL-IDS-002; fix when that decision lands.
+
+<details><summary>Original H-11 backlog entry (for history)</summary>
 
 **Source:** legacy-sdd-depth cleanup PR (2026-06-12) — user-surfaced
 legacy bug: the v3.2-era `sdd_depth: lite | standard | full` tiers had
@@ -413,6 +439,8 @@ deeper than this cleanup touched.
 
 **Dependency:** none specific. Independent of H-1..H-10. Can land
 incrementally.
+
+</details>
 
 ### H-13 — Large-artifact chunking for the review prompt (follow-on to D-0051)
 

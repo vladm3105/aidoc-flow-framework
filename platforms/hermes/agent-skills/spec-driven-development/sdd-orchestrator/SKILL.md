@@ -1,7 +1,7 @@
 ---
 name: sdd-orchestrator
-description: "Orchestrate SDD v3.2 workflows across 8 layers (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN) using 15 specialized review personas dispatched as parallel subagents."
-version: 2.0.0
+description: "Orchestrate SDD workflows across 8 layers (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN) using the framework's per-layer weighted review crews (framework/governance/REVIEW_CREWS.yaml) with per-lens playbook injection, dispatched as parallel subagents."
+version: 2.1.0
 metadata:
   hermes:
     tags: [sdd, orchestration, workflow, review, creation, remediation]
@@ -16,7 +16,7 @@ metadata:
 
 ## Overview
 
-You orchestrate the SDD v3.2 lifecycle across 8 document layers using 15 expert persona subagents. Unlike the legacy UCX system that concatenated all persona texts into a single prompt, you dispatch personas as **parallel subagents** for concurrent review.
+You orchestrate the SDD lifecycle across 8 document layers using the framework's **per-layer weighted review crews** — the closed lens set defined in `framework/governance/REVIEW_CREWS.yaml` (one crew of ~5-6 weighted lenses per layer), each lens injected with its per-`(layer, lens)` playbook from `framework/playbooks/<NN>_<LAYER>/` (LAYER-PLAYBOOKS-001, `framework/governance/REVIEW_TEAM.md` §Playbooks). Unlike the legacy UCX system that concatenated all persona texts into a single prompt, you dispatch each crew lens as a **parallel subagent** for concurrent review, then reduce their per-lens scores to a weighted-average readiness score (see "Chairperson Scoring" below).
 
 ### Mandatory Governance Load (Before Any SDD Work)
 
@@ -37,11 +37,12 @@ skill_view(name='sdd-orchestrator', file_path='governance/DEVELOPMENT_WORKFLOW_G
 ```
 
 These docs contain the planning-first gates (§3), Definition of Done for plan/IPLAN review level,
-depth model selection, plan types and storage rules (§2b), and the full agent operating model.
+the single-path layer model (§7 — no depth tiers; necessary-upstream contract), plan types and
+storage rules (§2b), and the full agent operating model.
 
 Governance docs are read **directly from the repository** (`framework/` tree); per D-0013 (aidoc-flow migration), there is no local sync — re-stale-checks are not needed.
 
-## SDD Layer Sequence (v3.2)
+## SDD Layer Sequence
 
 ```
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
@@ -70,25 +71,30 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | TSPEC (L10) | TDD (L7) with embedded test case definitions |
 | TASKS (L11) | IPLAN (L8) execution bridge with session handoff |
 
-## Persona Name Mapping (UCX → Hermes Skill)
+## Review Crews (authority: `framework/governance/REVIEW_CREWS.yaml`)
 
-| UCX Name | Hermes Skill Name |
-|----------|-------------------|
-| architect | system-architect |
-| auditor | security-auditor |
-| tech_lead | technical-lead |
-| strategist | business-strategist |
-| chaos_engineer | chaos-engineer |
-| operator | site-reliability-engineer |
-| integration_lead | integration-specialist |
-| product_owner | product-owner |
-| business_analyst | business-analyst |
-| fact_checker | fact-checker |
-| chairperson | board-chairperson |
-| qa_lead | qa-lead |
-| content_strategist | content-strategist |
-| requirements_specialist | requirements-specialist |
-| ux_strategist | ux-strategist |
+The review model is **not** a flat pool of personas dispatched uniformly. Each layer
+has one **weighted crew** — a closed set of ~5-6 lenses whose weights sum to 100 and
+drive the weighted-average readiness score. `framework/governance/REVIEW_CREWS.yaml` is
+the **single source of truth** for every crew's author lens, review lenses, and weights;
+read it at dispatch time rather than relying on any copy. Lens names there (`architect`,
+`business_analyst`, `auditor`, `chaos_engineer`, `security_engineer`, `tech_lead`,
+`qa_lead`, `operator`, `integration_lead`, `requirements_specialist`, `product_owner`,
+`synthesizer`, …) are the runtime identity — dispatch a subagent per lens.
+
+**One illustrative crew** (BRD review), showing the shape — see `REVIEW_CREWS.yaml` for
+the other eight (PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN, CHG):
+
+```yaml
+BRD:
+  author: business_analyst
+  review: {architect: 30, business_analyst: 30, auditor: 20, chaos_engineer: 12, security_engineer: 8}
+```
+
+Each dispatched lens is injected with its per-`(layer, lens)` playbook from
+`framework/playbooks/<NN>_<LAYER>/<lens>.md` (LAYER-PLAYBOOKS-001, `REVIEW_TEAM.md`
+§Playbooks). Do not maintain a second copy of the weights here — that drifts from the
+authority.
 
 ---
 
@@ -300,7 +306,7 @@ see `references/ears-generation-pattern.md`.
 
 1. Generate 2 benchmark EARS from the strongest upstream sources (umbrella + core feature)
 2. Validate both with sdd_validate
-3. Review with 4 personas: requirements-specialist, technical-lead, qa-lead, chaos-engineer
+3. Review with the EARS crew (per `REVIEW_CREWS.yaml`): requirements_specialist (35), tech_lead (25), qa_lead (20), chaos_engineer (12), security_engineer (8)
 4. Remediate findings
 5. Once validated, batch-generate remaining 7 EARS with execute_code
 
@@ -447,28 +453,23 @@ For umbrella PRDs, populate `discoverability` with all 8 feature PRDs. For featu
 
 1. Receive the target document type and any reference/upstream materials
 2. Load the appropriate YAML template from UCX (see Templates section below)
-3. Dispatch the creation personas as parallel subagents, each contributing their domain section
-4. Synthesize contributions into a complete document following the template structure
-5. Validate output against layer schema
+3. Dispatch the layer's **author lens** (the `author:` field of the layer's crew in
+   `REVIEW_CREWS.yaml`) to draft the document following the template structure
+4. Validate output against layer schema
 
-### Creation Persona Assignments
+### Creation Author
 
-| Doc Type | Persona Skills to Dispatch |
-|----------|---------------------------|
-| **BRD** | product-owner, business-analyst, business-strategist, system-architect, technical-lead |
-| **PRD** | product-owner, ux-strategist, content-strategist, technical-lead, system-architect, requirements-specialist |
-| **EARS** | requirements-specialist, technical-lead, qa-lead, chaos-engineer |
-| **BDD** | qa-lead, technical-lead, chaos-engineer, site-reliability-engineer, security-auditor |
-| **ADR** | system-architect, technical-lead, security-auditor, chaos-engineer, site-reliability-engineer |
-| **SPEC** | technical-lead, system-architect, integration-specialist, site-reliability-engineer, security-auditor |
-| **TDD** | qa-lead, technical-lead, chaos-engineer, site-reliability-engineer, security-auditor |
-| **IPLAN** | technical-lead, system-architect, site-reliability-engineer, qa-lead |
+Each layer's author is the single `author:` lens of its crew in
+`framework/governance/REVIEW_CREWS.yaml` (e.g., BRD → `business_analyst`, PRD →
+`product_owner`, EARS → `requirements_specialist`, ADR/SPEC → `architect`, BDD/TDD →
+`qa_lead`, IPLAN → `tech_lead`, CHG → `integration_lead`). Read the file for the current
+assignment rather than relying on a copy. The multi-lens crew reviews the draft in Phase 2.
 
 ### Creation Prompt Rules
 
 For BRD creation, enforce:
 
-- All 15 required sections present (Executive Summary, Problem Statement, Proposed Solution, Stakeholder Analysis, Functional Requirements, Non-Functional Requirements, Quality Attributes, Constraints, Assumptions, Dependencies, Risk Analysis, Success Criteria, Glossary, Appendices, Cross-References)
+- All required sections present per the current `framework/layers/01_BRD/BRD-TEMPLATE.yaml` (that template is the authority for the section set — do not enumerate a fixed list here; it drifts from the schema)
 - YAML frontmatter with `doc_id: "BRD-{NN}"`
 - Element IDs: `TYPE.NN.SS.xxxx` (4-segment format per naming standards: e.g., `BRD.01.07.a7f3`)
 - When uncertain about a requirement, DOCUMENT THE UNCERTAINTY rather than omit it
@@ -517,21 +518,17 @@ For IPLAN creation, enforce:
 
 ### Review Persona Assignments (Dispatch Phase)
 
-| Doc Type | Parallel Subagents to Dispatch |
-|----------|-------------------------------|
-| **BRD** | system-architect, security-auditor, business-analyst, chaos-engineer |
-| **PRD** | system-architect, security-auditor, technical-lead, product-owner, chaos-engineer |
-| **EARS** | requirements-specialist, technical-lead, qa-lead, chaos-engineer |
-| **BDD** | qa-lead, technical-lead, chaos-engineer, site-reliability-engineer, security-auditor |
-| **ADR** | system-architect, technical-lead, site-reliability-engineer, security-auditor, chaos-engineer |
-| **SPEC** | technical-lead, system-architect, chaos-engineer, site-reliability-engineer, integration-specialist |
-| **TDD** | qa-lead, technical-lead, chaos-engineer, site-reliability-engineer, security-auditor |
-| **IPLAN** | technical-lead, system-architect, site-reliability-engineer, qa-lead, security-auditor |
+Dispatch **the layer's crew** from `framework/governance/REVIEW_CREWS.yaml` — one parallel
+subagent per `review:` lens, each injected with its `framework/playbooks/<NN>_<LAYER>/<lens>.md`
+playbook. Read `REVIEW_CREWS.yaml` for the current crew + weights; do not rely on a copy here.
+(Illustrative: the BRD crew is `{architect: 30, business_analyst: 30, auditor: 20,
+chaos_engineer: 12, security_engineer: 8}`.) The `synthesizer` lens plays the chairperson
+reduce (see "Chairperson Scoring").
 
 ### Inline BRD Review (No Executor Required)
 
 When UCX `sdd_review` executors are unavailable or the user prefers inline reviews,
-use the 4-persona BRD review pattern directly in the main agent context.
+use the BRD crew's lenses (per `REVIEW_CREWS.yaml`) directly in the main agent context.
 
 See `references/brd-review-inline-pattern.md` for the full pattern, review template
 structure, common P1 finding categories, and differences from the ADR inline review.
@@ -541,7 +538,7 @@ structure, common P1 finding categories, and differences from the ADR inline rev
 After ALL parallel subagents return findings:
 
 1. **fact-checker**: Cross-validate all P0/P1 findings against the document. Remove false positives, correct categories.
-2. **board-chairperson**: Synthesize verified findings, de-duplicate, compute category-weighted score, produce final manifest with readiness verdict.
+2. **board-chairperson** (the `synthesizer` lens): Synthesize verified findings, de-duplicate, compute the weighted-average lens score, produce final manifest with readiness verdict.
 
 ### Review Prompt Rules
 
@@ -552,12 +549,21 @@ After ALL parallel subagents return findings:
 
 ### Chairperson Scoring
 
-Category-weighted scoring with 8 categories:
+The readiness score is the **weighted average of the crew's per-lens `lens_score`s**,
+using the per-layer weights in `framework/governance/REVIEW_CREWS.yaml` (renormalised over
+the lenses that actually ran), **then capped** by unresolved blocking findings:
 
-- functional, quality, compliance, constraints, integration, acceptance, risk, architecture
+- Each dispatched lens returns a `lens_score` (0-100) for the document.
+- `score = Σ(lens_score × weight) / Σ(weight)` over the lenses that ran.
+- **Cap:** an unresolved **P0** ⇒ fail (score 0); an unresolved **P1** ⇒ score capped
+  below the gate threshold.
+- **Coverage:** if the lenses that ran fall below the crew's quorum, flag *low-confidence →
+  human review*.
 
-Formula: Score = 100 - sum(capped_category_deductions × weights)
-Pass thresholds vary by doc type (check document-specific README).
+The numeric score is **advisory**; the deterministic gate (per `REVIEW_TEAM.md`) is the
+structural `sdd_doc_lint` floor **plus** "no unresolved P0/P1". Gate threshold: **≥90/100**
+readiness before generating the next layer (implemented in
+`platforms/hermes/src/mcp_server/review/review_scoring.py`).
 
 ---
 
@@ -704,7 +710,7 @@ See `references/ucx-remediate-content-limitations.md` for the full reproduction 
 
 ---
 
-## Templates & Layer Assets (v3.2)
+## Templates & Layer Assets
 
 All templates are unified YAML files available as linked files in this skill:
 
@@ -867,7 +873,7 @@ working directory but not the Python import path. Add `PYTHONPATH` in `env`:
 ```yaml
 mcp_servers:
   sdd-lifecycle:
-    command: "/opt/data/ucx_framework/.venv/bin/python"
+    command: "/path/to/python"
     args: ["-m", "mcp_server.server"]
     cwd: "platforms/hermes/src"
     env:
@@ -880,7 +886,7 @@ Without `PYTHONPATH`, imports fail with `ModuleNotFoundError` even though
 
 ---
 
-## Quality Gate Scoring Formulas (v3.2)
+## Quality Gate Scoring Formulas
 
 Each layer must achieve >=90/100 readiness score before generating the next layer.
 
@@ -902,7 +908,7 @@ Each layer must achieve >=90/100 readiness score before generating the next laye
 - Phase name/consistency rules between scope and implementation
 - Template compliance (all required subsections present, correct C4 level content)
 - Cumulative traceability tag validity (max 1 for BRD, max 8 for IPLAN)
-- Readiness score computation with category-weighted deductions
+- Readiness score computation (weighted-average of crew lens_scores, capped by unresolved P0/P1)
 - Metadata tag limits (BRD max 1 tag, SDD-XS-004)
 
 **Only `sdd_validate` (via ucx_hermes MCP) provides structural validation.** When the MCP server is unreachable, acknowledge the gap explicitly — do not silently substitute programmatic parsing and call it "validated." The validation status should be "PARSED (pending sdd_validate)" not "VALIDATED."
@@ -960,7 +966,7 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 
 ---
 
-## Cumulative Tagging Hierarchy (v3.2)
+## Cumulative Tagging Hierarchy
 
 Every document must reference all upstream artifacts. Enforced by cross-document validation. Max 8 cumulative tags at IPLAN layer (7 upstream + self-tag @iplan).
 
@@ -1067,7 +1073,7 @@ LOOP (max 3 iterations):
 
 ## Framework Location
 
-The SDD v3.2 framework lives at `framework/`.
+The SDD framework lives at `framework/`.
 See `references/framework-location-and-quirks.md` for the full directory layout,
 key reference files, known framework bugs (and their fixes), threshold formatting,
 and the list of v2 artifact types that must NOT be referenced.
@@ -1161,7 +1167,7 @@ Bridge between Hermes conversational reasoning and UCX deterministic SDD tools. 
 ```yaml
 mcp_servers:
   sdd-lifecycle:
-    command: "/opt/data/ucx_framework/.venv/bin/python"
+    command: "/path/to/python"
     args: ["-m", "mcp_server.server"]
     cwd: "platforms/hermes/src"
 ```
@@ -1170,7 +1176,7 @@ mcp_servers:
 
 ### SDD Naming Standards
 
-Enforce SDD v3.2 ID naming standards and format rules. Use BEFORE creating or editing any SDD document.
+Enforce SDD ID naming standards and format rules. Use BEFORE creating or editing any SDD document.
 
 **Document ID**: `TYPE-NN` (e.g., `BRD-01`). Regex: `^[A-Z]+-\d{2,}$`. File naming: `TYPE-NN.yaml`.
 
