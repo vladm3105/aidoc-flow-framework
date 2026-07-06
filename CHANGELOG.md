@@ -12,6 +12,24 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — D54-F13 phase-leak: COV03 advisory when a deferred (`Future`-banded) FR is realized downstream (framework spec 0.33.1 → 0.34.0) (2026-07-06)
+
+New `sdd_doc_lint` rule **`COV03`** — the exact inverse of `COV01`'s escape. `COV01` blocks
+an in-scope (`AUTHORED`) FR that is *not* realized; `COV03` warns when a **`DEFERRED`
+(`Future`-banded) FR IS realized downstream** by its realizing layer (PRD) — something scoped
+for a next MVP cycle is being pulled into the current build. **Advisory (`warning`) in both
+`build` and `gate-code`, never blocks** (scope pull-forward is legitimate; the fix is to
+re-band the FR `P1`/`P2` or confirm the deferral). A `realized_by:` FR is a positive coverage
+claim (`REALIZED_BY`), never flagged; cross-cycle leaks need no gate (later-cycle BRDs are
+trace-inert). This closes the phase-leak leg of `D54-F13` (its missing-downstream leg shipped
+earlier as `COV01`) with **no new phase tag** — grounding found the `Future` band + the BRD-00
+`Cycle` roadmap already encode both phase axes. Implemented in the canonical
+`tools/sdd_doc_lint/__init__.py` (vendored byte-identical to both platform mirrors via
+`sync-vendored.sh`), documented normatively in `framework/governance/TRACEABILITY.md` §Coverage
+gates + a BRD band note; 6 new `test_coverage_engine.py` cases; zero findings on the example
+corpus. Framework spec **MINOR** (new normative rule); plugin + Hermes product versions
+unchanged. See `plans/D54-F13-PHASE-LEAK-PLAN.md` + `plans/DECISIONS.md` D-0055.
+
 ### Changed — IPLAN-LANG-001: de-Python the IPLAN template; inherit language from SPEC (framework spec 0.33.0 → 0.33.1) (2026-07-06)
 
 `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` hardcoded a Python toolchain in its

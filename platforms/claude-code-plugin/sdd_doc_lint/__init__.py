@@ -1667,6 +1667,61 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     return findings
 
 
+def _check_phase_leak(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """COV03 — deferred-band over-realization (phase-leak advisory); the inverse
+    of COV01's escape (D54-F13 / D-0055).
+
+    COV01 blocks an ``AUTHORED`` FR that is NOT realized; COV03 warns when a
+    ``DEFERRED`` FR — a bare ``Future`` band, i.e. deferred to a next MVP cycle —
+    IS picked up element-level by its realizing layer (PRD). Such an FR is a
+    possible phase-leak: something marked next-cycle is being pulled into the
+    current build. **Advisory (``warning``) in both modes** — scope pull-forward
+    is legitimate; the fix is to re-band the FR ``P1``/``P2`` or confirm the
+    deferral, never to block a gate. A ``realized_by:`` FR classifies as
+    ``REALIZED_BY`` (a positive coverage claim), never ``DEFERRED`` → never
+    flagged.
+
+    Unlike COV01 this has **no** ``{SPEC, IPLAN}`` corpus precondition: it needs
+    only PRD realization, so it runs on a BRD+PRD-only corpus — the early-stage
+    cascade where a phase-leak is most likely. ``mode`` is accepted only for
+    sibling-signature symmetry with ``_check_forward_coverage``; the severity is
+    always ``warning``.
+    """
+    graph = build_edge_graph(corpus)
+    reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        # Identify the BRD the same way COV01 / the graph does.
+        if _artifact_code(fm) != "BRD":
+            continue
+        doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
+        if not doc_id:
+            continue
+        if reuse.get(doc_id, ("authored", ""))[0] == "referenced":
+            continue
+        for fr in scan_fr_elements(text):
+            # COV03 keys strictly on DEFERRED (a bare `Future` band). AUTHORED is
+            # COV01's domain; REALIZED_BY is a positive coverage claim.
+            if covered_state_of(fr) != CoveredState.DEFERRED:
+                continue
+            citers = _element_realizing_citers(graph, fr.elem_id, REALIZING_LAYERS.get("BRD", ()))
+            if citers:
+                findings.append(
+                    Finding(
+                        rel,
+                        fr.line,
+                        "COV03",
+                        f"deferred FR '{fr.elem_id}' (band Future) is realized "
+                        f"downstream by {', '.join(sorted(citers))} — a possible "
+                        f"phase-leak; re-band it P1/P2 for the current cycle or "
+                        f"confirm the deferral is intentional",
+                        severity="warning",
+                    )
+                )
+    return findings
+
+
 #: The requirement ("oracle") layers the backward gate checks for downstream
 #: realization, and the realization layers they must reach (CFB-PR-2b).
 _BACKWARD_ORACLE_LAYERS = ("EARS", "BDD")
@@ -2011,6 +2066,7 @@ def lint_path(
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))
+        findings.extend(_check_phase_leak(corpus, mode))
     return findings
 
 

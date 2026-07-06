@@ -393,15 +393,15 @@
   elements. The "scope ledger" is a *designated section of the existing
   BRD acceptance/index* (acceptance_criteria / launch_gates), NOT a new
   artifact — everything references it.
-- *Status:* **NARROWED (verified 2026-07-06) — the missing-downstream half is done;
-  only the phase-leak leg remains OPEN (P2).** The "accepted feature has no IPLAN =
-  warning" half shipped as **`COV01`** (SPEC-but-no-IPLAN = warning in `build` / error
-  in `gate-code`; see `ENG-FWD-COVERAGE`). The **genuinely-open work is the phase-leak
-  row (DD-6 row 4)** — explicitly deferred in the `COV01` docstring: a first-class
-  **phase tag** on capability elements + a blocking check when an out-of-phase item
-  leaks into an in-phase IPLAN. Needs element granularity (present since
-  ELEMENT-COVERAGE-001) + the new phase-tag concept + the BRD-index scope-ledger
-  binding. This is the highest-value genuinely-open coverage item.
+- *Status:* ✅ **CLOSED (2026-07-06, `D54-F13-PHASE-LEAK-PLAN.md`, D-0055, spec 0.33.1 →
+  0.34.0).** The missing-downstream half shipped earlier as `COV01`; the phase-leak leg now
+  ships as **`COV03`** — the inverse of COV01's escape: a `Future`-banded (deferred) FR that
+  IS realized downstream draws an **advisory** (`warning`, both modes, never blocks; re-band
+  P1/P2 or confirm the deferral). **No first-class phase tag was added** — grounding found it
+  redundant with the existing FR band (`Future` = next-cycle) + the BRD-00 `Cycle` roadmap
+  (later-cycle BRDs are trace-inert, so cross-cycle leaks are already structurally
+  prevented). Canonical `tools/sdd_doc_lint` + both vendored mirrors; documented in
+  TRACEABILITY.md §Coverage gates; 6 test cases; zero example-corpus findings.
 
 ### `[lint]` `D54-F05-BDD-COVERAGE-ROLLUP` — no aggregate EARS coverage across a split BDD set
 

@@ -23,6 +23,7 @@ from sdd_coverage import _collect_corpus, render_matrix  # noqa: E402
 from sdd_doc_lint import (  # noqa: E402
     _check_backward_coverage,
     _check_forward_coverage,
+    _check_phase_leak,
     _check_ref_granularity,
 )
 
@@ -188,6 +189,47 @@ class BRDTemplateRule(unittest.TestCase):
                 self.assertIn("Acceptance criteria:", tpl)
                 self.assertIn("(P1|P2|Future", tpl)
                 self.assertIn("realized_by", tpl)
+
+
+class PhaseLeakContract(unittest.TestCase):
+    """COV03 (D54-F13 / D-0055) — a deferred (``Future``-banded) FR that IS
+    realized downstream draws an advisory; the inverse of COV01's escape."""
+
+    _FR = "## 7. Functional Requirements\n\n- **BRD.01.07.aaaa — F** ({band}): a thing."
+
+    def _brd(self, band):
+        return _doc("BRD-01", "BRD", self._FR.format(band=band))
+
+    _PRD = _doc("PRD-01", "PRD", "@brd: BRD.01.07.aaaa")
+    _PRD_NOCITE = _doc("PRD-01", "PRD", "no citation here")
+
+    def test_deferred_fr_realized_downstream_warns(self):
+        findings = _check_phase_leak([self._brd("Future"), self._PRD])
+        self.assertEqual([(f.code, f.severity) for f in findings], [("COV03", "warning")])
+        self.assertIn("phase-leak", findings[0].message)
+
+    def test_deferred_fr_not_realized_is_silent(self):
+        self.assertEqual(_check_phase_leak([self._brd("Future"), self._PRD_NOCITE]), [])
+
+    def test_authored_fr_is_not_cov03(self):
+        # A P1 (AUTHORED) FR is COV01's domain, never COV03.
+        self.assertEqual(_check_phase_leak([self._brd("P1"), self._PRD]), [])
+
+    def test_realized_by_fr_is_not_cov03(self):
+        # `realized_by:` → REALIZED_BY (a positive coverage claim), never DEFERRED.
+        self.assertEqual(_check_phase_leak([self._brd("Future, realized_by: ADR"), self._PRD]), [])
+
+    def test_advisory_in_both_modes(self):
+        # Never escalates to error, unlike COV01.
+        for mode in ("build", "gate-code"):
+            findings = _check_phase_leak([self._brd("Future"), self._PRD], mode=mode)
+            self.assertEqual([f.severity for f in findings], ["warning"], mode)
+
+    def test_runs_without_spec_or_iplan(self):
+        # COV03 must NOT inherit COV01's {SPEC,IPLAN} corpus precondition — it
+        # fires on a BRD+PRD-only corpus (the early-stage cascade).
+        findings = _check_phase_leak([self._brd("Future"), self._PRD])
+        self.assertEqual([f.code for f in findings], ["COV03"])
 
 
 if __name__ == "__main__":

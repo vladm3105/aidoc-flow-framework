@@ -10,6 +10,37 @@ graduation.
 
 ---
 
+## D-0055 — COV03 phase-leak advisory (deferred-band over-realization); no new phase tag — the band + BRD-00 roadmap already encode both phase axes
+
+**2026-07-06.** D54-F13 (phase-leak leg; framework spec `0.33.1 → 0.34.0`, MINOR). The
+original TODO proposed "a first-class phase tag on capability elements." Grounding found that
+**redundant**: within-cycle phase is already the FR **band** (`priority_definitions`: `Future`
+= "Next MVP cycle"), and cross-cycle phase is already the **BRD-00 `Cycle` roadmap** — where
+later-cycle BRDs are `Planned`/`Sketch` = **trace-inert** (not in the `@`-tag graph), so an
+IPLAN structurally cannot realize a future-cycle element (that leak is already prevented).
+
+**Decision: ship only the missing check, no new tag.** `COV01` blocks an `AUTHORED` FR that is
+NOT realized; nothing flagged the inverse — a `DEFERRED` (`Future`-banded) FR that IS realized
+downstream. `COV03` adds exactly that as an **advisory** (`warning`, both modes, never blocks):
+scope pull-forward is legitimate, so it prompts the author to re-band `P1`/`P2` or confirm the
+deferral rather than failing a gate (the REUSE01-advisory precedent). It reuses the existing
+band + coverage graph + `_element_realizing_citers` helper — a ~40-line sibling of
+`_check_forward_coverage`, keyed strictly on `CoveredState.DEFERRED` (a bare `Future` band), so
+a `realized_by:` FR (`REALIZED_BY`, a positive coverage claim) is never flagged. It has **no**
+`{SPEC,IPLAN}` corpus precondition (unlike COV01) — it fires on a BRD+PRD-only corpus, the
+early stage where a phase-leak is likeliest.
+
+Rejected (out of scope, over-engineering): a first-class phase tag (duplicates the band +
+roadmap); a cross-cycle IPLAN→Cycle binding + a **blocking** gate (cross-cycle already
+prevented; blocking fights legitimate scope changes). Canonical edit in
+`tools/sdd_doc_lint/__init__.py`, vendored byte-identical to both mirrors
+(`sync-vendored.sh`); the `framework/**` GATE-SPEC change is the TRACEABILITY.md §Coverage
+gates doc + a BRD band note. 6 new `test_coverage_engine.py` cases; zero findings on the
+example corpus; new rule verified end-to-end across all 5 branch cases. Reviewed: 3 passes
+(Pass 2 independent). Closes FRAMEWORK-TODO `D54-F13`.
+
+---
+
 ## D-0054 — The IPLAN template inherits its implementation language from SPEC (no new IPLAN field); de-Python the template's example content
 
 **2026-07-06.** IPLAN-LANG-001 (framework spec `0.33.0 → 0.33.1`, PATCH). Layer-8
