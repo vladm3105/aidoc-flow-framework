@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.0"
+    version: "0.23.1"
     framework_spec_version: "0.33.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -89,7 +89,10 @@ fallback applies to other adaptation knobs (`section_toggles`).
 4. **Validate non-regression.** For each responsible lens identified
    in step 2, dispatch one `Task` subagent in patch-validation mode:
    `subagent_type=<mapped agent>`; brief = the patched region + the
-   original finding + the patch diff; output = a fresh persona-output
+   original finding + the patch diff; **the lens MUST NOT read, cite, or
+   weight any author self-assessment score** (`*_ready_score`/`*_score`/
+   `readiness_score`/`audit_score`) when forming its `lens_score`
+   (`REVIEW_TEAM.md` GD-05); output = a fresh persona-output
    record (lens_score for the patched region + any new findings).
    Persist each lens's output as
    `.aidoc/review/02_PRD/<PRD-id>/<persona>.fix_<N>.json` (`<N>` =

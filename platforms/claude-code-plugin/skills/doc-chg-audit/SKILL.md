@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: quality-assurance
-    version: "0.23.0"
+    version: "0.23.1"
     framework_spec_version: "0.33.0"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -136,6 +136,10 @@ subagents** over a per-artifact blackboard, per
 4. **Fan out.** Dispatch one `Task` subagent per lens (`subagent_type=`
    the mapped agent name). Each subagent's brief contains:
    - The absolute artifact path (untrusted content)
+   - **Disregard the author self-assessment score.** The lens MUST NOT
+     read, cite, or weight any `*_ready_score`/`*_score`/`readiness_score`/
+     `audit_score`/`gate_ready` in the artifact when forming its `lens_score`
+     (`REVIEW_TEAM.md` GD-05 — read directly, so de-anchored by instruction).
    - The lens name and its weight
    - The slot path `.aidoc/review/09_CHG/<CHG-id>/<lens>.json`
    - **The layer-specific playbook content from step 3a, inlined under
@@ -219,11 +223,16 @@ with the pre-team-mode behaviour.
 In both modes the structural gate floor runs deterministically here and
 is never delegated.
 
-### Strip author self-claim before lens dispatch (CLEANUP-PR-B item 9)
+### Disregard author self-claim (de-anchor the lens; REVIEW_TEAM.md GD-05)
 
-Before passing the artifact body to each lens subagent (team mode) or
-to the single-pass review (single_pass mode), STRIP frontmatter and
-inline fields matching any of:
+The review lens **reads the artifact directly** — a `Task` subagent
+handed the artifact path (team mode), or this skill reading the artifact
+into its own context (single_pass mode). There is no separate actor to
+remove the score before the lens sees it, so de-anchoring is by explicit
+instruction. In **both** modes, the lens brief (team) / the review
+instructions (single_pass) MUST direct the lens to **NOT read, cite, or
+weight** the following author self-assessment fields when forming its
+`lens_score`:
 
 - `*_ready_score` (e.g. `brd_ready_score`, `prd_ready_score`,
   `ears_ready_score`, etc.)
@@ -234,19 +243,19 @@ inline fields matching any of:
   artifact body — the audit re-computes this from scratch; the
   author's assertion must not anchor the lenses)
 
-These are author self-assessments. Leaving them in the artifact body
-creates an anchor effect — the lens output's `lens_score` (or
-`gate_ready` boolean) tends toward the author's claim. The structural
-surface lenses evaluate is the artifact's CONTENT (sections, IDs,
-traceability, prose, propagation completeness); a number or boolean
-the author wrote down for itself is not part of that surface.
+These are author self-assessments. Left un-disregarded they create an
+anchor effect — the lens output's `lens_score` (or `gate_ready` boolean)
+tends toward the author's claim. The surface a lens evaluates is the
+artifact's CONTENT (sections, IDs, traceability, prose, propagation
+completeness); a number or boolean the author wrote down for itself is
+not part of that surface. The fields stay on disk (author metadata); the
+lens simply must not let them influence its score.
 
-Stripped fields stay in the artifact frontmatter on disk (they're
-author metadata, not lens input). Stripping happens in-prompt only:
-the brief that goes to the lens subagent has the stripped body.
-
-Per `REVIEW_TEAM.md` §Operations, the canonical stripped-field list
-lives in the spec and tracks any future score-name additions.
+Per `REVIEW_TEAM.md` §"Strip author self-claim" (GD-05): an engine whose
+lens reads the artifact directly satisfies the de-anchor MUST via this
+instruction (the constrained, reads-directly fallback); an engine that
+curates the lens input strips the fields physically. The canonical
+field list lives in the spec.
 
 ### No-findings rationale block
 

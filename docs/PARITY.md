@@ -6,7 +6,7 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.7.0` /
-> `claude-code-plugin/v0.23.0` (framework spec `0.33.0`; both platforms on the
+> `claude-code-plugin/v0.23.1` (framework spec `0.33.0`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v0.7.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
@@ -166,10 +166,17 @@ and **reads the on-disk file** (via the artifact path in its brief); the Hermes 
 is an API completion, so the review prompt now **inlines** the document body
 (`## Document to Review`, from the per-persona `included_sections`) directly into the
 prompt. Before `v0.7.0`, Hermes inlined *no* body — the API-path review was
-content-blind (it scored metadata only); D-0051 closed that gap. (Note the
-author-self-claim strip contract, `REVIEW_TEAM.md:82`, is now effective on Hermes;
-whether the plugin's file-reading lens honors it is tracked as a follow-on — see
-`plans/HERMES-BACKLOG.md` H-14.)
+content-blind (it scored metadata only); D-0051 closed that gap.
+
+**Author-self-claim de-anchor — both mechanisms (GD-05).** The `REVIEW_TEAM.md`
+strip MUST is now satisfied on **both** platforms, by the mechanism each engine's
+architecture allows (GD-05, framework `0.33.0`): **Hermes curates the lens input**, so
+it **physically removes** the score before the lens sees it (D-0051); the **plugin lens
+reads the artifact directly**, so it **disregards** the score by an explicit brief
+instruction (the constrained fallback — it cannot physically strip). The plugin
+instruction was added across the 9 `doc-*-audit` + 9 `doc-*-fixer` SKILLs + `review-team`
+
++ `traceability-auditor` (H-14 / D-0052, plugin `v0.23.1`).
 
 | Trigger point | Plugin | Hermes |
 |---------------|--------|--------|
@@ -212,14 +219,14 @@ shape) and produces a structurally identical report.
 
 Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
 
-- **Output-shape (terminal-state) parity:**
++ **Output-shape (terminal-state) parity:**
   `tests/conformance/test_review_report_parity.py` validates committed
   sample report fixtures from **both** runners
   (`tests/conformance/fixtures/review/{hermes,plugin}_BRD-01_report.json`)
   against the shared `review_report.schema.json`, and asserts they share
   the report structure plus the deterministic-gate invariant
   (`passed == structural_pass AND no_blocking`).
-- **Saga-lifecycle parity (added by SAGA-PARITY-001, D-0031):**
++ **Saga-lifecycle parity (added by SAGA-PARITY-001, D-0031):**
   `tests/conformance/test_saga_lifecycle_parity.py` validates committed
   sample saga journals from both runners
   (`tests/conformance/fixtures/saga/{hermes,plugin}_BRD-01_saga.json`)
@@ -233,7 +240,7 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
   Hermes journal-conformance claim is now enforced against real output. (The `## Break-circuit policy` SKILL-prose is a separate
   plugin-side concern — it lives in the ~18 `doc-*-audit` / `doc-*-fixer`
   skills, not the autopilots — and is not asserted by this parity test.)
-- **Manual end-to-end (live run):** the "same artifact → identical
++ **Manual end-to-end (live run):** the "same artifact → identical
   lifecycle and report" check is manual, since live LLM output is not
   CI-deterministic. Procedure:
   1. Pick one artifact (e.g. a real `BRD-01`).
@@ -249,27 +256,27 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
 
 ### Hermes-only
 
-- **MCP-server runtime** — Hermes is a standalone server; integrates
++ **MCP-server runtime** — Hermes is a standalone server; integrates
   with any MCP-compatible client (Claude Code, custom).
-- **Scaffold runtime** — `sdd_init` materializes `<project>/UCX/`
++ **Scaffold runtime** — `sdd_init` materializes `<project>/UCX/`
   with personas + prompts + layer templates copied from
   `framework/layers/`.
-- **447-test pytest suite** — internal tests covering Hermes' own
++ **447-test pytest suite** — internal tests covering Hermes' own
   runtime behavior.
-- **`agent-skills/` package** — `sdd-orchestrator` (180 files) +
++ **`agent-skills/` package** — `sdd-orchestrator` (180 files) +
   `sdd-review-personas` (1 file) ported from the user's branch via
   P2-T7; provides additional governance + reference content.
-- **HTTP / stdio transport** — MCP-protocol-native transport per the
++ **HTTP / stdio transport** — MCP-protocol-native transport per the
   upstream spec; works in both modes.
 
 ### Plugin-only
 
-- **Auto-discovery** — Claude Code finds `skills/<name>/SKILL.md`,
++ **Auto-discovery** — Claude Code finds `skills/<name>/SKILL.md`,
   `agents/<name>.md`, `commands/<name>.md` without an explicit
   registration block in the manifest.
-- **Slash-prefix invocation** — `/aidoc-flow:doc-brd-autopilot`,
++ **Slash-prefix invocation** — `/aidoc-flow:doc-brd-autopilot`,
   `/aidoc-flow:doc-flow`, etc.
-- **AI Team subagent roster** (11 agents in `agents/` — 9 lifecycle + 2 review lenses) — a specialist
++ **AI Team subagent roster** (11 agents in `agents/` — 9 lifecycle + 2 review lenses) — a specialist
   team mirroring the SDD lifecycle: `pm-orchestrator` (delegates via
   the `Task` tool) plus the spec lane (`requirements-analyst`,
   `solutions-architect`, `test-architect`), execution lane
@@ -278,9 +285,9 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
   `traceability-auditor`). Subagents are a Claude Code construct;
   Hermes has no equivalent (it is the MCP tool-server such agents
   call). See `platforms/claude-code-plugin/docs/AGENTS.md`.
-- **`save-plan`** slash command (in `commands/`) — captures the
++ **`save-plan`** slash command (in `commands/`) — captures the
   current conversation plan to a timestamped file.
-- **Per-skill operation granularity** — the plugin user picks the
++ **Per-skill operation granularity** — the plugin user picks the
   exact operation (autopilot vs audit vs fixer) as a separate skill
   invocation; Hermes' generic tools dispatch based on inputs.
 

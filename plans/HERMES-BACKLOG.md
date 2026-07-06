@@ -427,7 +427,15 @@ follow-on that makes large-artifact review robust.
 
 **Dependency:** D-0051 (shipped). Independent otherwise.
 
-### H-14 — Plugin-side author-self-claim strip enforcement (cross-platform)
+### H-14 — Plugin-side author-self-claim strip enforcement (cross-platform) — ✅ CLOSED (2026-07-06, GD-05 + D-0052, framework 0.33.0 + plugin 0.23.1)
+
+**Status:** CLOSED. Verified the gap (the plugin's agentic lens reads the author score
+from disk), ratified **GD-05** (PR #246 — the strip MUST gains a disregard-instruction
+fallback for direct-read lenses; framework `0.33.0`), and implemented it plugin-side
+(D-0052 — 9 audit + 9 fixer SKILLs + review-team + traceability-auditor issue the
+disregard instruction; plugin `0.23.1`). Both platforms now satisfy the MUST: Hermes by
+physical removal (D-0051), the plugin by the disregard instruction. Plan:
+`plans/HERMES-PLUGIN-STRIP-PARITY-PLAN.md`.
 
 **Source:** the D-0051 investigation flagged a secondary cross-platform gap.
 

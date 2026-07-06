@@ -121,7 +121,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.23.0
+0.23.1
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.33.0
@@ -141,7 +141,7 @@ enforces that `FRAMEWORK_SPEC_VERSION` matches the canonical
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `claude-code-plugin/v0.23.0` (independent SemVer) |
+| Version | `claude-code-plugin/v0.23.1` (independent SemVer) |
 | Conforms to | framework spec `0.33.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
