@@ -57,6 +57,21 @@ class DocLint(unittest.TestCase):
         findings = lint_path(Path(__file__))
         self.assertEqual(findings, [])
 
+    def test_id02_skips_letter_leading_prose_but_flags_digit_leading(self):
+        # LINT-DOCID-HEADER-FALSE-POSITIVE: a valid doc-id is TYPE-<digits>, so a
+        # letter-leading TYPE-<word> token (PRD-Ready / BRD-TEMPLATE / BRD-NN /
+        # SPEC-Final) is prose, not a malformed id — it must NOT draw ID02. The
+        # valid fixture carries those four tokens; a digit-leading malformed id
+        # (BRD-2 in the broken fixture) must STILL draw ID02.
+        valid_id02 = [f for f in lint_path(FIXTURES / "valid") if f.code == "ID02"]
+        self.assertEqual(
+            valid_id02, [], f"letter-leading prose must not draw ID02; got {valid_id02}"
+        )
+        broken_id02 = {
+            f.message.split("'")[1] for f in lint_path(FIXTURES / "broken") if f.code == "ID02"
+        }
+        self.assertIn("BRD-2", broken_id02, "digit-leading malformed id must still draw ID02")
+
 
 if __name__ == "__main__":
     unittest.main()

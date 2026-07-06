@@ -96,12 +96,18 @@
 > BRD-00 `Cycle` roadmap already encode both phase axes (cross-cycle leaks are structurally
 > prevented by trace-inert future BRDs). Canonical `tools/sdd_doc_lint` + both mirrors;
 > TRACEABILITY.md §Coverage gates; 6 tests; zero example-corpus findings; verified
-> end-to-end. Closes `D54-F13`. **▶ Remaining genuinely-open framework-core:** `D54-F04`
-> EARS rubric (P3), `LINT-DOCID-HEADER-FALSE-POSITIVE` (P3), `D54-F08` skeleton-emit (P3).
-> Each is a `framework/` spec-tier PR → **impl merge needs founder ratification.**
-> **Note:** IPLAN-LANG-001 (#255) merged (founder-ratified); the D54-F13/COV03 impl PR is
-> OPEN awaiting founder ratification (spec-tier; AI must not auto-merge framework-spec
-> changes).
+> end-to-end. Closes `D54-F13`. Then shipped **`LINT-DOCID-HEADER-FALSE-POSITIVE`** (PR #258
+> plan; impl D-0056): the ID02 malformed-doc-id scan now fires **only on digit-leading
+> `TYPE-<n>` tokens** (a valid id is `TYPE-<digits>`; a letter-leading `TYPE-<word>` like
+> `PRD-Ready`/`BRD-TEMPLATE` is prose) — generalizes D-0043's `-INDEX` exemption. **Pure
+> `tools/sdd_doc_lint` bugfix — no `framework/` change, no version bump, auto-mergeable**
+> (D-0043 precedent). **▶ Remaining genuinely-open framework-core (both spec-tier, P3):**
+> `D54-F04` EARS-Ready rubric broadening, `D54-F08` `--skeleton` template emit — impl merge
+> needs founder ratification.
+> **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) merged (founder-ratified). **CI
+> FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254) FIXED the composition-check-on-PR-head gap
+> (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs PRs now merge via the **normal green
+> path** (no `--admin` needed); #258 was the first to merge cleanly without admin.
 >
 > ---
 >

@@ -10,6 +10,35 @@ graduation.
 
 ---
 
+## D-0056 — The ID02 malformed-doc-id scan flags only digit-leading `TYPE-<n>` tokens (generalizes D-0043's `-INDEX` exemption); no version bump
+
+**2026-07-06.** LINT-DOCID-HEADER-FALSE-POSITIVE. The `sdd_doc_lint` ID02 check
+(`_DOC_ID` = `\b(TYPE)-([A-Za-z0-9]+)\b`) flagged **any** `TYPE-<token>` that wasn't
+`TYPE-<digits>` (or `-INDEX`) as a malformed document id — so prose like `PRD-Ready` (a
+readiness-gate name), `BRD-TEMPLATE` (a quick-link), and `BRD-NN` (a placeholder) tripped it
+on the BRD-00 index template and on any consumer's filled-in index.
+
+**Decision.** A valid doc-id's post-hyphen segment is **always all-digits** (`doc_re` =
+`^[A-Z]+-\d{2,}$`), so a `TYPE-<letter-leading>` token can never be a malformed instance of
+that form — it is a compound word/marker. ID02 now fires **only when the second segment is
+digit-leading** (`m.group(2)[0].isdigit()`) and fails `doc_re`. This removes the prose
+false-positives while keeping every real malformed id flagged (`BRD-2`, `BRD-007x`), and
+**generalizes** [[D-0043]]'s special-cased `-INDEX` exemption to any non-id-like token (the
+explicit `-INDEX` clause is subsumed and removed). Accepted tradeoff: a letter-in-digit-slot
+typo (`BRD-O1`) is no longer flagged — rare, and a future `≥1-digit` heuristic could recover
+it without reintroducing the FPs.
+
+**No version bump.** ID02 is not documented normatively in `framework/`; the rule's contract
+("malformed doc-ids are flagged") is unchanged — only the FP scope narrows. The lint code
+lives in `tools/sdd_doc_lint/` (vendored byte-identical to both platform mirrors via
+`sync-vendored.sh`); no `framework/**` path is touched → GATE-SPEC does not fire, matching the
+D-0043 (STRUCT01-INDEX-EXEMPTION) linter-bugfix-no-bump precedent. New unit cases guard the FP
+removal (via the valid fixture) + the kept true-positive; 166 conformance green; zero ID02 on
+the example corpus. Reviewed: 3 passes (Pass 2 independent). Closes FRAMEWORK-TODO
+`LINT-DOCID-HEADER-FALSE-POSITIVE`.
+
+---
+
 ## D-0055 — COV03 phase-leak advisory (deferred-band over-realization); no new phase tag — the band + BRD-00 roadmap already encode both phase axes
 
 **2026-07-06.** D54-F13 (phase-leak leg; framework spec `0.33.1 → 0.34.0`, MINOR). The
