@@ -384,7 +384,15 @@
   elements. The "scope ledger" is a *designated section of the existing
   BRD acceptance/index* (acceptance_criteria / launch_gates), NOT a new
   artifact — everything references it.
-- *Status:* OPEN — P2.
+- *Status:* **NARROWED (verified 2026-07-06) — the missing-downstream half is done;
+  only the phase-leak leg remains OPEN (P2).** The "accepted feature has no IPLAN =
+  warning" half shipped as **`COV01`** (SPEC-but-no-IPLAN = warning in `build` / error
+  in `gate-code`; see `ENG-FWD-COVERAGE`). The **genuinely-open work is the phase-leak
+  row (DD-6 row 4)** — explicitly deferred in the `COV01` docstring: a first-class
+  **phase tag** on capability elements + a blocking check when an out-of-phase item
+  leaks into an in-phase IPLAN. Needs element granularity (present since
+  ELEMENT-COVERAGE-001) + the new phase-tag concept + the BRD-index scope-ledger
+  binding. This is the highest-value genuinely-open coverage item.
 
 ### `[lint]` `D54-F05-BDD-COVERAGE-ROLLUP` — no aggregate EARS coverage across a split BDD set
 
@@ -397,7 +405,15 @@
   an EARS-level coverage roll-up across the BDD set (in `sdd_doc_lint` /
   `trace_walk.py`) + a documented split-by-functional-block convention so
   per-file "partial" aggregates to a true score.
-- *Status:* OPEN — P2.
+- *Status:* **CORE SUBSUMED (verified 2026-07-06); residual = P3 cosmetic/doc.**
+  The "aggregate EARS coverage across a split BDD set" gate shipped as **`COV02`**
+  (`_check_backward_coverage`, corpus-wide) + element-level ELEMENT-COVERAGE-001 (spec
+  0.30.0): every EARS element's downstream BDD coverage is now computed across the whole
+  corpus, so a split `BDD-01/02` no longer hides coverage from the gate. **Residual
+  (P3):** the per-file `ears_coverage` *reporting field* still reads "partial" in
+  isolation (cosmetic — the gate is correct), and the "split-by-functional-block ≤12
+  scenarios" convention is documented in `AUTHORING_STYLE.md` / `04_BDD/` as guidance
+  but unenforced. Low value; fold into a future authoring-doc pass if it bites.
 
 ### `[docs]` `D54-F07-TAG-SYNTAX-REFERENCE` — per-layer tag punctuation undocumented + unenforced
 
@@ -409,7 +425,17 @@
   (Gherkin makes one-format impossible): a single tag-syntax reference
   page stating the legitimately-per-layer rules, plus `taglint` (an
   `sdd_doc_lint` check) enforcing them per layer.
-- *Status:* OPEN — P2.
+- *Status:* **DOC LEG ✅ SHIPPED, enforcement leg deferred (cosmetic).**
+  The reference page shipped as `framework/governance/TAG_SYNTAX.md` (YAML-BDD-SCHEMA
+  PR-3, #201, spec 0.29.0): per-layer punctuation ("one space after the colon"), the
+  **BDD exception** (structured `ears:` YAML list, not an `@`-tag), pipe-delimited
+  multi-tags, and the per-layer example table. The **enforcement leg is cosmetic-only
+  and deferred**: `sdd_doc_lint`'s `_TAG` regex (`@(...)\s*:\s*(...)`) accepts both
+  `@brd:X` and `@brd: X`, but the trace graph resolves identically either way — a
+  per-layer punctuation lint would catch nothing that breaks traceability, and the
+  original divergence driver (BDD Gherkin no-space tags) is now a legacy-only dual-mode
+  path since YAML-BDD. Not worth a GATE-SPEC change; revive only if a real
+  punctuation-driven mis-parse surfaces.
 
 ### `[playbook]` `D54-F04-EARS-NONLATENCY-RUBRIC` — readiness rubric docks non-latency quantified bounds
 
@@ -498,7 +524,17 @@
 - *Related:* the "every accepted feature → ≥1 IPLAN = warning" half is
   shared with `D54-F13-PHASE-SCOPE-RECONCILIATION`; one forward-coverage
   engine can serve both. Build once.
-- *Status:* OPEN — P2.
+- *Status:* ✅ **CLOSED (verified 2026-07-06 against shipped code).** Delivered
+  by the CFB-PR-2 coverage engine (spec 0.24.0–0.30.0). **Leg (a) forward gate =
+  `COV01`** (`sdd_doc_lint/__init__.py` `_check_forward_coverage`): every in-scope
+  (AUTHORED) BRD FR must reach ≥1 SPEC + ≥1 IPLAN corpus-wide, with the exact
+  author-specified severity split (escaped/`deferred` FR never blocks; no-SPEC =
+  error; SPEC-but-no-IPLAN = warning in `build` / error in `gate-code`); element
+  granularity added by ELEMENT-COVERAGE-001 (spec 0.30.0). **Leg (d) backward =
+  `COV02`** (`_check_backward_coverage`, corpus-wide, deferred-vs-missed split).
+  **Leg (e) generated matrix = `docs/TRACEABILITY_MATRIX.md`** (`tools/sdd_coverage.py`).
+  Residual: **the phase-leak row (DD-6 row 4)** is explicitly deferred in the COV01
+  docstring — tracked under `D54-F13` (the phase-tag leg), not here.
 
 ### `[docs]` `ENG-BRD-SKETCH-ROADMAP` — no project-init roadmap + BRD "sketch" sub-form
 
