@@ -368,7 +368,16 @@
   `language:`/`dependencies:` from SPEC. Revive + merge it; extend with
   non-code deliverable scaffolds (plugin/infra/docs) if SPEC-inheritance
   alone doesn't cover them. Do NOT duplicate the plan here.
-- *Status:* OPEN — P2. → `IPLAN-LANG-001-PLAN.md`.
+- *Status:* ✅ **CLOSED (2026-07-06, `IPLAN-LANG-001-PLAN.md`, D-0054, spec 0.33.0 →
+  0.33.1).** `IPLAN-TEMPLATE.yaml` example content is now language-neutral: `file_manifest`
+  paths (§2) + `execution_commands` (§3) + the residual §5/§6 example paths use
+  `<…, per the @spec language>` placeholders with labelled `# example (Python):` lines, and
+  the `_guidance` instructs deriving the toolchain from `@spec: SPEC-NN` (SPEC owns
+  `language:`/`dependencies:`). Inheritance, not a new IPLAN field; structural contract
+  preserved (no validator/schema/conformance change). **Deferred residual:** non-code
+  *deliverable scaffolds* (plugin SKILL.md sets / managed infra / docs) — SPEC-language
+  inheritance covers the language axis; a dedicated deliverable-type scaffold is a separate
+  item, surface it only if a non-code IPLAN actually needs one.
 
 ### `[lint]` `D54-F13-PHASE-SCOPE-RECONCILIATION` — no phase tag / no missing-downstream check
 

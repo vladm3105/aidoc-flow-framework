@@ -10,6 +10,38 @@ graduation.
 
 ---
 
+## D-0054 — The IPLAN template inherits its implementation language from SPEC (no new IPLAN field); de-Python the template's example content
+
+**2026-07-06.** IPLAN-LANG-001 (framework spec `0.33.0 → 0.33.1`, PATCH). Layer-8
+`IPLAN-TEMPLATE.yaml` hardcoded a Python toolchain (`pip install`/`pytest`/`mypy`/`ruff`,
+`src/[module]`, `*.py` paths) in its example content. Language + dependencies are a
+**SPEC-owned fact** (Layer 6 `SPEC-TEMPLATE.yaml` `language:`/`dependencies:`), and every
+IPLAN already cites its SPEC (`@spec: SPEC-NN`).
+
+**Decision: inheritance, not a new field.** The template instructs the author to read the
+`@spec` language/dependencies and express each phase in that toolchain, rather than adding
+an IPLAN-level `language:` key (which would duplicate a SPEC-owned decision at the wrong
+layer). Example content became `<…, per the @spec language>` placeholders + a labelled
+`# example (Python):` line per `file_manifest` path (§2) and `execution_commands` category
+(§3). During impl the same Python residue was found in §5 (session_handoff) + §6
+(traceability `@code:`/`@tests:` + code_inventory) and given the identical treatment for
+internal consistency (a discovered-in-impl extension of the ratified §2/§3 scope — same
+fix, no new design).
+
+**Contract preserved → no code change.** The six sections and the three
+`execution_commands` categories (`setup`/`implementation`/`validation`, each a non-empty
+list) are unchanged, so nothing that reads the template breaks: Hermes `iplan_rules.py`
+category validation, `test_layers.py` metadata assertions, and the acceptance harness
+(section-key presence only — no reader parses `execution_commands` *content*) all stay
+green. Plugin bundle re-vendored via `sync-plugin-framework.sh`. Framework **PATCH**;
+plugin + Hermes product versions unchanged. Rejected (out of scope): renaming the category
+keys (a validated contract), an action-vocabulary DSL (speculative until a non-Python
+platform demands it), and folding design-review governance into IPLAN (that rigor lives
+upstream). Reviewed: 5 passes (3 independent) incl. a 0.33.0 refresh re-validation. Closes
+FRAMEWORK-TODO `D54-F06-IPLAN-PROJECT-TYPES`.
+
+---
+
 ## D-0053 — Modernize the Hermes sdd-orchestrator skill from the v3.2 15-persona + Lite/Standard/Full depth-tier model to the weighted-crew + playbook + single-path model
 
 **2026-07-06.** H11-ORCHESTRATOR-CREW-MODEL. The `sdd-orchestrator` agent-skill described
