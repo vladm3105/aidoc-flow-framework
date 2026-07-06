@@ -47,6 +47,28 @@ the forward matrix and the backward walker never disagree. The matrix is
 > example's 1:1 numbering is coincidence, not contract. See
 > `framework/governance/ID_NAMING_STANDARDS.md` §Cross-layer cardinality.
 
+## Coverage gates (`sdd_doc_lint`)
+
+The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVERAGE-001):
+
+- **`COV01` — forward coverage.** Every in-scope (`AUTHORED`) BRD functional requirement
+  MUST reach ≥1 SPEC and ≥1 IPLAN downstream. No SPEC → error; SPEC-but-no-IPLAN → warning
+  in `build`, error in `gate-code`. Escaped FRs never block: a `Future` band (deferred) or a
+  `realized_by: <LAYER>` token (realized off the SPEC path).
+- **`COV02` — backward coverage.** The dual: every EARS / BDD element must be realized by a
+  downstream SPEC/TDD (or explicitly deferred), computed corpus-wide.
+- **`COV03` — phase-leak advisory (the inverse of `COV01`'s escape).** A **`Future`-banded
+  (deferred) FR that IS realized downstream** by its realizing layer draws a **`WARNING`** —
+  something scoped for a *next MVP cycle* is being pulled into the current build. **Advisory
+  only, in both modes** (never blocks): scope pull-forward is legitimate; the resolution is
+  to re-band the FR `P1`/`P2` for the current cycle or confirm the deferral is intentional. A
+  `realized_by:` FR is a positive coverage claim, not a leak, and is never flagged. Cross-cycle
+  leaks need no gate — later-cycle BRDs are `Planned`/`Sketch` (trace-inert), so their
+  elements are not in the graph. *Origin:* D54-F13 / D-0055.
+
+`reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
+realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
+
 ## Upstream/Downstream Validation
 
 | Layer | Required Upstream Tags | Validated Downstream |

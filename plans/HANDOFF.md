@@ -89,12 +89,19 @@
 > §5/§6 residual paths → `<…, per the @spec language>` + labelled Python examples);
 > inheritance from `@spec`, no new field; structural contract preserved (no validator/
 > conformance change); bundle re-vendored; 5-pass review (3 independent). Closes
-> FRAMEWORK-TODO `D54-F06`. **▶ Remaining genuinely-open framework-core:** `D54-F13`
-> phase-leak (highest value, design-heavy), `D54-F04` EARS rubric (P3),
-> `LINT-DOCID-HEADER-FALSE-POSITIVE` (P3), `D54-F08` skeleton-emit (P3). Each is a
-> `framework/` spec-tier PR → **impl merge needs founder ratification.**
-> **Note:** the IPLAN-LANG-001 impl PR is OPEN awaiting founder ratification (spec-tier;
-> AI must not auto-merge framework-spec changes).
+> FRAMEWORK-TODO `D54-F06`. Then shipped **`D54-F13` phase-leak** (PR #256 plan; impl PR =
+> spec-tier, framework `0.33.1 → 0.34.0`, **D-0055**): new lint rule **`COV03`** — the
+> inverse of COV01's escape, an **advisory** (never blocks) when a `Future`-banded (deferred)
+> FR IS realized downstream. **No new phase tag** — grounding found the `Future` band +
+> BRD-00 `Cycle` roadmap already encode both phase axes (cross-cycle leaks are structurally
+> prevented by trace-inert future BRDs). Canonical `tools/sdd_doc_lint` + both mirrors;
+> TRACEABILITY.md §Coverage gates; 6 tests; zero example-corpus findings; verified
+> end-to-end. Closes `D54-F13`. **▶ Remaining genuinely-open framework-core:** `D54-F04`
+> EARS rubric (P3), `LINT-DOCID-HEADER-FALSE-POSITIVE` (P3), `D54-F08` skeleton-emit (P3).
+> Each is a `framework/` spec-tier PR → **impl merge needs founder ratification.**
+> **Note:** IPLAN-LANG-001 (#255) merged (founder-ratified); the D54-F13/COV03 impl PR is
+> OPEN awaiting founder ratification (spec-tier; AI must not auto-merge framework-spec
+> changes).
 >
 > ---
 >

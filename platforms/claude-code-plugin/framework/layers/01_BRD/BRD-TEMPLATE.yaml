@@ -561,7 +561,9 @@ functional_requirements:
            band — the machine-readable phase signal. Allowed values are
            single-sourced in `priority_definitions` above; `Future` = the
            deferral signal. A missing/invalid band is treated as in-scope
-           (it never silently escapes the coverage gate).
+           (it never silently escapes the coverage gate). A `Future` FR that is
+           nonetheless realized downstream draws a `COV03` phase-leak advisory
+           (re-band it P1/P2 for the current cycle, or confirm the deferral).
         2. The literal line `Acceptance criteria:` bounds the gated FR
            sub-block: element IDs before it (under §7) are gated functional
            requirements; IDs after it are acceptance criteria and are NOT gated.
