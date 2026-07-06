@@ -51,13 +51,13 @@ A plan is Ready when:
 - [ ] Plan reviewed (self-review for solo projects)
 - [ ] Approval record exists for both planning package and IPLAN
 
-### Depth Model (GOV §7)
+### Layer Model (GOV §7) — single-path, no depth tiers
 
-| Depth | Required Artifacts |
-|-------|-------------------|
-| Lite | BRD, PRD, IPLAN |
-| Standard | BRD, PRD, EARS, ADR, SPEC, TDD, IPLAN |
-| Full | BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN + CHG gates |
+There are **no** Lite/Standard/Full depth tiers. The flow is a single path over the 8
+layers — BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code — with **CHG** as a
+governance overlay on changes. Which upstream a layer must realize is governed by the
+**necessary-upstream contract** (NECESSARY-UPSTREAM-001): a layer traces only the upstream
+layers that actually exist, not a fixed tier. Lifecycle: **MVP → PROD → NEW MVP**.
 
 ### Operational Steps from DEVELOPMENT_WORKFLOW_GUIDE.md §2
 

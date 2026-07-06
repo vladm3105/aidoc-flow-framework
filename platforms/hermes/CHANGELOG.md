@@ -119,6 +119,30 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **sdd-orchestrator skill modernized to the weighted-crew + playbook + single-path
+  model** (H11-ORCHESTRATOR-CREW-MODEL, D-0053; `0.7.0 → 0.7.1`). The
+  `agent-skills/.../sdd-orchestrator` skill described the obsolete v3.2 "15 parallel
+  personas + Lite/Standard/Full depth-tier" model the engine abandoned. Corrected, in
+  `SKILL.md`: the persona model (frontmatter/Overview + the inert UCX→Hermes 15-persona
+  mapping and the creation/review assignment tables → point at
+  `framework/governance/REVIEW_CREWS.yaml` as the authority for all 9 weighted crews +
+  one illustrative BRD crew + a `framework/playbooks/` / LAYER-PLAYBOOKS-001 cross-link);
+  the superseded "8-category weighted-deduction" chairperson formula → the current
+  **weighted-average of crew `lens_score`s, capped by unresolved P0/P1** (matching
+  `review/review_scoring.py`); the wrong "All 15 required BRD sections" list → point at
+  `BRD-TEMPLATE.yaml`; the "4-persona" EARS/BRD counts → the 5-lens crews; the stale
+  `/opt/data/ucx_framework/.venv` MCP-config paths → the canonical `/path/to/python`
+  placeholder; and dropped the "SDD v3.2" version pins. Two **loaded** governance files
+  carrying the abandoned Lite/Standard/Full depth-tier model —
+  `governance/GOVERNANCE_RULES.md` §7 and the primary-load
+  `references/governance-load-protocol.md` — were replaced with the current single-path
+  layer model (no tiers; necessary-upstream contract; MVP → PROD → NEW MVP). Skill
+  `version: 2.0.0 → 2.1.0`. Doc-accuracy only — no engine/runtime change, no `framework/`
+  change. *(Deferred backlog: the ~25-file cosmetic "v3.2" string residue across the
+  inherited governance scaffold; the hand-vendored `references/` framework-doc copies
+  (D-0013 delete-vs-resync); the element-ID SHA-256 residue, framework-gated by
+  PROVISIONAL-IDS-002.)*
+
 - **Element-ID alignment to the framework 4-segment hash form** (PLATFORM-ALIGN
   Part B, `0.1.0 → 0.2.0`). The runtime element-ID validators in
   `validation/cross_section.py` (`_ELEMENT_ID_RE`, `_ELEMENT_ID_INLINE_RE`) and
