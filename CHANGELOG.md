@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — IPLAN-LANG-001: de-Python the IPLAN template; inherit language from SPEC (framework spec 0.33.0 → 0.33.1) (2026-07-06)
+
+`framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` hardcoded a Python toolchain in its
+example content (`pip install`, `pytest`, `mypy`, `ruff`, `src/[module]`,
+`tests/unit/test_[module].py`), re-pinning a language its own `@spec: SPEC-NN` already
+owns (SPEC declares `language:` + `dependencies:` at Layer 6). Made the example content
+**language-neutral**: `file_manifest` paths (§2) and `execution_commands` strings (§3)
+are now `<…, per the @spec language>` placeholders + a lead-comment per category, each with
+a clearly labelled `# example (Python):` line, and the `_guidance` instructs the author to
+derive concrete commands/paths from the `@spec` language + dependencies. Extended the same
+treatment to the residual Python example paths in §5 (session_handoff) and §6 (traceability
+`@code:`/`@tests:` + code_inventory) so the template is internally consistent — a
+discovered-in-impl extension of the plan's §2/§3 scope, same fix. The **structural contract
+is preserved exactly** (six sections; the `setup`/`implementation`/`validation` categories,
+each a non-empty list), so **no validator, schema, or conformance change** — Hermes
+`iplan_rules.py` still passes, `test_layers.py` metadata assertions hold, and the plugin
+bundle was re-vendored via `sync-plugin-framework.sh`. Framework spec **PATCH**; plugin +
+Hermes product versions unchanged. See `plans/IPLAN-LANG-001-PLAN.md` + `plans/DECISIONS.md`.
+
 ### Changed — ENG-STALE-DEPTH-DOCS: reconcile the Hermes sdd-orchestrator's published root-docs + governance docs to the single-path model (dead Lite/Standard/Full tables + a dead SDD_DEPTH_GUIDE.md link) (hermes 0.7.1 → 0.7.2; skill 2.1.0 → 2.1.1; no framework change) (2026-07-06)
 
 Completes the behavioral legs of H-11a. The sdd-orchestrator skill's user-facing

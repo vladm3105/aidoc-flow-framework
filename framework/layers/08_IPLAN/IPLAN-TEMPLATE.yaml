@@ -83,18 +83,23 @@ file_manifest:
     Element-ID exemption: §2 file-manifest entries MAY omit `IPLAN.NN.SS.xxxx`
     element IDs — lineage comes from `@spec`/`@tdd` citations. Do NOT over-assign
     IDs. See `governance/ID_NAMING_STANDARDS.md` §"Element-ID exemptions".
+    Paths follow the conventions of the LANGUAGE + dependencies declared upstream
+    in `@spec: SPEC-NN` (SPEC owns `language:`/`dependencies:`); do NOT re-pin a
+    language here. Replace the `<…>` placeholders with concrete paths in that
+    toolchain. Example (Python): `tests/unit/test_auth.py`, `src/auth/service.py`,
+    `tests/integration/test_auth.py`.
   files:
-    - path: "tests/unit/test_[module].py"
+    - path: "<unit test for the component, per the @spec language>"
       order: 1
       status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
       session: null
       verified: false
-    - path: "src/[module]/[component].py"
+    - path: "<implementation file, per the @spec language>"
       order: 2
       status: NOT_STARTED
       session: null
       verified: false
-    - path: "tests/integration/test_[module].py"
+    - path: "<integration test for the component, per the @spec language>"
       order: 3
       status: NOT_STARTED
       session: null
@@ -107,19 +112,24 @@ execution_commands:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
   _guidance: |
-    Runnable bash commands. The actual bridge from specification to code.
-    Three categories matching the implementation workflow.
+    Runnable commands. The actual bridge from specification to code.
+    Three categories matching the implementation workflow (keys are a validated
+    contract — keep `setup`/`implementation`/`validation`, each a non-empty list).
+    Concrete commands depend on the LANGUAGE + dependencies declared upstream in
+    `@spec: SPEC-NN` (SPEC owns the toolchain); express each phase in THAT
+    toolchain. Do NOT re-pin a language here. The `# example (Python):` lines
+    below are illustrative only — replace them with your `@spec` toolchain's
+    equivalents (e.g. Node: `npm ci` / `npm test`; Go: `go mod download` /
+    `go test ./...`).
   setup:
-    - "python -m venv .venv && source .venv/bin/activate"
-    - "pip install -r requirements.txt"
-    - "mkdir -p src/[module] tests/unit tests/integration"
+    - "# Provision the toolchain + dependencies from @spec (env, package install, scaffold dirs)"
+    - "# example (Python): python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
   implementation:
-    - "# Create test file first (TDD): tests/unit/test_[module].py"
-    - "# Create implementation: src/[module]/[component].py"
+    - "# Author each file in @spec-language order — test first (TDD), then implementation"
+    - "# example (Python): create tests/unit/test_auth.py first, then src/auth/service.py"
   validation:
-    - "python -m pytest tests/ -v --cov=src/[module] --cov-report=term-missing"
-    - "python -m mypy src/[module] --strict"
-    - "python -m ruff check src/[module]"
+    - "# Run the @spec toolchain's test + type-check + lint gates"
+    - "# example (Python): python -m pytest tests/ -v --cov && python -m mypy --strict && python -m ruff check"
 
 # =============================================================================
 # Section 4: Implementation Contracts
@@ -169,7 +179,7 @@ session_handoff:
     - date: "YYYY-MM-DD"
       agent: "[AI agent / session identifier]"
       files_touched:
-        - path: "src/[module]/[file].py"
+        - path: "<implementation file, per the @spec language>"
           action: created  # created | modified
           status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
       partial_work: "[Exactly what's incomplete if session ended mid-step]"
@@ -192,15 +202,15 @@ traceability:
       - "@tdd: TDD.NN.SS.xxxx"  # element-level (GD-03); pipe-delimit several
   downstream:
     code_paths:
-      - "@code: src/[module]/"
+      - "@code: <source path(s), per the @spec language>"
     test_paths:
-      - "@tests: tests/"
+      - "@tests: <test path(s), per the @spec language>"
   code_inventory:
     _guidance: |
       Audit trail: every file created/modified during implementation.
       Verified = tests pass + lint clean. Populated by each session.
     files:
-      - path: "src/[module]/[file].py"
+      - path: "<implementation file, per the @spec language>"
         status: created  # created | modified
         session: 1
         verified: false  # true after tests pass + lint clean

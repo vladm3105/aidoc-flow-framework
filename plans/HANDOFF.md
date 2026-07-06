@@ -77,6 +77,27 @@
 > Pass 3 = fresh-context independent) expanded scope 1→3 files + 5 findings, MINOR→PATCH,
 > D-0052→D-0053. 3 follow-ups carved (H-11a cosmetic v3.2 sweep, H-11b vendored-copy
 > D-0013 decision, H-11c element-ID SHA-256 residue). H-11 CLOSED.
+> **🟢 FRAMEWORK-CORE BACKLOG SWEEP (2026-07-06) — begun after the Hermes doc arc.**
+> Grounded the whole framework-core backlog and found several "top P2" items were
+> **already shipped** by the COV01/COV02 coverage engine + `TAG_SYNTAX.md`. Reconciled
+> the tracking (PR #252, verified against code): **`ENG-FWD-COVERAGE` CLOSED** (= COV01/
+> COV02 + `TRACEABILITY_MATRIX.md`); **`D54-F07`** doc-shipped, enforcement cosmetic-deferred;
+> **`D54-F05`** core-subsumed by corpus-wide COV02; **`D54-F13`** narrowed to just its
+> genuinely-open **phase-leak leg**. Then shipped **`IPLAN-LANG-001`** (PR #253 refreshed
+> plan; impl PR = spec-tier, framework `0.33.0 → 0.33.1`, **D-0054**): de-Pythoned
+> `IPLAN-TEMPLATE.yaml` example content (§2 `file_manifest` + §3 `execution_commands` +
+> §5/§6 residual paths → `<…, per the @spec language>` + labelled Python examples);
+> inheritance from `@spec`, no new field; structural contract preserved (no validator/
+> conformance change); bundle re-vendored; 5-pass review (3 independent). Closes
+> FRAMEWORK-TODO `D54-F06`. **▶ Remaining genuinely-open framework-core:** `D54-F13`
+> phase-leak (highest value, design-heavy), `D54-F04` EARS rubric (P3),
+> `LINT-DOCID-HEADER-FALSE-POSITIVE` (P3), `D54-F08` skeleton-emit (P3). Each is a
+> `framework/` spec-tier PR → **impl merge needs founder ratification.**
+> **Note:** the IPLAN-LANG-001 impl PR is OPEN awaiting founder ratification (spec-tier;
+> AI must not auto-merge framework-spec changes).
+>
+> ---
+>
 > **ENG-STALE-DEPTH-DOCS ✅ SHIPPED** (PR #250 plan; impl `hermes/v0.7.2` + skill `2.1.1`,
 > no new D-number): completes the **behavioral** legs of H-11a — the sdd-orchestrator's
 > *user-facing* published docs still advertised the dead SDD-Lite/Standard/Full
