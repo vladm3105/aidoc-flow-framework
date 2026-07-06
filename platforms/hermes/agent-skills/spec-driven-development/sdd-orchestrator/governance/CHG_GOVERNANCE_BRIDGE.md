@@ -16,8 +16,8 @@ Maps v3 CHG gate overlay to governance execution phases.
 
 ## Integration Rules
 
-- Full-depth programs require all CHG gates.
-- Lite/Standard may use subset gates by policy.
+- CHG is an orthogonal governance overlay on changes; its gates apply to every change that
+  crosses a gate boundary (there are no depth tiers to key a subset off).
 - Emergency bypass must be documented with reason, approver, and follow-up action.
 
 ## References

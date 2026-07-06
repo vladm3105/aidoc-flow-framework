@@ -634,7 +634,19 @@
   `HERMES-BACKLOG.md` H-11 (the broader sdd-orchestrator v3.2-worldview
   refresh already parked there); this entry is the concrete file:line
   evidence for it. Do not double-track.
-- *Status:* OPEN — P2 (small + concrete; README leg + Hermes-side).
+- *Status:* ✅ **CLOSED (2026-07-06, `ENG-STALE-DEPTH-DOCS-PLAN.md`, hermes 0.7.2 + skill
+  2.1.1).** The Hermes-side legs are done: grounding found **7** published surfaces (not the
+  2 named here) — `root-docs/README.md` (tagline + the "SDD Depth Variants" table that
+  **self-contradicted** the file's own single-path prose), `MULTI_PROJECT_QUICK_REFERENCE.md`
+  - `MULTI_PROJECT_SETUP_GUIDE.md` (two depth tables + an embedded changelog line),
+  `governance/README.md` + `MULTI_PROJECT_SETUP_GUIDE.md` (two **dead links** to a
+  nonexistent `SDD_DEPTH_GUIDE.md`, removed), `CHG_GOVERNANCE_BRIDGE.md` (subset-gate rule),
+  and the "SDD-Full" CHG-label comments — all reconciled to the single-path model.
+  Doc-accuracy only; no framework change; no new decision (governed by the 2026-06-12
+  cleanup + D-0053). **Residual (leg (a), tracked here):** the *public GitHub README render
+  at the released tag* — this repo's own README is already single-flow; the stale public
+  copy is a released-tag/mirror concern, not an editable file in this tree. Verify at the
+  next release cut.
 
 ### BeeLocal consumer feedback (SDD authoring against v0.23.0) — triaged 2026-06-26
 

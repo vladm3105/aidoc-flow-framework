@@ -1,6 +1,6 @@
 # UCX Framework
 
-**AI-First Specification-Driven Development (SDD) with Scalable Depth**
+**AI-First Specification-Driven Development (SDD)**
 
 > **AI-First Design**: This framework is designed for AI agents (Claude Code, Gemini CLI, GitHub Copilot) as the primary operators. Humans work *through* AI assistants. AI agents autonomously execute workflows, generate artifacts, and manage the development lifecycle.
 
@@ -97,13 +97,13 @@ Review/remediation runtime controls in UCX Hermes:
 
 ---
 
-## SDD Depth Variants
+## SDD Layer Model
 
-| Depth | Layers | Best For | Timeline |
-|:------|:-------|:---------|:---------|
-| **SDD-Lite** | REF → BRD → PRD → IPLAN | MVPs, prototypes, solo + AI | 1-3 months |
-| **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams | 3-6 months |
-| **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team | 6+ months |
+The framework runs a **single SDD path** — all 8 layers (BRD → PRD → EARS → BDD → ADR →
+SPEC → TDD → IPLAN) are required by the **necessary-upstream contract**
+(NECESSARY-UPSTREAM-001); there are no Lite/Standard/Full depth tiers. The adaptive
+lifecycle is **MVP → PROD → NEW MVP**; reality deltas enter via the **CHG** governance
+overlay (an orthogonal overlay on changes, not a depth tier).
 
 See [framework/README.md](./framework/README.md) for detailed layer mappings.
 

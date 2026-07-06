@@ -14,15 +14,18 @@
 
 ---
 
-## SDD Depth Selection
+## SDD Layer Model
 
-This repository provides a **unified SDD framework** with scalable depth. It uses the **8-layer** flow (the pre-migration 14-layer model is superseded).
+This repository provides a **unified SDD framework** running a **single SDD path** — all 8
+layers are required by the **necessary-upstream contract** (NECESSARY-UPSTREAM-001); there
+are no Lite/Standard/Full depth tiers (the pre-migration 14-layer model is superseded).
 
-| Depth | Layers | Best For |
-|:------|:---------|:---------|
-| **SDD-Lite** | REF → BRD → PRD → IPLAN | MVPs, prototypes, solo + AI, 1-3 months |
-| **SDD-Standard** | + EARS, BDD, ADR | Production apps, small teams, 3-6 months |
-| **SDD-Full** | All 8 layers + CHG governance overlay | Enterprise, regulated, multi-team, 6+ months |
+| Flow | Layers |
+|:-----|:-------|
+| **SDD (single path)** | BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN (+ **CHG** governance overlay) |
+
+The adaptive lifecycle is **MVP → PROD → NEW MVP**; reality deltas enter via the CHG
+overlay.
 
 ## Hermes Skills (UCX V3)
 
@@ -49,7 +52,7 @@ KB policy references:
 | `ucx_kb/` | Standalone RAG + Graph knowledge base package |
 | `framework_rags/` | Shared RAG tools and reference utilities |
 
-**See**: [framework/README.md](./framework/README.md) for v3 layer mappings. The v2 depth guide is in [governance/SDD_DEPTH_GUIDE.md](./governance/SDD_DEPTH_GUIDE.md).
+**See**: [framework/README.md](./framework/README.md) for v3 layer mappings.
 
 ---
 
@@ -1270,7 +1273,7 @@ mv /opt/data/project_name/.claude/skills.new /opt/data/project_name/.claude/skil
 ### Version 2.4 (2026-04-29)
 
 - **SDD v3 Migration**: Updated all references for the 8-layer v3 framework
-  - SDD Depth Selection now shows v3 8-layer pipeline (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
+  - SDD setup now shows the single 8-layer pipeline (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN)
   - v2 14-layer variant preserved in `framework/` for legacy projects
   - Added `framework/` to directory tables and architecture diagrams
   - Updated test structure alignment to TDD (L7) instead of TSPEC (L10)

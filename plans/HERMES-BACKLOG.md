@@ -401,6 +401,12 @@ model. Doc-accuracy only; no engine/framework change.
   `governance/` scaffold + non-loaded `references/`/`root-docs/` carry a stale baseline
   "SDD v3.2" string but no behavioral error (only the 3 loaded governance files + the
   primary reference were behavior-bearing; those are fixed). Optional bulk sweep.
+  **Partial-closed (2026-07-06, `ENG-STALE-DEPTH-DOCS-PLAN.md`, hermes 0.7.2):** the
+  *behavioral* depth-model residue that survived H-11 — 7 published `root-docs/` +
+  `governance/` surfaces carrying the dead SDD-Lite/Standard/Full depth-variant tables +
+  two dead `SDD_DEPTH_GUIDE.md` links — is reconciled to the single-path model (closes
+  FRAMEWORK-TODO `ENG-STALE-DEPTH-DOCS`). What remains under H-11a is the purely-cosmetic
+  "v3.2" version-string residue (no behavioral error).
 - **H-11b — hand-vendored `references/` framework-doc copies** (`ucx-readme.md`,
   `doc-governance-core.md`, `id-naming-standards.md`, `layer-registry.yaml`,
   `data-consistency-report.json`) — a [[D-0013]] delete-vs-resync decision (Hermes reads
