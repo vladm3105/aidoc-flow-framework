@@ -77,6 +77,17 @@
 > Pass 3 = fresh-context independent) expanded scope 1→3 files + 5 findings, MINOR→PATCH,
 > D-0052→D-0053. 3 follow-ups carved (H-11a cosmetic v3.2 sweep, H-11b vendored-copy
 > D-0013 decision, H-11c element-ID SHA-256 residue). H-11 CLOSED.
+> **ENG-STALE-DEPTH-DOCS ✅ SHIPPED** (PR #250 plan; impl `hermes/v0.7.2` + skill `2.1.1`,
+> no new D-number): completes the **behavioral** legs of H-11a — the sdd-orchestrator's
+> *user-facing* published docs still advertised the dead SDD-Lite/Standard/Full
+> depth-variant model (D-0053 fixed the SKILL + 2 loaded governance files; these 7
+> published `root-docs/`+`governance/` surfaces were the remainder, incl. a
+> **self-contradictory** README and two **dead links** to a nonexistent
+> `SDD_DEPTH_GUIDE.md`). All reconciled to the single-path model; closes FRAMEWORK-TODO
+> `ENG-STALE-DEPTH-DOCS` (residual: the public-render leg, verify at next release cut).
+> 3-pass review (Pass 2 independent caught a missed changelog-line surface). No
+> framework/engine change. What's left under H-11a is now purely the cosmetic v3.2
+> version-string sweep.
 > **▶ Next (Hermes follow-ons, each its own plan):**
 > **(1)** ~~`H-6`/`H-2` calibration deltas~~ — H-6.1/6.2 done (above);
 > remaining calibration items (no-findings rationale /

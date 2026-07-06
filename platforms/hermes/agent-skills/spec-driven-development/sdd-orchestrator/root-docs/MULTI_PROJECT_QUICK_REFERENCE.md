@@ -8,15 +8,18 @@
 
 ---
 
-## SDD Depth Options
+## SDD Layer Model
 
-| Depth | Use Case | Layers (v3) |
-|:------|:---------|:-------|
-| **SDD-Lite** | MVPs, prototypes, solo + AI | REF → BRD → PRD → IPLAN |
-| **SDD-Standard** | Production apps, small teams | + EARS, BDD, ADR |
-| **SDD-Full** | Enterprise, regulated, multi-team | All 8 layers + CHG governance overlay |
+The framework runs a **single SDD path** — all 8 layers are required by the
+**necessary-upstream contract** (NECESSARY-UPSTREAM-001); there are no Lite/Standard/Full
+depth tiers.
 
-The pre-migration 14-layer model is superseded by the 8-layer flow.
+| Flow | Layers |
+|:-----|:-------|
+| **SDD (single path)** | BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN (+ **CHG** governance overlay) |
+
+The adaptive lifecycle is **MVP → PROD → NEW MVP**. The pre-migration 14-layer model is
+superseded by this 8-layer flow.
 
 ## Hermes Skills (UCX V3)
 

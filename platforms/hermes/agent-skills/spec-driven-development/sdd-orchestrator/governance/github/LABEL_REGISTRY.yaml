@@ -152,7 +152,7 @@ categories:
       color: "EEEEEE"
       description: "Skip AI code review for this PR"
 
-  # === CHG LABELS (SDD-Full) ===
+  # === CHG LABELS (change management) ===
   chg:
     - name: "chg:pending"
       color: "F9A825"

@@ -35,7 +35,6 @@ Promotion rule: if a temporary plan grows into new functionality, cross-cutting 
 ## Core Governance Docs
 
 - `governance/GOVERNANCE_RULES.md`
-- `governance/SDD_DEPTH_GUIDE.md`
 - `governance/AI_ISSUE_LIFECYCLE.md`
 
 ## Hermes Governance Skill Mapping

@@ -119,6 +119,24 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Changed
 
+- **sdd-orchestrator published docs reconciled to the single-path model**
+  (ENG-STALE-DEPTH-DOCS; `0.7.1 → 0.7.2`, skill `2.1.0 → 2.1.1`). Completes the behavioral
+  legs of H-11a: the skill's **user-facing** `root-docs/` + `governance/` docs still
+  advertised the dead v3.2 **SDD-Lite / SDD-Standard / SDD-Full depth-variant** model (the
+  2026-06-12 legacy cleanup fixed `sdd_config.yaml` + the repo README; D-0053 fixed the
+  SKILL + 2 loaded governance files; these published surfaces were the remainder). Fixed:
+  `root-docs/README.md` (the "Scalable Depth" tagline + the "SDD Depth Variants" table that
+  **contradicted the same file's** already-correct single-path prose),
+  `root-docs/MULTI_PROJECT_QUICK_REFERENCE.md` + `MULTI_PROJECT_SETUP_GUIDE.md` (two more
+  depth-selection tables + an embedded changelog line), `governance/CHG_GOVERNANCE_BRIDGE.md`
+  (a governance rule keyed on the dead tiers), and **two dead links** to a nonexistent
+  `governance/SDD_DEPTH_GUIDE.md` (removed). All reconciled to the single SDD path (8 layers
+  required per NECESSARY-UPSTREAM-001; MVP → PROD → NEW MVP; CHG overlay). A dead "SDD-Full"
+  term in the CHG-label comments was dropped (no `create_label` value changed). Doc-accuracy
+  only — no engine change, no `framework/` change. No new decision (governed by the
+  2026-06-12 cleanup + D-0053). Deferred: the public-render leg + the cosmetic v3.2
+  string sweep (H-11a proper).
+
 - **sdd-orchestrator skill modernized to the weighted-crew + playbook + single-path
   model** (H11-ORCHESTRATOR-CREW-MODEL, D-0053; `0.7.0 → 0.7.1`). The
   `agent-skills/.../sdd-orchestrator` skill described the obsolete v3.2 "15 parallel
