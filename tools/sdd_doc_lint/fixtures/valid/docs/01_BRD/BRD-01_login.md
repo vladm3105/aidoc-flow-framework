@@ -40,6 +40,10 @@ intro
 ## Business Objectives
 
 Stub BRD with element id BRD.01.07.a7f3 referenced from EARS-01 + PRD-01.
+The PRD-Ready gate, the BRD-TEMPLATE quick-link, the BRD-NN placeholder, and a
+SPEC-Final note are prose tokens, NOT malformed doc-ids — they must draw no ID02
+(LINT-DOCID-HEADER-FALSE-POSITIVE: only digit-leading TYPE-<n> tokens are doc-id
+attempts).
 
 ## Project Scope
 

@@ -551,7 +551,12 @@ def lint_text(
         # Inline document IDs (TYPE-NN) of known artifacts must match the doc form.
         for m in _DOC_ID.finditer(line):
             tok = m.group(0)
-            if not doc_re.match(tok) and not tok.upper().endswith("-INDEX"):
+            # Only a DIGIT-leading second segment is a plausible doc-id attempt
+            # (a valid id is TYPE-<digits>). A letter-leading token — PRD-Ready,
+            # BRD-TEMPLATE, BRD-NN, <X>-INDEX — is a compound word/marker, never a
+            # malformed id, so it must not draw ID02 (LINT-DOCID-HEADER-FALSE-POSITIVE;
+            # generalizes D-0043's `-INDEX` exemption to any non-id-like token).
+            if m.group(2)[0].isdigit() and not doc_re.match(tok):
                 findings.append(Finding(rel, i, "ID02", f"malformed document id '{tok}'"))
         # Inline element IDs (TYPE.a.b.c…) of known artifacts must match the element form.
         for m in _ELEM_ID.finditer(line):

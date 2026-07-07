@@ -600,7 +600,14 @@
 - *Fix shape:* narrow the `_DOC_ID` malformed-id check — skip tokens inside
   inline-code / link targets / known header words, or require the doc-id to be a
   standalone token in a trace context. Needs care not to mask real malformed ids.
-- *Status:* OPEN — P3.
+- *Status:* ✅ **CLOSED (2026-07-06, `LINT-DOCID-HEADER-FALSE-POSITIVE-PLAN.md`, D-0056).**
+  ID02 now fires **only on a digit-leading second segment** (a valid doc-id is
+  `TYPE-<digits>`, always digit-leading; a letter-leading `TYPE-<word>` is prose). Removes
+  `PRD-Ready`/`BRD-TEMPLATE`/`BRD-NN` while keeping real malformed ids (`BRD-2`, `BRD-007x`);
+  generalizes D-0043's `-INDEX` exemption. Pure `tools/sdd_doc_lint` bugfix (vendored to both
+  mirrors) — **no `framework/` change, no version bump** (D-0043 precedent). New unit guard +
+  166 conformance green. *(Chosen over the inline-code/link-context parse — that would miss
+  the bare table-cell `PRD-Ready`.)*
 
 ### `[template]` `ENG-PLATFORM-ADR-TIMING` — "ADRs created BEFORE PRD" wording conflicts with cumulative-tag chain
 
