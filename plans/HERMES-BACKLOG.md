@@ -407,10 +407,12 @@ model. Doc-accuracy only; no engine/framework change.
   two dead `SDD_DEPTH_GUIDE.md` links — is reconciled to the single-path model (closes
   FRAMEWORK-TODO `ENG-STALE-DEPTH-DOCS`). What remains under H-11a is the purely-cosmetic
   "v3.2" version-string residue (no behavioral error).
-- **H-11b — hand-vendored `references/` framework-doc copies** (`ucx-readme.md`,
-  `doc-governance-core.md`, `id-naming-standards.md`, `layer-registry.yaml`,
-  `data-consistency-report.json`) — a [[D-0013]] delete-vs-resync decision (Hermes reads
-  `framework/` directly; these local copies are orphaned). Separate follow-up.
+- **H-11b — hand-vendored `references/` framework-doc copies** — ✅ **CLOSED (2026-07-06,
+  D-0059, hermes 0.7.3).** Deleted all 5 (`ucx-readme.md`, `doc-governance-core.md`,
+  `id-naming-standards.md`, `layer-registry.yaml`, `data-consistency-report.json`): grep-verified
+  orphaned (no loader) + stale drift-sources (`id-naming-standards.md` was "SDD v3.2", 53 vs 191
+  canonical lines, describing the retired sequential-ID scheme). Per [[D-0013]] Hermes reads
+  `framework/` directly → **delete** (not re-sync). No behavioral change.
 - **H-11c — element-ID SHA-256 residue** (`SKILL.md` states element IDs are SHA-256-derived;
   per D-0040/`PROV01` they are LLM-generated stable strings, NOT content-hashes).
   Framework-gated by PROVISIONAL-IDS-002; fix when that decision lands.

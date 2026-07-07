@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Removed — H-11b: delete the 5 orphaned hand-vendored `references/` framework-doc copies from the Hermes sdd-orchestrator (hermes 0.7.2 → 0.7.3; skill 2.1.1 → 2.1.2; no framework change) (2026-07-06)
+
+Deleted `ucx-readme.md`, `doc-governance-core.md`, `id-naming-standards.md`,
+`layer-registry.yaml`, `data-consistency-report.json` from
+`platforms/hermes/agent-skills/.../sdd-orchestrator/references/`. Orphaned (no loader
+references them) + stale drift-sources (e.g. `id-naming-standards.md` was titled "SDD v3.2",
+53 vs the canonical 191 lines, describing the retired sequential-ID scheme). Per D-0013 Hermes
+reads `framework/` directly, so these local copies had silently drifted; deleting removes the
+drift source. No behavioral change; 166 conformance + 511 Hermes green. D-0059. Closes H-11b.
+
 ### Changed — D54-F04: broaden the EARS-Ready rubric so a non-latency quantified bound counts as "quantified" (framework spec 0.34.0 → 0.34.1) (2026-07-06)
 
 The EARS quality-attribute rubric in `framework/layers/03_EARS/EARS-TEMPLATE.yaml` conflated

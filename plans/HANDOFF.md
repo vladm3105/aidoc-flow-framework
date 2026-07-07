@@ -112,6 +112,13 @@
 > can't be naively stripped; no demand signal) — deferred with rationale, not built (founder
 > chose defer). **✅ FRAMEWORK-CORE BACKLOG CLEARED** — every P2/P3 item is shipped or
 > deferred-with-rationale; nothing genuinely-open remains.
+> **H-11 follow-ups (Hermes backlog):** **H-11b CLOSED** (D-0059, hermes 0.7.3) — deleted the
+> 5 orphaned + stale hand-vendored `sdd-orchestrator/references/` framework-doc copies
+> (grep-verified no loader; `id-naming-standards.md` was "SDD v3.2", 53 vs 191 canonical lines,
+> describing the retired sequential-ID scheme; per D-0013 Hermes reads `framework/` directly →
+> delete, not re-sync). **H-11a** (21 non-loaded cosmetic `v3.2` strings) + **H-11c** (element-ID
+> SHA-256 residue — framework-gated by PROVISIONAL-IDS-002; framework templates also still say
+> SHA256) remain DEFERRED (low value / framework-blocked respectively).
 > **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) + D54-F04 (#261) all merged
 > (founder-ratified). **CI FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254) FIXED the
 > composition-check-on-PR-head gap (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs PRs now

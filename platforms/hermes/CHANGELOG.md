@@ -99,6 +99,18 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ### Removed
 
+- **Orphaned hand-vendored `references/` framework-doc copies** (H-11b, D-0059;
+  `0.7.2 → 0.7.3`, skill `2.1.1 → 2.1.2`). Deleted 5 dead copies from the
+  `sdd-orchestrator/references/` directory — `ucx-readme.md`, `doc-governance-core.md`,
+  `id-naming-standards.md`, `layer-registry.yaml`, `data-consistency-report.json`. They were
+  **orphaned** (grep-verified: no loader anywhere in the repo references them; `SKILL.md`
+  loads none of them) and **stale drift-sources** — e.g. `id-naming-standards.md` was titled
+  "SDD v3.2", was 53 lines vs the canonical 191, and described the **retired sequential-ID
+  scheme** contradicting the current model. Per [[D-0013]] Hermes reads `framework/` directly
+  (no local sync), so these copies had silently drifted; deleting them (rather than
+  re-syncing) removes the drift/misinformation source. No behavioral change (nothing loaded
+  them); 166 conformance + 511 Hermes tests green. Closes H-11b.
+
 - **Legacy SYS/REQ/CTR/TSPEC layers** (PLATFORM-ALIGN Part B3, `0.2.0 → 0.3.0`).
   These layers are not part of the 8-layer SDD framework (the framework absorbed
   SYS→SPEC, REQ→EARS, CTR→SPEC, TSPEC→TDD); they were retained only as a "legacy

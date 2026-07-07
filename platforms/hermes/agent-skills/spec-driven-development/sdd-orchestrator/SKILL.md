@@ -1,7 +1,7 @@
 ---
 name: sdd-orchestrator
 description: "Orchestrate SDD workflows across 8 layers (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN) using the framework's per-layer weighted review crews (framework/governance/REVIEW_CREWS.yaml) with per-lens playbook injection, dispatched as parallel subagents."
-version: 2.1.1
+version: 2.1.2
 metadata:
   hermes:
     tags: [sdd, orchestration, workflow, review, creation, remediation]
