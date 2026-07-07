@@ -10,6 +10,28 @@ graduation.
 
 ---
 
+## D-0059 — H-11b: delete (not re-sync) the 5 orphaned hand-vendored `references/` framework-doc copies from the sdd-orchestrator
+
+**2026-07-06.** H-11b (Hermes `0.7.2 → 0.7.3`, skill `2.1.1 → 2.1.2`). The
+`sdd-orchestrator/references/` directory carried 5 hand-vendored copies of framework docs —
+`ucx-readme.md`, `doc-governance-core.md`, `id-naming-standards.md`, `layer-registry.yaml`,
+`data-consistency-report.json`. [[D-0013]] framed this as a delete-vs-resync decision.
+
+**Decision: delete.** Grounding found them (a) **orphaned** — a whole-repo grep found no loader
+referencing them (`SKILL.md` loads none; the only hits are historical plan/backlog mentions),
+and (b) **stale drift-sources** — e.g. `id-naming-standards.md` was titled "SDD v3.2", 53 lines
+vs the canonical 191, and described the **retired sequential-ID scheme** contradicting the
+current model. Under D-0013 Hermes reads `framework/` directly with **no local sync** — which is
+exactly why these copies drifted. Re-syncing would reintroduce the maintenance burden D-0013
+removed and re-create a second source of truth; **deleting** removes the drift/misinformation
+with zero behavioral change (nothing loaded them). 166 conformance + 511 Hermes tests green.
+No `framework/` change (Hermes-platform only). Closes H-11b. Remaining H-11 follow-ups: **H-11a**
+(cosmetic `v3.2` string residue in 21 non-loaded files — deferred, low value) and **H-11c**
+(element-ID SHA-256 residue — framework-gated by PROVISIONAL-IDS-002; the framework templates
+also still say SHA256, so Hermes cannot be fixed alone).
+
+---
+
 ## D-0058 — Defer D54-F08 (`--skeleton` template emit) as build-on-demand — a speculative DX convenience with real hazards, not built now
 
 **2026-07-06.** D54-F08 asked for a `--skeleton` emit that strips a template's authoring keys
