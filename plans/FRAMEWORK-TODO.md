@@ -455,7 +455,14 @@
 - *Fix shape:* the rubric is the real work — broaden the EARS-Ready
   scoring criteria (`framework/layers/03_EARS/` + auditor playbook) to
   count a quantified non-latency bound as "quantified." No new syntax.
-- *Status:* OPEN — P3.
+- *Status:* ✅ **CLOSED (2026-07-06, `D54-F04-EARS-RUBRIC-PLAN.md`, D-0057, spec 0.34.0 →
+  0.34.1).** Reworded the four percentile-mandating surfaces in `EARS-TEMPLATE.yaml` (scoring
+  weight, EARS-Ready checklist, antipattern, quality-attrs guidance + a new "Non-latency bound
+  examples" table): **latency** → percentiles; **non-latency** (cycle/iteration/event-window/
+  `*.count`) → concrete value + unit. Latency bar preserved; no new syntax. **Template-only**
+  — the playbook lenses were already correct (`tech_lead.md` "any other quantified"), so the
+  "+ auditor playbook" leg was unnecessary. Prose `_guidance` only (deterministic lint
+  byte-identical); the corpus score improvement lands at the next wholesale regen.
 
 ### `[template]` `D54-F12-AGENTIC-ANTIPATTERNS` — BRD/PRD business-vs-technical boundary fuzzy for AI-agent systems
 

@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — D54-F04: broaden the EARS-Ready rubric so a non-latency quantified bound counts as "quantified" (framework spec 0.34.0 → 0.34.1) (2026-07-06)
+
+The EARS quality-attribute rubric in `framework/layers/03_EARS/EARS-TEMPLATE.yaml` conflated
+"quantified" with "has latency percentiles" — it mandated `p50/p95/p99` for *every* timing
+requirement, so a genuinely quantified **non-latency** bound (`WITHIN 3 cycles`, retry
+iterations, an event-window, a `*.count` threshold) was docked for "lacking percentiles."
+Reworded the four percentile-mandating surfaces (`_guidance` scoring weight, the EARS-Ready
+checklist, the antipattern, and the quality-attributes guidance + its illustration block) so
+**latency/response-time** dimensions use percentiles while a **non-latency** dimension is
+quantified by a concrete numeric value + unit (added a "Non-latency bound examples" table:
+cycles / retries / count). The latency-percentile bar is **preserved**. No new syntax — the
+threshold vocabulary already supports non-latency categories (`circuit.failure.count`), and
+the playbook lenses (`tech_lead.md` "any other quantified" bound) already scored this way; the
+template was the over-strict outlier, now reconciled to them. Prose-only `_guidance` rewording;
+no validator/schema/conformance change (deterministic `sdd_doc_lint` output over the corpus is
+byte-identical). The rubric is LLM-auditor scoring, so the score improvement on the example
+corpus's non-latency bounds (`RTO ≤ 30 min`, `≥ 99.9% monthly`, a visit-window) lands at the
+next wholesale regen. Framework spec **PATCH**; plugin + Hermes product versions unchanged.
+See `plans/D54-F04-EARS-RUBRIC-PLAN.md` + `plans/DECISIONS.md` D-0057.
+
 ### Added — D54-F13 phase-leak: COV03 advisory when a deferred (`Future`-banded) FR is realized downstream (framework spec 0.33.1 → 0.34.0) (2026-07-06)
 
 New `sdd_doc_lint` rule **`COV03`** — the exact inverse of `COV01`'s escape. `COV01` blocks

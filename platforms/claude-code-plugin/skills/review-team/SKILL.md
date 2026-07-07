@@ -11,7 +11,7 @@ metadata:
     upstream_artifacts: []
     downstream_artifacts: []
     version: "0.23.1"
-    framework_spec_version: "0.34.0"
+    framework_spec_version: "0.34.1"
     last_updated: "2026-05-26"
     adapts: [review_mode, audit_threshold, active_layers]
 ---

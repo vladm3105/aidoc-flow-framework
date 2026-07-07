@@ -101,13 +101,18 @@
 > `TYPE-<n>` tokens** (a valid id is `TYPE-<digits>`; a letter-leading `TYPE-<word>` like
 > `PRD-Ready`/`BRD-TEMPLATE` is prose) — generalizes D-0043's `-INDEX` exemption. **Pure
 > `tools/sdd_doc_lint` bugfix — no `framework/` change, no version bump, auto-mergeable**
-> (D-0043 precedent). **▶ Remaining genuinely-open framework-core (both spec-tier, P3):**
-> `D54-F04` EARS-Ready rubric broadening, `D54-F08` `--skeleton` template emit — impl merge
-> needs founder ratification.
-> **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) merged (founder-ratified). **CI
-> FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254) FIXED the composition-check-on-PR-head gap
-> (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs PRs now merge via the **normal green
-> path** (no `--admin` needed); #258 was the first to merge cleanly without admin.
+> (D-0043 precedent). Then shipped **`D54-F04`** (PR #260 plan; impl D-0057, spec `0.34.0 →
+> 0.34.1`): reworded the EARS-Ready rubric so a **non-latency** quantified bound (cycles /
+> iterations / event-window / `*.count`) counts as quantified — percentiles stay required for
+> **latency** only. Template-only (the playbook lenses were already correct); no new syntax;
+> deterministic lint byte-identical (rubric is LLM-auditor scoring). **▶ Remaining
+> genuinely-open framework-core (spec-tier, P3):** just `D54-F08` `--skeleton` template emit —
+> impl merge needs founder ratification.
+> **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) merged (founder-ratified); D54-F04
+> (#261) impl OPEN awaiting ratification. **CI FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254)
+> FIXED the composition-check-on-PR-head gap (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs
+> PRs now merge via the **normal green path** (no `--admin` needed); #258/#260 merged cleanly
+> without admin.
 >
 > ---
 >
