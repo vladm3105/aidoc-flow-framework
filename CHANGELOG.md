@@ -42,6 +42,20 @@ corpus's non-latency bounds (`RTO ≤ 30 min`, `≥ 99.9% monthly`, a visit-wind
 next wholesale regen. Framework spec **PATCH**; plugin + Hermes product versions unchanged.
 See `plans/D54-F04-EARS-RUBRIC-PLAN.md` + `plans/DECISIONS.md` D-0057.
 
+### Fixed — LINT-DOCID-HEADER-FALSE-POSITIVE: narrow the ID02 doc-id scan to digit-leading tokens (tooling; no spec change) (2026-07-06)
+
+`sdd_doc_lint`'s ID02 malformed-doc-id scan (`_DOC_ID` = `\b(TYPE)-([A-Za-z0-9]+)\b`) flagged
+**any** `TYPE-<token>` that wasn't `TYPE-<digits>`/`-INDEX` as malformed — so legitimate prose
+(`PRD-Ready`, `BRD-TEMPLATE`, `BRD-NN`) tripped it on the BRD-00 index template and any
+consumer's filled-in index. A valid doc-id's post-hyphen segment is always all-digits
+(`doc_re` = `^[A-Z]+-\d{2,}$`), so ID02 now fires **only when the second segment is
+digit-leading** — a letter-leading `TYPE-<word>` is a compound word, not a doc-id attempt.
+Removes the false-positives; keeps real malformed ids (`BRD-2`, `BRD-007x`); generalizes
+D-0043's `-INDEX` exemption. Pure `tools/sdd_doc_lint` change, vendored byte-identical to both
+platform mirrors; **no `framework/` change, no version bump** (the D-0043 STRUCT01-INDEX-EXEMPTION
+precedent). New unit guard; 166 conformance green. See `plans/DECISIONS.md` D-0056 +
+`plans/LINT-DOCID-HEADER-FALSE-POSITIVE-PLAN.md`.
+
 ### Added — D54-F13 phase-leak: COV03 advisory when a deferred (`Future`-banded) FR is realized downstream (framework spec 0.33.1 → 0.34.0) (2026-07-06)
 
 New `sdd_doc_lint` rule **`COV03`** — the exact inverse of `COV01`'s escape. `COV01` blocks
