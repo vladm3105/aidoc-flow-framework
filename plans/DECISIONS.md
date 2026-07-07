@@ -10,6 +10,35 @@ graduation.
 
 ---
 
+## D-0058 — Defer D54-F08 (`--skeleton` template emit) as build-on-demand — a speculative DX convenience with real hazards, not built now
+
+**2026-07-06.** D54-F08 asked for a `--skeleton` emit that strips a template's authoring keys
+(`_guidance`/`_example`/`_antipatterns`) leaving the content keys, as plugin tooling. Grounding
+found no existing internal "context-strip" to reuse (the TODO's premise), and the feature is a
+speculative convenience with real hazards, so per the minimal-and-realistic / no-speculative-
+features convention it is **deferred (build-on-demand)**, not built.
+
+**Reasons.** (1) **Anti-aligned with the framework's own design** — templates are deliberately
+`_guidance`-dense (127 `_guidance` blocks in BRD alone) because the framework bets guidance-
+dense templates author *better*; the `doc-*` skills inject the **full** template. A guidance-
+stripped skeleton produces lower-quality authoring, working against that thesis. (2) **Comment-
+fidelity hazard** — a YAML `safe_load`→`safe_dump` strip destroys all inline `#` enum hints and
+reformats, so the skeleton would not resemble the template; faithful output needs a
+`ruamel.yaml` round-trip (a new dependency). (3) **Divergence risk** — the underscore keys are
+NOT uniformly strippable: `_authored_form` (the BRD FR-coverage contract COV01 depends on),
+`_required_when_subtype` (IPLAN sub-type gating), and `_required` are **normative**; a naive
+strip drops required structure and misleads authors, and the preserve-list must stay in sync as
+templates evolve. (4) **No demand signal** — no consumer requests it.
+
+**Revive criterion.** Build only if a consumer actually asks. The safe form is then a `tools/`
+script with a **curated strip denylist** (`_guidance`/`_size_target`/`_note`/`_antipatterns`/
+`_example`) that preserves the normative keys, plus a test asserting they survive — ideally
+`ruamel.yaml` round-trip for comment fidelity. Tracked as DEFERRED in FRAMEWORK-TODO
+`D54-F08`. This closes out the framework-core backlog sweep: the remaining P2/P3 items were
+either shipped or (this one) deferred with rationale.
+
+---
+
 ## D-0057 — EARS quantification is dimension-appropriate: latency → percentiles, non-latency → a concrete numeric bound (reconcile the template rubric to the already-correct playbooks)
 
 **2026-07-06.** D54-F04 (framework spec `0.34.0 → 0.34.1`, PATCH). The EARS quality-attribute
