@@ -10,6 +10,42 @@ graduation.
 
 ---
 
+## D-0057 — EARS quantification is dimension-appropriate: latency → percentiles, non-latency → a concrete numeric bound (reconcile the template rubric to the already-correct playbooks)
+
+**2026-07-06.** D54-F04 (framework spec `0.34.0 → 0.34.1`, PATCH). The EARS quality-attribute
+rubric in `EARS-TEMPLATE.yaml` conflated "quantified" with "has latency percentiles," mandating
+`p50/p95/p99` for *every* timing requirement — so a quantified **non-latency** bound (a `WITHIN
+N cycles/iterations`, an event-window, a `*.count` threshold) was docked for "lacking
+percentiles."
+
+**Decision: quantification is dimension-appropriate.** A latency/response-time dimension is
+quantified by percentiles (a distribution); a count/window/size dimension is quantified by a
+concrete numeric value + unit. The four percentile-mandating template surfaces (scoring weight,
+EARS-Ready checklist, antipattern, quality-attributes guidance + its illustration block) were
+reworded to scope percentiles to **latency** and admit a concrete non-latency bound as
+quantified (with a new "Non-latency bound examples" table). The **latency-percentile bar is
+preserved**.
+
+**Template-only; the playbooks were already right.** Grounding found the review lenses already
+count any quantified bound (`playbooks/03_EARS/tech_lead.md`: "retry counts, and any other
+quantified" bound) and the threshold vocabulary already supports non-latency categories
+(`circuit.failure.count`) — so the fix is template-only (the TODO's "+ auditor playbook" leg is
+unnecessary; the playbooks are the authority the template now matches) and needs **no new
+syntax**.
+
+**PATCH, no automated re-score.** Prose-only `_guidance` reconciliation to already-shipped
+behavior → PATCH (precedent: ENG-PLATFORM-ADR-TIMING, BL-READY-SCORE-ADVISORY). The percentile
+rubric is **LLM-auditor scoring, not a `sdd_doc_lint` rule** — verified the deterministic lint
+output over the corpus is byte-identical before/after, so no gate changed. The example corpus
+carries non-latency bounds (`EARS-01.md`: `RTO ≤ 30 min`, `≥ 99.9% monthly`, a visit-window)
+the strict rubric would have docked; the reword intentionally un-docks them, and that
+improvement lands at the next **wholesale corpus regen** ([[project-examples-regenerated-wholesale]]),
+not hand-applied. Reviewed: 3 passes (Pass 2 independent caught a load-bearing verification
+defect — the corpus was not latency-only and the linter can't see the rubric). Closes
+FRAMEWORK-TODO `D54-F04`.
+
+---
+
 ## D-0056 — The ID02 malformed-doc-id scan flags only digit-leading `TYPE-<n>` tokens (generalizes D-0043's `-INDEX` exemption); no version bump
 
 **2026-07-06.** LINT-DOCID-HEADER-FALSE-POSITIVE. The `sdd_doc_lint` ID02 check

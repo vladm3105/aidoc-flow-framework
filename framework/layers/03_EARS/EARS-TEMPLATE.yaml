@@ -41,7 +41,7 @@ metadata:
       BDD-Ready scoring criteria:
         Requirements clarity (40%): EARS syntax compliance, atomicity, quantifiability
         Testability (35%): BDD translation possible, observable verification, edge cases
-        Quality attribute completeness (15%): percentiles, security, reliability targets
+        Quality attribute completeness (15%): quantified targets (latency percentiles OR a concrete non-latency numeric bound + unit), security, reliability targets
         Strategic alignment (10%): business traceability, implementation feasibility
 
   c4_level:
@@ -220,14 +220,17 @@ requirements:
       | Dependency | Failure Mode | Detection | Fallback | Timeout | Recovery |
 
     EARS-Ready Checklist:
-      - All timing requirements have p50/p95/p99 values
+      - All latency/response-time requirements have p50/p95/p99 values;
+        non-latency bounds (cycle/iteration counts, event-windows, batch sizes,
+        retry limits, *.count thresholds) are quantified by a concrete numeric
+        value + unit — percentiles do not apply
       - All boundary conditions have explicit operators
       - State transitions include error states
       - All external dependencies have fallback paths
       - Requirements are testable (Given-When-Then derivable)
 
   _antipatterns:
-    - "FAIL: vague timing ('real-time', 'immediately', 'fast') — use percentiles"
+    - "FAIL: vague latency ('real-time', 'immediately', 'fast') — use percentiles. (A concrete non-latency bound — 'WITHIN 3 cycles', a *.count threshold — is quantified and is NOT a fail.)"
     - "FAIL: missing trigger clause (WHEN|WHILE|WHERE|IF) — every non-ubiquitous requirement needs one"
     - "FAIL: 'THEN' as the response connective — EARS uses THE [component] SHALL [response]"
     - "FAIL: compound requirements (multiple AND clauses) — split into atomic statements"
@@ -285,15 +288,24 @@ quality_attributes:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Quality attributes in EARS format with measurable targets.
-    All timing constraints MUST use percentile notation.
+    All latency constraints MUST use percentile notation; a non-latency bound
+    (cycle/iteration counts, event-windows, batch sizes, retry limits) uses a
+    concrete value + unit (e.g. `WITHIN 3 cycles`,
+    `@threshold: ADR.NN.circuit.failure.count`).
 
-    Timing Profile Matrix:
+    Latency Profile Matrix:
       | Operation    | p50   | p95    | p99    | Unit | Trigger Event |
       | API response | [X]   | [X]    | [X]    | ms   | User request  |
       | Page load    | [X]   | [X]    | [X]    | s    | Navigation    |
       | Data sync    | [X]   | [X]    | [X]    | s    | Background    |
 
-    Timing vocabulary replacements:
+    Non-latency bound examples (concrete value + unit, not percentiles):
+      | Bound             | Value | Unit    | Trigger Event         |
+      | Reconciliation    | 3     | cycles  | Batch completion      |
+      | Retry limit       | 5     | retries | Transient failure     |
+      | Circuit threshold | 10    | count   | Consecutive failures  |
+
+    Latency vocabulary replacements:
       "real-time"   → p50 <100ms, p95 <300ms, p99 <1000ms
       "immediately" → <500ms from trigger event
       "quickly"     → <2 seconds response time

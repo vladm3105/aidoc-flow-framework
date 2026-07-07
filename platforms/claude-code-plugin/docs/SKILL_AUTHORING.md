@@ -41,7 +41,7 @@ metadata:
     upstream_artifacts: [<...>]      # cumulative chain; [] for BRD
     downstream_artifacts: [<...>]
     version: "0.23.1"                  # DEFAULT = plugin VERSION (see §3)
-    framework_spec_version: "0.34.0"  # = FRAMEWORK_SPEC_VERSION
+    framework_spec_version: "0.34.1"  # = FRAMEWORK_SPEC_VERSION
     last_updated: "YYYY-MM-DD"
 ---
 ```
@@ -109,7 +109,7 @@ Format · Related Resources`
 ## 6. Acceptance checklist (per skill)
 
 - [ ] `name` equals the directory name.
-- [ ] `version: "0.23.1"`, `framework_spec_version: "0.34.0"` present.
+- [ ] `version: "0.23.1"`, `framework_spec_version: "0.34.1"` present.
 - [ ] No `## Version History`; no `mermaid-gen`; no `-reviewer`/`-validator`
       references; no removed-family references.
 - [ ] Template/README/governance links use `${CLAUDE_PLUGIN_ROOT}/framework/layers/NN_X/`.
