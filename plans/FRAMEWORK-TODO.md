@@ -485,7 +485,24 @@
 - *Fix shape:* a `--skeleton` emit (strip `_guidance`/`_example`/
   `_antipatterns`, leave content keys) — land as plugin tooling, not a
   new CLI.
-- *Status:* OPEN — P3.
+- *Status:* ⏸️ **DEFERRED — build-on-demand (2026-07-06, D-0058).** Grounding found this a
+  speculative DX convenience with real hazards, so it is not built now (per the
+  minimal-and-realistic convention). Reasons: (1) **anti-aligned with the framework's own
+  design** — templates are deliberately `_guidance`-dense because the framework bets that
+  guidance-dense templates author *better* (the `doc-*` skills inject the full template); a
+  guidance-stripped skeleton produces lower-quality authoring. (2) **Comment-fidelity hazard**
+  — a YAML `safe_load`→`safe_dump` strip destroys all `#` inline enum hints
+  (`value: feature  # platform | feature`) and reorders/reformats, so the skeleton would not
+  resemble the template; faithful output needs a `ruamel.yaml` round-trip (a new dependency).
+  (3) **Divergence risk** — not all underscore keys are strippable: `_authored_form` (the BRD
+  FR-coverage contract COV01 depends on), `_required_when_subtype` (IPLAN sub-type gating), and
+  `_required` are **normative** and must be preserved; a naive "strip all `_`" would drop
+  required structure and mislead authors, and the preserve-list must stay in sync as templates
+  evolve. (4) **No demand signal** — no consumer log requests a skeleton; the `doc-*` skills
+  already own authoring. **Revive only if a consumer actually asks** — at which point the safe
+  form is a `tools/` script with a curated strip denylist (`_guidance`/`_size_target`/`_note`/
+  `_antipatterns`/`_example`) that preserves the normative keys, plus a test asserting they
+  survive.
 
 ### Engramory consumer feedback (SDD authoring against v0.23.0) — triaged 2026-06-26
 

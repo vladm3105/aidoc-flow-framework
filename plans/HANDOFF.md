@@ -105,14 +105,21 @@
 > 0.34.1`): reworded the EARS-Ready rubric so a **non-latency** quantified bound (cycles /
 > iterations / event-window / `*.count`) counts as quantified — percentiles stay required for
 > **latency** only. Template-only (the playbook lenses were already correct); no new syntax;
-> deterministic lint byte-identical (rubric is LLM-auditor scoring). **▶ Remaining
-> genuinely-open framework-core (spec-tier, P3):** just `D54-F08` `--skeleton` template emit —
-> impl merge needs founder ratification.
-> **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) merged (founder-ratified); D54-F04
-> (#261) impl OPEN awaiting ratification. **CI FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254)
-> FIXED the composition-check-on-PR-head gap (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs
-> PRs now merge via the **normal green path** (no `--admin` needed); #258/#260 merged cleanly
-> without admin.
+> deterministic lint byte-identical (rubric is LLM-auditor scoring). Then **`D54-F08`
+> DEFERRED** (build-on-demand, D-0058): the `--skeleton` template emit is a speculative DX
+> convenience with real hazards (anti-aligned with the guidance-dense design; comment-fidelity
+> loss on a YAML strip; normative underscore keys `_authored_form`/`_required_when_subtype`
+> can't be naively stripped; no demand signal) — deferred with rationale, not built (founder
+> chose defer). **✅ FRAMEWORK-CORE BACKLOG CLEARED** — every P2/P3 item is shipped or
+> deferred-with-rationale; nothing genuinely-open remains.
+> **Note:** IPLAN-LANG-001 (#255) + D54-F13/COV03 (#257) + D54-F04 (#261) all merged
+> (founder-ratified). **CI FIX:** the v1.5.1 `aidoc-flow-ci` bump (#254) FIXED the
+> composition-check-on-PR-head gap (`AIDOC-CI-COMPOSITION-CHECK-PRHEAD`) — plan/docs PRs now
+> merge via the **normal green path** (no `--admin` needed); #258/#260 merged cleanly without
+> admin. **KNOWN CI FALSE-POSITIVE:** the v1.5.1 `ai-review` is diff-scoped — it flags a plan
+> cross-reference as a "broken xref" on every impl PR that cites its separately-merged plan
+> (e.g. #261). Verify the file is on `main` and `--admin` past it; the real fix is upstream in
+> `aidoc-flow-ci` (resolve referenced paths against the repo, not just the PR diff).
 >
 > ---
 >
