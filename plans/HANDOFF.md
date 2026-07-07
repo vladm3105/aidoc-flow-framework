@@ -1,10 +1,25 @@
 # Session Handoff
 
 > **✅ SESSION COMPLETE (2026-07-06) — Hermes doc arc + the ENTIRE framework-core
-> backlog cleared + H-11b. `main` clean; no open PRs; nothing in flight.**
-> **Versions:** framework spec `0.34.1` · plugin `0.23.1` · hermes `0.7.3`.
+> backlog cleared + H-11b + a Claude-plugin production-readiness audit & fix. `main`
+> clean; no open PRs; nothing in flight.**
+> **Versions:** framework spec `0.34.1` · plugin `0.23.2` · hermes `0.7.3`.
 >
-> **What shipped this session (13 PRs, D-0053 → D-0059):**
+> **Plugin production-readiness (2026-07-06, D-0060, plugin 0.23.2):** a 4-agent audit
+> (spec-consistency / skills / packaging / conformance-tooling-docs) found the plugin
+> clean/green on every dimension **except one release BLOCKER** — the 9 `doc-*-audit`
+> skills + `synthesizer.md` resolved their vendored playbooks/`REVIEW_TEAM.md` via
+> `${CLAUDE_PLUGIN_ROOT}/../../framework/…`, which escapes the plugin root, so the
+> weighted-crew review collapsed to zero coverage **in any distributed install** (worked
+> only in the source checkout by coincidence). Fixed (dropped `/../../`, 11 refs) + 3
+> SHOULD-FIX (doc-ears D54-F04 propagation; deprecated-stub `v0.7.0 → v1.0.0`; example
+> lint-baseline note). **Deferred framework-side items surfaced by the audit:** the
+> **SHA-256 element-ID honesty gap** (`ID_NAMING_STANDARDS.md` normatively promises
+> deterministic content-hash IDs the plugin doesn't produce — gated on PROVISIONAL-IDS-002,
+> = H-11c) and the **GD-02…05 "Proposed → Accepted" status flip** hygiene. Both are the
+> highest-value remaining framework-side polish.
+>
+> **What shipped this session (14 PRs, D-0053 → D-0060):**
 >
 > - **Hermes doc arc:** H-11 orchestrator crew-model modernization (D-0053), ENG-STALE-DEPTH-DOCS
 >   (single-path reconciliation), **H-11b** (D-0059 — deleted 5 orphaned/stale vendored

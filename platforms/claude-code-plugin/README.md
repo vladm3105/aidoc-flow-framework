@@ -52,11 +52,11 @@ right skill. The deeper authoring guidance is in
 | Skills (layer families) | 32 | The 8 SDD layers — `doc-brd`, `doc-prd`, `doc-ears`, `doc-bdd`, `doc-adr`, `doc-spec`, `doc-tdd`, `doc-iplan` — each in 4 variants: base, `-autopilot`, `-audit`, `-fixer`. |
 | Skills (change-management) | 4 | The CHG governance overlay — `doc-chg` + `-autopilot` + `-audit` + `-fixer` (governs edits to existing artifacts; not a layer). |
 | Skills (utilities) | 14 | `doc-flow`, `doc-naming`, `doc-ref`, `doc-validator`, `review-team`, `project-init`, `project-adopt`, `project-profile`, `knowledge-extractor`, `gate-check`, `charts-flow`, `adr-roadmap`, `quality-advisor`, `security-audit`. |
-| Skills (deprecated stubs) | 2 | `doc-review`, `trace-check` — redirect stubs for `doc-validator`; scheduled for removal in v0.7.0. |
+| Skills (deprecated stubs) | 2 | `doc-review`, `trace-check` — redirect stubs for `doc-validator`; scheduled for removal in v1.0.0. |
 | Agents | 11 | AI Team specialist roster — `requirements-analyst`, `pm-orchestrator`, `solutions-architect`, `test-architect`, `software-engineer`, `devops-release-engineer`, `code-reviewer`, `security-engineer`, `traceability-auditor`, plus the two review-team lenses `chaos-engineer` and `synthesizer`. See `docs/AGENTS.md`. |
 | Commands | 12 | 11 user-facing commands (meta · workflow · lifecycle · config) + `/aidoc-flow:save-plan`. See the "User-facing commands" subsection below. |
 | Hooks | 1 | `hooks/sdd-doc-review.sh` — a `PostToolUse` advisory nudge (see below). |
-| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v0.7.0) | |
+| **Total skills** | **52** (50 active + 2 deprecated stubs scheduled for removal in v1.0.0) | |
 
 The plugin auto-registers everything via Claude Code's directory
 conventions (`skills/`, `agents/`, `commands/`); no per-skill enumeration in
@@ -121,7 +121,7 @@ The two version declarations:
 
 ```
 $ cat VERSION
-0.23.1
+0.23.2
 
 $ cat FRAMEWORK_SPEC_VERSION
 0.34.1
@@ -141,7 +141,7 @@ enforces that `FRAMEWORK_SPEC_VERSION` matches the canonical
 | Field | Value |
 |-------|-------|
 | Engine | Native Claude Code (skills / agents / commands) |
-| Version | `claude-code-plugin/v0.23.1` (independent SemVer) |
+| Version | `claude-code-plugin/v0.23.2` (independent SemVer) |
 | Conforms to | framework spec `0.34.1` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
