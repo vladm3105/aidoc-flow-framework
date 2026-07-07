@@ -33,13 +33,14 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 ## Element IDs
 
 Hash-based, content-derived IDs scoped to PRD content (not BRD):
+> **Not verified end-to-end** until `rehash --check` (PROVISIONAL-IDS-002): engines emit stable opaque strings that *should* match this form. The SHA-256 form is the canonicalization target — see `ID_NAMING_STANDARDS.md`.
 
 ```text
 Format: PRD.{doc_id}.{section_id}.{hash}
 Example: PRD.01.09.b3f2
 ```
 
-Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars.
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars (the canonicalization target; not verified until `rehash --check`).
 See template `metadata.id_standard` for details.
 
 ## Upstream Traceability

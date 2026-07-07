@@ -55,7 +55,7 @@ SPEC requires **TDD-Ready score >=90/100** before downstream TDD generation:
 - **Numbering**: Allocate sequentially starting at `01`
 - **One component per file**: Each SPEC covers a single component
 - **Filename**: `SPEC-NN_{component_slug}.yaml`
-- **Hash-based element IDs**: Format `SPEC.NN.SS.xxxx`
+- **Hash-based element IDs**: Format `SPEC.NN.SS.xxxx` (the canonicalization target; not verified until `rehash --check` — see `ID_NAMING_STANDARDS.md`)
 
 ## Related Documents
 
