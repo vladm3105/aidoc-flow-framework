@@ -118,7 +118,7 @@ Two-step filter:
 The set of valid `Cn` ids for a (layer, lens) is derived from the
 playbook itself — parse `## Required evidence checks` headings and
 extract identifiers matching `^\*\*C\d+` (the canonical check-row
-shape; see `${CLAUDE_PLUGIN_ROOT}/../../framework/governance/REVIEW_TEAM.md`
+shape; see `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`
 §Playbooks §"Required content sections").
 
 Discarded findings are reported in `report.md` under a `## Discarded
@@ -249,7 +249,7 @@ Field semantics:
 
   Drift signal: if `beyond_checklist / total > 0.30`, the playbook
   may need revision (see
-  `${CLAUDE_PLUGIN_ROOT}/../../framework/governance/REVIEW_TEAM.md`
+  `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`
   §Playbooks §"Coverage emission").
 
 This JSON is the contract. Every required key must be present; every

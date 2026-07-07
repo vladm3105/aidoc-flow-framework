@@ -12,6 +12,19 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the plugin production-readiness audit (plugin 0.23.1 → 0.23.2; no framework change) (2026-07-06)
+
+A 4-agent production-readiness audit of the Claude Code plugin found it clean/green on
+packaging, conformance, tooling, versioning, and skill structure — with one BLOCKER + three
+SHOULD-FIX, all fixed here. **BLOCKER:** the 9 `doc-*-audit` skills + `agents/synthesizer.md`
+resolved their vendored playbooks / `REVIEW_TEAM.md` via `${CLAUDE_PLUGIN_ROOT}/../../framework/…`
+— the `/../../` escapes the plugin root, so in a distributed install every playbook/contract
+load failed and the weighted-crew review collapsed to zero coverage; dropped `/../../` (11
+refs). Plus: reconciled `doc-ears` + `doc-ears-audit` to the D54-F04 latency-vs-non-latency
+model; bumped the deprecated-stub removal milestone `v0.7.0 → v1.0.0` (8 occurrences); added a
+"known lint baseline" note to the url-shortener example README + dropped a phantom
+`docs/.version` line. Plugin PATCH; no `framework/` change. 166 conformance green. D-0060.
+
 ### Removed — H-11b: delete the 5 orphaned hand-vendored `references/` framework-doc copies from the Hermes sdd-orchestrator (hermes 0.7.2 → 0.7.3; skill 2.1.1 → 2.1.2; no framework change) (2026-07-06)
 
 Deleted `ucx-readme.md`, `doc-governance-core.md`, `id-naming-standards.md`,

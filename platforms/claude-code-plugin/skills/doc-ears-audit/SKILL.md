@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.1"
+    version: "0.23.2"
     framework_spec_version: "0.34.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold]
@@ -93,7 +93,7 @@ subagents** over a per-artifact blackboard, per
    - `security_engineer` → `security-engineer`
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
-   `${CLAUDE_PLUGIN_ROOT}/../../framework/playbooks/03_EARS/<lens>.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/03_EARS/<lens>.md`.
    If the playbook file is missing, mark `branches[<lens>].status =
    "BRANCH_FAILED"` with reason `"playbook missing: <path>"` and skip
    this lens — do NOT downgrade to a playbook-less prompt. Other lenses
@@ -341,7 +341,7 @@ canonical required-section set.
 | Element ID format | every ID matches `EARS.NN.SS.xxxx` (4-hex hash) |
 | Structure | every section enumerated above is present and non-empty |
 | EARS syntax | every requirement has a trigger (WHEN/IF/WHILE) + `THE … SHALL`; statements atomic |
-| Quantifiable constraints | timing uses p50/p95/p99; no vague terms ("fast", "real-time") |
+| Quantifiable constraints | latency uses p50/p95/p99; a non-latency bound (cycle/iteration counts, event-windows, `*.count`) uses a concrete value + unit; no vague terms ("fast", "real-time") |
 | Quality gate | BDD-Ready score ≥ threshold (default 90) |
 
 **Tier 2 — advisory (warning):** frontmatter metadata (below); single `@prd:` in

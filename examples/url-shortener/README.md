@@ -54,7 +54,6 @@ url-shortener/
 │   ├── 01_BRD/BRD-01.md
 │   ├── 02_PRD/PRD-01.md
 │   ├── …
-│   └── .version                  # records the plugin version of this chain
 ├── .aidoc/                       # AI provenance — committed
 │   ├── profile.yaml              # project profile (bootstrap from framework default)
 │   ├── audit/<NN>_<LAYER>-audit.md
@@ -88,6 +87,15 @@ only against the seed it amends.
 Quick reference; for the full flag inventory see
 [`tests/ACCEPTANCE.md`](../../tests/ACCEPTANCE.md)
 §3.
+
+> **Known lint baseline (expected — not corpus rot).** Running
+> `sdd_doc_lint` over `docs/` exits non-zero with a small, *tracked* baseline:
+> **1× `TH-RES-001`** (PRD-01 has no `component_decomposition`, so 11 downstream
+> `@threshold` citations can't resolve — tracked as `CORPUS-PRD-TH-RES` in
+> `plans/CORPUS-REGEN-RUNBOOK.md`) and **16× `COV02`** (BDD-01 scenarios realized
+> by no SPEC/TDD element — the known element-level orphan set). Both are deferred
+> to the next **wholesale corpus regen** (the example is regenerated as a whole,
+> never hand-patched), so they are expected, not a regression.
 
 ```bash
 cd framework

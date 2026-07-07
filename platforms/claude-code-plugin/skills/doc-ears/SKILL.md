@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.1"
+    version: "0.23.2"
     framework_spec_version: "0.34.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -99,12 +99,15 @@ patterns from the template where they apply.
 
 ### Quantifiable language (Sections 3 / 4)
 
-Use **SHALL / SHALL NOT / SHOULD / MAY** correctly. Replace vague timing with
-percentiles: `real-time` → p50<100ms/p95<300ms/p99<1000ms; `immediately` →
+Use **SHALL / SHALL NOT / SHOULD / MAY** correctly. Replace vague **latency**
+with percentiles: `real-time` → p50<100ms/p95<300ms/p99<1000ms; `immediately` →
 <500ms; `fast`/`quickly` → exact latency. Section 4 (Quality Attributes:
-Performance, Security, Reliability) is tabular with measurable targets; all
-timing uses p50/p95/p99 notation. Carry changeable values as
-`@threshold: PRD.NN.category.key` tags (no PRD section numbers in the tag).
+Performance, Security, Reliability) is tabular with measurable targets:
+**latency/response-time** uses p50/p95/p99 notation, while a **non-latency**
+bound (cycle/iteration counts, event-windows, batch sizes, `*.count`) is
+quantified by a concrete value + unit (percentiles do not apply). Carry
+changeable values as `@threshold: PRD.NN.category.key` tags (no PRD section
+numbers in the tag).
 
 ### Element IDs and tags
 
@@ -140,7 +143,7 @@ timing uses p50/p95/p99 notation. Carry changeable values as
 5. **Categorize requirements** into the five patterns; write atomic
    `THE … SHALL …` statements (WITHIN timing where applicable) with
    `@threshold:` constraints.
-6. **Fill Quality Attributes** (tabular, percentile timing) and **Traceability**
+6. **Fill Quality Attributes** (tabular; latency → percentiles, non-latency bounds → value + unit) and **Traceability**
    (`@prd` per the necessary-upstream contract).
 7. **Update the EARS index** `docs/03_EARS/EARS-00_index.md` in the same change.
 8. **Validate** (below) and commit the EARS and index together.

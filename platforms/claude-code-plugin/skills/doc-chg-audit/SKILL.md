@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: quality-assurance
-    version: "0.23.1"
+    version: "0.23.2"
     framework_spec_version: "0.34.1"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -127,7 +127,7 @@ subagents** over a per-artifact blackboard, per
    independently and the synthesizer deduplicates findings at fan-in.
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
-   `${CLAUDE_PLUGIN_ROOT}/../../framework/playbooks/09_CHG/<lens>.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/09_CHG/<lens>.md`.
    If the playbook file is missing, mark `branches[<lens>].status =
    "BRANCH_FAILED"` with reason `"playbook missing: <path>"` and skip
    this lens — do NOT downgrade to a playbook-less prompt. Other lenses

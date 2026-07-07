@@ -14,6 +14,32 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### [0.23.2] — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the production-readiness audit (D-0060) (2026-07-06)
+
+A 4-agent production-readiness audit found the plugin clean/green on packaging, conformance,
+tooling, versioning, and skill structure — with one BLOCKER and three SHOULD-FIX:
+
+- **🔴 BLOCKER — playbook / REVIEW_TEAM path escape.** The 9 `doc-*-audit` skills resolved
+  their per-`(layer,lens)` playbook, and `agents/synthesizer.md` its `REVIEW_TEAM.md` scoring
+  contract, via `${CLAUDE_PLUGIN_ROOT}/../../framework/…`. The `/../../` climbs **above** the
+  plugin root; the files are vendored **inside** it. It resolved only in the source-repo
+  checkout by coincidence — **in a distributed install every playbook/contract load failed, so
+  the weighted-crew review collapsed to zero coverage** (each lens hitting its own
+  `BRANCH_FAILED "playbook missing"`). Fixed: dropped `/../../` in all 11 refs (→
+  `${CLAUDE_PLUGIN_ROOT}/framework/…`, matching the 500+ correct sibling refs).
+- **doc-ears drift** — `doc-ears` + `doc-ears-audit` mandated percentiles for *all* timing (3
+  spots); reconciled to the shipped **D54-F04** model (latency → percentiles; non-latency
+  bound → concrete value + unit).
+- **Deprecated-stub milestone** — bumped the `doc-review`/`trace-check` removal target
+  `v0.7.0 → v1.0.0` (the ROADMAP cutover) across 8 occurrences (the 8th, `docs/PARITY.md`, caught by CI ai-review).
+- **Example baseline note** — added a "known lint baseline" note to `examples/url-shortener/README.md`
+  (the flagship example exits lint non-zero on 1 tracked `TH-RES-001` + 16 by-design `COV02`,
+  deferred to the next wholesale regen) + dropped a phantom `docs/.version` line.
+
+Plugin **PATCH** `0.23.1 → 0.23.2`; no `framework/` change. 166 conformance green (incl. the
+plugin drift/vendoring/manifest guards). See `plans/PLUGIN-PROD-READINESS-001-PLAN.md` +
+`plans/DECISIONS.md` D-0060.
+
 ### [0.23.1] — H-14: the review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05) (2026-07-06)
 
 The plugin's agentic review lens `Read`s the artifact directly (a `Task` subagent

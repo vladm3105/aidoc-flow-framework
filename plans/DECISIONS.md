@@ -10,6 +10,42 @@ graduation.
 
 ---
 
+## D-0060 — Plugin production-readiness batch: fix the `${CLAUDE_PLUGIN_ROOT}/../../` playbook-path-escape BLOCKER + 3 SHOULD-FIX
+
+**2026-07-06.** PLUGIN-PROD-READINESS-001 (plugin `0.23.1 → 0.23.2`, PATCH). A 4-agent
+production-readiness audit of the Claude Code plugin (spec-consistency, skills, packaging,
+conformance/tooling/docs) found it clean/green on every dimension **except** one BLOCKER + 3
+SHOULD-FIX.
+
+**🔴 BLOCKER — playbook / REVIEW_TEAM path escape.** The 9 `doc-*-audit` skills resolved their
+per-`(layer,lens)` playbook, and `agents/synthesizer.md` its `REVIEW_TEAM.md` scoring contract,
+via `${CLAUDE_PLUGIN_ROOT}/../../framework/…`. The `/../../` climbs two levels *above* the
+plugin root, but those files are vendored *inside* it at `${CLAUDE_PLUGIN_ROOT}/framework/…`.
+The escaping path resolved only in the source-repo checkout by coincidence
+(`platforms/claude-code-plugin/../../` = repo root); **in a distributed install it pointed
+outside the plugin → every playbook/contract load failed → the weighted-crew review collapsed
+to zero coverage** (each lens hitting its own `BRANCH_FAILED "playbook missing"`). Fixed by
+dropping `/../../` in all 11 refs — the 500+ correct sibling refs proved the pattern. This was
+a genuine release blocker: the plugin's core reviewed-authoring feature silently degraded for
+every installed user.
+
+**+ 3 SHOULD-FIX.** (1) `doc-ears` + `doc-ears-audit` still mandated percentiles for *all*
+timing (3 spots) — reconciled to the D54-F04 latency-vs-non-latency model (the template fix was
+template-only; this propagates it to the plugin skills). (2) Deprecated-stub removal milestone
+`v0.7.0 → v1.0.0` (8 occurrences — the 8th, `docs/PARITY.md`, caught by CI ai-review; the plugin is 16 minors past 0.7.0 — chose bump over remove
+to avoid rippling into the skill-count/manifest/PARITY copy). (3) A "known lint baseline" note
+in the url-shortener example README (the flagship example exits lint non-zero on a tracked
+`TH-RES-001` + 16 by-design `COV02`, deferred to regen) + dropped a phantom `docs/.version`
+line.
+
+**Deferred (framework-side, separate):** the SHA-256 element-ID honesty gap
+(`ID_NAMING_STANDARDS.md`, gated on PROVISIONAL-IDS-002) and the GD-02…05 "Proposed → Accepted"
+status flip — both `framework/` hygiene items, not plugin blockers. Reviewed: 3 passes (Pass 2
+independent caught 2 load-bearing enumeration gaps — a 7th `v0.7.0` spot + a 3rd doc-ears drift
+line). No `framework/` change → plugin PATCH, not spec-tier.
+
+---
+
 ## D-0059 — H-11b: delete (not re-sync) the 5 orphaned hand-vendored `references/` framework-doc copies from the sdd-orchestrator
 
 **2026-07-06.** H-11b (Hermes `0.7.2 → 0.7.3`, skill `2.1.1 → 2.1.2`). The

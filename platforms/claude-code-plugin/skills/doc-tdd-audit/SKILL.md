@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.23.1"
+    version: "0.23.2"
     framework_spec_version: "0.34.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -93,7 +93,7 @@ subagents** over a per-artifact blackboard, per
    - `auditor` → `traceability-auditor`
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
-   `${CLAUDE_PLUGIN_ROOT}/../../framework/playbooks/07_TDD/<lens>.md`.
+   `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/07_TDD/<lens>.md`.
    If the playbook file is missing, mark `branches[<lens>].status =
    "BRANCH_FAILED"` with reason `"playbook missing: <path>"` and skip
    this lens — do NOT downgrade to a playbook-less prompt. Other lenses
