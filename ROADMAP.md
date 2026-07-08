@@ -31,16 +31,17 @@ permanent asymmetry.
 Near-term, in-flight work.
 
 - **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
-  (`0.32.3`). The saga driver across all 8 autopilots shipped; the open gap is the
-  CONSUMER-FEEDBACK / coverage-engine wave: element-level COV01/COV02 (D-0039),
-  YAML-BDD scenarios, provisional IDs (D-0040), and reuse/satisfied-by-reference
-  (D-0041). The largest outstanding arc; tracked in
+  (framework `0.35.0`). Hermes already has team-mode + 8-layer playbook injection +
+  saga conformance (D-0045…D-0053; the whole 0.32.x arc is auto-satisfied via its
+  vendored `sdd_doc_lint` + shared templates). The residual items are small doc/skill
+  deltas — **H-11c** (SHA-256 residue, now unblocked by PROVISIONAL-IDS-002) + the
+  cosmetic H-11a sweep — and the architecturally-deferred saga gate (H-1). Tracked in
   [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
 
-- **Delivered (2026-06-29):** the CONSUMER-FEEDBACK-001 P1 wave on the plugin/spec —
-  element-level coverage (ELEMENT-COVERAGE-001), provisional IDs (PROVISIONAL-IDS-001),
-  reuse manifest (REUSE-MANIFEST-001) — plus the YAML-BDD arc. Framework spec
-  `0.29.0 → 0.32.3`. See [`CHANGELOG.md`](CHANGELOG.md).
+- **PROVISIONAL-IDS-002 Phase 1 (2026-07-08, framework `0.34.2 → 0.35.0`):** the Model-2
+  element-ID drift verifier — formalized hash-input contract + opt-in `rehash --check`
+  (`IDDRIFT01`). Phase 2+ (`rehash --fix`, all-layer extraction, corpus reconciliation)
+  is founder-decided. See [`plans/PROVISIONAL-IDS-002-PLAN.md`](plans/PROVISIONAL-IDS-002-PLAN.md).
 
 ---
 

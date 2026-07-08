@@ -415,7 +415,12 @@ model. Doc-accuracy only; no engine/framework change.
   `framework/` directly → **delete** (not re-sync). No behavioral change.
 - **H-11c — element-ID SHA-256 residue** (`SKILL.md` states element IDs are SHA-256-derived;
   per D-0040/`PROV01` they are LLM-generated stable strings, NOT content-hashes).
-  Framework-gated by PROVISIONAL-IDS-002; fix when that decision lands.
+  ▶ **UNBLOCKED (2026-07-08)** — the PROVISIONAL-IDS-002 gate is lifted: Phase 1 shipped
+  (D-0061/D-0062, framework 0.35.0). The reconciliation vocabulary is now settled —
+  element IDs are the **canonicalization target**, LLM-emitted as stable strings, and
+  **verifiable on demand** for BRD §7 via `rehash --check` (advisory `IDDRIFT01`), not
+  globally "SHA-256-derived." Fix the Hermes SKILL.md wording to match `ID_NAMING_STANDARDS.md`.
+  Small, Hermes-doc-only, no framework change.
 
 <details><summary>Original H-11 backlog entry (for history)</summary>
 

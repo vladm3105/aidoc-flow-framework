@@ -1,9 +1,16 @@
 # Session Handoff
 
-> **▶ IN FLIGHT (2026-07-08) — PROVISIONAL-IDS-002 Phase 1 impl PR open (spec-tier,
-> awaiting founder ratification).** The plan PR (#269) merged; the Phase-1 impl builds
+> **✅ SESSION COMPLETE (2026-07-08) — PROVISIONAL-IDS-002 Phase 1 shipped.** Both PRs
+> merged (plan #269 + impl #270); `main` clean, no open PRs. The Phase-1 build ships
 > `rehash --check` (the Model-2 drift verifier) + formalizes the hash-input contract.
-> **Versions:** framework spec `0.35.0` (this PR) · plugin `0.23.2` · hermes `0.7.3`.
+> **Versions:** framework spec `0.35.0` · plugin `0.23.2` · hermes `0.7.3`.
+>
+> **▶ Unblocked next:** **H-11c** (Hermes SKILL.md's "element IDs are SHA-256-derived"
+> residue) was framework-gated on PROVISIONAL-IDS-002 — that gate is now lifted; the
+> D-0061/D-0062 language ("canonicalization target," "verifiable on demand") is the fix
+> vocabulary. Also open: a release-tag cut (`framework/VERSION` 0.35.0 vs. last tag
+> `framework/v0.21.0`; ~20 `[Unreleased]` entries) and PROVISIONAL-IDS-002 Phase 2+
+> (founder-decided: `rehash --fix`, all-8-layer extraction, corpus reconciliation).
 >
 > **PROVISIONAL-IDS-002 Phase 1 (D-0062, framework 0.34.2 → 0.35.0):** executes the
 > ratified Model-2 direction (D-0061). **(1)** Formalized the byte-exact hash-input
