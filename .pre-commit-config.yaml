@@ -1,3 +1,4 @@
+# CANON: aidoc-flow-ci pre_push_check (idempotency marker per PLAN-002 §5.2)
 # Pre-commit hooks — https://pre-commit.com
 #
 # Setup:   pip install pre-commit && pre-commit install
@@ -109,7 +110,8 @@ repos:
       # PARITY.md current-state row, etc.). Re-stages on its own; idempotent.
       # See CLAUDE.md §"Durable conventions" — "Update docs of record per PR".
       - id: sync-version-refs
-        name: auto-sync version references (CLAUDE.md / README / PARITY / SKILL frontmatter / ...)
+        name: auto-sync version references (CLAUDE.md / README / PARITY / SKILL frontmatter
+          / ...)
         entry: bash scripts/sync-version-refs.sh
         language: system
         pass_filenames: false
@@ -130,3 +132,16 @@ repos:
         pass_filenames: false
         always_run: true
         verbose: true   # so the WARN block is visible in pre-commit's output
+  - repo: local
+    hooks:
+      - id: aidoc-flow-pre-push
+        name: aidoc-flow canon pre-push validation + OPS-0069 audit-trail check
+        entry: scripts/pre_push_check.sh
+        language: script
+        stages:
+          - pre-push
+        pass_filenames: false
+        always_run: true
+default_install_hook_types:
+  - pre-commit
+  - pre-push

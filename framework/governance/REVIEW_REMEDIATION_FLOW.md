@@ -169,9 +169,46 @@ platform's; the properties are not):
   the loop's stages correspond to these statuses — `Review` ↔ In Review,
   `Gate pass` ↔ Approved.
 
+## Mechanical author-side pre-push gate (aidoc-flow workspace layer)
+
+Framework consumers in the `aidoc-flow` workspace additionally enforce a
+**mechanical author-side pre-push gate** independent of the artifact-level
+review loop above: every push to a workspace repo must carry an OPS-0069
+audit-trail phrase (`Multi-agent self-review per OPS-0065` OR
+`Self-review skipped per founder OK`) in at least one non-exempt commit
+message. This is a **paper trail**, not a review substitute — the
+artifact-review loop described above still governs *content* quality; the
+audit-trail check governs *dispatch discipline*.
+
+Two enforcement points:
+
+1. **Local pre-push hook** — `scripts/pre_push_check.sh` (installed from
+   `aidoc-flow-ci@ci/v1.6.0` per PLAN-002 §5.5). Wired via
+   `.pre-commit-config.yaml` `default_install_hook_types: [pre-commit,
+   pre-push]`.
+2. **CI belt-and-suspenders** — the `audit-trail-check.yml` reusable
+   (check-name `call / verify`) catches `git push --no-verify` bypass at
+   the PR merge boundary.
+
+The two layers are complementary:
+
+- The artifact-review loop (this document) is **content-shaped**: it
+  produces findings + a readiness score against layer-specific rubrics.
+- The mechanical gate is **process-shaped**: it verifies that a
+  dispatch-and-fold cycle actually occurred before the push, without
+  looking at content quality.
+
+A change may pass the mechanical gate (phrase present) but still fail
+the artifact-review gate (findings unremediated, score below threshold),
+or vice versa. Both must pass for a merge.
+
 ## Cross-references
 
 - `DOC_GOVERNANCE_CORE.md` — governance principles and the readiness-gate baseline.
 - `TRACEABILITY.md` — the necessary-upstream tag chain a review checks.
 - `chg/` — the change-management overlay (the `pre_merge`/gate machinery for changes).
 - `../README.md` — the layer flow these artifacts are created in.
+- `aidoc-flow-ci@ci/v1.6.0`:`docs/REPO_STANDARDS.md` §14 —
+  self-review mechanical enforcement canon rule.
+- `aidoc-flow-ci@ci/v1.6.0`:`plans/PLAN-002_workspace-standards-rollout.md`
+  §5.5 Wave 1 — the rollout plan this framework adopts.
