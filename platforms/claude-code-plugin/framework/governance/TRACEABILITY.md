@@ -69,6 +69,26 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
 `reuse: referenced` docs are exempt from all three (their elements are reused as-is, not
 realized here). Run any gate over a `<docs_root>` with `python -m sdd_doc_lint <docs_root>`.
 
+## Element-ID content-drift check (`IDDRIFT01` — opt-in, advisory)
+
+Under Model 2 (D-0061), an element ID's 4-hex hash **is** the mint-time content
+fingerprint. `IDDRIFT01` (PROVISIONAL-IDS-002 Phase 1) verifies that: for a BRD's
+§7 gated FR elements it recomputes `SHA256("{doc}:{sec}:{norm(title)}:{norm(description)}")[:N]`
+(the normative transform + extraction boundary in `ID_NAMING_STANDARDS.md`) and
+warns when the ID's declared hash no longer matches — a **content drift** since the
+ID was minted, or a **canonical leak** (the ID was never the real hash).
+
+- **Opt-in + advisory.** Runs ONLY via `python -m sdd_doc_lint.rehash --check
+  <docs>` — it is **NOT** part of the default `sdd_doc_lint` pass, so the default
+  gate + the example-corpus lint are byte-identical. `IDDRIFT01` is `WARNING`-level
+  and never blocks.
+- **`canonical`-gated.** A doc declaring `id_state: provisional` is exempt (its IDs
+  are declared placeholders, not hashes).
+- **Phase-1 scope: BRD §7 FR elements only.** Other BRD sections and the other seven
+  layers are not yet verified — later PROVISIONAL-IDS-002 phases extend the
+  extractor, add `rehash --fix`, reconcile the corpus, and may promote the advisory
+  to a gate. See `plans/PROVISIONAL-IDS-002-PLAN.md`.
+
 ## Upstream/Downstream Validation
 
 | Layer | Required Upstream Tags | Validated Downstream |

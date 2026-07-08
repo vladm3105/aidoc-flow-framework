@@ -19,8 +19,10 @@ authored as Markdown or YAML.
 
 from __future__ import annotations
 
+import hashlib
 import os
 import re
+import unicodedata
 from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
@@ -797,6 +799,193 @@ def scan_fr_elements(text: str) -> list[FRElement]:
                 )
             )
     return out
+
+
+# --- Model-2 content-hash primitives (PROVISIONAL-IDS-002 Phase 1) --------------
+#
+# The element ID `TYPE.doc.sec.hash` embeds `hash =
+# SHA256("{doc}:{sec}:{norm(title)}:{norm(description)}")[:N]`, the element's
+# mint-time content fingerprint. `rehash_check` recomputes it and reports drift
+# (`IDDRIFT01`) when the current content no longer hashes to the ID. These
+# primitives are the SINGLE code implementation of the normative contract in
+# `framework/governance/ID_NAMING_STANDARDS.md` ("Hash algorithm" section) — the
+# verifier here and any future generator / `--fix` MUST reuse them so every tool
+# computes byte-identical hashes. They are NOT called by `lint_path`; the check
+# runs only via the explicit `python -m sdd_doc_lint.rehash --check` command, so
+# the default lint output is unchanged.
+
+
+#: A BRD §7 FR element with the content the hash is computed over (title +
+#: multi-line description), distinct from ``FRElement`` (which the coverage engine
+#: uses and which captures only id/band/realized_by). ``line`` is 1-based.
+@dataclass(frozen=True)
+class FRContent:
+    elem_id: str
+    line: int
+    title: str
+    description: str
+
+
+#: The bold ID+title span on an FR bullet: ``**<ID> — <Title>**``. Captures the
+#: element id (group 1) and the title (group 2, everything between the em/en/hyphen
+#: separator and the closing ``**``).
+_FR_IDTITLE = re.compile(r"\*\*([A-Z]+\.[0-9]+\.[0-9]+\.[a-f0-9]+)\s+[—–-]\s+([^*]+?)\*\*")
+
+
+def _normalize_hash_field(value: str) -> str:
+    """Normalize a ``title``/``description`` per the ID_NAMING_STANDARDS contract.
+
+    Exact ordered transform (PROVISIONAL-IDS-002): NFC → casefold → strip every
+    char not in ``[a-z0-9 ]`` → collapse whitespace runs to one space → trim →
+    first 100 chars. The verifier, any future generator, and hand authors MUST
+    apply this identically or they compute different hashes for the same content.
+    """
+    s = unicodedata.normalize("NFC", value).casefold()
+    s = "".join(ch for ch in s if ch in " " or ("a" <= ch <= "z") or ("0" <= ch <= "9"))
+    s = " ".join(s.split())
+    return s[:100]
+
+
+def compute_element_hash(doc_id: str, section_id: str, title: str, description: str) -> str:
+    """Return the content hash for an element's ``title``/``description``.
+
+    Assembles ``"{doc_id}:{section_id}:{norm(title)}:{norm(description)}"`` (each
+    text field normalized per ``_normalize_hash_field``) and returns the **full
+    64-char SHA-256 hexdigest**. Callers slice it to the desired length: 4 chars
+    for the standard form, 8 chars for the collision form. ``rehash_check`` slices
+    to the ID's own declared length (``full[:len(declared)]``), so both the 4- and
+    8-char forms verify against the same call.
+    """
+    payload = (
+        f"{doc_id}:{section_id}:{_normalize_hash_field(title)}:{_normalize_hash_field(description)}"
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
+
+
+def scan_fr_content(text: str) -> list[FRContent]:
+    """Return BRD §7 FR elements with their extracted title + multi-line body.
+
+    Extraction boundary (normative — ID_NAMING_STANDARDS "Field extraction"):
+    reuse the ``scan_fr_elements`` structural scan (§7 heading context, before the
+    ``Acceptance criteria:`` label), and for each FR *definition bullet* join the
+    bullet line with its wrapped continuation lines — stopping at the first blank
+    line, next ``- `` bullet, ``## `` heading, or the acceptance label — then split
+    ``**<ID> — <Title>** (band): <description>`` on the joined logical bullet. The
+    band parenthetical MAY itself wrap (corpus ``882c``); joining first makes the
+    band/description split reliable.
+    """
+    lines = text.splitlines()
+    n = len(lines)
+    out: list[FRContent] = []
+    in_fr_section = False
+    past_acceptance = False
+    i = 0
+    while i < n:
+        line = lines[i]
+        head = _SECTION_HEADING.match(line)
+        if head:
+            in_fr_section = _normalise_heading(head.group(1)) == _FR_SECTION_KEY
+            past_acceptance = False
+            i += 1
+            continue
+        if not in_fr_section or past_acceptance:
+            i += 1
+            continue
+        if _ACCEPTANCE_LABEL.match(line):
+            past_acceptance = True
+            i += 1
+            continue
+        if not _FR_BULLET.match(line):
+            i += 1
+            continue
+        # Accumulate this bullet's wrapped body: continuation lines until a blank
+        # line, the next bullet, a heading, or the acceptance label.
+        bullet_line = i + 1  # 1-based
+        parts = [line.strip()]
+        j = i + 1
+        while j < n:
+            nxt = lines[j]
+            if (
+                not nxt.strip()
+                or _FR_BULLET.match(nxt)
+                or re.match(r"^\s*-\s", nxt)
+                or _SECTION_HEADING.match(nxt)
+                or _ACCEPTANCE_LABEL.match(nxt)
+            ):
+                break
+            parts.append(nxt.strip())
+            j += 1
+        logical = " ".join(parts)
+        m = _FR_IDTITLE.search(logical)
+        if m:
+            elem_id, title = m.group(1), m.group(2).strip()
+            # Description: text after the title-close `**`, minus the leading
+            # `(band)` parenthetical and its `:` separator. The band ends at the
+            # paren-close that immediately precedes the `:` separator (`"):"`), so
+            # a band that itself contains a nested `(...)` — e.g.
+            # `(P1 (special)):` — is stripped whole rather than to its first `)`.
+            rest = logical[m.end() :].lstrip()
+            if rest.startswith("("):
+                sep = rest.find("):")
+                if sep != -1:
+                    rest = rest[sep + 2 :]
+                else:  # malformed (unterminated band) — fall back to first `)`
+                    rest = re.sub(r"^\([^)]*\)", "", rest)
+            rest = re.sub(r"^\s*:\s*", "", rest)  # drop the `:` separator (no-band case)
+            out.append(
+                FRContent(
+                    elem_id=elem_id,
+                    line=bullet_line,
+                    title=title,
+                    description=rest.strip(),
+                )
+            )
+        i = j
+    return out
+
+
+def rehash_check(text: str, rel: str) -> list[Finding]:
+    """Verify BRD §7 FR element IDs against their content hash (``IDDRIFT01``).
+
+    Advisory (warning). Runs ONLY on ``id_state: canonical`` docs — a
+    ``provisional`` doc's IDs are declared placeholders, so it is exempt and
+    yields no findings. For each §7 FR element, recompute
+    ``compute_element_hash`` and compare to the ID's embedded hash (matched at the
+    ID's own length, so both the 4- and 8-char collision forms verify). A mismatch
+    is a content drift or a canonical leak → ``IDDRIFT01``.
+
+    This is invoked only by ``python -m sdd_doc_lint.rehash --check``; it is never
+    part of ``lint_path``, so the default gate + corpus lint are byte-identical.
+    """
+    fm = _extract_frontmatter(text)
+    id_state = str((fm or {}).get("id_state") or "").strip().lower()
+    if id_state == "provisional":
+        return []  # placeholders by declaration — exempt
+    findings: list[Finding] = []
+    for el in scan_fr_content(text):
+        # elem_id is TYPE.doc.sec.hash
+        segs = el.elem_id.split(".")
+        if len(segs) != 4:
+            continue
+        _type, doc_id, section_id, declared = segs
+        full = compute_element_hash(doc_id, section_id, el.title, el.description)
+        if full[: len(declared)] != declared:
+            findings.append(
+                Finding(
+                    rel,
+                    el.line,
+                    "IDDRIFT01",
+                    (
+                        f"element {el.elem_id}: content no longer matches its ID "
+                        f"hash (recomputed {full[: len(declared)]!r} ≠ declared "
+                        f"{declared!r}) — content drifted since the ID was minted, "
+                        f"or a canonical leak. Re-canonicalize the ID, or mark the "
+                        f"doc id_state: provisional."
+                    ),
+                    severity="warning",
+                )
+            )
+    return findings
 
 
 # --- covered_state + band parser + escape classifier (CFB-PR-2 DD-2/DD-4/DD-5) -

@@ -1,9 +1,29 @@
 # Session Handoff
 
-> **✅ SESSION COMPLETE (2026-07-06) — Hermes doc arc + the ENTIRE framework-core
-> backlog cleared + H-11b + a Claude-plugin production-readiness audit & fix. `main`
-> clean; no open PRs; nothing in flight.**
-> **Versions:** framework spec `0.34.1` · plugin `0.23.2` · hermes `0.7.3`.
+> **▶ IN FLIGHT (2026-07-08) — PROVISIONAL-IDS-002 Phase 1 impl PR open (spec-tier,
+> awaiting founder ratification).** The plan PR (#269) merged; the Phase-1 impl builds
+> `rehash --check` (the Model-2 drift verifier) + formalizes the hash-input contract.
+> **Versions:** framework spec `0.35.0` (this PR) · plugin `0.23.2` · hermes `0.7.3`.
+>
+> **PROVISIONAL-IDS-002 Phase 1 (D-0062, framework 0.34.2 → 0.35.0):** executes the
+> ratified Model-2 direction (D-0061). **(1)** Formalized the byte-exact hash-input
+> contract in `ID_NAMING_STANDARDS.md` — the normalization transform (NFC → casefold →
+> strip `[a-z0-9 ]` → collapse ws → trim → first 100) + the BRD §7 FR field-extraction
+> boundary (multi-line description, wrapped band); migrated the normalization out of the
+> BRD template (now a cross-ref). **(2)** `python -m sdd_doc_lint.rehash --check` recomputes
+> each canonical BRD §7 FR hash and emits **`IDDRIFT01`** (advisory) on a mismatch — opt-in
+> (NOT default lint → corpus lint byte-identical), `canonical`-gated, BRD §7 only. **(3)** 16
+> conformance tests (`test_rehash_verifier.py`); primitives vendored byte-identical (rehash.py
+> added to the sync + drift guard). **Scoped "verifiable on demand," not "verified"** (Phase 1
+> doesn't run on the corpus; corpus reconciliation is Phase 2). **Deferred to founder-decided
+> Phase 2+:** `rehash --fix`, all-8-layer extraction, corpus reconciliation, advisory→gate
+> promotion, Unicode-category strip. Also unblocks **H-11c** (Hermes SHA-256 residue).
+>
+> ---
+>
+> **✅ PRIOR SESSION COMPLETE (2026-07-06) — Hermes doc arc + the ENTIRE framework-core
+> backlog cleared + H-11b + a Claude-plugin production-readiness audit & fix.**
+> **Versions then:** framework spec `0.34.1` · plugin `0.23.2` · hermes `0.7.3`.
 >
 > **Plugin production-readiness (2026-07-06, D-0060, plugin 0.23.2):** a 4-agent audit
 > (spec-consistency / skills / packaging / conformance-tooling-docs) found the plugin
