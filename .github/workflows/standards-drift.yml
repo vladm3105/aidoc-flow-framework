@@ -14,7 +14,9 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: Fetch drift-check script from aidoc-flow-ci canon
         run: |
-          URL="https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/ci/v1.6.0/sync/check-standards-drift.sh"
+          # Pinned to the commit SHA that ci/v1.6.0 resolves to (aidoc-flow-ci@e15ec7d)
+          # per business/iplanic/framework/operations ai-review verdicts M1: never curl-execute from mutable tags.
+          URL="https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/e15ec7d44234726195da316a740ad1684a2c5abd/sync/check-standards-drift.sh"
           mkdir -p sync
           curl -fsSL "$URL" -o sync/check-standards-drift.sh
           chmod +x sync/check-standards-drift.sh
