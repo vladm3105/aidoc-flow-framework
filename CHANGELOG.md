@@ -12,6 +12,37 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Wave 1 adoption of aidoc-flow-ci PLAN-003 governance-file canon (2026-07-08)
+
+Framework adopts the PLAN-003 flexible-canonical (Option B) project-governance
+file canon shipped by `aidoc-flow-ci@ci/v1.6.0` (see PR-V1/V2/V3/V4 —
+`aidoc-flow-ci#73`, `#74`, `aidoc-flow-operations#217`, `aidoc-flow-ci#75`
+— design at `aidoc-flow-ci/plans/PLAN-003_project-governance-canon.md`).
+Governance drift check (`bash ../aidoc-flow-ci/install/apply-standards.sh
+--check`) now reports `CLAUDE.md#per-repo-governance: OK`.
+
+- **`CLAUDE.md`** — `## Per-repo governance` table updated:
+  - Fixed `Plans` row: cell was `plans/<NAME>-PLAN.md` (a naming pattern
+    that doesn't resolve on disk) → `plans/` (the actual directory).
+  - Added required `Roadmap | ROADMAP.md` row (was absent per PLAN-003
+    §4.5 required-row check).
+  - Added 3 repo-specific additional rows below the required 6 per
+    §4.2: `Spec governance decisions | framework/governance/DECISIONS.md`
+    (second DECISIONS surface — spec-governance — distinct from
+    `plans/DECISIONS.md` which tracks migration decisions),
+    `Hermes per-package changelog | platforms/hermes/CHANGELOG.md`, and
+    `Plugin per-package changelog | platforms/claude-code-plugin/CHANGELOG.md`.
+
+**3 surfaces** (CLAUDE.md + FRAMEWORK-TODO.md tracking entry + this
+CHANGELOG entry) — at the OPS-0061 Rule 1 ≤3 boundary. Retrofit of the
+workspace-standards blocks (per
+PLAN-003 §5.4c framework row link-summary-format retrofit) DEFERRED to
+follow-up PR — tracked in `plans/FRAMEWORK-TODO.md` § Open under
+`[docs] PLAN-003 §5.4c framework link-summary retrofit`. Orthogonal to
+the `--check` governance-drift gate this PR closes.
+
+Multi-agent self-review per OPS-0065 (code-reviewer + documentation-specialist parallel dispatch): approved after 1 fold cycle addressing 2 HIGH (CHANGELOG TBD placeholder → filled; PR reference undercount PR-V1/V2 → PR-V1/V2/V3/V4 with per-PR #s) + 2 MEDIUM (deferred retrofit had no forward pointer → tracked in FRAMEWORK-TODO.md per feedback_framework_todo_list rule; scope-imprecision on plans/DECISIONS.md label wording → clarified as "migration decisions") + 5 LOW (dual-DECISIONS phrasing; italic separator note; explanatory prose deferred; PLAN-003 path cited inline; jargon reduced)
+
 ### Added — governance-doc addition triggers framework spec 0.35.0 → 0.35.1 patch bump (2026-07-08)
 
 - **`framework/VERSION`** — patch bump `0.35.0 → 0.35.1`. Prior Wave 1

@@ -24,6 +24,20 @@
 
 ## Open
 
+**[docs] PLAN-003 §5.4c framework link-summary retrofit — deferred from Wave 1a**
+
+- Context: Wave 1 PR (2026-07-08) closed the parser-gate `--check-governance`
+  drift in `CLAUDE.md ## Per-repo governance` (added missing Roadmap required
+  row + 3 additional rows + fixed Plans path). PLAN-003 §5.4c framework row
+  also mandates the "path-with-summary" retrofit of the workspace-standards
+  blocks (`## Governance PR discipline` / `## AI agent auto-merge default`
+  / `## Multi-agent automated review`) per §4.2 H5 mechanism — replacing the
+  ~150 lines of duplicated OPS-NNNN body content with concise pointer format.
+- Fix shape: rewrite framework's 3 workspace-standards sections to match the
+  path-with-summary format shown in `aidoc-flow-ci/CLAUDE.md` line 76-105
+  (one-sentence summary + `→ ../operations/CLAUDE.md — search "OPS-NNNN"`).
+  Follow-up PR; kept separate from Wave 1a to preserve Rule 1 ≤3 surfaces.
+
 > **CONSUMER-FEEDBACK-001 progress (2026-06-27):** 3 consumer logs triaged → 22
 > items (the 3 dated banners below), orchestrated by
 > `plans/CONSUMER-FEEDBACK-001-PLAN.md`. **Closed:** `BL-TAG-CHAIN-GATE-SYNC`

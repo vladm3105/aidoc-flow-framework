@@ -222,8 +222,13 @@ surfaces for **this** repo:
 | Live HANDOFF | `plans/HANDOFF.md` |
 | TODO / backlog | `plans/FRAMEWORK-TODO.md` |
 | Decisions log | `plans/DECISIONS.md` |
-| Plans | `plans/<NAME>-PLAN.md` |
+| Plans | `plans/` (per-initiative `PLAN-NNN-<slug>.md` files) |
 | Changelog | `CHANGELOG.md` |
+| Roadmap | `ROADMAP.md` |
+| *(repo-specific rows below — same table, optional)* | |
+| Spec governance decisions | `framework/governance/DECISIONS.md` |
+| Hermes per-package changelog | `platforms/hermes/CHANGELOG.md` |
+| Plugin per-package changelog | `platforms/claude-code-plugin/CHANGELOG.md` |
 
 **Never put any of these in `tmp/`** — `tmp/` is for transient working
 files; nothing in it survives a context-clear or new session.
