@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — governance-doc addition triggers framework spec 0.35.0 → 0.35.1 patch bump (2026-07-08)
+
+- **`framework/VERSION`** — patch bump `0.35.0 → 0.35.1`. Prior Wave 1
+  canon-adoption PR added a new "Mechanical author-side pre-push gate
+  (aidoc-flow workspace layer)" section to
+  `framework/governance/REVIEW_REMEDIATION_FLOW.md` — GATE-SPEC-E005
+  requires a version bump when `framework/**` changes. Patch (not
+  minor) because the addition is a governance-doc cross-reference,
+  not a schema/CHG change.
+
 ### Added — Wave 1 governance-tier adoption of aidoc-flow-ci canon (PLAN-002 §5.5) (2026-07-08)
 
 Self-adopts the workspace-wide standards canon from `aidoc-flow-ci@ci/v1.6.0`
