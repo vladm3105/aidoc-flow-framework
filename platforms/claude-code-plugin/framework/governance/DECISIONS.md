@@ -15,7 +15,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-05 — The author-self-claim strip MUST is satisfied by physical removal where the engine curates the lens input, or by a disregard instruction where the lens reads the artifact directly
 
-- **Status:** Proposed — 2026-07-04 (ratified on merge; a `framework/**` normative
+- **Status:** Accepted — 2026-07-04 (ratified on merge; a `framework/**` normative
   change — human sign-off per GATE-SPEC. The GD-05 entry + the `VERSION`/`CHANGELOG`
   bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
   per the GD-01 precedent — no separate CHG artifact). SemVer **minor** (`0.32.7 →
@@ -61,7 +61,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-04 — IPLAN-ASSURANCE L1 is ratified as an aidoc-flow conformance requirement
 
-- **Status:** Proposed — 2026-06-28 (ratified on merge; a validator never grants
+- **Status:** Accepted — 2026-06-28 (ratified on merge; a validator never grants
   approval, only a human signs). Pins `iplan/v0.4.0`. **Merge precondition:** the
   founder tags `iplan/v0.4.0` on `aidoc-flow-iplan-standard` first (PRs #4 §9, #5
   envelope+vectors, #6 R3-amend are all merged to that repo's main).
@@ -103,7 +103,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-03 — Trace citations to element-declaring layers are element-level (ref-granularity)
 
-- **Status:** Proposed — 2026-06-27 (per CFB-PR-3 / `BL-REF-GRANULARITY`;
+- **Status:** Accepted — 2026-06-27 (per CFB-PR-3 / `BL-REF-GRANULARITY`;
   ratified on merge — a spec change, GATE-SPEC human sign-off).
 - **Context:** Functionality is specified in **elements** (each FR / EARS
   statement / BDD scenario / ADR decision / TDD case has its own id); the
@@ -139,7 +139,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-02 — Independent automated review at `pre_merge`, with a tiered human-in-loop
 
-- **Status:** Proposed — 2026-06-15 (per `aidoc-flow-operations` IPLAN-0011;
+- **Status:** Accepted — 2026-06-15 (per `aidoc-flow-operations` IPLAN-0011;
   ratified on merge — a validator never grants approval, only a human signs).
 - **Context:** The spec already names `pre_merge` as an automatable review
   trigger (`REVIEW_REMEDIATION_FLOW.md`) and treats self-approval as failure code

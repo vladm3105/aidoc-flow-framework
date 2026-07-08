@@ -61,10 +61,11 @@ Format: `{TYPE}.{doc_id}.{section_id}.{hash}`
 
 Example: `BRD.01.07.a7f3`
 
-### Hash algorithm (normative)
+### Hash algorithm (the canonicalization target)
 
-The `hash` is computed deterministically so any tool — the plugin generator or a
-hand author — produces byte-identical IDs (PROVISIONAL-IDS-001):
+The SHA-256 form below is the **canonicalization target** — the by-hand↔tool parity
+anchor (PROVISIONAL-IDS-001) that *any* tool (the plugin generator or a hand author)
+should converge on:
 
 1. **Input string** (exact, colon-separated, from the element's OWN content — not
    upstream): `"{doc_id}:{section_id}:{title}:{description}"`.
@@ -72,15 +73,27 @@ hand author — produces byte-identical IDs (PROVISIONAL-IDS-001):
 3. **Collision**: if two distinct elements in scope yield the same 4-char prefix,
    extend BOTH to 8 chars (`[:8]`).
 
-The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored
-hash is just this algorithm applied by hand; it is byte-identical to the plugin's.
+The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored hash
+applies this algorithm by hand; it *should* be byte-identical to the plugin's.
+
+> **Scope of the guarantee (unverified until `rehash --check`).** This algorithm is
+> the target form, **not a currently-verified property**. LLM engines emit element IDs
+> as **stable opaque strings** that look like 4-hex hashes but are **not checked** to be
+> `SHA256(content)` — full canonical-correctness verification (`rehash --check`) is
+> deferred to **PROVISIONAL-IDS-002** and has not shipped. So a `canonical` ID is
+> treated as an opaque stable string that *should* match the algorithm; a mismatch (a
+> "canonical leak") is **not shape-detectable** today (only non-hex `xxxx` is flagged,
+> via `PH01`). The determinism above is the intended contract the verifier will one day
+> enforce — not a guarantee the current pipeline meets end-to-end.
 
 ### Provisional vs canonical IDs
 
 Hand-authored hashes are **placeholders until canonicalized**. A document declares
 its state once, in frontmatter:
 
-- `id_state: canonical` (default when omitted) — the IDs are content hashes.
+- `id_state: canonical` (default when omitted) — the IDs are **intended as** content
+  hashes (the canonicalization target; unverified until `rehash --check`, per the scope
+  note above).
 - `id_state: provisional` — the IDs are placeholders; canonicalize (recompute the
   hashes per the algorithm above) before downstream layers cite them. The linter
   emits one doc-level `PROV01` advisory.

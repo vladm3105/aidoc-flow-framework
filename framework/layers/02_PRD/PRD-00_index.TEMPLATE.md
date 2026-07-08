@@ -85,7 +85,7 @@ When creating a new PRD:
 - **Slugs**: Short, descriptive, lower_snake_case
 - **Cross-Links**: Each PRD references upstream BRD hash-based element IDs
 - **Index Updates**: Add a line for every new PRD; do not remove past entries
-- **Element IDs**: Hash-based format `PRD.NN.SS.xxxx` (SHA256, 4-char hex)
+- **Element IDs**: Hash-based format `PRD.NN.SS.xxxx` (SHA256, 4-char hex — the canonicalization target; not verified until `rehash --check`, see `ID_NAMING_STANDARDS.md`)
 
 ## Threshold Registry Integration
 

@@ -127,6 +127,7 @@ metadata:
     state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       All element IDs use content-derived hashes instead of sequential numbers.
+      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002). See `governance/ID_NAMING_STANDARDS.md`.
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
       Example: BRD.01.07.a7f3
 
@@ -136,7 +137,7 @@ metadata:
         2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
         3. Collision: extend hash from 4 to 8 chars if duplicate detected
 
-      Properties: deterministic, stateless, stable, deduplicating.
+      Properties (target, unverified until `rehash --check`): deterministic, stateless, stable, deduplicating.
       Template placeholder: "0000" represents the hash suffix.
 
     format: "{doc_type}.{doc_id}.{section_id}.{hash}"

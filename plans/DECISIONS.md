@@ -10,6 +10,51 @@ graduation.
 
 ---
 
+## D-0061 — Framework production-readiness: scope the SHA-256 element-ID guarantee to reality (13 surfaces) + ratify GD-02…05; the ID-model decision (PROVISIONAL-IDS-002) resolved as Model 2 (stable ID + drift fingerprint)
+
+**2026-07-07.** FRAMEWORK-PROD-READINESS-001 (framework `0.34.1 → 0.34.2`, PATCH) — the 2
+framework-side items from the production-readiness audit (the plugin items shipped in #266 /
+D-0060).
+
+**(1) SHA-256 over-claim scoped to reality.** `ID_NAMING_STANDARDS.md` + 12 more vendored spec
+surfaces (5 templates' `id_standard` block, 5 layer READMEs, PRD-00/SPEC-00 index templates)
+promised "deterministic, byte-identical" content-hash IDs that "any tool" produces. But the
+engines LLM-generate IDs (not real `SHA256(content)`) and nothing verifies them — D-0040
+explicitly deferred `rehash --check` to PROVISIONAL-IDS-002. Every surface now scopes the claim:
+the SHA-256 form is the **canonicalization target**, not a currently-verified property; a
+produced ID is a stable opaque string, unverified until `rehash --check`. The algorithm +
+`hash_algorithm: SHA256` field are unchanged (the target stands; only the *guarantee* is scoped).
+The independent review caught that the first draft scoped only 6 of the 13 surfaces — leaving 7
+READMEs/index-templates still over-promising would have reproduced the exact gap; all 13 are now
+covered.
+
+**(2) GD-02…05 ratified.** Flipped `Status: Proposed → Accepted` for the four graduated
+governance decisions that are merged + enforced (GD-05, GD-04, GD-03, GD-02); GD-01 was already
+Accepted. Executes the "ratified on merge" convention's missing flip-mechanism.
+
+**(3) The ID-model decision (PROVISIONAL-IDS-002) — RESOLVED as Model 2.** The founder chose to
+**enforce the hash and use it as a content-drift identifier** (option A over the honesty-scoping
+band-aid alone). Of the two enforcement models, **Model 2 (stable ID + drift fingerprint)** was
+chosen over Model 1 (strict content-addressing): the element ID is minted once and stays stable
+(so downstream `@`-tag citations never break on an edit), while `rehash --check` compares
+`SHA256(current content)[:4]` to the ID's embedded hash and flags a mismatch as **drift** ("this
+element's content changed since its ID was minted"). Rationale: the framework's entire
+traceability graph (COV01/COV02/REFGRAN01/`@`-tags) depends on stable citations — Model 1 would
+shatter citations across up to 7 downstream layers on a single upstream edit; Model 2 delivers
+the drift-detection value with zero citation churn and **no extra storage** (the ID's hash *is*
+the mint-time fingerprint), and dovetails with the existing `id_state: provisional/canonical`
+machinery (drift → mark provisional → re-canonicalize as a controlled, opt-in cascade). This
+honesty-scoping is the accurate **interim**; the Model-2 build (`rehash --check` drift-detect +
+`rehash --fix` re-canonicalize + corpus reconciliation) follows as the **PROVISIONAL-IDS-002**
+plan, which will flip "unverified until `rehash --check`" → "verified/drift-checked by
+`rehash --check`."
+
+Doc-accuracy + governance-status only; no rule/algorithm/structure change; deterministic lint
+byte-identical; 166 conformance green. Reviewed: 3 passes (Pass 2 independent caught the 7-surface
+completeness gap). Spec-tier (founder-ratified).
+
+---
+
 ## D-0060 — Plugin production-readiness batch: fix the `${CLAUDE_PLUGIN_ROOT}/../../` playbook-path-escape BLOCKER + 3 SHOULD-FIX
 
 **2026-07-06.** PLUGIN-PROD-READINESS-001 (plugin `0.23.1 → 0.23.2`, PATCH). A 4-agent

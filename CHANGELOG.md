@@ -12,6 +12,26 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — FRAMEWORK-PROD-READINESS-001: scope the SHA-256 element-ID guarantee to reality across all 13 spec surfaces + ratify GD-02…05 (framework spec 0.34.1 → 0.34.2) (2026-07-07)
+
+The 2 framework-side items from the production-readiness audit. **(1) SHA-256 over-claim
+scoped.** `ID_NAMING_STANDARDS.md` — and 12 more spec surfaces (5 layer templates' `id_standard`
+block + 5 layer READMEs + the PRD-00/SPEC-00 index templates, all vendored) — promised
+"deterministic, byte-identical" content-hash element IDs, but the engines LLM-generate IDs that
+aren't real `SHA256(content)` and nothing verifies them (D-0040 deferred `rehash --check` to
+PROVISIONAL-IDS-002). Every surface now carries a scope caveat: the SHA-256 form is the
+**canonicalization target**, not a currently-verified property — a produced ID is a stable
+opaque string, unverified until `rehash --check` ships. The algorithm + `hash_algorithm: SHA256`
+field stay verbatim (the target is unchanged; only the *guarantee* is scoped to reality).
+**(2) GD-02…05 ratified.** Flipped `Status: Proposed → Accepted` for the four graduated
+governance decisions that are merged + enforced (GD-05 disregard-strip, GD-04 IPLAN-ASSURANCE,
+GD-03 REFGRAN01, GD-02 independent review). Doc-accuracy + governance-status only — no
+rule/algorithm/structure change; deterministic `sdd_doc_lint` output byte-identical; 166
+conformance green. Framework spec **PATCH**. **Forward note:** the deeper decision
+(PROVISIONAL-IDS-002 — enforce the hash + use it as a content-drift identifier) is now DECIDED
+as **Model 2** (stable ID + drift fingerprint) and follows in its own plan. See
+`plans/FRAMEWORK-PROD-READINESS-001-PLAN.md` + `plans/DECISIONS.md` D-0061.
+
 ### Fixed — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the plugin production-readiness audit (plugin 0.23.1 → 0.23.2; no framework change) (2026-07-06)
 
 A 4-agent production-readiness audit of the Claude Code plugin found it clean/green on

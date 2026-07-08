@@ -89,6 +89,7 @@ metadata:
     state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       All element IDs use content-derived hashes scoped to EARS content.
+      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002). See `governance/ID_NAMING_STANDARDS.md`.
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
       Example: EARS.01.03.c4d8
 

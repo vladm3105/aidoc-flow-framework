@@ -13,11 +13,22 @@
 > weighted-crew review collapsed to zero coverage **in any distributed install** (worked
 > only in the source checkout by coincidence). Fixed (dropped `/../../`, 11 refs) + 3
 > SHOULD-FIX (doc-ears D54-F04 propagation; deprecated-stub `v0.7.0 → v1.0.0`; example
-> lint-baseline note). **Deferred framework-side items surfaced by the audit:** the
-> **SHA-256 element-ID honesty gap** (`ID_NAMING_STANDARDS.md` normatively promises
-> deterministic content-hash IDs the plugin doesn't produce — gated on PROVISIONAL-IDS-002,
-> = H-11c) and the **GD-02…05 "Proposed → Accepted" status flip** hygiene. Both are the
-> highest-value remaining framework-side polish.
+> lint-baseline note).
+> **Framework production-readiness (FRAMEWORK-PROD-READINESS-001, D-0061, framework 0.34.2):**
+> the audit's 2 framework-side items — (1) **SHA-256 over-claim scoped to reality** across all
+> **13** spec surfaces (`ID_NAMING_STANDARDS.md` + 5 templates + 5 layer READMEs + PRD-00/SPEC-00
+> index templates): each now says the SHA-256 form is the *canonicalization target, unverified
+> until `rehash --check`* (engines LLM-generate, not real hashes; algorithm unchanged); (2)
+> **GD-02…05 flipped Proposed → Accepted**. Prose/status only, lint byte-identical.
+> **▶ DECIDED — PROVISIONAL-IDS-002 = Model 2** (founder, 2026-07-07): enforce the content-hash
+> as a **content-drift identifier**, using the **stable-ID + drift-fingerprint** model (ID minted
+> once, never breaks citations; `rehash --check` compares `SHA256(current content)` to the ID's
+> embedded hash and flags drift). NOT Model 1 (strict content-addressing) — it would shatter
+> `@`-tag citations across 7 downstream layers on any upstream edit. This honesty-scoping is the
+> interim; **the next build is the PROVISIONAL-IDS-002 plan** — `rehash --check` (drift-detect) +
+> `rehash --fix` (re-canonicalize) + corpus reconciliation (the LLM-generated corpus IDs mostly
+> won't match today), which flips "unverified until `rehash --check`" → "drift-checked by it."
+> This also unblocks **H-11c** (the Hermes-side SHA-256 mention).
 >
 > **What shipped this session (14 PRs, D-0053 → D-0060):**
 >

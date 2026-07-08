@@ -48,6 +48,7 @@ Proposed → Accepted → Deprecated → Superseded
 ## Element IDs
 
 Hash-based, content-derived IDs scoped to ADR content:
+> **Not verified end-to-end** until `rehash --check` (PROVISIONAL-IDS-002): engines emit stable opaque strings that *should* match this form. The SHA-256 form is the canonicalization target — see `ID_NAMING_STANDARDS.md`.
 
 ```text
 Format: ADR.{doc_id}.{section_id}.{hash}

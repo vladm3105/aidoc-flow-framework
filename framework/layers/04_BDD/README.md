@@ -47,6 +47,7 @@ Scenario: User logs in with valid credentials
 ## Element IDs
 
 Hash-based, content-derived IDs scoped to BDD content:
+> **Not verified end-to-end** until `rehash --check` (PROVISIONAL-IDS-002): engines emit stable opaque strings that *should* match this form. The SHA-256 form is the canonicalization target — see `ID_NAMING_STANDARDS.md`.
 
 ```text
 Format: BDD.{doc_id}.{section_id}.{hash}
