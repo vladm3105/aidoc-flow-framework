@@ -1,0 +1,17 @@
+# Workspace .gitattributes baseline per docs/REPO_STANDARDS.md §10.2.
+#
+# Enforce LF line endings across contributors. Windows contributors
+# get platform-native on checkout via `text=auto`; committed content
+# is always LF. Prevents CRLF drift on mixed-OS teams.
+
+* text=auto eol=lf
+
+# Binary file types — do NOT normalize line endings.
+# Matches canon §10.2 exactly. Repo-specific extensions (e.g., *.zip,
+# *.ico for a repo that ships archives or app icons) are added by the
+# consumer AFTER apply-standards.sh — they extend, do not replace,
+# the canon list. Extend canon §10.2 first if a new type becomes
+# workspace-universal, so apply-standards.sh --check stays meaningful.
+*.png binary
+*.jpg binary
+*.pdf binary

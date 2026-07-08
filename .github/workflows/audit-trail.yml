@@ -1,0 +1,13 @@
+# audit-trail — consumer caller per PLAN-002 §5.5 Wave 1 (governance tier).
+name: audit-trail
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@e15ec7d44234726195da316a740ad1684a2c5abd # ci/v1.6.0
+    with:
+      runner_labels: '"ubuntu-latest"'
+    permissions:
+      contents: read
+      pull-requests: read

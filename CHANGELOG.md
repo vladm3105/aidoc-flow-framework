@@ -12,6 +12,62 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — governance-doc addition triggers framework spec 0.35.0 → 0.35.1 patch bump (2026-07-08)
+
+- **`framework/VERSION`** — patch bump `0.35.0 → 0.35.1`. Prior Wave 1
+  canon-adoption PR added a new "Mechanical author-side pre-push gate
+  (aidoc-flow workspace layer)" section to
+  `framework/governance/REVIEW_REMEDIATION_FLOW.md` — GATE-SPEC-E005
+  requires a version bump when `framework/**` changes. Patch (not
+  minor) because the addition is a governance-doc cross-reference,
+  not a schema/CHG change.
+
+### Added — Wave 1 governance-tier adoption of aidoc-flow-ci canon (PLAN-002 §5.5) (2026-07-08)
+
+Self-adopts the workspace-wide standards canon from `aidoc-flow-ci@ci/v1.6.0`
+per PLAN-002 §5.5 Wave 1 (governance tier). Adds mechanical OPS-0069
+audit-trail enforcement + updates `framework/governance/REVIEW_REMEDIATION_FLOW.md`
+to reference the new mechanical author-side gate (M7 fix per plan §5.5 Wave 1).
+
+Files (5 file surfaces + REVIEW_REMEDIATION_FLOW.md update + CHANGELOG):
+
+INSTALLED (fresh canon):
+
+- `scripts/pre_push_check.sh` (NEW) — canon self-review script.
+- `.gitattributes` (NEW) — canon baseline.
+- `.github/workflows/audit-trail.yml` (NEW) — caller `@ci/v1.6.0`.
+- `.github/workflows/standards-drift.yml` (NEW) — weekly cron `--tier governance`.
+
+MERGED:
+
+- `.pre-commit-config.yaml` — canon block appended via ruamel round-trip
+  (`indent(mapping=2, sequence=4, offset=2)`); `# CANON:` marker line 1.
+- `.gitignore` — 15 canon lines appended.
+
+UPDATED (M7 fix per plan §5.5):
+
+- `framework/governance/REVIEW_REMEDIATION_FLOW.md` — new "Mechanical
+  author-side pre-push gate (aidoc-flow workspace layer)" section
+  documenting the OPS-0069 audit-trail gate as complementary to the
+  artifact-level review loop. Content-shaped review + process-shaped
+  mechanical gate are two independent layers; both must pass for merge.
+
+PRESERVED (intentional canon-divergence):
+
+- `.github/CODEOWNERS` — existing custom routing preserved (more granular
+  than flat canon).
+- `.github/PULL_REQUEST_TEMPLATE.md` — existing template preserved (repo-
+  idiomatic; uppercase filename retained — GitHub accepts either case).
+- `.github/dependabot.yml` — existing per-directory pip + github-actions
+  config preserved (more useful than flat canon).
+
+Server-side follow-up (F5 blast-radius; not in this PR):
+`bash install/apply-standards.sh --apply --repo vladm3105/aidoc-flow-framework
+--tier governance --ci-tag ci/v1.6.0 --yes`
+
+Origin: `aidoc-flow-ci/plans/PLAN-002_workspace-standards-rollout.md` §5.5
+Wave 1 (governance tier).
+
 ### Added — PROVISIONAL-IDS-002 Phase 1: formalize the hash-input contract + ship `rehash --check` (the Model-2 element-ID drift verifier, `IDDRIFT01`) (framework spec 0.34.2 → 0.35.0) (2026-07-08)
 
 Delivers the ratified Model-2 direction (D-0061): element IDs get a real, verifiable

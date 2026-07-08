@@ -46,3 +46,20 @@ coverage.xml
 # Generated publish artifacts — the plugin mirror is a one-way build output
 # (tools/build-plugin-mirror.sh, PLUGIN-MARKETPLACE P2), never committed here.
 dist/
+
+# --- aidoc-flow-ci canon baseline (PLAN-002 §10.1) ---
+.claude/
+.review/
+scratch/
+.env
+.env.*
+!.env.example
+.mypy_cache/
+.ruff_cache/
+build/
+*.egg-info/
+node_modules/
+.DS_Store
+.vscode/
+.idea/
+Thumbs.db
