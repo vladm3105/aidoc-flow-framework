@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: chaos_engineer
 weight: 10
 agent: chaos-engineer
-framework_spec_version: "0.35.0"
+framework_spec_version: "0.35.1"
 ---
 # chaos_engineer lens — TDD layer
 
