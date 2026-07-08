@@ -10,6 +10,54 @@ graduation.
 
 ---
 
+## D-0062 — PROVISIONAL-IDS-002 Phase 1: formalize the hash-input contract + ship `rehash --check` (the Model-2 drift verifier, `IDDRIFT01`) — framework spec 0.34.2 → 0.35.0
+
+**2026-07-08.** Executes the ratified Model-2 direction (D-0061). Element IDs now
+have a real, verifiable content-drift signal, delivered as a **minimal Phase-1
+core** so the higher-risk pieces stay deferred to founder-decided later phases.
+
+**Shipped.**
+
+1. **Formalized the byte-exact hash-input contract** in
+   `framework/governance/ID_NAMING_STANDARDS.md` (the authority): the
+   **normalization transform** (NFC → casefold → strip to `[a-z0-9 ]` → collapse
+   whitespace → trim → first 100 chars) and the **BRD §7 FR field-extraction
+   boundary** (title between `—` and `**`; description = post-band body accumulated
+   across wrapped continuation lines until a blank line / next bullet / heading /
+   acceptance label). Migrated the normalization out of the BRD template (now a
+   cross-ref) so there is one source.
+2. **`rehash --check`** (`python -m sdd_doc_lint.rehash --check <docs>`) — recomputes
+   each canonical BRD §7 FR element's hash and emits **`IDDRIFT01`** (advisory) on a
+   mismatch. **Opt-in** (NOT in the default `sdd_doc_lint` pass → default gate +
+   corpus lint byte-identical), **`canonical`-gated** (provisional docs exempt),
+   **BRD §7 only**. Primitives (`_normalize_hash_field`, `compute_element_hash`,
+   `scan_fr_content`, `rehash_check`) live in the canonical `sdd_doc_lint/__init__.py`
+   (vendored byte-identical to both platform mirrors); the CLI is `rehash.py`.
+3. **Fixtures/tests** — `tests/conformance/test_rehash_verifier.py` (16 tests) proves
+   the transform determinism (V4), extraction bytes incl. multi-line + wrapped-band +
+   colon-in-body (V4b), §7-only scope (V4c), clean/drift/provisional-exempt (V1/V2/V3),
+   the 8-char collision form, and advisory severity.
+
+**Why "verifiable on demand," not "verified."** Pass-2 independent review of the
+plan caught that writing "verified for canonical docs" into the authority would
+re-introduce the exact over-claim D-0061 removed: Phase 1 does **not** run the check
+on the corpus (whose LLM-minted IDs would drift wholesale), so the authority says
+the contract is **verifiable on demand** via the opt-in command; the corpus stays
+unverified until the Phase-2 reconciliation.
+
+**Deferred (founder-decided) — Phase 2+.** `rehash --fix` (canonicalize + citation
+cascade); all-8-layer extraction; corpus reconciliation (grandfather vs.
+re-canonicalize at next wholesale regen); promoting `IDDRIFT01` advisory → gate; a
+Unicode-category normalization strip. See `plans/PROVISIONAL-IDS-002-PLAN.md`.
+
+**Versioning.** New normative spec content (the formalized contract) in
+`framework/governance/` trips GATE-SPEC → framework **MINOR** `0.34.2 → 0.35.0`.
+`IDDRIFT01` is opt-in advisory, so the default gate is unchanged; 182 conformance
+green. Both `FRAMEWORK_SPEC_VERSION` pointers auto-re-matched; plugin + Hermes
+product versions unchanged.
+
+---
+
 ## D-0061 — Framework production-readiness: scope the SHA-256 element-ID guarantee to reality (13 surfaces) + ratify GD-02…05; the ID-model decision (PROVISIONAL-IDS-002) resolved as Model 2 (stable ID + drift fingerprint)
 
 **2026-07-07.** FRAMEWORK-PROD-READINESS-001 (framework `0.34.1 → 0.34.2`, PATCH) — the 2

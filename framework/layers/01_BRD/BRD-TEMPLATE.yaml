@@ -127,17 +127,23 @@ metadata:
     state: canonical  # provisional | canonical (PROVISIONAL-IDS-001)
     _guidance: |
       All element IDs use content-derived hashes instead of sequential numbers.
-      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002). See `governance/ID_NAMING_STANDARDS.md`.
+      NOTE: this is the canonicalization TARGET — LLM engines emit stable opaque strings. For BRD §7 FR IDs it is verifiable on demand via the opt-in `rehash --check` (advisory `IDDRIFT01`, PROVISIONAL-IDS-002); the default lint does not run it and the corpus stays unverified until Phase-2 reconciliation. See `governance/ID_NAMING_STANDARDS.md`.
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
       Example: BRD.01.07.a7f3
 
-      Hash algorithm (SHA256, 4-char hex):
-        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
-           - title/description: first 100 chars, lowercased, special chars removed
-        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
-        3. Collision: extend hash from 4 to 8 chars if duplicate detected
+      Hash algorithm (SHA256, 4-char hex) — the byte-exact input assembly, the
+      title/description normalization transform, and the §7 FR field-extraction
+      boundary are the SINGLE SOURCE in `governance/ID_NAMING_STANDARDS.md`
+      ("Hash algorithm" section, PROVISIONAL-IDS-002). Do NOT re-specify the
+      normalization here — cross-ref the authority so the verifier
+      (`rehash --check`), any future generator, and hand authors converge on one
+      contract.
+        Shape: hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]
+        Collision: extend 4 -> 8 chars if duplicate detected.
 
-      Properties (target, unverified until `rehash --check`): deterministic, stateless, stable, deduplicating.
+      Properties (target): deterministic, stateless, stable, deduplicating —
+      verifiable on demand for BRD §7 FR IDs via `rehash --check` (advisory
+      `IDDRIFT01`); unverified elsewhere until later PROVISIONAL-IDS-002 phases.
       Template placeholder: "0000" represents the hash suffix.
 
     format: "{doc_type}.{doc_id}.{section_id}.{hash}"

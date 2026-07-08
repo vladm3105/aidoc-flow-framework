@@ -68,7 +68,8 @@ anchor (PROVISIONAL-IDS-001) that *any* tool (the plugin generator or a hand aut
 should converge on:
 
 1. **Input string** (exact, colon-separated, from the element's OWN content — not
-   upstream): `"{doc_id}:{section_id}:{title}:{description}"`.
+   upstream): `"{doc_id}:{section_id}:{title}:{description}"`, where `title` and
+   `description` are each passed through the **normalization transform** below.
 2. **Compute**: `hashlib.sha256(input.encode("utf-8")).hexdigest()[:4]`.
 3. **Collision**: if two distinct elements in scope yield the same 4-char prefix,
    extend BOTH to 8 chars (`[:8]`).
@@ -76,15 +77,61 @@ should converge on:
 The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored hash
 applies this algorithm by hand; it *should* be byte-identical to the plugin's.
 
-> **Scope of the guarantee (unverified until `rehash --check`).** This algorithm is
-> the target form, **not a currently-verified property**. LLM engines emit element IDs
-> as **stable opaque strings** that look like 4-hex hashes but are **not checked** to be
-> `SHA256(content)` — full canonical-correctness verification (`rehash --check`) is
-> deferred to **PROVISIONAL-IDS-002** and has not shipped. So a `canonical` ID is
-> treated as an opaque stable string that *should* match the algorithm; a mismatch (a
-> "canonical leak") is **not shape-detectable** today (only non-hex `xxxx` is flagged,
-> via `PH01`). The determinism above is the intended contract the verifier will one day
-> enforce — not a guarantee the current pipeline meets end-to-end.
+#### Normalization transform (normative — PROVISIONAL-IDS-002)
+
+`title` and `description` are each normalized by this **exact, ordered** transform
+before assembly into the input string. This is the load-bearing contract: the
+verifier (`rehash --check`) and any future generator or `--fix` MUST apply it
+identically, or two tools compute different hashes for the same content.
+
+1. **NFC** — Unicode normalization form C.
+2. **casefold** — Unicode case-folding (lowercase).
+3. **strip** — delete every character not in `[a-z0-9 ]` (space kept).
+4. **collapse** — replace every run of whitespace with a single space.
+5. **trim** — strip leading/trailing spaces.
+6. **truncate** — take the first 100 characters.
+
+**Limitation (intentional for Phase 1):** step 3 deletes all non-Latin scripts
+(CJK → empty) and accents NFC leaves composed (`café` → `caf`), so two distinct
+non-ASCII fields can normalize to the same string and collide on the 4-hex prefix —
+the collision rule (`[:8]`) covers that. A Unicode-category-based strip is a
+PROVISIONAL-IDS-002 Phase-2 option.
+
+#### Field extraction (normative — BRD §7 Functional-Requirement bullets)
+
+For a BRD §7 FR bullet
+`- **<ID> — <Title>** (band): <description…>`, `title` and `description` are
+extracted **byte-exactly** so the recompute is reproducible:
+
+- **title** — the text between the `— ` (em/en/hyphen) separator and the closing
+  `**` of the bold ID+title span.
+- **description** — the text after the closing `**`, skipping the leading
+  `(band)` parenthetical up to its `):` separator (so a band that itself contains
+  a nested `(...)` is stripped whole, not to its first `)`), then **accumulating
+  continuation lines** (the wrapped body) — joining with single spaces — until the
+  first of: a blank line, the next `- ` bullet, a `## ` heading, or the
+  `Acceptance criteria:` label. (The band parenthetical MAY itself wrap across
+  lines — corpus `882c` — so extraction joins the logical bullet first, then
+  splits band from description.)
+
+**Phase-1 coverage boundary:** `rehash --check` covers **only BRD §7 gated FR
+elements** (`scan_fr_content`). Other element-bearing BRD sections (e.g. §4
+constraint IDs) and the other seven layers are **NOT** verified in Phase 1; their
+`canonical` IDs remain unverified until later PROVISIONAL-IDS-002 phases extend the
+extractor.
+
+> **Scope of the guarantee (verifiable on demand via the opt-in `rehash --check`).**
+> This algorithm is the target form. As of PROVISIONAL-IDS-002 Phase 1 the
+> normalization + extraction contract is formalized (above) and `rehash --check`
+> **can verify** a `canonical` BRD's §7 FR IDs against it **on demand** — but the
+> check is an **explicit opt-in command, NOT run by the default `sdd_doc_lint`
+> pass**, and it is **not run over the example corpus** (whose IDs are LLM-generated
+> stable strings, not real hashes — they remain unverified until the Phase-2 corpus
+> reconciliation). So a `canonical` ID is a **stable opaque string that SHOULD match
+> the algorithm and is now verifiable for BRD §7 via `rehash --check`** — it is
+> **not** globally "verified": a mismatch (a "canonical leak") is reported as the
+> advisory `IDDRIFT01` when the command is run, and is still **not shape-detectable**
+> by the default lint (only non-hex `xxxx` is flagged, via `PH01`).
 
 ### Provisional vs canonical IDs
 
@@ -92,8 +139,11 @@ Hand-authored hashes are **placeholders until canonicalized**. A document declar
 its state once, in frontmatter:
 
 - `id_state: canonical` (default when omitted) — the IDs are **intended as** content
-  hashes (the canonicalization target; unverified until `rehash --check`, per the scope
-  note above).
+  hashes (the canonicalization target). For a BRD's §7 FR elements this is now
+  **verifiable on demand** via `rehash --check` (emits `IDDRIFT01` on a mismatch);
+  elsewhere it remains unverified until later PROVISIONAL-IDS-002 phases, per the
+  scope note above. `rehash --check` runs **only on `id_state: canonical` docs** — a
+  `provisional` doc is exempt (its IDs are declared placeholders, not hashes).
 - `id_state: provisional` — the IDs are placeholders; canonicalize (recompute the
   hashes per the algorithm above) before downstream layers cite them. The linter
   emits one doc-level `PROV01` advisory.
