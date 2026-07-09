@@ -143,7 +143,7 @@ class PluginReleaseMetadata(unittest.TestCase):
         # Bumped 0.15.1 → 0.15.2 for the framework/README.md Layout fix (PATCH:
         # doc clarification; any framework/** change trips GATE-SPEC-E005).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.36.1")
+        self.assertEqual(_plugin_framework_spec_version(), "0.36.2")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}

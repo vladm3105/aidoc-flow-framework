@@ -2,7 +2,7 @@
 
 Authority for **how** SDD documents are written. Templates define structure;
 this defines voice, density, and form. Apply to every layer (BRD/PRD/EARS/BDD/
-ADR/SPEC/TDD/IPLAN) and to CHG records. Audit skills enforce it as part of the
+ADR/SPEC/TDD/IPLAN) and to CHG records. The audit engine enforces it as part of the
 structural checklist.
 
 **Rationale.** A large corpus is read into LLM context every cycle (authoring,
@@ -86,7 +86,7 @@ for different jobs: words guide section density; the token cap triggers a split.
 
 ## Audit hook
 
-Audit skills (`doc-<layer>-audit`) include this rule in the Structural
+The per-layer audit engine includes this rule in its Structural
 Checklist:
 
 - [ ] Authoring style complies with `AUTHORING_STYLE.md` — no banned phrases,

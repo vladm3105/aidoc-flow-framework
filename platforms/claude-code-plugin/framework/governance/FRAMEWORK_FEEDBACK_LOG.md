@@ -10,7 +10,7 @@ Examples are the system-under-test (see [`AIDOC.md`](../docs/AIDOC.md) — the
 seed examples double as acceptance tests). Every consumer
 project applying the framework is an additional empirical test of the
 spec. Friction discovered during use — lint-rule misfires, harness
-flag absences, SKILL prose that contradicts the spec, sync-script
+flag absences, engine prose that contradicts the spec, sync-script
 gotchas, missing convenience features — is **new knowledge about the
 framework itself**. Without a deliberate capture mechanism, that
 knowledge evaporates between sessions and each new project
@@ -30,7 +30,7 @@ applying the framework. Examples (non-exhaustive):
 
 - A lint rule fires on an artifact that semantically should pass
 - A harness flag is missing for a workflow the project needed
-- A SKILL's prose contradicts the current spec
+- An engine's prose contradicts the current spec
 - A sync script's behavior is unexpected (silent overwrite, wrong
   direction, missing target)
 - A template field has unclear semantics
@@ -86,7 +86,7 @@ Tags (non-exhaustive — use what fits):
 
 - `[lint]` — `sdd_doc_lint` rule misfire / gap
 - `[harness]` — `tests/scripts/test-acceptance.sh` or cascade flow
-- `[skill]` — a plugin/agent SKILL contradicts the spec
+- `[skill]` — an engine capability/prompt contradicts the spec
 - `[template]` — a layer template field is wrong / unclear
 - `[sync]` — a sync script behaviour is unexpected
 - `[plan-review]` — plan-review process / verified-planning skill gap

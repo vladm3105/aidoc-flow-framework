@@ -25,7 +25,8 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer.
-Deeper lineage is transitive (one hop per layer, or `tools/trace_walk.py`):
+Deeper lineage is transitive (one hop per layer, or a trace-walk query — the
+reference implementation ships `tools/trace_walk.py`, outside the spec):
 
 ```
 BRD:   —

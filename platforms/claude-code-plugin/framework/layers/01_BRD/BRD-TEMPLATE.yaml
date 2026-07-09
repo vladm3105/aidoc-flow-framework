@@ -546,8 +546,10 @@ functional_requirements:
 
   # CFB-PR-2 (DD-3/DD-4): the forward-coverage engine reads the AUTHORED markdown
   # form of each FR. Two markers are therefore NORMATIVE in the rendered BRD; the
-  # coverage gate (sdd_doc_lint COV01) and the matrix (sdd_coverage.py) rely on
-  # both, and the necessary-upstream trace chain begins here.
+  # coverage gate (COV01) and the forward-coverage matrix rely on both — those
+  # checks are the normative capability; the reference-implementation scripts
+  # (`sdd_doc_lint`, `sdd_coverage.py`) that perform them are outside the spec.
+  # The necessary-upstream trace chain begins here.
   _authored_form:
     _guidance: |
       Render Section 7 so each functional requirement is a definition bullet

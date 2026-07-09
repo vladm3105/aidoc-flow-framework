@@ -10,8 +10,12 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 
 Each layer cites only its **necessary upstream** (`required_tags` in
 `LAYER_REGISTRY.yaml`) — **not** the cumulative closure of every preceding
-layer. Deeper lineage is discoverable transitively (one hop per layer, or
-`tools/trace_walk.py` for a one-shot query).
+layer. Deeper lineage is discoverable transitively (one hop per layer, or a
+one-shot trace-walk query). The `tools/*.py` helpers this document names
+(`trace_walk.py`, `sdd_coverage.py`) are a **reference implementation outside
+the engine-agnostic spec** — the traversal they perform over the `@`-tag graph
+is the normative capability; the scripts themselves are a convenience an engine
+MAY provide.
 
 ```
 Layer 1 (BRD):   —
@@ -157,4 +161,4 @@ Semantics:
 - **No free readiness score.** A referenced layer is *present + linked* but was
   not authored/audited here, so the authoring/audit flow MUST NOT grant it an
   authored-quality (≥90) readiness score. (The deterministic lint records the
-  reuse; the audit-skill enforcement of this rule is a follow-on.)
+  reuse; the audit-engine enforcement of this rule is a follow-on.)
