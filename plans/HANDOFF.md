@@ -1,17 +1,18 @@
 # Session Handoff
 
-> **▶ IN FLIGHT (2026-07-09) — FRWK-REVIEW-002** (`plans/FRWK-REVIEW-002-PLAN.md`,
-> plan PR #275 merged). **Current versions:** framework spec `0.35.1` · plugin
-> `0.23.4` · hermes `0.7.3`. Fixes 46 findings from the 2026-07-09 plugin + core-docs
-> review across 7 tier-scoped PRs. **PR-A shipped** (plugin `0.23.3`): skill-content
-> drift — audit-report path unified across 68 sites, iteration-cap citation
-> corrected + backported, `review_mode` consistency, phantom emitter removed, verdict
-> clarifier propagated, creator/autopilot descriptions disambiguated. **PR-B shipped**
-> (plugin `0.23.4`): removed the dead `--threshold` flag (driver + 8 autopilots), CHG
-> advisory-hook coverage, `save-plan` wired to `work_plans_dir`, changelog structure,
-> `plugin.json` keywords, CHG precheck-exclusion note. **Next:** PR-F (docs-of-record
-> currency). **Held for founder:** PR-C/PR-D (spec tier), PR-E0–E4 (engine-agnosticism,
-> GD decision), PR-G (CLAUDE.md).
+> **✅ FRWK-REVIEW-002 COMPLETE except PR-E (2026-07-09)** (`plans/FRWK-REVIEW-002-PLAN.md`).
+> **Current versions:** framework spec `0.36.0` · plugin `0.23.4` · hermes `0.7.3`.
+> 46 findings from the 2026-07-09 plugin + core-docs review, fixed across 6 merged
+> impl PRs: **PR-A #276** (plugin `0.23.3`, skill-content drift — 68 audit-report
+> sites, iteration-cap citation, review_mode, phantom emitter), **PR-B #277** (plugin
+> `0.23.4`, mechanics — dead `--threshold`, CHG hook, save-plan config, changelog),
+> **PR-F #278** (docs-of-record currency + sync-script hazard fix), **PR-C #279** (spec
+> `0.35.2`, 17 spec-text corrections — BDD YAML-BDD, adaptation 6-knob, SPEC-Ready gate,
+> registry-wins), **PR-D #280** (spec `0.36.0`, realizing-layers registry block +
+> 28-rule lint catalog), **PR-G #281** (CLAUDE.md anchor + stale current-state).
+> Conformance 192 green. **Remaining, tracked in `plans/FRAMEWORK-TODO.md`:** PR-E
+> engine-agnosticism (BLOCKED on founder GD-NN), the sync-hook CLAUDE.md plugin-version
+> gap, SKILL-DEDUP-001 (skill de-duplication), and the v1.0.0 deprecated-stub removal.
 >
 > **✅ SESSION COMPLETE (2026-07-08) — PROVISIONAL-IDS-002 Phase 1 shipped.** Both PRs
 > merged (plan #269 + impl #270); `main` clean, no open PRs. The Phase-1 build ships

@@ -24,6 +24,51 @@
 
 ## Open
 
+### `[docs]` `FRWK-REVIEW-002-PR-E` — engine-agnosticism sweep (BLOCKED on founder GD-NN)
+
+- Context: FRWK-REVIEW-002 (plan `plans/FRWK-REVIEW-002-PLAN.md`, PRs #276–#281
+  merged). PR-E is the only unshipped piece. The spec carries engine-specific
+  tokens: the playbook `agent:` frontmatter field points into
+  `platforms/claude-code-plugin/` (`REVIEW_TEAM.md:259`); `doc-*`/"SKILL"
+  vocabulary in governance/layer docs; a workspace-CI section pinning
+  `aidoc-flow-ci@ci/vX` in `REVIEW_REMEDIATION_FLOW.md`; repo-root tool refs
+  (`tools/trace_walk.py`, `tools/sdd_coverage.py`) the spec doesn't vendor.
+- Fix shape: **needs a founder decision first (GD-NN in `framework/governance/DECISIONS.md`)** —
+  what counts as an engine-specific token, and which refs are removed vs accepted
+  as documented exceptions (like D-0022). Then ship as PR-E0 (decision only) +
+  PR-E1–E4 (≤3 surfaces each, engine-neutral edits). Scoped in the plan's PR-E table.
+
+### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — `sync-version-refs.sh` doesn't update CLAUDE.md's plugin-version string
+
+- Context: FRWK-REVIEW-002 PR-A/B bumped the plugin `0.23.2 → 0.23.4` but the
+  `Current state` line in `CLAUDE.md` stayed at `0.23.2` — PR-G #281 fixed it by
+  hand. The sync hook updates CLAUDE.md's framework-spec string but not the
+  plugin-version string, so every plugin bump leaves it stale.
+- Fix shape: extend `scripts/sync-version-refs.sh` plugin-version block to also
+  rewrite the `Claude Code plugin \`X.Y.Z\`` token in `CLAUDE.md`'s current-state
+  line (mirror the framework-spec handling); add a conformance guard if cheap.
+
+### `[skill]` `SKILL-DEDUP-001` — 36 per-layer skills are ~57% duplicated boilerplate (≈7,800 lines)
+
+- Context: FRWK-REVIEW-002 skill-redundancy review. The 4 families × 9 layers
+  (`doc-*` / `-audit` / `-fixer` / `-autopilot`) share near-identical saga /
+  break-circuit / adaptation / report-format blocks; PR-A fixed the drift
+  *instances* but not the duplication *class*. Also absorbs A7 (cosmetic
+  autopilot-wording normalization, deferred from PR-A) and L16 (quality-advisor
+  re-implements the audits' Structural-Checklist checks with no shared source).
+- Fix shape: generate the 36 per-layer `SKILL.md` from one template per family +
+  a per-layer parameter block (precedent: `sync-version-refs.sh` already rewrites
+  all 52 frontmatters), and/or move engine-generic blocks into the governance docs
+  the skills already cite. Promote to `→ SKILL-DEDUP-001-PLAN.md` before building.
+
+### `[skill]` `DEPRECATED-STUB-REMOVAL-V1` — remove `doc-review` / `trace-check` stubs at v1.0.0
+
+- Context: FRWK-REVIEW-002 L15. The two deprecated redirect stubs (`replacement:
+  doc-validator`) are correctly marked and scheduled for removal at the plugin
+  v1.0.0 milestone; no action before then (review concluded no live dependencies).
+- Fix shape: at the v1.0.0 cut, delete the two `skills/` dirs, drop them from the
+  registry/README/marketplace counts, and update the "52 = 50 + 2" claims to 50.
+
 **[docs] PLAN-003 §5.4c framework link-summary retrofit — deferred from Wave 1a**
 
 - Context: Wave 1 PR (2026-07-08) closed the parser-gate `--check-governance`
