@@ -9,8 +9,12 @@ The suite has two halves:
    `framework/` spec is internally coherent: the registry agrees with itself
    and with the files on disk, layer templates match the registry, governance
    files are present, and no engine-specific tokens have leaked in.
-2. **Platform conformance** (Phase 4) — checks that a *platform* implementation
-   honours the spec. Not implemented yet; the contract is documented below.
+2. **Platform conformance** (`tests/conformance/platforms/`) — checks that a
+   *platform* implementation honours the spec. **Implemented and running**: 16
+   modules covering the Claude Code plugin (framework-bundle drift guard,
+   `sdd_doc_lint` vendoring identity, version/spec-version declarations, plugin
+   manifest + release metadata + config schema, autopilot saga parity, model
+   precheck, engine isolation, adaptation surface, skill-template alignment).
 
 ## Running it
 
@@ -35,14 +39,14 @@ prefer that runner.
 |--------|--------|
 | `test_registry.py` | registry structure; 8 dense layers; required keys; `error_prefix` == `artifact`; `downstream` chain; cumulative `required_tags`; `can_reference` consistency; `folder`/`template` resolve; `layer_groups` partition; `c4_mapping` artifacts known; `id_patterns` compile |
 | `test_layers.py` | each layer folder has template + README + index template; templates parse; `metadata.layer` matches the registry; `metadata.document_type` present |
-| `test_governance.py` | the 18 governance + CHG files are present (and only those); `CHG-TEMPLATE.yaml` parses |
+| `test_governance.py` | the governance + CHG files listed in `EXPECTED_FILES` are present (and only those — any new `framework/governance/` file must be registered); `CHG-TEMPLATE.yaml` parses |
 | `test_version.py` | `framework/VERSION` is present and a bare `X.Y.Z` SemVer string |
 | `test_spec_hygiene.py` | no engine tokens (`hermes`, `ucx_`, `.claude/`, `mcp`, `mermaid-gen`, `charts-flow`, engine SDD verbs) and no stale version strings under `framework/` |
 
 `_spec.py` is the shared helper (locates `framework/`, loads the registry); it
 is not a test module.
 
-## Platform-conformance contract (Phase 4)
+## Platform-conformance contract
 
 A platform (Hermes, the Claude Code plugin) conforms to the framework when:
 
@@ -53,6 +57,7 @@ A platform (Hermes, the Claude Code plugin) conforms to the framework when:
   `can_reference`, `downstream`);
 - it carries no expectation of the other platform's engine.
 
-Phase 4 adds platform-specific test modules here that exercise this contract
-against each platform's output. They are intentionally absent now — no platform
-exists yet.
+The `tests/conformance/platforms/` modules exercise this contract against the
+Claude Code plugin (see the second suite half above). The plugin ships a
+byte-identical vendored copy of the spec subtrees it consumes (D-0022); a drift
+guard fails CI if the bundle and the canonical spec diverge.

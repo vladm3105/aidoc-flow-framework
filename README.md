@@ -287,10 +287,13 @@ and keep a system alive — with its responsibilities drawn honestly.*
 The framework spec is engine-agnostic; two independent platforms implement it, each
 versioned independently. Both pass the same shared conformance suite.
 
-| Platform | Engine | Release |
+| Platform | Engine | Version |
 |----------|--------|---------|
 | **Hermes AI** | MCP server | `hermes/v0.7.3` (`platforms/hermes/`) |
 | **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.23.4` (`platforms/claude-code-plugin/`) |
+
+*Versions are the per-package `VERSION`-file values (namespaced as they would be
+tagged); the git tag itself may not be cut yet — see `docs/TAGGING.md`.*
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.

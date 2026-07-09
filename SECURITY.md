@@ -8,7 +8,7 @@ plus two platforms). Security fixes are applied to the latest release line.
 | Component | Supported |
 |-----------|-----------|
 | Latest project release (`v1.x`) | ✅ |
-| `framework/` spec — latest (`0.11.x`) | ✅ |
+| `framework/` spec — latest (`0.35.x`) | ✅ |
 | Platforms — latest tagged release | ✅ |
 | Older / pre-cutover (`< v1.0`, archive branch) | ❌ |
 

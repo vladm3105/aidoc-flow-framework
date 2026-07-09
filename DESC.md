@@ -287,10 +287,10 @@ and keep a system alive — with its responsibilities drawn honestly.*
 The framework spec is engine-agnostic; two independent platforms implement it, each
 versioned independently. Both pass the same shared conformance suite.
 
-| Platform | Engine | Release |
+| Platform | Engine | Version |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.3.0` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.17.1` (`platforms/claude-code-plugin/`) |
+| **Hermes AI** | MCP server | `0.7.3` (`platforms/hermes/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `0.23.4` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
@@ -309,9 +309,13 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.20.1`. The Claude Code plugin is a **pre-1.0 preview** — APIs
-and surfaces may change before 1.0. Platform release versions are in the
+framework spec `0.35.1`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+and surfaces may change before 1.0. Platform versions are in the
 [Platforms](#platforms) table above.
+
+> *This overview is a point-in-time snapshot (as of 2026-07-09); it is not
+> wired into the version-sync hook. For live version state see the per-package
+> `VERSION` files and [`docs/PARITY.md`](docs/PARITY.md).*
 
 Post-v1.0 development — delivered and planned — is tracked in
 [`ROADMAP.md`](ROADMAP.md); per-release detail is in

@@ -47,7 +47,7 @@ Together they handle: mechanical sync is invisible (just commit; the right files
 
 | Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
 |---|---|---|---|
-| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Post-v1.0 — Shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
+| **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Recently shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
 | **Platform change** (`platforms/<name>/**`) | `platforms/<name>/CHANGELOG.md` `[Unreleased]`; `platforms/<name>/VERSION` if bumping; `docs/PARITY.md` (release only); `docs/TAGGING.md` (release only) | plugin.json; marketplace.json; 52 × SKILL.md frontmatter; READMEs; PARITY current-state | CHANGELOG entry; new TAGGING row (on release) |
 | **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
 | **Hermes follow-on created** | `plans/HERMES-BACKLOG.md` new `H-N` entry in the same PR | — | backlog entry (Source / Plugin status / Substantive work / Dependency) |

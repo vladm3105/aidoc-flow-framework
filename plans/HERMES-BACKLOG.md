@@ -4,7 +4,7 @@
 |-------|-------|
 | Status     | **ARC UNDERWAY** — Phase 1 shipped (saga conformance); playbook injection is the load-bearing next gap |
 | Owner      | vladm3105 |
-| Last update | 2026-07-02 |
+| Last update | 2026-07-09 |
 | Policy     | **Plugin-first development.** Hermes work is deferred until the corresponding plugin functionality is complete and verified end-to-end. This is the single source of truth for "what Hermes still needs to catch up on." |
 
 > **⚠️ CORRECTED ASSESSMENT (2026-07-02, D-0045) — read before implementing any

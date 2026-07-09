@@ -177,6 +177,14 @@ fi
 fw_ver="$(read_version framework/VERSION)"
 log "framework VERSION: ${fw_ver:-(missing)}"
 
+# HAZARD (FRWK-REVIEW-002 F1): the replace_in_file calls below do a GLOBAL
+# substitution of the literal "framework spec `<prev>`" — they cannot tell a
+# current-state row from a historical/provenance mention. Any doc line that
+# quotes an OLD spec version in that exact literal form will be swept to the new
+# version on the next bump (this once corrupted the D-0031 provenance lines in
+# docs/PARITY.md, 0.13.0 -> 0.23.0). Rule: historical/provenance version
+# mentions MUST avoid the "framework spec `X.Y.Z`" literal — write them as
+# "`0.13.0` spec cycle" (or similar) so the sed can't match them.
 if [[ -n "$fw_ver" ]]; then
   fw_prev="$(detect_version_in CLAUDE.md \
     'framework spec `[0-9]+\.[0-9]+\.[0-9]+`')"

@@ -31,17 +31,17 @@ permanent asymmetry.
 Near-term, in-flight work.
 
 - **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
-  (framework `0.35.0`). Hermes already has team-mode + 8-layer playbook injection +
+  (framework `0.35.1`). Hermes already has team-mode + 8-layer playbook injection +
   saga conformance (D-0045…D-0053; the whole 0.32.x arc is auto-satisfied via its
   vendored `sdd_doc_lint` + shared templates). The residual items are small doc/skill
   deltas — **H-11c** (SHA-256 residue, now unblocked by PROVISIONAL-IDS-002) + the
   cosmetic H-11a sweep — and the architecturally-deferred saga gate (H-1). Tracked in
   [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
 
-- **PROVISIONAL-IDS-002 Phase 1 (2026-07-08, framework `0.34.2 → 0.35.0`):** the Model-2
-  element-ID drift verifier — formalized hash-input contract + opt-in `rehash --check`
-  (`IDDRIFT01`). Phase 2+ (`rehash --fix`, all-layer extraction, corpus reconciliation)
-  is founder-decided. See [`plans/PROVISIONAL-IDS-002-PLAN.md`](plans/PROVISIONAL-IDS-002-PLAN.md).
+- **FRWK-REVIEW-002 (in flight, 2026-07-09):** fixing 46 findings from the 2026-07-09
+  plugin + core-docs review across 7 tier-scoped PRs. Plugin PRs (A/B) + docs-of-record
+  (F) landed; spec-tier (C/D), engine-agnosticism (E), and CLAUDE.md (G) held for the
+  founder. See [`plans/FRWK-REVIEW-002-PLAN.md`](plans/FRWK-REVIEW-002-PLAN.md).
 
 ---
 
@@ -96,6 +96,30 @@ Strategic direction.
 
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
+
+- **PROVISIONAL-IDS-002 Phase 1 (2026-07-08, framework `0.34.2 → 0.35.0`).** The
+  Model-2 element-ID drift verifier — formalized hash-input contract + opt-in
+  `rehash --check` (`IDDRIFT01`, advisory, not in the default lint). Phase 2+
+  (`rehash --fix`, all-layer extraction, corpus reconciliation) is
+  founder-decided. See
+  [`plans/PROVISIONAL-IDS-002-PLAN.md`](plans/PROVISIONAL-IDS-002-PLAN.md).
+- **Governance-decision ratifications (framework `0.34.2`).** GD-02…GD-05 spec
+  governance decisions ratified.
+- **COV03 phase-leak advisory (framework `0.34.0`).** The inverse of COV01's
+  escape — flags a `Future`-banded element that a downstream layer already
+  realizes.
+- **GD-05 author self-claim strip (framework `0.33.0`).** The review lens
+  disregards any author-supplied readiness score before scoring.
+- **Provisional IDs + first-class reuse (D-0040 / D-0041).** Manual-mode
+  provisional IDs (`id_state`/`PROV01`) with the normative SHA-256 algorithm,
+  and satisfied-by-reference reuse (`reuse:` frontmatter, `REUSE01`/`REUSE02`).
+- **YAML-BDD arc (framework `0.28`–`0.29`).** BDD authored as structured
+  `scenarios:` YAML (not Gherkin-in-markdown); `doc-bdd*` skills, template, and
+  layer README moved to the YAML carrier.
+- **Element-level coverage engine (framework `0.24`–`0.27`).** COV01/COV02
+  element-level forward/backward coverage over the `REALIZING_LAYERS` map
+  (D-0039) — catches orphaned requirement/scenario elements a doc-level check
+  misses.
 
 - **Acceptance-fixtures drift fix (ACCEPTANCE-FIXTURES-DRIFT, no
   VERSION change).** Closes 12 long-standing failures in

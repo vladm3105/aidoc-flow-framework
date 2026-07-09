@@ -158,6 +158,13 @@
   current-state row only (drop the `/g`, or match the `claude-code-plugin/vX
   (framework spec …)` line specifically) so future bumps stop rewriting
   provenance. Restored the two lines by hand in `a0cb426f`.
+- **RESOLVED (FRWK-REVIEW-002 PR-F, 2026-07-09).** The prior hand-restore in
+  `a0cb426f` restored them to the wrong value (`0.23.0`, not the authored
+  `0.13.0`). PR-F F1 restored both PARITY lines to `0.13.0` and made them
+  sweep-proof by rephrasing to "`0.13.0` spec cycle" (no `framework spec \`X\``
+  literal for the sed to match), and documented the hazard inline in
+  `scripts/sync-version-refs.sh`. The`/g` behavior is left as-is; the
+  convention (historical mentions avoid the literal) is the guard.
 
 ### `[example-corpus]` `CORPUS-REFGRAN-RECASCADE` — 5 SPEC/TDD/IPLAN doc-level `@adr`/`@tdd` tags need element-level re-cascade (REFGRAN01)
 
