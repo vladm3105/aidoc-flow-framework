@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — auto-merge-ai-prs.yml caller (server-side auto-merge for AI-opened PRs) (2026-07-08)
+
+Adopts the canonical `auto-merge-ai-prs.yml` caller from
+`aidoc-flow-ci/install/templates/workflows/auto-merge-ai-prs-public.yml`
+per REPO_STANDARDS §17 workspace canon. Complements OPS-0062 (AI
+agent auto-merge default — in-session `--auto`) with server-side
+recovery for stuck-green PRs.
+
+- **`.github/workflows/auto-merge-ai-prs.yml`** (NEW) — thin caller
+  pinning `aidoc-flow-ci@ci/v1.5.1`. ubuntu-latest runner labels.
+
+Rollout aligned with 5 workspace-canon consumers (operations, business,
+iplanic, iplan-runner, engramory) from prior IPLAN-0030 Phase B.
+Requires reviewer App install + `auto_merge.repos` allowlist entry to
+fully activate; falls back to GITHUB_TOKEN with downgrade warning
+pre-install.
+
+Self-review skipped per founder OK — mechanical template-clone workflow addition; ci/v1.5.1 pin matches sibling consumers
+
 ### Changed — Wave 1 adoption of aidoc-flow-ci PLAN-003 governance-file canon (2026-07-08)
 
 Framework adopts the PLAN-003 flexible-canonical (Option B) project-governance
