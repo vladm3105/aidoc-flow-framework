@@ -69,7 +69,7 @@ version-controlled. A project value that overrides the seed for the same knob is
 a deliberate per-project deviation and is recorded as a learning (see the
 knowledge-extraction overlay).
 
-## 4. The surface (v1 — four knobs)
+## 4. The surface (v1 — six knobs)
 
 The authoritative definitions, types, and consumer roles live in
 `ADAPTATION_SURFACE.yaml`. This section is the rationale.
@@ -123,6 +123,28 @@ v1 — a glossary is a convenience, not a gate. This is the one knob a user-glob
 seed commonly carries.
 
 Honored by: **authoring**.
+
+### 4.5 `review_mode`
+
+Selects review/remediation depth: `team` runs the multi-persona review crew;
+`single_pass` runs a single agent applying every lens in one context. **Never
+weakens the gate** — the deterministic structural floor plus the
+no-unresolved-P0/P1 rule holds in either mode; `single_pass` trades reviewer
+diversity for cost, not rigor. The framework default is `team` at gates and
+`single_pass` at write-time. See `REVIEW_TEAM.md` for the crew mechanics.
+
+Honored by: **authoring** and **audit**.
+
+### 4.6 `quality_loop_max_iterations`
+
+The default cap on review→remediate cycles before the saga transitions to
+`PARTIAL_TIMEOUT` (see `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap"). Range
+1–10; a value outside the range is treated as malformed and falls back to the
+default (`3`). An engine reading it from the profile must handle
+missing-file / missing-field / malformed-value by falling back to the default.
+This bounds the loop; it does not weaken any gate.
+
+Honored by: **audit**.
 
 ## 5. How an engine consults the profile
 

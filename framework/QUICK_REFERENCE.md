@@ -41,6 +41,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | EARS-Ready | >=90/100 | PRD features, user stories, domain clarity |
 | BDD-Ready | >=90/100 | EARS syntax, atomicity, testability |
 | ADR-Ready | >=90/100 | BDD scenarios, scenario quality, edge cases |
+| SPEC-Ready | >=90/100 | ADR decisions, alternatives, consequences complete |
 | TDD-Ready | >=90/100 | SPEC interfaces, data models, behavior contracts |
 | IPLAN-Ready | >=90/100 | TDD test case coverage, threshold definitions |
 | EXEC-Ready | >=90/100 | IPLAN file manifest completeness, execution commands, contracts |

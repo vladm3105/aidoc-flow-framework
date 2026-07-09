@@ -53,10 +53,16 @@ Per [`framework/governance/ADAPTATION.md`](../governance/ADAPTATION.md):
 Effective precedence: `framework defaults < user-global seed < project
 profile`.
 
-Engines consult `profile.yaml` to determine which personas perform
-review and remediation. If a project has no `profile.yaml`, the
-acceptance suite bootstraps one by copying
-`framework/governance/REVIEW_CREWS.yaml` as the default.
+The profile carries the **project's adaptation-knob overrides only** — the
+closed knob set defined in
+[`ADAPTATION_SURFACE.yaml`](../governance/ADAPTATION_SURFACE.yaml)
+(`active_layers`, `section_toggles`, `audit_threshold`, `glossary`,
+`review_mode`, `quality_loop_max_iterations`). It is an override-only delta;
+absent keys fall through to the framework default. **Per-layer review crews and
+persona weights are framework-defined** (`REVIEW_CREWS.yaml`) and are **not**
+project-overridable through this surface. If a project has no `profile.yaml`, an
+engine bootstraps one from
+[`PROFILE-TEMPLATE.yaml`](../governance/PROFILE-TEMPLATE.yaml).
 
 ### `audit/`, `remediation/`, `review/`, `validation/`, `security/`, `quality/`
 

@@ -2,7 +2,7 @@
 
 ## Document IDs
 
-Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential two-digit number.
+Format: `{TYPE}-{NN}` where TYPE is the artifact prefix and NN is a sequential number of **two or more digits** (two-digit is the common case; the authoritative pattern is `registry/LAYER_REGISTRY.yaml` `id_patterns.document` = `^[A-Z]+-\d{2,}$`, which the registry README declares wins on any discrepancy).
 
 | Artifact | Prefix | Example |
 |----------|--------|---------|
@@ -201,7 +201,7 @@ traceability.
 | `@ears: EARS.NN.SS.xxxx` | EARS references | `@ears: EARS.01.03.5e2a` |
 | `@bdd: BDD.NN.SS.xxxx` | BDD references | `@bdd: BDD.01.03.8f4c` |
 | `@adr: ADR.NN.SS.xxxx` | ADR references | `@adr: ADR.01.03.e5b1` |
-| `@spec: SPEC.NN` | SPEC references (document-level) | `@spec: SPEC-01` |
+| `@spec: SPEC-NN` | SPEC references (document-level) | `@spec: SPEC-01` |
 | `@tdd: TDD.NN.SS.xxxx` | TDD references (test case level) | `@tdd: TDD.01.04.a3c1` |
 | `@iplan: IPLAN-NN` | IPLAN references (document-level) | `@iplan: IPLAN-01` |
 | `@threshold: TYPE.NN.key` | Performance thresholds | `@threshold: BRD.01.perf.p95_latency` |
@@ -249,6 +249,6 @@ Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 | Template | `{TYPE}-TEMPLATE.yaml` | `BRD-TEMPLATE.yaml` |
 | Index | `{TYPE}-00_index.md` (Layers 1-7) / `{TYPE}-00_index.yaml` (IPLAN) | `BRD-00_index.md` / `IPLAN-00_index.yaml` |
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
-| Document | `{TYPE}-NN.yaml` (BRD: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
+| Document | `{TYPE}-NN.yaml` (BRD, IPLAN: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
 | README | `README.md` | — |
 | IPLAN Index | `{TYPE}-00_index.yaml` | `IPLAN-00_index.yaml` |

@@ -12,6 +12,34 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Framework Spec `0.35.1 → 0.35.2` — FRWK-REVIEW-002 PR-C spec-text corrections (2026-07-09)
+
+Normative-text corrections from the 2026-07-09 plugin + core-docs review
+(`plans/FRWK-REVIEW-002-PLAN.md`), no behavior change (spec PATCH):
+
+- **BDD layer README + template** rewritten to the shipped YAML-BDD contract
+  (structured `scenarios:`/`ears:` per scenario, not Gherkin `@`-tags; `@ears`
+  corrected to Layer 3; dropped the contradictory "NO spaces after colon"
+  Gherkin block).
+- **Adaptation surface reconciled** — `ADAPTATION.md` §4 now documents all **6**
+  knobs (added `review_mode`, `quality_loop_max_iterations` rationale); fixed
+  the `Knobs (5)` comment and the `§8 → §9` pointer; unified the dotted
+  `quality_loop.max_iterations` → flat name in `REVIEW_REMEDIATION_FLOW.md`.
+- **SPEC-Ready gate** added to the `QUICK_REFERENCE.md` and `TRACEABILITY.md`
+  gate tables (both jumped ADR-Ready → TDD-Ready).
+- **COV02 wording** corrected to the realizing-set map (EARS → BDD/SPEC/TDD;
+  BDD → SPEC/TDD).
+- **Threshold + document-ID specs** reconciled to the authoritative registry
+  ("registry wins": threshold key min 2 segments / subcategory optional; NN is
+  2+ digits).
+- **Rehash phrasing** updated (BRD §7 is verifiable-on-demand, Phase 1 shipped;
+  other layers Phase 2+).
+- Misc: `REVIEW_TEAM.md` spec-version example → placeholder; AIDOC profile
+  semantics aligned to `PROFILE-TEMPLATE.yaml`; FEEDBACK_LOG dead link +
+  undefined identifiers; residual "Gherkin" mentions; governance/framework
+  README indexes; `@spec` tag-form typo; "Balanced split" relabel; fixer
+  break-circuit checkpoint canon documented in `REVIEW_REMEDIATION_FLOW.md`.
+
 ### Fixed — Claude Code plugin `0.23.4` — FRWK-REVIEW-002 PR-B plugin mechanics (2026-07-09)
 
 Plugin mechanics from the 2026-07-09 review (`plans/FRWK-REVIEW-002-PLAN.md`):

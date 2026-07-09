@@ -2,7 +2,7 @@
 
 ## Overview
 
-BDD defines executable acceptance scenarios using Given-When-Then (Gherkin) syntax,
+BDD defines executable acceptance scenarios as structured Given-When-Then YAML,
 translating EARS formal requirements into testable behaviors with spec_trace links to
 SPEC sections for req-to-implementation traceability.
 
@@ -30,24 +30,34 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 | File | Purpose |
 |------|---------|
-| `BDD-TEMPLATE.yaml` | Single source of truth — template with Gherkin guidance in `_example` fields |
+| `BDD-TEMPLATE.yaml` | Single source of truth — template with structured `scenarios:` YAML guidance in `_example` fields |
 | `BDD-00_index.TEMPLATE.md` | BDD registry template — tracks planned and active BDD documents per project |
 
-## Gherkin Syntax Quick Reference
+## Scenario YAML Quick Reference
 
-```gherkin
-@scenario-type:success @p0-critical @scenario-id:BDD.01.03.xxxx
-Scenario: User logs in with valid credentials
-  Given a registered user with valid credentials
-  When the user submits login request
-  Then the system SHALL authenticate the user
-  And a session token SHALL be returned WITHIN @threshold:PRD.01.perf.auth.p95
+BDD scenarios are authored as **structured YAML** (a `scenarios:` list), not
+Gherkin `@`-tags. `id`/`type`/`priority` are fields; the upstream trace is an
+element-level `ears:` list; `given`/`when`/`then` are phase lists.
+
+```yaml
+scenarios:
+  - id: BDD.01.03.xxxx
+    name: User logs in with valid credentials
+    type: success
+    priority: p0-critical
+    ears: [EARS.01.03.xxxx]
+    given: ["a registered user with valid credentials"]
+    when: ["the user submits a login request"]
+    then:
+      - "the system authenticates the user"
+      - "a session token is returned WITHIN @threshold:PRD.01.perf.auth.p95"
+    spec_trace: ["SPEC Section 5 (Behavior)"]
 ```
 
 ## Element IDs
 
 Hash-based, content-derived IDs scoped to BDD content:
-> **Not verified end-to-end** until `rehash --check` (PROVISIONAL-IDS-002): engines emit stable opaque strings that *should* match this form. The SHA-256 form is the canonicalization target — see `ID_NAMING_STANDARDS.md`.
+> The SHA-256 form is the **canonicalization target**: engines emit stable opaque strings that *should* match it. `rehash --check` verification is shipped for BRD §7 only (PROVISIONAL-IDS-002 Phase 1); extraction for this layer is Phase 2+. See `ID_NAMING_STANDARDS.md`.
 
 ```text
 Format: BDD.{doc_id}.{section_id}.{hash}
@@ -56,15 +66,17 @@ Example: BDD.01.03.d7a2
 
 ## Upstream Traceability
 
-BDD requires its necessary-upstream tag — @ears (Layer 4); EARS/PRD shown for context, PRD/BRD reached transitively:
+BDD is the **exception** to the `@`-tag convention (see `TAG_SYNTAX.md`): a BDD
+document carries its required upstream trace to **EARS (Layer 3)** as a
+structured, element-level `ears:` list **per scenario** — not as an `@ears`
+tag. PRD/BRD lineage is reached transitively through the EARS document's own
+`@`-tag chain; a BDD document emits no `@ears`/`@prd`/`@brd` tags of its own.
 
-```text
-@ears:EARS.NN.03.xxxx    (links to EARS requirement)
-@prd:PRD.NN.09.xxxx      (links to PRD functional requirement)
-@brd:BRD.NN.07.xxxx      (links to BRD functional requirement)
+```yaml
+scenarios:
+  - id: BDD.01.03.xxxx
+    ears: [EARS.01.03.xxxx]   # element-level; one space after the colon in any @-tag elsewhere
 ```
-
-Note: NO spaces after colon in Gherkin tags.
 
 ## Downstream Traceability
 

@@ -92,12 +92,12 @@ element ID format, empty section detection).
 ## Element IDs
 
 Hash-based, content-derived IDs (not sequential):
-> **Not verified end-to-end** until `rehash --check` (PROVISIONAL-IDS-002): engines emit stable opaque strings that *should* match this form. The SHA-256 form is the canonicalization target — see `ID_NAMING_STANDARDS.md`.
+> **Verifiable on demand** via `rehash --check` (PROVISIONAL-IDS-002 Phase 1 — advisory `IDDRIFT01`, opt-in, not in the default lint): engines emit stable opaque strings; `rehash --check` recomputes a canonical BRD's §7 FR IDs against the SHA-256 form below and flags drift. Scoped *verifiable on demand*, not *verified*. See `ID_NAMING_STANDARDS.md`.
 
 ```text
 Format: BRD.{doc_id}.{section_id}.{hash}
 Example: BRD.01.07.a7f3
 ```
 
-Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars (the canonicalization target; not verified until `rehash --check`).
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars (the canonicalization target; verifiable on demand via `rehash --check`).
 Collision handling: extend to 8 chars. See template `metadata.id_standard` for details.

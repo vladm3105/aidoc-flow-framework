@@ -60,10 +60,14 @@ framework/
   AI_ASSISTANT_RULES.md  Authoring rules for AI agents that consume the spec.
   layers/                The 8 layer definitions — one folder per layer, each
                          with a template, a README, and an index template
-                         (08_IPLAN also carries PLAN_STANDARD.md).
+                         (08_IPLAN also carries PLAN_STANDARD.md and
+                         IPLAN-ECOSYSTEM.md).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
-                         checklists the review-team crews apply, one folder per
-                         layer. A vendored artifact class.
+                         checklists the review-team crews apply. 9 folders: the
+                         8 layers plus 09_CHG (the change-management overlay).
+                         A vendored artifact class.
+  templates/             Doc templates that aren't layer artifacts (e.g.
+                         framework-feedback-log.template.md).
   registry/
     LAYER_REGISTRY.yaml   Authoritative machine-readable layer model: order,
                           traceability graph, C4 mapping, ID patterns.

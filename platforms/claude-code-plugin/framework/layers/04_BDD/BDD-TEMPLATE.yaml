@@ -62,7 +62,7 @@ metadata:
         Code              — source code implementation
 
       BDD translates EARS formal requirements into executable Given-When-Then
-      scenarios. Content must be precise, executable Gherkin — not narrative.
+      scenarios. Content must be precise, executable steps — not narrative.
     value: none
 
   diagram_standard:
@@ -173,9 +173,10 @@ feature_definition:
       [As a {role}, I want {capability}, So that {benefit}]
     background:
       _guidance: |
-        Background runs before each scenario. Store BARE step text (the optional
-        YAML→Gherkin emitter adds the Given/And keyword). Include system state +
-        timezone (IANA, default America/New_York).
+        Background runs before each scenario. Store BARE step text (a `.feature`
+        emitter, if one is ever authored, would add the Given/And keyword — none
+        ships today). Include system state + timezone (IANA, default
+        America/New_York).
       steps:
         - "the system is in a ready state"
         - 'the current time is "HH:MM:SS" in "America/New_York"'
@@ -285,24 +286,27 @@ scenario_structure:
 traceability:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Necessary-upstream tagging — Layer 4 requires @ears (its `required_tags`).
-    Upstream: REQUIRED — every BDD must reference its EARS element; PRD/BRD are
-    reached transitively (cite them only as optional provenance).
-    Downstream: OPTIONAL — only add links to artifacts that exist.
+    Necessary-upstream — Layer 4's required upstream is EARS (registry
+    `required_tags: [ears]`), satisfied by the per-scenario `ears:` lists (NOT a
+    written `@ears` tag). Upstream: REQUIRED — every BDD scenario must reference
+    its EARS element; PRD/BRD are reached transitively. Downstream: OPTIONAL —
+    only add links to artifacts that exist.
 
-    Gherkin tag format (NO spaces after colon):
-      @brd:BRD.NN.07.xxxx
-      @prd:PRD.NN.09.xxxx
-      @ears:EARS.NN.03.xxxx
-
-    Tags appear on separate lines BEFORE Feature: keyword.
+    Upstream trace is the per-scenario element-level `ears:` list (below), NOT
+    an `@ears`/`@prd`/`@brd` tag — BDD is the `@`-tag exception (TAG_SYNTAX.md).
+    The only `@`-tag a BDD document carries is its own doc-level `@bdd: BDD-NN`
+    self-tag; every `@`-tag in this framework takes exactly one space after the
+    colon.
 
   tags:
     - "@bdd: BDD-NN"
 
   upstream:
+    # Doc-level EARS coverage = the computed union of the scenarios' per-scenario
+    # `ears:` lists (below). BDD is the @-tag exception (TAG_SYNTAX.md): cite
+    # plain element IDs here, NOT a written `@ears` tag.
     ears_references:
-      - "@ears: EARS.NN.03.xxxx"
+      - EARS.NN.03.xxxx
 
   downstream_expected:
     - type: ADR

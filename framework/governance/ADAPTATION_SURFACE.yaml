@@ -30,7 +30,7 @@ consumer_roles:
   scaffolding: "creates the project structure"
 
 # -----------------------------------------------------------------------------
-# Knobs (5). `id_format` is deferred — see ADAPTATION.md §8.
+# Knobs (6). `id_format` is deferred — see ADAPTATION.md §9 (Out of scope).
 # -----------------------------------------------------------------------------
 knobs:
   - name: active_layers

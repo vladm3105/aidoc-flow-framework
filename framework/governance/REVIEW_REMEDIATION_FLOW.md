@@ -46,11 +46,11 @@ gate (gate passage still requires the score), it is a non-convergence
 guard.
 
 The cap is **tunable per project** via the
-`quality_loop.max_iterations` knob in `ADAPTATION_SURFACE.yaml`. Range
+`quality_loop_max_iterations` knob in `ADAPTATION_SURFACE.yaml`. Range
 1-10; default 3. Engines reading the knob must:
 
 1. Load the runtime profile (`.aidoc/profile.yaml`).
-2. Read `quality_loop.max_iterations` if present.
+2. Read `quality_loop_max_iterations` if present.
 3. Fall back to the default (3) if the field is missing, malformed,
    or the file is absent.
 4. Treat values outside the 1-10 range as malformed (use default).
@@ -58,6 +58,25 @@ The cap is **tunable per project** via the
 This cap is the documented stopping criterion that complements the
 gate threshold: gate decides *did we converge?*, cap decides *did we
 spend too long trying?*.
+
+### Break-circuit checkpoint placement
+
+Beyond the iteration cap (a *count* bound), each stage also honors a
+*wall-clock* break-circuit checkpoint so a single long stage degrades
+gracefully to `PARTIAL_TIMEOUT` rather than being SIGTERM'd mid-write. The
+canonical checkpoint boundaries:
+
+- **Audit stage** — after all lens dispatches return, **before** invoking the
+  synthesizer reduce.
+- **Fixer stage** — after the per-finding patch dispatches / multi-lens
+  validation return, **before** invoking the synthesizer reduce.
+
+Both are the same structural point in their respective stage: the last moment
+where partial results can be preserved and emitted cleanly before the reduce.
+Engines implement the check by comparing elapsed time against the
+`SOFT_DEADLINE` (a fixed buffer below the OS-level timeout); on crossing it they
+set saga `status: "PARTIAL_TIMEOUT"`, preserve any reduced findings, and exit
+cleanly for the caller to re-invoke.
 
 ## Trigger points
 

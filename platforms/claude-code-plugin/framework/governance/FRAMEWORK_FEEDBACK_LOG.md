@@ -6,8 +6,8 @@
 
 ## Why this exists
 
-Examples are the system-under-test ([`AIDOC.md`](../README.md#examples)
-+ `feedback_seed_examples_are_acceptance_tests`). Every consumer
+Examples are the system-under-test (see [`AIDOC.md`](../docs/AIDOC.md) — the
+seed examples double as acceptance tests). Every consumer
 project applying the framework is an additional empirical test of the
 spec. Friction discovered during use — lint-rule misfires, harness
 flag absences, SKILL prose that contradicts the spec, sync-script
@@ -37,8 +37,8 @@ applying the framework. Examples (non-exhaustive):
 - An auditor playbook lens scores the project's artifact in a way that
   doesn't reflect the spec's intent
 - A workflow gap (e.g., no fixer for a class of finding) forces the
-  project to either bypass or hand-edit (the latter being forbidden by
-  `feedback_never_hand_edit_example_artifacts` — so the gap itself
+  project to either bypass or hand-edit (the latter being forbidden —
+  never hand-edit example artifacts — so the gap itself
   goes in the feedback log)
 
 **Update cadence:** inline as discovered, the moment friction surfaces.
