@@ -25,7 +25,7 @@ alongside the artifacts.
 | Inputs | human-authored seeds + change requests | committed |
 | Outputs | the produced 8-layer chain (BRD → IPLAN) | committed |
 | Provenance (`.aidoc/`) | audit reports, review consensus, remediation logs, validation reports, security reviews, quality suggestions, project profile | committed |
-| Tool internals (`logs/`) | execution metadata, raw skill stdout, timing, exit codes | gitignored |
+| Tool internals (`logs/`) | execution metadata, raw engine/CLI stdout, timing, exit codes | gitignored |
 
 ## What `.aidoc/` contains
 
@@ -67,7 +67,7 @@ engine bootstraps one from
 ### `audit/`, `remediation/`, `review/`, `validation/`, `security/`, `quality/`
 
 Each subdirectory holds the report a particular review/remediation
-skill produced when the chain was last authored or updated. These are
+the engine produced when the chain was last authored or updated. These are
 the AI's working notes — what it found, why, and what it recommended.
 
 ## Why this is committed (not in `logs/`)
@@ -78,8 +78,8 @@ The audit and review reports aren't execution metadata — they're
 `.aidoc/review/spec-consensus.md` in git history without running the
 suite.
 
-Tool internals (claude -p stdout buffers, exit codes, run timing) stay
-in `logs/<TS>/` and are gitignored.
+Tool internals (the engine's CLI stdout buffers, exit codes, run timing)
+stay in `logs/<TS>/` and are gitignored.
 
 ## The blackboard split
 
@@ -91,12 +91,16 @@ blackboard." The split:
 - `.aidoc/review/<layer>-consensus.md` and other final reports —
   committed as documentation of provenance.
 
-## How the acceptance suite populates `.aidoc/`
+## How an engine populates `.aidoc/`
 
-When `tests/scripts/test-acceptance.sh` runs, it routes skill outputs to
-the correct tier:
+*The table below is a **Platform-B (Claude Code plugin) illustration** — the
+`doc-*` / `review-team` / `security-audit` names are that engine's capabilities
+and are **not** part of the engine-agnostic contract (GD-06). It shows the
+general shape: an engine routes each capability's output to the matching
+`.aidoc/` tier. The plugin's acceptance harness (`tests/scripts/test-acceptance.sh`)
+drives this routing.*
 
-| Skill | Tier | Path |
+| Capability (Platform B) | Tier | Path |
 |---|---|---|
 | `doc-<layer>-autopilot` | docs | `docs/<NN>_<LAYER>/<TYPE>-01.md` |
 | `doc-<layer>-audit` | .aidoc | `.aidoc/audit/<NN>_<LAYER>-audit.md` |

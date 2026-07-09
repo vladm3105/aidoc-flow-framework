@@ -85,7 +85,8 @@ dual of the BRD forward-coverage rule (the BRD-template `_authored_form` rule;
 - The matching forward direction (BRD FR → SPEC/IPLAN) is `COV01`, also
   element-level: each AUTHORED FR element must be cited by a **PRD** (then the
   host BRD's SPEC + IPLAN reach is retained). Both read the same `@`-tag graph
-  (`tools/sdd_coverage.py` / `governance/TRACEABILITY.md`).
+  (the reference-implementation `tools/sdd_coverage.py`, outside the spec; see
+  `governance/TRACEABILITY.md`).
 
 ## Maintenance Notes
 

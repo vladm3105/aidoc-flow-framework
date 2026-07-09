@@ -55,7 +55,7 @@ document_control:
 
     `_required_when_subtype:` markers on individual sections below
     declare which subtype set the section belongs to. The
-    `doc-iplan-audit` SKILL reads `subtype` from authored
+    IPLAN audit engine reads `subtype` from authored
     `document_control` and selects the section set. Missing subtype
     defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"

@@ -64,8 +64,8 @@ Example: `BRD.01.07.a7f3`
 ### Hash algorithm (the canonicalization target)
 
 The SHA-256 form below is the **canonicalization target** — the by-hand↔tool parity
-anchor (PROVISIONAL-IDS-001) that *any* tool (the plugin generator or a hand author)
-should converge on:
+anchor (PROVISIONAL-IDS-001) that *any* generator (an engine's ID generator or a
+hand author) should converge on:
 
 1. **Input string** (exact, colon-separated, from the element's OWN content — not
    upstream): `"{doc_id}:{section_id}:{title}:{description}"`, where `title` and
@@ -75,7 +75,8 @@ should converge on:
    extend BOTH to 8 chars (`[:8]`).
 
 The hash segment is `[a-f0-9]+` (lowercase hex; `ELEM_FORM`). A hand-authored hash
-applies this algorithm by hand; it *should* be byte-identical to the plugin's.
+applies this algorithm by hand; it *should* be byte-identical to an engine's
+generated hash.
 
 #### Normalization transform (normative — PROVISIONAL-IDS-002)
 

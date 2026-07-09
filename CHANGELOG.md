@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.36.1 → 0.36.2` — FRWK-REVIEW-002 PR-E engine-agnosticism neutralization (2026-07-09)
+
+Implements the GD-06 Hybrid ruling — neutralizes the generic platform vocabulary
+in the spec while keeping the two sanctioned bindings (spec PATCH, no behavior
+change):
+
+- **Neutralized:** `doc-*`/"SKILL" vocabulary → engine-neutral terms ("audit
+  engine", "authoring engine") across `REVIEW_TEAM.md`, `AUTHORING_STYLE.md`,
+  `ID_NAMING_STANDARDS.md`, `IPLAN-TEMPLATE.yaml`, `FRAMEWORK_FEEDBACK_LOG.md`,
+  `DOC_GOVERNANCE_CORE.md`; the `claude -p` reference →
+  "the engine's CLI"; the AIDOC `.aidoc/`-population table → explicitly marked a
+  Platform-B illustration; repo-root tool paths (`trace_walk.py`,
+  `sdd_coverage.py`) → framed as a reference implementation outside the spec
+  (`TRACEABILITY.md`, `REVIEW_TEAM.md`, `SPEC_DRIVEN_DEVELOPMENT_GUIDE.md`,
+  `SPEC-00_index.TEMPLATE.md`, `BRD-TEMPLATE.yaml`).
+- **Kept (GD-06 sanctioned exceptions):** the playbook `agent:` executor field
+  (plugin-path pointer softened to "see the platform's own docs") and the
+  `REVIEW_REMEDIATION_FLOW.md` workspace-CI section (gains a GD-06 scope note).
+
 ### Added — Framework Spec `0.36.0 → 0.36.1` — GD-06 engine-agnosticism boundary (FRWK-REVIEW-002 PR-E0) (2026-07-09)
 
 Records **GD-06** in `framework/governance/DECISIONS.md` — the founder-ratified

@@ -190,6 +190,11 @@ platform's; the properties are not):
 
 ## Mechanical author-side pre-push gate (aidoc-flow workspace layer)
 
+> **Scope note (GD-06):** this section is a **workspace convention**, not part
+> of the engine-agnostic contract. It is a documented exception — retained here
+> for the `aidoc-flow` workspace that authors this spec; an independent engine
+> adopting the spec is not bound by it.
+
 Framework consumers in the `aidoc-flow` workspace additionally enforce a
 **mechanical author-side pre-push gate** independent of the artifact-level
 review loop above: every push to a workspace repo must carry an OPS-0069

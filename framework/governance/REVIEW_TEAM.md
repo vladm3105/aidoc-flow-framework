@@ -140,7 +140,7 @@ corpus-level invariant:
 
 The rule is **citation-driven**: PRDs with no downstream threshold
 cites pass automatically (the section is OPTIONAL). The 4 downstream
-audit SKILLs (BDD/TDD/SPEC/ADR) ingest TH-RES-001 findings as
+audit engines (BDD/TDD/SPEC/ADR) ingest TH-RES-001 findings as
 blocking-findings sources via the structural-lint floor (per
 `REVIEW_REMEDIATION_FLOW.md` §"Structural floor checks").
 
@@ -256,7 +256,7 @@ Layer directory is `<NN>_<LAYER>` matching the `framework/layers/` convention. L
 layer: 02_PRD                          # matches directory name exactly
 lens: chaos_engineer                   # matches filename stem + REVIEW_CREWS.yaml persona name
 weight: 8                              # must match REVIEW_CREWS.yaml weight for this (layer, lens)
-agent: chaos-engineer                  # plugin agent name; lens→agent table: platforms/claude-code-plugin/skills/review-team/SKILL.md §"The crew"
+agent: chaos-engineer                  # engine-defined executor for this lens; the engine maps lens → executor (see the platform's own docs). Engine binding — documented exception per GD-06.
 framework_spec_version: "<framework/VERSION>"  # must equal framework/VERSION (set at author time; this example block is not auto-synced)
 ---
 ```
@@ -280,11 +280,11 @@ Every finding produced by a lens MUST cite either a checklist check (`check: "C1
 The synthesizer emits `verdict.playbook_coverage` summarizing how many findings cited each check id plus a `beyond_checklist` count. A drift signal: if > 30% of findings are beyond-checklist, the playbook needs revision. The 30% threshold is guidance (a working calibration target, not a normative gate); subject to revision by CHG as live cascade data accumulates.
 
 
-**CHG layer (CHG-RT-001, 2026-06-12)** — CHG is an overlay (not a lifecycle layer per `framework/governance/chg/README.md`) but uses the same playbook contract. Playbooks at `framework/playbooks/09_CHG/` cover the CHG crew (integration_lead/architect/chaos_engineer/operator/auditor/security_engineer with weights 30/20/15/15/10/10 summing to 100). `doc-chg-audit` SKILL injects them per the per-lens dispatch pattern.
+**CHG layer (CHG-RT-001, 2026-06-12)** — CHG is an overlay (not a lifecycle layer per `framework/governance/chg/README.md`) but uses the same playbook contract. Playbooks at `framework/playbooks/09_CHG/` cover the CHG crew (integration_lead/architect/chaos_engineer/operator/auditor/security_engineer with weights 30/20/15/15/10/10 summing to 100). the CHG audit engine injects them per the per-lens dispatch pattern.
 
 ## Necessary upstream + transitive trace
 
-A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through `tools/trace_walk.py` for one-shot queries.
+A layer's `required_tags` (declared in `LAYER_REGISTRY.yaml`) and the `upstream_artifacts:` frontmatter of every instance document declare **what this layer's own evaluation reads** — not the cumulative closure of every preceding layer. Lineage to layers further upstream is discoverable transitively through the @-tag chain (one hop per layer) and through a one-shot trace-walk query (the reference implementation ships `tools/trace_walk.py`, outside the spec).
 
 The necessary-upstream set per layer:
 
@@ -312,7 +312,7 @@ A layer **MAY** emit per-line `@<downstream>:` slots as forward-pointer
 navigation hints (e.g. EARS lines emit `@bdd: BDD-NN` indicating which
 BDD scenario will encode this SHALL). These slots are:
 
-- **Optional** — no spec rule mandates emission; a layer's author SKILL
+- **Optional** — no spec rule mandates emission; a layer's authoring engine
   decides whether they're useful for its content.
 - **Direction-of-flow-aware** — they point downstream, not upstream;
   `TRACE-RES-001`'s downstream-skip behavior (PR #125 Fix 1) means the
@@ -331,7 +331,7 @@ slots; do not require them to be present when slots are emitted.
 *Origin:* CLEANUP-PR-C (post-LAYER-PLAYBOOKS-001 url-shortener review,
 2026-06-11) found that EARS emits per-line `@bdd:` slots in cascade-
 produced artifacts while no other layer does. Rather than removing the
-slots (which would require SKILL prompt changes + a cascade verification),
+slots (which would require engine prompt/logic changes + a cascade verification),
 the framework formalizes them as optional + non-canonical.
 
 *Origin (necessary-upstream contract):* NECESSARY-UPSTREAM-001 (framework spec `0.15.2` → `0.16.0`) replaced the cumulative-trace contract — every downstream layer redeclaring every upstream layer in `required_tags` — after a TDD-RT-001 cascade exposed trace fabrication when an upstream layer was genuinely absent from a project (`@prd:` tags emitted with no PRD layer authored).
