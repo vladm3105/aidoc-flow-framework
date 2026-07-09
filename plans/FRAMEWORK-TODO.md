@@ -38,15 +38,16 @@
   as documented exceptions (like D-0022). Then ship as PR-E0 (decision only) +
   PR-E1–E4 (≤3 surfaces each, engine-neutral edits). Scoped in the plan's PR-E table.
 
-### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — `sync-version-refs.sh` doesn't update CLAUDE.md's plugin-version string
+### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — ✅ CLOSED (2026-07-09) — `sync-version-refs.sh` didn't update CLAUDE.md's plugin-version string
 
 - Context: FRWK-REVIEW-002 PR-A/B bumped the plugin `0.23.2 → 0.23.4` but the
   `Current state` line in `CLAUDE.md` stayed at `0.23.2` — PR-G #281 fixed it by
-  hand. The sync hook updates CLAUDE.md's framework-spec string but not the
-  plugin-version string, so every plugin bump leaves it stale.
-- Fix shape: extend `scripts/sync-version-refs.sh` plugin-version block to also
-  rewrite the `Claude Code plugin \`X.Y.Z\`` token in `CLAUDE.md`'s current-state
-  line (mirror the framework-spec handling); add a conformance guard if cheap.
+  hand. The sync hook updated CLAUDE.md's framework-spec string but not the
+  plugin-version string, so every plugin bump left it stale.
+- Fixed: extended the `scripts/sync-version-refs.sh` plugin-version block to also
+  rewrite the `Claude Code plugin \`X.Y.Z\`` token in `CLAUDE.md`(mirrors the
+  framework-spec handling), and added a conformance guard
+  (`test_claude_md_current_state_matches_plugin_version`) so re-drift fails CI.
 
 ### `[skill]` `SKILL-DEDUP-001` — 36 per-layer skills are ~57% duplicated boilerplate (≈7,800 lines)
 

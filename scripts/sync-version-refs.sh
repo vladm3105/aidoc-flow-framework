@@ -18,6 +18,7 @@
 #       "version": "<X.Y.Z>"
 #   - All platforms/claude-code-plugin/skills/<name>/SKILL.md frontmatter
 #       version: "<X.Y.Z>"
+#   - CLAUDE.md "Claude Code plugin `<X.Y.Z>`" current-state line
 #   - README.md
 #       `claude-code-plugin/v<X.Y.Z>` references
 #   - platforms/claude-code-plugin/docs/SKILL_AUTHORING.md
@@ -139,6 +140,11 @@ if [[ -n "$plugin_ver" ]]; then
       replace_in_file "$skill" \
         "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     done
+    # CLAUDE.md current-state line: "Claude Code plugin `<X.Y.Z>`"
+    # (SYNC-CLAUDE-PLUGIN-VERSION-GAP — the framework-spec token was already
+    # synced below; the plugin token was not, so every plugin bump left it stale).
+    replace_in_file CLAUDE.md \
+      "Claude Code plugin \`$plugin_prev\`" "Claude Code plugin \`$plugin_ver\`"
     replace_in_file README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/README.md \

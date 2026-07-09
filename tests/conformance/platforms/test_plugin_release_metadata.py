@@ -118,6 +118,13 @@ class PluginReleaseMetadata(unittest.TestCase):
         tag = f"claude-code-plugin/v{_plugin_version()}"
         self.assertIn(tag, text)
 
+    def test_claude_md_current_state_matches_plugin_version(self):
+        # CLAUDE.md's "Current state" line quotes the plugin version as
+        # `Claude Code plugin `<X.Y.Z>``; the sync hook keeps it current
+        # (SYNC-CLAUDE-PLUGIN-VERSION-GAP). Guard against re-drift.
+        text = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
+        self.assertIn(f"Claude Code plugin `{_plugin_version()}`", text)
+
     def test_parity_doc_matches_plugin_release_inventory(self):
         text = PARITY_DOC.read_text(encoding="utf-8")
         self.assertIn(f"claude-code-plugin/v{_plugin_version()}", text)
