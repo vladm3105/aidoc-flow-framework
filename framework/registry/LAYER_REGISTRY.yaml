@@ -221,3 +221,14 @@ id_patterns:
   # = 5 segments). Lowercase category distinguishes from element IDs
   # which carry digits in the section_id position.
   threshold: "^[A-Z]+\\.\\d{2,}\\.[a-z_]+(?:\\.[a-z0-9_]+)+$"
+
+# Element-level backward-coverage map (ELEMENT-COVERAGE-001 / D-0039). For COV02
+# an AUTHORED EARS/BDD element is "realized" when at least one downstream doc in
+# its realizing set cites it element-level (one-hop). ADR is a decision layer and
+# does not realize. This is the normative source; a platform's linter mirrors it
+# (e.g. the `REALIZING_LAYERS` constant in the reference `sdd_doc_lint`). See
+# governance/TRACEABILITY.md §"Element-level coverage".
+realizing_layers:
+  BRD: [PRD]
+  EARS: [BDD, SPEC, TDD]
+  BDD: [SPEC, TDD]

@@ -58,8 +58,10 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
 - **`COV02` — backward coverage.** The dual: every EARS / BDD element must be realized by a
   downstream doc in its **realizing set** (or explicitly deferred), computed corpus-wide. The
   realizing set is a curated one-hop map (EARS → BDD/SPEC/TDD; BDD → SPEC/TDD — ADR is a
-  decision layer and does not realize); an element cited by any doc in its set passes. See the
-  element-level treatment in `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md` for the map.
+  decision layer and does not realize); an element cited by any doc in its set passes. The
+  **normative map is `registry/LAYER_REGISTRY.yaml` `realizing_layers`** (a platform linter
+  mirrors it); the element-level treatment is also shown in
+  `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md`.
 - **`COV03` — phase-leak advisory (the inverse of `COV01`'s escape).** A **`Future`-banded
   (deferred) FR that IS realized downstream** by its realizing layer draws a **`WARNING`** —
   something scoped for a *next MVP cycle* is being pulled into the current build. **Advisory

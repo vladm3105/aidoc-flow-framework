@@ -1929,7 +1929,9 @@ _BACKWARD_REALIZED_LAYERS = ("SPEC", "TDD")
 #: ADR and mask orphans. ADR is deliberately excluded (it decides, it does not
 #: realize). EARS includes {BDD,SPEC,TDD} (not just BDD) so an EARS cited
 #: directly by SPEC is not false-flagged, while an EARS cited only by BDD still
-#: passes (one-hop, no transitive traversal).
+#: passes (one-hop, no transitive traversal). This constant MIRRORS the
+#: normative `realizing_layers` block in `framework/registry/LAYER_REGISTRY.yaml`
+#: (a conformance guard asserts they stay in sync); keep the two aligned.
 REALIZING_LAYERS: dict[str, tuple[str, ...]] = {
     "BDD": _BACKWARD_REALIZED_LAYERS,  # ("SPEC", "TDD")
     "EARS": ("BDD",) + _BACKWARD_REALIZED_LAYERS,  # ("BDD", "SPEC", "TDD")

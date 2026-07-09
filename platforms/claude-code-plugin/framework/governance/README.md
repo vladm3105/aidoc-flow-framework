@@ -25,6 +25,7 @@ of which engine executes the workflow.
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
 | `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
+| `LINT_RULES.md` | Normative catalog of the deterministic lint rule IDs a conforming linter emits (meaning, severity, defining contract). |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
 | `FRAMEWORK_FEEDBACK_LOG.md` | The empirical-feedback register — friction found while applying the spec to real projects (the canonical reference of DOC_GOVERNANCE_CORE Principle 9). |
 

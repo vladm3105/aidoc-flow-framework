@@ -26,6 +26,7 @@ EXPECTED_FILES = [
     "ADAPTATION_SURFACE.yaml",
     "PROFILE-TEMPLATE.yaml",
     "AUTHORING_STYLE.md",
+    "LINT_RULES.md",
     "DECISIONS.md",
     "README.md",
     "chg/README.md",
