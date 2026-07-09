@@ -167,7 +167,7 @@ Consumer Documents (reference via @threshold: tags):
  ADR   → references: @threshold: PRD.01.perf.api.p95 (to satisfy product SLA)
  SPEC  → references: @threshold: ADR.15.circuit.failure.count
  TDD   → references: @threshold: ADR.15.pool.db.max
- IPLAN → references: @threshold: SPEC.NN.perf.target
+ IPLAN → references: @threshold: ADR.15.circuit.failure.count
          ↓
 Code (implements with config reference)
 ```
@@ -184,15 +184,22 @@ Code (implements with config reference)
 ### 2.1 Key Format
 
 ```text
-{category}.{subcategory}.{attribute}[.{qualifier}]
+{category}[.{subcategory}].{attribute}[.{qualifier}]
 ```
 
 | Component | Required | Description | Example |
 |-----------|----------|-------------|---------|
 | `category` | Yes | Top-level domain | `quota`, `risk`, `perf` |
-| `subcategory` | Yes | Feature/scope within category | `l1`, `api`, `partner` |
-| `attribute` | Yes | Specific metric/limit | `daily`, `p95`, `timeout` |
+| `subcategory` | No | Feature/scope within category (omit when the category alone scopes the metric) | `l1`, `api`, `partner` |
+| `attribute` | Yes | Specific metric/limit | `daily`, `p95`, `timeout`, `p95_latency` |
 | `qualifier` | No | Additional specificity | `max`, `min`, `warning` |
+
+The **key** (the part after `{TYPE}.{NN}.`) is therefore a **minimum of two
+dot-separated segments** (`{category}.{attribute}`), matching the authoritative
+`id_patterns.threshold` regex in `registry/LAYER_REGISTRY.yaml` (the registry
+wins on any width discrepancy). A single underscore *within* a segment name
+(e.g. `p95_latency`) is a legal attribute token; NR-02 governs the *separators*
+between segments (dots), not characters inside a segment.
 
 ### 2.2 Category Creation Rules
 
@@ -601,7 +608,7 @@ risk.weight:
 ```yaml
 thresholds:
   {category}:
-    {subcategory}:
+    {subcategory}:        # optional level — omit when the category alone scopes the metric
       {attribute}: {value}
 ```
 
@@ -697,13 +704,18 @@ document — including its audit trail and approver set.
 ### 13.1 Key Construction Template
 
 ```text
-{category}.{scope}.{metric}[.{qualifier}]
-                             │
-                             └─ Optional: min/max/p50/p95/warning/critical
-                     └──────── Required: daily/monthly/timeout/rate
-              └─────────────── Required: l1/l2/l3/api/partner/user/session
-      └────────────────────── Required: quota/risk/perf/timeout/rate/alert
+{category}[.{scope}].{metric}[.{qualifier}]
+                              │
+                              └─ Optional: min/max/p50/p95/warning/critical
+                      └──────── Required: daily/monthly/timeout/rate
+              └───────────────── Optional: l1/l2/l3/api/partner/user/session
+      └─────────────────────── Required: quota/risk/perf/timeout/rate/alert
 ```
+
+The `{scope}` (subcategory) segment is **optional** — omit it when the category
+alone scopes the metric (e.g. `perf.p95_latency`). The key is a minimum of two
+dot-separated segments (`{category}.{metric}`), per §2.1 and the authoritative
+`id_patterns.threshold` regex.
 
 ### 13.2 Common Patterns
 
@@ -716,7 +728,7 @@ document — including its audit trail and approver set.
 
 ### 13.3 Checklist for New Thresholds
 
-- [ ] Key follows `category.subcategory.attribute` format
+- [ ] Key follows `category[.subcategory].attribute` format (subcategory optional; key is ≥2 dot-separated segments)
 - [ ] Uses lowercase with dot separators
 - [ ] Defined in the appropriate BRD/PRD/ADR with a YAML block
 - [ ] Type specified (integer/decimal/ratio/percent/score)

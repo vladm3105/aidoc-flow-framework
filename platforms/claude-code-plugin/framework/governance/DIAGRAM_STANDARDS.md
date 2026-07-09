@@ -115,7 +115,7 @@ Required fields in SPEC diagram contract subsection:
 | BRD (L1) | `@diagram: c4-l1`, `@diagram: dfd-l1`; sequence optional for critical journeys |
 | PRD (L2) | `@diagram: c4-l2`, `@diagram: dfd-l2`, `@diagram: sequence-sync`; required sequence with explicit error path |
 | EARS (L3) | No diagrams required (refinement step; inherits upstream) |
-| BDD (L4) | Gherkin scenarios (no C4/DFD diagram requirements) |
+| BDD (L4) | structured YAML scenarios (no C4/DFD diagram requirements) |
 | ADR (L5) | Required decision sequence; no C4/DFD tags (decision bridge, not a C4 level) |
 | SPEC (L6) | `@diagram: c4-l3`, `@diagram: dfd-l3`, required Component Diagram Contract subsection, sequence-path constraints, downstream TDD ownership link |
 | TDD (L7) | No C4/DFD requirements (test case definitions) |

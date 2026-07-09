@@ -56,7 +56,10 @@ The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVER
   in `build`, error in `gate-code`. Escaped FRs never block: a `Future` band (deferred) or a
   `realized_by: <LAYER>` token (realized off the SPEC path).
 - **`COV02` — backward coverage.** The dual: every EARS / BDD element must be realized by a
-  downstream SPEC/TDD (or explicitly deferred), computed corpus-wide.
+  downstream doc in its **realizing set** (or explicitly deferred), computed corpus-wide. The
+  realizing set is a curated one-hop map (EARS → BDD/SPEC/TDD; BDD → SPEC/TDD — ADR is a
+  decision layer and does not realize); an element cited by any doc in its set passes. See the
+  element-level treatment in `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md` for the map.
 - **`COV03` — phase-leak advisory (the inverse of `COV01`'s escape).** A **`Future`-banded
   (deferred) FR that IS realized downstream** by its realizing layer draws a **`WARNING`** —
   something scoped for a *next MVP cycle* is being pulled into the current build. **Advisory
@@ -111,7 +114,8 @@ Each layer must achieve a readiness score >=90/100 before generating its immedia
 | PRD-Ready | >=90 | BRD completeness in business objectives, requirements, scope |
 | EARS-Ready | >=90 | PRD completeness in features, user stories, domain clarity |
 | BDD-Ready | >=90 | EARS syntax compliance, atomicity, testability, spec_trace links |
-| ADR-Ready | >=90 | BDD scenario coverage, Gherkin quality, edge cases |
+| ADR-Ready | >=90 | BDD scenario coverage, scenario (YAML) quality, edge cases |
+| SPEC-Ready | >=90 | ADR decision completeness, alternatives, consequences |
 | TDD-Ready | >=90 | SPEC interface clarity, data model, behavior contracts |
 | IPLAN-Ready | >=90 | TDD test case coverage, threshold definitions, execution order |
 | EXEC-Ready | >=90 | IPLAN file manifest completeness, execution commands, session handoff |

@@ -61,7 +61,7 @@ crews:
     review: {requirements_specialist: 35, tech_lead: 25, qa_lead: 20, chaos_engineer: 12, security_engineer: 8}
   BDD:
     author: qa_lead
-    # rationale: Chaos-heavy at BDD (14 > 6) — failure scenarios dominate Gherkin
+    # rationale: Chaos-heavy at BDD (14 > 6) — failure scenarios dominate the
     # coverage; abuse-case scenarios are secondary.
     review: {qa_lead: 35, tech_lead: 25, chaos_engineer: 14, security_engineer: 6, operator: 10, auditor: 10}
   ADR:

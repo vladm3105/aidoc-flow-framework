@@ -68,7 +68,7 @@ verification. Both engines must produce a journal matching `saga.schema.json`
 | Field | Type | Description |
 |---|---|---|
 | `review_run_id` | string | 12-char-or-longer run identifier. Implementations MAY use deterministic IDs derived from the artifact + persona set + time bucket, or UUIDs. |
-| `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `framework/governance/ID_NAMING_STANDARDS.md` §"Format" (2-digit NN); if that document is ever revised to allow 3+ digits, this contract must change in lockstep. |
+| `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `framework/governance/ID_NAMING_STANDARDS.md` §"Format" and the authoritative `registry/LAYER_REGISTRY.yaml` `id_patterns.document` pattern (`^[A-Z]+-\d{2,}$` — two-or-more digits; two-digit is the common case). |
 | `layer` | string | One of the 8 framework layers (`01_BRD`..`08_IPLAN`). |
 | `personas_requested` | array of strings | The crew dispatched, drawn from `REVIEW_CREWS.yaml` personas registry. |
 | `status` | string | Current run-level state from the table above. |

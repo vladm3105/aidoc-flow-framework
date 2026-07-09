@@ -19,10 +19,14 @@ of which engine executes the workflow.
 | `DEFINITION_OF_DONE.md` | Engine-agnostic completion criteria for an artifact and for a spec change, plus the risk-tiered human-in-loop. |
 | `REVIEW_TEAM.md` | The multi-persona review-team model — crews, the shared blackboard, scoring/conflict/gate rules, and create/review/remediate shapes. |
 | `REVIEW_CREWS.yaml` | Machine-readable per-layer review crews + scoring weights behind `REVIEW_TEAM.md`. |
+| `REVIEW_SAGA.md` | The engine-agnostic saga lifecycle over the create→review→revise loop — state machine, transition table, journal schema, break-circuit policy. |
+| `saga.schema.json` | Machine-readable JSON Schema for the saga journal (`saga.json`) behind `REVIEW_SAGA.md`. |
 | `ADAPTATION.md` | The project-adaptation surface — how a consuming project adapts the flow without forking. |
 | `ADAPTATION_SURFACE.yaml` | Machine-readable closed knob registry behind `ADAPTATION.md`. |
+| `PROFILE-TEMPLATE.yaml` | The bootstrap template an engine copies to seed a project's `.aidoc/profile.yaml` (adaptation-knob overrides only). |
 | `AUTHORING_STYLE.md` | Token-efficient authoring rules — eliminations, form enforcement, form preferences, size targets. Audit-enforced. |
 | `DECISIONS.md` | Durable register of decisions about the spec and its governance (spec-affecting decisions graduate here). |
+| `FRAMEWORK_FEEDBACK_LOG.md` | The empirical-feedback register — friction found while applying the spec to real projects (the canonical reference of DOC_GOVERNANCE_CORE Principle 9). |
 
 ## CHG Overlay (`chg/`)
 

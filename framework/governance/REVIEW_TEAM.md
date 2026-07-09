@@ -200,7 +200,7 @@ Four categories:
 - **Security-heavy** (security > chaos): layers where the dominant risk is
   *exploitable design* — architectural trust boundaries, authn/authz
   choices, crypto. Examples: ADR (8:12).
-- **Equal split**: layers where both axes matter equally — cross-functional
+- **Balanced split** (both axes matter, near-equal weights): cross-functional
   specifications, test design. Examples: PRD (8:7), SPEC (10:10), TDD
   (10:10).
 - **Chaos-only**: layers where the security concern lives strictly
@@ -257,7 +257,7 @@ layer: 02_PRD                          # matches directory name exactly
 lens: chaos_engineer                   # matches filename stem + REVIEW_CREWS.yaml persona name
 weight: 8                              # must match REVIEW_CREWS.yaml weight for this (layer, lens)
 agent: chaos-engineer                  # plugin agent name; lens→agent table: platforms/claude-code-plugin/skills/review-team/SKILL.md §"The crew"
-framework_spec_version: "0.14.0"       # must match framework/VERSION; auto-propagated by sync hook
+framework_spec_version: "<framework/VERSION>"  # must equal framework/VERSION (set at author time; this example block is not auto-synced)
 ---
 ```
 
