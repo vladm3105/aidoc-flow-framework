@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: automation-workflow
-    version: "0.23.3"
+    version: "0.23.4"
     framework_spec_version: "0.35.1"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -28,6 +28,13 @@ CHG is **NOT a lifecycle layer** in the BRD..IPLAN sense: no template chain,
 no readiness score. The pipeline closes on **gate approval**, not a numeric
 score. For team-mode dispatch purposes the CHG layer is addressed as
 **`09_CHG`** (the layer-id slot occupied by the change-management overlay).
+
+This autopilot deliberately carries **no `## Model precheck` step**. The
+per-layer model recommendation (MODEL-PRECHECK-ROLLOUT) applies to the eight
+lifecycle-layer autopilots (BRD..IPLAN); CHG is a governance overlay with no
+`model.per_layer.CHG` entry, so there is nothing to precheck. The conformance
+suite (`tests/conformance/platforms/test_model_precheck.py`) asserts the
+precheck on exactly those eight — CHG's absence is intentional, not a gap.
 
 ## Skill Dependencies
 

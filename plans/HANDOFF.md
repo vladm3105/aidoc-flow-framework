@@ -5,9 +5,12 @@
 > review across 7 tier-scoped PRs. **PR-A shipped** (plugin `0.23.3`): skill-content
 > drift — audit-report path unified across 68 sites, iteration-cap citation
 > corrected + backported, `review_mode` consistency, phantom emitter removed, verdict
-> clarifier propagated, creator/autopilot descriptions disambiguated. **Next:** PR-B
-> (plugin mechanics), PR-F (docs-of-record currency). **Held for founder:** PR-C/PR-D
-> (spec tier), PR-E0–E4 (engine-agnosticism, GD decision), PR-G (CLAUDE.md).
+> clarifier propagated, creator/autopilot descriptions disambiguated. **PR-B shipped**
+> (plugin `0.23.4`): removed the dead `--threshold` flag (driver + 8 autopilots), CHG
+> advisory-hook coverage, `save-plan` wired to `work_plans_dir`, changelog structure,
+> `plugin.json` keywords, CHG precheck-exclusion note. **Next:** PR-F (docs-of-record
+> currency). **Held for founder:** PR-C/PR-D (spec tier), PR-E0–E4 (engine-agnosticism,
+> GD decision), PR-G (CLAUDE.md).
 >
 > **✅ SESSION COMPLETE (2026-07-08) — PROVISIONAL-IDS-002 Phase 1 shipped.** Both PRs
 > merged (plan #269 + impl #270); `main` clean, no open PRs. The Phase-1 build ships

@@ -197,7 +197,6 @@ class SagaContext:
     saga_dir: Path
     saga_file: Path
     start_epoch: float = field(default_factory=time.time)
-    threshold: int = 90
     plugin_dir: Path | None = None
 
 
@@ -641,7 +640,6 @@ def main(argv: list[str] | None = None) -> int:
         default=os.environ.get("PREV_OUTPUT"),
         help="upstream seed; falls back to $PREV_OUTPUT",
     )
-    parser.add_argument("--threshold", type=int, default=90)
     parser.add_argument(
         "--plugin-dir",
         default=os.environ.get("CLAUDE_PLUGIN_ROOT", os.environ.get("PLUGIN_DIR", "")),
@@ -666,7 +664,6 @@ def main(argv: list[str] | None = None) -> int:
         artifact_path=Path(args.artifact_path),
         saga_dir=saga_dir,
         saga_file=saga_dir / "saga.json",
-        threshold=args.threshold,
         plugin_dir=Path(args.plugin_dir),
     )
 

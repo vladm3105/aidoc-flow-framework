@@ -12,7 +12,7 @@ metadata:
     skill_category: automation-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.3"
+    version: "0.23.4"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
@@ -88,8 +88,7 @@ Your first **orchestration** action MUST be the `Bash` tool (the Model precheck 
 
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
-  --layer 02_PRD \
-  --threshold 90
+  --layer 02_PRD
 ```
 
 Use a generous timeout (≥1800s). Do not pre-analyze the input. Do not
