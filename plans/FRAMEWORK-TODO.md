@@ -24,19 +24,17 @@
 
 ## Open
 
-### `[docs]` `FRWK-REVIEW-002-PR-E` — engine-agnosticism sweep (BLOCKED on founder GD-NN)
+### `[docs]` `FRWK-REVIEW-002-PR-E` — ✅ CLOSED (2026-07-09) — engine-agnosticism sweep
 
-- Context: FRWK-REVIEW-002 (plan `plans/FRWK-REVIEW-002-PLAN.md`, PRs #276–#281
-  merged). PR-E is the only unshipped piece. The spec carries engine-specific
-  tokens: the playbook `agent:` frontmatter field points into
-  `platforms/claude-code-plugin/` (`REVIEW_TEAM.md:259`); `doc-*`/"SKILL"
-  vocabulary in governance/layer docs; a workspace-CI section pinning
-  `aidoc-flow-ci@ci/vX` in `REVIEW_REMEDIATION_FLOW.md`; repo-root tool refs
-  (`tools/trace_walk.py`, `tools/sdd_coverage.py`) the spec doesn't vendor.
-- Fix shape: **needs a founder decision first (GD-NN in `framework/governance/DECISIONS.md`)** —
-  what counts as an engine-specific token, and which refs are removed vs accepted
-  as documented exceptions (like D-0022). Then ship as PR-E0 (decision only) +
-  PR-E1–E4 (≤3 surfaces each, engine-neutral edits). Scoped in the plan's PR-E table.
+- Context: FRWK-REVIEW-002 PR-E — the spec carried engine-specific tokens (the
+  playbook `agent:` field pointing into `platforms/claude-code-plugin/`;
+  `doc-*`/"SKILL" vocabulary; a workspace-CI section; repo-root tool refs).
+- Resolved: founder chose the **Hybrid** ruling, recorded as **GD-06** in
+  `framework/governance/DECISIONS.md` (PR-E0 #284). PR-E-impl (#285) neutralized
+  the generic vocabulary (doc-*/"SKILL" → engine-neutral, `claude -p` → neutral,
+  AIDOC table → Platform-B illustration, tool paths → reference implementation)
+  and kept the two sanctioned exceptions (the `agent:` executor field, softened;
+  the workspace-CI section, scope-noted). Spec `0.36.0 → 0.36.2`.
 
 ### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — ✅ CLOSED (2026-07-09) — `sync-version-refs.sh` didn't update CLAUDE.md's plugin-version string
 

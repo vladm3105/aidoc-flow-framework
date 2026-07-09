@@ -1,7 +1,11 @@
 # Session Handoff
 
-> **✅ FRWK-REVIEW-002 COMPLETE except PR-E (2026-07-09)** (`plans/FRWK-REVIEW-002-PLAN.md`).
-> **Current versions:** framework spec `0.36.0` · plugin `0.23.4` · hermes `0.7.3`.
+> **✅ FRWK-REVIEW-002 COMPLETE (2026-07-09)** (`plans/FRWK-REVIEW-002-PLAN.md`).
+> All 46 findings resolved. **Current versions:** framework spec `0.36.2` · plugin
+> `0.23.4` · hermes `0.7.3`. PR-E (engine-agnosticism) shipped per the founder's
+> GD-06 Hybrid ruling (#284 decision + #285 neutralization). **Remaining backlog
+> (`plans/FRAMEWORK-TODO.md`, not FRWK-REVIEW-002):** SKILL-DEDUP-001 (skill
+> de-duplication) and the v1.0.0 deprecated-stub removal.
 > 46 findings from the 2026-07-09 plugin + core-docs review, fixed across 6 merged
 > impl PRs: **PR-A #276** (plugin `0.23.3`, skill-content drift — 68 audit-report
 > sites, iteration-cap citation, review_mode, phantom emitter), **PR-B #277** (plugin
