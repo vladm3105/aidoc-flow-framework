@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.35.2 → 0.36.0` — FRWK-REVIEW-002 PR-D spec-completeness additions (2026-07-09)
+
+Two normative surfaces that previously existed only in linter code, so an
+independent engine can now implement them from `framework/` alone (spec MINOR):
+
+- **`realizing_layers` map (D1).** Added a normative `realizing_layers` block to
+  `registry/LAYER_REGISTRY.yaml` (BRD→PRD; EARS→BDD/SPEC/TDD; BDD→SPEC/TDD) — the
+  element-level backward-coverage map behind `COV02` (D-0039), previously only a
+  `REALIZING_LAYERS` constant in `sdd_doc_lint`. `TRACEABILITY.md` now cites it as
+  the normative source. New conformance guard asserts the linter constant matches
+  the registry block.
+- **Lint-rule catalog (D2).** New `framework/governance/LINT_RULES.md` — one row
+  per emitted rule ID (28: COV01-03, CSC01, DG02, EARS01, FM01, HASH01, ID01-03,
+  IDDRIFT01, PH01, PROV01, REFGRAN01, REUSE01/02, STALE01, STRUCT01, STY01-03,
+  TAG01, TH01/02, TH-RES-001, TRACE-RES-001, BDD-SCHEMA-001) with meaning,
+  severity, and defining contract. New conformance guard asserts every rule ID the
+  linter can emit is catalogued; added to `test_governance.py` `EXPECTED_FILES`
+  and the governance README index.
+
 ### Fixed — Framework Spec `0.35.1 → 0.35.2` — FRWK-REVIEW-002 PR-C spec-text corrections (2026-07-09)
 
 Normative-text corrections from the 2026-07-09 plugin + core-docs review
