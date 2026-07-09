@@ -23,7 +23,7 @@ create→review→revise loop, while keeping their own runtime mechanisms
 (Hermes: Python saga runtime; plugin: SKILL prompts + JSON journal + Bash
 subprocesses). The contract lives in
 [`../framework/governance/REVIEW_SAGA.md`](../framework/governance/REVIEW_SAGA.md)
-(arriving with framework spec `0.23.0` via SAGA-PARITY-001, D-0031, which
+(arriving in the `0.13.0` spec cycle via SAGA-PARITY-001, D-0031, which
 extends D-0005's blackboard contract with an outer-loop journal).
 
 Earlier states of this document described **output-shape parity** —
@@ -204,7 +204,7 @@ deterministic gate, and reduced findings).
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
 | Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
-| Saga lifecycle (D-0031 / framework spec `0.23.0`) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 8 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement, single-pass in-process |
+| Saga lifecycle (D-0031 / `0.13.0` spec cycle) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 8 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement, single-pass in-process |
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | saga state machine **accepts** `PARTIAL_TIMEOUT` (spec-conformant table, HERMES-PARITY Phase 1); the orchestrator does not yet *write* it — the break-circuit + resume path is Phase 1b |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |

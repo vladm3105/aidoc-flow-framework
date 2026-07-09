@@ -14,7 +14,7 @@
 #
 #   - root CHANGELOG.md entry under [Unreleased] (project-level)
 #   - plugin CHANGELOG entry under [Unreleased]
-#   - ROADMAP.md "Post-v1.0 — Shipped" bullet
+#   - ROADMAP.md "Recently shipped" bullet
 #   - plans/HANDOFF.md current-state header refresh
 #   - plans/HERMES-BACKLOG.md new H-N entry (when the change creates Hermes
 #     follow-on work)
@@ -90,7 +90,7 @@ if (( substantive > 0 && has_doc_change == 0 )); then
 
                        Project-level:
                          - CHANGELOG.md          (entry under [Unreleased])
-                         - ROADMAP.md            ("Post-v1.0 — Shipped" bullet)
+                         - ROADMAP.md            ("Recently shipped" bullet)
                          - README.md             (Status block, if user-visible)
                          - CLAUDE.md             ("Current state" line)
                          - plans/HANDOFF.md      (current-state header)

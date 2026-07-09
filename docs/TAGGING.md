@@ -90,15 +90,25 @@ git log --oneline v0.1.0..v0.2.0   # commits between two tags
 Slash-namespaced refs (`framework/v0.1.0`, `mark/<slug>`) are valid git tag
 names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 
-## Current tags
+## Release inventory
 
-| Tag | Commit | Marks |
+> **This is the release/version record, not a list of git tags that all exist.**
+> Each row is a version assigned to a shipped change. A git **tag** is cut
+> separately, and the tag-cut has lagged the version stream (a known backlog —
+> see the HANDOFF). To see which tags are *actually* cut, run `git tag -l` /
+> `git ls-remote --tags origin`; as of 2026-07-09 the cut high-water marks are
+> `v1.1.0` (project), `framework/v0.21.0`, `claude-code-plugin/v0.20.1`, and
+> `hermes/v0.1.1`. Rows above those points are version assignments whose tag has
+> not yet been cut. Do not assume a row here means the tag exists.
+
+| Version / tag | Commit | Marks |
 |-----|--------|-------|
 | `v0.1.0` | Phase 0 baseline | Planning & scaffolding milestone |
 | `v0.2.0` | Phase 1 close | Framework Spec Extraction milestone |
 | `framework/v0.1.0` | Phase 1 close | Framework spec — first independent release |
 | `v0.3.0` | Phase 2 close | Platform A: Hermes Re-homing milestone |
 | `hermes/v0.1.0` | Phase 2 close | Hermes platform — first independent release |
+| `hermes/v0.1.1` | Hermes patch | Hermes platform — patch release (cut tag) |
 | `v0.4.0` | Phase 3 close | Platform B: Claude Code plugin milestone |
 | `claude-code-plugin/v0.1.0` | Phase 3 close | Claude Code plugin — first independent release |
 | `v0.5.0` | Phase 4 close | Conformance & Independence milestone |
@@ -161,21 +171,12 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `framework/v0.3.1` | CHG-D2 (`3753de2`) | Framework spec — governance decision register, GD-01 |
 | `v1.1.0` | PR #2 merge (`3974daa`) | Post-cutover feature release — skill-set revision + adaptation overlay + CHG GATE-SPEC |
 
-> Phase 1 tags (`v0.1.0`, `v0.2.0`, `framework/v0.1.0`) are published
-> on the remote. Phase 2 tags (`v0.3.0`, `hermes/v0.1.0`), Phase 3
-> tags (`v0.4.0`, `claude-code-plugin/v0.1.0`), and Phase 4 tag
-> (`v0.5.0`) are created locally on the in-container session at the
-> respective close commits and need the local-clone workaround
-> established at P1-T8 — the in-container git proxy continues to
-> refuse tag pushes with HTTP 403. See `plans/P2-T6-PLAN.md`
-> §Approach.5, `plans/P3-T5-PLAN.md` §Approach.5, and
-> `plans/P4-T5-PLAN.md` §Approach.6 for the exact local-clone
-> commands. Verify any tag's publication via
-> `git ls-remote --tags origin`.
->
-> The post-cutover tags (`framework/v0.2.0`, `framework/v0.3.0`,
-> `framework/v0.3.1`, and the project milestone `v1.1.0`) are **published** on
-> the remote, created from a local clone at the PR #2 merge.
+> All Phase 0–5 milestone tags (`v0.1.0`–`v0.5.0`, `v1.0.0`, `v1.1.0`,
+> `framework/v0.1.0`–`v0.3.1`, `framework/v0.21.0`, `hermes/v0.1.0`–`v0.1.1`,
+> `claude-code-plugin/v0.1.0`–`v0.20.1`) are **published on the remote**. The
+> per-package version streams have since moved ahead of the cut tags (the
+> tag-cut backlog noted at the top of this section). Verify any tag's
+> publication via `git ls-remote --tags origin`.
 
 ## In-container push restrictions
 

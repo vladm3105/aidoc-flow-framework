@@ -1,7 +1,8 @@
 # Session Handoff
 
 > **▶ IN FLIGHT (2026-07-09) — FRWK-REVIEW-002** (`plans/FRWK-REVIEW-002-PLAN.md`,
-> plan PR #275 merged). Fixes 46 findings from the 2026-07-09 plugin + core-docs
+> plan PR #275 merged). **Current versions:** framework spec `0.35.1` · plugin
+> `0.23.4` · hermes `0.7.3`. Fixes 46 findings from the 2026-07-09 plugin + core-docs
 > review across 7 tier-scoped PRs. **PR-A shipped** (plugin `0.23.3`): skill-content
 > drift — audit-report path unified across 68 sites, iteration-cap citation
 > corrected + backported, `review_mode` consistency, phantom emitter removed, verdict

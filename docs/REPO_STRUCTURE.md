@@ -28,7 +28,7 @@ aidoc-flow-framework/
 ├── .pre-commit-config.yaml         Pre-commit hooks (lint / format / security)
 ├── ruff.toml · .markdownlint.json · .markdownlintignore · .yamllint · .secrets.baseline
 ├── .github/
-│   ├── workflows/                  CI: conformance, hermes, plugin, pre-commit, codeql, chg-gate, labeler
+│   ├── workflows/                  CI: ai-review, audit-trail, auto-merge-ai-prs, chg-gate, codeql, composition, conformance, doc-review, hermes, labeler, plugin, pre-commit, standards-drift
 │   ├── CODEOWNERS · dependabot.yml · labeler.yml
 │   └── ISSUE_TEMPLATE/ · PULL_REQUEST_TEMPLATE.md
 ├── docs/
@@ -36,6 +36,7 @@ aidoc-flow-framework/
 │   ├── PROJECT.md                   Versioning, branches, milestones, change management
 │   ├── PARITY.md                    Hermes ↔ plugin capability comparison
 │   ├── TAGGING.md                   Git-tag policy
+│   ├── SUPPORT.md                   Support channels + how to get help
 │   └── STARTUP_HANDOFF.md
 │
 ├── framework/                       SHARED engine-agnostic specification (the contract)
