@@ -14,6 +14,35 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### [0.23.3] — FRWK-REVIEW-002 PR-A: skill-content drift (audit-report path, iteration-cap citation, review_mode, phantom emitter) (2026-07-09)
+
+Fixes the plugin-side skill-content drift found by the 2026-07-09 plugin + core-docs
+review (plan `plans/FRWK-REVIEW-002-PLAN.md`), all in `skills/`:
+
+- **A1 — audit-report path unified (68 sites).** All 9 `doc-*-audit` + 9 `doc-*-fixer`
+  skills now name the relocated fixed report `.aidoc/audit/<NN>_<LAYER>-audit.md`
+  instead of the legacy versioned `<TYPE>-NN.A_audit_report_vNNN.md`. The
+  version-series semantics (cleanup glob, "delete superseded", "consume the latest")
+  are reworded for a single overwritten file; several audits had contradicted
+  themselves (Execution-Contract step vs report-composition step).
+- **A2 — iteration-cap citation corrected + backported.** The `MAX_ITERATIONS=3`
+  cap paragraph cited a non-existent `REVIEW_SAGA.md §"Iteration cap"`; corrected to
+  `REVIEW_REMEDIATION_FLOW.md §"Iteration cap"` in the 2 audits that had it, and
+  backported to the 7 that lacked it (the cap is engine-wide behavior).
+- **A3 — `review_mode` consistency.** Added to the `adapts:` frontmatter of the 3
+  audits missing it (prd/ears/bdd) and documented in the `## Adaptation` section of
+  the 7 that lacked it.
+- **A4 — phantom emitter reference removed.** `doc-bdd` no longer claims a shipped
+  `tools/bdd_to_gherkin.py`; reworded to reflect that no `.feature` emitter ships
+  (only the reverse-direction `tools/gherkin_to_bdd_yaml.py`).
+- **A5 — verdict-outcome clarifier propagated** from `doc-chg-audit` to the other 8
+  audits, layer-neutrally (`combined_status: PASS` ⇒ advance; otherwise ⇒ fixer).
+- **A6 — creator vs autopilot descriptions disambiguated** (×9): creators now read as
+  the single-document authoring primitive; the autopilot drives end-to-end/batch.
+
+A7 (cosmetic wording normalization) deferred to SKILL-DEDUP-001, which regenerates
+these per-layer sections from templates.
+
 ### [0.23.2] — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the production-readiness audit (D-0060) (2026-07-06)
 
 A 4-agent production-readiness audit found the plugin clean/green on packaging, conformance,

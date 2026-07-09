@@ -1,6 +1,6 @@
 ---
 name: doc-bdd
-description: Create Behavior-Driven Development (BDD) scenarios - Layer 4 of the SDD flow, translating EARS requirements into executable Given-When-Then acceptance scenarios with req-to-SPEC trace links. Use after EARS, before ADR.
+description: Create Behavior-Driven Development (BDD) scenarios - Layer 4 of the SDD flow, translating EARS requirements into executable Given-When-Then acceptance scenarios with req-to-SPEC trace links. Use after EARS, before ADR. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-bdd-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -25,9 +25,11 @@ Create **Behavior-Driven Development (BDD)** scenarios — Layer 4 of the SDD
 flow. A BDD suite translates EARS formal requirements into structured **YAML
 scenarios** (Given/When/Then phase lists carried in a ` ```yaml ` block, NOT
 Gherkin `@`-tags), each carrying an **element-level `ears:` trace list** and a
-`spec_trace` link forward to the SPEC sections it exercises. (An optional
-on-demand emitter, `tools/bdd_to_gherkin.py`, generates `.feature` files from the
-YAML if a runner ever needs them.)
+`spec_trace` link forward to the SPEC sections it exercises. (If a runner ever
+needs `.feature` files, the YAML is the source of record and a `.feature`
+emitter can be authored on demand — no such emitter ships today; the only
+shipped transcoder is the one-off reverse-direction `tools/gherkin_to_bdd_yaml.py`
+used to migrate legacy Gherkin into the YAML form.)
 
 **Layer**: 4. **Upstream**: EARS (per the necessary-upstream contract;
 upstream PRD/BRD lineage is reachable transitively via the @-tag chain).

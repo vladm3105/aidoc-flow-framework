@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to a PRD, bridging
 converge.
 
 **Layer**: 2 (PRD quality improvement).
-**Upstream**: the PRD document + `PRD-NN.A_audit_report_vNNN.md`.
+**Upstream**: the PRD document + `.aidoc/audit/02_PRD-audit.md`.
 **Downstream**: the fixed PRD + `PRD-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ PRD (use `../doc-prd/SKILL.md` / `../doc-prd-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `PRD-NN.A_audit_report_vNNN.md`. Back up the PRD before
+Consume the `.aidoc/audit/02_PRD-audit.md` report. Back up the PRD before
 editing (`tmp/backup/PRD-NN_<ts>/`); on error, restore. Element-ID standards
 come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/02_PRD/PRD-TEMPLATE.yaml` and `README.md`.

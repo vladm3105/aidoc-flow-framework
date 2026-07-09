@@ -1,6 +1,6 @@
 ---
 name: doc-iplan
-description: Create an Implementation Plan (IPLAN) - Layer 8 of the SDD flow, the mandatory execution bridge from SPEC/TDD to source code via an executable, session-resumable file manifest. Use when ready to implement a SPEC component.
+description: Create an Implementation Plan (IPLAN) - Layer 8 of the SDD flow, the mandatory execution bridge from SPEC/TDD to source code via an executable, session-resumable file manifest. Use when ready to implement a SPEC component. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-iplan-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

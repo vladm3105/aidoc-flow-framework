@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: quality-assurance
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-06-12"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -39,7 +39,7 @@ number. For team-mode dispatch purposes the CHG layer is addressed as
 **Scope**: a CHG can touch any artifact along
 `BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code`.
 **Upstream**: a CHG record. **Downstream**:
-`CHG-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
+`.aidoc/audit/09_CHG-audit.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
@@ -51,9 +51,9 @@ or to run the formal gate itself (that is `../gate-check/SKILL.md`).
 **Fresh-audit policy:** always audit from scratch — never reuse prior results;
 re-evaluate gate-readiness independently each run.
 
-**Report cleanup:** after writing the new report, delete superseded
-`CHG-NN.A_audit_report_v*.md`; keep `CHG-NN.F_fix_report_v*.md`. Record a
-cleanup summary in the report.
+**Report cleanup:** the audit report is a single file
+(`.aidoc/audit/09_CHG-audit.md`) overwritten in place each run — no version
+cleanup needed. Keep `CHG-NN.F_fix_report_v*.md`.
 
 ## Execution Contract
 
@@ -69,7 +69,7 @@ from `framework/playbooks/09_CHG/<lens>.md` and inline it under the lens's
 brief (team mode) or apply its checks sequentially (single_pass) → 5)
 merge/normalize findings, including a playbook-coverage line surfacing which
 lenses ran with their playbook attached → 6) write
-`CHG-NN.A_audit_report_vNNN.md` → 7) if auto-fixable findings exist, hand off
+`.aidoc/audit/09_CHG-audit.md` → 7) if auto-fixable findings exist, hand off
 to `doc-chg-fixer`.
 
 ## Review Mode
@@ -385,7 +385,7 @@ check and the OS sends SIGTERM, saga.json reflects the last
 successful checkpoint state (NOT `PARTIAL_TIMEOUT`). Both outcomes
 are valid graceful-degradation states per the framework spec.
 
-Additionally, per `REVIEW_SAGA.md` §"Iteration cap", the saga driver
+Additionally, per `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap", the saga driver
 (not this skill) enforces a `MAX_ITERATIONS=3` cap across the
 audit↔fix loop. When the saga reaches `MAX_ITERATIONS` without
 converging to `gate_ready: true`, the saga driver writes
@@ -616,7 +616,7 @@ Apply to every report row that emits a shell-pipe code span inside a
 table cell. Cascade-output that trips MD056 is a SKILL bug, not a
 markdownlint over-strictness — fix here, not by lint-ignoring.
 
-Output: `CHG-NN.A_audit_report_vNNN.md`, with sections — **Summary** (CHG ID,
+Output: `.aidoc/audit/09_CHG-audit.md`, with sections — **Summary** (CHG ID,
 timestamp, overall status, `gate_ready: true|false`, change level, entry gate) ·
 **Gate-Readiness** (PASS/FAIL + the required approver per the change level, not
 a score) · **Metadata Findings** · **Schema Findings** · **Change-Level &
@@ -691,7 +691,7 @@ Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 Normalize every finding to: `source` (`schema`|`routing`|`impact`|`metadata`|`content`),
 `code`, `severity` (`error`|`warning`|`info`), `file`, `field/section`,
 `action_hint`, `confidence` (`auto-safe`|`auto-assisted`|`manual-required`).
-`doc-chg-fixer` consumes the latest `CHG-NN.A_audit_report_vNNN.md`.
+`doc-chg-fixer` consumes the `.aidoc/audit/09_CHG-audit.md` report.
 
 ## Related Resources
 

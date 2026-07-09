@@ -1,6 +1,6 @@
 ---
 name: doc-adr
-description: Create an Architecture Decision Record (ADR) - Layer 5 of the SDD flow, documenting one architecture decision with Context-Decision-Consequences. Use after BDD when an architectural choice needs recording.
+description: Create an Architecture Decision Record (ADR) - Layer 5 of the SDD flow, documenting one architecture decision with Context-Decision-Consequences. Use after BDD when an architectural choice needs recording. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-adr-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
