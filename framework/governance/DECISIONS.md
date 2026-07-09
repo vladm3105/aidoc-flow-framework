@@ -13,6 +13,57 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-06 — Engine-agnosticism boundary: the spec neutralizes generic platform vocabulary but sanctions a small set of load-bearing engine bindings as documented exceptions
+
+- **Status:** Accepted — 2026-07-09 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-06 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-01/GD-05 precedent — no separate CHG artifact). SemVer **patch**
+  (`0.36.0 → 0.36.1`; documentation clarification, no behavior change),
+  change-level **C1**.
+- **Context:** The engine-agnostic spec (durable convention: "carries no platform
+  names or runtime code") had leaked engine-specific tokens found in the
+  FRWK-REVIEW-002 review: (a) `doc-*`/"SKILL" plugin vocabulary in governance/layer
+  docs; (b) a direct Claude Code CLI reference (`claude -p`) and a plugin-skill table
+  in `docs/AIDOC.md`; (c) the playbook `agent:` frontmatter field, which names the
+  executor and pointed into `platforms/claude-code-plugin/`; (d) a workspace-CI
+  section in `REVIEW_REMEDIATION_FLOW.md` pinning `aidoc-flow-ci@ci/vX`; (e)
+  repo-root tool paths (`tools/trace_walk.py`, `tools/sdd_coverage.py`) referenced
+  normatively though the spec neither contains nor vendors them. A pure "remove
+  everything" sweep is one option; but some of these are **load-bearing** — an
+  engine-agnostic spec still needs *some* way to name the executor a lens maps to,
+  and workspace process legitimately rides alongside the vendored spec. D-0022 set
+  the precedent that a load-bearing platform coupling can be an **explicitly
+  documented exception** rather than a defect.
+- **Decision (hybrid):**
+  1. **Neutralize (must carry no platform-specific token):** replace `doc-*`/"SKILL"
+     vocabulary with engine-neutral terms ("the audit engine", "the layer-audit
+     capability"); make the `claude -p` reference engine-neutral; mark the AIDOC
+     plugin-skill table an explicit Platform-B *illustration*; and describe the
+     repo-root tools as a **reference implementation outside the spec** (state the
+     capability normatively, mark the tool path non-normative).
+  2. **Sanctioned exceptions (a load-bearing binding, documented, not a defect —
+     the D-0022 pattern):**
+     - The playbook `agent:` frontmatter field stays: it names the engine-defined
+       executor a platform maps each lens to. Its inline comment is softened from a
+       hard `platforms/claude-code-plugin/...` pointer to "the engine maps lens →
+       executor; see the platform's own docs" — the field is engine-defined, the
+       pointer is not normative.
+     - The `REVIEW_REMEDIATION_FLOW.md` "Mechanical author-side pre-push gate
+       (aidoc-flow workspace layer)" section stays: it is workspace-layer process,
+       already scoped by its heading; it gains a one-line note that it is a
+       workspace convention, not part of the engine-agnostic contract.
+- **Consequences:** the neutralization edits ship as scoped follow-up PRs citing
+  this GD-06 (≤3 doc surfaces each per governance PR-discipline). The two sanctioned
+  exceptions are conformance-neutral and remain in the spec with their documented
+  rationale. Engine-agnosticism conformance (e.g. `test_spec_hygiene`) may later be
+  extended to allow-list exactly the two sanctioned bindings; until then they are
+  covered by this decision. No behavior change; SemVer **patch**, change-level **C1**.
+- **Authority:** this decision; `framework/README.md` (engine-agnostic convention);
+  D-0022 (the vendored-bundle exception precedent); `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-05 — The author-self-claim strip MUST is satisfied by physical removal where the engine curates the lens input, or by a disregard instruction where the lens reads the artifact directly
 
 - **Status:** Accepted — 2026-07-04 (ratified on merge; a `framework/**` normative

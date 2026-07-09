@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.36.0 → 0.36.1` — GD-06 engine-agnosticism boundary (FRWK-REVIEW-002 PR-E0) (2026-07-09)
+
+Records **GD-06** in `framework/governance/DECISIONS.md` — the founder-ratified
+policy for engine-specific tokens in the spec (the FRWK-REVIEW-002 PR-E blocker).
+**Hybrid ruling:** neutralize the generic platform vocabulary (`doc-*`/"SKILL"
+terms, the `claude -p` reference, the AIDOC plugin-skill table, repo-root tool
+paths → "reference implementation outside the spec"); **keep two load-bearing
+bindings as documented exceptions** (the D-0022 pattern) — the playbook `agent:`
+executor field and the workspace-CI section. Decision only (no doc edits yet);
+the neutralization edits follow as a scoped PR citing GD-06. SemVer patch, C1.
+
 ### Added — Framework Spec `0.35.2 → 0.36.0` — FRWK-REVIEW-002 PR-D spec-completeness additions (2026-07-09)
 
 Two normative surfaces that previously existed only in linter code, so an
