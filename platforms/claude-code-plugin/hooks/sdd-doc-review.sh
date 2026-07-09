@@ -26,7 +26,7 @@ fi
 artifact="$(printf '%s' "$artifact" | tr '[:lower:]' '[:upper:]')"
 
 case "$artifact" in
-  BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN) ;;
+  BRD|PRD|EARS|BDD|ADR|SPEC|TDD|IPLAN|CHG) ;;
   *) exit 0 ;;  # not an SDD instance document — nothing to advise
 esac
 

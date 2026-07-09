@@ -14,7 +14,29 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
-### [0.23.3] — FRWK-REVIEW-002 PR-A: skill-content drift (audit-report path, iteration-cap citation, review_mode, phantom emitter) (2026-07-09)
+## [0.23.4] — FRWK-REVIEW-002 PR-B: plugin mechanics (dead --threshold flag, CHG hook, save-plan config, changelog structure) (2026-07-09)
+
+Second FRWK-REVIEW-002 plugin batch (plan `plans/FRWK-REVIEW-002-PLAN.md`):
+
+- **B1 — dead `--threshold` flag removed.** `saga_driver.py` parsed and stored
+  `--threshold`/`ctx.threshold` but never read it (PASS/FAIL comes solely from
+  `verdict.json` `combined_status`); the flag and the `--threshold 90` line in
+  all 8 layer-autopilot command blocks are removed. The real gate is the
+  `audit_threshold` adaptation knob (raise-only).
+- **B2 — advisory hook covers CHG.** `hooks/sdd-doc-review.sh` case-arm now
+  includes `CHG`, so a write under `docs/09_CHG/` nudges `doc-chg-audit`.
+- **B3 — `/aidoc-flow:save-plan` reads `work_plans_dir`.** The command now
+  resolves the work-plans directory from `.claude/aidoc-flow.config.yaml` first
+  (per `docs/CONFIG.md`), falling back to the legacy `.claude/CLAUDE.md` line;
+  modernized the stale example/timestamp and the frontmatter tag.
+- **B4 — changelog structure.** Promoted the released `0.23.0`–`0.23.3` entries
+  from `###` under `[Unreleased]` to top-level `##` sections.
+- **B5 — `plugin.json` keywords** gained `spec` and `tdd` (all 8 layers listed).
+- **B6 — CHG model-precheck exclusion documented** in `doc-chg-autopilot`
+  (governance overlay, no `model.per_layer.CHG`; conformance asserts precheck on
+  exactly the 8 layer autopilots).
+
+## [0.23.3] — FRWK-REVIEW-002 PR-A: skill-content drift (audit-report path, iteration-cap citation, review_mode, phantom emitter) (2026-07-09)
 
 Fixes the plugin-side skill-content drift found by the 2026-07-09 plugin + core-docs
 review (plan `plans/FRWK-REVIEW-002-PLAN.md`), all in `skills/`:
@@ -43,7 +65,7 @@ review (plan `plans/FRWK-REVIEW-002-PLAN.md`), all in `skills/`:
 A7 (cosmetic wording normalization) deferred to SKILL-DEDUP-001, which regenerates
 these per-layer sections from templates.
 
-### [0.23.2] — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the production-readiness audit (D-0060) (2026-07-06)
+## [0.23.2] — PLUGIN-PROD-READINESS-001: fix the playbook-path-escape BLOCKER + 3 SHOULD-FIX from the production-readiness audit (D-0060) (2026-07-06)
 
 A 4-agent production-readiness audit found the plugin clean/green on packaging, conformance,
 tooling, versioning, and skill structure — with one BLOCKER and three SHOULD-FIX:
@@ -69,7 +91,7 @@ Plugin **PATCH** `0.23.1 → 0.23.2`; no `framework/` change. 166 conformance gr
 plugin drift/vendoring/manifest guards). See `plans/PLUGIN-PROD-READINESS-001-PLAN.md` +
 `plans/DECISIONS.md` D-0060.
 
-### [0.23.1] — H-14: the review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05) (2026-07-06)
+## [0.23.1] — H-14: the review lens honors the author-self-claim strip MUST via a disregard instruction (GD-05) (2026-07-06)
 
 The plugin's agentic review lens `Read`s the artifact directly (a `Task` subagent
 handed the artifact path, or `single_pass` reading the artifact into its own context),
@@ -91,7 +113,7 @@ The lens MUST NOT read, cite, or weight `*_ready_score`/`*_score`/`readiness_sco
 `audit_score`/`gate_ready` when forming its `lens_score`. Plugin PATCH `0.23.0 →
 0.23.1`; framework `0.33.0` (GD-05). See D-0052.
 
-### [0.23.0] — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML scenario form (2026-06-28)
+## [0.23.0] — YAML-BDD-SCHEMA PR-5: `doc-bdd*` skills author the YAML scenario form (2026-06-28)
 
 The four BDD skills now author + validate the YAML-native scenario model
 (framework spec `0.29.0`; corpus migrated in PR-4), not Gherkin `@`-tags.

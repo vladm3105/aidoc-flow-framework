@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Claude Code plugin `0.23.4` — FRWK-REVIEW-002 PR-B plugin mechanics (2026-07-09)
+
+Plugin mechanics from the 2026-07-09 review (`plans/FRWK-REVIEW-002-PLAN.md`):
+removed the dead `--threshold` flag from `saga_driver.py` and all 8 autopilot
+command blocks (the effective gate is the `audit_threshold` knob), added `CHG`
+to the advisory-hook case-arm, wired `/aidoc-flow:save-plan` to the
+`work_plans_dir` config key with a legacy-CLAUDE.md fallback, promoted the
+released `0.23.x` plugin-changelog entries to `##` sections, added `spec`/`tdd`
+to `plugin.json` keywords, and documented the CHG model-precheck exclusion.
+Per-package detail in [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Fixed — Claude Code plugin `0.23.3` — FRWK-REVIEW-002 PR-A skill-content drift (2026-07-09)
 
 Plugin-side drift fixes from the 2026-07-09 plugin + core-docs review

@@ -3,7 +3,7 @@ title: "Save Plan Command"
 description: Save current plan and tasks to implementation file
 tags:
   - utility
-  - automation-skill
+  - workflow
   - active
 custom_fields:
   document_type: command
@@ -23,11 +23,15 @@ Extract the current conversation plan and task list, save to a timestamped imple
    - Capture any important decisions or constraints discussed
    - Note current progress state (what's completed, what's pending)
 
-2. **Determine Work Plans Directory**:
-   - Check `.claude/CLAUDE.md` for `Work Plans Directory` configuration
-   - If not found: Use AskUserQuestion to prompt user for directory path
-   - Store path in `.claude/CLAUDE.md` under `### Project Configuration` section
-   - Create directory structure if it doesn't exist
+2. **Determine Work Plans Directory** (resolution order per `docs/CONFIG.md`):
+   - **First**, read `work_plans_dir` from `.claude/aidoc-flow.config.yaml`
+     (the current home for this setting — see `docs/CONFIG.md`).
+   - **Else**, fall back to the legacy `Work Plans Directory` line in
+     `.claude/CLAUDE.md`.
+   - If neither is set: Use AskUserQuestion to prompt for the directory, then
+     store it as `work_plans_dir:` in `.claude/aidoc-flow.config.yaml` (new
+     projects prefer the config file; the legacy CLAUDE.md line still works).
+   - Create the directory structure if it doesn't exist.
 
 3. **Prompt for Plan Name**:
    - Use AskUserQuestion to ask user for meaningful plan name
@@ -37,8 +41,8 @@ Extract the current conversation plan and task list, save to a timestamped imple
 
 4. **Create Implementation File**:
    - Generate filename format: `{sanitized-plan-name}_YYYYMMDD_HHMMSS.md`
-   - Example: `implement-oauth_20250108_143022.md`
-   - Save to: [configured work plans directory from CLAUDE.md]
+   - Example: `implement-oauth_20260709_143022.md`
+   - Save to the work-plans directory resolved in step 2
    - Ensure directory exists before writing
 
 5. **File Structure**:
@@ -46,7 +50,7 @@ Extract the current conversation plan and task list, save to a timestamped imple
 ```markdown
 # Implementation Plan - [Brief Title]
 
-**Created**: YYYY-MM-DD HH:MM:SS EST
+**Created**: YYYY-MM-DDTHH:MM:SSZ
 **Status**: Ready for Implementation
 
 ## Objective
@@ -109,9 +113,14 @@ Extract the current conversation plan and task list, save to a timestamped imple
    - If directory doesn't exist: Create it with proper permissions
    - If no clear objective: Ask user to clarify before saving
 
-8. **CLAUDE.md Configuration Format**:
-   - Create `.claude/CLAUDE.md` if it doesn't exist
-   - Add or update section:
+8. **Configuration Format**:
+   - **Preferred** — `.claude/aidoc-flow.config.yaml` (see `docs/CONFIG.md`):
+
+   ```yaml
+   work_plans_dir: work_plans/
+   ```
+
+   - **Legacy** (still honored) — a line in `.claude/CLAUDE.md`:
 
    ```markdown
    ### Project Configuration
