@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Claude Code plugin `0.23.3` — FRWK-REVIEW-002 PR-A skill-content drift (2026-07-09)
+
+Plugin-side drift fixes from the 2026-07-09 plugin + core-docs review
+(`plans/FRWK-REVIEW-002-PLAN.md`): unified the audit-report path across all 18
+audit/fixer skills (68 sites; legacy versioned name → relocated
+`.aidoc/audit/<NN>_<LAYER>-audit.md`), corrected the iteration-cap governance
+citation and backported it, made `review_mode` adaptation consistent, removed
+the phantom `bdd_to_gherkin.py` reference, propagated the verdict-outcome
+clarifier, and disambiguated the 9 creator-vs-autopilot descriptions. Per-package
+detail in [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+
 ### Added — auto-merge-ai-prs.yml caller (server-side auto-merge for AI-opened PRs) (2026-07-08)
 
 Adopts the canonical `auto-merge-ai-prs.yml` caller from

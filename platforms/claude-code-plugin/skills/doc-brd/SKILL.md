@@ -1,6 +1,6 @@
 ---
 name: doc-brd
-description: Create a Business Requirements Document (BRD) - Layer 1 of the SDD flow, defining business needs, objectives, and success criteria. Use when starting a new project or feature.
+description: Create a Business Requirements Document (BRD) - Layer 1 of the SDD flow, defining business needs, objectives, and success criteria. Use when starting a new project or feature. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-brd-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]

@@ -1,6 +1,6 @@
 ---
 name: doc-ears
-description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 of the SDD flow, translating PRD features into atomic, testable WHEN-THE-SHALL-WITHIN statements. Use after BRD and PRD exist.
+description: Create EARS (Easy Approach to Requirements Syntax) formal requirements - Layer 3 of the SDD flow, translating PRD features into atomic, testable WHEN-THE-SHALL-WITHIN statements. Use after BRD and PRD exist. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-ears-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

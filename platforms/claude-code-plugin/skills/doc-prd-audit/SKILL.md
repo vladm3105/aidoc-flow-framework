@@ -12,10 +12,10 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
-    adapts: [section_toggles, active_layers, audit_threshold]
+    adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
 
 # doc-prd-audit
@@ -29,7 +29,7 @@ review — in one pass, producing a single combined report that
 PRD using the spec as the contract.
 
 **Layer**: 2 (PRD quality gate). **Upstream**: a PRD file. **Downstream**:
-`PRD-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
+`.aidoc/audit/02_PRD-audit.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
@@ -40,9 +40,9 @@ audit↔fix cycle. Do **not** use to create a PRD (use `../doc-prd/SKILL.md` or
 **Fresh-audit policy:** always audit from scratch — never reuse prior scores or
 cached results; compute the EARS-Ready score independently each run.
 
-**Report cleanup:** after writing the new report, delete superseded
-`PRD-NN.A_audit_report_v*.md`; keep `PRD-NN.F_fix_report_v*.md` and
-`.drift_cache.json`. Record a cleanup summary in the report.
+**Report cleanup:** the audit report is a single file
+(`.aidoc/audit/02_PRD-audit.md`) overwritten in place each run — no version cleanup
+needed. Keep `PRD-NN.F_fix_report_v*.md` and `.drift_cache.json`.
 
 ## Execution Contract
 
@@ -50,7 +50,7 @@ cached results; compute the EARS-Ready score independently each run.
 (default 90).
 
 **Sequence:** 1) run structural checks → 2) record findings → 3) run content
-review → 4) merge/normalize findings → 5) write `PRD-NN.A_audit_report_vNNN.md`
+review → 4) merge/normalize findings → 5) write `.aidoc/audit/02_PRD-audit.md`
 → 6) if auto-fixable findings exist, hand off to `doc-prd-fixer`.
 
 ## Review Mode
@@ -278,7 +278,8 @@ OS-level timeout):
 - Synthesizer also writes `verdict.json` (per BRD-RT-002,
   unchanged).
 - Exit returns control to the caller; the caller decides next phase
-  based on the verdict.
+  based on the verdict (`combined_status: PASS` ⇒ the layer gate is met and
+  the caller advances; otherwise ⇒ dispatch the fixer).
 
 ### When invoked standalone (no saga.json on entry)
 
@@ -318,6 +319,17 @@ If the soft deadline has been crossed, exit cleanly with saga
 check and the OS sends SIGTERM, saga.json reflects the last
 successful checkpoint state (NOT `PARTIAL_TIMEOUT`). Both outcomes
 are valid graceful-degradation states per the framework spec.
+
+Additionally, per
+`${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_REMEDIATION_FLOW.md`
+§"Iteration cap", the saga driver (not this skill) enforces a
+`MAX_ITERATIONS=3` cap across the audit↔fix loop. When the saga reaches
+`MAX_ITERATIONS` without converging to a PASS verdict, the saga driver
+writes `status: "PARTIAL_TIMEOUT"` (or `"ESCALATED"` if a P0 finding
+remains unresolved) and emits the artifact with the latest verdict.
+**This audit treats `PARTIAL_TIMEOUT` as a FAIL but does NOT retry** —
+the driver is the only component that re-invokes; retrying from within the
+audit would multiply the iteration count.
 
 ## Structural Checklist
 
@@ -516,7 +528,7 @@ Apply to every report row that emits a shell-pipe code span inside a
 table cell. Cascade-output that trips MD056 is a SKILL bug, not a
 markdownlint over-strictness — fix here, not by lint-ignoring.
 
-Output: `PRD-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+Output: `.aidoc/audit/02_PRD-audit.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** · **Diagram Contract Findings** ·
@@ -554,7 +566,7 @@ iter-(N-1) Fixes Applied entries (see `agents/synthesizer.md`).
 Normalize every finding to: `source` (`structural`|`content`), `code`,
 `severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-prd-fixer`
-consumes the latest `PRD-NN.A_audit_report_vNNN.md`.
+consumes the `.aidoc/audit/02_PRD-audit.md` report.
 
 ## Adaptation
 
@@ -564,7 +576,7 @@ Before applying defaults, read the project adaptation profile
 missing **required** section still is), `active_layers` (never flag the
 absence of — or a missing reference to — a layer the project disabled, per the
 cascade rule), and `audit_threshold` (use the project's quality-gate score
-only when it is **>=** the framework default; ignore any lower value). Ignore
+only when it is **>=** the framework default; ignore any lower value), and `review_mode` (select `team` or `single_pass` per §Review Mode above; if `review_mode` is unset, fall through to the framework default `team` at gates / `single_pass` at write-time). Ignore
 unknown keys.
 Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPTATION.md`.
 

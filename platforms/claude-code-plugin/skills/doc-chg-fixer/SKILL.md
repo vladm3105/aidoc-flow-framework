@@ -9,7 +9,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: quality-assurance
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-06-12"
     adapts: [section_toggles, review_mode]
@@ -31,7 +31,7 @@ here. For team-mode dispatch purposes the CHG layer is addressed as
 
 **Scope**: a CHG can touch any artifact along
 `BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code`.
-**Upstream**: the CHG record + `CHG-NN.A_audit_report_vNNN.md`.
+**Upstream**: the CHG record + `.aidoc/audit/09_CHG-audit.md`.
 **Downstream**: the fixed CHG + `CHG-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -43,7 +43,7 @@ gate approval (that is a human decision via `../gate-check/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `CHG-NN.A_audit_report_vNNN.md`. Back up the CHG before
+Consume the `.aidoc/audit/09_CHG-audit.md` report. Back up the CHG before
 editing (`tmp/backup/CHG-NN_<ts>/`); on error, restore. Schema and routing rules
 come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/CHG-TEMPLATE.yaml` and
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/chg/README.md`; gate definitions from
@@ -58,7 +58,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `CHG-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/09_CHG-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/09_CHG/<CHG-id>/` (where `<CHG-id>` is the short
    artifact ID, e.g. `CHG-01` or `CHG-EMG-20260612-1430`).

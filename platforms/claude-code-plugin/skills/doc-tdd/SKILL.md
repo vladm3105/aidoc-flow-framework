@@ -1,6 +1,6 @@
 ---
 name: doc-tdd
-description: Create a Test-Driven Development guide (TDD) - Layer 7 of the SDD flow, defining test cases, BDD-to-test mapping, and quality thresholds from SPEC component contracts. Use after SPEC, before IPLAN.
+description: Create a Test-Driven Development guide (TDD) - Layer 7 of the SDD flow, defining test cases, BDD-to-test mapping, and quality thresholds from SPEC component contracts. Use after SPEC, before IPLAN. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-tdd-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

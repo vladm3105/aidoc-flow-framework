@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to an EARS document, bridging
 converge.
 
 **Layer**: 3 (EARS quality improvement).
-**Upstream**: the EARS document + `EARS-NN.A_audit_report_vNNN.md`.
+**Upstream**: the EARS document + `.aidoc/audit/03_EARS-audit.md`.
 **Downstream**: the fixed EARS + `EARS-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ EARS (use `../doc-ears/SKILL.md` / `../doc-ears-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `EARS-NN.A_audit_report_vNNN.md`. Back up the EARS before
+Consume the `.aidoc/audit/03_EARS-audit.md` report. Back up the EARS before
 editing (`tmp/backup/EARS-NN_<ts>/`); on error, restore. Element-ID standards
 come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure and syntax
 rules from `${CLAUDE_PLUGIN_ROOT}/framework/layers/03_EARS/EARS-TEMPLATE.yaml` and `README.md`.
@@ -52,7 +52,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `EARS-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/03_EARS-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/03_EARS/<EARS-id>/` (where `<EARS-id>` is the short
    artifact ID, e.g. `EARS-01`).

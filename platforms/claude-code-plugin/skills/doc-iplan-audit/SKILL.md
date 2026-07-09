@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
@@ -29,7 +29,7 @@ content-quality review — in one pass, producing a single combined report that
 IPLAN using the spec as the contract.
 
 **Layer**: 8 (IPLAN quality gate). **Upstream**: an IPLAN file. **Downstream**:
-`IPLAN-NN.A_audit_report_vNNN.md` and an optional fix-cycle trigger.
+`.aidoc/audit/08_IPLAN-audit.md` and an optional fix-cycle trigger.
 
 ## When to Use
 
@@ -40,9 +40,9 @@ autopilot's audit↔fix cycle. Do **not** use to create an IPLAN (use
 **Fresh-audit policy:** always audit from scratch — never reuse prior scores or
 cached results; compute the CODE-Ready score independently each run.
 
-**Report cleanup:** after writing the new report, delete superseded
-`IPLAN-NN.A_audit_report_v*.md`; keep `IPLAN-NN.F_fix_report_v*.md` and
-`.drift_cache.json`. Record a cleanup summary in the report.
+**Report cleanup:** the audit report is a single file
+(`.aidoc/audit/08_IPLAN-audit.md`) overwritten in place each run — no version cleanup
+needed. Keep `IPLAN-NN.F_fix_report_v*.md` and `.drift_cache.json`.
 
 ## Execution Contract
 
@@ -56,7 +56,7 @@ own context) → 3a) load each lens's layer-and-lens playbook from
 `framework/playbooks/08_IPLAN/<lens>.md` and inline it under the lens's brief
 (team mode) or apply its checks sequentially (single_pass) → 4) merge/normalize
 findings, including a playbook-coverage line surfacing which lenses ran with
-their playbook attached → 5) write `IPLAN-NN.A_audit_report_vNNN.md` → 6) if
+their playbook attached → 5) write `.aidoc/audit/08_IPLAN-audit.md` → 6) if
 auto-fixable findings exist, hand off to `doc-iplan-fixer`.
 
 ## Review Mode
@@ -299,7 +299,8 @@ OS-level timeout):
 - Synthesizer also writes `verdict.json` (per BRD-RT-002,
   unchanged).
 - Exit returns control to the caller; the caller decides next phase
-  based on the verdict.
+  based on the verdict (`combined_status: PASS` ⇒ the layer gate is met and
+  the caller advances; otherwise ⇒ dispatch the fixer).
 
 ### When invoked standalone (no saga.json on entry)
 
@@ -340,7 +341,7 @@ check and the OS sends SIGTERM, saga.json reflects the last
 successful checkpoint state (NOT `PARTIAL_TIMEOUT`). Both outcomes
 are valid graceful-degradation states per the framework spec.
 
-Additionally, per `REVIEW_SAGA.md` §"Iteration cap", the saga driver
+Additionally, per `REVIEW_REMEDIATION_FLOW.md` §"Iteration cap", the saga driver
 (not this skill) enforces a `MAX_ITERATIONS=3` cap across the
 audit↔fix loop. When the saga reaches `MAX_ITERATIONS` without
 converging to a PASS verdict, the saga driver writes
@@ -569,7 +570,7 @@ Apply to every report row that emits a shell-pipe code span inside a
 table cell. Cascade-output that trips MD056 is a SKILL bug, not a
 markdownlint over-strictness — fix here, not by lint-ignoring.
 
-Output: `IPLAN-NN.A_audit_report_vNNN.md`, with sections — **Summary** (ID,
+Output: `.aidoc/audit/08_IPLAN-audit.md`, with sections — **Summary** (ID,
 timestamp, overall status, structural status, content score) · **Score
 Calculation** (`100 − deductions`, threshold compare) · **Metadata Findings** ·
 **Structural Findings** · **Content Findings** · **Manifest & Handoff Findings**
@@ -624,7 +625,7 @@ iter-(N-1) Fixes Applied entries (see `agents/synthesizer.md`).
 Normalize every finding to: `source` (`structural`|`content`), `code`,
 `severity` (`error`|`warning`|`info`), `file`, `section`, `action_hint`,
 `confidence` (`auto-safe`|`auto-assisted`|`manual-required`). `doc-iplan-fixer`
-consumes the latest `IPLAN-NN.A_audit_report_vNNN.md`.
+consumes the `.aidoc/audit/08_IPLAN-audit.md` report.
 
 ## Adaptation
 

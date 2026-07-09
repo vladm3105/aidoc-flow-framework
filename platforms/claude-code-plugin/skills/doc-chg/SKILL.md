@@ -1,6 +1,6 @@
 ---
 name: doc-chg
-description: Author a Change Management (CHG) record - classify the change level, route by source to the entry gate, assess cross-layer cascade impact, and register the change. Use when modifying an existing SDD artifact across any of the 8 layers.
+description: Author a Change Management (CHG) record - classify the change level, route by source to the entry gate, assess cross-layer cascade impact, and register the change. Use when modifying an existing SDD artifact across any of the 8 layers. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-chg-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -8,7 +8,7 @@ metadata:
   custom_fields:
     artifact_type: CHG
     skill_category: core-workflow
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
 ---

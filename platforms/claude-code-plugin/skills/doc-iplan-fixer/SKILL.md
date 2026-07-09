@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to an IPLAN, bridging
 converge.
 
 **Layer**: 8 (IPLAN quality improvement).
-**Upstream**: the IPLAN document + `IPLAN-NN.A_audit_report_vNNN.md`.
+**Upstream**: the IPLAN document + `.aidoc/audit/08_IPLAN-audit.md`.
 **Downstream**: the fixed IPLAN + `IPLAN-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ IPLAN (use `../doc-iplan/SKILL.md` / `../doc-iplan-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `IPLAN-NN.A_audit_report_vNNN.md`. Back up the IPLAN before
+Consume the `.aidoc/audit/08_IPLAN-audit.md` report. Back up the IPLAN before
 editing (`tmp/backup/IPLAN-NN_<ts>/`); on error, restore. ID standards come from
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` and `README.md`.
@@ -52,7 +52,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `IPLAN-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/08_IPLAN-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/08_IPLAN/<IPLAN-id>/` (where `<IPLAN-id>` is the
    short artifact ID, e.g. `IPLAN-01`).

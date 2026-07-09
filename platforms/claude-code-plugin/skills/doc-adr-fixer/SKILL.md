@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to an ADR, bridging
 converge.
 
 **Layer**: 5 (ADR quality improvement).
-**Upstream**: the ADR document + `ADR-NN.A_audit_report_vNNN.md`.
+**Upstream**: the ADR document + `.aidoc/audit/05_ADR-audit.md`.
 **Downstream**: the fixed ADR + `ADR-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ ADR (use `../doc-adr/SKILL.md` / `../doc-adr-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `ADR-NN.A_audit_report_vNNN.md`. Back up the ADR before
+Consume the `.aidoc/audit/05_ADR-audit.md` report. Back up the ADR before
 editing (`tmp/backup/ADR-NN_<ts>/`); on error, restore. Element-ID standards
 come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-TEMPLATE.yaml` and `README.md`.
@@ -52,7 +52,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `ADR-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/05_ADR-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/05_ADR/<ADR-id>/` (where `<ADR-id>` is the short
    artifact ID, e.g. `ADR-01`).

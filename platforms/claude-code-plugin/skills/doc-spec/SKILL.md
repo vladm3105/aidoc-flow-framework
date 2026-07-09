@@ -1,6 +1,6 @@
 ---
 name: doc-spec
-description: Create a Technical Specification (SPEC) - Layer 6 of the SDD flow, defining component interfaces, data models, and behavior contracts. Use when ADR decisions are settled and you need an implementation-ready spec before TDD.
+description: Create a Technical Specification (SPEC) - Layer 6 of the SDD flow, defining component interfaces, data models, and behavior contracts. Use when ADR decisions are settled and you need an implementation-ready spec before TDD. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-spec-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

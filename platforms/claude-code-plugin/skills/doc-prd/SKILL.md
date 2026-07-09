@@ -1,6 +1,6 @@
 ---
 name: doc-prd
-description: Create a Product Requirements Document (PRD) - Layer 2 of the SDD flow, defining product features, personas, success metrics, and acceptance criteria from an upstream BRD. Use after a BRD exists and before EARS.
+description: Create a Product Requirements Document (PRD) - Layer 2 of the SDD flow, defining product features, personas, success metrics, and acceptance criteria from an upstream BRD. Use after a BRD exists and before EARS. Single-document authoring primitive; for end-to-end or batch generation the autopilot (`doc-prd-autopilot`) drives this skill.
 metadata:
   tags:
     - sdd-workflow
@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]

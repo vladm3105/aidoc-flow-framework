@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR]
     downstream_artifacts: [TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to a SPEC, bridging
 converge.
 
 **Layer**: 6 (SPEC quality improvement).
-**Upstream**: the SPEC document + `SPEC-NN.A_audit_report_vNNN.md`.
+**Upstream**: the SPEC document + `.aidoc/audit/06_SPEC-audit.md`.
 **Downstream**: the fixed SPEC + `SPEC-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ SPEC (use `../doc-spec/SKILL.md` / `../doc-spec-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `SPEC-NN.A_audit_report_vNNN.md`. Back up the SPEC before
+Consume the `.aidoc/audit/06_SPEC-audit.md` report. Back up the SPEC before
 editing (`tmp/backup/SPEC-NN_<ts>/`); on error, restore. ID standards come from
 `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure rules from
 `${CLAUDE_PLUGIN_ROOT}/framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` and `README.md`.
@@ -52,7 +52,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `SPEC-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/06_SPEC-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/06_SPEC/<SPEC-id>/` (where `<SPEC-id>` is the short
    artifact ID, e.g. `SPEC-01`).

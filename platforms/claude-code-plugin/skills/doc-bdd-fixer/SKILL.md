@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to a BDD suite, bridging
 converge.
 
 **Layer**: 4 (BDD quality improvement).
-**Upstream**: the BDD document + `BDD-NN.A_audit_report_vNNN.md`.
+**Upstream**: the BDD document + `.aidoc/audit/04_BDD-audit.md`.
 **Downstream**: the fixed BDD + `BDD-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
@@ -38,7 +38,7 @@ BDD (use `../doc-bdd/SKILL.md` / `../doc-bdd-autopilot/SKILL.md`).
 
 ## Input Contract
 
-Consume the latest `BDD-NN.A_audit_report_vNNN.md`. Back up the BDD before
+Consume the `.aidoc/audit/04_BDD-audit.md` report. Back up the BDD before
 editing (`tmp/backup/BDD-NN_<ts>/`); on error, restore. Element-ID standards
 come from `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`; structure and the YAML
 scenario schema from `${CLAUDE_PLUGIN_ROOT}/framework/layers/04_BDD/BDD-TEMPLATE.yaml` and `README.md`.
@@ -52,7 +52,7 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
 ### team mode (per REVIEW_TEAM.md §Operations §Remediate)
 
-1. **Read the audit report** at `BDD-NN.A_audit_report_vNNN.md` AND,
+1. **Read the audit report** at `.aidoc/audit/04_BDD-audit.md` AND,
    when present, the per-persona slots under
    `.aidoc/review/04_BDD/<BDD-id>/` (where `<BDD-id>` is the short
    artifact ID, e.g. `BDD-01`).

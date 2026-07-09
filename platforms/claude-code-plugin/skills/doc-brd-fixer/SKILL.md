@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.2"
+    version: "0.23.3"
     framework_spec_version: "0.35.1"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -27,7 +27,7 @@ Read the latest audit report and apply fixes to a BRD, bridging
 converge.
 
 **Layer**: 1 (BRD quality improvement).
-**Upstream**: the BRD document + `BRD-NN.A_audit_report_vNNN.md`.
+**Upstream**: the BRD document + `.aidoc/audit/01_BRD-audit.md`.
 **Downstream**: the fixed BRD + `BRD-NN.F_fix_report_vNNN.md`.
 
 ## When to Use
