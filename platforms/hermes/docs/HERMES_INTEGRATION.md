@@ -2,7 +2,7 @@
 
 ## What Changed
 
-The UCX MCP server (`ucx_hermes`) now enforces an API-only executor model
+The Hermes MCP server (`mcp_server`, distributed as `hermes-server`) enforces an API-only executor model
 for LLM-enabled stages through LiteLLM. Deterministic stages do not invoke
 executors. Legacy CLI executor paths are unsupported.
 
@@ -84,13 +84,13 @@ In `~/.hermes/config.yaml`, the MCP server entry should include:
 ```yaml
 mcp_servers:
   sdd-lifecycle:
-    command: /opt/data/ucx_framework/.venv/bin/python
+    command: python            # or the installed `hermes-mcp` console script
     args:
       - -m
       - mcp_server.server
-    cwd: /opt/data/ucx_framework/ucx_hermes/src
+    cwd: /path/to/aidoc-flow-framework/platforms/hermes
     env:
-      PYTHONPATH: /opt/data/ucx_framework/ucx_hermes/src
+      PYTHONPATH: /path/to/aidoc-flow-framework/platforms/hermes/src
 ```
 
 ### 2. Hermes Skills
@@ -98,7 +98,7 @@ mcp_servers:
 Install the bridge skill into Hermes:
 
 ```bash
-cp -r /opt/data/ucx_framework/ucx_hermes/skills/hermes/ucx-sdd-bridge \
+cp -r /path/to/aidoc-flow-framework/platforms/hermes/skills/hermes/ucx-sdd-bridge \
   ~/.hermes/skills/
 ```
 
@@ -116,46 +116,36 @@ Skill version note:
 
 - Use `ucx-sdd-bridge` `v1.1.1+` for API-only executor guidance,
   fan-out/fan-in (`saga_parallel`) review controls, and executor troubleshooting.
-- Optional KB skills:
-  - `ucx-kb-context` for retrieval enrichment during UCX V3 lifecycle stages
-  - `ucx-kb-maintenance` for post-IPLAN knowledge updates with governance controls
-  - `ucx-kb-maintenance/KB_GENERAL_RULES.md` for mandatory coverage and ingestion policy across all document artifacts
-  - `ucx-kb-maintenance/KB_ENTRY_TEMPLATE.md` for KB admission checklist and canonical entry structure
 - Governance skills:
   - `ucx-github-governance` for issue/PR label flow and round-based merge governance
   - `ucx-github-deploy-governance` for CI/CD, QA, staging/prod readiness, and post-deploy issue loops
+- The `ucx-kb-context` / `ucx-kb-maintenance` bridge skills ship in
+  `skills/hermes/` but depend on a knowledge-base runtime (`ucx_kb`) that is
+  **not part of this platform** — KB/retrieval enrichment is superseded by
+  engramory (see §4). Treat them as inactive prompt guidance for now.
 
 Skill activation matrix:
 
 | Scenario | Primary Skill | Optional Companion | Notes |
 |----------|---------------|--------------------|-------|
-| BRD->IPLAN lifecycle orchestration in `framework` | `ucx-sdd-bridge` | `ucx-kb-context` | Keep document-layer flow MCP-only; do not use CLI lifecycle commands. |
-| Multi-persona review with fan-out/fan-in (`review_mode=saga_parallel`) | `ucx-sdd-bridge` | `ucx-kb-context` | Use KB retrieval before review for prior findings/constraints. |
-| Remediation planning and policy-gated apply | `ucx-sdd-bridge` | `ucx-kb-context` | Use API executor for `sdd_remediate`; use KB for accepted remediation patterns. |
-| Post-IPLAN implementation knowledge capture | `ucx-kb-maintenance` | `ucx-sdd-bridge` | Run after approved implementation evidence; KB updates do not advance lifecycle stages. |
-| KB unavailable or stale | `ucx-sdd-bridge` | none | Continue lifecycle gates; log reduced-confidence context and escalate high-impact assumptions. |
+| BRD->IPLAN lifecycle orchestration in `framework` | `ucx-sdd-bridge` | none | Keep document-layer flow MCP-only; do not use CLI lifecycle commands. |
+| Multi-persona review with fan-out/fan-in (`review_mode=saga_parallel`) | `ucx-sdd-bridge` | none | API-only executor routing; no KB runtime in this platform. |
+| Remediation planning and policy-gated apply | `ucx-sdd-bridge` | none | Use API executor for `sdd_remediate`. |
 
 ### 3. Project Setup
 
 For each project using UCX:
 
 ```bash
-# 1) Create shared framework virtual environment (required once per machine)
-cd /opt/data/ucx_framework
-scripts/bootstrap_ucx_venv.sh
+# 1) Create the platform virtual environment (required once per machine)
+cd /path/to/aidoc-flow-framework/platforms/hermes
+python -m venv .venv && .venv/bin/pip install -e .
 
-# Optional when project-knowledge MCP is enabled:
-scripts/bootstrap_ucx_venv.sh --with-kb
+# 2) Validate the runtime import
+PYTHONPATH=src .venv/bin/python -c "import mcp_server; print('hermes-server ok')"
 
-# 2) Validate runtime imports
-/opt/data/ucx_framework/.venv/bin/python -c "import mcp_server; print('ucx_hermes ok')"
-PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -c "import ucx_kb; print('ucx_kb ok')"
-
-# 3) Start MCP runtimes before BRD lifecycle work
-/opt/data/ucx_framework/.venv/bin/python -m mcp_server.server
-
-# Required when KB mode is enabled:
-PYTHONPATH=/opt/data/ucx_framework /opt/data/ucx_framework/.venv/bin/python -m ucx_kb.mcp.server
+# 3) Start the MCP runtime before BRD lifecycle work
+PYTHONPATH=src .venv/bin/python -m mcp_server.server
 
 # 4) Start Hermes session
 hermes chat
@@ -190,70 +180,32 @@ Preflight pass criteria (`sdd_preflight context=any`):
 
 Minimum checks before first lifecycle run:
 
-- `/opt/data/ucx_framework/.venv/bin/python` exists and reports Python `>=3.12`.
-- `mcp_server` import check passes in the shared virtual environment.
+- The platform `.venv` python exists and reports Python `>=3.12`.
+- `mcp_server` import check passes in the platform virtual environment.
 - `sdd-lifecycle` runtime is started before BRD prompt build.
-- KB-enabled projects: `project-knowledge` runtime is started before BRD prompt build.
 - `UCX/` scaffold exists for the target project.
 - `persona_mappings.yaml` exists and persona mapping health check does not report missing persona files.
 - Required executor environment keys are present for the configured provider path.
 
 BRD start gate:
 
-- Do not run BRD `sdd_create_build` until `sdd-lifecycle` startup is confirmed, and in KB mode `kb_status` plus `kb_graph_status` return successfully.
+- Do not run BRD `sdd_create_build` until `sdd-lifecycle` startup is confirmed.
 - Environment bootstrap and required framework tool availability are mandatory before any document creation stage starts.
 
-### 4. KB Preflight and Degraded Mode
+### 4. Knowledge-base retrieval (out of scope for this runtime)
 
-Framework baseline:
+Earlier revisions of this guide described a `project-knowledge` MCP server
+(`ucx_kb` package) with `kb_status` / `kb_graph_status` / `kb_search` preflight
+and a KB smoke-test runbook. That `ucx_kb` runtime is **not part of the current
+Hermes platform** — knowledge-base / retrieval enrichment is superseded by
+**engramory** (a separate repository, currently paused). The `ucx-kb-context` /
+`ucx-kb-maintenance` bridge skills remain in `skills/hermes/` as prompt guidance,
+but there is no `ucx_kb` MCP runtime to register against in this platform.
 
-- Keep framework MCP config minimal (`sdd-lifecycle` only).
-- Register `project-knowledge` only in a real project runtime where `ucx_kb` is initialized.
-
-Project-level MCP registration snippet (add in project runtime config):
-
-```json
-{
-  "mcpServers": {
-    "project-knowledge": {
-      "command": "/opt/data/ucx_framework/.venv/bin/python",
-      "args": ["-m", "ucx_kb.mcp.server"],
-      "cwd": "/opt/data/ucx_framework"
-    }
-  }
-}
-```
-
-Before lifecycle calls that depend on KB context:
-
-1. Call `kb_status`.
-2. Call `kb_graph_status`.
-3. Determine KB mode:
-   - `ready`: both calls succeed.
-   - `degraded`: one call fails.
-   - `unavailable`: both calls fail.
-
-If mode is `degraded` or `unavailable`, continue UCX lifecycle gates and record reduced-confidence reasoning notes. Do not block stage progression due to KB availability.
-
-### 5. KB Smoke Test (Operator Runbook)
-
-Run from `/opt/data/ucx_framework` after DB services are up and `.env` is configured for `ucx_kb`:
-
-```bash
-python -m ucx_kb.mcp.server
-```
-
-In Hermes session, verify these calls succeed:
-
-- `kb_status` (RAG status payload)
-- `kb_graph_status` (graph status payload)
-- `kb_search` with a small query (result or empty result without error)
-
-Pass criteria:
-
-- No MCP server startup exception
-- No tool contract error for the three calls above
-- Hermes can continue `sdd_*` lifecycle calls regardless of KB result cardinality
+Operate the SDD lifecycle with `sdd-lifecycle` only; do not register a
+`project-knowledge` server or gate lifecycle stages on KB availability. When
+engramory retrieval is reintroduced, its integration will be documented in the
+engramory repository.
 
 ## Standard Workflow
 
@@ -526,10 +478,10 @@ If you are migrating from a pre-UCX V3 runtime:
 
 | Component | Required Version |
 |-----------|-----------------|
-| UCX MCP Server | ucx_hermes v2.0.0+ |
+| Hermes MCP Server (`hermes-server`) | `hermes/v0.7.3`+ (spec `0.36.2`) |
 | Hermes Agent | Any with MCP support |
 | ucx-sdd-bridge skill | v1.1.1+ |
-| Python | 3.11+ |
+| Python | `>=3.12` |
 
 ## Files Modified
 

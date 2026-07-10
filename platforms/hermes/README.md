@@ -10,10 +10,10 @@ No native Claude Code integration; clients talk MCP.
 
 | Component | Count | Path |
 |-----------|------:|------|
-| Source modules | 18 | `src/mcp_server/` — `cleanup`, `cli`, `consistency`, `core`, `creation`, `executor`, `link_validation`, `models`, `preflight`, `prescreening`, `prompts`, `remediation`, `reporting`, `review`, `scan`, `scoring`, `skills`, `utils`, `validation` |
+| Source modules | 20 | `src/mcp_server/` — `cleanup`, `cli`, `consistency`, `core`, `creation`, `executor`, `link_validation`, `models`, `preflight`, `prescreening`, `prompts`, `remediation`, `reporting`, `review`, `scan`, `scoring`, `skills`, `team_emulator`, `utils`, `validation` |
 | Tests (pytest) | 447 | `tests/` — unit, integration, contract |
 | MCP prompts | 46 | `prompts/` + `prompts/templates/` |
-| Personas | 15 | `skills/personas/` |
+| Personas | 16 | `skills/personas/` |
 | Platform-specific skills | 5 | `skills/hermes/` — `ucx-github-deploy-governance`, `ucx-github-governance`, `ucx-kb-context`, `ucx-kb-maintenance`, `ucx-sdd-bridge` |
 | Agent-skills package | 181 | `agent-skills/spec-driven-development/` — `sdd-orchestrator` + `sdd-review-personas` |
 | Docs | 80 | `docs/` — `CHANGELOG/`, `architecture/`, `plans/`, `policies/`, `specs/` |
@@ -44,21 +44,31 @@ a reference):
 
 ## Use
 
-Hermes exposes **platform-wide MCP tools** for the SDD workflow:
+Hermes exposes **platform-wide MCP tools** for the SDD workflow (27
+registered tools, `TOOLS` in `src/mcp_server/tool_registry.py`):
 
 | Tool | Purpose |
 |------|---------|
-| `sdd_init` | Scaffold `<project>/UCX/` from `framework/layers/` |
-| `sdd_validate` | Structural validation of an artifact against its layer template |
-| `sdd_validate_chg` | CHG (Change Management) artifact validation |
-| `sdd_validate_links` | Cross-document link validation |
-| `sdd_score_validate` | Readiness scoring (quality gate) |
-| `sdd_score_show` / `sdd_score_compare` | Score inspection / diff |
-| `sdd_preflight` | Environment / input readiness check |
-| `sdd_consistency` | Cross-document traceability check |
-| `sdd_create` / `sdd_create_build` | Artifact authoring + template build |
-| `sdd_review` | Review workflow |
-| `sdd_scan` | Project scan |
+| `sdd_init` | Scaffold `<project>/UCX/` assets (personas, templates, schemas, prompts) |
+| `sdd_set_project` / `sdd_get_project` | Set / show the session default project |
+| `sdd_env_show` | Show project `.env` keys without exposing values |
+| `sdd_preflight` | Runtime / environment readiness check before create/review/remediate |
+| `sdd_create_build` / `sdd_create` | Assemble creation prompt / write the final artifact |
+| `sdd_validate` | Structural validation against the layer schema/template |
+| `sdd_validate_chg` | CHG (Change Management) governance validation |
+| `sdd_validate_links` | Markdown cross-document link validation |
+| `sdd_consistency` | Artifact lineage / stage-consistency check |
+| `sdd_score_show` / `sdd_score_validate` / `sdd_score_compare` | Compute / gate / diff quality score |
+| `sdd_review` | Assemble the multi-persona review prompt |
+| `sdd_remediate` | Run remediation from review findings (source-protected derived copies) |
+| `sdd_run_lifecycle` | Run multiple lifecycle stages in sequence |
+| `sdd_next_action` | Recommend the next lifecycle stage for a document folder |
+| `sdd_prescreen` | Identify high-priority remediation candidates |
+| `sdd_scan` | Extract finding-category counts from a report |
+| `sdd_clean` | Remove obsolete stage artifacts (keep latest per stage) |
+| `sdd_personas_show` / `sdd_personas_set` / `sdd_personas_diff` | Show / update / diff persona assignments |
+| `sdd_list_executors` / `sdd_register_executor` | List / register API executors |
+| `sdd_team_plan` | Run the AI-employee planning council (supervisor-approved artifacts) |
 
 The MCP client picks the tool; Hermes operates on any of the 8 SDD
 layers (BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN) generically.
@@ -71,13 +81,13 @@ version declarations:
 
 ```sh
 $ cat VERSION
-0.1.0
+0.7.3
 
 $ cat FRAMEWORK_SPEC_VERSION
-0.1.0
+0.36.2
 ```
 
-Hermes declares conformance to framework spec `0.1.0`; the
+Hermes declares conformance to framework spec `0.36.2`; the
 framework's own version is at `../../framework/VERSION`. The Phase 4
 conformance suite enforces this declaration matches.
 
@@ -104,8 +114,8 @@ conformance guard); run it from the platform root with
 | Distribution | `hermes-server` (PyPI when published) |
 | Script entry | `hermes-mcp` → `mcp_server.server:main_sync` |
 | Python | `>=3.12` |
-| Version | `0.1.0` (independent SemVer; tag namespace `hermes/v*`) |
-| Conforms to | framework spec `0.1.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
+| Version | `hermes/v0.7.3` (independent SemVer; tag namespace `hermes/v*`) |
+| Conforms to | framework spec `0.36.2` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Platform changelog | [`CHANGELOG.md`](CHANGELOG.md) |
