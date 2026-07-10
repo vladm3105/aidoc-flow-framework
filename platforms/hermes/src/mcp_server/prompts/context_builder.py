@@ -15,6 +15,7 @@ from mcp_server.models.context_engineering_contracts import (
     validate_context_contract,
     validate_prompt_metadata_sidecar,
 )
+from mcp_server.profile import ProjectProfile
 from mcp_server.skills.project_ucx_loader import (
     PersonaMappingError,
     load_multi_persona_files,
@@ -489,6 +490,50 @@ def assemble_project_review_prompt(
     )
 
 
+def _normalize_layer_key(layer: str) -> str:
+    """`04_BDD` / `bdd` / `BDD` → `BDD` (the ADAPTATION_SURFACE layer vocabulary)."""
+    return layer.rsplit("_", 1)[-1].upper() if layer else layer
+
+
+def _format_adaptation_profile_block(profile: ProjectProfile | None, layer: str) -> str:
+    """Render the prompt-injectable adaptation knobs (glossary / section_toggles /
+    active_layers) as a creation-prompt block (HERMES-REVIEW-001 A1). Returns "" when
+    the profile carries nothing authoring-relevant, so unprofiled projects are
+    byte-identical to before."""
+    if profile is None:
+        return ""
+    lines: list[str] = []
+
+    if profile.glossary:
+        lines.append("### Glossary — use these terms consistently in generated prose")
+        for term, definition in sorted(profile.glossary.items()):
+            lines.append(f"- **{term}**: {definition}")
+
+    layer_key = _normalize_layer_key(layer)
+    toggles_by_norm = {
+        _normalize_layer_key(str(k)): v
+        for k, v in profile.section_toggles.items()
+        if isinstance(v, dict)
+    }
+    layer_toggles = toggles_by_norm.get(layer_key, {})
+    disabled = sorted(k for k, v in layer_toggles.items() if v is False)
+    enabled = sorted(k for k, v in layer_toggles.items() if v is True)
+    if disabled:
+        lines.append(
+            "### Optional sections DISABLED for this artifact (do not author): "
+            + ", ".join(disabled)
+        )
+    if enabled:
+        lines.append("### Optional sections ENABLED for this artifact: " + ", ".join(enabled))
+
+    if profile.active_layers is not None:
+        lines.append("### Active layers for this project: " + ", ".join(profile.active_layers))
+
+    if not lines:
+        return ""
+    return "## Project Adaptation Profile\n" + "\n".join(lines)
+
+
 def assemble_project_creation_prompt(
     *,
     project_root: Path,
@@ -497,6 +542,7 @@ def assemble_project_creation_prompt(
     layer: str,
     template_name: str,
     sections: list[SourceSection] | None = None,
+    profile: ProjectProfile | None = None,
 ) -> CreationAssembly:
     """Assemble a creation prompt that fuses MCP runtime assets with authoritative SSD layer inputs.
 
@@ -566,8 +612,11 @@ def assemble_project_creation_prompt(
         combined_persona_text.strip(),
         prompt_template_text.strip(),
         MCP_CREATION_ACTIONABLE_RULES.strip(),
-        "## Authoritative Layer Assets\n" + layer_section,
     ]
+    adaptation_block = _format_adaptation_profile_block(profile, layer)
+    if adaptation_block:
+        parts.append(adaptation_block)
+    parts.append("## Authoritative Layer Assets\n" + layer_section)
     if document_template_text:
         parts.append("## Project-Tuned Template\n" + document_template_text.strip())
     parts.append(json.dumps(inspect_prompt_bundle(bundle), sort_keys=True))

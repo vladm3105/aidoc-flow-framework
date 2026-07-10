@@ -12,6 +12,20 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Hermes `0.8.0 → 0.9.0` `.aidoc/profile.yaml` runtime consumption — HERMES-REVIEW-001 PR-ADAPT (2026-07-10)
+
+- **Hermes now reads the spec's declared adaptation input at runtime** (M1/M7;
+  partly closes HERMES-BACKLOG **H-16**). New `mcp_server/profile.py` loads
+  `.aidoc/profile.yaml` (all 6 `ADAPTATION_SURFACE.yaml` knobs, graceful fallback),
+  wired into `ProjectContext`. **A2**: `sdd_review` accepts the spec `review_mode`
+  vocabulary (`team`→`saga_parallel`, `single_pass`→`prompt_only`) and honors a
+  profile that explicitly declares it. **A1**: the creation prompt injects a
+  `## Project Adaptation Profile` block (`glossary` + layer-scoped `section_toggles`
+  - `active_layers`) via `context_builder`. Structural enforcement of
+  `active_layers`/`section_toggles`, the `audit_threshold` gate, and
+  `quality_loop_max_iterations` are deferred (H-16 follow-up; the last needs the outer
+  review loop tracked as H-7). Hermes stream only.
+
 ### Changed — Hermes `0.7.4 → 0.8.0` native BDD authoring → YAML-BDD — HERMES-REVIEW-001 PR-BDD (2026-07-10)
 
 - **Rewrote Hermes's private BDD prompts/persona/output-schema from Gherkin to the

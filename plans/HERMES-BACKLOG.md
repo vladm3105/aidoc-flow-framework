@@ -555,7 +555,22 @@ guard).
 
 **Dependency:** none. Independent of the other H-items.
 
-### H-16 — `.aidoc/profile.yaml` / adaptation surface unread at runtime — **HIGH** — 🔴 OPEN → PR-ADAPT
+### H-16 — `.aidoc/profile.yaml` / adaptation surface unread at runtime — ⏳ PARTIAL (2026-07-10, HERMES-REVIEW-001 PR-ADAPT, `hermes/v0.9.0`)
+
+> **PR-ADAPT (minimum honest) shipped:** Hermes now reads `.aidoc/profile.yaml`
+> (`mcp_server/profile.py`, all 6 knobs + graceful fallback, wired into
+> `ProjectContext`); `review_mode` is reconciled (`team`/`single_pass` aliases +
+> explicit-declaration fallback — A2); and the prompt-injectable authoring knobs
+> (`glossary`, layer-scoped `section_toggles`, `active_layers`) are injected into the
+> creation prompt via `context_builder` (A1). **Still deferred (the follow-up):**
+> structural *enforcement* of `active_layers` (actual layer skipping) and
+> `section_toggles` (template mutation), the `audit_threshold` gate (its raise-only
+> semantics — value must be ≥ the framework default — do not match
+> `profile_contracts.resolve_threshold_precedence`'s override precedence, so a correct
+> wiring needs a raise-only reconciliation, not a drop-in feed), and
+> `quality_loop_max_iterations` (Hermes has no outer review→remediate loop yet — that
+> is H-7 / the multi-iteration review-loop initiative). Pull these when the outer loop
+> or a per-knob enforcement pass is scheduled.
 
 **Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`).
 

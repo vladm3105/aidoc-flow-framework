@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from mcp_server.models.context_engineering_contracts import serialize_prompt_metadata_sidecar
+from mcp_server.profile import ProjectProfile
 from mcp_server.prompts import (
     SourceSection,
     assemble_project_creation_prompt,
@@ -111,6 +112,7 @@ def run_project_creation_build(
     template_name: str,
     sections: list[SourceSection] | None = None,
     output_dir: Path | None = None,
+    profile: ProjectProfile | None = None,
 ) -> CreationRunResult:
     assembly = assemble_project_creation_prompt(
         project_root=project_root,
@@ -119,6 +121,7 @@ def run_project_creation_build(
         layer=layer,
         template_name=template_name,
         sections=sections,
+        profile=profile,
     )
     inspection = inspect_prompt_bundle(assembly.bundle)
     sidecar_json = serialize_prompt_metadata_sidecar(assembly.bundle.metadata)
@@ -160,6 +163,7 @@ def run_project_creation_artifact(
     sections: list[SourceSection] | None = None,
     output_dir: Path | None = None,
     overwrite: bool = False,
+    profile: ProjectProfile | None = None,
 ) -> CreationArtifactResult:
     creation_result = run_project_creation_build(
         project_root=project_root,
@@ -169,6 +173,7 @@ def run_project_creation_artifact(
         template_name=template_name,
         sections=sections,
         output_dir=output_dir,
+        profile=profile,
     )
 
     target_path = target_path.expanduser().resolve()
