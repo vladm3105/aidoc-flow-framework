@@ -1444,6 +1444,8 @@ def main(argv: list[str] | None = None) -> int:
             "deleted_count": len(clean_result.deleted),
             "kept": clean_result.kept,
             "kept_count": len(clean_result.kept),
+            "failed": clean_result.failed,
+            "failed_count": len(clean_result.failed),
             "bytes_freed": clean_result.total_bytes_freed,
         }
 

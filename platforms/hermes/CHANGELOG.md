@@ -16,6 +16,44 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.7.4] — 2026-07-10
+
+### Fixed
+
+- **MCP server source fixes (HERMES-REVIEW-001 PR-CODE; `0.7.3 → 0.7.4`).** Six
+  correctness/hygiene fixes from the 2026-07-09 Hermes review, each with a
+  regression test where behavior changes:
+  - **C1 (H2) — API-executor env lock.** Replaced the lazily-created module-global
+    `asyncio.Lock` (`_get_env_lock()` factory) with a module-global
+    `threading.Lock`. The review saga fans branches over a `ThreadPoolExecutor`
+    where each worker drives its own `asyncio.run` loop; the loop-bound
+    `asyncio.Lock`, cached on first use, raised `RuntimeError` ("bound to a
+    different event loop") under cross-thread contention. The lock is a sync
+    context manager, so the acquire site changed `async with` → `with` and the
+    factory collapsed. Parallel API-executor branches now serialize on env
+    injection (correctness over the non-default API-path concurrency). New
+    cross-thread regression test.
+  - **C2 (M2) — versioned-report TOCTOU.** `write_versioned_report_atomic` now
+    allocates versions with `os.open(O_CREAT|O_EXCL)` + retry-on-`FileExistsError`
+    instead of the exists()-then-`os.replace` race (mirrors
+    `saga_orchestrator._write_versioned_json`). New concurrent-writer regression test.
+  - **C3 (L1) — deprecated datetime.** `saga_orchestrator._time_bucket` uses
+    `datetime.now(UTC)` instead of the deprecated `datetime.utcnow()`.
+  - **C4 (M3) — event-loop blocking.** The synchronous `run_project_review_build_saga`
+    call in the async dispatch handler is offloaded via `await asyncio.to_thread(...)`
+    so it no longer blocks the MCP event loop (composes with C1).
+  - **C5 (L2) — cleanup unlink safety.** Each deletion goes through a helper that
+    unlinks first and records the path as deleted only on success (try/except),
+    so one unreadable file can't abort the batch half-done or make the result claim
+    a file it never removed. A failed unlink is surfaced on a new
+    `CleanResult.failed` field and exposed as `failed`/`failed_count` in the
+    `sdd_clean` (MCP + CLI) responses, so a partial cleanup is no longer reported
+    as an unqualified success.
+  - **C6 (L3) — dead code + intent.** Removed the dead
+    `if isinstance(required, list): pass` block in `scoring/runner.py`; annotated the
+    TDD/IPLAN readiness gate as intentionally fail-closed (a missing readiness score
+    does not pass).
+
 ## [0.7.3] — 2026-07-10
 
 ### Documentation

@@ -150,3 +150,41 @@ class TestSourceProtection:
         )
         run_clean(tmp_path, stages=["all"], keep=0, dry_run=False)
         assert (tmp_path / "BRD-01_test.yaml").exists()
+
+
+class TestDeletionFailureSurfacing:
+    """C5 regression (HERMES-REVIEW-001): a failed unlink must be surfaced on
+    ``result.failed`` (not dropped to the log), excluded from ``result.deleted``,
+    and must not abort the rest of the batch."""
+
+    def test_failed_unlink_is_recorded_and_batch_continues(
+        self, tmp_path: Path, monkeypatch
+    ) -> None:
+        _create_files(
+            tmp_path,
+            [
+                "BRD-01_test.yaml",
+                "BRD-01_test_remediate_v1.yaml",
+                "BRD-01_test_remediate_v2.yaml",
+                "BRD-01_test_remediate_v3.yaml",
+            ],
+        )
+        real_unlink = Path.unlink
+
+        def flaky_unlink(self: Path, *args, **kwargs):
+            if self.name == "BRD-01_test_remediate_v1.yaml":
+                raise PermissionError("simulated: file locked")
+            return real_unlink(self, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "unlink", flaky_unlink)
+
+        # keep=1 keeps v3, slates v1 + v2 for deletion.
+        result = run_clean(tmp_path, stages=["remediate"], keep=1, dry_run=False)
+
+        # v1 failed → surfaced on `failed`, absent from `deleted`, still on disk.
+        assert any("remediate_v1" in entry for entry in result.failed)
+        assert not any("remediate_v1" in entry for entry in result.deleted)
+        assert (tmp_path / "BRD-01_test_remediate_v1.yaml").exists()
+        # v2 still deleted → the failure did not abort the batch.
+        assert any("remediate_v2" in entry for entry in result.deleted)
+        assert not (tmp_path / "BRD-01_test_remediate_v2.yaml").exists()

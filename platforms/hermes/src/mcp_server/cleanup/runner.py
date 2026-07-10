@@ -6,11 +6,14 @@ folders while keeping the latest N versions per artifact type.
 
 from __future__ import annotations
 
+import logging
 import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
 from mcp_server.utils.source_files import REPORT_PATTERN
+
+logger = logging.getLogger(__name__)
 
 _REMEDIATE_VERSION_RE = re.compile(r"_remediate_v(\d+)")
 _VERSIONED_REPORT_RE = re.compile(r"\.v(\d+)\.")
@@ -23,8 +26,32 @@ class CleanResult:
 
     deleted: list[str] = field(default_factory=list)
     kept: list[str] = field(default_factory=list)
+    failed: list[str] = field(default_factory=list)
     dry_run: bool = True
     total_bytes_freed: int = 0
+
+
+def _delete_path(path: Path, result: CleanResult, *, dry_run: bool) -> None:
+    """Delete ``path``, recording it as deleted only if the unlink succeeds.
+
+    In dry-run mode nothing is unlinked but the path is still reported as a
+    deletion candidate. A failed unlink is recorded on ``result.failed`` (and
+    logged) but skipped, so one unreadable file cannot abort the batch half-done
+    or make ``result`` claim a file it never removed — and the partial failure is
+    surfaced to the caller rather than dropped to the server log alone.
+    """
+    if dry_run:
+        result.deleted.append(str(path))
+        return
+    try:
+        size = path.stat().st_size
+        path.unlink()
+    except OSError as exc:
+        logger.warning("cleanup: failed to delete %s: %s", path, exc)
+        result.failed.append(f"{path}: {exc}")
+        return
+    result.deleted.append(str(path))
+    result.total_bytes_freed += size
 
 
 def _classify_stage(name: str) -> str | None:
@@ -130,11 +157,7 @@ def run_clean(
             versioned_key = (group_key[0], "versioned_copy")
             if versioned_key in groups and groups[versioned_key]:
                 for path in paths:
-                    result.deleted.append(str(path))
-                    if not dry_run:
-                        size = path.stat().st_size
-                        path.unlink()
-                        result.total_bytes_freed += size
+                    _delete_path(path, result, dry_run=dry_run)
                 continue
 
         # Keep the latest `keep` items, delete the rest
@@ -144,10 +167,6 @@ def run_clean(
         for path in to_keep:
             result.kept.append(str(path))
         for path in to_delete:
-            result.deleted.append(str(path))
-            if not dry_run:
-                size = path.stat().st_size
-                path.unlink()
-                result.total_bytes_freed += size
+            _delete_path(path, result, dry_run=dry_run)
 
     return result

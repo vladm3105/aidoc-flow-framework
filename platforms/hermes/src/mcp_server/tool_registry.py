@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import json
 import re
@@ -1539,7 +1540,12 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         )
 
         if review_mode == "saga_parallel":
-            saga_result = run_project_review_build_saga(
+            # Offload the blocking, in-process saga (ThreadPoolExecutor fan-out +
+            # per-branch asyncio.run) to a worker thread so it doesn't block the
+            # MCP event loop — keeps keepalive/cancellation responsive during a
+            # long review (composes with the api_runner threading.Lock fix).
+            saga_result = await asyncio.to_thread(
+                run_project_review_build_saga,
                 project_root=project_root,
                 personas=arguments.get("personas"),
                 doc_type=arguments["doc_type"],
@@ -1819,6 +1825,8 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             "deleted_count": len(result.deleted),
             "kept": result.kept,
             "kept_count": len(result.kept),
+            "failed": result.failed,
+            "failed_count": len(result.failed),
             "bytes_freed": result.total_bytes_freed,
         }
 
@@ -1838,6 +1846,7 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
         clean_result = run_clean(document_path=doc_path, stages=["all"], keep=0, dry_run=False)
         results["_clean_before"] = {
             "deleted_count": len(clean_result.deleted),
+            "failed_count": len(clean_result.failed),
             "bytes_freed": clean_result.total_bytes_freed,
         }
 

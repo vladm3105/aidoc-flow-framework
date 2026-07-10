@@ -8,7 +8,7 @@ import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 
 from mcp_server.executor.dispatcher import run_executor
@@ -60,7 +60,7 @@ class SagaReviewResult:
 
 
 def _time_bucket() -> str:
-    return datetime.utcnow().strftime("%Y%m%d%H")
+    return datetime.now(UTC).strftime("%Y%m%d%H")
 
 
 _DOC_ID_RE = re.compile(r"([A-Z]+-\d+)")

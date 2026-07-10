@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import sys
+import threading
 from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
@@ -115,3 +116,91 @@ class TestProjectEnvThreading:
 
         assert result.exit_code == 0
         assert seen["value"] == "from_project"
+
+
+class TestEnvLockCrossThread:
+    """Regression for HERMES-REVIEW-001 C1 (H2).
+
+    The API-executor env lock must be a module-global ``threading.Lock``, not a
+    lazily-created ``asyncio.Lock``. The review saga fans branches over a
+    ``ThreadPoolExecutor`` where each worker drives its own event loop via
+    ``asyncio.run``; a loop-bound ``asyncio.Lock`` cached on first use would raise
+    ``RuntimeError`` ("bound to a different event loop") when a later thread's loop
+    tries to acquire it. This test drives ``run_api_executor`` from several threads,
+    each with its own ``asyncio.run`` loop, and asserts none raise and none hang.
+    """
+
+    def test_env_lock_survives_cross_thread_asyncio_run(self) -> None:
+        config = _make_config()
+
+        def _make_response():
+            return type(
+                "Resp",
+                (),
+                {
+                    "choices": [
+                        type("Choice", (), {"message": type("Msg", (), {"content": "ok"})()})()
+                    ],
+                    "usage": None,
+                },
+            )()
+
+        async def _fake_completion(*_args, **_kwargs):
+            # Hold the lock long enough that the other threads must WAIT on it.
+            # Waiting is what makes the loop-bind bug fire: a waiter enqueues a
+            # Future on its own loop, and the holder (a different thread/loop)
+            # completing the wake-up trips "bound to a different event loop". A
+            # no-op yield would take the uncontended fast path and hide the bug.
+            await asyncio.sleep(0.1)
+            return _make_response()
+
+        mock_litellm = type(
+            "LiteLLM",
+            (),
+            {
+                "acompletion": staticmethod(_fake_completion),
+                "AuthenticationError": Exception,
+                "RateLimitError": Exception,
+                "Timeout": Exception,
+                "APIError": Exception,
+            },
+        )()
+
+        worker_count = 4
+        errors: list[BaseException] = []
+        exit_codes: list[int] = []
+        lock = threading.Lock()
+        # Release all workers together so they collide on the env lock (one wins,
+        # the rest must wait — the condition that surfaces the loop-bind bug).
+        gate = threading.Barrier(worker_count)
+
+        def _worker() -> None:
+            try:
+                from mcp_server.executor.api_runner import run_api_executor
+
+                gate.wait(timeout=10)
+                result = asyncio.run(
+                    run_api_executor(
+                        config=config,
+                        prompt="hello",
+                        project_env={"TEST_API_KEY": "project_key"},
+                    )
+                )
+                with lock:
+                    exit_codes.append(result.exit_code)
+            except BaseException as exc:  # noqa: BLE001 — capture for assertion
+                with lock:
+                    errors.append(exc)
+
+        with patch.dict("sys.modules", {"litellm": mock_litellm}):
+            threads = [threading.Thread(target=_worker) for _ in range(worker_count)]
+            for thread in threads:
+                thread.start()
+            for thread in threads:
+                thread.join(timeout=15)
+
+        assert not any(thread.is_alive() for thread in threads), (
+            "a worker hung acquiring the env lock (deadlock/loop-bind regression)"
+        )
+        assert not errors, f"cross-thread env-lock contention raised: {errors!r}"
+        assert exit_codes == [0] * worker_count

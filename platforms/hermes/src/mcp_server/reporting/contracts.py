@@ -335,17 +335,24 @@ def write_versioned_report_atomic(
         candidate_version = (max(existing_versions) if existing_versions else 0) + 1
         candidate_name = report_name_factory(candidate_version)
         candidate_path = report_dir / candidate_name
-        temp_path = report_dir / f".{candidate_name}.tmp"
 
-        temp_path.write_text(content, encoding="utf-8")
+        # Test/racing-writer seam: a hook may occupy candidate_path here, so the
+        # O_EXCL open below collides deterministically (preserves the prior
+        # collision_hook contract).
         if collision_hook is not None:
             collision_hook(candidate_path)
 
-        if candidate_path.exists():
-            temp_path.unlink(missing_ok=True)
+        # Atomically create-or-fail: O_CREAT|O_EXCL closes the check-then-write
+        # TOCTOU window the previous exists()-then-os.replace pattern left open.
+        # A concurrent writer that wins the create makes our open raise
+        # FileExistsError, and we retry the next version (mirrors
+        # saga_orchestrator._write_versioned_json).
+        try:
+            fd = os.open(candidate_path, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
             continue
-
-        os.replace(temp_path, candidate_path)
+        with os.fdopen(fd, "w", encoding="utf-8") as handle:
+            handle.write(content)
         return candidate_path
 
     raise FileExistsError("Version allocation failed after bounded retries")

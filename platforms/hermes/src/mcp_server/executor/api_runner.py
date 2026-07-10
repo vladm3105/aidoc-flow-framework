@@ -6,25 +6,26 @@ including OpenAI, Anthropic, Google, and OpenRouter.
 
 from __future__ import annotations
 
-import asyncio
 import contextlib
 import logging
 import os
+import threading
 
 from .contracts import ExecutorResult
 from .registry import ExecutorConfig
 
 logger = logging.getLogger(__name__)
 
-_api_env_lock: asyncio.Lock | None = None
-
-
-def _get_env_lock() -> asyncio.Lock:
-    """Lazily create the env lock to avoid binding to the wrong event loop."""
-    global _api_env_lock
-    if _api_env_lock is None:
-        _api_env_lock = asyncio.Lock()
-    return _api_env_lock
+# Module-global lock serializing env injection around the LiteLLM call. This is a
+# threading.Lock, NOT an asyncio.Lock: the review saga fans branches over a
+# ThreadPoolExecutor, each worker running its own event loop via asyncio.run, so
+# an asyncio.Lock would bind to whichever loop first created it and raise
+# RuntimeError ("bound to a different event loop") under cross-thread contention.
+# A threading.Lock is loop-agnostic and safe across those threads. It is held
+# across the awaited acompletion call, so parallel API-executor branches serialize
+# on env injection — acceptable: correctness over the (currently non-default)
+# concurrency of the API path.
+_api_env_lock = threading.Lock()
 
 
 @contextlib.contextmanager
@@ -168,7 +169,7 @@ async def run_api_executor(
     # the full acompletion call because LiteLLM may read env vars at any
     # point during request setup. MCP servers typically process one tool
     # call at a time, so this is not a practical bottleneck.
-    async with _get_env_lock():
+    with _api_env_lock:
         with _inject_env(config.env, project_env):
             try:
                 response = await litellm.acompletion(**kwargs)
