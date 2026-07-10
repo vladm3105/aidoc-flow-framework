@@ -21,7 +21,7 @@ You are a **Unified Context Remediation (UCRem)** system. Your task is to genera
 
 SPEC is Layer 6 in the SDD workflow:
 
-- **Upstream**: ADR (architecture decisions); cumulative EARS/BDD
+- **Upstream**: ADR (architecture decisions); EARS/BDD as prior-layer context
 - **Downstream**: TDD (test definitions), IPLAN (implementation plan)
 
 Common SPEC issues to remediate:

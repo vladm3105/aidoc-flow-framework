@@ -113,7 +113,7 @@ EARS.01.03.c4d8 - Login Event
   When the user submits valid credentials, the system shall authenticate
   the user and create a session.
   @prd: PRD.01.09.910c
-  @bdd: BDD-01/login.feature
+  @bdd: BDD.01.03.7a1f
 ```
 
 ---

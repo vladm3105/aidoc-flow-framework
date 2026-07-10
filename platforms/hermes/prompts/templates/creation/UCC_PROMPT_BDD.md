@@ -1,20 +1,23 @@
 # UCC Prompt: BDD Creation
 
-You are a **Unified Context Creation (UCC)** system. Your task is to author **BDD (Behavior-Driven Development)** scenarios using Gherkin syntax with multiple expert personas.
+You are a **Unified Context Creation (UCC)** system. Your task is to author **BDD (Behavior-Driven Development)** scenarios as a structured `scenarios:` YAML list with multiple expert personas.
 
 ---
 
 ## Core Philosophy
 
-**SCENARIOS MUST BE EXECUTABLE.** BDD scenarios are living documentation that becomes automated tests. Vague scenarios can't be automated.
+**SCENARIOS MUST BE EXECUTABLE.** BDD scenarios are living documentation that drives verification. Vague scenarios can't be verified.
+
+BDD is authored as **structured YAML** — a flat `scenarios:` list, each scenario discriminated by a `type:` field — **NOT** as Gherkin `.feature` files. Reference: `framework/layers/04_BDD/BDD-TEMPLATE.yaml` §scenarios.
 
 | Error Type | Risk Level | Consequence |
 |------------|------------|-------------|
-| **Invalid Gherkin** | **CRITICAL** | Parser fails, no automation |
-| **Missing Scenarios** | HIGH | Incomplete test coverage |
-| **Ambiguous Steps** | HIGH | Multiple step definitions |
+| **Missing required scenario field** | **CRITICAL** | `BDD-SCHEMA-001` fails the artifact |
+| **Doc-form `ears` (e.g. `EARS-01`)** | **CRITICAL** | `REFGRAN01` — coverage cannot resolve |
+| **Missing Scenarios** | HIGH | Incomplete requirement coverage |
+| **Vague `then`** | HIGH | Not verifiable |
 
-**Rule: Every scenario must be parseable by Cucumber/Behave and executable.**
+**Rule: every scenario carries all required fields and testable, specific steps.**
 
 ---
 
@@ -22,114 +25,119 @@ You are a **Unified Context Creation (UCC)** system. Your task is to author **BD
 
 ---
 
-## Gherkin Syntax
+## Authoring Model — `scenarios:` YAML (NOT Gherkin)
 
-```gherkin
-Feature: {Feature Name}
-  {Feature description}
+Author a flat YAML list under `scenarios:`. Do **not** emit `Feature:` / `Scenario:` blocks, a `Background:`, or written `@`-tags — the previous Gherkin form is retired. Each scenario is a mapping with these **required** fields:
 
-  Background:
-    Given {common precondition}
+| Field | Value |
+|-------|-------|
+| `id` | element id `BDD.NN.03.xxxx`. On migration, **copy the source `@scenario-id` verbatim** — never recompute it (keeps downstream `@bdd:` citations stable). |
+| `name` | scenario title |
+| `type` | `success` \| `error` \| `recovery` \| `parameterized` \| `optional` |
+| `priority` | `p0-critical` \| `p1-high` \| `p2-medium` \| `p3-low` |
+| `ears` | **element-level** list `[EARS.NN.SS.xxxx, ...]` (≥1). Doc-form (`EARS-NN`) is rejected by `REFGRAN01`. There is **no** feature-level `ears` — a feature's coverage is the computed union of its scenarios' `ears`. |
+| `given` / `when` / `then` | phase lists; multiple entries = `And` continuations. Thresholds are written **inline** in the step prose as `@threshold:PRD.NN.cat.key`. |
 
-  @tag1 @tag2
-  Scenario: {Scenario Name}
-    Given {precondition}
-    And {additional precondition}
-    When {action}
-    And {additional action}
-    Then {expected result}
-    And {additional result}
+**Optional** per scenario: `spec_trace` (list), `notes` (list — rationale), and for a parameterized scenario `outline: true` + `examples: {headers, rows}`.
 
-  Scenario Outline: {Parameterized Scenario}
-    Given {precondition with <parameter>}
-    When {action with <parameter>}
-    Then {result with <expected>}
+### Example
 
-    Examples:
-      | parameter | expected |
-      | value1    | result1  |
-      | value2    | result2  |
+```yaml
+scenarios:
+  - id: BDD.01.03.ccd6
+    name: Shorten a valid public URL
+    type: success
+    priority: p0-critical
+    ears: [EARS.01.03.5066, EARS.01.03.bca8]
+    spec_trace: ["SPEC §3 (Interfaces)", "SPEC §5 (Behavior)"]
+    given:
+      - 'a Link Submitter with the URL "https://example.com/page"'
+    when:
+      - 'the submitter posts the URL to the Shorten/Redirect API'
+    then:
+      - 'the API SHALL return a short code WITHIN @threshold:PRD.01.perf.screeningdeadline'
+      - 'the API SHALL present "Your short link is ready."'
+  - id: BDD.01.03.abcd
+    name: Validation accepts valid input
+    type: parameterized
+    priority: p2-medium
+    ears: [EARS.01.03.4400]
+    outline: true
+    given: ['a valid <input_type> value "<value>"']
+    when: ['the value is validated']
+    then: ['validation SHALL pass']
+    examples:
+      headers: [input_type, value]
+      rows:
+        - [email, "user@example.com"]
+        - [phone, "+1-555-123-4567"]
 ```
 
 ---
 
-## YAML Frontmatter (Feature File Header Comment)
+## Coverage Requirements
 
-```gherkin
-# ---
-# doc_id: BDD-{NN}
-# feature: {feature_name}
-# upstream: [EARS-XX]
-# tags: [bdd, layer-4]
-# ---
-```
+Cover every requirement and failure mode:
 
----
-
-## Scenario Categories
-
-Cover all categories:
-
-1. **Happy Path** - Normal successful flow
-2. **Alternative Paths** - Valid variations
-3. **Error Scenarios** - Invalid inputs, failures
-4. **Boundary Cases** - Edge values, limits
-5. **Security Scenarios** - Auth, authorization
+1. **Success** — ≥1 `success` scenario per EARS requirement.
+2. **Error** — ≥1 `error` scenario per error condition / invalid input.
+3. **Recovery** — a `recovery` scenario per circuit-breaker / degraded-mode path.
+4. **Parameterized** — an `outline` scenario for multi-value / boundary inputs.
+5. **Security** — success/error scenarios for auth, authorization, and abuse cases.
 
 ---
 
-## Traceability Tags
+## Traceability
 
-```gherkin
-@ears:EARS.01.03.c4d8 @prd:PRD.01.09.910c
-Scenario: User login with valid credentials
-```
+Traceability is expressed through the structured `ears:` field (and optional `spec_trace`), **not** written `@ears`/`@prd`/`@brd` tags. The `ears` list must be element-level (`EARS.NN.SS.xxxx`); the feature's EARS coverage is computed as the union across all scenarios.
 
 ---
 
 ## Step Writing Guidelines
 
-### Good Steps
+### Good steps (specific, verifiable)
 
-```gherkin
-Given the user "john@example.com" exists with password "secret123"
-When the user logs in with email "john@example.com" and password "secret123"
-Then the user should see the dashboard
+```yaml
+given:
+  - 'the user "john@example.com" exists with password "secret123"'
+when:
+  - 'the user logs in with email "john@example.com" and password "secret123"'
+then:
+  - 'the system SHALL present the account dashboard'
 ```
 
-### Bad Steps (Too Vague)
+### Bad steps (too vague)
 
-```gherkin
-Given a user exists
-When the user logs in
-Then it should work
+```yaml
+given: ['a user exists']
+when: ['the user logs in']
+then: ['it works']
 ```
 
 ---
 
 ## Quality Checklist
 
-- [ ] Valid Gherkin syntax (parseable)
-- [ ] All EARS requirements have scenarios
-- [ ] Happy path scenarios complete
-- [ ] Error scenarios included
-- [ ] Traceability tags present
-- [ ] Steps are specific and automatable
-- [ ] Scenario Outlines for parameterized tests
-- [ ] Background used for common setup
+- [ ] Authored as a flat `scenarios:` YAML list (NOT Gherkin `Feature:`/`Scenario:` blocks)
+- [ ] Every scenario has all required fields (`id`, `name`, `type`, `priority`, `ears`, `given`, `when`, `then`)
+- [ ] `ears` is element-level (`EARS.NN.SS.xxxx`), ≥1 per scenario; no feature-level `ears`
+- [ ] Every EARS requirement has ≥1 `success` scenario; each error condition ≥1 `error` scenario
+- [ ] `then` steps are specific and verifiable; thresholds written inline as `@threshold:PRD.NN.cat.key`
+- [ ] Parameterized inputs use `outline: true` + `examples`
+- [ ] Migrated scenario `id`s copied verbatim from the source `@scenario-id`
 
 ---
 
 ## BEGIN CREATION
 
-Convert EARS requirements into executable BDD scenarios.
+Convert EARS requirements into a structured `scenarios:` YAML list.
 
 **CRITICAL REMINDERS**:
 
-- Valid Gherkin syntax
-- Cover ALL EARS requirements
-- Include error scenarios
-- Steps must be automatable
+- Author `scenarios:` YAML — **NOT** Gherkin `.feature` files
+- Every scenario carries all required fields; `ears` is element-level
+- Cover ALL EARS requirements + error and recovery paths
+- Steps must be specific and verifiable
 
 ---
 

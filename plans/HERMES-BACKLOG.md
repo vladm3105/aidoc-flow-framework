@@ -518,7 +518,7 @@ self-claim fields). Cross-platform; verify before planning.
 
 **Dependency:** none. Platform-parity concern surfaced by D-0051.
 
-### H-15 — Hermes native BDD prompts/persona/output-schema still teach Gherkin (D-0038) — **HIGH** — 🔴 OPEN → PR-BDD
+### H-15 — Hermes native BDD prompts/persona/output-schema still teach Gherkin (D-0038) — ✅ CLOSED (2026-07-10, HERMES-REVIEW-001 PR-BDD, `hermes/v0.8.0`)
 
 **Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`). Corrects the
 banner's over-broad "entire D-0038…D-0044 arc auto-satisfied — none needs
