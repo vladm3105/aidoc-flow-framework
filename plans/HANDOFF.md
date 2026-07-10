@@ -1,5 +1,21 @@
 # Session Handoff
 
+> **✅ HERMES-ADAPT-ENFORCE-001 COMPLETE (2026-07-10)** (`plans/HERMES-ADAPT-ENFORCE-001-PLAN.md`).
+> Follow-up to HERMES-REVIEW-001 PR-ADAPT: enforces the `.aidoc/profile.yaml`
+> **`audit_threshold`** knob as a raise-only score gate — the Hermes-native slice of
+> **H-16**. A profile per-layer value raises the effective gate only if ≥ 90 (the
+> framework-documented default) and never weakens it; `sdd_score_validate` gained an
+> optional `project` arg + pipeline threading so the profile is reachable, guarded by
+> a handler-level wiring test. Plan PR #296, impl PR #297. **Current hermes version:
+> `0.10.0`** (spec `0.36.2` unchanged). 556 hermes pytest + 193 conformance green.
+> **H-16 remainder still deferred:** structural `active_layers`/`section_toggles`
+> enforcement — the `active_layers` cascade lives in the byte-identical **vendored
+> `sdd_doc_lint`** (drift-guarded), so it is a **framework** change (both platforms),
+> not a Hermes-only plan — and `quality_loop_max_iterations` (needs the outer review
+> loop — **H-7**). A `hermes/v0.10.0` release tag remains uncut (last tag `hermes/v0.1.1`).
+
+---
+
 > **✅ HERMES-REVIEW-001 COMPLETE (2026-07-10)** (`plans/HERMES-REVIEW-001-PLAN.md`).
 > All 19 findings from the 2026-07-09 four-agent Hermes review resolved across 5
 > merged Hermes-stream PRs: **PR-BL #290** (HERMES-BACKLOG corrections — the wrong
