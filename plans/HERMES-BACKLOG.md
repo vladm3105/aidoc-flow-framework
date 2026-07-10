@@ -4,7 +4,7 @@
 |-------|-------|
 | Status     | **ARC UNDERWAY** — Phase 1 shipped (saga conformance); playbook injection is the load-bearing next gap |
 | Owner      | vladm3105 |
-| Last update | 2026-07-09 |
+| Last update | 2026-07-10 |
 | Policy     | **Plugin-first development.** Hermes work is deferred until the corresponding plugin functionality is complete and verified end-to-end. This is the single source of truth for "what Hermes still needs to catch up on." |
 
 > **⚠️ CORRECTED ASSESSMENT (2026-07-02, D-0045) — read before implementing any
@@ -12,10 +12,23 @@
 > premise **wrong**: **Hermes already has team-mode** (a working saga orchestrator
 > with parallel per-persona fan-out — `saga_orchestrator.py:526`; crews reconciled to
 > `REVIEW_CREWS.yaml` — `review_scoring.py:54`; MCP-wired `sdd_review` `saga_parallel`
-> mode). H-4's "team-mode not implemented" is **FALSE**. And the **entire 0.32.x arc
-> (D-0038…D-0044) is AUTO-SATISFIED** for Hermes via its byte-identical vendored
-> `sdd_doc_lint` + shared `framework/layers/` templates — none needs Hermes-native
-> code. The **real gap is older engine debt: playbook injection + saga completeness.**
+> mode). H-4's "team-mode not implemented" is **FALSE**. Most of the 0.32.x arc
+> (D-0038…D-0044) is AUTO-SATISFIED for Hermes via its byte-identical vendored
+> `sdd_doc_lint` + shared `framework/layers/` templates.
+>
+> > **⚠️ PARTIAL RETRACTION (2026-07-09, HERMES-REVIEW-001).** The "*entire*
+> > D-0038…D-0044 arc is auto-satisfied — none needs Hermes-native code" claim was
+> > **too broad for D-0038 (YAML-BDD)**. The vendored lint + shared `framework/layers/`
+> > templates *are* byte-identical, but Hermes also ships its **own native
+> > authoring/review/remediation prompts** (`prompts/templates/**/UCC_PROMPT_BDD.md`,
+> > `UCR_PROMPT_BDD.md`, `UCRem_PROMPT_BDD.md`), a `qa_lead` persona, and a Layer-4
+> > output schema — **all of which still teach Gherkin** and were NOT auto-updated by
+> > the shared template. D-0038 therefore needs Hermes-native code (the prompt
+> > rewrite). Tracked as **H-15** below → PR-BDD. The auto-satisfied claim holds only
+> > for the lint rules and the shared layer templates, not for Hermes's private prompts.
+>
+> The **real gap is older engine debt: playbook injection + saga completeness** (plus
+> the D-0038 native-prompt gap called out above).
 > Re-sequenced (see `plans/HERMES-PARITY-PHASE-1-PLAN.md`):
 >
 > | Phase | Scope | Status |
@@ -28,9 +41,11 @@
 > | 4 (opt) | `sdd-orchestrator` agent-skill v3.2 modernization (H-11) | **✅ shipped** (`hermes/v0.7.1` + skill `2.1.0`, D-0053) — H-11 CLOSED; H-11a/b/c cosmetic follow-ups carved |
 >
 > **Auto-satisfied (no action):** H-3 (dormant), H-7 lint rows / H-8 / H-9 lint+template
-> rows, and all of D-0038…D-0044 — Hermes gets these via vendored lint + shared
-> templates. The H-N entries below are retained as historical detail; the phase table
-> above is the live sequencing.
+> rows, and D-0039…D-0044 — Hermes gets these via vendored lint + shared
+> templates. **Exception — D-0038 (YAML-BDD) is NOT auto-satisfied:** Hermes's native
+> BDD prompts/persona/output-schema still teach Gherkin and need a native rewrite
+> (H-15 → PR-BDD; see the partial-retraction note above). The H-N entries below are
+> retained as historical detail; the phase table above is the live sequencing.
 
 ## Why this exists
 
@@ -222,7 +237,13 @@ REVIEW-CALIBRATION-002 yet — they're a watch-list:
 v0.6.2 sub-checks miss something the deferred items would catch.
 Until then, no design work.
 
-### H-4. Layer Playbook Injection in Hermes Team-Mode (LAYER-PLAYBOOKS-001)
+### H-4. Layer Playbook Injection in Hermes Team-Mode (LAYER-PLAYBOOKS-001) — ✅ CLOSED (BRD+PRD via Phase 2, `hermes/v0.4.0`, D-0046)
+
+> **Framing correction (2026-07-09, HERMES-REVIEW-001):** playbook injection is
+> **IMPLEMENTED**, not open. Phase 2 (D-0046) closed BRD+PRD; Phase 3 (D-0047) extended
+> to all 8 lifecycle layers. The "Hermes does not yet consume them" / "team-mode
+> currently not implemented" prose below is **stale historical detail** — treat the
+> phase table at the top of this file as authoritative.
 
 **Source:** PR LAYER-PLAYBOOKS-001 (plugin) shipped per-layer per-lens
 playbooks at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (BRD + PRD
@@ -237,7 +258,12 @@ parity: enforce `findings[].check` citation; emit
 
 **Dependency:** Hermes team-mode (currently not implemented).
 
-### H-5 — LAYER-PLAYBOOKS-001 closing 6 layers (EARS/BDD/ADR/SPEC/TDD/IPLAN)
+### H-5 — LAYER-PLAYBOOKS-001 closing 6 layers (EARS/BDD/ADR/SPEC/TDD/IPLAN) — ✅ CLOSED (Phase 3, `hermes/v0.5.0`, D-0047)
+
+> **Framing correction (2026-07-09, HERMES-REVIEW-001):** all 8 lifecycle layers
+> receive playbook injection (Phase 3, D-0047). The "Hermes still has zero playbook
+> injection across any layer" prose below is **stale historical detail** — the phase
+> table at the top of this file is authoritative.
 
 **Source:** plugin PRs EARS-RT-001 / BDD-RT-001 / ADR-RT-001 /
 SPEC-RT-001 / TDD-RT-001 / IPLAN-RT-001 (plugin `0.8.0 → 0.14.0`).
@@ -491,6 +517,68 @@ plugin-side strip (e.g. brief a stripped copy, or instruct the lens to ignore
 self-claim fields). Cross-platform; verify before planning.
 
 **Dependency:** none. Platform-parity concern surfaced by D-0051.
+
+### H-15 — Hermes native BDD prompts/persona/output-schema still teach Gherkin (D-0038) — **HIGH** — 🔴 OPEN → PR-BDD
+
+**Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`). Corrects the
+banner's over-broad "entire D-0038…D-0044 arc auto-satisfied — none needs
+Hermes-native code" claim (see the partial-retraction note at the top of this file).
+
+**Finding (evidence-backed):** the YAML-BDD authoring form (D-0038; spec
+`framework/layers/04_BDD/BDD-TEMPLATE.yaml` §scenarios) was adopted framework-wide,
+but Hermes's **private** BDD surfaces were never migrated and still teach the retired
+Gherkin form:
+
+- `prompts/templates/creation/UCC_PROMPT_BDD.md` — "author BDD scenarios using
+  Gherkin syntax"; example emits a Gherkin `Scenario:` block with written
+  `@ears:`/`@prd:` tags.
+- `prompts/templates/review/UCR_PROMPT_BDD.md` — scores Gherkin syntax (materializes
+  as a false-flag only when the review prompt is LLM-dispatched — `prompt_only`
+  external run or the LLM-saga branch; the deterministic default
+  `_branch_prompt_findings` never scores Gherkin).
+- `prompts/templates/remediation/UCRem_PROMPT_BDD.md` — fix reference uses the retired
+  `@EARS.XX`/`@happy-path` tag convention.
+- `skills/personas/qa_lead.md` — "Gherkin syntax purity" review lens.
+- `prompts/templates/creation/UCC_OUTPUT_SCHEMA.md` — Layer-4 output contract requires
+  Gherkin `.feature` files.
+
+**Fix shape (PR-BDD):** rewrite all five surfaces to the structured `scenarios:` YAML
+model (flat list, `type:`/`priority:`, per-scenario element-level `ears:` list, no
+Gherkin, no written `@`-tags); also fix stale `@bdd:` file-path / 3-segment-ID / stale
+"cumulative" wording in the EARS/PRD/SPEC prompts (M6/L4/L5). Add a **Hermes-side**
+conformance guard (`platforms/hermes/tests/`) asserting the BDD prompts reference
+`scenarios:` and contain no *structural* Gherkin markers (`^Feature:`, `^Scenario:`,
+gherkin-fenced Given/When/Then, `@`-tag-on-BDD) — NOT the bare word "Gherkin", which a
+correct anti-drift line legitimately contains. This converts a currently-CI-invisible
+drift class into a CI-visible one. Hermes MINOR (new authoring form + conformance
+guard).
+
+**Dependency:** none. Independent of the other H-items.
+
+### H-16 — `.aidoc/profile.yaml` / adaptation surface unread at runtime — **HIGH** — 🔴 OPEN → PR-ADAPT
+
+**Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`).
+
+**Finding:** the spec declares `.aidoc/profile.yaml` as the single adaptation input,
+but Hermes never reads it at runtime — only `quality_loop_max_iterations` is tracked
+(H-7 Phase-1b), and the other knobs (`active_layers`, `section_toggles`,
+`audit_threshold`, `glossary`, `review_mode`) are ignored. The plumbing partly exists
+but is unwired: `creation/profile_contracts.py` defines `resolve_threshold_precedence`
+(`profile_threshold` → `audit_threshold`) and `bind_registry_profile` **with no
+caller**. Separately, the tool `review_mode` enum is `prompt_only|saga_parallel`
+(`tool_registry.py:650-654`) while the spec knob is `team|single_pass` — a
+profile-declared `review_mode` is not consumable by name.
+
+**Fix shape (PR-ADAPT — minimum honest consumption):** read `.aidoc/profile.yaml` at
+runtime in the creation/review paths and honor the prompt-injectable knobs via the
+existing `context_builder` injection, feeding the existing-but-unwired
+`resolve_threshold_precedence`/`bind_registry_profile` rather than reimplementing
+precedence; alias the spec `review_mode` values (`team`→`saga_parallel`,
+`single_pass`→`prompt_only`). A complete per-knob-per-tool implementation, if larger,
+splits to a follow-up. Hermes MINOR.
+
+**Dependency:** none. `quality_loop_max_iterations` remains H-7 Phase-1b unless cheap
+to wire here.
 
 ## What's NOT in this backlog
 
