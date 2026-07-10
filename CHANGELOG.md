@@ -12,6 +12,20 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Hermes `0.7.3` docs/version drift sweep — HERMES-REVIEW-001 PR-DOCS (2026-07-10)
+
+- **Reconciled active-facing Hermes docs to the real `0.7.3` / spec `0.36.2`
+  state** (2026-07-09 Hermes review findings H3/H4/H5/M4/M5/M8, L6). `pyproject.toml`
+  version `0.1.0` → `0.7.3`; `platforms/hermes/README.md` conformance block +
+  platform-info table (canonical `hermes/v*` cell, complete 27-tool table, module
+  count `20`, persona count `16`); `docs/HERMES_INTEGRATION.md` paths rewritten to
+  `platforms/hermes` + Python `>=3.12` + retired `ucx_kb` KB sections repointed to
+  engramory; `docs/README.md` `2.0.0`/`ucx_hermes` self-id + dead migration link +
+  `SPEC-011`; `docs/ROADMAP.md` legacy table marked historical; `CHANGELOG.md`
+  `[0.7.3]` section cut from the bundled `[Unreleased]`. `scripts/sync-version-refs.sh`
+  extended to cover the Hermes `pyproject.toml` + README version blocks (closes
+  FRAMEWORK-TODO `HERMES-README-VERSION-DRIFT`). Hermes-stream docs/tooling only.
+
 ### Changed — Framework Spec `0.36.1 → 0.36.2` — FRWK-REVIEW-002 PR-E engine-agnosticism neutralization (2026-07-09)
 
 Implements the GD-06 Hybrid ruling — neutralizes the generic platform vocabulary

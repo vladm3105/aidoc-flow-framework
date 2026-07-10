@@ -310,21 +310,21 @@
   VERSION → run sync → observe web-site badge change) is the
   Confirmation gate in IPLAN-0008.
 
-### `[sync]` `HERMES-README-VERSION-DRIFT` — `platforms/hermes/README.md` Version + framework-spec cells stale
+### `[sync]` `HERMES-README-VERSION-DRIFT` — ✅ CLOSED (2026-07-10, HERMES-REVIEW-001 PR-DOCS) — `platforms/hermes/README.md` Version + framework-spec cells stale
 
 - *Context:* Plugin `0.20.1` PATCH (2026-06-14) found and fixed the same
   drift class in `platforms/claude-code-plugin/README.md` (`0.6.3` →
   `claude-code-plugin/v<X.Y.Z>` canonical form). `platforms/hermes/README.md`
-  lines 107-108 still carry the bug: `Version | hermes/v0.1.0` (actual
-  `0.3.0`) and `framework spec 0.1.0` (actual `0.21.1`).
-- *Fix shape:* (a) Canonicalize the hermes README Version cell to the
-  `hermes/v<X.Y.Z>` tag form — the v0.20.1 sync-script extension now
-  covers this pattern, so the next Hermes VERSION bump auto-propagates.
-  (b) The "Conforms to" cell uses a bare framework-spec X.Y.Z and needs
-  a separate sync pattern in `scripts/sync-version-refs.sh` (the
-  framework-VERSION fanout block) — add
-  `replace_in_file platforms/hermes/README.md "framework spec \`$fw_prev\`" ...`.
-  Out of scope for the plugin-first PATCH; pull when Hermes work resumes.
+  carried the bug: `Version | 0.1.0` and `framework spec 0.1.0` (plus
+  `pyproject.toml` frozen at `0.1.0` and the README `$ cat VERSION` /
+  `$ cat FRAMEWORK_SPEC_VERSION` blocks).
+- *Resolution (HERMES-REVIEW-001 PR-DOCS):* (a) canonicalized the hermes README
+  Version cell to the `hermes/v<X.Y.Z>` tag form (already sync-covered); (b) added
+  the hermes README `framework spec \`X\`` prose + `$ cat FRAMEWORK_SPEC_VERSION`
+  awk sync to the framework-VERSION fanout block; (c) added `platforms/hermes/pyproject.toml`
+  version + README `$ cat VERSION` awk sync to the hermes-VERSION fanout block. All
+  stale `0.1.0` strings reconciled to the real `0.7.3` / spec `0.36.2`; future bumps
+  auto-propagate.
 
 ### `[skill]` `MODEL-PRECHECK-ROLLOUT` — original framing (superseded; see PARKED entry above)
 

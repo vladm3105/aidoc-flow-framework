@@ -1,7 +1,9 @@
 # UCX Hermes — Primary AI Agent Orchestration Platform
 
-> **Status**: Canonical / Active / Primary
-> **Version**: 2.0.0
+> **Status**: Historical migration record (pre-migration `mcp_ucx` → `ucx_hermes`).
+> For the current platform overview see [`../README.md`](../README.md) and
+> [`HERMES_INTEGRATION.md`](HERMES_INTEGRATION.md).
+> **Current runtime**: `hermes/v0.7.3` (framework spec `0.36.2`); package `mcp_server` at `platforms/hermes/`.
 > **Date**: 2026-05-02
 > **Previous**: mcp_ucx v1.22.0 (DEPRECATED)
 > **Timezone**: America/New_York
@@ -26,11 +28,11 @@ This directory (`ucx_hermes/`) is now the **sole active runtime** for the UCX MC
 | Field | Value |
 | --- | --- |
 | Canonical Name | UCX Hermes |
-| Package Directory | `ucx_hermes/` |
+| Package Directory | `platforms/hermes/` (runtime package `mcp_server`) |
 | MCP Server Name | `sdd-lifecycle` |
 | Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | **Active** |
-| Version | 2.0.0 |
+| Version | `hermes/v0.7.3` (framework spec `0.36.2`) |
 | Date | 2026-05-02 |
 | Timezone | America/New_York |
 
@@ -192,7 +194,7 @@ All MCP tools resolve personas, prompts, and templates exclusively from `{projec
 
 | Asset Type | Runtime Path |
 | --- | --- |
-| Persona definitions (15 core) | `{project}/UCX/skills/personas/{persona}.md` |
+| Persona definitions (16 core) | `{project}/UCX/skills/personas/{persona}.md` |
 | Persona-to-doc-type mappings | `{project}/UCX/skills/persona_mappings.yaml` |
 | Layer alias mappings | `{project}/UCX/skills/layer_aliases/` |
 | Creation prompt templates | `{project}/UCX/prompts/templates/creation/` |
@@ -278,6 +280,7 @@ authoring policy.
 - [SPEC-008 MCP Output Schema Contracts](specs/SPEC-008_mcp_output_schema_contracts.md)
 - [SPEC-009 MCP Remediation and Fix Flow Contracts](specs/SPEC-009_mcp_remediation_and_fix_flow_contracts.md)
 - [SPEC-010 MCP Prescreen, Scan, and Scoring Contracts](specs/SPEC-010_mcp_prescreen_scan_scoring_contracts.md)
+- [SPEC-011 Team Emulator Contract](specs/SPEC-011_team_emulator_contract.md)
 
 ## 6. Policies
 
@@ -288,14 +291,13 @@ authoring policy.
 
 ## 7. Migration from mcp_ucx
 
-This section tracks migration from the legacy `mcp_ucx/` package to `ucx_hermes/`.
-
-See [migration/MIGRATION_FROM_MCP_UCX.md](migration/MIGRATION_FROM_MCP_UCX.md) for:
-
-- Path mapping (old -> new)
-- MCP configuration changes
-- What was patched and why
-- Rollback instructions
+The `mcp_ucx` → `ucx_hermes` migration is complete, and the platform has since
+migrated again into this repository's `platforms/hermes/` layout (runtime package
+`mcp_server`). The pre-migration project (pristine `ucx_framework` v0.20.4) is
+preserved on the protected, read-only branch **`legacy-ucx-v3.2-read-only`**; see
+the framework repo's `docs/PROJECT.md` §6 for change-management history. The
+former `migration/MIGRATION_FROM_MCP_UCX.md` runbook is retired (the migration it
+described has landed).
 
 ## 8. Hermes Integration
 

@@ -1,6 +1,6 @@
 [project]
 name = "hermes-server"
-version = "0.1.0"
+version = "0.7.3"
 description = "MCP server for UCX Hermes SDD lifecycle workflows"
 requires-python = ">=3.12"
 dependencies = [

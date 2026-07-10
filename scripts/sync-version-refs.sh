@@ -224,6 +224,23 @@ if [[ -n "$fw_ver" ]]; then
         && log "  updated plugin README: \$ cat FRAMEWORK_SPEC_VERSION block -> $fw_ver"
     fi
 
+    # platforms/hermes/README.md quotes the framework spec version the same two
+    # ways (prose "...framework spec `X`..." + a `$ cat FRAMEWORK_SPEC_VERSION`
+    # example block). Same fix as the plugin README, mirrored here so the Hermes
+    # conformance block no longer re-drifts (HERMES-README-VERSION-DRIFT).
+    replace_in_file platforms/hermes/README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    if [[ -f platforms/hermes/README.md ]]; then
+      awk -v prev="$fw_prev" -v new="$fw_ver" '
+        marker { if ($0 == prev) $0 = new; marker = 0 }
+        /^\$ cat FRAMEWORK_SPEC_VERSION$/ { marker = 1 }
+        { print }
+      ' platforms/hermes/README.md > platforms/hermes/README.md.tmp \
+        && mv platforms/hermes/README.md.tmp \
+              platforms/hermes/README.md \
+        && log "  updated hermes README: \$ cat FRAMEWORK_SPEC_VERSION block -> $fw_ver"
+    fi
+
     # The conformance test pins the expected spec version as a literal release
     # tripwire; it must track framework/VERSION. Correctness is also guarded by
     # the sibling assertEqual(..., framework_version()) and by GATE-SPEC-E008
@@ -297,6 +314,26 @@ if [[ -n "$hermes_ver" ]]; then
       "hermes/v$hermes_prev" "hermes/v$hermes_ver"
     replace_in_file docs/PARITY.md \
       "hermes/v$hermes_prev" "hermes/v$hermes_ver"
+
+    # platforms/hermes/pyproject.toml carries the bare package version, and
+    # platforms/hermes/README.md has a `$ cat VERSION` example block with the
+    # bare X.Y.Z on its own line. Neither was previously synced, so both drifted
+    # to the initial 0.1.0 (HERMES-README-VERSION-DRIFT / HERMES-REVIEW-001 H3).
+    # Sync pyproject via replace_in_file; sync the bare README line via awk,
+    # anchored to the preceding `$ cat VERSION` marker so the generic X.Y.Z is
+    # only touched inside that block.
+    replace_in_file platforms/hermes/pyproject.toml \
+      "version = \"$hermes_prev\"" "version = \"$hermes_ver\""
+    if [[ -f platforms/hermes/README.md ]]; then
+      awk -v prev="$hermes_prev" -v new="$hermes_ver" '
+        marker { if ($0 == prev) $0 = new; marker = 0 }
+        /^\$ cat VERSION$/ { marker = 1 }
+        { print }
+      ' platforms/hermes/README.md > platforms/hermes/README.md.tmp \
+        && mv platforms/hermes/README.md.tmp \
+              platforms/hermes/README.md \
+        && log "  updated hermes README: \$ cat VERSION block -> $hermes_ver"
+    fi
   fi
 fi
 

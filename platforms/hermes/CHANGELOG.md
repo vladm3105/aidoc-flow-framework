@@ -14,6 +14,29 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+_Nothing yet._
+
+## [0.7.3] — 2026-07-10
+
+### Documentation
+
+- **HERMES-REVIEW-001 PR-DOCS — active-facing docs/version drift sweep.** Finalizes
+  the 0.7.3 release record and reconciles stale version/path/count references
+  surfaced by the 2026-07-09 Hermes review (H3/H4/H5/M4/M5/M8, L6): `pyproject.toml`
+  version `0.1.0` → `0.7.3`; `README.md` conformance block + platform-info table to
+  real values (`VERSION` `0.7.3`, `FRAMEWORK_SPEC_VERSION`/spec `0.36.2`, canonical
+  `hermes/v*` Version cell), source-module count `18` → `20` (+`team_emulator`),
+  persona count `15` → `16`, and a complete 27-tool table; `docs/HERMES_INTEGRATION.md`
+  pre-migration `ucx_framework/ucx_hermes` paths rewritten to the `platforms/hermes`
+  layout, the `Python 3.11+` contradiction fixed to `>=3.12`, and the retired `ucx_kb`
+  KB-runtime sections repointed to engramory; `docs/README.md` `2.0.0`/`ucx_hermes`
+  self-id corrected, dead `migration/MIGRATION_FROM_MCP_UCX.md` link retired,
+  `SPEC-011` added to the spec list; `docs/ROADMAP.md` legacy `2.0.0` table marked
+  historical. Also extends `scripts/sync-version-refs.sh` to cover the Hermes
+  `pyproject.toml` + README version blocks so they no longer re-drift
+  (closes FRAMEWORK-TODO `HERMES-README-VERSION-DRIFT`). Docs + tooling only; no
+  runtime behavior change.
+
 ### Added
 
 - **Review calibration: no-findings rationale cap + strip author self-claim
@@ -39,7 +62,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   lens. Added the `chg` review crew to `persona_mappings.yaml` (crew parity with the
   framework CHG crew) and removed the `HERMES_DEFERRED_LAYERS` whitelist, so the
   crew-coverage conformance test now enforces CHG like the lifecycle layers. Crew-map
-  parity only — a *live/sanctioned* CHG saga review (adding `09_CHG` to
+  parity only — a _live/sanctioned_ CHG saga review (adding `09_CHG` to
   `saga.schema.json` + a dispatch path) is a deferred follow-on; no default flow
   dispatches a `chg` review. No framework spec change.
 
@@ -94,8 +117,8 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   enforces both platforms' tables against `REVIEW_SAGA.md` and validates a sample
   journal from each runner against `saga.schema.json` (the test `docs/PARITY.md`
   previously over-claimed already existed). **No version bump** — Phase 1 makes the
-  state machine *accept* the transition (parity contract); the orchestrator does not
-  yet *write* it (break-circuit exercise + resume is Phase 1b).
+  state machine _accept_ the transition (parity contract); the orchestrator does not
+  yet _write_ it (break-circuit exercise + resume is Phase 1b).
 
 ### Removed
 
@@ -124,7 +147,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   persona profiles (`skills/personas/*.md`): dropped the dead `SYS/REQ/CTR/TSPEC`
   scoring-weight lines, removed those tokens from each persona's `doc_types`
   list, and removed the dedicated layer rows + sections (e.g. integration_lead's
-  "CTR Expertise", qa_lead's "TSPEC Quality Metrics"). *Deliberately retained:*
+  "CTR Expertise", qa_lead's "TSPEC Quality Metrics"). _Deliberately retained:_
   the `agent-skills/` historical notes documenting the layers as "cut from
   v3"/"deprecated" (accurate history) and the threshold-rules `req`/`ctr` tokens
   (unrelated meanings — rate/Currency-Transaction-Report).
@@ -168,10 +191,10 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   `references/governance-load-protocol.md` — were replaced with the current single-path
   layer model (no tiers; necessary-upstream contract; MVP → PROD → NEW MVP). Skill
   `version: 2.0.0 → 2.1.0`. Doc-accuracy only — no engine/runtime change, no `framework/`
-  change. *(Deferred backlog: the ~25-file cosmetic "v3.2" string residue across the
+  change. _(Deferred backlog: the ~25-file cosmetic "v3.2" string residue across the
   inherited governance scaffold; the hand-vendored `references/` framework-doc copies
   (D-0013 delete-vs-resync); the element-ID SHA-256 residue, framework-gated by
-  PROVISIONAL-IDS-002.)*
+  PROVISIONAL-IDS-002.)_
 
 - **Element-ID alignment to the framework 4-segment hash form** (PLATFORM-ALIGN
   Part B, `0.1.0 → 0.2.0`). The runtime element-ID validators in
@@ -183,7 +206,7 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   8-layer EARS/BDD prompt templates' element-ID examples + the `UCC_PROMPT_EARS`
   ID-convention legend were migrated off the legacy type-code scheme
   (`EARS.NN.<CODE>.<seq>`, `PRD.NN.US.NN`, 3-segment refs) to the 4-segment hash
-  form. *Stricter validation:* a previously-accepted 3-segment ID now fails —
+  form. _Stricter validation:_ a previously-accepted 3-segment ID now fails —
   intended (the 3-segment form was the legacy variant the framework retired).
 
 - **EARS pattern alignment** — brought the Hermes vendored EARS pattern tables
@@ -195,11 +218,11 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
   6-pattern model with a mixed `IF…THEN` connective. Now: the five canonical
   patterns (Ubiquitous, Event/`WHEN`, State/`WHILE`, Optional/`WHERE`,
   Unwanted/`IF`) in the uniform `the [system] shall …` form (no `THEN`); "complex"
-  reframed as *composition* of the base patterns (the standalone `Complex` row +
+  reframed as _composition_ of the base patterns (the standalone `Complex` row +
   the `CX` type code removed). Doc-only; no runtime behavior change.
-  *(Note: the prompts' legacy type-code element-ID scheme — `EARS.NN.<code>.<seq>`
+  _(Note: the prompts' legacy type-code element-ID scheme — `EARS.NN.<code>.<seq>`
   vs the framework's hash-based `EARS.NN.SS.xxxx` — is a separate, pre-existing
-  divergence, out of scope here.)*
+  divergence, out of scope here.)_
 
 ## [0.1.1] — 2026-05-21
 
