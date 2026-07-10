@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | ACTIVE-LAYERS-CASCADE-001                   |
 | Type           | feature (framework-spec-behavior)           |
-| Status         | READY FOR PR — 2026-07-10 (3 review passes, 2 independent; gate green). **Implementation blocked on founder ratification of the §Governance A-vs-B decision.** |
+| Status         | ✅ COMPLETE — 2026-07-10 (founder ratified **decision A**, GD-07; framework spec `0.37.0`). Plan PR #299; impl pending merge. |
 | Depends on     | HERMES-ADAPT-ENFORCE-001 (`hermes/v0.10.0`) — the Hermes-side profile plumbing; this is the framework-level remainder of H-16 the Hermes plan deferred |
 | Feeds          | HERMES-BACKLOG **H-16** (adaptation-surface enforcement, framework tier); both platforms via the vendored lint |
 | Version impact | **OPEN GOVERNANCE QUESTION (see §Governance)** — recommended framework MINOR (`0.36.2 → 0.37.0`) + GATE-SPEC C2; both platforms re-declare `FRAMEWORK_SPEC_VERSION`. No platform-runtime change beyond the re-vendored lint. |

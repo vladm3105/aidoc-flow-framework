@@ -13,6 +13,45 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-07 — The reference lint honors the `active_layers` adaptation cascade; implementing an already-specified enforcement rule is a framework MINOR under GATE-SPEC
+
+- **Status:** Accepted — 2026-07-10 (founder-ratified governance decision A over B;
+  a `framework/`-versioned change — human sign-off per GATE-SPEC. This GD-07 entry +
+  the `VERSION`/`CHANGELOG` bump + both `FRAMEWORK_SPEC_VERSION` pins + green
+  conformance are the change record, per the GD-05/GD-06 precedent — no separate CHG
+  artifact). SemVer **minor** (`0.36.2 → 0.37.0`; new *enforced* behavior),
+  change-level **C2**.
+- **Context:** The `active_layers` knob (`ADAPTATION_SURFACE.yaml`) lets a project
+  disable a skippable layer (BDD/ADR), and the `cascade_rule` already *specifies*
+  that traceability/audit consumers must then stop demanding that layer's upstream
+  tag downstream. But the reference linter `tools/sdd_doc_lint` was profile-blind —
+  it never read `.aidoc/profile.yaml`, so a project legitimately skipping BDD still
+  got TAG01 "requires upstream tag `@bdd:`" failures on ADR/SPEC/TDD
+  (ACTIVE-LAYERS-CASCADE-001, the framework-tier remainder of the adaptation-surface
+  enforcement work tracked in the platform backlog as H-16).
+  A governance fork arose: the change edits `tools/` (outside `framework/`), so does
+  implementing an *unchanged* rule warrant a framework-VERSION bump + GATE-SPEC, or is
+  it tooling-only? `ADAPTATION.md` §6 ties a bump specifically to *changing the
+  surface* (adding/renaming/removing a knob, or changing the mandatory/skippable
+  split) — which this does NOT do — so §6 alone did not settle it.
+- **Decision (A — bump + GATE-SPEC):** treat it as a framework MINOR under GATE-SPEC.
+  **Rationale:** a new *enforced* conformance behavior shipped under a *fixed*
+  framework version is a silent behavior change for consumers pinned to that version;
+  a version signal + a GATE-SPEC audit record is the conservative, auditable choice —
+  even though only `tools/` + the vendored copies change and no `framework/` spec text
+  moves. This does not amend §6 (no surface change occurred); it establishes that
+  **first-time enforcement of an existing normative rule in the reference tooling is a
+  versioned framework change**, distinct from a pure bug-fix in the tooling.
+- **Implementation:** the cascade is TAG01-only (the sole demand site;
+  `can_reference` is unused, COV02/TRACE-RES-001/REFGRAN01 are no-ops/defensive on the
+  disabled path). The lint reads `active_layers` via `.aidoc/profile.yaml`
+  auto-discovery (+ `--active-layers` override), computes the disabled skippable set,
+  and lints against an *effective* registry view (a copy with disabled tags removed —
+  the module registry is never mutated). Re-vendored byte-identically to both
+  platforms. Plan + review: `plans/ACTIVE-LAYERS-CASCADE-001-PLAN.md`.
+
+---
+
 ## GD-06 — Engine-agnosticism boundary: the spec neutralizes generic platform vocabulary but sanctions a small set of load-bearing engine bindings as documented exceptions
 
 - **Status:** Accepted — 2026-07-09 (ratified on merge; a `framework/**` normative

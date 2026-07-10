@@ -62,6 +62,79 @@ def find_registry(start: Path | None = None) -> Path:
     return Path(__file__).resolve().parents[2] / _REGISTRY_REL
 
 
+# ── active_layers adaptation cascade (ACTIVE-LAYERS-CASCADE-001) ───────────────
+# A project's `.aidoc/profile.yaml` may disable a *skippable* layer; when it does,
+# the cascade_rule (framework/governance/ADAPTATION_SURFACE.yaml) requires that the
+# lint stop demanding the disabled layer's upstream tag on downstream layers.
+
+_PROFILE_REL = Path(".aidoc") / "profile.yaml"
+# Skippable layers per ADAPTATION_SURFACE.yaml `layers.skippable`, lowercased to
+# match the registry's lowercase `required_tags` vocabulary.
+SKIPPABLE_LAYERS = frozenset({"bdd", "adr"})
+
+
+def find_profile(start: Path) -> Path | None:
+    """Locate the project's ``.aidoc/profile.yaml`` by walking up from ``start``.
+
+    Returns ``None`` when no profile exists → all layers active (unchanged
+    behavior). Mirrors ``find_registry``'s upward search so a vendored copy works.
+    """
+    seed = start if start.is_dir() else start.parent
+    for base in [seed, *seed.resolve().parents]:
+        candidate = base / _PROFILE_REL
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def load_active_layers(profile_path: Path) -> frozenset[str] | None:
+    """Parse the ``active_layers`` knob (lowercased) from a profile.
+
+    Returns ``None`` on a missing/unreadable/malformed profile or knob (graceful
+    fallback → all layers active), never raising.
+    """
+    try:
+        data = yaml.safe_load(profile_path.read_text(encoding="utf-8"))
+    except (OSError, UnicodeDecodeError, yaml.YAMLError):
+        return None
+    if not isinstance(data, dict):
+        return None
+    raw = data.get("active_layers")
+    if not isinstance(raw, list) or not all(isinstance(x, str) for x in raw):
+        return None
+    return frozenset(x.strip().lower() for x in raw)
+
+
+def compute_disabled_skippable(active_layers: frozenset[str] | None) -> frozenset[str]:
+    """Disabled skippable layers = ``SKIPPABLE_LAYERS − active_layers``.
+
+    Empty when the knob is absent (``active_layers is None`` → all active) or when
+    nothing skippable was dropped. Only skippable layers are considered — a request
+    to disable a mandatory layer is ignored per the surface constraint.
+    """
+    if active_layers is None:
+        return frozenset()
+    return SKIPPABLE_LAYERS - active_layers
+
+
+def _apply_active_layers_cascade(layers: dict, disabled_skippable: frozenset[str]) -> dict:
+    """Return an effective ``layers`` view with disabled skippable layers removed
+    from every layer's ``required_tags`` (the cascade_rule). Returns the input
+    unchanged when nothing is disabled; **never mutates** the input dict (which is
+    the module-level registry — mutation would corrupt the REALIZING_LAYERS
+    registry-parity guard and every later lint call).
+    """
+    if not disabled_skippable:
+        return layers
+    effective: dict = {}
+    for name, spec in layers.items():
+        tags = spec.get("required_tags")
+        if tags and any(t in disabled_skippable for t in tags):
+            spec = {**spec, "required_tags": [t for t in tags if t not in disabled_skippable]}
+        effective[name] = spec
+    return effective
+
+
 LAYER_TAGS = ("brd", "prd", "ears", "bdd", "adr", "spec", "tdd", "iplan")
 
 _TAG = re.compile(r"@(" + "|".join(LAYER_TAGS) + r")\s*:\s*([^\s|]+)")
@@ -2216,13 +2289,21 @@ def lint_path(
     *,
     mode: str = "build",
     skip_coverage: bool = False,
+    disabled_skippable: frozenset[str] = frozenset(),
 ) -> list[Finding]:
     """Lint a file or recurse a directory; returns all findings.
 
     ``mode`` (``build`` | ``gate-code``) sets the forward-coverage severity
     (DD-6); ``skip_coverage`` suppresses the coverage gate entirely (DD-9 — the
-    transient-migration escape hatch)."""
+    transient-migration escape hatch). ``disabled_skippable`` (lowercased layer
+    tags ⊆ ``SKIPPABLE_LAYERS``, from a project's ``.aidoc/profile.yaml``
+    ``active_layers``) applies the adaptation cascade — a disabled skippable layer
+    is not demanded as an upstream tag on downstream layers (TAG01)."""
     layers, doc_re, elem_re = _load_registry(registry)
+    # ACTIVE-LAYERS-CASCADE-001: use an effective registry view for the run so a
+    # disabled skippable layer is dropped from downstream `required_tags` (TAG01).
+    # Empty set → `layers` is returned unchanged (byte-identical to no-profile).
+    layers = _apply_active_layers_cascade(layers, disabled_skippable)
     findings: list[Finding] = []
     corpus: list[tuple[str, str]] = []  # (rel_path, text) — for corpus-level passes
 
