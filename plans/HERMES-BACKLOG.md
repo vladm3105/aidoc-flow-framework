@@ -562,15 +562,22 @@ guard).
 > `ProjectContext`); `review_mode` is reconciled (`team`/`single_pass` aliases +
 > explicit-declaration fallback — A2); and the prompt-injectable authoring knobs
 > (`glossary`, layer-scoped `section_toggles`, `active_layers`) are injected into the
-> creation prompt via `context_builder` (A1). **Still deferred (the follow-up):**
-> structural *enforcement* of `active_layers` (actual layer skipping) and
-> `section_toggles` (template mutation), the `audit_threshold` gate (its raise-only
-> semantics — value must be ≥ the framework default — do not match
-> `profile_contracts.resolve_threshold_precedence`'s override precedence, so a correct
-> wiring needs a raise-only reconciliation, not a drop-in feed), and
-> `quality_loop_max_iterations` (Hermes has no outer review→remediate loop yet — that
-> is H-7 / the multi-iteration review-loop initiative). Pull these when the outer loop
-> or a per-knob enforcement pass is scheduled.
+> creation prompt via `context_builder` (A1).
+>
+> **`audit_threshold` gate ALSO shipped (2026-07-10, HERMES-ADAPT-ENFORCE-001,
+> `hermes/v0.10.0`):** `validate_score` now enforces a raise-only per-layer gate —
+> a profile value is honored only if ≥ the framework-documented default (90) and
+> applied via `max()` after the tdd/iplan floor (never weakens); `sdd_score_validate`
+> gained an optional `project` arg + pipeline threading so the profile is reachable.
+> Plan: `plans/HERMES-ADAPT-ENFORCE-001-PLAN.md`.
+>
+> **Still deferred (the framework-level / H-7 remainder):** structural *enforcement*
+> of `active_layers` (actual layer skipping) and `section_toggles` (template
+> mutation) — the `active_layers` cascade lives in the **byte-identical vendored
+> `sdd_doc_lint`** (drift-guarded), so it is a **framework** change (both platforms),
+> not a Hermes-only plan; and `quality_loop_max_iterations` (Hermes has no outer
+> review→remediate loop yet — that is **H-7**). Pull the cascade with a framework
+> initiative and the loop-cap with the H-7 multi-iteration review-loop work.
 
 **Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`).
 

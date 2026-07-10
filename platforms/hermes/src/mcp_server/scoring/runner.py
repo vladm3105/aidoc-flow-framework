@@ -1,9 +1,12 @@
 from __future__ import annotations
 
 import json
+import logging
 import re
 from dataclasses import dataclass
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True)
@@ -129,12 +132,57 @@ def show_score(*, report_file: Path) -> ScoreShowResult:
     )
 
 
-def validate_score(*, report_file: Path, threshold: int) -> ScoreValidateResult:
+# Framework-documented per-layer audit_threshold default (PROFILE-TEMPLATE.yaml).
+# A profile audit_threshold value is raise-only: honored only when >= this default.
+_FRAMEWORK_AUDIT_DEFAULT = 90
+
+
+def _normalize_layer_key(layer: str) -> str:
+    """`04_BDD` / `bdd` / `BDD` → `BDD` (the ADAPTATION_SURFACE layer vocabulary).
+
+    Mirrors ``prompts.context_builder._normalize_layer_key`` (kept local to avoid a
+    scoring→prompts dependency).
+    """
+    return layer.rsplit("_", 1)[-1].upper() if layer else layer
+
+
+def _resolve_audit_threshold(audit_threshold: dict | None, doc_type: str | None) -> int | None:
+    """Raise-only `audit_threshold` for the report's layer (HERMES-ADAPT-ENFORCE-001).
+
+    Returns the profile's per-layer value ONLY when it is a real int
+    >= the framework default (90); a missing map / missing key / malformed
+    (non-int, or bool) / below-default value returns ``None`` so the gate is never
+    weakened. `bool` is excluded explicitly because it is an `int` subclass.
+    """
+    if not audit_threshold or not doc_type:
+        return None
+    key = _normalize_layer_key(str(doc_type))
+    raw = audit_threshold.get(key)
+    if raw is None:
+        return None
+    if isinstance(raw, bool) or not isinstance(raw, int):
+        # A misconfigured value is a config error worth signalling (mirrors the
+        # profile.py coercers); a valid-but-below-default value is intentionally
+        # silent (spec: "out of surface, ignored").
+        logger.warning("profile.audit_threshold[%s] = %r is not an integer — ignoring", key, raw)
+        return None
+    if raw < _FRAMEWORK_AUDIT_DEFAULT:
+        return None
+    return raw
+
+
+def validate_score(
+    *,
+    report_file: Path,
+    threshold: int,
+    audit_threshold: dict | None = None,
+) -> ScoreValidateResult:
     payload = _load_report(report_file)
     show_result = show_score(report_file=report_file)
 
     doc_type, readiness_value = _extract_readiness_gate(payload)
     effective_threshold = threshold
+    threshold_source = "caller"
     readiness_gate = None
 
     if doc_type in {"tdd", "iplan"}:
@@ -142,13 +190,22 @@ def validate_score(*, report_file: Path, threshold: int) -> ScoreValidateResult:
         # if the readiness score can't be extracted from the report
         # (readiness_value is None), the gate does NOT pass — a missing/unparseable
         # readiness signal is treated as "not ready", never silently waved through.
-        effective_threshold = max(threshold, 90)
+        if 90 > effective_threshold:
+            effective_threshold = 90
+            threshold_source = "readiness_floor"
         readiness_gate = {
             "doc_type": doc_type,
             "required_minimum": 90,
             "readiness_value": readiness_value,
             "gate_passed": readiness_value is not None and readiness_value >= 90,
         }
+
+    # Raise-only profile audit_threshold (never weakens): a per-layer profile value
+    # >= the framework default (90) can only push the gate UP.
+    profile_threshold = _resolve_audit_threshold(audit_threshold, doc_type)
+    if profile_threshold is not None and profile_threshold > effective_threshold:
+        effective_threshold = profile_threshold
+        threshold_source = "profile"
 
     passed = show_result.score >= effective_threshold
     if readiness_gate is not None and readiness_gate["gate_passed"] is False:
@@ -162,6 +219,7 @@ def validate_score(*, report_file: Path, threshold: int) -> ScoreValidateResult:
             "report_file": str(report_file),
             "score": show_result.score,
             "threshold": effective_threshold,
+            "threshold_source": threshold_source,
             "passed": passed,
             "requested_threshold": threshold,
             "readiness_gate": readiness_gate,

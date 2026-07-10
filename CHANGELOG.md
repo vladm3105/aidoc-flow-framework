@@ -12,6 +12,17 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Hermes `0.9.0 → 0.10.0` `audit_threshold` raise-only gate — HERMES-ADAPT-ENFORCE-001 (2026-07-10)
+
+- **Enforces the `.aidoc/profile.yaml` `audit_threshold` knob** (the Hermes-native
+  slice of H-16). `validate_score` honors a per-layer profile threshold only if ≥ 90
+  (the framework-documented default) and raises the gate via `max()` after the
+  tdd/iplan floor — never weakens. `sdd_score_validate` gains an optional `project`
+  arg (+ pipeline threading) so the profile is reachable; a handler-level test guards
+  the wiring. Structural `active_layers`/`section_toggles` enforcement (the cascade is
+  a framework change — byte-identical vendored lint) and `quality_loop_max_iterations`
+  (H-7) remain deferred. Plan: `plans/HERMES-ADAPT-ENFORCE-001-PLAN.md`. Hermes stream only.
+
 ### Added — Hermes `0.8.0 → 0.9.0` `.aidoc/profile.yaml` runtime consumption — HERMES-REVIEW-001 PR-ADAPT (2026-07-10)
 
 - **Hermes now reads the spec's declared adaptation input at runtime** (M1/M7;

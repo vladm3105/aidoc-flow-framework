@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-ADAPT-ENFORCE-001                    |
 | Type           | feature                                     |
-| Status         | READY FOR PR — 2026-07-10 (3 review passes, 2 independent; verified-planning gate green) |
+| Status         | ✅ COMPLETE — 2026-07-10 (`hermes/v0.10.0`; plan PR #296, impl PR pending merge) |
 | Depends on     | HERMES-REVIEW-001 PR-ADAPT (#294, `hermes/v0.9.0`) — profile loader + `ProjectContext.profile` already shipped; this plan consumes them |
 | Feeds          | HERMES-BACKLOG **H-16** (adaptation-surface enforcement); the Hermes-parity arc |
 | Version impact | Hermes stream only: MINOR (new gate behavior + optional tool arg). No `framework/VERSION` change. |

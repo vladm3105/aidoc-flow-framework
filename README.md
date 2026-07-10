@@ -289,7 +289,7 @@ versioned independently. Both pass the same shared conformance suite.
 
 | Platform | Engine | Version |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.9.0` (`platforms/hermes/`) |
+| **Hermes AI** | MCP server | `hermes/v0.10.0` (`platforms/hermes/`) |
 | **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.23.4` (`platforms/claude-code-plugin/`) |
 
 *Versions are the per-package `VERSION`-file values (namespaced as they would be

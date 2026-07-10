@@ -16,6 +16,34 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.10.0] — 2026-07-10
+
+### Added
+
+- **`audit_threshold` raise-only score gate (HERMES-ADAPT-ENFORCE-001; `0.9.0 → 0.10.0`).**
+  Enforces the `.aidoc/profile.yaml` `audit_threshold` knob — the Hermes-native slice
+  of H-16. A profile-declared per-layer threshold RAISES the effective readiness gate
+  and never lowers it (per `ADAPTATION_SURFACE.yaml` "never weakens a gate"):
+  - `validate_score` gains `audit_threshold: dict | None`; a per-layer value is
+    honored **only if ≥ 90** (the framework-documented default, `PROFILE-TEMPLATE.yaml`)
+    and applied as `max(effective, value)` after the tdd/iplan `90` floor
+    (monotonic — can only push the gate up). Malformed / below-default / bool / float
+    values are skipped. A `threshold_source` (`caller` / `readiness_floor` / `profile`)
+    is recorded in the payload.
+  - `sdd_score_validate` gains an **optional** `project` arg; when supplied, the
+    handler resolves the profile via `ProjectContext` and passes its `audit_threshold`
+    map (guarded `ctx.profile if ctx else None`). The lifecycle pipeline threads
+    `project` into the `score_validate` re-dispatch. Without `project` / profile /
+    a matching layer key → byte-identical to before.
+  - Tests include a handler-level `_dispatch` wiring test that catches a
+    dead-profile-wiring regression (validated: it fails if the handler stops passing
+    the profile).
+
+  **Still deferred (HERMES-BACKLOG H-16):** structural `active_layers`/`section_toggles`
+  enforcement (the `active_layers` cascade lives in the byte-identical vendored lint —
+  a framework change) and `quality_loop_max_iterations` (needs the outer review loop —
+  H-7). See `plans/HERMES-ADAPT-ENFORCE-001-PLAN.md` §Out.
+
 ## [0.9.0] — 2026-07-10
 
 ### Added
