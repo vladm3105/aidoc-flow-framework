@@ -327,6 +327,14 @@ TOOLS: list[Tool] = [
             "properties": {
                 "report_file": {"type": "string", "description": "Path to JSON report file"},
                 "threshold": {"type": "integer", "description": "Minimum required score"},
+                "project": {
+                    "type": "string",
+                    "description": (
+                        "Optional project root. When supplied, a `.aidoc/profile.yaml` "
+                        "`audit_threshold` for the report's layer raises the gate "
+                        "(raise-only; never weakens)."
+                    ),
+                },
             },
             "required": ["report_file", "threshold"],
         },
@@ -1311,6 +1319,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         result = validate_score(
             report_file=_path(arguments, "report_file"),
             threshold=int(arguments["threshold"]),
+            audit_threshold=ctx.profile.audit_threshold if ctx else None,
         )
         return result.payload
 
@@ -1893,6 +1902,10 @@ async def _handle_lifecycle_pipeline(arguments: dict) -> dict:
                 "report_file": report_path,
                 "threshold": stage_args.get("threshold", 80),
             }
+            # Thread the project so the score_validate re-dispatch can resolve the
+            # profile audit_threshold (else ctx=None → raise never fires).
+            if stage_args.get("project"):
+                score_args["project"] = stage_args["project"]
             try:
                 stage_result = await _dispatch("sdd_score_validate", score_args)
                 results[stage] = stage_result
