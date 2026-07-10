@@ -147,33 +147,33 @@ custom_fields:
   personas_applied: [QA Lead, Tech Lead, Business Analyst]
 ```
 
-**Required Format**: Gherkin syntax in `.feature` files
+**Required Format**: a flat `scenarios:` YAML list (each scenario discriminated by `type:`) — **NOT** Gherkin `.feature` files. Reference: `framework/layers/04_BDD/BDD-TEMPLATE.yaml` §scenarios.
 
-```gherkin
-Feature: {Feature Name}
-  As a {persona}
-  I want {capability}
-  So that {benefit}
-
-  Background:
-    Given {common precondition}
-
-  @tag
-  Scenario: {Scenario Name}
-    Given {context}
-    When {action}
-    Then {expected outcome}
-    And {additional verification}
-
-  Scenario Outline: {Parameterized Scenario}
-    Given {context with <param>}
-    When {action with <param>}
-    Then {expected outcome}
-
-    Examples:
-      | param | expected |
-      | value1 | result1 |
-      | value2 | result2 |
+```yaml
+scenarios:
+  - id: BDD.NN.03.xxxx           # copy verbatim from source on migration
+    name: "{Scenario name}"
+    type: success                # success | error | recovery | parameterized | optional
+    priority: p0-critical        # p0-critical | p1-high | p2-medium | p3-low
+    ears: [EARS.NN.SS.xxxx]       # element-level list, >=1; no feature-level ears
+    given: ["{precondition}"]
+    when: ["{single action}"]
+    then: ["{specific, verifiable outcome}"]
+  # parameterized scenario:
+  - id: BDD.NN.03.yyyy
+    name: "{Parameterized scenario}"
+    type: parameterized
+    priority: p2-medium
+    ears: [EARS.NN.SS.yyyy]
+    outline: true
+    given: ["a <param> value"]
+    when: ["the value is processed"]
+    then: ["the result SHALL be <expected>"]
+    examples:
+      headers: [param, expected]
+      rows:
+        - [value1, result1]
+        - [value2, result2]
 ```
 
 ---
@@ -207,7 +207,7 @@ custom_fields:
 custom_fields:
   artifact_type: SPEC
   layer: 6
-  upstream_artifacts: [ADR-XX]            # cumulative: BRD, PRD, EARS, BDD, ADR
+  upstream_artifacts: [ADR-XX]            # direct upstream: ADR (prior layers reachable transitively)
   downstream_artifacts: [TDD-XX]
   personas_applied: [Tech Lead, Architect, Operator, Integration Lead]
 ```
@@ -249,7 +249,7 @@ monitoring:
 custom_fields:
   artifact_type: TDD
   layer: 7
-  upstream_artifacts: [SPEC-XX]           # cumulative through SPEC
+  upstream_artifacts: [SPEC-XX]           # direct upstream: SPEC (prior layers reachable transitively)
   downstream_artifacts: [IPLAN-XX]
   personas_applied: [QA Lead, Tech Lead, Operator]
 ```
@@ -285,7 +285,7 @@ execution_order: []
 custom_fields:
   artifact_type: IPLAN
   layer: 8
-  upstream_artifacts: [TDD-XX]            # cumulative through TDD
+  upstream_artifacts: [TDD-XX]            # direct upstream: TDD (prior layers reachable transitively)
   downstream_artifacts: [Code]
   personas_applied: [Tech Lead, Architect, Operator, Integration Lead]
 ```

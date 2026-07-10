@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Hermes `0.7.4 → 0.8.0` native BDD authoring → YAML-BDD — HERMES-REVIEW-001 PR-BDD (2026-07-10)
+
+- **Rewrote Hermes's private BDD prompts/persona/output-schema from Gherkin to the
+  structured `scenarios:` YAML form** (D-0038, closes HERMES-BACKLOG **H-15**). The 3
+  BDD prompts (creation/review/remediation), the `qa_lead` persona lens, and the
+  Layer-4 output schema now teach the flat `scenarios:` list (per-scenario
+  `type`/`priority`, element-level `ears:`, no Gherkin, no written `@`-tags), plus
+  M6/L4/L5 stale-tag/wording cleanups in the EARS/PRD/SPEC prompts. Added a
+  Hermes-side drift guard (`test_bdd_prompt_yaml_conformance.py`) keyed on
+  **structural** Gherkin markers (not the bare word "Gherkin"), making a previously
+  CI-invisible drift class visible. Hermes stream only.
+
 ### Fixed — Hermes `0.7.3 → 0.7.4` MCP source fixes — HERMES-REVIEW-001 PR-CODE (2026-07-10)
 
 - **Six correctness/hygiene fixes in the Hermes MCP server** from the 2026-07-09

@@ -151,7 +151,7 @@ algorithm: |
 
 ## BEGIN CREATION
 
-Create technical specifications from the ADR (and cumulative EARS/BDD).
+Create technical specifications from the ADR (with upstream EARS/BDD as context).
 
 **CRITICAL REMINDERS**:
 

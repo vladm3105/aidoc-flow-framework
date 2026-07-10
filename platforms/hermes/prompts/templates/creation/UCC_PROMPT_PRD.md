@@ -196,7 +196,8 @@ Section 8 **MUST** include this Layer Separation Note scope note at the beginnin
 
 Use 4-segment format with `@brd:` prefix:
 
-- **CORRECT**: `@brd: BRD.01.92d8`
+- **CORRECT**: `@brd: BRD.01.07.92d8`
+- **WRONG**: `@brd: BRD.01.92d8` (3-segment; missing the section segment)
 - **WRONG**: `@brd: BRD-01` (document-level only)
 
 ### 18.2 Architecture Decision Requirements Table

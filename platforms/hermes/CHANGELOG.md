@@ -16,6 +16,43 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.8.0] — 2026-07-10
+
+### Changed
+
+- **Native BDD authoring rewritten to YAML-BDD (HERMES-REVIEW-001 PR-BDD, D-0038;
+  `0.7.4 → 0.8.0`).** Hermes's private BDD prompts/persona/output-schema still taught
+  Gherkin `.feature` syntax while the framework had moved to the structured
+  `scenarios:` YAML form (D-0038). This was the D-0038 gap the HERMES-BACKLOG banner
+  wrongly claimed was auto-satisfied (H-15). Rewritten to the flat `scenarios:` YAML
+  model (per-scenario `type`/`priority`, element-level `ears:` list, no Gherkin, no
+  written `@`-tags):
+  - `prompts/templates/creation/UCC_PROMPT_BDD.md` — authoring model + example + checklist.
+  - `prompts/templates/review/UCR_PROMPT_BDD.md` — review criteria key on scenario
+    structure + element-level `ears` coverage; QA-lead lens retargeted from Gherkin
+    syntax to YAML-scenario structure.
+  - `prompts/templates/remediation/UCRem_PROMPT_BDD.md` — fixes edit the `scenarios:`
+    YAML; retired the `@EARS.XX`/`@happy-path` tag convention.
+  - `skills/personas/qa_lead.md` — "Gherkin syntax purity" lens → `scenarios:` YAML
+    structural lens.
+  - `prompts/templates/creation/UCC_OUTPUT_SCHEMA.md` — Layer-4 output contract
+    "Gherkin `.feature` files" → the `scenarios:` YAML block.
+  - Stale-tag/wording cleanups (M6/L4/L5): `UCC_PROMPT_EARS.md` `@bdd:` file-path →
+    element form `BDD.NN.SS.xxxx`; `UCC_PROMPT_PRD.md` 3-segment `@brd:` example →
+    4-segment; retired "cumulative" upstream wording in `UCC_OUTPUT_SCHEMA.md` /
+    `UCC_PROMPT_SPEC.md` / `UCRem_PROMPT_SPEC.md`.
+
+### Added
+
+- **BDD-prompt drift guard (`tests/unit/test_bdd_prompt_yaml_conformance.py`).** A
+  Hermes-side guard asserting the BDD surfaces reference `scenarios:` and contain no
+  _structural_ Gherkin markers (```gherkin fences, `Feature:`/`Scenario:`/`Background:`
+  declaration lines, standalone Gherkin scenario-tag lines). It deliberately does not
+  grep the bare word "Gherkin" (a correct prompt says "NOT Gherkin" as an anti-drift
+  line). Converts a previously CI-invisible drift class into a CI-visible one. Kept
+  Hermes-side rather than in the shared conformance suite (it asserts a platform's
+  private prompts).
+
 ## [0.7.4] — 2026-07-10
 
 ### Fixed
