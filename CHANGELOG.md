@@ -12,6 +12,22 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.36.2 → 0.37.0` — `active_layers` cascade in the reference lint (GD-07, ACTIVE-LAYERS-CASCADE-001) (2026-07-10)
+
+- **The reference linter now honors the `active_layers` adaptation cascade** — the
+  framework-tier remainder of H-16. When a project's `.aidoc/profile.yaml` disables a
+  skippable layer (BDD/ADR), `tools/sdd_doc_lint` stops demanding that layer's upstream
+  tag (TAG01) on downstream layers, per the already-specified `cascade_rule`
+  (`ADAPTATION_SURFACE.yaml`). The lint reads `active_layers` via `.aidoc/profile.yaml`
+  auto-discovery (+ `--active-layers` override) and lints against an *effective*
+  registry view (a copy with disabled tags removed — the registry is never mutated).
+  TAG01 is the sole demand site (verified: `can_reference` unused;
+  COV02/TRACE-RES-001/REFGRAN01 are no-ops on the disabled path). Re-vendored
+  byte-identically to both platforms; both re-declare `FRAMEWORK_SPEC_VERSION 0.37.0`.
+  Ratified as a framework MINOR under GATE-SPEC (decision **A**, GD-07 — first-time
+  enforcement of an existing normative rule is a versioned change). `section_toggles`
+  (a no-op today) and `quality_loop_max_iterations` (H-7) remain out.
+
 ### Added — Hermes `0.9.0 → 0.10.0` `audit_threshold` raise-only gate — HERMES-ADAPT-ENFORCE-001 (2026-07-10)
 
 - **Enforces the `.aidoc/profile.yaml` `audit_threshold` knob** (the Hermes-native

@@ -14,7 +14,7 @@ Historical notes:
 
 > **Historical snapshot (as of 2026-05-02).** The table below is a legacy
 > `ucx_hermes` release record; it is **not** the active version. The current
-> runtime is `hermes/v0.7.3` (framework spec `0.36.2`) — see the platform
+> runtime is `hermes/v0.10.0` (framework spec `0.37.0`) — see the platform
 > [`CHANGELOG.md`](../CHANGELOG.md) and [`../README.md`](../README.md).
 
 | Field | Value (historical) |

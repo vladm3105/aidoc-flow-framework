@@ -3,7 +3,7 @@
 > **Status**: Historical migration record (pre-migration `mcp_ucx` → `ucx_hermes`).
 > For the current platform overview see [`../README.md`](../README.md) and
 > [`HERMES_INTEGRATION.md`](HERMES_INTEGRATION.md).
-> **Current runtime**: `hermes/v0.7.3` (framework spec `0.36.2`); package `mcp_server` at `platforms/hermes/`.
+> **Current runtime**: `hermes/v0.10.0` (framework spec `0.37.0`); package `mcp_server` at `platforms/hermes/`.
 > **Date**: 2026-05-02
 > **Previous**: mcp_ucx v1.22.0 (DEPRECATED)
 > **Timezone**: America/New_York
@@ -32,7 +32,7 @@ This directory (`ucx_hermes/`) is now the **sole active runtime** for the UCX MC
 | MCP Server Name | `sdd-lifecycle` |
 | Sub-Framework Code | `ucx` (used in report naming: `BRD-03.ucx.validate.json`) |
 | Status | **Active** |
-| Version | `hermes/v0.7.3` (framework spec `0.36.2`) |
+| Version | `hermes/v0.10.0` (framework spec `0.37.0`) |
 | Date | 2026-05-02 |
 | Timezone | America/New_York |
 

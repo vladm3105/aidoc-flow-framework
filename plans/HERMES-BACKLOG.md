@@ -571,13 +571,19 @@ guard).
 > gained an optional `project` arg + pipeline threading so the profile is reachable.
 > Plan: `plans/HERMES-ADAPT-ENFORCE-001-PLAN.md`.
 >
-> **Still deferred (the framework-level / H-7 remainder):** structural *enforcement*
-> of `active_layers` (actual layer skipping) and `section_toggles` (template
-> mutation) — the `active_layers` cascade lives in the **byte-identical vendored
-> `sdd_doc_lint`** (drift-guarded), so it is a **framework** change (both platforms),
-> not a Hermes-only plan; and `quality_loop_max_iterations` (Hermes has no outer
-> review→remediate loop yet — that is **H-7**). Pull the cascade with a framework
-> initiative and the loop-cap with the H-7 multi-iteration review-loop work.
+> **`active_layers` cascade ALSO shipped (2026-07-10, ACTIVE-LAYERS-CASCADE-001, GD-07,
+> framework spec `0.37.0`):** the reference lint (`tools/sdd_doc_lint`, re-vendored to
+> both platforms) now reads `.aidoc/profile.yaml active_layers` and stops demanding a
+> disabled skippable layer's upstream tag (TAG01) downstream — the framework-tier
+> cascade this H-16 note called out. Ratified as a framework MINOR under GATE-SPEC.
+> Plan: `plans/ACTIVE-LAYERS-CASCADE-001-PLAN.md`.
+>
+> **Still deferred (H-7):** `quality_loop_max_iterations` (Hermes has no outer
+> review→remediate loop yet — that is **H-7**). `section_toggles` structural
+> enforcement stays out as a confirmed no-op (optional sections are already excluded
+> from STRUCT01). The adaptation-surface enforcement of H-16 is otherwise complete:
+> `review_mode` + `glossary`/`section_toggles`/`active_layers` prompt injection
+> (PR-ADAPT) + `audit_threshold` gate (HERMES-ADAPT-ENFORCE-001) + this cascade.
 
 **Source:** 2026-07-09 four-agent Hermes review (`HERMES-REVIEW-001`).
 

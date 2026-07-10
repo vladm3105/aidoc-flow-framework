@@ -15,7 +15,12 @@ import argparse
 import sys
 from pathlib import Path
 
-from . import lint_path
+from . import (
+    compute_disabled_skippable,
+    find_profile,
+    lint_path,
+    load_active_layers,
+)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -46,17 +51,35 @@ def main(argv: list[str] | None = None) -> int:
         help="suppress the forward-coverage gate entirely (CFB-PR-2 DD-9 — the "
         "transient-migration escape hatch)",
     )
+    parser.add_argument(
+        "--active-layers",
+        default=None,
+        help="CSV of active layers (overrides `.aidoc/profile.yaml` discovery); a "
+        "disabled skippable layer (BDD/ADR) is not demanded downstream "
+        "(ACTIVE-LAYERS-CASCADE-001)",
+    )
     args = parser.parse_args(sys.argv[1:] if argv is None else argv)
+
+    override = None
+    if args.active_layers is not None:
+        override = frozenset(x.strip().lower() for x in args.active_layers.split(",") if x.strip())
 
     findings = []
     try:
         for arg in args.paths:
+            path = Path(arg)
+            if override is not None:
+                active_layers = override
+            else:
+                profile = find_profile(path)
+                active_layers = load_active_layers(profile) if profile else None
             findings.extend(
                 lint_path(
-                    Path(arg),
+                    path,
                     registry=args.registry,
                     mode=args.mode,
                     skip_coverage=args.skip_coverage_gate,
+                    disabled_skippable=compute_disabled_skippable(active_layers),
                 )
             )
     except OSError as exc:

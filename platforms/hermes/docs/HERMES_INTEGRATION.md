@@ -478,7 +478,7 @@ If you are migrating from a pre-UCX V3 runtime:
 
 | Component | Required Version |
 |-----------|-----------------|
-| Hermes MCP Server (`hermes-server`) | `hermes/v0.7.3`+ (spec `0.36.2`) |
+| Hermes MCP Server (`hermes-server`) | `hermes/v0.10.0`+ (spec `0.37.0`) |
 | Hermes Agent | Any with MCP support |
 | ucx-sdd-bridge skill | v1.1.1+ |
 | Python | `>=3.12` |
