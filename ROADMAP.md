@@ -31,7 +31,7 @@ permanent asymmetry.
 Near-term, in-flight work.
 
 - **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
-  (framework `0.35.1`). Hermes already has team-mode + 8-layer playbook injection +
+  (framework `0.36.2`). Hermes already has team-mode + 8-layer playbook injection +
   saga conformance (D-0045…D-0053; the whole 0.32.x arc is auto-satisfied via its
   vendored `sdd_doc_lint` + shared templates). The residual items are small doc/skill
   deltas — **H-11c** (SHA-256 residue, now unblocked by PROVISIONAL-IDS-002) + the
