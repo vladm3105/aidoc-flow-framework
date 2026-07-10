@@ -1,23 +1,45 @@
-# CI runs on GitHub-hosted runners — this is a PUBLIC repo. Do NOT switch to self-hosted:
-# no cost benefit (public-repo Actions minutes are free) + a fork PR could run code on the
-# host. The ephemeral self-hosted runner is for PRIVATE repos only. Ref: aidoc-flow-operations IPLAN-0012.
-name: Labeler
+# Caller template for aidoc-flow-ci's reusable labeler workflow.
+#
+# Drop this at .github/workflows/labeler.yml in the consumer repo.
+# Requires a per-repo .github/labeler.yml config (path -> label map).
+# A starter config is shipped at install/templates/labeler.yml in
+# aidoc-flow-ci — copy + adapt to your repo's path layout.
+#
+# Visibility: single template (works for both PRIVATE + PUBLIC). The
+# default runner is ubuntu-latest (cheap; labeler only reads PR
+# metadata + writes labels via gh-token). PRIVATE consumers may
+# override `runner_labels` to '"runner-self"' to keep CI on the
+# self-hosted pool per OPS-0049 (no GitHub-hosted minutes for private).
+
+name: labeler
 
 on:
-  pull_request:
+  # pull_request_target (NOT pull_request): labeler needs `pull-requests: write`
+  # to apply labels, but `pull_request` downgrades GITHUB_TOKEN to read-only on
+  # fork PRs, so labeling fails. pull_request_target runs with the base repo's
+  # write token. SAFE here because the labeler reusable is JUST actions/labeler
+  # — it reads the base's `.github/labeler.yml` + the PR's changed-file list via
+  # the API; it does NOT check out or execute PR code. (PLAN-004 B3.)
+  pull_request_target:
 
 permissions:
   contents: read
   pull-requests: write
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # Key on the PR number, not github.ref: under pull_request_target github.ref
+  # is the BASE branch (identical for every open PR), so a ref-keyed group with
+  # cancel-in-progress would cancel OTHER PRs' in-flight labeler runs → PRs
+  # randomly left unlabeled. (PLAN-004 B3 review.)
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  label:
-    name: Auto-label by path
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/labeler@v6
-        # Reads .github/labeler.yml. Labels must already exist in the repo.
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/labeler.yml@ci/v1.8.1
+    permissions:
+      contents: read
+      pull-requests: write
+    # Override the default for PRIVATE consumers:
+    # with:
+    #   runner_labels: '"runner-self"'

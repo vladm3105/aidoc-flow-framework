@@ -1,6 +1,6 @@
 # Caller for vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml.
 # PUBLIC consumer variant — uses ubuntu-latest runners.
-# Pinned at @ci/v1.5.1 per IPLAN-0030 P3 rollout.
+# Auto-merge enforcer added in ci/v1.5.0 (IPLAN-0030 P3); the caller pin is the uses: line below.
 #
 # The reusable is the server-side enforcer for AI-opened PRs
 # (OPS-0062 deferred companion). It detects stuck-green PRs
@@ -50,7 +50,7 @@ jobs:
     # failed ai-review or composition), but this saves the runner slot
     # entirely (per OPS-0065 security-auditor recommendation).
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v1.5.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v1.8.1
     with:
       # `||` fallback per Workflow-tool expression semantics: returns
       # the first truthy operand. workflow_run path resolves the LHS;
@@ -59,4 +59,8 @@ jobs:
       # step 1 exits clean (per the reusable's fork-PR handling).
       pr_number: ${{ github.event.workflow_run.pull_requests[0].number || inputs.pr_number || '' }}
       runner_labels: '["ubuntu-latest"]'
+      # External adopters: MUST match ai-review.yml's trust config repo/ref.
+      # Defaults to vladm3105/aidoc-flow-operations@main.
+      # trust_config_repo: your-org/your-ops-repo
+      # trust_config_ref: main
     secrets: inherit  # pragma: allowlist secret
