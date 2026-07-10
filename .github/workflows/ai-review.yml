@@ -1,68 +1,15 @@
-# Pinned at @ci/v1.3.0 per IPLAN-0027 P4 (bundled Phase-2 release with
-# IPLAN-0026 P8). v1.3.0's reusable adds an R3 early-exit step at the
-# top of the ai-review job: gh-api queries existing reviews; if the
-# reviewer App has already APPROVED the current HEAD SHA, sets
-# SKIP_REVIEW=1 + SKIP_REASON=r3 via $GITHUB_ENV so downstream heavy
-# steps skip via their existing if: env.SKIP_REVIEW != '1' guards.
-# Saves ~$0.10-0.20 + ~2-3 min per redundant re-fire (typical case:
-# label-cycle-retriggered ai-review after the App had already approved
-# the same HEAD). Fail-OPEN on persistent gh-api failure (7-retry x
-# backoff capped at 20s); HEAD-SHA-tied; INERT when App not armed.
-# Force-fresh-review path (when fresh review needed at the same HEAD):
-# dismiss the App's prior review via gh-api per
-# aidoc-flow-ci/docs/troubleshooting.md §15 (ci/v1.3.0+).
-# Consumer caller shape unchanged — R3 lives entirely inside the
-# reusable; pin bump activates it automatically.
-#
-# Prior @ci/v1.2.0 per IPLAN-0026 P5 — reusable's composition body
-# refactored to handle BOTH event shapes (pull_request_review +
-# workflow_run) via ||-fallback expressions (Phase 1 mechanism).
-#
-# Also inherits @ci/v1.1.7 — defensive `bash -e` + assignment-with-
-# failing-command-substitution guard around the App-token auto-merge
-# `merge_err` capture (aidoc-flow-ci PR #38; surfaced on operations
-# PR #152). Framework was carrying the same latent bug at v1.1.6;
-# the v1.1.6 → v1.3.0 jump silently activates this defensive fix.
-#
-# Prior @ci/v1.1.6 — adds the auto-merge anti-recursion fix (aidoc-
-# flow-ci PR #37). Auto-merge now authenticated as the reviewer App
-# (APP_TOKEN) instead of the default GITHUB_TOKEN, so the App-authored
-# merge commit triggers downstream push: workflows on every routine
-# auto-merged PR. Discovered 2026-06-27 via IPLAN-0018 docs-sync
-# verification on operations PRs #149 + #150. v1.1.6 has a graceful
-# fallback to GITHUB_TOKEN if the App lacks `contents: write` (PR still
-# merges; push: workflows stay suppressed until permission is added;
-# operator-visible ::warning::). Framework currently has no push:
-# workflows depending on the fix — adopting v1.1.6 keeps framework in
-# version-lockstep with operations + readies the consumer for future
-# push: workflows.
-#
-# Prior @ci/v1.1.5 per IPLAN-0024 (operations PR #145 + aidoc-flow-ci
-# PR #36 + operations P3 PR #148) — replaced cross-repo `actions/
-# checkout` with `curl` for cross-repo rubric/schema/config fetches,
-# eliminating the v1.1.0→v1.1.3 sparse-checkout / clean-flag / INIT-
-# time-content-delete bug class. Framework P4 (PR #183) was the
-# CRITICAL validation on GitHub-hosted runners (ubuntu-latest) — the
-# bug-class home that v1.1.0-v1.1.3 couldn't escape. Per IPLAN-0022
-# PR-C reviewer rubric + schema live at aidoc-flow-ci/ai-review/ (no
-# longer in operations@main); per-consumer config.json still comes
-# from operations@main (transitional; per-consumer-from-each-consumer-
-# repo move tracked as a follow-up IPLAN).
-#
-# Prior @ci/v1.1.3 was — IPLAN-0022 PR-A sparse-checkout pattern hot-fix
-# lineage (aidoc-flow-ci PR #29 + #33; cone-mode → full-clone →
-# clean: false saga). Superseded by IPLAN-0024 mechanism-level fix.
-#
-# Prior @ci/v1.0.5 — first PUBLIC consumer of aidoc-flow-ci
-# (framework Phase A 2026-06-24). The reusable ai-review.yml installs
-# codex + claude CLI at workflow start when runner_labels_review
-# contains "ubuntu-latest" (no-op on self-hosted runners that have
-# the CLI pre-baked).
+# v1.0.2: public consumers can use ubuntu-latest. The reusable
+# ai-review.yml installs codex + claude CLI at workflow start when
+# runner_labels_review contains "ubuntu-latest" (no-op on self-hosted
+# runners that have the CLI pre-baked). See ci/v1.0.2 CHANGELOG and
+# docs/troubleshooting.md §10 for context. Install commands are
+# **unverified-in-CI** as of v1.0.2 ship; first PUBLIC consumer
+# adoption will validate. Report issues at vladm3105/aidoc-flow-ci.
 #
 # Secrets required (consumer adds to repo secrets):
 #   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
-#   ANTHROPIC_API_KEY                        if reviewer: claude (active)
 #   OPENAI_API_KEY                           if reviewer: codex
+#   ANTHROPIC_API_KEY                        if reviewer: claude
 #
 # `pull_request_target` (not `pull_request`) is required because the
 # trust gate needs write-capable credentials to apply labels/comments
@@ -76,20 +23,39 @@ on:
     types: [opened, synchronize, reopened, labeled, unlabeled]
   pull_request_review:
     types: [submitted]
-# Caller-level permissions required because framework's repo-default workflow
-# permissions is `read` — the reusable workflow declares write-level
-# permissions but a callee cannot elevate above the caller. Mirror what
-# operations' standalone ai-review.yml declares (operations works today
-# because its standalone workflow declares these directly).
+
+# Caller-level permissions set the ceiling for the reusable. The canon repo
+# default is `read` (install/templates/actions-permissions.json), and the
+# reusable requests contents/pull-requests/issues: write — so WITHOUT this
+# block the reusable exceeds the caller grant and fails at load
+# (startup_failure, zero jobs) on any consumer under the read default. Scopes
+# match the reusable's own declaration (ai-review.yml). Safe under
+# pull_request_target because the reusable is diff-only: the heavy review job
+# fetches the diff via curl and never `actions/checkout`s the PR head into this
+# write-capable context (the sole checkout is the trust gate reading the
+# trust-config repo). Keep it diff-only if the reusable is ever edited.
 permissions:
-  contents: write        # auto-merge
-  pull-requests: write   # review comment, labels, merge
-  issues: write          # labels
+  contents: write        # reusable auto-merge fallback (gh pr merge via GITHUB_TOKEN)
+  pull-requests: write   # trust-gate + verdict comments + label set
+  issues: write          # gh api label create/apply paths
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.5.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.8.1
     with:
-      reviewer: claude
+      # reviewer engine is CONFIG-DRIVEN: leave this unset and the reusable reads
+      # `.reviewer` (claude|codex) from your trust-config repo's
+      # .github/ai-review/config.json (operations@main by default; your own repo if
+      # you set trust_config_repo). Set the matching auth secret — claude:
+      # CLAUDE_CODE_OAUTH_TOKEN (CLI) or ANTHROPIC_API_KEY (API); codex:
+      # OPENAI_API_KEY. Uncomment to force an engine here regardless of config:
+      # reviewer: claude
       runner_labels_routine: '"ubuntu-latest"'
       runner_labels_review: '"ubuntu-latest"'
+      # External adopters: point the trust config at YOUR ops/config repo
+      # (holds `.github/ai-review/config.json`). Defaults to
+      # vladm3105/aidoc-flow-operations@main.
+      # trust_config_repo: your-org/your-ops-repo
+      # trust_config_ref: main
+      # NOTE: this override does NOT yet reach the composition gate, which reads
+      # the consumer repo's own .github/ai-review/config.json@main (FT-6).
     secrets: inherit  # pragma: allowlist secret

@@ -1,11 +1,19 @@
-# CI runs on GitHub-hosted runners — this is a PUBLIC repo. Do NOT switch to self-hosted:
-# no cost benefit (public-repo Actions minutes are free) + a fork PR could run code on the
-# host. The ephemeral self-hosted runner is for PRIVATE repos only. Ref: aidoc-flow-operations IPLAN-0012.
+# Caller template for aidoc-flow-ci's reusable pre-commit workflow.
+#
+# Single template (works for both PRIVATE + PUBLIC). The reusable
+# workflow uses ubuntu-latest by default. PRIVATE consumers per
+# OPS-0049 may override runner_labels to '"runner-self"'.
+#
+# Requires .pre-commit-config.yaml in the consumer repo root. The
+# workflow runs all hooks against all files via
+# `pre-commit run --all-files`.
+
 name: pre-commit
 
 on:
-  push:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -15,24 +23,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pre-commit:
-    name: Lint / format / security hooks
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-
-      # The local 'conformance' hook runs the suite via system python.
-      - name: Install pre-commit + conformance deps
-        run: pip install pre-commit -r tests/conformance/requirements.txt
-
-      - name: Run hooks
-        run: pre-commit run --all-files --show-diff-on-failure
-
-      # Dependency vulnerability audit (manual stage — not run on every commit).
-      - name: Dependency audit (pip-audit)
-        run: pre-commit run --all-files --hook-stage manual pip-audit
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/pre-commit.yml@ci/v1.8.1
+    with:
+      python-version: '3.12'
+      # Override examples:
+      # extra-deps: '-r tests/conformance/requirements.txt'
+      # runner_labels: '"runner-self"'   # PRIVATE per OPS-0049

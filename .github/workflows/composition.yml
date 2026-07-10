@@ -1,41 +1,29 @@
-# Caller for vladm3105/aidoc-flow-ci/.github/workflows/composition.yml.
-# Pinned at @ci/v1.3.0 per IPLAN-0026 P8 (Phase 2). The reusable handles
-# BOTH event shapes (pull_request_review + workflow_run) via ||-fallback
-# expressions in its env block (shipped in aidoc-flow-ci PR #39 / v1.2.0).
-# Phase 2 (ci/v1.3.0, aidoc-flow-ci PR #41) drops pull_request_target from
-# the install template; this caller mirrors the drop. Composition now
-# fires only on real state changes:
-#   - pull_request_review (submitted/dismissed/edited): App reviewer's
-#     APPROVED/REQUEST_CHANGES posted at HEAD.
-#   - workflow_run (ai-review completed, any conclusion): the consumer's
-#     ai-review caller workflow finished — success / failure / skipped /
-#     cancelled.
-# No more wasted early-fire `pull_request_target` run on PR open. The
-# stale-red FAILURE that branch-protection's rollup retained until a
-# `skip-ai-review` label-cycle is GONE.
+# IPLAN-0026 Phase 2 (ci/v1.3.0): dropped `pull_request_target` trigger
+# from the recommended install-template set. Phase 1 (ci/v1.2.0) shipped
+# the `workflow_run` mechanism alongside `pull_request_target` for safety
+# during the transition. Phase 2 drops `pull_request_target` and delivers
+# the actual friction relief. See composition-private.yml for the full
+# rationale. Public-repo variant uses `ubuntu-latest`.
 #
-# Force-fresh-review path (when the App approval should be re-evaluated
-# at the same HEAD): dismiss the App's prior review via gh-api per
-# aidoc-flow-ci/docs/troubleshooting.md §15 (ci/v1.3.0+).
+# The fully-superseded Phase-1 trigger set (KEPT here as commit history for
+# reference) was:
+#   pull_request_target:
+#     types: [opened, synchronize, reopened, labeled, unlabeled]
+# Existing public consumers can still locally override and re-add it if
+# their flow depends on it; the Phase-2 install template no longer
+# inherits it.
 name: composition
 on:
   pull_request_review:
     types: [submitted, dismissed, edited]
   workflow_run:
-    # Fires AFTER this repo's `ai-review` caller workflow completes (any
-    # conclusion — success / failure / skipped / cancelled via the default
-    # `types: [completed]`). The load-bearing trigger for Phase-2: every
-    # composition fire is now event-causal from ai-review, not from PR-open.
+    # Fires AFTER consumer's `ai-review` caller completes (any conclusion).
+    # See composition-private.yml for full rationale.
     workflows: ["ai-review"]
     types: [completed]
-# Caller-level permissions — see ai-review.yml header for rationale.
-# composition only needs read scopes.
-permissions:
-  pull-requests: read
-  contents: read
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.5.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.8.1
     with:
       runner_labels: '"ubuntu-latest"'
     secrets: inherit  # pragma: allowlist secret

@@ -1,48 +1,95 @@
+# dependabot.yml — canonical shape per docs/REPO_STANDARDS.md §6.
+#
+# Multi-ecosystem: enable only ecosystems present in the target repo.
+# Weekly cadence + grouped patch/minor to reduce CI churn; major bumps
+# get individual PRs for breaking-change scrutiny.
+#
+# Auto-merge policy: Dependabot PRs pass through ai-review.yml +
+# composition.yml + auto-merge-ai-prs.yml on green per the repo's
+# auto_merge.repos allowlist in operations config.json. Governance-
+# tier repos do NOT auto-merge Dependabot PRs — human merge only.
+
 version: 2
 updates:
-  # Python — Hermes MCP server (pyproject.toml)
-  - package-ecosystem: "pip"
-    directory: "/platforms/hermes"
+  # Every repo: bump reusable-workflow uses: pins.
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: weekly
+      day: monday
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "deps"
     groups:
-      python:
-        patterns:
-          - "*"
+      github-actions:
+        applies-to: version-updates
         update-types:
-          - "minor"
-          - "patch"
+          - minor
+          - patch
+    labels:
+      - dependencies
 
-  # Python — shared conformance suite (requirements.txt)
-  - package-ecosystem: "pip"
-    directory: "/tests/conformance"
+  # Python — enable only if the repo has a pyproject.toml or
+  # requirements*.txt at /. Extend `directory` if the code lives in a
+  # subpath (e.g. `/service`).
+  - package-ecosystem: pip
+    directory: /
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: weekly
+      day: monday
     open-pull-requests-limit: 5
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "deps"
-
-  # GitHub Actions workflows
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 3
-    labels:
-      - "dependencies"
-    commit-message:
-      prefix: "ci"
     groups:
-      actions:
+      python-runtime:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies
+
+  # Node / JS — enable only if the repo has a package.json at /.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      javascript-runtime:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies
+
+  # Docker — enable only if the repo has a Dockerfile at / or /docker.
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 3
+    groups:
+      docker-baseimages:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+    labels:
+      - dependencies
+
+  # Git submodules — umbrella tier only (aidoc-flow). Remove this
+  # entry on non-umbrella repos.
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 10
+    groups:
+      submodules:
+        applies-to: version-updates
         patterns:
           - "*"
+    labels:
+      - dependencies
+      - submodules
