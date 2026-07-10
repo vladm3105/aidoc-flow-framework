@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-REVIEW-001                           |
 | Type           | bugfix                                      |
-| Status         | PLANNED — 2026-07-09                        |
+| Status         | ✅ COMPLETE — 2026-07-10 (all 5 PRs merged: #290 #291 #292 #293 #294) |
 | Depends on     | 2026-07-09 four-agent Hermes review (working copy `tmp/REVIEW-2026-07-09_hermes.md`; this plan is self-contained) |
 | Feeds          | Hermes at genuine spec-`0.36.2` parity on the authoring/runtime surfaces (not just the lint); the Hermes-parity arc (`plans/HERMES-BACKLOG.md`) |
 | Version impact | Hermes stream only (independent of framework/plugin): PATCH ×2 (PR-DOCS, PR-CODE); MINOR (PR-BDD — new authoring form + conformance guard); MINOR (PR-ADAPT); PR-BL none. No `framework/VERSION` change. |
@@ -240,3 +240,31 @@ symbols) passed.
 **Result:** ready. Ledger has zero UNVERIFIED rows; three independent
 fresh-context passes drove the load-bearing count to zero; the final fold was a
 placement-consistency correction with no new source claims.
+
+## Implementation log
+
+### 2026-07-10 — all 5 PRs shipped
+
+Executed as 5 sequential PRs, each with author-side adversarial review before push
+and merge-on-green:
+
+- **PR-BL #290** — HERMES-BACKLOG corrections (banner partial-retraction; new H-15
+  BDD + H-16 adaptation; H-4/H-5 framing). No version bump. Review clean.
+- **PR-DOCS #291** — docs/version drift sweep (D1-D7). VERSION stayed `0.7.3`
+  (corrected drift to the already-current version + cut the `[0.7.3]` changelog
+  section); extended `sync-version-refs.sh` to cover the Hermes pyproject + README
+  version blocks (closed FRAMEWORK-TODO `HERMES-README-VERSION-DRIFT`). Two reviews clean.
+- **PR-CODE #292** — 6 MCP source fixes (C1-C6) → `0.7.4`, each with a regression
+  test; C1 threading.Lock validated against the old asyncio.Lock design. Review
+  surfaced + folded one finding (C5 partial-failure now surfaced on `CleanResult.failed`).
+- **PR-BDD #293** — native BDD authoring → YAML-BDD (B1-B7) → `0.8.0`, closing H-15;
+  new Hermes-side structural drift guard. Adversarial review folded one finding
+  (PARITY provenance lines corrected to true ship versions + de-literalized so the
+  sync hook can't sweep them).
+- **PR-ADAPT #294** — `.aidoc/profile.yaml` runtime consumption (A1/A2) → `0.9.0`,
+  partly closing H-16 (structural enforcement of active_layers/section_toggles +
+  audit_threshold gate + quality_loop_max_iterations deferred as the H-16 follow-up).
+  Review folded one finding (non-UTF-8 profile now falls back instead of crashing).
+
+Final state: hermes `0.9.0`; 544 hermes pytest + 193 conformance green. No
+`framework/VERSION` change (Platform-A-only initiative, as scoped).
