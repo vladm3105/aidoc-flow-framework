@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Hermes `0.7.3 → 0.7.4` MCP source fixes — HERMES-REVIEW-001 PR-CODE (2026-07-10)
+
+- **Six correctness/hygiene fixes in the Hermes MCP server** from the 2026-07-09
+  review, each with a regression test where behavior changes: **C1 (H2)** the
+  API-executor env lock is now a module-global `threading.Lock` (the lazily-created
+  `asyncio.Lock` raised `RuntimeError: bound to a different event loop` under the
+  saga's cross-thread `ThreadPoolExecutor`/`asyncio.run` contention; acquire site
+  `async with` → `with`, factory collapsed) + cross-thread regression test; **C2
+  (M2)** `write_versioned_report_atomic` uses `os.open(O_CREAT|O_EXCL)` instead of
+  the exists()-then-`os.replace` TOCTOU + concurrent-writer test; **C3 (L1)**
+  `datetime.now(UTC)` replaces deprecated `datetime.utcnow()`; **C4 (M3)** the
+  blocking saga call is offloaded via `await asyncio.to_thread(...)` so it no longer
+  blocks the MCP event loop; **C5 (L2)** cleanup unlinks first and records deletion
+  only on success (no half-done batch / false claims); **C6 (L3)** removed dead
+  scoring-runner code + annotated the TDD/IPLAN fail-closed readiness gate. Hermes
+  stream only.
+
 ### Fixed — Hermes `0.7.3` docs/version drift sweep — HERMES-REVIEW-001 PR-DOCS (2026-07-10)
 
 - **Reconciled active-facing Hermes docs to the real `0.7.3` / spec `0.36.2`

@@ -91,11 +91,6 @@ def _extract_readiness_gate(report_payload: dict[str, object]) -> tuple[str | No
         return doc_type, None
 
     field = "iplan_ready_score"
-    checks = report_payload.get("checks", {})
-    if isinstance(checks, dict):
-        required = checks.get("required_custom_fields", [])
-        if isinstance(required, list):
-            pass
 
     # score field is resolved from document payload via validation messages, so inspect passes/warnings/errors text
     for bucket_name in ("passes", "warnings", "errors"):
@@ -143,6 +138,10 @@ def validate_score(*, report_file: Path, threshold: int) -> ScoreValidateResult:
     readiness_gate = None
 
     if doc_type in {"tdd", "iplan"}:
+        # TDD/IPLAN carry a hard readiness gate (>= 90). Fail-closed by intent:
+        # if the readiness score can't be extracted from the report
+        # (readiness_value is None), the gate does NOT pass — a missing/unparseable
+        # readiness signal is treated as "not ready", never silently waved through.
         effective_threshold = max(threshold, 90)
         readiness_gate = {
             "doc_type": doc_type,

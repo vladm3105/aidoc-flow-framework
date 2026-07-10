@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import threading
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -62,3 +63,57 @@ def test_write_versioned_report_atomic_fails_after_bounded_retries() -> None:
         for path in sorted(tmp_path.glob("*")):
             path.unlink()
         tmp_path.rmdir()
+
+
+def test_write_versioned_report_atomic_concurrent_writers_get_unique_versions(
+    tmp_path: Path,
+) -> None:
+    """Regression for HERMES-REVIEW-001 C2 (M2).
+
+    ``write_versioned_report_atomic`` now allocates versions via
+    ``os.open(O_CREAT|O_EXCL)`` instead of the check-then-``os.replace`` TOCTOU.
+    Many threads racing on the same ``report_dir`` must each win a *distinct*
+    version file — none overwritten, none lost, no exceptions.
+    """
+
+    writer_count = 12
+
+    def _factory(version: int) -> str:
+        return str(build_family_report_name(doc_id="SPEC-006", family="audit", version=version))
+
+    results: list[Path] = []
+    errors: list[BaseException] = []
+    guard = threading.Lock()
+    start = threading.Barrier(writer_count)
+
+    def _worker(idx: int) -> None:
+        try:
+            start.wait()  # release all writers together to maximize contention
+            path = write_versioned_report_atomic(
+                report_dir=tmp_path,
+                report_name_factory=_factory,
+                content=f"payload-{idx}",
+                max_attempts=writer_count + 5,
+            )
+            with guard:
+                results.append(path)
+        except BaseException as exc:  # noqa: BLE001 — capture for assertion
+            with guard:
+                errors.append(exc)
+
+    threads = [threading.Thread(target=_worker, args=(i,)) for i in range(writer_count)]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join(timeout=15)
+
+    assert not any(t.is_alive() for t in threads), "a concurrent writer hung"
+    assert not errors, f"concurrent versioned writes raised: {errors!r}"
+    assert len(results) == writer_count
+    # Every writer won a distinct path (no two allocated the same version).
+    assert len({str(p) for p in results}) == writer_count
+    # Every allocated file exists on disk with intact content (no lost/partial writes).
+    on_disk = sorted(p for p in tmp_path.iterdir() if p.is_file())
+    assert len(on_disk) == writer_count
+    for path in on_disk:
+        assert path.read_text(encoding="utf-8").startswith("payload-")
