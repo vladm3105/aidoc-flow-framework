@@ -16,6 +16,36 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.9.0] — 2026-07-10
+
+### Added
+
+- **`.aidoc/profile.yaml` runtime consumption — minimum honest (HERMES-REVIEW-001
+  PR-ADAPT, D-0038 adaptation surface; `0.8.0 → 0.9.0`).** Hermes never read the
+  spec's declared single adaptation input at runtime (M1/M7); now it does:
+  - New `mcp_server/profile.py` — `load_project_profile(project_root)` reads
+    `<root>/.aidoc/profile.yaml`, parses all 6 `ADAPTATION_SURFACE.yaml` knobs, and
+    applies the spec-mandated graceful fallback on missing-file / missing-field /
+    malformed-value (each knob defaults independently). Wired into
+    `ProjectContext.resolve` as a `profile` field alongside env / executor config.
+  - **A2 — `review_mode` reconciled.** The `sdd_review` tool now accepts the spec
+    vocabulary `team` / `single_pass` as aliases for `saga_parallel` / `prompt_only`
+    (schema enum + normalization). When the arg is omitted, a profile that
+    _explicitly_ declares `review_mode` is honored; otherwise the existing
+    `prompt_only` default holds (a profile present only for e.g. a glossary does not
+    silently flip the review mode).
+  - **A1 — prompt-injectable authoring knobs.** The creation prompt now injects a
+    `## Project Adaptation Profile` block via `context_builder` carrying `glossary`
+    (terminology), the layer-scoped `section_toggles` (which optional sections to
+    author / skip), and `active_layers`. Unprofiled projects are byte-identical to
+    before (empty block → omitted).
+
+  **Deferred to a follow-up (see HERMES-BACKLOG H-16):** structural _enforcement_ of
+  `active_layers` (layer skipping) and `section_toggles` (template mutation), the
+  `audit_threshold` gate (its raise-only semantics need reconciling with
+  `profile_contracts.resolve_threshold_precedence`'s override semantics), and
+  `quality_loop_max_iterations` (Hermes has no outer review→remediate loop yet — H-7).
+
 ## [0.8.0] — 2026-07-10
 
 ### Changed

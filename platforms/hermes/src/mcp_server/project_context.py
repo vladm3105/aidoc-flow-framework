@@ -11,6 +11,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from mcp_server.profile import ProjectProfile, load_project_profile
+
 logger = logging.getLogger(__name__)
 
 _session_project: Path | None = None
@@ -105,6 +107,7 @@ class ProjectContext:
     executor_overrides: dict = field(default_factory=dict)
     # executor_overrides typed as dict (not dict[str, ExecutorConfig]) to avoid
     # circular import — registry.py imports are deferred to resolve().
+    profile: ProjectProfile = field(default_factory=ProjectProfile)
 
     @staticmethod
     def resolve(project_arg: str | None) -> ProjectContext | None:
@@ -123,4 +126,5 @@ class ProjectContext:
             project_root=project_root,
             project_env=load_project_env(project_root),
             executor_overrides=load_project_executor_config(project_root),
+            profile=load_project_profile(project_root),
         )

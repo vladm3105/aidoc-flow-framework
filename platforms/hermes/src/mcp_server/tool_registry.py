@@ -650,8 +650,8 @@ TOOLS: list[Tool] = [
                 },
                 "review_mode": {
                     "type": "string",
-                    "enum": ["prompt_only", "saga_parallel"],
-                    "description": "Review execution mode. saga_parallel enables saga journal/reducer scaffolding (parallel scheduler controls are forward-compatible).",
+                    "enum": ["prompt_only", "saga_parallel", "team", "single_pass"],
+                    "description": "Review execution mode. saga_parallel enables saga journal/reducer scaffolding. The framework ADAPTATION_SURFACE vocabulary is also accepted: `team` (alias of saga_parallel) and `single_pass` (alias of prompt_only). When omitted, a project `.aidoc/profile.yaml` that declares review_mode is honored; otherwise defaults to prompt_only.",
                     "default": "prompt_only",
                 },
                 "max_parallel_branches": {
@@ -1434,6 +1434,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             template_name=arguments["template"],
             sections=_build_sections(arguments),
             output_dir=output_dir,
+            profile=ctx.profile if ctx else None,
         )
         det_result = _serialize_result(result)
         # NOTE: AI executor for auto-creation has been disabled.
@@ -1464,6 +1465,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             sections=_build_sections(arguments),
             output_dir=output_dir,
             overwrite=arguments.get("overwrite", False),
+            profile=ctx.profile if ctx else None,
         )
         return _serialize_result(result)
 
@@ -1472,7 +1474,22 @@ async def _dispatch(name: str, arguments: dict) -> dict:
         from mcp_server.review import run_project_review_build, run_project_review_build_saga
 
         project_root = ctx.project_root
-        review_mode = arguments.get("review_mode", "prompt_only")
+        # review_mode resolution (HERMES-REVIEW-001 A2): accept the spec vocabulary
+        # (`team`/`single_pass`) as aliases for Hermes's internal
+        # `saga_parallel`/`prompt_only`; when the arg is omitted, honor a profile
+        # that *explicitly* declares review_mode, otherwise keep the prompt_only
+        # tool default (a profile present only for e.g. glossary does not silently
+        # flip the review mode).
+        from mcp_server.profile import REVIEW_MODE_ALIAS
+
+        raw_review_mode = arguments.get("review_mode")
+        if raw_review_mode is None:
+            if ctx and ctx.profile.review_mode_declared:
+                review_mode = ctx.profile.hermes_review_mode
+            else:
+                review_mode = "prompt_only"
+        else:
+            review_mode = REVIEW_MODE_ALIAS.get(raw_review_mode, raw_review_mode)
         if review_mode == "saga_parallel":
             executor_name = arguments.get("executor") or "api/openrouter"
         else:
