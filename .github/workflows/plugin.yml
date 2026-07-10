@@ -25,7 +25,7 @@ jobs:
     name: Plugin smoke checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@v7.0.0
 
       - name: Validate plugin manifest is JSON
         run: python -m json.tool < platforms/claude-code-plugin/.claude-plugin/plugin.json
