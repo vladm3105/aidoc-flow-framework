@@ -47,18 +47,25 @@
   framework-spec handling), and added a conformance guard
   (`test_claude_md_current_state_matches_plugin_version`) so re-drift fails CI.
 
-### `[skill]` `SKILL-DEDUP-001` — 36 per-layer skills are ~57% duplicated boilerplate (≈7,800 lines)
+### `[skill]` `SKILL-DEDUP-001` — ⏸ PARKED (2026-07-09, founder decision) — 36 per-layer skills share duplicated boilerplate
 
 - Context: FRWK-REVIEW-002 skill-redundancy review. The 4 families × 9 layers
-  (`doc-*` / `-audit` / `-fixer` / `-autopilot`) share near-identical saga /
-  break-circuit / adaptation / report-format blocks; PR-A fixed the drift
-  *instances* but not the duplication *class*. Also absorbs A7 (cosmetic
-  autopilot-wording normalization, deferred from PR-A) and L16 (quality-advisor
+  share near-identical saga / break-circuit / adaptation / report-format blocks;
+  PR-A fixed the drift *instances* but not the duplication *class*. Also would
+  absorb A7 (cosmetic autopilot-wording normalization) and L16 (quality-advisor
   re-implements the audits' Structural-Checklist checks with no shared source).
-- Fix shape: generate the 36 per-layer `SKILL.md` from one template per family +
-  a per-layer parameter block (precedent: `sync-version-refs.sh` already rewrites
-  all 52 frontmatters), and/or move engine-generic blocks into the governance docs
-  the skills already cite. Promote to `→ SKILL-DEDUP-001-PLAN.md` before building.
+- **Parked.** Drafted `→ SKILL-DEDUP-001-PLAN.md`; the **template-generation
+  approach was rejected** by independent review — the per-layer skills are NOT
+  ~96% boilerplate (chg-audit ≈60% identical to prd-audit; crew weights, lens
+  maps, and layer-specific checklists genuinely differ), so whole-file generation
+  can't reach byte-identity without the "template" degenerating into per-layer
+  content. The motivating drift is already fixed (PR-A); this is now a
+  maintainability-only concern, not a live problem. **Do not re-investigate the
+  template-generation approach.** If revisited, the candidate is **shared-section
+  extraction** (dedup only the ~90-line identical blocks into a shared reference
+  the skills cite; trade-off: a runtime `Read` per invocation) — needs a fresh
+  founder decision + redraft. See the plan's Review-log Pass 2 for the full
+  measurement.
 
 ### `[skill]` `DEPRECATED-STUB-REMOVAL-V1` — remove `doc-review` / `trace-check` stubs at v1.0.0
 
