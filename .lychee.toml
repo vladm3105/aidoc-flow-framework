@@ -1,0 +1,9 @@
+# lychee config — framework. Excludes platforms/** (deep platform/skill docs)
+# + examples/** (system-under-test corpora, maintained by framework agents,
+# never hand-edited) + tests/** from link checking. These carry pre-existing
+# internal-link debt tracked in plans/FRAMEWORK-TODO.md. The links gate covers
+# hand-maintained top-level docs (README, docs, plans, CHANGELOG, ai_dev_flow).
+# exclude_path skips those dirs as SOURCES; exclude skips durable-doc links
+# that POINT into them (e.g. CHANGELOG → examples/…).
+exclude_path = ["platforms", "examples", "tests"]
+exclude = ["/platforms/", "/examples/", "/tests/"]
