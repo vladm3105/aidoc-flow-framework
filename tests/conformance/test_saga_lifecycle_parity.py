@@ -209,19 +209,33 @@ class SagaRealJournalConformance(unittest.TestCase):
             set_branch_state,
             update_run_status,
         )
-        from mcp_server.review.saga_models import SagaBranchState, SagaRunState
+        from mcp_server.review.saga_models import (
+            SagaBranchState,
+            SagaRunState,
+            deterministic_review_run_id,
+        )
         from mcp_server.review.saga_orchestrator import _extract_doc_id
 
         cls._normalize_layer = staticmethod(normalize_layer)
         cls._extract_doc_id = staticmethod(_extract_doc_id)
         cls._SagaRunState = SagaRunState
         cls._SagaBranchState = SagaBranchState
+        cls._run_id = staticmethod(deterministic_review_run_id)
         cls._create = staticmethod(create_saga_journal)
         cls._update = staticmethod(update_run_status)
         cls._set_branch = staticmethod(set_branch_state)
         cls._load = staticmethod(load_saga_journal)
 
-    def _drive_real_journal(self, *, out_dir: Path, doc_type: str, layer, doc_dir: str):
+    def _drive_real_journal(
+        self,
+        *,
+        out_dir: Path,
+        doc_type: str,
+        layer,
+        doc_dir: str,
+        iteration: int = 1,
+        review_run_id: str = "realrun000001",  # 13 chars ≥ minLength 12
+    ):
         """Build a SagaRunState exactly as the orchestrator does, then walk a full
         lifecycle through the real journal functions. Returns the on-disk journal."""
         from pathlib import Path as _P
@@ -231,13 +245,13 @@ class SagaRealJournalConformance(unittest.TestCase):
         # F1: layer derives from the (required) doc_type when --layer is omitted.
         _, layer_dir = self._normalize_layer(layer or doc_type)
         run = self._SagaRunState(
-            review_run_id="realrun000001",  # 13 chars ≥ minLength 12
+            review_run_id=review_run_id,
             document_path=str(document_path),
             document_fingerprint=f"{doc_type}:3:1",
             personas_requested=["architect", "auditor"],
             artifact_id=artifact_id,
             layer=layer_dir,
-            iteration=1,
+            iteration=iteration,
         )
         journal_path = self._create(output_dir=out_dir, run=run)
         # Run-scope walk (each step is an allowed transition).
@@ -316,6 +330,96 @@ class SagaRealJournalConformance(unittest.TestCase):
         self.assertEqual(data["layer"], "09_CHG")
         self.assertEqual(data["artifact_id"], "CHG-01")
         self._assert_conforms(data, "chg")
+
+    def test_iteration_discriminator_yields_distinct_run_ids(self):
+        # LB-7: the run id is stable for iteration 1 (byte-identical to pre-loop) and
+        # distinct for each later pass, so a same-clock-hour re-review does not collide.
+        kw = dict(
+            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
+            document_fingerprint="brd:3:1",
+            personas=["architect", "auditor"],
+            time_bucket="2026071012",
+        )
+        base = self._run_id(**kw)
+        self.assertEqual(base, self._run_id(**kw, iteration=1))
+        ids = {self._run_id(**kw, iteration=n) for n in (1, 2, 3)}
+        self.assertEqual(len(ids), 3)
+
+    def test_multi_iteration_journals_coexist_and_validate(self):
+        # HERMES-REVIEW-LOOP-001: a real iteration>1 journal validates against the
+        # schema AND lands in a distinct file (the run id carries the iteration
+        # discriminator), so the multi-iteration audit trail is preserved, not clobbered.
+        import tempfile
+
+        kw = dict(
+            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
+            document_fingerprint="brd:3:1",
+            personas=["architect", "auditor"],
+            time_bucket="2026071012",
+        )
+        with tempfile.TemporaryDirectory() as td:
+            out = Path(td)
+            data1, path1 = self._drive_real_journal(
+                out_dir=out,
+                doc_type="brd",
+                layer="01_BRD",
+                doc_dir="/p/docs/01_BRD/BRD-01/",
+                iteration=1,
+                review_run_id=self._run_id(**kw, iteration=1),
+            )
+            data2, path2 = self._drive_real_journal(
+                out_dir=out,
+                doc_type="brd",
+                layer="01_BRD",
+                doc_dir="/p/docs/01_BRD/BRD-01/",
+                iteration=2,
+                review_run_id=self._run_id(**kw, iteration=2),
+            )
+            # both journals survive on disk — iteration 2 did not overwrite iteration 1
+            self.assertNotEqual(path1, path2)
+            self.assertTrue(path1.exists() and path2.exists())
+        self._assert_conforms(data1, "iter1")
+        self._assert_conforms(data2, "iter2")
+        self.assertEqual(data1["iteration"], 1)
+        self.assertEqual(data2["iteration"], 2)
+
+
+class SagaTransitionInvariant(unittest.TestCase):
+    """The Hermes mirror of `test_saga_driver_invariants.test_invalid_transition_raises`
+    (the D-0050 residual): `transition_run_status` enforces the spec table — an illegal
+    edge raises, a legal edge succeeds. Guards against a quality-loop change silently
+    loosening the state machine."""
+
+    def test_hermes_invalid_transition_raises(self):
+        run = saga_models.SagaRunState(
+            review_run_id="invalidrun01",
+            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
+            document_fingerprint="brd:3:1",
+            personas_requested=["architect"],
+            status="SYNTHESIZED",
+        )
+        # SYNTHESIZED -> PARTIAL_TIMEOUT is not in the table (only SYNTHESIZED -> CLOSED).
+        with self.assertRaises(ValueError):
+            saga_models.transition_run_status(run, target="PARTIAL_TIMEOUT")
+        # A run just prepared cannot jump straight to CLOSED.
+        prepared = saga_models.SagaRunState(
+            review_run_id="invalidrun02",
+            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
+            document_fingerprint="brd:3:1",
+            personas_requested=["architect"],
+        )
+        with self.assertRaises(ValueError):
+            saga_models.transition_run_status(prepared, target="CLOSED")
+
+    def test_hermes_valid_transition_succeeds(self):
+        prepared = saga_models.SagaRunState(
+            review_run_id="validrun0001",
+            document_path="/p/docs/01_BRD/BRD-01/BRD-01.md",
+            document_fingerprint="brd:3:1",
+            personas_requested=["architect"],
+        )
+        moved = saga_models.transition_run_status(prepared, target="FANOUT_STARTED")
+        self.assertEqual(moved.status, "FANOUT_STARTED")
 
 
 if __name__ == "__main__":

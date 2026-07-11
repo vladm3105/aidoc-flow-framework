@@ -504,6 +504,24 @@ def _safe_transition(*, journal_path: Path, target: str) -> None:
         return
 
 
+def _quality_gate_passed(review_score: dict[str, object] | None) -> bool:
+    """The quality-loop PASS gate (HERMES-REVIEW-LOOP-001): the weighted score meets
+    its gate threshold AND there are no unresolved P0/P1 findings.
+
+    A ``None`` score — the deterministic / ``prompt_only`` path, which produces no
+    numeric score — is treated as **PASS** so the loop degrades to a single pass
+    (it never loops without a gate signal). This is the LLM-path-only operating
+    constraint made safe.
+    """
+    if not isinstance(review_score, dict):
+        return True
+    score = review_score.get("score")
+    threshold = review_score.get("gate_threshold")
+    if not isinstance(score, (int, float)) or not isinstance(threshold, (int, float)):
+        return True
+    return score >= threshold and bool(review_score.get("no_blocking", False))
+
+
 def _compute_review_score(
     *,
     doc_type: str,
@@ -583,6 +601,9 @@ def run_project_review_build_saga(
     generation_params: dict[str, object] | None = None,
     saga_branch_llm_enabled: bool | None = None,
     branch_quorum: float = 0.5,
+    iteration: int = 1,
+    quality_loop: bool = False,
+    is_final_iteration: bool = True,
 ) -> SagaReviewResult:
     if output_dir is None:
         raise ValueError("output_dir is required for saga orchestration")
@@ -610,6 +631,7 @@ def run_project_review_build_saga(
         document_fingerprint=document_fingerprint,
         personas=personas,
         time_bucket=_time_bucket(),
+        iteration=iteration,
     )
     journal_path = output_dir / f"{review_run_id}_saga_journal_v001.json"
     if saga_resume and journal_path.exists():
@@ -634,7 +656,7 @@ def run_project_review_build_saga(
             personas_requested=list(personas),
             artifact_id=doc_id,
             layer=layer_dir,
-            iteration=1,
+            iteration=iteration,
         )
         journal_path = create_saga_journal(output_dir=output_dir, run=run)
         compensation_count = 0
@@ -911,18 +933,32 @@ def run_project_review_build_saga(
         lens_findings_count=lens_findings_count,
         no_findings_rationales=no_findings_rationales,
     )
-    _safe_transition(journal_path=journal_path, target="SYNTHESIZED")
-
-    aggregate = run_project_review_build(
-        project_root=project_root,
-        personas=sorted(completed_personas),
-        doc_type=doc_type,
-        template_name=template_name,
-        sections=sections,
-        layer=layer,
-        output_dir=output_dir,
+    # HERMES-REVIEW-LOOP-001 (H-7): quality-loop gate at FANIN_REDUCED. Default
+    # (quality_loop=False, or no numeric score off the LLM/framework-crew path) →
+    # the unconditional SYNTHESIZED→CLOSED path, byte-identical to before. When the
+    # loop is engaged and this is the FINAL iteration with a failing gate, break-circuit
+    # to PARTIAL_TIMEOUT (a legal edge from FANIN_REDUCED) instead of closing; the outer
+    # wrapper drives remediation + re-review on non-final failing iterations.
+    gate_passed = _quality_gate_passed(review_score) if quality_loop else True
+    terminal_status = (
+        "PARTIAL_TIMEOUT" if quality_loop and not gate_passed and is_final_iteration else "CLOSED"
     )
-    _safe_transition(journal_path=journal_path, target="CLOSED")
+
+    aggregate = None
+    if terminal_status == "CLOSED":
+        _safe_transition(journal_path=journal_path, target="SYNTHESIZED")
+        aggregate = run_project_review_build(
+            project_root=project_root,
+            personas=sorted(completed_personas),
+            doc_type=doc_type,
+            template_name=template_name,
+            sections=sections,
+            layer=layer,
+            output_dir=output_dir,
+        )
+        _safe_transition(journal_path=journal_path, target="CLOSED")
+    else:
+        _safe_transition(journal_path=journal_path, target="PARTIAL_TIMEOUT")
 
     branch_summary = {
         "total": requested_total,
@@ -946,7 +982,7 @@ def run_project_review_build_saga(
     playbook_coverage = emit_coverage(findings)
     synthesis_summary = {
         "review_run_id": review_run_id,
-        "saga_status": "CLOSED",
+        "saga_status": terminal_status,
         "reduced_count": len(reduced),
         "persona_count": len(personas),
         "branch_llm_enabled": branch_llm_enabled,
@@ -961,7 +997,7 @@ def run_project_review_build_saga(
         stem_prefix=f"{doc_id}_{source_stage}_saga_branch_summary",
         payload={
             "review_run_id": review_run_id,
-            "saga_status": "CLOSED",
+            "saga_status": terminal_status,
             **branch_summary,
         },
     )
@@ -970,7 +1006,7 @@ def run_project_review_build_saga(
         stem_prefix=f"{doc_id}_{source_stage}_saga_reducer_summary",
         payload={
             "review_run_id": review_run_id,
-            "saga_status": "CLOSED",
+            "saga_status": terminal_status,
             **reducer_summary,
         },
     )
@@ -983,11 +1019,11 @@ def run_project_review_build_saga(
     return SagaReviewResult(
         review_mode="saga_parallel",
         review_run_id=review_run_id,
-        saga_status="CLOSED",
+        saga_status=terminal_status,
         journal_path=journal_path,
-        prompt_path=aggregate.prompt_path,
-        sidecar_path=aggregate.sidecar_path,
-        inspection_path=aggregate.inspection_path,
+        prompt_path=aggregate.prompt_path if aggregate else None,
+        sidecar_path=aggregate.sidecar_path if aggregate else None,
+        inspection_path=aggregate.inspection_path if aggregate else None,
         branch_summary=branch_summary,
         branch_summary_path=branch_summary_path,
         compensation_summary={
@@ -1015,7 +1051,7 @@ def run_project_review_build_saga(
             }
             for item in reduced
         ],
-        passed=True,
+        passed=gate_passed,
         review_score=review_score,
         coverage=coverage,
         playbook_coverage=playbook_coverage,

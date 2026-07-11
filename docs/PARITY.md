@@ -5,7 +5,7 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of project `v1.1.0` / `hermes/v0.10.0` /
+> Status: as of project `v1.1.0` / `hermes/v0.11.0` /
 > `claude-code-plugin/v0.23.4` (framework spec `0.37.0`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v1.0.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
@@ -61,15 +61,24 @@ machine, not for every skill path.
 Note a scope difference the two runtimes keep: the plugin's driver is an
 **outer, wall-clock-bounded, multi-iteration** create→review→revise loop
 (soft deadline → `PARTIAL_TIMEOUT` break-circuit, cross-invocation resume,
-`quality_loop_max_iterations`), whereas Hermes's review saga is a
-**single-pass, in-process** fan-out/fan-in of one existing document. Both
-are conformant: `REVIEW_SAGA.md:150-154` accepts an orchestrator that
-ignores the break-circuit and records its last checkpoint state (not
-`PARTIAL_TIMEOUT`) as a valid graceful degradation. Hermes reaches a legal
-terminal by a different but equally-conformant path — an orderly
-quorum-based escalation (branch timeout → `BRANCH_FAILED` → `ESCALATED`).
-Bringing the plugin's break-circuit / resume machinery into Hermes is
-deferred until Hermes gains an outer review-loop (D-0050).
+`quality_loop_max_iterations`). Hermes's review saga is **single-pass by
+default**, but since HERMES-REVIEW-LOOP-001 Phase 1 (`hermes/v0.11.0`,
+D-0063) `sdd_review` also offers an **opt-in `quality_loop`** — a bounded
+review→remediate→re-review loop that reads the same
+`quality_loop_max_iterations` cap, enforces a `SOFT_DEADLINE_SECONDS`
+wall-clock bound, and *writes* `PARTIAL_TIMEOUT` on the final failing gate.
+It sequences fresh forward saga runs (no cross-invocation resume yet — G-R1
+is Phase 2), and functions only on the LLM crew-review path (a numeric
+score is required; off it the loop degrades to a single pass). The
+default (`quality_loop` off) remains a single-pass fan-out/fan-in of one
+existing document. Both defaults are conformant: `REVIEW_SAGA.md:150-154`
+accepts an orchestrator that ignores the break-circuit and records its last
+checkpoint state (not `PARTIAL_TIMEOUT`) as a valid graceful degradation.
+Hermes's default reaches a legal terminal by a different but
+equally-conformant path — an orderly quorum-based escalation (branch
+timeout → `BRANCH_FAILED` → `ESCALATED`). The plugin's *cross-invocation
+resume* machinery (G-R1) is still deferred until Hermes's loop gains Phase 2
+(D-0050 → D-0063).
 
 Conformance tests check the observable artifact (saga.json shape + state
 machine + break-circuit policy greppable invariants), not the enforcement
@@ -204,9 +213,9 @@ deterministic gate, and reduced findings).
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
 | Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
-| Saga lifecycle (D-0031 / `0.13.0` spec cycle) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 8 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement, single-pass in-process |
+| Saga lifecycle (D-0031 / `0.13.0` spec cycle) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 8 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement; single-pass by default, **opt-in bounded multi-iteration loop** via `sdd_review quality_loop` (HERMES-REVIEW-LOOP-001 Phase 1, `v0.11.0`) |
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
-| Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | saga state machine **accepts** `PARTIAL_TIMEOUT` (spec-conformant table, HERMES-PARITY Phase 1); the orchestrator does not yet *write* it — the break-circuit + resume path is Phase 1b |
+| Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | **default single-pass**: state machine **accepts** `PARTIAL_TIMEOUT` but the default path doesn't write it. **`quality_loop` opt-in (`v0.11.0`, D-0063)**: *writes* `PARTIAL_TIMEOUT` on the final failing gate + enforces `SOFT_DEADLINE_SECONDS`; each iteration is a fresh forward run — cross-invocation resume (G-R1) is Phase 2 |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
 | Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, hermes 0.4.0/0.5.0): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
 

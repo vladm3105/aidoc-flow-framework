@@ -72,10 +72,18 @@ def deterministic_review_run_id(
     document_fingerprint: str,
     personas: list[str],
     time_bucket: str,
+    iteration: int = 1,
 ) -> str:
     normalized_path = str(Path(document_path).as_posix())
     persona_key = ",".join(sorted(personas))
     payload = f"{normalized_path}|{document_fingerprint}|{persona_key}|{time_bucket}"
+    # `iteration` discriminates quality-loop passes (HERMES-REVIEW-LOOP-001 LB-7):
+    # without it, a structure-preserving fix in the same clock hour yields an
+    # identical run id → the next pass's journal overwrites the prior one. The
+    # discriminator is appended ONLY for iteration > 1, so the single-pass (default)
+    # id stays byte-identical to before.
+    if iteration > 1:
+        payload = f"{payload}|iter{iteration}"
     return sha256(payload.encode("utf-8")).hexdigest()[:16]
 
 

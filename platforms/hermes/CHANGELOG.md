@@ -16,6 +16,43 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.11.0] — 2026-07-11
+
+### Added
+
+- **Bounded, opt-in review→remediate→re-review quality loop (HERMES-REVIEW-LOOP-001
+  Phase 1; `0.10.0 → 0.11.0`).** `sdd_review` gains a `quality_loop` boolean
+  (default `false`). When set on the `saga_parallel` path, a failing readiness gate
+  below the profile's `quality_loop_max_iterations` cap (default 3) auto-drives the
+  remediation pipeline (findings → fix prompt → executor apply) and re-reviews the
+  remediated copy; the final failing pass break-circuits to `PARTIAL_TIMEOUT`. Off
+  (the default) the review is a single pass, byte-identical to before.
+  - **Outer wrapper, not a state-machine change** (`review/quality_loop.py`,
+    `run_review_quality_loop`). Each iteration is a _fresh forward saga run_
+    (`run_project_review_build_saga` gains `iteration` / `quality_loop` /
+    `is_final_iteration` params), so the forward-only transition table and
+    `saga.schema.json` are untouched — no `framework/VERSION` change.
+  - **Per-iteration journal discriminator (LB-7).** `deterministic_review_run_id`
+    appends an `iterN` discriminator for `iteration > 1` only, so a same-clock-hour
+    re-review lands in a distinct journal file instead of clobbering the prior pass's
+    audit trail. The `iteration == 1` (default) id stays byte-identical.
+  - **Gate at FANIN_REDUCED** (`_quality_gate_passed`): PASS iff the numeric review
+    score `≥ gate_threshold` and no blocking findings. **Operating constraint:** the
+    score is produced only on the `saga_parallel` + branch-LLM + framework-crew path;
+    off it the score is `None` → the gate passes → the loop degrades to a safe single
+    pass. A `SOFT_DEADLINE_SECONDS` (3600s) wall-clock bound also caps the loop.
+  - Conformance: a real multi-iteration Hermes journal (`iteration > 1`, distinct file,
+    both validate against `saga.schema.json`) + the Hermes mirror of the plugin's
+    `test_invalid_transition_raises` invariant
+    (`tests/conformance/test_saga_lifecycle_parity.py`). New unit coverage in
+    `tests/unit/test_quality_loop.py` (loop-off single pass, FAIL→remediate→PASS,
+    cap→`PARTIAL_TIMEOUT`, no-derived-copy stop, iteration threading).
+
+  Feeds HERMES-BACKLOG **H-7** (iteration cap — shipped), **H-1** (`PARTIAL_TIMEOUT`
+  write-site — now written on the quality-loop path; the general break-circuit +
+  cross-invocation resume / G-R1 remain Phase 2), and unblocks **H-6.3** (iter-N vs
+  iter-(N-1) regression detection — now has real iterations to compare).
+
 ## [0.10.0] — 2026-07-10
 
 ### Added

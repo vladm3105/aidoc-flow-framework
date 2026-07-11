@@ -1,5 +1,28 @@
 # Session Handoff
 
+> **✅ HERMES-REVIEW-LOOP-001 Phase 1 COMPLETE (2026-07-11)** (`plans/HERMES-REVIEW-LOOP-001-PLAN.md`, D-0063).
+> Hermes's first outer **review→remediate→re-review loop** — the initiative D-0050
+> named as the gate for the deferred H-1/H-6.3 saga machinery. `sdd_review` gains an
+> opt-in **`quality_loop`** boolean (default off): on the `saga_parallel` path a failing
+> readiness gate below the profile's `quality_loop_max_iterations` cap (default 3)
+> auto-drives remediation (findings → fix prompt → `run_executor` apply) and re-reviews
+> the remediated copy; the final failing pass break-circuits to `PARTIAL_TIMEOUT`
+> (+ a `SOFT_DEADLINE_SECONDS` 3600s wall-clock bound). It's an **outer wrapper**
+> (`review/quality_loop.py`) sequencing *fresh forward saga runs* (`run_project_review_build_saga`
+> gained `iteration`/`quality_loop`/`is_final_iteration`), so the transition table +
+> `saga.schema.json` are untouched → **no `framework/VERSION` change**; Hermes stream
+> **MINOR** (`0.10.0 → 0.11.0`). **LB-7:** `deterministic_review_run_id` appends `iterN`
+> for `iteration>1` only (iter-1 byte-identical), so per-iteration journals don't clobber.
+> **Operating constraint:** the gate needs a numeric review score (LLM crew path only);
+> off it → single-pass safe degrade. **Satisfies:** H-7 iteration-cap (shipped); H-1
+> PARTIAL_TIMEOUT write-site (PARTIAL — general break-circuit + G-R1 resume = Phase 2);
+> H-6.3 unblocked. **Current hermes version: `0.11.0`** (spec `0.37.0` unchanged).
+> 565 hermes pytest + 208 conformance green; default path byte-identical.
+> **Status: impl on branch `h7-review-loop-impl`, PR pending** (Hermes-only MINOR, not
+> spec-tier → auto-merge on green eligible). Plan PR #301 already merged.
+
+---
+
 > **✅ HERMES-ADAPT-ENFORCE-001 COMPLETE (2026-07-10)** (`plans/HERMES-ADAPT-ENFORCE-001-PLAN.md`).
 > Follow-up to HERMES-REVIEW-001 PR-ADAPT: enforces the `.aidoc/profile.yaml`
 > **`audit_threshold`** knob as a raise-only score gate — the Hermes-native slice of
