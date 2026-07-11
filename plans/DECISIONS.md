@@ -10,6 +10,64 @@ graduation.
 
 ---
 
+## D-0063 — HERMES-REVIEW-LOOP-001 Phase 1: opt-in bounded review→remediate→re-review loop for Hermes (`sdd_review quality_loop`) — hermes 0.10.0 → 0.11.0 (no framework change)
+
+**2026-07-11.** Hermes's review saga was single-pass, in-process, `iteration=1`
+hardcoded. This ships the first outer review loop — the initiative D-0050 named as
+the gate for the deferred H-1/H-6.3 saga-parity machinery — as a **minimal,
+flag-gated Phase 1** so the higher-risk resume machinery stays deferred.
+
+**Design decisions (ratified for build):**
+
+1. **Loop trigger = opt-in `quality_loop` boolean on `sdd_review`** (default `false`).
+   Not profile-auto-enabled; the caller opts in explicitly. The profile supplies only
+   the cap (`quality_loop_max_iterations`, default 3).
+2. **Outer wrapper, not a state-machine change.** Each iteration is a *fresh forward
+   saga run* (`run_project_review_build_saga` gains `iteration` / `quality_loop` /
+   `is_final_iteration`), sidestepping the forward-only transition table
+   (`SYNTHESIZED→{CLOSED}` only). The transition table and `saga.schema.json` are
+   unchanged → **no `framework/VERSION` change**; Hermes stream MINOR only. (Reviewed:
+   adding a `quality_loop` arg is an additive tool-schema field, not a spec/schema
+   change — MINOR, not MAJOR.)
+3. **Cap terminal = `PARTIAL_TIMEOUT`.** A failing gate on the *final* iteration writes
+   the break-circuit terminal state (satisfying part of H-1's write-site); non-final
+   failing gates remediate + re-review. A `SOFT_DEADLINE_SECONDS` (3600s) wall-clock
+   bound also forces the final iteration early.
+4. **Auto-remediate mode = executor-driven.** `run_remediate_fix_build` is copy-only
+   (LB-2); the actual fix is a separate `run_executor(prompt=fix.report_text, …)` on
+   the derived copy, mirroring the manual `sdd_remediate` drive. The re-review rebuilds
+   `sections` from the remediated derived file (LB-5 — the fan-out consumes `sections`,
+   not `document_path`).
+
+**Operating constraint (accepted):** the gate needs a numeric `review_score`, produced
+only on the `saga_parallel` + branch-LLM + framework-crew path. Off it the score is
+`None` → `_quality_gate_passed` returns `True` → the loop closes on the first pass (a
+safe single-pass degrade). Documented, not a defect. **Boundary (review-surfaced):**
+`review_score` is also `None` when the crew *did* run but produced no parseable
+`lens_score` (all branches omit it) or the `doc_type` has no framework crew — those also
+degrade to PASS. This is **not a regression**: the pre-existing `saga_parallel` path
+already returned `passed=True` unconditionally regardless of score, so the loop is no
+weaker than the status quo. Distinguishing "expected `None`" (deterministic path) from
+"unexpected `None`" (crew ran, scores unparseable) and treating the latter as a gate
+*miss* rather than a *pass* is deferred to **Phase 2** (it needs a score-coverage floor;
+treating `None` as FAIL naively would create false-failure loops for legitimately
+score-less configs).
+
+**LB-7 journal discriminator:** `deterministic_review_run_id` appends `iterN` for
+`iteration > 1` only (the `iteration == 1` id stays byte-identical), so a same-clock-hour
+re-review lands in a distinct journal file instead of clobbering the prior pass's audit
+trail — preserving the multi-iteration audit trail (and the H-6.3 comparison input).
+
+**What this satisfies vs. defers:** H-7 iteration-cap = shipped; H-1 `PARTIAL_TIMEOUT`
+write-site = PARTIAL (loop final-gate path + SOFT_DEADLINE; general break-circuit +
+G-R1 cross-invocation resume = **Phase 2**); H-6.3 (iter-N vs iter-(N-1) regression
+detection) = unblocked (real iterations now exist; the comparison itself is a follow-up).
+
+**Verification:** 565 Hermes tests + 208 conformance tests green; the default
+(`quality_loop` off) path is byte-identical (17 saga tests unchanged). New:
+`tests/unit/test_quality_loop.py` (9 cases) + conformance multi-iteration journal +
+Hermes `test_invalid_transition_raises` mirror (`SagaTransitionInvariant`).
+
 ## D-0062 — PROVISIONAL-IDS-002 Phase 1: formalize the hash-input contract + ship `rehash --check` (the Model-2 drift verifier, `IDDRIFT01`) — framework spec 0.34.2 → 0.35.0
 
 **2026-07-08.** Executes the ratified Model-2 direction (D-0061). Element IDs now

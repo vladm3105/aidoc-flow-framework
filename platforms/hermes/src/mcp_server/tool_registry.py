@@ -662,6 +662,11 @@ TOOLS: list[Tool] = [
                     "description": "Review execution mode. saga_parallel enables saga journal/reducer scaffolding. The framework ADAPTATION_SURFACE vocabulary is also accepted: `team` (alias of saga_parallel) and `single_pass` (alias of prompt_only). When omitted, a project `.aidoc/profile.yaml` that declares review_mode is honored; otherwise defaults to prompt_only.",
                     "default": "prompt_only",
                 },
+                "quality_loop": {
+                    "type": "boolean",
+                    "description": "Opt in to the bounded review->remediate->re-review loop (HERMES-REVIEW-LOOP-001, saga_parallel only): on a failing gate below the profile's quality_loop_max_iterations cap, remediation is auto-applied and the artifact re-reviewed; the final failing pass break-circuits to PARTIAL_TIMEOUT. Off (default) → a single pass. Functions only on the LLM crew-review path (needs a numeric review score).",
+                    "default": False,
+                },
                 "max_parallel_branches": {
                     "type": "integer",
                     "minimum": 1,
@@ -1570,8 +1575,7 @@ async def _dispatch(name: str, arguments: dict) -> dict:
             # per-branch asyncio.run) to a worker thread so it doesn't block the
             # MCP event loop — keeps keepalive/cancellation responsive during a
             # long review (composes with the api_runner threading.Lock fix).
-            saga_result = await asyncio.to_thread(
-                run_project_review_build_saga,
+            saga_call_kwargs = dict(
                 project_root=project_root,
                 personas=arguments.get("personas"),
                 doc_type=arguments["doc_type"],
@@ -1620,13 +1624,45 @@ async def _dispatch(name: str, arguments: dict) -> dict:
                 },
                 saga_branch_llm_enabled=arguments.get("saga_branch_llm_enabled"),
             )
+            if bool(arguments.get("quality_loop", False)):
+                # HERMES-REVIEW-LOOP-001 (H-7): opt-in bounded review->remediate->
+                # re-review loop, capped by the profile's quality_loop_max_iterations
+                # (default 3). Off this path (or no numeric score) it degrades to a
+                # single pass. The wrapper drives the loop; each pass is a fresh saga.
+                from mcp_server.review.quality_loop import run_review_quality_loop
+
+                saga_result = await asyncio.to_thread(
+                    run_review_quality_loop,
+                    max_iterations=(ctx.profile.quality_loop_max_iterations if ctx else 3),
+                    **saga_call_kwargs,
+                )
+            else:
+                # Offload the blocking, in-process saga (ThreadPoolExecutor fan-out +
+                # per-branch asyncio.run) to a worker thread so it doesn't block the
+                # MCP event loop (composes with the api_runner threading.Lock fix).
+                saga_result = await asyncio.to_thread(
+                    run_project_review_build_saga, **saga_call_kwargs
+                )
             det_result = _serialize_result(saga_result)
             if not saga_result.passed:
                 det_result["passed"] = False
-                det_result["error"] = (
-                    "SagaEscalated: review orchestration escalated before synthesis."
-                )
-                det_result["error_code"] = "SagaEscalated"
+                saga_status = getattr(saga_result, "saga_status", None)
+                if saga_status == "ESCALATED":
+                    # Below quorum — the crew could not synthesize a review.
+                    det_result["error"] = (
+                        "SagaEscalated: review orchestration escalated before synthesis "
+                        "(below quorum)."
+                    )
+                    det_result["error_code"] = "SagaEscalated"
+                else:
+                    # Quality-loop terminal: PARTIAL_TIMEOUT (iteration/deadline cap) or a
+                    # CLOSED pass the loop could not remediate further — both mean the
+                    # readiness gate is still unmet after the loop finished.
+                    det_result["error"] = (
+                        "SagaQualityGateUnmet: the review quality loop finished with the "
+                        f"readiness gate still unmet (terminal={saga_status})."
+                    )
+                    det_result["error_code"] = "SagaQualityGateUnmet"
                 det_result["executor"] = executor_name
                 det_result["supported_review_modes"] = ["prompt_only", "saga_parallel"]
                 return det_result

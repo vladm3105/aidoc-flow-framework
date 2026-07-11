@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------- |
 | Task           | HERMES-REVIEW-LOOP-001 (Phase 1)            |
 | Type           | feature (architecture)                      |
-| Status         | READY FOR PR — 2026-07-10 (4 review passes, 3 independent; gate green). **Implementation blocked on founder ratification of the 4 design decisions + acceptance of the LLM-path-only operating constraint (see Review log Pass 4).** |
+| Status         | ✅ SHIPPED — 2026-07-11 (`hermes/v0.11.0`, D-0063). Founder ratified the 4 design decisions + the LLM-path-only constraint ("Keep going now — build the wrapper carefully"). 565 Hermes + 208 conformance tests green; default path byte-identical. Plan-review history: READY FOR PR 2026-07-10 (4 review passes, 3 independent; gate green). |
 | Depends on     | HERMES-ADAPT-ENFORCE-001 (`hermes/v0.10.0`) — `ProjectProfile.quality_loop_max_iterations` is already parsed; this consumes it |
 | Feeds          | HERMES-BACKLOG **H-7** (iteration cap), **H-1** (PARTIAL_TIMEOUT write-site), **H-6.3** (iter-N vs iter-(N-1) regression detection — needs real iterations). Phase 2 (cross-invocation resume + G-R1) is a follow-up. |
 | Version impact | Hermes stream only: **MINOR** (a new opt-in saga capability; the existing path is untouched — flag-gated, see Approach). No `framework/VERSION` change — the loop is an outer wrapper over the existing forward saga; the spec/schema/transition-table are unchanged. |

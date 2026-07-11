@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Hermes `0.10.0 → 0.11.0` — bounded review→remediate→re-review quality loop (HERMES-REVIEW-LOOP-001 Phase 1) (2026-07-11)
+
+- **Hermes gains an opt-in, bounded review→remediate→re-review loop.** `sdd_review`
+  gains a `quality_loop` boolean (default off). On the `saga_parallel` path a failing
+  readiness gate below the profile's `quality_loop_max_iterations` cap (default 3)
+  auto-remediates and re-reviews; the final failing pass break-circuits to
+  `PARTIAL_TIMEOUT`. It is an *outer wrapper* sequencing fresh forward saga runs, so the
+  transition table and `saga.schema.json` are unchanged — **no `framework/VERSION`
+  change** (Hermes stream MINOR only). Off the LLM crew-review path (no numeric score)
+  it degrades to a single pass, byte-identical to before. See
+  [`platforms/hermes/CHANGELOG.md`](platforms/hermes/CHANGELOG.md) `0.11.0` for detail.
+
 ### Added — Framework Spec `0.36.2 → 0.37.0` — `active_layers` cascade in the reference lint (GD-07, ACTIVE-LAYERS-CASCADE-001) (2026-07-10)
 
 - **The reference linter now honors the `active_layers` adaptation cascade** — the

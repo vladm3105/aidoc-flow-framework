@@ -34,7 +34,7 @@
 > | Phase | Scope | Status |
 > |-------|-------|--------|
 > | 1 | saga state-machine conformance (`PARTIAL_TIMEOUT`) + enforced `test_saga_lifecycle_parity.py` | **✅ shipped** — partial H-1 (table); no Hermes bump |
-> | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | pending |
+> | 1b | orchestrator break-circuit *exercise* + resume (rest of H-1); `quality_loop_max_iterations` (H-7 knob) | ⏳ PARTIAL (`hermes/v0.11.0`, D-0063, HERMES-REVIEW-LOOP-001 Phase 1) — `quality_loop_max_iterations` wired + PARTIAL_TIMEOUT written on the loop's final-gate path + SOFT_DEADLINE bound; general break-circuit + G-R1 cross-invocation resume = Phase 2 |
 > | 2 | **playbook injection** for BRD+PRD (H-4) — the load-bearing gap | **✅ shipped** (`hermes/v0.4.0`, D-0046) — H-4 CLOSED for BRD+PRD; H-2/H-6 fold into Phase 3 |
 > | 3 | 8-layer coverage (H-5, already delivered by Phase 2 — verified) + CHG crew (H-10) | **✅ shipped** (`hermes/v0.5.0`, D-0047) — H-5 CLOSED (all 8 lifecycle layers); H-10 crew-map parity CLOSED; live CHG saga = follow-on |
 > | 3b | real saga-journal conformance + `09_CHG` schema enum + live CHG (H-12) | **✅ shipped** (`hermes/v0.5.1` + framework `0.32.7`, D-0048) — H-12 CLOSED; real journals conform; live CHG sanctioned |
@@ -113,10 +113,26 @@ landed in Phase 3 (#234). The only thing "live CHG" adds beyond H-12 is document
 **Dependency:** none. Independent of the other H-items. Higher value than the
 originally-planned "live CHG saga" (which grounding showed unnecessary).
 
-### H-1 — SAGA-PARITY-001 Phase 3: G-R1 invariant alignment — ⏸️ DEFERRED (architectural gate; D-0050, 2026-07-04)
+### H-1 — SAGA-PARITY-001 Phase 3: G-R1 invariant alignment — ⏳ PARTIAL (HERMES-REVIEW-LOOP-001 Phase 1; D-0050 → D-0063, 2026-07-11)
 
-**Status:** DEFERRED pending a future Hermes **multi-iteration / wall-clock-bounded
-review-loop initiative** — the same gate as H-6.3. An evidence-based assessment
+**Update (2026-07-11, D-0063):** the deferral's gating initiative — the Hermes
+multi-iteration / wall-clock-bounded review loop — **shipped as HERMES-REVIEW-LOOP-001
+Phase 1** (`hermes/v0.11.0`). What that now satisfies vs. what stays deferred:
+
+- **PARTIAL_TIMEOUT write-site — now PARTIAL.** The break-circuit terminal state IS
+  written on the quality-loop path (a final failing gate → `PARTIAL_TIMEOUT` in the real
+  journal). A `SOFT_DEADLINE_SECONDS` (3600s) wall-clock bound is also enforced by the
+  wrapper. The *general* break-circuit (any non-terminal state on a hard host timeout,
+  not just the loop's final gate) is still not written.
+- **`quality_loop_max_iterations` — now applicable + wired** (was "inapplicable").
+- **Saga-invariant conformance test — DONE**: the plugin's `test_invalid_transition_raises`
+  now has a Hermes mirror (`SagaTransitionInvariant`, `test_saga_lifecycle_parity.py`).
+- **G-R1 cross-invocation resume — still DEFERRED (Phase 2).** Each loop iteration is a
+  *fresh* forward saga run (no `from: PARTIAL_TIMEOUT` resume walk), so the resume-walk
+  machinery is still not built; that + the general break-circuit are Phase 2.
+
+**Original status (retained):** DEFERRED pending a future Hermes **multi-iteration /
+wall-clock-bounded review-loop initiative** — the same gate as H-6.3. An evidence-based assessment
 (D-0050) found the two blockers this entry originally cited are **stale**:
 
 - *"Plugin Phase 4 should land first"* — **SATISFIED**: shipped in
@@ -286,9 +302,11 @@ D-0051), so its `v0.6.0` CLOSED status was false. **Now genuinely CLOSED** via
 HERMES-REVIEW-CONTENT-DELIVERY (D-0051, `hermes/v0.7.0`), which inlines the body into
 the review prompt and folds the strip into the shared builder so it finally bites
 (covering the `single_pass` surfaces too). H-6.3 (fixer-introduced regression
-detection) **remains BLOCKED**: it needs an iter-N vs iter-(N-1) comparison and
-Hermes's saga is single-pass (`iteration=1`); it belongs to a future Hermes
-multi-iteration review-loop initiative, not this arc.
+detection) is now **UNBLOCKED** (2026-07-11, D-0063): HERMES-REVIEW-LOOP-001 Phase 1
+gives Hermes real multi-iteration passes (`iteration > 1`, distinct per-iteration
+journals), so the synthesizer now *has* an iter-(N-1) journal to compare iter-N finding
+locations against. Implementing the comparison + `fixer_introduced` cap + `## Regressions`
+section is a follow-up (not built by Phase 1, which lands the loop mechanism only).
 
 **Source:** plugin PR #131 (CLEANUP-PR-B, framework `0.19.0` + plugin
 `0.16.0`).
@@ -327,7 +345,13 @@ Spec changes the Hermes lint surface must mirror:
 - **Iteration cap** — `quality_loop_max_iterations` knob in
   `ADAPTATION_SURFACE.yaml` (default 3, range 1-10);
   REVIEW_REMEDIATION_FLOW.md §Iteration cap. Plugin's saga driver
-  reads it; Hermes's saga implementation must too.
+  reads it; Hermes's saga implementation must too. **✅ SHIPPED**
+  (HERMES-REVIEW-LOOP-001 Phase 1, `hermes/v0.11.0`, D-0063,
+  2026-07-11): the opt-in `quality_loop` on `sdd_review` reads
+  `ctx.profile.quality_loop_max_iterations` as the loop cap. (The
+  other H-7 bullets below — `@threshold:` pattern, TH-RES-001,
+  `optional_downstream_slots`, element-ID exemption — are lint-surface
+  deltas, still pending.)
 - **`@threshold:` ID pattern** — `LAYER_REGISTRY.yaml`
   `id_patterns.threshold` regex
   (`^[A-Z]+\.\d{2,}\.[a-z_]+(?:\.[a-z0-9_]+)+$`). Plugin's
