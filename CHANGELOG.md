@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Framework Spec `0.37.0 → 0.37.1` — complete the GD-06 engine-token sweep + doc-staleness in `REVIEW_SAGA.md` (2026-07-11)
+
+- **Neutralized 3 engine-token leaks GD-06 missed** in
+  `framework/governance/REVIEW_SAGA.md` (pre-prod readiness audit): "SKILL-prompt
+  orchestration" → "prompt-orchestration engine" (`:13`); "per-skill-type table" →
+  "per-orchestrator-role table" (`:124`, also corrects the reference — the table is
+  by orchestrator role); "the prior decision that **the plugin engine** would not
+  port the saga" → "one engine" (`:216`, D-0005 citation). Pure prose completing the
+  GD-06 neutralization; the spec contract (transition table, `saga.schema.json`, layer
+  set) is unchanged — a **doc-hygiene PATCH** (GATE-SPEC requires a VERSION bump for
+  any `framework/**` change). Re-vendored byte-identically to the plugin bundle; both
+  platforms re-pin `FRAMEWORK_SPEC_VERSION 0.37.1`.
+- **Doc-staleness in the same file:** the saga-lifecycle-parity conformance test is
+  now referenced in present tense at its real path (was "arriving in SAGA-PARITY-001
+  Phase 3" — it already exists and is populated); the `layer` field doc now names the
+  `09_CHG` overlay that `saga.schema.json`'s enum already permits (was "8 layers").
+- **Tracked follow-up:** extending `tests/conformance/test_spec_hygiene.py`
+  `ENGINE_TOKENS` to guard `plugin`/`SKILL`/`doc-*` needs an allowlist for the
+  GD-06-sanctioned `AIDOC.md` illustration + the `DECISIONS.md` decision records —
+  recorded in `plans/FRAMEWORK-TODO.md`.
+
 ### Fixed — Hermes `0.11.0 → 0.11.1` — pre-prod readiness cleanup (audit 2026-07-11)
 
 - Three small robustness/observability fixes from the pre-prod audit: corrupt

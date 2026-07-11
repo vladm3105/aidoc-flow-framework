@@ -24,6 +24,18 @@
 
 ## Open
 
+### `[docs]` `PREPROD-HYGIENE` — extend `test_spec_hygiene` `ENGINE_TOKENS` to guard `plugin`/`SKILL`/`doc-*`
+
+- Context: pre-prod readiness audit (2026-07-11). The engine-token sweep in
+  `REVIEW_SAGA.md` was completed by hand (3 leaks GD-06 missed), but
+  `tests/conformance/test_spec_hygiene.py` `ENGINE_TOKENS` still omits
+  `plugin`/`SKILL`/`doc-<layer>`, so a future leak of that class regresses unguarded.
+- Fix shape: add those patterns to `ENGINE_TOKENS` **with an allowlist** for the
+  GD-06-sanctioned `AIDOC.md` illustration (`framework/docs/AIDOC.md:96-103`) and the
+  `governance/DECISIONS.md` GD-06 decision record (legitimate meta-content naming what
+  it neutralized) — per GD-06:98-99's own note that the test "may later be extended to
+  allow-list exactly the two sanctioned bindings."
+
 ### `[docs]` `FRWK-REVIEW-002-PR-E` — ✅ CLOSED (2026-07-09) — engine-agnosticism sweep
 
 - Context: FRWK-REVIEW-002 PR-E — the spec carried engine-specific tokens (the
