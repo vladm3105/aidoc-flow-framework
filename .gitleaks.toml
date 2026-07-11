@@ -1,5 +1,0 @@
-[extend]
-useDefault = true
-[[allowlists]]
-description = "detect-secrets baseline (hashed placeholders / audited FPs, not live secrets)"
-paths = ['''\.secrets\.baseline$''']
