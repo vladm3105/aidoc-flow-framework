@@ -1,30 +1,37 @@
 # Session Handoff
 
-> **🔎 PRE-PROD READINESS AUDIT (2026-07-11)** — ran a full audit (framework spec +
-> both platforms + conformance + CI health + docs/version) after #305 landed. Baseline
-> green: framework `0.37.0` · Hermes `0.11.1` · plugin `0.23.4` (versions consistent);
+> **🔎 PRE-PROD READINESS AUDIT (2026-07-11) — COMPLETE.** Ran a full audit (framework
+> spec + both platforms + conformance + CI health + docs/version) after #305 landed.
+> **No correctness P0 in spec/platforms.** All four fix PRs landed; final main state:
+> **framework `0.37.1` · Hermes `0.11.1` · plugin `0.23.4`** (spec-pins all `0.37.1`);
 > conformance **208** ✓, Hermes **570** ✓, plugin bundle byte-identical & drift-guarded.
-> **No correctness P0 in spec/platforms.** Fix status:
 >
-> - **P0 (CI, yours):** `call / composition` + `audit-trail` required/aux checks
->   `startup_failure` repo-wide (aidoc-flow-ci reusable-workflow access change ~07-10
->   20:49) → blocks all normal merges; needs an org/repo Actions-settings fix. Detail in
->   the CI-blocker note below.
-> - **P1-3 (framework, spec-tier):** `REVIEW_SAGA.md` engine-token leaks (GD-06 sweep)
->   - doc-staleness → **PR #306** (`framework 0.37.0 → 0.37.1`), **awaiting founder
->   ratification/merge** (spec-tier, not admin-merged).
+> - **P1-3 (framework, spec-tier):** `REVIEW_SAGA.md` GD-06 engine-token sweep +
+>   doc-staleness + CLAUDE.md `Current state` refresh (Hermes `0.7.3 → 0.11.1`) →
+>   **PR #306 ✅ merged** (`framework 0.37.0 → 0.37.1`, founder-ratified, `--admin`).
+>   The ai-review "changes requested" on it was a **verified false positive** (claimed
+>   `tests/conformance/test_saga_lifecycle_parity.py` is absent — it exists, blob
+>   `0d76bae2`, added by #305; rebuttal on the PR).
 > - **P2 (Hermes):** traceable degradation + empty-choices guard + executor deploy-doc
->   → **PR #307 merged** (`hermes 0.11.1`, `--admin`). Audit item "delete dead vendored
+>   → **PR #307 ✅ merged** (`hermes 0.11.1`, `--admin`). Audit item "delete dead vendored
 >   `sdd_doc_lint/`" **rejected on verification** (it's drift-guarded, not dead).
-> - **P2 (docs):** ROADMAP version-ref + plugin `1.0`-gate checklist + this HANDOFF →
->   **PR #308** (`--admin`). **CLAUDE.md** `Current state` still says Hermes `0.7.3`
->   (now `0.11.1`) — deferred to fold into #306's founder-merge (it already edits
->   CLAUDE.md via version-sync; avoids a same-line conflict).
-> - **P1-2 (Hermes, deferred → needs a plan):** the parallel-review global lock
+> - **P2 (docs):** ROADMAP version-ref + plugin `1.0`-gate checklist + HANDOFF →
+>   **PR #308 ✅ merged** (`--admin`).
+>
+> **Open follow-ups (next session):**
+>
+> - **P0 (CI, founder-owned):** `call / composition` + `audit-trail` reusable-workflow
+>   checks `startup_failure` repo-wide since 2026-07-10 ~20:49 (aidoc-flow-ci Actions
+>   access/visibility change) → blocks all normal merges; **every PR needs `--admin`**
+>   until an org/repo Actions-settings fix. Full diagnosis in
+>   `plans/FRAMEWORK-TODO.md` (`[ci] AIDOC-CI-COMPOSITION-CHECK-PRHEAD`, 2026-07-11
+>   escalation).
+> - **P1-2 (Hermes, needs a plan):** the parallel-review global lock
 >   (`api_runner.py:172`) holds a `threading.Lock` across the `await litellm.acompletion()`,
 >   serializing saga branches → N-persona review = N sequential calls (amplified by the
->   quality loop). Highest-value engineering fix; needs a dedicated plan (auth/provider-env
->   risk) — NOT hacked inline.
+>   quality loop). Highest-value engineering fix; a dedicated plan is warranted
+>   (auth/provider-env risk) — NOT hacked inline. Tracked in
+>   `plans/HERMES-BACKLOG.md` (**H-17**).
 >
 > ---
 >
