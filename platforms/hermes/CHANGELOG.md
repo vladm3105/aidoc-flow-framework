@@ -16,6 +16,30 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.11.1] — 2026-07-11
+
+### Fixed
+
+- **Pre-prod readiness cleanup (audit 2026-07-11; `0.11.0 → 0.11.1`).** Three small
+  robustness/observability fixes surfaced by the pre-prod audit:
+  - **Corrupt review/remediation reports no longer degrade silently**
+    (`remediation/runner.py`). The two report-read sites that caught
+    `JSONDecodeError`/`OSError` with a bare `pass` (→ default `{}` = "no findings",
+    indistinguishable from a genuinely clean report) now emit a `logger.warning` so the
+    silent-clean path is traceable.
+  - **Empty-choices API responses surface as a normal executor failure**
+    (`executor/api_runner.py`). A provider returning zero `choices` previously raised a
+    bare `IndexError` that lost the executor-context the other error paths wrap; it now
+    returns an `ExecutorResult(exit_code=1, …)` with a clear message. Regression test added.
+  - **Deploy note for the built-in executors' localhost LiteLLM proxy**
+    (`executor/registry.py`). Documented that the default executors require the local
+    proxy (or a `UCX_EXECUTOR_*` / `executors.json` override) — a connection failure
+    otherwise surfaces as a non-zero `exit_code` at call time, not a crash.
+
+  (Audit item "delete dead vendored `sdd_doc_lint/`" was **rejected on verification** —
+  it is a drift-guarded vendored copy, not dead code.) The parallel-review global-lock
+  latency finding (a larger change) is tracked separately for a dedicated fix.
+
 ## [0.11.0] — 2026-07-11
 
 ### Added

@@ -173,7 +173,19 @@ async def run_api_executor(
         with _inject_env(config.env, project_env):
             try:
                 response = await litellm.acompletion(**kwargs)
-                content = response.choices[0].message.content or ""
+                choices = getattr(response, "choices", None) or []
+                if not choices:
+                    # A provider returning zero choices would otherwise raise a bare
+                    # IndexError that loses the executor-context wrapping the other
+                    # error paths give; surface it as a normal executor failure.
+                    return ExecutorResult(
+                        stdout="",
+                        stderr=f"API executor '{config.name}' returned no choices",
+                        exit_code=1,
+                        executor_name=config.name,
+                        metadata={"model": model, "api_base": api_base},
+                    )
+                content = choices[0].message.content or ""
                 usage_raw = getattr(response, "usage", None)
                 usage: dict[str, object] | None = None
                 if usage_raw is not None:

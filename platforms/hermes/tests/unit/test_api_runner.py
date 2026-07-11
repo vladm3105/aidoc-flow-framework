@@ -86,6 +86,22 @@ class TestApiExecutorSuccess:
         assert result.stdout == "Generated content here"
         assert result.executor_name == "api/test"
 
+    def test_empty_choices_returns_executor_failure(self):
+        # A provider returning zero choices must surface as a normal executor failure
+        # (exit_code != 0 with executor context), not a bare IndexError.
+        mock_lit = _mock_litellm()
+        mock_lit.acompletion.return_value.choices = []
+        with patch.dict("sys.modules", {"litellm": mock_lit}):
+            from mcp_server.executor.api_runner import run_api_executor
+
+            config = _api_config()
+            result = asyncio.get_event_loop().run_until_complete(
+                run_api_executor(config, "test prompt", project_env={"TEST_API_KEY": "key"})
+            )
+        assert result.exit_code == 1
+        assert result.executor_name == "api/test"
+        assert "no choices" in result.stderr
+
     def test_system_prompt_included(self):
         mock_lit = _mock_litellm()
         with patch.dict("sys.modules", {"litellm": mock_lit}):
