@@ -12,10 +12,13 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- **docs-sync workflow (dry-run)** — added `.github/workflows/docs-sync.yml` (caller of aidoc-flow-ci `docs-sync.yml@ci/v1.9.5`) + `.github/docs-sync.json`; post-merge mechanical doc-fixer in dry-run (proposes changes as a PR comment, no push-back).
+
 ### Added — canon secret-scan (gitleaks) workflow (2026-07-11)
 
 Adopted the aidoc-flow-ci secret-scan gate (@ci/v1.9.2, gitleaks binary).
-
 
 ### Fixed — Framework Spec `0.37.0 → 0.37.1` — complete the GD-06 engine-token sweep + doc-staleness in `REVIEW_SAGA.md` (2026-07-11)
 

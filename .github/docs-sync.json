@@ -1,0 +1,37 @@
+{
+  "$schema": "https://aidoc-flow.io/schemas/docs-sync-config-v1.json",
+  "version": 1,
+  "_comment": "Per-consumer docs-sync configuration. Start with dry_run: true for first 1-2 weeks per IPLAN-0018 §3.7 P3. Graduate to dry_run: false after ≥5 merges with zero proposed-vs-applied file-set divergence (per §3.1).",
+
+  "dry_run": true,
+
+  "changelog_stub": {
+    "_comment": "Stub-entry inserter — when merged commit touches trigger_paths AND CHANGELOG wasn't touched, append a stub entry under section_header. Stub is intentionally low-quality so contributors rewrite on next PR (currency, not polish).",
+    "enabled": true,
+    "trigger_paths": [".github/workflows/*.yml", "scripts/**"],
+    "destination": "CHANGELOG.md",
+    "section_header": "## [Unreleased]"
+  },
+
+  "version_sync": {
+    "_comment": "Version-string propagation — read each version_file; propagate into target files via per-consumer regex map (full regex-map design in alpha.2; alpha.1 stub does detection only).",
+    "enabled": true,
+    "sources": [
+      { "version_file": "VERSION", "targets": ["README.md"] }
+    ]
+  },
+
+  "cross_ref_repair": {
+    "_comment": "Cross-ref dead-link repair (full impl ships in alpha.2 — depends on lychee JSON output design + git-rename detection threshold).",
+    "enabled": false,
+    "rename_threshold": 50,
+    "allowed_paths": ["CHANGELOG.md", "README.md", "docs/**", "*.md"]
+  },
+
+  "allowed_paths": [
+    "CHANGELOG.md",
+    "README.md",
+    "docs/**",
+    "*.md"
+  ]
+}
