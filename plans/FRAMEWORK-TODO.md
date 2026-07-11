@@ -161,6 +161,22 @@
   the run `head_sha`; OR make the required context conditional. Cross-repo (CI
   library + operations auto-merge enforcer backlog); track the fix upstream.
   Logged here for next-session merge-flow awareness.
+- *Escalation (2026-07-11, pre-prod audit):* a **second, distinct** failure mode
+  now compounds this — `composition` (and the `pull_request`-triggered
+  `audit-trail`) `startup_failure` **repo-wide** (on `main` too) since
+  **2026-07-10 ~20:49** (last success 18:43). The caller
+  `.github/workflows/composition.yml` is valid and pins the immutable `@ci/v1.8.1`
+  tag (unchanged sha); the callee `composition.yml` is byte-identical at
+  `ci/v1.8.1` and `ci/v1.9.0`; no relevant merge to `main` in the break window.
+  Only **aidoc-flow-ci reusable-workflow callers** fail (local-job checks +
+  `pull_request`-triggered reusable `lint` still pass), pointing to a **GitHub
+  Actions access/visibility change on the `aidoc-flow-ci` repo** (ci commit #120 at
+  19:54 = "private repos use self-hosted runners by default") making its reusable
+  workflows unresolvable from this repo → `startup_failure` ("workflow file
+  issue"). *Fix:* an **org/repo Actions-settings / ci-repo-visibility change
+  (founder/CI-owner)**, NOT a repo-file edit; a caller re-pin won't help (callee is
+  identical across tags). Until fixed, all PRs land via `--admin` (#305/#306/#307/
+  #308 did). Founder-owned.
 
 ### `[lint]` `STRUCT01-INDEX-EXEMPTION-NESTED` — ✅ CLOSED (2026-06-30) — index/registry templates never hit the STRUCT01/trace `-INDEX` exemption
 

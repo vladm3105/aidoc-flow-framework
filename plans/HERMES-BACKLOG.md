@@ -632,6 +632,32 @@ splits to a follow-up. Hermes MINOR.
 **Dependency:** none. `quality_loop_max_iterations` remains H-7 Phase-1b unless cheap
 to wire here.
 
+### H-17 — Parallel-review global env-lock serializes the saga API path — ⏳ OPEN (2026-07-11, pre-prod audit; needs a plan)
+
+**Source:** pre-prod readiness audit (2026-07-11), P1-2.
+
+`executor/api_runner.py` holds the process-global `_api_env_lock` (`threading.Lock`)
+across the entire `await litellm.acompletion()` network call (`api_runner.py:172` — the
+lock covers the awaited call because LiteLLM may read env at any point during request
+setup). The review saga fans branches over a `ThreadPoolExecutor`
+(`saga_orchestrator.py`), but each branch blocks on that lock for its whole LLM call, so
+an **N-persona `saga_parallel` review issues N *sequential* API calls** — wall-time scales
+linearly with persona count, and the new **`quality_loop` multiplies it by iteration
+count**. On a large doc this can exceed the MCP client hard-timeout and return nothing.
+
+The lock is only needed to isolate *different* project-envs across concurrent tool calls;
+within one saga all branches share identical env, so serializing them buys nothing.
+
+**Fix shape (needs a plan — auth/provider-env risk):** scope the lock to the
+`os.environ` mutation rather than the awaited call, or key it per merged-env signature,
+or pass all provider credentials via `litellm` kwargs so `os.environ` injection during
+the await is unnecessary. NOT a safe inline hack — providers read env vars differently,
+and a naive narrowing risks env-restore leaks or broken auth. Verify against the built-in
+executors (localhost LiteLLM proxy: creds already passed as kwargs) + a representative
+env-reading provider.
+
+**Dependency:** none. Highest-value Hermes engineering item post-quality-loop.
+
 ## What's NOT in this backlog
 
 - **Anything plugin-side.** Plugin TODOs live in normal places —
