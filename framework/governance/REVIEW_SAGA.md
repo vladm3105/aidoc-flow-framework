@@ -10,7 +10,7 @@ lifecycle behavior. Each platform binds the contract to its own runtime.
 
 The contract was generalized from a working reference implementation that
 predated this spec section, then promoted into framework spec so that any
-conforming engine — saga runtime, SKILL-prompt orchestration, or another
+conforming engine — saga runtime, prompt-orchestration engine, or another
 mechanism — can implement it while exposing the same observable lifecycle. The
 project's parity goal is **lifecycle-behavior parity** (per `docs/PARITY.md`);
 this document is its load-bearing definition.
@@ -69,7 +69,7 @@ verification. Both engines must produce a journal matching `saga.schema.json`
 |---|---|---|
 | `review_run_id` | string | 12-char-or-longer run identifier. Implementations MAY use deterministic IDs derived from the artifact + persona set + time bucket, or UUIDs. |
 | `artifact_id` | string | Short ID of the artifact under review (`BRD-01`, `PRD-02`, …). The format follows `framework/governance/ID_NAMING_STANDARDS.md` §"Format" and the authoritative `registry/LAYER_REGISTRY.yaml` `id_patterns.document` pattern (`^[A-Z]+-\d{2,}$` — two-or-more digits; two-digit is the common case). |
-| `layer` | string | One of the 8 framework layers (`01_BRD`..`08_IPLAN`). |
+| `layer` | string | One of the framework layers (`01_BRD`..`08_IPLAN`), plus the `09_CHG` change-management overlay — matching the `layer` enum in `saga.schema.json`. |
 | `personas_requested` | array of strings | The crew dispatched, drawn from `REVIEW_CREWS.yaml` personas registry. |
 | `status` | string | Current run-level state from the table above. |
 | `iteration` | integer | `1`-based create→review→revise iteration counter. |
@@ -121,7 +121,7 @@ Cooperative graceful-exit mechanism: every orchestrator that participates in
 the saga MUST monitor its own wall-clock against an implementation-defined
 SOFT_DEADLINE that sits **below** the implementation's hard timeout (OS
 signal, runtime kill, or equivalent), with a minimum buffer of 300s. At
-checkpoint boundaries (per-skill-type table below), the orchestrator checks
+checkpoint boundaries (per-orchestrator-role table below), the orchestrator checks
 elapsed time and exits cleanly with status `PARTIAL_TIMEOUT` if the soft
 deadline has been crossed.
 
@@ -173,7 +173,7 @@ The conformance test `test_FRAMEWORK_SPEC_VERSION_matches_framework_VERSION`
 enforces only string equality between `framework/VERSION` and each
 platform's `FRAMEWORK_SPEC_VERSION`. Implementation completeness against the
 spec is verified by behavior-specific tests (e.g., the saga-lifecycle-parity
-conformance test arriving in SAGA-PARITY-001 Phase 3).
+conformance test at `tests/conformance/test_saga_lifecycle_parity.py`).
 
 This declaration-vs-implementation distinction allows a multi-phase delivery
 where the spec changes in Phase N and platforms implement in Phases N+1,
@@ -213,7 +213,7 @@ in this engine-agnostic spec.
 - `saga.schema.json` — formal JSON Schema for the journal.
 - `plans/DECISIONS.md` D-0031 — the supersession decision that brought
   this contract into the framework spec.
-- `plans/DECISIONS.md` D-0005 — the prior decision that the plugin engine
+- `plans/DECISIONS.md` D-0005 — the prior decision that one engine
   would not port the saga, superseded in scope (its blackboard-for-
   crew-state reasoning remains authoritative).
 - `docs/PARITY.md` — the per-platform binding of the contract (which
