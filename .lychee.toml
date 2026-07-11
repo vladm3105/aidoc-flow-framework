@@ -1,0 +1,14 @@
+# lychee config — framework. Two classes of exclusion:
+#  1. platforms/** + examples/** + tests/** — deep platform/skill docs +
+#     system-under-test corpora (never hand-edited); pre-existing internal-link
+#     debt tracked as FRAMEWORK-TODO LINKS-PLATFORM-DEBT.
+#  2. cross-repo relative links (../business, ../operations, …) — resolve only
+#     in the local multi-repo workspace, never in single-repo CI. Verified by
+#     the umbrella, not per-repo CI.
+exclude_path = ["platforms", "examples", "tests"]
+exclude = [
+  "/platforms/", "/examples/", "/tests/",
+  "/business/", "/operations/", "/iplanic/", "/interlog/",
+  "/engramory/", "/iplan-standard/", "/aidoc-flow-ci/",
+  "/knowledge-rag/", "/web-site/",
+]

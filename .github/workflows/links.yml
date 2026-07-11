@@ -1,0 +1,36 @@
+# Caller for aidoc-flow-ci's reusable links workflow (@ci/v1.9.4).
+# internal = PR-blocking (offline; internal/relative links only);
+# external = weekly cron, non-blocking. See aidoc-flow-ci docs/REPO_STANDARDS §4.3.
+name: links
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  internal:
+    name: internal links (blocking)
+    if: github.event_name != 'schedule'
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.4
+    with:
+      mode: internal
+      fail-on-error: true
+
+  external:
+    name: external links (non-blocking)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.4
+    with:
+      mode: external
+      fail-on-error: false

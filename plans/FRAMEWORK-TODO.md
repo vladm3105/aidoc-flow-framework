@@ -24,6 +24,24 @@
 
 ## Open
 
+### `[ci]` `LINKS-PLATFORM-DEBT` — pre-existing internal-link debt under `platforms/**` + `examples/**`
+
+- Context: 2026-07-11, aidoc-flow-ci links-workflow population (ci/v1.9.4). A
+  `lychee --offline` sweep of hand-maintained + generated docs found **248
+  broken internal links**, ~245 of them clustered in
+  `platforms/hermes/agent-skills/spec-driven-development/**` skill docs, plus a
+  few durable-doc links pointing into `examples/url-shortener/**` (a
+  regenerated system-under-test corpus that must never be hand-edited).
+- Interim: the deployed `.lychee.toml` scopes the links gate to hand-maintained
+  top-level docs via `exclude_path = ["platforms", "examples", "tests"]` (+ URL
+  excludes for links pointing into them), so the gate is green on what's
+  actually maintained. The excluded paths carry the debt.
+- Fix shape: audit the `platforms/hermes/agent-skills/**` READMEs for the
+  relocated/renamed targets (likely one systematic dir move); repair
+  durable-doc → example links or confirm the example corpus regen resolves
+  them. Then narrow the `.lychee.toml` excludes. Framework-domain remediation,
+  NOT a CI change — example artifacts are fixed by regen, never by hand.
+
 ### `[docs]` `PREPROD-HYGIENE` — extend `test_spec_hygiene` `ENGINE_TOKENS` to guard `plugin`/`SKILL`/`doc-*`
 
 - Context: pre-prod readiness audit (2026-07-11). The engine-token sweep in
