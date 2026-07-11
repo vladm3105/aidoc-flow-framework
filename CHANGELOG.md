@@ -12,6 +12,15 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Hermes `0.11.0 → 0.11.1` — pre-prod readiness cleanup (audit 2026-07-11)
+
+- Three small robustness/observability fixes from the pre-prod audit: corrupt
+  review/remediation reports now `logger.warning` instead of degrading silently to
+  "no findings"; an empty-choices API response surfaces as a normal executor failure
+  (was a bare `IndexError`); a deploy note documents the built-in executors' localhost
+  LiteLLM-proxy requirement. See
+  [`platforms/hermes/CHANGELOG.md`](platforms/hermes/CHANGELOG.md) `0.11.1`.
+
 ### Added — Hermes `0.10.0 → 0.11.0` — bounded review→remediate→re-review quality loop (HERMES-REVIEW-LOOP-001 Phase 1) (2026-07-11)
 
 - **Hermes gains an opt-in, bounded review→remediate→re-review loop.** `sdd_review`

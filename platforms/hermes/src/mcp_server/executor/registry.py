@@ -14,6 +14,13 @@ from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
+# Deploy note: the built-in executors default to a LOCAL LiteLLM proxy. A
+# deployment without that proxy running (and without `LITELLM_MASTER_KEY` set)
+# will have every default executor fail with a connection error at call time
+# (surfaced as a non-zero `ExecutorResult.exit_code`, not a crash). Operators
+# either run the proxy at this address or override per-executor via
+# `executors.json` / the `UCX_EXECUTOR_API_BASE` / `UCX_EXECUTOR_API_KEY_ENV`
+# environment redirects (see `_resolve_overrides` in `api_runner.py`).
 LITELLM_PROXY_API_BASE = "http://localhost:4001/v1"
 LITELLM_PROXY_API_KEY_ENV = "LITELLM_MASTER_KEY"
 

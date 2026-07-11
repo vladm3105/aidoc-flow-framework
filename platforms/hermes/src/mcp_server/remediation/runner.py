@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import logging
 import re
 import shutil
 from dataclasses import dataclass
@@ -10,6 +11,8 @@ from typing import Any
 
 from mcp_server.reporting import build_action_id, build_finding_id
 from mcp_server.utils.source_files import extract_doc_id
+
+logger = logging.getLogger(__name__)
 
 PLACEHOLDER_PATTERN = re.compile(r"\b(TODO|TBD|FIXME|XXX)\b", re.IGNORECASE)
 
@@ -205,8 +208,14 @@ def _build_validate_fix_prompt(
     if validation_report_path and validation_report_path.exists():
         try:
             validation_data = json.loads(validation_report_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as exc:
+            # A corrupt/unreadable report degrades to "no findings"; warn so the
+            # silent-clean result is traceable (it would otherwise look like a pass).
+            logger.warning(
+                "Could not read validation report %s (%s); treating as no findings",
+                validation_report_path,
+                exc,
+            )
 
     errors = validation_data.get("errors", [])
     warnings = validation_data.get("warnings", [])
@@ -313,8 +322,14 @@ def _build_remediate_fix_prompt(
     if remediation_report_path and remediation_report_path.exists():
         try:
             remediation_data = json.loads(remediation_report_path.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as exc:
+            # A corrupt/unreadable report degrades to "no findings"; warn so the
+            # silent-clean result is traceable (it would otherwise look like a pass).
+            logger.warning(
+                "Could not read remediation report %s (%s); treating as no findings",
+                remediation_report_path,
+                exc,
+            )
 
     findings = remediation_data.get("findings", [])
     if findings:
