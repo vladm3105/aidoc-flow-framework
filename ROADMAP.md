@@ -31,11 +31,15 @@ permanent asymmetry.
 Near-term, in-flight work.
 
 - **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
-  (framework `0.36.2`). Hermes already has team-mode + 8-layer playbook injection +
-  saga conformance (D-0045…D-0053; the whole 0.32.x arc is auto-satisfied via its
-  vendored `sdd_doc_lint` + shared templates). The residual items are small doc/skill
-  deltas — **H-11c** (SHA-256 residue, now unblocked by PROVISIONAL-IDS-002) + the
-  cosmetic H-11a sweep — and the architecturally-deferred saga gate (H-1). Tracked in
+  (framework `0.37.x`). Hermes has advanced substantially (team-mode + 8-layer playbook
+  injection + saga conformance, and now the `audit_threshold` gate + `.aidoc/profile.yaml`
+  runtime consumption + the opt-in bounded review→remediate→re-review **quality loop**
+  (`hermes/v0.11.0`, HERMES-REVIEW-LOOP-001 Phase 1); the whole 0.32.x arc is
+  auto-satisfied via its vendored `sdd_doc_lint` + shared templates). The residual items
+  are small doc/skill deltas — **H-11c** (SHA-256 residue, now unblocked by
+  PROVISIONAL-IDS-002) + the cosmetic H-11a sweep — plus the quality-loop **Phase 2**
+  (cross-invocation resume / G-R1, and the parallel-review global-lock latency fix from
+  the 2026-07-11 pre-prod audit). Tracked in
   [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
 
 - **FRWK-REVIEW-002 (in flight, 2026-07-09):** fixing 46 findings from the 2026-07-09
@@ -49,6 +53,15 @@ Near-term, in-flight work.
 
 Planned, scoped, not yet started.
 
+- **Claude Code plugin `1.0` cut** — the plugin ships as a pre-1.0 preview (`0.23.4`).
+  The enumerated gates for the `1.0` release (consolidated from the 2026-07-11 pre-prod
+  audit; previously scattered across `CLAUDE.md` / stubs):
+  1. **Hermes parity** — Hermes no longer lags the plugin on the recent spec (see the
+     "Hermes parity catch-up" item under **Now**; `plans/HERMES-BACKLOG.md`).
+  2. **Remove the 2 deprecated redirect stubs** — `doc-review` + `trace-check`
+     (both self-document `v1.0.0` removal → `doc-validator`); drops the skill set 52 → 50.
+  3. **The "Next" cleanups below** — doc-number independence (#18), the optional
+     decomposition layer (#19), and domain profiles.
 - **Doc-number independence** *(deferred cleanup #18)* — decouple per-layer document
   numbering so layers can be authored and renumbered without cross-layer coupling.
 - **Decomposition layer for complex projects** *(deferred cleanup #19)* — promote an
