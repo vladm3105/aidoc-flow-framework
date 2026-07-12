@@ -2414,3 +2414,5 @@ auto-acknowledgment; one-way form — is owned by the operations repo (PR
 PR [#24](https://github.com/vladm3105/aidoc-flow-operations/pull/24) impl;
 OPS-0039). This framework PR is the docs-only sync. No VERSION change
 (documentation update only). No conformance impact.
+
+<!-- composition gate verification 2026-07-12 -->
