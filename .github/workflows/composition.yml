@@ -21,6 +21,10 @@ on:
     # See composition-private.yml for full rationale.
     workflows: ["ai-review"]
     types: [completed]
+permissions:
+  pull-requests: read
+  contents: read
+
 jobs:
   call:
     uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v1.8.1
