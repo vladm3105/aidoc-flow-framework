@@ -50,7 +50,7 @@ jobs:
     # failed ai-review or composition), but this saves the runner slot
     # entirely (per OPS-0065 security-auditor recommendation).
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v1.8.1
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v1.9.5
     with:
       # `||` fallback per Workflow-tool expression semantics: returns
       # the first truthy operand. workflow_run path resolves the LHS;

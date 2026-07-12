@@ -22,7 +22,7 @@ jobs:
   internal:
     name: internal links (blocking)
     if: github.event_name != 'schedule'
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.4
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.5
     with:
       mode: internal
       fail-on-error: true
@@ -30,7 +30,7 @@ jobs:
   external:
     name: external links (non-blocking)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.4
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/links.yml@ci/v1.9.5
     with:
       mode: external
       fail-on-error: false
