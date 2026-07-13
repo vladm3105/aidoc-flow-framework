@@ -14,7 +14,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
-- **docs-sync workflow (dry-run)** — added `.github/workflows/docs-sync.yml` (caller of aidoc-flow-ci `docs-sync.yml@ci/v1.9.5`) + `.github/docs-sync.json`; post-merge mechanical doc-fixer in dry-run (proposes changes as a PR comment, no push-back).
+- **MVP skeleton templates** — added `*-MVP-TEMPLATE.yaml` for all 8 SDD layers (BRD through IPLAN). Stripped-down structural forms for experienced agents already familiar with the full template conventions. Not standalone; must also load the full `*-TEMPLATE.yaml` for embedded guidance.
+
+### Changed
+
+- **BDD format documentation** — added "YAML vs Gherkin" section to `framework/layers/04_BDD/README.md` explaining the framework's structured YAML scenario format over Gherkin `.feature` files.
+- **Template selection rule** — all 8 layer READMEs and index templates now document that the full `*-TEMPLATE.yaml` is the default. MVP skeletons are secondary references, not standalone templates.
+
+### Added — docs-sync workflow (dry-run) — added `.github/workflows/docs-sync.yml` (caller of aidoc-flow-ci `docs-sync.yml@ci/v1.9.5`) + `.github/docs-sync.json`; post-merge mechanical doc-fixer in dry-run (proposes changes as a PR comment, no push-back).
 
 ### Added — canon secret-scan (gitleaks) workflow (2026-07-11)
 

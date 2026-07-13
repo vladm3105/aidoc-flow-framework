@@ -27,7 +27,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 | File | Purpose |
 |------|---------|
-| `EARS-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
+| `EARS-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `EARS-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project |
 
 ## EARS Syntax Patterns

@@ -45,7 +45,8 @@ SPEC (L6)  ──►  TDD (L7)  ──►  IPLAN (L8)  ──►  Code
 
 ## Templates
 
-- [TDD-TEMPLATE.yaml](TDD-TEMPLATE.yaml) — TDD guide template with test case definitions
+- [TDD-TEMPLATE.yaml](TDD-TEMPLATE.yaml) — **Default** — full template with embedded authoring guidance
+- [TDD-MVP-TEMPLATE.yaml](TDD-MVP-TEMPLATE.yaml) — Skeleton — not standalone; must also read the full template
 
 ## Quality Gate
 

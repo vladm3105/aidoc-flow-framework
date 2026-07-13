@@ -1,0 +1,79 @@
+# SPEC-MVP-TEMPLATE.yaml — minimal SPEC for MVP cycles.
+
+document_control:
+  spec_id: "SPEC-01"
+  title: "<Component Name> — Technical Specification"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "spec"
+  deliverable_type: "code"
+
+component:
+  name: "<Component name>"
+  purpose: "<What this component does>"
+  adr_reference: "ADR-01"
+  language: "<Programming language>"
+  dependencies:
+    - "<External dependency 1>"
+
+interfaces:
+  - name: "<Interface name>"
+    type: "api|library|message_queue|database|rpc"
+    description: "<What it provides>"
+    exports:
+      - signature: "<function/class signature>"
+        description: "<What it does>"
+        errors:
+          - "<Error condition → error response>"
+
+data_models:
+  - name: "<Model name>"
+    fields:
+      - name: "<field_name>"
+        type: "<type>"
+        required: true
+        description: "<Purpose>"
+
+behavior:
+  validation_rules:
+    - rule: "<Validation rule>"
+      applies_to: "<Field or input>"
+  state_transitions:
+    - from: "<State A>"
+      to: "<State B>"
+      trigger: "<Event>"
+      guard: "<Condition>"
+  error_handling:
+    - condition: "<Error condition>"
+      response: "<System response>"
+      source: "REQ-E-01"
+
+implementation_notes:
+  patterns: ["<Design pattern used>"]
+  constraints: ["<Technical constraint>"]
+  performance: "<Target>"
+
+downstream:
+  tdd_contracts:
+    - component: "<Component name>"
+      owner: "<File or test suite>"
+      threshold: "<Quality gate>"
+
+traceability:
+  upstream:
+    - type: "ADR"
+      id: "ADR-01"
+  downstream:
+    - type: "TDD"
+      status: "planned"
+    - type: "IPLAN"
+      status: "planned"
+
+glossary:
+  terms: []

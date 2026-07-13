@@ -30,4 +30,7 @@ Defines test cases that validate SPEC component contracts. Each TDD document map
 
 ## Template
 
-See [TDD-TEMPLATE.yaml](TDD-TEMPLATE.yaml).
+| File | Purpose |
+|------|---------|
+| `TDD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `TDD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |

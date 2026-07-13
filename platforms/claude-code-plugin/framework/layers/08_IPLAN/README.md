@@ -76,7 +76,10 @@ Each AI agent session reads the IPLAN in this order:
 
 ## Template
 
-See [IPLAN-TEMPLATE.yaml](IPLAN-TEMPLATE.yaml).
+| File | Purpose |
+|------|---------|
+| `IPLAN-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `IPLAN-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 
 ## Registry
 

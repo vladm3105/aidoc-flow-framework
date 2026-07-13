@@ -1,0 +1,65 @@
+# BDD-MVP-TEMPLATE.yaml — minimal BDD for MVP cycles.
+# BDD uses structured YAML scenarios, not Gherkin .feature files.
+# Each scenario references EARS requirements via inline ears: lists.
+
+document_control:
+  bdd_id: "BDD-01"
+  title: "<Project Name> — Acceptance Scenarios"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "bdd"
+  deliverable_type: "code"
+
+feature:
+  name: "<Feature name under test>"
+  description: "<One-line summary of the feature's behavior>"
+  scope: "<What this BDD document covers>"
+
+scenarios:
+  - id: "SC-01"
+    type: "success|error|recovery|parameterized|optional"
+    description: "<What this scenario validates>"
+    priority: "P1"
+    ears:
+      - "REQ-E-01"
+    given:
+      - "<Precondition 1>"
+      - "<Precondition 2>"
+    when:
+      - "<Action 1>"
+    then:
+      - "<Expected outcome 1>"
+      - "<Expected outcome 2>"
+    notes: "<Any clarifications>"
+
+  - id: "SC-02"
+    type: "error"
+    description: "<Error scenario>"
+    priority: "P2"
+    ears:
+      - "REQ-E-01"
+    given:
+      - "<Precondition>"
+    when:
+      - "<Error-triggering action>"
+    then:
+      - "<Error response>"
+
+traceability:
+  upstream:
+    - type: "EARS"
+      id: "EARS-01"
+  downstream:
+    - type: "ADR"
+      status: "planned"
+    - type: "TDD"
+      status: "planned"
+
+glossary:
+  terms: []

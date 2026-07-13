@@ -41,4 +41,7 @@ Implementation-ready technical specification for a single software component. De
 
 ## Template
 
-See [SPEC-TEMPLATE.yaml](SPEC-TEMPLATE.yaml).
+| File | Purpose |
+|------|---------|
+| `SPEC-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `SPEC-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |

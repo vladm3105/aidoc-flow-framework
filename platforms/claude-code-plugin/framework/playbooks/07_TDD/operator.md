@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: operator
 weight: 10
 agent: devops-release-engineer
-framework_spec_version: "0.37.1"
+framework_spec_version: "0.37.2"
 ---
 # operator lens — TDD layer
 

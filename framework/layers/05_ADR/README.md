@@ -25,7 +25,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 | File | Purpose |
 |------|---------|
-| `ADR-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
+| `ADR-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `ADR-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project |
 
 ## ADR Status Lifecycle

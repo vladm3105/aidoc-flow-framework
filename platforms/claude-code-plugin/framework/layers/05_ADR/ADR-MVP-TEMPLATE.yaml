@@ -1,0 +1,65 @@
+# ADR-MVP-TEMPLATE.yaml — minimal ADR for MVP cycles.
+
+document_control:
+  adr_id: "ADR-01"
+  title: "<Architecture Decision Title>"
+  version: "1.0.0"
+  status: "proposed"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "adr"
+  deliverable_type: "code"
+
+context:
+  problem: "<What architectural problem does this decision address?>"
+  background: "<Why is this decision needed now?>"
+  constraints:
+    - "<Constraint 1>"
+    - "<Constraint 2>"
+
+decision:
+  chosen_solution: "<What was decided>"
+  rationale: "<Why this option>"
+  key_components:
+    - "<Component 1>"
+    - "<Component 2>"
+
+alternatives:
+  - name: "<Alternative name>"
+    description: "<Brief description>"
+    pros: ["<Pro>"]
+    cons: ["<Con>"]
+    reason_rejected: "<Why not chosen>"
+
+consequences:
+  positive:
+    - "<Benefit of the decision>"
+  negative:
+    - "<Cost or constraint imposed>"
+  mitigation:
+    - "<How negative consequences are managed>"
+
+implementation:
+  approach: "<High-level implementation plan>"
+  dependencies:
+    - "<Prerequisite 1>"
+  risks:
+    - description: "<Risk>"
+      mitigation: "<Mitigation>"
+
+traceability:
+  upstream:
+    - type: "EARS"
+      id: "EARS-01"
+    - type: "BDD"
+      id: "BDD-01"
+  downstream:
+    - type: "SPEC"
+      status: "planned"
+
+glossary:
+  terms: []

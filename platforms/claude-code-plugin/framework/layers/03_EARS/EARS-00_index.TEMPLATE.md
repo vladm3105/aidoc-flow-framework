@@ -101,7 +101,8 @@ EARS must achieve **BDD-Ready score >=90/100** before downstream BDD generation.
 
 ## Related Documents
 
-- **Template**: [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml)
+- **Template** (default): [EARS-TEMPLATE.yaml](./EARS-TEMPLATE.yaml)
+- **MVP skeleton**: [EARS-MVP-TEMPLATE.yaml](./EARS-MVP-TEMPLATE.yaml) — not standalone
 - **README**: [README.md](./README.md) — EARS purpose and statement types
 - **Upstream**: [02_PRD](../02_PRD/) — Product Requirements
 - **Downstream**: [04_BDD](../04_BDD/) — Behavior-Driven Development

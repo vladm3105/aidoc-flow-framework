@@ -1,0 +1,57 @@
+# IPLAN-MVP-TEMPLATE.yaml — minimal IPLAN for MVP cycles.
+# Subtype: code_build (default). Use deploy subtype for infrastructure.
+
+document_control:
+  iplan_id: "IPLAN-001"
+  title: "<Project Name> — Implementation Plan"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  subtype: "code_build"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "iplan"
+  deliverable_type: "code"
+
+purpose: "<One sentence: what this IPLAN builds>"
+
+file_manifest:
+  - path: "<path/to/file.py>"
+    type: "create|modify|delete"
+    description: "<What this file is>"
+    source: "SPEC-01"  # from TDD contract
+    order: 1
+
+execution:
+  setup:
+    - "<Pre-build command 1>"
+  implementation:
+    - "<Build command 1>"
+  validation:
+    - "<Test command 1>"
+
+implementation_contracts:
+  interfaces:
+    - name: "<Interface name>"
+      kind: "protocol|exception|state_machine|data_model|di"
+      signature: "<Python type signature or YAML definition>"
+
+session_handoff:
+  last_session: ""
+  status_markers:
+    - file: "<path/to/file.py>"
+      status: "not_started|in_progress|completed|blocked"
+      notes: ""
+  resume_from: "<File, line, or step to resume from>"
+
+traceability:
+  upstream:
+    - type: "TDD"
+      id: "TDD-01"
+  downstream: []
+
+glossary:
+  terms: []
