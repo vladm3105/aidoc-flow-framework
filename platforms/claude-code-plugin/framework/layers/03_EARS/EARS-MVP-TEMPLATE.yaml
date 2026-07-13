@@ -1,0 +1,44 @@
+# EARS-MVP-TEMPLATE.yaml — minimal EARS for MVP cycles.
+
+document_control:
+  ears_id: "EARS-01"
+  title: "<Project Name> — Formal Requirements"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "ears"
+  deliverable_type: "code"
+
+purpose: "<One sentence: what system/feature these requirements govern>"
+
+requirements:
+  - id: "REQ-E-01"
+    type: "event_driven|state_driven|optional|unwanted_behavior|ubiquitous"
+    statement: "<WHEN-THE / WHILE-THE / WHERE / IF-THE / THE-SHALL pattern>"
+    priority: "P1"
+    source: "FR-01"  # from BRD
+    rationale: "<Why this requirement exists>"
+
+quality_attributes:
+  - attribute: "latency"
+    threshold: "<Target with unit and percentile>"
+    profile: "critical_path|normal|background"
+  - attribute: "availability"
+    threshold: "<Target>"
+    profile: "critical_path|normal|background"
+
+traceability:
+  upstream:
+    - type: "PRD"
+      id: "PRD-01"
+  downstream:
+    - type: "BDD"
+      status: "planned"
+
+glossary:
+  terms: []

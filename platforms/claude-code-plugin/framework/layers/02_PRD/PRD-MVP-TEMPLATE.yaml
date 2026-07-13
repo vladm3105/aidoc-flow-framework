@@ -1,0 +1,75 @@
+# PRD-MVP-TEMPLATE.yaml — minimal PRD for MVP cycles.
+
+document_control:
+  prd_id: "PRD-01"
+  title: "<Project Name> — Product Requirements"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "prd"
+  deliverable_type: "code"
+
+executive_summary:
+  problem_statement: "<Core user/customer problem>"
+  proposed_solution: "<How the product solves it>"
+  target_audience: "<Primary users>"
+
+success_metrics:
+  - id: "SM-01"
+    metric: "<Measurable KPI>"
+    target: "<Target value>"
+    measurement: "<How collected>"
+
+goals:
+  - id: "G-01"
+    description: "<Goal>"
+    priority: "P1"
+    success_indicator: "<How you know it's met>"
+
+scope:
+  requirements:
+    - id: "REQ-01"
+      description: "<Requirement>"
+      priority: "P1"
+  exclusions:
+    - "<Explicitly excluded>"
+  assumptions:
+    - "<Key assumption>"
+  constraints:
+    - "<Hard constraint>"
+
+user_stories:
+  - id: "US-01"
+    role: "<User role>"
+    desire: "<What they want>"
+    benefit: "<Why it matters>"
+    acceptance_criteria:
+      - "<Measurable condition>"
+    priority: "P1"
+
+non_functional_requirements:
+  - category: "performance|security|availability|scalability|maintainability"
+    requirement: "<Specific target>"
+    measurement: "<How verified>"
+
+risks:
+  - id: "R-01"
+    description: "<Risk>"
+    impact: "high|medium|low"
+    mitigation: "<Plan>"
+
+traceability:
+  upstream:
+    - type: "BRD"
+      id: "BRD-00"
+  downstream:
+    - type: "EARS"
+      status: "planned"
+
+glossary:
+  terms: []

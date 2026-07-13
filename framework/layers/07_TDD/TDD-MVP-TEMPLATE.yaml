@@ -1,0 +1,69 @@
+# TDD-MVP-TEMPLATE.yaml — minimal TDD for MVP cycles.
+
+document_control:
+  tdd_id: "TDD-01"
+  title: "<Component Name> — Test Definitions"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "tdd"
+  deliverable_type: "code"
+
+test_pyramid:
+  unit: 70       # percentage
+  integration: 20
+  e2e: 10
+
+bdd_scenario_map:
+  - scenario_id: "SC-01"
+    test_type: "integration|e2e"
+    test_file: "<path/to/test_file>"
+    test_function: "<test function name>"
+
+test_cases:
+  - id: "TC-01"
+    type: "unit|integration|e2e|security"
+    description: "<What this test validates>"
+    source: "SC-01"  # BDD scenario
+    inputs: {}
+    expected_output: {}
+    edge_cases:
+      - "<Edge case 1>"
+
+quality_thresholds:
+  - metric: "coverage"
+    target: 80
+    unit: "percent"
+    fail_action: "block_merge"
+  - metric: "pass_rate"
+    target: 100
+    unit: "percent"
+    fail_action: "block_merge"
+
+tdd_sequence:
+  - phase: "write_tests"
+    description: "Write failing tests for all test cases"
+  - phase: "red"
+    description: "Run tests; confirm they fail"
+  - phase: "implement"
+    description: "Implement code to make tests pass"
+  - phase: "green"
+    description: "Run tests; confirm they pass"
+  - phase: "refactor"
+    description: "Clean up while keeping tests green"
+
+traceability:
+  upstream:
+    - type: "SPEC"
+      id: "SPEC-01"
+  downstream:
+    - type: "IPLAN"
+      status: "planned"
+
+glossary:
+  terms: []

@@ -8,6 +8,21 @@ SPEC sections for req-to-implementation traceability.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
+## YAML vs Gherkin
+
+The framework uses **YAML-structured scenarios**, not Gherkin `.feature` files.
+This is a deliberate design choice:
+
+- YAML scenarios carry per-scenario EARS element-level traceability (the `ears:`
+  list on each scenario), which Gherkin comments cannot encode formally.
+- YAML scenarios integrate with the framework's element-ID and `@`-tag system
+  (content-hash IDs, upstream/downstream cross-references).
+- YAML is directly machine-parsable by both the `sdd_doc_lint` validator and the
+  TDD mapping step (layer 7), avoiding brittle regex-based `.feature` parsing.
+- Gherkin is still supported as an **output format** for human-readable
+  summaries, but the authoritative representation is YAML.
+
+
 **Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use TDD (L7) unit/integration tests for CI.
 
 ## C4 Model Position
@@ -30,7 +45,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 | File | Purpose |
 |------|---------|
-| `BDD-TEMPLATE.yaml` | Single source of truth — template with structured `scenarios:` YAML guidance in `_example` fields |
+| `BDD-TEMPLATE.yaml` | **Default** — full template with embedded `scenarios:` YAML guidance in `_example` fields. Self-documenting for AI agents. |
+| `BDD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `BDD-00_index.TEMPLATE.md` | BDD registry template — tracks planned and active BDD documents per project |
 
 ## Scenario YAML Quick Reference

@@ -36,7 +36,8 @@ Central registry for all SPEC documents. Each SPEC defines the implementation co
 
 ## Templates
 
-- [SPEC-TEMPLATE.yaml](SPEC-TEMPLATE.yaml) — Unified technical specification template (no subtypes — single unified SPEC)
+- [SPEC-TEMPLATE.yaml](SPEC-TEMPLATE.yaml) — **Default** — full template with embedded authoring guidance
+- [SPEC-MVP-TEMPLATE.yaml](SPEC-MVP-TEMPLATE.yaml) — Skeleton — not standalone; must also read the full template
 
 ## Quality Gate
 

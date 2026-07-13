@@ -27,7 +27,8 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 
 | File | Purpose |
 |------|---------|
-| `PRD-TEMPLATE.yaml` | Single source of truth — template with embedded authoring guidance |
+| `PRD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `PRD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `PRD-00_index.TEMPLATE.md` | PRD registry template — tracks planned and active PRDs per project |
 
 ## Element IDs

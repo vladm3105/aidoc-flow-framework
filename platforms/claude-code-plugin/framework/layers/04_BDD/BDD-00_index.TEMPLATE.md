@@ -44,7 +44,8 @@ flowchart LR
 
 BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 
-**Template**: [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml) — single source of truth
+**Template** (default): [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
+**MVP skeleton**: [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) — not standalone
 
 ---
 
@@ -143,7 +144,8 @@ element-level `@bdd: BDD.NN.SS.xxxx` tags.
 
 ## Related Documents
 
-- **Template**: [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
+- **Template** (default): [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
+- **MVP skeleton**: [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) — not standalone
 - **README**: [README.md](./README.md) — BDD purpose, structure, and best practices
 - **Upstream**: [03_EARS](../03_EARS/) — Formal requirements
 - **Downstream**: [05_ADR](../05_ADR/) — Architecture decisions

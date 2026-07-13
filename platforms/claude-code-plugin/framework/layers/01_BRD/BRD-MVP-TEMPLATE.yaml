@@ -1,0 +1,84 @@
+# BRD-MVP-TEMPLATE.yaml — minimal BRD for MVP cycles.
+# Validates against the same schema as BRD-TEMPLATE.yaml.
+# Use when: rapid initial pass; graduate to full template in PROD cycle.
+
+document_control:
+  brd_id: "BRD-00"
+  title: "<Project Name> — Business Requirements"
+  version: "1.0.0"
+  status: "draft"
+  lifecycle: "mvp"
+  author: "<Primary Author>"
+  created: "<YYYY-MM-DD>"
+  last_updated: "<YYYY-MM-DD>"
+  reviewers: []
+  approvals: []
+  document_type: "brd"
+  deliverable_type: "code"
+
+executive_summary:
+  vision: "<One-sentence vision statement>"
+  problem: "<Core problem the project solves>"
+  solution: "<High-level solution approach>"
+  value_proposition: "<Primary value delivered>"
+
+business_objectives:
+  - id: "BO-01"
+    description: "<Objective>"
+    success_criterion: "<Specific, measurable criterion>"
+    priority: "P1"
+    metric: "<How measured>"
+
+project_scope:
+  in_scope:
+    - "<What this project includes>"
+  out_of_scope:
+    - "<What this project explicitly excludes>"
+  assumptions:
+    - "<Key assumption>"
+  constraints:
+    - "<Hard constraint>"
+
+stakeholders:
+  - role: "<Role>"
+    name: "<Name or Team>"
+    interest: "<Why they care>"
+    involvement: "accountable|responsible|consulted|informed"
+
+functional_requirements:
+  - id: "FR-01"
+    description: "<What the system must do>"
+    priority: "P1"
+    acceptance_criteria:
+      - "<Measurable condition>"
+    source_objective: "BO-01"
+
+architecture_decision_topics:
+  - id: "AT-01"
+    topic: "<Decision area>"
+    rationale: "<Why this needs an architecture decision>"
+    category: "technology|security|performance|integration|data|operations|governance"
+    priority: "P1"
+
+quality_expectations:
+  - attribute: "<e.g. availability, latency, throughput, security, maintainability>"
+    threshold: "<Measurable target>"
+    measurement: "<How verified>"
+
+risks:
+  - id: "R-01"
+    description: "<Risk>"
+    impact: "high|medium|low"
+    probability: "high|medium|low"
+    mitigation: "<Plan>"
+
+traceability:
+  upstream_documents: []
+  downstream_artifacts:
+    - type: "PRD"
+      status: "planned"
+
+glossary:
+  terms:
+    - term: "<Term>"
+      definition: "<Definition>"

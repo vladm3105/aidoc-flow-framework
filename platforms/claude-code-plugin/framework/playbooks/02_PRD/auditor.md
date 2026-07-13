@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.37.1"
+framework_spec_version: "0.37.2"
 ---
 # auditor lens — PRD layer
 

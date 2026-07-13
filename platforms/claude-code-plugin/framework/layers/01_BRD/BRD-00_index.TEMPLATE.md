@@ -79,7 +79,8 @@ cycle's BRD(s) in full, and leave the rest as planned/sketch rows. See
 ## Quick Links
 
 - **PRD Layer**: [02_PRD](../02_PRD/)
-- **Template**: [BRD-TEMPLATE.yaml](BRD-TEMPLATE.yaml)
+- **Template** (default): [BRD-TEMPLATE.yaml](BRD-TEMPLATE.yaml)
+- **MVP skeleton**: [BRD-MVP-TEMPLATE.yaml](BRD-MVP-TEMPLATE.yaml) — not standalone; must also read the full template
 - **README**: [README.md](README.md)
 
 ---
