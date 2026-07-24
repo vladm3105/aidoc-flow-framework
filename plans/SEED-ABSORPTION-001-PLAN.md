@@ -5,7 +5,7 @@
 | Task           | SEED-ABSORPTION-001                                          |
 | Type           | feature                                                      |
 | Status         | PLANNED — 2026-07-24T00:00:00Z                               |
-| Depends on     | FRWK-REVIEW-003 T2/T3 if that plan lands first (see R3)      |
+| Depends on     | FRWK-REVIEW-003 T3 if that plan lands first (see R3)         |
 | Feeds          | corpus regeneration; `plans/FRAMEWORK-TODO.md` residuals     |
 | Version impact | framework **MINOR** (additive); GATE-SPEC C2. Absolute numbers deliberately not pinned, per `PLAN_STANDARD.md` |
 
@@ -64,7 +64,7 @@ nothing**, a state conformance currently *pins* as expected.
   is an example of a future ID. Only produced artifacts are constrained.
 - Extending the seed contract to `chg/` (the second human-input tier).
 - A `.feature` Gherkin emitter for BDD scenarios.
-- Authoring the SPEC coverage the 16 orphan scenarios lack (Task 8 finding).
+- Authoring the SPEC coverage the 16 orphan scenarios lack (Task 7 finding).
 
 ## Approach / Design
 
@@ -233,8 +233,8 @@ Other design points:
   be zero (the 15 covered scenarios are cited by both SPEC and TDD, the 16
   uncovered by neither). Under the case-scoped rule the delta is **not**
   knowable from the current measurement — some of the 15 may be cited only in
-  the §4 block. T7 measures it before asserting anything, and the conformance
-  fixture (V3) is what proves the loophole is closed.
+  the §4 block. T6 measures it before asserting anything, and the conformance
+  fixture (V4) is what proves the loophole is closed.
 
 ### Governance
 
@@ -282,6 +282,7 @@ the bundle.
 | `framework/layers/01_BRD/BRD-MVP-TEMPLATE.yaml` | Skeleton row for `seed_disposition:` |
 | `framework/layers/01_BRD/README.md` | "Seed input" section pointing at the contract |
 | `framework/layers/07_TDD/TDD-TEMPLATE.yaml` | Acceptance-criteria guidance on the BDD map |
+| `framework/layers/04_BDD/README.md` | Acceptance-pairing note (Part C); no placeholder/ID edits |
 | `framework/layers/07_TDD/README.md` + `framework/TESTING_STRATEGY_TDD.md` | Pairing contract is normative, not advisory |
 | `framework/registry/LAYER_REGISTRY.yaml` | New `acceptance_layers` block |
 | `framework/playbooks/01_BRD/business_analyst.md` | C8 — author the seed-disposition ledger |
@@ -596,6 +597,26 @@ removed as no-longer-defects, rows 15b/15c/17b/18/18b added for the
 already-existing prevention. Parts A and C are unchanged from the Pass-2
 independent review, so that review still stands for them.
 
-**Result:** ready — Part B is a scope *reduction* the founder directed and I
-verified against source; Parts A and C carry their prior independent review
-unchanged. Re-running the citation gate after this fold.
+Part B is a scope *reduction* the founder directed and I verified against
+source; Parts A and C carry their prior independent review unchanged.
+
+### Pass 5 — 2026-07-24 — author-side ai-review (stands in for CI ai-review)
+
+The CI `ai-review` check fail-closed on a 401 (the `codex` reviewer has no
+OpenAI key on this public repo — infrastructure error, not a verdict), so an
+author-side adversarial review was run on the committed diff. It returned
+`CHANGES_REQUESTED` with four internal-consistency findings, all leftovers from
+the Pass-4 renumbering that were not fully propagated — folded:
+
+- Scope bullet said "Task 8 finding" for the SPEC-coverage gap → **Task 7**.
+- Part C prose said "T7 measures it" → **T6**; and "fixture (V3)" → **V4**.
+- File-structure Modified table was missing the `04_BDD/README.md` row that
+  T6 edits → added.
+- `Depends on` cited FRWK-REVIEW-003 "T2/T3" but only T3 is substantiated (Part
+  B no longer touches the template family) → narrowed to **T3**.
+
+All text-only; no design change. The reviewer confirmed scope discipline and
+ledger self-consistency were sound.
+
+**Result:** ready — four consistency fixes folded; re-running the citation gate
+and markdownlint after this fold.
