@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: chaos_engineer
 weight: 8
 agent: chaos-engineer
-framework_spec_version: "0.37.2"
+framework_spec_version: "0.38.0"
 ---
 # chaos_engineer lens — IPLAN layer
 

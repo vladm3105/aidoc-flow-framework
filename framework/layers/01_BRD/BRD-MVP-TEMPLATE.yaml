@@ -82,3 +82,13 @@ glossary:
   terms:
     - term: "<Term>"
       definition: "<Definition>"
+
+# Seed→SDD absorption ledger (GD-08 / governance/SEED_CONTRACT.md). Optional
+# carrier; give every seed claim one disposition: absorbed (names >=1 BRD
+# element), rejected (rationale), or deferred (rationale + target_cycle).
+seed_disposition:
+  - claim: "<Claim the seed makes>"
+    disposition: "absorbed|rejected|deferred"
+    brd_elements: ["BRD.NN.SS.xxxx"]   # absorbed only
+    rationale: "<Why rejected/deferred>"   # rejected/deferred only
+    target_cycle: "BRD-02"   # deferred only

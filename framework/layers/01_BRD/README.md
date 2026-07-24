@@ -9,6 +9,28 @@ cycle is not limited to a single BRD.
 
 **Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 
+## Seed input
+
+The BRD is the point where the chain first accounts for the `seed/` tier — the
+raw, human-authored source material a cycle starts from
+(`../../README.md` inputs row; `../../docs/AIDOC.md` tier table). The seed is
+governed by [`../../governance/SEED_CONTRACT.md`](../../governance/SEED_CONTRACT.md)
+(GD-08):
+
+- **The seed is frozen historical input.** Once this cycle's first BRD is
+  authored, seed files are not edited to resolve findings — a "the seed says X,
+  the chain does not" finding is resolved **in the BRD**, never by amending the
+  seed. New human input arrives through the gated `chg/` tier.
+- **Every seed claim gets a total disposition** in the BRD's `seed_disposition:`
+  section: `absorbed` (names ≥1 BRD element ID), `rejected` (rationale), or
+  `deferred` (rationale + target cycle). A claim first appearing at PRD or later
+  with no BRD row is a gap.
+
+The `seed_disposition:` carrier ships `_required: false` (additive), so BRDs
+authored before the contract are unaffected. `SEED01` checks the ledger is
+well-formed and each `absorbed` target resolves; the auditor lens (C8) owns
+completeness against the seed prose.
+
 ## C4 Model Mapping
 
 BRD is the **Context** level in the C4 architecture model. Content describes the business

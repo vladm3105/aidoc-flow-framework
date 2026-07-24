@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: business_analyst
 weight: 30
 agent: requirements-analyst
-framework_spec_version: "0.37.2"
+framework_spec_version: "0.38.0"
 ---
 # business_analyst lens — BRD layer
 
@@ -78,6 +78,16 @@ header metadata) must include: document Owner (named individual or role),
 Status (Draft/Review/Approved), Version, and Effective Date. An incomplete
 Document Control block prevents governance routing and approval tracking.
 Missing → P2 finding citing C7.
+
+**C8 — Author the seed-disposition ledger.** When the cycle has a
+`<project>/seed/` input, this BRD's `seed_disposition:` section must give
+**every** claim the seed makes exactly one disposition (governance
+`SEED_CONTRACT.md`, GD-08): `absorbed` names ≥1 BRD element ID from §Functional
+Requirements that carries it; `rejected` gives a rationale; `deferred` gives a
+rationale and a target cycle (and SHOULD also appear in §out_of_scope). Do
+**not** edit the seed to resolve a finding — the seed is frozen historical
+input; dispose the claim here. A seed claim first accounted for at PRD or later,
+with no BRD row, is a gap. Missing/incomplete ledger → P2 finding citing C8.
 
 ## Beyond-checklist
 

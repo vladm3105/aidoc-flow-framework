@@ -1523,6 +1523,35 @@ def _bdd_yaml_scenarios(text: str) -> tuple[list | None, bool]:
     return None, False
 
 
+# --- Seed disposition ledger parse (SEED-ABSORPTION-001, GD-08) ---------------
+#: A produced BRD carries the seed→SDD absorption ledger as a fenced ```yaml block
+#: whose top-level key is ``seed_disposition:`` — a list of rows. Mirrors the
+#: BDD ``scenarios:`` carrier convention. ``SEED01`` validates each row and
+#: resolves each ``absorbed`` row's ``brd_elements`` against declared elements.
+_SEED_DISPOSITIONS = ("absorbed", "rejected", "deferred")
+
+
+def _seed_disposition_rows(text: str) -> tuple[list | None, bool]:
+    """Return ``(rows, malformed)`` for a BRD's seed-disposition ledger.
+
+    ``rows`` is the parsed list when a ```yaml block declares ``seed_disposition:``
+    as a list; ``None`` when no such block is present (the carrier is optional —
+    ``_required: false``). ``malformed`` is True when a block intends a
+    ``seed_disposition:`` mapping but fails to parse or has the wrong shape."""
+    for m in _YAML_FENCE.finditer(text):
+        raw = m.group(1)
+        if not re.search(r"^\s*seed_disposition\s*:", raw, re.MULTILINE):
+            continue
+        try:
+            obj = yaml.safe_load(raw)
+        except yaml.YAMLError:
+            return None, True
+        if isinstance(obj, dict) and isinstance(obj.get("seed_disposition"), list):
+            return obj["seed_disposition"], False
+        return None, True
+    return None, False
+
+
 def _bdd_ears_tokens(scenarios: list) -> list[str]:
     """Every ``ears`` token across scenarios, verbatim (doc-form included)."""
     out: list[str] = []
@@ -2011,6 +2040,30 @@ REALIZING_LAYERS: dict[str, tuple[str, ...]] = {
     "BRD": ("PRD",),
 }
 
+#: BDD-scenario -> acceptance-test pairing map (SEED-ABSORPTION-001 / GD-08).
+#: MIRRORS the additive `acceptance_layers` block in `LAYER_REGISTRY.yaml` (a
+#: conformance guard asserts they stay in sync). Sibling to REALIZING_LAYERS,
+#: which is NOT reused: ACC01 is case-scoped where COV02 is element-citation
+#: scoped. See `_check_acceptance_pairing`.
+ACCEPTANCE_LAYERS: dict[str, tuple[str, ...]] = {
+    "BDD": ("TDD",),
+}
+
+#: A TDD **test-case** element id (`TDD.NN.04.xxxx`, Section 4 Test Cases). Its
+#: co-location with a `@bdd:` citation is what makes that citation a *pairing*
+#: (a test case or §3 mapping row names the scenario) rather than a bare
+#: traceability-block listing.
+_TDD_CASE_ID = re.compile(r"\bTDD\.\d{2,}\.\d{2,}\.[a-f0-9]{4,8}\b")
+
+#: The TDD **carrier fields** that name a paired scenario in the structured-YAML
+#: form (TDD-TEMPLATE.yaml): `test_mapping.scenarios[].bdd_scenario` and
+#: `e2e_tests.cases[].bdd_ref`. In that form the `@bdd:` value sits ON the field
+#: line, NOT on the same line as a `TDD.NN.04.xxxx` id — so a `@bdd:` on a
+#: `bdd_scenario`/`bdd_ref` line pairs too. The §7 traceability block carries
+#: bare `@bdd:` lists with neither a co-located test-case id nor a carrier field,
+#: so the loophole stays closed.
+_BDD_PAIR_FIELD = re.compile(r"\bbdd_(?:scenario|ref)\b")
+
 
 def _element_realizing_citers(graph: EdgeGraph, token: str, layers: tuple[str, ...]) -> set[str]:
     """Citer docs of element ``token`` whose layer is in ``layers`` — the
@@ -2221,6 +2274,240 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
     return findings
 
 
+# --- Acceptance pairing lint (SEED-ABSORPTION-001, GD-08) ----------------------
+def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
+    """ACC01 — every declared BDD scenario must be **paired** to a TDD test case.
+
+    BDD is specified as "executable acceptance scenarios", yet `COV02` accepts a
+    scenario realized by SPEC *or* TDD, so a scenario can satisfy coverage with
+    zero tests. ACC01 closes that: a BDD scenario is *paired* only when a TDD
+    **test case or mapping entry** names it — a `@bdd:` citation that shares a
+    line with either a TDD test-case element id (`TDD.NN.04.xxxx`; the Markdown
+    §3 mapping-row / §4 e2e form) or a `bdd_scenario`/`bdd_ref` carrier field
+    (the structured-YAML form in TDD-TEMPLATE.yaml). A scenario cited only in the
+    TDD §7 traceability block (a bare list of `@bdd:` tokens, neither marker
+    present) does NOT pair — which is why ACC01 is case-scoped, not a reuse of
+    the document-scoped realization primitive `COV02` uses. Appending scenario
+    IDs to one traceability line therefore cannot silence ACC01 (the
+    vacuous-pass loophole).
+
+    `acceptance_layers` (`{BDD: [TDD]}`) is the normative source; this mirrors it.
+    Gating and severity mirror `COV02`: no-ops unless a real (non-`-00`) TDD doc
+    exists; **warning** in `build`, **error** in `gate-code`; a `reuse: referenced`
+    host BDD doc is exempt.
+    """
+    graph = build_edge_graph(corpus)
+    # Activate only when a real (non-index) TDD doc exists — a single-file BDD
+    # `on_author` run must not fire (mirrors COV02's DD-2b-3 gate).
+    if not any(
+        layer == "TDD" and not doc_id.endswith("-00") for doc_id, layer in graph.doc_layer.items()
+    ):
+        return []
+
+    rel_by_doc: dict[str, str] = {}
+    text_by_doc: dict[str, str] = {}
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
+        if doc_id:
+            rel_by_doc.setdefault(doc_id, rel)
+            text_by_doc.setdefault(doc_id, text)
+
+    # Paired BDD tokens: every `@bdd:` citation on a TDD line that ALSO carries
+    # either a TDD test-case element id (the rendered Markdown mapping-row / e2e
+    # form the corpus uses) OR a `bdd_scenario`/`bdd_ref` carrier field (the
+    # structured-YAML form TDD-TEMPLATE.yaml prescribes, where the id sits on a
+    # sibling line). Scanned across all real TDD docs. This is NEW parsing over
+    # the rendered TDD document (not `_element_realizing_citers`, which returns
+    # citer *documents* and cannot see the traceability-block loophole). The §7
+    # traceability block carries bare `@bdd:` lists with neither marker, so it
+    # never pairs — the loophole stays closed.
+    paired: set[str] = set()
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
+        if _artifact_code(fm) != "TDD" or doc_id.endswith("-00"):
+            continue
+        for line in text.splitlines():
+            if not (_TDD_CASE_ID.search(line) or _BDD_PAIR_FIELD.search(line)):
+                continue
+            for m in _TAG.finditer(line):
+                if m.group(1) == "bdd":
+                    # In the structured-YAML carrier the value is quoted
+                    # (`bdd_ref: "@bdd: BDD.NN.03.xxxx"`), so `_TAG`'s greedy
+                    # capture keeps the trailing quote/comma; take the leading
+                    # id token so it matches the declared element.
+                    tok = re.match(r"[A-Za-z][A-Za-z0-9.\-]*", m.group(2))
+                    if tok:
+                        paired.add(tok.group(0))
+
+    reuse = _reuse_map(corpus)  # exempt referenced host BDD docs
+    severity = "error" if mode == "gate-code" else "warning"
+    findings: list[Finding] = []
+    for elem, host in sorted(graph.element_host.items()):
+        if elem.split(".", 1)[0] != "BDD":
+            continue
+        if reuse.get(host, ("authored", ""))[0] == "referenced":
+            continue
+        if elem in paired:
+            continue
+        findings.append(
+            Finding(
+                rel_by_doc.get(host, host),
+                _bdd_line_of(text_by_doc.get(host, ""), elem),
+                "ACC01",
+                f"BDD scenario '{elem}' (host {host}) is not paired to any TDD test case — "
+                "no TDD test-case or mapping entry names it (a citation only in the TDD "
+                "traceability block does not pair)",
+                severity=severity,
+            )
+        )
+    return findings
+
+
+# --- Seed disposition ledger lint (SEED-ABSORPTION-001, GD-08) -----------------
+def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """SEED01 — structural validation of a BRD's ``seed_disposition:`` ledger
+    (governance/SEED_CONTRACT.md, GD-08).
+
+    Deterministic half of the enforcement split: every ledger row must be
+    well-formed, and each ``absorbed`` row's ``brd_elements`` must resolve to a
+    declared element. It CANNOT tell whether the ledger missed a claim the seed
+    prose makes — that is the BRD auditor lens's check C8 (a reading judgement).
+
+    The carrier is optional (``_required: false``): a BRD with no ledger block is
+    silently skipped, so the rule fires on nothing in corpora authored before the
+    contract.
+    """
+
+    # Resolve `absorbed` targets against elements declared OUTSIDE the ledger.
+    # build_edge_graph registers any `TYPE.NN.*` token whose doc prefix matches
+    # the host as a declared element — including the ledger's own `brd_elements`
+    # citations. Left unstripped, a bogus `absorbed` target would self-declare
+    # from its own row and resolve to itself, defeating the check. Strip each
+    # seed-disposition fence before computing the declared set.
+    def _drop_ledger(m: re.Match[str]) -> str:
+        return (
+            "" if re.search(r"^\s*seed_disposition\s*:", m.group(1), re.MULTILINE) else m.group(0)
+        )
+
+    stripped = [(rel, _YAML_FENCE.sub(_drop_ledger, text)) for rel, text in corpus]
+    declared: set[str] = set(build_edge_graph(stripped).element_host)
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if _artifact_code(fm) != "BRD":
+            continue
+        rows, malformed = _seed_disposition_rows(text)
+        if malformed:
+            findings.append(
+                Finding(
+                    rel,
+                    _bdd_line_of(text, "seed_disposition:"),
+                    "SEED01",
+                    "seed_disposition ledger YAML block is malformed or not a list",
+                )
+            )
+            continue
+        if rows is None:
+            continue  # optional carrier absent — nothing to check
+        for idx, row in enumerate(rows, 1):
+            # Guard: _bdd_line_of does `token in line`, which requires a str.
+            # A non-string YAML scalar for `claim` (e.g. an unquoted `42`) must
+            # be REPORTED as malformed, not crash the whole lint run.
+            _claim_raw = row.get("claim") if isinstance(row, dict) else None
+            line = _bdd_line_of(text, _claim_raw if isinstance(_claim_raw, str) else None)
+            if not isinstance(row, dict):
+                findings.append(
+                    Finding(rel, line, "SEED01", f"seed_disposition row #{idx} is not a mapping")
+                )
+                continue
+            claim = row.get("claim")
+            label = claim if isinstance(claim, str) and claim else f"#{idx}"
+            if not (isinstance(claim, str) and claim.strip()):
+                findings.append(
+                    Finding(rel, line, "SEED01", f"seed_disposition row {label} is missing 'claim'")
+                )
+            disposition = row.get("disposition")
+            if disposition not in _SEED_DISPOSITIONS:
+                findings.append(
+                    Finding(
+                        rel,
+                        line,
+                        "SEED01",
+                        f"seed_disposition row '{label}' has invalid disposition "
+                        f"'{disposition}' (want one of {'/'.join(_SEED_DISPOSITIONS)})",
+                    )
+                )
+                continue
+            if disposition == "absorbed":
+                elems = row.get("brd_elements")
+                if not (isinstance(elems, list) and elems):
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"absorbed seed claim '{label}' must name >=1 BRD element in "
+                            "'brd_elements'",
+                        )
+                    )
+                    continue
+                for elem in elems:
+                    if not (
+                        isinstance(elem, str) and _ELEM_FORM.match(elem) and elem.startswith("BRD.")
+                    ):
+                        findings.append(
+                            Finding(
+                                rel,
+                                line,
+                                "SEED01",
+                                f"absorbed seed claim '{label}' names a malformed BRD element "
+                                f"'{elem}'",
+                            )
+                        )
+                    elif elem not in declared:
+                        findings.append(
+                            Finding(
+                                rel,
+                                line,
+                                "SEED01",
+                                f"absorbed seed claim '{label}' names BRD element '{elem}' "
+                                "that resolves to no declared element",
+                            )
+                        )
+            elif disposition == "rejected":
+                if not (isinstance(row.get("rationale"), str) and row["rationale"].strip()):
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"rejected seed claim '{label}' must give a 'rationale'",
+                        )
+                    )
+            elif disposition == "deferred":
+                if not (isinstance(row.get("rationale"), str) and row["rationale"].strip()):
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"deferred seed claim '{label}' must give a 'rationale'",
+                        )
+                    )
+                if not (isinstance(row.get("target_cycle"), str) and row["target_cycle"].strip()):
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "SEED01",
+                            f"deferred seed claim '{label}' must name a 'target_cycle'",
+                        )
+                    )
+    return findings
+
+
 # --- Ref-granularity lint (CFB-PR-3, GD-03) -----------------------------------
 #: Layers that declare canonical element IDs — a trace citation TO one of these
 #: must be element-level (GD-03). SPEC/IPLAN are element-ID-exempt → doc-level.
@@ -2329,6 +2616,7 @@ def lint_path(
     findings.extend(_check_threshold_consistency(corpus))
     findings.extend(_check_threshold_resolution(corpus))
     findings.extend(_check_id_uniqueness(corpus))
+    findings.extend(_check_seed_disposition(corpus))
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
     findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
@@ -2343,6 +2631,7 @@ def lint_path(
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))
+        findings.extend(_check_acceptance_pairing(corpus, mode))
         findings.extend(_check_phase_leak(corpus, mode))
     return findings
 

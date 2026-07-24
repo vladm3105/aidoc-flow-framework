@@ -25,6 +25,15 @@ This is a deliberate design choice:
 
 **Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use TDD (L7) unit/integration tests for CI.
 
+**Acceptance pairing (normative — GD-08).** Because BDD scenarios are not
+executed here, "executable acceptance scenario" is only true once TDD (L7) pairs
+each scenario to a concrete test case. Every scenario declared in this layer MUST
+be named by a TDD **test case or §3 mapping entry**; a scenario that reaches only
+the TDD §7 traceability block is not paired. `ACC01`
+(`../../governance/LINT_RULES.md`; `../../governance/SEED_CONTRACT.md`) enforces
+this — `warning` in `build`, `error` in `gate-code` — and is stricter than
+`COV02`, which a SPEC-only citation already satisfies.
+
 ## C4 Model Position
 
 BDD is a **refinement step** alongside EARS that formalizes the transition from

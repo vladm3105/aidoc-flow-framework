@@ -1,5 +1,56 @@
 # Session Handoff
 
+> **✅ SEED-ABSORPTION-001 IMPLEMENTED (2026-07-24) — one PR.** Implemented the
+> full plan (`plans/SEED-ABSORPTION-001-PLAN.md`) in a single PR, framework
+> `0.37.2 → 0.38.0` (GATE-SPEC C2, **GD-08**). **Part A** seed contract
+> (`SEED_CONTRACT.md`, BRD `seed_disposition:` §16 `_required:false` carrier,
+> `SEED01` lint, playbook C8). **Part B** templated-ID regression lock (negative
+> fixture + `test_templated_id_rejected.py` + doc notes; no template change).
+> **Part C** BDD→TDD acceptance pairing (`ACC01` + additive `acceptance_layers`;
+> case-scoped over `bdd_scenario`/`bdd_ref` co-location). Records: CHANGELOG,
+> ROADMAP, `DECISIONS.md` D-0064, GD-08; both `FRAMEWORK_SPEC_VERSION 0.38.0`;
+> vendored linter + plugin bundle re-synced (idempotent). **Conformance 239 ✓**
+> (+31 new tests), BRD golden green, corpus lint unchanged (16 COV02 / 16 ACC01 /
+> 6 STY02 / 5 REFGRAN01 / 1 TH-RES-001). CI `ai-review` is broken (401, no
+> reviewer key) → **author-side multi-agent review run instead** (code-reviewer +
+> documentation-specialist). Doc review clean; code review found **2 confirmed
+> defects, both fixed + regression-tested**: (1) SEED01 crashed the whole lint
+> run on a non-string `claim` (unguarded `_bdd_line_of`); (2) ACC01's line-only
+> co-location heuristic false-fired on a TDD authored in the framework's own
+> structured-YAML form — now also pairs via the `bdd_scenario`/`bdd_ref` carrier
+> fields (and the quoted-value capture is normalized), matching the plan's stated
+> contract; doc wording corrected to not over-assert physical co-location.
+>
+> **PR #326 — OPEN, awaiting founder GATE-SPEC merge.**
+> <https://github.com/vladm3105/aidoc-flow-framework/pull/326>. Every substantive
+> CI gate is GREEN (conformance, Framework-spec change gate, structural gate,
+> plugin smoke, Hermes pytest, lint/format hooks, gitleaks, internal links,
+> `call/verify` audit-trail, `call/ai-review` via `skip-ai-review`); `mergeable =
+> MERGEABLE`, zero failing checks. It sits `BLOCKED` because it is a **spec-tier
+> `framework/**` change** — GATE-SPEC / GD-01 reserve the merge for founder human
+> approval, and the repo auto-merge rule excludes spec/governance-tier PRs, so the
+> AI did **not** merge it. The required `call/composition` context does not post
+> on the `skip-ai-review` path for a spec-tier PR, so the founder merges (likely
+> `gh pr merge --squash --admin`). Handled en route: OPS-0069 audit-trail phrase
+> in the commit body, `skip-ai-review` label (public-repo ai-review 401), and a
+> transient gitleaks network flake (rerun → green).
+>
+> **Known pre-existing (NOT this PR):** `tests/acceptance` has 3 failures on
+> `layer_07_tdd` goldens (COV02/REFGRAN01) present on `main` before this work;
+> `tests/release/test_changelog_entry.py`'s `test_no_placeholder_orphans` is red
+> on a stale "TBD" in historical changelog prose (line ~332). Its
+> `test_changelog_has_entry_for_current_version` was red for `0.37.2` (no
+> CHANGELOG heading, FRWK-REVIEW-003 BL-1) — the `0.38.0` heading this PR adds
+> makes that half green for the current version. T7 filed a SPEC-coverage gap
+> (16 orphan scenarios un-designed) in `FRAMEWORK-TODO.md`; pinned count stays 16.
+>
+> **FRWK-REVIEW-003 in-flight work preserved (separate initiative).** The working
+> tree carried uncommitted `plans/FRAMEWORK-TODO.md` edits + an untracked
+> `plans/FRWK-REVIEW-003-PLAN.md` on session start; both were kept OUT of PR #326.
+> The `FRAMEWORK-TODO.md` edits live in `git stash@{0}` (they conflict with this
+> PR's T7 entry — resolve on apply, keep both); the plan file remains untracked in
+> the tree. Resume that initiative from there.
+>
 > **🔎 PRE-PROD READINESS AUDIT (2026-07-11) — COMPLETE.** Ran a full audit (framework
 > spec + both platforms + conformance + CI health + docs/version) after #305 landed.
 > **No correctness P0 in spec/platforms.** All four fix PRs landed; final main state:

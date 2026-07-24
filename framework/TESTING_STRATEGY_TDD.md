@@ -61,3 +61,13 @@ SDD uses a single TDD document per SPEC component. The document:
 ## BDD as Source of Truth
 
 TDD does NOT create new test scenarios. It maps **existing BDD scenarios** (with their `spec_trace` links) to test implementation. If BDD has 10 scenarios for a feature, TDD maps those 10 scenarios to their corresponding test types, file paths, and concrete test cases.
+
+**Every BDD scenario MUST be paired to a TDD test case (normative — GD-08).**
+Pairing means a TDD **test case or §3 mapping entry** names the scenario — a
+`bdd_scenario` mapping entry or an e2e-case `bdd_ref` field (in a rendered
+Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying the
+test-case id). A scenario listed only in the TDD §7 traceability block is
+**not** paired. `ACC01` (`governance/LINT_RULES.md`) enforces this deterministically:
+`warning` in `build`, `error` in `gate-code`. It is stricter than `COV02`, which
+accepts a scenario realized by SPEC *or* TDD and so would pass a scenario that no
+test covers.

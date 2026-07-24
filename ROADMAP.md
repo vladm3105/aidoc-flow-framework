@@ -110,6 +110,13 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **SEED-ABSORPTION-001 (2026-07-24, framework `0.37.2 → 0.38.0`, GD-08).** The
+  seed→SDD absorption contract (`SEED_CONTRACT.md`: frozen seed, total
+  disposition, `seed_disposition:` BRD carrier, `SEED01`); a regression lock that
+  a produced artifact can never carry a templated `TYPE.NN.SS.xxxx` ID
+  (`ID03`/`ID01`); and BDD→TDD acceptance pairing (`ACC01` + `acceptance_layers`,
+  case-scoped so a traceability-block citation cannot fake a paired test). See
+  [`plans/SEED-ABSORPTION-001-PLAN.md`](plans/SEED-ABSORPTION-001-PLAN.md).
 - **PROVISIONAL-IDS-002 Phase 1 (2026-07-08, framework `0.34.2 → 0.35.0`).** The
   Model-2 element-ID drift verifier — formalized hash-input contract + opt-in
   `rehash --check` (`IDDRIFT01`, advisory, not in the default lint). Phase 2+

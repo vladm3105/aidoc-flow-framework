@@ -15,6 +15,7 @@ Defines test cases that validate SPEC component contracts. Each TDD document map
 - **Single template, no subtypes** — unified TDD authoring contract.
 - **Test-first enforcement** — test files are generated BEFORE implementation files
 - **BDD as source of truth** — no new behavior descriptions; maps existing BDD scenarios (with spec_trace links) to test types
+- **Acceptance pairing is normative (GD-08)** — every BDD scenario MUST be paired to a TDD **test case**: named in a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` (in a rendered Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying the test-case id). A scenario named only in the §7 traceability block is not paired. Enforced by `ACC01` (`../../governance/LINT_RULES.md`): `warning` in `build`, `error` in `gate-code`. Stricter than `COV02` (which a SPEC-only citation satisfies).
 - **One document per SPEC component** — same granularity as SPEC for minimal maintenance
 
 ## TDD Baseline

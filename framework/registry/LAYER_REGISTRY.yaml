@@ -232,3 +232,23 @@ realizing_layers:
   BRD: [PRD]
   EARS: [BDD, SPEC, TDD]
   BDD: [SPEC, TDD]
+
+# BDD-scenario -> acceptance-test pairing map (SEED-ABSORPTION-001 / GD-08).
+# Additive sibling to realizing_layers, which is NOT changed (mutating it would
+# break the pinned assertion in tests/conformance/test_coverage_engine.py and
+# re-grade every consumer corpus). ACC01 (LINT_RULES.md) reads this block: a BDD
+# scenario is "paired" only when a TDD **test case or mapping entry** names it —
+# a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` field (in a rendered
+# Markdown TDD, the equivalent §3 Test Mapping row or §4 e2e line carrying the
+# test-case id `TDD.NN.04.xxxx`). A scenario cited only in the TDD §7
+# traceability block (bare `@bdd:` list, no carrier field or test-case id) does
+# NOT pair, which is why ACC01 is stricter than COV02 (COV02 treats any
+# element-level TDD citation as realization). This closes the vacuous-pass
+# loophole: appending scenario IDs to a single traceability line cannot pair them.
+#
+# DISAMBIGUATION: `acceptance_layers` / `ACC01` govern BDD-scenario -> TDD-case
+# pairing inside a *project's* SDD chain. They are unrelated to the framework's
+# OWN acceptance harness (tests/acceptance/, tests/ACCEPTANCE.md, the plugin's
+# pre-deployment release-gate methodology).
+acceptance_layers:
+  BDD: [TDD]

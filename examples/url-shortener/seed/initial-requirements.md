@@ -20,6 +20,12 @@ A small URL-shortener service.
 - Analytics dashboards.
 
 This seed is the input to the 8-layer SDD flow
-(BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN). The worked output
-chain under `../docs/` has been cleared pending regeneration; see
-[`../README.md`](../README.md) for the walkthrough.
+(BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN); the worked output chain
+lives under `../docs/`, and [`../README.md`](../README.md) is the walkthrough.
+
+**Frozen historical input.** Per the seed contract
+([`framework/governance/SEED_CONTRACT.md`](../../../framework/governance/SEED_CONTRACT.md),
+GD-08), this seed is not edited to resolve a downstream finding once `BRD-01`
+was authored: a "the seed says X, the chain does not" gap is disposed in
+`BRD-01`'s `seed_disposition:` ledger (absorbed / rejected / deferred), and new
+human input arrives through `chg/`, not by amending the claims above.

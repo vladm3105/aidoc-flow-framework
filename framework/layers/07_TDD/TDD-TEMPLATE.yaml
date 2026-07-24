@@ -82,6 +82,14 @@ test_mapping:
     Test file paths declare where tests will be written.
     TDD ORDER: test files must exist before implementation files
     (enforced by the AI when generating code from this document).
+
+    ACCEPTANCE PAIRING (normative — GD-08): every BDD scenario MUST be named
+    here in a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` field (in a
+    rendered Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying
+    the test-case id). A scenario that appears only in the §7 traceability block
+    is NOT paired and fires `ACC01` (governance/LINT_RULES.md; warning in build,
+    error in gate-code). Do NOT try to satisfy the gate by listing scenarios in
+    the traceability block — pair each to a real test case.
   scenarios:
     - bdd_scenario: "@bdd: BDD.NN.03.xxxx"
       description: "[Scenario name from BDD]"

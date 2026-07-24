@@ -12,6 +12,41 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.37.2 → 0.38.0` — seed→SDD absorption contract, acceptance pairing, produced-artifact ID hygiene (SEED-ABSORPTION-001 / GD-08) (2026-07-24)
+
+MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-08** in
+`framework/governance/DECISIONS.md`.
+
+- **Seed contract (Part A).** New `framework/governance/SEED_CONTRACT.md`: the
+  `seed/` tier is frozen historical input; every seed claim gets a total
+  disposition in the BRD (`absorbed` names ≥1 BRD element, `rejected` gives a
+  rationale, `deferred` gives a rationale + target cycle). New BRD
+  `seed_disposition:` §16 carrier (`_required: false`, non-breaking) + BRD-MVP
+  skeleton row + `01_BRD/README.md` "Seed input" section. New `SEED01` lint rule
+  (deterministic ledger well-formedness + `absorbed`-target resolution); the
+  auditor lens owns completeness (business-analyst + auditor playbook check C8).
+- **Templated-ID regression lock (Part B).** A produced artifact carrying the
+  templated placeholder ID form (`TYPE.NN.SS.xxxx`) is rejected by the existing
+  `ID03`/`ID01` (valid only in templates/snippets). Locked by
+  `tests/acceptance/fixtures/negative/brd-templated-ids.md` +
+  `test_templated_id_rejected.py`; discoverability note in
+  `ID_NAMING_STANDARDS.md` + `LINT_RULES.md`. No template/README change.
+- **Acceptance pairing (Part C).** New `ACC01` lint rule + additive
+  `acceptance_layers: {BDD: [TDD]}` registry block (sibling to `realizing_layers`,
+  which is unchanged). Case-scoped: a BDD scenario pairs only when a TDD test
+  case or §3 mapping entry names it — a citation in the TDD traceability block
+  alone does not pair (closes the vacuous-pass loophole). `warning` in `build`,
+  `error` in `gate-code`. Normative wording in `04_BDD`/`07_TDD` READMEs,
+  `TESTING_STRATEGY_TDD.md`, `TDD-TEMPLATE.yaml`, and `qa_lead.md` C1.
+- Both platforms re-declare `FRAMEWORK_SPEC_VERSION 0.38.0`; vendored linter +
+  plugin framework bundle re-synced; conformance green (239 tests).
+- **Author-side review fold (CI ai-review unavailable — 401, no reviewer key on
+  this public repo):** documentation/consistency review clean; code review found
+  and fixed 2 correctness defects, each regression-tested — (1) `SEED01` aborted
+  the whole lint run on a non-string `claim`; (2) `ACC01`'s line-only heuristic
+  false-fired on a TDD authored in the framework's own structured-YAML form, now
+  also paired via the `bdd_scenario`/`bdd_ref` carrier fields.
+
 ### Added
 
 - **MVP skeleton templates** — added `*-MVP-TEMPLATE.yaml` for all 8 SDD layers (BRD through IPLAN). Stripped-down structural forms for experienced agents already familiar with the full template conventions. Not standalone; must also load the full `*-TEMPLATE.yaml` for embedded guidance.

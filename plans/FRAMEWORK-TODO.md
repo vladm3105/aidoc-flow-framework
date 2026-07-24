@@ -24,6 +24,23 @@
 
 ## Open
 
+### `[example-corpus]` `SEED-ABSORPTION-001-T7` — 16 BDD scenarios are un-designed (SPEC-coverage gap), not merely un-tested
+
+- *Context:* SEED-ABSORPTION-001 T7 (2026-07-24). New `ACC01` fires on the same
+  16 orphan BDD scenarios as `COV02`. The T7 probe (dispatch `doc-tdd-audit`/
+  `doc-tdd-fixer` against `examples/url-shortener/docs/07_TDD/`) is blocked
+  **upstream**: `TDD-01.md:66` scopes itself to "the **15** Mapping-Store BDD
+  scenarios (SPEC-01 §8)", the corpus has exactly **one** SPEC, and TDD's
+  declared upstream includes `spec`. So the 16 orphans are un-**designed** — no
+  SPEC specifies them — and the TDD skills cannot author paired test cases for
+  scenarios no SPEC covers. Per `CLAUDE.md` "Never hand-edit example artifacts",
+  the corpus was not touched; `test_coverage_engine.py:103` stays pinned at 16.
+- *Fix shape:* the corpus is regenerated wholesale after framework changes
+  (`CLAUDE.md`), so the real fix is a regen that either designs the other 16
+  scenarios in SPEC (then TDD pairs them) or trims BDD-01 to the 15 that SPEC-01
+  covers. This entry records the SPEC-coverage gap the T7 probe surfaced; it is
+  not a hand-edit task.
+
 ### `[ci]` `LINKS-PLATFORM-DEBT` — pre-existing internal-link debt under `platforms/**` + `examples/**`
 
 - Context: 2026-07-11, aidoc-flow-ci links-workflow population (ci/v1.9.4). A
