@@ -79,6 +79,23 @@ this repo's half of upstream `aidoc-flow-ci` PLAN-009 Phase 2.
   so it validated against a canon version this repo no longer ran.
 - **Dropped the Dependabot `semver-major` hold** on `vladm3105/aidoc-flow-ci/*`,
   its in-file removal condition now being satisfied.
+- **Declared `litellm.model` in `.github/ai-review/config.json`** per
+  `MIGRATION_v2.0.0.md` §3, with the caveat recorded in the file: it is **not**
+  load-bearing here. The reusable resolves the alias from the config it fetches
+  from `trust_config_repo` (`aidoc-flow-operations@main`), which already sets
+  `ai-reviewer`. This repo's copy is documentation, and would become
+  authoritative only if `trust_config_repo` were pointed here.
+- **Root cause of the pre-migration `ai-review` failure, for the record.** It was
+  **not** a lapsed reviewer credential, as `plans/HANDOFF.md` states. When
+  `aidoc-flow-operations` cut over to `ci/v2.0.1`, it rewrote the shared trust
+  config to schema v2 and **removed the `reviewer` field**. The `ci/v1.9.5`
+  reusable resolves the engine with `jq -r '.reviewer // "codex"'`
+  (`ai-review.yml:525`, `:669`), so the absent field silently selected **codex**,
+  which needs `OPENAI_API_KEY` (`:590`) — a secret this repo has never held.
+  Hence `401 Unauthorized` from `api.openai.com` and `no parseable verdict —
+  fail-closed`. The gate has been unpassable since operations' cutover, and this
+  migration is what fixes it: the v2 reusable reads `litellm.model` from that
+  same config and routes through the LiteLLM proxy instead.
 - **Expect two `standards-drift` warnings** until the founder applies the CI-0011
   `actions-permissions` narrowing (`verified_allowed`, `patterns_allowed`). Both
   warn and exit 0; this repo's live pattern is narrower than canon's, so every
