@@ -12,6 +12,66 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI canon migrated `ci/v1.9.5` → `ci/v2.14.0` (CI-CANON-V2-001) (2026-07-25)
+
+No spec or platform change (no `VERSION` bump). Executes
+[`plans/CI-CANON-V2-MIGRATION-PLAN.md`](plans/CI-CANON-V2-MIGRATION-PLAN.md),
+this repo's half of upstream `aidoc-flow-ci` PLAN-009 Phase 2.
+
+- **All eleven `aidoc-flow-ci` call sites re-pinned to `@ci/v2.14.0`** — ten
+  pre-existing (nine files; `links.yml` calls twice) plus the new
+  `standards-drift` caller. Bumped in one PR on purpose: a partial sweep yields
+  a mixed-major CI canon inside one repo, which is why Dependabot PRs #321–#324
+  were closed.
+- **`ai-review` moved to the self-hosted pool, both jobs.** `runner_labels_routine`
+  and `runner_labels_review` now use `["self-hosted", "ci-runner", "single-use"]`
+  per the PLAN-013 uniform-protected model (`ci/v2.2.0`), which replaced the
+  public/private caller split with one protected template. Safe on a public repo:
+  forks are never trusted, so a fork PR reaches only the no-PR-code trust job.
+- **`litellm_allow_insecure_http: true` added.** Not optional here — this repo's
+  `LITELLM_BASE_URL` is the host-local Docker-bridge URL (port 4001 binds only to
+  `172.17.0.1` and `127.0.0.1`; no public or TLS listener), and canon's
+  `litellm_client.py` rejects a non-HTTPS scheme without it.
+- **Adopted two canon caller-body changes `--repin` does not apply:** FT-43
+  (`ready_for_review` / `converted_to_draft` triggers — filed upstream as a
+  **security** fix; without them a PR whose code changed while a draft could
+  reach merge un-reviewed) and FT-42 (explicit least-privilege `secrets:` map
+  replacing `secrets: inherit`, which forwarded every repo secret including ones
+  the reusable never declares).
+- **`secret-scan`: added a narrowly-scoped `.gitleaks.toml` + `config-path`.**
+  `ci/v2.0.0` removed the default allowlist for `tests/` / `fixtures/` /
+  `vectors/` / `.secrets.baseline`. Measured with the canon-pinned gitleaks
+  8.30.1: the re-pin would have flipped this gate green→red on 27 findings, all
+  synthetic (26 in the detect-secrets baseline, 1 fixture string in
+  `test_saga_review_orchestrator.py`). The config allowlists the baseline by path
+  and the fixture by exact literal — deliberately not by tree, so a real key
+  added to that same test file is still caught. Verified against canon's own
+  config canary: the resolved ruleset still detects a planted AWS key and GitHub
+  PAT.
+- **Removed `.gitleaksignore`.** It contained a bare path (`.secrets.baseline`)
+  where gitleaks expects a fingerprint, so it had been a silent no-op since
+  `935befed` — gitleaks rejected the entry on every run. Its intent is now
+  correctly implemented in `.gitleaks.toml`.
+- **`standards-drift` migrated from a hand-rolled `curl`-and-execute to canon's
+  reusable** at `tier: governance` (this repo is Governance tier per
+  `REPO_STANDARDS.md` §1, not the caller template's default `product`). The old
+  shape fetched `check-standards-drift.sh` from a hardcoded `ci/v1.6.0` commit
+  SHA — nine minors stale, and a pin that did not move when the repo re-pinned,
+  so it validated against a canon version this repo no longer ran.
+- **Dropped the Dependabot `semver-major` hold** on `vladm3105/aidoc-flow-ci/*`,
+  its in-file removal condition now being satisfied.
+- **Expect two `standards-drift` warnings** until the founder applies the CI-0011
+  `actions-permissions` narrowing (`verified_allowed`, `patterns_allowed`). Both
+  warn and exit 0; this repo's live pattern is narrower than canon's, so every
+  reusable it calls is still admitted.
+
+**Correction to the previous entry below:** it stated the caller raise would make
+the upstream `docs-sync` fix "take effect on re-pin". It does not. Canon
+`docs-sync.yml` at `ci/v2.14.0` still declares `pull-requests: read` at workflow
+level with no job-level override, while its "Post dry-run comment" step runs
+`gh pr comment`. **`docs-sync` therefore remains red after this migration** — the
+fix is still upstream-only.
+
 ### Changed — CI plumbing: `docs-sync` diagnosis + caller prerequisite (still red pending upstream), plus the CI changes that had no entry (2026-07-25)
 
 No spec or platform change (no `VERSION` bump).

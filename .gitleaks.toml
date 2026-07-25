@@ -1,0 +1,46 @@
+# gitleaks configuration for aidoc-flow-framework.
+#
+# Required by the `ci/v2.x` canon `secret-scan` reusable. The `ci/v1.x` reusable
+# shipped a DEFAULT allowlist covering `tests/`, `fixtures/`, `vectors/` and
+# `.secrets.baseline`; `ci/v2.0.0` removed it, on the reasoning that test and
+# example trees are common locations for accidentally-committed real credentials
+# and are therefore not safe blanket exclusions. Suppression is now the
+# consumer's job, and must be narrow.
+#
+# Verified 2026-07-25 with the canon-pinned gitleaks 8.30.1: a default scan of
+# this repo reports 27 findings, all synthetic — 26 in the detect-secrets
+# baseline and 1 fixture string in a Hermes unit test. Both are suppressed below.
+#
+# NOTE on scope: `[extend] useDefault = true` is mandatory, not stylistic. The
+# reusable runs a config canary that plants a live-looking AWS key and a GitHub
+# PAT and asserts the resolved config still detects them. A config with an
+# `[allowlist]` but no rules scans NOTHING and exits 0 — a green required check
+# that checks nothing. The canary exists to catch exactly that.
+#
+# Do NOT broaden the allowlist to `tests/` or `platforms/**`. Each entry here is
+# deliberately pinned to one path or one exact literal.
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Synthetic credentials in fixtures — no live secret is suppressed here"
+
+paths = [
+  # detect-secrets baseline. Holds HASHED representations of candidate secrets
+  # plus their file/line coordinates, not the secrets themselves; gitleaks'
+  # generic-api-key rule matches the hash strings. Source of 26 of the 27
+  # findings.
+  '''^\.secrets\.baseline$''',
+]
+
+regexes = [
+  # platforms/hermes/tests/unit/test_saga_review_orchestrator.py:274 — a fake
+  # OpenAI-style key embedded in a JSON fixture that asserts the saga
+  # orchestrator surfaces a "Rotate key" P1 security finding. The literal is a
+  # sequential alphabet run, not a credential shape any provider issues.
+  #
+  # Scoped to the exact string rather than to the file, so an accidental REAL
+  # key added to that same test file in future is still caught.
+  '''sk-abcdefghijklmnopqrstuv123456''',
+]

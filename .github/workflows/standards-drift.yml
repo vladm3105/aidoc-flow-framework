@@ -1,35 +1,62 @@
-# standards-drift — weekly canon drift check per PLAN-002 §5.5 Wave 1.
+# standards-drift — weekly server-side canon drift check.
+#
+# Compares THIS repo's branch protection, repo settings, actions permissions and
+# labels against the canon templates for its tier, and emits ::warning::
+# annotations for any drift. Warning-only by design (IPLAN-0017 §3.1b) — it never
+# blocks a PR. Dispatch it with `strict: true` for a release/adoption gate.
+#
+# MIGRATED to the canon reusable (CI-CANON-V2-001). This file previously
+# `curl`ed `check-standards-drift.sh` from a hardcoded aidoc-flow-ci commit SHA
+# and executed it directly, because no `workflow_call` reusable existed before
+# `ci/v2.8.0`. That shape had two defects the reusable fixes: the fetched script
+# was pinned nine minors behind canon, and its pin did not move when the repo
+# re-pinned its other callers — so the drift check validated against a canon
+# version this repo no longer ran.
+#
+# The old file's SHA-pinning rationale ("never curl-execute from mutable tags")
+# does not carry over and is not a regression: this is now a `uses:` reference,
+# which GitHub resolves through canon's immutable `ci/v*` tag ruleset, not a
+# curl-and-execute of a mutable ref.
+#
+# TIER: `governance`, NOT the caller template's default `product`. This repo is
+# Governance tier per aidoc-flow-ci docs/REPO_STANDARDS.md §1 ("aidoc-flow-framework,
+# aidoc-flow-iplan-standard — Public spec/schema repo; human-merge only"), which
+# matches the `--tier governance` the hand-rolled version passed. Comparing
+# against the `product` template would check the wrong branch-protection shape.
+#
+# RUNNER: `ubuntu-latest` (the reusable's default, left unset). This job only
+# reads the GitHub API — unlike ai-review it needs no LiteLLM proxy access, so it
+# does not belong on the self-hosted pool.
+#
+# TOKEN: verifying branch protection needs an admin-scoped token, which is NOT a
+# grantable GITHUB_TOKEN scope — so under the default token that one control
+# reports `warn_uncheckable` rather than a false green. To verify it, run with a
+# PAT carrying admin as GH_TOKEN.
+#
+# EXPECTED DRIFT after this migration (canon CI-0011, docs/UPDATE_GUIDE.md):
+# until the narrowed `actions-permissions.json` is applied to this repo, expect
+# two warnings — `verified_allowed: canon=false actual=true` and
+# `patterns_allowed: MISSING … vladm3105/*`. Both are warnings, exit 0. Nothing
+# is broken: this repo's live pattern is NARROWER than canon's, so every canon
+# reusable it calls is still admitted. Applying the settings is a founder step.
 name: standards-drift
+
 on:
   schedule:
-    - cron: '0 9 * * 1'
+    - cron: '0 9 * * 1'   # weekly Mon 09:00 UTC
   workflow_dispatch:
+    inputs:
+      strict:
+        description: 'Fail on drift or an uncheckable control (release/adoption gate)'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
 jobs:
   drift:
-    name: check-standards-drift
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      # SHA-pinned on purpose — this job is tier=governance and curl-executes a
-      # remote script below, so it holds a stricter posture than the repo's other
-      # workflows (which float on actions/checkout@v7). Do not "normalize" to a tag.
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-      - name: Fetch drift-check script from aidoc-flow-ci canon
-        run: |
-          # Pinned to the commit SHA that ci/v1.6.0 resolves to (aidoc-flow-ci@e827ab8)
-          # per business/iplanic/framework/operations ai-review verdicts M1: never curl-execute from mutable tags.
-          #
-          # e827ab8 is the COMMIT ci/v1.6.0 points at. The previous pin used
-          # e15ec7d, which is the annotated TAG OBJECT's SHA — raw.githubusercontent
-          # cannot serve a tag object, so this step 404'd on every scheduled run
-          # (verified: tag-object SHA -> 404, commit SHA -> 200). Deref annotated
-          # tags with `git rev-list -n1 <tag>` before pinning.
-          URL="https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/e827ab8268917ea4a81a0b8ddbc59eace702f7ed/sync/check-standards-drift.sh"
-          mkdir -p sync
-          curl -fsSL "$URL" -o sync/check-standards-drift.sh
-          chmod +x sync/check-standards-drift.sh
-      - name: Run standards drift check (tier=governance)
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: bash sync/check-standards-drift.sh --tier governance
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/standards-drift.yml@ci/v2.14.0
+    with:
+      tier: governance
+      strict: ${{ github.event.inputs.strict == 'true' }}

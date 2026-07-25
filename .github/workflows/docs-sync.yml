@@ -1,4 +1,4 @@
-# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v1.9.5).
+# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v2.14.0).
 # DRY-RUN rollout: computes proposed mechanical doc-fixes post-merge and
 # comments them on the PR — no push-back, no bot App needed (bot secrets are
 # only referenced by the live-mode Apply step, gated by dry_run != true).
@@ -21,15 +21,23 @@ permissions:
   # and the workflow reported green — until a merge finally produced a proposal.
   #
   # But GitHub intersects caller and callee permissions for reusable workflows,
-  # and the callee (aidoc-flow-ci docs-sync.yml@ci/v1.9.5) declares
-  # `pull-requests: read` at its own workflow level. So the effective token stays
-  # `read` until THAT declaration is raised upstream and a new ci/vX.Y.Z is cut.
-  # This raise is the necessary-but-insufficient half; it pre-positions the caller
-  # so the upstream fix takes effect on re-pin without a second change here.
+  # and the callee declares `pull-requests: read` at its own workflow level, with
+  # no job-level override. So the effective token stays `read` until THAT
+  # declaration is raised upstream.
+  #
+  # STILL NOT RAISED AT ci/v2.14.0 (verified 2026-07-25, CI-CANON-V2-001):
+  # canon docs-sync.yml declares `contents: read` + `pull-requests: read` at
+  # lines 59-61 and its `sync` job sets no `permissions:` block, while the
+  # "Post dry-run comment" step runs `gh pr comment` (line 244). Re-pinning this
+  # caller to v2.14.0 therefore does NOT fix the dry-run comment — an earlier
+  # version of this comment assumed the upstream half would ship alongside the
+  # re-pin, and it has not. This block remains pre-positioning only; the fix must
+  # land in canon. Track upstream before graduating docs-sync out of dry-run.
+  #
   # `contents` stays `read`: dry-run never pushes, and live mode uses the bot App.
   pull-requests: write
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v1.9.5
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v2.14.0
     secrets: inherit  # pragma: allowlist secret

@@ -1,6 +1,10 @@
 {
   "$schema": "https://aidoc-flow.io/schemas/ai-review-config-v1.json",
   "version": 1,
+  "litellm": {
+    "_comment": "Model alias resolved by the ci/v2.x reusable via the LiteLLM proxy. Defaults to 'ai-reviewer' when absent; set explicitly per MIGRATION_v2.0.0.md §3.",
+    "model": "ai-reviewer"
+  },
   "trust": {
     "ai_review": ["vladm3105"],
     "auto_fix":  []

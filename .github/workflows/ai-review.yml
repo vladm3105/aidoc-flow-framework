@@ -1,26 +1,34 @@
-# v1.0.2: public consumers can use ubuntu-latest. The reusable
-# ai-review.yml installs codex + claude CLI at workflow start when
-# runner_labels_review contains "ubuntu-latest" (no-op on self-hosted
-# runners that have the CLI pre-baked). See ci/v1.0.2 CHANGELOG and
-# docs/troubleshooting.md §10 for context. Install commands are
-# **unverified-in-CI** as of v1.0.2 ship; first PUBLIC consumer
-# adoption will validate. Report issues at vladm3105/aidoc-flow-ci.
+# PROTECTED caller — uniform on PUBLIC and PRIVATE repos (PLAN-013, ci/v2.2.0).
+# Runs on the ephemeral self-hosted single-use pool despite this being a PUBLIC
+# repo: the LiteLLM proxy is host-local (no public or TLS listener), so a
+# GitHub-hosted runner cannot reach it by any route. Safe on a public repo
+# because forks are never trusted (see `.github/ai-review/config.json`) → a fork
+# PR reaches only the no-PR-code trust job on the isolated pool; the heavy review
+# job runs only for trusted, non-fork authors.
 #
 # Secrets required (consumer adds to repo secrets):
 #   APP_REVIEWER_1_ID + APP_REVIEWER_1_KEY  reviewer App credentials
-#   OPENAI_API_KEY                           if reviewer: codex
-#   ANTHROPIC_API_KEY                        if reviewer: claude
+#   LITELLM_BASE_URL                         proxy base URL (normally .../v1)
+#   LITELLM_REVIEW_API_KEY                   review-scoped LiteLLM virtual key
 #
-# `pull_request_target` (not `pull_request`) is required because the
-# trust gate needs write-capable credentials to apply labels/comments
-# on fork PRs and the heavy review job needs secrets — both unavailable
-# under `pull_request` on fork PRs. The trust gate decides whether to
-# proceed; the heavy job runs only for trusted authors per the
-# allowlist in `.github/ai-review/config.json`.
+# Autofix (PLAN-012) is OPT-IN and DEFAULT-OFF; this repo sets
+# `autofix.enabled: false` in its config and holds none of the autofix App
+# credentials, so that job stays inert. The secrets are still mapped below —
+# an unset secret passes empty and the matching flow self-skips.
+#
+# `pull_request_target` (not `pull_request`) is required because the trust gate
+# needs write-capable credentials to apply labels/comments on fork PRs and the
+# heavy review job needs secrets — both unavailable under `pull_request` on fork
+# PRs. The trust gate decides whether to proceed; the heavy job runs only for
+# trusted authors per the allowlist in `.github/ai-review/config.json`.
 name: ai-review
 on:
   pull_request_target:
-    types: [opened, synchronize, reopened, labeled, unlabeled]
+    # FT-43 (ci/v2.12.0, filed as a SECURITY fix): `ready_for_review` +
+    # `converted_to_draft` so a draft→ready transition triggers a real review,
+    # and a ready→draft is seen by the fail-closed guard. Without them a PR whose
+    # code changed while it was a draft could reach merge un-reviewed.
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review, converted_to_draft]
   pull_request_review:
     types: [submitted]
 
@@ -30,27 +38,37 @@ on:
 # block the reusable exceeds the caller grant and fails at load
 # (startup_failure, zero jobs) on any consumer under the read default. Scopes
 # match the reusable's own declaration (ai-review.yml). Safe under
-# pull_request_target because the reusable is diff-only: the heavy review job
-# fetches the diff via curl and never `actions/checkout`s the PR head into this
-# write-capable context (the sole checkout is the trust gate reading the
-# trust-config repo). Keep it diff-only if the reusable is ever edited.
+# pull_request_target because the reusable is diff-only on the REVIEW path: the
+# heavy review job fetches the diff via curl and never `actions/checkout`s the PR
+# head; the sole review-path checkout is the trust gate reading the trust-config
+# repo. (Exception — the DEFAULT-OFF autofix job DOES check out the PR head, but
+# with a read-only token, `persist-credentials: false`, and it never EXECUTES PR
+# code — only `git apply` plus a canon-pinned client; CI-0009.) Keep the review
+# path diff-only if the reusable is ever edited.
 permissions:
   contents: write        # reusable auto-merge fallback (gh pr merge via GITHUB_TOKEN)
   pull-requests: write   # trust-gate + verdict comments + label set
   issues: write          # gh api label create/apply paths
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v1.9.5
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.14.0
     with:
-      # reviewer engine is CONFIG-DRIVEN: leave this unset and the reusable reads
-      # `.reviewer` (claude|codex) from your trust-config repo's
-      # .github/ai-review/config.json (operations@main by default; your own repo if
-      # you set trust_config_repo). Set the matching auth secret — claude:
-      # CLAUDE_CODE_OAUTH_TOKEN (CLI) or ANTHROPIC_API_KEY (API); codex:
-      # OPENAI_API_KEY. Uncomment to force an engine here regardless of config:
-      # reviewer: claude
-      runner_labels_routine: '"ubuntu-latest"'
-      runner_labels_review: '"ubuntu-latest"'
+      # Model selection is CONFIG-DRIVEN: the reusable reads `litellm.model`
+      # from the trusted .github/ai-review/config.json. Uncomment to override:
+      # model: ai-reviewer
+      runner_labels_routine: '["self-hosted", "ci-runner", "single-use"]'
+      runner_labels_review: '["self-hosted", "ci-runner", "single-use"]'
+      # REQUIRED here, not optional. This repo's LITELLM_BASE_URL is the
+      # host-local Docker-bridge URL (port 4001 binds only to 172.17.0.1 and
+      # 127.0.0.1 — no public, no TLS listener), and canon's litellm_client.py
+      # rejects any non-HTTPS scheme unless this is true, failing with
+      # "LITELLM_BASE_URL must use HTTPS (or explicitly allow HTTP)".
+      litellm_allow_insecure_http: true
+      # `tier:` deliberately unset. This repo's human-merge floor is enforced
+      # server-side — canon composition.yml plus this repo's omission from the
+      # `auto_merge.repos` allowlist — so `tier: spec` would be redundant
+      # (PLAN-009 Phase 2, framework row).
+      #
       # External adopters: point the trust config at YOUR ops/config repo
       # (holds `.github/ai-review/config.json`). Defaults to
       # vladm3105/aidoc-flow-operations@main.
@@ -58,4 +76,17 @@ jobs:
       # trust_config_ref: main
       # NOTE: this override does NOT yet reach the composition gate, which reads
       # the consumer repo's own .github/ai-review/config.json@main (FT-6).
-    secrets: inherit  # pragma: allowlist secret
+    # FT-42 (ci/v2.12.0): explicit least-privilege map, replacing
+    # `secrets: inherit` — which forwarded every repo secret, including ones this
+    # reusable never declares. Only the declared secrets are forwarded now; an
+    # unset one passes empty and the matching flow self-skips (every reusable
+    # secret input is `required: false`).
+    secrets:
+      APP_REVIEWER_1_ID: ${{ secrets.APP_REVIEWER_1_ID }}
+      APP_REVIEWER_1_KEY: ${{ secrets.APP_REVIEWER_1_KEY }}
+      APP_AUTOFIX_ID: ${{ secrets.APP_AUTOFIX_ID }}
+      APP_AUTOFIX_KEY: ${{ secrets.APP_AUTOFIX_KEY }}
+      AI_REVIEW_TOKEN: ${{ secrets.AI_REVIEW_TOKEN }}
+      LITELLM_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+      LITELLM_REVIEW_API_KEY: ${{ secrets.LITELLM_REVIEW_API_KEY }}
+      LITELLM_FIX_API_KEY: ${{ secrets.LITELLM_FIX_API_KEY }}
