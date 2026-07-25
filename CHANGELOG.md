@@ -12,6 +12,18 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Docs — HANDOFF live-banner correction (2026-07-25)
+
+No spec or platform change (no `VERSION` bump).
+
+- Corrected the stale SEED-ABSORPTION-001 live banner in `plans/HANDOFF.md`:
+  #326 was shown `OPEN, awaiting founder merge` but had merged (`4423a1cc`), and
+  its `stash@{0}` guidance was wrong (described as slim FRAMEWORK-TODO edits;
+  actually a full pre-merge WIP of the now-merged change + a stale TODO, whose
+  "apply, keep both" advice would reintroduce merged content). Banner flipped to
+  past-tense DONE/merged; stash guidance corrected to drop-and-resume-from-plan.
+  Obsolete `stash@{0}` dropped. PR #327.
+
 ### Added — Framework Spec `0.37.2 → 0.38.0` — seed→SDD absorption contract, acceptance pairing, produced-artifact ID hygiene (SEED-ABSORPTION-001 / GD-08) (2026-07-24)
 
 MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-08** in
