@@ -11,6 +11,9 @@ jobs:
     permissions:
       contents: read
     steps:
+      # SHA-pinned on purpose — this job is tier=governance and curl-executes a
+      # remote script below, so it holds a stricter posture than the repo's other
+      # workflows (which float on actions/checkout@v7). Do not "normalize" to a tag.
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Fetch drift-check script from aidoc-flow-ci canon
         run: |
