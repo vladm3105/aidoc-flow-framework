@@ -12,7 +12,22 @@ on:
 
 permissions:
   contents: read
-  pull-requests: read
+  # PREREQUISITE ONLY — this alone does NOT fix the failing dry-run comment.
+  #
+  # Dry-run's "Post dry-run comment" step posts to the merge's PR and needs
+  # pull-requests: write; with `read` it dies on
+  # `GraphQL: Resource not accessible by integration (addComment)` under
+  # `set -euo pipefail`. The step is gated on `proposed != 0`, so it never ran —
+  # and the workflow reported green — until a merge finally produced a proposal.
+  #
+  # But GitHub intersects caller and callee permissions for reusable workflows,
+  # and the callee (aidoc-flow-ci docs-sync.yml@ci/v1.9.5) declares
+  # `pull-requests: read` at its own workflow level. So the effective token stays
+  # `read` until THAT declaration is raised upstream and a new ci/vX.Y.Z is cut.
+  # This raise is the necessary-but-insufficient half; it pre-positions the caller
+  # so the upstream fix takes effect on re-pin without a second change here.
+  # `contents` stays `read`: dry-run never pushes, and live mode uses the bot App.
+  pull-requests: write
 
 jobs:
   call:
