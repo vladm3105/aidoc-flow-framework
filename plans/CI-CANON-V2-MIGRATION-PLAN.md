@@ -42,8 +42,10 @@ hand-rolls (`standards-drift`), and records what stays deliberately local.
   `check-standards-drift.sh` pinned at a `ci/v1.6.0` commit SHA) with a thin
   caller of the canon `standards-drift.yml` reusable at `tier: governance`.
 - **Wave 3 (🔴 founder, post-merge):** apply the CI-0011 `actions-permissions`
-  narrowing so the newly-adopted `standards-drift` reports clean; delete the
-  now-unreferenced `CLAUDE_CODE_OAUTH_TOKEN` secret.
+  narrowing so the newly-adopted `standards-drift` reports clean.
+  **Superseded 2026-07-25:** this wave originally also deleted
+  `CLAUDE_CODE_OAUTH_TOKEN`; the founder decided to **keep** it. See the note
+  under Wave 0 item 3.
 
 **Out of scope (deferred):**
 
@@ -146,12 +148,23 @@ other needs shell access to the proxy host.
    body was never updated. Both jobs run serially per supervisor instance, so
    register enough instances that a PR does not serialize.
 
-3. **Drop the deprecated vendor-CLI secret** (`MIGRATION_v2.0.0.md` §2;
-   PLAN-009 Phase 0 #5) — **post-cutover**, not before: `CLAUDE_CODE_OAUTH_TOKEN`
-   is no longer referenced by any v2 reusable. **Keep `AI_REVIEW_TOKEN`** — it is
-   on PLAN-009 Phase 0 #3's *verify-it-did-not-lapse* list, not the deprecated
-   list. Keep `APP_REVIEWER_1_ID` / `_KEY` and the `APP_REVIEWER_1_BOT_ID`
-   variable.
+3. **Deprecated vendor-CLI secret — SUPERSEDED 2026-07-25: `CLAUDE_CODE_OAUTH_TOKEN`
+   is KEPT.** This plan originally called for dropping it post-cutover per
+   `MIGRATION_v2.0.0.md` §2 and PLAN-009 Phase 0 #5. **Founder decision: keep it.
+   Do not delete it, and do not re-raise the deletion in a later session.**
+
+   Keeping it is inert with respect to CI (verified 2026-07-25): no workflow in
+   this repo references `CLAUDE_CODE_OAUTH_TOKEN` or `ANTHROPIC_API_KEY`; no
+   canon reusable at `ci/v2.14.0` declares either; and although
+   `composition`, `auto-merge-ai-prs` and `docs-sync` still pass
+   `secrets: inherit`, a reusable can only access secrets it declares, so an
+   undeclared secret is never exposed. (`ai-review` no longer inherits at all —
+   it uses the FT-42 explicit map.) The residual consideration is hygiene rather
+   than function: an unused credential still sitting in the repo's secret store.
+
+   **Keep `AI_REVIEW_TOKEN`** — it is on PLAN-009 Phase 0 #3's
+   *verify-it-did-not-lapse* list, not the deprecated list. Keep
+   `APP_REVIEWER_1_ID` / `_KEY` and the `APP_REVIEWER_1_BOT_ID` variable.
 
 **Verification gate:** `gh secret list` shows both LiteLLM secrets, and `gh api
 repos/vladm3105/aidoc-flow-framework/actions/runners` shows ≥1 online runner
@@ -289,8 +302,9 @@ outside that set `startup_failure`s **silently, with no logs**. `conformance.yml
 10. **Post-merge: open a throwaway PR and watch `ai-review` to live green.** This
     is the real pass criterion. If it fails, the fix is forward — do not revert
     the pins without re-checking Wave 0.
-11. Wave 3 — hand the founder the CI-0011 settings PUT and the
-    `CLAUDE_CODE_OAUTH_TOKEN` deletion.
+11. Wave 3 — hand the founder the CI-0011 settings PUT. (The
+    `CLAUDE_CODE_OAUTH_TOKEN` deletion that was also listed here is superseded —
+    the secret is kept; see Wave 0 item 3.)
 
 ## Verification
 
@@ -436,6 +450,10 @@ Three further gaps, one of them structural:
    (deprecated → delete post-cutover) and `AI_REVIEW_TOKEN` (**not** deprecated —
    it is on PLAN-009 Phase 0 #3's verify-it-did-not-lapse list). Conflating the
    two would have deleted a live credential. → Added as Wave 0 item 3 + Wave 3.
+   **Superseded 2026-07-25 (founder): `CLAUDE_CODE_OAUTH_TOKEN` is kept.** The
+   finding stands — the two secrets are not interchangeable and `AI_REVIEW_TOKEN`
+   must not be dropped — but the deletion half no longer applies. See Wave 0
+   item 3.
 7. **Wave 0's smoke-test gate over-claimed.** `litellm-smoke.yml` ships only in
    canon, so a green run proves the proxy and the `ai-reviewer` alias are healthy
    — not that *this repo's* pool can reach the proxy. → Gate narrowed to the two
