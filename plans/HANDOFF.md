@@ -58,9 +58,44 @@
 > `Framework + platform conformance`, `call / composition`. Verify against a live
 > PR afterwards; GitHub's protection API is easy to get subtly wrong.
 >
-> **Still open (🔴 founder):** Wave 3 — apply the CI-0011 `actions-permissions`
-> narrowing (until then `standards-drift` reports two warnings, exit 0, nothing
-> broken). **`CLAUDE_CODE_OAUTH_TOKEN` is KEPT — founder decision 2026-07-25 —
+> **✅ Wave 3 DONE 2026-07-25 — CI-0011 applied.** Live state now
+> `verified_allowed: false`, `patterns_allowed:
+> ["actions/*","github/*","vladm3105/*"]`, `github_owned_allowed: true`. Audited
+> before applying: this repo uses only `actions/checkout`,
+> `actions/setup-python`, `github/codeql-action/*` and
+> `vladm3105/aidoc-flow-ci/*`, all still admitted — no silent `startup_failure`
+> risk. **`standards-drift` cannot confirm this** (`cannot check
+> actions.selected — gh api failed (token scope?)`); verify with
+> `gh api repos/vladm3105/aidoc-flow-framework/actions/permissions/selected-actions`,
+> not the drift job. Also created the 3 missing canon labels
+> (`ai:autofix-escalated`, `agents`, `config`) — those drift warnings are gone.
+>
+> **🔴 STILL OPEN — the phantom required status check.** Branch protection
+> requires `Lint / format / security hooks`; the check reports as
+> **`call / Lint / format / security hooks`**. Until corrected, every PR here is
+> `BLOCKED` regardless of results and `--admin` stays structurally necessary —
+> which is what let the broken reviewer go unnoticed for nine days. Fix:
+>
+> ```sh
+> printf '%s' '{"strict":false,"contexts":["call / Lint / format / security hooks","Framework + platform conformance","call / composition"]}' \
+>   | gh api -X PATCH repos/vladm3105/aidoc-flow-framework/branches/main/protection/required_status_checks --input -
+> ```
+>
+> Prior value for rollback:
+> `["Lint / format / security hooks","Framework + platform conformance","call / composition"]`.
+> Verify against a live PR after applying. **Not caused by this migration and
+> not fixed by it** — it predates the cutover.
+>
+> **Upstream findings filed on `aidoc-flow-ci`:** #305 (v1 `ai-review` codex
+> fallback — still latent for the six un-migrated consumers), #306 (`docs-sync`
+> callee caps `pull-requests: read`, so it stays red here), #307 (`secret-scan`
+> header says `dir`, code runs `git`), #308 (`standards-drift` reports
+> unreadable state as drift and passes green while verifying 1 of 4 control
+> families), #309 (doc accuracy). Full analysis:
+> `tmp/CANON-FINDINGS_ci-canon-v2-migration.md` (transient — the issues are the
+> durable record).
+>
+> **Secrets:** **`CLAUDE_CODE_OAUTH_TOKEN` is KEPT — founder decision 2026-07-25 —
 > do NOT delete it**, notwithstanding `MIGRATION_v2.0.0.md` §2 and PLAN-009
 > Phase 0 #5, which both prescribe dropping vendor-CLI credentials post-cutover.
 > Keeping it is inert for CI: no workflow here references it, no canon reusable
