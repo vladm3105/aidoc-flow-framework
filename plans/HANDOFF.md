@@ -1,6 +1,6 @@
 # Session Handoff
 
-> **✅ SEED-ABSORPTION-001 IMPLEMENTED (2026-07-24) — one PR.** Implemented the
+> **✅ SEED-ABSORPTION-001 DONE (2026-07-24; merged 2026-07-25) — one PR (#326).** Implemented the
 > full plan (`plans/SEED-ABSORPTION-001-PLAN.md`) in a single PR, framework
 > `0.37.2 → 0.38.0` (GATE-SPEC C2, **GD-08**). **Part A** seed contract
 > (`SEED_CONTRACT.md`, BRD `seed_disposition:` §16 `_required:false` carrier,
@@ -21,19 +21,19 @@
 > fields (and the quoted-value capture is normalized), matching the plan's stated
 > contract; doc wording corrected to not over-assert physical co-location.
 >
-> **PR #326 — OPEN, awaiting founder GATE-SPEC merge.**
+> **PR #326 — MERGED 2026-07-25 01:15Z by vladm3105** (founder GATE-SPEC merge;
+> squash commit `4423a1cc`, now the tip of framework `main`).
 > <https://github.com/vladm3105/aidoc-flow-framework/pull/326>. Every substantive
-> CI gate is GREEN (conformance, Framework-spec change gate, structural gate,
-> plugin smoke, Hermes pytest, lint/format hooks, gitleaks, internal links,
-> `call/verify` audit-trail, `call/ai-review` via `skip-ai-review`); `mergeable =
-> MERGEABLE`, zero failing checks. It sits `BLOCKED` because it is a **spec-tier
-> `framework/**` change** — GATE-SPEC / GD-01 reserve the merge for founder human
-> approval, and the repo auto-merge rule excludes spec/governance-tier PRs, so the
-> AI did **not** merge it. The required `call/composition` context does not post
-> on the `skip-ai-review` path for a spec-tier PR, so the founder merges (likely
-> `gh pr merge --squash --admin`). Handled en route: OPS-0069 audit-trail phrase
-> in the commit body, `skip-ai-review` label (public-repo ai-review 401), and a
-> transient gitleaks network flake (rerun → green).
+> CI gate was GREEN at merge (conformance, Framework-spec change gate, structural
+> gate, plugin smoke, Hermes pytest, lint/format hooks, gitleaks, internal links,
+> `call/verify` audit-trail, `call/ai-review` via `skip-ai-review`). It was
+> `BLOCKED` from AI auto-merge because it is a **spec-tier `framework/**` change**
+> — GATE-SPEC / GD-01 reserve the merge for founder human approval, and the repo
+> auto-merge rule excludes spec/governance-tier PRs — so the founder merged it
+> manually (as predicted). Handled en route: OPS-0069 audit-trail phrase in the
+> commit body, `skip-ai-review` label (public-repo ai-review 401), and a transient
+> gitleaks network flake (rerun → green). **Framework `main` is clean post-merge**
+> (spec `0.38.0`, both spec-pins `0.38.0`, plugin `0.23.4`, hermes `0.11.1`).
 >
 > **Known pre-existing (NOT this PR):** `tests/acceptance` has 3 failures on
 > `layer_07_tdd` goldens (COV02/REFGRAN01) present on `main` before this work;
@@ -44,12 +44,19 @@
 > makes that half green for the current version. T7 filed a SPEC-coverage gap
 > (16 orphan scenarios un-designed) in `FRAMEWORK-TODO.md`; pinned count stays 16.
 >
-> **FRWK-REVIEW-003 in-flight work preserved (separate initiative).** The working
-> tree carried uncommitted `plans/FRAMEWORK-TODO.md` edits + an untracked
-> `plans/FRWK-REVIEW-003-PLAN.md` on session start; both were kept OUT of PR #326.
-> The `FRAMEWORK-TODO.md` edits live in `git stash@{0}` (they conflict with this
-> PR's T7 entry — resolve on apply, keep both); the plan file remains untracked in
-> the tree. Resume that initiative from there.
+> **FRWK-REVIEW-003 in-flight work — resume from the untracked plan file only.**
+> The only live, unmerged FRWK-REVIEW-003 artifact is the untracked
+> `plans/FRWK-REVIEW-003-PLAN.md` (still present in the tree). **Ignore
+> `git stash@{0}`** — inspection (2026-07-25) shows it is *not* a slim
+> FRAMEWORK-TODO-edits stash: it is a full pre-merge WIP snapshot of the entire
+> SEED-ABSORPTION-001 change (20 files — `SEED_CONTRACT.md`, `DECISIONS.md` D-0064,
+> BRD/TDD templates, `LAYER_REGISTRY.yaml`, playbooks, etc.), **all now merged via
+> #326**, plus a *stale* `FRAMEWORK-TODO.md` that still carries the removed
+> `FRWK-REVIEW-003`/`TREND-AGENTS-MD` "Open" entries and lacks the `T7` entry
+> `main` now has. Applying it would reintroduce merged content and resurrect a
+> superseded TODO. **Recommended: `git stash drop stash@{0}`** (obsolete). The T7
+> SPEC-coverage gap is correctly recorded on `main` (`FRAMEWORK-TODO.md`, entry
+> `SEED-ABSORPTION-001-T7`); no salvage needed from the stash.
 >
 > **🔎 PRE-PROD READINESS AUDIT (2026-07-11) — COMPLETE.** Ran a full audit (framework
 > spec + both platforms + conformance + CI health + docs/version) after #305 landed.
