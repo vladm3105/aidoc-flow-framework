@@ -1,5 +1,79 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-25 (later) — CI canon migrated to `ci/v2.14.0`
+> (CI-CANON-V2-001).** Plan #334, implementation #335, both merged. All eleven
+> `aidoc-flow-ci` call sites are now `@ci/v2.14.0`; `standards-drift` moved from a
+> hand-rolled `curl`-and-execute (pinned nine minors stale at a `ci/v1.6.0`
+> commit SHA) to canon's reusable at `tier: governance`; `ai-review` runs **both**
+> jobs on the self-hosted pool with `litellm_allow_insecure_http: true`; FT-42
+> (least-privilege `secrets:` map) and FT-43 (draft/ready triggers — an upstream
+> **security** fix) adopted; `.gitleaks.toml` added; the Dependabot `semver-major`
+> hold dropped. Full record: `CHANGELOG.md` + `plans/DECISIONS.md` **D-0066**.
+>
+> **⚠️ CORRECTION — the `ai-review` root cause below is WRONG.** The banner
+> further down says `ai-review` "is 401 (no working reviewer key)" and prescribes
+> "restore the reviewer-App credential." **Neither is right, and that wording cost
+> this session real time.** The reviewer-App credentials
+> (`APP_REVIEWER_1_ID`/`_KEY`) were valid throughout and were never consulted for
+> the review call. What actually happened: when `aidoc-flow-operations` cut over
+> to `ci/v2.0.1` on 2026-07-16 it rewrote the **shared** trust config
+> (`trust_config_repo`, which this repo reads by default) to schema v2 and
+> **removed the `reviewer` field**. The `ci/v1.9.5` reusable resolves the engine
+> with `jq -r '.reviewer // "codex"'`, so the missing field silently selected
+> **codex**, which needs `OPENAI_API_KEY` — a secret this repo has never held →
+> `401` from `api.openai.com` → `no parseable verdict — fail-closed`. The gate was
+> unpassable here for ~9 days, and every merge in that window (incl. #335) went
+> through founder `--admin`. **The migration is the fix**, not a credential
+> restore. See D-0066.
+>
+> **Wave 0 infrastructure is live on this repo.** Two single-use runners
+> (`ci-runner@framework-1`, `ci-runner@framework-2`) registered with
+> `self-hosted,ci-runner,single-use`; `LITELLM_BASE_URL` +
+> `LITELLM_REVIEW_API_KEY` set. **`LITELLM_BASE_URL` must be the Docker-bridge
+> address `http://172.17.0.1:4001/v1`, NOT loopback** — the runner executes inside
+> a container, where `127.0.0.1`/`localhost` is the container itself. It was first
+> set to loopback and the v2 review job failed `proxy request failed after 3
+> attempts: URLError`; corrected 2026-07-25T20:44Z. Verified from inside a job
+> container: bridge → `GET /v1/models` returns HTTP 401 (alive, auth required);
+> loopback → unreachable.
+>
+> **✅ VERIFIED END-TO-END (throwaway PR #336, closed unmerged).** `call /
+> ai-review` **pass** and `call / composition` **pass** — composition's first
+> success in ~9 days. Both `ai-review` jobs scheduled on the pool with no
+> queueing; LiteLLM reached over the bridge URL; reviewer returned a parseable
+> verdict (`ai:review-passed`, review posted by the `aidoc-reviewer` App). A
+> green migration PR proved nothing on its own — #335 was reviewed by the *old*
+> v1.9.5 caller, since `pull_request_target` runs the base branch's workflow — so
+> this probe is the actual evidence.
+>
+> **⚠️ PRs here are STILL `BLOCKED`, for a second and unrelated reason.** Branch
+> protection requires the status context **`Lint / format / security hooks`**,
+> but the check reports as **`call / Lint / format / security hooks`** (the
+> reusable-workflow job prefix). A never-reported context can never be satisfied,
+> so every PR is blocked however green it is. This is the phantom
+> branch-protection context upstream PLAN-009 flags for
+> framework/business/iplanic; it **predates this migration and survives it**, and
+> it is why `--admin` has felt routine here. Fix is a 🔴 founder branch-protection
+> write — required contexts should be `call / Lint / format / security hooks`,
+> `Framework + platform conformance`, `call / composition`. Verify against a live
+> PR afterwards; GitHub's protection API is easy to get subtly wrong.
+>
+> **Still open (🔴 founder):** Wave 3 — apply the CI-0011 `actions-permissions`
+> narrowing (until then `standards-drift` reports two warnings, exit 0, nothing
+> broken), and delete the now-unreferenced `CLAUDE_CODE_OAUTH_TOKEN`. **Keep
+> `AI_REVIEW_TOKEN`** — it is on the verify-it-did-not-lapse list, not the
+> deprecated list.
+>
+> **Two upstream `aidoc-flow-ci` defects found, not yet filed:** (1) `secret-scan`
+> changed from `gitleaks dir` to `gitleaks git` (full history) at v2 while its own
+> header comment still says `dir` — this is why a locally-clean scan failed in CI;
+> (2) `docs-sync` still declares `pull-requests: read` at workflow level with no
+> job override while its dry-run step runs `gh pr comment`, so **`docs-sync`
+> remains red after this migration** — the caller-side raise in #333 is
+> necessary-but-insufficient and the real fix is upstream.
+>
+> ---
+>
 > **✅ SESSION 2026-07-25 (wrap) — handoff hygiene + open-PR triage.**
 > Reviewed this file against live git state, found the SEED-ABSORPTION-001 banner
 > stale (said #326 OPEN; it merged 2026-07-24 21:15 EST / 01:15Z `4423a1cc`) and

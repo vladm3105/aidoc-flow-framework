@@ -10,6 +10,81 @@ graduation.
 
 ---
 
+## D-0066 — CI canon migration: target the latest tag, not the plan's; and a shared trust config makes a partial fleet migration a breaking change
+
+**2026-07-25.** Four decisions from executing CI-CANON-V2-001
+(`plans/CI-CANON-V2-MIGRATION-PLAN.md`, PRs #334/#335).
+
+- **Target `ci/v2.14.0`, not PLAN-009's `ci/v2.8.0`.** Upstream's fleet-cutover
+  plan names `v2.8.0`, but that banner dates to 2026-07-18 and canon has since
+  shipped six further minors; `v2.14.0` is the current `Latest` and the tag
+  canon's own install templates reference. Re-pinning to the plan's literal
+  target would have required an immediate second bump. **Rule: a plan naming a
+  version target is naming it as of its writing date — re-resolve against
+  `Latest` at execution time, and record the deviation rather than following the
+  stale number.**
+
+- **Where upstream plan text conflicts with upstream source, source wins.**
+  PLAN-009 Phase 2's Edit F says to move only `ai-review`'s heavy *review* job
+  to the self-hosted pool and keep the trust job on `ubuntu-latest`. Canon's
+  actual caller template has been a **single** protected file since `ci/v2.2.0`
+  (PLAN-013), setting **both** `runner_labels_routine` and
+  `runner_labels_review` to the pool. PLAN-009's own superseded-target banner
+  says as much; its Phase 2 body was never updated. Following the prose would
+  have diverged from canon and under-sized the runner pool by half.
+
+- **`gitleaks` scan scope changed silently at v2; verify against the command CI
+  runs, not the one the docs describe.** `ci/v1.9.5` ran `gitleaks dir .`
+  (working tree); `ci/v2.x` runs `gitleaks git .` (full history — 1343 commits
+  here). Canon's own header comment still says `dir`. Local verification with
+  `dir` passed clean and CI then failed on 33 history findings, all
+  pre-migration `ucx_framework` placeholders. **Rule: when validating a CI gate
+  locally, read the step body for the actual invocation; a header comment is not
+  the contract.**
+
+- **A shared trust config makes a partial fleet migration a breaking change.**
+  This repo's `ai-review` had been failing `no parseable verdict — fail-closed`
+  since `aidoc-flow-operations` cut over to `ci/v2.0.1` on 2026-07-16 — not, as
+  `plans/HANDOFF.md` recorded, because a reviewer key lapsed. Operations rewrote
+  the **shared** trust config (`trust_config_repo`, which every consumer reads by
+  default) to schema v2, removing the `reviewer` field. The `v1.9.5` reusable
+  resolves the engine with `jq -r '.reviewer // "codex"'`, so the absent field
+  silently selected **codex**, which requires `OPENAI_API_KEY` — never held here.
+  Hence `401 Unauthorized` from `api.openai.com`. **Consequence for this repo:
+  its AI review gate was unpassable for ~9 days and every merge in that window
+  went through `--admin`, including #335's.** The migration is the fix: the v2
+  reusable reads `litellm.model` from that same config. Recorded here because
+  the failure mode is not local — a config this repo does not own can break its
+  gate, and the symptom (`no parseable verdict`) names neither the cause nor the
+  owner.
+
+- **`LITELLM_BASE_URL` must be the Docker-bridge address, not loopback.** The
+  single-use runner executes jobs **inside a container**, so `127.0.0.1` /
+  `localhost` resolves to the container itself, not the host. Set it to
+  `http://172.17.0.1:4001/v1`. Verified from inside a job container: the bridge
+  address answers `GET /v1/models` with **HTTP 401** (proxy alive, virtual key
+  required — the correct unauthenticated response), while both loopback forms are
+  unreachable. Set to loopback first, the v2 review job failed
+  `litellm: proxy request failed after 3 attempts: URLError`; corrected
+  2026-07-25T20:44Z and it passed on the next run. Note the LiteLLM container
+  publishes **host 4001 → container 4000**, and is a *different* service from
+  `llm_router-llm-router-1` (unpublished 4000/tcp, plus a separate host listener
+  on `0.0.0.0:4000`) — pointing at 4000 hits the wrong service.
+
+- **Two independent causes of `BLOCKED` were conflated; fixing `ai-review` only
+  removes one.** With the migration verified (`call / ai-review` and
+  `call / composition` both green on the #336 probe — composition's first success
+  in ~9 days), PRs here *still* report `BLOCKED`. Cause: branch protection
+  requires the status context **`Lint / format / security hooks`**, but the check
+  actually reports as **`call / Lint / format / security hooks`** — the reusable-
+  workflow job prefix. A context that is never reported can never be satisfied, so
+  every PR is blocked no matter how green. This is the "phantom
+  branch-protection context" upstream PLAN-009 flags for framework/business/
+  iplanic, and it is **independent of the reviewer**: it predates the migration
+  and survives it. Fixing it is a branch-protection write (🔴 founder); until then
+  `--admin` remains structurally necessary here, which is precisely the condition
+  that made `--admin` feel routine.
+
 ## D-0065 — CI-plumbing PRs get a CHANGELOG entry (founder call, 2026-07-25); and warning-only tooling can hide a hard failure behind a gate that never fires
 
 **2026-07-25.** Two decisions from the open-PR triage session.
