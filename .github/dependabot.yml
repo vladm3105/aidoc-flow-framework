@@ -51,10 +51,13 @@ updates:
       # being missed today — this guards the latent case.)
       #
       # REMOVE THIS ENTRY when the LiteLLM secrets are provisioned and the
-      # fleet re-pin is armed; then bump all ten call sites in one PR. The
-      # weekly standards-drift job also flags this file's divergence from
-      # the aidoc-flow-ci canonical template, so the hold resurfaces on its
-      # own rather than depending on anyone remembering.
+      # fleet re-pin is armed; then bump all ten call sites in one PR.
+      #
+      # NOTE: nothing automated will remind you. The weekly standards-drift
+      # job would normally flag this file's divergence from the
+      # aidoc-flow-ci canonical template, but it is the only reminder in
+      # play and it is not a strong one — it reports drift as a warning,
+      # never a failure. Treat this comment as the record.
       - dependency-name: "vladm3105/aidoc-flow-ci/*"
         update-types:
           - version-update:semver-major

@@ -17,9 +17,15 @@ jobs:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
       - name: Fetch drift-check script from aidoc-flow-ci canon
         run: |
-          # Pinned to the commit SHA that ci/v1.6.0 resolves to (aidoc-flow-ci@e15ec7d)
+          # Pinned to the commit SHA that ci/v1.6.0 resolves to (aidoc-flow-ci@e827ab8)
           # per business/iplanic/framework/operations ai-review verdicts M1: never curl-execute from mutable tags.
-          URL="https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/e15ec7d44234726195da316a740ad1684a2c5abd/sync/check-standards-drift.sh"
+          #
+          # e827ab8 is the COMMIT ci/v1.6.0 points at. The previous pin used
+          # e15ec7d, which is the annotated TAG OBJECT's SHA — raw.githubusercontent
+          # cannot serve a tag object, so this step 404'd on every scheduled run
+          # (verified: tag-object SHA -> 404, commit SHA -> 200). Deref annotated
+          # tags with `git rev-list -n1 <tag>` before pinning.
+          URL="https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/e827ab8268917ea4a81a0b8ddbc59eace702f7ed/sync/check-standards-drift.sh"
           mkdir -p sync
           curl -fsSL "$URL" -o sync/check-standards-drift.sh
           chmod +x sync/check-standards-drift.sh
