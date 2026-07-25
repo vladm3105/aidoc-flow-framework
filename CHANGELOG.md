@@ -39,15 +39,34 @@ this repo's half of upstream `aidoc-flow-ci` PLAN-009 Phase 2.
   replacing `secrets: inherit`, which forwarded every repo secret including ones
   the reusable never declares).
 - **`secret-scan`: added a narrowly-scoped `.gitleaks.toml` + `config-path`.**
-  `ci/v2.0.0` removed the default allowlist for `tests/` / `fixtures/` /
-  `vectors/` / `.secrets.baseline`. Measured with the canon-pinned gitleaks
-  8.30.1: the re-pin would have flipped this gate green→red on 27 findings, all
-  synthetic (26 in the detect-secrets baseline, 1 fixture string in
-  `test_saga_review_orchestrator.py`). The config allowlists the baseline by path
-  and the fixture by exact literal — deliberately not by tree, so a real key
-  added to that same test file is still caught. Verified against canon's own
-  config canary: the resolved ruleset still detects a planted AWS key and GitHub
-  PAT.
+  Two independent v2 changes made this necessary, and the second is not
+  documented upstream:
+  1. `ci/v2.0.0` removed the default allowlist for `tests/` / `fixtures/` /
+     `vectors/` / `.secrets.baseline`.
+  2. **`ci/v2.x` also changed the scan from `gitleaks dir .` (working tree) to
+     `gitleaks git .` (full commit history — 1325 commits here).** Canon's own
+     header comment in `secret-scan.yml` still says `dir`, so the change is
+     invisible on a read; it was found only by running the gate. `ci/v1.9.5`
+     ran `dir` (verified at that tag).
+
+  Measured with the canon-pinned gitleaks 8.30.1: the working tree yields 27
+  findings and history a further 33 — 60 in total, **all synthetic**. The 27 are
+  the detect-secrets baseline (26) plus one fixture string in
+  `test_saga_review_orchestrator.py`. The 33 are SPEC-template `api_key:`
+  placeholders, `Authorization: Bearer` examples in RAG guides, and a
+  Stripe-shaped token in an API-integration example — all under `UCX/`,
+  `ai_dev_flow/`, `ai_dev_ssd_flow/`, `mcp_sdd/`, `framework_rags/` and
+  `.claude/skills`, paths inherited from the pre-migration `ucx_framework`
+  project that are **absent at HEAD and untracked**.
+
+  Each suppression uses the narrowest mechanism that works: the baseline and the
+  dead pre-migration trees by anchored path, the live fixture key by exact
+  literal (not by file, so a real key added to that same test is still caught).
+  Allowlisting a path absent from HEAD cannot mask a live secret; if any of those
+  directories is ever reintroduced, its entry must be deleted rather than
+  inherited — recorded in the config itself. Verified against canon's own config
+  canary: the resolved ruleset still detects a planted AWS key and GitHub PAT, so
+  this is not a config that passes while scanning nothing.
 - **Removed `.gitleaksignore`.** It contained a bare path (`.secrets.baseline`)
   where gitleaks expects a fingerprint, so it had been a silent no-op since
   `935befed` — gitleaks rejected the entry on every run. Its intent is now

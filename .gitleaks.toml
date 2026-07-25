@@ -7,9 +7,17 @@
 # and are therefore not safe blanket exclusions. Suppression is now the
 # consumer's job, and must be narrow.
 #
-# Verified 2026-07-25 with the canon-pinned gitleaks 8.30.1: a default scan of
-# this repo reports 27 findings, all synthetic — 26 in the detect-secrets
-# baseline and 1 fixture string in a Hermes unit test. Both are suppressed below.
+# SCAN MODE — read this before editing. The `ci/v2.x` reusable runs
+# `gitleaks git .` over the FULL commit history (1325 commits at time of
+# writing), not `gitleaks dir .` over the working tree. `ci/v1.9.5` ran `dir`;
+# v2 changed it, and canon's own header comment still says `dir`, so the change
+# is easy to miss. Consequence: this config must account for files that no
+# longer exist at HEAD but are still reachable in history.
+#
+# Verified 2026-07-25 with the canon-pinned gitleaks 8.30.1:
+#   gitleaks dir . (working tree)  -> 27 findings, all synthetic
+#   gitleaks git . (full history)  -> 33 further findings, all pre-migration
+# All are suppressed below, each by the narrowest mechanism that works.
 #
 # NOTE on scope: `[extend] useDefault = true` is mandatory, not stylistic. The
 # reusable runs a config canary that plants a live-looking AWS key and a GitHub
@@ -27,11 +35,36 @@ useDefault = true
 description = "Synthetic credentials in fixtures — no live secret is suppressed here"
 
 paths = [
+  # --- present at HEAD -------------------------------------------------------
   # detect-secrets baseline. Holds HASHED representations of candidate secrets
   # plus their file/line coordinates, not the secrets themselves; gitleaks'
   # generic-api-key rule matches the hash strings. Source of 26 of the 27
-  # findings.
+  # working-tree findings.
   '''^\.secrets\.baseline$''',
+
+  # --- PRE-MIGRATION HISTORY ONLY -------------------------------------------
+  # Every path below is ABSENT at HEAD and untracked (verified 2026-07-25:
+  # `git ls-tree -r --name-only HEAD` matches none of them). They exist only in
+  # commits inherited from the pre-migration `ucx_framework` project, preserved
+  # on the read-only branch `legacy-ucx-v3.2-read-only` and reachable from this
+  # repo's history. The findings are documentation and template placeholders —
+  # SPEC template `api_key:` fields, `curl -H "Authorization: Bearer ..."`
+  # examples in RAG guides, a Stripe-shaped token in an API-integration example.
+  #
+  # Allowlisting a path that does not exist at HEAD cannot mask a live secret in
+  # the current tree. It CAN mask one if the path is ever reintroduced —
+  # so if any of these directories comes back, DELETE its entry here rather than
+  # inheriting the suppression.
+  #
+  # The alternative (rewriting history to purge them) is not on the table: the
+  # pre-migration history is deliberately preserved, and the values are
+  # placeholders, not live credentials.
+  '''^UCX/''',
+  '''^ai_dev_flow/''',
+  '''^ai_dev_ssd_flow/''',
+  '''^mcp_sdd/''',
+  '''^framework_rags/''',
+  '''^\.claude/skills''',
 ]
 
 regexes = [
@@ -42,5 +75,5 @@ regexes = [
   #
   # Scoped to the exact string rather than to the file, so an accidental REAL
   # key added to that same test file in future is still caught.
-  '''sk-abcdefghijklmnopqrstuv123456''',
+  '''sk-abcdefghijklmnopqrstuv123456''',  # pragma: allowlist secret
 ]
