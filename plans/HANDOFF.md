@@ -60,9 +60,14 @@
 >
 > **Still open (🔴 founder):** Wave 3 — apply the CI-0011 `actions-permissions`
 > narrowing (until then `standards-drift` reports two warnings, exit 0, nothing
-> broken), and delete the now-unreferenced `CLAUDE_CODE_OAUTH_TOKEN`. **Keep
-> `AI_REVIEW_TOKEN`** — it is on the verify-it-did-not-lapse list, not the
-> deprecated list.
+> broken). **`CLAUDE_CODE_OAUTH_TOKEN` is KEPT — founder decision 2026-07-25 —
+> do NOT delete it**, notwithstanding `MIGRATION_v2.0.0.md` §2 and PLAN-009
+> Phase 0 #5, which both prescribe dropping vendor-CLI credentials post-cutover.
+> Keeping it is inert for CI: no workflow here references it, no canon reusable
+> at `ci/v2.14.0` declares it, and the three `secrets: inherit` callers
+> (`composition`, `auto-merge-ai-prs`, `docs-sync`) cannot expose an undeclared
+> secret to a reusable. **Keep `AI_REVIEW_TOKEN`** too — it is on the
+> verify-it-did-not-lapse list, not the deprecated list.
 >
 > **Two upstream `aidoc-flow-ci` defects found, not yet filed:** (1) `secret-scan`
 > changed from `gitleaks dir` to `gitleaks git` (full history) at v2 while its own
