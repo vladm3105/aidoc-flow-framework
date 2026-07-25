@@ -285,13 +285,34 @@ future company projects; it ships independently semver-tagged
 `ops/iplans/IPLAN-0017_unified-ci-flows.md` +
 `ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
 
-**Per-repo state (2026-06-22):** **public repo; GitHub-hosted runners
-(per "## CI host policy" — do not self-host).** Current standalone
-`.github/workflows/ai-review.yml` is LIVE (codex reviewer). Migrates
-to `uses: aidoc-flow-ci/...@ci/v1.0.0` in **Phase A** of IPLAN-0017
-rollout — the eat-our-own-dogfood proof point (smallest cost; public-repo
-iteration speed; fork-safe `pull_request` trigger). 🔴 Phase 0 (founder
-creates `aidoc-flow-ci` repo) is the prerequisite.
+**Per-repo state (2026-07-25):** **public repo, but NOT purely
+GitHub-hosted.** All eleven `aidoc-flow-ci` call sites are pinned
+`@ci/v2.14.0` (CI-CANON-V2-001; plan `plans/CI-CANON-V2-MIGRATION-PLAN.md`,
+PRs #334/#335; decisions `plans/DECISIONS.md` D-0066).
+
+Runner split — deliberate, do not "normalize":
+
+- **`ai-review` runs entirely on the self-hosted single-use pool**
+  (`["self-hosted", "ci-runner", "single-use"]`, **both** the trust and
+  review jobs) per the PLAN-013 uniform-protected model. It has to: the
+  LiteLLM proxy is host-local with no public or TLS listener, so a
+  GitHub-hosted runner cannot reach it. Safe on a public repo because forks
+  are never trusted, so a fork PR reaches only the no-PR-code trust job.
+  The caller also sets `litellm_allow_insecure_http: true` — the bridge URL
+  is `http://`, and canon's client refuses non-HTTPS without it.
+- **Everything else stays on `ubuntu-latest`**, including the
+  fork-code-executing lint callers (`links`, `pre-commit`).
+
+Two operational facts that cost a session when unrecorded:
+
+- **`LITELLM_BASE_URL` must be the Docker-bridge address**
+  (`http://172.17.0.1:4001/v1`), never loopback — jobs run inside a
+  container, where `localhost` is the container. LiteLLM publishes host
+  4001 → container 4000, and is a different service from `llm_router`.
+- **`secret-scan` at v2 scans full git history** (`gitleaks git`), not the
+  working tree (`gitleaks dir`, which is what canon's own header comment
+  still claims). Validate locally with `git`, or a clean local run will
+  still fail CI. Suppressions live in `.gitleaks.toml`.
 
 ### Local overrides shared — the foundational rule
 
