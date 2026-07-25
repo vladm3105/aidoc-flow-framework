@@ -273,6 +273,62 @@ issues, reviews, releases, repo queries — not the GitHub MCP servers
 (`github-tt`, `github-vl`) or raw API calls. If `gh` is unauthenticated, run
 `gh auth login` rather than falling back to MCP/API.
 
+## Cross-repo feedback — file it as a GitHub issue on the owning repo
+
+When work here surfaces a defect **owned by another repo** — the CI canon
+(`aidoc-flow-ci`), a sibling submodule, an upstream spec — **file it there as a
+GitHub issue**. Recording it only in this repo's `DECISIONS.md` / `HANDOFF.md` /
+`plans/` is not sufficient: those files are read by sessions entering *this*
+repo, never by the people or agents who own the fix, so the defect stays latent
+for every other consumer.
+
+**When it applies.** The test is ownership, not severity: if the fix belongs in
+another repo's files, it gets an issue there. A local workaround does not
+discharge the obligation — ship the workaround *and* file the issue.
+
+**What a filed issue needs** (all of these; a bare symptom report wastes the
+owner's time):
+
+- **Reproduction against their source** — `file:line` for the defect, and the
+  command or run that exercised it.
+- **Blast radius** — who else is affected. Check the fleet rather than assuming
+  this repo is special; `gh secret list` / a `uses:` grep across sibling repos
+  usually settles it in one command.
+- **Why it was hard to diagnose**, when the symptom misnames the cause. This is
+  often the most valuable part — it argues for a better error message, which is
+  usually the real fix.
+- **A suggested fix**, concrete enough to act on.
+- **What is NOT broken**, when you checked and it was fine. It saves the owner
+  re-deriving it, and it keeps the report honest.
+
+**Granularity.** One issue per defect. Group only trivially-related items (e.g.
+several doc-accuracy corrections) into one, and say so up front. Do not open an
+issue for something already covered by an existing one — add the new evidence as
+a **comment** on that issue instead.
+
+**Then link it back.** Record the issue number in this repo's `DECISIONS.md` or
+`HANDOFF.md` so a future session finds the upstream thread instead of
+rediscovering the defect as a fresh bug.
+
+**Verify what you published.** Use `gh issue create --body-file -` (and
+`gh pr create --body-file -`). **`--body -` sets the body to a literal `-`** —
+it exits 0 and prints a URL, so it looks like it worked. Read the artifact back:
+
+```sh
+gh issue view <N> -R <owner>/<repo> --json body --jq '.body | length'
+```
+
+*Origin:* CI-CANON-V2-001 (2026-07-25). Migrating this repo to `ci/v2.14.0`
+surfaced five `aidoc-flow-ci` defects — filed as
+[#305](https://github.com/vladm3105/aidoc-flow-ci/issues/305)–[#309](https://github.com/vladm3105/aidoc-flow-ci/issues/309).
+The most serious (#305) had broken the AI review gate on **seven** repos for
+~9 days behind a symptom (`no parseable verdict — fail-closed`) that named
+neither cause nor owner; this repo's own `HANDOFF.md` had recorded a wrong
+cause, and that misdiagnosis survived multiple sessions precisely because it
+was only ever written down locally. All five issues were also initially
+published **empty** via `--body -`, and were caught only because the founder
+looked — hence the verify-what-you-published step.
+
 ## Unified CI — consume from `aidoc-flow-ci`
 
 This repo's CI workflows (ai-review, composition, doc-gate, secret-scan,
