@@ -24,6 +24,26 @@ updates:
         update-types:
           - minor
           - patch
+    ignore:
+      # aidoc-flow-ci reusable workflows — HELD at ci/v1.9.5 deliberately.
+      #
+      # `ci/v2.0.0` is a breaking change: it unifies AI review behind a
+      # LiteLLM proxy and removes the vendor-CLI credentials and workflow
+      # inputs the v1.x callers rely on (upstream
+      # docs/MIGRATION_v2.0.0.md). It requires consumer secrets this repo
+      # does not yet have — LITELLM_BASE_URL, LITELLM_REVIEW_API_KEY,
+      # LITELLM_DOC_API_KEY. Upstream also gates the re-pin as a
+      # founder-decided fleet action (ci/v2.8.0 release notes →
+      # plans/ROLLOUT_plan015-arming.md).
+      #
+      # Left un-ignored, Dependabot proposes the ten callers a few at a
+      # time (open-pull-requests-limit: 5), which can only ever produce a
+      # mixed-major CI canon inside one repo. PRs #321-#324 were closed
+      # for exactly that reason.
+      #
+      # REMOVE THIS ENTRY when the LiteLLM secrets are provisioned and the
+      # fleet re-pin is armed; then bump all ten callers in one PR.
+      - dependency-name: "vladm3105/aidoc-flow-ci/*"
     labels:
       - dependencies
 
