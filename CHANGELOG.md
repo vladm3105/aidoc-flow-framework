@@ -12,6 +12,102 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI canon migrated `ci/v1.9.5` → `ci/v2.14.0` (CI-CANON-V2-001) (2026-07-25)
+
+No spec or platform change (no `VERSION` bump). Executes
+[`plans/CI-CANON-V2-MIGRATION-PLAN.md`](plans/CI-CANON-V2-MIGRATION-PLAN.md),
+this repo's half of upstream `aidoc-flow-ci` PLAN-009 Phase 2.
+
+- **All eleven `aidoc-flow-ci` call sites re-pinned to `@ci/v2.14.0`** — ten
+  pre-existing (nine files; `links.yml` calls twice) plus the new
+  `standards-drift` caller. Bumped in one PR on purpose: a partial sweep yields
+  a mixed-major CI canon inside one repo, which is why Dependabot PRs #321–#324
+  were closed.
+- **`ai-review` moved to the self-hosted pool, both jobs.** `runner_labels_routine`
+  and `runner_labels_review` now use `["self-hosted", "ci-runner", "single-use"]`
+  per the PLAN-013 uniform-protected model (`ci/v2.2.0`), which replaced the
+  public/private caller split with one protected template. Safe on a public repo:
+  forks are never trusted, so a fork PR reaches only the no-PR-code trust job.
+- **`litellm_allow_insecure_http: true` added.** Not optional here — this repo's
+  `LITELLM_BASE_URL` is the host-local Docker-bridge URL (port 4001 binds only to
+  `172.17.0.1` and `127.0.0.1`; no public or TLS listener), and canon's
+  `litellm_client.py` rejects a non-HTTPS scheme without it.
+- **Adopted two canon caller-body changes `--repin` does not apply:** FT-43
+  (`ready_for_review` / `converted_to_draft` triggers — filed upstream as a
+  **security** fix; without them a PR whose code changed while a draft could
+  reach merge un-reviewed) and FT-42 (explicit least-privilege `secrets:` map
+  replacing `secrets: inherit`, which forwarded every repo secret including ones
+  the reusable never declares).
+- **`secret-scan`: added a narrowly-scoped `.gitleaks.toml` + `config-path`.**
+  Two independent v2 changes made this necessary, and the second is not
+  documented upstream:
+  1. `ci/v2.0.0` removed the default allowlist for `tests/` / `fixtures/` /
+     `vectors/` / `.secrets.baseline`.
+  2. **`ci/v2.x` also changed the scan from `gitleaks dir .` (working tree) to
+     `gitleaks git .` (full commit history — 1325 commits here).** Canon's own
+     header comment in `secret-scan.yml` still says `dir`, so the change is
+     invisible on a read; it was found only by running the gate. `ci/v1.9.5`
+     ran `dir` (verified at that tag).
+
+  Measured with the canon-pinned gitleaks 8.30.1: the working tree yields 27
+  findings and history a further 33 — 60 in total, **all synthetic**. The 27 are
+  the detect-secrets baseline (26) plus one fixture string in
+  `test_saga_review_orchestrator.py`. The 33 are SPEC-template `api_key:`
+  placeholders, `Authorization: Bearer` examples in RAG guides, and a
+  Stripe-shaped token in an API-integration example — all under `UCX/`,
+  `ai_dev_flow/`, `ai_dev_ssd_flow/`, `mcp_sdd/`, `framework_rags/` and
+  `.claude/skills`, paths inherited from the pre-migration `ucx_framework`
+  project that are **absent at HEAD and untracked**.
+
+  Each suppression uses the narrowest mechanism that works: the baseline and the
+  dead pre-migration trees by anchored path, the live fixture key by exact
+  literal (not by file, so a real key added to that same test is still caught).
+  Allowlisting a path absent from HEAD cannot mask a live secret; if any of those
+  directories is ever reintroduced, its entry must be deleted rather than
+  inherited — recorded in the config itself. Verified against canon's own config
+  canary: the resolved ruleset still detects a planted AWS key and GitHub PAT, so
+  this is not a config that passes while scanning nothing.
+- **Removed `.gitleaksignore`.** It contained a bare path (`.secrets.baseline`)
+  where gitleaks expects a fingerprint, so it had been a silent no-op since
+  `935befed` — gitleaks rejected the entry on every run. Its intent is now
+  correctly implemented in `.gitleaks.toml`.
+- **`standards-drift` migrated from a hand-rolled `curl`-and-execute to canon's
+  reusable** at `tier: governance` (this repo is Governance tier per
+  `REPO_STANDARDS.md` §1, not the caller template's default `product`). The old
+  shape fetched `check-standards-drift.sh` from a hardcoded `ci/v1.6.0` commit
+  SHA — nine minors stale, and a pin that did not move when the repo re-pinned,
+  so it validated against a canon version this repo no longer ran.
+- **Dropped the Dependabot `semver-major` hold** on `vladm3105/aidoc-flow-ci/*`,
+  its in-file removal condition now being satisfied.
+- **Declared `litellm.model` in `.github/ai-review/config.json`** per
+  `MIGRATION_v2.0.0.md` §3, with the caveat recorded in the file: it is **not**
+  load-bearing here. The reusable resolves the alias from the config it fetches
+  from `trust_config_repo` (`aidoc-flow-operations@main`), which already sets
+  `ai-reviewer`. This repo's copy is documentation, and would become
+  authoritative only if `trust_config_repo` were pointed here.
+- **Root cause of the pre-migration `ai-review` failure, for the record.** It was
+  **not** a lapsed reviewer credential, as `plans/HANDOFF.md` states. When
+  `aidoc-flow-operations` cut over to `ci/v2.0.1`, it rewrote the shared trust
+  config to schema v2 and **removed the `reviewer` field**. The `ci/v1.9.5`
+  reusable resolves the engine with `jq -r '.reviewer // "codex"'`
+  (`ai-review.yml:525`, `:669`), so the absent field silently selected **codex**,
+  which needs `OPENAI_API_KEY` (`:590`) — a secret this repo has never held.
+  Hence `401 Unauthorized` from `api.openai.com` and `no parseable verdict —
+  fail-closed`. The gate has been unpassable since operations' cutover, and this
+  migration is what fixes it: the v2 reusable reads `litellm.model` from that
+  same config and routes through the LiteLLM proxy instead.
+- **Expect two `standards-drift` warnings** until the founder applies the CI-0011
+  `actions-permissions` narrowing (`verified_allowed`, `patterns_allowed`). Both
+  warn and exit 0; this repo's live pattern is narrower than canon's, so every
+  reusable it calls is still admitted.
+
+**Correction to the previous entry below:** it stated the caller raise would make
+the upstream `docs-sync` fix "take effect on re-pin". It does not. Canon
+`docs-sync.yml` at `ci/v2.14.0` still declares `pull-requests: read` at workflow
+level with no job-level override, while its "Post dry-run comment" step runs
+`gh pr comment`. **`docs-sync` therefore remains red after this migration** — the
+fix is still upstream-only.
+
 ### Changed — CI plumbing: `docs-sync` diagnosis + caller prerequisite (still red pending upstream), plus the CI changes that had no entry (2026-07-25)
 
 No spec or platform change (no `VERSION` bump).

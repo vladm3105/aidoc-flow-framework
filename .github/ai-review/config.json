@@ -1,6 +1,10 @@
 {
   "$schema": "https://aidoc-flow.io/schemas/ai-review-config-v1.json",
   "version": 1,
+  "litellm": {
+    "_comment": "NOT load-bearing for model resolution on this repo. The ci/v2.x ai-review reusable resolves the alias from the config it FETCHES from trust_config_repo (vladm3105/aidoc-flow-operations@main), not from this file — see canon ai-review.yml 'Resolve LiteLLM model'. Operations already sets model 'ai-reviewer'. This entry is kept for two reasons: it documents the expected alias at the point a reader looks for it, and it becomes authoritative if trust_config_repo is ever pointed at this repo. Declared per MIGRATION_v2.0.0.md §3.",
+    "model": "ai-reviewer"
+  },
   "trust": {
     "ai_review": ["vladm3105"],
     "auto_fix":  []
