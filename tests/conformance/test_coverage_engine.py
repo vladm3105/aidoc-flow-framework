@@ -108,6 +108,11 @@ class BackwardCoverageContract(unittest.TestCase):
         # `gate-code`. All 26 EARS elements are realized (via BDD) so none are
         # flagged. Remediation of the orphans is a separate corpus/skill follow-up;
         # this codifies the known state so the gate stays meaningful.
+        #
+        # COV02 owns the *realization* half (designed/tested by SPEC OR TDD).
+        # ACC01 (SEED-ABSORPTION-001, test_acceptance_pairing.py) owns the
+        # *pairing* half — each BDD scenario paired to a TDD test case — which
+        # COV02 does not enforce (a scenario cited only by SPEC is COV02-clean).
         corpus = _collect_corpus(_EXAMPLE_DOCS)
         build = [f for f in _check_backward_coverage(corpus) if f.code == "COV02"]
         self.assertEqual(len(build), 16, [f.message for f in build])

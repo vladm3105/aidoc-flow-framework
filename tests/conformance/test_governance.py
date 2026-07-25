@@ -27,6 +27,7 @@ EXPECTED_FILES = [
     "PROFILE-TEMPLATE.yaml",
     "AUTHORING_STYLE.md",
     "LINT_RULES.md",
+    "SEED_CONTRACT.md",
     "DECISIONS.md",
     "README.md",
     "chg/README.md",

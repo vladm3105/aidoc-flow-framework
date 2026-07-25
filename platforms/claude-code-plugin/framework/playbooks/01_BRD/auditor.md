@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: auditor
 weight: 20
 agent: traceability-auditor
-framework_spec_version: "0.37.2"
+framework_spec_version: "0.38.0"
 ---
 # auditor lens — BRD layer
 
@@ -83,6 +83,16 @@ Document Control Status is "Review" or "Approved", a version history table
 must be present showing at least one prior revision entry. A document at
 Review/Approved status with no revision history cannot be audited for
 change provenance. Missing → P3 finding citing C7.
+
+**C8 — Seed-disposition ledger complete against the seed.** When the cycle has
+a `<project>/seed/` input, read the seed prose against this BRD's
+`seed_disposition:` ledger and confirm **every** claim the seed makes has a row
+(governance `SEED_CONTRACT.md`, GD-08). This is a reading judgement the
+deterministic `SEED01` lint cannot make — `SEED01` proves each row is
+well-formed and each `absorbed` target resolves, but only this lens can catch a
+seed claim the ledger *omitted*. Flag any seed claim with no disposition, and
+any finding "resolved" by editing the seed rather than by a ledger row (the seed
+is frozen). Missing claim / seed edited to pass → P2 finding citing C8.
 
 ## Beyond-checklist
 

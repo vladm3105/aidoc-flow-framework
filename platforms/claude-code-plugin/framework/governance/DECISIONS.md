@@ -13,6 +13,58 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-08 — The `seed/` tier is frozen historical input; every seed claim gets a total disposition (absorbed / rejected / deferred) recorded in the BRD
+
+- **Status:** Accepted — 2026-07-24 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-08 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05/GD-06/GD-07 precedent — no separate CHG artifact). SemVer **minor**
+  (additive: a new `_required: false` carrier + two additive lint rules; no existing
+  behavior changes), change-level **C2**.
+- **Context:** The spec named the `seed/` input tier three times, all descriptively
+  (`README.md` inputs row; `docs/AIDOC.md` tier diagram + tier table), but defined no
+  contract over it. `layers/01_BRD/README.md` — the doc governing the layer the seed
+  feeds — never mentioned it, and BRD carries `required_tags: []`
+  (`registry/LAYER_REGISTRY.yaml`), so the layer had no declared upstream of any kind.
+  Two failure modes followed: seed content that never reaches the chain is invisible,
+  and the cheapest way to "resolve" an audit finding is to edit the seed until the gap
+  disappears — destroying the record of what was asked for.
+- **Decision:** Ratify `SEED_CONTRACT.md`'s three rules as conformance requirements:
+  (1) **frozen input** — once a cycle's first BRD is authored, seed files are not
+  edited to resolve findings; new human input arrives through the gated `chg/` tier;
+  (2) **total disposition** — every seed claim has exactly one disposition in the BRD
+  set (`absorbed` names ≥1 BRD element ID; `rejected` gives a rationale; `deferred`
+  gives a rationale + target cycle); (3) **BRD is the absorption point** — a claim
+  first appearing at PRD or later with no BRD row is a gap. The disposition ledger is
+  carried in a new BRD `seed_disposition:` section shipped **`_required: false`**, so
+  the contract is normative for new BRDs (via business-analyst lens C8) while the lint
+  stays silent on BRDs authored before it. Making the section *required* is a separate,
+  breaking change, deliberately deferred.
+- **Enforcement split (stated so the gate is not read as stronger than it is):**
+  `SEED01` (deterministic lint) checks that every ledger row is well-formed and each
+  `absorbed` row's target element resolves; it **cannot** know whether the ledger
+  missed a claim the seed prose makes — completeness is a reading judgement owned by
+  the BRD auditor lens (check C8).
+- **Consequences:** new `SEED_CONTRACT.md`, a `governance/README.md` index row,
+  and the `test_governance.py` `EXPECTED_FILES` registration; `SEED01` in the
+  reference linter plus its `LINT_RULES.md` row; the BRD `seed_disposition:` §16
+  carrier, the BRD-MVP skeleton row, and the `01_BRD/README.md` "Seed input"
+  section; playbook checks C8 (business_analyst and auditor). Additive
+  throughout: SemVer **minor**, change-level **C2**.
+- **Security (GATE-SPEC-W003).** Parts A and C inject agent-facing authoring
+  guidance (playbook C8 checks, BRD/TDD template `_guidance`). `SECURITY_REVIEW.md`
+  checklist assessment: the added text only instructs an agent to author a
+  disposition ledger and to pair scenarios to test cases — it grants no
+  capability/tool/permission, introduces no secret-bearing surface (T-secrets),
+  and adds no active content or external fetch (T-active-content). Injection risk
+  (T2) is unchanged: the guidance is static spec prose, not consumed input.
+  Trivially safe — the GD-05 precedent for advisory-W003 agent-instruction text.
+- **Authority:** `SEED_CONTRACT.md`; `layers/01_BRD/BRD-TEMPLATE.yaml`
+  (`seed_disposition:`); `LINT_RULES.md` (`SEED01`); `playbooks/01_BRD/{business_analyst,auditor}.md`;
+  `SECURITY_REVIEW.md` (W003); `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-07 — The reference lint honors the `active_layers` adaptation cascade; implementing an already-specified enforcement rule is a framework MINOR under GATE-SPEC
 
 - **Status:** Accepted — 2026-07-10 (founder-ratified governance decision A over B;

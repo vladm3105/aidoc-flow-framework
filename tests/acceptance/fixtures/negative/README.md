@@ -18,6 +18,7 @@ detection contract.
 |---|---|---|---|:---:|
 | `brd-broken-sections.md` | BRD | Missing `Functional Requirements` section | `STRUCT01` | ✅ |
 | `brd-broken-tags.md` | BRD | Trace-tags use 3-segment form (`BRD.01.aaaa`) instead of canonical 4-segment | `ID01` | ✅ |
+| `brd-templated-ids.md` | BRD | A produced artifact carries the templated placeholder ID form (`BDD.01.03.xxxx`) in an `id:` declaration, an `@`-tag citation, and prose — valid only in templates/snippets, never a produced doc | `ID03` + `ID01` | ✅ |
 | `prd-broken-upstream-ref.md` | PRD | References well-formed but non-existent `@brd: BRD.99.01.aaaa` | `doc-validator` (live) reports unresolved reference | ❌ live |
 | `ears-score-7.md` | EARS | Vague content + placeholders → low audit score; also tripwires several lint codes | `STRUCT01`/`PH01`/`TAG01` + `doc-ears-audit` (live) reports low score | ✅ partial / live for score |
 | `adr-missing-sequence-diagram.md` | ADR | Missing `sequenceDiagram`; lint catches several missing sections incidentally | `STRUCT01` + `doc-adr-audit` (live) reports diagram contract violation | ✅ partial / live for diagram |

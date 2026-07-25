@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: qa_lead
 weight: 35
 agent: test-architect
-framework_spec_version: "0.37.2"
+framework_spec_version: "0.38.0"
 ---
 # qa_lead lens — TDD layer
 
@@ -60,7 +60,16 @@ are out-of-scope and discorded by the synthesizer.
 scenario in the upstream BDD layer traces forward to at least one TDD
 test case via `@bdd:` tag. A scenario without a paired test is a
 behavior the implementation can violate silently — the gate's binding
-force evaporates between BDD and code. Missing → P1 citing C1.
+force evaporates between BDD and code. The `@bdd:` pairing MUST be in a
+**test case or §3 mapping entry** — a `bdd_scenario` mapping entry or an
+e2e-case `bdd_ref` (in a rendered Markdown TDD, the equivalent §3 mapping
+row or §4 e2e line carrying the test-case id). A scenario named only in the
+§7 traceability block is **not** paired, and listing scenarios there to
+satisfy the gate is the
+exact vacuous pass `ACC01` (governance `SEED_CONTRACT.md` / GD-08) exists
+to catch. Deterministic `ACC01` fires the same finding
+(`warning`/`error` by mode); this lens owns the reading judgement of test
+*adequacy* beyond mere presence. Missing → P1 citing C1.
 
 **C2 — Each test case carries name, AAA structure, deterministic
 fixtures, one assertion-cluster.** Every test case has a self-

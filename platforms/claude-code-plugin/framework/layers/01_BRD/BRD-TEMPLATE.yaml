@@ -26,7 +26,7 @@ metadata:
   document_type: "brd-document"
   layer: 1
   lifecycle: mvp-prod-newmvp
-  total_sections: 15
+  total_sections: 16
   last_updated: "2026-03-29"
   validation:
     _guidance: |
@@ -991,6 +991,53 @@ glossary:
       definition: "Product Requirements Document"
     - term: "[Domain term]"
       definition: "[Definition]"
+
+# =============================================================================
+# Section 16: Seed Disposition (GD-08 — the seed contract)
+# =============================================================================
+# Ships `_required: false`: additive/non-breaking. Two independent enforcers
+# derive "required sections" from this template body (STRUCT01 in sdd_doc_lint;
+# the stricter tests/acceptance harness); without this marker the section's mere
+# existence would emit a STRUCT01 error on every already-authored BRD and break
+# the BRD golden acceptance test. The precedent is PRD's component_decomposition.
+# See governance/SEED_CONTRACT.md.
+seed_disposition:
+  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+  _required: false
+  _guidance: |
+    The seed→SDD absorption ledger (governance/SEED_CONTRACT.md, GD-08).
+    <project>/seed/ is FROZEN historical input once this BRD is authored — do
+    NOT edit the seed to resolve a finding; resolve it here instead. Give EVERY
+    claim the seed makes exactly ONE disposition:
+      absorbed — the chain realizes it; name >=1 BRD element ID (this BRD's §7)
+                 that carries it, in `brd_elements`.
+      rejected — deliberately not carried; give a `rationale`.
+      deferred — carried by a later cycle; give a `rationale` AND a
+                 `target_cycle` (and SHOULD also list it in `out_of_scope:`).
+    Render the ledger as a fenced ```yaml block whose top-level key is
+    `seed_disposition:` — a list of rows in the shape shown in `_example`.
+    SEED01 checks each row is well-formed and each `absorbed` target resolves;
+    it CANNOT tell whether a seed claim is missing — that is the BRD auditor
+    lens's check C8 (a reading judgement).
+  _example:
+    - claim: "Every issued short code must be unique."
+      disposition: absorbed
+      brd_elements: ["BRD.01.07.be48"]
+    - claim: "Visitors follow links without creating an account."
+      disposition: absorbed
+      brd_elements: ["BRD.01.07.15e1", "BRD.01.07.6c3f"]
+    - claim: "Per-user vanity/custom short codes."
+      disposition: rejected
+      rationale: "Not a business objective for this MVP cycle; no owner."
+    - claim: "Rate-limiting / abuse protection on the shorten endpoint."
+      disposition: deferred
+      rationale: "Out of MVP scope; needs an abuse-model BRD first."
+      target_cycle: "BRD-02"
+  _antipatterns:
+    - "Editing a seed file so an audit passes — the seed is frozen; dispose here."
+    - "An `absorbed` row that names no BRD element, or one that does not resolve."
+    - "A seed claim that first appears at PRD or later with no BRD row (a gap)."
+    - "A `deferred` row with no `target_cycle`, or a `rejected` row with no rationale."
 
 # =============================================================================
 # Appendix: Lifecycle Reference

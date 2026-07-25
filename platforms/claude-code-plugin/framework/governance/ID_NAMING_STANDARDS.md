@@ -209,6 +209,16 @@ traceability.
 | `@depends: TYPE-NN` | Hard prerequisite | `@depends: BRD-01` |
 | `@discoverability: TYPE-NN` | Related document | `@discoverability: BRD-02` |
 
+> **Templated `xxxx` is a template-only placeholder.** The `TYPE.NN.SS.xxxx`
+> form above is *pattern notation* — the shape of a future ID — and is valid
+> only in the layer templates and illustrative README snippets. A **produced**
+> document artifact MUST carry a real element ID (4–8 lowercase hex, e.g.
+> `BDD.01.03.d7a2`); the templated placeholder must never survive into one.
+> `ID03` (malformed element id) and `ID01` (malformed trace-tag id) reject the
+> templated form in any authored document — in an `id:` declaration, an `@`-tag
+> citation, or free prose. Regression-locked by
+> `tests/acceptance/fixtures/negative/brd-templated-ids.md`.
+
 ### Reference granularity (GD-03)
 
 Functionality is defined in **elements** (each functional requirement, EARS

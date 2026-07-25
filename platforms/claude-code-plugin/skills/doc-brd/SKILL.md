@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.23.4"
-    framework_spec_version: "0.37.2"
+    framework_spec_version: "0.38.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
 ---
@@ -74,7 +74,7 @@ Confirm no ID collision: `ls docs/01_BRD/`. Never invent placeholders like
   (BRD → PRD → EARS → BDD → ADR); §8 references the Platform BRD's adopted
   topics rather than introducing new architectural decisions.
 
-### Required structure (15 sections)
+### Required structure (16 sections)
 
 `document_control` is **Section 1** (project name, version, date `YYYY-MM-DD`,
 owner, prepared-by, status, revision-history table). Then:
@@ -84,7 +84,9 @@ owner, prepared-by, status, revision-history table). Then:
 7. Functional Requirements · 8. Architecture Decision Topics (`adr_topics`) ·
 9. Quality Expectations · 10. Constraints and Assumptions ·
 11. Acceptance Criteria and Success Validation · 12. Business Risk Management ·
-13. Approval · 14. Traceability · 15. Glossary.
+13. Approval · 14. Traceability · 15. Glossary ·
+16. Seed Disposition (`seed_disposition` — OPTIONAL, `_required: false`; the
+seed→SDD absorption ledger, GD-08 / `SEED_CONTRACT.md`).
 
 The template additionally defines two structural blocks alongside the numbered
 sections: a **Diagrams Registry** (`diagrams:`) and a **Lifecycle Reference**

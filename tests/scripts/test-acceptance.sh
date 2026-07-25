@@ -1275,6 +1275,7 @@ phase_1_cascade() {
 NEGATIVE_FIXTURES=(
   "brd-broken-sections|brd-broken-sections.md|lint:STRUCT01"
   "brd-broken-tags|brd-broken-tags.md|lint:ID01"
+  "brd-templated-ids|brd-templated-ids.md|lint:ID03"
   "prd-broken-upstream-ref|prd-broken-upstream-ref.md|validator"
   "ears-score-7|ears-score-7.md|audit:doc-ears-audit"
   "adr-missing-sequence-diagram|adr-missing-sequence-diagram.md|lint:STRUCT01"

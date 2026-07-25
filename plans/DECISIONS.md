@@ -10,6 +10,40 @@ graduation.
 
 ---
 
+## D-0064 — SEED-ABSORPTION-001: three project-side decisions behind GD-08 (Part B is a regression-lock, not a template change; `realizing_layers` stays unmutated; `ACC01` is case-scoped)
+
+**2026-07-24.** Implemented the SEED-ABSORPTION-001 plan (spec-tier record is
+**GD-08** in `framework/governance/DECISIONS.md`; framework `0.37.2 → 0.38.0`,
+GATE-SPEC C2). Three non-obvious build choices are recorded here so the "why"
+survives:
+
+- **Part B is a regression-lock, not a template placeholder rewrite (founder
+  direction 2026-07-24).** The templated `TYPE.NN.SS.xxxx` form is *correct* in
+  the layer templates and README snippets — it is the shape of a future ID.
+  `ID03`/`ID01` already reject it in a produced artifact (verified empirically).
+  So Part B adds only a negative fixture + conformance assertion + one
+  discoverability sentence; it changes **no** `framework/layers/` template
+  (V6 asserts all eight `.xxxx` placeholder counts unchanged).
+- **`realizing_layers` is NOT mutated; `acceptance_layers` is additive.**
+  Changing the `BDD: [SPEC, TDD]` map would break the pinned COV02 corpus
+  assertion (`test_coverage_engine.py:103`) and re-grade every consumer corpus.
+  `ACC01` reads a new sibling `acceptance_layers: {BDD: [TDD]}` block instead.
+- **`ACC01` is case-scoped, not document-scoped.** Reusing the realization
+  primitive would count a *document* citation — and `TDD-01.md:206` already cites
+  all 15 scenarios on one traceability line, so a document-scoped rule could be
+  satisfied by appending IDs there with no test authored. `ACC01` instead pairs a
+  scenario only when a `@bdd:` citation is co-located with a TDD test-case element
+  id (a §3 mapping row or §4 `bdd_ref`). Measured corpus delta: ACC01 = 16
+  (same orphans as COV02 here, but robust to the traceability-block loophole,
+  which the V4 fixture proves closed). T7 confirmed the 16 orphans are
+  un-*designed* (one SPEC; TDD-01 scoped to the 15 SPEC-01 scenarios) — filed as
+  a SPEC-coverage gap in `FRAMEWORK-TODO.md`, pinned count left at 16, no
+  hand-edits per `CLAUDE.md`.
+
+Plan + full ledger: [`plans/SEED-ABSORPTION-001-PLAN.md`](SEED-ABSORPTION-001-PLAN.md).
+
+---
+
 ## D-0063 — HERMES-REVIEW-LOOP-001 Phase 1: opt-in bounded review→remediate→re-review loop for Hermes (`sdd_review quality_loop`) — hermes 0.10.0 → 0.11.0 (no framework change)
 
 **2026-07-11.** Hermes's review saga was single-pass, in-process, `iteration=1`
