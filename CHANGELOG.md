@@ -12,6 +12,38 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI plumbing: `docs-sync` diagnosis + caller prerequisite (still red pending upstream), plus the CI changes that had no entry (2026-07-25)
+
+No spec or platform change (no `VERSION` bump).
+
+- **`docs-sync` has failed on every `main` push since #329, and is NOT fixed by
+  this change.** Diagnosis: dry-run mode's "Post dry-run comment" step posts to
+  the merge's PR and needs `pull-requests: write`; with `read` it dies on
+  `GraphQL: Resource not accessible by integration (addComment)` under
+  `set -euo pipefail`. The step is gated on `proposed != 0`, so it had never
+  executed and the workflow reported green from the day it landed — until a merge
+  finally produced a proposal. Latent since the workflow was added; the merges
+  only exposed it.
+  This PR raises the **caller** to `pull-requests: write`, which is necessary but
+  **not sufficient**: GitHub intersects caller and callee permissions for reusable
+  workflows, and the callee (`aidoc-flow-ci` `docs-sync.yml@ci/v1.9.5`) declares
+  `pull-requests: read` at its own workflow level, so the effective token stays
+  `read`. **The real fix is upstream** — raise it in `aidoc-flow-ci`, cut a new
+  `ci/vX.Y.Z`, re-pin here. Until then `docs-sync` stays red. The caller raise is
+  landed now so the upstream fix takes effect on re-pin without a second change.
+- **Retroactive entries for the three CI PRs that shipped without one**, per the
+  new convention in `plans/DECISIONS.md` D-0065:
+  - **#329** — held the `aidoc-flow-ci` canon at `ci/v1.9.5` with a
+    `semver-major`-scoped Dependabot `ignore` (`ci/v2.0.0` is breaking: LiteLLM
+    unification, requires `LITELLM_*` secrets this repo lacks), and fixed
+    `standards-drift.yml`, which had pinned `actions/checkout` to an annotated
+    **tag object** rather than a commit — raw.githubusercontent cannot serve one,
+    so the job had 404'd on every scheduled run.
+  - **#331** — `actions/setup-python` `v6 → v7` across four workflows. v7's only
+    removal is the `pip-install` input, unused here.
+  - **#332** — `standards-drift.yml` `actions/checkout` SHA to `v7.0.1`
+    (`3d3c42e5`), the one non-regressive hunk of the closed #330.
+
 ### Fixed — HANDOFF live-banner corrections (2026-07-25)
 
 No spec or platform change (no `VERSION` bump).

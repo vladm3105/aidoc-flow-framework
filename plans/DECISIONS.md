@@ -10,6 +10,54 @@ graduation.
 
 ---
 
+## D-0065 — CI-plumbing PRs get a CHANGELOG entry (founder call, 2026-07-25); and warning-only tooling can hide a hard failure behind a gate that never fires
+
+**2026-07-25.** Two decisions from the open-PR triage session.
+
+- **CI-only PRs carry a CHANGELOG entry.** #329, #331 and #332 all landed
+  without one. The reasoning at the time was that CI plumbing has no
+  project-visible behaviour change, so an entry would be noise. The repo's own
+  `docs-sync` tooling disagreed — its `changelog_stub` op proposed a CHANGELOG
+  update after those merges — and the founder ruled for the tooling. **Rule
+  going forward: a PR that changes `.github/workflows/**`,
+  `.github/dependabot.yml`, or CI configuration gets a `[Unreleased]` entry like
+  any other change.** Rationale: the "no user-visible change" test is the wrong
+  one for this repo, where CI *is* the governance surface — #329's Dependabot
+  hold and #332's SHA pin are exactly the decisions a future session needs to
+  find without reading git log. Retroactive entries for the three PRs were added
+  in the same commit as this decision. Supersedes the inline justification in
+  #329's commit body ("No CHANGELOG entry: CI plumbing, no project-visible
+  behaviour change; …").
+- **A gated step that has never executed is untested, not working.**
+  `docs-sync` had been broken since it was added: its caller granted
+  `pull-requests: read` while the dry-run comment step needs `write`. The step is
+  gated on `proposed != 0`, so it never ran, and the workflow reported green for
+  weeks. The same shape recurred twice more in one day — `standards-drift`
+  404'ing on an annotated-tag-object pin (fixed in #329) surfaced only because
+  its output was finally read, and the `skip-audit-trail` override could not be
+  applied to an open PR because the caller does not listen for `labeled` events.
+  **When auditing CI, treat "never observed to run" as a red flag equal to
+  "observed to fail"** — check the gate conditions, not just the badge.
+- **Corollary, earned the hard way in this very commit: a caller-side permission
+  raise does not fix a reusable workflow.** The first draft of this change raised
+  the `docs-sync` caller to `pull-requests: write` and declared the bug Fixed.
+  Author-side review caught that GitHub **intersects** caller and callee
+  permissions, and the callee (`aidoc-flow-ci` `docs-sync.yml@ci/v1.9.5`) declares
+  `pull-requests: read` at its own workflow level — so the effective token would
+  have stayed `read` and the workflow would have stayed red behind a CHANGELOG
+  entry claiming otherwise. Exactly the false-green failure this decision
+  documents, reproduced while documenting it. The real fix is upstream; the caller
+  raise is kept as the necessary-but-insufficient half.
+- **Open follow-up (not in this PR — 3-surface governance cap).** The new
+  CHANGELOG rule is recorded here but contradicted where contributors will
+  actually look: `CONTRIBUTING.md`'s documents-of-record matrix has no
+  `.github/**` row, so a CI-only PR falls under `Trivial / … → (none)`; and
+  `scripts/check-docs-updated.sh` has no `.github/*` case arm, so its
+  doc-currency reminder will never fire for one. Both need updating for this rule
+  to stick — otherwise it is itself a gate that never fires.
+
+---
+
 ## D-0064 — SEED-ABSORPTION-001: three project-side decisions behind GD-08 (Part B is a regression-lock, not a template change; `realizing_layers` stays unmutated; `ACC01` is case-scoped)
 
 **2026-07-24.** Implemented the SEED-ABSORPTION-001 plan (spec-tier record is
