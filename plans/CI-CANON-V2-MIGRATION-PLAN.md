@@ -94,9 +94,10 @@ Live prerequisite state on `vladm3105/aidoc-flow-framework`:
 | --- | --- |
 | `APP_REVIEWER_1_ID` / `APP_REVIEWER_1_KEY` | ✅ present |
 | `APP_REVIEWER_1_BOT_ID` (repo variable) | ✅ `294948438` |
-| `LITELLM_BASE_URL` | ❌ **absent** |
-| `LITELLM_REVIEW_API_KEY` | ❌ **absent** |
-| Self-hosted runners | ❌ **`total_count: 0`** |
+| `LITELLM_BASE_URL` | ✅ set 2026-07-25T19:52:52Z (Wave 0 #1 done) |
+| `LITELLM_REVIEW_API_KEY` | ✅ set 2026-07-25T19:52:52Z (Wave 0 #1 done) |
+| Self-hosted runners | ❌ **`total_count: 0`** — Wave 0 #2 outstanding |
+| LiteLLM proxy reachability | ⚠️ `172.17.0.1:4001` + `127.0.0.1:4001` only; no public/TLS listener (`ss -tlnp`, 2026-07-25) → forces both Edit D and Wave 0 #2 |
 
 ### Target tag — `ci/v2.14.0`, not PLAN-009's `ci/v2.8.0`
 
@@ -168,6 +169,7 @@ cannot happen on the migration PR itself.
 | --- | --- | --- |
 | **A** | Edit A | All ten `uses:` lines `@ci/v1.9.5` → `@ci/v2.14.0`. Use `CI_TAG=ci/v2.14.0 bash install.sh vladm3105/aidoc-flow-framework --repin` — **never `--update`**, which replaces caller bodies and would discard this repo's `runner_labels_*`, `permissions:` blocks, and trigger customizations. |
 | **F** | Edit F, as corrected by PLAN-013 | On `ai-review.yml`, set **both** `runner_labels_routine` **and** `runner_labels_review` to `'["self-hosted", "ci-runner", "single-use"]'`, matching canon's single `install/templates/workflows/ai-review.yml`. Do **not** follow PLAN-009 Phase 2's literal "keep routine on `ubuntu-latest`" — that predates `ci/v2.2.0`. Every other caller stays on `ubuntu-latest`: per `aidoc-flow-ci/docs/UPDATE_GUIDE.md`, on public repos the fork-code-executing lint callers (`links`, `pre-commit`) must stay GitHub-hosted, and only the AI flow moves to the pool. |
+| **D** | Edit D, extended to this repo | On `ai-review.yml`: `litellm_allow_insecure_http: true`. PLAN-009 scopes Edit D to the private trio, on the assumption public repos reach the proxy over HTTPS. **That does not hold here.** Verified 2026-07-25: the proxy listens only on `172.17.0.1:4001` and `127.0.0.1:4001` — there is no public or TLS listener — so this repo's `LITELLM_BASE_URL` is necessarily an `http://` Docker-bridge URL. Canon's `litellm_client.py:49-51` refuses any non-HTTPS scheme unless `LITELLM_ALLOW_INSECURE_HTTP=true`, failing with *"LITELLM_BASE_URL must use HTTPS (or explicitly allow HTTP)"*. Without this input the review job dies on every PR. |
 | **G** | §"Tidy" | Delete the now-false header comments in `ai-review.yml` naming `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` / the config-driven `reviewer:` selection, and the commented-out `# reviewer: claude` line. v2 removed the input; leaving the comment misdocuments the contract. |
 | **H** | MIGRATION §3 | Add `"litellm": {"model": "ai-reviewer"}` to `.github/ai-review/config.json`. The reusable defaults to `ai-reviewer` when absent, so this is explicitness, not a functional change. |
 | **I** | Phase 1 bullet | **secret-scan fixture audit.** v2 drops the blanket `tests/` / `fixtures/` / `vectors/` / `.secrets.baseline` allowlist. This repo has a `.secrets.baseline` (~12 KB) and **no `.gitleaks.toml`**, so a re-pinned `secret-scan` can flip green→red. Run gitleaks locally against the v2 config before pushing; ship a repo-local `.gitleaks.toml` if it finds fixture placeholders. |
@@ -249,7 +251,7 @@ outside that set `startup_failure`s **silently, with no logs**. `conformance.yml
 
 | Path | Change |
 | ---- | ------ |
-| `.github/workflows/ai-review.yml` | Edit A (pin), F (`runner_labels_routine` **and** `runner_labels_review` → pool), G (comment tidy) |
+| `.github/workflows/ai-review.yml` | Edit A (pin), D (`litellm_allow_insecure_http`), F (`runner_labels_routine` **and** `runner_labels_review` → pool), G (comment tidy) |
 | `.github/workflows/composition.yml` | Edit A |
 | `.github/workflows/auto-merge-ai-prs.yml` | Edit A |
 | `.github/workflows/docs-sync.yml` | Edit A |
@@ -272,7 +274,7 @@ outside that set `startup_failure`s **silently, with no logs**. `conformance.yml
 2. Branch `ci/canon-v2-migration` from the resulting `main`.
 3. Run `install.sh --repin` at `CI_TAG=ci/v2.14.0`; `grep` to confirm exactly ten
    `@ci/v2.14.0` and zero `@ci/v1.9.5` remain.
-4. Apply Edits F, G, H, J by hand.
+4. Apply Edits D, F, G, H, J by hand.
 5. Edit I — run gitleaks with the v2 config locally; add `.gitleaks.toml` if
    needed.
 6. Wave 2 — rewrite `standards-drift.yml` as a canon caller at
@@ -470,8 +472,30 @@ draft described an intended end-state as though it were the live one. Worth
 carrying into the next plan as a review lens — *check whether each asserted
 precondition is on `main`, not merely written down somewhere.*
 
+### Pass 5 — 2026-07-25T20:00Z — Wave 0 provisioning check (post-PR)
+
+Ran while verifying the founder's Wave 0 work, against live host + repo state.
+The LiteLLM secrets are confirmed set (`LITELLM_BASE_URL` +
+`LITELLM_REVIEW_API_KEY`, 2026-07-25T19:52:52Z). One further defect:
+
+10. **Edit D was wrongly scoped out (load-bearing).** The draft followed
+    PLAN-009 in applying `litellm_allow_insecure_http: true` only to the private
+    trio, implicitly assuming public repos reach the proxy over HTTPS. Live
+    check: `ss -tlnp` shows port 4001 bound to `172.17.0.1` and `127.0.0.1`
+    **only** — no public and no TLS listener — so this repo's `LITELLM_BASE_URL`
+    must be an `http://` bridge URL. Canon's `litellm_client.py:49-51` refuses a
+    non-HTTPS scheme unless `LITELLM_ALLOW_INSECURE_HTTP=true`. Without the
+    input, the review job would fail on every PR with *"LITELLM_BASE_URL must
+    use HTTPS (or explicitly allow HTTP)"* — and, per Pass 2's finding 5, that
+    would not have surfaced until the post-merge throwaway PR. → Added as
+    Edit D in Wave 1, the file table, and the implementation sequence.
+
+The same host check independently confirms Wave 0 item 2 is **not** optional:
+with no public listener, a GitHub-hosted runner cannot reach the proxy by any
+route, so the self-hosted pool is load-bearing rather than a preference.
+
 **No new substantive gaps.** Per `CLAUDE.md`, the ≥2-cycle floor is met and this
 plan is ready for its plan PR. The empirical 4–5-cycle figure for cross-cutting
-plans is advisory, not normative; this plan converged at 4, inside that band —
+plans is advisory, not normative; this plan converged at 5, inside that band —
 its scope is mechanical (a pin bump plus one caller replacement) and every claim
 was verifiable against a local canon checkout or `git log` rather than inferred.
