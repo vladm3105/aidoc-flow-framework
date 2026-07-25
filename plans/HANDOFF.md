@@ -1,5 +1,63 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-25 (wrap) — handoff hygiene + open-PR triage.**
+> Reviewed this file against live git state, found the SEED-ABSORPTION-001 banner
+> stale (said #326 OPEN; it merged 2026-07-24 21:15 EST / 01:15Z `4423a1cc`) and
+> its `stash@{0}` guidance wrong (described as slim FRAMEWORK-TODO edits, actually
+> a full pre-merge WIP of the now-merged #326 change + a stale TODO). Corrected
+> both → **PR #327 merged** (`7f5dd1e5`, founder `--admin`). Then **dropped
+> `stash@{0}`** — obsolete; its commit `be8e854` is now a dangling object,
+> unreachable in a fresh clone and gc-eligible, cited for provenance only.
+>
+> **⚠️ `call/composition` is NOT an infrastructure failure — do not treat
+> `--admin` as routine.** Earlier wording in this file called it a repo-wide
+> `startup_failure`. It is not: the job runs and fails the step *"Assert a
+> counting reviewer-App approval at head"* with `no counting reviewer-App approval
+> (bot id 294948438) at head <sha> — blocking merge until the App approves the
+> current head`. The reusable reserves a *different* message for the genuine infra
+> case (`could not fetch PR reviews after retries — INFRASTRUCTURE, not a
+> verdict`), so this is a **verdict**. Root cause is one banner below: `ai-review`
+> is 401 (no working reviewer key), and the `skip-ai-review` label makes the caller
+> exit green **without** the App ever approving — so composition correctly refuses.
+> Every `--admin` merge past it bypasses a live approval gate. **Unblocker:
+> restore the reviewer-App credential** (🔴 founder — needs repo secrets); until
+> then expect `BLOCKED` on every PR here, including #328/#329.
+>
+> **Next initiative: FRWK-REVIEW-003.** The draft plan is **pushed to
+> `wip/frwk-review-003-plan`** (`2e684c27`) — it is no longer in any other
+> branch's working tree; restore with
+> `git checkout wip/frwk-review-003-plan -- plans/FRWK-REVIEW-003-PLAN.md`.
+> It has three review passes (Pass 3: "ready — no further load-bearing findings")
+> but is **not PR-ready**: it predates #326, which partially resolved its Task 1 /
+> BL-1 premise (the `0.38.0` CHANGELOG heading turned
+> `test_changelog_has_entry_for_current_version` green for the current version).
+> Reconcile it against `main` before opening the plan PR. T7 SPEC-coverage gap is
+> already recorded on `main` (`FRAMEWORK-TODO.md` `SEED-ABSORPTION-001-T7`).
+>
+> **Open-PR triage — five Dependabot PRs closed, two fixes re-landed as #329.**
+> #321–#324 proposed `ci/v1.9.5 → ci/v2.8.0` on four of this repo's **ten**
+> `aidoc-flow-ci` callers (four, not ten, because `open-pull-requests-limit: 5`
+> capped it) — any subset yields a mixed-major CI canon. `ci/v2.0.0` is a
+> documented breaking change (LiteLLM unification; vendor-CLI credentials and
+> workflow inputs removed) needing `LITELLM_BASE_URL` /`LITELLM_REVIEW_API_KEY` /
+> `LITELLM_DOC_API_KEY`, **none of which this repo has**; #324 (`docs-sync`) would
+> have broken outright. Upstream also gates the re-pin as a 🔴 founder fleet
+> action, and 2.8.0 is already six minors stale (upstream is at `ci/v2.14.0`).
+> #303 was superseded — `main` already runs `actions/checkout@v7` in 6 of its 7
+> files, so it had degraded into `@v7 → @v7.0.0`, pinning away from the repo's
+> floating-major convention. **#329** lands the two justified pieces: a
+> `dependabot.yml` `ignore` for `vladm3105/aidoc-flow-ci/*` (with its removal
+> condition in-file) and the one real #303 hunk — `standards-drift.yml` checkout
+> SHA v4.2.2 → v7.0.0.
+>
+> **Env note:** the local gitleaks pre-commit hook cannot build — system
+> `go1.19.8` cannot parse gitleaks' `go.mod` (`go 1.22.0` plus a `toolchain`
+> directive, both requiring go ≥ 1.21) → doc commits need `--no-verify`; CI
+> gitleaks still gates. (Earlier wording here said "go 1.22 vs go.mod 1.23",
+> which inverted the versions.)
+>
+> ---
+>
 > **✅ SEED-ABSORPTION-001 DONE (2026-07-24; merged 2026-07-25) — one PR (#326).** Implemented the
 > full plan (`plans/SEED-ABSORPTION-001-PLAN.md`) in a single PR, framework
 > `0.37.2 → 0.38.0` (GATE-SPEC C2, **GD-08**). **Part A** seed contract
@@ -44,6 +102,15 @@
 > makes that half green for the current version. T7 filed a SPEC-coverage gap
 > (16 orphan scenarios un-designed) in `FRAMEWORK-TODO.md`; pinned count stays 16.
 >
+> **⛔ SUPERSEDED 2026-07-25 — the paragraph below is history, not instructions.**
+> The stash it describes **has already been dropped** (`git stash list` is empty),
+> and the plan file has moved to the `wip/frwk-review-003-plan` branch — see the
+> current banner at the top of this file. **Do not run its
+> `git stash drop stash@{0}`:** `stash@{0}` is a *positional* ref, so the next
+> stash anyone creates takes that slot and the command would destroy live work.
+>
+> <details><summary>Superseded FRWK-REVIEW-003 stash analysis (2026-07-25)</summary>
+>
 > **FRWK-REVIEW-003 in-flight work — resume from the untracked plan file only.**
 > The only live, unmerged FRWK-REVIEW-003 artifact is the untracked
 > `plans/FRWK-REVIEW-003-PLAN.md` (still present in the tree). **Ignore
@@ -57,6 +124,8 @@
 > superseded TODO. **Recommended: `git stash drop stash@{0}`** (obsolete). The T7
 > SPEC-coverage gap is correctly recorded on `main` (`FRAMEWORK-TODO.md`, entry
 > `SEED-ABSORPTION-001-T7`); no salvage needed from the stash.
+>
+> </details>
 >
 > **🔎 PRE-PROD READINESS AUDIT (2026-07-11) — COMPLETE.** Ran a full audit (framework
 > spec + both platforms + conformance + CI health + docs/version) after #305 landed.

@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — HANDOFF live-banner corrections (2026-07-25)
+
+No spec or platform change (no `VERSION` bump).
+
+- Corrected the stale SEED-ABSORPTION-001 live banner in `plans/HANDOFF.md`:
+  #326 was shown `OPEN, awaiting founder merge` but had merged (`4423a1cc`), and
+  its `stash@{0}` guidance was wrong (described as slim FRAMEWORK-TODO edits;
+  actually a full pre-merge WIP of the now-merged change + a stale TODO, whose
+  "apply, keep both" advice would reintroduce merged content). Banner flipped to
+  past-tense DONE/merged; stash guidance corrected to drop-and-resume-from-plan.
+  Obsolete `stash@{0}` dropped. PR #327.
+- **Corrected the `call/composition` diagnosis** the file had been recording as a
+  repo-wide `startup_failure`. The job runs and fails the step "Assert a counting
+  reviewer-App approval at head" — a *verdict*, not infrastructure (the reusable
+  emits a distinct `INFRASTRUCTURE, not a verdict` message for the real infra
+  path). Cause: `ai-review` 401 + the `skip-ai-review` label means the reviewer
+  App never approves the head. Recorded so `--admin` is not treated as routine
+  CI-workaround; the unblocker is restoring the reviewer-App credential.
+- Marked the superseded FRWK-REVIEW-003 stash paragraph as history and folded it
+  into a `<details>` block. Its standing `git stash drop stash@{0}` advice was
+  both done and unsafe to repeat — `stash@{0}` is positional, so a later stash
+  inherits the slot.
+- Repointed FRWK-REVIEW-003 continuity at the pushed `wip/frwk-review-003-plan`
+  branch (was: an untracked working-tree file that no future session would have),
+  and recorded that the draft is review-complete but stale against #326's
+  partial resolution of its Task 1 / BL-1 premise.
+- Corrected the gitleaks env note (system `go1.19.8` cannot parse gitleaks'
+  `go.mod` `go 1.22.0` + `toolchain` directive; the note had the versions
+  inverted) and dated #326's merge in EST per project convention.
+
 ### Added — Framework Spec `0.37.2 → 0.38.0` — seed→SDD absorption contract, acceptance pairing, produced-artifact ID hygiene (SEED-ABSORPTION-001 / GD-08) (2026-07-24)
 
 MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-08** in
