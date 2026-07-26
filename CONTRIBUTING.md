@@ -79,6 +79,15 @@ See [`tests/CONTRIBUTING.md`](tests/CONTRIBUTING.md) (test-suite contribution gu
 
 The framework spec is GATE-SPEC governed. Any change under `framework/` (the spec subtree) requires bumping `framework/VERSION` and going through the conformance suite. See [`docs/PROJECT.md`](docs/PROJECT.md) §6 (Change Management).
 
+## Secret scanning — where each pass runs
+
+| Stage | Tool | Scope | Config |
+|---|---|---|---|
+| `pre-commit` (local) | `detect-secrets` | staged files | `.secrets.baseline` |
+| CI (`secret-scan.yml`) | `gitleaks` | **full git history** (`gitleaks git`, canon `ci/v2.x`) | `.gitleaks.toml` |
+
+There is deliberately **no local gitleaks hook** ([#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)): the upstream hook builds gitleaks from source and needs Go ≥ 1.21, and the failure lands in hook installation, aborting the commit before any other hook runs. Because CI scans history rather than the working tree, a clean local tree can still fail the gate — validate a suspected finding with `git log -p` / `git grep` over history, and record justified suppressions in `.gitleaks.toml`.
+
 ## Reporting bugs and security issues
 
 - Functional bugs: <https://github.com/vladm3105/aidoc-flow-framework/issues>

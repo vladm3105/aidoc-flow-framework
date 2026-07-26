@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Removed — the local `gitleaks` pre-commit hook (#348) (2026-07-26)
+
+No spec or platform change (no `VERSION` bump). Tooling only.
+
+- **`.pre-commit-config.yaml` — `gitleaks/gitleaks@v8.21.2` dropped.** The
+  upstream hook is `language: golang`, so pre-commit builds it from source, and
+  gitleaks' `go.mod` uses the three-part `go 1.22.0` directive plus `toolchain`
+  — both Go ≥ 1.21 features. On an older toolchain the build can never succeed,
+  and because the failure is in hook *installation* it aborts the whole commit
+  before any other hook runs, with an error naming `go.mod` rather than gitleaks.
+  A comment at the same location records why the hook is absent so it is not
+  re-added.
+- **Secret-scanning coverage is unchanged.** `detect-secrets` still runs on the
+  commit stage locally, and `.github/workflows/secret-scan.yml` runs gitleaks
+  over the **full git history** in CI against this repo's `.gitleaks.toml` (the
+  config file is untouched). The local hook duplicated the CI gate at the cost
+  of a Go build every contributor had to be able to run; no version floor was
+  documented anywhere.
+- **`CONTRIBUTING.md`** gains a "Secret scanning — where each pass runs" table
+  (stage → tool → scope → config) plus the consequence that follows from CI
+  scanning history rather than the working tree: a clean local tree can still
+  fail the gate, so validate findings with `git log -p` / `git grep` and record
+  justified suppressions in `.gitleaks.toml`.
+- `plans/FRAMEWORK-TODO.md` — `GITLEAKS-PRECOMMIT-GO-FLOOR` moved to **Closed**.
+
 ### Added — `AGENTS.md` + the `GOV-TODO-ISSUE-SPLIT` filing rule (2026-07-26)
 
 No spec or platform change (no `VERSION` bump). Governance working rules only.
