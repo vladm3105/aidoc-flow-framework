@@ -1,5 +1,45 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (wrap) — element-ID contract audited; 5 issues filed;
+> gap-filing rule codified.** Four PRs merged: **#346** (TODO index for the
+> element-ID gaps), **#347** (`CLAUDE.md` gap-filing rule + new `AGENTS.md`),
+> **#349** (TODO index for #348). All three needed `--admin` — see the
+> `ai-review` self-cancel banner below.
+>
+> **What started it:** the founder asked whether the framework ships a script for
+> the element-ID hash, having watched an agent write its own during doc
+> generation. It does — `compute_element_hash()`
+> (`tools/sdd_doc_lint/__init__.py:922`) — but **only as a verifier**
+> (`rehash --check`); there is no generator, no `--fix`, and none in Hermes. The
+> agent's ad-hoc script was faithful to what the *templates* say and therefore
+> wrong: the templates predate D-0062's normalization transform.
+>
+> **Open issues from this session** (each paired with a `FRAMEWORK-TODO.md`
+> entry per the new rule):
+>
+> | Issue | TODO entry | Gap |
+> |---|---|---|
+> | [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342) | `IDGEN-NO-GENERATOR` | 9 skill/prompt surfaces instruct LLM-side SHA-256 with nothing to call — contradicts PROVISIONAL-IDS-002's own "LLMs can't compute SHA-256 reliably" position |
+> | [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343) | `IDHASH-NORM-TEMPLATE-DRIFT` | D-0062's normalization reached `BRD-TEMPLATE` only; PRD/EARS/BDD/ADR templates + BRD/PRD/EARS READMEs still publish the raw input string |
+> | [#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344) | `TDD-ELEMENT-ID-SPEC-GAP` | TDD mandates element IDs; its README + template document neither format nor algorithm |
+> | [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345) | `GOV-TODO-ISSUE-SPLIT` | spec half only — `DOC_GOVERNANCE_CORE.md` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md` Tier 2 still needs CHG / GATE-SPEC + a `framework/VERSION` bump |
+> | [#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348) | `GITLEAKS-PRECOMMIT-GO-FLOOR` | local gitleaks pre-commit hook can't build on Go < 1.21 and aborts every commit; redundant with CI |
+>
+> **Next session should start with #343** — it is the cheapest and the most
+> load-bearing: five of six element-ID layers currently publish an algorithm that
+> disagrees with the normative one, so every ID authored from a layer template is
+> unverifiable by construction. #342 depends on the founder's Phase-2/3 call
+> (`plans/PROVISIONAL-IDS-002-PLAN.md`); #344 is self-contained.
+>
+> **Practical note for committing here:** the local `gitleaks` hook fails to
+> install on this machine (Go 1.19.8), so commits need `SKIP=gitleaks` until #348
+> is resolved. CI's gitleaks is unaffected and green.
+>
+> **New rule in force (PR #347):** an own-repo gap gets a `FRAMEWORK-TODO.md`
+> entry **and** a GitHub issue when it is actionable by a non-finder, reproducible
+> at `file:line`, or consumer-blocking. Linked both ways; closed on the same SHA.
+> `AGENTS.md` (new) carries the same rule for non-Claude agents.
+>
 > **⚠️ SESSION 2026-07-26 — `ai-review` self-cancel is why PRs still need
 > `--admin`; filed upstream as
 > [aidoc-flow-ci#322](https://github.com/vladm3105/aidoc-flow-ci/issues/322).**
