@@ -52,6 +52,20 @@
   block does not wait on the provisional-vs-canonical decision.
   Cross-refs → `PROVISIONAL-IDS-002-PLAN.md`, D-0040,
   `ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md` D6.
+- *Planned:* `plans/IDGEN-NO-GENERATOR-PLAN.md` (2026-07-26, PR #360). The plan
+  **supersedes the fix shape above** on one point: "correct the 19 surfaces to
+  emit provisional ordinal IDs" is right for only five of the six layers. A
+  generator needs `title`/`description`, and `ID_NAMING_STANDARDS.md` defines
+  field extraction for **BRD §7 only** (GD-09 re-affirmed that inventing a
+  boundary for the others is a new normative contract). So BRD surfaces get
+  "call the tool"; PRD/EARS/BDD/ADR/TDD get provisional ordinals.
+- ⚠️ *Blocked on a founder decision (plan step 1):* the layer templates declare
+  `state: canonical`, so instructing five layers to emit `id_state: provisional`
+  contradicts their own default. GD-09 declined to change `state:` for TDD
+  *because* it would make TDD unique — at five layers that argument inverts. If
+  the answer is "change the template default", #342 becomes a **spec** plan
+  (GATE-SPEC + a `framework/VERSION` bump) and must be re-scoped. Resolve before
+  implementing.
 
 ### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — the acceptance harness re-implements the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
 
