@@ -1,5 +1,89 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (later, wrap) — ELEMENT-ID-LAYER-CONTRACT-001 plan
+> merged (#353, `94522be8`); 2 new issues + a #342 scope correction filed.**
+> The plan for the #343/#344 fix is on `main` at
+> `plans/ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md`. **Implementation has NOT
+> started** — that is the next session's first task, and CLAUDE.md permits it
+> now that the plan PR has merged.
+>
+> **What the plan does.** Deletes the re-specified hash algorithm from 4 layer
+> templates + 3 layer READMEs so `ID_NAMING_STANDARDS.md` is the single source;
+> gives the TDD layer the element-ID contract it never had; adds
+> `tests/conformance/test_element_id_layer_contract.py` as a regression lock.
+> framework **MINOR `0.38.0` → `0.39.0`**, GATE-SPEC C2. **No platform
+> product-version bump** — verified against `D54-F04-EARS-RUBRIC-PLAN.md:10`
+> precedent, and a plugin bump would turn the suite red via
+> `test_plugin_release_metadata.py:135` + `docs/TAGGING.md`.
+>
+> **Read the plan's `## Review log` before implementing.** Four independent
+> `verified-planning-reviewer` passes produced 31 findings. Passes 2, 3 and 4
+> each found real defects *in the preceding fold*. Three traps are recorded
+> there that will each cost a failed run if ignored:
+>
+> 1. **Propagation order is load-bearing.** `framework/VERSION` bump →
+>    `scripts/sync-version-refs.sh` → **then** `tools/sync-plugin-framework.sh`.
+>    Reversing it lands 51 drifted bundled playbooks and a red bundle guard.
+> 2. **Do not hand-edit `CLAUDE.md` before running the version sync.** Lines
+>    198-252 of `sync-version-refs.sh` are gated on a literal it detects *from
+>    CLAUDE.md*; if CLAUDE.md already reads `0.39.0` the block is skipped
+>    **silently, exit 0**, leaving README / PARITY / both platform READMEs and a
+>    conformance tripwire stale. The script writes CLAUDE.md for you.
+> 3. **The declared diff is ~66 files, not 9** — the version fanout rewrites 51
+>    playbooks and, notably, a hardcoded assertion inside
+>    `test_plugin_release_metadata.py:146`. Flag that in the impl PR body or a
+>    spec reviewer will reasonably stop at a modified test.
+>
+> **The census grew from 8 surfaces to 30.** Both issues undercounted. Newly
+> filed this session:
+>
+> | Issue | Gap |
+> |---|---|
+> | [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351) | `tests/acceptance/_id_coordinator.py:17` is a **live second implementation** that skips the D-0062 normalization and **mints fixture IDs**; its smoke test never checks parity with `compute_element_hash()`. Also emits string `section_id`s the registry pattern rejects. Fixing it churns committed goldens — hence its own plan |
+> | [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352) | `placeholder: "0000"` matches neither available meaning, is defined nowhere in `framework/governance/`, and has no consumer. **#343's "secondary observation" was valid** — an early draft of the plan wrongly rejected it |
+> | [#342 comment](https://github.com/vladm3105/aidoc-flow-framework/issues/342#issuecomment-5084448384) | Scope corrected **9 → 19** surfaces (union — nothing dropped). Highest-value item: `brd-validation-automation.md:179`, a **loaded** reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code with a **fourth** normalization variant disagreeing with the standard on five of six steps. That is what an agent finds instead of writing its own script |
+>
+> **#343 cannot fully close on the impl PR.** It has three fix clauses; the plan
+> implements one. Plan D8 sequences the transfer of clause 2 (→ #342) and
+> clause 3 (→ #352) *before* closing it. #344 closes outright.
+>
+> **The 12 plugin skill surfaces are deliberately NOT in scope** — #342 owns
+> those exact lines and its fix shape (*delete* the SHA-256 instruction) would
+> discard any edit made there. Plan D6 records the evidence.
+>
+> **Two mechanics that cost time this session, both now known:**
+>
+> - **`call / verify` needs the literal OPS-0069 phrase** in a commit body:
+>   `Multi-agent self-review per OPS-0065 (<agents>): <verdict>` or
+>   `Self-review skipped per founder OK`. Nothing else matches (`grep -qF`).
+> - **markdownlint's autofix corrupts plan files twice over:** a line starting
+>   `#343` becomes an H1 (`# 343`), and `__init__.py` becomes `**init**.py`,
+>   which silently breaks Claim-ledger citations. Write issue refs as
+>   `Issue #343` at line start, and **backtick** any path containing
+>   underscores — the repo precedent is `PROVISIONAL-IDS-002-PLAN.md:198`.
+>
+> **`--admin` was again required** — the `ai-review` self-cancel
+> ([ci#322](https://github.com/vladm3105/aidoc-flow-ci/issues/322)) reproduced on
+> every SHA: one CANCELLED + one SUCCESS `call / ai-review` on the head, and
+> because that context is required the GraphQL rollup is FAILURE while
+> `gh pr checks` looks fine. Confirmed again: **do not label-cycle**, and a fresh
+> SHA does not clear it.
+>
+> **Also confirmed:** `call / gitleaks` is green, so
+> [#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348) is a
+> local-hook-only problem — CI secret-scan coverage is intact. Local commits
+> still need `SKIP=gitleaks`.
+>
+> **Still not done:** the four stale local branches from earlier sessions
+> (`docs/ci-canon-v2-governance-records`, `docs/cross-repo-feedback-rule`,
+> `docs/keep-claude-oauth-token`, `docs/wave3-complete`) plus
+> `ci/canon-v2-migration`, `ci/docs-sync-comment-permission`,
+> `plans/ci-canon-v2-migration`, `tmp/verify-ai-review-v2`. All merged upstream;
+> left for founder confirmation. `wip/frwk-review-003-plan` is **live work** —
+> do not prune it.
+>
+> ---
+>
 > **✅ SESSION 2026-07-26 (wrap) — element-ID contract audited; 5 issues filed;
 > gap-filing rule codified.** Four PRs merged: **#346** (TODO index for the
 > element-ID gaps), **#347** (`CLAUDE.md` gap-filing rule + new `AGENTS.md`),
