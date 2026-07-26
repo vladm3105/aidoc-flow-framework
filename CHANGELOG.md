@@ -12,6 +12,32 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — `AGENTS.md` + the `GOV-TODO-ISSUE-SPLIT` filing rule (2026-07-26)
+
+No spec or platform change (no `VERSION` bump). Governance working rules only.
+
+- **`AGENTS.md` (new).** Cross-agent orientation for Codex / Gemini CLI /
+  Copilot / Hermes — the repo had none. Names `CLAUDE.md` as the full working
+  agreement and carries the rules most often missed (gap filing, never
+  hand-editing example artifacts, conformance stays green, where state lives).
+- **`CLAUDE.md` — own-repo gaps get a TODO entry *and* a GitHub issue.** The
+  sibling of the cross-repo feedback rule: an entry that is actionable by a
+  non-finder, reproducible at `file:line`, or consumer-blocking also gets an
+  issue on this repo, linked both ways and closed on the same SHA. Resolves the
+  working-rule half of
+  [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345); the
+  framework-spec half (`DOC_GOVERNANCE_CORE.md` Principle 9 →
+  `FRAMEWORK_FEEDBACK_LOG.md` Tier 2) still needs CHG / GATE-SPEC ratification.
+- **Element-ID gaps filed** as
+  [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)–[#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
+  and indexed in `plans/FRAMEWORK-TODO.md` (PR #346): no callable ID generator,
+  the D-0062 normalization transform reaching only `BRD-TEMPLATE`, and TDD
+  documenting no element-ID contract.
+- **`plans/HANDOFF.md`** records
+  [aidoc-flow-ci#322](https://github.com/vladm3105/aidoc-flow-ci/issues/322) —
+  `ai-review` self-cancels via its own review submission, which is the actual
+  reason PRs here need `--admin`, not the `composition` check.
+
 ### Changed — CI canon migrated `ci/v1.9.5` → `ci/v2.14.0` (CI-CANON-V2-001) (2026-07-25)
 
 No spec or platform change (no `VERSION` bump). Executes
