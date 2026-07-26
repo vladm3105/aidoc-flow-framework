@@ -37,13 +37,40 @@
 > The plan's Pass 1-4 review log was worth reading before starting; nothing in it
 > was wrong.
 >
-> **Still open, in the order they were scoped with the founder:**
+> **Where each remaining issue stands:**
 >
-> | Issue | Decision | Next step |
+> | Issue | State | Next step |
 > |---|---|---|
-> | #345 | ✅ **done** — spec `0.40.0`, **GD-10**, stacked on the element-ID PR | `DOC_GOVERNANCE_CORE.md` Principle 9 + `FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker". `CLAUDE.md`'s "spec counterpart is not yet ratified" caveat was replaced in the same PR — it had become false |
-> | #342 | **ship the generator too** | expose `compute_element_hash()` through a callable entry point, then correct all 19 surfaces. Needs a plan + two review cycles first. Highest-value item is `brd-validation-automation.md:179` — a *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code whose normalization disagrees with the standard on five of six steps |
-> | #351 | **plan only, no impl** | golden churn is real; the plan lands, the implementation does not |
+> | #345 | ✅ **spec half done** — `0.40.0`, **GD-10**, in [#358](https://github.com/vladm3105/aidoc-flow-framework/pull/358) (stacked on #357) | `DOC_GOVERNANCE_CORE.md` Principle 9 + `FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker". `CLAUDE.md`'s "spec counterpart is not yet ratified" caveat was replaced — it had become false |
+> | #342 | 📋 **plan merged** ([#360](https://github.com/vladm3105/aidoc-flow-framework/pull/360)), impl not started | `plans/IDGEN-NO-GENERATOR-PLAN.md`. **Step 1 is a founder decision, not code** — see the blocker below. Depends on #357 landing first |
+> | #351 | 📋 **plan merged** ([#359](https://github.com/vladm3105/aidoc-flow-framework/pull/359)), impl deliberately not started | `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`. **Its premise changed** — see below |
+>
+> **#342 carries an unresolved blocker that decides its tier.** The layer
+> templates declare `state: canonical`; instructing five layers to emit
+> `id_state: provisional` contradicts that default. GD-09 declined to change
+> `state:` for TDD *because* it would make TDD unique — at five layers that
+> argument inverts. If the answer is "change the template default," #342 becomes
+> a **spec** plan (GATE-SPEC + a `framework/VERSION` bump) and must be re-scoped.
+> The plan makes this step 1 rather than a note.
+>
+> **#351's stated premise turned out to be false, which changes its priority.**
+> It was deferred because fixing it "will churn committed goldens." It will not:
+> `write_registry()` has **zero callers**, `ID_REGISTRY.yaml` is `{}` at 3 bytes
+> and unchanged since `f0d08f54`, and no golden carries an ID this code minted.
+> **Zero churn** — it is a small, self-contained change, not the golden-update
+> project it was filed as. The correction is a comment on #351 and the plan's
+> opening section. The same investigation found a **latent crash**:
+> `extract_elements()` raises `ComposerError` on the three multi-document
+> `fullpath/golden_chain` YAML goldens, invisible because the only walking test
+> uses `layer_NN/valid`. And `PLUGIN-TEST-SUITE-REVIEW.md:32` finding **F2** had
+> already recorded the never-imported module + empty registry and was never
+> actioned.
+>
+> **Confirmed this session, worth not re-learning:** markdownlint's autofix
+> rewrote two claim-ledger citations from `__init__.py` to `**init**.py`,
+> silently breaking them. Backticking the path fixes it and survives a repeat
+> `--fix` — verified. **Eight other plan files already carry this corruption** in
+> their claim ledgers, from before the trap was documented.
 >
 > ---
 >
