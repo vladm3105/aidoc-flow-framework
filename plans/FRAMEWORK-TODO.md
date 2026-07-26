@@ -38,7 +38,7 @@
   pass is wanted, use a prebuilt-binary or container delivery and document the
   toolchain floor in `CONTRIBUTING.md`.
 
-### `[skill]` `IDGEN-NO-GENERATOR` — 9 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
+### `[skill]` `IDGEN-NO-GENERATOR` — 19 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
 
 - *Context:* founder review 2026-07-26. `compute_element_hash()`
   (`tools/sdd_doc_lint/__init__.py:922`) is reachable only via
@@ -49,10 +49,58 @@
   contradicts `PROVISIONAL-IDS-002-PLAN.md:112-114` ("LLMs can't compute SHA-256
   reliably … the generator emits provisional ordinal IDs"). Observed: an agent
   hit the instruction, found no callable, and wrote its own ad-hoc hash script.
-- *Fix shape:* correct the nine surfaces to emit provisional ordinal IDs +
+- *Count corrected 9 → 19* (2026-07-26, `ELEMENT-ID-LAYER-CONTRACT-001` census;
+  full enumeration in the issue comment). The original nine missed the six
+  `doc-*` **authoring** skills (`doc-brd/SKILL.md:125` + siblings — the creation
+  path, where most IDs are actually minted), three more Hermes prompts
+  (`UCC_PROMPT_EARS.md:74`, `UCRem_PROMPT_EARS.md:186`,
+  `UCRem_PROMPT_PRD.md:199`), and **`brd-validation-automation.md:179`** — a
+  *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code
+  with a **fourth** normalization variant that disagrees with
+  `ID_NAMING_STANDARDS.md:88-93` on five of six steps. That last one is the
+  highest-value item: it is what an agent finds instead of writing its own script.
+- *Fix shape:* correct the 19 surfaces to emit provisional ordinal IDs +
   `id_state: provisional` (available today, text-only), and expose the generator
   side — `rehash --fix` (Phase 3) or a smaller `--compute` subcommand.
-  Cross-refs → `PROVISIONAL-IDS-002-PLAN.md`, D-0040.
+  `brd-validation-automation.md:179` is separable — deleting/correcting its code
+  block does not wait on the provisional-vs-canonical decision.
+  Cross-refs → `PROVISIONAL-IDS-002-PLAN.md`, D-0040,
+  `ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md` D6.
+
+### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — the acceptance harness re-implements the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
+
+- *Context:* found 2026-07-26 during `ELEMENT-ID-LAYER-CONTRACT-001` Pass 1.
+  `tests/acceptance/_id_coordinator.py:17-19` hashes
+  `f"{doc_id}:{section_id}:{title}:{description}"` raw — no
+  `_normalize_hash_field` — and `element_id()` (`:22-24`) **mints fixture IDs**
+  from it. Its smoke test (`deterministic/test_id_coordinator.py:22-36`) checks
+  determinism and shape only, never parity with `compute_element_hash()`, so a
+  wrong algorithm is indistinguishable from a right one. Second divergence in the
+  same function: `element_id` takes a *string* `section_id` (`"project_scope"`),
+  producing IDs the registry pattern `LAYER_REGISTRY.yaml:216` rejects.
+  Unlike the 30-surface documentation census, this one *executes*.
+- *Fix shape:* delegate to `compute_element_hash`; add a parity test. Expect
+  fixture-golden churn — hence a separate plan, not folded into the spec-side
+  drift fix. Fold in the same-class doc defect at
+  `tools/sdd_doc_lint/__init__.py:1131-1132` (AS11 docstring states the input with no
+  transform; vendored ×2).
+
+### `[template]` `IDPLACEHOLDER-UNDEFINED` — `placeholder: "0000"` matches no documented meaning and has no consumer → [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
+
+- *Context:* raised as #343's secondary observation, deliberately not actioned
+  there (drift fix ≠ governance question). All five element-ID templates declare
+  `placeholder: "0000"` + *"Template placeholder"* prose
+  (`BRD-TEMPLATE.yaml:147,153` + siblings) while using `.xxxx` in their own
+  bodies. Neither reading fits: as a *template* placeholder each file
+  self-contradicts; as a *produced-document* placeholder the documented form is
+  `0001` (`ID_NAMING_STANDARDS.md:152-155`), not `0000`. `0000` appears nowhere
+  in `framework/governance/`; D-0040 never mentions the key; nothing reads it.
+  Inert today only because `xxxx` in a template is separately sanctioned
+  (`ID_NAMING_STANDARDS.md:212-220`).
+- *Fix shape:* delete the key (cheapest — nothing reads it, the standard already
+  governs both forms), or redefine it to `"0001"` and reword the prose. Resolve
+  before or alongside #344 or a sixth copy ships with TDD. Add to the Part-E
+  conformance lock.
 
 ### `[template]` `IDHASH-NORM-TEMPLATE-DRIFT` — 4 layer templates + 3 READMEs publish the pre-normalization hash input → [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343)
 
