@@ -13,6 +13,54 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-10 — A backlog file is a capture queue, not a publication channel: Tier-2 gaps that meet the bar also get a tracker issue
+
+- **Status:** Accepted — 2026-07-26 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-10 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-09 precedent — no separate CHG artifact). SemVer **minor**
+  (additive: a second Tier-2 surface with an explicit bar; the existing queue and its
+  lifecycle are unchanged), change-level **C2**.
+- **Context:** Principle 9 defined **one** capture surface for the framework's own
+  gaps — the Tier-2 backlog file — and no rule that ever opened a tracker issue for
+  them. Issues were mandated only for defects owned by *another* repo, so by
+  construction that rule never fired for a framework-owned gap. The result was
+  measurable rather than theoretical: a ~1,376-line backlog holding ~40 entries
+  against a single open issue, on a tracker already provisioned with eleven issue
+  templates and a complete area-label taxonomy that nothing ever routed anything to.
+  The failure mode is the same one the cross-repo rule was written to fix — *"those
+  files are read by sessions entering this repo, never by the people or agents who
+  own the fix, so the defect stays latent"* — and it applies unchanged to consumers
+  of the framework, who cannot see the backlog file at all.
+- **Decision:** Tier 2 has **two surfaces with distinct roles**, not one.
+  1. **The backlog file stays the triage queue**, unchanged: every gap gets an entry,
+     appended inline as discovered, and the entry IS the capture moment. Its
+     triage → promote-to-plan → ship → Closed-with-merge-SHA lifecycle is untouched.
+  2. **An issue is opened for an entry that meets ANY of three tests** — actionable
+     by someone other than its finder; reproducible at `file:line` with a concrete fix
+     shape; or user-visible / blocking a consumer. Purely local, speculative, or
+     already-planned entries stay queue-only. The bar exists because the tracker must
+     not become a second copy of the backlog — replacing one surface with the other
+     would trade a latency problem for a duplication problem.
+  3. **The issue carries evidence, not a symptom** — reproduction at `file:line` plus
+     the command that exercised it, blast radius (checked, not assumed), why it was
+     hard to diagnose where the symptom misnames the cause, a concrete suggested fix,
+     and what is **NOT** broken where that was verified. The last two are what make an
+     issue actionable by a non-finder, which is the entire reason to open one.
+  4. **Linked both ways and closed together** on the same merge SHA; one issue per
+     defect; new evidence on an existing issue goes in a **comment**, not a second
+     issue. **Read the filed artifact back** — filing tools can exit 0 while
+     publishing an empty body, and an empty issue discharges nothing.
+- **Consequences:** Principle 9 gains the queue-vs-channel sentence and points at the
+  new `FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker" for the bar. Tier 1 is
+  untouched: a consumer project's own log still surfaces upstream by PR, issue, or
+  direct addition, at its own cadence. The rule is deliberately written against "the
+  framework's tracker" rather than a named host, so a consumer running the framework
+  on any tracker can satisfy it. No lint rule or conformance check enforces this —
+  it is a governance obligation on the maintainer, like the rest of Principle 9.
+
+---
+
 ## GD-09 — The element-ID hash algorithm has exactly one source; a layer cross-references it and never re-specifies it
 
 - **Status:** Accepted — 2026-07-26 (ratified on merge; a `framework/**` normative

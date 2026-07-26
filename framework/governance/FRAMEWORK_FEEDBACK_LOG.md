@@ -69,8 +69,51 @@ submodule repo. One log per framework.
 **Lifecycle:** entries are triaged → promoted to a formal
 `plans/<NAME>-PLAN.md` when large enough to design → shipped as PRs.
 Closed entries move to a **Closed** section with the merge-commit
-SHA. The log is the single triage queue for the framework's evolving
-backlog.
+SHA. The log is the single triage **queue** for the framework's evolving
+backlog — see the next section for what a queue does *not* do.
+
+### Tier 2 → the tracker: the queue is not the publication channel
+
+`plans/FRAMEWORK-TODO.md` lives inside the framework repo, so it is read
+only by a session already working inside that repo. The people and agents
+a gap actually affects — consumer projects, other maintainers, a future
+contributor — cannot see it at all. A queue that is also the only public
+record leaves every own-repo gap latent for everyone but its finder.
+
+So Tier 2 has **two surfaces with distinct roles**, not one:
+
+| Surface | Role | Rule |
+| --- | --- | --- |
+| `plans/FRAMEWORK-TODO.md` | the triage **queue** | unchanged — every gap gets an entry, appended inline as discovered. The entry IS the capture moment; no "later PR" |
+| an issue on the framework's tracker | the **externally visible** record | opened when the entry meets **any** of: (a) actionable by someone other than its finder, (b) reproducible at `file:line` with a concrete fix shape, (c) user-visible or blocks a consumer |
+
+Entries that are purely local, speculative, or already covered by an open
+plan stay queue-only. The tracker must not become a second copy of the
+backlog — that is the failure mode this split is shaped to avoid, and it
+is why the bar is the three tests above rather than "file everything."
+
+**An issue carries evidence, not a symptom.** Reproduction at `file:line`
+plus the command that exercised it; blast radius (who else is affected —
+check, do not assume); why it was hard to diagnose, when the symptom
+misnames the cause; a concrete suggested fix; and what is **NOT** broken,
+where that was checked. The last two are what make an issue actionable by
+a non-finder, which is the whole point of opening one.
+
+**Link both ways, close together.** The queue entry's heading ends with the
+issue reference; the issue names the queue entry's tag. Both close on the
+same merge SHA — the entry moves to **Closed**, the issue closes with the
+same ref. One issue per defect; group only trivially-related items, and say
+so up front. If an issue already exists, add the new evidence as a
+**comment** rather than opening a second one.
+
+**Verify what you published.** Filing tools can succeed while publishing an
+empty body. Read the artifact back after filing or commenting and confirm
+the body length is non-trivial; an empty issue discharges nothing.
+
+**This applies to the framework's own gaps.** Defects owned by *another*
+repo are a separate obligation — they get an issue on the owning repo,
+because the fix belongs in that repo's files and recording it here would
+reach nobody who can act on it.
 
 ## Entry format (both tiers)
 
