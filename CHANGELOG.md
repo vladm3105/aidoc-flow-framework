@@ -36,6 +36,7 @@ No spec or platform change (no `VERSION` bump). Tooling only.
   fail the gate, so validate findings with `git log -p` / `git grep` and record
   justified suppressions in `.gitleaks.toml`.
 - `plans/FRAMEWORK-TODO.md` — `GITLEAKS-PRECOMMIT-GO-FLOOR` moved to **Closed**.
+
 ### Changed — `.github/ai-review/config.json` brought to schema v2 (#341) (2026-07-26)
 
 No spec or platform change (no `VERSION` bump). CI configuration only; the file
