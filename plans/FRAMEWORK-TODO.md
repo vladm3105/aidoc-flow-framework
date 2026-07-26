@@ -79,52 +79,6 @@
   finding **F2** already recorded the never-imported module + empty registry and
   was never actioned.
 
-### `[template]` `IDPLACEHOLDER-UNDEFINED` — `placeholder: "0000"` matches no documented meaning and has no consumer → [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
-
-- *Context:* raised as #343's secondary observation, deliberately not actioned
-  there (drift fix ≠ governance question). All five element-ID templates declare
-  `placeholder: "0000"` + *"Template placeholder"* prose
-  (`BRD-TEMPLATE.yaml:147,153` + siblings) while using `.xxxx` in their own
-  bodies. Neither reading fits: as a *template* placeholder each file
-  self-contradicts; as a *produced-document* placeholder the documented form is
-  `0001` (`ID_NAMING_STANDARDS.md:152-155`), not `0000`. `0000` appears nowhere
-  in `framework/governance/`; D-0040 never mentions the key; nothing reads it.
-  Inert today only because `xxxx` in a template is separately sanctioned
-  (`ID_NAMING_STANDARDS.md:212-220`).
-- *Fix shape:* delete the key (cheapest — nothing reads it, the standard already
-  governs both forms), or redefine it to `"0001"` and reword the prose. Resolve
-  before or alongside #344 or a sixth copy ships with TDD. Add to the Part-E
-  conformance lock.
-
-### `[template]` `IDHASH-NORM-TEMPLATE-DRIFT` — 4 layer templates + 3 READMEs publish the pre-normalization hash input → [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343)
-
-- *Context:* founder review 2026-07-26. D-0062 made the normalization transform
-  normative (`ID_NAMING_STANDARDS.md:81-99`) but propagated it to
-  `BRD-TEMPLATE.yaml:134-141` only. `PRD-TEMPLATE.yaml:106-109`,
-  `EARS-TEMPLATE.yaml:96-99`, `BDD-TEMPLATE.yaml:91-94`,
-  `ADR-TEMPLATE.yaml:101-104` and the BRD/PRD/EARS READMEs still print raw
-  `{title}:{description}` — so a generator following them computes a *different*
-  hash than the verifier. Undetected because `rehash --check` covers BRD §7 only,
-  i.e. the one layer already fixed.
-- *Fix shape:* delete the re-specified 3-step algorithm in each and cross-ref
-  `ID_NAMING_STANDARDS.md` per the BRD template's own instruction ("Do NOT
-  re-specify the normalization here"); same for `doc-tdd-fixer/SKILL.md:250`'s
-  divergent `SHA256(case content)`. Secondary: align `.xxxx` example IDs to the
-  declared `placeholder: "0000"`.
-
-### `[template]` `TDD-ELEMENT-ID-SPEC-GAP` — TDD layer documents no element-ID format or hash algorithm → [#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344)
-
-- *Context:* founder review 2026-07-26. `ID_NAMING_STANDARDS.md:162-164` mandates
-  element IDs for TDD, but `framework/layers/07_TDD/README.md` has no
-  `## Element IDs` section and `TDD-TEMPLATE.yaml` has no `element_id` block —
-  it uses `id: "TDD.NN.04.xxxx"` (lines 132/152/171/190) with no derivation, no
-  `hash_algorithm`, no `placeholder`. All five sibling mandated layers have both.
-  The only written TDD contract is a *platform* surface (`doc-tdd/SKILL.md:119`),
-  inverting spec-owns-the-contract.
-- *Fix shape:* add the `## Element IDs` README section + the `element_id`
-  template block, cross-referencing the standard rather than re-specifying it;
-  reconcile `doc-tdd-fixer/SKILL.md:250` to it.
-
 ### `[governance]` `GOV-TODO-ISSUE-SPLIT` — framework-owned gaps are tracked only here; no rule opens a GitHub issue → [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
 
 - *Context:* founder question 2026-07-26. Governance mandates the TODO tier
@@ -1144,6 +1098,71 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[template]` `IDPLACEHOLDER-UNDEFINED` — ✅ CLOSED (2026-07-26) — `placeholder: "0000"` matches no documented meaning and has no consumer → [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
+
+- *Context:* raised as #343's secondary observation, deliberately not actioned
+  there (drift fix ≠ governance question). All five element-ID templates declare
+  `placeholder: "0000"` + *"Template placeholder"* prose
+  (`BRD-TEMPLATE.yaml:147,153` + siblings) while using `.xxxx` in their own
+  bodies. Neither reading fits: as a *template* placeholder each file
+  self-contradicts; as a *produced-document* placeholder the documented form is
+  `0001` (`ID_NAMING_STANDARDS.md:152-155`), not `0000`. `0000` appears nowhere
+  in `framework/governance/`; D-0040 never mentions the key; nothing reads it.
+  Inert today only because `xxxx` in a template is separately sanctioned
+  (`ID_NAMING_STANDARDS.md:212-220`).
+- ✅ **Fixed** (ELEMENT-ID-LAYER-CONTRACT-001, D-0067 / GD-09): founder chose
+  option (a) — **delete the key**. `placeholder: "0000"` and its
+  *"Template placeholder"* prose line removed from all five templates that
+  carried it; deliberately NOT added to TDD, so no sixth copy was ever minted.
+  Locked by `test_element_id_layer_contract.py::test_no_template_reintroduces_the_placeholder_key`.
+  This overrode the merged plan's D4 deferral — see the plan's
+  `## Implementation log`. Spec `0.38.0 → 0.39.0`.
+
+### `[template]` `IDHASH-NORM-TEMPLATE-DRIFT` — ✅ CLOSED (2026-07-26) — 4 layer templates + 3 READMEs publish the pre-normalization hash input → [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343)
+
+- *Context:* founder review 2026-07-26. D-0062 made the normalization transform
+  normative (`ID_NAMING_STANDARDS.md:81-99`) but propagated it to
+  `BRD-TEMPLATE.yaml:134-141` only. `PRD-TEMPLATE.yaml:106-109`,
+  `EARS-TEMPLATE.yaml:96-99`, `BDD-TEMPLATE.yaml:91-94`,
+  `ADR-TEMPLATE.yaml:101-104` and the BRD/PRD/EARS READMEs still print raw
+  `{title}:{description}` — so a generator following them computes a *different*
+  hash than the verifier. Undetected because `rehash --check` covers BRD §7 only,
+  i.e. the one layer already fixed.
+- ✅ **Fixed for the 7 framework surfaces** (ELEMENT-ID-LAYER-CONTRACT-001,
+  D-0067 / GD-09): the re-specified 3-step algorithm is **deleted** from the PRD,
+  EARS, BDD and ADR templates and the BRD/PRD/EARS READMEs, each replaced by the
+  `norm()` shape line plus a cross-reference to `ID_NAMING_STANDARDS.md` as the
+  single source — the BRD template's own instruction, applied everywhere. Each
+  layer's "from *this* layer's content, NOT upstream" scoping clause is preserved,
+  and each now also states that byte-exact field extraction is defined for BRD §7
+  only. Locked by `tests/conformance/test_element_id_layer_contract.py`.
+  Spec `0.38.0 → 0.39.0`.
+- ↪ **Residual clauses transferred, not dropped:** `doc-tdd-fixer/SKILL.md`'s
+  divergent `SHA256(case content)` → **#342** (which owns those exact lines and
+  whose fix shape would discard any edit made here); the `.xxxx`-vs-`0000`
+  secondary → **#352**, resolved in the same PR by deleting the key.
+
+### `[template]` `TDD-ELEMENT-ID-SPEC-GAP` — ✅ CLOSED (2026-07-26) — TDD layer documents no element-ID format or hash algorithm → [#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344)
+
+- *Context:* founder review 2026-07-26. `ID_NAMING_STANDARDS.md:162-164` mandates
+  element IDs for TDD, but `framework/layers/07_TDD/README.md` has no
+  `## Element IDs` section and `TDD-TEMPLATE.yaml` has no `element_id` block —
+  it uses `id: "TDD.NN.04.xxxx"` (lines 132/152/171/190) with no derivation, no
+  `hash_algorithm`, no `placeholder`. All five sibling mandated layers have both.
+  The only written TDD contract is a *platform* surface (`doc-tdd/SKILL.md:119`),
+  inverting spec-owns-the-contract.
+- ✅ **Fixed** (ELEMENT-ID-LAYER-CONTRACT-001, D-0067 / GD-09):
+  `07_TDD/README.md` gains an `## Element IDs` section in its five siblings' form
+  (format, the fixed `04` section segment for test cases, the `norm()` algorithm
+  line, the standard as authority); `TDD-TEMPLATE.yaml`'s `id_standard` block
+  gains the four keys plus the shape line. Both state explicitly what is **not**
+  defined: a TDD case declares `name`/`spec_ref`/`target`/`test_file`/`test_function`
+  and carries neither `title` nor `description`, so the field-extraction mapping is
+  deferred to PROVISIONAL-IDS-002 Phase 2+ rather than invented here — PRD/EARS/BDD/ADR
+  are in the identical position. `placeholder` was NOT added (see
+  `IDPLACEHOLDER-UNDEFINED`). Locked by `test_element_id_layer_contract.py`.
+  Spec `0.38.0 → 0.39.0`.
 
 ### `[ci]` `GITLEAKS-PRECOMMIT-GO-FLOOR` — ✅ CLOSED (2026-07-26) — the local gitleaks pre-commit hook could not install on Go < 1.21 and aborted every commit
 

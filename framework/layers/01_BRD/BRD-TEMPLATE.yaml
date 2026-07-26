@@ -144,13 +144,11 @@ metadata:
       Properties (target): deterministic, stateless, stable, deduplicating —
       verifiable on demand for BRD §7 FR IDs via `rehash --check` (advisory
       `IDDRIFT01`); unverified elsewhere until later PROVISIONAL-IDS-002 phases.
-      Template placeholder: "0000" represents the hash suffix.
 
     format: "{doc_type}.{doc_id}.{section_id}.{hash}"
     hash_algorithm: SHA256
     hash_length: 4
     max_hash_length: 8
-    placeholder: "0000"
 
   cross_section_rules:
     description: "Machine-enforced cross-section rules"

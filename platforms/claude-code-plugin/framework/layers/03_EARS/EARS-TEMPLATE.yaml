@@ -93,19 +93,22 @@ metadata:
       Format: {doc_type}.{doc_id}.{section_id}.{hash}
       Example: EARS.01.03.c4d8
 
-      Hash algorithm (SHA256, 4-char hex):
-        1. Build input: "{doc_id}:{section_id}:{title}:{description}"
-           - from EARS content, NOT upstream PRD/BRD content
-        2. Compute: hashlib.sha256(input.encode('utf-8')).hexdigest()[:4]
-        3. Collision: extend hash from 4 to 8 chars if duplicate detected
-
-      Template placeholder: "0000" represents the hash suffix.
+      Hash algorithm (SHA256, 4-char hex) — the byte-exact input assembly and
+      the title/description normalization transform are the SINGLE SOURCE in
+      `governance/ID_NAMING_STANDARDS.md` ("Hash algorithm" section,
+      PROVISIONAL-IDS-002). Do NOT re-specify the normalization here — cross-ref
+      the authority so the verifier (`rehash --check`), any future generator,
+      and hand authors converge on one contract.
+        Shape: hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]
+        Scope: from EARS content, NOT upstream PRD/BRD content.
+        Collision: extend 4 -> 8 chars if duplicate detected.
+        Field extraction: byte-exact extraction is defined for BRD §7 only
+          (PROVISIONAL-IDS-002 Phase 1); for this layer it is Phase 2+.
 
     format: "{doc_type}.{doc_id}.{section_id}.{hash}"
     hash_algorithm: SHA256
     hash_length: 4
     max_hash_length: 8
-    placeholder: "0000"
 
 # =============================================================================
 # Section 1: Document Control

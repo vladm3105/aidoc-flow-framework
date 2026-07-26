@@ -13,6 +13,64 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-09 — The element-ID hash algorithm has exactly one source; a layer cross-references it and never re-specifies it
+
+- **Status:** Accepted — 2026-07-26 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-09 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05/GD-06/GD-07/GD-08 precedent — no separate CHG artifact). SemVer
+  **minor** (additive: TDD gains an element-ID contract and four `id_standard` keys a
+  platform may read; no existing behavior changes), change-level **C2**.
+- **Context:** D-0062 (PROVISIONAL-IDS-002 Phase 1, spec `0.35.0`) made a six-step
+  normalization transform normative for element-ID hash inputs and named
+  `ID_NAMING_STANDARDS.md` its single source. Within the spec that change reached
+  exactly **one** surface, `01_BRD/BRD-TEMPLATE.yaml`. Four layer templates (PRD,
+  EARS, BDD, ADR) and three layer READMEs (BRD, PRD, EARS) went on publishing the
+  *pre*-normalization input `"{doc_id}:{section_id}:{title}:{description}"`, so a
+  reader following a layer template — which is what templates are for — computed a
+  different hash than `compute_element_hash()` does for the same content, for any
+  title or description containing uppercase or punctuation. The one layer with a
+  verifier (`rehash --check`, BRD §7) was precisely the one already corrected, so
+  nothing could catch it. Separately, TDD — one of the six layers
+  `ID_NAMING_STANDARDS.md` says **MUST** carry element IDs — documented neither
+  format nor algorithm in its README or template, leaving the only written statement
+  of its contract on a *platform* authoring surface — inverting the rule that
+  `framework/` is the engine-agnostic contract and platforms consume it.
+- **Decision:** Three rules, ratified together.
+  1. **Single source, enforced by deletion.** A layer surface states the *shape*
+     (`sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}")[:4]`) and
+     cross-references `ID_NAMING_STANDARDS.md` for the byte-exact assembly, the
+     `norm()` transform, and the field-extraction boundary. It does **not** restate
+     the algorithm. Re-specifying per layer is what allowed the drift; updating the
+     seven stale copies would only reset the drift clock.
+  2. **Every mandating layer states its contract in-layer.** TDD gains an
+     `## Element IDs` README section and the four `id_standard` keys, matching its
+     five siblings, including that test cases live in Section 4 (so authored IDs
+     carry `04`). It also states explicitly what it does *not* define: a TDD case
+     declares `name`/`spec_ref`/`target`/`test_file`/`test_function` and carries
+     neither `title` nor `description`, so which field supplies each hash input is
+     deferred to Phase 2+ — naming one would be a new normative contract smuggled
+     into a documentation fix. PRD, EARS, BDD and ADR are in the identical position
+     and are labelled the same way.
+  3. **`placeholder` is deleted, not redefined.** All five templates declared
+     `placeholder: "0000"` while using `.xxxx` throughout their own bodies. The key
+     matched neither available meaning — the prose called it the *template*
+     placeholder (contradicted in the same file), and the documented
+     *produced-document* provisional form is the section ordinal `0001`, not `0000`.
+     `0000` appears nowhere in `framework/governance/`, and no code reads
+     `id_standard.placeholder`. `ID_NAMING_STANDARDS.md` already governs both
+     notations, so the key is removed rather than given a referent it never had.
+- **Consequences:** `tests/conformance/test_element_id_layer_contract.py` locks all
+  three rules over `framework/layers/**` — no raw input string, the four keys plus a
+  cross-reference on each of the six mandating templates, an `## Element IDs` section
+  on each of the six READMEs, and no re-introduced `placeholder`. Its scope is the
+  spec only — platform authoring surfaces that also state a hash input are out of
+  scope here and must add their own lock. SPEC (06) and IPLAN (08) remain
+  the two documented exemptions and are deliberately excluded from the hardcoded
+  layer list.
+
+---
+
 ## GD-08 — The `seed/` tier is frozen historical input; every seed claim gets a total disposition (absorbed / rejected / deferred) recorded in the BRD
 
 - **Status:** Accepted — 2026-07-24 (ratified on merge; a `framework/**` normative
