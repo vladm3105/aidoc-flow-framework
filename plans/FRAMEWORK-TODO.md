@@ -65,11 +65,19 @@
   same function: `element_id` takes a *string* `section_id` (`"project_scope"`),
   producing IDs the registry pattern `LAYER_REGISTRY.yaml:216` rejects.
   Unlike the 30-surface documentation census, this one *executes*.
-- *Fix shape:* delegate to `compute_element_hash`; add a parity test. Expect
-  fixture-golden churn — hence a separate plan, not folded into the spec-side
-  drift fix. Fold in the same-class doc defect at
-  `tools/sdd_doc_lint/__init__.py:1131-1132` (AS11 docstring states the input with no
-  transform; vendored ×2).
+- *Fix shape:* delegate to `compute_element_hash`; add a parity test. Fold in the
+  same-class doc defect at `tools/sdd_doc_lint/__init__.py:1131-1132` (AS11
+  docstring states the input with no transform; vendored ×2).
+- *Planned:* `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md` (2026-07-26).
+  **The "expect fixture-golden churn" premise above is wrong** and the plan
+  corrects it: `write_registry()` has zero callers, `ID_REGISTRY.yaml` is `{}` at
+  3 bytes and unchanged since `f0d08f54`, and no golden carries an ID this code
+  minted — so the fix has **zero** golden churn. The plan also picks up two
+  defects #351 does not mention: `extract_elements()` raises `ComposerError` on
+  the three multi-document `fullpath/golden_chain` YAML goldens (latent — the
+  only walking test uses `layer_NN/valid`), and `PLUGIN-TEST-SUITE-REVIEW.md:32`
+  finding **F2** already recorded the never-imported module + empty registry and
+  was never actioned.
 
 ### `[template]` `IDPLACEHOLDER-UNDEFINED` — `placeholder: "0000"` matches no documented meaning and has no consumer → [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
 
