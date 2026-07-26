@@ -30,6 +30,35 @@ metadata:
       *component*, so its @spec ref is document-level (SPEC-NN) by design;
       traces to specific upstream elements (@adr/@bdd) use the element form.
 
+      All element IDs use content-derived hashes scoped to TDD content.
+      NOTE: this is the canonicalization TARGET, not a verified property — LLM engines emit stable opaque strings, unverified until `rehash --check` (PROVISIONAL-IDS-002; shipped for BRD §7 only — byte-exact field extraction for this layer is Phase 2+). See `governance/ID_NAMING_STANDARDS.md`.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: TDD.01.04.f19c
+      Section segment: test cases live in Section 4, so authored test-case IDs
+      carry `04` as the {section_id}.
+
+      Hash algorithm (SHA256, 4-char hex) — the byte-exact input assembly and
+      the title/description normalization transform are the SINGLE SOURCE in
+      `governance/ID_NAMING_STANDARDS.md` ("Hash algorithm" section,
+      PROVISIONAL-IDS-002). Do NOT re-specify the normalization here — cross-ref
+      the authority so the verifier (`rehash --check`), any future generator,
+      and hand authors converge on one contract.
+        Shape: hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]
+        Scope: from TDD content, NOT upstream SPEC/ADR/BDD content.
+        Collision: extend 4 -> 8 chars if duplicate detected.
+        Field extraction: defined for BRD §7 only (PROVISIONAL-IDS-002 Phase 1).
+          A TDD test case declares `name` / `spec_ref` / `target` / `test_file` /
+          `test_function` and carries no `title` or `description` field, so which
+          case field supplies each hash input is deliberately NOT defined here —
+          naming one would be a new normative contract, not a drift fix. Until
+          Phase 2+ defines it, a TDD element ID is a stable opaque string of the
+          shape above, not a recomputable hash.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
 # =============================================================================
 # Section 1: Document Control
 # =============================================================================

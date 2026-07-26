@@ -139,5 +139,5 @@ Format: BRD.{doc_id}.{section_id}.{hash}
 Example: BRD.01.07.a7f3
 ```
 
-Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars (the canonicalization target; verifiable on demand via `rehash --check`).
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{norm(title)}:{norm(description)}"`, first 4 hex chars (the canonicalization target; verifiable on demand via `rehash --check`). `norm()` is the normalization transform, and `governance/ID_NAMING_STANDARDS.md` is its **single source** — along with the byte-exact input assembly and the §7 FR field-extraction boundary. Do not re-specify it here.
 Collision handling: extend to 8 chars. See template `metadata.id_standard` for details.

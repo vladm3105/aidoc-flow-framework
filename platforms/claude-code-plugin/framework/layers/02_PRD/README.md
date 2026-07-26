@@ -41,7 +41,7 @@ Format: PRD.{doc_id}.{section_id}.{hash}
 Example: PRD.01.09.b3f2
 ```
 
-Algorithm: SHA256 of `"{doc_id}:{section_id}:{title}:{description}"`, first 4 hex chars (the canonicalization target; not verified until `rehash --check`).
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{norm(title)}:{norm(description)}"`, first 4 hex chars (the canonicalization target; not verified until `rehash --check`). `norm()` is the normalization transform, and `governance/ID_NAMING_STANDARDS.md` is its **single source** — along with the byte-exact input assembly. Do not re-specify it here.
 See template `metadata.id_standard` for details.
 
 ## Upstream Traceability

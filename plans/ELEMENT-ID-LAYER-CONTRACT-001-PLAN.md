@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | ELEMENT-ID-LAYER-CONTRACT-001                                |
 | Type           | documentation                                                |
-| Status         | PLANNED — 2026-07-26                                         |
+| Status         | IMPLEMENTED — 2026-07-26 (see `## Implementation log`)        |
 | Depends on     | D-0040, D-0061, D-0062 (PROVISIONAL-IDS-002 Phase 1)         |
 | Feeds          | #342 (generator), PROVISIONAL-IDS-002 Phase 2                |
 | Closes         | [#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344) fully; [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343) after its two residual clauses are transferred (see D8) |
@@ -567,6 +567,95 @@ edit; any surrounding prose that needs rewording is the manual part.
 The `FRAMEWORK-TODO.md` and issue-routing work in step 7 is **already done**
 (2026-07-26) — what remains for the PR is the two entries → Closed and the #343
 transfer-then-close sequence (D8).
+
+## Implementation log
+
+### 2026-07-26 — implemented; one founder-directed deviation from D4
+
+All of Parts A/B/C/E/F shipped as planned. The four verification rows the plan
+called out as traps all behaved as predicted:
+
+- **Step-5 ordering held.** `framework/VERSION` + both `FRAMEWORK_SPEC_VERSION`
+  → `scripts/sync-version-refs.sh` → **then** `tools/sync-plugin-framework.sh`.
+  `CLAUDE.md` was left alone before the fanout, so the `fw_prev` detection at
+  `sync-version-refs.sh:195-198` fired and the `:198-252` block ran: the
+  current-state literal moved `0.38.0` → `0.39.0`, and the hardcoded tripwire at
+  `test_plugin_release_metadata.py:146` was rewritten by the script, not by hand.
+- **Second sync is a no-op.** `git add -A && bash tools/sync-plugin-framework.sh
+  && git diff --name-only` → empty.
+- **Corpus is unchanged from the pinned baseline** — 16 COV02 / 16 ACC01 /
+  6 STY02 / 5 REFGRAN01 / 1 TH-RES-001, exactly as the plan predicted. The
+  change did not leak into behavior.
+- **`git diff HEAD --stat tools/ tests/acceptance/` is empty**, which is what the
+  census's deferral of the 30th surface (#351) rests on.
+
+Suites: conformance **243 passed / 670 subtests**; Hermes **570 passed**. The new
+`test_element_id_layer_contract.py` was confirmed **red on pre-fix `main`** —
+all four test methods failing (7 raw-input hits, TDD missing both its README
+section and its `id_standard` keys, 5 `placeholder` hits) — before it went green.
+
+**Deviation — D4 (`placeholder: "0000"`) overridden by founder decision.**
+
+The plan deferred the key to [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
+and had Part C add a sixth inert copy to TDD "for uniformity with its five
+siblings." The founder instead chose **option (a) — delete the key** (2026-07-26),
+so this PR:
+
+- deletes `placeholder: "0000"` and its `Template placeholder: …` prose line from
+  all five templates that carried it (BRD, PRD, EARS, BDD, ADR);
+- does **not** add it to TDD, so no sixth copy is ever minted;
+- reduces the plan's "five `id_standard` keys" to **four**
+  (`format`/`hash_algorithm`/`hash_length`/`max_hash_length`) everywhere,
+  including Part E's assertion;
+- adds a **fourth** Part-E check — `test_no_template_reintroduces_the_placeholder_key`
+  — so the deletion is locked rather than merely done.
+
+The deferral was correct as written (a merged plan should not unilaterally settle
+a governance question mid-drift-fix) and so was the override (once the owner
+ruled, shipping it here avoided creating the sixth copy). Recorded as **D-0067**
+and ratified in the spec register as **GD-09**. #352 closes on this PR's merge
+SHA rather than surviving as a follow-up.
+
+**One unplanned fix.** `test_spec_hygiene.py::test_no_engine_tokens` (the GD-06
+engine-agnosticism guard) failed on the first draft of the GD-09 entry, which
+named a platform and a platform file path inside `framework/governance/`. The
+guard was right: the spec register is engine-agnostic like the rest of the spec.
+Both references were reworded to "platform authoring surface(s)" — the
+engine-specific detail lives in this plan and in `CHANGELOG.md`, which are
+project surfaces, not spec surfaces.
+
+### GATE-SPEC record
+
+**Pre-gate checklist (§2.1)** — all items satisfied:
+
+| Item | Status |
+|---|---|
+| Change edits `framework/` | ✅ templates, READMEs, governance register, `VERSION` |
+| `change_description.why` / `.trigger` populated | ✅ GD-09 *Context* (why) + issues #343/#344/#352 (trigger) |
+| `semver_impact` set | ✅ `minor` |
+| `change_level` proposed (≥ C2) | ✅ **C2** |
+| `CHANGELOG.md` entry drafted | ✅ |
+| C3 platform-owner notification | n/a — not C3 |
+
+**Error checks:** E001 provenance ✅ · E002 `minor`/C2 ✅ · E003 ≥ C2 ✅ ·
+E004 n/a (not C3) · E005 `framework/VERSION` bumped ✅ · E006 both
+`FRAMEWORK_SPEC_VERSION` == `0.39.0` ✅ · E007 conformance green ✅ ·
+E008 `CHANGELOG.md` changed ✅.
+
+**W003 — `SECURITY_REVIEW.md` assessment** (agent-facing template/governance
+guidance, so the check applies):
+
+| Threat | Assessment |
+|---|---|
+| T1 — credentials / tokens / personal data | ✅ none. The diff adds no literals beyond version strings and a synthetic example ID (`TDD.01.04.f19c`). |
+| T2 — instruction from external/untrusted content acted on | ✅ none. Every change traces to `ID_NAMING_STANDARDS.md`, D-0062, or the three issues; no external content was ingested. |
+| T3 — promoted rule/threshold cites a traceable source | ✅ the entire change *removes* per-layer rule statements in favour of citing one authority; the new TDD text cites the same standard rather than introducing a threshold. |
+| T4 — generated commands / paths stay in scope | ✅ no command or path is generated. The one executable artifact added, `test_element_id_layer_contract.py`, only reads under `framework/layers/**`. |
+| Links / inline markup sanitized | ✅ no new links or click handlers; added markup is plain fenced text and backticked paths. |
+
+**Net security posture: improved.** Deleting six divergent statements of one
+algorithm reduces the chance an agent follows a stale instruction — which is the
+concrete failure this plan exists to fix.
 
 ## Review log
 

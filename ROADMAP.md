@@ -110,6 +110,19 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **ELEMENT-ID-LAYER-CONTRACT-001 (2026-07-26, framework `0.38.0 → 0.39.0`,
+  GD-09).** One element-ID hash contract with one source: the re-specified
+  algorithm is **deleted** from four layer templates and three layer READMEs in
+  favour of the `norm()` shape line plus a cross-reference to
+  `ID_NAMING_STANDARDS.md`, closing the drift D-0062 left when it reached only
+  `BRD-TEMPLATE.yaml`. TDD gains the `## Element IDs` contract it never had
+  despite being one of six layers that must carry element IDs — while stating
+  explicitly that its field-extraction mapping is Phase 2+, not invented here.
+  The inert `placeholder: "0000"` key is removed from all five templates. Locked
+  by `tests/conformance/test_element_id_layer_contract.py` over
+  `framework/layers/**`; the 19 platform authoring surfaces (#342) and the
+  acceptance harness's second implementation (#351) remain open. See
+  [`plans/ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md`](plans/ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md).
 - **SEED-ABSORPTION-001 (2026-07-24, framework `0.37.2 → 0.38.0`, GD-08).** The
   seed→SDD absorption contract (`SEED_CONTRACT.md`: frozen seed, total
   disposition, `seed_disposition:` BRD carrier, `SEED01`); a regression lock that

@@ -1,5 +1,52 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (issue sweep) — ELEMENT-ID-LAYER-CONTRACT-001
+> IMPLEMENTED; framework `0.38.0 → 0.39.0`; 8 open issues triaged, 4 closed.**
+>
+> The session began from "review issues on this repo, fix what applies." All
+> eight open issues were verified live against `main` — **none was stale or
+> inapplicable**, so nothing was closed as not-applicable.
+>
+> **Landed:**
+>
+> | PR | Issue | What |
+> |---|---|---|
+> | [#355](https://github.com/vladm3105/aidoc-flow-framework/pull/355) ✅ merged | #348 | local `gitleaks` pre-commit hook dropped; `CONTRIBUTING.md` gains a "Secret scanning — where each pass runs" table. **Commits no longer need `SKIP=gitleaks`** on a Go < 1.21 machine |
+> | [#356](https://github.com/vladm3105/aidoc-flow-framework/pull/356) ⏸ **held for founder** | #341 | `.github/ai-review/config.json` → schema v2. Touches `.github/`, an explicit auto-merge exception |
+> | (this PR) | #343 / #344 / #352 | ELEMENT-ID-LAYER-CONTRACT-001, spec `0.39.0`, GD-09 |
+>
+> **#356 found a second violation the issue did not report.** The v2 schema
+> declares `litellm` with `additionalProperties: false`, so the long `_comment`
+> that lived *inside* `litellm` was invalid independently of the version key —
+> flipping `version` alone would have produced a file that still fails its own
+> schema. Validating the old file yields **two** errors. The prose moved to the
+> root `_note`. Also worth knowing: **`ci/v2.15.0` is not tagged yet** (canon
+> tops out at `ci/v2.14.0`, our pin), so the `version == 2` assertion the issue
+> cites has not shipped — the change is preparatory, not corrective.
+>
+> **The element-ID implementation deviated from the merged plan once, on founder
+> direction:** D4 deferred `placeholder: "0000"` to #352 and had Part C add a
+> sixth inert copy to TDD. The founder chose **deletion** instead, so the key is
+> gone from all five templates, never added to TDD, and locked out by a fourth
+> Part-E check. Recorded in the plan's new `## Implementation log`, as **D-0067**,
+> and ratified as **GD-09**. #352 closes on this PR rather than surviving.
+>
+> **All four of the plan's recorded traps behaved exactly as documented** — the
+> step-5 ordering, the "do not hand-edit CLAUDE.md before the fanout" gate, the
+> ~66-file declared diff, and the `git add -A` + re-sync + `git diff` mechanic.
+> The plan's Pass 1-4 review log was worth reading before starting; nothing in it
+> was wrong.
+>
+> **Still open, in the order they were scoped with the founder:**
+>
+> | Issue | Decision | Next step |
+> |---|---|---|
+> | #345 | **separate PR after this one** | ratify the TODO/issue split in the spec (`DOC_GOVERNANCE_CORE.md` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md` Tier 2), framework `0.39.0 → 0.40.0` |
+> | #342 | **ship the generator too** | expose `compute_element_hash()` through a callable entry point, then correct all 19 surfaces. Needs a plan + two review cycles first. Highest-value item is `brd-validation-automation.md:179` — a *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code whose normalization disagrees with the standard on five of six steps |
+> | #351 | **plan only, no impl** | golden churn is real; the plan lands, the implementation does not |
+>
+> ---
+>
 > **✅ SESSION 2026-07-26 (later, wrap) — ELEMENT-ID-LAYER-CONTRACT-001 plan
 > merged (#353, `94522be8`); 2 new issues + a #342 scope correction filed.**
 > The plan for the #343/#344 fix is on `main` at

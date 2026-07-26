@@ -10,6 +10,44 @@ graduation.
 
 ---
 
+## D-0067 — Deleting a re-specification beats correcting it; and a merged plan's honest deferral is still overridable by the founder
+
+**2026-07-26.** Three decisions from executing ELEMENT-ID-LAYER-CONTRACT-001
+(`plans/ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md`, issues #343/#344/#352).
+Graduated into the spec register as **GD-09**.
+
+- **When a contract has drifted into N copies, delete the copies rather than
+  fix them.** Seven framework surfaces published a hash algorithm that D-0062
+  had superseded. The available fixes were (a) update the stale text in each
+  layer, or (b) delete it and cross-reference the authority. (b): re-stating a
+  *corrected* algorithm in seven places resets the drift clock rather than
+  stopping it, and the re-specification is itself the mechanism that let D-0062
+  reach exactly one of eight surfaces. The general form: **the number of places
+  a rule is written is the rate at which it will drift**, so a fix that leaves
+  the count unchanged has not fixed the class.
+
+- **A regression lock must iterate a hardcoded list, not a glob, when the
+  population has documented exemptions.** `framework/layers/**` contains
+  `*-MVP-TEMPLATE.yaml`, `*-00_index.TEMPLATE.*`, and the `06_SPEC` / `08_IPLAN`
+  templates and READMEs — the two layers `ID_NAMING_STANDARDS.md` explicitly
+  exempts from element IDs. A glob over templates or READMEs would have produced
+  a double-digit count of spurious failures and made the guard's red state
+  meaningless. The test names its six `(README.md, <TYPE>-TEMPLATE.yaml)` pairs.
+
+- **`placeholder: "0000"` was deleted, overriding the merged plan's D4
+  deferral.** The plan deferred the key to its own issue (#352) with a correct
+  and honestly-recorded rationale — resolving what it *means* is a governance
+  question, not a drift fix — and Part C therefore added a sixth inert copy to
+  TDD for uniformity. The founder chose deletion instead. Both the deferral and
+  the override were right: the plan should not have unilaterally resolved a
+  governance question mid-drift-fix, and once the owner ruled, shipping the
+  ruling in the same PR avoided minting a sixth copy of a key that was about to
+  be removed. **Rule: a merged plan's deferral binds the implementer, not the
+  founder; when it is overridden, record the deviation in the plan's progress
+  log rather than silently diverging from a merged document.**
+
+---
+
 ## D-0066 — CI canon migration: target the latest tag, not the plan's; and a shared trust config makes a partial fleet migration a breaking change
 
 **2026-07-25.** Four decisions from executing CI-CANON-V2-001

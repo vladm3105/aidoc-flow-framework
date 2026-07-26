@@ -12,6 +12,86 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.38.0 → 0.39.0` — one element-ID hash contract, one source; TDD gains the contract it never had (ELEMENT-ID-LAYER-CONTRACT-001 / GD-09) (2026-07-26)
+
+MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-09** in
+`framework/governance/DECISIONS.md` and **D-0067** in `plans/DECISIONS.md`.
+Closes [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343)
+(framework surfaces; two residual clauses transferred),
+[#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344) and
+[#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352).
+**No platform product-version bump** — only `framework/VERSION` moves and both
+`FRAMEWORK_SPEC_VERSION` pins re-match it.
+
+- **Part A — the re-specified hash algorithm is deleted from four layer
+  templates** (PRD, EARS, BDD, ADR), not corrected. Each now states only the
+  shape —
+  `hashlib.sha256("{doc_id}:{section_id}:{norm(title)}:{norm(description)}").hexdigest()[:4]`
+  — and cross-references `governance/ID_NAMING_STANDARDS.md` as the single source
+  for the byte-exact assembly and the `norm()` transform. This is the pattern
+  `BRD-TEMPLATE.yaml` already carried, including its own instruction *"Do NOT
+  re-specify the normalization here."* Each layer's *"from **this** layer's
+  content, NOT upstream"* scoping clause is preserved.
+- **Part B — the three stale layer READMEs** (BRD, PRD, EARS) move from the raw
+  `"{doc_id}:{section_id}:{title}:{description}"` to the `norm()` form plus the
+  same cross-reference. BDD and ADR READMEs already carried no algorithm line and
+  were left alone.
+- **Why it mattered.** D-0062 (spec `0.35.0`) made a six-step normalization
+  transform normative and named `ID_NAMING_STANDARDS.md` its single source, but
+  within the spec that change reached exactly **one** surface. Seven others went
+  on publishing the pre-normalization input, so anyone following a layer template
+  — which is what templates are for — computed a **different hash** than
+  `compute_element_hash()` does for the same content, for any title or
+  description containing uppercase or punctuation. It stayed invisible because
+  `rehash --check` covers BRD §7 only: the one layer with a verifier was the one
+  already correct.
+- **Part C — TDD gains the element-ID contract it never had.**
+  `framework/layers/07_TDD/README.md` gets an `## Element IDs` section in its five
+  siblings' form, and `TDD-TEMPLATE.yaml`'s `id_standard` block gets the four keys
+  plus the shape line — stating `TDD.{doc_id}.{section_id}.{hash}` and that test
+  cases live in **Section 4**, so authored case IDs carry `04`. TDD is one of the
+  six layers `ID_NAMING_STANDARDS.md` says **MUST** carry element IDs; before
+  this, the only written statement of its contract lived on a *platform* surface,
+  inverting the rule that `framework/` is the contract and platforms consume it.
+- **What Part C deliberately does NOT define.** Which test-case field supplies
+  `title` and which supplies `description`. A TDD case declares
+  `name`/`spec_ref`/`target`/`test_file`/`test_function` and carries neither
+  field; naming a mapping would be a new normative contract smuggled into a
+  documentation fix. Both README and template say so explicitly and defer it to
+  PROVISIONAL-IDS-002 Phase 2+, alongside PRD/EARS/BDD/ADR, none of which has a
+  defined extraction boundary either.
+- **`placeholder: "0000"` deleted from all five templates that declared it**
+  (#352). The key matched neither available meaning: the prose called it the
+  *template* placeholder while every template body uses `.xxxx`, and the
+  documented *produced-document* provisional form is the section ordinal `0001`,
+  not `0000`. `0000` appears nowhere in `framework/governance/`, D-0040 never
+  mentions the key, and no code reads `id_standard.placeholder`. It was not added
+  to TDD, so a sixth copy was never minted. This **overrides the merged plan's D4
+  deferral** on founder direction — recorded in the plan's `## Implementation
+  log`.
+- **Part E — new regression lock.**
+  `tests/conformance/test_element_id_layer_contract.py` asserts, over
+  `framework/layers/**` only: no surface publishes the raw input string; each of
+  the six mandating layer templates declares the four `id_standard` keys **and**
+  cites the standard; each of the six mandating READMEs has an `## Element IDs`
+  section; and no template re-introduces `placeholder`. It iterates a **hardcoded**
+  list of the six `(README.md, <TYPE>-TEMPLATE.yaml)` pairs rather than a glob —
+  a glob would sweep in the MVP/index templates and the `06_SPEC` / `08_IPLAN`
+  element-ID exemptions and produce a double-digit count of spurious failures.
+  Confirmed **red on pre-fix `main`** (all four checks failing) before going green.
+- **Scope stated plainly.** The lock covers the spec only. The 19 plugin and
+  Hermes authoring surfaces that also state a hash input are owned by
+  [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342) and remain
+  unfixed; `tests/acceptance/_id_coordinator.py`, a live second implementation
+  that mints fixture IDs without the transform, is
+  [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351). A green
+  run of this file does **not** mean the repo is free of the drift class.
+- **Verification.** Conformance 243 passed / 670 subtests; Hermes 570 passed;
+  bundle re-sync a clean no-op; `git diff HEAD --stat tools/ tests/acceptance/`
+  empty (no linter or fixture-minting code touched); example-corpus lint
+  **unchanged** from its pinned baseline — 16 COV02 / 16 ACC01 / 6 STY02 /
+  5 REFGRAN01 / 1 TH-RES-001 — confirming the change did not leak into behavior.
+
 ### Removed — the local `gitleaks` pre-commit hook (#348) (2026-07-26)
 
 No spec or platform change (no `VERSION` bump). Tooling only.
