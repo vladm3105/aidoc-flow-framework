@@ -1,5 +1,102 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (WRAP) — issue sweep complete: 8 issues triaged, 7
+> closed, 8 PRs merged, framework `0.38.0 → 0.40.0`.**
+>
+> Entered from "review issues on this repo, fix what applies." **Every one of the
+> 8 open issues reproduced against `main` — none was stale or inapplicable, so
+> nothing was closed as not-applicable.**
+>
+> | PR | Closes | What |
+> |---|---|---|
+> | #355 | #348 | local `gitleaks` pre-commit hook dropped — commits no longer need `SKIP=gitleaks` |
+> | #356 | #341 | `.github/ai-review/config.json` → schema v2 |
+> | #357 | #343 #344 #352 | element-ID contract, spec `0.39.0`, **GD-09** |
+> | #359 | — | #351 plan (impl deferred by founder choice) |
+> | #360 | — | #342 plan |
+> | #361 | #345 | TODO/issue split ratified, spec `0.40.0`, **GD-10** |
+> | #362 | — | linked `IDGEN-NO-GENERATOR` to its plan + its blocker |
+> | #363 | #342 | the generator ships; 25 surfaces rewritten. Plugin `0.24.0`, Hermes `0.12.0` |
+>
+> **Versions now: framework `0.40.0`, plugin `0.24.0`, Hermes `0.12.0`.**
+> Conformance **253 passed / 688 subtests**; Hermes **570 passed**; corpus
+> unchanged at its pinned baseline throughout.
+>
+> ## Only #351 remains, and it is cheaper than it looks
+>
+> Plan merged (`plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`), implementation
+> deferred by founder choice. **Its filed premise is false** — `write_registry()`
+> has zero callers, `ID_REGISTRY.yaml` is `{}` at 3 bytes unchanged since
+> `f0d08f54`, and no golden carries an ID that code minted, so there is **zero
+> golden churn**. Its step 1 is a keep-or-delete question:
+> `_id_coordinator.py` has no product consumer and
+> `PLUGIN-TEST-SUITE-REVIEW.md:32` finding **F2** already proposed removing it —
+> which would close #351 outright and supersede the whole plan.
+>
+> ## Five things a next session must not re-derive
+>
+> 1. **Verify a blocker before escalating it.** `IDGEN-NO-GENERATOR`'s plan
+>    declared a founder decision was required on `state: canonical` vs
+>    `id_state: provisional`. There was no conflict: `id_standard.state` is
+>    template metadata with **no code consumer**, `id_state` is produced-doc
+>    frontmatter, and the linter says so at
+>    `tools/sdd_doc_lint/__init__.py:558`. An unverified blocker in a merged plan
+>    stalls work on a decision nobody needs to make (**D-0068**).
+> 2. **Write the scan before the census.** #342 counted 9 surfaces → corrected to
+>    19 → the truth was **25**. Both manual passes checked one Hermes
+>    `references/` file instead of the tree; the conformance guard found the rest
+>    immediately. A hand-built census of a class is a sample that gets reported as
+>    a total.
+> 3. **Mutation-test a negative-property guard.** The new
+>    `test_no_inprompt_hashing.py` passed a live reintroduction on first write:
+>    markdownlint reflows these surfaces into single long lines, so the correction
+>    and the regression share a line and a line-scoped negation skip masked it.
+>    Fixed by excising the negation clause, bounded so it cannot swallow the
+>    reintroduction; a test pins that specific masking.
+> 4. **Measure blast radius before shipping an operation over shared state.**
+>    `rehash --fix` was cut on measurement, not principle: it would rewrite all 4
+>    of BRD-01's §7 FR IDs and break citations in **8 downstream files**. It is a
+>    corpus-wide re-cascade and returns with PROVISIONAL-IDS-002 Phase 2/3.
+> 5. **Stacked PRs: retarget the child before merging the parent.** Merging #357
+>    with `--delete-branch` deleted #358's base, which **auto-closed #358**, and
+>    GitHub refuses to retarget a closed PR. It was rebuilt as #361 by
+>    cherry-picking onto `main`. Also: `Closes #344 and #352` only closes #344 —
+>    the parser needs the keyword before **each** reference (#352 was closed by
+>    hand).
+>
+> ## Mechanics confirmed this session
+>
+> - **`--admin` is still required on every PR** — `aidoc-flow-ci#322` reproduces
+>   exactly as documented: `call / ai-review` posts one CANCELLED + one SUCCESS on
+>   the same head (the run's own review submission fires the workflow's
+>   `pull_request_review` trigger, and the concurrency guard's
+>   `cancel-in-progress` excludes only `labeled`/`unlabeled`). ci#322 already
+>   pins this precisely, so nothing was added to it.
+> - **A local caller fix exists but was not applied**: dropping
+>   `pull_request_review` from this repo's `ai-review.yml` `on:` would stop the
+>   self-cancel (composition has its own trigger plus a `workflow_run`), at the
+>   cost of diverging from the canon template. Founder chose `--admin` instead.
+> - **Local `pre-commit` on changed files ≠ CI's `--all-files`.** A rebase
+>   conflict resolution dropped a blank line before a CHANGELOG heading; local
+>   hooks never re-linted the seam and CI failed on MD022. **Run
+>   `pre-commit run --all-files` after any manual conflict resolution.**
+> - **`sync-version-refs` reporting "files were modified" is often a knock-on**,
+>   not a second defect: it re-stages whatever an earlier autofix touched. Verify
+>   by running it alone against a clean HEAD.
+> - **Editing `tools/sdd_doc_lint/*.py` requires re-copying both vendored
+>   platform mirrors by hand** — no script does it, and `ruff-format` may rewrite
+>   the file *after* you copy, so re-copy and re-run until two consecutive
+>   `--all-files` runs are clean.
+> - The markdownlint `__init__.py` → `**init**.py` trap is real; backticking the
+>   path fixes it. **Eight older plan files still carry that corruption** in their
+>   claim ledgers, from before it was documented.
+>
+> **Local branches from this session were pruned.** The 8 pre-existing stale
+> branches are left for founder confirmation as prior sessions recorded, and
+> `wip/frwk-review-003-plan` is live work — do not prune it.
+>
+> ---
+>
 > **✅ SESSION 2026-07-26 (issue sweep, cont.) — #342 IMPLEMENTED.** Plugin
 > `0.23.4 → 0.24.0`, Hermes `0.11.1 → 0.12.0`, **no framework change**
 > (`framework/VERSION` stays `0.40.0`; not GATE-SPEC).
