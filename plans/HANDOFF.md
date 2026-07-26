@@ -1,5 +1,31 @@
 # Session Handoff
 
+> **⚠️ SESSION 2026-07-26 — `ai-review` self-cancel is why PRs still need
+> `--admin`; filed upstream as
+> [aidoc-flow-ci#322](https://github.com/vladm3105/aidoc-flow-ci/issues/322).**
+> The reviewer's own review submission fires `pull_request_review: submitted`,
+> which starts a second run in concurrency group `ai-review-<PR#>`; canon's
+> `cancel-in-progress` predicate (`ai-review.yml:97-102` @ `ci/v2.14.0`) exempts
+> only `labeled`/`unlabeled`, so that run **cancels the run that posted the
+> review**. The cancelled `call / ai-review` check-run persists on the head SHA,
+> and since that context is required, the GraphQL rollup is FAILURE while
+> `gh pr checks` looks green. `gh pr merge` reports only "the base branch policy
+> prohibits the merge", naming nothing. **Do not label-cycle to recover** — each
+> cycle adds another cancelled run (observed on PR #346: one → two). A fresh SHA
+> does not clear it either; the self-cancel repeats on every push. Until #322
+> lands, `--admin` is the only route, and the standing
+> `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` TODO entry attributing this to
+> `composition` is **wrong** — composition is green on the PR head.
+>
+> **Element-ID gaps filed 2026-07-26.** A cross-layer review of the element-ID
+> hash contract produced
+> [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)–[#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345),
+> indexed in `plans/FRAMEWORK-TODO.md`: no callable ID generator (9 skill/prompt
+> surfaces instruct LLM-side SHA-256), the D-0062 normalization transform reached
+> only `BRD-TEMPLATE`, TDD documents no element-ID contract at all, and governance
+> never routes an own-repo gap to the issue tracker. #345's working-rule half is
+> now in `CLAUDE.md` + `AGENTS.md`; its spec half awaits GATE-SPEC.
+>
 > **✅ SESSION 2026-07-25 (later) — CI canon migrated to `ci/v2.14.0`
 > (CI-CANON-V2-001).** Plan #334, implementation #335, both merged. All eleven
 > `aidoc-flow-ci` call sites are now `@ci/v2.14.0`; `standards-drift` moved from a
