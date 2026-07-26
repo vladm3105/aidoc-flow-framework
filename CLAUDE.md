@@ -3,6 +3,10 @@
 Persistent context for the **AI Doc Flow Framework**. Auto-loaded every
 session. Keep it short and current.
 
+Non-Claude agents (Codex, Gemini CLI, Copilot, Hermes) start at
+[`AGENTS.md`](AGENTS.md) — the short cross-agent orientation. This file remains
+the full working agreement; where the two disagree, this one wins.
+
 ## What this project is
 
 The document-flow framework, delivered as **one engine-agnostic specification
@@ -272,6 +276,46 @@ Use the **GitHub CLI (`gh`)** as the default for all GitHub operations — PRs,
 issues, reviews, releases, repo queries — not the GitHub MCP servers
 (`github-tt`, `github-vl`) or raw API calls. If `gh` is unauthenticated, run
 `gh auth login` rather than falling back to MCP/API.
+
+## Own-repo gaps — TODO entry **and** GitHub issue (GOV-TODO-ISSUE-SPLIT)
+
+The sibling of the cross-repo rule below, for defects **this repo owns**. Two
+surfaces, one flow — the TODO file is the queue, the issue is the externally
+visible record:
+
+| Surface | Role | Rule |
+|---|---|---|
+| `plans/FRAMEWORK-TODO.md` | the triage **queue** | unchanged — every gap gets an entry, inline as discovered (tag + title + *Context* + *Fix shape*). The entry IS the capture moment; no "later PR" |
+| GitHub issue on this repo | the **externally visible** record | opened when the entry meets **any** of: (a) actionable by someone other than its finder, (b) reproducible at `file:line` with a concrete fix shape, (c) user-visible or blocks a consumer |
+
+Purely local, speculative, or already-planned items stay TODO-only — the tracker
+must not become a second copy of the backlog.
+
+**An issue body carries the same evidence the cross-repo rule demands** (below):
+reproduction at `file:line`, blast radius, why it was hard to diagnose, a
+suggested fix, and what is NOT broken. Same `--body-file -` + read-back
+verification. Same one-issue-per-defect granularity.
+
+**Link both ways.** The TODO entry's heading ends with `→ #N`; the issue's
+*Related* section names the TODO entry ID. Close both on the same merge SHA
+(the TODO entry moves to **Closed**; the issue closes with the same ref).
+
+**Why.** `plans/FRAMEWORK-TODO.md` is read only by a session entering *this*
+repo — the exact latency failure the cross-repo rule was written to fix, applied
+to consumers of this framework, who cannot see the file at all. This repo held
+one issue against ~40 TODO entries, with 11 issue templates and a full label
+taxonomy provisioned and unused, because no rule ever routed anything there.
+
+**Spec counterpart is not yet ratified.** The framework-spec version of this rule
+(`framework/governance/DOC_GOVERNANCE_CORE.md` Principle 9 →
+`FRAMEWORK_FEEDBACK_LOG.md` Tier 2) is proposed in
+[#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345) and needs
+CHG / GATE-SPEC ratification plus a `framework/VERSION` bump. This section is the
+repo working rule in the meantime; do not treat it as the ratified spec.
+
+*Origin:* `GOV-TODO-ISSUE-SPLIT` (2026-07-26), found while filing three
+element-ID gaps ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)–[#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344))
+that governance would have parked in a markdown file no consumer reads.
 
 ## Cross-repo feedback — file it as a GitHub issue on the owning repo
 
