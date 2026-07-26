@@ -12,6 +12,51 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.39.0 → 0.40.0` — a backlog file is a capture queue, not a publication channel (GD-10) (2026-07-26)
+
+MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-10** in
+`framework/governance/DECISIONS.md`. Closes
+[#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345) — the
+framework-spec half; the repo working-rule half landed earlier in `CLAUDE.md`
+(PR #347). **No platform product-version bump.**
+
+- **The gap.** Principle 9 defined **one** capture surface for the framework's
+  own gaps — the Tier-2 backlog file — and no rule that ever opened a tracker
+  issue for them. Issues were mandated only for defects owned by *another* repo,
+  so by construction that rule never fired for a framework-owned gap. The result
+  was measurable: a ~1,376-line backlog holding ~40 entries against a single open
+  issue, on a tracker already provisioned with eleven issue templates and a full
+  area-label taxonomy that nothing ever routed anything to.
+- **`FRAMEWORK_FEEDBACK_LOG.md` gains §"Tier 2 → the tracker".** Tier 2 now has
+  **two surfaces with distinct roles**: the backlog file stays the triage
+  **queue** (unchanged — every gap gets an entry, appended inline, the entry IS
+  the capture moment), and an issue is the **externally visible** record, opened
+  when an entry meets **any** of three tests — actionable by someone other than
+  its finder, reproducible at `file:line` with a concrete fix shape, or
+  user-visible / blocking a consumer.
+- **The bar is load-bearing.** Purely local, speculative, or already-planned
+  entries stay queue-only. Replacing one surface with the other would trade a
+  latency problem for a duplication problem; the tracker must not become a second
+  copy of the backlog.
+- **An issue carries evidence, not a symptom** — reproduction at `file:line` plus
+  the command that exercised it, blast radius (checked, not assumed), why it was
+  hard to diagnose where the symptom misnames the cause, a concrete suggested fix,
+  and what is **NOT** broken where that was verified. Plus: link both ways, close
+  on the same merge SHA, one issue per defect, new evidence as a **comment** on an
+  existing issue rather than a second one, and **read the filed artifact back** —
+  filing tools can exit 0 while publishing an empty body.
+- **`DOC_GOVERNANCE_CORE.md` Principle 9** gains the queue-vs-channel sentence and
+  points at the new section for the bar. Tier 1 is untouched — a consumer
+  project's own log still surfaces upstream by PR, issue, or direct addition, at
+  its own cadence.
+- **Written host-agnostically.** The rule names "the framework's tracker", not a
+  specific host, so a consumer running the framework on any tracker can satisfy
+  it. No lint rule or conformance check enforces it; it is a governance obligation
+  on the maintainer, like the rest of Principle 9.
+- **`CLAUDE.md`'s "Spec counterpart is not yet ratified" caveat is now false and
+  was replaced** — the repo section stays as the repo-specific working rule
+  (`gh` invocations, this repo's paths) and defers to the spec where they differ.
+
 ### Changed — Framework Spec `0.38.0 → 0.39.0` — one element-ID hash contract, one source; TDD gains the contract it never had (ELEMENT-ID-LAYER-CONTRACT-001 / GD-09) (2026-07-26)
 
 MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-09** in

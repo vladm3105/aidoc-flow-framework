@@ -41,7 +41,7 @@
 >
 > | Issue | Decision | Next step |
 > |---|---|---|
-> | #345 | **separate PR after this one** | ratify the TODO/issue split in the spec (`DOC_GOVERNANCE_CORE.md` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md` Tier 2), framework `0.39.0 → 0.40.0` |
+> | #345 | ✅ **done** — spec `0.40.0`, **GD-10**, stacked on the element-ID PR | `DOC_GOVERNANCE_CORE.md` Principle 9 + `FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker". `CLAUDE.md`'s "spec counterpart is not yet ratified" caveat was replaced in the same PR — it had become false |
 > | #342 | **ship the generator too** | expose `compute_element_hash()` through a callable entry point, then correct all 19 surfaces. Needs a plan + two review cycles first. Highest-value item is `brd-validation-automation.md:179` — a *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code whose normalization disagrees with the standard on five of six steps |
 > | #351 | **plan only, no impl** | golden churn is real; the plan lands, the implementation does not |
 >
