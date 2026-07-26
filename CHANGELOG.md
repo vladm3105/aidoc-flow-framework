@@ -12,6 +12,53 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — one element-hash implementation in the repo; the acceptance harness delegates (#351) (2026-07-26)
+
+**No version moves** — `tests/` plus a docstring inside `tools/sdd_doc_lint/`.
+No `framework/` change, so not a GATE-SPEC change; no platform product change,
+so neither platform `VERSION` moves. Implements
+`plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`; closes
+[#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351).
+
+- **`_id_coordinator.element_hash()` delegates instead of re-deriving.** It was a
+  second, independent implementation that skipped the D-0062 normalization
+  transform entirely, so any title or description containing uppercase or
+  punctuation hashed differently from the canonical `compute_element_hash()`. The
+  `tools/` `sys.path` insert moved to module scope with it — it previously ran
+  only inside `extract_elements()`, so a module-level import would have raised
+  `ImportError` on the exact call path the new parity test exercises.
+- **A parity test makes silent re-divergence impossible.** Eight cases, one per
+  transform step (casefold, punctuation strip, NFC composition, whitespace
+  collapse, trim, 100-char truncation, combined, empty description), each
+  asserting `element_hash(...) == compute_element_hash(...)[:4]`. A second test
+  guards the guard: every case must hash differently with and without the
+  transform, so no case can silently become one that passes under a wrong
+  implementation.
+- **A latent crash, fixed.** `extract_elements()` used `yaml.safe_load()`, which
+  raises `ComposerError` on a second YAML document — and the three
+  `fullpath/golden_chain/{06_SPEC,07_TDD,08_IPLAN}` goldens carry a frontmatter
+  fence plus a body. Invisible because the only test walking goldens used
+  `layer_NN/valid`. Now `safe_load_all()` taking the last dict document — a
+  key-union merge would promote frontmatter keys into the section namespace,
+  diverging from `_harness.headings()`, which strips frontmatter outright. A
+  `fullpath/` regression test walks all 16 goldens; because no frontmatter in the
+  corpus can mint an element either way, a synthesised artifact pins the
+  body-document contract with the shape that actually discriminates.
+- **The string `section_id` is documented, not silently "fixed".**
+  `element_id()` returns `BRD.01.project_scope.<hash>`, which the registry
+  pattern rejects; the docstring now says so. Making it numeric needs a
+  per-layer heading→ordinal table that exists nowhere in the repo — a new
+  contract, the overreach GD-09 declined for TDD. Tracked as
+  `IDCOORD-NUMERIC-SECTION-ID`.
+- **AS11's docstring named the raw hash input** with no mention of the normative
+  transform (`tools/sdd_doc_lint/__init__.py`); corrected and re-vendored to both
+  platform copies. Documentation only — the implementation 200 lines above was
+  always correct.
+- **Zero golden churn**, as the plan predicted against the issue's stated
+  premise: `git diff --stat tests/acceptance/fixtures/` is empty. `write_registry()`
+  has no callers and `ID_REGISTRY.yaml` is `{}`, so no committed artifact ever
+  carried an ID this code minted.
+
 ### Changed — no authoring surface computes SHA-256 in-prompt; the generator ships (#342) (2026-07-26)
 
 Plugin **`0.23.4 → 0.24.0`** (MINOR), Hermes **`0.11.1 → 0.12.0`** (MINOR).

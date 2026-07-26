@@ -1129,7 +1129,11 @@ def _check_id_uniqueness(corpus: list[tuple[str, str]]) -> list[Finding]:
     """AS11 — element-ID hash integrity (definition uniqueness).
 
     Each element ID ``TYPE.NN.SS.xxxx`` carries a 4-hex-char SHA256-prefix of
-    its ``{doc_id}:{section_id}:{title}:{description}`` content. A canonical
+    its content, as computed by ``compute_element_hash()`` — which normalizes
+    ``title`` and ``description`` per ``_normalize_hash_field`` before
+    assembling ``{doc_id}:{section_id}:{norm(title)}:{norm(description)}``. The
+    transform is normative (ID_NAMING_STANDARDS "Normalization transform"); a
+    hash taken over the raw fields is a different hash. A canonical
     invariant is that any given hash defines **one** element — so the same ID
     must not be *defined* in two different files (citations via
     ``@<lower>:`` tags are fine; only standalone definitions count).

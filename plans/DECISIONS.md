@@ -10,6 +10,45 @@ graduation.
 
 ---
 
+## D-0069 — A defect fix does not smuggle in a strategy change; and a coverage guard needs a guard of its own
+
+**2026-07-26.** Three decisions from executing IDCOORD-SECOND-HASH-IMPL
+(`plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`, #351).
+
+- **Keep + fix, not delete — and the question went to the founder first.**
+  `tests/acceptance/_id_coordinator.py` has no product consumer, its registry is
+  `{}`, and `PLUGIN-TEST-SUITE-REVIEW.md:32` **F2** had already offered "remove
+  both files" as a disposition. Deleting it would have closed #351 outright and
+  strictly cheaper. It was still put to the founder as the plan's step 1 rather
+  than decided in-flight, because *whether the suite wants cross-layer ID-closure
+  testing* is a test-strategy question, while *a second wrong implementation of a
+  normative algorithm* is a defect regardless of how that question resolves.
+  **Rule: a defect fix must not be the vehicle for a strategy change.** Answer:
+  keep + fix. The repo now carries a module with no consumer, now correct — a cost
+  stated in the plan before the work, not discovered after it.
+
+- **The string `section_id` was documented, not "fixed."** `element_id()` returns
+  `BRD.01.project_scope.<hash>`, which `LAYER_REGISTRY.yaml:216` rejects. Making
+  it numeric requires a per-layer heading→ordinal table that exists nowhere in the
+  repo — inventing one is a new contract, the same overreach GD-09 declined for
+  TDD field extraction. The docstring now states the limitation and the numeric
+  form is a deferred TODO. **Rule: when the honest fix is a new contract, say what
+  the thing is instead of quietly making it look conformant.**
+
+- **A guard that proves the guard.** The parity table's own check
+  (`test_parity_cases_actually_exercise_the_transform`) asserts each case differs
+  pre/post transform — but it is a property of the *table*, and it cannot see
+  which transform *step* a case covers. A per-step mutation matrix found that
+  **one row covers NFC**, and only while its text stays decomposed: a formatter
+  precomposing the literal would drop that step's coverage to zero with every
+  test still green, because the row's casefold difference alone satisfies the
+  check. **Rule: for a guard over an N-step contract, verify per-step coverage by
+  mutation — a per-case "is it non-trivial" check will report full coverage while
+  a step has none.** This is the same masking class as the
+  `test_no_inprompt_hashing.py` finding recorded in D-0068's session.
+
+---
+
 ## D-0068 — A blocker is only a blocker once verified; and a negative-property guard finds the surfaces a manual census misses
 
 **2026-07-26.** Three decisions from executing IDGEN-NO-GENERATOR

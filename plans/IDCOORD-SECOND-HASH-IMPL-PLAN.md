@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | IDCOORD-SECOND-HASH-IMPL                                     |
 | Type           | test-harness                                                 |
-| Status         | PLANNED — 2026-07-26                                         |
+| Status         | ✅ SHIPPED — 2026-07-26                                      |
 | Depends on     | D-0062 (PROVISIONAL-IDS-002 Phase 1), D-0067 / GD-09         |
 | Closes         | [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351) |
 | Version impact | **None.** No `framework/` change, no platform change, no `VERSION` bump — `tests/` only |
@@ -334,3 +334,71 @@ now says "no `VERSION` bump" explicitly rather than implying it via "not
 GATE-SPEC" (E touches `tools/`, which a reader could reasonably think is a
 platform surface), and Risk 2 names the concrete failure mode (pytest rootdir)
 rather than "path issues." Converged.
+
+## Implementation notes — 2026-07-26
+
+Step 1 was put to the founder before any code was written; the answer was
+**keep + fix**, so A–E executed as specified. Three corrections to the plan that
+only surfaced against the source:
+
+1. **Step 6 named the wrong sync script.** `tools/sync-plugin-framework.sh`
+   vendors `framework/` subtrees plus three named `tools/` files
+   (`saga_driver.py`, `finding_filter.py`, `playbook_loader.py`) — **not**
+   `sdd_doc_lint`. The script that re-vendors the linter is
+   `tools/sdd_doc_lint/sync-vendored.sh`, which
+   `tests/conformance/platforms/test_doc_lint_vendoring.py:13` names as the fix
+   command. Used that; the three `md5sum`s match.
+2. **"Frontmatter-bearing" is not the same as "multi-document."** A *leading*
+   `---` is only a document-start marker; what `safe_load` rejects is a second
+   document, i.e. a *closing* fence. All six `fullpath` YAML goldens open with
+   `---`, but only the three under `golden_chain/` carry two markers and crash.
+   The regression test counts parsed documents rather than inspecting the first
+   line.
+3. **The parity table needed guards of its own.** A parity case whose raw and
+   normalized forms happen to coincide would pass under the wrong implementation
+   too — the same "passes under any hash function" flaw that let the original
+   divergence hide. `test_parity_cases_actually_exercise_the_transform` asserts
+   every case differs pre/post transform. It is a property of the *table*, not of
+   `element_hash` — it is green on `HEAD` too, by design; the 8 subtests that go
+   red before the fix and green after are
+   `test_element_hash_matches_canonical_prefix`'s.
+
+   Self-review then found the table had a hole the guard could not see. A
+   per-step mutation matrix (drop one transform step, see which rows catch it)
+   showed **exactly one row covers NFC** — and only while its text stays
+   decomposed. A formatter that precomposed the literal would drop NFC coverage
+   to zero with every test still green, since that row's casefold difference
+   alone satisfies the exercise-check. Fixed by writing the row as `é`
+   escapes plus `test_nfc_case_is_decomposed`. Final matrix: nfc←1 row,
+   truncate←1, collapse←3, strip←4, casefold←7. Every step covered.
+
+4. **The same trap caught the YAML fix, twice.** Review found the merge should
+   take the last dict document rather than union the key sets (a union promotes
+   frontmatter keys into the section namespace, diverging from
+   `_harness.headings()`). The `fullpath/` regression test was then asserted to
+   catch that — it does not: mutating the fix back to `data.update(document)`
+   left all tests green, because today's frontmatter is `doc_id` (scalar) and
+   `metadata` (filtered by name). The first replacement test *also* failed to
+   discriminate: `reuse:` (TRACEABILITY.md:141), the one first-class frontmatter
+   block the spec defines, is a flat dict of scalars and mints nothing either
+   way. Only a frontmatter key mapping to a **mapping-of-mappings** — the
+   extractor's own criterion for a walkable section — separates the two
+   implementations, so `test_frontmatter_keys_are_not_walked_as_sections`
+   synthesises exactly that, verified red under the mutation and green after.
+   **Every "this test would catch it" claim in this PR was checked by mutation;
+   two of them were false.**
+
+**Verification at ship** — parity + fullpath tests red before, green after;
+acceptance deterministic tier 62 tests with the **same 3 pre-existing failures**
+as `HEAD`; conformance **253 passed / 688 subtests**; Hermes **570 passed**;
+`git diff --stat tests/acceptance/fixtures/` **empty** (the plan's central claim,
+confirmed); `git diff --stat framework/` empty; both sync scripts idempotent.
+
+**Those 3 pre-existing failures turned out to be untracked**, contrary to a first
+draft of this note that attributed them to `CORPUS-REFGRAN-RECASCADE`. That entry
+is `[example-corpus]`, covers `examples/url-shortener/docs/`, and touches the
+acceptance suite only in one clause about `SPEC-01_golden` REFGRAN01 — it does not
+cover ACC01 (present in 2 of the 3) or the COV02 findings on these fixtures. Filed
+as `ACCEPTANCE-TIER-DRIFT-UNTRACKED` +
+[#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365), together
+with the reason it went unnoticed: **no CI workflow runs the acceptance tier.**

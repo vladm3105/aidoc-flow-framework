@@ -24,31 +24,42 @@
 
 ## Open
 
-### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — the acceptance harness re-implements the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
+### `[harness]` `IDCOORD-NUMERIC-SECTION-ID` — `_id_coordinator.element_id()` emits a string `section_id`, so its IDs can never be registry-valid
 
-- *Context:* found 2026-07-26 during `ELEMENT-ID-LAYER-CONTRACT-001` Pass 1.
-  `tests/acceptance/_id_coordinator.py:17-19` hashes
-  `f"{doc_id}:{section_id}:{title}:{description}"` raw — no
-  `_normalize_hash_field` — and `element_id()` (`:22-24`) **mints fixture IDs**
-  from it. Its smoke test (`deterministic/test_id_coordinator.py:22-36`) checks
-  determinism and shape only, never parity with `compute_element_hash()`, so a
-  wrong algorithm is indistinguishable from a right one. Second divergence in the
-  same function: `element_id` takes a *string* `section_id` (`"project_scope"`),
-  producing IDs the registry pattern `LAYER_REGISTRY.yaml:216` rejects.
-  Unlike the 30-surface documentation census, this one *executes*.
-- *Fix shape:* delegate to `compute_element_hash`; add a parity test. Fold in the
-  same-class doc defect at `tools/sdd_doc_lint/__init__.py:1131-1132` (AS11
-  docstring states the input with no transform; vendored ×2).
-- *Planned:* `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md` (2026-07-26).
-  **The "expect fixture-golden churn" premise above is wrong** and the plan
-  corrects it: `write_registry()` has zero callers, `ID_REGISTRY.yaml` is `{}` at
-  3 bytes and unchanged since `f0d08f54`, and no golden carries an ID this code
-  minted — so the fix has **zero** golden churn. The plan also picks up two
-  defects #351 does not mention: `extract_elements()` raises `ComposerError` on
-  the three multi-document `fullpath/golden_chain` YAML goldens (latent — the
-  only walking test uses `layer_NN/valid`), and `PLUGIN-TEST-SUITE-REVIEW.md:32`
-  finding **F2** already recorded the never-imported module + empty registry and
-  was never actioned.
+- *Context:* deferred out of `IDCOORD-SECOND-HASH-IMPL` as plan **D3 option (b)**
+  (2026-07-26). `extract_elements()` derives `section_id` from a normalised
+  heading (`"project_scope"`), so `element_id()` returns
+  `BRD.01.project_scope.<hash>`, which the registry element pattern
+  `^[A-Z]+\.\d{2,}\.\d{2,}\.[a-f0-9]{4,8}$` (`LAYER_REGISTRY.yaml:216`) rejects.
+  The shipped fix documented the limitation (option c) rather than inventing a
+  heading→ordinal mapping — a new contract, the same overreach GD-09 declined
+  for TDD field extraction. Harmless today: the module has no product consumer.
+- *Fix shape:* a per-layer heading→section-ordinal table, which does not exist
+  anywhere in the repo. Only worth building if cross-layer ID-closure testing is
+  actually wired up (the other, still-unactioned half of
+  `PLUGIN-TEST-SUITE-REVIEW.md:32` **F2**); until then the string form is
+  honest about what it is.
+- *Tracker:* **TODO-only** per the GD-10 three-test bar — fails (c) (no consumer
+  is affected: the module has none) and is conditional on prerequisite work
+  nobody has scheduled, i.e. the "already-planned / purely local" carve-out.
+
+### `[harness]` `ACCEPTANCE-TIER-DRIFT-UNTRACKED` — 3 acceptance tests fail on `main`, and no CI job runs the tier → [#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365)
+
+- *Context:* found 2026-07-26 while shipping `IDCOORD-SECOND-HASH-IMPL`, which
+  needed a before/after baseline. `python3 -m unittest discover -s
+  tests/acceptance/deterministic` fails 3 of 58 on `main`: `test_fullpath` and
+  `test_layer_iplan` (ACC01 + COV02 + REFGRAN01), `test_layer_tdd` (COV02 +
+  REFGRAN01), on the `layer_*`/`fullpath` goldens. Not covered by
+  `CORPUS-REFGRAN-RECASCADE`, which is `[example-corpus]`, scoped to
+  `examples/url-shortener/docs/`, and mentions the acceptance suite only for
+  `SPEC-01_golden` REFGRAN01 — nothing about ACC01 or these COV02 findings.
+  **`grep -rn acceptance .github/workflows/` returns nothing**, which is how
+  three red tests sat on `main` unnoticed.
+- *Fix shape:* two independent halves — (1) realign the acceptance fixtures with
+  the coverage rules that have shipped since they were authored (ACC01/COV02
+  element-level coverage, REFGRAN01), and (2) decide whether the tier belongs in
+  CI. Half (2) is the one that keeps this from recurring; it is also the one that
+  needs a call on whether these fixtures are meant to be gate-clean.
 
 ### `[example-corpus]` `SEED-ABSORPTION-001-T7` — 16 BDD scenarios are un-designed (SPEC-coverage gap), not merely un-tested
 
@@ -1053,6 +1064,31 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — ✅ CLOSED (2026-07-26) — the acceptance harness re-implemented the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
+
+- *Context:* found 2026-07-26 during `ELEMENT-ID-LAYER-CONTRACT-001` Pass 1.
+  `tests/acceptance/_id_coordinator.py:17-19` hashed
+  `f"{doc_id}:{section_id}:{title}:{description}"` raw — no
+  `_normalize_hash_field`. Its smoke test (`deterministic/test_id_coordinator.py`)
+  checked determinism and shape only, never parity with `compute_element_hash()`,
+  so a wrong algorithm was indistinguishable from a right one.
+- *Shipped:* `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md` — `element_hash()` now
+  delegates to `compute_element_hash()[:4]` (import hoisted to module scope, since
+  the `tools/` path insert previously ran only inside `extract_elements()`); an
+  8-case parity table covers every transform step, guarded by a second test
+  asserting each case's normalized and un-normalized hashes actually differ;
+  `safe_load` → `safe_load_all` fixes a **latent `ComposerError`** on the three
+  multi-document `fullpath/golden_chain` YAML goldens, with a `fullpath/`
+  regression test closing the coverage gap that hid it; AS11's docstring now names
+  the transform (re-vendored ×2).
+- *Premise correction:* the entry's original "expect fixture-golden churn" claim
+  was **false** — `write_registry()` has zero callers, `ID_REGISTRY.yaml` is `{}`
+  at 3 bytes, and no golden carried an ID this code minted. Verified at ship:
+  `git diff --stat tests/acceptance/fixtures/` empty.
+- *Deferred:* the string-`section_id` half → `IDCOORD-NUMERIC-SECTION-ID` (Open).
+  The keep-or-delete question from `PLUGIN-TEST-SUITE-REVIEW.md:32` **F2** was put
+  to the founder before the work started; answer: **keep + fix**.
 
 ### `[skill]` `IDGEN-NO-GENERATOR` — ✅ CLOSED (2026-07-26) — 19 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
 
