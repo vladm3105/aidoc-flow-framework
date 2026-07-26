@@ -36,6 +36,37 @@ No spec or platform change (no `VERSION` bump). Tooling only.
   fail the gate, so validate findings with `git log -p` / `git grep` and record
   justified suppressions in `.gitleaks.toml`.
 - `plans/FRAMEWORK-TODO.md` — `GITLEAKS-PRECOMMIT-GO-FLOOR` moved to **Closed**.
+### Changed — `.github/ai-review/config.json` brought to schema v2 (#341) (2026-07-26)
+
+No spec or platform change (no `VERSION` bump). CI configuration only; the file
+is inert today and this PR does not change any check's behaviour.
+
+- **`version: 1` → `version: 2`, `$schema` → canon's
+  `ai-review-config-v2.schema.json`** (pinned at `ci/v2.14.0`, matching this
+  repo's caller pins, rather than the previously-declared
+  `aidoc-flow.io/schemas/ai-review-config-v1.json`).
+- **Why it mattered.** The file's own comment claimed it *"becomes authoritative
+  if `trust_config_repo` is ever pointed at this repo."* CI-0014 makes both the
+  `trust` and `ai-review` jobs assert `version == 2` **before reading any
+  field**, so a v1 file pointed at would hard-fail the required `ai-review`
+  check instead — leaving no passing path to merge. Bringing the file to v2
+  makes the documented fallback actually work.
+- **A second, previously-unreported violation is fixed in the same pass.** The
+  v2 schema declares `litellm` with `additionalProperties: false` and `model` as
+  its only property, so the long `_comment` that lived *inside* `litellm` was
+  invalid independently of the version key. Validating the old file against
+  canon's schema yields **two** errors, not one. The prose moved to the root
+  `_note` (which the schema permits) and now also records why it cannot sit
+  inside `litellm`.
+- **`auto_merge` gains a `_comment`** stating plainly that this repo is
+  deliberately omitted from the operations-side `auto_merge.repos` allowlist —
+  it is the spec/governance repo, human-merge always — and that the flags here
+  describe policy rather than opting anything in. The allowlist that governs
+  auto-merge is read from `trust_config_repo`, never from this file.
+- **Nothing changes today.** Every `trust_config_repo:` line in every caller is
+  commented out, so all jobs resolve the default
+  `vladm3105/aidoc-flow-operations`, whose config is already `version: 2`.
+  Validated with `jsonschema` against canon's schema at `ci/v2.14.0`.
 
 ### Added — `AGENTS.md` + the `GOV-TODO-ISSUE-SPLIT` filing rule (2026-07-26)
 

@@ -1,8 +1,8 @@
 {
-  "$schema": "https://aidoc-flow.io/schemas/ai-review-config-v1.json",
-  "version": 1,
+  "$schema": "https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/ci/v2.14.0/schemas/ai-review-config-v2.schema.json",
+  "version": 2,
+  "_note": "NOT load-bearing for model resolution on this repo. The ci/v2.x ai-review reusable resolves the alias from the config it FETCHES from trust_config_repo (vladm3105/aidoc-flow-operations@main), not from this file — see canon ai-review.yml 'Resolve LiteLLM model'. Operations already sets model 'ai-reviewer'. This file is kept because it documents the expected policy at the point a reader looks for it, and because it becomes authoritative if trust_config_repo is ever pointed at this repo. It is declared at schema v2 so that path actually works: canon asserts version == 2 before reading any field (CI-0014), so a v1 file pointed at would hard-fail the required ai-review check rather than become authoritative. This _note sits at the root, not inside litellm, because the v2 schema declares litellm additionalProperties:false. Declared per MIGRATION_v2.0.0.md §3.",
   "litellm": {
-    "_comment": "NOT load-bearing for model resolution on this repo. The ci/v2.x ai-review reusable resolves the alias from the config it FETCHES from trust_config_repo (vladm3105/aidoc-flow-operations@main), not from this file — see canon ai-review.yml 'Resolve LiteLLM model'. Operations already sets model 'ai-reviewer'. This entry is kept for two reasons: it documents the expected alias at the point a reader looks for it, and it becomes authoritative if trust_config_repo is ever pointed at this repo. Declared per MIGRATION_v2.0.0.md §3.",
     "model": "ai-reviewer"
   },
   "trust": {
@@ -19,6 +19,7 @@
     "carry_forward_on_skip_label": true
   },
   "auto_merge": {
+    "_comment": "This repo is DELIBERATELY OMITTED from the operations-side auto_merge.repos allowlist — it is the spec/governance repo (tier:spec, human-always; CLAUDE.md locked decision). The flags below state the policy this repo would declare if its config were ever authoritative; they do not opt it in, because the allowlist that governs auto-merge is read from trust_config_repo, not from here.",
     "enabled": true,
     "spec_paths_blocked": ["framework/", "spec/"]
   },
