@@ -24,6 +24,67 @@
 
 ## Open
 
+### `[skill]` `IDGEN-NO-GENERATOR` — 9 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
+
+- *Context:* founder review 2026-07-26. `compute_element_hash()`
+  (`tools/sdd_doc_lint/__init__.py:922`) is reachable only via
+  `rehash --check` — no `--fix`, no generator, none in Hermes. Yet the six
+  `doc-*-fixer` skills (`doc-brd-fixer/SKILL.md:239,245` + siblings),
+  `doc-naming/SKILL.md:106`, and Hermes `UCC_PROMPT_BRD.md:79` /
+  `UCC_PROMPT_PRD.md:65` all tell the engine to compute SHA-256 by hand. That
+  contradicts `PROVISIONAL-IDS-002-PLAN.md:112-114` ("LLMs can't compute SHA-256
+  reliably … the generator emits provisional ordinal IDs"). Observed: an agent
+  hit the instruction, found no callable, and wrote its own ad-hoc hash script.
+- *Fix shape:* correct the nine surfaces to emit provisional ordinal IDs +
+  `id_state: provisional` (available today, text-only), and expose the generator
+  side — `rehash --fix` (Phase 3) or a smaller `--compute` subcommand.
+  Cross-refs → `PROVISIONAL-IDS-002-PLAN.md`, D-0040.
+
+### `[template]` `IDHASH-NORM-TEMPLATE-DRIFT` — 4 layer templates + 3 READMEs publish the pre-normalization hash input → [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343)
+
+- *Context:* founder review 2026-07-26. D-0062 made the normalization transform
+  normative (`ID_NAMING_STANDARDS.md:81-99`) but propagated it to
+  `BRD-TEMPLATE.yaml:134-141` only. `PRD-TEMPLATE.yaml:106-109`,
+  `EARS-TEMPLATE.yaml:96-99`, `BDD-TEMPLATE.yaml:91-94`,
+  `ADR-TEMPLATE.yaml:101-104` and the BRD/PRD/EARS READMEs still print raw
+  `{title}:{description}` — so a generator following them computes a *different*
+  hash than the verifier. Undetected because `rehash --check` covers BRD §7 only,
+  i.e. the one layer already fixed.
+- *Fix shape:* delete the re-specified 3-step algorithm in each and cross-ref
+  `ID_NAMING_STANDARDS.md` per the BRD template's own instruction ("Do NOT
+  re-specify the normalization here"); same for `doc-tdd-fixer/SKILL.md:250`'s
+  divergent `SHA256(case content)`. Secondary: align `.xxxx` example IDs to the
+  declared `placeholder: "0000"`.
+
+### `[template]` `TDD-ELEMENT-ID-SPEC-GAP` — TDD layer documents no element-ID format or hash algorithm → [#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344)
+
+- *Context:* founder review 2026-07-26. `ID_NAMING_STANDARDS.md:162-164` mandates
+  element IDs for TDD, but `framework/layers/07_TDD/README.md` has no
+  `## Element IDs` section and `TDD-TEMPLATE.yaml` has no `element_id` block —
+  it uses `id: "TDD.NN.04.xxxx"` (lines 132/152/171/190) with no derivation, no
+  `hash_algorithm`, no `placeholder`. All five sibling mandated layers have both.
+  The only written TDD contract is a *platform* surface (`doc-tdd/SKILL.md:119`),
+  inverting spec-owns-the-contract.
+- *Fix shape:* add the `## Element IDs` README section + the `element_id`
+  template block, cross-referencing the standard rather than re-specifying it;
+  reconcile `doc-tdd-fixer/SKILL.md:250` to it.
+
+### `[governance]` `GOV-TODO-ISSUE-SPLIT` — framework-owned gaps are tracked only here; no rule opens a GitHub issue → [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
+
+- *Context:* founder question 2026-07-26. Governance mandates the TODO tier
+  (`DOC_GOVERNANCE_CORE.md:13` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md:55-74`)
+  and mandates GitHub issues **only for cross-repo** defects
+  (`CLAUDE.md:276-320`). Nothing routes an own-repo gap to the tracker: this file
+  is 1,376 lines / ~40 entries while the repo held 1 issue, despite 11 issue
+  templates + a full area-label taxonomy. `FRAMEWORK_FEEDBACK_LOG.md:100` already
+  assumes issues exist ("if a plan or issue already exists…") without saying when
+  one is created.
+- *Fix shape:* amend Tier 2 to define the split — TODO = triage queue (all
+  entries); issue = externally visible record for entries that are actionable by
+  a non-finder, reproducible at `file:line`, or consumer-blocking; bidirectional
+  link, closed on the same SHA. Spec surface → CHG / GATE-SPEC ratification +
+  `framework/VERSION` bump; #345 is the proposal, not a unilateral edit.
+
 ### `[example-corpus]` `SEED-ABSORPTION-001-T7` — 16 BDD scenarios are un-designed (SPEC-coverage gap), not merely un-tested
 
 - *Context:* SEED-ABSORPTION-001 T7 (2026-07-24). New `ACC01` fires on the same
