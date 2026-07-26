@@ -110,6 +110,14 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **GOV-TODO-ISSUE-SPLIT (2026-07-26, framework `0.39.0 → 0.40.0`, GD-10).** A
+  backlog file is a capture queue, not a publication channel. Tier 2 gains a
+  second surface: the queue is unchanged, and an entry that is actionable by a
+  non-finder, reproducible at `file:line` with a fix shape, or consumer-visible
+  also gets a tracker issue — carrying reproduction, blast radius, a suggested
+  fix and what is *not* broken, linked both ways and closed on the same SHA.
+  Purely local or speculative entries stay queue-only, so the tracker does not
+  become a second copy of the backlog.
 - **ELEMENT-ID-LAYER-CONTRACT-001 (2026-07-26, framework `0.38.0 → 0.39.0`,
   GD-09).** One element-ID hash contract with one source: the re-specified
   algorithm is **deleted** from four layer templates and three layer READMEs in

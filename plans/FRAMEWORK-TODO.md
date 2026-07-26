@@ -79,22 +79,6 @@
   finding **F2** already recorded the never-imported module + empty registry and
   was never actioned.
 
-### `[governance]` `GOV-TODO-ISSUE-SPLIT` — framework-owned gaps are tracked only here; no rule opens a GitHub issue → [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
-
-- *Context:* founder question 2026-07-26. Governance mandates the TODO tier
-  (`DOC_GOVERNANCE_CORE.md:13` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md:55-74`)
-  and mandates GitHub issues **only for cross-repo** defects
-  (`CLAUDE.md:276-320`). Nothing routes an own-repo gap to the tracker: this file
-  is 1,376 lines / ~40 entries while the repo held 1 issue, despite 11 issue
-  templates + a full area-label taxonomy. `FRAMEWORK_FEEDBACK_LOG.md:100` already
-  assumes issues exist ("if a plan or issue already exists…") without saying when
-  one is created.
-- *Fix shape:* amend Tier 2 to define the split — TODO = triage queue (all
-  entries); issue = externally visible record for entries that are actionable by
-  a non-finder, reproducible at `file:line`, or consumer-blocking; bidirectional
-  link, closed on the same SHA. Spec surface → CHG / GATE-SPEC ratification +
-  `framework/VERSION` bump; #345 is the proposal, not a unilateral edit.
-
 ### `[example-corpus]` `SEED-ABSORPTION-001-T7` — 16 BDD scenarios are un-designed (SPEC-coverage gap), not merely un-tested
 
 - *Context:* SEED-ABSORPTION-001 T7 (2026-07-24). New `ACC01` fires on the same
@@ -1098,6 +1082,29 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[governance]` `GOV-TODO-ISSUE-SPLIT` — ✅ CLOSED (2026-07-26) — framework-owned gaps are tracked only here; no rule opens a GitHub issue → [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
+
+- *Context:* founder question 2026-07-26. Governance mandates the TODO tier
+  (`DOC_GOVERNANCE_CORE.md:13` Principle 9 → `FRAMEWORK_FEEDBACK_LOG.md:55-74`)
+  and mandates GitHub issues **only for cross-repo** defects
+  (`CLAUDE.md:276-320`). Nothing routes an own-repo gap to the tracker: this file
+  is 1,376 lines / ~40 entries while the repo held 1 issue, despite 11 issue
+  templates + a full area-label taxonomy. `FRAMEWORK_FEEDBACK_LOG.md:100` already
+  assumes issues exist ("if a plan or issue already exists…") without saying when
+  one is created.
+- ✅ **Fixed in both halves.** Repo working rule landed first in `CLAUDE.md`
+  (PR #347, 2026-07-26). Spec half ratified as **GD-10**, framework
+  `0.39.0 → 0.40.0`: `DOC_GOVERNANCE_CORE.md` Principle 9 gains the
+  queue-vs-channel sentence, and `FRAMEWORK_FEEDBACK_LOG.md` gains
+  §"Tier 2 → the tracker" — the three-test bar (actionable by a non-finder /
+  reproducible at `file:line` with a fix shape / user-visible), the evidence an
+  issue must carry, one-issue-per-defect, link-both-ways + close-on-the-same-SHA,
+  and read-the-filed-artifact-back. Purely local or speculative entries stay
+  queue-only so the tracker does not become a second copy of the backlog.
+  Written host-agnostically ("the framework's tracker"), so a consumer on any
+  tracker can satisfy it. `CLAUDE.md`'s "spec counterpart is not yet ratified"
+  caveat was replaced in the same PR.
 
 ### `[template]` `IDPLACEHOLDER-UNDEFINED` — ✅ CLOSED (2026-07-26) — `placeholder: "0000"` matches no documented meaning and has no consumer → [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352)
 
