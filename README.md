@@ -289,8 +289,8 @@ versioned independently. Both pass the same shared conformance suite.
 
 | Platform | Engine | Version |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.11.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.23.4` (`platforms/claude-code-plugin/`) |
+| **Hermes AI** | MCP server | `hermes/v0.12.0` (`platforms/hermes/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.24.0` (`platforms/claude-code-plugin/`) |
 
 *Versions are the per-package `VERSION`-file values (namespaced as they would be
 tagged); the git tag itself may not be cut yet — see `docs/TAGGING.md`.*

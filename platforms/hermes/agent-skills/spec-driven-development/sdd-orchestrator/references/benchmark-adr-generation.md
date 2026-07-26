@@ -14,7 +14,7 @@ Upstream fixes MUST be complete before ADR generation begins. ADRs reference
 BRD, PRD, EARS, and BDD documents at hash-level precision — broken hashes
 propagate to all downstream layers.
 
-- [ ] Fix any BDD hash collisions (same hash used for different scenarios across documents — e.g., `58db` used for "Recovery from Data Source Failed" in BDD-04,07,08,09). Recompute with `hashlib.sha256(f"{doc_id}:{section_id}:{name}").hexdigest()[:4]`.
+- [ ] Fix any BDD hash collisions (same hash used for different scenarios across documents — e.g., `58db` used for "Recovery from Data Source Failed" in BDD-04,07,08,09). Resolve by assigning distinct stable identifiers, or extend both to 8 chars; never compute a hash in-prompt (governance/ID_NAMING_STANDARDS.md).
 - [ ] Fix PRD `xxxx` placeholder hashes in `@brd: BRD.NN.XX.xxxx` references. Read the actual BRD section, extract its hash, and replace. NOTE: `id_standard.placeholder: xxxx` in PRD metadata is INTENTIONAL template boilerplate — do NOT fix these.
 - [ ] Verify all BDD validation reports exist in `out/04_BDD/`.
 - [ ] Verify ADR template is current: run `sdd_init(project, update=true)`.

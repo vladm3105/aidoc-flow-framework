@@ -64,9 +64,10 @@ Correct pattern (what passed):
 ```python
 import yaml, hashlib, re, subprocess
 
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
 def make_id(doc_type, doc_num, section_num, desc):
-    inp = f"{doc_type}:{doc_num}:{section_num}:{desc}"[:200]
-    h = hashlib.sha256(inp.encode()).hexdigest()[:4]
+    h = compute_element_hash(f"{doc_num:02d}", f"{section_num:02d}", desc, "")[:4]
     return f"{doc_type}.{doc_num:02d}.{section_num:02d}.{h}"
 
 # Decompose ALL BRD FRs into PRD capabilities

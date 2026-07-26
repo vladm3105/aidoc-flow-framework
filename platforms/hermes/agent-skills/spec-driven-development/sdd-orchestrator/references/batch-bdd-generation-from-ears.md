@@ -9,9 +9,11 @@ Generates BDD acceptance scenario documents from EARS formal requirements using 
 ```python
 import yaml, subprocess, hashlib, datetime
 
-def h(vals):
-    """4-char content-derived hash for element IDs."""
-    return hashlib.sha256(":".join(vals).encode()).hexdigest()[:4]
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
+def h(doc_id, section_id, title, desc=""):
+    """4-char content-derived hash — delegates to the canonical implementation."""
+    return compute_element_hash(doc_id, section_id, title, desc)[:4]
 
 def build_bdd(doc_num, ears_id, ears_dict, title_suffix, feature_desc, extra_scenarios=None):
     reqs = ears_dict.get("requirements", {})

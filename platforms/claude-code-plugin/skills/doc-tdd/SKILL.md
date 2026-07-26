@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -117,8 +117,8 @@ files are generated **before** implementation files.
 ### Element IDs and tags
 
 - Test-case element IDs: `TDD.{doc_id}.{section_id}.{hash}` (4-segment) — test
-  cases live in Section 4, so `TDD.NN.04.xxxx` (e.g. `TDD.01.04.a3c1`; `hash` =
-  first 4 hex of SHA256 of the case content, extend to 8 on collision).
+  cases live in Section 4, so `TDD.NN.04.xxxx` (e.g. `TDD.01.04.a3c1`).
+  Emit a **stable 4-hex-char identifier** per element, distinct within its section (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this prompt — the hash form is the canonicalization TARGET produced by a deterministic tool pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+ for TDD). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
 - TDD is Layer 7, so it carries the **required upstream tags** (per the
   necessary-upstream contract): `@ears @bdd @adr @spec`. EARS/BDD use dot
   element form; ADR and `@spec: SPEC-NN` are document-level dash form.

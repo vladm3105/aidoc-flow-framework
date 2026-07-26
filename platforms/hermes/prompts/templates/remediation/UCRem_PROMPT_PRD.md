@@ -196,7 +196,11 @@ fix_action:
 PRD elements use hash-based IDs: `PRD.{doc_id}.{section_id}.{hash}`
 
 - Section IDs match the 15-section PRD-TEMPLATE.yaml structure
-- Hash: SHA256 of content, first 4 hex chars
+- Hash: assign a **stable 4-hex-char identifier**, distinct within its section
+  (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this
+  prompt — the hash form is the canonicalization TARGET produced by a
+  deterministic tool pass, and byte-exact field extraction is defined for BRD
+  §7 only (Phase 2+ for PRD). Authority: `framework/governance/ID_NAMING_STANDARDS.md`
 - Example: `PRD.01.08.b3f2` (doc 01, section 8 user stories, hash b3f2)
 
 Common section IDs:

@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [PRD]
     downstream_artifacts: [BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -113,8 +113,7 @@ numbers in the tag).
 
 - Hierarchical element IDs: `EARS.{doc_id}.{section_id}.{hash}` (e.g.
   `EARS.01.03.c4d8`; Requirements = section `03`, Quality Attributes = section
-  `04`). `hash` = first 4 hex of `SHA256("{doc_id}:{section_id}:{title}:{description}")`,
-  extend to 8 on collision.
+  `04`). Emit a **stable 4-hex-char identifier** per element, distinct within its section (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this prompt — the hash form is the canonicalization TARGET produced by a deterministic tool pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+ for EARS). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
 - EARS is Layer 3, so it carries the required `@prd` upstream tag (per the
   necessary-upstream contract). One `@prd:` only in Document Control (extras go
   in per-requirement tags); no ranges. Upstream BRD lineage is reachable

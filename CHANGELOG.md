@@ -12,6 +12,52 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — no authoring surface computes SHA-256 in-prompt; the generator ships (#342) (2026-07-26)
+
+Plugin **`0.23.4 → 0.24.0`** (MINOR), Hermes **`0.11.1 → 0.12.0`** (MINOR).
+**No framework-spec change** — `framework/VERSION` stays `0.40.0` and this is not
+a GATE-SPEC change. Implements `plans/IDGEN-NO-GENERATOR-PLAN.md`; closes
+[#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342) and clause 2
+of [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343).
+
+- **The generator ships.** `python -m sdd_doc_lint.rehash --compute --doc-id NN
+  --section-id SS --title T --description D` prints the element-ID hash
+  (`--length 8` for the collision form), going through the single canonical
+  `compute_element_hash()`. Previously the framework had a correct implementation
+  exposed **only as a verifier**, so 25 authoring surfaces told an LLM to compute
+  SHA-256 by hand — unexecutable correctly, and against PROVISIONAL-IDS-002's own
+  ruling that hashes come from a tool pass "not from prompting". A founder-run
+  agent hit exactly that, found no callable, and wrote its own script.
+- **`--compute` rejects the `artifact_id` form.** The hash input uses the element
+  ID's own numeric segments (`BRD.01.07.a7f3` → `--doc-id 01 --section-id 07`),
+  which is what the verifier splits out. Passing `BRD-01` would silently produce a
+  hash `--check` can never match, so it is a usage error naming the right form —
+  the silent-wrong-answer failure class this command exists to remove.
+- **25 authoring surfaces rewritten**: 13 plugin skills, 5 Hermes prompts, 7
+  loaded Hermes references (plus 2 unreferenced ones). BRD surfaces **call the
+  tool**; PRD/EARS/BDD/ADR/TDD emit a **stable opaque 4-hex identifier**, distinct
+  within its section, with no `id_state: provisional` — canonicalization cannot run
+  for those layers yet, so a provisional mark could never be discharged and would
+  raise a permanent `PROV01`. No surface restates the algorithm; each
+  cross-references `governance/ID_NAMING_STANDARDS.md`.
+- **The census was wrong in both directions, and the guard is why we know.**
+  #342 counted 9, later corrected to 19; the true figure is **25 live surfaces**.
+  The 9 extra are Hermes `references/` documents shipping **runnable** ad-hoc hash
+  code, each with its own normalization variant, **none** matching the standard —
+  found only because the new conformance guard scanned the whole tree rather than
+  the one file the manual census checked.
+- **New guard**: `tests/conformance/platforms/test_no_inprompt_hashing.py`, the
+  platform-side counterpart to the framework-side lock. It asserts the *negative*
+  property only — that no surface instructs hashing — and says so, since it cannot
+  verify that what replaced the instruction is correct. Dated session records are
+  excluded **by name**, not by narrowing the glob, because rewriting one would
+  falsify history.
+- **`--fix` is deliberately NOT shipped**, deviating from the merged plan's Part B.
+  Measured on the example corpus: `--fix` would rewrite **all 4** of BRD-01's §7
+  FR IDs and break citations in **8 downstream files**. It is a corpus-wide
+  re-cascade, not a file-local operation, and shipping it without a citation-update
+  design would hand users a footgun. Recorded in the plan's implementation log.
+
 ### Added — Framework Spec `0.39.0 → 0.40.0` — a backlog file is a capture queue, not a publication channel (GD-10) (2026-07-26)
 
 MINOR (additive; GATE-SPEC change-level C2). Recorded as **GD-10** in

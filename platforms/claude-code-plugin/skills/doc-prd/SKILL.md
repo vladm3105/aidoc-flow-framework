@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -112,10 +112,8 @@ decision*. **Do not reference ADR numbers** — ADRs do not exist yet.
 ### Element IDs and tags
 
 - Hierarchical element IDs: `PRD.{doc_id}.{section_id}.{hash}` (e.g.
-  `PRD.01.09.b3f2`; `hash` = first 4 hex of SHA256 of
-  `"{doc_id}:{section_id}:{title}:{description}"` from PRD content, extend to 8
-  on collision). `SS` is the **section the element lives in** — no numeric
-  type-codes.
+  `PRD.01.09.b3f2`). Emit a **stable 4-hex-char identifier** per element, distinct within its section (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this prompt — the hash form is the canonicalization TARGET produced by a deterministic tool pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+ for PRD). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
+  `SS` is the **section the element lives in** — no numeric type-codes.
 - PRD is Layer 2, so it carries **`@brd:`** tags (e.g.
   `@brd: BRD.01.07.a7f3`). Downstream artifacts tag it: `@prd: PRD.01.09.b3f2`.
 - **Removed patterns** (do not use): `FR-XXX`, `US-XXX`, `AC-XXX`, `F-XXX`, and

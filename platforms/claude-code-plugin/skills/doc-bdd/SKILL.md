@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS]
     downstream_artifacts: [ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -118,9 +118,8 @@ A `parameterized` scenario adds `outline: true` + `examples: {headers, rows}`.
 ### Element IDs and upstream trace
 
 - Hierarchical element IDs: `BDD.{doc_id}.{section_id}.{hash}` (e.g.
-  `BDD.01.03.d7a2`; `hash` = first 4 hex of SHA256 of
-  `"{doc_id}:{section_id}:{title}:{description}"` from BDD content, extend to 8
-  on collision). Scenarios live in section `03`, in each scenario's `id:` field.
+  `BDD.01.03.d7a2`). Emit a **stable 4-hex-char identifier** per element, distinct within its section (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this prompt — the hash form is the canonicalization TARGET produced by a deterministic tool pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+ for BDD). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
+  Scenarios live in section `03`, in each scenario's `id:` field.
 - BDD's required upstream trace is each scenario's element-level `ears:` list
   (per the necessary-upstream contract — satisfies `required_tags: [ears]`).
   Downstream artifacts cite BDD scenarios with `@bdd: BDD.01.03.8f4c` tags

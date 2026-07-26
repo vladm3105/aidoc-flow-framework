@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | IDGEN-NO-GENERATOR                                           |
 | Type           | tooling + platform surfaces                                  |
-| Status         | PLANNED — 2026-07-26                                         |
+| Status         | IMPLEMENTED — 2026-07-26 (see `## Implementation log`)        |
 | Depends on     | D-0040, D-0061, D-0062, **D-0067 / GD-09** (the spec-side single-source fix must land first) |
 | Closes         | [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342); clause 2 of [#343](https://github.com/vladm3105/aidoc-flow-framework/issues/343) |
 | Version impact | **plugin MINOR**, **Hermes MINOR**, **no `framework/` change** and no spec bump — see D5 |
@@ -262,6 +262,57 @@ contract for the first time, so there is now something to reconcile that surface
 `plans/DECISIONS.md` · `plans/FRAMEWORK-TODO.md` (`IDGEN-NO-GENERATOR` → Closed) ·
 `plans/HANDOFF.md` · `ROADMAP.md`. **No** `framework/` docs — unless D4 changes
 that.
+
+## Implementation log
+
+### 2026-07-26 — implemented, with three recorded deviations
+
+Parts A, C, D and E shipped. Plugin `0.23.4 → 0.24.0`, Hermes `0.11.1 → 0.12.0`,
+**no `framework/` change** (`git diff --stat framework/` empty), so not GATE-SPEC.
+
+**Deviation 1 — D4's blocker was not real, and step 1 was resolved by inspection
+rather than escalation.** D4 claimed the `state: canonical` / `id_state:
+provisional` tension "may need a spec change after all". Verified against source:
+`id_standard.state` is template metadata with **no code consumer**, `id_state` is
+produced-document frontmatter, and the linter states the relationship itself —
+*"the template `id_standard.state` documents the convention"*
+(`tools/sdd_doc_lint/__init__.py:558`). No enforceable conflict. What remained was
+a smaller product question, put to the founder and answered: **stable opaque IDs,
+no `id_state`** — because canonicalization cannot run for those five layers, so a
+provisional mark could never be discharged and would raise a permanent,
+un-clearable `PROV01` on every artifact. Recorded as **D-0068**.
+
+**Deviation 2 — the census was 25, not 19.** Both #342's count and this plan's
+D6 "re-derived by live grep" checked `references/brd-validation-automation.md`
+only, not the `references/` tree. Part E's guard, run before any edit, enumerated
+the real set: 13 plugin skills + 5 Hermes prompts + **9** Hermes reference
+documents (7 of them loaded by `sdd-orchestrator/SKILL.md`). The nine ship
+*runnable* ad-hoc hash code with per-file normalization variants, none matching
+the standard. All live surfaces were fixed rather than capped at the planned 19.
+A dated session record was **excluded by name** — rewriting it would falsify
+history — with the exemption visible in the test rather than hidden in a glob.
+
+**Deviation 3 — Part B (`--fix`) is NOT shipped.** Measured before building:
+`--fix` over the example corpus would rewrite **all 4** of BRD-01's §7 FR IDs and
+break citations in **8 downstream files**, because an LLM-authored ID essentially
+never equals its content hash. That makes it a corpus-wide re-cascade rather than
+the file-local operation the plan assumed, and the plan had no citation-update
+design. `--compute` alone closes the issue's actual complaint ("no callable
+generator exists"). `--fix` returns with PROVISIONAL-IDS-002 Phase 2/3, where the
+re-cascade belongs.
+
+**One correction to the plan's own text:** D1's example wrote
+`--doc-id BRD-01`. That is wrong — the hash input uses the element ID's numeric
+segments (`BRD.01.07.a7f3` → `--doc-id 01 --section-id 07`), which is what
+`rehash_check` splits out before hashing. `--compute` now **rejects** the
+`artifact_id` form with a message naming the right one, and a test asserts it.
+
+**Verification.** Conformance **252 passed / 688 subtests** (was 243/670; +9 from
+the new guard and the `--compute` cases); Hermes **570 passed**; example-corpus
+lint **unchanged** at its pinned baseline (16 COV02 / 16 ACC01 / 6 STY02 /
+5 REFGRAN01 / 1 TH-RES-001); `git diff --stat framework/` empty; the three
+vendored `sdd_doc_lint` copies re-verified byte-identical after `rehash.py`
+changed (the vendoring guard caught the omission first).
 
 ## Review log
 

@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
@@ -121,8 +121,7 @@ BRD §8 = *what & why & how much*; PRD = *how to evaluate*; ADR = *the decision*
 
 ### Element IDs and tags
 
-- Element IDs: `BRD.{doc_id}.{section_id}.{hash}` — hash = first 4 hex of
-  SHA256(`{doc_id}:{section_id}:{title}:{description}`), extend to 8 on collision.
+- Element IDs: `BRD.{doc_id}.{section_id}.{hash}`. Do **not** compute the hash in this prompt — call the generator: `python -m sdd_doc_lint.rehash --compute --doc-id NN --section-id SS --title T --description D` (`--length 8` on collision). Authority: `framework/governance/ID_NAMING_STANDARDS.md`; never restate the algorithm here.
 - Layer 1 carries **no `@` upstream tags**; downstream tags it (`@brd: BRD.01.06.a7f3`).
 - **Removed patterns**: `AC-XXX`, `FR-XXX`, `BO-XXX`, `BC-XXX`, legacy 3-segment `BRD.NN.xxxx`.
 

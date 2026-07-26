@@ -75,8 +75,10 @@ Assign IDs to all requirements using the canonical 4-segment format
 BRD.{doc_num}.{section_id}.{hash}
 ```
 
-Where `section_id` is the two-digit section the element lives in and `hash` is
-the first 4 hex of SHA256. Requirement types map to their sections:
+Where `section_id` is the two-digit section the element lives in. Do **not**
+compute the `hash` in this prompt — call the generator: `python -m sdd_doc_lint.rehash --compute --doc-id NN --section-id SS --title T --description D`
+(`--length 8` on collision). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
+Requirement types map to their sections:
 
 - Functional requirement → section 04 (Business Requirements)
 - Non-functional requirement → section 04

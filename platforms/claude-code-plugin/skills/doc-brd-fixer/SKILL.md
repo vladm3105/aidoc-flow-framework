@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -242,10 +242,11 @@ Run in order; later phases assume the earlier ones succeeded.
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`/`upstream_mode`; when `upstream_mode: "ref"`, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler (`in order to` → `to`; drop `the fact that`, `it should be noted`, `please note`, `as a matter of fact`); replace flagged superlatives (`amazing`, `seamless`, `cutting-edge`, `state-of-the-art`); collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control ↔ revision-history rows (mirror frontmatter as the source of truth); STY02/03 — auto-split sections > 300 words at the first natural subheading, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
-**Element ID re-derivation:** `key = "{doc_id}:{section_id}:{title}:{description}"`;
-ID = `BRD.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on
-collision). Document-level refs (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) stay in dash
-form.
+**Element ID re-derivation:** `BRD.{doc_id}.{section_id}.{hash}`. Do **not**
+compute SHA-256 here — call the generator: `python -m sdd_doc_lint.rehash --compute --doc-id NN --section-id SS --title T --description D`
+(`--length 8` on collision). Preserve an existing ID unless it is malformed —
+re-deriving a valid ID breaks every downstream citation. Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
+Document-level refs (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) stay in dash form.
 
 **Tiered upstream drift** (only when `upstream_mode: "ref"`): <5% change →
 Tier 1 auto-merge (patch bump); 5–15% → Tier 2 auto-merge + detailed changelog

@@ -14,6 +14,35 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.24.0] — no skill computes SHA-256 in-prompt; the generator ships (#342) (2026-07-26)
+
+MINOR. All 13 `doc-*` authoring/fixing skills changed their element-ID
+instructions, which changes what the engine produces.
+
+- **13 skills no longer instruct in-prompt SHA-256.** `doc-{brd,prd,ears,bdd,adr,tdd}`,
+  their six `-fixer` siblings and `doc-naming` told the engine to take "the first
+  4 hex of SHA256(...)". No LLM does that reliably, and
+  `plans/PROVISIONAL-IDS-002-PLAN.md` had already ruled that real hashes come
+  from a deterministic tool pass "not from prompting" — so the instruction was
+  unexecutable *and* against the ratified position, while the emitted ID passed
+  `ELEM_FORM` regardless. Nothing failed; the wrong ID shipped.
+- **BRD skills call the generator.** `doc-brd`, `doc-brd-fixer` and `doc-naming`'s
+  migration path now invoke `python -m sdd_doc_lint.rehash --compute`. BRD §7 is
+  the one layer with a defined field-extraction boundary, so it is the one layer
+  where a generator has correct inputs to work from.
+- **The other five layers emit a stable opaque identifier.** PRD/EARS/BDD/ADR/TDD
+  skills instruct a stable 4-hex-char identifier, distinct within its section
+  (`HASH01`), extending to 8 on collision — and state that the hash form is the
+  canonicalization TARGET produced by a tool pass, with extraction defined for
+  BRD §7 only. **No `id_state: provisional`**: canonicalization cannot run for
+  these layers yet, so a provisional mark could never be discharged and would
+  raise a permanent, un-clearable `PROV01` on every artifact.
+- **Fixer skills gained a "preserve an existing valid ID" clause.** Re-deriving a
+  valid ID breaks every downstream citation; the skills previously said
+  "re-derive" unconditionally.
+- No skill restates the algorithm any more; each cross-references
+  `framework/governance/ID_NAMING_STANDARDS.md`.
+
 ## [0.23.4] — FRWK-REVIEW-002 PR-B: plugin mechanics (dead --threshold flag, CHG hook, save-plan config, changelog structure) (2026-07-09)
 
 Second FRWK-REVIEW-002 plugin batch (plan `plans/FRWK-REVIEW-002-PLAN.md`):
