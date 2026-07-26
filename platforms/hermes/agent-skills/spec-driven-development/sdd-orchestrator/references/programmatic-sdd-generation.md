@@ -14,10 +14,11 @@ Generate a BRD, PRD, or other SDD YAML document programmatically via `execute_co
 ```python
 import hashlib, yaml, subprocess, datetime, re
 
-def hash4(text):
-    """Produce 4-char hex hash for element IDs."""
-    clean = text.lower()[:100]
-    return hashlib.sha256(clean.encode()).hexdigest()[:4]
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
+def hash4(doc_id, section_id, title, desc=""):
+    """4-char element-ID hash — delegates to the canonical implementation."""
+    return compute_element_hash(doc_id, section_id, title, desc)[:4]
 
 def eid(section, title, desc=""):
     """Generate TYPE.NN.SS.xxxx element ID. Section can be int or string."""

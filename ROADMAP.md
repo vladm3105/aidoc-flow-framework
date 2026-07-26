@@ -110,6 +110,15 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **IDGEN-NO-GENERATOR (2026-07-26, plugin `0.24.0`, Hermes `0.12.0`).** The
+  element-ID generator ships (`rehash --compute`), and no authoring surface
+  computes SHA-256 in-prompt any more. 25 surfaces rewritten: BRD calls the tool;
+  the five layers without a defined extraction boundary emit a stable opaque
+  identifier. Nine of those surfaces — loaded Hermes references shipping runnable
+  ad-hoc hash code — were absent from the issue's census and were found by the new
+  guard. `--fix` deferred: it would break citations in 8 downstream files, so it
+  needs a re-cascade design first. See
+  [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
 - **GOV-TODO-ISSUE-SPLIT (2026-07-26, framework `0.39.0 → 0.40.0`, GD-10).** A
   backlog file is a capture queue, not a publication channel. Tier 2 gains a
   second surface: the queue is unchanged, and an entry that is actionable by a

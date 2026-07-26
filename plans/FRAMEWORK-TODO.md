@@ -24,49 +24,6 @@
 
 ## Open
 
-### `[skill]` `IDGEN-NO-GENERATOR` — 19 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
-
-- *Context:* founder review 2026-07-26. `compute_element_hash()`
-  (`tools/sdd_doc_lint/__init__.py:922`) is reachable only via
-  `rehash --check` — no `--fix`, no generator, none in Hermes. Yet the six
-  `doc-*-fixer` skills (`doc-brd-fixer/SKILL.md:239,245` + siblings),
-  `doc-naming/SKILL.md:106`, and Hermes `UCC_PROMPT_BRD.md:79` /
-  `UCC_PROMPT_PRD.md:65` all tell the engine to compute SHA-256 by hand. That
-  contradicts `PROVISIONAL-IDS-002-PLAN.md:112-114` ("LLMs can't compute SHA-256
-  reliably … the generator emits provisional ordinal IDs"). Observed: an agent
-  hit the instruction, found no callable, and wrote its own ad-hoc hash script.
-- *Count corrected 9 → 19* (2026-07-26, `ELEMENT-ID-LAYER-CONTRACT-001` census;
-  full enumeration in the issue comment). The original nine missed the six
-  `doc-*` **authoring** skills (`doc-brd/SKILL.md:125` + siblings — the creation
-  path, where most IDs are actually minted), three more Hermes prompts
-  (`UCC_PROMPT_EARS.md:74`, `UCRem_PROMPT_EARS.md:186`,
-  `UCRem_PROMPT_PRD.md:199`), and **`brd-validation-automation.md:179`** — a
-  *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code
-  with a **fourth** normalization variant that disagrees with
-  `ID_NAMING_STANDARDS.md:88-93` on five of six steps. That last one is the
-  highest-value item: it is what an agent finds instead of writing its own script.
-- *Fix shape:* correct the 19 surfaces to emit provisional ordinal IDs +
-  `id_state: provisional` (available today, text-only), and expose the generator
-  side — `rehash --fix` (Phase 3) or a smaller `--compute` subcommand.
-  `brd-validation-automation.md:179` is separable — deleting/correcting its code
-  block does not wait on the provisional-vs-canonical decision.
-  Cross-refs → `PROVISIONAL-IDS-002-PLAN.md`, D-0040,
-  `ELEMENT-ID-LAYER-CONTRACT-001-PLAN.md` D6.
-- *Planned:* `plans/IDGEN-NO-GENERATOR-PLAN.md` (2026-07-26, PR #360). The plan
-  **supersedes the fix shape above** on one point: "correct the 19 surfaces to
-  emit provisional ordinal IDs" is right for only five of the six layers. A
-  generator needs `title`/`description`, and `ID_NAMING_STANDARDS.md` defines
-  field extraction for **BRD §7 only** (GD-09 re-affirmed that inventing a
-  boundary for the others is a new normative contract). So BRD surfaces get
-  "call the tool"; PRD/EARS/BDD/ADR/TDD get provisional ordinals.
-- ⚠️ *Blocked on a founder decision (plan step 1):* the layer templates declare
-  `state: canonical`, so instructing five layers to emit `id_state: provisional`
-  contradicts their own default. GD-09 declined to change `state:` for TDD
-  *because* it would make TDD unique — at five layers that argument inverts. If
-  the answer is "change the template default", #342 becomes a **spec** plan
-  (GATE-SPEC + a `framework/VERSION` bump) and must be re-scoped. Resolve before
-  implementing.
-
 ### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — the acceptance harness re-implements the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
 
 - *Context:* found 2026-07-26 during `ELEMENT-ID-LAYER-CONTRACT-001` Pass 1.
@@ -1096,6 +1053,46 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[skill]` `IDGEN-NO-GENERATOR` — ✅ CLOSED (2026-07-26) — 19 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
+
+- *Context:* founder review 2026-07-26. `compute_element_hash()`
+  (`tools/sdd_doc_lint/__init__.py:922`) is reachable only via
+  `rehash --check` — no `--fix`, no generator, none in Hermes. Yet the six
+  `doc-*-fixer` skills (`doc-brd-fixer/SKILL.md:239,245` + siblings),
+  `doc-naming/SKILL.md:106`, and Hermes `UCC_PROMPT_BRD.md:79` /
+  `UCC_PROMPT_PRD.md:65` all tell the engine to compute SHA-256 by hand. That
+  contradicts `PROVISIONAL-IDS-002-PLAN.md:112-114` ("LLMs can't compute SHA-256
+  reliably … the generator emits provisional ordinal IDs"). Observed: an agent
+  hit the instruction, found no callable, and wrote its own ad-hoc hash script.
+- *Count corrected 9 → 19* (2026-07-26, `ELEMENT-ID-LAYER-CONTRACT-001` census;
+  full enumeration in the issue comment). The original nine missed the six
+  `doc-*` **authoring** skills (`doc-brd/SKILL.md:125` + siblings — the creation
+  path, where most IDs are actually minted), three more Hermes prompts
+  (`UCC_PROMPT_EARS.md:74`, `UCRem_PROMPT_EARS.md:186`,
+  `UCRem_PROMPT_PRD.md:199`), and **`brd-validation-automation.md:179`** — a
+  *loaded* reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code
+  with a **fourth** normalization variant that disagrees with
+  `ID_NAMING_STANDARDS.md:88-93` on five of six steps. That last one is the
+  highest-value item: it is what an agent finds instead of writing its own script.
+- ✅ **Fixed** (IDGEN-NO-GENERATOR, D-0068; plugin `0.24.0`, Hermes `0.12.0`; no
+  framework change): the generator ships as
+  `python -m sdd_doc_lint.rehash --compute` (rejecting the `artifact_id` form,
+  which would silently produce a hash `--check` can never match), and **25 live
+  authoring surfaces** were rewritten — BRD calls the tool; PRD/EARS/BDD/ADR/TDD
+  emit a stable opaque 4-hex identifier with **no** `id_state: provisional`
+  (canonicalization cannot run for those layers, so the mark could never be
+  discharged). Locked by
+  `tests/conformance/platforms/test_no_inprompt_hashing.py`.
+- 📌 *The count was 25, not 19.* Both this entry's census and the plan's
+  "re-derived by live grep" checked one Hermes `references/` file, not the tree.
+  The 9 extra were shipping **runnable** ad-hoc hash code, each with its own
+  normalization variant, none matching the standard — found only because the
+  guard scanned the whole class.
+- ↪ *`--fix` deferred to PROVISIONAL-IDS-002 Phase 2/3, on measurement:* it would
+  rewrite all 4 of BRD-01's §7 FR IDs and break citations in **8 downstream
+  files**, so it is a corpus-wide re-cascade needing a citation-update design,
+  not a file-local fix.
 
 ### `[governance]` `GOV-TODO-ISSUE-SPLIT` — ✅ CLOSED (2026-07-26) — framework-owned gaps are tracked only here; no rule opens a GitHub issue → [#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)
 

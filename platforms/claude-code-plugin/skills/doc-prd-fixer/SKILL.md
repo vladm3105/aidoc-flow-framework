@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD]
     downstream_artifacts: [EARS, BDD, ADR, SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles]
@@ -239,9 +239,13 @@ Run in order; later phases assume the earlier ones succeeded.
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; apply tiered BRD drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler (`in order to` → `to`; drop `the fact that`, `it should be noted`, `please note`); replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — auto-split sections > 300 words at the first natural subheading, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
-**Element ID re-derivation:** `key = "{doc_id}:{section_id}:{title}:{description}"`;
-ID = `PRD.{doc_id}.{section_id}.<first 4 hex of SHA256(key)>` (extend to 8 on
-collision). `section_id` = the section the element lives in. Document-level refs
+**Element ID re-derivation:** `PRD.{doc_id}.{section_id}.{hash}` — assign a
+**stable 4-hex-char identifier**, distinct within its section (`HASH01`), extending
+to 8 on collision. Do **not** compute SHA-256 here: the hash form is the
+canonicalization TARGET produced by a deterministic tool pass, and byte-exact
+field extraction is defined for BRD §7 only (Phase 2+ for PRD). Preserve an
+existing valid ID — re-deriving one breaks every downstream citation.
+Authority: `framework/governance/ID_NAMING_STANDARDS.md`. `section_id` = the section the element lives in. Document-level refs
 (`SPEC-NN`, `ADR-NN`, `IPLAN-NN`) stay in dash form.
 
 **Tiered upstream drift** (BRD source): <5% change → Tier 1 auto-merge (patch

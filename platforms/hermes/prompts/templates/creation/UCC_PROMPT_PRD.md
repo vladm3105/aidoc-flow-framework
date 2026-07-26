@@ -62,7 +62,11 @@ Where:
 
 - `NN` = PRD document number (e.g., 01)
 - `SS` = section number where the element lives (e.g., 09)
-- `xxxx` = 4-char content hash (first 4 hex of SHA256)
+- `xxxx` = a **stable 4-hex-char identifier**, distinct within its section
+  (`HASH01`); 8 on collision. Do **not** compute SHA-256 in this prompt — the
+  hash form is the canonicalization TARGET produced by a deterministic tool
+  pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+
+  for PRD). Authority: `framework/governance/ID_NAMING_STANDARDS.md`
 
 The `SS` segment is the element's section. Element types map to their sections:
 

@@ -16,10 +16,11 @@ comparison operators, and write in one shot.
 ```python
 import hashlib
 
-def hash4(text):
-    """4-char SHA256 hex from text — deterministic element ID suffix."""
-    clean = text.lower()[:100]
-    return hashlib.sha256(clean.encode()).hexdigest()[:4]
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
+def hash4(doc_id, section_id, title, desc=""):
+    """4-char element-ID hash — delegates to the canonical implementation."""
+    return compute_element_hash(doc_id, section_id, title, desc)[:4]
 
 def eid(section, title, desc=""):
     """Generate BRD.NN.SS.xxxx element ID. Section can be int or string."""
@@ -168,17 +169,19 @@ for brd_id, filename in [("BRD-01", "BRD-01.yaml"), ...]:
 
 ## Phase 2: Element ID Assignment
 
-Generate deterministic SHA256 4-char hashes from content, assign to elements
+Generate element-ID hashes via the canonical generator, assign to elements
 across all sections, rewrite YAML, and post-process to quote comparison operators.
 
 ```python
 import yaml, hashlib, re, subprocess
 
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
 def generate_hash(doc_id, section_id, title, description=""):
-    """Deterministic 4-char SHA256 hash for element ID"""
-    inp = f"{doc_id}:{section_id}:{title}:{description}"
-    inp = re.sub(r'[^a-z0-9:]', '', inp.lower())[:200]
-    return hashlib.sha256(inp.encode()).hexdigest()[:4]
+    """4-char element-ID hash. Delegates — do NOT re-implement the normalization:
+    this function previously stripped spaces, used lower() not casefold(), skipped
+    NFC and truncated at 200, so it disagreed with the verifier on five of six steps."""
+    return compute_element_hash(doc_id, section_id, title, description)[:4]
 
 # Load document
 doc = yaml.safe_load(r.stdout)
@@ -243,7 +246,7 @@ assert doc["metadata"]["validation"]["server"] == "ucx_hermes"
 
 - **Do NOT use `read_file()` inside execute_code** — returns line-numbered output (`1|content`). Use `subprocess.run(["cat", path])` instead.
 - **Programmatic parsing ≠ UCX validation.** `yaml.safe_load()` checks syntax and key presence, but `sdd_validate` (via `mcp_sdd_lifecycle_sdd_validate`) enforces cross-section rules, phase consistency, C4 compliance, and metadata limits. Documents must be tagged **PARSED (pending sdd_validate)** until UCX confirms zero errors.
-- **Check for hash collisions** — SHA256 4-char prefix has ~1/65K collision rate. Scan for duplicates before writing.
+- **Check for hash collisions** — the 4-char prefix has ~1/65K collision rate; extend BOTH colliding IDs to 8 chars (`--length 8`). Scan for duplicates before writing.
 - **`yaml.dump()` width** — set `width=200` to avoid auto-line-wrapping long values (which breaks quoted comparison operators).
 - **Keep existing IDs** — if an element already has a real hash (not `xxxx`), do NOT overwrite it. Preserve stability.
 - **`cwd` alone does NOT set `PYTHONPATH`** for stdio MCP servers. If the server imports sibling modules, add `env: {PYTHONPATH: "/path/to/src"}` to the Hermes `mcp_servers` config.

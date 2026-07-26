@@ -1,5 +1,55 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (issue sweep, cont.) — #342 IMPLEMENTED.** Plugin
+> `0.23.4 → 0.24.0`, Hermes `0.11.1 → 0.12.0`, **no framework change**
+> (`framework/VERSION` stays `0.40.0`; not GATE-SPEC).
+>
+> **The generator ships.** `python -m sdd_doc_lint.rehash --compute --doc-id NN
+> --section-id SS --title T --description D`. It **rejects the `artifact_id`
+> form** (`BRD-01`) — the hash input uses the element ID's numeric segments
+> (`BRD.01.07.a7f3` → `01`/`07`), which is what `rehash_check` splits out;
+> accepting `BRD-01` would silently mint a hash `--check` can never match. The
+> merged plan's own example had this wrong.
+>
+> **Three things a next session must not re-derive:**
+>
+> 1. **The "founder decision" blocker on #342 was never real.**
+>    `id_standard.state` is template metadata with **no code consumer**;
+>    `id_state` is produced-doc frontmatter. The linter says so at
+>    `tools/sdd_doc_lint/__init__.py:558`. The plan escalated an unverified
+>    tension and would have stalled indefinitely. **Verify a blocker against
+>    source before escalating it** (D-0068).
+> 2. **The census was 25, not 19.** #342 said 9 → 19; a live grep still said 19;
+>    the truth is 25, because both passes checked one Hermes `references/` file
+>    instead of the tree. The 9 extra ship **runnable** ad-hoc hash code with
+>    per-file normalization variants, none matching the standard. Found only
+>    because the new guard scanned the whole class. **Write the scan first when
+>    the defect is "every place that says X."**
+> 3. **`--fix` is deliberately not shipped.** Measured: it would rewrite all 4 of
+>    BRD-01's §7 FR IDs and break citations in **8 downstream files** — a
+>    corpus-wide re-cascade, not a file-local fix. It returns with
+>    PROVISIONAL-IDS-002 Phase 2/3, which is where the re-cascade design belongs.
+>
+> **Founder decision applied:** the five layers without a defined extraction
+> boundary emit a **stable opaque 4-hex identifier**, NOT `id_state: provisional`
+> — canonicalization cannot run for them, so a provisional mark could never be
+> discharged and would raise a permanent `PROV01` on every artifact.
+>
+> **One issue left open: [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)**
+> (plan merged, impl deferred by founder choice). Its filed premise is false —
+> **zero golden churn** — so it is cheaper than it looks. Its plan's step 1 is a
+> keep-or-delete question: `_id_coordinator.py` has no product consumer and
+> `PLUGIN-TEST-SUITE-REVIEW.md:32` F2 already proposed removing it, which would
+> close #351 outright.
+>
+> **New guard:** `tests/conformance/platforms/test_no_inprompt_hashing.py`. It
+> locks the *negative* property only — no surface instructs hashing — and says so;
+> it cannot verify the replacement text is right. Dated session records are
+> excluded **by name**, not by narrowing the glob, because rewriting one would
+> falsify history.
+>
+> ---
+>
 > **✅ SESSION 2026-07-26 (issue sweep) — ELEMENT-ID-LAYER-CONTRACT-001
 > IMPLEMENTED; framework `0.38.0 → 0.39.0`; 8 open issues triaged, 4 closed.**
 >

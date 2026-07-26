@@ -10,6 +10,44 @@ graduation.
 
 ---
 
+## D-0068 — A blocker is only a blocker once verified; and a negative-property guard finds the surfaces a manual census misses
+
+**2026-07-26.** Three decisions from executing IDGEN-NO-GENERATOR
+(`plans/IDGEN-NO-GENERATOR-PLAN.md`, #342).
+
+- **The plan's own "founder decision required" blocker dissolved on inspection.**
+  D4 claimed that instructing five layers to emit `id_state: provisional` would
+  contradict the templates' `state: canonical` and "may need a spec change after
+  all". It does not: `id_standard.state` is **template metadata with no code
+  consumer**, while `id_state` is **produced-document frontmatter**, and the
+  linter says so itself — *"the template `id_standard.state` documents the
+  convention"* (`tools/sdd_doc_lint/__init__.py:558`). Different fields, different
+  layers, no enforceable conflict. **Rule: verify a blocker against source before
+  escalating it.** An unverified blocker in a merged plan stalls the work
+  indefinitely on a decision nobody actually needs to make — the cost is the same
+  as a wrong fix, and harder to notice.
+
+- **A negative-property guard beats a manual census.** #342 counted 9 surfaces,
+  corrected to 19; a live grep in this session still said 19; the real figure is
+  **25**, because both passes checked one Hermes `references/` file instead of the
+  tree. The nine extra were shipping *runnable* ad-hoc hash code with per-file
+  normalization variants, none matching the standard. They were found the moment a
+  conformance test scanned the whole surface class. **Rule: when a defect class is
+  "every place that says X", write the scan first and let it enumerate — a
+  hand-built census of a class is a sample, and it will be reported as a total.**
+
+- **`--fix` was cut on measured blast radius, not on principle.** The merged plan
+  scoped it in. Measured first: on the example corpus `--fix` would rewrite **all
+  4** of BRD-01's §7 FR IDs and break citations in **8 downstream files**, because
+  an LLM-authored ID essentially never equals its content hash. That makes it a
+  corpus-wide re-cascade, not a file-local fix, and shipping it without a
+  citation-update design would be a footgun. `--compute` alone fully closes the
+  issue's actual complaint ("no callable generator exists"). **Rule: when a plan
+  scopes in an operation over shared state, measure its blast radius before
+  building it, not after.**
+
+---
+
 ## D-0067 — Deleting a re-specification beats correcting it; and a merged plan's honest deferral is still overridable by the founder
 
 **2026-07-26.** Three decisions from executing ELEMENT-ID-LAYER-CONTRACT-001

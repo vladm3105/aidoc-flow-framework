@@ -234,5 +234,116 @@ class CLI(unittest.TestCase):
         self.assertEqual(rh.main(["--check", "/nonexistent/path/BRD-99.md"]), 2)
 
 
+class ComputeGenerator(unittest.TestCase):
+    """`--compute` — the generator side (#342).
+
+    The point of the subcommand is that an authoring surface CALLS it instead of
+    being told to compute SHA-256 in-prompt. So the load-bearing property is
+    parity with the canonical implementation the verifier uses: if `--compute`
+    and `rehash --check` ever disagree, the generator is worse than useless —
+    it mints IDs its own verifier rejects.
+    """
+
+    def _compute(self, *argv):
+        """Run `--compute`, returning (exit_code, stdout).
+
+        `argparse.error()` raises SystemExit rather than returning, so a usage
+        error surfaces as the exception — caught here and reported as its exit
+        code, which is what a shell caller observes.
+        """
+        import contextlib
+        import io
+
+        from sdd_doc_lint import rehash as rh
+
+        buf, err = io.StringIO(), io.StringIO()
+        try:
+            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(err):
+                rc = rh.main(["--compute", *argv])
+        except SystemExit as exc:  # argparse usage error
+            return int(exc.code or 0), buf.getvalue().strip()
+        return rc, buf.getvalue().strip()
+
+    def test_compute_matches_the_canonical_implementation(self):
+        """Parity across every step of the normalization transform."""
+        from sdd_doc_lint import compute_element_hash
+
+        cases = [
+            ("01", "07", "User Login (P1)", "Users authenticate"),  # case + punctuation
+            ("01", "07", "café", "accents NFC leaves composed"),  # NFC + strip
+            ("01", "07", "  spaced   out  ", "collapse   and   trim"),  # collapse/trim
+            ("02", "09", "x" * 250, "y" * 250),  # >100-char truncation
+            ("01", "07", "ALL CAPS TITLE", ""),  # empty description
+        ]
+        for doc_id, section_id, title, desc in cases:
+            with self.subTest(title=title[:24]):
+                rc, out = self._compute(
+                    "--doc-id",
+                    doc_id,
+                    "--section-id",
+                    section_id,
+                    "--title",
+                    title,
+                    "--description",
+                    desc,
+                )
+                self.assertEqual(rc, 0)
+                self.assertEqual(out, compute_element_hash(doc_id, section_id, title, desc)[:4])
+
+    def test_compute_length_eight_is_the_collision_form(self):
+        from sdd_doc_lint import compute_element_hash
+
+        rc, out = self._compute(
+            "--doc-id",
+            "01",
+            "--section-id",
+            "07",
+            "--title",
+            "T",
+            "--description",
+            "D",
+            "--length",
+            "8",
+        )
+        self.assertEqual(rc, 0)
+        self.assertEqual(len(out), 8)
+        self.assertEqual(out, compute_element_hash("01", "07", "T", "D")[:8])
+
+    def test_compute_rejects_the_artifact_id_form(self):
+        """`--doc-id BRD-01` would silently produce a hash the verifier can never match.
+
+        The hash input uses the element ID's OWN numeric segments
+        (ID_NAMING_STANDARDS "Hash algorithm"; rehash_check splits exactly those
+        out). Accepting the artifact_id would reintroduce the silent-wrong-answer
+        failure this command exists to remove, so it must be a usage error.
+        """
+        for bad in ("BRD-01", "BRD.01", "brd01", "", "7"):
+            with self.subTest(doc_id=bad):
+                rc, _ = self._compute("--doc-id", bad, "--section-id", "07", "--title", "T")
+                self.assertEqual(rc, 2)
+
+    def test_compute_requires_its_inputs_and_takes_no_paths(self):
+        rc, _ = self._compute("--doc-id", "01", "--section-id", "07")  # no --title
+        self.assertEqual(rc, 2)
+        rc, _ = self._compute(
+            "--doc-id", "01", "--section-id", "07", "--title", "T", "some/path.md"
+        )
+        self.assertEqual(rc, 2)
+
+    def test_compute_and_check_are_mutually_exclusive(self):
+        from sdd_doc_lint import rehash as rh
+
+        with self.assertRaises(SystemExit) as ctx:
+            rh.main(["--check", "--compute"])
+        self.assertEqual(ctx.exception.code, 2)
+
+    def test_bare_invocation_names_both_modes(self):
+        from sdd_doc_lint import rehash as rh
+
+        with self.assertRaises(SystemExit) as ctx:
+            rh.main([])
+        self.assertEqual(ctx.exception.code, 2)
+
+
 if __name__ == "__main__":
     unittest.main()

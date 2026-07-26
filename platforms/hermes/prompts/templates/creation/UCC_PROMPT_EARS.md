@@ -71,7 +71,11 @@ While {state}, when {event}, the {system} shall {action}.
 EARS elements use hash-based IDs: `EARS.{doc_id}.{section_id}.{hash}`
 
 - Section IDs match the EARS-TEMPLATE.yaml section structure
-- Hash: SHA256 of content, first 4 hex chars (extend to 8 on collision)
+- Hash: assign a **stable 4-hex-char identifier**, distinct within its section
+  (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this
+  prompt — the hash form is the canonicalization TARGET produced by a
+  deterministic tool pass, and byte-exact field extraction is defined for BRD
+  §7 only (Phase 2+ for EARS). Authority: `framework/governance/ID_NAMING_STANDARDS.md`
 - Example: `EARS.01.03.7b21` (doc 01, section 03 = Requirements, hash 7b21)
 
 Common section IDs:

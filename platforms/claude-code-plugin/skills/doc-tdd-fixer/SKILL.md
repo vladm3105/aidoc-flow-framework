@@ -12,7 +12,7 @@ metadata:
     skill_category: quality-assurance
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
@@ -247,8 +247,14 @@ Run in order; later phases assume the earlier ones succeeded.
 | 6 — Upstream | metadata + drift | fix `deliverable_type`/`document_type`; when the parent SPEC has changed, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized Test Case sections at type/category boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
-**Element ID re-derivation:** `ID = TDD.{doc_id}.04.<first 4 hex of
-SHA256(case content)>` (extend to 8 on collision). Test type stays a `type`
+**Element ID re-derivation:** `ID = TDD.{doc_id}.04.{hash}` — assign a **stable
+4-hex-char identifier**, distinct within Section 4 (`HASH01`), extending to 8 on
+collision. Do **not** compute SHA-256 here: the hash form is the canonicalization
+TARGET produced by a deterministic tool pass, and byte-exact field extraction is
+defined for BRD §7 only — a TDD case declares `name`/`spec_ref`/`target`/
+`test_file`/`test_function` and carries no `title`/`description`, so no field
+mapping exists to hash (Phase 2+). Preserve an existing valid ID — re-deriving one
+breaks every downstream citation. Authority: `framework/governance/ID_NAMING_STANDARDS.md`. Test type stays a `type`
 attribute, never an ID code. Document-level refs (`SPEC-NN`, `ADR-NN`,
 `IPLAN-NN`) stay in dash form.
 

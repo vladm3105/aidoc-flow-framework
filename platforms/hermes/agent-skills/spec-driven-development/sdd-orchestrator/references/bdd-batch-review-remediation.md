@@ -158,7 +158,7 @@ Each subagent receives:
 3. FIX LIST (structured, not prose): priority, cross_links, add_success (list of scenario descriptions), add_error, add_recovery (bool), add_audit (bool), rewrite_gherkin (bool), add_timing (bool), fix_spec_trace (bool), health_score, notes
 4. RULES:
    - Overwrite original file; do NOT create new path
-   - Scenario IDs: BDD.NN.SS.xxxx where xxxx = first 4 chars of SHA256("BDD.NN:{section}:{name}")
+   - Scenario IDs: BDD.NN.SS.xxxx where xxxx is a stable 4-hex identifier, distinct within its section; do NOT compute it in-prompt (see governance/ID_NAMING_STANDARDS.md)
    - Keep exact YAML structure under scenario_structure.scenarios.{success,error,recovery,audit}
    - After writing, verify yaml.safe_load() and report scenario count breakdown
    - Return absolute file path and final scenario count
@@ -266,7 +266,7 @@ rationale per finding.
 
 1. **read_file inside execute_code**: Use `subprocess.run(["cat", path])` for clean YAML.
 2. **Subagent timeout on large BDDs**: `delegate_task` with >800 line documents times out. Review via file-read + findings generation is more reliable.
-3. **Placeholder hashes in element IDs**: BDD generation from EARS may produce `xxxx` placeholder hashes. Fix by recomputing SHA256 of "{doc_id}:{section_id}:{label}".
+3. **Placeholder hashes in element IDs**: BDD generation from EARS may produce `xxxx` placeholder hashes. Fix by assigning a stable 4-hex identifier distinct within the section — never by computing a hash in-prompt (governance/ID_NAMING_STANDARDS.md).
 4. **BDD YAML schema traversal — scenarios are NOT a flat list**: BDD v3.2 nests scenarios under `scenario_structure.scenarios.{success,error,recovery,edge,performance,security}`. Accessing `doc.get("scenarios", [])` returns `[]` every time. Correct traversal:
 
    ```python

@@ -9,7 +9,7 @@ metadata:
     skill_category: utility
     upstream_artifacts: []
     downstream_artifacts: []
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
 ---
@@ -54,7 +54,7 @@ extra leading zeros beyond two: `BRD-01`, `ADR-99`, `IPLAN-102`). File name:
 | TYPE | Artifact prefix | `BRD PRD EARS BDD ADR TDD` |
 | NN | Document number | 2+ digits |
 | SS | Source section number | 2+ digits |
-| xxxx | Content hash (SHA256, first 4 hex; extend to 8 on collision) | `[a-f0-9]{4,8}` |
+| xxxx | Stable content identifier, 4 hex (8 on collision) — see below | `[a-f0-9]{4,8}` |
 
 Example: `BRD.01.07.a7f3`. Element IDs appear as markdown headings
 (`### BRD.01.07.a7f3: Title`).
@@ -103,7 +103,11 @@ Migrate every match to `TYPE.NN.SS.xxxx` (or a dash doc ref for SPEC/IPLAN):
 Detect with grep, e.g. `grep -E "(AC|FR|BC|BA|QA|BO|NFR|RISK|METRIC)(-[A-Za-z0-9]+)*-[0-9]+" file.md`
 (the optional `(-[A-Za-z0-9]+)*` catches compound forms like `FR-CICD-001`).
 Migration: derive `TYPE`/`NN` from the file name, `SS` from the source section,
-`xxxx` from the element content hash; replace all occurrences and re-verify.
+and `xxxx` as a **stable 4-hex identifier** distinct within its section; replace
+all occurrences and re-verify. Do **not** compute SHA-256 by hand. For BRD §7 —
+the one layer with a defined field-extraction boundary — call the generator:
+`python -m sdd_doc_lint.rehash --compute --doc-id NN --section-id SS --title T
+--description D`. Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
 
 ### 7. ISO 8601 timestamps
 

@@ -57,10 +57,10 @@ After reviewing BRD-01 and BRD-02, the same issues appear in BRD-03 through BRD-
 import yaml, os, subprocess, hashlib, re
 from datetime import datetime
 
+from sdd_doc_lint import compute_element_hash  # # Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+
 def make_id(doc_id, section_id, label):
-    inp = f"{doc_id}:{section_id}:{label}"[:200].lower()
-    inp = re.sub(r'[^a-z0-9]', '', inp)
-    h = hashlib.sha256(inp.encode()).hexdigest()[:4]
+    h = compute_element_hash(str(doc_id), str(section_id), label, "")[:4]
     try:
         sid = f"{int(section_id):02d}"
     except (ValueError, TypeError):

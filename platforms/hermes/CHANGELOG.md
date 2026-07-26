@@ -16,6 +16,30 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.12.0] — no prompt or reference computes SHA-256 in-prompt (#342) (2026-07-26)
+
+MINOR. Five prompt templates and nine loaded reference documents changed their
+element-ID instructions.
+
+- **5 prompts corrected** — `creation/UCC_PROMPT_{BRD,EARS,PRD}.md` and
+  `remediation/UCRem_PROMPT_{EARS,PRD}.md`. The BRD prompt now calls
+  `python -m sdd_doc_lint.rehash --compute`; the rest instruct a stable opaque
+  4-hex identifier and cite `ID_NAMING_STANDARDS.md`.
+- **9 loaded reference documents were shipping RUNNABLE ad-hoc hash code** —
+  reachable because `sdd-orchestrator/SKILL.md` points agents at them for "the
+  complete" procedure. Each carried its own normalization variant and **none**
+  matched the standard. The worst, `brd-validation-automation.md`, applied
+  `re.sub(r'[^a-z0-9:]', '', inp.lower())[:200]` to the _assembled_ string —
+  disagreeing on five of six steps (`lower()` not `casefold()`, no NFC, per-string
+  not per-field, spaces deleted, truncation at 200 not 100). All now delegate to
+  `compute_element_hash()`, so there is one algorithm.
+- **These nine were NOT in #342's census** (nor in this session's first
+  re-derivation, which checked only one reference file). They were found by the
+  new conformance guard, which is why the guard exists.
+- A dated session record (`*-session-YYYY-MM-DD.md`) is deliberately **not**
+  rewritten — it is history, not an authoring surface — and is excluded from the
+  guard by name so the exemption is visible.
+
 ## [0.11.1] — 2026-07-11
 
 ### Fixed

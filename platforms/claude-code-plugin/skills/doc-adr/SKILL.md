@@ -11,7 +11,7 @@ metadata:
     skill_category: core-workflow
     upstream_artifacts: [EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
-    version: "0.23.4"
+    version: "0.24.0"
     framework_spec_version: "0.40.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
@@ -103,8 +103,7 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 ### Element IDs and tags
 
 - **Element IDs (inside the ADR):** `ADR.{doc_id}.{section_id}.{hash}` (e.g.
-  `ADR.01.03.e5b1`; `hash` = first 4 hex of SHA256 of
-  `"{doc_id}:{section_id}:{title}:{description}"`, extend to 8 on collision).
+  `ADR.01.03.e5b1`). Emit a **stable 4-hex-char identifier** per element, distinct within its section (`HASH01`); extend to 8 on collision. Do **not** compute SHA-256 in this prompt — the hash form is the canonicalization TARGET produced by a deterministic tool pass, and byte-exact field extraction is defined for BRD §7 only (Phase 2+ for ADR). Authority: `framework/governance/ID_NAMING_STANDARDS.md`.
   There are no numeric type-codes — an element's kind is given by its section.
 - **ADR is a DOCUMENT-level artifact.** It is referenced in **dash form**
   `ADR-NN`, never as a dotted element ID. The self-tag is `@adr: ADR-NN`

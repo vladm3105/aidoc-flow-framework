@@ -40,8 +40,11 @@ Key sections that remain structurally identical:
 
 Use a deterministic `make_id(doc_id, section_id, label)` function:
 
-- Input: `f"{doc_id}:{section_id}:{label}"[:200].lower()` with special chars stripped
-- Hash: `hashlib.sha256(input.encode()).hexdigest()[:4]`
+- Hash: call the canonical generator — `python -m sdd_doc_lint.rehash --compute
+  --doc-id NN --section-id SS --title T --description D` (or
+  `compute_element_hash()` in-process). Do **not** re-derive the input assembly or
+  the normalization transform: `governance/ID_NAMING_STANDARDS.md` is the single
+  source, and every hand-rolled variant in this repo disagreed with it
 - Output: `BRD.{doc_id:02d}.{section_id:02d}.{hash}`
 
 ### Post-processing
