@@ -24,20 +24,6 @@
 
 ## Open
 
-### `[ci]` `GITLEAKS-PRECOMMIT-GO-FLOOR` — the local gitleaks pre-commit hook cannot install on Go < 1.21 and aborts every commit → [#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)
-
-- *Context:* 2026-07-26, while committing PRs #346/#347.
-  `.pre-commit-config.yaml:82-85` pins `gitleaks/gitleaks@v8.21.2`, a
-  `language: golang` hook pre-commit builds from source; Go 1.19.8 rejects the
-  module's `go 1.22.0` + `toolchain` directives, so the build always fails — at
-  *install* time, which aborts the commit before any other hook runs. Local
-  addition (`935befed`), not canon: canon's `pre-commit-hook-block.yaml` @
-  `ci/v2.14.0` has no gitleaks entry and no sibling repo pins it. Redundant with
-  `call / gitleaks` in CI (green throughout) + `detect-secrets` locally.
-- *Fix shape:* drop the hook (CI already scans full history at v2); if a local
-  pass is wanted, use a prebuilt-binary or container delivery and document the
-  toolchain floor in `CONTRIBUTING.md`.
-
 ### `[skill]` `IDGEN-NO-GENERATOR` — 19 skill/prompt surfaces instruct LLM-side SHA-256; no callable generator exists → [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)
 
 - *Context:* founder review 2026-07-26. `compute_element_hash()`
@@ -1150,6 +1136,24 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[ci]` `GITLEAKS-PRECOMMIT-GO-FLOOR` — ✅ CLOSED (2026-07-26) — the local gitleaks pre-commit hook could not install on Go < 1.21 and aborted every commit
+
+- *Context:* 2026-07-26, while committing PRs #346/#347.
+  `.pre-commit-config.yaml:82-85` pinned `gitleaks/gitleaks@v8.21.2`, a
+  `language: golang` hook pre-commit builds from source; Go 1.19.8 rejects the
+  module's `go 1.22.0` + `toolchain` directives, so the build always failed — at
+  *install* time, which aborts the commit before any other hook runs. Local
+  addition (`935befed`), not canon: canon's `pre-commit-hook-block.yaml` @
+  `ci/v2.14.0` has no gitleaks entry and no sibling repo pins it. Redundant with
+  `call / gitleaks` in CI (green throughout) + `detect-secrets` locally.
+- ✅ **Fixed** ([#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)):
+  hook dropped, replaced by a comment at the same location recording *why* there
+  is no local gitleaks pass so it is not re-added. `CONTRIBUTING.md` gains a
+  "Secret scanning — where each pass runs" table making the split explicit
+  (`detect-secrets` local / `gitleaks` over full history in CI) and warning that
+  a clean working tree can still fail the CI gate. `.gitleaks.toml` is untouched
+  — it is what CI consumes.
 
 ### `[skill]` `MODEL-PRECHECK-ROLLOUT` — autopilots print the per-layer model recommendation (2026-06-23)
 

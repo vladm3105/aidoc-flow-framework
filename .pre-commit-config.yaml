@@ -79,10 +79,14 @@ repos:
       - id: detect-secrets
         args: [--baseline, .secrets.baseline]
 
-  - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.21.2
-    hooks:
-      - id: gitleaks  # git-aware secret scan; config in .gitleaks.toml
+  # No local gitleaks hook (#348). The upstream hook is `language: golang`, so
+  # pre-commit builds it from source; gitleaks' go.mod uses the three-part `go
+  # 1.22.0` directive plus `toolchain`, both Go >= 1.21 features. On any machine
+  # with an older toolchain the failure lands in hook *installation*, which
+  # aborts the whole commit before any other hook runs — and the error names
+  # go.mod, not gitleaks. Secret scanning is unaffected: `detect-secrets` above
+  # covers the commit stage, and .github/workflows/secret-scan.yml runs gitleaks
+  # over the full git history in CI, consuming this repo's .gitleaks.toml.
 
   # ---- dependency vulnerability audit ----------------------------------------
   # Heavy / network-bound — runs in the `manual` stage (CI) + pre-push, not on
