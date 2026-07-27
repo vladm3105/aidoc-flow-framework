@@ -1,7 +1,7 @@
 # Session Handoff
 
-> **✅ SESSION 2026-07-27 — #365 implemented: the acceptance tier is green and
-> gated. The tracker is empty once this merges.**
+> **✅ SESSION 2026-07-27 — #365 CLOSED: the acceptance tier is green, pinned,
+> and a required check. Tracker empty — 0 open issues.**
 >
 > `plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md` executed. Tier goes **3
 > failures / 63 → 0 failures / 64**, and `.github/workflows/acceptance.yml` runs
@@ -40,10 +40,16 @@
 >    heads; the real blocker was the `ai-review` self-cancel, fixed in #369 by
 >    pinning `ci/v2.15.0`.
 >
-> **One post-merge step remains, and it is not in any diff:** add
-> `Acceptance tier (deterministic)` to `required_status_checks` via
-> **GET → append → PATCH** (the endpoint is full-replace; a naive PATCH drops the
-> other required contexts). Verify by read-back asserting `observed ∪ {new}`.
+> **Done 2026-07-27 — the gate is required.** `Acceptance tier (deterministic)`
+> is the **6th** required context on `main` (was 5), added via
+> **GET → append → PATCH** because `required_status_checks` is full-replace; a
+> naive PATCH sending only the new context would have silently dropped the other
+> five and left `main` less protected while appearing to succeed. Read-back
+> asserted **set equality** against `observed ∪ {new}` — an inclusion check would
+> have passed after exactly that mistake. `strict: false` preserved.
+>
+> So the recurrence fix is now fully installed: the tier cannot go red on `main`
+> without blocking merges, which is the failure that let three tests sit broken.
 >
 > Deferred: `ACCEPTANCE-FIXTURE-WARNING-DEBT` — the 13 pinned warnings are real
 > advisory debt, self-verifying to clear (bidirectional matching means a fixed
