@@ -12,6 +12,50 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the acceptance tier is green, pinned, and runs in CI (#365) (2026-07-27)
+
+**No version moves** — `tests/` + `.github/workflows/` only. No `framework/`
+change, so not a GATE-SPEC change. Implements
+`plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md`; closes
+[#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365).
+
+- **The suite asserted a standard stricter than the framework's own gate.** Three
+  tests failed on `main` while the linter *passed* every fixture directory
+  (`rc=0`) — all 13 findings were `severity: warning`. The failing assertion
+  demanded zero findings of **any** severity, so each newly-shipped advisory rule
+  reddened the tier on contact: `REFGRAN01`, then `ACC01` (2026-07-24, against
+  fixtures authored 2026-05-31). Fixing the fixtures would have cleared 13
+  findings and left the mechanism intact for the next rule.
+- **`assert_golden_passes_lint` now asserts what it means**: `rc == 0` first
+  (a registry-unavailable exit produces empty stdout, which would otherwise read
+  as "every entry is stale"), then zero `error` findings, then the warning
+  **multiset** against a per-target manifest.
+- **Matching is bidirectional, so the manifest cannot rot.** An unpinned warning
+  fails (drift); a pinned warning that stops firing **also** fails (delete the
+  entry). Clearing a fixture therefore tells you to shrink the manifest — the
+  deferred fixture-authoring work is self-verifying.
+- **The match key is a multiset of `(code, file, ref)` + `count`.** Counts alone
+  cannot detect substitution (ACC01/COV02 report against the *host* doc, so
+  re-pairing one element while orphaning another leaves the count unchanged), and
+  an exact set silently dedups genuinely distinct findings (`SPEC-01_golden.yaml`
+  emits two `REFGRAN01` with the same cited tag). `ref` is per-code: the element
+  ID for ACC01/COV02, the cited tag for REFGRAN01 — which exposes no element ID
+  at all, only a literal `TYPE.NN.SS.xxxx` placeholder.
+- **Manifests live outside `fixtures/`.** Inside a `NN_LAYER/` directory the
+  linter ingests a manifest as an artifact — measured on the chain: **13 → 31
+  findings and `rc` 0 → 1**, i.e. it manufactures errors, not just warnings — and
+  `live/_live_harness.py` copies `valid/` contents into exactly such a directory.
+  Structural avoidance, not a convention contributors must remember.
+- **The tier now runs in CI** (`.github/workflows/acceptance.yml`). Nothing ran
+  it before — which is how three red tests sat on `main` unnoticed, and why
+  `tests/acceptance/README.md`'s "runs in every PR" claim was false. It is true
+  now. **Promotion to a *required* check is a branch-protection change, not in
+  this diff** — tracked as `ACCEPTANCE-TIER-REQUIRED-CHECK`.
+- **Verified by mutation, not by inspection**: a bogus entry, a deleted entry, an
+  element-ID substitution, a cited-tag substitution, and deleting one of two
+  duplicate-key findings each **fail**; rewording a rule's message prose while
+  preserving the quoted token **passes**.
+
 ### Fixed — one element-hash implementation in the repo; the acceptance harness delegates (#351) (2026-07-26)
 
 **No version moves** — `tests/` plus a docstring inside `tools/sdd_doc_lint/`.

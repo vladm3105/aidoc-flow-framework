@@ -52,6 +52,7 @@ Together they handle: mechanical sync is invisible (just commit; the right files
 | **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
 | **Hermes follow-on created** | `plans/HERMES-BACKLOG.md` new `H-N` entry in the same PR | — | backlog entry (Source / Plugin status / Substantive work / Dependency) |
 | **Session milestone reached** | `plans/HANDOFF.md` prepend new current-state header | — | handoff narrative (PRs landed, next item) |
+| **New advisory (warning) lint rule** | the affected manifests under `tests/acceptance/expected_warnings/` — the rule fires on the acceptance fixtures and reddens the tier until each new warning is pinned with a `reason` (or the fixture is cleared) | — | `reason` prose naming what would clear each pinned warning |
 | **Trivial / typo / internal refactor** | (none) | — | — |
 
 If your change spans categories, do all the updates. The hooks above flag misses on commit; an explicit checklist in your PR description naming the touched docs helps reviewers.
@@ -74,6 +75,15 @@ The hook exits 0 regardless — it's a reminder, not a gate. If your change genu
 ## How to add a test, a skill, a lint check
 
 See [`tests/CONTRIBUTING.md`](tests/CONTRIBUTING.md) (test-suite contribution guidance).
+
+**Adding an advisory (warning-severity) lint rule?** It will fire on the
+acceptance fixtures, so the deterministic acceptance tier goes red until you
+update the affected manifests under `tests/acceptance/expected_warnings/` **in
+the same PR** (and blocks merges once that check is required). That is deliberate: the
+tier previously asserted zero findings of any severity, so each new advisory rule
+silently reddened it (`REFGRAN01`, then `ACC01`). Pin the new warnings with a
+`reason`, or clear the fixtures. See
+[`tests/acceptance/README.md`](tests/acceptance/README.md#accepted-warnings-expected_warnings).
 
 ## How to add a governance file or change a framework spec section
 

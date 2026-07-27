@@ -1,5 +1,56 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-27 — #365 implemented: the acceptance tier is green and
+> gated. The tracker is empty once this merges.**
+>
+> `plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md` executed. Tier goes **3
+> failures / 63 → 0 failures / 64**, and `.github/workflows/acceptance.yml` runs
+> it on every push/PR — nothing ran it before, which is how three red tests sat
+> on `main` unnoticed. **It is not yet a *required* check**: that is a
+> branch-protection change, tracked as `ACCEPTANCE-TIER-REQUIRED-CHECK`.
+>
+> **The issue's premise was wrong and I wrote it.** #365 said "realign the
+> fixtures with the coverage rules." The goldens *pass* the lint gate (`rc=0`
+> everywhere); all 13 findings are `severity: warning`. What failed was a second
+> assertion demanding zero findings of **any** severity — stricter than any gate
+> the framework defines, so every new advisory rule reddens the tier on contact
+> (`REFGRAN01`, then `ACC01`). Realigning fixtures would have cleared 13 findings
+> and left the mechanism for rule #3.
+>
+> **Four things a next session must not re-derive:**
+>
+> 1. **Manifests live OUTSIDE `fixtures/`** (`tests/acceptance/expected_warnings/`).
+>    Inside a `NN_LAYER/` dir the linter ingests one as an artifact — measured on
+>    the chain, **13 → 31 findings and `rc` 0 → 1**, i.e. it manufactures errors —
+>    and `live/_live_harness.py:stage_upstreams_into` copies `valid/` contents
+>    into exactly such a dir. Latent, since live is `skipUnless(LIVE=1)`.
+> 2. **The pinned set measures trace-graph visibility, not fixture debt.** Three
+>    goldens *inside `valid/` dirs* have an unterminated frontmatter fence (one
+>    `---`, no `doc_id`) and are invisible to `build_edge_graph`; three more share
+>    the shape under `fullpath/broken_chain/`, six in the tree. Repairing one is
+>    benign and **moves the manifest** — adding the fence to `layer_06_spec/valid`
+>    takes it 0 → 6.
+> 3. **`ELEM_FORM` cannot search a message** — it is fully anchored. Extraction is
+>    two-step: take the single-quoted token, then validate. And the linter's
+>    `file` key is CWD-relative (or absolute), so the loader **must** normalize to
+>    target-relative or every entry mismatches.
+> 4. **`AIDOC-CI-COMPOSITION-CHECK-PRHEAD` is stale** and is now annotated as
+>    such. A reviewer read it as proof that required checks gate nothing here,
+>    which nearly killed this plan. `call / composition` reports success on PR
+>    heads; the real blocker was the `ai-review` self-cancel, fixed in #369 by
+>    pinning `ci/v2.15.0`.
+>
+> **One post-merge step remains, and it is not in any diff:** add
+> `Acceptance tier (deterministic)` to `required_status_checks` via
+> **GET → append → PATCH** (the endpoint is full-replace; a naive PATCH drops the
+> other required contexts). Verify by read-back asserting `observed ∪ {new}`.
+>
+> Deferred: `ACCEPTANCE-FIXTURE-WARNING-DEBT` — the 13 pinned warnings are real
+> advisory debt, self-verifying to clear (bidirectional matching means a fixed
+> fixture fails until its entry is deleted).
+
+---
+
 > **✅ SESSION 2026-07-26 (LATER) — #351 implemented; PR open, closes on merge.**
 >
 > `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md` executed as written. Its step 1 was a

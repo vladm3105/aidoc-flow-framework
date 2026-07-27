@@ -1,0 +1,54 @@
+# Accepted lint warnings for this target — see
+# plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md.
+#
+# Matching is a MULTISET and BIDIRECTIONAL: an unpinned warning fails, and a
+# pinned warning that no longer fires ALSO fails. Clearing a fixture therefore
+# tells you to delete its entry here. Do not add an entry without a `reason`
+# stating what would clear it.
+target: layer_07_tdd/valid
+expected_warnings:
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.bbbb"
+    count: 1
+    reason: >
+      `BDD.01.04.bbbb` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.cccc"
+    count: 1
+    reason: >
+      `BDD.01.04.cccc` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.dddd"
+    count: 1
+    reason: >
+      `BDD.01.04.dddd` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: EARS-01_golden.md
+    ref: "EARS.01.03.cccc"
+    count: 1
+    reason: >
+      `EARS.01.03.cccc` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: REFGRAN01
+    file: SPEC-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 2
+    reason: >
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Clearing it means re-cascading the tag to a specific element; pinned so it
+      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
+      fixture-authoring work.
