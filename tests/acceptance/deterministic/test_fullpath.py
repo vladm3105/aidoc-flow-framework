@@ -5,7 +5,14 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import FIXTURES_ROOT, headings, run_lint, subtype_of, template_sections  # noqa: E402
+from _harness import (  # noqa: E402
+    FIXTURES_ROOT,
+    assert_lint_matches_manifest,
+    assert_no_orphan_manifests,
+    headings,
+    subtype_of,
+    template_sections,
+)
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "conformance"))
 from _spec import ARTIFACTS  # noqa: E402
@@ -16,9 +23,12 @@ BROKEN_CHAIN = FIXTURES_ROOT / "fullpath" / "broken_chain"
 
 class FullpathChainTests(unittest.TestCase):
     def test_chain_lint_passes(self):
-        rc, findings = run_lint(CHAIN)
-        self.assertEqual(rc, 0, f"fullpath chain lint failed:\n{findings}")
-        self.assertEqual([], findings, f"chain emitted findings:\n{findings}")
+        """The chain must be gate-clean and emit exactly its pinned warnings."""
+        assert_lint_matches_manifest(self, CHAIN)
+
+    def test_no_orphan_expected_warnings_manifests(self):
+        """Every manifest must point at a target that still exists."""
+        assert_no_orphan_manifests(self)
 
     def test_every_layer_has_one_artifact(self):
         for idx, name in enumerate(ARTIFACTS, start=1):

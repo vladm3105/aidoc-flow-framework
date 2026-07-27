@@ -1,0 +1,117 @@
+# Accepted lint warnings for this target — see
+# plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md.
+#
+# Matching is a MULTISET and BIDIRECTIONAL: an unpinned warning fails, and a
+# pinned warning that no longer fires ALSO fails. Clearing a fixture therefore
+# tells you to delete its entry here. Do not add an entry without a `reason`
+# stating what would clear it.
+target: fullpath/golden_chain
+expected_warnings:
+  - code: ACC01
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.aaaa"
+    count: 1
+    reason: >
+      `BDD.01.04.aaaa` is paired to no TDD test case. The fixture predates ACC01
+      (SEED-ABSORPTION-001, shipped 2026-07-24 against fixtures authored
+      2026-05-31); clearing it means authoring the paired test case. Pinned so
+      it cannot mask a new unpaired scenario.
+  - code: ACC01
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.bbbb"
+    count: 1
+    reason: >
+      `BDD.01.04.bbbb` is paired to no TDD test case. The fixture predates ACC01
+      (SEED-ABSORPTION-001, shipped 2026-07-24 against fixtures authored
+      2026-05-31); clearing it means authoring the paired test case. Pinned so
+      it cannot mask a new unpaired scenario.
+  - code: ACC01
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.cccc"
+    count: 1
+    reason: >
+      `BDD.01.04.cccc` is paired to no TDD test case. The fixture predates ACC01
+      (SEED-ABSORPTION-001, shipped 2026-07-24 against fixtures authored
+      2026-05-31); clearing it means authoring the paired test case. Pinned so
+      it cannot mask a new unpaired scenario.
+  - code: ACC01
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.dddd"
+    count: 1
+    reason: >
+      `BDD.01.04.dddd` is paired to no TDD test case. The fixture predates ACC01
+      (SEED-ABSORPTION-001, shipped 2026-07-24 against fixtures authored
+      2026-05-31); clearing it means authoring the paired test case. Pinned so
+      it cannot mask a new unpaired scenario.
+  - code: COV02
+    file: 03_EARS/EARS-01_golden.md
+    ref: "EARS.01.03.cccc"
+    count: 1
+    reason: >
+      `EARS.01.03.cccc` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.bbbb"
+    count: 1
+    reason: >
+      `BDD.01.04.bbbb` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.cccc"
+    count: 1
+    reason: >
+      `BDD.01.04.cccc` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: COV02
+    file: 04_BDD/BDD-01_golden.md
+    ref: "BDD.01.04.dddd"
+    count: 1
+    reason: >
+      `BDD.01.04.dddd` is realized by no downstream element. The fixture
+      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
+      means authoring the missing downstream citation. Pinned so it cannot mask
+      a new coverage gap.
+  - code: REFGRAN01
+    file: 06_SPEC/SPEC-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 2
+    reason: >
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Clearing it means re-cascading the tag to a specific element; pinned so it
+      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
+      fixture-authoring work.
+  - code: REFGRAN01
+    file: 07_TDD/TDD-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 1
+    reason: >
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Clearing it means re-cascading the tag to a specific element; pinned so it
+      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
+      fixture-authoring work.
+  - code: REFGRAN01
+    file: 08_IPLAN/IPLAN-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 1
+    reason: >
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Clearing it means re-cascading the tag to a specific element; pinned so it
+      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
+      fixture-authoring work.
+  - code: REFGRAN01
+    file: 08_IPLAN/IPLAN-01_golden.yaml
+    ref: "@tdd: TDD-01"
+    count: 1
+    reason: >
+      Doc-level `@tdd: TDD-01` predates GD-03 element granularity (CFB-PR-3).
+      Clearing it means re-cascading the tag to a specific element; pinned so it
+      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
+      fixture-authoring work.

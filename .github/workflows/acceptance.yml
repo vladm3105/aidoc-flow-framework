@@ -1,0 +1,55 @@
+# CI runs on GitHub-hosted runners — this is a PUBLIC repo. Do NOT switch to self-hosted:
+# no cost benefit (public-repo Actions minutes are free) + a fork PR could run code on the
+# host. The ephemeral self-hosted runner is for PRIVATE repos only. Ref: aidoc-flow-operations IPLAN-0012.
+name: Acceptance
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+# `cancel-in-progress` is safe HERE because of this workflow's TRIGGER SHAPE, and
+# the reasoning must survive so nobody re-derives it:
+#
+#   push          -> github.ref = refs/heads/<branch>
+#   pull_request  -> github.ref = refs/pull/<N>/merge
+#
+# Two different groups, so the two events on one commit never cancel each other.
+# Cancellation only fires across successive pushes to the SAME ref, which cancels
+# a stale SHA's in-flight run — never the newest SHA's own check-run.
+#
+# That precondition is exactly what ai-review.yml violated (two trigger events
+# collapsing into one group on the same SHA), stranding a CANCELLED required
+# check that blocked PRs #366 and #367 outright; fixed by ci/v2.15.0.
+# DO NOT add a second trigger event here without re-deriving the above.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  acceptance:
+    # This exact string is the required-status-check context (`<job name>`, NOT
+    # the workflow `name:` above). Changing it silently un-satisfies branch
+    # protection, which never fires again — rename only with a matching
+    # required_status_checks update.
+    name: Acceptance tier (deterministic)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+
+      # The tier's only non-stdlib import is PyYAML, already pinned here.
+      # There is no acceptance-specific requirements file.
+      - name: Install dependencies
+        run: pip install -r tests/conformance/requirements.txt
+
+      # `deterministic` only. The `live/` tier needs a plugin runtime and is
+      # gated behind LIVE=1; it is not part of this check.
+      - name: Run deterministic acceptance tier
+        run: python -m unittest discover -s tests/acceptance/deterministic -v

@@ -24,6 +24,47 @@
 
 ## Open
 
+### `[ci]` `ACCEPTANCE-TIER-REQUIRED-CHECK` — promote the acceptance gate to a required status check
+
+- *Context:* `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27) added
+  `.github/workflows/acceptance.yml`, which runs the deterministic tier on every
+  push/PR. Making it **required** is a branch-protection change — repo settings,
+  not a file — so it cannot ship in the same diff, and until it lands the tier
+  can go red without blocking a merge.
+- *Fix shape:* **GET → append → PATCH.**
+  `PATCH /repos/{owner}/{repo}/branches/main/protection/required_status_checks`
+  is **full-replace**: a payload carrying only the new context silently drops the
+  others. Read the live `checks` array, append
+  `{"context": "Acceptance tier (deterministic)", "app_id": 15368}`, preserve
+  `strict: false`, PATCH the union, then read back and assert set equality against
+  `observed ∪ {new}`. Confirm `main` is under classic protection first (under
+  rulesets the endpoint 404s and the step is a silent no-op), and rebase any PR
+  opened before the workflow file existed — it cannot produce the context.
+- *Precondition:* the tier must be green on `main` first, and worth a soak run —
+  a reviewer observed two non-reproducible failures in ~45 runs that could not be
+  isolated. A flaky required check blocks everything.
+
+### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
+
+- *Context:* deferred from `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27). The
+  fixtures carry 5 `REFGRAN01` (doc-level `@adr:`/`@tdd:` tags predating GD-03),
+  4 `COV02` (elements realized by nothing) and 4 `ACC01` (BDD scenarios paired to
+  no TDD test case). The three manifests hold **30 warnings across 27 entries** —
+  the layer dirs reuse byte-identical goldens, so the 13 are the distinct debt.
+  Pinned is
+  not acceptable — each entry's `reason` names what would clear it.
+- *Fix shape:* author the missing element-level citations and paired TDD test
+  cases. Self-verifying: the match is bidirectional, so clearing a fixture fails
+  the suite until its manifest entry is deleted.
+- *Caveat:* the pinned set reflects **trace-graph visibility**, not total debt.
+  `layer_06_spec/valid/SPEC-01_golden.yaml`,
+  `layer_07_tdd/valid/TDD-01_golden.yaml` and
+  `layer_08_iplan/valid/IPLAN-01_golden.yaml` each have one `---` and no
+  `doc_id`, so they are invisible to the graph; adding a closing fence is a
+  benign repair that ADDS findings and moves the manifest. (Three MORE share the
+  shape under `fullpath/broken_chain/` — six in the tree; the three above are the
+  ones inside `valid/` dirs that a manifest covers.)
+
 ### `[harness]` `IDCOORD-NUMERIC-SECTION-ID` — `_id_coordinator.element_id()` emits a string `section_id`, so its IDs can never be registry-valid
 
 - *Context:* deferred out of `IDCOORD-SECOND-HASH-IMPL` as plan **D3 option (b)**
@@ -42,24 +83,6 @@
 - *Tracker:* **TODO-only** per the GD-10 three-test bar — fails (c) (no consumer
   is affected: the module has none) and is conditional on prerequisite work
   nobody has scheduled, i.e. the "already-planned / purely local" carve-out.
-
-### `[harness]` `ACCEPTANCE-TIER-DRIFT-UNTRACKED` — 3 acceptance tests fail on `main`, and no CI job runs the tier → [#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365)
-
-- *Context:* found 2026-07-26 while shipping `IDCOORD-SECOND-HASH-IMPL`, which
-  needed a before/after baseline. `python3 -m unittest discover -s
-  tests/acceptance/deterministic` fails 3 of 58 on `main`: `test_fullpath` and
-  `test_layer_iplan` (ACC01 + COV02 + REFGRAN01), `test_layer_tdd` (COV02 +
-  REFGRAN01), on the `layer_*`/`fullpath` goldens. Not covered by
-  `CORPUS-REFGRAN-RECASCADE`, which is `[example-corpus]`, scoped to
-  `examples/url-shortener/docs/`, and mentions the acceptance suite only for
-  `SPEC-01_golden` REFGRAN01 — nothing about ACC01 or these COV02 findings.
-  **`grep -rn acceptance .github/workflows/` returns nothing**, which is how
-  three red tests sat on `main` unnoticed.
-- *Fix shape:* two independent halves — (1) realign the acceptance fixtures with
-  the coverage rules that have shipped since they were authored (ACC01/COV02
-  element-level coverage, REFGRAN01), and (2) decide whether the tier belongs in
-  CI. Half (2) is the one that keeps this from recurring; it is also the one that
-  needs a call on whether these fixtures are meant to be gate-clean.
 
 ### `[example-corpus]` `SEED-ABSORPTION-001-T7` — 16 BDD scenarios are un-designed (SPEC-coverage gap), not merely un-tested
 
@@ -211,44 +234,6 @@
 > COV01/COV02 upgrade** — SHIPPED (ELEMENT-COVERAGE-001, `0.30.0`; the deferred
 > payoff — catches the 16 orphaned BDD scenarios);
 > (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
-
-### `[ci]` `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — required `call / composition` check never lands on a PR head → every PR needs `--admin` to merge
-
-- *Discovered:* 2026-06-29 (PR #219; confirmed byte-identical state on #218,
-  merged ~1h earlier by `vladm3105` via admin). Branch protection on `main`
-  requires the `call / composition` context, but it is **structurally
-  unsatisfiable on a PR head**: `ai-review.yml` runs on `pull_request_target`,
-  whose run `head_sha` is the **base** (main HEAD), not the PR head. The
-  `workflow_run`-triggered `composition.yml` keys off that `head_sha` and posts
-  `call / composition` to main's HEAD — never to the PR's head commit. The PR's
-  combined status therefore stays `pending` on that context indefinitely.
-- *Impact:* the OPS-0062 green-path `gh pr merge` is `BLOCKED` even when all real
-  checks are green; every PR (incl. doc-only) is closed via `--admin` override.
-  This defeats the auto-merge default's normal path for this repo. **A
-  `skip-ai-review` label-cycle does NOT help** — it re-fires the same
-  `pull_request_target` → main-SHA composition.
-- *Fix locus:* **aidoc-flow-ci** `composition.yml` reusable — post the
-  `call / composition` status to
-  `github.event.workflow_run.pull_requests[0].head.sha` (the PR head) instead of
-  the run `head_sha`; OR make the required context conditional. Cross-repo (CI
-  library + operations auto-merge enforcer backlog); track the fix upstream.
-  Logged here for next-session merge-flow awareness.
-- *Escalation (2026-07-11, pre-prod audit):* a **second, distinct** failure mode
-  now compounds this — `composition` (and the `pull_request`-triggered
-  `audit-trail`) `startup_failure` **repo-wide** (on `main` too) since
-  **2026-07-10 ~20:49** (last success 18:43). The caller
-  `.github/workflows/composition.yml` is valid and pins the immutable `@ci/v1.8.1`
-  tag (unchanged sha); the callee `composition.yml` is byte-identical at
-  `ci/v1.8.1` and `ci/v1.9.0`; no relevant merge to `main` in the break window.
-  Only **aidoc-flow-ci reusable-workflow callers** fail (local-job checks +
-  `pull_request`-triggered reusable `lint` still pass), pointing to a **GitHub
-  Actions access/visibility change on the `aidoc-flow-ci` repo** (ci commit #120 at
-  19:54 = "private repos use self-hosted runners by default") making its reusable
-  workflows unresolvable from this repo → `startup_failure` ("workflow file
-  issue"). *Fix:* an **org/repo Actions-settings / ci-repo-visibility change
-  (founder/CI-owner)**, NOT a repo-file edit; a caller re-pin won't help (callee is
-  identical across tags). Until fixed, all PRs land via `--admin` (#305/#306/#307/
-  #308 did). Founder-owned.
 
 ### `[lint]` `STRUCT01-INDEX-EXEMPTION-NESTED` — ✅ CLOSED (2026-06-30) — index/registry templates never hit the STRUCT01/trace `-INDEX` exemption
 
@@ -1064,6 +1049,87 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[ci]` `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — ✅ CLOSED (2026-07-27, stale — mechanism no longer occurs) — required `call / composition` check never landed on a PR head
+
+- *Status (2026-07-27): **STALE — the described mechanism no longer occurs.***
+  Verified on the four most recent PRs: `call / composition` reports **success on
+  the PR head** every time (#366 `[success,success]`, #363, #361, #356). The
+  `ci/v2.x` canon migration fixed it. **A reviewer read this entry as proof that
+  required checks gate nothing here, which nearly killed a correct plan** — hence
+  this note. PRs #366/#367 *did* need `--admin`, but for an unrelated cause: the
+  `ai-review.yml` self-cancel (`aidoc-flow-ci#322`), fixed by pinning
+  `ci/v2.15.0` in PR #369. Retained for history; do not act on the body below.
+
+- *Discovered:* 2026-06-29 (PR #219; confirmed byte-identical state on #218,
+  merged ~1h earlier by `vladm3105` via admin). Branch protection on `main`
+  requires the `call / composition` context, but it is **structurally
+  unsatisfiable on a PR head**: `ai-review.yml` runs on `pull_request_target`,
+  whose run `head_sha` is the **base** (main HEAD), not the PR head. The
+  `workflow_run`-triggered `composition.yml` keys off that `head_sha` and posts
+  `call / composition` to main's HEAD — never to the PR's head commit. The PR's
+  combined status therefore stays `pending` on that context indefinitely.
+- *Impact:* the OPS-0062 green-path `gh pr merge` is `BLOCKED` even when all real
+  checks are green; every PR (incl. doc-only) is closed via `--admin` override.
+  This defeats the auto-merge default's normal path for this repo. **A
+  `skip-ai-review` label-cycle does NOT help** — it re-fires the same
+  `pull_request_target` → main-SHA composition.
+- *Fix locus:* **aidoc-flow-ci** `composition.yml` reusable — post the
+  `call / composition` status to
+  `github.event.workflow_run.pull_requests[0].head.sha` (the PR head) instead of
+  the run `head_sha`; OR make the required context conditional. Cross-repo (CI
+  library + operations auto-merge enforcer backlog); track the fix upstream.
+  Logged here for next-session merge-flow awareness.
+- *Escalation (2026-07-11, pre-prod audit):* a **second, distinct** failure mode
+  now compounds this — `composition` (and the `pull_request`-triggered
+  `audit-trail`) `startup_failure` **repo-wide** (on `main` too) since
+  **2026-07-10 ~20:49** (last success 18:43). The caller
+  `.github/workflows/composition.yml` is valid and pins the immutable `@ci/v1.8.1`
+  tag (unchanged sha); the callee `composition.yml` is byte-identical at
+  `ci/v1.8.1` and `ci/v1.9.0`; no relevant merge to `main` in the break window.
+  Only **aidoc-flow-ci reusable-workflow callers** fail (local-job checks +
+  `pull_request`-triggered reusable `lint` still pass), pointing to a **GitHub
+  Actions access/visibility change on the `aidoc-flow-ci` repo** (ci commit #120 at
+  19:54 = "private repos use self-hosted runners by default") making its reusable
+  workflows unresolvable from this repo → `startup_failure` ("workflow file
+  issue"). *Fix:* an **org/repo Actions-settings / ci-repo-visibility change
+  (founder/CI-owner)**, NOT a repo-file edit; a caller re-pin won't help (callee is
+  identical across tags). Until fixed, all PRs land via `--admin` (#305/#306/#307/
+  #308 did). Founder-owned.
+
+### `[harness]` `ACCEPTANCE-TIER-DRIFT-UNTRACKED` — ✅ CLOSED (2026-07-27) — 3 acceptance tests failed on `main`, and no CI job ran the tier → [#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365)
+
+- *Context:* found 2026-07-26 while shipping `IDCOORD-SECOND-HASH-IMPL`, which
+  needed a before/after baseline. `python3 -m unittest discover -s
+  tests/acceptance/deterministic` fails 3 of 63 on `main`: `test_fullpath` and
+  `test_layer_iplan` (ACC01 + COV02 + REFGRAN01), `test_layer_tdd` (COV02 +
+  REFGRAN01), on the `layer_*`/`fullpath` goldens. Not covered by
+  `CORPUS-REFGRAN-RECASCADE`, which is `[example-corpus]`, scoped to
+  `examples/url-shortener/docs/`, and mentions the acceptance suite only for
+  `SPEC-01_golden` REFGRAN01 — nothing about ACC01 or these COV02 findings.
+  **`grep -rn acceptance .github/workflows/` returns nothing**, which is how
+  three red tests sat on `main` unnoticed.
+- *Fix shape:* two independent halves — (1) realign the acceptance fixtures with
+  the coverage rules that have shipped since they were authored (ACC01/COV02
+  element-level coverage, REFGRAN01), and (2) decide whether the tier belongs in
+  CI. Half (2) is the one that keeps this from recurring; it is also the one that
+  needs a call on whether these fixtures are meant to be gate-clean.
+- *Shipped:* 2026-07-27, `plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md`.
+  **The premise in this entry was wrong and the plan corrected it:** the goldens
+  PASS the lint gate (`rc=0` everywhere) and all 13 findings are
+  `severity: warning`. What failed was a second assertion demanding zero findings
+  of *any* severity — stricter than any gate the framework defines, so every new
+  advisory rule reddened the tier on contact. Fixed by asserting `rc == 0` + zero
+  errors + a **bidirectional multiset** match against
+  `tests/acceptance/expected_warnings/<target>.yaml`, and by adding
+  `.github/workflows/acceptance.yml`, which runs the tier on every push/PR.
+  Tier: **64 tests, 0 failures.** Promotion to a *required* check is a
+  branch-protection change, not in the diff → `ACCEPTANCE-TIER-REQUIRED-CHECK`.
+- *Deferred:* the 13 pinned warnings are real advisory debt →
+  `ACCEPTANCE-FIXTURE-WARNING-DEBT` (Open). Note the pinned set measures what the
+  **trace graph can see**: three goldens carry an unterminated frontmatter fence
+  and are invisible to it, so repairing one is a benign edit that MOVES the
+  manifest.
 
 ### `[conformance]` `IDCOORD-SECOND-HASH-IMPL` — ✅ CLOSED (2026-07-26) — the acceptance harness re-implemented the element hash without normalization → [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)
 
