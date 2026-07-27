@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v2.14.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v2.15.0
     with:
       runner_labels: '"ubuntu-latest"'
     permissions:
