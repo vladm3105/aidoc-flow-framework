@@ -1,5 +1,54 @@
 # Session Handoff
 
+> **✅ SESSION 2026-07-26 (LATER) — #351 implemented; PR open, closes on merge.**
+>
+> `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md` executed as written. Its step 1 was a
+> founder keep-or-delete question, put before any code: answer **keep + fix**.
+> `_id_coordinator.element_hash()` now delegates to `compute_element_hash()[:4]`
+> so the repo has **one** element-hash implementation, guarded by an 8-case
+> parity table — plus a test that guards the table itself, asserting each case
+> hashes differently with and without the transform (a case where they coincide
+> would pass under a wrong implementation, which is exactly how the original
+> divergence hid).
+>
+> **The latent `ComposerError` is fixed too**: `safe_load` → `safe_load_all`, with
+> a `fullpath/` regression test that walks all 16 artifacts. Note for anyone
+> re-deriving this — a *leading* `---` is only a document-start marker; all six
+> `fullpath` YAML goldens have one, but only the three under `golden_chain/`
+> carry a *closing* fence and so are genuinely two documents.
+>
+> **No version moved.** `tests/` + one docstring in `tools/sdd_doc_lint/`
+> (re-vendored ×2). **Zero golden churn**, confirming the premise correction.
+>
+> Two things a next session should not re-derive:
+>
+> 1. **The linter's vendoring sync script is `tools/sdd_doc_lint/sync-vendored.sh`**,
+>    not `tools/sync-plugin-framework.sh` — the latter vendors `framework/`
+>    subtrees plus three named tools files and does **not** touch `sdd_doc_lint`.
+>    The plan named the wrong one; `test_doc_lint_vendoring.py:13` names the right
+>    one.
+> 2. **The acceptance deterministic tier has 3 pre-existing failures on `main`**
+>    — `test_fullpath` and `test_layer_iplan` (ACC01 + COV02 + REFGRAN01) and
+>    `test_layer_tdd` (COV02 + REFGRAN01), on the
+>    `tests/acceptance/fixtures/layer_*` goldens. Verified byte-identical before
+>    and after this change; don't mistake them for a regression. **They were not
+>    tracked** — `CORPUS-REFGRAN-RECASCADE` is `[example-corpus]`, covers
+>    `examples/url-shortener/docs/`, and mentions the acceptance suite in one
+>    clause about `SPEC-01_golden` REFGRAN01 only; it says nothing about ACC01 or
+>    the COV02 findings on these fixtures. Now filed as
+>    `ACCEPTANCE-TIER-DRIFT-UNTRACKED` +
+>    [#365](https://github.com/vladm3105/aidoc-flow-framework/issues/365).
+>    **No CI workflow runs this tier** — grep `.github/workflows/` for
+>    "acceptance" returns nothing — which is how three red tests sat on `main`
+>    unnoticed.
+>
+> Still open, deliberately: `IDCOORD-NUMERIC-SECTION-ID` (the string-`section_id`
+> half, plan D3 option b) and the other half of `PLUGIN-TEST-SUITE-REVIEW.md:32`
+> **F2** — wiring `write_registry()` into a real closure test. The module still
+> has no product consumer; it is now merely correct.
+
+---
+
 > **✅ SESSION 2026-07-26 (WRAP) — issue sweep complete: 8 issues triaged, 7
 > closed, 8 PRs merged, framework `0.38.0 → 0.40.0`.**
 >
@@ -23,6 +72,9 @@
 > unchanged at its pinned baseline throughout.
 >
 > ## Only #351 remains, and it is cheaper than it looks
+>
+> *(Superseded by the banner at the top of this file — #351 was implemented later
+> the same day. The rest of this section is the record as it stood at wrap.)*
 >
 > Plan merged (`plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`), implementation
 > deferred by founder choice. **Its filed premise is false** — `write_registry()`
@@ -133,7 +185,8 @@
 > discharged and would raise a permanent `PROV01` on every artifact.
 >
 > **One issue left open: [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)**
-> (plan merged, impl deferred by founder choice). Its filed premise is false —
+> (plan merged, impl deferred by founder choice — *superseded: implemented later
+> the same day; see the banner at the top of this file*). Its filed premise is false —
 > **zero golden churn** — so it is cheaper than it looks. Its plan's step 1 is a
 > keep-or-delete question: `_id_coordinator.py` has no product consumer and
 > `PLUGIN-TEST-SUITE-REVIEW.md:32` F2 already proposed removing it, which would
@@ -190,7 +243,7 @@
 > |---|---|---|
 > | #345 | ✅ **spec half done** — `0.40.0`, **GD-10**, in [#358](https://github.com/vladm3105/aidoc-flow-framework/pull/358) (stacked on #357) | `DOC_GOVERNANCE_CORE.md` Principle 9 + `FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker". `CLAUDE.md`'s "spec counterpart is not yet ratified" caveat was replaced — it had become false |
 > | #342 | 📋 **plan merged** ([#360](https://github.com/vladm3105/aidoc-flow-framework/pull/360)), impl not started | `plans/IDGEN-NO-GENERATOR-PLAN.md`. **Step 1 is a founder decision, not code** — see the blocker below. Depends on #357 landing first |
-> | #351 | 📋 **plan merged** ([#359](https://github.com/vladm3105/aidoc-flow-framework/pull/359)), impl deliberately not started | `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`. **Its premise changed** — see below |
+> | #351 | ✅ **SHIPPED later the same day** — see the banner at the top of this file | `plans/IDCOORD-SECOND-HASH-IMPL-PLAN.md`. Founder answered its step-1 keep-or-delete question **keep + fix**. The rest of this row's "not started" framing is the record as it stood at wrap |
 >
 > **#342 carries an unresolved blocker that decides its tier.** The layer
 > templates declare `state: canonical`; instructing five layers to emit
@@ -260,7 +313,7 @@
 >
 > | Issue | Gap |
 > |---|---|
-> | [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351) | `tests/acceptance/_id_coordinator.py:17` is a **live second implementation** that skips the D-0062 normalization and **mints fixture IDs**; its smoke test never checks parity with `compute_element_hash()`. Also emits string `section_id`s the registry pattern rejects. Fixing it churns committed goldens — hence its own plan |
+> | [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351) | `tests/acceptance/_id_coordinator.py:17` is a **live second implementation** that skips the D-0062 normalization and **mints fixture IDs**; its smoke test never checks parity with `compute_element_hash()`. Also emits string `section_id`s the registry pattern rejects. ~~Fixing it churns committed goldens~~ — **that premise was false; zero churn, verified at ship** |
 > | [#352](https://github.com/vladm3105/aidoc-flow-framework/issues/352) | `placeholder: "0000"` matches neither available meaning, is defined nowhere in `framework/governance/`, and has no consumer. **#343's "secondary observation" was valid** — an early draft of the plan wrongly rejected it |
 > | [#342 comment](https://github.com/vladm3105/aidoc-flow-framework/issues/342#issuecomment-5084448384) | Scope corrected **9 → 19** surfaces (union — nothing dropped). Highest-value item: `brd-validation-automation.md:179`, a **loaded** reference (`sdd-orchestrator/SKILL.md:836`) shipping runnable code with a **fourth** normalization variant disagreeing with the standard on five of six steps. That is what an agent finds instead of writing its own script |
 >
