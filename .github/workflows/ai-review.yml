@@ -51,7 +51,17 @@ permissions:
   issues: write          # gh api label create/apply paths
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.14.0
+    # ci/v2.15.0 — the CI-0025 self-cancel fix (aidoc-flow-ci#322). At v2.14.0 the
+    # reusable's concurrency group used a DENYLIST of self-emitted actions, so the
+    # review this workflow posts fired `pull_request_review: submitted`, which
+    # landed in the same group and cancelled the `pull_request_target` run that had
+    # just posted it — stranding a CANCELLED `call / ai-review` check on the head
+    # SHA. A cancelled required context is not success, so EVERY PR blocked and
+    # merged only via `--admin` (observed on #366 and #367). v2.15.0 replaces the
+    # denylist with an ALLOWLIST of the two code-changing actions (`synchronize`,
+    # `opened`); every other subscribed event fires at the current head and must
+    # not cancel. Do not pin back below v2.15.0.
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.15.0
     with:
       # Model selection is CONFIG-DRIVEN: the reusable reads `litellm.model`
       # from the trusted .github/ai-review/config.json. Uncomment to override:
