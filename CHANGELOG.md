@@ -49,8 +49,10 @@ change, so not a GATE-SPEC change. Implements
 - **The tier now runs in CI** (`.github/workflows/acceptance.yml`). Nothing ran
   it before — which is how three red tests sat on `main` unnoticed, and why
   `tests/acceptance/README.md`'s "runs in every PR" claim was false. It is true
-  now. **Promotion to a *required* check is a branch-protection change, not in
-  this diff** — tracked as `ACCEPTANCE-TIER-REQUIRED-CHECK`.
+  now. **It is also a required status check on `main`** as of 2026-07-27 —
+  context `Acceptance tier (deterministic)`, added via GET → append → PATCH
+  because `required_status_checks` is full-replace and a naive PATCH would have
+  dropped the other five.
 - **Verified by mutation, not by inspection**: a bogus entry, a deleted entry, an
   element-ID substitution, a cited-tag substitution, and deleting one of two
   duplicate-key findings each **fail**; rewording a rule's message prose while

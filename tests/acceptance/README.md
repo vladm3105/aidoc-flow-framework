@@ -4,8 +4,8 @@
 **Pyramid tier:** 3 + 4
 **Runs:** deterministic in every PR (`.github/workflows/acceptance.yml`); live
 in nightly + release
-**Gating:** the workflow runs on every push/PR. Promotion to a *required* check
-is a branch-protection change, tracked as `ACCEPTANCE-TIER-REQUIRED-CHECK`
+**Gating:** required status check on `main` — context
+`Acceptance tier (deterministic)` (2026-07-27)
 **Determinism:** deterministic (default) | live (`LIVE=1`)
 
 ## What this suite covers
@@ -37,9 +37,8 @@ it. Manifests live here, **not** under `fixtures/`: a manifest inside a
 `NN_LAYER/` directory is ingested by the linter as an artifact, and the live
 harness copies `valid/` contents into exactly such a directory.
 
-**Adding a new advisory lint rule?** It will fire on these fixtures and turn this
-check red until the manifests are updated in the same PR (and block merges once
-the check is required). That is intended — it is what stops the tier from
+**Adding a new advisory lint rule?** It will fire on these fixtures and **block
+every merge** until the manifests are updated in the same PR. That is intended — it is what stops the tier from
 silently reddening — but budget for it.
 
 ### Manifest schema

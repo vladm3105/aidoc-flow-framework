@@ -77,9 +77,9 @@ The hook exits 0 regardless — it's a reminder, not a gate. If your change genu
 See [`tests/CONTRIBUTING.md`](tests/CONTRIBUTING.md) (test-suite contribution guidance).
 
 **Adding an advisory (warning-severity) lint rule?** It will fire on the
-acceptance fixtures, so the deterministic acceptance tier goes red until you
-update the affected manifests under `tests/acceptance/expected_warnings/` **in
-the same PR** (and blocks merges once that check is required). That is deliberate: the
+acceptance fixtures, and the deterministic acceptance tier is a **required
+check**, so it blocks every merge until you update the affected manifests under
+`tests/acceptance/expected_warnings/` **in the same PR**. That is deliberate: the
 tier previously asserted zero findings of any severity, so each new advisory rule
 silently reddened it (`REFGRAN01`, then `ACC01`). Pin the new warnings with a
 `reason`, or clear the fixtures. See

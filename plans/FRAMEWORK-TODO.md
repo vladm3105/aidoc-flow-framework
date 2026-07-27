@@ -24,26 +24,6 @@
 
 ## Open
 
-### `[ci]` `ACCEPTANCE-TIER-REQUIRED-CHECK` — promote the acceptance gate to a required status check
-
-- *Context:* `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27) added
-  `.github/workflows/acceptance.yml`, which runs the deterministic tier on every
-  push/PR. Making it **required** is a branch-protection change — repo settings,
-  not a file — so it cannot ship in the same diff, and until it lands the tier
-  can go red without blocking a merge.
-- *Fix shape:* **GET → append → PATCH.**
-  `PATCH /repos/{owner}/{repo}/branches/main/protection/required_status_checks`
-  is **full-replace**: a payload carrying only the new context silently drops the
-  others. Read the live `checks` array, append
-  `{"context": "Acceptance tier (deterministic)", "app_id": 15368}`, preserve
-  `strict: false`, PATCH the union, then read back and assert set equality against
-  `observed ∪ {new}`. Confirm `main` is under classic protection first (under
-  rulesets the endpoint 404s and the step is a silent no-op), and rebase any PR
-  opened before the workflow file existed — it cannot produce the context.
-- *Precondition:* the tier must be green on `main` first, and worth a soak run —
-  a reviewer observed two non-reproducible failures in ~45 runs that could not be
-  isolated. A flaky required check blocks everything.
-
 ### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
 
 - *Context:* deferred from `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27). The
@@ -1049,6 +1029,36 @@
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[ci]` `ACCEPTANCE-TIER-REQUIRED-CHECK` — ✅ CLOSED (2026-07-27) — promote the acceptance gate to a required status check
+
+- *Context:* `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27) added
+  `.github/workflows/acceptance.yml`, which runs the deterministic tier on every
+  push/PR. Making it **required** is a branch-protection change — repo settings,
+  not a file — so it cannot ship in the same diff, and until it lands the tier
+  can go red without blocking a merge.
+- *Fix shape:* **GET → append → PATCH.**
+  `PATCH /repos/{owner}/{repo}/branches/main/protection/required_status_checks`
+  is **full-replace**: a payload carrying only the new context silently drops the
+  others. Read the live `checks` array, append
+  `{"context": "Acceptance tier (deterministic)", "app_id": 15368}`, preserve
+  `strict: false`, PATCH the union, then read back and assert set equality against
+  `observed ∪ {new}`. Confirm `main` is under classic protection first (under
+  rulesets the endpoint 404s and the step is a silent no-op), and rebase any PR
+  opened before the workflow file existed — it cannot produce the context.
+- *Precondition:* the tier must be green on `main` first, and worth a soak run —
+  a reviewer observed two non-reproducible failures in ~45 runs that could not be
+  isolated. A flaky required check blocks everything.
+- *Done:* 2026-07-27. `Acceptance tier (deterministic)` is now the **6th** required
+  context on `main` (was 5). Executed as GET → append → PATCH against the live
+  `checks` array; `strict: false` preserved; `app_id: 15368` (GitHub Actions) to
+  match the existing entries. Read-back asserted **set equality** against
+  `observed ∪ {new}` — not mere inclusion, which would have passed even if the
+  full-replace endpoint had dropped the other five. Preconditions checked first:
+  `main` is under classic protection (rulesets would 404 the endpoint), and the
+  context had already reported **success on `main` HEAD**, so no PR hangs on a
+  context that never arrives. No open PR predated the workflow file, so no rebase
+  was needed.
 
 ### `[ci]` `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — ✅ CLOSED (2026-07-27, stale — mechanism no longer occurs) — required `call / composition` check never landed on a PR head
 
