@@ -33,5 +33,16 @@ jobs:
       # patch in the job summary — PREVIEW ONLY, nothing is pushed (no App needed).
       # Costs a second semgrep pass; off by default for the report-only rollout.
       autofix-preview: false
-      runner_labels: '["self-hosted", "ci-runner", "single-use"]'
+      # DIVERGENCE from canon's self-hosted default, and the only one of the three
+      # PLAN-014 scan callers that needs it. semgrep installs into a `python3 -m venv`,
+      # and the aidoc-flow-runner image carries no python3-venv/ensurepip
+      # (install/templates/runner/Dockerfile installs ca-certificates, curl, gnupg,
+      # gh, ripgrep, libatomic1 — no python), so the venv step dies with "ensurepip is
+      # not available" BEFORE any findings logic runs. `fail-on-findings: false` cannot
+      # protect against that: it gates the verdict, not the install.
+      # dep-scan and trivy-scan stay self-hosted and pass — they curl static binaries.
+      # Filed as aidoc-flow-ci#349; revert this line to canon's value once the image ships python.
+      # GitHub-hosted is safe and free here (public repo) and the reusable's fork guard
+      # (`if: …head.repo.fork != true`) skips fork PRs independently of the label.
+      runner_labels: '["ubuntu-latest"]'
     # No `secrets: inherit` — sast-scan uses only GITHUB_TOKEN (least privilege).

@@ -40,6 +40,16 @@ byte-exact at the pin by construction.
   label is canon's trust design, not a tooling requirement. Verified: the pool is
   two *self-replenishing* slots (`Restart=always`, `RestartSec=5`), so three
   added jobs serialize against the required `ai-review` rather than deadlock it.
+- **`sast-scan.yml` overrides `runner_labels` to `'["ubuntu-latest"]'`** — the one
+  divergence among the three, found by shipping it: semgrep installs into a
+  `python3 -m venv` and the `aidoc-flow-runner` image carries no
+  `python3-venv`/`ensurepip`, so the install died with *"ensurepip is not available"*
+  before any findings logic ran. `fail-on-findings: false` gates the **verdict**, not
+  the **install**, so report-only could not keep the check green. Filed upstream as
+  [aidoc-flow-ci#349](https://github.com/vladm3105/aidoc-flow-ci/issues/349) with the
+  runner `Dockerfile` line numbers and a suggested fix; the override reverts when the
+  image ships Python. Latent fleet-wide, not actively breaking anyone — no sibling repo
+  adopts the scan tier, so this repo is its first adopter.
 - **`markdown-lint.yml` adopted advisory-only**, with globs scoped to this repo's
   already-justified exclusion set. Measured at adoption with `markdownlint-cli2`:
   canon's bare `**/*.md` reports **260 issues in 78 files**, *all* under
