@@ -7,3 +7,6 @@ triggers can be exercised by hand.
 
 This PR is closed unmerged. If you are reading this on `main`, something
 went wrong.
+
+Second commit: establishes an all-green SHA so the skipped-check test runs
+without a retained failure confusing the rollup.
