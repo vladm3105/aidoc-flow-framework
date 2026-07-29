@@ -1,0 +1,29 @@
+# PROTECTED caller — IaC / misconfiguration gate via trivy (config mode) (PLAN-014).
+# Uniform on PUBLIC and PRIVATE repos: runs on the ephemeral self-hosted single-use
+# pool regardless of visibility (no `-public`/`-private` split; a flip is a no-op).
+# Safe on public because the scan job is FORK-GUARDED (a fork PR skips → human review).
+#
+# Scans Dockerfiles / IaC for misconfigurations only (`trivy config`) — it does NOT
+# duplicate dep-scan (osv, deps) or secret-scan (gitleaks, secrets). Ships
+# REPORT-ONLY (`fail-on-findings: false`); flip to `true` after a clean window.
+#
+# Secrets: none (uses GITHUB_TOKEN). SARIF surfaces in the Security tab on public
+# repos with free GHAS; on private the gate still runs, the upload just no-ops.
+name: trivy-scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write   # SARIF → Code scanning (public repos w/ GHAS)
+
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/trivy-scan.yml@ci/v2.16.0
+    with:
+      # Report-only rollout. Flip to true to block PRs on an IaC/config misconfiguration.
+      fail-on-findings: false
+      runner_labels: '["self-hosted", "ci-runner", "single-use"]'
+    # No `secrets: inherit` — trivy-scan uses only GITHUB_TOKEN (least privilege).

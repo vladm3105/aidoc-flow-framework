@@ -12,6 +12,53 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — four absent `aidoc-flow-ci` surfaces adopted; `codeql` becomes a canon caller (2026-07-29)
+
+**No version moves** — `.github/` only. Completes the *adoption* dimension of the
+canon migration, which re-pinning (`ci/v2.16.0`, D-0070) could not: a `--repin`
+rewrites `uses:` strings and can never adopt a surface the repo does not call.
+Scaffolded with canon's own `deploy-ci-wizard.sh scaffold`, so the callers are
+byte-exact at the pin by construction.
+
+- **`codeql.yml` is now a canon caller** (`@ci/v2.16.0`), replacing this repo's
+  hand-rolled workflow. **Closes
+  [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)**: the
+  floating `github/codeql-action@v4` / `actions/checkout@v7` are gone because
+  canon's reusable already SHA-pins them (`github/codeql-action@e4fba868` #
+  v4.37.3, `actions/checkout@3d3c42e5` # v7.0.1). #373 was a *symptom of an
+  unmigrated surface*, not an independent defect. `languages` carries
+  `python` forward from the local workflow and gains canon's `actions`, so the
+  workflows themselves are now scanned. Stays GitHub-hosted — no
+  `runner_labels` override — per this repo's public-repo runner split.
+- **`dep-scan.yml` (osv-scanner SCA), `sast-scan.yml` (semgrep), `trivy-scan.yml`
+  (IaC misconfiguration) adopted byte-exact**, all `fail-on-findings: false`
+  (report-only per canon's PLAN-014 rollout) and all on the self-hosted
+  single-use pool as canon ships them. Their scan jobs are fork-guarded in the
+  reusable (`if: …head.repo.fork != true`), so untrusted fork code never reaches
+  the host — the concern this repo's `ubuntu-latest` default protects against.
+  Tools install at runtime (pinned release binary / pinned pip venv), so the
+  label is canon's trust design, not a tooling requirement. Verified: the pool is
+  two *self-replenishing* slots (`Restart=always`, `RestartSec=5`), so three
+  added jobs serialize against the required `ai-review` rather than deadlock it.
+- **`markdown-lint.yml` adopted advisory-only**, with globs scoped to this repo's
+  already-justified exclusion set. Measured at adoption with `markdownlint-cli2`:
+  canon's bare `**/*.md` reports **260 issues in 78 files**, *all* under
+  `legacy/`, `framework/`, `platforms/claude-code-plugin/framework/`, Hermes
+  vendored content, and `.aidoc` cascade output — paths where a style fix is
+  forbidden, not merely unwanted (`framework/` trips GATE-SPEC; the vendored
+  plugin copy breaks its byte-identity drift guard). The scoped set lints **447
+  files with 0 issues**, so the check catches new debt instead of emitting
+  annotations nobody may act on. `fail-on-findings` stays `false` permanently,
+  not as a debt rollout: the blocking markdown gate is the `markdownlint-cli`
+  pre-commit hook under the required `Lint / format / security hooks` context,
+  and a rule-default disagreement between two different engines must never be
+  able to block a merge.
+- **Drift accounting:** compared callers **10 → 15**; drifted **10 → 12**. The
+  three scan callers add zero drift. `codeql` and `markdown-lint` drift by
+  intent, each carrying an in-file comment stating why, per `check-drift.sh`'s
+  own "intentional divergence" resolution. Pin-currency remains "all pins
+  current" against `ci/v2.16.0`.
+
 ### Changed — every CI caller is at `ci/v2.16.0`, and the body changes a re-pin cannot deliver (2026-07-29)
 
 **No version moves** — `.github/` only. CI infrastructure; no `framework/`

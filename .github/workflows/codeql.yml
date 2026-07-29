@@ -1,7 +1,15 @@
-# CI runs on GitHub-hosted runners — this is a PUBLIC repo. Do NOT switch to self-hosted:
-# no cost benefit (public-repo Actions minutes are free) + a fork PR could run code on the
-# host. The ephemeral self-hosted runner is for PRIVATE repos only. Ref: aidoc-flow-operations IPLAN-0012.
-name: CodeQL
+# Caller template for aidoc-flow-ci's reusable codeql workflow.
+#
+# Triggers per GitHub's recommended pattern: push + PR to default
+# branch + weekly cron + workflow_dispatch. Cron is staggered (Mon
+# 14:20 UTC = ~10:20 EST / 7:20 PST) to avoid contention with other
+# weekly jobs.
+#
+# Adjust the `languages` input to match your repo. Default ["actions"]
+# scans the workflows themselves — every consumer benefits. Add other
+# languages as appropriate (e.g., '["actions","python","javascript-typescript"]').
+
+name: codeql
 
 on:
   push:
@@ -9,30 +17,30 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "30 2 * * 1"   # weekly, Monday 02:30 UTC
+    - cron: '20 14 * * 1'
+  workflow_dispatch:
 
 permissions:
   contents: read
-  security-events: write   # upload results to the Security tab
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  analyze:
-    name: Analyze Python
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
-        with:
-          languages: python
-          build-mode: none   # Python is interpreted — no build step
-
-      - name: Perform CodeQL analysis
-        uses: github/codeql-action/analyze@v4
-        with:
-          category: "/language:python"
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/codeql.yml@ci/v2.16.0
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    with:
+      # `python` carried over from this repo's pre-canon local codeql.yml (build-mode
+      # none — Python is interpreted); `actions` is canon's default and scans the
+      # workflows themselves. This input is why the manifest marks codeql
+      # safe_to_replace:false — `--update` must never overwrite it.
+      languages: '["actions","python"]'
+      # No runner_labels override: this is a PUBLIC repo, so CI stays GitHub-hosted
+      # per CLAUDE.md's runner split (free minutes; a fork PR must not reach the host).
+      # PRIVATE consumers override:
+      # runner_labels: '["self-hosted", "ci-runner", "single-use"]'

@@ -1,0 +1,37 @@
+# PROTECTED caller — SAST (static code analysis) gate via semgrep (PLAN-014 Phase 3).
+# Uniform on PUBLIC and PRIVATE repos: runs on the ephemeral self-hosted single-use
+# pool regardless of visibility (no `-public`/`-private` split; a flip is a no-op).
+# Safe on public because the scan job is FORK-GUARDED (a fork PR skips → human review).
+#
+# semgrep is the OWN SAST complementing native CodeQL (codeql.yml) — CodeQL needs
+# GitHub Advanced Security (N/A on private repos), so this gates PRIVATE repos too.
+# Data-only static analysis; --metrics off (no telemetry). Ships REPORT-ONLY
+# (`fail-on-findings: false`); flip to `true` after a clean window.
+#
+# Secrets: none (uses GITHUB_TOKEN). SARIF surfaces in the Security tab on public
+# repos with free GHAS; on private the gate still runs, the upload just no-ops.
+name: sast-scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write   # SARIF → Code scanning (public repos w/ GHAS)
+
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/sast-scan.yml@ci/v2.16.0
+    with:
+      # Report-only rollout. Flip to true to block PRs on a SAST finding.
+      fail-on-findings: false
+      # semgrep ruleset. "p/default" is the recommended baseline; tune per repo
+      # (e.g. "p/security-audit", or a language pack like "p/python").
+      config: 'p/default'
+      # Flip to true to ALSO surface semgrep's deterministic (rule-provided) autofix
+      # patch in the job summary — PREVIEW ONLY, nothing is pushed (no App needed).
+      # Costs a second semgrep pass; off by default for the report-only rollout.
+      autofix-preview: false
+      runner_labels: '["self-hosted", "ci-runner", "single-use"]'
+    # No `secrets: inherit` — sast-scan uses only GITHUB_TOKEN (least privilege).
