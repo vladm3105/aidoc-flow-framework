@@ -1,0 +1,101 @@
+# Caller template for aidoc-flow-ci's AI-driven doc-maintainer workflow.
+# Per IPLAN-0025 (operations 2026-06-28; READY via PR #166). Ships as
+# ci/v1.4.0 alpha.1.
+#
+# PROTECTED caller — uniform on PUBLIC and PRIVATE repos (PLAN-013): runs on the
+# ephemeral self-hosted single-use pool regardless of visibility (no
+# `-public`/`-private` split; a visibility flip is a no-op). Safe on public repos
+# because this is a POST-MERGE flow (`push: main`) — a fork PR cannot trigger it.
+#
+# This is OPT-IN: consumer must drop this file into .github/workflows/ AND
+# provide the per-consumer config + conventions:
+#   - .github/doc-maintainer.json (config schema per IPLAN-0025 §2.2)
+#   - .github/doc-maintainer-conventions.md (consumer-authored prose
+#     describing the consumer's doc-of-record discipline; AI consumes this
+#     as part of the planning prompt)
+#
+# PREREQUISITES (per IPLAN-0025 §3 + §2.6 "Changes required outside
+# doc-maintainer.yml itself"):
+#   - P3a 🟡 governance PR: add `aidoc-flow-bot[bot]` to the consumer's
+#     `.github/ai-review/config.json#trust.ai_review` allowlist. Without
+#     this, the bot's low-risk PRs hit ai-review's HUMAN-REVIEW-ONLY
+#     branch + auto-merge collapses (Pass-2 BLOCKER #1 / Risk 13 / D11).
+#   - P5a 🟡 founder runbook: expand `aidoc-flow-bot` App permissions to
+#     `Pull-requests: write` + `Issues: write` (Risk 7 / D7). The dry-run
+#     path (P3) does NOT need this — comments use GITHUB_TOKEN.
+#   - secrets AIDOC_FLOW_BOT_ID + AIDOC_FLOW_BOT_KEY set on consumer
+#     (live mode only; dry-run mode runs without them).
+#   - LITELLM_BASE_URL + LITELLM_DOC_API_KEY set.
+#
+# Phase 1 (this template's purpose): dry-run pilot on operations.
+# Mechanical docs-sync.yml stays LIVE during the pilot. After ≥5 clean
+# dry-run cycles (P4 graduation gate) + P3a + P5a preconditions: flip
+# `doc_maintainer.dry_run: false` per IPLAN-0025 §3 P5.
+#
+# TRIGGERS:
+#   push: branches: [main] — primary trigger after every merge
+#   schedule: cron '7,37 * * * *' — backup reconciler (off-peak slots per
+#     IPLAN-0025 D9 / Pass-3 minor #3 calibration). Addresses the
+#     IPLAN-0018 "didn't fire" reliability gap deterministically by
+#     scanning recent main commits for any SHA without an associated
+#     doc-maintainer run.
+#
+# alpha.1 (v1.4.0) status: workflow wiring + script skeleton; LLM
+# invocation stubbed → planner emits empty plan + dry-run posts a count-
+# only PR comment. Trigger reliability observation begins immediately
+# upon adoption. Real LLM call + bot-PR creation + issue creation +
+# reconciler auto-dispatch ship in v1.4.1.
+
+name: doc-maintainer
+run-name: doc-maintainer ${{ inputs.head_sha || github.sha }}
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+    inputs:
+      head_sha:
+        description: 'Merge SHA to recover (normally set by the scheduled reconciler)'
+        required: false
+        type: string
+
+permissions:
+  actions: write
+  # `read`, not `write` (CI-0015): every write this flow performs — the branch
+  # push and the PR create — goes through the doc-maintainer App's BOT_TOKEN, not
+  # GITHUB_TOKEN, and both callee jobs declare `contents: read`. Because the
+  # effective token is the caller∩callee intersection, `contents: write` here was
+  # unusable by construction: a dead grant that read as a capability the flow had.
+  # Surfaced by the caller/callee parity contract test.
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/doc-maintainer.yml@ci/v2.16.0
+    with:
+      runner_labels: '["self-hosted", "ci-runner", "single-use"]'
+      model: ai-doc-maintainer
+      # HTTP proxies require explicit opt-in. Required by the URL SCHEME, NOT by
+      # repo visibility — if LITELLM_BASE_URL starts `http://`, uncomment this,
+      # public repo or not. On the shared self-hosted pool the proxy is the
+      # Docker bridge gateway (http://172.17.0.1:4001/v1 — plain HTTP), so this
+      # applies there too. NB: LITELLM_BASE_URL must NOT be 127.0.0.1/localhost;
+      # jobs run inside a container, so loopback is the container itself.
+      # (CI-0017.)
+      # REQUIRED here, not optional: this repo's LITELLM_BASE_URL is
+      # http://172.17.0.1:4001/v1 (the Docker-bridge gateway — never loopback, since
+      # jobs run inside a container), and canon's client refuses a non-HTTPS proxy
+      # without this flag. `ai-review.yml` sets it for the same reason. Required by
+      # the URL SCHEME, not by repo visibility.
+      litellm_allow_insecure_http: true
+      merge_sha: ${{ inputs.head_sha || '' }}
+    # Explicit map (FT-27 least-privilege) — exactly the secrets the reusable declares.
+    secrets:
+      AIDOC_FLOW_BOT_ID: ${{ secrets.AIDOC_FLOW_BOT_ID }}
+      AIDOC_FLOW_BOT_KEY: ${{ secrets.AIDOC_FLOW_BOT_KEY }}
+      LITELLM_BASE_URL: ${{ secrets.LITELLM_BASE_URL }}
+      LITELLM_DOC_API_KEY: ${{ secrets.LITELLM_DOC_API_KEY }}
