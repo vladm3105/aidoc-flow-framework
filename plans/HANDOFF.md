@@ -1,7 +1,87 @@
 # Session Handoff
 
+> **🔄 SESSION 2026-07-29 — CI-CANON-V2.16-001 in flight. PR 0 merged (#374);
+> PR 1 open; PR 2 (`CLAUDE.md` + plan → `Completed`) still to come.**
+>
+> `plans/CI-CANON-V2.16-MIGRATION-PLAN.md`, Status **In Progress**. PR 1 takes
+> all eleven `aidoc-flow-ci` call sites to `@ci/v2.16.0` and applies the four
+> body changes a re-pin structurally cannot deliver (B1–B4), plus the comments
+> the bump falsifies. Records `plans/DECISIONS.md` **D-0070**.
+>
+> **PR 1 carries four doc surfaces against governance Rule 1's ≤3 cap** —
+> `DECISIONS.md` + `HANDOFF.md` + `CHANGELOG.md` + the plan file (whose `Status`
+> must move in the same change as the state change). Founder OK granted
+> 2026-07-29 and **re-confirmed at execution time**; the commit message carries
+> the audit-trail line naming the fourth surface. It is founder-merged regardless
+> — it touches `ai-review.yml`.
+>
+> **Four things a next session must not re-derive:**
+>
+> 1. **The `--repin`/`--update` distinction is load-bearing, not stylistic.**
+>    `install.sh --update` replaces the whole body of all sixteen
+>    `safe_to_replace` surfaces. This repo's callers carry customizations that
+>    would not survive it: `ai-review`'s dual self-hosted `runner_labels_*` +
+>    `litellm_allow_insecure_http: true`, `secret-scan`'s `config-path:
+>    .gitleaks.toml` (without it the scan reports 27 synthetic findings and goes
+>    red), `docs-sync`'s `pull-requests: write`, `links`'s two-job split.
+> 2. **`check-drift.sh` cannot tell you a pin is stale**, because it frames each
+>    caller against the template *at the tag that caller declares* — a stale pin
+>    is self-consistent and silent. That is `check-pin-currency.sh`'s job, and
+>    this repo runs it **nowhere**, which is how the mixed-pin state accumulated.
+>    Filed as `NO-PIN-CURRENCY-CHECK` in `FRAMEWORK-TODO.md` (TODO-only).
+> 3. **Reading the drift output: count `::warning::drift-check:`, not
+>    `::warning::`.** A bare grep returns 12 for 10 annotations —
+>    `standards-drift.yml`'s canon header quotes the literal string, so its own
+>    drift body reproduces it twice. Measured before and after this change: **10
+>    both times**. And `secret-scan.yml`'s diff body legitimately *grows* by ~13
+>    lines after the bump — its template is one of the eight that gained the #329
+>    allowlist at v2.16.0, and this repo deliberately adds no `concurrency:` block
+>    there. Do not "fix" it; that is `--update` by hand.
+> 4. **Seven local workflows still carry `cancel-in-progress: true` and are exempt
+>    only because they are not required contexts** (`codeql`, `chg-gate`,
+>    `doc-review`, `hermes`, `plugin`, `labeler`, `links`). That is a snapshot,
+>    not a property — `acceptance` was exempt by the same reasoning, complete with
+>    a comment arguing it was safe, until 2026-07-27 made it required and turned
+>    the comment into the B4 defect. **Any change that makes one of the seven
+>    required must take the allowlist in the same PR.**
+>
+> **Verified at execution:** pins 11/11 at `@ci/v2.16.0`; `check-pin-currency.sh
+> --canon ci/v2.16.0` → "all pins current"; drift before/after shows only pin
+> strings, B1–B4, the Step-4 comment edits, and the expected `secret-scan`
+> baseline-move growth, with `pre-commit.yml`'s `concurrency:` region now
+> byte-exact against canon; runners **2.335.1** (≥ the 2.327.1 node24 floor);
+> `APP_REVIEWER_1_BOT_ID` present, i.e. **armed** — which is why #331 and §23.4
+> are no-ops here and why `ai-review.yml`'s FT-43 comment keeps canon's
+> `while unarmed` qualifier.
+>
+> **Author-side review found one real defect, and all three agents found the same
+> one.** The `ai-review.yml` FT-43 comment as first written said "both job `if:`s
+> require `draft == false`" — false. Only the **trust** job's `if:` carries a
+> `draft` term (canon `ai-review.yml:148`); the review job has none and skips
+> transitively via `needs: trust`. The conclusion held, the mechanism did not —
+> the exact defect class B4 exists to delete, nearly re-introduced by the PR that
+> deletes it. Fixed before push.
+>
+> **Cross-repo, two issues on `aidoc-flow-ci`:**
+> [#347](https://github.com/vladm3105/aidoc-flow-ci/issues/347) —
+> `docs/UPDATE_GUIDE.md:88`'s worked example for *this* repo names
+> `runner_labels_routine: '"ubuntu-latest"'`, false since PLAN-013.
+> [#348](https://github.com/vladm3105/aidoc-flow-ci/issues/348) — the #329
+> allowlist comment cites a label write in six templates whose `pull_request:` is
+> untyped and which therefore never receive one. **This repo deliberately keeps
+> canon's wrong wording** in `pre-commit.yml`: correcting it would forfeit the
+> byte-exactness verification #3 turns on and earn a permanent drift warning for
+> being right. `conformance.yml` / `acceptance.yml` are locally owned, so they got
+> the trim.
+
+---
+
 > **✅ SESSION 2026-07-27 — #365 CLOSED: the acceptance tier is green, pinned,
-> and a required check. Tracker empty — 0 open issues.**
+> and a required check. ~~Tracker empty — 0 open issues.~~ *(Superseded
+> 2026-07-29: the tracker holds
+> [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373),
+> `CODEQL-FLOATING-ACTION-PIN`, filed by CI-CANON-V2.16-001's own PR 0. It was
+> empty when this banner was written.)***
 >
 > `plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md` executed. Tier goes **3
 > failures / 63 → 0 failures / 64**, and `.github/workflows/acceptance.yml` runs

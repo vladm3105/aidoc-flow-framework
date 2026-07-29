@@ -4,7 +4,7 @@
 | -------------- | --------------------------------------------------------------------------------- |
 | Task           | CI-CANON-V2.16-001                                                                 |
 | Type           | chore                                                                              |
-| Status         | Draft — 2026-07-29                                                                 |
+| Status         | In Progress — 2026-07-29 (PR 0 merged as #374; PR 1 open; PR 2 pending)             |
 | Depends on     | nothing blocking; canon `ci/v2.16.0` is cut (2026-07-27)                            |
 | Feeds          | a single-tag fleet position for this repo's workflow callers; unblocks the next canon bump being mechanical |
 | Version impact | none — no `VERSION` stream moves (CI infrastructure only)                           |

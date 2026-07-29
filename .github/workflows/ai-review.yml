@@ -25,9 +25,19 @@ name: ai-review
 on:
   pull_request_target:
     # FT-43 (ci/v2.12.0, filed as a SECURITY fix): `ready_for_review` +
-    # `converted_to_draft` so a draft→ready transition triggers a real review,
-    # and a ready→draft is seen by the fail-closed guard. Without them a PR whose
-    # code changed while it was a draft could reach merge un-reviewed.
+    # `converted_to_draft` so a draft→ready transition triggers a real review
+    # (and a ready→draft still gets a real review while unarmed — #331 removed
+    # the fail-closed step that used to intercept it), rather than a
+    # code-changed-while-draft PR going straight to merge un-reviewed.
+    #
+    # Keep the `while unarmed` qualifier: THIS repo is armed
+    # (`vars.APP_REVIEWER_1_BOT_ID` is set), so a `converted_to_draft` still
+    # job-skips here — but by ONE mechanism, not two. Only the TRUST job's `if:`
+    # carries `draft == false` on its armed disjunct (canon ai-review.yml:148);
+    # the review job's `if:` has no `draft` term at all — it skips transitively
+    # because it is `needs: trust`, so `needs.trust.outputs.ai_review_ok` is
+    # empty when trust skips. Do not read the review job as independently
+    # draft-gated. #331 is a no-op on this repo.
     types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review, converted_to_draft]
   pull_request_review:
     types: [submitted]
@@ -51,7 +61,9 @@ permissions:
   issues: write          # gh api label create/apply paths
 jobs:
   call:
-    # ci/v2.15.0 — the CI-0025 self-cancel fix (aidoc-flow-ci#322). At v2.14.0 the
+    # ci/v2.15.0 SHIPPED the CI-0025 self-cancel fix (aidoc-flow-ci#322) — this
+    # annotation names the tag that fixed it, not the tag pinned below, so it
+    # stays true across later bumps. At v2.14.0 the
     # reusable's concurrency group used a DENYLIST of self-emitted actions, so the
     # review this workflow posts fired `pull_request_review: submitted`, which
     # landed in the same group and cancelled the `pull_request_target` run that had
@@ -61,7 +73,7 @@ jobs:
     # denylist with an ALLOWLIST of the two code-changing actions (`synchronize`,
     # `opened`); every other subscribed event fires at the current head and must
     # not cancel. Do not pin back below v2.15.0.
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.15.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.16.0
     with:
       # Model selection is CONFIG-DRIVEN: the reusable reads `litellm.model`
       # from the trusted .github/ai-review/config.json. Uncomment to override:

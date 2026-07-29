@@ -1,4 +1,4 @@
-# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v2.14.0).
+# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v2.16.0).
 # DRY-RUN rollout: computes proposed mechanical doc-fixes post-merge and
 # comments them on the PR — no push-back, no bot App needed (bot secrets are
 # only referenced by the live-mode Apply step, gated by dry_run != true).
@@ -12,32 +12,26 @@ on:
 
 permissions:
   contents: read
-  # PREREQUISITE ONLY — this alone does NOT fix the failing dry-run comment.
-  #
   # Dry-run's "Post dry-run comment" step posts to the merge's PR and needs
   # pull-requests: write; with `read` it dies on
   # `GraphQL: Resource not accessible by integration (addComment)` under
   # `set -euo pipefail`. The step is gated on `proposed != 0`, so it never ran —
   # and the workflow reported green — until a merge finally produced a proposal.
   #
-  # But GitHub intersects caller and callee permissions for reusable workflows,
-  # and the callee declares `pull-requests: read` at its own workflow level, with
-  # no job-level override. So the effective token stays `read` until THAT
-  # declaration is raised upstream.
+  # MECHANISM (keep this — it is why the caller-side grant alone was never
+  # enough): GitHub INTERSECTS caller and callee permissions for reusable
+  # workflows, so the effective token is the weaker of the two. This grant is one
+  # half; the callee's own workflow-level declaration is the other.
   #
-  # STILL NOT RAISED AT ci/v2.14.0 (verified 2026-07-25, CI-CANON-V2-001):
-  # canon docs-sync.yml declares `contents: read` + `pull-requests: read` at
-  # lines 59-61 and its `sync` job sets no `permissions:` block, while the
-  # "Post dry-run comment" step runs `gh pr comment` (line 244). Re-pinning this
-  # caller to v2.14.0 therefore does NOT fix the dry-run comment — an earlier
-  # version of this comment assumed the upstream half would ship alongside the
-  # re-pin, and it has not. This block remains pre-positioning only; the fix must
-  # land in canon. Track upstream before graduating docs-sync out of dry-run.
+  # BOTH HALVES ARE NOW IN PLACE. CI-0015 raised the callee to
+  # `pull-requests: write` at ci/v2.15.0 (canon docs-sync.yml:77, verified at
+  # ci/v2.16.0 — the pin below). The intersection therefore resolves to `write`
+  # and the dry-run comment can post. Nothing upstream is outstanding.
   #
   # `contents` stays `read`: dry-run never pushes, and live mode uses the bot App.
   pull-requests: write
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v2.14.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v2.16.0
     secrets: inherit  # pragma: allowlist secret

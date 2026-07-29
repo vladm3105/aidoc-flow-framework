@@ -12,7 +12,19 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # CI-0025 / REPO_STANDARDS §23: ALLOWLIST of the code-changing events.
+  # This workflow feeds a REQUIRED context. Every event other than a push or a
+  # code-changing PR action fires at the CURRENT head SHA, and a cancelled required
+  # check is not success — it is retained alongside any later success from a
+  # separate run, so the rollup stays FAILURE and the PR is --admin-only. Here the
+  # untyped `pull_request` trigger admits `reopened`, which lands in the SAME group
+  # at the SAME head SHA as an in-flight `synchronize` run. Expressed as `==` so an
+  # empty `github` context yields false and cancels nothing; a `!=` denylist would
+  # cancel everything in that degraded state.
+  cancel-in-progress: >-
+    ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      || ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
+          && contains(fromJSON('["opened","synchronize"]'), github.event.action)) }}
 
 jobs:
   conformance:

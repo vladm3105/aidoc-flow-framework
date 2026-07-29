@@ -2,10 +2,24 @@
 name: audit-trail
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    # `labeled, unlabeled` are load-bearing, not cosmetic: the reusable's
+    # documented escape hatch is the two-signal override (the `skip-audit-trail`
+    # LABEL + a commit-body marker). Without a `labeled` trigger, applying the
+    # label fires no event, so the check never re-runs and the red check never
+    # clears — the operator is told to apply a label that cannot take effect and
+    # has to push an empty commit instead. ai-review's callers already include
+    # these; audit-trail was the outlier. This repo hit exactly that failure —
+    # see plans/DECISIONS.md D-0065.
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+
+# Deliberately NO top-level `concurrency:` block in this file. Canon's template
+# carries one, but it is the #329 ALLOWLIST rather than `cancel-in-progress:
+# true`; this caller has never had a block, and no block at all is strictly safer
+# than an allowlist. Nothing to cancel, so nothing to fix. Recorded here, at the
+# level a `concurrency:` sweep actually greps, per D-0070.
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v2.15.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v2.16.0
     with:
       runner_labels: '"ubuntu-latest"'
     permissions:
