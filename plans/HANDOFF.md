@@ -1,19 +1,31 @@
 # Session Handoff
 
-> **🔄 SESSION 2026-07-29 — CI-CANON-V2.16-001 in flight. PR 0 merged (#374);
-> PR 1 open; PR 2 (`CLAUDE.md` + plan → `Completed`) still to come.**
+> **✅ SESSION 2026-07-29 — CI-CANON-V2.16-001 COMPLETE. All eleven canon call
+> sites are at `@ci/v2.16.0`; the tracker holds one open issue (#373).**
 >
-> `plans/CI-CANON-V2.16-MIGRATION-PLAN.md`, Status **In Progress**. PR 1 takes
-> all eleven `aidoc-flow-ci` call sites to `@ci/v2.16.0` and applies the four
-> body changes a re-pin structurally cannot deliver (B1–B4), plus the comments
-> the bump falsifies. Records `plans/DECISIONS.md` **D-0070**.
+> `plans/CI-CANON-V2.16-MIGRATION-PLAN.md`, Status **Completed**. Three PRs, all
+> merged: **#374** (plan), **#375** (the migration — eleven pins plus the four
+> caller-body changes B1–B4 a re-pin structurally cannot deliver, plus the
+> comments the bump falsified), **this one** (`CLAUDE.md` propagation + final
+> Status). Scratch PR **#376** ran verification #8 and was closed unmerged.
+> Records `plans/DECISIONS.md` **D-0070**, which supersedes D-0066 **in scope
+> only** — its `@ci/v2.14.0` pin position, not its shared-trust-config rule.
+> D-0066's gitleaks bullet also has one *observation* spent (canon's header no
+> longer "still says `dir`"); its rule — a header comment is not the contract —
+> stands.
 >
-> **PR 1 carries four doc surfaces against governance Rule 1's ≤3 cap** —
-> `DECISIONS.md` + `HANDOFF.md` + `CHANGELOG.md` + the plan file (whose `Status`
-> must move in the same change as the state change). Founder OK granted
-> 2026-07-29 and **re-confirmed at execution time**; the commit message carries
-> the audit-trail line naming the fourth surface. It is founder-merged regardless
-> — it touches `ai-review.yml`.
+> **Both PRs took a founder-granted 4th doc surface** against governance Rule 1's
+> ≤3 cap — granted 2026-07-29 and **re-confirmed at execution time for each**,
+> each with the audit-trail line in the commit message: PR 1 because the
+> plan's own `Status` had to move with the state change, PR 2 because
+> verification #8 falsified `DECISIONS.md` *and* this file. Both were
+> founder-merged anyway (`ai-review.yml`, then `CLAUDE.md`).
+>
+> **What is genuinely new for the repo, beyond the pins:** PRs here reached
+> `CLEAN` and merged **without `--admin`**, twice — the first time in weeks. The
+> `ai-review` self-cancel (CI-0025 / ci#322) is fixed at this tag: on #375 the
+> `pull_request_target` run concluded `success` rather than being cancelled by
+> the `pull_request_review` run its own review submission fired.
 >
 > **Four things a next session must not re-derive:**
 >
@@ -62,12 +74,29 @@
 > `repository_dispatch`, irrelevant to a label). **No `audit-trail` run on that
 > branch was label-triggered** — all came from `pull_request`. Say provenance,
 > not a count; the count moves with the next push. Only a **human** (or App-token)
-> label write reaches the new trigger. Two follow-ons: the skipped⇒success
-> assumption B2 rests on is **still unexercised** — the plan's verification #8
-> smoke test is the only way to settle it, and the label must be applied **by
-> hand**; and the support previously offered for it (`call / ai-review`
-> job-skipping on `ai:review-*` writes) is **not evidence**, because no run is
-> ever created. The retracted sentences are annotated in place in the plan's §B2.
+> label write reaches the new trigger. The support previously offered for
+> skipped⇒success (`call / ai-review` job-skipping on `ai:review-*` writes) is
+> **not evidence**, because no run is ever created. The retracted sentences are
+> annotated in place in the plan's §B2.
+>
+> **Verification #8 then measured it, on scratch PR #376 — labels applied BY
+> HAND, because a bot label proves nothing.** Three results, tabulated in the
+> plan's §Step 6: (a) the hatch fires — a hand-applied `skip-audit-trail` started
+> an `audit-trail` run whose `verify` job **ran** and passed the two-signal
+> override, where before B2 it fired nothing; (b) a `skipped` run does **not
+> degrade** a required context that already succeeded at that SHA — `skipped`
+> `call / verify` + `call / ai-review` beside their successes left the PR
+> `CLEAN`; (c) check-runs are **retained alongside** with the rollup keeping the
+> worst — a `failure` and a later `success` for `call / verify` at one SHA read
+> `BLOCKED`. **B2 is safe as shipped.**
+>
+> Three things not to overstate when citing that table. `call / trust` is **not**
+> a required context (a draft counted it as one). Result (b) does **not** prove
+> the general "skipped ⇒ success" — every skip observed landed beside an existing
+> success, so a required context whose *only* run job-skips is **untested**; B2
+> does not need that case. And (c) **corroborates** rather than settles:
+> `ci#330` closed 2026-07-27 and `ci/v2.16.0` already publishes the mechanism at
+> `docs/REPO_STANDARDS.md` §23.1.
 >
 > **CI-0025 is confirmed fixed, but read the right run for it.** Under the defect
 > the `pull_request_review` run was the *canceller*, not the victim — it killed
