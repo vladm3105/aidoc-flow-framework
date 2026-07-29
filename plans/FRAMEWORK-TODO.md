@@ -57,36 +57,57 @@
   fix shape). Fails (c): `codeql.yml` feeds no required context, so it degrades
   the Security tab rather than blocking merges.
 
-### `[ci]` `NO-PIN-CURRENCY-CHECK` — nothing in this repo's CI or hooks runs `check-pin-currency.sh`, which is why a mixed-pin state accumulated unnoticed
+### `[ci]` ~~`NO-PIN-CURRENCY-CHECK`~~ → `PIN-CURRENCY-NO-READER` — the check runs and warned correctly; nothing reads warning-only annotations on a weekly scheduled job
 
-- *Context:* surfaced by `CI-CANON-V2.16-MIGRATION-PLAN.md` (2026-07-29). The
-  eleven canon call sites had drifted into **two** tags — six at `ci/v2.15.0`,
-  five at `ci/v2.14.0` — and stayed that way from 2026-07-27 until a human
-  looked. `check-drift.sh` structurally cannot catch it: it frames each caller
-  against the template *at the tag that caller declares*, so a stale pin is
-  self-consistent and silent (`aidoc-flow-ci/sync/check-pin-currency.sh:4`).
-  `check-pin-currency.sh` is the check that would have caught it, and this repo
-  runs it nowhere.
-- *Fix shape:* a periodic warning-only job (or a pre-commit hook) invoking
-  `aidoc-flow-ci/sync/check-pin-currency.sh --canon <tag>`. Warning-only is not a
-  softening — the script exits 0 by design (`:10`, `WARNING-ONLY, NEVER BLOCKS`),
-  so its output must be read, which is an argument for a scheduled job that
-  reports rather than a hook that scrolls past. Open question the fix must answer:
-  where the canon tag comes from, since hardcoding it recreates the same staleness
-  one level up.
-- *Tracker:* **TODO-only** — but on the rule's *speculative* carve-out, **not**
-  on the three-test bar, because test (a) is honestly met: the fix shape is
-  mechanical, names its own invocation, and has two copyable precedents in this
-  repo (`standards-drift.yml` as a scheduled canon caller,
-  `scripts/check-docs-updated.sh` as the blessed warning-only-hook pattern), so
-  any contributor could land it. Tests (b) and (c) do fail — the defect is an
-  *absence*, with no `file:line` in this repo where it lives, and no consumer is
-  affected. What keeps it off the tracker is that it proposes tooling that does
-  not exist and leaves a real design question open (where the canon tag comes
-  from). Promote when someone picks the work up, or as soon as that question has
-  an answer — **not** on "if it recurs": the detection gap is already established
-  as structural, and the migration plan resolves the mixed-pin *symptom* without
-  adding the check.
+**RETRACTED AND RESTATED 2026-07-29 (CANON-PARITY-001).** The original entry
+claimed this repo "runs `check-pin-currency.sh` nowhere." **That was false, and it
+was measured false, not argued false.** It runs on every weekly
+`standards-drift.yml` run: canon's reusable fetches
+`sync/check-standards-drift.sh`, whose tail (`:499-515` at `ci/v2.16.0`)
+invokes `check-pin-currency.sh` in-repo. It fired during the exact window the
+entry described — run
+[30257877863](https://github.com/vladm3105/aidoc-flow-framework/actions/runs/30257877863),
+2026-07-27T10:23:42Z:
+
+```
+pin-currency: auditing ./.github/workflows against canon ci/v2.15.0
+##[warning]pin-currency: ai-review.yml pinned @ci/v2.14.0 (canon ci/v2.15.0) — re-pin
+… ten such lines …
+pin-currency: 10 stale pin(s) — run 'install/install.sh <this-repo> --repin' (warning-only)
+```
+
+It named every stale caller *and* the remedy command, two days before a human
+noticed. So the detection was never absent and the proposed fix — "add a periodic
+job invoking `check-pin-currency.sh`" — would have added a **second** copy of a
+check that was already running and already right.
+
+- *Context (restated):* the real defect is that the signal has **no reader**.
+  `standards-drift.yml` is `schedule:`-only (weekly, Mon 09:00 UTC) plus
+  `workflow_dispatch`; the script is warning-only by design
+  (`check-pin-currency.sh:10`, `WARNING-ONLY, NEVER BLOCKS`) and its output is a
+  `::warning::` annotation inside a scheduled run that notifies nobody and blocks
+  nothing. The same run also reported `8 drift, 4 fetch/scope error(s)` unread.
+- *Fix shape:* give the existing output a destination rather than adding a
+  detector. Cheapest credible option: a small local workflow that runs the
+  script and **opens or updates a single tracking issue** when pins are stale, so
+  the state is visible where work is queued. Rejected alternatives, with reasons
+  — `strict: true` on the weekly run turns the job red permanently (8 drift +
+  4 uncheckable controls are expected here, so it would signal nothing); a
+  pre-commit hook needs a network fetch of canon's `VERSION` at commit time and
+  scrolls past anyway.
+- *Upstream angle:* canon has no adopter-facing template for this, so the
+  broadly-useful version is a feature request on `aidoc-flow-ci` (a reader for
+  warning-only drift/pin output), and the local workflow is the
+  "add a custom workflow" override mode until then.
+- *Tracker:* **TODO-only.** Test (a) is met — the fix shape is mechanical with a
+  copyable precedent (`standards-drift.yml` as a scheduled canon caller). Tests
+  (b) and (c) still fail: no `file:line` in this repo holds the defect, and no
+  consumer is affected. Promote when someone picks it up.
+- *Lesson worth more than the fix:* the original entry was written from the
+  symptom (a mixed-pin state survived two days) and inferred the cause (no check
+  exists) without reading a run log. One `gh run view --log | grep pin-currency`
+  falsified it. **An absence is the easiest defect to assert and the hardest to
+  verify — check the log before filing one.**
 
 ### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
 
