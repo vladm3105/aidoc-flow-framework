@@ -389,10 +389,37 @@ future company projects; it ships independently semver-tagged
 `ops/iplans/IPLAN-0017_unified-ci-flows.md` +
 `ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
 
-**Per-repo state (2026-07-25):** **public repo, but NOT purely
+**Per-repo state (2026-07-29):** **public repo, but NOT purely
 GitHub-hosted.** All eleven `aidoc-flow-ci` call sites are pinned
-`@ci/v2.14.0` (CI-CANON-V2-001; plan `plans/CI-CANON-V2-MIGRATION-PLAN.md`,
-PRs #334/#335; decisions `plans/DECISIONS.md` D-0066).
+`@ci/v2.16.0` (CI-CANON-V2.16-001; plan
+`plans/CI-CANON-V2.16-MIGRATION-PLAN.md`, PRs #374/#375; decisions
+`plans/DECISIONS.md` D-0070 — which supersedes D-0066's `@ci/v2.14.0`
+position from CI-CANON-V2-001, PRs #334/#335).
+
+**A canon bump is a migration, not a dependency update — do not leave it to
+Dependabot.** It rewrites `uses:` lines and nothing else, so it can never
+deliver a caller-**body** change and never notices a comment it falsified.
+Both failure modes were live here: the eleven sites had drifted into **two**
+tags because one caller was bumped by hand and a Dependabot group PR carried
+five of the ten distinct reusables, leaving four behind. Use canon's
+`--repin` — `CI_TAG=ci/vX.Y.Z bash install/install.sh <repo> --repin`, which
+rewrites the tag string only; **never `--update`**, which replaces whole caller
+bodies and would clobber this repo's
+self-hosted `runner_labels_*`, `litellm_allow_insecure_http`, `secret-scan`'s
+`config-path: .gitleaks.toml`, `docs-sync`'s `pull-requests: write`, and
+`links`'s two-job split.
+
+**The #329 concurrency allowlist is scoped by required-context, not by
+ownership.** `pre-commit`, `conformance` and `acceptance` all carry it: a
+cancelled required check is not success, and an untyped `pull_request` admits
+`reopened`, which fires at the current head. The last two are locally owned and
+call no reusable. **Seven local workflows still carry
+`cancel-in-progress: true` and are exempt only because they feed no required
+context** (`codeql`, `chg-gate`, `doc-review`, `hermes`, `plugin`, `labeler`,
+`links`) — a snapshot, not a property. `acceptance` was exempt by that same
+reasoning, defended by a comment arguing it was safe, until it became required
+on 2026-07-27. **Any change that makes one of the seven required must take the
+allowlist in the same PR.**
 
 Runner split — deliberate, do not "normalize":
 
@@ -407,16 +434,34 @@ Runner split — deliberate, do not "normalize":
 - **Everything else stays on `ubuntu-latest`**, including the
   fork-code-executing lint callers (`links`, `pre-commit`).
 
-Two operational facts that cost a session when unrecorded:
+Four operational facts that cost a session when unrecorded:
 
 - **`LITELLM_BASE_URL` must be the Docker-bridge address**
   (`http://172.17.0.1:4001/v1`), never loopback — jobs run inside a
   container, where `localhost` is the container. LiteLLM publishes host
   4001 → container 4000, and is a different service from `llm_router`.
 - **`secret-scan` at v2 scans full git history** (`gitleaks git`), not the
-  working tree (`gitleaks dir`, which is what canon's own header comment
-  still claims). Validate locally with `git`, or a clean local run will
-  still fail CI. Suppressions live in `.gitleaks.toml`.
+  working tree (`gitleaks dir`). Validate locally with `git`, or a clean local
+  run will still fail CI. Suppressions live in `.gitleaks.toml`. *(The rider
+  that canon's own header comment "still claims `dir`" was true at
+  `ci/v2.14.0` and is **no longer**. The scope change itself landed at
+  `ci/v2.0.0` (CI-0016); what `ci/v2.16.0` fixed is the header that had gone on
+  describing the old behaviour. Upstream `aidoc-flow-ci#307` is closed.)*
+- **A `GITHUB_TOKEN`-triggered event creates no workflow run** (the documented
+  exceptions are `workflow_dispatch` and `repository_dispatch`), which is why
+  `labeler`'s and `ai-review`'s own label writes start nothing. Only a
+  **human** or App-token label write reaches a `labeled` trigger. Measured on
+  PR #375; do not reason about label-driven CI without it (D-0070).
+- **Check-runs are retained alongside each other with the rollup keeping the
+  worst, and a job skipped by `if:` does not degrade a **required** context that
+  already succeeded at that SHA.** Measured on scratch PR #376, not assumed: a `skipped`
+  `call / verify` alongside an earlier success left the PR `CLEAN`, while a
+  `failure` and a later `success` for that context at one SHA left it `BLOCKED`.
+  **So labelling cannot clear a red required check** — on this repo's branch
+  protection; canon settled the general mechanism in `REPO_STANDARDS` §23.1
+  (`aidoc-flow-ci#330`, closed). ⚠️ **Not tested: a required context whose
+  *only* run at a SHA job-skips.** A workflow that never triggers at all is a
+  different and worse case — it stays pending and blocks forever (D-0065).
 
 ### Local overrides shared — the foundational rule
 

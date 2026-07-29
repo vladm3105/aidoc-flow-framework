@@ -4,7 +4,7 @@
 | -------------- | --------------------------------------------------------------------------------- |
 | Task           | CI-CANON-V2.16-001                                                                 |
 | Type           | chore                                                                              |
-| Status         | In Progress — 2026-07-29 (PR 0 merged as #374; PR 1 open; PR 2 pending)             |
+| Status         | Completed — 2026-07-29 (PR 0 #374, PR 1 #375, PR 2 this; verification #8 run on scratch PR #376) |
 | Depends on     | nothing blocking; canon `ci/v2.16.0` is cut (2026-07-27)                            |
 | Feeds          | a single-tag fleet position for this repo's workflow callers; unblocks the next canon bump being mechanical |
 | Version impact | none — no `VERSION` stream moves (CI infrastructure only)                           |
@@ -61,6 +61,14 @@ Three reasons, each independently sufficient:
 - **PR 2 — the propagation.** `CLAUDE.md` §"Unified CI" per-repo-state paragraph,
   **plus this plan's final `Status` → `Completed`**. Split out to respect the
   ≤3-doc-surface governance rule (see §Governance for the per-PR Status table).
+  **As executed it also carried `plans/DECISIONS.md` and `plans/HANDOFF.md`** —
+  verification #8 falsified D-0070's "still unexercised" wording *and* the
+  HANDOFF banner's live status, and the per-PR doc-of-record rule requires the
+  PR that falsifies a doc of record to correct it in the same change. Four
+  surfaces; founder OK granted 2026-07-29, audit-trail line in the commit
+  message. The ≤3 split this bullet originally described did not survive contact
+  with a plan whose own completion falsifies three other documents — worth
+  knowing before planning the next one.
 
 **Out (named, not silently dropped):**
 
@@ -196,9 +204,9 @@ and B2 bricking the gate, so it is stated rather than assumed.
 > that branch was label-triggered — both came from `pull_request`. So it is **not**
 > *every* label write, only a **human** or App-token one; and `call / ai-review`
 > job-skipping on its own `ai:review-*` writes **is not evidence** for
-> skipped⇒success, because no run is created to skip. The assumption remains
-> **unexercised**, which makes verification #8 the only way to settle it — and it
-> must apply the label **by hand**.
+> skipped⇒success, because no run is created to skip. That left verification #8
+> as the only way to settle it — **run on scratch PR #376; see §Step 6, the
+> verification #8 results table.** It had to apply the label **by hand**.
 
 ⚠️ **Add no `concurrency:` block when taking B2** — but not for the reason a first
 draft of this plan gave. Canon's template block is the #329 **allowlist**, not
@@ -342,7 +350,55 @@ queues in the same group, independently of `cancel-in-progress`.
 | 5 | `gh api repos/vladm3105/aidoc-flow-framework/actions/runners --jq '.runners[].version'` | every runner ≥ 2.327.1 — re-measure at execution time; do not trust this plan's snapshot |
 | 6 | `gh variable list -R vladm3105/aidoc-flow-framework` | `APP_REVIEWER_1_BOT_ID` present — this is what "armed" means to the reusable, **not** the presence of the `APP_REVIEWER_1_*` secrets |
 | 7 | The PR's own required checks | all six green. This is the real integration test: `ai-review`, `composition`, `pre-commit`, `audit-trail`, `conformance` and `acceptance` all execute their changed form on this very PR |
-| 8 | B2 smoke (post-merge, optional) | On a scratch PR: (a) apply `skip-audit-trail` → `call / verify` **re-runs**; before B2 it fired on neither add nor remove. (b) apply any *other* label → an `audit-trail` run starts and its `verify` job is **skipped**, and the PR remains mergeable — this is what confirms the skipped⇒success assumption B2 rests on |
+| 8 | B2 smoke (post-merge, ~~optional~~ **RUN — scratch PR #376, closed unmerged**) | On a scratch PR: (a) apply `skip-audit-trail` → `call / verify` **re-runs**; before B2 it fired on neither add nor remove. (b) apply any *other* label → an `audit-trail` run starts and its `verify` job is **skipped**, and the PR remains mergeable — this is what confirms the skipped⇒success assumption B2 rests on. **Results below.** It was reclassified from optional to required once #375 showed the assumption had never been exercised at all |
+
+**Verification #8 — run 2026-07-29 on scratch PR #376 (closed unmerged).** The
+labels were applied **by hand**; a bot label write uses `GITHUB_TOKEN` and
+creates no run, so it would have proved nothing.
+
+| Question | Answer | Evidence |
+| --- | --- | --- |
+| (a) Does the hatch now fire? | **Yes** | Hand-applied `skip-audit-trail` started an `audit-trail` run (18:47:45Z) whose `verify` job **ran** and passed on the two-signal override. Removing the label fired `unlabeled` and re-ran it too. Before B2, neither add nor remove fired anything |
+| (b) Does a `skipped` job degrade a **required** context? | **No** | At the clean SHA `dd2d6046`, hand-applying an unrelated label (`ci`) produced `skipped` check-runs on **two** required contexts — `call / verify` and `call / ai-review` — alongside their earlier successes. `mergeStateStatus` stayed **CLEAN**. (`call / trust` also skipped, but it is **not** a required context, so it evidences nothing here) |
+| (c) Are check-runs retained alongside, with the rollup keeping the worst? | **Yes** | At SHA `c9fcb5eb`, `call / verify` carried **both** a `failure` (18:47:02Z) and a later `success` (18:47:47Z); the PR read **BLOCKED**. It is why B2 cannot green a red check by labelling |
+
+**Read (b) precisely — it proves less than "skipped ⇒ success."** The skipped
+runs landed *alongside earlier successes* for the same contexts. Under (c)'s
+worst-wins rule, `CLEAN` is consistent with both "`skipped` counts as success"
+and "`skipped` is ignored while the earlier success governs." What is proven is
+that **a `skipped` run does not degrade a required context that has already
+succeeded at that SHA** — which is exactly and only what B2 needs, because
+`audit-trail` always has a prior `pull_request` run at any SHA a label event can
+reach. Strictly the narrowed claim wants a prior *success*, not merely a prior
+run; the gap is closed by (c) rather than by the trigger set — if that prior run
+failed or was cancelled the context is already red, and under worst-wins a later
+skip cannot improve it. **The untested case is a required context whose *only*
+run at a SHA job-skips**; nothing here speaks to it.
+
+**Provenance for (c), stated so it can be audited.** Three `call / verify`
+check-runs exist at `c9fcb5eb`, not two: `failure` 18:47:02Z, `success`
+18:47:47Z, and a second `failure` at 18:49:31Z from the `unlabeled` event. The
+`BLOCKED` reading was taken in the window **18:48:21Z–18:49:31Z** — after
+`call / Lint / format / security hooks` completed at 18:48:21Z (so no required
+context was still pending) and before the third run's check-run appeared at
+18:49:31Z (the check-run query taken at the same moment returned exactly two
+`call / verify` entries; the run itself was *created* two seconds earlier, at
+18:49:29Z). In that window every one of the other five required contexts had
+completed successfully, `required_approving_review_count` is 0 and `strict` is
+false — so nothing but `call / verify`'s retained `failure` can explain
+`BLOCKED`, and it is explainable neither by a pending check nor by
+latest-run-wins.
+
+**(c) corroborates canon rather than settling anything.**
+[ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330) was **closed
+2026-07-27**, and `ci/v2.16.0` — the tag this plan adopts — already publishes the
+answer at `docs/REPO_STANDARDS.md` §23.1 ("Scope, settled (#330)"): an in-place
+**re-run replaces** a check-run, while a **separate run adds a second alongside**
+and both are retained. #376 reproduced that independently on this repo. Recording
+it as corroboration, not as a resolution.
+
+**Conclusion: B2 is safe as shipped.** The escape hatch is reachable, and the
+extra runs a human label write now starts are benign.
 
 ## Risks
 
@@ -428,7 +484,7 @@ sequence, not one edit, and PR 2 is in scope, so PR 1 cannot legitimately write
 | --- | --- | --- |
 | PR 0 | stays `Draft` (authored, not started) | this plan + `FRAMEWORK-TODO.md` = 2 |
 | PR 1 | `Draft` → **`In Progress`** | `DECISIONS.md` + `HANDOFF.md` + `CHANGELOG.md` + this plan = **4** (founder OK) |
-| PR 2 | `In Progress` → **`Completed`** | `CLAUDE.md` + this plan = 2 |
+| PR 2 | `In Progress` → **`Completed`** | planned: `CLAUDE.md` + this plan = 2. **As executed: 4** — + `DECISIONS.md` (verification #8 falsified D-0070's wording) + `HANDOFF.md` (its live-status banner asserted `In Progress`, "PR 1 open", and "still unexercised", all falsified by this PR). **Founder OK granted 2026-07-29**, audit-trail line in the commit message |
 
 Without PR 2 carrying the final transition the plan ends life stuck at
 `In Progress` — the stale-status defect the governance rule explicitly names. Note
@@ -665,7 +721,10 @@ argument for the second pass.
    copying it would not "introduce cancellation into a required context." The
    action (add no block) survives; the reason was replaced — precisely the class of
    inline reasoning B4 exists to delete from `acceptance.yml`.
-4. **B2 rested on an unstated load-bearing assumption.** After B2, every label
+4. **B2 rested on an unstated load-bearing assumption.** *(This finding's
+   premise was later retracted — a `GITHUB_TOKEN` label write starts nothing;
+   see D-0070 and §B2's corrected block. Kept verbatim as the Pass-N record.)*
+   After B2, every label
    write in the repo starts an `audit-trail` run whose `verify` job is skipped,
    adding a `skipped` check-run to a *required* context; B2 is benign only under
    skipped⇒success. Now stated, cited (`audit-trail-check.yml:84`), and made

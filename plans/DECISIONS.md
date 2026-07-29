@@ -17,6 +17,21 @@ graduation.
 `aidoc-flow-ci` call sites from a mixed `ci/v2.14.0` / `ci/v2.15.0` state to
 `ci/v2.16.0`.
 
+**Supersession scope.** This **supersedes D-0066 in one part only** — its
+`@ci/v2.14.0` pin position (CI-CANON-V2-001, "Target `ci/v2.14.0`", shipped in
+PRs `#334`/`#335`). Everything else in D-0066 is **carried forward unchanged**, in
+particular its second half — *a shared trust config makes a partial fleet
+migration a breaking change* — which is a standing rule about fleet
+coordination, not a statement about any one tag, and its diagnosis of the
+nine-day `ai-review` outage. D-0066 is superseded **in scope**, not retired.
+
+One exception to "unchanged": D-0066's gitleaks bullet observes that "canon's own
+header comment still says `dir`". That was true at `ci/v2.14.0` and is **not** at
+`ci/v2.16.0`, which documents the CI-0016 scope change (upstream `aidoc-flow-ci`
+issue 307, closed 2026-07-26). The bullet's *rule* — a header comment is not the
+contract, so validate against what the job runs — stands; only that one
+observation is spent.
+
 - **Dependabot cannot deliver a caller-body change, so a pin bump is never the
   whole migration.** It rewrites `uses:` lines and nothing else. Two of the four
   changes in this PR live in caller bodies (`pre-commit.yml`'s concurrency
@@ -59,18 +74,35 @@ graduation.
   retained alongside the earlier one with the rollup keeping the worst. So the
   benefit is precisely that the override becomes usable on the next push instead
   of being unreachable — this repo had already hit the unreachable case (D-0065).
-  B2 also rests on an assumption worth stating: a job skipped by `if:` reports
-  success to branch protection. It is the difference between B2 being harmless
-  noise and B2 bricking a required gate. The sharpest case is *failure-then-skip*:
-  `call / verify` is red at SHA X, someone applies an unrelated label, and a fresh
-  run job-skips at that same SHA. Under the retained-alongside/worst-wins model
-  these files assert throughout, the earlier `failure` still governs and the gate
-  holds; if [ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330)
-  resolves toward latest-run-wins instead, B2 is where this repo would feel it
-  first.
+  B2 rests on an assumption that is now **measured, not assumed** — scratch PR
+  #376, verification #8, run before this plan was marked Completed. **A job
+  skipped by `if:` does not degrade a required context that already succeeded at
+  that SHA**: `skipped` check-runs for `call / verify` and `call / ai-review`
+  (both required) landed alongside their earlier successes and the PR stayed
+  `CLEAN`. **And check-runs are retained alongside each other with the rollup
+  keeping the worst**: at another SHA, a `failure` and a later `success` for
+  `call / verify` coexisted and the PR read `BLOCKED`. The second result is what
+  makes the first safe rather than merely observed — labelling cannot green a red
+  required check. **B2 is safe as shipped.**
 
-- **B2's blast radius is much narrower than the plan assumed, and the assumption
-  above is still UNEXERCISED — measured on PR #375, this change's own PR.** The
+  **Three precision notes, because this is the kind of table that gets cited
+  later.** (1) `call / trust` also skipped, and an earlier draft counted it as a
+  third required context — **it is not required**; the required set is
+  `Framework + platform conformance`, `call / composition`, `call / Lint /
+  format / security hooks`, `call / ai-review`, `call / verify`, `Acceptance tier
+  (deterministic)`. (2) The measurement does **not** establish the general
+  "skipped ⇒ success" claim, because every skip observed landed beside an
+  existing success; the untested case is a required context whose *only* run at a
+  SHA job-skips. B2 does not need that case — `audit-trail` always has a prior
+  `pull_request` run at any SHA a label event can reach. (3) It **corroborates**
+  rather than settles: [ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330)
+  closed 2026-07-27, and `ci/v2.16.0` already publishes the mechanism at
+  `docs/REPO_STANDARDS.md` §23.1 — an in-place re-run *replaces* a check-run, a
+  separate run *adds one alongside*. An earlier draft of this bullet said #330
+  "leaves open"; it did not.
+
+- **B2's blast radius is much narrower than the plan assumed — measured on
+  PR #375, this change's own PR.** The
   plan asserted that after B2 "*every* label write in this repo (`labeler`'s path
   labels, `ai-review`'s own `ai:review-*` writes, the `skip-ai-review`
   label-cycle) starts an `audit-trail` run whose `verify` job is skipped." **It
@@ -90,10 +122,20 @@ graduation.
   Two consequences. First, the earlier empirical support offered for
   skipped⇒success — "`call / ai-review` job-skips on every `ai:review-*` label
   event and PRs still merge" — **is not evidence at all**: no run is created, so
-  nothing job-skips. Do not cite it. Second, the plan's verification #8 (the
-  post-merge scratch-PR smoke test) is now the *only* way to settle the
-  assumption, and it must apply the label **by hand** — a bot-applied label will
-  reproduce nothing.
+  nothing job-skips. Do not cite it. Second, that left verification #8 as the
+  *only* way to settle the assumption — which is why it was reclassified from
+  optional to required and run on scratch PR #376 before this plan was marked
+  Completed. **It must apply the label by hand**; a bot-applied label reproduces
+  nothing, and a smoke test that used one would have "passed" while measuring
+  precisely zero.
+
+- **The general fact worth keeping, independent of this migration: a
+  `GITHUB_TOKEN`-triggered event creates no workflow run.** Documented exceptions
+  are `workflow_dispatch` and `repository_dispatch`. This is why a workflow can
+  subscribe to `labeled` and still appear never to fire — the labels it sees in
+  practice are written by other workflows under `GITHUB_TOKEN`. Reason about
+  label-driven CI here with that in hand, or conclude the trigger is broken when
+  it is working exactly as specified.
 
 - **A byte-exact copy is worth keeping even when the copied comment is wrong —
   file the defect upstream instead.** Canon's `pre-commit.yml` allowlist comment
