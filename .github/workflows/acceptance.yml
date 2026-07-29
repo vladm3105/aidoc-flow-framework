@@ -10,23 +10,27 @@ on:
 permissions:
   contents: read
 
-# `cancel-in-progress` is safe HERE because of this workflow's TRIGGER SHAPE, and
-# the reasoning must survive so nobody re-derives it:
-#
-#   push          -> github.ref = refs/heads/<branch>
-#   pull_request  -> github.ref = refs/pull/<N>/merge
-#
-# Two different groups, so the two events on one commit never cancel each other.
-# Cancellation only fires across successive pushes to the SAME ref, which cancels
-# a stale SHA's in-flight run — never the newest SHA's own check-run.
-#
-# That precondition is exactly what ai-review.yml violated (two trigger events
-# collapsing into one group on the same SHA), stranding a CANCELLED required
-# check that blocked PRs #366 and #367 outright; fixed by ci/v2.15.0.
-# DO NOT add a second trigger event here without re-deriving the above.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # CI-0025 / REPO_STANDARDS §23: ALLOWLIST of the code-changing events.
+  # This workflow feeds a REQUIRED context. Every event other than a push or a
+  # code-changing PR action fires at the CURRENT head SHA, and a cancelled required
+  # check is not success — it is retained alongside any later success from a
+  # separate run, so the rollup stays FAILURE and the PR is --admin-only. Here the
+  # untyped `pull_request` trigger admits `reopened`, which lands in the SAME group
+  # at the SAME head SHA as an in-flight `synchronize` run. Expressed as `==` so an
+  # empty `github` context yields false and cancels nothing; a `!=` denylist would
+  # cancel everything in that degraded state.
+  #
+  # An earlier version of this comment argued blanket cancellation was safe here
+  # because `push` (refs/heads/<branch>) and `pull_request` (refs/pull/<N>/merge)
+  # resolve to different groups. That is true and irrelevant — the collision is
+  # WITHIN `pull_request`. It was written while this workflow was still
+  # non-required; it became the 6th required context on 2026-07-27.
+  cancel-in-progress: >-
+    ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      || ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
+          && contains(fromJSON('["opened","synchronize"]'), github.event.action)) }}
 
 jobs:
   acceptance:

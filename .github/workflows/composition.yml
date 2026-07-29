@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v2.15.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/composition.yml@ci/v2.16.0
     with:
       runner_labels: '"ubuntu-latest"'
     secrets: inherit  # pragma: allowlist secret

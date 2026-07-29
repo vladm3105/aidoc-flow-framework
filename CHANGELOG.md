@@ -12,6 +12,47 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — every CI caller is at `ci/v2.16.0`, and the body changes a re-pin cannot deliver (2026-07-29)
+
+**No version moves** — `.github/` only. CI infrastructure; no `framework/`
+change, so not a GATE-SPEC change. Implements
+`plans/CI-CANON-V2.16-MIGRATION-PLAN.md`; records `plans/DECISIONS.md` **D-0070**.
+
+- **All eleven `aidoc-flow-ci` call sites → `@ci/v2.16.0`** (ten files). They sat
+  at two tags — six at `ci/v2.15.0`, five at `ci/v2.14.0` — since 2026-07-27.
+  Applied with canon's `--repin` semantics (tag string only), never `--update`,
+  which would have replaced whole caller bodies and clobbered this repo's
+  self-hosted `runner_labels_*`, `config-path: .gitleaks.toml`, and `docs-sync`
+  permission grant.
+- **`pre-commit.yml`, `conformance.yml`, `acceptance.yml`: `cancel-in-progress:
+  true` → canon's #329 allowlist.** All three feed required contexts under an
+  untyped `pull_request` trigger, so a `reopened` could cancel a required check
+  at the current head SHA — and a cancelled required check is not success, it is
+  retained alongside any later success, leaving the PR `--admin`-only. The
+  behavioral delta is `reopened` alone; `push`, `opened` and `synchronize` still
+  cancel as before. The latter two are locally owned — the rule is scoped by
+  required-context, not by ownership.
+- **`acceptance.yml`'s "two different groups" comment was wrong and is
+  rewritten.** It argued cancellation was safe because `push` and `pull_request`
+  resolve to different `github.ref` values. True and irrelevant: the collision is
+  *within* `pull_request`. It was written while the workflow was still
+  non-required.
+- **`audit-trail.yml` gains `labeled, unlabeled` triggers.** Without them,
+  applying the `skip-audit-trail` label fires no event at all, so the documented
+  two-signal escape hatch on the required `call / verify` context was
+  unreachable — a failure this repo had already hit (D-0065). It makes the hatch
+  *fire*; it does not make an already-red check go green by labelling.
+- **Four comments the bump falsified, corrected:** `docs-sync.yml`'s "STILL NOT
+  RAISED" verdict (CI-0015 raised the callee to `pull-requests: write` at
+  `ci/v2.15.0`, so the dry-run comment can now post); `ai-review.yml`'s FT-43
+  note (#331 removed the fail-closed step — canon's `while unarmed` qualifier
+  kept, because this repo *is* armed); `auto-merge-ai-prs.yml`'s claim that the
+  enforcer re-arms `--merge` (it has always run `--squash`); and the `@ci/v2.14.0`
+  tags in two file headers.
+- **`.github/ai-review/config.json`'s `$schema` → `ci/v2.16.0`** — currency, not
+  breakage. No CI check validates against it, and no canon tool would ever bump
+  it.
+
 ### Fixed — the acceptance tier is green, pinned, and runs in CI (#365) (2026-07-27)
 
 **No version moves** — `tests/` + `.github/workflows/` only. No `framework/`

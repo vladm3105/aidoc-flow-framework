@@ -20,11 +20,21 @@ permissions:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
+  # CI-0025 / REPO_STANDARDS §23: ALLOWLIST of the code-changing events.
+  # This caller feeds a REQUIRED context. Every event here other than a push or a
+  # code-changing PR action fires at the CURRENT head SHA, and a cancelled required
+  # check is not success — it is retained alongside any later success from a
+  # separate run, so the rollup stays FAILURE and the PR is --admin-only. A label
+  # write (audit-trail's documented `skip-audit-trail` hatch) or a reopen would do
+  # it. Expressed as `==` so an empty `github` context yields false and cancels
+  # nothing; a `!=` denylist would cancel everything in that degraded state.
+  cancel-in-progress: >-
+    ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+      || ((github.event_name == 'pull_request' || github.event_name == 'pull_request_target')
+          && contains(fromJSON('["opened","synchronize"]'), github.event.action)) }}
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/pre-commit.yml@ci/v2.15.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/pre-commit.yml@ci/v2.16.0
     with:
       python-version: '3.12'
       # Override examples:

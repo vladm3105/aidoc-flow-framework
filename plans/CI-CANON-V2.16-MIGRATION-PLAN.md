@@ -4,7 +4,7 @@
 | -------------- | --------------------------------------------------------------------------------- |
 | Task           | CI-CANON-V2.16-001                                                                 |
 | Type           | chore                                                                              |
-| Status         | Draft — 2026-07-29                                                                 |
+| Status         | In Progress — 2026-07-29 (PR 0 merged as #374; PR 1 open; PR 2 pending)             |
 | Depends on     | nothing blocking; canon `ci/v2.16.0` is cut (2026-07-27)                            |
 | Feeds          | a single-tag fleet position for this repo's workflow callers; unblocks the next canon bump being mechanical |
 | Version impact | none — no `VERSION` stream moves (CI infrastructure only)                           |
@@ -188,6 +188,17 @@ That is benign only under the skipped⇒success rule. It already holds empirical
 here — `call / ai-review` is job-skipped on every `ai:review-*` label event today
 and PRs still merge — but it is the difference between B2 being harmless noise
 and B2 bricking the gate, so it is stated rather than assumed.
+
+> **⚠️ CORRECTED AT IMPLEMENTATION — the two preceding sentences are wrong; see
+> `plans/DECISIONS.md` D-0070.** Measured on PR #375: `labeler` and `ai-review`
+> write labels with `GITHUB_TOKEN` (actor `github-actions[bot]`), and a
+> `GITHUB_TOKEN`-triggered event creates no workflow run. No `audit-trail` run on
+> that branch was label-triggered — both came from `pull_request`. So it is **not**
+> *every* label write, only a **human** or App-token one; and `call / ai-review`
+> job-skipping on its own `ai:review-*` writes **is not evidence** for
+> skipped⇒success, because no run is created to skip. The assumption remains
+> **unexercised**, which makes verification #8 the only way to settle it — and it
+> must apply the label **by hand**.
 
 ⚠️ **Add no `concurrency:` block when taking B2** — but not for the reason a first
 draft of this plan gave. Canon's template block is the #329 **allowlist**, not

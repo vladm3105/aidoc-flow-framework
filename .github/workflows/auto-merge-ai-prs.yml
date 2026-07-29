@@ -5,7 +5,7 @@
 # The reusable is the server-side enforcer for AI-opened PRs
 # (OPS-0062 deferred companion). It detects stuck-green PRs
 # (label=ai:review-passed + mergeStateStatus=CLEAN + autoMergeRequest
-# is null + updatedAt > 2 min) + re-arms `gh pr merge --auto --merge`
+# is null + updatedAt > 2 min) + re-arms `gh pr merge --auto --squash`
 # under the reviewer App's token. Narrow scope cases 1+2 per plan §1.
 #
 # Trigger architecture per IPLAN-0030 §2.2 + Pass-2 C1 finding:
@@ -50,7 +50,7 @@ jobs:
     # failed ai-review or composition), but this saves the runner slot
     # entirely (per OPS-0065 security-auditor recommendation).
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v2.14.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v2.16.0
     with:
       # `||` fallback per Workflow-tool expression semantics: returns
       # the first truthy operand. workflow_run path resolves the LHS;

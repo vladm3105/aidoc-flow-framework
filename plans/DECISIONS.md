@@ -10,6 +10,125 @@ graduation.
 
 ---
 
+## D-0070 — A re-pin is not a migration; and an exemption from a required-context rule is a snapshot, not a property
+
+**2026-07-29.** Decisions from executing CI-CANON-V2.16-001
+(`plans/CI-CANON-V2.16-MIGRATION-PLAN.md`), which took all eleven
+`aidoc-flow-ci` call sites from a mixed `ci/v2.14.0` / `ci/v2.15.0` state to
+`ci/v2.16.0`.
+
+- **Dependabot cannot deliver a caller-body change, so a pin bump is never the
+  whole migration.** It rewrites `uses:` lines and nothing else. Two of the four
+  changes in this PR live in caller bodies (`pre-commit.yml`'s concurrency
+  allowlist, `audit-trail.yml`'s `labeled, unlabeled` triggers) and a third class
+  — comments the bump *falsifies* — is invisible to it entirely. The mixed-pin
+  state itself was Dependabot residue: PR #369 bumped one caller by hand and the
+  group PR #370 carried five reusables, leaving four behind. **Treat a canon bump
+  as a migration with a plan, not as a dependency update.**
+
+- **`--repin`, never `--update`.** `install.sh --update` replaces the whole body
+  of all sixteen `safe_to_replace` surfaces and would clobber every local
+  customization this repo depends on — `ai-review`'s dual self-hosted
+  `runner_labels_*` plus `litellm_allow_insecure_http: true`, `secret-scan`'s
+  `config-path: .gitleaks.toml` (without which the scan reports 27 synthetic
+  findings and goes red), `docs-sync`'s `pull-requests: write`, `links`'s
+  two-job split. The four body changes were applied by hand, per file, quoted
+  from canon. Canon's own guide says default to `--repin`.
+
+- **The #329 allowlist is scoped by *context*, not by ownership.** `conformance.yml`
+  and `acceptance.yml` call no canon reusable, so no pin moved in them — but both
+  feed required contexts and both carried `cancel-in-progress: true` under an
+  untyped `pull_request` trigger, which is the same defect `pre-commit.yml` had.
+  A cancelled required check is not success; it is retained alongside any later
+  success from a separate run, leaving the PR `--admin`-only. Shipping the fix
+  for one of three affected required contexts would have been worse than the
+  scope creep.
+
+- **Seven local workflows still carry the shape and are exempt only because they
+  are not required — that exemption is a snapshot, not a property.** `codeql`,
+  `chg-gate`, `doc-review`, `hermes`, `plugin`, `labeler` and `links` all carry
+  `cancel-in-progress: true`. `acceptance` was exempt by exactly that reasoning,
+  and defended by a comment arguing the cancellation was safe here, until
+  2026-07-27 made it the sixth required context and turned the comment into a
+  defect. **Any future change that makes one of these seven a required context
+  must take the allowlist in the same PR.**
+
+- **B2 makes the escape hatch fire; it does not make a red check go green.** The
+  `skip-audit-trail` override is two-signal (the label **plus** a commit-body
+  marker), and per §23.1 a label event starts a *separate* run whose check-run is
+  retained alongside the earlier one with the rollup keeping the worst. So the
+  benefit is precisely that the override becomes usable on the next push instead
+  of being unreachable — this repo had already hit the unreachable case (D-0065).
+  B2 also rests on an assumption worth stating: a job skipped by `if:` reports
+  success to branch protection. It is the difference between B2 being harmless
+  noise and B2 bricking a required gate. The sharpest case is *failure-then-skip*:
+  `call / verify` is red at SHA X, someone applies an unrelated label, and a fresh
+  run job-skips at that same SHA. Under the retained-alongside/worst-wins model
+  these files assert throughout, the earlier `failure` still governs and the gate
+  holds; if [ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330)
+  resolves toward latest-run-wins instead, B2 is where this repo would feel it
+  first.
+
+- **B2's blast radius is much narrower than the plan assumed, and the assumption
+  above is still UNEXERCISED — measured on PR #375, this change's own PR.** The
+  plan asserted that after B2 "*every* label write in this repo (`labeler`'s path
+  labels, `ai-review`'s own `ai:review-*` writes, the `skip-ai-review`
+  label-cycle) starts an `audit-trail` run whose `verify` job is skipped." **It
+  does not.** All four label writes on #375 (`documentation`, `ci`, `plans`,
+  `ai:review-passed`) were made by `github-actions[bot]` — i.e. `GITHUB_TOKEN` —
+  and a `GITHUB_TOKEN`-triggered event does not create a workflow run (the
+  documented exceptions, `workflow_dispatch` and `repository_dispatch`, are not
+  in play for a label write). **No `audit-trail` run on that branch was created
+  by a label event** — every one came from `pull_request`. State it as provenance,
+  not as a count: the count moves with the next push. So routine bot labelling
+  starts nothing; only a **human** label write, or one made under an App token,
+  reaches the new trigger. The second `call / ai-review` run on #375 came from
+  `pull_request_review` (the reviewer App `aidoc-reviewer[bot]` submitting its
+  review — a different identity from `github-actions[bot]`, which is itself the
+  corroboration), not from a label.
+
+  Two consequences. First, the earlier empirical support offered for
+  skipped⇒success — "`call / ai-review` job-skips on every `ai:review-*` label
+  event and PRs still merge" — **is not evidence at all**: no run is created, so
+  nothing job-skips. Do not cite it. Second, the plan's verification #8 (the
+  post-merge scratch-PR smoke test) is now the *only* way to settle the
+  assumption, and it must apply the label **by hand** — a bot-applied label will
+  reproduce nothing.
+
+- **A byte-exact copy is worth keeping even when the copied comment is wrong —
+  file the defect upstream instead.** Canon's `pre-commit.yml` allowlist comment
+  cites "a label write (audit-trail's documented `skip-audit-trail` hatch)" as a
+  motivating case, but that template's `pull_request:` is **untyped**, so it never
+  receives a `labeled` event; only the `reopened` half is live. The same paragraph
+  ships over the same untyped trigger in six templates (`pre-commit`,
+  `markdown-lint`, `secret-scan` × public/private). Correcting it locally would
+  have cost the byte-exactness that verification #3's pass condition turns on, and
+  `check-drift.sh` would then warn permanently *for being right*. So this repo
+  keeps canon's text verbatim in `pre-commit.yml` and filed
+  [ci#348](https://github.com/vladm3105/aidoc-flow-ci/issues/348). The trim WAS
+  applied to `conformance.yml` and `acceptance.yml` — those are locally owned,
+  have no canon counterpart, and so carry no drift cost.
+
+- **#329 is narrowed, not closed.** GitHub cancels a *pending* run when a newer
+  one queues in the same group, independently of `cancel-in-progress`. Canon does
+  not claim closure and neither does this repo.
+
+- **`.github/ai-review/config.json`'s `$schema` was bumped for currency, not
+  breakage.** Nothing in CI validates against it, and neither `--repin`
+  (workflows only) nor `check-pin-currency.sh` (`.github/workflows` only) would
+  ever touch it — so it would have silently stayed two minors behind the
+  single-tag position this migration claims. One line, kept because leaving it
+  makes the claim false.
+
+- **Cross-repo feedback filed, not recorded locally.**
+  [`aidoc-flow-ci#347`](https://github.com/vladm3105/aidoc-flow-ci/issues/347) —
+  `docs/UPDATE_GUIDE.md:88` states that `framework`'s ai-review caller pins
+  `runner_labels_routine: '"ubuntu-latest"'`, false since PLAN-013; the live
+  caller pins the self-hosted array. Blast radius is any adopter reading the
+  guide's worked example for this repo.
+
+---
+
 ## D-0069 — A defect fix does not smuggle in a strategy change; and a coverage guard needs a guard of its own
 
 **2026-07-26.** Three decisions from executing IDCOORD-SECOND-HASH-IMPL
