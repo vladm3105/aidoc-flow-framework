@@ -1,0 +1,32 @@
+# PROTECTED caller — dependency-vulnerability (SCA) gate via osv-scanner (PLAN-014).
+# Uniform on PUBLIC and PRIVATE repos: runs on the ephemeral self-hosted single-use
+# pool regardless of visibility (no `-public`/`-private` split; a visibility flip is
+# a no-op). Safe on public because the reusable's scan job is FORK-GUARDED (a fork PR
+# skips → human review; only trusted, non-fork collaborator PRs scan on self-hosted).
+#
+# Ships REPORT-ONLY (`fail-on-findings: false`) per PLAN-014 §5 — flip to `true` to
+# make it a blocking gate after a clean window.
+#
+# Secrets: none required (uses GITHUB_TOKEN). SARIF surfaces in the Security tab on
+# public repos with free GHAS; on private repos the gate still runs, the upload just
+# no-ops (best-effort) — compliance rides on the gate, not the Security tab.
+name: dep-scan
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write   # SARIF → Code scanning (public repos w/ GHAS)
+
+jobs:
+  call:
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/dep-scan.yml@ci/v2.16.0
+    with:
+      # Report-only rollout. Flip to true to block PRs on a known-vulnerable dependency.
+      fail-on-findings: false
+      runner_labels: '["self-hosted", "ci-runner", "single-use"]'
+    # No `secrets: inherit` — dep-scan uses only GITHUB_TOKEN (least privilege; the
+    # reusable references no secrets and runs osv-scanner over untrusted-influenced
+    # lockfiles, so it must not be handed the caller's secret set).
