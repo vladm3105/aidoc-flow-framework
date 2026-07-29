@@ -60,17 +60,40 @@ graduation.
   benefit is precisely that the override becomes usable on the next push instead
   of being unreachable — this repo had already hit the unreachable case (D-0065).
   B2 also rests on an assumption worth stating: a job skipped by `if:` reports
-  success to branch protection. It holds empirically here (`call / ai-review`
-  job-skips on every `ai:review-*` label event and PRs still merge), and it is
-  the difference between B2 being harmless noise and B2 bricking a required gate.
-  The sharpest case it has to cover is *failure-then-skip*: `call / verify` is
-  red at SHA X, someone applies an unrelated label, and a fresh run job-skips at
-  that same SHA. Under the retained-alongside/worst-wins model these files assert
-  throughout, the earlier `failure` still governs and the gate holds. The shape
-  is not novel here — `call / ai-review` has subscribed to `labeled`/`unlabeled`
-  and job-skipped the same way for months — but if
-  [ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330) resolves toward
-  latest-run-wins, B2 is where this repo would feel it first.
+  success to branch protection. It is the difference between B2 being harmless
+  noise and B2 bricking a required gate. The sharpest case is *failure-then-skip*:
+  `call / verify` is red at SHA X, someone applies an unrelated label, and a fresh
+  run job-skips at that same SHA. Under the retained-alongside/worst-wins model
+  these files assert throughout, the earlier `failure` still governs and the gate
+  holds; if [ci#330](https://github.com/vladm3105/aidoc-flow-ci/issues/330)
+  resolves toward latest-run-wins instead, B2 is where this repo would feel it
+  first.
+
+- **B2's blast radius is much narrower than the plan assumed, and the assumption
+  above is still UNEXERCISED — measured on PR #375, this change's own PR.** The
+  plan asserted that after B2 "*every* label write in this repo (`labeler`'s path
+  labels, `ai-review`'s own `ai:review-*` writes, the `skip-ai-review`
+  label-cycle) starts an `audit-trail` run whose `verify` job is skipped." **It
+  does not.** All four label writes on #375 (`documentation`, `ci`, `plans`,
+  `ai:review-passed`) were made by `github-actions[bot]` — i.e. `GITHUB_TOKEN` —
+  and a `GITHUB_TOKEN`-triggered event does not create a workflow run (the
+  documented exceptions, `workflow_dispatch` and `repository_dispatch`, are not
+  in play for a label write). **No `audit-trail` run on that branch was created
+  by a label event** — every one came from `pull_request`. State it as provenance,
+  not as a count: the count moves with the next push. So routine bot labelling
+  starts nothing; only a **human** label write, or one made under an App token,
+  reaches the new trigger. The second `call / ai-review` run on #375 came from
+  `pull_request_review` (the reviewer App `aidoc-reviewer[bot]` submitting its
+  review — a different identity from `github-actions[bot]`, which is itself the
+  corroboration), not from a label.
+
+  Two consequences. First, the earlier empirical support offered for
+  skipped⇒success — "`call / ai-review` job-skips on every `ai:review-*` label
+  event and PRs still merge" — **is not evidence at all**: no run is created, so
+  nothing job-skips. Do not cite it. Second, the plan's verification #8 (the
+  post-merge scratch-PR smoke test) is now the *only* way to settle the
+  assumption, and it must apply the label **by hand** — a bot-applied label will
+  reproduce nothing.
 
 - **A byte-exact copy is worth keeping even when the copied comment is wrong —
   file the defect upstream instead.** Canon's `pre-commit.yml` allowlist comment

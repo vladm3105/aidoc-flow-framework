@@ -189,6 +189,17 @@ here — `call / ai-review` is job-skipped on every `ai:review-*` label event to
 and PRs still merge — but it is the difference between B2 being harmless noise
 and B2 bricking the gate, so it is stated rather than assumed.
 
+> **⚠️ CORRECTED AT IMPLEMENTATION — the two preceding sentences are wrong; see
+> `plans/DECISIONS.md` D-0070.** Measured on PR #375: `labeler` and `ai-review`
+> write labels with `GITHUB_TOKEN` (actor `github-actions[bot]`), and a
+> `GITHUB_TOKEN`-triggered event creates no workflow run. No `audit-trail` run on
+> that branch was label-triggered — both came from `pull_request`. So it is **not**
+> *every* label write, only a **human** or App-token one; and `call / ai-review`
+> job-skipping on its own `ai:review-*` writes **is not evidence** for
+> skipped⇒success, because no run is created to skip. The assumption remains
+> **unexercised**, which makes verification #8 the only way to settle it — and it
+> must apply the label **by hand**.
+
 ⚠️ **Add no `concurrency:` block when taking B2** — but not for the reason a first
 draft of this plan gave. Canon's template block is the #329 **allowlist**, not
 `cancel-in-progress: true`, so copying it would introduce only same-ref

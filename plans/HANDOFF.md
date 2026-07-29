@@ -54,6 +54,28 @@
 > are no-ops here and why `ai-review.yml`'s FT-43 comment keeps canon's
 > `while unarmed` qualifier.
 >
+> **B2's blast radius is far smaller than the plan claimed — measured on PR #375
+> itself, and the correction is in D-0070.** The plan said *every* label write
+> would now start an `audit-trail` run whose `verify` job skips. It does not: all
+> four label writes on #375 were `github-actions[bot]` (`GITHUB_TOKEN`), and a
+> `GITHUB_TOKEN` event creates no workflow run (bar `workflow_dispatch` /
+> `repository_dispatch`, irrelevant to a label). **No `audit-trail` run on that
+> branch was label-triggered** — all came from `pull_request`. Say provenance,
+> not a count; the count moves with the next push. Only a **human** (or App-token)
+> label write reaches the new trigger. Two follow-ons: the skipped⇒success
+> assumption B2 rests on is **still unexercised** — the plan's verification #8
+> smoke test is the only way to settle it, and the label must be applied **by
+> hand**; and the support previously offered for it (`call / ai-review`
+> job-skipping on `ai:review-*` writes) is **not evidence**, because no run is
+> ever created. The retracted sentences are annotated in place in the plan's §B2.
+>
+> **CI-0025 is confirmed fixed, but read the right run for it.** Under the defect
+> the `pull_request_review` run was the *canceller*, not the victim — it killed
+> the `pull_request_target` run that had just posted the review. So the evidence
+> is that #375's **first** run (17:45:57, `pull_request_target`) concluded
+> `success` rather than `cancelled`; the second run would have survived either
+> way (ci#322).
+>
 > **Author-side review found one real defect, and all three agents found the same
 > one.** The `ai-review.yml` FT-43 comment as first written said "both job `if:`s
 > require `draft == false`" — false. Only the **trust** job's `if:` carries a
