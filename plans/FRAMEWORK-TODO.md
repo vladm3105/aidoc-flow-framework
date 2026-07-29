@@ -24,7 +24,26 @@
 
 ## Open
 
-### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — `codeql.yml` resolves `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
+### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — ✅ CLOSED (2026-07-29, CANON-PARITY-001 / PR #378) — `codeql.yml` resolved `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
+
+**Closed by adoption, not by the fix shape below.** `codeql.yml` became a canon
+caller (`@ci/v2.16.0`), and canon's reusable already SHA-pins both steps to one
+peeled commit (`github/codeql-action@e4fba868…` / v4.37.3) plus
+`actions/checkout@3d3c42e5…` / v7.0.1. So the floating references are gone
+*because this repo stopped owning the workflow*, and the "pin both steps to
+canon's SHA" plan below was never executed — it would have fixed the symptom and
+left a hand-rolled workflow to drift again at the next action release.
+
+**The caveat below still stands and was NOT widened:** `actions/checkout@v7` /
+`setup-python@v7` still float in the six remaining locally-owned workflows
+(`conformance`, `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`).
+Whether that convention should change is still the different, unasked question.
+`codeql` simply left that set.
+
+**Generalisable, recorded as D-0071 §2:** before fixing a defect in a
+hand-rolled surface, check whether canon owns that surface. The entry below
+correctly observed that neither canon check could see the defect — true, and the
+reason was that the surface was not a canon caller at all.
 
 - *Context:* surfaced while scoping `CI-CANON-V2.16-MIGRATION-PLAN.md`
   (2026-07-29) and named there as explicitly out of scope. `codeql.yml:30,36`
