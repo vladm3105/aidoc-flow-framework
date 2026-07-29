@@ -390,11 +390,28 @@ future company projects; it ships independently semver-tagged
 `ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
 
 **Per-repo state (2026-07-29):** **public repo, but NOT purely
-GitHub-hosted.** All eleven `aidoc-flow-ci` call sites are pinned
-`@ci/v2.16.0` (CI-CANON-V2.16-001; plan
-`plans/CI-CANON-V2.16-MIGRATION-PLAN.md`, PRs #374/#375; decisions
-`plans/DECISIONS.md` D-0070 — which supersedes D-0066's `@ci/v2.14.0`
-position from CI-CANON-V2-001, PRs #334/#335).
+GitHub-hosted.** All **sixteen** `aidoc-flow-ci` call sites across fifteen
+files are pinned `@ci/v2.16.0` (was eleven across ten until
+CANON-PARITY-001 adopted five more; `links.yml` holds two). Pins:
+CI-CANON-V2.16-001, plan `plans/CI-CANON-V2.16-MIGRATION-PLAN.md`,
+PRs #374/#375, `plans/DECISIONS.md` D-0070 — which supersedes D-0066's
+`@ci/v2.14.0` position from CI-CANON-V2-001, PRs #334/#335.
+
+**Re-pinning and adopting are different dimensions, and only the first was
+ever automated.** A `--repin` rewrites `uses:` strings; it cannot adopt a
+canon surface this repo does not call, so an absent surface stays absent
+through any number of green bumps. CANON-PARITY-001 (PR #378, D-0071)
+closed that gap: `codeql` became a canon caller — which is what actually
+closed [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373),
+since canon's reusable already SHA-pins the actions — and `dep-scan`,
+`sast-scan`, `trivy-scan`, `markdown-lint` were adopted. Scaffold new
+surfaces with canon's `install/deploy-ci-wizard.sh scaffold <repo> <dir>
+[wf…]`: it writes byte-exact callers at the pin into a scratch dir and
+never commits, so it cannot clobber a customized caller the way `--update`
+would. **The manifest's presence check is case-sensitive** — it lists
+`.github/pull_request_template.md`, and this repo's equally-valid
+`.github/PULL_REQUEST_TEMPLATE.md` reads as absent; do not conclude a
+surface is missing from that alone.
 
 **A canon bump is a migration, not a dependency update — do not leave it to
 Dependabot.** It rewrites `uses:` lines and nothing else, so it can never
@@ -421,6 +438,15 @@ reasoning, defended by a comment arguing it was safe, until it became required
 on 2026-07-27. **Any change that makes one of the seven required must take the
 allowlist in the same PR.**
 
+The surfaces adopted by CANON-PARITY-001 add two more shapes, so "does it
+cancel?" is now a three-way question, not two: `markdown-lint` already ships
+canon's `#329` allowlist (it is a required context *for other consumers*, and the
+template is uniform), while `dep-scan`, `sast-scan` and `trivy-scan` carry **no
+`concurrency:` block at all** — they never cancel, which is the safest state and
+needs no allowlist. `codeql` keeps plain `cancel-in-progress: true`, which is why
+it stays in the seven above. **Count the exemption by shape, not by filename:**
+absent block ≠ allowlist ≠ bare `true`.
+
 Runner split — deliberate, do not "normalize":
 
 - **`ai-review` runs entirely on the self-hosted single-use pool**
@@ -431,8 +457,23 @@ Runner split — deliberate, do not "normalize":
   are never trusted, so a fork PR reaches only the no-PR-code trust job.
   The caller also sets `litellm_allow_insecure_http: true` — the bridge URL
   is `http://`, and canon's client refuses non-HTTPS without it.
+- **`dep-scan` and `trivy-scan` also run self-hosted** — canon's PLAN-014
+  uniform-protected model, adopted byte-exact. Safe on a public repo because
+  the reusable's own fork guard (`if: …head.repo.fork != true`) skips fork PRs,
+  so untrusted code never reaches the host; the label is canon's trust design,
+  not a tooling requirement (both `curl` a pinned static binary). This means the
+  pool now serves up to five jobs per PR against **two** slots — it
+  self-replenishes (`ci-runner@.service` is `Restart=always`/`RestartSec=5`), so
+  they serialize rather than starve the required `ai-review`.
+- **`sast-scan` is the exception and must stay on `ubuntu-latest`.** semgrep
+  installs into a `python3 -m venv` and the `aidoc-flow-runner` image ships no
+  Python, so on the self-hosted pool it dies at *"ensurepip is not available"*
+  before any findings logic — and `fail-on-findings: false` gates the verdict,
+  not the install, so report-only does not keep it green. Filed as
+  [aidoc-flow-ci#349](https://github.com/vladm3105/aidoc-flow-ci/issues/349);
+  revert the override only once that lands.
 - **Everything else stays on `ubuntu-latest`**, including the
-  fork-code-executing lint callers (`links`, `pre-commit`).
+  fork-code-executing lint callers (`links`, `pre-commit`) and `codeql`.
 
 Four operational facts that cost a session when unrecorded:
 

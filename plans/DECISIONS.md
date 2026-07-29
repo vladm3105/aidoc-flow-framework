@@ -10,6 +10,96 @@ graduation.
 
 ---
 
+## D-0071 — Adoption is a separate dimension from pinning; and an asserted absence is the cheapest defect to file and the hardest to verify
+
+**2026-07-29.** Decisions from CANON-PARITY-001 (PR `#378`), which adopted the
+four `aidoc-flow-ci` surfaces this repo had never called and converted `codeql`
+from a hand-rolled workflow into a canon caller. **Extends D-0070; supersedes
+nothing.** D-0070's rule — *a canon bump is a migration, not a dependency
+update* — is about caller **bodies**; this one is about caller **existence**.
+
+**1. A green pin audit says nothing about adoption.** `check-pin-currency.sh`
+and `check-drift.sh` both iterate over callers **that exist**. An absent surface
+is invisible to both, so this repo could report "all pins current ✅" while
+calling ten of canon's surfaces and ignoring four. The census that finds them is
+canon's `install/templates/manifest.json`, walked against the working tree.
+**Corollary:** run that walk when the canon minor moves, not just the re-pin.
+
+**2. `#373` was a symptom, and fixing it directly would have been the wrong
+repair.** The issue asked to SHA-pin `github/codeql-action` off the floating
+`@v4`. Editing the local workflow's `uses:` lines would have closed it and left
+the actual defect — a hand-rolled workflow where canon ships a reusable —
+in place, to drift again at the next action release. Adopting the caller fixed
+it upstream-of-the-symptom: canon already pins `e4fba868` (v4.37.3). **Before
+fixing a defect in a hand-rolled surface, check whether canon owns that surface.**
+
+**3. Byte-exactness is the default; each divergence pays for itself in a
+comment.** Three of five adoptions landed byte-exact (`dep-scan`,
+`sast-scan` modulo one label, `trivy-scan`), adding zero drift. Two diverge and
+say why in-file, per `check-drift.sh`'s own "intentional divergence" resolution:
+`codeql` (the `languages` input — which is *why* canon marks it
+`safe_to_replace: false`) and `markdown-lint` (globs + a permanent
+`fail-on-findings: false`).
+
+**4. `fail-on-findings: false` on `markdown-lint` is a design position, not a
+debt rollout.** The blocking markdown gate here is the `markdownlint-cli`
+pre-commit hook, running in CI under the required `Lint / format / security
+hooks` context. Canon's caller runs `markdownlint-cli2` — a different engine at
+a different rev — over the same files. Two engines may disagree on rule
+defaults; the advisory one must never be able to block a merge. So it stays
+`false` permanently, and the graduation path canon's header recommends does not
+apply.
+
+**5. Scope a lint adopted into an existing corpus by measurement, and check
+whether a "fix" is even permitted.** Canon's bare `**/*.md` reports **260 issues
+in 78 files** here — all under `legacy/`, `framework/`,
+`platforms/claude-code-plugin/framework/`, Hermes vendored content, and `.aidoc`
+cascade output. Those are not merely unwanted: `framework/` is GATE-SPEC-governed
+so a style edit **trips the gate**, and the vendored plugin copy is a generated
+byte-identical mirror (D-0022) whose drift guard a fix **breaks**. Scoped to the
+exclusion set `.pre-commit-config.yaml` had already justified: **447 files, 0
+issues**. An advisory check that points at 260 unfixable findings trains readers
+to ignore it.
+
+**6. `report-only` protects the verdict, not the toolchain — and shipping it is
+how you learn that.** `sast-scan` went red on first run with
+`fail-on-findings: false` set: semgrep installs into a `python3 -m venv` and the
+`aidoc-flow-runner` image ships no Python, so it died at *"ensurepip is not
+available"* before any findings logic. The check name (`sast-scan FAILURE`) named
+the wrong cause — it reads as "semgrep found something". Overridden to
+`ubuntu-latest` locally, filed upstream as
+[aidoc-flow-ci#349](https://github.com/vladm3105/aidoc-flow-ci/issues/349).
+`dep-scan` and `trivy-scan` share the pool and pass, because they `curl` static
+binaries. **A report-only flag is not evidence a new caller cannot fail.**
+
+**7. An asserted absence needs a log, not an inference — this one cost a wrong
+entry in two documents.** `NO-PIN-CURRENCY-CHECK` claimed "this repo runs
+`check-pin-currency.sh` nowhere," reasoned from the symptom that a mixed-pin
+state survived two days. It was false: canon's `check-standards-drift.sh` tail
+(`:499-515`) invokes it on every weekly `standards-drift` run, and it fired on
+2026-07-27 naming all ten stale pins **and** the `--repin` remedy. One
+`gh run view --log | grep pin-currency` falsified it. The real defect is that a
+warning-only annotation on a weekly scheduled job has **no reader** — a
+different fix, since adding the proposed periodic job would have duplicated a
+check that was already running and already correct. Restated in
+`plans/FRAMEWORK-TODO.md` as `PIN-CURRENCY-NO-READER`. **Verify an absence
+against a run log or a grep before writing it down; a wrong cause, once
+recorded, is re-read as fact by every later session** — the same failure mode
+D-0066 recorded for the nine-day `ai-review` outage.
+
+**8. A manifest presence check is case-sensitive, and `--jq` on a 404 lies.**
+Two false readings inside one session. The manifest lists
+`.github/pull_request_template.md`; this repo carries the equally-valid
+`.github/PULL_REQUEST_TEMPLATE.md`, which reads as absent on a case-sensitive
+filesystem — caught only because `pre-commit`'s case-conflict hook rejected the
+duplicate. And `gh api …/contents/<missing> --jq '.name'` emits the string
+`null`, which a `[ -n "$n" ]` test reads as **present**: that turned "no sibling
+repo adopts `sast-scan`" into "all seven do" until re-checked by listing the
+directory. **Test for a path's existence on disk, and never truth-test a jq
+scalar that can be `null`.**
+
+---
+
 ## D-0070 — A re-pin is not a migration; and an exemption from a required-context rule is a snapshot, not a property
 
 **2026-07-29.** Decisions from executing CI-CANON-V2.16-001
