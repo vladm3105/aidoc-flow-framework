@@ -1,14 +1,47 @@
+<!--
+Canon structure per aidoc-flow-ci docs/REPO_STANDARDS.md §8, merged with this
+repo's SDD traceability section (CANON-PARITY-001, D-0071). Canon ships this as
+the lowercase `pull_request_template.md`; GitHub accepts either casing, and this
+repo keeps the uppercase form — note that canon's manifest presence check is
+case-sensitive and will read this file as absent.
+
+Delete sections that don't apply. Keep Summary, Files touched, Multi-agent
+review and Test plan.
+-->
+
 ## Summary
 
-<!-- Brief description of changes (1-2 sentences) -->
+<!-- 1-3 sentences: what changed and why. Reviewers read the diff for the
+     "what" — spend the words on the "why". -->
 
-## Linked Issue
+## Linked issue
 
 Closes #
 
-## SDD Traceability
+## Files touched (OPS-0061 Rule 1 self-check)
 
-<!-- Copy from linked issue if source:sdd, otherwise delete this section -->
+<!--
+Rule 1 caps a GOVERNANCE PR at ≤3 doc surfaces. This repo's governance-PR list
+(CLAUDE.md § "Governance PR discipline"): CLAUDE.md, plans/PLAN-*.md,
+plans/DECISIONS.md, .github/ai-review/, .github/workflows/ai-review.yml, or a
+change that supersedes a locked decision.
+
+Over 3 surfaces on a governance PR: SPLIT into sequential PRs, or record a
+founder OK here AND as an audit-trail line in the commit message. Splitting is
+the default — a carve-out is the exception.
+
+Non-governance PRs (code, tests, docs-only) have no surface cap.
+-->
+
+| Surface | Change |
+| --- | --- |
+| `path/to/file` | brief note |
+
+**Governance tier:** <!-- 🟢 non-governance / 🟡 governance / 🔴 spec-tier (GATE-SPEC) -->
+
+## SDD traceability
+
+<!-- Copy from the linked issue if `source:sdd`; otherwise delete this section. -->
 
 | Tag | Reference |
 |-----|-----------|
@@ -17,20 +50,43 @@ Closes #
 | @req | |
 | @brd | |
 
-## Changes
+## Multi-agent self-review (OPS-0065 / OPS-0069)
+
+<!--
+The audit-trail phrase must appear in a COMMIT MESSAGE in the push range — not
+in this body. `call / verify` greps for it literally (`grep -qF`), and it is a
+REQUIRED context, so a missing phrase blocks the merge:
+
+  Multi-agent self-review per OPS-0065 (<agents>): <verdict>
+
+OR (founder OK required):
+
+  Self-review skipped per founder OK — <reason>
+
+Acceptable skip cases per the skip discipline: mechanical content (pin bumps
+with no logic edits), review already done by a dispatched agent named in the
+commit, or an explicit founder OK. Cap at 3 fold cycles per OPS-0066.
+-->
+
+**Agents dispatched:**
+
+- `<agent>` — `<verdict>`
+
+**Fold outcome:** <!-- e.g. "cycle 1 APPROVED, 0 findings" -->
+
+## Test plan
+
+<!-- What CI verifies vs what a human must verify. Check the boxes that apply;
+     delete the rest. Unchecked boxes on a ready PR read as "not done". -->
+
+- [ ] `pre-commit run --all-files` green (includes the conformance suite)
+- [ ] `python -m pytest tests/conformance/` green
+- [ ] platform tests green (`platforms/hermes/`, plugin)
+- [ ] `python3 -m sdd_doc_lint examples/<name>/docs/` — zero *unexpected* findings
+- [ ] `<domain-specific verification>`
+
+## Cross-references
+
+<!-- D-NNNN, GD-NN, PLAN files, issues, sibling-repo PRs. Delete if none. -->
 
 -
-
-## Testing
-
-- [ ] Unit tests pass (`pytest tests/unit/`)
-- [ ] Integration tests pass (`pytest tests/integration/`)
-- [ ] Manual testing completed
-
-## Checklist
-
-- [ ] Code follows project conventions
-- [ ] Tests added/updated
-- [ ] Documentation updated (if applicable)
-- [ ] Traceability tags present (if `source:sdd`)
-- [ ] Acceptance criteria verified (checked in linked issue)
