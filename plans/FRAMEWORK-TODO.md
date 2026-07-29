@@ -24,6 +24,70 @@
 
 ## Open
 
+### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — `codeql.yml` resolves `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
+
+- *Context:* surfaced while scoping `CI-CANON-V2.16-MIGRATION-PLAN.md`
+  (2026-07-29) and named there as explicitly out of scope. `codeql.yml:30,36`
+  pin `github/codeql-action/{init,analyze}@v4`; canon SHA-pins the same action to
+  one commit wherever it uses it (`aidoc-flow-ci/.github/workflows/codeql.yml:98`,
+  `e4fba868…` / v4.37.3). It is the only floating action reference this repo
+  *owns* that runs under `security-events: write` — `secret-scan.yml:9` holds the
+  same permission but delegates to canon, which SHA-pins its `upload-sarif`.
+  Invisible to both canon checks — `check-drift.sh` needs a declared canon tag,
+  `check-pin-currency.sh` greps `@ci/vX.Y.Z` only — and Dependabot never converts
+  a floating tag to a SHA, so nothing can close it automatically.
+- *Fix shape:* pin both steps to canon's SHA with the version as a trailing
+  comment. `init` and `analyze` must share **one** commit, and it must be the
+  *peeled commit*, not the annotated tag object — canon hit exactly that failure
+  (`aidoc-flow-ci/CHANGELOG.md:1380-1384` and `aidoc-flow-ci/plans/FRAMEWORK-TODO.md:859-866`:
+  `autobuild` pinned the tag object, which 422s on the commits API and trips the
+  workspace SHA audit; canon's `test_lint.sh` now asserts all three steps pin one
+  commit). Canon's `e4fba868…` is already the peeled commit, so copying it is
+  safe. Leave `actions/checkout@v7` alone — see the caveat.
+- *Caveat — do not widen this into a policy change.* Floating majors are the
+  repo's standing convention for locally-owned workflows: `actions/checkout@v7`
+  / `setup-python@v7` float in seven files (`codeql`, `conformance`,
+  `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`). `codeql-action` is
+  separable on two specific grounds only — canon SHA-pins that action
+  deliberately, and every *other* floating reference in the repo runs under
+  `contents: read` while this one runs under `security-events: write`. Whether
+  the convention itself should change is a different, unasked question.
+- *Tracker:* **issue** per the GD-10 three-test bar — meets (a) (mechanical, any
+  contributor can land it) and (b) (reproducible at `file:line` with a concrete
+  fix shape). Fails (c): `codeql.yml` feeds no required context, so it degrades
+  the Security tab rather than blocking merges.
+
+### `[ci]` `NO-PIN-CURRENCY-CHECK` — nothing in this repo's CI or hooks runs `check-pin-currency.sh`, which is why a mixed-pin state accumulated unnoticed
+
+- *Context:* surfaced by `CI-CANON-V2.16-MIGRATION-PLAN.md` (2026-07-29). The
+  eleven canon call sites had drifted into **two** tags — six at `ci/v2.15.0`,
+  five at `ci/v2.14.0` — and stayed that way from 2026-07-27 until a human
+  looked. `check-drift.sh` structurally cannot catch it: it frames each caller
+  against the template *at the tag that caller declares*, so a stale pin is
+  self-consistent and silent (`aidoc-flow-ci/sync/check-pin-currency.sh:4`).
+  `check-pin-currency.sh` is the check that would have caught it, and this repo
+  runs it nowhere.
+- *Fix shape:* a periodic warning-only job (or a pre-commit hook) invoking
+  `aidoc-flow-ci/sync/check-pin-currency.sh --canon <tag>`. Warning-only is not a
+  softening — the script exits 0 by design (`:10`, `WARNING-ONLY, NEVER BLOCKS`),
+  so its output must be read, which is an argument for a scheduled job that
+  reports rather than a hook that scrolls past. Open question the fix must answer:
+  where the canon tag comes from, since hardcoding it recreates the same staleness
+  one level up.
+- *Tracker:* **TODO-only** — but on the rule's *speculative* carve-out, **not**
+  on the three-test bar, because test (a) is honestly met: the fix shape is
+  mechanical, names its own invocation, and has two copyable precedents in this
+  repo (`standards-drift.yml` as a scheduled canon caller,
+  `scripts/check-docs-updated.sh` as the blessed warning-only-hook pattern), so
+  any contributor could land it. Tests (b) and (c) do fail — the defect is an
+  *absence*, with no `file:line` in this repo where it lives, and no consumer is
+  affected. What keeps it off the tracker is that it proposes tooling that does
+  not exist and leaves a real design question open (where the canon tag comes
+  from). Promote when someone picks the work up, or as soon as that question has
+  an answer — **not** on "if it recurs": the detection gap is already established
+  as structural, and the migration plan resolves the mixed-pin *symptom* without
+  adding the check.
+
 ### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
 
 - *Context:* deferred from `ACCEPTANCE-TIER-DRIFT-UNTRACKED` (2026-07-27). The
