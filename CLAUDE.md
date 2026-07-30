@@ -390,9 +390,13 @@ future company projects; it ships independently semver-tagged
 `ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
 
 **Per-repo state (2026-07-29):** **public repo, but NOT purely
-GitHub-hosted.** All **sixteen** `aidoc-flow-ci` call sites across fifteen
+GitHub-hosted.** All **seventeen** `aidoc-flow-ci` call sites across sixteen
 files are pinned `@ci/v2.16.0` (was eleven across ten until
-CANON-PARITY-001 adopted five more; `links.yml` holds two). Pins:
+CANON-PARITY-001 adopted five more, then #382 added `doc-maintainer.yml`;
+`links.yml` holds two). Re-count rather than copying that figure —
+`grep -rho 'aidoc-flow-ci/\.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ | wc -l`
+for sites, `grep -rl 'aidoc-flow-ci/\.github/workflows/.*@ci/v' .github/workflows/ | wc -l`
+for files. Pins:
 CI-CANON-V2.16-001, plan `plans/CI-CANON-V2.16-MIGRATION-PLAN.md`,
 PRs #374/#375, `plans/DECISIONS.md` D-0070 — which supersedes D-0066's
 `@ci/v2.14.0` position from CI-CANON-V2-001, PRs #334/#335.
@@ -695,3 +699,250 @@ diff), not framework spec ratification.
 **Origin:** OPS-0065/0067 in `aidoc-flow-operations` `ops/DECISIONS.md`;
 cross-repo rollout runbook at
 `aidoc-flow-operations` `ops/inbox/2026-06-30_cto-platform_ops-0067-multi-agent-review-rollout.md`.
+
+## Durable traps — do not re-derive these
+
+Every entry below cost a session real time at least once. They are **facts about
+this repo and its toolchain**, not status — which is why they live here and not in
+`plans/HANDOFF.md`. The handoff is rewritten wholesale at every merge, so anything
+durable parked there is re-verified, re-summarised, or silently dropped on each
+regeneration; here it is written once and loaded automatically.
+
+**The boundary:** a trap graduates to this section once it has settled (measured,
+reproduced, and not expected to change). `plans/HANDOFF.md` carries only traps too
+fresh to have settled, and never repeats one that is already here.
+
+### Merging and CI mechanics
+
+- **`call / verify` greps the commit body for a literal phrase**, and it is a
+  *required* context — so a missing or paraphrased phrase blocks the merge. Exactly
+  one of: `Multi-agent self-review per OPS-0065 (<agents>): <verdict>` or
+  `Self-review skipped per founder OK — <reason>`. It is `grep -qF`; nothing else
+  matches, and the phrase belongs in the **commit message**, not the PR body.
+- **Stacked PRs: retarget the child before merging the parent.** Merging #357 with
+  `--delete-branch` deleted #358's base, which **auto-closed #358**, and GitHub
+  refuses to retarget a closed PR — it had to be rebuilt by cherry-picking onto
+  `main`. Prefer branching each PR from `main` when the files don't overlap.
+- **`Closes #A and #B` closes only `#A`.** The keyword is needed before *each*
+  reference.
+- **`report-only` protects the verdict, not the toolchain.** A `fail-on-findings:
+  false` caller can still go red by failing *before* any findings logic runs — see
+  `sast-scan` under § "Unified CI" for the concrete instance. **A report-only flag is
+  never evidence that a new caller cannot fail.**
+- **Never truth-test a `jq` scalar that can be absent — and do not pattern-match the
+  failure string either.** `gh api …/contents/<missing> --jq '.name'` puts the full
+  error JSON (`{"message":"Not Found",…,"status":"404"}`) on **stdout**; re-measured
+  2026-07-30, it is *not* the bare string `null`, so even a guard written as
+  `case "$n" in ''|null)` — which looks like it handles the documented form — reads a
+  missing file as **present**. This has inverted a blast-radius finding twice: once
+  from "no sibling repo adopts this" to "all seven do", and again to "10 of 10
+  workspace repos call `standards-drift`" when the truth is **7 of 10**. **List the
+  directory instead:**
+  `gh api repos/<r>/contents/.github/workflows --jq '.[].name'`.
+
+### Reading CI output
+
+- **A downloaded log contains `##[warning]`, never `::warning::`.**
+  `gh run view --log` renders the workflow command. On a log where `##[warning]`
+  returns 22, `grep -c '::warning::'` returns **0** — so a grep-based reader written
+  against the emitted form silently matches nothing.
+- **Counting drift annotations: grep `::warning::drift-check:`, not `::warning::`.**
+  A bare grep returns 12 for 10 annotations — `standards-drift.yml`'s canon header
+  quotes the literal string, so its own drift body reproduces it twice. (Distinct
+  from the trap above: this one is about the *annotation* text, that one about the
+  *log* rendering.)
+- **`check-standards-drift:` is a PREFIX, not a completion marker.** The drift script
+  emits an opening `repo=… tier=…` header and a `cannot check <family>` warning per
+  unreadable family under that same prefix — the first of them **24 lines ahead** of
+  the pin-currency section, so a log truncated in that window still satisfies a
+  prefix test. The terminal markers are the summary line
+  (`check-standards-drift: N drift,`) and `check-standards-drift: coverage —`, the
+  latter emitted by `emit_coverage` at normal termination *and* from every
+  `stop_uncheckable` early exit. This shipped as a real silent-failure path and was
+  caught in review, not by a test.
+- **A measurement is dated to the canon version that RAN, not the one checked out.**
+  Run `30257877863` executed `check-standards-drift.sh` at **`ci/v2.14.0`** (380
+  lines) while the local checkout was `v2.16.0` (523 lines) — `emit_coverage` shipped
+  in `v2.15.0` and does not exist in what ran. Cost most of a review cycle: a
+  reviewer correctly derived a **23rd** warning from the v2.16.0 source and concluded
+  the measured **22** was wrong. **Read the `adopted canon pin` notice in the run's
+  own log before citing line numbers at it.**
+- **Canon's pin-currency check false-greens two ways, and one would make a reader
+  close a tracking issue.** `check-pin-currency.sh:62` greps `@ci/v…` literally, so a
+  **SHA-pinned** caller is invisible and it reports `all pins current ✅` — while the
+  *fleet* path at `:71` **does** match `@<40hex> # ci/v…`, i.e. two paths in one
+  script disagree. Second: if the `curl` of canon `main`'s `VERSION` returns an error
+  page instead of failing, `ver_cmp` (`:39`) compares non-numeric fields under
+  `2>/dev/null`, every comparison falls through to equal, and `:101` prints the same
+  green. `:87` is the only validation there is — an emptiness guard — and an
+  error-page body is non-empty. **Validate a resolved canon token against
+  `^ci/v[0-9]+\.[0-9]+\.[0-9]+$` before trusting any verdict built on it.** Both were
+  filed upstream by `PIN-CURRENCY-READER-PLAN.md` Task 3; cite `:39` + `:101` for the
+  second, not `:87`.
+
+### Local hooks and tooling
+
+- **`tests/unit/` is executed by no hook and no workflow.**
+  `.pre-commit-config.yaml:106` discovers `tests/conformance` only, and the workflows
+  run `tests/conformance`, `tests/acceptance/deterministic`,
+  `tools/sdd_doc_lint/tests` and Hermes' own suite; `pre_push_check.sh` invokes no
+  `unittest` at all. So ~30 modules under `tests/unit/` (including
+  `test_sync_scripts.py`) are **unguarded after merge** — a test placed there proves
+  something once, locally, and never again. **The one runner that exists is worse
+  than none:** `tests/scripts/test-plugin.sh:257`/`:302` do
+  `python3 -m unittest discover tests/unit`, but nothing calls that script (grep
+  `.github/workflows/`, `.pre-commit-config.yaml`, `scripts/`) and both call sites end
+  in `|| true`, so even the manual path cannot fail. The registration shim is
+  `tests/conformance/test_repo_scripts.py` — add new modules to its `REGISTERED`
+  tuple. Wiring the hook is reuse, not authoring; dropping the `|| true` is the
+  deeper fix.
+- **Local `pre-commit` on changed files ≠ CI's `--all-files`.** A rebase conflict
+  resolution once dropped a blank line before a CHANGELOG heading; local hooks never
+  re-linted the seam and CI failed on MD022. **Run `pre-commit run --all-files` after
+  any manual conflict resolution.**
+- **markdownlint autofix corrupts prose in two specific ways.** A line starting
+  `#NNN` becomes an H1 (`# NNN`) — write `Issue #NNN` or backtick it; and
+  `__init__.py` becomes `**init**.py`, silently breaking claim-ledger citations —
+  backtick any path containing underscores. **Seven** older plan files still carry the
+  `**init**.py` corruption from before this was documented (re-measure with
+  `grep -rl '\*\*init\*\*\.py' plans/`; the figure was recorded as eight and was wrong).
+- **`sync-version-refs` reporting "files were modified" is usually a knock-on**, not
+  a second defect — it re-stages whatever an earlier autofix touched. Verify by
+  running it alone against a clean HEAD.
+- **Editing `tools/sdd_doc_lint/*.py` requires re-copying both vendored platform
+  mirrors by hand.** No script does it, and `ruff-format` may rewrite the file
+  *after* you copy — re-copy and re-run until two consecutive `--all-files` runs are
+  clean. The linter's own sync script is `tools/sdd_doc_lint/sync-vendored.sh`,
+  **not** `tools/sync-plugin-framework.sh` (which vendors `framework/` subtrees plus
+  three named tools files and does not touch `sdd_doc_lint`).
+- **Propagation order for a framework version bump is load-bearing:**
+  `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
+  `tools/sync-plugin-framework.sh`. Reversing it lands 51 drifted bundled playbooks
+  and a red bundle guard.
+- **The plugin and Hermes `CLAUDE.md` current-state tokens self-heal; the
+  framework-spec token does not.** Since #389, `sync-version-refs.sh` detects the
+  previous plugin and Hermes values **from `CLAUDE.md` itself**, so a stale token is
+  fixed even when every other surface is current — the state that had let `CLAUDE.md`
+  sit at Hermes `0.11.1` against a `0.12.0` `VERSION` for four days, and that the
+  plugin token had carried latently since `SYNC-CLAUDE-PLUGIN-VERSION-GAP`.
+  `fw_prev` is different: it is read
+  from `CLAUDE.md` **and** gates propagation to `README.md`, `docs/PARITY.md`, both
+  platform READMEs and a conformance-test literal — so **hand-editing the
+  framework-spec token in `CLAUDE.md` before running the sync strands those five
+  files, silently, at exit 0.** Measured, not inferred; filed as
+  [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386). The 52 SKILL
+  frontmatters, the playbooks and `platforms/*/FRAMEWORK_SPEC_VERSION` are **not** in
+  that blast radius — each has its own detector.
+- **Run a sync-script reproduction in a throwaway clone, never in the working tree.**
+  Proving #386 meant bumping `framework/VERSION`, which fired the three independent
+  detectors and rewrote **100+** SKILL / playbook / `FRAMEWORK_SPEC_VERSION` files —
+  and the script's closing `git add -u` **staged all of them**. Restoring the two
+  files the test targeted is not enough; the collateral is elsewhere and already in
+  the index.
+
+### Acceptance harness
+
+- **Manifests live OUTSIDE `fixtures/`** (`tests/acceptance/expected_warnings/`).
+  Inside a `NN_LAYER/` dir the linter ingests one as an artifact — measured at
+  13 → 31 findings and `rc` 0 → 1, i.e. it *manufactures* errors. Latent for the live
+  tier, since `live/_live_harness.py:stage_upstreams_into` copies `valid/` contents
+  into exactly such a dir and live is `skipUnless(LIVE=1)`.
+- **The pinned warning set measures trace-graph visibility, not fixture debt.** Six
+  goldens have an unterminated frontmatter fence (one `---`, no `doc_id`) and are
+  invisible to `build_edge_graph`. Repairing one is benign and **moves the manifest**
+  — adding the fence to `layer_06_spec/valid` takes it 0 → 6.
+- **`ELEM_FORM` cannot search a message** — it is fully anchored, so extraction is two
+  steps: take the single-quoted token, then validate. And the linter's `file` key is
+  CWD-relative or absolute, so a manifest loader **must** normalize to
+  target-relative or every entry mismatches.
+- **A *leading* `---` is only a document-start marker.** All six `fullpath` YAML
+  goldens have one; only the three under `golden_chain/` carry a *closing* fence and
+  are genuinely two documents. Walk them with `safe_load_all`, not `safe_load`.
+
+### Writing to GitHub from a script
+
+Each of these cost a real defect in merged code, and each was found only by looking
+at the published artifact — never by a test asserting on the call sequence.
+
+- **`gh run view --log` renders ANSI as the two literal characters `^` `[`, never a
+  raw ESC byte.** Measured on run `30257877863`: **0** occurrences of `0x1b`, **68**
+  of `^[`. A filter written as `grep -v $'\x1b'` therefore matches nothing — it looks
+  like a guard and is dead code. Filter on `'\^\['` instead. The same fact means a
+  fixture built from a real download is byte-faithful even though it *looks*
+  re-rendered; do not "fix" it.
+- **In a single-quoted `printf` format, `` \` `` is a literal backslash, not an
+  escape** — it publishes as `` \` `` to anyone reading the issue. In an **unquoted**
+  heredoc (`<<EOF`) the opposite holds: a bare backtick is command substitution, so
+  the backslash there is required. The two rules are inverted, and one script can
+  contain both. Shipped in #392, caught on issue #393's real close comment, fixed in
+  #394.
+- **Command substitution strips trailing newlines**, so a helper ending in
+  `printf '\n'` cannot supply the blank line that terminates a GFM table when
+  consumed as `$(helper)` inside a heredoc — the following paragraph is absorbed into
+  the table as junk rows. The blank line has to be literal *in the heredoc*.
+- **`gh --jq` uses gh's own built-in jq**, so a `|| die` on the `gh` call proves
+  nothing about a *separate* external `jq` invocation on its output. Guard each
+  extraction, and treat an unparseable id as fatal — an empty id is
+  indistinguishable from "no such issue" and will route a read failure into a
+  **create**.
+- **`gh issue create --assignee` and `--label` both hard-error on an unknown value.**
+  Apply the label by *retry* (labelled, then unlabelled + `::warning::`) — never
+  `|| true`, which makes the whole creation non-fatal. Set the assignee *after*
+  creation, so its failure cannot take the create with it.
+- **The prescribed comment-readback can report a published comment as empty.**
+  `gh issue view <N> --json comments --jq '.comments[-1].body|length'` returned **0**
+  for a comment that had published in full (3,629 chars via
+  `gh api …/issues/comments/<id>`), and the correct value on a later read —
+  read-after-write lag. The feedback contract calls a non-zero length "the only proof
+  it published", and the symptom is **identical to the `--body -` bug**, so the
+  natural reaction is to re-post and duplicate. Anchor the check to the id in the URL
+  `gh` returned, or retry before concluding anything. Filed as
+  [aidoc-flow-operations#290](https://github.com/vladm3105/aidoc-flow-operations/issues/290).
+- **`gh issue list` defaults to `--limit 30`**, and this repo is past #390. A
+  tracking issue that has aged off page 1 is invisible to an exact-title lookup, and
+  the run creates a duplicate. Use `--state all --limit 200`, and never `--search`
+  (tokenized and eventually consistent, so a just-created issue can be missing).
+
+### Process
+
+- **Verify a blocker before escalating it** (**D-0068**). `IDGEN-NO-GENERATOR`'s
+  merged plan declared a founder decision was required over `state: canonical` vs
+  `id_state: provisional`. There was no conflict — `id_standard.state` is template
+  metadata with no code consumer, and the linter says so at
+  `tools/sdd_doc_lint/__init__.py:558`. An unverified blocker in a merged plan stalls
+  work on a decision nobody needs to make.
+- **Write the scan before the census.** A surface count went 9 → 19 → the truth of
+  **25**, because both manual passes sampled one file instead of the tree. A
+  hand-built census of a class is a sample that gets reported as a total.
+- **A root cause is a claim about a distribution — derive the distribution first**
+  (**D-0072 §3**). A sampled read of `doc-maintainer`'s failures named `ci#352` "the
+  blocker" and that framing reached three files; the full census put #352 at 3 of 23
+  and #353 at 15. Both are true in their own sense, but conflating them produced a
+  **resume condition that would have returned a majority-red pilot**. Loop every
+  failing run and bucket the errors before naming a cause.
+- **When an error names a condition, check the named artifact actually violates it**
+  (**D-0072 §2**). Canon's `duplicate or non-allowlisted plan path: <path>` covers two
+  conditions in one string, and its most frequent instance named a path that **is**
+  allowlisted. An allowlist-shaped message about an allowlisted path read as a config
+  mismatch, and that misdiagnosis was written into the backlog as this repo's bug.
+  One `jq '.allowed_paths'` falsified it.
+- **An absence is the easiest defect to assert and the hardest to verify.**
+  `NO-PIN-CURRENCY-CHECK` named an absence as the cause of a mixed-pin state
+  surviving two days. The check *does* run — canon's `check-standards-drift.sh` tail
+  invokes it on every weekly `standards-drift` run — and it had fired on 2026-07-27
+  naming all ten stale pins **and** the `--repin` remedy. The proposed fix would have added a
+  **second copy of a check that was already running and already right**; the real gap
+  was that a warning-only annotation on a weekly job has no reader. One
+  `gh run view --log | grep pin-currency` falsified it. **Read the log before writing
+  an absence down.**
+- **Mutation-test a negative-property guard.** `test_no_inprompt_hashing.py` passed a
+  live reintroduction on first write: markdownlint reflows those surfaces into single
+  long lines, so the correction and the regression shared a line and a line-scoped
+  negation skip masked it.
+- **Measure blast radius before shipping an operation over shared state.**
+  `rehash --fix` was cut on measurement, not principle — it would rewrite all four of
+  BRD-01's §7 FR IDs and break citations in 8 downstream files.
+- **Before fixing a defect in a hand-rolled surface, check whether canon owns that
+  surface** (**D-0071 §2**). #373 asked to SHA-pin an action; adopting canon's caller
+  closed it and removed the class of defect, where editing the `uses:` lines would
+  have fixed the symptom and left the workflow to drift at the next release.
