@@ -35,6 +35,17 @@ stream moved today**. **Open PRs: 0. Open issues: 2** —
 [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) and
 [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386), both unchanged.
 
+**Last merge: [#399](https://github.com/vladm3105/aidoc-flow-framework/pull/399)
+(`c8fcd209`) — the durable/volatile split above is live, not aspirational.** The
+`## Durable traps` section moved out of this file into `CLAUDE.md` (424 → 182 here,
+697 → 948 there). Four facts in the moved content were wrong and were corrected rather
+than carried: this file had claimed `CLAUDE.md` owned the `jq`-null trap (it did not,
+and the two statements of it here contradicted each other on the failure text); the
+`**init**.py` corruption count was eight and is **seven**; the `aidoc-flow-ci` call
+sites were "sixteen across fifteen files" and are **seventeen across sixteen**. Both
+counts now carry their re-measure command inline in `CLAUDE.md`. Closed
+`HANDOFF-OVER-SIZE` + `DOC-MAINTAINER-ADOPTION-CLAIM-STALE`.
+
 **`doc-maintainer` is PAUSED, and CI is green again.**
 [#397](https://github.com/vladm3105/aidoc-flow-framework/pull/397) set
 `kill_switch: true`. Verified in production, not assumed: the merge's own `push` run
