@@ -2,22 +2,22 @@
   "$schema": "https://aidoc-flow.io/schemas/doc-maintainer-config-v1.json",
   "version": 1,
   "dry_run": true,
-  "kill_switch": false,
+  "_comment_kill_switch": "PAUSED 2026-07-30 after 23 failures / 47 runs across FOUR independent upstream failure modes: 15 planner rejections (aidoc-flow-ci#353 — 9 duplicate `plans/HANDOFF.md`, 6 non-allowlisted), 3 apply 200 KB refusals (#354), 3 silent Step 9 deaths (#352), 2 apply 30%-deletion guard trips (reported on #353). #352 is the smallest by count and still the graduation blocker: Step 9 renders with `diff`, which exits 1 whenever files differ, and GitHub's `bash -e` kills the step before the `[ rc -le 1 ]` guard forgives it — and because its loop reads `.low_risk_set[]`, no plan containing a low-risk edit can ever complete a dry run, which is exactly what the IPLAN-0025 SS3 P4 gate exists to exercise. RESUME REQUIRES #352 AND #353 — #353 alone is 15 of the 23 failures, so flipping on #352 only would return a majority-red pilot. Full rationale: .github/doc-maintainer-conventions.md, Status section.",
+  "kill_switch": true,
   "allowed_paths": [
     "README.md",
-    "CHANGELOG.md",
     "ROADMAP.md",
     "docs/**",
     "plans/HANDOFF.md",
     "platforms/hermes/CHANGELOG.md",
     "platforms/claude-code-plugin/CHANGELOG.md"
   ],
+  "_comment_allowed_paths": "CHANGELOG.md is deliberately absent. It is well past apply.py's hard 200 KB full-file-regeneration refusal (281 KB measured 2026-07-30, and it only grows), so every plan selecting it is a guaranteed red run (aidoc-flow-ci#354). It is also the wrong shape for this tool regardless of size: the changelog is append-only and the only correct edit is an insert under `## [Unreleased]`, which needs the head of the file, not a whole-file rewrite. The per-platform changelogs (91 KB, 33 KB) stay in scope and are under the limit.",
   "max_edits_per_pr": 4,
   "max_prs_per_day": 2,
   "auto_merge": {
     "low_risk_paths": [
       "README.md",
-      "CHANGELOG.md",
       "docs/**",
       "platforms/hermes/CHANGELOG.md",
       "platforms/claude-code-plugin/CHANGELOG.md"
@@ -30,6 +30,7 @@
       "plans/HERMES-BACKLOG.md",
       "framework/governance/DECISIONS.md",
       "CLAUDE.md"
-    ]
+    ],
+    "_comment_high_risk_paths": "Five of these — plans/DECISIONS.md, plans/FRAMEWORK-TODO.md, plans/HERMES-BACKLOG.md, framework/governance/DECISIONS.md, CLAUDE.md — are intentionally NOT in allowed_paths: defence-in-depth if the allowlist is ever widened, per doc-maintainer-conventions.md. (ROADMAP.md and plans/HANDOFF.md ARE allowlisted, and their high-risk classification is load-bearing.) The five are not drift: planner.py:187 rejects a non-allowlisted path before classification is reached, planner.py:197 already treats anything not low-risk as high-risk, and high_risk_paths is never shown to the model and never widens the allowlist — so listing them is inert today and correct tomorrow."
   }
 }
