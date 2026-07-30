@@ -24,41 +24,32 @@
 
 ## Open
 
-### `[ci]` `DOC-MAINTAINER-RED-ON-EVERY-PUSH` — the adopted dry-run caller has failed every `push` run since it landed, unwatched
+### `[docs]` `HANDOFF-OVER-SIZE` — the handoff is ~425 lines against a ~200-line target, and the overflow is durable content in the wrong file
 
-- *Context:* found 2026-07-30 while confirming the `ci/v2.16.0` migration was
-  complete (it is — 17/17 call sites). `doc-maintainer.yml` was adopted in #382
-  on 2026-07-29; since then **20 failures / 41 runs**. `schedule` runs succeed
-  because they find nothing to do; **every `push` run fails**. Two distinct
-  causes, measured across five failing runs:
-  `planner: duplicate or non-allowlisted plan path: <X>` (4 of 5) and
-  `apply: refusing autonomous full-file generation over 200 KB: CHANGELOG.md`
-  (which is 276 KB and only grows).
-- *Fix shape:* **ours** — `.github/doc-maintainer.json` lists five paths in
-  `auto_merge.high_risk_paths` that are absent from `allowed_paths`
-  (`CLAUDE.md`, `plans/DECISIONS.md`, `plans/FRAMEWORK-TODO.md`,
-  `plans/HERMES-BACKLOG.md`, `framework/governance/DECISIONS.md`), so the
-  planner proposes them and the gate rejects them. Decide whether each should
-  be maintainable at all, then align the two lists.
-  **Canon's** — the error message conflates *duplicate* with *non-allowlisted*
-  (`plans/HANDOFF.md` **is** allowlisted, so its failures are the duplicate
-  branch), and the 200 KB refusal fires on an allowlisted **low-risk** path with
-  no chunking path. Both belong on `aidoc-flow-ci`; **not yet filed.**
-- *Note:* this is the same unread-surface class `PIN-CURRENCY-NO-READER` closed,
-  one level worse — that one was warning-only, this one is red.
+- *Context:* noted 2026-07-30 while regenerating for #397. Target is well under ~200
+  lines. The bulk is **`## Durable traps` (~250 lines)** — content the rule says to keep,
+  but keep *small*, and which the file's own header already routes elsewhere: "a trap
+  already recorded in `CLAUDE.md` is not repeated here."
+- *Fix shape:* graduate settled traps to `CLAUDE.md` in tag-sized batches (the
+  acceptance-harness and local-hooks blocks are the largest self-contained ones), and
+  prune `## Stale advice` rows whose sources no longer exist. Its own change — it would
+  breach another PR's 3-surface cap. Re-measure with `wc -l`; do not trust a number
+  written here.
 
-### `[docs]` `DOC-MAINTAINER-ADOPTION-CLAIM-STALE` — two docs still say the caller is unadopted and its secrets absent
+### `[docs]` `DOC-MAINTAINER-ADOPTION-CLAIM-STALE` — `CLAUDE.md` still says sixteen call sites across fifteen files
 
 - *Context:* found 2026-07-30. `CLAUDE.md` says "**sixteen** `aidoc-flow-ci` call
   sites across fifteen files"; the real count has been **17 across 16** since #382
-  added `doc-maintainer.yml`. `plans/HANDOFF.md` called it "the one canon surface
-  still unadopted" and claimed `LITELLM_DOC_API_KEY` / `LITELLM_BASE_URL` exist on
-  `aidoc-flow-operations` "but not here" — `gh secret list` shows **both present
-  on this repo**. Only `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are missing, and
-  those are live-mode only.
-- *Fix shape:* HANDOFF corrected in the same change as this entry. **`CLAUDE.md`
-  is not** — fold the count fix into the plan's PR 4, which already edits
-  `CLAUDE.md`, rather than spending a governance PR on one number.
+  added `doc-maintainer.yml`. The `plans/HANDOFF.md` half of this entry (the
+  "still unadopted" and "secrets absent" claims) was corrected in #396 — `gh secret
+  list` shows `LITELLM_BASE_URL` and `LITELLM_DOC_API_KEY` both present here; only
+  `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are missing, and those are live-mode
+  only.
+- *Fix shape:* fold the count fix into the pin-currency plan's PR 4, which already
+  edits `CLAUDE.md`, rather than spending a governance PR on one number. Re-count before
+  editing — do not copy the number from here. Sites, then files:
+  `grep -rho 'aidoc-flow-ci/\.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ | wc -l`
+  and `grep -rl 'aidoc-flow-ci/\.github/workflows/.*@ci/v' .github/workflows/ | wc -l`.
 
 ### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
@@ -1197,6 +1188,49 @@ check that was already running and already right.
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[ci]` `DOC-MAINTAINER-RED-ON-EVERY-PUSH` — ✅ CLOSED (2026-07-30, PR #397) — the adopted dry-run caller was red on nearly every push, unwatched
+
+- *Context:* found 2026-07-30 while confirming the `ci/v2.16.0` migration was
+  complete (it is — 17/17 call sites). `doc-maintainer.yml` was adopted in #382 on
+  2026-07-29; **23 failures / 47 runs**, 12 of 13 `push` runs, across **four**
+  independent upstream defects — not the two originally recorded.
+- *Resolution:* `kill_switch: true` (PR #397, D-0072). Verified in production: the
+  merge's own push run went green — `kill_switch=true; exiting cleanly (no LLM cost
+  incurred)`. `CHANGELOG.md` also removed from `allowed_paths` (281 KB, past the
+  200 KB apply refusal). **Resume requires `aidoc-flow-ci` #352 AND #353** — #353
+  alone is 15 of the 23, so #352 alone returns a majority-red pilot.
+- *Correction — the original fix shape in this entry was wrong.* It named five
+  paths in `auto_merge.high_risk_paths` absent from `allowed_paths` as "ours" and
+  proposed aligning the lists. That is a no-op: `planner.py:187` rejects a
+  non-allowlisted path before classification, `planner.py:197` already treats
+  anything not low-risk as high-risk, and `high_risk_paths` is never shown to the
+  model. Those five caused **none** of the 23 failures; they are deliberate
+  defence-in-depth and are now documented as such in the config. The misreading
+  came from canon's message conflating *duplicate* with *non-allowlisted* — see
+  D-0072 point 2.
+- *Filed upstream:* [#352](https://github.com/vladm3105/aidoc-flow-ci/issues/352)
+  (Step 9 `set -e` — the graduation blocker),
+  [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) (one bad entry reds
+  the run; `validation.rejected` declared and never written; the 30 %-deletion
+  guard added as evidence),
+  [#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354) (200 KB refusal vs
+  an install template shipping `CHANGELOG.md` as low-risk, while canon's own
+  changelog is 363 KB).
+
+### `[docs]` `FEEDBACK-READBACK-FALSE-NEGATIVE` — ✅ CLOSED (2026-07-30, filed) — the cross-repo comment readback can report a published comment as empty
+
+- *Context:* found 2026-07-30 while filing the three canon issues above.
+  `operations/docs/AGENT_FEEDBACK_INTAKE.md:201` (and the `submit-feedback` skill
+  §5) prescribe `gh issue view <N> --json comments --jq '.comments[-1].body|length'`
+  as proof a comment published. It returned **0** for a comment that had published
+  in full (3,629 chars, confirmed via `gh api …/issues/comments/<id>`), and
+  returned the right value on a later read — read-after-write lag, not a broken
+  command. The doc calls a non-zero length "the only proof it published", so an
+  agent following it literally re-posts and duplicates.
+- *Resolution:* filed as
+  [aidoc-flow-operations#290](https://github.com/vladm3105/aidoc-flow-operations/issues/290)
+  with the id-anchored readback as the suggested fix. Not this repo's to fix.
 
 ### `[ci]` `ACCEPTANCE-TIER-REQUIRED-CHECK` — ✅ CLOSED (2026-07-27) — promote the acceptance gate to a required status check
 

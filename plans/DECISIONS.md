@@ -10,6 +10,72 @@ graduation.
 
 ---
 
+## D-0072 — Pause a pilot that cannot pass its own gate; and weight a failure census before naming a root cause
+
+**2026-07-30.** Decisions from PR `#397`, which set `kill_switch: true` on the
+`doc-maintainer` caller adopted in `#382`. **Supersedes the diagnosis recorded in
+`#396`** (see point 2); supersedes nothing else.
+
+**1. Pause, rather than narrow the config or un-adopt.** The caller was red on
+23 of 47 runs across four independent upstream defects. `kill_switch: true` makes
+canon exit cleanly before any LLM call (`doc-maintainer.yml:340-345`), so the
+workflow is green at zero cost while the caller, its config and its conventions
+stay in place — resume is a one-line flip. Un-adopting would have discarded the
+28/28 canon manifest parity `#382` established, and narrowing the config could
+not have worked: `max_edits_per_pr: 1` and an empty `low_risk_paths` between them
+address 12 of the 23 failures and leave the rest. **The reason to pause is not
+that it was red — it is that the pilot could not produce the evidence it exists
+to produce.** A dry-run pilot's output is dry-run cycles carrying coherent
+proposals, and `aidoc-flow-ci#352` means no plan containing a low-risk edit can
+ever complete one. Running it therefore costs LLM calls and CI noise and returns
+nothing.
+
+⚠️ **The bar here is self-imposed, and earlier framing overstated its
+authority.** `#382` and `#397` both cite IPLAN-0025 §3 P4 ("≥5 dry-run cycles…")
+as *the* graduation gate for this caller. Read at source, P4 is written against
+the **operations** repo as the sole pilot consumer, and §6 puts sibling-consumer
+onboarding explicitly out of scope — *"each consumer onboards at its own pace
+post-graduation."* No plan document binds this repo to P4's numbers. It remains a
+sensible bar to hold ourselves to; it is not a requirement we are failing.
+
+**2. The prior diagnosis was wrong, and the error was structural.** `#396`
+recorded this repo's half of the bug as five paths in
+`auto_merge.high_risk_paths` missing from `allowed_paths`, to be fixed by
+aligning the lists. That fix would have changed nothing. `planner.py:187` rejects
+a non-allowlisted path *before* classification is reached; `planner.py:197`
+already treats anything not low-risk as high-risk; and `high_risk_paths` is never
+shown to the model and never widens the allowlist. The five entries are inert
+defence-in-depth and caused **none** of the 23 failures. They are now documented
+as deliberate in the config itself, because the next reader will otherwise
+re-derive the same wrong conclusion from the same evidence.
+
+The misreading was not carelessness — it was **manufactured by canon's error
+message**. `duplicate or non-allowlisted plan path: <path>` covers two conditions
+in one string, and the single most common failure (9 of 23) names
+`plans/HANDOFF.md`, which *is* allowlisted. An allowlist-shaped message about an
+allowlisted path reads unambiguously as a config mismatch. **When a message names
+a condition, verify the named artifact actually violates it before acting.**
+
+**3. Census before root cause; a sample will mis-weight it.** The first pass here
+sampled failures and named `#352` as "the blocker", then wrote that framing into
+three files. A full census over all 23 failures put `#352` at 3 and `#353` at 15.
+Both statements are true — `#352` is the *graduation* blocker because it is the
+terminal gate that can never pass, while `#353` is the dominant *observed*
+failure — but conflating them produced a **resume condition that would have
+returned a majority-red pilot**, since it named `#352` alone. The corrected
+condition requires `#352` **and** `#353`. **A root cause is a claim about a
+distribution; derive the distribution first.**
+
+**4. Report a guard that is working when its blast radius is wrong.** Two
+failures were apply's *"deleted/replaced more than 30 % of README.md"* guard. The
+guard is correct and should not be relaxed — but like the planner's, it aborts
+the whole run instead of dropping the entry. That is the same defect as `#353`,
+so it was added there as evidence rather than filed as a fourth issue.
+**Correct-but-over-broad enforcement is still a defect worth reporting**, and it
+belongs on the issue that already argues the general shape.
+
+---
+
 ## D-0071 — Adoption is a separate dimension from pinning; and an asserted absence is the cheapest defect to file and the hardest to verify
 
 **2026-07-29.** Decisions from CANON-PARITY-001 (PR `#378`), which adopted the
