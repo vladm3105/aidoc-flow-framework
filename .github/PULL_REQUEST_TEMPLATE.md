@@ -22,9 +22,15 @@ Closes #
 
 <!--
 Rule 1 caps a GOVERNANCE PR at ≤3 doc surfaces. This repo's governance-PR list
-(CLAUDE.md § "Governance PR discipline"): CLAUDE.md, plans/PLAN-*.md,
-plans/DECISIONS.md, .github/ai-review/, .github/workflows/ai-review.yml, or a
-change that supersedes a locked decision.
+(CLAUDE.md § "Governance PR discipline" is the definition; this is a copy, so
+check it there if the two ever disagree): CLAUDE.md, plans/*-PLAN.md and their
+plans/*-DESIGN.md companions, plans/DECISIONS.md,
+framework/governance/DECISIONS.md, .github/ai-review/,
+.github/workflows/ai-review.yml, or a change that supersedes a locked decision.
+
+The plan glob is a SUFFIX — every plan here is <NAME>-PLAN.md. The prefix form
+plans/PLAN-*.md, which this template and CLAUDE.md both carried until
+2026-07-30, matches only PLAN-TEMPLATE.md, i.e. no real plan.
 
 Over 3 surfaces on a governance PR: SPLIT into sequential PRs, or record a
 founder OK here AND as an audit-trail line in the commit message. Splitting is
