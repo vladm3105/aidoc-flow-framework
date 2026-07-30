@@ -1,0 +1,35 @@
+{
+  "$schema": "https://aidoc-flow.io/schemas/doc-maintainer-config-v1.json",
+  "version": 1,
+  "dry_run": true,
+  "kill_switch": false,
+  "allowed_paths": [
+    "README.md",
+    "CHANGELOG.md",
+    "ROADMAP.md",
+    "docs/**",
+    "plans/HANDOFF.md",
+    "platforms/hermes/CHANGELOG.md",
+    "platforms/claude-code-plugin/CHANGELOG.md"
+  ],
+  "max_edits_per_pr": 4,
+  "max_prs_per_day": 2,
+  "auto_merge": {
+    "low_risk_paths": [
+      "README.md",
+      "CHANGELOG.md",
+      "docs/**",
+      "platforms/hermes/CHANGELOG.md",
+      "platforms/claude-code-plugin/CHANGELOG.md"
+    ],
+    "high_risk_paths": [
+      "ROADMAP.md",
+      "plans/HANDOFF.md",
+      "plans/DECISIONS.md",
+      "plans/FRAMEWORK-TODO.md",
+      "plans/HERMES-BACKLOG.md",
+      "framework/governance/DECISIONS.md",
+      "CLAUDE.md"
+    ]
+  }
+}
