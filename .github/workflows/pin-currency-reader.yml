@@ -1,0 +1,153 @@
+# pin-currency-reader — give the EXISTING pin-currency output a reader.
+#
+# The weekly `standards-drift` run already detects stale `@ci/v*` pins correctly
+# and names the `--repin` remedy. Nothing read it: canon's check is warning-only
+# by contract, its reusable exposes no `outputs:`, it writes no step summary,
+# and the check-run annotations API caps at 10 warnings per level — which on the
+# measured run dropped all ten pin-currency lines, because they are emitted at
+# the script's tail. This workflow reads the completed run's LOG, the only
+# surface that carries the signal, and reconciles one tracking issue from it.
+#
+# It adds NO second detector. See plans/PIN-CURRENCY-READER-PLAN.md.
+#
+# LOCAL OVERRIDE, not a canon caller. Canon has no adopter-facing pin reader —
+# in fact its own weekly fleet audit (standards-drift-self.yml) discards its
+# verdict with `|| true`, so no audit anywhere has a reader. The generalizable
+# half is filed upstream; delete this file once canon's own reader lands.
+name: pin-currency-reader
+
+on:
+  workflow_run:
+    # Scoped by name so the reader can never trigger on itself.
+    workflows: ["standards-drift"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: standards-drift run ID whose log should be read
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: read       # required to download another workflow run's log
+  issues: write
+
+# SERIALIZATION, not cancellation. `cancel-in-progress: false` under a fixed
+# group name stops a `workflow_run` fire and a concurrent `workflow_dispatch`
+# from both finding no open issue and each creating one.
+#
+# Do NOT rewrite this rationale as "nothing to cancel, so nothing to fix" —
+# that is verbatim this repo's justification for shipping NO `concurrency:`
+# block at all (see audit-trail.yml), so a future sweep reading it here would
+# delete the block and reintroduce the duplicate-issue race. Recorded at the
+# level a `concurrency:` sweep actually greps, per D-0070.
+#
+# This workflow feeds no required context, so the #329 allowlist does not apply.
+# Counting by SHAPE rather than by filename, as `CLAUDE.md` requires, this is a
+# FOURTH shape alongside "absent block", the #329 allowlist, and bare `true`.
+#
+# Caveat worth knowing before relying on it: `cancel-in-progress: false` does not
+# make a run uncancellable. GitHub queues at most one PENDING run per group, so a
+# third arrival while one is running and one is queued displaces the queued one.
+# Benign here — the surviving run reads a newer log — but it is not a guarantee
+# that every upstream verdict is read.
+concurrency:
+  group: pin-currency-reader
+  cancel-in-progress: false
+
+jobs:
+  read:
+    name: Read pin-currency verdict
+    # The precedent's FULL form (auto-merge-ai-prs.yml). A conclusion-only
+    # filter green-SKIPS every dispatch, because
+    # `github.event.workflow_run.conclusion` is empty on a `workflow_dispatch`
+    # run — and a skipped job is green, so a manual verification run would
+    # report "no issue created" against a passing workflow.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    # The reconcile's arg parser is arity-checked, but an unattended job with no
+    # ceiling would burn the 6h default if anything ever did hang.
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Resolve the source run
+        id: src
+        # `run_id` is an attacker-controllable `workflow_dispatch` string, so it
+        # reaches the shell ONLY through `env:` — never interpolated into the
+        # script body. A `${{ }}` expansion is textual substitution performed
+        # before bash parses the line, so a quoted `$(…)` payload in the input
+        # would execute here with GH_TOKEN in scope and `issues: write` on the
+        # job token. `actionlint` does not flag this, so the pattern is the
+        # only guard. Same reason the digits check is a hard fail, not a warn.
+        env:
+          INPUT_RUN_ID: ${{ github.event.inputs.run_id }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+          SERVER_URL: ${{ github.server_url }}
+        run: |
+          run_id="${INPUT_RUN_ID:-$EVENT_RUN_ID}"
+          [ -n "$run_id" ] || { echo "::error::pin-currency-reader: no run id to read"; exit 1; }
+          case "$run_id" in
+            ''|*[!0-9]*) echo "::error::pin-currency-reader: run id is not numeric: '${run_id}'"; exit 1;;
+          esac
+          echo "run_id=${run_id}" >> "$GITHUB_OUTPUT"
+          echo "run_url=${SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${run_id}" >> "$GITHUB_OUTPUT"
+
+      - name: Download the standards-drift run log
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ steps.src.outputs.run_id }}
+        run: |
+          # Bounded retry: `gh run view --log` 404s while a just-completed run's
+          # log archive is still being assembled — which is exactly when
+          # `workflow_run: completed` fires. Without this the dominant failure
+          # mode is a red workflow on an unwatched surface: the same
+          # invisibility this reader exists to remove, inverted.
+          for attempt in 1 2 3 4 5; do
+            if gh run view "$RUN_ID" --repo "$GITHUB_REPOSITORY" --log > drift.log 2>run-view.err; then
+              [ -s drift.log ] && { echo "log downloaded on attempt ${attempt}"; exit 0; }
+            fi
+            echo "::notice::pin-currency-reader: log not ready (attempt ${attempt}/5), backing off"
+            sleep $((attempt * 15))
+          done
+          echo "::error::pin-currency-reader: could not download the log for run ${RUN_ID}"
+          cat run-view.err >&2 || true
+          exit 1
+
+      - name: Parse the pin-currency verdict
+        id: parse
+        run: bash scripts/read-pin-currency-log.sh drift.log >> "$GITHUB_OUTPUT"
+
+      - name: Reconcile the tracking issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ steps.src.outputs.run_url }}
+          ASSIGNEE: ${{ github.repository_owner }}
+        run: |
+          bash scripts/read-pin-currency-log.sh drift.log \
+            | bash scripts/reconcile-pin-currency-issue.sh \
+                --repo "$GITHUB_REPOSITORY" \
+                --run-url "$RUN_URL" \
+                --assignee "$ASSIGNEE"
+
+      - name: Summary
+        if: always()
+        # Same `env:`-only rule as the resolve step — `run_url` carries the
+        # dispatch input transitively, so it must not be interpolated either.
+        env:
+          VERDICT: ${{ steps.parse.outputs.verdict }}
+          STALE_COUNT: ${{ steps.parse.outputs.stale_count }}
+          CANON: ${{ steps.parse.outputs.canon }}
+          RUN_URL: ${{ steps.src.outputs.run_url }}
+        run: |
+          {
+            echo "### pin-currency"
+            echo
+            echo "| Field | Value |"
+            echo "| --- | --- |"
+            echo "| verdict | \`${VERDICT}\` |"
+            echo "| stale files | ${STALE_COUNT} |"
+            echo "| canon | \`${CANON}\` |"
+            echo "| source run | ${RUN_URL} |"
+          } >> "$GITHUB_STEP_SUMMARY"

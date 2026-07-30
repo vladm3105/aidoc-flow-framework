@@ -4,7 +4,7 @@
 | -------------- | ---------------------------------------------------------------------- |
 | Task           | `PIN-CURRENCY-NO-READER` (`plans/FRAMEWORK-TODO.md`, `[ci]`)            |
 | Type           | feature                                                                |
-| Status         | READY — 2026-07-30 (Pass 5, 4 independent passes, zero load-bearing findings outstanding) |
+| Status         | IN PROGRESS — 2026-07-30. PR 1 merged (plan); **PR 2 open** (scripts, workflow, fixtures, tests, registration shim). PR 3 gated on V10–V14; PR 4 last. Reviewed over 5 passes, zero load-bearing findings outstanding |
 | Depends on     | D-0070 (`@ci/v2.16.0` pins), D-0071 (CANON-PARITY-001)                 |
 | Feeds          | an upstream feature request on `aidoc-flow-ci`                          |
 | Version impact | none — no version stream moves (local CI surface only)                  |
@@ -171,10 +171,15 @@ inline, which was the wrong half to trust.
 - **"Comment only on verdict change" is defined by the verdict and the stale set, not by
   the body.** The body embeds a run URL that changes weekly, so body-diffing would
   comment every run. Comment on exactly three transitions: `clean`/absent → `stale`
-  (opened or reopened), a change in `stale_count` or the stale file set while open, and
-  `stale` → `clean` (closing). A re-run with an identical verdict and identical stale
-  set edits the body silently. Without the middle transition, a count going 10 → 15
-  would be a silent edit with no notification, which defeats R8.
+  **where that reopens an existing issue**, a change in `stale_count` or the stale file
+  set while open, and `stale` → `clean` (closing). A re-run with an identical verdict and
+  identical stale set edits the body silently. Without the middle transition, a count
+  going 10 → 15 would be a silent edit with no notification, which defeats R8.
+  - **Creating the issue is itself the notification, so a create emits no comment.**
+    An issue opened and assigned already notifies; a comment restating the body it was
+    created with is noise. A reopen is the case that needs one, because reopening alone
+    is quiet. *(Clarified during PR 2 — the original "(opened or reopened)" read as
+    requiring both, which V10 never asked for and V12 asked for only on reopen.)*
 - **Assignee is set *after* creation, via `gh issue edit --add-assignee`** (R8) — a
   `github-actions[bot]` issue notifies only repo watchers, and `GITHUB_TOKEN` authorship
   fires no `issues`-triggered automation, so an assignee is needed. But
@@ -290,7 +295,7 @@ and `.github/labeler.yml` that no such label existed. Those are not the live lab
 
 | Path | Purpose |
 | ---- | ------- |
-| `scripts/read-pin-currency-log.sh` | parse a `standards-drift` log → `stale` / `clean` / `skipped` verdict |
+| `scripts/read-pin-currency-log.sh` | parse a `standards-drift` log → `stale` / `clean` / `unresolved` / `skipped` verdict |
 | `scripts/reconcile-pin-currency-issue.sh` | reconcile the single tracking issue; `--dry-run` capable |
 | `.github/workflows/pin-currency-reader.yml` | run both per completed `standards-drift` run |
 | `tests/unit/fixtures/standards_drift_stale.log` | run `30257877863`, in **`v2.16.0` shape** (coverage tail appended) — 10 stale pins |
@@ -440,7 +445,7 @@ Split by what can run before the merge and what structurally cannot (R1).
 
 | #  | Check (command or observable) | Expected result | Maps to |
 | -- | ----------------------------- | --------------- | ------- |
-| V1 | `python3 -m unittest tests.unit.test_pin_currency_reader -v` | 6 parse cases + 7 reconcile cases (six scenarios plus the label fallback) pass | Task 1, Task 2 |
+| V1 | `python3 -m unittest tests.unit.test_pin_currency_reader -v` | 17 pass: 8 parse cases (4 verdicts + 4 must-fail shapes) and 9 reconcile cases (six scenarios, the label fallback, and two asserting generated body content). Grew from 6 + 7 during PR 2's self-review — see §Review log Pass 6 | Task 1, Task 2 |
 | V2 | `python3 -m unittest discover -s tests/conformance` before vs. after the registration shim | the test count **increases** by the new cases, proving the shim reaches `tests/unit/` | R6 |
 | V3 | `bash scripts/read-pin-currency-log.sh tests/unit/fixtures/standards_drift_stale.log` | `verdict=stale`, `stale_count=10`, `canon=ci/v2.15.0` | Task 1 |
 | V4 | `GH=<stub> bash scripts/reconcile-pin-currency-issue.sh --dry-run` across the six scenarios in Task 2 | the expected create / edit / edit+comment / reopen / close / stamp-only sequence; **zero** live API writes, and no `gh` or network needed | Task 2 |
@@ -469,7 +474,7 @@ which is what forces the reopen contract rather than create-on-stale (R5).
 
 Per §PR sequencing, not in one PR.
 
-- [ ] `CHANGELOG.md` — entry *(PR 2)*
+- [x] `CHANGELOG.md` — entry *(PR 2)*
 - [ ] `plans/DECISIONS.md` — `D-00NN`: why the log, why not annotations, why the reader
       fails loudly *(PR 3)*
 - [ ] `plans/FRAMEWORK-TODO.md` — entry → `## Closed` with the merge ref *(PR 3)*
@@ -821,3 +826,59 @@ already accepted (the registration shim's reducibility; `unresolved`/`skipped` s
 behavior) remain open by decision, not oversight.
 
 **Result:** ready — no load-bearing findings outstanding.
+
+### Pass 6 — 2026-07-30 — PR 2 implementation self-review (Rule 2, 3 agents)
+
+Not a plan review: the mandatory adversarial review of the **implementation** diff,
+dispatched per governance Rule 2 / OPS-0067 across three agents (shell correctness,
+workflow + test fidelity, governance + dead refs). Fourteen load-bearing findings, all
+fixed before push. The four that would have shipped real defects:
+
+- **The completion gate proved the wrong thing.** Pass 5 authorized grepping the common
+  prefix `check-standards-drift:` as positive evidence that the drift script ran. It is
+  not a terminal marker: the script emits an opening `repo=… tier=…` header and a
+  `cannot check <family>` warning per unreadable family under that same prefix — the
+  first of them **24 lines ahead** of pin-currency in the measured log. So a log
+  truncated anywhere in that window satisfied the gate, parsed as `skipped`, and exited
+  0 with ten stale pins in the real run. Reachable, not theoretical: `workflow_run:
+  completed` fires while the log archive is still assembling and a partial archive is
+  non-empty. Now gated on the summary line **or** the `coverage —` line, both of which
+  only appear at termination. The plan's own C39/C40 wording was right and the
+  "one substring for free" optimisation was what broke it.
+- **The `--repin` remedy was swallowed into the markdown table.** `$(render_table)`
+  inside a heredoc — command substitution strips trailing newlines, so the blank line
+  meant to terminate the GFM table could not survive, and the remedy paragraph rendered
+  as two junk table rows. On **every issue the tool would ever open**.
+- **A `workflow_dispatch` `run_id` reached three `run:` blocks by interpolation**, with
+  `GH_TOKEN` in scope and `issues: write` on the job token. Now `env:`-only, plus a
+  digits check. `actionlint` does not flag this, so V6 could never have caught it.
+- **A failed `jq` read routed to CREATE.** `gh --jq` uses gh's built-in jq, so the
+  `|| die` on the list call passes even when the external `jq` the extractions use is
+  broken — leaving `issue_number` empty, which is indistinguishable from "no issue
+  exists". A read failure could open a duplicate. Now `|| die` per extraction.
+
+Also fixed: the stamp silently no-opped (and reported success) on a body whose
+`last verified` line had been hand-edited away; `clean` closed the issue with a body
+headed "Stale @ci/v\* pins" reporting 0 stale files; a CRLF body from a web-UI edit
+blanked every previous-verdict field and would have commented weekly; a value-less
+trailing option hung the arg parser forever with no `timeout-minutes` above it; and
+`sort` was locale-dependent on a string compared **across** runs.
+
+**The fixtures were vindicated, the filter was not.** A reviewer flagged the fixtures as
+unfaithful because they carry `^[` rather than raw `0x1b`. Measured against the live
+download: `gh run view --log` emits **zero** raw ESC and 68 literal `^[`, so the fixtures
+are byte-faithful and the *filter* was wrong — `grep -v $'\x1b'` matched nothing, making
+a guard the script documented as load-bearing into dead code.
+
+**Four test guards were vacuous and are now mutation-verified.** The `gh` stub ignored
+`--state all` / `--limit 200`, so removing either kept the suite green while production
+opened duplicates; the `--add-assignee` assertion tested a dry-run `printf` literal, not
+the shipping branch; and no test read a single generated body, leaving both the
+state-block round trip and Pass 5's "stamp preserves the block verbatim" fold unlocked.
+Every guard added here was mutation-tested — the defect reintroduced, the guard confirmed
+to fail, the defect reverted.
+
+**Verified and NOT changed:** Rule 1 compliance (2 doc surfaces); the diff matching PR 2's
+declared contents exactly, with no PR 3 or PR 4 leak; `permissions:`, the dual-trigger
+`if:`, and the retry loop's control flow under the runner's `bash -e`; and every
+cross-file claim in the new comments, checked against canon at the pinned tag.
