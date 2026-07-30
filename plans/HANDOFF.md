@@ -4,13 +4,9 @@
 context — current state, what to do next, and the traps that cost an earlier session
 real time. Nothing else.
 
-**This file is regenerated, not appended.** It had grown to 3377 lines of stacked
-session banners, which is the failure mode the workspace rule forbids: status that is
-appended rots, and a wrong cause left standing gets re-read as fact by every later
-session. Two banners here were asserting resolved blockers as live, and one asserted a
-cause that was measurably false. **Git is the archive** — the full prior history is at
-`387d05a6:plans/HANDOFF.md` and in `git log -- plans/HANDOFF.md`. Do not restore it
-here.
+**This file is regenerated, not appended.** Status that is appended rots, and a wrong
+cause left standing gets re-read as fact by every later session. **Git is the archive** —
+prior states live in `git log -- plans/HANDOFF.md`. Do not restore them here.
 
 ## What lives where — do not duplicate across these
 
@@ -34,64 +30,63 @@ semantics, the runner split incl. why `sast-scan` is the `ubuntu-latest` excepti
 
 ## Where we are — 2026-07-30
 
-Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0`. `main` clean.
-**Open PRs: 0. Open issues: 2** —
-[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) (next-task 4) and
-[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) (next-task 5), both
-filed 2026-07-30.
+Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0` — **no version
+stream moved today**. `main` clean at `c77ff3f4`. **Open PRs: 0. Open issues: 2** —
+[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) and
+[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386), both unchanged.
 
-**Last merges: #387 → #390, one governance correction split four ways.**
-[#387](https://github.com/vladm3105/aidoc-flow-framework/pull/387) (`88cd62e4`) fixed the
-governance-PR **plan glob**, which was written as a prefix (`plans/PLAN-*.md`) against a
-repo where every plan is `<NAME>-PLAN.md` — it matched `PLAN-TEMPLATE.md` and no real
-plan, in *both* copies inside `CLAUDE.md`, so the auto-merge exception that inherits that
-list by reference covered nothing. The other three carried what would not fit:
-[#390](https://github.com/vladm3105/aidoc-flow-framework/pull/390) the same glob in
-`.github/PULL_REQUEST_TEMPLATE.md` (a third copy),
-[#389](https://github.com/vladm3105/aidoc-flow-framework/pull/389) the
-`sync-version-refs.sh` fix behind the stale version token, and
-[#388](https://github.com/vladm3105/aidoc-flow-framework/pull/388) the TODO entries for
-the two issues below.
+**The pin-currency reader shipped.**
+[#392](https://github.com/vladm3105/aidoc-flow-framework/pull/392) (`d3d7f845`) is PR 2
+of `plans/PIN-CURRENCY-READER-PLAN.md`: two scripts under `scripts/`, the
+`workflow_run` wrapper, five fixtures, 19 unit tests, and the
+`tests/conformance/test_repo_scripts.py` registration shim.
+[#394](https://github.com/vladm3105/aidoc-flow-framework/pull/394) (`c77ff3f4`) fixed a
+defect the post-merge verification found. The upstream half is filed as
+[aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) — five
+measured defects, body read back at 9179 chars.
 
-**Read that split as a rule, not as history** — it is the cheapest thing to get wrong
-next time. A **governance** PR is capped at 3 doc surfaces (Rule 1), and CI's
-`call / ai-review` independently demands a `CHANGELOG.md` `[Unreleased]` entry for any
-substantive change — **including a docs-only `CLAUDE.md` edit**, not just code. The two
-collide after the PR is open: satisfying the reviewer takes a 3-surface PR to 4. So
-budget a governance PR as **2 real surfaces + `CHANGELOG.md`**, and split code out on the
-first commit. Rule 1 names splitting the default and a founder-OK carve-out the
-exception; do not self-grant the carve-out to keep a bundle intact. `FRAMEWORK-TODO.md`,
-this file, and the PR template are **not** governance surfaces — they have no cap and
-auto-merge on green, so they are where overflow goes.
+**V10–V14 all pass, so PR 3 is unblocked.** Measured, not assumed:
 
-**`PIN-CURRENCY-NO-READER` is still the next implementation task.**
-`plans/PIN-CURRENCY-READER-PLAN.md` is `READY` and is PR 1 of a four-PR sequence it
-defines itself; **PR 2 is next.** Its `FRAMEWORK-TODO.md` entry stays **open** by design —
-the plan's PR 3 closes it, gated on post-merge verification.
+| # | Result |
+|---|---|
+| V10 | issue #393 created — 10 file rows, `--repin` command, `last verified` line, assignee set, `ci` label applied |
+| V11 | re-dispatch → edited in place; **1** issue, **0** new comments |
+| V12 | closed by hand → **reopened** and commented; still 1 issue |
+| V13 | label fallback, via the stub |
+| V14 | `standards-drift` dispatched → reader run with **`event=workflow_run`** |
 
-**The canon CI migration is complete on both dimensions.** Pins:
-CI-CANON-V2.16-001 (PRs #374/#375, **D-0070**) took all call sites to `@ci/v2.16.0`.
-Adoption: CANON-PARITY-001 (PR #378, **D-0071**) adopted the four surfaces this repo
-had never called and converted `codeql` from hand-rolled into a canon caller — which
-is what closed [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373).
-Sixteen call sites across fifteen files. `sast-scan` carries the one deliberate
-runner-label divergence ([aidoc-flow-ci#349](https://github.com/vladm3105/aidoc-flow-ci/issues/349)).
+**pending — V15 (schedule→`workflow_run` chain) unconfirmed until the first Monday run.**
+It was never a gate. V14 proved the `workflow_run` chain itself off a *dispatched*
+upstream; V15 only adds that a *scheduled* upstream chains the same way. Whoever sees
+the first Monday `standards-drift` run should check that a `pin-currency-reader` run
+followed it, then delete this paragraph.
 
-**The insight worth keeping:** re-pinning and adopting are different dimensions, and
-only the first was automated. `check-pin-currency.sh` and `check-drift.sh` both iterate
-over callers **that exist**, so they reported "all pins current ✅" while four surfaces
-were absent. The census that finds the gap is canon's
-`install/templates/manifest.json` walked against the working tree — **run it when the
-canon minor moves, not just the re-pin.** Adopt with
-`install/deploy-ci-wizard.sh scaffold <repo> <dir> [wf…]`: byte-exact callers at the
-pin, into a scratch dir, never committed.
+**V14 also verified the `clean` → close path live**, which the plan recorded as
+"deliberately absent" and stub-only. It became testable because canon `main` and every
+caller here now sit at `ci/v2.16.0`, so a live run reports `clean`. Issue #393 is the
+tool's own artifact — **closed, and correct to leave closed.** It reopens by itself the
+next time canon tags a release, which is the designed behaviour, not a bug.
 
 ## Next tasks — prioritized
 
 The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
 `plans/HERMES-BACKLOG.md`. This is only the ordering a fresh session should use.
 
-1. **`doc-maintainer` — founder-blocked, not declined.** The one canon surface still
+1. **`PIN-CURRENCY-NO-READER` — PR 3, then PR 4. Both are governance PRs; the founder
+   merges.** The gate they waited on has passed.
+   - **PR 3** = `plans/DECISIONS.md` (a new `D-00NN`: why the log and not annotations,
+     why the reader fails loudly), `plans/FRAMEWORK-TODO.md` (the entry at line ~107 →
+     `## Closed` with the merge ref), and this file. **That is Rule 1's cap of three.**
+     ⚠️ CI's `call / ai-review` independently demands a `CHANGELOG.md` `[Unreleased]`
+     entry for substantive changes; if it demands one here, that is a **fourth** surface
+     and the fix is to move this file out into its own follow-up, **not** to exceed the
+     cap. Budget accordingly.
+   - **PR 4** = `CLAUDE.md` (the annotation-cap trap at the granularity M1 supports,
+     plus the concurrency inventory's **fourth** shape — `cancel-in-progress: false`
+     under a fixed group, which `pin-currency-reader.yml` introduced) and the plan's
+     Status → `IMPLEMENTED`.
+   - The plan's §PR sequencing is the contract; read it rather than this summary.
+2. **`doc-maintainer` — founder-blocked, not declined.** The one canon surface still
    unadopted. `LITELLM_DOC_API_KEY`, `AIDOC_FLOW_BOT_ID`, `AIDOC_FLOW_BOT_KEY` exist on
    `aidoc-flow-operations` but **not here**, and a personal account has no org secrets
    to inherit (the API returns 422). Dry-run needs only the LiteLLM doc key:
@@ -100,48 +95,16 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    permissions raised to PR/Issues write, `aidoc-flow-bot[bot]` in
    `.github/ai-review/config.json#trust.ai_review`, and a hand-authored
    `.github/doc-maintainer-conventions.md`.
-2. **`PIN-CURRENCY-NO-READER` — implement PR 2 of 4.** The plan is merged, `READY`, and
-   carries its own §PR sequencing, §Verification (V1–V16, split pre/post-merge) and a
-   40-row Claim ledger. **Read the plan, not this summary** — but three things about it
-   are load-bearing enough to repeat, because they will look like over-engineering
-   otherwise:
-   - **PR 2 ships on unit + dry-run evidence only.** `workflow_run` and
-     `workflow_dispatch` both require the file on the **default branch**, so V10–V15
-     cannot run until after PR 2 merges. This is why the parse and reconcile logic is
-     extracted into `scripts/` instead of living inline in the workflow YAML.
-   - **PR 3 is gated on V10–V14** so the TODO entry cannot close on unverified work.
-     V15 (the `schedule` → `workflow_run` chain) waits up to seven days for a Monday run
-     and is a post-hoc observation, never a gate — PR 3 lands a `pending — V15
-     unconfirmed` line in this file for whoever observes it to clear.
-   - **All four PRs are governance PRs and none is auto-mergeable** — the auto-merge
-     exception list is defined by reference to the governance-PR list, which includes
-     plan files and `DECISIONS.md`. PR 1 was merged by the founder for this reason. As of
-     #387 that reference actually resolves: the glob it inherits used to match no plan.
+3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
+   unreliable in *two* directions: entries marked `✅ CLOSED` sit under `## Open` (so it
+   **overstates** what is open), and `## Closed` holds unmarked entries that read as
+   live backlog — `[gate] Component-decomposition gate missing between PRD and ADR`,
+   `[harness] Cascade harness lacks --skip-lint-smoke flag`, `[template] IPLAN
+   sub-types: code-build vs deploy` — so it also **hides** open work, which is worse.
+   Scope the sweep to both, and pick one convention stated at the top of the file.
 
-   Five upstream defects go to `aidoc-flow-ci` as one issue (plan Task 3). Worth filing
-   early: if canon adds a `$GITHUB_STEP_SUMMARY` write plus a reusable `output`, the
-   local workflow becomes **deletable** rather than permanent.
-3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** Re-counted
-   2026-07-30; **both** figures previously in this file were wrong, and the queue is
-   unreliable in *two* directions:
-   - **7** entries marked `✅ CLOSED` sit under `## Open` (lines 55, 246, 258, 350, 365,
-     381, 510 as of `88cd62e4`), so the queue **overstates** what is open — `## Open`
-     holds 52 entries and 7 of them are done. **Re-run the awk below rather than trusting
-     those line numbers**: they moved +28 when #388 inserted two entries at the top of the
-     section, which is the second time this figure has gone stale inside the range that
-     documents it. Cite counts, not line numbers, when the file is append-at-top.
-   - The `## Closed` section holds **32** entries of which only **10** carry a marker.
-     Several of the 22 unmarked ones read as live backlog — `[gate] Component-decomposition
-     gate missing between PRD and ADR`, `[harness] Cascade harness lacks
-     --skip-lint-smoke flag`, `[template] IPLAN sub-types: code-build vs deploy`. So
-     `## Closed` also **hides** open work, which is the worse direction.
-
-   Scope the sweep to both: pick one convention, state it at the top of the file, and
-   **triage the 22 unmarked `## Closed` entries** — each is either genuinely closed (add
-   the marker) or was filed there by mistake (move it back to `## Open`). Count scoped
-   between the two headings; a whole-file `grep -c` conflates them.
-
-   Reproduce the counts:
+   **Re-run these rather than trusting any count written down** — this figure has gone
+   stale twice inside the very text documenting it, because the file is append-at-top:
 
    ```sh
    awk '/^## Open/{o=1} /^## Closed/{o=0} o&&/✅ CLOSED/{n++} END{print n}' plans/FRAMEWORK-TODO.md
@@ -186,29 +149,29 @@ IPLAN ↔ iplanic integration is deferred (`plans/IPLAN-IPLANIC-DEFERRED.md`).
 ## Stale advice — a fresh session will find these referenced, and they are FIXED
 
 Older plans, TODO entries and commit messages still describe these as live. They are
-not. Each was verified on 2026-07-29.
+not. Verified 2026-07-29 unless noted.
 
 | Stale claim | Reality |
 |---|---|
-| "`--admin` is required on every PR" (the `ai-review` self-cancel, `aidoc-flow-ci#322`) | **Fixed at `ci/v2.16.0`.** #378 and #380 reached `CLEAN` and merged with no `--admin` |
-| "Branch protection requires the phantom `Lint / format / security hooks`, so every PR is BLOCKED" | **Fixed.** Required contexts now read `call / Lint / format / security hooks`, `call / composition`, `call / ai-review`, `call / verify`, `Framework + platform conformance`, `Acceptance tier (deterministic)` |
-| `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — "`call / composition` is structurally unsatisfiable on a PR head" | **Stale.** composition reports success on PR heads; 4/4 recent runs green. A reviewer once read this entry as proof that required checks gate nothing here, and it nearly killed a correct plan |
+| "`--admin` is required on every PR" (the `ai-review` self-cancel, `aidoc-flow-ci#322`) | **Fixed at `ci/v2.16.0`.** #378, #380, #392 and #394 all reached mergeable with no `--admin` |
+| "Branch protection requires the phantom `Lint / format / security hooks`, so every PR is BLOCKED" | **Fixed.** The six required contexts, read from the API on 2026-07-30, are `call / Lint / format / security hooks`, `call / composition`, `call / ai-review`, `call / verify`, `Framework + platform conformance`, `Acceptance tier (deterministic)`. `call / trust` is **not** required |
+| `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — "`call / composition` is structurally unsatisfiable on a PR head" | **Stale.** composition reports success on PR heads. A reviewer once read this entry as proof that required checks gate nothing here, and it nearly killed a correct plan |
 | "commits need `SKIP=gitleaks`" | **Fixed** (#355) — the local gitleaks hook was dropped; CI's is unaffected |
 | "the acceptance deterministic tier has 3 pre-existing failures on `main`" | **Fixed** (#365, #371/#372). 0 failures / 64, and the tier is now a **required** context |
 | `NO-PIN-CURRENCY-CHECK` — "this repo runs `check-pin-currency.sh` nowhere" | **Retracted, it was false.** See below |
-| `PIN-CURRENCY-NO-READER` — "the fix is a workflow that **runs the script** and opens an issue" (the restated TODO entry's own fix shape) | **Superseded by the merged plan.** Running the script would be the second detector the same entry forbids. The reader consumes the completed run's **log** — the only one of four input surfaces that carries the signal |
-| "canon has no adopter-facing pin reader at all" | **Overstated.** `standards-drift-self.yml:85` runs a `--fleet` pin audit against *this repo* every Monday and discards it with `\|\| true`. The gap is that **no** audit has a reader, on either side |
-| `plans/PLAN-*.md` as the governance-PR plan glob (`CHANGELOG.md:1892`, `CI-CANON-V2.16-MIGRATION-PLAN.md:468`/`:784`) | **Fixed in `CLAUDE.md`.** The glob is a **suffix** — `plans/*-PLAN.md`. The prefix form matched only `PLAN-TEMPLATE.md`, so the governance list read as covering *no* real plan, and the auto-merge exception list inherits that list by reference. Merged plans and the CHANGELOG keep the old string as history; `CLAUDE.md` is the live rule |
+| `PIN-CURRENCY-NO-READER` — "the fix is a workflow that **runs the script** and opens an issue" | **Superseded and now SHIPPED** (#392). Running the script would be the second detector the same entry forbids; the reader consumes the completed run's **log** |
+| The plan's "a live `clean` check is deliberately absent … verified only by V4's stub" | **Overtaken by events.** Canon `main` and every caller here are both `ci/v2.16.0`, so a live run reports `clean` — V14 exercised close-on-clean for real |
+| `plans/PLAN-*.md` as the governance-PR plan glob (`CHANGELOG.md`, `CI-CANON-V2.16-MIGRATION-PLAN.md:468`/`:784`) | **Fixed in `CLAUDE.md`** (#387/#390). The glob is a **suffix** — `plans/*-PLAN.md`. Merged plans and the CHANGELOG keep the old string as history; `CLAUDE.md` is the live rule |
 
 **The retraction, because the lesson generalises.** That entry named an absence as the
 cause of a mixed-pin state surviving two days. The check *does* run — canon's
-`check-standards-drift.sh` tail (`:499-515` **at v2.16.0**; the same block is `:359-375` at v2.14.0, which is what that run executed) invokes it on every weekly
-`standards-drift` run — and it fired on 2026-07-27 naming all ten stale pins **and**
-the `--repin` remedy. The proposed fix would have added a **second copy of a check that
-was already running and already right**. The real gap is that a warning-only
-annotation on a weekly scheduled job has no reader. One
-`gh run view --log | grep pin-currency` falsified it. **An absence is the easiest
-defect to assert and the hardest to verify — read the log before writing one down.**
+`check-standards-drift.sh` tail invokes it on every weekly `standards-drift` run — and it
+fired on 2026-07-27 naming all ten stale pins **and** the `--repin` remedy. The proposed
+fix would have added a **second copy of a check that was already running and already
+right**. The real gap was that a warning-only annotation on a weekly scheduled job has no
+reader, which is what #392 closed. One `gh run view --log | grep pin-currency` falsified
+it. **An absence is the easiest defect to assert and the hardest to verify — read the log
+before writing one down.**
 
 ## Durable traps — do not re-derive these
 
@@ -269,6 +232,14 @@ defect to assert and the hardest to verify — read the log before writing one d
   correctly derived a 23rd warning from the v2.16.0 source and concluded the measured 22
   was wrong. **Read the `adopted canon pin` notice in the run's own log before citing line
   numbers at it.**
+- **`check-standards-drift:` is a PREFIX, not a completion marker.** The drift script
+  emits an opening `repo=… tier=…` header and a `cannot check <family>` warning per
+  unreadable family under that same prefix — the first of them **24 lines ahead** of the
+  pin-currency section. A log truncated in that window satisfies a prefix test. The
+  terminal markers are the summary line (`check-standards-drift: N drift,`) and
+  `check-standards-drift: coverage —`, the latter emitted by `emit_coverage` at normal
+  termination *and* from every `stop_uncheckable` early exit. This shipped as a real
+  silent-failure path and was caught in review, not by a test.
 - **Canon false-greens two ways, and one would make a reader close a tracking issue.**
   `check-pin-currency.sh:62` greps `@ci/v…` literally, so a **SHA-pinned** caller is
   invisible and reports `all pins current ✅` — and the *fleet* path at `:71` **does**
@@ -363,6 +334,49 @@ defect to assert and the hardest to verify — read the log before writing one d
 - **A *leading* `---` is only a document-start marker.** All six `fullpath` YAML
   goldens have one; only the three under `golden_chain/` carry a *closing* fence and are
   genuinely two documents. Walk them with `safe_load_all`, not `safe_load`.
+
+### Writing to GitHub from a script (new 2026-07-30 — PIN-CURRENCY-READER PR 2)
+
+These cost real defects in merged code, each found only by looking at the artifact.
+
+- **`gh run view --log` renders ANSI as the two literal characters `^` `[`, never a raw
+  ESC byte.** Measured on run `30257877863`: **0** occurrences of `0x1b`, **68** of
+  `^[`. A filter written as `grep -v $'\x1b'` therefore matches nothing — it looks like
+  a guard and is dead code. Filter on `'\^\['` instead. The same fact means a fixture
+  built from a real download is byte-faithful even though it *looks* re-rendered; do not
+  "fix" it.
+- **In a single-quoted `printf` format, `\`` is a literal backslash, not an escape.**
+  It publishes as `` \` `` to anyone reading the issue. In an **unquoted** heredoc
+  (`<<EOF`) the opposite holds — a bare backtick is command substitution, so the
+  backslash there is required. The two rules are inverted, and one script can contain
+  both. Shipped in #392, caught on issue #393's real close comment, fixed in #394.
+- **Command substitution strips trailing newlines**, so a helper that ends with
+  `printf '\n'` cannot supply the blank line that terminates a GFM table when consumed
+  as `$(helper)` inside a heredoc. The following paragraph is absorbed into the table as
+  junk rows. The blank line has to be literal *in the heredoc*.
+- **`gh --jq` uses gh's own built-in jq**, so a `|| die` on the `gh` call proves nothing
+  about a *separate* external `jq` invocation on its output. Guard each extraction, and
+  treat an unparseable id as fatal — an empty id is indistinguishable from "no such
+  issue" and will route a read failure into a **create**.
+- **`gh issue create --assignee` and `--label` both hard-error on an unknown value.**
+  Apply the label by *retry* (labelled, then unlabelled + `::warning::`) — never
+  `|| true`, which makes the whole creation non-fatal. Set the assignee *after*
+  creation, so its failure cannot take the create with it.
+- **`gh issue list` defaults to `--limit 30`**, and this repo is past #390. A tracking
+  issue that has aged off page 1 is invisible to an exact-title lookup, and the run
+  creates a duplicate. `--state all --limit 200`, and never `--search` (tokenized and
+  eventually consistent, so a just-created issue can be missing).
+
+### The absence-probe trap, restated because it bit again
+
+`CLAUDE.md` records that `gh api …/contents/<missing> --jq '.name'` must not be
+truth-tested. Re-measured 2026-07-30, the failure text is **not** the string `null` —
+it is the full error JSON (`{"message":"Not Found",…,"status":"404"}`) on stdout. So a
+guard written as `case "$n" in ''|null)` — which looks like it handles the documented
+form — reads a missing file as **present**. It gave a blast-radius figure of **10 of 10**
+workspace repos calling `standards-drift`; the truth, from listing the directory and
+grepping, is **7 of 10**. **Do not pattern-match the failure string at all. List the
+directory:** `gh api repos/<r>/contents/.github/workflows --jq '.[].name'`.
 
 ### Process
 
