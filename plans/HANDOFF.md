@@ -31,41 +31,34 @@ semantics, the runner split incl. why `sast-scan` is the `ubuntu-latest` excepti
 ## Where we are — 2026-07-30
 
 Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0` — **no version
-stream moved today**. `main` clean at `c77ff3f4`. **Open PRs: 0. Open issues: 2** —
+stream moved today**. **Open PRs: 0. Open issues: 2** —
 [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) and
 [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386), both unchanged.
 
-**The pin-currency reader shipped.**
-[#392](https://github.com/vladm3105/aidoc-flow-framework/pull/392) (`d3d7f845`) is PR 2
-of `plans/PIN-CURRENCY-READER-PLAN.md`: two scripts under `scripts/`, the
-`workflow_run` wrapper, five fixtures, 19 unit tests, and the
-`tests/conformance/test_repo_scripts.py` registration shim.
-[#394](https://github.com/vladm3105/aidoc-flow-framework/pull/394) (`c77ff3f4`) fixed a
-defect the post-merge verification found. The upstream half is filed as
-[aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) — five
-measured defects, body read back at 9179 chars.
+**`doc-maintainer` is PAUSED, and CI is green again.**
+[#397](https://github.com/vladm3105/aidoc-flow-framework/pull/397) set
+`kill_switch: true`. Verified in production, not assumed: the merge's own `push` run
+succeeded with `doc-maintainer kill_switch=true; exiting cleanly (no LLM cost incurred)`.
+Only one other `push` run had gone green since adoption, and that one passed by
+proposing nothing; this is the first that is green *by design*. The caller, its config
+and its conventions all stay in place; resume is a one-line flip.
 
-**V10–V14 all pass, so PR 3 is unblocked.** Measured, not assumed:
+It had 23 failures / 47 runs across **four** independent upstream defects — not the two
+previously recorded, and **not** the config mismatch this repo was blamed for (retracted;
+see Next tasks item 2 and **D-0072 §2**). The full census lives in D-0072 and in
+`.github/doc-maintainer-conventions.md`, which is kept current for the resume; do not
+copy it here.
 
-| # | Result |
-|---|---|
-| V10 | issue #393 created — 10 file rows, `--repin` command, `last verified` line, assignee set, `ci` label applied |
-| V11 | re-dispatch → edited in place; **1** issue, **0** new comments |
-| V12 | closed by hand → **reopened** and commented; still 1 issue |
-| V13 | label fallback, via the stub |
-| V14 | `standards-drift` dispatched → reader run with **`event=workflow_run`** |
+**Resume requires ci#352 AND ci#353** — #353 alone is 15 of the 23, so flipping on #352
+alone returns a majority-red pilot. #352 is the smaller count and still the blocker for
+*graduation*: no plan containing a low-risk edit can complete a dry run, which is the
+path a dry-run pilot exists to validate.
 
-**pending — V15 (schedule→`workflow_run` chain) unconfirmed until the first Monday run.**
-It was never a gate. V14 proved the `workflow_run` chain itself off a *dispatched*
-upstream; V15 only adds that a *scheduled* upstream chains the same way. Whoever sees
-the first Monday `standards-drift` run should check that a `pin-currency-reader` run
-followed it, then delete this paragraph.
-
-**V14 also verified the `clean` → close path live**, which the plan recorded as
-"deliberately absent" and stub-only. It became testable because canon `main` and every
-caller here now sit at `ci/v2.16.0`, so a live run reports `clean`. Issue #393 is the
-tool's own artifact — **closed, and correct to leave closed.** It reopens by itself the
-next time canon tags a release, which is the designed behaviour, not a bug.
+**Pin-currency reader (#392/#394) shipped earlier; V10–V14 all passed, so PR 3 is
+unblocked.** **V15 (schedule→`workflow_run` chain) is still unconfirmed** — it was never
+a gate; V14 proved the chain off a *dispatched* upstream. Whoever sees the first Monday
+`standards-drift` run should check a `pin-currency-reader` run followed it, then delete
+this paragraph.
 
 ## Next tasks — prioritized
 
@@ -90,22 +83,19 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
      copying that figure —
      `grep -rcE '^\s*uses: vladm3105/aidoc-flow-ci' .github/workflows/*.yml`.
    - The plan's §PR sequencing is the contract; read it rather than this summary.
-2. **`doc-maintainer` is ADOPTED and RED — it fails every `push` run, unwatched.**
-   → `FRAMEWORK-TODO.md` `DOC-MAINTAINER-RED-ON-EVERY-PUSH`.
+2. **`doc-maintainer` — nothing to do here; it is paused and waiting on upstream.**
+   Watch `aidoc-flow-ci` #352 and #353. When **both** ship in a released `ci/vX.Y.Z`:
+   re-pin this caller, flip `kill_switch` → `false` in `.github/doc-maintainer.json`,
+   and watch the next few `push` runs. Do **not** flip on #352 alone.
 
-   ⚠️ **Earlier handoffs said this surface was "still unadopted" and that its LiteLLM
-   secrets did not exist here. Both were false, and the claim survived several
-   regenerations.** `doc-maintainer.yml` was adopted in dry-run by #382 on 2026-07-29
-   (canon manifest parity 28/28), and `gh secret list` shows `LITELLM_BASE_URL` **and**
-   `LITELLM_DOC_API_KEY` present on this repo. Only `AIDOC_FLOW_BOT_ID` /
-   `AIDOC_FLOW_BOT_KEY` are absent, and those are **live-mode only** — dry-run does not
-   need them. Verify with `gh secret list` before repeating any secrets claim here.
+   ⚠️ **Do not re-file the `high_risk_paths` / `allowed_paths` mismatch as a defect.**
+   It is deliberate, inert, and documented in the config itself; #396 recorded it as a
+   bug and was wrong. D-0072 point 2 explains why the error message manufactures that
+   misreading.
 
-   The real state: **20 failures / 41 runs** since adoption. `schedule` runs succeed
-   (nothing to do); every `push` run fails, on two distinct causes — a planner
-   allowlist/duplicate rejection, and a 200 KB refusal on `CHANGELOG.md` (276 KB). The
-   config half is ours to fix; the conflated error message and the size refusal belong
-   upstream and are **not yet filed**. See the TODO entry for the measurements.
+   `gh secret list` shows `LITELLM_BASE_URL` **and** `LITELLM_DOC_API_KEY` present here;
+   only `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are absent, and those are **live-mode
+   only**. Verify with `gh secret list` before repeating any secrets claim.
 3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
    unreliable in *two* directions: entries marked `✅ CLOSED` sit under `## Open` (so it
    **overstates** what is open), and `## Closed` holds unmarked entries that read as
@@ -373,6 +363,15 @@ These cost real defects in merged code, each found only by looking at the artifa
   Apply the label by *retry* (labelled, then unlabelled + `::warning::`) — never
   `|| true`, which makes the whole creation non-fatal. Set the assignee *after*
   creation, so its failure cannot take the create with it.
+- **The prescribed comment-readback can report a published comment as empty.**
+  `gh issue view <N> --json comments --jq '.comments[-1].body|length'` returned **0**
+  for a comment that had published in full (3,629 chars via
+  `gh api …/issues/comments/<id>`), and the correct value on a later read —
+  read-after-write lag. The feedback contract calls a non-zero length "the only proof it
+  published", and the symptom is **identical to the `--body -` bug**, so the natural
+  reaction is to re-post and duplicate. Anchor the check to the id in the URL `gh`
+  returned, or retry before concluding anything. Filed as
+  [aidoc-flow-operations#290](https://github.com/vladm3105/aidoc-flow-operations/issues/290).
 - **`gh issue list` defaults to `--limit 30`**, and this repo is past #390. A tracking
   issue that has aged off page 1 is invisible to an exact-title lookup, and the run
   creates a duplicate. `--state all --limit 200`, and never `--search` (tokenized and
@@ -400,6 +399,18 @@ directory:** `gh api repos/<r>/contents/.github/workflows --jq '.[].name'`.
 - **Write the scan before the census.** A surface count went 9 → 19 → the truth of
   **25**, because both manual passes sampled one file instead of the tree. A hand-built
   census of a class is a sample that gets reported as a total.
+- **A root cause is a claim about a distribution — derive the distribution first**
+  (**D-0072 §3**). A sampled read of `doc-maintainer`'s failures named ci#352 "the
+  blocker" and that framing reached three files; the full census put #352 at 3 of 23 and
+  #353 at 15. Both are true in their own sense, but conflating them produced a **resume
+  condition that would have returned a majority-red pilot**. Loop every failing run and
+  bucket the errors before naming a cause.
+- **When an error names a condition, check the named artifact actually violates it**
+  (**D-0072 §2**). Canon's `duplicate or non-allowlisted plan path: <path>` covers two
+  conditions in one string, and its most frequent instance named a path that **is**
+  allowlisted. An allowlist-shaped message about an allowlisted path read as a config
+  mismatch, and that misdiagnosis was written into the backlog as this repo's bug. One
+  `jq '.allowed_paths'` falsified it.
 - **Mutation-test a negative-property guard.** `test_no_inprompt_hashing.py` passed a
   live reintroduction on first write: markdownlint reflows those surfaces into single
   long lines, so the correction and the regression shared a line and a line-scoped
