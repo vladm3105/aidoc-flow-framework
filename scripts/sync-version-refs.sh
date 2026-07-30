@@ -43,7 +43,15 @@
 #   - README.md "framework spec `<X.Y.Z>`" Status block
 #   - docs/PARITY.md "framework spec `<X.Y.Z>`" current-state row
 #
-# Hermes VERSION (platforms/hermes/VERSION): same pattern for hermes/v<X.Y.Z>.
+# Hermes VERSION (platforms/hermes/VERSION): same pattern for hermes/v<X.Y.Z>,
+# plus:
+#   - CLAUDE.md "Hermes `<X.Y.Z>`" current-state line
+#
+# The two CLAUDE.md current-state tokens (plugin, hermes) are detected from
+# CLAUDE.md itself, so they self-heal even when every other surface is already
+# current. The framework-spec token is deliberately NOT: fw_prev detected from
+# CLAUDE.md is what gates propagation to README / PARITY / both platform READMEs,
+# so hand-editing CLAUDE.md before a framework bump still silently skips them.
 #
 # What it does NOT do (semantic / human-authored content):
 #   - CHANGELOG entries (text)
@@ -124,6 +132,26 @@ plugin_ver="$(read_version platforms/claude-code-plugin/VERSION)"
 log "plugin VERSION: ${plugin_ver:-(missing)}"
 
 if [[ -n "$plugin_ver" ]]; then
+  # CLAUDE.md current-state line: "Claude Code plugin `<X.Y.Z>`"
+  # (SYNC-CLAUDE-PLUGIN-VERSION-GAP). Detected from CLAUDE.md itself, NOT from
+  # the plugin.json-derived prev below, so it self-heals when plugin.json is
+  # already current and the block below is skipped — the state that let the
+  # Hermes token sit at 0.11.1 against a 0.12.0 VERSION for four days.
+  #
+  # HAZARD (same class as FRWK-REVIEW-002 F1 below): replace_in_file does a
+  # GLOBAL sed of the literal, so a historical/provenance mention written in this
+  # exact form would be swept to the new version on the next bump. Write those as
+  # "the `0.23.4` plugin cycle" or "(from `0.7.3`)", never as
+  # "Claude Code plugin `0.23.4`" / "Hermes `0.11.1`".
+  claude_plugin_prev="$(detect_version_in CLAUDE.md \
+    'Claude Code plugin `[0-9]+\.[0-9]+\.[0-9]+`')"
+  if [[ -n "$claude_plugin_prev" && "$claude_plugin_prev" != "$plugin_ver" ]]; then
+    log "plugin CLAUDE.md sync $claude_plugin_prev -> $plugin_ver"
+    replace_in_file CLAUDE.md \
+      "Claude Code plugin \`$claude_plugin_prev\`" \
+      "Claude Code plugin \`$plugin_ver\`"
+  fi
+
   plugin_prev="$(detect_version_in \
     platforms/claude-code-plugin/.claude-plugin/plugin.json \
     '"version": "[0-9]+\.[0-9]+\.[0-9]+"')"
@@ -140,11 +168,6 @@ if [[ -n "$plugin_ver" ]]; then
       replace_in_file "$skill" \
         "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     done
-    # CLAUDE.md current-state line: "Claude Code plugin `<X.Y.Z>`"
-    # (SYNC-CLAUDE-PLUGIN-VERSION-GAP — the framework-spec token was already
-    # synced below; the plugin token was not, so every plugin bump left it stale).
-    replace_in_file CLAUDE.md \
-      "Claude Code plugin \`$plugin_prev\`" "Claude Code plugin \`$plugin_ver\`"
     replace_in_file README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/README.md \
@@ -305,6 +328,22 @@ hermes_ver="$(read_version platforms/hermes/VERSION)"
 log "hermes VERSION: ${hermes_ver:-(missing)}"
 
 if [[ -n "$hermes_ver" ]]; then
+  # CLAUDE.md current-state line: "Hermes `<X.Y.Z>`". Detected from CLAUDE.md
+  # itself, NOT from the README-derived prev below, so it self-heals even when
+  # README.md is already current and the block below is skipped — exactly the
+  # state that let CLAUDE.md sit at 0.11.1 while every other surface said 0.12.0
+  # for four days. CLAUDE.md is auto-loaded, so a stale token there is read
+  # before any correct one. Same shape, and same global-sed hazard, as the plugin
+  # token block above — see the HAZARD note there before adding a historical
+  # "Hermes `X.Y.Z`" mention to CLAUDE.md.
+  claude_hermes_prev="$(detect_version_in CLAUDE.md \
+    'Hermes `[0-9]+\.[0-9]+\.[0-9]+`')"
+  if [[ -n "$claude_hermes_prev" && "$claude_hermes_prev" != "$hermes_ver" ]]; then
+    log "hermes CLAUDE.md sync $claude_hermes_prev -> $hermes_ver"
+    replace_in_file CLAUDE.md \
+      "Hermes \`$claude_hermes_prev\`" "Hermes \`$hermes_ver\`"
+  fi
+
   hermes_prev="$(detect_version_in README.md 'hermes/v[0-9]+\.[0-9]+\.[0-9]+')"
   if [[ -n "$hermes_prev" && "$hermes_prev" != "$hermes_ver" ]]; then
     log "hermes sync $hermes_prev -> $hermes_ver"

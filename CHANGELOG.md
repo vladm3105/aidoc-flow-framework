@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — `CLAUDE.md`'s platform version tokens now self-heal (2026-07-30)
+
+**No version moves** — `scripts/sync-version-refs.sh` only.
+
+- `CLAUDE.md` sat at Hermes `0.11.1` against a `0.12.0` `VERSION` for four days, because
+  the hermes fanout never wrote `CLAUDE.md` at all. Both platform tokens now detect their
+  previous value **from `CLAUDE.md` itself** rather than from `plugin.json` / `README.md`,
+  so a stale token is corrected even when every other surface is already current — the
+  state that hid this one, and which the plugin token shared latently since
+  SYNC-CLAUDE-PLUGIN-VERSION-GAP (its write was nested inside the `plugin.json`-derived
+  guard). Verified by injecting each token stale with all other surfaces current: both
+  corrected in one run, idempotent on the second.
+- The framework-spec token is deliberately **not** changed: `fw_prev` is read from
+  `CLAUDE.md` *and* gates propagation to five other files, so it is a load-bearing path
+  rather than a doc edit. Filed as
+  [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386).
+
 ### Added — `doc-maintainer` adopted in dry-run; canon manifest parity is complete (2026-07-29)
 
 **No version moves** — `.github/` only. The last of the 28 canon manifest surfaces.
