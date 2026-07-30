@@ -12,6 +12,70 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — the doc-maintainer dry-run pilot is paused; canon cannot render a dry-run patch (2026-07-30)
+
+**No version moves** — `.github/doc-maintainer.json` + `.github/doc-maintainer-conventions.md` only.
+
+- `kill_switch: true`. The caller adopted in #382 was red on nearly every `push` since
+  it landed — **23 failures / 47 runs**, 12 of 13 `push` runs — across **four
+  independent failure modes**, none of them fixable from this repo:
+
+  | Failures | Cause | Upstream |
+  |---:|---|---|
+  | 9 | planner rejects a **repeated** `plans/HANDOFF.md` entry — the path **is** allowlisted, so this is the duplicate branch reported as `non-allowlisted` | [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) |
+  | 6 | planner rejects a genuinely non-allowlisted path (`plans/PIN-CURRENCY-READER-PLAN.md` ×3, `CLAUDE.md` ×2, the conventions file itself ×1) | [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) |
+  | 3 | apply refuses `CHANGELOG.md` at the 200 KB full-file-regeneration limit | [#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354) |
+  | 3 | Step 9 dies silently rendering the dry-run patch | [#352](https://github.com/vladm3105/aidoc-flow-ci/issues/352) |
+  | 2 | apply's *"agent deleted/replaced more than 30 % of README.md"* guard — the guard is right, but it reds the run instead of dropping the entry | reported on #353 |
+
+  **#352 is the smallest of these by count and still the one that blocks graduation.**
+  `doc-maintainer.yml` Step 9 renders the patch with `diff`, which exits 1 whenever files
+  differ, and GitHub's `bash -e` kills the step before the `[ rc -le 1 ]` guard can
+  forgive it — reproduced under GitHub's exact shell (`bash --noprofile --norc -eo
+  pipefail`), not inferred. Because Step 9's loop reads `.low_risk_set[]`, **no plan
+  containing a low-risk edit can ever complete a dry run**, and the IPLAN-0025 §3 P4
+  graduation gate exists precisely to exercise that low-risk auto-apply path. Introduced
+  at `ci/v2.0.0` (2026-07-13), when patch rendering replaced the count-only stub; every
+  release since carries it, `ci/v2.16.0` included.
+- **Why pause rather than narrow the config.** Config-only mitigations were considered
+  and are insufficient: `max_edits_per_pr: 1` would make a duplicate structurally
+  impossible (−9) and emptying `low_risk_paths` would leave Step 9's loop always empty
+  (−3), but neither touches the 6 non-allowlisted rejections or the 2 deletion-guard
+  failures, and emptying `low_risk_paths` buys green by abandoning the only path
+  graduation is meant to validate. The precise claim is therefore **not** "no config
+  change can make this green" — it is that no config change here makes it green *while
+  exercising the low-risk path*. Leaving it red was not free either: canon's reconciler
+  counts a **failed** run as un-maintained (`reconcile.py:98-104`), so it re-dispatched
+  each failing SHA every cron tick inside its 90-minute lookback — ~3 extra full LLM
+  planning calls per merge, all discarded, with the failure count climbing without new
+  commits.
+- **Resume needs #352 *and* #353**, not #352 alone: #353 accounts for 15 of the 23
+  failures, so flipping the switch on #352 alone would return a majority-red pilot. The
+  30 %-deletion class should be understood by then too.
+- `CHANGELOG.md` removed from `allowed_paths` and `auto_merge.low_risk_paths`. At
+  281 KB it exceeds the apply step's hard 200 KB full-file-regeneration refusal, so
+  every plan selecting it was a guaranteed red run. It is the
+  wrong shape for the tool at any size — the changelog is append-only and the only
+  correct edit is an insert under `## [Unreleased]`. Filed as
+  [aidoc-flow-ci#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354), which also
+  records that canon's own install template ships `CHANGELOG.md` as a low-risk path
+  while canon's own changelog is 363 KB. The per-platform changelogs (91 KB, 33 KB)
+  stay in scope.
+- Conventions gain two house rules, one per planner failure class: **one entry per path**
+  (the 9 repeated-`plans/HANDOFF.md` rejections) and **the allowed-paths list is closed**
+  (the 6 out-of-allowlist proposals, one of which was the conventions file itself). Both
+  are mitigations for [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353), not
+  fixes — the planner discards the whole plan either way.
+- **Not changed, deliberately:** `CLAUDE.md`, `plans/DECISIONS.md`,
+  `plans/FRAMEWORK-TODO.md`, `plans/HERMES-BACKLOG.md` and
+  `framework/governance/DECISIONS.md` remain in `auto_merge.high_risk_paths` while absent
+  from `allowed_paths`. That mismatch was on record as this repo's half of the bug; it is
+  neither half. `planner.py:187` rejects a non-allowlisted path *before* classification
+  is ever reached, and `high_risk_paths` is never shown to the model and never widens the
+  allowlist — so the five entries are inert defence-in-depth, and they caused none of the
+  23 failures. Now documented in the config so the next reader does not re-file it as
+  drift.
+
 ### Fixed — the pin-currency close comment rendered literal backslashes (2026-07-30)
 
 **No version moves** — `scripts/reconcile-pin-currency-issue.sh` only.

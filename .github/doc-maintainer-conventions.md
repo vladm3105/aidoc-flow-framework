@@ -5,13 +5,42 @@ Consumed by `scripts/doc-maintainer/planner.py` as part of its planning prompt. 
 *this repository's* documentation discipline; it does not attempt to change the
 planner's task, output format, allowed paths, or safety rules.
 
-**Status: dry-run pilot.** `.github/doc-maintainer.json` sets `dry_run: true`. The flow
-proposes edits as a PR comment plus a patch artifact and changes nothing. Graduation to
-live requires ≥5 dry-run cycles with coherent proposals, zero allowlist violations and
-zero infrastructure errors (IPLAN-0025 §3 P4), **and** the two founder-tier
-prerequisites that are not yet in place: `AIDOC_FLOW_BOT_ID`/`AIDOC_FLOW_BOT_KEY` on
-this repo, and `aidoc-flow-bot[bot]` added to
-`.github/ai-review/config.json#trust.ai_review`.
+**Status: dry-run pilot, PAUSED 2026-07-30.** `.github/doc-maintainer.json` sets
+`kill_switch: true`, so the flow exits cleanly before any LLM call and this file is not
+read. It is kept current for the resume.
+
+The pause is not a retreat from the pilot — it is that four independent upstream defects
+stacked on one caller. Measured over this caller's first 47 runs (2026-07-30, adoption in
+PR #382 → pause): **23 failures**, 12 of 13 `push` runs, distributed as
+
+| Failures | Cause | Upstream |
+|---:|---|---|
+| 9 | planner rejects a **repeated** `plans/HANDOFF.md` entry. The path **is** allowlisted, so this is the duplicate branch — reported under a message that says `non-allowlisted`, which is how the cause was long misread as a config mismatch | [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) |
+| 6 | planner rejects a genuinely non-allowlisted path — `plans/PIN-CURRENCY-READER-PLAN.md` ×3, `CLAUDE.md` ×2, **this conventions file** ×1 | [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) |
+| 3 | apply refuses `CHANGELOG.md` at its 200 KB full-file-regeneration limit | [#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354) |
+| 3 | Step 9 dies silently while rendering the dry-run patch | [#352](https://github.com/vladm3105/aidoc-flow-ci/issues/352) |
+| 2 | apply's *"agent deleted/replaced more than 30 % of README.md"* guard. The guard is correct; it reds the whole run instead of dropping the entry | reported on [#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353) |
+
+**#352 is the smallest of these by count and still the one that blocks graduation.**
+Step 9 renders with `diff`, which exits 1 whenever files differ, and GitHub's `bash -e`
+kills the step before the `[ rc -le 1 ]` guard can forgive it. Its loop reads
+`.low_risk_set[]`, so **no plan containing a low-risk edit can ever complete a dry run** —
+and the IPLAN-0025 §3 P4 gate exists precisely to exercise that low-risk auto-apply path.
+(A plan of *only* high-risk edits does survive Step 9 and post a real proposal; that is
+why the pilot is not merely "always red", but it exercises the wrong path.) The failure
+count also climbed without new commits, because canon's reconciler treats a failed run as
+un-maintained and re-dispatches the SHA each cron tick.
+
+**Resume requires #352 *and* #353** — #353 alone is 15 of the 23 failures, so flipping the
+switch on #352 alone would return a majority-red pilot; the 30 %-deletion class should be
+understood by then too. Then: both ship in a released `ci/vX.Y.Z`, this caller is
+re-pinned to it, and `kill_switch` → `false`. Graduation to live additionally requires the
+IPLAN-0025 §3 P4 gate — ≥5 dry-run cycles with coherent proposals, zero allowlist
+violations, zero infrastructure errors — **and** the two founder-tier prerequisites that
+are not yet in place: `AIDOC_FLOW_BOT_ID`/`AIDOC_FLOW_BOT_KEY` on this repo, and
+`aidoc-flow-bot[bot]` added to `.github/ai-review/config.json#trust.ai_review`.
+(`LITELLM_BASE_URL` and `LITELLM_DOC_API_KEY` **are** present on this repo — an earlier
+handoff claimed otherwise.)
 
 ## Paths this repository forbids editing — never propose changes here
 
@@ -29,13 +58,13 @@ a preference:
 | `plans/DECISIONS.md`, `framework/governance/DECISIONS.md` | A decision log is authored by whoever made the decision, with their reasoning. Proposing entries here would fabricate provenance. Classified high-risk as defence-in-depth in case the allowlist is ever widened. |
 | `plans/FRAMEWORK-TODO.md`, `plans/HERMES-BACKLOG.md` | Work queues. Whether an item is open is a judgment about reality, not a documentation fact. |
 | `CLAUDE.md` | The working agreement. Changes are governance PRs with a founder in the loop. |
+| `CHANGELOG.md` | **Removed from `allowed_paths` 2026-07-30.** Structurally the wrong shape for a whole-file rewrite: the changelog is append-only, and the only correct edit is an insert under `## [Unreleased]`, which needs the head of the file. The size limit merely makes that unavoidable — at 281 KB it is past the apply step's hard 200 KB full-file-regeneration refusal, so proposing it is a guaranteed failed run ([aidoc-flow-ci#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354)). The **per-platform** changelogs (91 KB, 33 KB) remain in scope and keep the same `## [Unreleased]` discipline. |
 
 ## What each maintained document is for
 
 | Document | Purpose | What a good proposal looks like |
 |---|---|---|
-| `CHANGELOG.md` | Project-level, **Keep a Changelog** format, semver. New work goes under `## [Unreleased]` in a dated `### Added/Changed/Fixed —` subsection | A concise user-visible entry for a merged change that has none. Include file paths and what was measured; this repo's changelog records evidence, not intentions |
-| `platforms/hermes/CHANGELOG.md`, `platforms/claude-code-plugin/CHANGELOG.md` | Per-platform streams, versioned independently of the project and of the spec | An entry when `platforms/<name>/**` changed but its own changelog did not |
+| `platforms/hermes/CHANGELOG.md`, `platforms/claude-code-plugin/CHANGELOG.md` | Per-platform streams, **Keep a Changelog** format, versioned independently of the project and of the spec. New work goes under `## [Unreleased]` | An entry when `platforms/<name>/**` changed but its own changelog did not. Include file paths and what was measured; this repo's changelogs record evidence, not intentions |
 | `README.md` | Stable entry-point guidance + the Status block | Correct a statement the merged PR falsified. Do not restate the changelog |
 | `ROADMAP.md` | Now/Next/Later + a recently-shipped log | Move an item to shipped when a merge demonstrably completed it. **High-risk**: it encodes intent and priority, so propose rather than assert |
 | `docs/**` | Detailed operational and technical material (`PROJECT.md`, `PARITY.md`, `TAGGING.md`, `REPO_STRUCTURE.md`, `SKILL_AUTHORING.md`) | Update a fact the change falsified — a parity row, a layout entry, a policy detail |
@@ -43,6 +72,17 @@ a preference:
 
 ## House rules for any proposal
 
+- **One entry per path — never propose the same file twice.** Combine everything you
+  would say about a file into a single entry. A repeated path is the single most common
+  way this flow has failed here — 9 of its 23 failures were a second `plans/HANDOFF.md`
+  entry, which the planner rejects as `duplicate or non-allowlisted` and which costs the
+  whole plan, not just the repeat
+  ([aidoc-flow-ci#353](https://github.com/vladm3105/aidoc-flow-ci/issues/353)).
+- **The allowed-paths list is closed.** Propose nothing outside it, including files
+  named in the forbidden table above and this conventions file itself. A single
+  out-of-list path discards the entire plan — 6 of the 23 failures were exactly this
+  (`plans/PIN-CURRENCY-READER-PLAN.md`, `CLAUDE.md`, and this file), and the allowlist
+  is handed to you verbatim in the prompt, so there is no ambiguity to resolve.
 - **Update only what the merged PR actually changed.** Behavior, interfaces,
   configuration, operations, architecture, governance or release-visible facts. A typo
   fix, a test-only change or an invisible refactor needs no doc update, and proposing
