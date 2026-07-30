@@ -12,6 +12,27 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the governance-PR plan glob matched no real plan (2026-07-30)
+
+**No version moves** — `CLAUDE.md` only.
+
+- The governance-PR definition wrote the plan glob as a **prefix**,
+  `plans/PLAN-*.md`, against a repo where every plan is `<NAME>-PLAN.md`. It matched
+  exactly one file, `PLAN-TEMPLATE.md`. Since the auto-merge exception list is defined
+  by reference to that definition, the rule meant to keep plan PRs out of auto-merge
+  covered no plan. Now `plans/*-PLAN.md` plus the `plans/*-DESIGN.md` companions, with
+  both `DECISIONS.md` files named, as a bullet list rather than one prose sentence.
+- The auto-merge exception bullet kept its **own copy** of that list — same broken glob,
+  and no `DECISIONS.md` at all. The copy is deleted rather than corrected: a second
+  enumeration is how the two drifted. (The third copy, in
+  `.github/PULL_REQUEST_TEMPLATE.md`, is fixed in #390.)
+- Current-state line: Hermes `0.11.1` → `0.12.0` (the sync gap behind it is #389), and
+  [#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342) /
+  [#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351) were described as
+  open when both closed 2026-07-26/27. The replacement claim is scoped to what the
+  `#342` guard actually verifies, because it does not verify as much as its name
+  implies — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385).
+
 ### Fixed — `CLAUDE.md`'s platform version tokens now self-heal (2026-07-30)
 
 **No version moves** — `scripts/sync-version-refs.sh` only.

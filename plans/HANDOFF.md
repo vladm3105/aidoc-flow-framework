@@ -35,7 +35,10 @@ semantics, the runner split incl. why `sast-scan` is the `ubuntu-latest` excepti
 ## Where we are — 2026-07-30
 
 Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0`. `main` clean.
-**Open issues: 0. Open PRs: 0.**
+**Open issues: 2** — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
+(next-task 4 below) and [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386)
+(the `sync-version-refs.sh` framework-token gate, under *Local hooks and tooling*), both
+filed 2026-07-30. **Open PRs: 0** once the PR carrying this file lands.
 
 **Last merge: PR [#383](https://github.com/vladm3105/aidoc-flow-framework/pull/383)
 (`845ea13f`) — the PIN-CURRENCY-NO-READER *plan*, and nothing else.** No
@@ -120,23 +123,18 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    awk '/^## Closed/{c=1} c&&/^### /{e++} c&&/✅ CLOSED/{m++} END{print e, m}' plans/FRAMEWORK-TODO.md
    ```
 
-4. **Two `CLAUDE.md` defects found while wrapping PR #383 — both independent of that
-   work, and one changes who may merge what.**
-   - **The governance-PR list's literal glob matches no real plan.** `CLAUDE.md:546` and
-     `:629` both write it as `plans/PLAN-*.md`, but every plan here is `<NAME>-PLAN.md` —
-     the convention `CLAUDE.md:229` itself documents. `ls plans/PLAN-*.md` returns exactly
-     one file, `PLAN-TEMPLATE.md`. Since the auto-merge exception list is defined *by
-     reference* to that list, a fresh session could defensibly read the
-     PIN-CURRENCY PR 2 as **non**-governance and auto-merge it on green — the opposite of
-     what the merged plan intends. Fix the glob to `plans/*-PLAN.md`; until then, treat
-     the *convention* as authoritative, not the pattern.
-   - **`CLAUDE.md:23` says Hermes `0.11.1`; `platforms/hermes/VERSION` is `0.12.0`.**
-     CLAUDE.md is auto-loaded, so a fresh session reads the stale number first and this
-     file's correct one second.
-
-   Both belong in a `CLAUDE.md` PR, which is governance + founder-merge. PR 4 of the
-   PIN-CURRENCY sequence already touches `CLAUDE.md` at 2 of Rule 1's 3 surfaces, so it
-   can carry them — or they ship as their own small PR, which is cleaner.
+4. **[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) — the `#342`
+   regression guard scans less than it claims.**
+   `tests/conformance/platforms/test_no_inprompt_hashing.py:99`/`:103` use
+   `glob("doc-*/SKILL.md")` and a non-recursive `glob("*.md")`, so **41 of 52** plugin
+   SKILLs and **36 of 39** Hermes references are scanned. The 3 unscanned Hermes files
+   are all of `references/batch-brd-processing/`, and
+   `batch-remediation-script.md:24` still computes element IDs with its own
+   `hashlib.sha256` routine that diverges from the normative transform on four points.
+   The 11 unscanned plugin SKILLs are clean today — that half is latent. The guard's own
+   docstring (`:92`) forbids narrowing coverage by glob, which is what happened. Fix is
+   `rglob` both + point the script at `rehash --compute`; the issue carries the census
+   command. **A green run of this guard is not evidence that no surface hashes.**
 5. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
@@ -164,6 +162,7 @@ not. Each was verified on 2026-07-29.
 | `NO-PIN-CURRENCY-CHECK` — "this repo runs `check-pin-currency.sh` nowhere" | **Retracted, it was false.** See below |
 | `PIN-CURRENCY-NO-READER` — "the fix is a workflow that **runs the script** and opens an issue" (the restated TODO entry's own fix shape) | **Superseded by the merged plan.** Running the script would be the second detector the same entry forbids. The reader consumes the completed run's **log** — the only one of four input surfaces that carries the signal |
 | "canon has no adopter-facing pin reader at all" | **Overstated.** `standards-drift-self.yml:85` runs a `--fleet` pin audit against *this repo* every Monday and discards it with `\|\| true`. The gap is that **no** audit has a reader, on either side |
+| `plans/PLAN-*.md` as the governance-PR plan glob (`CHANGELOG.md:1892`, `CI-CANON-V2.16-MIGRATION-PLAN.md:468`/`:784`) | **Fixed in `CLAUDE.md`.** The glob is a **suffix** — `plans/*-PLAN.md`. The prefix form matched only `PLAN-TEMPLATE.md`, so the governance list read as covering *no* real plan, and the auto-merge exception list inherits that list by reference. Merged plans and the CHANGELOG keep the old string as history; `CLAUDE.md` is the live rule |
 
 **The retraction, because the lesson generalises.** That entry named an absence as the
 cause of a mixed-pin state surviving two days. The check *does* run — canon's
@@ -282,6 +281,26 @@ defect to assert and the hardest to verify — read the log before writing one d
   linter's own sync script is `tools/sdd_doc_lint/sync-vendored.sh`, **not**
   `tools/sync-plugin-framework.sh` (which vendors `framework/` subtrees plus three
   named tools files and does not touch `sdd_doc_lint`).
+- **Both `CLAUDE.md` current-state platform tokens now self-heal** (PR #389). `sync-version-refs.sh`
+  detects the previous plugin and Hermes values **from `CLAUDE.md` itself**, not from
+  `plugin.json` / `README.md`, so a stale token is fixed even when every other surface is
+  already current — the state that let `CLAUDE.md` sit at Hermes `0.11.1` against a
+  `0.12.0` VERSION for four days. The plugin token had carried the same latent bug since
+  SYNC-CLAUDE-PLUGIN-VERSION-GAP (its write was nested inside the `plugin.json`-derived
+  guard); it is now independent too. **The framework-spec token still is not**, and it
+  carries the higher-fanout version of the same bug: `fw_prev` is detected from
+  `CLAUDE.md` *and* gates propagation to `README.md`, `docs/PARITY.md`, both platform
+  READMEs and the conformance-test literal — five files stranded, silently, exit 0, if
+  `CLAUDE.md` is corrected first. Measured, not inferred, and filed as
+  [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386). **The hand-edit
+  hazard below now applies to that token alone.** The 52 SKILL frontmatters, the
+  playbooks and `platforms/*/FRAMEWORK_SPEC_VERSION` are **not** in that blast radius —
+  each has its own detector.
+- **Run a sync-script reproduction in a throwaway clone, never in the working tree.**
+  Proving #386 meant bumping `framework/VERSION`, which fired the three independent
+  detectors and rewrote **100+** SKILL / playbook / `FRAMEWORK_SPEC_VERSION` files — and
+  the script's closing `git add -u` **staged all of them**. Restoring the two files the
+  test targeted is not enough; the collateral is elsewhere and already in the index.
 - **Propagation order for a framework version bump is load-bearing:**
   `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
   `tools/sync-plugin-framework.sh`. Reversing it lands 51 drifted bundled playbooks and
