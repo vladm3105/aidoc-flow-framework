@@ -84,17 +84,28 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    - **PR 4** = `CLAUDE.md` (the annotation-cap trap at the granularity M1 supports,
      plus the concurrency inventory's **fourth** shape — `cancel-in-progress: false`
      under a fixed group, which `pin-currency-reader.yml` introduced) and the plan's
-     Status → `IMPLEMENTED`.
+     Status → `IMPLEMENTED`. **Fold one more `CLAUDE.md` correction in while it is
+     open:** it says "sixteen call sites across fifteen files"; the real count is
+     **17 across 16** since #382 added `doc-maintainer.yml`. Re-count rather than
+     copying that figure —
+     `grep -rcE '^\s*uses: vladm3105/aidoc-flow-ci' .github/workflows/*.yml`.
    - The plan's §PR sequencing is the contract; read it rather than this summary.
-2. **`doc-maintainer` — founder-blocked, not declined.** The one canon surface still
-   unadopted. `LITELLM_DOC_API_KEY`, `AIDOC_FLOW_BOT_ID`, `AIDOC_FLOW_BOT_KEY` exist on
-   `aidoc-flow-operations` but **not here**, and a personal account has no org secrets
-   to inherit (the API returns 422). Dry-run needs only the LiteLLM doc key:
-   `export LITELLM_BASE_URL LITELLM_DOC_API_KEY; bash install/set-litellm-secrets.sh
-   --repos "vladm3105/aidoc-flow-framework" --doc`. Live mode additionally needs App
-   permissions raised to PR/Issues write, `aidoc-flow-bot[bot]` in
-   `.github/ai-review/config.json#trust.ai_review`, and a hand-authored
-   `.github/doc-maintainer-conventions.md`.
+2. **`doc-maintainer` is ADOPTED and RED — it fails every `push` run, unwatched.**
+   → `FRAMEWORK-TODO.md` `DOC-MAINTAINER-RED-ON-EVERY-PUSH`.
+
+   ⚠️ **Earlier handoffs said this surface was "still unadopted" and that its LiteLLM
+   secrets did not exist here. Both were false, and the claim survived several
+   regenerations.** `doc-maintainer.yml` was adopted in dry-run by #382 on 2026-07-29
+   (canon manifest parity 28/28), and `gh secret list` shows `LITELLM_BASE_URL` **and**
+   `LITELLM_DOC_API_KEY` present on this repo. Only `AIDOC_FLOW_BOT_ID` /
+   `AIDOC_FLOW_BOT_KEY` are absent, and those are **live-mode only** — dry-run does not
+   need them. Verify with `gh secret list` before repeating any secrets claim here.
+
+   The real state: **20 failures / 41 runs** since adoption. `schedule` runs succeed
+   (nothing to do); every `push` run fails, on two distinct causes — a planner
+   allowlist/duplicate rejection, and a 200 KB refusal on `CHANGELOG.md` (276 KB). The
+   config half is ours to fix; the conflated error message and the size refusal belong
+   upstream and are **not yet filed**. See the TODO entry for the measurements.
 3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
    unreliable in *two* directions: entries marked `✅ CLOSED` sit under `## Open` (so it
    **overstates** what is open), and `## Closed` holds unmarked entries that read as
