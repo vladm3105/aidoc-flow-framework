@@ -32,10 +32,17 @@ must be the Docker-bridge address, `secret-scan` at v2 scans full git history,
 semantics, the runner split incl. why `sast-scan` is the `ubuntu-latest` exception, the
 `#329` concurrency allowlist by *shape*, and never hand-editing example artifacts.
 
-## Where we are — 2026-07-29
+## Where we are — 2026-07-30
 
 Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0`. `main` clean.
-**Open issues: 0. Open PRs: #379** (founder-merge — touches `CLAUDE.md`).
+**Open issues: 0. Open PRs: 0.**
+
+**Last merge: PR [#383](https://github.com/vladm3105/aidoc-flow-framework/pull/383)
+(`845ea13f`) — the PIN-CURRENCY-NO-READER *plan*, and nothing else.** No
+implementation shipped. `plans/PIN-CURRENCY-READER-PLAN.md` is `READY` and is PR 1 of a
+four-PR sequence it defines itself; **PR 2 (implementation) is the next task.** The
+`PIN-CURRENCY-NO-READER` entry in `FRAMEWORK-TODO.md` is still **open** by design — the
+plan's PR 3 closes it, gated on post-merge verification.
 
 **The canon CI migration is complete on both dimensions.** Pins:
 CI-CANON-V2.16-001 (PRs #374/#375, **D-0070**) took all call sites to `@ci/v2.16.0`.
@@ -68,20 +75,72 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    permissions raised to PR/Issues write, `aidoc-flow-bot[bot]` in
    `.github/ai-review/config.json#trust.ai_review`, and a hand-authored
    `.github/doc-maintainer-conventions.md`.
-2. **`PIN-CURRENCY-NO-READER`** (`FRAMEWORK-TODO.md`, TODO-only). Give the *existing*
-   weekly pin-currency output a destination — do **not** add a second detector. See
-   the retraction under "Stale advice" below.
-3. **`FRAMEWORK-TODO.md` hygiene.** **6** entries marked `✅ CLOSED` sit under
-   `## Open`, while a `## Closed` section at the bottom holds 11 more. Both patterns are
-   in use, so the queue overstates what is open. One focused sweep; pick one convention
-   and state it at the top of the file. *(Count it scoped between the two headings —
-   a whole-file `grep -c '✅ CLOSED'` returns 17 and includes the `## Closed` section's
-   own entries, which are correctly filed. I got this wrong once already; the wrong
-   figure is in #379's commit body, corrected in a PR comment.)*
-4. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
+2. **`PIN-CURRENCY-NO-READER` — implement PR 2 of 4.** The plan is merged, `READY`, and
+   carries its own §PR sequencing, §Verification (V1–V16, split pre/post-merge) and a
+   40-row Claim ledger. **Read the plan, not this summary** — but three things about it
+   are load-bearing enough to repeat, because they will look like over-engineering
+   otherwise:
+   - **PR 2 ships on unit + dry-run evidence only.** `workflow_run` and
+     `workflow_dispatch` both require the file on the **default branch**, so V10–V15
+     cannot run until after PR 2 merges. This is why the parse and reconcile logic is
+     extracted into `scripts/` instead of living inline in the workflow YAML.
+   - **PR 3 is gated on V10–V14** so the TODO entry cannot close on unverified work.
+     V15 (the `schedule` → `workflow_run` chain) waits up to seven days for a Monday run
+     and is a post-hoc observation, never a gate — PR 3 lands a `pending — V15
+     unconfirmed` line in this file for whoever observes it to clear.
+   - **All four PRs are governance PRs and none is auto-mergeable** — the auto-merge
+     exception list is defined by reference to the governance-PR list, which includes
+     plan files and `DECISIONS.md`. PR 1 was merged by the founder for this reason.
+
+   Five upstream defects go to `aidoc-flow-ci` as one issue (plan Task 3). Worth filing
+   early: if canon adds a `$GITHUB_STEP_SUMMARY` write plus a reusable `output`, the
+   local workflow becomes **deletable** rather than permanent.
+3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** Re-counted
+   2026-07-30; **both** figures previously in this file were wrong, and the queue is
+   unreliable in *two* directions:
+   - **7** entries marked `✅ CLOSED` sit under `## Open` (lines 27, 218, 230, 322, 337,
+     353, 482), so the queue **overstates** what is open. The 7th,
+     `CODEQL-FLOATING-ACTION-PIN`, was closed by PR #378 — which this very file
+     documents, so the count went stale inside the range it was wrapping.
+   - The `## Closed` section holds **32** entries of which only **10** carry a marker.
+     Several of the 22 unmarked ones read as live backlog — `[gate] Component-decomposition
+     gate missing between PRD and ADR`, `[harness] Cascade harness lacks
+     --skip-lint-smoke flag`, `[template] IPLAN sub-types: code-build vs deploy`. So
+     `## Closed` also **hides** open work, which is the worse direction.
+
+   Scope the sweep to both: pick one convention, state it at the top of the file, and
+   **triage the 22 unmarked `## Closed` entries** — each is either genuinely closed (add
+   the marker) or was filed there by mistake (move it back to `## Open`). Count scoped
+   between the two headings; a whole-file `grep -c` conflates them.
+
+   Reproduce the counts:
+
+   ```sh
+   awk '/^## Open/{o=1} /^## Closed/{o=0} o&&/✅ CLOSED/{n++} END{print n}' plans/FRAMEWORK-TODO.md
+   awk '/^## Closed/{c=1} c&&/^### /{e++} c&&/✅ CLOSED/{m++} END{print e, m}' plans/FRAMEWORK-TODO.md
+   ```
+
+4. **Two `CLAUDE.md` defects found while wrapping PR #383 — both independent of that
+   work, and one changes who may merge what.**
+   - **The governance-PR list's literal glob matches no real plan.** `CLAUDE.md:546` and
+     `:629` both write it as `plans/PLAN-*.md`, but every plan here is `<NAME>-PLAN.md` —
+     the convention `CLAUDE.md:229` itself documents. `ls plans/PLAN-*.md` returns exactly
+     one file, `PLAN-TEMPLATE.md`. Since the auto-merge exception list is defined *by
+     reference* to that list, a fresh session could defensibly read the
+     PIN-CURRENCY PR 2 as **non**-governance and auto-merge it on green — the opposite of
+     what the merged plan intends. Fix the glob to `plans/*-PLAN.md`; until then, treat
+     the *convention* as authoritative, not the pattern.
+   - **`CLAUDE.md:23` says Hermes `0.11.1`; `platforms/hermes/VERSION` is `0.12.0`.**
+     CLAUDE.md is auto-loaded, so a fresh session reads the stale number first and this
+     file's correct one second.
+
+   Both belong in a `CLAUDE.md` PR, which is governance + founder-merge. PR 4 of the
+   PIN-CURRENCY sequence already touches `CLAUDE.md` at 2 of Rule 1's 3 surfaces, so it
+   can carry them — or they ship as their own small PR, which is cleaner.
+5. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
-5. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
+6. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
    `[template]`, `[harness]`, `[example-corpus]`, `[docs]`, `[skill]`, `[sync]`),
    including the D54 and Engramory consumer-feedback batches. Nothing there is
    blocking.
@@ -103,10 +162,12 @@ not. Each was verified on 2026-07-29.
 | "commits need `SKIP=gitleaks`" | **Fixed** (#355) — the local gitleaks hook was dropped; CI's is unaffected |
 | "the acceptance deterministic tier has 3 pre-existing failures on `main`" | **Fixed** (#365, #371/#372). 0 failures / 64, and the tier is now a **required** context |
 | `NO-PIN-CURRENCY-CHECK` — "this repo runs `check-pin-currency.sh` nowhere" | **Retracted, it was false.** See below |
+| `PIN-CURRENCY-NO-READER` — "the fix is a workflow that **runs the script** and opens an issue" (the restated TODO entry's own fix shape) | **Superseded by the merged plan.** Running the script would be the second detector the same entry forbids. The reader consumes the completed run's **log** — the only one of four input surfaces that carries the signal |
+| "canon has no adopter-facing pin reader at all" | **Overstated.** `standards-drift-self.yml:85` runs a `--fleet` pin audit against *this repo* every Monday and discards it with `\|\| true`. The gap is that **no** audit has a reader, on either side |
 
 **The retraction, because the lesson generalises.** That entry named an absence as the
 cause of a mixed-pin state surviving two days. The check *does* run — canon's
-`check-standards-drift.sh` tail (`:499-515`) invokes it on every weekly
+`check-standards-drift.sh` tail (`:499-515` **at v2.16.0**; the same block is `:359-375` at v2.14.0, which is what that run executed) invokes it on every weekly
 `standards-drift` run — and it fired on 2026-07-27 naming all ten stale pins **and**
 the `--repin` remedy. The proposed fix would have added a **second copy of a check that
 was already running and already right**. The real gap is that a warning-only
@@ -145,8 +206,63 @@ defect to assert and the hardest to verify — read the log before writing one d
   `[ -n "$n" ]` reads as **present** — that inverted a blast-radius finding from "no
   sibling repo adopts this" to "all seven do" until re-checked by listing the directory.
 
+### Reading CI output (new 2026-07-30 — PIN-CURRENCY-READER plan)
+
+`CLAUDE.md` does not own these yet; the plan's PR 4 propagates the first one.
+
+- **The check-run annotations API silently truncates at 10 warnings, keeping the
+  earliest.** Measured on check-run `89950624082`: the job emitted **22** `##[warning]`
+  lines and the API returns **10 of them** — dropping all ten `pin-currency:` lines,
+  because they are emitted at the drift script's tail. So **`gh api …/annotations` is not
+  a substitute for the log** when the thing you want is emitted late.
+  - **The response length is 11, not 10** — 10 `warning` plus 1 `notice`. Verify with
+    `--jq 'group_by(.annotation_level)|map({(.[0].annotation_level):length})|add'`, not
+    `length`, or this trap reads as false and gets discarded.
+  - That surviving `notice` **is** evidence the cap is applied **per annotation level**:
+    a full 10 warnings did not crowd it out. What stays unattributable from this run is
+    per-step vs per-job vs per-run — the whole script is one `run:` step, so those three
+    are indistinguishable here. PR 4 writes the cap into `CLAUDE.md`; it may claim
+    per-level, not per-step.
+- **A downloaded log contains `##[warning]`, never `::warning::`.** `gh run view --log`
+  renders the workflow command. `grep -c '::warning::'` on it returns **0** while
+  `##[warning]` returns 22. This is a different trap from the drift-body one below, and it
+  silently makes a grep-based reader match nothing.
+- **A measurement is dated to the canon version that RAN, not the one you have checked
+  out.** Run `30257877863` executed `check-standards-drift.sh` at **`ci/v2.14.0`** (380
+  lines) while the local checkout is `v2.16.0` (523 lines) — `emit_coverage` shipped in
+  `v2.15.0` and does not exist in what ran. Cost most of a review cycle: a reviewer
+  correctly derived a 23rd warning from the v2.16.0 source and concluded the measured 22
+  was wrong. **Read the `adopted canon pin` notice in the run's own log before citing line
+  numbers at it.**
+- **Canon false-greens two ways, and one would make a reader close a tracking issue.**
+  `check-pin-currency.sh:62` greps `@ci/v…` literally, so a **SHA-pinned** caller is
+  invisible and reports `all pins current ✅` — and the *fleet* path at `:71` **does**
+  match `@<40hex> # ci/v…`, so this is two paths in one script disagreeing, which is a
+  far stronger upstream ask than a plain omission. Second path: if the `curl` of canon
+  `main`'s `VERSION` returns an error page instead of failing, `ver_cmp` (`:39`) compares
+  non-numeric fields under `2>/dev/null`, every comparison falls through to equal, and
+  `:101` prints the same green. **`:87` is the only validation there is** — an emptiness
+  guard — and an error-page body is non-empty, so it slips straight past. Validate a
+  resolved canon token against `^ci/v[0-9]+\.[0-9]+\.[0-9]+$` before trusting any verdict
+  built on it. Both are filed upstream by the plan's Task 3; cite `:39` + `:101` for the
+  second, not `:87`.
+
 ### Local hooks and tooling
 
+- **`tests/unit/` is executed by no hook and no workflow** — `.pre-commit-config.yaml:106`
+  discovers `tests/conformance` only, and the workflows run `tests/conformance`,
+  `tests/acceptance/deterministic`, `tools/sdd_doc_lint/tests` and Hermes' own suite.
+  `pre_push_check.sh` invokes no `unittest` at all. So ~30 modules under `tests/unit/`
+  (including `test_sync_scripts.py`) are **unguarded after merge**: a test placed there
+  proves something once, locally, and never again.
+  - **The one runner that exists is worse than none.** `tests/scripts/test-plugin.sh:257`
+    and `:302` do `python3 -m unittest discover tests/unit` — but **nothing calls that
+    script** (grep `.github/workflows/`, `.pre-commit-config.yaml`, `scripts/`), and both
+    call sites end in `|| true`, so even the manual path cannot fail. Wiring the hook is
+    therefore reuse, not authoring; dropping the `|| true` is the deeper fix.
+  - This is why the merged PIN-CURRENCY plan adds a registration shim, and why R6 there
+    says "no hook and no workflow" rather than "nothing" — that wording is accurate as
+    written. Fixing the class instead of the instance is an accepted open item.
 - **Local `pre-commit` on changed files ≠ CI's `--all-files`.** A rebase conflict
   resolution once dropped a blank line before a CHANGELOG heading; local hooks never
   re-linted the seam and CI failed on MD022. **Run `pre-commit run --all-files` after
