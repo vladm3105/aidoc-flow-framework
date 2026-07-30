@@ -1,0 +1,248 @@
+drift / check-standards-drift	UNKNOWN STEP	﻿2026-07-27T10:23:37.5851074Z Current runner version: '2.335.1'
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5886338Z ##[group]Runner Image Provisioner
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5887548Z Hosted Compute Agent
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5888772Z Version: 20260707.563
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5889745Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5890894Z Build Date: 2026-07-07T19:33:50Z
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5892047Z Worker ID: {80b6579b-448e-46a7-b35c-7b87bd7801d7}
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5893153Z Azure Region: eastus2
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5894130Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5896172Z ##[group]Operating System
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5897183Z Ubuntu
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5898295Z 24.04.4
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5899100Z LTS
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5899884Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5900859Z ##[group]Runner Image
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5901824Z Image: ubuntu-24.04
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5902734Z Version: 20260720.247.2
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5904707Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260720.247/images/ubuntu/Ubuntu2404-Readme.md
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5907321Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260720.247
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5909263Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5910983Z ##[group]GITHUB_TOKEN Permissions
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5913749Z Contents: read
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5914616Z Metadata: read
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5915619Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5918725Z Secret source: Actions
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.5920187Z Prepare workflow directory
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.6373153Z Prepare all required actions
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.6427058Z Getting action download info
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:37.8326118Z Download action repository 'actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0' (SHA:9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0517227Z Uses: vladm3105/aidoc-flow-ci/.github/workflows/standards-drift.yml@refs/tags/ci/v2.14.0 (8cf9e62e6b62a5d90a3b12dd204ba7b657d69055)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0522128Z ##[group] Inputs
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0522903Z   tier: governance
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0523945Z   strict: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0524641Z   runner_labels: "ubuntu-latest"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0525373Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.0525985Z Complete job name: drift / check-standards-drift
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1366562Z ##[group]Run actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1367573Z with:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1368290Z   repository: vladm3105/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1372535Z   token: ***
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1372991Z   ssh-strict: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1373441Z   ssh-user: git
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1373897Z   persist-credentials: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1374395Z   clean: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1374853Z   sparse-checkout-cone-mode: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1375385Z   fetch-depth: 1
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1375827Z   fetch-tags: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1376273Z   show-progress: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1376728Z   lfs: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1377145Z   submodules: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1377600Z   set-safe-directory: true
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1378224Z   allow-unsafe-pr-checkout: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.1379101Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2406935Z Syncing repository: vladm3105/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2409544Z ##[group]Getting Git version info
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2410510Z Working directory is '/home/runner/work/aidoc-flow-framework/aidoc-flow-framework'
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2411824Z [command]/usr/bin/git version
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2432694Z git version 2.54.0
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2453575Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2466074Z Temporarily overriding HOME='/home/runner/work/_temp/28a74eec-37d4-4cd0-99e0-13d3f396c277' before making global git config changes
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2468477Z Adding repository directory to the temporary git global config as a safe directory
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2473066Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/aidoc-flow-framework/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2523410Z Deleting the contents of '/home/runner/work/aidoc-flow-framework/aidoc-flow-framework'
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2527331Z ##[group]Determining repository object format
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2529476Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2530622Z ##[group]Initializing the repository
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2535176Z [command]/usr/bin/git init /home/runner/work/aidoc-flow-framework/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2631114Z hint: Using 'master' as the name for the initial branch. This default branch name
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2632904Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2634669Z hint: to use in all of your new repositories, which will suppress this warning,
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2636135Z hint: call:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2636948Z hint:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2638162Z hint: 	git config --global init.defaultBranch <name>
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2639342Z hint:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2640401Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2641996Z hint: 'development'. The just-created branch can be renamed via this command:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2643443Z hint:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2644350Z hint: 	git branch -m <name>
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2645362Z hint:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2646536Z hint: Disable this message with "git config set advice.defaultBranchName false"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2648978Z Initialized empty Git repository in /home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git/
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2652407Z [command]/usr/bin/git remote add origin https://github.com/vladm3105/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2691781Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2692608Z ##[group]Disabling automatic garbage collection
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2695517Z [command]/usr/bin/git config --local gc.auto 0
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2728260Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2729196Z ##[group]Setting up auth
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2729755Z Removing SSH command configuration
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2734580Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.2770987Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3084667Z Removing HTTP extra header
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3091046Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3122648Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3351149Z Removing includeIf entries pointing to credentials config files
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3356261Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3388977Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3630536Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3669359Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git.path /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3700327Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3734154Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3766125Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3793606Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3800207Z ##[group]Fetching the repository
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:38.3801596Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +2f6479b1a002b7146e7b2ed1729a5753b80cbc26:refs/remotes/origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1100982Z From https://github.com/vladm3105/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1103286Z  * [new ref]         2f6479b1a002b7146e7b2ed1729a5753b80cbc26 -> origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1140306Z [command]/usr/bin/git branch --list --remote origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1169077Z   origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1178844Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1204047Z 2f6479b1a002b7146e7b2ed1729a5753b80cbc26
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1209085Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1210290Z ##[group]Determining the checkout info
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1211780Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1213250Z [command]/usr/bin/git sparse-checkout disable
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1259476Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1289841Z ##[group]Checking out the ref
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.1292142Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2466237Z Switched to a new branch 'main'
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2468488Z branch 'main' set up to track 'origin/main'.
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2479281Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2533325Z [command]/usr/bin/git log -1 --format=%H
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2559721Z 2f6479b1a002b7146e7b2ed1729a5753b80cbc26
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2824971Z ##[group]Run set -euo pipefail
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2826448Z ^[[36;1mset -euo pipefail^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2828376Z ^[[36;1m# Resolve the adopted canon tag from the consumer's OWN checked-out^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2830683Z ^[[36;1m# standards-drift caller pin (actions/checkout above put it on disk).^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2833046Z ^[[36;1m# Deterministic and pin-accurate; see the header for why not workflow_ref.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2835432Z ^[[36;1m# FT-22: brought to the full docs/REPO_STANDARDS.md §4.2a property list —^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2837845Z ^[[36;1m# this workflow pioneered the approach but predated five of its rules.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2839788Z ^[[36;1m[ -d .github/workflows ] \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2842508Z ^[[36;1m  || { echo "::error::standards-drift: .github/workflows/ not found after checkout — INFRASTRUCTURE error, not a drift verdict."; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2845237Z ^[[36;1m^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2846652Z ^[[36;1m# Read only real `uses:` lines in files GitHub actually executes: a^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2848899Z ^[[36;1m# *.yml.bak/*.disabled leftover or a commented-out example must never^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2850985Z ^[[36;1m# supply the tag (it would WIN the version sort — verified).^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2852582Z ^[[36;1mset +e^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2854370Z ^[[36;1mUSES_LINES="$(grep -rhE --include='*.yml' --include='*.yaml' '^[[:space:]]*uses:' .github/workflows/)"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2856497Z ^[[36;1mgrc=$?^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2857471Z ^[[36;1mset -e^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2858965Z ^[[36;1m# grep rc: 0=match, 1=no match, >=2=real error (unreadable dir). Without^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2861052Z ^[[36;1m# this split, an I/O error is misreported as "caller not installed".^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2862755Z ^[[36;1m[ "$grc" -le 1 ] \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2865330Z ^[[36;1m  || { echo "::error::standards-drift: could not read .github/workflows/ (grep exit $grc) — INFRASTRUCTURE error, not a drift verdict."; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2868261Z ^[[36;1m^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2869303Z ^[[36;1mPINS="$(printf '%s\n' "$USES_LINES" \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2871990Z ^[[36;1m  | grep -ohE 'vladm3105/aidoc-flow-ci/\.github/workflows/standards-drift\.yml@([0-9a-f]{40} +# +)?ci/v[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?' \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2874615Z ^[[36;1m  | sort -u || true)"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2876022Z ^[[36;1mPIN_COUNT="$(printf '%s' "$PINS" | grep -c . || true)"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2877951Z ^[[36;1m[ "$PIN_COUNT" -ge 1 ] \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2881680Z ^[[36;1m  || { echo "::error::standards-drift: could not find a standards-drift '@ci/vX.Y.Z' pin on a 'uses:' line in .github/workflows/ — is this caller installed from the canon template? INFRASTRUCTURE error, not a drift verdict."; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2885946Z ^[[36;1m# Fail CLOSED on ambiguity: only one reusable actually runs, so the^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2888132Z ^[[36;1m# correct tag is unknowable from the tree. Picking the highest would^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2890205Z ^[[36;1m# silently compare against a version the repo never adopted.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2891830Z ^[[36;1m[ "$PIN_COUNT" -eq 1 ] \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2895378Z ^[[36;1m  || { echo "::error::standards-drift: found $PIN_COUNT differing standards-drift pins in .github/workflows/ — resolve to one. INFRASTRUCTURE error, not a drift verdict."; printf '%s\n' "$PINS" | sed 's/^/  /'; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2899180Z ^[[36;1m^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2900706Z ^[[36;1mCANON_TAG="$(printf '%s' "$PINS" | grep -oE 'ci/v[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.]+)?')"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2903063Z ^[[36;1mCANON_SHA="$(printf '%s' "$PINS" | grep -oE '@[0-9a-f]{40}' | tr -d '@' || true)"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2904831Z ^[[36;1mcase "$CANON_TAG" in^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2907830Z ^[[36;1m  *-*) echo "::error::standards-drift: pre-release canon pin '${CANON_TAG}' is not supported — pin a released ci/vX.Y.Z tag. INFRASTRUCTURE error, not a drift verdict."; exit 1 ;;^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2911196Z ^[[36;1mesac^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2912589Z ^[[36;1m# SHA-pinned caller → GitHub executes THAT SHA, so fetch from it; the^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2914528Z ^[[36;1m# trailing `# ci/vX.Y.Z` is documentation and can lag.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2916061Z ^[[36;1mFETCH_REF="${CANON_SHA:-$CANON_TAG}"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2918510Z ^[[36;1mecho "::notice::standards-drift: adopted canon pin vladm3105/aidoc-flow-ci@${CANON_TAG} (fetching at ${FETCH_REF})"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2920831Z ^[[36;1m^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2922127Z ^[[36;1m# The consumer does not ship sync/. Fetch the script from the adopted^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2924171Z ^[[36;1m# canon tag; owner/repo hardcoded to canonical canon (matching the^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2926280Z ^[[36;1m# script's own template + pin-currency fetches, check-standards-drift.sh).^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2928635Z ^[[36;1m# ALWAYS fetch to a fresh temp path — never run a caller-vendored copy^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2930712Z ^[[36;1m# that could shadow the pinned version. The script self-fetches its^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2932808Z ^[[36;1m# check-pin-currency.sh dependency from the same tag (see its tail).^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2934480Z ^[[36;1mSCRIPT="$(mktemp)"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2935621Z ^[[36;1mcurl -fsSL --retry 3 --retry-delay 2 \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2936909Z ^[[36;1m  -o "$SCRIPT" \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2939129Z ^[[36;1m  "https://raw.githubusercontent.com/vladm3105/aidoc-flow-ci/${FETCH_REF}/sync/check-standards-drift.sh" \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2943447Z ^[[36;1m  || { echo "::error::standards-drift: could not fetch check-standards-drift.sh from vladm3105/aidoc-flow-ci@${FETCH_REF} — INFRASTRUCTURE error, not a drift verdict. Re-run."; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2946646Z ^[[36;1m[ -s "$SCRIPT" ] \^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2948607Z ^[[36;1m  || { echo "::error::standards-drift: fetched check-standards-drift.sh is empty"; exit 1; }^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2950516Z ^[[36;1m^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2951836Z ^[[36;1m# --ci-tag pins the comparison base (tier templates + pin-currency) to^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2953955Z ^[[36;1m# the SAME adopted tag — deterministic; the consumer compares against^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2955674Z ^[[36;1m# exactly the version it adopted.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2957338Z ^[[36;1m# FETCH_REF, not CANON_TAG: the script uses this purely as a^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2959694Z ^[[36;1m# raw.githubusercontent ref for TEMPLATE_BASE + its check-pin-currency^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2962086Z ^[[36;1m# self-fetch, so a 40-hex SHA works identically — and a SHA-pinned^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2964397Z ^[[36;1m# caller must compare against the templates it actually executed, not a^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2966527Z ^[[36;1m# tag whose trailing comment may lag. Identical for plain-tag pins.^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2968975Z ^[[36;1margs=(--tier "$TIER" --repo "$GH_REPO" --ci-tag "$FETCH_REF")^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2971376Z ^[[36;1m[ "$STRICT" = "true" ] && args+=(--strict)^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.2973334Z ^[[36;1mbash "$SCRIPT" "${args[@]}"^[[0m
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3028809Z shell: /usr/bin/bash -e {0}
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3029906Z env:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3039995Z   GH_TOKEN: ***
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3040991Z   GH_REPO: vladm3105/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3042181Z   TIER: governance
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3043119Z   STRICT: false
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3044011Z ##[endgroup]
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:39.3281173Z ##[notice]standards-drift: adopted canon pin vladm3105/aidoc-flow-ci@ci/v2.14.0 (fetching at ci/v2.14.0)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.0178638Z check-standards-drift: repo=vladm3105/aidoc-flow-framework tier=governance canon=ci/v2.14.0 branch=main (warning-only)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.2740952Z ##[warning]check-standards-drift: cannot check branch-protection (needs 'administration: read' on the token (FT-5) — grant it to the drift job (or run with a PAT) to verify branch protection; skipping)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7063861Z ##[warning]repo-settings.allow_merge_commit: canon=false actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7121461Z ##[warning]repo-settings.allow_squash_merge: canon=true actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7182333Z ##[warning]repo-settings.allow_rebase_merge: canon=false actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7241729Z ##[warning]repo-settings.delete_branch_on_merge: canon=true actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7300247Z ##[warning]repo-settings.allow_auto_merge: canon=true actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7358322Z ##[warning]repo-settings.allow_update_branch: canon=true actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7416594Z ##[warning]repo-settings.squash_merge_commit_title: canon=PR_TITLE actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.7473984Z ##[warning]repo-settings.squash_merge_commit_message: canon=PR_BODY actual=null
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:40.9818875Z ##[warning]check-standards-drift: cannot check actions.general (gh api failed (token scope?))
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:41.1524008Z ##[warning]check-standards-drift: cannot check actions.workflow (gh api failed (token scope?))
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:41.3495951Z ##[warning]check-standards-drift: cannot check actions.selected (gh api failed (or allowed_actions != selected))
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.1692883Z ##[notice]check-standards-drift: check-pin-currency.sh not available at ci/v2.16.0 — skipping pin-currency (re-pin standards-drift to a release that includes it)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.2481217Z check-standards-drift: 8 drift, 4 fetch/scope error(s), 0 pin error(s) (warning-only)
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.2500000Z ##[warning]check-standards-drift: coverage — verified 2/4 control families (actions, labels); NOT verified: branch-protection, repo-settings. Could not be read (cause is named per-family in the warnings above — commonly insufficient token scope, in which case re-run with an admin PAT or grant 'administration: read'): branch-protection, repo-settings. A green result does NOT mean the unverified families match canon.
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.2686215Z Post job cleanup.
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3528642Z [command]/usr/bin/git version
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3566163Z git version 2.54.0
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3601196Z Temporarily overriding HOME='/home/runner/work/_temp/492cbc0d-7353-4149-8b6c-9ae2dec8756c' before making global git config changes
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3602958Z Adding repository directory to the temporary git global config as a safe directory
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3607231Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/aidoc-flow-framework/aidoc-flow-framework
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3641264Z Removing SSH command configuration
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3646670Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3681549Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3918047Z Removing HTTP extra header
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3923412Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.3959360Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4191878Z Removing includeIf entries pointing to credentials config files
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4198276Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4225800Z includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4226975Z includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git/worktrees/*.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4228137Z includeif.gitdir:/github/workspace/.git.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4228868Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4235750Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4259290Z /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4269130Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git.path /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4304290Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git/worktrees/*.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4327185Z /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4335931Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/aidoc-flow-framework/aidoc-flow-framework/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4367646Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4390606Z /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4397187Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4429335Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4451435Z /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4459641Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4492740Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4724501Z Removing credentials config '/home/runner/work/_temp/git-credentials-8d84a334-5df2-4afd-a23a-24d0ad8199ff.config'
+drift / check-standards-drift	UNKNOWN STEP	2026-07-27T10:23:42.4870190Z Cleaning up orphan processes

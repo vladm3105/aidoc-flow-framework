@@ -1,0 +1,20 @@
+[
+  {
+    "number": 411,
+    "title": "Some unrelated open issue",
+    "state": "OPEN",
+    "body": "Not the tracking issue. Present so the exact-title compare has something to reject."
+  },
+  {
+    "number": 412,
+    "title": "CI canon drift — stale @ci/v* pins",
+    "state": "OPEN",
+    "body": "## Stale `@ci/v*` pins\n\n`standards-drift` found **10** caller file(s) pinned below canon\n**`ci/v2.15.0`**.\n\n| Caller | Pinned |\n| --- | --- |\n| `ai-review.yml` | `ci/v2.14.0` |\n\n**Remedy** — re-pin only.\n\nSource run: https://github.com/vladm3105/aidoc-flow-framework/actions/runs/30257877863\n\nlast verified 2026-07-27T10:30:00Z\n\n```pin-currency-state\nverdict=stale\nstale_count=10\ncanon=ci/v2.15.0\nstale_files=ai-review.yml@ci/v2.14.0,audit-trail.yml@ci/v2.14.0,auto-merge-ai-prs.yml@ci/v2.14.0,composition.yml@ci/v2.14.0,docs-sync.yml@ci/v2.14.0,labeler.yml@ci/v2.14.0,links.yml@ci/v2.14.0,pre-commit.yml@ci/v2.14.0,secret-scan.yml@ci/v2.14.0,standards-drift.yml@ci/v2.14.0\n```\n"
+  },
+  {
+    "number": 380,
+    "title": "CI canon drift — stale @ci/v* pins (old, hand-filed)",
+    "state": "CLOSED",
+    "body": "A near-miss title. The lookup is an EXACT compare, so this must not match."
+  }
+]

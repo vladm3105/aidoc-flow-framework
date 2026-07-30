@@ -12,6 +12,45 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — the pin-currency verdict finally has a reader (2026-07-30)
+
+**No version moves** — local CI surface only. PR 2 of the four-PR sequence in
+[`plans/PIN-CURRENCY-READER-PLAN.md`](plans/PIN-CURRENCY-READER-PLAN.md).
+
+- `.github/workflows/pin-currency-reader.yml` reads a completed `standards-drift`
+  run and reconciles **one** auto-maintained tracking issue from its verdict —
+  created on `stale`, edited in place, **reopened** rather than duplicated, closed
+  when clean. No second detector is added: the weekly run already detects stale
+  `@ci/v*` pins correctly and names the `--repin` remedy; nothing read it.
+- **The run log is the only surface carrying the signal**, which is why this parses
+  a log rather than calling an API. Canon's reusable declares `inputs:` and no
+  `outputs:`; the drift script writes nothing to `$GITHUB_STEP_SUMMARY`; and the
+  check-run annotations API truncates — on the measured run it returned 10 of the
+  job's 22 warnings and **none** of the ten pin-currency lines, which are emitted at
+  the script's tail.
+- `scripts/read-pin-currency-log.sh` — log in, `verdict` / `stale_count` / `canon` /
+  `stale_files` / `drift_summary` out. Four verdicts (`stale`, `clean`, `unresolved`,
+  `skipped`); a truncated log or a **malformed canon token** exits non-zero. That
+  token check is load-bearing: if canon's `VERSION` fetch returns an error page
+  rather than failing, its `ver_cmp` falls through to equal and prints
+  `all pins current ✅`, and honouring that false clean would **close** the tracking
+  issue on a transient.
+- `scripts/reconcile-pin-currency-issue.sh` — takes canon's own `GH="${GH:-gh}"`
+  injection point, so `--dry-run` is driven by a stub rather than a live
+  authenticated read. Creating the issue is its own notification; beyond that it
+  comments on exactly three transitions (closed → stale on reopen, a changed stale
+  set while open, stale → clean on close), and an unchanged re-run edits silently.
+  `unresolved` / `skipped` touch no open/closed state and stamp a `last verified`
+  line into an existing issue, preserving the machine-readable block verbatim; with
+  no issue open there is nothing to stamp and the run is a no-op.
+- Both halves are extracted from the workflow **because** `workflow_run` and
+  `workflow_dispatch` each require the file on the default branch, so nothing
+  end-to-end can run on the PR that introduces it. 17 unit tests over five
+  checked-in fixtures cover what ships; end-to-end verification follows the merge.
+- `tests/conformance/test_repo_scripts.py` registers those tests into the
+  conformance suite. `tests/unit/` is run by no hook and no workflow, so without
+  this the new tests would guard nothing after merge (253 → 271 tests).
+
 ### Fixed — the governance-PR plan glob matched no real plan (2026-07-30)
 
 **No version moves** — `CLAUDE.md` only.
