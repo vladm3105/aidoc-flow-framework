@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the pin-currency close comment rendered literal backslashes (2026-07-30)
+
+**No version moves** — `scripts/reconcile-pin-currency-issue.sh` only.
+
+- The `stale → clean` close comment was built by `printf` inside a **single-quoted**
+  string with `\`` before each backtick. There, a backslash is not an escape — it is a
+  literal backslash, so the comment published as ``All \`@ci/v*\` pins are current``.
+  Measured on the real close comment of [#393](https://github.com/vladm3105/aidoc-flow-framework/issues/393)
+  during the post-merge V10–V14 verification of #392, not inferred. The reopen and
+  changed-set comments were already correct, which is why only one of the three paths
+  showed it.
+- The regression guard sweeps **all five** markdown-emitting paths (create, silent
+  edit, reopen, close, changed-set) rather than the one that broke, since each builds
+  its markdown separately. Sweeping only four left the changed-set comment — the most
+  frequent of them — a mutation survivor.
+  Mutation-verified: reintroducing the escape fails the test.
+
 ### Added — the pin-currency verdict finally has a reader (2026-07-30)
 
 **No version moves** — local CI surface only. PR 2 of the four-PR sequence in

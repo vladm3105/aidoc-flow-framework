@@ -275,7 +275,10 @@ if [ "$verdict" = clean ]; then
   render_resolved_body >"$body_file"
   gh_write issue edit "$issue_number" --repo "$REPO" --body-file "$body_file" \
     || warn "could not update body of #${issue_number} before closing"
-  printf 'All \`@ci/v*\` pins are current as of \`%s\` (canon \`%s\`). Closing.\n\nSource run: %s\n' \
+  # Bare backticks: this is a single-quoted string, so a backslash before one is
+  # NOT an escape — it is a literal backslash, and it renders as `\` in the
+  # comment. Measured on issue #393's real close comment.
+  printf 'All `@ci/v*` pins are current as of `%s` (canon `%s`). Closing.\n\nSource run: %s\n' \
     "$NOW" "$canon" "${RUN_URL:-(not recorded)}" >"$comment_file"
   gh_write issue comment "$issue_number" --repo "$REPO" --body-file "$comment_file" \
     || warn "could not comment on #${issue_number}"
