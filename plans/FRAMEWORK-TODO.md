@@ -24,33 +24,6 @@
 
 ## Open
 
-### `[docs]` `HANDOFF-OVER-SIZE` — the handoff is ~425 lines against a ~200-line target, and the overflow is durable content in the wrong file
-
-- *Context:* noted 2026-07-30 while regenerating for #397. Target is well under ~200
-  lines. The bulk is **`## Durable traps` (~250 lines)** — content the rule says to keep,
-  but keep *small*, and which the file's own header already routes elsewhere: "a trap
-  already recorded in `CLAUDE.md` is not repeated here."
-- *Fix shape:* graduate settled traps to `CLAUDE.md` in tag-sized batches (the
-  acceptance-harness and local-hooks blocks are the largest self-contained ones), and
-  prune `## Stale advice` rows whose sources no longer exist. Its own change — it would
-  breach another PR's 3-surface cap. Re-measure with `wc -l`; do not trust a number
-  written here.
-
-### `[docs]` `DOC-MAINTAINER-ADOPTION-CLAIM-STALE` — `CLAUDE.md` still says sixteen call sites across fifteen files
-
-- *Context:* found 2026-07-30. `CLAUDE.md` says "**sixteen** `aidoc-flow-ci` call
-  sites across fifteen files"; the real count has been **17 across 16** since #382
-  added `doc-maintainer.yml`. The `plans/HANDOFF.md` half of this entry (the
-  "still unadopted" and "secrets absent" claims) was corrected in #396 — `gh secret
-  list` shows `LITELLM_BASE_URL` and `LITELLM_DOC_API_KEY` both present here; only
-  `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are missing, and those are live-mode
-  only.
-- *Fix shape:* fold the count fix into the pin-currency plan's PR 4, which already
-  edits `CLAUDE.md`, rather than spending a governance PR on one number. Re-count before
-  editing — do not copy the number from here. Sites, then files:
-  `grep -rho 'aidoc-flow-ci/\.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ | wc -l`
-  and `grep -rl 'aidoc-flow-ci/\.github/workflows/.*@ci/v' .github/workflows/ | wc -l`.
-
 ### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
 - *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
@@ -1188,6 +1161,45 @@ check that was already running and already right.
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[docs]` `HANDOFF-OVER-SIZE` — ✅ CLOSED (2026-07-30, PR #399) — the handoff was 424 lines against a ~200-line target, and the overflow was durable content in the wrong file
+
+- *Context:* noted 2026-07-30 while regenerating for #397. The bulk was
+  **`## Durable traps` (~250 lines)** — content the rule says to keep, but keep
+  *small*, and which the file's own header already routed elsewhere: "a trap already
+  recorded in `CLAUDE.md` is not repeated here."
+- *Resolution:* the whole traps section graduated to `CLAUDE.md` § "Durable traps —
+  do not re-derive these" (six sub-sections, deduplicated against what `CLAUDE.md`
+  already owned), and the one `## Stale advice` row whose only remaining source was
+  the handoff itself (`SKIP=gitleaks`) was deleted. Measured, not estimated:
+  `plans/HANDOFF.md` **424 → 182** lines, `CLAUDE.md` **697 → 948**. Done in one pass
+  rather than the tag-sized batches this entry proposed — batching would have left the
+  two files duplicating each other between merges, which is the drift the split exists
+  to prevent.
+- *Two corrections found while moving the content, both carried into `CLAUDE.md`:*
+  the handoff's absence-probe section claimed `CLAUDE.md` "records that
+  `gh api …/contents/<missing> --jq '.name'` must not be truth-tested" — it did not,
+  and the handoff's own two statements of that trap contradicted each other on
+  whether the failure text is the bare string `null` (it is the full 404 JSON); they
+  are now one correct bullet. The manifest-case-sensitivity trap was already in
+  `CLAUDE.md` § "Unified CI" and was dropped rather than duplicated; `report-only` was
+  kept as a short bullet carrying the transferable rule ("a report-only flag is never
+  evidence that a new caller cannot fail"), cross-referencing the concrete `sast-scan`
+  instance rather than restating it.
+- *Deliberately not graduated:* the check-run annotation-cap trap stays in the
+  handoff, because `PIN-CURRENCY-READER-PLAN.md` PR 4 is chartered to propagate it.
+
+### `[docs]` `DOC-MAINTAINER-ADOPTION-CLAIM-STALE` — ✅ CLOSED (2026-07-30, PR #399) — `CLAUDE.md` said sixteen call sites across fifteen files
+
+- *Context:* found 2026-07-30. The real count has been **17 across 16** since #382
+  added `doc-maintainer.yml`. The `plans/HANDOFF.md` half of this entry (the "still
+  unadopted" and "secrets absent" claims) was corrected in #396.
+- *Resolution:* fixed in the same PR as `HANDOFF-OVER-SIZE`, which was already
+  editing `CLAUDE.md` — this entry's own fix shape asked for exactly that, and named
+  the pin-currency plan's PR 4 only because that was the next `CLAUDE.md` PR then in
+  prospect. Re-counted with the two commands this entry prescribed (17 sites, 16
+  files); both commands are now inline in `CLAUDE.md` beside the figure, so the next
+  session re-derives instead of copying.
 
 ### `[ci]` `DOC-MAINTAINER-RED-ON-EVERY-PUSH` — ✅ CLOSED (2026-07-30, PR #397) — the adopted dry-run caller was red on nearly every push, unwatched
 
