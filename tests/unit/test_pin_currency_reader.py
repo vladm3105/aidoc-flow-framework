@@ -199,8 +199,8 @@ class ParseLogTests(unittest.TestCase):
 
 
 class ReconcileIssueTests(unittest.TestCase):
-    """Nine cases: six reconciliation scenarios, the label fallback, and two that
-    assert generated body CONTENT rather than the call sequence."""
+    """Ten cases: six reconciliation scenarios, the label fallback, and three
+    that assert generated body CONTENT rather than the call sequence."""
 
     @classmethod
     def setUpClass(cls):
@@ -378,6 +378,43 @@ class ReconcileIssueTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("issue close 412", result.stdout)
         self.assertIn("issue comment 412", result.stdout)
+
+    def test_no_generated_markdown_contains_an_escaped_backtick(self):
+        r"""These strings are built by `printf` inside SINGLE quotes, where a
+        backslash before a backtick is a literal backslash rather than an
+        escape — so it renders as `\` to a human reading the issue. Caught on
+        issue #393's real close comment during post-merge verification; every
+        comment and body path is swept here so it cannot come back in one of
+        the branches the others do not exercise."""
+        clean_kv = (
+            "verdict=clean\nstale_count=0\ncanon=ci/v2.15.0\nstale_files=\n"
+            "drift_summary=0 drift, 0 fetch/scope error(s), 0 pin error(s)\n"
+        )
+        closed = self.open_issue_fixture()
+        for issue in closed:
+            if issue["title"] == TITLE:
+                issue["state"] = "CLOSED"
+        for label, kv, issues in (
+            ("close", clean_kv, self.open_issue_fixture()),
+            ("create", self.stale_kv(), []),
+            ("silent-edit", self.stale_kv(), self.open_issue_fixture()),
+            ("reopen", self.stale_kv(), closed),
+            # The changed-set comment is a SEPARATE printf from the reopen one,
+            # and it is the most frequent commenting path — it fires on every
+            # canon release that shifts the set. Sweeping the other four leaves
+            # it a mutation survivor.
+            (
+                "changed-set",
+                self.stale_kv(count=11, files=STALE_SET + ",codeql.yml@ci/v2.14.0"),
+                self.open_issue_fixture(),
+            ),
+        ):
+            with self.subTest(path=label):
+                self.bodies.write_text("")
+                result, _ = self.reconcile(kv, issues, dry_run=False)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                written = "".join(self.written_bodies())
+                self.assertNotIn("\\`", written, f"{label} path emits an escaped backtick")
 
     def test_silent_verdicts_stamp_without_touching_state(self):
         """`skipped` and `unresolved` must not open, close or reopen anything —
