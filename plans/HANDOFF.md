@@ -35,17 +35,39 @@ semantics, the runner split incl. why `sast-scan` is the `ubuntu-latest` excepti
 ## Where we are — 2026-07-30
 
 Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0`. `main` clean.
-**Open issues: 2** — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
-(next-task 4 below) and [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386)
-(the `sync-version-refs.sh` framework-token gate, under *Local hooks and tooling*), both
-filed 2026-07-30. **Open PRs: 0** once the PR carrying this file lands.
+**Open PRs: 0. Open issues: 2** —
+[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) (next-task 4) and
+[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) (next-task 5), both
+filed 2026-07-30.
 
-**Last merge: PR [#383](https://github.com/vladm3105/aidoc-flow-framework/pull/383)
-(`845ea13f`) — the PIN-CURRENCY-NO-READER *plan*, and nothing else.** No
-implementation shipped. `plans/PIN-CURRENCY-READER-PLAN.md` is `READY` and is PR 1 of a
-four-PR sequence it defines itself; **PR 2 (implementation) is the next task.** The
-`PIN-CURRENCY-NO-READER` entry in `FRAMEWORK-TODO.md` is still **open** by design — the
-plan's PR 3 closes it, gated on post-merge verification.
+**Last merges: #387 → #390, one governance correction split four ways.**
+[#387](https://github.com/vladm3105/aidoc-flow-framework/pull/387) (`88cd62e4`) fixed the
+governance-PR **plan glob**, which was written as a prefix (`plans/PLAN-*.md`) against a
+repo where every plan is `<NAME>-PLAN.md` — it matched `PLAN-TEMPLATE.md` and no real
+plan, in *both* copies inside `CLAUDE.md`, so the auto-merge exception that inherits that
+list by reference covered nothing. The other three carried what would not fit:
+[#390](https://github.com/vladm3105/aidoc-flow-framework/pull/390) the same glob in
+`.github/PULL_REQUEST_TEMPLATE.md` (a third copy),
+[#389](https://github.com/vladm3105/aidoc-flow-framework/pull/389) the
+`sync-version-refs.sh` fix behind the stale version token, and
+[#388](https://github.com/vladm3105/aidoc-flow-framework/pull/388) the TODO entries for
+the two issues below.
+
+**Read that split as a rule, not as history** — it is the cheapest thing to get wrong
+next time. A **governance** PR is capped at 3 doc surfaces (Rule 1), and CI's
+`call / ai-review` independently demands a `CHANGELOG.md` `[Unreleased]` entry for any
+substantive change — **including a docs-only `CLAUDE.md` edit**, not just code. The two
+collide after the PR is open: satisfying the reviewer takes a 3-surface PR to 4. So
+budget a governance PR as **2 real surfaces + `CHANGELOG.md`**, and split code out on the
+first commit. Rule 1 names splitting the default and a founder-OK carve-out the
+exception; do not self-grant the carve-out to keep a bundle intact. `FRAMEWORK-TODO.md`,
+this file, and the PR template are **not** governance surfaces — they have no cap and
+auto-merge on green, so they are where overflow goes.
+
+**`PIN-CURRENCY-NO-READER` is still the next implementation task.**
+`plans/PIN-CURRENCY-READER-PLAN.md` is `READY` and is PR 1 of a four-PR sequence it
+defines itself; **PR 2 is next.** Its `FRAMEWORK-TODO.md` entry stays **open** by design —
+the plan's PR 3 closes it, gated on post-merge verification.
 
 **The canon CI migration is complete on both dimensions.** Pins:
 CI-CANON-V2.16-001 (PRs #374/#375, **D-0070**) took all call sites to `@ci/v2.16.0`.
@@ -93,7 +115,8 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
      unconfirmed` line in this file for whoever observes it to clear.
    - **All four PRs are governance PRs and none is auto-mergeable** — the auto-merge
      exception list is defined by reference to the governance-PR list, which includes
-     plan files and `DECISIONS.md`. PR 1 was merged by the founder for this reason.
+     plan files and `DECISIONS.md`. PR 1 was merged by the founder for this reason. As of
+     #387 that reference actually resolves: the glob it inherits used to match no plan.
 
    Five upstream defects go to `aidoc-flow-ci` as one issue (plan Task 3). Worth filing
    early: if canon adds a `$GITHUB_STEP_SUMMARY` write plus a reusable `output`, the
@@ -101,10 +124,12 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
 3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** Re-counted
    2026-07-30; **both** figures previously in this file were wrong, and the queue is
    unreliable in *two* directions:
-   - **7** entries marked `✅ CLOSED` sit under `## Open` (lines 27, 218, 230, 322, 337,
-     353, 482), so the queue **overstates** what is open. The 7th,
-     `CODEQL-FLOATING-ACTION-PIN`, was closed by PR #378 — which this very file
-     documents, so the count went stale inside the range it was wrapping.
+   - **7** entries marked `✅ CLOSED` sit under `## Open` (lines 55, 246, 258, 350, 365,
+     381, 510 as of `88cd62e4`), so the queue **overstates** what is open — `## Open`
+     holds 52 entries and 7 of them are done. **Re-run the awk below rather than trusting
+     those line numbers**: they moved +28 when #388 inserted two entries at the top of the
+     section, which is the second time this figure has gone stale inside the range that
+     documents it. Cite counts, not line numbers, when the file is append-at-top.
    - The `## Closed` section holds **32** entries of which only **10** carry a marker.
      Several of the 22 unmarked ones read as live backlog — `[gate] Component-decomposition
      gate missing between PRD and ADR`, `[harness] Cascade harness lacks
@@ -135,10 +160,21 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    docstring (`:92`) forbids narrowing coverage by glob, which is what happened. Fix is
    `rglob` both + point the script at `rehash --compute`; the issue carries the census
    command. **A green run of this guard is not evidence that no surface hashes.**
-5. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
+5. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
+   framework-spec token gates five files on `CLAUDE.md`'s own state.**
+   `sync-version-refs.sh:218` reads `fw_prev` from `CLAUDE.md` **and** uses it to gate
+   propagation to `README.md`, `docs/PARITY.md`, both platform READMEs and a
+   conformance-test literal — so correcting `CLAUDE.md` first strands all five, silently,
+   at exit 0. #389 fixed the plugin and Hermes tokens by detecting each from `CLAUDE.md`
+   and writing only `CLAUDE.md`; this one cannot take that shape unchanged, because its
+   `prev` is load-bearing elsewhere. Fix shape: derive the gating `prev` from a fanout
+   target nobody hand-edits (`docs/PARITY.md`), and give `CLAUDE.md` its own block. The
+   SKILL frontmatter, playbooks and `platforms/*/FRAMEWORK_SPEC_VERSION` are **not** in
+   the blast radius — each has its own detector, measured.
+6. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
-6. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
+7. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
    `[template]`, `[harness]`, `[example-corpus]`, `[docs]`, `[skill]`, `[sync]`),
    including the D54 and Engramory consumer-feedback batches. Nothing there is
    blocking.
