@@ -24,6 +24,34 @@
 
 ## Open
 
+### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
+
+- *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
+  surface computes SHA-256 in-prompt (PR #387). `test_no_inprompt_hashing.py:99`
+  globs `doc-*/SKILL.md` and `:103` is non-recursive, so all of
+  `references/batch-brd-processing/` is unscanned —
+  `batch-remediation-script.md:24` still mints element IDs with its own
+  `hashlib.sha256` routine, diverging from the normative transform on four
+  points. The guard's own docstring (`:92`) forbids narrowing coverage by glob.
+  The 11 unscanned plugin SKILLs are clean today; that half is latent.
+- *Fix shape:* `rglob` both, keep the by-name `_SESSION_RECORD` exemption as the
+  only exclusion, point the script at `rehash --compute`, and assert the surface
+  count so a future narrowing fails loudly. Issue carries the census command.
+
+### `[sync]` `SYNC-FW-TOKEN-SELF-GATED` — the framework-spec fanout is gated on `CLAUDE.md`'s own token → [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386)
+
+- *Context:* surfaced 2026-07-30 in PR #387, which made the plugin and Hermes
+  `CLAUDE.md` tokens self-detecting and deliberately left this one alone.
+  `sync-version-refs.sh:218` reads `fw_prev` from `CLAUDE.md` **and** uses it to
+  gate propagation to `README.md`, `docs/PARITY.md`, both platform READMEs and
+  the conformance-test literal — so correcting `CLAUDE.md` first strands five
+  files, silently, exit 0. `plans/HANDOFF.md` already carries the workaround as
+  folklore. SKILL frontmatter, playbooks and `platforms/*/FRAMEWORK_SPEC_VERSION`
+  are **not** in the blast radius; each has its own detector.
+- *Fix shape:* split detection from propagation — give `CLAUDE.md` its own
+  self-detecting block, and derive the gating `fw_prev` from a fanout target the
+  author is not hand-editing (`docs/PARITY.md` or the plugin README).
+
 ### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — ✅ CLOSED (2026-07-29, CANON-PARITY-001 / PR #378) — `codeql.yml` resolved `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
 
 **Closed by adoption, not by the fix shape below.** `codeql.yml` became a canon
