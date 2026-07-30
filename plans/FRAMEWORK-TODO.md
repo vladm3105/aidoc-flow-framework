@@ -24,6 +24,42 @@
 
 ## Open
 
+### `[ci]` `DOC-MAINTAINER-RED-ON-EVERY-PUSH` — the adopted dry-run caller has failed every `push` run since it landed, unwatched
+
+- *Context:* found 2026-07-30 while confirming the `ci/v2.16.0` migration was
+  complete (it is — 17/17 call sites). `doc-maintainer.yml` was adopted in #382
+  on 2026-07-29; since then **20 failures / 41 runs**. `schedule` runs succeed
+  because they find nothing to do; **every `push` run fails**. Two distinct
+  causes, measured across five failing runs:
+  `planner: duplicate or non-allowlisted plan path: <X>` (4 of 5) and
+  `apply: refusing autonomous full-file generation over 200 KB: CHANGELOG.md`
+  (which is 276 KB and only grows).
+- *Fix shape:* **ours** — `.github/doc-maintainer.json` lists five paths in
+  `auto_merge.high_risk_paths` that are absent from `allowed_paths`
+  (`CLAUDE.md`, `plans/DECISIONS.md`, `plans/FRAMEWORK-TODO.md`,
+  `plans/HERMES-BACKLOG.md`, `framework/governance/DECISIONS.md`), so the
+  planner proposes them and the gate rejects them. Decide whether each should
+  be maintainable at all, then align the two lists.
+  **Canon's** — the error message conflates *duplicate* with *non-allowlisted*
+  (`plans/HANDOFF.md` **is** allowlisted, so its failures are the duplicate
+  branch), and the 200 KB refusal fires on an allowlisted **low-risk** path with
+  no chunking path. Both belong on `aidoc-flow-ci`; **not yet filed.**
+- *Note:* this is the same unread-surface class `PIN-CURRENCY-NO-READER` closed,
+  one level worse — that one was warning-only, this one is red.
+
+### `[docs]` `DOC-MAINTAINER-ADOPTION-CLAIM-STALE` — two docs still say the caller is unadopted and its secrets absent
+
+- *Context:* found 2026-07-30. `CLAUDE.md` says "**sixteen** `aidoc-flow-ci` call
+  sites across fifteen files"; the real count has been **17 across 16** since #382
+  added `doc-maintainer.yml`. `plans/HANDOFF.md` called it "the one canon surface
+  still unadopted" and claimed `LITELLM_DOC_API_KEY` / `LITELLM_BASE_URL` exist on
+  `aidoc-flow-operations` "but not here" — `gh secret list` shows **both present
+  on this repo**. Only `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are missing, and
+  those are live-mode only.
+- *Fix shape:* HANDOFF corrected in the same change as this entry. **`CLAUDE.md`
+  is not** — fold the count fix into the plan's PR 4, which already edits
+  `CLAUDE.md`, rather than spending a governance PR on one number.
+
 ### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
 - *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
