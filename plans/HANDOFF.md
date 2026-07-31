@@ -35,15 +35,28 @@ stream moved today**. **Open PRs: 0. Open issues: 2** —
 [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) and
 [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386), both unchanged.
 
-**Last merge: [#402](https://github.com/vladm3105/aidoc-flow-framework/pull/402) — PR 4
-of `PIN-CURRENCY-NO-READER`, the last of four. `PIN-CURRENCY-NO-READER` is now closed
-end to end.** It graduated the annotation-cap trap and the concurrency inventory's
-**fourth** shape (`cancel-in-progress: false` under a fixed group = serialization) into
-`CLAUDE.md`, and moved the plan's Status to `IMPLEMENTED`. Three things it leaves
-behind, all below: the two watch items (V15, and ci#351) and one queue entry that no
-queue yet holds (next tasks item 3). *(This file is written
-inside the PR it describes, so it carries the PR number and no squash SHA — that SHA
-does not exist until merge. `git log -1 -- plans/HANDOFF.md` gives it.)*
+**Last merge: [#403](https://github.com/vladm3105/aidoc-flow-framework/pull/403), squash
+`b44279a1` — the `FRAMEWORK-TODO.md` status-hygiene sweep.** The queue is now
+trustworthy in both directions and states its own convention. *(This refresh ships as
+its own follow-up PR, so `git log` shows one commit after `b44279a1` touching only this
+file. That is expected, not a missed merge.)*
+
+**`plans/FRAMEWORK-TODO.md` is a reliable input again — Open 52 → 30, Closed 37 → 60,
+90 entries throughout.** Three defects, not the two the last handoff named: 7 `✅ CLOSED`
+entries sat under `## Open`; 22 entries under `## Closed` carried no heading marker at
+all; and **22 more declared their state only in a body `*Status:*` line** — the form
+nobody had named. That third form does not pattern-match (`SHIPPED`, `CORE SHIPPED`,
+`CORE SUBSUMED`, `DOC LEG ✅ SHIPPED, enforcement leg deferred`, `Closed by …`), and the
+deferral that keeps an entry open is often a trailing clause on an otherwise
+finished-looking line. Each was read in full: 16 closed, **6 carry live legs** and now
+say so in the heading under a new `⏳ OPEN ON RESIDUAL (…)` marker. The file's
+`> **Rules:**` block states the whole contract — read it before touching the queue;
+do not re-derive it from here.
+
+Also landed there: 18 `PR #TBD, merge SHA TBD` placeholders resolved (`CLEANUP-PR-A`…`-F`
+= PRs #129/#131/#130/#133/#132/#135, non-sequential), and the new `[ci]`
+`PIN-CURRENCY-READER-HAS-NO-READER` entry that the last session flagged as held by no
+queue.
 
 **`doc-maintainer` is PAUSED, and CI is green again.**
 [#397](https://github.com/vladm3105/aidoc-flow-framework/pull/397) set
@@ -92,31 +105,7 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    `gh secret list` shows `LITELLM_BASE_URL` **and** `LITELLM_DOC_API_KEY` present here;
    only `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are absent, and those are **live-mode
    only**. Verify with `gh secret list` before repeating any secrets claim.
-3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
-   unreliable in *two* directions: entries marked `✅ CLOSED` sit under `## Open` (so it
-   **overstates** what is open), and `## Closed` holds unmarked entries that read as
-   live backlog — `[gate] Component-decomposition gate missing between PRD and ADR`,
-   `[harness] Cascade harness lacks --skip-lint-smoke flag`, `[template] IPLAN
-   sub-types: code-build vs deploy` — so it also **hides** open work, which is worse.
-   Scope the sweep to both, and pick one convention stated at the top of the file.
-
-   **Re-run these rather than trusting any count written down** — this figure has gone
-   stale twice inside the very text documenting it, because the file is append-at-top:
-
-   ```sh
-   awk '/^## Open/{o=1} /^## Closed/{o=0} o&&/✅ CLOSED/{n++} END{print n}' plans/FRAMEWORK-TODO.md
-   awk '/^## Closed/{c=1} c&&/^### /{e++} c&&/✅ CLOSED/{m++} END{print e, m}' plans/FRAMEWORK-TODO.md
-   ```
-
-   **Add one entry while you are in there:** *give the pin-currency reader its own
-   reader*. D-0073 §3 names it a live open risk with a concrete instance —
-   `pin-currency-reader.yml:67` skips the reader when the upstream `standards-drift`
-   run concludes failure, so the pin verdict goes unread exactly when something else
-   has already broken — and the plan deliberately left it out of scope. It is recorded
-   in `DECISIONS.md` only; no queue holds it, which is the failure mode
-   `GOV-TODO-ISSUE-SPLIT` exists to prevent.
-
-4. **[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) — the `#342`
+3. **[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) — the `#342`
    regression guard scans less than it claims.**
    `tests/conformance/platforms/test_no_inprompt_hashing.py:99`/`:103` use
    `glob("doc-*/SKILL.md")` and a non-recursive `glob("*.md")`, so **41 of 52** plugin
@@ -128,7 +117,7 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    docstring (`:92`) forbids narrowing coverage by glob, which is what happened. Fix is
    `rglob` both + point the script at `rehash --compute`; the issue carries the census
    command. **A green run of this guard is not evidence that no surface hashes.**
-5. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
+4. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
    framework-spec token gates five files on `CLAUDE.md`'s own state.** The mechanism
    and the hand-edit hazard are in `CLAUDE.md` § "Durable traps → Local hooks and
    tooling"; do not restate them here. Outstanding here is only the **fix shape**:
@@ -136,13 +125,14 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    writing only `CLAUDE.md`, but this one cannot take that shape unchanged, because
    its `prev` is load-bearing elsewhere. Derive the gating `prev` from a fanout target
    nobody hand-edits (`docs/PARITY.md`), and give `CLAUDE.md` its own block.
-6. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
+5. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
-7. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
+6. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
    `[template]`, `[harness]`, `[example-corpus]`, `[docs]`, `[skill]`, `[sync]`),
-   including the D54 and Engramory consumer-feedback batches. Nothing there is
-   blocking.
+   including the D54 and Engramory consumer-feedback batches. **30 open entries, and
+   the section now means what it says** (#403) — an entry under `## Open` with no
+   `⏳ OPEN ON RESIDUAL` marker is genuinely open work. Nothing there is blocking.
 
 **Standing:** the example corpus is regenerated wholesale after framework changes, so
 corpus-remediation findings are deferred to that regen rather than fixed in place.
