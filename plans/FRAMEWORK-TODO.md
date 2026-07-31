@@ -24,6 +24,24 @@
 
 ## Open
 
+### `[docs]` `D-0071-JQ-NULL-CLAIM-CONTRADICTED` — a permanent decision entry states a failure mode `CLAUDE.md` re-measured and reversed
+
+- *Context:* found 2026-07-31 during PR 3 review of `PIN-CURRENCY-NO-READER`.
+  `plans/DECISIONS.md:300` (D-0071 §8) says `gh api …/contents/<missing>
+  --jq '.name'` "emits the string `null`". `CLAUDE.md:732-736` says the opposite
+  on a **2026-07-30 re-measurement**: it puts the full 404 JSON on stdout and is
+  *not* the bare string `null` — which matters, because a guard written against
+  the `null` form reads a missing file as **present**. Both are load-bearing
+  statements of the same trap; a reader landing on the decision log first gets
+  the falsified one.
+- *Fix shape:* the decision log is append-only, so **do not edit D-0071**. Add a
+  new dated entry recording the re-measurement and superseding §8's failure-text
+  claim only (the §8 *lesson* — never truth-test a `jq` scalar that can be
+  absent — stands unchanged). Fold into the next `DECISIONS.md` PR rather than
+  spending one on it.
+- *Tracker:* **TODO-only.** Purely local, no consumer affected, and no
+  `file:line` outside this repo.
+
 ### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
 - *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
@@ -103,58 +121,6 @@ reason was that the surface was not a canon caller at all.
   contributor can land it) and (b) (reproducible at `file:line` with a concrete
   fix shape). Fails (c): `codeql.yml` feeds no required context, so it degrades
   the Security tab rather than blocking merges.
-
-### `[ci]` ~~`NO-PIN-CURRENCY-CHECK`~~ → `PIN-CURRENCY-NO-READER` — the check runs and warned correctly; nothing reads warning-only annotations on a weekly scheduled job
-
-**RETRACTED AND RESTATED 2026-07-29 (CANON-PARITY-001).** The original entry
-claimed this repo "runs `check-pin-currency.sh` nowhere." **That was false, and it
-was measured false, not argued false.** It runs on every weekly
-`standards-drift.yml` run: canon's reusable fetches
-`sync/check-standards-drift.sh`, whose tail (`:499-515` at `ci/v2.16.0`)
-invokes `check-pin-currency.sh` in-repo. It fired during the exact window the
-entry described — run
-[30257877863](https://github.com/vladm3105/aidoc-flow-framework/actions/runs/30257877863),
-2026-07-27T10:23:42Z:
-
-```
-pin-currency: auditing ./.github/workflows against canon ci/v2.15.0
-##[warning]pin-currency: ai-review.yml pinned @ci/v2.14.0 (canon ci/v2.15.0) — re-pin
-… ten such lines …
-pin-currency: 10 stale pin(s) — run 'install/install.sh <this-repo> --repin' (warning-only)
-```
-
-It named every stale caller *and* the remedy command, two days before a human
-noticed. So the detection was never absent and the proposed fix — "add a periodic
-job invoking `check-pin-currency.sh`" — would have added a **second** copy of a
-check that was already running and already right.
-
-- *Context (restated):* the real defect is that the signal has **no reader**.
-  `standards-drift.yml` is `schedule:`-only (weekly, Mon 09:00 UTC) plus
-  `workflow_dispatch`; the script is warning-only by design
-  (`check-pin-currency.sh:10`, `WARNING-ONLY, NEVER BLOCKS`) and its output is a
-  `::warning::` annotation inside a scheduled run that notifies nobody and blocks
-  nothing. The same run also reported `8 drift, 4 fetch/scope error(s)` unread.
-- *Fix shape:* give the existing output a destination rather than adding a
-  detector. Cheapest credible option: a small local workflow that runs the
-  script and **opens or updates a single tracking issue** when pins are stale, so
-  the state is visible where work is queued. Rejected alternatives, with reasons
-  — `strict: true` on the weekly run turns the job red permanently (8 drift +
-  4 uncheckable controls are expected here, so it would signal nothing); a
-  pre-commit hook needs a network fetch of canon's `VERSION` at commit time and
-  scrolls past anyway.
-- *Upstream angle:* canon has no adopter-facing template for this, so the
-  broadly-useful version is a feature request on `aidoc-flow-ci` (a reader for
-  warning-only drift/pin output), and the local workflow is the
-  "add a custom workflow" override mode until then.
-- *Tracker:* **TODO-only.** Test (a) is met — the fix shape is mechanical with a
-  copyable precedent (`standards-drift.yml` as a scheduled canon caller). Tests
-  (b) and (c) still fail: no `file:line` in this repo holds the defect, and no
-  consumer is affected. Promote when someone picks it up.
-- *Lesson worth more than the fix:* the original entry was written from the
-  symptom (a mixed-pin state survived two days) and inferred the cause (no check
-  exists) without reading a run log. One `gh run view --log | grep pin-currency`
-  falsified it. **An absence is the easiest defect to assert and the hardest to
-  verify — check the log before filing one.**
 
 ### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
 
@@ -1161,6 +1127,50 @@ check that was already running and already right.
 - *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
+
+### `[ci]` ~~`NO-PIN-CURRENCY-CHECK`~~ → `PIN-CURRENCY-NO-READER` — ✅ CLOSED (2026-07-31, `d3d7f845` PR #392 + `c77ff3f4` PR #394) — the check ran and warned correctly; nothing read a warning-only annotation on a weekly scheduled job
+
+- *Context:* the original entry claimed this repo "runs `check-pin-currency.sh`
+  nowhere." **It was measured false** (2026-07-29, CANON-PARITY-001): canon's
+  `check-standards-drift.sh` tail invokes it on every weekly `standards-drift`
+  run, and it fired on 2026-07-27 — run
+  [30257877863](https://github.com/vladm3105/aidoc-flow-framework/actions/runs/30257877863)
+  — naming all ten stale callers *and* the `--repin` remedy, two days before a
+  human noticed. Restated then as `PIN-CURRENCY-NO-READER`: the defect is that
+  the signal has no reader, since `standards-drift.yml` is `schedule:`-only and
+  the script is `WARNING-ONLY, NEVER BLOCKS` by design
+  (`check-pin-currency.sh:10`).
+- *Resolution:* `.github/workflows/pin-currency-reader.yml` reads a completed
+  `standards-drift` run and reconciles **one** auto-maintained tracking issue
+  from its verdict — created on `stale`, edited in place, reopened rather than
+  duplicated, closed when clean. **No second detector was added**, which the
+  entry's own fix shape would have done: the reader consumes the run that
+  already happened. The parse and reconcile halves live in `scripts/` rather
+  than inline in YAML, because `workflow_run` and `workflow_dispatch` both
+  require the file on the default branch, so nothing end-to-end can run on the
+  PR that introduces it; 18 unit tests over five checked-in fixtures cover what
+  ships, registered into conformance by `tests/conformance/test_repo_scripts.py`.
+  Verified live after merge: issue
+  [#393](https://github.com/vladm3105/aidoc-flow-framework/issues/393) created
+  (V10), edited without duplicating (V11), reopened after a manual close (V12),
+  and a reader run appeared with `event=workflow_run` (V14). V13 was satisfied
+  by the stub; the live close-on-clean was outside the gate by design.
+  Rationale in **D-0073**; plan `plans/PIN-CURRENCY-READER-PLAN.md`.
+- *Upstream half — filed, not merely noted:* no pin audit anywhere has a reader;
+  canon's own fleet audit discards its verdict with `|| true`. Five measured
+  defects went to
+  [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351),
+  including two paths in `check-pin-currency.sh` that report a green that is not
+  one. Open at time of closure.
+- *Tracker:* stayed **TODO-only** under the carve-out
+  `FRAMEWORK_FEEDBACK_LOG.md:90` actually names — *"already covered by an open
+  plan"* — which `PIN-CURRENCY-READER-PLAN.md` was from the moment this entry was
+  picked up. ⚠️ **Not** because it closed on the same merge as its fix: `:104`
+  makes closing together the *normal case* for an issue that meets the bar, not
+  an exemption from filing one. The *upstream* defects met the bar and are the
+  issue above.
+- *Lesson:* graduated to `CLAUDE.md` § "Durable traps → Process" — *an absence is
+  the easiest defect to assert and the hardest to verify.* Not restated here.
 
 ### `[docs]` `HANDOFF-OVER-SIZE` — ✅ CLOSED (2026-07-30, PR #399) — the handoff was 424 lines against a ~200-line target, and the overflow was durable content in the wrong file
 

@@ -28,23 +28,22 @@ semantics, the runner split, and the `#329` concurrency allowlist by *shape*. A 
 recorded there is **never** repeated here; this file carries only what has not settled
 yet, and graduates it once it has.
 
-## Where we are — 2026-07-30
+## Where we are — 2026-07-31
 
 Framework spec `0.40.0`, Claude Code plugin `0.24.0`, Hermes `0.12.0` — **no version
 stream moved today**. **Open PRs: 0. Open issues: 2** —
 [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) and
 [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386), both unchanged.
 
-**Last merge: [#399](https://github.com/vladm3105/aidoc-flow-framework/pull/399)
-(`c8fcd209`) — the durable/volatile split above is live, not aspirational.** The
-`## Durable traps` section moved out of this file into `CLAUDE.md` (424 → 182 here,
-697 → 948 there). Four facts in the moved content were wrong and were corrected rather
-than carried: this file had claimed `CLAUDE.md` owned the `jq`-null trap (it did not,
-and the two statements of it here contradicted each other on the failure text); the
-`**init**.py` corruption count was eight and is **seven**; the `aidoc-flow-ci` call
-sites were "sixteen across fifteen files" and are **seventeen across sixteen**. Both
-counts now carry their re-measure command inline in `CLAUDE.md`. Closed
-`HANDOFF-OVER-SIZE` + `DOC-MAINTAINER-ADOPTION-CLAIM-STALE`.
+**Last merge: [#401](https://github.com/vladm3105/aidoc-flow-framework/pull/401) — PR 3
+of `PIN-CURRENCY-NO-READER`, the close-out.** It recorded **D-0073** (rationale lives
+there; not restated here) and moved the TODO entry to `## Closed` against the merges
+that shipped the work, `d3d7f845` (#392) and `c77ff3f4` (#394). *(This file is written
+inside the PR it describes, so it carries the PR number and no squash SHA — that SHA
+does not exist until merge. `git log -1 -- plans/HANDOFF.md` gives it.)*
+
+**Only PR 4 of that plan remains** — see Next tasks item 1. It is the sole reason the
+`## Unsettled trap` section below still exists.
 
 **`doc-maintainer` is PAUSED, and CI is green again.**
 [#397](https://github.com/vladm3105/aidoc-flow-framework/pull/397) set
@@ -54,49 +53,54 @@ Only one other `push` run had gone green since adoption, and that one passed by
 proposing nothing; this is the first that is green *by design*. The caller, its config
 and its conventions all stay in place; resume is a one-line flip.
 
-It had 23 failures / 47 runs across **four** independent upstream defects — not the two
-previously recorded, and **not** the config mismatch this repo was blamed for (retracted;
-see Next tasks item 2 and **D-0072 §2**). The full census lives in D-0072 and in
-`.github/doc-maintainer-conventions.md`, which is kept current for the resume; do not
-copy it here.
+It had 23 failures / 47 runs across four independent upstream defects; the census lives
+in D-0072 and in `.github/doc-maintainer-conventions.md`, kept current for the resume.
 
 **Resume requires ci#352 AND ci#353** — #353 alone is 15 of the 23, so flipping on #352
 alone returns a majority-red pilot. #352 is the smaller count and still the blocker for
 *graduation*: no plan containing a low-risk edit can complete a dry run, which is the
 path a dry-run pilot exists to validate.
 
-**Pin-currency reader (#392/#394) shipped earlier; V10–V14 all passed, so PR 3 is
-unblocked.** **V15 (schedule→`workflow_run` chain) is still unconfirmed** — it was never
-a gate; V14 proved the chain off a *dispatched* upstream. Whoever sees the first Monday
-`standards-drift` run should check a `pin-currency-reader` run followed it, then delete
-this paragraph.
+**V15 (schedule→`workflow_run` chain) is still unconfirmed** — it was never a gate; V14
+proved the chain off a *dispatched* upstream only. `standards-drift` runs Mondays at
+09:00 UTC, first observable **2026-08-03**. **If today is on or past that date**, read
+the latest `standards-drift` run and check a `pin-currency-reader` run followed it with
+`event=workflow_run`, then delete this paragraph. A failure there is a new bug against
+the merged workflow, not a reopening of the plan.
 
 ## Next tasks — prioritized
 
 The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
 `plans/HERMES-BACKLOG.md`. This is only the ordering a fresh session should use.
 
-1. **`PIN-CURRENCY-NO-READER` — PR 3, then PR 4. Both are governance PRs; the founder
-   merges.** The gate they waited on has passed.
-   - **PR 3** = `plans/DECISIONS.md` (a new `D-00NN`: why the log and not annotations,
-     why the reader fails loudly), `plans/FRAMEWORK-TODO.md` (the `PIN-CURRENCY-NO-READER`
-     entry → `## Closed` with the merge ref), and this file. **That is Rule 1's cap of
-     three.** ⚠️ CI's `call / ai-review` independently demands a `CHANGELOG.md`
-     `[Unreleased]` entry for substantive changes; if it demands one here, that is a
-     **fourth** surface and the fix is to move this file out into its own follow-up,
-     **not** to exceed the cap.
-   - **PR 4** = `CLAUDE.md` + the plan's Status → `IMPLEMENTED`. **Its chartered scope
-     is unchanged** — the plan's §PR-sequencing table names two `CLAUDE.md` edits and
-     both are still outstanding: the annotation-cap trap at the granularity M1
-     supports (held in § "Unsettled trap" below precisely so PR 4 propagates it), and
-     the concurrency inventory's **fourth** shape — `cancel-in-progress: false` under
-     a fixed group, which `pin-currency-reader.yml` introduced. What is **no longer**
-     PR 4's to carry is the "sixteen call sites" count: the previous handoff proposed
-     folding that in here, and HANDOFF-OVER-SIZE landed it instead — `CLAUDE.md`
-     § "Unified CI" now says **seventeen across sixteen** and carries the two
-     re-count commands beside the figure.
+1. **`PIN-CURRENCY-NO-READER` — PR 4, the last of four. Governance PR; the founder
+   merges.** Two surfaces, both still outstanding:
+   - **`CLAUDE.md`** — (a) the annotation-cap trap, stated at the granularity M1
+     actually supports, which is why § "Unsettled trap" below still exists; and (b) the
+     concurrency inventory's **fourth** shape — `cancel-in-progress: false` under a
+     fixed group, which `pin-currency-reader.yml` introduced. Today § "Unified CI"
+     describes three shapes (absent block / `#329` allowlist / bare `true`) and calls
+     it a three-way question; PR 4 makes it four. The rationale is in **D-0073 §7**,
+     including the sentence it must *not* be written as.
+   - **The plan's Status → `IMPLEMENTED`** (it reads `IN PROGRESS`, describing PR 2 as
+     open — stale on both counts).
+   - What is **not** PR 4's to carry: the call-site count (landed by
+     `HANDOFF-OVER-SIZE`; `CLAUDE.md` says **seventeen across sixteen** with its
+     re-count commands beside it) and any D-0073 content beyond the trap — the decision
+     log already holds it.
+   - **Also PR 4's, and easy to miss:** the plan's own `## Docs to update` boxes for
+     PR 3 stay unticked after this merge (ticking them here would have been a fourth
+     surface), and its **V1 row still says 17 tests** where the suite now runs 18 —
+     `#394`'s regression guard. PR 4 is already editing that file, so both cost
+     nothing.
    - The plan's §PR sequencing is the contract; read it rather than this summary.
-2. **`doc-maintainer` — nothing to do here; it is paused and waiting on upstream.**
+2. **Watch [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) —
+   when canon ships its own reader, DELETE ours.** `.github/workflows/pin-currency-reader.yml`
+   plus `scripts/read-pin-currency-log.sh` and `scripts/reconcile-pin-currency-issue.sh`
+   are the "add a custom workflow" override mode, not a permanent local surface (plan
+   R9). Nothing else in a live queue says so — the statement otherwise survives only
+   inside the merged plan, which is why it is here.
+3. **`doc-maintainer` — nothing to do here; it is paused and waiting on upstream.**
    Watch `aidoc-flow-ci` #352 and #353. When **both** ship in a released `ci/vX.Y.Z`:
    re-pin this caller, flip `kill_switch` → `false` in `.github/doc-maintainer.json`,
    and watch the next few `push` runs. Do **not** flip on #352 alone.
@@ -109,7 +113,7 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    `gh secret list` shows `LITELLM_BASE_URL` **and** `LITELLM_DOC_API_KEY` present here;
    only `AIDOC_FLOW_BOT_ID` / `AIDOC_FLOW_BOT_KEY` are absent, and those are **live-mode
    only**. Verify with `gh secret list` before repeating any secrets claim.
-3. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
+4. **`FRAMEWORK-TODO.md` hygiene — bigger than "pick a convention".** The queue is
    unreliable in *two* directions: entries marked `✅ CLOSED` sit under `## Open` (so it
    **overstates** what is open), and `## Closed` holds unmarked entries that read as
    live backlog — `[gate] Component-decomposition gate missing between PRD and ADR`,
@@ -125,7 +129,7 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    awk '/^## Closed/{c=1} c&&/^### /{e++} c&&/✅ CLOSED/{m++} END{print e, m}' plans/FRAMEWORK-TODO.md
    ```
 
-4. **[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) — the `#342`
+5. **[#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) — the `#342`
    regression guard scans less than it claims.**
    `tests/conformance/platforms/test_no_inprompt_hashing.py:99`/`:103` use
    `glob("doc-*/SKILL.md")` and a non-recursive `glob("*.md")`, so **41 of 52** plugin
@@ -137,7 +141,7 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    docstring (`:92`) forbids narrowing coverage by glob, which is what happened. Fix is
    `rglob` both + point the script at `rehash --compute`; the issue carries the census
    command. **A green run of this guard is not evidence that no surface hashes.**
-5. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
+6. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
    framework-spec token gates five files on `CLAUDE.md`'s own state.** The mechanism
    and the hand-edit hazard are in `CLAUDE.md` § "Durable traps → Local hooks and
    tooling"; do not restate them here. Outstanding here is only the **fix shape**:
@@ -145,10 +149,10 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and
    writing only `CLAUDE.md`, but this one cannot take that shape unchanged, because
    its `prev` is load-bearing elsewhere. Derive the gating `prev` from a fanout target
    nobody hand-edits (`docs/PARITY.md`), and give `CLAUDE.md` its own block.
-6. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
+7. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
-7. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
+8. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`,
    `[template]`, `[harness]`, `[example-corpus]`, `[docs]`, `[skill]`, `[sync]`),
    including the D54 and Engramory consumer-feedback batches. Nothing there is
    blocking.
