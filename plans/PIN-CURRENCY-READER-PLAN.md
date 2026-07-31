@@ -4,7 +4,7 @@
 | -------------- | ---------------------------------------------------------------------- |
 | Task           | `PIN-CURRENCY-NO-READER` (`plans/FRAMEWORK-TODO.md`, `[ci]`)            |
 | Type           | feature                                                                |
-| Status         | IN PROGRESS — 2026-07-30. PR 1 merged (plan); **PR 2 open** (scripts, workflow, fixtures, tests, registration shim). PR 3 gated on V10–V14; PR 4 last. Reviewed over 5 passes, zero load-bearing findings outstanding |
+| Status         | IMPLEMENTED — 2026-07-31. #383 (plan), #392 + #394 (scripts, workflow, fixtures, tests, registration shim, and the published-artifact fix) and #401 (D-0073 + TODO closure) are **merged**; PR 4 is this change itself (`CLAUDE.md` trap + fourth concurrency shape + this Status + the handoff), written inside the PR it describes and therefore carrying no merge ref of its own. V1–V14 and V16 pass; **V15 is not a gate** and stays unconfirmed until the first Monday `schedule` run (2026-08-03) — a failure there is a new bug against the merged workflow, not a reopening of this plan |
 | Depends on     | D-0070 (`@ci/v2.16.0` pins), D-0071 (CANON-PARITY-001)                 |
 | Feeds          | an upstream feature request on `aidoc-flow-ci`                          |
 | Version impact | none — no version stream moves (local CI surface only)                  |
@@ -329,7 +329,7 @@ surfaces**, and this work touches five plus the plan. It also requires the plan 
 | 1 | this plan file only; merges **before** implementation starts | 1 | **yes** — a plan file. Rule 2 self-review applies; not auto-mergeable |
 | 2 | the three new source files, five fixtures, the test, the registration shim, `CHANGELOG.md`, and this plan's Status → **`IN PROGRESS`** | 2 | **yes** — it touches the plan file |
 | 3 | `plans/DECISIONS.md` (`D-00NN`), `plans/FRAMEWORK-TODO.md` (→ `## Closed`), `plans/HANDOFF.md`. **Opens only after V10–V14 pass** | 3 | **yes** — `DECISIONS.md` |
-| 4 | `CLAUDE.md` (the annotation-cap trap at the granularity M1 supports, plus the concurrency inventory's **fourth** shape), and this plan's Status → **`IMPLEMENTED`** | 2 | **yes** — `CLAUDE.md`; founder-merge |
+| 4 | `CLAUDE.md` (the annotation-cap trap at the granularity M1 supports, plus the concurrency inventory's **fourth** shape), this plan's Status → **`IMPLEMENTED`**, and `plans/HANDOFF.md` (the trap is deleted from there as it graduates, and the volatile half is regenerated) | 3 | **yes** — `CLAUDE.md`; founder-merge |
 
 **All four are governance PRs and none is auto-mergeable.** An earlier draft named only
 PR 4 as excluded. `CLAUDE.md` defines a governance PR as one touching `DECISIONS.md`,
@@ -343,7 +343,10 @@ move in the same change as the state change, and forbids `IMPLEMENTED` on unveri
 work. PR 2's end-to-end verification (V10–V15) runs only *after* it merges (R1), so PR 2
 can set only `IN PROGRESS`; `IMPLEMENTED` (C37) belongs to PR 4, once V10–V14 have
 actually passed. PR 3 cannot absorb it — it is already at Rule 1's cap of three surfaces.
-PR 2 and PR 4 sit at two each.
+PR 2 sits at two. **PR 4 shipped at three, not the two this table originally projected**
+— the handoff refresh is mandatory at every merge, and the trap PR 4 graduates has to be
+deleted from the handoff in the same change that writes it into `CLAUDE.md`. At the cap,
+not over it.
 
 **PR 3 is gated on verification, and V15 is not part of that gate.** The TODO entry must
 not close on unverified work, so PR 3 opens only after **V10–V14** pass. V15 waits for
@@ -445,7 +448,7 @@ Split by what can run before the merge and what structurally cannot (R1).
 
 | #  | Check (command or observable) | Expected result | Maps to |
 | -- | ----------------------------- | --------------- | ------- |
-| V1 | `python3 -m unittest tests.unit.test_pin_currency_reader -v` | 17 pass: 8 parse cases (4 verdicts + 4 must-fail shapes) and 9 reconcile cases (six scenarios, the label fallback, and two asserting generated body content). Grew from 6 + 7 during PR 2's self-review — see §Review log Pass 6 | Task 1, Task 2 |
+| V1 | `python3 -m unittest tests.unit.test_pin_currency_reader -v` | **18** pass: 8 parse cases (4 verdicts + 4 must-fail shapes) and 10 reconcile cases (six scenarios, the label fallback, two asserting generated body content, and #394's guard that **no** generated markdown contains an escaped backtick, `:382`). Grew from 6 + 7 during PR 2's self-review — see §Review log Pass 6. Re-count with `grep -c 'def test_' tests/unit/test_pin_currency_reader.py` rather than trusting this figure | Task 1, Task 2 |
 | V2 | `python3 -m unittest discover -s tests/conformance` before vs. after the registration shim | the test count **increases** by the new cases, proving the shim reaches `tests/unit/` | R6 |
 | V3 | `bash scripts/read-pin-currency-log.sh tests/unit/fixtures/standards_drift_stale.log` | `verdict=stale`, `stale_count=10`, `canon=ci/v2.15.0` | Task 1 |
 | V4 | `GH=<stub> bash scripts/reconcile-pin-currency-issue.sh --dry-run` across the six scenarios in Task 2 | the expected create / edit / edit+comment / reopen / close / stamp-only sequence; **zero** live API writes, and no `gh` or network needed | Task 2 |
@@ -475,14 +478,16 @@ which is what forces the reopen contract rather than create-on-stale (R5).
 Per §PR sequencing, not in one PR.
 
 - [x] `CHANGELOG.md` — entry *(PR 2)*
-- [ ] `plans/DECISIONS.md` — `D-00NN`: why the log, why not annotations, why the reader
-      fails loudly *(PR 3)*
-- [ ] `plans/FRAMEWORK-TODO.md` — entry → `## Closed` with the merge ref *(PR 3)*
-- [ ] `plans/HANDOFF.md` — regenerate volatile part; add the annotation-cap trap and the
-      version-provenance trap *(PR 3)*
-- [ ] `CLAUDE.md` — the annotation cap, stated at the granularity M1 actually
+- [x] `plans/DECISIONS.md` — **`D-0073`**: why the log, why not annotations, why the
+      reader fails loudly *(PR 3, #401)*
+- [x] `plans/FRAMEWORK-TODO.md` — entry → `## Closed` with the merge ref *(PR 3, #401)*
+- [x] `plans/HANDOFF.md` — regenerate volatile part; add the annotation-cap trap and the
+      version-provenance trap *(PR 3, #401 — the version-provenance trap had already
+      graduated to `CLAUDE.md` in #399, so PR 3 carried only the annotation cap; PR 4
+      graduates that one too and regenerates this file again on the same merge)*
+- [x] `CLAUDE.md` — the annotation cap, stated at the granularity M1 actually
       supports, **and** the concurrency inventory's fourth shape *(PR 4, founder)*
-- [ ] `ROADMAP.md` — not applicable (no milestone moves)
+- [x] `ROADMAP.md` — not applicable (no milestone moves)
 
 ## Risks
 
