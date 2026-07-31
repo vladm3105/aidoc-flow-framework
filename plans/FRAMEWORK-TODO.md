@@ -54,6 +54,116 @@
 
 ## Open
 
+### `[hermes]` `HERMES-MCP-FLOATING-DEP` — `Hermes pytest` is red on an unpinned SDK floor, and a path filter hid it for days
+
+- *Context:* surfaced 2026-07-31 on PR #406, which is the first PR to touch
+  `platforms/hermes/**` since 2026-07-27 — the workflow is path-filtered, so the
+  break sat unobserved. `pyproject.toml` declares `mcp[cli]>=1.0.0` (floor, no
+  ceiling) and `.github/workflows/hermes.yml:40` runs `pip install -e .`, so CI
+  resolves to whatever the SDK published last. A release renamed the `Tool` model's
+  `inputSchema` field to `input_schema`, and collection dies at
+  `src/mcp_server/tool_registry.py:790`:
+  `AttributeError: 'Tool' object has no attribute 'inputSchema'`.
+- *Blast radius is smaller than the raw grep suggests.* 36 hits, but **27 are
+  constructor kwargs** (`inputSchema={`) which the traceback proves still work —
+  `TOOLS` builds, and only the later attribute read fails. The real surface is **9
+  attribute accesses**: `tool_registry.py:790` plus 8 in
+  `tests/unit/test_server.py` (`:38-40`, `:44`, `:90`, `:95`, `:103`, `:107`).
+- *Do not date this to a version without measuring.* Locally-installed `mcp
+  1.22.0` still exposes `inputSchema` and has **no** `input_schema`, so the rename
+  landed **after** 1.22.0 — CI resolved something newer. Check what CI actually
+  installed before naming a version.
+- *Fix shape:* a bare rename to `input_schema` breaks anyone on an older SDK,
+  which the `>=1.0.0` floor explicitly still admits. Pin a floor that matches the
+  attribute the code uses (or add a compat accessor), then update the 9 reads.
+  Worth asking separately whether a path-filtered workflow is right for a package
+  whose dependencies float — the filter is what turned a dependency break into a
+  latent one.
+- *Not blocking:* `Hermes pytest` is **not** a required context (required are
+  conformance, `call / composition`, `call / Lint / format / security hooks`,
+  `call / ai-review`, `call / verify`, `Acceptance tier (deterministic)`).
+  Deferred by founder direction on 2026-07-31; captured here so it does not die
+  with the session.
+- *Tracker:* TODO-only pending founder direction — clears the issue bar
+  (reproducible at `file:line`, concrete fix shape, breaks a consumer's test run)
+  if it is picked up.
+
+### `[skill]` `SDD-CORPUS-UNVERIFIED` — the sdd-orchestrator reference corpus ships runnable Python that nothing parses, executes, or checks
+
+- *Context:* founder call, 2026-07-31, after #385's fix surfaced the fourth
+  defect in this corpus in three remediation passes. A census of the
+  sdd-orchestrator surfaces (excluding the vendored `governance/` mirror) found
+  **45 fenced Python blocks: 3 do not parse, 10 carry unused imports, and 10 call
+  a locally-defined function with too few positional arguments.** Roughly half the
+  blocks carry a defect that a 20-line AST check finds in under a second.
+  `sdd-orchestrator/SKILL.md:1155` points agents at these files for "the complete
+  scripts," so this is live authoring guidance, not archive.
+- *Why the remediation method is the defect, not the count.* #342 corrected 9
+  reference files and declared the property closed; it missed a 10th, left 6
+  files with stale `import hashlib`, and rewrote `hash4()`'s signature at
+  `brd-validation-automation.md:21` without touching its call site at `:31`
+  (3 positional params required, called with 1 — a runtime `TypeError`). #385
+  then fixed the 10th, declared it closed, and missed
+  `sdd-orchestrator/SKILL.md:667` plus 3 more import sites. Three passes, each
+  bounded by whatever the author grepped for, each declared complete, each wrong.
+  A fourth hand-patch would repeat it.
+- *Nothing guards it.* `grep -rl agent-skills tests/ .github/workflows/
+  .pre-commit-config.yaml` returns only markdown-lint, pre-commit formatting, and
+  `test_no_inprompt_hashing.py` — a text-regex guard. **No test executes,
+  imports, or AST-parses a single block.** That is why arity errors and dead
+  imports survive indefinitely.
+- *Fix shape — gate first, then remediate against it.* Build the mechanical check
+  before touching content: extract every fenced block, assert it parses, has no
+  undefined names, no unused imports, call arity matches local defs, and that
+  `compute_element_hash` is called with 4 real arguments (4 of 8 call sites pass
+  `""` as description or the description as title, so the IDs they mint would be
+  rejected by `rehash --check`). The gate enumerates the work mechanically
+  instead of a human guessing at its bounds, and makes "closed" mean something.
+  Then fold in the known instances: `SKILL.md:667`; the `INSTRUCTION` regex gap
+  (`:1183` says "first 4 **chars** of SHA256", which the regex misses — it only
+  matches "**hex** of"); the 4th guard root for `agent-skills/**/SKILL.md`; the 3
+  files / 4 sites of stale `import hashlib`; `hash4()`'s arity.
+- *Founder decision needed first:* these files ship Python that has never run.
+  Make it genuinely executable and tested, demote it to explicitly-marked
+  non-runnable pseudocode, or extract it to real `.py` files under test. Today it
+  is the worst of the three — it reads as authoritative, agents are told to copy
+  it, and about half of it is wrong. The answer changes what the gate asserts, so
+  it precedes the plan.
+- *Also re-point on landing:* `CLAUDE.md`'s current-state line cites #385 for
+  "one unscanned surface still hashes"; that clause should cite this entry once
+  the root gap closes.
+- *Tracker:* plan + issue to open once the design call above is made. Needs a
+  `plans/` plan with the two-cycle gap review — it is a non-trivial change.
+
+### `[sync]` `SYNC-HISTORICAL-REF-CORRUPTION` — the `hermes/v*` fanout has silently rewritten a "shipped in version X" claim on three consecutive bumps → [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405)
+
+- *Context:* surfaced 2026-07-31 during the #385 fix, whose Hermes PATCH bump made
+  the hook rewrite `docs/PARITY.md:65` from `hermes/v0.12.0` to `hermes/v0.12.1`.
+  That line dates **when HERMES-REVIEW-LOOP-001 Phase 1 shipped**, which was
+  `0.11.0` (`08e98968`, `platforms/hermes/CHANGELOG.md` `[0.11.0]`). `git log -L`
+  shows it correct at authoring and rewritten by **every** bump since —
+  `65a8936d` → `v0.11.1`, `a00f804e` → `v0.12.0`, and this one → `v0.12.1`. It has
+  been wrong in published docs since 2026-07-11.
+- *This is the already-documented hazard class, one literal short.*
+  `scripts/sync-version-refs.sh:209` (FRWK-REVIEW-002 F1) warns that
+  `replace_in_file` is a **global** sed that "cannot tell a current-state row from
+  a historical/provenance mention," and `:141` repeats it for the `CLAUDE.md`
+  tokens. Neither covers the `hermes/v<prev>` / `claude-code-plugin/v<prev>`
+  literals swept across `README.md`, `docs/PARITY.md` and
+  `platforms/hermes/README.md` at `:347-355` — which carry no warning and no
+  anchor. `docs/PARITY.md:43` (`claude-code-plugin/v0.21.0`) is a latent second
+  instance, unhit only because the plugin's previous version has never been
+  `0.21.0` since.
+- *Fix shape:* the hazard note's own remedy is to write historical mentions in a
+  form the sed cannot match; PARITY:65 was corrected that way here (`the 0.11.0
+  Hermes cycle`). That fixes the instance, not the class. The class needs either
+  an anchored replace (as the `$ cat VERSION` awk block at `:367` already does)
+  or a guard that fails when a bump would rewrite more occurrences than the
+  known current-state rows. A conformance check that every `X/vN.N.N` literal in
+  those three files is either the current version or provably historical would
+  catch the next one.
+- *Tracker:* filed as [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405).
+
 ### `[ci]` `PIN-CURRENCY-READER-HAS-NO-READER` — the reader is skipped exactly when the upstream run has already broken
 
 - *Context:* filed 2026-07-31 from `plans/DECISIONS.md` D-0073 §3, which names
@@ -98,20 +208,6 @@
   spending one on it.
 - *Tracker:* **TODO-only.** Purely local, no consumer affected, and no
   `file:line` outside this repo.
-
-### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — the `#342` regression guard scans 41 of 52 plugin SKILLs and 36 of 39 Hermes references → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
-
-- *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
-  surface computes SHA-256 in-prompt (PR #387). `test_no_inprompt_hashing.py:99`
-  globs `doc-*/SKILL.md` and `:103` is non-recursive, so all of
-  `references/batch-brd-processing/` is unscanned —
-  `batch-remediation-script.md:24` still mints element IDs with its own
-  `hashlib.sha256` routine, diverging from the normative transform on four
-  points. The guard's own docstring (`:92`) forbids narrowing coverage by glob.
-  The 11 unscanned plugin SKILLs are clean today; that half is latent.
-- *Fix shape:* `rglob` both, keep the by-name `_SESSION_RECORD` exemption as the
-  only exclusion, point the script at `rehash --compute`, and assert the surface
-  count so a future narrowing fails loudly. Issue carries the census command.
 
 ### `[sync]` `SYNC-FW-TOKEN-SELF-GATED` — the framework-spec fanout is gated on `CLAUDE.md`'s own token → [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386)
 
@@ -701,6 +797,33 @@
 - *Status:* OPEN — P3.
 
 ## Closed
+
+### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — ✅ CLOSED (2026-07-31, PR #406) — the guard was green partly because it did not look where a violation survived → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
+
+- *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
+  surface computes SHA-256 in-prompt (PR #387). `test_no_inprompt_hashing.py`
+  globbed `doc-*/SKILL.md` (41 of 52 plugin SKILLs) and a non-recursive
+  `references/*.md` (36 of 39), so all of `references/batch-brd-processing/` was
+  unscanned — and `batch-remediation-script.md:24` still minted element IDs with
+  its own `hashlib.sha256` routine, diverging from the normative transform on
+  four points and hashing a different input tuple, so it computed **different
+  IDs**. The guard's own docstring forbids narrowing coverage by glob.
+- *Resolution:* both roots `rglob` now; the script calls `compute_element_hash()`,
+  matching the sibling corrected by `#342`; a coverage census walks each root
+  independently of the scan's own patterns; and the exempt filenames are pinned as
+  a literal set, since re-applying `_SESSION_RECORD` in the census would have been
+  the same computation twice — broadening it to `\.md$` empties the scan and a
+  census written that way stays green. Six mutations verified: reintroduce the
+  hash, re-narrow either glob, plant a violation in a previously unreachable
+  plugin SKILL, broaden the exemption, delete a whole root. The 11 unscanned
+  plugin SKILLs were confirmed clean, so that half was latent, not live.
+  Hermes `0.12.0` → `0.12.1`.
+- *Scope — closed as filed, not as titled.* #385 named the plugin-SKILL and
+  Hermes-reference halves and both are closed. It did **not** cover
+  `agent-skills/**/SKILL.md`, which no root reaches and where
+  `sdd-orchestrator/SKILL.md:667` still hashes. Left deliberately to
+  `SDD-CORPUS-UNVERIFIED` above rather than hand-patched, on the reasoning that
+  produced that entry.
 
 ### `[ci]` ~~`NO-PIN-CURRENCY-CHECK`~~ → `PIN-CURRENCY-NO-READER` — ✅ CLOSED (2026-07-31, `d3d7f845` PR #392 + `c77ff3f4` PR #394) — the check ran and warned correctly; nothing read a warning-only annotation on a weekly scheduled job
 

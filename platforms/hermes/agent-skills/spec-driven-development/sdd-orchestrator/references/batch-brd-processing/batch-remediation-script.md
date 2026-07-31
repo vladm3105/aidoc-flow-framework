@@ -15,13 +15,14 @@ After reviewing BRD-01 and BRD-02, these patterns appear consistently:
 ## Complete Script
 
 ```python
-import yaml, os, subprocess, hashlib, re
+import yaml, os
 from datetime import datetime
 
+# Single source: governance/ID_NAMING_STANDARDS.md. Never re-derive the hash here.
+from sdd_doc_lint import compute_element_hash
+
 def make_id(doc_id, section_id, label):
-    inp = f"{doc_id}:{section_id}:{label}"[:200].lower()
-    inp = re.sub(r'[^a-z0-9]', '', inp)
-    h = hashlib.sha256(inp.encode()).hexdigest()[:4]
+    h = compute_element_hash(str(doc_id), str(section_id), label, "")[:4]
     try:
         sid = f"{int(section_id):02d}"
     except (ValueError, TypeError):
