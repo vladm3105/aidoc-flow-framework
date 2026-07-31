@@ -30,34 +30,44 @@ yet, and graduates it once it has.
 
 ## Where we are — 2026-07-31
 
-Framework spec `0.40.0`, plugin `0.24.0`, **Hermes `0.12.0` → `0.12.1`**.
+Framework spec `0.40.0`, plugin `0.24.0`, Hermes `0.12.1`.
 **Open PRs: 0. Open issues: 2** —
 [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) and
-[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405). #385 is **closed**.
+[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405).
 
-**Last merge: [#406](https://github.com/vladm3105/aidoc-flow-framework/pull/406), squash
-`371f6261` — the in-prompt-hashing guard now reaches the file that was still hashing.**
-Both roots `rglob`; `batch-remediation-script.md` calls `compute_element_hash()`; a
-coverage census walks each root *independently of the scan's own patterns*; exempt
-filenames are pinned as a literal set. **Six mutations verified to fail**, including two
-the review found: broadening the exemption to `\.md$` (which silently emptied the scan)
-and deleting a whole root.
+**Last merge: [#408](https://github.com/vladm3105/aidoc-flow-framework/pull/408), squash
+`bdac0a11` — `plans/PLUGIN-PREPROD-001-PLAN.md`. Plan only; no code shipped.**
 
-**#385 was closed as filed, not as titled — the property does NOT hold platform-wide.**
-It named the plugin-SKILL and Hermes-reference halves; both are shut.
-`agent-skills/**/SKILL.md` is reached by **no root**, and
-`sdd-orchestrator/SKILL.md:667` still instructs `first 4 chars of SHA256(...)` — matched
-by the guard's own regex, invisible only for want of a root. `:1183` is a *second,
-different* gap: the `INSTRUCTION` regex matches "**hex** of SHA256" and misses
-"**chars** of". A green run of this guard is still not evidence that no surface hashes.
+**The founder intends to deploy the plugin. A five-lens pre-prod review of
+`platforms/claude-code-plugin` returned BLOCKER, and the plan to clear it is now merged
+and is task 1.** The packaging is sound and must not be disturbed — all suites green,
+123/123 vendored files byte-identical, all 572 `${CLAUDE_PLUGIN_ROOT}` refs and 149
+slash-command refs resolve. What blocks the deploy is runtime behavior on a stranger's
+machine. **All four blockers were reproduced, not inferred:**
 
-**The session's real finding is that the remediation *method* is the defect.** #342 fixed
-9 reference files and declared the property closed — it missed a 10th and left 6 files
-with a stale `import hashlib`. #385 fixed the 10th, declared it closed, and missed 2 more
-surfaces plus 3 import sites. Three passes, each bounded by whatever the author grepped
-for, each declared complete, each wrong. A fourth hand-patch repeats it. Hence
-`SDD-CORPUS-UNVERIFIED` (task 1) — **founder call taken 2026-07-31 to stop patching and
-audit the corpus instead.**
+- **B1** — the review hook executes code from the user's CWD. `python3 -m` puts CWD ahead
+  of `PYTHONPATH`, so a `sdd_doc_lint/` package in any cloned repo shadows the vendored
+  one; the payload ran and the hook still exited 0. Fix is `PYTHONSAFEPATH=1` (verified);
+  invoking `__main__.py` by absolute path does **not** work — relative-import failure.
+- **B2** — 9 skills mandate a driver that spawns `claude --dangerously-skip-permissions`
+  (`tools/saga_driver.py:398`), disclosed in **zero** shipped `.md`/`.json`.
+- **B3** — the saga driver can wedge permanently and can report `PASS` on reviews whose
+  lenses never ran.
+- **B4** — PyYAML and Python ≥3.11 are undeclared; their absence exits 1, the same code
+  the hook reads as findings, so a traceback is injected into model context labelled
+  "Structural findings" on every edit.
+
+Plus 3 HIGH — the hook fires in repos that never adopted the framework (the bundled
+registry makes the documented "skip silently" path unreachable); the entire documented
+`review_hook` on/off/verbose enum is **unwired**, so there is no way to turn the hook off;
+and untrusted file content crosses into instruction context unframed.
+
+**The `#385` in-prompt-hashing property still does NOT hold platform-wide** (#406 closed
+only the plugin-SKILL and Hermes-reference halves). `agent-skills/**/SKILL.md` is reached
+by no guard root and `sdd-orchestrator/SKILL.md:667` still hashes. A green run of that
+guard is not evidence. The deeper finding — three successive hand-patches, each bounded by
+whatever its author grepped for, each declared complete, each wrong — is why
+`SDD-CORPUS-UNVERIFIED` audits instead of patching a fourth time.
 
 **⚠️ `Hermes pytest` is RED on `main` and it is not this repo's regression.**
 `pyproject.toml` declares `mcp[cli]>=1.0.0` — a floor with no ceiling — and
@@ -85,7 +95,29 @@ alone is 15 of the 23, so flipping on #352 alone returns a majority-red pilot.
 The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and `plans/HERMES-BACKLOG.md`.
 This is only the ordering a fresh session should use.
 
-1. **`SDD-CORPUS-UNVERIFIED` — the sdd-orchestrator corpus ships runnable Python that
+1. **PLUGIN-PREPROD-001 — implement PR 1 (hook hardening). The plan is merged, reviewed
+   to convergence, and actionable with no further discovery.** Read
+   `plans/PLUGIN-PREPROD-001-PLAN.md`; it carries a 57-row claim ledger with verified
+   `file:line` for every assertion, and five review passes recorded.
+   - **Five staged PRs**, ordered by risk: (1) hook hardening — B1, B4-hook-half, H1, H2,
+     H3, M1, L4, L5-visible-half; (2) linter dependency guards + re-vendor **both**
+     mirrors; (3) saga driver — B2, B3a/b/c, M3, M4, M5, L2, L3; (4) agent/manifest
+     hygiene; (5) docs, version bump, tag, Release. **PR 2 depends on PR 1**; PRs 1 and 4
+     are independent; PR 5 is last and its tag + GitHub Release are **founder-gated**.
+   - **PR 1 also creates one `FRAMEWORK-TODO.md` entry per finding** (23 findings:
+     B1–B4, H1–H3, M1–M8, L1–L7, P1) — they do not exist yet. PR 5 closes them.
+   - Founder decisions already taken and recorded in the plan: full scope · fix the
+     driver in place behind an opt-in flag · staged PRs · **O1** ship the flag with **no**
+     config key · **O2** skip the Hermes version bump, accepting that Hermes ships a
+     behavior change with no version signal.
+   - **Do not re-derive the plan's rejected alternatives.** Three independent passes
+     (13, 10 and 10 load-bearing findings) killed several obvious-looking fixes: removing
+     the "dead" `--threshold` flag breaks the acceptance cascade at layer 1; gating the
+     hook on `.aidoc/` disables the feature on the plugin's own greenfield path; filtering
+     the linter through a pipeline inverts `$?` to grep's status; disclosing the
+     permission flag literally in a `SKILL.md` trips a release gate. Each is written up
+     with its evidence in the plan.
+2. **`SDD-CORPUS-UNVERIFIED` — the sdd-orchestrator corpus ships runnable Python that
    nothing parses, executes, or checks. START WITH THE FOUNDER DECISION; it gates the
    plan.** Census: **45 fenced Python blocks — 3 do not parse, 10 carry unused imports,
    10 call a locally-defined function with too few positional arguments.** `grep -rl
@@ -100,13 +132,13 @@ This is only the ordering a fresh session should use.
      assertions and the five known instances to fold in (`SKILL.md:667`, the `:1183`
      regex gap, the 4th guard root, 3 files / 4 stale imports, `hash4()`'s arity).
    - Non-trivial → needs a `plans/` plan with the two-cycle gap review.
-2. **Watch [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) —
+3. **Watch [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) —
    when canon ships its own reader, DELETE ours.** `.github/workflows/pin-currency-reader.yml`
    plus `scripts/read-pin-currency-log.sh` and `scripts/reconcile-pin-currency-issue.sh`
    are the "add a custom workflow" override mode, not a permanent local surface (plan
    R9). Nothing else in a live queue says so — the statement otherwise survives only
    inside the merged plan, which is why it is here.
-3. **[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405) —
+4. **[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405) —
    `sync-version-refs.sh` rewrites historical "shipped in vX" claims.** The
    `hermes/v<prev>` / `claude-code-plugin/v<prev>` fanout at `:347-355` is an unanchored
    global sed carrying neither of the two `HAZARD` notes the script already has (`:141`,
@@ -114,7 +146,7 @@ This is only the ordering a fresh session should use.
    that instance by rewording, not the class. `docs/PARITY.md:43` is latent behind it.
    Fix shape: anchor the replace (the `$ cat VERSION` awk block at `:367` is the model)
    or fail when a bump would rewrite more occurrences than the known current-state rows.
-4. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
+5. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
    framework-spec token gates five files on `CLAUDE.md`'s own state.** The mechanism
    and the hand-edit hazard are in `CLAUDE.md` § "Durable traps → Local hooks and
    tooling"; do not restate them here. Outstanding here is only the **fix shape**:
@@ -122,7 +154,7 @@ This is only the ordering a fresh session should use.
    writing only `CLAUDE.md`, but this one cannot take that shape unchanged, because
    its `prev` is load-bearing elsewhere. Derive the gating `prev` from a fanout target
    nobody hand-edits (`docs/PARITY.md`), and give `CLAUDE.md` its own block.
-5. **`doc-maintainer` — nothing to do; it is paused and waiting on upstream.** Watch
+6. **`doc-maintainer` — nothing to do; it is paused and waiting on upstream.** Watch
    `aidoc-flow-ci` #352 and #353. When **both** ship in a released `ci/vX.Y.Z`: re-pin,
    flip `kill_switch` → `false`, watch the next few `push` runs.
 
@@ -130,13 +162,30 @@ This is only the ordering a fresh session should use.
    It is deliberate, inert, and documented in the config itself; #396 recorded it as a
    bug and was wrong. D-0072 point 2 explains why the error message manufactures that
    misreading.
-6. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
+7. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`: remaining
    plugin-vs-Hermes deltas plus quality-loop Phase 2 (cross-invocation resume / G-R1,
    the parallel-review global lock).
-7. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`, `[template]`,
+8. **Everything else** is in `FRAMEWORK-TODO.md` by tag (`[ci]`, `[lint]`, `[template]`,
    `[harness]`, `[example-corpus]`, `[docs]`, `[skill]`, `[sync]`, `[hermes]`), including
    the D54 and Engramory consumer-feedback batches. An entry under `## Open` with no
    `⏳ OPEN ON RESIDUAL` marker is genuinely open work (#403). Nothing there is blocking.
+
+**Two planning-tool defects found 2026-07-31, not yet filed** (both hit while
+authoring PR #408 — neither is in `CLAUDE.md` yet because neither has settled):
+
+- **`check_plan.py` false-greens on a not-ready plan.** Its zero-findings check is a
+  phrase match, and it accepted a Review log whose final pass said, in terms,
+  *"**Result:** NOT READY"* — because the surrounding prose contained "all folded". A gate
+  that passes a plan declaring itself unready is worse than no gate. Canonical script is
+  `~/.claude/skills/verified-planning/check_plan.py`; there is no repo-local copy.
+- **markdownlint silently corrupts claim-ledger citations.** Its autofix rewrites
+  `__init__.py` → `**init**.py` in an unbackticked table cell, which broke **ten**
+  citations at once and made the gate fail with the misleading
+  `path '.py' does not exist`. `CLAUDE.md` already records the corruption, not that it
+  lands on ledgers. Workaround in #408: `<!-- markdownlint-disable MD050 -->` scoped
+  around the ledger, and backtick dunder paths outside it. A trailing space **inside**
+  inline code is likewise stripped by the whitespace hook — which silently changed a
+  regex whose whole point was that trailing space.
 
 **Standing:** the example corpus is regenerated wholesale after framework changes, so
 corpus-remediation findings are deferred to that regen rather than fixed in place.
