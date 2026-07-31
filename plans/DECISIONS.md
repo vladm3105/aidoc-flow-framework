@@ -10,6 +10,145 @@ graduation.
 
 ---
 
+## D-0073 — Read the run that already ran; and a reader for a warning-only signal must itself fail loudly
+
+**2026-07-31.** Decisions from `PIN-CURRENCY-NO-READER`
+(`plans/PIN-CURRENCY-READER-PLAN.md`), shipped in PRs `#392` and `#394` and
+closed out here. **Extends D-0071 §7; supersedes nothing.** D-0071 established
+that the pin-currency *check* runs and is correct; this one is about what
+happens to its output.
+
+**1. The run log is not the preferred input surface — it is the only one that
+carries the signal.** Four candidates were measured, and three lose it
+structurally:
+
+| Candidate | Verdict |
+| --- | --- |
+| Reusable job `outputs:` | does not exist — canon's reusable declares `inputs:` only, so a caller receives nothing |
+| `$GITHUB_STEP_SUMMARY` | never written — no such call in `check-standards-drift.sh` **nor in the reusable that invokes it** |
+| Check-run annotations API | truncates. Check-run `89950624082` emitted **22** `##[warning]` lines; the API returned **10 warnings** — the cap is **per annotation level**, so the response `length` is 11, one `notice` included — keeping the earliest. **None** of the ten `pin-currency:` lines survived, because they are emitted at the script's tail. Re-measure with `group_by(.annotation_level)`, never bare `length`, or this reads as off-by-one and gets discarded |
+| The run **log** | complete: all ten stale-pin lines plus the tail count |
+
+**That measurement is dated to `ci/v2.14.0`,** the canon version run
+`30257877863` actually executed — not the `v2.16.0` then checked out. `v2.16.0`
+emits *more* (`emit_coverage` shipped in `v2.15.0`), so the conclusion holds a
+fortiori; the figure `22` does not travel. Two further surfaces a later reader
+will think of — run **artifacts** and the check-run's own `output.summary` /
+`output.text`, a different endpoint from annotations — are empty for the same
+reason as rows 1 and 2: the reusable writes nothing.
+
+So a parser of a downloaded log is not a workaround for missing tooling. It is
+the design the available surfaces permit, and the upstream half of this plan
+asks canon to change that.
+
+**2. Give the existing output a reader; do not add a second invocation.** The
+originating TODO entry proposed a job that *runs* `check-pin-currency.sh`. Be
+precise about what that is and is not: it would have been a second **invocation**
+of canon's one implementation, not a rival implementation — so the objection is
+not "two definitions of stale could disagree". It is that a second invocation
+needs its own fetch, its own pin resolution and its own schedule, and reports on
+a moment other than the one the weekly audit already reported on.
+
+**The coupling is relocated, not removed, and the next reader must know which
+one this repo now owns.** `scripts/read-pin-currency-log.sh` matches **six**
+literal canon log strings (`:79`, `:82`, `:86`, `:100`, `:104`, `:105`, `:133`).
+Canon's warning-only script publishes no output-format contract, so its *message
+text* is now a de-facto interface for this repo. That is a deliberate trade —
+a message-format dependency that fails visibly (§3) in place of a duplicated
+detector that would fail silently by drifting — but it is a real dependency, and
+the upstream ask in §8 is partly a request to replace it with a structured one.
+
+**3. The reader fails non-zero rather than reporting a false `clean` —
+which is a narrower claim than "fails loudly", and the difference is the
+residual risk.** `check-pin-currency.sh:10` declares itself
+`WARNING-ONLY, NEVER BLOCKS`, correct for a detector that must not gate merges,
+and precisely why nothing read it for two days. A reader inherits no such
+constraint: a truncated log, an absent `check-standards-drift:` marker, or an
+unparseable verdict exits **non-zero**. A warning-only reader of a warning-only
+signal is two layers of silence.
+
+⚠️ **But "loud" here means non-zero, not *heard*.** `pin-currency-reader.yml`
+feeds no required context and sits on no PR path, so a red run is a red mark in
+the Actions tab of a workflow nobody watches — the same invisibility this reader
+exists to remove, one level up. The workflow says so itself for the
+download-retry case (`:104-106`); the general form belongs here. **Named open
+risk, not a solved problem**, with one concrete instance already in the merged
+code: `:67`'s `if: … workflow_run.conclusion == 'success'` means an upstream
+`standards-drift` **failure skips the reader and reports green**, so the pin
+verdict goes unread exactly when something else has already gone wrong. Giving
+the reader its own reader is the obvious next iteration and is deliberately not
+in this plan.
+
+**4. A malformed `canon` token is a hard failure, never a fallback to `clean`.**
+If canon's `curl` of `main`'s `VERSION` returns an error page instead of
+failing, `ver_cmp` compares non-numeric fields, every comparison falls through
+to equal, and the script prints `all pins current ✅`. A parser that trusted
+that string would **close** the tracking issue on a transient. So `clean`
+requires a token matching `^ci/v[0-9]+\.[0-9]+\.[0-9]+$`, and anything else
+exits non-zero. This is the difference between parsing a verdict and trusting
+one.
+
+**5. Reopen the same issue; do not create on every stale.** The stale → clean →
+stale cycle recurs *per canon release* — the drift script resolves canon from
+`main`'s `VERSION`, so the moment canon tags a new version every caller here
+reads stale until re-pinned. Unguarded, create-on-stale would produce one issue
+**per weekly run while stale**, not one per release; and even guarded by "no
+*open* issue", a closed one plus a recurring condition still yields a fresh
+issue every cycle. So the exact title is the idempotence key, and a closed issue
+is reopened rather than duplicated.
+
+**6. The logic left the YAML because nothing end-to-end can run on the PR that
+introduces it.** `workflow_run` and `workflow_dispatch` both require the file on
+the default branch. Extraction into two `scripts/` entry points is what makes
+the load-bearing halves testable before merge — 18 unit tests over five
+checked-in fixtures at the time of writing (`grep -c 'def test_'
+tests/unit/test_pin_currency_reader.py`; the figure will drift, the command will
+not), registered into conformance via `tests/conformance/test_repo_scripts.py`
+because `tests/unit/` is reached by no hook and no workflow. An earlier draft
+extracted only the parser and left the branchier reconcile inline, which was the
+wrong half to trust.
+
+**7. `cancel-in-progress: false` under a named group is serialization, and the
+rationale must say so.** It stops a `workflow_run` and a concurrent
+`workflow_dispatch` from both finding no open issue and creating duplicates.
+The reasoning is recorded in the workflow file itself, and must **not** be
+written as "nothing to cancel, so nothing to fix" — that is verbatim the
+argument this repo uses to justify carrying **no** `concurrency:` block at all,
+so a future sweep reading it would delete the block and reintroduce the race.
+This is a fourth shape in the repo's concurrency inventory, distinct from the
+`#329` allowlist, a bare `true`, and an absent block.
+
+**8. The upstream ask is not politeness — the audit on *canon's own* side has no
+reader either.** `standards-drift-self.yml` runs a **fleet** pin audit against
+this repo every Monday (`cron: '0 9 * * 1'`) and discards the verdict with
+`|| true` (`:88`). **That is the measured domain: canon's fleet job and this
+repo's caller.** The stronger form — *no* pin audit anywhere in the workspace
+has a reader — is plausible and unmeasured; do not repeat it without the census,
+since this repo has twice inverted a blast-radius figure by asserting one
+(`CLAUDE.md` § "Durable traps"). Filed as
+[aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351),
+carrying five measured defects: the annotation cap, the missing step summary,
+`strict` being unable to fire for stale pins, a SHA-pinned caller being
+invisible to the in-repo path while the fleet path handles it (two paths in one
+script disagreeing), and the unvalidated canon token of §4.
+
+**Verified live — and the verification was not clean, which is the point of
+doing it.** Against `#392`'s merged code, issue
+[#393](https://github.com/vladm3105/aidoc-flow-framework/issues/393) was created
+(V10), edited in place with no duplicate (V11), reopened after a manual close
+(V12), and a reader run appeared with `event=workflow_run` (V14) — off a
+**dispatched** upstream; the `schedule` leg is V15. V13, the label fallback, was
+satisfied by the V4 stub rather than live. The issue also **closed when clean** —
+which the plan had deliberately placed *outside* the gate (`:465`, "a live
+`clean` check is deliberately absent"), so that is a bonus observation, not a
+gate item. Every transition passed,
+*and* the close comment published with literal backslashes, a defect only a real
+published artifact could show; fixed in `#394` and re-confirmed after it. **A
+green transition is not a correct artifact — read what you published.**
+V15 was never a merge gate and remains unconfirmed until the first Monday run.
+
+---
+
 ## D-0072 — Pause a pilot that cannot pass its own gate; and weight a failure census before naming a root cause
 
 **2026-07-30.** Decisions from PR `#397`, which set `kill_switch: true` on the
