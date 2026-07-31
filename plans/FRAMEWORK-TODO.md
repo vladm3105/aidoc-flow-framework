@@ -54,6 +54,40 @@
 
 ## Open
 
+### `[hermes]` `HERMES-MCP-FLOATING-DEP` — `Hermes pytest` is red on an unpinned SDK floor, and a path filter hid it for days
+
+- *Context:* surfaced 2026-07-31 on PR #406, which is the first PR to touch
+  `platforms/hermes/**` since 2026-07-27 — the workflow is path-filtered, so the
+  break sat unobserved. `pyproject.toml` declares `mcp[cli]>=1.0.0` (floor, no
+  ceiling) and `.github/workflows/hermes.yml:40` runs `pip install -e .`, so CI
+  resolves to whatever the SDK published last. A release renamed the `Tool` model's
+  `inputSchema` field to `input_schema`, and collection dies at
+  `src/mcp_server/tool_registry.py:790`:
+  `AttributeError: 'Tool' object has no attribute 'inputSchema'`.
+- *Blast radius is smaller than the raw grep suggests.* 36 hits, but **27 are
+  constructor kwargs** (`inputSchema={`) which the traceback proves still work —
+  `TOOLS` builds, and only the later attribute read fails. The real surface is **9
+  attribute accesses**: `tool_registry.py:790` plus 8 in
+  `tests/unit/test_server.py` (`:38-40`, `:44`, `:90`, `:95`, `:103`, `:107`).
+- *Do not date this to a version without measuring.* Locally-installed `mcp
+  1.22.0` still exposes `inputSchema` and has **no** `input_schema`, so the rename
+  landed **after** 1.22.0 — CI resolved something newer. Check what CI actually
+  installed before naming a version.
+- *Fix shape:* a bare rename to `input_schema` breaks anyone on an older SDK,
+  which the `>=1.0.0` floor explicitly still admits. Pin a floor that matches the
+  attribute the code uses (or add a compat accessor), then update the 9 reads.
+  Worth asking separately whether a path-filtered workflow is right for a package
+  whose dependencies float — the filter is what turned a dependency break into a
+  latent one.
+- *Not blocking:* `Hermes pytest` is **not** a required context (required are
+  conformance, `call / composition`, `call / Lint / format / security hooks`,
+  `call / ai-review`, `call / verify`, `Acceptance tier (deterministic)`).
+  Deferred by founder direction on 2026-07-31; captured here so it does not die
+  with the session.
+- *Tracker:* TODO-only pending founder direction — clears the issue bar
+  (reproducible at `file:line`, concrete fix shape, breaks a consumer's test run)
+  if it is picked up.
+
 ### `[skill]` `SDD-CORPUS-UNVERIFIED` — the sdd-orchestrator reference corpus ships runnable Python that nothing parses, executes, or checks
 
 - *Context:* founder call, 2026-07-31, after #385's fix surfaced the fourth
