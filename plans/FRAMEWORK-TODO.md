@@ -798,7 +798,7 @@
 
 ## Closed
 
-### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — ✅ CLOSED (2026-07-31, PR #406) — the guard was green partly because it did not look where a violation survived → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
+### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — ✅ CLOSED (2026-07-31, `371f6261` PR #406) — the guard was green partly because it did not look where a violation survived → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
 - *Context:* surfaced 2026-07-30 while correcting a `CLAUDE.md` claim that no
   surface computes SHA-256 in-prompt (PR #387). `test_no_inprompt_hashing.py`
