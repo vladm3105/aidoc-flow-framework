@@ -5,7 +5,7 @@ AI Doc Flow framework — **Hermes** (MCP server) and the **Claude
 Code plugin** — so users picking between them see the capability
 shape on each side.
 
-> Status: as of project `v1.1.0` / `hermes/v0.12.0` /
+> Status: as of project `v1.1.0` / `hermes/v0.12.1` /
 > `claude-code-plugin/v0.24.0` (framework spec `0.40.0`; both platforms on the
 > 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v1.0.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
@@ -62,8 +62,8 @@ Note a scope difference the two runtimes keep: the plugin's driver is an
 **outer, wall-clock-bounded, multi-iteration** create→review→revise loop
 (soft deadline → `PARTIAL_TIMEOUT` break-circuit, cross-invocation resume,
 `quality_loop_max_iterations`). Hermes's review saga is **single-pass by
-default**, but since HERMES-REVIEW-LOOP-001 Phase 1 (`hermes/v0.12.0`,
-D-0063) `sdd_review` also offers an **opt-in `quality_loop`** — a bounded
+default**, but since HERMES-REVIEW-LOOP-001 Phase 1 (the `0.11.0` Hermes
+cycle, D-0063) `sdd_review` also offers an **opt-in `quality_loop`** — a bounded
 review→remediate→re-review loop that reads the same
 `quality_loop_max_iterations` cap, enforces a `SOFT_DEADLINE_SECONDS`
 wall-clock bound, and *writes* `PARTIAL_TIMEOUT` on the final failing gate.

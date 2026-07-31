@@ -93,17 +93,46 @@ ALLOWED = {
 # exemption is visible and a NEW live reference cannot slip through with it.
 _SESSION_RECORD = re.compile(r"-session-\d{4}-\d{2}-\d{2}\.md$")
 
+# The exact filenames `_SESSION_RECORD` is allowed to excuse, pinned by name.
+#
+# The census cannot police the exemption by re-applying `_SESSION_RECORD` — that
+# is the same computation twice, so broadening the regex would empty the scan and
+# keep the suite green. (Mutation-verified: `_SESSION_RECORD = r"\.md$"` exempts
+# every file in every root and still passes a census written that way — #385's
+# failure mode moved from the glob to the exemption.) Pinning the literal set
+# means widening the regex, or adding a file that matches it, fails loudly.
+_EXPECTED_EXEMPT = frozenset({"subagent-bdd-remediation-session-2026-05-08.md"})
+
+
+# Each root paired with the recursive pattern that defines its FULL population.
+#
+# `test_every_file_under_each_root_is_scanned_or_exempt` deliberately does NOT
+# read this tuple — it re-derives the roots and walks them itself. That
+# independence is the whole point: if the census shared `_ROOTS`, narrowing a
+# pattern would shrink the scan and the census together and the census could
+# never fire. Do not "tidy" the census to iterate `_ROOTS`; verified by mutation,
+# doing so silently removes root-deletion detection.
+_ROOTS = (
+    (PLUGIN_SKILLS, "SKILL.md"),
+    (HERMES_PROMPTS, "*.md"),
+    (HERMES_REFERENCES, "*.md"),
+)
+
 
 def _surfaces():
-    """Every authoring/fixing surface that could carry the instruction."""
-    yield from sorted(PLUGIN_SKILLS.glob("doc-*/SKILL.md"))
-    yield from sorted(HERMES_PROMPTS.glob("*/*.md"))
-    # Loaded references ship runnable code an agent is pointed at, so they count
-    # as authoring surfaces even though they are not prompts.
-    for path in sorted(HERMES_REFERENCES.glob("*.md")):
-        if _SESSION_RECORD.search(path.name):
-            continue
-        yield path
+    """Every authoring/fixing surface that could carry the instruction.
+
+    Recursive by root (#385). `doc-*/SKILL.md` reached 41 of 52 plugin SKILLs and a
+    non-recursive `references/*.md` reached 36 of 39, leaving a live violation in
+    `references/batch-brd-processing/` that this guard's own regexes matched. Loaded
+    references ship runnable code an agent is pointed at, so they count as authoring
+    surfaces even though they are not prompts.
+    """
+    for root, pattern in _ROOTS:
+        for path in sorted(root.rglob(pattern)):
+            if _SESSION_RECORD.search(path.name):
+                continue
+            yield path
 
 
 class NoInPromptHashing(unittest.TestCase):
@@ -128,6 +157,36 @@ class NoInPromptHashing(unittest.TestCase):
             "emit a stable opaque 4-hex identifier and cite "
             "governance/ID_NAMING_STANDARDS.md as the authority:\n  " + "\n  ".join(offenders),
         )
+
+    def test_every_file_under_each_root_is_scanned_or_exempt(self):
+        """Coverage census — the assertion #385 was filed for.
+
+        A negative-property guard reports the count of what it chose to look at, so
+        "36 files, all clean" and "36 of 39 files, all clean" are indistinguishable
+        from a green run. This walks each root for every `*.md` independently of the
+        patterns `_surfaces()` uses, so re-narrowing a glob fails loudly here instead
+        of silently shrinking coverage.
+
+        A NEW unscanned file fails this too, by design: adding a markdown file under
+        one of these roots forces a decision — scan it, or exempt it by name — which
+        is exactly the docstring rule that `doc-*/SKILL.md` had quietly broken.
+        """
+        scanned = set(_surfaces())
+        for root in (PLUGIN_SKILLS, HERMES_PROMPTS, HERMES_REFERENCES):
+            with self.subTest(root=root.name):
+                missed = sorted(
+                    p.relative_to(REPO_ROOT)
+                    for p in root.rglob("*.md")
+                    if p not in scanned and p.name not in _EXPECTED_EXEMPT
+                )
+                self.assertEqual(
+                    missed,
+                    [],
+                    f"these files live under {root.relative_to(REPO_ROOT)} but no pattern in "
+                    "`_surfaces()` reaches them, so the guard cannot fail for them. Widen the "
+                    "pattern, or exempt them by name with a stated reason — never leave "
+                    "coverage narrowed by a glob:\n  " + "\n  ".join(str(m) for m in missed),
+                )
 
     def test_the_guard_would_catch_a_regression(self):
         """The pattern must actually match the form the surfaces used.

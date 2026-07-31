@@ -12,6 +12,55 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the in-prompt-hashing guard could not see the file that was still hashing (2026-07-31)
+
+**Hermes `0.12.0` → `0.12.1`.** No framework-spec or plugin change.
+
+- **`#342`'s regression guard was green partly because it did not look where a
+  violation survived.** `test_no_inprompt_hashing.py` globbed `doc-*/SKILL.md`
+  (41 of 52 plugin SKILLs) and a non-recursive `references/*.md` (36 of 39), and
+  its own docstring forbids exactly that — exemptions must be by name, "never by
+  silently narrowing the glob." Both roots are recursive now, with the by-name
+  session-record exemption as the only exclusion.
+- **The unreachable half held a live violation.**
+  `references/batch-brd-processing/batch-remediation-script.md:24` still minted
+  element IDs from its own `hashlib.sha256` routine, which the guard's existing
+  regexes match — a miss, not a judgement call. It calls the canonical
+  `compute_element_hash()` now. The 11 unscanned plugin SKILLs were clean, so
+  that half was latent; verified by sweeping all 14 newly-covered files for
+  `hashlib|sha-?256|hexdigest|md5`, which found only this file.
+- **A coverage census now fails loudly instead of silently shrinking.** A green
+  negative-property guard reports the count of what it chose to look at, so "36
+  files, all clean" and "36 of 39 files, all clean" are indistinguishable. The
+  new test walks each root independently of the scan's own patterns, and pins the
+  exempt filenames as a literal set — re-applying the exemption regex would have
+  been the same computation twice, so widening it would have emptied the scan and
+  kept the suite green.
+- **All six mutations are caught** — reintroducing the hash in the newly-covered
+  file, re-narrowing either glob, planting a violation in a previously unreachable
+  plugin SKILL, broadening the exemption to every file, and deleting a whole root
+  each fail the suite. Per the standing trap, a negative-property guard that has
+  never failed proves nothing.
+- **Scope, stated so a green run is not over-read.** This closes the plugin-SKILL
+  and Hermes-reference halves of the property, not the property.
+  `agent-skills/**/SKILL.md` is still reached by no root and
+  `sdd-orchestrator/SKILL.md:667` still hashes. That is deliberately left to the
+  corpus audit (`SDD-CORPUS-UNVERIFIED`): a census of the sdd-orchestrator
+  reference corpus found **45 Python blocks, of which 3 do not parse, 10 carry
+  unused imports and 10 call a locally-defined function with too few positional
+  arguments** — and nothing in CI executes, imports, or parses any of them.
+  Fixing one more instance by hand is the bounded sweep that produced this bug
+  three times running.
+- **Rider — `docs/PARITY.md:65` said HERMES-REVIEW-LOOP-001 Phase 1 shipped in
+  the version this PR was bumping to.** It shipped in `0.11.0`. The Hermes
+  version fanout in `scripts/sync-version-refs.sh` is a global sed that cannot
+  tell a current-state row from a historical "shipped in vX" claim, and had
+  rewritten that line at `0.11.1`, `0.12.0`, and again here — wrong in published
+  docs since 2026-07-11. Reworded to the form the script's own `HAZARD` note
+  prescribes, which the sweep cannot match. That closes the instance; the class
+  is [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405), with
+  `docs/PARITY.md:43` latent behind it.
+
 ### Changed — the doc-maintainer dry-run pilot is paused; canon cannot render a dry-run patch (2026-07-30)
 
 **No version moves** — `.github/doc-maintainer.json` + `.github/doc-maintainer-conventions.md` only.

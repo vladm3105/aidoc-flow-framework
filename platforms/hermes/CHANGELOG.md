@@ -16,6 +16,38 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 _Nothing yet._
 
+## [0.12.1] — a 10th loaded reference was still hashing; 0.12.0's claim was overstated (#385) (2026-07-31)
+
+PATCH. Reference-document content only; no server behaviour changes.
+
+- **`references/batch-brd-processing/batch-remediation-script.md` still minted
+  element IDs with its own `hashlib.sha256` routine.** It calls
+  `compute_element_hash()` now, matching the sibling
+  `batch-brd-review-remediation.md` corrected in 0.12.0. The old routine did not
+  merely bypass the generator — it disagreed with the normative transform in
+  `governance/ID_NAMING_STANDARDS.md` on four points (no NFC; `.lower()` rather
+  than `casefold`; deleted spaces instead of collapsing runs; truncation at 200
+  chars _before_ normalizing rather than 100 _after_), and hashed a
+  `doc:section:label` triple rather than the extracted `title`/`description`
+  fields — so it computed **different IDs**.
+- **The 0.12.0 entry above says "9 loaded reference documents" and its heading
+  claims no reference computes SHA-256 in-prompt. Both were one file short.**
+  The file sits in a subdirectory, and the guard written to lock the property
+  (`tests/conformance/platforms/test_no_inprompt_hashing.py`) globbed
+  non-recursively, so its reach stopped at 36 of 39 references — and a
+  negative-property guard reports the count of what it chose to look at, so
+  nothing distinguished that from 39 of 39. The guard is recursive as of #385
+  and now carries a coverage census.
+- **Scope — this does NOT establish that no Hermes surface hashes.**
+  `agent-skills/**/SKILL.md` is reached by no root, and
+  `sdd-orchestrator/SKILL.md:667` still instructs `first 4 chars of
+  SHA256(...)` — matched by the guard's own regex, invisible only for want of a
+  root. Deliberately not fixed here: it is one finding of a corpus-wide audit
+  tracked as `SDD-CORPUS-UNVERIFIED` in `plans/FRAMEWORK-TODO.md`, and patching
+  it in isolation would repeat the bounded-sweep failure that produced this
+  entry. `platforms/hermes/VERSION` moves, but the property does not yet hold
+  platform-wide.
+
 ## [0.12.0] — no prompt or reference computes SHA-256 in-prompt (#342) (2026-07-26)
 
 MINOR. Five prompt templates and nine loaded reference documents changed their
