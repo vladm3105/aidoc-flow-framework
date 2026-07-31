@@ -442,14 +442,29 @@ reasoning, defended by a comment arguing it was safe, until it became required
 on 2026-07-27. **Any change that makes one of the seven required must take the
 allowlist in the same PR.**
 
-The surfaces adopted by CANON-PARITY-001 add two more shapes, so "does it
-cancel?" is now a three-way question, not two: `markdown-lint` already ships
+"Does it cancel?" is a **four**-way question, not two, and the shapes arrived
+from different work: CANON-PARITY-001's adopted surfaces added two, and
+`pin-currency-reader.yml` (#392) added the fourth. `markdown-lint` already ships
 canon's `#329` allowlist (it is a required context *for other consumers*, and the
 template is uniform), while `dep-scan`, `sast-scan` and `trivy-scan` carry **no
 `concurrency:` block at all** — they never cancel, which is the safest state and
 needs no allowlist. `codeql` keeps plain `cancel-in-progress: true`, which is why
-it stays in the seven above. **Count the exemption by shape, not by filename:**
-absent block ≠ allowlist ≠ bare `true`.
+it stays in the seven above.
+
+**The fourth shape is `cancel-in-progress: false` under a fixed group, and it is
+serialization — not an absent block written out longhand.**
+`pin-currency-reader.yml:55-57` pins `group: pin-currency-reader` so that a
+`workflow_run` and a concurrent `workflow_dispatch` cannot both find no open
+issue and both create one. **Never re-derive it as "nothing to cancel, so
+nothing to fix"** — that is verbatim the argument this repo uses to justify
+carrying **no** `concurrency:` block at all, so a sweep reading it that way
+deletes the block and reintroduces the duplicate-issue race. Rationale:
+`plans/DECISIONS.md` D-0073 §7, and the workflow file states it at the block —
+including the caveat that serialization is **not** a guarantee every upstream
+verdict is read, since GitHub queues at most one *pending* run per group.
+
+**Count the exemption by shape, not by filename:** absent block ≠ `#329`
+allowlist ≠ bare `true` ≠ `false` under a fixed group.
 
 Runner split — deliberate, do not "normalize":
 
@@ -767,6 +782,29 @@ fresh to have settled, and never repeats one that is already here.
   reviewer correctly derived a **23rd** warning from the v2.16.0 source and concluded
   the measured **22** was wrong. **Read the `adopted canon pin` notice in the run's
   own log before citing line numbers at it.**
+- **The check-run annotations API truncates at 10 per annotation level, keeping the
+  earliest — so it is not a substitute for the log when what you want is emitted
+  late.** Check-run `89950624082` emitted **22** `##[warning]` lines and the API
+  returned **10 warnings**; **none** of the ten `pin-currency:` lines survived, because
+  they are emitted at the drift script's tail. Below the cap the API is complete and is
+  the cheaper surface — **a level returning exactly 10 is the truncation signal; fewer
+  than 10 at a level means that level is whole.**
+  - **Verify with
+    `--jq 'group_by(.annotation_level)|map({(.[0].annotation_level):length})|add'`,
+    never bare `length`** — the response length is **11**, 10 `warning` plus 1
+    `notice`, so a bare count reads as off-by-one and the trap gets discarded as false.
+  - **"Earliest" is which annotations survive, not the order they come back in.** The
+    response is sorted by *descending* `start_line`, so `.[0]` is the **last** survivor
+    (measured: `.[0]` at line 88; the earliest survivor, line 79, is second-to-last).
+    Check "keeps the earliest" against `.[-1]`, or it reads as refuted and a true trap
+    gets discarded.
+  - That surviving `notice` is also the evidence the cap applies **per annotation
+    level**: a full 10 warnings did not crowd it out. **Per-step vs per-job vs per-run
+    stays unattributable** from this measurement — the whole drift script is one `run:`
+    step, so the three are indistinguishable here. Claim per-level; do not claim
+    per-step.
+  - The `22` is dated to `ci/v2.14.0` per the bullet above and **does not travel**;
+    `v2.16.0` emits more, so the truncation conclusion holds a fortiori.
 - **Canon's pin-currency check false-greens two ways, and one would make a reader
   close a tracking issue.** `check-pin-currency.sh:62` greps `@ci/v…` literally, so a
   **SHA-pinned** caller is invisible and it reports `all pins current ✅` — while the
