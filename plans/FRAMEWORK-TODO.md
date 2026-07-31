@@ -21,8 +21,65 @@
 >   merge-commit ref.
 > - Don't double-track. If a plan already exists, cross-reference it
 >   instead of creating a new entry.
+> - **State an entry's status in its HEADING. Two markers, and they are
+>   the whole vocabulary:**
+>   - `— ✅ CLOSED (YYYY-MM-DD, <ref>)` — done. Lives under **Closed**.
+>     Give the strongest ref you have (PR + merge SHA; else a spec
+>     version, decision id, or plan name) — but never a `TBD`
+>     placeholder. Older entries carry date-only parens; that is
+>     tolerated where the ref was never recorded, not a form to copy.
+>   - `— ⏳ OPEN ON RESIDUAL (<what shipped; what is left>)` — the bulk
+>     shipped but a named leg is still live. Stays under **Open**,
+>     because the residual is the work.
+>
+>   Every entry under **Closed** carries the first marker. Every entry
+>   under **Open** carries the second or neither.
+> - **Both halves are load-bearing, and each fails differently.** A
+>   resolved entry left under **Open** *overstates* the queue; an entry
+>   under **Closed** whose heading lacks the marker *hides* work, because
+>   this file is skimmed by heading — a `*Resolution:*` line 15 lines
+>   down is not read. The second is the worse failure, and it is the one
+>   that went unnoticed longest.
+> - **A body-level `*Status:*` line closes nothing — it is unswept
+>   residue, and it is the trap.** Entries that predate this convention
+>   declare their state in the body instead. **Do not pattern-match the
+>   wording.** The shapes vary (`SHIPPED`, `CORE SHIPPED`, `CORE
+>   SUBSUMED`, `DOC LEG ✅ SHIPPED, enforcement leg deferred`,
+>   `Closed by …`) and the deferral that keeps an entry open is often a
+>   trailing clause on an otherwise finished-looking line — `SHIPPED (…)
+>   … Deferred: …` reads as done until the last sentence. **Read the
+>   whole body, then choose a heading marker.** Closing a partial entry
+>   is the failure that hides work, and skimming afterwards will not
+>   recover it.
 
 ## Open
+
+### `[ci]` `PIN-CURRENCY-READER-HAS-NO-READER` — the reader is skipped exactly when the upstream run has already broken
+
+- *Context:* filed 2026-07-31 from `plans/DECISIONS.md` D-0073 §3, which names
+  this a **live open risk, not a solved problem**, and which
+  `PIN-CURRENCY-NO-READER` deliberately left out of scope — so no queue held it
+  until now. Two levels: generally, `pin-currency-reader.yml` feeds no required
+  context and sits on no PR path, so its own red run is a red mark in the
+  Actions tab of a workflow nobody watches — the same invisibility it exists to
+  remove, one level up. Concretely, in the merged code,
+  `.github/workflows/pin-currency-reader.yml:67` gates the read job on
+  `${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}`,
+  so on a `workflow_run` event the first disjunct is false and an upstream
+  `standards-drift` **failure skips the reader** — and a skipped job is green, so
+  the pin verdict goes unread precisely when something else has already gone wrong.
+- *Fix shape:* read on upstream `failure` too, and distinguish "the drift script
+  never reached the pin-currency section" from "it ran and reported" — the
+  terminal markers for that are in `CLAUDE.md` § "Durable traps → Reading CI
+  output" (`check-standards-drift: coverage —`). **Keep the `workflow_dispatch`
+  disjunct** when editing that condition: dropping it green-skips every manual
+  dispatch, which is exactly what the comment above the line warns about.
+  Routing a real failure somewhere
+  with a reader is the separate, larger half. **Bounded by
+  [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351):**
+  this whole surface is an override that gets **deleted** when canon ships its
+  own reader (plan R9), so invest here only if #351 stays open long enough to
+  matter.
 
 ### `[docs]` `D-0071-JQ-NULL-CLAIM-CONTRADICTED` — a permanent decision entry states a failure mode `CLAUDE.md` re-measured and reversed
 
@@ -69,58 +126,6 @@
 - *Fix shape:* split detection from propagation — give `CLAUDE.md` its own
   self-detecting block, and derive the gating `fw_prev` from a fanout target the
   author is not hand-editing (`docs/PARITY.md` or the plugin README).
-
-### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — ✅ CLOSED (2026-07-29, CANON-PARITY-001 / PR #378) — `codeql.yml` resolved `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
-
-**Closed by adoption, not by the fix shape below.** `codeql.yml` became a canon
-caller (`@ci/v2.16.0`), and canon's reusable already SHA-pins both steps to one
-peeled commit (`github/codeql-action@e4fba868…` / v4.37.3) plus
-`actions/checkout@3d3c42e5…` / v7.0.1. So the floating references are gone
-*because this repo stopped owning the workflow*, and the "pin both steps to
-canon's SHA" plan below was never executed — it would have fixed the symptom and
-left a hand-rolled workflow to drift again at the next action release.
-
-**The caveat below still stands and was NOT widened:** `actions/checkout@v7` /
-`setup-python@v7` still float in the six remaining locally-owned workflows
-(`conformance`, `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`).
-Whether that convention should change is still the different, unasked question.
-`codeql` simply left that set.
-
-**Generalisable, recorded as D-0071 §2:** before fixing a defect in a
-hand-rolled surface, check whether canon owns that surface. The entry below
-correctly observed that neither canon check could see the defect — true, and the
-reason was that the surface was not a canon caller at all.
-
-- *Context:* surfaced while scoping `CI-CANON-V2.16-MIGRATION-PLAN.md`
-  (2026-07-29) and named there as explicitly out of scope. `codeql.yml:30,36`
-  pin `github/codeql-action/{init,analyze}@v4`; canon SHA-pins the same action to
-  one commit wherever it uses it (`aidoc-flow-ci/.github/workflows/codeql.yml:98`,
-  `e4fba868…` / v4.37.3). It is the only floating action reference this repo
-  *owns* that runs under `security-events: write` — `secret-scan.yml:9` holds the
-  same permission but delegates to canon, which SHA-pins its `upload-sarif`.
-  Invisible to both canon checks — `check-drift.sh` needs a declared canon tag,
-  `check-pin-currency.sh` greps `@ci/vX.Y.Z` only — and Dependabot never converts
-  a floating tag to a SHA, so nothing can close it automatically.
-- *Fix shape:* pin both steps to canon's SHA with the version as a trailing
-  comment. `init` and `analyze` must share **one** commit, and it must be the
-  *peeled commit*, not the annotated tag object — canon hit exactly that failure
-  (`aidoc-flow-ci/CHANGELOG.md:1380-1384` and `aidoc-flow-ci/plans/FRAMEWORK-TODO.md:859-866`:
-  `autobuild` pinned the tag object, which 422s on the commits API and trips the
-  workspace SHA audit; canon's `test_lint.sh` now asserts all three steps pin one
-  commit). Canon's `e4fba868…` is already the peeled commit, so copying it is
-  safe. Leave `actions/checkout@v7` alone — see the caveat.
-- *Caveat — do not widen this into a policy change.* Floating majors are the
-  repo's standing convention for locally-owned workflows: `actions/checkout@v7`
-  / `setup-python@v7` float in seven files (`codeql`, `conformance`,
-  `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`). `codeql-action` is
-  separable on two specific grounds only — canon SHA-pins that action
-  deliberately, and every *other* floating reference in the repo runs under
-  `contents: read` while this one runs under `security-events: write`. Whether
-  the convention itself should change is a different, unasked question.
-- *Tracker:* **issue** per the GD-10 three-test bar — meets (a) (mechanical, any
-  contributor can land it) and (b) (reproducible at `file:line` with a concrete
-  fix shape). Fails (c): `codeql.yml` feeds no required context, so it degrades
-  the Security tab rather than blocking merges.
 
 ### `[harness]` `ACCEPTANCE-FIXTURE-WARNING-DEBT` — 13 distinct advisory findings pinned across the acceptance fixtures (30 manifest warnings / 27 entries)
 
@@ -209,29 +214,6 @@ reason was that the surface was not a canon caller at all.
   it neutralized) — per GD-06:98-99's own note that the test "may later be extended to
   allow-list exactly the two sanctioned bindings."
 
-### `[docs]` `FRWK-REVIEW-002-PR-E` — ✅ CLOSED (2026-07-09) — engine-agnosticism sweep
-
-- Context: FRWK-REVIEW-002 PR-E — the spec carried engine-specific tokens (the
-  playbook `agent:` field pointing into `platforms/claude-code-plugin/`;
-  `doc-*`/"SKILL" vocabulary; a workspace-CI section; repo-root tool refs).
-- Resolved: founder chose the **Hybrid** ruling, recorded as **GD-06** in
-  `framework/governance/DECISIONS.md` (PR-E0 #284). PR-E-impl (#285) neutralized
-  the generic vocabulary (doc-*/"SKILL" → engine-neutral, `claude -p` → neutral,
-  AIDOC table → Platform-B illustration, tool paths → reference implementation)
-  and kept the two sanctioned exceptions (the `agent:` executor field, softened;
-  the workspace-CI section, scope-noted). Spec `0.36.0 → 0.36.2`.
-
-### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — ✅ CLOSED (2026-07-09) — `sync-version-refs.sh` didn't update CLAUDE.md's plugin-version string
-
-- Context: FRWK-REVIEW-002 PR-A/B bumped the plugin `0.23.2 → 0.23.4` but the
-  `Current state` line in `CLAUDE.md` stayed at `0.23.2` — PR-G #281 fixed it by
-  hand. The sync hook updated CLAUDE.md's framework-spec string but not the
-  plugin-version string, so every plugin bump left it stale.
-- Fixed: extended the `scripts/sync-version-refs.sh` plugin-version block to also
-  rewrite the `Claude Code plugin \`X.Y.Z\`` token in `CLAUDE.md`(mirrors the
-  framework-spec handling), and added a conformance guard
-  (`test_claude_md_current_state_matches_plugin_version`) so re-drift fails CI.
-
 ### `[skill]` `SKILL-DEDUP-001` — ⏸ PARKED (2026-07-09, founder decision) — 36 per-layer skills share duplicated boilerplate
 
 - Context: FRWK-REVIEW-002 skill-redundancy review. The 4 families × 9 layers
@@ -313,52 +295,6 @@ reason was that the surface was not a canon caller at all.
 > payoff — catches the 16 orphaned BDD scenarios);
 > (c) `CORPUS-REFGRAN-RECASCADE` (below) — now just the 5 SPEC/TDD/IPLAN edges.
 
-### `[lint]` `STRUCT01-INDEX-EXEMPTION-NESTED` — ✅ CLOSED (2026-06-30) — index/registry templates never hit the STRUCT01/trace `-INDEX` exemption
-
-- *Discovered:* 2026-06-30 by the ENG-BRD-SKETCH-ROADMAP plan's independent review.
-  The STRUCT01 required-section exemption + the trace-resolution INDEX skip both read
-  a **top-level** `artifact_type` ending in `-INDEX`, but the 7 `.md` layer index
-  templates nest `artifact_type` under `custom_fields` (6 with a bare value) and the
-  IPLAN-00 registry is a `.yaml` with no `---` frontmatter — so the exemption never
-  fired and a consumer's copied index threw STRUCT01 errors (BRD-00: 17). The
-  `-INDEX` token also self-tripped the ID02 doc-id scan.
-- ✅ **Fixed** (STRUCT01-INDEX-EXEMPTION, D-0043): filename-based `_is_index_doc`
-  (`<TYPE>-00_index`) used in both exemptions + ID02 skips `-INDEX` tokens; all 8
-  index templates (incl. the `.yaml`) lint clean; new conformance guard
-  `test_index_template_lint.py`. Pure linter fix, no spec bump.
-  Plan: `plans/STRUCT01-INDEX-EXEMPTION-PLAN.md`.
-
-### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — ✅ CLOSED (2026-06-29) — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
-
-- ✅ **Fixed:** `bump_version.py` now sweeps any unanchored
-  `framework_spec_version: "X"` in `SKILL_AUTHORING.md` (idempotent), catching
-  the backtick-wrapped §6 checklist line; the current stale `0.27.0` value
-  corrected to `0.30.0`.
-- *Context:* recurred in CFB-PR-2 2a-core step 6 (0.23.1→0.24.0) AND 2b step 3
-  (0.24.0→0.25.0). `SKILL_AUTHORING.md:112` (`- [ ] … framework_spec_version:
-  "X" present.`) is a backtick-wrapped checklist line, not the `^…
-  framework_spec_version: "…"` frontmatter form `bump_version.bump_fsv` matches,
-  so every framework bump leaves it stale (fixed by hand each time). Author-facing
-  (a skill author following the checklist asserts the wrong value).
-- *Fix shape:* extend `bump_version.py` (a `bump_plugin_readme`-style targeted
-  rewrite for the SKILL_AUTHORING checklist line), or add a conformance guard
-  asserting the checklist version == `framework/VERSION`.
-
-### `[harness]` `RELEASE-CHANGELOG-TEST-CONVENTION-GAP` — ✅ CLOSED (2026-06-29) — `tests/release/test_changelog_entry.py` doesn't match the `[Unreleased]` convention
-
-- ✅ **Fixed:** the test now accepts the current version in EITHER a released
-  `## [X.Y.Z]` heading OR an `[Unreleased]` `### … <version>` subsection heading
-  (matches the version in any level-2/3 heading, trailing-boundary guarded).
-  3/3 release tests green.
-- *Context:* surfaced in CFB-PR-2b self-review. The test requires a top-level
-  `## [<version>]` heading, but the repo nests releases under `## [Unreleased]`
-  with `### Added — Framework Spec X → Y`. It is RED at HEAD for `0.25.0` (and on
-  `main` for `0.24.0`) — but **outside CI scope** (conformance.yml runs only
-  `tests/conformance`; hermes.yml runs pytest under `platforms/hermes`), so CI
-  stays green. Pre-existing, not a 2b regression.
-- *Fix shape:* update the test to recognize the `[Unreleased]` + `### … X → Y`
-  convention, or move release entries to top-level `## [X]` headings on release.
-
 ### `[sync]` `SYNC-VERSION-PROVENANCE-OVERBUMP` — `sync-version-refs.sh` global-sed rewrites historical version refs
 
 - *Context:* CFB-PR-2 2a-core step 6 (`a0cb426f`). The framework-spec bump
@@ -408,26 +344,6 @@ reason was that the surface was not a canon caller at all.
   thresholds the downstream `@threshold:` tags expect, then re-cascade. Never
   hand-edit the example artifact.
 
-### `[template]` `INDEX-UPSTREAM-RESIDUE` — stale cumulative `Upstream:` enumerations in layer index templates / READMEs
-
-- *Context:* CFB-PR-1 (PR #180) migrated cumulative→necessary-upstream across
-  ~20 surfaces, but its V6 grep keyed on the literal "cumulative" and missed the
-  per-layer **`Upstream:` enumerations** in the layer index templates / READMEs.
-  Concrete: `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md:27` declares
-  `Upstream: BRD, PRD, EARS, BDD, ADR` (the old full chain) where SPEC's
-  `required_tags` is `[ears, bdd, adr]`; `:29` carries the full-chain line. The
-  other layer index templates likely carry the same.
-- *Fix shape:* sweep the `NN_*/<TYPE>-00_index.TEMPLATE.*` + layer READMEs;
-  correct each `Upstream:` line to the registry `required_tags`. Same class as
-  CFB-PR-1; doc-only. (CFB-PR-2 2b fixes the SPEC-00 two lines in-passing while
-  it's open; this entry tracks the cross-layer sweep.)
-- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Corrected the 5
-  stale `Upstream:` lines in EARS/BDD/ADR/TDD-00 index templates to
-  necessary-upstream (SPEC-00/PRD-00 were already correct). **Template-side only** —
-  the example corpus has no layer index (only `09_CHG/CHG-00_index.md`), so the
-  wholesale corpus regen does NOT touch this (earlier banner/runbook mischaracterized
-  it as corpus-side — corrected).
-
 ### `[harness]` `TRACE-RES-001-PER-LAYER-TEST-MODE` — per-layer acceptance tests duplicate the upstream chain
 
 - *Context:* ACCEPTANCE-FIXTURES-DRIFT (2026-06-14) closed 12
@@ -451,7 +367,7 @@ reason was that the surface was not a canon caller at all.
   real burden, OR when adding a new layer makes the duplication
   pattern obvious.
 
-### `[sync]` `WEBSITE-VERSION-BADGE-DRIFT` — `web-site/src/pages/index.astro` `Pre-release v<X.Y.Z>` badge
+### `[sync]` `WEBSITE-VERSION-BADGE-DRIFT` — `web-site/src/pages/index.astro` `Pre-release v<X.Y.Z>` badge — ⏳ OPEN ON RESIDUAL (sync-script leg landed; the cross-repo confirmation gate is in IPLAN-0008)
 
 - *Context:* IPLAN-0008 step 6 closed the bug class for the web-site
   home-page badge by extending `scripts/sync-version-refs.sh` to
@@ -472,22 +388,6 @@ reason was that the surface was not a canon caller at all.
   sync-script extension lands here; the cross-repo verification (bump
   VERSION → run sync → observe web-site badge change) is the
   Confirmation gate in IPLAN-0008.
-
-### `[sync]` `HERMES-README-VERSION-DRIFT` — ✅ CLOSED (2026-07-10, HERMES-REVIEW-001 PR-DOCS) — `platforms/hermes/README.md` Version + framework-spec cells stale
-
-- *Context:* Plugin `0.20.1` PATCH (2026-06-14) found and fixed the same
-  drift class in `platforms/claude-code-plugin/README.md` (`0.6.3` →
-  `claude-code-plugin/v<X.Y.Z>` canonical form). `platforms/hermes/README.md`
-  carried the bug: `Version | 0.1.0` and `framework spec 0.1.0` (plus
-  `pyproject.toml` frozen at `0.1.0` and the README `$ cat VERSION` /
-  `$ cat FRAMEWORK_SPEC_VERSION` blocks).
-- *Resolution (HERMES-REVIEW-001 PR-DOCS):* (a) canonicalized the hermes README
-  Version cell to the `hermes/v<X.Y.Z>` tag form (already sync-covered); (b) added
-  the hermes README `framework spec \`X\`` prose + `$ cat FRAMEWORK_SPEC_VERSION`
-  awk sync to the framework-VERSION fanout block; (c) added `platforms/hermes/pyproject.toml`
-  version + README `$ cat VERSION` awk sync to the hermes-VERSION fanout block. All
-  stale `0.1.0` strings reconciled to the real `0.7.3` / spec `0.36.2`; future bumps
-  auto-propagate.
 
 ### `[skill]` `MODEL-PRECHECK-ROLLOUT` — original framing (superseded; see PARKED entry above)
 
@@ -540,7 +440,7 @@ reason was that the surface was not a canon caller at all.
 > **Orchestration:** → `plans/CONSUMER-FEEDBACK-001-PLAN.md` sequences all
 > 22 items (D54 + Engramory + BeeLocal) into child PRs PR-1…PR-12.
 
-### `[template]` `D54-F02-REUSE-MANIFEST` — no first-class reuse of an existing/external artifact
+### `[template]` `D54-F02-REUSE-MANIFEST` — no first-class reuse of an existing/external artifact — ⏳ OPEN ON RESIDUAL (core shipped 2026-06-29, spec 0.32.0; deferred: element-granular marking → REUSE-MANIFEST-002, commit-existence verification, audit no-free-≥90 enforcement)
 
 - *Context:* D54 F-02 (P1, make-or-break for brownfield). Framework
   assumes greenfield authoring of all 8 layers; `active_layers` only
@@ -557,7 +457,7 @@ reason was that the surface was not a canon caller at all.
   non-authoritative `@discoverability` hints, never the trace target.
 - *Status:* SHIPPED (REUSE-MANIFEST-001, spec 0.32.0, 2026-06-29) — `reuse: {state: referenced, target}` frontmatter; COV01/COV02 exempt referenced docs; REUSE01 advisory + REUSE02 in-repo-pinned-target contract; full-prefix rule; TRACEABILITY.md reuse contract. Deferred: element-granular per-element marking (REUSE-MANIFEST-002), commit-existence verification, audit-skill no-free-≥90 enforcement.
 
-### `[lint]` `D54-F01-PROVISIONAL-IDS` — manual-mode placeholder-ID convention + hash-algo parity
+### `[lint]` `D54-F01-PROVISIONAL-IDS` — manual-mode placeholder-ID convention + hash-algo parity — ⏳ OPEN ON RESIDUAL (core shipped 2026-06-29, spec 0.31.0; the reference-aware `rehash` leg → PROVISIONAL-IDS-002)
 
 - *Context:* D54 F-01 (P1). Templates still use `xxxx`; the id regex
   `[a-f0-9]{4,8}` rejects it, and `sdd_doc_lint`'s placeholder check
@@ -592,53 +492,7 @@ reason was that the surface was not a canon caller at all.
   `ID_NAMING_STANDARDS.md`. **Remaining:** the reference-aware `rehash` subcommand
   (+ `rehash --check`) → **PROVISIONAL-IDS-002** (follow-on).
 
-### `[template]` `D54-F06-IPLAN-PROJECT-TYPES` — IPLAN hardcodes a Python source tree
-
-- *Context:* D54 F-06. `IPLAN-TEMPLATE.yaml` still hardcodes
-  `pytest/mypy/ruff`, `src/`, `tests/`; PR-E sub-types only split
-  `code_build`/`deploy`/`combined`, not language/deliverable. Non-Python
-  deliverables (plugin SKILL.md sets, managed infra) don't fit.
-- *Fix shape:* **cross-reference `plans/IPLAN-LANG-001-PLAN.md`** (already
-  drafted, PLANNED, not merged) — language-neutral template inheriting
-  `language:`/`dependencies:` from SPEC. Revive + merge it; extend with
-  non-code deliverable scaffolds (plugin/infra/docs) if SPEC-inheritance
-  alone doesn't cover them. Do NOT duplicate the plan here.
-- *Status:* ✅ **CLOSED (2026-07-06, `IPLAN-LANG-001-PLAN.md`, D-0054, spec 0.33.0 →
-  0.33.1).** `IPLAN-TEMPLATE.yaml` example content is now language-neutral: `file_manifest`
-  paths (§2) + `execution_commands` (§3) + the residual §5/§6 example paths use
-  `<…, per the @spec language>` placeholders with labelled `# example (Python):` lines, and
-  the `_guidance` instructs deriving the toolchain from `@spec: SPEC-NN` (SPEC owns
-  `language:`/`dependencies:`). Inheritance, not a new IPLAN field; structural contract
-  preserved (no validator/schema/conformance change). **Deferred residual:** non-code
-  *deliverable scaffolds* (plugin SKILL.md sets / managed infra / docs) — SPEC-language
-  inheritance covers the language axis; a dedicated deliverable-type scaffold is a separate
-  item, surface it only if a non-code IPLAN actually needs one.
-
-### `[lint]` `D54-F13-PHASE-SCOPE-RECONCILIATION` — no phase tag / no missing-downstream check
-
-- *Context:* D54 F-13 (gap only — the underlying drift was a workflow
-  error, not a framework defect). `trace_walk.py`/TRACE-RES-001 detect
-  *orphans* (downstream→no upstream) but there is no *missing-downstream*
-  check (accepted feature → no IPLAN) and no phase/scope-band tag.
-- *Fix shape:* asymmetric, per author: "accepted feature has no IPLAN" =
-  **warning** (legitimately mid-build; respects the completeness-check
-  convention); "out-of-phase item leaked into an in-phase plan" (Phase-2
-  SP in a Phase-1 IPLAN) = **blocking/high-severity** — a correctness
-  defect, not incompleteness. Add a first-class phase tag on capability
-  elements. The "scope ledger" is a *designated section of the existing
-  BRD acceptance/index* (acceptance_criteria / launch_gates), NOT a new
-  artifact — everything references it.
-- *Status:* ✅ **CLOSED (2026-07-06, `D54-F13-PHASE-LEAK-PLAN.md`, D-0055, spec 0.33.1 →
-  0.34.0).** The missing-downstream half shipped earlier as `COV01`; the phase-leak leg now
-  ships as **`COV03`** — the inverse of COV01's escape: a `Future`-banded (deferred) FR that
-  IS realized downstream draws an **advisory** (`warning`, both modes, never blocks; re-band
-  P1/P2 or confirm the deferral). **No first-class phase tag was added** — grounding found it
-  redundant with the existing FR band (`Future` = next-cycle) + the BRD-00 `Cycle` roadmap
-  (later-cycle BRDs are trace-inert, so cross-cycle leaks are already structurally
-  prevented). Canonical `tools/sdd_doc_lint` + both vendored mirrors; documented in
-  TRACEABILITY.md §Coverage gates; 6 test cases; zero example-corpus findings.
-
-### `[lint]` `D54-F05-BDD-COVERAGE-ROLLUP` — no aggregate EARS coverage across a split BDD set
+### `[lint]` `D54-F05-BDD-COVERAGE-ROLLUP` — no aggregate EARS coverage across a split BDD set — ⏳ OPEN ON RESIDUAL (core subsumed by COV02 2026-07-06; residual is P3 cosmetic — per-file `ears_coverage` reporting + the unenforced split convention)
 
 - *Context:* D54 F-05. `ears_coverage` is per-file only; no tool
   aggregates EARS coverage across `BDD-01/02`; per-file reads "partial"
@@ -659,7 +513,7 @@ reason was that the surface was not a canon caller at all.
   scenarios" convention is documented in `AUTHORING_STYLE.md` / `04_BDD/` as guidance
   but unenforced. Low value; fold into a future authoring-doc pass if it bites.
 
-### `[docs]` `D54-F07-TAG-SYNTAX-REFERENCE` — per-layer tag punctuation undocumented + unenforced
+### `[docs]` `D54-F07-TAG-SYNTAX-REFERENCE` — per-layer tag punctuation undocumented + unenforced — ⏳ OPEN ON RESIDUAL (doc leg shipped spec 0.29.0; the per-layer punctuation enforcement leg is cosmetic and deferred)
 
 - *Context:* D54 F-07. BDD template demands no-space `@brd:BRD.01`
   (Gherkin-parser-forced); EARS/ADR/SPEC use pipe+space `@brd: X | @prd: Y`
@@ -680,37 +534,6 @@ reason was that the surface was not a canon caller at all.
   original divergence driver (BDD Gherkin no-space tags) is now a legacy-only dual-mode
   path since YAML-BDD. Not worth a GATE-SPEC change; revive only if a real
   punctuation-driven mis-parse surfaces.
-
-### `[playbook]` `D54-F04-EARS-NONLATENCY-RUBRIC` — readiness rubric docks non-latency quantified bounds
-
-- *Context:* D54 F-04. Syntax already flexes (`@threshold:` + cycle-based
-  `WITHIN` + a `batch` category work), but the EARS-Ready checklist
-  mandates `p50/p95/p99` and docks a quantified cycle/iteration/event-window
-  bound for lacking percentiles.
-- *Fix shape:* the rubric is the real work — broaden the EARS-Ready
-  scoring criteria (`framework/layers/03_EARS/` + auditor playbook) to
-  count a quantified non-latency bound as "quantified." No new syntax.
-- *Status:* ✅ **CLOSED (2026-07-06, `D54-F04-EARS-RUBRIC-PLAN.md`, D-0057, spec 0.34.0 →
-  0.34.1).** Reworded the four percentile-mandating surfaces in `EARS-TEMPLATE.yaml` (scoring
-  weight, EARS-Ready checklist, antipattern, quality-attrs guidance + a new "Non-latency bound
-  examples" table): **latency** → percentiles; **non-latency** (cycle/iteration/event-window/
-  `*.count`) → concrete value + unit. Latency bar preserved; no new syntax. **Template-only**
-  — the playbook lenses were already correct (`tech_lead.md` "any other quantified"), so the
-  "+ auditor playbook" leg was unnecessary. Prose `_guidance` only (deterministic lint
-  byte-identical); the corpus score improvement lands at the next wholesale regen.
-
-### `[template]` `D54-F12-AGENTIC-ANTIPATTERNS` — BRD/PRD business-vs-technical boundary fuzzy for AI-agent systems
-
-- *Context:* D54 F-12. BRD/PRD antipatterns are CRUD-flavored; no agentic
-  example distinguishing "independent review stage" (business) from
-  "multi-stage agent pipeline w/ timeouts" (architecture).
-- *Fix shape:* add agentic/AI-system examples to the BRD/PRD
-  `_antipatterns` business-vs-technical lists (resolve via C4 altitude).
-  Cheap docs/template fix.
-- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Added an agentic
-  FAIL/PASS pair to BRD `_antipatterns` (agent-topology = architecture, not business
-  value) and PRD `_antipatterns` (pipeline topology/timeouts = ADR/SPEC, not
-  Container product behavior).
 
 ### `[harness]` `D54-F08-SKELETON-EMIT` — no content-keys-only template emit
 
@@ -751,90 +574,6 @@ reason was that the surface was not a canon caller at all.
 >
 > **Orchestration:** → `plans/CONSUMER-FEEDBACK-001-PLAN.md` (PR-2/5/6/7/10).
 
-### `[lint]` `ENG-FWD-COVERAGE` — no full-chain FORWARD coverage gate; single-upstream EARS hides built requirements
-
-- *Context:* Engramory #7 (extends BeeLocal #54). Two implemented core
-  requirements traced to NO IPLAN because the serving EARS lines carried
-  only one `@brd:` each. `trace_walk.py` is BACKWARD-only (downstream →
-  upstream orphan resolution); nothing asserts FORWARD that every BRD FR
-  reaches ≥1 SPEC and ≥1 IPLAN. `ID_NAMING_STANDARDS.md:34-36` permits
-  multi-`@brd:` at *document* level but not explicitly at EARS-*line* level,
-  and no lint flags a BRD FR with zero downstream coverage.
-- *Fix shape:* (a) a forward coverage report/GATE-CODE pre-check
-  (`sdd_coverage`): resolve the `@`-tag graph, assert every BRD FR reaches
-  ≥1 SPEC + ≥1 IPLAN, emit the full BRD→…→IPLAN matrix, list broken/empty
-  downstream paths. **Severity is split (author):** a BRD FR explicitly
-  marked `deferred:`/future-cycle with no IPLAN = **warning** (legitimately
-  mid-build); an *in-scope* FR with no IPLAN at GATE-CODE = **block** (can't
-  codegen an in-scope requirement with no plan); the **SPEC leg is stricter
-  than the IPLAN leg** — a BRD FR reaching NO SPEC at all = **block** (the
-  false-pass design gap the gate exists to catch). (b) Permit + encourage
-  multiple `@brd:` per EARS line; lint any BRD FR with zero downstream EARS
-  coverage. **Syntax (author):** repeated same-layer tags, pipe-delimited —
-  `@brd: X | @brd: Z | @prd: Y`; `taglint` splits on `|`, parses each token
-  as `@<layer>: <ID>`, OR-groups by layer. NOT comma lists (the EARS
-  traceability antipattern already forbids commas/ranges — would collide
-  with `D54-F07`). Backward-compatible: single-tag lines are the degenerate
-  case. (c) Bind the gate at each layer's native granularity — element-level
-  for BRD→…→ADR, **document-level** for SPEC/TDD/IPLAN (`@spec: SPEC-NN`,
-  `@iplan: IPLAN-NN` are document-level by design), so the gate never
-  depends on SPEC/IPLAN element IDs (keeps it non-conflicting with
-  `ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE`). (d) **Backward leg (BeeLocal #54/#10):**
-  add a `coverage` section to the `SPEC-00` index template — each L3/L4
-  (EARS/BDD) element → its covering SPEC or an explicit `deferred: <reason>`
-  — plus a GATE-06 backward-coverage check flagging any EARS req / BDD
-  scenario with no downstream SPEC/TDD, distinguishing *deferred* from
-  *missed* (BeeLocal measured EARS-01 11/16, BDD-02 6/12 uncovered at
-  element level, indistinguishable today). (e) The forward gate's emitted
-  BRD→…→IPLAN matrix doubles as BeeLocal #52's "recommended generated
-  `TRACEABILITY.md` matrix" (#8b — the cardinality *note* is already closed
-  via CLEANUP-PR-F; only the generated matrix remained open).
-- *Related:* the "every accepted feature → ≥1 IPLAN = warning" half is
-  shared with `D54-F13-PHASE-SCOPE-RECONCILIATION`; one forward-coverage
-  engine can serve both. Build once.
-- *Status:* ✅ **CLOSED (verified 2026-07-06 against shipped code).** Delivered
-  by the CFB-PR-2 coverage engine (spec 0.24.0–0.30.0). **Leg (a) forward gate =
-  `COV01`** (`sdd_doc_lint/__init__.py` `_check_forward_coverage`): every in-scope
-  (AUTHORED) BRD FR must reach ≥1 SPEC + ≥1 IPLAN corpus-wide, with the exact
-  author-specified severity split (escaped/`deferred` FR never blocks; no-SPEC =
-  error; SPEC-but-no-IPLAN = warning in `build` / error in `gate-code`); element
-  granularity added by ELEMENT-COVERAGE-001 (spec 0.30.0). **Leg (d) backward =
-  `COV02`** (`_check_backward_coverage`, corpus-wide, deferred-vs-missed split).
-  **Leg (e) generated matrix = `docs/TRACEABILITY_MATRIX.md`** (`tools/sdd_coverage.py`).
-  Residual: **the phase-leak row (DD-6 row 4)** is explicitly deferred in the COV01
-  docstring — tracked under `D54-F13` (the phase-tag leg), not here.
-
-### `[docs]` `ENG-BRD-SKETCH-ROADMAP` — no project-init roadmap + BRD "sketch" sub-form
-
-- *Context:* Engramory #1 (extends the "author current cycle full, stub the
-  rest" practice). Authoring only `BRD-01` full + index one-liners leaves
-  whole-project scope under-specified before cycle 1. `BRD-00_index` already
-  has an optional "Planned BRDs" table and `@depends:` chaining exists, but
-  there is no scope-only "sketch" form: `BRD-TEMPLATE.yaml:179` status is
-  only `Draft|In Review|Approved`, and a scope-only future-cycle BRD would
-  fail lint as an incomplete full BRD.
-- *Fix shape (author scoped to docs-only now; lint deferred):* (a) document
-  a project-initiation step (README + `01_BRD/README.md`): enumerate all MVP
-  cycles **by extending the existing `BRD-00_index` "Planned BRDs" table**
-  with cycle / PROD / `@depends:` columns (its natural home — avoids
-  colliding with a consumer's top-level `ROADMAP.md` product-strategy file);
-  *recommend* the BRD-layer location, do NOT mandate a path. (b) Add a
-  `status: Sketch` value for scope-only future-cycle BRDs (document_control,
-  introduction, business_objectives hypothesis, project_scope only). (c) A
-  sketch is **trace-inert**: carries only its document-level `BRD-NN` +
-  `@depends:` for sequencing — no element IDs, not in the `@`-tag graph,
-  ignored by `ENG-FWD-COVERAGE`; on graduation to a full BRD it gets element
-  IDs + enters the graph. (d) Add a `SKETCH-001` lint (forbid downstream
-  content / element IDs on a Sketch) **only if** over-authoring drift shows
-  up in practice — deferred to keep this out of MINOR territory.
-- *Status:* SHIPPED (spec 0.32.5, 2026-06-30 — `ENG-BRD-SKETCH-ROADMAP-PLAN.md`,
-  D-0044). The `BRD-00` index "Planned BRDs" table is the roadmap home (extended
-  with cycle/PROD/`@depends:`/status `Planned|Sketch`); `01_BRD/README.md` documents
-  the project-init enumeration step + the trace-inert Sketch concept; cross-ref in
-  `BRD-TEMPLATE.yaml`. Built on STRUCT01-INDEX-EXEMPTION (D-0043). **Deferred
-  follow-ons** logged below: standalone Sketch-file lint support; the `_DOC_ID`
-  header/filename false-positive.
-
 ### `[lint]` `SKETCH-FILE-STANDALONE` — standalone scope-only `status: Sketch` BRD *file* support (deferred from ENG-BRD-SKETCH-ROADMAP)
 
 - *Context:* ENG-BRD-SKETCH-ROADMAP (D-0044) shipped the Sketch concept as a
@@ -848,82 +587,7 @@ reason was that the surface was not a canon caller at all.
   want standalone Sketch files / over-authoring drift appears. Likely framework MINOR.
 - *Status:* OPEN — P3, deferred (author (d): "only if over-authoring drift shows up").
 
-### `[lint]` `LINT-DOCID-HEADER-FALSE-POSITIVE` — `_DOC_ID` scan flags `<TYPE>-<word>` header/filename tokens as ID02
-
-- *Context:* surfaced by ENG-BRD-SKETCH-ROADMAP Pass-4 review. The ID02 doc-id scan
-  matches any `<KNOWN-TYPE>-<token>` and flags it unless it is `TYPE-<digits>` (or,
-  post-D-0043, ends in `-INDEX`). So legitimate prose tokens trip it: e.g.
-  `BRD-00_index.TEMPLATE.md` carries ID02 on the `PRD-Ready` column header and the
-  `BRD-TEMPLATE` quick-link. Pre-existing; orthogonal to the roadmap rows; harmless
-  (templates aren't CI-linted) but a consumer's filled-in index keeps 2 standing ID02s.
-- *Fix shape:* narrow the `_DOC_ID` malformed-id check — skip tokens inside
-  inline-code / link targets / known header words, or require the doc-id to be a
-  standalone token in a trace context. Needs care not to mask real malformed ids.
-- *Status:* ✅ **CLOSED (2026-07-06, `LINT-DOCID-HEADER-FALSE-POSITIVE-PLAN.md`, D-0056).**
-  ID02 now fires **only on a digit-leading second segment** (a valid doc-id is
-  `TYPE-<digits>`, always digit-leading; a letter-leading `TYPE-<word>` is prose). Removes
-  `PRD-Ready`/`BRD-TEMPLATE`/`BRD-NN` while keeping real malformed ids (`BRD-2`, `BRD-007x`);
-  generalizes D-0043's `-INDEX` exemption. Pure `tools/sdd_doc_lint` bugfix (vendored to both
-  mirrors) — **no `framework/` change, no version bump** (D-0043 precedent). New unit guard +
-  166 conformance green. *(Chosen over the inline-code/link-context parse — that would miss
-  the bare table-cell `PRD-Ready`.)*
-
-### `[template]` `ENG-PLATFORM-ADR-TIMING` — "ADRs created BEFORE PRD" wording conflicts with cumulative-tag chain
-
-- *Context:* Engramory #5 (resolves BeeLocal #40 by clarification).
-  `BRD-TEMPLATE.yaml:101` (platform-BRD guidance): "ADRs created BEFORE PRD
-  to validate architectural decisions." Read literally this conflicts with
-  the chain — an ADR carries `@ears`/`@bdd`, which can't exist pre-PRD.
-- *Fix shape:* reword: author ADRs in sequence (after BDD) so they carry
-  the full cumulative chain; "decided before PRD" refers to decision
-  *provenance* (recorded in the ADR's `context`/`originating_topic`), not
-  authoring *order*. **Confirmed pure wording fix — no platform-ADR-first
-  workflow variant (author Q8):** Engramory authored in strict layer order,
-  ADRs carried full `@ears`/`@bdd`, #40 never bit; their 5 ADRs were
-  converted from prior design decisions but still authored in-sequence.
-  **BeeLocal #40 adds a PRD-layer manifestation:** `PRD-TEMPLATE`
-  traceability says "Do NOT reference specific ADR numbers — ADRs don't
-  exist yet" and frames `adr_topic_elaboration` as "options for ADR to
-  evaluate" — backwards for a platform PRD whose ADRs are already decided.
-  Add a platform-flow note to the PRD template too (a platform PRD MAY cite
-  existing ADRs). Same clarification, second surface.
-- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Reworded the
-  platform-BRD ADR-timing line (decisions DECIDED before PRD = provenance; ADR
-  *documents* still AUTHORED in-sequence so they carry the full upstream chain) +
-  added the platform-flow exception to `PRD-TEMPLATE` traceability +
-  `adr_topic_elaboration` (a platform PRD MAY cite already-decided ADRs).
-
-### `[template]` `ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE` — element-ID exemption lives only in the standard, not the templates
-
-- *Context:* Engramory #4. `ID_NAMING_STANDARDS.md:64-98` documents that
-  SPEC §5/§3 and IPLAN §4/§2 MAY omit layer-local element IDs, but
-  `SPEC-TEMPLATE.yaml` / `IPLAN-TEMPLATE.yaml` are silent — an author
-  reading only the template may over-assign IDs (noise) or worry they're
-  missing required ones. Follow-on to the closed item that *added* the
-  exemption to the standard (CLEANUP-PR-C).
-- *Fix shape:* add a one-line `_note` in SPEC §5/§3 and IPLAN §4/§2
-  template guidance cross-referencing the exemption; **keep the exemption**
-  (author Q7 — do NOT require element IDs everywhere; that would reintroduce
-  the second-naming-surface the standard created the exemption to avoid).
-  Non-conflicting with `ENG-FWD-COVERAGE`: that gate binds SPEC/TDD/IPLAN at
-  *document* level, so it never relied on their element IDs. Keep the
-  standard authoritative; the template just cross-references it.
-- *Status:* SHIPPED (spec 0.32.1, 2026-06-29) — cross-ref `_note` added to SPEC §3/§5 + IPLAN §2/§4 template guidance; exemption unchanged.
-
-### `[docs]` `ENG-IPLAN-REGISTRY-README` — registry-vs-document schema distinction undocumented in the layer README
-
-- *Context:* Engramory #3. `IPLAN-00_index` is `document_type:
-  iplan-registry` (no `document_control`); `IPLAN-NN_*` are
-  `iplan-document`. A naive "validate every `08_IPLAN/IPLAN-*.yaml`" glob
-  trips on the registry. `sdd_doc_lint` ALREADY special-cases INDEX docs
-  (`__init__.py:927-969`, `:836-850`) — so only the *author-facing note* is
-  missing.
-- *Fix shape:* one-line note in `08_IPLAN/README.md` that registry vs
-  document are distinct schemas + how each is validated (lint exempts
-  `artifact_type: *-INDEX`). Docs-only.
-- *Status:* SHIPPED (spec 0.32.2, 2026-06-29) — 'Index registry vs document schema' section added to 08_IPLAN/README.md.
-
-### `[hermes-parity]` `ENG-STALE-DEPTH-DOCS` — dead Lite/Standard/Full tables still in Hermes orchestrator docs
+### `[hermes-parity]` `ENG-STALE-DEPTH-DOCS` — dead Lite/Standard/Full tables still in Hermes orchestrator docs — ⏳ OPEN ON RESIDUAL (Hermes legs closed 2026-07-06; leg (a), the public README render at the released tag, verify at the next release cut)
 
 - *Context:* Engramory #6 — its *requested clarification is moot* (depth
   variants are dead since 2026-06-12, framework is single-path; author
@@ -994,39 +658,6 @@ reason was that the surface was not a canon caller at all.
 >    `BL-VENDOR-NAME-SCOPE`, with `BL-READY-SCORE-ADVISORY` separate if the
 >    pair already hits 3 surfaces.
 
-### `[governance]` `BL-TAG-CHAIN-GATE-SYNC` — stale cumulative-tag docs contradict the necessary-upstream contract
-
-- *Context:* BeeLocal #53. The author flagged that SPEC/TDD carry only
-  `@adr,@bdd,@ears` and IPLAN only `@spec,@tdd`, "contradicting GATE-08-E003."
-  **The templates are CORRECT** — NECESSARY-UPSTREAM-001 (PR #121) deliberately
-  replaced the old cumulative chain (immediate-upstream only; the cumulative
-  form caused trace-fabrication). The real defect is the OPPOSITE of the
-  author's proposed fix: `GATE-08_IPLAN.md:222-231` (E003 *resolution*
-  example) and `TRACEABILITY.md:9-24` (cumulative-tags diagram) are STALE —
-  they still show the old full chain, contradicting `LAYER_REGISTRY.yaml`
-  `required_tags` + the live templates.
-- *Fix shape:* do NOT re-add cumulative tags to SPEC/TDD/IPLAN templates.
-  Instead correct the two stale docs to the necessary-upstream contract:
-  fix the `GATE-08-E003` resolution example to `[spec, tdd]` and resync the
-  `TRACEABILITY.md` chain diagram to immediate-upstream. The corrected
-  diagram MUST state the transitive path **explicitly** (PRD/BRD reachable
-  by walking ADR/BDD/EARS→PRD→BRD, not via L6+ local tags), and point the
-  reverse lookup ("which BRD is SPEC-07?") at the generated `TRACEABILITY.md`
-  matrix (`ENG-FWD-COVERAGE` (e)) so nobody re-files it as a gap.
-- *Confirmed (author Q1):* BeeLocal's chain verified clean with exactly this
-  contract — SPEC `@adr/@bdd/@ears`, TDD `@spec/@bdd/@ears`, IPLAN `@spec/@tdd`
-  only, zero dangling refs. GATE-08-E003 requiring `@brd+@prd` is the bug,
-  not the templates. Do NOT re-add cumulative tags.
-- *Status:* **CLOSED** — 2026-06-27, squash `8e001192` (PR #180), as
-  **CFB-PR-1** (CONSUMER-FEEDBACK-001). Expanded during implementation from the
-  2 named docs to the **full ~20-surface cumulative→necessary-upstream
-  reconciliation** (the V6 grep + independent review surfaced the stale model
-  across EARS/BDD templates, GATE-03 + error catalog with FALSE `required_tags`
-  claims, 3 layer READMEs, BDD-00 index, DEFINITION_OF_DONE, the ADR + IPLAN
-  auditor playbooks, the guides, and the `AI_ASSISTANT_RULES` live author-facing
-  bug). Framework spec 0.23.0 → 0.23.1; plugin VERSION unchanged. See
-  `plans/CFB-PR-1-TAG-CHAIN-GATE-SYNC-PLAN.md` Pass-4 log.
-
 ### `[lint]` `BL-REF-GRANULARITY` — doc-level vs element-level refs interchangeable, silently defeats coverage
 
 - *Context:* BeeLocal #55. Templates allow both `@bdd: BDD-NN` (whole doc)
@@ -1054,29 +685,6 @@ reason was that the surface was not a canon caller at all.
   taglint surface).
 - *Status:* OPEN — P2.
 
-### `[template]` `BL-READY-SCORE-ADVISORY` — `*_ready_score` placeholders read as a required gate
-
-- *Context:* BeeLocal #56 (52 occurrences). Every ADR/SPEC/TDD ships
-  `*_ready_score: [Score]/100` + `target_score: ">=90/100"`, which reads as
-  a required gate, but the score is **advisory** — the deterministic lint
-  floor is the real gate and the score is computed by the auditor lens, not
-  hand-authored. A blank field makes a finished set look half-done.
-- *Fix shape (author Q4 — mark-advisory, do NOT build a rubric):* mark the
-  field explicitly advisory in every template (`_note: "Computed by the
-  auditor lens; authoring this is advisory — a blank value is NOT
-  incomplete"`) and reword `target_score` so it reads as a readability
-  threshold, not a gate. **No offline rubric/tool** — that would contradict
-  `D54-F03` (the audit skill IS the rubric; the deterministic floor is
-  `sdd_doc_lint`).
-- *Status:* SHIPPED (spec 0.32.4, 2026-06-30 — `BL-READY-SCORE-ADVISORY-PLAN.md`,
-  D-0042). All 7 layer templates (BRD…TDD) marked: inline `#` comment on each of the
-  14 score lines + one `_note:` per `health_score` block + **15 reworded
-  `_guidance` prose lines** that still framed the score as "required"/a "quality
-  gate" (ai-review caught the contradiction on impl PR #222 — plan Pass 3); PATCH
-  0.32.3 → 0.32.4. No rubric (author Q4). The "52 occurrences" was BeeLocal's
-  per-artifact tally; the template fix is 14 field lines + 15 prose lines. IPLAN/08
-  carries neither field, so "all 7" = 01–07.
-
 ### `[template]` `BL-STATUS-SCOPE` — `status:` key overloaded across 3 scopes, unlintable
 
 - *Context:* BeeLocal #57. `status:` carries 3 different legal-value sets:
@@ -1091,40 +699,6 @@ reason was that the surface was not a canon caller at all.
   artifact + the example corpus for no behavioral gain; a scope-aware linter
   solves the actual problem. Fold a rename in only at a future major break.
 - *Status:* OPEN — P3.
-
-### `[docs]` `BL-BRD-SET-WORDING` — "each BRD = one cycle" misreads as one-BRD-per-cycle
-
-- *Context:* BeeLocal #34. `01_BRD/README.md:6,34` says "Each BRD represents
-  ONE iteration cycle." Platform/feature BRD typing
-  (`BRD-TEMPLATE.yaml:95-109`) + `@depends:` already support a BRD *set* per
-  cycle (one platform BRD + child feature BRDs), but the wording hides it —
-  caused real BeeLocal planning confusion.
-- *Fix shape:* reword to "each BRD *set* (platform + its feature BRDs) = one
-  iteration cycle" + add a parent/child tree example. Docs-only; ties to
-  `ENG-BRD-SKETCH-ROADMAP` (same BRD-00/cycle area).
-- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
-
-### `[docs]` `BL-SIZE-UNITS` — section `_size_target` in words vs document cap in tokens
-
-- *Context:* BeeLocal #41a. Section `_size_target` values are WORDS
-  (`BRD-TEMPLATE.yaml:171` `100 # words`, …) and `AUTHORING_STYLE.md:62-69`
-  targets are words, but the document split cap is 50,000 TOKENS
-  (`BRD-TEMPLATE.yaml:117-118`). Mixed units, no stated relationship.
-- *Fix shape:* one clarifying note (in `AUTHORING_STYLE.md` or the template
-  size guidance) stating the two units' relationship — section targets are
-  authoring guidance in words; the 50k-token cap is the split trigger.
-- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
-
-### `[template]` `BL-VENDOR-NAME-SCOPE` — "no vendor names" rule collides with `recommended_selection`
-
-- *Context:* BeeLocal #41b. `adr_topics` guidance
-  (`BRD-TEMPLATE.yaml:615-617`) says "use business capability descriptions,
-  not vendor names (FAIL: MUST use PostgreSQL)" — yet `recommended_selection`
-  is exactly where the chosen vendor goes. The rule's scope is unstated.
-- *Fix shape:* clarify the rule applies to titles/`business_driver` (stay
-  business-level) but vendor names ARE allowed in `recommended_selection`
-  (the decision record). One-line template note.
-- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
 
 ## Closed
 
@@ -1253,6 +827,58 @@ reason was that the surface was not a canon caller at all.
 - *Resolution:* filed as
   [aidoc-flow-operations#290](https://github.com/vladm3105/aidoc-flow-operations/issues/290)
   with the id-anchored readback as the suggested fix. Not this repo's to fix.
+
+### `[ci]` `CODEQL-FLOATING-ACTION-PIN` — ✅ CLOSED (2026-07-29, CANON-PARITY-001 / PR #378) — `codeql.yml` resolved `github/codeql-action` through the floating `@v4` major → [#373](https://github.com/vladm3105/aidoc-flow-framework/issues/373)
+
+**Closed by adoption, not by the fix shape below.** `codeql.yml` became a canon
+caller (`@ci/v2.16.0`), and canon's reusable already SHA-pins both steps to one
+peeled commit (`github/codeql-action@e4fba868…` / v4.37.3) plus
+`actions/checkout@3d3c42e5…` / v7.0.1. So the floating references are gone
+*because this repo stopped owning the workflow*, and the "pin both steps to
+canon's SHA" plan below was never executed — it would have fixed the symptom and
+left a hand-rolled workflow to drift again at the next action release.
+
+**The caveat below still stands and was NOT widened:** `actions/checkout@v7` /
+`setup-python@v7` still float in the six remaining locally-owned workflows
+(`conformance`, `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`).
+Whether that convention should change is still the different, unasked question.
+`codeql` simply left that set.
+
+**Generalisable, recorded as D-0071 §2:** before fixing a defect in a
+hand-rolled surface, check whether canon owns that surface. The entry below
+correctly observed that neither canon check could see the defect — true, and the
+reason was that the surface was not a canon caller at all.
+
+- *Context:* surfaced while scoping `CI-CANON-V2.16-MIGRATION-PLAN.md`
+  (2026-07-29) and named there as explicitly out of scope. `codeql.yml:30,36`
+  pin `github/codeql-action/{init,analyze}@v4`; canon SHA-pins the same action to
+  one commit wherever it uses it (`aidoc-flow-ci/.github/workflows/codeql.yml:98`,
+  `e4fba868…` / v4.37.3). It is the only floating action reference this repo
+  *owns* that runs under `security-events: write` — `secret-scan.yml:9` holds the
+  same permission but delegates to canon, which SHA-pins its `upload-sarif`.
+  Invisible to both canon checks — `check-drift.sh` needs a declared canon tag,
+  `check-pin-currency.sh` greps `@ci/vX.Y.Z` only — and Dependabot never converts
+  a floating tag to a SHA, so nothing can close it automatically.
+- *Fix shape:* pin both steps to canon's SHA with the version as a trailing
+  comment. `init` and `analyze` must share **one** commit, and it must be the
+  *peeled commit*, not the annotated tag object — canon hit exactly that failure
+  (`aidoc-flow-ci/CHANGELOG.md:1380-1384` and `aidoc-flow-ci/plans/FRAMEWORK-TODO.md:859-866`:
+  `autobuild` pinned the tag object, which 422s on the commits API and trips the
+  workspace SHA audit; canon's `test_lint.sh` now asserts all three steps pin one
+  commit). Canon's `e4fba868…` is already the peeled commit, so copying it is
+  safe. Leave `actions/checkout@v7` alone — see the caveat.
+- *Caveat — do not widen this into a policy change.* Floating majors are the
+  repo's standing convention for locally-owned workflows: `actions/checkout@v7`
+  / `setup-python@v7` float in seven files (`codeql`, `conformance`,
+  `acceptance`, `chg-gate`, `doc-review`, `hermes`, `plugin`). `codeql-action` is
+  separable on two specific grounds only — canon SHA-pins that action
+  deliberately, and every *other* floating reference in the repo runs under
+  `contents: read` while this one runs under `security-events: write`. Whether
+  the convention itself should change is a different, unasked question.
+- *Tracker:* **issue** per the GD-10 three-test bar — meets (a) (mechanical, any
+  contributor can land it) and (b) (reproducible at `file:line` with a concrete
+  fix shape). Fails (c): `codeql.yml` feeds no required context, so it degrades
+  the Security tab rather than blocking merges.
 
 ### `[ci]` `ACCEPTANCE-TIER-REQUIRED-CHECK` — ✅ CLOSED (2026-07-27) — promote the acceptance gate to a required status check
 
@@ -1536,7 +1162,438 @@ reason was that the surface was not a canon caller at all.
   a clean working tree can still fail the CI gate. `.gitleaks.toml` is untouched
   — it is what CI consumes.
 
-### `[skill]` `MODEL-PRECHECK-ROLLOUT` — autopilots print the per-layer model recommendation (2026-06-23)
+### `[sync]` `HERMES-README-VERSION-DRIFT` — ✅ CLOSED (2026-07-10, HERMES-REVIEW-001 PR-DOCS) — `platforms/hermes/README.md` Version + framework-spec cells stale
+
+- *Context:* Plugin `0.20.1` PATCH (2026-06-14) found and fixed the same
+  drift class in `platforms/claude-code-plugin/README.md` (`0.6.3` →
+  `claude-code-plugin/v<X.Y.Z>` canonical form). `platforms/hermes/README.md`
+  carried the bug: `Version | 0.1.0` and `framework spec 0.1.0` (plus
+  `pyproject.toml` frozen at `0.1.0` and the README `$ cat VERSION` /
+  `$ cat FRAMEWORK_SPEC_VERSION` blocks).
+- *Resolution (HERMES-REVIEW-001 PR-DOCS):* (a) canonicalized the hermes README
+  Version cell to the `hermes/v<X.Y.Z>` tag form (already sync-covered); (b) added
+  the hermes README `framework spec \`X\`` prose + `$ cat FRAMEWORK_SPEC_VERSION`
+  awk sync to the framework-VERSION fanout block; (c) added `platforms/hermes/pyproject.toml`
+  version + README `$ cat VERSION` awk sync to the hermes-VERSION fanout block. All
+  stale `0.1.0` strings reconciled to the real `0.7.3` / spec `0.36.2`; future bumps
+  auto-propagate.
+
+### `[docs]` `FRWK-REVIEW-002-PR-E` — ✅ CLOSED (2026-07-09) — engine-agnosticism sweep
+
+- Context: FRWK-REVIEW-002 PR-E — the spec carried engine-specific tokens (the
+  playbook `agent:` field pointing into `platforms/claude-code-plugin/`;
+  `doc-*`/"SKILL" vocabulary; a workspace-CI section; repo-root tool refs).
+- Resolved: founder chose the **Hybrid** ruling, recorded as **GD-06** in
+  `framework/governance/DECISIONS.md` (PR-E0 #284). PR-E-impl (#285) neutralized
+  the generic vocabulary (doc-*/"SKILL" → engine-neutral, `claude -p` → neutral,
+  AIDOC table → Platform-B illustration, tool paths → reference implementation)
+  and kept the two sanctioned exceptions (the `agent:` executor field, softened;
+  the workspace-CI section, scope-noted). Spec `0.36.0 → 0.36.2`.
+
+### `[sync]` `SYNC-CLAUDE-PLUGIN-VERSION-GAP` — ✅ CLOSED (2026-07-09) — `sync-version-refs.sh` didn't update CLAUDE.md's plugin-version string
+
+- Context: FRWK-REVIEW-002 PR-A/B bumped the plugin `0.23.2 → 0.23.4` but the
+  `Current state` line in `CLAUDE.md` stayed at `0.23.2` — PR-G #281 fixed it by
+  hand. The sync hook updated CLAUDE.md's framework-spec string but not the
+  plugin-version string, so every plugin bump left it stale.
+- Fixed: extended the `scripts/sync-version-refs.sh` plugin-version block to also
+  rewrite the `Claude Code plugin \`X.Y.Z\`` token in `CLAUDE.md`(mirrors the
+  framework-spec handling), and added a conformance guard
+  (`test_claude_md_current_state_matches_plugin_version`) so re-drift fails CI.
+
+### `[template]` `D54-F06-IPLAN-PROJECT-TYPES` — IPLAN hardcodes a Python source tree — ✅ CLOSED (2026-07-06, D-0054, spec 0.33.1)
+
+- *Context:* D54 F-06. `IPLAN-TEMPLATE.yaml` still hardcodes
+  `pytest/mypy/ruff`, `src/`, `tests/`; PR-E sub-types only split
+  `code_build`/`deploy`/`combined`, not language/deliverable. Non-Python
+  deliverables (plugin SKILL.md sets, managed infra) don't fit.
+- *Fix shape:* **cross-reference `plans/IPLAN-LANG-001-PLAN.md`** (already
+  drafted, PLANNED, not merged) — language-neutral template inheriting
+  `language:`/`dependencies:` from SPEC. Revive + merge it; extend with
+  non-code deliverable scaffolds (plugin/infra/docs) if SPEC-inheritance
+  alone doesn't cover them. Do NOT duplicate the plan here.
+- *Status:* ✅ **CLOSED (2026-07-06, `IPLAN-LANG-001-PLAN.md`, D-0054, spec 0.33.0 →
+  0.33.1).** `IPLAN-TEMPLATE.yaml` example content is now language-neutral: `file_manifest`
+  paths (§2) + `execution_commands` (§3) + the residual §5/§6 example paths use
+  `<…, per the @spec language>` placeholders with labelled `# example (Python):` lines, and
+  the `_guidance` instructs deriving the toolchain from `@spec: SPEC-NN` (SPEC owns
+  `language:`/`dependencies:`). Inheritance, not a new IPLAN field; structural contract
+  preserved (no validator/schema/conformance change). **Deferred residual:** non-code
+  *deliverable scaffolds* (plugin SKILL.md sets / managed infra / docs) — SPEC-language
+  inheritance covers the language axis; a dedicated deliverable-type scaffold is a separate
+  item, surface it only if a non-code IPLAN actually needs one.
+
+### `[lint]` `D54-F13-PHASE-SCOPE-RECONCILIATION` — no phase tag / no missing-downstream check — ✅ CLOSED (2026-07-06, D-0055, spec 0.34.0)
+
+- *Context:* D54 F-13 (gap only — the underlying drift was a workflow
+  error, not a framework defect). `trace_walk.py`/TRACE-RES-001 detect
+  *orphans* (downstream→no upstream) but there is no *missing-downstream*
+  check (accepted feature → no IPLAN) and no phase/scope-band tag.
+- *Fix shape:* asymmetric, per author: "accepted feature has no IPLAN" =
+  **warning** (legitimately mid-build; respects the completeness-check
+  convention); "out-of-phase item leaked into an in-phase plan" (Phase-2
+  SP in a Phase-1 IPLAN) = **blocking/high-severity** — a correctness
+  defect, not incompleteness. Add a first-class phase tag on capability
+  elements. The "scope ledger" is a *designated section of the existing
+  BRD acceptance/index* (acceptance_criteria / launch_gates), NOT a new
+  artifact — everything references it.
+- *Status:* ✅ **CLOSED (2026-07-06, `D54-F13-PHASE-LEAK-PLAN.md`, D-0055, spec 0.33.1 →
+  0.34.0).** The missing-downstream half shipped earlier as `COV01`; the phase-leak leg now
+  ships as **`COV03`** — the inverse of COV01's escape: a `Future`-banded (deferred) FR that
+  IS realized downstream draws an **advisory** (`warning`, both modes, never blocks; re-band
+  P1/P2 or confirm the deferral). **No first-class phase tag was added** — grounding found it
+  redundant with the existing FR band (`Future` = next-cycle) + the BRD-00 `Cycle` roadmap
+  (later-cycle BRDs are trace-inert, so cross-cycle leaks are already structurally
+  prevented). Canonical `tools/sdd_doc_lint` + both vendored mirrors; documented in
+  TRACEABILITY.md §Coverage gates; 6 test cases; zero example-corpus findings.
+
+### `[playbook]` `D54-F04-EARS-NONLATENCY-RUBRIC` — readiness rubric docks non-latency quantified bounds — ✅ CLOSED (2026-07-06, D-0057, spec 0.34.1)
+
+- *Context:* D54 F-04. Syntax already flexes (`@threshold:` + cycle-based
+  `WITHIN` + a `batch` category work), but the EARS-Ready checklist
+  mandates `p50/p95/p99` and docks a quantified cycle/iteration/event-window
+  bound for lacking percentiles.
+- *Fix shape:* the rubric is the real work — broaden the EARS-Ready
+  scoring criteria (`framework/layers/03_EARS/` + auditor playbook) to
+  count a quantified non-latency bound as "quantified." No new syntax.
+- *Status:* ✅ **CLOSED (2026-07-06, `D54-F04-EARS-RUBRIC-PLAN.md`, D-0057, spec 0.34.0 →
+  0.34.1).** Reworded the four percentile-mandating surfaces in `EARS-TEMPLATE.yaml` (scoring
+  weight, EARS-Ready checklist, antipattern, quality-attrs guidance + a new "Non-latency bound
+  examples" table): **latency** → percentiles; **non-latency** (cycle/iteration/event-window/
+  `*.count`) → concrete value + unit. Latency bar preserved; no new syntax. **Template-only**
+  — the playbook lenses were already correct (`tech_lead.md` "any other quantified"), so the
+  "+ auditor playbook" leg was unnecessary. Prose `_guidance` only (deterministic lint
+  byte-identical); the corpus score improvement lands at the next wholesale regen.
+
+### `[lint]` `ENG-FWD-COVERAGE` — no full-chain FORWARD coverage gate; single-upstream EARS hides built requirements — ✅ CLOSED (2026-07-06, CFB-PR-2, spec 0.24.0–0.30.0)
+
+- *Context:* Engramory #7 (extends BeeLocal #54). Two implemented core
+  requirements traced to NO IPLAN because the serving EARS lines carried
+  only one `@brd:` each. `trace_walk.py` is BACKWARD-only (downstream →
+  upstream orphan resolution); nothing asserts FORWARD that every BRD FR
+  reaches ≥1 SPEC and ≥1 IPLAN. `ID_NAMING_STANDARDS.md:34-36` permits
+  multi-`@brd:` at *document* level but not explicitly at EARS-*line* level,
+  and no lint flags a BRD FR with zero downstream coverage.
+- *Fix shape:* (a) a forward coverage report/GATE-CODE pre-check
+  (`sdd_coverage`): resolve the `@`-tag graph, assert every BRD FR reaches
+  ≥1 SPEC + ≥1 IPLAN, emit the full BRD→…→IPLAN matrix, list broken/empty
+  downstream paths. **Severity is split (author):** a BRD FR explicitly
+  marked `deferred:`/future-cycle with no IPLAN = **warning** (legitimately
+  mid-build); an *in-scope* FR with no IPLAN at GATE-CODE = **block** (can't
+  codegen an in-scope requirement with no plan); the **SPEC leg is stricter
+  than the IPLAN leg** — a BRD FR reaching NO SPEC at all = **block** (the
+  false-pass design gap the gate exists to catch). (b) Permit + encourage
+  multiple `@brd:` per EARS line; lint any BRD FR with zero downstream EARS
+  coverage. **Syntax (author):** repeated same-layer tags, pipe-delimited —
+  `@brd: X | @brd: Z | @prd: Y`; `taglint` splits on `|`, parses each token
+  as `@<layer>: <ID>`, OR-groups by layer. NOT comma lists (the EARS
+  traceability antipattern already forbids commas/ranges — would collide
+  with `D54-F07`). Backward-compatible: single-tag lines are the degenerate
+  case. (c) Bind the gate at each layer's native granularity — element-level
+  for BRD→…→ADR, **document-level** for SPEC/TDD/IPLAN (`@spec: SPEC-NN`,
+  `@iplan: IPLAN-NN` are document-level by design), so the gate never
+  depends on SPEC/IPLAN element IDs (keeps it non-conflicting with
+  `ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE`). (d) **Backward leg (BeeLocal #54/#10):**
+  add a `coverage` section to the `SPEC-00` index template — each L3/L4
+  (EARS/BDD) element → its covering SPEC or an explicit `deferred: <reason>`
+  — plus a GATE-06 backward-coverage check flagging any EARS req / BDD
+  scenario with no downstream SPEC/TDD, distinguishing *deferred* from
+  *missed* (BeeLocal measured EARS-01 11/16, BDD-02 6/12 uncovered at
+  element level, indistinguishable today). (e) The forward gate's emitted
+  BRD→…→IPLAN matrix doubles as BeeLocal #52's "recommended generated
+  `TRACEABILITY.md` matrix" (#8b — the cardinality *note* is already closed
+  via CLEANUP-PR-F; only the generated matrix remained open).
+- *Related:* the "every accepted feature → ≥1 IPLAN = warning" half is
+  shared with `D54-F13-PHASE-SCOPE-RECONCILIATION`; one forward-coverage
+  engine can serve both. Build once.
+- *Status:* ✅ **CLOSED (verified 2026-07-06 against shipped code).** Delivered
+  by the CFB-PR-2 coverage engine (spec 0.24.0–0.30.0). **Leg (a) forward gate =
+  `COV01`** (`sdd_doc_lint/__init__.py` `_check_forward_coverage`): every in-scope
+  (AUTHORED) BRD FR must reach ≥1 SPEC + ≥1 IPLAN corpus-wide, with the exact
+  author-specified severity split (escaped/`deferred` FR never blocks; no-SPEC =
+  error; SPEC-but-no-IPLAN = warning in `build` / error in `gate-code`); element
+  granularity added by ELEMENT-COVERAGE-001 (spec 0.30.0). **Leg (d) backward =
+  `COV02`** (`_check_backward_coverage`, corpus-wide, deferred-vs-missed split).
+  **Leg (e) generated matrix = `docs/TRACEABILITY_MATRIX.md`** (`tools/sdd_coverage.py`).
+  Residual: **the phase-leak row (DD-6 row 4)** is explicitly deferred in the COV01
+  docstring — tracked under `D54-F13` (the phase-tag leg), not here.
+
+### `[lint]` `LINT-DOCID-HEADER-FALSE-POSITIVE` — `_DOC_ID` scan flags `<TYPE>-<word>` header/filename tokens as ID02 — ✅ CLOSED (2026-07-06, D-0056)
+
+- *Context:* surfaced by ENG-BRD-SKETCH-ROADMAP Pass-4 review. The ID02 doc-id scan
+  matches any `<KNOWN-TYPE>-<token>` and flags it unless it is `TYPE-<digits>` (or,
+  post-D-0043, ends in `-INDEX`). So legitimate prose tokens trip it: e.g.
+  `BRD-00_index.TEMPLATE.md` carries ID02 on the `PRD-Ready` column header and the
+  `BRD-TEMPLATE` quick-link. Pre-existing; orthogonal to the roadmap rows; harmless
+  (templates aren't CI-linted) but a consumer's filled-in index keeps 2 standing ID02s.
+- *Fix shape:* narrow the `_DOC_ID` malformed-id check — skip tokens inside
+  inline-code / link targets / known header words, or require the doc-id to be a
+  standalone token in a trace context. Needs care not to mask real malformed ids.
+- *Status:* ✅ **CLOSED (2026-07-06, `LINT-DOCID-HEADER-FALSE-POSITIVE-PLAN.md`, D-0056).**
+  ID02 now fires **only on a digit-leading second segment** (a valid doc-id is
+  `TYPE-<digits>`, always digit-leading; a letter-leading `TYPE-<word>` is prose). Removes
+  `PRD-Ready`/`BRD-TEMPLATE`/`BRD-NN` while keeping real malformed ids (`BRD-2`, `BRD-007x`);
+  generalizes D-0043's `-INDEX` exemption. Pure `tools/sdd_doc_lint` bugfix (vendored to both
+  mirrors) — **no `framework/` change, no version bump** (D-0043 precedent). New unit guard +
+  166 conformance green. *(Chosen over the inline-code/link-context parse — that would miss
+  the bare table-cell `PRD-Ready`.)*
+
+### `[template]` `INDEX-UPSTREAM-RESIDUE` — stale cumulative `Upstream:` enumerations in layer index templates / READMEs — ✅ CLOSED (2026-06-30, spec 0.32.6 — P3 docs sweep)
+
+- *Context:* CFB-PR-1 (PR #180) migrated cumulative→necessary-upstream across
+  ~20 surfaces, but its V6 grep keyed on the literal "cumulative" and missed the
+  per-layer **`Upstream:` enumerations** in the layer index templates / READMEs.
+  Concrete: `framework/layers/06_SPEC/SPEC-00_index.TEMPLATE.md:27` declares
+  `Upstream: BRD, PRD, EARS, BDD, ADR` (the old full chain) where SPEC's
+  `required_tags` is `[ears, bdd, adr]`; `:29` carries the full-chain line. The
+  other layer index templates likely carry the same.
+- *Fix shape:* sweep the `NN_*/<TYPE>-00_index.TEMPLATE.*` + layer READMEs;
+  correct each `Upstream:` line to the registry `required_tags`. Same class as
+  CFB-PR-1; doc-only. (CFB-PR-2 2b fixes the SPEC-00 two lines in-passing while
+  it's open; this entry tracks the cross-layer sweep.)
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Corrected the 5
+  stale `Upstream:` lines in EARS/BDD/ADR/TDD-00 index templates to
+  necessary-upstream (SPEC-00/PRD-00 were already correct). **Template-side only** —
+  the example corpus has no layer index (only `09_CHG/CHG-00_index.md`), so the
+  wholesale corpus regen does NOT touch this (earlier banner/runbook mischaracterized
+  it as corpus-side — corrected).
+
+### `[template]` `D54-F12-AGENTIC-ANTIPATTERNS` — BRD/PRD business-vs-technical boundary fuzzy for AI-agent systems — ✅ CLOSED (2026-06-30, spec 0.32.6 — P3 docs sweep)
+
+- *Context:* D54 F-12. BRD/PRD antipatterns are CRUD-flavored; no agentic
+  example distinguishing "independent review stage" (business) from
+  "multi-stage agent pipeline w/ timeouts" (architecture).
+- *Fix shape:* add agentic/AI-system examples to the BRD/PRD
+  `_antipatterns` business-vs-technical lists (resolve via C4 altitude).
+  Cheap docs/template fix.
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Added an agentic
+  FAIL/PASS pair to BRD `_antipatterns` (agent-topology = architecture, not business
+  value) and PRD `_antipatterns` (pipeline topology/timeouts = ADR/SPEC, not
+  Container product behavior).
+
+### `[docs]` `ENG-BRD-SKETCH-ROADMAP` — no project-init roadmap + BRD "sketch" sub-form — ✅ CLOSED (2026-06-30, D-0044, spec 0.32.5)
+
+- *Context:* Engramory #1 (extends the "author current cycle full, stub the
+  rest" practice). Authoring only `BRD-01` full + index one-liners leaves
+  whole-project scope under-specified before cycle 1. `BRD-00_index` already
+  has an optional "Planned BRDs" table and `@depends:` chaining exists, but
+  there is no scope-only "sketch" form: `BRD-TEMPLATE.yaml:179` status is
+  only `Draft|In Review|Approved`, and a scope-only future-cycle BRD would
+  fail lint as an incomplete full BRD.
+- *Fix shape (author scoped to docs-only now; lint deferred):* (a) document
+  a project-initiation step (README + `01_BRD/README.md`): enumerate all MVP
+  cycles **by extending the existing `BRD-00_index` "Planned BRDs" table**
+  with cycle / PROD / `@depends:` columns (its natural home — avoids
+  colliding with a consumer's top-level `ROADMAP.md` product-strategy file);
+  *recommend* the BRD-layer location, do NOT mandate a path. (b) Add a
+  `status: Sketch` value for scope-only future-cycle BRDs (document_control,
+  introduction, business_objectives hypothesis, project_scope only). (c) A
+  sketch is **trace-inert**: carries only its document-level `BRD-NN` +
+  `@depends:` for sequencing — no element IDs, not in the `@`-tag graph,
+  ignored by `ENG-FWD-COVERAGE`; on graduation to a full BRD it gets element
+  IDs + enters the graph. (d) Add a `SKETCH-001` lint (forbid downstream
+  content / element IDs on a Sketch) **only if** over-authoring drift shows
+  up in practice — deferred to keep this out of MINOR territory.
+- *Status:* SHIPPED (spec 0.32.5, 2026-06-30 — `ENG-BRD-SKETCH-ROADMAP-PLAN.md`,
+  D-0044). The `BRD-00` index "Planned BRDs" table is the roadmap home (extended
+  with cycle/PROD/`@depends:`/status `Planned|Sketch`); `01_BRD/README.md` documents
+  the project-init enumeration step + the trace-inert Sketch concept; cross-ref in
+  `BRD-TEMPLATE.yaml`. Built on STRUCT01-INDEX-EXEMPTION (D-0043). **Deferred
+  follow-ons** logged below: standalone Sketch-file lint support; the `_DOC_ID`
+  header/filename false-positive.
+
+### `[template]` `ENG-PLATFORM-ADR-TIMING` — "ADRs created BEFORE PRD" wording conflicts with cumulative-tag chain — ✅ CLOSED (2026-06-30, spec 0.32.6 — P3 docs sweep)
+
+- *Context:* Engramory #5 (resolves BeeLocal #40 by clarification).
+  `BRD-TEMPLATE.yaml:101` (platform-BRD guidance): "ADRs created BEFORE PRD
+  to validate architectural decisions." Read literally this conflicts with
+  the chain — an ADR carries `@ears`/`@bdd`, which can't exist pre-PRD.
+- *Fix shape:* reword: author ADRs in sequence (after BDD) so they carry
+  the full cumulative chain; "decided before PRD" refers to decision
+  *provenance* (recorded in the ADR's `context`/`originating_topic`), not
+  authoring *order*. **Confirmed pure wording fix — no platform-ADR-first
+  workflow variant (author Q8):** Engramory authored in strict layer order,
+  ADRs carried full `@ears`/`@bdd`, #40 never bit; their 5 ADRs were
+  converted from prior design decisions but still authored in-sequence.
+  **BeeLocal #40 adds a PRD-layer manifestation:** `PRD-TEMPLATE`
+  traceability says "Do NOT reference specific ADR numbers — ADRs don't
+  exist yet" and frames `adr_topic_elaboration` as "options for ADR to
+  evaluate" — backwards for a platform PRD whose ADRs are already decided.
+  Add a platform-flow note to the PRD template too (a platform PRD MAY cite
+  existing ADRs). Same clarification, second surface.
+- *Status:* SHIPPED (spec 0.32.6, 2026-06-30 — P3 docs sweep). Reworded the
+  platform-BRD ADR-timing line (decisions DECIDED before PRD = provenance; ADR
+  *documents* still AUTHORED in-sequence so they carry the full upstream chain) +
+  added the platform-flow exception to `PRD-TEMPLATE` traceability +
+  `adr_topic_elaboration` (a platform PRD MAY cite already-decided ADRs).
+
+### `[template]` `BL-READY-SCORE-ADVISORY` — `*_ready_score` placeholders read as a required gate — ✅ CLOSED (2026-06-30, D-0042, spec 0.32.4)
+
+- *Context:* BeeLocal #56 (52 occurrences). Every ADR/SPEC/TDD ships
+  `*_ready_score: [Score]/100` + `target_score: ">=90/100"`, which reads as
+  a required gate, but the score is **advisory** — the deterministic lint
+  floor is the real gate and the score is computed by the auditor lens, not
+  hand-authored. A blank field makes a finished set look half-done.
+- *Fix shape (author Q4 — mark-advisory, do NOT build a rubric):* mark the
+  field explicitly advisory in every template (`_note: "Computed by the
+  auditor lens; authoring this is advisory — a blank value is NOT
+  incomplete"`) and reword `target_score` so it reads as a readability
+  threshold, not a gate. **No offline rubric/tool** — that would contradict
+  `D54-F03` (the audit skill IS the rubric; the deterministic floor is
+  `sdd_doc_lint`).
+- *Status:* SHIPPED (spec 0.32.4, 2026-06-30 — `BL-READY-SCORE-ADVISORY-PLAN.md`,
+  D-0042). All 7 layer templates (BRD…TDD) marked: inline `#` comment on each of the
+  14 score lines + one `_note:` per `health_score` block + **15 reworded
+  `_guidance` prose lines** that still framed the score as "required"/a "quality
+  gate" (ai-review caught the contradiction on impl PR #222 — plan Pass 3); PATCH
+  0.32.3 → 0.32.4. No rubric (author Q4). The "52 occurrences" was BeeLocal's
+  per-artifact tally; the template fix is 14 field lines + 15 prose lines. IPLAN/08
+  carries neither field, so "all 7" = 01–07.
+
+### `[lint]` `STRUCT01-INDEX-EXEMPTION-NESTED` — ✅ CLOSED (2026-06-30) — index/registry templates never hit the STRUCT01/trace `-INDEX` exemption
+
+- *Discovered:* 2026-06-30 by the ENG-BRD-SKETCH-ROADMAP plan's independent review.
+  The STRUCT01 required-section exemption + the trace-resolution INDEX skip both read
+  a **top-level** `artifact_type` ending in `-INDEX`, but the 7 `.md` layer index
+  templates nest `artifact_type` under `custom_fields` (6 with a bare value) and the
+  IPLAN-00 registry is a `.yaml` with no `---` frontmatter — so the exemption never
+  fired and a consumer's copied index threw STRUCT01 errors (BRD-00: 17). The
+  `-INDEX` token also self-tripped the ID02 doc-id scan.
+- ✅ **Fixed** (STRUCT01-INDEX-EXEMPTION, D-0043): filename-based `_is_index_doc`
+  (`<TYPE>-00_index`) used in both exemptions + ID02 skips `-INDEX` tokens; all 8
+  index templates (incl. the `.yaml`) lint clean; new conformance guard
+  `test_index_template_lint.py`. Pure linter fix, no spec bump.
+  Plan: `plans/STRUCT01-INDEX-EXEMPTION-PLAN.md`.
+
+### `[template]` `ENG-SPEC-IPLAN-ID-EXEMPTION-NOTE` — element-ID exemption lives only in the standard, not the templates — ✅ CLOSED (2026-06-29, spec 0.32.1)
+
+- *Context:* Engramory #4. `ID_NAMING_STANDARDS.md:64-98` documents that
+  SPEC §5/§3 and IPLAN §4/§2 MAY omit layer-local element IDs, but
+  `SPEC-TEMPLATE.yaml` / `IPLAN-TEMPLATE.yaml` are silent — an author
+  reading only the template may over-assign IDs (noise) or worry they're
+  missing required ones. Follow-on to the closed item that *added* the
+  exemption to the standard (CLEANUP-PR-C).
+- *Fix shape:* add a one-line `_note` in SPEC §5/§3 and IPLAN §4/§2
+  template guidance cross-referencing the exemption; **keep the exemption**
+  (author Q7 — do NOT require element IDs everywhere; that would reintroduce
+  the second-naming-surface the standard created the exemption to avoid).
+  Non-conflicting with `ENG-FWD-COVERAGE`: that gate binds SPEC/TDD/IPLAN at
+  *document* level, so it never relied on their element IDs. Keep the
+  standard authoritative; the template just cross-references it.
+- *Status:* SHIPPED (spec 0.32.1, 2026-06-29) — cross-ref `_note` added to SPEC §3/§5 + IPLAN §2/§4 template guidance; exemption unchanged.
+
+### `[docs]` `ENG-IPLAN-REGISTRY-README` — registry-vs-document schema distinction undocumented in the layer README — ✅ CLOSED (2026-06-29, spec 0.32.2)
+
+- *Context:* Engramory #3. `IPLAN-00_index` is `document_type:
+  iplan-registry` (no `document_control`); `IPLAN-NN_*` are
+  `iplan-document`. A naive "validate every `08_IPLAN/IPLAN-*.yaml`" glob
+  trips on the registry. `sdd_doc_lint` ALREADY special-cases INDEX docs
+  (`__init__.py:927-969`, `:836-850`) — so only the *author-facing note* is
+  missing.
+- *Fix shape:* one-line note in `08_IPLAN/README.md` that registry vs
+  document are distinct schemas + how each is validated (lint exempts
+  `artifact_type: *-INDEX`). Docs-only.
+- *Status:* SHIPPED (spec 0.32.2, 2026-06-29) — 'Index registry vs document schema' section added to 08_IPLAN/README.md.
+
+### `[docs]` `BL-BRD-SET-WORDING` — "each BRD = one cycle" misreads as one-BRD-per-cycle — ✅ CLOSED (2026-06-29, spec 0.32.3 — BeeLocal docs sweep)
+
+- *Context:* BeeLocal #34. `01_BRD/README.md:6,34` says "Each BRD represents
+  ONE iteration cycle." Platform/feature BRD typing
+  (`BRD-TEMPLATE.yaml:95-109`) + `@depends:` already support a BRD *set* per
+  cycle (one platform BRD + child feature BRDs), but the wording hides it —
+  caused real BeeLocal planning confusion.
+- *Fix shape:* reword to "each BRD *set* (platform + its feature BRDs) = one
+  iteration cycle" + add a parent/child tree example. Docs-only; ties to
+  `ENG-BRD-SKETCH-ROADMAP` (same BRD-00/cycle area).
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
+
+### `[docs]` `BL-SIZE-UNITS` — section `_size_target` in words vs document cap in tokens — ✅ CLOSED (2026-06-29, spec 0.32.3 — BeeLocal docs sweep)
+
+- *Context:* BeeLocal #41a. Section `_size_target` values are WORDS
+  (`BRD-TEMPLATE.yaml:171` `100 # words`, …) and `AUTHORING_STYLE.md:62-69`
+  targets are words, but the document split cap is 50,000 TOKENS
+  (`BRD-TEMPLATE.yaml:117-118`). Mixed units, no stated relationship.
+- *Fix shape:* one clarifying note (in `AUTHORING_STYLE.md` or the template
+  size guidance) stating the two units' relationship — section targets are
+  authoring guidance in words; the 50k-token cap is the split trigger.
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
+
+### `[template]` `BL-VENDOR-NAME-SCOPE` — "no vendor names" rule collides with `recommended_selection` — ✅ CLOSED (2026-06-29, spec 0.32.3 — BeeLocal docs sweep)
+
+- *Context:* BeeLocal #41b. `adr_topics` guidance
+  (`BRD-TEMPLATE.yaml:615-617`) says "use business capability descriptions,
+  not vendor names (FAIL: MUST use PostgreSQL)" — yet `recommended_selection`
+  is exactly where the chosen vendor goes. The rule's scope is unstated.
+- *Fix shape:* clarify the rule applies to titles/`business_driver` (stay
+  business-level) but vendor names ARE allowed in `recommended_selection`
+  (the decision record). One-line template note.
+- *Status:* SHIPPED (spec 0.32.3, 2026-06-29 — BeeLocal docs sweep).
+
+### `[sync]` `BUMP-SKILL-AUTHORING-CHECKLIST-STRAGGLER` — ✅ CLOSED (2026-06-29) — `bump_version.py` misses the SKILL_AUTHORING acceptance-checklist line
+
+- ✅ **Fixed:** `bump_version.py` now sweeps any unanchored
+  `framework_spec_version: "X"` in `SKILL_AUTHORING.md` (idempotent), catching
+  the backtick-wrapped §6 checklist line; the current stale `0.27.0` value
+  corrected to `0.30.0`.
+- *Context:* recurred in CFB-PR-2 2a-core step 6 (0.23.1→0.24.0) AND 2b step 3
+  (0.24.0→0.25.0). `SKILL_AUTHORING.md:112` (`- [ ] … framework_spec_version:
+  "X" present.`) is a backtick-wrapped checklist line, not the `^…
+  framework_spec_version: "…"` frontmatter form `bump_version.bump_fsv` matches,
+  so every framework bump leaves it stale (fixed by hand each time). Author-facing
+  (a skill author following the checklist asserts the wrong value).
+- *Fix shape:* extend `bump_version.py` (a `bump_plugin_readme`-style targeted
+  rewrite for the SKILL_AUTHORING checklist line), or add a conformance guard
+  asserting the checklist version == `framework/VERSION`.
+
+### `[harness]` `RELEASE-CHANGELOG-TEST-CONVENTION-GAP` — ✅ CLOSED (2026-06-29) — `tests/release/test_changelog_entry.py` doesn't match the `[Unreleased]` convention
+
+- ✅ **Fixed:** the test now accepts the current version in EITHER a released
+  `## [X.Y.Z]` heading OR an `[Unreleased]` `### … <version>` subsection heading
+  (matches the version in any level-2/3 heading, trailing-boundary guarded).
+  3/3 release tests green.
+- *Context:* surfaced in CFB-PR-2b self-review. The test requires a top-level
+  `## [<version>]` heading, but the repo nests releases under `## [Unreleased]`
+  with `### Added — Framework Spec X → Y`. It is RED at HEAD for `0.25.0` (and on
+  `main` for `0.24.0`) — but **outside CI scope** (conformance.yml runs only
+  `tests/conformance`; hermes.yml runs pytest under `platforms/hermes`), so CI
+  stays green. Pre-existing, not a 2b regression.
+- *Fix shape:* update the test to recognize the `[Unreleased]` + `### … X → Y`
+  convention, or move release entries to top-level `## [X]` headings on release.
+
+### `[governance]` `BL-TAG-CHAIN-GATE-SYNC` — stale cumulative-tag docs contradict the necessary-upstream contract — ✅ CLOSED (2026-06-27, PR #180, `8e001192`)
+
+- *Context:* BeeLocal #53. The author flagged that SPEC/TDD carry only
+  `@adr,@bdd,@ears` and IPLAN only `@spec,@tdd`, "contradicting GATE-08-E003."
+  **The templates are CORRECT** — NECESSARY-UPSTREAM-001 (PR #121) deliberately
+  replaced the old cumulative chain (immediate-upstream only; the cumulative
+  form caused trace-fabrication). The real defect is the OPPOSITE of the
+  author's proposed fix: `GATE-08_IPLAN.md:222-231` (E003 *resolution*
+  example) and `TRACEABILITY.md:9-24` (cumulative-tags diagram) are STALE —
+  they still show the old full chain, contradicting `LAYER_REGISTRY.yaml`
+  `required_tags` + the live templates.
+- *Fix shape:* do NOT re-add cumulative tags to SPEC/TDD/IPLAN templates.
+  Instead correct the two stale docs to the necessary-upstream contract:
+  fix the `GATE-08-E003` resolution example to `[spec, tdd]` and resync the
+  `TRACEABILITY.md` chain diagram to immediate-upstream. The corrected
+  diagram MUST state the transitive path **explicitly** (PRD/BRD reachable
+  by walking ADR/BDD/EARS→PRD→BRD, not via L6+ local tags), and point the
+  reverse lookup ("which BRD is SPEC-07?") at the generated `TRACEABILITY.md`
+  matrix (`ENG-FWD-COVERAGE` (e)) so nobody re-files it as a gap.
+- *Confirmed (author Q1):* BeeLocal's chain verified clean with exactly this
+  contract — SPEC `@adr/@bdd/@ears`, TDD `@spec/@bdd/@ears`, IPLAN `@spec/@tdd`
+  only, zero dangling refs. GATE-08-E003 requiring `@brd+@prd` is the bug,
+  not the templates. Do NOT re-add cumulative tags.
+- *Status:* **CLOSED** — 2026-06-27, squash `8e001192` (PR #180), as
+  **CFB-PR-1** (CONSUMER-FEEDBACK-001). Expanded during implementation from the
+  2 named docs to the **full ~20-surface cumulative→necessary-upstream
+  reconciliation** (the V6 grep + independent review surfaced the stale model
+  across EARS/BDD templates, GATE-03 + error catalog with FALSE `required_tags`
+  claims, 3 layer READMEs, BDD-00 index, DEFINITION_OF_DONE, the ADR + IPLAN
+  auditor playbooks, the guides, and the `AI_ASSISTANT_RULES` live author-facing
+  bug). Framework spec 0.23.0 → 0.23.1; plugin VERSION unchanged. See
+  `plans/CFB-PR-1-TAG-CHAIN-GATE-SYNC-PLAN.md` Pass-4 log.
+
+### `[skill]` `MODEL-PRECHECK-ROLLOUT` — autopilots print the per-layer model recommendation — ✅ CLOSED (2026-06-22, PR #164, `6700301f`)
 
 - *Context:* `commands/model.md` documented a `model.precheck` mode the
   `doc-*` skills "consult," but no skill did — a documented-but-unimplemented
@@ -1555,7 +1612,7 @@ reason was that the surface was not a canon caller at all.
   Pass 1-7 + independent diff review (caught the stale `commands/model.md`
   wording). See `plans/MODEL-PRECHECK-ROLLOUT-PLAN.md`.
 
-### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots now saga-driven (2026-06-22)
+### `[skill]` `SAGA-PARITY-001-PHASE-4` — 6 layer autopilots now saga-driven — ✅ CLOSED (2026-06-22, PR #161, `f277ea1a`)
 
 - *Context:* Only `doc-brd/prd/chg-autopilot` invoked `tools/saga_driver.py`;
   the 6 layer autopilots `doc-{ears,bdd,adr,spec,tdd,iplan}-autopilot` still
@@ -1574,7 +1631,7 @@ reason was that the surface was not a canon caller at all.
   independent diff review caught + fixed a Step-3 dangling cross-reference.
   See `plans/SAGA-PARITY-001-PHASE-4-PLAN.md`.
 
-### `[example-corpus]` url-shortener corpus regen → all 6 layers PASS (2026-06-10)
+### `[example-corpus]` url-shortener corpus regen → all 6 layers PASS — ✅ CLOSED (2026-06-10, PR #125, `90f37002` + PR #127, `c56c386f`)
 
 - *Resolution:* TRACE-RES-FIXUP-001 (PR #125, merge `90f37002`) + IPLAN-RT-001
   (PR #127, merge `c56c386f`). Cascade scores: PRD 92 / EARS 94 / BDD 91 /
@@ -1582,7 +1639,7 @@ reason was that the surface was not a canon caller at all.
   surfaced 9 NEW framework-improvement items, captured above as Open
   entries for FRAMEWORK-CLEANUP-001 triage.
 
-### `[harness]` Cascade harness lacks `--skip-lint-smoke` flag for migration scenarios
+### `[harness]` Cascade harness lacks `--skip-lint-smoke` flag for migration scenarios — ✅ CLOSED (2026-06-11, PR #129, `79b91d0e`)
 
 - *Context:* TRACE-RES-FIXUP-001 cascade (2026-06-10) needed
   `SDD_LINT_SKIP_TRACE_RES=1` env-var bypass to run against the legacy
@@ -1590,9 +1647,9 @@ reason was that the surface was not a canon caller at all.
 - *Fix shape:* add `--skip-lint-smoke` flag to `tests/scripts/test-acceptance.sh`
   Phase 0 so migration runs can defer lint until after the corpus is
   regenerated. Removes the need for per-rule env-var bypasses.
-  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-A (PR #129, merge `79b91d0e`) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
 
-### `[harness]` Tree-safety check requires `--force` after pre-cleanup; plan templates don't surface this
+### `[harness]` Tree-safety check requires `--force` after pre-cleanup; plan templates don't surface this — ✅ CLOSED (2026-06-11, PR #129, `79b91d0e`)
 
 - *Context:* TRACE-RES-FIXUP-001 first cascade attempt (2026-06-10) aborted
   in 30s at Phase 0 "tree-safety FAIL" because `rm -rf` of legacy artifacts
@@ -1602,9 +1659,9 @@ reason was that the surface was not a canon caller at all.
   the cascade-rebuild section of plans that touch `examples/<NAME>/`,
   or (b) auto-stage the cleanup in the harness so the safety check sees
   a clean tree.
-  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-A (PR #129, merge `79b91d0e`) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
 
-### `[lint]` `sync-vendored.sh` and `sync-plugin-framework.sh` are two separate sync mechanisms; easy to confuse
+### `[lint]` `sync-vendored.sh` and `sync-plugin-framework.sh` are two separate sync mechanisms; easy to confuse — ✅ CLOSED (2026-06-11, PR #129, `79b91d0e`)
 
 - *Context:* TRACE-RES-FIXUP-001 Task 2 (2026-06-10) and earlier
   NECESSARY-UPSTREAM-001 (PR #121): I edited the vendored lint module,
@@ -1618,9 +1675,9 @@ reason was that the surface was not a canon caller at all.
   vendored module declaring "DO NOT EDIT — synced from tools/...". A
   brief CONTRIBUTING.md note next to the existing sync-script docs
   would also help.
-  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-A (PR #129, merge `79b91d0e`) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
 
-### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056)
+### `[skill]` Auditor + fixer SKILLs emit unescaped `|` inside backtick code spans in table cells (MD056) — ✅ CLOSED (2026-06-11, PR #129, `79b91d0e`)
 
 - *Context:* IPLAN-RT-001 live cascade (2026-06-10) produced
   `examples/url-shortener/.aidoc/audit/08_IPLAN-audit.md:105` and
@@ -1634,9 +1691,9 @@ reason was that the surface was not a canon caller at all.
   span to a paragraph reference). Until then, `examples/<name>/.aidoc/`
   is excluded from the pre-commit markdownlint hook (workflow-gap fix
   landed in IPLAN-RT-001 commit).
-  *Resolution:* CLEANUP-PR-A (PR #TBD, merge SHA TBD) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-A (PR #129, merge `79b91d0e`) — first child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-A-HARNESS-LINT-PLAN.md` for impl details.
 
-### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound
+### `[governance]` Iteration cap for the quality loop is implementation-bound, not spec-bound — ✅ CLOSED (2026-06-11, PR #130, `60f72a5e`)
 
 - *Context:* `REVIEW_REMEDIATION_FLOW.md` defines the quality loop as
   "Draft → Review → (Remediate → Re-review)* → Gate Pass" and states
@@ -1658,9 +1715,9 @@ reason was that the surface was not a canon caller at all.
   consistent with spec — but the silent 3-iter ceiling means
   near-convergent artifacts (89/90) end up `PARTIAL_TIMEOUT` instead of
   one-more-cycle.
-  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-C (PR #130, merge `60f72a5e`) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
 
-### `[registry]` `@threshold:` 3-segment keys vs element-ID 4-segment pattern
+### `[registry]` `@threshold:` 3-segment keys vs element-ID 4-segment pattern — ✅ CLOSED (2026-06-11, PR #130, `60f72a5e`)
 
 - *Context:* `LAYER_REGISTRY.yaml` `id_patterns.element` regex covers
   the 4-segment hash form `TYPE.NN.SS.xxxx`. But threshold keys use a
@@ -1671,9 +1728,9 @@ reason was that the surface was not a canon caller at all.
 - *Fix shape:* add a `threshold` ID pattern to `LAYER_REGISTRY.yaml`
   `id_patterns:`; extend `sdd_doc_lint` to validate the new namespace.
   Coordinate with the `[gate] Threshold-binding gate` entry above.
-  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-C (PR #130, merge `60f72a5e`) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
 
-### `[template]` SPEC + IPLAN declare no layer-local element IDs
+### `[template]` SPEC + IPLAN declare no layer-local element IDs — ✅ CLOSED (2026-06-11, PR #130, `60f72a5e`)
 
 - *Context:* url-shortener review (2026-06-11) — `SPEC-01.md` and
   `IPLAN-01.md` carry no `SPEC.NN.SS.xxxx` or `IPLAN.NN.SS.xxxx`
@@ -1686,9 +1743,9 @@ reason was that the surface was not a canon caller at all.
   IPLAN §4 contracts via template + auditor lens, or (b) document the
   deliberate exemption in `ID_NAMING_STANDARDS.md` so future authors
   know it's intentional.
-  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-C (PR #130, merge `60f72a5e`) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
 
-### `[template]` EARS emits per-line `@bdd:` downstream slots — direction-of-flow violation
+### `[template]` EARS emits per-line `@bdd:` downstream slots — direction-of-flow violation — ✅ CLOSED (2026-06-11, PR #130, `60f72a5e`)
 
 - *Context:* url-shortener review (2026-06-11) — `EARS-01.md:68, 73, 81 etc.`
   emit per-line `@bdd: BDD-01` slots BEFORE the downstream BDD exists.
@@ -1698,9 +1755,9 @@ reason was that the surface was not a canon caller at all.
   rely on BDD's reverse `@ears:` tags for the trace (cleaner direction),
   or (b) declare downstream-slot semantics officially in
   `LAYER_REGISTRY.yaml` so the contract names them.
-  *Resolution:* CLEANUP-PR-C (PR #TBD, merge SHA TBD) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-C (PR #130, merge `60f72a5e`) — second child PR of FRAMEWORK-CLEANUP-001. See `plans/CLEANUP-PR-C-SPEC-REGISTRY-PLAN.md` for impl details.
 
-### `[plan-review]` Plan reviews should cross-check claims against the example corpus, not only test fixtures
+### `[plan-review]` Plan reviews should cross-check claims against the example corpus, not only test fixtures — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* NECESSARY-UPSTREAM-001 (PR #121) Pass 4 verified
   TRACE-RES-001 against `tools/sdd_doc_lint/fixtures/` but **not**
@@ -1712,9 +1769,9 @@ reason was that the surface was not a canon caller at all.
   skill to require, when a plan changes lint rules or @-tag semantics,
   a `python3 -m sdd_doc_lint examples/<NAME>/docs/` smoke run as a
   mandatory Pass-N check. Catches corpus drift before merge.
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[skill]` doc-tdd auditor C4 inter-section consistency may be over-strict (or the cascade-produced TDD-01 has a real inconsistency)
+### `[skill]` doc-tdd auditor C4 inter-section consistency may be over-strict (or the cascade-produced TDD-01 has a real inconsistency) — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* TDD-RT-001 live cascade (2026-06-09) finished with
   `content_score 89`; one P2 finding cited "§1 line 30 (cumulative
@@ -1725,9 +1782,9 @@ reason was that the surface was not a canon caller at all.
   PR #122 + decide whether C4 is the right gate or whether the TDD
   author needs to be tighter about section-level tag consistency. May
   result in a small `doc-tdd/SKILL.md` tightening.
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[plan-review]` 5-pass plan reviews are paying off; consider codifying minimum-pass count by plan-type
+### `[plan-review]` 5-pass plan reviews are paying off; consider codifying minimum-pass count by plan-type — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* TRACE-RES-FIXUP-001 plan took 5 passes to converge
   (Pass 4 caught a silent-no-op `rm -rf .aidoc/saga/` that would have
@@ -1738,9 +1795,9 @@ reason was that the surface was not a canon caller at all.
   in practice; per-layer rollout plans converge in 2. CLAUDE.md's
   "minimum 2" floor is correct; an advisory upper-bound by plan-type
   would help future estimation.
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[playbook]` `auditor` + `tech_lead` lens calibration — convergence theater
+### `[playbook]` `auditor` + `tech_lead` lens calibration — convergence theater — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* url-shortener cascade audit trail (2026-06-11) — `auditor`
   lens scored **100 on 4 of 5 cascaded layers** where it ran; `tech_lead`
@@ -1754,9 +1811,9 @@ reason was that the surface was not a canon caller at all.
   require tech_lead to cross-check the sections security/chaos flagged.
   Add a "no-lens-scores-100-without-falsifiable-evidence" guard to the
   synthesizer.
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[skill]` `doc-*-audit` must strip author's self-claimed scores before lens fan-out
+### `[skill]` `doc-*-audit` must strip author's self-claimed scores before lens fan-out — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* url-shortener cascade audit trail (2026-06-11) —
   `02_PRD/PRD-01/verdict.json:AUD-002` flagged that the author's
@@ -1769,9 +1826,9 @@ reason was that the surface was not a canon caller at all.
   must strip fields like `ears_ready_score`, `prd_score`, etc. from the
   artifact text before passing to each lens subagent. Document the
   stripped-field list in `REVIEW_TEAM.md` §Operations.
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[saga]` Saga lifecycle — no `fixer_introduced_finding` tag
+### `[saga]` Saga lifecycle — no `fixer_introduced_finding` tag — ✅ CLOSED (2026-06-11, PR #131, `1f28cc16`)
 
 - *Context:* `examples/url-shortener/.aidoc/review/04_BDD/BDD-01/saga.json`
   shows iter-2 fixer rewrote scenario `.9b90`; iter-3 audit found the
@@ -1783,9 +1840,9 @@ reason was that the surface was not a canon caller at all.
   `fixer_introduced_finding` tag on iter-N findings whose location
   matches a iter-(N-1) "Fixes Applied" table row. Surface in the audit
   report under `## Regressions` (new section in audit report format).
-  *Resolution:* CLEANUP-PR-B (PR #TBD, merge SHA TBD) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
+  *Resolution:* CLEANUP-PR-B (PR #131, merge `1f28cc16`) — third child PR of FRAMEWORK-CLEANUP-001 (heart). See `plans/CLEANUP-PR-B-REVIEW-CALIBRATION-PLAN.md` for impl details.
 
-### `[template]` IPLAN sub-types: code-build vs deploy
+### `[template]` IPLAN sub-types: code-build vs deploy — ✅ CLOSED (2026-06-11, PR #132, `9358faf0`)
 
 - *Context:* url-shortener review (2026-06-11) — IPLAN-01 covers Red/Green/
   Refactor with pytest gates but has **no canary, no smoke endpoint, no
@@ -1798,9 +1855,9 @@ reason was that the surface was not a canon caller at all.
   `code_build` | `deploy` | `combined`. Deploy IPLANs are gated on
   rollback/smoke/observability sections; code-build IPLANs are exempt.
   Audit dispatch selects the section set by subtype.
-  *Resolution:* CLEANUP-PR-E (PR #TBD, merge SHA TBD) — fourth child PR. See `plans/CLEANUP-PR-E-IPLAN-SUBTYPES-PLAN.md`.
+  *Resolution:* CLEANUP-PR-E (PR #132, merge `9358faf0`) — fourth child PR. See `plans/CLEANUP-PR-E-IPLAN-SUBTYPES-PLAN.md`.
 
-### `[gate]` Component-decomposition gate missing between PRD and ADR
+### `[gate]` Component-decomposition gate missing between PRD and ADR — ✅ CLOSED (2026-06-11, PR #133, `a9f1a795`)
 
 - *Context:* url-shortener review (2026-06-11) — BRD/PRD scoped the **whole
   service** (shorten + redirect + counter + abuse screening); ADR-01 onward
@@ -1812,9 +1869,9 @@ reason was that the surface was not a canon caller at all.
   artifact (a CHG-like decision record) at the PRD↔ADR boundary. ADR
   authoring SKILL must reference it; auditor must verify scope matches.
   Without it, downstream layers silently shrink scope unobserved.
-  *Resolution:* CLEANUP-PR-D (PR #TBD, merge SHA TBD) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
+  *Resolution:* CLEANUP-PR-D (PR #133, merge `a9f1a795`) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
 
-### `[gate]` Threshold-binding gate missing before BDD/TDD PASS
+### `[gate]` Threshold-binding gate missing before BDD/TDD PASS — ✅ CLOSED (2026-06-11, PR #133, `a9f1a795`)
 
 - *Context:* url-shortener review (2026-06-11) — 7 of 11 threshold keys
   in PRD-01 are placeholders (`screeningdeadline`, `countstaleness`,
@@ -1826,9 +1883,9 @@ reason was that the surface was not a canon caller at all.
   (mirror of TRACE-RES-001 for threshold keys): every `@threshold:KEY`
   citation must resolve to a numeric-bound value in the host doc.
   Unbound thresholds fire P1 at BDD/TDD audit.
-  *Resolution:* CLEANUP-PR-D (PR #TBD, merge SHA TBD) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
+  *Resolution:* CLEANUP-PR-D (PR #133, merge `a9f1a795`) — fifth and final child PR. Option A chosen; Option B deferred to item #19.
 
-### `[governance]` Doc-number independence across layers not codified anywhere
+### `[governance]` Doc-number independence across layers not codified anywhere — ✅ CLOSED (2026-06-11, PR #135, `7736120d`)
 
 - *Context:* User clarification (2026-06-11) — document numbers (the
   `NN` in `BRD-01` / `PRD-01` / `EARS-01` / ...) are **per-layer
@@ -1851,9 +1908,9 @@ reason was that the surface was not a canon caller at all.
   orphans. **Deferred to a follow-up CLEANUP-PR-F (single-item)** —
   cataloged here per Tier-2 pipeline (FRAMEWORK-FEEDBACK-LOG-001
   Principle 9); impl waits until after current cleanup PRs settle.
-  *Resolution:* CLEANUP-PR-F (PR #TBD, merge SHA TBD) — single-item follow-up after FRAMEWORK-CLEANUP-001 workstream closed; codified per-layer cardinality independence in ID_NAMING_STANDARDS.md.
+  *Resolution:* CLEANUP-PR-F (PR #135, merge `7736120d`) — single-item follow-up after FRAMEWORK-CLEANUP-001 workstream closed; codified per-layer cardinality independence in ID_NAMING_STANDARDS.md.
 
-### `[legacy]` Scan for v3.2-era anachronisms across the codebase
+### `[legacy]` Scan for v3.2-era anachronisms across the codebase — ✅ CLOSED (2026-06-12, PR #139, `f2b76d4b`)
 
 - *Context:* user-surfaced (2026-06-12) — the `sdd-orchestrator`
   agent-skill still carried `sdd_depth: lite | standard | full` tiers
@@ -1869,8 +1926,7 @@ reason was that the surface was not a canon caller at all.
   personas`, `ucx_hermes/templates`, `sdd_create` / `sdd_validate`
   CLI invocations. Hermes-side scope tracked separately in
   HERMES-BACKLOG H-11.
-- *Status:* OPEN — file under `[legacy]` tag.
-  *Resolution:* v3.2-residue scan PR (2026-06-12) — scanned 7
+  *Resolution:* v3.2-residue scan (PR #139, merge `f2b76d4b`) — scanned 7
   target patterns across the codebase. One purely-dead file deleted:
   `platforms/hermes/agent-skills/spec-driven-development/sdd-orchestrator/governance/SDD_DEPTH_GUIDE.md`
   (52 lines, entirely about the dead lite/standard/full depth concept).
