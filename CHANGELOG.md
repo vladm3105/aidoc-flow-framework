@@ -12,6 +12,47 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the linter diagnoses its own prerequisites, and the review hook stops importing project-supplied code (2026-07-31)
+
+**PLUGIN-PREPROD-001 PR 2 of 5.** No version bump on any stream; the plugin's
+`0.24.0 → 0.25.0` cut is PR 5.
+
+- **PyYAML and the Python ≥3.11 floor are declared in code and diagnosed.**
+  Either absent, `sdd_doc_lint` died with a traceback exiting **1** — the same
+  code the plugin's review hook reads as "this document has structural
+  findings", so a machine without PyYAML got a Python traceback injected into
+  model context labelled as a lint finding. Both now print one line naming the
+  cause and exit **3**, distinct from 2 (already "argparse usage error" *and*
+  "registry unavailable"). The floor check runs before the `enum.StrEnum` import
+  it protects, so the message names the version rather than an unfamiliar symbol.
+  Stock macOS ships 3.9 as `/usr/bin/python3`, so both cases have a real
+  population.
+- **New `--warn-exit` flag exits 1 on any finding, not only error-severity
+  ones**, and the review hook passes it — warning findings could never reach the
+  model before, though `verbose` mode documented that they would. The default
+  contract (0 unless an error) is unchanged; CI gates on it.
+- **The review hook no longer extends `PYTHONPATH` with the inherited value.**
+  A `yaml/` package on any inherited entry was imported by the bundled linter
+  and **executed** — measured during a real hook run, with the hook still
+  exiting 0 and writing nothing. `.envrc` is repository content and direnv
+  exports it. This is the second vector of the same finding whose first half
+  (a package in the working directory) closed in PR 1.
+- **A PR 1 regression test had been silently disarmed by the guard above.** It
+  provoked a linter crash by shadowing PyYAML with an `ImportError` — exactly
+  what the new guard catches — so the hook's `rc == 1` branch was never entered
+  and its assertions passed because nothing was produced rather than because it
+  was filtered. It runs against a stub interpreter now, which states the
+  contract instead of arranging for a crash and hoping it lands on 1.
+- **`doc-review.yml`'s negative step required only "non-zero"**, which this
+  change makes reachable with a second code that means the linter never examined
+  the fixtures; it requires exactly 1.
+- Twelve mutants, each killed by exactly one test; two survived a first pass and
+  the tests that now kill them record why. Two defects found during review are
+  captured rather than fixed — [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
+  (single-file linting reports every cross-document trace tag as an ERROR) and
+  `LINT-FINDING-MESSAGES-UNBOUNDED` — both in `plans/FRAMEWORK-TODO.md` with
+  reproductions and fix shapes.
+
 ### Fixed — the in-prompt-hashing guard could not see the file that was still hashing (2026-07-31)
 
 **Hermes `0.12.0` → `0.12.1`.** No framework-spec or plugin change.
