@@ -50,11 +50,22 @@ jobs:
         run: PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/valid
 
       - name: Negative — broken fixtures must fail the gate
+        # Require exactly 1 ("error findings"). Any non-zero used to count as
+        # success, which silently accepts the codes that mean the linter never
+        # examined the fixtures: 2 (usage error / registry unavailable) and 3
+        # (missing prerequisite — PyYAML absent, or Python below the floor).
+        # Those report "gate works" while proving nothing about the gate.
         run: |
-          if PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/broken; then
+          set +e
+          PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/broken
+          rc=$?
+          set -e
+          if [ "$rc" -eq 1 ]; then
+            echo "broken fixtures failed as expected — gate works"
+          elif [ "$rc" -eq 0 ]; then
             echo "::error::broken fixtures unexpectedly passed the gate"; exit 1
           else
-            echo "broken fixtures failed as expected — gate works"
+            echo "::error::linter exited $rc — it never gated the fixtures"; exit 1
           fi
 
       - name: Gate SDD documents under docs/

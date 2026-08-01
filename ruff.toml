@@ -15,4 +15,9 @@ ignore = [
 [lint.per-file-ignores]
 # Test/loader modules legitimately set sys.path before importing the package under test.
 "**/tests/**" = ["E402"]
+# The linter checks its interpreter floor and its PyYAML dependency BEFORE the
+# imports those prerequisites would otherwise break, so every later import is
+# "not at top of file" by construction (PLUGIN-PREPROD-001 PR 2). Glob covers
+# the canonical copy and both vendored mirrors.
+"**/sdd_doc_lint/__init__.py" = ["E402"]
 "**/__init__.py" = ["F401"]

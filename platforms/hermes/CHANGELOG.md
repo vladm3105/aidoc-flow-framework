@@ -14,7 +14,20 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
-_Nothing yet._
+- **The vendored `sdd_doc_lint` diagnoses its own missing prerequisites instead
+  of tracebacking.** PyYAML absent, or an interpreter below Python 3.11, now
+  prints one line naming the cause and exits **3** — a code distinct from 2
+  (already both "usage error" and "registry unavailable") and from 1 ("this
+  document has error findings"). Re-vendored byte-identical from
+  `tools/sdd_doc_lint/` per PLUGIN-PREPROD-001 PR 2; Hermes declares both
+  prerequisites (`requires-python >=3.12`, `PyYAML>=6.0`), so this is a
+  robustness change, not a fix for a failure seen here.
+- **New `--warn-exit` flag on the linter CLI.** Exits 1 when *any* finding is
+  emitted, not only error-severity ones. Off by default: the existing contract
+  (0 unless an error) is what CI gates on and is unchanged.
+- No `platforms/hermes/VERSION` bump (PLUGIN-PREPROD-001 founder decision O2), so
+  a consumer cannot tell from the version that the vendored linter changed. This
+  entry is the record until the next Hermes release carries the signal.
 
 ## [0.12.1] — a 10th loaded reference was still hashing; 0.12.0's claim was overstated (#385) (2026-07-31)
 
@@ -27,7 +40,7 @@ PATCH. Reference-document content only; no server behaviour changes.
   merely bypass the generator — it disagreed with the normative transform in
   `governance/ID_NAMING_STANDARDS.md` on four points (no NFC; `.lower()` rather
   than `casefold`; deleted spaces instead of collapsing runs; truncation at 200
-  chars _before_ normalizing rather than 100 _after_), and hashed a
+  chars *before* normalizing rather than 100 *after*), and hashed a
   `doc:section:label` triple rather than the extracted `title`/`description`
   fields — so it computed **different IDs**.
 - **The 0.12.0 entry above says "9 loaded reference documents" and its heading
@@ -61,7 +74,7 @@ element-ID instructions.
   reachable because `sdd-orchestrator/SKILL.md` points agents at them for "the
   complete" procedure. Each carried its own normalization variant and **none**
   matched the standard. The worst, `brd-validation-automation.md`, applied
-  `re.sub(r'[^a-z0-9:]', '', inp.lower())[:200]` to the _assembled_ string —
+  `re.sub(r'[^a-z0-9:]', '', inp.lower())[:200]` to the *assembled* string —
   disagreeing on five of six steps (`lower()` not `casefold()`, no NFC, per-string
   not per-field, spaces deleted, truncation at 200 not 100). All now delegate to
   `compute_element_hash()`, so there is one algorithm.
@@ -108,7 +121,7 @@ element-ID instructions.
   remediated copy; the final failing pass break-circuits to `PARTIAL_TIMEOUT`. Off
   (the default) the review is a single pass, byte-identical to before.
   - **Outer wrapper, not a state-machine change** (`review/quality_loop.py`,
-    `run_review_quality_loop`). Each iteration is a _fresh forward saga run_
+    `run_review_quality_loop`). Each iteration is a *fresh forward saga run*
     (`run_project_review_build_saga` gains `iteration` / `quality_loop` /
     `is_final_iteration` params), so the forward-only transition table and
     `saga.schema.json` are untouched — no `framework/VERSION` change.
@@ -176,7 +189,7 @@ element-ID instructions.
   - **A2 — `review_mode` reconciled.** The `sdd_review` tool now accepts the spec
     vocabulary `team` / `single_pass` as aliases for `saga_parallel` / `prompt_only`
     (schema enum + normalization). When the arg is omitted, a profile that
-    _explicitly_ declares `review_mode` is honored; otherwise the existing
+    *explicitly* declares `review_mode` is honored; otherwise the existing
     `prompt_only` default holds (a profile present only for e.g. a glossary does not
     silently flip the review mode).
   - **A1 — prompt-injectable authoring knobs.** The creation prompt now injects a
@@ -185,7 +198,7 @@ element-ID instructions.
     author / skip), and `active_layers`. Unprofiled projects are byte-identical to
     before (empty block → omitted).
 
-  **Deferred to a follow-up (see HERMES-BACKLOG H-16):** structural _enforcement_ of
+  **Deferred to a follow-up (see HERMES-BACKLOG H-16):** structural *enforcement* of
   `active_layers` (layer skipping) and `section_toggles` (template mutation), the
   `audit_threshold` gate (its raise-only semantics need reconciling with
   `profile_contracts.resolve_threshold_precedence`'s override semantics), and
@@ -221,7 +234,7 @@ element-ID instructions.
 
 - **BDD-prompt drift guard (`tests/unit/test_bdd_prompt_yaml_conformance.py`).** A
   Hermes-side guard asserting the BDD surfaces reference `scenarios:` and contain no
-  _structural_ Gherkin markers (```gherkin fences, `Feature:`/`Scenario:`/`Background:`
+  *structural* Gherkin markers (```gherkin fences, `Feature:`/`Scenario:`/`Background:`
   declaration lines, standalone Gherkin scenario-tag lines). It deliberately does not
   grep the bare word "Gherkin" (a correct prompt says "NOT Gherkin" as an anti-drift
   line). Converts a previously CI-invisible drift class into a CI-visible one. Kept
@@ -312,7 +325,7 @@ element-ID instructions.
   lens. Added the `chg` review crew to `persona_mappings.yaml` (crew parity with the
   framework CHG crew) and removed the `HERMES_DEFERRED_LAYERS` whitelist, so the
   crew-coverage conformance test now enforces CHG like the lifecycle layers. Crew-map
-  parity only — a _live/sanctioned_ CHG saga review (adding `09_CHG` to
+  parity only — a *live/sanctioned* CHG saga review (adding `09_CHG` to
   `saga.schema.json` + a dispatch path) is a deferred follow-on; no default flow
   dispatches a `chg` review. No framework spec change.
 
@@ -367,8 +380,8 @@ element-ID instructions.
   enforces both platforms' tables against `REVIEW_SAGA.md` and validates a sample
   journal from each runner against `saga.schema.json` (the test `docs/PARITY.md`
   previously over-claimed already existed). **No version bump** — Phase 1 makes the
-  state machine _accept_ the transition (parity contract); the orchestrator does not
-  yet _write_ it (break-circuit exercise + resume is Phase 1b).
+  state machine *accept* the transition (parity contract); the orchestrator does not
+  yet *write* it (break-circuit exercise + resume is Phase 1b).
 
 ### Removed
 
@@ -397,7 +410,7 @@ element-ID instructions.
   persona profiles (`skills/personas/*.md`): dropped the dead `SYS/REQ/CTR/TSPEC`
   scoring-weight lines, removed those tokens from each persona's `doc_types`
   list, and removed the dedicated layer rows + sections (e.g. integration_lead's
-  "CTR Expertise", qa_lead's "TSPEC Quality Metrics"). _Deliberately retained:_
+  "CTR Expertise", qa_lead's "TSPEC Quality Metrics"). *Deliberately retained:*
   the `agent-skills/` historical notes documenting the layers as "cut from
   v3"/"deprecated" (accurate history) and the threshold-rules `req`/`ctr` tokens
   (unrelated meanings — rate/Currency-Transaction-Report).
@@ -441,10 +454,10 @@ element-ID instructions.
   `references/governance-load-protocol.md` — were replaced with the current single-path
   layer model (no tiers; necessary-upstream contract; MVP → PROD → NEW MVP). Skill
   `version: 2.0.0 → 2.1.0`. Doc-accuracy only — no engine/runtime change, no `framework/`
-  change. _(Deferred backlog: the ~25-file cosmetic "v3.2" string residue across the
+  change. *(Deferred backlog: the ~25-file cosmetic "v3.2" string residue across the
   inherited governance scaffold; the hand-vendored `references/` framework-doc copies
   (D-0013 delete-vs-resync); the element-ID SHA-256 residue, framework-gated by
-  PROVISIONAL-IDS-002.)_
+  PROVISIONAL-IDS-002.)*
 
 - **Element-ID alignment to the framework 4-segment hash form** (PLATFORM-ALIGN
   Part B, `0.1.0 → 0.2.0`). The runtime element-ID validators in
@@ -456,7 +469,7 @@ element-ID instructions.
   8-layer EARS/BDD prompt templates' element-ID examples + the `UCC_PROMPT_EARS`
   ID-convention legend were migrated off the legacy type-code scheme
   (`EARS.NN.<CODE>.<seq>`, `PRD.NN.US.NN`, 3-segment refs) to the 4-segment hash
-  form. _Stricter validation:_ a previously-accepted 3-segment ID now fails —
+  form. *Stricter validation:* a previously-accepted 3-segment ID now fails —
   intended (the 3-segment form was the legacy variant the framework retired).
 
 - **EARS pattern alignment** — brought the Hermes vendored EARS pattern tables
@@ -468,11 +481,11 @@ element-ID instructions.
   6-pattern model with a mixed `IF…THEN` connective. Now: the five canonical
   patterns (Ubiquitous, Event/`WHEN`, State/`WHILE`, Optional/`WHERE`,
   Unwanted/`IF`) in the uniform `the [system] shall …` form (no `THEN`); "complex"
-  reframed as _composition_ of the base patterns (the standalone `Complex` row +
+  reframed as *composition* of the base patterns (the standalone `Complex` row +
   the `CX` type code removed). Doc-only; no runtime behavior change.
-  _(Note: the prompts' legacy type-code element-ID scheme — `EARS.NN.<code>.<seq>`
+  *(Note: the prompts' legacy type-code element-ID scheme — `EARS.NN.<code>.<seq>`
   vs the framework's hash-based `EARS.NN.SS.xxxx` — is a separate, pre-existing
-  divergence, out of scope here.)_
+  divergence, out of scope here.)*
 
 ## [0.1.1] — 2026-05-21
 

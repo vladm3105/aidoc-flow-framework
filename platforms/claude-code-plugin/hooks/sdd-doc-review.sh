@@ -145,7 +145,10 @@ msg="Edited a ${artifact} document (<untrusted-filename>${safe_base}</untrusted-
 #
 # Exit codes: 1 = findings *or* a crash — the two are told apart by the finding
 # grammar below, never by the exit code; 0 = clean; anything else = the linter
-# declined to run, so say nothing.
+# declined to run, so say nothing. 3 in particular means a missing prerequisite
+# (Python below 3.11, or no PyYAML): the linter names it on stderr, and this
+# hook stays silent because it is advisory and must not nag about the host's
+# setup on every edit. `README.md` documents the prerequisites.
 if [ "$review_hook" = "verbose" ] && [ "$adopted" -eq 1 ]; then
   plugin_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." 2>/dev/null && pwd)"
   # Regular files only. A directory, a device, or a FIFO at the edited path
@@ -167,13 +170,23 @@ if [ "$review_hook" = "verbose" ] && [ "$adopted" -eq 1 ]; then
     #     and compiles that registry's `id_patterns` as regexes over document
     #     text. From the plugin root it always resolves the bundled registry, so
     #     a planted one cannot inject a catastrophically-backtracking pattern.
-    #   * an empty or `.` entry in an inherited PYTHONPATH still means "the CWD",
-    #     which PYTHONSAFEPATH does not strip; from here that is the plugin root.
+    #   * PYTHONPATH is REPLACED, not extended. Appending the inherited value
+    #     left a hole the size of the one above it: a `yaml/` package on any
+    #     inherited entry is imported by the linter and executes. Measured — a
+    #     planted `yaml/__init__.py` ran during a real hook invocation, with the
+    #     hook still exiting 0 and writing nothing, so nothing observable said
+    #     so. `.envrc`, a devcontainer or a shell profile all set PYTHONPATH,
+    #     and the first is repository content. The linter needs only the plugin
+    #     root; an installed PyYAML comes from site-packages either way, and an
+    #     absent one is now diagnosed rather than substituted.
     # Invoking `__main__.py` by absolute path is NOT an alternative — it fails
     # the relative imports.
+    # `--warn-exit` is what makes WARNING findings reachable at all: without it
+    # the linter exits 0 on a warnings-only document, and the `rc -eq 1` test
+    # below would drop every one of them while `verbose` mode claims otherwise.
     raw="$(cd "$plugin_root" 2>/dev/null &&
-      PYTHONSAFEPATH=1 PYTHONPATH="${plugin_root}${PYTHONPATH:+:$PYTHONPATH}" \
-        python3 -m sdd_doc_lint "$abs_path" 2>&1)"
+      PYTHONSAFEPATH=1 PYTHONPATH="$plugin_root" \
+        python3 -m sdd_doc_lint --warn-exit "$abs_path" 2>&1)"
     rc=$?
     # rc is captured on the UNPIPED run on purpose: through a pipeline $? would
     # be grep's status, and grep exits 1 when *nothing* matched — inverting the
