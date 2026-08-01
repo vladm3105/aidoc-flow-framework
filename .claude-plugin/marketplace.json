@@ -3,7 +3,7 @@
   "description": "BYO marketplace hosting the aidoc-flow Claude Code plugin (pre-1.0 preview). Spec-driven development for the 8-layer doc flow (BRD → IPLAN).",
   "owner": {
     "name": "vladm3105",
-    "email": "vla.myakota@gmail.com"
+    "url": "https://github.com/vladm3105"
   },
   "plugins": [
     {
