@@ -398,13 +398,23 @@ Pass criteria: produces a non-empty plan file under
 
 `hooks/sdd-doc-review.sh` synthetically invoked with a fake
 PostToolUse JSON payload pointing at a staged BRD-01.md from the
-`brd-broken-sections` fixture. Pass criteria:
+`brd-broken-sections` fixture. The sandbox project carries a
+`.claude/aidoc-flow.config.yaml` with `review_hook: "verbose"`: the
+documented default `on` nudges without linting, so without it the element
+would assert on findings the hook is configured not to produce. Pass
+criteria:
 
 - `hooks.json` is valid JSON; references `PostToolUse` + `Write|Edit`
   - `sdd-doc-review.sh`
 - Hook exits 0 (advisory — must never block)
-- Hook output is valid JSON, includes `doc-brd-audit` nudge, and
-  includes `STRUCT01` / "structural findings" text
+- Hook output is valid JSON, includes the `doc-brd-audit` nudge, and
+  includes `STRUCT01`, which the hook emits inside an
+  `<untrusted-tool-output>` envelope
+
+The hook's adoption gate (structural findings only in a project that
+adopted the framework) is **not** covered here — the staged document sits
+under `docs/01_BRD/`, which satisfies the gate on its own.
+`tests/conformance/test_plugin_hook_safety.py` is what guards it.
 
 This is the only Phase-4 check that runs in `--no-live` mode.
 

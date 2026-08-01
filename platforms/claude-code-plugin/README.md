@@ -12,6 +12,22 @@ backend and nothing to run separately.
 The plugin is **self-contained**: it bundles a copy of the framework spec it
 needs, so it installs and runs from a marketplace with no external checkout.
 
+## Prerequisites
+
+| Tool | Needed for | Without it |
+| --- | --- | --- |
+| Python ≥ 3.11 | `tools/saga_driver.py` — **required** by the 9 `doc-*-autopilot` skills, which name it as the sole orchestration mechanism — and the bundled `sdd_doc_lint` structural linter | the autopilots cannot run; no structural findings in the review hook's `verbose` mode |
+| PyYAML | the same two | as above |
+| `jq` | the `PostToolUse` review hook | the hook exits immediately, emitting nothing |
+
+The Python floor is **3.11 specifically** — `StrEnum` in the linter, `datetime.UTC`
+in the driver — not "any Python 3". Stock macOS still ships 3.9 as
+`/usr/bin/python3`, so this is worth checking before filing a bug.
+
+Everything else — the other 41 skills, all commands, the agents — works with
+none of these installed. The review hook in particular is advisory and degrades
+quietly: it never blocks an edit, whatever is missing.
+
 ## Install
 
 Published through the repo-root marketplace manifest
