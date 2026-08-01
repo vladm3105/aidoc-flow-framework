@@ -86,8 +86,13 @@ Your VERY FIRST tool call MUST be the `Bash` tool, running exactly:
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
   --layer 09_CHG \
-  --artifact-path "${ARTIFACT_PATH}"
+  --artifact-path "${ARTIFACT_PATH}" \
+  --allow-skip-permissions
 ```
+
+`--allow-skip-permissions` lets the phases the driver dispatches write
+files without a permission prompt — unattended autopilot requires it.
+Drop the flag to run the same loop with Claude Code's normal prompts on.
 
 Use a generous timeout (≥1800s). Do not pre-analyze the input. Do not
 read the seed. Do not classify level/source. The driver and its

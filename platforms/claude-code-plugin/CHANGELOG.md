@@ -14,6 +14,59 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed — the autopilot's saga driver: no permanent wedge, no clobbered journal, no false success (2026-08-01)
+
+PLUGIN-PREPROD-001 PR 3 of 5. Closes B2, B3a–c, M3, M4, M5, L2 and L3 from the
+2026-07-31 pre-production review; PRs 4 and 5 carry the rest.
+
+- **`--allow-skip-permissions` (new, off by default).** `tools/saga_driver.py`
+  ran every dispatched phase with `--dangerously-skip-permissions`
+  unconditionally. The bypass is now opt-in. The 9 `doc-*-autopilot` skills
+  pass it, so autopilot behaviour is unchanged for anyone invoking a skill;
+  running the driver directly without the flag now prompts normally. See the
+  README section "What the autopilot skills do to your permissions".
+- **Recovery paths no longer raise.** Transitions to `PARTIAL_TIMEOUT` from
+  `BRANCH_FAILED`, `BRANCH_COMPENSATING` or `SYNTHESIZED` are recorded as
+  forced edges instead of raising `ValueError` and abandoning the run. A
+  forced edge may only ever target `PARTIAL_TIMEOUT`: forcing toward a failure
+  terminal is safe, forcing toward `CLOSED` would report a pass the state
+  machine says was unreachable.
+- **A `PASS` verdict on an inconsistent journal no longer closes the saga.**
+  If the audit subprocess reports `PASS` while leaving the saga in a state
+  from which fan-in was never reached — including `ESCALATED` — the run is
+  reported as not converged rather than walked to `CLOSED`. Previously an
+  audit that escalated *and* wrote a `PASS` verdict had its escalation
+  silently rewritten as success at exit 0.
+- **`dispatch_phase` preserves what the phase subprocess wrote to
+  `saga.json`** instead of overwriting it with a pre-dispatch snapshot. If
+  that file comes back unreadable the phase is treated as failed and the
+  corrupt journal is copied to `saga.corrupt.json` rather than being
+  overwritten with the driver's stale snapshot.
+- **Resume from `PARTIAL_TIMEOUT` considers run-scoped transitions only**, so
+  a single lens's branch failure can no longer become the run's status.
+- **macOS: `timeout` is probed, with `gtimeout` and a Python-level timeout as
+  fallbacks.** A failed spawn is journalled rather than leaving a dispatch
+  event with no completion.
+- **Exit codes: 4 = `PARTIAL_TIMEOUT`, 5 = `ESCALATED`, 127 = the phase
+  subprocess could not be spawned, 0 only for `CLOSED`.** Previously every
+  terminal status exited 0, so a caller chaining on success proceeded on
+  artifacts that never passed review. 127 is reported directly rather than as
+  a `PARTIAL_TIMEOUT`, because a missing `claude` binary is an environment
+  defect that will fail identically on every retry, not a resumable deadline.
+- **`verdict.json` is rotated to `verdict.iterN.json` before each audit
+  dispatch**, so a stale `PASS` cannot be read as the current verdict while
+  the findings that motivated the fixer pass survive for whoever inspects the
+  run.
+- **`--threshold` now gates a `PASS` that reports a `content_score`** (it was
+  accepted and ignored). `int`, `float` and numeric strings are all read —
+  `92.5` is an ordinary thing for an LLM-written verdict to contain, and an
+  int-only reader would have silently disabled the gate on it. Verdicts that
+  report no score — CHG, by design — are not gated; a score that is present
+  but unreadable fails the gate rather than skipping it.
+- **`tools/playbook_loader.py` rejects `layer`/`lens` values that resolve
+  outside `framework/playbooks/`**, including via symlink, and returns the
+  path it validated rather than a re-built one.
+
 ### Fixed — the review hook no longer runs the user's code, and `review_hook` finally does something (2026-07-31)
 
 PLUGIN-PREPROD-001 PR 1 of 5. Closes B1, B4's hook half, H1, H2, H3, M1, L4 and
