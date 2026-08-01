@@ -288,6 +288,59 @@
 - *Fix shape:* scope the assertion to the `[Unreleased]` section, or to lines
   that are not inside a quotation — not by deleting the historical text.
 
+### `[lint]` `LINT-TRACE-RES-SINGLE-FILE` — linting one file reports every cross-document trace tag as an ERROR → [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
+
+- *Context:* found 2026-07-31 by review during PLUGIN-PREPROD-001 PR 2, in the
+  plugin's own `verbose` hook path. `_check_trace_resolution`
+  (`tools/sdd_doc_lint/__init__.py:1782`) resolves `@<layer>:` tags against
+  `doc_index`, which is built from **the paths passed on this invocation**. Lint
+  one file and every upstream tag it emits is unresolvable by construction:
+  `python3 -m sdd_doc_lint examples/url-shortener/docs/06_SPEC/SPEC-01.md` yields
+  **66** `TRACE-RES-001` ERRORs — `references unknown document (no corpus member
+  has doc_id 'ADR-01')` while `docs/05_ADR/ADR-01.md` sits right there — against
+  **0** for `…/docs`. Every layer-02..08 document in the shipped corpus behaves
+  the same.
+- *Blast radius:* the review hook lints exactly one file (the edited one) and
+  forwards up to 4000 bytes of findings into model context on every edit of an
+  adopted project in `verbose` mode. That budget is spent almost entirely on
+  false ERRORs, and `--warn-exit` (PR 2) does not cause this — the exit code was
+  already 1. Also reached by any consumer linting a single path.
+- *Fix shape:* gate `TRACE-RES-001`'s cross-document arm on a whole-corpus run,
+  the way `_check_forward_coverage` already gates itself
+  (`__init__.py:1961-1963` returns `[]` when the corpus has no SPEC or IPLAN,
+  "which also covers the single-file `on_author` case"). Same idea, applied to
+  the tag resolver: an unresolvable tag is only evidence of a defect when the
+  corpus was whole. NOT in PLUGIN-PREPROD-001's scope — a linter-semantics
+  change with its own design, deliberately not folded into a dependency-guard PR.
+
+### `[lint]` `LINT-FINDING-MESSAGES-UNBOUNDED` — finding messages interpolate unbounded document-controlled text, and the hook forwards them to the model
+
+- *Context:* found 2026-07-31 by security review during PLUGIN-PREPROD-001 PR 2.
+  `STY02` interpolates the raw section heading
+  (`tools/sdd_doc_lint/__init__.py:571-576`; `_SECTION_HEADING` at `:267`
+  captures the whole rest of the line), and `PROV01` the raw `id_state`
+  frontmatter value (`:645-650`). Both are bounded only by the hook's 1 MiB file
+  gate. Demonstrated: a BRD with a ~7 KB hostile heading fills the hook's entire
+  4000-byte findings budget with attacker-chosen prose inside
+  `<untrusted-tool-output>`.
+- *Not a PR 2 regression, but PR 2 widened it.* Such a document reached the model
+  before only if it also carried an ERROR; `--warn-exit` makes warnings-only
+  documents (largely BRDs) reachable too. **Envelope integrity holds either way**
+  — `tr -d '<>'` plus the line-anchored grammar filter were verified against a
+  multi-line breakout attempt, and only the first line survived. What is
+  unbounded is plain prose inside a correctly-formed envelope.
+- *Fix shape:* truncate at the source — `heading[:80]` in the `STY02` message and
+  the same for `PROV01` — so the bound holds for every consumer (CI logs and
+  pre-commit too), not only the hook. The finding stays actionable: the line
+  number and word count carry it. Deferred deliberately: it moves linter output,
+  so it needs a blast-radius pass over `tests/acceptance/expected_warnings/`
+  and the golden fixtures first.
+- *Also here, same class, latent:* `STALE01` interpolates raw `last_audited_spec`
+  (`:1294-1299`) but is **unreachable through the plugin today only by accident**
+  — `_framework_version` (`:1239-1246`) reads `registry.parent.parent/VERSION`
+  and `platforms/claude-code-plugin/framework/VERSION` does not exist. A future
+  sync that adds that file makes it reachable with nothing to notice.
+
 ### `[lint]` `LINT-LOCAL-REGISTRY-NO-TEMPLATES` — a project-local registry without its layer templates silently disables the structural checks
 
 - *Context:* found 2026-07-31 while building

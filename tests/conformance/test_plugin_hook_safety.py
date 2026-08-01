@@ -3,9 +3,11 @@
 Locks the PLUGIN-PREPROD-001 PR 1 fixes for
 `platforms/claude-code-plugin/hooks/sdd-doc-review.sh`:
 
-* **B1** — a `sdd_doc_lint/` package sitting in the user's working directory must
-  not execute. The hook invokes the linter with `python3 -m`, which puts the CWD
-  ahead of `PYTHONPATH` unless `PYTHONSAFEPATH` suppresses it.
+* **B1** — no module the project can place gets imported by the linter. Two
+  vectors, closed in two stages: a `sdd_doc_lint/` package in the user's working
+  directory (`python3 -m` searches the CWD first — PR 1), and a `yaml/` package
+  on an **inherited `PYTHONPATH`**, which the hook used to append to the plugin
+  root (PR 2). The second one executed, silently, in a real hook run.
 * **B4 (hook half)** — only lines matching the linter's finding grammar reach the
   model; a crash must not be relabelled as structural findings.
 * **H1** — structural findings require a project that actually adopted the
@@ -26,6 +28,7 @@ from __future__ import annotations
 
 import json
 import os
+import shlex
 import shutil
 import subprocess
 import tempfile
@@ -127,6 +130,27 @@ class HookHarness(unittest.TestCase):
                     handle.write(f"\n## Pad {n}\n\n{words}\n")
         return target
 
+    def stub_python3(self, root: Path, *, rc: int, stdout: str = "", stderr: str = ""):
+        """A `python3` on `PATH` that emits fixed output and exits `rc`.
+
+        The hook's contract is written in terms of the linter's exit code, and
+        every way of provoking a real non-zero from the vendored linter runs
+        through a path the hardening has since closed. Stubbing the interpreter
+        states the contract directly: this code, this output, this behaviour.
+        """
+        bindir = root / "stubbin"
+        bindir.mkdir(exist_ok=True)
+        stub = bindir / "python3"
+        stub.write_text(
+            "#!/usr/bin/env bash\n"
+            f"printf '%s' {shlex.quote(stdout)}\n"
+            f"printf '%s' {shlex.quote(stderr)} >&2\n"
+            f"exit {int(rc)}\n",
+            encoding="utf-8",
+        )
+        stub.chmod(0o755)
+        return dict(os.environ, PATH=f"{bindir}{os.pathsep}{os.environ.get('PATH', '')}")
+
     def run_hook(self, target: Path, cwd: Path, env: dict | None = None):
         payload = json.dumps({"tool_input": {"file_path": str(target)}})
         return subprocess.run(
@@ -221,30 +245,80 @@ class OnlyFindingsReachTheModel(HookHarness):
         self.assertIn("[ERROR STRUCT01]", context)
 
     def test_a_crashing_linter_yields_no_findings_block(self):
-        """A traceback exits 1 — the same code as findings — and must be dropped."""
+        """A traceback exits 1 — the same code as findings — and must be dropped.
+
+        Driven by a stub `python3` on `PATH` rather than by shadowing PyYAML.
+        The shadow used to work because the hook appended the inherited
+        `PYTHONPATH`; it no longer does (that was a code-execution hole — see
+        `PlantedModulesOnPythonpathDoNotExecute`), so the shadow can no longer
+        reach the linter. It had also stopped testing this at all in the
+        meantime: PLUGIN-PREPROD-001 PR 2 made an absent PyYAML exit **3**, so
+        the `rc == 1` branch was never entered and all three assertions below
+        passed because nothing was produced rather than because it was filtered.
+
+        The stub is strictly better than either: it names the exit code and the
+        output independently, so the test states the contract instead of
+        arranging for a real crash and hoping it still lands on 1.
+        """
         root = self.make_project(review_hook="verbose", adopted=True)
         target = self.place_broken_brd(root, "docs/01_BRD/BRD-01.md")
 
-        # Shadow PyYAML so the vendored linter dies on import, exiting non-zero
-        # with a traceback on stderr and nothing matching the finding grammar.
-        (root / "yaml.py").write_text('raise ImportError("no yaml here")\n', encoding="utf-8")
-        env = dict(os.environ, PYTHONPATH=str(root))
-        payload = json.dumps({"tool_input": {"file_path": str(target)}})
-        proc = subprocess.run(
-            ["bash", str(_HOOK)],
-            input=payload,
-            capture_output=True,
-            text=True,
-            cwd=str(root),
-            env=env,
-            timeout=120,
+        env = self.stub_python3(
+            root,
+            rc=1,
+            stderr=(
+                "Traceback (most recent call last):\n"
+                '  File "<frozen runpy>", line 189, in _run_module_as_main\n'
+                "ImportError: cannot import name 'safe_load' from 'yaml'\n"
+            ),
         )
+        proc = self.run_hook(target, cwd=root, env=env)
 
         context = self.context_of(proc)
         self.assertIn("doc-brd-audit", context, "the nudge must survive a linter crash")
         self.assertNotIn("Traceback", context)
         self.assertNotIn("ImportError", context)
         self.assertNotIn("<untrusted-tool-output", context)
+
+
+class PlantedModulesOnPythonpathDoNotExecute(HookHarness):
+    """B1, second vector: an inherited `PYTHONPATH` must not reach the linter.
+
+    PR 1 closed the working-directory vector (`python3 -m` searching the CWD).
+    The hook still *appended* the inherited `PYTHONPATH` to the plugin root,
+    so a `yaml/` package on any inherited entry was imported by the linter and
+    ran — silently, with the hook exiting 0 and emitting a normal nudge.
+    `.envrc` is repository content and direnv exports it, so this was reachable
+    from a cloned repo on a developer machine with a common tool installed.
+    """
+
+    def test_planted_yaml_package_does_not_execute(self):
+        root = self.make_project(review_hook="verbose", adopted=True)
+        target = self.place_broken_brd(root, "docs/01_BRD/BRD-01.md")
+
+        planted = root / "envdir"
+        (planted / "yaml").mkdir(parents=True)
+        marker = root / "PLANTED_RAN"
+        (planted / "yaml" / "__init__.py").write_text(
+            "import pathlib\n"
+            f'pathlib.Path({str(marker)!r}).write_text("executed\\n")\n'
+            "def safe_load(*a, **k):\n"
+            "    return {}\n"
+            "def safe_load_all(*a, **k):\n"
+            "    return iter(())\n",
+            encoding="utf-8",
+        )
+
+        context = self.context_of(
+            self.run_hook(target, cwd=root, env=dict(os.environ, PYTHONPATH=str(planted)))
+        )
+
+        self.assertFalse(
+            marker.exists(),
+            "a yaml/ package on the inherited PYTHONPATH executed inside the hook",
+        )
+        # The real linter ran instead — the fix must not have silenced it.
+        self.assertIn("STRUCT01", context)
 
 
 class AdoptionIsRequiredForFindings(HookHarness):

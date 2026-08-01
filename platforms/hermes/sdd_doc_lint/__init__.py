@@ -15,9 +15,60 @@ LLM `-audit` skill; this is the fast, repeatable gate beneath it.
 
 Text-based on purpose: the checks work on an instance document whether it is
 authored as Markdown or YAML.
+
+Importing this package **exits the process** (``SystemExit``,
+``EXIT_MISSING_PREREQUISITE``) when the interpreter is below ``MIN_PYTHON`` or
+PyYAML cannot be imported, after printing one line naming the cause. Deliberate:
+the package cannot function without either, every consumer is a short-lived CLI,
+and the alternative — an ``ImportError`` traceback exiting 1 — is
+indistinguishable from "this document has error findings" to the callers that
+only read the exit code.
 """
 
 from __future__ import annotations
+
+import sys
+
+#: The interpreter floor, and the exit code every unmet prerequisite reports.
+#: ``StrEnum`` (imported below) and ``datetime.UTC`` in the sibling tools both
+#: landed in Python 3.11; stock macOS still ships 3.9 as ``/usr/bin/python3``,
+#: so this is a real user, not a hypothetical one.
+#:
+#: Exit **3**, deliberately not 2: 2 already means both "argparse usage error"
+#: and "registry unavailable" (see ``__main__``), and overloading it a third
+#: time would defeat the point of telling failure modes apart. Callers that
+#: only distinguish 0/1 — the plugin's review hook is the live example — treat
+#: 3 as "the linter declined to run" and stay silent.
+MIN_PYTHON = (3, 11)
+EXIT_MISSING_PREREQUISITE = 3
+
+
+def python_floor_error(version_info: tuple[int, ...] | None = None) -> str | None:
+    """Return a one-line diagnostic if the interpreter is too old, else ``None``.
+
+    Split out as a plain function taking the version so it is testable: the
+    branch it guards can never be exercised on an interpreter new enough to run
+    the test suite.
+    """
+    found = tuple(version_info if version_info is not None else sys.version_info)[:2]
+    if found >= MIN_PYTHON:
+        return None
+    return (
+        "sdd-doc-lint: needs Python {}.{} or newer (running {}.{}); the linter uses "
+        "enum.StrEnum. Stock macOS ships 3.9 as /usr/bin/python3 — run it with a "
+        "newer interpreter.".format(*MIN_PYTHON, *found)
+    )
+
+
+# Checked BEFORE `from enum import StrEnum`, which is the import that would
+# otherwise fail: on 3.9 the user would get an ImportError naming a symbol they
+# have never heard of instead of the version they need. Everything above this
+# line must stay parseable on the floor it names, or the diagnostic is
+# unreachable — `tests/conformance/test_lint_runtime_guards.py` locks both.
+_floor_error = python_floor_error()
+if _floor_error is not None:
+    print(_floor_error, file=sys.stderr)
+    raise SystemExit(EXIT_MISSING_PREREQUISITE)
 
 import hashlib
 import os
@@ -27,7 +78,25 @@ from dataclasses import dataclass
 from enum import StrEnum
 from pathlib import Path
 
-import yaml
+# PyYAML is the linter's one third-party dependency and the plugin bundles no
+# installer, so "not installed" is the expected state on a fresh machine rather
+# than a broken one. Unguarded it died with a traceback at exit 1 — the same
+# code as "this document has error findings" — which is what B4 was about.
+# Catch ImportError, not just ModuleNotFoundError: a present-but-broken install
+# fails the same way for the user and needs the same one-line answer.
+try:
+    import yaml
+except ImportError as exc:
+    # First line, bounded: a broken install's message can be multi-line and can
+    # carry the absolute path of the site-packages that failed, which would both
+    # break the one-line contract and publish host layout into a CI log.
+    _why = str(exc).splitlines()[0][:200] if str(exc) else exc.__class__.__name__
+    print(
+        f"sdd-doc-lint: PyYAML is required but could not be imported ({_why}); "
+        "install it with `python3 -m pip install pyyaml`.",
+        file=sys.stderr,
+    )
+    raise SystemExit(EXIT_MISSING_PREREQUISITE) from exc
 
 # Shared @-tag trace primitives (CFB-PR-2 DD-1). The forward coverage engine
 # reuses the SAME token→doc reduction, layer order, and `@`-tag regex as the

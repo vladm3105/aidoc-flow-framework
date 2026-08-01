@@ -1,7 +1,16 @@
 """CLI: python -m sdd_doc_lint [--registry PATH] [--mode build|gate-code]
-       [--skip-coverage-gate] <path> [<path> ...]
+       [--skip-coverage-gate] [--warn-exit] <path> [<path> ...]
 
-Exit 0 = no error-level findings; 1 = error findings; 2 = usage error.
+Exit codes:
+
+* **0** — no error-level findings (and, under ``--warn-exit``, no findings at all)
+* **1** — error findings; with ``--warn-exit``, warning findings too
+* **2** — usage error, *or* the registry could not be read
+* **3** — a runtime prerequisite is missing: Python is below the floor, or PyYAML
+  cannot be imported. Raised at package import, before any linting. Kept distinct
+  from 2 so a caller can tell "the linter declined to run" from "your document is
+  wrong" — see ``sdd_doc_lint.EXIT_MISSING_PREREQUISITE``.
+
 The framework registry is located automatically (upward search for
 ``framework/registry/LAYER_REGISTRY.yaml``, or ``$SDD_REGISTRY`` / ``--registry``),
 so the same code runs from the canonical repo or a vendored platform copy.
@@ -50,6 +59,13 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="suppress the forward-coverage gate entirely (CFB-PR-2 DD-9 — the "
         "transient-migration escape hatch)",
+    )
+    parser.add_argument(
+        "--warn-exit",
+        action="store_true",
+        help="exit 1 when any finding is emitted, not only error-severity ones; the "
+        "default contract (0 unless an error) is what CI gates on, so callers that "
+        "want to see warnings — the plugin's review hook — opt in here",
     )
     parser.add_argument(
         "--active-layers",
@@ -115,7 +131,11 @@ def main(argv: list[str] | None = None) -> int:
         elif not findings:
             print("sdd-doc-lint: no structural findings.")
 
-    return 1 if any(f.severity == "error" for f in findings) else 0
+    if any(f.severity == "error" for f in findings):
+        return 1
+    # Without this, a warning is emitted and then reported as success, so a
+    # caller that speaks only on a non-zero exit can never surface one.
+    return 1 if (args.warn_exit and findings) else 0
 
 
 if __name__ == "__main__":
