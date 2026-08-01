@@ -1847,8 +1847,13 @@ phase_4_hook() {
     return 0
   fi
 
-  local hook_sandbox="$LOG_DIR/sandbox/hook/docs/01_BRD"
-  mkdir -p "$hook_sandbox"
+  local hook_project="$LOG_DIR/sandbox/hook"
+  local hook_sandbox="$hook_project/docs/01_BRD"
+  mkdir -p "$hook_sandbox" "$hook_project/.claude"
+  # `review_hook` defaults to "on" — nudge only, no lint. This element asserts on
+  # the structural findings, so the sandbox project opts into "verbose". The hook
+  # locates this file by walking up from the staged document, not from its CWD.
+  printf 'schema: 1\nreview_hook: "verbose"\n' > "$hook_project/.claude/aidoc-flow.config.yaml"
   local staged="$hook_sandbox/BRD-01.md"
   cp "$fixture" "$staged"
 
@@ -1867,7 +1872,7 @@ phase_4_hook() {
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "hook output invalid JSON"
   elif ! printf '%s' "$hook_out" | grep -q "doc-brd-audit"; then
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing audit nudge"
-  elif ! printf '%s' "$hook_out" | grep -qiE "STRUCT01|structural findings"; then
+  elif ! printf '%s' "$hook_out" | grep -qiE "STRUCT01"; then
     record_outcome "sdd-doc-review" "hook" "hook" "FAIL" "$duration" "" "" "false" "" "missing structural findings"
   else
     record_outcome "sdd-doc-review" "hook" "hook" "PASS" "$duration"

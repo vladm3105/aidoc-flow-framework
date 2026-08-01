@@ -14,6 +14,56 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed — the review hook no longer runs the user's code, and `review_hook` finally does something (2026-07-31)
+
+PLUGIN-PREPROD-001 PR 1 of 5. Closes B1, B4's hook half, H1, H2, H3, M1, L4 and
+P1 from the 2026-07-31 pre-production review; the remaining findings ship in
+PRs 2–5.
+
+- **A `sdd_doc_lint/` package in the user's working directory executed.** The
+  hook invokes the linter with `python3 -m`, which puts the CWD ahead of
+  `PYTHONPATH` — so cloning a repo that carried one and editing a BRD ran it.
+  Reproduced, and the hook still exited 0. `PYTHONSAFEPATH=1` closes it on
+  Python ≥ 3.11; the linter now also runs **from the plugin root**, which closes
+  it on 3.9 and 3.10 where that variable is silently ignored — stock macOS still
+  ships 3.9. Running from there additionally means a planted
+  `framework/registry/LAYER_REGISTRY.yaml` can no longer supply the regexes the
+  linter compiles over document text.
+- **The hook is silent on stderr, on every path.** It is captured with `2>&1`
+  and parsed as JSON, so one diagnostic byte fails with the misleading reason
+  "invalid JSON". A file deleted between the tool call and the hook, an
+  unreadable file, or a FIFO at the edited path each used to produce one.
+- **A crashing linter was reported to the model as structural findings.** The
+  hook read exit 1 as "findings", and a traceback exits 1 too. Only lines
+  matching the linter's finding grammar are forwarded now; the exit code is
+  captured on the unpiped run, since through a pipeline it would be `grep`'s.
+- **Findings are framed as untrusted data.** Linter output quotes raw tokens
+  from the edited document, and it reached the model concatenated onto an
+  instruction string. It now travels inside an explicit
+  `<untrusted-tool-output>` envelope, as does the filename.
+- **`review_hook` is wired.** The documented `off | on | verbose` enum had no
+  reader, so there was no way to turn the hook off. The config file is now found
+  by walking up from the edited file, and parsed without a YAML dependency so it
+  still works when Python or PyYAML is absent. A CRLF file is handled: since
+  `CONFIG.md` tells you to quote these values, a CR left on the end is exactly
+  what makes the documented `review_hook: "off"` unparseable.
+- **⚠️ Behavior change: the default is quieter than before.** The hook used to
+  behave unconditionally as `verbose`. The documented default is `on` — nudge
+  only. Set `review_hook: "verbose"` in `.claude/aidoc-flow.config.yaml` to keep
+  today's output.
+- **Structural findings now require an adopted project.** The plugin bundles a
+  registry, so the linter resolved one in any directory and the documented "skip
+  silently" path was unreachable — the hook fired in repos that never adopted
+  the framework. The upward walk for an adoption marker stops at `$HOME`, since
+  a user-global `~/.aidoc/profile.yaml` is documented. **This is a noise gate,
+  not a trust boundary:** every signal it reads is ordinary repository content,
+  so a repo you cloned can carry them. It keeps the hook quiet where the
+  framework was never adopted; it is not evidence that a project is trusted.
+- **The hook is bounded**: `"timeout": 15` in `hooks.json` (not a `timeout(1)`
+  wrapper, which is absent on stock macOS), a 1 MB file cap, and a byte budget on
+  the findings block.
+- **`docs_root` is honoured** by the layer-path test, which hardcoded `/docs/`.
+
 ## [0.24.0] — no skill computes SHA-256 in-prompt; the generator ships (#342) (2026-07-26)
 
 MINOR. All 13 `doc-*` authoring/fixing skills changed their element-ID

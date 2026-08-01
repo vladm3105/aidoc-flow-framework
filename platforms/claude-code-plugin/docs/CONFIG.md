@@ -43,7 +43,8 @@ schema: 1
 
 # Where the 8-layer SDD tree lives, relative to the project root. The
 # `/aidoc-flow:status` and `/aidoc-flow:next` commands resolve `docs/0N_<ARTIFACT>/`
-# against this prefix.
+# against this prefix, and so does `hooks/sdd-doc-review.sh` when it decides
+# which layer an edited document belongs to.
 docs_root: docs/
 
 # Where `/aidoc-flow:save-plan` writes implementation plan files. (Mirrors the
@@ -67,9 +68,24 @@ output_language: en
 #   "off"     — hook still runs but emits nothing
 #   "verbose" — also append the structural-lint findings from `sdd_doc_lint`
 #
-# Note: the values "on" and "off" MUST be quoted — unquoted, YAML parses them
-# as booleans (true/false). The plugin treats unquoted booleans here as a
-# config error.
+# The hook finds this file by walking UP from the edited file — not from its
+# working directory, which is not guaranteed to be the project root. It reads
+# `review_hook` and `docs_root` with grep/sed rather than a YAML parser, so it
+# keeps working when Python or PyYAML is absent; a value outside the enum is
+# ignored and the default applies.
+#
+# Under "verbose", structural findings additionally require a project that
+# adopted the framework: the edited file inside a scaffolded
+# `<docs_root>/0N_<ARTIFACT>/` tree, or a project-local
+# `framework/registry/LAYER_REGISTRY.yaml` or `.aidoc/` above it. The plugin
+# bundles its own registry, so without that gate the linter would resolve one in
+# any directory and emit findings in projects that never opted in.
+#
+# Note: quote "on" and "off". The three config commands parse this file as
+# YAML, where unquoted `on`/`off` become the booleans true/false and are
+# rejected as a config error. The review hook reads the value textually and
+# accepts either form, so an unquoted value still works there — but the two
+# readers then disagree about the same file, which is the reason to quote.
 review_hook: "on"
 
 # --- Budget (effort knob) -------------------------------------------------

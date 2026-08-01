@@ -14,7 +14,9 @@
 >   that surfaced it) + Fix shape (one-line description of what would
 >   resolve it). ≤ 3 lines per entry.
 > - Tags: `[lint]` / `[harness]` / `[skill]` / `[template]` / `[sync]` /
->   `[plan-review]` / `[docs]` / `[hermes-parity]` / `[example-corpus]`.
+>   `[plan-review]` / `[docs]` / `[hermes-parity]` / `[example-corpus]` /
+>   `[ci]` / `[hermes]` / `[plugin]`. The last three were added by use before
+>   they were declared here; a new tag belongs in this list when it is coined.
 > - Once an item is large enough to design, promote to a formal plan
 >   and link from the TODO entry as `→ <NAME>-PLAN.md`. The TODO entry
 >   stays open until the plan ships, then moves to **Closed** with the
@@ -53,6 +55,261 @@
 >   recover it.
 
 ## Open
+
+### `[plugin]` `PLUGIN-PREPROD-001` — the pre-prod review queue (23 findings, one entry each below)
+
+- *Context:* a five-lens pre-production review of `platforms/claude-code-plugin`
+  on 2026-07-31 returned **BLOCKER**. Every blocker and HIGH was reproduced
+  against source before it survived into the verdict. The packaging is sound;
+  what blocks the deploy is runtime behavior on a stranger's machine. Plan:
+  `plans/PLUGIN-PREPROD-001-PLAN.md` (merged, PR
+  [#408](https://github.com/vladm3105/aidoc-flow-framework/pull/408)).
+- *Why one entry per finding rather than one for the plan:* the plan ships as
+  **five sequential PRs**, so a stall between stages must leave a readable queue.
+  The 23 entries below are the queue; the plan is the design. PR 5 closes them.
+- *Citations are to `d789651b`, the pre-PR-1 tree.* Several of the lines
+  cited below are moved or deleted by PR 1 itself, which is what closing a
+  finding means; each such citation says so.
+- *Tag note:* `[plugin]` is new here — the documented tag list predates a
+  platform with its own runtime surface. Plugin runtime and packaging items carry
+  it; linter, harness and doc items keep their existing tags.
+
+### `[plugin]` `PREPROD-B1` — the review hook executes code from the user's working directory
+
+- *Context:* `hooks/sdd-doc-review.sh:43` (pre-PR-1) invokes the linter with `python3 -m`,
+  which puts the CWD ahead of `PYTHONPATH`. A `sdd_doc_lint/` package in any
+  cloned repo shadows the vendored one; reproduced — the payload ran and the hook
+  still exited 0.
+- *Fix shape:* `PYTHONSAFEPATH=1` on the invocation. Invoking `__main__.py` by
+  absolute path is **not** an alternative — it fails the relative imports.
+- *Stage:* PR 1.
+
+### `[plugin]` `PREPROD-B2` — nine skills mandate a permission-model bypass disclosed in no shipped file
+
+- *Context:* `tools/saga_driver.py:398` spawns child sessions with
+  `--dangerously-skip-permissions`, and nine autopilot skills name the driver as
+  the MANDATORY orchestration step (e.g.
+  `skills/doc-brd-autopilot/SKILL.md:85`). Zero shipped `.md`/`.json` discloses it.
+- *Fix shape:* make the bypass opt-in behind a flag the skills pass explicitly,
+  and disclose it. A doc-only disclosure would strip the bypass from the plugin's
+  primary path, since every invoker passes only `--layer`.
+- *Stage:* PR 3. The literal flag string must not reach a `SKILL.md` —
+  `tests/release/test_marketplace_gate.py:39` fails the release if it does.
+
+### `[plugin]` `PREPROD-B3` — the saga driver can wedge permanently and can report PASS on reviews that never ran
+
+- *Context:* three distinct sub-defects. **B3a** — an illegal transition raises
+  (`saga_driver.py:305`) and `PARTIAL_TIMEOUT` is unreachable from
+  `BRANCH_FAILED`/`BRANCH_COMPENSATING`/`SYNTHESIZED` (`:47`, `:48`, `:51`), so
+  four call sites can wedge. **B3b** — `dispatch_phase` writes its stale
+  in-memory dict back after the subprocess returns (`:406`), discarding
+  transitions the child wrote. **B3c** — the resume filter ignores transition
+  scope (`:370`).
+- *Fix shape:* a forced-transition path plus write-ordering, not a redesign of
+  the transition table. B3c must use `t.get("scope", "run")` — a bare `== "run"`
+  fails the existing scope-less fixture (`tests/conformance/test_saga_driver_invariants.py:71`).
+- *Stage:* PR 3.
+
+### `[lint]` `PREPROD-B4` — PyYAML and Python ≥3.11 are undeclared, and their absence is reported as lint findings
+
+- *Context:* `tools/sdd_doc_lint/__init__.py:30` imports `yaml` unguarded and
+  `:27` requires `StrEnum` (3.11+). Either absence exits 1 — the same code the
+  hook reads as structural findings — so a traceback is injected into model
+  context labelled as a finding.
+- *Fix shape:* a distinct exit code (3) plus a diagnostic naming the dependency,
+  and a hook-side filter that forwards only lines matching the finding grammar.
+- *Stage:* PR 1 (hook half) and PR 2 (linter half).
+
+### `[plugin]` `PREPROD-H1` — the hook emits findings in repos that never adopted the framework
+
+- *Context:* the plugin bundles a registry and `find_registry`
+  (`tools/sdd_doc_lint/__init__.py:46`) falls back to the module's own location,
+  so the documented "skip silently when there is no framework/" path is
+  unreachable once installed.
+- *Fix shape:* gate findings on an adoption marker — the scaffolded
+  `<docs_root>/0N_<ARTIFACT>/` tree, or a project-local registry / `.aidoc/`
+  found by walking up. Bound the walk at `$HOME`: a user-global
+  `~/.aidoc/profile.yaml` is documented and would otherwise make every project
+  under `$HOME` pass.
+- *Stage:* PR 1.
+
+### `[plugin]` `PREPROD-H2` — the documented `review_hook` on/off/verbose enum is unwired
+
+- *Context:* `docs/CONFIG.md` documents three values controlling the hook
+  (`review_hook:` in the schema block).
+  The hook reads no config at all, so there is no way to turn it off.
+- *Fix shape:* locate `.claude/aidoc-flow.config.yaml` by walking up from the
+  edited file (not from the CWD) and honour the enum. Parse with `grep`/`sed` —
+  the hook must keep working when Python or PyYAML is absent.
+- *Stage:* PR 1. Note the default `on` becomes quieter than today's behavior,
+  which is `verbose`.
+
+### `[plugin]` `PREPROD-H3` — untrusted file content crosses into instruction context unframed
+
+- *Context:* `hooks/sdd-doc-review.sh:45` (pre-PR-1) concatenates linter output
+  onto an instruction string, and `:34` interpolates the filename. Finding messages quote
+  raw tokens from the document (`tools/sdd_doc_lint/__init__.py:642`).
+- *Fix shape:* an explicit `<untrusted-tool-output source="...">` envelope
+  preceded by a sentence stating it is data, not instructions; the same framing
+  for the filename.
+- *Stage:* PR 1.
+
+### `[plugin]` `PREPROD-M1` — the hook declares no timeout
+
+- *Context:* `hooks/hooks.json` (pre-PR-1) declared a `PostToolUse` command with
+  no `timeout`, so a hung linter hung the edit.
+- *Fix shape:* `"timeout": 15` in `hooks.json`. **Not** a `timeout 10` wrapper —
+  GNU `timeout` is absent on stock macOS, where the invocation returns 127.
+- *Stage:* PR 1.
+
+### `[plugin]` `PREPROD-M2` — one agent declares neither `tools:` nor `model:`
+
+- *Context:* `agents/requirements-analyst.md:3` is the only one of 11, so it
+  inherits every tool including `Write`, `Edit` and `Bash`.
+- *Fix shape:* scope it to match its siblings; add a conformance test asserting
+  every agent declares both.
+- *Stage:* PR 4.
+
+### `[plugin]` `PREPROD-M3` — the driver wraps the child in GNU `timeout`, absent on stock macOS
+
+- *Context:* `tools/saga_driver.py:393`. On macOS the invocation returns 127 and
+  the driver's subprocess half is dead.
+- *Fix shape:* probe for it, or implement the bound in-process.
+- *Stage:* PR 3.
+
+### `[plugin]` `PREPROD-M4` — `main()` returns 0 regardless of terminal saga status
+
+- *Context:* `tools/saga_driver.py:732`, and again at `:679` straight after the
+  break circuit sets `PARTIAL_TIMEOUT`. Both return sites are the complete set.
+- *Fix shape:* a meaningful exit code. `tests/scripts/test-acceptance.sh:1177`
+  consumes it and records FAIL on non-zero, so the harness moves with it.
+- *Stage:* PR 3.
+
+### `[plugin]` `PREPROD-M5` — `verdict.json` is read with no freshness check and never unlinked
+
+- *Context:* `tools/saga_driver.py:425`. A stale verdict from a prior run is
+  indistinguishable from this run's.
+- *Fix shape:* unlink before dispatch, or stamp and verify the run id. Coerce
+  `int(... or 0)` before any score comparison.
+- *Stage:* PR 3.
+
+### `[docs]` `PREPROD-M6` — the latest GitHub Release is six versions stale
+
+- *Context:* what a visitor to the repo sees first. Not a code defect.
+- *Fix shape:* cut `claude-code-plugin/v0.25.0` and publish a Release.
+- *Stage:* PR 5. **Founder-gated** — a tag cut and a public Release are
+  outward-facing acts outside the AI auto-merge default.
+
+### `[docs]` `PREPROD-M7` — `SECURITY.md` names a stale spec version and scanners CI does not run
+
+- *Context:* `SECURITY.md:11` says `0.35.x`; `:49` names `bandit`. CI runs
+  semgrep, osv-scanner, gitleaks, `trivy config` and CodeQL.
+- *Fix shape:* correct both to what is true.
+- *Stage:* PR 5.
+
+### `[docs]` `PREPROD-M8` — `ROADMAP.md` states a stale plugin version
+
+- *Context:* `ROADMAP.md:56` says `0.23.4`.
+- *Fix shape:* correct it with the PR 5 bump.
+- *Stage:* PR 5.
+
+### `[plugin]` `PREPROD-L1` — the plugin declares MIT and ships no license text
+
+- *Context:* `.claude-plugin/plugin.json:10` declares `"license": "MIT"`; the
+  installed artifact contains no `LICENSE`.
+- *Fix shape:* add `platforms/claude-code-plugin/LICENSE`.
+- *Stage:* PR 4.
+
+### `[plugin]` `PREPROD-L2` — `--threshold` is accepted and ignored
+
+- *Context:* `tools/saga_driver.py:644` declares it; nothing reads it as a gate.
+  `CHANGELOG.md:1125` already claims the removal shipped — for the driver it
+  never did.
+- *Fix shape:* honour it. **Do not remove the flag** —
+  `tests/scripts/test-acceptance.sh:1175` passes `--threshold 90` on every
+  cascade layer, so deleting the argparse entry makes the driver exit 2 on a
+  usage error before any saga work.
+- *Stage:* PR 3.
+
+### `[plugin]` `PREPROD-L3` — `playbook_loader` joins caller-supplied segments with no traversal guard
+
+- *Context:* `tools/playbook_loader.py:18` `resolve_playbook_path`.
+- *Fix shape:* resolve and assert containment under the playbook root.
+- *Stage:* PR 3.
+
+### `[plugin]` `PREPROD-L4` — the hook's layer path test hardcodes `/docs/`
+
+- *Context:* `hooks/sdd-doc-review.sh:21` (pre-PR-1), defeating the configurable
+  `docs_root` (`docs/CONFIG.md:47`, documented with a trailing slash and
+  possibly multi-segment).
+- *Fix shape:* substitute the configured value, normalizing the trailing slash
+  and escaping regex metacharacters first.
+- *Stage:* PR 1.
+
+### `[lint]` `PREPROD-L5` — warning-severity findings can never reach the hook
+
+- *Context:* `tools/sdd_doc_lint/__main__.py:118` exits 0 unless a finding is
+  `error`, and the hook acts only on exit 1.
+- *Fix shape:* a `--warn-exit` flag — which closes nothing unless the hook passes
+  it, so the hook's invocation line moves in the same PR.
+- *Stage:* PR 2 (depends on PR 1).
+
+### `[docs]` `PREPROD-L6` — `marketplace.json` ships a personal email
+
+- *Context:* `.claude-plugin/marketplace.json:6`, on a public manifest.
+- *Fix shape:* a role address, if the founder wants it off the manifest.
+- *Stage:* PR 4.
+
+### `[plugin]` `PREPROD-L7` — `agents/code-reviewer.md` can collide with a consumer's own agent
+
+- *Context:* a generic name in a namespace the consumer shares.
+- *Fix shape:* rename under the plugin's namespace, or document the collision.
+- *Stage:* PR 4.
+
+### `[plugin]` `PREPROD-P1` — unreproduced `jq: Argument list too long` from the hook
+
+- *Context:* reported, never reproduced. The mechanism would be an unbounded
+  findings block reaching `jq`.
+- *Fix shape:* closed by construction — a file-size cap and a byte budget on the
+  findings block remove the mechanism.
+- *Stage:* PR 1.
+
+### `[harness]` `RELEASE-GATE-TBD-FALSE-POSITIVE` — the release changelog gate is red on `main` and will block the PLUGIN-PREPROD release cut
+
+- *Context:* found 2026-07-31 running `tests/release/` for PLUGIN-PREPROD-001
+  PR 1. `tests/release/test_changelog_entry.py:45` asserts the literal `TBD` is
+  absent from the whole of `CHANGELOG.md`. It appears at `CHANGELOG.md:1192` —
+  inside a *quoted historical commit message* that records a past review fixing a
+  TBD placeholder. Confirmed pre-existing: red on `main` with this branch stashed.
+- *Why it matters:* the tier is run by no workflow and no hook, so nothing
+  surfaced it; PLUGIN-PREPROD-001 PR 5 cuts a release and is the first thing that
+  will hit it. A placeholder check that scans an append-only historical record
+  gets strictly more false positives over time.
+- *Fix shape:* scope the assertion to the `[Unreleased]` section, or to lines
+  that are not inside a quotation — not by deleting the historical text.
+
+### `[lint]` `LINT-LOCAL-REGISTRY-NO-TEMPLATES` — a project-local registry without its layer templates silently disables the structural checks
+
+- *Context:* found 2026-07-31 while building
+  `tests/conformance/test_plugin_hook_safety.py`. `find_registry`
+  (`tools/sdd_doc_lint/__init__.py:46`) resolves the **nearest** registry by
+  walking up from the CWD, and each layer's required sections are then read from
+  a template resolved relative to that registry. A project that vendors
+  `framework/registry/LAYER_REGISTRY.yaml` alone therefore lints to **zero
+  findings** — measured: the same `BRD-01.md` that yields
+  `[ERROR STRUCT01] missing required section` against the bundled registry yields
+  `no structural findings` against a lone copied one, exit 0.
+- *Why it matters:* the failure is silent and green. A consumer who vendors part
+  of the framework gets a linter that reports clean documents forever, and
+  nothing says the templates are missing.
+- *Scope after PLUGIN-PREPROD-001 PR 1:* the review hook is no longer exposed —
+  it runs the linter from the plugin root, so it always resolves the bundled
+  registry. This is now a defect of the linter's own CLI path only.
+- *Fix shape:* fail loudly when a resolved registry's template directory is
+  absent, rather than treating a missing template as "no required sections".
+- *Tracker:* TODO-only for now — clears the issue bar (reproducible, concrete fix
+  shape, user-visible), but it is one repo's linter and not on the PLUGIN-PREPROD
+  critical path.
 
 ### `[hermes]` `HERMES-MCP-FLOATING-DEP` — `Hermes pytest` is red on an unpinned SDK floor, and a path filter hid it for days
 
