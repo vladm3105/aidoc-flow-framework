@@ -12,6 +12,64 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — one agent no longer inherits every tool; the plugin ships its license (2026-08-01)
+
+**PLUGIN-PREPROD-001 PR 4 of 5.** No version bump on any stream; the plugin's
+`0.24.0 → 0.25.0` cut is PR 5. Closes M2, L1, L6 and L7 of the 2026-07-31
+pre-production review.
+
+- **`requirements-analyst` inherited every tool, including `Write`, `Edit` and
+  `Bash`.** It was the only one of eleven agents declaring neither `tools:` nor
+  `model:`, and an agent that omits `tools:` does not get a narrower set — it
+  gets all of them. Scoped to `Read, Write, Edit, Grep, Glob, Bash, Skill,
+  WebFetch`, matching the other two spec-lane authors, and to `model: sonnet`
+  per the authoring tier `docs/AGENTS.md` documents. That file recorded the gap
+  honestly as `inherit` in two places; both now state the declared tier.
+- **A new conformance guard makes the omission fail the build.**
+  `tests/conformance/platforms/test_agent_frontmatter.py` asserts every agent
+  declares an explicit `tools:` allowlist and a `model:` drawn from the three
+  tiers `docs/AGENTS.md` defines. The existing manifest test covered agent
+  *identity* (`name`, `description`); nothing covered *scoping*, which is a
+  security property rather than a metadata one. `inherit` is deliberately not an
+  accepted model value — it is the unscoped state the guard exists to reject.
+  It also locks the read-only claim: an agent marked
+  `custom_fields.access: read-only` may hold no `Write`, `Edit` or
+  `NotebookEdit`. `Bash` is deliberately excluded from that set — the review
+  lenses genuinely shell out — which is why `docs/AGENTS.md` now says plainly
+  that read-only means *no editing tools plus an instruction*, not a sandbox.
+- **The plugin declared MIT and shipped no license text.** `LICENSE` now sits
+  inside `platforms/claude-code-plugin/`, so the installed artifact carries the
+  terms its `plugin.json` claims rather than relying on a repository root a
+  consumer never receives.
+- **`marketplace.json` no longer publishes a personal email.** `owner.email` is
+  optional in the marketplace schema and `owner.url` is an accepted alternative
+  ([Owner fields](https://code.claude.com/docs/en/plugin-marketplaces) — both
+  are `Required: No`; nothing in this repo vendors that schema, so the citation
+  is the source), so the address is replaced by the maintainer's GitHub profile.
+  An earlier plan anticipated a role address instead; that mailbox is not
+  provisioned, so the profile URL stands in. This narrows a
+  public manifest, not the address's exposure — it remains in this repository's
+  commit metadata.
+- **The `code-reviewer` collision is documented rather than renamed — and the
+  documentation says something sharper than the finding did.** Plugin agents
+  register under a scoped identifier (`aidoc-flow:code-reviewer`), so installing
+  this plugin cannot overwrite a consumer's own `code-reviewer`. That is only
+  half the story, and the reassuring half: a **bare** name is resolved by scope
+  precedence, where a plugin's `agents/` directory ranks lowest of five, below
+  `~/.claude/agents/`. A consumer who defines `code-reviewer` and asks for "the
+  code-reviewer" therefore reaches theirs, and this plugin's read-only gate is
+  never consulted. Renaming one file does not fix that — every dispatch is by
+  bare name — so `docs/AGENTS.md` § "Naming" now states the precedence rule, the
+  consequence that read-only is a property of *this* plugin's declaration rather
+  than of the name, and the gap itself.
+- **That gap is filed, not closed.** The plugin's own skills and the
+  `pm-orchestrator` delegation table dispatch by bare name, so on a machine
+  defining any of those names the plugin's instructions route to the consumer's
+  agent. Closing it means namespacing the dispatch references across roughly 45
+  files — out of scope for a hygiene stage, and tracked as
+  `PREPROD-L7-BARE-DISPATCH` / issue
+  [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417).
+
 ### Fixed — the saga driver stops wedging, stops clobbering its subprocess, and stops reporting success on runs that never converged (2026-08-01)
 
 **PLUGIN-PREPROD-001 PR 3 of 5.** No version bump on any stream; the plugin's

