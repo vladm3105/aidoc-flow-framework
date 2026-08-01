@@ -86,6 +86,13 @@
 - *Not broken:* installation does not shadow or overwrite a consumer's agent, and
   PR 4's `docs/AGENTS.md` §"Naming" documents the hazard for a human reader. This
   entry is the machine-facing half.
+- *Correction owed:* the PR 4 `CHANGELOG.md` entry sizes this sweep at "roughly 45
+  files". **That figure is wrong** — measured 2026-08-01 it is **29 `subagent_type=`
+  occurrences across 20 files** (28 in 19 under `skills/`, plus `README.md:213`), and
+  most are `subagent_type=<mapped agent>` placeholders, so the real sweep is the
+  per-skill lens→agent mapping tables rather than the dispatch lines. Not corrected in
+  place because the changelog is append-only; **PR 5 fixes it** when it consolidates the
+  `[Unreleased]` entries into the release narrative.
 - *Stage:* after PLUGIN-PREPROD-001; not a release blocker for the `0.25.0` cut.
 
 ### `[plugin]` `PREPROD-AGENT-WEBFETCH` — `WebFetch` is granted to 9 of 11 agents and used by no workflow
