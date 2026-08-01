@@ -28,6 +28,31 @@ Everything else — the other 41 skills, all commands, the agents — works with
 none of these installed. The review hook in particular is advisory and degrades
 quietly: it never blocks an edit, whatever is missing.
 
+## What the autopilot skills do to your permissions
+
+The 9 `doc-*-autopilot` skills run a create-review-revise loop by spawning
+`claude` subprocesses through `tools/saga_driver.py`. An unattended loop
+cannot answer permission prompts, so the skills pass
+**`--allow-skip-permissions`** to the driver, and the driver in turn runs each
+subprocess with Claude Code's `--dangerously-skip-permissions`.
+
+Inside those subprocesses **every** permission prompt is suppressed — not only
+file writes. The dispatched skills declare no `allowed-tools`, so each
+subprocess holds the full tool set (`Bash`, `Write`, `Edit`, `WebFetch`) and
+can run shell commands and reach the network without asking. Nothing scopes
+the writes to your project directory. One autopilot invocation dispatches up
+to four phases per iteration and up to three iterations — ten if
+`.aidoc/profile.yaml` raises `quality_loop_max_iterations` — each bounded at
+30 minutes.
+
+Run the autopilot only on a repository whose contents you trust.
+
+It is **opt-in and visible at the invocation site**, not a default buried in
+the driver: run `saga_driver.py` yourself without the flag and every dispatched
+phase prompts normally. If you would rather approve each write, invoke the
+per-layer skills (`/aidoc-flow:doc-brd`, `-audit`, `-fixer`) directly instead of
+the autopilot — same work, one prompt at a time, no subprocesses.
+
 ## Install
 
 Published through the repo-root marketplace manifest

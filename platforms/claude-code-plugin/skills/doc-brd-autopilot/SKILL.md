@@ -100,8 +100,13 @@ Your first **orchestration** action MUST be the `Bash` tool (the Model precheck 
 
 ```sh
 python3 "${CLAUDE_PLUGIN_ROOT}/tools/saga_driver.py" \
-  --layer 01_BRD
+  --layer 01_BRD \
+  --allow-skip-permissions
 ```
+
+`--allow-skip-permissions` lets the phases the driver dispatches write
+files without a permission prompt — unattended autopilot requires it.
+Drop the flag to run the same loop with Claude Code's normal prompts on.
 
 Use a generous timeout (≥1800s). Do not pre-analyze the input. Do not
 read the seed. Do not classify type/scope. The driver and its

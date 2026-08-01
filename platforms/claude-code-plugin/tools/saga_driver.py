@@ -29,6 +29,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -146,6 +147,59 @@ SUBPROCESS_TIMEOUT_SECONDS = 1800
 # missing, malformed, or the field is absent / out of range [1, 10].
 MAX_ITERATIONS = 3
 
+# Process exit codes. A caller that chains on success must not proceed on an
+# artifact that never passed review, so a saga ending in a non-CLOSED terminal
+# state exits non-zero.
+#
+# Deliberately neither 2 nor 124: argparse spends 2 on a usage error, and 124
+# is what `timeout` returns, which `tests/scripts/test-acceptance.sh`
+# special-cases as "driver timeout". Reusing either would make failure
+# attribution in that harness ambiguous.
+EXIT_OK = 0
+EXIT_PARTIAL_TIMEOUT = 4
+EXIT_ESCALATED = 5
+# Returned when the phase subprocess could not be spawned at all (the shell
+# convention for command-not-found). Returned by `main` directly, not mapped
+# through `_exit_code_for_status`: the saga does end PARTIAL_TIMEOUT, but
+# reporting a missing `claude` binary as a resumable deadline would tell the
+# operator to retry a run that will fail identically every time.
+EXIT_SPAWN_FAILED = 127
+
+
+# Sentinel: `verdict.json` reported a `content_score` that cannot be read as a
+# number. Distinct from `None`, which means it reported none at all — the two
+# must not share a gate outcome (see `read_verdict_score`).
+SCORE_UNUSABLE = object()
+
+# Terminal states that already represent a run which did not pass review. A
+# saga sitting in one of these has nothing left to force.
+_FAILURE_TERMINALS = frozenset({"PARTIAL_TIMEOUT", "ESCALATED"})
+
+
+def _force_partial_timeout(saga: dict, *, scope: str = "run") -> None:
+    """Drive the saga to PARTIAL_TIMEOUT from wherever it is.
+
+    No-ops when the saga already sits in a failure terminal: re-forcing
+    `PARTIAL_TIMEOUT -> PARTIAL_TIMEOUT` writes a meaningless self-edge, and
+    rewriting an `ESCALATED` run as merely timed-out would downgrade a state
+    that asks for a human.
+    """
+    if saga["status"] in _FAILURE_TERMINALS:
+        return
+    append_transition(
+        saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT", scope=scope, forced=True
+    )
+    saga["status"] = "PARTIAL_TIMEOUT"
+
+
+def _exit_code_for_status(status: str) -> int:
+    """Map a terminal saga status to the driver's process exit code."""
+    if status == "PARTIAL_TIMEOUT":
+        return EXIT_PARTIAL_TIMEOUT
+    if status == "ESCALATED":
+        return EXIT_ESCALATED
+    return EXIT_OK
+
 
 def _resolve_max_iterations(profile_path: str | Path | None = None) -> int:
     """Resolve the quality-loop iteration cap.
@@ -199,6 +253,12 @@ class SagaContext:
     start_epoch: float = field(default_factory=time.time)
     threshold: int = 90
     plugin_dir: Path | None = None
+    # Opt-in only (PLUGIN-PREPROD-001 B2). When false — the default — the
+    # dispatched phase subprocess runs under Claude Code's normal permission
+    # prompts. The 9 `doc-*-autopilot` SKILLs and the acceptance harness pass
+    # `--allow-skip-permissions` explicitly, so the bypass is visible where it
+    # is requested rather than hidden in this driver.
+    allow_skip_permissions: bool = False
 
 
 def load_or_init_saga(ctx: SagaContext, seed_path: Path) -> dict:
@@ -207,7 +267,8 @@ def load_or_init_saga(ctx: SagaContext, seed_path: Path) -> dict:
     Entry conditions handled here:
     - saga.json missing -> fresh init (pre-Phase-2 blackboard migration
       if slot files are present).
-    - status CLOSED or ESCALATED -> log + sys.exit(0).
+    - status CLOSED -> log + sys.exit(0); ESCALATED -> log +
+      sys.exit(EXIT_ESCALATED), since that artifact never passed review.
     - status PARTIAL_TIMEOUT or any other in-flight state -> resume.
     """
     if ctx.saga_file.exists():
@@ -220,8 +281,11 @@ def load_or_init_saga(ctx: SagaContext, seed_path: Path) -> dict:
             )
             sys.exit(0)
         if status == "ESCALATED":
+            # Non-zero for the same reason main's return is (M4): the artifact
+            # never passed review, so a caller chaining on success must not
+            # proceed just because this invocation had nothing left to do.
             print(f"saga ESCALATED for {ctx.artifact_id}; human review required")
-            sys.exit(0)
+            sys.exit(EXIT_ESCALATED)
         return saga
 
     ctx.saga_dir.mkdir(parents=True, exist_ok=True)
@@ -297,15 +361,51 @@ def can_transition(*, current: str, target: str) -> bool:
 
 
 def append_transition(
-    saga: dict, *, from_state: str | None, to_state: str, scope: str = "run"
+    saga: dict, *, from_state: str | None, to_state: str, scope: str = "run", forced: bool = False
 ) -> None:
     """Append a transition. Raises ValueError on invalid transitions
-    (preemptive enforcement)."""
-    if from_state is not None and not can_transition(current=from_state, target=to_state):
+    (preemptive enforcement).
+
+    `forced=True` records an edge the transition table does not allow instead
+    of raising, stamping it `forced: true` so a journal reader can tell a
+    reconciled edge from a legal one. It exists for the recovery paths that
+    must reach `PARTIAL_TIMEOUT` from *any* non-terminal state — three of
+    which (`BRANCH_FAILED`, `BRANCH_COMPENSATING`, `SYNTHESIZED`) cannot reach
+    it legally, so an unforced call there raises and wedges the saga
+    permanently (PLUGIN-PREPROD-001 B3a). Use it only where the alternative is
+    an uncaught raise; `can_transition` itself stays strict.
+
+    **A forced edge may only target `PARTIAL_TIMEOUT`.** Forcing toward a
+    failure terminal is safe in the worst case — it fails a run that might
+    have passed. Forcing toward `CLOSED` (or along the chain that reaches it)
+    inverts that: it would report success for a saga the transition table says
+    could not have got there, which is precisely the "reports PASS on reviews
+    that never ran" defect this driver's fixes exist to remove. Anything
+    wanting a forced success has a journal inconsistency to surface, not to
+    paper over.
+    """
+    if forced and to_state != "PARTIAL_TIMEOUT":
         raise ValueError(
-            f"Invalid transition: {from_state} -> {to_state} "
-            f"(allowed: {sorted(_ALLOWED_TRANSITIONS.get(from_state, set()))})"
+            f"forced transitions may only target PARTIAL_TIMEOUT, not {to_state}: "
+            "forcing toward a success state would report a pass the state "
+            "machine says was unreachable"
         )
+    if from_state is not None and not can_transition(current=from_state, target=to_state):
+        if not forced:
+            raise ValueError(
+                f"Invalid transition: {from_state} -> {to_state} "
+                f"(allowed: {sorted(_ALLOWED_TRANSITIONS.get(from_state, set()))})"
+            )
+        entry = {
+            "ts": _utc_now_iso(),
+            "from": from_state,
+            "to": to_state,
+            "scope": scope,
+            "forced": True,
+        }
+        saga["transitions"].append(entry)
+        saga["updated_at"] = _utc_now_iso()
+        return
     saga["transitions"].append(
         {
             "ts": _utc_now_iso(),
@@ -348,8 +448,7 @@ def check_break_circuit(ctx: SagaContext, saga: dict) -> bool:
     PARTIAL_TIMEOUT and caller should exit."""
     elapsed = time.time() - ctx.start_epoch
     if elapsed > SOFT_DEADLINE_SECONDS:
-        append_transition(saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT", scope="run")
-        saga["status"] = "PARTIAL_TIMEOUT"
+        _force_partial_timeout(saga)
         write_saga(ctx, saga)
         print(
             f"break-circuit fired at {elapsed:.0f}s elapsed; "
@@ -363,14 +462,81 @@ def resume_from_partial_timeout(saga: dict) -> None:
     """Per Phase 2 Pass 4 G-R1: walk transitions[] backward to find the
     pre-PARTIAL_TIMEOUT state. Set saga.status to that state so the loop
     continues from there. Do NOT append a transition with from: PARTIAL_TIMEOUT.
+
+    Only **run-scoped** transitions are candidates: `transitions[]` interleaves
+    run-scope and `branch:<lens>`-scope entries, so an unscoped walk can adopt
+    a branch terminal (e.g. `BRANCH_FAILED` for one lens) as the whole run's
+    status (PLUGIN-PREPROD-001 B3c).
+
+    The `"run"` default is load-bearing, not stylistic. Scope-less entries are
+    real — the audit SKILL's LLM writes transitions straight into `saga.json`,
+    and `reconcile_post_audit` already reads `scope` defensively for that
+    reason. Under a bare `t.get("scope") == "run"` any such journal would find
+    no candidate and restart the saga at `PREPARED`.
     """
     if saga["status"] != "PARTIAL_TIMEOUT":
         return
     for t in reversed(saga["transitions"]):
-        if t["to"] != "PARTIAL_TIMEOUT":
+        if t.get("scope", "run") == "run" and t["to"] != "PARTIAL_TIMEOUT":
             saga["status"] = t["to"]
             return
     saga["status"] = "PREPARED"
+
+
+def _timeout_wrapper() -> list[str]:
+    """Return the argv prefix that bounds a phase subprocess, if one exists.
+
+    `timeout` is GNU coreutils: present on Linux, absent from a stock macOS,
+    where Homebrew's coreutils installs it as `gtimeout`. Probe rather than
+    assume — an unconditional `timeout` prefix makes every dispatch fail with
+    a spawn error on macOS. Callers fall back to `subprocess.run(timeout=…)`
+    when this returns empty (PLUGIN-PREPROD-001 M3).
+    """
+    for name in ("timeout", "gtimeout"):
+        found = shutil.which(name)
+        if found:
+            return [found, str(SUBPROCESS_TIMEOUT_SECONDS)]
+    return []
+
+
+def _reload_saga_in_place(ctx: SagaContext, saga: dict) -> bool:
+    """Refresh `saga` from disk, preserving the caller's dict identity.
+
+    The dispatched subprocess writes its own per-branch transitions and status
+    directly to `saga.json`. Mutating in place (rather than rebinding) means
+    every holder of the dict — including the caller that passed it in — sees
+    the child's work instead of a stale pre-dispatch snapshot.
+
+    Returns False when the journal is unreadable, having first copied it aside
+    as `saga.corrupt.json`. Swallowing that case silently would be the B3b
+    clobber all over again: the caller would go on to write its stale
+    pre-dispatch snapshot over the child's work *and* over the evidence of why
+    the child failed, and nothing downstream could tell. The caller must treat
+    False as a failed phase.
+    """
+    if not ctx.saga_file.exists():
+        return True
+    try:
+        on_disk = json.loads(ctx.saga_file.read_text())
+        if not isinstance(on_disk, dict):
+            raise ValueError(f"saga.json is not a JSON object: {ctx.saga_file}")
+    except (OSError, ValueError) as exc:
+        quarantine = ctx.saga_file.with_name("saga.corrupt.json")
+        try:
+            shutil.copy2(ctx.saga_file, quarantine)
+            preserved = f" preserved at {quarantine}"
+        except OSError:
+            preserved = " (could not be preserved)"
+        print(
+            f"saga.json is unreadable after the subprocess returned ({exc}); "
+            f"the subprocess's work cannot be recovered and must not be "
+            f"overwritten. Corrupt file{preserved}.",
+            file=sys.stderr,
+        )
+        return False
+    saga.clear()
+    saga.update(on_disk)
+    return True
 
 
 def dispatch_phase(ctx: SagaContext, phase: str, brief: str, saga: dict | None = None) -> int:
@@ -382,6 +548,12 @@ def dispatch_phase(ctx: SagaContext, phase: str, brief: str, saga: dict | None =
     events to saga.events[] for orchestration observability (SPEC-RT-001
     2026-06-09 gap — fixer dispatch + completion previously left no
     journal trace).
+
+    The completion event is appended to the saga **as the subprocess left it on
+    disk**, not to the pre-dispatch in-memory copy. Writing the stale copy back
+    clobbered every transition, branch update and status change the child made
+    (PLUGIN-PREPROD-001 B3b) — the caller's later reload then read the driver's
+    own overwrite and could not tell.
     """
     slash = {
         "draft": f"/aidoc-flow:doc-{ctx.layer_type.lower()}",
@@ -389,44 +561,138 @@ def dispatch_phase(ctx: SagaContext, phase: str, brief: str, saga: dict | None =
         "fixer": f"/aidoc-flow:doc-{ctx.layer_type.lower()}-fixer",
         "re-review": f"/aidoc-flow:doc-{ctx.layer_type.lower()}-audit",
     }[phase]
-    cmd = [
-        "timeout",
-        str(SUBPROCESS_TIMEOUT_SECONDS),
+    claude_argv = [
         "claude",
         "--plugin-dir",
         str(ctx.plugin_dir),
-        "--dangerously-skip-permissions",
-        "-p",
-        f"{slash} {brief}",
     ]
+    if ctx.allow_skip_permissions:
+        claude_argv.append("--dangerously-skip-permissions")
+    claude_argv += ["-p", f"{slash} {brief}"]
+
+    wrapper = _timeout_wrapper()
+    cmd = wrapper + claude_argv
+    run_kwargs: dict = {"capture_output": False, "check": False}
+    if not wrapper:
+        run_kwargs["timeout"] = SUBPROCESS_TIMEOUT_SECONDS
+
     print(f"dispatch: {phase} ({slash}) ...")
     if saga is not None:
         append_event(saga, f"dispatch:{phase}", iteration=saga.get("iteration"), slash=slash)
         write_saga(ctx, saga)
-    result = subprocess.run(cmd, capture_output=False, check=False)
+
+    error: str | None = None
+    try:
+        returncode = subprocess.run(cmd, **run_kwargs).returncode
+    except subprocess.TimeoutExpired:
+        # Match GNU `timeout`'s exit code so both wrapper paths report a
+        # deadline the same way to every caller.
+        returncode = 124
+        error = f"phase {phase} exceeded {SUBPROCESS_TIMEOUT_SECONDS}s"
+    except (FileNotFoundError, PermissionError) as exc:
+        # The dispatch event is already journalled. Returning without a
+        # completion event would leave a journal claiming work that never
+        # started, so record the failed spawn explicitly.
+        #
+        # Name `claude` rather than cmd[0]: when a wrapper is in use, cmd[0]
+        # is the resolved timeout path that `shutil.which` just proved exists,
+        # so blaming it points at the one binary that is definitely present.
+        returncode = EXIT_SPAWN_FAILED
+        error = f"could not spawn {claude_argv[0]!r}: {exc}"
+        print(f"dispatch failed: {error}", file=sys.stderr)
+
     if saga is not None:
+        if not _reload_saga_in_place(ctx, saga) and returncode == 0:
+            # An unreadable journal is a failed phase even when the child
+            # exited 0 — main must not advance the state machine on it.
+            returncode = 1
+            error = "saga.json unreadable after the subprocess returned"
+        extra = {"error": error} if error else {}
         append_event(
             saga,
             f"complete:{phase}",
             iteration=saga.get("iteration"),
-            exit_code=result.returncode,
+            exit_code=returncode,
+            **extra,
         )
         write_saga(ctx, saga)
-    return result.returncode
+    return returncode
 
 
-def read_verdict_score(ctx: SagaContext) -> tuple[int, str]:
+def read_verdict_score(ctx: SagaContext) -> tuple[int | float | None | object, str]:
     """Read .aidoc/review/<layer>/<id>/verdict.json. Returns (score, status).
 
-    Returns (0, "MISSING") if verdict.json absent - caller treats this as
+    Returns (None, "MISSING") if verdict.json absent - caller treats this as
     an AUDIT FAILURE (per Pass-4 A9), distinct from a low content score
     (FAIL with score). Driver escalates rather than dispatching fixer.
+
+    Three score outcomes, and conflating any two of them breaks the
+    `--threshold` gate in one direction or the other:
+
+    * a number (`int` or `float`) — gate on it.
+    * `None`, when the verdict reports **no** `content_score`. Some layers
+      have no numeric readiness score *by design*: CHG says so in its own
+      `content_score_note` and gates on `combined_status` plus
+      `blocking_findings_count`. Coercing that absence to 0 would fail every
+      threshold and drive such a layer to the iteration cap.
+    * `SCORE_UNUSABLE`, when the key **is** present but cannot be read as a
+      number. `verdict.json` is written by an LLM-driven audit skill, so
+      `92.5` and `"88"` are ordinary — but `true`, `null` or `"n/a"` are not
+      scores. Treating those as "no score supplied" would silently disable
+      the gate, which is the most likely way this gate fails in practice.
     """
     verdict_path = ctx.saga_dir / "verdict.json"
     if not verdict_path.exists():
-        return 0, "MISSING"
+        return None, "MISSING"
     v = json.loads(verdict_path.read_text())
-    return v.get("content_score", 0), v.get("combined_status", "UNKNOWN")
+    if not isinstance(v, dict):
+        raise ValueError(f"verdict.json is not a JSON object: {verdict_path}")
+    if "content_score" not in v or v["content_score"] is None:
+        return None, v.get("combined_status", "UNKNOWN")
+    raw = v["content_score"]
+    score: int | float | object
+    if isinstance(raw, bool):
+        score = SCORE_UNUSABLE
+    elif isinstance(raw, (int, float)):
+        score = raw
+    elif isinstance(raw, str):
+        try:
+            score = float(raw)
+        except ValueError:
+            score = SCORE_UNUSABLE
+        else:
+            print(
+                f"verdict content_score was the string {raw!r}; read as {score}",
+                file=sys.stderr,
+            )
+    else:
+        score = SCORE_UNUSABLE
+    if score is SCORE_UNUSABLE:
+        print(
+            f"verdict content_score is present but unusable ({raw!r}); "
+            f"treating the run as not converged",
+            file=sys.stderr,
+        )
+    return score, v.get("combined_status", "UNKNOWN")
+
+
+def _invalidate_verdict(ctx: SagaContext, iteration: int) -> None:
+    """Move verdict.json aside so a stale PASS cannot be read as current.
+
+    The audit subprocess is not guaranteed to rewrite it — a crashed or
+    non-team-mode audit leaves the previous iteration's file in place, which
+    `read_verdict_score` would then read as the current verdict
+    (PLUGIN-PREPROD-001 M5).
+
+    Rotated rather than deleted. The file holds the `blocking_findings` that
+    motivated this fixer pass, and the runs that most need it are exactly the
+    ones where the next audit never writes a replacement: a human arriving at
+    the resulting PARTIAL_TIMEOUT would otherwise find an empty review
+    directory — neither the failing verdict nor a new one.
+    """
+    verdict = ctx.saga_dir / "verdict.json"
+    if verdict.exists():
+        verdict.replace(ctx.saga_dir / f"verdict.iter{iteration}.json")
 
 
 def validate_and_repair_branches(ctx: SagaContext, saga: dict) -> None:
@@ -545,6 +811,21 @@ def reconcile_post_audit(ctx: SagaContext, saga: dict) -> None:
     saga["updated_at"] = _utc_now_iso()
 
 
+def _meets_threshold(ctx: SagaContext, score: int | float | None | object) -> bool:
+    """Whether a PASS verdict clears the caller's `--threshold` gate.
+
+    `None` (no score reported) is **not** gated — see `read_verdict_score` for
+    why CHG depends on that. `SCORE_UNUSABLE` (a score reported but
+    unreadable) **fails** the gate: an unreadable score is a broken audit, and
+    failing closed is the only safe reading of one.
+    """
+    if score is None:
+        return True
+    if score is SCORE_UNUSABLE:
+        return False
+    return score >= ctx.threshold
+
+
 def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
     """Apply the state-machine transition for a completed phase + decide
     next phase based on verdict.json (for review/re-review phases)."""
@@ -565,10 +846,16 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
             # not fan out / write verdict.json — e.g., legacy single-pass
             # audit subprocess that hasn't been team-mode-wired yet). From
             # FANOUT_STARTED, ESCALATED is illegal; PARTIAL_TIMEOUT is the
-            # universally-reachable non-CLOSED terminal. Use PARTIAL_TIMEOUT
-            # so the harness B2 assertion reports FAIL with the right
-            # semantics ("resumable; needs human review / team-mode wiring
-            # for this layer") instead of the driver crashing.
+            # non-CLOSED terminal that carries the right semantics
+            # ("resumable; needs human review / team-mode wiring for this
+            # layer") for the harness B2 assertion.
+            #
+            # PARTIAL_TIMEOUT is NOT reachable from every non-terminal state —
+            # BRANCH_FAILED, BRANCH_COMPENSATING and SYNTHESIZED cannot reach
+            # it, and this branch runs after reconcile_post_audit, which can
+            # leave the saga in any of them. Hence forced=True: without it the
+            # recovery path itself raises and wedges the saga permanently
+            # (PLUGIN-PREPROD-001 B3a).
             saga["compensation_actions"].append(
                 {
                     "ts": _utc_now_iso(),
@@ -581,8 +868,26 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
                     "action": "partial_timeout",
                 }
             )
-            append_transition(saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT")
-            saga["status"] = "PARTIAL_TIMEOUT"
+            _force_partial_timeout(saga)
+            return
+
+        if status == "PASS" and not _meets_threshold(ctx, score):
+            # L2: --threshold was accepted and ignored. A PASS whose reported
+            # content_score is below the caller's gate is not a pass; fall
+            # through to the fixer/cap branch below.
+            print(
+                f"verdict PASS but content_score {score} < threshold "
+                f"{ctx.threshold}; treating as not converged"
+            )
+            status = "FAIL"
+
+        if status != "PASS" and saga["status"] in {"CLOSED"} | _FAILURE_TERMINALS:
+            # The audit subprocess left the saga terminal, but the verdict
+            # says this run did not converge. Without this, the fixer branch
+            # below would set current_phase on a CLOSED saga, main's loop
+            # guard would see a terminal status, and the run would exit 0 —
+            # the gate firing and the run reporting success in one breath.
+            _force_partial_timeout(saga)
             return
 
         if status == "PASS":
@@ -593,8 +898,36 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
             # along the chain. Append only the transitions still needed
             # to reach CLOSED — appending a no-op (e.g. FANIN_REDUCED ->
             # FANIN_REDUCED) would raise ValueError.
+            #
+            # The entry state is whatever the audit subprocess left on disk
+            # (B3b stopped the driver clobbering it), so it need not be one
+            # from which FANIN_REDUCED is legal. That inconsistency is NOT
+            # absorbed: a PASS arriving on a journal that records no completed
+            # fan-in is evidence the audit is broken, not evidence the
+            # document is good. Forcing the edge here would walk the saga to
+            # CLOSED and exit 0 — e.g. an audit that wrote `status: ESCALATED`
+            # and a PASS verdict would have its escalation silently rewritten
+            # as success. Surface it as unconverged instead.
             terminal_chain = ("FANIN_REDUCED", "SYNTHESIZED", "CLOSED")
             if saga["status"] not in terminal_chain:
+                if not can_transition(current=saga["status"], target="FANIN_REDUCED"):
+                    print(
+                        f"verdict PASS but saga is at {saga['status']}, from which "
+                        f"FANIN_REDUCED is unreachable — the audit reported a pass on a "
+                        f"journal recording no completed fan-in. Treating as not "
+                        f"converged; inspect {ctx.saga_file}.",
+                        file=sys.stderr,
+                    )
+                    saga["compensation_actions"].append(
+                        {
+                            "ts": _utc_now_iso(),
+                            "branch": "*",
+                            "reason": (f"PASS verdict from non-fan-in state {saga['status']}"),
+                            "action": "partial_timeout",
+                        }
+                    )
+                    _force_partial_timeout(saga)
+                    return
                 append_transition(saga, from_state=saga["status"], to_state="FANIN_REDUCED")
                 saga["status"] = "FANIN_REDUCED"
             if saga["status"] == "FANIN_REDUCED":
@@ -613,17 +946,19 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
                 # BRANCH_FAILED or BRANCH_COMPENSATING. At max iterations
                 # we're typically at BRANCH_COMPLETED or FANIN_REDUCED
                 # (audit completed but verdict FAIL), neither of which
-                # allows direct -> ESCALATED. Use PARTIAL_TIMEOUT
-                # (universally reachable from non-terminal states) as
-                # the non-CLOSED terminal. Harness treats both as FAIL.
-                append_transition(saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT")
-                saga["status"] = "PARTIAL_TIMEOUT"
+                # allows direct -> ESCALATED. Use PARTIAL_TIMEOUT as the
+                # non-CLOSED terminal. Harness treats both as FAIL.
+                # Forced for the same reason as the MISSING branch above:
+                # PARTIAL_TIMEOUT is not reachable from every non-terminal
+                # state, and BRANCH_FAILED is a live entry state here
+                # (PLUGIN-PREPROD-001 B3a).
+                _force_partial_timeout(saga)
     elif phase == "fixer":
         saga["iteration"] += 1
         saga["current_phase"] = "re-review"
 
 
-def main(argv: list[str] | None = None) -> int:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Saga driver for plugin autopilot")
     parser.add_argument("--layer", required=True, help="e.g. 01_BRD")
     parser.add_argument(
@@ -641,11 +976,35 @@ def main(argv: list[str] | None = None) -> int:
         default=os.environ.get("PREV_OUTPUT"),
         help="upstream seed; falls back to $PREV_OUTPUT",
     )
-    parser.add_argument("--threshold", type=int, default=90)
+    parser.add_argument(
+        "--threshold",
+        type=int,
+        default=90,
+        help=(
+            "minimum content_score a PASS verdict must report to close the "
+            "saga; verdicts that report no score are not gated"
+        ),
+    )
     parser.add_argument(
         "--plugin-dir",
         default=os.environ.get("CLAUDE_PLUGIN_ROOT", os.environ.get("PLUGIN_DIR", "")),
     )
+    parser.add_argument(
+        "--allow-skip-permissions",
+        action="store_true",
+        help=(
+            "run each dispatched phase subprocess with "
+            "--dangerously-skip-permissions, so it can write files without "
+            "prompting. Required for unattended autopilot runs; off by default "
+            "because it disables Claude Code's permission prompts for every "
+            "subprocess this driver spawns."
+        ),
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = build_parser()
     args = parser.parse_args(argv)
 
     for name in ("artifact_id", "artifact_path", "seed"):
@@ -668,6 +1027,7 @@ def main(argv: list[str] | None = None) -> int:
         saga_file=saga_dir / "saga.json",
         threshold=args.threshold,
         plugin_dir=Path(args.plugin_dir),
+        allow_skip_permissions=args.allow_skip_permissions,
     )
 
     saga = load_or_init_saga(ctx, Path(args.seed))
@@ -676,9 +1036,11 @@ def main(argv: list[str] | None = None) -> int:
 
     while saga["status"] not in {"CLOSED", "ESCALATED", "PARTIAL_TIMEOUT"}:
         if check_break_circuit(ctx, saga):
-            return 0
+            return _exit_code_for_status(saga["status"])
 
         phase = saga["current_phase"]
+        if phase in ("review", "re-review"):
+            _invalidate_verdict(ctx, saga["iteration"])
         brief = (
             f"Artifact {args.artifact_id} at {args.artifact_path}; "
             f"seed at {args.seed}; saga at {ctx.saga_file}; "
@@ -704,23 +1066,43 @@ def main(argv: list[str] | None = None) -> int:
             # failure (claude API limit, network, timeout, etc.) the
             # saga is usually at PREPARED / FANOUT_STARTED / BRANCH_RUNNING
             # / BRANCH_COMPLETED, none of which allow direct -> ESCALATED.
-            # PARTIAL_TIMEOUT is universally reachable from non-terminal
-            # states and connotes "non-CLOSED terminal, resumable on
+            # PARTIAL_TIMEOUT connotes "non-CLOSED terminal, resumable on
             # next invocation" — the right semantics for a transient
             # external failure. Harness treats both ESCALATED and
-            # PARTIAL_TIMEOUT as FAIL.
+            # PARTIAL_TIMEOUT as FAIL. forced=True because the reloaded
+            # status is whatever the subprocess left behind, which may be
+            # one of the three states PARTIAL_TIMEOUT is not reachable
+            # from (PLUGIN-PREPROD-001 B3a).
+            reason = f"phase {phase} subprocess exit {rc}"
+            if rc == EXIT_SPAWN_FAILED:
+                reason = f"phase {phase} subprocess could not be spawned"
+            elif rc == 124 and not ctx.allow_skip_permissions:
+                # A phase that ran to the full deadline with the permission
+                # bypass off is far more likely to have been sitting on an
+                # unanswerable prompt than to have been slow.
+                reason += " (permission prompts are on; --allow-skip-permissions was not passed)"
             saga["compensation_actions"].append(
                 {
                     "ts": _utc_now_iso(),
                     "branch": "*",
-                    "reason": f"phase {phase} subprocess exit {rc}",
+                    "reason": reason,
                     "action": "partial_timeout",
                 }
             )
-            append_transition(
-                saga, from_state=saga["status"], to_state="PARTIAL_TIMEOUT", scope="run"
-            )
-            saga["status"] = "PARTIAL_TIMEOUT"
+            _force_partial_timeout(saga)
+
+            if rc == EXIT_SPAWN_FAILED:
+                # An environment defect, not a resumable deadline. Reporting
+                # it through EXIT_PARTIAL_TIMEOUT would tell the operator the
+                # run can simply be retried, and every retry would fail
+                # identically.
+                print(
+                    f"phase {phase} could not be spawned — this is an environment "
+                    f"defect, not a resumable timeout. Verify `claude` is on PATH.",
+                    file=sys.stderr,
+                )
+                write_saga(ctx, saga)
+                return EXIT_SPAWN_FAILED
 
         write_saga(ctx, saga)
 
@@ -729,7 +1111,7 @@ def main(argv: list[str] | None = None) -> int:
         f"(iteration {saga['iteration']}, "
         f"{len(saga['transitions'])} transitions)"
     )
-    return 0
+    return _exit_code_for_status(saga["status"])
 
 
 if __name__ == "__main__":

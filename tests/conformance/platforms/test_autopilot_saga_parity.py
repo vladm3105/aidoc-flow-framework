@@ -32,6 +32,10 @@ LAYER_AUTOPILOTS = {
     "doc-iplan-autopilot": "08_IPLAN",
 }
 
+# Every SKILL that shells the driver, including the CHG autopilot, which is
+# outside the 8-layer flow above but invokes the driver identically.
+DRIVER_INVOKERS = dict(LAYER_AUTOPILOTS, **{"doc-chg-autopilot": "09_CHG"})
+
 
 def split_frontmatter(path):
     text = path.read_text(encoding="utf-8")
@@ -97,6 +101,27 @@ class AutopilotSagaParity(unittest.TestCase):
                     declared_adapts(fm),
                     f"{name}: adapts must declare review_mode (it branches on it)",
                 )
+
+    def test_driver_invocation_passes_the_permission_flag(self):
+        """PLUGIN-PREPROD-001 B2: the permission bypass is opt-in in the
+        driver, so every invoker must *pass* `--allow-skip-permissions`, not
+        merely mention it. A documentation-only change would strip the bypass
+        from the plugin's primary path and from the live cascade.
+
+        Asserted on the invocation block itself — prose elsewhere in the SKILL
+        naming the flag is not a passed argument.
+        """
+        for name in DRIVER_INVOKERS:
+            with self.subTest(skill=name):
+                _, body = split_frontmatter(self._skill(name))
+                blocks = [b for b in body.split("```") if "saga_driver.py" in b and "python3" in b]
+                self.assertTrue(blocks, f"{name}: no saga_driver.py invocation block")
+                for block in blocks:
+                    self.assertIn(
+                        "--allow-skip-permissions",
+                        block,
+                        f"{name}: driver invocation does not pass --allow-skip-permissions",
+                    )
 
     def test_no_dangling_singlepass_crossref(self):
         # Regression guard (Phase 4 review): the team-mode saga block must state

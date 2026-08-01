@@ -56,6 +56,57 @@
 
 ## Open
 
+### `[plugin]` `SAGA-ALL-BRANCHES-FAILED-CLOSES` — a review where every lens failed still closes at exit 0
+
+- *Context:* found 2026-08-01 by review during PLUGIN-PREPROD-001 PR 3, and
+  **pre-existing** — not introduced by that PR, though B3b makes it more
+  reachable by preserving the subprocess's real state.
+  `tools/saga_driver.py` `reconcile_post_audit` counts `BRANCH_FAILED` as
+  terminal-and-fine (`terminal_branch_states = {"BRANCH_COMPLETED",
+  "BRANCH_FAILED"}`), so a run whose crew all failed walks `FANOUT_STARTED →
+  BRANCH_RUNNING → BRANCH_COMPLETED` **legally**. A `PASS` verdict then closes
+  it via the ordinary chain — PR 3's forced-edge guard does not catch this,
+  because no edge is forced. Reachable in practice: `validate_and_repair_branches`
+  fabricates `BRANCH_FAILED` for every persona with no slot file, which is what
+  an audit that writes `verdict.json` but dies before stamping branches leaves.
+- *Fix shape:* gate the run-level walk on `BRANCH_COMPLETED` only, or escalate
+  when any branch is `BRANCH_FAILED`. Needs a decision on what a partially-failed
+  crew means for quorum (`REVIEW_TEAM.md` §Resilience already defines
+  `coverage.quorum_met`, which the driver never reads) — so it is a design
+  question, not a one-liner, and deliberately out of PR 3's scope.
+
+### `[plugin]` `SAGA-DRAFT-HARDCODED-FROM-STATE` — the draft branch journals a `from` state it never checked
+
+- *Context:* found 2026-08-01 during PLUGIN-PREPROD-001 PR 3.
+  `tools/saga_driver.py` `_advance_after_phase` stamps
+  `append_transition(from_state="PREPARED", to_state="FANOUT_STARTED")` for the
+  draft phase regardless of the saga's actual status, then overwrites
+  `saga["status"]`. Latent while the draft subprocess leaves `saga.json` alone
+  (it does today — journal writes belong to the audit skill), but B3b now
+  preserves whatever the child wrote, so a draft skill that ever touches the
+  journal would have its state silently replaced and the transition recorded
+  with a `from` that was never true.
+- *Fix shape:* read `saga["status"]` like the other branches do, and treat an
+  unexpected state as the inconsistency it is rather than overwriting it.
+
+### `[plugin]` `PREPROD-B2-GATE-SCOPE` — the no-bypass release gate matches a literal string, and skips `commands/` + `agents/`
+
+- *Context:* found 2026-08-01 by security review of PLUGIN-PREPROD-001 PR 3.
+  `tests/release/test_marketplace_gate.py:39` asserts the absence of the literal
+  `--dangerously-skip-permissions` in `SKILL.md` files. PR 3 moved the bypass
+  behind `--allow-skip-permissions`, which the gate does not match — the
+  semantic invariant is still covered (conformance
+  `test_bypass_absent_by_default` + `test_flag_defaults_off` assert the driver
+  ships it off, `test_driver_invocation_passes_the_permission_flag` asserts which
+  skills opt in), but the gate itself no longer measures it. Separately
+  `skill_dirs()` (`tests/conformance/_spec.py:90`) scans `skills/` only, so a
+  `commands/` or `agents/` surface that enabled a bypass would be outside both.
+- *Fix shape:* have the gate assert the property rather than the spelling —
+  any surface naming a bypass flag must be on a declared allowlist and carry an
+  in-file disclosure — and extend the scan to `commands/` and `agents/`.
+  **Not done in PR 3:** the plan forbids amending that gate, and PR 5 cuts the
+  release off it.
+
 ### `[plugin]` `PLUGIN-PREPROD-001` — the pre-prod review queue (23 findings, one entry each below)
 
 - *Context:* a five-lens pre-production review of `platforms/claude-code-plugin`

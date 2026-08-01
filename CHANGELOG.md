@@ -12,6 +12,102 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the saga driver stops wedging, stops clobbering its subprocess, and stops reporting success on runs that never converged (2026-08-01)
+
+**PLUGIN-PREPROD-001 PR 3 of 5.** No version bump on any stream; the plugin's
+`0.24.0 → 0.25.0` cut is PR 5. Closes B2, B3a–c, M3, M4, M5, L2 and L3 of the
+2026-07-31 pre-production review.
+
+- **The permission bypass is opt-in and stated where it is requested.** The
+  driver hardcoded `--dangerously-skip-permissions` on every subprocess it
+  spawned, disclosed in no shipped file. It is now behind
+  `--allow-skip-permissions`, off by default; the 9 `doc-*-autopilot` skills
+  and the acceptance harness pass it explicitly, so the bypass is visible at
+  the invocation site rather than buried in the driver. Documented in the
+  plugin README and the `plugin.json` description.
+- **A saga could wedge permanently.** Four call sites transitioned to
+  `PARTIAL_TIMEOUT` from whatever state the saga was in, but three
+  non-terminal states cannot legally reach it — so the recovery path itself
+  raised, and the run died holding a journal it never finished writing. All
+  four now use an explicit forced transition, recorded as `forced: true` so a
+  reader can tell a reconciled edge from a legal one. `can_transition` is
+  unchanged: the preemptive validation was right, its recovery paths were not.
+  **A forced edge may only target `PARTIAL_TIMEOUT`** — forcing toward a
+  failure terminal is safe in the worst case, while forcing toward `CLOSED`
+  would report a pass the transition table says was unreachable.
+- **A `PASS` verdict arriving on an inconsistent journal no longer closes the
+  run.** If the audit reports `PASS` while leaving the saga in a state from
+  which fan-in was never reached, that is evidence the audit is broken, not
+  that the document is good; the run is reported as not converged with a
+  compensation action naming the state. The `ESCALATED` case is the one that
+  matters: an audit that escalates *and* writes a `PASS` verdict would
+  otherwise have had its escalation rewritten as success at exit 0.
+- **The driver overwrote its own subprocess's journal.** `dispatch_phase`
+  wrote a pre-dispatch snapshot back after the child returned, discarding the
+  per-branch transitions, branch records and status the child had written; the
+  caller's later reload then read the driver's overwrite and could not tell.
+  The completion event is now appended to the file as the child left it. An
+  unreadable `saga.json` is treated as a failed phase and copied aside to
+  `saga.corrupt.json` — swallowing it and writing the stale snapshot back
+  would have been the same clobber, destroying the evidence with it.
+- **Resume walked branch-scoped transitions.** A saga resuming from
+  `PARTIAL_TIMEOUT` could adopt one lens's `BRANCH_FAILED` as the whole run's
+  status. The walk is now run-scoped, defaulting a missing `scope` to `"run"`
+  — scope-less entries are real, and a stricter test would have restarted
+  every such journal at `PREPARED`.
+- **GNU `timeout` is probed for, not assumed.** Stock macOS ships no
+  `timeout`; the driver now falls back to `gtimeout`, then to
+  `subprocess.run(timeout=…)`, and maps an expiry to 124 either way. A
+  subprocess that cannot be spawned at all now journals its failure instead of
+  leaving a `dispatch:` event with no completion.
+- **A run that never passed review no longer exits 0.** `main` returned 0 for
+  every terminal status. It now exits **4** for `PARTIAL_TIMEOUT`, **5** for
+  `ESCALATED` and **127** when the phase subprocess could not be spawned —
+  never 2 (argparse) or 124 (`timeout`), so failure attribution stays
+  unambiguous — at both return sites and on the already-`ESCALATED` early
+  exit. 127 is deliberately not folded into 4: a missing `claude` binary is an
+  environment defect that fails identically on every retry, and reporting it
+  as "resumable" would send the operator round that loop. The acceptance
+  harness reports each cause by name.
+- **`verdict.json` is rotated to `verdict.iterN.json` before each audit
+  dispatch**, so an audit that crashes cannot have the previous iteration's
+  `PASS` read as its own. Rotated rather than deleted: the file holds the
+  `blocking_findings` that motivated the fixer pass, and the runs that most
+  need them are exactly the ones where no replacement verdict is ever written.
+- **`--threshold` was accepted and ignored.** It now gates a `PASS` verdict
+  that reports a `content_score`, reading `int`, `float` and numeric strings —
+  an int-only reader would have been silently defeated by `92.5`, which is an
+  entirely ordinary thing for an LLM-written verdict to contain, and that was
+  the most likely way this gate would have failed in practice. Three outcomes
+  are kept distinct: a number is gated; **no** score is not gated (CHG has no
+  numeric readiness score by design and says so in its own verdict, so
+  coercing that absence to 0 would drive the layer to the iteration cap); a
+  score that is present but unreadable **fails** the gate, because an
+  unreadable score means a broken audit. The flag string survives either way —
+  the acceptance harness passes `--threshold 90` on every cascade layer, so
+  removing it would have exited 2 on a usage error before any saga work.
+- **`playbook_loader` confined to its own root.** `layer` and `lens` were
+  interpolated into a path with no traversal guard. The guard resolves both
+  sides, so symlink escapes are caught too, and it returns the path it
+  validated rather than re-building an unvalidated one.
+
+Test-first throughout: `tests/conformance/test_saga_driver_recovery.py`,
+`tests/conformance/test_playbook_loader_safety.py` and
+`tests/conformance/platforms/test_tools_vendoring.py` were written failing,
+then made to pass — conformance goes 299 → 357. Both new guards are
+deliberately conformance-resident rather than joining `playbook_loader`'s
+existing tests under `tests/unit/`, which no hook and no workflow executes.
+
+Then mutation-checked: **34 mutants, each backing out exactly one fix, all 34
+detected.** Two were initially missed and the *tests* were at fault, not the
+fixes — `content_score: true` compares as 1 and so fails a threshold of 90 for
+the wrong reason, and a resolved-vs-unresolved return path is indistinguishable
+unless a symlink makes the two differ. Both now assert the classification
+rather than the downstream outcome. The harness also restores from a saved
+copy on every iteration rather than in a `finally`: one mutant leaves the
+driver's loop non-terminating, and killing the run skipped the cleanup and left
+a mutant in the working tree.
+
 ### Fixed — the linter diagnoses its own prerequisites, and the review hook stops importing project-supplied code (2026-07-31)
 
 **PLUGIN-PREPROD-001 PR 2 of 5.** No version bump on any stream; the plugin's

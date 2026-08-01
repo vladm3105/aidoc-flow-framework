@@ -1169,21 +1169,37 @@ phase_1_cascade() {
       write_element_log "doc-$layer-autopilot"
 
       driver_timeout="$ORCHESTRATOR_TIMEOUT"
+      # --allow-skip-permissions: the driver's permission bypass is opt-in
+      # (PLUGIN-PREPROD-001 B2). Without it the phase subprocesses this
+      # cascade spawns would block on permission prompts with no one to
+      # answer them.
       timeout "$driver_timeout" python3 \
         "$PLUGIN_DIR/tools/saga_driver.py" \
         --layer "${layer_num}_${type}" \
         --threshold 90 \
+        --allow-skip-permissions \
         > "$driver_log" 2>&1
       driver_rc=$?
       driver_t1="$(date +%s)"
       driver_dur=$((driver_t1 - driver_t0))
 
       OUTPUT_PATH_BY_NAME["doc-$layer-autopilot"]="$artifact"
+      # The driver's exit code now distinguishes how a run ended (M4): 0 only
+      # when the saga reached CLOSED, 4 PARTIAL_TIMEOUT, 5 ESCALATED, 127 the
+      # phase subprocess could not be spawned at all. 124 is still the outer
+      # `timeout` above, which the driver deliberately does not reuse, so each
+      # code attributes to exactly one cause.
       if (( driver_rc == 0 )); then
         record_outcome "doc-$layer-autopilot" "skill" "cascade" "PASS" "$driver_dur"
       elif (( driver_rc == 124 )); then
         echo "TIMEOUT after ${driver_timeout}s" >> "$driver_log"
         record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "driver timeout"
+      elif (( driver_rc == 4 )); then
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "saga PARTIAL_TIMEOUT (resumable)"
+      elif (( driver_rc == 5 )); then
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "saga ESCALATED (human review required)"
+      elif (( driver_rc == 127 )); then
+        record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "driver could not spawn claude (environment defect, not resumable)"
       else
         record_outcome "doc-$layer-autopilot" "skill" "cascade" "FAIL" "$driver_dur" "" "" "false" "" "driver exit $driver_rc"
       fi
