@@ -96,6 +96,19 @@ founder-gated; the version cut in PR 5c is not a release. `PREPROD-M6` stays ope
 under `## Open` for exactly that reason, and it is the only member of the 23-item
 batch that does.
 
+⚠️ **§4 superseded 2026-08-02 — the gate opened, on the same day this was
+written.** The founder authorized the cut. `claude-code-plugin/v0.25.0` is cut
+(annotated → `e6c6539d`, on the remote) and the GitHub Release is published as a
+pre-release, matching `v0.18.0`'s tier since the plugin is a declared pre-1.0
+preview — closing **M6**, so all 23 findings are now closed. `PREPROD-M6` moved
+to `## Closed` in `plans/FRAMEWORK-TODO.md` (PR #429). §4's present-tense claims
+— that the tag and Release "remain founder-gated" and that `PREPROD-M6` "stays
+open" — are therefore history, not live state; they are left unedited because
+this log is append-only. **§§1–3 are unaffected, and the decision §4 records
+still stands:** a tag cut and a public Release are outward-facing acts outside
+the AI auto-merge default. What changed is that the approval was given, not the
+rule that it was needed.
+
 ---
 
 ## D-0073 — Read the run that already ran; and a reader for a warning-only signal must itself fail loudly

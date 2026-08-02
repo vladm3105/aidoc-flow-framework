@@ -112,8 +112,8 @@ Headline capabilities now in the framework (full detail in
 
 - **PLUGIN-PREPROD-001 (2026-08-02, plugin `0.25.0`).** The pre-production
   hardening that unblocked the plugin deploy: a five-lens review returned
-  **BLOCKER** on 2026-07-31 with 23 findings, and 22 are closed across five
-  staged PRs ([#410](https://github.com/vladm3105/aidoc-flow-framework/pull/410),
+  **BLOCKER** on 2026-07-31 with 23 findings, and **all 23 are closed** across
+  five staged PRs ([#410](https://github.com/vladm3105/aidoc-flow-framework/pull/410),
   [#413](https://github.com/vladm3105/aidoc-flow-framework/pull/413),
   [#415](https://github.com/vladm3105/aidoc-flow-framework/pull/415),
   [#418](https://github.com/vladm3105/aidoc-flow-framework/pull/418), and PR 5's
@@ -123,10 +123,12 @@ Headline capabilities now in the framework (full detail in
   on reviews that never ran, and its exit codes distinguish terminal states;
   missing PyYAML or an unmet Python floor is diagnosed rather than surfaced as
   lint findings; shipped agents declare their tools; the plugin ships its
-  `LICENSE`. **The 23rd finding (M6) is open**: cutting the
-  `claude-code-plugin/v0.25.0` tag and publishing the GitHub Release are
-  outward-facing acts, still founder-gated, so the latest published Release
-  remains `claude-code-plugin/v0.18.0`.
+  `LICENSE`. **The 23rd finding (M6) closed on 2026-08-02**: the tag cut and the
+  public Release are outward-facing acts and were separately founder-gated, and
+  the founder authorized both. `claude-code-plugin/v0.25.0` is cut (annotated →
+  `e6c6539d`, on the remote) and **the latest published Release is now
+  `claude-code-plugin/v0.25.0`**, a pre-release matching `v0.18.0`'s tier since
+  the plugin is a declared pre-1.0 preview.
 - **IDGEN-NO-GENERATOR (2026-07-26, plugin `0.24.0`, Hermes `0.12.0`).** The
   element-ID generator ships (`rehash --compute`), and no authoring surface
   computes SHA-256 in-prompt any more. 25 surfaces rewritten: BRD calls the tool;
