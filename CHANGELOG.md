@@ -12,6 +12,72 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — `SECURITY.md` described a security posture the repository does not have (2026-08-02)
+
+**PLUGIN-PREPROD-001 PR 5, stage b.** Closes finding **M7**. No version bump on
+any stream; the plugin's `0.24.0 → 0.25.0` cut is the next stage.
+
+- **The one reporting channel the file names did not exist.** `SECURITY.md`
+  directs researchers to GitHub's private vulnerability reporting and forbids
+  the public fallback, but private vulnerability reporting was disabled on the
+  repository — the Security tab rendered no "Report a vulnerability" control,
+  so the documented path dead-ended. It is now enabled (founder-authorized,
+  2026-08-02), which makes the existing text true; no wording changed. Found
+  while reviewing this change, in the one section the change does not touch.
+- **The enforcement picture was backwards, which is the defect that mattered.**
+  The file listed scanners without saying which of them gates anything. None of
+  the five configured in `.github/workflows/` is a required status check on
+  `main`; the required context `call / Lint / format / security hooks` is the
+  `pre-commit` job, so `bandit`, `detect-secrets` and `detect-private-key` are
+  the only security tools here whose findings can block a merge. A new opening
+  paragraph states that first, before any inventory.
+- **The scanner list omitted four of the five workflow-configured scanners.**
+  What it did name was accurate for `bandit`, `detect-secrets` and
+  `detect-private-key`, but of the tools configured in `.github/workflows/` it
+  listed only CodeQL, and called that one Python-only where `codeql.yml:42`
+  sets `'["actions","python"]'`. Each list is now headed by the file that
+  configures it, and the entries name what each tool actually is: semgrep,
+  osv-scanner, gitleaks over full commit history, `trivy config`.
+- **The pre-commit hooks are not local-only.** `.github/workflows/pre-commit.yml`
+  runs the same hook set over the whole tree, which is precisely why they are
+  the ones that gate. `pip-audit` is the exception and is no longer listed
+  beside them: it declares `stages: [manual]` and the CI caller requests no
+  stage override, so it runs on neither commit nor CI.
+- **Each workflow scanner reports twice, and only one of the two reflects
+  `fail-on-findings`.** Every one of the five uploads SARIF, so a pull request
+  carries both a workflow check and a separate code-scanning check run. Of the
+  workflow checks, three are `fail-on-findings: false`; `secret-scan` fails its
+  job on a finding and `codeql` has no findings gate at all. The section also
+  now warns that a fork pull request runs three of the five not at all and
+  produces no code-scanning check, so the missing checks are expected rather
+  than a broken pipeline.
+- **The pre-commit list did not mention the repository-wide `exclude:`.** It
+  hides `legacy/`, `framework/` and the plugin's vendored copy of the spec from
+  every hook in that file, both secret scanners included, so an unqualified
+  "detect-secrets + detect-private-key" read as covering the primary product.
+  Coverage of those paths comes from `secret-scan.yml`, which scans full
+  history and is not subject to the exclude; `.gitleaks.toml` allowlists none
+  of the three.
+- **The supported-versions table promised release lines that do not exist.** It
+  pinned the spec at `0.35.x` against an actual `0.40.0`, and conferred support
+  by "latest tagged release" when every stream ships well past its newest tag —
+  the framework spec by nineteen minor versions, Hermes by eleven.
+  `scripts/sync-version-refs.sh` does not touch this file, so every number in
+  it was hand-maintained and unchecked. The table now names no version, and no
+  longer implies a stale tag gets patched: support is `main`, where fixes land
+  first, plus each stream's most recent release, where the fix then ships. The
+  preamble tells a reporter on an untagged build — which both platforms
+  currently are — to report against `main`, and cites `docs/TAGGING.md` for the
+  tag-cut backlog rather than presenting the lag as intentional.
+- **Scope omitted the paths most likely to be reported against.** It now names
+  `tools/`, `.github/workflows/` and `scripts/` — the latter two implied in
+  scope by CodeQL's `actions` analysis and by workflows that run on a
+  self-hosted runner pool. Scope also called `legacy/` "frozen pre-migration content"; it is a parking
+  area for skills pulled from the shipped plugin surface, currently holding one
+  retired skill, and the pre-migration archive is the branch
+  `legacy-ucx-v3.2-read-only` — which the table had cited as "archive branch"
+  without ever naming.
+
 ### Fixed — the release changelog gate stopped failing on its own history (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5 of 5.** PR 5's eight documents of record exceed the
