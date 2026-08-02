@@ -10,6 +10,94 @@ graduation.
 
 ---
 
+## D-0074 — Ship a safety fix quieter than the behaviour it replaces, and make the bypass it needs opt-in and disclosed
+
+**2026-08-02.** Decisions from `PLUGIN-PREPROD-001`
+(`plans/PLUGIN-PREPROD-001-PLAN.md`), shipped across PRs
+[#410](https://github.com/vladm3105/aidoc-flow-framework/pull/410),
+[#413](https://github.com/vladm3105/aidoc-flow-framework/pull/413),
+[#415](https://github.com/vladm3105/aidoc-flow-framework/pull/415),
+[#418](https://github.com/vladm3105/aidoc-flow-framework/pull/418) and PR 5, and
+recorded here at stage 5d because the two choices below are **policy embedded in
+shipped code** — the class `plans/DECISIONS.md` exists to authorize. Both cross
+PR boundaries, which is why neither was filed in the PR that implemented it.
+**Supersedes nothing.**
+
+**1. The permission-model bypass stays available, but opt-in and disclosed —
+rather than removed.** Nine autopilot skills mandated
+`--dangerously-skip-permissions` on the child sessions they spawn, and no shipped
+file said so. Three options were on the table: delete the bypass (breaks
+unattended cascades, which are the feature), keep it silent (the status quo, and
+indefensible for a marketplace plugin a stranger installs), or gate it. Gating
+won: `tools/saga_driver.py` defaults `allow_skip_permissions` to `False`
+(`:261`), appends the flag only when explicitly set (`:569-570`), and
+`platforms/claude-code-plugin/README.md:33-44` discloses what the flag does
+before anyone installs.
+
+**The reasoning that makes this a decision and not an implementation detail:**
+the safe default is the one that *cannot* silently widen a stranger's trust
+boundary, even though it is the default that makes the headline feature
+(hands-off cascade) require an explicit argument. We accepted a worse
+out-of-the-box demo for a defensible install.
+
+⚠️ **The invariant IS guarded — but not by the gate whose name suggests it, and
+not everywhere.** Stating this precisely, because the imprecise version ("the
+invariant is no longer measured") is false and was nearly recorded here:
+
+- **Covered:** conformance asserts the property — `test_bypass_absent_by_default`
+  and `test_flag_defaults_off` (`tests/conformance/test_saga_driver_recovery.py:88`,
+  `:114`) prove the driver ships the bypass off, and
+  `test_driver_invocation_passes_the_permission_flag`
+  (`tests/conformance/platforms/test_autopilot_saga_parity.py:105`) pins which
+  skills opt in.
+- **Not covered:** the *release* gate
+  (`tests/release/test_marketplace_gate.py:42`) greps `skills/**/SKILL.md` for the
+  literal `--dangerously-skip-permissions`. PR 3 moved the mechanism behind
+  `--allow-skip-permissions`, which that string does not match — so the gate still
+  runs, still forbids the **old** spelling, and no longer measures the **live**
+  one. And `skill_dirs()` scans `skills/` only, so a `commands/` or `agents/`
+  surface enabling a bypass is outside both.
+
+Tracked as `PREPROD-B2-GATE-SCOPE`, whose fix is to assert the *property* rather
+than a spelling. **The lesson worth more than the finding: a gate that greps a
+literal stops measuring the moment the implementation is renamed, and it keeps
+passing — so a green gate named for an invariant is not evidence the invariant
+holds.**
+
+**2. A hook that used to always speak now defaults to nudge-only, and that is a
+deliberate regression in visibility.** The review hook behaved unconditionally as
+`verbose`; the documented `review_hook` enum (`on`/`off`/`verbose`) was unwired
+entirely. Wiring it meant choosing which value becomes the default, and the
+documented default was `on` — quieter than the shipped behaviour. We honoured the
+**documentation** over the **behaviour**, so existing users lose output they had.
+
+Rationale: the hook fires on every file edit, and the same PR gated it on project
+adoption (`PREPROD-H1`) precisely because it was emitting findings in repos that
+never adopted the framework. A hook that is both always-on and always-verbose is
+the shape that gets uninstalled. Recovery is one line —
+`review_hook: "verbose"` in `.claude/aidoc-flow.config.yaml` — and it is
+documented, which is the condition that made the regression acceptable.
+
+**3. Where a fix had a documentation option, we took it only when the mechanical
+half was separately tracked.** `PREPROD-L7` (a shipped `code-reviewer` agent can
+collide with a consumer's own) allowed either a rename or documenting the
+collision. Documentation shipped. That is defensible **only** because the live
+half — every dispatch reference the plugin ships is a *bare* name, and a bare
+name resolves by scope precedence where a plugin ranks lowest of five — is
+carried by `PREPROD-L7-BARE-DISPATCH`
+([#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417)). Closing
+L7 on documentation without that successor entry would have been closing a
+partial finding. **The general rule: a documentation-only closure needs a named
+owner for the mechanism, or it is not a closure.**
+
+**4. What was NOT decided here.** The `claude-code-plugin/v0.25.0` tag and the
+public GitHub Release (finding **M6**) are outward-facing acts that remain
+founder-gated; the version cut in PR 5c is not a release. `PREPROD-M6` stays open
+under `## Open` for exactly that reason, and it is the only member of the 23-item
+batch that does.
+
+---
+
 ## D-0073 — Read the run that already ran; and a reader for a warning-only signal must itself fail loudly
 
 **2026-07-31.** Decisions from `PIN-CURRENCY-NO-READER`
