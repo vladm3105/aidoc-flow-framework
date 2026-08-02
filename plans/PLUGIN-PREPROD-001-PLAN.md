@@ -4,7 +4,7 @@
 | -------------- | ----------------------------------------------------------- |
 | Task           | PLUGIN-PREPROD-001                                           |
 | Type           | bugfix                                                       |
-| Status         | In Progress (`Draft` → `In Progress` 2026-08-02; PRs 1–4 and 5a–5b merged, 5c–5e remain) |
+| Status         | In Progress — **22 of 23 findings closed; M6 (the `claude-code-plugin/v0.25.0` tag + public Release) is founder-gated and OPEN.** `Draft` → `In Progress` 2026-08-02. ⚠️ Deliberately **not** `Completed`: 5e's own instruction said to set it, but a declared item is still live, and `Completed` on unfinished work is the defect the status rule exists to prevent. The founder flips this when M6 lands. |
 | Depends on     | none                                                         |
 | Feeds          | the `claude-code-plugin/v0.25.0` tag + first public marketplace announcement |
 | Version impact | plugin MINOR (`0.24.0` → `0.25.0`); **Hermes: no version bump** (founder decision O2 — see Risks); framework spec unchanged |
@@ -259,7 +259,7 @@ copy).
    or failure attribution in that harness becomes ambiguous.
 7. **M5 — invalidate `verdict.json` between iterations.** Unlink it before each
    audit dispatch, so a stale `PASS` cannot be read as current.
-8. **L2 — `--threshold` is accepted and ignored.** **Do not remove the flag.**
+8. **L2 — `--threshold` is accepted and ignored.** ✅ **NO LONGER TRUE — PR 3 made it a live gate** (`tools/saga_driver.py`, `_meets_threshold` at `:814`, enforced at `:874`): a `PASS` whose `content_score` is under the threshold no longer counts as converged, and the flag string survived as required. The rest of this bullet is the pre-PR-3 state, kept for the audit trail — **except its "Also correct the record" clause, which was an instruction, not a description: the `0.23.4` changelog correction it demands SHIPPED in the root `CHANGELOG.md` `[Unreleased]` entry.** **Do not remove the flag.**
    `tests/scripts/test-acceptance.sh` passes `--threshold 90` on every cascade
    layer (claim 52); deleting the argparse entry makes the driver exit 2 on a
    usage error before any saga work, failing layer 1 and aborting the whole
@@ -291,9 +291,9 @@ copy).
 
 ### PR 5 — docs, governance, and the release cut
 
-**PR 5 ships as five stages (a–e), not one PR.** § "Docs to update" (`:526`, PR-5
-sentence at `:532-536`) lists eight documents of record for this PR against the
-≤3-surface Governance PR cap, and this plan says to split (`:547`). The split
+**PR 5 ships as five stages (a–e), not one PR.** § "Docs to update" (`:537`, PR-5
+sentence at `:543-547`) lists eight documents of record for this PR against the
+≤3-surface Governance PR cap, and this plan says to split (`:558`). The split
 is **measured**, not proposed:
 
 | Stage | Surfaces | State |
@@ -304,7 +304,7 @@ is **measured**, not proposed:
 | 5d | `ROADMAP.md` (M8) + `plans/DECISIONS.md` (`D-00NN`) + `plans/FRAMEWORK-TODO.md` (close the batch) | |
 | 5e | this plan (the corrections below + status → `Completed`) + `plans/HANDOFF.md` + `CLAUDE.md` | |
 
-**5c cannot be split** — see O2 (`:424`, risk row `:557`) and `:538-545`: the `sync-version-refs`
+**5c cannot be split** — see O2 (`:435`, risk row `:568`) and `:549-556`: the `sync-version-refs`
 pre-commit hook re-stages its own writes, so the diff cannot be separated after
 the fact, and it rewrites `CLAUDE.md`, which pulls the stage under Governance PR
 discipline. The Hermes case was resolved by skipping the bump (O2); the plugin
@@ -313,43 +313,52 @@ cannot skip, since M6 needs `0.25.0`. So 5c requires Rule 1's stated exception:
 self-grantable, and one stage exceeding the cap is not evidence the split is
 wrong.
 
-**⚠️ Four claims in this plan were falsified by the work that implemented it.
-5e must correct all four — not only the one that is easiest to see.**
+**✅ FIVE claims in this plan were falsified by the work that implemented it** — the
+four identified before 5e, plus a fifth that **5c itself created** (the "six versions
+stale" figure, which its own bump made seven). All five were corrected in stage 5e
+(2026-08-02), annotated in place below, with the originals kept for the audit trail
+rather than deleted.**
 
 ⚠️ These are **self-references, and every edit to this file shifts them.** Each is
 quoted as well as cited — match the quote, not the number, if they disagree.
 
-1. **`:344` (M7) — "replace the scanner list" is wrong.** #422 deliberately did
+1. **`:347` (M7) — "replace the scanner list" is wrong.** #422 deliberately did
    not replace it: the existing list was *incomplete*, not false, and replacing it
    would have deleted four accurate `pre-commit` entries (`bandit`,
    `detect-secrets`, `detect-private-key`, `pip-audit`). The shipped fix splits
    the list **by configuring file** — CI scanners under `.github/workflows/`,
    local/CI hooks in `.pre-commit-config.yaml` — and records which of them can
    actually block a merge.
-2. **`:602` (claim-ledger row 34) is false.** It reads "`SECURITY.md` names
+2. **`:613` (claim-ledger row 34) is false.** It reads "`SECURITY.md` names
    scanners CI does not run | bandit". `.github/workflows/pre-commit.yml` **does**
    run bandit in CI, inside the required `call / Lint / format / security hooks`
    context. A plan marked `Completed` while carrying a falsified ledger row is the
    exact failure the ledger exists to prevent.
-3. **`:367-368` — the README prerequisites section already shipped in PR 1.**
-   Do not re-add it. (`:404` assigns it to PR 1; the two rows disagree.)
-4. **`:262-269` — the `--threshold` bullet is doubly stale.** PR 3 made the flag
+3. **`:377` — the README prerequisites section already shipped in PR 1.**
+   Do not re-add it. (`:415` assigns it to PR 1; the two rows disagree.)
+4. **`:262-272` — the `--threshold` bullet is doubly stale.** PR 3 made the flag
    live. The 5c changelog entry must say *that*, not restate either version of the
    old claim.
 
-Also to fix at 5e: the § "File structure" row at **`:378`** names
+Also to fix at 5e: the § "File structure" row at **`:389`** names
 `tests/conformance/test_agent_frontmatter.py`; it shipped at
 `tests/conformance/platforms/test_agent_frontmatter.py` (`PREPROD-PLAN-TESTPATH`).
 
 - **M7** — `SECURITY.md`: correct the spec version and the scanner list.
-  ⚠️ **Superseded in part — read correction 1 above before acting on this
-  bullet.** Original text: "replace the scanner list with what CI actually runs —
-  semgrep (SAST), osv-scanner (dependencies), gitleaks (secrets), `trivy config`
-  (IaC) and CodeQL. The draft's list was itself incomplete: it omitted trivy and
-  CodeQL." The omission half was right and shipped; the *replace* half was not.
+  ✅ **SHIPPED in #422, and NOT as this bullet specified.** The bullet said to
+  *replace* the list with what CI runs; that would have deleted four accurate
+  `pre-commit` entries. What shipped splits the list **by configuring file** — CI
+  scanners under `.github/workflows/`, hooks in `.pre-commit-config.yaml` — and
+  states which three checks can actually block a merge. The bullet's *omission*
+  half was right and did ship: `trivy config` and CodeQL were missing. Superseded
+  text kept for the audit trail: "replace the scanner list with what CI actually
+  runs — semgrep (SAST), osv-scanner (dependencies), gitleaks (secrets),
+  `trivy config` (IaC) and CodeQL."
 - **M8** — `ROADMAP.md`: correct the stale plugin version.
 - **M6** — cut `claude-code-plugin/v0.25.0` and publish a GitHub Release. The
-  latest Release is six versions stale, which is what a visitor sees first.
+  latest Release is **seven** versions stale (`0.18.0` against `VERSION` `0.25.0`) —
+  it read *six* until 5c's own bump falsified it, making this a **fifth** claim this
+  plan's implementation falsified. That is what a visitor sees first.
   **Founder-gated:** a tag cut and a public Release are outward-facing acts
   outside the AI auto-merge default, so PR 5 merges but the tag and Release wait
   on explicit founder approval.
@@ -364,8 +373,10 @@ Also to fix at 5e: the § "File structure" row at **`:378`** names
   stages leaves a readable queue rather than nothing.
 - Version bump `0.24.0` → `0.25.0` in the documented propagation order, then
   hand-verify the fanout because of the two open `sync-version-refs.sh` defects.
-- `CHANGELOG.md` entries for the plugin and the project; add the README
-  prerequisites section (jq, Python ≥3.11, PyYAML) that PR 2's guards diagnose.
+- `CHANGELOG.md` entries for the plugin and the project. ⚠️ **The README
+  prerequisites section (jq, Python ≥3.11, PyYAML) already SHIPPED in PR 1**
+  (`platforms/claude-code-plugin/README.md:19-23`). Do not re-add it — `:404`
+  assigns it to PR 1 (`:415`), and this row contradicted that.
 
 ## File structure
 
@@ -375,7 +386,7 @@ Also to fix at 5e: the § "File structure" row at **`:378`** names
 | ---- | ------- |
 | `platforms/claude-code-plugin/LICENSE` | MIT text inside the installed artifact (L1) |
 | `tests/conformance/test_plugin_hook_safety.py` | locks B1 (shadow package cannot execute), M1 (timeout present), H3 (untrusted envelope present) |
-| `tests/conformance/test_agent_frontmatter.py` | every agent declares `tools:` and `model:` (M2) |
+| `tests/conformance/platforms/test_agent_frontmatter.py` | every agent declares `tools:` and `model:` (M2) — shipped under `platforms/`, beside the other plugin-platform checks (`PREPROD-PLAN-TESTPATH`) |
 
 ### Modified
 
@@ -599,7 +610,7 @@ the code PR.
 | 31 | The plugin manifest declares MIT while shipping no license text | `"license": "MIT"` | platforms/claude-code-plugin/.claude-plugin/plugin.json:10 |
 | 32 | The marketplace manifest ships a personal email | `"email"` | .claude-plugin/marketplace.json:6 |
 | 33 | `SECURITY.md` names a spec version five minors stale | `0.35.x` | SECURITY.md:11 |
-| 34 | `SECURITY.md` names scanners CI does not run | `bandit` | SECURITY.md:49 |
+| 34 | ❌ **FALSE — retracted 2026-08-02.** `SECURITY.md` names scanners CI does not run | `bandit` | SECURITY.md:49 — **`bandit` DOES run in CI**: `.github/workflows/pre-commit.yml:37` calls canon's reusable, which runs `pre-commit run --all-files`, so `.pre-commit-config.yaml:45-50` executes inside the required `call / Lint / format / security hooks` context. The row's *shape* held for a different entry: `pip-audit` is configured in that file and runs automatically nowhere (`stages: [manual]`, `.pre-commit-config.yaml:98`), which #422 resolved by **stating** it at `SECURITY.md:100-102` rather than by deletion. The real defect was an incomplete list plus one unqualified entry — the cited *symbol* was simply wrong |
 | 35 | `ROADMAP.md` states a stale plugin version | `0.23.4` | ROADMAP.md:56 |
 | 36 | `playbook_loader` joins caller-supplied segments with no traversal guard | `resolve_playbook_path` | tools/playbook_loader.py:18 |
 | 37 | Raw file tokens are embedded in finding messages that reach model context | `malformed element id` | tools/sdd_doc_lint/__init__.py:642 |
