@@ -14,33 +14,61 @@ Framework spec `0.40.0`, **plugin `0.25.0`**, Hermes `0.12.1`.
 [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417),
 [#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423).
 
-**PLUGIN-PREPROD-001 is done except for one founder act.** Five PRs plus a five-stage
-PR 5; **22 of 23 findings closed**. Merges this session: #424 (handoff), **#425 (`0.25.0`
-cut)**, **#426 (22 closures + M8 + D-0074)**, and 5e — this one.
+**PLUGIN-PREPROD-001 is functionally COMPLETE — all 23 findings, including M6.** Five PRs
+plus a five-stage PR 5. Merges: #424 (handoff), **#425 (`0.25.0` cut)**, **#426 (22
+closures + M8 + D-0074)**, #427 (5e).
 
-**⚠️ The ONE thing left, and it is yours, not an agent's: `PREPROD-M6`.** Cut
-`claude-code-plugin/v0.25.0` and publish the GitHub Release. Verified 2026-08-02: the
-newest tag is `claude-code-plugin/v0.20.1` and `gh release list` returns exactly one row,
-`v0.18.0` (2026-06-12) — **seven versions stale.** A tag cut and a public Release are
-outward-facing acts outside the AI auto-merge default. Everything else shipped.
+**M6 landed 2026-08-02 — the founder authorized it and it is done.** Annotated tag
+`claude-code-plugin/v0.25.0` points at `e6c6539d` and is on the remote; the GitHub Release
+is **published as a pre-release** (matching `v0.18.0`'s tier, since the plugin is a declared
+pre-1.0 preview). Gate evidence at the tagged commit: conformance `361 passed, 769 subtests`,
+and `VERSION` / `.claude-plugin/plugin.json` / `.claude-plugin/marketplace.json` all reading
+`0.25.0` against `FRAMEWORK_SPEC_VERSION` `0.40.0` = `framework/VERSION`. ⚠️ The first two
+are under `platforms/claude-code-plugin/`; **`marketplace.json` is at the REPO ROOT** — a
+re-derivation that looks for it beside `plugin.json` gets "No such file" and reads this
+evidence as fabricated. Verify with
+`gh release view claude-code-plugin/v0.25.0` and `git rev-list -n1 claude-code-plugin/v0.25.0`.
+
+**⚠️ THE ONE TASK LEFT IS A DOC RECONCILIATION, AND IT IS THE TOP PRIORITY.** The tag cut
+falsified **seven** surfaces that still assert M6 is open. This was deliberately handed to a
+fresh session rather than appended to the tagging session; it is task 1 below, and nothing
+else picks it up. Until it lands the repo publicly contradicts its own Release.
 
 **Consequences a fresh session must not misread:**
 
-- `PLUGIN-PREPROD-001-PLAN.md` is **`In Progress`, deliberately NOT `Completed`** — 5e's
-  own instruction said to set `Completed`, and that instruction was wrong while a declared
-  item is live. Flip it when M6 lands.
-- The `FRAMEWORK-TODO.md` queue header is **`⏳ OPEN ON RESIDUAL`** with M6 its sole open
-  member. The other 22 are under `## Closed` with empirically-attributed refs.
-- `VERSION` reading `0.25.0` is **the version this tree builds, not a published release.**
-  Both changelog entries sit under `[Unreleased]` for exactly that reason.
+- The plan and both changelogs are **stale, not authoritative.** The tag exists; the files
+  saying it does not are the defect. Do not "verify" against them.
+- The seven surfaces, each with the exact false claim: (a)
+  `plans/PLUGIN-PREPROD-001-PLAN.md:7` status row still `In Progress` + the M6 bullet at
+  `:358` still says "founder-gated"; (b) `plans/FRAMEWORK-TODO.md` queue header still
+  `⏳ OPEN ON RESIDUAL` with M6 its sole open member; (c) `docs/TAGGING.md:125` says "Tag
+  **not yet cut**", and `:99-100` still gives the cut high-water mark as
+  `claude-code-plugin/v0.20.1`; (d) `platforms/claude-code-plugin/CHANGELOG.md` keeps the
+  `0.25.0` entry under `## [Unreleased]` with a bullet saying the tag is not part of the
+  stage; (e) `CHANGELOG.md:47-51` says "No tag and no GitHub Release yet" **and**, at `:50-51`,
+  that `VERSION` is "not a published release"; (f) `ROADMAP.md:126-129` says "The 23rd
+  finding (M6) is open" **and** that the latest Release "remains
+  `claude-code-plugin/v0.18.0`" — the most publicly visible of the seven.
+- **(g) is different in kind and must not be edited like the others.**
+  `plans/DECISIONS.md:93-97` (D-0074 §4) says the tag and Release "**remain** founder-gated"
+  and that "`PREPROD-M6` **stays open** under `## Open`" — present-tense claims about live
+  state, now false, inside an **append-only** log that is also a governance surface. Fix it
+  with a **new dated entry or a `⚠️ superseded 2026-08-02` rider**, never by rewriting
+  D-0074. It is also the first hit a fresh session gets from `grep -rn M6 plans/`, which is
+  why it is listed rather than left to discovery.
+- **It is a governance PR** (`plans/*-PLAN.md`, `plans/DECISIONS.md`), so the ≤3-surface cap
+  applies — **three sequential PRs, not one.** Suggested split: (a)+(b)+(c) → (d)+(e) →
+  (f)+(g)+this handoff. Re-derive every `:NNN` above before citing it; they were measured
+  2026-08-02 and each PR shifts the next one's lines.
 - **⚠️ Two `FRAMEWORK-TODO.md` items are FIXED-BUT-NOT-CLOSED, deliberately, because
   closing them would have been a 4th doc surface against the ≤3 cap on the initiative's
   last stage.** Neither blocks anything; both are ~2-line edits. (a)
   `PREPROD-PLAN-TESTPATH` — 5e corrected the path, but the entry still sits under
   `## Open` and both its `:378` citations now land on a blank line; move it to
-  `## Closed` and re-cite the current line. (b) `PREPROD-M6`'s heading still says "six
-  versions stale"; it is **seven** now, because 5c's own bump falsified it. **5e was the
-  last stage, so nothing later picks these up — they are yours.**
+  `## Closed` and re-cite the current line. (b) `PREPROD-M6`'s entry is now **closed by the
+  tag cut**, not merely mis-stated — fold it into task 1's surface (b) rather than repairing
+  its "six versions stale" heading, which the cut made moot. **5e was the last stage, so
+  nothing later picks these up — they are yours.**
 
 **⚠️ A plugin `VERSION` bump needs a hand-authored `docs/TAGGING.md` row, or conformance
 goes red.** `tests/conformance/platforms/test_plugin_release_metadata.py:137` asserts the
@@ -80,9 +108,12 @@ new bug, not a reopened plan.
 The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and `plans/HERMES-BACKLOG.md`.
 This is only the ordering a fresh session should use.
 
-1. **`PREPROD-M6` — FOUNDER ACT, blocks nothing else.** Cut the tag, publish the Release.
-   Nothing an agent should do unprompted. When it lands, flip the plan to `Completed` and
-   move the queue header from `⏳ OPEN ON RESIDUAL` to `✅ CLOSED`.
+1. **Reconcile the seven surfaces the M6 tag cut falsified — START HERE.** Enumerated with
+   their exact false claims in § "Consequences" above. Three sequential governance PRs.
+   The plan goes `In Progress` → `Completed`, the `FRAMEWORK-TODO.md` queue header
+   `⏳ OPEN ON RESIDUAL` → `✅ CLOSED`, both changelog `0.25.0` entries out of
+   `[Unreleased]` under a dated release heading, and `docs/TAGGING.md`'s high-water mark to
+   `claude-code-plugin/v0.25.0`. **No discovery needed; no founder decision pending.**
 2. **[#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417) — namespace the
    plugin's agent dispatch references.** 29 `subagent_type=` occurrences across 20 files,
    none scoped — but most are `subagent_type=<mapped agent>` *placeholders*, so the bare
