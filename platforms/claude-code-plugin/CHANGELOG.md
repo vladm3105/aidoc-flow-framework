@@ -14,6 +14,39 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — version `0.24.0` → `0.25.0` (2026-08-02)
+
+**PLUGIN-PREPROD-001 PR 5, stage c.** The version cut for the pre-production
+hardening already merged in PRs 1–4 and stages 5a–5b — the review hook no longer
+executes code from the user's working directory, the permission-model bypass is
+disclosed and opt-in, the saga driver cannot wedge permanently or report success
+on reviews that never ran, the two undeclared runtime dependencies are diagnosed
+rather than surfaced as lint findings, and the shipped agents declare their tools
+instead of inheriting the session's (PR 4, which also bundles `LICENSE` and
+narrows `marketplace.json`).
+
+**MINOR.** The consumer-observable changes across the cut are PR 1's quieter
+`review_hook` default, PR 3's opt-in permission flag, **PR 3's exit-code
+contract** (`0` now means `CLOSED` only; `4`/`5`/`127` are new), **PR 2's new
+`--warn-exit`** plus a dedicated `EXIT_MISSING_PREREQUISITE = 3`
+(`tools/sdd_doc_lint/__init__.py:43`) where an absent Python floor or PyYAML
+previously surfaced as an unhandled traceback, and **PR 4's narrowing of
+`requirements-analyst`** from an inherited toolset to a declared eight-tool
+allowlist (`Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch`). ⚠️ **A caller chaining on the saga driver's exit status is
+the one upgrade path whose behaviour changes** — `saga_driver.py && next` now
+stops where it previously proceeded. Nothing was deleted and the package is
+pre-1.0, so MINOR rather than MAJOR.
+
+- All **52** `SKILL.md` frontmatter versions moved with the bump, via the
+  `sync-version-refs` pre-commit hook (59 files in total; `VERSION` itself is the
+  hand-edited trigger, not a target).
+- **`FRAMEWORK_SPEC_VERSION` stays `0.40.0`** and still matches
+  `framework/VERSION`. This is a platform-only bump; no spec change.
+- **The `claude-code-plugin/v0.25.0` tag and the GitHub Release are NOT part of
+  this stage.** They are separately founder-gated (finding M6). The latest
+  published Release remains `claude-code-plugin/v0.18.0` until that cut, so this
+  entry stays under `[Unreleased]`.
+
 ### Fixed — the autopilot's saga driver: no permanent wedge, no clobbered journal, no false success (2026-08-01)
 
 PLUGIN-PREPROD-001 PR 3 of 5. Closes B2, B3a–c, M3, M4, M5, L2 and L3 from the

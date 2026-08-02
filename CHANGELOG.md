@@ -12,6 +12,47 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
+
+**PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the
+pre-production hardening from PRs 1–4 and stages 5a–5b. MINOR, not PATCH: PR 3
+added an opt-in permission flag and PR 1 changed the review hook's default
+behaviour, both of which are new surface a consumer can observe.
+
+The bump touched **60 files**: the hand-edited
+`platforms/claude-code-plugin/VERSION`, plus **59** written by the
+`sync-version-refs` pre-commit hook — 52 `SKILL.md` frontmatter versions,
+`CLAUDE.md`, `README.md`, `docs/PARITY.md`, `.claude-plugin/marketplace.json`,
+and three more under `platforms/claude-code-plugin/` (`.claude-plugin/plugin.json`,
+`README.md`, `docs/SKILL_AUTHORING.md`). Hand-verified: only current-state tokens
+moved, and no historical "shipped in vX" claim was rewritten, so
+[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405) did not fire
+on this bump. `ROADMAP.md` is deliberately absent — the hook does not touch it
+(`scripts/sync-version-refs.sh:56-60`), which is why its stale plugin version
+rides with stage 5d, as do `plans/HANDOFF.md` and `plans/FRAMEWORK-TODO.md` in
+stages 5d/5e.
+
+- **Correcting the record: `0.23.4` claimed the `--threshold` flag was "removed
+  from `saga_driver.py`". It was not.** The skill half of that claim was true —
+  the eight autopilot command blocks did drop `--threshold 90` — but the driver's
+  argparse entry never went away, and still has not: `tools/saga_driver.py:980`
+  declares it and `:1028` passes it into the context. Per the append-only rule
+  this entry corrects that record rather than editing it. What changed since is
+  the opposite of removal: PR 3 made the flag a **live gate** (`_meets_threshold`
+  at `:814`, enforced at `:874`), so a `PASS` whose `content_score` is under the
+  threshold no longer counts as converged. The plan's L2 bullet at `:262-269`
+  still describes the flag as "accepted and ignored", which was the pre-PR-3
+  state; the plan records the staleness at `:336-338` and corrects the bullet in
+  stage 5e.
+- **No tag and no GitHub Release yet.** The `claude-code-plugin/v0.25.0` tag and
+  the public Release are outward-facing acts, separately founder-gated as finding
+  M6, and are not part of this stage. The entry stays under `[Unreleased]` until
+  that cut happens — `platforms/claude-code-plugin/VERSION` reading `0.25.0` is
+  the version this tree builds, not a published release.
+- **Framework spec unchanged** at `0.40.0`;
+  `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` still matches it. Hermes
+  is untouched (founder decision O2 — no Hermes version bump in this initiative).
+
 ### Fixed — `SECURITY.md` described a security posture the repository does not have (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage b.** Closes finding **M7**. No version bump on
