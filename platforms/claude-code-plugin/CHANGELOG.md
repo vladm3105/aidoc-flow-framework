@@ -14,6 +14,14 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+## [0.25.0] — the pre-production hardening cut (PLUGIN-PREPROD-001) (2026-08-02)
+
+> **Released 2026-08-02.** Tag `claude-code-plugin/v0.25.0` (annotated) →
+> `e6c6539d`; GitHub Release published as a **pre-release**, matching `v0.18.0`'s
+> tier since the plugin is a declared pre-1.0 preview. This closes finding **M6**,
+> the 23rd and last of the pre-production review — the cut was separately
+> founder-gated and authorized on the day.
+
 ### Changed — version `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut for the pre-production
@@ -42,10 +50,13 @@ pre-1.0, so MINOR rather than MAJOR.
   hand-edited trigger, not a target).
 - **`FRAMEWORK_SPEC_VERSION` stays `0.40.0`** and still matches
   `framework/VERSION`. This is a platform-only bump; no spec change.
-- **The `claude-code-plugin/v0.25.0` tag and the GitHub Release are NOT part of
-  this stage.** They are separately founder-gated (finding M6). The latest
-  published Release remains `claude-code-plugin/v0.18.0` until that cut, so this
-  entry stays under `[Unreleased]`.
+- **The tag and the GitHub Release were not part of stage 5c — they landed
+  separately, on 2026-08-02.** ⚠️ **Superseded 2026-08-02**, when the cut happened
+  and this entry was promoted out of `[Unreleased]` per the condition it set for
+  itself. Original text: "**The `claude-code-plugin/v0.25.0` tag and the GitHub
+  Release are NOT part of this stage.** They are separately founder-gated (finding
+  M6). The latest published Release remains `claude-code-plugin/v0.18.0` until
+  that cut, so this entry stays under `[Unreleased]`."
 
 ### Fixed — the autopilot's saga driver: no permanent wedge, no clobbered journal, no false success (2026-08-01)
 
