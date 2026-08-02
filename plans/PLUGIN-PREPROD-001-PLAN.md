@@ -4,7 +4,7 @@
 | -------------- | ----------------------------------------------------------- |
 | Task           | PLUGIN-PREPROD-001                                           |
 | Type           | bugfix                                                       |
-| Status         | Draft                                                        |
+| Status         | In Progress (`Draft` → `In Progress` 2026-08-02; PRs 1–4 and 5a–5b merged, 5c–5e remain) |
 | Depends on     | none                                                         |
 | Feeds          | the `claude-code-plugin/v0.25.0` tag + first public marketplace announcement |
 | Version impact | plugin MINOR (`0.24.0` → `0.25.0`); **Hermes: no version bump** (founder decision O2 — see Risks); framework spec unchanged |
@@ -291,10 +291,62 @@ copy).
 
 ### PR 5 — docs, governance, and the release cut
 
-- **M7** — `SECURITY.md`: correct the spec version and replace the scanner list
-  with what CI actually runs — semgrep (SAST), osv-scanner (dependencies),
-  gitleaks (secrets), `trivy config` (IaC) and CodeQL. The draft's list was
-  itself incomplete: it omitted trivy and CodeQL.
+**PR 5 ships as five stages (a–e), not one PR.** § "Docs to update" (`:526`, PR-5
+sentence at `:532-536`) lists eight documents of record for this PR against the
+≤3-surface Governance PR cap, and this plan says to split (`:547`). The split
+is **measured**, not proposed:
+
+| Stage | Surfaces | State |
+|---|---|---|
+| 5a | the release changelog gate | **done** — #420 |
+| 5b | `SECURITY.md` + `CHANGELOG.md` (M7) | **done** — #422 |
+| 5c ⛔ **FOUNDER-GATED** | `VERSION` `0.24.0`→`0.25.0` + the 60-file fanout + both CHANGELOGs | next |
+| 5d | `ROADMAP.md` (M8) + `plans/DECISIONS.md` (`D-00NN`) + `plans/FRAMEWORK-TODO.md` (close the batch) | |
+| 5e | this plan (the corrections below + status → `Completed`) + `plans/HANDOFF.md` + `CLAUDE.md` | |
+
+**5c cannot be split** — see O2 (`:424`, risk row `:557`) and `:538-545`: the `sync-version-refs`
+pre-commit hook re-stages its own writes, so the diff cannot be separated after
+the fact, and it rewrites `CLAUDE.md`, which pulls the stage under Governance PR
+discipline. The Hermes case was resolved by skipping the bump (O2); the plugin
+cannot skip, since M6 needs `0.25.0`. So 5c requires Rule 1's stated exception:
+**explicit founder OK plus an audit-trail line in the commit message.** It is not
+self-grantable, and one stage exceeding the cap is not evidence the split is
+wrong.
+
+**⚠️ Four claims in this plan were falsified by the work that implemented it.
+5e must correct all four — not only the one that is easiest to see.**
+
+⚠️ These are **self-references, and every edit to this file shifts them.** Each is
+quoted as well as cited — match the quote, not the number, if they disagree.
+
+1. **`:344` (M7) — "replace the scanner list" is wrong.** #422 deliberately did
+   not replace it: the existing list was *incomplete*, not false, and replacing it
+   would have deleted four accurate `pre-commit` entries (`bandit`,
+   `detect-secrets`, `detect-private-key`, `pip-audit`). The shipped fix splits
+   the list **by configuring file** — CI scanners under `.github/workflows/`,
+   local/CI hooks in `.pre-commit-config.yaml` — and records which of them can
+   actually block a merge.
+2. **`:602` (claim-ledger row 34) is false.** It reads "`SECURITY.md` names
+   scanners CI does not run | bandit". `.github/workflows/pre-commit.yml` **does**
+   run bandit in CI, inside the required `call / Lint / format / security hooks`
+   context. A plan marked `Completed` while carrying a falsified ledger row is the
+   exact failure the ledger exists to prevent.
+3. **`:367-368` — the README prerequisites section already shipped in PR 1.**
+   Do not re-add it. (`:404` assigns it to PR 1; the two rows disagree.)
+4. **`:262-269` — the `--threshold` bullet is doubly stale.** PR 3 made the flag
+   live. The 5c changelog entry must say *that*, not restate either version of the
+   old claim.
+
+Also to fix at 5e: the § "File structure" row at **`:378`** names
+`tests/conformance/test_agent_frontmatter.py`; it shipped at
+`tests/conformance/platforms/test_agent_frontmatter.py` (`PREPROD-PLAN-TESTPATH`).
+
+- **M7** — `SECURITY.md`: correct the spec version and the scanner list.
+  ⚠️ **Superseded in part — read correction 1 above before acting on this
+  bullet.** Original text: "replace the scanner list with what CI actually runs —
+  semgrep (SAST), osv-scanner (dependencies), gitleaks (secrets), `trivy config`
+  (IaC) and CodeQL. The draft's list was itself incomplete: it omitted trivy and
+  CodeQL." The omission half was right and shipped; the *replace* half was not.
 - **M8** — `ROADMAP.md`: correct the stale plugin version.
 - **M6** — cut `claude-code-plugin/v0.25.0` and publish a GitHub Release. The
   latest Release is six versions stale, which is what a visitor sees first.
