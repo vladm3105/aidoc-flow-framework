@@ -300,7 +300,7 @@ is **measured**, not proposed:
 |---|---|---|
 | 5a | the release changelog gate | **done** — #420 |
 | 5b | `SECURITY.md` + `CHANGELOG.md` (M7) | **done** — #422 |
-| 5c ⛔ **FOUNDER-GATED** | `VERSION` `0.24.0`→`0.25.0` + the 60-file fanout + both CHANGELOGs | next |
+| 5c | `VERSION` `0.24.0`→`0.25.0` + the 60-file fanout + both CHANGELOGs | **Rule 1 exception GRANTED by the founder 2026-08-02**; in flight — move to `done — #N` at 5d |
 | 5d | `ROADMAP.md` (M8) + `plans/DECISIONS.md` (`D-00NN`) + `plans/FRAMEWORK-TODO.md` (close the batch) | |
 | 5e | this plan (the corrections below + status → `Completed`) + `plans/HANDOFF.md` + `CLAUDE.md` | |
 
