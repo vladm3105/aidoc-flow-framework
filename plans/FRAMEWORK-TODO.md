@@ -56,6 +56,74 @@
 
 ## Open
 
+### `[build]` `SYNC-WEBSITE-SILENT-NOOP` — the version sync writes a sibling repo, misses, and says nothing → #423
+
+- *Context:* found 2026-08-02 while measuring the plugin `VERSION` fanout for
+  PLUGIN-PREPROD-001 PR 5c. `scripts/sync-version-refs.sh:180` writes
+  `../web-site/src/pages/index.astro` — an independent repo with its own remote,
+  outside this git tree. The badge there reads `Pre-release v0.20.1` (`:19`)
+  while this repo is at plugin `0.24.0`, so the script's `grep -qF` for the
+  *previous* value misses and `replace_in_file` returns 0 **without logging**
+  (`sync-version-refs.sh`, `replace_in_file`: `grep -qF "$old" "$file" || return 0`).
+  Two compounding facts: the script's own header (`:31-37`) documents the silence
+  for the case where `web-site/` is **absent**, not for a value mismatch; and the
+  prescribed way to test a sync script is a throwaway clone (`CLAUDE.md`
+  § "Local hooks and tooling"), which has no sibling `../web-site/` and is
+  therefore structurally blind to this write. It is self-sealing — every future
+  bump greps for a `prev` the site has not carried since `0.20.1`.
+- *Blast radius:* the public site advertises a five-minors-stale version. The
+  header comment at `:34` says this write exists to "close the v0.18.0
+  stale-badge drift bug", so the bug it was written to fix has recurred.
+- *Fix shape:* make a grep miss on the `web-site` path **warn** rather than
+  return silently (it must stay non-fatal — the sibling is legitimately absent in
+  CI), and repair the badge by hand in a `web-site` PR. Do not make
+  `replace_in_file` warn globally; most of its misses are the idempotent case.
+- *Stage:* the hand repair rides with PR 5c; the warn-on-miss fix is independent.
+
+### `[docs]` `PRECOMMIT-CONFIG-COMMENTS-STALE` — two comments in `.pre-commit-config.yaml` describe things that are not so
+
+- *Context:* found 2026-08-02 during the #422 `SECURITY.md` review; both are
+  comment-only, neither affects hook behaviour. (a) `:9` calls `legacy/` "the
+  frozen pre-migration archive" — it is a parking area for skills pulled from the
+  shipped plugin surface; the pre-migration archive is branch
+  `legacy-ucx-v3.2-read-only`. (b) `:92` says `pip-audit` runs in "the `manual`
+  stage (CI) + pre-push". It runs in **neither**: `stages: [manual]` (`:98`), the
+  CI caller passes no `run-stage` (`.github/workflows/pre-commit.yml:38-42`), and
+  `scripts/pre_push_check.sh` never invokes it.
+- *Fix shape:* correct both comments. Decide separately whether `pip-audit`
+  *should* run somewhere — the comment asserts an intent the config never had.
+- *Stage:* unassigned; one- and two-line edits.
+
+### `[docs]` `CONTRIBUTING-SECRET-TABLE-NO-CI-ROW` — the secret-scanning table omits the required CI pass, and links one way
+
+- *Context:* found 2026-08-02 during the #422 `SECURITY.md` review.
+  `CONTRIBUTING.md:94-97` tabulates secret scanning as `detect-secrets` (local)
+  - `gitleaks` (CI). ⚠️ **The `detect-secrets` row is explicitly scoped
+  `(local)` and is NOT wrong** — an earlier draft of this finding called it
+  false because CI runs `--all-files`, which would have deleted an accurate
+  scope. The real defect is an **omission**: there is no row for the required CI
+  `pre-commit` job, which runs the same hooks over the whole tree. Separately,
+  `SECURITY.md` carries this coverage as bullets (`:62`, `:76-77`, `:97`), not a
+  table, so the two surfaces overlap without either being a copy; and the link is
+  one-way — `CONTRIBUTING.md:104` points at `SECURITY.md`, nothing points back.
+- *Fix shape:* add the CI `pre-commit` row; leave the local row alone; add the
+  back-link from `SECURITY.md`.
+- *Stage:* unassigned.
+
+### `[ops]` `SYNC-SECRET-SCANNING-KNOBS` — push protection is on, two scanning knobs are off — FOUNDER DECISION
+
+- *Context:* found 2026-08-02 by `gh api repos/vladm3105/aidoc-flow-framework`
+  during the #422 review. `secret_scanning` and `secret_scanning_push_protection`
+  are enabled; `secret_scanning_non_provider_patterns` and
+  `secret_scanning_validity_checks` are **disabled**, which narrows what the one
+  merge-blocking control actually catches. Not a defect — a posture choice nobody
+  has made explicitly. `SECURITY.md:66` presents push protection as the control
+  that stops a change before it lands, without this qualifier.
+- *Fix shape:* founder decides whether to enable both (repo-settings write is
+  🔴 tier). If yes, enable and note the qualifier in `SECURITY.md`; if no, record
+  why in `plans/DECISIONS.md` so the next review does not re-file it.
+- *Stage:* unassigned; blocked on the founder.
+
 ### `[plugin]` `PREPROD-L7-BARE-DISPATCH` — the plugin dispatches its agents by bare name, so a consumer's same-named agent wins → #417
 
 - *Context:* found 2026-08-01 by security review during PLUGIN-PREPROD-001 PR 4,
@@ -112,14 +180,14 @@
 
 ### `[docs]` `PREPROD-PLAN-TESTPATH` — the PR 4 plan's file table names a path that does not exist
 
-- *Context:* `plans/PLUGIN-PREPROD-001-PLAN.md:326` names
+- *Context:* `plans/PLUGIN-PREPROD-001-PLAN.md:378` names
   `tests/conformance/test_agent_frontmatter.py`; it shipped at
   `tests/conformance/platforms/test_agent_frontmatter.py`, beside the 18 other
   plugin-platform checks. The `platforms/` placement is correct — the adjacent
   `:325` row (`test_plugin_hook_safety.py`, PR 1) is the one that is arguably
   misplaced. Not fixed in PR 4 because editing a `plans/*-PLAN.md` makes it a
   governance PR under the ≤3-doc-surface rule.
-- *Fix shape:* amend `:326` during PR 5, which closes the plan out anyway.
+- *Fix shape:* amend `:378` during PR 5, which closes the plan out anyway.
 - *Stage:* PR 5.
 
 ### `[plugin]` `SAGA-ALL-BRANCHES-FAILED-CLOSES` — a review where every lens failed still closes at exit 0
