@@ -4,7 +4,7 @@
 | -------------- | ----------------------------------------------------------- |
 | Task           | PLUGIN-PREPROD-001                                           |
 | Type           | bugfix                                                       |
-| Status         | In Progress — **22 of 23 findings closed; M6 (the `claude-code-plugin/v0.25.0` tag + public Release) is founder-gated and OPEN.** `Draft` → `In Progress` 2026-08-02. ⚠️ Deliberately **not** `Completed`: 5e's own instruction said to set it, but a declared item is still live, and `Completed` on unfinished work is the defect the status rule exists to prevent. The founder flips this when M6 lands. |
+| Status         | **Completed** — all **23 of 23** findings closed. `Draft` → `In Progress` 2026-08-02 → `Completed` 2026-08-02, when M6 (the `claude-code-plugin/v0.25.0` tag + public Release) landed on explicit founder approval. Superseded text kept for the audit trail: "In Progress — 22 of 23 findings closed; M6 … is founder-gated and OPEN. ⚠️ Deliberately **not** `Completed`: 5e's own instruction said to set it, but a declared item is still live … The founder flips this when M6 lands." |
 | Depends on     | none                                                         |
 | Feeds          | the `claude-code-plugin/v0.25.0` tag + first public marketplace announcement |
 | Version impact | plugin MINOR (`0.24.0` → `0.25.0`); **Hermes: no version bump** (founder decision O2 — see Risks); framework spec unchanged |
@@ -340,9 +340,9 @@ quoted as well as cited — match the quote, not the number, if they disagree.
    live. The 5c changelog entry must say *that*, not restate either version of the
    old claim.
 
-Also to fix at 5e: the § "File structure" row at **`:389`** names
-`tests/conformance/test_agent_frontmatter.py`; it shipped at
-`tests/conformance/platforms/test_agent_frontmatter.py` (`PREPROD-PLAN-TESTPATH`).
+✅ Fixed at 5e — a **sixth** falsified claim, found after the block above was
+written: the § "File structure" row at **`:389`** now names the `platforms/` path.
+Superseded: "`:389` names `tests/conformance/test_agent_frontmatter.py`".
 
 - **M7** — `SECURITY.md`: correct the spec version and the scanner list.
   ✅ **SHIPPED in #422, and NOT as this bullet specified.** The bullet said to
@@ -355,13 +355,13 @@ Also to fix at 5e: the § "File structure" row at **`:389`** names
   runs — semgrep (SAST), osv-scanner (dependencies), gitleaks (secrets),
   `trivy config` (IaC) and CodeQL."
 - **M8** — `ROADMAP.md`: correct the stale plugin version.
-- **M6** — cut `claude-code-plugin/v0.25.0` and publish a GitHub Release. The
-  latest Release is **seven** versions stale (`0.18.0` against `VERSION` `0.25.0`) —
-  it read *six* until 5c's own bump falsified it, making this a **fifth** claim this
-  plan's implementation falsified. That is what a visitor sees first.
-  **Founder-gated:** a tag cut and a public Release are outward-facing acts
-  outside the AI auto-merge default, so PR 5 merges but the tag and Release wait
-  on explicit founder approval.
+- **M6** — cut `claude-code-plugin/v0.25.0` and publish a GitHub Release.
+  ✅ **DONE 2026-08-02** on founder approval: annotated tag → `e6c6539d`, on the
+  remote; Release published as a **pre-release** (pre-1.0 preview, `v0.18.0`'s
+  tier). Superseded text — it carries the **fifth** falsified claim counted above:
+  "The latest Release is **seven** versions stale (`0.18.0` against `VERSION`
+  `0.25.0`) — it read *six* until 5c's own bump falsified it, making this a
+  **fifth** claim this plan's implementation falsified. … **Founder-gated:** …"
 - **Record the decision.** The opt-in permission flag (PR 3) is a policy choice
   embedded in shipped code, which `plans/DECISIONS.md` exists to authorize. Add a
   `D-00NN` entry covering it and the `review_hook` default becoming quieter than
