@@ -12,6 +12,73 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the release changelog gate stopped failing on its own history (2026-08-02)
+
+**PLUGIN-PREPROD-001 PR 5 of 5.** PR 5's eight documents of record exceed the
+≤3-surface governance cap, so it lands as a short sequence of PRs; this is the
+first, and carries no version bump on any stream. The plugin's
+`0.24.0 → 0.25.0` cut follows. Closes `RELEASE-GATE-TBD-FALSE-POSITIVE`.
+
+- **`tests/release/test_changelog_entry.py` had been permanently red for 25
+  days.** Its placeholder check asserted the literal `TBD` was absent from the
+  whole of `CHANGELOG.md`. The check landed in `982b06cb` (2026-05-31) and
+  passed until `e73a8c91` (2026-07-08) added a quoted historical commit message
+  recording a past review that fixed such a placeholder. That text is correct
+  and, this file being append-only, must not be edited — so from that commit on
+  the gate could not pass. A placeholder check that scans an append-only record
+  accrues strictly more false positives over time.
+- **Two things were wrong, and fixing only the scope re-broke the gate
+  immediately.** The first draft narrowed *what* is scanned and left the matcher
+  a bare substring test — so this very entry, which has to name the tokens it
+  describes, failed the gate it was documenting. The matcher now ignores
+  occurrences inside backticks or fenced blocks, which is markdown's own way of
+  marking a mention rather than a use, and treats everything else as a
+  placeholder. The word boundary is alphanumeric-only on purpose: punctuation
+  and hyphens do not exempt a token, so a dated heading left unfilled as
+  `2026-08-TBD` still fails — the likeliest such placeholder in a changelog, and
+  the shape the next release heading takes — as do `_TBD_` and `**TBD**`. That leaves
+  exactly one way to name a token without tripping the gate, and the assertion
+  message says so.
+- **The scan is scoped to the entry being published.** A `newest_entry` helper
+  returns the first level-2 section that has a body, truncated at its second
+  level-3 heading, with headings located in the code-stripped text so a `##`
+  inside a fenced example cannot truncate the entry early. Scoping to
+  `## [Unreleased]` — the shape the backlog entry proposed — would not have
+  worked: this repo keeps every unreleased entry under that one heading, roughly
+  2,700 lines of them, so the quoted text is *inside* it. Nor would excluding
+  blockquotes; the line carries no `>` prefix. An emptied section is skipped
+  rather than returned, because a release cut promotes the entry to its own
+  level-2 heading and leaves `## [Unreleased]` bare — the shape
+  `platforms/claude-code-plugin/CHANGELOG.md` takes at its cuts — and returning
+  it would scan nothing and pass vacuously.
+- **Accepted limitations, recorded rather than hidden.** Only the newest entry
+  is scanned, so a single PR adding *two* level-3 entries has only the first
+  checked; that matches this repo's one-entry-per-PR convention but nothing
+  enforces it. And in the window after a cut empties `## [Unreleased]` and
+  before the next entry is written, the newest body-bearing section is a
+  released one. The gate covers the entry being published, not the changelog.
+- **41 new cases, and every mutation in two author sets killed against a
+  baseline asserted green first.** Two earlier mutation runs in this session
+  reported a perfect score and both were worthless — the first because the
+  harness never imported the module, the second because the baseline itself was
+  red — so every mutant "died" of the harness, not the tests. An independent
+  review then ran a wider set and found further survivors; the six consequential
+  ones are now covered too (whitespace-only section bodies, the leading word
+  boundary, case sensitivity, slicing from stripped rather than original text,
+  the body-detection offset, and the fence-indent allowance). The surviving-mutant list that survived
+  a *valid* run drove real changes: the vocabulary assertion no longer iterates
+  the tuple it claims to pin, `strip_code` is a line scanner rather than a
+  regex (a non-greedy fence pattern pairs an unterminated fence with the next
+  one and blanks the prose between them, hiding placeholders), and headings are
+  found in stripped text. `test_changelog_has_entry_for_current_version` still
+  scans the whole file on purpose: it is a presence check, and the heading it
+  looks for may be a released section far below the newest entry.
+- **What this does not fix.** The tier is executed on every PR and every tag by
+  the *umbrella* repo, not by this one — so the red gate was invisible here
+  because the umbrella pins this repo at a submodule commit three weeks older
+  than the offending line, not because nothing runs it. Recorded as
+  `RELEASE-TIER-STALE-SUBMODULE-PIN` in `plans/FRAMEWORK-TODO.md`.
+
 ### Fixed — one agent no longer inherits every tool; the plugin ships its license (2026-08-01)
 
 **PLUGIN-PREPROD-001 PR 4 of 5.** No version bump on any stream; the plugin's

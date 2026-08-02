@@ -391,19 +391,55 @@
   findings block remove the mechanism.
 - *Stage:* PR 1.
 
-### `[harness]` `RELEASE-GATE-TBD-FALSE-POSITIVE` — the release changelog gate is red on `main` and will block the PLUGIN-PREPROD release cut
+### `[harness]` `RELEASE-TIER-STALE-SUBMODULE-PIN` — the release tier runs on every umbrella PR, against a framework checkout seven weeks stale
 
-- *Context:* found 2026-07-31 running `tests/release/` for PLUGIN-PREPROD-001
-  PR 1. `tests/release/test_changelog_entry.py:45` asserts the literal `TBD` is
-  absent from the whole of `CHANGELOG.md`. It appears at `CHANGELOG.md:1192` —
-  inside a *quoted historical commit message* that records a past review fixing a
-  TBD placeholder. Confirmed pre-existing: red on `main` with this branch stashed.
-- *Why it matters:* the tier is run by no workflow and no hook, so nothing
-  surfaced it; PLUGIN-PREPROD-001 PR 5 cuts a release and is the first thing that
-  will hit it. A placeholder check that scans an append-only historical record
-  gets strictly more false positives over time.
-- *Fix shape:* scope the assertion to the `[Unreleased]` section, or to lines
-  that are not inside a quotation — not by deleting the historical text.
+- *Context:* found 2026-08-02 while closing `RELEASE-GATE-TBD-FALSE-POSITIVE`.
+  ⚠️ **The obvious diagnosis is wrong, and a first draft of this entry shipped
+  it.** The tier is *not* unrun. The umbrella executes it twice, unguarded:
+  `aidoc-flow/.github/workflows/pr-checks.yml:42`
+  (`cd framework && python3 -m unittest discover tests/release -v`) on every PR,
+  and `aidoc-flow/.github/workflows/release.yml:37` on `v*` tags. What it runs
+  is a **submodule pointer**: umbrella `origin/main` pins this repo at
+  `0ffa153c` (2026-06-15). The offending `TBD` line landed here in `e73a8c91`
+  (2026-07-08), three weeks *after* that pin — so the umbrella has been running
+  a green tier against a framework that predates the defect, while `main` here
+  was red. That, not an absent runner, is why nothing surfaced it.
+- *⚠️ Two claims a session will reach for here, both false.* (1) "`tests/release/`
+  is run by nothing" — true of *this* repo only; always check the umbrella
+  before writing an absence down. (2) "`test-plugin.sh` ends in `|| true`, so
+  even the manual path cannot fail" — the script sets `set -uo pipefail` with
+  **no** `-e` (`tests/scripts/test-plugin.sh:52`), and `run()` increments
+  `FAILED` *before* returning (`:114` declares it `-i`, so `+=1` at `:135` is
+  arithmetic; `run()` spans `:123-137`), which `:369-376` turns into `exit 1`.
+  The `|| true` discards an already-recorded status and suppresses nothing.
+  `CLAUDE.md:830-831` § "Durable traps → Local hooks and tooling" carries **two**
+  wrong claims in one sentence — this one about `:257`/`:302`, *and* "nothing
+  calls that script", refuted by umbrella `release.yml:32`. Correcting them
+  needs a governance PR; fix both, not the one that is easier to see.
+- *Why it matters:* the tier is the marketplace pre-publish gate — changelog
+  entry presence, no unfilled placeholders, bundle-size and skill-count caps,
+  a network-egress scan over the vendored linter, no
+  `--dangerously-skip-permissions` default in any `SKILL.md`, plugin manifest
+  present. Every one is a claim about what ships to consumers, and all of them
+  are currently being verified against a seven-week-old snapshot. (The egress
+  scan is narrower than its name — `tests/release/test_marketplace_gate.py:26`
+  walks only the vendored `sdd_doc_lint` tree and `continue`s if it is absent,
+  so do not cite the tier as a marketplace egress guarantee.) A green umbrella run is not evidence about this
+  repo's `main`.
+- *Fix shape:* the gap is *currency*, not existence. Either bump the umbrella's
+  submodule pointer as part of merging here, or run the tier from this repo at
+  the point a release is cut. Do **not** add it to this repo's conformance
+  workflow: it is release-only by design, and
+  `test_changelog_has_entry_for_current_version` would fail every PR that has
+  not yet written its version heading — the tier is release-only by design
+  (`tests/README.md:29`).
+- *Target:* `vladm3105/aidoc-flow` (the umbrella) if fixed by bumping the pointer;
+  this repo if fixed by running the tier at the cut. **Tier 🟡, not filed** — the
+  umbrella is outside the ten-repo OPS-0076 cross-repo carve-out (it holds no dev
+  and has no capture surface), so a human files it if the pointer half is chosen.
+  Queue-only here is the specified behaviour, not an omission.
+- *Stage:* not a PLUGIN-PREPROD-001 blocker — the `0.25.0` cut runs the tier by
+  hand. Genuinely open work after that.
 
 ### `[lint]` `LINT-TRACE-RES-SINGLE-FILE` — linting one file reports every cross-document trace tag as an ERROR → [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
 
@@ -1224,6 +1260,68 @@
 - *Status:* OPEN — P3.
 
 ## Closed
+
+### `[harness]` `RELEASE-GATE-TBD-FALSE-POSITIVE` — ✅ CLOSED (2026-08-02, PR #420) — the release changelog gate was red on `main` and would have blocked the PLUGIN-PREPROD release cut
+
+- *Context:* found 2026-07-31 running `tests/release/` for PLUGIN-PREPROD-001
+  PR 1. `test_no_placeholder_orphans` asserted the literal `TBD` was absent from
+  the whole of `CHANGELOG.md`. One appears — inside a *quoted historical commit
+  message* recording a past review that fixed such a placeholder. Confirmed
+  pre-existing: red on `main` with that branch stashed. **Not "could never
+  pass"**: the check landed in `982b06cb` (2026-05-31) and passed until
+  `e73a8c91` (2026-07-08) added the quoted line, then could not pass again.
+  PLUGIN-PREPROD-001 PR 5 cuts a release and was the first thing to hit it.
+- *Resolution:* **two defects, not one — and fixing only the scope re-broke the
+  gate on the spot.** (a) The *matcher* was a bare substring test, so any entry
+  describing this gate failed it; it now ignores tokens inside backticks or
+  fenced blocks, markdown's own mention-vs-use marker. (b) The *scope* is now
+  the entry being published: a `newest_entry` helper returns the first level-2
+  section that has a body, truncated at its second level-3 heading, with
+  headings located in code-stripped text so a `##` inside a fenced example
+  cannot truncate the entry and leave a placeholder below it unscanned.
+- *⚠️ The word boundary is alphanumeric-only, deliberately — do not "fix" it to
+  `\w` or `[\w-]`.* Either of those exempts `2026-08-TBD` in a dated heading,
+  which is the likeliest real unfilled placeholder in a changelog, and `_TBD_`
+  as well. The cost is that prose must **backtick** this entry's own ID; the
+  benefit is one rule with no exceptions.
+- *⚠️ Both fix shapes this entry originally proposed are wrong, and a future
+  session will reach for them again.* Scoping to `## [Unreleased]` does nothing:
+  this repo keeps every unreleased entry under that one heading — some 2,600
+  lines — so the quoted text is *inside* it. Excluding quotations does nothing
+  either: the line carries no `>` blockquote prefix, it is ordinary prose
+  recording a commit message. And **neither is sufficient alone** — the scope
+  fix alone turned the gate red against this very changelog entry, because an
+  entry documenting a placeholder check has to name the tokens it checks for.
+- *⚠️ An emptied `## [Unreleased]` is skipped, not returned.* A release cut
+  promotes the entry to its own level-2 heading and leaves `## [Unreleased]`
+  bare — the shape `platforms/claude-code-plugin/CHANGELOG.md` takes at every
+  cut. Returning that section would scan nothing and pass vacuously, which is
+  the failure mode this entry exists to prevent, one level up.
+- *Accepted limitation:* only the newest entry is scanned, so a PR adding **two**
+  level-3 entries has only the first checked. That matches the one-entry-per-PR
+  convention; nothing enforces it. **The gate covers the entry being published,
+  not the changelog** — do not cite it as changelog-wide coverage.
+- *Guard:* 44 cases in the module (41 added here); every mutation in two author
+  sets killed, plus the six consequential survivors an independent review found
+  in a wider set.
+  `test_changelog_has_entry_for_current_version` still scans the whole file by
+  design; it is a presence check, and the heading may be a released section far
+  below the newest entry.
+- *⚠️ Two mutation runs in this session scored 17/17 and 11/11 and both were
+  worthless.* The first harness copied the module to a scratch directory where
+  its `sys.path` sibling did not resolve, so every mutant died of
+  `ModuleNotFoundError`. The second ran while two of the new tests were failing,
+  so every mutant died of the red baseline. **A perfect first-try kill rate is
+  the symptom, not the result** — assert the unmutated baseline is green inside
+  the harness before trusting a single row. The valid run's survivors were all
+  real and all drove changes: a vocabulary assertion that iterated the tuple it
+  claimed to pin (so any truncation agreed with it), a non-greedy fence regex
+  that paired an *unterminated* fence with the next one and blanked the prose
+  between them, and the boundary class above.
+- *Not closed by this:* the tier is executed on every umbrella PR and tag, but
+  against a stale submodule pointer, which is why a red gate here was invisible.
+  Tracked as `RELEASE-TIER-STALE-SUBMODULE-PIN` under `## Open` — and read that
+  entry before asserting anything about what runs this tier.
 
 ### `[harness]` `IDHASH-GUARD-GLOB-NARROW` — ✅ CLOSED (2026-07-31, `371f6261` PR #406) — the guard was green partly because it did not look where a violation survived → [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385)
 
