@@ -44,11 +44,21 @@ stages 5d/5e.
   still describes the flag as "accepted and ignored", which was the pre-PR-3
   state; the plan records the staleness at `:336-338` and corrects the bullet in
   stage 5e.
-- **No tag and no GitHub Release yet.** The `claude-code-plugin/v0.25.0` tag and
-  the public Release are outward-facing acts, separately founder-gated as finding
-  M6, and are not part of this stage. The entry stays under `[Unreleased]` until
-  that cut happens — `platforms/claude-code-plugin/VERSION` reading `0.25.0` is
-  the version this tree builds, not a published release.
+- **The tag and Release landed later the same day.** ⚠️ **Superseded 2026-08-02.**
+  The `claude-code-plugin/v0.25.0` tag was cut on explicit founder approval
+  (annotated → `e6c6539d`, on the remote) and the GitHub Release published as a
+  **pre-release**, matching `v0.18.0`'s tier since the plugin is a declared pre-1.0
+  preview. That closed finding **M6** and the per-platform entry was promoted to
+  its own `## [0.25.0]` section in
+  [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+  This file keeps every plugin and Hermes entry under `[Unreleased]` by design —
+  only project-stream and framework-spec releases cut a level-2 section here — so
+  this entry stays where it is, corrected in place rather than by a new dated
+  entry, because it is still under `[Unreleased]` and the append-only rule binds
+  released sections. Original text: "**No tag and no GitHub Release
+  yet.** … The entry stays under `[Unreleased]` until that cut happens —
+  `platforms/claude-code-plugin/VERSION` reading `0.25.0` is the version this tree
+  builds, not a published release."
 - **Framework spec unchanged** at `0.40.0`;
   `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` still matches it. Hermes
   is untouched (founder decision O2 — no Hermes version bump in this initiative).
