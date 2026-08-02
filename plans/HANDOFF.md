@@ -7,132 +7,82 @@ never repeated here; open work lives in `plans/FRAMEWORK-TODO.md`, never here.
 
 ## Where we are — 2026-08-02
 
-Framework spec `0.40.0`, plugin `0.24.0`, Hermes `0.12.1`.
-**Open PRs: 0. Open issues: 5** —
-[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386),
+Framework spec `0.40.0`, **plugin `0.25.0`**, Hermes `0.12.1`.
+**Open PRs: 0. Open issues: 5** — [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386),
 [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405),
 [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412),
 [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417),
 [#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423).
 
-**Last merge: [#422](https://github.com/vladm3105/aidoc-flow-framework/pull/422), squash
-`4cbaaad5` — `SECURITY.md` corrected, finding M7, PR 5 stage b.** The file had described
-a security posture this repo does not have; the enforcement half was inverted. Ground
-truth, as of 2026-08-02 and now recorded in `SECURITY.md` itself: **none** of the five
-scanners under `.github/workflows/` (`codeql`, `dep-scan`, `sast-scan`, `secret-scan`,
-`trivy-scan`) is a required status check, and the required
-`call / Lint / format / security hooks` context is the `pre-commit` job — so the only
-*checks* whose findings block a merge are `bandit`, `detect-secrets` and
-`detect-private-key`. Two qualifiers travel with that claim; do not drop them when
-re-summarizing:
+**PLUGIN-PREPROD-001 is done except for one founder act.** Five PRs plus a five-stage
+PR 5; **22 of 23 findings closed**. Merges this session: #424 (handoff), **#425 (`0.25.0`
+cut)**, **#426 (22 closures + M8 + D-0074)**, and 5e — this one.
 
-- **`bandit` is scoped** `^(platforms/hermes/src/|tests/).*\.py$`
-  (`.pre-commit-config.yaml:50`), so most of `tools/` and the plugin tree is outside it.
-- **`SECURITY.md:66` names the one non-check control that does block** — GitHub
-  secret-scanning push protection. It is enabled.
+**⚠️ The ONE thing left, and it is yours, not an agent's: `PREPROD-M6`.** Cut
+`claude-code-plugin/v0.25.0` and publish the GitHub Release. Verified 2026-08-02: the
+newest tag is `claude-code-plugin/v0.20.1` and `gh release list` returns exactly one row,
+`v0.18.0` (2026-06-12) — **seven versions stale.** A tag cut and a public Release are
+outward-facing acts outside the AI auto-merge default. Everything else shipped.
 
-Branch protection is mutable and this claim now lives in a public file — re-derive with
-`gh api repos/vladm3105/aidoc-flow-framework/branches/main/protection --jq '.required_status_checks.contexts'`
-before citing it.
+**Consequences a fresh session must not misread:**
 
-**Private vulnerability reporting was DISABLED and is now on** (founder-authorized
-2026-08-02, verified by readback). `SECURITY.md` had pointed researchers at a Security-tab
-control that did not render while forbidding the public fallback, so its only reporting
-channel dead-ended. Do not re-file this; do not disable it.
+- `PLUGIN-PREPROD-001-PLAN.md` is **`In Progress`, deliberately NOT `Completed`** — 5e's
+  own instruction said to set `Completed`, and that instruction was wrong while a declared
+  item is live. Flip it when M6 lands.
+- The `FRAMEWORK-TODO.md` queue header is **`⏳ OPEN ON RESIDUAL`** with M6 its sole open
+  member. The other 22 are under `## Closed` with empirically-attributed refs.
+- `VERSION` reading `0.25.0` is **the version this tree builds, not a published release.**
+  Both changelog entries sit under `[Unreleased]` for exactly that reason.
+- **⚠️ Two `FRAMEWORK-TODO.md` items are FIXED-BUT-NOT-CLOSED, deliberately, because
+  closing them would have been a 4th doc surface against the ≤3 cap on the initiative's
+  last stage.** Neither blocks anything; both are ~2-line edits. (a)
+  `PREPROD-PLAN-TESTPATH` — 5e corrected the path, but the entry still sits under
+  `## Open` and both its `:378` citations now land on a blank line; move it to
+  `## Closed` and re-cite the current line. (b) `PREPROD-M6`'s heading still says "six
+  versions stale"; it is **seven** now, because 5c's own bump falsified it. **5e was the
+  last stage, so nothing later picks these up — they are yours.**
 
-**⚠️ PR 5 is five PRs. 5a (#420) and 5b (#422) are done; 5c is next and is FOUNDER-GATED
-on the Rule 1 surface-cap exception.** `PLUGIN-PREPROD-001-PLAN.md` § "Docs to update"
-(`:532-536`) lists **eight** documents of record for PR 5 against the ≤3-surface
-governance cap, and the plan says to split (`:547`). The measured split is task 1 below.
-**PRs 1–4 shipped; the `PREPROD-*` batch stays under `FRAMEWORK-TODO.md` `## Open` until
-5d closes it — the entries do not tell you what has shipped; this file does.**
+**⚠️ A plugin `VERSION` bump needs a hand-authored `docs/TAGGING.md` row, or conformance
+goes red.** `tests/conformance/platforms/test_plugin_release_metadata.py:137` asserts the
+file contains the current plugin tag string, and `scripts/sync-version-refs.sh` deliberately
+does not write it (`:56-60` lists TAGGING/ROADMAP/HANDOFF release rows as human-authored).
+Cost a conformance failure during 5c. **Not in the plan and not in any earlier handoff.**
 
-**⚠️ Three `FRAMEWORK-TODO.md` entries are NOT part of the original 23 and must NOT be
-closed with the batch** — `PREPROD-L7-BARE-DISPATCH` (#417), `PREPROD-AGENT-WEBFETCH`,
-`PREPROD-PLAN-TESTPATH`. Only `PREPROD-PLAN-TESTPATH` is PR 5's to fix (a one-line path
-amendment at `PLUGIN-PREPROD-001-PLAN.md:378`).
-
-**⚠️ `L7` is resolved only because the *documentation* is now correct.** Plugin agents
-register under a scoped identifier, so installation overwrites nothing — but a **bare**
-name resolves by scope precedence, where a plugin ranks lowest of five. Every dispatch the
-plugin ships is bare. #417 (task 2) is the machine-facing half.
+**⚠️ The `sync-version-refs.sh` fanout reaches OUTSIDE this repo, and that write is broken.**
+`:180` writes `../web-site/src/pages/index.astro`, a sibling repo with its own remote. The
+badge there reads `Pre-release v0.20.1`; the script greps for the *previous* value, misses,
+and `replace_in_file` returns 0 **without logging**. Self-sealing — no future bump repairs
+it. A throwaway clone (the prescribed test method) has no sibling and is structurally blind
+to it. [#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423); the founder
+declined the repair during 5c, so **the public site still advertises `v0.20.1`.**
 
 **⚠️ The `ai-review` gate WILL request changes on a code or CI PR with no root
-`CHANGELOG.md` entry.** The ≤3-surface cap is a *ceiling*, not observed practice — recent
-PRs have used one real surface + `CHANGELOG.md` and others three; what they share is the
-changelog entry. A failing run **uploads a verdict artifact**
-(`gh run download <id> -n ai-review-verdict`) — a run that fails *after* producing it is a
-verdict, not an outage.
+`CHANGELOG.md` entry.** The ≤3-surface cap is a *ceiling*, not observed practice — what
+passing PRs share is the changelog entry, not a surface count. A failing run **uploads a
+verdict artifact** (`gh run download <id> -n ai-review-verdict`) — a run that fails *after*
+producing it is a verdict, not an outage. Docs-of-record-only PRs need none — #424
+(`plans/` only) and #426 (`plans/` **plus `ROADMAP.md`**) both passed without one.
 
 **⚠️ Two tiers are RED on `main` for pre-existing reasons, neither CI-gated, neither
-yours.** `Hermes pytest` — an unpinned `mcp[cli]>=1.0.0` floor, path-filtered, locally
-green (570), see `HERMES-MCP-FLOATING-DEP`, do not re-diagnose. Phase 0 `lint-smoke` in
+yours.** `Hermes pytest` — an unpinned `mcp[cli]>=1.0.0` floor, path-filtered, locally green
+(570), see `HERMES-MCP-FLOATING-DEP`, do not re-diagnose. Phase 0 `lint-smoke` in
 `tests/scripts/test-acceptance.sh` — example-corpus debt deferred to the wholesale regen;
 use `--skip-lint-smoke`.
 
 **V15 (schedule→`workflow_run` chain) is still unconfirmed** — never a gate; V14 proved the
 chain off a *dispatched* upstream only. `standards-drift` runs Mondays 09:00 UTC, **first
-observable 2026-08-03**. On or past that date, confirm a `pin-currency-reader` run followed
-it with `event=workflow_run`, then delete this paragraph. A failure there is a new bug, not
-a reopened plan.
+observable 2026-08-03 (tomorrow).** On or past that date, confirm a `pin-currency-reader`
+run followed it with `event=workflow_run`, then delete this paragraph. A failure there is a
+new bug, not a reopened plan.
 
 ## Next tasks — prioritized
 
 The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`) and `plans/HERMES-BACKLOG.md`.
 This is only the ordering a fresh session should use.
 
-1. **PLUGIN-PREPROD-001 — PR 5, stages c–e. The last stage of the initiative.**
-   Read `plans/PLUGIN-PREPROD-001-PLAN.md` § "PR 5" (`:292`).
-
-   **⚠️ STOP: 5c needs an explicit founder OK before you touch `VERSION`, plus an
-   audit-trail line in the commit message.** A plugin bump is a 60-file diff including
-   `CLAUDE.md` (Governance PR discipline), and the hook re-stages its own writes so it
-   **cannot be split**. Do not self-grant the Rule 1 exception; do not conclude the split
-   is wrong because one stage will not fit. The full argument, the stage table, and the
-   **four falsified plan claims 5e must correct** are now in the plan (§ "PR 5") — durable
-   content, kept there because this file is deleted at the next merge. Read it; do not
-   re-derive it.
-
-   `CLAUDE.md` takes the **mechanical version token** at 5c (hook-written) and the
-   **authored** trap corrections + trap graduation at 5e. `CHANGELOG.md` takes a per-PR
-   entry at every stage — that is doc-currency, not duplication.
-
-   - **How to propagate (5c).** Edit `platforms/claude-code-plugin/VERSION` and commit;
-     the `sync-version-refs` pre-commit hook fires on `^platforms/[^/]+/VERSION$`
-     (`.pre-commit-config.yaml:116-124`), rewrites the fanout and re-stages itself.
-     `tools/sync-plugin-framework.sh` is **not** part of a plugin bump — it is
-     framework-spec-driven and references no `VERSION` file. Re-derive the 60 before
-     trusting it (throwaway clone, per the `CLAUDE.md` trap):
-
-     ```sh
-     d=$(mktemp -d) && git clone -q --no-hardlinks . "$d/f" && cd "$d/f" \
-       && echo 0.25.0 > platforms/claude-code-plugin/VERSION \
-       && bash scripts/sync-version-refs.sh >/dev/null 2>&1; git status --porcelain | wc -l
-     ```
-
-   - **⚠️ A clone cannot verify the whole fanout, and the part it cannot see is broken.**
-     `scripts/sync-version-refs.sh:180` also writes the **sibling repo**
-     `../web-site/src/pages/index.astro`, which no clone has. In the real tree that write
-     **silently no-ops**: the site badge reads `Pre-release v0.20.1` (`:19`), the script
-     greps for the *previous* value, and `replace_in_file` returns 0 without logging on a
-     miss. So 5c must update the site **by hand in a `web-site` PR**, or the public page
-     stays five minors stale — and no future bump will ever repair it. Filed as
-     [#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423)
-     (`SYNC-WEBSITE-SILENT-NOOP`).
-   - **5d must correct `PREPROD-M7`'s *Context* line before closing it**
-     (`FRAMEWORK-TODO.md:390`) — it repeats the same rejected misconception
-     ("`SECURITY.md:49` names `bandit`"), which is now stale in line number *and*
-     substance. It also clears the GOV-TODO-ISSUE-SPLIT bar and has no `→ #N`.
-   - **M8 — `ROADMAP.md:56` says the plugin is `0.23.4`.** `sync-version-refs.sh` does
-     **not** touch `ROADMAP.md`, which is why M8 rides with 5d rather than landing early.
-     ⚠️ **`ROADMAP.md:113` also says `0.24.0` and is a *historical* claim**
-     (IDGEN-NO-GENERATOR shipped at `0.24.0`) — it must survive untouched. That is exactly
-     [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405).
-   - **M6 — cut `claude-code-plugin/v0.25.0` + publish a Release. SEPARATELY
-     FOUNDER-GATED** (an outward-facing tag + Release, not the Rule 1 exception), after
-     5c. The latest Release is `claude-code-plugin/v0.18.0` (2026-06-12), six versions
-     stale. The PRs merge normally; only the tag and the public Release wait.
-
+1. **`PREPROD-M6` — FOUNDER ACT, blocks nothing else.** Cut the tag, publish the Release.
+   Nothing an agent should do unprompted. When it lands, flip the plan to `Completed` and
+   move the queue header from `⏳ OPEN ON RESIDUAL` to `✅ CLOSED`.
 2. **[#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417) — namespace the
    plugin's agent dispatch references.** 29 `subagent_type=` occurrences across 20 files,
    none scoped — but most are `subagent_type=<mapped agent>` *placeholders*, so the bare
@@ -140,111 +90,109 @@ This is only the ordering a fresh session should use.
    `platforms/claude-code-plugin/README.md:215+` (`:213` is the table header). Mechanical,
    but **verify first that `subagent_type` accepts `plugin:agent`**; the docs confirm the
    scoped form for `--agent` and @-mention but do not state it for `subagent_type`. If it
-   does not, this reopens as a rename of the definitions.
-3. **`SDD-CORPUS-UNVERIFIED` — START WITH THE FOUNDER DECISION; it gates the plan.**
+   does not, this reopens as a rename of the definitions. This is the live half of `L7`,
+   which closed on documentation only.
+3. **`PREPROD-B2-GATE-SCOPE` — a release gate that greps a literal stopped measuring.**
+   `tests/release/test_marketplace_gate.py:42` forbids `--dangerously-skip-permissions` in
+   `skills/**/SKILL.md`; PR 3 renamed the mechanism to `--allow-skip-permissions`, so the
+   gate still passes and no longer measures anything live. Conformance *does* cover the
+   property (`test_bypass_absent_by_default`, `test_flag_defaults_off`), so this is a
+   gate-quality gap, not an exposure. Also `skill_dirs()` scans `skills/` only —
+   `commands/` and `agents/` are outside both. Fix shape: assert the property, extend the
+   scan. See **D-0074 §1**.
+4. **`SDD-CORPUS-UNVERIFIED` — START WITH THE FOUNDER DECISION; it gates the plan.**
    Census in the `FRAMEWORK-TODO.md` entry. Two rules not there: **build the gate before
    touching content**, and this needs a `plans/` plan with the two-cycle gap review.
-4. **[#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412) — linting a
+5. **[#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412) — linting a
    single file reports every cross-document trace tag as a `TRACE-RES-001` ERROR.** Fix
    shape is the single-file gate `_check_forward_coverage` already carries
    (`tools/sdd_doc_lint/__init__.py:1972-1973`, documented at `:1965-1967`). ⚠️ An earlier
    handoff cited `:1961-1963` and was wrong — those are run-mode severity bullets.
    Re-derive a carried-forward line number before re-publishing it.
-5. **Watch [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) —
+6. **[#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423) — the
+   `web-site` badge.** Two halves: repair `Pre-release v0.20.1` by hand in a `web-site` PR,
+   and make a grep miss on that path **warn** instead of returning silently. Keep it
+   non-fatal — the sibling is legitimately absent in CI — and do **not** make
+   `replace_in_file` warn globally; most of its misses are the benign idempotent case.
+7. **Watch [aidoc-flow-ci#351](https://github.com/vladm3105/aidoc-flow-ci/issues/351) —
    when canon ships its own reader, DELETE ours.** `.github/workflows/pin-currency-reader.yml`
    plus `scripts/read-pin-currency-log.sh` and `scripts/reconcile-pin-currency-issue.sh`
    are an override, not a permanent local surface (plan R9). Nothing else says so.
-6. **[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405) —
+8. **[#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405) —
    `sync-version-refs.sh` rewrites historical "shipped in vX" claims.** Corrupted
    `docs/PARITY.md:65` on three consecutive bumps. **Did NOT fire on the `0.25.0` plugin
-   bump** (verified in a clone, 2026-08-02) — still open for framework-spec bumps.
-7. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
+   bump** — verified line by line during 5c, in the real tree. Still open for
+   framework-spec bumps.
+9. **[#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) — the
    framework-spec token gates five files on `CLAUDE.md`'s own state.** Outstanding is only
    the **fix shape** — #389's approach cannot be reused because this `prev` is load-bearing
    elsewhere; derive it from a fanout target nobody hand-edits (`docs/PARITY.md`).
-8. **`doc-maintainer` — nothing to do; it is PAUSED** (`kill_switch: true`, #397), CI
+10. **`doc-maintainer` — nothing to do; it is PAUSED** (`kill_switch: true`, #397), CI
    green. Resume requires `aidoc-flow-ci` #352 **AND** #353 — #353 alone is 15 of the 23
-   failures. Census in D-0072. ⚠️ **Do not re-file the `high_risk_paths` /
-   `allowed_paths` mismatch** — deliberate and documented; #396 recorded it as a bug and
-   was wrong.
-9. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`.
-10. **Everything else** is in `FRAMEWORK-TODO.md` by tag. An entry under `## Open` with no
+   failures. Census in D-0072. ⚠️ **Do not re-file the `high_risk_paths` / `allowed_paths`
+   mismatch** — deliberate and documented; #396 recorded it as a bug and was wrong.
+11. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`.
+12. **Everything else** is in `FRAMEWORK-TODO.md` by tag. An entry under `## Open` with no
    `⏳ OPEN ON RESIDUAL` marker is genuinely open work (#403). Nothing there is blocking.
 
 ## Traps too fresh to have settled — not yet in `CLAUDE.md`
 
+The four that had settled were **graduated into `CLAUDE.md` § "Durable traps → Process"**
+by this stage, and are deliberately not repeated here. What remains:
+
 - **A review fold authors its own false claims, and the pass that produced the fold never
-  catches them.** Three on #422, each caught by the *next* cycle: "`codeql` fails on
-  findings" (its reusable has no findings gate at all); "tags lag `main` **by design**"
-  (`docs/TAGGING.md:97` calls it a known backlog); and a supported-versions table whose two
-  ✅ rows cancelled the ❌ row below them. No rate is implied — the removed-defect count was
-  never tallied. **Re-verify folded text against source, not against the findings list**,
-  and expect a fold that rewrites a section wholesale to need its own full pass.
+  catches them.** Three on #422, each caught by the *next* cycle. Measured again this
+  session at a larger scale: the 5d closure audit produced a finding ("the release gate no
+  longer measures the invariant") that was **false** and had already been written into a
+  decision-log draft before one `grep` refuted it — conformance covers the property; only
+  the *gate's literal* is stale. **Re-verify folded text against source, not against the
+  findings list**, and treat a subagent's finding as a claim, never as a result.
+- **An absence is the easiest thing to assert and the hardest to verify** — and it is
+  the shape agents produce most confidently. Two instances this session, both refuted by a
+  single command: "nothing calls `test-plugin.sh`" (umbrella `release.yml:32` does) and the
+  gate claim above. **Before writing "X does not happen", run the command that would show
+  it happening.**
+- **A self-citation inside a file you are editing is invalid the moment you edit it.**
+  Correcting the plan shifted every line after `:292` — twice, because the follow-up edits
+  shifted them again — silently invalidating eight `:NNN` references I had just written.
+  **Derive self-references last, in one pass, after content is final**, and state the quote
+  beside the number so a future reader can recover from the drift. The plan now carries that
+  warning inline.
 - **A document can name a channel, a control or a setting that does not exist, and nothing
   in CI will ever notice** — `SECURITY.md` pointed at private vulnerability reporting for
   months while it was disabled. Found only by running
   `gh api repos/<r>/private-vulnerability-reporting`. **When a doc tells a reader to go
-  somewhere, go there.** The same pass found push protection on but
-  `secret_scanning_non_provider_patterns` and `..._validity_checks` off, which narrows what
-  it catches (`SYNC-SECRET-SCANNING-KNOBS` in `FRAMEWORK-TODO.md`).
-- **A cross-repo write is invisible to the isolation you verify in.** See the `../web-site/`
-  warning under task 1 — a throwaway clone is the prescribed way to test a sync script, and
-  it is structurally blind to the one write that leaves the repo. **Ask what the sandbox
-  cannot see**, and check whether a "skipped silently" path is silent about *absence* only
-  or about *a value mismatch* too.
-- **A perfect first-try mutation kill rate is the symptom, not the result.** Two runs in one
-  session scored 11/11 and 17/17 and **both were worthless** — one harness copied the module
-  where its `sys.path` sibling did not resolve, so every mutant died of
-  `ModuleNotFoundError`; the other ran against a red baseline. **Assert the unmutated
-  baseline green *inside* the harness, and include a control mutant that must die.** The
-  valid run then found six real survivors, every one of which drove a code change. Also:
-  anything mutating source in place leaves the tree dirty in a way that reads as authored
-  code — restore from a saved copy each iteration, **never in a `finally`** (killing a hung
-  mutant skips it), bound each run with a timeout, and verify `git diff --quiet <path>`
-  before any run you intend to trust.
+  somewhere, go there.** Two scanning knobs are still off — `SYNC-SECRET-SCANNING-KNOBS`,
+  founder decision.
+- **A perfect first-try mutation kill rate is the symptom, not the result.** Two runs scored
+  11/11 and 17/17 and **both were worthless** — one harness copied the module where its
+  `sys.path` sibling did not resolve, so every mutant died of `ModuleNotFoundError`; the
+  other ran against a red baseline. **Assert the unmutated baseline green *inside* the
+  harness, and include a control mutant that must die.** Also: anything mutating source in
+  place leaves the tree dirty in a way that reads as authored code — restore from a saved
+  copy each iteration, **never in a `finally`** (killing a hung mutant skips it), bound each
+  run with a timeout, and verify `git diff --quiet <path>` before any run you intend to trust.
 - **When a fix has a *scope* and a *matcher*, changing one re-breaks the other.** The release
   gate's scope fix immediately failed against the PR's own changelog entry, because an entry
   documenting a placeholder check has to name the tokens it checks for. Ask which *other*
   dimension the change moved.
-- **`CLAUDE.md` § "Durable traps → Local hooks and tooling" carries two wrong claims in one
-  sentence, at `:829-836`.** (a) "`test-plugin.sh:257`/`:302` end in `|| true`, so even the
-  manual path cannot fail" — the script sets `set -uo pipefail` with **no `-e`** (`:52`),
-  `FAILED` is `declare -i` (`:114`), and `run()` increments it *before* returning
-  (`:123-137`), which `:369-376` turns into `exit 1`. The `|| true` suppresses nothing.
-  (b) "nothing calls that script" — refuted by umbrella `release.yml:32`. **Fix both in 5e,
-  not the one that is easier to see.** Related and durable: the umbrella runs
-  `tests/release/` unguarded on **every** PR (`aidoc-flow/.github/workflows/pr-checks.yml:42`)
-  and every `v*` tag, but pins this repo at `0ffa153c` (2026-06-15) — so a green umbrella run
-  is not evidence about this repo's `main`. **Before writing "nothing runs X", check the
-  umbrella.**
 - **`check_plan.py` false-greens on a not-ready plan.** Its zero-findings check is a phrase
   match, and it accepted a Review log whose final pass said *"**Result:** NOT READY"* —
   because the surrounding prose contained "all folded". Canonical script is
   `~/.claude/skills/verified-planning/check_plan.py`; no repo-local copy. **Not filed.**
-- **markdownlint's `__init__.py` → `**init**.py` corruption is already in `CLAUDE.md`; two
-  things are not.** It made the citation gate fail with the misleading
-  `path '.py' does not exist`, and the workaround in #408 is
-  `<!-- markdownlint-disable MD050 -->` scoped around the ledger. It also normalizes
-  `_x_` → `*x*` across a **whole** changelog file you touch. **Fold these two into the
-  existing `CLAUDE.md` bullet at 5e; do not re-state the corruption itself.**
-
-**Four settled traps to graduate into `CLAUDE.md` at 5e** (it touches that file anyway).
-Titles only — the full text is in `git log -- plans/HANDOFF.md` at `4cbaaad5`:
-registration-rule vs resolution-rule; your own test can enshrine the defect it was written
-beside; a surviving mutant usually indicts the test, not the fix; a fix can silently disarm
-an existing regression test.
 
 Also unresolved and blocking nothing: the founder flagged plugin `requirements-analyst`'s
-`model: sonnet` as unratified.
+`model: sonnet` as unratified. It now also declares an eight-tool allowlist (PR 4).
 
 ## Stale advice — a fresh session will find these referenced, and they are FIXED
 
 | Stale claim | Reality |
 |---|---|
 | "`--admin` is required on every PR" ([aidoc-flow-ci#322](https://github.com/vladm3105/aidoc-flow-ci/issues/322)) | **Fixed at `ci/v2.16.0`.** Every PR since #378 has reached mergeable with no `--admin`. Do not re-add PR numbers to this row — it is the one that accretes |
-| "Branch protection requires the phantom `Lint / format / security hooks`, so every PR is BLOCKED" | **Fixed.** The six required contexts are `call / Lint / format / security hooks`, `call / composition`, `call / ai-review`, `call / verify`, `Framework + platform conformance`, `Acceptance tier (deterministic)`. `call / trust` and `Hermes pytest` are **not** required |
+| "Branch protection requires the phantom `Lint / format / security hooks`" | **Fixed.** The six required contexts are `call / Lint / format / security hooks`, `call / composition`, `call / ai-review`, `call / verify`, `Framework + platform conformance`, `Acceptance tier (deterministic)`. `call / trust` and `Hermes pytest` are **not** required |
 | `AIDOC-CI-COMPOSITION-CHECK-PRHEAD` — "`call / composition` is structurally unsatisfiable on a PR head" | **Stale.** composition reports success on PR heads. A reviewer once read this entry as proof that required checks gate nothing here, and it nearly killed a correct plan |
 | Three pin-currency claims: `NO-PIN-CURRENCY-CHECK`, `PIN-CURRENCY-NO-READER`, `PIN-CURRENCY-READER-PLAN.md:465`/`:469` | **All three dead.** The check runs on every weekly `standards-drift`; the reader SHIPPED at #392 and consumes the completed run's **log**; V14 exercised close-on-clean for real |
+| The plan's PR 5 section as a guide to what PR 5 does | **Four of its claims were falsified by its own implementation** and are annotated in place (M7's "replace the list", ledger row 34, the README prerequisites row, the `--threshold` bullet). Read the annotations, not the original text |
 
 **Standing:** the example corpus is regenerated wholesale after framework changes, so
 corpus-remediation findings are deferred to that regen. IPLAN ↔ iplanic integration is

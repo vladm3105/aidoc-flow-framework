@@ -826,14 +826,26 @@ fresh to have settled, and never repeats one that is already here.
   `tools/sdd_doc_lint/tests` and Hermes' own suite; `pre_push_check.sh` invokes no
   `unittest` at all. So ~30 modules under `tests/unit/` (including
   `test_sync_scripts.py`) are **unguarded after merge** — a test placed there proves
-  something once, locally, and never again. **The one runner that exists is worse
-  than none:** `tests/scripts/test-plugin.sh:257`/`:302` do
-  `python3 -m unittest discover tests/unit`, but nothing calls that script (grep
-  `.github/workflows/`, `.pre-commit-config.yaml`, `scripts/`) and both call sites end
-  in `|| true`, so even the manual path cannot fail. The registration shim is
+  something once, locally, and never again. The registration shim is
   `tests/conformance/test_repo_scripts.py` — add new modules to its `REGISTERED`
-  tuple. Wiring the hook is reuse, not authoring; dropping the `|| true` is the
-  deeper fix.
+  tuple. Wiring `tests/unit` into the existing `conformance` hook
+  (`.pre-commit-config.yaml:104-106`) is reuse, not authoring.
+  - ⚠️ **This bullet used to carry two wrong claims about the one runner that
+    does exist; both are corrected here (2026-08-02), because each was reassuring
+    in the wrong direction.** (a) It said `tests/scripts/test-plugin.sh:257`/`:302`
+    "both end in `|| true`, so even the manual path cannot fail." **The `|| true`
+    suppresses nothing.** The script sets `set -uo pipefail` with **no `-e`**
+    (`:52`), `FAILED` is `declare -i` (`:114`), and `run()` increments it *before*
+    returning (`:123-137`), which `:369-376` turns into `exit 1`. (b) It said
+    "nothing calls that script" — **refuted by the umbrella.** The nuances matter
+    more than the refutation: the umbrella **pins this repo at `0ffa153c`
+    (2026-06-15)**, so *no* umbrella run is evidence about current `main`; and it
+    reaches `tests/unit/` two ways — `release.yml:32` (this harness, `v*` tags) and
+    `pr-checks.yml:36` (`unittest discover tests/unit -v` directly, on **every
+    umbrella PR**). Neither guards *this* repo's PR path, which is the real gap.
+    **Before writing "nothing runs X", check the umbrella — then check what SHA it
+    pins.** *(`pr-checks.yml:28` also mentions this script in a comment, at the
+    wrong path — `framework/scripts/` rather than `framework/tests/scripts/`.)*
 - **Local `pre-commit` on changed files ≠ CI's `--all-files`.** A rebase conflict
   resolution once dropped a blank line before a CHANGELOG heading; local hooks never
   re-linted the seam and CI failed on MD022. **Run `pre-commit run --all-files` after
@@ -844,6 +856,13 @@ fresh to have settled, and never repeats one that is already here.
   backtick any path containing underscores. **Seven** older plan files still carry the
   `**init**.py` corruption from before this was documented (re-measure with
   `grep -rl '\*\*init\*\*\.py' plans/`; the figure was recorded as eight and was wrong).
+  Two further facts, and **they are two different rules** — disabling one does not stop
+  the other. The corruption makes the citation gate fail with the **misleading**
+  `path '.py' does not exist`; the workaround (#408) is
+  `<!-- markdownlint-disable MD050 -->` scoped around the ledger — **MD050** is
+  strong-style, the `__x__` case. Separately **MD049** (emphasis-style) normalizes
+  `_x_` → `*x*` across a **whole** changelog file you touch, not just the lines you
+  edited, and MD050 does not cover it.
 - **`sync-version-refs` reporting "files were modified" is usually a knock-on**, not
   a second defect — it re-stages whatever an earlier autofix touched. Verify by
   running it alone against a clean HEAD.
@@ -984,3 +1003,27 @@ at the published artifact — never by a test asserting on the call sequence.
   surface** (**D-0071 §2**). #373 asked to SHA-pin an action; adopting canon's caller
   closed it and removed the class of defect, where editing the `uses:` lines would
   have fixed the symptom and left the workflow to drift at the next release.
+- **A registration rule and a resolution rule live in different tables, and you find
+  the reassuring one first.** "Installing it shadows nothing" ≠ "a bare name resolves
+  to it". Ask what resolves the name *at call time*. No test and no green CI catches a
+  wrong reassurance — the plugin agent case (`PREPROD-L7` / #417) is the worked example:
+  agents register under a scoped identifier, so installation overwrites nothing, but
+  every dispatch the plugin ships is *bare*, and a bare name resolves by scope
+  precedence where a plugin ranks lowest of five.
+- **Your own test can enshrine the defect you just introduced.** Written beside its
+  fix, a test inherits the fix's misconception, and mutation testing is blind to it
+  because the mutant and the test agree. When a fix has a *direction*, state it as an
+  invariant in code, not only as an assertion about one case.
+- **A surviving mutant usually indicts the test, not the fix.** Assert the
+  *classification*, not the downstream outcome, whenever the outcome has more than one
+  possible cause — otherwise the test passes for the wrong reason and the mutant lives.
+- **A fix can silently disarm an existing regression test, and the suite stays green
+  because nothing happened.** When a change alters an exit code, a return value or an
+  error type, **grep for tests that arrange the OLD behaviour** — they now pass
+  vacuously. (Sibling of the gate-greps-a-literal lesson in **D-0074 §1**: a check
+  named for an invariant stops measuring it the moment the implementation is renamed.)
+- **A "documentation-only" closure needs a named owner for the mechanism, or it is not
+  a closure** (**D-0074 §3**). `PREPROD-L7` allowed either a rename or documenting the
+  collision; documentation shipped, and that was defensible *only* because the live
+  half went to `PREPROD-L7-BARE-DISPATCH` (#417). Without the successor entry it would
+  have been closing a partial finding.
