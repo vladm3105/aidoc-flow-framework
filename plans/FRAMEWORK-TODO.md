@@ -178,18 +178,6 @@
   easiest path, not the only one. A real fix pairs it with the `Bash` question.
 - *Stage:* unscheduled.
 
-### `[docs]` `PREPROD-PLAN-TESTPATH` — the PR 4 plan's file table names a path that does not exist
-
-- *Context:* `plans/PLUGIN-PREPROD-001-PLAN.md:378` names
-  `tests/conformance/test_agent_frontmatter.py`; it shipped at
-  `tests/conformance/platforms/test_agent_frontmatter.py`, beside the 18 other
-  plugin-platform checks. The `platforms/` placement is correct — the adjacent
-  `:325` row (`test_plugin_hook_safety.py`, PR 1) is the one that is arguably
-  misplaced. Not fixed in PR 4 because editing a `plans/*-PLAN.md` makes it a
-  governance PR under the ≤3-doc-surface rule.
-- *Fix shape:* amend `:378` during PR 5, which closes the plan out anyway.
-- *Stage:* PR 5.
-
 ### `[plugin]` `SAGA-ALL-BRANCHES-FAILED-CLOSES` — a review where every lens failed still closes at exit 0
 
 - *Context:* found 2026-08-01 by review during PLUGIN-PREPROD-001 PR 3, and
@@ -241,30 +229,31 @@
   **Not done in PR 3:** the plan forbids amending that gate, and PR 5 cuts the
   release off it.
 
-### `[plugin]` `PLUGIN-PREPROD-001` — the pre-prod review queue — ⏳ OPEN ON RESIDUAL (22 of 23 findings closed 2026-08-02 across PRs #410/#413/#415/#418/#422 + PR 5; **M6 — the `claude-code-plugin/v0.25.0` tag cut and the public GitHub Release — is founder-gated and still open**)
+### `[harness]` `TAGGING-GATE-SUBSTRING-ONLY` — the tagging-doc gate accepts the version anywhere in the file, including the prose it is not meant to guard
 
-- *Context:* a five-lens pre-production review of `platforms/claude-code-plugin`
-  on 2026-07-31 returned **BLOCKER**. Every blocker and HIGH was reproduced
-  against source before it survived into the verdict. The packaging is sound;
-  what blocks the deploy is runtime behavior on a stranger's machine. Plan:
-  `plans/PLUGIN-PREPROD-001-PLAN.md` (merged, PR
-  [#408](https://github.com/vladm3105/aidoc-flow-framework/pull/408)).
-- *Why one entry per finding rather than one for the plan:* the plan ships as
-  **five sequential PRs**, so a stall between stages must leave a readable queue.
-  The 23 entries below are the queue; the plan is the design. PR 5 closes them.
-- *Citations are to `d789651b`, the pre-PR-1 tree.* Several of the lines
-  cited below are moved or deleted by PR 1 itself, which is what closing a
-  finding means; each such citation says so.
-- *Tag note:* `[plugin]` is new here — the documented tag list predates a
-  platform with its own runtime surface. Plugin runtime and packaging items carry
-  it; linter, harness and doc items keep their existing tags.
-
-### `[docs]` `PREPROD-M6` — the latest GitHub Release is six versions stale
-
-- *Context:* what a visitor to the repo sees first. Not a code defect.
-- *Fix shape:* cut `claude-code-plugin/v0.25.0` and publish a Release.
-- *Stage:* PR 5. **Founder-gated** — a tag cut and a public Release are
-  outward-facing acts outside the AI auto-merge default.
+- *Context:* found 2026-08-02 while reconciling `docs/TAGGING.md` after the M6
+  cut. `tests/conformance/platforms/test_plugin_release_metadata.py:136-137`
+  asserts only that `claude-code-plugin/v<VERSION>` appears *somewhere* in
+  `docs/TAGGING.md`. The § "Release inventory" preamble also names a plugin tag
+  (the cut high-water mark), so once that paragraph and the inventory row agree,
+  either one alone satisfies the gate — a future bump could update the prose,
+  omit the release row, and stay green. Same class as `PREPROD-B2-GATE-SCOPE`:
+  the gate is named for an invariant it does not measure.
+- *Fix shape:* assert the **anchored occurrence**, not a bare substring. ⚠️ **Three
+  gates share the weakness; they do NOT share the remedy** — the guarded token sits
+  in a different shape in each file, so this is three fixes, not one regex.
+  `:136-137` → `docs/TAGGING.md:125`, a table row, match
+  ``| `claude-code-plugin/v<VERSION>` |``. `:116-119` → `README.md:293`, where the
+  tag is the **third cell** of the Platforms row. `:129-130` → `docs/PARITY.md:9`,
+  a **blockquote** — that file has no release-inventory table at all, despite the
+  gate being named `..._matches_plugin_release_inventory`. A fourth,
+  `test_claude_md_current_state_matches_plugin_version` (`:121-126`), is the same
+  defect with a different token: its comment says it guards CLAUDE.md's "Current
+  state" line, but it asserts the string appears anywhere in the file. Fix the
+  class, not the instance — scoping to the one that was noticed is the failure
+  `PREPROD-B2-GATE-SCOPE` is about.
+- *Stage:* unscheduled. Not an exposure — the row is present and correct today;
+  this is gate quality.
 
 ### `[harness]` `RELEASE-TIER-STALE-SUBMODULE-PIN` — the release tier runs on every umbrella PR, against a framework checkout seven weeks stale
 
@@ -1136,6 +1125,24 @@
 
 ## Closed
 
+### `[plugin]` `PLUGIN-PREPROD-001` — the pre-prod review queue — ✅ CLOSED (2026-08-02, PRs #410/#413/#415/#418/#422 + PR 5's stages #424/#425/#426/#427 — all **23 of 23** findings closed; M6, the `claude-code-plugin/v0.25.0` tag cut and the public GitHub Release, landed on explicit founder approval, tag → `e6c6539d`)
+
+- *Context:* a five-lens pre-production review of `platforms/claude-code-plugin`
+  on 2026-07-31 returned **BLOCKER**. Every blocker and HIGH was reproduced
+  against source before it survived into the verdict. The packaging is sound;
+  what blocks the deploy is runtime behavior on a stranger's machine. Plan:
+  `plans/PLUGIN-PREPROD-001-PLAN.md` (merged, PR
+  [#408](https://github.com/vladm3105/aidoc-flow-framework/pull/408)).
+- *Why one entry per finding rather than one for the plan:* the plan ships as
+  **five sequential PRs**, so a stall between stages must leave a readable queue.
+  The 23 entries below are the queue; the plan is the design. PR 5 closes them.
+- *Citations are to `d789651b`, the pre-PR-1 tree.* Several of the lines
+  cited below are moved or deleted by PR 1 itself, which is what closing a
+  finding means; each such citation says so.
+- *Tag note:* `[plugin]` is new here — the documented tag list predates a
+  platform with its own runtime surface. Plugin runtime and packaging items carry
+  it; linter, harness and doc items keep their existing tags.
+
 ### `[plugin]` `PREPROD-B1` — the review hook executes code from the user's working directory — ✅ CLOSED (2026-08-02, #410, `3bbadbb1`)
 
 - *Context:* `hooks/sdd-doc-review.sh:43` (pre-PR-1) invokes the linter with `python3 -m`,
@@ -1255,6 +1262,20 @@
   `int(... or 0)` before any score comparison.
 - *Stage:* PR 3.
 
+### `[docs]` `PREPROD-M6` — the latest GitHub Release is stale — ✅ CLOSED (2026-08-02, tag `claude-code-plugin/v0.25.0` → `e6c6539d`, Release published as a pre-release)
+
+- *Context:* what a visitor to the repo sees first. Not a code defect. The
+  heading's original "six versions stale" was already stale when written —
+  PR 5c's own bump made it seven — and the tag cut made the count moot.
+- *Fix shape:* cut `claude-code-plugin/v0.25.0` and publish a Release.
+- *Stage:* PR 5, then the founder-gated cut. **Was founder-gated** — a tag cut
+  and a public Release are outward-facing acts outside the AI auto-merge
+  default; the founder authorized both on 2026-08-02. Gate evidence at the
+  tagged commit: conformance `361 passed, 769 subtests`, and `VERSION` /
+  `.claude-plugin/plugin.json` / the repo-root `.claude-plugin/marketplace.json`
+  all reading `0.25.0` against `FRAMEWORK_SPEC_VERSION` `0.40.0` =
+  `framework/VERSION`.
+
 ### `[docs]` `PREPROD-M7` — `SECURITY.md` names a stale spec version and scanners CI does not run — ✅ CLOSED (2026-08-02, #422, `4cbaaad5`)
 
 - *Context:* `SECURITY.md`'s supported-versions table pinned a **stale spec
@@ -1341,6 +1362,22 @@
 - *Fix shape:* closed by construction — a file-size cap and a byte budget on the
   findings block remove the mechanism.
 - *Stage:* PR 1.
+
+### `[docs]` `PREPROD-PLAN-TESTPATH` — the PR 4 plan's file table names a path that does not exist — ✅ CLOSED (2026-08-02, #427, `e6c6539d`)
+
+- *Context:* the plan's § "File structure" row named
+  `tests/conformance/test_agent_frontmatter.py`; it shipped at
+  `tests/conformance/platforms/test_agent_frontmatter.py`, beside the 18 other
+  plugin-platform checks. The `platforms/` placement is correct — the adjacent
+  `test_plugin_hook_safety.py` row (PR 1) is the one that is arguably
+  misplaced. Not fixed in PR 4 because editing a `plans/*-PLAN.md` makes it a
+  governance PR under the ≤3-doc-surface rule.
+- *Fix shape:* amend the row during PR 5, which closes the plan out anyway.
+- *Resolution:* 5e corrected it. The row now reads the `platforms/` path at
+  `plans/PLUGIN-PREPROD-001-PLAN.md:389`, and `:343-345` carries the annotated
+  supersession. ⚠️ The original entry cited `:378`, which the plan's own later
+  edits had already shifted off the row — do not carry that number forward.
+- *Stage:* PR 5.
 
 ### `[harness]` `RELEASE-GATE-TBD-FALSE-POSITIVE` — ✅ CLOSED (2026-08-02, PR #420) — the release changelog gate was red on `main` and would have blocked the PLUGIN-PREPROD release cut
 
