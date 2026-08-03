@@ -56,6 +56,32 @@
 
 ## Open
 
+### `[plan-review]` `FRWK-REVIEW-003-UNSURFACED` — a reviewed 626-line spec-remediation plan is parked on a branch and tracked nowhere
+
+- *Context:* found 2026-08-02 while wrapping the PLUGIN-PREPROD-001 reconciliation.
+  Branch **`wip/frwk-review-003-plan`** (pushed, so not at risk; last commit
+  2026-07-25 `1223a450`) carries 902 uncommitted-to-`main` lines: a 626-line
+  `plans/FRWK-REVIEW-003-PLAN.md` remediating the 2026-07-19 framework-spec review
+  — **`Status: PLANNED`, three review passes already logged, self-marked NOT
+  PR-ready** — plus the 249-line source review it derives from
+  (`plans/reviews/FRAMEWORK-SPEC-REVIEW-2026-07-19.md`), preserved out of a
+  gitignored `tmp/`. ⚠️ **It appears in no queue.** `FRWK-REVIEW-003` is named on
+  `main` only in `CHANGELOG.md` and `plans/SEED-ABSORPTION-001-PLAN.md`, neither of
+  which is a backlog; `FRAMEWORK-TODO.md`, `HANDOFF.md` and `HERMES-BACKLOG.md` had
+  no entry before this one. A fresh session entering through the handoff cannot
+  find it.
+- *Why it matters beyond the one plan:* the review-preservation commit exists
+  because the artifact was sitting in gitignored `tmp/` — the exact "nothing in
+  `tmp/` survives" failure the governance table warns about. Moving it to a branch
+  saved the bytes but not the *discoverability*, which is what a queue is for.
+- *Fix shape:* decide the plan's fate, then make the queue say so. Either (a) land
+  the two documents on `main` as `Draft` and give this entry a `→` pointer so the
+  plan is discoverable without the branch, or (b) mark it `ABANDONED` with a reason
+  per the plan-status rule and close this entry. **Do not simply resume it** — it
+  predates the `0.40.0` spec and PLUGIN-PREPROD-001, so re-validate its findings
+  against current `framework/**` before trusting any of the nine tasks.
+- *Stage:* unscheduled. Blocks nothing; the cost is silent loss, not breakage.
+
 ### `[build]` `SYNC-WEBSITE-SILENT-NOOP` — the version sync writes a sibling repo, misses, and says nothing → #423
 
 - *Context:* found 2026-08-02 while measuring the plugin `VERSION` fanout for

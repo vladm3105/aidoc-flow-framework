@@ -19,8 +19,8 @@ default `--limit 30` (this repo is past #430).
 **PLUGIN-PREPROD-001 is COMPLETE and reconciled. Nothing about it is left.** All 23
 findings closed, the plan is `Completed`, and the seven surfaces the tag cut falsified
 were repaired across three governance PRs: **#429** (plan + `FRAMEWORK-TODO` +
-`docs/TAGGING.md`), **#430** (both changelogs), and **the PR carrying this file**
-(`ROADMAP.md` + `DECISIONS.md` rider + this handoff).
+`docs/TAGGING.md`), **#430** (both changelogs), **#431** (`ROADMAP.md` +
+`DECISIONS.md` rider + this handoff) — all three merged.
 
 The release itself: annotated tag `claude-code-plugin/v0.25.0` → `e6c6539d`, on the
 remote; GitHub Release published as a **pre-release** (matching `v0.18.0`'s tier — the
@@ -80,7 +80,7 @@ paragraph. A failure there is a new bug, not a reopened plan.
 
 ## Next tasks — prioritized
 
-The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`, 46 entries) and
+The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`, 47 entries) and
 `plans/HERMES-BACKLOG.md`. This is only the ordering a fresh session should use.
 **Nothing below is blocked, and nothing is mid-flight.**
 
@@ -134,8 +134,15 @@ The full queue is `plans/FRAMEWORK-TODO.md` (`## Open`, 46 entries) and
    green. Resume requires `aidoc-flow-ci` #352 **AND** #353 — #353 alone is 15 of the 23
    failures. Census in D-0072. ⚠️ **Do not re-file the `high_risk_paths` / `allowed_paths`
    mismatch** — deliberate and documented; #396 recorded it as a bug and was wrong.
-10. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`.
-11. **Everything else** is in `FRAMEWORK-TODO.md` by tag. An entry under `## Open` with no
+10. **`FRWK-REVIEW-003-UNSURFACED` — a reviewed plan nobody can find.** Branch
+   `wip/frwk-review-003-plan` (pushed) holds a 626-line spec-remediation plan,
+   `Status: PLANNED` with three review passes logged and self-marked NOT PR-ready,
+   plus the 249-line 2026-07-19 spec review it derives from. It was in **no queue**
+   until 2026-08-02. Decide its fate — land on `main` as `Draft`, or mark
+   `ABANDONED` with a reason — and **re-validate before resuming**: it predates
+   spec `0.40.0` and PLUGIN-PREPROD-001.
+11. **Hermes parity — the residual arc.** `plans/HERMES-BACKLOG.md`.
+12. **Everything else** is in `FRAMEWORK-TODO.md` by tag. An entry under `## Open` with no
    `⏳ OPEN ON RESIDUAL` marker is genuinely open work (#403). Nothing there is blocking.
 
 ## Traps too fresh to have settled — not yet in `CLAUDE.md`
