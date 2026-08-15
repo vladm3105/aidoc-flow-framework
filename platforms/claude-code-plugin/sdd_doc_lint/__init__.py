@@ -1782,6 +1782,8 @@ def _check_trace_resolution(
     layers: dict,
     doc_re: re.Pattern,
     elem_re: re.Pattern,
+    *,
+    whole_corpus: bool = True,
 ) -> list[Finding]:
     """TRACE-RES-001 — every emitted UPSTREAM ``@<layer>: <ID>`` tag in
     the corpus resolves on disk (the target document exists AND the cited
@@ -1793,6 +1795,15 @@ def _check_trace_resolution(
     auditor lens.
 
     Skipped:
+      * Cross-document citations on single-file (``on_author``) runs —
+        ``whole_corpus=False``. The corpus of a single-file run is the
+        edited document alone, so every upstream tag it emits is
+        unresolvable by construction and a wall of TRACE-RES-001 ERRORs
+        about correctly-cited documents would drown the real findings
+        (LINT-TRACE-RES-SINGLE-FILE). Only citations resolvable within
+        the linted document itself (self doc-tags, elements hosted by
+        this document) are still checked. Directory runs — ``pre_merge``,
+        pre-commit, CI — pass ``whole_corpus=True`` and are unaffected.
       * Index documents (frontmatter ``artifact_type: <X>-INDEX``) — they
         intentionally carry no trace tags.
       * Placeholder / malformed tag values — covered by PH01 / ID01.
@@ -1847,6 +1858,11 @@ def _check_trace_resolution(
             if m_pfx:
                 artifact_code = m_pfx.group(1)
         my_layer_n = layer_number.get(artifact_code, 0)
+        # This artifact's own doc_id — the one citation target that IS
+        # present in a single-file (on_author) corpus.
+        own_doc_id = ""
+        if fm:
+            own_doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
 
         for i, line in enumerate(text.splitlines(), 1):
             for m in _TAG.finditer(line):
@@ -1859,6 +1875,21 @@ def _check_trace_resolution(
                 value = m.group(2)
                 if not (doc_re.match(value) or elem_re.match(value)):
                     continue
+                # LINT-TRACE-RES-SINGLE-FILE: on a single-file run, only
+                # citations of this document itself can resolve — skip
+                # everything cross-document (it is unresolvable by
+                # construction, not evidence of a defect).
+                if not whole_corpus:
+                    if doc_re.match(value):
+                        if value != own_doc_id:
+                            continue
+                    else:
+                        head = value.split(".", 2)
+                        host = (
+                            f"{head[0]}-{head[1]}" if len(head) >= 2 and head[1].isdigit() else ""
+                        )
+                        if host != own_doc_id:
+                            continue
                 if doc_re.match(value):
                     if value not in doc_index:
                         findings.append(
@@ -1895,7 +1926,9 @@ def _check_trace_resolution(
                             )
                         )
         # BDD YAML dual-mode: resolve scenario `ears` tokens (no @-tags to scan).
-        if artifact_code == "BDD":
+        # Skipped on single-file runs — scenario `ears` tokens are upstream
+        # EARS citations, cross-document by construction (see gate above).
+        if artifact_code == "BDD" and whole_corpus:
             scenarios, _ = _bdd_yaml_scenarios(text)
             if scenarios is not None:
                 for tok in _bdd_ears_tokens(scenarios):
@@ -2692,7 +2725,12 @@ def lint_path(
     findings.extend(_check_seed_disposition(corpus))
     findings.extend(_check_cascade(corpus))
     findings.extend(_check_staleness(corpus, _framework_version(registry or find_registry())))
-    findings.extend(_check_trace_resolution(corpus, layers, doc_re, elem_re))
+    # LINT-TRACE-RES-SINGLE-FILE: cross-document resolution is evidence only
+    # when the invocation covered a corpus — a single-file (on_author) run
+    # cannot resolve upstream tags by construction.
+    findings.extend(
+        _check_trace_resolution(corpus, layers, doc_re, elem_re, whole_corpus=target.is_dir())
+    )
     # REFGRAN01 is a form rule (GD-03), not the corpus coverage gate — it runs
     # unconditionally (not behind --skip-coverage-gate), with run-mode severity.
     findings.extend(_check_ref_granularity(corpus, mode))
