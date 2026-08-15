@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — `saga.schema.json` rejected registry-valid 3+ digit document IDs (2026-08-15)
+
+Closes [#444](https://github.com/vladm3105/aidoc-flow-framework/issues/444).
+The saga journal schema validated `artifact_id` with `^[A-Z]+-[0-9]{2}$`
+(exactly two digits) while `LAYER_REGISTRY.yaml` `id_patterns.document` and
+`ID_NAMING_STANDARDS.md` both say **two or more** (`{2,}`) — so a project past
+99 documents of a type (or using an `IPLAN-001`-style convention) wrote journal
+entries the machine contract rejected, though the registry, the linter, and the
+review-team docs all accepted them. The pattern now matches the registry, and a
+new lockstep conformance test
+(`test_saga_lifecycle_parity.py::SagaIdPatternLockstep`) asserts the schema and
+registry `document` patterns never diverge again — the schema's own description
+demanded the lockstep but nothing enforced it. The plugin's vendored governance
+copy is synced.
+
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the
