@@ -82,7 +82,7 @@
   against current `framework/**` before trusting any of the nine tasks.
 - *Stage:* unscheduled. Blocks nothing; the cost is silent loss, not breakage.
 
-### `[build]` `MCP-CONFIG-DEAD-PATHS` — tracked root `.mcp.json` configured the sdd-lifecycle server inside the retired `/opt/data/ucx_framework` — ⏳ FIX IN REVIEW ([#437](https://github.com/vladm3105/aidoc-flow-framework/issues/437): both keys moved to the portable placeholder form `platforms/hermes/README.md` §"Install" documents for this file)
+### `[build]` `MCP-CONFIG-DEAD-PATHS` — tracked root `.mcp.json` configured the sdd-lifecycle server inside the retired `/opt/data/ucx_framework` — ⏳ FIX IN REVIEW ([#437](https://github.com/vladm3105/aidoc-flow-framework/issues/437), PR [#459](https://github.com/vladm3105/aidoc-flow-framework/pull/459): both keys moved to the portable placeholder form `platforms/hermes/README.md` §"Install" documents for this file)
 
 ### `[build]` `SYNC-WEBSITE-SILENT-NOOP` — the version sync writes a sibling repo, misses, and says nothing → #423
 
