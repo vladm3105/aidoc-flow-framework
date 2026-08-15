@@ -12,6 +12,22 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the PRD auditor's mandatory-section list was 9 of 15 positions wrong (2026-08-15)
+
+Closes [#446](https://github.com/vladm3105/aidoc-flow-framework/issues/446).
+`playbooks/02_PRD/auditor.md` C3 pinned "mandatory sections" against a PRD
+template that no longer exists — §1 Overview / §4 Non-Goals / §6 Personas /
+§12 NFRs / §14 Glossary / §15 Document Control and more, 9 of 15 positions
+wrong versus `PRD-TEMPLATE.yaml`, and the template has **no NFR section** at
+all. An auditor following it flagged valid PRDs and never checked the real §2
+Executive Summary / §6 Goals & Objectives / §10 Customer-Facing Content /
+§14 Traceability. C3 now lists the template's actual §1–§15 (naming §7b as
+optional), C4's glossary pointer moves §14→§15, C5's Document Control pointer
+§15→§1, the altitude-note's section list matches real titles, and
+`chaos_engineer.md`'s two §12 "non-functional anchor" wordings point at
+§12 Constraints & Assumptions (the section that exists). The plugin's vendored
+playbook mirror is synced.
+
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the

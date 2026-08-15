@@ -36,9 +36,10 @@ Every finding MUST cite which check fired. Findings without a check citation
 are out-of-scope and discarded by the synthesizer.
 
 **C1 — §13 risk-row symmetry (CE-1 calibration).** Every risk row in §13
-must have three anchors: (a) a §10 user-facing surface that exposes this risk
+must have three anchors: (a) a §10 customer-facing surface that exposes this risk
 to users, (b) a §11 AC gate that verifies the mitigation is in place, and (c)
-a §12 non-functional anchor (NFR, SLO, or ADR deferral). A risk row that
+a §12 constraints & assumptions anchor (NFR, SLO, constraint, or ADR
+deferral). A risk row that
 names a mitigation but lacks any of the three anchors is structurally
 incomplete — the PRD-01 pool-exhaustion risk had §13 text and §10 surface but
 no §11 gate, which let the risk pass review undetected. Missing → P2 finding
