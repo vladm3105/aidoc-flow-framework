@@ -1,9 +1,9 @@
 {
   "mcpServers": {
     "sdd-lifecycle": {
-      "command": "/opt/data/ucx_framework/.venv/bin/python",
+      "command": "/path/to/python",
       "args": ["-m", "mcp_server.server"],
-      "cwd": "/opt/data/ucx_framework/platforms/hermes/src"
+      "cwd": "/path/to/aidoc-flow-framework/platforms/hermes/src"
     }
   }
 }

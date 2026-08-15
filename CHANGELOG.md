@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the tracked `.mcp.json` pointed at the retired ucx_framework checkout (2026-08-15)
+
+Closes [#437](https://github.com/vladm3105/aidoc-flow-framework/issues/437).
+The repo-root `.mcp.json` — tracked, so shipped to every clone — configured the
+`sdd-lifecycle` MCP server entirely inside `/opt/data/ucx_framework`, the
+retired pre-migration predecessor (`cwd` never resolved post-migration; the
+checkout itself is now deleted, so `command` dangles too). Both keys now carry
+the portable placeholder form that `platforms/hermes/README.md` §"Install"
+already documents for this exact file ("/path/to/python" +
+"/path/to/aidoc-flow-framework/platforms/hermes/src"), restoring the file's
+documented role as a reference config instead of a machine-specific dead one.
+A previous changelog-recorded sweep rewrote stale `/opt/data/ucx_framework/.venv`
+MCP paths to that placeholder but missed this file — the class was declared
+fixed while the live instance survived.
+
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the
