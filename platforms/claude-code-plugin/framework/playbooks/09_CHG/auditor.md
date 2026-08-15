@@ -21,7 +21,10 @@ survive contact with the next CHG that touches the same artifacts.
 Back-references are the central concept. Every artifact the CHG
 modified must carry a `@chg: CHG-NN` tag pointing back to this CHG,
 so that a future reader looking at a BRD / PRD / EARS / etc. update
-can trace it to the governing change record. Without that
+can trace it to the governing change record. The tag's syntax,
+carriers, and placement are defined in
+`governance/TAG_SYNTAX.md` §"Provenance tag" — a document-level
+provenance back-reference, not a trace citation. Without that
 back-reference, the modified artifact looks like an unsourced edit,
 indistinguishable from a hand-edit. The auditor lens also verifies
 that the change-level classification (C1 / C2 / C3 / Emergency)
@@ -53,9 +56,10 @@ Every finding MUST cite which check fired. Findings without a check
 citation are out-of-scope and discarded by the synthesizer.
 
 **C1 — Every modified artifact carries `@chg: CHG-NN` back-reference.**
-Each artifact the CHG modifies (named in `impact_assessment` with a
-propagated diff) must include a `@chg: CHG-NN` back-reference
-pointing to this CHG, so future readers can trace the edit. A
+Each artifact the CHG modifies (named in `implementation.artifacts_modified[]`
+with `change_type: modified`) must include a `@chg: CHG-NN` back-reference
+pointing to this CHG, in the form and placement `governance/TAG_SYNTAX.md`
+§"Provenance tag" defines. A
 modified artifact without the back-reference is indistinguishable
 from an unsourced hand-edit. Missing on any modified artifact → P1
 citing C1.

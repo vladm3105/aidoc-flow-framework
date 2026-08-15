@@ -12,6 +12,25 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the CHG auditor's P1 `@chg: CHG-NN` requirement cited a tag defined nowhere (2026-08-15)
+
+Closes [#448](https://github.com/vladm3105/aidoc-flow-framework/issues/448).
+`playbooks/09_CHG/auditor.md` made the `@chg: CHG-NN` back-reference a **P1**
+requirement (check C1), but the form appeared in no other spec surface — not
+`TAG_SYNTAX.md`, not the registry, not the CHG template — so an auditor demanded
+a citation whose syntax, carriers, and placement no document specified, and a
+corrected artifact could not know the required shape. `TAG_SYNTAX.md` now
+defines it in a new §"Provenance tag": document-level form matching the CHG
+record's `chg_id`, carried by every artifact in the CHG's
+`implementation.artifacts_modified[]` with `change_type: modified`, placed in
+the artifact's traceability section (or Document Control where the template has
+none), pipe-delimited cardinality unchanged — and explicitly **not** a trace
+citation (CHG is a governance overlay in no layer's `required_tags`, so the
+linter's `_TAG` correctly ignores it). The auditor playbook's two references now
+cite the definition, and C1 names the real template field
+(`artifacts_modified[]`, not a nonexistent `impact_assessment` propagated-diff
+list). The plugin's vendored framework mirror is synced.
+
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the
