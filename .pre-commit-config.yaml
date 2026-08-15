@@ -122,6 +122,13 @@ repos:
         # Only run when one of the authoritative VERSION files changes — this
         # keeps the hook silent on commits that don't bump a version.
         files: '^(platforms/[^/]+/VERSION|framework/VERSION)$'
+        # verbose so the #405 count-guard WARN block reaches the contributor.
+        # The guard's whole remedy is "skip the substitution and warn a human to
+        # reword the historical mention" — but the script always exits 0, and
+        # pre-commit prints a PASSING hook's output only under verbose. Without
+        # this, the one run where the skip was the only action is silent, which
+        # is the same silence #405 was filed about, just relocated.
+        verbose: true
 
       # Warning hook: when a commit changes code/spec/skills but does NOT
       # touch any of the documents-of-record (CHANGELOG, ROADMAP, README,

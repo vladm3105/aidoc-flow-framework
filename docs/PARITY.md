@@ -40,7 +40,7 @@ contract.
 vendored into the bundle, now invoked by **all 8 layer autopilots**
 (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}-autopilot`) plus the CHG family
 as thin entry points — completed by SAGA-PARITY-001 **Phase 4**
-(`claude-code-plugin/v0.21.0`, 2026-06-22). The driver's `can_transition`
+(the `0.21.0` plugin cycle, 2026-06-22). The driver's `can_transition`
 raises on invalid transitions and owns the saga.json journal directly.
 (Background: plugin v0.6.0's cooperative-enforcement attempt empirically
 failed in the 2026-06-05 live BRD verification — invalid transitions,

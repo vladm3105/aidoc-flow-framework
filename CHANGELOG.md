@@ -12,6 +12,69 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the version-sync fanout can no longer silently rewrite historical "shipped in vX" claims (2026-08-15)
+
+Closes [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405)
+(`SYNC-HISTORICAL-REF-CORRUPTION`). The `hermes/v*` / `claude-code-plugin/v*`
+fanout in `sync-version-refs.sh` did an unanchored global replace, so a
+historical mention written in the swept literal form was rewritten one version
+forward at every bump — a "shipped in `hermes/v0.11.0`" claim in
+`docs/PARITY.md` was corrupted on **three consecutive releases**, silently, by
+the pre-commit autofix, landing attributed to the release author. The script's
+own HAZARD comment documented the class but the fanout block carried neither
+guard nor warning.
+
+Fix: a `replace_in_file_counted` helper (count-guarded substitution) now backs
+**eleven** call sites — the six `X/vN.N.N` tag calls and, after review, the
+five `framework spec \`X.Y.Z\`` calls as well. An occurrence count above the
+expected count **skips the substitution and warns**, so a historical claim
+survives for a human to reword instead of being silently falsified.
+
+Extending it to the framework-spec fanout is the substantive change here.
+That block is not a hypothetical: its own comment records that it already
+corrupted the D-0031 provenance lines in `docs/PARITY.md`, `0.13.0 -> 0.23.0`.
+Closing #405 on the tag literals alone would have left the one fanout with a
+*realized* instance of the defect unguarded. Its expected counts are 1 for
+`CLAUDE.md`, `README.md` and `docs/PARITY.md`, and **2** for each platform
+README — a prose conformance sentence plus a `| Conforms to |` table row,
+verified by inspection rather than assumed uniform.
+
+Three defects in the guard itself, found by review and fixed here:
+
+- The count came from `grep -oF` (occurrences) while the diagnostic listed
+  lines via `grep -nF | tail -n +N`. The two do not index each other, so two
+  occurrences on one line printed an empty "extra occurrence(s)" list. Worse,
+  the positional listing assumed the legitimate rows come *first* — in
+  `docs/PARITY.md` the historical mention sat at `:43` and the current-state
+  row later, so it would have named the **current-state row** as the thing to
+  reword, silently disabling that file's sync. It now prints every matching
+  line and says one of them is historical.
+- The count was fixed-string but the substitution was `sed` BRE, where `.` is
+  a wildcard — so sed could rewrite more than was counted, which is the exact
+  class the guard exists to stop. The pattern is now escaped.
+- `.pre-commit-config.yaml` did not set `verbose: true` on this hook, and the
+  script always exits 0. pre-commit prints a passing hook's output only under
+  verbose, so in the one run where the skip was the *only* action the warning
+  reached nobody — the same silence #405 was filed about, relocated. Set.
+
+The magic counts are no longer maintained by comment alone:
+`tests/conformance/test_sync_version_refs_counts.py` parses the call sites out
+of the script and asserts each expected count against the tree, with a vacuity
+guard so a reformat cannot make it pass over an empty list. Mutation-verified:
+an inflated expectation and an added current-state row each fail it.
+
+The latent instance is also closed — `docs/PARITY.md:43`'s
+`(claude-code-plugin/v0.21.0, 2026-06-22)` is reworded to "the `0.21.0` plugin
+cycle", which is what makes the plugin counts exactly one.
+
+Verified in a throwaway worktree, not asserted: a clean `0.40.0 -> 0.41.0` bump
+moves all five framework-spec surfaces with the expected 1/1/1/2/2 counts, and
+an injected historical mention fires the guard, survives the bump, and is
+listed alongside the current-state row it must not be confused with. Line
+numbers are deliberately absent from the comments this entry cites — the #405
+fix itself shifted them, invalidating the `:141` and `:209` citations an
+earlier draft of this entry carried.
+
 ### Fixed — the tracked `.mcp.json` pointed at the retired ucx_framework checkout (2026-08-15)
 
 Closes [#437](https://github.com/vladm3105/aidoc-flow-framework/issues/437).
