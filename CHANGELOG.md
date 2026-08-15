@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — AI_ASSISTANT_RULES generation-order `from` clauses contradicted the registry (2026-08-15)
+
+Closes [#450](https://github.com/vladm3105/aidoc-flow-framework/issues/450).
+The file a consuming project points its assistants at "before authoring"
+taught exactly the wrong upstream citations: ADR "(from BDD + PRD topics)"
+omitted EARS and added out-of-set PRD; SPEC "(from ADR + BDD)" and TDD
+"(from SPEC + BDD)" omitted EARS (and ADR for TDD); IPLAN "(from TDD)" omitted
+SPEC — each contradicting both the same file's own necessary-upstream doctrine
+(line 12) and `LAYER_REGISTRY.yaml` `required_tags`. The four clauses now
+match the registry exactly: ADR (from EARS + BDD), SPEC (from EARS + BDD +
+ADR), TDD (from EARS + BDD + ADR + SPEC), IPLAN (from SPEC + TDD). This is the
+trace-fabrication/omission class the doctrine exists to prevent: an assistant
+following the old text would emit a `@prd` tag on an ADR the linter's TAG01
+rejects, and omit the `@ears` tag it demands.
+
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 
 **PLUGIN-PREPROD-001 PR 5, stage c.** The version cut that carries the
