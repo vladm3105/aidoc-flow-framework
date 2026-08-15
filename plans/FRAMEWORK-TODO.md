@@ -343,7 +343,7 @@
 - *Stage:* not a PLUGIN-PREPROD-001 blocker — the `0.25.0` cut runs the tier by
   hand. Genuinely open work after that.
 
-### `[lint]` `LINT-TRACE-RES-SINGLE-FILE` — linting one file reports every cross-document trace tag as an ERROR → [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
+### `[lint]` `LINT-TRACE-RES-SINGLE-FILE` — linting one file reports every cross-document trace tag as an ERROR — ⏳ FIX IN REVIEW ([#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412), PR [#456](https://github.com/vladm3105/aidoc-flow-framework/pull/456): cross-document arm gated on the invocation shape, `whole_corpus=target.is_dir()`; both vendored copies synced)
 
 - *Context:* found 2026-07-31 by review during PLUGIN-PREPROD-001 PR 2, in the
   plugin's own `verbose` hook path. `_check_trace_resolution`
