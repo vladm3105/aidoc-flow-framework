@@ -13,22 +13,35 @@ Code plugin** (`platforms/claude-code-plugin/`). The spec defines the 8-layer SD
 flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code). Both platforms
 pass the same shared conformance suite (`tests/conformance/`).
 
-## Filing gaps — TODO entry **and** GitHub issue
+## Filing gaps — open a GitHub issue
 
-When you find a defect, inconsistency, or missing capability, it gets **both**:
+When you find a defect, inconsistency, or missing capability, **open a GitHub
+issue on this repo**. That is the whole rule — there is one surface.
 
-1. An entry in `plans/FRAMEWORK-TODO.md` — the triage queue. Inline as
-   discovered: tag + one-line title + *Context* (what surfaced it) + *Fix shape*.
-   The entry IS the capture moment; there is no "later PR".
-2. **A GitHub issue on this repo** when the entry is (a) actionable by someone
-   other than you, (b) reproducible at `file:line` with a concrete fix shape, or
-   (c) user-visible / blocks a consumer. Speculative or purely local items stay
-   TODO-only.
+Capture at discovery still applies, unchanged: open the issue when you find it,
+not in a "later PR". What moved is the *surface*, not the timing.
 
-The issue body carries: reproduction at `file:line`, blast radius, why it was
-hard to diagnose, a suggested fix, and what is **not** broken. One issue per
-defect. Link both ways — the TODO heading ends with `→ #N`, the issue names the
-TODO entry ID — and close both on the same merge SHA.
+The issue body carries: reproduction at `file:line`, blast radius **run** rather
+than assumed, why it was hard to diagnose, a suggested fix, and what is **not**
+broken. One issue per defect. **Move the analysis verbatim — never summarise a
+finding into an issue**, because a re-derived finding silently contracts.
+
+Search before filing (`gh issue list --search … --state all`); comment on an
+**open** match instead of duplicating it; a **closed** match gets a new issue
+cross-linked as a regression, never a reopen. The merge closes the issue — the PR
+body carries `Closes #N`, one keyword per reference (`Closes #A and #B` closes
+only `#A`).
+
+Use `gh issue create --body-file -`, **never `--body -`**: the latter publishes a
+literal `-`, exits 0, and prints a URL, so it looks like it worked. Read the
+artifact back — `gh issue view <N> --json body --jq '.body | length'` — a
+non-zero length is the only proof it published.
+
+> **`plans/FRAMEWORK-TODO.md` is retired.** It is a tombstone carrying the
+> entry → issue mapping for the 42 entries migrated out of it on 2026-08-15.
+> Do not add to it. Its file-queue rule (a TODO entry *plus* an issue, with a
+> three-test bar deciding which gaps got one) is superseded: the file held 41
+> entries no consumer could see, which is what retired it.
 
 If the defect is owned by **another** repo (the CI canon `aidoc-flow-ci`, a
 sibling submodule, an upstream spec), the issue goes **there**, not here. The
@@ -65,7 +78,7 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 | Surface | Path |
 |---|---|
 | Live handoff | `plans/HANDOFF.md` — read it first, every session |
-| TODO / backlog | `plans/FRAMEWORK-TODO.md` |
+| TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
 | Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
 | Plans | `plans/<NAME>-PLAN.md` |
 | Changelog / roadmap | `CHANGELOG.md`, `ROADMAP.md` |
