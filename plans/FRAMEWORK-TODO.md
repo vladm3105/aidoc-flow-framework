@@ -15,8 +15,9 @@
 >   resolve it). ≤ 3 lines per entry.
 > - Tags: `[lint]` / `[harness]` / `[skill]` / `[template]` / `[sync]` /
 >   `[plan-review]` / `[docs]` / `[hermes-parity]` / `[example-corpus]` /
->   `[ci]` / `[hermes]` / `[plugin]`. The last three were added by use before
->   they were declared here; a new tag belongs in this list when it is coined.
+>   `[ci]` / `[hermes]` / `[plugin]` / `[build]`. The last four were added by use
+>   before they were declared here; a new tag belongs in this list when it is
+>   coined.
 > - Once an item is large enough to design, promote to a formal plan
 >   and link from the TODO entry as `→ <NAME>-PLAN.md`. The TODO entry
 >   stays open until the plan ships, then moves to **Closed** with the
@@ -81,6 +82,17 @@
   predates the `0.40.0` spec and PLUGIN-PREPROD-001, so re-validate its findings
   against current `framework/**` before trusting any of the nine tasks.
 - *Stage:* unscheduled. Blocks nothing; the cost is silent loss, not breakage.
+
+### `[build]` `MCP-CONFIG-DEAD-PATHS` — tracked root `.mcp.json` pointed the sdd-lifecycle server at the retired `ucx_framework` → #437
+
+- *Context:* the tracked root `.mcp.json` set both `command` and `cwd` inside
+  `/opt/data/ucx_framework`, the retired pre-migration predecessor. That
+  checkout is deleted from this machine, and `cwd` had never resolved since the
+  migration (the retired repo carried no `platforms/` layout). Claude Code
+  auto-loads this file at project root, so it shipped broken to every clone.
+- *Fix shape:* move both keys to the portable placeholder form
+  `platforms/hermes/README.md` §"Install" already documents for this exact file,
+  keeping that README's "set up as a reference" claim true.
 
 ### `[build]` `SYNC-WEBSITE-SILENT-NOOP` — the version sync writes a sibling repo, misses, and says nothing → #423
 
@@ -407,7 +419,7 @@
   shape, user-visible), but it is one repo's linter and not on the PLUGIN-PREPROD
   critical path.
 
-### `[hermes]` `HERMES-MCP-FLOATING-DEP` — `Hermes pytest` is red on an unpinned SDK floor, and a path filter hid it for days
+### `[hermes]` `HERMES-MCP-FLOATING-DEP` — `Hermes pytest` is red on an unpinned SDK floor, and a path filter hid it for days → #465
 
 - *Context:* surfaced 2026-07-31 on PR #406, which is the first PR to touch
   `platforms/hermes/**` since 2026-07-27 — the workflow is path-filtered, so the
