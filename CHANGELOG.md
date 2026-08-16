@@ -12,6 +12,88 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the plugin dispatched its agents by bare name, so a consumer's same-named agent won (2026-08-16)
+
+Closes [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417)
+(`PREPROD-L7-BARE-DISPATCH`). Plugin agents register under scoped identifiers,
+so installing the plugin cannot overwrite a consumer's agent — but Claude Code
+resolves a **bare** subagent reference by scope precedence, in which a plugin
+ranks lowest of five scopes. Every dispatch the plugin shipped therefore routed
+to whatever same-named agent the consumer defines at a higher-priority scope
+(`code-reviewer` being the likeliest collision). A substituted agent carries its
+own `tools:` and may edit the artifact it is reviewing, so the read-only review
+gates were silently subvertible.
+
+The fix namespaces the **references**, not the definitions: `aidoc-flow:<name>`
+in the `pm-orchestrator` delegation table (and the numbered routing steps that
+restated it in bare Title-Case four lines below), the `review-team` and nine
+`doc-*-audit` lens→agent maps, the nine `doc-*-fixer` tables, `doc-brd`'s
+`subagent_type=` literal, the `README.md` lens→agent table, and the prose mapping
+in `docs/AGENTS.md`. Definition names, file names and roster inventories stay
+bare — they document what a file *defines*, not what a dispatch resolves.
+
+**Five surfaces the first pass missed, each a different shape of the same
+mistake** — and the count moved from three to five because the class was
+enumerated by script rather than listed by hand. (1) The nine `doc-*-fixer` skills dispatch the synthesizer at step 6
+in **prose with no identifier at all** — "Dispatch the synthesizer once" — where
+their `doc-*-audit` counterparts carry a `subagent_type=`. That is the worst
+case, not the mildest: there is no bare name for a guard to find, so the file
+reads as clean while a model still resolves the name by scope. (2) The
+`README.md` lens→agent table has **three** columns with the agent in the middle,
+and the guard's row pattern anchored to the *last* cell — measured by mutation:
+reverting a cell there to the bare form passed the guard. (3) `docs/AGENTS.md`
+states three lens→agent mappings **mid-paragraph**, and the arrow pattern matched
+only list items. (4) `skills/review-team/SKILL.md`'s canonical crew table left
+the `drafter` row as "the layer's author agent" — no identifier — while the
+derived `README.md` copy resolved it; and `README.md` cited a "Create
+assignments" section that exists nowhere, so the per-layer author binding
+existed in scoped form in neither place. (5) `doc-brd-fixer` and `doc-prd-fixer`
+dispatch `subagent_type=<mapped agent>` at step 4 but, unlike the other seven,
+carried **no** lens→agent table to resolve it against; both now have one.
+
+The guard was rewritten rather than patched, because every miss above was a rule
+anchored to a *position* instead of to *substance*. It now keys on table
+structure (a header naming an agent/delegate column, confirmed by the delimiter
+row beneath it, ⇒ every non-first cell is a dispatch position), matches arrows
+and imperative prose over a **two-line window** (a wrapped line put two of the
+three `docs/AGENTS.md` mappings out of reach of a line-scoped rule — a wrap this
+change had itself introduced), accepts `subagent_type` with a colon or no
+backticks, derives its file list by glob rather than by hand, and asserts each
+fixer both names the synthesizer it dispatches and can resolve its step-4
+placeholder.
+
+**Coverage is measured, not asserted: 164 single-token reversions to the bare
+form, 145 killed, 19 survived (88%)**, against a green baseline and a control
+mutant the harness must kill first. All 19 survivors are *descriptive* mentions —
+an agent as the subject of a sentence, an explanation of a lens binding,
+consumer-facing naming advice — not instructions to dispatch. The boundary is
+deliberate: a rule broad enough to flag those also flags the paragraph
+documenting the fix. An earlier draft of this entry claimed "six mutants, one per
+surface, all killed"; that was six mutants chosen by hand, it was not one per
+surface, and it read as completeness. The measured figure replaces it.
+
+**Explicitly not changed, and not an oversight — the 51 lens playbooks under
+`framework/playbooks/` keep their bare `agent:` frontmatter key.** It is not a
+plugin dispatch position: the plugin never *resolves* lens → agent from it —
+that comes from the crew table in `skills/review-team/SKILL.md` — and **GD-06**
+sanctions it as an *engine-defined* executor each platform maps for itself ("see
+the platform's own docs"). The weaker claim is the accurate one: the key's text
+**is** read — the nine `doc-*-audit` skills inline whole playbook files,
+frontmatter included, into each lens brief — but it cannot become a dispatch
+because no recipient declares the `Task` tool (only `pm-orchestrator` does, and
+it is never handed an inlined playbook). That is the latent condition, recorded
+here and in the guard: **if a lens agent is ever granted `Task`, revisit this.** Scoping it in the vendored copy is also not possible:
+`platforms/claude-code-plugin/framework/` is asserted byte-identical to canonical
+`framework/` by `test_plugin_framework_bundle.py` and is regenerated wholesale by
+`tools/sync-plugin-framework.sh`, so a hand-edit would fail conformance and then
+be overwritten — and the spec carries no platform names by durable convention.
+The exclusion is recorded in the guard's own docstring so a later sweep does not
+read its silence as a gap.
+
+No agent filename, `name:` frontmatter or `tools:` declaration changed, so no
+expectation string in `test-acceptance.sh` churns. Framework spec unchanged at
+`0.40.0`; no version bump (plugin documentation + guard only).
+
 ### Changed — `AGENTS.md` routed to the tracker (2026-08-15)
 
 Companion to the retirement below, split out to respect the ≤3-surface

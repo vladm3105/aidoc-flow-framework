@@ -86,12 +86,23 @@ fallback applies to other adaptation knobs (`section_toggles`).
      validation pass.
    P2/P3 are advisory — apply deterministically without lens
    validation.
+
+   Lens → agent map for BRD:
+
+   | Lens | Agent |
+   |------|-------|
+   | `architect` | `aidoc-flow:solutions-architect` |
+   | `business_analyst` | `aidoc-flow:requirements-analyst` |
+   | `auditor` | `aidoc-flow:traceability-auditor` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+   | `security_engineer` | `aidoc-flow:security-engineer` |
+
 3. **Propose and apply a patch** per blocking finding. Fix Phases 0–7
    below describe the patch shapes; the catalogue is the same in both
    modes. Back up first per the existing Input Contract.
 4. **Validate non-regression.** For each responsible lens identified
    in step 2, dispatch one `Task` subagent in patch-validation mode:
-   `subagent_type=<mapped agent>`; brief = the patched region + the
+   `subagent_type=<mapped agent>` (the map above); brief = the patched region + the
    original finding + the patch diff; **the lens MUST NOT read, cite, or
    weight any author self-assessment score** (`*_ready_score`/`*_score`/
    `readiness_score`/`audit_score`) when forming its `lens_score`
@@ -105,7 +116,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `.aidoc/remediation/01_BRD-fix.md` with both the Fixes Applied table
    AND a Validation Slots index.

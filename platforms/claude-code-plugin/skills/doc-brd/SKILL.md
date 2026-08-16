@@ -166,14 +166,14 @@ claude --plugin-dir "$PLUGIN_DIR" -p \
 ```
 
 Because `claude -p` has no `subagent_type` CLI parameter, the
-persona binding (`business_analyst` lens → `requirements-analyst`
+persona binding (`business_analyst` lens → `aidoc-flow:requirements-analyst`
 agent per `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml`
 plus the lens-to-agent table in `../review-team/SKILL.md`) moves
 INTO this SKILL's prompt. When the invocation brief contains the word
 `Draft` (case-insensitive) — indicating a saga-driven draft phase —
 dispatch the author this way:
 
-1. Dispatch ONE `Task` subagent with `subagent_type=requirements-analyst`,
+1. Dispatch ONE `Task` subagent with `subagent_type=aidoc-flow:requirements-analyst`,
    acting as the `business_analyst` lens (BRD author per
    `REVIEW_CREWS.yaml`'s BRD crew).
 2. Brief: the BRD-TEMPLATE.yaml + the source input (REF / prompt /

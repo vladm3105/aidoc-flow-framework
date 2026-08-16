@@ -205,23 +205,23 @@ maps each lens to its agent via this table, then dispatches one `Task`
 subagent per lens in parallel. Each subagent writes its persona-output
 record (`persona`, `findings[]`, `lens_score`) to a slot on the
 blackboard at `.aidoc/review/<NN>_<LAYER>/<artifact-id>/<lens>.json`;
-the `synthesizer` agent then reduces the slots deterministically per
+the `aidoc-flow:synthesizer` agent then reduces the slots deterministically per
 `framework/governance/REVIEW_TEAM.md`.
 
 ### Lens → agent mapping
 
 | Framework lens | Plugin agent (`subagent_type=`) | Agent file |
 |---|---|---|
-| `business_analyst`, `requirements_specialist`, `product_owner` | `requirements-analyst` | [`agents/requirements-analyst.md`](agents/requirements-analyst.md) |
-| `architect`, `tech_lead`, `integration_lead` | `solutions-architect` | [`agents/solutions-architect.md`](agents/solutions-architect.md) |
-| `qa_lead` | `test-architect` | [`agents/test-architect.md`](agents/test-architect.md) |
-| `operator` | `devops-release-engineer` | [`agents/devops-release-engineer.md`](agents/devops-release-engineer.md) |
-| `auditor` | `traceability-auditor` | [`agents/traceability-auditor.md`](agents/traceability-auditor.md) |
-| `chaos_engineer` (internal stability) | `chaos-engineer` | [`agents/chaos-engineer.md`](agents/chaos-engineer.md) |
-| `security_engineer` (external threats) | `security-engineer` | [`agents/security-engineer.md`](agents/security-engineer.md) |
-| `synthesizer` (deterministic reduce + narrative) | `synthesizer` | [`agents/synthesizer.md`](agents/synthesizer.md) |
-| `drafter` (Create operation; per-layer) | the layer's author agent — for BRD/PRD/EARS that is `requirements-analyst`; for ADR/SPEC, `solutions-architect`; etc. | (see Create assignments below) |
-| `fixer` (Remediate operation) | `software-engineer` and/or the layer's `doc-<layer>-fixer` skill | [`agents/software-engineer.md`](agents/software-engineer.md) |
+| `business_analyst`, `requirements_specialist`, `product_owner` | `aidoc-flow:requirements-analyst` | [`agents/requirements-analyst.md`](agents/requirements-analyst.md) |
+| `architect`, `tech_lead`, `integration_lead` | `aidoc-flow:solutions-architect` | [`agents/solutions-architect.md`](agents/solutions-architect.md) |
+| `qa_lead` | `aidoc-flow:test-architect` | [`agents/test-architect.md`](agents/test-architect.md) |
+| `operator` | `aidoc-flow:devops-release-engineer` | [`agents/devops-release-engineer.md`](agents/devops-release-engineer.md) |
+| `auditor` | `aidoc-flow:traceability-auditor` | [`agents/traceability-auditor.md`](agents/traceability-auditor.md) |
+| `chaos_engineer` (internal stability) | `aidoc-flow:chaos-engineer` | [`agents/chaos-engineer.md`](agents/chaos-engineer.md) |
+| `security_engineer` (external threats) | `aidoc-flow:security-engineer` | [`agents/security-engineer.md`](agents/security-engineer.md) |
+| `synthesizer` (deterministic reduce + narrative) | `aidoc-flow:synthesizer` | [`agents/synthesizer.md`](agents/synthesizer.md) |
+| `drafter` (Create operation; per-layer) | the layer's author agent — for BRD/PRD/EARS that is `aidoc-flow:requirements-analyst`; for ADR/SPEC, `aidoc-flow:solutions-architect`; etc. | (per-layer; see [`skills/review-team/SKILL.md`](skills/review-team/SKILL.md)) |
+| `fixer` (Remediate operation) | `aidoc-flow:software-engineer` and/or the layer's `doc-<layer>-fixer` skill | [`agents/software-engineer.md`](agents/software-engineer.md) |
 
 Some lenses share an agent because the agent carries multiple
 review-lens briefs and switches role based on which lens the dispatcher

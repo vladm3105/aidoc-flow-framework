@@ -48,15 +48,15 @@ You can spawn the eight specialist agents. Match work to role:
 
 | Need | Delegate to |
 |------|-------------|
-| BRD → PRD → EARS authoring | `requirements-analyst` |
-| BDD / ADR / SPEC + C4 diagrams | `solutions-architect` |
-| TDD + test specs (UTEST…SECTEST) | `test-architect` |
-| Implement code/tests from IPLAN | `software-engineer` |
-| Code/PR review (read-only gate) | `code-reviewer` |
-| Threat model + SECTEST (read-only gate) | `security-engineer` |
-| CI/CD + deploy + release readiness | `devops-release-engineer` |
-| Traceability/integrity audit (read-only gate) | `traceability-auditor` |
-| Multi-persona review at a gate | `../skills/review-team/SKILL.md` (fans the crew + `chaos_engineer` / `security_engineer` / `synthesizer`) |
+| BRD → PRD → EARS authoring | `aidoc-flow:requirements-analyst` |
+| BDD / ADR / SPEC + C4 diagrams | `aidoc-flow:solutions-architect` |
+| TDD + test specs (UTEST…SECTEST) | `aidoc-flow:test-architect` |
+| Implement code/tests from IPLAN | `aidoc-flow:software-engineer` |
+| Code/PR review (read-only gate) | `aidoc-flow:code-reviewer` |
+| Threat model + SECTEST (read-only gate) | `aidoc-flow:security-engineer` |
+| CI/CD + deploy + release readiness | `aidoc-flow:devops-release-engineer` |
+| Traceability/integrity audit (read-only gate) | `aidoc-flow:traceability-auditor` |
+| Multi-persona review at a gate | `../skills/review-team/SKILL.md` (fans the crew + `chaos_engineer` / `security_engineer` / `aidoc-flow:synthesizer`) |
 
 Delegation rules: give each agent a self-contained brief (goal, inputs, the
 artifacts/paths involved, the acceptance bar, expected output form). Run
@@ -65,8 +65,8 @@ to also gate its own work — always route review to the read-only gates.
 
 **Review team (at gates).** At `pre_promotion` / `pre_merge`, run the multi-persona
 **review team** via `../skills/review-team/SKILL.md`: fan the layer's crew out as
-`Task` subagents (the lenses above plus `chaos_engineer`, `security_engineer`, and `synthesizer`) writing to
-the git-ignored `.aidoc/review/` blackboard, then run `synthesizer` to reduce them
+`Task` subagents (the lenses above plus `chaos_engineer`, `security_engineer`, and `aidoc-flow:synthesizer`) writing to
+the git-ignored `.aidoc/review/` blackboard, then run `aidoc-flow:synthesizer` to reduce them
 into one scored, coverage-aware report. The gate stays the deterministic structural
 floor + no unresolved P0/P1; `single_pass` is the advisory `on_author` default and
 the no-subagent fallback (`review_mode` knob).
@@ -87,10 +87,13 @@ the no-subagent fallback (`review_mode` knob).
 ## Closed-Loop Operating Model
 
 1. Drive planning/approval from BRD through IPLAN via the native SDD skills.
-2. Delegate approved `ai:ready` scope to the execution lane (Software Engineer,
-   DevOps).
-3. Route every change through the read-only gates (Code Reviewer, Security,
-   Traceability Auditor) before merge.
+2. Delegate approved `ai:ready` scope to the execution lane
+   (`aidoc-flow:software-engineer`, `aidoc-flow:devops-release-engineer`).
+3. Route every change through the read-only gates
+   (`aidoc-flow:code-reviewer`, `aidoc-flow:security-engineer`,
+   `aidoc-flow:traceability-auditor`) before merge. Always dispatch by the
+   scoped identifier in the delegation table above — a bare name resolves to
+   the consumer's agent, which may be write-capable (#417).
 4. Feed deploy/observability incidents back into triage; create issues with
    traceability links and acceptance criteria.
 5. Verify post-deploy evidence; close issues only when acceptance + monitoring

@@ -141,8 +141,9 @@ class ReviewCrews(unittest.TestCase):
     def test_lens_to_agent_mapping_has_both_new_rows(self):
         text = REVIEW_TEAM_SKILL.read_text(encoding="utf-8")
         for row in (
-            "| `chaos_engineer` | `chaos-engineer` |",
-            "| `security_engineer` | `security-engineer` |",
+            # PREPROD-L7-BARE-DISPATCH (#417): dispatch references are scoped.
+            "| `chaos_engineer` | `aidoc-flow:chaos-engineer` |",
+            "| `security_engineer` | `aidoc-flow:security-engineer` |",
         ):
             self.assertIn(
                 row,

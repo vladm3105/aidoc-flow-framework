@@ -79,12 +79,12 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
    | Lens | Agent |
    |------|-------|
-   | `architect` | `solutions-architect` |
-   | `tech_lead` | `solutions-architect` |
-   | `chaos_engineer` | `chaos-engineer` |
-   | `security_engineer` | `security-engineer` |
-   | `operator` | `devops-release-engineer` |
-   | `auditor` | `traceability-auditor` |
+   | `architect` | `aidoc-flow:solutions-architect` |
+   | `tech_lead` | `aidoc-flow:solutions-architect` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+   | `security_engineer` | `aidoc-flow:security-engineer` |
+   | `operator` | `aidoc-flow:devops-release-engineer` |
+   | `auditor` | `aidoc-flow:traceability-auditor` |
 
    ADR crew weights: `{architect: 35, tech_lead: 25, chaos_engineer: 8,
    security_engineer: 12, operator: 10, auditor: 10}`.
@@ -110,7 +110,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `ADR-NN.F_fix_report_vNNN.md` with both the Fixes Applied table
    AND a Validation Slots index.

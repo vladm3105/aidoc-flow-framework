@@ -79,11 +79,11 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
    | Lens | Agent |
    |------|-------|
-   | `requirements_specialist` | `requirements-analyst` |
-   | `tech_lead` | `solutions-architect` |
-   | `qa_lead` | `test-architect` |
-   | `chaos_engineer` | `chaos-engineer` |
-   | `security_engineer` | `security-engineer` |
+   | `requirements_specialist` | `aidoc-flow:requirements-analyst` |
+   | `tech_lead` | `aidoc-flow:solutions-architect` |
+   | `qa_lead` | `aidoc-flow:test-architect` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+   | `security_engineer` | `aidoc-flow:security-engineer` |
 
    EARS crew weights: `{requirements_specialist: 35, tech_lead: 25,
    qa_lead: 20, chaos_engineer: 12, security_engineer: 8}`.
@@ -109,7 +109,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `EARS-NN.F_fix_report_vNNN.md` with both the Fixes Applied table
    AND a Validation Slots index.

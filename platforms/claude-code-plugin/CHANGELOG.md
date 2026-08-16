@@ -14,6 +14,39 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Fixed — dispatch references scoped, so a consumer's same-named agent cannot capture a gate (2026-08-16)
+
+Closes [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417)
+(`PREPROD-L7-BARE-DISPATCH`). Claude Code resolves a **bare** subagent reference
+by scope precedence, and this plugin's `agents/` directory ranks lowest of five
+scopes — so every dispatch reference the plugin shipped routed to whatever
+same-named agent a consumer defines at a higher-priority scope. A substituted
+agent carries its own `tools:` and may edit what it is meant to review
+read-only, which made the review gates subvertible with no error and no log line.
+
+Every dispatch position now uses `aidoc-flow:<name>`: the `pm-orchestrator`
+delegation table and its numbered routing steps, the `review-team` crew table
+(including the `drafter` row, which named no agent at all), the nine
+`doc-*-audit` lens→agent maps, the nine `doc-*-fixer` tables and their step-6
+synthesizer dispatch, `doc-brd`'s `subagent_type=` literal, the `README.md`
+lens→agent table, and the prose mapping in `docs/AGENTS.md`. `doc-brd-fixer` and
+`doc-prd-fixer` gained the lens→agent table the other seven already had — their
+step-4 `subagent_type=<mapped agent>` placeholder previously resolved against
+nothing in the file. `README.md`'s dead "Create assignments" cross-reference now
+points at the crew table.
+
+**Definition names are unchanged** — `name:` frontmatter, file names, `tools:`
+declarations and roster inventories all stay bare; they say what a file
+*defines*, not what a dispatch resolves. Nothing about agent capability moved,
+so no `test-acceptance.sh` expectation churns and no version bump is required.
+
+Pinned by `tests/conformance/platforms/test_agent_dispatch_scoping.py`. Its
+coverage is measured, not asserted: 164 reversions to the bare form, **145
+killed, 19 survived**, all 19 being descriptive mentions rather than dispatch
+instructions. See the root [`CHANGELOG.md`](../../CHANGELOG.md) for the full
+analysis, including why the 51 lens playbooks' `agent:` key is deliberately out
+of scope.
+
 ## [0.25.0] — the pre-production hardening cut (PLUGIN-PREPROD-001) (2026-08-02)
 
 > **Released 2026-08-02.** Tag `claude-code-plugin/v0.25.0` (annotated) →
