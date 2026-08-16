@@ -224,7 +224,7 @@ surfaces for **this** repo:
 | Surface | Path (in this repo) |
 |---|---|
 | Live HANDOFF | `plans/HANDOFF.md` |
-| TODO / backlog | `plans/FRAMEWORK-TODO.md` |
+| TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone; never add to it |
 | Decisions log | `plans/DECISIONS.md` |
 | Plans | `plans/` (per-initiative `<NAME>-PLAN.md` files) |
 | Changelog | `CHANGELOG.md` |
@@ -260,7 +260,9 @@ never relocates their state.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
 - `docs/TAGGING.md` — git-tag policy. `docs/PARITY.md` — platform comparison.
 - `plans/` — the active planning surface (per-initiative plans, audits, verify
-  records, `DECISIONS.md`, `HANDOFF.md`, `FRAMEWORK-TODO.md`).
+  records, `DECISIONS.md`, `HANDOFF.md`). The backlog is **not** here: it is
+  GitHub issues. `FRAMEWORK-TODO.md` remains only as a retired tombstone
+  carrying the entry → issue mapping.
 
 ## Pre-migration history
 
@@ -277,49 +279,54 @@ issues, reviews, releases, repo queries — not the GitHub MCP servers
 (`github-tt`, `github-vl`) or raw API calls. If `gh` is unauthenticated, run
 `gh auth login` rather than falling back to MCP/API.
 
-## Own-repo gaps — TODO entry **and** GitHub issue (GOV-TODO-ISSUE-SPLIT)
+## Own-repo gaps — open a GitHub issue (supersedes GOV-TODO-ISSUE-SPLIT)
 
-The sibling of the cross-repo rule below, for defects **this repo owns**. Two
-surfaces, one flow — the TODO file is the queue, the issue is the externally
-visible record:
+The sibling of the cross-repo rule below, for defects **this repo owns**. There
+is now **one surface**: the tracker.
 
-| Surface | Role | Rule |
-|---|---|---|
-| `plans/FRAMEWORK-TODO.md` | the triage **queue** | unchanged — every gap gets an entry, inline as discovered (tag + title + *Context* + *Fix shape*). The entry IS the capture moment; no "later PR" |
-| GitHub issue on this repo | the **externally visible** record | opened when the entry meets **any** of: (a) actionable by someone other than its finder, (b) reproducible at `file:line` with a concrete fix shape, (c) user-visible or blocks a consumer |
-
-Purely local, speculative, or already-planned items stay TODO-only — the tracker
-must not become a second copy of the backlog.
+**Filing on the repo you are working in is not cross-repo** and needs no special
+authorisation. Capture and publish are the same act: open the issue. Never keep a
+local queue file shadowing this repo's own tracker — two records of one truth is
+how they come to disagree, and it is why the previous file-based queue was
+retired.
 
 **An issue body carries the same evidence the cross-repo rule demands** (below):
-reproduction at `file:line`, blast radius, why it was hard to diagnose, a
-suggested fix, and what is NOT broken. Same `--body-file -` + read-back
-verification. Same one-issue-per-defect granularity.
+reproduction at `file:line`, blast radius *run* rather than assumed, why it was
+hard to diagnose, a suggested fix, and what is NOT broken. Same `--body-file -`
+plus read-back verification. Same one-issue-per-defect granularity. **The merge
+closes the issue** — the PR body carries `Closes #N`, one keyword per reference
+(`Closes #A and #B` closes only `#A`). Never close by hand afterwards, and clear
+the in-progress marker yourself: the merge does not.
 
-**Link both ways.** The TODO entry's heading ends with `→ #N`; the issue's
-*Related* section names the TODO entry ID. Close both on the same merge SHA
-(the TODO entry moves to **Closed**; the issue closes with the same ref).
+**Never summarise a finding into an issue.** Move the analysis verbatim; a
+re-derived finding silently contracts.
 
-**Why.** `plans/FRAMEWORK-TODO.md` is read only by a session entering *this*
-repo — the exact latency failure the cross-repo rule was written to fix, applied
-to consumers of this framework, who cannot see the file at all. This repo held
-one issue against ~40 TODO entries, with 11 issue templates and a full label
-taxonomy provisioned and unused, because no rule ever routed anything there.
+**Why the split was dropped.** `GOV-TODO-ISSUE-SPLIT` (2026-07-26) ran a two-
+surface model: `plans/FRAMEWORK-TODO.md` as the triage queue, an issue only when
+an entry cleared a three-test bar. Measured on 2026-08-15, that produced **48
+open entries of which 41 had no issue** — findings visible only to a session
+already inside this repo, which is the exact latency the rule was written to fix.
+The queue file was retired, all **42** untracked entries migrated verbatim
+(#466–#504, #505–#507), and the file left as a tombstone carrying the entry →
+issue mapping. (#465 was filed separately, beforehand, and is not one of them.
+42 rather than 41 because one entry was a bold pseudo-heading nested inside its
+neighbour, so it had never been independently trackable.)
 
-**Spec counterpart ratified** (spec `0.40.0`, **GD-10**, closing
-[#345](https://github.com/vladm3105/aidoc-flow-framework/issues/345)).
-`framework/governance/DOC_GOVERNANCE_CORE.md` Principle 9 now states that a
-backlog file is a capture queue, not a publication channel, and
-`FRAMEWORK_FEEDBACK_LOG.md` §"Tier 2 → the tracker" carries the same three-test
-bar, the evidence requirements, the link-both-ways/close-together rule, and the
-read-the-artifact-back step. This section remains the **repo** working rule and
-is where repo-specific detail lives (`gh` invocations, this repo's file paths);
-the spec states the obligation engine- and host-agnostically. Where they
-disagree, the spec is the contract.
-
-*Origin:* `GOV-TODO-ISSUE-SPLIT` (2026-07-26), found while filing three
-element-ID gaps ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)–[#344](https://github.com/vladm3105/aidoc-flow-framework/issues/344))
-that governance would have parked in a markdown file no consumer reads.
+**The spec still names this file, and that is now a dead reference — tracked, not
+waved away.** `framework/governance/DOC_GOVERNANCE_CORE.md:13` (Principle 9 — a
+list item, not a `###` heading) names `plans/FRAMEWORK-TODO.md` **by path** as the
+Tier-2 framework-repo surface, and `FRAMEWORK_FEEDBACK_LOG.md:55/59/87` does the
+same, with `:51` carrying a consumer-facing instruction to add entries to it
+directly. The census is **five** `framework/**` files, not two — those plus
+`governance/REVIEW_TEAM.md:149`, `layers/02_PRD/PRD-TEMPLATE.yaml:353` and
+`templates/framework-feedback-log.template.md:8` — and **four** ship vendored in
+the plugin bundle. This repo's new rule also drops the
+three-test bar and the two-surface split, which **GD-10** ratified at spec
+`0.40.0` — so this is a divergence from the spec model, not merely a file rename.
+Editing `framework/**` trips GATE-SPEC-E005 (version bump + fanout) and warrants a
+GD entry, so it is deferred to **#508**, which owns it. Until #508 lands, this
+section governs **for this repository's own gaps**; the spec remains the contract
+for everything else.
 
 ## Cross-repo feedback — file it as a GitHub issue on the owning repo
 
