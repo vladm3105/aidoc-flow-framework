@@ -28,13 +28,19 @@
 #       (added 2026-06-14 to close the v0.6.3 → v0.20.0 drift bug — the
 #       prior awk pass only handled bare X.Y.Z lines in the `$ cat VERSION`
 #       example block, missing the table cell)
-#   - ../web-site/src/pages/index.astro
-#       `Pre-release v<X.Y.Z>` badge in the home page (cross-submodule write
-#       at the umbrella layer; added 2026-06-14 per IPLAN-0008 step 6 to
-#       close the v0.18.0 stale-badge drift bug). The sibling web-site/ is
-#       a separate git repo, so writes here land as unstaged changes in
-#       web-site's working tree — the developer commits them in web-site's
-#       own PR. Skipped silently if web-site/ is not present alongside.
+#   - ../web-site/src/pages/index.astro and
+#     ../web-site/src/pages/claude-plugin/index.astro
+#       `Pre-release v<X.Y.Z>` badges (cross-submodule write at the umbrella
+#       layer; added 2026-06-14 per IPLAN-0008 step 6 to close the v0.18.0
+#       stale-badge drift bug). #423 (SYNC-WEBSITE-SILENT-NOOP): the badge is
+#       matched on a version-agnostic pattern and rewritten to the CURRENT
+#       plugin version whenever the sibling is present — self-healing, so one
+#       missed bump cannot desynchronize it (the exact-string form once left
+#       the site five minors stale with every later bump returning silently).
+#       The sibling web-site/ is a separate git repo, so writes here land as
+#       unstaged changes in web-site's working tree — the developer commits
+#       them in web-site's own PR. Files absent (standalone clone, CI) are
+#       skipped; a present file with no badge warns.
 #   - docs/PARITY.md
 #       claude-code-plugin/v<X.Y.Z> current-state row
 #
@@ -172,13 +178,6 @@ if [[ -n "$plugin_ver" ]]; then
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
-    # Cross-submodule write: ../web-site/ is a sibling repo under the umbrella.
-    # The sync hook lands changes in its working tree; the developer commits
-    # them in the web-site PR. The replace_in_file helper is no-op if the file
-    # does not exist (e.g., the framework repo is cloned standalone without
-    # the umbrella siblings).
-    replace_in_file ../web-site/src/pages/index.astro \
-      "Pre-release v$plugin_prev" "Pre-release v$plugin_ver"
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
@@ -199,6 +198,34 @@ if [[ -n "$plugin_ver" ]]; then
         && log "  updated platforms/claude-code-plugin/README.md: bare \`^$plugin_prev$\` line -> $plugin_ver"
     fi
   fi
+fi
+
+# --- web-site badge (cross-repo self-healing write) ----------------------------
+# #423 (SYNC-WEBSITE-SILENT-NOOP): the badge used to be synced by an exact-
+# string replace of "Pre-release v<prev>", so once one bump missed (or the
+# sibling carried an unexpected value) every later bump grepped for a prev the
+# site no longer had and returned silently — the public site sat five minors
+# stale with nothing failing. Instead, match the badge on a version-agnostic
+# pattern and rewrite it to the CURRENT plugin version whenever the sibling is
+# present: one missed bump can no longer desynchronize it, and drift heals on
+# the next run rather than sealing itself. Runs OUTSIDE the prev-detection
+# guard above, so it heals even when plugin.json is already current.
+# A present sibling file with NO badge at all is the one state worth hearing
+# about — warn (non-fatal; CI clones legitimately have no sibling at all).
+if [[ -n "$plugin_ver" ]]; then
+  for site_badge_file in \
+    ../web-site/src/pages/index.astro \
+    ../web-site/src/pages/claude-plugin/index.astro; do
+    [[ -f "$site_badge_file" ]] || continue
+    if grep -qE 'Pre-release v[0-9]+\.[0-9]+\.[0-9]+' "$site_badge_file"; then
+      sed -i -E \
+        "s/Pre-release v[0-9]+\\.[0-9]+\\.[0-9]+/Pre-release v$plugin_ver/g" \
+        "$site_badge_file" \
+        && log "  updated $site_badge_file: badge -> Pre-release v$plugin_ver (self-healing)"
+    else
+      warn "$site_badge_file exists but carries no 'Pre-release v<x.y.z>' badge — expected one (see #423)"
+    fi
+  done
 fi
 
 # --- framework VERSION fanout -------------------------------------------------
