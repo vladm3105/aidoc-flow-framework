@@ -46,6 +46,19 @@ custom_fields:
 
 ## 2. Gate Validation Results
 
+> **One form per change. Which gates belong on it is decided by §1.1 Entry Gate,
+> not by this section's layout.** Record the gates this change's entry gate
+> actually cascades through — the `change_source` → entry gate → affected layers
+> routing in [`CHG-TEMPLATE.yaml`](../CHG-TEMPLATE.yaml) — and mark every other
+> section `N/A`. A `Design` change entering at GATE-06, for example, records
+> GATE-06 / GATE-08 / GATE-CODE and nothing above them.
+>
+> **The one path that is not a single cascade is bubble-up.** A `Feedback` change
+> enters at GATE-CODE; where its root cause is upstream,
+> [`GATE-CODE_IMPLEMENTATION.md`](../gates/GATE-CODE_IMPLEMENTATION.md) §6.2 makes
+> the upstream fix a separate CHG on which this one depends — so the upstream
+> gates belong on *that* CHG's form, not this one.
+
 ### 2.1 GATE-01: Business/Product (L1-L2)
 
 **Applicable**: [ ] Yes / [ ] No / [ ] N/A (not entry gate)
@@ -74,9 +87,10 @@ custom_fields:
 | GATE-03-E002: Security review complete | [ ] Pass / [ ] Fail / [ ] N/A | |
 | GATE-03-E003: EARS syntax valid | [ ] Pass / [ ] Fail / [ ] N/A | |
 | GATE-03-E004: BDD format valid | [ ] Pass / [ ] Fail / [ ] N/A | |
-| GATE-03-E005: EARS 2 upstream tags | [ ] Pass / [ ] Fail / [ ] N/A | |
-| GATE-03-E006: BDD 3 upstream tags | [ ] Pass / [ ] Fail / [ ] N/A | |
-| GATE-03-E007: ADR 4 upstream tags | [ ] Pass / [ ] Fail / [ ] N/A | |
+| GATE-03-E005: EARS 1 necessary-upstream tag (`@prd`) | [ ] Pass / [ ] Fail / [ ] N/A | |
+| GATE-03-E006: BDD 1 necessary-upstream tag (`@ears`, carried as the structured YAML `ears:` list — BDD emits no `@`-tag) | [ ] Pass / [ ] Fail / [ ] N/A | |
+| GATE-03-E007: ADR 2 necessary-upstream tags (`@ears` `@bdd`) | [ ] Pass / [ ] Fail / [ ] N/A | |
+| GATE-03-E008: External change cites a CVE/advisory or an explicit N/A | [ ] Pass / [ ] Fail / [ ] N/A | |
 
 **Warnings Addressed**:
 - [ ] GATE-03-W001: CVE reference added
@@ -157,6 +171,7 @@ custom_fields:
 **Warnings Addressed**:
 - [ ] GATE-SPEC-W001: `major` change has a per-platform migration note
 - [ ] GATE-SPEC-W002: both platforms track the new spec version (no parity drift)
+- [ ] GATE-SPEC-W003: agent-facing spec change has a recorded `SECURITY_REVIEW.md` assessment
 
 **GATE-SPEC Result**: [ ] PASS / [ ] PASS WITH WARNINGS / [ ] FAIL
 

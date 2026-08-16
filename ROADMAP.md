@@ -138,6 +138,19 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **GATE-FORM-PARITY (2026-08-16, framework `0.41.0 → 0.41.1`, GD-12).** The gate
+  approval form — the surface a reviewer actually fills in — disagreed with the gate
+  definitions in both directions, and now cannot. `GATE-03-E008` and
+  `GATE-SPEC-W003`, both Security-category and both defined and catalogued since
+  `817d9a1a`, had never been added to the form: two checks nobody performed. §2.2's
+  upstream-tag counts said 2/3/4 against the registry's 1/1/2, and two further
+  documents stated the ADR requirement as the full `@brd @prd @ears @bdd` chain.
+  `tests/conformance/test_governance.py::GateCheckIdParity` now asserts check-id
+  parity across all six gates × `{E, W}` × the three surfaces, comparing the form's
+  *fillable* items rather than its mentions. Closes
+  [#433](https://github.com/vladm3105/aidoc-flow-framework/issues/433),
+  [#434](https://github.com/vladm3105/aidoc-flow-framework/issues/434),
+  [#445](https://github.com/vladm3105/aidoc-flow-framework/issues/445).
 - **SPEC-0.41.0-FOLD (2026-08-16, framework `0.40.0 → 0.41.0`, GD-11).** Four
   independent spec corrections shipped as one release, because GATE-SPEC binds
   concurrent `framework/**` edits to a single `VERSION` — the unit of release is

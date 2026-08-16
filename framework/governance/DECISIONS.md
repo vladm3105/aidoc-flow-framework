@@ -13,6 +13,140 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-12 — The gate approval form is the executed surface, so its agreement with the gate definitions is a conformance invariant, not editorial care
+
+- **Status:** Accepted — 2026-08-16 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-12 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-11 precedent — no separate CHG artifact). SemVer **patch**
+  (`0.41.0 → 0.41.1`), change-level **C2**.
+- **Context:** three defects filed from a downstream audit
+  ([#433](https://github.com/vladm3105/aidoc-flow-framework/issues/433),
+  [#434](https://github.com/vladm3105/aidoc-flow-framework/issues/434),
+  [#445](https://github.com/vladm3105/aidoc-flow-framework/issues/445)) all land on
+  `chg/templates/GATE_APPROVAL_FORM.md`. Each gate's checks are stated in three
+  documents — the gate definition, `chg/gates/GATE_ERROR_CATALOG.md`, and the form —
+  and **only the third is filled in**. #434 records the observed cost: a downstream
+  project produced two change records from the form alone, concluding "no second CHG
+  record is minted", the inverse of what `GATE-CODE_IMPLEMENTATION.md` §6.2 requires.
+  The three documents had drifted in three ways:
+  - **Omission.** `GATE-03-E008` is defined and catalogued but absent from the form,
+    so a GATE-03 review driven from the form never considers it. It is one of the
+    gate's two Security-category ERRORs and the only one the form omits (`E002` is
+    the other and is present). The form does carry `GATE-03-W001: CVE reference
+    added` four lines below, which reads as CVE coverage and masks the absence — but
+    W001 is a non-blocking nudge and E008 is blocking.
+  - **Stale restatement.** The form restated tag *counts* (EARS 2 / BDD 3 / ADR 4)
+    that match neither `LAYER_REGISTRY.yaml` (`[prd]`, `[ears]`, `[ears, bdd]` — 1/1/2)
+    nor the gate's own check table.
+  - **No routing.** The form presents every gate as a section of one document,
+    which is right for an `Upstream` entry and wrong for a `Feedback` entry whose
+    root cause is upstream — that becomes a separate, dependent CHG under §6.2.
+    Neither document referenced the other, and the form collects the deciding datum
+    (§1.1 Entry Gate) without using it. This is #434: the §2 note within bundle
+    item 1, plus items 4 and 5, exist for it.
+  **Two of the three defects were larger than filed, and the fixing session's
+  censuses are what found the remainder.** #433 compared **five** gates; there are
+  six, and `GATE-SPEC-W003` (also Security, also defined and catalogued) is likewise
+  missing from the form. #445 named two carriers of the over-stated ADR requirement
+  and there are three: `GATE_ERROR_CATALOG.md` §9.1/§9.2 carries it too. That one was
+  missed by **phrasing, not by absence of a count** — an earlier draft of this entry
+  claimed the catalog stated the chain with no count anywhere, which is false (`:206`
+  "Add 4 traceability tags to ADR", `:215` "Add all 4 upstream traceability tags"),
+  and it also claimed two carriers were missed when #445 names `GATE-03:233`
+  explicitly. The accurate lesson is narrower and is the one `CLAUDE.md`
+  § "Durable traps → Process" already states: a sweep anchored on one phrasing of a
+  fact under-covers, because the same fact has many spellings. Define the class as
+  *the requirement statement*, not as the string searched for.
+- **Decision:** correct all six statements (enumerated in the `CHANGELOG` entry with
+  the counting unit named, because the figure is otherwise not re-derivable), add the
+  two missing form rows, wire the cross-references that route a bubble-up correctly,
+  and **lock the omission class in conformance** —
+  `tests/conformance/test_governance.py::GateCheckIdParity` asserts set equality of
+  check ids across all six gates × `{E, W}` × the three surfaces, comparing the form's
+  **fillable items** rather than its mentions. The guard is stated as an invariant
+  with a direction, because the two directions are different defects: a code in the
+  definition but not the form is a check nobody performs; a code in the form but not
+  the definition is a check with no criteria.
+- **What is in the bundle:**
+  1. `chg/templates/GATE_APPROVAL_FORM.md` — adds the `GATE-03-E008` and
+     `GATE-SPEC-W003` rows; corrects §2.2's tag counts to 1/1/2 naming the actual
+     tags; adds a §2 note routing a GATE-CODE-entry change with an upstream root
+     cause to `GATE-CODE_IMPLEMENTATION.md` §6.2 rather than onto this form.
+  2. `chg/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md` — E007's resolution template
+     states the 2-tag rule, and states what E007 does **not** fail on.
+  3. `chg/gates/GATE_ERROR_CATALOG.md` — the same correction at its §9.1
+     quick-reference row and its §9.2 resolution template (the third carrier).
+  4. `chg/gates/GATE-CODE_IMPLEMENTATION.md` — §6.2 step 2 names the artifact the
+     new CHG carries, closing the loop the form's new note opens.
+  5. `chg/CHG-TEMPLATE.yaml` — the Feedback routing cell stopped at `SPEC`, which
+     read as a floor; extended to the reach `GATE-CODE_IMPLEMENTATION.md:151` and
+     `GATE_INTERACTION_DIAGRAM.md:109` already state, including ADR, which §6.1
+     routes to GATE-03 alongside BDD and EARS.
+  6. `tests/conformance/test_governance.py` — the parity guard.
+- **A near-miss worth keeping, because it inverts this entry's own thesis.** The
+  first draft of items 2 and 3 wrote *"do NOT add `@brd` or `@prd` — those are
+  transitive"*. That is a **new prohibition on a blocking ERROR**, and four spec
+  surfaces contradict it: `ADR-TEMPLATE.yaml` ("optional provenance … not
+  required"), `TRACEABILITY.md` (`required_tags` is the *minimum* set; a layer MAY
+  carry provenance tags), `REVIEW_TEAM.md` ("decorative lineage … are permitted"),
+  `playbooks/05_ADR/auditor.md`. `AI_ASSISTANT_RULES.md` forbids *fabrication* —
+  tags for **absent** upstream layers — not a resolvable provenance tag. Fixing a
+  document that disagreed with the registry by making it disagree with four other
+  documents is the same defect one layer down; it was caught in pre-push review, not
+  by any test, and no test would have caught it.
+- **Why PATCH.** Every item restores agreement with a normative source that already
+  said the correct thing — the registry, the gate check tables, §6.2,
+  `GATE-CODE:151`. Nothing here asks an author for anything that was not already
+  required, which is what separates this from GD-11's MINOR (where `@chg:` gained a
+  definition it had never had). The near-miss above is the counter-example that
+  makes the test meaningful rather than rhetorical: had it shipped, PATCH would have
+  been the wrong level.
+- **Rule 1 (≤3 doc surfaces per governance PR) is exceeded here, deliberately and on
+  GD-11's ratified reasoning.** GATE-SPEC-E005 binds every concurrent `framework/**`
+  edit to one `VERSION`, so a spec release cannot split below `VERSION` +
+  `CHANGELOG` + this entry + the corrected documents. The commit message carries the
+  audit-trail line the rule requires. Splitting would produce three releases of one
+  correction, each paying a ~170-file fanout — the cost argument GD-11 sets out,
+  applied to surfaces rather than to PRs.
+- **Consequences:** platforms re-pin to `0.41.1`; the vendored plugin bundle is
+  regenerated by `tools/sync-plugin-framework.sh`. **Propagation order is
+  load-bearing** — `framework/VERSION` → `scripts/sync-version-refs.sh` →
+  `tools/sync-plugin-framework.sh`; reversing it lands drifted bundled playbooks and a
+  red bundle guard.
+- **Known limits of the new guard, established by mutation and not by assumption.**
+  (i) On the *definition and catalog* sides it compares the set of ids a document
+  mentions, not table structure. Each names a code more than once — check table,
+  error-catalog section, resolution heading — so deleting `GATE-03-E008`'s row from
+  GATE-03's §3.1 leaves the id present at its §7.1 row and its resolution heading,
+  and the guard stays green. Out of scope deliberately: anchoring on rows would make
+  the check positional across six heterogeneous documents, and this direction is
+  benign — the code still resolves in the catalog and the form, so the check is
+  still performed. (ii) Only `E` and `W` are compared, and the id pattern
+  matches exactly three digits; `GATE_ERROR_CATALOG.md:24` also defines `I` (Info).
+  Neither exists today, so nothing is unguarded now.
+  **A third limit was found by review, not by us, and is now closed.** The first
+  draft compared the form's *mentions*. Deleting `GATE-03-E008`'s row and adding a
+  prose sentence naming it left the guard green — #433's own failure mode surviving
+  in the direction the guard claimed to cover. The form side now compares fillable
+  items (a line carrying `[ ]`), which matches both the E-code table cell and the
+  W-code checkbox without anchoring on either. The general lesson: a guard written
+  beside its fix inherits the fix's framing, and "present in the document" was the
+  framing that let the original defect exist.
+- **Precedent set.** Where the spec states one fact in more than one document and
+  one of them is the surface actually executed, the agreement is a conformance
+  invariant. The drift here is undetectable by reading any one of the three
+  documents, because each is internally consistent — and it did not need years of
+  accumulation. `817d9a1a` added **both** `GATE-03-E008` and `GATE-SPEC-W003` to
+  their gate definitions and to the catalog in one commit, and did not touch the
+  form. That same commit edited `tests/conformance/test_governance.py` — to add
+  `SECURITY_REVIEW.md` to `EXPECTED_FILES`, an exact-set guard over *filenames*. So
+  the suite was extended in the very change that introduced the drift and still
+  could not see it: a file-existence list is not a cross-document check. One edit to
+  a document set with no cross-document check is sufficient to produce this.
+
+---
+
 ## GD-11 — Four independent spec corrections ship as one MINOR because GATE-SPEC binds them to a single `VERSION`, not because they are one change
 
 - **Status:** Accepted — 2026-08-16 (ratified on merge; a `framework/**` normative

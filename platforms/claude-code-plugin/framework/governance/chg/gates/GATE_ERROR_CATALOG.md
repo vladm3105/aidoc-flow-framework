@@ -203,7 +203,7 @@ platform's protected-branch review.
 
 | Error | Frequency | Quick Fix |
 |-------|-----------|-----------|
-| GATE-03-E007 | High | Add 4 traceability tags to ADR |
+| GATE-03-E007 | High | Add the 2 necessary-upstream tags to ADR (`@ears` `@bdd`) |
 | GATE-06-E001 | High | Improve SPEC TDD-Ready score |
 | GATE-CODE-E001 | Medium | Add RCA section |
 | GATE-01-E003 | Medium | Escalate breaking change to C3 |
@@ -212,10 +212,9 @@ platform's protected-branch review.
 
 ```markdown
 ## GATE-03-E007 Resolution
-Add all 4 upstream traceability tags:
+Add the 2 necessary-upstream traceability tags (LAYER_REGISTRY required_tags:
+[ears, bdd]). @prd/@brd are optional provenance, not required by this check:
 
-@brd: BRD-XXX
-@prd: PRD-XXX
 @ears: EARS-XXX
 @bdd: BDD-XXX
 

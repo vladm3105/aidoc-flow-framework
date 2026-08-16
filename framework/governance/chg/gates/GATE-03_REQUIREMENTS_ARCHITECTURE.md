@@ -230,12 +230,15 @@ When [action]
 Then [expected outcome]
 
 ## GATE-03-E007 Resolution
-ADR must have all 4 upstream tags:
+ADR must carry both necessary-upstream tags (LAYER_REGISTRY required_tags: [ears, bdd]):
 
-@brd: BRD-XXX
-@prd: PRD-XXX
 @ears: EARS-XXX
 @bdd: BDD-XXX
+
+@prd/@brd are optional provenance recorded in context, not required by this
+check (ADR-TEMPLATE.yaml; TRACEABILITY.md "minimum trace-resolution set").
+E007 fails only when @ears or @bdd is missing — never for a resolvable
+provenance tag above the required set.
 
 ## GATE-03-E008 Resolution
 An External-source change must record one of:
