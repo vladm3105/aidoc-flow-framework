@@ -115,6 +115,64 @@ replace_in_file() {
   return 0
 }
 
+# HAZARD (FRWK-REVIEW-002 F1 / #405, SYNC-HISTORICAL-REF-CORRUPTION):
+# replace_in_file does a GLOBAL sed of the literal, so it cannot tell a
+# current-state row from a historical/provenance mention written in the same
+# form — this corrupted a "shipped in hermes/v0.11.0" claim in docs/PARITY.md
+# on three consecutive bumps (each bump rewrote the historical version one
+# release forward; see #405). Both the `X/vN.N.N` tag literals AND the
+# "framework spec `X.Y.Z`" literal are now swept via replace_in_file_counted
+# with the exact number of current-state rows per file: an occurrence count
+# ABOVE the expected count means a historical mention has (re)appeared in the
+# swept form — the substitution is SKIPPED with a warning listing every
+# matching line, so the historical claim survives and a human rewords it
+# (the remedy: write historical mentions as "the `0.21.0` plugin cycle", never
+# "claude-code-plugin/v0.21.0").
+#
+# Cite this note by NAME, never by line number. The #405 fix inserted ~50 lines
+# above it, which silently invalidated every ":141"/":209" citation that pointed
+# here — including two in the changelog entry that shipped the fix.
+#
+# When you deliberately ADD or REMOVE a current-state row in one of these files,
+# update the expected count in the same change. tests/conformance/
+# test_sync_version_refs_counts.py asserts the counts against the tree, so a
+# drifted expectation fails CI rather than silently skipping a file's sync.
+replace_in_file_counted() {
+  local file="$1" old="$2" new="$3" expected="$4"
+  [[ -f "$file" ]] || return 0
+  [[ "$old" != "$new" ]] || return 0
+  local count old_re
+  count="$(grep -oF "$old" "$file" 2>/dev/null | wc -l)"
+  [[ "$count" -eq 0 ]] && return 0
+  if [[ "$count" -gt "$expected" ]]; then
+    # Report ALL matching lines, not "the ones past the expected count". The
+    # count is per OCCURRENCE (grep -oF) while a listing is per LINE, so the two
+    # do not index each other: two occurrences on one line would print nothing.
+    # Worse, "the extra ones" assumes the legitimate current-state rows come
+    # FIRST — in docs/PARITY.md the historical mention sat at :43 and the
+    # current-state row later, so a positional listing names the wrong line and
+    # tells a human to reword the row the sync depends on. Print every match and
+    # let the reader identify the historical one.
+    warn "SYNC-HISTORICAL-REF-CORRUPTION guard: $file holds $count occurrence(s) of '$old', expected <= $expected — skipping the substitution."
+    warn "  All $count matching line(s) — ONE OR MORE is a historical/provenance mention, not a current-state row:"
+    grep -nF "$old" "$file" | while IFS= read -r line; do
+      warn "    $line"
+    done
+    warn "  Reword the historical one (e.g. \"the 0.21.0 plugin cycle\") per the HAZARD note above replace_in_file_counted, then re-run. Do NOT reword a current-state row — that silently disables this file's sync."
+    return 0
+  fi
+  # Count with grep -F (literal) but substitute with sed (BRE), where `.` is a
+  # wildcard: sed could rewrite more than was counted, which is the corruption
+  # class this guard exists to stop. Escape the pattern so both agree.
+  old_re="${old//./\\.}"
+  sed -i "s|${old_re}|${new}|g" "$file" 2>/dev/null || {
+    warn "sed failed on $file"
+    return 0
+  }
+  log "  updated $file ($count occurrence(s)): $old -> $new"
+  return 0
+}
+
 # Find current version reference in a file matching a regex; returns the
 # captured X.Y.Z group, or empty if not found. Never fails.
 detect_version_in() {
@@ -168,10 +226,10 @@ if [[ -n "$plugin_ver" ]]; then
       replace_in_file "$skill" \
         "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     done
-    replace_in_file README.md \
-      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
-    replace_in_file platforms/claude-code-plugin/README.md \
-      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    replace_in_file_counted README.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver" 1
+    replace_in_file_counted platforms/claude-code-plugin/README.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver" 1
     # Cross-submodule write: ../web-site/ is a sibling repo under the umbrella.
     # The sync hook lands changes in its working tree; the developer commits
     # them in the web-site PR. The replace_in_file helper is no-op if the file
@@ -183,8 +241,12 @@ if [[ -n "$plugin_ver" ]]; then
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "(currently \`$plugin_prev\`)" "(currently \`$plugin_ver\`)"
-    replace_in_file docs/PARITY.md \
-      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver"
+    # Each file holds exactly ONE current-state `claude-code-plugin/vX.Y.Z`
+    # row; counted for the same #405 reason as the hermes/v fanout above (the
+    # historical `v0.21.0` mention in docs/PARITY.md was reworded out of this
+    # form precisely so this guard can be exact).
+    replace_in_file_counted docs/PARITY.md \
+      "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver" 1
 
     # platforms/claude-code-plugin/README.md has a `$ cat VERSION` example
     # block with the bare version on its own line. The bare X.Y.Z is too
@@ -206,26 +268,34 @@ fi
 fw_ver="$(read_version framework/VERSION)"
 log "framework VERSION: ${fw_ver:-(missing)}"
 
-# HAZARD (FRWK-REVIEW-002 F1): the replace_in_file calls below do a GLOBAL
-# substitution of the literal "framework spec `<prev>`" — they cannot tell a
-# current-state row from a historical/provenance mention. Any doc line that
-# quotes an OLD spec version in that exact literal form will be swept to the new
-# version on the next bump (this once corrupted the D-0031 provenance lines in
-# docs/PARITY.md, 0.13.0 -> 0.23.0). Rule: historical/provenance version
-# mentions MUST avoid the "framework spec `X.Y.Z`" literal — write them as
-# "`0.13.0` spec cycle" (or similar) so the sed can't match them.
+# HAZARD (FRWK-REVIEW-002 F1): a GLOBAL substitution of the literal
+# "framework spec `<prev>`" cannot tell a current-state row from a
+# historical/provenance mention, so any doc line quoting an OLD spec version in
+# that exact form is swept to the new version on the next bump. This is not
+# hypothetical here: it corrupted the D-0031 provenance lines in docs/PARITY.md,
+# 0.13.0 -> 0.23.0. Rule still stands — historical/provenance mentions MUST
+# avoid the "framework spec `X.Y.Z`" literal, written instead as "`0.13.0` spec
+# cycle" — and since #405 these calls are ALSO count-guarded, so a violation is
+# refused loudly rather than applied silently.
+#
+# Expected counts, verified against the tree (all current-state, no historical):
+#   CLAUDE.md 1 (§"Current state"), README.md 1, docs/PARITY.md 1 (status
+#   blockquote), and 2 each in the two platform READMEs — a prose conformance
+#   sentence plus a "| Conforms to |" table row. tests/conformance/
+#   test_sync_version_refs_counts.py pins these, so a doc edit that adds or
+#   removes a current-state row fails CI instead of silently skipping a sync.
 if [[ -n "$fw_ver" ]]; then
   fw_prev="$(detect_version_in CLAUDE.md \
     'framework spec `[0-9]+\.[0-9]+\.[0-9]+`')"
 
   if [[ -n "$fw_prev" && "$fw_prev" != "$fw_ver" ]]; then
     log "framework sync $fw_prev -> $fw_ver"
-    replace_in_file CLAUDE.md \
-      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
-    replace_in_file README.md \
-      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
-    replace_in_file docs/PARITY.md \
-      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file_counted CLAUDE.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`" 1
+    replace_in_file_counted README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`" 1
+    replace_in_file_counted docs/PARITY.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`" 1
 
     # platforms/claude-code-plugin/README.md quotes the framework spec version
     # in prose ("...framework spec `X`...") AND in a `$ cat FRAMEWORK_SPEC_VERSION`
@@ -234,8 +304,8 @@ if [[ -n "$fw_ver" ]]; then
     # drift after the fact). Sync prose via replace_in_file; sync the bare line
     # via awk, anchored to the preceding `$ cat FRAMEWORK_SPEC_VERSION` marker so
     # the generic X.Y.Z is only touched inside that block.
-    replace_in_file platforms/claude-code-plugin/README.md \
-      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file_counted platforms/claude-code-plugin/README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`" 2
     if [[ -f platforms/claude-code-plugin/README.md ]]; then
       awk -v prev="$fw_prev" -v new="$fw_ver" '
         marker { if ($0 == prev) $0 = new; marker = 0 }
@@ -251,8 +321,8 @@ if [[ -n "$fw_ver" ]]; then
     # ways (prose "...framework spec `X`..." + a `$ cat FRAMEWORK_SPEC_VERSION`
     # example block). Same fix as the plugin README, mirrored here so the Hermes
     # conformance block no longer re-drifts (HERMES-README-VERSION-DRIFT).
-    replace_in_file platforms/hermes/README.md \
-      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`"
+    replace_in_file_counted platforms/hermes/README.md \
+      "framework spec \`$fw_prev\`" "framework spec \`$fw_ver\`" 2
     if [[ -f platforms/hermes/README.md ]]; then
       awk -v prev="$fw_prev" -v new="$fw_ver" '
         marker { if ($0 == prev) $0 = new; marker = 0 }
@@ -347,12 +417,16 @@ if [[ -n "$hermes_ver" ]]; then
   hermes_prev="$(detect_version_in README.md 'hermes/v[0-9]+\.[0-9]+\.[0-9]+')"
   if [[ -n "$hermes_prev" && "$hermes_prev" != "$hermes_ver" ]]; then
     log "hermes sync $hermes_prev -> $hermes_ver"
-    replace_in_file README.md \
-      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
-    replace_in_file platforms/hermes/README.md \
-      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
-    replace_in_file docs/PARITY.md \
-      "hermes/v$hermes_prev" "hermes/v$hermes_ver"
+    # Each file holds exactly ONE current-state `hermes/vX.Y.Z` row; the
+    # counted guard (see HAZARD above replace_in_file_counted) refuses the
+    # substitution and warns when a historical mention re-enters the swept
+    # form instead of silently rewriting it (#405).
+    replace_in_file_counted README.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver" 1
+    replace_in_file_counted platforms/hermes/README.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver" 1
+    replace_in_file_counted docs/PARITY.md \
+      "hermes/v$hermes_prev" "hermes/v$hermes_ver" 1
 
     # platforms/hermes/pyproject.toml carries the bare package version, and
     # platforms/hermes/README.md has a `$ cat VERSION` example block with the
