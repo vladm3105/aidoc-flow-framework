@@ -1800,10 +1800,18 @@ def _check_trace_resolution(
         edited document alone, so every upstream tag it emits is
         unresolvable by construction and a wall of TRACE-RES-001 ERRORs
         about correctly-cited documents would drown the real findings
-        (LINT-TRACE-RES-SINGLE-FILE). Only citations resolvable within
-        the linted document itself (self doc-tags, elements hosted by
-        this document) are still checked. Directory runs — ``pre_merge``,
-        pre-commit, CI — pass ``whole_corpus=True`` and are unaffected.
+        (LINT-TRACE-RES-SINGLE-FILE). Treat a single-file run as
+        carrying NO trace-resolution coverage. The self-referential
+        arms below (a document citing its own ``doc_id``, or an element
+        it hosts itself) are retained defensively, but no fixture
+        exercises them and none could be constructed — do not read them
+        as partial coverage. Directory runs — ``pre_merge``, pre-commit,
+        CI — pass ``whole_corpus=True`` and are unaffected.
+
+        NOTE the gate is per ``lint_path`` TARGET, not per file:
+        ``__main__`` calls ``lint_path`` once per CLI argument, so
+        ``sdd_doc_lint a.md b.md`` disables the rule for both. No
+        current caller does this; see the follow-up issue.
       * Index documents (frontmatter ``artifact_type: <X>-INDEX``) — they
         intentionally carry no trace tags.
       * Placeholder / malformed tag values — covered by PH01 / ID01.

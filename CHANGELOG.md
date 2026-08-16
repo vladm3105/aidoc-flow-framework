@@ -12,6 +12,33 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — single-file lint runs no longer report every upstream trace tag as an ERROR (2026-08-15)
+
+Closes [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
+(`LINT-TRACE-RES-SINGLE-FILE`). `sdd_doc_lint` resolves `@<layer>:` tags
+against a `doc_index` built from **the paths passed on the invocation**, so
+linting one file made every upstream tag unresolvable by construction — 66
+false `TRACE-RES-001` ERRORs on the corpus's `SPEC-01` alone, and 11–66 across
+the other layer-02..08 documents. The plugin's `PostToolUse` review hook lints
+exactly one file, so its normal operating mode spent the 4000-byte findings
+budget drowning real findings. The fix gates the cross-document arm on the
+invocation shape: `whole_corpus=target.is_dir()` — directory runs (`pre_merge`,
+pre-commit, CI) are unaffected, measured rather than asserted: the example
+corpus yields an identical 46 findings before and after, and a one-document
+directory corpus an identical 32. A same-corpus directory run still fires
+(asserted by test), so the skip is invocation-shaped, not a blanket disable.
+
+Scope stated precisely, because an earlier draft of this entry overstated it:
+on a single-file run `TRACE-RES-001` does **not** fire at all. The self-
+referential arms (a document citing its own `doc_id`, or an element it hosts
+itself) are retained defensively, but no fixture exercises them and none could
+be constructed — treat single-file runs as carrying no trace-resolution
+coverage, not partial coverage.
+
+Applied to all **three** tracked copies of the linter — `tools/sdd_doc_lint/`,
+the plugin bundle's `platforms/claude-code-plugin/sdd_doc_lint/`, and
+`platforms/hermes/sdd_doc_lint/` — byte-identical before and after.
+
 ### Fixed — the version-sync fanout can no longer silently rewrite historical "shipped in vX" claims (2026-08-15)
 
 Closes [#405](https://github.com/vladm3105/aidoc-flow-framework/issues/405)
@@ -140,24 +167,6 @@ stages 5d/5e.
 - **Framework spec unchanged** at `0.40.0`;
   `platforms/claude-code-plugin/FRAMEWORK_SPEC_VERSION` still matches it. Hermes
   is untouched (founder decision O2 — no Hermes version bump in this initiative).
-
-### Fixed — single-file lint runs no longer report every upstream trace tag as an ERROR (2026-08-15)
-
-Closes [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
-(`LINT-TRACE-RES-SINGLE-FILE`). `sdd_doc_lint` resolves `@<layer>:` tags
-against a `doc_index` built from **the paths passed on the invocation**, so
-linting one file made every upstream tag unresolvable by construction — 66
-false `TRACE-RES-001` ERRORs on the corpus's `SPEC-01` alone, and 14–70 on
-every layer-02..08 document. The plugin's `PostToolUse` review hook lints
-exactly one file, so its normal operating mode spent the 4000-byte findings
-budget drowning real findings. The fix gates the cross-document arm on the
-invocation shape: `whole_corpus=target.is_dir()` — directory runs (`pre_merge`,
-pre-commit, CI) are byte-for-byte unaffected, and single-file runs still check
-everything resolvable within the edited document itself. A same-corpus
-directory run still fires (asserted by test), so the skip is invocation-shaped,
-not a blanket disable. Applied to both tracked copies of the linter
-(`tools/sdd_doc_lint/` and the plugin bundle's `platforms/claude-code-plugin/sdd_doc_lint/`,
-which were byte-identical before and after).
 
 ### Fixed — `SECURITY.md` described a security posture the repository does not have (2026-08-02)
 

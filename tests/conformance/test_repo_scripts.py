@@ -28,7 +28,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 
 # Modules under tests/unit/ that must run wherever conformance runs.
-REGISTERED = ("tests.unit.test_pin_currency_reader",)
+REGISTERED = (
+    "tests.unit.test_pin_currency_reader",
+    "tests.unit.test_sdd_doc_lint_trace_resolution",
+)
 
 
 def load_tests(loader, tests, pattern):  # noqa: ARG001 — unittest protocol
