@@ -36,6 +36,28 @@ def _run_lint(corpus: dict[str, str]) -> list[dict]:
         return json.loads(result.stdout or "[]")
 
 
+def _run_lint_single(corpus: dict[str, str], lint_key: str) -> list[dict]:
+    """Run sdd_doc_lint on ONE file (the ``on_author`` invocation shape).
+
+    LINT-TRACE-RES-SINGLE-FILE: the corpus of such a run is the edited
+    document alone, so cross-document resolution must not fire.
+    """
+    with tempfile.TemporaryDirectory() as td:
+        td_path = Path(td)
+        for rel, body in corpus.items():
+            target = td_path / rel
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(body, encoding="utf-8")
+        result = subprocess.run(
+            [sys.executable, "-m", "sdd_doc_lint", td_path / lint_key, "--format=json"],
+            env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        return json.loads(result.stdout or "[]")
+
+
 def _brd_doc(doc_id: str = "BRD-01", body_id: str = "BRD.01.07.aaaa") -> str:
     return textwrap.dedent(
         f"""
@@ -258,6 +280,50 @@ class TraceResolutionFloor(unittest.TestCase):
             index_findings,
             f"index doc should be skipped, got {index_findings}",
         )
+
+    def test_single_file_run_skips_cross_doc_resolution(self):
+        """LINT-TRACE-RES-SINGLE-FILE (#412).
+
+        Linting one file (the plugin ``on_author`` hook's normal mode) must
+        not report upstream tags as unresolvable — the corpus is the edited
+        document alone, so cross-document citations cannot resolve by
+        construction. A wall of such ERRORs both drowns real findings and
+        teaches the model that correct trace tags are broken.
+        """
+        findings = _run_lint_single(
+            {"docs/02_PRD/PRD-01.md": _prd_doc(brd_ref="BRD-01")},
+            "docs/02_PRD/PRD-01.md",
+        )
+        trace_findings = [f for f in findings if f["code"] == "TRACE-RES-001"]
+        self.assertFalse(
+            trace_findings,
+            f"single-file run must skip cross-doc resolution, got {trace_findings}",
+        )
+
+    def test_single_file_run_skip_is_invocation_shaped(self):
+        """The single-file skip is invocation-shaped, not a blanket disable.
+
+        The SAME corpus linted as a directory must still fire TRACE-RES-001
+        for the unresolvable ``@brd: BRD-99`` — only the single-file
+        (``on_author``) invocation shape skips cross-document resolution.
+        (Own-document element citations cannot fire in either mode: an
+        element citation whose host equals the citing doc's own doc_id
+        self-registers in the element index — pre-existing behavior,
+        unchanged by the single-file gate.)
+        """
+        corpus = {"docs/02_PRD/PRD-01.md": _prd_doc(brd_ref="BRD-99")}
+        single = _run_lint_single(corpus, "docs/02_PRD/PRD-01.md")
+        self.assertFalse(
+            [f for f in single if f["code"] == "TRACE-RES-001"],
+            f"single-file run must skip cross-doc resolution, got {single}",
+        )
+        directory = _run_lint(corpus)
+        trace_findings = [f for f in directory if f["code"] == "TRACE-RES-001"]
+        self.assertTrue(
+            trace_findings,
+            f"directory run of the same corpus must still fire, got {directory}",
+        )
+        self.assertIn("BRD-99", trace_findings[0]["message"])
 
 
 if __name__ == "__main__":
