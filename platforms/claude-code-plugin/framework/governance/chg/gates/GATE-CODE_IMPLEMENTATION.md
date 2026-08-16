@@ -176,7 +176,9 @@ Test Failure Analysis:
 When root cause is upstream:
 
 1. Document finding in current CHG
-2. Create new CHG for upstream fix
+2. Create a new CHG for the upstream fix, with its own
+   [`GATE_APPROVAL_FORM`](../templates/GATE_APPROVAL_FORM.md) — do **not** record
+   the upstream gates on the current change's form
 3. Route to appropriate gate
 4. Current change becomes dependent on upstream CHG
 

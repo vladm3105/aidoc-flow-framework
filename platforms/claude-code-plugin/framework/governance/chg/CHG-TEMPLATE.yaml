@@ -57,7 +57,7 @@ metadata:
       | Design     | SPEC/TDD change | GATE-06 | SPEC→TDD→IPLAN→Code |
       | Execution  | IPLAN change | GATE-08 | IPLAN→Code |
       | External   | Regulatory, vendor, market change | GATE-01 | Varies — full impact assessment |
-      | Feedback   | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC (bubble-up) |
+      | Feedback   | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC→ADR/BDD/EARS→PRD/BRD (bubble-up reaches GATE-08/06/03/01; the upstream fix is a separate dependent CHG — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
       | Spec       | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
 
       Workflow per source:

@@ -12,6 +12,125 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Framework Spec `0.41.0 → 0.41.1` — the gate approval form disagreed with the gate definitions, in both directions (GD-12) (2026-08-16)
+
+Closes #433, #434 and #445 — three defects from a downstream audit, all landing on
+`chg/templates/GATE_APPROVAL_FORM.md`. Each gate states its checks in three
+documents: the gate definition, `GATE_ERROR_CATALOG.md`, and the form. Only the
+form is filled in, and #434 records what that costs — a downstream project
+(BeeLocal / `b-local-privy`) produced two change records from the form alone,
+concluding "no second CHG record is minted", which is the inverse of what
+`GATE-CODE_IMPLEMENTATION.md` §6.2 requires.
+
+**Two of the three defects were larger than filed; the censuses run while fixing
+them are what found the remainder.**
+
+- **#433 — `GATE-03-E008` missing from the form.** Defined at
+  `GATE-03_REQUIREMENTS_ARCHITECTURE.md:79`, catalogued at
+  `GATE_ERROR_CATALOG.md:64`, absent from §2.2, whose rows stopped at E007. It
+  requires an external-source change to cite a CVE/advisory or record an explicit
+  `no advisory applies: <reason>`. It is one of GATE-03's **two**
+  Security-category ERRORs and the only one absent from the form — `GATE-03-E002`
+  is the other and is present at `:87`. (#433's body says "the only
+  Security-category ERROR"; `GATE_ERROR_CATALOG.md:58` classifies E002 the same
+  way, so the correct claim is the narrower one.) The form's
+  `GATE-03-W001: CVE reference added`, four lines below, reads as CVE coverage and
+  masks the absence — W001 is a non-blocking nudge, E008 blocks.
+  **Second instance, not in the issue:** its blast-radius table compared **five**
+  gates; there are six. `GATE-SPEC-W003` (also Security — an agent-facing spec
+  change without a recorded `SECURITY_REVIEW.md` assessment) is defined at
+  `GATE-SPEC_FRAMEWORK.md:105` and catalogued at `GATE_ERROR_CATALOG.md:158`, and
+  is likewise missing from the form's §2.6. **Both omissions came from one
+  commit, not from accumulated drift**: `817d9a1a` (2026-05-24) added E008 and
+  W003 to their gate definitions and to the catalog, and did not touch the form.
+  It also edited `tests/conformance/test_governance.py` — to add
+  `SECURITY_REVIEW.md` to `EXPECTED_FILES`, a guard over filenames — so the suite
+  was extended in the same change that introduced the drift and still could not
+  see it.
+- **#445 — the form's tag counts were stale, and the fabricated ADR chain had a
+  third carrier.** §2.2 said "EARS 2 / BDD 3 / ADR 4 upstream tags";
+  `LAYER_REGISTRY.yaml:51/71/84` says `[prd]`, `[ears]`, `[ears, bdd]` — 1/1/2, which
+  is also what the gate's own check table says. `GATE-03:233` separately restated
+  the full `@brd @prd @ears @bdd` chain as the requirement. **Third carrier, not in
+  the issue:** `GATE_ERROR_CATALOG.md` §9.1/§9.2 carried the same chain (pre-fix
+  `:206` and `:215-220`). It was missed because the report was framed on one
+  phrasing — "`ADR 4 upstream tags`" — while the catalog says "Add 4 traceability
+  tags to ADR" and "Add all 4 upstream traceability tags"; the tag block itself
+  carries no count at all. The class is the *requirement statement*, not the
+  wording of a count.
+
+  Full class across `framework/`, corrected — **6 statements in 3 files**, counted
+  as one per corrected statement:
+
+  | File (pre-fix line) | Statement |
+  |---|---|
+  | `GATE_APPROVAL_FORM.md:77` | EARS 2 upstream tags |
+  | `GATE_APPROVAL_FORM.md:78` | BDD 3 upstream tags |
+  | `GATE_APPROVAL_FORM.md:79` | ADR 4 upstream tags |
+  | `GATE-03_REQUIREMENTS_ARCHITECTURE.md:233` | ADR must have all 4 upstream tags (+ block `:235-238`) |
+  | `GATE_ERROR_CATALOG.md:206` | Add 4 traceability tags to ADR |
+  | `GATE_ERROR_CATALOG.md:215` | Add all 4 upstream traceability tags (+ block `:217-220`) |
+
+  Counted as contiguous edit regions instead it is 4; the unit is stated because
+  the figure is otherwise not re-derivable. Checked and genuinely not an instance:
+  `GATE-01_BUSINESS_PRODUCT.md:199` (`@brd` for PRD is 1 tag, exactly what
+  `required_tags: [brd]` requires).
+
+  Both resolution templates now also state what E007 does **not** fail on:
+  `@prd`/`@brd` above the required set are optional provenance, permitted by
+  `ADR-TEMPLATE.yaml`, `TRACEABILITY.md`, `REVIEW_TEAM.md` and
+  `playbooks/05_ADR/auditor.md`, subject only to resolving. A first draft of this
+  change wrote "do NOT add `@brd` or `@prd`" and would have made a blocking ERROR
+  contradict four surfaces that permit them; caught in pre-push review.
+
+  **Not swept, and outside this scope — filed as
+  [#518](https://github.com/vladm3105/aidoc-flow-framework/issues/518).** The census
+  above covers `framework/` (and, by vendoring, the plugin bundle). In the Hermes
+  reference corpus, `agent-skills/…/references/benchmark-adr-generation.md:46` states
+  ADR traceability as "references to all 4 upstream layers" — the same class, in a
+  platform corpus rather than the spec, so it is filed rather than folded in.
+  Its neighbour `adr-layer-planning-and-gap-review.md:69` ("Verify all 4 upstream
+  layers pass structural validation") matches the same grep and is **not** an
+  instance: it is about reading and validating upstream artifacts before authoring,
+  not about what the ADR must tag. Both dispositions are recorded on #518, because
+  "matched the grep" and "is the defect" are the distinction this whole entry is about.
+- **#434 — the form gave no route for a bubble-up.** Presenting all six gates as
+  sections of one form is correct for an `Upstream` entry and wrong for a `Feedback`
+  entry whose root cause is upstream, which `GATE-CODE_IMPLEMENTATION.md` §6.2
+  requires to become a **separate, dependent CHG**. Neither document referenced the
+  other, and the form collects the deciding datum (§1.1 Entry Gate) without using
+  it. Downstream this produced two change records re-cast as single five-gate forms
+  concluding "no second CHG record is minted" — the inverse of §6.2 step 2. Fixed
+  with a §2 note on the form, an artifact name in §6.2 step 2, and by extending
+  `CHG-TEMPLATE.yaml`'s Feedback routing cell, which stopped at `SPEC` and so read
+  as a floor, to the full reach the gate docs already state.
+
+- **New guard:** `tests/conformance/test_governance.py::GateCheckIdParity` asserts
+  set equality of check ids across all six gates × `{E, W}` × the three surfaces.
+  The form side compares **fillable items** (a line carrying `[ ]`), not mentions:
+  an earlier draft compared mentions, and pre-push review measured the resulting
+  hole — delete a code's row, add "(Note: `GATE-03-E008` exists.)" in prose, and the
+  guard passed while the check went unperformed, which is #433's failure mode
+  surviving in the direction the guard claimed to cover.
+  Mutation-tested, four killed: drop `GATE-03-E008`'s form row · drop
+  `GATE-SPEC-W003`'s form row · invent a form-only `GATE-06-E005` · the
+  row-plus-prose mutant above. **Two limits are stated in the docstring rather than
+  left implicit.** (i) One mutant survives by design — deleting a code's row from a
+  gate *definition's* check table leaves the id elsewhere in that document
+  (`GATE-03-E008` at its §7.1 row and its resolution heading), and that direction is
+  benign because the code still resolves in the catalog and the form. (ii) Only `E` and `W` are
+  compared; `GATE_ERROR_CATALOG.md:24` also defines `I` (Info), and the id pattern
+  matches exactly three digits. Neither exists today, so nothing is unguarded now —
+  but a future one would be invisible, which is a scope limit, not coverage.
+
+- **Bump:** `framework/VERSION` `0.41.0 → 0.41.1` — **PATCH**, because every item
+  restores agreement with a normative source that already said the correct thing
+  (the registry, the gate check tables, §6.2). Nothing here asks an author for
+  anything that was not already required, which is what separates it from GD-11's
+  MINOR. Both platforms' `FRAMEWORK_SPEC_VERSION` = `0.41.1`; plugin bundle
+  re-vendored by `tools/sync-plugin-framework.sh`. Propagation order is load-bearing
+  — `VERSION` → `sync-version-refs.sh` → `sync-plugin-framework.sh`.
+
 ### Changed — Framework Spec `0.40.0 → 0.41.0` — four independent corrections folded into one release (GD-11) (2026-08-16)
 
 **Four corrections that were ready at the same moment, folded to pay one release
