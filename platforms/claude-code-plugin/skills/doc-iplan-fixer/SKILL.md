@@ -79,12 +79,12 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
    | Lens | Agent |
    |------|-------|
-   | `tech_lead` | `solutions-architect` |
-   | `architect` | `solutions-architect` |
-   | `operator` | `devops-release-engineer` |
-   | `integration_lead` | `solutions-architect` |
-   | `auditor` | `traceability-auditor` |
-   | `chaos_engineer` | `chaos-engineer` |
+   | `tech_lead` | `aidoc-flow:solutions-architect` |
+   | `architect` | `aidoc-flow:solutions-architect` |
+   | `operator` | `aidoc-flow:devops-release-engineer` |
+   | `integration_lead` | `aidoc-flow:solutions-architect` |
+   | `auditor` | `aidoc-flow:traceability-auditor` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
 
    IPLAN crew weights: `{tech_lead: 30, architect: 25, operator: 15,
    integration_lead: 12, auditor: 10, chaos_engineer: 8}`.
@@ -110,7 +110,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `IPLAN-NN.F_fix_report_vNNN.md` with both the Fixes Applied table
    AND a Validation Slots index.

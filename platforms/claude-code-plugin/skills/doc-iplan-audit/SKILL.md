@@ -91,20 +91,20 @@ subagents** over a per-artifact blackboard, per
    see `REVIEW_TEAM.md` §"Weight allocation rules".
 3. **Map each lens to its plugin agent** via the table in
    `../review-team/SKILL.md`:
-   - `tech_lead` → `solutions-architect` (also IPLAN author)
-   - `architect` → `solutions-architect`
-   - `operator` → `devops-release-engineer`
-   - `integration_lead` → `solutions-architect` (new lens at IPLAN —
+   - `tech_lead` → `aidoc-flow:solutions-architect` (also IPLAN author)
+   - `architect` → `aidoc-flow:solutions-architect`
+   - `operator` → `aidoc-flow:devops-release-engineer`
+   - `integration_lead` → `aidoc-flow:solutions-architect` (new lens at IPLAN —
      covers cross-component coordination, sequencing handoffs, and the
      compatibility envelope between this IPLAN and prior/in-flight
-     work). Because `solutions-architect` carries three lens-roles at
+     work). Because `aidoc-flow:solutions-architect` carries three lens-roles at
      IPLAN (`architect`, `tech_lead`, `integration_lead`), each lens is
      dispatched as a **separate `Task` subagent invocation** with its
      own lens-specific playbook brief; do NOT collapse them into one
      call — the lenses score independently and the synthesizer
      deduplicates findings at fan-in.
-   - `auditor` → `traceability-auditor`
-   - `chaos_engineer` → `chaos-engineer`
+   - `auditor` → `aidoc-flow:traceability-auditor`
+   - `chaos_engineer` → `aidoc-flow:chaos-engineer`
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
    `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/08_IPLAN/<lens>.md`.
@@ -137,7 +137,7 @@ subagents** over a per-artifact blackboard, per
    or returns nothing, mark its slot failed and continue with the lenses
    that did return.
 6. **Dispatch the synthesizer.** Run a `Task` subagent
-   (`subagent_type=synthesizer`) against the slot directory. It writes
+   (`subagent_type=aidoc-flow:synthesizer`) against the slot directory. It writes
    **both** companion files (per `agents/synthesizer.md` §"Output"):
    - `.aidoc/review/08_IPLAN/<IPLAN-id>/verdict.json` — the
      authoritative machine-readable verdict (`combined_status`,
@@ -265,7 +265,7 @@ For each lens dispatched as a `Task` subagent:
    persona-output record. Set `ended_at: <now>`. Append a transition
    entry with the appropriate `to` state.
 
-Note: because `solutions-architect` carries three lens-roles at IPLAN
+Note: because `aidoc-flow:solutions-architect` carries three lens-roles at IPLAN
 (`architect`, `tech_lead`, `integration_lead`), the saga records
 **three independent branches** (one per lens-role), not one shared
 branch. Each branch transitions independently.

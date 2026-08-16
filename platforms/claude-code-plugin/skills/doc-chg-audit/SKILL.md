@@ -111,16 +111,16 @@ subagents** over a per-artifact blackboard, per
    `REVIEW_TEAM.md` §"Weight allocation rules".
 3. **Map each lens to its plugin agent** via the table in
    `../review-team/SKILL.md`:
-   - `integration_lead` → `solutions-architect` (CHG primary lens —
+   - `integration_lead` → `aidoc-flow:solutions-architect` (CHG primary lens —
      propagation completeness across affected layers, gate routing,
      blast-radius enumeration; also CHG author per `REVIEW_CREWS.yaml`)
-   - `architect` → `solutions-architect`
-   - `chaos_engineer` → `chaos-engineer`
-   - `operator` → `devops-release-engineer`
-   - `auditor` → `traceability-auditor`
-   - `security_engineer` → `security-engineer`
+   - `architect` → `aidoc-flow:solutions-architect`
+   - `chaos_engineer` → `aidoc-flow:chaos-engineer`
+   - `operator` → `aidoc-flow:devops-release-engineer`
+   - `auditor` → `aidoc-flow:traceability-auditor`
+   - `security_engineer` → `aidoc-flow:security-engineer`
 
-   Because `solutions-architect` carries TWO lens-roles at CHG
+   Because `aidoc-flow:solutions-architect` carries TWO lens-roles at CHG
    (`integration_lead` + `architect`), each lens is dispatched as a
    **separate `Task` subagent invocation** with its own lens-specific
    playbook brief; do NOT collapse them into one call — the lenses score
@@ -157,7 +157,7 @@ subagents** over a per-artifact blackboard, per
    or returns nothing, mark its slot failed and continue with the lenses
    that did return.
 6. **Dispatch the synthesizer.** Run a `Task` subagent
-   (`subagent_type=synthesizer`) against the slot directory. It writes
+   (`subagent_type=aidoc-flow:synthesizer`) against the slot directory. It writes
    **both** companion files (per `agents/synthesizer.md` §"Output"):
    - `.aidoc/review/09_CHG/<CHG-id>/verdict.json` — the authoritative
      machine-readable verdict (`combined_status`, `gate_ready`,
@@ -309,7 +309,7 @@ For each lens dispatched as a `Task` subagent:
    persona-output record. Set `ended_at: <now>`. Append a transition
    entry with the appropriate `to` state.
 
-Note: because `solutions-architect` carries two lens-roles at CHG
+Note: because `aidoc-flow:solutions-architect` carries two lens-roles at CHG
 (`integration_lead`, `architect`), the saga records **two independent
 branches** (one per lens-role), not one shared branch. Each branch
 transitions independently.

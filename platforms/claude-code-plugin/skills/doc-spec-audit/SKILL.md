@@ -86,11 +86,11 @@ subagents** over a per-artifact blackboard, per
    see `REVIEW_TEAM.md` §"Weight allocation rules".
 3. **Map each lens to its plugin agent** via the table in
    `../review-team/SKILL.md`:
-   - `architect` → `solutions-architect`
-   - `tech_lead` → `solutions-architect`
-   - `integration_lead` → `solutions-architect`
-   - `chaos_engineer` → `chaos-engineer`
-   - `security_engineer` → `security-engineer`
+   - `architect` → `aidoc-flow:solutions-architect`
+   - `tech_lead` → `aidoc-flow:solutions-architect`
+   - `integration_lead` → `aidoc-flow:solutions-architect`
+   - `chaos_engineer` → `aidoc-flow:chaos-engineer`
+   - `security_engineer` → `aidoc-flow:security-engineer`
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
    `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/06_SPEC/<lens>.md`.
@@ -113,7 +113,7 @@ subagents** over a per-artifact blackboard, per
      playbook check fired in every finding (`check: "C1"` or
      `check: "beyond-checklist:<principle-tag>"`); the synthesizer
      discards uncited findings.
-   - For the three lenses bound to `solutions-architect`
+   - For the three lenses bound to `aidoc-flow:solutions-architect`
      (`architect` / `tech_lead` / `integration_lead`), the brief must
      specify which lens to apply at Task dispatch time so the agent
      scopes its review to that lens.
@@ -127,7 +127,7 @@ subagents** over a per-artifact blackboard, per
    or returns nothing, mark its slot failed and continue with the lenses
    that did return.
 6. **Dispatch the synthesizer.** Run a `Task` subagent
-   (`subagent_type=synthesizer`) against the slot directory. It writes
+   (`subagent_type=aidoc-flow:synthesizer`) against the slot directory. It writes
    **both** companion files (per `agents/synthesizer.md` §"Output"):
    - `.aidoc/review/06_SPEC/<SPEC-id>/verdict.json` — the authoritative
      machine-readable verdict (`combined_status`, `content_score`,

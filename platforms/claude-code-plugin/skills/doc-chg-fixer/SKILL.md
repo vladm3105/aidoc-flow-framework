@@ -85,16 +85,16 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
    | Lens | Agent |
    |------|-------|
-   | `integration_lead` | `solutions-architect` |
-   | `architect` | `solutions-architect` |
-   | `chaos_engineer` | `chaos-engineer` |
-   | `operator` | `devops-release-engineer` |
-   | `auditor` | `traceability-auditor` |
-   | `security_engineer` | `security-engineer` |
+   | `integration_lead` | `aidoc-flow:solutions-architect` |
+   | `architect` | `aidoc-flow:solutions-architect` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+   | `operator` | `aidoc-flow:devops-release-engineer` |
+   | `auditor` | `aidoc-flow:traceability-auditor` |
+   | `security_engineer` | `aidoc-flow:security-engineer` |
 
    CHG crew weights: `{integration_lead: 30, architect: 20,
    chaos_engineer: 15, operator: 15, auditor: 10,
-   security_engineer: 10}`. Because `solutions-architect` carries two
+   security_engineer: 10}`. Because `aidoc-flow:solutions-architect` carries two
    lens-roles at CHG (`integration_lead` + `architect`), each lens is
    dispatched as a **separate `Task` subagent** with its own lens
    brief; the validation slots for the two roles are kept separate
@@ -121,7 +121,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `CHG-NN.F_fix_report_vNNN.md` with both the Fixes Applied table
    AND a Validation Slots index.

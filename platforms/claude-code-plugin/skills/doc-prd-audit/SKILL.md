@@ -86,12 +86,12 @@ subagents** over a per-artifact blackboard, per
    see `REVIEW_TEAM.md` §"Weight allocation rules".
 3. **Map each lens to its plugin agent** via the table in
    `../review-team/SKILL.md`:
-   - `product_owner` → `requirements-analyst`
-   - `architect` → `solutions-architect`
-   - `tech_lead` → `solutions-architect`
-   - `chaos_engineer` → `chaos-engineer`
-   - `security_engineer` → `security-engineer`
-   - `auditor` → `traceability-auditor`
+   - `product_owner` → `aidoc-flow:requirements-analyst`
+   - `architect` → `aidoc-flow:solutions-architect`
+   - `tech_lead` → `aidoc-flow:solutions-architect`
+   - `chaos_engineer` → `aidoc-flow:chaos-engineer`
+   - `security_engineer` → `aidoc-flow:security-engineer`
+   - `auditor` → `aidoc-flow:traceability-auditor`
 3a. **Load the layer-and-lens playbook.** For each lens in the crew,
    resolve and read the playbook content from
    `${CLAUDE_PLUGIN_ROOT}/framework/playbooks/02_PRD/<lens>.md`.
@@ -124,7 +124,7 @@ subagents** over a per-artifact blackboard, per
    or returns nothing, mark its slot failed and continue with the lenses
    that did return.
 6. **Dispatch the synthesizer.** Run a `Task` subagent
-   (`subagent_type=synthesizer`) against the slot directory. It writes
+   (`subagent_type=aidoc-flow:synthesizer`) against the slot directory. It writes
    **both** companion files (per `agents/synthesizer.md` §"Output"):
    - `.aidoc/review/02_PRD/<PRD-id>/verdict.json` — the authoritative
      machine-readable verdict (`combined_status`, `content_score`,

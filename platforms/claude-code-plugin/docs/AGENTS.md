@@ -109,13 +109,40 @@ of the name*. Your `code-reviewer` carries its own `tools:` and may well write.
 Qualify the identifier — `aidoc-flow:code-reviewer` — whenever you mean this one
 and the bare name is one you also define.
 
-> ⚠️ **Known gap.** This plugin's own skills and the `pm-orchestrator` delegation
-> table still dispatch by **bare** name (`code-reviewer`, `synthesizer`, …). On a
-> machine that defines any of those names at a higher-priority scope, the
-> plugin's own instructions route to *your* agent rather than to the one
-> documented here — including for the read-only gates. Tracked as
-> `PREPROD-L7-BARE-DISPATCH` in `plans/FRAMEWORK-TODO.md`, issue
+> ✅ **Gap closed (2026-08-16).** Every dispatch reference this plugin ships —
+> the `pm-orchestrator` delegation table, the `review-team` and `doc-*-audit`
+> lens→agent maps, the nine `doc-*-fixer` tables *and* their step-6 synthesizer
+> dispatch, `doc-brd`'s `subagent_type=` literal, the `README.md` lens→agent
+> table, and the prose mapping in this file — now uses the **scoped** form
+> (`aidoc-flow:code-reviewer`, `aidoc-flow:synthesizer`, …), so a same-named
+> agent at a higher-priority scope can no longer capture the plugin's own
+> dispatches, including the read-only gates. The consumer-facing advice above
+> still applies to *your* unqualified mentions of these names. Was
+> `PREPROD-L7-BARE-DISPATCH` →
 > [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417).
+>
+> **What the guard does and does not pin.**
+> `tests/conformance/platforms/test_agent_dispatch_scoping.py` covers table
+> cells, `lens → agent` mappings, `subagent_type` literals and *imperative*
+> prose ("run the `…` subagent"). Measured by mutation: 164 reversions to the
+> bare form, **145 killed, 19 survived**. All 19 survivors are *descriptive*
+> mentions — an agent as the subject of a sentence, or an explanation of a lens
+> binding — not instructions to dispatch. A green run therefore means no
+> dispatch **position** is bare; it does not mean no bare name exists anywhere
+> in these files.
+>
+> **Not a dispatch position, despite looking like one:** the `agent:` frontmatter
+> key on the 51 lens playbooks under `framework/playbooks/`. The plugin never
+> *resolves* lens → agent from it — that comes from the crew table in
+> `../skills/review-team/SKILL.md` — and GD-06 sanctions the key as an
+> *engine-defined* executor that each platform maps for itself. Note the weaker
+> claim: the key's text **is** read, because the nine `doc-*-audit` skills inline
+> whole playbook files (frontmatter included) into each lens brief. It cannot
+> become a dispatch because no recipient declares `Task` — only
+> `pm-orchestrator` does, and it is never handed an inlined playbook. **If a lens
+> agent is ever granted `Task`, revisit this.** It is also not scopeable here:
+> the vendored `framework/` bundle is byte-identical to the canonical spec by
+> conformance, and the spec carries no platform names.
 
 Two facts about the `tools:` declarations themselves:
 
@@ -144,12 +171,14 @@ Beyond the nine lifecycle agents, two **review lenses** support the multi-person
 | `security-engineer` | opus | read-only | external-threat lens — threat model, trust boundaries, abuse cases, missing authn/authz/integrity controls |
 | `synthesizer` | sonnet | read-only | chairperson — reduces the crew's blackboard slots into one scored, coverage-aware report |
 
-The remaining framework lenses map onto the lifecycle agents (e.g. `qa_lead` →
-`test-architect`; `architect`/`tech_lead`/`integration_lead` → `solutions-architect`;
-`auditor` → `traceability-auditor`); see the full mapping in
-`../skills/review-team/SKILL.md`. The crew fans out as `Task` subagents writing to
-the git-ignored `.aidoc/review/` blackboard; the `synthesizer` reduces the slots
-and the gate stays the deterministic structural floor + no unresolved P0/P1.
+The remaining framework lenses map onto the lifecycle agents:
+`qa_lead` → `aidoc-flow:test-architect`;
+`architect`/`tech_lead`/`integration_lead` → `aidoc-flow:solutions-architect`;
+`auditor` → `aidoc-flow:traceability-auditor`.
+See the full mapping in `../skills/review-team/SKILL.md`. The crew fans out as
+`Task` subagents writing to the git-ignored `.aidoc/review/` blackboard; the
+`aidoc-flow:synthesizer` agent reduces the slots and the gate stays the
+deterministic structural floor + no unresolved P0/P1.
 
 ---
 

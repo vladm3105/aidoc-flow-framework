@@ -79,13 +79,13 @@ fallback applies to other adaptation knobs (`section_toggles`).
 
    | Lens | Agent |
    |------|-------|
-   | `architect` | `solutions-architect` |
-   | `tech_lead` | `solutions-architect` |
-   | `integration_lead` | `solutions-architect` |
-   | `chaos_engineer` | `chaos-engineer` |
-   | `security_engineer` | `security-engineer` |
+   | `architect` | `aidoc-flow:solutions-architect` |
+   | `tech_lead` | `aidoc-flow:solutions-architect` |
+   | `integration_lead` | `aidoc-flow:solutions-architect` |
+   | `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+   | `security_engineer` | `aidoc-flow:security-engineer` |
 
-   For the three lenses bound to `solutions-architect`
+   For the three lenses bound to `aidoc-flow:solutions-architect`
    (`architect` / `tech_lead` / `integration_lead`), the validation
    brief must specify which lens to apply at Task dispatch time so the
    agent scopes its validation to that lens.
@@ -114,7 +114,8 @@ fallback applies to other adaptation knobs (`section_toggles`).
 5. **Revert regressions.** If any lens returns new P0/P1 on the patch,
    revert that patch and flag `manual_required` for the original
    finding. **Never silently keep a regressing fix.**
-6. **Dispatch the synthesizer once**, after all patches are validated,
+6. **Dispatch the synthesizer once**
+   (`subagent_type=aidoc-flow:synthesizer`), after all patches are validated,
    to emit the unified fix report. Persist
    `SPEC-NN.F_fix_report_vNNN.md` with both the Fixes Applied table
    AND a Validation Slots index.

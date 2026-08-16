@@ -59,16 +59,16 @@ the closest agent with that lens brief):
 
 | Framework lens | Plugin agent |
 |----------------|--------------|
-| `requirements_specialist`, `business_analyst`, `product_owner` | `requirements-analyst` |
-| `architect`, `tech_lead`, `integration_lead` | `solutions-architect` |
-| `qa_lead` | `test-architect` |
-| `operator` | `devops-release-engineer` |
-| `auditor` | `traceability-auditor` |
-| `chaos_engineer` | `chaos-engineer` |
-| `security_engineer` | `security-engineer` |
-| `synthesizer` | `synthesizer` |
-| `drafter` (create) | the layer's author agent |
-| `fixer` (remediate) | `software-engineer` / `../doc-<layer>-fixer/SKILL.md` |
+| `requirements_specialist`, `business_analyst`, `product_owner` | `aidoc-flow:requirements-analyst` |
+| `architect`, `tech_lead`, `integration_lead` | `aidoc-flow:solutions-architect` |
+| `qa_lead` | `aidoc-flow:test-architect` |
+| `operator` | `aidoc-flow:devops-release-engineer` |
+| `auditor` | `aidoc-flow:traceability-auditor` |
+| `chaos_engineer` | `aidoc-flow:chaos-engineer` |
+| `security_engineer` | `aidoc-flow:security-engineer` |
+| `synthesizer` | `aidoc-flow:synthesizer` |
+| `drafter` (create) | the layer's author agent — BRD/PRD/EARS `aidoc-flow:requirements-analyst`; ADR/SPEC `aidoc-flow:solutions-architect`; TDD `aidoc-flow:test-architect`; IPLAN `aidoc-flow:pm-orchestrator` |
+| `fixer` (remediate) | `aidoc-flow:software-engineer` / `../doc-<layer>-fixer/SKILL.md` |
 
 ## The blackboard
 
@@ -156,12 +156,12 @@ initialize the saga from scratch).
    `*_score`/`readiness_score`/`audit_score`) — not read, cite, or weight it when
    forming its `lens_score` (`REVIEW_TEAM.md` GD-05: the lens reads the artifact
    directly, so the score is de-anchored by instruction).
-3. **Reduce + synthesize**: run the `synthesizer` subagent over all slots. It
+3. **Reduce + synthesize**: run the `aidoc-flow:synthesizer` subagent over all slots. It
    dedups by (`location`+`id`), takes max severity, **unions** recommendations,
    computes the weighted/capped score + coverage, and writes `report.md`.
 4. **Gate**: see below.
 
-`pm-orchestrator` (or the invoking `doc-<layer>-audit`) is the dispatcher.
+`aidoc-flow:pm-orchestrator` (or the invoking `doc-<layer>-audit`) is the dispatcher.
 
 ## Scoring, coverage & the gate
 
@@ -206,7 +206,7 @@ framework defaults. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/ADAPT
 
 - Model + scoring/gate contract: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_TEAM.md`
 - Per-layer crews + weights: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_CREWS.yaml`
-- Lens agents: `chaos-engineer`, `security-engineer`, `synthesizer` (+ the lifecycle agents in `agents/`)
+- Lens agents: `aidoc-flow:chaos-engineer`, `aidoc-flow:security-engineer`, `aidoc-flow:synthesizer` (+ the lifecycle agents in `agents/`)
 - Structural gate: `../doc-validator/SKILL.md`, `../doc-<layer>-audit/SKILL.md`
 - Remediation loop: `${CLAUDE_PLUGIN_ROOT}/framework/governance/REVIEW_REMEDIATION_FLOW.md`
 - Untrusted-input handling: `${CLAUDE_PLUGIN_ROOT}/framework/governance/SECURITY_REVIEW.md`
