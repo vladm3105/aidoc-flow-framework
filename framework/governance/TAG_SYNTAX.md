@@ -52,6 +52,33 @@ These use the document form and are **exempt** from `REFGRAN01`:
   navigation (`@tdd: TDD-01` as a "Downstream" hint on a SPEC): informational,
   points at a not-yet-or-elsewhere-realized layer.
 
+## Provenance tag — `@chg: CHG-NN` (change back-reference)
+
+`@chg:` is **not a trace tag**: it carries no lineage (CHG is a governance
+overlay, not one of the 8 registry layers, and appears in no layer's
+`required_tags` or `can_reference`). It is a **provenance back-reference** from
+a modified artifact to the change record that authorized the edit:
+
+- **Form:** `@chg: CHG-NN` — always document-level (`CHG-NN` matches the CHG
+  record's `chg_id` in `CHG-TEMPLATE.yaml`; CHG declares no elements).
+- **Carrier:** every artifact listed in the CHG's
+  `implementation.artifacts_modified[]` with `change_type: modified` (created
+  artifacts cite the CHG in their own Document Control origin; deleted
+  artifacts obviously carry nothing).
+- **Placement:** in the modified artifact's **traceability section**. One rule,
+  no fallback: all eight layer templates declare that section, so a
+  template-conformant artifact always has the slot. (An earlier wording offered
+  a Document Control fallback "where the layer template has no traceability
+  section" — unreachable, since none lacks one — and then added "anywhere the
+  tag is discoverable", which cancelled both placements and left a **P1** check
+  citing an undecidable rule. Two auditors would have graded the same artifact
+  differently.)
+- **Semantics:** without it, a modified artifact is an unsourced edit
+  indistinguishable from a hand-edit. The CHG auditor check **C1** (P1)
+  enforces it on every modified artifact; this section is the definition C1
+  cites. Pipe-delimited cardinality (above) applies unchanged when one
+  artifact was touched by several CHGs.
+
 ## Per-layer necessary-upstream tags
 
 Each layer's `required_tags` (its direct upstream — see `TRACEABILITY.md`) use

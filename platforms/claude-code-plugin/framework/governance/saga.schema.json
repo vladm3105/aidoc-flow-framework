@@ -26,8 +26,8 @@
     },
     "artifact_id": {
       "type": "string",
-      "pattern": "^[A-Z]+-[0-9]{2}$",
-      "description": "Short artifact ID like BRD-01, PRD-02. Pattern matches the 2-digit NN format mandated by framework/governance/ID_NAMING_STANDARDS.md §'Format'. If ID_NAMING_STANDARDS is ever revised to allow 3+ digits, this pattern must change in lockstep."
+      "pattern": "^[A-Z]+-[0-9]{2,}$",
+      "description": "Short artifact ID like BRD-01, PRD-02. Pattern matches the two-or-more-digit NN format of LAYER_REGISTRY.yaml id_patterns.document and ID_NAMING_STANDARDS.md §'Format' (three-plus-digit IDs like BRD-100 are registry-valid). The three surfaces must change in lockstep."
     },
     "layer": {
       "type": "string",

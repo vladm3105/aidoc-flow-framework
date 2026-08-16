@@ -138,6 +138,18 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **SPEC-0.41.0-FOLD (2026-08-16, framework `0.40.0 → 0.41.0`, GD-11).** Four
+  independent spec corrections shipped as one release, because GATE-SPEC binds
+  concurrent `framework/**` edits to a single `VERSION` — the unit of release is
+  the version, not the defect. `saga.schema.json` accepts registry-valid 3+ digit
+  document IDs; `TAG_SYNTAX.md` **defines** `@chg: CHG-NN`, which the CHG
+  auditor's C1 had required at P1 while it was defined nowhere (the one
+  additive-normative item, and why this is MINOR); `AI_ASSISTANT_RULES.md`
+  generation-order `from` clauses now match the registry's `required_tags`
+  instead of contradicting the same document's doctrine; and the PRD auditor's
+  C3 section list matches `PRD-TEMPLATE.yaml`, which declares no NFR section.
+  Each keeps its own issue and changelog entry, so the per-defect record
+  survives the fold.
 - **GOV-TODO-ISSUE-SPLIT (2026-07-26, framework `0.39.0 → 0.40.0`, GD-10).** A
   backlog file is a capture queue, not a publication channel. Tier 2 gains a
   second surface: the queue is unchanged, and an entry that is actionable by a

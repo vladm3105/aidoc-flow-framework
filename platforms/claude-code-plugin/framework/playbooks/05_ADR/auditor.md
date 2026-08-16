@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.40.0"
+framework_spec_version: "0.41.0"
 ---
 # auditor lens — ADR layer
 

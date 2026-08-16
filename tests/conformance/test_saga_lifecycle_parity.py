@@ -384,6 +384,33 @@ class SagaRealJournalConformance(unittest.TestCase):
         self.assertEqual(data2["iteration"], 2)
 
 
+class SagaIdPatternLockstep(unittest.TestCase):
+    """#444: the schema's `artifact_id` pattern must equal the registry's
+    `id_patterns.document` pattern — the schema once rejected registry-valid
+    3+ digit IDs (``{2}`` vs ``{2,}``) and nothing asserted the lockstep the
+    schema's own description demanded. REVIEW_SAGA.md quotes the registry
+    pattern verbatim as authoritative; ID_NAMING_STANDARDS.md agrees with the
+    registry; only the schema was narrower."""
+
+    def test_artifact_id_pattern_matches_registry_document_pattern(self):
+        import yaml
+
+        schema = json.loads(_SCHEMA_PATH.read_text(encoding="utf-8"))
+        schema_pattern = schema["properties"]["artifact_id"]["pattern"]
+        registry = yaml.safe_load(
+            (_REPO_ROOT / "framework" / "registry" / "LAYER_REGISTRY.yaml").read_text(
+                encoding="utf-8"
+            )
+        )
+        registry_pattern = registry["id_patterns"]["document"]
+        self.assertEqual(
+            schema_pattern,
+            registry_pattern.replace("\\d", "[0-9]"),
+            "saga.schema.json artifact_id and LAYER_REGISTRY.yaml id_patterns.document "
+            "diverged — documents valid at one surface are rejected at the other",
+        )
+
+
 class SagaTransitionInvariant(unittest.TestCase):
     """The Hermes mirror of `test_saga_driver_invariants.test_invalid_transition_raises`
     (the D-0050 residual): `transition_run_status` enforces the spec table — an illegal

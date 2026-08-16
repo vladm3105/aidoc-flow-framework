@@ -20,10 +20,10 @@
 2. PRD — product features, user stories (from BRD)
 3. EARS — formal WHEN-THE-SHALL-WITHIN requirements (from PRD)
 4. BDD — Given-When-Then scenarios with spec_trace to SPEC (from EARS)
-5. ADR — architecture decisions (from BDD + PRD topics)
-6. SPEC — component interfaces, data models, behavior contracts (from ADR + BDD)
-7. TDD — test case definitions with inputs/outputs/edge cases (from SPEC + BDD)
-8. IPLAN — file manifest, bash commands, session handoff (from TDD)
+5. ADR — architecture decisions (from EARS + BDD)
+6. SPEC — component interfaces, data models, behavior contracts (from EARS + BDD + ADR)
+7. TDD — test case definitions with inputs/outputs/edge cases (from EARS + BDD + ADR + SPEC)
+8. IPLAN — file manifest, bash commands, session handoff (from SPEC + TDD)
 9. Code — implementation from IPLAN
 ```
 
