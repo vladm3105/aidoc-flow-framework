@@ -12,6 +12,55 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.40.0 → 0.41.0` — four independent corrections folded into one release (GD-11) (2026-08-16)
+
+**Four corrections that were ready at the same moment, folded to pay one release
+fanout instead of four.** The fixes were authored as four PRs
+(PR #460 / issue #444, PR #461 / #448, PR #462 / #450, PR #463 / #446), each
+correct and each independently reviewable. All four were red on **GATE-SPEC E005**
+(`framework/**` changed, `framework/VERSION` not bumped). They are folded here with
+the bump, ratified as **GD-11**.
+
+**The justification is cost, not impossibility — an earlier draft of this entry
+claimed the latter and was wrong.** E005 as implemented
+(`tests/chg/spec_gate.py:84`) only requires `framework/VERSION` to appear in the
+diff; it does not constrain the value, so four sequential merges at
+`0.41.0`/`0.42.0`/`0.43.0`/`0.44.0` would each have passed, exactly as this repo
+already serialises doc PRs on `CHANGELOG.md`. What folding actually avoids is four
+rebases, four version bumps, four ~170-file fanouts and four sets of platform
+re-pins. Recorded precisely because asserting an unverified blocker is the failure
+D-0068 names.
+
+Each fix keeps its own entry below and its own issue, so the per-defect record
+survives the fold and `git log` still carries four authored commits. **MINOR** rather
+than PATCH because one item is additive-normative: `@chg:` gains a definition.
+
+- **`governance/saga.schema.json`** — `artifact_id` pattern `^[A-Z]+-[0-9]{2}$` →
+  `^[A-Z]+-[0-9]{2,}$`. A correction: `LAYER_REGISTRY.yaml` `id_patterns.document`
+  and `ID_NAMING_STANDARDS.md` §"Format" already permit three-plus digits, so the
+  schema rejected registry-valid IDs like `BRD-100`. The description now names all
+  three surfaces as the lockstep set instead of asserting a 2-digit mandate.
+- **`governance/TAG_SYNTAX.md`** — **defines `@chg: CHG-NN`**, which the CHG
+  auditor's check **C1** had made a P1 requirement while the tag was defined in no
+  spec surface. Documented as a **provenance back-reference, not a trace tag**: CHG
+  is a governance overlay, not one of the eight registry layers, and appears in no
+  layer's `required_tags` or `can_reference`.
+- **`AI_ASSISTANT_RULES.md`** — generation-order `from` clauses realigned to the
+  registry's `required_tags` and the necessary-upstream doctrine (ADR from EARS+BDD;
+  SPEC from EARS+BDD+ADR; TDD from EARS+BDD+ADR+SPEC; IPLAN from SPEC+TDD). The old
+  clauses contradicted doctrine stated in the same document.
+- **`playbooks/02_PRD/{auditor,chaos_engineer}.md`** — the auditor's C3
+  mandatory-section list realigned to `PRD-TEMPLATE.yaml`, which declares no NFR
+  section, so the check had demanded sections the template does not define.
+
+- **Bump:** `framework/VERSION` `0.40.0 → 0.41.0`; both platforms'
+  `FRAMEWORK_SPEC_VERSION` = `0.41.0`; `framework_spec_version` declarations synced by
+  `scripts/sync-version-refs.sh`; plugin bundle re-vendored byte-identically by
+  `tools/sync-plugin-framework.sh` (123 files). Propagation order is load-bearing —
+  `VERSION` → `sync-version-refs.sh` → `sync-plugin-framework.sh`; reversing it lands
+  drifted bundled playbooks and a red bundle guard. Conformance green
+  (368 passed, 781 subtests).
+
 ### Fixed — the plugin dispatched its agents by bare name, so a consumer's same-named agent won (2026-08-16)
 
 Closes [#417](https://github.com/vladm3105/aidoc-flow-framework/issues/417)
@@ -279,6 +328,73 @@ documented role as a reference config instead of a machine-specific dead one.
 A previous changelog-recorded sweep rewrote stale `/opt/data/ucx_framework/.venv`
 MCP paths to that placeholder but missed this file — the class was declared
 fixed while the live instance survived.
+
+### Fixed — `saga.schema.json` rejected registry-valid 3+ digit document IDs (2026-08-15)
+
+Closes [#444](https://github.com/vladm3105/aidoc-flow-framework/issues/444).
+The saga journal schema validated `artifact_id` with `^[A-Z]+-[0-9]{2}$`
+(exactly two digits) while `LAYER_REGISTRY.yaml` `id_patterns.document` and
+`ID_NAMING_STANDARDS.md` both say **two or more** (`{2,}`) — so a project past
+99 documents of a type (or using an `IPLAN-001`-style convention) wrote journal
+entries the machine contract rejected, though the registry, the linter, and the
+review-team docs all accepted them. The pattern now matches the registry, and a
+new lockstep conformance test
+(`test_saga_lifecycle_parity.py::SagaIdPatternLockstep`) asserts the schema and
+registry `document` patterns never diverge again — the schema's own description
+demanded the lockstep but nothing enforced it. The plugin's vendored governance
+copy is synced.
+
+### Fixed — the CHG auditor's P1 `@chg: CHG-NN` requirement cited a tag defined nowhere (2026-08-15)
+
+Closes [#448](https://github.com/vladm3105/aidoc-flow-framework/issues/448).
+`playbooks/09_CHG/auditor.md` made the `@chg: CHG-NN` back-reference a **P1**
+requirement (check C1), but the form appeared in no other spec surface — not
+`TAG_SYNTAX.md`, not the registry, not the CHG template — so an auditor demanded
+a citation whose syntax, carriers, and placement no document specified, and a
+corrected artifact could not know the required shape. `TAG_SYNTAX.md` now
+defines it in a new §"Provenance tag": document-level form matching the CHG
+record's `chg_id`, carried by every artifact in the CHG's
+`implementation.artifacts_modified[]` with `change_type: modified`, placed in
+the artifact's traceability section (or Document Control where the template has
+none), pipe-delimited cardinality unchanged — and explicitly **not** a trace
+citation (CHG is a governance overlay in no layer's `required_tags`, so the
+linter's `_TAG` correctly ignores it). The auditor playbook's two references now
+cite the definition, and C1 names the real template field
+(`artifacts_modified[]`, not the per-artifact propagated-diff list inside
+`impact_assessment` — that section exists and two sibling lenses depend on it; the
+per-artifact list inside it never did
+list). The plugin's vendored framework mirror is synced.
+
+### Fixed — AI_ASSISTANT_RULES generation-order `from` clauses contradicted the registry (2026-08-15)
+
+Closes [#450](https://github.com/vladm3105/aidoc-flow-framework/issues/450).
+The file a consuming project points its assistants at "before authoring"
+taught exactly the wrong upstream citations: ADR "(from BDD + PRD topics)"
+omitted EARS and added out-of-set PRD; SPEC "(from ADR + BDD)" and TDD
+"(from SPEC + BDD)" omitted EARS (and ADR for TDD); IPLAN "(from TDD)" omitted
+SPEC — each contradicting both the same file's own necessary-upstream doctrine
+(line 12) and `LAYER_REGISTRY.yaml` `required_tags`. The four clauses now
+match the registry exactly: ADR (from EARS + BDD), SPEC (from EARS + BDD +
+ADR), TDD (from EARS + BDD + ADR + SPEC), IPLAN (from SPEC + TDD). This is the
+trace-fabrication/omission class the doctrine exists to prevent: an assistant
+following the old text would emit a `@prd` tag on an ADR the linter's TAG01
+rejects, and omit the `@ears` tag it demands.
+
+### Fixed — the PRD auditor's mandatory-section list was 9 of 15 positions wrong (2026-08-15)
+
+Closes [#446](https://github.com/vladm3105/aidoc-flow-framework/issues/446).
+`playbooks/02_PRD/auditor.md` C3 pinned "mandatory sections" against a PRD
+template that no longer exists — §1 Overview / §4 Non-Goals / §6 Personas /
+§12 NFRs / §14 Glossary / §15 Document Control and more, 9 of 15 positions
+wrong versus `PRD-TEMPLATE.yaml`, and the template has **no NFR section** at
+all. An auditor following it flagged valid PRDs and never checked the real §2
+Executive Summary / §6 Goals & Objectives / §10 Customer-Facing Content /
+§14 Traceability. C3 now lists the template's actual §1–§15 (naming §7b as
+optional), C4's glossary pointer moves §14→§15, C5's Document Control pointer
+§15→§1, the altitude-note's section list matches real titles, and
+`chaos_engineer.md`'s §12 "non-functional anchor" wording point at
+§12 Constraints & Assumptions (the section that exists). The plugin's vendored
+playbook mirror is synced.
 
 ### Changed — Claude Code plugin `0.24.0` → `0.25.0` (2026-08-02)
 

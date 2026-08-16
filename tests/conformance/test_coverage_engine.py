@@ -170,6 +170,30 @@ class TagSyntaxPage(unittest.TestCase):
                 # the carve-outs (self-tags + downstream pointers) are documented
                 self.assertIn("Self-tag", page)
 
+    def test_chg_provenance_tag_is_defined_and_the_auditor_can_cite_it(self):
+        """`@chg: CHG-NN` has a definition, and C1's citation resolves (GD-11).
+
+        #448 was exactly this defect in the other direction: the CHG auditor's
+        C1 made the tag a **P1** requirement while the tag was defined on no spec
+        surface. The definition is the only additive-normative item in the
+        `0.41.0` release and so the only reason it is MINOR — and it shipped with
+        no guard, which is the drift that produced #448. Both halves are pinned
+        here: delete the section, or let C1's cross-reference go stale, and this
+        fails.
+        """
+        for base in (FRAMEWORK, plugin_bundle_root() / "framework"):
+            page = (base / "governance" / "TAG_SYNTAX.md").read_text(encoding="utf-8")
+            auditor = (base / "playbooks" / "09_CHG" / "auditor.md").read_text(encoding="utf-8")
+            with self.subTest(copy=str(base)):
+                self.assertIn("@chg: CHG-NN", page)
+                # non-trace is the load-bearing half: CHG is a governance overlay,
+                # not one of the 8 registry layers, so it carries no lineage.
+                self.assertIn("**not a trace tag**", page)
+                # placement must stay a single decidable rule — a P1 check cites it
+                self.assertIn("One rule,", page)
+                # and the auditor must still point at this page
+                self.assertIn("TAG_SYNTAX", auditor)
+
 
 class SPEC00CoverageSection(unittest.TestCase):
     def test_coverage_section_and_necessary_upstream_present(self):
