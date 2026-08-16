@@ -12,6 +12,70 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — the backlog moved from a file to GitHub issues; `plans/FRAMEWORK-TODO.md` retired (2026-08-15)
+
+`plans/FRAMEWORK-TODO.md` is no longer the backlog. It is a tombstone carrying
+an entry → issue mapping, and adding to it is now a defect.
+
+**Measured, which is what forced the change.** `GOV-TODO-ISSUE-SPLIT`
+(2026-07-26) ran two surfaces: the file as triage queue, an issue only when an
+entry cleared a three-test bar. On 2026-08-15 the Open section held **48
+entries, 41 of them with no issue at all** — findings visible only to a session
+already inside this repo, which is precisely the latency the rule existed to
+fix. Two surfaces did not split the load; one of them absorbed it.
+
+**All 42 untracked entries were migrated verbatim** to
+[#466](https://github.com/vladm3105/aidoc-flow-framework/issues/466)–[#504](https://github.com/vladm3105/aidoc-flow-framework/issues/504)
+and [#505](https://github.com/vladm3105/aidoc-flow-framework/issues/505)–[#507](https://github.com/vladm3105/aidoc-flow-framework/issues/507)
+(42 rather than 41 because one entry was written as a bold pseudo-heading
+instead of a `###`, so it had been silently nested inside its neighbour and was
+not independently trackable). Not all 42 are findings: three are consumer-feedback
+triage **section headers** (#492, #498, #501) and one is a superseded
+cross-reference stub (#490), migrated for provenance and closable as `not planned`
+once their successors are confirmed. The last three were caught by review: the
+link-detector read only an entry's heading and its **first two body lines**, so
+three entries citing a merged **PR** (#422) or a closed issue about a different
+defect (#385) *there* were wrongly read as already tracked. Stated precisely
+because the first draft of this entry said the detector "matched any `#NNN`",
+which a fourth entry falsifies — `SYNC-SECRET-SCANNING-KNOBS` cites #422 one line
+lower and was classified correctly (filed as #467). A root cause is a claim about
+a distribution (D-0072 §3). One of them was `SDD-CORPUS-UNVERIFIED`, a founder-gated
+corpus defect and a named next-task — precisely the disappearance this migration
+exists to prevent. Moved, not summarised — a re-derived finding
+contracts, and the entries carry `file:line` evidence worth more than their
+titles. Each issue has a Provenance section naming its original entry and a
+warning to re-verify citations, since some predate spec `0.40.0`. Three slugs
+already referenced by an existing issue (#365 ×2, #454) were filed separately
+with a cross-link rather than commented onto a different defect. The 87 closed
+entries were not migrated; git holds them.
+
+Also filed [#465](https://github.com/vladm3105/aidoc-flow-framework/issues/465)
+for `HERMES-MCP-FLOATING-DEP`, which had sat captured-but-unpublished since
+2026-07-31 while `Hermes pytest` failed to collect on every run.
+
+**Not changed — deferred with a named owner, and the earlier framing of this
+was wrong.** An earlier draft of this entry said the spec merely described a
+backlog file as a capture queue for *consuming* projects. It does not:
+`DOC_GOVERNANCE_CORE.md:13` (Principle 9) names `plans/FRAMEWORK-TODO.md` **by
+path** as the Tier-2 framework-repo surface, and `FRAMEWORK_FEEDBACK_LOG.md`
+`:55`/`:59`/`:87` does the same, with `:51` carrying a consumer-facing
+instruction to add entries to it directly. The census, run rather than sampled
+(`grep -rn 'FRAMEWORK-TODO' framework/`), is **five** files — those two plus
+`governance/REVIEW_TEAM.md:149`, `layers/02_PRD/PRD-TEMPLATE.yaml:353`, and
+`templates/framework-feedback-log.template.md:8`, the consumer scaffold. The last
+two also cite the retired ordinal scheme ("item #19"), so they are doubly dead.
+**Four** of the five ship vendored in the plugin bundle, so the dead reference
+reaches consumers. #508 owns the full `framework/**` census, not just the first
+two files. This repo's new rule additionally drops the
+three-test bar and the two-surface split that **GD-10** ratified at spec
+`0.40.0`, making this a divergence from the spec *model*, not a file rename.
+Editing `framework/**` trips GATE-SPEC-E005, so it is deferred to
+[#508](https://github.com/vladm3105/aidoc-flow-framework/issues/508), which owns
+it; [#509](https://github.com/vladm3105/aidoc-flow-framework/issues/509) owns the
+14 remaining non-spec pointers. Retiring the file **retired no gate** — no test,
+script or workflow reads it (grepped `tests/**`, `scripts/**`,
+`.github/workflows/**`, `tools/**`: zero matches).
+
 ### Fixed — single-file lint runs no longer report every upstream trace tag as an ERROR (2026-08-15)
 
 Closes [#412](https://github.com/vladm3105/aidoc-flow-framework/issues/412)
