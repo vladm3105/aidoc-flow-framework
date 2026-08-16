@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — `AGENTS.md` routed to the tracker (2026-08-15)
+
+Companion to the retirement below, split out to respect the ≤3-surface
+governance cap and recorded here because the PR itself shipped without a
+changelog entry. `AGENTS.md` is where Codex, Gemini CLI, Copilot and Hermes
+start (`CLAUDE.md` §orientation), and its "Filing gaps" section still instructed
+them to append to `plans/FRAMEWORK-TODO.md` — whose first lines now read *"Do not
+add entries to it"* — while reproducing the retired two-surface rule and its
+three-test bar. `AGENTS.md` states its own repair obligation ("Where the two
+disagree, `CLAUDE.md` wins — fix this file"), so leaving it would have left every
+non-Claude agent following a superseded rule into a tombstone.
+
+The section is rewritten to the one-surface rule and gains what it never carried:
+search-before-filing, the open-match-comment vs closed-match-cross-link
+distinction, `Closes #N` with the `Closes #A and #B` trap, and the
+`--body-file -` trap with its read-back proof.
+
 ### Changed — the backlog moved from a file to GitHub issues; `plans/FRAMEWORK-TODO.md` retired (2026-08-15)
 
 `plans/FRAMEWORK-TODO.md` is no longer the backlog. It is a tombstone carrying
