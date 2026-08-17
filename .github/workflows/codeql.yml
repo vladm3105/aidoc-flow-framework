@@ -29,7 +29,7 @@ concurrency:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/codeql.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/codeql.yml@ci/v3.0.0
     permissions:
       actions: read
       contents: read
