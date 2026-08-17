@@ -21,7 +21,7 @@ permissions:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/trivy-scan.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/trivy-scan.yml@ci/v3.0.0
     with:
       # Report-only rollout. Flip to true to block PRs on an IaC/config misconfiguration.
       fail-on-findings: false
