@@ -72,6 +72,28 @@ class DocLint(unittest.TestCase):
         }
         self.assertIn("BRD-2", broken_id02, "digit-leading malformed id must still draw ID02")
 
+    def test_sty02_size_exemption_honors_numbered_and_unnumbered_headings(self):
+        """#458: Numbering a section heading (e.g. '## 15. Glossary') must not
+        silently strip the STY02 size exemption from exempt sections."""
+        from sdd_doc_lint import _SIZE_EXEMPT_HEADINGS, _normalise_heading
+
+        for heading in (
+            "## Glossary",
+            "## 15. Glossary",
+            "## Document Control",
+            "## 1. Document Control",
+            "## Traceability",
+            "## 14. Traceability",
+            "## Revision History",
+            "## 16. Revision History",
+        ):
+            key = _normalise_heading(heading.replace("## ", ""))
+            self.assertIn(
+                key,
+                _SIZE_EXEMPT_HEADINGS,
+                f"heading {heading!r} normalized to {key!r} which should be exempt",
+            )
+
 
 if __name__ == "__main__":
     unittest.main()

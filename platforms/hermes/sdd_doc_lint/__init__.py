@@ -264,8 +264,8 @@ _DOC_TARGET_WORDS = {
     "IPLAN": 1500,
 }
 # Sections that legitimately carry mostly tabular metadata; exempt from the
-# section-size warning.
-_SIZE_EXEMPT_HEADINGS = {"document control", "traceability", "glossary", "revision history"}
+# section-size warning. Keys match _normalise_heading() output.
+_SIZE_EXEMPT_HEADINGS = {"document_control", "traceability", "glossary", "revision_history"}
 
 _FRONTMATTER_FENCE = re.compile(r"^---\s*$")
 _SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
@@ -562,9 +562,9 @@ def _check_style(
     # the flat 200-word default when no template entry matches.
     section_targets = _load_section_targets(artifact, registry)
     for heading, start, words in _section_word_counts(body):
-        if heading.strip().lower() in _SIZE_EXEMPT_HEADINGS:
-            continue
         key = _normalise_heading(heading)
+        if key in _SIZE_EXEMPT_HEADINGS:
+            continue
         target = section_targets.get(key, _SECTION_TARGET_WORDS)
         blocking = int(target * _BLOCKING_FACTOR)
         if words > blocking:

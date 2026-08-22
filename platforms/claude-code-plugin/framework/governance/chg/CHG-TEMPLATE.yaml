@@ -50,22 +50,23 @@ metadata:
     _guidance: |
       Where the change originates determines the entry gate:
 
-      | Source     | Description | Entry Gate | Affected Layers |
-      |-----------|-------------|------------|-----------------|
-      | Upstream   | BRD/PRD change cascading down | GATE-01 | PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
-      | Midstream  | EARS/BDD/ADR change affecting neighbors | GATE-03 | EARS↔BDD↔ADR→SPEC→TDD→IPLAN |
-      | Design     | SPEC/TDD change | GATE-06 | SPEC→TDD→IPLAN→Code |
-      | Execution  | IPLAN change | GATE-08 | IPLAN→Code |
-      | External   | Regulatory, vendor, market change | GATE-01 | Varies — full impact assessment |
-      | Feedback   | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC→ADR/BDD/EARS→PRD/BRD (bubble-up reaches GATE-08/06/03/01; the upstream fix is a separate dependent CHG — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
-      | Spec       | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
+      | Source               | Description | Entry Gate | Affected Layers |
+      |----------------------|-------------|------------|-----------------|
+      | Upstream             | BRD/PRD change cascading down | GATE-01 | PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
+      | Midstream            | EARS/BDD/ADR change affecting neighbors | GATE-03 | EARS↔BDD↔ADR→SPEC→TDD→IPLAN |
+      | Design               | SPEC/TDD change | GATE-06 | SPEC→TDD→IPLAN→Code |
+      | Execution            | IPLAN change | GATE-08 | IPLAN→Code |
+      | External (business)  | Regulatory, compliance, partner demands | GATE-01 | PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
+      | External (technical) | Security CVE, dependency update, 3rd-party API | GATE-03 | EARS/BDD/ADR→SPEC→TDD→IPLAN→Code |
+      | Feedback             | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC→ADR/BDD/EARS→PRD/BRD (bubble-up reaches GATE-08/06/03/01; the upstream fix is a separate dependent CHG — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
+      | Spec                 | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
 
       Workflow per source:
         1. Classify change (C1/C2/C3)
-        2. Route to entry gate based on source
+        2. Route to entry gate based on source (assessing entry criteria against the change request)
         3. Assess impact on affected layers
         4. Update affected artifacts
-        5. Verify changes pass gate criteria
+        5. Verify changes pass gate criteria (including §3 validation checklist)
         6. Record change in CHG document
 
     value: null  # upstream | midstream | design | execution | external | feedback | spec

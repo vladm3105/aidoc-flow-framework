@@ -6,7 +6,7 @@ IPLAN is part of the **Implementation Bridge** (L7-L8, no C4 level). It is the e
 
 ## Purpose
 
-Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per TDD component. Each IPLAN declares the file creation order (test-first from TDD), provides executable bash commands, tracks session progress across stateless executor calls, and maintains an audit trail from specification to delivered files.
+Mandatory execution layer bridging TDD (L7) to source code. One IPLAN per SPEC component. Each IPLAN declares the file creation order (test-first from TDD), provides executable bash commands, tracks session progress across stateless executor calls, and maintains an audit trail from specification to delivered files.
 
 ## Permanent vs Temporary Plans
 
@@ -56,7 +56,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 
 | Area | IPLAN |
 |---|---|
-| Upstream contract | TDD + SPEC + ADR |
+| Upstream contract | TDD + SPEC |
 | Execution tracking | File manifest with status markers |
 | Scope ownership | Execution-only (business scope remains in upstream docs) |
 | Sequencing model | File-by-file test-first creation order |

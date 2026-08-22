@@ -931,6 +931,7 @@ traceability:
     Cross-linking tags (machine-parseable):
       @depends: BRD-NN — hard prerequisite BRD(s)
       @discoverability: BRD-NN (rationale) — related BRDs for AI search
+      @chg: CHG-NN — authorizing change record (when modified under CHG)
 
   tags:
     - "@brd: BRD-NN"
@@ -940,6 +941,8 @@ traceability:
       - "@depends: BRD-NN"
     discoverability:
       - "@discoverability: BRD-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
 
   objectives_to_requirements:
     - objective_id: "BRD.NN.04.xxxx"

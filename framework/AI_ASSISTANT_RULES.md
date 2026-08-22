@@ -65,4 +65,4 @@ Each AI agent session follows this protocol:
 
 - Non-active layer artifacts in current authoring workflows
 - Legacy subtype taxonomies when generating active artifacts
-- CHG gates — a governance overlay, outside layer authoring
+- CHG gates — a governance overlay, outside layer authoring (**when authoring a CHG record itself**, `governance/chg/` is the contract: `CHG-TEMPLATE.yaml` is the primary artifact, `templates/GATE_APPROVAL_FORM.md` its companion, and `gates/GATE-*.md` define the checks. See especially `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up.)

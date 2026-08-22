@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-CODE: Implementation Gate
 
-> **Position**: Before Code (source code implementation)
+> **Position**: Between execution planning and Code (source code implementation)
 > **Change Sources**: Implementation, Feedback (defects), Cascade from GATE-08
 > **Purpose**: Validate implementation changes and ensure proper root cause analysis
 
 ## 1. Purpose & Scope
 
-GATE-CODE validates changes to source code. It is the final gate before deployment. All code changes must pass TDD test suites, maintain code quality standards, and demonstrate that fixes address root causes rather than symptoms. IPLAN (L8) is the immediate upstream documentation layer.
+GATE-CODE validates changes to source code. It is the final gate before deployment. All code changes must pass TDD test suites, maintain code quality standards, and demonstrate that fixes address root causes rather than symptoms. IPLAN (L8) is the immediate upstream documentation layer. Entry criteria are assessed against the change request; source code and test suite are implemented and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layer Covered
 

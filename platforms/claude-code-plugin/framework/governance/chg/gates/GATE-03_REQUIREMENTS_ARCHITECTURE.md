@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-03: Requirements & Architecture Gate (L3-L5)
 
-> **Position**: Before Layers 3-5 (EARS, BDD, ADR)
+> **Position**: Between upstream changes and Layers 3-5 (EARS, BDD, ADR)
 > **Change Sources**: Midstream, External (technical), Upstream cascade from GATE-01
 > **Purpose**: Validate formal requirements, acceptance scenarios, and architecture decisions before cascading to design
 
 ## 1. Purpose & Scope
 
-GATE-03 validates changes to formal requirements (EARS), behavior-driven scenarios (BDD), and architecture decisions (ADR). These changes form the decision bridge between product requirements and component design. Incorrect or incomplete changes at this level propagate errors through all downstream layers.
+GATE-03 validates changes to formal requirements (EARS), behavior-driven scenarios (BDD), and architecture decisions (ADR). These changes form the decision bridge between product requirements and component design. Incorrect or incomplete changes at this level propagate errors through all downstream layers. Entry criteria are assessed against the change request; layer artifacts are updated/authored and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layers Covered
 

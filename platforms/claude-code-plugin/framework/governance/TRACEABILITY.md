@@ -126,10 +126,11 @@ Each layer must achieve a readiness score >=90/100 before generating its immedia
 | IPLAN-Ready | >=90 | TDD test case coverage, threshold definitions, execution order |
 | EXEC-Ready | >=90 | IPLAN file manifest completeness, execution commands, session handoff |
 
-## Cross-Document Dependencies
+## Cross-Document Dependencies & Governance Tags
 
 - `@depends: TYPE-NN` — Hard prerequisite. Downstream cannot exist without upstream.
 - `@discoverability: TYPE-NN` — Related document for AI search context.
+- `@chg: CHG-NN` — Provenance back-reference to authorizing change record.
 - `@threshold: TYPE.NN.key` — Performance or quality threshold reference.
 
 ## Reuse (satisfied-by-reference) — REUSE-MANIFEST-001

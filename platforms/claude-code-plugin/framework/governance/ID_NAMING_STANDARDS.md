@@ -208,6 +208,7 @@ traceability.
 | `@threshold: TYPE.NN.key` | Performance thresholds | `@threshold: BRD.01.perf.p95_latency` |
 | `@depends: TYPE-NN` | Hard prerequisite | `@depends: BRD-01` |
 | `@discoverability: TYPE-NN` | Related document | `@discoverability: BRD-02` |
+| `@chg: CHG-NN` | Change back-reference (provenance) | `@chg: CHG-01` |
 
 > **Templated `xxxx` is a template-only placeholder.** The `TYPE.NN.SS.xxxx`
 > form above is *pattern notation* — the shape of a future ID — and is valid

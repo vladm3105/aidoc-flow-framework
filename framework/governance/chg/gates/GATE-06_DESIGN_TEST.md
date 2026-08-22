@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-06: Design & Test Gate (L6-L7)
 
-> **Position**: Before Layers 6-7 (SPEC, TDD)
+> **Position**: Between architecture decisions and Layers 6-7 (SPEC, TDD)
 > **Change Sources**: Design, Midstream cascade from GATE-03, implementation feedback
 > **Purpose**: Validate technical specifications and test definitions before execution planning
 
 ## 1. Purpose & Scope
 
-GATE-06 validates changes to technical specifications (SPEC) and test case definitions (TDD). SPEC defines component contracts; TDD defines how those contracts are validated. Changes must maintain SPEC→TDD consistency. This gate ensures specification quality before IPLAN execution begins.
+GATE-06 validates changes to technical specifications (SPEC) and test case definitions (TDD). SPEC defines component contracts; TDD defines how those contracts are validated. Changes must maintain SPEC→TDD consistency. This gate ensures specification quality before IPLAN execution begins. Entry criteria are assessed against the change request; layer artifacts are updated/authored and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layers Covered
 

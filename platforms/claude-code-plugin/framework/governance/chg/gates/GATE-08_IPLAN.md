@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-08: IPLAN Gate (L8)
 
-> **Position**: Before Layer 8 (IPLAN)
+> **Position**: Between design/test and Layer 8 (IPLAN)
 > **Change Sources**: Design cascade from GATE-06, execution adjustment
 > **Purpose**: Validate implementation plans before code generation — the last documentation gate before source code
 
 ## 1. Purpose & Scope
 
-GATE-08 validates changes to Implementation Plans (IPLAN). IPLAN is the execution bridge between TDD test definitions and source code — its file manifest, command sequence, session handoff, and audit trail must be correct and complete. Errors in IPLAN result in incorrect or incomplete code generation.
+GATE-08 validates changes to Implementation Plans (IPLAN). IPLAN is the execution bridge between TDD test definitions and source code — its file manifest, command sequence, session handoff, and audit trail must be correct and complete. Errors in IPLAN result in incorrect or incomplete code generation. Entry criteria are assessed against the change request; layer artifacts are updated/authored and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layer Covered
 

@@ -146,7 +146,7 @@ blocking-findings sources via the structural-lint floor (per
 
 Component decomposition is currently a PRD subsection (Option A,
 2026-06-11). A future promotion to a first-class `02b_DECOMP` layer
-is tracked as Option B in `plans/FRAMEWORK-TODO.md` item #19.
+is tracked as Option B in issue #491.
 
 ### Fixer-introduced regressions (CLEANUP-PR-B item 10)
 

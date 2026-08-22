@@ -415,6 +415,8 @@ traceability:
       - "@depends: ADR-NN"
     discoverability:
       - "@discoverability: ADR-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
 
   health_score:
     spec_ready: "[X]%"

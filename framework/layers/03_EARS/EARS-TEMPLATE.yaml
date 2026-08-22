@@ -381,6 +381,8 @@ traceability:
       - "@depends: EARS-NN"
     discoverability:
       - "@discoverability: EARS-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
 
   threshold_references:
     _guidance: "Use @threshold: convention. Do NOT reference PRD section numbers."

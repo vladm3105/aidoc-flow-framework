@@ -43,7 +43,7 @@ See template `metadata.id_standard` for details.
 |---------------------|----------|
 | Position | L7 (after SPEC) |
 | Test case shape | Section 4 test case definitions |
-| Upstream | SPEC + ADR + BDD |
+| Upstream | EARS + BDD + ADR + SPEC |
 | Downstream | IPLAN |
 | Template model | Single unified template |
 | Core assets | Template + index + README |
