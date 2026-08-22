@@ -12,7 +12,7 @@
 #    _example      — sample values for reference
 #
 #  Downstream: SPEC (Layer 6)
-#  Upstream: BRD (L1), PRD (L2), EARS (L3), BDD (L4)
+#  Upstream: EARS (L3), BDD (L4)
 # =============================================================================
 
 id: ADR-NN
@@ -40,7 +40,7 @@ metadata:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
         Architecture clarity (25%): required decision sequenceDiagram (@diagram: sequence-*) present, integration points defined
         Consequence analysis (20%): positive outcomes, trade-offs, costs documented
-        Traceability (15%): upstream PRD/EARS/BDD/BRD tags complete
+        Traceability (15%): upstream EARS/BDD tags complete
         Verification (10%): success criteria defined, BDD cross-refs present
 
       Status-to-score mapping:
@@ -127,7 +127,6 @@ document_control:
       (NOT Draft/In Review/Approved)
 
     SPEC-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
-    Originating Topic: links to PRD Section 14 (ADR topic elaboration).
     Each ADR addresses ONE architecture decision. New decisions = new ADR.
   status: Proposed  # Proposed | Accepted | Deprecated | Superseded
   date: "YYYY-MM-DD"
@@ -136,8 +135,6 @@ document_control:
     - "[Tech Lead Name]"
   author: "[Author Name]"
   version: "1.0"
-  originating_topic: "@prd: PRD.NN.14.xxxx"
-  brd_reference: "@brd: BRD.NN.08.xxxx"
   spec_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
 
   revision_history:
@@ -389,15 +386,11 @@ verification:
 traceability:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    ADR synthesizes inputs from all upstream layers.
-    Originating topic comes from PRD Section 14 (ADR topic elaboration).
+    ADR synthesizes inputs from its necessary upstream layers.
     Necessary-upstream tags: @ears + @bdd required (Layer 5 required_tags).
-    @prd/@brd are optional provenance (recorded in context), not required.
 
   tags:
     - "@adr: ADR-NN"
-
-  originating_topic: "@prd: PRD.NN.14.xxxx"
 
   upstream:
     bdd_references:
@@ -415,6 +408,8 @@ traceability:
       - "@depends: ADR-NN"
     discoverability:
       - "@discoverability: ADR-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
 
   health_score:
     spec_ready: "[X]%"

@@ -9,7 +9,7 @@ description: >
   strategy. A downstream-heavy quality role — the success-story data shows the
   largest delivery gains come from compressing testing, so this agent is built
   out in depth.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 tags:
   - agent

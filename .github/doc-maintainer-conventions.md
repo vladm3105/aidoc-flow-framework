@@ -56,7 +56,6 @@ a preference:
 | `tools/sdd_doc_lint/fixtures/**` | Deliberately-malformed sample documents that the doc-linter's own tests assert against. "Fixing" one breaks its test. |
 | `tests/acceptance/expected_warnings/**` | Pinned-warning manifests, matched bidirectionally — a fixed fixture *fails* until its entry is deleted. Editing these needs the paired fixture change. |
 | `plans/DECISIONS.md`, `framework/governance/DECISIONS.md` | A decision log is authored by whoever made the decision, with their reasoning. Proposing entries here would fabricate provenance. Classified high-risk as defence-in-depth in case the allowlist is ever widened. |
-| `plans/FRAMEWORK-TODO.md`, `plans/HERMES-BACKLOG.md` | Work queues. Whether an item is open is a judgment about reality, not a documentation fact. |
 | `CLAUDE.md` | The working agreement. Changes are governance PRs with a founder in the loop. |
 | `CHANGELOG.md` | **Removed from `allowed_paths` 2026-07-30.** Structurally the wrong shape for a whole-file rewrite: the changelog is append-only, and the only correct edit is an insert under `## [Unreleased]`, which needs the head of the file. The size limit merely makes that unavoidable — at 281 KB it is past the apply step's hard 200 KB full-file-regeneration refusal, so proposing it is a guaranteed failed run ([aidoc-flow-ci#354](https://github.com/vladm3105/aidoc-flow-ci/issues/354)). The **per-platform** changelogs (91 KB, 33 KB) remain in scope and keep the same `## [Unreleased]` discipline. |
 

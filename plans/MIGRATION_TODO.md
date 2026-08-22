@@ -1,11 +1,10 @@
-# Migration TODO — Multi-Platform Restructure
+# Migration TODO — retired (historical archive)
 
-> **✅ MIGRATION COMPLETE (2026-05-21).** All phases done through the
-> Phase 5 cutover (project `v1.0.0`). This tracker is now a historical
-> record of how the multi-platform project was built. The only
-> remaining action is user-side: the `main` force-replace + tag
-> pushes (P5-T6 below) and the CI-workflow relocation. Pre-migration
-> history lives on the protected `legacy-ucx-v3.2-read-only` branch.
+> **✅ MIGRATION COMPLETE (2026-05-21) — RETIRED TOMBSTONE.**
+> This file is a frozen historical record of the multi-platform migration. Do not add tasks to it.
+> All active tasks, backlogs, and defect tracking live in **[GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues)**.
+
+---
 
 Live task tracker for the migration. Phases mirror `ROADMAP.md`.
 Status legend: `[ ]` open · `[~]` in progress · `[x]` done (committed + pushed).

@@ -7,7 +7,7 @@ description: >
   (ADR), and Technical Specifications (SPEC). Owns C4 modeling and Mermaid
   diagrams. Focuses on architectural reasoning and specification quality, not
   code implementation.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: opus
 tags:
   - agent

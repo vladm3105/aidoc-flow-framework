@@ -26,11 +26,9 @@
       "ROADMAP.md",
       "plans/HANDOFF.md",
       "plans/DECISIONS.md",
-      "plans/FRAMEWORK-TODO.md",
-      "plans/HERMES-BACKLOG.md",
       "framework/governance/DECISIONS.md",
       "CLAUDE.md"
     ],
-    "_comment_high_risk_paths": "Five of these — plans/DECISIONS.md, plans/FRAMEWORK-TODO.md, plans/HERMES-BACKLOG.md, framework/governance/DECISIONS.md, CLAUDE.md — are intentionally NOT in allowed_paths: defence-in-depth if the allowlist is ever widened, per doc-maintainer-conventions.md. (ROADMAP.md and plans/HANDOFF.md ARE allowlisted, and their high-risk classification is load-bearing.) The five are not drift: planner.py:187 rejects a non-allowlisted path before classification is reached, planner.py:197 already treats anything not low-risk as high-risk, and high_risk_paths is never shown to the model and never widens the allowlist — so listing them is inert today and correct tomorrow."
+    "_comment_high_risk_paths": "Three of these — plans/DECISIONS.md, framework/governance/DECISIONS.md, CLAUDE.md — are intentionally NOT in allowed_paths: defence-in-depth if the allowlist is ever widened, per doc-maintainer-conventions.md. (ROADMAP.md and plans/HANDOFF.md ARE allowlisted, and their high-risk classification is load-bearing.) The three are not drift: planner.py:187 rejects a non-allowlisted path before classification is reached, planner.py:197 already treats anything not low-risk as high-risk, and high_risk_paths is never shown to the model and never widens the allowlist — so listing them is inert today and correct tomorrow."
   }
 }

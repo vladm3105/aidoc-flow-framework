@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-03: Requirements & Architecture Gate (L3-L5)
 
-> **Position**: Before Layers 3-5 (EARS, BDD, ADR)
+> **Position**: Between upstream changes and Layers 3-5 (EARS, BDD, ADR)
 > **Change Sources**: Midstream, External (technical), Upstream cascade from GATE-01
 > **Purpose**: Validate formal requirements, acceptance scenarios, and architecture decisions before cascading to design
 
 ## 1. Purpose & Scope
 
-GATE-03 validates changes to formal requirements (EARS), behavior-driven scenarios (BDD), and architecture decisions (ADR). These changes form the decision bridge between product requirements and component design. Incorrect or incomplete changes at this level propagate errors through all downstream layers.
+GATE-03 validates changes to formal requirements (EARS), behavior-driven scenarios (BDD), and architecture decisions (ADR). These changes form the decision bridge between product requirements and component design. Incorrect or incomplete changes at this level propagate errors through all downstream layers. Entry criteria are assessed against the change request; layer artifacts are updated/authored and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layers Covered
 
@@ -191,7 +191,7 @@ After passing GATE-03:
 | GATE-03-E003 | Syntax | EARS syntax violation | Fix WHEN-THE-SHALL-WITHIN format |
 | GATE-03-E004 | Syntax | BDD format violation | Fix Given-When-Then structure |
 | GATE-03-E005 | Traceability | EARS missing upstream tag | Add @prd (the required necessary-upstream tag) |
-| GATE-03-E006 | Traceability | BDD missing upstream tag | Add @ears (the required necessary-upstream tag) |
+| GATE-03-E006 | Traceability | BDD missing upstream tag | Add ears: upstream list to scenario (the required necessary-upstream carrier) |
 | GATE-03-E007 | Traceability | ADR missing upstream tags | Add @ears, @bdd (the required necessary-upstream tags) |
 | GATE-03-E008 | Security | External change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 | GATE-03-W001 | Documentation | CVE reference missing | Add CVE-YYYY-NNNN to change document |

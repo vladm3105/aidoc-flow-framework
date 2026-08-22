@@ -115,26 +115,39 @@ class PluginReleaseMetadata(unittest.TestCase):
 
     def test_root_readme_plugin_release_matches_plugin_version(self):
         text = ROOT_README.read_text(encoding="utf-8")
-        tag = f"claude-code-plugin/v{_plugin_version()}"
-        self.assertIn(tag, text)
+        version = _plugin_version()
+        # Must appear in the Platforms table row: | **Claude Code plugin** | ... | `claude-code-plugin/v<version>` |
+        pattern = re.compile(
+            rf"\|\s*\*\*Claude Code plugin\*\*\s*\|[^|]+\|\s*`claude-code-plugin/v{re.escape(version)}`"
+        )
+        self.assertRegex(
+            text, pattern, f"Platforms table in README.md missing plugin version `{version}`"
+        )
 
     def test_claude_md_current_state_matches_plugin_version(self):
         # CLAUDE.md's "Current state" line quotes the plugin version as
         # `Claude Code plugin `<X.Y.Z>``; the sync hook keeps it current
         # (SYNC-CLAUDE-PLUGIN-VERSION-GAP). Guard against re-drift.
         text = (REPO_ROOT / "CLAUDE.md").read_text(encoding="utf-8")
-        self.assertIn(f"Claude Code plugin `{_plugin_version()}`", text)
+        first_section = text[:2000]
+        self.assertIn(f"Claude Code plugin `{_plugin_version()}`", first_section)
 
     def test_parity_doc_matches_plugin_release_inventory(self):
         text = PARITY_DOC.read_text(encoding="utf-8")
-        self.assertIn(f"claude-code-plugin/v{_plugin_version()}", text)
+        self.assertIn(f"`claude-code-plugin/v{_plugin_version()}`", text)
         # v0.4.0 ships 52 skills total: 50 canonical active + 2 deprecated stubs.
         self.assertIn("52 (50 active + 2 deprecated)", text)
         self.assertNotIn("**54 skills** total", text)
 
     def test_tagging_doc_lists_current_plugin_release(self):
         text = TAGGING_DOC.read_text(encoding="utf-8")
-        self.assertIn(f"claude-code-plugin/v{_plugin_version()}", text)
+        # Must appear in a table row: | `claude-code-plugin/v<VERSION>` | ... |
+        pattern = re.compile(rf"\|\s*`claude-code-plugin/v{re.escape(_plugin_version())}`\s*\|")
+        self.assertRegex(
+            text,
+            pattern,
+            f"docs/TAGGING.md inventory table missing row for claude-code-plugin/v{_plugin_version()}",
+        )
         # v0.4.0 ships 52 skills total: 50 canonical active + 2 deprecated stubs.
         self.assertIn("52 (50 active + 2 deprecated)", text)
 
@@ -143,7 +156,7 @@ class PluginReleaseMetadata(unittest.TestCase):
         # Bumped 0.15.1 → 0.15.2 for the framework/README.md Layout fix (PATCH:
         # doc clarification; any framework/** change trips GATE-SPEC-E005).
         self.assertEqual(_plugin_framework_spec_version(), framework_version())
-        self.assertEqual(_plugin_framework_spec_version(), "0.41.1")
+        self.assertEqual(_plugin_framework_spec_version(), "0.41.2")
 
     def test_skill_inventory_matches_canonical_release_set(self):
         actual = {path.parent.name for path in (PLUGIN / "skills").glob("*/SKILL.md")}

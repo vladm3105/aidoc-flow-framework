@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: requirements_specialist
 weight: 35
 agent: requirements-analyst
-framework_spec_version: "0.41.1"
+framework_spec_version: "0.41.2"
 ---
 # requirements_specialist lens — EARS layer
 
@@ -21,14 +21,14 @@ refinement question: does each requirement appear as a syntactically
 correct EARS line that can be tested and traced without interpretation?
 
 EARS syntax enforces precision through pattern selection. Each of the
-six canonical patterns (ubiquitous, event-driven, state-driven,
-optional, unwanted, complex) constrains what information must be
+five canonical patterns (ubiquitous, event-driven, state-driven,
+optional, unwanted; plus complex compositions combining them) constrains what information must be
 present. Ubiquitous: "The system shall…" — no trigger, no state, always
 true. Event-driven: "When <trigger>, the system shall…" State-driven:
 "While <state>, the system shall…" Optional: "Where <feature> is
 included, the system shall…" Unwanted: "If <condition>, the system
-shall <response>." Complex: combines two or more of the above. Any
-line that cannot be classified into one of these six patterns is not an
+shall <response>." Complex composition combines two or more of the five patterns (composition is not a sixth pattern). Any
+line that cannot be classified into one of these patterns is not an
 EARS line — it is prose masquerading as a requirement.
 
 This lens does NOT evaluate: whether the stated behaviours are
@@ -44,8 +44,9 @@ Every finding MUST cite which check fired. Findings without a check citation
 are out-of-scope and discarded by the synthesizer.
 
 **C1 — Canonical EARS pattern used.** Every requirement line must begin
-with or be classifiable under one of the six EARS canonical patterns:
-ubiquitous, event-driven, state-driven, optional, unwanted, or complex.
+with or be classifiable under one of the five EARS canonical patterns
+(ubiquitous, event-driven, state-driven, optional, unwanted) or their
+complex composition (composition is not a sixth pattern).
 Lines that read as prose obligations ("The system should handle…",
 "Users can expect…", "The platform manages…") without pattern structure
 are not EARS-conformant and cannot be tested or traced. Missing →

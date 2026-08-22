@@ -51,7 +51,7 @@ import yaml
 d = yaml.safe_load(open('$FILE'))
 print(d.get('id','MISSING'))
 " 2>/dev/null || echo "MISSING")
-if [[ "$DOCID" == "MISSING" || ! "$DOCID" =~ ^BRD-[0-9]{2}$ ]]; then
+if [[ "$DOCID" == "MISSING" || ! "$DOCID" =~ ^BRD-[0-9]{2,}$ ]]; then
     echo "[ERROR] Invalid or missing id: '$DOCID' (expected BRD-NN)"
     ((ERRORS++)) || true
 fi

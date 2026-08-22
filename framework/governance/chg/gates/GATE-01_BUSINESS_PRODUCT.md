@@ -15,13 +15,13 @@ custom_fields:
 
 # GATE-01: Business/Product Gate (L1-L2)
 
-> **Position**: Before Layers 1-2 (BRD, PRD)
+> **Position**: Between the change request and Layers 1-2 (BRD, PRD)
 > **Change Sources**: Upstream, External (business impact)
 > **Purpose**: Validate business/product changes before cascading to requirements
 
 ## 1. Purpose & Scope
 
-GATE-01 validates changes originating from business requirements, product decisions, market feedback, or regulatory compliance. It ensures that changes to foundational layers (L1-L2) are properly justified, scoped, and have stakeholder approval before cascading downstream.
+GATE-01 validates changes originating from business requirements, product decisions, market feedback, or regulatory compliance. It ensures that changes to foundational layers (L1-L2) are properly justified, scoped, and have stakeholder approval before cascading downstream. Entry criteria are assessed against the change request; layer artifacts are updated/authored and verified against the §3 validation checklist before the gate is fully passed.
 
 ### 1.1 Layers Covered
 

@@ -264,8 +264,8 @@ _DOC_TARGET_WORDS = {
     "IPLAN": 1500,
 }
 # Sections that legitimately carry mostly tabular metadata; exempt from the
-# section-size warning.
-_SIZE_EXEMPT_HEADINGS = {"document control", "traceability", "glossary", "revision history"}
+# section-size warning. Keys match _normalise_heading() output.
+_SIZE_EXEMPT_HEADINGS = {"document_control", "traceability", "glossary", "revision_history"}
 
 _FRONTMATTER_FENCE = re.compile(r"^---\s*$")
 _SECTION_HEADING = re.compile(r"^## +(.+?)\s*$")
@@ -501,6 +501,14 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
     except (OSError, StopIteration, KeyError, yaml.YAMLError):
         return {}
     tpl = registry.parent.parent / layer_folder / f"{artifact}-TEMPLATE.yaml"
+    if not tpl.is_file():
+        # Raise error if registry exists but its layer template is missing
+        print(
+            f"sdd-doc-lint: [ERROR] template file not found for {artifact} at '{tpl}' "
+            f"(resolved relative to registry '{registry}'). Structural checks cannot run.",
+            file=sys.stderr,
+        )
+        return {}
     try:
         doc = yaml.safe_load(tpl.read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError):
@@ -562,18 +570,19 @@ def _check_style(
     # the flat 200-word default when no template entry matches.
     section_targets = _load_section_targets(artifact, registry)
     for heading, start, words in _section_word_counts(body):
-        if heading.strip().lower() in _SIZE_EXEMPT_HEADINGS:
-            continue
         key = _normalise_heading(heading)
+        if key in _SIZE_EXEMPT_HEADINGS:
+            continue
         target = section_targets.get(key, _SECTION_TARGET_WORDS)
         blocking = int(target * _BLOCKING_FACTOR)
         if words > blocking:
+            trunc_h = heading[:80] + ("..." if len(heading) > 80 else "")
             findings.append(
                 Finding(
                     rel,
                     body_offset + start,
                     "STY02",
-                    f"section '{heading}' is {words} words; target ≤{target}"
+                    f"section '{trunc_h}' is {words} words; target ≤{target}"
                     f" (blocking >{blocking})",
                     severity="warning",
                 )
@@ -643,12 +652,13 @@ def lint_text(
             )
         )
     elif _id_state and _id_state != "canonical":
+        trunc_state = _id_state[:80] + ("..." if len(_id_state) > 80 else "")
         findings.append(
             Finding(
                 rel,
                 1,
                 "PROV01",
-                f"unknown id_state '{_id_state}' (want 'provisional' or 'canonical')",
+                f"unknown id_state '{trunc_state}' (want 'provisional' or 'canonical')",
                 severity="warning",
             )
         )
@@ -1292,13 +1302,14 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
             )
             continue
         last = str(raw_last).strip().strip('"').strip("'")
+        trunc_last = last[:40] + ("..." if len(last) > 40 else "")
         if _parse_minor(last) < current:
             findings.append(
                 Finding(
                     rel,
                     1,
                     "STALE01",
-                    f"last_audited_spec={last} < current framework/VERSION={framework_version}"
+                    f"last_audited_spec={trunc_last} < current framework/VERSION={framework_version}"
                     f" — re-audit before relying on the Approved status",
                     severity="warning",
                 )

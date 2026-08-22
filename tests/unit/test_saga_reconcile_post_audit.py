@@ -213,6 +213,24 @@ class ReconcilePostAuditTests(unittest.TestCase):
         reconcile_post_audit(_ctx(), saga)
         self.assertEqual(saga["status"], "FANOUT_STARTED")  # not advanced
 
+    def test_does_not_advance_when_all_branches_failed(self):
+        """If all branches ended in BRANCH_FAILED, saga.status does NOT advance to BRANCH_COMPLETED (#469)."""
+        saga = {
+            "status": "FANOUT_STARTED",
+            "iteration": 1,
+            "current_phase": "review",
+            "branches": {
+                "architect": _branch("BRANCH_FAILED"),
+                "tech_lead": _branch("BRANCH_FAILED"),
+            },
+            "transitions": [
+                {"ts": "t1", "from": None, "to": "PREPARED", "scope": "run"},
+                {"ts": "t2", "from": "PREPARED", "to": "FANOUT_STARTED", "scope": "run"},
+            ],
+        }
+        reconcile_post_audit(_ctx(), saga)
+        self.assertEqual(saga["status"], "FANOUT_STARTED")  # not advanced to BRANCH_COMPLETED
+
     def test_regression_real_spec_rt_001_saga(self):
         """Replay the verbatim broken SPEC-RT-001 saga.json against reconcile.
 

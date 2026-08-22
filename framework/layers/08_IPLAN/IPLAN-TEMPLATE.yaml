@@ -40,7 +40,7 @@ metadata:
 document_control:
   _size_target: 100  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    One IPLAN per TDD component. Created when TDD reaches
+    One IPLAN per SPEC component. Created when TDD reaches
     IPLAN-Ready >=90/100.
 
     `subtype` selects which sections this IPLAN must carry. Values
@@ -205,6 +205,13 @@ traceability:
       - "@code: <source path(s), per the @spec language>"
     test_paths:
       - "@tests: <test path(s), per the @spec language>"
+  cross_links:
+    depends:
+      - "@depends: IPLAN-NN"
+    discoverability:
+      - "@discoverability: IPLAN-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
   code_inventory:
     _guidance: |
       Audit trail: every file created/modified during implementation.

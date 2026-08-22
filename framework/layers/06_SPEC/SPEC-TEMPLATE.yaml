@@ -1,6 +1,6 @@
 # SPEC-TEMPLATE.yaml — Unified Technical Specification
 # SDD Layer 6 — Implementation-ready specification
-# Upstream: ADR (Layer 5), BDD (Layer 4)
+# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 # Downstream: TDD (Layer 7)
 
 metadata:
@@ -219,6 +219,13 @@ traceability:
       description: "Implementation plan — bridges TDD to Code"
     - type: CODE
       description: "Source code implementation"
+  cross_links:
+    depends:
+      - "@depends: SPEC-NN"
+    discoverability:
+      - "@discoverability: SPEC-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
   health_score:
     tdd_ready: "[X]%"
     target_score: ">=90/100"  # advisory readability target, not a merge gate

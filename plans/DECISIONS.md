@@ -10,6 +10,15 @@ graduation.
 
 ---
 
+## D-0075 — Re-measurement of gh api 404 behavior supersedes D-0071 §8 failure-text claim
+
+**2026-08-16.** Re-measurement from PIN-CURRENCY-NO-READER investigation (PR 3 review, issue #477).
+
+A re-measurement on 2026-07-30 showed that `gh api …/contents/<missing> --jq '.name'` puts the full 404 JSON error payload on stdout/stderr and does **not** emit the bare string `null` (as claimed in D-0071 §8). A guard asserting `[ "$res" != "null" ]` against missing files reads a 404 error response as present.
+The core lesson of D-0071 §8 stands unchanged: **test for a path's existence on disk, and never truth-test a jq scalar that can be absent or return an error envelope**.
+
+---
+
 ## D-0074 — Ship a safety fix quieter than the behaviour it replaces, and make the bypass it needs opt-in and disclosed
 
 **2026-08-02.** Decisions from `PLUGIN-PREPROD-001`

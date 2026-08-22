@@ -63,7 +63,7 @@ def _time_bucket() -> str:
     return datetime.now(UTC).strftime("%Y%m%d%H")
 
 
-_DOC_ID_RE = re.compile(r"([A-Z]+-\d+)")
+_DOC_ID_RE = re.compile(r"([A-Z]+-\d{2,})")
 
 
 def _extract_doc_id(*, document_path: Path | None, doc_type: str) -> str:

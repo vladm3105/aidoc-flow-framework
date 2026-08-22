@@ -1,7 +1,7 @@
 # lychee config — framework. Two classes of exclusion:
 #  1. platforms/** + examples/** + tests/** — deep platform/skill docs +
 #     system-under-test corpora (never hand-edited); pre-existing internal-link
-#     debt tracked as FRAMEWORK-TODO LINKS-PLATFORM-DEBT.
+#     debt tracked in issue #481 (LINKS-PLATFORM-DEBT).
 #  2. cross-repo relative links (../business, ../operations, …) — resolve only
 #     in the local multi-repo workspace, never in single-repo CI. Verified by
 #     the umbrella, not per-repo CI.

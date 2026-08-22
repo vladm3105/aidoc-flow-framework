@@ -12,6 +12,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — Framework Spec `0.41.1 → 0.41.2` — remediate MVP layer contracts, template provenance, and governance findings (2026-08-22)
+
+Closes #386, #435, #436, #439, #440, #441, #442, #443, #447, #449, #451, #452, #453, #454, #455, #458, #465, #468, #470, #471, #472, #474, #475, #477, #482, #503, #504, #505, #506, #508, #509, #513, #514, #515, #518, #519.
+
+- **Spec & Templates:** Clarified upstream traceability contracts across layer templates (ADR, SPEC, TDD, IPLAN), standardized optional `@chg` binding fields, refined EARS pattern definitions, and corrected engine-neutral spec hygiene.
+- **Platform Parity & Tools:** Fixed saga reconciliation when all fanout branches fail, resolved STY02 heading normalization in `sdd_doc_lint`, and updated version-reference sync logic.
+- **Governance & Marketplace Gates:** Retrofitted workspace standards link summaries, hardened marketplace gate permissions, and migrated retired markdown backlogs to GitHub issues.
+
 ### Fixed — Framework Spec `0.41.0 → 0.41.1` — the gate approval form disagreed with the gate definitions, in both directions (GD-12) (2026-08-16)
 
 Closes #433, #434 and #445 — three defects from a downstream audit, all landing on

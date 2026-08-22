@@ -627,6 +627,8 @@ traceability:
       - "@depends: PRD-NN"
     discoverability:
       - "@discoverability: PRD-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
 
   health_score:
     brd_coverage: "[X]%"

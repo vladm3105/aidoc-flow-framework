@@ -20,7 +20,7 @@ The platforms share the `framework/` spec and nothing else. Both pass the same
 shared conformance suite (`tests/conformance/`). The `framework/` spec defines
 the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code).
 
-**Current state (as of 2026-08-16):** framework spec `0.41.1`, Claude Code plugin `0.25.0` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs), Hermes `0.12.1`. **YAML-BDD arc complete** (BDD authored as structured `scenarios:` YAML, not Gherkin-in-markdown) and the **CONSUMER-FEEDBACK P1 wave shipped**: element-level COV01/COV02 coverage (D-0039 — `REALIZING_LAYERS` map; catches orphaned requirement elements), manual-mode provisional IDs + normative SHA-256 algorithm (D-0040 — `id_state`/`PROV01`; element IDs are LLM-generated stable strings, NOT verified content-hashes), and first-class reuse / satisfied-by-reference (D-0041 — `reuse:` frontmatter; `REUSE01`/`REUSE02`). **PROVISIONAL-IDS-002 Phase 1 shipped** (D-0061/D-0062, spec `0.35.0`): the element-ID hash-input contract (normalization transform + BRD §7 extraction boundary) is formalized in `ID_NAMING_STANDARDS.md`, and `python -m sdd_doc_lint.rehash --check` verifies a canonical BRD's §7 FR IDs against it on demand (`IDDRIFT01` — advisory, opt-in, NOT in the default lint). Scoped "verifiable on demand," not "verified"; `rehash --fix` + all-layer extraction + corpus reconciliation are founder-decided Phase 2+. **ELEMENT-ID-LAYER-CONTRACT-001 shipped** (GD-09/D-0067, spec `0.39.0`): that transform had reached only `BRD-TEMPLATE.yaml`, so the re-specified algorithm is now **deleted** from the other four layer templates + three layer READMEs in favour of a cross-reference to `ID_NAMING_STANDARDS.md`; TDD gains the element-ID contract it never had; the inert `placeholder: "0000"` key is removed; `tests/conformance/test_element_id_layer_contract.py` locks all of it over `framework/layers/**` — **spec only** at the time, leaving the 19 plugin/Hermes authoring surfaces ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)) and the acceptance harness's second hash implementation ([#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)) open. **Both have since closed** (2026-07-26/27): the element-ID generator shipped as `python -m sdd_doc_lint.rehash --compute` (PR #363, D-0068), and the acceptance harness now delegates to that one implementation (PR #366). The guard that locks the negative property (`tests/conformance/platforms/test_no_inprompt_hashing.py`) scans less than its name implies and one unscanned surface still hashes — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) closed the plugin-SKILL and Hermes-reference halves, but `agent-skills/**/SKILL.md` is still reached by no root — so a green run of it is not evidence that no surface hashes. Plugin also ships full 8-layer playbook injection + preemptive saga driver across all 8 autopilots (SAGA-PARITY-001) + per-layer model-recommendation precheck (MODEL-PRECHECK-ROLLOUT) + review-quality calibration + necessary-upstream contract (NECESSARY-UPSTREAM-001) + threshold-resolution gate (TH-RES-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8). 8-layer development sequence complete. **Hermes has since advanced substantially** (from `0.7.3`): the `audit_threshold` raise-only gate (HERMES-ADAPT-ENFORCE-001), `.aidoc/profile.yaml` runtime consumption, and the opt-in bounded review→remediate→re-review **quality loop** (HERMES-REVIEW-LOOP-001 Phase 1, D-0063). **Residual arc: Hermes parity** — remaining plugin-vs-Hermes deltas + quality-loop Phase 2 (cross-invocation resume / G-R1, parallel-review lock fix), tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). The example corpus is regenerated wholesale after framework changes (so corpus-remediation findings are deferred to that regen). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
+**Current state (as of 2026-08-16):** framework spec `0.41.2`, Claude Code plugin `0.25.0` (pre-1.0 preview, 52 skills = 50 active + 2 deprecated stubs), Hermes `0.12.1`. **YAML-BDD arc complete** (BDD authored as structured `scenarios:` YAML, not Gherkin-in-markdown) and the **CONSUMER-FEEDBACK P1 wave shipped**: element-level COV01/COV02 coverage (D-0039 — `REALIZING_LAYERS` map; catches orphaned requirement elements), manual-mode provisional IDs + normative SHA-256 algorithm (D-0040 — `id_state`/`PROV01`; element IDs are LLM-generated stable strings, NOT verified content-hashes), and first-class reuse / satisfied-by-reference (D-0041 — `reuse:` frontmatter; `REUSE01`/`REUSE02`). **PROVISIONAL-IDS-002 Phase 1 shipped** (D-0061/D-0062, spec `0.35.0`): the element-ID hash-input contract (normalization transform + BRD §7 extraction boundary) is formalized in `ID_NAMING_STANDARDS.md`, and `python -m sdd_doc_lint.rehash --check` verifies a canonical BRD's §7 FR IDs against it on demand (`IDDRIFT01` — advisory, opt-in, NOT in the default lint). Scoped "verifiable on demand," not "verified"; `rehash --fix` + all-layer extraction + corpus reconciliation are founder-decided Phase 2+. **ELEMENT-ID-LAYER-CONTRACT-001 shipped** (GD-09/D-0067, spec `0.39.0`): that transform had reached only `BRD-TEMPLATE.yaml`, so the re-specified algorithm is now **deleted** from the other four layer templates + three layer READMEs in favour of a cross-reference to `ID_NAMING_STANDARDS.md`; TDD gains the element-ID contract it never had; the inert `placeholder: "0000"` key is removed; `tests/conformance/test_element_id_layer_contract.py` locks all of it over `framework/layers/**` — **spec only** at the time, leaving the 19 plugin/Hermes authoring surfaces ([#342](https://github.com/vladm3105/aidoc-flow-framework/issues/342)) and the acceptance harness's second hash implementation ([#351](https://github.com/vladm3105/aidoc-flow-framework/issues/351)) open. **Both have since closed** (2026-07-26/27): the element-ID generator shipped as `python -m sdd_doc_lint.rehash --compute` (PR #363, D-0068), and the acceptance harness now delegates to that one implementation (PR #366). The guard that locks the negative property (`tests/conformance/platforms/test_no_inprompt_hashing.py`) scans less than its name implies and one unscanned surface still hashes — [#385](https://github.com/vladm3105/aidoc-flow-framework/issues/385) closed the plugin-SKILL and Hermes-reference halves, but `agent-skills/**/SKILL.md` is still reached by no root — so a green run of it is not evidence that no surface hashes. Plugin also ships full 8-layer playbook injection + preemptive saga driver across all 8 autopilots (SAGA-PARITY-001) + per-layer model-recommendation precheck (MODEL-PRECHECK-ROLLOUT) + review-quality calibration + necessary-upstream contract (NECESSARY-UPSTREAM-001) + threshold-resolution gate (TH-RES-001) + per-PR doc-of-record discipline (DOC_GOVERNANCE_CORE.md Principle 8). 8-layer development sequence complete. **Hermes has since advanced substantially** (from `0.7.3`): the `audit_threshold` raise-only gate (HERMES-ADAPT-ENFORCE-001), `.aidoc/profile.yaml` runtime consumption, and the opt-in bounded review→remediate→re-review **quality loop** (HERMES-REVIEW-LOOP-001 Phase 1, D-0063). **Residual arc: Hermes parity** — remaining plugin-vs-Hermes deltas + quality-loop Phase 2 (cross-invocation resume / G-R1, parallel-review lock fix), tracked in [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md). The example corpus is regenerated wholesale after framework changes (so corpus-remediation findings are deferred to that regen). IPLAN ↔ iplanic integration deferred — see `plans/IPLAN-IPLANIC-DEFERRED.md`.
 
 ## Durable conventions
 
@@ -73,11 +73,11 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
      `docs/PARITY.md` current-state row. Re-stages on its own;
      idempotent.
   2. **Semantic doc-reminder** (`scripts/check-docs-updated.sh`) —
-     runs on every commit. When the staged change touches
-     code/spec/skills but does NOT touch any document-of-record
-     (CHANGELOG, ROADMAP, HANDOFF, HERMES-BACKLOG, …), prints a
-     checklist of likely-stale docs. Warning-only; never blocks the
-     commit. Contributor decides whether to update or proceed.
+      runs on every commit. When the staged change touches
+      code/spec/skills but does NOT touch any document-of-record
+      (CHANGELOG, ROADMAP, HANDOFF, …), prints a
+      checklist of likely-stale docs. Warning-only; never blocks the
+      commit. Contributor decides whether to update or proceed.
 
   The mechanical sync handles every doc whose update is deterministic
   (a version string changed; propagate). The semantic reminder
@@ -568,159 +568,18 @@ this repo's `.github/workflows/` and accept the drift warning.
 
 ## Governance PR discipline (mandatory)
 
-A **governance PR** is any PR that touches one of these surfaces, or that
-supersedes a locked decision:
-
-- `CLAUDE.md`
-- `plans/DECISIONS.md` and `framework/governance/DECISIONS.md`
-- **`plans/*-PLAN.md`**, plus the `plans/*-DESIGN.md` companions some
-  initiatives carry (e.g. `LAYER-PLAYBOOKS-001-DESIGN.md` beside its
-  `-PLAN.md`). The plan glob is a **suffix**: every plan here is
-  `<NAME>-PLAN.md` per §"Per-repo governance" above, so the prefix form
-  `plans/PLAN-*.md` matches only `PLAN-TEMPLATE.md` — no real plan at all.
-  Sibling repos such as `aidoc-flow-operations` use `ops/iplans/IPLAN-*.md`.
-- `.github/ai-review/` and `.github/workflows/ai-review.yml`
-
-Two rules apply to every governance PR — no exceptions without explicit
-founder OK and an audit-trail note in the commit message.
-
-### Rule 1 — Small scope (≤3 doc surfaces per PR)
-
-A governance PR touches **at most 3 distinct doc surfaces** in one PR.
-If more surfaces need updating, **split into sequential PRs** — e.g.,
-DECISIONS first → plan citing it → CLAUDE.md propagation.
-
-**Reconciliation with the existing doc-currency rule:** Rule 1 does NOT
-supersede doc-currency; it scopes how the rule applies. Each split PR
-is a self-contained smaller change with its own affected docs fully
-updated within that PR. Doc-currency applies per-PR-scope, not
-per-overall-change.
-
-### Rule 2 — Mandatory adversarial self-review before every push
-
-Before `git push` on any governance PR, dispatch a code-reviewer agent
-on the diff. Required focus areas:
-
-- **Dead refs** — for every quoted path/file in the diff, grep and
-  verify the target exists (or qualify as a forward-reference)
-- **Supersession completeness** — when "supersedes X" appears, read
-  X end-to-end and name ALL parts superseded vs ALL parts carried
-  forward
-- **Internal consistency** — every DECIDED / open / Status status
-  matches across files in the diff
-
-Fix every load-bearing finding **BEFORE push**. Skip only with explicit
-founder OK + commit-message audit line (`Self-review skipped per founder
-OK <reason>`).
-
-**Origin:** operations 2026-06-23 (after 22+ ai-reviewer findings across
-operations PRs #107-109 in one session). Full reasoning + formal record
-in `aidoc-flow-operations` `CLAUDE.md` "Governance PR discipline" section,
-plus `ops/DECISIONS.md` `OPS-0061`.
+Follows workspace standard OPS-0061. A governance PR touches `CLAUDE.md`, `plans/DECISIONS.md`, `framework/governance/DECISIONS.md`, `plans/*-PLAN.md`, or `.github/ai-review/`. Enforces small scope (≤3 doc surfaces per PR) and mandatory adversarial self-review before every push.
+→ `../operations/CLAUDE.md` — search "OPS-0061".
 
 ## AI agent auto-merge default (OPS-0062)
 
-**Applies to ALL AI agents (Claude, Codex, Gemini, GitHub Copilot, etc.) —
-not just one model.** For PRs the AI agent opens itself in this repository:
-
-1. **Auto-watch + auto-merge when green.** After opening a PR, the AI
-   watches the PR's check rollup until all checks complete. If
-   `mergeStateStatus = CLEAN` AND all required checks are SUCCESS, the AI
-   attempts `gh pr merge --squash --delete-branch` without asking the human
-   for explicit per-PR authorization (the act of directing the AI to ship
-   the work constitutes the merge intent). Stale-check recovery uses the
-   documented patterns (label-cycle per `aidoc-flow-ci/docs/troubleshooting.md
-   §15`; `--admin` flag only when authorized).
-2. **Escalate to human at 10 attempts.** If the PR still hasn't merged
-   after 10 distinct merge-or-recovery actions, the AI STOPS and requests
-   human confirmation with a summary of what was tried, what's blocking,
-   and next-step options.
-
-**One attempt =** each distinct merge-or-recovery action: each `gh pr merge`
-invocation, each `skip-ai-review` label-cycle (add+remove = one logical
-action), each `gh run rerun`, each `gh workflow run` retrigger. Polling
-(`gh pr view`) does not count. **Counter is per-PR cumulative, not
-per-session.**
-
-**Visibility — AI announces each merge attempt in-session.** Before each
-`gh pr merge` / label-cycle / rerun, the AI emits a brief chat line
-("auto-merging PR #N now"; "label-cycling PR #N attempt 3/10"). The rule
-reduces per-PR PROMPT overhead, not VISIBILITY.
-
-**Session-boundary:** the AI watches checks only while in-session. If the
-session ends before checks settle, the PR stays OPEN; the next AI session
-resuming the work picks up the counter (per-PR cumulative).
-
-**Exceptions (AI never auto-merges these; always asks):**
-
-- **🟡 / 🔴 actions per autonomy tiers** (see operations CLAUDE.md for the
-  canonical autonomy-tier table; this repo inherits the same tiers via the
-  governance discipline rollout).
-- **Spec / governance tier PRs** (already excluded from auto-merge by the
-  reusable `ai-review.yml` workflow's `tier=spec` check; AI must not
-  bypass).
-- **Cross-repo coordinated changes** — synchronized merges across
-  repositories where ordering matters.
-- **PRs that touch any governance surface named in the "Governance PR
-  discipline" section above.** That list is the definition — **do not
-  restate it here.** A second copy is how the two drift apart: this bullet
-  used to carry its own enumeration, which wrote the plan glob as
-  `plans/PLAN-*.md` (matching no real plan) and omitted `DECISIONS.md`
-  entirely, so the exception silently under-covered what it was defined to
-  cover.
-
-**Human-opened PRs are unaffected** — the human controls merge timing for
-their own PRs.
-
-**Origin:** OPS-0062 (2026-06-27). Codified after a session shipping 12+
-AI-opened PRs on operations where the per-PR "merge if it is green" prompt
-added overhead without signal. Full reasoning + scope clauses + reconciliation
-with the `auto_merge.repos` allowlist (server-side action of `ai-review.yml`)
-in `aidoc-flow-operations` `ops/DECISIONS.md` OPS-0062.
-
-**Deferred companion (not in scope of OPS-0062):** a reusable
-`auto-merge-ai-prs.yml` GitHub Actions workflow on aidoc-flow-ci that serves
-as a server-side enforcer. To be tracked in operations HANDOFF backlog;
-queued post-current-tasks per founder direction.
+Follows workspace standard OPS-0062. Auto-watch and auto-merge when green up to 10 attempts; escalate to human on failure. Exceptions: 🟡/🔴 autonomy tiers, spec/governance PRs, cross-repo coordinated changes. Note this repository itself is currently human-always per `.github/ai-review/config.json`.
+→ `../operations/CLAUDE.md` — search "OPS-0062".
 
 ## Multi-agent automated review (aidoc-flow standard — OPS-0065 + OPS-0067)
 
-This repo follows the **aidoc-flow standard** for author-side AI-team multi-
-agent review BEFORE push/commit. Note: this is the **AI-employees standard**
-for internal review discipline; it is separate from the framework's own
-spec-governance via GATE-SPEC / GD-NN. The canonical rules + diff-class →
-agents table + parameterized prompt templates live in `aidoc-flow-operations`:
-
-- **Rules:** `aidoc-flow-operations/CLAUDE.md` → "Multi-agent automated review
-  (OPS-0065 — generalizes the CI ai-reviewer pattern to ALL internal flow)"
-  section.
-- **Prompt templates:** `aidoc-flow-operations/.claude/agents/review-prompts/`
-  — diff-class skeletons (`workflow-yaml.md` / `governance-docs.md` /
-  `docs.md` / `scripts.md` / `cross-repo.md` / `adversarial-judge.md` +
-  `INDEX.md`).
-- **Empirical default (OPS-0067):** 3-agent parallel dispatch + single fold
-  cycle for ≤300-line diffs. Re-dispatch only on NEW load-bearing surfaces
-  or structural pivots. Cap at 3 cycles per OPS-0066 circuit-breaker.
-- **Standard scope:** all aidoc-flow workspace repos — this one included.
-
-The CI `ai-review.yml` gate (merge-side) is unchanged; multi-agent review
-strengthens the author-side review pattern.
-
-**Skip discipline:** Stop using `SKIP_LOCAL_AI_REVIEW=1` indiscriminately
-per OPS-0065. Acceptable cases: (a) mechanical content (pin bumps with no
-logic edits); (b) AI-side review already done via dispatched agent (commit-
-message audit-trail line names the agents + verdict); (c) explicit founder
-OK per governance PR-discipline Rule 2.
-
-**Framework-vs-AI-employees separation:** framework spec-governance (GATE-
-SPEC ratifications, GD-NN framework decisions, etc.) has its own governance
-gate documented in `GOVERNANCE.md`. This OPS-0065/0067 section covers only
-AI-side dev-workflow review discipline (which agents are dispatched on a
-diff), not framework spec ratification.
-
-**Origin:** OPS-0065/0067 in `aidoc-flow-operations` `ops/DECISIONS.md`;
-cross-repo rollout runbook at
-`aidoc-flow-operations` `ops/inbox/2026-06-30_cto-platform_ops-0067-multi-agent-review-rollout.md`.
+Follows workspace standard OPS-0065/OPS-0067 for author-side AI multi-agent review before push/commit (3-agent parallel dispatch + single fold cycle for ≤300-line diffs; cap at 3 cycles).
+→ `../operations/CLAUDE.md` — search "OPS-0065".
 
 ## Durable traps — do not re-derive these
 

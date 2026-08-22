@@ -6,7 +6,7 @@ description: >
   release readiness across the execution lane. Owns the path from merged code to
   deployed, observed, and verified release, including staging/prod gates and the
   post-deploy evidence loop.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 tags:
   - agent

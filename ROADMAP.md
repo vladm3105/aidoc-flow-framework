@@ -3,8 +3,7 @@
 Where the project is heading. Work is **event-triggered, not calendar-bound** — items
 advance when their dependencies and review gates clear, not on fixed dates.
 
-For shipped detail, see [`CHANGELOG.md`](CHANGELOG.md). For deferred Hermes work, see
-[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+For shipped detail, see [`CHANGELOG.md`](CHANGELOG.md). Backlog and defect tracking live in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues).
 
 ---
 
@@ -30,17 +29,17 @@ permanent asymmetry.
 
 Near-term, in-flight work.
 
-- **Hermes parity catch-up** — bring Hermes up to the plugin's current spec surface
-  (framework `0.37.x`). Hermes has advanced substantially (team-mode + 8-layer playbook
+- **Hermes parity catch-up** — both platforms declare current spec surface
+  (spec `0.41.x`). Hermes has advanced substantially (team-mode + 8-layer playbook
   injection + saga conformance, and now the `audit_threshold` gate + `.aidoc/profile.yaml`
   runtime consumption + the opt-in bounded review→remediate→re-review **quality loop**
-  (`hermes/v0.11.0`, HERMES-REVIEW-LOOP-001 Phase 1); the whole 0.32.x arc is
-  auto-satisfied via its vendored `sdd_doc_lint` + shared templates). The residual items
-  are small doc/skill deltas — **H-11c** (SHA-256 residue, now unblocked by
+  (`hermes/v0.11.0`, HERMES-REVIEW-LOOP-001 Phase 1); the full spec arc is
+  satisfied via its vendored `sdd_doc_lint` + shared templates). The residual items
+  are capability-level parity deltas — **H-11c** (SHA-256 residue, now unblocked by
   PROVISIONAL-IDS-002) + the cosmetic H-11a sweep — plus the quality-loop **Phase 2**
   (cross-invocation resume / G-R1, and the parallel-review global-lock latency fix from
   the 2026-07-11 pre-prod audit). Tracked in
-  [`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+  [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues?q=is%3Aopen+label%3A%22platform%3A+hermes%22).
 
 - **FRWK-REVIEW-002 (in flight, 2026-07-09):** fixing 46 findings from the 2026-07-09
   plugin + core-docs review across 7 tier-scoped PRs. Plugin PRs (A/B) + docs-of-record
@@ -57,7 +56,7 @@ Planned, scoped, not yet started.
   The enumerated gates for the `1.0` release (consolidated from the 2026-07-11 pre-prod
   audit; previously scattered across `CLAUDE.md` / stubs):
   1. **Hermes parity** — Hermes no longer lags the plugin on the recent spec (see the
-     "Hermes parity catch-up" item under **Now**; `plans/HERMES-BACKLOG.md`).
+     "Hermes parity catch-up" item under **Now**; GitHub issues `platform: hermes`).
   2. **Remove the 2 deprecated redirect stubs** — `doc-review` + `trace-check`
      (both self-document `v1.0.0` removal → `doc-validator`); drops the skill set 52 → 50.
   3. **The "Next" cleanups below** — doc-number independence (#18), the optional
@@ -163,7 +162,7 @@ Headline capabilities now in the framework (full detail in
   C3 section list matches `PRD-TEMPLATE.yaml`, which declares no NFR section.
   Each keeps its own issue and changelog entry, so the per-defect record
   survives the fold.
-- **GOV-TODO-ISSUE-SPLIT (2026-07-26, framework `0.39.0 → 0.40.0`, GD-10).** A
+- **GOV-TODO-ISSUE-SPLIT (2026-07-26, framework `0.39.0 → 0.40.0`, GD-10).** *(Note: superseded on 2026-08-15 when `plans/FRAMEWORK-TODO.md` was retired to a tombstone in favour of GitHub issues as the sole backlog surface).* A
   backlog file is a capture queue, not a publication channel. Tier 2 gains a
   second surface: the queue is unchanged, and an entry that is actionable by a
   non-finder, reproducible at `file:line` with a fix shape, or consumer-visible
@@ -230,15 +229,14 @@ Headline capabilities now in the framework (full detail in
   `/feedback`, GitHub Issues direct, web-site `/support`);
   `scripts/sync-version-refs.sh` extended for the web-site home-page
   version badge (sibling fix to the plugin-README drift fixed in
-  v0.20.1). Tracked in `plans/FRAMEWORK-TODO.md` as
-  `WEBSITE-VERSION-BADGE-DRIFT`.
+  v0.20.1). Tracked as issue #489 (`WEBSITE-VERSION-BADGE-DRIFT`).
 - **Platform README Version cell drift fix (`0.20.0 → 0.20.1`, PATCH).**
   Fixed long-standing drift in `platforms/claude-code-plugin/README.md`
   Platform info table (`Version` cell stuck at `0.6.3` since plugin v0.7.0)
   by canonicalizing the cell to the tag form (`claude-code-plugin/v<X.Y.Z>`)
   and extending `scripts/sync-version-refs.sh` to propagate the tag form
   in platform READMEs. Bug class closed; same drift in
-  `platforms/hermes/README.md` flagged in `FRAMEWORK-TODO.md` for
+  `platforms/hermes/README.md` flagged in issue tracker for
   Hermes's next bump.
 - **bug-report / feedback LLM-drafted issues (`0.19.0 → 0.20.0`, MINOR).**
   `/aidoc-flow:bug-report` and `/aidoc-flow:feedback` now accept a user

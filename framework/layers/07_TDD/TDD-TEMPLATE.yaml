@@ -1,6 +1,6 @@
 # TDD-TEMPLATE.yaml — Test-Driven Development Guide
 # SDD Layer 7 — Test case definitions from SPEC component contracts
-# Upstream: SPEC (Layer 6), ADR (Layer 5), BDD (Layer 4)
+# Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
 # Downstream: IPLAN (Layer 8)
 
 metadata:
@@ -314,6 +314,13 @@ traceability:
     - type: IPLAN
       layer: 8
       description: "Implementation plan — test-first file generation order enforced"
+  cross_links:
+    depends:
+      - "@depends: TDD-NN"
+    discoverability:
+      - "@discoverability: TDD-NN (short rationale)"
+    chg:
+      - "@chg: CHG-NN"
   health_score:
     iplan_ready: "[X]%"
     target_score: ">=90/100"  # advisory readability target, not a merge gate

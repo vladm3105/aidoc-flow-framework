@@ -312,15 +312,14 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.41.1`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+framework spec `0.41.2`. The Claude Code plugin is a **pre-1.0 preview** — APIs
 and surfaces may change before 1.0. Platform release versions are in the
 [Platforms](#platforms) table above.
 
 Post-v1.0 development — delivered and planned — is tracked in
 [`ROADMAP.md`](ROADMAP.md); per-release detail is in
 [`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
-first, with Hermes follow-on batches per
-[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+first, with Hermes follow-on batches tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues?q=is%3Aopen+label%3A%22platform%3A+hermes%22).
 
 ## Contributing
 

@@ -34,7 +34,7 @@ Implementation-ready technical specification for a single software component. De
 | Metadata model | `schema_version: 1.0` unified model |
 | Traceability | Flat upstream tags |
 | Template model | Single unified template |
-| Upstream | ADR + BDD |
+| Upstream | EARS + BDD + ADR |
 | Downstream | TDD → IPLAN → Code |
 | Document shape | 8 core sections |
 | Readiness gate | TDD-Ready score |

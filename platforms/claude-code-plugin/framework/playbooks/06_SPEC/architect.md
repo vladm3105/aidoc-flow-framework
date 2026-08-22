@@ -3,7 +3,7 @@ layer: 06_SPEC
 lens: architect
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.41.1"
+framework_spec_version: "0.41.2"
 ---
 # architect lens — SPEC layer
 
@@ -90,7 +90,7 @@ architecture). Wrong altitude pollutes the documentation chain and
 forces downstream layers to compensate. Wrong altitude → P2 citing C4.
 
 **C5 — Section-level traceability.** Every section traces to an
-upstream ADR or EARS reference, or explicitly declares "no upstream"
+upstream ADR, EARS, or BDD reference, or explicitly declares "no upstream"
 when the section captures SPEC-original content (e.g., template
 boilerplate). Orphan sections leave the reader unable to navigate
 from the SPEC back to the commitment that drove it. Orphan → P3

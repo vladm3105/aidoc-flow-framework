@@ -4,8 +4,8 @@
 > aidoc-flow framework to this project. Per
 > [`framework/governance/FRAMEWORK_FEEDBACK_LOG.md`] Tier 1 —
 > consumer projects keep this log inline as friction surfaces; the
-> framework maintainer aggregates surfaced items into
-> `plans/FRAMEWORK-TODO.md` (Tier 2) upstream.
+> framework maintainer aggregates surfaced items into the framework
+> issue tracker (Tier 2) upstream.
 >
 > **Rules:**
 >

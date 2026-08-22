@@ -23,7 +23,8 @@ across the 8-layer SDD workflow.
 | Midstream | GATE-03 | EARS/BDD/ADR change affecting neighbors |
 | Design | GATE-06 | SPEC/TDD change |
 | Execution | GATE-08 | IPLAN change |
-| External | GATE-01 | Regulatory, vendor, market |
+| External (business) | GATE-01 | Regulatory, compliance, partner demands |
+| External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues |
 | Spec | GATE-SPEC | Change to the `framework/` spec (meta — orthogonal to the cascade) |
 

@@ -208,6 +208,7 @@ traceability.
 | `@threshold: TYPE.NN.key` | Performance thresholds | `@threshold: BRD.01.perf.p95_latency` |
 | `@depends: TYPE-NN` | Hard prerequisite | `@depends: BRD-01` |
 | `@discoverability: TYPE-NN` | Related document | `@discoverability: BRD-02` |
+| `@chg: CHG-NN` | Change back-reference (provenance) | `@chg: CHG-01` |
 
 > **Templated `xxxx` is a template-only placeholder.** The `TYPE.NN.SS.xxxx`
 > form above is *pattern notation* — the shape of a future ID — and is valid
@@ -227,7 +228,11 @@ is a container. A trace citation must therefore name the **element**, not the
 document — a document-level ref discards the granularity at which the work is
 actually specified.
 
-- An `@<layer>:` **trace citation** to an **element-declaring** layer (`@brd`,
+**Derivable Principle:**
+- **Oracle layers (EARS requirement or BDD scenario):** citing an oracle layer in a verification or design realization context **MUST be element-level** (`TYPE.NN.SS.xxxx`). Citing a document-level ID (e.g. `BDD-01` instead of `BDD.01.03.xxxx`) in a verification context discards fine-grained traceability and silently zeroes element-level coverage.
+- **Design & realization layers (ADR / SPEC / TDD / IPLAN):** citing an upstream design doc as an architectural unit (e.g. SPEC citing `ADR-01`, TDD citing `SPEC-01`, IPLAN citing `TDD-01`) is **document-level permitted**.
+
+- An `@<layer>:` **trace citation** to an **element-declaring oracle/behavior layer** (`@brd`,
   `@prd`, `@ears`, `@bdd`, `@adr`, `@tdd`) **MUST be element-level**
   (`TYPE.NN.SS.xxxx`). This holds for **every** trace context — inline body
   citations **and** the **necessary-upstream / feature-level** tag (e.g. an
@@ -252,6 +257,15 @@ actually specified.
   exempt from this rule.
 
 Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
+
+### Status field scopes and legal values
+
+The `status:` field appears across different scopes with distinct legal-value enumerations:
+
+- **Document Lifecycle (Layers 1-4, 6-7):** `Draft` | `In Review` | `Approved`
+- **ADR Lifecycle (Layer 5):** `Proposed` | `Accepted` | `Deprecated` | `Superseded`
+- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed`
+- **Option / Item Status:** `Selected` | `Pending` | `Rejected`
 
 ## File Naming
 
