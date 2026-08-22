@@ -568,159 +568,18 @@ this repo's `.github/workflows/` and accept the drift warning.
 
 ## Governance PR discipline (mandatory)
 
-A **governance PR** is any PR that touches one of these surfaces, or that
-supersedes a locked decision:
-
-- `CLAUDE.md`
-- `plans/DECISIONS.md` and `framework/governance/DECISIONS.md`
-- **`plans/*-PLAN.md`**, plus the `plans/*-DESIGN.md` companions some
-  initiatives carry (e.g. `LAYER-PLAYBOOKS-001-DESIGN.md` beside its
-  `-PLAN.md`). The plan glob is a **suffix**: every plan here is
-  `<NAME>-PLAN.md` per §"Per-repo governance" above, so the prefix form
-  `plans/PLAN-*.md` matches only `PLAN-TEMPLATE.md` — no real plan at all.
-  Sibling repos such as `aidoc-flow-operations` use `ops/iplans/IPLAN-*.md`.
-- `.github/ai-review/` and `.github/workflows/ai-review.yml`
-
-Two rules apply to every governance PR — no exceptions without explicit
-founder OK and an audit-trail note in the commit message.
-
-### Rule 1 — Small scope (≤3 doc surfaces per PR)
-
-A governance PR touches **at most 3 distinct doc surfaces** in one PR.
-If more surfaces need updating, **split into sequential PRs** — e.g.,
-DECISIONS first → plan citing it → CLAUDE.md propagation.
-
-**Reconciliation with the existing doc-currency rule:** Rule 1 does NOT
-supersede doc-currency; it scopes how the rule applies. Each split PR
-is a self-contained smaller change with its own affected docs fully
-updated within that PR. Doc-currency applies per-PR-scope, not
-per-overall-change.
-
-### Rule 2 — Mandatory adversarial self-review before every push
-
-Before `git push` on any governance PR, dispatch a code-reviewer agent
-on the diff. Required focus areas:
-
-- **Dead refs** — for every quoted path/file in the diff, grep and
-  verify the target exists (or qualify as a forward-reference)
-- **Supersession completeness** — when "supersedes X" appears, read
-  X end-to-end and name ALL parts superseded vs ALL parts carried
-  forward
-- **Internal consistency** — every DECIDED / open / Status status
-  matches across files in the diff
-
-Fix every load-bearing finding **BEFORE push**. Skip only with explicit
-founder OK + commit-message audit line (`Self-review skipped per founder
-OK <reason>`).
-
-**Origin:** operations 2026-06-23 (after 22+ ai-reviewer findings across
-operations PRs #107-109 in one session). Full reasoning + formal record
-in `aidoc-flow-operations` `CLAUDE.md` "Governance PR discipline" section,
-plus `ops/DECISIONS.md` `OPS-0061`.
+Follows workspace standard OPS-0061. A governance PR touches `CLAUDE.md`, `plans/DECISIONS.md`, `framework/governance/DECISIONS.md`, `plans/*-PLAN.md`, or `.github/ai-review/`. Enforces small scope (≤3 doc surfaces per PR) and mandatory adversarial self-review before every push.
+→ `../operations/CLAUDE.md` — search "OPS-0061".
 
 ## AI agent auto-merge default (OPS-0062)
 
-**Applies to ALL AI agents (Claude, Codex, Gemini, GitHub Copilot, etc.) —
-not just one model.** For PRs the AI agent opens itself in this repository:
-
-1. **Auto-watch + auto-merge when green.** After opening a PR, the AI
-   watches the PR's check rollup until all checks complete. If
-   `mergeStateStatus = CLEAN` AND all required checks are SUCCESS, the AI
-   attempts `gh pr merge --squash --delete-branch` without asking the human
-   for explicit per-PR authorization (the act of directing the AI to ship
-   the work constitutes the merge intent). Stale-check recovery uses the
-   documented patterns (label-cycle per `aidoc-flow-ci/docs/troubleshooting.md
-   §15`; `--admin` flag only when authorized).
-2. **Escalate to human at 10 attempts.** If the PR still hasn't merged
-   after 10 distinct merge-or-recovery actions, the AI STOPS and requests
-   human confirmation with a summary of what was tried, what's blocking,
-   and next-step options.
-
-**One attempt =** each distinct merge-or-recovery action: each `gh pr merge`
-invocation, each `skip-ai-review` label-cycle (add+remove = one logical
-action), each `gh run rerun`, each `gh workflow run` retrigger. Polling
-(`gh pr view`) does not count. **Counter is per-PR cumulative, not
-per-session.**
-
-**Visibility — AI announces each merge attempt in-session.** Before each
-`gh pr merge` / label-cycle / rerun, the AI emits a brief chat line
-("auto-merging PR #N now"; "label-cycling PR #N attempt 3/10"). The rule
-reduces per-PR PROMPT overhead, not VISIBILITY.
-
-**Session-boundary:** the AI watches checks only while in-session. If the
-session ends before checks settle, the PR stays OPEN; the next AI session
-resuming the work picks up the counter (per-PR cumulative).
-
-**Exceptions (AI never auto-merges these; always asks):**
-
-- **🟡 / 🔴 actions per autonomy tiers** (see operations CLAUDE.md for the
-  canonical autonomy-tier table; this repo inherits the same tiers via the
-  governance discipline rollout).
-- **Spec / governance tier PRs** (already excluded from auto-merge by the
-  reusable `ai-review.yml` workflow's `tier=spec` check; AI must not
-  bypass).
-- **Cross-repo coordinated changes** — synchronized merges across
-  repositories where ordering matters.
-- **PRs that touch any governance surface named in the "Governance PR
-  discipline" section above.** That list is the definition — **do not
-  restate it here.** A second copy is how the two drift apart: this bullet
-  used to carry its own enumeration, which wrote the plan glob as
-  `plans/PLAN-*.md` (matching no real plan) and omitted `DECISIONS.md`
-  entirely, so the exception silently under-covered what it was defined to
-  cover.
-
-**Human-opened PRs are unaffected** — the human controls merge timing for
-their own PRs.
-
-**Origin:** OPS-0062 (2026-06-27). Codified after a session shipping 12+
-AI-opened PRs on operations where the per-PR "merge if it is green" prompt
-added overhead without signal. Full reasoning + scope clauses + reconciliation
-with the `auto_merge.repos` allowlist (server-side action of `ai-review.yml`)
-in `aidoc-flow-operations` `ops/DECISIONS.md` OPS-0062.
-
-**Deferred companion (not in scope of OPS-0062):** a reusable
-`auto-merge-ai-prs.yml` GitHub Actions workflow on aidoc-flow-ci that serves
-as a server-side enforcer. To be tracked in operations HANDOFF backlog;
-queued post-current-tasks per founder direction.
+Follows workspace standard OPS-0062. Auto-watch and auto-merge when green up to 10 attempts; escalate to human on failure. Exceptions: 🟡/🔴 autonomy tiers, spec/governance PRs, cross-repo coordinated changes. Note this repository itself is currently human-always per `.github/ai-review/config.json`.
+→ `../operations/CLAUDE.md` — search "OPS-0062".
 
 ## Multi-agent automated review (aidoc-flow standard — OPS-0065 + OPS-0067)
 
-This repo follows the **aidoc-flow standard** for author-side AI-team multi-
-agent review BEFORE push/commit. Note: this is the **AI-employees standard**
-for internal review discipline; it is separate from the framework's own
-spec-governance via GATE-SPEC / GD-NN. The canonical rules + diff-class →
-agents table + parameterized prompt templates live in `aidoc-flow-operations`:
-
-- **Rules:** `aidoc-flow-operations/CLAUDE.md` → "Multi-agent automated review
-  (OPS-0065 — generalizes the CI ai-reviewer pattern to ALL internal flow)"
-  section.
-- **Prompt templates:** `aidoc-flow-operations/.claude/agents/review-prompts/`
-  — diff-class skeletons (`workflow-yaml.md` / `governance-docs.md` /
-  `docs.md` / `scripts.md` / `cross-repo.md` / `adversarial-judge.md` +
-  `INDEX.md`).
-- **Empirical default (OPS-0067):** 3-agent parallel dispatch + single fold
-  cycle for ≤300-line diffs. Re-dispatch only on NEW load-bearing surfaces
-  or structural pivots. Cap at 3 cycles per OPS-0066 circuit-breaker.
-- **Standard scope:** all aidoc-flow workspace repos — this one included.
-
-The CI `ai-review.yml` gate (merge-side) is unchanged; multi-agent review
-strengthens the author-side review pattern.
-
-**Skip discipline:** Stop using `SKIP_LOCAL_AI_REVIEW=1` indiscriminately
-per OPS-0065. Acceptable cases: (a) mechanical content (pin bumps with no
-logic edits); (b) AI-side review already done via dispatched agent (commit-
-message audit-trail line names the agents + verdict); (c) explicit founder
-OK per governance PR-discipline Rule 2.
-
-**Framework-vs-AI-employees separation:** framework spec-governance (GATE-
-SPEC ratifications, GD-NN framework decisions, etc.) has its own governance
-gate documented in `GOVERNANCE.md`. This OPS-0065/0067 section covers only
-AI-side dev-workflow review discipline (which agents are dispatched on a
-diff), not framework spec ratification.
-
-**Origin:** OPS-0065/0067 in `aidoc-flow-operations` `ops/DECISIONS.md`;
-cross-repo rollout runbook at
-`aidoc-flow-operations` `ops/inbox/2026-06-30_cto-platform_ops-0067-multi-agent-review-rollout.md`.
+Follows workspace standard OPS-0065/OPS-0067 for author-side AI multi-agent review before push/commit (3-agent parallel dispatch + single fold cycle for ≤300-line diffs; cap at 3 cycles).
+→ `../operations/CLAUDE.md` — search "OPS-0065".
 
 ## Durable traps — do not re-derive these
 
