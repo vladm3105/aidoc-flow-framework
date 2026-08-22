@@ -16,8 +16,6 @@
 #   - plugin CHANGELOG entry under [Unreleased]
 #   - ROADMAP.md "Recently shipped" bullet
 #   - plans/HANDOFF.md current-state header refresh
-#   - plans/HERMES-BACKLOG.md new H-N entry (when the change creates Hermes
-#     follow-on work)
 #
 # The hook reads staged changes only and produces output even when those docs
 # WERE updated (a "summary of which docs were touched" line) — so the
@@ -60,7 +58,6 @@ for f in "${staged[@]}"; do
     CLAUDE.md) has_doc_change=1; docs_touched+=("CLAUDE.md") ;;
     CONTRIBUTING.md) has_doc_change=1; docs_touched+=("CONTRIBUTING.md") ;;
     plans/HANDOFF.md) has_doc_change=1; docs_touched+=("plans/HANDOFF.md") ;;
-    plans/HERMES-BACKLOG.md) has_doc_change=1; docs_touched+=("plans/HERMES-BACKLOG.md") ;;
     docs/PARITY.md) has_doc_change=1; docs_touched+=("docs/PARITY.md") ;;
     docs/TAGGING.md) has_doc_change=1; docs_touched+=("docs/TAGGING.md") ;;
     docs/PROJECT.md) has_doc_change=1; docs_touched+=("docs/PROJECT.md") ;;
@@ -95,18 +92,13 @@ if (( substantive > 0 && has_doc_change == 0 )); then
                          - CLAUDE.md             ("Current state" line)
                          - plans/HANDOFF.md      (current-state header)
 
-                       Platform / framework:
-                         - platforms/<name>/CHANGELOG.md  (under [Unreleased])
-                         - docs/PARITY.md                 (current-state row, on release)
-                         - docs/TAGGING.md                (new release row, on release)
-                         - framework/governance/DECISIONS.md (if a decision is recorded)
+                        Platform / framework:
+                          - platforms/<name>/CHANGELOG.md  (under [Unreleased])
+                          - docs/PARITY.md                 (current-state row, on release)
+                          - docs/TAGGING.md                (new release row, on release)
+                          - framework/governance/DECISIONS.md (if a decision is recorded)
 
-                       Hermes follow-on:
-                         - plans/HERMES-BACKLOG.md  (new H-N entry, if this
-                                                     plugin change creates
-                                                     Hermes catch-up work)
-
-                       This is a WARNING, not a failure. Commit proceeds. If
+                        This is a WARNING, not a failure. Commit proceeds. If
                        the change genuinely needs no doc update (typo fix,
                        internal refactor, test-only change), this warning is
                        a false positive and can be ignored.

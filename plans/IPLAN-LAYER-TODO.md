@@ -1,4 +1,9 @@
-# 08_IPLAN — TODO (execution-management gap audit)
+# 08_IPLAN — TODO (retired / historical gap audit)
+
+> **This file is retired and preserved for historical reference only. Do not add entries to it.**
+> All active tasks and defects are tracked on the **[GitHub issue tracker](https://github.com/vladm3105/aidoc-flow-framework/issues)**.
+
+---
 
 Status: open items from the 2026-06-09 IPLAN layer review session.
 Origin: discussion of IPLAN-TEMPLATE.yaml language-coupling (→

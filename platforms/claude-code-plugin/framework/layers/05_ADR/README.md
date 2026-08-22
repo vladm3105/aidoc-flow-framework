@@ -58,11 +58,9 @@ Example: ADR.01.03.e5b1
 
 ## Upstream Traceability
 
-ADR requires its necessary-upstream tags — @ears + @bdd (Layer 5 `required_tags`); @brd/@prd below are optional provenance, not required:
+ADR requires its necessary-upstream tags — @ears + @bdd (Layer 5 `required_tags`):
 
 ```text
-@brd: BRD.NN.08.xxxx    (business-level topic origin)
-@prd: PRD.NN.14.xxxx    (originating topic — PRD ADR elaboration)
 @ears: EARS.NN.03.xxxx   (timing constraints informing decision)
 @bdd: BDD.NN.03.xxxx     (integration/failure scenarios)
 ```

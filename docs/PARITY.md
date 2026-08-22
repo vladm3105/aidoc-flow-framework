@@ -145,7 +145,7 @@ D-0015). `project-profile` + `knowledge-extractor` were added in ADAPT
 P3-T7. In plugin `v0.4.0`, `skill-recommender`, `workflow-optimizer`, and
 `context-analyzer` were folded into `doc-flow` (hard-deleted); `doc-review`
 and `trace-check` were folded into `doc-validator` and retained as deprecated
-redirect stubs (scheduled for removal in `v0.6.0`). See
+redirect stubs (scheduled for removal in `v1.0.0`). See
 `plans/P3-T6-PLAN.md`, `plans/P3-T7-PLAN.md`, and
 `platforms/claude-code-plugin/CHANGELOG.md`.
 

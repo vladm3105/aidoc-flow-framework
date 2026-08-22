@@ -90,7 +90,7 @@ architecture). Wrong altitude pollutes the documentation chain and
 forces downstream layers to compensate. Wrong altitude → P2 citing C4.
 
 **C5 — Section-level traceability.** Every section traces to an
-upstream ADR or EARS reference, or explicitly declares "no upstream"
+upstream ADR, EARS, or BDD reference, or explicitly declares "no upstream"
 when the section captures SPEC-original content (e.g., template
 boilerplate). Orphan sections leave the reader unable to navigate
 from the SPEC back to the commitment that drove it. Orphan → P3

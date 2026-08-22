@@ -66,5 +66,4 @@ Each EARS links to its source PRD via its necessary-upstream tag (BRD is reached
 
 ```text
 @prd: PRD.NN.09.xxxx    (required — links to PRD functional requirement)
-@brd: BRD.NN.07.xxxx    (optional provenance; BRD is reached transitively via the PRD)
 ```

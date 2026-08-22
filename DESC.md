@@ -289,8 +289,8 @@ versioned independently. Both pass the same shared conformance suite.
 
 | Platform | Engine | Version |
 |----------|--------|---------|
-| **Hermes AI** | MCP server | `0.7.3` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `0.23.4` (`platforms/claude-code-plugin/`) |
+| **Hermes AI** | MCP server | `0.12.1` (`platforms/hermes/`) |
+| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `0.25.0` (`platforms/claude-code-plugin/`) |
 
 See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
 "which platform should I use?" guide.
@@ -309,7 +309,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.36.2`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+framework spec `0.41.1`. The Claude Code plugin is a **pre-1.0 preview** — APIs
 and surfaces may change before 1.0. Platform versions are in the
 [Platforms](#platforms) table above.
 
@@ -318,10 +318,9 @@ and surfaces may change before 1.0. Platform versions are in the
 > `VERSION` files and [`docs/PARITY.md`](docs/PARITY.md).*
 
 Post-v1.0 development — delivered and planned — is tracked in
-[`ROADMAP.md`](ROADMAP.md); per-release detail is in
+[`ROADMAP.md`](ROADMAP.md) and [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues); per-release detail is in
 [`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
-first, with Hermes follow-on batches per
-[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+first, with Hermes follow-on batches tracked on the issue tracker.
 
 ## Contributing
 

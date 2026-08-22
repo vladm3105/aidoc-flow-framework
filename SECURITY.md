@@ -90,7 +90,7 @@ red, though a toolchain failure still can. `secret-scan` does fail its job on a
 finding, and `codeql` has no findings gate at all.
 
 **Configured in `.pre-commit-config.yaml`**, run on `git commit` and again in
-CI, where `pre-commit.yml` runs the same hooks over the whole tree:
+CI, where `pre-commit.yml` runs the same hooks over the whole tree (see also [`CONTRIBUTING.md`](CONTRIBUTING.md#secret-scanning--where-each-pass-runs)):
 
 - **bandit** — Python security linter, scoped to `platforms/hermes/src/` and
   `tests/`.

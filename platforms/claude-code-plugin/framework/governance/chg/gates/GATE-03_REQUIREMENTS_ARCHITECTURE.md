@@ -191,7 +191,7 @@ After passing GATE-03:
 | GATE-03-E003 | Syntax | EARS syntax violation | Fix WHEN-THE-SHALL-WITHIN format |
 | GATE-03-E004 | Syntax | BDD format violation | Fix Given-When-Then structure |
 | GATE-03-E005 | Traceability | EARS missing upstream tag | Add @prd (the required necessary-upstream tag) |
-| GATE-03-E006 | Traceability | BDD missing upstream tag | Add @ears (the required necessary-upstream tag) |
+| GATE-03-E006 | Traceability | BDD missing upstream tag | Add ears: upstream list to scenario (the required necessary-upstream carrier) |
 | GATE-03-E007 | Traceability | ADR missing upstream tags | Add @ears, @bdd (the required necessary-upstream tags) |
 | GATE-03-E008 | Security | External change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 | GATE-03-W001 | Documentation | CVE reference missing | Add CVE-YYYY-NNNN to change document |

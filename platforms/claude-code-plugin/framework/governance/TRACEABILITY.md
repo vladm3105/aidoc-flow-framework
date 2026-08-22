@@ -21,7 +21,7 @@ MAY provide.
 Layer 1 (BRD):   —
 Layer 2 (PRD):   @brd
 Layer 3 (EARS):  @prd
-Layer 4 (BDD):   @ears
+Layer 4 (BDD):   ears (YAML carrier)
 Layer 5 (ADR):   @ears @bdd
 Layer 6 (SPEC):  @ears @bdd @adr
 Layer 7 (TDD):   @ears @bdd @adr @spec

@@ -50,7 +50,7 @@ Together they handle: mechanical sync is invisible (just commit; the right files
 | **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Recently shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
 | **Platform change** (`platforms/<name>/**`) | `platforms/<name>/CHANGELOG.md` `[Unreleased]`; `platforms/<name>/VERSION` if bumping; `docs/PARITY.md` (release only); `docs/TAGGING.md` (release only) | plugin.json; marketplace.json; 52 × SKILL.md frontmatter; READMEs; PARITY current-state | CHANGELOG entry; new TAGGING row (on release) |
 | **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
-| **Hermes follow-on created** | `plans/HERMES-BACKLOG.md` new `H-N` entry in the same PR | — | backlog entry (Source / Plugin status / Substantive work / Dependency) |
+| **Platform follow-on / defect discovered** | Open GitHub issue with label `platform: <name>` | — | issue reproduction, blast radius, fix shape |
 | **Session milestone reached** | `plans/HANDOFF.md` prepend new current-state header | — | handoff narrative (PRs landed, next item) |
 | **New advisory (warning) lint rule** | the affected manifests under `tests/acceptance/expected_warnings/` — the rule fires on the acceptance fixtures and reddens the tier until each new warning is pinned with a `reason` (or the fixture is cleared) | — | `reason` prose naming what would clear each pinned warning |
 | **Trivial / typo / internal refactor** | (none) | — | — |
@@ -62,7 +62,7 @@ If your change spans categories, do all the updates. The hooks above flag misses
 `check-docs-updated` prints a WARNING when:
 
 - Any of `framework/**`, `platforms/**/{skills,agents,scripts,tools}/**`, `platforms/**/VERSION`, `tools/**` is staged
-- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `plans/HERMES-BACKLOG.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`, `platforms/*/CHANGELOG.md`) is staged
+- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`, `platforms/*/CHANGELOG.md`) is staged
 
 Common false positives (warning is correct to ignore):
 
@@ -94,9 +94,10 @@ The framework spec is GATE-SPEC governed. Any change under `framework/` (the spe
 | Stage | Tool | Scope | Config |
 |---|---|---|---|
 | `pre-commit` (local) | `detect-secrets` | staged files | `.secrets.baseline` |
+| CI (`pre-commit.yml`) | `detect-secrets`, `detect-private-key` | full tree (`--all-files`) | `.secrets.baseline`, `.pre-commit-config.yaml` |
 | CI (`secret-scan.yml`) | `gitleaks` | **full git history** (`gitleaks git`, canon `ci/v2.x`) | `.gitleaks.toml` |
 
-There is deliberately **no local gitleaks hook** ([#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)): the upstream hook builds gitleaks from source and needs Go ≥ 1.21, and the failure lands in hook installation, aborting the commit before any other hook runs. Because CI scans history rather than the working tree, a clean local tree can still fail the gate — validate a suspected finding with `git log -p` / `git grep` over history, and record justified suppressions in `.gitleaks.toml`.
+There is deliberately **no local gitleaks hook** ([#348](https://github.com/vladm3105/aidoc-flow-framework/issues/348)): the upstream hook builds gitleaks from source and needs Go ≥ 1.21, and the failure lands in hook installation, aborting the commit before any other hook runs. Because CI scans history rather than the working tree, a clean local tree can still fail the gate — validate a suspected finding with `git log -p` / `git grep` over history, and record justified suppressions in `.gitleaks.toml`. See [`SECURITY.md`](SECURITY.md) for full details on automated security checks.
 
 ## Reporting bugs and security issues
 

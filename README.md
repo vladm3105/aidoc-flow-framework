@@ -319,8 +319,7 @@ and surfaces may change before 1.0. Platform release versions are in the
 Post-v1.0 development — delivered and planned — is tracked in
 [`ROADMAP.md`](ROADMAP.md); per-release detail is in
 [`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
-first, with Hermes follow-on batches per
-[`plans/HERMES-BACKLOG.md`](plans/HERMES-BACKLOG.md).
+first, with Hermes follow-on batches tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues?q=is%3Aopen+label%3A%22platform%3A+hermes%22).
 
 ## Contributing
 

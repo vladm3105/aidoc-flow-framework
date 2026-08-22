@@ -59,7 +59,7 @@ Where:
 | GATE-03-E003 | Syntax | EARS must follow WHEN-THE-SHALL syntax | Fix WHEN-THE-SHALL-WITHIN format |
 | GATE-03-E004 | Syntax | BDD must have Given-When-Then format | Fix Given-When-Then structure |
 | GATE-03-E005 | Traceability | EARS missing necessary-upstream tag (@prd) | Add the required upstream tag |
-| GATE-03-E006 | Traceability | BDD missing necessary-upstream tag (@ears) | Add the required upstream tag |
+| GATE-03-E006 | Traceability | BDD missing necessary-upstream tag (ears: list) | Add the required upstream list |
 | GATE-03-E007 | Traceability | ADR missing necessary-upstream tags (@ears @bdd) | Add the 2 required upstream tags |
 | GATE-03-E008 | Security | External-source change cites neither a CVE/advisory nor an N/A reason | Add `CVE-YYYY-NNNN`/advisory ref, or `no advisory applies: <reason>` |
 

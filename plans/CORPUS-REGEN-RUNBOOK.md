@@ -22,16 +22,16 @@ reuse, advisory scores, the sketch roadmap), so a regen is due.
 
 ## What a regen clears (the deferred backlog)
 
-These `FRAMEWORK-TODO.md` items are **closed by the regen**, not by hand:
+These items are **closed by the regen**, not by hand:
 
 - **16 COV02 orphans** — BDD scenarios with no downstream SPEC/TDD at element
-  level (surfaced by ELEMENT-COVERAGE-001; a fresh cascade authors the coverage).
+  level (surfaced by ELEMENT-COVERAGE-001; a fresh cascade authors the coverage; issue #480).
 - **`CORPUS-REFGRAN-RECASCADE`** — the 5 remaining SPEC/TDD/IPLAN doc-level
-  `@adr`/`@tdd` tags re-cascaded to element granularity (GD-03/REFGRAN01).
+  `@adr`/`@tdd` tags re-cascaded to element granularity (GD-03/REFGRAN01; issue #486).
 - **`CORPUS-PRD-TH-RES`** — PRD-01's missing `component_decomposition` thresholds
-  (11 unresolvable `@threshold:` citations).
+  (11 unresolvable `@threshold:` citations; issue #487).
 
-After a clean regen these drop out of the corpus baseline; close each TODO entry
+After a clean regen these drop out of the corpus baseline; close each issue
 with the regen commit ref.
 
 > **Not** closed by the regen: `INDEX-UPSTREAM-RESIDUE` was **template-side** (stale
@@ -86,8 +86,8 @@ a regen.
 
    This stages + commits `docs/` + `.aidoc/` (see `ACCEPTANCE.md` §3.2 `--promote`).
 
-5. **Close the backlog.** In `plans/FRAMEWORK-TODO.md`, move the four
-   corpus-remediation items above to Closed with the regen commit ref; update
+5. **Close the backlog.** Close the corresponding GitHub issues for the
+   corpus-remediation items above with the regen commit ref; update
    `plans/HANDOFF.md`.
 
 ## Notes

@@ -12,7 +12,7 @@
 #    _example      — sample values for reference
 #
 #  Downstream: BDD (Layer 4)
-#  Upstream: BRD (Layer 1), PRD (Layer 2)
+#  Upstream: PRD (Layer 2)
 # =============================================================================
 
 id: EARS-NN
@@ -119,7 +119,6 @@ document_control:
   _guidance: |
     BDD-Ready Score: >=90/100 is the advisory readability target (auditor-lens computed, never hand-authored) — NOT a merge gate; the deterministic sdd_doc_lint floor is the actual gate.
     Source Document: link to upstream PRD using hash-based IDs.
-    BRD Reference: link to upstream BRD using hash-based IDs.
   version: "1.0"
   status: Draft  # Draft | In Review | Approved
   date_created: "YYYY-MM-DDTHH:MM:SS"
@@ -127,7 +126,6 @@ document_control:
   author: "[Requirements Engineer]"
   priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
   source_document: "@prd: PRD.NN.09.xxxx"
-  brd_reference: "@brd: BRD.NN.07.xxxx"
   bdd_ready_score: "[Score]/100"  # advisory — auditor-lens score; blank is NOT incomplete (the sdd_doc_lint floor is the gate)
 
   revision_history:
@@ -248,7 +246,7 @@ requirements:
         WHEN [trigger condition],
         THE [system component] SHALL [response action]
         WITHIN [timing constraint].
-      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+      traceability: "@prd: PRD.NN.09.xxxx"
 
   state_driven:
     - id: "EARS.NN.03.xxxx"
@@ -257,7 +255,7 @@ requirements:
         WHILE [state condition],
         THE [system component] SHALL [continuous behavior]
         WITHIN [operational context].
-      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+      traceability: "@prd: PRD.NN.09.xxxx"
 
   unwanted_behavior:
     - id: "EARS.NN.03.xxxx"
@@ -266,7 +264,7 @@ requirements:
         IF [error condition],
         THE [system component] SHALL [recovery action]
         WITHIN [timing constraint].
-      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+      traceability: "@prd: PRD.NN.09.xxxx"
 
   optional_feature:
     - id: "EARS.NN.03.xxxx"
@@ -274,7 +272,7 @@ requirements:
       statement: |
         WHERE [feature/configuration is present],
         THE [system component] SHALL [feature behavior].
-      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+      traceability: "@prd: PRD.NN.09.xxxx"
 
   ubiquitous:
     - id: "EARS.NN.03.xxxx"
@@ -282,7 +280,7 @@ requirements:
       statement: |
         THE [system component] SHALL [universal behavior]
         for [scope/context].
-      traceability: "@brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx"
+      traceability: "@prd: PRD.NN.09.xxxx"
 
 # =============================================================================
 # Section 4: Quality Attributes
@@ -349,19 +347,18 @@ traceability:
   _guidance: |
     Necessary-upstream tagging — Layer 3 requires @prd (its `required_tags`).
     Upstream: REQUIRED — every EARS must reference its PRD element; BRD is
-    reached transitively via the PRD (cite @brd only as optional provenance).
+    reached transitively via the PRD.
     Downstream: OPTIONAL — only add links to artifacts that exist.
     Do NOT reference specific ADR/BDD numbers until they exist.
 
     Tag format (pipe-separated):
-      @brd: BRD.NN.07.xxxx | @prd: PRD.NN.09.xxxx | @threshold: PRD.NN.perf.key
+      @prd: PRD.NN.09.xxxx | @threshold: PRD.NN.perf.key
 
     Use @threshold: convention for timing/performance values (no PRD section numbers).
 
   _antipatterns:
     - "FAIL: ranges '@prd: PRD.01.09.1dbc - PRD.01.09.a6ce' — list separately"
-    - "FAIL: commas '@brd: X, @prd: Y' — use pipes ' | '"
-    - "FAIL: missing prefix 'BRD.02.07.f1de' — must be '@brd: BRD.02.07.f1de'"
+    - "FAIL: missing prefix 'PRD.02.09.f1de' — must be '@prd: PRD.02.09.f1de'"
     - "FAIL: multiple @prd in Document Control — one only, extras in per-requirement tags"
 
   tags:

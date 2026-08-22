@@ -1,4 +1,11 @@
-# Hermes Backlog — deferred work pending plugin completion
+# HERMES-BACKLOG — retired (tombstone)
+
+> **This file is no longer used for tracking backlog items. Do not add entries to it.**
+> All platform and framework backlog tasks, parity items, and issues are tracked in **[GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues)** (filtered by label e.g. `platform: hermes`).
+
+---
+
+## Historical Hermes Backlog — Archive (as of 2026-07-10)
 
 | Field | Value |
 |-------|-------|
