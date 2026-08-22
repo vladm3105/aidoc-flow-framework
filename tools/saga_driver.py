@@ -796,12 +796,14 @@ def reconcile_post_audit(ctx: SagaContext, saga: dict) -> None:
 
     # Walk run-level status from FANOUT_STARTED through to BRANCH_COMPLETED
     # via the allowed-transition graph, but only when every crew branch
-    # has reached a terminal state (BRANCH_COMPLETED or BRANCH_FAILED).
+    # has reached a terminal state AND at least one branch completed successfully.
+    # If all branches failed (or none completed), do not advance to BRANCH_COMPLETED (#469).
     terminal_branch_states = {"BRANCH_COMPLETED", "BRANCH_FAILED"}
     all_branches_terminal = bool(branches) and all(
         b.get("status") in terminal_branch_states for b in branches.values()
     )
-    if all_branches_terminal and saga["status"] == "FANOUT_STARTED":
+    any_branch_completed = any(b.get("status") == "BRANCH_COMPLETED" for b in branches.values())
+    if all_branches_terminal and any_branch_completed and saga["status"] == "FANOUT_STARTED":
         append_transition(saga, from_state="FANOUT_STARTED", to_state="BRANCH_RUNNING", scope="run")
         saga["status"] = "BRANCH_RUNNING"
         append_transition(

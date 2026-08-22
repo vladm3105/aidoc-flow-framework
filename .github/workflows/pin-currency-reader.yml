@@ -59,12 +59,9 @@ concurrency:
 jobs:
   read:
     name: Read pin-currency verdict
-    # The precedent's FULL form (auto-merge-ai-prs.yml). A conclusion-only
-    # filter green-SKIPS every dispatch, because
-    # `github.event.workflow_run.conclusion` is empty on a `workflow_dispatch`
-    # run — and a skipped job is green, so a manual verification run would
-    # report "no issue created" against a passing workflow.
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    # Run on manual dispatch OR when workflow_run completes (success or failure),
+    # so that an upstream standards-drift failure does not skip reading the verdict.
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' || github.event.workflow_run.conclusion == 'failure' }}
     runs-on: ubuntu-latest
     # The reconcile's arg parser is arity-checked, but an unattended job with no
     # ceiling would burn the 6h default if anything ever did hang.

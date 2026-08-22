@@ -228,7 +228,11 @@ is a container. A trace citation must therefore name the **element**, not the
 document — a document-level ref discards the granularity at which the work is
 actually specified.
 
-- An `@<layer>:` **trace citation** to an **element-declaring** layer (`@brd`,
+**Derivable Principle:**
+- **Oracle layers (EARS requirement or BDD scenario):** citing an oracle layer in a verification or design realization context **MUST be element-level** (`TYPE.NN.SS.xxxx`). Citing a document-level ID (e.g. `BDD-01` instead of `BDD.01.03.xxxx`) in a verification context discards fine-grained traceability and silently zeroes element-level coverage.
+- **Design & realization layers (ADR / SPEC / TDD / IPLAN):** citing an upstream design doc as an architectural unit (e.g. SPEC citing `ADR-01`, TDD citing `SPEC-01`, IPLAN citing `TDD-01`) is **document-level permitted**.
+
+- An `@<layer>:` **trace citation** to an **element-declaring oracle/behavior layer** (`@brd`,
   `@prd`, `@ears`, `@bdd`, `@adr`, `@tdd`) **MUST be element-level**
   (`TYPE.NN.SS.xxxx`). This holds for **every** trace context — inline body
   citations **and** the **necessary-upstream / feature-level** tag (e.g. an

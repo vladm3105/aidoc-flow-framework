@@ -55,6 +55,7 @@ the forward matrix and the backward walker never disagree. The matrix is
 
 The linter enforces element-level coverage over the `@`-tag graph (ELEMENT-COVERAGE-001):
 
+- **Reference Granularity Principle (GD-03 / #502):** Citing an oracle layer (EARS requirements or BDD scenarios) in verification contexts (e.g. SPEC `upstream.bdd_references`, TDD `scenarios[].bdd_scenario`, inline `source: "@bdd: ..."`) MUST be element-level (`TYPE.NN.SS.xxxx`). Citing a document-level ID (e.g. `BDD-01`) for an oracle defeats element coverage computation. Conversely, citing design/decision units (ADR, SPEC, TDD, IPLAN) at document-level (e.g. `@adr: ADR-01`, `@spec: SPEC-01`) is permitted when referencing the design container as a whole.
 - **`COV01` — forward coverage.** Every in-scope (`AUTHORED`) BRD functional requirement
   MUST reach ≥1 SPEC and ≥1 IPLAN downstream. No SPEC → error; SPEC-but-no-IPLAN → warning
   in `build`, error in `gate-code`. Escaped FRs never block: a `Future` band (deferred) or a
