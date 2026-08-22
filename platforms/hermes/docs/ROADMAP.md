@@ -12,15 +12,12 @@ Historical notes:
 - Runtime paths, commands, and operational guidance for active work are
   `ucx_hermes` references.
 
-> **Historical snapshot (as of 2026-05-02).** The table below is a legacy
-> `ucx_hermes` release record; it is **not** the active version. The current
-> runtime is `hermes/v0.10.0` (framework spec `0.37.0`) — see the platform
-> [`CHANGELOG.md`](../CHANGELOG.md) and [`../README.md`](../README.md).
+> **Frozen historical snapshot (as of 2026-05-02).** The table below is a legacy
+> `ucx_hermes` release record — superseded by the platform [`CHANGELOG.md`](../CHANGELOG.md) and [`../README.md`](../README.md).
 
 | Field | Value (historical) |
 | --- | --- |
-| Current Version | **2.0.0** *(historical; now `hermes/v0.7.3`)* |
-| Latest Release | **2.0.0** (Hermes hardening: AI executor removal, bridge skill, integration doc — IPLAN-034) |
+| Historical Release | **2.0.0** (Hermes hardening: AI executor removal, bridge skill, integration doc — IPLAN-034) |
 | Previous Release | 1.22.0 (TDD/IPLAN readiness — PLAN-033) |
 | Base Release | 1.22.0 (mcp_ucx final — frozen) |
 | Next Major | 3.0.0 (Trace2Skill online tuning; multi-agent orchestration) |

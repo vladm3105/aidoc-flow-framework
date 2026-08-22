@@ -1,9 +1,8 @@
 # UCX Hermes — Primary AI Agent Orchestration Platform
 
-> **Status**: Historical migration record (pre-migration `mcp_ucx` → `ucx_hermes`).
-> For the current platform overview see [`../README.md`](../README.md) and
-> [`HERMES_INTEGRATION.md`](HERMES_INTEGRATION.md).
-> **Current runtime**: `hermes/v0.10.0` (framework spec `0.37.0`); package `mcp_server` at `platforms/hermes/`.
+> **Status**: Frozen 2026-05-02 historical migration snapshot — superseded by [`../README.md`](../README.md) and the `VERSION` / `FRAMEWORK_SPEC_VERSION` files.
+> For current platform versions, see [`../README.md`](../README.md) and [`docs/PARITY.md`](../../../docs/PARITY.md).
+> **Historical runtime**: `hermes/v0.10.0` (framework spec `0.37.0`); package `mcp_server` at `platforms/hermes/`.
 > **Date**: 2026-05-02
 > **Previous**: mcp_ucx v1.22.0 (DEPRECATED)
 > **Timezone**: America/New_York

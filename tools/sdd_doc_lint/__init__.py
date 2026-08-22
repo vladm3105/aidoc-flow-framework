@@ -501,6 +501,14 @@ def _load_section_targets(artifact: str, registry: Path | None = None) -> dict[s
     except (OSError, StopIteration, KeyError, yaml.YAMLError):
         return {}
     tpl = registry.parent.parent / layer_folder / f"{artifact}-TEMPLATE.yaml"
+    if not tpl.is_file():
+        # Raise error if registry exists but its layer template is missing
+        print(
+            f"sdd-doc-lint: [ERROR] template file not found for {artifact} at '{tpl}' "
+            f"(resolved relative to registry '{registry}'). Structural checks cannot run.",
+            file=sys.stderr,
+        )
+        return {}
     try:
         doc = yaml.safe_load(tpl.read_text(encoding="utf-8"))
     except (OSError, yaml.YAMLError):
@@ -568,12 +576,13 @@ def _check_style(
         target = section_targets.get(key, _SECTION_TARGET_WORDS)
         blocking = int(target * _BLOCKING_FACTOR)
         if words > blocking:
+            trunc_h = heading[:80] + ("..." if len(heading) > 80 else "")
             findings.append(
                 Finding(
                     rel,
                     body_offset + start,
                     "STY02",
-                    f"section '{heading}' is {words} words; target ≤{target}"
+                    f"section '{trunc_h}' is {words} words; target ≤{target}"
                     f" (blocking >{blocking})",
                     severity="warning",
                 )
@@ -643,12 +652,13 @@ def lint_text(
             )
         )
     elif _id_state and _id_state != "canonical":
+        trunc_state = _id_state[:80] + ("..." if len(_id_state) > 80 else "")
         findings.append(
             Finding(
                 rel,
                 1,
                 "PROV01",
-                f"unknown id_state '{_id_state}' (want 'provisional' or 'canonical')",
+                f"unknown id_state '{trunc_state}' (want 'provisional' or 'canonical')",
                 severity="warning",
             )
         )
@@ -1292,13 +1302,14 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
             )
             continue
         last = str(raw_last).strip().strip('"').strip("'")
+        trunc_last = last[:40] + ("..." if len(last) > 40 else "")
         if _parse_minor(last) < current:
             findings.append(
                 Finding(
                     rel,
                     1,
                     "STALE01",
-                    f"last_audited_spec={last} < current framework/VERSION={framework_version}"
+                    f"last_audited_spec={trunc_last} < current framework/VERSION={framework_version}"
                     f" — re-audit before relying on the Approved status",
                     severity="warning",
                 )

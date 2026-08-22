@@ -43,7 +43,7 @@ allows 2 in one call). Each subagent must:
    - Architecture Flow (Section 6): Mermaid sequence/state diagram
    - Implementation Assessment (Section 7): phases, complexity 1-5, rollback path
    - Verification (Section 8): concrete success criteria with measurements
-   - Traceability (Section 9): hash-level references to all 4 upstream layers
+   - Traceability (Section 9): element-level references to the 2 necessary upstream layers (@ears, @bdd); @prd/@brd optional provenance
 4. Overwrite the file to `05_ADR/ADR-NN.yaml`
 5. Verify with `yaml.safe_load()`
 

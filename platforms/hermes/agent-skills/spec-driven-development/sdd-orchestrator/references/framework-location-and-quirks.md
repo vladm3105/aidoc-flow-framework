@@ -50,11 +50,7 @@ ADR can both DEFINE technical thresholds AND REFERENCE business/product threshol
 
 ## What NOT to Reference (per AI_ASSISTANT_RULES.md)
 
-- `framework/` — SDD v2, superseded
-- SYS, REQ, CTR layers — cut from v3
-- TSPEC subtypes (UTEST, ITEST, STEST, FTEST, PTEST, SECTEST) — replaced by TDD
-- TASKS — replaced by IPLAN
-- CHG/ gates — not a v3 concern for document creation/review
+See `framework/AI_ASSISTANT_RULES.md` for the authoritative rules on obsolete layer types, cuts, and template generation rules.
 
 ## 4. UCX sdd_validate Template Collision Bug
 
@@ -109,5 +105,4 @@ nearby.
 
 ## Development Completion Rule (from AI_ASSISTANT_RULES.md)
 
-IPLAN is Completed when: source code + CI/CD scripts authored, committed, tests pass, pre-commit passes.
-NOT blocked by: terraform apply, atlas migrate apply, acceptance/soak testing, image build/deploy.
+See `framework/AI_ASSISTANT_RULES.md` for authoritative development completion and IPLAN completion criteria.

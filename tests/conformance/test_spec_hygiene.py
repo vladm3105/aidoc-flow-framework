@@ -28,7 +28,33 @@ ENGINE_TOKENS = [
         r"preflight|next_action|review|remediate)",
         re.IGNORECASE,
     ),
+    re.compile(r"\bplugin\b", re.IGNORECASE),
+    re.compile(r"\bSKILL(?:\.md)?\b"),
+    re.compile(
+        r"\bdoc-(?:brd|prd|ears|bdd|adr|spec|tdd|iplan|chg|validator|ref|flow|naming"
+        r"|autopilot|audit|fixer)\b",
+        re.IGNORECASE,
+    ),
 ]
+
+# Allowlisted occurrences of engine tokens in framework/ (e.g. meta-governance or explicit illustrations)
+ALLOWLISTED_TOKENS = {
+    # Sanctioned Platform-B illustration in AIDOC.md
+    ("docs/AIDOC.md", "plugin"),
+    ("docs/AIDOC.md", "doc-"),
+    ("docs/AIDOC.md", "doc-validator"),
+    ("docs/AIDOC.md", "doc-ref"),
+    ("docs/AIDOC.md", "doc-<layer>-autopilot"),
+    ("docs/AIDOC.md", "doc-<layer>-audit"),
+    ("docs/AIDOC.md", "doc-<layer>-fixer"),
+    # GD-06 decision record naming neutralized tokens
+    ("governance/DECISIONS.md", "plugin"),
+    ("governance/DECISIONS.md", "skill"),
+    ("governance/DECISIONS.md", "doc-"),
+    ("governance/DECISIONS.md", "doc-*"),
+    # Registry acceptance harness commentary note
+    ("registry/LAYER_REGISTRY.yaml", "plugin"),
+}
 
 # `framework_version` is banned everywhere — the spec version lives in
 # `framework/VERSION` (D-0006), not in per-file frontmatter.
@@ -48,11 +74,18 @@ class EngineTokenHygiene(unittest.TestCase):
     def test_no_engine_tokens(self):
         violations = []
         for path in framework_files():
+            rel = str(path.relative_to(FRAMEWORK))
             for lineno, line in _lines(path):
                 for pattern in ENGINE_TOKENS:
                     if pattern.search(line):
-                        rel = path.relative_to(FRAMEWORK)
-                        violations.append(f"{rel}:{lineno}: {line.strip()}")
+                        # Check allowlist
+                        allowlisted = False
+                        for allow_path, allow_token in ALLOWLISTED_TOKENS:
+                            if rel == allow_path and allow_token.lower() in line.lower():
+                                allowlisted = True
+                                break
+                        if not allowlisted:
+                            violations.append(f"{rel}:{lineno}: {line.strip()}")
         self.assertEqual(violations, [], f"engine tokens in framework/: {violations}")
 
 
