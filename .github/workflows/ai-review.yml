@@ -73,7 +73,7 @@ jobs:
     # denylist with an ALLOWLIST of the two code-changing actions (`synchronize`,
     # `opened`); every other subscribed event fires at the current head and must
     # not cancel. Do not pin back below v2.15.0.
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v3.0.0
     with:
       # Model selection is CONFIG-DRIVEN: the reusable reads `litellm.model`
       # from the trusted .github/ai-review/config.json. Uncomment to override:
