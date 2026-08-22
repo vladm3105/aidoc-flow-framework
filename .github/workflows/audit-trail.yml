@@ -19,7 +19,7 @@ on:
 # level a `concurrency:` sweep actually greps, per D-0070.
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/audit-trail-check.yml@ci/v3.0.0
     with:
       runner_labels: '"ubuntu-latest"'
     permissions:
