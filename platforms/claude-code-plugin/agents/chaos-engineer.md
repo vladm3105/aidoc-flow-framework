@@ -9,7 +9,7 @@ description: >
   findings to its review-blackboard slot. A READ-ONLY review lens: it reports
   findings and a lens_score; it never edits. For external-attacker concerns
   (threat modelling, abuse cases, controls), see `security-engineer.md`.
-tools: Read, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Grep, Glob, Bash, Skill
 model: opus
 tags:
   - agent

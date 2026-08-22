@@ -7,7 +7,7 @@ description: >
   execution), GitHub issue/label governance, and delegation to the eight
   specialist agents. It drives the document lifecycle through the plugin's native
   SDD skills and is the PM seat the team plugs into.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, Task, WebFetch, WebSearch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill, Task
 model: opus
 tags:
   - agent

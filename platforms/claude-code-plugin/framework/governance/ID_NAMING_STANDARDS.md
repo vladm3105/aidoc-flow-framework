@@ -254,6 +254,15 @@ actually specified.
 
 Enforced by `sdd_doc_lint REFGRAN01` (CFB-PR-3).
 
+### Status field scopes and legal values
+
+The `status:` field appears across different scopes with distinct legal-value enumerations:
+
+- **Document Lifecycle (Layers 1-4, 6-7):** `Draft` | `In Review` | `Approved`
+- **ADR Lifecycle (Layer 5):** `Proposed` | `Accepted` | `Deprecated` | `Superseded`
+- **IPLAN Lifecycle (Layer 8):** `Draft` | `In Progress` | `Completed`
+- **Option / Item Status:** `Selected` | `Pending` | `Rejected`
+
 ## File Naming
 
 | File | Format | Example |

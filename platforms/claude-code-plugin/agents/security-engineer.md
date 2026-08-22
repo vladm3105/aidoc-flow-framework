@@ -6,7 +6,7 @@ description: >
   authoring/validating Security Test Specifications (SECTEST). A READ-ONLY
   quality gate: it identifies vulnerabilities and missing controls and reports
   them; it does not modify code. Co-owns SECTEST with the Test Architect.
-tools: Read, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Grep, Glob, Bash, Skill
 model: opus
 tags:
   - agent

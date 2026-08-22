@@ -6,7 +6,7 @@ description: >
   Owns the execution lane: turning Implementation Plans (IPLAN) and SPEC into
   working, tested code, opening PRs, and applying fixes raised by the review
   gates. Only operates on approved (ai:ready) scope.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 tags:
   - agent

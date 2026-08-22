@@ -830,7 +830,8 @@ def _advance_after_phase(ctx: SagaContext, saga: dict, phase: str) -> None:
     """Apply the state-machine transition for a completed phase + decide
     next phase based on verdict.json (for review/re-review phases)."""
     if phase == "draft":
-        append_transition(saga, from_state="PREPARED", to_state="FANOUT_STARTED")
+        current_st = saga.get("status", "PREPARED")
+        append_transition(saga, from_state=current_st, to_state="FANOUT_STARTED")
         saga["status"] = "FANOUT_STARTED"
         saga["current_phase"] = "review"
     elif phase in ("review", "re-review"):

@@ -6,7 +6,7 @@ description: >
   the SDD workflow. Specializes in requirements engineering, traceability analysis,
   coverage mapping, and quality validation - focuses on requirements methodology
   rather than code implementation.
-tools: Read, Write, Edit, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 tags:
   - agent

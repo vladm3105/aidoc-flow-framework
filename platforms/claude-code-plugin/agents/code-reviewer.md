@@ -7,7 +7,7 @@ description: >
   verification. A READ-ONLY quality gate: it reports findings and a verdict, it
   never edits code itself. A downstream-heavy role built out in depth, since the
   success-story data shows review/test compression drives the largest gains.
-tools: Read, Grep, Glob, Bash, Skill, WebFetch
+tools: Read, Grep, Glob, Bash, Skill
 model: opus
 tags:
   - agent

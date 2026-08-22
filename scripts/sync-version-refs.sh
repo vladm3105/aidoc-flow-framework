@@ -285,7 +285,9 @@ log "framework VERSION: ${fw_ver:-(missing)}"
 #   test_sync_version_refs_counts.py pins these, so a doc edit that adds or
 #   removes a current-state row fails CI instead of silently skipping a sync.
 if [[ -n "$fw_ver" ]]; then
-  fw_prev="$(detect_version_in CLAUDE.md \
+  # Derive fw_prev from docs/PARITY.md rather than CLAUDE.md so that a manual
+  # edit to CLAUDE.md does not strand the rest of the fanout targets (#386).
+  fw_prev="$(detect_version_in docs/PARITY.md \
     'framework spec `[0-9]+\.[0-9]+\.[0-9]+`')"
 
   if [[ -n "$fw_prev" && "$fw_prev" != "$fw_ver" ]]; then

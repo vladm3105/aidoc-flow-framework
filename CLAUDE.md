@@ -73,11 +73,11 @@ the 8-layer SDD flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → 
      `docs/PARITY.md` current-state row. Re-stages on its own;
      idempotent.
   2. **Semantic doc-reminder** (`scripts/check-docs-updated.sh`) —
-     runs on every commit. When the staged change touches
-     code/spec/skills but does NOT touch any document-of-record
-     (CHANGELOG, ROADMAP, HANDOFF, HERMES-BACKLOG, …), prints a
-     checklist of likely-stale docs. Warning-only; never blocks the
-     commit. Contributor decides whether to update or proceed.
+      runs on every commit. When the staged change touches
+      code/spec/skills but does NOT touch any document-of-record
+      (CHANGELOG, ROADMAP, HANDOFF, …), prints a
+      checklist of likely-stale docs. Warning-only; never blocks the
+      commit. Contributor decides whether to update or proceed.
 
   The mechanical sync handles every doc whose update is deterministic
   (a version string changed; propagate). The semantic reminder
