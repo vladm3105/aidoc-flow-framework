@@ -14,6 +14,16 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — re-pinned to framework spec `0.41.3` (2026-08-23)
+
+`FRAMEWORK_SPEC_VERSION` `0.41.0 → 0.41.3` across three spec bumps. Hermes vendors
+no `framework/` copy, so this is a pin change only — no Hermes code changed and
+`platforms/hermes/VERSION` stays `0.12.1`. Consumers of the spec through Hermes
+pick up framework **GD-13**: the CHG overlay-semantics clarifications and the
+reconciliation of six authoring surfaces to GD-03's citation granularity. Note that
+`src/mcp_server/validation/chg_rules.py` `_SOURCE_TO_GATE` was already correct and
+is what caught the draft's invalid `feedback` → `GATE-03` routing example.
+
 - **The vendored `sdd_doc_lint` diagnoses its own missing prerequisites instead
   of tracebacking.** PyYAML absent, or an interpreter below Python 3.11, now
   prints one line naming the cause and exits **3** — a code distinct from 2

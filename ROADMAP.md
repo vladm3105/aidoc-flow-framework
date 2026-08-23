@@ -137,6 +137,16 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **CHG-OVERLAY-AND-GRANULARITY (2026-08-23, framework `0.41.2 → 0.41.3`, GD-13).**
+  Two unrelated clarifications in one spec bump, bundled because GATE-SPEC-E005 makes
+  any `framework/**` touch one versioned event. Change management: `09_CHG` is named
+  an operational namespace rather than a 9th lifecycle layer, `change_source: spec` is
+  stated as always `>= C2` routing to GATE-SPEC, and `GATE-CODE_IMPLEMENTATION.md` §6's
+  bubble-up procedure becomes five explicit steps — the draft of which had paired
+  `change_source: feedback` with `entry_gate: GATE-03`, a combination Hermes rejects
+  outright as `CHG-002`. Citation granularity: six authoring surfaces had drifted from
+  GD-03 and told authors that ADR and TDD may be cited at document level, which
+  `REFGRAN01` has flagged since June; all six are reconciled. Erratum, so PATCH.
 - **GATE-FORM-PARITY (2026-08-16, framework `0.41.0 → 0.41.1`, GD-12).** The gate
   approval form — the surface a reviewer actually fills in — disagreed with the gate
   definitions in both directions, and now cannot. `GATE-03-E008` and

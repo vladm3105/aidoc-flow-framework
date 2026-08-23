@@ -230,7 +230,7 @@ actually specified.
 
 **Derivable Principle:**
 - **Oracle layers (EARS requirement or BDD scenario):** citing an oracle layer in a verification or design realization context **MUST be element-level** (`TYPE.NN.SS.xxxx`). Citing a document-level ID (e.g. `BDD-01` instead of `BDD.01.03.xxxx`) in a verification context discards fine-grained traceability and silently zeroes element-level coverage.
-- **Design & realization layers (ADR / SPEC / TDD / IPLAN):** citing an upstream design doc as an architectural unit (e.g. SPEC citing `ADR-01`, TDD citing `SPEC-01`, IPLAN citing `TDD-01`) is **document-level permitted**.
+- **Design & realization layers (SPEC / IPLAN):** citing an upstream design doc as an architectural unit or provenance (e.g. TDD citing `SPEC-01`, IPLAN citing `SPEC-01`) is **document-level permitted**, because SPEC and IPLAN are the two element-ID-exempt layers — they are not required to declare canonical elements, so a citation cannot rely on one existing. Citing an **element-declaring** layer — a concrete test case in TDD, a decision in ADR — remains element-level (`TYPE.NN.SS.xxxx`); a genuine whole-document dependency on one of those is recorded in prose, never as a document-level trace tag.
 
 - An `@<layer>:` **trace citation** to an **element-declaring oracle/behavior layer** (`@brd`,
   `@prd`, `@ears`, `@bdd`, `@adr`, `@tdd`) **MUST be element-level**
@@ -276,4 +276,3 @@ The `status:` field appears across different scopes with distinct legal-value en
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
 | Document | `{TYPE}-NN.yaml` (BRD, IPLAN: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
 | README | `README.md` | — |
-| IPLAN Index | `{TYPE}-00_index.yaml` | `IPLAN-00_index.yaml` |

@@ -44,6 +44,8 @@ metadata:
       | C3        | Cross-layer change, new requirements | Formal gate | Full CHG process |
       | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document → post-mortem within 48h |
 
+      Note: For change_source: spec (GATE-SPEC), change_level must be >= C2 (never C1 per GATE-SPEC-E003); major semver_impact requires C3.
+
     value: C2  # C1 | C2 | C3 | Emergency
 
   change_source:
@@ -62,8 +64,8 @@ metadata:
       | Spec                 | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
 
       Workflow per source:
-        1. Classify change (C1/C2/C3)
-        2. Route to entry gate based on source (assessing entry criteria against the change request)
+        1. Classify change (C1/C2/C3; spec changes are >= C2)
+        2. Route to entry gate based on source (assessing entry criteria against the change request; spec source routes to GATE-SPEC)
         3. Assess impact on affected layers
         4. Update affected artifacts
         5. Verify changes pass gate criteria (including §3 validation checklist)
@@ -78,9 +80,9 @@ metadata:
 change_control:
   chg_id: "CHG-NN"
   status: Proposed  # Proposed | In Review | Approved | Implemented | Rejected | Rolled Back
-  change_level: C2  # C1 | C2 | C3 | Emergency
+  change_level: C2  # C1 | C2 | C3 | Emergency (Note: change_source: spec requires >= C2)
   change_source: null  # upstream | midstream | design | execution | external | feedback | spec
-  entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC | None (C1)
+  entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC | None (C1 only for non-spec changes)
   semver_impact: null  # major | minor | patch — REQUIRED for change_source: spec (GATE-SPEC). major => change_level: C3
   author: "[Author Name]"
   date_proposed: "YYYY-MM-DDTHH:MM:SS"

@@ -13,6 +13,54 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-13 — Two governance documents had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
+
+- **Status:** Accepted — 2026-08-23 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-13 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-12 precedent — no separate CHG artifact). SemVer **patch**
+  (`0.41.2 → 0.41.3`), change-level **C2**.
+- **Context:** GD-03 (Accepted 2026-06-27) ratified that every `@<layer>:` trace
+  citation to an **element-declaring** layer (`@brd @prd @ears @bdd @adr @tdd`) MUST
+  be element-level, that only `@spec:` / `@iplan:` remain document-level (those two
+  layers being element-ID-exempt), and that **self-tags and downstream
+  forward-pointers are exempt** because they are not trace citations. `REFGRAN01`
+  has enforced this since — `tools/sdd_doc_lint/__init__.py`
+  `_REFGRAN_ELEMENT_DECLARING`, a warning in `build` and an **error** in `gate-code`.
+  Six authoring surfaces had never been reconciled to it and went on telling authors
+  the opposite:
+  - `ID_NAMING_STANDARDS.md` §"Reference granularity" — GD-03's own named
+    **authority** — listed ADR and TDD among the layers a document-level citation may
+    name, contradicting the bullet immediately below it in the same file.
+  - `TRACEABILITY.md` carried the identical proposition, citing GD-03 while stating
+    its inverse.
+  - `playbooks/05_ADR/auditor.md` C5 and `playbooks/07_TDD/auditor.md` C5 *mandated*
+    the dash form for whole-document pointers, penalty P3 — so an auditor obeying the
+    playbook produced artifacts `REFGRAN01` flags.
+  - `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` declared `@spec` **and** `@tdd`
+    document-level "by design"; the `@spec` half is correct, the `@tdd` half is not.
+  - `platforms/claude-code-plugin/agents/requirements-analyst.md` presented
+    `@adr: ADR-NN` as the canonical cumulative-upstream form.
+- **Decision:** reconcile all six to GD-03. The dash form survives only where GD-03
+  already exempts it — a document's own self-tag, a downstream forward-pointer, and
+  `@depends: TYPE-NN` — and a genuine whole-document dependency is stated in prose,
+  never as a document-level trace tag. GD-03 itself is unchanged and is not amended:
+  this records that its authority text had drifted from it.
+- **Consequences:** **PATCH, not MINOR.** GD-03's own MINOR grade covered
+  *introducing* the rule; nothing here changes what the linter accepts, what a
+  conformant document may contain, or any consumer-visible behaviour — six documents
+  stop disagreeing with a rule that was already ratified and already enforced. The
+  drift is the same shape GD-12 was written about, one layer up: a rule stated in
+  several documents where only some get corrected. **Not yet guarded** — there is no
+  conformance test asserting the document-level-permitted set is `{SPEC, IPLAN}`
+  across `ID_NAMING_STANDARDS.md`, `TAG_SYNTAX.md`, `TRACEABILITY.md` and
+  `_REFGRAN_ELEMENT_DECLARING`; such a guard would have caught all six and is the
+  obvious successor to this entry.
+- **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity"; GD-03;
+  `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-12 — The gate approval form is the executed surface, so its agreement with the gate definitions is a conformance invariant, not editorial care
 
 - **Status:** Accepted — 2026-08-16 (ratified on merge; a `framework/**` normative

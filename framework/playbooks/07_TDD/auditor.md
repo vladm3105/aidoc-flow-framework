@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.41.2"
+framework_spec_version: "0.41.3"
 ---
 # auditor lens — TDD layer
 
@@ -20,8 +20,9 @@ transitively through the EARS/BDD `@`-tag chain (one hop per layer).
 Traceability at TDD altitude runs across the necessary-upstream set
 plus any decorative cumulative-trace tags the author chose to emit.
 Every `@bdd: BDD.NN…` / `@spec: SPEC.NN…` / `@ears: EARS.NN…` /
-`@adr: ADR-NN` tag in the TDD document MUST resolve to a named
-element in the corresponding upstream document. Optional `@prd:` or
+`@adr: ADR.NN.SS.xxxx` tag in the TDD document MUST resolve to a named
+element in the corresponding upstream document. `@adr` is element-declaring:
+a document-level `@adr: ADR-NN` upstream citation is a REFGRAN01 finding (GD-03). Optional `@prd:` or
 `@brd:` tags MAY appear as decorative-lineage hints; if emitted,
 they must also resolve, but their absence is not a finding (the
 necessary-upstream contract is the gate). The TDD layer is where
@@ -40,9 +41,11 @@ matrix at the top of the TDD document indexes test cases; every
 matrix row must trace to a body test case, and every body test case
 must appear in the matrix. The `@bdd: / @spec: / @ears: / @adr:`
 header at the doc level (declared once and applying to every test
-case) must resolve cleanly. Cross-TDD references must use the right
-form: dash for doc-level refs (`@tdd: TDD-NN`), dotted for element-
-level (`@tdd: TDD.NN.SS.xxxx`).
+case) must resolve cleanly. Cross-TDD **trace citations** must be
+element-level (`@tdd: TDD.NN.SS.xxxx`); the dash form (`@tdd: TDD-NN`) is
+reserved for the document's own self-tag and downstream forward-pointers,
+which GD-03 exempts. A whole-document dependency is stated in prose or as
+`@depends: TDD-NN`, never as a document-level trace tag.
 
 This lens does NOT evaluate: test-suite integrity (qa_lead),
 test-engineering (tech_lead), failure-mode coverage (chaos_engineer),
@@ -90,11 +93,12 @@ check listed `@brd / @prd` in the header; updated by CLEANUP-PR-B
 item 7 (2026-06-11) to match the necessary-upstream contract that
 was already in effect on disk.
 
-**C5 — Cross-TDD references use correct form.** `@tdd:` references
-use the dash form (`@tdd: TDD-NN`) when pointing to a whole document
-and the dotted form (`@tdd: TDD.NN.SS.xxxx`) when pointing to a
-specific test case. Tools branch on the form; wrong form produces
-broken cross-links. Wrong form → P3 citing C5.
+**C5 — Cross-TDD references use correct form.** A cross-TDD `@tdd:`
+**trace citation** uses the dotted form (`@tdd: TDD.NN.SS.xxxx`) — TDD is
+element-declaring, so document-level trace citations are a REFGRAN01
+finding (GD-03). The dash form (`@tdd: TDD-NN`) is correct only for the
+document's own self-tag and downstream forward-pointers; a whole-document
+dependency uses prose or `@depends: TDD-NN`. Wrong form → P3 citing C5.
 
 ## Beyond-checklist
 

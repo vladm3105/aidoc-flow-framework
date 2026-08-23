@@ -195,11 +195,12 @@ Code (implements with config reference)
 | `qualifier` | No | Additional specificity | `max`, `min`, `warning` |
 
 The **key** (the part after `{TYPE}.{NN}.`) is therefore a **minimum of two
-dot-separated segments** (`{category}.{attribute}`), matching the authoritative
-`id_patterns.threshold` regex in `registry/LAYER_REGISTRY.yaml` (the registry
-wins on any width discrepancy). A single underscore *within* a segment name
-(e.g. `p95_latency`) is a legal attribute token; NR-02 governs the *separators*
-between segments (dots), not characters inside a segment.
+dot-separated segments** (`{category}.{attribute}`), making the entire threshold
+tag a minimum of 4 dotted segments (`{TYPE}.{NN}.{category}.{attribute}`),
+matching the authoritative `id_patterns.threshold` regex in
+`registry/LAYER_REGISTRY.yaml` (the registry wins on any width discrepancy). A single
+underscore *within* a segment name (e.g. `p95_latency`) is a legal attribute token;
+NR-02 governs the *separators* between segments (dots), not characters inside a segment.
 
 ### 2.2 Category Creation Rules
 

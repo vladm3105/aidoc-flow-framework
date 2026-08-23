@@ -12,6 +12,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.41.2 → 0.41.3` — clarify change-management overlay semantics, spec constraints, bubble-up procedure, and reference/threshold granularity (2026-08-22)
+
+Change management (`framework/governance/chg/`):
+
+- **Namespace & overlay semantics:** Clarified in `framework/governance/chg/README.md` that `09_CHG` is an operational namespace for playbooks, example artifacts, and multi-agent saga reviews rather than a linear 9th SDD lifecycle layer.
+- **Template constraints:** Updated `framework/governance/chg/CHG-TEMPLATE.yaml` guidance to state that `change_source: spec` changes are always `>= C2` (never C1, per `GATE-SPEC-E003`) and route to `GATE-SPEC`, and that `major` `semver_impact` requires C3.
+- **Bubble-up workflow:** Expanded the upstream-dependency procedure in `GATE-CODE_IMPLEMENTATION.md` §6 into five explicit steps, keeping the rule that an upstream CHG carries its own `GATE_APPROVAL_FORM`, and naming the upstream CHG's routing (`change_source: midstream` → `GATE-03` for an ADR/BDD/EARS root cause, per the routing tables in `chg/README.md` and `CHG-TEMPLATE.yaml`).
+
+Naming and granularity (`framework/governance/`):
+
+- **Reference granularity (GD-03):** `ID_NAMING_STANDARDS.md` listed ADR, SPEC, TDD and IPLAN as layers a document-level citation may name, contradicting the bullet immediately below it — which requires every `@adr` and `@tdd` trace citation to be element-level. Narrowed to **SPEC / IPLAN**, the two element-ID-exempt layers (`tests/conformance/test_element_id_layer_contract.py:40`), and restated that a whole-document dependency on an element-declaring layer is recorded in prose, never as a document-level trace tag.
+- **Threshold width:** `THRESHOLD_NAMING_RULES.md` §2.1 gave the minimum only for the key, leaving the width of a whole threshold tag implicit. Now states the full tag is a minimum of four dotted segments (`{TYPE}.{NN}.{category}.{attribute}`), matching `registry/LAYER_REGISTRY.yaml:223`.
+- **Index naming:** Removed a duplicate `IPLAN Index` row from the `ID_NAMING_STANDARDS.md` filename table; the `Index` row above it already covers `IPLAN-00_index.yaml`.
+- **Traceability parity:** `TRACEABILITY.md` carried the same superseded proposition as `ID_NAMING_STANDARDS.md` — that ADR and TDD may be cited at document level — and is narrowed identically.
+
+SemVer rationale (PATCH, not MINOR): the granularity edits are **errata**, not a rule change. GD-03 (`framework/governance/DECISIONS.md`, Accepted 2026-06-27) already ratified that every `@adr` / `@tdd` trace citation MUST be element-level and that only `@spec` / `@iplan` remain document-level, and `REFGRAN01` has enforced it since (`tools/sdd_doc_lint/__init__.py`, `_REFGRAN_ELEMENT_DECLARING`). These two governance docs had drifted from that ratified rule; reconciling them changes no consumer-visible behaviour, so it is a PATCH. GD-03's own MINOR grade covered *introducing* the rule.
+
 ### Fixed — Framework Spec `0.41.1 → 0.41.2` — remediate MVP layer contracts, template provenance, and governance findings (2026-08-22)
 
 Closes #386, #435, #436, #439, #440, #441, #442, #443, #447, #449, #451, #452, #453, #454, #455, #458, #465, #468, #470, #471, #472, #474, #475, #477, #482, #503, #504, #505, #506, #508, #509, #513, #514, #515, #518, #519.
