@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.41.2"
+framework_spec_version: "0.41.3"
 ---
 # auditor lens — ADR layer
 
@@ -31,11 +31,12 @@ cascades into every element-level finding downstream. (`@brd`/`@prd`, if
 present, are optional provenance reached transitively — not required.)
 
 Cross-ADR reference form matters because the ID naming standard
-distinguishes doc-level refs (`@adr: ADR-NN`, dash form) from element-
-level refs (`@adr: ADR.NN.SS.xxxx`, dotted form). Tools and downstream
-consumers branch on the form: a dash-form reference is a pointer to
-the whole document; a dotted-form reference is a pointer to a specific
-decision element. Wrong form pollutes the reference graph and produces
+distinguishes the two uses of `@adr:`. A cross-ADR **trace citation** is
+element-level (`@adr: ADR.NN.SS.xxxx`, dotted form) — ADR is element-
+declaring, so a document-level trace citation is a REFGRAN01 finding
+(GD-03). The dash form (`@adr: ADR-NN`) is correct only for the document's
+own self-tag, which GD-03 exempts; a hard whole-document prerequisite is
+`@depends: ADR-NN`. Wrong form pollutes the reference graph and produces
 broken cross-links in generated traceability matrices.
 
 This lens does NOT evaluate: decision integrity (architect),
@@ -80,12 +81,13 @@ resolve cleanly to existing upstream IDs. Element-level tags amplify the
 header; a broken header cascades into every element-level finding downstream.
 Missing or broken → P2 citing C4.
 
-**C5 — Cross-ADR references use correct form.** `@adr:` references must
-use the dash form (`@adr: ADR-NN`) when pointing to a whole document
-and the dotted form (`@adr: ADR.NN.SS.xxxx`) when pointing to a specific
-decision element. Tools branch on the form; using the wrong form
-produces broken cross-links in generated traceability matrices. Wrong
-form → P3 citing C5.
+**C5 — Cross-ADR references use correct form.** A cross-ADR `@adr:`
+**trace citation** uses the dotted form (`@adr: ADR.NN.SS.xxxx`); a
+document-level trace citation is a REFGRAN01 finding (GD-03). The dash
+form (`@adr: ADR-NN`) is correct only for the document's own self-tag,
+and a hard whole-document prerequisite is `@depends: ADR-NN`. Tools
+branch on the form; using the wrong form produces broken cross-links in
+generated traceability matrices. Wrong form → P3 citing C5.
 
 ## Beyond-checklist
 

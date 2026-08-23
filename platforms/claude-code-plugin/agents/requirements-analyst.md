@@ -267,10 +267,10 @@ docs/03_EARS/
 @prd: PRD.NN.SS.xxxx        # Layer 2 (dot notation, e.g., PRD.01.09.5d9d)
 @ears: EARS.NN.SS.xxxx      # Layer 3 (dot notation, e.g., EARS.01.03.3209)
 @bdd: BDD.NN.SS.xxxx        # Layer 4 (dot notation, e.g., BDD.01.03.c284)
-@adr: ADR-NN                # Layer 5 (dash notation)
+@adr: ADR.NN.SS.xxxx        # Layer 5 (dot notation, e.g., ADR.01.04.8b21)
 ```
 
-> The dash form `ADR-NN` is the canonical **document-level** reference per `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md`. **Element-level** ADR refs use the 4-segment dot form `ADR.NN.SS.xxxx` like every other layer's element IDs. Use document-level dash when citing a whole ADR, element-level dot when citing a specific decision element.
+> ADR is **element-declaring**, so an upstream `@adr:` **trace citation** uses the 4-segment dot form `ADR.NN.SS.xxxx` like every other element-declaring layer — see `${CLAUDE_PLUGIN_ROOT}/framework/governance/ID_NAMING_STANDARDS.md` §"Reference granularity" (GD-03). The dash form `ADR-NN` is reserved for an ADR's own **self-tag** and for `@depends: ADR-NN` hard prerequisites, both of which GD-03 exempts; a whole-document dependency is stated in prose, never as a document-level trace tag.
 
 **Link Check**:
 

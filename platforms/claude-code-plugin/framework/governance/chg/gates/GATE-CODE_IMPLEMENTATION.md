@@ -175,12 +175,11 @@ Test Failure Analysis:
 
 When root cause is upstream:
 
-1. Document finding in current CHG
-2. Create a new CHG for the upstream fix, with its own
-   [`GATE_APPROVAL_FORM`](../templates/GATE_APPROVAL_FORM.md) — do **not** record
-   the upstream gates on the current change's form
-3. Route to appropriate gate
-4. Current change becomes dependent on upstream CHG
+1. **Document finding in current CHG**: Record the upstream origin in the active change's RCA section and name the blocking CHG id there. Leave `status:` at a legal enum value — there is no `blocked` state.
+2. **Create upstream CHG**: Mint a new CHG record targeting the root-cause layer (e.g. `change_source: midstream`, `entry_gate: GATE-03` for an ADR/BDD/EARS defect — see the routing table in [`../CHG-TEMPLATE.yaml`](../CHG-TEMPLATE.yaml)).
+3. **Dedicated Gate Approval Form**: The upstream CHG carries its own [`GATE_APPROVAL_FORM`](../templates/GATE_APPROVAL_FORM.md) — do **not** record upstream gate approvals on the current implementation change's form.
+4. **Cascade resolution**: Author and approve the upstream fix through the normal cascade down to Code.
+5. **Resume current CHG**: Unblock and verify the implementation change once the upstream CHG is ratified.
 
 ## 7. Error Catalog
 

@@ -65,3 +65,9 @@ CHG is NOT:
 - Part of the readiness score chain
 
 CHG uses gate approval instead of readiness scores.
+
+### Note on `09_CHG` Namespace
+While CHG is an overlay rather than a sequential 9th SDD lifecycle layer, the `09_CHG` prefix is the reserved operational namespace across the framework for:
+- Playbook definitions (`framework/playbooks/09_CHG/`)
+- Example artifacts and project documentation (`docs/09_CHG/`)
+- Multi-agent saga review dispatch and schema validation (`saga.schema.json` layer enum)
