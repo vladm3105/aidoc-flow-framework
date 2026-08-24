@@ -5,13 +5,19 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** last deployable commit is the `main` tip carrying PR **#530** — verify with
-`git log --oneline -1 origin/main` (it was `8dccc315` at the wrap; assert the PR, not the
-hash). Framework spec **`0.41.3`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
-`FRAMEWORK_SPEC_VERSION` pins read `0.41.3`. **Merged, not released** — no tag cut (only
-`framework/v0.41.2` exists), no consumer has run against `0.41.3`. No open PRs. Working
-tree clean once this wrap commit lands — while you are reading the uncommitted draft,
-`plans/HANDOFF.md` is itself modified.
+**State:** framework spec **`0.41.3`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+`FRAMEWORK_SPEC_VERSION` pins read `0.41.3`. **RELEASED** — `framework/v0.41.3` is an
+annotated tag on `8dccc315` (PR #530), published as the **Latest** GitHub release on
+2026-08-24. Conformance was verified green *at that commit*, not inferred from `main`, per
+`docs/TAGGING.md`. No consumer has yet run against it. No open PRs, working tree clean.
+
+The last **deployable** commit is `8dccc315` (PR #530); everything on `main` after it is
+docs-only. Re-derive with **two** commands — `git rev-list -n1 framework/v0.41.3` for the
+commit, and `gh release view framework/v0.41.3 --json tagName,isPrerelease,isDraft` for the
+publication state. Do **not** use `git log -1 origin/main` (returns whatever docs commit
+landed last, and shows no PR number) and do **not** use `--json targetCommitish`: that field
+is the release's target branch, so it returns the literal string `main` and no SHA at all.
+`gh release view` exposes no field carrying the tag's commit.
 
 **Verified this session on `main` at `8dccc315`** (run, not asserted): conformance
 371 passed / 795 subtests · acceptance-deterministic 64 passed / 56 subtests ·
@@ -133,5 +139,18 @@ cost a wrong prediction this session. **The root cause was fixed, not merely def
 `platforms/hermes/pyproject.toml:7` now reads `mcp[cli]>=1.0.0,<2`, so the resolver can no
 longer pull `mcp 2.0.0`. Do not describe this dependency as an open failure class.
 
-**What did NOT change:** no release, no tag, neither platform version moved, the example
-corpus was not touched, and no `plans/` document other than this one was written.
+**Repo hygiene done 2026-08-24:** stale branches pruned (local 14 → 2, remote 10 → 3, plus
+whatever branch carries the change you are reading) and two abandoned worktrees removed. The
+two survivor sets differ, so read them separately: **locally** `main` and
+`fix/423-site-badge-selfheal`; **on origin** those two plus `legacy-ucx-v3.2-read-only`,
+which is the protected read-only pre-migration branch and has no local counterpart. Kept
+deliberately: `fix/423-site-badge-selfheal` carries live work for #423.
+
+⚠️ When judging whether a branch is dead, **check its PR state, not
+`git merge-base --is-ancestor`.** Everything here is squash-merged, and a squashed branch's
+tip is never an ancestor of `main` — so the ancestor test called all thirteen "unmerged"
+when twelve had fully landed. (It is a reliable test only for branches that were
+fast-forwarded or rebase-merged; this repo has none.)
+
+**What did NOT change:** neither platform version moved, no platform release was cut, the
+example corpus was not touched, and no `plans/` document other than this one was written.
