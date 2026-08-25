@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: security_engineer
 weight: 10
 agent: security-engineer
-framework_spec_version: "0.41.3"
+framework_spec_version: "0.42.0"
 ---
 # security_engineer lens — TDD layer
 

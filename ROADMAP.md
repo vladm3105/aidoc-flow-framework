@@ -137,6 +137,16 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **BRD-FR-CAP (2026-08-25, framework `0.41.3 → 0.42.0`, GD-14).** A BRD document SHOULD
+  carry at most 5 functional requirements; beyond five, split into BRD-02+ with its own
+  scope. Previously the only split trigger was a 50,000-token threshold, which is a poor
+  proxy for how much distinct capability one document commits to — and the three surfaces
+  stating a count disagreed on the unit (per BRD vs per cycle vs unstated). The iteration
+  cycle keeps its 5-15 total. Counting rule stated normatively against the
+  `Acceptance criteria:` boundary the linter already applies, per authored shape. Six
+  disagreeing surfaces reconciled, two of them found only in review — one stating the
+  proposition with no number at all, one spelling the range with an en dash. MINOR,
+  because it changes policy rather than correcting an error. Not linter-enforced.
 - **CHG-OVERLAY-AND-GRANULARITY (2026-08-23, framework `0.41.2 → 0.41.3`, GD-13).**
   Two unrelated clarifications in one spec bump, bundled because GATE-SPEC-E005 makes
   any `framework/**` touch one versioned event. Change management: `09_CHG` is named

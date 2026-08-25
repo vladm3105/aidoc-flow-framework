@@ -3,7 +3,7 @@ layer: 07_TDD
 lens: qa_lead
 weight: 35
 agent: test-architect
-framework_spec_version: "0.41.3"
+framework_spec_version: "0.42.0"
 ---
 # qa_lead lens — TDD layer
 

@@ -12,6 +12,16 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.41.3 → 0.42.0` — a BRD document SHOULD carry at most 5 functional requirements (GD-14) (2026-08-25)
+
+- **New split trigger.** A BRD document **SHOULD** carry at most 5 functional requirements. Beyond five, start a new document of the same type (BRD-02, BRD-03) and register it in the `BRD-00` index. This sits beside the existing 50,000-token threshold, whichever is reached first — previously size was the *only* trigger, and token count is a poor proxy for how much distinct capability a document commits to.
+- **Cycle total is 5-15 per cycle**, and the cap implies a floor of `ceil(N/5)` documents — a floor, not a ceiling on set size, since a set may hold more documents for reasons unrelated to size (one platform BRD plus several feature BRDs). Readers of the old `layers/01_BRD/README.md`, which said "5-15 per BRD", should note this **tightens** the cycle ceiling for a multi-BRD set. Splitting a single BRD into sectioned files remains forbidden — the unit of splitting is the document.
+- **Counting rule, stated normatively** because a cap nobody can count cannot be applied, and stated per authored shape because the layer has three. Authored markdown: the element IDs under `## 7. Functional Requirements` and before that section's `Acceptance criteria:` line — the boundary already ratified in `_authored_form` rule 2 and implemented by `sdd_doc_lint`'s `scan_fr_elements`, so the cap counts exactly what the coverage gate counts. Full structured template: `requirements[]` entries. MVP skeleton: `functional_requirements[]` entries. `examples/url-shortener`'s BRD-01 carries 8 `BRD.01.07.*` IDs but 4 requirements, and is compliant.
+- **Linking corrected.** A document created because the previous one hit the cap is a **sibling**, not a dependent — `@depends:` is reserved for a genuine hard prerequisite per `governance/TRACEABILITY.md`, and the sibling relationship is recorded in the index and in prose instead.
+- **Supersedes six disagreeing surfaces** across the spec, the Hermes reference corpus and the plugin's BRD authoring skill — four stating a requirement count with three different units, two stating "each BRD represents one iteration cycle". All six now agree.
+- **MINOR, not patch:** the prior guidance was not wrong, it was a different policy, so this changes what the spec instructs rather than correcting an error.
+- **Scope limits, deliberate:** documents already over the cap need not split retroactively; no other layer is capped (PRD still says "5-15 must-have features" per document); and nothing enforces the cap — `sdd_doc_lint` has no FR-count check and no auditor check was added, so this is guidance a reviewer applies.
+
 ### Changed — Framework Spec `0.41.2 → 0.41.3` — clarify change-management overlay semantics, spec constraints, bubble-up procedure, and reference/threshold granularity (2026-08-22)
 
 Change management (`framework/governance/chg/`):

@@ -10,8 +10,8 @@
 
 ```mermaid
 flowchart LR
-  MVP1[MVP BRD-01<br/>1-2 weeks<br/>5-15 features] --> PROD1[PROD v1.0<br/>30-90 days]
-  PROD1 --> MVP2[NEW MVP BRD-02<br/>1-2 weeks] --> PROD2[PROD v2.0<br/>30-90 days]
+  MVP1[MVP BRD-01..NN<br/>1-2 weeks<br/>5-15 features, max 5 per BRD] --> PROD1[PROD v1.0<br/>30-90 days]
+  PROD1 --> MVP2[NEW MVP, next BRD-NN<br/>1-2 weeks] --> PROD2[PROD v2.0<br/>30-90 days]
   PROD2 --> NEXT[...]
 ```
 
@@ -21,7 +21,7 @@ flowchart LR
 | **PROD** | 30-90 days | Operate, measure metrics, collect user feedback |
 | **NEW MVP** | 1-2 weeks | Create NEW BRD for next feature set, repeat cycle |
 
-Each BRD represents one iteration cycle. New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. The framework is the **8-layer** flow above (the pre-migration 14-layer model is superseded).
+Each BRD *set* represents one iteration cycle; a set is 1-3 documents, because a single BRD holds at most 5 functional requirements (GD-14). New features get new BRDs (BRD-01, BRD-02, BRD-03). Cross-cycle traceability via `@depends: BRD-01`. The framework is the **8-layer** flow above (the pre-migration 14-layer model is superseded).
 
 ## Recommended Agent Operating Model
 

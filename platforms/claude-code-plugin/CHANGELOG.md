@@ -14,6 +14,18 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — re-pinned to framework spec `0.42.0` (2026-08-25)
+
+`FRAMEWORK_SPEC_VERSION` `0.41.3 → 0.42.0`, vendored bundle re-generated. Carries
+framework **GD-14**: a BRD document SHOULD hold at most 5 functional requirements,
+splitting into BRD-02+ beyond that, with the cycle keeping its 5-15 total.
+
+**Not pin-only.** `skills/doc-brd/SKILL.md` — the operative BRD authoring instruction —
+said "One BRD = one MVP iteration (5–15 focused requirements)", the superseded policy
+stated per document, and is corrected. It was missed by the first census because it
+spells the range with an en dash where every framework surface uses a hyphen. No other
+skill, no agent and no plugin code changed; `VERSION` stays `0.25.0`.
+
 ### Changed — re-pinned to framework spec `0.41.3` (2026-08-23)
 
 `FRAMEWORK_SPEC_VERSION` `0.41.0 → 0.41.3` across three spec bumps, and the

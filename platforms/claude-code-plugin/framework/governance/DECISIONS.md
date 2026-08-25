@@ -13,6 +13,81 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-14 — A BRD document SHOULD carry at most 5 functional requirements; the iteration cycle keeps its 5-15 and may span several documents
+
+- **Status:** Accepted — 2026-08-25 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-14 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-13 precedent — no separate CHG artifact). SemVer **minor**
+  (`0.41.3 → 0.42.0`), change-level **C2**.
+- **Context:** the BRD layer had no requirement-count ceiling — the only split trigger
+  was `file_organization`'s 50,000-token threshold, and token count is a poor proxy for
+  how much distinct capability one document commits to. **Six** surfaces described a
+  BRD's size or its relationship to a cycle, and they did not agree:
+  - `layers/01_BRD/README.md` — "5-15 requirements **per BRD**" (per document).
+  - `layers/01_BRD/BRD-TEMPLATE.yaml` §7 — "5-15 requirements total **per MVP cycle**".
+  - `layers/01_BRD/BRD-TEMPLATE.yaml` `document_scope` — "(5-15 requirements)", unit unstated.
+  - `layers/01_BRD/BRD-TEMPLATE.yaml` `lifecycle` — "Each BRD represents ONE iteration cycle".
+  - `platforms/hermes/agent-skills/.../sdd-orchestrator/root-docs/README.md` — a lifecycle
+    diagram reading "MVP BRD-01 … 5-15 features", plus "Each BRD represents one iteration cycle".
+  - `platforms/claude-code-plugin/skills/doc-brd/SKILL.md` — "One BRD = one MVP iteration
+    (5–15 focused requirements)", the operative authoring instruction on Platform B.
+- **Rationale — and what it is NOT.** The cost of an oversized BRD is **author attention
+  and review surface**: one document bundling fifteen capabilities is authored in one
+  pass, reviewed as one artifact, and versioned as one unit, so a change to any one
+  capability re-opens all fifteen. It is **not** a traceability argument. Coverage in
+  this framework is element-level (`governance/TRACEABILITY.md` COV01/COV02, the linter's
+  `doc_index`/`element_index`), so document count does not affect fan-out granularity at
+  all — verified in review, and recorded here because the first draft of this entry
+  argued the opposite and was self-refuting.
+- **Decision:** a BRD document **SHOULD** carry at most 5 functional requirements. Beyond
+  five, start a new document of the same type (BRD-02, BRD-03) and register it in the
+  `BRD-00` index. This is a second split trigger beside the token threshold, whichever is
+  reached first. The **cycle total is 5-15 per cycle**; the cap implies a floor of
+  ceil(N/5) documents, which is a floor and **not** a ceiling on set size — a set may hold
+  more documents for reasons unrelated to size (one platform BRD plus several feature
+  BRDs), each independently subject to the cap. Splitting a single BRD into sectioned
+  files remains forbidden; the unit of splitting is the document.
+- **Linking.** Use `@depends: BRD-NN` **only** for a genuine hard prerequisite —
+  `TRACEABILITY.md` defines it as "downstream cannot exist without upstream". A document
+  created purely because the previous one reached the cap is a **sibling** within one
+  cycle, not a dependent; record that in the `BRD-00` index and in prose.
+- **Counting rule (normative, because a cap nobody can count cannot be applied).** One
+  requirement, stated per authored shape because the layer has three: in the **authored
+  markdown** form, the element IDs under `## 7. Functional Requirements` and before that
+  section's literal `Acceptance criteria:` line — the boundary already ratified in
+  `BRD-TEMPLATE.yaml` `_authored_form` rule 2 and implemented by `sdd_doc_lint`'s
+  `scan_fr_elements`, so the cap counts exactly what the coverage gate counts; in the
+  **full structured template**, the entries of `requirements[]`; in the **MVP skeleton**,
+  the entries of `functional_requirements[]`, whose `acceptance_criteria` is a field of
+  the requirement. Worked example: `examples/url-shortener`'s BRD-01 carries **8**
+  `BRD.01.07.*` element IDs but **4** requirements — the other four follow its
+  `Acceptance criteria:` line. Compliant, and it would not have been under an
+  ID-counting rule.
+- **Consequences:** **MINOR, not patch.** The prior guidance was not wrong, it was a
+  different policy, so this changes what the spec instructs authors to produce rather
+  than correcting an error — the GD-03 shape, not GD-13's erratum shape. Note it is
+  *restrictive* normative where GD-03's minor rested on additive; pre-1.0 makes minor
+  right either way. Two scope limits, stated so they are not read as oversights:
+  - **Existing documents over the cap are not required to split retroactively.** The
+    triggers govern new authoring.
+  - **No other layer is capped.** PRD in particular still says "List 5-15 must-have
+    features for MVP" per document, and the attention argument above would apply there
+    too; extending it was out of scope for this change and is deliberately not done here.
+  - **Not enforced, by decision rather than by oversight.** `sdd_doc_lint` has no
+    FR-count check and none was added, because this was scoped as guidance a reviewer
+    applies. No auditor check was added either. ⚠️ The first draft of this entry
+    justified that by claiming a C-numbered check "would make the SHOULD binding"; that
+    is **false** — `governance/REVIEW_TEAM.md` makes the gate structural plus "no
+    unresolved P0/P1", and `playbooks/01_BRD/auditor.md` already ships non-blocking P2
+    and P3 checks, so a P3 check would not bind. The absent enforcement is tracked as
+    [#540](https://github.com/vladm3105/aidoc-flow-framework/issues/540) rather than
+    argued away.
+- **Authority:** `layers/01_BRD/BRD-TEMPLATE.yaml` §7 `functional_requirements` and
+  `file_organization`; `layers/01_BRD/README.md`; `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+
+---
+
 ## GD-13 — Two governance documents had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
 
 - **Status:** Accepted — 2026-08-23 (ratified on merge; a `framework/**` normative
