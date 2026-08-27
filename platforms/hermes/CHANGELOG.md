@@ -14,6 +14,25 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — re-pinned to framework spec `0.43.0` (2026-08-26)
+
+`FRAMEWORK_SPEC_VERSION` `0.42.0 → 0.43.0`. Carries framework **GD-15** (YAML is the
+normative artifact format; Markdown is a generated rendering) and **GD-16** (an IPLAN
+file-manifest entry carries its TDD test cases in a line-local `tdd_ref` field, whose
+value is a quoted `@tdd:` tag). Also carries the linter fix behind GD-16: a trace tag
+ending a quoted YAML scalar no longer has the closing quote captured into its value, so
+it is no longer silently dropped from the trace graph
+([#542](https://github.com/vladm3105/aidoc-flow-framework/issues/542)). A tag value that
+*begins* with a quote is now reported `ID01` rather than matching nothing.
+
+### Changed — re-pinned to framework spec `0.42.0` (2026-08-25)
+
+`FRAMEWORK_SPEC_VERSION` `0.41.3 → 0.42.0`, carrying framework **GD-14** (a BRD document
+SHOULD hold at most 5 functional requirements). Unlike previous re-pins this one is not
+pin-only: the `sdd-orchestrator` reference corpus stated "5-15 features" for a single MVP
+BRD-01 in its lifecycle diagram, which GD-14 falsifies, so `root-docs/README.md` is
+corrected to `BRD-01..NN … max 5 per BRD`. No Hermes code changed; `VERSION` stays `0.12.1`.
+
 ### Changed — re-pinned to framework spec `0.41.3` (2026-08-23)
 
 `FRAMEWORK_SPEC_VERSION` `0.41.0 → 0.41.3` across three spec bumps. Hermes vendors

@@ -3,7 +3,7 @@
 ## Principles
 
 1. **Single source of truth** — Each layer has one template. No duplicate representations.
-2. **YAML-first** — All templates are `.yaml`. MD is for indexes and reference docs only.
+2. **YAML is the mandatory format and the source of truth** — for **templates and for the instance artifacts authored from them**. Every layer template is `{TYPE}-TEMPLATE.yaml`, and every artifact a layer produces is authored as `.yaml`. **Markdown is optional and descriptive**: a rendering of the YAML, or additional explanatory material around it. Markdown never carries a fact the YAML does not, and a fact that exists only in markdown is a defect of the same class as two records of one count. Where a `.md` file restates YAML content it is **generated, not authored** — hand-editing it is destroyed by the next generation run, and a stale rendering is a drift defect. Scope note: this principle governs the artifacts of layers 1-8 and their templates; it does not govern repository prose (`README`, `CHANGELOG`, governance surfaces such as this file) or a layer's `<X>-00_index.TEMPLATE.*`, whose extension is fixed per layer by `LAYER_REGISTRY.yaml`.
 3. **Necessary-upstream traceability** — Each layer cites only its `required_tags` (`LAYER_REGISTRY.yaml`), not the cumulative closure of every upstream layer; deeper lineage is transitive.
 4. **Readiness gates** — Each layer must score >=90/100 before downstream generation.
 5. **No circular dependencies** — Downstream artifacts reference upstream, never the reverse.
@@ -39,7 +39,10 @@ Practical effect:
 
 ## Template Policy
 
-- **Unified YAML only** — No `.md` templates, no `.feature` templates.
+- **Unified YAML only** — No `.md` templates, no `.feature` templates. This bullet
+  governs **templates**; Principle 2 governs the instance artifacts authored from
+  them. Both mandate YAML — read Principle 2 before concluding that a layer's
+  instance format is unconstrained.
 - Each layer has exactly one `{TYPE}-TEMPLATE.yaml`.
 - Template fields use `_guidance` prefix for authoring instructions (not validated).
 - Metadata block (`metadata:`) defines layer, schema version, and document type.

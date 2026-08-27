@@ -63,6 +63,33 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 | Validation reporting | `validation_results` per session handoff entry |
 | Planning model | Permanent + temporary plan split |
 
+## TDD-case carrier (`tdd_ref`)
+
+A file-manifest entry MAY name the TDD test cases it builds:
+
+```yaml
+- path: tests/unit/test_auth.py
+  order: 1
+  status: NOT_STARTED
+  tdd_ref: "@tdd: TDD.01.04.aaaa | @tdd: TDD.01.04.bbbb"
+```
+
+Three rules govern it:
+
+1. **The value is the tag, and it must be quoted.** YAML treats a leading `@` as a
+   reserved indicator, so an unquoted value fails to parse. Several cases may share one
+   scalar, pipe-delimited.
+2. **The key and the tag share one line.** This mirrors the TDD layer's own
+   `bdd_scenario:` / `bdd_ref:` carriers. A downstream check reads both from a single
+   line, so **a citation listed only in the traceability block is not a build record** —
+   that is the whole point of the carrier.
+3. **Optional per entry.** A package initialiser or a config file legitimately realizes
+   no test case. Completeness is judged from the TDD side — every declared test case
+   should be named by some entry — not by requiring every entry to name a case.
+
+The carrier is a field-name token, so it is not tied to one serialization: the same
+rule applies wherever the manifest is rendered.
+
 ## Session Handoff Protocol
 
 Each AI agent session reads the IPLAN in this order:

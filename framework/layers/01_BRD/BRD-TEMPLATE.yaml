@@ -115,8 +115,24 @@ metadata:
       Invalid: BRD-01.yaml (missing slug), brd-001_platform.yaml (wrong case)
 
       Monolithic (single file): up to 50,000 tokens — default.
-      If >50,000 tokens: create a new document of the same type (e.g., BRD-02) with its own scope.
-      Do NOT split into sectioned files — each document is self-contained.
+
+      Two triggers say a new document SHOULD be started, whichever is reached first:
+        - more than 5 functional requirements (see functional_requirements below), or
+        - more than 50,000 tokens.
+      In both cases start a new document of the same type (e.g., BRD-02) and register
+      it in the BRD-00 index.
+
+      Linking: use `@depends: BRD-NN` only for a genuine hard prerequisite — governance
+      `TRACEABILITY.md` defines it as "downstream cannot exist without upstream". A
+      document created purely because the previous one reached the FR cap is a SIBLING
+      within one cycle, not a dependent; record that relationship in the BRD-00 index
+      and in prose, not with `@depends:`.
+
+      Documents already exceeding either threshold are not required to be split
+      retroactively; the triggers govern new authoring.
+
+      Do NOT split into sectioned files — each document is self-contained. The
+      unit of splitting is the DOCUMENT, never the section.
 
       Index: Maintain BRD-00_index.md as the authoritative source of planned/active BRDs.
 
@@ -288,7 +304,7 @@ introduction:
   document_scope:
     in_scope:
       - "Core business objectives for MVP"
-      - "Essential functional requirements (5-15 requirements)"
+      - "Essential functional requirements (at most 5 per document; split into BRD-02+ beyond that)"
       - "Baseline quality expectations"
       - "Architecture decision topics for downstream ADR"
       - "MVP success criteria and transition to full product"
@@ -481,7 +497,28 @@ functional_requirements:
   _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Business-level capabilities, NOT technical implementation details.
-    Aim for 5-15 requirements total per MVP cycle.
+
+    SIZE: a BRD document **SHOULD** carry at most 5 functional requirements.
+    Beyond 5, start a new document of the same type (BRD-02, BRD-03) rather than
+    growing this one — see file_organization above.
+    An iteration cycle still carries 5-15 requirements in total, so the cap implies
+    a floor of ceil(N/5) documents — at least 1, at least 3 at fifteen. It is a floor,
+    NOT a ceiling: a set may hold more documents for reasons unrelated to size (one
+    platform BRD plus several feature BRDs), and each of those is independently
+    subject to the cap.
+
+    What counts toward the 5 — one rule, stated per authored shape, all three
+    counting the same thing (a requirement, never an acceptance criterion):
+      - Authored markdown (`_authored_form` below): the element IDs under the
+        `## 7. Functional Requirements` heading and BEFORE that section's literal
+        `Acceptance criteria:` line. This is the boundary `sdd_doc_lint` already
+        applies (`scan_fr_elements`), so the cap counts exactly what the coverage
+        gate counts — no second discriminator is introduced.
+      - Full template (structured): the entries of `requirements[]` below.
+      - MVP skeleton (`BRD-MVP-TEMPLATE.yaml`): the entries of
+        `functional_requirements[]`, whose `acceptance_criteria` is a FIELD of the
+        requirement and so never counts separately.
+
     Technical implementation belongs in PRD. User stories belong in PRD.
 
     Each requirement has 4 subsections:
@@ -1048,7 +1085,8 @@ appendix:
   _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   lifecycle:
     _guidance: |
-      Each BRD represents ONE iteration cycle: MVP → PROD → NEW MVP.
+      Each BRD *set* represents ONE iteration cycle: MVP → PROD → NEW MVP.
+      A set is 1-3 documents, since a single BRD holds at most 5 FRs (GD-14).
       New features = New BRD (BRD-02, BRD-03, etc.).
       Link cycles via cross_brd_dependencies in traceability section.
 

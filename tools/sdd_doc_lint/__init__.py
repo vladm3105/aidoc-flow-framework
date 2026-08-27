@@ -206,7 +206,18 @@ def _apply_active_layers_cascade(layers: dict, disabled_skippable: frozenset[str
 
 LAYER_TAGS = ("brd", "prd", "ears", "bdd", "adr", "spec", "tdd", "iplan")
 
-_TAG = re.compile(r"@(" + "|".join(LAYER_TAGS) + r")\s*:\s*([^\s|]+)")
+#: The value capture excludes quotes as well as whitespace/pipe — see
+#: `trace_graph.TAG` for the rationale (LINT-TAG-QUOTE-001, issue #542). Mirrors
+#: the exclusion `_THRESHOLD` below has carried since YAML-BDD-SCHEMA Pass-2 LB-1.
+_TAG = re.compile(r"@(" + "|".join(LAYER_TAGS) + r")\s*:\s*([^\s|'\"]+)")
+
+#: A trace tag whose value *begins* with a quote. Excluding quotes from `_TAG`'s
+#: value class means such a tag matches NOTHING — which would silently drop it,
+#: the exact failure `_TAG`'s fix removes, mirrored onto a different input shape.
+#: Detection-only: `_check_ids` emits ID01 for these, preserving the pre-fix
+#: behaviour (a quote-wrapped value was always malformed, and was always
+#: reported). `_THRESHOLD` has the same shape and is checked the same way.
+_TAG_QUOTED_VALUE = re.compile(r"@(" + "|".join(LAYER_TAGS) + r")\s*:\s*['\"]")
 #: A `@threshold:` value terminates on whitespace, a pipe, OR a quote — the
 #: quote-exclusion (YAML-BDD-SCHEMA Pass-2 LB-1) keeps the capture clean when an
 #: inline `@threshold:` ends a quoted YAML scalar (`'… @threshold:PRD.01.x'`),
@@ -672,6 +683,21 @@ def lint_text(
                 findings.append(
                     Finding(rel, i, "ID01", f"malformed trace-tag id '@{m.group(1)}: {val}'")
                 )
+        # A value that *begins* with a quote matches no `_TAG` at all (the class
+        # excludes quotes), so without this it would vanish silently instead of
+        # being reported malformed — see `_TAG_QUOTED_VALUE`.
+        for m in _TAG_QUOTED_VALUE.finditer(line):
+            seen_tags.add(m.group(1))
+            findings.append(
+                Finding(
+                    rel,
+                    i,
+                    "ID01",
+                    f"malformed trace-tag id '@{m.group(1)}:' — the value must not "
+                    "begin with a quote; quote the whole tag instead "
+                    '(`"@tag: ID"`, not `@tag: "ID"`)',
+                )
+            )
         # Threshold tags: TYPE.NN.<category>.<key> dotted form. Record their
         # spans so the element-id scan below does not mistake a threshold key
         # for an element id. CLEANUP-PR-C item 12 — uses the strict pattern
@@ -2460,8 +2486,11 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
                 if m.group(1) == "bdd":
                     # In the structured-YAML carrier the value is quoted
                     # (`bdd_ref: "@bdd: BDD.NN.03.xxxx"`), so `_TAG`'s greedy
-                    # capture keeps the trailing quote/comma; take the leading
-                    # id token so it matches the declared element.
+                    # capture keeps a trailing comma or period in prose; take
+                    # the leading id token so it matches the declared element.
+                    # (The trailing *quote* case is gone since LINT-TAG-QUOTE-001
+                    # — `_TAG` now terminates on a quote. The strip is still
+                    # needed for the punctuation cases.)
                     tok = re.match(r"[A-Za-z][A-Za-z0-9.\-]*", m.group(2))
                     if tok:
                         paired.add(tok.group(0))

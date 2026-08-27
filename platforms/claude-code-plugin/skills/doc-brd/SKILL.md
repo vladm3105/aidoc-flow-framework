@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: []
     downstream_artifacts: [PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
     version: "0.25.0"
-    framework_spec_version: "0.41.3"
+    framework_spec_version: "0.43.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary, review_mode]
 ---
@@ -28,8 +28,12 @@ in business language, before any product or technical detail.
 **Layer**: 1 (entry point, no upstream).
 **Downstream**: PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code.
 
-One BRD = one MVP iteration (5–15 focused requirements). New features get a
-new BRD; link cycles with `@depends: BRD-NN`.
+One MVP iteration = 5–15 focused requirements total, spread across as many BRD
+documents as that needs: a single BRD **SHOULD** carry at most 5 functional
+requirements (GD-14), so a cycle needs at least `ceil(N/5)` documents — a floor, not
+a ceiling. Beyond five, start BRD-02. New features also get a new BRD. Use
+`@depends: BRD-NN` only for a genuine hard prerequisite; a document created because
+the previous one hit the cap is a sibling, recorded in the `BRD-00` index.
 
 ## When to Use
 

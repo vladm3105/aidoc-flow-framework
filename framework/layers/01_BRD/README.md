@@ -73,7 +73,11 @@ as the reference for section-level expectations and authoring conventions.
 
 ## Lifecycle: MVP → PROD → NEW MVP
 
-Each BRD *set* represents ONE iteration cycle (5-15 requirements per BRD). A set
+Each BRD *set* represents ONE iteration cycle of 5-15 requirements. A BRD document
+**SHOULD** carry at most 5 functional requirements (GD-14), so a cycle needs at least
+ceil(N/5) documents — a floor, not a ceiling; a set may hold more for reasons unrelated
+to size. Note this fixes the cycle total at 5-15 *per cycle*: earlier wording here read
+"5-15 per BRD", which for a multi-BRD set implied a far larger ceiling. A set
 is one platform BRD + its feature BRDs (typed via `brd_type`, linked by
 `@depends:`); a single-BRD set is the common small case, not the only shape:
 
