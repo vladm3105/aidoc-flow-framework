@@ -24,14 +24,17 @@ file_manifest:
       order: 1
       status: DONE
       verified: true
+      tdd_ref: "@tdd: TDD.01.04.aaaa"
     - path: tests/integration/test_auth_kms.py
       order: 2
       status: IN_PROGRESS
       verified: false
+      tdd_ref: "@tdd: TDD.01.04.bbbb"
     - path: tests/e2e/test_auth_flow.py
       order: 3
       status: NOT_STARTED
       verified: false
+      tdd_ref: "@tdd: TDD.01.04.cccc"
     - path: src/auth/auth_service.py
       order: 4
       status: IN_PROGRESS

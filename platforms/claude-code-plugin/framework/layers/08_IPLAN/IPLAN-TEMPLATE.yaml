@@ -90,17 +90,28 @@ file_manifest:
     language here. Replace the `<…>` placeholders with concrete paths in that
     toolchain. Example (Python): `tests/unit/test_auth.py`, `src/auth/service.py`,
     `tests/integration/test_auth.py`.
+
+    TDD-CASE CARRIER (`tdd_ref`). An entry MAY name the TDD test cases it builds.
+    The value is the tag itself and MUST be quoted — YAML treats a leading `@` as
+    a reserved indicator, so an unquoted value fails to parse. Several cases may
+    share one scalar, pipe-delimited. Structurally this mirrors the TDD layer's own
+    `bdd_scenario:` / `bdd_ref:` carriers: a downstream check reads the key and the
+    tag from ONE line, so a citation listed only in the traceability block is not a
+    build record. Optional per entry — a package initialiser or a config file
+    legitimately realizes no test case; completeness is judged from the TDD side.
   files:
     - path: "<unit test for the component, per the @spec language>"
       order: 1
       status: NOT_STARTED  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
       session: null
       verified: false
+      tdd_ref: "@tdd: TDD.NN.04.xxxx | @tdd: TDD.NN.04.yyyy"
     - path: "<implementation file, per the @spec language>"
       order: 2
       status: NOT_STARTED
       session: null
       verified: false
+      tdd_ref: "@tdd: TDD.NN.04.xxxx"
     - path: "<integration test for the component, per the @spec language>"
       order: 3
       status: NOT_STARTED

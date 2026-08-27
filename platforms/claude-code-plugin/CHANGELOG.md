@@ -14,6 +14,17 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — re-pinned to framework spec `0.43.0` (2026-08-26)
+
+`FRAMEWORK_SPEC_VERSION` `0.42.0 → 0.43.0`, vendored bundle re-generated. Carries framework **GD-15** (YAML is the
+normative artifact format; Markdown is a generated rendering) and **GD-16** (an IPLAN
+file-manifest entry carries its TDD test cases in a line-local `tdd_ref` field, whose
+value is a quoted `@tdd:` tag). Also carries the linter fix behind GD-16: a trace tag
+ending a quoted YAML scalar no longer has the closing quote captured into its value, so
+it is no longer silently dropped from the trace graph
+([#542](https://github.com/vladm3105/aidoc-flow-framework/issues/542)). A tag value that
+*begins* with a quote is now reported `ID01` rather than matching nothing.
+
 ### Changed — re-pinned to framework spec `0.42.0` (2026-08-25)
 
 `FRAMEWORK_SPEC_VERSION` `0.41.3 → 0.42.0`, vendored bundle re-generated. Carries

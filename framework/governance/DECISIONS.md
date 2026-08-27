@@ -13,6 +13,117 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-16 — An IPLAN file-manifest entry carries its TDD test cases in a line-local `tdd_ref` field, not in the traceability block
+
+- **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-16 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-15 precedent — no separate CHG artifact). SemVer **minor**,
+  change-level **C2**.
+- **Context:** the element-level trace chain is enforced BRD→PRD (`COV01`),
+  EARS/BDD→SPEC/TDD (`COV02`) and BDD-scenario→TDD-case (`ACC01`), then stops.
+  `REALIZING_LAYERS` has no IPLAN key, so nothing asks whether a TDD test case reached
+  an IPLAN. Measured on the example corpus: `TDD-01` declares 35 test-case elements and
+  `IPLAN-01` cites **7** of them in the trace graph — while the IPLAN audit returned
+  PASS at 100/100 with zero blocking findings (issue #543).
+- **The naive fix does not work, and that is why this GD exists.** A coverage rule built
+  on the document-scoped realization primitive (`_element_realizing_citers`, which
+  returns citer *documents*) is silenceable by one line: `IPLAN-01.md` already carries a
+  §6 traceability bullet with five `@tdd:` tokens self-described as "representative
+  anchors" for the 35-case contract, and expanding that bullet to 35 would satisfy such
+  a rule with **no change to what the IPLAN builds**. `ACC01` documents this same
+  vacuous-pass loophole for BDD scenarios and closes it with a **line-local carrier**
+  parse — a key whose *value* is the tag (`bdd_scenario:` / `bdd_ref:`), so the citation
+  and its carrier share one line.
+- **Decision:** an IPLAN file-manifest entry carries `tdd_ref`, whose value is a `@tdd:`
+  tag. Normative properties:
+  1. **The value is the tag and MUST be quoted** — `@` is a YAML reserved indicator, so
+     an unquoted value fails to parse. Several cases may share one scalar,
+     pipe-delimited.
+  2. **The key and the tag share one line.** A citation appearing only in the
+     traceability block is **not** a build record.
+  3. **Optional per entry.** Completeness is judged from the TDD side, not by requiring
+     every entry to name a case.
+  4. The carrier is a **field-name token**, so it is serialization-independent — the
+     same rule holds wherever the manifest is rendered.
+- **What this does NOT decide.** It does not add the coverage rule (`COV04`), which is a
+  successor change and must be carrier-scoped per the reasoning above; it does not
+  reconcile `IPLAN-MVP-TEMPLATE.yaml`'s bare-list manifest shape with the canonical
+  `files:` shape (issue #438) — the carrier is line-local and attaches to either; and it
+  does not touch `file_manifest`'s existing status/verified semantics.
+- **Consequences:** **MINOR** — additive template keys and a new governance rule; no
+  existing artifact becomes non-conformant, because the field is optional. A prerequisite
+  linter defect had to land first: a `@tdd:` tag ending a quoted YAML scalar was silently
+  discarded from the trace graph because the value capture did not terminate on a quote
+  (issue #542) — without that fix the carrier is unusable in the normative format.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` §2 `file_manifest`,
+  `layers/08_IPLAN/IPLAN-MVP-TEMPLATE.yaml`, `layers/08_IPLAN/README.md`
+  §"TDD-case carrier"; guarded by `tests/conformance/test_iplan_carrier.py`;
+  `plans/IPLAN-TDDREF-001-PLAN.md`; `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`.
+
+---
+
+## GD-15 — YAML is the mandatory format and the source of truth for layer artifacts; Markdown is optional, descriptive, and generated
+
+- **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
+  change — human sign-off per GATE-SPEC. This GD-15 entry + the `VERSION`/`CHANGELOG`
+  bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
+  per the GD-05..GD-14 precedent — no separate CHG artifact). SemVer **minor**,
+  change-level **C2**.
+- **Context:** the spec constrained template format and left instance format
+  undeclared, and three surfaces disagreed about what an artifact actually is:
+  - `DOC_GOVERNANCE_CORE.md` Principle 2 — "All templates are `.yaml`. MD is for
+    indexes and reference docs only." Scoped to **templates**; silent on instances,
+    and its second clause is contradicted by every artifact the corpus ships.
+  - `DOC_GOVERNANCE_CORE.md` §Template Policy "Unified YAML only" — also
+    template-scoped. `OKF-CONFORMANCE-001-DESIGN.md` records a reviewer reading this
+    bullet as an instance-format mandate; it was not one, and nothing else was.
+  - `LAYER_REGISTRY.yaml` — `extensions: [.yaml]` on **all eight** layers (the
+    normative field), under a header comment asserting "Layers 01-07 use Markdown
+    (.md)". The comment was about the `<X>-00_index.TEMPLATE.*` docs and read as a
+    statement about instances, contradicting the file's own data.
+
+  The measured state was a three-way disagreement: registry all-`.yaml`, acceptance
+  goldens mixed (5 `.md` + 3 `.yaml`), example corpus all-`.md`. Under that spread no
+  engine, lint rule, or conformance test could be written against "the artifact format",
+  because there was no declared one.
+- **Decision:** YAML is the **mandatory format and the source of truth** for every
+  artifact of layers 1-8 and for the templates that produce them. **Markdown is
+  optional and descriptive** — a rendering of the YAML, or additional explanatory
+  material around it. Three normative consequences:
+  1. Markdown never carries a fact the YAML does not. A fact existing only in
+     markdown is a defect of the same class as two records of one count.
+  2. A `.md` file restating YAML content is **generated, not authored**. Hand-editing
+     it is destroyed by the next generation run; a stale rendering is a drift defect
+     and needs a guard, not a convention.
+  3. `LAYER_REGISTRY.yaml` `extensions` is the normative instance-format field, and
+     its `<X>-00_index.TEMPLATE.*` header comment is scoped to index docs only.
+- **What this does NOT decide.** It does not settle the five `status` vocabularies
+  (`OKF-CONFORMANCE-001-DESIGN.md` D4 defers those whole), does not adopt the
+  frontmatter contract (that design's D1 owns it), and does not itself make any tree
+  OKF-conformant — see Consequences.
+- **Consequences:** **MINOR, not patch.** The prior guidance was not wrong, it was
+  **absent** at the instance scope; declaring a contract where none existed is
+  additive, and it re-grades surfaces that were previously unconstrained rather than
+  non-conformant.
+  - The example corpus is inverted with respect to this decision (all `.md`, no `.yaml`
+    sources). Per `CLAUDE.md`, correct it by **regeneration**, never by hand-editing
+    the artifacts.
+  - Acceptance goldens for layers 1-5 are `.md` and become non-conformant instances.
+  - **OKF interaction.** Google Cloud's Open Knowledge Format v0.2 addresses `.md`
+    files, so a YAML-normative tree violates no OKF rule and contributes **zero
+    concepts** — conformant and empty. OKF conformance therefore requires a generated
+    `.md` projection carrying the OKF frontmatter, with the YAML remaining the source.
+    This decision resolves `OKF-CONFORMANCE-001-DESIGN.md` open question 1 with an
+    option that document did not list; its Stage 1 instruction to put `type` into the
+    26 templates is superseded — templates carry `artifact_type` and `title`, and the
+    OKF-facing `type` is emitted by the projection generator and never enters the YAML.
+- **Authority:** `DOC_GOVERNANCE_CORE.md` Principle 2 and §Template Policy;
+  `registry/LAYER_REGISTRY.yaml` `extensions` + header;
+  `plans/OKF-CONFORMANCE-001-DESIGN.md`; `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md` F-0.
+
+---
+
 ## GD-14 — A BRD document SHOULD carry at most 5 functional requirements; the iteration cycle keeps its 5-15 and may span several documents
 
 - **Status:** Accepted — 2026-08-25 (ratified on merge; a `framework/**` normative

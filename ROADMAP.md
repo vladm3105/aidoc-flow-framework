@@ -137,6 +137,18 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **IPLAN-TDDREF + LINT-TAG-QUOTE (2026-08-26, framework `0.42.0 → 0.43.0`, GD-15/GD-16).**
+  YAML is declared the normative artifact format, not just the template format (GD-15) —
+  Markdown is a generated rendering that never carries a fact the YAML lacks. IPLAN gains
+  a line-local `tdd_ref` carrier binding a file-manifest entry to the TDD test cases it
+  builds (GD-16), the field a future `COV04` must match on: element-level coverage stops
+  at TDD today, and 28 of 35 corpus test cases are cited by no IPLAN while the audit
+  returns 100/100 ([#543](https://github.com/vladm3105/aidoc-flow-framework/issues/543)).
+  A document-scoped rule would not have worked — one traceability line listing every id
+  silences it. Shipped with the linter defect that blocked the carrier: a tag ending a
+  quoted YAML scalar was silently dropped from the trace graph
+  ([#542](https://github.com/vladm3105/aidoc-flow-framework/issues/542)). The coverage
+  rule itself is the successor, `IPLAN-COV04-002`.
 - **BRD-FR-CAP (2026-08-25, framework `0.41.3 → 0.42.0`, GD-14).** A BRD document SHOULD
   carry at most 5 functional requirements; beyond five, split into BRD-02+ with its own
   scope. Previously the only split trigger was a 50,000-token threshold, which is a poor

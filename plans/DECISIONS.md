@@ -10,6 +10,28 @@ graduation.
 
 ---
 
+## D-0076 — A line-local carrier beats a document-scoped coverage primitive, and the carrier must land before the rule
+
+**2026-08-26.** From the Layer-8 review (IPLAN-LAYER-REVIEW-001) and its three plan-review cycles.
+
+**The finding.** Element-level coverage stops at TDD: `REALIZING_LAYERS` has no IPLAN key, so nothing asks whether a test case reached an implementation plan. Measured on the corpus: 7 of 35 `TDD-01` elements are cited by `IPLAN-01` in the trace graph, and the audit returned PASS at 100/100 (issue #543).
+
+**Three design attempts were killed by independent review, each for the same class of reason**, and the sequence is the lesson:
+
+1. A `COV04` built on `_element_realizing_citers` — refuted because that primitive returns citer *documents*, so one traceability line listing 35 tokens silences it. `ACC01`'s own source says this explicitly and refuses to reuse it.
+2. A top-level `coverage_map:` section as the carrier — refuted because a section header is a **block** marker: no citation shares its line, so a line-local matcher counts nothing.
+3. The same field nested in `file_manifest.files[]` — accepted, because `template_sections()` reads only top-level keys, so it reddens no golden, needs no subtype marker, and moves no section count.
+
+**The transferable rule:** when a check must bind a citation to *something*, ask what shares the citation's **line**. `bdd_scenario:`/`bdd_ref:` work because the key's *value* is the tag. A path, a section header, or a table caption does not.
+
+**Sequencing:** the rule cannot be specified against a field that does not exist, so the carrier (GD-16) ships first and `COV04` follows. A prerequisite linter defect had to precede both — a quoted tag was silently dropped from the edge graph (issue #542) — which was found only by executing the regex rather than reading it.
+
+**Counting the passes.** Findings ran 5 → 7 → 5 across the first plan and 6 → 6 → 5 across its successor. Growth twice forced a scope cut rather than another fold, and both cuts were right: the second split a six-file linter fix out of a ~100-file spec change, because `spec_gate` fires only on `framework/` paths.
+
+---
+
+---
+
 ## D-0075 — Re-measurement of gh api 404 behavior supersedes D-0071 §8 failure-text claim
 
 **2026-08-16.** Re-measurement from PIN-CURRENCY-NO-READER investigation (PR 3 review, issue #477).

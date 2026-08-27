@@ -26,10 +26,16 @@ from pathlib import Path
 KNOWN_LAYERS = ("BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN")
 LAYER_INDEX = {name: i + 1 for i, name in enumerate(KNOWN_LAYERS)}
 
-#: Every `@<layer>: <value>` token. The value capture `[^\s|]+` terminates on a
-#: pipe, so a pipe-separated multi-tag line (`@brd: X | @brd: Z`) yields each
-#: tag as a separate match (CFB-PR-2 DD-8).
-TAG = re.compile(r"@(" + "|".join(t.lower() for t in KNOWN_LAYERS) + r")\s*:\s*([^\s|]+)")
+#: Every `@<layer>: <value>` token. The value capture terminates on whitespace, a
+#: pipe, OR a quote. The pipe keeps a multi-tag line (`@brd: X | @brd: Z`) yielding
+#: one match per tag (CFB-PR-2 DD-8); the quote-exclusion (LINT-TAG-QUOTE-001, issue
+#: #542) stops a tag closing a quoted YAML scalar (`tdd_ref: "@tdd: TDD.01.04.aaaa"`)
+#: from glomming the closing quote into the value — which failed the anchored
+#: `ELEM_FORM` below and dropped the citation from the edge graph SILENTLY. Sibling of
+#: the same exclusion on `_THRESHOLD` in `__init__.py`. Safe because a tag value is
+#: always validated against `DOC_FORM`/`ELEM_FORM` (and the registry `id_patterns`),
+#: none of which admit a quote.
+TAG = re.compile(r"@(" + "|".join(t.lower() for t in KNOWN_LAYERS) + r")\s*:\s*([^\s|'\"]+)")
 
 #: Document-level id, e.g. `BRD-01`.
 DOC_FORM = re.compile(r"^([A-Z]+)-\d+$")

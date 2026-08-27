@@ -19,11 +19,16 @@ document_control:
 purpose: "<One sentence: what this IPLAN builds>"
 
 file_manifest:
+  # `tdd_ref` is the TDD-case carrier: the value is the tag and must be quoted.
+  # This skeleton's manifest is a bare list where the canonical template uses
+  # `files:` — that divergence is tracked separately; the carrier is line-local,
+  # so it attaches either way.
   - path: "<path/to/file.py>"
     type: "create|modify|delete"
     description: "<What this file is>"
     source: "SPEC-01"  # from TDD contract
     order: 1
+    tdd_ref: "@tdd: TDD.NN.04.xxxx"
 
 execution:
   setup:

@@ -13,9 +13,18 @@ metadata:
 # Each layer's `folder` is a path relative to the `framework/` root;
 # `template` is a filename within that folder.
 #
+#
+# Instance format: `extensions` is normative and is `.yaml` for all eight layers.
+# YAML is the mandatory format and the source of truth for every artifact a layer
+# produces (DOC_GOVERNANCE_CORE.md Principle 2). Markdown is optional and
+# descriptive — a generated rendering of the YAML, or additional explanatory
+# material — and never carries a fact the YAML does not.
+#
 # Index templates: each layer ships a `<X>-00_index.TEMPLATE.*` registry doc.
 # Layers 01-07 use Markdown (.md); layer 08 (IPLAN) uses YAML
 # (IPLAN-00_index.TEMPLATE.yaml) because its index is structured plan data.
+# This applies to the INDEX docs only — it is not a statement about the layers'
+# instance artifacts, which `extensions` governs above.
 layers:
   - number: 1
     artifact: BRD
