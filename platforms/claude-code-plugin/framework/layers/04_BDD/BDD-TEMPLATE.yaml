@@ -145,7 +145,8 @@ feature_definition:
   _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Define the feature under test as a `feature:` YAML block (rendered inside a
-    ```yaml fence in §2 of the produced BDD-NN.md). The feature is a CONTAINER —
+    ```yaml fence in §2 of the Markdown rendering of the produced BDD document).
+    The feature is a CONTAINER —
     it carries NO `ears` field; its EARS coverage is the computed union of its
     scenarios' element-level `ears` lists (YAML-BDD-SCHEMA D-3). Upstream trace
     lives on each scenario, NOT as `@`-tags on the feature.

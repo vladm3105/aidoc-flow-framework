@@ -3,7 +3,7 @@ layer: 02_PRD
 lens: security_engineer
 weight: 7
 agent: security-engineer
-framework_spec_version: "0.43.0"
+framework_spec_version: "0.44.0"
 ---
 # security_engineer lens — PRD layer
 

@@ -20,7 +20,10 @@ This is a deliberate design choice:
 - YAML is directly machine-parsable by both the `sdd_doc_lint` validator and the
   TDD mapping step (layer 7), avoiding brittle regex-based `.feature` parsing.
 - Gherkin is still supported as an **output format** for human-readable
-  summaries, but the authoritative representation is YAML.
+  summaries, but the authoritative representation is YAML. The authoritative
+  per-layer value is `extensions` in
+  [`../../registry/LAYER_REGISTRY.yaml`](../../registry/LAYER_REGISTRY.yaml) — the
+  single normative source (GD-17). This states the value; it does not re-specify it.
 
 
 **Execution**: QA STAGING ONLY — do NOT run in CI pipeline. Use TDD (L7) unit/integration tests for CI.

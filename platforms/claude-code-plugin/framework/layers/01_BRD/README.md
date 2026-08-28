@@ -116,7 +116,7 @@ an active BRD may point `@depends: BRD-05` at a not-yet-authored planned row wit
 traceability error. On **graduation** to a full BRD, the entry moves to the Document
 Registry, gains element IDs, and enters the trace graph.
 
-> A *standalone* scope-only BRD file (its own `BRD-NN_*.md` with only a few
+> A *standalone* scope-only BRD file (its own `BRD-NN_*.yaml` with only a few
 > sections) is **not** supported yet — it would fail the required-section lint as an
 > incomplete instance BRD. Until that form ships, keep sketches as Planned-BRDs rows.
 
@@ -125,6 +125,11 @@ Registry, gains element IDs, and enters the trace graph.
 BRDs are authored in YAML (`.yaml`). Documents are validated with cross-section
 consistency rules. YAML format enables structured validation (required keys,
 element ID format, empty section detection).
+
+The authoritative per-layer value is `extensions` in
+[`../../registry/LAYER_REGISTRY.yaml`](../../registry/LAYER_REGISTRY.yaml) — the single
+normative source (GD-17). This section states the value; it does not re-specify it. GD-17
+also states, once, when the instance-format mandate takes normative effect.
 
 ## BRD Types
 

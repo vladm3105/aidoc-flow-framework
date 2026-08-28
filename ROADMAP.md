@@ -137,6 +137,14 @@ Headline capabilities now in the framework (full detail in
   guard. `--fix` deferred: it would break citations in 8 downstream files, so it
   needs a re-cascade design first. See
   [`plans/IDGEN-NO-GENERATOR-PLAN.md`](plans/IDGEN-NO-GENERATOR-PLAN.md).
+- **INSTANCE-FORMAT-SSOT-001 (2026-08-28, framework `0.43.0 → 0.44.0`, GD-17).** GD-15 made
+  YAML the mandatory instance format and, in the same entry, deferred the frontmatter contract
+  that makes an instance legible — so the spec mandated a format its own gate rejected
+  (measured: 17 `STRUCT01` errors on a conformant YAML BRD, `COV01` vacuous).
+  `LAYER_REGISTRY.yaml` `extensions` becomes the single normative authority; six carriers
+  state the value and cross-reference it; the mandate gains an outcome-based effective
+  condition; `tests/conformance/test_instance_format_ssot.py` guards the negative property.
+  First framework tag since `framework/v0.41.3` — see #558 / D-0078 for the provenance.
 - **IPLAN-TDDREF + LINT-TAG-QUOTE (2026-08-26, framework `0.42.0 → 0.43.0`, GD-15/GD-16).**
   YAML is declared the normative artifact format, not just the template format (GD-15) —
   Markdown is a generated rendering that never carries a fact the YAML lacks. IPLAN gains

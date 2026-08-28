@@ -12,6 +12,48 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
+
+**Release provenance — read this before reasoning about framework version history.** Spec
+`0.42.0` **was never a value of `framework/VERSION`**: the file moved directly from `0.41.3` to
+`0.43.0`, so the `0.41.3 → 0.42.0` entry below documents a transition no commit realized. Spec
+`0.43.0` was real but **was never tagged**. `framework/v0.44.0` is therefore the **first
+framework tag since `framework/v0.41.3`** (2026-08-24), and it carries the content of all three.
+Per the founder decision on
+[#558](https://github.com/vladm3105/aidoc-flow-framework/issues/558) (2026-08-28), the published
+entries below are **corrected forward here and left unedited** in place.
+
+**The defect.** `GD-15` (spec `0.43.0`) made YAML the mandatory instance format for layers 1-8
+and, in the same entry, declined to adopt the frontmatter contract that makes such an instance
+legible to any rule. Measured: a BRD authored exactly as `BRD-TEMPLATE.yaml` prescribes produced
+**17 `STRUCT01` errors** while the identical content as Markdown produced **zero**, and `COV01`
+discovered **0** functional requirements against 1 — simultaneously unpassable and blind on the
+format the spec mandated. Seven spec surfaces asserted the mandate; two contradicted the registry.
+
+**The change (`GD-17`).**
+
+- `LAYER_REGISTRY.yaml` `extensions` is now the **single normative authority** for instance
+  format. The other six surfaces state the value and cross-reference it; none re-specifies it —
+  applying **GD-09 rule 2**, so each layer keeps the statement an author actually reads.
+- The mandate's **effective condition is an outcome, not a component list**: it takes effect when
+  a reference instance in each layer's `extensions` format lints clean **and** yields the same
+  element and coverage results as the Markdown form (carrier parity). Three successive
+  enumerations were each short; an outcome cannot be under-enumerated. Operationally this is
+  [#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564).
+- Two filename claims repaired: `layers/01_BRD/README.md` said `BRD-NN_*.md` six lines before
+  saying BRDs are authored in YAML; `layers/04_BDD/BDD-TEMPLATE.yaml` named the produced instance
+  `BDD-NN.md`. The BDD sentence describes a ```yaml **fence** — the in-force extraction path — so
+  the extension claim was **removed** rather than switched to `.yaml`, which would have asserted a
+  form the gate rejects.
+- `tests/conformance/test_instance_format_ssot.py` guards the negative property, with mutation
+  tests on both exemptions (index mentions, exempt at the **mention** level; and `DECISIONS.md`).
+
+**Not changed.** The example corpus and acceptance goldens remain `.md` and are **conformant** —
+the mandate is not yet in effect. This is what unblocks
+[#555](https://github.com/vladm3105/aidoc-flow-framework/issues/555), whose regeneration would
+otherwise have produced ~17 errors per BRD. Scope is the spec only; platform authoring surfaces
+must add their own lock.
+
 ### Fixed — the `fw_prev` doc-currency trap named the wrong file in two places (2026-08-28)
 
 `scripts/sync-version-refs.sh` derives `fw_prev` from `docs/PARITY.md`, a change made by issue #386. `fw_prev` gates one block of the framework-spec fanout — `CLAUDE.md`, `README.md`, `docs/PARITY.md` itself, both platform READMEs and a conformance literal. It does **not** gate the three loops below it (`FRAMEWORK_SPEC_VERSION`, the 52 SKILL frontmatters, the playbooks), each of which has its own detector. Two narrative surfaces went on describing the pre-#386 behaviour and named `CLAUDE.md` as the source: the script's own header comment and `CLAUDE.md` § "Durable traps".

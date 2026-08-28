@@ -276,3 +276,7 @@ The `status:` field appears across different scopes with distinct legal-value en
 | Index template | `{TYPE}-00_index.TEMPLATE.{md,yaml}` | `BRD-00_index.TEMPLATE.md` / `IPLAN-00_index.TEMPLATE.yaml` |
 | Document | `{TYPE}-NN.yaml` (BRD, IPLAN: `{TYPE}-NN_{slug}.yaml`) | `BRD-01_kyc_onboarding.yaml` |
 | README | `README.md` | — |
+
+> **Extensions are authoritative in `../registry/LAYER_REGISTRY.yaml` `extensions`** — the
+> single normative source (GD-17). The table above states the values; it does not re-specify
+> them. The index row is the documented per-layer index carve-out, not an instance format.

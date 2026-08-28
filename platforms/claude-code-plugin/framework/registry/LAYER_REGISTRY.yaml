@@ -14,11 +14,14 @@ metadata:
 # `template` is a filename within that folder.
 #
 #
-# Instance format: `extensions` is normative and is `.yaml` for all eight layers.
-# YAML is the mandatory format and the source of truth for every artifact a layer
-# produces (DOC_GOVERNANCE_CORE.md Principle 2). Markdown is optional and
-# descriptive — a generated rendering of the YAML, or additional explanatory
-# material — and never carries a fact the YAML does not.
+# Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
+# eight layers. Every other spec surface states the value and cross-references this
+# field; none re-specifies it (GD-17, applying GD-09's single-source rule). Markdown
+# is optional and descriptive — a generated rendering of the YAML, or additional
+# explanatory material — and never carries a fact the YAML does not.
+#
+# EFFECTIVE CONDITION: the instance-format mandate takes normative effect per GD-17
+# (`governance/DECISIONS.md`), which states it ONCE. Do not restate it here.
 #
 # Index templates: each layer ships a `<X>-00_index.TEMPLATE.*` registry doc.
 # Layers 01-07 use Markdown (.md); layer 08 (IPLAN) uses YAML
