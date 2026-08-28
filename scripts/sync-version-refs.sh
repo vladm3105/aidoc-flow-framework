@@ -49,9 +49,17 @@
 #
 # The two CLAUDE.md current-state tokens (plugin, hermes) are detected from
 # CLAUDE.md itself, so they self-heal even when every other surface is already
-# current. The framework-spec token is deliberately NOT: fw_prev detected from
-# CLAUDE.md is what gates propagation to README / PARITY / both platform READMEs,
-# so hand-editing CLAUDE.md before a framework bump still silently skips them.
+# current. The framework-spec token is detected from docs/PARITY.md instead (see
+# the fw_prev assignment below) -- that is what gates propagation to CLAUDE.md,
+# README.md, docs/PARITY.md ITSELF, both platform READMEs, and the conformance
+# literal in tests/conformance/platforms/test_plugin_release_metadata.py. So it
+# is docs/PARITY.md that must not be hand-edited before a framework bump: it is
+# both the detector's source and one of its targets, so pre-editing it makes the
+# gate compare equal and skip every one of them. Editing CLAUDE.md first is
+# harmless. NOTE the three framework loops BELOW this gate (FRAMEWORK_SPEC_VERSION,
+# SKILL frontmatter, playbooks) each have their own detector and are NOT affected.
+# (This comment previously said fw_prev came from CLAUDE.md; #386 fixed that and
+# the comment was not updated. Corrected per #556.)
 #
 # What it does NOT do (semantic / human-authored content):
 #   - CHANGELOG entries (text)

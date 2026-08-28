@@ -46,7 +46,7 @@ Bundling converts that into one.
 - **#554**, **#555**, **#486**, **#487** — no bump, or absorbed by the corpus regen.
 - All ⏸ PARKED issues (#438, #483, #543–#548).
 - **Two defects discovered during this plan's review, filed separately rather than fixed
-  here:** the stale `fw_prev` trap (Claim 19/20), filed as **#556**, and EARS's `glossary:` being
+  here:** the stale `fw_prev` trap (Claim 19/20), filed as **#556** and since **fixed**, and EARS's `glossary:` being
   admitted to STRUCT01's required set while the template numbers five sections (Claim 18),
   filed as **#557**.
 
@@ -177,8 +177,9 @@ correct (Claim 10) and is the target shape.
 - **Do not hand-edit the framework-spec token in `docs/PARITY.md` before running the
   sync.** `fw_prev` is detected from `docs/PARITY.md` (Claim 19) and gates propagation to
   `CLAUDE.md`, `README.md`, both platform READMEs and a conformance literal. ⚠️ Both
-  `CLAUDE.md` § "Durable traps" and the script's own header comment (Claim 20) still name
-  `CLAUDE.md` as the source — they are stale; `:288` is the operative code.
+  *(Both `CLAUDE.md` § "Durable traps" and the script's own header comment used to name
+  `CLAUDE.md` as the source. **Fixed 2026-08-28 by #556** — Claim 20. Cite the `fw_prev`
+  assignment by name, not by line: correcting that header moved it.)*
 - Write `GD-17` in `framework/governance/DECISIONS.md` covering the three changes.
 - Record the founder's per-bump grant as an audit-trail line in the commit message.
 
@@ -218,7 +219,7 @@ correct (Claim 10) and is the target shape.
 | R2 | An addition creates a new required section and reddens every existing instance of that layer | Medium | D1 nests both additions; **V4 and V3 catch the STRUCT01 and header-count derivations, V6 catches the acceptance-harness derivation (Claim 27) that both are blind to** |
 | R3 | Implementing #551 from the issue body produces a third threshold shape | Medium | D2; copy `EARS-TEMPLATE.yaml:384`, not the issue's snippet |
 | R4 | The fanout runs in the wrong order and lands drifted playbooks | Medium | Task 4 fixes the order; V9 detects it |
-| R5 | An implementer follows the stale `CLAUDE.md` trap, hand-edits `CLAUDE.md`, and believes they have broken the fanout — or pre-edits `docs/PARITY.md` and actually does | Medium | Task 4 names `docs/PARITY.md` as the real source and flags both stale surfaces (Claims 19, 20) |
+| R5 | An implementer pre-edits `docs/PARITY.md` and silently strands the gated block | **Low since #556** | Both narrative surfaces now name `docs/PARITY.md` (Claim 20). Task 4 restates it; the failure is still silent at exit 0, so the warning stays |
 | R6 | #550's fix is scoped to one marker and leaves survivors — six under other **path** keys, or seven under the **function** keys one field over | **High** | D3 counts both classes; **V2a covers paths, V2b covers functions**. This plan's first draft made the path error and its second made the function error |
 | R7 | Adding template keys reddens the acceptance tier | Medium | The fixtures are linted against the **live** templates, so "templates are not instances" does not decouple them; V6 is the check and the tier matches warnings as a bidirectional multiset, so any movement is visible |
 
@@ -239,13 +240,13 @@ correct (Claim 10) and is the target shape.
 | 11 | Two sync scripts perform the fanout | `sync-version-refs.sh` | scripts/sync-version-refs.sh:10 |
 | 12 | `TESTING_STRATEGY_TDD.md` names no language or runner — blocks Task 1 | (absence) | PROBE: `grep -in -e python -e pytest -e jest framework/TESTING_STRATEGY_TDD.md` exits 1 |
 | 13 | GD-13's title says "Two governance documents" while its body says six | `GD-13` | framework/governance/DECISIONS.md:202 |
-| 14 | The `0.41.3` CHANGELOG entry is the block to extend | `0.41.2 → 0.41.3` | CHANGELOG.md:38 |
+| 14 | The `0.41.3` CHANGELOG entry is the block to extend | `0.41.2 → 0.41.3` | CHANGELOG.md:46 |
 | 15 | `total_sections` has exactly one consumer and it is BRD-only | `test_total_sections_bumped` | tests/conformance/test_seed_contract.py:80 |
 | 16 | STRUCT01's required-section set is derived from top-level keys carrying `_size_target` | `_size_target` | `tools/sdd_doc_lint/__init__.py:531` |
 | 17 | The section-count gate counts `# Section N:` comment headers | `_template_numbered_count` | tests/conformance/platforms/test_skill_template_alignment.py:78 |
 | 18 | EARS's `glossary:` carries `_size_target` and no `_required: false`, so STRUCT01 requires a section the template does not number | `glossary` | framework/layers/03_EARS/EARS-TEMPLATE.yaml:401 |
-| 19 | `fw_prev` is detected from `docs/PARITY.md`, not `CLAUDE.md` — #386 is fixed | `fw_prev` | scripts/sync-version-refs.sh:288 |
-| 20 | The script's own header comment still claims `CLAUDE.md` is the `fw_prev` source | `deliberately NOT` | scripts/sync-version-refs.sh:52 |
+| 19 | `fw_prev` is detected from `docs/PARITY.md`, not `CLAUDE.md` — #386 is fixed | `fw_prev="$(detect_version_in docs/PARITY.md` | scripts/sync-version-refs.sh:298 |
+| 20 | **RESOLVED 2026-08-28 by #556.** The script header and `CLAUDE.md` both named `CLAUDE.md` as the `fw_prev` source; both now name `docs/PARITY.md` | `Corrected per #556` | scripts/sync-version-refs.sh:62 |
 | 21 | SPEC's declared diagram-tag vocabulary is two values | `diagram_tags` | framework/registry/LAYER_REGISTRY.yaml:204 |
 | 22 | EARS's diagram allowlist is empty, so any EARS `@diagram:` tag is a DG02 error | `_DIAGRAM_ALLOWED` | `tools/sdd_doc_lint/__init__.py:820` |
 | 23 | R8 places IPLAN `title` in `metadata:` and is founder-gated on OKF D1 — line cited as of `docs/a2-discard-d0077`, which restores two void R-rows above it | `R8` | plans/IPLAN-LAYER-REVIEW-001-DESIGN.md:340 |
@@ -294,7 +295,7 @@ more findings than Pass 1, so scope was cut rather than folded** (fold disciplin
   not number (Claim 18) — is filed separately, not fixed here.
 - **Task 4's fanout guardrail protected the wrong file.** `fw_prev` is detected from
   `docs/PARITY.md` (Claim 19); #386 is fixed. `CLAUDE.md`'s durable trap and the script's
-  own header (Claim 20) are both stale. Rewritten, and filed separately.
+  own header (Claim 20) were both stale — filed as #556 and fixed on 2026-08-28.
 - **Minor, folded:** Task 3 edits a historical CHANGELOG entry in place; permissible only
   because it is still under `## [Unreleased]` (Claim 24). Now stated.
 - **Confirmed, no action:** D2 is correct and #551's snippet genuinely is wrong; blast

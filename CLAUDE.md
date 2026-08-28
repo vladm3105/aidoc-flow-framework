@@ -748,12 +748,23 @@ fresh to have settled, and never repeats one that is already here.
   fixed even when every other surface is current — the state that had let `CLAUDE.md`
   sit at Hermes `0.11.1` against a `0.12.0` `VERSION` for four days, and that the
   plugin token had carried latently since `SYNC-CLAUDE-PLUGIN-VERSION-GAP`.
-  `fw_prev` is different: it is read
-  from `CLAUDE.md` **and** gates propagation to `README.md`, `docs/PARITY.md`, both
-  platform READMEs and a conformance-test literal — so **hand-editing the
-  framework-spec token in `CLAUDE.md` before running the sync strands those five
-  files, silently, at exit 0.** Measured, not inferred; filed as
-  [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386). The 52 SKILL
+  `fw_prev` is different: it is detected **from `docs/PARITY.md`** (the `fw_prev`
+  assignment in `scripts/sync-version-refs.sh` — cite it by name, never by line) and
+  gates propagation to `CLAUDE.md`, `README.md`, **`docs/PARITY.md` itself**, both
+  platform READMEs and a conformance-test literal — so **hand-editing the framework-spec
+  token in `docs/PARITY.md` before running the sync strands every one of those except
+  `docs/PARITY.md` itself, silently, at exit 0.** It is both the detector's source and
+  one of its targets, which is exactly why editing it first is the destructive case: the
+  gate compares it against the new `VERSION`, finds them equal, and skips the whole
+  block. Worse, the run still *looks* successful — the three ungated loops below rewrite
+  their files and the script prints `version-reference sync applied`. ⚠️ **This bullet used to name `CLAUDE.md` as the
+  `fw_prev` source. That was true when
+  [#386](https://github.com/vladm3105/aidoc-flow-framework/issues/386) was filed and is
+  false now — #386 is **fixed and closed**, and the fix moved the detector to
+  `docs/PARITY.md` precisely so a hand-edited `CLAUDE.md` could no longer strand the
+  fanout. Editing `CLAUDE.md`'s framework token first is now harmless; editing
+  `docs/PARITY.md`'s is not.** The stale wording misled in both directions for weeks and
+  reached a plan draft before review caught it (#556). The 52 SKILL
   frontmatters, the playbooks and `platforms/*/FRAMEWORK_SPEC_VERSION` are **not** in
   that blast radius — each has its own detector.
 - **Run a sync-script reproduction in a throwaway clone, never in the working tree.**
