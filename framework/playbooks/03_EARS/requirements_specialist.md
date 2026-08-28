@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: requirements_specialist
 weight: 35
 agent: requirements-analyst
-framework_spec_version: "0.43.0"
+framework_spec_version: "0.44.0"
 ---
 # requirements_specialist lens — EARS layer
 

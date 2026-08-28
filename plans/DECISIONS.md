@@ -10,6 +10,38 @@ graduation.
 
 ---
 
+## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
+
+**Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)
+
+*Numbering note: `D-0077` is reserved on branch `docs/a2-discard-d0077` (commit `3a26050b`)
+and is not yet merged. The gap is deliberate, recorded here rather than only in the handoff,
+which is rewritten wholesale each merge.*
+
+**The state.** `framework/VERSION` moved `0.41.3 → 0.43.0` in one commit. Spec `0.42.0` was
+**never a value of the file**, yet `CHANGELOG.md` documents a `0.41.3 → 0.42.0` release and GD-14
+is ratified against it. `0.43.0` was real but never tagged. Latest tag: `framework/v0.41.3`.
+
+**Decision — option 3 of the three offered on #558.** Tag neither retroactively. The next real
+release carries all three and states the history in its notes. No published CHANGELOG entry is
+edited.
+
+**Why not the alternatives.** Tagging `0.42.0` retroactively would put a tag on a commit whose
+`VERSION` file reads `0.41.3` — accurate to the changelog, false to the tree. Editing the
+published `0.42.0` entry rewrites shipped history, which the same founder had already rejected on
+`TEMPLATE-COMPLETENESS-001` ("correct forward inside the new entry; do not rewrite the released
+`0.41.3` entry"). This decision applies that precedent one release on.
+
+**What executed it.** `INSTANCE-FORMAT-SSOT-001` — the `0.44.0` CHANGELOG entry carries the
+provenance paragraph; `GD-17` states its own SemVer pair explicitly, which GD-15 and GD-16 both
+omitted. `framework/v0.44.0` is the first framework tag since `framework/v0.41.3`.
+
+**Standing consequence.** `GATE-SPEC` has **no release step** — E001..E008 are all diff-local, so
+nothing checks that a superseded version was ever published. That gap is what produced the phantom
+and is not closed by this decision.
+
+---
+
 ## D-0076 — A line-local carrier beats a document-scoped coverage primitive, and the carrier must land before the rule
 
 **2026-08-26.** From the Layer-8 review (IPLAN-LAYER-REVIEW-001) and its three plan-review cycles.

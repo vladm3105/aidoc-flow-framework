@@ -13,6 +13,84 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
+
+- **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —
+  human sign-off per GATE-SPEC. This GD-17 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record, per the GD-05..GD-16
+  precedent — no separate CHG artifact). SemVer **minor** (`0.43.0 → 0.44.0`), change-level
+  **C2**. *(GD-15 and GD-16 omitted their version pairs; stating this one explicitly is part of
+  what this entry repairs.)*
+- **Context.** GD-15 made YAML the mandatory **instance** format for layers 1-8 and, in the same
+  entry, recorded that it "does not adopt the frontmatter contract (that design's D1 owns it)".
+  The spec therefore mandated a format that no rule could read. **Measured** on a BRD authored
+  exactly as `BRD-TEMPLATE.yaml` prescribes: **17 `STRUCT01` errors** — including for sections
+  physically present as YAML keys — while the identical content as Markdown produced **zero**
+  findings, and `scan_fr_elements` discovered **0** gated FRs against 1, so `COV01` passed
+  vacuously. The gate was simultaneously unpassable and blind on the mandated format.
+- **The mandate was also diffuse.** Seven spec surfaces asserted it: `DOC_GOVERNANCE_CORE.md`
+  Principle 2 and §Template Policy, `LAYER_REGISTRY.yaml`'s header + `extensions`, GD-15 itself,
+  `layers/01_BRD/README.md` §Document Formats, `governance/ID_NAMING_STANDARDS.md`'s File-Naming
+  table, and `layers/04_BDD/BDD-00_index.TEMPLATE.md` §File Format. Two of them contradicted the
+  registry outright, and one — the BDD index — states the value in prose with no filename token,
+  so no mechanical check could ever have seen it drift.
+- **Decision.** Three rules, ratified together.
+  1. **One normative source.** `LAYER_REGISTRY.yaml` `extensions` is the **authority** for
+     instance format. Every surface that **asserts the format as a rule** states the value and
+     cross-references it; none re-specifies it. Surfaces that merely *use* a filename in an
+     example or a naming table are not required to carry the cross-reference — they are held to
+     the registry mechanically by `test_instance_format_ssot.py`, which is the stronger guarantee.
+     This bound is deliberate: requiring a prose cross-reference on every filename mention would
+     grow the obligation without adding a check. This applies **GD-09 rule 2** — *"every mandating layer states its contract
+     in-layer"* — rather than GD-09 rule 1 alone: the layer keeps its statement, and only the
+     *authority* is centralized. Deleting the in-layer statements would remove the text an author
+     actually reads.
+  2. **The effective condition is an outcome, stated once, here.** The instance-format mandate
+     takes normative effect when, for every layer, a reference instance authored in that layer's
+     `extensions` format satisfies **rule-applicability parity** with the equivalent Markdown
+     form: (a) it lints with **zero** findings, and (b) **every rule that applies to the Markdown
+     form applies to it and returns the same verdict**. Clause (b) is deliberately stated as
+     applicability rather than as a list of result classes — "element and coverage results" would
+     omit `BDD-SCHEMA-001` (schema validation) and `SEED01` (silently skipped when its carrier is
+     absent), both of which satisfy clause (a) *vacuously*, which is the failure this condition
+     exists to exclude.
+     **Evaluator and state carrier.** The condition is evaluated by a per-layer carrier-parity
+     assertion in the conformance or acceptance tier — the same shape as
+     `tests/conformance/test_instance_format_ssot.py`, comparing a YAML reference instance against
+     its Markdown counterpart rule by rule. The condition's *state* is carried by a successor GD
+     entry that records it as met; **no surface may infer it from an issue being closed**, since
+     closing #564 updates nothing a reader consults. Operationally this is the completion of the carrier-aware work in
+     [#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564).
+     **Why an outcome and not a list:** three successive enumerations were each short. `doc_id`
+     alone leaves 17 `STRUCT01` errors, because `STRUCT01` resolves sections from `##` headings
+     and never reads frontmatter. Adding a carrier-aware structural check still leaves `COV01`
+     vacuous, because FR discovery is a third primitive. `BDD-SCHEMA-001` and the EARS→BDD edges
+     (fence matcher) and `SEED01` (silently skipped) are a fourth and fifth. An outcome cannot be
+     under-enumerated.
+  3. **The negative property is guarded.** `tests/conformance/test_instance_format_ssot.py`
+     asserts that no spec surface names a layer instance whose extension is absent from that
+     layer's `extensions`, with two exemptions carrying their own mutation tests: index-doc
+     mentions (exempt **at the mention level**, since two of the nine sit outside index files)
+     and `DECISIONS.md`, whose `IPLAN-01.md` reference describes a real corpus artifact inside a
+     ratified record.
+- **Security (GATE-SPEC-W003).** Agent-facing governance guidance changes. Assessed against
+  `SECURITY_REVIEW.md`: no credentials or personal data introduced (T1); no instruction is taken
+  from external or untrusted content — every edit derives from the repo's own registry and
+  measured linter behaviour (T2); provenance is recorded for each carrier (T3); the change
+  **narrows** rather than broadens authority, since it removes an in-effect mandate that no rule
+  could enforce and gates its return on a testable outcome (Rule 4); no active content is
+  introduced (T4). No blocking finding.
+- **Consequences.** `framework/VERSION` `0.43.0 → 0.44.0`; both `FRAMEWORK_SPEC_VERSION` pins
+  re-declare; the vendored plugin bundle is re-synced. The example corpus and acceptance goldens
+  remain `.md` and are **conformant**, because the mandate is not yet in effect — which is what
+  unblocks [#555](https://github.com/vladm3105/aidoc-flow-framework/issues/555) from a
+  regeneration that would otherwise have produced ~17 errors per BRD.
+  **Scope is the spec only** — platform authoring surfaces state their own filenames and must add
+  their own lock, the same caveat GD-09 recorded.
+- **Authority:** `registry/LAYER_REGISTRY.yaml` `extensions` + header; `DOC_GOVERNANCE_CORE.md`
+  Principle 2 and §Template Policy; GD-09 rules 1-2; GD-15;
+  `plans/INSTANCE-FORMAT-SSOT-001-PLAN.md`.
+
 ## GD-16 — An IPLAN file-manifest entry carries its TDD test cases in a line-local `tdd_ref` field, not in the traceability block
 
 - **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
@@ -65,6 +143,9 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-15 — YAML is the mandatory format and the source of truth for layer artifacts; Markdown is optional, descriptive, and generated
 
+- **Amended by GD-17 (2026-08-28).** The instance-format mandate below is **not unconditionally
+  in force**: GD-17 gives it an effective condition and makes `LAYER_REGISTRY.yaml` `extensions`
+  its single normative authority. Read GD-17 before acting on this entry.
 - **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
   change — human sign-off per GATE-SPEC. This GD-15 entry + the `VERSION`/`CHANGELOG`
   bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,

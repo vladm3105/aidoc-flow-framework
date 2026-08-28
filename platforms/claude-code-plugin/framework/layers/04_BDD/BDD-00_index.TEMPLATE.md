@@ -44,6 +44,10 @@ flowchart LR
 
 BDD uses **`.yaml` files** (unified YAML template pattern across all layers).
 
+The authoritative per-layer value is `extensions` in
+[`../../registry/LAYER_REGISTRY.yaml`](../../registry/LAYER_REGISTRY.yaml) — the single
+normative source (GD-17). This section states the value; it does not re-specify it.
+
 **Template** (default): [BDD-TEMPLATE.yaml](./BDD-TEMPLATE.yaml)
 **MVP skeleton**: [BDD-MVP-TEMPLATE.yaml](./BDD-MVP-TEMPLATE.yaml) — not standalone
 

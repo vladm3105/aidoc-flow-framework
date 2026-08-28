@@ -7,7 +7,7 @@
 | Status         | PLANNED — 2026-08-28T00:00:00Z                                |
 | Depends on     | GD-15 (YAML normative), GD-16 (`tdd_ref` carrier)             |
 | Feeds          | #550, #551, #532                                              |
-| Version impact | framework **MINOR** `0.43.0 → 0.44.0` (additive template keys) |
+| Version impact | framework **MINOR** `0.44.0 → 0.45.0` (additive template keys) |
 
 ## Objective
 
@@ -25,7 +25,7 @@ Bundling converts that into one.
   close the companion silence in `framework/TESTING_STRATEGY_TDD.md`.
 - **#551** — give SPEC and TDD a `threshold_references` carrier.
 - **#532** — GD-13's title and the `0.41.3` CHANGELOG enumeration.
-- The fanout both sync scripts perform, a `GD-17` decision entry, and the docs of record.
+- The fanout both sync scripts perform, a `GD-18` decision entry, and the docs of record.
 
 **Out of scope (deferred):**
 
@@ -116,9 +116,9 @@ correct (Claim 10) and is the target shape.
 | `framework/layers/07_TDD/TDD-TEMPLATE.yaml` | D3 (7 paths); D1 row 2 |
 | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` | D3 (3 paths); D1 row 1 |
 | `framework/TESTING_STRATEGY_TDD.md` | new section: test paths derive from `@spec` `language:` |
-| `framework/governance/DECISIONS.md` | GD-13 title fix (#532); new GD-17 |
-| `framework/VERSION` | `0.43.0` → `0.44.0` |
-| `CHANGELOG.md` | `0.41.3` entry enumerates all six surfaces (#532); new `0.44.0` entry |
+| `framework/governance/DECISIONS.md` | GD-13 title fix (#532); new GD-18 |
+| `framework/VERSION` | `0.44.0` → `0.45.0` |
+| `CHANGELOG.md` | `0.41.3` entry enumerates all six surfaces (#532); new `0.45.0` entry |
 | `platforms/claude-code-plugin/framework/layers/**` | vendored mirrors, by script (Claim 11) |
 | `ROADMAP.md`, `plans/HANDOFF.md`, `plans/DECISIONS.md` | docs of record |
 
@@ -158,7 +158,7 @@ correct (Claim 10) and is the target shape.
   option (b). Extending the `0.41.3` CHANGELOG entry in place would rewrite the changelog of
   a **published release**: `framework/v0.41.3` is a non-draft, non-prerelease GitHub release
   on `8dccc315`, published 2026-08-24 (Claim 24). Instead, state the correction inside the
-  new `0.44.0` entry: name all six GD-13 surfaces there and say explicitly that the `0.41.3`
+  new `0.45.0` entry: name all six GD-13 surfaces there and say explicitly that the `0.41.3`
   entry named two of them. Leave `CHANGELOG.md:38` untouched.
   *(An earlier draft argued the in-place edit was safe because the entry sits under
   `## [Unreleased]` at `CHANGELOG.md:13`. That inference was false — `[Unreleased]` heads
@@ -166,7 +166,7 @@ correct (Claim 10) and is the target shape.
   independently tagged, so the heading was never evidence about the framework stream.)*
 - ⚠️ **Related but out of scope: issue #558.** Spec `0.42.0` and `0.43.0` are themselves
   untagged, and `framework/VERSION` never held `0.42.0`. That is a separate founder call and
-  does **not** block this plan — but do not cut a `0.44.0` tag without reading #558 first.
+  does **not** block this plan — but do not cut a `0.45.0` tag without reading #558 first.
 - The GD-13 retitle (Claim 13) proceeds unaffected.
 
 ### Task 4: version bump and fanout
@@ -180,7 +180,7 @@ correct (Claim 10) and is the target shape.
   *(Both `CLAUDE.md` § "Durable traps" and the script's own header comment used to name
   `CLAUDE.md` as the source. **Fixed 2026-08-28 by #556** — Claim 20. Cite the `fw_prev`
   assignment by name, not by line: correcting that header moved it.)*
-- Write `GD-17` in `framework/governance/DECISIONS.md` covering the three changes.
+- Write `GD-18` in `framework/governance/DECISIONS.md` covering the three changes.
 - Record the founder's per-bump grant as an audit-trail line in the commit message.
 
 ## Verification
@@ -197,18 +197,18 @@ correct (Claim 10) and is the target shape.
 | V7 | `PYTHONPATH=tools python3 -m pytest tools/sdd_doc_lint/tests -q` | green | all |
 | V8 | `pre-commit run --all-files` | clean | Task 4 |
 | V9 | `diff -r framework/layers platforms/claude-code-plugin/framework/layers` | no drift | Task 4 |
-| V10 | `cat platforms/*/FRAMEWORK_SPEC_VERSION` | both read `0.44.0` | Task 4 |
-| V11 | the same `grep -oE 'ID_NAMING_STANDARDS\|TRACEABILITY\|auditor\|IPLAN-TEMPLATE\|requirements-analyst' \| sort -u \| wc -l` run over the **new `0.44.0`** CHANGELOG block | `5` tokens naming **6** surfaces — the regex matches `auditor` once for both playbooks (Claim 26), so the two figures are consistent | Task 3 |
+| V10 | `cat platforms/*/FRAMEWORK_SPEC_VERSION` | both read `0.45.0` | Task 4 |
+| V11 | the same `grep -oE 'ID_NAMING_STANDARDS\|TRACEABILITY\|auditor\|IPLAN-TEMPLATE\|requirements-analyst' \| sort -u \| wc -l` run over the **new `0.45.0`** CHANGELOG block | `5` tokens naming **6** surfaces — the regex matches `auditor` once for both playbooks (Claim 26), so the two figures are consistent | Task 3 |
 | V11b | `git diff main -- CHANGELOG.md \| grep '^-'` | no deletions inside the `0.41.3` block — the released entry is untouched (option (b)) | Task 3 |
 | V12 | `grep -n '^## GD-13' framework/governance/DECISIONS.md` | title says "Six authoring surfaces" | Task 3 |
 
 ## Docs to update
 
-- [ ] `CHANGELOG.md` — `0.44.0` entry; plus the `0.41.3` correction (Task 3)
+- [ ] `CHANGELOG.md` — `0.45.0` entry; plus the `0.41.3` correction (Task 3)
 - [ ] `ROADMAP.md` — bullet
 - [ ] `plans/HANDOFF.md` — narrative + next steps
 - [ ] `plans/DECISIONS.md` — the bundling decision and the two Pass-2 cuts
-- [ ] `framework/governance/DECISIONS.md` — GD-17
+- [ ] `framework/governance/DECISIONS.md` — GD-18
 - [ ] `CLAUDE.md`, `README.md`, `docs/PARITY.md` — by `scripts/sync-version-refs.sh`
 
 ## Risks
@@ -255,6 +255,22 @@ correct (Claim 10) and is the target shape.
 | 26 | GD-13 enumerates six surfaces across **five** bullets — one bullet names both auditor playbooks | `playbooks/05_ADR/auditor.md` | framework/governance/DECISIONS.md:223 |
 | 27 | A third required-section derivation exists and ignores `_size_target`: every top-level mapping key except `metadata` | `_required_when_subtype` | tests/acceptance/_harness.py:211 |
 | 28 | TDD carries seven pytest-shaped `function:` / `test_function:` values alongside the paths | `function` | framework/layers/07_TDD/TDD-TEMPLATE.yaml:128 |
+
+## Re-point note — 2026-08-28
+
+**This plan's target version and its governance-decision id both moved forward one step**, to
+`0.45.0` and `GD-18` respectively. `INSTANCE-FORMAT-SSOT-001` took the slot ahead of it: that
+plan relieves the release blocker (GD-15 mandated an instance format the framework's own gate
+rejects), and blocker relief must precede the first tag since `framework/v0.41.3`. It had also
+claimed the same decision id, and it lands first.
+
+**Three mentions of the superseded version are deliberately NOT rewritten** — the claim-ledger
+row and the two sentences inside the dated `Amendment — 2026-08-28` block. Those are historical
+records, one of them a founder decision; editing them would falsify the record they exist to
+preserve. Only forward-looking targets moved.
+
+*This note names only the new values, so the verification greps over this file stay
+meaningful — see `INSTANCE-FORMAT-SSOT-001` V11/V12.*
 
 ## Review log
 

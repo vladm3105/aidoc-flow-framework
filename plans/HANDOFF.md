@@ -5,7 +5,7 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** framework spec **`0.43.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+**State:** framework spec **`0.44.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
 `FRAMEWORK_SPEC_VERSION` pins read `0.43.0`.
 
 **Verified this session** (run, not asserted): conformance **375 passed / 796 subtests** ·
@@ -15,23 +15,16 @@ Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred t
 wholesale regen; use `--skip-lint-smoke`.
 *(`pytest tools/sdd_doc_lint/tests` needs `PYTHONPATH=tools` or it fails to collect.)*
 
-## ⚠️ `0.43.0` is not released, and `0.42.0` never existed — #558
+## Release provenance — resolved (#558, D-0078)
 
-`framework/VERSION` reads `0.43.0` and every other surface agrees, so the natural inference
-is that `0.43.0` shipped. **The latest framework release is `0.41.3`.** Worse, spec
-`0.42.0` was never a value of `framework/VERSION` at all — `272d964d` moved the file
-straight from `0.41.3` to `0.43.0` — yet `CHANGELOG.md:28` documents a `0.41.3 → 0.42.0`
-release and GD-14 is ratified against it.
+`0.42.0` was never a value of `framework/VERSION` and `0.43.0` shipped untagged. **Founder
+decision 2026-08-28 (option 3):** correct forward, rewrite no published entry. Executed by
+`INSTANCE-FORMAT-SSOT-001` — the `0.44.0` CHANGELOG entry carries the provenance paragraph.
+`framework/v0.44.0` is the first framework tag since `framework/v0.41.3`. Recorded as
+`plans/DECISIONS.md` **D-0078**; #558 stays open until the tag is cut.
 
-```sh
-git tag --list 'framework/v0.4*'                 # -> v0.41.2, v0.41.3 only
-gh release list --limit 5                        # -> "Framework Spec 0.41.3   Latest"
-git log --oneline -S'0.42.0' -- framework/VERSION # -> no output
-```
-
-**Filed as #558 with three options; it needs a founder call.** Do not cut a tag without
-reading it. This is also why `TEMPLATE-COMPLETENESS-001` blocks on its `0.41.3` CHANGELOG
-edit — `0.41.3` is the one entry that *is* released.
+⚠️ **Still open:** `GATE-SPEC` has no release step — E001..E008 are all diff-local, so nothing
+checks that a superseded version was ever published. That is what produced the phantom.
 
 ## The backlog is GitHub issues
 
@@ -70,13 +63,14 @@ record.
 ## What to do next — prioritized
 
 1. **`plans/TEMPLATE-COMPLETENESS-001-PLAN.md`** — bundles **#550, #551, #532** into one
-   framework MINOR (`0.43.0 → 0.44.0`); each independently trips GATE-SPEC-E005, so
+   framework MINOR (`0.44.0 → 0.45.0`, GD-18 — re-pointed 2026-08-28 when
+   `INSTANCE-FORMAT-SSOT-001` took `0.44.0`); each independently trips GATE-SPEC-E005, so
    shipping them apart costs three bumps, three fanouts and three founder grants. Three
    review cycles done (1 self + 2 dispatched independent), 28-claim ledger, citation gate
    green. **#552 and #553 were cut from the bundle at Pass 2** — the plan's Out-of-scope
    section says why; each needs its own plan.
    Its one escalated decision was resolved by the founder as **option (b): correct forward
-   inside the new `0.44.0` entry; do not rewrite the released `0.41.3` entry** — recorded
+   inside the new entry; do not rewrite the released `0.41.3` entry** — recorded
    here as well as in the plan, so it survives independently.
    The plan lives on branch **`plans/template-completeness-001`** (`aef7b76e`), which is
    branched from `main` and independent of the other two open branches.
