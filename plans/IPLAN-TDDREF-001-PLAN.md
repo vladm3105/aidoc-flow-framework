@@ -4,10 +4,10 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | IPLAN-TDDREF-001                                               |
 | Type           | feature                                                        |
-| Status         | PLANNED — 2026-08-26T00:00:00Z                                 |
-| Depends on     | **`LINT-TAG-QUOTE-001` (must merge first — §D2)**; GD-15 (accepted, unbumped) |
+| Status         | **COMPLETED — merged 2026-08-26 in framework `0.43.0`** (`272d964d`, PR #549) |
+| Depends on     | **`LINT-TAG-QUOTE-001` (must merge first — §D2)**; GD-15 (accepted; shipped in `0.43.0`) |
 | Feeds          | `IPLAN-COV04-002` — the coverage rule, whose matcher is written against this field |
-| Version impact | framework MINOR; the `framework/VERSION` bump + `CHANGELOG.md` are **required in the shipping PR diff** (§D4) |
+| Version impact | framework MINOR — **shipped**: `0.42.0 → 0.43.0`, bump and `CHANGELOG.md` landed in the same diff (§D4) |
 
 ## Objective
 
@@ -18,8 +18,11 @@ carried on the manifest entry for the file.
 **The entry-level binding is authored, not enforced.** A line-local matcher proves
 only that some `tdd_ref` line in this IPLAN cites the element; it cannot prove the
 line sits in a `file_manifest` entry rather than a renamed block, nor say *which*
-entry. Enforcing that needs a structural parse, deferred with Stage 2's `tasks[]`
-(design F-3). The Objective is stated at the granularity the mechanism delivers.
+entry. Enforcing that needs a structural parse, which nothing currently requires.
+*(Updated 2026-08-27: this originally deferred to Stage 2's `tasks[]`; that work was
+discarded — see the A2 tombstone in `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`. The
+entry-level binding stays authored-not-enforced, and no successor is planned.)* The
+Objective is stated at the granularity the mechanism delivers.
 
 This ships no linter change and no lint rule — the linter defect its carrier depends
 on is `LINT-TAG-QUOTE-001`, a separate PR.
@@ -54,7 +57,7 @@ successor's matcher is written against; the bundle mirror; the GATE-SPEC obligat
 (§D4).
 
 **Out:** the `COV04` rule, the registry `building_layers` block, any lint constant or
-fixture, corpus regeneration, and R3-R12 of
+fixture, corpus regeneration, and R5-R12 of
 `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`.
 
 ## Approach / Design
@@ -146,7 +149,7 @@ The predecessor put the bump "out of scope", which would have produced an
 unmergeable PR. Phase D's ordering is load-bearing: `framework/VERSION` →
 `scripts/sync-version-refs.sh` → `tools/sync-plugin-framework.sh`.
 
-**GD-15 is already in-tree, unbumped and un-changelogged** — verified 2026-08-26, not
+**GD-15 was in-tree, unbumped and un-changelogged at authoring time** — verified 2026-08-26, not
 inferred from the changelog alone: `git log -S 'GD-15 —' -- framework/governance/DECISIONS.md`
 returns nothing and `git show HEAD:framework/governance/DECISIONS.md` contains no GD-15,
 so it is an uncommitted working-tree edit. (Its presence in the plugin bundle copy is
@@ -177,9 +180,12 @@ The `VERSION` bump fans out well beyond the authored set: both
 SKILL frontmatters and the playbook set with its mirror. **This is a ~100-file PR, not
 a five-file one** — a different review and a different governance-budget conversation.
 
-⚠️ Do **not** hand-edit `CLAUDE.md`'s framework-spec token before running
-`scripts/sync-version-refs.sh`: `fw_prev` is read from `CLAUDE.md` and gates
-propagation to five further files, silently, at exit 0.
+⚠️ Do **not** hand-edit the framework-spec token in `docs/PARITY.md` before running
+`scripts/sync-version-refs.sh`: `fw_prev` is detected from **`docs/PARITY.md`**
+(`:288`) and gates propagation to `CLAUDE.md`, `README.md`, both platform READMEs
+and a conformance literal. *(Corrected 2026-08-27: this previously named
+`CLAUDE.md`, which #386 fixed and closed. `CLAUDE.md` § "Durable traps" and the
+script's own header at `:50-54` are both still stale — see #556.)*
 
 ## Implementation sequence
 
@@ -482,11 +488,13 @@ Implemented and verified, except the version bump (below).
 - GD-16 recorded; layer README documents the three carrier rules; bundle mirror synced.
 - Conformance 374 passed / 796 subtests; acceptance 64 passed; corpus lint delta zero.
 
-**Withheld: the `framework/VERSION` bump, `CHANGELOG.md`, and the ~100-file fanout**
-(§D4). The founder's standing instruction is not to bump, and `CLAUDE.md` requires
-per-bump founder OK for the plugin fanout. Consequence to be explicit about: with
-`framework/**` edited and no bump in the diff, **GATE-SPEC-E005 and E008 will fail this
-PR**. The change is complete and verified locally; it is not mergeable until the bump
-lands in the same diff.
+**Resolved 2026-08-26 — the bump was NOT withheld.** This paragraph previously recorded
+the `framework/VERSION` bump, `CHANGELOG.md` and the ~100-file fanout as held back, and
+concluded the change was "not mergeable until the bump lands in the same diff". The
+founder granted the bump and it shipped together with this change: `272d964d` (PR #549)
+carries `framework/VERSION` `0.42.0 → 0.43.0`, the `CHANGELOG.md` entry, both
+`platforms/*/FRAMEWORK_SPEC_VERSION` pins and the vendored mirror, ratified as **GD-16**.
+`GATE-SPEC-E005`/`E008` therefore passed. *(Corrected 2026-08-27 — the stale text had
+survived the merge and made a ratified spec decision read as stranded pre-bump.)*
 
 Filed as issue #543 (the coverage gap this carrier serves).
