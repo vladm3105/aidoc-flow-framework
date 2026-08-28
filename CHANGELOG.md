@@ -12,6 +12,14 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the `fw_prev` doc-currency trap named the wrong file in two places (2026-08-28)
+
+`scripts/sync-version-refs.sh` derives `fw_prev` from `docs/PARITY.md`, a change made by issue #386. `fw_prev` gates one block of the framework-spec fanout — `CLAUDE.md`, `README.md`, `docs/PARITY.md` itself, both platform READMEs and a conformance literal. It does **not** gate the three loops below it (`FRAMEWORK_SPEC_VERSION`, the 52 SKILL frontmatters, the playbooks), each of which has its own detector. Two narrative surfaces went on describing the pre-#386 behaviour and named `CLAUDE.md` as the source: the script's own header comment and `CLAUDE.md` § "Durable traps".
+
+The wording misled in both directions at once. It warned readers off hand-editing `CLAUDE.md`, which #386 made harmless, and said nothing about `docs/PARITY.md` — which, being both the detector's source and one of its targets, makes the gate compare equal and skip that whole block when pre-edited. Silently: the ungated loops still run, so the script prints `version-reference sync applied` and exits 0. Because `CLAUDE.md` is auto-loaded every session and its § "Durable traps" preamble tells readers not to re-derive its entries, the stale claim was carried into a plan draft before an independent review opened the script.
+
+Corrected in both surfaces, with the superseded wording marked rather than silently replaced, and **cited by name rather than by line number** — the first draft of this very fix shipped a line citation that its own edit invalidated, which is the precedent the script already records at its `#405` note. Comment-and-prose only; no behaviour change. Issue #556.
+
 ### Changed — Framework Spec `0.42.0 → 0.43.0` — YAML is the normative artifact format (GD-15); IPLAN gains a `tdd_ref` TDD-case carrier (GD-16) (2026-08-26)
 
 Two spec decisions ship together, plus the linter defect that blocked the second.
