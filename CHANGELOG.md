@@ -12,6 +12,43 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — the GD-03 citation-granularity rule is now measured, not only stated (#531) (2026-08-28)
+
+`tests/conformance/test_ref_granularity_parity.py` asserts that the
+**document-level-permitted** set is exactly `{SPEC, IPLAN}` on all four surfaces that carry
+the proposition: the linter constant `_REFGRAN_ELEMENT_DECLARING` (imported, not parsed) and
+the three governance prose surfaces `ID_NAMING_STANDARDS.md`, `TAG_SYNTAX.md` and
+`TRACEABILITY.md`.
+
+Between GD-03's ratification (2026-06-27) and GD-13 (2026-08-23) two of those statements said
+the **opposite** of the ratified rule and nothing noticed. The regression subject is that
+drift verbatim — three fixtures extracted from `8dccc315^` under
+`tests/conformance/fixtures/refgran/`, with the already-correct `TAG_SYNTAX.md` as the
+negative control. Three surfaces keep them byte-faithful: `.pre-commit-config.yaml`'s
+**global** `exclude:`, `.github/workflows/markdown-lint.yml`, and `.markdownlintignore`. The
+exclusion is global rather than markdownlint-scoped because `trailing-whitespace`,
+`end-of-file-fixer` and `mixed-line-ending` rewrite unconditionally and carry no exclude of
+their own; it is scoped to `refgran/` rather than to `fixtures/` because the sibling `saga/`
+and `review/` fixtures are sample reports and a JSON schema, not extracted evidence, and a
+directory-wide exclude silently dropped them — and every future fixture — out of
+`check-json`, `detect-secrets`, `ruff` and `yamllint`.
+
+Every mutant the guard was measured against ships as a test (`MutationLocks`), applied to the
+**live** governance text at run time. That is the change independent review forced and the
+part most worth reusing: the permit-over-forbid rule had been documented as "established by
+mutation" while no shipped test distinguished it — the drift fixture carries no forbid
+sentence, so a forbid-first classifier passed every other test in the module. Review also
+constructed three pieces of genuinely wrong text the first draft reported as correct, two of
+them inside the anchored region; each is now a lock.
+
+**Scope, stated in the guard's own docstring rather than left to be inferred:** four
+surfaces, per anchored region and not per file, and a reach of **two** of GD-13's six
+corrected surfaces — not the six that decision's successor sentence claims. Rationale and the
+rejected `LAYER_REGISTRY.yaml` alternative are `plans/DECISIONS.md` **D-0079**.
+
+`tests/**` and CI-config only — no `framework/**` edit, so `GATE-SPEC-E005` does not fire and
+no `framework/VERSION` bump is involved.
+
 ### Changed — Framework Spec `0.44.0 → 0.46.0` — test paths derive from the SPEC's `language:`, SPEC and TDD get a threshold carrier, IPLAN status becomes a written contract (GD-18) (2026-08-28)
 
 Three verified spec gaps and one erratum, in one release. Each independently trips

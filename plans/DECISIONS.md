@@ -73,6 +73,87 @@ lint rule that would fire on existing artifacts must land **after** the artifact
 whatever its severity. Severity controls whether the framework's *gate* fails; it does not
 control whether the *acceptance suite* fails.
 
+## D-0079 — The GD-03 granularity guard compares the document-level-permitted set, on four surfaces, and says so
+
+**Date:** 2026-08-28 · **Issue:** #531 · **Plan:** `plans/REFGRAN-GUARD-001-PLAN.md`
+
+Four decisions in `tests/conformance/test_ref_granularity_parity.py` that a reader would
+otherwise re-litigate, each measured rather than argued:
+
+1. **Compare the document-level-permitted set, not the element-declaring one.** They are
+   complements, so either would seem to do. `TRACEABILITY.md` names four of the six
+   element-declaring layers and omits BRD and PRD, so an element-declaring comparison
+   reports a 4-of-6 mismatch **on a correct file**. Every surface states the
+   document-level side completely.
+
+2. **A failed parse raises `Unparseable`; it is never an empty set.** The first prototype
+   "caught" the pre-#530 drift by returning the empty set from a failed match. That is a
+   pass for the wrong reason, and its inverse is worse — a benign rewording of a *correct*
+   surface would redden CI with a message naming layers, sending the author to fix a rule
+   that is not wrong. The fixture test binds itself to the same rule: it asserts the exact
+   set extracted, so a broken parse can never be mistaken for a detected regression.
+
+3. **A permit phrase outranks a forbid marker in the same bullet.** Measured, not
+   preferred: `ID_NAMING_STANDARDS.md`'s "Design & realization layers" bullet carries both,
+   and it is the bullet that actually drifted. A re-drift adding `ADR / TDD` back to its
+   bolded subject while leaving today's "remains element-level" sentence intact **survives**
+   a forbid-first classifier and is **killed** by permit-first — run both ways, both results
+   recorded.
+
+4. **The positive control is the discarded prototype, not a stub.** A stub raising
+   `NotImplementedError` fails for a reason unrelated to detection, and a perfect kill rate
+   against a control you built is a symptom rather than a result. The control differs from
+   the real extractor in exactly one dimension — `@tag` tokens instead of the bolded subject
+   — so its failure isolates the rule it exists to justify. Same section anchor, same permit
+   classifier, **and the same empty-set guard**: without that last one the difference is
+   two-dimensional, and a broken parse would be reported as evidence against the
+   bolded-subject rule.
+
+5. **Every mutant that was measured is shipped as a test** (`MutationLocks`). This is the
+   decision the independent review forced, and it generalises past this guard. Item 3's
+   permit-over-forbid rule was documented as "established by mutation" while **no shipped
+   test distinguished it**: the drift fixture's bullet carries no forbid sentence — that
+   sentence arrived with the #530 correction — so a forbid-first classifier read the
+   fixture correctly and passed every test in the module. A mutation run once during
+   development proves the guard worked that afternoon and locks nothing. The locks apply
+   their mutation to the **live** governance text at run time and assert the target still
+   exists, so they cannot rot into vacuous passes.
+
+6. **The guard reads a permit clause, not a document — and the honest statement of that
+   limit is per *phrasing*, not per *region*.** Review constructed three pieces of
+   genuinely wrong text that an earlier draft reported as correct, two of them **inside**
+   the anchored region: layers moved out of a bolded subject into the bullet body, a
+   permitting bullet's forbid clause flipped, and an extra document-level claim appended to
+   the `TRACEABILITY.md` bullet. All three are now closed by locks, **as specific phrasings
+   rather than as a class**. A fourth phrasing nobody has thought of is the standing
+   residual, and it is the real argument for the rejected alternative below: a parsed set
+   has no phrasings.
+
+**Rejected, and why it is the better design.** Stating the set once in `LAYER_REGISTRY.yaml`
+alongside `realizing_layers` and `acceptance_layers`, then checking the prose against the
+registry, is the correct shape. It is rejected on cost only — a `framework/**` edit trips
+`GATE-SPEC-E005` and forces a `framework/VERSION` bump with its fanout and a per-bump founder
+grant. Recorded as the successor rather than silently not-chosen.
+
+**Reach, stated because the successor language overclaims it.**
+`framework/governance/DECISIONS.md:324` (GD-13) says such a guard "would have caught all six"
+of the surfaces it corrected. It would have caught **two**; the other four are an auditor
+playbook ×2, a layer template and a plugin agent, none of which this guard reads. A
+class-wide scan over those was measured and rejected — the token census returns 51 hits
+across 29 files (re-measured independently, exact match, under two different `grep`
+implementations), overwhelmingly exempt, and an exemption model at that ratio either
+false-positives and blocks CI or under-covers and reads as complete.
+
+⚠️ **This finding belongs to [#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532),
+not to a new issue.** #532 is open, is scoped to exactly this class — doc-accuracy defects
+in GD-13 and the `0.41.3` CHANGELOG — and its "What is NOT broken" section explicitly
+asserts the opposite of what this entry establishes: *"GD-13's body, its six-surface
+enumeration, its PATCH-vs-MINOR reasoning and its authority line are all correct and need no
+change."* The overclaiming sentence is **in that body**. Per the granularity rule the
+evidence goes on #532 as a comment; an earlier draft of this plan said the sentence "needs
+its own issue", which would have opened a duplicate of a live issue that already proposed
+folding alongside #531.
+
 ## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
 
 **Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)
