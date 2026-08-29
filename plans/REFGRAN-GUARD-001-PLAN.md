@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | REFGRAN-GUARD-001                                            |
 | Type           | bugfix                                                       |
-| Status         | READY — 2026-08-28T00:00:00Z (4 review passes; see Review log) |
+| Status         | READY — 2026-08-28T00:00:00Z (5 review passes; see Review log) |
 | Depends on     | GD-03, GD-13 (#530)                                          |
 | Feeds          | #531                                                         |
 | Version impact | **none** — `tests/**` plus two lint-exclude lines; no `framework/**` edit, so GATE-SPEC-E005 does not fire and no `framework/VERSION` bump is needed |
@@ -47,9 +47,12 @@ nothing noticed (#531). This plan makes the four surfaces agree by test.
 - Any `framework/**` edit. The three governance surfaces are already correct;
   this plan only locks them. This also defers **correcting** GD-13's
   "would have caught all six" sentence at
-  `framework/governance/DECISIONS.md:243` — amending it is a `framework/**` edit
+  `framework/governance/DECISIONS.md:324` — amending it is a `framework/**` edit
   with the GATE-SPEC-E005 cost of alternative 1. The guard's docstring records
-  the true figure; the GD sentence needs its own issue.
+  the true figure. The GD sentence does **not** need its own issue: **#532** is open,
+  is scoped to exactly this class, and its "What is NOT broken" section asserts the
+  opposite ("GD-13's body … all correct and need no change"). The evidence goes there
+  as a comment.
 
 ## Approach / Design
 
@@ -235,7 +238,7 @@ fails here instead of vanishing.
    Those surfaces are not unguarded in consequence, only unguarded *here*:
    `REFGRAN01` flags the artifacts they generate, which is how #486 was found —
    a downstream detector with regen latency, recorded as a real limit.
-3. **Inheriting GD-13's framing unexamined.** `framework/governance/DECISIONS.md:243`
+3. **Inheriting GD-13's framing unexamined.** `framework/governance/DECISIONS.md:324`
    says a guard over these four surfaces "would have caught all six". It would
    not: two of the six were `playbooks/{05_ADR,07_TDD}/auditor.md`, a third was
    `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` and a fourth was
@@ -406,7 +409,7 @@ fails here instead of vanishing.
 | 28 | `tools/sdd_doc_lint/fixtures` is already excluded for verbatim this reason | `sdd_doc_lint fixtures are` | `.pre-commit-config.yaml:62` |
 | 29 | The CI markdown-lint caller carries the matching glob and needs the same addition | `!tools/sdd_doc_lint/fixtures` | `.github/workflows/markdown-lint.yml:74` |
 | 30 | MD013 is disabled, so no tool reflows the one-line TRACEABILITY anchor | `"MD013": false` | `.markdownlint.json:3` |
-| 31 | GD-13's successor language claims this guard "would have caught all six" | `such a guard would have caught all six` | `framework/governance/DECISIONS.md:243` |
+| 31 | GD-13's successor language claims this guard "would have caught all six" | `such a guard would have caught all six` | `framework/governance/DECISIONS.md:324` |
 | 32 | GD-13 names only two prose surfaces as drifted; the other four are outside this guard | `Six authoring surfaces had never been reconciled to it and went on telling authors` | `framework/governance/DECISIONS.md:216` |
 | 33 | `LAYER_REGISTRY.yaml` already carries normative sets of this kind — alternative 1's basis | `realizing_layers` | `framework/registry/LAYER_REGISTRY.yaml:240` |
 | 34 | The registry is at `framework/registry/`, not `framework/layers/` | `REGISTRY_PATH` | `tests/conformance/_spec.py:16` |
@@ -530,3 +533,44 @@ finding, and it is a defect in the **design as written**, not in the folds:
 
 **Result:** ready to open. The remaining Pass-3 folds are validated by V1–V10
 passing against the as-built module.
+
+### Pass 5 — 2026-08-28 — independent (dispatched, two reviewers, against the as-built module)
+
+Pass 4 built the module and declared the Pass-3 folds validated. Two independent
+reviewers dispatched per OPS-0065 against that build returned findings that
+**refute** that declaration for the module's test design, while confirming its
+factual claims. Both are recorded because the split is the useful part: the
+prose was accurate and the tests were not.
+
+Confirmed accurate, independently re-measured, so nobody re-derives them: the
+51-hits-across-29-files census (exact match under two `grep` implementations),
+the two-of-GD-13's-six reach, the three-hooks-carry-no-exclude claim, and the
+fixtures' byte-identity to `8dccc315^`.
+
+**Nine defects, all reproduced before folding:**
+
+1. **A test that asserted nothing.** `test_the_two_drifted_surfaces_would_have_failed_the_live_check` compared two module constants and never called an extractor — it passed with all three extractor bodies stubbed. Inside a class whose own comment lectures against exactly that. Ruff cannot see it: `F841` does not flag names bound by tuple unpacking.
+2. **`extract_tag_syntax` collected pipe rows to EOF**, so the file's *second* table (necessary-upstream tags, `TAG_SYNTAX.md:87-95`) was in scope. Two of its rows already read `doc-level` one cell from the one being read, so the benign margin was one cell wide. Measured: a plausible edit returns `{SPEC, IPLAN, TDD}` on correct text.
+3. **`extract_tag_syntax` returned the empty set** where the other two raise `Unparseable` — the module's own named-dangerous inversion, shipped in one of three implementations.
+4. **`@tag` tokens were read body-wide** while the docstring said "never from the bullet body". Appending the *correct* clarification "(unlike `@adr:` and `@tdd:`, which must be element-level)" made the guard report right text as drift.
+5. **Genuinely wrong text passed** — three constructions, two of them *inside* the anchored region: layers moved out of the bolded subject into the bullet body; a permitting bullet's forbid clause flipped; an extra document-level claim appended to the `TRACEABILITY.md` bullet.
+6. **The control differed in two dimensions, not one**, its docstring's central claim. It lacked the empty-set guard, so a broken parse would have been reported as evidence against the bolded-subject rule.
+7. **Permit-over-forbid was narration.** The drift fixture's bullet carries **no** forbid sentence — that sentence arrived with the #530 correction — so a forbid-first classifier passed every test in the module. D3's "measured" claim was true of a one-off probe against a live-file mutation, not of anything shipped.
+8. **`.markdownlintignore` was missed** — the third of three mirror surfaces, and the only one protecting the fixtures from a contributor running `markdownlint` directly, since pre-commit passes explicit paths and ignores that file.
+9. **The exclude was directory-wide** on a justification true only of `refgran/`. Measured: it dropped the five pre-existing `saga/` and `review/` JSON fixtures out of `check-json`, `detect-secrets` and the hygiene hooks. Narrowed to `refgran/`.
+
+**The fold that generalises past this plan:** every mutant that was measured is
+now a shipped test (`MutationLocks`), applied to the **live** governance text at
+run time with an existence assertion on its target. Finding 7 is the argument —
+a mutation run once during development proves the guard worked that afternoon
+and locks nothing, and the module had *three* such probes recorded as V3, V5 and
+V7 in this plan's own Verification table. A verification row is not a regression
+test, and this plan treated them as interchangeable.
+
+Scope limit 2 was restated as a consequence: the guard reads a **permit clause**,
+not a document, so the limit is per *phrasing*, not per *region*. The three
+constructions in finding 5 are closed as specific phrasings, not as a class.
+
+**Result:** ready to open. Verified after folding — 429 conformance tests pass;
+12 of the module's 15 fail when the extractors are stubbed, so the suite is not
+decorative; the fixtures survive `pre-commit run --all-files` byte-identical.
