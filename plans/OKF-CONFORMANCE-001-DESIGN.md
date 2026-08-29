@@ -9,6 +9,14 @@
 | Feeds          | `plans/OKF-CONFORMANCE-001-PLAN.md` (not yet written)       |
 | Version impact | framework MINOR + plugin MINOR; see "Version impact" below  |
 
+> ⚠️ **Superseded in part by GD-15 (Accepted 2026-08-26, framework `0.43.0`).**
+> GD-15 made YAML the mandatory instance format and, in doing so, **resolved
+> this design's open question 1** — with a third option the design did not list
+> — and **withdrew its Stage 1 instruction** to put `type` into the layer
+> templates. Both are corrected in place below, and every figure this design
+> quotes was re-derived on 2026-08-28 rather than carried forward. Two open
+> questions remain, not three. Corrected under #554.
+
 ## Objective
 
 Make the SDD artifacts this framework produces conform to Google Cloud's Open
@@ -120,9 +128,18 @@ five sites against a shape no spec file declares.
 
 ### D2 — `type` mirrors `artifact_type`; `artifact_type` stays canonical
 
-`artifact_type` is read at five linter sites and appears in 19 `framework/` + 80
-`platforms/` files. Renaming buys nothing functional. The contract declares
+`artifact_type` is read by the linter and appears in **20** `framework/` + **81**
+`platforms/` files (re-derived 2026-08-28: `grep -rl artifact_type framework/`
+and `platforms/`; the figures this design shipped, 19 + 80, were measured before
+`0.42.0`–`0.44.0`). Renaming buys nothing functional. The contract declares
 `type` as the OKF-facing projection, `OKF01` asserts equality.
+
+**Under GD-15 the subject of that assertion moves.** `artifact_type` stays
+canonical *in the YAML source*; `type` is emitted into the **projection**, so
+`OKF01` reads the generated `.md` and compares it against the YAML it was
+generated from. It is a generator-output check, not a template check — which is
+the same relocation Stage 1 records, stated here because D2 is where a reader
+looks for `OKF01`'s target.
 
 **`OKF01` must name which `artifact_type` it reads.** Index templates carry it
 under `custom_fields` while the corpus carries it in *both* places. The rule
@@ -140,10 +157,20 @@ classes. The contract enumerates explicitly:
   `IPLAN`, `CHG`.
 - Reference documents — `REF`.
 - Index documents — one form, chosen in the contract and applied to all nine.
-  Today six carry the bare artifact name and one carries `BRD-INDEX`; the bare
-  form makes an index indistinguishable from an instance, so `<X>-INDEX` is
+  **Re-derived 2026-08-28**, and the class is more ragged than this design first
+  recorded: of the eight *layer* index templates, **six** carry the bare artifact
+  name (`PRD`, `EARS`, `BDD`, `ADR`, `SPEC`, `TDD`), **one** carries `BRD-INDEX`,
+  and **`IPLAN-00_index.TEMPLATE.yaml` declares no `artifact_type` at all**. The
+  bare form makes an index indistinguishable from an instance, so `<X>-INDEX` is
   recommended, which makes this a **corpus- and template-affecting change**, not
-  a documentation one.
+  a documentation one — six templates change value and one gains the key.
+
+  The absent one matters more than the count. D2 calls the index class "the one
+  class where the vocabulary is ambiguous" and refuses a blanket
+  "missing-means-satisfied" carve-out for exactly that reason; the IPLAN index is
+  the member that would have been silently exempted by such a carve-out. It is
+  also the only index template authored as `.yaml` rather than `.md`, which is
+  why a `.md`-shaped survey missed it.
 - Generated artifacts — `TRACEABILITY-MATRIX`.
 - `.aidoc/` report types (`AUDIT_REPORT`, `REVIEW_REPORT`, `REMEDIATION_REPORT`)
   are **excluded**: `.aidoc/` is not part of the OKF bundle. The contract says so.
@@ -174,12 +201,27 @@ Recorded so a later reader does not inherit the false blocker.
 
 ## Stages
 
-### Stage 1 — the contract and the emitters
+### Stage 1 — the contract and the projection generator
 
-`FRONTMATTER_CONTRACT.md` + `type` into the 26 templates + the emitters that
-write instance frontmatter. **This stage is not platform-free** — the first
-draft's central staging claim. The templates declare the contract; the plugin
-SKILLs and Hermes prompt templates emit it.
+> **Withdrawn:** this stage previously read "`FRONTMATTER_CONTRACT.md` + `type`
+> into the 26 templates + the emitters that write instance frontmatter". GD-15
+> superseded it explicitly. **`type` never enters the YAML.** The templates carry
+> `artifact_type` and `title`; the OKF-facing `type` is emitted by a projection
+> generator. The instruction to edit the templates for `type` is withdrawn, not
+> merely rephrased — nothing was built against it (measured: `FRONTMATTER_CONTRACT.md`
+> does not exist and `grep -rn 'OKF01\|OKF02' framework/ tools/` returns zero
+> hits outside this file), so the correction costs nothing.
+
+`FRONTMATTER_CONTRACT.md`, declaring the YAML source shape — and a **projection
+generator** emitting the `.md` rendering that carries OKF `type`. The YAML is the
+source; the markdown is generated, per GD-15 consequence 2 ("a `.md` file
+restating YAML content is generated, not authored").
+
+**This stage is not platform-free** — the first draft's central staging claim
+survives GD-15, but its subject changes. What is no longer platform-free is the
+generator's *output contract*, not a set of per-engine emitters each writing
+frontmatter by hand: the plugin SKILLs and Hermes prompt templates author YAML,
+and one generator projects it.
 
 Also here, because each is an OKF rule-1 violation the framework creates itself:
 
@@ -201,16 +243,20 @@ from severity.
 
 ## Open questions for the implementation plan
 
-1. **The `.yaml`-authored layers.** SPEC, TDD and IPLAN goldens are `.yaml`. OKF's
-   atom is a `.md` file, so a YAML-authored tree is vacuously conformant — an OKF
-   reader sees an empty bundle. Either the contract declares markdown mandatory
-   for OKF-conformant trees, or those three layers are declared outside the
-   bundle. Not decidable from the spec alone; needs a founder call.
-2. **Section-split artifacts.** `doc-brd/SKILL.md:143-146` splits documents over
+> **Resolved — what was open question 1.** "The `.yaml`-authored layers": OKF's
+> atom is a `.md` file, so a YAML tree is vacuously conformant and an OKF reader
+> sees an empty bundle. The design offered two options and called for a founder
+> call. **GD-15 resolved it with a third** — a generated `.md` **projection**
+> carrying the OKF frontmatter, with the YAML remaining the source
+> (`framework/governance/DECISIONS.md`, GD-15 §"OKF interaction"). The question
+> is closed; the projection generator it implies is now Stage 1.
+
+1. **Section-split artifacts.** `doc-brd/SKILL.md:143-146` splits documents over
    25 KB into `BRD-NN.S_{section}.md`. Each split file is an independent OKF
    concept needing its own `type`. The contract must say what it is.
-3. **Index `type` form.** `<X>-INDEX` is recommended in D3, but it changes six
-   templates' `artifact_type` values and therefore the corpus.
+2. **Index `type` form.** `<X>-INDEX` is recommended in D3 — see D3 for the
+   re-derived blast radius, which is **six** templates plus one that declares no
+   `artifact_type` at all.
 
 ## Version impact
 
@@ -279,8 +325,10 @@ folded:
   and "no `document_fingerprint` producer".
 - Scope cut to conformance-only per the minimal-and-realistic convention.
 
-**Result:** not ready — three open questions must be resolved before the
-implementation plan's first review cycle.
+**Result:** not ready — **two** open questions must be resolved before the
+implementation plan's first review cycle. (Three when this design was written;
+GD-15 closed the first — see the note under the header table and the resolved
+entry above.)
 
 > **Next:** per `CLAUDE.md` § "Development workflow" item 2, the implementation
 > plan must clear at least two full gap-review cycles plus the example-corpus
