@@ -27,6 +27,13 @@ metadata:
   document_type: "adr-document"
   layer: 5
   lifecycle: mvp-prod-newmvp
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 12 here,
+  # because required unnumbered backmatter (`glossary` + `appendix`) is additional.
+  # The two numbers differing is correct, not a defect — see
+  # governance/LINT_RULES.md §"What STRUCT01 requires". Do NOT reconcile them
+  # with `_required: false`: that marks OPTIONAL content and would remove a
+  # live assertion.
   total_sections: 10
   last_updated: "2026-03-29"
   validation:

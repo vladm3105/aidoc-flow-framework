@@ -13,6 +13,56 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-21 — `total_sections` counts NUMBERED sections; STRUCT01's required set is derived and may exceed it
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** rides `0.44.0 → 0.45.0` with GD-20,
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Issues:** #557
+
+**Bundled with GD-20 under GD-11's rule**, and the conditions are asserted rather than assumed:
+independently correct, independently revertible (disjoint keys — GD-20 touches the linter and
+`requirements[]`, this touches `metadata` comments and a governance section), ready at the same
+moment, and each would otherwise pay a full ~170-file fanout of its own.
+
+**The defect is an unwritten convention, not a wrong number.** `total_sections` counts the
+**numbered** sections; `STRUCT01`'s required set is **derived** — top-level keys carrying
+`_size_target`, minus `_required: false` / `_required_when_subtype:` — and additionally
+includes required **unnumbered backmatter**. **No surface anywhere stated this**, so three
+layers legitimately disagree with their own declaration and every reader who compares the two
+concludes there is a bug:
+
+| Layer | derived | `total_sections` | why |
+| --- | --- | --- | --- |
+| BRD | 17 | 16 | `diagrams` + `appendix` |
+| ADR | 12 | 10 | `glossary` + `appendix` |
+| EARS | 6 | 5 | `glossary` |
+
+**#557 is the proof this needed writing down.** It was filed as an EARS defect, proposing
+`_required: false` on `glossary`. Both halves of its premise were false: both EARS artifacts
+carry a glossary, so the marker would have removed a **live** assertion; and EARS was never the
+outlier, since BRD and ADR have the identical shape. SPEC and TDD agree only because they carry
+no backmatter — a two-layer sample that reads as the rule.
+
+**`_required: false` marks OPTIONAL CONTENT.** Its one meaning is that the section may be
+absent (`PRD`'s `component_decomposition`: *"only required when downstream cites `@threshold`"*).
+It does **not** mean "required but unnumbered", and asking it to carry both senses is what
+produced #557.
+
+- **Authority:** `governance/LINT_RULES.md` §"What `STRUCT01` requires";
+  `tools/sdd_doc_lint` `_load_section_targets`; `layers/02_PRD/PRD-TEMPLATE.yaml`
+  `component_decomposition` (the marker's worked example)
+- **Consequences:**
+  - Stated in **two** places by design: the governance catalogue, and a comment at each of the
+    three divergent `total_sections:` declarations — because the reader who trips on this is
+    looking at the template, not the catalogue.
+  - **No template's structure changes and no count moves.** Verified: BRD 17, ADR 12, EARS 6,
+    unchanged. This is documentation of an existing contract.
+  - `tests/conformance/test_required_section_sets.py` already pins each derived count, so the
+    edit #557 proposed cannot be made silently.
+
+---
+
 ## GD-20 — The carrier changes where a rule LOOKS, never what it decides
 
 - **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.44.0 → 0.45.0` (MINOR),

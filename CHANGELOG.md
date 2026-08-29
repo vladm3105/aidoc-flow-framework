@@ -55,6 +55,26 @@ Markdown-only.
 **The Markdown path is unchanged** — the example corpus reports byte-identical findings before
 and after, asserted rather than assumed.
 
+**Also in this bump — `total_sections` counts NUMBERED sections (GD-21, [#557](https://github.com/vladm3105/aidoc-flow-framework/issues/557))**
+
+Bundled under GD-11's fold rule: independently correct, independently revertible, ready at the
+same moment, and each would otherwise pay a full ~170-file fanout.
+
+`total_sections` counts the **numbered** sections; `STRUCT01`'s required set is **derived**
+(top-level keys carrying `_size_target`) and additionally includes required **unnumbered
+backmatter**. **No surface stated this**, so three layers legitimately disagree with their own
+declaration — BRD 17 vs 16, ADR 12 vs 10, EARS 6 vs 5 — and every reader who compares them
+concludes there is a bug.
+
+Issue #557 is the proof it needed writing down: filed as an EARS defect proposing `_required: false`
+
+on `glossary`, when both halves of its premise were false. Now stated in the governance
+catalogue **and** as a comment at each of the three divergent declarations, because the reader
+who trips on this is looking at the template, not the catalogue.
+
+**No template's structure changes and no count moves** — BRD 17, ADR 12, EARS 6, verified
+unchanged. `_required: false` marks **optional content**, never "required but unnumbered".
+
 ### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
 
 **Release provenance — read this before reasoning about framework version history.** Spec

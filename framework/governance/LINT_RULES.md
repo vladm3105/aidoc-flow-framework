@@ -16,12 +16,48 @@ Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 | ID | Meaning | Severity | Contract |
 |----|---------|----------|----------|
 | `FM01` | Frontmatter status/version/last_updated disagrees with the Document Control block or latest revision-history entry. | error | — |
-| `STRUCT01` | A required template section is missing or the document structure is malformed. | error | layer templates |
+| `STRUCT01` | A required template section is missing or the document structure is malformed. The required set is **derived**, not declared — see §"What `STRUCT01` requires, and why it can exceed `total_sections`" below. | error | layer templates |
 | `BDD-SCHEMA-001` | The BDD `scenarios:` YAML block is malformed or not a list (structural validation of the YAML-BDD carrier). | error | `../layers/04_BDD/BDD-TEMPLATE.yaml` |
 | `EARS01` | An EARS statement uses a `THEN [response]` connective instead of the required `THE … SHALL …` form. | error | `../layers/03_EARS/` |
 | `DG02` | An `@diagram:` tag names a diagram kind not valid for the artifact's layer. | error | `DIAGRAM_STANDARDS.md` |
 | `PH01` | A placeholder / unfilled token (e.g. `TODO`, `XXX`, `{…}`) remains in the body. | error | `AUTHORING_STYLE.md` |
 | `SEED01` | A BRD `seed_disposition:` ledger row is malformed (missing claim, illegal disposition, `absorbed` with no/unresolvable BRD element, `rejected` with no rationale, or `deferred` with no rationale/target cycle). Deterministic half of the seed contract; the auditor lens (C8) owns completeness. Silent when the optional carrier is absent. | error | `SEED_CONTRACT.md` |
+
+
+## What `STRUCT01` requires, and why it can exceed `total_sections`
+
+**These are two different counts, and three layers disagree by design.** Reading them as the
+same number is why #557 was filed against a template that was correct.
+
+- **`total_sections`** (declared in each `<TYPE>-TEMPLATE.yaml` `metadata:`) counts the
+  **numbered** sections — the ones rendered `# Section 1:` … `# Section N:`.
+- **`STRUCT01`'s required set** is **derived**, never declared: every top-level template key
+  carrying `_size_target`, minus those marked `_required: false` or `_required_when_subtype:`.
+  It therefore also includes required **unnumbered backmatter**.
+
+Measured across all eight layers:
+
+| Layer | `STRUCT01` requires | `total_sections` | why they differ |
+| --- | --- | --- | --- |
+| BRD | **17** | 16 | `diagrams` + `appendix` backmatter |
+| ADR | **12** | 10 | `glossary` + `appendix` backmatter |
+| EARS | **6** | 5 | `glossary` backmatter |
+| PRD / BDD / SPEC / TDD | 15 / 5 / 8 / 7 | 15 / 5 / 8 / 7 | no unnumbered backmatter |
+
+So a layer whose two numbers differ is **not** defective — it is a layer with required
+backmatter. SPEC and TDD agree only because they have none.
+
+### `_required: false` marks OPTIONAL CONTENT, not "unnumbered"
+
+The marker's one meaning is that the section may be **absent**. `PRD`'s
+`component_decomposition` is the worked example: *"OPTIONAL — only required when downstream
+cites `@threshold`"*.
+
+It does **not** mean "required but unnumbered". Applying it to backmatter that is genuinely
+required — EARS's `glossary`, which every EARS artifact in the corpus carries and which the
+layer's authoring guidance calls required — **removes a live assertion** and makes that layer the only one of three
+where required backmatter is unenforced. `tests/conformance/test_required_section_sets.py` pins
+each layer's derived count so that edit cannot be made silently.
 
 ## Identifiers
 
