@@ -4,10 +4,10 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | TEMPLATE-COMPLETENESS-001                                     |
 | Type           | feature                                                       |
-| Status         | PLANNED — 2026-08-28T00:00:00Z                                |
+| Status         | IMPLEMENTED — 2026-08-28T00:00:00Z (GD-18, spec `0.46.0`)     |
 | Depends on     | GD-15 (YAML normative), GD-16 (`tdd_ref` carrier)             |
 | Feeds          | #550, #551, #532                                              |
-| Version impact | framework **MINOR** `0.44.0 → 0.45.0` (additive template keys) |
+| Version impact | framework **MINOR** `0.44.0 → 0.46.0` (additive template keys) |
 
 ## Objective
 
@@ -49,6 +49,30 @@ Bundling converts that into one.
   here:** the stale `fw_prev` trap (Claim 19/20), filed as **#556** and since **fixed**, and EARS's `glossary:` being
   admitted to STRUCT01's required set while the template numbers five sections (Claim 18),
   filed as **#557**.
+
+> **Folded in at implementation (founder grant, 2026-08-28).** **#569** (IPLAN
+> status-ownership contract) was added to this bundle rather than costing its own bump. It
+> satisfies D1 — an additive edit inside an existing top-level section that does not change
+> `STRUCT01`'s derived required set.
+>
+> **#557 was folded in and then REVERTED before commit, on measurement.** Independent review
+> falsified both halves of its premise. It states no EARS artifact has a `glossary` section;
+> **both do**, so marking `glossary:` `_required: false` removes a **live** assertion, and the
+> acceptance harness — which applies the marker through a second, independent derivation —
+> would have kept passing while asserting less. And EARS is not the outlier: `total_sections`
+> counts **numbered** sections while the derived set counts **required** ones, so BRD (17 vs
+> 16) and ADR (12 vs 10) have the identical shape. The change would have made EARS the one
+> layer of three where required backmatter is unenforced, against a plugin skill that calls it
+> required. `tests/conformance/test_required_section_sets.py` was added to pin every layer's
+> derived set so this class of edit cannot recur silently; it kills the reverted mutant.
+>
+> **#565 (FMT01) was granted for this bundle and then EXCLUDED on measurement.** Its stated
+> fix shape — ship at `warning` severity so the all-`.md` corpus does not go red — does not
+> survive contact with `tests/acceptance/_harness.py`, which matches warnings as a
+> **bidirectional multiset**: a new warning fails a target exactly as an error does. Measured:
+> 55 `.md` acceptance fixtures and 11 `.md` corpus files would each gain an FMT01 warning, so
+> shipping it here would mean pinning 55+ new warnings into the manifests — the very debt
+> #555's regeneration exists to remove. Recorded on #565.
 
 ## Approach / Design
 
@@ -117,8 +141,8 @@ correct (Claim 10) and is the target shape.
 | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml` | D3 (3 paths); D1 row 1 |
 | `framework/TESTING_STRATEGY_TDD.md` | new section: test paths derive from `@spec` `language:` |
 | `framework/governance/DECISIONS.md` | GD-13 title fix (#532); new GD-18 |
-| `framework/VERSION` | `0.44.0` → `0.45.0` |
-| `CHANGELOG.md` | `0.41.3` entry enumerates all six surfaces (#532); new `0.45.0` entry |
+| `framework/VERSION` | `0.44.0` → `0.46.0` |
+| `CHANGELOG.md` | `0.41.3` entry enumerates all six surfaces (#532); new `0.46.0` entry |
 | `platforms/claude-code-plugin/framework/layers/**` | vendored mirrors, by script (Claim 11) |
 | `ROADMAP.md`, `plans/HANDOFF.md`, `plans/DECISIONS.md` | docs of record |
 
@@ -158,7 +182,7 @@ correct (Claim 10) and is the target shape.
   option (b). Extending the `0.41.3` CHANGELOG entry in place would rewrite the changelog of
   a **published release**: `framework/v0.41.3` is a non-draft, non-prerelease GitHub release
   on `8dccc315`, published 2026-08-24 (Claim 24). Instead, state the correction inside the
-  new `0.45.0` entry: name all six GD-13 surfaces there and say explicitly that the `0.41.3`
+  new `0.46.0` entry: name all six GD-13 surfaces there and say explicitly that the `0.41.3`
   entry named two of them. Leave `CHANGELOG.md:38` untouched.
   *(An earlier draft argued the in-place edit was safe because the entry sits under
   `## [Unreleased]` at `CHANGELOG.md:13`. That inference was false — `[Unreleased]` heads
@@ -166,7 +190,7 @@ correct (Claim 10) and is the target shape.
   independently tagged, so the heading was never evidence about the framework stream.)*
 - ⚠️ **Related but out of scope: issue #558.** Spec `0.42.0` and `0.43.0` are themselves
   untagged, and `framework/VERSION` never held `0.42.0`. That is a separate founder call and
-  does **not** block this plan — but do not cut a `0.45.0` tag without reading #558 first.
+  does **not** block this plan — but do not cut a `0.46.0` tag without reading #558 first.
 - The GD-13 retitle (Claim 13) proceeds unaffected.
 
 ### Task 4: version bump and fanout
@@ -197,14 +221,14 @@ correct (Claim 10) and is the target shape.
 | V7 | `PYTHONPATH=tools python3 -m pytest tools/sdd_doc_lint/tests -q` | green | all |
 | V8 | `pre-commit run --all-files` | clean | Task 4 |
 | V9 | `diff -r framework/layers platforms/claude-code-plugin/framework/layers` | no drift | Task 4 |
-| V10 | `cat platforms/*/FRAMEWORK_SPEC_VERSION` | both read `0.45.0` | Task 4 |
-| V11 | the same `grep -oE 'ID_NAMING_STANDARDS\|TRACEABILITY\|auditor\|IPLAN-TEMPLATE\|requirements-analyst' \| sort -u \| wc -l` run over the **new `0.45.0`** CHANGELOG block | `5` tokens naming **6** surfaces — the regex matches `auditor` once for both playbooks (Claim 26), so the two figures are consistent | Task 3 |
+| V10 | `cat platforms/*/FRAMEWORK_SPEC_VERSION` | both read `0.46.0` | Task 4 |
+| V11 | the same `grep -oE 'ID_NAMING_STANDARDS\|TRACEABILITY\|auditor\|IPLAN-TEMPLATE\|requirements-analyst' \| sort -u \| wc -l` run over the **new `0.46.0`** CHANGELOG block | `5` tokens naming **6** surfaces — the regex matches `auditor` once for both playbooks (Claim 26), so the two figures are consistent | Task 3 |
 | V11b | `git diff main -- CHANGELOG.md \| grep '^-'` | no deletions inside the `0.41.3` block — the released entry is untouched (option (b)) | Task 3 |
 | V12 | `grep -n '^## GD-13' framework/governance/DECISIONS.md` | title says "Six authoring surfaces" | Task 3 |
 
 ## Docs to update
 
-- [ ] `CHANGELOG.md` — `0.45.0` entry; plus the `0.41.3` correction (Task 3)
+- [ ] `CHANGELOG.md` — `0.46.0` entry; plus the `0.41.3` correction (Task 3)
 - [ ] `ROADMAP.md` — bullet
 - [ ] `plans/HANDOFF.md` — narrative + next steps
 - [ ] `plans/DECISIONS.md` — the bundling decision and the two Pass-2 cuts
@@ -392,3 +416,14 @@ narrows a task — and adds one verification step. Nothing in Tasks 1, 2 or 4 ch
 **Result:** ready for its plan PR. Ledger has 28 rows and no `UNVERIFIED`; three review
 cycles ran (1 self + 2 dispatched independent); every finding is folded and the sole
 escalated decision is resolved.
+
+## Re-point note — 2026-08-29
+
+**Target version moved again, to `0.46.0`.** The `GD-18` id is unchanged. Four spec PRs were
+open simultaneously and three of them (this one, `GD-20`/`GD-21`, `GD-22`) each claimed
+`0.45.0` while a fourth claimed `0.46.0`; only one can hold a version. Founder decision: land
+all four as **one combined `0.46.0` release** rather than sequence them across four bumps, so
+`0.45.0` is skipped and never becomes a value of `framework/VERSION`.
+
+This is the same correct-forward handling `D-0078` applies to `0.42.0` — a skipped version is
+recorded, not back-filled, and the `2026-08-28` note above is left as written.

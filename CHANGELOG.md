@@ -12,6 +12,70 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.44.0 → 0.46.0` — test paths derive from the SPEC's `language:`, SPEC and TDD get a threshold carrier, IPLAN status becomes a written contract (GD-18) (2026-08-28)
+
+Three verified spec gaps and one erratum, in one release. Each independently trips
+`GATE-SPEC-E005`, so shipping them apart would have cost four version bumps and four ~160-file
+fanouts. They are otherwise unrelated; `GD-18` asserts them against GD-11's four conditions for
+a permitted fold rather than arguing cost alone.
+
+**Test-file layout is no longer prescribed ([#550](https://github.com/vladm3105/aidoc-flow-framework/issues/550)).**
+`TDD-TEMPLATE.yaml` and `SPEC-TEMPLATE.yaml` hardcoded **ten** Python test paths and **seven**
+pytest-shaped function names — the last place in the chain where a language survived, its own
+`TDD-MVP-TEMPLATE.yaml` having already been genericized. All seventeen become placeholders in
+the MVP variant's bare angle-bracket form. The decision is **not** "support more languages",
+which is what the consumer report asked for: per-case `language:` / `test_framework:` fields
+would re-pin the toolchain one layer down and give it two owners. SPEC owns `language:`; TDD
+and IPLAN derive from it. `framework/TESTING_STRATEGY_TDD.md` was silent on the subject — so
+the template change would have pointed at nothing — and now states the derivation with Python,
+Go and TypeScript forms as equally conformant.
+
+**SPEC and TDD gain `threshold_references` ([#551](https://github.com/vladm3105/aidoc-flow-framework/issues/551)).**
+`THRESHOLD_NAMING_RULES.md` designates five layers as threshold consumers; two of them had
+nowhere to put the citation. EARS's block is copied in shape. `TDD-TEMPLATE.yaml`'s existing
+`thresholds:` section is **untouched** and holds a different concept — coverage gates, not
+`@threshold:` citations — and that name collision is why the gap survived. Neither addition
+carries `_size_target`, so `STRUCT01`'s derived required-section set is unchanged (verified:
+SPEC 8, TDD 7).
+
+**[#557](https://github.com/vladm3105/aidoc-flow-framework/issues/557) was in this bundle and
+was removed on measurement — its premise is false.** It reports that `STRUCT01` derives six
+required EARS sections against a declared five, and proposes marking `glossary:`
+`_required: false` on the grounds that "neither [EARS artifact] has a `glossary` section at
+all". **Both do**, so the marker would have removed a *live* assertion rather than a latent one
+— and the acceptance harness would have gone on passing while asserting less. Measured across
+all eight layers, EARS is also not the outlier: `total_sections` counts **numbered** sections,
+and BRD (17 vs 16) and ADR (12 vs 10) have exactly the same shape for the same reason. SPEC and
+TDD agree only because they carry no backmatter. Detail in `GD-18` item 4; the issue stays open
+and needs re-scoping.
+
+**An IPLAN's `status` is a write target, not a report field ([#569](https://github.com/vladm3105/aidoc-flow-framework/issues/569)).**
+Real consumer feedback: an executor created 97 files across 8 IPLANs, reported COMPLETE, and left
+every `file_manifest.files[].status` at `NOT_STARTED` — while the index showed
+`files_done == files_declared`, which masked it. **The framework had no contract to violate**,
+which is the actual defect: the template declared the fields and the session-startup protocol
+read them, but nothing said who writes them or when. `file_manifest._guidance` now states the
+transitions, that `verified: true` is a separate assertion from `status: DONE` ("the file exists"
+is not verification), and that an index may aggregate these values but is never where they are
+recorded first. This is a contract, not enforcement — nothing yet checks a manifest against the
+filesystem.
+
+**Two GD-13 corrections ([#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532)),
+and a correction forward to the published `0.41.3` entry.** GD-13's title said "Two governance
+documents" while its own body said "Six authoring surfaces" and enumerated them. Separately its
+successor sentence claimed a governance-prose guard "would have caught all six"; it reaches
+**two** — the other four are two auditor playbooks, a layer template and a plugin agent, none of
+which such a guard reads.
+
+> **Correcting the released `0.41.3` entry forward, not in place.** That entry does not merely
+> under-enumerate — it **asserts** "These two governance docs had drifted from that ratified
+> rule", carrying the same wrong claim GD-13's title carried. The six are: `governance/ID_NAMING_STANDARDS.md`,
+> `governance/TRACEABILITY.md`, `playbooks/05_ADR/auditor.md`, `playbooks/07_TDD/auditor.md`,
+> `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` and
+> `platforms/claude-code-plugin/agents/requirements-analyst.md`. `framework/v0.41.3` is a
+> published, non-draft GitHub release, so its entry is **left unedited** — per the founder
+> decision of 2026-08-28, option (b).
+
 ### Fixed — a framework spec bump could not fire the hook that propagates it (#574) (2026-08-29)
 
 `pre-commit` applies the global `exclude:` **after** each hook's `files:`, so a path a hook

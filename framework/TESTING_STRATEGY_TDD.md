@@ -50,6 +50,42 @@ SDD embeds test case definitions directly in the TDD document (Section 4):
 - **Integration tests**: Contract validation, state transitions, error paths — derived from SPEC behavior
 - **E2E tests**: Workflow steps, timeouts, cleanup — derived from BDD scenarios
 
+## Test Paths Derive From the SPEC's `language:`
+
+**The framework prescribes no test-file layout.** Test-file paths and
+test-function names follow the conventions of the language and framework
+declared upstream, in the SPEC's `language:` field — SPEC owns the toolchain
+(`SPEC-TEMPLATE.yaml` **§2 Component Overview**, `component_overview.language`).
+
+So `TDD-TEMPLATE.yaml` and `SPEC-TEMPLATE.yaml` carry **placeholders**, not
+examples. They use different keys, because each names the path from its own side:
+
+```yaml
+# TDD-TEMPLATE.yaml §4 — the test case
+test_file: "<unit test path, per the @spec language>"
+test_function: "<unit test function name>"
+
+# SPEC-TEMPLATE.yaml §7 tdd_contracts — the files the TDD will define
+- path: "<unit test path, per the language: declared above>"
+```
+
+Replace them with concrete paths in the project's own toolchain, **including its
+addressing convention** — the separator is part of what varies. A Python project
+writes `tests/unit/test_auth.py` / `test_validate_token` (pytest addresses it as
+`path::name`); a Go project writes `internal/auth/service_test.go` /
+`TestValidateToken` (addressed as `go test -run TestValidateToken ./internal/auth`);
+a TypeScript project writes `src/auth/__tests__/service.spec.ts`. All three are
+conformant, and writing a Go path with pytest's `::` separator is the mistake this
+section exists to prevent.
+
+**Do not re-pin a language in TDD or IPLAN.** `IPLAN-TEMPLATE.yaml` states the
+same rule twice for its own `file_manifest` and `execution_commands`, and the
+reason is one-source-of-truth rather than style: a polyglot project (a Go
+backend and a TypeScript frontend behind one SPEC set) has no single correct
+test path, and a template that names one silently invalidates every other
+toolchain. The per-tier distinction the templates *do* make — unit /
+integration / e2e / security — is language-independent and is retained.
+
 ## One Document Per Component
 
 SDD uses a single TDD document per SPEC component. The document:

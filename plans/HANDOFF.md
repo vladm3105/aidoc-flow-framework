@@ -5,26 +5,30 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** framework spec **`0.44.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
-`FRAMEWORK_SPEC_VERSION` pins read `0.43.0`.
+**State:** framework spec **`0.46.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+`FRAMEWORK_SPEC_VERSION` pins read `0.46.0` — the `0.43.0` skew is closed.
+`framework/v0.44.0` is **tagged and released**, the first framework tag since `v0.41.3`.
 
-**Verified this session** (run, not asserted): conformance **375 passed / 796 subtests** ·
-acceptance-deterministic **64 passed / 56 subtests** · `sdd_doc_lint` **6 passed** ·
-Hermes **570 passed** · `pre-commit` 19 hooks green on commit. **0 failing.**
+**Verified this session** (run, not asserted), after the `0.46.0` bump and both fanouts:
+conformance **414** · acceptance-deterministic **64** · unit **196** · packaging **5** ·
+release **50** · `sdd_doc_lint` **6**. **0 failing.**
 Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the
 wholesale regen; use `--skip-lint-smoke`.
 *(`pytest tools/sdd_doc_lint/tests` needs `PYTHONPATH=tools` or it fails to collect.)*
 
-## Release provenance — resolved (#558, D-0078)
+## Release provenance — #558 CLOSED (D-0078)
 
 `0.42.0` was never a value of `framework/VERSION` and `0.43.0` shipped untagged. **Founder
-decision 2026-08-28 (option 3):** correct forward, rewrite no published entry. Executed by
-`INSTANCE-FORMAT-SSOT-001` — the `0.44.0` CHANGELOG entry carries the provenance paragraph.
-`framework/v0.44.0` is the first framework tag since `framework/v0.41.3`. Recorded as
-`plans/DECISIONS.md` **D-0078**; #558 stays open until the tag is cut.
+decision 2026-08-28 (option 3):** correct forward, rewrite no published entry. **Executed** —
+`framework/v0.44.0` cut at `2c69a402` and released, provenance in both the tag message and the
+release notes. `gh release list` now reports `0.44.0` as Latest, which was the presenting
+symptom.
 
-⚠️ **Still open:** `GATE-SPEC` has no release step — E001..E008 are all diff-local, so nothing
-checks that a superseded version was ever published. That is what produced the phantom.
+⚠️ **Carried forward, and it is the sharper half of #558:** `GATE-SPEC` has **no release
+step**. E001..E008 are all diff-local, so nothing checks that a superseded version was ever
+published, and the gate is satisfied by *any* bump rather than the right one — which is what
+produced the phantom `0.42.0`. It has **no tracker home of its own**: only this paragraph and
+the release notes' "Known gap" block. File it if it should have one.
 
 ## The backlog is GitHub issues
 
@@ -62,46 +66,42 @@ record.
 
 ## What to do next — prioritized
 
-1. **`plans/TEMPLATE-COMPLETENESS-001-PLAN.md`** — bundles **#550, #551, #532** into one
-   framework MINOR (`0.44.0 → 0.45.0`, GD-18 — re-pointed 2026-08-28 when
-   `INSTANCE-FORMAT-SSOT-001` took `0.44.0`); each independently trips GATE-SPEC-E005, so
-   shipping them apart costs three bumps, three fanouts and three founder grants. Three
-   review cycles done (1 self + 2 dispatched independent), 28-claim ledger, citation gate
-   green. **#552 and #553 were cut from the bundle at Pass 2** — the plan's Out-of-scope
-   section says why; each needs its own plan.
-   Its one escalated decision was resolved by the founder as **option (b): correct forward
-   inside the new entry; do not rewrite the released `0.41.3` entry** — recorded
-   here as well as in the plan, so it survives independently.
-   The plan lives on branch **`plans/template-completeness-001`** (`aef7b76e`), which is
-   branched from `main` and independent of the other two open branches.
-2. **#531** — `tests/`-only, needs no version bump, so it lands independently of #558's
-   release question. Extend `tests/conformance/test_governance.py::GateCheckIdParity`
-   (`:143`) — the same set-equality-across-surfaces shape one layer over. ⚠️
-   `framework/governance/TRACEABILITY.md` has no `### Reference granularity` heading (it has
-   no `###` headings at all), so the issue's surface list needs adjusting first.
-3. ~~**#554**~~ — **done**, branch `docs/554-okf-design-stale`. `OKF-CONFORMANCE-001-DESIGN.md`
-   now carries a superseded-in-part banner, two open questions rather than three, and a
-   Stage 1 rewritten to GD-15's projection-generator model. Two figures were re-derived
-   rather than carried forward and **both had moved** (`artifact_type` 19+80 → 20+81), and
-   the re-derivation found something the issue did not ask for:
-   `IPLAN-00_index.TEMPLATE.yaml` declares **no `artifact_type` at all** — the one member
-   of the index class that D2's refusal of a "missing-means-satisfied" carve-out exists to
-   catch, and the only index template authored as `.yaml`, which is why a `.md`-shaped
-   survey missed it.
+1. ~~**TEMPLATE-COMPLETENESS-001**~~ — **SHIPPED** as framework `0.46.0` / **GD-18**, branch
+   `feat/template-completeness-001`. (The handoff previously said this plan lived on branch
+   `plans/template-completeness-001`; it had already **merged** via PR #561 and is on `main`.)
+   Bundles **#550, #551, #532** as planned, plus **#569** folded in under the founder's
+   per-bump grant. All tiers green after both fanouts.
+   ⚠️ **#557 was folded in and then REVERTED before commit** — independent review falsified
+   both halves of its premise (see the plan's fold note and the comment on #557). It stays
+   **open** and needs re-scoping: the real gap, if any, is that no surface says
+   `total_sections` counts *numbered* sections only, which is a three-layer documentation
+   issue rather than an EARS marker bug. `tests/conformance/test_required_section_sets.py`
+   now pins every layer's derived required set so the class cannot recur silently.
+   ⚠️ **#565 was granted for this bundle and then EXCLUDED on measurement.** Its fix shape
+   assumes `warning` severity is safe for the all-`.md` corpus. It is not:
+   `tests/acceptance/_harness.py` matches warnings as a **bidirectional multiset**, so a new
+   warning fails a target exactly as an error does. 55 `.md` fixtures + 11 `.md` corpus files
+   would each gain one, so shipping it here pins 55+ warnings that #555's regen then has to
+   remove. Recorded on #565 and in the plan's fold note.
+
+2. ~~**#531**~~ — **done**, PRs **#570** (plan) and **#571** (guard, merge second). Landed as
+   its own module `tests/conformance/test_ref_granularity_parity.py`, not as an extension of
+   `GateCheckIdParity`. ⚠️ The `TRACEABILITY.md` caveat was real **and understated**: beyond
+   having no `###` heading, the anchor the plan specified for that surface matches the
+   *drifted* text **zero** times, so the regression fixture would have raised `Unparseable` and
+   stood as evidence of a detection that never happened.
+3. ~~**#554**~~ — **done**, PR **#572**.
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
-5. **#393** — ⚠️ **not a `--repin`, and the issue body's stated remedy would hang a required
-   check.** `plans/CI-CANON-V4-MIGRATION-PLAN.md` has the measured exposure: all **five**
-   `ci/v4.0.0` breaking changes apply here. **BLOCKED on two founder/infrastructure
-   prerequisites, both of which fail silently:**
-   - Both runners advertise only `self-hosted,ci-runner,single-use`; v4 renames them to
-     `ci`/`ephemeral`, and a job routed to labels no runner carries **queues forever** — no
-     failure, no timeout, no log. `ai-review` is a required context, so the migration PR
-     could not merge itself.
-   - `LLM_URL` and `LLM_API_KEY` do not exist as repo secrets, and the `ai-review` caller
-     still forwards the three `LITELLM_*` names that v4 **un-declares** — an explicit
-     `secrets:` map naming an undeclared secret fails to LOAD (`startup_failure`, zero jobs,
-     no logs).
+5. **#393** — ⚠️ **NOT a `--repin`, and the issue body's stated remedy would hang a required
+   check.** Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
+   breaking changes apply here. **BLOCKED on two founder/infrastructure prerequisites, both
+   silent:** (a) both runners advertise only `self-hosted,ci-runner,single-use` while v4
+   renames them to `ci`/`ephemeral`, and a job routed to labels no runner carries **queues
+   forever** — `ai-review` is required, so the migration PR could not merge itself; (b)
+   `LLM_URL`/`LLM_API_KEY` do not exist and the caller still forwards the three `LITELLM_*`
+   names that v4 **un-declares**, which is a load-time `startup_failure`. Nothing can land
+   ahead of the repin — the caller edits are only valid *at* v4.
 
    Nothing can land ahead of the repin: the BC4/BC5 caller edits are only valid *at* v4.

@@ -42,6 +42,37 @@ why the in-repo scanners (`detect-secrets` + `detect-private-key` as required ho
 `secret-scan.yml` over full history) make this a *narrowing* rather than an absence. #467 stays
 open until the UI toggle is made; it is no longer blocked on a decision, only on a click.
 
+## D-0080 — A `warning`-severity lint rule is not a grace window in this repo, and FMT01 proves it
+
+**Date:** 2026-08-28 · **Issue:** #565 · **Context:** `TEMPLATE-COMPLETENESS-001` implementation
+
+`#565`'s fix shape reasons that `FMT01` "**must ship `warning`, not `error`**", because every
+layer declares `extensions: [.yaml]` while the corpus is 100% `.md`, so an error-severity rule
+"turns the corpus and every acceptance golden red on the commit that introduces it". The
+severity choice is right; **the inference that `warning` is therefore safe is wrong here.**
+
+`tests/acceptance/_harness.py` `assert_lint_matches_manifest` compares the `warning` multiset
+**in both directions** — a new warning fails a target, and a pinned warning that stops firing
+also fails it. Its own docstring says so, and the design is deliberate ("so it cannot rot into
+an excuse list"). So a warning reddens an acceptance target exactly as an error does.
+
+Measured: **55 `.md` acceptance fixtures** and **11 `.md` corpus files**. Shipping `FMT01` at
+`warning` would mean pinning 55+ brand-new warnings into the manifests — which is the debt
+`#555`'s regeneration exists to remove, recorded as the very thing that would then have to
+unpin them.
+
+**Consequence for sequencing.** `#565` is not merely "after `#564`"; it is effectively behind
+`#555`. The correct order is `#564` (carrier-aware primitives) → `#555` (regenerate the corpus
+and goldens to `.yaml`) → `#565` (`FMT01`, which then fires on nothing). It was granted a slot
+in the `0.46.0` bundle and **excluded on this measurement** rather than on effort.
+
+**The general rule, which is the reusable part.** `OKF-CONFORMANCE-001-DESIGN.md` already
+recorded it for its own `OKF01`/`OKF02` — *"There is no warning-based grace window … grace comes
+from ordering, not from severity"* — and it was rediscovered here for a different rule. Any new
+lint rule that would fire on existing artifacts must land **after** the artifacts are fixed,
+whatever its severity. Severity controls whether the framework's *gate* fails; it does not
+control whether the *acceptance suite* fails.
+
 ## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
 
 **Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)

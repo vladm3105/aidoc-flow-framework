@@ -124,16 +124,16 @@ test_mapping:
       description: "[Scenario name from BDD]"
       tests:
         - type: unit
-          file: "tests/unit/test_[module].py"
-          function: "test_[scenario_slug]"
+          file: "<unit test path, per the @spec language>"
+          function: "<unit test function name>"
           status: pending
         - type: integration
-          file: "tests/integration/test_[module].py"
-          function: "test_[scenario_slug]_integration"
+          file: "<integration test path, per the @spec language>"
+          function: "<integration test function name>"
           status: pending
         - type: e2e
-          file: "tests/e2e/test_[workflow].py"
-          function: "test_[scenario_slug]_e2e"
+          file: "<end-to-end test path, per the @spec language>"
+          function: "<end-to-end test function name>"
           status: pending
 
   coverage_table:
@@ -155,6 +155,11 @@ test_cases:
     - Integration tests validate component interactions and behavior (SPEC Section 5)
     - E2E tests validate full workflows mapped from BDD scenarios
 
+    Test-file paths and test-function names follow the conventions of the
+    language and framework declared in `@spec: SPEC-NN` (SPEC owns `language:`).
+    Do NOT re-pin a language here — write the placeholder in the form the
+    project's own toolchain uses.
+
   unit_tests:
     _guidance: "Validate individual functions, methods, and data model constraints from SPEC Sections 3-4."
     cases:
@@ -162,8 +167,8 @@ test_cases:
         name: "[Descriptive test name]"
         spec_ref: "@spec: SPEC-NN"
         target: "[function_name | ClassName.method_name]"
-        test_file: "tests/unit/test_[module].py"
-        test_function: "test_[description]"
+        test_file: "<unit test path, per the @spec language>"
+        test_function: "<unit test function name>"
         inputs:
           - name: "[param_name]"
             type: "[Type]"
@@ -182,8 +187,8 @@ test_cases:
         name: "[Descriptive test name]"
         spec_ref: "@spec: SPEC-NN"
         contract: "[interface or behavior contract from SPEC]"
-        test_file: "tests/integration/test_[module].py"
-        test_function: "test_[description]_integration"
+        test_file: "<integration test path, per the @spec language>"
+        test_function: "<integration test function name>"
         setup:
           - "[dependency or mock setup]"
         action:
@@ -201,8 +206,8 @@ test_cases:
         name: "[Descriptive test name]"
         bdd_ref: "@bdd: BDD.NN.03.xxxx"
         spec_ref: "@spec: SPEC-NN"
-        test_file: "tests/e2e/test_[workflow].py"
-        test_function: "test_[description]_e2e"
+        test_file: "<end-to-end test path, per the @spec language>"
+        test_function: "<end-to-end test function name>"
         workflow:
           - step: 1
             action: "[user/system action]"
@@ -220,8 +225,8 @@ test_cases:
         name: "[Security test name]"
         spec_ref: "@spec: SPEC-NN"
         threat: "[OWASP category or threat model ref]"
-        test_file: "tests/security/test_[module].py"
-        test_function: "test_[description]_security"
+        test_file: "<security test path, per the @spec language>"
+        test_function: "<security test function name>"
         inputs:
           - name: "[input name]"
             type: "[Type]"
@@ -321,6 +326,13 @@ traceability:
       - "@discoverability: TDD-NN (short rationale)"
     chg:
       - "@chg: CHG-NN"
+
+  threshold_references:
+    _guidance: "Use the @threshold: convention. Do NOT reference PRD or ADR section numbers."
+    items:
+      - tag: "@threshold: PRD.NN.perf.category.key"
+        category: "Timing"
+        value: "[NN]ms"
   health_score:
     iplan_ready: "[X]%"
     target_score: ">=90/100"  # advisory readability target, not a merge gate

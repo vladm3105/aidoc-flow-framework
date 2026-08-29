@@ -99,6 +99,42 @@ file_manifest:
     tag from ONE line, so a citation listed only in the traceability block is not a
     build record. Optional per entry — a package initialiser or a config file
     legitimately realizes no test case; completeness is judged from the TDD side.
+
+    STATUS IS A WRITE TARGET, NOT A REPORT FIELD. `status` and `verified` on each
+    entry record what has actually been built. Whatever executes an IPLAN MUST
+    write them back into THIS FILE as it goes — not only into a handoff narrative,
+    a session report or a registry. A file created on disk whose entry still reads
+    `NOT_STARTED` is a defect in the executor, not a documentation lag: this
+    manifest is what a later stateless session reads to decide what to do next
+    (§5 `session_handoff`, "Session startup protocol"), so a stale entry causes
+    repeated or skipped work.
+
+    Transitions, using the four values declared on the `status:` key below:
+    `NOT_STARTED` -> `IN_PROGRESS` when work begins; `PARTIAL` when the file
+    exists but does not yet satisfy its declared `tdd_ref` cases; `DONE` when it
+    does. `DONE` and `verified` are not the same claim and the stricter one is
+    `verified` — §8 `code_inventory` defines it as **tests pass + lint clean**,
+    so a file may be `DONE` and not yet `verified`. Set `verified: true` only when
+    that check has actually been run; "the file exists" establishes neither.
+
+    `document_control.status` is a DOCUMENT-level field and every entry reaching
+    `DONE` is necessary but NOT sufficient for `Completed` — see
+    `framework/AI_ASSISTANT_RULES.md` §"Development Completion Rule", which is the
+    authority and additionally requires committed infrastructure artifacts, a
+    clean `pre-commit run --all-files`, and any deployment-handoff obligations
+    registered in the registry's `deferred_items` BEFORE the flip.
+
+    A registry (`IPLAN-00_index`) legitimately owns statuses that have no per-file
+    origin — `BACKLOG` and `ABANDONED` exist only there. What it must never own is
+    a DERIVED AGGREGATE presented as evidence for the facts it aggregates: an index
+    showing `files_done == files_declared` over stale per-file entries hides the
+    drift rather than surfacing it.
+
+    ⚠️ Two further carriers restate per-file status and are NOT reconciled here:
+    §5 `session_handoff.sessions[].files_touched[].status` and §8
+    `traceability.code_inventory.files[].status` (a different vocabulary —
+    `created | modified` — with its own `verified:`). This manifest is the one an
+    executor writes as it goes; the other two are audit trails written per session.
   files:
     - path: "<unit test for the component, per the @spec language>"
       order: 1
