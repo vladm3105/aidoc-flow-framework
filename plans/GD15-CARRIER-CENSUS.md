@@ -42,8 +42,8 @@ Each was measured, not argued.
 3. **`_section_word_counts` does NOT return `[]`** — 15 of the 24 `.yaml`
    fixtures carry 5–8 `##` lines, which are YAML comments that read as headings.
 4. **`scan_fr_elements` is not consumed by `ACC01`.** Its real consumers are
-   `COV01` (`__init__.py:2071`), **`COV03`** (`:2150`) and `tools/sdd_coverage.py:78`.
-5. **`rehash --check` cannot see a `.yaml` file at all** (`rehash.py:53` globs
+   `COV01` (`tools/sdd_doc_lint/__init__.py:2071`), **`COV03`** (`:2150`) and `tools/sdd_coverage.py:78`.
+5. **`rehash --check` cannot see a `.yaml` file at all** (`tools/sdd_doc_lint/rehash.py:53` globs
    `*.md`), and it uses `scan_fr_content`, not `scan_fr_elements`. The design's
    stated coupling between seam 3 and element-ID hashing is impossible.
 6. **It cited `plans/DECISIONS.md` D-0080, which does not exist on `main`** — it
@@ -75,19 +75,19 @@ the model all three refuted designs assumed.
 
 Counts are occurrences in `tools/sdd_doc_lint/__init__.py`, then in the two
 sibling tools. **`tools/sdd_coverage.py` is outside the package's main module and
-is missed by every `__init__.py`-scoped grep** — it imports `_extract_frontmatter`
+is missed by every `tools/sdd_doc_lint/__init__.py`-scoped grep** — it imports `_extract_frontmatter`
 (`:38`, called `:68`) and `scan_fr_elements` (`:41`, called `:78`), and it is
-**not vendored to either platform mirror**, so `sync-vendored.sh` does not
+**not vendored to either platform mirror**, so `tools/sdd_doc_lint/sync-vendored.sh` does not
 surface it either. Its own docstring (`:32-34`) states the invariant a
 carrier-blind copy would break: *"the matrix and the linter's forward-coverage
 gate read the SAME graph + classifier, so they never disagree."*
 
-| Primitive | `__init__.py` | sibling tools | Rules that depend on it |
+| Primitive | `tools/sdd_doc_lint/__init__.py` | sibling tools | Rules that depend on it |
 | --- | --- | --- | --- |
-| `_extract_frontmatter` | 18 (incl. 1 def → **17 call sites**) | `sdd_coverage.py:68` | doc identity → the whole trace graph, `COV01/02`, `CSC01`, `SEED01`, `STALE01`, `REUSE01/02`, `ACC01` |
+| `_extract_frontmatter` | 18 (incl. 1 def → **17 call sites**) | `tools/sdd_coverage.py:68` | doc identity → the whole trace graph, `COV01/02`, `CSC01`, `SEED01`, `STALE01`, `REUSE01/02`, `ACC01` |
 | `_split_frontmatter` | 5 | — | **`FM01` calls it DIRECTLY** (`:439`) and returns early with no fence — so `FM01` is a seam that threading `_extract_frontmatter` does **not** reach |
 | `_section_word_counts` | 4 (**2 call sites**: `:583` STY02, `:1480` STRUCT01) | — | `STRUCT01`, and `STY02` — changing it at the function level changes size budgets too |
-| `scan_fr_elements` | 4 (**2 call sites**) | `sdd_coverage.py:78` | `COV01` (`:2071`), **`COV03`** (`:2150`) |
+| `scan_fr_elements` | 4 (**2 call sites**) | `tools/sdd_coverage.py:78` | `COV01` (`:2071`), **`COV03`** (`:2150`) |
 | `scan_fr_content` | 2 | — | `rehash_check` (`:1143`) — a *separate* Markdown-only scanner |
 | `_YAML_FENCE` | 4 (**3 call sites**) | — | `:1622` `_bdd_yaml_scenarios`, `:1651` `_seed_disposition_rows`, `:2548` ledger strip |
 
@@ -111,12 +111,12 @@ Recorded because a design that treats them as implementation detail will be
 refuted a fourth time.
 
 1. **There is no normative hash input for a structured FR entry.**
-   `ID_NAMING_STANDARDS.md` defines title/description extraction byte-exactly
+   `framework/governance/ID_NAMING_STANDARDS.md` defines title/description extraction byte-exactly
    over a **Markdown bullet** and scopes Phase 1 to that form. Element IDs on a
    YAML-authored BRD have no defined derivation. This is a
    `framework/governance/` change with GATE-SPEC weight, not a code change.
 2. **`covered_state_of` reads `band` and `realized_by`; the structured
-   `requirements[]` shape has neither.** `BRD-TEMPLATE.yaml` gives it `priority:`
+   `requirements[]` shape has neither.** `framework/layers/01_BRD/BRD-TEMPLATE.yaml` gives it `priority:`
    and no `realized_by` key, and prescribes the escape hatch only inside the
    *Markdown* band parenthetical. So on a YAML BRD every FR would classify
    `AUTHORED` and `COV01` becomes unconditionally blocking, with no way to
