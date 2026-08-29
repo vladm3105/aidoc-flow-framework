@@ -109,7 +109,35 @@ exclude.
 
 **Configured in the repository's security settings**, outside any file here:
 **secret scanning with push protection**, which rejects a push containing a
-recognised provider token outright — scanning for non-provider and custom
-patterns is not enabled, so it does not catch every secret — and
-**Dependabot**, which raises security alerts and dependency-update pull
-requests.
+recognised provider token outright, and **Dependabot**, which raises security
+alerts and dependency-update pull requests.
+
+⚠️ **Two scanning knobs are OFF, and they narrow what the one merge-blocking
+control actually catches.** Push protection is presented above as the control
+that stops a change before it lands; that is true only for **recognised provider
+tokens**:
+
+| Setting | State | What being off means |
+| --- | --- | --- |
+| `secret_scanning` | enabled | — |
+| `secret_scanning_push_protection` | enabled | — |
+| `secret_scanning_non_provider_patterns` | **disabled** | Generic and custom-shaped secrets — a private key blob, an internal token format, a connection string — are not matched, so push protection does not stop them. |
+| `secret_scanning_validity_checks` | **disabled** | A detected token is not tested against its provider, so an alert cannot say whether the credential is still live. Triage has to assume every finding is active. |
+
+The gap is partly covered in-repo: `detect-secrets` and `detect-private-key` run
+as **required** pre-commit hooks, and `secret-scan.yml` scans the **full git
+history** rather than the working tree. Those catch shapes GitHub's provider
+matching does not. They are not equivalent — they run on this repository's own
+pushes, not on forks' — but they are why the disabled knobs are a narrowing
+rather than an absence.
+
+Re-derive the live state rather than trusting this table:
+
+```sh
+gh api repos/vladm3105/aidoc-flow-framework   --jq '.security_and_analysis | to_entries[] | "\(.key)=\(.value.status)"'
+```
+
+*Status:* enabling both was decided on 2026-08-29 (issue #467). The REST API
+**accepts the write and does not apply it** — a `PATCH` returns `200` with the
+values unchanged — so the change has to be made in the repository's
+Settings → Code security UI. Recorded in `plans/DECISIONS.md`.
