@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — forward coverage was exercised by nothing; 15 acceptance fixtures now author §7 in the normative form (#577) (2026-08-29)
+
+`COV01` — *every in-scope BRD functional requirement must reach a SPEC and an IPLAN*, an error
+in `gate-code` — **fired on zero acceptance targets**. Not "passed": it graded nothing, because
+every fixture authored §7 as `### <ID> <Title>` level-3 headings while
+`BRD-TEMPLATE.yaml` `functional_requirements._authored_form` normatively prescribes
+`- **<ID> — <Title>** (<band>): …`. Of 27 fixture files with an FR heading, **none** yielded a
+single requirement, and no manifest pinned a `COV01`.
+
+**The scanner was right; the fixtures were not.** 15 files re-authored into the normative form,
+including the `(P1)` band and the `Acceptance criteria:` boundary that bounds the gated set.
+
+`COV01` is now **live** on `fullpath/golden_chain` — the one target with a complete
+BRD→…→IPLAN graph — and it is quiet there because it is *satisfied*, not because it is blind.
+Proven both ways: injecting an uncovered `(P1)` FR produces a `COV01` error; the unmodified
+chain produces none.
+
+The per-layer targets remain unexercised for a **different**, already-recorded reason: their
+`.yaml` downstreams carry an unterminated `---` fence, so `_extract_frontmatter` returns `None`,
+they are invisible to `build_edge_graph`, and their BRD's forward reach never includes SPEC.
+That repair is #478's, and it is measured there as adding findings and moving the manifest.
+
+`tests/conformance/test_forward_coverage_is_exercised.py` asserts **liveness, not silence** —
+the fixtures must yield FRs *and* an uncovered FR must actually produce a finding. Asserting
+only that the corpus is clean is what let the blind state persist, because a blind gate and a
+satisfied gate are both quiet. Mutation-tested: reverting one fixture to the heading form
+fails it.
+
+**No manifest changed and no corpus finding moved** — verified.
+
 ### Fixed — three acceptance goldens were invisible to the trace graph; the fence repair makes 14 hidden warnings visible (#478) (2026-08-29)
 
 `layer_06_spec/valid/SPEC-01_golden.yaml`, `layer_07_tdd/valid/TDD-01_golden.yaml` and
