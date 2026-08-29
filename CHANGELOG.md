@@ -12,6 +12,31 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — a framework spec bump could not fire the hook that propagates it (#574) (2026-08-29)
+
+`pre-commit` applies the global `exclude:` **after** each hook's `files:`, so a path a hook
+explicitly names can be silently removed from its own trigger. `sync-version-refs` declares
+`files: '^(platforms/[^/]+/VERSION|framework/VERSION)$'` while the exclude began
+`^(legacy/|framework/|…` — killing the `framework/VERSION` half. A **platform** bump fired the
+hook; a **framework spec** bump did not.
+
+Measured end-to-end in a throwaway clone: bumping only `framework/VERSION` propagated to **1**
+file before (i.e. nothing) and **114** after, including `docs/PARITY.md`, `README.md` and both
+`platforms/*/FRAMEWORK_SPEC_VERSION` pins.
+
+Fixed with a negative lookahead sparing exactly that one path —
+`framework/(?!VERSION$)` — so the GATE-SPEC-governed spec tree and its byte-identical vendored
+mirror stay excluded from every autofixing hook.
+
+**It was a missing safety net, not a live breakage:** the propagation is also run by hand as
+`CLAUDE.md`'s recorded three-step sequence, so shipped bumps were correct. What was dead is the
+automation that would catch a contributor who forgets that step.
+
+`tests/conformance/test_precommit_trigger_reachability.py` asserts the **invariant** rather than
+the instance: every hook's `files:` pattern must match at least one tracked file that survives
+the exclude. Mutation-tested in both directions — reverting the carve-out fails it, and
+over-widening the exclude fails a companion assertion that the spec tree is still protected.
+
 ### Fixed — forward coverage was exercised by nothing; 15 acceptance fixtures now author §7 in the normative form (#577) (2026-08-29)
 
 `COV01` — *every in-scope BRD functional requirement must reach a SPEC and an IPLAN*, an error
