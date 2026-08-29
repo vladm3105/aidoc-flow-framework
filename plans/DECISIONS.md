@@ -10,6 +10,38 @@ graduation.
 
 ---
 
+## D-0081 — Both secret-scanning knobs are to be ON; the REST API silently refuses, so it is a UI change
+
+**Date:** 2026-08-29 · **Issue:** #467 · **Decider:** founder (in session)
+
+**Decision: enable `secret_scanning_non_provider_patterns` and
+`secret_scanning_validity_checks`.** #467 framed this as a posture choice nobody had made
+explicitly rather than a defect, and the choice is now made.
+
+**It could not be executed from here, and the failure mode is worth recording.** A
+`PATCH /repos/{owner}/{repo}` carrying either knob returns **`200` with the repository object
+and the values unchanged** — no error, no warning, no `message` field. Verified by a fresh
+`GET` after each attempt, not by trusting the response. Both bracket-style `-f` parameters and a
+proper nested JSON body behave identically, so it is not a request-shape problem.
+
+The token carries `repo` scope and `permissions.admin: true` on the repository, so this is a
+feature-availability limit rather than an authorisation error — but GitHub reports it as
+success either way. **The change has to be made in Settings → Code security.**
+
+*This is the `--body -` lesson in a different API.* A write that returns 200 and does nothing is
+indistinguishable from a write that worked, unless you read the artifact back. Anyone scripting
+repository-settings changes should assume the same and verify with a separate `GET`.
+
+**Fleet note, measured while diagnosing:** the two keys are *present and disabled* on
+`aidoc-flow-framework` and `aidoc-flow-ci`, and **absent entirely** from the API response for
+`aidoc-flow-operations` and `aidoc-flow`. So the setting's availability is not uniform across
+the workspace, and a fleet-wide posture claim cannot be made from one repository's response.
+
+**Consequence.** `SECURITY.md` now states both knobs, what each being off actually costs, and
+why the in-repo scanners (`detect-secrets` + `detect-private-key` as required hooks, and
+`secret-scan.yml` over full history) make this a *narrowing* rather than an absence. #467 stays
+open until the UI toggle is made; it is no longer blocked on a decision, only on a click.
+
 ## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
 
 **Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)
