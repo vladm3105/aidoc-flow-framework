@@ -12,6 +12,40 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — three acceptance goldens were invisible to the trace graph; the fence repair makes 14 hidden warnings visible (#478) (2026-08-29)
+
+`layer_06_spec/valid/SPEC-01_golden.yaml`, `layer_07_tdd/valid/TDD-01_golden.yaml` and
+`layer_08_iplan/valid/IPLAN-01_golden.yaml` each carried a **single** `---` — a YAML
+document-start marker, not a terminated frontmatter fence — and no `doc_id`. So
+`_extract_frontmatter` returned `None`, `build_edge_graph` dropped them, and their upstream
+BRD's forward reach stopped short of the layer the target exists to test:
+
+```
+layer_06_spec/valid   BRD-01 reach BEFORE ['ADR','BDD','EARS','PRD']
+                                    AFTER ['ADR','BDD','EARS','PRD','SPEC']
+layer_08_iplan/valid                AFTER ['ADR','BDD','EARS','IPLAN','PRD','SPEC','TDD']
+```
+
+Repaired with a minimal terminated fence carrying **only** `doc_id`; the body — `metadata`
+included — is untouched, because the per-layer tests assert on `metadata` in the body.
+
+**The repair is not benign, and #478 did not record why.** Making these two-document streams
+broke four per-layer tests that parsed them with a bare `yaml.safe_load`, which raises
+`ComposerError` on a stream — the trap `CLAUDE.md` § "Acceptance harness" records as *"walk them
+with `safe_load_all`"*. `_harness.py` already carried frontmatter-stripping logic **twice**; it
+is now extracted as `load_layer_document()` and the four call sites use it. Reuse, not new
+authoring.
+
+**14 previously-hidden warnings are now pinned** (manifests go 5 → 6, 5 → 11, 10 → 13; a
+`layer_06_spec__valid.yaml` manifest is created, matching #478's predicted 0 → 6). Every entry
+carries a `reason` stating that it is **pre-existing debt the repair made visible, not new
+debt**, and what would clear it. The delta was computed by diffing emitted against pinned rather
+than reasoned by hand — the hand pass produced duplicate keys the harness rejected.
+
+Together with #577 this makes `COV01` live on `layer_08_iplan/valid` as well as
+`fullpath/golden_chain`. `layer_06`/`layer_07` contain no IPLAN, so forward coverage is
+legitimately **inapplicable** there rather than blind.
+
 ### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
 
 **Release provenance — read this before reasoning about framework version history.** Spec
