@@ -12,6 +12,32 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.45.0 → 0.46.0` — GD-14's 5-FR cap becomes measurable without becoming a gate (GD-19) (2026-08-29)
+
+`GD-14` makes it normative that a BRD **SHOULD** carry at most five functional requirements.
+Nothing measured it: a twelve-requirement BRD passed `sdd_doc_lint`, the conformance suite and
+the BRD auditor lens ([#540](https://github.com/vladm3105/aidoc-flow-framework/issues/540)).
+
+**`FRCAP01` measures it and does not gate it** — `warning` in every run mode, with **no
+`gate-code` escalation**. #540 records that the cap was requested as *guidance*, so escalating
+would overrule a deliberate scope decision under cover of an implementation detail. A test
+asserts the severity in **both** run modes, because `COV01` and `REFGRAN01` both escalate and
+that is the pattern a contributor would copy.
+
+It counts what `COV01` grades — element IDs under the FR section and **before** its literal
+`Acceptance criteria:` line. **Escaped (`Future` / `realized_by:`) requirements still count**:
+they escape coverage because they carry no coverage obligation, but the cap is about document
+*size*, so the exemption does not transfer.
+
+**It ships with its own fixture because it could not otherwise be tested.** Measured first: of
+every BRD in the repository the example corpus's carried **4** visible FRs and no acceptance
+fixture yielded **any** — there was no document a cap check could fire on, so it would have been
+born untestable and green.
+
+⚠️ **Merge order:** this bumps `0.45.0 → 0.46.0` and therefore lands **after**
+PR #575, which takes `0.44.0 → 0.45.0`. Both were open simultaneously; the version was
+re-taken rather than collided.
+
 ### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
 
 **Release provenance — read this before reasoning about framework version history.** Spec

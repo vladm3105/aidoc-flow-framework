@@ -33,6 +33,7 @@ Severity notes: many rules are context-sensitive (e.g. `COV01` warns in the
 | `HASH01` | An element id is defined in more than one place (collision / duplicate declaration). | error | `ID_NAMING_STANDARDS.md` |
 | `PROV01` | The document declares `id_state: provisional` — its element IDs are placeholders, not verified canonical hashes. | warning (advisory) | `ID_NAMING_STANDARDS.md` |
 | `IDDRIFT01` | `rehash --check`: an element's content no longer matches its declared ID hash (drift since the ID was minted). | warning (advisory opt-in) | `ID_NAMING_STANDARDS.md` |
+| `FRCAP01` | A BRD carries more functional requirements than GD-14's SHOULD cap of 5. Counts the element IDs under the FR section and BEFORE its literal `Acceptance criteria:` line — the same boundary `COV01` grades — so acceptance criteria do not count. Escaped (`Future` / `realized_by:`) requirements DO count: the cap is about document size, not coverage obligation. **Never escalates** — GD-14 states the cap as a SHOULD. | warning (advisory) | GD-14, `../layers/01_BRD/BRD-TEMPLATE.yaml` |
 
 ## Traceability & coverage
 

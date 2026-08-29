@@ -13,6 +13,59 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-19 — GD-14's 5-FR cap becomes measurable without becoming a gate
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.45.0 → 0.46.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC. This GD-19 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate CHG
+  artifact.
+- **Issues:** #540
+
+`GD-14` makes it normative that a BRD document **SHOULD** carry at most five functional
+requirements. Nothing measured it: a twelve-requirement BRD passed `sdd_doc_lint`, the
+conformance suite and the BRD auditor lens. The rule was guidance a human reviewer applied,
+on the one layer most often authored by an LLM reading `_guidance` blocks.
+
+**`FRCAP01` measures it and does not gate it.** `warning` severity in every run mode, with
+**no `gate-code` escalation** — a twelve-requirement BRD still passes. #540 records that the
+cap was *requested* as guidance rather than as a gate, so escalating here would overrule a
+deliberate scope decision under cover of an implementation detail. The
+`tests/conformance/test_fr_cap_advisory.py` case that asserts the severity in **both** run
+modes is what keeps that true; `COV01` and `REFGRAN01` both escalate, so the pattern a
+contributor would copy is the wrong one.
+
+**What counts, and why the boundary was not chosen freshly.** `FRCAP01` calls
+`scan_fr_elements` — the element IDs under the FR section and **before** that section's
+literal `Acceptance criteria:` line. `GD-14`'s counting rule was deliberately written against
+that same boundary so the cap counts exactly what the coverage gate counts. Acceptance
+criteria are not requirements and do not count.
+
+**Escaped requirements DO count**, and this is the entry's one genuinely new decision. A
+`Future`-banded or `realized_by:`-tagged FR escapes `COV01` because it carries no coverage
+obligation. It is still a requirement the document carries, and the cap is about document
+**size**. The two exemptions therefore do not transfer, and a test asserts it so a later
+reader does not "simplify" the count by reusing `covered_state_of`.
+
+- **Authority:** GD-14; `layers/01_BRD/BRD-TEMPLATE.yaml` `functional_requirements`
+  (`_guidance` size rule and `_authored_form`); `governance/LINT_RULES.md`;
+  `tools/sdd_doc_lint` `scan_fr_elements`
+- **Consequences:**
+  - **The rule ships with its own fixture, because it could not otherwise be tested.**
+    Measured first: of every BRD in the repository, the example corpus's carried **4** visible
+    FRs and no acceptance fixture yielded **any**. There was no document a cap check could fire
+    on, so it would have been born untestable and green.
+    `tests/acceptance/fixtures/negative/brd-fr-cap-exceeded.md` carries seven, two of them
+    escaped, and three acceptance criteria that must not count.
+  - The example corpus is at 4 of 5 and stays silent — verified, not assumed.
+  - `FRCAP01` runs **unconditionally**, not behind `--skip-coverage-gate`: it is a
+    document-size advisory, not a coverage gate, so skipping coverage must not hide it.
+  - This does **not** make the SHOULD binding. `governance/REVIEW_TEAM.md` still defines the
+    pass/fail floor as the deterministic structural check plus "no unresolved P0/P1"; an
+    advisory sits above that floor, as `playbooks/01_BRD/auditor.md`'s C3/C4 already do.
+
+---
+
 ## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
 
 - **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —

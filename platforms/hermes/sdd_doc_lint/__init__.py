@@ -2028,6 +2028,54 @@ def _doc_forward_reach(graph: EdgeGraph, start_doc: str) -> set[str]:
     return {graph.doc_layer.get(d, "") for d in reached}
 
 
+#: GD-14's cap. A BRD document SHOULD carry at most this many functional
+#: requirements; beyond it, start BRD-02 rather than growing BRD-01.
+FR_CAP = 5
+
+
+def _check_fr_cap(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """FRCAP01 — GD-14's 5-FR-per-BRD cap, as a NON-BLOCKING advisory.
+
+    GD-14 states the cap as a **SHOULD**, and #540 records that it was requested
+    as guidance rather than as a gate. This check does not change that: it is
+    ``severity="warning"`` in every run mode, with no ``gate-code`` escalation,
+    so a 12-requirement BRD still passes the gate. What it changes is that the
+    guidance is now *measured* — previously nothing anywhere computed it, on a
+    layer usually authored by an LLM reading ``_guidance`` blocks.
+
+    Counts exactly what ``COV01`` grades: ``scan_fr_elements`` returns the
+    element IDs under the FR section and **before** that section's literal
+    ``Acceptance criteria:`` line. GD-14's counting rule was deliberately written
+    against the same boundary so the cap counts what the coverage gate counts —
+    acceptance criteria are not requirements and do not count toward it.
+
+    Escaped requirements are **included** in the count, deliberately. A
+    ``Future``-banded or ``realized_by:``-tagged FR is still a requirement the
+    document carries; the cap is about document size, not about coverage
+    obligation, so the two exemptions do not transfer.
+    """
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        fm = _extract_frontmatter(text)
+        if _artifact_code(fm) != "BRD":
+            continue
+        frs = scan_fr_elements(text)
+        if len(frs) <= FR_CAP:
+            continue
+        findings.append(
+            Finding(
+                rel,
+                frs[FR_CAP].line,
+                "FRCAP01",
+                f"BRD carries {len(frs)} functional requirements; GD-14 sets a SHOULD cap of "
+                f"{FR_CAP}. Start a new document of the same type (BRD-02, BRD-03) rather than "
+                "growing this one. Advisory — this does not block the gate.",
+                severity="warning",
+            )
+        )
+    return findings
+
+
 def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
     """COV01 — forward coverage (CFB-PR-2 DD-6 rows 2-3).
 
@@ -2787,6 +2835,10 @@ def lint_path(
     # for referenced docs lives in the gates below (behind --skip-coverage-gate),
     # but the reuse visibility + target validation are always on.
     findings.extend(_check_reuse(corpus))
+    # FRCAP01 (GD-14) is a document-size advisory, not a coverage gate — it runs
+    # unconditionally and never escalates, so --skip-coverage-gate does not hide it
+    # and gate-code does not turn it red.
+    findings.extend(_check_fr_cap(corpus))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))
