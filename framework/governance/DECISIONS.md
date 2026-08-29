@@ -13,6 +13,168 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-18 — Three independent template gaps and one erratum ship as one MINOR: derived test paths (#550), threshold carriers (#551), IPLAN status ownership (#569), GD-13's figures (#532)
+
+- **Status:** Accepted — 2026-08-28 · **SemVer:** framework `0.44.0 → 0.46.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human
+  sign-off per GATE-SPEC. This GD-18 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate
+  CHG artifact.
+- **Issues:** #550, #551, #532, #569
+
+Three verified spec gaps and one erratum to a prior entry, shipped as one release. Each independently trips
+`GATE-SPEC-E005`, so shipping them apart would cost five version bumps, five
+fanouts and five per-bump founder grants. Bundling is the whole reason they are
+one entry; they are otherwise unrelated.
+
+**1. The framework prescribes no test-file layout (#550).** `TDD-TEMPLATE.yaml`
+and `SPEC-TEMPLATE.yaml` hardcoded **ten** Python test paths (`tests/unit/test_[module].py`
+and siblings) and **seven** pytest-shaped function names. Every other surface in
+the chain had already been genericized — `SPEC-TEMPLATE.yaml`'s `language:`,
+both of `IPLAN-TEMPLATE.yaml`'s do-not-re-pin statements, and `TDD-MVP-TEMPLATE.yaml`
+— so the full TDD template was the one place a language survived, and its own MVP
+variant was ahead of it.
+
+The **decision is not "support more languages"**, which is what the consumer report
+that surfaced this asked for (per-case `language:` and `test_framework:` fields).
+That would re-pin the language one layer down and give the toolchain two owners.
+SPEC owns `language:`; TDD and IPLAN derive from it. Placeholders take
+`TDD-MVP-TEMPLATE.yaml`'s bare angle-bracket form, one form and not two — the
+`# example (Python):` device works in `IPLAN-TEMPLATE.yaml` only because those
+entries are list-of-string commands rather than mapping values.
+
+`framework/TESTING_STRATEGY_TDD.md` was **silent** on the subject, so the template
+change would have pointed at nothing; it now states the derivation and gives
+Python, Go and TypeScript forms as equally conformant. The per-tier distinction
+(unit / integration / e2e / security) is language-independent and is retained.
+
+**2. SPEC and TDD gain a `threshold_references` carrier (#551).**
+`THRESHOLD_NAMING_RULES.md` normatively designates five layers as threshold
+*consumers* and gives TDD a worked example, but two of the five had nowhere to put
+the citation. EARS's block is copied in shape, under the same name.
+
+`TDD-TEMPLATE.yaml`'s existing `thresholds:` section is **untouched** and is a
+different concept — it holds coverage gates (`unit.coverage_target`, `fail_action`),
+not `@threshold:` citations resolving to a PRD or ADR declaration. That name
+collision is why this gap survived, and it is the reason the new block is named
+`threshold_references` rather than folded into it.
+
+**Neither addition carries `_size_target`**, so `STRUCT01`'s derived required-section
+set is unchanged — verified: SPEC stays at 8, TDD at 7.
+
+**3. GD-13's title and its reach claim (#532).** The title said "Two governance
+documents" while its own body said "Six authoring surfaces" and enumerated them;
+the narrower figure had survived in the most prominent position after review
+expanded the sweep. Separately, its successor sentence claimed a governance-prose
+guard "would have caught all six" — it reaches **two**. Both corrected in place.
+The `0.41.3` CHANGELOG entry is a **published release** and is left unedited; the
+correction is stated forward in the `0.46.0` entry.
+
+**4. #557 was in this bundle and was REMOVED on measurement — its premise is
+false.** Recorded here rather than dropped silently, because the issue is still
+open and the next reader will otherwise re-attempt the same change.
+
+#557 reports that `STRUCT01` derives **six** required EARS sections while
+`total_sections`, the five numbered headers and the plugin skill all say five, and
+proposes marking `glossary:` `_required: false`. It states the change is latent
+because "neither [EARS artifact] has a `glossary` section at all".
+
+**Both do** — `tests/acceptance/fixtures/layer_03_ears/valid/EARS-01_golden.md:54`
+and `examples/url-shortener/docs/03_EARS/EARS-01.md:259`. So the marker would not
+have been latent: it would have **removed a live assertion**. The acceptance
+harness's `template_sections()` applies `_required: false` through a second,
+independent derivation, so `tests/acceptance/deterministic/test_layer_ears.py`
+would have gone on passing while asserting less — the "a fix can silently disarm
+an existing regression test" trap.
+
+**And EARS was never the outlier.** `total_sections` counts **numbered** sections;
+the derived set is required sections, which includes required *unnumbered*
+backmatter. Measured across all eight layers:
+
+| Layer | derived required | `total_sections` |
+| --- | --- | --- |
+| BRD | **17** | 16 |
+| ADR | **12** | 10 |
+| EARS | **6** | 5 |
+| PRD / BDD / SPEC / TDD | 15 / 5 / 8 / 7 | 15 / 5 / 8 / 7 |
+
+ADR and BRD have exactly the shape #557 calls a defect, for the same reason
+(`glossary` + `appendix`, `diagrams` + `appendix`). SPEC and TDD agree only
+because they carry no backmatter. Marking EARS optional would have made it the
+one layer of three where required backmatter is unenforced, and put the template
+in direct conflict with `platforms/claude-code-plugin/skills/doc-ears/SKILL.md:75`,
+which calls the glossary **required**.
+
+`_required: false` means *optional content* — `PRD`'s `component_decomposition`
+is "only required when downstream cites `@threshold`". It does not mean
+"required but unnumbered", and #557 asked it to carry both senses.
+
+The real defect, if any, is that no surface states that `total_sections` counts
+numbered sections only. That is a documentation gap across three layers, not an
+EARS marker bug, and it is left to #557 to re-scope.
+
+**5. An IPLAN's `status` is a write target, not a report field (#569).** Real
+consumer feedback: an executor created 97 files across 8 IPLANs, reported COMPLETE,
+and left every `file_manifest.files[].status` at `NOT_STARTED` — while the
+`IPLAN-00_index` registry showed `files_done == files_declared`, which masked it.
+
+**The framework had no contract to violate**, which is the actual defect. The
+template declared the fields and the session-startup protocol read them, but
+nothing said who writes them or when. `file_manifest._guidance` now states it:
+the transitions, that `verified: true` is a separate assertion from `status: DONE`
+("the file exists" is not verification), and that an index MAY aggregate these
+values but is never where they are recorded first — an index over stale entries
+hides drift rather than surfacing it.
+
+This is a **contract**, not enforcement. Nothing yet checks a manifest against the
+filesystem, and a stale entry still lints clean.
+
+- **Authority:** `layers/06_SPEC/SPEC-TEMPLATE.yaml` §2 `component_overview.language`
+  and §7 `tdd_contracts`; `layers/07_TDD/TDD-TEMPLATE.yaml`;
+  `layers/03_EARS/EARS-TEMPLATE.yaml`; `layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
+  §2 `file_manifest`; `TESTING_STRATEGY_TDD.md`;
+  `governance/THRESHOLD_NAMING_RULES.md`; `governance/AUTHORING_STYLE.md`
+  §"Size targets"; `tools/sdd_doc_lint` `_load_section_targets`;
+  `AI_ASSISTANT_RULES.md` §"Development Completion Rule"; GD-11 (the bundling
+  precedent this entry follows); GD-13 (corrected here)
+- **Bundling, against GD-11's four conditions.** GD-11 sets the bar and warns that
+  *"the gate made me do it" is not available as a justification*, so the conditions are
+  asserted rather than the cost alone: each of the five is **independently correct**
+  (none depends on another landing), **independently revertible** (they touch disjoint
+  keys — three templates, one governance entry, one strategy doc), **ready at the same
+  moment** (all five evidence-complete on the tracker before this bump), and each
+  **would otherwise pay a full fanout** of its own.
+- **Consequences:**
+  - `TDD-TEMPLATE.yaml` and `SPEC-TEMPLATE.yaml` no longer illustrate a concrete
+    toolchain. An author copying the template gets a placeholder they must fill,
+    which is louder than a wrong default and is the intent.
+  - The example corpus is Python and remains conformant — it declares Python in
+    its SPEC. It is regenerated wholesale, so no hand-edit follows from this.
+  - **`STRUCT01` becomes reachable on EARS the moment a YAML EARS instance
+    exists**, and item 4 is what makes it demand five sections rather than six at
+    that point. GD-17's effective condition still gates when that is.
+  - Item 5 leaves a gap it deliberately does not close: an executor that ignores
+    the contract is still undetected. A manifest-vs-filesystem check is the
+    successor and needs its own entry. Item 5 also changed **one** authoring
+    surface of four — `layers/08_IPLAN/README.md`, `AI_ASSISTANT_RULES.md` and this
+    template's own §5 protocol step list still say "update status after completion
+    or session end", which is laxer than "write it as you go". Reconciling them is
+    successor work, not done here.
+  - **Scope is the spec tree only.** `TESTING_STRATEGY_TDD.md` is **not vendored**
+    to the plugin bundle (which carries `governance/`, `layers/`, `playbooks/`,
+    `registry/` and the guide) — so the templates carrying the new placeholders are
+    synced while the document explaining *why* they are placeholders is not.
+    Platform authoring surfaces are out of scope here and must add their own, per
+    the caveat GD-09 and GD-17 record for their guards.
+  - **`IPLAN-MVP-TEMPLATE.yaml` is NOT reconciled and this entry does not decide
+    it.** Its manifest declares `not_started|in_progress|completed|blocked` —
+    different case, `completed` for `DONE`, an extra `blocked`, no `PARTIAL`. That
+    divergence is #438's territory, which GD-16 likewise declined to settle. Item 1
+    praises the MVP set for being *ahead* of the full templates on test paths; item
+    5 must not be read as claiming the same for status.
+
+---
+
 ## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
 
 - **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —
@@ -280,7 +442,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
-## GD-13 — Two governance documents had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
+## GD-13 — Six authoring surfaces had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
 
 - **Status:** Accepted — 2026-08-23 (ratified on merge; a `framework/**` normative
   change — human sign-off per GATE-SPEC. This GD-13 entry + the `VERSION`/`CHANGELOG`
@@ -321,8 +483,18 @@ Newest first. Timestamps are ISO 8601 UTC.
   several documents where only some get corrected. **Not yet guarded** — there is no
   conformance test asserting the document-level-permitted set is `{SPEC, IPLAN}`
   across `ID_NAMING_STANDARDS.md`, `TAG_SYNTAX.md`, `TRACEABILITY.md` and
-  `_REFGRAN_ELEMENT_DECLARING`; such a guard would have caught all six and is the
-  obvious successor to this entry.
+  `_REFGRAN_ELEMENT_DECLARING`; it is the obvious successor to this entry and is
+  tracked as #531. Such a guard **would catch two** of the six above, not all six
+  — an earlier form of this sentence claimed all six, which over-reports its
+  reach. The other four
+  are two auditor playbooks, a layer template and a plugin agent, none of which a
+  governance-prose guard reads. A class-wide scan over those surfaces was measured
+  and rejected: 51 token hits across 29 files, overwhelmingly exempt (self-tags,
+  downstream forward-pointers, `FAIL:` counter-examples), so an exemption model at
+  that ratio either false-positives and blocks CI or under-covers and reads as
+  complete. Those surfaces are covered by `REFGRAN01` on the artifacts they
+  generate — a downstream detector with regeneration latency, which is how the
+  surviving drift in #563 was found.
 - **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity"; GD-03;
   `chg/gates/GATE-SPEC_FRAMEWORK.md`.
 
