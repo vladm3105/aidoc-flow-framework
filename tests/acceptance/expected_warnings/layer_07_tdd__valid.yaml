@@ -52,3 +52,48 @@ expected_warnings:
       Clearing it means re-cascading the tag to a specific element; pinned so it
       cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
       fixture-authoring work.
+  - code: ACC01
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.aaaa"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
+      new debt. Clearing it means authoring the paired TDD test case.
+  - code: ACC01
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.bbbb"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
+      new debt. Clearing it means authoring the paired TDD test case.
+  - code: ACC01
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.cccc"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
+      new debt. Clearing it means authoring the paired TDD test case.
+  - code: ACC01
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.dddd"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
+      new debt. Clearing it means authoring the paired TDD test case.
+  - code: REFGRAN01
+    file: TDD-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
+      new debt. Clearing it means re-cascading the tag to element form (GD-03).

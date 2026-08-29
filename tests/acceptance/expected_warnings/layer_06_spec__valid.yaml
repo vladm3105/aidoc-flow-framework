@@ -1,0 +1,58 @@
+# Accepted lint warnings for this target — see
+# plans/ACCEPTANCE-TIER-DRIFT-UNTRACKED-PLAN.md.
+#
+# Matching is a MULTISET and BIDIRECTIONAL: an unpinned warning fails, and a
+# pinned warning that no longer fires ALSO fails. Clearing a fixture therefore
+# tells you to delete its entry here. Do not add an entry without a `reason`
+# stating what would clear it.
+target: layer_06_spec/valid
+expected_warnings:
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.bbbb"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
+      new debt. Clearing it means authoring the element-level citation that
+      realizes this element downstream.
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.cccc"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
+      new debt. Clearing it means authoring the element-level citation that
+      realizes this element downstream.
+  - code: COV02
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.dddd"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
+      new debt. Clearing it means authoring the element-level citation that
+      realizes this element downstream.
+  - code: COV02
+    file: EARS-01_golden.md
+    ref: "EARS.01.03.cccc"
+    count: 1
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
+      new debt. Clearing it means authoring the element-level citation that
+      realizes this element downstream.
+  - code: REFGRAN01
+    file: SPEC-01_golden.yaml
+    ref: "@adr: ADR-01"
+    count: 2
+    reason: >
+      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
+      invisible to `build_edge_graph` and this warning could not fire. The fence was
+      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
+      new debt. Clearing it means re-cascading the tag to element form (GD-03).

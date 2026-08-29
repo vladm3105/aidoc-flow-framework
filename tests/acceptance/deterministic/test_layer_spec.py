@@ -4,10 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 
-import yaml
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import LayerHarness, fixtures_for
+from _harness import LayerHarness, fixtures_for, load_layer_document
 
 
 class LayerSpecTests(unittest.TestCase, LayerHarness):
@@ -32,8 +30,7 @@ class LayerSpecTests(unittest.TestCase, LayerHarness):
         self.assert_cumulative_upstream_tags_resolve(self.golden)
 
     def test_parses_as_yaml_with_metadata_layer_6(self):
-        with self.golden.open(encoding="utf-8") as fh:
-            data = yaml.safe_load(fh)
+        data = load_layer_document(self.golden)
         self.assertIsInstance(data, dict, "SPEC-01: golden must parse to a YAML mapping")
         self.assertIn("metadata", data, "SPEC-01: missing 'metadata' key")
         self.assertEqual(

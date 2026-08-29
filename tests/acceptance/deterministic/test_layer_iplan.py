@@ -4,10 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 
-import yaml
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import LayerHarness, fixtures_for
+from _harness import LayerHarness, fixtures_for, load_layer_document
 
 
 def _is_test_entry(path: str) -> bool:
@@ -38,8 +36,7 @@ class LayerIplanTests(unittest.TestCase, LayerHarness):
         self.assert_cumulative_upstream_tags_resolve(self.golden)
 
     def test_file_manifest_lists_tests_before_implementation(self):
-        with self.golden.open(encoding="utf-8") as fh:
-            data = yaml.safe_load(fh)
+        data = load_layer_document(self.golden)
         files = (data.get("file_manifest") or {}).get("files") or []
         self.assertGreaterEqual(
             len(files),
@@ -68,8 +65,7 @@ class LayerIplanTests(unittest.TestCase, LayerHarness):
         )
 
     def test_first_session_has_next_session_directive(self):
-        with self.golden.open(encoding="utf-8") as fh:
-            data = yaml.safe_load(fh)
+        data = load_layer_document(self.golden)
         sessions = (data.get("session_handoff") or {}).get("sessions") or []
         self.assertGreaterEqual(
             len(sessions),
