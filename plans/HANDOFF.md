@@ -86,17 +86,17 @@ record.
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
-5. **#393** — CI pins are split **11 × `ci/v2.16.0` + 6 × `ci/v3.0.0`** against canon
-   `ci/v4.0.0`. ⚠️ Two major boundaries: `--repin` rewrites the tag string only and cannot
-   carry a breaking-change adaptation, so read canon's release notes first.
+5. **#393** — ⚠️ **not a `--repin`, and the issue body's stated remedy would hang a required
+   check.** `plans/CI-CANON-V4-MIGRATION-PLAN.md` has the measured exposure: all **five**
+   `ci/v4.0.0` breaking changes apply here. **BLOCKED on two founder/infrastructure
+   prerequisites, both of which fail silently:**
+   - Both runners advertise only `self-hosted,ci-runner,single-use`; v4 renames them to
+     `ci`/`ephemeral`, and a job routed to labels no runner carries **queues forever** — no
+     failure, no timeout, no log. `ai-review` is a required context, so the migration PR
+     could not merge itself.
+   - `LLM_URL` and `LLM_API_KEY` do not exist as repo secrets, and the `ai-review` caller
+     still forwards the three `LITELLM_*` names that v4 **un-declares** — an explicit
+     `secrets:` map naming an undeclared secret fails to LOAD (`startup_failure`, zero jobs,
+     no logs).
 
-## Blockers and standing constraints
-
-**⚠️ A framework `VERSION` bump needs a per-bump founder OK** and is unsplittable — it
-exceeds Rule 1's 3-surface cap because `scripts/sync-version-refs.sh` writes three of the
-four surfaces itself and re-stages them. Record the grant in the commit message. Not
-standing.
-
-**⚠️ Corpus and fixture debt all waits on one run.** #486, #487 and #555 item 1 are
-deferred to the same `plans/CORPUS-REGEN-RUNBOOK.md` pass, which requires a live Claude Code
-plugin session, not a framework-dev container.
+   Nothing can land ahead of the repin: the BC4/BC5 caller edits are only valid *at* v4.
