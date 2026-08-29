@@ -79,10 +79,15 @@ record.
    (`:143`) — the same set-equality-across-surfaces shape one layer over. ⚠️
    `framework/governance/TRACEABILITY.md` has no `### Reference granularity` heading (it has
    no `###` headings at all), so the issue's surface list needs adjusting first.
-3. **#554** — `plans/`-only, no bump. Retires a resolved open question and a void Stage 1
-   from `OKF-CONFORMANCE-001-DESIGN.md`, the entry point for that initiative; until it
-   lands, a session picking OKF up gets a wrong blocker count and an instruction GD-15
-   forbids.
+3. ~~**#554**~~ — **done**, branch `docs/554-okf-design-stale`. `OKF-CONFORMANCE-001-DESIGN.md`
+   now carries a superseded-in-part banner, two open questions rather than three, and a
+   Stage 1 rewritten to GD-15's projection-generator model. Two figures were re-derived
+   rather than carried forward and **both had moved** (`artifact_type` 19+80 → 20+81), and
+   the re-derivation found something the issue did not ask for:
+   `IPLAN-00_index.TEMPLATE.yaml` declares **no `artifact_type` at all** — the one member
+   of the index class that D2's refusal of a "missing-means-satisfied" carve-out exists to
+   catch, and the only index template authored as `.yaml`, which is why a `.md`-shaped
+   survey missed it.
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
