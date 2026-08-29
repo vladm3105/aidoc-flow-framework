@@ -70,6 +70,15 @@ metadata:
       BDD uses sequence diagrams for scenario flow visualization.
       Not C4 diagrams — BDD operates at the scenario/test level.
 
+      Tag form: `@diagram: sequence-*`, valid on every layer (GD-22).
+    diagram:
+      _guidance: "Optional. Shows the scenario's actor/system interaction order."
+      tags: ["@diagram: sequence-sync"]
+      mermaid: |
+        sequenceDiagram
+          Actor->>System: action
+          System-->>Actor: outcome
+
   tags:
     - bdd-document
     - layer-4-artifact

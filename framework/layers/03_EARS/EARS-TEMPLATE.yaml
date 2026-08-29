@@ -75,6 +75,18 @@ metadata:
         - sequenceDiagram: interaction flows for event-driven requirements
         - flowchart: decision logic for unwanted behavior / fallback paths
 
+      Tag forms: `@diagram: state-*` for stateDiagram-v2, `@diagram: flow-*` for
+      flowchart, `@diagram: sequence-*` for sequenceDiagram. All three are valid
+      on every layer (GD-22) — they carry no C4 level to mismatch.
+    diagram:
+      _guidance: "Optional. One diagram per requirement cluster, not per requirement."
+      tags: ["@diagram: state-lifecycle"]
+      mermaid: |
+        stateDiagram-v2
+          [*] --> Idle
+          Idle --> Active: trigger
+          Active --> [*]
+
   tags:
     - ears-document
     - layer-3-artifact

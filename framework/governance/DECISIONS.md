@@ -13,6 +13,52 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-22 — Non-C4 diagram kinds are valid on every layer; only C4/DFD levels are policed per layer
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.44.0 → 0.45.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Issues:** #552
+
+Six layers declared a `diagram_standard` and **one** shipped an authoring slot. The blocker was
+vocabulary, not effort: `EARS-TEMPLATE.yaml` recommends three diagram kinds and only one
+(`sequenceDiagram`) had any `@diagram:` tag form. `DG02` is **error**-severity and EARS, BDD and
+ADR have empty C4 allowlists, so a *tagged* slot on any of them emitted a `DG02` error **on the
+template's own example content**.
+
+**Decision: `state-*` and `flow-*` join `sequence-*` as kinds valid on every layer.**
+
+**The reasoning generalises, and it is why this is not a per-layer allowlist.** `c4_mapping`
+allowlists a layer's C4/DFD **level**, which is exactly what `DG02` exists to police — a BRD may
+not carry an L3 component diagram. A state machine or a flowchart **has no level to mismatch**.
+A per-layer allowlist for them would encode nothing, and would have to be repeated on every
+layer that ever wants one. `sequence-*` was already treated this way; this extends the existing
+rule rather than introducing a second mechanism.
+
+`DG02` keeps its teeth, verified rather than asserted: `c4-l3` on EARS or BRD is still rejected,
+`c4-l1` on BRD still passes, and an unknown kind (`bogus-kind`) is still rejected.
+
+With the vocabulary settled, EARS, BDD and ADR gain the `diagram:` authoring slot SPEC already
+had — `_guidance`, `tags:` and a `mermaid:` block — and each emits **zero** `DG02` findings on
+its own template.
+
+- **Authority:** `governance/DIAGRAM_STANDARDS.md`; `registry/LAYER_REGISTRY.yaml` `c4_mapping`;
+  `tools/sdd_doc_lint` `_DIAGRAM_SEQUENCE` (the precedent this extends)
+- **Consequences:**
+  - **PRD, TDD and IPLAN still have no slot**, deliberately. PRD's C4-L2 diagram belongs with
+    its container decomposition and is a separate question; TDD and IPLAN declare no
+    `diagram_standard` at all, so there is nothing to give them a slot *for*.
+  - The tag forms are **open-ended** (`state-<name>`, `flow-<name>`), matching `sequence-*`.
+    A closed enumeration would need updating for every new diagram purpose, which is the churn
+    `sequence-*` was already designed to avoid.
+  - **Nothing existing changes.** The corpus reports byte-identical findings; the new kinds
+    widen what is accepted and narrow nothing.
+  - This settles the *vocabulary* half of #552. The **registry-as-authority** half shipped
+    separately: `DG02` now reads `c4_mapping[*].diagram_tags` instead of a literal, so the field
+    the registry declares is finally the field the linter consults.
+
+---
+
 ## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
 
 - **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —

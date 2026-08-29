@@ -80,6 +80,17 @@ metadata:
       ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SPEC (Layer 6).
       ADR diagrams show the decision's impact, not the system structure itself.
 
+      Tag forms: `@diagram: sequence-*` (the required decision diagram) and
+      `@diagram: flow-*` (the optional supplement). Both are valid on every
+      layer (GD-22).
+    diagram:
+      _guidance: "REQUIRED — the decision/interaction sequence diagram."
+      tags: ["@diagram: sequence-sync"]
+      mermaid: |
+        sequenceDiagram
+          Caller->>Decision: request
+          Decision-->>Caller: outcome
+
   tags:
     - adr-document
     - layer-5-artifact

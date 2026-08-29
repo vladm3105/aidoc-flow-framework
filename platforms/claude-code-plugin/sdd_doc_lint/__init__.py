@@ -876,6 +876,20 @@ def _diagram_allowed(artifact: str, registry: Path | None = None) -> set:
 
 
 _DIAGRAM_SEQUENCE = re.compile(r"^sequence-(sync|async|error|[a-z0-9-]+)$")
+#: Non-C4 diagram kinds, allowed on EVERY layer — the same treatment
+#: ``sequence-*`` already receives, and for the same reason (GD-22).
+#:
+#: `c4_mapping` allowlists a layer's C4/DFD *level*, which is what `DG02` exists
+#: to police: a BRD may not carry an L3 component diagram. A state machine or a
+#: flowchart has no level to mismatch, so a per-layer allowlist for these would
+#: encode nothing and would have to be repeated on every layer that ever wants
+#: one.
+#:
+#: Without this, `EARS-TEMPLATE.yaml` recommended three diagram kinds of which
+#: only one (`sequenceDiagram`) had any tag form, so a tagged authoring slot on
+#: EARS, BDD or ADR — all of which have empty C4 allowlists — emitted a `DG02`
+#: ERROR on the template's own example content (#552).
+_DIAGRAM_UNIVERSAL = re.compile(r"^(state|flow)-[a-z0-9-]+$")
 
 
 def _check_diagram_level(
@@ -891,7 +905,7 @@ def _check_diagram_level(
     for i, line in enumerate(text.splitlines(), 1):
         for m in _DIAGRAM_TAG.finditer(line):
             tag = m.group(1)
-            if _DIAGRAM_SEQUENCE.match(tag):
+            if _DIAGRAM_SEQUENCE.match(tag) or _DIAGRAM_UNIVERSAL.match(tag):
                 continue
             if tag in allowed:
                 continue
