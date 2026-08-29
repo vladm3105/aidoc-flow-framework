@@ -12,6 +12,49 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.44.0 → 0.45.0` — the carrier changes where a rule looks, never what it decides (GD-20) (2026-08-29)
+
+`GD-15` made YAML the mandatory instance format and changed no rule; `GD-17` gave that mandate
+an effective condition precisely because the rules could not read the mandated carrier. This is
+the enablement ([#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564)).
+
+Measured before and after on the reproduction in #564 — a minimal BRD authored exactly as
+`BRD-TEMPLATE.yaml` prescribes:
+
+| | before | after |
+|---|---|---|
+| `STRUCT01` on sections physically present as YAML keys | 4 spurious | **0** |
+| `TRACE-RES-001` "no corpus member has doc_id" | 1 | **0** — the document is in the trace graph |
+| total errors | **18** | **13**, all genuinely-missing sections |
+
+13 and not 0 is the correct outcome: BRD requires 17 sections and that fixture declares 4.
+
+**Four decisions**, all in `GD-20`:
+
+- **Carrier by suffix, never sniffed.** A `.md` file whose body happens to parse as a YAML
+  mapping must not acquire a frontmatter it does not have.
+- **The hash input is a mirror** — `norm(title)` ← `title`, `norm(description)` ← `capability`.
+  Transform unchanged, so the same content hashes the same on either carrier and a migration is
+  ID-preserving. `capability` because that is the key the template declares.
+- **`requirements[]` gains an optional `realized_by`.** Without it every YAML requirement
+  classified `AUTHORED`, so `COV01` was **unconditionally blocking** on the mandated carrier.
+- **A section is a `##` heading OR a top-level key** — same unit, two names; the required set is
+  still derived from the template.
+
+Two census findings were load-bearing and are why earlier designs failed:
+`yaml.safe_load` **raises** on the two-document fixtures (`safe_load_all` + merge is required),
+and `##` lines appear inside 15 of 24 `.yaml` fixtures as **comments**, so a heading scan would
+call a document complete on the strength of its comments.
+
+**`tests/conformance/test_carrier_parity.py` is the per-layer parity assertion GD-17 requires**,
+and it did not exist before. ⚠️ **This does not claim GD-17's condition is met** — parity is
+asserted only for the primitives changed here, and two seams remain open and named: `FM01`
+reaches `_split_frontmatter` directly, and `scan_fr_content` behind `rehash_check` is
+Markdown-only.
+
+**The Markdown path is unchanged** — the example corpus reports byte-identical findings before
+and after, asserted rather than assumed.
+
 ### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
 
 **Release provenance — read this before reasoning about framework version history.** Spec

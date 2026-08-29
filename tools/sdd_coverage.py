@@ -65,7 +65,7 @@ def render_matrix(corpus: list[tuple[str, str]]) -> str:
 
     rows: list[tuple[str, str, str, str, set[str]]] = []  # (fr_id, host, band, state, reached)
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, _rel)
         if not fm:
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")

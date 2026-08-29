@@ -623,6 +623,15 @@ functional_requirements:
       title: "[MVP Core Feature 1 — Business Capability Name]"
       capability: "[One-sentence description of business capability]"
       priority: P1
+      # OPTIONAL escape (GD-20). Names the layer that realizes this requirement
+      # when it is NOT picked up on the SPEC path — an ADR-only decision, an NFR,
+      # or infra with no dedicated SPEC. Declares the requirement covered without
+      # requiring a SPEC, exactly as the authored-markdown band's
+      # `realized_by: <LAYER>` token does. Omit it for an ordinary requirement.
+      # This key and the markdown band token are two surfaces for ONE value —
+      # without it a YAML-authored requirement has no way to declare an off-SPEC
+      # realization, and COV01 becomes unconditionally blocking on this carrier.
+      realized_by: null  # <LAYER> | null
       complexity:
         _guidance: |
           Rating 1-5 based on business factors:

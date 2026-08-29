@@ -134,6 +134,37 @@ extractor.
 > advisory `IDDRIFT01` when the command is run, and is still **not shape-detectable**
 > by the default lint (only non-hex `xxxx` is flagged, via `PH01`).
 
+#### Structured (YAML) carrier — same input, different extraction (GD-20)
+
+The extraction above is defined byte-exactly over an **authored-markdown FR
+bullet**. A YAML-authored instance has no bullet, so this states where the same
+four parts come from in the structured shape. **The hash input and the
+normalization transform are unchanged** — only the extraction differs, which is
+what keeps an ID stable across a carrier migration.
+
+| Hash input part | Markdown bullet | Structured `requirements[]` entry |
+| --- | --- | --- |
+| `doc` | the document's `NN` | the document's `NN` |
+| `sec` | the section's `SS` | the section's `SS` |
+| `norm(title)` | the bolded title, between `— ` and the closing `**` | the entry's `title` |
+| `norm(description)` | the text after the band parenthetical's `:` | the entry's `capability` |
+
+**`capability`, not `description`.** `BRD-TEMPLATE.yaml` names the one-sentence
+business statement `capability:`, and it is the field the markdown bullet's
+post-colon text carries. Mapping to a `description` key that the template does
+not declare would produce an empty description and therefore a *different* hash
+for identical content — the precise failure this section exists to prevent.
+
+**Consequence — the same content hashes the same on both carriers.** That is the
+property that makes a carrier migration ID-preserving, and it is why the mapping
+is a mirror rather than a new vocabulary.
+
+**Not yet verified over YAML.** `rehash --check` walks `*.md` only
+(`tools/sdd_doc_lint/rehash.py`), so it cannot see a `.yaml` instance at all.
+This section defines the contract; extending the verifier to the structured
+carrier is later-phase work and is **not** claimed here. Stating it because the
+table above otherwise reads as an enforced guarantee.
+
 ### Provisional vs canonical IDs
 
 Hand-authored hashes are **placeholders until canonicalized**. A document declares

@@ -649,7 +649,7 @@ def lint_text(
     # per-element error) reminding the author to canonicalize the placeholder IDs
     # before downstream layers cite them. `state` governs ID *stability*, not
     # coverage — provisional elements are still gated normally.
-    _fm = _extract_frontmatter(text)
+    _fm = _extract_frontmatter(text, rel)
     _id_state = str((_fm or {}).get("id_state") or "").strip().lower()
     if _id_state == "provisional":
         findings.append(
@@ -979,6 +979,60 @@ def scan_fr_elements(text: str) -> list[FRElement]:
     return out
 
 
+def scan_fr_elements_yaml(fm: dict) -> list[FRElement]:
+    """The structured counterpart of ``scan_fr_elements``, per GD-20.
+
+    Reads ``functional_requirements.requirements[]``. `BRD-TEMPLATE.yaml` names
+    that list as the structured shape's FR set and states one counting rule per
+    authored shape, so the *set* is inherited from the template rather than
+    chosen here.
+
+    Field mapping, decided by GD-20 and deliberately a MIRROR of the Markdown
+    bullet's four parts rather than a new vocabulary:
+
+    ============  ==========================  ===================================
+    FRElement     Markdown bullet             YAML entry
+    ============  ==========================  ===================================
+    ``elem_id``   the bolded ``<ID>``         ``id``
+    ``band``      leading ``(P1|P2|Future)``  ``priority``
+    ``realized_by`` ``realized_by:`` in band  ``realized_by``
+    ============  ==========================  ===================================
+
+    ``line`` is 0 — a YAML mapping has no bullet to point at, and the linter's
+    Finding line is advisory. It is not ``None`` because callers arithmetic on it.
+
+    **Acceptance criteria do not appear here at all.** On the Markdown carrier
+    they are excluded by the literal ``Acceptance criteria:`` boundary; in the
+    structured shape they are simply a different key, so the exclusion is
+    structural rather than positional. Same set, both carriers — which is the
+    property GD-17's effective condition requires.
+    """
+    block = (fm or {}).get("functional_requirements")
+    if not isinstance(block, dict):
+        return []
+    rows = block.get("requirements")
+    if not isinstance(rows, list):
+        return []
+    out: list[FRElement] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        elem_id = str(row.get("id") or "").strip()
+        if not elem_id:
+            continue
+        band = row.get("priority")
+        rb = row.get("realized_by")
+        out.append(
+            FRElement(
+                elem_id=elem_id,
+                line=0,
+                band=str(band).strip() if band else None,
+                realized_by=str(rb).strip().upper() if rb else None,
+            )
+        )
+    return out
+
+
 # --- Model-2 content-hash primitives (PROVISIONAL-IDS-002 Phase 1) --------------
 #
 # The element ID `TYPE.doc.sec.hash` embeds `hash =
@@ -1135,7 +1189,7 @@ def rehash_check(text: str, rel: str) -> list[Finding]:
     This is invoked only by ``python -m sdd_doc_lint.rehash --check``; it is never
     part of ``lint_path``, so the default gate + corpus lint are byte-identical.
     """
-    fm = _extract_frontmatter(text)
+    fm = _extract_frontmatter(text, rel)
     id_state = str((fm or {}).get("id_state") or "").strip().lower()
     if id_state == "provisional":
         return []  # placeholders by declaration — exempt
@@ -1308,7 +1362,7 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
     current = _parse_minor(framework_version)
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if not fm:
             continue
         status = str(fm.get("status", "")).strip()
@@ -1343,7 +1397,46 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
     return findings
 
 
-def _extract_frontmatter(text: str) -> dict | None:
+def _extract_frontmatter(text: str, rel: str | None = None) -> dict | None:
+    """The document's top-level metadata mapping, for either carrier.
+
+    ``rel`` selects the carrier by SUFFIX, not by sniffing the text. A ``.md``
+    file with no fence whose body happens to parse as a YAML mapping would
+    otherwise acquire a frontmatter it does not have — silently, because the
+    rules would then grade a document that never declared itself. Suffix is a
+    fact about the file; parseability is a coincidence. Omitting ``rel``
+    preserves the historical Markdown-only behaviour exactly.
+
+    **A ``.yaml`` instance has three shapes in practice** (measured across the
+    fixture corpus, `plans/GD15-CARRIER-CENSUS.md`), and all three are handled:
+
+    * **no fence** — the file is one YAML document; it *is* the mapping.
+    * **one leading ``---``** — a YAML document-start marker, not a terminated
+      frontmatter fence. Still one document.
+    * **two ``---``** — a genuine two-document stream, where the first document
+      is the frontmatter and the second is the body.
+
+    ``yaml.safe_load`` **raises** ``ComposerError`` on the third shape, which is
+    why this uses ``safe_load_all`` and merges. A design that used ``safe_load``
+    was refuted for exactly this: it turned six visible fixtures invisible and
+    would have dropped seven pinned warnings. ``CLAUDE.md`` § "Acceptance
+    harness" records the rule.
+
+    Merge order is first-document-wins for ``doc_id``-bearing keys: the
+    frontmatter document is the identity declaration, and the body must not be
+    able to override it.
+    """
+    if rel is not None and str(rel).lower().endswith((".yaml", ".yml")):
+        try:
+            docs = [d for d in yaml.safe_load_all(text) if isinstance(d, dict)]
+        except yaml.YAMLError:
+            return None
+        if not docs:
+            return None
+        merged: dict = {}
+        for doc in reversed(docs):  # earlier documents win
+            merged.update(doc)
+        return merged
     lines = text.splitlines()
     fm_lines, _ = _split_frontmatter(lines)
     if not fm_lines:
@@ -1375,7 +1468,7 @@ def _check_cascade(corpus: list[tuple[str, str]]) -> list[Finding]:
     non_brd: list[tuple[str, str, dict, str | None]] = []
 
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if not fm:
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1469,15 +1562,31 @@ def _check_required_template_sections(
     findings: list[Finding] = []
     if not artifact:
         return findings
-    fm = _extract_frontmatter(text)
+    fm = _extract_frontmatter(text, rel)
     if _is_index_doc(rel, fm):
         return findings
     targets = _load_section_targets(artifact, registry)
     if not targets:
         return findings
-    _, body = _split_frontmatter(text.splitlines())
-    # _section_word_counts() already returns only ## (level-2) headings.
-    present = {_normalise_heading(h) for h, _start, _wc in _section_word_counts(body)}
+    # A section is a `##` heading on the Markdown carrier and a TOP-LEVEL KEY on
+    # the YAML one — the same structural unit, named two ways. The required set
+    # is derived from the template's top-level keys either way
+    # (`_load_section_targets`), so only the *lookup* differs, not the contract.
+    #
+    # Not `_section_word_counts(body)` for YAML: 15 of the 24 `.yaml` fixtures
+    # carry `## …` lines that are YAML COMMENTS, so a heading scan reads them as
+    # sections and would report a document as structurally complete on the
+    # strength of its comments (`plans/GD15-CARRIER-CENSUS.md`).
+    if rel and str(rel).lower().endswith((".yaml", ".yml")):
+        present = {
+            _normalise_heading(k)
+            for k in (fm or {})
+            if isinstance(k, str) and not k.startswith("_")
+        }
+    else:
+        _, body = _split_frontmatter(text.splitlines())
+        # _section_word_counts() already returns only ## (level-2) headings.
+        present = {_normalise_heading(h) for h, _start, _wc in _section_word_counts(body)}
     for key in targets:
         if key not in present:
             findings.append(
@@ -1755,7 +1864,7 @@ def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
     doc_layer: dict[str, str] = {}
     docs: list[tuple[str, str]] = []  # (doc_id, text) for docs with a doc_id
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, _rel)
         doc_id = ""
         if fm:
             doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1868,7 +1977,7 @@ def _check_trace_resolution(
     doc_index: dict[str, str] = {}
     element_index: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = ""
         if fm:
             doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1890,7 +1999,7 @@ def _check_trace_resolution(
 
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if _is_index_doc(rel, fm):
             continue
         # Derive artifact's own layer-number for downstream-skip comparison.
@@ -2028,6 +2137,17 @@ def _doc_forward_reach(graph: EdgeGraph, start_doc: str) -> set[str]:
     return {graph.doc_layer.get(d, "") for d in reached}
 
 
+def _fr_elements(text: str, rel: str | None, fm: dict | None) -> list[FRElement]:
+    """Carrier-dispatching FR scan — the seam COV01 and COV03 share.
+
+    One function so the two rules cannot drift apart by carrier, which is the
+    failure GD-17's effective condition (clause b) is written to prevent.
+    """
+    if rel and str(rel).lower().endswith((".yaml", ".yml")):
+        return scan_fr_elements_yaml(fm or {})
+    return scan_fr_elements(text)
+
+
 def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
     """COV01 — forward coverage (CFB-PR-2 DD-6 rows 2-3).
 
@@ -2052,7 +2172,7 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         # Identify the BRD the same way the graph does (artifact_type, else the
         # doc_id prefix via _artifact_code) so a BRD authored without an explicit
         # artifact_type still gets gated rather than silently escaping.
@@ -2068,7 +2188,7 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
             continue
         reach = _doc_forward_reach(graph, doc_id)
         reaches_spec, reaches_iplan = "SPEC" in reach, "IPLAN" in reach
-        for fr in scan_fr_elements(text):
+        for fr in _fr_elements(text, rel, fm):
             # Escaped FRs (deferred / realized_by) never block (DD-5).
             if covered_state_of(fr) != CoveredState.AUTHORED:
                 continue
@@ -2138,7 +2258,7 @@ def _check_phase_leak(corpus: list[tuple[str, str]], mode: str = "build") -> lis
     reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         # Identify the BRD the same way COV01 / the graph does.
         if _artifact_code(fm) != "BRD":
             continue
@@ -2147,7 +2267,7 @@ def _check_phase_leak(corpus: list[tuple[str, str]], mode: str = "build") -> lis
             continue
         if reuse.get(doc_id, ("authored", ""))[0] == "referenced":
             continue
-        for fr in scan_fr_elements(text):
+        for fr in _fr_elements(text, rel, fm):
             # COV03 keys strictly on DEFERRED (a bare `Future` band). AUTHORED is
             # COV01's domain; REALIZED_BY is a positive coverage claim.
             if covered_state_of(fr) != CoveredState.DEFERRED:
@@ -2238,7 +2358,7 @@ def _reuse_map(corpus: list[tuple[str, str]]) -> dict[str, tuple[str, str]]:
     State defaults to ``authored`` when the block is absent (back-compatible)."""
     out: dict[str, tuple[str, str]] = {}
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text) or {}
+        fm = _extract_frontmatter(text, _rel) or {}
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if not doc_id:
             continue
@@ -2265,7 +2385,7 @@ def _check_reuse(corpus: list[tuple[str, str]]) -> list[Finding]:
     rels = {rel for rel, _ in corpus}
     rel_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text) or {}
+        fm = _extract_frontmatter(text, rel) or {}
         did = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if did:
             rel_by_doc.setdefault(did, rel)
@@ -2385,7 +2505,7 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
     rel_by_doc: dict[str, str] = {}
     text_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
@@ -2458,7 +2578,7 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     rel_by_doc: dict[str, str] = {}
     text_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
@@ -2475,7 +2595,7 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     # never pairs — the loophole stays closed.
     paired: set[str] = set()
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if _artifact_code(fm) != "TDD" or doc_id.endswith("-00"):
             continue
@@ -2549,7 +2669,7 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     declared: set[str] = set(build_edge_graph(stripped).element_host)
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if _artifact_code(fm) != "BRD":
             continue
         rows, malformed = _seed_disposition_rows(text)
@@ -2695,7 +2815,7 @@ def _check_ref_granularity(corpus: list[tuple[str, str]], mode: str = "build") -
     graph = build_edge_graph(corpus)
     rel_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)

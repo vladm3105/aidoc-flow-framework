@@ -13,6 +13,72 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-20 — The carrier changes where a rule LOOKS, never what it decides
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.44.0 → 0.45.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC. This GD-20 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate CHG
+  artifact.
+- **Issues:** #564 · **Census:** `plans/GD15-CARRIER-CENSUS.md`
+
+`GD-15` made YAML the mandatory instance format and changed no rule; `GD-17` gave that mandate
+an effective condition precisely because the rules could not yet read the mandated carrier.
+This is the enablement.
+
+**Three designs were refuted before this one**, all on facts rather than judgement, and the
+census that replaced the third is what made this tractable. Two of its findings are load-bearing
+here and are stated so they are not re-derived:
+
+1. **A `.yaml` instance has three shapes**, not one — no fence, a leading `---`
+   document-start marker, and a genuine two-document stream. `yaml.safe_load` **raises** on the
+   third, so `safe_load_all` + merge is required. A design using `safe_load` would have turned
+   six visible fixtures invisible and dropped seven pinned warnings.
+2. **`##` lines appear inside `.yaml` files as comments** — in 15 of 24 fixtures. So a heading
+   scan would report a document structurally complete on the strength of its comments.
+
+**Decision 1 — the carrier is selected by SUFFIX, never sniffed.** A `.md` file whose body
+happens to parse as a YAML mapping must not acquire a frontmatter it does not have. Suffix is a
+fact about the file; parseability is a coincidence.
+
+**Decision 2 — the hash input is a MIRROR, not a new vocabulary.** `norm(title)` ← `title`,
+`norm(description)` ← `capability`. The transform and the four-part input are unchanged, so the
+same content hashes the same on either carrier and a migration is ID-preserving.
+`capability` and not `description` because that is the key the template declares; mapping to an
+undeclared key would silently hash an empty description. Full table in
+`ID_NAMING_STANDARDS.md` §"Structured (YAML) carrier".
+
+**Decision 3 — `requirements[]` gains an optional `realized_by`.** Without it every
+YAML-authored requirement classified `AUTHORED`, so `COV01` became **unconditionally blocking**
+on the mandated carrier and an ADR-realized requirement had no way to declare itself. The
+markdown band's `realized_by:` token and this key are two surfaces for one value.
+
+**Decision 4 — a section is a `##` heading OR a top-level key.** The same structural unit named
+two ways; the *required* set is still derived from the template by `_load_section_targets`, so
+only the lookup differs and the contract does not.
+
+- **Authority:** GD-15, GD-17; `governance/ID_NAMING_STANDARDS.md` §"Hash algorithm";
+  `layers/01_BRD/BRD-TEMPLATE.yaml` `functional_requirements`; `tools/sdd_doc_lint`
+  (`_extract_frontmatter`, `_check_required_template_sections`, `scan_fr_elements_yaml`,
+  `_fr_elements`)
+- **Consequences:**
+  - **`tests/conformance/test_carrier_parity.py` is the per-layer carrier-parity assertion
+    GD-17 requires**, and it did not exist before. GD-17 also requires a **successor GD entry**
+    recording the effective condition as met — **this entry does NOT claim that**, because
+    parity is asserted only for the primitives changed here.
+  - **Two seams remain open** and are named rather than left implicit: `FM01` calls
+    `_split_frontmatter` **directly** and passes vacuously on a YAML instance, and
+    `scan_fr_content` behind `rehash_check` is Markdown-only. Until both close, GD-17's clause
+    (b) — *every rule returns the same verdict* — is not satisfied.
+  - **`rehash --check` still cannot see a `.yaml` file** (`rehash.py` globs `*.md`). The hash
+    contract for the structured carrier is *defined* here and *unverified*.
+  - **The Markdown path is unchanged**, asserted rather than assumed: the example corpus
+    reports byte-identical findings before and after.
+  - `tools/sdd_coverage.py` is a consumer **outside** the linter package and was threaded too;
+    it is vendored to no mirror, so no `__init__.py`-scoped sweep would have found it.
+
+---
+
 ## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
 
 - **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —
