@@ -791,7 +791,7 @@ def lint_text(
     # AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
     findings.extend(_check_frontmatter_consistency(text, rel))
     # AS10 — @diagram tag level cascade vs DIAGRAM_STANDARDS.md.
-    findings.extend(_check_diagram_level(text, artifact, rel))
+    findings.extend(_check_diagram_level(text, artifact, rel, registry))
     # STRUCT01 — required template sections present.
     findings.extend(_check_required_template_sections(rel, text, artifact, registry))
     return findings
@@ -816,6 +816,10 @@ _THRESHOLD_VALUE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|s|min|h|%|MB|GB|KB|req/s|r
 # associated with its own layer (BRD=L1, PRD=L2, SPEC=L3); ADR has no C4/DFD
 # level (decision bridge). 'sequence-*' tags are allowed on every layer.
 _DIAGRAM_TAG = re.compile(r"@diagram:\s*([a-z][a-z0-9]*(?:-[a-z0-9]+)+)")
+#: Fallback only. The authority is ``LAYER_REGISTRY.yaml`` ``c4_mapping[*].diagram_tags``
+#: — see ``_diagram_allowed()``. Kept so a registry that cannot be read degrades to
+#: today's behaviour instead of allowing everything, which is the direction that
+#: fails safe: an empty allowlist makes ``DG02`` reject, not accept.
 _DIAGRAM_ALLOWED = {
     "BRD": {"c4-l1", "dfd-l1"},
     "PRD": {"c4-l2", "dfd-l2"},
@@ -826,17 +830,64 @@ _DIAGRAM_ALLOWED = {
     "TDD": set(),
     "IPLAN": set(),
 }
+
+
+def _diagram_allowed(artifact: str, registry: Path | None = None) -> set:
+    """Per-layer diagram allowlist, read from the registry rather than hardcoded.
+
+    ``LAYER_REGISTRY.yaml`` carries ``c4_mapping[*].diagram_tags`` and the
+    registry's own README calls itself the single source of truth — but until
+    now **no code read that field**, and ``DG02``'s real authority was a literal
+    in this module. That made the diagram vocabulary a five-surface statement
+    with the executable one last (#552), the same shape as #565's ``extensions``
+    and #531's granularity rule.
+
+    Verified equivalent to the previous literal for all eight layers before the
+    switch, so this is a consolidation and not a behaviour change. ``PRD``'s
+    registry entry additionally lists ``sequence-sync``, which changes nothing:
+    ``_DIAGRAM_SEQUENCE`` allows any ``sequence-*`` tag on every layer.
+
+    Falls back to the literal when the registry is unreadable — the direction
+    that fails safe, since an empty allowlist makes ``DG02`` reject rather than
+    accept.
+    """
+    # Read the YAML directly: `_load_registry` returns (layers, doc_re, elem_re)
+    # and discards `c4_mapping` entirely, so it cannot serve this.
+    try:
+        path = registry or find_registry()
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except Exception:
+        return _DIAGRAM_ALLOWED.get(artifact, set())
+    mapping = (data or {}).get("c4_mapping")
+    if not isinstance(mapping, dict):
+        return _DIAGRAM_ALLOWED.get(artifact, set())
+    for entry in mapping.values():
+        if not isinstance(entry, dict):
+            continue
+        arts = entry.get("artifacts") or ([entry["artifact"]] if entry.get("artifact") else [])
+        if artifact not in arts:
+            continue
+        return {
+            str(tag).split(":", 1)[1].strip()
+            for tag in (entry.get("diagram_tags") or [])
+            if ":" in str(tag)
+        }
+    return _DIAGRAM_ALLOWED.get(artifact, set())
+
+
 _DIAGRAM_SEQUENCE = re.compile(r"^sequence-(sync|async|error|[a-z0-9-]+)$")
 
 
-def _check_diagram_level(text: str, artifact: str, rel: str) -> list[Finding]:
+def _check_diagram_level(
+    text: str, artifact: str, rel: str, registry: Path | None = None
+) -> list[Finding]:
     """AS10 — verify each ``@diagram: <type>`` tag uses a type permitted on
     this artifact's layer (per ``framework/governance/DIAGRAM_STANDARDS.md``).
     ``sequence-*`` tags are universally allowed; C4/DFD tags must match the
     layer's level (BRD→L1, PRD→L2, SPEC→L3); ADR has no C4/DFD level.
     """
     findings: list[Finding] = []
-    allowed = _DIAGRAM_ALLOWED.get(artifact, set())
+    allowed = _diagram_allowed(artifact, registry)
     for i, line in enumerate(text.splitlines(), 1):
         for m in _DIAGRAM_TAG.finditer(line):
             tag = m.group(1)

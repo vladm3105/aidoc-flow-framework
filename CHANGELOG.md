@@ -12,6 +12,36 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — DG02's diagram allowlist now comes from the registry that claims to own it (#552) (2026-08-29)
+
+`LAYER_REGISTRY.yaml` carries `c4_mapping[*].diagram_tags` and the registry's own README calls
+itself the single source of truth. **No code read that field.** `DG02`'s real authority was a
+literal in `tools/sdd_doc_lint`, which made the diagram vocabulary a **five-surface** statement
+with the executable one last.
+
+That is the **third instance of one shape** this session, and the pattern is worth naming: a
+machine-readable field that *looks* authoritative and is consumed by nothing. The others are
+[#565](https://github.com/vladm3105/aidoc-flow-framework/issues/565) (`extensions` is the
+normative instance-format field and no linter reads it) and
+[#531](https://github.com/vladm3105/aidoc-flow-framework/issues/531) (a granularity rule stated
+in four places, executable in one).
+
+**Verified equivalent for all eight layers before the switch**, so this is a consolidation and
+not a behaviour change. PRD's registry entry additionally lists `sequence-sync`, which changes
+nothing — `_DIAGRAM_SEQUENCE` allows any `sequence-*` tag on every layer regardless.
+
+The literal survives as a **fallback for an unreadable registry**, which is the direction that
+fails safe: an empty allowlist makes `DG02` *reject*, not accept.
+
+⚠️ **This closes one half of #552.** The other half — six layers declare a `diagram_standard`
+and one ships an authoring slot — is **not** fixed here and needs a vocabulary decision first:
+`stateDiagram-v2` and `flowchart` are recommended by `EARS-TEMPLATE.yaml` and have **no
+`@diagram:` tag form at all**, so a tagged slot on EARS, BDD or ADR would emit a `DG02` error on
+the template's own example content. Measured and recorded on the issue.
+
+`tools/` and `tests/` only — no `framework/**` edit, so `GATE-SPEC-E005` does not fire and no
+version bump is involved.
+
 ### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
 
 **Release provenance — read this before reasoning about framework version history.** Spec
