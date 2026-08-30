@@ -13,6 +13,14 @@ metadata:
   schema_version: "1.0"
   document_type: "iplan-document"
   layer: 8
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 2 here — FEWER,
+  # not more. IPLAN is the one layer that diverges DOWNWARD: 9 of its 11
+  # `_size_target` keys are `_required: false` or `_required_when_subtype:`, so
+  # the derivation subtracts where BRD/ADR/EARS add required unnumbered
+  # backmatter. Do NOT read the generalisation "differs => has backmatter" here;
+  # it gets IPLAN exactly backwards. The two numbers differing is correct, not a
+  # defect — see governance/LINT_RULES.md §"What STRUCT01 requires".
   total_sections: 6
   last_updated: "2026-04-29"
   tags:

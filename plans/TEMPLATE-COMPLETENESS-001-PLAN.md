@@ -421,9 +421,16 @@ escalated decision is resolved.
 
 **Target version moved again, to `0.46.0`.** The `GD-18` id is unchanged. Four spec PRs were
 open simultaneously and three of them (this one, `GD-20`/`GD-21`, `GD-22`) each claimed
-`0.45.0` while a fourth claimed `0.46.0`; only one can hold a version. Founder decision: land
-all four as **one combined `0.46.0` release** rather than sequence them across four bumps, so
-`0.45.0` is skipped and never becomes a value of `framework/VERSION`.
+`0.45.0` while a fourth claimed `0.46.0`; only one can hold a version, because `GATE-SPEC-E005`
+is a *path* check. `0.45.0` is skipped and never becomes a value of `framework/VERSION`.
 
 This is the same correct-forward handling `D-0078` applies to `0.42.0` — a skipped version is
 recorded, not back-filled, and the `2026-08-28` note above is left as written.
+
+**Correction — 2026-08-30.** The sentence above originally said the founder decision was to land
+**all four** as one combined `0.46.0` release. That is not what shipped, and leaving it would
+make this plan the one surface still describing the superseded shape. **This plan (GD-18) shipped
+ALONE as `0.46.0`** (PR #575). The other three PRs were then combined into a single `0.47.0`
+release (PR #586, GD-19 + GD-20 + GD-21 + GD-22) — because `GATE-SPEC-E005` requires
+`framework/VERSION` in each PR's changed-file list, so a second PR could not also hold `0.46.0`.
+Full reasoning in `plans/DECISIONS.md` **D-0082**.

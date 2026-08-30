@@ -22,6 +22,7 @@ detection contract.
 | `prd-broken-upstream-ref.md` | PRD | References well-formed but non-existent `@brd: BRD.99.01.aaaa` | `doc-validator` (live) reports unresolved reference | ❌ live |
 | `ears-score-7.md` | EARS | Vague content + placeholders → low audit score; also tripwires several lint codes | `STRUCT01`/`PH01`/`TAG01` + `doc-ears-audit` (live) reports low score | ✅ partial / live for score |
 | `adr-missing-sequence-diagram.md` | ADR | Missing `sequenceDiagram`; lint catches several missing sections incidentally | `STRUCT01` + `doc-adr-audit` (live) reports diagram contract violation | ✅ partial / live for diagram |
+| `brd-fr-cap-exceeded.md` | BRD | Carries 7 functional requirements against GD-14's cap of 5 | `FRCAP01` (advisory `warning`, never blocking) | ✅ |
 | `chain-trace-broken/` | full chain | PRD references well-formed `@brd: BRD.01.99.f7f7` with no matching section/hash in BRD | `doc-validator` (live) reports broken trace | ❌ live |
 
 ## Detection layers
@@ -29,6 +30,7 @@ detection contract.
 Fixtures split into two detection categories:
 
 - **Deterministic (lint-based)**: `brd-broken-sections.md`, `brd-broken-tags.md`,
+  `brd-templated-ids.md`, `brd-fr-cap-exceeded.md`,
   `ears-score-7.md` (partial), `adr-missing-sequence-diagram.md` (partial) —
   detected by `sdd_doc_lint` without any LLM cost. Phase 1.2 can verify
   these in `--no-live` mode.

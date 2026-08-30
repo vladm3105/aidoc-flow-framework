@@ -1295,6 +1295,7 @@ NEGATIVE_FIXTURES=(
   "prd-broken-upstream-ref|prd-broken-upstream-ref.md|validator"
   "ears-score-7|ears-score-7.md|audit:doc-ears-audit"
   "adr-missing-sequence-diagram|adr-missing-sequence-diagram.md|lint:STRUCT01"
+  "brd-fr-cap-exceeded|brd-fr-cap-exceeded.md|lint:FRCAP01"
   "chain-trace-broken|chain-trace-broken|validator"
 )
 

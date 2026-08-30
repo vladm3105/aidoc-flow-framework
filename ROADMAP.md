@@ -109,6 +109,20 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Framework spec `0.46.0` and `0.47.0` (2026-08-30).** Five governance decisions
+  across two releases. `0.46.0` shipped **GD-18** alone (derived test paths #550,
+  threshold carriers #551, IPLAN status ownership #569, GD-13's figures #532).
+  `0.47.0` combined **GD-19** (`FRCAP01`, GD-14's 5-FR cap becomes measurable
+  without becoming a gate — #540), **GD-20** (the carrier changes where a rule
+  *looks*, never what it decides; the `_fr_elements` seam `COV01` and `COV03`
+  share — #564), **GD-21** (`total_sections` counts *numbered* sections; STRUCT01's
+  required set is derived and four layers diverge, IPLAN *downward* — #557) and
+  **GD-22** (non-C4 diagram kinds valid on every layer; DG02's allowlist comes
+  from the registry that claims to own it — #552).
+  ⚠️ **`0.45.0` was skipped** and never became a value of `framework/VERSION`:
+  `GATE-SPEC-E005` is a path check, so one version cannot span four PRs. See
+  `plans/DECISIONS.md` **D-0082**.
+
 - **PLUGIN-PREPROD-001 (2026-08-02, plugin `0.25.0`).** The pre-production
   hardening that unblocked the plugin deploy: a five-lens review returned
   **BLOCKER** on 2026-07-31 with 23 findings, and **all 23 are closed** across

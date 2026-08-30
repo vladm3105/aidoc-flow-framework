@@ -26,6 +26,13 @@ metadata:
   document_type: "brd-document"
   layer: 1
   lifecycle: mvp-prod-newmvp
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 17 here,
+  # because required unnumbered backmatter (`diagrams` + `appendix`) is additional.
+  # The two numbers differing is correct, not a defect — see
+  # governance/LINT_RULES.md §"What STRUCT01 requires". Do NOT reconcile them
+  # with `_required: false`: that marks OPTIONAL content and would remove a
+  # live assertion.
   total_sections: 16
   last_updated: "2026-03-29"
   validation:
@@ -623,6 +630,15 @@ functional_requirements:
       title: "[MVP Core Feature 1 — Business Capability Name]"
       capability: "[One-sentence description of business capability]"
       priority: P1
+      # OPTIONAL escape (GD-20). Names the layer that realizes this requirement
+      # when it is NOT picked up on the SPEC path — an ADR-only decision, an NFR,
+      # or infra with no dedicated SPEC. Declares the requirement covered without
+      # requiring a SPEC, exactly as the authored-markdown band's
+      # `realized_by: <LAYER>` token does. Omit it for an ordinary requirement.
+      # This key and the markdown band token are two surfaces for ONE value —
+      # without it a YAML-authored requirement has no way to declare an off-SPEC
+      # realization, and COV01 becomes unconditionally blocking on this carrier.
+      realized_by: null  # <LAYER> | null
       complexity:
         _guidance: |
           Rating 1-5 based on business factors:

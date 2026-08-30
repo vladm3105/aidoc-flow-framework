@@ -79,7 +79,7 @@ Use the following model across the MVP → PROD → NEW MVP lifecycle.
 Each required diagram block MUST include an intent header immediately above the Mermaid block.
 
 Required fields:
-- `diagram_type`: `c4` | `dfd` | `sequence`
+- `diagram_type`: `c4` | `dfd` | `sequence` | `state` | `flow`
 - `level`: `l1` | `l2` | `l3` | `l4` (as applicable, aligned: C4 level = DFD level)
 - `scope_boundary`: short boundary definition
 - `upstream_refs`: source requirement/decision references
@@ -89,6 +89,14 @@ Required machine tags adjacent to diagram blocks:
 - `@diagram: c4-l1 | c4-l2 | c4-l3 | c4-l4`
 - `@diagram: dfd-l1 | dfd-l2 | dfd-l3`
 - `@diagram: sequence-sync | sequence-async | sequence-error`
+- `@diagram: state-*` and `@diagram: flow-*` — non-C4 kinds (GD-22)
+
+**Per-layer policing applies to C4 and DFD levels only.** `sequence-*`, `state-*` and `flow-*`
+are valid on **every** layer: they describe behaviour, not system structure, so there is no
+level to align to a layer. `DG02` enforces exactly this — the per-layer allowlist governs the
+`c4-*` / `dfd-*` tags and is read from `LAYER_REGISTRY.yaml` `c4_mapping[*].diagram_tags`
+(GD-22, #552), which is **the authority for that allowlist**; this document remains the
+authority for the tag vocabulary and the intent-header contract.
 
 Validation severity defaults:
 - Error: missing mandatory diagram type for the layer/section

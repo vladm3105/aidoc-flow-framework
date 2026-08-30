@@ -306,6 +306,8 @@ Per-example additions, if any, live under
 | `prd-broken-upstream-ref.md` | References non-existent `@brd:BRD.99.01.aaaa` | `doc-validator` reports unresolved reference |
 | `ears-score-7.md` | Vague content forces audit score < 50 | `doc-ears-audit` reports findings |
 | `adr-missing-sequence-diagram.md` | No required `sequenceDiagram` | `doc-adr-audit` reports diagram contract violation |
+| `brd-templated-ids.md` | Produced artifact carries templated placeholder IDs (`BDD.01.03.xxxx`) | `sdd_doc_lint` reports ID03 + ID01 |
+| `brd-fr-cap-exceeded.md` | 7 functional requirements against GD-14's cap of 5 | `sdd_doc_lint` reports FRCAP01 (advisory `warning`) |
 | `chain-trace-broken/` | Mid-cascade `@brd` reference to non-existent upstream | `doc-validator` reports broken trace |
 
 For each fixture: invoke the relevant audit/lint skill, assert it
