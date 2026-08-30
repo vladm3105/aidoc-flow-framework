@@ -72,6 +72,7 @@ jobs:
         !platforms/hermes/prompts
         !platforms/hermes/skills
         !tools/sdd_doc_lint/fixtures
+        !tests/conformance/fixtures/refgran
         !examples/*/.aidoc
       # PRIVATE consumers add this inside the existing `with:` block:
       # runner_labels: '["self-hosted", "ci-runner", "single-use"]'
