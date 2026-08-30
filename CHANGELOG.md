@@ -12,6 +12,209 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.44.0 → 0.46.0` — test paths derive from the SPEC's `language:`, SPEC and TDD get a threshold carrier, IPLAN status becomes a written contract (GD-18) (2026-08-28)
+
+Three verified spec gaps and one erratum, in one release. Each independently trips
+`GATE-SPEC-E005`, so shipping them apart would have cost four version bumps and four ~160-file
+fanouts. They are otherwise unrelated; `GD-18` asserts them against GD-11's four conditions for
+a permitted fold rather than arguing cost alone.
+
+**Test-file layout is no longer prescribed ([#550](https://github.com/vladm3105/aidoc-flow-framework/issues/550)).**
+`TDD-TEMPLATE.yaml` and `SPEC-TEMPLATE.yaml` hardcoded **ten** Python test paths and **seven**
+pytest-shaped function names — the last place in the chain where a language survived, its own
+`TDD-MVP-TEMPLATE.yaml` having already been genericized. All seventeen become placeholders in
+the MVP variant's bare angle-bracket form. The decision is **not** "support more languages",
+which is what the consumer report asked for: per-case `language:` / `test_framework:` fields
+would re-pin the toolchain one layer down and give it two owners. SPEC owns `language:`; TDD
+and IPLAN derive from it. `framework/TESTING_STRATEGY_TDD.md` was silent on the subject — so
+the template change would have pointed at nothing — and now states the derivation with Python,
+Go and TypeScript forms as equally conformant.
+
+**SPEC and TDD gain `threshold_references` ([#551](https://github.com/vladm3105/aidoc-flow-framework/issues/551)).**
+`THRESHOLD_NAMING_RULES.md` designates five layers as threshold consumers; two of them had
+nowhere to put the citation. EARS's block is copied in shape. `TDD-TEMPLATE.yaml`'s existing
+`thresholds:` section is **untouched** and holds a different concept — coverage gates, not
+`@threshold:` citations — and that name collision is why the gap survived. Neither addition
+carries `_size_target`, so `STRUCT01`'s derived required-section set is unchanged (verified:
+SPEC 8, TDD 7).
+
+**[#557](https://github.com/vladm3105/aidoc-flow-framework/issues/557) was in this bundle and
+was removed on measurement — its premise is false.** It reports that `STRUCT01` derives six
+required EARS sections against a declared five, and proposes marking `glossary:`
+`_required: false` on the grounds that "neither [EARS artifact] has a `glossary` section at
+all". **Both do**, so the marker would have removed a *live* assertion rather than a latent one
+— and the acceptance harness would have gone on passing while asserting less. Measured across
+all eight layers, EARS is also not the outlier: `total_sections` counts **numbered** sections,
+and BRD (17 vs 16) and ADR (12 vs 10) have exactly the same shape for the same reason. SPEC and
+TDD agree only because they carry no backmatter. Detail in `GD-18` item 4; the issue stays open
+and needs re-scoping.
+
+**An IPLAN's `status` is a write target, not a report field ([#569](https://github.com/vladm3105/aidoc-flow-framework/issues/569)).**
+Real consumer feedback: an executor created 97 files across 8 IPLANs, reported COMPLETE, and left
+every `file_manifest.files[].status` at `NOT_STARTED` — while the index showed
+`files_done == files_declared`, which masked it. **The framework had no contract to violate**,
+which is the actual defect: the template declared the fields and the session-startup protocol
+read them, but nothing said who writes them or when. `file_manifest._guidance` now states the
+transitions, that `verified: true` is a separate assertion from `status: DONE` ("the file exists"
+is not verification), and that an index may aggregate these values but is never where they are
+recorded first. This is a contract, not enforcement — nothing yet checks a manifest against the
+filesystem.
+
+**Two GD-13 corrections ([#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532)),
+and a correction forward to the published `0.41.3` entry.** GD-13's title said "Two governance
+documents" while its own body said "Six authoring surfaces" and enumerated them. Separately its
+successor sentence claimed a governance-prose guard "would have caught all six"; it reaches
+**two** — the other four are two auditor playbooks, a layer template and a plugin agent, none of
+which such a guard reads.
+
+> **Correcting the released `0.41.3` entry forward, not in place.** That entry does not merely
+> under-enumerate — it **asserts** "These two governance docs had drifted from that ratified
+> rule", carrying the same wrong claim GD-13's title carried. The six are: `governance/ID_NAMING_STANDARDS.md`,
+> `governance/TRACEABILITY.md`, `playbooks/05_ADR/auditor.md`, `playbooks/07_TDD/auditor.md`,
+> `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` and
+> `platforms/claude-code-plugin/agents/requirements-analyst.md`. `framework/v0.41.3` is a
+> published, non-draft GitHub release, so its entry is **left unedited** — per the founder
+> decision of 2026-08-28, option (b).
+
+### Fixed — a framework spec bump could not fire the hook that propagates it (#574) (2026-08-29)
+
+`pre-commit` applies the global `exclude:` **after** each hook's `files:`, so a path a hook
+explicitly names can be silently removed from its own trigger. `sync-version-refs` declares
+`files: '^(platforms/[^/]+/VERSION|framework/VERSION)$'` while the exclude began
+`^(legacy/|framework/|…` — killing the `framework/VERSION` half. A **platform** bump fired the
+hook; a **framework spec** bump did not.
+
+Measured end-to-end in a throwaway clone: bumping only `framework/VERSION` propagated to **1**
+file before (i.e. nothing) and **114** after, including `docs/PARITY.md`, `README.md` and both
+`platforms/*/FRAMEWORK_SPEC_VERSION` pins.
+
+Fixed with a negative lookahead sparing exactly that one path —
+`framework/(?!VERSION$)` — so the GATE-SPEC-governed spec tree and its byte-identical vendored
+mirror stay excluded from every autofixing hook.
+
+**It was a missing safety net, not a live breakage:** the propagation is also run by hand as
+`CLAUDE.md`'s recorded three-step sequence, so shipped bumps were correct. What was dead is the
+automation that would catch a contributor who forgets that step.
+
+`tests/conformance/test_precommit_trigger_reachability.py` asserts the **invariant** rather than
+the instance: every hook's `files:` pattern must match at least one tracked file that survives
+the exclude. Mutation-tested in both directions — reverting the carve-out fails it, and
+over-widening the exclude fails a companion assertion that the spec tree is still protected.
+
+### Fixed — forward coverage was exercised by nothing; 15 acceptance fixtures now author §7 in the normative form (#577) (2026-08-29)
+
+`COV01` — *every in-scope BRD functional requirement must reach a SPEC and an IPLAN*, an error
+in `gate-code` — **fired on zero acceptance targets**. Not "passed": it graded nothing, because
+every fixture authored §7 as `### <ID> <Title>` level-3 headings while
+`BRD-TEMPLATE.yaml` `functional_requirements._authored_form` normatively prescribes
+`- **<ID> — <Title>** (<band>): …`. Of 27 fixture files with an FR heading, **none** yielded a
+single requirement, and no manifest pinned a `COV01`.
+
+**The scanner was right; the fixtures were not.** 15 files re-authored into the normative form,
+including the `(P1)` band and the `Acceptance criteria:` boundary that bounds the gated set.
+
+`COV01` is now **live** on `fullpath/golden_chain` — the one target with a complete
+BRD→…→IPLAN graph — and it is quiet there because it is *satisfied*, not because it is blind.
+Proven both ways: injecting an uncovered `(P1)` FR produces a `COV01` error; the unmodified
+chain produces none.
+
+The per-layer targets remain unexercised for a **different**, already-recorded reason: their
+`.yaml` downstreams carry an unterminated `---` fence, so `_extract_frontmatter` returns `None`,
+they are invisible to `build_edge_graph`, and their BRD's forward reach never includes SPEC.
+That repair is #478's, and it is measured there as adding findings and moving the manifest.
+
+`tests/conformance/test_forward_coverage_is_exercised.py` asserts **liveness, not silence** —
+the fixtures must yield FRs *and* an uncovered FR must actually produce a finding. Asserting
+only that the corpus is clean is what let the blind state persist, because a blind gate and a
+satisfied gate are both quiet. Mutation-tested: reverting one fixture to the heading form
+fails it.
+
+**No manifest changed and no corpus finding moved** — verified.
+
+### Fixed — three acceptance goldens were invisible to the trace graph; the fence repair makes 14 hidden warnings visible (#478) (2026-08-29)
+
+`layer_06_spec/valid/SPEC-01_golden.yaml`, `layer_07_tdd/valid/TDD-01_golden.yaml` and
+`layer_08_iplan/valid/IPLAN-01_golden.yaml` each carried a **single** `---` — a YAML
+document-start marker, not a terminated frontmatter fence — and no `doc_id`. So
+`_extract_frontmatter` returned `None`, `build_edge_graph` dropped them, and their upstream
+BRD's forward reach stopped short of the layer the target exists to test:
+
+```
+layer_06_spec/valid   BRD-01 reach BEFORE ['ADR','BDD','EARS','PRD']
+                                    AFTER ['ADR','BDD','EARS','PRD','SPEC']
+layer_08_iplan/valid                AFTER ['ADR','BDD','EARS','IPLAN','PRD','SPEC','TDD']
+```
+
+Repaired with a minimal terminated fence carrying **only** `doc_id`; the body — `metadata`
+included — is untouched, because the per-layer tests assert on `metadata` in the body.
+
+**The repair is not benign, and #478 did not record why.** Making these two-document streams
+broke four per-layer tests that parsed them with a bare `yaml.safe_load`, which raises
+`ComposerError` on a stream — the trap `CLAUDE.md` § "Acceptance harness" records as *"walk them
+with `safe_load_all`"*. `_harness.py` already carried frontmatter-stripping logic **twice**; it
+is now extracted as `load_layer_document()` and the four call sites use it. Reuse, not new
+authoring.
+
+**14 previously-hidden warnings are now pinned** (manifests go 5 → 6, 5 → 11, 10 → 13; a
+`layer_06_spec__valid.yaml` manifest is created, matching #478's predicted 0 → 6). Every entry
+carries a `reason` stating that it is **pre-existing debt the repair made visible, not new
+debt**, and what would clear it. The delta was computed by diffing emitted against pinned rather
+than reasoned by hand — the hand pass produced duplicate keys the harness rejected.
+
+Together with #577 this makes `COV01` live on `layer_08_iplan/valid` as well as
+`fullpath/golden_chain`. `layer_06`/`layer_07` contain no IPLAN, so forward coverage is
+legitimately **inapplicable** there rather than blind.
+
+### Changed — Framework Spec `0.43.0 → 0.44.0` — instance format gets one normative source, and its mandate an effective condition (GD-17) (2026-08-28)
+
+**Release provenance — read this before reasoning about framework version history.** Spec
+`0.42.0` **was never a value of `framework/VERSION`**: the file moved directly from `0.41.3` to
+`0.43.0`, so the `0.41.3 → 0.42.0` entry below documents a transition no commit realized. Spec
+`0.43.0` was real but **was never tagged**. `framework/v0.44.0` is therefore the **first
+framework tag since `framework/v0.41.3`** (2026-08-24), and it carries the content of all three.
+Per the founder decision on
+[#558](https://github.com/vladm3105/aidoc-flow-framework/issues/558) (2026-08-28), the published
+entries below are **corrected forward here and left unedited** in place.
+
+**The defect.** `GD-15` (spec `0.43.0`) made YAML the mandatory instance format for layers 1-8
+and, in the same entry, declined to adopt the frontmatter contract that makes such an instance
+legible to any rule. Measured: a BRD authored exactly as `BRD-TEMPLATE.yaml` prescribes produced
+**17 `STRUCT01` errors** while the identical content as Markdown produced **zero**, and `COV01`
+discovered **0** functional requirements against 1 — simultaneously unpassable and blind on the
+format the spec mandated. Seven spec surfaces asserted the mandate; two contradicted the registry.
+
+**The change (`GD-17`).**
+
+- `LAYER_REGISTRY.yaml` `extensions` is now the **single normative authority** for instance
+  format. The other six surfaces state the value and cross-reference it; none re-specifies it —
+  applying **GD-09 rule 2**, so each layer keeps the statement an author actually reads.
+- The mandate's **effective condition is an outcome, not a component list**: it takes effect when
+  a reference instance in each layer's `extensions` format lints clean **and** yields the same
+  element and coverage results as the Markdown form (carrier parity). Three successive
+  enumerations were each short; an outcome cannot be under-enumerated. Operationally this is
+  [#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564).
+- Two filename claims repaired: `layers/01_BRD/README.md` said `BRD-NN_*.md` six lines before
+  saying BRDs are authored in YAML; `layers/04_BDD/BDD-TEMPLATE.yaml` named the produced instance
+  `BDD-NN.md`. The BDD sentence describes a ```yaml **fence** — the in-force extraction path — so
+  the extension claim was **removed** rather than switched to `.yaml`, which would have asserted a
+  form the gate rejects.
+- `tests/conformance/test_instance_format_ssot.py` guards the negative property, with mutation
+  tests on both exemptions (index mentions, exempt at the **mention** level; and `DECISIONS.md`).
+
+**Not changed.** The example corpus and acceptance goldens remain `.md` and are **conformant** —
+the mandate is not yet in effect. This is what unblocks
+[#555](https://github.com/vladm3105/aidoc-flow-framework/issues/555), whose regeneration would
+otherwise have produced ~17 errors per BRD. Scope is the spec only; platform authoring surfaces
+must add their own lock.
+
+### Fixed — the `fw_prev` doc-currency trap named the wrong file in two places (2026-08-28)
+
+`scripts/sync-version-refs.sh` derives `fw_prev` from `docs/PARITY.md`, a change made by issue #386. `fw_prev` gates one block of the framework-spec fanout — `CLAUDE.md`, `README.md`, `docs/PARITY.md` itself, both platform READMEs and a conformance literal. It does **not** gate the three loops below it (`FRAMEWORK_SPEC_VERSION`, the 52 SKILL frontmatters, the playbooks), each of which has its own detector. Two narrative surfaces went on describing the pre-#386 behaviour and named `CLAUDE.md` as the source: the script's own header comment and `CLAUDE.md` § "Durable traps".
+
+The wording misled in both directions at once. It warned readers off hand-editing `CLAUDE.md`, which #386 made harmless, and said nothing about `docs/PARITY.md` — which, being both the detector's source and one of its targets, makes the gate compare equal and skip that whole block when pre-edited. Silently: the ungated loops still run, so the script prints `version-reference sync applied` and exits 0. Because `CLAUDE.md` is auto-loaded every session and its § "Durable traps" preamble tells readers not to re-derive its entries, the stale claim was carried into a plan draft before an independent review opened the script.
+
+Corrected in both surfaces, with the superseded wording marked rather than silently replaced, and **cited by name rather than by line number** — the first draft of this very fix shipped a line citation that its own edit invalidated, which is the precedent the script already records at its `#405` note. Comment-and-prose only; no behaviour change. Issue #556.
+
 ### Changed — Framework Spec `0.42.0 → 0.43.0` — YAML is the normative artifact format (GD-15); IPLAN gains a `tdd_ref` TDD-case carrier (GD-16) (2026-08-26)
 
 Two spec decisions ship together, plus the linter defect that blocked the second.

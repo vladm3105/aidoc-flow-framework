@@ -187,13 +187,18 @@ tdd_contracts:
   _guidance: |
     Reference the TDD document that will define test cases for this SPEC component.
     TDD (Layer 7) defines test inputs, expected outputs, edge cases, and thresholds.
+
+    Test-file paths follow the conventions of the language and framework declared
+    in this document's own `language:` field (SPEC owns the toolchain). Do NOT
+    re-pin a language here — write the path in the form the project's own
+    toolchain uses.
   tdd_document: "@tdd: TDD-NN"
   test_files:
-    - path: "tests/unit/test_[module].py"
+    - path: "<unit test path, per the language: declared above>"
       covers: "[Functions/classes tested]"
-    - path: "tests/integration/test_[module].py"
+    - path: "<integration test path, per the language: declared above>"
       covers: "[Integration points tested]"
-    - path: "tests/e2e/test_[workflow].py"
+    - path: "<end-to-end test path, per the language: declared above>"
       covers: "[BDD scenarios tested]"
 
 # =============================================================================
@@ -226,6 +231,13 @@ traceability:
       - "@discoverability: SPEC-NN (short rationale)"
     chg:
       - "@chg: CHG-NN"
+
+  threshold_references:
+    _guidance: "Use the @threshold: convention. Do NOT reference PRD or ADR section numbers."
+    items:
+      - tag: "@threshold: PRD.NN.perf.category.key"
+        category: "Timing"
+        value: "[NN]ms"
   health_score:
     tdd_ready: "[X]%"
     target_score: ">=90/100"  # advisory readability target, not a merge gate

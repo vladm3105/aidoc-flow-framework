@@ -10,6 +10,97 @@ graduation.
 
 ---
 
+## D-0081 — Both secret-scanning knobs are to be ON; the REST API silently refuses, so it is a UI change
+
+**Date:** 2026-08-29 · **Issue:** #467 · **Decider:** founder (in session)
+
+**Decision: enable `secret_scanning_non_provider_patterns` and
+`secret_scanning_validity_checks`.** #467 framed this as a posture choice nobody had made
+explicitly rather than a defect, and the choice is now made.
+
+**It could not be executed from here, and the failure mode is worth recording.** A
+`PATCH /repos/{owner}/{repo}` carrying either knob returns **`200` with the repository object
+and the values unchanged** — no error, no warning, no `message` field. Verified by a fresh
+`GET` after each attempt, not by trusting the response. Both bracket-style `-f` parameters and a
+proper nested JSON body behave identically, so it is not a request-shape problem.
+
+The token carries `repo` scope and `permissions.admin: true` on the repository, so this is a
+feature-availability limit rather than an authorisation error — but GitHub reports it as
+success either way. **The change has to be made in Settings → Code security.**
+
+*This is the `--body -` lesson in a different API.* A write that returns 200 and does nothing is
+indistinguishable from a write that worked, unless you read the artifact back. Anyone scripting
+repository-settings changes should assume the same and verify with a separate `GET`.
+
+**Fleet note, measured while diagnosing:** the two keys are *present and disabled* on
+`aidoc-flow-framework` and `aidoc-flow-ci`, and **absent entirely** from the API response for
+`aidoc-flow-operations` and `aidoc-flow`. So the setting's availability is not uniform across
+the workspace, and a fleet-wide posture claim cannot be made from one repository's response.
+
+**Consequence.** `SECURITY.md` now states both knobs, what each being off actually costs, and
+why the in-repo scanners (`detect-secrets` + `detect-private-key` as required hooks, and
+`secret-scan.yml` over full history) make this a *narrowing* rather than an absence. #467 stays
+open until the UI toggle is made; it is no longer blocked on a decision, only on a click.
+
+## D-0080 — A `warning`-severity lint rule is not a grace window in this repo, and FMT01 proves it
+
+**Date:** 2026-08-28 · **Issue:** #565 · **Context:** `TEMPLATE-COMPLETENESS-001` implementation
+
+`#565`'s fix shape reasons that `FMT01` "**must ship `warning`, not `error`**", because every
+layer declares `extensions: [.yaml]` while the corpus is 100% `.md`, so an error-severity rule
+"turns the corpus and every acceptance golden red on the commit that introduces it". The
+severity choice is right; **the inference that `warning` is therefore safe is wrong here.**
+
+`tests/acceptance/_harness.py` `assert_lint_matches_manifest` compares the `warning` multiset
+**in both directions** — a new warning fails a target, and a pinned warning that stops firing
+also fails it. Its own docstring says so, and the design is deliberate ("so it cannot rot into
+an excuse list"). So a warning reddens an acceptance target exactly as an error does.
+
+Measured: **55 `.md` acceptance fixtures** and **11 `.md` corpus files**. Shipping `FMT01` at
+`warning` would mean pinning 55+ brand-new warnings into the manifests — which is the debt
+`#555`'s regeneration exists to remove, recorded as the very thing that would then have to
+unpin them.
+
+**Consequence for sequencing.** `#565` is not merely "after `#564`"; it is effectively behind
+`#555`. The correct order is `#564` (carrier-aware primitives) → `#555` (regenerate the corpus
+and goldens to `.yaml`) → `#565` (`FMT01`, which then fires on nothing). It was granted a slot
+in the `0.46.0` bundle and **excluded on this measurement** rather than on effort.
+
+**The general rule, which is the reusable part.** `OKF-CONFORMANCE-001-DESIGN.md` already
+recorded it for its own `OKF01`/`OKF02` — *"There is no warning-based grace window … grace comes
+from ordering, not from severity"* — and it was rediscovered here for a different rule. Any new
+lint rule that would fire on existing artifacts must land **after** the artifacts are fixed,
+whatever its severity. Severity controls whether the framework's *gate* fails; it does not
+control whether the *acceptance suite* fails.
+
+## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
+
+**Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)
+
+**The state.** `framework/VERSION` moved `0.41.3 → 0.43.0` in one commit. Spec `0.42.0` was
+**never a value of the file**, yet `CHANGELOG.md` documents a `0.41.3 → 0.42.0` release and GD-14
+is ratified against it. `0.43.0` was real but never tagged. Latest tag: `framework/v0.41.3`.
+
+**Decision — option 3 of the three offered on #558.** Tag neither retroactively. The next real
+release carries all three and states the history in its notes. No published CHANGELOG entry is
+edited.
+
+**Why not the alternatives.** Tagging `0.42.0` retroactively would put a tag on a commit whose
+`VERSION` file reads `0.41.3` — accurate to the changelog, false to the tree. Editing the
+published `0.42.0` entry rewrites shipped history, which the same founder had already rejected on
+`TEMPLATE-COMPLETENESS-001` ("correct forward inside the new entry; do not rewrite the released
+`0.41.3` entry"). This decision applies that precedent one release on.
+
+**What executed it.** `INSTANCE-FORMAT-SSOT-001` — the `0.44.0` CHANGELOG entry carries the
+provenance paragraph; `GD-17` states its own SemVer pair explicitly, which GD-15 and GD-16 both
+omitted. `framework/v0.44.0` is the first framework tag since `framework/v0.41.3`.
+
+**Standing consequence.** `GATE-SPEC` has **no release step** — E001..E008 are all diff-local, so
+nothing checks that a superseded version was ever published. That gap is what produced the phantom
+and is not closed by this decision.
+
+---
+
 ## D-0077 — A2 (per-requirement work unit) discarded: the ecosystem argument ran the wrong way, and GD-16 removed the need
 
 **2026-08-27.** Founder decision, on the Layer-8 review (`plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`). Recorded here because a discard that lives only in the design it removes is invisible to a session that reads this log for the "why" — which is what this file promises.
@@ -46,8 +137,6 @@ graduation.
 **Sequencing:** the rule cannot be specified against a field that does not exist, so the carrier (GD-16) ships first and `COV04` follows. A prerequisite linter defect had to precede both — a quoted tag was silently dropped from the edge graph (issue #542) — which was found only by executing the regex rather than reading it.
 
 **Counting the passes.** Findings ran 5 → 7 → 5 across the first plan and 6 → 6 → 5 across its successor. Growth twice forced a scope cut rather than another fold, and both cuts were right: the second split a six-file linter fix out of a ~100-file spec change, because `spec_gate` fires only on `framework/` paths.
-
----
 
 ---
 

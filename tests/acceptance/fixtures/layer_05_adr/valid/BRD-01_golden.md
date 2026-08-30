@@ -39,9 +39,11 @@ Decision makers and key contributors for the MVP cycle.
 
 Business-level capabilities the MVP must support.
 
-### BRD.01.07.aaaa Authenticated session
+- **BRD.01.07.aaaa — Authenticated session** (P1): the MVP must let registered users sign in and maintain an authenticated session for the duration of their workflow, with response budgets the downstream EARS requirement codifies.
 
-The MVP must let registered users sign in and maintain an authenticated session for the duration of their workflow, with response budgets the downstream EARS requirement codifies.
+Acceptance criteria:
+
+- **BRD.01.07.b2c4 — Session persists across the workflow**: a signed-in user's session remains valid for the duration of one uninterrupted workflow without re-authentication.
 
 ## ADR Topics
 

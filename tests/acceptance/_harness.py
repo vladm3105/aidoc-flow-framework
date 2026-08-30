@@ -24,6 +24,33 @@ FIXTURES_ROOT = Path(__file__).resolve().parent / "fixtures"
 EXPECTED_WARNINGS_ROOT = Path(__file__).resolve().parent / "expected_warnings"
 
 
+def load_layer_document(path: Path) -> dict:
+    """Parse a fixture's YAML body, tolerating a frontmatter block.
+
+    A `.yaml` layer artifact may carry a terminated ``---`` frontmatter fence
+    (carrying ``doc_id``, which is what makes it visible to ``build_edge_graph``)
+    followed by the document body. That is **two YAML documents in one stream**,
+    so a bare ``yaml.safe_load`` raises ``ComposerError`` on it — the trap
+    recorded in ``CLAUDE.md`` § "Acceptance harness".
+
+    Strips the frontmatter block, then loads the body. Files with no fence load
+    unchanged, so this is safe for every shape a fixture currently takes.
+
+    Extracted from the two copies that already existed in this module
+    (``golden_subtype`` and ``template_sections``' golden reader) rather than
+    written fresh — they had the logic and the per-layer tests did not, which is
+    why repairing a fixture's fence broke four of them.
+    """
+    text = path.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    if lines and lines[0].strip() == "---":
+        for i in range(1, len(lines)):
+            if lines[i].strip() == "---":
+                text = "\n".join(lines[i + 1 :])
+                break
+    return yaml.safe_load(text) or {}
+
+
 def _manifest_path(target: Path) -> Path:
     """Return the manifest file for a lint target (may not exist)."""
     rel = target.resolve().relative_to(FIXTURES_ROOT.resolve()).as_posix()

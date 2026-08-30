@@ -43,11 +43,7 @@ Role definitions and product-level story summaries for the MVP cycle.
 
 Product-level capabilities elaborating the upstream BRD business requirements.
 
-### PRD.01.09.aaaa Sign-in capability
-
-The product provides a sign-in surface that elaborates the upstream BRD authenticated-session requirement; the downstream EARS atomic requirement codifies the response budget.
-
-- @brd: BRD.01.07.aaaa
+- **PRD.01.09.aaaa — Sign-in capability** (P1): the product provides a sign-in surface that elaborates the upstream BRD authenticated-session requirement; the downstream EARS atomic requirement codifies the response budget. @brd: BRD.01.07.aaaa
 
 ## Customer-Facing Content
 

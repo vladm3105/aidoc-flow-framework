@@ -5,152 +5,103 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** framework spec **`0.41.3`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
-`FRAMEWORK_SPEC_VERSION` pins read `0.41.3`. **RELEASED** — `framework/v0.41.3` is an
-annotated tag on `8dccc315` (PR #530), published as the **Latest** GitHub release on
-2026-08-24. Conformance was verified green *at that commit*, not inferred from `main`, per
-`docs/TAGGING.md`. No consumer has yet run against it. No open PRs, working tree clean.
+**State:** framework spec **`0.46.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+`FRAMEWORK_SPEC_VERSION` pins read `0.46.0` — the `0.43.0` skew is closed.
+`framework/v0.44.0` is **tagged and released**, the first framework tag since `v0.41.3`.
 
-The last **deployable** commit is `8dccc315` (PR #530); everything on `main` after it is
-docs-only. Re-derive with **two** commands — `git rev-list -n1 framework/v0.41.3` for the
-commit, and `gh release view framework/v0.41.3 --json tagName,isPrerelease,isDraft` for the
-publication state. Do **not** use `git log -1 origin/main` (returns whatever docs commit
-landed last, and shows no PR number) and do **not** use `--json targetCommitish`: that field
-is the release's target branch, so it returns the literal string `main` and no SHA at all.
-`gh release view` exposes no field carrying the tag's commit.
-
-**Verified this session on `main` at `8dccc315`** (run, not asserted): conformance
-371 passed / 795 subtests · acceptance-deterministic 64 passed / 56 subtests ·
-`sdd_doc_lint` 6 passed ·
-Hermes `570 passed` · `pre-commit run --all-files` clean, 19 hooks. **0 failing across
-those four suites** — Phase 0 `lint-smoke` is a separate harness and is RED, see below.
+**Verified this session** (run, not asserted), after the `0.46.0` bump and both fanouts:
+conformance **414** · acceptance-deterministic **64** · unit **196** · packaging **5** ·
+release **50** · `sdd_doc_lint` **6**. **0 failing.**
+Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the
+wholesale regen; use `--skip-lint-smoke`.
 *(`pytest tools/sdd_doc_lint/tests` needs `PYTHONPATH=tools` or it fails to collect.)*
 
-## ⚠️ This repo does NOT auto-merge — ask every time
+## Release provenance — #558 CLOSED (D-0078)
 
-`.github/ai-review/config.json:22` records it as deliberately omitted from the
-operations-side `auto_merge.repos` allowlist: spec/governance repo, `tier:spec`,
-human-always. **`CLAUDE.md`'s OPS-0062 section reads the opposite way** and is where you
-will look first — it describes the generic default, not this repo's exclusion. The
-`"enabled": true` flag beside that comment is inert, and the allowlist itself lives in
-`vladm3105/aidoc-flow-operations`. #530 was merged on the founder's explicit in-session
-authorization for that PR only. Never infer standing approval.
+`0.42.0` was never a value of `framework/VERSION` and `0.43.0` shipped untagged. **Founder
+decision 2026-08-28 (option 3):** correct forward, rewrite no published entry. **Executed** —
+`framework/v0.44.0` cut at `2c69a402` and released, provenance in both the tag message and the
+release notes. `gh release list` now reports `0.44.0` as Latest, which was the presenting
+symptom.
+
+⚠️ **Carried forward, and it is the sharper half of #558:** `GATE-SPEC` has **no release
+step**. E001..E008 are all diff-local, so nothing checks that a superseded version was ever
+published, and the gate is satisfied by *any* bump rather than the right one — which is what
+produced the phantom `0.42.0`. It has **no tracker home of its own**: only this paragraph and
+the release notes' "Known gap" block. File it if it should have one.
 
 ## The backlog is GitHub issues
 
-`plans/FRAMEWORK-TODO.md` is a tombstone carrying an entry → issue mapping. Do not add to
-it. **Open issues: 16.** Re-derive with `gh issue list --state open --limit 300` — never
-`--search` (tokenised, eventually consistent), never the default `--limit 30`.
-In-progress work carries **`status: in progress`**.
+**Open issues: 32.** Re-derive with `gh issue list --state open --limit 300`.
+In-progress work carries **`status: in progress`** — currently only **#423**.
+
+**Twelve are blocked on a founder decision** and are not pickable. Eight carry a `⏸ PARKED`
+title prefix (#438, #483, #543–#548); four name the decision only in the body or in a plan,
+so a title scan misses them: **#467**, **#507**, **#558** (new, above), and **#540** (its
+three options all touch `framework/**` and which one to take is a founder call).
+**#553** is likewise gated — on the IPLAN `title` placement question that
+`IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 owns.
+
+Three more are blocked externally: **#484** (gated on v1.0.0), **#473** (the umbrella owns
+the submodule pointer), **#528** (product call).
 
 ## What this session did
 
-**Adopted 175 uncommitted files** that were sitting on `main` from an unfinished earlier
-session — a framework spec bump `0.41.2 → 0.41.3` with no branch, no commit and nothing on
-the remote. Shipped as PR **#530**, ratified as **GD-13**, at 185 files: the extra 10 are
-`TRACEABILITY.md`, the two auditor playbooks, `IPLAN-TEMPLATE.yaml`, the plugin agent doc,
-`ROADMAP.md`, `DECISIONS.md`, both platform changelogs and their vendored mirrors.
+**A backlog readiness pass over all open issues**, re-verifying each premise against `main`
+rather than trusting the issue bodies. Four verification comments posted
+(#438, #532, #393, #473) and three defects filed — **#556**, **#557**, **#558** — each
+summarised in its own issue; do not re-derive them from here.
 
-**The draft carried two defects, one of them executable.** Its bubble-up example paired
-`change_source: feedback` with `entry_gate: GATE-03`; both routing tables bind
-Feedback → GATE-CODE, and `platforms/hermes/src/mcp_server/validation/chg_rules.py:15`
-rejects the pairing as a hard `CHG-002`. It also set `status:` to a value absent from the
-`CHG-TEMPLATE.yaml:82` enum. That routing line was the only new normative **routing**
-assertion in the diff, and it was wrong. (Two other statements were newly *explicit* —
-the 4-segment threshold width and `change_source: spec` being `>= C2` — but both restate
-an existing authority rather than asserting something new.)
+⚠️ **#556 is the one to read before any framework bump.** `CLAUDE.md`'s durable trap on
+`fw_prev` is **wrong**: `fw_prev` is detected from `docs/PARITY.md`
+(`scripts/sync-version-refs.sh:288`), not `CLAUDE.md`, and the script's own header at
+`:50-54` is stale too. Following the trap protects the wrong file.
 
-**GD-13 is an erratum, not a rule change.** GD-03 ratified in June that `@adr` / `@tdd`
-trace citations must be element-level and only `@spec` / `@iplan` stay document-level;
-`REFGRAN01` has enforced it since. **Six** authoring surfaces had never been reconciled —
-including `ID_NAMING_STANDARDS.md`, which is GD-03's own named *authority*, and both the
-ADR and TDD auditor playbooks, whose C5 rules **mandated** the form the linter flags
-(penalty P3). Nothing consumer-visible moves, so PATCH, where GD-03 itself carried MINOR
-for introducing the rule.
-
-**The class sweep only happened because a reviewer asked for it.** The first fix
-reconciled 2 surfaces of 6 and read as complete. `#531` was filed for the missing guard
-that would have caught all six.
-
-**Three OPS-0065 review agents, verdicts FAIL / FAIL / APPROVE-WITH-CHANGES, one fold
-cycle** — the cap is 3 and was not exceeded. Every finding was re-derived against source
-before folding: GD-03's own exemption clause (self-tags and downstream forward-pointers
-are not trace citations) cleared roughly two-thirds of a 30-hit grep as legitimately
-document-level, so the reviewer's raw surface list was larger than the real class.
+**Discarded design finding A2** (founder decision, 2026-08-27) — commit `3a26050b` on
+branch **`docs/a2-discard-d0077`**, recorded as **`plans/DECISIONS.md` D-0077**. The same commit corrected three
+stale claims that pre-push review surfaced in those files, the largest being that
+`IPLAN-TDDREF-001-PLAN.md` still recorded itself as unmergeable with the version bump
+withheld, when it had merged with the bump in `0.43.0` and is GD-16's named authority
+record.
 
 ## What to do next — prioritized
 
-Filter: [`is:open is:issue`](https://github.com/vladm3105/aidoc-flow-framework/issues) ·
-in-flight: `--label "status: in progress"`. Below is only the ordering.
+1. ~~**TEMPLATE-COMPLETENESS-001**~~ — **SHIPPED** as framework `0.46.0` / **GD-18**, branch
+   `feat/template-completeness-001`. (The handoff previously said this plan lived on branch
+   `plans/template-completeness-001`; it had already **merged** via PR #561 and is on `main`.)
+   Bundles **#550, #551, #532** as planned, plus **#569** folded in under the founder's
+   per-bump grant. All tiers green after both fanouts.
+   ⚠️ **#557 was folded in and then REVERTED before commit** — independent review falsified
+   both halves of its premise (see the plan's fold note and the comment on #557). It stays
+   **open** and needs re-scoping: the real gap, if any, is that no surface says
+   `total_sections` counts *numbered* sections only, which is a three-layer documentation
+   issue rather than an EARS marker bug. `tests/conformance/test_required_section_sets.py`
+   now pins every layer's derived required set so the class cannot recur silently.
+   ⚠️ **#565 was granted for this bundle and then EXCLUDED on measurement.** Its fix shape
+   assumes `warning` severity is safe for the all-`.md` corpus. It is not:
+   `tests/acceptance/_harness.py` matches warnings as a **bidirectional multiset**, so a new
+   warning fails a target exactly as an error does. 55 `.md` fixtures + 11 `.md` corpus files
+   would each gain one, so shipping it here pins 55+ warnings that #555's regen then has to
+   remove. Recorded on #565 and in the plan's fold note.
 
-1. **[#531](https://github.com/vladm3105/aidoc-flow-framework/issues/531) — filed this
-   session, and the direct successor to GD-13.** *(Fold
-   [#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532) in with it — GD-13's
-   title says "Two governance documents" where its body says six, and the `0.41.3` CHANGELOG
-   names 2 of the 6 reconciled surfaces. Both need a `framework/VERSION` bump to fix, so
-   they should ride the same release rather than burn one of their own.)* No conformance test locks the
-   document-level-permitted set to `{SPEC, IPLAN}` across `ID_NAMING_STANDARDS.md`,
-   `TAG_SYNTAX.md`, `TRACEABILITY.md` and `_REFGRAN_ELEMENT_DECLARING`. Six surfaces
-   drifted for two months behind that absence. `tests/conformance/test_governance.py::GateCheckIdParity`
-   is the same pattern one layer over — extending it is reuse, not authoring. Parse the
-   structured artifacts; do **not** grep for a marker string, which is this defect's own
-   failure mode. Mutation-test it before believing it.
-2. **[#486](https://github.com/vladm3105/aidoc-flow-framework/issues/486)** — the same
-   rule violated in the example corpus (`SPEC-01:31,67,469`, `TDD-01:204`, `IPLAN-01:43`).
-   Likely the *same* root cause as #531 rather than an independent defect. ⚠️ Tension to
-   resolve before starting: the corpus is regenerated wholesale after framework changes,
-   which is why corpus findings are normally deferred — so decide whether #486 is
-   remediation or is simply absorbed by the next regen.
-3. **[#438](https://github.com/vladm3105/aidoc-flow-framework/issues/438)** — 8
-   `*-MVP-TEMPLATE.yaml` non-conformant with the framework's own governance. ⚠️ **Its
-   premise may be stale**: the issue says "remediation plan FRWK-REVIEW-003 unmerged",
-   but `plans/FRWK-REVIEW-003-PLAN.md` is on `main`. Verify before planning work.
-4. **[#423](https://github.com/vladm3105/aidoc-flow-framework/issues/423)** — the only
-   issue marked in progress, and not this session's. Its work is committed as `f05dfc0d`
-   on `origin/fix/423-site-badge-selfheal` (`scripts/sync-version-refs.sh`, +41/−14) and
-   needs a PR, not a rescue.
-5. **OKF-CONFORMANCE-001** — `plans/OKF-CONFORMANCE-001-DESIGN.md` (PR #529) is merged but
-   has **no tracking issue** — re-derive rather than trusting this, an absence is the
-   easiest claim to assert and the hardest to verify:
-   `gh issue list --state all --limit 300 --json number,title --jq '.[]|select(.title|test("OKF";"i"))'`.
-   Three open questions in it block the implementation
-   plan. The decisive one: SPEC/TDD/IPLAN goldens are `.yaml` while OKF's atom is a `.md`
-   file, so a YAML-authored tree is *vacuously* conformant and an OKF reader sees an empty
-   bundle. Founder decision.
+2. ~~**#531**~~ — **done**, PRs **#570** (plan) and **#571** (guard, merge second). Landed as
+   its own module `tests/conformance/test_ref_granularity_parity.py`, not as an extension of
+   `GateCheckIdParity`. ⚠️ The `TRACEABILITY.md` caveat was real **and understated**: beyond
+   having no `###` heading, the anchor the plan specified for that surface matches the
+   *drifted* text **zero** times, so the regression fixture would have raised `Unparseable` and
+   stood as evidence of a detection that never happened.
+3. ~~**#554**~~ — **done**, PR **#572**.
+4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
+   carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
+   current `main`, a finalized commit message and a PR — not a rescue.
+5. **#393** — ⚠️ **NOT a `--repin`, and the issue body's stated remedy would hang a required
+   check.** Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
+   breaking changes apply here. **BLOCKED on two founder/infrastructure prerequisites, both
+   silent:** (a) both runners advertise only `self-hosted,ci-runner,single-use` while v4
+   renames them to `ci`/`ephemeral`, and a job routed to labels no runner carries **queues
+   forever** — `ai-review` is required, so the migration PR could not merge itself; (b)
+   `LLM_URL`/`LLM_API_KEY` do not exist and the caller still forwards the three `LITELLM_*`
+   names that v4 **un-declares**, which is a load-time `startup_failure`. Nothing can land
+   ahead of the repin — the caller edits are only valid *at* v4.
 
-## Blockers and standing constraints
-
-**⚠️ Every doc PR serialises on `CHANGELOG.md`.** All entries insert at the top of
-`## [Unreleased]`, so each merge makes the next open PR `DIRTY`. Structural, not a
-mistake; the only lever is fewer PRs.
-
-**⚠️ A framework `VERSION` bump is an unsplittable governance PR and needs a per-bump
-founder OK.** It touches four capped doc surfaces (`CHANGELOG.md`, `CLAUDE.md`,
-`README.md`, `docs/PARITY.md`) against Rule 1's cap of three, and cannot be split because
-`scripts/sync-version-refs.sh` writes the last three itself and **re-stages them**. Record
-the grant as an audit-trail line in the commit message. Granted for #530; not standing.
-
-**Phase 0 `lint-smoke` in `tests/scripts/test-acceptance.sh` is RED** — example-corpus debt
-deferred to the wholesale regen; use `--skip-lint-smoke`.
-
-**Hermes pytest is GREEN and #465 is closed** — by **#527**, squashed onto `main` as
-`3354d4f6`. Earlier handoffs said it was red since 2026-07-27; that is no longer true and
-cost a wrong prediction this session. **The root cause was fixed, not merely deferred:**
-`platforms/hermes/pyproject.toml:7` now reads `mcp[cli]>=1.0.0,<2`, so the resolver can no
-longer pull `mcp 2.0.0`. Do not describe this dependency as an open failure class.
-
-**Repo hygiene done 2026-08-24:** stale branches pruned (local 14 → 2, remote 10 → 3, plus
-whatever branch carries the change you are reading) and two abandoned worktrees removed. The
-two survivor sets differ, so read them separately: **locally** `main` and
-`fix/423-site-badge-selfheal`; **on origin** those two plus `legacy-ucx-v3.2-read-only`,
-which is the protected read-only pre-migration branch and has no local counterpart. Kept
-deliberately: `fix/423-site-badge-selfheal` carries live work for #423.
-
-⚠️ When judging whether a branch is dead, **check its PR state, not
-`git merge-base --is-ancestor`.** Everything here is squash-merged, and a squashed branch's
-tip is never an ancestor of `main` — so the ancestor test called all thirteen "unmerged"
-when twelve had fully landed. (It is a reliable test only for branches that were
-fast-forwarded or rebase-merged; this repo has none.)
-
-**What did NOT change:** neither platform version moved, no platform release was cut, the
-example corpus was not touched, and no `plans/` document other than this one was written.
+   Nothing can land ahead of the repin: the BC4/BC5 caller edits are only valid *at* v4.

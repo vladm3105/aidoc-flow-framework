@@ -13,6 +13,246 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-18 — Three independent template gaps and one erratum ship as one MINOR: derived test paths (#550), threshold carriers (#551), IPLAN status ownership (#569), GD-13's figures (#532)
+
+- **Status:** Accepted — 2026-08-28 · **SemVer:** framework `0.44.0 → 0.46.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human
+  sign-off per GATE-SPEC. This GD-18 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate
+  CHG artifact.
+- **Issues:** #550, #551, #532, #569
+
+Three verified spec gaps and one erratum to a prior entry, shipped as one release. Each independently trips
+`GATE-SPEC-E005`, so shipping them apart would cost five version bumps, five
+fanouts and five per-bump founder grants. Bundling is the whole reason they are
+one entry; they are otherwise unrelated.
+
+**1. The framework prescribes no test-file layout (#550).** `TDD-TEMPLATE.yaml`
+and `SPEC-TEMPLATE.yaml` hardcoded **ten** Python test paths (`tests/unit/test_[module].py`
+and siblings) and **seven** pytest-shaped function names. Every other surface in
+the chain had already been genericized — `SPEC-TEMPLATE.yaml`'s `language:`,
+both of `IPLAN-TEMPLATE.yaml`'s do-not-re-pin statements, and `TDD-MVP-TEMPLATE.yaml`
+— so the full TDD template was the one place a language survived, and its own MVP
+variant was ahead of it.
+
+The **decision is not "support more languages"**, which is what the consumer report
+that surfaced this asked for (per-case `language:` and `test_framework:` fields).
+That would re-pin the language one layer down and give the toolchain two owners.
+SPEC owns `language:`; TDD and IPLAN derive from it. Placeholders take
+`TDD-MVP-TEMPLATE.yaml`'s bare angle-bracket form, one form and not two — the
+`# example (Python):` device works in `IPLAN-TEMPLATE.yaml` only because those
+entries are list-of-string commands rather than mapping values.
+
+`framework/TESTING_STRATEGY_TDD.md` was **silent** on the subject, so the template
+change would have pointed at nothing; it now states the derivation and gives
+Python, Go and TypeScript forms as equally conformant. The per-tier distinction
+(unit / integration / e2e / security) is language-independent and is retained.
+
+**2. SPEC and TDD gain a `threshold_references` carrier (#551).**
+`THRESHOLD_NAMING_RULES.md` normatively designates five layers as threshold
+*consumers* and gives TDD a worked example, but two of the five had nowhere to put
+the citation. EARS's block is copied in shape, under the same name.
+
+`TDD-TEMPLATE.yaml`'s existing `thresholds:` section is **untouched** and is a
+different concept — it holds coverage gates (`unit.coverage_target`, `fail_action`),
+not `@threshold:` citations resolving to a PRD or ADR declaration. That name
+collision is why this gap survived, and it is the reason the new block is named
+`threshold_references` rather than folded into it.
+
+**Neither addition carries `_size_target`**, so `STRUCT01`'s derived required-section
+set is unchanged — verified: SPEC stays at 8, TDD at 7.
+
+**3. GD-13's title and its reach claim (#532).** The title said "Two governance
+documents" while its own body said "Six authoring surfaces" and enumerated them;
+the narrower figure had survived in the most prominent position after review
+expanded the sweep. Separately, its successor sentence claimed a governance-prose
+guard "would have caught all six" — it reaches **two**. Both corrected in place.
+The `0.41.3` CHANGELOG entry is a **published release** and is left unedited; the
+correction is stated forward in the `0.46.0` entry.
+
+**4. #557 was in this bundle and was REMOVED on measurement — its premise is
+false.** Recorded here rather than dropped silently, because the issue is still
+open and the next reader will otherwise re-attempt the same change.
+
+#557 reports that `STRUCT01` derives **six** required EARS sections while
+`total_sections`, the five numbered headers and the plugin skill all say five, and
+proposes marking `glossary:` `_required: false`. It states the change is latent
+because "neither [EARS artifact] has a `glossary` section at all".
+
+**Both do** — `tests/acceptance/fixtures/layer_03_ears/valid/EARS-01_golden.md:54`
+and `examples/url-shortener/docs/03_EARS/EARS-01.md:259`. So the marker would not
+have been latent: it would have **removed a live assertion**. The acceptance
+harness's `template_sections()` applies `_required: false` through a second,
+independent derivation, so `tests/acceptance/deterministic/test_layer_ears.py`
+would have gone on passing while asserting less — the "a fix can silently disarm
+an existing regression test" trap.
+
+**And EARS was never the outlier.** `total_sections` counts **numbered** sections;
+the derived set is required sections, which includes required *unnumbered*
+backmatter. Measured across all eight layers:
+
+| Layer | derived required | `total_sections` |
+| --- | --- | --- |
+| BRD | **17** | 16 |
+| ADR | **12** | 10 |
+| EARS | **6** | 5 |
+| PRD / BDD / SPEC / TDD | 15 / 5 / 8 / 7 | 15 / 5 / 8 / 7 |
+
+ADR and BRD have exactly the shape #557 calls a defect, for the same reason
+(`glossary` + `appendix`, `diagrams` + `appendix`). SPEC and TDD agree only
+because they carry no backmatter. Marking EARS optional would have made it the
+one layer of three where required backmatter is unenforced, and put the template
+in direct conflict with `platforms/claude-code-plugin/skills/doc-ears/SKILL.md:75`,
+which calls the glossary **required**.
+
+`_required: false` means *optional content* — `PRD`'s `component_decomposition`
+is "only required when downstream cites `@threshold`". It does not mean
+"required but unnumbered", and #557 asked it to carry both senses.
+
+The real defect, if any, is that no surface states that `total_sections` counts
+numbered sections only. That is a documentation gap across three layers, not an
+EARS marker bug, and it is left to #557 to re-scope.
+
+**5. An IPLAN's `status` is a write target, not a report field (#569).** Real
+consumer feedback: an executor created 97 files across 8 IPLANs, reported COMPLETE,
+and left every `file_manifest.files[].status` at `NOT_STARTED` — while the
+`IPLAN-00_index` registry showed `files_done == files_declared`, which masked it.
+
+**The framework had no contract to violate**, which is the actual defect. The
+template declared the fields and the session-startup protocol read them, but
+nothing said who writes them or when. `file_manifest._guidance` now states it:
+the transitions, that `verified: true` is a separate assertion from `status: DONE`
+("the file exists" is not verification), and that an index MAY aggregate these
+values but is never where they are recorded first — an index over stale entries
+hides drift rather than surfacing it.
+
+This is a **contract**, not enforcement. Nothing yet checks a manifest against the
+filesystem, and a stale entry still lints clean.
+
+- **Authority:** `layers/06_SPEC/SPEC-TEMPLATE.yaml` §2 `component_overview.language`
+  and §7 `tdd_contracts`; `layers/07_TDD/TDD-TEMPLATE.yaml`;
+  `layers/03_EARS/EARS-TEMPLATE.yaml`; `layers/08_IPLAN/IPLAN-TEMPLATE.yaml`
+  §2 `file_manifest`; `TESTING_STRATEGY_TDD.md`;
+  `governance/THRESHOLD_NAMING_RULES.md`; `governance/AUTHORING_STYLE.md`
+  §"Size targets"; `tools/sdd_doc_lint` `_load_section_targets`;
+  `AI_ASSISTANT_RULES.md` §"Development Completion Rule"; GD-11 (the bundling
+  precedent this entry follows); GD-13 (corrected here)
+- **Bundling, against GD-11's four conditions.** GD-11 sets the bar and warns that
+  *"the gate made me do it" is not available as a justification*, so the conditions are
+  asserted rather than the cost alone: each of the five is **independently correct**
+  (none depends on another landing), **independently revertible** (they touch disjoint
+  keys — three templates, one governance entry, one strategy doc), **ready at the same
+  moment** (all five evidence-complete on the tracker before this bump), and each
+  **would otherwise pay a full fanout** of its own.
+- **Consequences:**
+  - `TDD-TEMPLATE.yaml` and `SPEC-TEMPLATE.yaml` no longer illustrate a concrete
+    toolchain. An author copying the template gets a placeholder they must fill,
+    which is louder than a wrong default and is the intent.
+  - The example corpus is Python and remains conformant — it declares Python in
+    its SPEC. It is regenerated wholesale, so no hand-edit follows from this.
+  - **`STRUCT01` becomes reachable on EARS the moment a YAML EARS instance
+    exists**, and item 4 is what makes it demand five sections rather than six at
+    that point. GD-17's effective condition still gates when that is.
+  - Item 5 leaves a gap it deliberately does not close: an executor that ignores
+    the contract is still undetected. A manifest-vs-filesystem check is the
+    successor and needs its own entry. Item 5 also changed **one** authoring
+    surface of four — `layers/08_IPLAN/README.md`, `AI_ASSISTANT_RULES.md` and this
+    template's own §5 protocol step list still say "update status after completion
+    or session end", which is laxer than "write it as you go". Reconciling them is
+    successor work, not done here.
+  - **Scope is the spec tree only.** `TESTING_STRATEGY_TDD.md` is **not vendored**
+    to the plugin bundle (which carries `governance/`, `layers/`, `playbooks/`,
+    `registry/` and the guide) — so the templates carrying the new placeholders are
+    synced while the document explaining *why* they are placeholders is not.
+    Platform authoring surfaces are out of scope here and must add their own, per
+    the caveat GD-09 and GD-17 record for their guards.
+  - **`IPLAN-MVP-TEMPLATE.yaml` is NOT reconciled and this entry does not decide
+    it.** Its manifest declares `not_started|in_progress|completed|blocked` —
+    different case, `completed` for `DONE`, an extra `blocked`, no `PARTIAL`. That
+    divergence is #438's territory, which GD-16 likewise declined to settle. Item 1
+    praises the MVP set for being *ahead* of the full templates on test paths; item
+    5 must not be read as claiming the same for status.
+
+---
+
+## GD-17 — Instance format has exactly one normative source, and its mandate takes effect on a testable outcome rather than a component list
+
+- **Status:** Accepted — 2026-08-28 (ratified on merge; a `framework/**` normative change —
+  human sign-off per GATE-SPEC. This GD-17 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record, per the GD-05..GD-16
+  precedent — no separate CHG artifact). SemVer **minor** (`0.43.0 → 0.44.0`), change-level
+  **C2**. *(GD-15 and GD-16 omitted their version pairs; stating this one explicitly is part of
+  what this entry repairs.)*
+- **Context.** GD-15 made YAML the mandatory **instance** format for layers 1-8 and, in the same
+  entry, recorded that it "does not adopt the frontmatter contract (that design's D1 owns it)".
+  The spec therefore mandated a format that no rule could read. **Measured** on a BRD authored
+  exactly as `BRD-TEMPLATE.yaml` prescribes: **17 `STRUCT01` errors** — including for sections
+  physically present as YAML keys — while the identical content as Markdown produced **zero**
+  findings, and `scan_fr_elements` discovered **0** gated FRs against 1, so `COV01` passed
+  vacuously. The gate was simultaneously unpassable and blind on the mandated format.
+- **The mandate was also diffuse.** Seven spec surfaces asserted it: `DOC_GOVERNANCE_CORE.md`
+  Principle 2 and §Template Policy, `LAYER_REGISTRY.yaml`'s header + `extensions`, GD-15 itself,
+  `layers/01_BRD/README.md` §Document Formats, `governance/ID_NAMING_STANDARDS.md`'s File-Naming
+  table, and `layers/04_BDD/BDD-00_index.TEMPLATE.md` §File Format. Two of them contradicted the
+  registry outright, and one — the BDD index — states the value in prose with no filename token,
+  so no mechanical check could ever have seen it drift.
+- **Decision.** Three rules, ratified together.
+  1. **One normative source.** `LAYER_REGISTRY.yaml` `extensions` is the **authority** for
+     instance format. Every surface that **asserts the format as a rule** states the value and
+     cross-references it; none re-specifies it. Surfaces that merely *use* a filename in an
+     example or a naming table are not required to carry the cross-reference — they are held to
+     the registry mechanically by `test_instance_format_ssot.py`, which is the stronger guarantee.
+     This bound is deliberate: requiring a prose cross-reference on every filename mention would
+     grow the obligation without adding a check. This applies **GD-09 rule 2** — *"every mandating layer states its contract
+     in-layer"* — rather than GD-09 rule 1 alone: the layer keeps its statement, and only the
+     *authority* is centralized. Deleting the in-layer statements would remove the text an author
+     actually reads.
+  2. **The effective condition is an outcome, stated once, here.** The instance-format mandate
+     takes normative effect when, for every layer, a reference instance authored in that layer's
+     `extensions` format satisfies **rule-applicability parity** with the equivalent Markdown
+     form: (a) it lints with **zero** findings, and (b) **every rule that applies to the Markdown
+     form applies to it and returns the same verdict**. Clause (b) is deliberately stated as
+     applicability rather than as a list of result classes — "element and coverage results" would
+     omit `BDD-SCHEMA-001` (schema validation) and `SEED01` (silently skipped when its carrier is
+     absent), both of which satisfy clause (a) *vacuously*, which is the failure this condition
+     exists to exclude.
+     **Evaluator and state carrier.** The condition is evaluated by a per-layer carrier-parity
+     assertion in the conformance or acceptance tier — the same shape as
+     `tests/conformance/test_instance_format_ssot.py`, comparing a YAML reference instance against
+     its Markdown counterpart rule by rule. The condition's *state* is carried by a successor GD
+     entry that records it as met; **no surface may infer it from an issue being closed**, since
+     closing #564 updates nothing a reader consults. Operationally this is the completion of the carrier-aware work in
+     [#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564).
+     **Why an outcome and not a list:** three successive enumerations were each short. `doc_id`
+     alone leaves 17 `STRUCT01` errors, because `STRUCT01` resolves sections from `##` headings
+     and never reads frontmatter. Adding a carrier-aware structural check still leaves `COV01`
+     vacuous, because FR discovery is a third primitive. `BDD-SCHEMA-001` and the EARS→BDD edges
+     (fence matcher) and `SEED01` (silently skipped) are a fourth and fifth. An outcome cannot be
+     under-enumerated.
+  3. **The negative property is guarded.** `tests/conformance/test_instance_format_ssot.py`
+     asserts that no spec surface names a layer instance whose extension is absent from that
+     layer's `extensions`, with two exemptions carrying their own mutation tests: index-doc
+     mentions (exempt **at the mention level**, since two of the nine sit outside index files)
+     and `DECISIONS.md`, whose `IPLAN-01.md` reference describes a real corpus artifact inside a
+     ratified record.
+- **Security (GATE-SPEC-W003).** Agent-facing governance guidance changes. Assessed against
+  `SECURITY_REVIEW.md`: no credentials or personal data introduced (T1); no instruction is taken
+  from external or untrusted content — every edit derives from the repo's own registry and
+  measured linter behaviour (T2); provenance is recorded for each carrier (T3); the change
+  **narrows** rather than broadens authority, since it removes an in-effect mandate that no rule
+  could enforce and gates its return on a testable outcome (Rule 4); no active content is
+  introduced (T4). No blocking finding.
+- **Consequences.** `framework/VERSION` `0.43.0 → 0.44.0`; both `FRAMEWORK_SPEC_VERSION` pins
+  re-declare; the vendored plugin bundle is re-synced. The example corpus and acceptance goldens
+  remain `.md` and are **conformant**, because the mandate is not yet in effect — which is what
+  unblocks [#555](https://github.com/vladm3105/aidoc-flow-framework/issues/555) from a
+  regeneration that would otherwise have produced ~17 errors per BRD.
+  **Scope is the spec only** — platform authoring surfaces state their own filenames and must add
+  their own lock, the same caveat GD-09 recorded.
+- **Authority:** `registry/LAYER_REGISTRY.yaml` `extensions` + header; `DOC_GOVERNANCE_CORE.md`
+  Principle 2 and §Template Policy; GD-09 rules 1-2; GD-15;
+  `plans/INSTANCE-FORMAT-SSOT-001-PLAN.md`.
+
 ## GD-16 — An IPLAN file-manifest entry carries its TDD test cases in a line-local `tdd_ref` field, not in the traceability block
 
 - **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
@@ -65,6 +305,9 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ## GD-15 — YAML is the mandatory format and the source of truth for layer artifacts; Markdown is optional, descriptive, and generated
 
+- **Amended by GD-17 (2026-08-28).** The instance-format mandate below is **not unconditionally
+  in force**: GD-17 gives it an effective condition and makes `LAYER_REGISTRY.yaml` `extensions`
+  its single normative authority. Read GD-17 before acting on this entry.
 - **Status:** Accepted — 2026-08-26 (ratified on merge; a `framework/**` normative
   change — human sign-off per GATE-SPEC. This GD-15 entry + the `VERSION`/`CHANGELOG`
   bump + both `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record,
@@ -199,7 +442,7 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
-## GD-13 — Two governance documents had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
+## GD-13 — Six authoring surfaces had drifted from GD-03's ratified citation granularity, so reconciling them is an erratum, not a rule change
 
 - **Status:** Accepted — 2026-08-23 (ratified on merge; a `framework/**` normative
   change — human sign-off per GATE-SPEC. This GD-13 entry + the `VERSION`/`CHANGELOG`
@@ -240,8 +483,18 @@ Newest first. Timestamps are ISO 8601 UTC.
   several documents where only some get corrected. **Not yet guarded** — there is no
   conformance test asserting the document-level-permitted set is `{SPEC, IPLAN}`
   across `ID_NAMING_STANDARDS.md`, `TAG_SYNTAX.md`, `TRACEABILITY.md` and
-  `_REFGRAN_ELEMENT_DECLARING`; such a guard would have caught all six and is the
-  obvious successor to this entry.
+  `_REFGRAN_ELEMENT_DECLARING`; it is the obvious successor to this entry and is
+  tracked as #531. Such a guard **would catch two** of the six above, not all six
+  — an earlier form of this sentence claimed all six, which over-reports its
+  reach. The other four
+  are two auditor playbooks, a layer template and a plugin agent, none of which a
+  governance-prose guard reads. A class-wide scan over those surfaces was measured
+  and rejected: 51 token hits across 29 files, overwhelmingly exempt (self-tags,
+  downstream forward-pointers, `FAIL:` counter-examples), so an exemption model at
+  that ratio either false-positives and blocks CI or under-covers and reads as
+  complete. Those surfaces are covered by `REFGRAN01` on the artifacts they
+  generate — a downstream detector with regeneration latency, which is how the
+  surviving drift in #563 was found.
 - **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity"; GD-03;
   `chg/gates/GATE-SPEC_FRAMEWORK.md`.
 

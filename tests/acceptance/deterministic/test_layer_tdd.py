@@ -4,10 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 
-import yaml
-
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from _harness import LayerHarness, fixtures_for
+from _harness import LayerHarness, fixtures_for, load_layer_document
 
 VALID_TYPES = {"unit", "integration", "functional", "e2e", "smoke", "performance", "security"}
 
@@ -34,8 +32,7 @@ class LayerTddTests(unittest.TestCase, LayerHarness):
         self.assert_cumulative_upstream_tags_resolve(self.golden)
 
     def test_every_test_case_has_a_valid_type(self):
-        with self.golden.open(encoding="utf-8") as fh:
-            data = yaml.safe_load(fh)
+        data = load_layer_document(self.golden)
         cases = (data.get("test_cases") or {}).get("cases") or []
         self.assertGreaterEqual(
             len(cases),
