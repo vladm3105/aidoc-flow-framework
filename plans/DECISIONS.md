@@ -77,8 +77,9 @@ control whether the *acceptance suite* fails.
 
 **Date:** 2026-08-28 · **Issue:** #531 · **Plan:** `plans/REFGRAN-GUARD-001-PLAN.md`
 
-Four decisions in `tests/conformance/test_ref_granularity_parity.py` that a reader would
-otherwise re-litigate, each measured rather than argued:
+Nine decisions in `tests/conformance/test_ref_granularity_parity.py` that a reader would
+otherwise re-litigate, each measured rather than argued. Items 5-9 arrived from independent review and are the five most worth
+reusing, so the count matters:
 
 1. **Compare the document-level-permitted set, not the element-declaring one.** They are
    complements, so either would seem to do. `TRACEABILITY.md` names four of the six
@@ -124,10 +125,69 @@ otherwise re-litigate, each measured rather than argued:
    genuinely wrong text that an earlier draft reported as correct, two of them **inside**
    the anchored region: layers moved out of a bolded subject into the bullet body, a
    permitting bullet's forbid clause flipped, and an extra document-level claim appended to
-   the `TRACEABILITY.md` bullet. All three are now closed by locks, **as specific phrasings
-   rather than as a class**. A fourth phrasing nobody has thought of is the standing
-   residual, and it is the real argument for the rejected alternative below: a parsed set
-   has no phrasings.
+   the `TRACEABILITY.md` bullet. All three are closed by locks, **as specific phrasings
+   rather than as a class**.
+
+7. **Three adversarial rounds found 3, then 5, then 7 constructions — and the trend is the
+   finding, not any of the fifteen.** Each round ran against a form of this module its
+   author believed was finished; rounds 2 and 3 ran against text already pushed for merge.
+   Each found governance text that genuinely grants ADR/TDD document-level citation — the
+   GD-13 drift verbatim — reported as **correct**, plus benign edits reported as drift:
+
+   | Round | Grants missed | Correct text called drift | Ran against |
+   | --- | --- | --- | --- |
+   | 1 | 3 | 0 | the draft |
+   | 2 | 4 | 1 | the pushed branch |
+   | 3 | 3 | 4 | the fixed branch |
+
+   Representative causes, each reproduced before its fix: `_permit_subject` truncates at
+   the permit phrase, so a trailing conjunction is invisible; the role check tested a
+   role's *bare substring* inside a ±40-character window, so a claim reusing that wording
+   accounted for itself; the permit clause's own unbounded `[^()]*?` **swallowed** a grant
+   planted in its subject, defeating containment by the one pattern that is not short and
+   anchored; and `"must be"` was treated as negation when it is modality
+   (`must be document-level` is a grant). In the other direction, moving the live bullet's
+   own `(e.g. …)` example after its predicate, adding one adverb, bolding the term to match
+   the sibling file's house style, and reflowing below ~53 columns each turned a
+   **required** check red on correct text.
+
+   All fifteen ship as locks except one, and each fix was mutation-tested by reverting it.
+
+8. **The guard stops relying on classification for the direction that matters — the
+   anchored prose is pinned by digest.** One phrasing is provably not closable by markers:
+   a later sentence that both grants and contrasts (`So are @adr: and @tdd: citations,
+   unlike @ears:`) is skipped whole, and splitting it finer false-positives on the live
+   "Design & realization layers" bullet, whose forbid sentence names TDD and ADR in a
+   counter-example. There is no marker that separates those two.
+
+   `AnchoredProseIsPinned` therefore hashes each anchored region (whitespace-normalised, so
+   reflows and re-indents pass) against a pin. **A digest cannot be defeated by phrasing**,
+   so a re-drift cannot pass unnoticed however it is worded, and the extractors go back to
+   their real job — proving the *current* text states `{SPEC, IPLAN}` — instead of carrying
+   the impossible burden of proving no future wording could. The open false negative is
+   kept as a **live assertion** (`test_a_grant_no_extractor_models_still_fails`) that the
+   extractor still misses it and the pin still catches it, so the limit cannot quietly
+   become untrue.
+
+   The cost is that any wording change to a normative region fails until a human confirms
+   it — which for a rule that drifted unnoticed for two months is the behaviour worth
+   buying, not a tax. The failure message names the region, prints the set still extracted,
+   and supplies the digest to paste, so a repin is a two-line diff a reviewer can check.
+   This is `OKF-CONFORMANCE-001-DESIGN.md`'s "grace comes from ordering, not from severity"
+   applied to prose: the pause is the mechanism.
+
+   **It does not supersede the `LAYER_REGISTRY.yaml` alternative below**, which remains the
+   right shape — a pin detects that a statement changed; a registry makes there be one
+   statement. It removes the *silent* failure mode at a cost this PR can pay.
+
+9. **Counts in prose drift, so they are now asserted.** The review-round counts in this
+   entry, in `CHANGELOG.md`, in the plan and in the module docstring were wrong **three
+   separate times** during this work — narrated from memory rather than derived, and each
+   wrong count read as authoritative until someone re-derived it.
+   `DocumentedCountsAreReal` now asserts them against the code and names the four prose
+   surfaces to update. *The reusable part:* a number repeated in four documents needs one
+   executable source, and a review that re-derives counts finds errors that a review
+   reading for sense does not.
 
 **Rejected, and why it is the better design.** Stating the set once in `LAYER_REGISTRY.yaml`
 alongside `realizing_layers` and `acceptance_layers`, then checking the prose against the
@@ -135,24 +195,43 @@ registry, is the correct shape. It is rejected on cost only — a `framework/**`
 `GATE-SPEC-E005` and forces a `framework/VERSION` bump with its fanout and a per-bump founder
 grant. Recorded as the successor rather than silently not-chosen.
 
-**Reach, stated because the successor language overclaims it.**
-`framework/governance/DECISIONS.md:324` (GD-13) says such a guard "would have caught all six"
-of the surfaces it corrected. It would have caught **two**; the other four are an auditor
-playbook ×2, a layer template and a plugin agent, none of which this guard reads. A
-class-wide scan over those was measured and rejected — the token census returns 51 hits
-across 29 files (re-measured independently, exact match, under two different `grep`
-implementations), overwhelmingly exempt, and an exemption model at that ratio either
+**Reach — two of the six, and the overclaim it once corrected is already fixed.**
+This guard reaches **two** of the six surfaces GD-13 corrected; the other four are an
+auditor playbook ×2, a layer template and a plugin agent, none of which this guard reads.
+A class-wide scan over those was measured and rejected — the token census covers **29 files**
+(re-derived here, exact match), overwhelmingly exempt, and an exemption model at that ratio either
 false-positives and blocks CI or under-covers and reads as complete.
 
-⚠️ **This finding belongs to [#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532),
-not to a new issue.** #532 is open, is scoped to exactly this class — doc-accuracy defects
-in GD-13 and the `0.41.3` CHANGELOG — and its "What is NOT broken" section explicitly
-asserts the opposite of what this entry establishes: *"GD-13's body, its six-surface
-enumeration, its PATCH-vs-MINOR reasoning and its authority line are all correct and need no
-change."* The overclaiming sentence is **in that body**. Per the granularity rule the
-evidence goes on #532 as a comment; an earlier draft of this plan said the sentence "needs
-its own issue", which would have opened a duplicate of a live issue that already proposed
-folding alongside #531.
+⚠️ **The "51 hits" figure this entry previously carried does not reproduce and has been
+dropped.** The *file* count re-derives exactly (29), but
+`grep -rhoE '@(adr|tdd):'` over those six surfaces returns **65** token occurrences, not 51.
+The figure is inherited from `framework/governance/DECISIONS.md:492`, so it is not authored
+here and correcting it is a `framework/**` edit that trips `GATE-SPEC-E005`; it is recorded
+here so the number is not re-cited from this entry. The file count is what the
+exemption-ratio argument actually rests on, and it is unaffected.
+
+⚠️ **An earlier form of this entry reported GD-13's successor sentence as a live defect and
+cited it at `framework/governance/DECISIONS.md:324`. Both halves were wrong.** Line 324 is
+GD-18's `LAYER_REGISTRY.yaml` `extensions:` bullet; the sentence is at `:487-489`, and it
+already reads "would catch **two** of the six above, not all six — an earlier form of this
+sentence claimed all six, which over-reports its reach", with GD-18 item 3 (`:64-70`)
+recording the correction as landed. Both were true at this branch's own merge base, so
+this was not staleness from a later push — it was a finding that had already been fixed
+when it was written down. *The reusable part:* a decision record that asserts a defect in
+another document must re-read that document at the commit it is being merged onto. Citing
+a line number is not the same as reading the line.
+
+**No issue is filed for the reach overclaim, because there is nothing left to file.**
+[#532](https://github.com/vladm3105/aidoc-flow-framework/issues/532) owned exactly this
+class — doc-accuracy defects in GD-13 and the `0.41.3` CHANGELOG — and **closed on
+2026-08-29**, one day before this branch's commit, with the sentence corrected in place.
+
+An earlier form of this entry said "#532 is open" and routed the evidence there as a
+comment, quoting that issue's "What is NOT broken" section as still asserting the
+opposite. Following that instruction would have commented on a closed issue about an
+already-fixed sentence. **The rule this breaks is the repo's own:** an issue's state is
+volatile and a decision record is durable, so a record must re-check the state at the
+commit it merges on, not at the one it was drafted on.
 
 ## D-0078 — Untagged spec versions are corrected forward in the next real release, never by rewriting a published record
 

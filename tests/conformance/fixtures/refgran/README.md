@@ -32,12 +32,25 @@ that they are the drift verbatim, so a hook or a contributor normalising
 emphasis, whitespace or line endings destroys the evidence — and the suite would
 then be green *because* the corruption ran.
 
-They are excluded from every pre-commit hook via the global `exclude:` in
-`.pre-commit-config.yaml`, and from CI markdownlint via the
-`!tests/conformance/fixtures` glob in `.github/workflows/markdown-lint.yml`.
-The exclusion is global rather than markdownlint-scoped because
+**Three** surfaces protect them, and each covers a path the others do not:
+
+| Surface | Protects against |
+| --- | --- |
+| the **global** `exclude:` in `.pre-commit-config.yaml` | every pre-commit hook, on commit |
+| the `!tests/conformance/fixtures/refgran` glob in `.github/workflows/markdown-lint.yml` | CI markdownlint |
+| `tests/conformance/fixtures/refgran/` in `.markdownlintignore` | a contributor running `markdownlint` directly — pre-commit passes explicit paths and ignores this file, so it is the only surface that covers this |
+
+The pre-commit exclusion is **global** rather than markdownlint-scoped because
 `trailing-whitespace`, `end-of-file-fixer` and `mixed-line-ending` rewrite
-unconditionally and carry no exclude of their own.
+unconditionally and carry no exclude of their own, so a per-hook line would
+leave three of the four live.
+
+All three are scoped to `refgran/` and **not** to `fixtures/`. That is
+deliberate and measured: the sibling `saga/` and `review/` fixtures are sample
+reports and a JSON schema rather than extracted evidence, and a directory-wide
+exclude silently dropped them — and every future fixture — out of `check-json`,
+`detect-secrets`, `ruff` and `yamllint`, for a byte-faithfulness reason that
+does not apply to them.
 
 If an extractor rewrite makes a fixture fail, the extractor is wrong. That is
 what the fixture is for.

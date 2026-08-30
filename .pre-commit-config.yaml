@@ -25,7 +25,12 @@
 # All are excluded from all hooks.
 #
 # ONE CARVE-OUT: framework/VERSION. The sync-version-refs hook below names it in its
-# own `files:` pattern, but `
+# own `files:` pattern, but `exclude:` is applied AFTER `files:`, so a bare `framework/`
+# silently killed half that hook's declared trigger — a framework spec bump could not
+# fire the hook that exists to propagate it, while a platform bump could (#574). The
+# lookahead spares exactly that one path and nothing else; the spec tree stays excluded.
+# Safe for the autofixing hooks too: it is a one-line file (`X.Y.Z\n`) that they
+# no-op on, and it is only ever staged by the bump that already rewrites it.
 exclude: '^(legacy/|framework/(?!VERSION$)|platforms/claude-code-plugin/framework/|tests/conformance/fixtures/refgran/|.*\.pytest_cache/|.*/__pycache__/)'
 
 repos:

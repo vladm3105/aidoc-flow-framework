@@ -11,8 +11,10 @@ See ``DocumentLevelPermittedParity`` for what is and is not covered.
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
+import textwrap
 import unittest
 from pathlib import Path
 
@@ -74,6 +76,65 @@ def extract_tag_syntax(text: str) -> set:
       the second cell makes a *file*-scoped extractor return
       ``{SPEC, IPLAN, TDD}`` and report correct text as drift.
     """
+    body = tag_syntax_rows(text)
+    permitted: set = set()
+    for row in body:
+        cells = [c.strip() for c in row.strip().strip("|").split("|")]
+        if len(cells) < 2:
+            raise Unparseable(f"TAG_SYNTAX.md: malformed table row: {row!r}")
+        target, form = cells[0], cells[1]
+        if "document" in form.lower():
+            permitted |= {m.group(1) for m in _LAYER.finditer(target)}
+    if not permitted:
+        # The empty set is never an answer here. Rewording the Form cell from
+        # "**document**" to "**doc**" would otherwise report
+        # "set() != {SPEC, IPLAN}" under the disagreement message — the exact
+        # inversion ``Unparseable`` exists to prevent, and the first draft of
+        # this extractor shipped it while the other two guarded against it.
+        raise Unparseable(
+            "TAG_SYNTAX.md: granularity table names no document-level row "
+            "(the Form cell no longer says 'document')"
+        )
+    return permitted
+
+
+def _joined_bullet(text: str, anchor: str) -> str | None:
+    """The bullet containing ``anchor``, joined across its continuation lines.
+
+    Physical-line scoping was a measured false positive in the *benign*
+    direction, which is the expensive one: ``TRACEABILITY.md``'s granularity
+    bullet is a single 743-character line in a file whose next-longest line is
+    103 and whose body wraps at ~95, so it is an outlier that a reflow or a
+    copy-edit is likely to wrap. Reproduced at widths 80, 95 and 100 — every one
+    made the permit anchor ``Unparseable``, i.e. the conformance hook (a
+    *required* context) failing on text that is still correct.
+
+    ``_bullets`` has always joined continuations for ``ID_NAMING_STANDARDS.md``;
+    this is the same rule, applied to the one surface that lacked it. It is
+    deliberately more permissive than ``_bullets`` about indentation: a wrap
+    written without a two-space continuation indent is still a wrap.
+    """
+    lines = text.splitlines()
+    start = next((i for i, ln in enumerate(lines) if anchor in ln), None)
+    if start is None:
+        return None
+    bullet = lines[start].rstrip()
+    for line in lines[start + 1 :]:
+        stripped = line.strip()
+        # A blank line, a sibling bullet or a heading ends the bullet. Anything
+        # else non-blank is a continuation of it.
+        # A bare "#" is not a heading — CommonMark requires a following space — and
+        # the anchored bullet contains the literal `#502`, so a narrow reflow starts
+        # a continuation line with it. Treating that as a heading ended the join and
+        # made the surface Unparseable; measured at width 48.
+        if not stripped or re.match(r"^(?:[-*+]\s|#{1,6}\s|\d+\.\s)", stripped):
+            break
+        bullet += " " + stripped
+    return bullet
+
+
+def tag_syntax_rows(text: str) -> list:
+    """The data rows of the granularity table — the first pipe table only."""
     lines = text.splitlines()
     header = next(
         (
@@ -97,26 +158,7 @@ def extract_tag_syntax(text: str) -> set:
         body.append(ln)
     if not body:
         raise Unparseable("TAG_SYNTAX.md: granularity table has no data rows")
-
-    permitted: set = set()
-    for row in body:
-        cells = [c.strip() for c in row.strip().strip("|").split("|")]
-        if len(cells) < 2:
-            raise Unparseable(f"TAG_SYNTAX.md: malformed table row: {row!r}")
-        target, form = cells[0], cells[1]
-        if "document" in form.lower():
-            permitted |= {m.group(1) for m in _LAYER.finditer(target)}
-    if not permitted:
-        # The empty set is never an answer here. Rewording the Form cell from
-        # "**document**" to "**doc**" would otherwise report
-        # "set() != {SPEC, IPLAN}" under the disagreement message — the exact
-        # inversion ``Unparseable`` exists to prevent, and the first draft of
-        # this extractor shipped it while the other two guarded against it.
-        raise Unparseable(
-            "TAG_SYNTAX.md: granularity table names no document-level row "
-            "(the Form cell no longer says 'document')"
-        )
-    return permitted
+    return body
 
 
 def _bullets(section: str) -> list:
@@ -163,12 +205,103 @@ def _permit_subject(bullet: str) -> str:
     is present, which keeps the function total rather than empty — callers gate
     on ``_permits`` first.
     """
-    for sentence in re.split(r"(?<=\.)\s+", bullet):
+    for sentence in _sentences(bullet):
         for phrase in _PERMIT:
             index = sentence.find(phrase)
             if index != -1:
                 return sentence[:index]
     return bullet
+
+
+# Markers that make a fragment a *contrast* rather than a grant. Without them the
+# clarification "(unlike `@adr:` and `@tdd:`, which must be element-level)" reads
+# as permitting ADR and TDD; with them, ", as are `@adr:` and `@tdd:` citations"
+# still reads as the grant it is. Both directions are locked in ``MutationLocks``.
+# Deliberately NOT "must be" or "never": both are modal rather than negative, so
+# "as must be `@adr:` and `@tdd:` citations" — a grant — was read as a forbid and
+# skipped. Every marker here entails element-level, which is the actual contrast.
+_FORBID_MARKERS = ("element-level", "unlike", "whereas", "as opposed to")
+
+# A clause introducing an EXAMPLE or a cross-reference names layers without
+# claiming anything about them. Without this, moving the live bullet's own
+# "(e.g. TDD citing `SPEC-01`, …)" after the predicate — a meaning-preserving
+# copy-edit — reported correct text as Unparseable, naming TDD.
+_EXAMPLE_MARKERS = ("e.g.", "i.e.", "cf.", "see ")
+
+
+_ABBREVIATIONS = ("e.g.", "i.e.", "cf.", "et al.", "vs.")
+
+
+def _sentences(text: str) -> list:
+    r"""Sentence split that does not break inside a common abbreviation.
+
+    ``re.split(r"(?<=\.)\s+", …)`` breaks after "e.g.", which silently halves
+    the live "Design & realization layers" bullet and put its own example into
+    what the tail rule treats as a separate statement. Guarded by a placeholder
+    swap rather than a lookbehind, because Python requires fixed-width lookbehind
+    and these abbreviations differ in length.
+    """
+    guarded = text
+    for index, abbreviation in enumerate(_ABBREVIATIONS):
+        guarded = guarded.replace(abbreviation, f"\x00{index}\x00")
+    return [
+        re.sub(r"\x00(\d+)\x00", lambda m: _ABBREVIATIONS[int(m.group(1))], sentence)
+        for sentence in re.split(r"(?<=\.)\s+", guarded)
+    ]
+
+
+def _has_forbid_marker(fragment: str) -> bool:
+    lowered = fragment.lower()
+    return any(marker in lowered for marker in _FORBID_MARKERS)
+
+
+def _stray_layers(bullet: str, granted: set) -> set:
+    """Layers a permitting bullet names AFTER its permit phrase and does not forbid.
+
+    ``_permit_subject`` truncates at the permit phrase because the phrase is a
+    predicate, so its subject precedes it. That is right for the subject and
+    blind to a **trailing conjunction**: appending ", as are ``@adr:`` and
+    ``@tdd:`` citations" to the ``@spec:``/``@iplan:`` bullet grants two
+    element-declaring layers document-level citation — verbatim the GD-13 drift
+    — and an earlier draft returned ``{SPEC, IPLAN}`` for it, reporting the
+    drift as correct.
+
+    The tail cannot simply be read for layer names: the live text names SPEC and
+    IPLAN again in a cross-reference ("see the SPEC §5 / IPLAN §4 exemption"),
+    and the *other* permitting bullet's forbid sentence names TDD and ADR in a
+    counter-example. So the rule is **new** names only — a tail may restate what
+    the bullet granted, never introduce a layer — and fragments carrying a
+    forbid marker are skipped. A survivor is reported ``Unparseable``, not
+    silently dropped: a construction this parser cannot classify is not the same
+    claim as "permits nothing".
+    """
+    sentences = _sentences(bullet)
+    tail: list = []
+    for index, sentence in enumerate(sentences):
+        for phrase in _PERMIT:
+            at = sentence.find(phrase)
+            if at != -1:
+                tail = [sentence[at + len(phrase) :], *sentences[index + 1 :]]
+                break
+        if tail:
+            break
+
+    stray: set = set()
+    for position, sentence in enumerate(tail):
+        # A *later* sentence carrying a forbid marker is a forbid statement and
+        # is skipped whole — that is the shape of the live "Design & realization
+        # layers" bullet's second sentence. The permit sentence's own tail
+        # (position 0) is split finer, because its contrast lives in a clause.
+        if position and _has_forbid_marker(sentence):
+            continue
+        for clause in re.split(r"[(),;—]", sentence):
+            if _has_forbid_marker(clause):
+                continue
+            if any(marker in clause.lower() for marker in _EXAMPLE_MARKERS):
+                continue
+            stray |= {m.group(1) for m in _LAYER.finditer(clause)}
+            stray |= {m.group(1).upper() for m in _TAG.finditer(clause)}
+    return stray - granted
 
 
 def _permits(bullet: str) -> bool:
@@ -177,13 +310,17 @@ def _permits(bullet: str) -> bool:
     return any(phrase in bullet for phrase in _PERMIT)
 
 
-def id_naming_bullets(text: str) -> list:
+def id_naming_section(text: str) -> str:
     start = text.find("### Reference granularity")
     if start == -1:
         raise Unparseable("ID_NAMING_STANDARDS.md: no '### Reference granularity' heading")
     rest = text[start + 1 :]
     end = rest.find("\n### ")
-    section = rest if end == -1 else rest[:end]
+    return rest if end == -1 else rest[:end]
+
+
+def id_naming_bullets(text: str) -> list:
+    section = id_naming_section(text)
     bullets = _bullets(section)
     if not bullets:
         raise Unparseable("ID_NAMING_STANDARDS.md: '### Reference granularity' has no bullets")
@@ -244,6 +381,16 @@ def extract_id_naming(text: str) -> set:
                 "its bolded subject or its permitting sentence, so its claim "
                 f"cannot be read: {bullet[:120]!r}"
             )
+        stray = _stray_layers(bullet, found)
+        if stray:
+            # See ``_stray_layers``. Reported rather than answered, because the
+            # answer would be a set that omits a layer the text just granted.
+            raise Unparseable(
+                "ID_NAMING_STANDARDS.md: a permitting bullet names "
+                f"{sorted(stray)} after its permit phrase, outside any "
+                "element-level or contrast clause, so whether it grants them "
+                f"document-level citation cannot be read: {bullet[:120]!r}"
+            )
         permitted |= found
     if not permitted:
         raise Unparseable("ID_NAMING_STANDARDS.md: no permitting bullet named any layer")
@@ -251,15 +398,37 @@ def extract_id_naming(text: str) -> set:
 
 
 _TRACEABILITY_ANCHOR = "Reference Granularity Principle"
-_TRACEABILITY_PERMIT = re.compile(r"citing\s+[^()]*?\(([^)]*)\)\s+at document-level", re.IGNORECASE)
+# The lazy run is forbidden from crossing a ``document-level`` occurrence. Without
+# that guard it absorbs arbitrary prose — including a second, unmodelled grant —
+# into the permit clause's own match span, which the role check then reads as
+# "accounted for". Measured: a grant planted inside the clause's subject returned
+# {SPEC, IPLAN}. Locked by ``test_a_grant_inside_the_permit_clause_is_unparseable``.
+_TRACEABILITY_PERMIT = re.compile(
+    r"citing\s+(?:(?!document-level)[^()])*?\(([^)]*)\)\s+at document-level", re.IGNORECASE
+)
 
-# Every role a "document-level" phrase is allowed to play in that bullet. Any
-# occurrence matching none of these is an unmodelled statement, and the parse is
-# reported as unreadable rather than answered.
-_TRACEABILITY_KNOWN_ROLES = (
-    "at document-level",  # the permit clause — the anchor
-    "a document-level ID",  # the forbid counter-example
-    "are document-level and exempt",  # the self-tag / forward-pointer carve-out
+# Every role a "document-level" phrase is allowed to play in that bullet, as a
+# pattern that must **contain** the occurrence it accounts for.
+#
+# Substrings-in-a-window were the first design and were defeated two ways, both
+# reproduced against the live text and both now locked in ``MutationLocks``:
+# a new claim that *reuses* a role's own wording ("`@adr:` and `@tdd:` may
+# likewise be cited at document-level") matched the bare "at document-level"
+# string, and a new claim merely *near* a legitimate one ("Citing a
+# document-level ID, though ADR document-level cites are fine, (e.g. `BDD-01`)")
+# fell inside its ±40-character window. Both returned {SPEC, IPLAN} — genuinely
+# wrong text reported as correct. Containment has neither failure mode: an
+# occurrence is accounted for only by a match that spans it.
+_TRACEABILITY_ROLE_PATTERNS = (
+    # the permit clause — the anchor itself, so it accounts for its own occurrence
+    _TRACEABILITY_PERMIT,
+    # the forbid counter-example
+    re.compile(r"Citing\s+a\s+\*{0,2}document-level\*{0,2}\s+ID", re.IGNORECASE),
+    # the self-tag / forward-pointer carve-out
+    re.compile(
+        r"are\s+\*{0,2}document-level\*{0,2}\s+and\s+(?:\w+\s+)?(?:exempt|are\s+\*\*not\*\*)",
+        re.IGNORECASE,
+    ),
 )
 
 
@@ -289,18 +458,23 @@ def extract_traceability(text: str) -> set:
     ``(…) at document-level``, in the live text or in the fixture, so the
     single-match requirement is unaffected.
     """
-    bullet = next(
-        (ln for ln in text.splitlines() if _TRACEABILITY_ANCHOR in ln),
-        None,
-    )
+    bullet = _joined_bullet(text, _TRACEABILITY_ANCHOR)
     if bullet is None:
         raise Unparseable(f"TRACEABILITY.md: no '{_TRACEABILITY_ANCHOR}' bullet")
 
+    accounted = [
+        match.span()
+        for pattern in _TRACEABILITY_ROLE_PATTERNS
+        for match in pattern.finditer(bullet)
+    ]
     unmodelled = []
     for occurrence in re.finditer(r"document-level", bullet):
-        window = bullet[max(0, occurrence.start() - 40) : occurrence.end() + 40]
-        if not any(role in window for role in _TRACEABILITY_KNOWN_ROLES):
-            unmodelled.append(window.strip())
+        if not any(
+            start <= occurrence.start() and occurrence.end() <= end for start, end in accounted
+        ):
+            unmodelled.append(
+                bullet[max(0, occurrence.start() - 40) : occurrence.end() + 40].strip()
+            )
     if unmodelled:
         raise Unparseable(
             "TRACEABILITY.md: the granularity bullet makes a document-level "
@@ -315,6 +489,36 @@ def extract_traceability(text: str) -> set:
             f"permit clause, found {len(hits)}"
         )
     return {m.group(1) for m in _LAYER.finditer(hits[0])}
+
+
+def anchored_region(name: str, text: str) -> str:
+    """The exact span of prose each extractor reads, whitespace-normalised.
+
+    Normalisation is whitespace-only, so a reflow or an indent change does not
+    move the digest — those are the edits the extractors are already tolerant
+    of. Every other edit does move it, which is the point.
+    """
+    if name == "ID_NAMING_STANDARDS.md":
+        region = id_naming_section(text)
+    elif name == "TAG_SYNTAX.md":
+        region = "\n".join(tag_syntax_rows(text))
+    elif name == "TRACEABILITY.md":
+        region = _joined_bullet(text, _TRACEABILITY_ANCHOR) or ""
+        if not region:
+            raise Unparseable(f"TRACEABILITY.md: no '{_TRACEABILITY_ANCHOR}' bullet")
+    else:  # pragma: no cover - guarded by test_every_surface_is_pinned
+        raise KeyError(name)
+    return re.sub(r"\s+", " ", region).strip()
+
+
+# Digest of each anchored region as it stands today. See ``AnchoredProseIsPinned``
+# for why these exist and what to do when one fails; the failure message carries
+# the new digest, so regenerating is a copy, never a computation.
+PINNED_REGIONS = {
+    "ID_NAMING_STANDARDS.md": "7749a042461518610a32edc839530502f7b3bede690eeff8e9b5f168ffcfae51",  # pragma: allowlist secret
+    "TAG_SYNTAX.md": "914e3577d0d195f2ecff54ad1d448a12ee9c8a0e205ac4d10edb53b78de60cd1",  # pragma: allowlist secret
+    "TRACEABILITY.md": "65cb30a43a0a11f2aae69914b131397c38a68afbf63414d52c44a97f1d8a8590",  # pragma: allowlist secret
+}
 
 
 SURFACES = {
@@ -410,22 +614,44 @@ class DocumentLevelPermittedParity(unittest.TestCase):
        the anchored region itself*, phrased in a way none of the three
        extractors models.
 
-       Three such constructions were found in review and each is now closed by
-       a lock in ``MutationLocks``: layers moved out of a bolded subject into
-       the bullet body, a permitting bullet's forbid clause flipped, and an
-       extra document-level claim appended to the ``TRACEABILITY.md`` bullet.
-       They are closed **as specific phrasings**, not as a class. A fourth
-       phrasing nobody has thought of is the standing residual risk here, and
-       it is the reason the ``LAYER_REGISTRY.yaml`` alternative in limit 4 is
-       the better design: a parsed set has no phrasings.
+       **Fifteen** such constructions have been found across **three**
+       adversarial rounds — 3, then 5, then 7 — and the trend is the point, not
+       the fifteen. Rounds 2 and 3 each ran against a form of this module that
+       had been pushed for merge, and each found governance text granting ADR
+       and TDD document-level citation, the GD-13 drift verbatim, reported as
+       **correct**. Round 3 also found four benign edits reported as drift,
+       including moving the live bullet's own example after its predicate.
 
-    3. *Reach.* ``framework/governance/DECISIONS.md`` GD-13 says a guard over
-       these surfaces "would have caught all six". It would have caught **two**.
-       The other four were ``playbooks/{05_ADR,07_TDD}/auditor.md``,
+       **So the extractors are no longer the only guard, and scope limit 2 is
+       narrower than it was.** ``AnchoredProseIsPinned`` pins each anchored
+       region by digest, and a digest cannot be defeated by phrasing — a
+       re-drift cannot pass unnoticed however it is worded. What remains
+       phrasing-dependent is only which *message* you get: a construction an
+       extractor models is reported as a wrong set, and one it does not is
+       reported as changed prose to re-read. One such construction is known and
+       kept as a live assertion rather than a footnote (a later sentence that
+       both grants and contrasts; splitting it finer false-positives on the
+       live "Design & realization layers" bullet, so markers cannot separate
+       them).
+
+       The counts above are asserted by ``DocumentedCountsAreReal``, because
+       they were narrated wrongly three times before they were derived.
+
+    3. *Reach — two, not six.* This module reaches **two** of the six surfaces
+       GD-13 corrected. The other four were
+       ``playbooks/{05_ADR,07_TDD}/auditor.md``,
        ``layers/08_IPLAN/IPLAN-TEMPLATE.yaml`` and
        ``platforms/claude-code-plugin/agents/requirements-analyst.md``, none of
-       which this module reads. The inherited claim is recorded here as wrong
-       rather than repeated.
+       which this module reads.
+
+       An earlier form of GD-13's successor sentence claimed such a guard
+       "would have caught all six", and an earlier form of *this* docstring
+       recorded that as a live defect. **It is not one:**
+       ``framework/governance/DECISIONS.md`` already states "would catch **two**
+       of the six above, not all six", and GD-18 item 3 records the correction
+       as landed. Both were true at this branch's merge base, so the claim is
+       stated here as the plain fact it is rather than as a finding against
+       another document.
 
     4. *The better design is not this one.* Stating the set once in
        ``LAYER_REGISTRY.yaml`` — as ``realizing_layers`` and
@@ -692,6 +918,413 @@ class MutationLocks(unittest.TestCase):
         )
         with self.assertRaises(Unparseable):
             extract_traceability(mutant)
+
+    # ----------------------------------------------------------------------
+    # Review-2 locks. Each of the four below is a construction that the first
+    # merged form of this module got wrong on the LIVE text, reproduced before
+    # being folded. Three grant ADR/TDD document-level citation — verbatim the
+    # GD-13 drift this guard exists to catch — and were reported as correct;
+    # the fourth reddened a required check on text that was right.
+    # ----------------------------------------------------------------------
+
+    def test_a_trailing_conjunction_grant_is_not_silently_dropped(self):
+        """The grant arrives AFTER the permit phrase, as a conjunction.
+
+        ``_permit_subject`` truncates at the permit phrase because the phrase is
+        a predicate — correct for the subject, blind to a tail. Measured:
+        this returned ``{SPEC, IPLAN}``, i.e. the guard passing on text that
+        grants two element-declaring layers document-level citation.
+
+        Note this is the *symmetric* case of
+        ``test_a_correct_clarification_naming_upstream_tags_is_not_a_permission``
+        above: that one locks the false-positive direction of the same tail, and
+        having only it is what left this direction open.
+        """
+        mutant = self._mutate(
+            "ID_NAMING_STANDARDS.md",
+            "- `@spec:` and `@iplan:` citations are **document-level**",
+            "- `@spec:` and `@iplan:` citations are **document-level**, "
+            "as are `@adr:` and `@tdd:` citations",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_id_naming(mutant)
+        # Not merely "it raised": a parse that broke for an unrelated reason
+        # would satisfy assertRaises while detecting nothing (D2). The message
+        # must name the layers the mutant granted.
+        self.assertIn("ADR", str(caught.exception))
+        self.assertIn("TDD", str(caught.exception))
+
+    def test_a_second_sentence_grant_is_not_silently_dropped(self):
+        """The same grant as its own sentence, which sentence-scoping alone misses."""
+        mutant = self._mutate(
+            "ID_NAMING_STANDARDS.md",
+            "- `@spec:` and `@iplan:` citations are **document-level**",
+            "- `@spec:` and `@iplan:` citations are **document-level**. "
+            "So are `@adr:` and `@tdd:` citations.",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_id_naming(mutant)
+        self.assertIn("ADR", str(caught.exception))
+        self.assertIn("TDD", str(caught.exception))
+
+    def test_a_grant_reusing_a_modelled_roles_wording_is_unparseable(self):
+        """A new claim phrased in an existing role's own words.
+
+        The first form of the role check tested for the bare substring
+        ``"at document-level"`` anywhere in a ±40-character window, so a claim
+        that *reused* that wording accounted for itself. Measured: returned
+        ``{SPEC, IPLAN}``. Containment has no such failure mode.
+        """
+        mutant = self._mutate(
+            "TRACEABILITY.md",
+            "Self-tags and downstream forward-pointers are document-level and exempt (GD-03).",
+            "`@adr:` and `@tdd:` may likewise be cited at document-level. "
+            "Self-tags and downstream forward-pointers are document-level and exempt (GD-03).",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_traceability(mutant)
+        # The unmodelled-role path specifically — not a broken permit anchor,
+        # which would raise for a reason that is not a detection (D2).
+        self.assertIn("modelled roles", str(caught.exception))
+
+    def test_a_grant_adjacent_to_a_modelled_role_is_unparseable(self):
+        """A new claim that is merely NEAR a legitimate one.
+
+        The second defeat of the window design, and independent of the first:
+        this phrasing reuses no role string, it simply lands inside the forbid
+        counter-example's window. Measured: returned ``{SPEC, IPLAN}``.
+        """
+        mutant = self._mutate(
+            "TRACEABILITY.md",
+            "Citing a document-level ID (e.g. `BDD-01`)",
+            "Citing a document-level ID, though ADR document-level cites are fine, (e.g. `BDD-01`)",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_traceability(mutant)
+        self.assertIn("modelled roles", str(caught.exception))
+
+    def test_a_rewrapped_bullet_is_still_readable(self):
+        """The false-positive direction: a benign reflow must not redden a required check.
+
+        The bullet is a ~740-character line in a file whose next-longest is 103,
+        so it is exactly the line a reflow touches. Physical-line scoping made
+        **every** wrap width ``Unparseable`` — the conformance hook failing on
+        correct text, which sends the author to fix a rule that is not wrong.
+
+        ``break_on_hyphens=False`` models a real wrap: splitting ``document-``
+        from ``level`` would corrupt the rendered prose, so no reflow a
+        contributor would actually run does it. Both continuation-indent styles
+        are covered because the guard must not depend on one.
+        """
+        text = (GOVERNANCE / "TRACEABILITY.md").read_text(encoding="utf-8")
+        self.assertIn(_TRACEABILITY_ANCHOR, text)
+        for indent in ("  ", ""):
+            for width in (72, 80, 95, 120):
+                with self.subTest(indent=len(indent), width=width):
+                    wrapped = []
+                    for line in text.splitlines():
+                        if _TRACEABILITY_ANCHOR in line:
+                            wrapped.extend(
+                                textwrap.wrap(
+                                    line,
+                                    width,
+                                    subsequent_indent=indent,
+                                    break_on_hyphens=False,
+                                    break_long_words=False,
+                                )
+                            )
+                        else:
+                            wrapped.append(line)
+                    self.assertEqual(
+                        extract_traceability("\n".join(wrapped)),
+                        set(EXPECTED_PERMITTED),
+                    )
+
+
+class MutationLocksRoundThree(unittest.TestCase):
+    """Round three's mutants. Same contract as ``MutationLocks``: applied to the
+    live text, existence-guarded, and each reproduced before its fix was written.
+
+    Two grants the guard reported as **correct**, and four benign edits it
+    reported as drift. The split matters: a phrasing classifier fails in both
+    directions, and only the second direction is visible without an adversary.
+    """
+
+    def _mutate(self, name: str, old: str, new: str) -> str:
+        text = (GOVERNANCE / name).read_text(encoding="utf-8")
+        self.assertIn(old, text, f"{name}: mutation target no longer present — rewrite this mutant")
+        return text.replace(old, new, 1)
+
+    def test_a_grant_inside_the_permit_clause_is_unparseable(self):
+        """The permit clause's own lazy run absorbed an unmodelled grant.
+
+        ``[^()]*?`` is unbounded, so a grant planted in the clause's *subject*
+        was swallowed into the clause's match span — and containment then read
+        it as accounted for. The role check was thereby defeated by the one
+        pattern that is not short and anchored. Measured: ``{SPEC, IPLAN}``.
+        """
+        mutant = self._mutate(
+            "TRACEABILITY.md",
+            "citing the element-ID-exempt layers (SPEC, IPLAN) at document-level",
+            "citing the element-ID-exempt layers, and `@adr:`/`@tdd:` refs which are "
+            "equally document-level, (SPEC, IPLAN) at document-level",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_traceability(mutant)
+        self.assertIn("modelled roles", str(caught.exception))
+
+    def test_a_modal_grant_is_not_read_as_a_forbid(self):
+        """``must be`` is modality, not negation.
+
+        ``must be document-level`` is a grant and ``must be element-level`` is a
+        forbid; a bare ``must be`` marker cannot tell them apart, and treating
+        it as a forbid skipped the clause. Two words from a mutant already
+        locked in ``MutationLocks``. Measured: ``{SPEC, IPLAN}``.
+        """
+        mutant = self._mutate(
+            "ID_NAMING_STANDARDS.md",
+            "- `@spec:` and `@iplan:` citations are **document-level**",
+            "- `@spec:` and `@iplan:` citations are **document-level**, "
+            "as must be `@adr:` and `@tdd:` citations",
+        )
+        with self.assertRaises(Unparseable) as caught:
+            extract_id_naming(mutant)
+        self.assertIn("ADR", str(caught.exception))
+        self.assertIn("TDD", str(caught.exception))
+
+    def test_moving_the_live_example_after_the_predicate_stays_correct(self):
+        """A meaning-preserving reorder of the bullet's OWN example.
+
+        Nothing says the example must precede the predicate — the ordering is
+        incidental. Moving it after put ``TDD`` in the tail, and the stray rule
+        called correct text drift, naming TDD. The expensive direction.
+        """
+        mutant = self._mutate(
+            "ID_NAMING_STANDARDS.md",
+            "citing an upstream design doc as an architectural unit or provenance "
+            "(e.g. TDD citing `SPEC-01`, IPLAN citing `SPEC-01`) is **document-level permitted**",
+            "citing an upstream design doc as an architectural unit or provenance "
+            "is **document-level permitted** (e.g. TDD citing `SPEC-01`, IPLAN citing `SPEC-01`)",
+        )
+        self.assertEqual(extract_id_naming(mutant), set(EXPECTED_PERMITTED))
+
+    def test_an_adverb_in_the_exemption_clause_stays_correct(self):
+        """One inserted word must not redden a required check."""
+        mutant = self._mutate(
+            "TRACEABILITY.md",
+            "are document-level and exempt",
+            "are document-level and therefore exempt",
+        )
+        self.assertEqual(extract_traceability(mutant), set(EXPECTED_PERMITTED))
+
+    def test_bolding_the_term_stays_correct(self):
+        """Converging on the sibling file's house style must not fail.
+
+        ``ID_NAMING_STANDARDS.md`` already bolds the term in both its permitting
+        bullets, so bolding it in ``TRACEABILITY.md`` is a contributor making the
+        two governance files agree — and it made the role patterns miss.
+        """
+        mutant = self._mutate(
+            "TRACEABILITY.md",
+            "are document-level and exempt",
+            "are **document-level** and exempt",
+        )
+        self.assertEqual(extract_traceability(mutant), set(EXPECTED_PERMITTED))
+
+    def test_a_narrow_reflow_starting_a_line_with_an_issue_ref_stays_correct(self):
+        """``#502`` is not a heading, and the bullet contains it.
+
+        CommonMark requires a space after ``#``. Treating a bare ``#`` as a
+        heading ended the continuation join at a line starting ``#502):**``,
+        which any reflow narrower than ~53 columns produces. This repo's own
+        ``CLAUDE.md`` records ``#NNN``-at-line-start as a live markdownlint
+        hazard, so the token class is not hypothetical here.
+        """
+        text = (GOVERNANCE / "TRACEABILITY.md").read_text(encoding="utf-8")
+        self.assertIn("#502", text, "the issue reference this mutant needs is gone")
+        for width in (44, 48, 52):
+            with self.subTest(width=width):
+                wrapped = []
+                for line in text.splitlines():
+                    if _TRACEABILITY_ANCHOR in line:
+                        wrapped.extend(
+                            textwrap.wrap(
+                                line, width, break_on_hyphens=False, break_long_words=False
+                            )
+                        )
+                    else:
+                        wrapped.append(line)
+                self.assertEqual(extract_traceability("\n".join(wrapped)), set(EXPECTED_PERMITTED))
+
+
+class DocumentedCountsAreReal(unittest.TestCase):
+    """The counts this module's prose states are asserted against the code.
+
+    Not pedantry: the review-round counts in this module's docstring, in
+    ``CHANGELOG.md`` and in ``plans/DECISIONS.md`` D-0079 were **wrong three
+    separate times** while this guard was being built — narrated from memory
+    rather than derived, and each wrong count read as authoritative. A number
+    that appears in four documents needs one executable source.
+
+    If a round finds more constructions, update the number here **and** in the
+    four prose surfaces named in the failure message. That is the point: the
+    test makes the prose edit non-optional.
+    """
+
+    ROUND_LOCKS = {1: 3, 2: 5, 3: 7}
+    PROSE_SURFACES = (
+        "this module's class docstring, scope limit 2",
+        "CHANGELOG.md, the #531 entry",
+        "plans/DECISIONS.md, D-0079 items 7-8",
+        "plans/REFGRAN-GUARD-001-PLAN.md, Pass 6-7",
+    )
+
+    def test_round_three_locks_match_the_documented_count(self):
+        """Round 3 = the locks in ``MutationLocksRoundThree`` + the pin-only one.
+
+        The pin-only construction is the phrasing no extractor models, asserted
+        live in ``AnchoredProseIsPinned.test_a_grant_no_extractor_models_still_fails``.
+        """
+        locked = len([m for m in dir(MutationLocksRoundThree) if m.startswith("test_")])
+        pin_only = 1
+        self.assertEqual(
+            locked + pin_only,
+            self.ROUND_LOCKS[3],
+            "round-3 construction count changed; update ROUND_LOCKS and then "
+            + "; ".join(self.PROSE_SURFACES),
+        )
+
+    def test_total_constructions_match_the_documented_total(self):
+        self.assertEqual(
+            sum(self.ROUND_LOCKS.values()),
+            15,
+            "the total this module's prose states is stale; update it in "
+            + "; ".join(self.PROSE_SURFACES),
+        )
+
+
+class AnchoredProseIsPinned(unittest.TestCase):
+    """The anchored regions are pinned by digest, so no re-drift can be silent.
+
+    **Why this exists, stated plainly: the extractors above cannot be trusted to
+    be exhaustive, and three rounds of review are the evidence.** Each round
+    was adversarial, each constructed governance text that genuinely grants an
+    element-declaring layer document-level citation, and each found phrasings
+    the previous round's extractor reported as **correct** — 3, then 5, then 7.
+    A classifier built from permit phrases and forbid markers is doing natural
+    language, and its known-closed phrasing set has never been its coverage.
+
+    One phrasing is still open and is not closable that way: a later sentence
+    that both grants and contrasts ("So are ``@adr:`` and ``@tdd:`` citations,
+    unlike ``@ears:``") is skipped whole, because splitting it finer
+    false-positives on the live "Design & realization layers" bullet, whose
+    forbid sentence names TDD and ADR in a counter-example. Marker-based
+    classification has no answer there.
+
+    So the guard stops relying on classification for the direction that matters.
+    A digest cannot be defeated by phrasing: **any** change to the prose these
+    extractors read moves it, so a re-drift cannot pass unnoticed regardless of
+    how it is worded. The extractors keep their job — proving the *current*
+    pinned text states ``{SPEC, IPLAN}`` — and stop carrying the burden of
+    proving that no future wording could.
+
+    **The false positives are the feature.** Normalisation is whitespace-only,
+    so reflows and re-indents pass; every other edit fails, with a message that
+    names the region, prints the set still extracted, and gives the new digest
+    to paste. That is not "fix a rule that is not wrong" — it is "a normative
+    statement that drifted unnoticed for two months has changed; confirm it
+    still means ``{SPEC, IPLAN}`` and say so." Updating a pin is a two-line
+    diff a reviewer can actually check.
+
+    **Do not regenerate a pin to make CI green.** Read the region, confirm the
+    document-level-permitted set is still exactly ``{SPEC, IPLAN}``, and only
+    then paste the digest — the whole value of this test is the pause.
+    """
+
+    def test_every_surface_is_pinned(self):
+        """The pin set and the extractor set stay in step.
+
+        Without this, adding a fourth surface to ``SURFACES`` would leave it
+        unpinned and the pin suite would still be green — a guard that grows a
+        hole exactly when it grows a surface.
+        """
+        self.assertEqual(set(PINNED_REGIONS), set(SURFACES))
+
+    def test_anchored_regions_match_their_pins(self):
+        for name in sorted(PINNED_REGIONS):
+            with self.subTest(surface=name):
+                text = (GOVERNANCE / name).read_text(encoding="utf-8")
+                region = anchored_region(name, text)
+                digest = hashlib.sha256(region.encode("utf-8")).hexdigest()
+                if digest == PINNED_REGIONS[name]:
+                    continue
+                try:
+                    reads_as = sorted(SURFACES[name](text))
+                except Unparseable as exc:
+                    reads_as = f"UNREADABLE — {exc}"
+                self.fail(
+                    f"{name}: the anchored granularity prose changed.\n"
+                    f"  It now reads as document-level-permitted: {reads_as}\n"
+                    f"  (it must be {sorted(EXPECTED_PERMITTED)})\n"
+                    "  If that is still correct, this is a wording change: confirm it, "
+                    "then update PINNED_REGIONS to\n"
+                    f'    "{name}": "{digest}",\n'
+                    "  and say in the PR that you re-read the region. Never repin to go green."
+                )
+
+    def test_a_grant_no_extractor_models_still_fails(self):
+        """The phrasing the extractors provably cannot classify is caught here.
+
+        ``extract_id_naming`` returns ``{SPEC, IPLAN}`` for this mutant — the
+        one open false negative, kept as a *live* assertion so the claim stays
+        honest — and the pin catches it anyway. This is the test that makes the
+        digest load-bearing rather than decorative.
+        """
+        text = (GOVERNANCE / "ID_NAMING_STANDARDS.md").read_text(encoding="utf-8")
+        target = "- `@spec:` and `@iplan:` citations are **document-level**"
+        self.assertIn(target, text, "mutation target no longer present — rewrite this mutant")
+        mutant = text.replace(
+            target,
+            target + ". So are `@adr:` and `@tdd:` citations, unlike `@ears:`.",
+            1,
+        )
+        self.assertEqual(
+            extract_id_naming(mutant),
+            set(EXPECTED_PERMITTED),
+            "the extractor now classifies this phrasing — good; rewrite this test "
+            "against the next one it cannot, or drop it and say why",
+        )
+        self.assertNotEqual(
+            hashlib.sha256(
+                anchored_region("ID_NAMING_STANDARDS.md", mutant).encode("utf-8")
+            ).hexdigest(),
+            PINNED_REGIONS["ID_NAMING_STANDARDS.md"],
+            "the pin did not move, so it does not close what the extractor misses",
+        )
+
+    def test_a_reflow_does_not_move_a_pin(self):
+        """Whitespace-only normalisation, asserted rather than assumed.
+
+        If a re-indent moved the digest, every reflow would demand a repin and
+        the pin would train reviewers to regenerate without reading — which is
+        the one failure mode that makes this test worthless.
+        """
+        for name in sorted(PINNED_REGIONS):
+            with self.subTest(surface=name):
+                text = (GOVERNANCE / name).read_text(encoding="utf-8")
+                # Only what a reflow actually touches: continuation indent and
+                # trailing whitespace. Re-indenting headings, table rows or
+                # bullet starts is corruption, not a reflow, and would break the
+                # anchors rather than testing normalisation.
+                reflowed = "\n".join(
+                    "      " + line.strip() + " " if line[:1].isspace() and line.strip() else line
+                    for line in text.splitlines()
+                )
+                self.assertNotEqual(reflowed, text, "the reflow changed nothing")
+                self.assertEqual(
+                    anchored_region(name, text),
+                    anchored_region(name, reflowed),
+                )
 
 
 class UnparseableIsDistinctFromDisagreement(unittest.TestCase):
