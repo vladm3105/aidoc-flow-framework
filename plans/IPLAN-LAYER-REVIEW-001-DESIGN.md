@@ -4,7 +4,7 @@
 | -------------- | -------------------------------------------------------------- |
 | Task           | IPLAN-LAYER-REVIEW-001                                           |
 | Type           | design (feeds a separate implementation plan)                    |
-| Status         | Draft — 2026-08-26                                               |
+| Status         | Draft — 2026-08-26; amended 2026-08-27 (A2 discarded)            |
 | Review cycles  | **0** — no gap-review pass has run against this draft            |
 | Depends on     | `plans/OKF-CONFORMANCE-001-DESIGN.md` (Draft; owns D1 contract)  |
 | Feeds          | `plans/IPLAN-LAYER-REVIEW-001-PLAN.md` (not yet written)         |
@@ -128,22 +128,34 @@ re-grades every consumer corpus. `ACC01` faced the same constraint and resolved
 it by adding `acceptance_layers` as an additive sibling. `COV04` follows that
 precedent (R1).
 
-### A2 — The unit of work is a file, not a requirement (P1)
+### A2 — DISCARDED 2026-08-27 (founder decision): per-requirement work unit
 
-`file_manifest.files[]` carries `path`, `order`, `status`, `session`, `verified`.
-A file has one status marker, so it cannot express that 9 of the 12 TDD cases
-landing in that file are done. There is no task, no acceptance criterion, and no
-per-case state anywhere in the template.
+**Withdrawn, with the reasoning, so it is not re-derived from the same observation.**
 
-This also degrades the session-handoff protocol the layer exists for:
-`partial_work` must describe mid-file state in prose because no unit smaller than
-a file exists.
+The finding was that `file_manifest.files[]` (`framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:102-108`)
+carries one `status`/`verified` per **file**, while a file realizes many test cases — so the structure cannot say which
+cases in a file are done, and `partial_work` carries mid-file state as prose.
 
-The sibling repository that executes these plans already carries the missing
-unit. `IPLAN-ECOSYSTEM.md` names the divergence in its own table — *unit of work:
-`file_manifest` (files)* against *`step → work_order → todo`* — and recommends
-keeping L8 canonical for authoring with an iplanic-side import. That
-recommendation holds only if L8 grows a unit the import can map.
+The observation is accurate. It is not a defect the framework needs to fix:
+
+- **No consumer observes the imprecision.** The linter never reads `file_manifest`;
+  Hermes' validator checks only that the fields exist and that `status` is one of four
+  strings (`platforms/hermes/src/mcp_server/validation/iplan_rules.py:70,83`) and never
+  acts on the value. Nothing else reads `status` or `verified`.
+- **The ecosystem argument ran the wrong way.** `IPLAN-ECOSYSTEM.md` recommends
+  **option 2** — L8 stays canonical for *authoring* and iplanic imports into its richer
+  `step → work_order → todo` model. Adding tasks to L8 moves toward option 1, which that
+  document declined. The original draft cited it as support; it is the opposite.
+- **`tdd_ref` (GD-16) removed the need.** An importer now has the (file → test case)
+  mapping, so a todo per pair is derivable at the boundary that owns execution.
+- **It was speculative scope** by this repo's own test: no named issue, no consumer
+  friction, discovered by reading the template rather than by use.
+
+**What would reopen it:** a consumer whose executor needs per-case completion state in
+the *authored* artifact, or a measured case where prose `partial_work` loses a session's
+progress. **Open a GitHub issue on this repo** — per `CLAUDE.md` § "Own-repo gaps", which retired
+the Tier-1/Tier-2 split for repository-owned gaps. Do not re-derive the asymmetry as a
+fresh finding; cite this tombstone and `plans/DECISIONS.md` D-0077.
 
 ### A3 — The review crew has no `code_build` checks (P1)
 
@@ -168,7 +180,7 @@ no applicable check.
 
 ### A4 — The deterministic floor is two sections (P1)
 
-`_collect_size_targets` skips any section whose body carries
+`_load_section_targets` skips any section whose body carries
 `_required_when_subtype:`, deferring the subtype-aware check to the layer audit
 SKILL. Nine of IPLAN's eleven sections carry that marker, so `STRUCT01` enforces
 the presence of `document_control` and `traceability` only. `file_manifest`,
@@ -320,8 +332,8 @@ Ordered so each step is usable on its own. Complexity is 1 (minimal config) to 5
 | --- | --- | --- | --- |
 | R1 | Ship `COV04`: every TDD test-case element is cited element-level by at least one IPLAN. Gate on corpus-has-IPLAN as `COV01` does; warning in `build`, error in `gate-code`. **Do not mutate `realizing_layers`** — add an additive sibling block (`building_layers: {TDD: [IPLAN]}`) following the `acceptance_layers` precedent, with the same registry-versus-constant sync guard | A1 | 3 |
 | R2 | **Amended 2026-08-26.** Add a line-local `tdd_ref:` field to the existing `file_manifest.files[]` entries — a key whose *value* is the `@tdd:` tag, mirroring `bdd_ref`. The first draft proposed a top-level `coverage_map:` block; three review passes established a block header is invisible to a line-local matcher and that the nested field reddens no golden and moves no section count. Owned by `IPLAN-TDDREF-001` | A1, A5 | 1 |
-| R3 | Add `tasks[]` **nested under each `file_manifest` entry** (F-3), one per TDD case or SPEC contract, carrying `tdd_ref`, `acceptance`, `confirmed_by` and `status`; land the file-status derivation rule in the same change. Shape it to normalize onto iplanic's `todo` so the `IPLAN-ECOSYSTEM.md` option-2 import stays viable | A2, A5 | 4 |
-| R4 | Re-point the session-handoff resume protocol at task granularity so `partial_work` stops carrying mid-file state as prose | A2 | 2 |
+| R3 | *(VOID — A2 discarded 2026-08-27; see the A2 tombstone. Row retained so R-numbering stays stable, matching F-3)* | — | — |
+| R4 | *(VOID — A2 discarded 2026-08-27; see the A2 tombstone)* | — | — |
 | R5 | Author `code_build` checks for tech_lead, architect and integration_lead — manifest-versus-TDD completeness, contracts-versus-SPEC-interfaces completeness, Red/Green gate presence, execution commands expressible in the `@spec` toolchain — or introduce a separate `code_build` crew | A3 | 4 |
 | R6 | Rewrite `auditor.md` C1-C3 against the actual IPLAN contract: dash-form document IDs, no dotted element IDs, no deployment-step matrix | B1 | 2 |
 | R7 | Make `STRUCT01` read `document_control.subtype` and enforce the matching section set deterministically, rather than deferring the whole set to a SKILL; add the missing markers to `document_control` and `traceability` | A4, B7 | 3 |
@@ -331,7 +343,7 @@ Ordered so each step is usable on its own. Complexity is 1 (minimal config) to 5
 | R11 | Fix `LAYER_REGISTRY.yaml` extensions to match F-0 and the projection, and drop the `##`-heading language from `doc-iplan-audit/SKILL.md`, the `glossary` requirement, the autopilot's cumulative-tag line, `total_sections`, and the Section 7 gap. Remove the golden's comment-headings and add its `artifact_type` and `title` | B2, B3, B4, B5, B8, C8 | 2 |
 | R12 | Add the IPLAN-specific rows to the frontmatter contract: slug immutability, `tmp/` exclusion, and a statement that `file_manifest` paths and `code_inventory` entries are opaque values rather than concept references. The index type form defers to OKF D3 (F-4) | C5, C6, C7 | 1 |
 
-R1 and R2 are the pair that would have caught all 9 dropped test cases. R10 cannot
+R1 and R2 are the pair that would have caught all 28 uncovered test cases. R10 cannot
 start before the OKF D1 contract exists, and under F-1 it is framework-wide rather
 than IPLAN-scoped. R12's index row waits on OKF D3; its other three rows do not.
 
@@ -363,20 +375,10 @@ ones, so each projection carries a generated-file header naming its source and
 the generator. Without it, the "never hand-edit" rule has no visible carrier at
 the point of editing.
 
-### F-3 — `tasks:` nests under each file-manifest entry
+### F-3 — VOID (A2 discarded 2026-08-27)
 
-`file_manifest.files[]` keeps `path` and `order`, preserving the test-first
-ordering contract. Each entry gains `tasks[]`, one per TDD case or SPEC contract,
-carrying `tdd_ref`, `acceptance`, `confirmed_by` and `status`.
-
-**File `status` and `verified` become derived**, not authored: a file is DONE when
-all its tasks are DONE, and `verified` when its tasks' `confirmed_by` commands
-have run green. This is what keeps one status record — R3 must land the derivation
-rule alongside the field, or the nesting reintroduces the duplication it was
-chosen to avoid.
-
-This also supplies R4 directly: `partial_work` stops carrying mid-file state as
-prose, because the task list already holds it.
+Resolved the nesting shape for a `tasks[]` block that is no longer proposed. Retained
+only so the numbering of F-1/F-2/F-4 stays stable.
 
 ### F-4 — The index type form follows OKF D3
 
@@ -420,9 +422,9 @@ own gap-review cycles before its PR opens. Only Stage 1 is drafted.
 | Stage | Owns | Plan | State |
 | --- | --- | --- | --- |
 | 0 | The `_TAG` quote-termination fix — a prerequisite discovered in review; without it a quoted `@tdd:` tag is silently discarded from the trace graph | `plans/LINT-TAG-QUOTE-001-PLAN.md` | **IMPLEMENTED** 2026-08-26 — suites green, blast radius zero as predicted. Issue #542 |
-| 1a | R2 — the `tdd_ref` line-local carrier | `plans/IPLAN-TDDREF-001-PLAN.md` | **IMPLEMENTED** 2026-08-26 — GD-16; guarded by `tests/conformance/test_iplan_carrier.py`. Version bump withheld (§Version impact) |
+| 1a | R2 — the `tdd_ref` line-local carrier | `plans/IPLAN-TDDREF-001-PLAN.md` | **IMPLEMENTED** 2026-08-26 — GD-16; guarded by `tests/conformance/test_iplan_carrier.py`. **Shipped in framework `0.43.0`** as GD-16 (`272d964d`, PR #549) — the bump was NOT withheld |
 | 1b | R1 — the `COV04` rule | `IPLAN-COV04-002`, not written | blocked on 1a. **Founder decision 2026-08-26: Stages 1a and 1b ship as separate PRs**, accepting a second framework MINOR + fanout (`LINT_RULES.md` is a `framework/` path) |
-| 2 | R3, R4 — nested `tasks[]`, file-status derivation, task-granular handoff | not written | blocked on Stage 1a: `tasks[]` nests under the same manifest entry that carries `tdd_ref` |
+| 2 | *(vacated — A2 discarded 2026-08-27; see the A2 tombstone)* | — | **VACATED** — no successor planned |
 | 3 | R5, R6 — `code_build` lens checks, `auditor.md` rewrite | not written | independent of Stage 1 |
 | 4 | R7, R11 — subtype-aware `STRUCT01`, the consistency fixes (`total_sections`, Section 7 gap, `glossary`, `##`-heading, autopilot tags, registry extensions) | not written | independent |
 | 5 | R8, R9, R10, R12 — OKF template fields, MVP reconciliation, the layers 1-8 projection generator, contract rows | not written | blocked on `OKF-CONFORMANCE-001` D1; R12's index row also on D3 |
@@ -448,7 +450,7 @@ example-corpus cross-check before its PR opens.
 
 - `python3 -m sdd_doc_lint examples/url-shortener/docs/` against a **pinned
   expected delta**, not "zero unexpected findings". `COV04` on the current corpus
-  produces 9 findings by construction; the corpus is regenerated wholesale after
+  produces 28 findings by construction; the corpus is regenerated wholesale after
   framework changes, so the delta is the measurement, not the count.
 - A conformance test asserting the new additive block and its `sdd_doc_lint`
   constant stay in sync, mirroring the existing `ACCEPTANCE_LAYERS` guard. The
@@ -473,7 +475,6 @@ example-corpus cross-check before its PR opens.
 | `COV04` lands before the corpus is regenerated and reddens the acceptance tier | High | Sequence R1 behind the corpus regen, or land the rule at `warning` in `build` with the golden delta pinned in the same PR |
 | The projection goes stale against its YAML source | High | R10 ships the guard with the generator, never after |
 | `COV04` is implemented by mutating `realizing_layers`, re-grading every consumer corpus | Medium | R1 mandates an additive sibling block; the exact-equality pin failing is the signal that this happened |
-| Nested `tasks[]` (F-3) duplicates `file_manifest.status` because the derivation rule ships late or not at all | Medium | R3 lands the derivation rule in the same change as the field; a file `status` that is authored rather than derived is the defect signal |
 | `code_build` lens checks are written beside the fix and inherit its misconception | Medium | Derive the checks from the TDD and SPEC contracts, not from the corpus IPLAN that already passed at 100 |
 | The template gains `artifact_type` while the emitters keep omitting it | Medium | `OKF01` fires on the artifact, not the template |
 | F-0 is read as forbidding markdown anywhere | Low | The decision is about the source of truth; descriptive and explanatory markdown remains permitted, and the projection is generated markdown |
@@ -493,6 +494,10 @@ corrections), `CHANGELOG.md`, `plans/HANDOFF.md`.
 `CLAUDE.md` § "Development workflow" item 2, at least two full cycles plus the
 example-corpus cross-check are required before any PR opens, and implementation
 begins only after the plan PR merges.
+
+**Amendment — 2026-08-27 — founder decision (NOT a review pass).** A2 discarded;
+R3 and R4 voided; F-3 voided; Stage 2 vacated. Reasoning in the A2 tombstone. The
+`Review cycles` count above is unchanged — a discard is not a gap-review cycle.
 
 Findings not yet filed on the tracker. Parts A, B and C are repository-owned
 defects; per `CLAUDE.md` § "Own-repo gaps" each belongs on GitHub issues at

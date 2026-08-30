@@ -77,10 +77,6 @@ control whether the *acceptance suite* fails.
 
 **Date:** 2026-08-28 · **Issue:** #558 · **Decider:** founder (in session)
 
-*Numbering note: `D-0077` is reserved on branch `docs/a2-discard-d0077` (commit `3a26050b`)
-and is not yet merged. The gap is deliberate, recorded here rather than only in the handoff,
-which is rewritten wholesale each merge.*
-
 **The state.** `framework/VERSION` moved `0.41.3 → 0.43.0` in one commit. Spec `0.42.0` was
 **never a value of the file**, yet `CHANGELOG.md` documents a `0.41.3 → 0.42.0` release and GD-14
 is ratified against it. `0.43.0` was real but never tagged. Latest tag: `framework/v0.41.3`.
@@ -105,6 +101,25 @@ and is not closed by this decision.
 
 ---
 
+## D-0077 — A2 (per-requirement work unit) discarded: the ecosystem argument ran the wrong way, and GD-16 removed the need
+
+**2026-08-27.** Founder decision, on the Layer-8 review (`plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`). Recorded here because a discard that lives only in the design it removes is invisible to a session that reads this log for the "why" — which is what this file promises.
+
+**The observation was accurate and is not disputed.** `file_manifest.files[]` carries one `status`/`verified` per **file**, while a file realizes many TDD test cases, so the structure cannot express that 9 of 12 cases in a file are done; `partial_work` carries mid-file state as prose.
+
+**Four reasons it is not a defect the framework needs to fix:**
+
+1. **No consumer observes the imprecision.** The linter never reads `file_manifest` — `grep 'file_manifest\|partial_work' tools/sdd_doc_lint/` returns nothing. Hermes' validator checks only that the fields exist and that `status` is one of four strings (`platforms/hermes/src/mcp_server/validation/iplan_rules.py:70,83`) and never acts on the value.
+2. **The ecosystem argument ran the opposite way to how the draft cited it.** `framework/layers/08_IPLAN/IPLAN-ECOSYSTEM.md:99` recommends **option 2** — L8 stays canonical for *authoring*, iplanic imports into its richer `step → work_order → todo` model. Adding tasks to L8 moves toward option 1, which that document declined. The draft cited it as support; it is the reverse.
+3. **`tdd_ref` (GD-16, framework `0.43.0`) removed the need.** An importer now has the (file → test case) mapping, so a todo per pair is derivable at the boundary that owns execution.
+4. **It was speculative scope** by this repo's own test (`CLAUDE.md` § "Durable conventions" — minimal-and-realistic plans): no named issue, no consumer friction, discovered by reading the template rather than by use.
+
+**What would reopen it:** a consumer whose executor needs per-case completion state in the *authored* artifact, or a measured case where prose `partial_work` loses a session's progress. **Open a GitHub issue on this repo** — per `CLAUDE.md` § "Own-repo gaps", which retired the Tier-1/Tier-2 split for repository-owned gaps; the earlier tombstone text routed this to a queue file that is now a tombstone.
+
+**Blast radius of the discard:** R3 and R4 voided, F-3 voided, Stage 2 vacated, all in `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`. Void rows were retained rather than deleted so the R/F numbering stays stable for inbound range references — one such reference (`IPLAN-TDDREF-001-PLAN.md` "R3-R12") had already been falsified by the first attempt at the discard, and was caught only by pre-push review.
+
+**The transferable rule:** a discard is a change with a blast radius, exactly like an addition. Deleting an identifier that other documents cite *by range* breaks them silently, because a range reference names no missing target — nothing resolves to "R3" for a grep to find.
+
 ## D-0076 — A line-local carrier beats a document-scoped coverage primitive, and the carrier must land before the rule
 
 **2026-08-26.** From the Layer-8 review (IPLAN-LAYER-REVIEW-001) and its three plan-review cycles.
@@ -122,8 +137,6 @@ and is not closed by this decision.
 **Sequencing:** the rule cannot be specified against a field that does not exist, so the carrier (GD-16) ships first and `COV04` follows. A prerequisite linter defect had to precede both — a quoted tag was silently dropped from the edge graph (issue #542) — which was found only by executing the regex rather than reading it.
 
 **Counting the passes.** Findings ran 5 → 7 → 5 across the first plan and 6 → 6 → 5 across its successor. Growth twice forced a scope cut rather than another fold, and both cuts were right: the second split a six-file linter fix out of a ~100-file spec change, because `spec_gate` fires only on `framework/` paths.
-
----
 
 ---
 
