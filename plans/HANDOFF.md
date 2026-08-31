@@ -15,6 +15,11 @@ is the same one #558 was about.
 conformance **457 / 943 subtests** · acceptance-deterministic **64 / 56** · unit **196 / 231** ·
 `sdd_doc_lint` **6** · `pre-commit` 19 hooks green. **0 failing.**
 Conformance moved 453 → **457**: `tests/conformance/test_layer_title_declared.py` adds four.
+**Re-run unchanged after `main` was merged into #598**, all still green. ⚠️ **That 457 is a
+`pytest` count** (`python3 -m pytest tests/conformance -q` → `457 passed, 943 subtests passed`).
+CI runs `python -m unittest discover -s tests/conformance -v`, which reports **493** for the same
+tree — the two runners count subtests differently, so neither figure is wrong and neither
+travels. Cite the command with the number.
 
 ⚠️ **One unreproduced transient, recorded rather than explained away.** The first measurement
 run immediately after `bump_version.py` reported `1 failed` in **both** conformance and unit;
@@ -110,6 +115,72 @@ was read and the number was not. Two transferable rules, now in D-0083: a prefix
 numeric ID is a bug the moment the ID space passes 9, and a gate's success line carries a
 measurement, not just a verdict.
 
+**Also landed here: `call / ai-review` and `call / composition` were removed from `main`'s
+required status checks** — `plans/DECISIONS.md` **D-0084**, PR **#598**. Both workflows still
+run and still post verdicts; only the merge-blocking is gone. This is **server state that lives
+in no git repository**, so D-0084 is the only artifact of it and carries the exact one-call
+restore. The next section has the scope and the traps; read D-0084 before declaring any PR
+unblocked.
+
+## CI gating — `ai-review` and `composition` no longer gate (D-0084)
+
+⚠️ **`call / ai-review` NO LONGER GATES — `plans/DECISIONS.md` D-0084 (2026-08-31), which is
+authoritative; read it rather than this summary.** It and `call / composition` were removed from
+`main`'s required status checks; both still run and still post verdicts. **No required status
+check blocks on either** — that is the accurate scope, not "nothing blocks":
+`required_conversation_resolution` is still true and `required_pull_request_reviews` still
+exists, and both are inert only because canon submits COMMENT-state reviews here and opens no
+inline threads.
+
+**`call / verify` is NOT a review gate.** It is an audit-trail marker: the author writes the
+phrase, `Self-review skipped per founder OK` is a self-authorizing opt-out, and bot authors are
+exempt. With `required_approving_review_count: 0`, no automated surface can now falsify a
+self-review claim. D-0084 §"What still gates review" has the detail.
+
+**Never disable the ai-review WORKFLOW while `call / composition` is required** — de-requiring
+ai-review is fine, since the workflow still runs and composition still fires and reports. The
+pending-forever risk needs the workflow stopped, not the context de-required. (And on this repo
+composition never enforced anything anyway: canon hardcodes it to pass — D-0084.)
+
+**The failure below is now diagnosed, and the handoff's previous hypothesis was wrong.** It is
+**intermittent**, and **not** size-driven. Measured across five runs (full table in D-0084): one
+branch at ~34 KB failed at 13:55, produced a real verdict at 13:57, and failed again at 14:01.
+⚠️ **This diagnosis was wrong twice** — first "file count", then "diff size, deterministic" —
+both generalised from n=2. Every observed run is far under canon's **400,000-byte input cap,
+which never fires** (34 KB is 8.5% of it), so a size budget upstream would chase the wrong
+variable. A spec bump fans out to ~179 mostly one-line files
+and `GATE-SPEC-E005` forbids splitting it, so the repo's own release shape was structurally
+unmergeable. Filed upstream as
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543). The historical
+record below is kept because it shows how the wrong inference was reached:
+
+- **2026-08-29 was NOT an outage.** The LiteLLM step **succeeded** on three other branches
+  (`33272686574` `fix/577` 20:08Z, `33273970026` `fix/574` 20:37Z, `33275838766`
+  `feat/template-completeness-001` 21:20Z) while `feat/531-refgran-guard` failed **five
+  times** (19:58 / 20:05 / 20:24 / 20:38 / 20:52Z). The proxy was up; that PR alone failed.
+- **2026-08-30: every run that reached the proxy failed**, across three branches — and every
+  `success` sampled took the **skip path** (`Run review through LiteLLM → verdict file =
+  skipped`). **`#586` merged this way**: run `33344007376` on `c7cf1dbb` is green via
+  `ai-review skipped (label OR R3 pre-approved OR review-event)`, having reviewed nothing.
+  `#586` is **+3068** lines, so its green is *not* evidence the proxy handles large diffs.
+
+**The one fact from that era still worth keeping:** `ResponseShapeError` is a **malformed
+response body**, a **different symptom from the 402** this proxy is otherwise known for — so do
+not check the account balance for it. *(The paragraph that used to sit here named `#559` as the
+run that would decide between outage and large-diff. That framing is superseded: the failure is
+neither an outage nor line-count, and the decisive measurement is above.)*
+
+**Mechanics, measured:** `skip-ai-review` only *re-fires* ai-review, and this repo's own
+measurement (scratch PR #376, `CLAUDE.md` § "Merging and CI mechanics") is that a label write
+**cannot** clear a red required check. That mechanic is unchanged and still true of the
+contexts that ARE required — but its old consequence is not: `gh pr merge --admin` is no longer
+the only path for a PR whose ai-review runs and fails, because ai-review no longer gates
+(D-0084). **#571** — the `#531` ref-granularity guard, merged 2026-08-30 — landed by `--admin`
+under the old regime; a PR in that position today merges normally. The proxy is host-local and
+its config lives in **no git repo**; `CLAUDE.md` § "Unified CI" (the `LITELLM_BASE_URL` bullet)
+documents the address but the runtime value is a repository secret, so treat the documented
+value as documentation, not as verified.
+
 ## What to do next — prioritized
 
 Items 1-3 of the previous revision (`TEMPLATE-COMPLETENESS-001`, #531, #554) are all **shipped**
@@ -133,12 +204,13 @@ and have been removed rather than kept as struck-through history — `git log` i
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
-5. **#393** — ⚠️ **NOT a `--repin`, and the issue body's stated remedy would hang a required
-   check.** Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
+5. **#393** — ⚠️ **NOT a `--repin`; the issue body's stated remedy silently kills the review.**
+   *(It used to say "would hang a required check" — void since D-0084; `ai-review` is advisory,
+   so the failure mode is now an unreviewed merge rather than a deadlock.)* Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
    breaking changes apply here. **BLOCKED on two founder/infrastructure prerequisites, both
    silent:** (a) both runners advertise only `self-hosted,ci-runner,single-use` while v4
    renames them to `ci`/`ephemeral`, and a job routed to labels no runner carries **queues
-   forever** — `ai-review` is required, so the migration PR could not merge itself; (b)
+   forever** — which since D-0084 costs the verdict, not the merge; (b)
    `LLM_URL`/`LLM_API_KEY` do not exist and the caller still forwards the three `LITELLM_*`
    names that v4 **un-declares**, which is a load-time `startup_failure`. Nothing can land
    ahead of the repin — the caller edits are only valid *at* v4.

@@ -12,6 +12,39 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI: `ai-review` and `composition` no longer gate merges (D-0084) (2026-08-31)
+
+`call / ai-review` and `call / composition` were removed from `main`'s required status checks.
+**Both workflows still run and still post verdicts; only the merge-blocking is gone.** Branch
+protection is server state that lives in no repo — `plans/DECISIONS.md` **D-0084** is the record
+and carries the exact one-call restore.
+
+**Why.** `ai-review` fails **intermittently** with `ResponseShapeError` (upstream
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543)) — often enough that
+the release shape could not get through. A framework spec bump fans out to ~179 mostly one-line
+files and `GATE-SPEC-E005` forbids splitting it, so the only route was `gh pr merge --admin` — a
+bypass of *every* required check. A gate that can only be satisfied by bypassing it is not a
+gate.
+
+Measured while writing this up, and both corrections matter more than the change itself:
+
+- **`call / composition` never enforced anything on this repo.** Canon hardcodes it at the pinned
+  tag (`composition.yml@ci/v2.16.0:272-275`) to exit 0 for `*/aidoc-flow-framework` before the
+  approval assertion. It was a required check hardwired to pass, so removing it changed merge
+  preconditions by zero.
+- **The failure is not the documented 400 KB input cap, and it is not size-driven at all.** One
+  branch at ~34 KB — 8.5% of the limit — failed, succeeded, then failed again within six minutes.
+  The cap never fires; the call fails downstream at `ResponseShapeError`. D-0084 carries the full
+  run table and an explicit note that this diagnosis was wrong twice before landing here.
+
+**What this costs, plainly.** Every remaining required check is mechanical. `call / verify` is an
+audit-trail marker, not a review control — it greps the commit body for a phrase the author
+writes, accepts a `Self-review skipped per founder OK` opt-out that requires no founder, and
+exempts bot authors. With `required_approving_review_count: 0`, **no automated surface can now
+falsify a self-review claim.** CI ai-review caught a real defect on #589 that four dispatched
+review passes missed; that signal is kept but is now advisory. Revisit trigger and owner are
+recorded in D-0084.
+
 ### Added — Framework Spec `0.47.0 → 0.48.0` — three layer templates declare no title, while every artifact they produce has one (GD-23) (2026-08-31)
 
 `SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml` and `IPLAN-TEMPLATE.yaml` declared no document title

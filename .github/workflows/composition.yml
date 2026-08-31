@@ -1,3 +1,24 @@
+# ⚠️ ADVISORY SINCE 2026-08-31 — `call / composition` is NOT a required check.
+# Removed from `main`'s required status checks alongside `call / ai-review`
+# (`plans/DECISIONS.md` D-0084, which is authoritative; this comment is a pointer).
+#
+# ⚠️ AND ON THIS REPO IT NEVER ENFORCED ANYTHING ANYWAY. Canon hardcodes it — at
+# the pinned tag, `composition.yml@ci/v2.16.0:272` is
+#   case "$GH_REPO" in */aidoc-flow-framework) LOCKED=true;; esac
+# and `:275` exits 0 with "governance-locked PR → human-merge; composition not
+# enforced (pass)", BEFORE the block that asserts a counting reviewer-App
+# approval at head. So this check was hardwired to pass here. Do not cite it as
+# a merge control, and do not expect restoring it to restore protection.
+#
+# STILL TRUE, AND THE REASON THE TWO MOVE TOGETHER: this workflow's only
+# AUTOMATIC trigger is the `workflow_run: ["ai-review"]` below. De-requiring
+# ai-review is fine — the workflow still runs, so this one still fires and still
+# reports. But *disabling the ai-review workflow* would leave this one firing
+# only on `pull_request_review`, i.e. only when a human submits or edits a
+# review — off the normal merge path. A required check in that state effectively
+# never reports, which blocks harder than a red one. NEVER disable the ai-review
+# workflow while `call / composition` is required.
+#
 # IPLAN-0026 Phase 2 (ci/v1.3.0): dropped `pull_request_target` trigger
 # from the recommended install-template set. Phase 1 (ci/v1.2.0) shipped
 # the `workflow_run` mechanism alongside `pull_request_target` for safety

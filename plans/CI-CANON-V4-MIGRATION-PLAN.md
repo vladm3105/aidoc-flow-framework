@@ -8,7 +8,22 @@
 | Feeds          | #393                                                                  |
 | Version impact | none — `.github/workflows/**` only; no `framework/**` edit, so `GATE-SPEC-E005` does not fire |
 
-## The headline: `#393`'s stated remedy is wrong, and acting on it hangs a required check
+## The headline: `#393`'s stated remedy is wrong, and acting on it silently kills the review
+
+> ⚠️ **AMENDED 2026-08-31 — this plan's blocking rationale changed, but the plan is still
+> BLOCKED.** `ai-review` is **no longer a required context** (`plans/DECISIONS.md` **D-0084**;
+> `call / ai-review` and `call / composition` were removed from `main`'s required checks). So
+> every claim below that the migration PR "could not merge itself" is **void** — a queued-forever
+> or `startup_failure`d `ai-review` now costs the *verdict*, not the *merge*.
+>
+> **The prerequisites are unchanged and still real**, which is why the status stays BLOCKED: (a)
+> the runner labels genuinely do not exist, so a repinned `ai-review` would queue forever and
+> produce no review at all; (b) `LLM_URL`/`LLM_API_KEY` genuinely do not exist and the caller
+> still forwards three `LITELLM_*` names v4 un-declares, which is a load-time `startup_failure`.
+> Both remain founder/infrastructure prerequisites. What changed is only the **consequence**:
+> degraded review capability rather than a deadlocked merge. **A founder re-decision is needed on
+> whether that lower consequence still justifies BLOCKED** — do not inherit the status without
+> re-reading this note.
 
 The issue body says:
 
@@ -66,11 +81,14 @@ routes it to labels no runner advertises, and per canon: *"Jobs queue forever �
 no failure, no timeout, no log. `timeout-minutes` cannot save a job that never
 starts."*
 
-`ai-review` is a **required** context on this repo. `CLAUDE.md` § "Unified CI"
-records the untested-but-worse case verbatim: *"A workflow that never triggers at
-all […] stays pending and blocks forever (D-0065)."* A queued-forever required
-job is that case, reached deliberately. **The migration PR would be unable to
-merge itself.**
+~~`ai-review` is a **required** context on this repo.~~ **Void since D-0084
+(2026-08-31)** — it is advisory. `CLAUDE.md` § "Unified CI" records the worse case
+verbatim: *"A workflow that never triggers at all […] stays pending and blocks
+forever."* That case **no longer applies to `ai-review` here**, because a
+non-required context that never reports blocks nothing. A queued-forever job now
+means the PR merges **with no review having happened** — quieter, and arguably
+worse for the reason D-0084 records: ai-review is the only control that can
+produce a "no" the author did not write.
 
 Required action, on the runner host: register
 `self-hosted,ci-runner,single-use,ci,ephemeral` on both runners, confirm a job
@@ -82,8 +100,8 @@ repin is green.
 Canon's ordering rule 3: provision `LLM_URL` + `LLM_API_KEY` **and** delete the
 three `LITELLM_*` lines from the caller's `secrets:` map **in the same change as
 the repin**. Secrets alone do not rescue it: *"an explicit map naming an
-undeclared secret fails to load"* — `startup_failure`, zero jobs, **no logs**, on
-a required check.
+undeclared secret fails to load"* — `startup_failure`, zero jobs, **no logs**. (It
+was "on a required check" until D-0084; now it is a silent loss of the review.)
 
 Measured — neither secret exists:
 
@@ -157,7 +175,7 @@ is not mistaken for a decision that it was unwanted.
 
 | # | Risk | Likelihood | Mitigation |
 | - | ---- | ---------- | ---------- |
-| R1 | Repin lands before P1 → `ai-review` queues forever on a required context, and the PR cannot merge itself | **High if the issue's stated remedy is followed** | V1 gates the PR; this plan exists to make the ordering explicit |
+| R1 | Repin lands before P1 → `ai-review` queues forever and produces no verdict. ~~and the PR cannot merge itself~~ — void since D-0084; the context is not required, so the PR merges unreviewed | **Medium since D-0084** (was High: a merge deadlock became a silent review gap) | V1 gates the PR; this plan exists to make the ordering explicit |
 | R2 | `--update` used instead of `--repin`, clobbering six local overrides | Medium | Step 3 names all six |
 | R3 | Rollback needed mid-migration | Low | `ci/v3.0.0` was not re-cut and remains a valid pin and canon's stated rollback target (CI-0044) — but rollback must also revert the caller edits, since they are v4-only |
 | R4 | The runner-label narrowing (P1 second half) is forgotten, leaving the coexistence set live | Medium | Step 7; harmless but leaves the old labels advertised indefinitely |

@@ -10,6 +10,221 @@ graduation.
 
 ---
 
+## D-0084 — `ai-review` stops gating merges; what actually replaces it is weaker than it looks
+
+**Date:** 2026-08-31 · **Issues:** aidoc-flow-ci#543 · **Decider:** founder (in session)
+
+> **Numbering note.** **D-0083** was still open in PR **#595** (framework `0.48.0` / GD-23) when
+> this entry was written, so it is absent above. #595 landed first; both entries insert at the
+> head of this file and that conflict was resolved when `main` was merged into #598. D-0083 now
+> sits directly below.
+
+**This records a change to SERVER STATE that exists in no git repository.** `main`'s branch
+protection is not version-controlled, so without this entry the only trace would be the GitHub
+UI. Treat the restore command below as the artifact.
+
+### What changed
+
+Two contexts were removed from `main`'s required status checks:
+
+```
+before: Framework + platform conformance · call / composition ·
+        call / Lint / format / security hooks · call / ai-review ·
+        call / verify · Acceptance tier (deterministic)     (strict: false)
+
+after:  Framework + platform conformance ·
+        call / Lint / format / security hooks ·
+        call / verify · Acceptance tier (deterministic)     (strict: false)
+```
+
+`strict` was `false` before and is `false` after — recorded explicitly because it lives *inside*
+`required_status_checks` and is therefore the one field a before/after diff of the surrounding
+object cannot see. Everything outside that object was diffed and is byte-identical:
+`enforce_admins` false, `required_conversation_resolution` true,
+`required_approving_review_count` 0, `dismiss_stale_reviews` true, `restrictions` null.
+
+**Both workflows still run.** This is a gating change, not a teardown: `ai-review` still submits
+its verdict and `composition` still evaluates. Only the *blocking* is gone.
+
+### Scope of "nothing blocks" — three channels, only one of which was changed
+
+⚠️ **Only `required_status_checks` was touched.** Two other channels can block a PR and are
+untouched; both were checked rather than assumed, and both are currently inert **for reasons
+that could change**:
+
+1. **A `REQUEST_CHANGES` review would still block** — `required_pull_request_reviews` exists
+   (count 0, `dismiss_stale_reviews` true). It is inert only because canon deliberately submits a
+   **COMMENT**-state review on gov-locked PRs (IPLAN-0029; `ai-review.yml@ci/v3.0.0:1211-1212`),
+   which is what the App did on both #589 reviews. If the gov-lock hardcode ever stops matching
+   this repo, the App's verdict becomes merge-blocking again through this channel, with no
+   required-check involved.
+2. **`required_conversation_resolution: true` is still on.** An unresolved review-comment thread
+   blocks. Inert today only because the App posts an issue comment plus a comment-state review
+   and opens **no inline threads** — measured: `pulls/595/comments` returns 0.
+
+So the accurate claim is *"no required status check blocks on either workflow"*, **not**
+"nothing blocks". Re-derive before declaring a PR unblocked.
+
+### Why
+
+`ai-review` fails often enough on this repo to make it unusable as a gate, and the failure is
+`ResponseShapeError` at the LiteLLM step. Filed upstream as
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543).
+
+⚠️ **The mechanism is NOT settled, and this entry got it wrong twice before getting here.** The
+first draft said the discriminator was *file count*; the second said *diff size, and
+deterministic*. Both were generalisations from n=2. The full observation set:
+
+| PR / run | files | diff bytes | result |
+|---|---|---|---|
+| #589 | 1 | 41,256 | real verdict (×2) |
+| #595 | 179 | 149,906 | failed, and again on re-run |
+| #598 13:55 | 8 | ~34,000 | failed |
+| #598 13:57 | 8 | 33,435 | **real verdict** |
+| #598 14:01 | 9 | 34,120 | failed |
+
+**The same branch at ~34 KB failed, succeeded, then failed again.** So the failure is
+**intermittent**, not size-deterministic, and "deterministic" was wrong — #595's two consecutive
+failures were consistent with intermittency at a higher rate, not proof of a threshold. Size may
+raise the failure probability; nothing here establishes that it does.
+
+The one solid measurement remains: **every one of these is far under canon's 400,000-byte input
+cap, which never fired** — 34 KB is 8.5% of it. So the guard reports the input acceptable and
+the call fails anyway, and chasing a size budget upstream would be chasing the wrong variable.
+Both corrections were posted to aidoc-flow-ci#543.
+
+**The lesson, since this repo keeps relearning it:** I named a root cause from two data points,
+twice. Enumerate the full set of failing *and* succeeding runs before naming a mechanism —
+`plans/DECISIONS.md` D-0072 §3 says exactly this, and it applied here.
+
+The consumer impact is unchanged and is what forced the decision: a framework spec bump fans out
+to ~179 mostly one-line files and `GATE-SPEC-E005` is a path check that forbids splitting it, so
+the repo's own release shape hit this every time. The only route was `gh pr merge --admin`, a
+bypass of *every* required check — and the two documented alternatives cannot rescue it
+(`skip-ai-review` only re-fires the workflow, and a later SUCCESS does not clear an earlier
+FAILURE for one context at one SHA; canon's CI-0021 break-glass discharges *composition*, never
+a red `ai-review`). **A gate that can only be satisfied by bypassing it is not a gate.**
+
+### Why both contexts, and the correction to the first draft's reasoning
+
+⚠️ **This entry's first draft got the rationale wrong in two ways, and the wrong version is the
+kind a reverter would act on.** It is corrected here rather than quietly rewritten:
+
+- **Wrong:** *"removing `call / ai-review` alone would have left `call / composition` required and
+  never reporting — pending forever."* That is **counterfactual under the change actually made**:
+  the ai-review *workflow* still runs, so composition's `workflow_run` trigger still fires and the
+  context still reports. The pending-forever risk applies only if ai-review is stopped from
+  **running**, which is a different action from de-requiring it. And even then composition has a
+  second trigger — `pull_request_review` — so it would report on any PR that receives a human
+  review, red rather than pending.
+- **Wrong:** *"composition is ai-review's enforcement half / one of two server-side halves of the
+  human-merge floor."* On **this repo** composition enforced nothing. Canon hardcodes it, at the
+  pinned tag: `composition.yml@ci/v2.16.0:272` is
+  `case "$GH_REPO" in */aidoc-flow-framework) LOCKED=true;; esac`, and `:275` `exit 0`s with
+  *"governance-locked PR → human-merge; composition not enforced (pass)"* — **before** the block
+  that asserts a counting reviewer-App approval. `call / composition` was a required check
+  hardwired to pass. Removing it changed the merge preconditions by **zero**.
+
+**The surviving reason to remove them together is still good, stated correctly:** if ai-review is
+ever disabled outright rather than de-required, a required `composition` reports only when a human
+submits a review — off the normal merge path. **Never disable the ai-review workflow while
+`call / composition` is required.**
+
+### What still gates review — and be precise about it
+
+`call / verify` (audit-trail.yml → canon `audit-trail-check.yml@ci/v3.0.0`). **It is an
+audit-trail marker, not a review control**, and this entry should not be read as calling it the
+review gate. It passes when *any one commit* in `base..head` has a body containing one of two
+literal strings — and the second, `Self-review skipped per founder OK`, is a **self-authorizing
+opt-out that requires no founder**. It also exempts `dependabot[bot]`, `renovate[bot]` and
+`github-actions[bot]` outright, and this repo configures five Dependabot ecosystems.
+
+**So the honest position: no automated surface can now falsify a self-review claim.**
+`scripts/pre_push_check.sh` greps the same phrase locally, `call / verify` greps it in CI, and
+the layer that used to catch a false claim — CI ai-review — is advisory. With
+`required_approving_review_count: 0`, no human approval is required either. Every remaining
+required check is mechanical: does it parse, lint, conform, contain a string. **The only control
+capable of producing a "no" the author did not write himself is now advisory.**
+
+### What was NOT weakened — and where the floor actually lives
+
+AI agents still cannot auto-merge here, through **three** independent controls, not the one an
+earlier draft credited:
+
+1. `ai-review.yml@ci/v3.0.0:856` — `case "$GH_REPO" in */aidoc-flow-framework) LOCKED=true`,
+   making `GOV_LOCKED` true, so the auto-merge arming path never arms. Defaults to `true` if
+   unset — fails closed.
+2. Canon's enforcer refuses again at `auto-merge-ai-prs.yml:301`, unconditionally and reached
+   even under `skip-ai-review`.
+3. The `auto_merge.repos` allowlist omission — which lives in **`vladm3105/aidoc-flow-operations`,
+   not in this repo**, and is therefore *not* the "server state" this entry is otherwise about.
+
+An earlier draft said the allowlist "is now the whole floor". It is the **weakest of the three**,
+and the two hardcodes are stronger because a consumer cannot switch them off. Correcting this
+matters in a specific way: a future maintainer who reads "the allowlist is the whole floor" may
+treat an allowlist edit as sufficient to enable auto-merge here. It is not — canon would still
+refuse, twice.
+
+Also untouched: `enforce_admins` (false), force-push and deletion protection, conversation
+resolution.
+
+### Known divergence from canon's own tier profile
+
+`aidoc-flow-ci/install/templates/branch-protection-governance.json` names this repo as a
+governance-tier repo and requires both removed contexts, plus `enforce_admins: true`,
+`required_approving_review_count: 1` and `require_code_owner_reviews: true`. This repo already
+diverged on the last three **before** this change; it now diverges on the contexts too.
+
+The review-count divergence is **structurally forced, not sloppy**: `CODEOWNERS` names a single
+owner who is also the sole trusted author, and GitHub forbids self-approval — so requiring 1
+code-owner approval would deadlock every founder-authored PR. `enforce_admins: false` is *not*
+forced and is the cheapest real hardening available; it is called out here rather than fixed,
+because it is a separate decision.
+
+Do not expect the weekly `standards-drift` run to surface any of this: it reports branch
+protection as `warn_uncheckable` under the default token.
+
+### The cost, stated plainly
+
+CI's `ai-review` caught a real defect on #589 that four dispatched independent review passes had
+missed — a ledger row deleted by a prefix-match bug. That is direct evidence that the pre-PR
+self-review does not substitute for it. The signal is *kept* (the verdict still posts) but is no
+longer enforced, so acting on it is now a human judgement.
+
+**Revisit trigger, so this is not a permanent removal recorded as a temporary one:** when
+aidoc-flow-ci#543 closes, or by **2026-11-30**, whichever comes first — owner: founder. If the
+advisory verdicts have stopped being read by then, this traded a gate for nothing.
+
+### Restore — one call
+
+```sh
+gh api -X PATCH repos/vladm3105/aidoc-flow-framework/branches/main/protection/required_status_checks \
+  --input - <<'JSON'
+{"strict": false, "checks": [
+  {"context": "Framework + platform conformance", "app_id": 15368},
+  {"context": "call / composition", "app_id": 15368},
+  {"context": "call / Lint / format / security hooks", "app_id": 15368},
+  {"context": "call / ai-review", "app_id": 15368},
+  {"context": "call / verify", "app_id": 15368},
+  {"context": "Acceptance tier (deterministic)", "app_id": 15368}
+]}
+JSON
+```
+
+Captured from `.required_status_checks.checks` (which carries `app_id`), not the deprecated flat
+`.contexts` array (which does not) — so the pins reproduce the prior state rather than narrowing
+it. `PATCH` on the `required_status_checks` sub-resource is deliberate: it touches only `strict`
+and `checks` and cannot clobber `enforce_admins`, review settings or `restrictions`, which a
+`PUT` on the parent `/protection` would. `15368` is GitHub Actions. Re-derive the live set with
+`gh api repos/vladm3105/aidoc-flow-framework/branches/main/protection --jq '.required_status_checks.checks'`.
+
+**Restoring `call / composition` restores a permanently-green check**, per the hardcode above —
+harmless, but not protection. Restoring `call / ai-review` re-blocks the release shape until
+aidoc-flow-ci#543 is fixed.
+
+**Supersedes** `plans/CI-CANON-V2.16-MIGRATION-PLAN.md` measurement M1, which enumerates the
+six-context set and is the most greppable such list in the repo.
+
 ## D-0083 — `title` is a top-level scalar on every layer template; the identity half is deferred
 
 **Date:** 2026-08-31 · **Issues:** #553, #588 · **PR:** #589 (plan) · **Decider:** founder (in session)
