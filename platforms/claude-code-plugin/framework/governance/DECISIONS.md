@@ -13,6 +13,50 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-23 — A layer template MUST declare the document's `title`, at top level, as a scalar
+
+- **Status:** Accepted — 2026-08-31 · **SemVer:** framework `0.47.0 → 0.48.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Issues:** #553 · defers the identity half to #588
+
+`SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml` and `IPLAN-TEMPLATE.yaml` declared no document title.
+Every artifact those templates produce carries one anyway — `examples/url-shortener/docs/`
+authors `title:` on all nine documents, and so does every acceptance golden. The templates were
+silent about a key their own output universally has.
+
+**Decision: `title` is a top-level scalar key on every full layer template.**
+
+**Placement follows the majority and the authority, not the MVP set.** Five of the eight full
+templates already carried a top-level `title:`; the seven index templates carry one in
+frontmatter; every authored artifact carries one. `metadata.title` — the placement
+`IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 proposed — exists in **no template in the repository**.
+
+**R8 is superseded on placement because it contradicts the authority it cites.** R8 defers to
+the OKF D1 contract, and D1 declares *the required **top-level** keys*; D2 settles the sibling
+key the same way, choosing the top-level `artifact_type` the linter reads over a nested one.
+The retirement deliberately does **not** rest on `FRONTMATTER_CONTRACT.md` being unwritten —
+that ground would evaporate the moment it is authored, and this decision feeds it.
+
+**The scalar requirement is normative, not stylistic.** Two derivations read a template's
+top-level keys and they disagree about what a section is: `sdd_doc_lint._load_section_targets`
+requires an integer `_size_target`, while `tests/acceptance/_harness.template_sections` admits
+**every** top-level mapping except `metadata`. A `title:` authored as a mapping therefore leaves
+`STRUCT01` green while reddening every golden for that layer with `missing template sections
+['title']`. Measured, not argued: the mutant was run in both tiers before this shipped.
+`tests/conformance/test_layer_title_declared.py` asserts the type, not merely the key.
+
+**Identity is explicitly out of scope.** Top-level `id:` does not accompany `title:`. It is
+authored by no artifact and read by no code, while `doc_id:` is what artifacts write and what
+the linter reads — four carriers with no normative one. That is #588's, and D1's, to settle.
+
+**Consequence.** `file_manifest.files[]` also gains a per-entry `description`, and
+`document_control._guidance` reserves `session_summary` for a status-at-a-glance field so it
+cannot collide with the §5 `session_handoff` section. Both are IPLAN-local and ride this bump
+rather than costing their own.
+
+---
+
 ## GD-22 — Non-C4 diagram kinds are valid on every layer; only C4/DFD levels are policed per layer
 
 - **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.46.0 → 0.47.0` (MINOR),

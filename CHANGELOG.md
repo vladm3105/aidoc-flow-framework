@@ -45,6 +45,47 @@ falsify a self-review claim.** CI ai-review caught a real defect on #589 that fo
 review passes missed; that signal is kept but is now advisory. Revisit trigger and owner are
 recorded in D-0084.
 
+### Added — Framework Spec `0.47.0 → 0.48.0` — three layer templates declare no title, while every artifact they produce has one (GD-23) (2026-08-31)
+
+`SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml` and `IPLAN-TEMPLATE.yaml` declared no document title
+([#553](https://github.com/vladm3105/aidoc-flow-framework/issues/553)). Every artifact they
+produce carries one anyway — all nine corpus documents and every acceptance golden author
+`title:`, in a key the template never named.
+
+**`title` is now a top-level scalar on all eight full layer templates.** Placement follows the
+majority and the authority rather than the MVP set: five of eight already carried a top-level
+`title:`, the seven index templates carry one, every artifact carries one, and `metadata.title`
+— the placement `IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 proposed — existed in **no template in
+the repository**. R8 is superseded on placement because it contradicts the authority it cites:
+it defers to the OKF D1 contract, and D1 declares *the required **top-level** keys*.
+
+**The scalar requirement is normative, and it was measured rather than argued.** Two derivations
+read a template's top-level keys and disagree about what a section is —
+`sdd_doc_lint._load_section_targets` requires an integer `_size_target`, while
+`tests/acceptance/_harness.template_sections` admits every top-level mapping except `metadata`.
+A `title:` authored as a mapping therefore leaves `STRUCT01` **green** while reddening every
+golden for that layer with `missing template sections ['title']`. The mutant was run in both
+tiers before this shipped. `tests/conformance/test_layer_title_declared.py` asserts the value's
+type, not merely the key's presence, and pins the class over `ARTIFACTS` so a ninth layer cannot
+arrive without a title.
+
+Also in this bump, both IPLAN-local:
+
+- `file_manifest.files[]` gains a per-entry `description`. The six existing keys give a resumed
+  session a location, a sequence and a state; none says what the file is *for*, and the section
+  exists to drive a stateless executor.
+- `document_control._guidance` reserves **`session_summary`** for a status-at-a-glance field and
+  states that it is distinct from the §5 `session_handoff` section, so the collision is designed
+  out rather than rediscovered.
+
+**Deferred, not forgotten.** Top-level `id:` does **not** accompany `title:`. It is authored by
+no artifact and read by no code, while `doc_id:` is what artifacts write and the linter reads —
+IPLAN alone already carries three identity carriers. Filed as
+[#588](https://github.com/vladm3105/aidoc-flow-framework/issues/588) for OKF D1 to settle.
+
+Governance: `framework/governance/DECISIONS.md` **GD-23**; rationale and review provenance in
+`plans/DECISIONS.md` **D-0083** and `plans/IPLAN-SELF-DESCRIPTION-001-PLAN.md`.
+
 ### Added — Framework Spec `0.46.0 → 0.47.0` — non-C4 diagram kinds are valid on every layer, and EARS/BDD gain authoring slots (GD-22) (2026-08-29)
 
 Six layers declared a `diagram_standard` — BRD, PRD, EARS, BDD, ADR, SPEC — and **two of them,

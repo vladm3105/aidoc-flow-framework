@@ -3,6 +3,8 @@
 # Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 # Downstream: TDD (Layer 7)
 
+title: "[Technical Specification Title]"
+
 metadata:
   schema_version: "1.0"
   document_type: "spec-document"

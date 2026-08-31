@@ -75,7 +75,7 @@ permissions:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/doc-maintainer.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/doc-maintainer.yml@ci/v4.0.0
     with:
       runner_labels: '["self-hosted", "ci-runner", "single-use"]'
       model: ai-doc-maintainer
