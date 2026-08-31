@@ -649,7 +649,7 @@ def lint_text(
     # per-element error) reminding the author to canonicalize the placeholder IDs
     # before downstream layers cite them. `state` governs ID *stability*, not
     # coverage — provisional elements are still gated normally.
-    _fm = _extract_frontmatter(text)
+    _fm = _extract_frontmatter(text, rel)
     _id_state = str((_fm or {}).get("id_state") or "").strip().lower()
     if _id_state == "provisional":
         findings.append(
@@ -791,7 +791,7 @@ def lint_text(
     # AS8 — frontmatter ↔ Document Control ↔ revision-history consistency.
     findings.extend(_check_frontmatter_consistency(text, rel))
     # AS10 — @diagram tag level cascade vs DIAGRAM_STANDARDS.md.
-    findings.extend(_check_diagram_level(text, artifact, rel))
+    findings.extend(_check_diagram_level(text, artifact, rel, registry))
     # STRUCT01 — required template sections present.
     findings.extend(_check_required_template_sections(rel, text, artifact, registry))
     return findings
@@ -816,6 +816,10 @@ _THRESHOLD_VALUE = re.compile(r"(\d+(?:\.\d+)?)\s*(ms|s|min|h|%|MB|GB|KB|req/s|r
 # associated with its own layer (BRD=L1, PRD=L2, SPEC=L3); ADR has no C4/DFD
 # level (decision bridge). 'sequence-*' tags are allowed on every layer.
 _DIAGRAM_TAG = re.compile(r"@diagram:\s*([a-z][a-z0-9]*(?:-[a-z0-9]+)+)")
+#: Fallback only. The authority is ``LAYER_REGISTRY.yaml`` ``c4_mapping[*].diagram_tags``
+#: — see ``_diagram_allowed()``. Kept so a registry that cannot be read degrades to
+#: today's behaviour instead of allowing everything, which is the direction that
+#: fails safe: an empty allowlist makes ``DG02`` reject, not accept.
 _DIAGRAM_ALLOWED = {
     "BRD": {"c4-l1", "dfd-l1"},
     "PRD": {"c4-l2", "dfd-l2"},
@@ -826,21 +830,82 @@ _DIAGRAM_ALLOWED = {
     "TDD": set(),
     "IPLAN": set(),
 }
+
+
+def _diagram_allowed(artifact: str, registry: Path | None = None) -> set:
+    """Per-layer diagram allowlist, read from the registry rather than hardcoded.
+
+    ``LAYER_REGISTRY.yaml`` carries ``c4_mapping[*].diagram_tags`` and the
+    registry's own README calls itself the single source of truth — but until
+    now **no code read that field**, and ``DG02``'s real authority was a literal
+    in this module. That made the diagram vocabulary a five-surface statement
+    with the executable one last (#552), the same shape as #565's ``extensions``
+    and #531's granularity rule.
+
+    Verified equivalent to the previous literal for all eight layers before the
+    switch, so this is a consolidation and not a behaviour change. ``PRD``'s
+    registry entry additionally lists ``sequence-sync``, which changes nothing:
+    ``_DIAGRAM_SEQUENCE`` allows any ``sequence-*`` tag on every layer.
+
+    Falls back to the literal when the registry is unreadable — the direction
+    that fails safe, since an empty allowlist makes ``DG02`` reject rather than
+    accept.
+    """
+    # Read the YAML directly: `_load_registry` returns (layers, doc_re, elem_re)
+    # and discards `c4_mapping` entirely, so it cannot serve this.
+    try:
+        path = registry or find_registry()
+        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+    except Exception:
+        return _DIAGRAM_ALLOWED.get(artifact, set())
+    mapping = (data or {}).get("c4_mapping")
+    if not isinstance(mapping, dict):
+        return _DIAGRAM_ALLOWED.get(artifact, set())
+    for entry in mapping.values():
+        if not isinstance(entry, dict):
+            continue
+        arts = entry.get("artifacts") or ([entry["artifact"]] if entry.get("artifact") else [])
+        if artifact not in arts:
+            continue
+        return {
+            str(tag).split(":", 1)[1].strip()
+            for tag in (entry.get("diagram_tags") or [])
+            if ":" in str(tag)
+        }
+    return _DIAGRAM_ALLOWED.get(artifact, set())
+
+
 _DIAGRAM_SEQUENCE = re.compile(r"^sequence-(sync|async|error|[a-z0-9-]+)$")
+#: Non-C4 diagram kinds, allowed on EVERY layer — the same treatment
+#: ``sequence-*`` already receives, and for the same reason (GD-22).
+#:
+#: `c4_mapping` allowlists a layer's C4/DFD *level*, which is what `DG02` exists
+#: to police: a BRD may not carry an L3 component diagram. A state machine or a
+#: flowchart has no level to mismatch, so a per-layer allowlist for these would
+#: encode nothing and would have to be repeated on every layer that ever wants
+#: one.
+#:
+#: Without this, `EARS-TEMPLATE.yaml` recommended three diagram kinds of which
+#: only one (`sequenceDiagram`) had any tag form, so a tagged authoring slot on
+#: EARS, BDD or ADR — all of which have empty C4 allowlists — emitted a `DG02`
+#: ERROR on the template's own example content (#552).
+_DIAGRAM_UNIVERSAL = re.compile(r"^(state|flow)-[a-z0-9-]+$")
 
 
-def _check_diagram_level(text: str, artifact: str, rel: str) -> list[Finding]:
+def _check_diagram_level(
+    text: str, artifact: str, rel: str, registry: Path | None = None
+) -> list[Finding]:
     """AS10 — verify each ``@diagram: <type>`` tag uses a type permitted on
     this artifact's layer (per ``framework/governance/DIAGRAM_STANDARDS.md``).
     ``sequence-*`` tags are universally allowed; C4/DFD tags must match the
     layer's level (BRD→L1, PRD→L2, SPEC→L3); ADR has no C4/DFD level.
     """
     findings: list[Finding] = []
-    allowed = _DIAGRAM_ALLOWED.get(artifact, set())
+    allowed = _diagram_allowed(artifact, registry)
     for i, line in enumerate(text.splitlines(), 1):
         for m in _DIAGRAM_TAG.finditer(line):
             tag = m.group(1)
-            if _DIAGRAM_SEQUENCE.match(tag):
+            if _DIAGRAM_SEQUENCE.match(tag) or _DIAGRAM_UNIVERSAL.match(tag):
                 continue
             if tag in allowed:
                 continue
@@ -976,6 +1041,60 @@ def scan_fr_elements(text: str) -> list[FRElement]:
                     realized_by=rb_m.group(1).upper() if rb_m else None,
                 )
             )
+    return out
+
+
+def scan_fr_elements_yaml(fm: dict) -> list[FRElement]:
+    """The structured counterpart of ``scan_fr_elements``, per GD-20.
+
+    Reads ``functional_requirements.requirements[]``. `BRD-TEMPLATE.yaml` names
+    that list as the structured shape's FR set and states one counting rule per
+    authored shape, so the *set* is inherited from the template rather than
+    chosen here.
+
+    Field mapping, decided by GD-20 and deliberately a MIRROR of the Markdown
+    bullet's four parts rather than a new vocabulary:
+
+    ============  ==========================  ===================================
+    FRElement     Markdown bullet             YAML entry
+    ============  ==========================  ===================================
+    ``elem_id``   the bolded ``<ID>``         ``id``
+    ``band``      leading ``(P1|P2|Future)``  ``priority``
+    ``realized_by`` ``realized_by:`` in band  ``realized_by``
+    ============  ==========================  ===================================
+
+    ``line`` is 0 — a YAML mapping has no bullet to point at, and the linter's
+    Finding line is advisory. It is not ``None`` because callers arithmetic on it.
+
+    **Acceptance criteria do not appear here at all.** On the Markdown carrier
+    they are excluded by the literal ``Acceptance criteria:`` boundary; in the
+    structured shape they are simply a different key, so the exclusion is
+    structural rather than positional. Same set, both carriers — which is the
+    property GD-17's effective condition requires.
+    """
+    block = (fm or {}).get("functional_requirements")
+    if not isinstance(block, dict):
+        return []
+    rows = block.get("requirements")
+    if not isinstance(rows, list):
+        return []
+    out: list[FRElement] = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        elem_id = str(row.get("id") or "").strip()
+        if not elem_id:
+            continue
+        band = row.get("priority")
+        rb = row.get("realized_by")
+        out.append(
+            FRElement(
+                elem_id=elem_id,
+                line=0,
+                band=str(band).strip() if band else None,
+                realized_by=str(rb).strip().upper() if rb else None,
+            )
+        )
     return out
 
 
@@ -1135,7 +1254,7 @@ def rehash_check(text: str, rel: str) -> list[Finding]:
     This is invoked only by ``python -m sdd_doc_lint.rehash --check``; it is never
     part of ``lint_path``, so the default gate + corpus lint are byte-identical.
     """
-    fm = _extract_frontmatter(text)
+    fm = _extract_frontmatter(text, rel)
     id_state = str((fm or {}).get("id_state") or "").strip().lower()
     if id_state == "provisional":
         return []  # placeholders by declaration — exempt
@@ -1308,7 +1427,7 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
     current = _parse_minor(framework_version)
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if not fm:
             continue
         status = str(fm.get("status", "")).strip()
@@ -1343,7 +1462,46 @@ def _check_staleness(corpus: list[tuple[str, str]], framework_version: str | Non
     return findings
 
 
-def _extract_frontmatter(text: str) -> dict | None:
+def _extract_frontmatter(text: str, rel: str | None = None) -> dict | None:
+    """The document's top-level metadata mapping, for either carrier.
+
+    ``rel`` selects the carrier by SUFFIX, not by sniffing the text. A ``.md``
+    file with no fence whose body happens to parse as a YAML mapping would
+    otherwise acquire a frontmatter it does not have — silently, because the
+    rules would then grade a document that never declared itself. Suffix is a
+    fact about the file; parseability is a coincidence. Omitting ``rel``
+    preserves the historical Markdown-only behaviour exactly.
+
+    **A ``.yaml`` instance has three shapes in practice** (measured across the
+    fixture corpus, `plans/GD15-CARRIER-CENSUS.md`), and all three are handled:
+
+    * **no fence** — the file is one YAML document; it *is* the mapping.
+    * **one leading ``---``** — a YAML document-start marker, not a terminated
+      frontmatter fence. Still one document.
+    * **two ``---``** — a genuine two-document stream, where the first document
+      is the frontmatter and the second is the body.
+
+    ``yaml.safe_load`` **raises** ``ComposerError`` on the third shape, which is
+    why this uses ``safe_load_all`` and merges. A design that used ``safe_load``
+    was refuted for exactly this: it turned six visible fixtures invisible and
+    would have dropped seven pinned warnings. ``CLAUDE.md`` § "Acceptance
+    harness" records the rule.
+
+    Merge order is first-document-wins for ``doc_id``-bearing keys: the
+    frontmatter document is the identity declaration, and the body must not be
+    able to override it.
+    """
+    if rel is not None and str(rel).lower().endswith((".yaml", ".yml")):
+        try:
+            docs = [d for d in yaml.safe_load_all(text) if isinstance(d, dict)]
+        except yaml.YAMLError:
+            return None
+        if not docs:
+            return None
+        merged: dict = {}
+        for doc in reversed(docs):  # earlier documents win
+            merged.update(doc)
+        return merged
     lines = text.splitlines()
     fm_lines, _ = _split_frontmatter(lines)
     if not fm_lines:
@@ -1375,7 +1533,7 @@ def _check_cascade(corpus: list[tuple[str, str]]) -> list[Finding]:
     non_brd: list[tuple[str, str, dict, str | None]] = []
 
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if not fm:
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1469,15 +1627,31 @@ def _check_required_template_sections(
     findings: list[Finding] = []
     if not artifact:
         return findings
-    fm = _extract_frontmatter(text)
+    fm = _extract_frontmatter(text, rel)
     if _is_index_doc(rel, fm):
         return findings
     targets = _load_section_targets(artifact, registry)
     if not targets:
         return findings
-    _, body = _split_frontmatter(text.splitlines())
-    # _section_word_counts() already returns only ## (level-2) headings.
-    present = {_normalise_heading(h) for h, _start, _wc in _section_word_counts(body)}
+    # A section is a `##` heading on the Markdown carrier and a TOP-LEVEL KEY on
+    # the YAML one — the same structural unit, named two ways. The required set
+    # is derived from the template's top-level keys either way
+    # (`_load_section_targets`), so only the *lookup* differs, not the contract.
+    #
+    # Not `_section_word_counts(body)` for YAML: 15 of the 24 `.yaml` fixtures
+    # carry `## …` lines that are YAML COMMENTS, so a heading scan reads them as
+    # sections and would report a document as structurally complete on the
+    # strength of its comments (`plans/GD15-CARRIER-CENSUS.md`).
+    if rel and str(rel).lower().endswith((".yaml", ".yml")):
+        present = {
+            _normalise_heading(k)
+            for k in (fm or {})
+            if isinstance(k, str) and not k.startswith("_")
+        }
+    else:
+        _, body = _split_frontmatter(text.splitlines())
+        # _section_word_counts() already returns only ## (level-2) headings.
+        present = {_normalise_heading(h) for h, _start, _wc in _section_word_counts(body)}
     for key in targets:
         if key not in present:
             findings.append(
@@ -1755,7 +1929,7 @@ def build_edge_graph(corpus: list[tuple[str, str]]) -> EdgeGraph:
     doc_layer: dict[str, str] = {}
     docs: list[tuple[str, str]] = []  # (doc_id, text) for docs with a doc_id
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, _rel)
         doc_id = ""
         if fm:
             doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1868,7 +2042,7 @@ def _check_trace_resolution(
     doc_index: dict[str, str] = {}
     element_index: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = ""
         if fm:
             doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -1890,7 +2064,7 @@ def _check_trace_resolution(
 
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if _is_index_doc(rel, fm):
             continue
         # Derive artifact's own layer-number for downstream-skip comparison.
@@ -2028,6 +2202,75 @@ def _doc_forward_reach(graph: EdgeGraph, start_doc: str) -> set[str]:
     return {graph.doc_layer.get(d, "") for d in reached}
 
 
+#: GD-14's cap. A BRD document SHOULD carry at most this many functional
+#: requirements; beyond it, start BRD-02 rather than growing BRD-01.
+FR_CAP = 5
+
+
+def _check_fr_cap(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """FRCAP01 — GD-14's 5-FR-per-BRD cap, as a NON-BLOCKING advisory.
+
+    GD-14 states the cap as a **SHOULD**, and #540 records that it was requested
+    as guidance rather than as a gate. This check does not change that: it is
+    ``severity="warning"`` in every run mode, with no ``gate-code`` escalation,
+    so a 12-requirement BRD still passes the gate. What it changes is that the
+    guidance is now *measured* — previously nothing anywhere computed it, on a
+    layer usually authored by an LLM reading ``_guidance`` blocks.
+
+    Counts exactly what ``COV01`` grades, and by the same route: both go through
+    ``_fr_elements``, GD-20's carrier seam, which dispatches to
+    ``scan_fr_elements`` on a Markdown carrier and ``scan_fr_elements_yaml`` on a
+    YAML one. The seam returns the element IDs under the FR section and **before**
+    that section's literal ``Acceptance criteria:`` line. GD-14's counting rule was deliberately written
+    against the same boundary so the cap counts what the coverage gate counts —
+    acceptance criteria are not requirements and do not count toward it.
+
+    Escaped requirements are **included** in the count, deliberately. A
+    ``Future``-banded or ``realized_by:``-tagged FR is still a requirement the
+    document carries; the cap is about document size, not about coverage
+    obligation, so the two exemptions do not transfer.
+    """
+    findings: list[Finding] = []
+    for rel, text in corpus:
+        # Carrier-aware, via GD-20's shared seam. Reading the Markdown scanner
+        # directly here would make the cap blind on a `.yaml` BRD -- i.e. on the
+        # format GD-15 mandates -- while the docstring above claims it counts
+        # exactly what COV01 grades. COV01 goes through `_fr_elements`, so this
+        # must too, or the two drift by carrier.
+        fm = _extract_frontmatter(text, rel)
+        if _artifact_code(fm) != "BRD":
+            continue
+        frs = _fr_elements(text, rel, fm)
+        if len(frs) <= FR_CAP:
+            continue
+        findings.append(
+            Finding(
+                rel,
+                # `scan_fr_elements_yaml` sets line=0 for every element by design;
+                # publishing that as a Finding.line hands a 1-based consumer an
+                # out-of-range value. Fall back to the doc-level 1, as PROV01 does.
+                frs[FR_CAP].line or 1,
+                "FRCAP01",
+                f"BRD carries {len(frs)} functional requirements; GD-14 sets a SHOULD cap of "
+                f"{FR_CAP}. Start a new document of the same type (BRD-02, BRD-03) rather than "
+                "growing this one. Advisory — this does not block the gate.",
+                severity="warning",
+            )
+        )
+    return findings
+
+
+def _fr_elements(text: str, rel: str | None, fm: dict | None) -> list[FRElement]:
+    """Carrier-dispatching FR scan — the seam COV01 and COV03 share.
+
+    One function so the two rules cannot drift apart by carrier, which is the
+    failure GD-17's effective condition (clause b) is written to prevent.
+    """
+    if rel and str(rel).lower().endswith((".yaml", ".yml")):
+        return scan_fr_elements_yaml(fm or {})
+    return scan_fr_elements(text)
+
+
 def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") -> list[Finding]:
     """COV01 — forward coverage (CFB-PR-2 DD-6 rows 2-3).
 
@@ -2052,7 +2295,7 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
     reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         # Identify the BRD the same way the graph does (artifact_type, else the
         # doc_id prefix via _artifact_code) so a BRD authored without an explicit
         # artifact_type still gets gated rather than silently escaping.
@@ -2068,7 +2311,7 @@ def _check_forward_coverage(corpus: list[tuple[str, str]], mode: str = "build") 
             continue
         reach = _doc_forward_reach(graph, doc_id)
         reaches_spec, reaches_iplan = "SPEC" in reach, "IPLAN" in reach
-        for fr in scan_fr_elements(text):
+        for fr in _fr_elements(text, rel, fm):
             # Escaped FRs (deferred / realized_by) never block (DD-5).
             if covered_state_of(fr) != CoveredState.AUTHORED:
                 continue
@@ -2138,7 +2381,7 @@ def _check_phase_leak(corpus: list[tuple[str, str]], mode: str = "build") -> lis
     reuse = _reuse_map(corpus)  # REUSE-MANIFEST-001: skip referenced host docs
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         # Identify the BRD the same way COV01 / the graph does.
         if _artifact_code(fm) != "BRD":
             continue
@@ -2147,7 +2390,7 @@ def _check_phase_leak(corpus: list[tuple[str, str]], mode: str = "build") -> lis
             continue
         if reuse.get(doc_id, ("authored", ""))[0] == "referenced":
             continue
-        for fr in scan_fr_elements(text):
+        for fr in _fr_elements(text, rel, fm):
             # COV03 keys strictly on DEFERRED (a bare `Future` band). AUTHORED is
             # COV01's domain; REALIZED_BY is a positive coverage claim.
             if covered_state_of(fr) != CoveredState.DEFERRED:
@@ -2238,7 +2481,7 @@ def _reuse_map(corpus: list[tuple[str, str]]) -> dict[str, tuple[str, str]]:
     State defaults to ``authored`` when the block is absent (back-compatible)."""
     out: dict[str, tuple[str, str]] = {}
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text) or {}
+        fm = _extract_frontmatter(text, _rel) or {}
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if not doc_id:
             continue
@@ -2265,7 +2508,7 @@ def _check_reuse(corpus: list[tuple[str, str]]) -> list[Finding]:
     rels = {rel for rel, _ in corpus}
     rel_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text) or {}
+        fm = _extract_frontmatter(text, rel) or {}
         did = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
         if did:
             rel_by_doc.setdefault(did, rel)
@@ -2385,7 +2628,7 @@ def _check_backward_coverage(corpus: list[tuple[str, str]], mode: str = "build")
     rel_by_doc: dict[str, str] = {}
     text_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
@@ -2458,7 +2701,7 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     rel_by_doc: dict[str, str] = {}
     text_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
@@ -2475,7 +2718,7 @@ def _check_acceptance_pairing(corpus: list[tuple[str, str]], mode: str = "build"
     # never pairs — the loophole stays closed.
     paired: set[str] = set()
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if _artifact_code(fm) != "TDD" or doc_id.endswith("-00"):
             continue
@@ -2549,7 +2792,7 @@ def _check_seed_disposition(corpus: list[tuple[str, str]]) -> list[Finding]:
     declared: set[str] = set(build_edge_graph(stripped).element_host)
     findings: list[Finding] = []
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         if _artifact_code(fm) != "BRD":
             continue
         rows, malformed = _seed_disposition_rows(text)
@@ -2695,7 +2938,7 @@ def _check_ref_granularity(corpus: list[tuple[str, str]], mode: str = "build") -
     graph = build_edge_graph(corpus)
     rel_by_doc: dict[str, str] = {}
     for rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, rel)
         doc_id = str((fm or {}).get("doc_id") or "").strip().strip('"').strip("'")
         if doc_id:
             rel_by_doc.setdefault(doc_id, rel)
@@ -2787,6 +3030,10 @@ def lint_path(
     # for referenced docs lives in the gates below (behind --skip-coverage-gate),
     # but the reuse visibility + target validation are always on.
     findings.extend(_check_reuse(corpus))
+    # FRCAP01 (GD-14) is a document-size advisory, not a coverage gate — it runs
+    # unconditionally and never escalates, so --skip-coverage-gate does not hide it
+    # and gate-code does not turn it red.
+    findings.extend(_check_fr_cap(corpus))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))

@@ -13,6 +13,246 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-22 — Non-C4 diagram kinds are valid on every layer; only C4/DFD levels are policed per layer
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.46.0 → 0.47.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Issues:** #552
+
+Six layers declared a `diagram_standard` — BRD, PRD, EARS, BDD, ADR, SPEC — and **two of them,
+EARS and BDD, shipped no authoring slot at all**. The other **four** already carried one:
+measured on `main`, BRD 2, PRD 1, ADR 2, SPEC 1 `diagram:` keys. (TDD also has a `diagram:` key
+but declares no `diagram_standard`, so it is outside this population — see the consequence
+below. An earlier draft said "one shipped a slot"; a second said "five, including TDD". Both
+were wrong and were corrected on OPS-0065 review before merge.) The blocker was
+vocabulary, not effort: `EARS-TEMPLATE.yaml` recommends three diagram kinds and only one
+(`sequenceDiagram`) had any `@diagram:` tag form. `DG02` is **error**-severity and EARS, BDD and
+ADR have empty C4 allowlists, so a *tagged* slot on any of them emitted a `DG02` error **on the
+template's own example content**.
+
+**Decision: `state-*` and `flow-*` join `sequence-*` as kinds valid on every layer.**
+
+**The reasoning generalises, and it is why this is not a per-layer allowlist.** `c4_mapping`
+allowlists a layer's C4/DFD **level**, which is exactly what `DG02` exists to police — a BRD may
+not carry an L3 component diagram. A state machine or a flowchart **has no level to mismatch**.
+A per-layer allowlist for them would encode nothing, and would have to be repeated on every
+layer that ever wants one. `sequence-*` was already treated this way; this extends the existing
+rule rather than introducing a second mechanism.
+
+`DG02` keeps its teeth, verified rather than asserted: `c4-l3` on EARS or BRD is still rejected,
+`c4-l1` on BRD still passes, and an unknown kind (`bogus-kind`) is still rejected.
+
+With the vocabulary settled, **EARS and BDD** gain a `diagram:` authoring slot in the same
+**key shape** SPEC already had — `_guidance`, `tags:` and a `mermaid:` block — and each emits
+**zero** `DG02` findings on its own template.
+
+⚠️ **Same shape, different placement, deliberately.** SPEC's slot sits inside
+`component_overview`, a numbered content section carrying a `_size_target`. These two sit under
+`metadata.diagram_standard`, which carries none — which is exactly what keeps GD-21's "no count
+moves" true, since `STRUCT01`'s required set is derived from `_size_target` keys. Do not read
+this entry as claiming structural parity with SPEC; it claims key-shape parity only. They are the only two layers that genuinely lacked one: of the six that
+declare a `diagram_standard`, **four** (BRD, PRD, ADR, SPEC) already shipped a slot.
+
+- **Authority:** `governance/DIAGRAM_STANDARDS.md`; `registry/LAYER_REGISTRY.yaml` `c4_mapping`;
+  `tools/sdd_doc_lint` `_DIAGRAM_SEQUENCE` (the precedent this extends)
+- **Consequences:**
+  - **ADR deliberately gains NO new slot.** It already ships one as the REQUIRED
+    `decision_sequence` section. Adding a second would put two REQUIRED declarations of the
+    same decision diagram in two different key shapes into one template, telling an author to
+    write it twice. An earlier draft of this entry did add it; removed on OPS-0065 review
+    before merge. See `layers/05_ADR/ADR-TEMPLATE.yaml`, which states the absence at the site.
+  - **PRD, TDD and IPLAN still have no slot**, deliberately. PRD's C4-L2 diagram belongs with
+    its container decomposition and is a separate question; TDD and IPLAN declare no
+    `diagram_standard` at all, so there is nothing to give them a slot *for*.
+  - The tag forms are **open-ended** (`state-<name>`, `flow-<name>`), matching `sequence-*`.
+    A closed enumeration would need updating for every new diagram purpose, which is the churn
+    `sequence-*` was already designed to avoid.
+  - **Nothing existing changes.** The corpus reports byte-identical findings; the new kinds
+    widen what is accepted and narrow nothing.
+  - This settles the *vocabulary* half of #552. The **registry-as-authority** half shipped
+    separately: `DG02` now reads `c4_mapping[*].diagram_tags` instead of a literal, so the field
+    the registry declares is finally the field the linter consults.
+
+## GD-21 — `total_sections` counts NUMBERED sections; STRUCT01's required set is derived and may exceed it
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** rides `0.46.0 → 0.47.0` with GD-20,
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Issues:** #557
+
+**Bundled with GD-20 under GD-11's rule**, and the conditions are asserted rather than assumed:
+independently correct, independently revertible (disjoint keys — GD-20 touches the linter and
+`requirements[]`, this touches `metadata` comments and a governance section), ready at the same
+moment, and each would otherwise pay a full ~170-file fanout of its own.
+
+⚠️ **The bundle on `0.47.0` is four-way, not two-way.** GD-19, GD-20, GD-21 and GD-22 share a
+single fanout. GD-21 was authored when it expected to ride with GD-20 alone; the pairing above
+describes that origin, not the shipped release. See the `0.47.0` CHANGELOG entry for why the
+four were combined (`GATE-SPEC-E005` is a path check, so one version cannot span four PRs).
+
+**The defect is an unwritten convention, not a wrong number.** `total_sections` counts the
+**numbered** sections; `STRUCT01`'s required set is **derived** — top-level keys carrying
+`_size_target`, minus `_required: false` / `_required_when_subtype:` — and additionally
+includes required **unnumbered backmatter**. **No surface anywhere stated this**, so four
+layers legitimately disagree with their own declaration and every reader who compares the two
+concludes there is a bug:
+
+| Layer | derived | `total_sections` | why |
+| --- | --- | --- | --- |
+| BRD | 17 | 16 | `diagrams` + `appendix` |
+| ADR | 12 | 10 | `glossary` + `appendix` |
+| EARS | 6 | 5 | `glossary` |
+| IPLAN | 2 | 6 | **fewer** — 9 of 11 `_size_target` keys are `_required: false` / `_required_when_subtype:` |
+
+**IPLAN diverges downward, which is why this is stated as two independent counts** rather than
+as "declared plus backmatter": that generalisation gets IPLAN exactly backwards. It was omitted
+from the first draft of this entry and added on OPS-0065 review.
+
+**#557 is the proof this needed writing down.** It was filed as an EARS defect, proposing
+`_required: false` on `glossary`. Both halves of its premise were false: both EARS artifacts
+carry a glossary, so the marker would have removed a **live** assertion; and EARS was never the
+outlier, since BRD and ADR have the identical shape. Four layers agree — PRD, BDD, SPEC and TDD
+— because none carries *unnumbered* backmatter; PRD's and BDD's glossaries are numbered sections
+and so are already counted. An earlier draft of this entry said "SPEC and TDD agree only", which
+undercounts the agreeing set by half and makes a four-layer class read as a two-layer sample.
+
+**`_required: false` marks OPTIONAL CONTENT.** Its one meaning is that the section may be
+absent (`PRD`'s `component_decomposition`: *"only required when downstream cites `@threshold`"*).
+It does **not** mean "required but unnumbered", and asking it to carry both senses is what
+produced #557.
+
+- **Authority:** `governance/LINT_RULES.md` §"What `STRUCT01` requires";
+  `tools/sdd_doc_lint` `_load_section_targets`; `layers/02_PRD/PRD-TEMPLATE.yaml`
+  `component_decomposition` (the marker's worked example)
+- **Consequences:**
+  - Stated in **two** places by design: the governance catalogue, and a comment at each of the
+    divergent `total_sections:` declarations — because the reader who trips on this is
+    looking at the template, not the catalogue.
+  - **No template's structure changes and no count moves.** Verified: BRD 17, ADR 12, EARS 6,
+    IPLAN 2, unchanged. This is documentation of an existing contract.
+  - `tests/conformance/test_required_section_sets.py` already pins each derived count, so the
+    edit #557 proposed cannot be made silently.
+
+---
+
+## GD-20 — The carrier changes where a rule LOOKS, never what it decides
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.46.0 → 0.47.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC. This GD-20 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate CHG
+  artifact.
+- **Issues:** #564 · **Census:** `plans/GD15-CARRIER-CENSUS.md`
+
+`GD-15` made YAML the mandatory instance format and changed no rule; `GD-17` gave that mandate
+an effective condition precisely because the rules could not yet read the mandated carrier.
+This is the enablement.
+
+**Three designs were refuted before this one**, all on facts rather than judgement, and the
+census that replaced the third is what made this tractable. Two of its findings are load-bearing
+here and are stated so they are not re-derived:
+
+1. **A `.yaml` instance has three shapes**, not one — no fence, a leading `---`
+   document-start marker, and a genuine two-document stream. `yaml.safe_load` **raises** on the
+   third, so `safe_load_all` + merge is required. A design using `safe_load` would have turned
+   six visible fixtures invisible and dropped seven pinned warnings.
+2. **`##` lines appear inside `.yaml` files as comments** — in 15 of 24 fixtures. So a heading
+   scan would report a document structurally complete on the strength of its comments.
+
+**Decision 1 — the carrier is selected by SUFFIX, never sniffed.** A `.md` file whose body
+happens to parse as a YAML mapping must not acquire a frontmatter it does not have. Suffix is a
+fact about the file; parseability is a coincidence.
+
+**Decision 2 — the hash input is a MIRROR, not a new vocabulary.** `norm(title)` ← `title`,
+`norm(description)` ← `capability`. The transform and the four-part input are unchanged, so the
+same content hashes the same on either carrier and a migration is ID-preserving.
+`capability` and not `description` because that is the key the template declares; mapping to an
+undeclared key would silently hash an empty description. Full table in
+`ID_NAMING_STANDARDS.md` §"Structured (YAML) carrier".
+
+**Decision 3 — `requirements[]` gains an optional `realized_by`.** Without it every
+YAML-authored requirement classified `AUTHORED`, so `COV01` became **unconditionally blocking**
+on the mandated carrier and an ADR-realized requirement had no way to declare itself. The
+markdown band's `realized_by:` token and this key are two surfaces for one value.
+
+**Decision 4 — a section is a `##` heading OR a top-level key.** The same structural unit named
+two ways; the *required* set is still derived from the template by `_load_section_targets`, so
+only the lookup differs and the contract does not.
+
+- **Authority:** GD-15, GD-17; `governance/ID_NAMING_STANDARDS.md` §"Hash algorithm";
+  `layers/01_BRD/BRD-TEMPLATE.yaml` `functional_requirements`; `tools/sdd_doc_lint`
+  (`_extract_frontmatter`, `_check_required_template_sections`, `scan_fr_elements_yaml`,
+  `_fr_elements`)
+- **Consequences:**
+  - **`tests/conformance/test_carrier_parity.py` is the per-layer carrier-parity assertion
+    GD-17 requires**, and it did not exist before. GD-17 also requires a **successor GD entry**
+    recording the effective condition as met — **this entry does NOT claim that**, because
+    parity is asserted only for the primitives changed here.
+  - **Two seams remain open** and are named rather than left implicit: `FM01` calls
+    `_split_frontmatter` **directly** and passes vacuously on a YAML instance, and
+    `scan_fr_content` behind `rehash_check` is Markdown-only. Until both close, GD-17's clause
+    (b) — *every rule returns the same verdict* — is not satisfied.
+  - **`rehash --check` still cannot see a `.yaml` file** (`rehash.py` globs `*.md`). The hash
+    contract for the structured carrier is *defined* here and *unverified*.
+  - **The Markdown path is unchanged**, asserted rather than assumed: the example corpus
+    reports byte-identical findings before and after.
+  - `tools/sdd_coverage.py` is a consumer **outside** the linter package and was threaded too;
+    it is vendored to no mirror, so no `__init__.py`-scoped sweep would have found it.
+
+## GD-19 — GD-14's 5-FR cap becomes measurable without becoming a gate
+
+- **Status:** Accepted — 2026-08-29 · **SemVer:** framework `0.46.0 → 0.47.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC. This GD-19 entry + the `VERSION`/`CHANGELOG` bump + both
+  `FRAMEWORK_SPEC_VERSION` pins + green conformance are the change record; no separate CHG
+  artifact.
+- **Issues:** #540
+
+`GD-14` makes it normative that a BRD document **SHOULD** carry at most five functional
+requirements. Nothing measured it: a twelve-requirement BRD passed `sdd_doc_lint`, the
+conformance suite and the BRD auditor lens. The rule was guidance a human reviewer applied,
+on the one layer most often authored by an LLM reading `_guidance` blocks.
+
+**`FRCAP01` measures it and does not gate it.** `warning` severity in every run mode, with
+**no `gate-code` escalation** — a twelve-requirement BRD still passes. #540 records that the
+cap was *requested* as guidance rather than as a gate, so escalating here would overrule a
+deliberate scope decision under cover of an implementation detail. The
+`tests/conformance/test_fr_cap_advisory.py` case that asserts the severity in **both** run
+modes is what keeps that true; `COV01` and `REFGRAN01` both escalate, so the pattern a
+contributor would copy is the wrong one.
+
+**What counts, and why the boundary was not chosen freshly.** `FRCAP01` counts through
+GD-20's `_fr_elements` seam — `scan_fr_elements` on a Markdown carrier, `scan_fr_elements_yaml`
+on a YAML one — i.e. the element IDs under the FR section and **before** that section's
+literal `Acceptance criteria:` line. `GD-14`'s counting rule was deliberately written against
+that same boundary so the cap counts exactly what the coverage gate counts. Acceptance
+criteria are not requirements and do not count.
+
+**Escaped requirements DO count**, and this is the entry's one genuinely new decision. A
+`Future`-banded or `realized_by:`-tagged FR escapes `COV01` because it carries no coverage
+obligation. It is still a requirement the document carries, and the cap is about document
+**size**. The two exemptions therefore do not transfer, and a test asserts it so a later
+reader does not "simplify" the count by reusing `covered_state_of`.
+
+- **Authority:** GD-14; `layers/01_BRD/BRD-TEMPLATE.yaml` `functional_requirements`
+  (`_guidance` size rule and `_authored_form`); `governance/LINT_RULES.md`;
+  `tools/sdd_doc_lint` `_fr_elements` (GD-20's carrier seam; dispatches to
+  `scan_fr_elements` / `scan_fr_elements_yaml`)
+- **Consequences:**
+  - **The rule ships with its own fixture, because it could not otherwise be tested.**
+    Measured first: of every BRD in the repository, the example corpus's carried **4** visible
+    FRs and no acceptance fixture yielded **any**. There was no document a cap check could fire
+    on, so it would have been born untestable and green.
+    `tests/acceptance/fixtures/negative/brd-fr-cap-exceeded.md` carries seven, two of them
+    escaped, and three acceptance criteria that must not count.
+  - The example corpus is at 4 of 5 and stays silent — verified, not assumed.
+  - `FRCAP01` runs **unconditionally**, not behind `--skip-coverage-gate`: it is a
+    document-size advisory, not a coverage gate, so skipping coverage must not hide it.
+  - This does **not** make the SHOULD binding. `governance/REVIEW_TEAM.md` still defines the
+    pass/fail floor as the deterministic structural check plus "no unresolved P0/P1"; an
+    advisory sits above that floor, as `playbooks/01_BRD/auditor.md`'s C3/C4 already do.
+
 ## GD-18 — Three independent template gaps and one erratum ship as one MINOR: derived test paths (#550), threshold carriers (#551), IPLAN status ownership (#569), GD-13's figures (#532)
 
 - **Status:** Accepted — 2026-08-28 · **SemVer:** framework `0.44.0 → 0.46.0` (MINOR),

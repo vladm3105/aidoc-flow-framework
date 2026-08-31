@@ -36,9 +36,9 @@ from sdd_doc_lint import (
     _artifact_code,
     _doc_forward_reach,
     _extract_frontmatter,
+    _fr_elements,
     build_edge_graph,
     covered_state_of,
-    scan_fr_elements,
 )
 from sdd_doc_lint.trace_graph import KNOWN_LAYERS
 
@@ -65,7 +65,7 @@ def render_matrix(corpus: list[tuple[str, str]]) -> str:
 
     rows: list[tuple[str, str, str, str, set[str]]] = []  # (fr_id, host, band, state, reached)
     for _rel, text in corpus:
-        fm = _extract_frontmatter(text)
+        fm = _extract_frontmatter(text, _rel)
         if not fm:
             continue
         doc_id = str(fm.get("doc_id") or "").strip().strip('"').strip("'")
@@ -75,7 +75,11 @@ def render_matrix(corpus: list[tuple[str, str]]) -> str:
         if _artifact_code(fm) != "BRD" or not doc_id:
             continue
         reach = _doc_forward_reach(graph, doc_id)
-        for fr in scan_fr_elements(text):
+        # Same carrier seam COV01 uses (GD-20). Calling the Markdown scanner
+        # here would make the matrix silently empty for a `.yaml` BRD that the
+        # gate is actively grading -- breaking the shared-core invariant this
+        # module's own header states.
+        for fr in _fr_elements(text, _rel, fm):
             rows.append((fr.elem_id, doc_id, fr.band or "—", covered_state_of(fr).value, reach))
 
     # Total order (fr_id, host) so duplicate fr ids across BRDs stay deterministic

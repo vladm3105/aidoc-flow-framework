@@ -27,6 +27,13 @@ metadata:
   document_type: "ears-document"
   layer: 3
   lifecycle: mvp-prod-newmvp
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 6 here,
+  # because required unnumbered backmatter (`glossary`) is additional.
+  # The two numbers differing is correct, not a defect — see
+  # governance/LINT_RULES.md §"What STRUCT01 requires". Do NOT reconcile them
+  # with `_required: false`: that marks OPTIONAL content and would remove a
+  # live assertion.
   total_sections: 5
   last_updated: "2026-03-29"
   validation:
@@ -74,6 +81,18 @@ metadata:
         - stateDiagram-v2: state transitions for state-driven requirements
         - sequenceDiagram: interaction flows for event-driven requirements
         - flowchart: decision logic for unwanted behavior / fallback paths
+
+      Tag forms: `@diagram: state-*` for stateDiagram-v2, `@diagram: flow-*` for
+      flowchart, `@diagram: sequence-*` for sequenceDiagram. All three are valid
+      on every layer (GD-22) — they carry no C4 level to mismatch.
+    diagram:
+      _guidance: "Optional. One diagram per requirement cluster, not per requirement."
+      tags: ["@diagram: state-lifecycle"]
+      mermaid: |
+        stateDiagram-v2
+          [*] --> Idle
+          Idle --> Active: trigger
+          Active --> [*]
 
   tags:
     - ears-document

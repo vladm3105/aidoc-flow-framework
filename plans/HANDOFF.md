@@ -5,13 +5,18 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** framework spec **`0.46.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
-`FRAMEWORK_SPEC_VERSION` pins read `0.46.0` — the `0.43.0` skew is closed.
+**State:** framework spec **`0.47.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+`FRAMEWORK_SPEC_VERSION` pins read `0.47.0` — the `0.43.0` skew is closed. `0.45.0` was
+**skipped** and never became a value of `framework/VERSION` (`plans/DECISIONS.md` D-0082).
 `framework/v0.44.0` is **tagged and released**, the first framework tag since `v0.41.3`.
 
-**Verified this session** (run, not asserted), after the `0.46.0` bump and both fanouts:
-conformance **414** · acceptance-deterministic **64** · unit **196** · packaging **5** ·
+**Verified this session** (run, not asserted), after the `0.47.0` bump and both fanouts:
+conformance **451** · acceptance-deterministic **64** · unit **196** · packaging **5** ·
 release **50** · `sdd_doc_lint` **6**. **0 failing.**
+*(The conformance figure was left at the `0.46.0`-era **414** through several edits — it is the
+one number this release moved, in the file whose whole purpose is a fresh session's verified
+current state. Caught on OPS-0065 round 4; cf. the auto-memory entry "verify carried-forward
+handoff claims".)*
 Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the
 wholesale regen; use `--skip-lint-smoke`.
 *(`pytest tools/sdd_doc_lint/tests` needs `PYTHONPATH=tools` or it fails to collect.)*
@@ -32,13 +37,14 @@ the release notes' "Known gap" block. File it if it should have one.
 
 ## The backlog is GitHub issues
 
-**Open issues: 32.** Re-derive with `gh issue list --state open --limit 300`.
+**Open issues: 31.** Re-derive with `gh issue list --state open --limit 300`.
 In-progress work carries **`status: in progress`** — currently only **#423**.
 
-**Twelve are blocked on a founder decision** and are not pickable. Eight carry a `⏸ PARKED`
-title prefix (#438, #483, #543–#548); four name the decision only in the body or in a plan,
-so a title scan misses them: **#467**, **#507**, **#558** (new, above), and **#540** (its
-three options all touch `framework/**` and which one to take is a founder call).
+**Eleven are blocked on a founder decision** and are not pickable. Eight carry a `⏸ PARKED`
+title prefix (#438, #483, #543–#548); three name the decision only in the body or in a plan,
+so a title scan misses them: **#467**, **#507** and **#558** (new, above). ~~**#540**~~ is no
+longer among them — GD-19 ships it in `0.47.0` as the advisory `FRCAP01`, so the founder call it
+was waiting on has been made.
 **#553** is likewise gated — on the IPLAN `title` placement question that
 `IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 owns.
 
@@ -71,12 +77,13 @@ record.
    `plans/template-completeness-001`; it had already **merged** via PR #561 and is on `main`.)
    Bundles **#550, #551, #532** as planned, plus **#569** folded in under the founder's
    per-bump grant. All tiers green after both fanouts.
-   ⚠️ **#557 was folded in and then REVERTED before commit** — independent review falsified
-   both halves of its premise (see the plan's fold note and the comment on #557). It stays
-   **open** and needs re-scoping: the real gap, if any, is that no surface says
-   `total_sections` counts *numbered* sections only, which is a three-layer documentation
-   issue rather than an EARS marker bug. `tests/conformance/test_required_section_sets.py`
-   now pins every layer's derived required set so the class cannot recur silently.
+   ⚠️ **#557 was folded in, REVERTED before commit, then re-scoped and SHIPPED as GD-21** in
+   `0.47.0`. Independent review had falsified both halves of its original premise, and the
+   re-scope is the residue it named: no surface said `total_sections` counts *numbered*
+   sections only. That is now stated in `LINT_RULES.md` and at each divergent declaration.
+   **Four** layers diverge, not three — IPLAN diverges *downward* (2 vs 6) and was missing its
+   comment until OPS-0065 review caught it. `tests/conformance/test_required_section_sets.py`
+   pins every layer's derived required set so the class cannot recur silently.
    ⚠️ **#565 was granted for this bundle and then EXCLUDED on measurement.** Its fix shape
    assumes `warning` severity is safe for the all-`.md` corpus. It is not:
    `tests/acceptance/_harness.py` matches warnings as a **bidirectional multiset**, so a new

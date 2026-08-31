@@ -10,6 +10,57 @@ graduation.
 
 ---
 
+## D-0082 — One version cannot span four PRs, so four ratified GDs ship as one release; `0.45.0` is skipped
+
+**Date:** 2026-08-30 · **Issues:** #540, #564, #557, #552 · **PR:** #586 · **Decider:** founder (in session)
+
+**The constraint is mechanical, and it is the whole reason for the shape.** `GATE-SPEC-E005` is a
+**path** check, not a value check — `tests/chg/spec_gate.py` `evaluate()` appends the failure
+unless `framework/VERSION` is literally in the changed-file list:
+
+```python
+if "framework/VERSION" not in files:
+    failures.append("GATE-SPEC-E005")
+```
+
+So a second PR that leaves `VERSION` at the value `main` already carries does not list the file
+at all and trips the gate. **"All four at one version" is only reachable inside one commit.**
+
+Four spec PRs were open simultaneously, and this is the census — an earlier draft of this entry
+listed three under the word "four" and mis-stated which claimed what:
+
+| PR | Decision | Claimed |
+| --- | --- | --- |
+| #575 | GD-18 | `0.45.0` |
+| #582 | GD-19 | `0.46.0` |
+| #583 | GD-20 + GD-21 | `0.45.0` |
+| #584 | GD-22 | `0.45.0` |
+
+**Three claimed `0.45.0` and one claimed `0.46.0`** — which is itself the tell: #582 was authored
+expecting a `0.45.0` to land ahead of it, so the four were never independently versionable.
+
+**Decision.** GD-18 shipped alone as `0.46.0` (#575). The remaining four were cherry-picked into
+a single commit as `0.47.0` (#586) and the three source PRs closed. **`0.45.0` is skipped and
+never becomes a value of `framework/VERSION`** — corrected forward in the `0.47.0` CHANGELOG
+entry, rewriting no published record, exactly as `D-0078` handled the `0.42.0` phantom.
+
+**Content was removed from an already-reviewed PR, deliberately.** #584 added an ADR `diagram:`
+slot. ADR already ships one as the REQUIRED `decision_sequence` section, so shipping both would
+have put two REQUIRED declarations of the same diagram, in two key shapes, into one template.
+Removed in the combine on founder instruction rather than ratified and erratum'd later. Recorded
+here because a reader diffing #584 against `main` will otherwise find content that vanished.
+
+**Why this is worth a decision entry rather than only a commit message.** The combine ran **four**
+OPS-0065 review rounds — **ten reviewer passes, every one REQUEST-CHANGES** — and **each round
+found defects in the previous round's fixes**: a half-landed correction that left the ratified GD
+record contradicting the template it shipped with; a premise correction that was itself wrong;
+two further half-landed corrections plus a test class appended after `unittest.main()` and so
+invisible to a direct run; and finally three mutants surviving the whole tier on carrier fixes the
+combine itself had made. The
+reusable lesson is the one already in `CLAUDE.md`: a fold that half-lands reads as resolved.
+Combining N reviewed PRs is not free — it creates integration defects **neither parent branch
+could have caught**, and `FRCAP01` being dead on the YAML carrier is the worked example.
+
 ## D-0081 — Both secret-scanning knobs are to be ON; the REST API silently refuses, so it is a UI change
 
 **Date:** 2026-08-29 · **Issue:** #467 · **Decider:** founder (in session)

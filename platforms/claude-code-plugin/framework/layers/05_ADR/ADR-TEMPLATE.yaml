@@ -27,6 +27,13 @@ metadata:
   document_type: "adr-document"
   layer: 5
   lifecycle: mvp-prod-newmvp
+  # Counts the NUMBERED sections only. STRUCT01's required set is derived
+  # separately (top-level keys carrying `_size_target`) and is 12 here,
+  # because required unnumbered backmatter (`glossary` + `appendix`) is additional.
+  # The two numbers differing is correct, not a defect — see
+  # governance/LINT_RULES.md §"What STRUCT01 requires". Do NOT reconcile them
+  # with `_required: false`: that marks OPTIONAL content and would remove a
+  # live assertion.
   total_sections: 10
   last_updated: "2026-03-29"
   validation:
@@ -79,6 +86,15 @@ metadata:
 
       ADR does NOT use C4 level diagrams. C4-L3 (Component) belongs to SPEC (Layer 6).
       ADR diagrams show the decision's impact, not the system structure itself.
+
+      Tag forms: `@diagram: sequence-*` (the required decision diagram) and
+      `@diagram: flow-*` (the optional supplement). Both are valid on every
+      layer (GD-22).
+      ADR already ships its authoring slot as the REQUIRED `decision_sequence`
+      section below — GD-22 deliberately does NOT add a second one here. Two
+      REQUIRED declarations of the same diagram, in two key shapes, is an
+      authoring hazard: it tells the author to write the decision sequence
+      twice. EARS and BDD are the only layers that genuinely lacked a slot.
 
   tags:
     - adr-document

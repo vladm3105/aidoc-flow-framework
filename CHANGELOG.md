@@ -12,6 +12,184 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — Framework Spec `0.46.0 → 0.47.0` — non-C4 diagram kinds are valid on every layer, and EARS/BDD gain authoring slots (GD-22) (2026-08-29)
+
+Six layers declared a `diagram_standard` — BRD, PRD, EARS, BDD, ADR, SPEC — and **two of them,
+EARS and BDD, shipped no authoring slot at all**
+([#552](https://github.com/vladm3105/aidoc-flow-framework/issues/552)). The other **four** (BRD,
+PRD, ADR, SPEC) already carried one. TDD also has a `diagram:` key but declares no
+`diagram_standard`, so it is outside this population — see the "no slot" consequence below,
+which says so. The blocker was
+vocabulary, not effort: `EARS-TEMPLATE.yaml` recommends three diagram kinds and only one
+(`sequenceDiagram`) had any `@diagram:` tag form. `DG02` is **error**-severity and EARS, BDD and
+ADR have empty C4 allowlists, so a *tagged* slot on any of them emitted a `DG02` error **on the
+template's own example content**.
+
+**`state-*` and `flow-*` join `sequence-*` as kinds valid on every layer.** `c4_mapping`
+allowlists a layer's C4/DFD **level**, which is what `DG02` exists to police — a BRD may not
+carry an L3 component diagram. A state machine or flowchart **has no level to mismatch**, so a
+per-layer allowlist would encode nothing and would need repeating on every layer that ever
+wants one. This extends the rule `sequence-*` already followed rather than adding a second
+mechanism.
+
+`DG02` keeps its teeth — verified, not asserted:
+
+| tag | layer | verdict |
+|---|---|---|
+| `c4-l3` | EARS, BRD | **rejected** |
+| `c4-l1` | BRD | accepted |
+| `state-lifecycle` | EARS | accepted |
+| `bogus-kind` | EARS | **rejected** |
+
+**EARS and BDD** now carry a `diagram:` slot in the same **key shape** SPEC already had —
+`_guidance`, `tags:` and a `mermaid:` block — and each emits **zero** `DG02` findings on its own
+template. The placement differs on purpose: SPEC's is inside the numbered `component_overview`
+section, these two are under `metadata.diagram_standard`, which carries no `_size_target` and so
+moves no `STRUCT01` count. They are the
+only two that lacked one. **ADR deliberately gains no new slot**: it already ships the REQUIRED
+`decision_sequence` section, and a second declaration of the same diagram in a different key
+shape would tell an author to write it twice.
+
+PRD, TDD and IPLAN still have no slot, deliberately: PRD's C4-L2 diagram belongs with its
+container decomposition and is a separate question, and TDD/IPLAN declare no `diagram_standard`
+at all.
+
+**Nothing existing changes** — the corpus reports byte-identical findings; the new kinds widen
+what is accepted and narrow nothing.
+
+### Fixed — DG02's diagram allowlist now comes from the registry that claims to own it (#552) (2026-08-29)
+
+`LAYER_REGISTRY.yaml` carries `c4_mapping[*].diagram_tags` and the registry's own README calls
+itself the single source of truth. **No code read that field.** `DG02`'s real authority was a
+literal in `tools/sdd_doc_lint`, which made the diagram vocabulary a **five-surface** statement
+with the executable one last.
+
+That is the **third instance of one shape** this session, and the pattern is worth naming: a
+machine-readable field that *looks* authoritative and is consumed by nothing. The others are
+[#565](https://github.com/vladm3105/aidoc-flow-framework/issues/565) (`extensions` is the
+normative instance-format field and no linter reads it) and
+[#531](https://github.com/vladm3105/aidoc-flow-framework/issues/531) (a granularity rule stated
+in four places, executable in one).
+
+**Verified equivalent for all eight layers before the switch**, so this is a consolidation and
+not a behaviour change. PRD's registry entry additionally lists `sequence-sync`, which changes
+nothing — `_DIAGRAM_SEQUENCE` allows any `sequence-*` tag on every layer regardless.
+
+The literal survives as a **fallback for an unreadable registry**, which is the direction that
+fails safe: an empty allowlist makes `DG02` *reject*, not accept.
+
+⚠️ **This closes one half of #552.** The other half — the authoring-slot gap, which is **EARS
+and BDD**, not "five of six layers" as this entry originally said (see the corrected figure in
+the GD-22 entry above) — is **not** fixed here and needs a vocabulary decision first:
+`stateDiagram-v2` and `flowchart` are recommended by `EARS-TEMPLATE.yaml` and have **no
+`@diagram:` tag form at all**, so a tagged slot on EARS, BDD or ADR would emit a `DG02` error on
+the template's own example content. Measured and recorded on the issue.
+
+`tools/` and `tests/` only — no `framework/**` edit, so `GATE-SPEC-E005` does not fire and no
+version bump is involved.
+
+### Added — Framework Spec `0.46.0 → 0.47.0` — the carrier changes where a rule looks, never what it decides (GD-20) (2026-08-29)
+
+`GD-15` made YAML the mandatory instance format and changed no rule; `GD-17` gave that mandate
+an effective condition precisely because the rules could not read the mandated carrier. This is
+the enablement ([#564](https://github.com/vladm3105/aidoc-flow-framework/issues/564)).
+
+Measured before and after on the reproduction in #564 — a minimal BRD authored exactly as
+`BRD-TEMPLATE.yaml` prescribes:
+
+| | before | after |
+|---|---|---|
+| `STRUCT01` on sections physically present as YAML keys | 4 spurious | **0** |
+| `TRACE-RES-001` "no corpus member has doc_id" | 1 | **0** — the document is in the trace graph |
+| total errors | **18** | **13**, all genuinely-missing sections |
+
+13 and not 0 is the correct outcome: BRD requires 17 sections and that fixture declares 4.
+
+**Four decisions**, all in `GD-20`:
+
+- **Carrier by suffix, never sniffed.** A `.md` file whose body happens to parse as a YAML
+  mapping must not acquire a frontmatter it does not have.
+- **The hash input is a mirror** — `norm(title)` ← `title`, `norm(description)` ← `capability`.
+  Transform unchanged, so the same content hashes the same on either carrier and a migration is
+  ID-preserving. `capability` because that is the key the template declares.
+- **`requirements[]` gains an optional `realized_by`.** Without it every YAML requirement
+  classified `AUTHORED`, so `COV01` was **unconditionally blocking** on the mandated carrier.
+- **A section is a `##` heading OR a top-level key** — same unit, two names; the required set is
+  still derived from the template.
+
+Two census findings were load-bearing and are why earlier designs failed:
+`yaml.safe_load` **raises** on the two-document fixtures (`safe_load_all` + merge is required),
+and `##` lines appear inside 15 of 24 `.yaml` fixtures as **comments**, so a heading scan would
+call a document complete on the strength of its comments.
+
+**`tests/conformance/test_carrier_parity.py` is the per-layer parity assertion GD-17 requires**,
+and it did not exist before. ⚠️ **This does not claim GD-17's condition is met** — parity is
+asserted only for the primitives changed here, and two seams remain open and named: `FM01`
+reaches `_split_frontmatter` directly, and `scan_fr_content` behind `rehash_check` is
+Markdown-only.
+
+**The Markdown path is unchanged** — the example corpus reports byte-identical findings before
+and after, asserted rather than assumed.
+
+**Also in this bump — `total_sections` counts NUMBERED sections (GD-21, [#557](https://github.com/vladm3105/aidoc-flow-framework/issues/557))**
+
+Bundled under GD-11's fold rule: independently correct, independently revertible, ready at the
+same moment, and each would otherwise pay a full ~170-file fanout.
+
+`total_sections` counts the **numbered** sections; `STRUCT01`'s required set is **derived**
+(top-level keys carrying `_size_target`) and additionally includes required **unnumbered
+backmatter**. **No surface stated this**, so four layers legitimately disagree with their own
+declaration — BRD 17 vs 16, ADR 12 vs 10, EARS 6 vs 5, and **IPLAN 2 vs 6** — and every reader
+who compares them concludes there is a bug. IPLAN diverges **downward** (9 of its 11
+`_size_target` keys are `_required: false` / `_required_when_subtype:`), which is why the rule
+is stated as two independent counts rather than as "declared plus backmatter".
+
+Issue #557 is the proof it needed writing down: filed as an EARS defect proposing
+`_required: false` on `glossary`, when both halves of its premise were false. Now stated in the governance
+catalogue **and** as a comment at each of the four divergent declarations — BRD, ADR, EARS and
+IPLAN — because the reader who trips on this is looking at the template, not the catalogue.
+IPLAN's was the one missing: it is the only layer that diverges **downward**, so it is also the
+one most likely to be misread as a bug.
+
+**No template's structure changes and no count moves** — BRD 17, ADR 12, EARS 6, IPLAN 2, verified
+unchanged. `_required: false` marks **optional content**, never "required but unnumbered".
+
+### Added — Framework Spec `0.46.0 → 0.47.0` — GD-14's 5-FR cap becomes measurable without becoming a gate (GD-19) (2026-08-29)
+
+`GD-14` makes it normative that a BRD **SHOULD** carry at most five functional requirements.
+Nothing measured it: a twelve-requirement BRD passed `sdd_doc_lint`, the conformance suite and
+the BRD auditor lens ([#540](https://github.com/vladm3105/aidoc-flow-framework/issues/540)).
+
+**`FRCAP01` is carrier-aware.** It counts through GD-20's `_fr_elements` seam, so it fires on
+a `.yaml` BRD as well as a `.md` one. That is a **new user-visible warning** on the carrier
+GD-15 mandates: a YAML BRD over the cap was previously invisible to the rule, because
+`_check_fr_cap` read the Markdown scanner directly. Caught by OPS-0065 review of this combined
+release and fixed here.
+
+**`FRCAP01` measures it and does not gate it** — `warning` in every run mode, with **no
+`gate-code` escalation**. #540 records that the cap was requested as *guidance*, so escalating
+would overrule a deliberate scope decision under cover of an implementation detail. A test
+asserts the severity in **both** run modes, because `COV01` and `REFGRAN01` both escalate and
+that is the pattern a contributor would copy.
+
+It counts what `COV01` grades — element IDs under the FR section and **before** its literal
+`Acceptance criteria:` line. **Escaped (`Future` / `realized_by:`) requirements still count**:
+they escape coverage because they carry no coverage obligation, but the cap is about document
+*size*, so the exemption does not transfer.
+
+**It ships with its own fixture because it could not otherwise be tested.** Measured first: of
+every BRD in the repository the example corpus's carried **4** visible FRs and no acceptance
+fixture yielded **any** — there was no document a cap check could fire on, so it would have been
+born untestable and green.
+
+⚠️ **`0.45.0` was skipped and is not a missing release.** Four spec PRs were open at once
+and three of them had each claimed `0.45.0`; only one PR can hold a version, because
+`GATE-SPEC-E005` is a *path* check — `tests/chg/spec_gate.py` fails unless `framework/VERSION`
+appears in the changed-file list, so a second PR leaving it untouched trips the gate. GD-18
+took `0.46.0` on its own, and GD-19/20/21/22 ship together here as `0.47.0`. `0.45.0` never
+became a value of `framework/VERSION`. Corrected forward, no published entry rewritten —
+the same handling `D-0078` applied to the `0.42.0` phantom.
+
 ### Added — the GD-03 citation-granularity rule is now measured, not only stated (#531) (2026-08-28)
 
 `tests/conformance/test_ref_granularity_parity.py` asserts that the
