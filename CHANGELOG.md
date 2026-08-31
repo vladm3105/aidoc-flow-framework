@@ -12,6 +12,37 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI: `ai-review` and `composition` no longer gate merges (D-0084) (2026-08-31)
+
+`call / ai-review` and `call / composition` were removed from `main`'s required status checks.
+**Both workflows still run and still post verdicts; only the merge-blocking is gone.** Branch
+protection is server state that lives in no repo — `plans/DECISIONS.md` **D-0084** is the record
+and carries the exact one-call restore.
+
+**Why.** `ai-review` fails deterministically on this repo's release shape (confirmed by re-run;
+upstream [aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543)). A framework
+spec bump fans out to ~179 mostly one-line files and `GATE-SPEC-E005` forbids splitting it, so
+the only route was `gh pr merge --admin` — a bypass of *every* required check. A gate that can
+only be satisfied by bypassing it is not a gate.
+
+Measured while writing this up, and both corrections matter more than the change itself:
+
+- **`call / composition` never enforced anything on this repo.** Canon hardcodes it at the pinned
+  tag (`composition.yml@ci/v2.16.0:272-275`) to exit 0 for `*/aidoc-flow-framework` before the
+  approval assertion. It was a required check hardwired to pass, so removing it changed merge
+  preconditions by zero.
+- **The failure is not the documented 400 KB input cap.** #595's diff is 149,906 bytes — 37% of
+  the limit — and the cap never fired; the call fails downstream at `ResponseShapeError`. The
+  guard reports the input as acceptable and the call fails anyway.
+
+**What this costs, plainly.** Every remaining required check is mechanical. `call / verify` is an
+audit-trail marker, not a review control — it greps the commit body for a phrase the author
+writes, accepts a `Self-review skipped per founder OK` opt-out that requires no founder, and
+exempts bot authors. With `required_approving_review_count: 0`, **no automated surface can now
+falsify a self-review claim.** CI ai-review caught a real defect on #589 that four dispatched
+review passes missed; that signal is kept but is now advisory. Revisit trigger and owner are
+recorded in D-0084.
+
 ### Added — Framework Spec `0.46.0 → 0.47.0` — non-C4 diagram kinds are valid on every layer, and EARS/BDD gain authoring slots (GD-22) (2026-08-29)
 
 Six layers declared a `diagram_standard` — BRD, PRD, EARS, BDD, ADR, SPEC — and **two of them,

@@ -490,7 +490,10 @@ Runner split — deliberate, do not "normalize":
   not a tooling requirement (both `curl` a pinned static binary). This means the
   pool now serves up to five jobs per PR against **two** slots — it
   self-replenishes (`ci-runner@.service` is `Restart=always`/`RestartSec=5`), so
-  they serialize rather than starve the required `ai-review`.
+  they serialize rather than starve `ai-review`. *(`ai-review` stopped being a
+  **required** context on 2026-08-31 — `plans/DECISIONS.md` D-0084. It still runs on
+  this pool, so the contention statement stands; only the word "required" was
+  removed.)*
 - **`sast-scan` is the exception and must stay on `ubuntu-latest`.** semgrep
   installs into a `python3 -m venv` and the `aidoc-flow-runner` image ships no
   Python, so on the self-hosted pool it dies at *"ensurepip is not available"*

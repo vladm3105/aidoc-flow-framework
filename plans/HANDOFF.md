@@ -113,9 +113,25 @@ record.
    reproduced when re-run, so trace-only findings are worth re-executing, not discounting.
 3. ~~**#554**~~ — **done**, PR **#572**.
 
-⚠️ **`call / ai-review` is green on the skip path, not on review — do not read it as healthy.**
-It is a **required, fail-closed** context, and when it *does* invoke the proxy it fails with
-`litellm: proxy request failed after 3 attempts: ResponseShapeError`. Read the two days apart:
+⚠️ **`call / ai-review` NO LONGER GATES — `plans/DECISIONS.md` D-0084 (2026-08-31).** It and
+`call / composition` were removed from `main`'s required status checks; both still run and still
+post verdicts, but nothing blocks on them. The review gate is now `call / verify`
+(audit-trail.yml), which asserts the pre-PR OPS-0065 self-review phrase in the commit body.
+**Never re-add one of those two contexts without the other** — composition's only non-human
+trigger is `workflow_run: ["ai-review"]`, so a required composition without a running ai-review
+sits pending forever and blocks harder than a red check.
+
+**The failure below is now diagnosed, and the handoff's previous hypothesis was wrong.** It is
+**not** an outage and **not** line-count: PR **#589** (+555/-0, **1 file**, 41,256 diff bytes)
+produced two real verdicts on the same day PR **#595** (+630/-280, **179 files**, 149,906 diff
+bytes) failed, deterministically, on re-run. ⚠️ **The exact discriminator is NOT settled** — with
+n=2, file count and byte size co-vary, and an earlier version of this paragraph asserted file
+count. What IS measured: #595 is **under canon's 400,000-byte input cap, which never fired**, so
+the guard passes a payload the call then rejects. A spec bump fans out to ~179 mostly one-line files
+and `GATE-SPEC-E005` forbids splitting it, so the repo's own release shape was structurally
+unmergeable. Filed upstream as
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543). The historical
+record below is kept because it shows how the wrong inference was reached:
 
 - **2026-08-29 was NOT an outage.** The LiteLLM step **succeeded** on three other branches
   (`33272686574` `fix/577` 20:08Z, `33273970026` `fix/574` 20:37Z, `33275838766`
@@ -127,30 +143,31 @@ It is a **required, fail-closed** context, and when it *does* invoke the proxy i
   `ai-review skipped (label OR R3 pre-approved OR review-event)`, having reviewed nothing.
   `#586` is **+3068** lines, so its green is *not* evidence the proxy handles large diffs.
 
-**One run decides the diagnosis and is still unchecked.** `#559` is only **+83/-57** and also
-failed on 08-30 (run `33332071769`). If it failed *at the LiteLLM step*, this is a plain
-outage; if it failed earlier, the live hypothesis is **large-diff failure** — `#571` was
-**+2262/-6**, the largest by line count on 08-29 and the only branch failing that day, and
-`ResponseShapeError` is a **malformed response body**, which is what a truncated or
-over-limit completion looks like. It is a **different symptom from the 402** this proxy is
-known for, so do not check the account balance for it.
+**The one fact from that era still worth keeping:** `ResponseShapeError` is a **malformed
+response body**, a **different symptom from the 402** this proxy is otherwise known for — so do
+not check the account balance for it. *(The paragraph that used to sit here named `#559` as the
+run that would decide between outage and large-diff. That framing is superseded: the failure is
+neither an outage nor line-count, and the decisive measurement is above.)*
 
 **Mechanics, measured:** `skip-ai-review` only *re-fires* ai-review, and this repo's own
 measurement (scratch PR #376, `CLAUDE.md` § "Merging and CI mechanics") is that a label write
-**cannot** clear a red required check. While this persists the only merge path for a PR whose
-ai-review actually runs is `gh pr merge --admin`, a branch-protection bypass — how `#571`
-landed. The proxy is host-local and its config lives in **no git repo**; `CLAUDE.md:506`
+**cannot** clear a red required check. That mechanic is unchanged and still true of the
+contexts that ARE required — but its old consequence is not: `gh pr merge --admin` is no longer
+the only path for a PR whose ai-review runs and fails, because ai-review no longer gates
+(D-0084). `#571` landed by `--admin` under the old regime; a PR in that position today merges
+normally. The proxy is host-local and its config lives in **no git repo**; `CLAUDE.md:506`
 documents the address but the runtime value is a repository secret, so treat the documented
 value as documentation, not as verified.
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
-5. **#393** — ⚠️ **NOT a `--repin`, and the issue body's stated remedy would hang a required
-   check.** Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
+5. **#393** — ⚠️ **NOT a `--repin`; the issue body's stated remedy silently kills the review.**
+   *(It used to say "would hang a required check" — void since D-0084; `ai-review` is advisory,
+   so the failure mode is now an unreviewed merge rather than a deadlock.)* Plan: `plans/CI-CANON-V4-MIGRATION-PLAN.md`, PR **#573**. All five `ci/v4.0.0`
    breaking changes apply here. **BLOCKED on two founder/infrastructure prerequisites, both
    silent:** (a) both runners advertise only `self-hosted,ci-runner,single-use` while v4
    renames them to `ci`/`ephemeral`, and a job routed to labels no runner carries **queues
-   forever** — `ai-review` is required, so the migration PR could not merge itself; (b)
+   forever** — which since D-0084 costs the verdict, not the merge; (b)
    `LLM_URL`/`LLM_API_KEY` do not exist and the caller still forwards the three `LITELLM_*`
    names that v4 **un-declares**, which is a load-time `startup_failure`. Nothing can land
    ahead of the repin — the caller edits are only valid *at* v4.

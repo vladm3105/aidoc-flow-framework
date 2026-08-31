@@ -1,3 +1,20 @@
+# ⚠️ ADVISORY SINCE 2026-08-31 — `call / ai-review` is NOT a required check.
+# It and `call / composition` were removed from `main`'s required status checks
+# (`plans/DECISIONS.md` D-0084 — authoritative; this is one of four pointers).
+# The workflow still RUNS and still submits its verdict (as an issue comment plus
+# a COMMENT-state review, per canon's gov-lock path).
+#
+# ⚠️ "NOT REQUIRED" IS NOT "CANNOT BLOCK". Only `required_status_checks` changed.
+# `required_conversation_resolution` is still true and `required_pull_request_reviews`
+# still exists, so an inline review thread or a REQUEST_CHANGES review would still
+# block. Both are inert only because canon submits COMMENT-state on gov-locked PRs
+# and opens no inline threads — measured, not assumed. D-0084 has the detail.
+#
+# Branch protection is SERVER STATE and lives in no repo. Do not infer "required"
+# from this file existing. Re-derive:
+#   gh api repos/vladm3105/aidoc-flow-framework/branches/main/protection \
+#     --jq '.required_status_checks.checks'
+#
 # PROTECTED caller — uniform on PUBLIC and PRIVATE repos (PLAN-013, ci/v2.2.0).
 # Runs on the ephemeral self-hosted single-use pool despite this being a PUBLIC
 # repo: the LiteLLM proxy is host-local (no public or TLS listener), so a
@@ -86,10 +103,17 @@ jobs:
       # rejects any non-HTTPS scheme unless this is true, failing with
       # "LITELLM_BASE_URL must use HTTPS (or explicitly allow HTTP)".
       litellm_allow_insecure_http: true
-      # `tier:` deliberately unset. This repo's human-merge floor is enforced
-      # server-side — canon composition.yml plus this repo's omission from the
-      # `auto_merge.repos` allowlist — so `tier: spec` would be redundant
-      # (PLAN-009 Phase 2, framework row).
+      # `tier:` deliberately unset, and `tier: spec` would still be redundant
+      # (PLAN-009 Phase 2, framework row) — but NOT for the reason this comment
+      # used to give. It said the human-merge floor was "canon composition.yml
+      # plus the auto_merge.repos allowlist omission". Composition was never a
+      # floor half here (canon hardcodes this repo to a pass — see
+      # composition.yml's header), and the floor is actually THREE controls:
+      # canon's GOV_LOCKED hardcode at ai-review.yml@ci/v3.0.0:856, canon's
+      # enforcer hardcode at auto-merge-ai-prs.yml:301, and the allowlist
+      # omission — which lives in aidoc-flow-operations, not here, and is the
+      # WEAKEST of the three. Editing the allowlist alone would not enable
+      # auto-merge here; canon would still refuse twice. See D-0084.
       #
       # External adopters: point the trust config at YOUR ops/config repo
       # (holds `.github/ai-review/config.json`). Defaults to

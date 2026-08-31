@@ -149,9 +149,13 @@ fi
 #                                             skip in-session; reason
 #                                             MUST follow the phrase.
 #
-# The hook verifies the phrase, not the review itself. Falsifying the
-# phrase is a governance-Rule-2 violation caught at the CI ai-review
-# layer.
+# The hook verifies the phrase, not the review itself. It used to say a
+# falsified phrase was "caught at the CI ai-review layer" — that backstop
+# is GONE since `plans/DECISIONS.md` D-0084 (2026-08-31): CI ai-review is
+# advisory and cannot block a merge, and `call / verify` greps the same
+# phrase. With `required_approving_review_count: 0`, NO automated surface
+# can now falsify a self-review claim; only a human reading the advisory
+# verdict can.
 #
 # shellcheck disable=SC1083  # @{upstream} is git ref-syntax, not shell brace expansion
 upstream_ref="$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/dev/null || echo '')"
