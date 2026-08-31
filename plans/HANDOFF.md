@@ -91,13 +91,57 @@ record.
    would each gain one, so shipping it here pins 55+ warnings that #555's regen then has to
    remove. Recorded on #565 and in the plan's fold note.
 
-2. ~~**#531**~~ — **done**, PRs **#570** (plan) and **#571** (guard, merge second). Landed as
-   its own module `tests/conformance/test_ref_granularity_parity.py`, not as an extension of
-   `GateCheckIdParity`. ⚠️ The `TRACEABILITY.md` caveat was real **and understated**: beyond
-   having no `###` heading, the anchor the plan specified for that surface matches the
-   *drifted* text **zero** times, so the regression fixture would have raised `Unparseable` and
-   stood as evidence of a detection that never happened.
+2. ~~**#531**~~ — **merged** 2026-08-30 as `0a2d4eeb` (PRs **#570** plan, **#571** guard);
+   `#531` closed by the merge. Module `tests/conformance/test_ref_granularity_parity.py`,
+   **32 tests**. ⚠️ Merged with `--admin` over a red required `call / ai-review` — see the
+   ai-review note below.
+
+   **The durable lesson is about guard design, not about GD-03.** Three adversarial rounds
+   found **3, then 5, then 7** wrong phrasings; rounds 2 and 3 ran against branches already
+   pushed for merge, and each found governance text that genuinely grants ADR/TDD
+   document-level citation (the GD-13 drift verbatim) reported as **correct**. A
+   marker-and-phrase classifier over prose has a known-closed set that is **never its
+   coverage**, and one construction is provably not closable that way at all. The fix was to
+   stop relying on classification for the direction that matters: `AnchoredProseIsPinned`
+   pins each anchored region by digest, so a re-drift cannot pass unnoticed however it is
+   worded. **Reach for a digest pin or a parsed set before reaching for another marker.**
+   Rationale: `plans/DECISIONS.md` **D-0079** items 7-9.
+
+   Two sub-lessons: **counts narrated from memory were wrong three times** across four
+   documents (now asserted by `DocumentedCountsAreReal`); and a review whose reproductions
+   were **hand-traced rather than executed** still found seven real defects — all seven
+   reproduced when re-run, so trace-only findings are worth re-executing, not discounting.
 3. ~~**#554**~~ — **done**, PR **#572**.
+
+⚠️ **`call / ai-review` is green on the skip path, not on review — do not read it as healthy.**
+It is a **required, fail-closed** context, and when it *does* invoke the proxy it fails with
+`litellm: proxy request failed after 3 attempts: ResponseShapeError`. Read the two days apart:
+
+- **2026-08-29 was NOT an outage.** The LiteLLM step **succeeded** on three other branches
+  (`33272686574` `fix/577` 20:08Z, `33273970026` `fix/574` 20:37Z, `33275838766`
+  `feat/template-completeness-001` 21:20Z) while `feat/531-refgran-guard` failed **five
+  times** (19:58 / 20:05 / 20:24 / 20:38 / 20:52Z). The proxy was up; that PR alone failed.
+- **2026-08-30: every run that reached the proxy failed**, across three branches — and every
+  `success` sampled took the **skip path** (`Run review through LiteLLM → verdict file =
+  skipped`). **`#586` merged this way**: run `33344007376` on `c7cf1dbb` is green via
+  `ai-review skipped (label OR R3 pre-approved OR review-event)`, having reviewed nothing.
+  `#586` is **+3068** lines, so its green is *not* evidence the proxy handles large diffs.
+
+**One run decides the diagnosis and is still unchecked.** `#559` is only **+83/-57** and also
+failed on 08-30 (run `33332071769`). If it failed *at the LiteLLM step*, this is a plain
+outage; if it failed earlier, the live hypothesis is **large-diff failure** — `#571` was
+**+2262/-6**, the largest by line count on 08-29 and the only branch failing that day, and
+`ResponseShapeError` is a **malformed response body**, which is what a truncated or
+over-limit completion looks like. It is a **different symptom from the 402** this proxy is
+known for, so do not check the account balance for it.
+
+**Mechanics, measured:** `skip-ai-review` only *re-fires* ai-review, and this repo's own
+measurement (scratch PR #376, `CLAUDE.md` § "Merging and CI mechanics") is that a label write
+**cannot** clear a red required check. While this persists the only merge path for a PR whose
+ai-review actually runs is `gh pr merge --admin`, a branch-protection bypass — how `#571`
+landed. The proxy is host-local and its config lives in **no git repo**; `CLAUDE.md:506`
+documents the address but the runtime value is a repository secret, so treat the documented
+value as documentation, not as verified.
 4. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal`
    carries `f05dfc0d` (+41/−14 in `scripts/sync-version-refs.sh`). Needs a rebase onto
    current `main`, a finalized commit message and a PR — not a rescue.
