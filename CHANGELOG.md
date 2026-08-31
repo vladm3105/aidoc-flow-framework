@@ -190,6 +190,66 @@ took `0.46.0` on its own, and GD-19/20/21/22 ship together here as `0.47.0`. `0.
 became a value of `framework/VERSION`. Corrected forward, no published entry rewritten —
 the same handling `D-0078` applied to the `0.42.0` phantom.
 
+### Added — the GD-03 citation-granularity rule is now measured, not only stated (#531) (2026-08-28)
+
+`tests/conformance/test_ref_granularity_parity.py` asserts that the
+**document-level-permitted** set is exactly `{SPEC, IPLAN}` on all four surfaces that carry
+the proposition: the linter constant `_REFGRAN_ELEMENT_DECLARING` (imported, not parsed) and
+the three governance prose surfaces `ID_NAMING_STANDARDS.md`, `TAG_SYNTAX.md` and
+`TRACEABILITY.md`.
+
+Between GD-03's ratification (2026-06-27) and GD-13 (2026-08-23) two of those statements said
+the **opposite** of the ratified rule and nothing noticed. The regression subject is that
+drift verbatim — three fixtures extracted from `8dccc315^` under
+`tests/conformance/fixtures/refgran/`, with the already-correct `TAG_SYNTAX.md` as the
+negative control. Three surfaces keep them byte-faithful: `.pre-commit-config.yaml`'s
+**global** `exclude:`, `.github/workflows/markdown-lint.yml`, and `.markdownlintignore`. The
+exclusion is global rather than markdownlint-scoped because `trailing-whitespace`,
+`end-of-file-fixer` and `mixed-line-ending` rewrite unconditionally and carry no exclude of
+their own; it is scoped to `refgran/` rather than to `fixtures/` because the sibling `saga/`
+and `review/` fixtures are sample reports and a JSON schema, not extracted evidence, and a
+directory-wide exclude silently dropped them — and every future fixture — out of
+`check-json`, `detect-secrets`, `ruff` and `yamllint`.
+
+Every mutant the guard was measured against ships as a test (`MutationLocks`), applied to the
+**live** governance text at run time. That is the change independent review forced and the
+part most worth reusing: the permit-over-forbid rule had been documented as "established by
+mutation" while no shipped test distinguished it — the drift fixture carries no forbid
+sentence, so a forbid-first classifier passed every other test in the module.
+
+**Three adversarial rounds found 3, then 5, then 7 wrong phrasings — and the trend is the
+result, not the fifteen.** Rounds 2 and 3 each ran against a form already pushed for merge.
+Each found governance text that genuinely grants ADR and TDD document-level citation — the
+GD-13 drift verbatim — reported as **correct**: a trailing conjunction after the permit
+phrase, the same grant as its own sentence, a claim reusing a modelled role's own wording,
+a claim merely adjacent to one, a grant swallowed by the permit clause's own unbounded
+lazy run, and `must be` read as negation when it is modality. Five benign edits ran the
+other way and turned a **required** check red on correct text — a reflow, one added adverb,
+bolding the term to match the sibling governance file's house style, a reflow below ~53
+columns (the bullet contains `#502`, which is not a heading), and moving the bullet's own
+`(e.g. …)` example after its predicate.
+
+**The design changed as a result: the anchored prose is now pinned by digest.** A phrasing
+classifier is doing natural language, and its known-closed set had never been its coverage
+— one construction is provably not closable by markers at all, since splitting it finer
+false-positives on live text. `AnchoredProseIsPinned` hashes each anchored region
+(whitespace-normalised, so reflows pass) so that **a re-drift cannot pass unnoticed however
+it is worded**, and the extractors go back to proving that the *current* text states
+`{SPEC, IPLAN}`. The open false negative is kept as a live assertion that the extractor
+misses it and the pin catches it. Any other wording change fails until a human confirms it
+— for a rule that drifted unnoticed for two months, that pause is the feature; the failure
+message supplies the digest to paste.
+
+**Scope, stated in the guard's own docstring rather than left to be inferred:** four
+surfaces, and a reach of **two** of GD-13's six corrected surfaces. Phrasing now determines
+only *which* failure you get — a wrong-set report or a changed-prose report — not whether
+you get one. Rationale, the rejected `LAYER_REGISTRY.yaml` alternative (still the better
+shape: a pin detects that a statement changed, a registry makes there be one statement),
+and the standing residual are `plans/DECISIONS.md` **D-0079**.
+
+`tests/**` and CI-config only — no `framework/**` edit, so `GATE-SPEC-E005` does not fire and
+no `framework/VERSION` bump is involved.
+
 ### Changed — Framework Spec `0.44.0 → 0.46.0` — test paths derive from the SPEC's `language:`, SPEC and TDD get a threshold carrier, IPLAN status becomes a written contract (GD-18) (2026-08-28)
 
 Three verified spec gaps and one erratum, in one release. Each independently trips

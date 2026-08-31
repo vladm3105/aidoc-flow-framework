@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | REFGRAN-GUARD-001                                            |
 | Type           | bugfix                                                       |
-| Status         | READY — 2026-08-28T00:00:00Z (5 review passes; see Review log) |
+| Status         | READY — 2026-08-30T00:00:00Z (7 review passes; see Review log) |
 | Depends on     | GD-03, GD-13 (#530)                                          |
 | Feeds          | #531                                                         |
 | Version impact | **none** — `tests/**` plus two lint-exclude lines; no `framework/**` edit, so GATE-SPEC-E005 does not fire and no `framework/VERSION` bump is needed |
@@ -263,11 +263,12 @@ fails here instead of vanishing.
 
 | Path | Change |
 | ---- | ------ |
-| `.pre-commit-config.yaml` | add `tests/conformance/fixtures` to the markdownlint exclude at `:67` |
-| `.github/workflows/markdown-lint.yml` | add the matching `!tests/conformance/fixtures` glob at `:74` |
+| `.pre-commit-config.yaml` | add `tests/conformance/fixtures/refgran/` to the **global** `exclude:` (per D6, not the markdownlint-scoped `:67` line this row originally named) |
+| `.github/workflows/markdown-lint.yml` | add the matching `!tests/conformance/fixtures/refgran` glob |
+| `.markdownlintignore` | add `tests/conformance/fixtures/refgran/` — the only surface covering a direct `markdownlint` invocation, since pre-commit passes explicit paths |
 | `CHANGELOG.md` | `[Unreleased]` entry |
 | `plans/DECISIONS.md` | D2, D5, D6, D7 and alternative 1 are non-obvious and measured |
-| `plans/HANDOFF.md` | regenerate |
+| `plans/HANDOFF.md` | regenerate — **done ahead of this PR**; the handoff already records #531 as landing via #570 + #571 |
 
 ## Implementation sequence
 
@@ -574,3 +575,69 @@ constructions in finding 5 are closed as specific phrasings, not as a class.
 **Result:** ready to open. Verified after folding — 429 conformance tests pass;
 12 of the module's 15 fail when the extractors are stubbed, so the suite is not
 decorative; the fixtures survive `pre-commit run --all-files` byte-identical.
+
+### Pass 6 — 2026-08-30 — independent (dispatched, against the pushed PR branch)
+
+Run against PR #571 **as pushed** — after the plan had merged and the module was
+declared ready. Every finding reproduced before folding. Five constructions:
+
+1. **A trailing conjunction after the permit phrase is invisible.**
+   `` …are **document-level**, as are `@adr:` and `@tdd:` citations `` returned
+   `{SPEC, IPLAN}`. `_permit_subject` truncates at the permit phrase — right for
+   the subject, blind to a tail. The same grant as its own sentence was also
+   missed. This is the symmetric case of D3's false-positive lock; having only
+   that lock is what left this direction open.
+2. **The `TRACEABILITY.md` role check was defeatable two ways** — a claim
+   reusing a role's bare substring, and a claim merely inside its ±40-character
+   window. Both returned `{SPEC, IPLAN}`.
+3. **`extract_traceability` was physical-line-scoped**, and the live bullet is
+   ~740 characters where the next-longest line is 103. Any reflow made it
+   `Unparseable` — a *required* check red on correct text.
+
+Also folded: the `.pre-commit-config.yaml` edit had **truncated #574's carve-out
+comment**, deleting six lines and leaving a sentence ending mid-clause; the regex
+was unharmed, so no check caught it. Restored verbatim from `origin/main`.
+
+Three doc defects: D-0079 asserted a GD-13 overclaim that
+`framework/governance/DECISIONS.md` had **already corrected in place**, citing it
+at `:324` (a GD-18 bullet; the sentence is at `:487-489`); it routed evidence to
+issue `#532` as "open" when that issue had closed on 2026-08-29; and it opened
+"Four decisions" over six items. The fixture `README.md` named the `!tests/conformance/fixtures` glob —
+the broader scope D6 deliberately rejected — and omitted `.markdownlintignore`.
+
+### Pass 7 — 2026-08-30 — independent (dispatched ×2, against the Pass-6 fixes)
+
+Two reviewers against the folded module. **Seven more constructions, all
+reproduced by running them** — the reviewer that found them had no shell, so
+every hand-trace was re-executed before being acted on, and all seven held.
+
+Three were grants the guard read as correct: the permit clause's own unbounded
+`[^()]*?` **swallowing** a grant planted in its subject (defeating containment via
+the one role pattern that is not short and anchored); `"must be"` treated as
+negation when it is modality; and a later sentence that both grants and
+contrasts. Four were correct text called drift: moving the live bullet's own
+`(e.g. …)` example after its predicate, one inserted adverb, bolding the term to
+match the sibling file's house style, and a reflow below ~53 columns — the bullet
+contains `#502`, and `#` is a heading only when followed by a space.
+
+**This pass changed the design, and that is its result.** Rounds of 3, 5 and 7 —
+each against a form believed finished, the last two against pushed branches —
+establish that a marker-and-phrase classifier's known-closed set is not its
+coverage, and one construction is provably not closable that way at all. So
+`AnchoredProseIsPinned` pins each anchored region by digest: **a digest cannot be
+defeated by phrasing**, so a re-drift cannot pass unnoticed however it is worded,
+and phrasing now decides only *which* failure a reader gets. The open false
+negative is kept as a **live assertion** that the extractor misses it and the pin
+catches it, so the limit cannot quietly become untrue. This does **not** supersede
+the `LAYER_REGISTRY.yaml` alternative — a pin detects that a statement changed, a
+registry makes there be one statement — it removes the silent failure mode at a
+cost this PR can pay.
+
+A separate class: the review-round **counts** in this plan, `CHANGELOG.md`,
+D-0079 and the module docstring were wrong three times, narrated rather than
+derived. `DocumentedCountsAreReal` now asserts them and names the four prose
+surfaces to update.
+
+**Result:** 32 tests in the module (was 15); 15 constructions locked (one closed
+by the pin alone); 457 conformance tests pass; every fix mutation-tested by
+reverting it; the fixtures remain byte-identical to `8dccc315^`.
