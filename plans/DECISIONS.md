@@ -66,23 +66,35 @@ So the accurate claim is *"no required status check blocks on either workflow"*,
 
 ### Why
 
-`ai-review` fails **deterministically** on this repo's release shape — confirmed by re-run, and
-filed upstream as [aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543).
+`ai-review` fails often enough on this repo to make it unusable as a gate, and the failure is
+`ResponseShapeError` at the LiteLLM step. Filed upstream as
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543).
 
-⚠️ **The mechanism is NOT settled, and an earlier draft of this entry claimed it was.** It said
-the discriminator is *file count, not line count*. With n=2 that is unsupported — the two
-observations co-vary on both axes:
+⚠️ **The mechanism is NOT settled, and this entry got it wrong twice before getting here.** The
+first draft said the discriminator was *file count*; the second said *diff size, and
+deterministic*. Both were generalisations from n=2. The full observation set:
 
-| PR | files | added lines | diff bytes | result |
-|---|---|---|---|---|
-| #589 | 1 | 555 | 41,256 | real verdict |
-| #595 | 179 | 630 | 149,906 | failed, and again on re-run |
+| PR / run | files | diff bytes | result |
+|---|---|---|---|
+| #589 | 1 | 41,256 | real verdict (×2) |
+| #595 | 179 | 149,906 | failed, and again on re-run |
+| #598 13:55 | 8 | ~34,000 | failed |
+| #598 13:57 | 8 | 33,435 | **real verdict** |
+| #598 14:01 | 9 | 34,120 | failed |
 
-What **is** measured, and is the more useful finding: **#595's diff is 149,906 bytes, well under
-canon's 400,000-byte input cap, which never fired.** The run log shows `diff bytes: 149906` and
-no cap error; the failure is `ResponseShapeError` at the LiteLLM step. So the guard that exists
-to prevent this reports the input as acceptable and the call fails anyway. The correction was
-posted to aidoc-flow-ci#543, which had been filed with the stronger claim.
+**The same branch at ~34 KB failed, succeeded, then failed again.** So the failure is
+**intermittent**, not size-deterministic, and "deterministic" was wrong — #595's two consecutive
+failures were consistent with intermittency at a higher rate, not proof of a threshold. Size may
+raise the failure probability; nothing here establishes that it does.
+
+The one solid measurement remains: **every one of these is far under canon's 400,000-byte input
+cap, which never fired** — 34 KB is 8.5% of it. So the guard reports the input acceptable and
+the call fails anyway, and chasing a size budget upstream would be chasing the wrong variable.
+Both corrections were posted to aidoc-flow-ci#543.
+
+**The lesson, since this repo keeps relearning it:** I named a root cause from two data points,
+twice. Enumerate the full set of failing *and* succeeding runs before naming a mechanism —
+`plans/DECISIONS.md` D-0072 §3 says exactly this, and it applied here.
 
 The consumer impact is unchanged and is what forced the decision: a framework spec bump fans out
 to ~179 mostly one-line files and `GATE-SPEC-E005` is a path check that forbids splitting it, so

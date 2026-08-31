@@ -132,12 +132,12 @@ pending-forever risk needs the workflow stopped, not the context de-required. (A
 composition never enforced anything anyway: canon hardcodes it to pass — D-0084.)
 
 **The failure below is now diagnosed, and the handoff's previous hypothesis was wrong.** It is
-**not** an outage and **not** line-count: PR **#589** (+555/-0, **1 file**, 41,256 diff bytes)
-produced two real verdicts on the same day PR **#595** (+630/-280, **179 files**, 149,906 diff
-bytes) failed, deterministically, on re-run. ⚠️ **The exact discriminator is NOT settled** — with
-n=2, file count and byte size co-vary, and an earlier version of this paragraph asserted file
-count. What IS measured: #595 is **under canon's 400,000-byte input cap, which never fired**, so
-the guard passes a payload the call then rejects. A spec bump fans out to ~179 mostly one-line files
+**intermittent**, and **not** size-driven. Measured across five runs (full table in D-0084): one
+branch at ~34 KB failed at 13:55, produced a real verdict at 13:57, and failed again at 14:01.
+⚠️ **This diagnosis was wrong twice** — first "file count", then "diff size, deterministic" —
+both generalised from n=2. Every observed run is far under canon's **400,000-byte input cap,
+which never fires** (34 KB is 8.5% of it), so a size budget upstream would chase the wrong
+variable. A spec bump fans out to ~179 mostly one-line files
 and `GATE-SPEC-E005` forbids splitting it, so the repo's own release shape was structurally
 unmergeable. Filed upstream as
 [aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543). The historical

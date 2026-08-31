@@ -19,11 +19,12 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 protection is server state that lives in no repo — `plans/DECISIONS.md` **D-0084** is the record
 and carries the exact one-call restore.
 
-**Why.** `ai-review` fails deterministically on this repo's release shape (confirmed by re-run;
-upstream [aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543)). A framework
-spec bump fans out to ~179 mostly one-line files and `GATE-SPEC-E005` forbids splitting it, so
-the only route was `gh pr merge --admin` — a bypass of *every* required check. A gate that can
-only be satisfied by bypassing it is not a gate.
+**Why.** `ai-review` fails **intermittently** with `ResponseShapeError` (upstream
+[aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543)) — often enough that
+the release shape could not get through. A framework spec bump fans out to ~179 mostly one-line
+files and `GATE-SPEC-E005` forbids splitting it, so the only route was `gh pr merge --admin` — a
+bypass of *every* required check. A gate that can only be satisfied by bypassing it is not a
+gate.
 
 Measured while writing this up, and both corrections matter more than the change itself:
 
@@ -31,9 +32,10 @@ Measured while writing this up, and both corrections matter more than the change
   tag (`composition.yml@ci/v2.16.0:272-275`) to exit 0 for `*/aidoc-flow-framework` before the
   approval assertion. It was a required check hardwired to pass, so removing it changed merge
   preconditions by zero.
-- **The failure is not the documented 400 KB input cap.** #595's diff is 149,906 bytes — 37% of
-  the limit — and the cap never fired; the call fails downstream at `ResponseShapeError`. The
-  guard reports the input as acceptable and the call fails anyway.
+- **The failure is not the documented 400 KB input cap, and it is not size-driven at all.** One
+  branch at ~34 KB — 8.5% of the limit — failed, succeeded, then failed again within six minutes.
+  The cap never fires; the call fails downstream at `ResponseShapeError`. D-0084 carries the full
+  run table and an explicit note that this diagnosis was wrong twice before landing here.
 
 **What this costs, plainly.** Every remaining required check is mechanical. `call / verify` is an
 audit-trail marker, not a review control — it greps the commit body for a phrase the author
