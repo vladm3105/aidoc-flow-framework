@@ -113,13 +113,23 @@ record.
    reproduced when re-run, so trace-only findings are worth re-executing, not discounting.
 3. ~~**#554**~~ — **done**, PR **#572**.
 
-⚠️ **`call / ai-review` NO LONGER GATES — `plans/DECISIONS.md` D-0084 (2026-08-31).** It and
-`call / composition` were removed from `main`'s required status checks; both still run and still
-post verdicts, but nothing blocks on them. The review gate is now `call / verify`
-(audit-trail.yml), which asserts the pre-PR OPS-0065 self-review phrase in the commit body.
-**Never re-add one of those two contexts without the other** — composition's only non-human
-trigger is `workflow_run: ["ai-review"]`, so a required composition without a running ai-review
-sits pending forever and blocks harder than a red check.
+⚠️ **`call / ai-review` NO LONGER GATES — `plans/DECISIONS.md` D-0084 (2026-08-31), which is
+authoritative; read it rather than this summary.** It and `call / composition` were removed from
+`main`'s required status checks; both still run and still post verdicts. **No required status
+check blocks on either** — that is the accurate scope, not "nothing blocks":
+`required_conversation_resolution` is still true and `required_pull_request_reviews` still
+exists, and both are inert only because canon submits COMMENT-state reviews here and opens no
+inline threads.
+
+**`call / verify` is NOT a review gate.** It is an audit-trail marker: the author writes the
+phrase, `Self-review skipped per founder OK` is a self-authorizing opt-out, and bot authors are
+exempt. With `required_approving_review_count: 0`, no automated surface can now falsify a
+self-review claim. D-0084 §"What still gates review" has the detail.
+
+**Never disable the ai-review WORKFLOW while `call / composition` is required** — de-requiring
+ai-review is fine, since the workflow still runs and composition still fires and reports. The
+pending-forever risk needs the workflow stopped, not the context de-required. (And on this repo
+composition never enforced anything anyway: canon hardcodes it to pass — D-0084.)
 
 **The failure below is now diagnosed, and the handoff's previous hypothesis was wrong.** It is
 **not** an outage and **not** line-count: PR **#589** (+555/-0, **1 file**, 41,256 diff bytes)
