@@ -280,9 +280,7 @@ Adjudicated here so a later pass does not re-raise it as an omission.
 | 1 | Five full layer templates declare a top-level `title:`, each as an adjacent `id:` + `title:` pair | `title:` | `framework/layers/01_BRD/BRD-TEMPLATE.yaml:18` |
 | 2 | All eight MVP templates put `title` under `document_control` instead | `title:` | `framework/layers/08_IPLAN/IPLAN-MVP-TEMPLATE.yaml:6` |
 | 3 | The authored corpus IPLAN carries a top-level `title:` the template never declared | `title:` | `examples/url-shortener/docs/08_IPLAN/IPLAN-01.md:2` |
-| 40 | NEW@pass3 — `sync-plugin-framework.sh` performs no `git add`, unlike `sync-version-refs.sh`, which re-stages precisely because *"pre-commit reads from the staging area"* | `Re-stage anything we touched` | `scripts/sync-version-refs.sh:463` |
-| 41 | NEW@pass4 — the plugin IPLAN skill's manifest-key prose is already a key short: it omits `tdd_ref`, which shipped under GD-16 | `session`, `verified` | `platforms/claude-code-plugin/skills/doc-iplan/SKILL.md:100` |
-| 42 | NEW@pass4 — that same skill names the template as the source of truth, so its prose is not a second declaration | `Template (source of truth)` | `platforms/claude-code-plugin/skills/doc-iplan/SKILL.md:51` |
+| 4 | The index templates carry a top-level `title:` in frontmatter | `title:` | `framework/layers/01_BRD/BRD-00_index.TEMPLATE.md:2` |
 | 5 | The corpus SPEC and TDD artifacts also carry a top-level `title:` | `title:` | `examples/url-shortener/docs/06_SPEC/SPEC-01.md:2` |
 | 6 | SPEC and TDD templates open at `metadata:` with no key above it | `metadata:` | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml:6` |
 | 7 | SPEC's `document_control` carries no identifier field at all | `document_control:` | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml:70` |
@@ -318,6 +316,9 @@ Adjudicated here so a later pass does not re-raise it as an omission.
 | 37 | NEW@pass2 — the conformance suite runs as an `always_run` pre-commit hook, so a red bundle guard blocks the commit itself | `always_run` | `.pre-commit-config.yaml:128` |
 | 38 | NEW@pass2 — `markdownlint --fix` runs on every commit; it is what corrupts an un-backticked `__init__.py` into `**init**.py` | `--fix` | `.pre-commit-config.yaml:75` |
 | 39 | NEW@pass2 — `bump_version.py`'s closing reminder still calls the release-metadata pin a manual step | `Reminder` | `tools/bump_version.py:152` |
+| 40 | NEW@pass3 — `sync-plugin-framework.sh` performs no `git add`, unlike `sync-version-refs.sh`, which re-stages precisely because *"pre-commit reads from the staging area"* | `Re-stage anything we touched` | `scripts/sync-version-refs.sh:463` |
+| 41 | NEW@pass4 — the plugin IPLAN skill's manifest-key prose is already a key short: it omits `tdd_ref`, which shipped under GD-16 | `session`, `verified` | `platforms/claude-code-plugin/skills/doc-iplan/SKILL.md:100` |
+| 42 | NEW@pass4 — that same skill names the template as the source of truth, so its prose is not a second declaration | `Template (source of truth)` | `platforms/claude-code-plugin/skills/doc-iplan/SKILL.md:51` |
 
 ## Review log
 
@@ -519,3 +520,36 @@ Five minor items, all folded:
 **Ledger grew 40 → 42.** Two rows, both closing a gate gap rather than adding design.
 
 **Result:** ready — no load-bearing findings.
+
+### Post-review repair - 2026-08-31 - CI `ai-review`
+
+Not a review pass. Recorded because the defect was introduced **after** pass 4, by
+the mechanical edit that folded pass 4, and every human-side check passed over it.
+
+The fold's reordering script selected ledger rows with `l.startswith('| 4')`, which
+matches **`| 4 |`** as well as `| 40 |`, `| 41 |`, `| 42 |`. It deleted Claim 4 and
+relocated 40-42 into its slot, leaving the table ordered `1 2 3 40 41 42 5 …` with
+41 rows. F-1's reference to Claim 4 dangled.
+
+**The citation gate reported it and I read past it.** It printed
+`verified 41 citation(s)` where the ledger should have had 42 — the count is the
+gate's only signal for a *deleted* row, since every surviving citation still
+resolved and nothing failed. CI's `ai-review` caught it on the plan PR and named
+both halves precisely.
+
+Repaired: Claim 4 restored, rows re-sorted, gate now `verified 42 citation(s)`.
+
+Two lessons, both about instruments rather than about this plan:
+
+- **A prefix match on a numeric ID is a bug whenever the ID space passes 9.**
+  `'| 4'` and `'| 40'` are the same prefix. This is the third appearance in this
+  plan of the family "a check that matches on a string rather than on structure" —
+  after the MD050 citation corruption and the marker-classifier lesson `D-0079`
+  records. Parse the row, do not prefix-match it.
+- **A gate's success line carries a measurement, not just a verdict.** `ok` and
+  `41` arrived on the same line and only the first was read. The count is worth
+  reconciling against the ledger on every run, because a deleted row is the one
+  corruption that leaves every remaining citation valid.
+
+The four review passes are unaffected — they reviewed content that is unchanged by
+this repair.
