@@ -10,6 +10,50 @@ graduation.
 
 ---
 
+## D-0083 — `title` is a top-level scalar on every layer template; the identity half is deferred
+
+**Date:** 2026-08-31 · **Issues:** #553, #588 · **PR:** #589 (plan) · **Decider:** founder (in session)
+
+Three founder decisions, all taken against measurement rather than against the issue text.
+`IPLAN-SELF-DESCRIPTION-001` records them; `framework/governance/DECISIONS.md` **GD-23** is the
+spec-side ratification. This entry exists because two of the three are decisions *not* to do
+something, and those are the ones a later session re-litigates.
+
+**F-1 — top-level, not `document_control` and not `metadata`.** #553 implies
+`document_control.title` (the shape all eight MVP templates use, and what the consumer authored
+by hand). `IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 says `metadata.title`. The measurement settles
+it: 5 of 8 full templates already carry top-level `title:`, every authored artifact and every
+golden carries one, the 7 index templates carry one, and `metadata.title` exists **nowhere**.
+
+**R8 is retired on the right ground, and the wrong ground is recorded so it is not reached for
+again.** The tempting argument — "R8 defers to OKF D1 and `FRONTMATTER_CONTRACT.md` does not
+exist" — is *weak*: D1 is a live decision that this very work feeds, so the argument expires the
+moment someone writes the file. The durable ground is that **D1 mandates the required top-level
+keys**, so R8 contradicts the authority it cites. An argument from a file's absence against a
+decision that is scheduled to create that file is a shape worth recognising.
+
+**F-2 — `title:` ships without `id:`, deliberately creating a shape no template has.** All five
+templates with a top-level `title:` carry it paired with `id:`. Shipping `title` alone is
+therefore *not* "matching the existing shape", and the plan says so rather than claiming the
+tidier story. The reason: `id:` is authored by no artifact and read by no code, while `doc_id:`
+is what every artifact writes and what the linter reads — IPLAN alone already carries three
+identity carriers, and top-level `id:` would be a fourth. Filed as **#588** for D1 to settle.
+
+**F-3 — three layers, one bump.** SPEC and TDD have IPLAN's gap in a sharper form: they declare
+no identifier and no title anywhere. Per-bump founder OK granted in session.
+
+**The scalar constraint is the part that had to be measured.** See GD-23; the short version is
+that the conformance and acceptance tiers disagree about what a top-level key means, and only
+the tier that is *not* run by the obvious pre-check would have caught the mapping form. The
+mutant was executed in both tiers rather than reasoned about.
+
+**Review provenance.** Four dispatched independent passes (8 → 4 → 2 → 0 load-bearing findings),
+then CI `ai-review` caught a 41st defect introduced by the fold that closed the fourth pass — a
+reordering script whose `startswith('| 4')` matched Claim **4** as well as 40-42 and deleted it.
+The citation gate had reported it as `verified 41 citation(s)` against a 42-row ledger; the
+count was the signal and it was read past. **A prefix match on a numeric ID is a bug the moment
+the ID space passes 9**, and a gate's success line carries a measurement, not just a verdict.
+
 ## D-0082 — One version cannot span four PRs, so four ratified GDs ship as one release; `0.45.0` is skipped
 
 **Date:** 2026-08-30 · **Issues:** #540, #564, #557, #552 · **PR:** #586 · **Decider:** founder (in session)

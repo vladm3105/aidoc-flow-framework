@@ -284,7 +284,7 @@ Adjudicated here so a later pass does not re-raise it as an omission.
 | 5 | The corpus SPEC and TDD artifacts also carry a top-level `title:` | `title:` | `examples/url-shortener/docs/06_SPEC/SPEC-01.md:2` |
 | 6 | SPEC and TDD templates open at `metadata:` with no key above it | `metadata:` | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml:6` |
 | 7 | SPEC's `document_control` carries no identifier field at all | `document_control:` | `framework/layers/06_SPEC/SPEC-TEMPLATE.yaml:70` |
-| 8 | IPLAN's `document_control` carries `iplan_id` — the only full template that does | `iplan_id:` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:71` |
+| 8 | IPLAN's `document_control` carries `iplan_id` — the only full template that does | `iplan_id:` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:82` |
 | 9 | The IPLAN golden authors `iplan_id`, so removing it is not an additive edit | `iplan_id:` | `tests/acceptance/fixtures/layer_08_iplan/valid/IPLAN-01_golden.yaml:13` |
 | 10 | Goldens carry `doc_id` and `metadata.artifact_id` as two further identity carriers | `doc_id:` | `tests/acceptance/fixtures/layer_06_spec/valid/SPEC-01_golden.yaml:2` |
 | 11 | The linter reads `doc_id` from frontmatter; nothing reads a top-level `id` | `doc_id` | `tools/sdd_doc_lint/__init__.py:1539` |
@@ -296,7 +296,7 @@ Adjudicated here so a later pass does not re-raise it as an omission.
 | 17 | BRD derives 17 required sections while carrying a top-level `title:` — the live proof a scalar key is skipped | `EXPECTED` | `tests/conformance/test_required_section_sets.py:52` |
 | 18 | `total_sections` and the derived required count are pinned as two separate measurements | `_declared` | `tests/conformance/test_required_section_sets.py:211` |
 | 19 | `file_manifest.files[]` entries carry at most six keys and none states intent — the third entry carries five, having no `tdd_ref` | `files:` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:146` |
-| 20 | `session_handoff` is a top-level IPLAN section, so a `document_control` field of that name would collide | `session_handoff:` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:217` |
+| 20 | `session_handoff` is a top-level IPLAN section, so a `document_control` field of that name would collide | `session_handoff:` | `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml:239` |
 | 21 | `tools/sync-plugin-framework.sh` writes to exactly two destinations: four subtrees (`layers`, `governance`, `registry`, `playbooks`) plus a named root file into `platforms/claude-code-plugin/framework`, and three named tools files into `platforms/claude-code-plugin/tools`. It is the write side of the guard in Claim 36 | `TOOLS_FILES` | `tools/sync-plugin-framework.sh:33` |
 | 22 | The manual propagation order `VERSION` → `sync-version-refs.sh` → `sync-plugin-framework.sh` is load-bearing; reversing it lands drifted playbooks | `Propagation order` | `CLAUDE.md:741` |
 | 23 | The stateless-executor protocol this `description` serves reads the manifest for the next file | `file_manifest` | `platforms/claude-code-plugin/skills/doc-iplan/SKILL.md:129` |
@@ -305,7 +305,7 @@ Adjudicated here so a later pass does not re-raise it as an omission.
 | 26 | NEW@pass1, reworded@pass2 — Correction 4 establishes that templates receive `artifact_type` **and `title`**. It says nothing about placement; top-level comes from D1 (Claim 12) and D2 (Claim 15) | `Correction` | `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md:321` |
 | 27 | NEW@pass1 — that design's R-table has an established retirement convention: the row is retained and marked VOID | `VOID` | `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md:335` |
 | 28 | NEW@pass1 — `TEMPLATE-COMPLETENESS-001` records R8's `metadata:` placement and the #553 founder gate as live fact | `R8 places` | `plans/TEMPLATE-COMPLETENESS-001-PLAN.md:40` |
-| 29 | NEW@pass1 — the handoff names R8 as the owner of the #553 gate | `R8 owns` | `plans/HANDOFF.md:49` |
+| 29 | NEW@pass1, **executed** — the handoff named R8 as owner of the #553 gate and went stale on merge, exactly as this row predicted. Now amended to the past tense, with the tally at `:52` reconciled in the same edit. Re-pointed because the row's own remedy moved the line it cited | `R8 owned` | `plans/HANDOFF.md:64` |
 | 30 | NEW@pass1 — `_load_section_targets` is the linter's only read of a layer template | `tpl = registry.parent.parent` | `tools/sdd_doc_lint/__init__.py:514` |
 | 31 | NEW@pass1 — `sync-version-refs.sh` rewrites the pinned literal in the plugin release-metadata test | `test_plugin_release_metadata.py` | `scripts/sync-version-refs.sh:352` |
 | 32 | NEW@pass1 — `bump_version.py` bumps the canonical playbooks itself, so its bundle-first sync order carries the new values | `bundle copies follow via sync` | `tools/bump_version.py:99` |
