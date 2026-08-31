@@ -3,7 +3,7 @@ layer: 08_IPLAN
 lens: operator
 weight: 15
 agent: devops-release-engineer
-framework_spec_version: "0.47.0"
+framework_spec_version: "0.48.0"
 ---
 # operator lens — IPLAN layer
 

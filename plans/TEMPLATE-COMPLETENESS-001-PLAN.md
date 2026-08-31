@@ -40,6 +40,12 @@ Bundling converts that into one.
   R8 places `title` in `metadata:` per the OKF D1 contract and is founder-gated on
   `OKF-CONFORMANCE-001` (Claim 23). Shipping `document_control.title` now either pre-empts
   that decision or lands two `title` fields. Blocked on the placement call, not on effort.
+  > **RESOLVED 2026-08-31 — the cut was correct and the placement call went a third way.**
+  > `IPLAN-SELF-DESCRIPTION-001` (GD-23, framework `0.48.0`) ships `title` **top-level and
+  > scalar** — neither `document_control.title` nor R8's `metadata:` — across SPEC, TDD and
+  > IPLAN. R8 is superseded on placement because it contradicts the authority it cites: D1
+  > mandates the required *top-level* keys. Claim 23's characterisation of R8 was accurate
+  > when written; it is retained as the record of why this was cut.
 - **#540** (BRD 5-FR cap) — all three options touch `framework/**` and would ride this bump,
   but which option is a founder call.
 - **#531** — `tests/`-only, needs no bump; its own plan.

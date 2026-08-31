@@ -3,6 +3,8 @@
 # Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
 # Downstream: IPLAN (Layer 8)
 
+title: "[Test Definition Title]"
+
 metadata:
   schema_version: "1.0"
   document_type: "tdd-document"
