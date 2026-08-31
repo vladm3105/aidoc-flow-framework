@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/sast-scan.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/sast-scan.yml@ci/v4.0.0
     with:
       # Report-only rollout. Flip to true to block PRs on a SAST finding.
       fail-on-findings: false
