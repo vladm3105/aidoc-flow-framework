@@ -12,6 +12,41 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Removed — CI: the `doc-maintainer` flow is eliminated (D-0085, #603) (2026-09-01)
+
+Deleted `.github/workflows/doc-maintainer.yml` and its two per-consumer config files
+(`.github/doc-maintainer.json`, `.github/doc-maintainer-conventions.md`). The AI-driven
+doc-maintainer pilot adopted in #382 is retired; **nothing replaces it**. `docs-sync.yml`
+(mechanical) and `scripts/check-docs-updated.sh` (advisory) remain the doc-currency mechanism,
+as they were throughout the pilot. This resolves the open question
+`plans/CI-CANON-V4-MIGRATION-PLAN.md` had deliberately left unanswered.
+
+**The deletion was also a defect fix.** The caller was pinned
+`…/doc-maintainer.yml@ci/v4.0.0` — a tag at which **canon had deleted that reusable** (v4
+BC #2 / CI-0040). A caller pointing at a nonexistent reusable can only `startup_failure`, and
+canon's release notes say to delete the caller *before* repinning. Dependabot PR #591 did the
+inverse on 2026-08-31 and it merged green, because the workflow had been `disabled_manually`
+since 2026-08-22 — so the broken pin never executed and there was nothing to observe. The
+retirement masked the defect it should have prevented.
+
+This discharges `CI-CANON-V4-MIGRATION`'s step 2 / BC #2 early. That plan stays **BLOCKED** on
+its two unchanged prerequisites; the deletion was always safe to do first because it depends on
+neither.
+
+### Changed — CI: Dependabot no longer proposes canon majors (D-0085, #603) (2026-09-01)
+
+`.github/dependabot.yml` re-arms a `version-update:semver-major` hold on
+`vladm3105/aidoc-flow-ci/*`. `CLAUDE.md` already stated the rule — *"a canon bump is a
+migration, not a dependency update — do not leave it to Dependabot"* — but it was prose with
+nothing enforcing it, and **ten canon majors merged as unreviewed dependency updates**: five to
+`ci/v3.0.0` (#522-#526) and five to `ci/v4.0.0` (#590-#594). Every pin in this repo above
+`ci/v2.16.0` arrived that way, which is why the pin set is now split three ways across two major
+boundaries (7 × `v2.16.0` + 5 × `v3.0.0` + 4 × `v4.0.0` over 16 call sites).
+
+Minor and patch bumps stay in scope deliberately — canon does not change the caller contract
+within a major, so those are mechanical. Majors are not: v4 carries five breaking changes, two
+of which canon states plainly that `--repin` cannot deliver.
+
 ### Changed — CI: `ai-review` and `composition` no longer gate merges (D-0084) (2026-08-31)
 
 `call / ai-review` and `call / composition` were removed from `main`'s required status checks.

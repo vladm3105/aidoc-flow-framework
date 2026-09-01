@@ -4,7 +4,7 @@
 | -------------- | --------------------------------------------------------------------- |
 | Task           | CI-CANON-V4-MIGRATION                                                 |
 | Type           | migration                                                             |
-| Status         | BLOCKED — 2026-08-28T00:00:00Z, on two founder/infrastructure prerequisites |
+| Status         | BLOCKED — re-affirmed 2026-09-01, on two founder/infrastructure prerequisites (unchanged since 2026-08-28). Step 2 / BC #2 **discharged** 2026-09-01 by #603 |
 | Feeds          | #393                                                                  |
 | Version impact | none — `.github/workflows/**` only; no `framework/**` edit, so `GATE-SPEC-E005` does not fire |
 
@@ -43,19 +43,51 @@ reader, which emits the same remedy string regardless of the boundary crossed.
 
 ## Measured exposure — all five breaking changes apply here
 
-Re-derived 2026-08-28 against `main` at `2c69a402`. Pins: **17 call sites across
-16 files**, split **11 × `ci/v2.16.0` + 6 × `ci/v3.0.0`**.
+> ⚠️ **RE-MEASURED 2026-09-01 (D-0085, #603) — the 2026-08-28 figures below were
+> superseded twice over, and every line citation in the original table had drifted.**
+> Two things changed: **BC #2 is now DISCHARGED** (the `doc-maintainer` caller is
+> deleted — see below), and **ten Dependabot majors moved the pins** while this plan
+> sat BLOCKED, so the "11 × v2.16.0 + 6 × v3.0.0" split never described the tree this
+> plan will actually run against. Re-derive before executing; do not trust either
+> vintage.
 
-| # | v4 breaking change | This repo | Evidence |
+Re-derived **2026-09-01** against `fix/603-doc-maintainer-deleted-reusable`. Pins:
+**16 call sites across 15 files**, split **7 × `ci/v2.16.0` + 5 × `ci/v3.0.0` +
+4 × `ci/v4.0.0`**.
+
+```sh
+grep -rho 'aidoc-flow-ci/\.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ \
+  | sed 's#.*@##' | sort | uniq -c
+```
+
+The four already at `ci/v4.0.0` (`labeler`, `pre-commit`, `sast-scan`, `trivy-scan`)
+arrived via Dependabot and are **fine** — verified by green post-bump runs, not by
+inference. **Three** have a successful `main` run at 2026-08-31T20:17Z —
+`33435263501` (trivy-scan), `33435263368` (sast-scan), `33435263395` (pre-commit) —
+each reporting `referenced_workflows … @ci/v4.0.0`. **`labeler` is not among them and
+cannot be:** its caller is `pull_request_target`-only, so it never produces a
+`main`-branch run at all. Its v4 evidence is two successful `pull_request_target`
+runs after #593 merged — `33430104193` and `33428517384` — on PR head branches.
+Do not "correct" this to four by looking for a `main` run that cannot exist.
+`trivy-scan` survives BC #1 only because its caller passes the old labels explicitly,
+overriding canon's new `["self-hosted", "ci", "ephemeral"]` default; that is a
+coincidence of this repo's override, not evidence BC #1 is harmless.
+
+| # | v4 breaking change | This repo | Evidence (line-checked 2026-09-01) |
 | --- | --- | --- | --- |
-| 1 | runner labels `ci-runner`→`ci`, `single-use`→`ephemeral` | **EXPOSED** — 5 caller inputs across 4 workflows | `ai-review.yml:81,82`, `dep-scan.yml:28`, `trivy-scan.yml:28`, `doc-maintainer.yml:80` |
-| 2 | `doc-maintainer.yml` deleted from canon | **EXPOSED** — this repo ships that caller | `.github/workflows/doc-maintainer.yml:78` |
-| 3 | `sast`/`dep`/`trivy` `config` + `scan-path` allowlisted | **not exposed** | `sast-scan.yml:31` passes `config: 'p/default'`, which is allowlisted; `dep-scan.yml` and `trivy-scan.yml` pass neither key |
-| 4 | `LITELLM_*` secret fallbacks removed **and undeclared** | **EXPOSED** — all three forwarded in an explicit `secrets:` map | `ai-review.yml:112,113,114` |
-| 5 | input renamed `litellm_allow_insecure_http` → `llm_allow_insecure_http` | **EXPOSED** — 2 callers | `ai-review.yml:88`, `doc-maintainer.yml:94` |
+| 1 | runner labels `ci-runner`→`ci`, `single-use`→`ephemeral` | **EXPOSED** — 4 caller inputs across 3 workflows | `ai-review.yml:98,99` (`runner_labels_routine` / `runner_labels_review`), `dep-scan.yml:29`, `trivy-scan.yml:28` |
+| 2 | `doc-maintainer.yml` deleted from canon | ~~**EXPOSED**~~ → **DISCHARGED 2026-09-01** — caller deleted (D-0085, #603) | was `.github/workflows/doc-maintainer.yml:78` |
+| 3 | `sast`/`dep`/`trivy` `config` + `scan-path` allowlisted | **not exposed** | `sast-scan.yml` passes `config: 'p/default'`, which is allowlisted; `dep-scan.yml` and `trivy-scan.yml` pass neither key |
+| 4 | `LITELLM_*` secret fallbacks removed **and undeclared** | **EXPOSED** — all three forwarded in an explicit `secrets:` map | `ai-review.yml:136,137,138` |
+| 5 | input renamed `litellm_allow_insecure_http` → `llm_allow_insecure_http` | **EXPOSED** — 1 caller (was 2) | `ai-review.yml:105` |
 
 Item 3 is recorded as *checked and fine* rather than omitted, so the next reader
 does not re-derive it.
+
+**BC #2 was discharged early, and that was safe** — it is a *deletion*, so it depends
+on neither P1 nor P2. It was also urgent independently of this plan: Dependabot PR
+**#591** had already repinned that caller to `ci/v4.0.0`, a tag at which the reusable
+does not exist. See D-0085.
 
 ## Why this is BLOCKED, not merely large
 
@@ -113,7 +145,11 @@ CLAUDE_CODE_OAUTH_TOKEN, LITELLM_BASE_URL, LITELLM_REVIEW_API_KEY
 
 **A rider found while measuring, and it is why P2 must not be done by analogy.**
 The caller forwards `LITELLM_FIX_API_KEY`, `APP_AUTOFIX_ID` and `APP_AUTOFIX_KEY`
-(`ai-review.yml:110,111,114`), and **none of the three exists** as a repo secret.
+(`ai-review.yml:133,134,138` — **not contiguous**, and re-derived 2026-09-01;
+this citation previously read `:110,111,114`, which are prose comment lines), and
+**none of the three exists** as a repo secret. The adjacent `:135,136,137`
+(`AI_REVIEW_TOKEN`, `LITELLM_BASE_URL`, `LITELLM_REVIEW_API_KEY`) are the set that
+must be **migrated**, not deleted — do not take a contiguous block here.
 That is harmless *today* only because the v2/v3 reusable **declares** them
 `required: false`, so an unset secret resolves to empty. The v4 failure is not
 "the secret is unset", it is "the secret is **undeclared** by the reusable" — a
@@ -134,30 +170,46 @@ rejected. So the caller edits and the tag rewrite are one commit, not a sequence
 
 1. **P1 and P2 confirmed done** (founder), with a real job observed landing on
    the new runner labels.
-2. **Delete `.github/workflows/doc-maintainer.yml` first** — canon's ordering
-   rule 2, *before* the repin, because a caller repinned to a deleted reusable
-   gets `startup_failure` with no logs. This also closes the open question of
-   what replaces it; see "Open question" below.
+2. ~~**Delete `.github/workflows/doc-maintainer.yml` first**~~ — **DONE
+   2026-09-01** (D-0085, #603), ahead of the rest of the migration. Canon's
+   ordering rule 2 says to delete *before* the repin, because a caller repinned to
+   a deleted reusable gets `startup_failure` with no logs — and by then Dependabot
+   #591 had already made that repin, so this stopped being optional. Nothing
+   remains for this step; the two per-consumer config files went with it.
 3. `CI_TAG=ci/v4.0.0 bash install/install.sh vladm3105/aidoc-flow-framework --repin`
    for the tag strings. **Never `--update`** — it replaces whole caller bodies
-   and would clobber this repo's `runner_labels_*`, `secret-scan`'s
-   `config-path: .gitleaks.toml`, `docs-sync`'s `pull-requests: write`, `links`'s
-   two-job split and `sast-scan`'s `ubuntu-latest` override.
+   and would clobber this repo's **six** local overrides: `runner_labels_*`,
+   `secret-scan`'s `config-path: .gitleaks.toml`, `docs-sync`'s
+   `pull-requests: write`, `links`'s two-job split, `sast-scan`'s `ubuntu-latest`
+   override, and `ai-review`'s `litellm_allow_insecure_http` (the sixth — it was
+   omitted here while R2 below counted six, so the mitigation could not be checked
+   off).
 4. Hand-apply the two caller edits `--repin` cannot deliver: the `secrets:` map
    (BC4) and the input rename (BC5).
-5. Update the runner-label strings in all five caller inputs (BC1).
+5. Update the runner-label strings in all **four** caller inputs (BC1) —
+   `ai-review.yml:98,99`, `dep-scan.yml:29`, `trivy-scan.yml:28`. It was five until
+   #603 deleted `doc-maintainer.yml`'s. **Do not go looking for a fifth:**
+   `markdown-lint.yml:78` and `codeql.yml:46` carry commented-out examples of the
+   same label array, and editing a comment as if it were live config is the
+   failure this note exists to prevent.
 6. Re-verify the `#329` concurrency allowlist survived, by **shape** not by
    filename — `CLAUDE.md` records four distinct shapes and a sweep that reads
    them as one deletes `pin-currency-reader.yml`'s serialization block.
 7. Observe green, then narrow the runner labels (P1's second half).
 
-## Open question — `doc-maintainer`'s replacement
+## ~~Open question~~ — RESOLVED 2026-09-01: `doc-maintainer` is eliminated
 
 Canon deleted the reusable. This repo adopted the caller in #382 and it is the
 subject of `D-0072`, whose census put 15 of 23 failures on `ci#353`. Deleting the
-caller is required by the migration; whether the *capability* is replaced, and by
-what, is not decided here and is not this plan's scope. Flagged so the deletion
-is not mistaken for a decision that it was unwanted.
+caller was required by the migration; whether the *capability* would be replaced was
+deliberately left open here, so the deletion would not be mistaken for a verdict on
+whether it was wanted.
+
+**Founder decision, 2026-09-01: the flow is eliminated. Nothing replaces it.**
+`docs-sync.yml` (mechanical) and `scripts/check-docs-updated.sh` (advisory) remain the
+doc-currency mechanism, as they were throughout the pilot. Recorded as **D-0085**;
+executed in #603. This section is kept rather than deleted because the *reason* the
+question was held open is still worth reading — the answer just exists now.
 
 ## Verification
 
@@ -179,3 +231,28 @@ is not mistaken for a decision that it was unwanted.
 | R2 | `--update` used instead of `--repin`, clobbering six local overrides | Medium | Step 3 names all six |
 | R3 | Rollback needed mid-migration | Low | `ci/v3.0.0` was not re-cut and remains a valid pin and canon's stated rollback target (CI-0044) — but rollback must also revert the caller edits, since they are v4-only |
 | R4 | The runner-label narrowing (P1 second half) is forgotten, leaving the coexistence set live | Medium | Step 7; harmless but leaves the old labels advertised indefinitely |
+
+## Review log
+
+### Pass 1 — 2026-09-01 (amendment review, #603)
+
+This plan was materially amended by #603 (BC #2 discharged, exposure table
+re-measured, open question resolved). Three reviewers ran against that diff.
+Findings folded here, and the two that were **refuted** are recorded so they are
+not re-derived:
+
+| # | Finding | Resolution |
+| --- | --- | --- |
+| 1 | Approach step 5 said "all five caller inputs" while the re-measured table said four | **Fixed** — step 5 now says four and names them, plus a warning about the two commented-out label arrays that look like a fifth |
+| 2 | `ai-review.yml:110,111,114` cited for the autofix/fix secrets was dead — actual `:133,134,138`, and non-contiguous | **Fixed**, with an explicit note that `:135,136,137` are the migrate-not-delete set |
+| 3 | Step 3 named five local overrides while R2's mitigation claims "Step 3 names all six" | **Fixed** — `litellm_allow_insecure_http` was the missing sixth |
+| 4 | "The four already at v4 … verified by green runs on `main`" cited only three run IDs | **Fixed** — `labeler` is `pull_request_target`-only and can produce no `main` run; its two PR-branch runs are now cited instead |
+| 5 | Deleting the caller would add `standards-drift` warnings, falsifying the "expect two warnings" comment in `standards-drift.yml:36-41` | **REFUTED.** `sync/check-standards-drift.sh@ci/v2.16.0` contains **zero** occurrences of `manifest`; its warning families are branch-protection, `actions.*`, labels and repo-settings — there is no file-presence check. The case-sensitive manifest presence check `CLAUDE.md` records belongs to `install/deploy-ci-wizard.sh`, a manual scaffolding tool that no workflow runs. The three deleted paths **are** manifest entries at `ci/v2.16.0` (all `auto_install: false`) and are **absent from the manifest at `ci/v4.0.0`**, so nothing regresses at the repin either. No edit needed |
+| 6 | The `#522-#526` / `#590-#594` PR ranges were asserted from a `grep -c` that yields only a count | **Fixed in D-0085** — the enumerating command is now cited, and the ranges were independently re-derived as exact |
+
+**Not folded, tracked instead:** `CLAUDE.md`'s pin census (17 across 16, "all
+pinned `@ci/v2.16.0`") is falsified — partly by inherited Dependabot drift, partly
+by #603's deletion. It is a fourth doc surface, over OPS-0061's cap, so it is filed
+as **#604** and ships as the immediate follow-up, per that rule's prescribed
+DECISIONS → plan → `CLAUDE.md` ordering. **Verification step V3 below reads a pin
+count, so do not execute this plan against `CLAUDE.md`'s figures** — re-derive.
