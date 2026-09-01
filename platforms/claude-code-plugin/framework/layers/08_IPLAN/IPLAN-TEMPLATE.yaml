@@ -297,7 +297,7 @@ traceability:
       Verified = tests pass + lint clean. Populated by each session.
     files:
       - path: "<implementation file, per the @spec language>"
-        status: created  # created | modified
+        status: created  # created | modified | planned
         session: 1
         verified: false  # true after tests pass + lint clean
 
