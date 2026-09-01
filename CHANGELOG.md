@@ -12,6 +12,79 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the public site badge could not heal itself, and a second page was never synced at all (#423) (2026-09-02)
+
+`scripts/sync-version-refs.sh` writes a `Pre-release v<X.Y.Z>` badge into
+`../web-site/`, an **independent sibling repository**. It matched the exact string
+`Pre-release v<plugin_prev>`, from inside the previous-version detection guard — so once one
+bump was missed, every later run grepped for a version the site no longer carried, and
+`replace_in_file` returns success on a miss **with no log line**. A skipped write was
+indistinguishable from a clean one, and the drift could only widen.
+
+**Measured 2026-09-01, and worse than #423 reported.** Against plugin `0.25.0`:
+`src/pages/index.astro` sat at **`v0.20.1`** (five minors), and
+`src/pages/claude-plugin/index.astro` sat at **`v0.18.0`** (seven minors) — that second page
+was **never in the sweep at all**, which #423 did not know. The mechanism had itself been added
+to close the *same* stale-badge bug at `v0.18.0`; it recurred in the same place with nothing
+failing.
+
+**The badge is now matched version-agnostically and rewritten to the current plugin version,
+outside the prev guard** — so drift heals on the next run instead of sealing itself, and both
+pages are swept. Three behaviours are deliberate: an **absent** sibling stays silent (normal for
+a standalone clone and for CI); a sibling that is **present but carries no badge** now *warns*,
+which is the one state the old code hid; and an **already-current** badge is not rewritten,
+because this block runs on every invocation and an unconditional `sed` would dirty a sibling
+repository's working tree on every commit touching any `VERSION` file.
+
+**The prescribed test method was structurally blind to this**, which is why it survived.
+`CLAUDE.md` requires a sync-script reproduction to run in a throwaway clone — and a clone has no
+sibling `../web-site/`, so the only write that leaves the repo cannot be observed. The new
+`tests/unit/test_sync_website_badge.py` supplies a **synthetic** sibling in a temp directory
+instead, and is **registered** in `tests/conformance/test_repo_scripts.py` so it runs wherever
+conformance runs — `tests/unit/` is reached by no hook and no workflow on its own. **Twelve**
+tests; reverting the script to the exact-string form fails **eight** of them, and twelve distinct
+mutations are killed in total. *(Two earlier drafts of this line said "five of six" and "four of
+nine" — the first counted failure `subTest` items rather than methods, the second was simply not
+re-derived after three tests were added. Re-run before citing it.)*
+
+**Three hardening items came out of review, and one was a live corruption risk.** The badge
+pattern now includes any pre-release/build suffix: matching the bare `X.Y.Z` prefix rewrote only
+that prefix and welded the old suffix onto the new version — `Pre-release v0.26.0-rc1` becoming
+`Pre-release v0.25.0-rc1` on a public page, and *stably*, because the next run then sees a
+current-looking badge. A **symlinked** badge file is now refused rather than rewritten (`sed -i`
+unlinks and renames, so it would swap the link for a regular file and leave the real target
+stale — a silent half-fix of exactly the kind this change removes). And a `grep` **error** exit
+is now distinguished from "no match", so an unreadable file reports `cannot read` instead of the
+misleading `carries no badge`. The cross-repo write is additionally gated on `git rev-parse`
+succeeding, because `repo_root` otherwise falls back to `pwd` and these paths are relative to it.
+
+**And the fix had reproduced the very silence it removes.** The heal was announced with `log`,
+which only prints under the script's `--verbose` switch — but `.pre-commit-config.yaml`'s
+`entry:` is a bare `bash scripts/sync-version-refs.sh`, and its `verbose: true` is *pre-commit's*
+display flag, not the script's. Measured: the production invocation rewrote a file in another git
+repository with **zero output and rc = 0**. Every test passed, because the tests passed
+`--verbose` and so could not see it. The line is now a `warn` (which always prints), and a test
+asserts the announcement **without** the flag. That is the same trap `.pre-commit-config.yaml`
+already records for #405's WARN block, hit again one hook down.
+
+**The test itself was not hermetic, and proving it cost a repo repair.** During a real
+`git commit`, git exports `GIT_DIR` and `GIT_INDEX_FILE` to the hook, and a subprocess that
+inherits them ignores its own `cwd`. So the sandbox's `git init` re-initialized *this
+submodule's* real module directory — setting `core.bare = true` and breaking the worktree
+(`fatal: unable to set up work tree using invalid config`) — and the script's
+`git rev-parse --show-toplevel` then returned the real root, resolving `../web-site` to the
+developer's **actual** sibling checkout. Measured directly: in a temp repo with `GIT_DIR`
+inherited, `rev-parse --show-toplevel` returns `/opt/data/aidoc-flow/framework`. No damage
+resulted only because the real badges were already current. The config is repaired, every
+subprocess now runs with a `GIT_*`-scrubbed environment, and a test sets `GIT_DIR`
+deliberately and asserts the sandbox still heals — removing the scrub fails it.
+**`pre-commit run --all-files` exports only `GIT_EDITOR`**, so this class of bug is invisible
+there and appears only at real commit time.
+
+**Not fixed here, and it cannot be:** the badge values are authored in `web-site`, which this
+repo cannot commit to. The script now heals them into that repo's working tree on the next run
+with the sibling present; the commit belongs to a `web-site` PR.
+
 ### Added — a phantom release cannot ship unnoticed; four framework tags cut (#617) (2026-09-01)
 
 `plans/DECISIONS.md` **D-0078** left a standing consequence: `GATE-SPEC` has **no release

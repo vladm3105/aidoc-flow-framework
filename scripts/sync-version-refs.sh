@@ -28,13 +28,18 @@
 #       (added 2026-06-14 to close the v0.6.3 → v0.20.0 drift bug — the
 #       prior awk pass only handled bare X.Y.Z lines in the `$ cat VERSION`
 #       example block, missing the table cell)
-#   - ../web-site/src/pages/index.astro
-#       `Pre-release v<X.Y.Z>` badge in the home page (cross-submodule write
-#       at the umbrella layer; added 2026-06-14 per IPLAN-0008 step 6 to
-#       close the v0.18.0 stale-badge drift bug). The sibling web-site/ is
-#       a separate git repo, so writes here land as unstaged changes in
-#       web-site's working tree — the developer commits them in web-site's
-#       own PR. Skipped silently if web-site/ is not present alongside.
+#   - ../web-site/src/pages/index.astro and
+#     ../web-site/src/pages/claude-plugin/index.astro
+#       `Pre-release v<X.Y.Z>` badges (cross-submodule write at the umbrella
+#       layer; added 2026-06-14 per IPLAN-0008 step 6 to close the v0.18.0
+#       stale-badge drift bug — which then recurred, in the same place, with
+#       nothing failing). Per #423 the badge is now matched version-agnostically
+#       and rewritten to the CURRENT plugin version, so one missed bump cannot
+#       desynchronize it. The sibling web-site/ is a separate git repo, so writes
+#       land as unstaged changes in its working tree — the developer commits them
+#       in web-site's own PR. An absent sibling is skipped silently; a present
+#       file with no badge WARNS (the old code was silent in both cases, which is
+#       what let the drift sit unseen).
 #   - docs/PARITY.md
 #       claude-code-plugin/v<X.Y.Z> current-state row
 #
@@ -238,13 +243,7 @@ if [[ -n "$plugin_ver" ]]; then
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver" 1
     replace_in_file_counted platforms/claude-code-plugin/README.md \
       "claude-code-plugin/v$plugin_prev" "claude-code-plugin/v$plugin_ver" 1
-    # Cross-submodule write: ../web-site/ is a sibling repo under the umbrella.
-    # The sync hook lands changes in its working tree; the developer commits
-    # them in the web-site PR. The replace_in_file helper is no-op if the file
-    # does not exist (e.g., the framework repo is cloned standalone without
-    # the umbrella siblings).
-    replace_in_file ../web-site/src/pages/index.astro \
-      "Pre-release v$plugin_prev" "Pre-release v$plugin_ver"
+    # (The ../web-site badge is synced below, self-healing and outside this guard — #423.)
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
       "version: \"$plugin_prev\"" "version: \"$plugin_ver\""
     replace_in_file platforms/claude-code-plugin/docs/SKILL_AUTHORING.md \
@@ -269,6 +268,85 @@ if [[ -n "$plugin_ver" ]]; then
         && log "  updated platforms/claude-code-plugin/README.md: bare \`^$plugin_prev$\` line -> $plugin_ver"
     fi
   fi
+fi
+
+# --- web-site badges (cross-repo, self-healing) --------------------------------
+# #423. The badge used to be swept by an exact-string replace of
+# "Pre-release v$plugin_prev" from INSIDE the prev-detection guard above. Two
+# consequences, both live when this was written:
+#
+#   * One missed bump sealed the drift permanently. Every later run grepped for a
+#     prev the site no longer carried, and `replace_in_file` returns success on a
+#     miss with no log line — so a skipped write is indistinguishable from a clean
+#     one. `index.astro` sat at v0.20.1 against plugin 0.25.0, and the mechanism
+#     had been added to close *the same* stale-badge bug at v0.18.0.
+#   * `../web-site/src/pages/claude-plugin/index.astro` was never in the sweep at
+#     all, and sat at v0.18.0 — seven minors behind.
+#
+# So: match version-agnostically, rewrite to the CURRENT plugin version, and run
+# OUTSIDE the prev guard, so drift heals on the next run instead of sealing. An
+# absent sibling is normal (standalone clone, CI) and stays silent; a file that is
+# present but carries no badge is the one state worth hearing about.
+#
+# Writes land as unstaged changes in web-site's own working tree — a separate git
+# repo — and the developer commits them in web-site's PR. Nothing here stages or
+# commits outside this repository.
+# A SemVer badge INCLUDING any pre-release/build suffix. Matching the bare
+# `X.Y.Z` prefix would rewrite only that prefix and weld the old suffix onto the
+# new version — "Pre-release v0.26.0-rc1" becoming "Pre-release v0.25.0-rc1" on a
+# public page, stably, because the next run then sees a current-looking badge.
+badge_re='Pre-release v[0-9]+\.[0-9]+\.[0-9]+([-+][0-9A-Za-z.-]+)?'
+
+# `git rev-parse` gating a cross-repo write: `repo_root` above falls back to
+# `pwd`, and these paths are relative to it. Outside a git repo that fallback
+# could resolve `../web-site` somewhere unintended, so a write that leaves the
+# repository requires the authoritative root, not the fallback.
+if [[ -n "$plugin_ver" ]] && git rev-parse --show-toplevel >/dev/null 2>&1; then
+  for site_badge_file in \
+    ../web-site/src/pages/index.astro \
+    ../web-site/src/pages/claude-plugin/index.astro; do
+    [[ -e "$site_badge_file" ]] || continue
+    if [[ -L "$site_badge_file" ]]; then
+      # `sed -i` unlinks and renames, so it would replace the link with a regular
+      # file and leave the real target stale — a silent half-fix of the exact kind
+      # this block exists to remove.
+      warn "$site_badge_file is a symlink — not rewriting it (#423)"
+      continue
+    fi
+    [[ -f "$site_badge_file" ]] || continue
+    badges="$(grep -oE "$badge_re" "$site_badge_file" 2>/dev/null)"
+    case "$?" in
+      0) ;;
+      1)
+        warn "$site_badge_file carries no 'Pre-release v<x.y.z>' badge — expected one (#423)"
+        continue
+        ;;
+      *)
+        # Exit >=2 is a grep ERROR (unreadable, binary). Reporting it as "no badge"
+        # would name the wrong cause, which is how #423 stayed invisible.
+        warn "cannot read $site_badge_file — badge not checked (#423)"
+        continue
+        ;;
+    esac
+    # Only write on a real difference. This block runs on every invocation, so an
+    # unconditional sed would dirty a sibling repo's working tree — and its mtime —
+    # on every commit that touches a VERSION file. Comparing the extracted badges
+    # (rather than grepping for the current one) keeps a file carrying both a
+    # current and a stale badge from being skipped.
+    stale="$(printf '%s\n' "$badges" | grep -vxF "Pre-release v$plugin_ver" || true)"
+    [[ -n "$stale" ]] || continue
+    if sed -E --follow-symlinks -i "s/$badge_re/Pre-release v$plugin_ver/g" \
+      "$site_badge_file" 2>/dev/null; then
+      # `warn`, not `log`: this write lands in ANOTHER git repository, and the
+      # pre-commit `entry:` passes no `--verbose`, so every `log` line is
+      # suppressed in the only invocation that matters. A cross-repo write
+      # announced by nothing is the silence #423 was filed about, relocated —
+      # the same trap `.pre-commit-config.yaml` records for #405's WARN block.
+      warn "updated $site_badge_file: badge -> Pre-release v$plugin_ver (self-healing, #423)"
+    else
+      warn "sed failed on $site_badge_file"
+    fi
+  done
 fi
 
 # --- framework VERSION fanout -------------------------------------------------

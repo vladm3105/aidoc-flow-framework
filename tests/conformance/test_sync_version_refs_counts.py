@@ -101,7 +101,7 @@ class SyncVersionRefsExpectedCounts(unittest.TestCase):
                 literal, _var = resolved
                 target = _REPO_ROOT / path
                 if not target.is_file():
-                    # The sibling web-site write is legitimately absent.
+                    # A target may legitimately be absent in a partial checkout.
                     continue
                 actual = target.read_text(encoding="utf-8").count(literal)
                 self.assertEqual(
