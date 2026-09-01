@@ -24,15 +24,55 @@ updates:
         update-types:
           - minor
           - patch
-    # The `ci/v1.9.5` semver-major hold on vladm3105/aidoc-flow-ci/* was
-    # REMOVED here (CI-CANON-V2-001, plans/CI-CANON-V2-MIGRATION-PLAN.md).
-    # Its own removal condition — "REMOVE THIS ENTRY when the LiteLLM secrets
-    # are provisioned and the fleet re-pin is armed; then bump all ten call
-    # sites in one PR" — is satisfied: LITELLM_BASE_URL +
-    # LITELLM_REVIEW_API_KEY were set 2026-07-25, and all ten call sites moved
-    # to @ci/v2.14.0 in this same PR. Dependabot may now propose canon majors
-    # again; a future major still needs its own migration review, since
-    # ci/v2.0.0 proved these bumps are not mechanical.
+    # RE-ARMED semver-major hold on vladm3105/aidoc-flow-ci/* (D-0085, #603).
+    #
+    # History: a `ci/v1.9.5` hold lived here until CI-CANON-V2-001
+    # (plans/CI-CANON-V2-MIGRATION-PLAN.md) removed it, on the reasoning that
+    # "a future major still needs its own migration review, since ci/v2.0.0
+    # proved these bumps are not mechanical." That reasoning was right and the
+    # removal was wrong: nothing enforced the review, so **ten** canon majors
+    # then merged unreviewed — five to `ci/v3.0.0` (#522-#526) and five to
+    # `ci/v4.0.0` (#590-#594). Every pin in this repo above `ci/v2.16.0`
+    # arrived that way.
+    #
+    # One of them, #591, repinned `doc-maintainer.yml` to `ci/v4.0.0` — a tag
+    # at which canon had DELETED that reusable (v4 BC #2 / CI-0040). A caller
+    # pointing at a nonexistent reusable can only `startup_failure`, and canon's
+    # release notes say to delete the caller BEFORE repinning. It merged green
+    # because the workflow was already `disabled_manually`, so the broken pin
+    # never executed.
+    #
+    # `--repin` rewrites tag strings and nothing else, so it structurally cannot
+    # deliver a caller-body change or notice a deleted reusable. That is the
+    # class of change Dependabot also cannot make, which is why the hold is on
+    # MAJORS only: minor/patch canon bumps stay in scope, because canon does not
+    # change the caller contract within a major.
+    #
+    # DO NOT remove this entry to unblock a migration. The migration is a PR that
+    # edits caller bodies and rewrites pins together (see
+    # plans/CI-CANON-V4-MIGRATION-PLAN.md); this entry does not stand in its way,
+    # it only stops the bump arriving as an unreviewed dependency update.
+    #
+    # ⚠️ This file is `safe_to_replace: true` in canon's manifest, and NO drift
+    # check covers it — `sync/check-drift.sh` scans only the manifest's
+    # `.github/workflows/` surface, and `check-standards-drift.sh` checks only
+    # server-side settings. So `install.sh --update` silently deletes this hold
+    # and its rationale, with no warning. That is the same failure shape this
+    # hold exists to prevent, one level up. See D-0085.
+    ignore:
+      # BOTH forms are required. Dependabot names a REUSABLE WORKFLOW dependency
+      # `owner/repo/<path>.yml` — covered by the first pattern, since `*` in a
+      # `dependency-name` matches across `/` and `.`. A bare composite action
+      # (`uses: vladm3105/aidoc-flow-ci@ci/vX.Y.Z`) would be named `owner/repo`
+      # and is NOT matched by it. Zero such sites today; canon's v3 was a
+      # composite-action rework, so one is plausible. The second entry is cheap
+      # insurance against a silent escape.
+      - dependency-name: "vladm3105/aidoc-flow-ci/*"
+        update-types:
+          - version-update:semver-major
+      - dependency-name: "vladm3105/aidoc-flow-ci"
+        update-types:
+          - version-update:semver-major
     labels:
       - dependencies
 

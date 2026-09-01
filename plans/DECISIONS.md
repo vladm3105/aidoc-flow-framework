@@ -10,6 +10,198 @@ graduation.
 
 ---
 
+## D-0085 — `doc-maintainer` is eliminated, not paused; and canon majors stop arriving via Dependabot
+
+**Date:** 2026-09-01 · **Issues:** #603 (this repo), #393 · **Decider:** founder (in session)
+
+**Resolves the open question left by `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — the section now
+headed *"~~Open question~~ — RESOLVED 2026-09-01"*, retitled by this same change — which
+deliberately declined to decide whether the capability
+would be replaced, so that the deletion the migration requires would not be mistaken for a
+verdict on whether it was wanted. The verdict is now given: **the flow is eliminated.** Nothing
+replaces it. `docs-sync.yml` (mechanical) and `scripts/check-docs-updated.sh` (advisory) remain
+the doc-currency mechanism, as they were throughout the pilot.
+
+**Supersedes `D-0072` point 1** ("Pause, rather than narrow the config or un-adopt"), and
+nothing else in D-0072. That entry chose to pause via `kill_switch: true` precisely so the caller
+could be resumed with a one-line flip, and weighed **against** un-adopting that it "would have
+discarded the 28/28 canon manifest parity `#382` established." **That cost has since evaporated
+rather than been accepted:** canon deleted all three `doc-maintainer` surfaces from its manifest
+at `ci/v4.0.0` (verified — `install/templates/manifest.json` lists them at `ci/v2.16.0`, all
+`auto_install: false`, and contains no `doc-maintainer` entry at `ci/v4.0.0`). So deleting the
+caller *restores* manifest parity at v4 and forfeits it only against the superseded v2.16.0
+manifest, which this repo is leaving anyway. The parity argument no longer opposes un-adoption.
+
+### What was decided
+
+1. **`doc-maintainer` is retired.** `.github/workflows/doc-maintainer.yml` and its two
+   per-consumer config files (`.github/doc-maintainer.json`,
+   `.github/doc-maintainer-conventions.md`) are deleted. The workflow had been
+   `disabled_manually` since 2026-08-22; this makes the repository state agree with the
+   decision that was already taken.
+
+   **This is a second, later action than D-0072's — do not conflate them.** D-0072 set
+   `kill_switch: true` in the caller's config on 2026-07-30 (the flow still ran, and exited
+   early). The workflow itself was then *disabled at GitHub* on 2026-08-22, which is server state
+   recorded nowhere in this repo. Both halves are measurable:
+
+   ```sh
+   gh workflow list --all --json name,state --jq '.[]|select(.state!="active")'
+   # doc-maintainer  disabled_manually        <- the only disabled workflow in the repo
+
+   gh api 'repos/vladm3105/aidoc-flow-framework/actions/workflows/doc-maintainer.yml/runs?per_page=1' \
+     --jq '.workflow_runs[0] | "\(.id) \(.created_at)"'
+   # 32585669423 2026-08-22T16:45:26Z         <- last of 979 runs; none since, despite a
+   #                                             30-minute cron and push:main
+   ```
+
+   The date is load-bearing — it is why #591 could merge green nine days later with nothing to
+   observe — so it is cited with its repro rather than asserted.
+2. **Dependabot no longer proposes canon majors.** `.github/dependabot.yml` re-arms a
+   `version-update:semver-major` hold on `vladm3105/aidoc-flow-ci/*`.
+
+### Why 2 follows from 1 — the defect that forced this
+
+`.github/workflows/doc-maintainer.yml:78` was pinned
+`…/doc-maintainer.yml@ci/v4.0.0`. **Canon deleted that reusable at v4** (BC #2, CI-0040). Its
+release notes state the consequence and the ordering:
+
+> | 2 | **`doc-maintainer.yml` deleted** (CI-0040) | A caller repinned to v4 gets
+> `startup_failure`, which produces no logs. |
+
+and, in the same notes' upgrade ordering:
+
+> 2. **Delete your `doc-maintainer.yml` caller BEFORE repinning**, not after.
+
+Dependabot PR **#591** did precisely the inverse, and it merged. Verified against canon rather
+than inferred:
+
+```sh
+for ref in ci/v2.16.0 ci/v3.0.0 ci/v4.0.0; do
+  gh api "repos/vladm3105/aidoc-flow-ci/contents/.github/workflows?ref=$ref" \
+    --jq '[.[].name] | index("doc-maintainer.yml")'
+done
+# 7 · 7 · null
+```
+
+**Three independent controls were live, and all three passed it through.**
+
+- **`CLAUDE.md` § "Unified CI" already states the rule** — *"A canon bump is a migration, not a
+  dependency update — do not leave it to Dependabot."* It is prose. Nothing enforced it, and
+  `.github/dependabot.yml` kept canon callers in scope.
+- **CI was green.** The bad pin never executed, because the workflow was already disabled. A
+  `startup_failure` produces no logs; a *disabled* workflow does not even reach that. **The
+  retirement masked the defect it should have prevented.**
+- **The stale-pin detector recommends the defect.** #393 is auto-maintained by
+  `.github/workflows/pin-currency-reader.yml` and listed `doc-maintainer.yml | ci/v2.16.0` as
+  stale under `install.sh … --repin`. `--repin` rewrites tag strings only, so it cannot delete a
+  caller: acting on that remedy would have written this exact pin. The detector is correct about
+  staleness and unsafe about the remedy whenever a major boundary is crossed.
+
+### Scope of the Dependabot hold, and why majors only
+
+The removal of the previous hold (CI-CANON-V2-001) reasoned that *"a future major still needs its
+own migration review."* The reasoning was correct; relying on discipline to deliver it was not.
+Measured:
+
+```sh
+# count, then the numbers themselves — a count alone cannot support a PR range
+git log --oneline --grep='bump vladm3105/aidoc-flow-ci' | grep -cE 'to (3|4)\.0\.0'   # 10
+git log --oneline --grep='bump vladm3105/aidoc-flow-ci' | grep -E 'to (3|4)\.0\.0'
+```
+
+Re-derived independently, the ten are **#522-#526** (2026-08-22 → `ci/v3.0.0`: trivy-scan, links,
+codeql, audit-trail-check, ai-review) and **#590-#594** (2026-08-31 → `ci/v4.0.0`: trivy-scan,
+doc-maintainer, sast-scan, labeler, pre-commit). `trivy-scan` is the only workflow bumped in both
+waves, which is why #590 reads `from 3.0.0` where its four siblings read `from 2.16.0`. The ten
+commits moved **eleven** call sites, because #523 changed two `uses:` lines in `links.yml`.
+
+**Ten canon majors merged as unreviewed dependency updates** — five to `ci/v3.0.0` (#522-#526)
+and five to `ci/v4.0.0` (#590-#594). Every pin in this repo above `ci/v2.16.0` arrived that way,
+which is the whole explanation for a pin set now split three ways across two major boundaries.
+
+Minor and patch bumps stay in Dependabot's scope deliberately: canon does not change the caller
+contract within a major, so those *are* mechanical. Majors are not — v4 alone carries five
+breaking changes, two of which canon states plainly that `--repin` **cannot** deliver. The hold
+does not block the migration; it only stops the migration arriving one caller at a time with no
+one reading the release notes.
+
+### Two consequences of the hold, priced in rather than discovered later
+
+**1. It freezes the three-way split; it does not heal it.** Semver classification is per
+dependency, relative to that dependency's *own* current pin. So the 7 callers at `ci/v2.16.0`
+will now accept only `ci/v2.x` — and canon is at v4 and will ship no more v2, so **those 7 go
+permanently silent**. That is the intended trade (no bot-driven major crossings) but it removes
+the only automatic pressure that was closing the gap, and canon states v2→v3 and v3→v4 "do not
+compose into one repin". The compensating detector is `pin-currency-reader.yml` / #393, which
+reports staleness weekly — **the hold's safety now depends on that reader staying alive.** Note
+the standing caveat that its `--repin` remedy is unsafe across a major boundary; it is a
+detector here, not a remedy.
+
+**2. `.github/dependabot.yml` is a drifted `safe_to_replace` surface with no detector.** Canon's
+manifest marks this file `safe_to_replace: true`, and `install.sh --update --non-interactive`
+auto-replaces exactly that class — so one command silently deletes this hold and its rationale.
+Nothing warns: `sync/check-drift.sh` scans only the manifest's `.github/workflows/` surface and
+`check-standards-drift.sh` checks only server-side settings, so this file is in neither. This is
+the same shape as the defect above — a control removed with nothing enforcing the review — one
+level up. `CLAUDE.md`'s existing "never `--update`" rule justifies itself only by the
+`runner_labels_*` / `config-path` / `permissions` clobbers and does not yet mention this one.
+The durable fix is to push the hold **upstream** into canon's own
+`install/templates/dependabot.yml`, where it is correct for every consumer; until then the local
+copy is drift that no tool will defend.
+
+### How to verify the hold actually armed — it fails GREEN if it did not
+
+The load-bearing assumption is that Dependabot parses `ci/v2.16.0` into the semver `2.16.0`, so
+that `update-types` can classify a v4 bump as major. Evidence says it does: Dependabot renders a
+PR title from `dependency.previous_version` and falls back to the **raw ref** only when that is
+nil, so an unparsed version would have titled #591 *"from ci/v2.16.0 to 4.0.0"*. The observed
+title is symmetric — *"from 2.16.0 to 4.0.0"* — which means the version parsed. **That is
+inference from a rendered title, not a measurement**, and the failure mode logs nothing, so
+confirm it rather than assuming:
+
+1. Seven callers sit at `ci/v2.16.0` while `ci/v4.0.0` exists, and Dependabot has already proven
+   it will bump them. With the hold armed, the next weekly run must open **zero** PRs for those
+   seven. Absence is positive evidence here precisely because the update is known to exist.
+2. **Rule out the confound first** — a rejected config produces the identical "no PRs" symptom,
+   because a config error stops the whole ecosystem entry. Check Insights → Dependency graph →
+   Dependabot for a config-error banner and a fresh "last checked" timestamp.
+3. For direct proof, read the `github-actions` job log: it prints a resolved `Ignored versions:`
+   requirement per dependency. A bound of `>= 3.a` against a canon workflow is the proof; an
+   empty ignored-versions list is the no-op signature.
+
+If it ever proves to be a no-op, the parser-independent form is a `versions: [">= 5"]` condition,
+which is matched against the resolved **tag** version rather than `dependency.version`. Do **not**
+add that today: a single literal bound cannot express "no major crossing" for three different
+current majors, and `>= 3` would freeze the v3 and v4 callers against the minor/patch bumps this
+decision deliberately keeps.
+
+### What this does NOT do
+
+- **It does not perform the v4 migration.** `plans/CI-CANON-V4-MIGRATION-PLAN.md` stays
+  **BLOCKED** on its two founder/infrastructure prerequisites (runner labels; `LLM_URL` /
+  `LLM_API_KEY` with the `LITELLM_*` map deleted). Deleting the `doc-maintainer` caller
+  discharges that plan's step 2 and BC #2 early — which was always safe to do first, since it is
+  a deletion and depends on neither prerequisite.
+- **It does not fix `ai-review`.** That caller stays at `ci/v3.0.0` and is unaffected. It remains
+  exposed to v4 BC #4 and BC #5, so #393's `--repin` remedy is still unsafe for a second,
+  independent reason after this change.
+- **It does not un-disable anything.** No workflow state changes; the disabled `doc-maintainer`
+  workflow simply ceases to exist.
+
+### Transferable lesson
+
+**A retired-but-undeleted surface is a blind spot that absorbs defects silently.** Disabling the
+workflow removed the signal without removing the surface, so an automated change to it could
+merge green for nine days with nothing to observe. Retire by deleting, or the next automated edit
+lands somewhere nobody is watching.
+
+Sibling of the trap `CLAUDE.md` records as *"report-only protects the verdict, not the
+toolchain"*: in both cases a mechanism that looks like a safety margin is actually removing the
+evidence that something is wrong.
+
+---
+
 ## D-0084 — `ai-review` stops gating merges; what actually replaces it is weaker than it looks
 
 **Date:** 2026-08-31 · **Issues:** aidoc-flow-ci#543 · **Decider:** founder (in session)
@@ -865,7 +1057,12 @@ V15 was never a merge gate and remains unconfirmed until the first Monday run.
 `doc-maintainer` caller adopted in `#382`. **Supersedes the diagnosis recorded in
 `#396`** (see point 2); supersedes nothing else.
 
-**1. Pause, rather than narrow the config or un-adopt.** The caller was red on
+**1. Pause, rather than narrow the config or un-adopt.**
+⚠️ **SUPERSEDED by D-0085 (2026-09-01) — the flow is now eliminated and the caller deleted.**
+"Resume is a one-line flip" is no longer true, and the 28/28 manifest-parity cost weighed below
+has evaporated: canon deleted all three `doc-maintainer` surfaces from its manifest at
+`ci/v4.0.0`. The rest of D-0072 (points 2 onward, and the census method) stands.
+The caller was red on
 23 of 47 runs across four independent upstream defects. `kill_switch: true` makes
 canon exit cleanly before any LLM call (`doc-maintainer.yml:340-345`), so the
 workflow is green at zero cost while the caller, its config and its conventions
