@@ -32,7 +32,9 @@ File it if it should have one.
 
 ## The backlog is GitHub issues
 
-**Open issues: 34** (measured 2026-09-01). Re-derive with
+**Open issues: 33** (re-derived 2026-09-01 after this session's fifth PR was raised — it files
+**#611** and closes **#606** on merge, leaving 32. The previously recorded 34 did not survive
+re-derivation; run the command rather than carrying the figure). Re-derive with
 `gh issue list --state open --limit 300 --json number --jq 'length'`.
 In-progress work carries **`status: in progress`** — currently only **#423**.
 
@@ -45,7 +47,8 @@ submodule pointer), **#528** (product call).
 ## What this session did
 
 Four merges, in order: **#605** (closes #603) → **#608** (unbreak `main`) → **#607**
-(closes #604). Two issues filed and left open: **#606**, **#609**.
+(closes #604). Two issues filed: **#606** — fixed in this session's fifth PR, which closes it —
+and **#609**, left open. #606's fix also filed **#611**.
 
 **`doc-maintainer` is eliminated — `plans/DECISIONS.md` D-0085, PR #605 (#603).** The caller
 was pinned `@ci/v4.0.0`, a tag at which canon had **deleted** that reusable (v4 BC #2 /
@@ -129,20 +132,19 @@ not a blanket pool outage. Three instances is not a root cause — a fourth warr
    version bump + GD entry, is `IPLAN-TEMPLATE.yaml:163` reconciled, and is **#601** actually
    satisfied by a comment-only edit? All three travel together, because reconciling `:163` is
    itself a `framework/**` edit that trips `GATE-SPEC-E005`.
-3. **#606** — `.github/ai-review/config.json:2` pins `$schema` at `ci/v2.16.0` against a
-   `ci/v3.0.0` caller, and canon says it self-repairs under neither `--repin` nor `--update`.
-   Best folded into the v4 migration PR, which already edits that caller. Not urgent: the file
-   is not load-bearing for model resolution today.
-4. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
+3. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
    infrastructure prerequisites (runner labels `ci`/`ephemeral` do not exist; `LLM_URL` /
    `LLM_API_KEY` do not exist and the caller still forwards three `LITELLM_*` names v4
    un-declares). ⚠️ **Its stated `--repin` remedy is unsafe** — read the plan, not the issue
    body. The plan's exposure table and every line citation were re-measured 2026-09-01 and it
-   now carries a `## Review log`.
-5. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
+   now carries a `## Review log`. **Its repin must now also move
+   `.github/ai-review/config.json`'s `$schema`** (plan step 6 / verification V3b) —
+   `tests/conformance/test_ai_review_schema_pin.py` fails the required conformance context
+   otherwise.
+4. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
    D1's to settle.
-6. **#546** — carries a measured correction that **splits it**. The `_required: false` half of
+5. **#546** — carries a measured correction that **splits it**. The `_required: false` half of
    the `STY02` defect is independently shippable and does not wait on the parked subtype
    decision. Re-title or split before picking it up.
-7. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal` carries
+6. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal` carries
    `f05dfc0d`. Needs a rebase onto current `main`, a finalized commit message and a PR.

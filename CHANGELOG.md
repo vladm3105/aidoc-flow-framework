@@ -12,54 +12,55 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-### Fixed — docs: `CLAUDE.md`'s canon pin census was wrong in both directions (#604) (2026-09-01)
+### Fixed — CI: the ai-review config's `$schema` pin, and the absence of any detector for it (#606) (2026-09-01)
 
-`CLAUDE.md` § "Unified CI" asserted *"All **seventeen** `aidoc-flow-ci` call sites across sixteen
-files are pinned `@ci/v2.16.0`"*. Measured: **16 call sites across 15 files**, split across
-**three majors** — 7 × `ci/v2.16.0` + 5 × `ci/v3.0.0` + 4 × `ci/v4.0.0`. Because `CLAUDE.md` is
-auto-loaded, that was a false premise handed to every session — which is the whole blast radius.
-*(An earlier draft added "and the v4 migration's verification step V3 is a pin count"; V3 is a
-distinct-tag uniqueness check that re-derives from the tree and consumes no figure from
-`CLAUDE.md`, so that consequence does not follow.)*
+`.github/ai-review/config.json:2` pinned its `$schema` at `ci/v2.16.0` while its caller
+(`.github/workflows/ai-review.yml`) had been carried across the v3 major boundary by Dependabot.
+Unlike the comment-level staleness swept in #604, this one is **machine-read** — and nothing in
+the toolchain repairs or reports it: `--repin` rewrites `uses:` lines only; canon marks this file
+`safe_to_replace: false` in `install/templates/manifest.json`, so `--update --non-interactive`
+(and any no-TTY run) keeps the local copy; and `check-pin-currency.sh` walks `.github/workflows/`
+only, on both its local and its fleet path. *(An **interactive** `--update` does prompt to replace
+it — with canon's whole template body, which would discard this repo's `trust`, `governance`,
+`auto_merge` and `autofix` blocks. Answer keep. That is now recorded in the file itself.)*
 
-Two independent causes, now both stated in the file: **ten Dependabot canon major bumps**
-(#522-#526, #590-#594) split the pins while the uniformity claim went unrevised, and #603 deleted
-the seventeenth site. The counting commands the section prescribes were correct and are unchanged
-— only the figures were wrong.
+**Retargeted to `ci/v3.0.0` — the caller's tag, not canon's latest.** #606 asked for the schemas
+to be diffed first; they were. `schemas/ai-review-config-v2.schema.json` is the **same git blob**
+(`8012104`) at `ci/v2.16.0`, `ci/v3.0.0` and `ci/v4.0.0`, no v3/v4-numbered schema replaced it,
+and canon still asserts `SUPPORTED=2` at both majors (in its `CI0014-SCHEMA-ASSERT` block — cited
+by marker, since the construct occurs twice per reusable and moves every release). So
+`"version": 2` stays correct and the retarget is a pure currency fix; the config was re-validated
+against that blob and passes. Pinning at the **caller** rather than at canon `main` is deliberate:
+a caller deliberately held back a major must be able to hold its schema back with it. `ai-review.yml`
+is the anchor because the config is its namesake and its is the version assertion — `composition.yml`
+also reads this file, by API from this repo (the FT-6 path), at its own tag, and is deliberately not
+the anchor.
 
-Also corrected in the same pass:
+**The pin alone would drift again, so the coupling is now enforced:**
+`tests/conformance/test_ai_review_schema_pin.py` asserts the `$schema` tag equals the tag on
+`jobs.call.uses`, that the URL names the contract file the `version` field declares, and — guarding
+the guard — that its two matchers *reject* a floating ref, a fork and a different reusable. It runs
+wherever the conformance suite runs (the `always_run` pre-commit hook and the required
+`Framework + platform conformance` context). Verified against the two mutants that matter: the
+original #606 state fails, and a **coordinated** bump of both files to `ci/v4.0.0` stays green — the
+guard blocks drift, not migration.
 
-- `.github/workflows/links.yml:1` — the header comment claimed `@ci/v2.16.0` while both of that
-  file's `uses:` pins are `@ci/v3.0.0`. This is a live instance of the failure mode the section
-  itself documents: a re-pin *"can never deliver a caller-body change and never notices a comment
-  it falsified."*
-- The "never `--update`" clobber list named only workflow-body overrides. It now also names
-  `.github/dependabot.yml`, which is `safe_to_replace: true` in canon's manifest — so `--update`
-  would silently delete the `semver-major` hold added in #603.
-- **Corrected D-0085's detector claim, which was inverted.** #603 recorded that "no drift check"
-  covers `.github/dependabot.yml`, from a two-item enumeration that was not exhaustive. Canon's
-  `install/apply-standards.sh:434` **exact-matches** that file and `--check` exits 1 on drift —
-  and since canon's template carries no `ignore:` block, **the hold itself reads as the drift**.
-  The real hazard is the opposite of the one recorded: a session that "restores canonical" on a
-  red `apply-standards.sh --check` **deletes the hold**. Nothing detects its deletion. Corrected
-  in `plans/DECISIONS.md` D-0085, `CLAUDE.md` and the `.github/dependabot.yml` comment.
-- `CLAUDE.md`'s claim that the hold means "the split can no longer widen on its own" was
-  narrowed: the hold is **major-only**, and grouped minor/patch bumps stay in scope — which is
-  precisely how the pin set split the first time.
-- The runner-split bullet calling `dep-scan` and `trivy-scan` "adopted byte-exact" now notes that
-  is no longer true of `trivy-scan`: at `@ci/v4.0.0` it *overrides* canon's renamed
-  `["self-hosted", "ci", "ephemeral"]` default, surviving v4 BC #1 by that override rather than
-  by being canonical.
-- The `doc-maintainer` census trap (D-0072 §3) notes the flow is retired, so no reader looks for
-  a resume condition that no longer exists.
+`plans/CI-CANON-V4-MIGRATION-PLAN.md` gains that edit as approach step 6 plus verification V3b, so
+when it unblocks, repinning the caller without the config fails conformance rather than leaving the
+pin a major behind. It also now records the one live consequence: the `semver-major` hold leaves
+minor/patch Dependabot bumps in scope, so once the caller reaches canon's current major, the next
+grouped bump will red conformance — the remedy is to carry the one-line `$schema` edit onto the
+Dependabot branch, never to remove the guard.
 
-**Swept but not fully cleared, and filed rather than papered over:** the falsified-reference class
-also contains a *machine-read* pin, not just comments — `.github/ai-review/config.json:2` pins its
-`$schema` at `ci/v2.16.0` while its caller is `ci/v3.0.0`. Canon states that pin is
-`safe_to_replace: false` and self-repairs under neither `--repin` nor `--update`. It is **not**
-fixed here because the file is deliberately declared at schema v2 (canon asserts `version == 2`
-before reading any field), so retargeting the URL needs the schemas diffed first. Filed as
-**#606**, suggested for the v4 migration PR that already edits that caller.
+**Not a live failure, before or after.** The reusable resolves policy from `trust_config_repo`
+(`vladm3105/aidoc-flow-operations@main`), not from this file; `$schema` is advisory to JSON-schema
+tooling and no workflow step dereferences it. The stale pin only breaks the path the file exists
+for — `trust_config_repo` ever being pointed at this repo. `CLAUDE.md` is deliberately untouched:
+the rule is now mechanically enforced and fails with a message that states the remedy, so it needs
+no auto-loaded prose. Superseded framing left standing for a follow-up: `plans/DECISIONS.md` D-0070
+still frames this pin as a *currency* matter against canon, which this change replaces with
+*equality to the caller* — a fourth doc surface, over OPS-0061's cap, so it is filed as **#611**
+rather than folded, per the same rule's prescribed split.
 
 ### Removed — CI: the `doc-maintainer` flow is eliminated (D-0085, #603) (2026-09-01)
 
