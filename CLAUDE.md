@@ -396,11 +396,31 @@ future company projects; it ships independently semver-tagged
 `ops/iplans/IPLAN-0017_unified-ci-flows.md` +
 `ops/iplans/IPLAN-0017-CHARTER_aidoc-flow-ci.md`.
 
-**Per-repo state (2026-07-29):** **public repo, but NOT purely
-GitHub-hosted.** All **seventeen** `aidoc-flow-ci` call sites across sixteen
-files are pinned `@ci/v2.16.0` (was eleven across ten until
-CANON-PARITY-001 adopted five more, then #382 added `doc-maintainer.yml`;
-`links.yml` holds two). Re-count rather than copying that figure —
+**Per-repo state (2026-09-01):** **public repo, but NOT purely
+GitHub-hosted.** **16** `aidoc-flow-ci` call sites across **15** files, and they
+are **NOT uniform — they are split across three majors**: 7 × `@ci/v2.16.0`
+(`auto-merge-ai-prs`, `composition`, `dep-scan`, `docs-sync`, `markdown-lint`,
+`secret-scan`, `standards-drift`) + 5 × `@ci/v3.0.0` (`ai-review`,
+`audit-trail` — whose caller file names the `audit-trail-check` reusable, the one
+place the two differ — `codeql`, `links` ×2) + 4 × `@ci/v4.0.0` (`labeler`,
+`pre-commit`, `sast-scan`, `trivy-scan`). `links.yml` holds two sites, which is
+why files < sites.
+
+⚠️ **This paragraph asserted "all seventeen … pinned `@ci/v2.16.0`" until
+2026-09-01 and was wrong in both directions** (#604). The split arrived through
+**ten Dependabot canon MAJOR bumps** — #522-#526 → `ci/v3.0.0`, #590-#594 →
+`ci/v4.0.0` — i.e. exactly the mechanism the next paragraph forbids, running
+unopposed because the rule was prose. The seventeenth site was
+`doc-maintainer.yml`, **deleted** 2026-09-01 (D-0085, #603) after Dependabot
+repinned it to a tag at which canon had removed the reusable. Dependabot now
+carries a `semver-major` hold on `vladm3105/aidoc-flow-ci/*`, so a **major**
+crossing can no longer arrive on its own. **Minor/patch bumps stay in scope and stay
+grouped**, which is exactly how the set split the first time — a group PR carried
+five of ten reusables and left four behind (next section) — so the split can still
+widen *without* a major. The hold freezes the major boundary rather than healing the
+split, and the 7 callers at `ci/v2.16.0` will go silent because canon ships no
+more v2.
+Re-count rather than copying that figure —
 `grep -rho 'aidoc-flow-ci/\.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ | wc -l`
 for sites, `grep -rl 'aidoc-flow-ci/\.github/workflows/.*@ci/v' .github/workflows/ | wc -l`
 for files. Pins:
@@ -436,6 +456,22 @@ bodies and would clobber this repo's
 self-hosted `runner_labels_*`, `litellm_allow_insecure_http`, `secret-scan`'s
 `config-path: .gitleaks.toml`, `docs-sync`'s `pull-requests: write`, and
 `links`'s two-job split.
+
+⚠️ **The clobber list above is workflows only, and that is not the whole blast
+radius.** `.github/dependabot.yml` is `safe_to_replace: true` in canon's manifest,
+so `--update --non-interactive` auto-replaces it too — **silently deleting the
+`semver-major` hold** that is now the only thing keeping Dependabot from crossing a
+canon major. **The detector situation is worse than absent — it points the wrong
+way.** `sync/check-drift.sh` covers only the manifest's `.github/workflows/` surface
+and `check-standards-drift.sh` only server-side settings, so neither sees this file;
+but `install/apply-standards.sh:434` **exact-matches** it (`--check` exits 1 on
+drift), and canon's `install/templates/dependabot.yml` carries **no `ignore:` block
+at all**. So the one canon tool that reads this file reports the hold's **presence**
+as drift and would have it removed — while **nothing detects its deletion**. Do not
+"restore canonical" here on a red `apply-standards.sh --check`; that is the failure
+this warning exists to prevent, reached through the tool meant to prevent it. The
+durable fix is to push the hold **upstream** into canon's template; rationale in
+`plans/DECISIONS.md` **D-0085**.
 
 **The #329 concurrency allowlist is scoped by required-context, not by
 ownership.** `pre-commit`, `conformance` and `acceptance` all carry it: a
@@ -484,7 +520,11 @@ Runner split — deliberate, do not "normalize":
   The caller also sets `litellm_allow_insecure_http: true` — the bridge URL
   is `http://`, and canon's client refuses non-HTTPS without it.
 - **`dep-scan` and `trivy-scan` also run self-hosted** — canon's PLAN-014
-  uniform-protected model, adopted byte-exact. Safe on a public repo because
+  uniform-protected model, adopted byte-exact — **true of `dep-scan` (still
+  `@ci/v2.16.0`) but no longer of `trivy-scan`**, which is at `@ci/v4.0.0` and now
+  *overrides* canon's renamed `["self-hosted", "ci", "ephemeral"]` default by
+  passing the old labels explicitly. It survives v4 BC #1 by that override, not by
+  being canonical. Safe on a public repo because
   the reusable's own fork guard (`if: …head.repo.fork != true`) skips fork PRs,
   so untrusted code never reaches the host; the label is canon's trust design,
   not a tooling requirement (both `curl` a pinned static binary). This means the
@@ -856,7 +896,10 @@ at the published artifact — never by a test asserting on the call sequence.
   blocker" and that framing reached three files; the full census put #352 at 3 of 23
   and #353 at 15. Both are true in their own sense, but conflating them produced a
   **resume condition that would have returned a majority-red pilot**. Loop every
-  failing run and bucket the errors before naming a cause.
+  failing run and bucket the errors before naming a cause. *(The `doc-maintainer`
+  flow itself was eliminated 2026-09-01 — D-0085 — so the artifact is gone; the
+  lesson is about the method and does not depend on it. There is no resume
+  condition to return to.)*
 - **When an error names a condition, check the named artifact actually violates it**
   (**D-0072 §2**). Canon's `duplicate or non-allowlisted plan path: <path>` covers two
   conditions in one string, and its most frequent instance named a path that **is**

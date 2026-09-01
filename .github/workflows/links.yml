@@ -1,4 +1,4 @@
-# Caller for aidoc-flow-ci's reusable links workflow (@ci/v2.16.0).
+# Caller for aidoc-flow-ci's reusable links workflow (@ci/v3.0.0).
 # internal = PR-blocking (offline; internal/relative links only);
 # external = weekly cron, non-blocking. See aidoc-flow-ci docs/REPO_STANDARDS §4.3.
 name: links

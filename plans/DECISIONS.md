@@ -138,17 +138,34 @@ reports staleness weekly — **the hold's safety now depends on that reader stay
 the standing caveat that its `--repin` remedy is unsafe across a major boundary; it is a
 detector here, not a remedy.
 
-**2. `.github/dependabot.yml` is a drifted `safe_to_replace` surface with no detector.** Canon's
-manifest marks this file `safe_to_replace: true`, and `install.sh --update --non-interactive`
-auto-replaces exactly that class — so one command silently deletes this hold and its rationale.
-Nothing warns: `sync/check-drift.sh` scans only the manifest's `.github/workflows/` surface and
-`check-standards-drift.sh` checks only server-side settings, so this file is in neither. This is
-the same shape as the defect above — a control removed with nothing enforcing the review — one
-level up. `CLAUDE.md`'s existing "never `--update`" rule justifies itself only by the
-`runner_labels_*` / `config-path` / `permissions` clobbers and does not yet mention this one.
-The durable fix is to push the hold **upstream** into canon's own
-`install/templates/dependabot.yml`, where it is correct for every consumer; until then the local
-copy is drift that no tool will defend.
+**2. `.github/dependabot.yml` is a drifted `safe_to_replace` surface, and its detector points the
+wrong way.** Canon's manifest marks this file `safe_to_replace: true`, and
+`install.sh --update --non-interactive` auto-replaces exactly that class — so one command silently
+deletes this hold and its rationale. Same shape as the defect above — a control removed with
+nothing enforcing the review — one level up. `CLAUDE.md`'s "never `--update`" rule justified itself
+only by the `runner_labels_*` / `config-path` / `permissions` clobbers and did not mention this
+one; **#604** adds it.
+
+> ⚠️ **CORRECTED 2026-09-01 by #604.** As first written this paragraph said *"no detector …
+> nothing warns"*, naming only `sync/check-drift.sh` and `check-standards-drift.sh`. That
+> enumeration was not exhaustive and the conclusion was **inverted**. Canon ships a third checker
+> covering this exact file — `install/apply-standards.sh:434` runs
+> `exact_match_check ".github/dependabot.yml"`, and `--check` exits 1 on drift. Canon's
+> `install/templates/dependabot.yml` contains **no `ignore:` block at all**, so under exact-match
+> **this hold IS the drift**. Accurately: *the one canon tool that reads this file reports the
+> hold's **presence** as drift and would have it removed; **nothing detects its deletion**.* So a
+> session that runs `apply-standards.sh --check`, sees `.github/dependabot.yml DRIFT` + exit 1 and
+> "restores canonical" **deletes the hold** — reaching the outcome this decision exists to
+> prevent, *through* the tool meant to prevent it. This repo treats that checker as live
+> (`.gitattributes:12-14`).
+
+The durable fix is unchanged and now more urgent: push the hold **upstream** into canon's own
+`install/templates/dependabot.yml`, where it is correct for every consumer and stops being drift.
+
+**The lesson is one this repo already records** — *"An absence is the easiest defect to assert and
+the hardest to verify."* "No detector covers this" was asserted from a two-item enumeration never
+checked for completeness, and `check-drift.sh`'s own header names `apply-standards.sh` as the
+checker for exactly the non-workflow surfaces.
 
 ### How to verify the hold actually armed — it fails GREEN if it did not
 
