@@ -12,6 +12,52 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added — a phantom release cannot ship unnoticed; four framework tags cut (#617) (2026-09-01)
+
+`plans/DECISIONS.md` **D-0078** left a standing consequence: `GATE-SPEC` has **no release
+step**: none of `E001`–`E008` looks beyond the current tree — `E005`/`E008` at the PR diff,
+`E006`/`E007` at HEAD, `E001`–`E004` at the change record — so nothing checks that a version
+the changelog documents was ever real. That is what produced #558 — `framework/VERSION` moved
+`0.41.3 → 0.43.0` in one commit while `CHANGELOG.md` documents a `0.41.3 → 0.42.0` release
+and GD-14 is ratified against it. Spec `0.42.0` was never a value of the file.
+
+**`tests/conformance/test_release_record_integrity.py` is that missing check**, over all
+three version streams: every version a changelog names as a release must have been a value
+of its `VERSION` file at some point in history. It runs in the conformance suite, which is
+a required context — not as a warning-only weekly annotation, because this repo has already
+learned that such an annotation has no reader.
+
+**The check found a second, worse instance while being written.** `hermes/v0.1.1` is a cut,
+pushed release tag on a commit whose `platforms/hermes/VERSION` reads `0.1.0` — precisely the
+option D-0078 rejected ("a tag on a commit whose `VERSION` file reads `0.41.3` — accurate to
+the changelog, false to the tree"), already in the tree and unnoticed. It is not a
+predates-the-file artifact: the file existed from 2026-05-20 holding `0.1.0`. Both it and
+framework `0.42.0` are permanent — D-0078 chose correct-forward, and release tags are
+immutable — so each is a **named, cited exception**, and a test asserts each is still a real
+phantom, so the allowlist cannot outlive its defect and quietly license the next one.
+
+**The originally-proposed fix was withdrawn on measurement.** #617 first proposed a
+tag-currency check. Measured, **77 of 89** framework versions are untagged and
+`docs/TAGGING.md` already calls the tag-cut lag "a known backlog" — so that check would have
+emitted dozens of findings against a sanctioned state. Tags are deliberately out of scope of
+the guard.
+
+**`conformance.yml` now sets `fetch-depth: 0`.** `actions/checkout` defaults to depth 1, in
+which the guard would measure nothing rather than fail. Because the suite also runs inside
+the reusable `pre-commit` workflow, whose checkout this repo does not own, the
+history-dependent tests **skip** when the clone is shallow and a separate assertion — which
+needs no history, so it runs everywhere — requires `conformance.yml` to keep the setting.
+Deleting it reddens the suite in every runner rather than silently disarming it.
+
+**Four framework tags cut**, on founder decision: `framework/v0.46.0` (`62928a28`),
+`v0.47.0` (`e9bd5055`), `v0.48.0` (`eb82b0bb`), `v0.49.0` (`29619057`) — each annotated, on
+the squash-merge commit that bumped `framework/VERSION`, each verified to carry that version with
+both platform `FRAMEWORK_SPEC_VERSION` pins matching and a green `Framework + platform
+conformance` on its PR. `docs/TAGGING.md`'s inventory preamble is corrected with it: it had
+named `framework/v0.21.0` as the high-water mark "as of 2026-08-02" when `v0.41.2`, `v0.41.3`
+and `v0.44.0` had since been cut, and it now separates the sanctioned tag backlog from the
+phantom-version defect, which are different things.
+
 ### Changed — Framework Spec `0.48.0 → 0.49.0` — the ADR `alternatives` block stops mandating a cost estimate per option, and gains a way to cite an existing survey (GD-24, #602) (2026-09-01)
 
 `ADR-TEMPLATE.yaml`'s `alternatives` block demanded a cost estimate and a fit rating on

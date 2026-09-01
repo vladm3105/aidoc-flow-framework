@@ -96,10 +96,34 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > Each row is a version assigned to a shipped change. A git **tag** is cut
 > separately, and the tag-cut has lagged the version stream (a known backlog —
 > see the HANDOFF). To see which tags are *actually* cut, run `git tag -l` /
-> `git ls-remote --tags origin`; as of 2026-08-02 the cut high-water marks are
-> `v1.1.0` (project), `framework/v0.21.0`, `claude-code-plugin/v0.25.0`, and
-> `hermes/v0.1.1`. Rows above those points are version assignments whose tag has
-> not yet been cut. Do not assume a row here means the tag exists.
+> `git ls-remote --tags origin`; **re-derive rather than trusting the figures
+> below, which are a snapshot.** Normalize whitespace when you do — one commit
+> wrote `framework/VERSION` with no trailing newline, so the obvious one-liner
+> concatenates two values and reports 88 rather than 89:
+>
+> ```sh
+> git log --format=%H main -- framework/VERSION \
+>   | while read -r s; do git show "$s:framework/VERSION" | tr -d '[:space:]'; echo; done \
+>   | sort -u | grep -c .
+> ``` As of **2026-09-01** the cut high-water marks
+> are `v1.1.0` (project), **`framework/v0.49.0`**, `claude-code-plugin/v0.25.0`,
+> and `hermes/v0.1.1`. Rows above those points are version assignments whose tag
+> has not yet been cut. Do not assume a row here means the tag exists.
+>
+> Scale, so the backlog is not mistaken for a defect: **77 of the 89 values
+> `framework/VERSION` has held are untagged** (measured 2026-09-01, after
+> `v0.46.0`–`v0.49.0` were cut), and the plugin stream is exactly
+> current (`0.25.0` tagged, `VERSION` = `0.25.0`) while **Hermes has the largest
+> gap** (`hermes/v0.1.1` against `VERSION` = `0.12.1`). Lagging is the norm here,
+> not an error state.
+>
+> **A missing tag is not the same defect as a phantom version.** A version
+> documented as released that `VERSION` never actually held cannot be tagged at
+> all without putting a tag on a commit that contradicts it — see
+> `plans/DECISIONS.md` D-0078 (#558) and the guard
+> `tests/conformance/test_release_record_integrity.py` (#617), which fails on any
+> new one. Two already exist and are permanent: framework `0.42.0`, and
+> `hermes/v0.1.1`, whose tag sits on a commit whose `VERSION` reads `0.1.0`.
 
 | Version / tag | Commit | Marks |
 |-----|--------|-------|
@@ -174,12 +198,12 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 | `framework/v0.3.1` | CHG-D2 (`3753de2`) | Framework spec — governance decision register, GD-01 |
 | `v1.1.0` | PR #2 merge (`3974daa`) | Post-cutover feature release — skill-set revision + adaptation overlay + CHG GATE-SPEC |
 
-> All Phase 0–5 milestone tags (`v0.1.0`–`v0.5.0`, `v1.0.0`, `v1.1.0`,
-> `framework/v0.1.0`–`v0.3.1`, `framework/v0.21.0`, `hermes/v0.1.0`–`v0.1.1`,
-> `claude-code-plugin/v0.1.0`–`v0.20.1`) are **published on the remote**. The
-> per-package version streams have since moved ahead of the cut tags (the
-> tag-cut backlog noted at the top of this section). Verify any tag's
-> publication via `git ls-remote --tags origin`.
+> **Every tag named in this document is published on the remote, and the
+> authoritative list is `git ls-remote --tags origin` — not this file.** A
+> hand-maintained enumeration here previously listed the Phase 0–5 milestones and
+> went stale by seven tags, contradicting the high-water marks at the top of this
+> same section; two disagreeing censuses in one file is worse than none. The
+> per-package version streams run ahead of the cut tags (the backlog noted above).
 
 ## In-container push restrictions
 
