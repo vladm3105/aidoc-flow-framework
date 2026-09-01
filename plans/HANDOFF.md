@@ -5,16 +5,20 @@
 restore prior states here. Settled traps live in `CLAUDE.md` § "Durable traps" and are
 never repeated here.
 
-**State:** framework spec **`0.48.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
-`FRAMEWORK_SPEC_VERSION` pins read `0.48.0`. `0.45.0` was **skipped** and never became a value
+**State:** framework spec **`0.49.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
+`FRAMEWORK_SPEC_VERSION` pins read `0.49.0`. `0.45.0` was **skipped** and never became a value
 of `framework/VERSION` (`plans/DECISIONS.md` D-0082). `framework/v0.44.0` is the most recent
-**tag**; `0.46.0`, `0.47.0` and `0.48.0` are untagged — see "Release provenance" below.
+**tag**; `0.46.0`, `0.47.0`, `0.48.0` and `0.49.0` are untagged — see "Release provenance" below.
 
-**Verified this session** (run, not asserted, at `794aa573`): conformance **457 passed / 943
-subtests** via `pytest`, and **493** via `python -m unittest discover -s tests/conformance`
-(CI's runner) — the two count subtests differently, so cite the command with the number ·
-acceptance-deterministic **64** · unit **196** · `sdd_doc_lint` **6** (needs `PYTHONPATH=tools`)
-· `pre-commit run --all-files` 19 hooks green, rc=0. **0 failing.**
+**Verified this session** (run, not asserted, on `fix/602-adr-alternatives-cite-not-restate`,
+which branches from `dce4a1ef` and so does **not** contain the unmerged #606 work):
+conformance **473 passed / 950 subtests** via `python3 -m pytest tests/conformance -q`, and
+**509** via `python3 -m unittest discover -s tests/conformance -t tests/conformance` (CI's
+runner) — the two count subtests differently, so cite the command with the number ·
+acceptance-deterministic **64** via `python3 -m unittest discover -s tests/acceptance/deterministic -t .`
+· unit **196** via `python3 -m unittest discover -s tests/unit -t .` · `sdd_doc_lint` **6** via
+`PYTHONPATH=tools python3 -m unittest discover -s tools/sdd_doc_lint/tests` · `pre-commit run
+--all-files` green, rc=0. **0 failing.**
 
 Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the wholesale
 regen; use `--skip-lint-smoke`.
@@ -122,7 +126,7 @@ not a blanket pool outage. Three instances is not a root cause — a fourth warr
 ## What to do next — prioritized
 
 1. **Tag the untagged releases.** `framework/v0.44.0` is still the most recent tag while
-   `0.46.0`, `0.47.0` and `0.48.0` have all shipped to `main`. Three untagged releases is the
+   `0.46.0`, `0.47.0`, `0.48.0` and `0.49.0` have all shipped to `main`. Four untagged releases is the
    point at which "correct forward" stops being cheap, and the missing `GATE-SPEC` release
    step still has no tracker home — file it.
 2. **#609** — the deferred founder call from this session: does `2943bf3b` owe a framework

@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.25.0"
-    framework_spec_version: "0.48.0"
+    framework_spec_version: "0.49.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -357,7 +357,9 @@ canonical required-section set.
 | Quality gate | SPEC-Ready score ≥ threshold (default 90) for Accepted status |
 
 **Tier 2 — advisory (warning):** frontmatter metadata (below); alternatives
-include 2–3 options with cost/fit and rejection reasons; consequences cover
+carry 2–3 rejected options beside the selected one, whose rejection reasons each
+name a concrete disqualifying factor (cost and fit are optional per option, and an
+existing survey may be cited in `prior_analysis` rather than restated); consequences cover
 trade-offs with severity; internal links and template/governance references
 resolve; no downstream (SPEC/TDD/IPLAN) numbers cited before they exist;
 Architecture-Flow section carries the decision/interaction **sequence** diagram

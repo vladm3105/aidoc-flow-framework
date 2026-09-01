@@ -88,7 +88,7 @@ When creating a new ADR:
 - **Numbering**: Allocate sequentially starting at `01`
 - **One Decision Per File**: Each `ADR-NN` covers a single significant architectural decision
 - **Slugs**: Short, descriptive, lower_snake_case
-- **Alternatives Required**: Document at least 2-3 alternatives considered
+- **Alternatives Required**: Document 2-3 alternatives considered beside the selected option
 - **Consequences Analysis**: Include positive and negative outcomes
 - **Index Updates**: Add entry for every new ADR
 
@@ -108,7 +108,7 @@ ADR must achieve **SPEC-Ready score >=90/100** before downstream SPEC generation
 
 Before marking ADR as "Accepted":
 - [PASS] Problem statement clearly defined with business context
-- [PASS] At least 2-3 alternatives considered and documented
+- [PASS] 2-3 alternatives considered and documented beside the selected option
 - [PASS] Consequences analysis includes both positive and negative outcomes
 - [PASS] Architecture flow diagrams included (Mermaid format)
 - [PASS] Implementation assessment covers complexity, dependencies, resources

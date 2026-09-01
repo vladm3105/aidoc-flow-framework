@@ -13,6 +13,145 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-24 — The ADR `alternatives` block grades a named disqualifying factor; cost and fit are optional dimensions, and an existing survey is cited rather than restated
+
+- **Status:** Accepted — 2026-09-01 · **SemVer:** framework `0.48.0 → 0.49.0` (MINOR),
+  change-level **C2**. Three motions: an additive optional field, a relaxed mandate, and two
+  new advisory `_antipatterns` that tighten what C2 already graded. None is breaking, and
+  `major ⇒ C3` is one-directional per GD-01, so C2 holds. Ratified on merge; a `framework/**`
+  normative change — human sign-off per GATE-SPEC.
+- **Issues:** #602 (`Origin: real-use`) · defers the `@seed:` provenance-tag question to #614
+- **GATE-SPEC-W002 (parity):** both platforms track `0.49.0`. Three plugin skills move with
+  the template (below). The other engine needs no change — its ADR prompt templates require
+  pros/cons and a rejection reason but never a per-option cost or fit, and their cost
+  language is already scope-qualified to significant or infrastructure decisions.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
+  agent-instruction text. The change adds authoring guidance and removes a mandate; it grants
+  no capability, names no external resource, and introduces no instruction an agent could
+  follow to reach outside the artifact.
+
+`ADR-TEMPLATE.yaml`'s `alternatives` block demanded a cost estimate and a fit rating on
+**every** option — `_guidance` ("Each must have pros, cons, estimated cost, and fit
+rating") and, as a hard failure, `_antipatterns` ("FAIL: no cost estimate per
+alternative"). The normative authoring lens demands neither.
+`playbooks/05_ADR/architect.md` check **C2** grades two things: that ≥2 alternatives are
+enumerated, and that each rejected one carries "a one-paragraph rationale naming the
+concrete factor that disqualified it (cost, latency, complexity, vendor lock-in, etc.)" —
+cost is *one example on an open list*, and the lens's failure mode is a stub rationale, not
+a missing dollar figure.
+
+**The template and the lens were grading different things, and the template is what agents
+read.** An ADR deciding a pattern, a process or an interface has no monthly dollar figure,
+so a conforming author either invents one — noise that reads as evidence to every
+downstream reader — or fails an antipattern the audit never actually checks. The mandate
+had also fanned out to three plugin authoring surfaces (`doc-adr`, `doc-adr-autopilot`,
+`doc-adr-audit`), so the audit lens restated it back to the author.
+
+**Decision: `estimated_cost` and `fit` are OPTIONAL per option; the rejection reason must
+name a concrete disqualifying factor; and an analysis that already exists is cited in a new
+optional `prior_analysis` field rather than restated.**
+
+**The optionality is demonstrated, not merely declared.** One example option omits both
+fields, cites `prior_analysis`, and carries a rejection reason — the whole shape in one
+place — because the example block is the schema as far as an authoring agent is concerned.
+Prose calling a field optional beside three examples that all carry it teaches the mandate.
+
+**The `seed/` case is the common one, and it is now supported.** The reporting project's
+flow is the ordinary one: the options were surveyed and approved in the project's `seed/`
+stakeholder documents, and the SDD ADR is the development record that carries the approved
+option forward into SPEC. It did not originate the survey, and the template was telling it
+to reproduce one. `prior_analysis` names `seed/` explicitly as a legitimate target.
+
+**Citing the seed opens no second absorption path.** Seed *claims* are absorbed exactly
+once, at BRD, each with a disposition row (`SEED_CONTRACT.md` rules 2-3 / GD-08 — rule 2 is
+total disposition, rule 3 is BRD-as-absorption-point). Naming a seed document as the place
+an analysis lives asserts no claim and creates no ledger row, so the field is
+contract-compatible; and because C2 still requires the disqualifying factor to be stated
+**in the ADR**, no claim travels solely through the pointer.
+
+**The decision record itself does not move.** No SDD layer above ADR records an architecture
+commitment, so an ADR that cites its way out of stating one — the commitment, the rejection
+factors, the consequences SPEC inherits — has recorded nothing, however good the survey it
+points at. `playbooks/05_ADR/architect.md` **C2** is extended in the same change to say both
+halves: a rationale MAY compress to the named factor plus the citation, and a citation
+naming **no** factor is still the stub rationale C2 has always failed.
+
+**A count defect surfaced in review and ships with the fix.** `options:` includes the
+selected option, so the template's legal minimum — two entries — is one selected plus a
+*single* rival, which C2 explicitly P1s ("a single alternative"). Only the template's
+maximum satisfied the lens, and the antipattern forbade going higher. The count is now
+stated as **2-3 alternatives beside the selected option** (3-4 `options:` entries) in the
+template, the three plugin skills and `ADR-00_index.TEMPLATE.md`, whose two statements said
+"at least 2-3" — a third reading again.
+
+**Consequences §5 moves too, for the identical reason.** `consequences.cost_estimate` was
+unconditional, so an author told to omit `estimated_cost` in §4 was asked for
+`$[X,XXX]/month` one section later, and `doc-adr/SKILL.md` checklisted it. The block is now
+CONDITIONAL — omitted where the decision commits no spend — and the readiness rubric's
+"costs documented" is qualified to match. Leaving it would have discharged only half of a
+`real-use` report while this entry's own rationale indicted it.
+
+Three things the report proposed were **not** adopted, and the reasons are the substance of
+the rest of this entry.
+
+- **The `@seed:` tag FORM, not the seed citation.** What the report wanted — the ADR
+  pointing at the seed survey instead of copying it — ships, as prose. The tag form does
+  not, and **the reason is scope, not principle.** An earlier draft of this entry argued
+  "a tag is lineage"; that is **false**, and `TAG_SYNTAX.md` is the file that refutes it:
+  its "Provenance tag" section registers `@chg: CHG-NN` as explicitly *not* a trace tag,
+  carrying no lineage, for a CHG overlay that is likewise "not one of the 8 registry
+  layers" and "appears in no layer's `required_tags` or `can_reference`". So the registered
+  set is the 8 layer forms **plus** `@chg:`, and an `@seed:` provenance tag would be at
+  least the tenth class, not the ninth. It is also architecturally coherent — which is
+  precisely why it is not being decided here. `@chg:` earns its registration by anchoring
+  to a gated CHG record with a defined form, carrier, placement rule and an enforcing
+  check (C1); the seed has no such anchor, and a new class needs a `TAG_SYNTAX.md` section,
+  a carrier rule, a `REFGRAN01` carve-out and a lint decision. That is a spec change in its
+  own right, filed as **#614**. A prose field meets the reported need today without
+  pre-empting it.
+- **The governance rule cited in the report is not this framework's.**
+  `DECISION_WORKFLOW.md` §3 ("SDD ADR selects, doesn't re-survey") exists in the reporting
+  project, not in this spec or anywhere in the workspace, and its three-tier
+  Seed → Module → SDD model has no framework counterpart. The defect is real regardless —
+  it is the template-vs-C2 contradiction above, which is entirely framework-owned — but it
+  is a narrower defect than the report's premise, and fixing it on that premise would have
+  broken C2 by replacing per-option analysis with a one-line `decision:` field.
+- **`options:` is not renamed to `considered:`.** Before this change nothing keyed on the
+  name — not `sdd_doc_lint`, not the layer registry, not any conformance check; after it,
+  the sole consumer is `tests/conformance/test_adr_alternatives_optionality.py`, added
+  here. So the rename breaks no gate. What it costs is template drift against every ADR
+  already authored, plus a guard update, to buy clearer semantics — churn without a
+  functional gain, out of scope per the minimal-and-realistic convention.
+
+**Guard.** `tests/conformance/test_adr_alternatives_optionality.py` (16 tests). Its
+per-option mandate rule is a **normalized-sentence scan**, not a literal blocklist, and that
+shape was forced by review: the literal version missed the live mandate in
+`doc-adr/SKILL.md` (which read "cost, fit", not "cost/fit"), and one of its literals was a
+substring of the *sanctioned* replacement text, held apart only by a capital letter — so
+lowercasing a correct line would have reddened a required check. The rule normalizes
+whitespace, splits into sentences, and fails a sentence carrying a per-option quantifier and
+an optional dimension in **either order** without an exemption word. Order-directionality
+was itself a bug caught by mutation: written quantifier-first, it missed "cost and fit
+required on each option". Nine mutations are killed, including the live `doc-adr` defect,
+a reflowed mandate, an appended `_guidance` sentence, a reworded antipattern, a gutted C2,
+a mandate in `doc-adr-fixer` (outside the first draft's hardcoded roster), a stub rejection
+placeholder, a filler option gaming the demonstration, and an `@`-tag written into
+`prior_analysis`; lowercasing compliant text stays green.
+
+- **Consequences.** Projects already filling `estimated_cost` keep working — the field is
+  unchanged and still first in the example option — with one exception: an ADR carrying an
+  *invented* figure on a decision with no cost dimension now trips a new advisory
+  antipattern. That is the intended tightening. The three plugin ADR surfaces move in the
+  same change, so the audit lens cannot fail an ADR the template told the author to write.
+  `ADR-MVP-TEMPLATE.yaml` is untouched: it never carried a cost or fit mandate.
+- **Authority:** `layers/05_ADR/ADR-TEMPLATE.yaml` (`alternatives`, `consequences`),
+  `layers/05_ADR/ADR-00_index.TEMPLATE.md`, `playbooks/05_ADR/architect.md` (C2),
+  `governance/TAG_SYNTAX.md` (the `@chg:` provenance precedent),
+  `governance/SEED_CONTRACT.md` + **GD-08** (BRD is the absorption point), **GD-01**
+  (`major ⇒ C3` one-directional), `tests/conformance/test_adr_alternatives_optionality.py`.
+
+---
+
 ## GD-23 — A layer template MUST declare the document's `title`, at top level, as a scalar
 
 - **Status:** Accepted — 2026-08-31 · **SemVer:** framework `0.47.0 → 0.48.0` (MINOR),

@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.25.0"
-    framework_spec_version: "0.48.0"
+    framework_spec_version: "0.49.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
@@ -135,8 +135,9 @@ manual dry-runs.
 2. **Decision scope** — confirm exactly one decision; reserve the next
    `ADR-NN`; verify the cited upstream artifacts exist.
 3. **Generation** — produce the ADR per `../doc-adr/SKILL.md`: Document Control
-   first (status `Proposed`/`Accepted`), §2–§10 + glossary + appendix, 2–3 alternatives with
-   cost/fit, internal element IDs `ADR.NN.SS.xxxx`, cumulative tags
+   first (status `Proposed`/`Accepted`), §2–§10 + glossary + appendix, 2–3 alternatives
+   beside the selected option, each naming its disqualifying factor (cost and
+   fit are optional), internal element IDs `ADR.NN.SS.xxxx`, cumulative tags
    `@brd @prd @ears @bdd`, the `@adr: ADR-NN` self-tag, architecture-flow
    diagram via `../charts-flow/SKILL.md`.
 4. **Validation** — run `../doc-adr-audit/SKILL.md` from scratch.

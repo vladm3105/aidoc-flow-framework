@@ -46,7 +46,7 @@ metadata:
       SPEC-Ready scoring criteria:
         Decision completeness (30%): clear decision with rationale, alternatives evaluated
         Architecture clarity (25%): required decision sequenceDiagram (@diagram: sequence-*) present, integration points defined
-        Consequence analysis (20%): positive outcomes, trade-offs, costs documented
+        Consequence analysis (20%): positive outcomes, trade-offs, and costs where the decision has a cost dimension
         Traceability (15%): upstream EARS/BDD tags complete
         Verification (10%): success criteria defined, BDD cross-refs present
 
@@ -226,13 +226,51 @@ decision:
 alternatives:
   _size_target: 500  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Evaluate 2-3 viable alternatives. Each must have pros, cons, estimated cost,
-    and fit rating. Non-selected options must include a rejection reason.
+    Evaluate 2-3 alternatives BESIDE the selected option, so `options:` carries
+    3-4 entries — the selected one plus its 2-3 rejected rivals. Two entries is
+    a single rival, which `playbooks/05_ADR/architect.md` check C2 fails.
+
+    Every non-selected option carries a rejection reason naming the CONCRETE
+    factor that disqualified it — cost, latency, complexity, vendor lock-in,
+    operational burden, whatever actually decided it. That named factor is what
+    C2 grades; a stub ("not chosen for technical reasons") fails it, because a
+    future reader cannot re-evaluate the decision when the factor changes.
+
+    `estimated_cost` and `fit` are OPTIONAL on every option, the selected one
+    included. Fill `estimated_cost` when money is one of the decision factors
+    and omit it when it is not: a process, pattern, or interface decision has
+    no monthly dollar figure, and an invented one is noise that reads as
+    evidence. `fit` is a coarse summary rating — useful when options differ by
+    degree, omitted when the rejection reason already says everything.
+
+    `prior_analysis` is the release valve for duplication, and the case it
+    exists for is the COMMON one: the options were surveyed and approved in the
+    project's `seed/` stakeholder documents, and this ADR is the development
+    record carrying the approved option forward into SPEC. It did not originate
+    that survey and must not reproduce it. Other targets: a prior ADR, an
+    upstream PRD/EARS element, an external design note. Cite the survey, and
+    keep `pros`/`cons` to the factors that bore on THIS selection.
+
+    `prior_analysis` is PER-OPTION PROSE and carries NO `@`-tag of any layer.
+    The linter's tag scanner is document-global, so an `@adr:` or `@prd:`
+    written here becomes a real trace edge — lineage, which this field is not.
+    Lineage stays in the traceability section. Naming a seed document here is
+    provenance and opens no second absorption path: seed CLAIMS are absorbed
+    exactly once, at BRD, each with a disposition row
+    (`governance/SEED_CONTRACT.md` rules 2-3 / GD-08), and naming where an
+    analysis lives asserts no claim.
+
+    What never moves upstream is the decision RECORD — the commitment, the
+    rejection factors, the consequences SPEC inherits. An ADR that cites its
+    way out of stating those has recorded nothing, however good the survey it
+    points at.
 
   _antipatterns:
-    - "FAIL: more than 3 alternatives — violates MVP streamlining"
+    - "FAIL: fewer than 2, or more than 3, non-selected alternatives beside the selected option"
     - "FAIL: missing rejection reason for non-selected options"
-    - "FAIL: no cost estimate per alternative"
+    - "FAIL: rejection reason names no concrete disqualifying factor (architect C2)"
+    - "FAIL: an @-tag written inside prior_analysis — it is prose, and the tag scanner reads it as lineage"
+    - "FAIL: an estimated_cost left as an unresolved placeholder — fill it or omit the field"
 
   options:
     - id: "ADR.NN.04.xxxx"
@@ -245,32 +283,33 @@ alternatives:
       cons:
         - "[Con 1]"
         - "[Con 2]"
-      estimated_cost: "$[X]/month"
-      fit: Best
+      estimated_cost: "$[X]/month"  # OPTIONAL — omit where cost is not a decision factor
+      fit: Best  # OPTIONAL — Best | Good | Poor
 
+    # The worked example of the whole shape: rejected, cost and fit omitted
+    # because neither decided it, and the survey cited rather than restated.
     - id: "ADR.NN.04.xxxx"
       name: "[Alternative B]"
       selected: false
       description: "[Description]"
+      prior_analysis: "[Where the survey lives, in prose — e.g. 'options surveyed and approved in seed/ARCH-01 §3']"  # OPTIONAL
       pros:
-        - "[Pro 1]"
+        - "[Pro that bore on THIS selection]"
       cons:
-        - "[Con 1]"
-      rejection_reason: "[Why not selected]"
-      estimated_cost: "$[X]/month"
-      fit: Good  # Good | Poor
+        - "[Con that bore on THIS selection]"
+      rejection_reason: "[Names the concrete disqualifying factor]"
 
     - id: "ADR.NN.04.xxxx"
-      name: "[Alternative C — optional]"
+      name: "[Alternative C]"
       selected: false
       description: "[Description]"
       pros:
         - "[Pro 1]"
       cons:
         - "[Con 1]"
-      rejection_reason: "[Why not selected]"
-      estimated_cost: "$[X]/month"
-      fit: Poor
+      rejection_reason: "[Names the concrete disqualifying factor]"
+      estimated_cost: "$[X]/month"  # OPTIONAL
+      fit: Poor  # OPTIONAL
 
 # =============================================================================
 # Section 5: Consequences
@@ -280,7 +319,14 @@ consequences:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Document the full impact of the decision: positive outcomes,
-    trade-offs/risks with severity, and cost breakdown.
+    trade-offs/risks with severity, and — where the decision HAS a cost
+    dimension — a cost breakdown.
+
+    `cost_estimate` is CONDITIONAL, for the same reason `alternatives`'
+    `estimated_cost` is optional: an ADR deciding a pattern, a process or an
+    interface has no dollar figure, and inventing one plants a number every
+    downstream reader treats as evidence. Omit the whole block when the
+    decision commits no spend; fill it when it does.
 
   positive_outcomes:
     - id: "ADR.NN.05.xxxx"
@@ -294,7 +340,7 @@ consequences:
       impact: High  # High | Medium | Low
       mitigation: "[How to mitigate]"
 
-  cost_estimate:
+  cost_estimate:  # CONDITIONAL — omit entirely where the decision commits no spend
     mvp_cost: "$[X,XXX]"
     ongoing_monthly: "$[X,XXX]/month"
     notes: "[Cost assumptions and caveats]"
