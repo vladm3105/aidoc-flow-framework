@@ -32,15 +32,15 @@ File it if it should have one.
 
 ## The backlog is GitHub issues
 
-**Open issues: 33** (re-derived 2026-09-01 after this session's fifth PR was raised — it files
-**#611** and closes **#606** on merge, leaving 32. The previously recorded 34 did not survive
-re-derivation; run the command rather than carrying the figure). Re-derive with
+**Open issues: 34** (re-derived 2026-09-01 after PR #612 was raised — it files **#611** and
+**#613** and closes **#606** on merge, leaving 33). Every figure in this section was re-derived
+by command, not carried: the previously recorded 34 was right by coincidence, having been
+measured before #609 closed and before this PR's two filings. Re-derive with
 `gh issue list --state open --limit 300 --json number --jq 'length'`.
 In-progress work carries **`status: in progress`** — currently only **#423**.
 
-**Thirteen carry the `parked` label** and are not pickable: #438, #467, #473, #483, #484,
-and #507, #528, #543, #544, #545, #546, #547, #548. Derive that set from the label, not from
-a title scan — two of them name the gating decision only in the body.
+**Fourteen carry the `parked` label** and are not pickable: #438, #467, #473, #483, #484, #507, #528, #543, #544, #545, #546, #547, #548, #563.
+Derive that set from the label, not from a title scan — two of them name the gating decision only in the body.
 Three are blocked externally: **#484** (gated on v1.0.0), **#473** (the umbrella owns the
 submodule pointer), **#528** (product call).
 
@@ -48,7 +48,8 @@ submodule pointer), **#528** (product call).
 
 Four merges, in order: **#605** (closes #603) → **#608** (unbreak `main`) → **#607**
 (closes #604). Two issues filed: **#606** — fixed in this session's fifth PR, which closes it —
-and **#609**, left open. #606's fix also filed **#611**.
+and **#609** — which the founder closed COMPLETED at 05:08Z, mid-session, with no closing
+comment. #606's fix also filed **#611**, and PR #612's own CI filed **#613**.
 
 **`doc-maintainer` is eliminated — `plans/DECISIONS.md` D-0085, PR #605 (#603).** The caller
 was pinned `@ci/v4.0.0`, a tag at which canon had **deleted** that reusable (v4 BC #2 /
@@ -87,11 +88,13 @@ contexts at once — conformance, GATE-SPEC (its *conformance* step; the diff-aw
 checks **passed**), and pre-commit. #608 repaired it with the generator, one file.
 
 **The durable part:** a direct push to `main` bypasses PR checks entirely, so `GATE-SPEC` never
-evaluated that `framework/**` edit. Whether it owes a version bump is **undecided and tracked
-in #609** — founder deferred it as "unblock now, decide later". #609 also records that the edit
-left `IPLAN-TEMPLATE.yaml:163` contradicting `:300` (`:163` documents that carrier's vocabulary
-as `created | modified`), and that whether **#601** is actually satisfied depends on the same
-call: if the comment *is* the contract it is, otherwise the enforced surface still needs it.
+evaluated that `framework/**` edit. Whether it owes a version bump was tracked in
+**#609**, which the founder **closed COMPLETED at 05:08Z with no closing comment** — so the
+answer is not recorded on the issue, and no `plans/DECISIONS.md` or GD entry carries it either.
+Treat the divergence as **accepted, not resolved**: `IPLAN-TEMPLATE.yaml` is unchanged since
+`2943bf3b` and still carries the `created | modified` vocabulary its `:160-165` note now flags
+explicitly as "NOT reconciled here". Re-file if that costs anything downstream; do not
+reopen #609 expecting to find reasoning in it.
 
 ## CI gating — `ai-review` and `composition` no longer gate (D-0084)
 
@@ -110,17 +113,24 @@ Re-derive with
 skip form is self-authorizing and bot authors are exempt.
 
 **`ai-review` fails intermittently** with `litellm: proxy request failed after 3 attempts:
-ResponseShapeError` (upstream `aidoc-flow-ci#543`) — observed again this session, then passing
-on a re-run of the same branch. It is **not** the 402 this proxy is otherwise known for, and
-not size-driven. Since it no longer gates, the cost is a lost verdict, not a blocked merge.
+ResponseShapeError` (upstream `aidoc-flow-ci#543`) — observed earlier this session and passing
+on a re-run of that branch. It is **not** the 402 this proxy is otherwise known for, and not
+size-driven. **On PR #612 it did not clear**: two consecutive failures on the same head, so
+"re-run and it passes" is not reliable. Since it no longer gates the cost is a lost
+verdict — #612 carries none and rests on its author-side OPS-0065 review. Evidence added to that upstream
 
-## Unsettled — watch, do not yet file
+issue, because at **5 files / +387−239** this instance also sits below the file-count
+discriminator its title asserts (1 file passes, 179 fails), so satisfying that budget is not
+sufficient to pass.
 
-**Intermittent DNS failure on this host.** `curl: (6) Could not resolve host: github.com`
-failed `call / dep-scan` twice (02:29Z, 02:45Z), and a local `git fetch` hit
-`ssh: Could not resolve hostname github.com` in the same window. All three self-recovered.
-`trivy-scan` runs on the same self-hosted pool at the same timestamps and **passed**, so it is
-not a blanket pool outage. Three instances is not a root cause — a fourth warrants an issue.
+**`dep-scan` fails intermittently too, from a different cause — #613.** Four instances of one
+resolver fault, and they are not all the same shape: **three** are `call / dep-scan` hitting
+`curl: (6) Could not resolve host: github.com`, each clearing on a re-run of the same SHA; the
+fourth was a local `git fetch` on the host hitting `ssh: Could not resolve hostname github.com`.
+That fourth one is the evidence the fault is **host-level, not workflow-level**. `trivy-scan`
+passes on the same pool in the same windows while downloading from that same `github.com` host,
+so it is not a pool outage. Since `dep-scan` does not gate (above), re-run it rather than
+diagnosing the workflow; ownership of the host-side fix is the open question in the issue.
 
 ## What to do next — prioritized
 
@@ -128,11 +138,7 @@ not a blanket pool outage. Three instances is not a root cause — a fourth warr
    `0.46.0`, `0.47.0` and `0.48.0` have all shipped to `main`. Three untagged releases is the
    point at which "correct forward" stops being cheap, and the missing `GATE-SPEC` release
    step still has no tracker home — file it.
-2. **#609** — the deferred founder call from this session: does `2943bf3b` owe a framework
-   version bump + GD entry, is `IPLAN-TEMPLATE.yaml:163` reconciled, and is **#601** actually
-   satisfied by a comment-only edit? All three travel together, because reconciling `:163` is
-   itself a `framework/**` edit that trips `GATE-SPEC-E005`.
-3. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
+2. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
    infrastructure prerequisites (runner labels `ci`/`ephemeral` do not exist; `LLM_URL` /
    `LLM_API_KEY` do not exist and the caller still forwards three `LITELLM_*` names v4
    un-declares). ⚠️ **Its stated `--repin` remedy is unsafe** — read the plan, not the issue
@@ -141,10 +147,10 @@ not a blanket pool outage. Three instances is not a root cause — a fourth warr
    `.github/ai-review/config.json`'s `$schema`** (plan step 6 / verification V3b) —
    `tests/conformance/test_ai_review_schema_pin.py` fails the required conformance context
    otherwise.
-4. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
+3. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
    D1's to settle.
-5. **#546** — carries a measured correction that **splits it**. The `_required: false` half of
+4. **#546** — carries a measured correction that **splits it**. The `_required: false` half of
    the `STY02` defect is independently shippable and does not wait on the parked subtype
    decision. Re-title or split before picking it up.
-6. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal` carries
+5. **#423** — the only issue marked in progress. `origin/fix/423-site-badge-selfheal` carries
    `f05dfc0d`. Needs a rebase onto current `main`, a finalized commit message and a PR.
