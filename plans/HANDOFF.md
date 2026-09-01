@@ -8,7 +8,10 @@ never repeated here.
 **State:** framework spec **`0.49.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
 `FRAMEWORK_SPEC_VERSION` pins read `0.49.0`. `0.45.0` was **skipped** and never became a value
 of `framework/VERSION` (`plans/DECISIONS.md` D-0082). `framework/v0.44.0` is the most recent
-**tag**; `0.46.0`, `0.47.0`, `0.48.0` and `0.49.0` are untagged — see "Release provenance" below.
+**tag** — ⚠️ **already false**: `framework/v0.46.0`–`v0.49.0` were cut and pushed 2026-09-01
+(they are tags, not a PR artifact, so they exist regardless of #618's state). The high-water
+mark is **`framework/v0.49.0`**; re-derive with `git ls-remote --tags origin 'refs/tags/framework/*'`.
+See "Release provenance" below.
 
 **Verified this session** (run, not asserted, on `main` at **`29619057`** — i.e. after
 PR #615 merged): conformance **473 passed / 950 subtests** via
@@ -150,10 +153,10 @@ one self-recovering instance after closure is not yet a trend. Re-open #613 if i
    `fix/606-ai-review-schema-pin` (`cfb7b6e4`). Three dispositions are laid out in the comment
    on #606. Cheapest correct path: re-submit the branch, since the `ai-review` flake that
    killed PR #612 no longer gates.
-2. **Tag the untagged releases.** `framework/v0.44.0` is still the most recent tag while
-   `0.46.0`, `0.47.0`, `0.48.0` and `0.49.0` have all shipped to `main`. Four untagged releases
-   is the point at which "correct forward" stops being cheap, and the missing `GATE-SPEC`
-   release step still has no tracker home — file it.
+2. **#618** — closes #617 with the phantom-version guard and records **D-0086** (the
+   `hermes/v0.1.1` tagged phantom: a cut, immutable release tag on a commit whose VERSION reads
+   `0.1.0`). The four framework tags it describes are **already pushed**; the PR carries the
+   guard, `docs/TAGGING.md` and the decision record, not the tags.
 3. **#609** — the deferred founder call: does `2943bf3b` owe a framework version bump + GD
    entry, is `IPLAN-TEMPLATE.yaml:163` reconciled, and is **#601** actually satisfied by a
    comment-only edit? All three travel together, because reconciling `:163` is itself a
