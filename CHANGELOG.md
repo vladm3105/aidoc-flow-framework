@@ -12,6 +12,74 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.48.0 → 0.49.0` — the ADR `alternatives` block stops mandating a cost estimate per option, and gains a way to cite an existing survey (GD-24, #602) (2026-09-01)
+
+`ADR-TEMPLATE.yaml`'s `alternatives` block demanded a cost estimate and a fit rating on
+**every** option — in `_guidance`, and as a hard `_antipatterns` failure ("FAIL: no cost
+estimate per alternative"). The lens that actually audits the section demands neither:
+`playbooks/05_ADR/architect.md` check **C2** grades that ≥2 alternatives are enumerated and
+that each rejected one carries a rationale naming *the concrete factor that disqualified it*,
+with cost listed as one example beside latency, complexity and vendor lock-in. So an ADR
+deciding a pattern, a process or an interface — which has no monthly dollar figure — could
+satisfy the audit while failing the template, and the way out the template offered was to
+invent a number that then reads as evidence to every downstream reader.
+
+**What changed.** `estimated_cost` and `fit` become OPTIONAL per option; the rejection
+reason must name a concrete disqualifying factor; and a new optional `prior_analysis` field
+lets an author name where a fuller survey already lives instead of restating it. The
+optionality is *demonstrated* — one example option omits both fields, cites
+`prior_analysis` and carries a rejection reason — because three examples that all carry a
+field teach the mandate no matter what the prose beside them says.
+
+**The `seed/` case is named explicitly, because it is the common one**: the options were
+surveyed and approved in the project's `seed/` stakeholder documents, and the SDD ADR is the
+development record carrying the approved option into SPEC. `prior_analysis` cites that survey;
+**C2** is extended in the same change so a rationale MAY compress to the named factor plus the
+citation — and so a citation naming **no** factor is still the stub rationale C2 has always
+failed. Without that second half the compression is a way to say nothing. Citing the seed
+opens no second absorption path: seed *claims* are absorbed once, at BRD, each with a
+disposition row (`SEED_CONTRACT.md` rules 2-3 / GD-08), and naming where an analysis lives
+creates no ledger row.
+
+**Two adjacent defects surfaced in review and ship with the fix.** `options:` includes the
+selected option, so the template's legal minimum was one selected plus a *single* rival —
+which C2 explicitly P1s; the count is now "2-3 alternatives **beside** the selected option"
+across the template, the plugin skills and `ADR-00_index.TEMPLATE.md` (which had said "at
+least 2-3", a third reading). And `consequences.cost_estimate` was unconditional, so an
+author told to omit `estimated_cost` in §4 was asked for `$[X,XXX]/month` one section later;
+it is now CONDITIONAL, with the readiness rubric qualified to match.
+
+**The plugin surfaces move in the same change.** `doc-adr`, `doc-adr-autopilot` and
+`doc-adr-audit` had each restated the per-option mandate, `doc-adr-audit` as an advisory
+audit check — so leaving them would have had the auditor fail an ADR the template told the
+author to write.
+
+**Guarded.** `tests/conformance/test_adr_alternatives_optionality.py` (16 tests). Its mandate
+rule is a **normalized-sentence scan**, not a literal blocklist, and review forced that shape:
+the literal draft missed a live mandate in `doc-adr/SKILL.md` (which read "cost, fit", not
+"cost/fit"), and one literal was a substring of the *sanctioned* replacement text, separated
+only by a capital letter — lowercasing a correct line would have reddened a required check.
+Nine mutations are killed, including that live defect, a reflowed mandate, an appended
+`_guidance` sentence, a reworded antipattern, a gutted C2, a mandate in `doc-adr-fixer`
+(outside the first draft's roster), a stub rejection placeholder, a filler option gaming the
+demonstration, and an `@`-tag written into `prior_analysis`. Lowercasing compliant text stays
+green.
+
+**Three things the report asked for were not adopted**, and `framework/governance/DECISIONS.md`
+**GD-24** carries the reasoning. The `@seed:` *tag form* — citing the seed ships, but as
+prose, and the decline is **scope, not principle**: an early draft argued "a tag is lineage",
+which `TAG_SYNTAX.md` itself refutes by registering `@chg:` as an explicitly non-lineage
+**provenance** tag for an overlay that is likewise not one of the 8 layers. A tenth tag class
+needs a form, a carrier rule, a `REFGRAN01` carve-out and a lint decision, so it is filed as
+[#614](https://github.com/vladm3105/aidoc-flow-framework/issues/614) rather than settled here.
+The cited `DECISION_WORKFLOW.md` §3 belongs to the reporting project and exists nowhere in
+this workspace; its premise would have replaced per-option analysis with a one-line field,
+breaking C2. And renaming `options:` to `considered:` breaks no gate — nothing keyed on the
+name before this change, and only the new guard does after — but costs template drift against
+every ADR already authored, to buy clearer semantics. The underlying defect is real and
+framework-owned regardless: it is the template-vs-C2 contradiction, not the three-tier
+decision model the report inferred it from.
+
 ### Fixed — docs: `CLAUDE.md`'s canon pin census was wrong in both directions (#604) (2026-09-01)
 
 `CLAUDE.md` § "Unified CI" asserted *"All **seventeen** `aidoc-flow-ci` call sites across sixteen

@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: architect
 weight: 35
 agent: solutions-architect
-framework_spec_version: "0.48.0"
+framework_spec_version: "0.49.0"
 ---
 # architect lens — ADR layer
 
@@ -60,6 +60,23 @@ one-paragraph rationale naming the concrete factor that disqualified it
 or a stub rationale ("not chosen for technical reasons") means future
 readers cannot re-evaluate the decision when the disqualifying factor
 changes. Missing alternative or stub rationale → P1 citing C2.
+
+Where the survey itself lives upstream — commonly the project's `seed/`
+stakeholder documents, which approved the option this ADR carries into
+SPEC — the rationale MAY compress to the named factor plus the template's
+`prior_analysis` citation, and that satisfies C2. What C2 grades is that a
+reader can name the disqualifying factor and reach the analysis behind it,
+never that the ADR reproduce an analysis it did not originate; a restated
+survey is the copy that goes stale, since the seed is frozen and the ADR is
+not. The compression is not a loophole: a citation carrying no named factor
+is still a stub rationale, because the reader cannot see why the option lost
+without leaving the document.
+
+Cost is one example on that open list, never a required field. An ADR
+deciding a pattern, a process or an interface has no cost dimension, and
+inventing a figure to fill the slot buys nothing here while planting a
+number downstream readers will treat as evidence — which is why the template
+carries it as an antipattern rather than a requirement.
 
 **C3 — Trade-offs explicit (gains AND gives-up).** The Trade-offs section
 names both what the decision wins and what it loses. An ADR that lists

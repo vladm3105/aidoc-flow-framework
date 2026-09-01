@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [EARS, BDD]
     downstream_artifacts: [SPEC, TDD, IPLAN]
     version: "0.25.0"
-    framework_spec_version: "0.48.0"
+    framework_spec_version: "0.49.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -86,9 +86,10 @@ history). Then:
 
 2. Context (problem statement, business driver, constraints, technical
 context) · 3. Decision (chosen solution, key components, MVP/next-cycle scope) ·
-4. Alternatives Considered (2–3 options, each with pros/cons, cost, fit;
-rejected options carry a rejection reason) · 5. Consequences (positive
-outcomes, trade-offs/risks with severity, cost estimate) · 6. Architecture
+4. Alternatives Considered (the selected option plus 2–3 rejected rivals, each
+with pros/cons; rejected ones name the concrete disqualifying factor — cost and
+fit optional) · 5. Consequences (positive outcomes, trade-offs/risks with
+severity, and a cost estimate where the decision commits spend) · 6. Architecture
 Flow (diagrams + integration points) · 7. Implementation Assessment (phases,
 rollback, monitoring baseline) · 8. Verification (success criteria, BDD
 cross-refs) · 9. Traceability · 10. Related Decisions.
@@ -133,8 +134,12 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
    `${CLAUDE_PLUGIN_ROOT}/framework/layers/05_ADR/ADR-00_index.TEMPLATE.md`.
 4. **Document Control (Section 1) first**, then complete §2–§10 plus the
    glossary and appendix backmatter from the template.
-5. **Evaluate 2–3 alternatives** with cost and fit; give every rejected option
-   a rejection reason. State the decision decisively with rationale.
+5. **Evaluate 2–3 alternatives beside the selected option** (so `options:`
+   carries 3–4 entries) — give every rejected option a rejection reason
+   naming the concrete disqualifying factor. `estimated_cost`/`fit` are
+   optional per option; where a fuller survey already exists, cite it in
+   `prior_analysis` instead of restating it. State the decision decisively
+   with rationale.
 6. **Add the required upstream tags** `@ears @bdd`; add the `@adr: ADR-NN`
    self-tag and any `@depends:` cross-links.
 7. **Update the ADR index** `docs/05_ADR/ADR-00_index.md` in the same change.
@@ -147,8 +152,11 @@ See `ADR-TEMPLATE.yaml` for per-section content and authoring `_antipatterns`.
 - [ ] Document Control is the first section; status is one of
       Proposed/Accepted/Deprecated/Superseded.
 - [ ] All 10 sections present and non-empty; exactly one decision.
-- [ ] 2–3 alternatives, each with pros/cons + cost; rejected ones have a reason.
-- [ ] Consequences cover positive outcomes, trade-offs (with severity), cost.
+- [ ] 2–3 rejected alternatives beside the selected option, each with
+      pros/cons and a concrete disqualifying factor. Cost and fit are
+      optional; an existing survey is cited, not restated.
+- [ ] Consequences cover positive outcomes and trade-offs (with severity); a
+      cost estimate only where the decision commits spend.
 - [ ] Element IDs match `ADR.NN.SS.xxxx`; document refs use dash `ADR-NN`; no
       removed patterns.
 - [ ] Required upstream tags `@ears @bdd` present (per necessary-upstream
@@ -206,5 +214,5 @@ framework defaults. Authority:
 | **Self-reference** | dash form `@adr: ADR-NN` (document-level) |
 | **Element IDs** | `ADR.NN.SS.xxxx` (internal elements only) |
 | **Status** | Proposed → Accepted → Deprecated → Superseded |
-| **Must include** | Document Control (first), 10 sections, 2–3 alternatives |
+| **Must include** | Document Control (first), 10 sections, 2–3 alternatives beside the selected option |
 | **Next** | `doc-spec` |
