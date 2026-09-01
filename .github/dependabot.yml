@@ -53,12 +53,19 @@ updates:
     # plans/CI-CANON-V4-MIGRATION-PLAN.md); this entry does not stand in its way,
     # it only stops the bump arriving as an unreviewed dependency update.
     #
-    # ⚠️ This file is `safe_to_replace: true` in canon's manifest, and NO drift
-    # check covers it — `sync/check-drift.sh` scans only the manifest's
-    # `.github/workflows/` surface, and `check-standards-drift.sh` checks only
-    # server-side settings. So `install.sh --update` silently deletes this hold
-    # and its rationale, with no warning. That is the same failure shape this
-    # hold exists to prevent, one level up. See D-0085.
+    # ⚠️ This file is `safe_to_replace: true` in canon's manifest, so
+    # `install.sh --update --non-interactive` silently deletes this hold and its
+    # rationale, with no warning — the same failure shape the hold itself exists
+    # to prevent, one level up.
+    #
+    # And the detector points the WRONG WAY. `sync/check-drift.sh` covers only
+    # the manifest's `.github/workflows/` surface and `check-standards-drift.sh`
+    # only server-side settings — neither sees this file. But
+    # `install/apply-standards.sh:434` exact-matches it, and canon's
+    # `install/templates/dependabot.yml` has no `ignore:` block, so
+    # `apply-standards.sh --check` reports THIS BLOCK as the drift and exits 1.
+    # Nothing detects its deletion. Do NOT "restore canonical" on that red. The
+    # durable fix is to push the hold upstream into canon's template. See D-0085.
     ignore:
       # BOTH forms are required. Dependabot names a REUSABLE WORKFLOW dependency
       # `owner/repo/<path>.yml` — covered by the first pattern, since `*` in a
