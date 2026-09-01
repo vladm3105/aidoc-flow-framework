@@ -62,6 +62,55 @@ still frames this pin as a *currency* matter against canon, which this change re
 *equality to the caller* — a fourth doc surface, over OPS-0061's cap, so it is filed as **#611**
 rather than folded, per the same rule's prescribed split.
 
+### Fixed — docs: `CLAUDE.md`'s canon pin census was wrong in both directions (#604) (2026-09-01)
+
+`CLAUDE.md` § "Unified CI" asserted *"All **seventeen** `aidoc-flow-ci` call sites across sixteen
+files are pinned `@ci/v2.16.0`"*. Measured: **16 call sites across 15 files**, split across
+**three majors** — 7 × `ci/v2.16.0` + 5 × `ci/v3.0.0` + 4 × `ci/v4.0.0`. Because `CLAUDE.md` is
+auto-loaded, that was a false premise handed to every session — which is the whole blast radius.
+*(An earlier draft added "and the v4 migration's verification step V3 is a pin count"; V3 is a
+distinct-tag uniqueness check that re-derives from the tree and consumes no figure from
+`CLAUDE.md`, so that consequence does not follow.)*
+
+Two independent causes, now both stated in the file: **ten Dependabot canon major bumps**
+(#522-#526, #590-#594) split the pins while the uniformity claim went unrevised, and #603 deleted
+the seventeenth site. The counting commands the section prescribes were correct and are unchanged
+— only the figures were wrong.
+
+Also corrected in the same pass:
+
+- `.github/workflows/links.yml:1` — the header comment claimed `@ci/v2.16.0` while both of that
+  file's `uses:` pins are `@ci/v3.0.0`. This is a live instance of the failure mode the section
+  itself documents: a re-pin *"can never deliver a caller-body change and never notices a comment
+  it falsified."*
+- The "never `--update`" clobber list named only workflow-body overrides. It now also names
+  `.github/dependabot.yml`, which is `safe_to_replace: true` in canon's manifest — so `--update`
+  would silently delete the `semver-major` hold added in #603.
+- **Corrected D-0085's detector claim, which was inverted.** #603 recorded that "no drift check"
+  covers `.github/dependabot.yml`, from a two-item enumeration that was not exhaustive. Canon's
+  `install/apply-standards.sh:434` **exact-matches** that file and `--check` exits 1 on drift —
+  and since canon's template carries no `ignore:` block, **the hold itself reads as the drift**.
+  The real hazard is the opposite of the one recorded: a session that "restores canonical" on a
+  red `apply-standards.sh --check` **deletes the hold**. Nothing detects its deletion. Corrected
+  in `plans/DECISIONS.md` D-0085, `CLAUDE.md` and the `.github/dependabot.yml` comment.
+- `CLAUDE.md`'s claim that the hold means "the split can no longer widen on its own" was
+  narrowed: the hold is **major-only**, and grouped minor/patch bumps stay in scope — which is
+  precisely how the pin set split the first time.
+- The runner-split bullet calling `dep-scan` and `trivy-scan` "adopted byte-exact" now notes that
+  is no longer true of `trivy-scan`: at `@ci/v4.0.0` it *overrides* canon's renamed
+  `["self-hosted", "ci", "ephemeral"]` default, surviving v4 BC #1 by that override rather than
+  by being canonical.
+- The `doc-maintainer` census trap (D-0072 §3) notes the flow is retired, so no reader looks for
+  a resume condition that no longer exists.
+
+**Swept but not fully cleared, and filed rather than papered over:** the falsified-reference class
+also contains a *machine-read* pin, not just comments — `.github/ai-review/config.json:2` pins its
+`$schema` at `ci/v2.16.0` while its caller is `ci/v3.0.0`. Canon states that pin is
+`safe_to_replace: false` and self-repairs under neither `--repin` nor `--update`. It is **not**
+fixed here because the file is deliberately declared at schema v2 (canon asserts `version == 2`
+before reading any field), so retargeting the URL needs the schemas diffed first. Filed as
+**#606**, suggested for the v4 migration PR that already edits that caller.
+
 ### Removed — CI: the `doc-maintainer` flow is eliminated (D-0085, #603) (2026-09-01)
 
 Deleted `.github/workflows/doc-maintainer.yml` and its two per-consumer config files
