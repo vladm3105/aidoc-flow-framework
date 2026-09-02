@@ -643,6 +643,19 @@ fresh to have settled, and never repeats one that is already here.
   one of: `Multi-agent self-review per OPS-0065 (<agents>): <verdict>` or
   `Self-review skipped per founder OK — <reason>`. It is `grep -qF`; nothing else
   matches, and the phrase belongs in the **commit message**, not the PR body.
+  **It is a phrase check, not a review gate** — the skip form is self-authorizing and
+  bot authors are exempt, so a green `call / verify` is evidence that a string is
+  present and nothing more. That cuts both ways: the skip form asserts a **founder OK
+  that the gate never verifies**, so writing it without one puts a false authorization
+  claim in permanent history. Run the review and use the other form, or get the OK.
+- **A direct push to `main` bypasses every PR check, so `GATE-SPEC` never evaluates the
+  edit.** `2943bf3b` was pushed straight to `main` and changed
+  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` without re-running
+  `tools/sync-plugin-framework.sh`; the vendored plugin copy drifted and took down
+  conformance, GATE-SPEC's *conformance* step and pre-commit at once (#608 repaired it
+  with the generator, one file). The gate's diff-aware `E001`–`E008` never ran at all —
+  they are PR-triggered — so **a `framework/**` edit can reach `main` owing a version
+  bump nobody assessed.** Whether that one does is still open in #609.
 - **Stacked PRs: retarget the child before merging the parent.** Merging #357 with
   `--delete-branch` deleted #358's base, which **auto-closed #358**, and GitHub
   refuses to retarget a closed PR — it had to be rebuilt by cherry-picking onto
