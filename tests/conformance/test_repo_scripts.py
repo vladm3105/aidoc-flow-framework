@@ -31,6 +31,7 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 REGISTERED = (
     "tests.unit.test_pin_currency_reader",
     "tests.unit.test_sdd_doc_lint_trace_resolution",
+    "tests.unit.test_sync_website_badge",
     "tests.unit.test_tag_quote_termination",
 )
 
