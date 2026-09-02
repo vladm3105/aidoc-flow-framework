@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.49.0"
+    framework_spec_version: "0.50.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -400,8 +400,9 @@ the subtype is wrong (not the section set).
 
 **Tier 2 — advisory (warning):** frontmatter metadata (below); execution
 commands cover setup/implementation/validation; implementation contracts present
-when 3+ files share interfaces; `code_inventory` populated for each
-created/modified file; `validation_results` recorded per session; internal links
+when 3+ files share interfaces; `code_inventory` carries one entry per
+`file_manifest` path — `planned` until built, then `created`/`modified` with a
+session number; `validation_results` recorded per session; internal links
 and template/governance references resolve; permanent plan registered in
 `IPLAN-00_index.yaml`; any dependency diagram uses `../charts-flow/SKILL.md`.
 

@@ -12,6 +12,79 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.49.0 → 0.50.0` — IPLAN `code_inventory` gains a `planned` status and is seeded at Draft instead of left empty (GD-25, #601, #609) (2026-09-02)
+
+`IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
+`2943bf3b` — `created` and `modified` — and demonstrated them with one worked entry reading
+`status: created`, `session: 1`. Both values assert the file exists. A Draft IPLAN has no
+files, so an agent generating one from the template had no correct value to write and copied
+the example, producing a Draft whose audit trail claimed work that had not happened. Reported
+from a consuming project running the SDD chain.
+
+**The defect was in the example, not only in the enum.** The `_guidance` said "Populated by
+each session" — the correct retrospective reading, and exactly why the block was never meant
+to be filled at Draft. The example beside it said otherwise, and **an example overrides the
+prose beside it** (GD-24, one release earlier). This is why appending a value to the `#`
+comment did not close the report: nothing parses that comment, and the surface agents
+actually copy was unchanged.
+
+**What changed.** The vocabulary is `planned | created | modified`, and a Draft IPLAN of
+subtype `code_build` or `combined` now seeds **one entry per §2 `file_manifest` path**, in
+manifest order, all `planned`, `session: null`, `verified: false`. Each session sets the
+entries it touched to `created` or `modified`, records its session number, and appends an
+entry for any file it touches that §2 does not declare; `planned` MUST NOT survive a session
+that touched the file — without that clause the new value just becomes the next permanent
+stale marker. A `deploy` IPLAN requires no `file_manifest`, so it seeds no entries. All three
+worked entries in the template now show the Draft state and match `file_manifest`'s paths, so
+copying them verbatim produces a correct Draft.
+
+**The empty block is retired, and that was a spec-vs-platform disagreement.** `doc-iplan` and
+`doc-iplan-autopilot` both instructed an authoring agent to ship an *empty* `code_inventory`.
+An empty block is the weaker artifact on its own terms: it is indistinguishable from an
+executor that never wrote its entries back, whereas a fully `planned` block states the
+expected set and makes the gap between plan and reality visible to the next stateless
+session. `doc-iplan-audit`'s advisory row and `doc-iplan-fixer`'s phase-5 repair action move
+with them, so the auditor cannot fail an IPLAN the author was told to write.
+
+**The template also stopped agreeing with itself — in three places, not two.** §2's passage
+explaining this carrier restated the vocabulary as `created | modified`, so after `2943bf3b`
+it contradicted the `status:` key ~140 lines below for two days; that was the second of the
+three questions [#609](https://github.com/vladm3105/aidoc-flow-framework/issues/609) held
+open. The third statement is `_guidance`'s own lifecycle list, which nobody had counted and
+which the first draft of the guard left unlocked. All three now name the same values, and
+GD-25 answers #609's other two questions on the record: `2943bf3b` did owe a version bump
+(this release pays it), and a comment-only edit did not satisfy #601.
+
+**Guarded.** `tests/conformance/test_iplan_code_inventory_lifecycle.py` (15 tests). The Draft
+rule reads the **parsed YAML entries**, not the enum comment — a guard checking only the
+comment would have passed `2943bf3b`. Mutation testing over the first draft killed four
+platform-side rules: the retired instruction re-entered by **word order** ("leave
+`code_inventory` empty"), a *correct* prohibition ("Reject an empty `code_inventory`")
+reddened the check, a skill could instruct `status: created` in a Draft seed and stay green,
+and deleting a skill's seed instruction outright stayed green. Every claim about the four
+skills now has a positive assertion behind it, the scan globs `doc-iplan*/**/*.md` rather
+than top-level `SKILL.md`, and expected fragments carry no pinned punctuation — an earlier
+draft anchored §2's em-dashes, so a meaning-preserving reword reddened a required context.
+Nineteen mutations were run and eighteen behave as specified; the nineteenth (reverting one
+of `doc-iplan`'s two seed statements) stays green by design and is stated as a limit in
+GD-25 rather than claimed as coverage.
+
+**What was not adopted.** §6 now shares a path list with §2 `file_manifest`, and the two are
+deliberately left unreconciled: §2 is the executor's build order over four values
+(`NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`), §6 is the audit trail over three, and each
+carries its own `verified:`. Collapsing them is a larger redesign of the layer than a
+status-value report warrants and would change the meaning of every IPLAN already authored;
+the detection gap that redundancy creates — nothing validates the §2 ↔ §6 correspondence on
+an authored artifact — is recorded in GD-25 rather than closed here.
+`session_handoff.sessions[].files_touched[].action` is **not** extended either: it records
+what a session did to a file, and a session that touched a file created or modified it. §5's
+worked example carries the identical Draft defect one section up, on which the two engines
+already disagree — filed as
+[#621](https://github.com/vladm3105/aidoc-flow-framework/issues/621), not left silent.
+
+IPLANs already carrying `created` / `modified` entries stay valid; `planned` is additive.
+`framework/VERSION` `0.49.0 → 0.50.0` (MINOR, C2) plus fanout; **GD-25** records the decision.
+
 ### Fixed — the public site badge could not heal itself, and a second page was never synced at all (#423) (2026-09-02)
 
 `scripts/sync-version-refs.sh` writes a `Pre-release v<X.Y.Z>` badge into

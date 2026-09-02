@@ -3,7 +3,7 @@ layer: 01_BRD
 lens: business_analyst
 weight: 30
 agent: requirements-analyst
-framework_spec_version: "0.49.0"
+framework_spec_version: "0.50.0"
 ---
 # business_analyst lens — BRD layer
 

@@ -109,6 +109,13 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Framework spec `0.50.0` (2026-09-02).** **GD-25** — IPLAN `code_inventory`
+  becomes a three-value lifecycle (`planned | created | modified`) and a Draft
+  IPLAN seeds one `planned` entry per `file_manifest` path instead of shipping an
+  empty block (#601). Answers the three questions #609 held open, including that
+  the direct-to-`main` `2943bf3b` did owe this bump. Four plugin IPLAN skills move
+  with it — two of them reverse, having instructed the empty block. The §5
+  `session_handoff` analogue is filed as #621.
 - **Framework spec `0.46.0` and `0.47.0` (2026-08-30).** Five governance decisions
   across two releases. `0.46.0` shipped **GD-18** alone (derived test paths #550,
   threshold carriers #551, IPLAN status ownership #569, GD-13's figures #532).

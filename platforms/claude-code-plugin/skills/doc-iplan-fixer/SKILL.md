@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.49.0"
+    framework_spec_version: "0.50.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, review_mode]
 ---
@@ -251,7 +251,7 @@ Run in order; later phases assume the earlier ones succeeded.
 | 2 — Links | broken/abs paths | recompute relative paths to SPEC/TDD; convert absolute → relative; fix malformed manifest paths |
 | 3 — IDs | invalid IDs | convert hierarchical `IPLAN.NN.SS.xxxx` → document-level `IPLAN-NN`; re-number 3-digit `IPLAN-NNN` → two-digit; add 4-hex hash to `TDD.NN.SS` → `TDD.NN.SS.xxxx`; convert `SPEC.NN.SS.xxxx` → `SPEC-NN` |
 | 4 — Content & manifest | placeholders, ordering | fill template dates; reorder manifest to test-first; add missing `status`/`verified` markers; flag `[TODO]`/`[TBD]` for manual completion |
-| 5 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — IPLAN requires `@spec @tdd`); add missing `code_inventory` entries |
+| 5 — References | traceability | add tags missing from this layer's `required_tags` (per `LAYER_REGISTRY.yaml` necessary-upstream contract — IPLAN requires `@spec @tdd`); add a `code_inventory` entry for every `file_manifest` path that lacks one — `status: planned`, `session: null`, `verified: false` in a Draft IPLAN, regardless of whether phase 0/1 stubbed the file onto disk |
 | 6 — Upstream | drift | when SPEC/TDD changed since creation, apply tiered drift merge (below) |
 | 7 — Style | STY01 banned phrases, STY02/03 oversized prose, FM01 frontmatter mismatch | substitute filler; replace flagged superlatives; collapse paragraph (≥ 3 banned phrases in one section) to bullets; reconcile frontmatter ↔ Document Control rows; STY02/03 — split oversized session-handoff narrative at session boundaries, or mark `manual_required`. Authority: `${CLAUDE_PLUGIN_ROOT}/framework/governance/AUTHORING_STYLE.md` |
 
