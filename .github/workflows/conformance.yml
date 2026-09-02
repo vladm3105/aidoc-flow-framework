@@ -32,6 +32,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # Full history so test_release_record_integrity can read the VERSION
+          # files' history (#617). actions/checkout defaults to depth 1, which
+          # would make that guard measure nothing rather than fail. chg-gate.yml
+          # sets this for the same class of reason.
+          fetch-depth: 0
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v7

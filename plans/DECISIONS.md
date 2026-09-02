@@ -10,6 +10,41 @@ graduation.
 
 ---
 
+## D-0086 — The `hermes/v0.1.1` phantom is accepted as permanent, on D-0078's reasoning, because a release tag cannot be moved
+
+**Date:** 2026-09-01 · **Issue:** #617 · **Decider:** in-session, applying D-0078's precedent
+
+**The state.** Building #617's phantom-version guard surfaced a second instance of the defect
+D-0078 records, in a stream neither D-0078 nor #617 had looked at. `hermes/v0.1.1` is a cut,
+pushed, **annotated release tag** on commit `0ca860b3`, whose `platforms/hermes/VERSION` reads
+**`0.1.0`**. `0.1.1` is not one of the 19 distinct values that file has ever held.
+
+**It is not a predates-the-file artifact**, which was the first thing checked: the file was
+created 2026-05-20 by `884c84ec` holding `0.1.0`, a day before the tag. The provenance is
+visible in `plans/MIGRATION_TODO.md:360`, which scripts `git tag -a hermes/v0.1.1` with no
+accompanying VERSION bump.
+
+**Decision — accept it as permanent and name it, on D-0078's reasoning.** D-0078 rejected
+retroactive tagging because it "would put a tag on a commit whose `VERSION` file reads `0.41.3`
+— accurate to the changelog, false to the tree." That is precisely the state `hermes/v0.1.1`
+is already in. It is **strictly worse than framework `0.42.0`**: that one is only a changelog
+entry, whereas this is a published tag, and `docs/TAGGING.md` §1 makes release tags immutable
+("Never move or force-push one; to correct a mistake, cut a new version"). There is nothing to
+correct forward *to* — the Hermes stream has since reached `0.12.1` — so the honest action is
+to record it rather than to leave a test-file string literal as its only justification.
+
+**Consequences.** `tests/conformance/test_release_record_integrity.py` carries it as one of two
+named `ACCEPTED_PHANTOMS`, each with its reason, and a companion test asserts each is *still* a
+real phantom so the allowlist cannot outlive its defect and quietly license a third. A **new**
+phantom is still cheap to fix at the PR that introduces it, and the guard fails on one; that
+asymmetry — permanent-and-named versus fixable-and-blocked — is the point of the allowlist, not
+an exemption anyone may extend.
+
+**Authority:** `docs/TAGGING.md` §1 (immutability), **D-0078** (#558, correct-forward),
+`tests/conformance/test_release_record_integrity.py`, `plans/MIGRATION_TODO.md:360`.
+
+---
+
 ## D-0085 — `doc-maintainer` is eliminated, not paused; and canon majors stop arriving via Dependabot
 
 **Date:** 2026-09-01 · **Issues:** #603 (this repo), #393 · **Decider:** founder (in session)
