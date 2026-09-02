@@ -107,23 +107,42 @@ Closure metadata: closed `COMPLETED` 32 seconds after PR #612 closed unmerged, w
 the founder's. Nothing is failing today — `$schema` is advisory and no workflow step
 dereferences it.
 
-## CI gating — `ai-review` and `composition` no longer gate (D-0084)
-
-**Read `plans/DECISIONS.md` D-0084 rather than this summary.** Both were removed from `main`'s
-required status checks; both still run and still post verdicts. This is **server state that
-lives in no git repository**, and D-0084 carries the one-call restore.
+## CI gating — `ai-review` no longer RUNS AT ALL, and D-0084 says otherwise
 
 **The four required contexts are:** `Framework + platform conformance`,
 `call / Lint / format / security hooks`, `call / verify`, `Acceptance tier (deterministic)`.
 Re-derive with
 `gh api repos/vladm3105/aidoc-flow-framework/branches/main/protection/required_status_checks --jq '.contexts[]'`.
 `GATE-SPEC` and `dep-scan` are **not** required — a red one leaves a PR `UNSTABLE`, not
-`BLOCKED`.
+`BLOCKED`. That part of `plans/DECISIONS.md` **D-0084** still holds, and D-0084 carries the
+one-call restore for the branch-protection half.
 
-**`ai-review` fails intermittently** with `litellm: proxy request failed after 3 attempts:
-ResponseShapeError` (upstream `aidoc-flow-ci#543`). It is **not** the 402 this proxy is
-otherwise known for, and not size-driven. Since it no longer gates, the cost is a lost verdict,
-not a blocked merge.
+⚠️ **D-0084's other half is now false, and this file asserted it too until 2026-09-02.**
+D-0084 says *"Both workflows still run. This is a gating change, not a teardown."* Measured on
+PR #622: **`ai-review` is `disabled_manually`** — `gh workflow list --all | grep ai-review` —
+so it produced no run, no verdict and no check-run. `composition` is still `active` but never
+fires on a PR either: its only PR-side triggers are `pull_request_review` and a `workflow_run`
+chained off **`ai-review`** completing, so disabling the parent silences the child. The last
+`ai-review` run was `2026-09-01T06:13:49Z` on `fix/606-ai-review-schema-pin` (the third
+consecutive `ResponseShapeError` failure, the one that killed PR #612); nothing has run since,
+including on PR #619 which merged to `main` on 2026-09-02.
+
+**This is server state recorded in no git repository, and the disable itself has no decision
+entry.** Whether it was deliberate is the founder's to say. Re-derive before trusting either
+statement:
+`gh workflow list --all` · `gh run list --workflow=ai-review.yml --limit 5`.
+
+⚠️ **A disabled-but-undeleted caller is a known trap in this workspace, not a neutral state.**
+`.github/workflows/ai-review.yml` still exists and still pins
+`vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v3.0.0`, so Dependabot still sees
+it and will still open bumps against it — and those bumps merge green because the workflow
+never runs to contradict them. `doc-maintainer.yml` was deleted (D-0085, #603) for exactly
+this: Dependabot repinned it to a tag at which canon had removed the reusable. Either re-enable
+`ai-review` or delete the caller; leaving it disabled removes the signal, not the surface.
+
+**When it does run, `ai-review` fails intermittently** with `litellm: proxy request failed after
+3 attempts: ResponseShapeError` (upstream `aidoc-flow-ci#543`) — **not** the 402 this proxy is
+otherwise known for, and not size-driven. Three such failures immediately precede the disable.
 
 ## Unsettled — watch
 
