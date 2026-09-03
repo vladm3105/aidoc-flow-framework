@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.49.0"
+    framework_spec_version: "0.50.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -108,7 +108,8 @@ Sections 1-6 (code_build set):
    `partial_work`, `blockers`, `next_session_directive`, `validation_results`.
 6. **Traceability** — required upstream tags (`@spec`, `@tdd`), downstream
    `code_paths` / `test_paths`, and `code_inventory` (audit trail of every
-   file created/modified with session attribution and `verified` status).
+   file planned/created/modified with session attribution and `verified`
+   status).
 
 Sections 7-11 (deploy set; required when subtype is `deploy` or `combined`):
 
@@ -179,8 +180,10 @@ completed work → 5) update file status → 6) append a session with a
 8. **Define implementation contracts** (code_build / combined only)
    if 3+ files share interfaces; else state "No implementation contracts".
 9. **Seed session handoff** (code_build / combined only) so the first
-   executor has a clear `next_session_directive`; add an empty
-   `code_inventory`.
+   executor has a clear `next_session_directive`; seed `code_inventory`
+   with one `status: planned` entry per `file_manifest` path
+   (`session: null`, `verified: false`). Never leave it empty and never
+   write `created` into a Draft IPLAN.
 10. **For deploy subtype only**: complete rollback_procedure,
     smoke_tests, canary_metrics, observability_hooks,
     runbook_reference (sections 7-11).
@@ -203,7 +206,8 @@ completed work → 5) update file status → 6) append a session with a
 - [ ] Required upstream tags (`@spec @tdd`, per necessary-upstream contract)
       reference existing docs; document ID is `IPLAN-NN` (no dotted IPLAN
       element ID).
-- [ ] `code_inventory` ready to record created/modified files.
+- [ ] `code_inventory` seeded `planned` — one entry per `file_manifest`
+      path, `session: null`, ready to record created/modified files.
 - [ ] Permanent plan registered in `IPLAN-00_index.yaml`; temporary under `tmp/`.
 
 **Error codes** (all severity `error`): `XDOC-006` tag format invalid · `XDOC-008` broken internal link · `XDOC-009` missing traceability section.

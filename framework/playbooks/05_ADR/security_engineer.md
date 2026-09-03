@@ -3,7 +3,7 @@ layer: 05_ADR
 lens: security_engineer
 weight: 12
 agent: security-engineer
-framework_spec_version: "0.49.0"
+framework_spec_version: "0.50.0"
 ---
 # security_engineer lens — ADR layer
 

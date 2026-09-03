@@ -140,7 +140,7 @@ file_manifest:
     `NOT_STARTED` -> `IN_PROGRESS` when work begins; `PARTIAL` when the file
     exists but does not yet satisfy its declared `tdd_ref` cases; `DONE` when it
     does. `DONE` and `verified` are not the same claim and the stricter one is
-    `verified` — §8 `code_inventory` defines it as **tests pass + lint clean**,
+    `verified` — §6 `code_inventory` defines it as **tests pass + lint clean**,
     so a file may be `DONE` and not yet `verified`. Set `verified: true` only when
     that check has actually been run; "the file exists" establishes neither.
 
@@ -157,11 +157,20 @@ file_manifest:
     showing `files_done == files_declared` over stale per-file entries hides the
     drift rather than surfacing it.
 
-    ⚠️ Two further carriers restate per-file status and are NOT reconciled here:
-    §5 `session_handoff.sessions[].files_touched[].status` and §8
+    ⚠️ THREE further carriers restate per-file state and are NOT reconciled here.
+    §5 `session_handoff.sessions[].files_touched[].status` takes the same four
+    values as this manifest. §5 `...files_touched[].action` takes
+    `created | modified` and is deliberately NOT extended with `planned` — a
+    session that touched a file created or modified it. §6
     `traceability.code_inventory.files[].status` (a different vocabulary —
-    `created | modified` — with its own `verified:`). This manifest is the one an
-    executor writes as it goes; the other two are audit trails written per session.
+    `planned | created | modified` — with its own `verified:`) is seeded `planned`
+    at Draft and then written per session. This manifest is the one an executor
+    writes as it goes; §5 is a per-session audit trail.
+
+    §6's vocabulary appears in THREE places in this file — its `status:` key, its
+    `_guidance` lifecycle list, and this passage. All three MUST name the same
+    values; `tests/conformance/test_iplan_code_inventory_lifecycle.py` holds them
+    together, and the contradiction it exists to prevent has already shipped once.
   files:
     - path: "<unit test for the component, per the @spec language>"
       description: "<what this file is for, in one line>"
@@ -293,13 +302,46 @@ traceability:
       - "@chg: CHG-NN"
   code_inventory:
     _guidance: |
-      Audit trail: every file created/modified during implementation.
-      Verified = tests pass + lint clean. Populated by each session.
+      Audit trail: every file planned, created or modified during implementation.
+
+      Status lifecycle (this list, the `status:` key below and §2's carrier note
+      MUST name the same three values):
+        planned  — declared in §2 `file_manifest`, not yet on disk
+        created  — brought into existence during `session:`
+        modified — already existed, changed during `session:`
+
+      SEEDED AT DRAFT. A Draft IPLAN of subtype `code_build` or `combined`
+      carries one entry per §2 `file_manifest` path, in manifest order, every one
+      of them `status: planned`, `session: null`, `verified: false` — so a
+      stateless executor reading this block alone sees that nothing has been
+      built. An empty `code_inventory` is NOT the Draft state: it is
+      indistinguishable from an IPLAN whose executor never wrote its entries
+      back. A `deploy` IPLAN carries no `file_manifest` (see
+      `document_control.subtype`) and so seeds no entries; it records a file here
+      only when a cutover step creates or modifies one.
+
+      WRITTEN PER SESSION. Each session sets the entries it touched to `created`
+      or `modified` and records its own session number, and APPENDS an entry for
+      any file it creates or modifies that §2 does not declare. `planned` MUST
+      NOT survive a session that touched the file. Copying a `created` example
+      verbatim into a Draft claims a file exists that does not — the defect this
+      lifecycle exists to prevent.
+
+      Set `verified: true` only after tests pass and lint is clean for that file.
+      `created` does not imply it.
     files:
-      - path: "<implementation file, per the @spec language>"
-        status: created  # created | modified | planned
-        session: 1
+      - path: "<unit test for the component, per the @spec language>"
+        status: planned  # planned | created | modified
+        session: null  # the session that created/modified it; null while planned
         verified: false  # true after tests pass + lint clean
+      - path: "<implementation file, per the @spec language>"
+        status: planned
+        session: null
+        verified: false
+      - path: "<integration test for the component, per the @spec language>"
+        status: planned
+        session: null
+        verified: false
 
 # =============================================================================
 # Section 8: Rollback Procedure (deploy / combined)

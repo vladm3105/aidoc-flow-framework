@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [EARS, BDD, ADR, SPEC]
     downstream_artifacts: [IPLAN]
     version: "0.25.0"
-    framework_spec_version: "0.49.0"
+    framework_spec_version: "0.50.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---

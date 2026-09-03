@@ -14,6 +14,29 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — the four IPLAN skills seed `code_inventory` with `planned` instead of leaving it empty (framework spec `0.50.0`, GD-25, #601) (2026-09-02)
+
+`FRAMEWORK_SPEC_VERSION` `0.49.0 → 0.50.0`, vendored bundle re-generated. The spec change is
+described in [`../../CHANGELOG.md`](../../CHANGELOG.md); what moves on this platform is the
+authoring instruction, and it **reverses** for two skills:
+
+- **`doc-iplan`** step 9 and its validation checklist — "add an empty `code_inventory`" becomes
+  "seed one `status: planned` entry per `file_manifest` path (`session: null`,
+  `verified: false`)". The §6 description gains `planned` alongside created/modified.
+- **`doc-iplan-autopilot`** generation step 3 — the same reversal, from "an empty
+  `code_inventory`" to one seeded `planned`.
+- **`doc-iplan-audit`** Tier-2 advisory row — grades one entry per manifest path, `planned`
+  until built, rather than "populated for each created/modified file". Still advisory, so it
+  warns rather than blocks an IPLAN authored before this release.
+- **`doc-iplan-fixer`** phase 5 — adds a `planned` entry for every manifest path that lacks
+  one. An earlier draft carved out "unless the file is already on disk"; that was removed in
+  review, because phase 1 stubs files at every declared manifest path *before* phase 5 runs, so
+  the carve-out always fired and left `created` as the agent's only reading — the fixer would
+  have written the reported defect into every Draft it repaired.
+
+No plugin `VERSION` bump: this is an authoring-instruction change carried by the spec release,
+on the GD-24 precedent.
+
 ### Changed — re-pinned to framework spec `0.43.0` (2026-08-26)
 
 `FRAMEWORK_SPEC_VERSION` `0.42.0 → 0.43.0`, vendored bundle re-generated. Carries framework **GD-15** (YAML is the

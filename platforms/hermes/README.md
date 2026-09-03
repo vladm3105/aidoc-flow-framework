@@ -84,10 +84,10 @@ $ cat VERSION
 0.12.1
 
 $ cat FRAMEWORK_SPEC_VERSION
-0.49.0
+0.50.0
 ```
 
-Hermes declares conformance to framework spec `0.49.0`; the
+Hermes declares conformance to framework spec `0.50.0`; the
 framework's own version is at `../../framework/VERSION`. The Phase 4
 conformance suite enforces this declaration matches.
 
@@ -115,7 +115,7 @@ conformance guard); run it from the platform root with
 | Script entry | `hermes-mcp` → `mcp_server.server:main_sync` |
 | Python | `>=3.12` |
 | Version | `hermes/v0.12.1` (independent SemVer; tag namespace `hermes/v*`) |
-| Conforms to | framework spec `0.49.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
+| Conforms to | framework spec `0.50.0` (declared in `FRAMEWORK_SPEC_VERSION`) |
 | License | MIT |
 | Repository | <https://github.com/vladm3105/aidoc-flow-framework> |
 | Platform changelog | [`CHANGELOG.md`](CHANGELOG.md) |

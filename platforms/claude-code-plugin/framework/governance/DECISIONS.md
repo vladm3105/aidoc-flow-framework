@@ -13,6 +13,163 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-25 — IPLAN `code_inventory` is a three-value lifecycle seeded `planned` at Draft, and every statement of that vocabulary must agree
+
+- **Status:** Accepted — 2026-09-02 · **SemVer:** framework `0.49.0 → 0.50.0` (MINOR),
+  change-level **C2**. Two motions: an additive third enum value with its transition rule,
+  and a Draft-seed rule that replaces an empty block. Neither is breaking — an IPLAN already
+  carrying `created` / `modified` entries stays valid — and `major ⇒ C3` is one-directional
+  per GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human
+  sign-off per GATE-SPEC.
+- **Issues:** #601 (`Origin: real-use`) · answers all **three** questions #609 held open
+  (below) · defers the §5 `session_handoff` analogue to #621
+- **GATE-SPEC-W002 (parity):** both platforms track `0.50.0`. Four plugin skills move with
+  the template (below). **The other engine is left unchanged, and that is a judgement, not
+  an absence.** It carries no `code_inventory` surface of its own — zero occurrences in its
+  tree — and reaches this carrier only through
+  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, which it references by path. So it
+  inherits the rule and regresses on nothing. What it does *not* gain is an authoring
+  instruction: its own IPLAN prompt enumerates the traceability section without naming the
+  block, so the seed reaches one platform's authoring path and not the other's. Tracked with
+  the §5 split in **#621**, on which the two engines already contradict each other.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
+  agent-instruction text. The change adds authoring guidance and a status value; it grants no
+  capability, names no external resource, and introduces no instruction an agent could follow
+  to reach outside the artifact.
+
+`IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
+`2943bf3b` — `created` and `modified` — and demonstrated them with one worked entry reading
+`status: created`, `session: 1`. Both values assert that the file exists. A Draft IPLAN has
+no files, so an authoring agent generating one from the template had no correct value to
+write and copied the example — producing a Draft whose audit trail claims work that has not
+happened.
+
+**The defect is in the example, not only in the enum.** The `_guidance` said "Populated by
+each session", which is the correct retrospective reading and is exactly why the block was
+never meant to be filled at Draft. The example beside it said otherwise, and **an example
+overrides the prose beside it** — GD-24 recorded that lesson one release earlier. This is
+why `2943bf3b`'s repair did not close #601: it appended `planned` to a YAML `#` comment
+that nothing parses, and left the surface agents actually copy unchanged.
+
+**Decision: `planned | created | modified`, and a Draft IPLAN of subtype `code_build` or
+`combined` seeds ONE ENTRY PER §2 `file_manifest` PATH, in manifest order, all `planned`,
+`session: null`, `verified: false`.** Each session sets the entries it touched to `created`
+or `modified`, records its session number, and appends an entry for any file it touches that
+§2 does not declare. `planned` MUST NOT survive a session that touched the file — without
+that clause the new value simply becomes the next permanent stale marker, which is the
+defect one step removed. A `deploy` IPLAN requires no `file_manifest`
+(`document_control._guidance`), so it seeds no entries and records a file here only when a
+cutover step creates or modifies one; without that carve-out the rule is unsatisfiable for a
+whole subtype.
+
+**The empty block is retired, and that is a platform-visible change.** `doc-iplan` and
+`doc-iplan-autopilot` both instructed an authoring agent to ship an *empty*
+`code_inventory`, so Platform B and the spec had already disagreed about what a Draft
+carries. An empty block is also the weaker artifact on its own terms: it is
+indistinguishable from an executor that never wrote its entries back, whereas a fully
+`planned` block states the expected set and makes the gap between plan and reality visible
+to the next stateless session. `doc-iplan-audit`'s advisory row and `doc-iplan-fixer`'s
+phase-5 repair action move with them, so the auditor cannot fail an IPLAN the author was
+told to write, and the fixer seeds the state the template now specifies. The fixer's first
+draft of that action carved out "unless the file is already on disk" — review killed it:
+phase 1 creates stub files at every declared manifest path *before* phase 5 runs, so the
+carve-out always fired, named no alternative status, and left `created` as the agent's only
+reading. The fixer would have written #601 into every Draft it repaired.
+
+**The redundancy with §2 `file_manifest` is accepted.** The two carriers now share a path
+list, and §2's note says explicitly that they are *not* reconciled: §2 is the executor's
+build order over four values (`NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`), §6 is the audit
+trail over three, and each carries its own `verified:` — §6's is the stricter claim
+(tests pass + lint clean), §2's tracks the same file through a different question. Collapsing
+them is a larger redesign of the layer than a `real-use` status-value report warrants, and it
+would change the meaning of every IPLAN already authored. Not adopted here; deliberately left
+as two carriers. **The redundancy creates a detection gap this change does not close:**
+nothing validates the §2 ↔ §6 correspondence on an *authored* artifact — `sdd_doc_lint`
+carries no `code_inventory` rule, and the conformance guard below reaches the template only.
+A Draft whose §6 still holds the template's placeholder paths while §2 carries real ones is
+silently conforming.
+
+**Every in-file statement of the vocabulary must agree, and there are three.** §2's
+explanatory passage restated it as `created | modified`, and after `2943bf3b` it contradicted
+the `status:` key ~140 lines below (`:163` against `:300`) for two days — the second of the
+three questions #609 held open. The third statement is `_guidance`'s own lifecycle list,
+which sits directly above the entries and is the copy a reader meets first; the first draft
+of the guard tied only two of the three together, and mutation testing showed the list could
+lose `planned` while every test stayed green. All three are now held to one value set.
+
+**`session_handoff.sessions[].files_touched[].action` is NOT extended.** It records what a
+session did to a file, and a session that touched a file created or modified it. `planned`
+there would be a contradiction in terms, and the guard now holds that enum to two values so
+the non-decision is not merely stated.
+
+**What #609 asked, and the answers.** #609 held three questions, closed by hand on
+2026-09-01 with no recorded disposition; this entry supplies them. **(1) Did `2943bf3b` owe
+a version bump?** Yes. The vocabulary is normative — it is the only place the carrier's
+allowed values are stated, so the comment *is* the contract by default — which makes the
+edit a `framework/**` spec change owing a bump and a GD entry. It bypassed `GATE-SPEC`
+because a direct push to `main` runs no PR checks. This release pays that debt and this
+entry is that record. **(2) Is `:163` reconciled with `:300`?** Yes, and a third copy nobody
+had counted is reconciled with them. **(3) Is #601 satisfied by a comment-only edit?** No —
+that is the finding above, and it is why this change rewrites the worked entries.
+
+**The §5 analogue is real and is filed, not waved away.** §5 `session_handoff.sessions[]`
+ships a worked example carrying `action: created` and `status: IN_PROGRESS`, and
+`doc-iplan/SKILL.md` instructs seeding it at Draft — the identical defect shape one section
+up, on which the two engines already disagree — one initializes an empty `sessions` array.
+It is **#621**, not silence: a documentation-only closure needs a named owner for the
+mechanism, and scoping this release to the reported carrier is the minimal-and-realistic
+convention, not a judgement that §5 is fine.
+
+**Guard.** `tests/conformance/test_iplan_code_inventory_lifecycle.py` (15 tests). The Draft
+rule reads the **parsed YAML entries**, not the enum comment: a guard checking only the
+comment would have passed `2943bf3b`, the change that shipped the defect. Expected fragments
+are built from the module's `LIFECYCLE` tuple rather than hardcoded, so a meaning-preserving
+reword of the punctuation around them cannot red a required context. Mutation testing over
+the first draft killed four platform-side rules and drove the shape of what replaced them:
+the retired instruction re-entered by **word order** ("leave `code_inventory` empty"), which
+is verbatim the order-directionality bug GD-24's guard records as review-killed; a *correct*
+prohibition ("Reject an empty `code_inventory`") reddened the check, so a negation exemption
+is required rather than optional; a skill could instruct `status: created` in a Draft seed
+and stay green, because the rule banned the previous wrong instruction and not the class; and
+deleting a skill's seed instruction outright stayed green, because a negative can only prove
+a surface stopped saying the old thing. Every claim this entry makes about the four skills
+now has a **positive** assertion behind it. The scan globs `doc-iplan*/**/*.md` rather than
+top-level `SKILL.md`, after `test_no_inprompt_hashing.py`, and normalizes whitespace, because
+the live instruction in `doc-iplan/SKILL.md` was split across a line break. Expected fragments
+carry no pinned punctuation: an earlier draft anchored the em-dashes around §2's vocabulary,
+so rewriting `(a different vocabulary — X —` as `(a different vocabulary: X,` reddened a
+required context for no semantic change.
+
+**Nineteen mutations, eighteen behaving as specified, and the nineteenth is a stated limit.**
+Killed: the original #601 defect; `2943bf3b` exactly; the enum comment alone; §2's passage
+alone; `_guidance`'s list alone; the retired instruction in either word order and in its
+`files: []` form; a `created` Draft seed; deletion of the audit row, the fixer action, or the
+autopilot seed; `action` extended with `planned`; the README's seed sentence; a gutted GD-25;
+a `doc-iplan*/reference.md` and a nested fifth-skill `SKILL.md` carrying the instruction; and
+`verified: 0` for `false`. Deliberately green: a correct prohibition, a meaning-preserving
+reword of the guidance, and the punctuation swap above. **Not killed:** reverting
+`doc-iplan`'s validation-checklist line alone, because step 9 of the same file still states
+the seed — the skill stays correct, so this is a weakening the positive rule tolerates by
+design, not a reintroduction. The vendored-bundle assertion **adds no coverage** —
+`test_plugin_framework_bundle.py` already byte-compares every bundled file and did catch
+`2943bf3b`'s drift; it is kept only so a failure names this carrier.
+
+- **Consequences.** IPLANs already carrying `created` / `modified` entries stay valid and
+  need no migration; `planned` is additive. A Draft IPLAN with an empty `code_inventory` is
+  now incomplete rather than correct — but the template states the seed as a MUST while
+  `doc-iplan-audit` grades it **Tier 2 (advisory)**, so it warns rather than blocks and
+  `doc-iplan-fixer` phase 5 repairs it. That asymmetry is deliberate: a Draft missing the
+  seed is under-specified, not wrong, and blocking on it would fail every IPLAN authored
+  before this release. The example corpus is regenerated wholesale after framework changes
+  and is untouched here.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§2 carrier note,
+  `document_control` subtype table, `traceability.code_inventory`),
+  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an
+  example overrides the prose beside it),
+  `tests/conformance/test_iplan_code_inventory_lifecycle.py`.
+
+---
+
 ## GD-24 — The ADR `alternatives` block grades a named disqualifying factor; cost and fit are optional dimensions, and an existing survey is cited rather than restated
 
 - **Status:** Accepted — 2026-09-01 · **SemVer:** framework `0.48.0 → 0.49.0` (MINOR),

@@ -49,7 +49,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 - **Test-first file order** — file_manifest declares test files before implementation files (TDD principle inherited from L7).
 - **Session handoff protocol** — solves the stateless executor problem: each session reads the previous session's state, identifies the next incomplete step, and continues without regenerating completed work.
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).
-- **Code inventory for audit trail** — every file created/modified is recorded with session attribution and verification status.
+- **Code inventory for audit trail** — one entry per `file_manifest` path, seeded `planned` at Draft, then set to `created` / `modified` with session attribution and verification status.
 - **Temporary plans** for bugfixes only — no TDD upstream, disposable, live in `tmp/`.
 
 ## IPLAN Baseline
