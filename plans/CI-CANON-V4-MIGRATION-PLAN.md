@@ -6,7 +6,7 @@
 | Type           | migration                                                             |
 | Status         | BLOCKED — re-affirmed 2026-09-01, on two founder/infrastructure prerequisites (unchanged since 2026-08-28). Step 2 / BC #2 **discharged** 2026-09-01 by #603 |
 | Feeds          | #393                                                                  |
-| Version impact | none — `.github/workflows/**` only; no `framework/**` edit, so `GATE-SPEC-E005` does not fire |
+| Version impact | none — `.github/**` only (the workflow callers plus `.github/ai-review/config.json`, added to the edit set by step 6); no `framework/**` edit, so `GATE-SPEC-E005` does not fire |
 
 ## The headline: `#393`'s stated remedy is wrong, and acting on it silently kills the review
 
@@ -192,10 +192,29 @@ rejected. So the caller edits and the tag rewrite are one commit, not a sequence
    `markdown-lint.yml:78` and `codeql.yml:46` carry commented-out examples of the
    same label array, and editing a comment as if it were live config is the
    failure this note exists to prevent.
-6. Re-verify the `#329` concurrency allowlist survived, by **shape** not by
+6. **Move `.github/ai-review/config.json:2`'s `$schema` tag with the caller** —
+   `--repin` cannot deliver it (`uses:` lines only) and `--update` keeps the file on
+   every automatic path (`safe_to_replace: false` in canon's
+   `install/templates/manifest.json` — an *interactive* `--update` prompts, and the
+   answer is keep), so it is a hand edit like BC4/BC5. Since #606 this is
+   **enforced, not remembered**: `tests/conformance/test_ai_review_schema_pin.py`
+   asserts the tag equals `jobs.call.uses`'s, so repinning `ai-review.yml` without it
+   fails the required conformance context. The v2 contract itself does **not** change
+   at v4 — the schema is the same git blob at `ci/v2.16.0`/`v3.0.0`/`v4.0.0` and canon
+   still asserts `SUPPORTED=2` (in its `CI0014-SCHEMA-ASSERT` block) — so `"version": 2`
+   stays as-is; only the tag in the URL moves.
+   ⚠️ **After this migration the guard starts intercepting Dependabot.** The
+   `semver-major` hold in `.github/dependabot.yml` leaves minor/patch bumps in scope,
+   and a grouped bump rewrites `uses:` while being unable to touch `config.json` — so
+   once `ai-review.yml` sits at canon's current major, the next in-major bump reds the
+   required conformance context. That is the guard working. **Remedy: push the
+   one-line `$schema` edit onto the Dependabot branch — never remove the guard.**
+   Exposure is nil until then: canon ships no further v3, so no in-major bump exists
+   for the caller's current pin.
+7. Re-verify the `#329` concurrency allowlist survived, by **shape** not by
    filename — `CLAUDE.md` records four distinct shapes and a sweep that reads
    them as one deletes `pin-currency-reader.yml`'s serialization block.
-7. Observe green, then narrow the runner labels (P1's second half).
+8. Observe green, then narrow the runner labels (P1's second half).
 
 ## ~~Open question~~ — RESOLVED 2026-09-01: `doc-maintainer` is eliminated
 
@@ -218,6 +237,7 @@ question was held open is still worth reading — the answer just exists now.
 | V1 | `gh api …/actions/runners --jq '…labels…'` | both runners advertise `ci` and `ephemeral` — **gates the PR** |
 | V2 | `gh secret list` | `LLM_URL` and `LLM_API_KEY` present — **gates the PR** |
 | V3 | `grep -rho 'aidoc-flow-ci/.github/workflows/[^@]*@ci/v[0-9.]*' .github/workflows/ \| sed 's#.*@##' \| sort -u` | exactly one line, `ci/v4.0.0` |
+| V3b | `python3 -c "import json;print(json.load(open('.github/ai-review/config.json'))['\$schema'])"` | ends `…/ci/v4.0.0/schemas/ai-review-config-v2.schema.json` — the `$schema` moved with the caller (step 6). **Parse the field, do not `grep` the file:** that `_note` names several `ci/v*` tags in prose, so a grep matches `ci/v4.0.0` whether or not the pin moved. `tests/conformance/test_ai_review_schema_pin.py` fails the PR otherwise |
 | V4 | `grep -rn 'litellm_allow_insecure_http\|LITELLM_' .github/workflows/` | no hits outside comments |
 | V5 | `grep -rn 'ci-runner\|single-use' .github/workflows/` | no hits outside comments |
 | V6 | the PR's own `ai-review` check | reaches a conclusion — not stuck in `queued`. This is the direct test of P1, and it is the one that cannot be run in advance |
@@ -230,7 +250,7 @@ question was held open is still worth reading — the answer just exists now.
 | R1 | Repin lands before P1 → `ai-review` queues forever and produces no verdict. ~~and the PR cannot merge itself~~ — void since D-0084; the context is not required, so the PR merges unreviewed | **Medium since D-0084** (was High: a merge deadlock became a silent review gap) | V1 gates the PR; this plan exists to make the ordering explicit |
 | R2 | `--update` used instead of `--repin`, clobbering six local overrides | Medium | Step 3 names all six |
 | R3 | Rollback needed mid-migration | Low | `ci/v3.0.0` was not re-cut and remains a valid pin and canon's stated rollback target (CI-0044) — but rollback must also revert the caller edits, since they are v4-only |
-| R4 | The runner-label narrowing (P1 second half) is forgotten, leaving the coexistence set live | Medium | Step 7; harmless but leaves the old labels advertised indefinitely |
+| R4 | The runner-label narrowing (P1 second half) is forgotten, leaving the coexistence set live | Medium | Step 8; harmless but leaves the old labels advertised indefinitely |
 
 ## Review log
 
@@ -256,3 +276,27 @@ by #603's deletion. It is a fourth doc surface, over OPS-0061's cap, so it is fi
 as **#604** and ships as the immediate follow-up, per that rule's prescribed
 DECISIONS → plan → `CLAUDE.md` ordering. **Verification step V3 below reads a pin
 count, so do not execute this plan against `CLAUDE.md`'s figures** — re-derive.
+
+### Pass 2 — 2026-09-01 (amendment review, #606)
+
+This plan was amended by #606, which fixed `.github/ai-review/config.json`'s `$schema`
+pin (`ci/v2.16.0` → `ci/v3.0.0`, matching this repo's current `ai-review.yml` caller)
+and added `tests/conformance/test_ai_review_schema_pin.py` to enforce the coupling. The
+amendment added approach **step 6** (former 6-7 renumbered to 7-8, R4's mitigation
+re-pointed to step 8) and verification row **V3b**. Three reviewers ran against that
+diff. Findings folded here:
+
+| # | Finding | Resolution |
+| --- | --- | --- |
+| 1 | **V3b as first drafted was a false-green.** It prescribed `grep -o 'ci/v[0-9.]*' .github/ai-review/config.json`, expecting `ci/v4.0.0` — but the same amendment's `_note` rewrite put several `ci/v*` tags into that file's prose, so the grep matches `ci/v4.0.0` **whether or not the pin moved**. Two reviewers found it independently. Demonstrated on the merged file, where the pin is `ci/v3.0.0`: `grep -o 'ci/v[0-9.]*' .github/ai-review/config.json` returns **5** tokens — `ci/v`, `ci/v2.16.0`, `ci/v3.0.0` ×2, `ci/v4.0.0` — so the expected value is present while the pin is two majors below it. *(An earlier draft of this row said 7; re-derive with the command rather than citing the figure — the count moves with every `_note` edit, which is exactly why the row now prescribes parsing.)* | **Fixed** — V3b now parses the `$schema` field with `json.load` and says explicitly why a grep is wrong here. The repo's own recorded trap ("parse structured artifacts instead of grepping them"), reintroduced by the commit that added the row |
+| 2 | The `Version impact` field still read "`.github/workflows/**` only", which step 6 falsified — the config is not under that path | **Fixed** — field now reads `.github/**`, naming both surfaces. The conclusion (no version impact, `GATE-SPEC-E005` does not fire) was unaffected |
+| 3 | Step 6 cited `safe_to_replace: false` to `scripts/sync-version-refs.sh`, which carries no entry for the consumer file — the declaration is in `install/templates/manifest.json` | **Fixed** in all four places it appeared. Same dead-ref class as Pass 1 finding #2 |
+| 4 | "`--update` skips it" is over-strong: `install/install.sh` keeps the file on every *automatic* path, but an **interactive** `--update` prompts `[k]eep/[r]eplace`, and replacing installs canon's whole template body — discarding this repo's `trust`, `governance`, `auto_merge` and `autofix` blocks. Worse than the stale pin, and written down nowhere | **Fixed** — step 6 and the config's `_note` now state the automatic/interactive split and prescribe keep |
+| 5 | The guard will red the required conformance context on a future in-major Dependabot bump of `ai-review.yml`, since the `semver-major` hold leaves minor/patch in scope and a grouped bump cannot touch `config.json` | **Fixed** — step 6 names the consequence, the remedy (carry the one-line edit onto the Dependabot branch, never remove the guard) and the fact that exposure is nil until the caller reaches canon's current major |
+| 6 | `SUPPORTED=2` was cited by line number at two tags; the construct occurs **twice** per reusable and moves every release | **Fixed** — cited by canon's own `CI0014-SCHEMA-ASSERT` marker instead |
+| 7 | `ai-review.yml` was treated as "the caller" when `composition.yml` **also** reads this repo's config (canon fetches it by API — the FT-6 path) at a different tag, leaving the anchor ambiguous | **Fixed** — the anchor and the reason for it are now stated in the config `_note` and the guard's docstring. No functional consequence: the schema blob is identical at both tags and both reusables assert `version == 2` |
+
+**Nothing about the block was touched.** Status stays BLOCKED on the same two
+founder/infrastructure prerequisites (V1, V2), and #606's fix is independent of them —
+it pins to the caller's *current* tag, so it neither anticipates the v4 repin nor holds
+anything up waiting for it.

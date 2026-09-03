@@ -24,10 +24,11 @@ regen; use `--skip-lint-smoke`.
 
 ## What this session did
 
-**Five merges, all on `main`.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, at
-`07b52e02`); PRs #624 and #625 (handoff + tagging docs); and PR #626 (closes #623, re-enables
-`ai-review`, at `06e0a641`). Three issues filed — **#620**, **#621**, **#623** — **#613
-reopened**, and **`framework/v0.50.0` cut and pushed**. Nothing is left open from this thread.
+**Six merges, all on `main`.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, at
+`07b52e02`); PRs #624 and #625 (handoff + tagging docs); PR #626 (closes #623, re-enables
+`ai-review`, at `06e0a641`); and PR #627 (handoff, at `7ffa9841`). Three issues filed — **#620**, **#621**, **#623** — **#613
+reopened**, and **`framework/v0.50.0` cut and pushed**. Then **#606's fix was re-submitted**
+(below) — the record and `main` no longer disagree anywhere.
 
 **IPLAN `code_inventory` became a three-value lifecycle seeded at Draft.** Vocabulary is
 `planned | created | modified`; a Draft `code_build`/`combined` IPLAN carries one `planned`
@@ -136,27 +137,29 @@ disagree**: the plugin seeds the handoff, the other engine's IPLAN prompt initia
 `sessions` array. #621 carries two candidate shapes; GD-25 names it in its "not adopted"
 paragraph, so it is a deferral with an owner, not silence.
 
-## ⚠️ #606 is closed but its fix is NOT on `main`
+## #606's fix is on `main` again — the issue stays closed
 
-Re-verified 2026-09-03 at `07b52e02`: `.github/ai-review/config.json:2` still pins `$schema` at
-`ci/v2.16.0` against a `ci/v3.0.0` caller, and `tests/conformance/test_ai_review_schema_pin.py`
-does not exist.
+Re-submitted 2026-09-03 as a fresh branch off `main`, not a replay. `.github/ai-review/config.json`'s
+`$schema` now pins `ci/v3.0.0`, matching `ai-review.yml`'s caller, and
+`tests/conformance/test_ai_review_schema_pin.py` (4 tests) enforces the coupling.
+`plans/CI-CANON-V4-MIGRATION-PLAN.md` carries it as step 6 + V3b.
 
-**The work is on the remote.** `git ls-remote origin 'refs/heads/fix/606*'` returns `cfb7b6e4`,
-so the disposition is *reopen PR #612 or open a new one*, never *push a branch*. PR #612 went red
-only on the `ai-review` `ResponseShapeError` flake, which no longer gates (D-0084) — and per #623
-no longer runs at all, so that flake cannot block a resubmission today.
+**The issue is left CLOSED and was not reopened.** It closed `COMPLETED` on 2026-09-01, 32
+seconds after PR #612 closed unmerged; the record and `main` now agree, so reopening would only
+churn. The original branch `fix/606-ai-review-schema-pin` (`cfb7b6e4`) is still on the remote and
+is now **superseded** — do not merge it: its `CHANGELOG.md` and `plans/HANDOFF.md` commits would
+resurrect superseded figures, which is exactly why only the three unique files were carried.
 
-⚠️ **Do not replay the branch wholesale.** All three of its commits touch `plans/HANDOFF.md`
-and/or `CHANGELOG.md`, and both have moved again. Carry forward only what is unique to #606 — the
-`config.json` `$schema` edit, the guard test, and the `CI-CANON-V4-MIGRATION-PLAN.md` step-6/V3b
-additions — onto a branch off current `main`, and re-author the changelog entry rather than
-replay it.
+**Two claims from that branch were re-derived rather than trusted before shipping.** The schema
+blob equality (`8012104…` identical at `ci/v2.16.0`/`v3.0.0`/`v4.0.0`, no v3/v4-numbered schema)
+holds. The Pass-2 review log's "grep emits 7 tokens" does **not** — the merged file yields **5**;
+corrected in the plan with the command, since the count moves with every `_note` edit.
 
-Closure metadata: closed `COMPLETED` 32 seconds after PR #612 closed unmerged, with an empty
-`closedByPullRequestsReferences`. Evidence and dispositions are on the issue; the reopen call is
-the founder's. Nothing is failing today — `$schema` is advisory and no workflow step
-dereferences it.
+⚠️ **After the v4 migration this guard starts intercepting Dependabot.** The `semver-major` hold
+leaves minor/patch bumps in scope, and a grouped bump rewrites `uses:` while being unable to
+touch `config.json`, so the required conformance context goes red. **That is the guard working —
+push the one-line `$schema` edit onto the Dependabot branch, never remove the guard.** Exposure
+is nil today: canon ships no further v3.
 
 ## Unsettled — watch
 
@@ -172,21 +175,15 @@ do not re-file.
 
 ## What to do next — prioritized
 
-1. **Decide #606's disposition** — the only item where the record and `main` disagree. Cheapest
-   correct path: re-submit the branch. ⚠️ **`ai-review` now runs again (D-0087), and PR #612 is
-   the one branch it failed on** — three times, deterministically. Expect that failure to recur
-   on a resubmission; it is non-blocking (`ai-review` is not a required context), and reproducing
-   it deliberately would be useful evidence for upstream `aidoc-flow-ci#543`, whose stated
-   diagnosis does not fit a 5-file diff.
-2. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
+1. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
    future framework bump pays the `--no-verify` cost until it lands, and that is the change class
    where skipping the other hooks is least acceptable.
-3. **#621** — decide what a Draft's `sessions:` carries, and bring both engines onto it.
-4. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
-5. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
+2. **#621** — decide what a Draft's `sessions:` carries, and bring both engines onto it.
+3. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
+4. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
    precedent? Suggested default is **no** unless a second `real-use` report arrives; the point of
    the issue is that the *reason* must be scope, never "a tag is lineage". Not blocking anything.
-6. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
+5. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
    infrastructure prerequisites (runner labels `ci`/`ephemeral` do not exist; `LLM_URL` /
    `LLM_API_KEY` do not exist and the caller still forwards three `LITELLM_*` names v4
    un-declares). ⚠️ **Its stated `--repin` remedy is insufficient**, not unsafe — the plan
@@ -194,9 +191,9 @@ do not re-file.
    repo's word for `--update` (risk R2). Read the plan, not the issue body. If #606 is
    re-submitted, its `$schema` edit and this plan's step 6 / verification V3b must stay
    consistent.
-7. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
+6. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
    D1's to settle.
-8. **#546** — **parked**, and splitting it is what unparks it. The `_required: false` half of
+7. **#546** — **parked**, and splitting it is what unparks it. The `_required: false` half of
    the `STY02` defect is independently shippable and does not wait on the parked subtype
    decision; the correction that establishes this is in the issue's own comments. Re-title or
    split before picking it up, and drop `parked` from the shippable half.
