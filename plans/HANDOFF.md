@@ -65,6 +65,36 @@ recorded in its PR body. Fix shape is on **#620**.
 
 ## `ai-review` is RE-ENABLED and verified working (D-0087, #623 closed)
 
+⚠️ **A discriminator for the `ResponseShapeError` failures now fits, and it is NOT size — it is
+`.github/`.** Census of every PR for which `call / ai-review` produced a conclusion:
+
+| PR | files | touches `.github/` | ai-review |
+| --- | --- | --- | --- |
+| 589 | 1 | no | success |
+| 595 | 179 | no | **failure** |
+| 605 | 7 | **yes** | **failure** |
+| 612 | 5 | **yes** | **failure** (×3) |
+| 626 | 3 | no | success |
+| 627 | 1 | no | success |
+| 628 | 5 | **yes** | **failure** (×2) |
+
+`.github/` predicts failure **3 of 3**; not touching it predicts success 3 of 4, the exception
+being the 179-file fanout that upstream `aidoc-flow-ci#543` was filed on. **So there are two
+failure populations**, and the `.github/` one — which fires on ordinary CI-maintenance PRs, not
+just release fanouts — was unreported upstream until now. Deterministic on re-run, both times.
+
+**Mechanism is a candidate only, deliberately not asserted.** `.github/` is
+`governance.locked_paths[0]` in this repo's `.github/ai-review/config.json`, and canon's own step
+names show the reusable branches on it (`Fetch PR diff + files (+ governance floor)`,
+`Mint reviewer App token (routine + governance-locked PRs)`). Canon's source was not read; two
+hypotheses in that thread have already been retracted. **The cheap decisive test** is two
+throwaway PRs — one whose whole diff is a one-line comment change under `.github/`, one identical
+outside it. Filed as a comment on #543, with that test spelled out.
+
+**Practical consequence today:** a PR touching `.github/` will red `call / ai-review` and get
+`ai:review-infra-error`. It does not block (not a required context). Do not treat it as a broken
+reviewer and do not disable the workflow — that is exactly the misreading D-0087 undid.
+
 **It was `disabled_manually` from 2026-09-01 to 2026-09-03** and produced no run, no verdict and
 no check-run on any PR in that window — including PRs #619, #622, #624 and #625, all merged to
 `main`. Nothing recorded the disable. **Read `plans/DECISIONS.md` D-0087 rather than this
