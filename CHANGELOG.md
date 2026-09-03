@@ -12,6 +12,49 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — CI: `ai-review` is re-enabled after a two-day silent window nothing recorded (D-0087, closes #623) (2026-09-03)
+
+`ai-review` was **`disabled_manually`** from 2026-09-01 to 2026-09-03. It is now `active` again.
+In that window it produced no run, no verdict and no check-run on any PR — including
+PRs #619, #622, #624 and #625, all merged to `main` — and nothing recorded the disable:
+no decision entry, no issue, no comment. It was found by noticing `ai-review` absent from
+PR #622's check rollup.
+
+**`composition` read `active` for the whole window and was equally silent**, because its only
+PR-side triggers are `pull_request_review` and a `workflow_run` chained off **`ai-review`**
+completing. Disabling the parent silences the child while `gh workflow list` still shows the
+child healthy — and that listing is the first thing an auditor reaches for.
+
+**Why re-enable rather than delete.** On 2026-09-01, four `ai-review` runs **succeeded** across
+three branches between 02:45 and 03:12, and the three failures that preceded the disable were all
+on **one** branch (`fix/606-ai-review-schema-pin`, PR #612). Run `33465218619` was inspected
+step-wise rather than trusted from its conclusion — `call / trust` success, `call / ai-review`
+success, `call / autofix` skipped: a real review job. So the reviewer was working when it was
+switched off, and silencing it repo-wide cost every other PR its verdict. Deleting the callers
+(#623's alternative, on D-0085's "retire by deleting, not disabling") was rejected because
+re-enabling closes the same disabled-caller hazard by the other route: the workflow runs again,
+so a stale Dependabot pin surfaces instead of merging green unopposed.
+
+**This entry is a successor to the `0.48.0`-era D-0084 entry below, which is left as written.**
+That entry states *"Both workflows still run and still post verdicts; only the merge-blocking is
+gone."* True on 2026-08-31, falsified on 2026-09-01 by an action D-0084 did not authorize. It
+also calls the failure **intermittent**; the evidence above narrows that to *branch-confined and
+deterministic on the branch it hits*. Neither statement is edited — a changelog entry is a record
+of what shipped, at its date — so this is the correction a reader following that entry needs.
+
+**The upstream diagnosis does not fit either.** `aidoc-flow-ci#543` reports the failure as
+deterministic on a **many-file** diff (179 files) and its own follow-up retracts the file-count
+mechanism, concluding only that the 400,000-byte input cap does not bound the failure. **PR #612
+is 5 files, +313/−40** — small on every axis — and failed three times. So neither file count,
+line count nor the input cap explains it; the discriminator is unmeasured and upstream-owned.
+Filed there as a comment. Not blocking: `ai-review` is still not a required context, so a red
+verdict leaves a PR `UNSTABLE`.
+
+**One channel does reopen:** every PR resumes LiteLLM spend, and this proxy is separately known
+for HTTP 402 on an exhausted balance. If the disable was a spend decision rather than a flake
+response, that reason is recorded nowhere — `plans/DECISIONS.md` **D-0087** says so, and carries
+the one-command reverse.
+
 ### Changed — Framework Spec `0.49.0 → 0.50.0` — IPLAN `code_inventory` gains a `planned` status and is seeded at Draft instead of left empty (GD-25, #601, #609) (2026-09-02)
 
 `IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
@@ -362,6 +405,13 @@ of which canon states plainly that `--repin` cannot deliver.
 **Both workflows still run and still post verdicts; only the merge-blocking is gone.** Branch
 protection is server state that lives in no repo — `plans/DECISIONS.md` **D-0084** is the record
 and carries the exact one-call restore.
+
+> ⚠️ **Superseded on one point, 2026-09-03.** The bolded sentence above was true at this date and
+> was falsified two days later, when `ai-review` was set `disabled_manually` without a record and
+> neither workflow ran for two days. The "intermittent" characterisation below is also narrowed by
+> later evidence to branch-confined. See the D-0087 entry at the top of this file. Nothing here is
+> edited: a changelog entry records what shipped, at its date. The gating change itself — the four
+> required contexts and D-0084's restore command — is unaffected and still current.
 
 **Why.** `ai-review` fails **intermittently** with `ResponseShapeError` (upstream
 [aidoc-flow-ci#543](https://github.com/vladm3105/aidoc-flow-ci/issues/543)) — often enough that

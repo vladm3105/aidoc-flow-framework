@@ -10,6 +10,107 @@ graduation.
 
 ---
 
+## D-0087 — `ai-review` is re-enabled; the disable was a repo-wide response to one branch's failures, and it silenced a reviewer that was working
+
+**Date:** 2026-09-03 · **Issues:** #623 · upstream `aidoc-flow-ci#543` · **Decider:** founder
+(in session, "fix this" on #623)
+
+**This records a change to SERVER STATE that exists in no git repository**, on the D-0084
+precedent. `gh workflow enable ai-review.yml` — reversible with `gh workflow disable
+ai-review.yml`, and the treated artifact is that command pair, not this prose.
+
+### What was true, and for how long
+
+`ai-review` was `disabled_manually` from **2026-09-01** until **2026-09-03**. In that window it
+produced no run, no verdict and no check-run on any PR — including #619, #622, #624 and #625,
+all merged to `main`. `composition` remained `active` and was equally silent, because its only
+PR-side triggers are `pull_request_review` and a `workflow_run` chained off **`ai-review`**
+completing: disabling the parent silences the child, and `gh workflow list` shows the child as
+`active` throughout. **Reading that listing alone is misleading, and it is the first thing an
+auditor reaches for.**
+
+Nothing recorded the disable — no decision entry, no issue, no comment. It was found by noticing
+`ai-review` absent from PR #622's check rollup, against a handoff that asserted it would be
+present.
+
+### The evidence that decides it: the reviewer was working
+
+`gh run list --workflow=ai-review.yml` for 2026-09-01:
+
+| Time (UTC) | Branch | Result |
+|---|---|---|
+| 02:45:40 | `fix/main-iplan-bundle-drift` | success |
+| 02:53:31 | `fix/604-claude-md-pin-census` | success |
+| 03:10:07 | `chore/handoff-refresh-post-604` | success |
+| 03:12:04 | `chore/handoff-refresh-post-604` | success (`pull_request_review`) |
+| **05:43:25** | **`fix/606-ai-review-schema-pin`** | **failure** |
+| **06:04:28** | **`fix/606-ai-review-schema-pin`** | **failure** |
+| **06:13:49** | **`fix/606-ai-review-schema-pin`** | **failure** |
+
+Four successes across three branches, then three failures **all on one branch**, then a
+repo-wide disable. Run `33465218619` was inspected rather than trusted from its conclusion:
+`call / trust` success, `call / ai-review` success, `call / autofix` skipped — a real review job,
+not a skip reporting green.
+
+**So the reviewer was not broken when it was switched off.** Silencing it repo-wide is a much
+larger response than one branch's failures support, and the cost was every other PR's verdict.
+**Decision: re-enable.** It also restores D-0084's own stated intent from the day before — "a
+gating change, not a teardown" — which no later decision revised.
+
+### What re-enabling does and does not expose
+
+- **It cannot block a merge.** `ai-review` is not a required context (D-0084) and canon submits
+  `COMMENT`, never `REQUEST_CHANGES`. A red verdict leaves a PR `UNSTABLE`.
+- **It cannot auto-merge.** `auto-merge-ai-prs` is `active`, but canon refuses for this repo at
+  `auto-merge-ai-prs.yml:301` and again at the `auto_merge.repos` allowlist.
+- **The fork surface is unchanged and was vetted before.** `pull_request_target` on a public repo
+  with self-hosted runners is safe here because a fork PR reaches only the no-PR-code trust job
+  (`CLAUDE.md` § "Unified CI"). Re-enabling restores a configuration that ran for months, not a
+  new one.
+- **A cost channel does reopen.** Every PR resumes LiteLLM spend, and this proxy is separately
+  known for HTTP 402 on an exhausted balance. If the disable was a spend decision rather than a
+  flake response, that reason is recorded nowhere and this entry is wrong on motive — but not on
+  outcome, because the reverse command is one line.
+
+### Why deleting the callers was rejected
+
+Issue 623 offered deletion as the alternative, on D-0085's reasoning that a
+disabled-but-undeleted workflow removes the signal and not the surface. That reasoning is sound and the hazard is real
+here — `.github/workflows/ai-review.yml` still pins `@ci/v3.0.0`, so Dependabot still opens bumps
+against it and they would merge green with nothing running to contradict them. **Re-enabling
+closes that hazard by the other route**: the workflow now runs, so a bad pin surfaces. Deletion
+is irreversible and would discard a reviewer whose findings this repo has measured as substantive
+(upstream #543 records it catching a real defect four human-directed passes had missed).
+`.github/dependabot.yml:77-82` additionally holds `semver-major` on `vladm3105/aidoc-flow-ci/*`,
+so the exact #603 shape could not have arrived unattended in the interim.
+
+### What is NOT settled
+
+**Upstream `aidoc-flow-ci#543` is open, and its stated diagnosis does not fit the failures that
+preceded the disable.** #543 reports the failure as deterministic on a **many-file** diff (179
+files) and its own follow-up comment retracts the file-count mechanism, concluding only that the
+400,000-byte input cap "does not bound the failure it exists to prevent." **PR #612 is 5 files,
++313/−40** — small on every axis — and failed three times. So neither file count nor line count
+nor the input cap explains it, and the discriminator remains unmeasured. That evidence is filed
+as a comment on #543; it is upstream-owned and does not gate this decision, because the failure
+is confined and non-blocking.
+
+**#596 is affected.** Its items 1 and 2 were written on the premise that `ai-review` still runs;
+that premise is true again as of this entry, so those items revert to their original form rather
+than resolving by deletion.
+
+- **Restore command**, if the disable is ever wanted back:
+
+  ```sh
+  gh workflow disable ai-review.yml -R vladm3105/aidoc-flow-framework
+  ```
+
+- **Authority:** `plans/DECISIONS.md` **D-0084** (the gating change this supersedes on one point
+  only), **D-0085** (retire by deleting, not disabling), `CLAUDE.md` § "Unified CI" (the fork
+  surface), `.github/dependabot.yml:77-82`, upstream `aidoc-flow-ci#543`.
+
+---
+
 ## D-0086 — The `hermes/v0.1.1` phantom is accepted as permanent, on D-0078's reasoning, because a release tag cannot be moved
 
 **Date:** 2026-09-01 · **Issue:** #617 · **Decider:** in-session, applying D-0078's precedent
@@ -289,6 +390,13 @@ object cannot see. Everything outside that object was diffed and is byte-identic
 
 **Both workflows still run.** This is a gating change, not a teardown: `ai-review` still submits
 its verdict and `composition` still evaluates. Only the *blocking* is gone.
+
+> ⚠️ **That paragraph was true on 2026-08-31 and was falsified two days later by an action this
+> entry did not authorize.** `ai-review` was set `disabled_manually` on 2026-09-01, so from then
+> until 2026-09-03 neither workflow ran on any PR. **D-0087 records that window and the
+> re-enable; nothing above is rewritten**, because a decision is accurate as of its date and the
+> correction belongs in the entry that supersedes it. The gating half of this entry — the four
+> required contexts and the restore command below — was never affected and still holds.
 
 ### Scope of "nothing blocks" — three channels, only one of which was changed
 
