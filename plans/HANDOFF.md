@@ -8,8 +8,10 @@ never repeated here.
 **State:** framework spec **`0.50.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
 `FRAMEWORK_SPEC_VERSION` pins read `0.50.0`. `0.45.0` was **skipped** and never became a value
 of `framework/VERSION` (`plans/DECISIONS.md` D-0082). Tag high-water mark is
-**`framework/v0.49.0`**; **`v0.50.0` is NOT cut** — re-derive with
-`git ls-remote --tags origin 'refs/tags/framework/*'`.
+**`framework/v0.50.0`**, cut 2026-09-03 at `07b52e02` — re-derive with
+`git ls-remote --tags origin 'refs/tags/framework/*'`. **A cut tag is not a published Release
+here:** `framework/v0.44.0` is the newest framework Release and so still shows as *Latest* while
+the spec is `0.50.0`; `v0.46.0`–`v0.50.0` are tag-only.
 
 **Verified 2026-09-03 on `main` at `07b52e02`** (run, not asserted): conformance **494 passed /
 1034 subtests** via `python3 -m pytest tests/conformance -q`, and **543** via
@@ -22,8 +24,10 @@ regen; use `--skip-lint-smoke`.
 
 ## What this session did
 
-**One merge: #622 (closes #601), framework spec `0.49.0 → 0.50.0`, squashed as `07b52e02`.**
-Three issues filed — **#620**, **#621**, **#623** — and **#613 reopened**.
+**Four merges.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, squashed as
+`07b52e02`); PRs #624 and #625 (handoff + tagging docs); and this one, closing #623. Three
+issues filed — **#620**, **#621**, **#623** — **#613 reopened**, and **`framework/v0.50.0` cut
+and pushed**.
 
 **IPLAN `code_inventory` became a three-value lifecycle seeded at Draft.** Vocabulary is
 `planned | created | modified`; a Draft `code_build`/`combined` IPLAN carries one `planned`
@@ -58,34 +62,37 @@ skips ruff, markdownlint, yamllint, detect-secrets and both sync hooks — so **
 `pre-commit run --all-files` immediately after and confirm green**, which is what #622 did and
 recorded in its PR body. Fix shape is on **#620**.
 
-## ⚠️ #623 — `ai-review` does not run at all, and D-0084 says it does
+## `ai-review` is RE-ENABLED as of 2026-09-03 (D-0087, closes #623)
 
-**`gh workflow list --all` reports `ai-review` as `disabled_manually`.** It is not merely
-non-gating: no run, no verdict, no check-run. On #622's rollup the count of check-runs matching
-`ai-review|composition` is **0**. Last run was `2026-09-01T06:13:49Z` on
-`fix/606-ai-review-schema-pin` — the third consecutive `ResponseShapeError` failure, the one that
-killed PR #612 — and nothing has run since, including PRs #619 and #622, both merged to `main`.
+**It was `disabled_manually` from 2026-09-01 to 2026-09-03** and produced no run, no verdict and
+no check-run on any PR in that window — including #619, #622, #624 and #625, all merged to
+`main`. Nothing recorded the disable. **Read `plans/DECISIONS.md` D-0087 rather than this
+summary**; the evidence that decided it is that four `ai-review` runs succeeded on three
+branches between 02:45 and 03:12 on 2026-09-01, and the three failures that preceded the disable
+were **all on one branch** (`fix/606-ai-review-schema-pin`, PR #612).
 
-`plans/DECISIONS.md` **D-0084** states *"Both workflows still run. This is a gating change, not a
-teardown."* That was true at its date and is false now; **D-0084 is not rewritten**, because a
-decision record is accurate as of when it was made. `composition` shows `active` but is equally
-silent — its only PR-side triggers are `pull_request_review` and a `workflow_run` chained off
-**`ai-review`** completing, so disabling the parent silences the child. Reading
-`gh workflow list` alone is misleading here.
+**Two traps from that window are worth keeping even though the state is fixed:**
 
-Re-derive before trusting either statement: `gh workflow list --all` ·
-`gh run list --workflow=ai-review.yml --limit 5`.
+- **`gh workflow list` showed `composition` as `active` throughout, and it was silent.** Its only
+  PR-side triggers are `pull_request_review` and a `workflow_run` chained off **`ai-review`**
+  completing, so disabling the parent silences the child while the listing still reads healthy.
+  Check the child's *runs*, not its status.
+- **D-0084 asserts "Both workflows still run", and that sentence was falsified two days after it
+  was written.** It is annotated in place, not rewritten — a decision is accurate as of its date.
+  Its gating half (the four required contexts, the restore command) was never affected.
 
-**The disable itself has no decision entry.** Whether it is permanent is the founder's call,
-and issue 623 carries both paths. Note the disabled-caller hazard:
-`.github/workflows/ai-review.yml` still pins `@ci/v3.0.0`, so Dependabot still opens bumps against it and those merge green because
-nothing runs to contradict them — the `doc-maintainer.yml` failure (D-0085, #603). **Narrower
-here:** `.github/dependabot.yml:77-82` holds `semver-major` on `vladm3105/aidoc-flow-ci/*`, so
-the #603 shape cannot arrive unattended; a **minor/patch** bump still can.
+Re-derive rather than trusting either: `gh workflow list --all` ·
+`gh run list --workflow=ai-review.yml --limit 8`.
 
-**#596 is the adjacent issue and its premise moved.** It enumerates statements falsified *by*
-D-0084 on the assumption `ai-review` still runs; a comment there records the shift, and its
-items 1 and 2 may resolve by deletion rather than correction.
+**Expect intermittent red, and it does not block.** `ai-review` is not a required context, so a
+failure leaves a PR `UNSTABLE`. Upstream `aidoc-flow-ci#543` is **open** and its diagnosis does
+not fit: it reports the failure as deterministic on a **many-file** diff and its own follow-up
+retracts the file-count mechanism, but PR #612 is **5 files, +313/−40** and failed three times.
+Neither file count, line count, nor the 400,000-byte input cap explains it. That evidence is now
+a comment on #543; the discriminator is unmeasured and upstream-owned.
+
+**#596's premise is restored.** Its items 1 and 2 were written assuming `ai-review` still runs;
+that is true again, so they revert to their original form rather than resolving by deletion.
 
 ## CI gating — the branch-protection half of D-0084 still holds
 
@@ -158,22 +165,21 @@ do not re-file.
 
 ## What to do next — prioritized
 
-1. **Decide #623** — is `ai-review` permanently disabled? Both author-side AI review signals are
-   currently absent from every PR, and the disable is recorded nowhere. Re-enable, or delete both
-   callers per D-0085's reasoning; either way record it in `plans/DECISIONS.md`. Settling this
-   also decides whether #596's items 1 and 2 are edited or deleted.
-2. **Decide #606's disposition** — the only item where the record and `main` disagree. Cheapest
-   correct path: re-submit the branch. Per #623, the `ai-review` flake that killed PR #612 cannot
-   even run today, so nothing blocks it.
-3. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
+1. **Decide #606's disposition** — the only item where the record and `main` disagree. Cheapest
+   correct path: re-submit the branch. ⚠️ **`ai-review` now runs again (D-0087), and PR #612 is
+   the one branch it failed on** — three times, deterministically. Expect that failure to recur
+   on a resubmission; it is non-blocking (`ai-review` is not a required context), and reproducing
+   it deliberately would be useful evidence for upstream `aidoc-flow-ci#543`, whose stated
+   diagnosis does not fit a 5-file diff.
+2. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
    future framework bump pays the `--no-verify` cost until it lands, and that is the change class
    where skipping the other hooks is least acceptable.
-4. **#621** — decide what a Draft's `sessions:` carries, and bring both engines onto it.
-5. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
-6. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
+3. **#621** — decide what a Draft's `sessions:` carries, and bring both engines onto it.
+4. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
+5. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
    precedent? Suggested default is **no** unless a second `real-use` report arrives; the point of
    the issue is that the *reason* must be scope, never "a tag is lineage". Not blocking anything.
-7. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
+6. **#393 / `plans/CI-CANON-V4-MIGRATION-PLAN.md`** — still **BLOCKED** on two founder /
    infrastructure prerequisites (runner labels `ci`/`ephemeral` do not exist; `LLM_URL` /
    `LLM_API_KEY` do not exist and the caller still forwards three `LITELLM_*` names v4
    un-declares). ⚠️ **Its stated `--repin` remedy is insufficient**, not unsafe — the plan
@@ -181,13 +187,13 @@ do not re-file.
    repo's word for `--update` (risk R2). Read the plan, not the issue body. If #606 is
    re-submitted, its `$schema` edit and this plan's step 6 / verification V3b must stay
    consistent.
-8. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
+7. **#588** — the identity-carrier split. Not startable alone; it is `OKF-CONFORMANCE-001`
    D1's to settle.
-9. **#546** — **parked**, and splitting it is what unparks it. The `_required: false` half of
+8. **#546** — **parked**, and splitting it is what unparks it. The `_required: false` half of
    the `STY02` defect is independently shippable and does not wait on the parked subtype
    decision; the correction that establishes this is in the issue's own comments. Re-title or
    split before picking it up, and drop `parked` from the shippable half.
 
-Cutting `framework/v0.50.0` is **not** on this list: `docs/TAGGING.md` records the tag-cut lag as
-a known backlog, and 77 of 89 framework versions are untagged. Cut it only as part of a
-deliberate tagging pass.
+`framework/v0.50.0` was cut this session and is off this list. `docs/TAGGING.md` still records
+the tag-cut lag as a sanctioned backlog — **77 of 90** values untagged, all of them older than
+`v0.46.0` — so the *older* backlog stays deferred; only the contiguous recent run is maintained.
