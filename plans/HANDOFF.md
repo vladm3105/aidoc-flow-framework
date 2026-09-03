@@ -13,7 +13,7 @@ of `framework/VERSION` (`plans/DECISIONS.md` D-0082). Tag high-water mark is
 here:** `framework/v0.44.0` is the newest framework Release and so still shows as *Latest* while
 the spec is `0.50.0`; `v0.46.0`–`v0.50.0` are tag-only.
 
-**Verified 2026-09-03 on `main` at `07b52e02`** (run, not asserted): conformance **494 passed /
+**Verified 2026-09-03 on `main` at `06e0a641`** (run, not asserted): conformance **494 passed /
 1034 subtests** via `python3 -m pytest tests/conformance -q`, and **543** via
 `python3 -m unittest discover -s tests/conformance -t tests/conformance` (CI's runner) — the two
 count subtests differently, so cite the command with the number. Acceptance-deterministic **64**,
@@ -24,10 +24,10 @@ regen; use `--skip-lint-smoke`.
 
 ## What this session did
 
-**Four merges.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, squashed as
-`07b52e02`); PRs #624 and #625 (handoff + tagging docs); and this one, closing #623. Three
-issues filed — **#620**, **#621**, **#623** — **#613 reopened**, and **`framework/v0.50.0` cut
-and pushed**.
+**Five merges, all on `main`.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, at
+`07b52e02`); PRs #624 and #625 (handoff + tagging docs); and PR #626 (closes #623, re-enables
+`ai-review`, at `06e0a641`). Three issues filed — **#620**, **#621**, **#623** — **#613
+reopened**, and **`framework/v0.50.0` cut and pushed**. Nothing is left open from this thread.
 
 **IPLAN `code_inventory` became a three-value lifecycle seeded at Draft.** Vocabulary is
 `planned | created | modified`; a Draft `code_build`/`combined` IPLAN carries one `planned`
@@ -62,14 +62,21 @@ skips ruff, markdownlint, yamllint, detect-secrets and both sync hooks — so **
 `pre-commit run --all-files` immediately after and confirm green**, which is what #622 did and
 recorded in its PR body. Fix shape is on **#620**.
 
-## `ai-review` is RE-ENABLED as of 2026-09-03 (D-0087, closes #623)
+## `ai-review` is RE-ENABLED and verified working (D-0087, #623 closed)
 
 **It was `disabled_manually` from 2026-09-01 to 2026-09-03** and produced no run, no verdict and
-no check-run on any PR in that window — including #619, #622, #624 and #625, all merged to
+no check-run on any PR in that window — including PRs #619, #622, #624 and #625, all merged to
 `main`. Nothing recorded the disable. **Read `plans/DECISIONS.md` D-0087 rather than this
 summary**; the evidence that decided it is that four `ai-review` runs succeeded on three
 branches between 02:45 and 03:12 on 2026-09-01, and the three failures that preceded the disable
 were **all on one branch** (`fix/606-ai-review-schema-pin`, PR #612).
+
+**Confirmed working, not merely re-enabled.** PR #626 — the change that re-enabled it — was
+itself reviewed: a substantive `changes requested` (a missing CHANGELOG entry, which was
+verified against the D-0084 changelog entry and correct), then `ai:review-passed` after the fold.
+`composition` ran and passed alongside it. So the reviewer produces real verdicts on ordinary
+PRs, and a red `call / ai-review` is the intended signal for `changes requested` rather than an
+infrastructure error — check the PR comment before treating one as a break.
 
 **Two traps from that window are worth keeping even though the state is fixed:**
 
