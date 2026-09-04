@@ -105,23 +105,24 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 > git log --format=%H main -- framework/VERSION \
 >   | while read -r s; do git show "$s:framework/VERSION" | tr -d '[:space:]'; echo; done \
 >   | sort -u | grep -c .
-> ``` As of **2026-09-03** the cut high-water marks
-> are `v1.1.0` (project), **`framework/v0.50.0`**, `claude-code-plugin/v0.25.0`,
+> ``` As of **2026-09-04** the cut high-water marks
+> are `v1.1.0` (project), **`framework/v0.51.0`**, `claude-code-plugin/v0.25.0`,
 > and `hermes/v0.1.1`. Rows above those points are version assignments whose tag
 > has not yet been cut. Do not assume a row here means the tag exists.
 >
-> Scale, so the backlog is not mistaken for a defect: **77 of the 90 values
-> `framework/VERSION` has held are untagged** (measured 2026-09-03, after
-> `v0.50.0` was cut at `07b52e02`), and the plugin stream is exactly
+> Scale, so the backlog is not mistaken for a defect: **77 of the 91 values
+> `framework/VERSION` has held are untagged** (measured 2026-09-04, after
+> `v0.51.0` was cut at `d218aefa`; the count of untagged values is unchanged
+> because the new value and its tag arrived together), and the plugin stream is exactly
 > current (`0.25.0` tagged, `VERSION` = `0.25.0`) while **Hermes has the largest
 > gap** (`hermes/v0.1.1` against `VERSION` = `0.12.1`). Lagging is the norm here,
 > not an error state.
 >
 > **The framework stream's recent run is contiguous, and that is the part worth
-> preserving.** `v0.46.0`, `v0.47.0`, `v0.48.0`, `v0.49.0` and `v0.50.0` are each
-> cut on the squash-merge commit whose `framework/VERSION` reads that exact
-> version. The 77 untagged values are all older than `v0.46.0`; nothing in the
-> current run is missing. Verify a tag's target rather than assuming it — the
+> preserving.** `v0.46.0`, `v0.47.0`, `v0.48.0`, `v0.49.0`, `v0.50.0` and
+> `v0.51.0` are each cut on the squash-merge commit whose `framework/VERSION`
+> reads that exact version. The 77 untagged values are all older than `v0.46.0`;
+> nothing in the current run is missing. Verify a tag's target rather than assuming it — the
 > check is one command, and a tag is immutable once pushed:
 >
 > ```sh
@@ -130,8 +131,8 @@ names and make `git tag -l '<prefix>/*'` an effective per-stream filter.
 >
 > **A cut tag does not imply a published GitHub Release, and here it usually does
 > not.** `framework/v0.44.0` is the newest framework **Release** and therefore
-> still shows as *Latest* on the releases page, while the spec is at `0.50.0`;
-> `v0.46.0`–`v0.50.0` are tags with no Release. Read `git tag -l`, never the
+> still shows as *Latest* on the releases page, while the spec is at `0.51.0`;
+> `v0.46.0`–`v0.51.0` are tags with no Release. Read `git tag -l`, never the
 > releases page, to answer "what is the current spec version".
 >
 > **A missing tag is not the same defect as a phantom version.** A version
