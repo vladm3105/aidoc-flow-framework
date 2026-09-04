@@ -12,6 +12,45 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.50.0` → `0.51.0`: a Draft IPLAN's §5 `session_handoff.sessions` is empty (GD-26, #621) (2026-09-04)
+
+`framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying
+a date, an agent and `action: created` on a file not on disk, while
+`platforms/claude-code-plugin/skills/doc-iplan/SKILL.md` step 9 instructed seeding that block
+**at Draft**. An authoring agent copying the example produced a Draft IPLAN recording a session
+that never ran — GD-25/#601 one section up, on the section a stateless executor reads first.
+
+**A Draft carries `sessions: []`.** The worked entry moves into `_guidance`, labelled as what a
+session APPENDS. No key is added and none is removed, so an IPLAN already carrying sessions
+stays valid — MINOR, change-level C2.
+
+**GD-25's §6 seed is deliberately not mirrored, and the template and layer README both say
+why.** §6 `code_inventory` seeds one entry per §2 `file_manifest` path, so that seed is
+*derived* from a set already known at authoring time — which is exactly what makes an empty §6
+indistinguishable from an executor that never wrote its entries back. Nobody knows the future
+sessions, so a §5 seed would be *fabricated*, and it would contradict
+`document_control.session_count: 0`.
+
+**Both engines moved; ten surfaces across six files.** Platform A's IPLAN creation prompt was
+already right about the Draft shape, but its orchestrator skill required carrying "previous
+session state" under "For IPLAN creation, enforce:" — the same defect on the other engine.
+Separately, **three** surfaces demand every required section be non-empty or "populated"
+(`doc-iplan-audit`, `doc-iplan`, and Hermes' `UCC_PROMPT_IPLAN.md`, the last already
+contradicting its own empty-array instruction); all three gain the Draft carve-out, so an
+auditor cannot fail an IPLAN the author was told to write.
+
+**Not adopted:** relocating `next_session_directive` to a Draft-level key. The first file to
+build is startup-protocol step 2, preconditions belong in §3 `execution_commands.setup`, and a
+relocation would mean either two carriers of one string or a breaking key removal owing the C3
+gate. `files_touched[].action` stays `created | modified` per GD-25.
+
+**Guard:** `tests/conformance/test_iplan_session_handoff_draft.py` (15 tests), reading the
+parsed YAML value rather than a comment. `GD25GuardIsNotDisarmed` measures 7
+`code_inventory`-bearing sentences across the four IPLAN skills and pins **0** exempt from GD-25's
+per-sentence `_PROHIBITION` escape — and it **caught this change's own edit**: an audit
+carve-out ending "not a missing section" took the count to 1, silently exempting a
+~1,900-character region from GD-25's negative rules. The clause was cut.
+
 ### Fixed — CI: the `ai-review` config's `$schema` pin follows its caller, and a guard keeps them coupled (#606) (2026-09-03)
 
 `.github/ai-review/config.json:2` pinned its `$schema` at **`ci/v2.16.0`** while

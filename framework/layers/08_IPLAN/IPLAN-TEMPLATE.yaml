@@ -254,6 +254,7 @@ session_handoff:
 
     Session startup protocol:
       1. Read this session_handoff — identify last session's state
+         (a Draft has had none: `sessions: []` — go straight to step 2)
       2. Check file_manifest — find next NOT_STARTED or PARTIAL file
       3. Read partial_work description if resuming a PARTIAL step
       4. Continue from that point — do NOT regenerate completed work
@@ -263,20 +264,47 @@ session_handoff:
       IN_PROGRESS — session actively working on this file
       DONE — file complete and verified (tests pass)
       PARTIAL — session ended mid-file (resume from partial_work)
-  sessions:
-    - date: "YYYY-MM-DD"
-      agent: "[AI agent / session identifier]"
-      files_touched:
-        - path: "<implementation file, per the @spec language>"
-          action: created  # created | modified
-          status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
-      partial_work: "[Exactly what's incomplete if session ended mid-step]"
-      blockers: "[Any blockers preventing next session]"
-      next_session_directive: "[What the next session should do first — cite file + step]"
-      validation_results:
-        tests_passing: false  # true | false | null
-        coverage: null  # percentage or null
-        lint_clean: false
+
+    EMPTY AT DRAFT. `sessions:` is a RETROSPECTIVE audit trail: an entry is
+    APPENDED by a session as that session ends. A Draft IPLAN has had no
+    session, so it carries `sessions: []`. Do NOT write a session entry while
+    authoring — one naming a date, an agent and `action: created` asserts work
+    that has not happened, and `document_control.session_count` would read 0
+    against a non-empty list.
+
+    THIS IS NOT §6's RULE, AND THE DIFFERENCE IS THE REASON FOR IT. §6
+    `traceability.code_inventory` IS seeded at Draft — one `planned` entry per
+    §2 `file_manifest` path — because that seed is DERIVED from a set already
+    known when the IPLAN is written, which is exactly what makes an empty §6
+    indistinguishable from an executor that never wrote its entries back. A
+    session seed has no such source: nobody knows the future sessions, so
+    seeding one FABRICATES rather than derives. The empty list also preserves
+    the reading that matters — `sessions: []` beside an all-`NOT_STARTED` §2 is
+    coherent, while `sessions: []` beside a `DONE` §2 is a detectable executor
+    failure.
+
+    THE FIRST EXECUTOR'S STARTING POINT IS §2, NOT A SEEDED DIRECTIVE.
+    Startup-protocol step 2 selects the lowest-`order` NOT_STARTED entry, and
+    environment preconditions belong in §3 `execution_commands.setup`.
+    `next_session_directive` is what ONE session hands the NEXT, so a Draft has
+    none to write. It stays a per-session field: this rule adds no key and
+    removes none, which is why an IPLAN already carrying sessions stays valid.
+
+    SHAPE A SESSION APPENDS — an example of the append, NEVER a Draft value:
+      - date: "YYYY-MM-DD"
+        agent: "[AI agent / session identifier]"
+        files_touched:
+          - path: "<implementation file, per the @spec language>"
+            action: created  # created | modified
+            status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+        partial_work: "[Exactly what's incomplete if session ended mid-step]"
+        blockers: "[Any blockers preventing next session]"
+        next_session_directive: "[What the next session should do first — cite file + step]"
+        validation_results:
+          tests_passing: false  # true | false | null
+          coverage: null  # percentage or null
+          lint_clean: false
+  sessions: []
 
 # =============================================================================
 # Section 6: Traceability

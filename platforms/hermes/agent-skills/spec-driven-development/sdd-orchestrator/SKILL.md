@@ -500,7 +500,8 @@ For IPLAN creation, enforce:
 
 - File manifest: one entry per deliverable file with status (NOT_STARTED/PARTIAL/COMPLETED)
 - Bash commands: executable one-liners only, no interactive prompts
-- Session handoff: previous session state, next_step directive
+- Session handoff: `sessions: []` at creation — the trail is appended by each
+  session as it ends, never carried forward while authoring
 - Execution order: test files FIRST, then implementation files
 - Partial work tracking: description of in-progress work for resumption
 

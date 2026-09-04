@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.50.0"
+    framework_spec_version: "0.51.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, glossary, review_mode]
 ---
@@ -138,8 +138,8 @@ manual dry-runs.
    next `IPLAN-NN`.
 3. **Generation** — produce the IPLAN per `../doc-iplan/SKILL.md`: Document
    Control first, all 6 sections, test-first file manifest, execution commands,
-   implementation contracts when 3+ files share interfaces, seeded session
-   handoff, cumulative tags (`@brd @prd @ears @bdd @adr @spec @tdd`), and a
+   implementation contracts when 3+ files share interfaces, an empty session
+   handoff (`sessions: []`), cumulative tags (`@brd @prd @ears @bdd @adr @spec @tdd`), and a
    `code_inventory` seeded `planned` (one entry per manifest path).
    Diagrams via `../charts-flow/SKILL.md`.
 4. **Validation** — run `../doc-iplan-audit/SKILL.md` from scratch.

@@ -101,6 +101,13 @@ Each AI agent session reads the IPLAN in this order:
 5. **Update file status** after completion or session end
 6. **Append to session_handoff.sessions** with next_session_directive
 
+**A Draft IPLAN carries `sessions: []`** — the trail is retrospective, appended by
+each session as it ends, so at Draft there is nothing to record and step 1 falls
+straight through to step 2. Writing a session entry while authoring asserts work
+that has not happened. This is deliberately *unlike* the code inventory above,
+which **is** seeded at Draft: that seed is derived from a set already known (one
+entry per `file_manifest` path), whereas nobody knows the future sessions.
+
 ## Template
 
 | File | Purpose |

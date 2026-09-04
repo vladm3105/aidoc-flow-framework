@@ -4,7 +4,7 @@
 | -------------- | ------------------------------------------------------------ |
 | Task           | IPLAN-SESSION-HANDOFF-001                                     |
 | Type           | bugfix                                                        |
-| Status         | PLANNED — 2026-09-04T00:00:00Z                                |
+| Status         | Completed — 2026-09-04; all tasks executed and verified, closed by the implementation PR |
 | Depends on     | GD-25 (spec `0.50.0`, #601) — this is its deferred §5 half     |
 | Feeds          | closes #621                                                   |
 | Version impact | framework MINOR `0.50.0 → 0.51.0`; change level **C2**         |

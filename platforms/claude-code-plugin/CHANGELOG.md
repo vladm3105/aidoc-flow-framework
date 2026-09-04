@@ -14,6 +14,27 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — the IPLAN skills stop seeding a session at Draft (framework spec `0.51.0`, GD-26, #621) (2026-09-04)
+
+`FRAMEWORK_SPEC_VERSION` `0.50.0 → 0.51.0`, vendored bundle re-generated. The spec change is
+described in [`../../CHANGELOG.md`](../../CHANGELOG.md); what moves on this platform is the
+authoring instruction.
+
+- **`doc-iplan`** — step 9 no longer seeds the session handoff. It leaves
+  `session_handoff.sessions: []` and states that the first executor starts from
+  `file_manifest` order 1. The §5 blurb, the session-handoff protocol and two checklist lines
+  move with it, including "All 6 sections present and non-empty", which now carries the Draft
+  carve-out: a Draft's `session_handoff` holding `sessions: []` satisfies it.
+- **`doc-iplan-audit`** — the Tier-1 session-handoff row accepts `[]` in a Draft and requires
+  `next_session_directive` only on *appended* entries; the Structure row gains the same
+  carve-out, so the auditor cannot fail an IPLAN the author was told to write.
+- **`doc-iplan-autopilot`** — generation produces an empty handoff rather than a seeded one.
+- **`doc-iplan-fixer`** — phase 1 seeds `session_handoff` with `sessions: []`.
+
+**No plugin `VERSION` bump.** This is an authoring-instruction change carried by the spec
+release, on the GD-24 / GD-25 precedent. The behaviour a user sees is the spec's, and a bump
+would drag the full plugin version fanout for no plugin-side change.
+
 ### Changed — the four IPLAN skills seed `code_inventory` with `planned` instead of leaving it empty (framework spec `0.50.0`, GD-25, #601) (2026-09-02)
 
 `FRAMEWORK_SPEC_VERSION` `0.49.0 → 0.50.0`, vendored bundle re-generated. The spec change is

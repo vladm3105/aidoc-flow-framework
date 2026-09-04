@@ -13,7 +13,7 @@ metadata:
     upstream_artifacts: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.50.0"
+    framework_spec_version: "0.51.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, active_layers, audit_threshold, review_mode]
 ---
@@ -392,9 +392,9 @@ the subtype is wrong (not the section set).
 | Check | Verifies |
 |-------|----------|
 | Document ID format | IPLAN referenced as `IPLAN-NN` (dash form); no dotted `IPLAN.NN.SS.xxxx`; `@tdd` uses `TDD.NN.SS.xxxx`, `@spec` uses `SPEC-NN` |
-| Structure | every section enumerated above is present and non-empty |
+| Structure | every section enumerated above is present and non-empty. A Draft's `session_handoff` carrying `sessions: []` **satisfies** this — the trail is retrospective, so an empty one is the correct Draft state |
 | Test-first order | `file_manifest` lists tests before implementation files |
-| Session handoff | `session_handoff.sessions` present with a `next_session_directive` |
+| Session handoff | `session_handoff.sessions` present — `[]` in a Draft, and every appended session carries a `next_session_directive` |
 | Upstream references | parent SPEC/TDD references resolve to existing docs |
 | Quality gate | CODE-Ready score ≥ threshold (default 90) |
 

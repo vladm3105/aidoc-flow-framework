@@ -14,6 +14,26 @@ this platform adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.ht
 
 ## [Unreleased]
 
+### Changed — the IPLAN creation surfaces stop carrying session state at Draft (framework spec `0.51.0`, GD-26, #621) (2026-09-04)
+
+`FRAMEWORK_SPEC_VERSION` `0.50.0 → 0.51.0`; `VERSION` stays `0.12.1` — this is an
+authoring-instruction change carried by the spec release, with no runtime change. The spec
+change is described in [`../../CHANGELOG.md`](../../CHANGELOG.md).
+
+- **`prompts/templates/creation/UCC_PROMPT_IPLAN.md`** — the Draft instruction was already
+  correct ("Initialize with empty sessions array") and now states the prohibition explicitly
+  and names the value (`sessions: []`). Its Success Criteria line "All 6 sections present and
+  populated" gains the Draft carve-out; it had contradicted the file's own empty-array
+  instruction four lines below.
+- **`agent-skills/spec-driven-development/sdd-orchestrator/SKILL.md`** — under "For IPLAN
+  creation, enforce:", the rule required carrying *previous session state*. That is #621's
+  defect on this engine, and it is why the claim "the other engine was already right" was
+  retracted during review. It now states `sessions: []` at creation.
+
+**This changelog is stale across `0.44`–`0.50`** — the entry below it is `0.43.0`. Those were
+spec releases that changed no file in this tree, so the drift is a records gap rather than a
+behavioural one; it is not backfilled here.
+
 ### Changed — re-pinned to framework spec `0.43.0` (2026-08-26)
 
 `FRAMEWORK_SPEC_VERSION` `0.42.0 → 0.43.0`. Carries framework **GD-15** (YAML is the

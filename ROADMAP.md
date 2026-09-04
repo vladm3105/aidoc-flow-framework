@@ -109,6 +109,14 @@ Strategic direction.
 Headline capabilities now in the framework (full detail in
 [`CHANGELOG.md`](CHANGELOG.md)):
 
+- **Framework spec `0.51.0` (2026-09-04).** **GD-26** — a Draft IPLAN's §5
+  `session_handoff.sessions` is **empty** (`sessions: []`); the worked entry moves
+  into `_guidance` as an append example (#621). Closes the analogue GD-25 deferred.
+  The §6 seed is deliberately not mirrored: that seed is *derived* from the
+  `file_manifest`, while nobody knows the future sessions, so a §5 seed would be
+  *fabricated* — and would contradict `session_count: 0`. Both engines moved, ten
+  surfaces across six files, and three separate "every section must be non-empty"
+  statements gained the Draft carve-out.
 - **Framework spec `0.50.0` (2026-09-02).** **GD-25** — IPLAN `code_inventory`
   becomes a three-value lifecycle (`planned | created | modified`) and a Draft
   IPLAN seeds one `planned` entry per `file_manifest` path instead of shipping an
