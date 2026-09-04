@@ -8,34 +8,35 @@ never repeated here.
 **State:** framework spec **`0.51.0`**, plugin `0.25.0`, Hermes `0.12.1`; both platform
 `FRAMEWORK_SPEC_VERSION` pins read `0.51.0`. `0.45.0` was **skipped** and never became a value
 of `framework/VERSION` (`plans/DECISIONS.md` D-0082). Tag high-water mark is
-**`framework/v0.50.0`**, cut 2026-09-03 at `07b52e02` — re-derive with
+**`framework/v0.51.0`**, cut 2026-09-04 at `d218aefa` — re-derive with
 `git ls-remote --tags origin 'refs/tags/framework/*'`. **A cut tag is not a published Release
 here:** `framework/v0.44.0` is the newest framework Release and so still shows as *Latest* while
-the spec is `0.50.0`; `v0.46.0`–`v0.50.0` are tag-only.
+the spec is `0.51.0`; `v0.46.0`–`v0.51.0` are tag-only.
 
-**Verified 2026-09-04 on `main` at `1c2958db`** (run, not asserted): conformance **498 passed /
-1040 subtests** via `python3 -m pytest tests/conformance -q`, and **547** via
+**Verified 2026-09-04 on `main` at `d218aefa`** (run, not asserted): conformance **513 passed /
+1059 subtests** via `python3 -m pytest tests/conformance -q`, and **562** via
 `python3 -m unittest discover -s tests/conformance -t tests/conformance` (CI's runner) — the two
 count subtests differently, so cite the command with the number. Acceptance-deterministic **64**,
-unit **209**, `sdd_doc_lint` **6**, `pre-commit run --all-files` green. **0 failing.**
-`main` is now `0d0fdc90` (PR #630) and those figures were **not** re-derived there. This change
-adds 15 conformance tests, so every count above moves — re-derive before citing any of them; the
-run for this change is recorded in its PR body.
+unit **209**, `sdd_doc_lint` **6**, `pre-commit run --all-files` green on two consecutive runs.
+**0 failing.**
 
 Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the wholesale
 regen; use `--skip-lint-smoke`.
 
 ## What this session did
 
-**PR #630 merged** (`0d0fdc90`) — the plan for #621. Implementation then ran on
-`fix/621-iplan-session-handoff-draft`: **framework spec `0.50.0 → 0.51.0`, GD-26**, a Draft
-IPLAN's §5 `session_handoff.sessions` is now **empty**. The template, the layer README and ten
-platform surfaces across six files, both engines, plus a new 15-test guard. **Read `framework/governance/DECISIONS.md` GD-26 and the
-`0.51.0` CHANGELOG entry, not this summary.**
+**Two PRs merged, both for #621, which is CLOSED.** PR #630 landed the plan; PR #631 landed the
+implementation at **`d218aefa`** — framework spec **`0.50.0 → 0.51.0`, GD-26**: a Draft IPLAN's
+§5 `session_handoff.sessions` is now **empty**. `framework/v0.51.0` was cut and pushed.
 
-An evidence comment also went on **#438** (the MVP IPLAN template's `session_handoff` uses
-different *keys* — no `sessions[]`, lower-case markers). It is a comment because #438 already
-owns the MVP-template class.
+**Read the owners, not this summary** — `framework/governance/DECISIONS.md` **GD-26**, the
+`0.51.0` entry in `CHANGELOG.md`, and `plans/IPLAN-SESSION-HANDOFF-001-PLAN.md` (Completed).
+
+**Two issues filed from the review, both open:** **#632** (the deploy sections are 8-12 but
+`doc-iplan/SKILL.md` calls them 7-11 twice, and the template has no Section 7) and **#633** (the
+conformance prose guards cannot tell an instruction from a description, so a correct audit rule
+would red the check that forbids the defect). An evidence comment also went on **#438** — the MVP
+IPLAN template's `session_handoff` uses different keys entirely.
 
 ## ⚠️ #620 — a framework version bump cannot pass its own pre-commit
 
@@ -135,7 +136,7 @@ contexts and that half is unchanged.
 
 ## The backlog is GitHub issues
 
-**Open issues: 32**, of which **14** are parked (measured 2026-09-04, after #623 closed). Re-derive rather than copy:
+**Open issues: 33**, of which **14** are parked (measured 2026-09-04, after #621 closed and #632/#633 were filed). Re-derive rather than copy:
 `gh issue list --state open --limit 300 --json number --jq 'length'` and
 `gh issue list --state open --limit 300 --json number,labels --jq '[.[]|select(.labels[].name=="parked")|.number]'`.
 In-progress work carries **`status: in progress`** — that label is currently on nothing.
@@ -147,19 +148,16 @@ from the label, not from a title scan — two of them name the gating decision o
 Three are blocked externally: **#484** (gated on v1.0.0), **#473** (the umbrella owns the
 submodule pointer), **#528** (product call).
 
-## #621 — IMPLEMENTED on a branch; the PR is what remains
+## #621 is shipped — what a future session needs from it
 
-**A Draft IPLAN carries `session_handoff.sessions: []`.** The worked entry moved into
-`_guidance` as an append example. No key added, none removed — MINOR / C2.
+**A Draft IPLAN carries `session_handoff.sessions: []`.** No key added, none removed. The two
+durable traps this implementation produced are in **`CLAUDE.md` § "Durable traps"**, not here.
 
-**The durable traps from this implementation moved to `CLAUDE.md` § "Durable traps"** — the
-per-sentence exemption collapse, and the engine-agnostic rule below. Both are settled facts
-about permanent files, so they do not belong in a file rewritten at each merge.
-
-**One unsettled trap stays here:** the new guard's first draft flagged correct prose three
-ways — a retrospective clause, GD-25's own sanctioned `` (`session: null`) `` sentence, and
-seeding the *empty* list. Mutation testing then showed a residual false-positive class the
-repair does not close; it is recorded in GD-26 as a stated limit.
+**The one live consequence to know about:** `#633` records that the prose guards fire on correct
+*descriptive* sentences. If you add a detection rule for this defect class to `doc-iplan-audit`
+or `doc-iplan-fixer`, the guard will red — and the cheapest way to silence it (adding an
+exemption word) permanently unscans that region. Read #633 before rewording anything to get
+green.
 
 ## #606's fix is on `main` — the issue stays closed
 
@@ -220,10 +218,11 @@ to it first at `timeout:5` — harmless outside a wave, amplifying inside one.
 1. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
    future framework bump pays the `--no-verify` cost until it lands, and that is the change class
    where skipping the other hooks is least acceptable.
-2. **#621** — **open the implementation PR** from
-   `fix/621-iplan-session-handoff-draft`; it carries `Closes #621`. Everything else is done
-   and verified. The commit needs `--no-verify` (#620); run
-   `pre-commit run --all-files` immediately after and confirm green.
+2. **#632** — the IPLAN deploy sections are 8-12; `doc-iplan/SKILL.md:116` and `:194` call them
+   7-11. Prose-only in the skill, and the issue argues for fixing the skill rather than
+   renumbering the template (renumbering moves section numbers GD-25/GD-26/CHANGELOG cite).
+   Small, well-scoped, and a conformance assertion tying the range to the template's real
+   headers would stop it recurring.
 3. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
 4. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
    precedent? Suggested default is **no** unless a second `real-use` report arrives; the point of
