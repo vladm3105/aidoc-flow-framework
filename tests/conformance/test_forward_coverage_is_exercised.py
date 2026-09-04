@@ -31,11 +31,19 @@ from sdd_doc_lint import lint_path, scan_fr_elements  # noqa: E402
 
 FIXTURES = REPO_ROOT / "tests" / "acceptance" / "fixtures"
 
-# The one target with a complete BRD→…→IPLAN graph, and therefore the only place
-# forward coverage is meaningful. The per-layer targets stage upstreams as
-# context and their `.yaml` downstreams carry an unterminated `---` fence, so
-# they are invisible to `build_edge_graph` and their BRD never reaches SPEC —
-# a separate defect, tracked on #478, with a measured manifest cost.
+# The canonical target: a complete BRD→…→IPLAN graph, so forward coverage is
+# both meaningful and satisfied here. It is also the ONLY target this module
+# exercises — the two statements below are measured, not asserted by any test.
+#
+# `layer_08_iplan/valid` is also live: PR #580 (issue #478) repaired the
+# unterminated `---` fences that had made the per-layer `.yaml` downstreams
+# invisible to `build_edge_graph`, and injecting an uncovered FR into it now
+# yields COV01. `layer_06_spec/valid` and `layer_07_tdd/valid` stage no IPLAN,
+# and `_check_forward_coverage` returns `[]` unless the corpus holds both a SPEC
+# and an IPLAN (`tools/sdd_doc_lint/__init__.py:2293`) — so COV01 there is
+# *inapplicable*, not blind. Re-derive from that precondition rather than
+# trusting this comment; an earlier revision of it went stale by attributing all
+# three targets to a fence defect that had already been fixed.
 CHAIN = FIXTURES / "fullpath" / "golden_chain"
 CHAIN_BRD = CHAIN / "01_BRD" / "BRD-01_golden.md"
 

@@ -62,6 +62,18 @@ And the response time is at or below the documented threshold
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.bbbb
 
+### BDD.01.04.eeee Scenario: Cart confirmation persists the order
+
+Given a buyer with a populated cart
+When the buyer confirms the cart
+Then the order service persists the order
+And the order service emits a confirmation event
+And the response time is at or below the documented threshold
+
+- @brd: BRD.01.07.aaaa
+- @prd: PRD.01.09.aaaa
+- @ears: EARS.01.03.cccc
+
 ## Traceability
 
 Upstream BRD, PRD, and EARS references for this BDD document.
