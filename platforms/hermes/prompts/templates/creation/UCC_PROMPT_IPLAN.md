@@ -34,7 +34,8 @@ Follow the IPLAN-TEMPLATE.yaml structure exactly. Create:
    depend on shared interfaces. State "No implementation contracts"
    if not applicable.
 
-5. **Session Handoff**: Initialize with empty sessions array. This section
+5. **Session Handoff**: Initialize with empty sessions array (`sessions: []`).
+   Never write a session entry while authoring — the trail is retrospective and
    is populated during implementation sessions via markers (NOT_STARTED,
    IN_PROGRESS, DONE, PARTIAL)
 
@@ -50,7 +51,7 @@ Follow the IPLAN-TEMPLATE.yaml structure exactly. Create:
 
 ## Success Criteria
 
-- All 6 sections present and populated
+- All 6 sections present and populated (a Draft's `session_handoff` is `sessions: []`)
 - File manifest declares all files with proper order
 - Execution commands include setup, implementation, validation
 - Session handoff section initialized (empty sessions array)

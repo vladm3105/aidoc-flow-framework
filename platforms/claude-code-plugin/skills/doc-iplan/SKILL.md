@@ -12,7 +12,7 @@ metadata:
     upstream_artifacts: [SPEC, TDD]
     downstream_artifacts: [CODE]
     version: "0.25.0"
-    framework_spec_version: "0.50.0"
+    framework_spec_version: "0.51.0"
     last_updated: "2026-05-23"
     adapts: [section_toggles, glossary]
 ---
@@ -104,8 +104,10 @@ Sections 1-6 (code_build set):
    state machines, data models, DI interfaces live *inside* the IPLAN. Required
    only when 3+ files share interfaces; otherwise state "No implementation
    contracts".
-5. **Session Handoff** — the stateless-executor bridge; `sessions[]` with
-   `partial_work`, `blockers`, `next_session_directive`, `validation_results`.
+5. **Session Handoff** — the stateless-executor bridge. `sessions[]` is a
+   retrospective trail, appended by each session as it ends, so a Draft carries
+   `sessions: []`. Per appended session: `partial_work`, `blockers`,
+   `next_session_directive`, `validation_results`.
 6. **Traceability** — required upstream tags (`@spec`, `@tdd`), downstream
    `code_paths` / `test_paths`, and `code_inventory` (audit trail of every
    file planned/created/modified with session attribution and `verified`
@@ -130,7 +132,8 @@ Each stateless session: 1) read `session_handoff.sessions` for the last
 state → 2) find the next `NOT_STARTED`/`PARTIAL` file in `file_manifest` →
 3) read `partial_work` if resuming → 4) continue, do **not** regenerate
 completed work → 5) update file status → 6) append a session with a
-`next_session_directive`. Markers: `NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`.
+`next_session_directive`. At Draft the trail is `sessions: []`, so step 1 falls
+straight through to step 2. Markers: `NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`.
 
 ### Document ID and tags
 
@@ -179,11 +182,13 @@ completed work → 5) update file status → 6) append a session with a
    `setup` / `implementation` / `validation`.
 8. **Define implementation contracts** (code_build / combined only)
    if 3+ files share interfaces; else state "No implementation contracts".
-9. **Seed session handoff** (code_build / combined only) so the first
-   executor has a clear `next_session_directive`; seed `code_inventory`
-   with one `status: planned` entry per `file_manifest` path
-   (`session: null`, `verified: false`). Never leave it empty and never
-   write `created` into a Draft IPLAN.
+9. **Leave the session handoff empty** (code_build / combined only) —
+   `session_handoff.sessions: []`. A Draft has had no session, so there is
+   nothing to record, and the first executor starts from `file_manifest`
+   order 1. A session entry written while authoring asserts work that has
+   not happened. Then seed `code_inventory` with one `status: planned` entry
+   per `file_manifest` path (`session: null`, `verified: false`). Never leave
+   that inventory empty and never write `created` into a Draft IPLAN.
 10. **For deploy subtype only**: complete rollback_procedure,
     smoke_tests, canary_metrics, observability_hooks,
     runbook_reference (sections 7-11).
@@ -197,12 +202,14 @@ completed work → 5) update file status → 6) append a session with a
 
 - [ ] `metadata.layer: 8`, `document_type: iplan-document`.
 - [ ] Document Control complete (`iplan_id`, `source_spec`, status, dates).
-- [ ] All 6 sections present and non-empty.
+- [ ] All 6 sections present and non-empty; a Draft's `session_handoff`
+      carrying `sessions: []` satisfies this.
 - [ ] File Manifest lists tests before implementation; each file has a status
       marker and `verified` flag.
 - [ ] Execution commands cover setup / implementation / validation.
 - [ ] Implementation Contracts declared (or "No implementation contracts").
-- [ ] Session Handoff seeded with a `next_session_directive`.
+- [ ] Session Handoff present — `sessions: []` at Draft, and every appended
+      session carries a `next_session_directive`.
 - [ ] Required upstream tags (`@spec @tdd`, per necessary-upstream contract)
       reference existing docs; document ID is `IPLAN-NN` (no dotted IPLAN
       element ID).
