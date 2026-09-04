@@ -12,47 +12,55 @@ expected_warnings:
     ref: "BDD.01.04.bbbb"
     count: 1
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
-      new debt. Clearing it means authoring the element-level citation that
-      realizes this element downstream.
+      This target stages a SPEC and no TDD, and `SPEC-01_golden.yaml` cites only
+      `@bdd: BDD.01.04.aaaa` element-level — so every other BDD scenario is
+      realized by nothing *in this target*. The same finding clears in
+      `fullpath/golden_chain`, `layer_07_tdd/valid` and `layer_08_iplan/valid`
+      via the TDD `test_mapping.scenarios` list (#478). Clearing it here means
+      `SPEC-01_golden.yaml` citing the scenario element-level.
   - code: COV02
     file: BDD-01_golden.md
     ref: "BDD.01.04.cccc"
     count: 1
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
-      new debt. Clearing it means authoring the element-level citation that
-      realizes this element downstream.
+      This target stages a SPEC and no TDD, and `SPEC-01_golden.yaml` cites only
+      `@bdd: BDD.01.04.aaaa` element-level — so every other BDD scenario is
+      realized by nothing *in this target*. The same finding clears in
+      `fullpath/golden_chain`, `layer_07_tdd/valid` and `layer_08_iplan/valid`
+      via the TDD `test_mapping.scenarios` list (#478). Clearing it here means
+      `SPEC-01_golden.yaml` citing the scenario element-level.
   - code: COV02
     file: BDD-01_golden.md
     ref: "BDD.01.04.dddd"
     count: 1
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
-      new debt. Clearing it means authoring the element-level citation that
-      realizes this element downstream.
+      This target stages a SPEC and no TDD, and `SPEC-01_golden.yaml` cites only
+      `@bdd: BDD.01.04.aaaa` element-level — so every other BDD scenario is
+      realized by nothing *in this target*. The same finding clears in
+      `fullpath/golden_chain`, `layer_07_tdd/valid` and `layer_08_iplan/valid`
+      via the TDD `test_mapping.scenarios` list (#478). Clearing it here means
+      `SPEC-01_golden.yaml` citing the scenario element-level.
   - code: COV02
-    file: EARS-01_golden.md
-    ref: "EARS.01.03.cccc"
+    file: BDD-01_golden.md
+    ref: "BDD.01.04.eeee"
     count: 1
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
-      new debt. Clearing it means authoring the element-level citation that
-      realizes this element downstream.
+      Same structural cause and same clearing condition as its three siblings
+      above: `SPEC-01_golden.yaml` citing the scenario element-level.
+      `BDD.01.04.eeee` was authored in #478 to realize `EARS.01.03.cccc` (which
+      it clears in all four targets); in the three targets that stage a TDD it is
+      paired and realized by the `test_mapping.scenarios` list. Realism note, not
+      a lint requirement: the SPEC covers only AuthService and CatalogService
+      (`:29`, `:34`), so an honest citation of this checkout scenario would come
+      with an order component.
   - code: REFGRAN01
     file: SPEC-01_golden.yaml
     ref: "@adr: ADR-01"
     count: 2
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is pre-existing debt the repair made VISIBLE, not
-      new debt. Clearing it means re-cascading the tag to element form (GD-03).
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Re-citing alone cannot clear it: `ADR-01_golden.md` declares no
+      `ADR.01.SS.xxxx` element, so the ADR fixture must be authored first.
+      Tracked on #635, sequenced behind #563 (the plugin skills still instruct
+      the document-level form). Pinned so it cannot mask a new REFGRAN01
+      elsewhere.

@@ -7,93 +7,25 @@
 # stating what would clear it.
 target: layer_07_tdd/valid
 expected_warnings:
-  - code: COV02
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.bbbb"
-    count: 1
-    reason: >
-      `BDD.01.04.bbbb` is realized by no downstream element. The fixture
-      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
-      means authoring the missing downstream citation. Pinned so it cannot mask
-      a new coverage gap.
-  - code: COV02
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.cccc"
-    count: 1
-    reason: >
-      `BDD.01.04.cccc` is realized by no downstream element. The fixture
-      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
-      means authoring the missing downstream citation. Pinned so it cannot mask
-      a new coverage gap.
-  - code: COV02
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.dddd"
-    count: 1
-    reason: >
-      `BDD.01.04.dddd` is realized by no downstream element. The fixture
-      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
-      means authoring the missing downstream citation. Pinned so it cannot mask
-      a new coverage gap.
-  - code: COV02
-    file: EARS-01_golden.md
-    ref: "EARS.01.03.cccc"
-    count: 1
-    reason: >
-      `EARS.01.03.cccc` is realized by no downstream element. The fixture
-      predates element-level COV01/COV02 (ELEMENT-COVERAGE-001); clearing it
-      means authoring the missing downstream citation. Pinned so it cannot mask
-      a new coverage gap.
   - code: REFGRAN01
     file: SPEC-01_golden.yaml
     ref: "@adr: ADR-01"
     count: 2
     reason: >
       Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
-      Clearing it means re-cascading the tag to a specific element; pinned so it
-      cannot mask a new REFGRAN01 elsewhere. Tracked as deferred
-      fixture-authoring work.
-  - code: ACC01
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.aaaa"
-    count: 1
-    reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
-      new debt. Clearing it means authoring the paired TDD test case.
-  - code: ACC01
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.bbbb"
-    count: 1
-    reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
-      new debt. Clearing it means authoring the paired TDD test case.
-  - code: ACC01
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.cccc"
-    count: 1
-    reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
-      new debt. Clearing it means authoring the paired TDD test case.
-  - code: ACC01
-    file: BDD-01_golden.md
-    ref: "BDD.01.04.dddd"
-    count: 1
-    reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
-      new debt. Clearing it means authoring the paired TDD test case.
+      Re-citing alone cannot clear it: `ADR-01_golden.md` declares no
+      `ADR.01.SS.xxxx` element, so the ADR fixture must be authored first.
+      Tracked on #635, sequenced behind #563 (the plugin skills still instruct
+      the document-level form). Pinned so it cannot mask a new REFGRAN01
+      elsewhere.
   - code: REFGRAN01
     file: TDD-01_golden.yaml
     ref: "@adr: ADR-01"
     count: 1
     reason: >
-      This target's `.yaml` downstream carried an unterminated `---` fence, so it was
-      invisible to `build_edge_graph` and this warning could not fire. The fence was
-      repaired (#478); the warning is PRE-EXISTING debt the repair made visible, not
-      new debt. Clearing it means re-cascading the tag to element form (GD-03).
+      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
+      Re-citing alone cannot clear it: `ADR-01_golden.md` declares no
+      `ADR.01.SS.xxxx` element, so the ADR fixture must be authored first.
+      Tracked on #635, sequenced behind #563 (the plugin skills still instruct
+      the document-level form). Pinned so it cannot mask a new REFGRAN01
+      elsewhere.
