@@ -12,6 +12,61 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — CI: the `ai-review` config's `$schema` pin follows its caller, and a guard keeps them coupled (#606) (2026-09-03)
+
+`.github/ai-review/config.json:2` pinned its `$schema` at **`ci/v2.16.0`** while
+`.github/workflows/ai-review.yml` had been carried across the v3 major boundary by Dependabot.
+Retargeted to **`ci/v3.0.0`** — the caller's tag, deliberately not canon's latest: a repo holding
+a caller back a major must be able to hold its schema back with it.
+
+**Unlike the comment-level staleness swept by #604, this pin is machine-read, and nothing in the
+toolchain repairs or reports it.** `--repin` rewrites `uses:` lines only; canon marks the file
+`safe_to_replace: false` in `install/templates/manifest.json`, so `--update --non-interactive`
+and every no-TTY path keep the local copy; and `check-pin-currency.sh` walks
+`.github/workflows/` only, on both its local and its fleet path. An *interactive* `--update`
+does prompt `[k]eep/[r]eplace` — **answer keep**: replacing installs canon's whole template body
+and would discard this repo's `trust`, `governance`, `auto_merge` and `autofix` blocks, which is
+worse than the stale pin and was written down nowhere.
+
+**The schemas were diffed first, as the issue asked, and re-derived before this landed.**
+`schemas/ai-review-config-v2.schema.json` is the same git blob —
+`8012104026b32f049a1e4def7b2e3be35bdeeaa9` — at `ci/v2.16.0`, `ci/v3.0.0` and `ci/v4.0.0`; no
+v3- or v4-numbered schema replaced it (canon's `schemas/` holds exactly two files at v4); and
+canon still asserts `SUPPORTED=2`. So `"version": 2` stays correct and only the tag moves.
+
+**A pin alone would drift again**, so `tests/conformance/test_ai_review_schema_pin.py` asserts
+the `$schema` tag equals the one on `ai-review.yml`'s `uses:`, and that the URL names the
+contract file the `version` field declares. Guarding the guard, it also rejects a floating ref, a
+fork owner and a different reusable. Mutation-tested on the merged tree: reverting to the
+original #606 state fails, bumping the caller alone fails, a floating `main` ref fails, a fork
+owner fails, `version: 3` fails, naming the v1 contract file fails — and a **coordinated** bump
+of both files to `ci/v4.0.0` stays green.
+
+**`ai-review.yml` is the anchor, and that is a choice.** `composition.yml` also reads this file
+(canon fetches it from this repo by API — the FT-6 path) at a different tag. No functional
+consequence, since the blob is identical at both tags and both reusables assert `version == 2`,
+but the anchor is now stated in the config's `_note` and the guard's docstring rather than left
+implicit.
+
+`plans/CI-CANON-V4-MIGRATION-PLAN.md` gains this as approach **step 6** and verification **V3b**,
+so the blocked v4 migration cannot repin the caller and leave the config behind. ⚠️ **After that
+migration the guard starts intercepting Dependabot**: the `semver-major` hold leaves minor/patch
+bumps in scope, and a grouped bump rewrites `uses:` while being unable to touch `config.json`.
+That is the guard working — carry the one-line `$schema` edit onto the Dependabot branch, never
+remove the guard. Exposure is nil until then, because canon ships no further v3.
+
+**Nothing was failing.** The reusable resolves policy from `trust_config_repo`
+(`vladm3105/aidoc-flow-operations@main`), not from this file, and `$schema` is advisory to
+JSON-schema tooling. The stale pin only broke the one path the file exists for —
+`trust_config_repo` ever being pointed at this repo.
+
+*Process note: this work was authored on `fix/606-ai-review-schema-pin` and its PR #612 closed
+unmerged on 2026-09-01 after repeated `ai-review` infrastructure errors, while the issue closed
+`COMPLETED` 32 seconds later with no merge. Only the three files unique to the fix were carried
+onto current `main`; the branch's `CHANGELOG.md` and `plans/HANDOFF.md` commits were **not**
+replayed, because both files have moved several times since and replaying them would have
+resurrected superseded figures. This entry is re-authored, not restored.*
+
 ### Changed — CI: `ai-review` is re-enabled after a two-day silent window nothing recorded (D-0087, closes #623) (2026-09-03)
 
 `ai-review` was **`disabled_manually`** from 2026-09-01 to 2026-09-03. It is now `active` again.
