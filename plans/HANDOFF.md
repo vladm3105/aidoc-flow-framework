@@ -18,36 +18,30 @@ the spec is `0.50.0`; `v0.46.0`–`v0.50.0` are tag-only.
 `python3 -m unittest discover -s tests/conformance -t tests/conformance` (CI's runner) — the two
 count subtests differently, so cite the command with the number. Acceptance-deterministic **64**,
 unit **209**, `sdd_doc_lint` **6**, `pre-commit run --all-files` green. **0 failing.**
+`main` has since advanced to `696fb4ad` (docs-only) and these figures were **not** re-derived there; what was re-run this session is the pre-commit conformance hook on branch `plan/621-iplan-session-handoff-draft`, green. Re-derive before citing a count.
 
 Phase 0 `lint-smoke` is a separate harness and is RED — corpus debt deferred to the wholesale
 regen; use `--skip-lint-smoke`.
 
 ## What this session did
 
-**Six merges, all on `main`.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, at
-`07b52e02`); PRs #624 and #625 (handoff + tagging docs); PR #626 (closes #623, re-enables
-`ai-review`, at `06e0a641`); PR #627 (handoff, at `7ffa9841`); and PR #628 (#606's fix
-re-submitted, at `1c2958db`). Three issues filed — **#620**, **#621**, **#623** — **#613
-reopened**, and **`framework/v0.50.0` cut and pushed**. The record and `main` no longer disagree
-anywhere. Two host faults outside every repo were also fixed: the LiteLLM provider balance and the
-host's DNS.
+**One PR opened, nothing merged.** PR **#630** carries
+`plans/IPLAN-SESSION-HANDOFF-001-PLAN.md` — the plan for **#621**. It is **OPEN and
+`CLEAN`** (all required contexts green, `call / ai-review` SUCCESS); merge is human-only on
+this repo, so it awaits the founder. `main` is unchanged at `696fb4ad`.
 
-**IPLAN `code_inventory` became a three-value lifecycle seeded at Draft.** Vocabulary is
-`planned | created | modified`; a Draft `code_build`/`combined` IPLAN carries one `planned`
-entry per §2 `file_manifest` path instead of an empty block, and `deploy` seeds none because it
-requires no manifest. Four plugin IPLAN skills moved with it and **two reversed** — `doc-iplan`
-and `doc-iplan-autopilot` had instructed the empty block, so spec and Platform B had already
-disagreed. **Read the owners, not this summary** — `framework/governance/DECISIONS.md` **GD-25**
-and the `0.49.0 → 0.50.0` entry in `CHANGELOG.md`.
+**Also published:** a progress comment on #621 recording the ratified shape, and an
+evidence comment on **#438** — the MVP IPLAN template's `session_handoff` uses different
+*keys* from the full template (`last_session`/`status_markers`/`resume_from`, no
+`sessions[]`, lower-case markers). That went as a **comment on the existing issue**, not a
+new one: #438 already owns "all 8 `*-MVP-TEMPLATE.yaml` are non-conformant" and already
+cites that file.
 
-**#609 is answered and closed; do not re-open it.** It held three questions and was closed by
-hand on 2026-09-01 with no recorded disposition. GD-25 supplies all three, including the one it
-existed for: `2943bf3b` **did** owe a version bump, and `0.50.0` pays it.
-
-**`code_inventory` is in §6, not §8.** `traceability` is `# Section 6`; `# Section 8` is
-`rollback_procedure`; there is no Section 7. The template had mislabelled it at two pre-existing
-sites and #622 swept them. **Any older plan or changelog entry saying "§8 `code_inventory`" is
-wrong.**
+**No `framework/**` file was touched, no `VERSION` moved, no issue opened or closed.** So
+`CHANGELOG.md`, `ROADMAP.md`, `plans/DECISIONS.md` and `framework/governance/DECISIONS.md`
+were all deliberately left alone — there is nothing shipped to record, and the spec decision
+belongs in **GD-26**, which the implementation PR writes. Writing it in two places is the
+defect this repo keeps hitting.
 
 ## ⚠️ #620 — a framework version bump cannot pass its own pre-commit
 
@@ -159,14 +153,40 @@ from the label, not from a title scan — two of them name the gating decision o
 Three are blocked externally: **#484** (gated on v1.0.0), **#473** (the umbrella owns the
 submodule pointer), **#528** (product call).
 
-## #621 — the same defect one section up, filed not fixed
+## #621 — shape RATIFIED, plan on PR #630, implementation not started
 
-§5 `session_handoff.sessions[]` ships a worked example carrying `action: created` and
-`status: IN_PROGRESS`, and `doc-iplan/SKILL.md` step 9 instructs seeding it **at Draft** — so an
-agent copying it produces a Draft asserting a session that never ran. **The two engines already
-disagree**: the plugin seeds the handoff, the other engine's IPLAN prompt initializes an empty
-`sessions` array. #621 carries two candidate shapes; GD-25 names it in its "not adopted"
-paragraph, so it is a deferral with an owner, not silence.
+**The decision: a Draft IPLAN carries `session_handoff.sessions: []`.** The worked entry
+moves into `_guidance` labelled as what a session APPENDS. **No key is added and none is
+removed** — so an IPLAN already carrying sessions stays valid, and it is framework MINOR
+`0.50.0 → 0.51.0` at change level **C2**, not the C3 formal gate a key relocation would owe.
+
+**Read the plan, not this summary** — `plans/IPLAN-SESSION-HANDOFF-001-PLAN.md`. It carries
+40 gated citations, seven tasks, 15 verification rows and nine risks.
+
+**Why GD-25's §6 seed is deliberately NOT mirrored** (the plan and GD-26 both must say this,
+or a later reader "repairs" §5 into §6's shape): §6 seeds one entry per §2 `file_manifest`
+path, so its seed is **derived** and an empty §6 is indistinguishable from an executor that
+never wrote back. Nobody knows the future *sessions*, so a §5 seed would be **fabricated** —
+and it would contradict `document_control.session_count: 0`.
+
+**The fanout is ten surfaces across six files, not the three the issue lists.** Two review
+passes found the extra ones, and two of the plan's own first-draft claims were **false and
+are retracted in the plan's Review log**: that the "every section must be non-empty" rule
+lived on one surface (it is three — `doc-iplan-audit/SKILL.md:395`,
+`doc-iplan/SKILL.md:200`, `UCC_PROMPT_IPLAN.md:53`, the last already self-contradicting at
+`:56`), and that Platform A needed no change (`sdd-orchestrator/SKILL.md:503` enforces
+"previous session state" at IPLAN **creation**).
+
+⚠️ **The trap that will bite the implementation, and it is measured, not predicted.**
+Adding a *correct* prohibition sentence to a `doc-iplan*` skill can **silently disarm**
+GD-25's two negative guards. `_PROHIBITION` exempts the whole **sentence**
+(`test_iplan_code_inventory_lifecycle.py:329`), and `_normalize` collapses a markdown table
+with no `.`+whitespace into one — `doc-iplan-fixer/SKILL.md:247-256` is a single
+**1,900-character** "sentence" carrying `code_inventory` twice. Inserting "never a session
+entry" into it flips the whole table to exempt and the suite goes green *because nothing
+happens*. **Baseline measured on `main`: 7 `code_inventory`-bearing sentences across the
+four skills, 0 exempt. It must still be 0 after the edits** — that is plan check V14. Every
+new prohibition clause must be its own sentence, terminated by `.` + whitespace.
 
 ## #606's fix is on `main` — the issue stays closed
 
@@ -227,7 +247,10 @@ to it first at `timeout:5` — harmless outside a wave, amplifying inside one.
 1. **#620** — fix the phantom-release guard so a spec release can pass its own pre-commit. Every
    future framework bump pays the `--no-verify` cost until it lands, and that is the change class
    where skipping the other hooks is least acceptable.
-2. **#621** — decide what a Draft's `sessions:` carries, and bring both engines onto it.
+2. **#621** — **the shape is decided and the plan is written; this is now blocked on a human
+   merging PR #630.** Once it lands, execute `plans/IPLAN-SESSION-HANDOFF-001-PLAN.md`
+   task by task. Check first: `gh pr view 630 --json state,mergeStateStatus`. Expect #620's
+   `--no-verify` cost on the implementation commit (it bumps `framework/VERSION`).
 3. **#613** — reopened; the fix is host-side resolver work, not a repo change. Not blocking.
 4. **#614** — does the seed tier get a registered `@seed:` provenance tag on the `@chg:`
    precedent? Suggested default is **no** unless a second `real-use` report arrives; the point of
