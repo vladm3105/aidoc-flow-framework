@@ -12,6 +12,49 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Fixed — the acceptance goldens never adopted the normative TDD acceptance-pairing form; 8 pinned findings clear (#478) (2026-09-04)
+
+`TDD-01_golden.yaml` carried `test_mapping.coverage_table.columns` but **omitted the
+`test_mapping.scenarios:` list entirely**, which `framework/layers/07_TDD/TDD-TEMPLATE.yaml`
+declares normative for GD-08 acceptance pairing. `_check_acceptance_pairing` pairs a BDD
+scenario only when a TDD line carries a real `@bdd:` tag beside a test-case id or a
+`bdd_scenario`/`bdd_ref` carrier, so every scenario read as unpaired — and the fixture also
+wrote `bdd_ref: BDD.01.04.bbbb` without the `@bdd:` prefix the template prescribes.
+Separately `EARS.01.03.cccc` (checkout) was realized by nothing: the BDD covered sign-in and
+catalog search only.
+
+**These were errors, not warnings, in `gate-code`** — so the acceptance tier's `valid/`
+positive controls could not pass the framework's own code gate.
+
+Authoring the normative `scenarios:` list clears `ACC01` ×4 and `COV02` ×3; a new
+`BDD.01.04.eeee` checkout scenario citing `@ears: EARS.01.03.cccc` clears the fourth `COV02`.
+
+```
+fullpath/golden_chain  {COV02:4, ACC01:4, REFGRAN01:5} -> {REFGRAN01:5}
+layer_07_tdd/valid     {ACC01:4, COV02:4, REFGRAN01:3} -> {REFGRAN01:3}
+layer_08_iplan/valid   {ACC01:4, COV02:4, REFGRAN01:5} -> {REFGRAN01:5}
+layer_06_spec/valid    {COV02:4, REFGRAN01:2}          -> unchanged
+```
+
+Manifests go from **39 entries / 43 warnings to 15 / 19**. `layer_06_spec/valid` is net-zero
+by design, not by omission: it stages a SPEC and no TDD, and `SPEC-01_golden.yaml` cites only
+`@bdd: BDD.01.04.aaaa` element-level, so `BDD.01.04.eeee` takes the departing
+`EARS.01.03.cccc` slot for the same structural reason its three siblings were already pinned.
+
+**The remaining five `REFGRAN01` are split out to #635** — they cannot be cleared by re-citing,
+because `ADR-01_golden.md` declares no `ADR.01.SS.xxxx` element, and they are sequenced
+behind issue #563. **The three remaining `broken_chain` fences are split out to #636.**
+
+Two source comments that misdescribed current state were corrected in the same change:
+`tests/conformance/test_forward_coverage_is_exercised.py` still attributed the per-layer
+targets' invisibility to a fence defect PR #580 had already fixed (`layer_08_iplan/valid` is a
+second live `COV01` target; `layer_06`/`layer_07` stage no IPLAN, so `COV01` there is
+inapplicable, not blind), and `tests/acceptance/deterministic/test_doc_validator.py` claimed a
+single HTML-comment marker was the whole difference between `golden_chain` and `broken_chain`
+when five files differ and always have.
+
+Tests only — no framework spec, platform or tooling surface is touched.
+
 ### Changed — Framework Spec `0.50.0` → `0.51.0`: a Draft IPLAN's §5 `session_handoff.sessions` is empty (GD-26, #621) (2026-09-04)
 
 `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying

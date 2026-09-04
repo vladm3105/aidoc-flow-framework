@@ -27,6 +27,37 @@ test_mapping:
       - unit
       - integration
       - e2e
+  scenarios:
+    - bdd_scenario: "@bdd: BDD.01.04.aaaa"
+      description: Authenticated session feature
+      tests:
+        - type: unit
+          file: tests/unit/test_auth.py
+          function: test_issue_token_returns_session_token
+    - bdd_scenario: "@bdd: BDD.01.04.bbbb"
+      description: Valid credentials yield a session token
+      tests:
+        - type: integration
+          file: tests/integration/test_auth_kms.py
+          function: test_token_signed_with_kms_key
+    - bdd_scenario: "@bdd: BDD.01.04.cccc"
+      description: Invalid credentials produce an error response
+      tests:
+        - type: unit
+          file: tests/unit/test_auth.py
+          function: test_invalid_credentials_raise_auth_error
+    - bdd_scenario: "@bdd: BDD.01.04.dddd"
+      description: Catalog search returns ranked results
+      tests:
+        - type: e2e
+          file: tests/e2e/test_catalog_search.py
+          function: test_search_returns_ranked_results
+    - bdd_scenario: "@bdd: BDD.01.04.eeee"
+      description: Cart confirmation persists the order
+      tests:
+        - type: integration
+          file: tests/integration/test_orders.py
+          function: test_confirm_cart_persists_order
 
 ## Test Cases
 test_cases:
@@ -44,13 +75,24 @@ test_cases:
     - id: TDD.01.04.cccc
       type: e2e
       spec_ref: SPEC-01
-      bdd_ref: BDD.01.04.bbbb
+      bdd_ref: "@bdd: BDD.01.04.bbbb"
       test_file: tests/e2e/test_auth_flow.py
+    - id: TDD.01.04.dddd
+      type: e2e
+      spec_ref: SPEC-01
+      bdd_ref: "@bdd: BDD.01.04.dddd"
+      test_file: tests/e2e/test_catalog_search.py
+    - id: TDD.01.04.eeee
+      type: integration
+      spec_ref: SPEC-01
+      bdd_ref: "@bdd: BDD.01.04.eeee"
+      test_file: tests/integration/test_orders.py
 
 ## Thresholds
 thresholds:
   auth_p95: 300ms
   catalog_p95: 500ms
+  order_p95: 800ms
 
 ## Tdd Order
 tdd_order:
