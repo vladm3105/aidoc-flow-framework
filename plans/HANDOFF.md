@@ -13,8 +13,8 @@ of `framework/VERSION` (`plans/DECISIONS.md` D-0082). Tag high-water mark is
 here:** `framework/v0.44.0` is the newest framework Release and so still shows as *Latest* while
 the spec is `0.50.0`; `v0.46.0`–`v0.50.0` are tag-only.
 
-**Verified 2026-09-03 on `main` at `06e0a641`** (run, not asserted): conformance **494 passed /
-1034 subtests** via `python3 -m pytest tests/conformance -q`, and **543** via
+**Verified 2026-09-04 on `main` at `1c2958db`** (run, not asserted): conformance **498 passed /
+1040 subtests** via `python3 -m pytest tests/conformance -q`, and **547** via
 `python3 -m unittest discover -s tests/conformance -t tests/conformance` (CI's runner) — the two
 count subtests differently, so cite the command with the number. Acceptance-deterministic **64**,
 unit **209**, `sdd_doc_lint` **6**, `pre-commit run --all-files` green. **0 failing.**
@@ -26,9 +26,11 @@ regen; use `--skip-lint-smoke`.
 
 **Six merges, all on `main`.** PR #622 (closes #601, framework spec `0.49.0 → 0.50.0`, at
 `07b52e02`); PRs #624 and #625 (handoff + tagging docs); PR #626 (closes #623, re-enables
-`ai-review`, at `06e0a641`); and PR #627 (handoff, at `7ffa9841`). Three issues filed — **#620**, **#621**, **#623** — **#613
-reopened**, and **`framework/v0.50.0` cut and pushed**. Then **#606's fix was re-submitted**
-(below) — the record and `main` no longer disagree anywhere.
+`ai-review`, at `06e0a641`); PR #627 (handoff, at `7ffa9841`); and PR #628 (#606's fix
+re-submitted, at `1c2958db`). Three issues filed — **#620**, **#621**, **#623** — **#613
+reopened**, and **`framework/v0.50.0` cut and pushed**. The record and `main` no longer disagree
+anywhere. Two host faults outside every repo were also fixed: the LiteLLM provider balance and the
+host's DNS.
 
 **IPLAN `code_inventory` became a three-value lifecycle seeded at Draft.** Vocabulary is
 `planned | created | modified`; a Draft `code_build`/`combined` IPLAN carries one `planned`
@@ -65,35 +67,35 @@ recorded in its PR body. Fix shape is on **#620**.
 
 ## `ai-review` is RE-ENABLED and verified working (D-0087, #623 closed)
 
-⚠️ **A discriminator for the `ResponseShapeError` failures now fits, and it is NOT size — it is
-`.github/`.** Census of every PR for which `call / ai-review` produced a conclusion:
+**The `ResponseShapeError` failures are RESOLVED, and the cause was neither of the two things
+this file previously claimed.** It was host-side and outside every repo:
 
-| PR | files | touches `.github/` | ai-review |
-| --- | --- | --- | --- |
-| 589 | 1 | no | success |
-| 595 | 179 | no | **failure** |
-| 605 | 7 | **yes** | **failure** |
-| 612 | 5 | **yes** | **failure** (×3) |
-| 626 | 3 | no | success |
-| 627 | 1 | no | success |
-| 628 | 5 | **yes** | **failure** (×2) |
+1. **The provider account was exhausted** — `api.deepseek.com` reported `total_balance: "-0.04"`,
+   `is_available: false`, so every call silently fell to the Ollama Cloud fallback. Now `4.93`.
+2. **Host DNS was failing in waves** — see the `#613` section below.
 
-`.github/` predicts failure **3 of 3**; not touching it predicts success 3 of 4, the exception
-being the 179-file fanout that upstream `aidoc-flow-ci#543` was filed on. **So there are two
-failure populations**, and the `.github/` one — which fires on ordinary CI-maintenance PRs, not
-just release fanouts — was unreported upstream until now. Deterministic on re-run, both times.
+With both fixed, `call / ai-review` **passed on PR #628**, a 37,106-byte diff that had failed three
+times, with no other change. That is the proof; nothing else here is.
 
-**Mechanism is a candidate only, deliberately not asserted.** `.github/` is
-`governance.locked_paths[0]` in this repo's `.github/ai-review/config.json`, and canon's own step
-names show the reusable branches on it (`Fetch PR diff + files (+ governance floor)`,
-`Mint reviewer App token (routine + governance-locked PRs)`). Canon's source was not read; two
-hypotheses in that thread have already been retracted. **The cheap decisive test** is two
-throwaway PRs — one whose whole diff is a one-line comment change under `.github/`, one identical
-outside it. Filed as a comment on #543, with that test spelled out.
+⚠️ **Two mechanisms were published to `aidoc-flow-ci#543` and BOTH were retracted — do not
+resurrect either from an older revision of this file or from that thread's middle.** The first
+claimed PRs touching `.github/` fail (3-of-3 in a census, confounded with diff size); the second
+claimed an input-size threshold near 20-37 KB. **Every measurement behind them was taken while the
+balance and DNS were both moving underneath.** A distribution measured during an outage describes
+the outage. The retraction is `aidoc-flow-ci#543`'s newest comment.
 
-**Practical consequence today:** a PR touching `.github/` will red `call / ai-review` and get
-`ai:review-infra-error`. It does not block (not a required context). Do not treat it as a broken
-reviewer and do not disable the workflow — that is exactly the misreading D-0087 undid.
+**One reproduction is real but is NOT the bug**, recorded so nobody chases it: a *bare*
+single-user-message probe — 37 KB diff plus "reply with ONLY JSON", no system prompt — returns
+empty `content` with `completion_tokens` exactly equal to `max_tokens`, at every budget tried, on
+**both** routes, under healthy DNS and a positive balance. Canon succeeds on that same diff at the
+same moment, so the two differ by call shape and the probe explains nothing about CI.
+
+**The finding that survives, and is still upstream-owned:** the proxy returns **HTTP 200** with an
+empty body — verified in its access log, every call across three failing runs — and canon reports
+that as `litellm: proxy request failed after 3 attempts: ResponseShapeError`. The request did not
+fail and the proxy did not error. That message is what sent two separate investigations to the
+proxy and to diff size, and it is why `ai-review` was disabled for two days instead of someone
+checking a balance.
 
 **It was `disabled_manually` from 2026-09-01 to 2026-09-03** and produced no run, no verdict and
 no check-run on any PR in that window — including PRs #619, #622, #624 and #625, all merged to
@@ -145,8 +147,7 @@ contexts and that half is unchanged.
 
 ## The backlog is GitHub issues
 
-**Open issues: 33**, of which **14** are parked (measured 2026-09-03, after #601 closed,
-issues 620 / 621 / 623 were filed, and #613 reopened). Re-derive rather than copy:
+**Open issues: 32**, of which **14** are parked (measured 2026-09-04, after #623 closed). Re-derive rather than copy:
 `gh issue list --state open --limit 300 --json number --jq 'length'` and
 `gh issue list --state open --limit 300 --json number,labels --jq '[.[]|select(.labels[].name=="parked")|.number]'`.
 In-progress work carries **`status: in progress`** — that label is currently on nothing.
@@ -167,9 +168,9 @@ disagree**: the plugin seeds the handoff, the other engine's IPLAN prompt initia
 `sessions` array. #621 carries two candidate shapes; GD-25 names it in its "not adopted"
 paragraph, so it is a deferral with an owner, not silence.
 
-## #606's fix is on `main` again — the issue stays closed
+## #606's fix is on `main` — the issue stays closed
 
-Re-submitted 2026-09-03 as a fresh branch off `main`, not a replay. `.github/ai-review/config.json`'s
+Merged 2026-09-04 as PR #628 at `1c2958db`, a fresh branch off `main` rather than a replay. `.github/ai-review/config.json`'s
 `$schema` now pins `ci/v3.0.0`, matching `ai-review.yml`'s caller, and
 `tests/conformance/test_ai_review_schema_pin.py` (4 tests) enforces the coupling.
 `plans/CI-CANON-V4-MIGRATION-PLAN.md` carries it as step 6 + V3b.
@@ -193,15 +194,33 @@ is nil today: canon ships no further v3.
 
 ## Unsettled — watch
 
-**#613 REOPENED — the host DNS intermittent is a trend.** `call / dep-scan` failed twice on
-2026-09-02 (17:03Z and 20:06Z, different SHAs of PR #622) with
-`curl: (6) Could not resolve host: github.com`, self-recovering on re-run each time; the host's
-own `gh` failed three times in the same windows with `error connecting to api.github.com`, and a
-`git ls-remote` failed on 2026-09-03 with `ssh: Could not resolve hostname github.com`. That is
-**eight instances across two days on two surfaces**. `call / trivy-scan` passed from the same
-self-hosted pool in both windows, which still rules out a pool outage. The new evidence is
-host-side: the fix belongs on the host's resolver, not in the runner image. Full table on #613 —
-do not re-file.
+**#613 — root cause CONFIRMED and partly fixed; the residual is the router.** The LAN gateway
+`192.168.86.1` episodically stops serving DNS: caught mid-outage, UDP/53 timed out, **TCP/53 was
+refused outright**, and the LAN hop measured 1355-1569 ms RTT at 0% packet loss. It comes in waves
+— twenty minutes later the same gateway answered at 3-94 ms. `eno2` shows 0 RX/TX errors and host
+load 1.25, so it is not this machine. `aidoc-flow-operations` has a runbook naming the same router
+from **2026-06-19**.
+
+**Fixed this session:**
+
+- **Host** — `/etc/resolv.conf` now lists public resolvers first with the gateway last, plus
+  `options timeout:1 attempts:2`; `/etc/NetworkManager/conf.d/90-dns-none.conf` (`dns=none`) stops
+  NM reverting it at the next DHCP renewal. Backup: `/etc/resolv.conf.bak-20260903-161439`.
+  Measured **0/10 → 20/20 @ 78 ms**.
+- **Containers** — founder added a `dns` key to `/etc/docker/daemon.json` and restarted Docker.
+  `ci-job-*` containers now resolve `github.com` **15/15**; `litellm` **10/10**.
+
+**Correction worth keeping:** the runner job containers were **never** on the bad resolver. That
+June runbook's fix shipped, and `run-ephemeral.sh` passes `--dns 1.1.1.1 --dns 8.8.8.8` —
+`docker inspect` confirms `["1.1.1.1","8.8.8.8"]`. Their `Could not resolve host` failures were
+packet loss during a wave, not resolver inheritance. Do not go looking for that bug.
+
+**Residual, and no software config closes it:** during a wave, UDP is lost to *any* resolver. Two
+things would — a caching resolver on `172.17.0.1:53` with `RUNNER_DNS="172.17.0.1"` (CI resolves
+the same few names hundreds of times per run, so cache hits ride out a wave; needs a package
+install **and** a cross-repo edit in `aidoc-flow-operations`), or replacing the gateway. Also note
+`daemon.json`'s `dns-opts` uses `rotate` with the gateway still in the list, so ~1 query in 3 goes
+to it first at `timeout:5` — harmless outside a wave, amplifying inside one.
 
 ## What to do next — prioritized
 
