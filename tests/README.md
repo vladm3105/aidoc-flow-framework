@@ -56,7 +56,7 @@ seed. **Methodology**:
 
 `tests/scripts/test-acceptance.sh` writes its outputs across three tiers per example:
 
-- `examples/<NAME>/docs/` — produced 8-layer chain (committed)
+- `examples/<NAME>/docs/` — produced 10-layer chain (committed)
 - `examples/<NAME>/.aidoc/` — audit, review, remediation, validation, security, quality reports (committed; AI provenance documentation)
 - `examples/<NAME>/logs/<TS>/` — execution metadata + raw stdout (gitignored)
 

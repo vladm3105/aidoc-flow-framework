@@ -36,7 +36,7 @@ cross-layer relationships:
   from `BRD-01` *and* `BRD-02` simply lists both upstream tags.
 
 The cascade harness's standard example (`examples/url-shortener/`)
-happens to use 1:1 numbering across all 8 layers (BRD-01 → PRD-01 →
+happens to use 1:1 numbering across all 10 layers (BRD-01 → PRD-01 →
 ... → IPLAN-01). **That alignment is coincidence, not contract.** A
 reader inferring "doc numbers cascade across layers" from the
 example is reading a pattern that isn't there.
@@ -190,7 +190,7 @@ only — provisional elements are still subject to coverage and traceability gat
 
 ### Element-ID exemptions (CLEANUP-PR-C item 13)
 
-Six of the eight layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
+Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
 element IDs on every distinct content unit per their template's required
 sections. The remaining two layers carry a documented exemption:
 

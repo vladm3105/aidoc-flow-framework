@@ -1,11 +1,24 @@
 # Specification-Driven Development Guide
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
-SDD is a streamlined 8-layer documentation-to-code framework. Each layer produces one YAML document type, with end-to-end traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
+SDD is a streamlined 10-layer documentation-to-code framework. Each layer produces one YAML document type, with end-to-end traceability from business requirements to execution planning. The layer order follows a logical dependency flow: specify what to build first (SPEC), then define how to test it (TDD), then plan the execution (IPLAN).
 
 ```
 BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → TDD (L7) → IPLAN (L8) → Code
+                                                                                           ↑
+                                                                             CHG (L9, overlay) → EVAL (L10)
 ```
 
 ## Layer Descriptions
@@ -20,6 +33,8 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | L6 | SPEC | Component interfaces, data models, behavior contracts | EARS, BDD, ADR | TDD |
 | L7 | TDD | Test case definitions, BDD-to-test mapping, quality thresholds | EARS, BDD, ADR, SPEC | IPLAN |
 | L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | SPEC, TDD | Code |
+| L9 | CHG | Change management overlay — gates, versioning, audit trail | Any | — |
+| L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
 
 ## Necessary-upstream traceability
 
@@ -61,7 +76,7 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 | Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
 | Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
 | Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
-| Governance workflow | CHG overlay | Project-level control outside layer numbering |
+| Governance workflow | CHG overlay (L9) | Project-level control outside layer numbering |
 
 ## Development vs Deployment Separation
 

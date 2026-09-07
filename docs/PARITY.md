@@ -6,8 +6,8 @@ Code plugin** — so users picking between them see the capability
 shape on each side.
 
 > Status: as of project `v1.1.0` / `hermes/v0.12.1` /
-> `claude-code-plugin/v0.25.0` (framework spec `0.51.0`; both platforms on the
-> 8-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v1.0.0`)). Updates land when a platform ships a structurally different
+> `claude-code-plugin/v0.25.0` (framework spec `0.53.0`; both platforms on the
+> 10-layer model; plugin skill set is the canonical 52 = 32 layer-family + 4 CHG + 14 utilities + 2 deprecated redirect stubs (`doc-review`, `trace-check`, scheduled for removal in `v1.0.0`)). Updates land when a platform ships a structurally different
 > capability, not per-PR.
 
 Both platforms pass the shared conformance suite at
@@ -33,11 +33,11 @@ parity remains (enforced by
 but it is now one component of the broader lifecycle-behavior parity
 contract.
 
-**Enforcement parity — all 8 layers (plugin v0.21.0+).** On the
+**Enforcement parity — all 10 layers (plugin v0.21.0+).** On the
 **autopilot-dispatched path**, both platforms enforce the state machine
 **preemptively for every layer**: Hermes via its Python saga runtime
 (`saga_orchestrator.py`); the plugin via the `tools/saga_driver.py` script
-vendored into the bundle, now invoked by **all 8 layer autopilots**
+vendored into the bundle, now invoked by **all 10 layer autopilots**
 (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}-autopilot`) plus the CHG family
 as thin entry points — completed by SAGA-PARITY-001 **Phase 4**
 (the `0.21.0` plugin cycle, 2026-06-22). The driver's `can_transition`
@@ -86,7 +86,7 @@ mechanism — both preemptive and cooperative implementations are
 compliant if they produce schema-conformant journals with valid
 transitions.
 
-## Capability matrix — 8-layer SDD coverage
+## Capability matrix — 10-layer SDD coverage
 
 | # | Layer | Hermes | Plugin |
 |---|-------|--------|--------|
@@ -98,6 +98,8 @@ transitions.
 | 6 | SPEC | `sdd_*` tools (generic) | `doc-spec` + 3 variants |
 | 7 | **TDD** | `sdd_*` tools (generic) | `doc-tdd` + 3 variants |
 | 8 | **IPLAN** | `sdd_*` tools (generic) | `doc-iplan` + 3 variants |
+| 9 | **CHG** | `sdd_validate_chg` | `doc-chg` + 3 variants |
+| 10 | **EVAL** | `sdd_*` tools (generic) | `doc-flow` (eval orchestration) |
 
 Each plugin layer ships 4 skills: the base authoring skill plus `-autopilot`,
 `-audit`, and `-fixer`.
@@ -122,7 +124,7 @@ specifies):
 | `sdd_review` | Review workflow |
 | `sdd_scan` | Project scan |
 
-**Plugin — per-layer skills** (each of the 8 layers ships a 4-skill bundle):
+**Plugin — per-layer skills** (each of the 10 layers ships a 4-skill bundle):
 
 | Operation | Plugin skills |
 |-----------|--------------:|
@@ -131,7 +133,7 @@ specifies):
 | `-audit` | 8 |
 | `-fixer` | 8 |
 
-The 8 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan}`) cover all 8
+The 10 layer families (`doc-{brd,prd,ears,bdd,adr,spec,tdd,iplan,chg,flow}`) cover all 10
 SDD layers, plus the `doc-chg` change-management family (4 variants — the CHG
 governance overlay) and 14 utility skills (`doc-flow`, `doc-naming`, `doc-ref`,
 `doc-validator`, `review-team`, `project-init`, `project-adopt`,
@@ -213,11 +215,11 @@ deterministic gate, and reduced findings).
 | Blackboard | git-ignored `.aidoc/review/<artifact-id>/<persona>.json` slots | saga journal + branch summaries |
 | Persona names | framework names natively (`chaos_engineer`, `security_engineer`, `synthesizer`, …) | framework names natively (`chaos_engineer`, `security_engineer`, …); single remaining alias `chairperson` → `synthesizer` |
 | Reduce / score | `synthesizer` subagent (rule-driven) | `saga_reducer` + `review_scoring.py` (code) |
-| Saga lifecycle (D-0031 / `0.13.0` spec cycle) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 8 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement; single-pass by default, **opt-in bounded multi-iteration loop** via `sdd_review quality_loop` (HERMES-REVIEW-LOOP-001 Phase 1, `v0.11.0`) |
+| Saga lifecycle (D-0031 / `0.13.0` spec cycle) | `saga.json` written at `.aidoc/review/<NN>_<LAYER>/<id>/saga.json`; same state machine + journal schema as Hermes. **All 10 layers (plugin v0.21.0+)**: preemptive enforcement via `tools/saga_driver.py` invoked by every `doc-<layer>-autopilot` (SAGA-PARITY-001 Phase 4). Outer wall-clock-bounded, multi-iteration loop. | Python saga runtime (`saga_orchestrator.py`, `saga_models.py`, `saga_journal.py`); preemptive enforcement; single-pass by default, **opt-in bounded multi-iteration loop** via `sdd_review quality_loop` (HERMES-REVIEW-LOOP-001 Phase 1, `v0.11.0`) |
 | Resilience — partial crew | blackboard slots + coverage/quorum (D-0005 blackboard, authoritative for crew state) + saga.json journal for outer-loop phase state (D-0031) | saga retries/compensation; degrade above quorum, escalate below |
 | Resilience — partial outer loop | `saga.json` PARTIAL_TIMEOUT state via break-circuit; next invocation resumes from checkpoint | **default single-pass**: state machine **accepts** `PARTIAL_TIMEOUT` but the default path doesn't write it. **`quality_loop` opt-in (`v0.11.0`, D-0063)**: *writes* `PARTIAL_TIMEOUT` on the final failing gate + enforces `SOFT_DEADLINE_SECONDS`; each iteration is a fresh forward run — cross-invocation resume (G-R1) is Phase 2 |
 | Report | unified report (`UCR_OUTPUT_UNIFIED` / audit report) | `PERSONA_REVIEW_REPORT` / saga summary |
-| Layer Playbooks (all 8 layers) | ✅ active — 45 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6) | ✅ **all 8 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, hermes 0.4.0/0.5.0): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
+| Layer Playbooks (all 10 layers) | ✅ active — 65 playbooks (BRD 5 / PRD 6 / EARS 5 / BDD 6 / ADR 6 / SPEC 5 / TDD 6 / IPLAN 6 / CHG 9 / IPLAN_VERIFY 3) | ✅ **all 10 lifecycle layers active** (HERMES-PARITY-PHASE-2/3, hermes 0.4.0/0.5.0): saga branches inject `framework/playbooks/<NN>_<LAYER>/<lens>.md`, enforce the `check:` citation floor (discard uncited), emit `verdict.playbook_coverage`. **CHG: crew-map parity** (`persona_mappings.yaml`); a live/sanctioned CHG *saga* review (schema `09_CHG` + dispatch) is a follow-on |
 
 Both bind to the **same** crew map, persona-output contract, scoring/gate
 policy, saga state machine, and report shape — so a BRD reviewed by either
@@ -302,7 +304,7 @@ Lifecycle-behavior parity is enforced at two layers; both must pass on CI.
 
 ## SDD layer model — both platforms aligned
 
-Both platforms now implement the framework's **8-layer model**
+Both platforms now implement the framework's **10-layer model**
 (BRD·PRD·EARS·BDD·ADR·SPEC·TDD·IPLAN → Code). Hermes was rewritten to
 it during P2-T9; the Claude Code plugin's skill corpus — originally
 authored against the legacy 12-layer model (…SYS, REQ, CTR, SPEC,
@@ -326,7 +328,7 @@ carries no legacy-model fingerprints, so the alignment cannot regress.
 | Native Claude Code experience with slash-commands | **Plugin** |
 | Per-operation skill granularity in your workflow | **Plugin** |
 | Server-side validation as an HTTP / stdio service | **Hermes** |
-| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (8 layers × base/autopilot/audit/fixer) |
+| The widest per-layer audit / autopilot / fixer toolset | **Plugin** (10 layers × base/autopilot/audit/fixer) |
 | Internal pytest-style validation of the platform itself | **Hermes** (447 tests) |
 | Documentation-first artifacts via skill bodies | **Plugin** (declarative SKILL.md per operation) |
 

@@ -1,5 +1,16 @@
 # 06_SPEC — Technical Specification
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## C4 Model Position
 
 SPEC is the **C4-L3 (Component)** level in the C4 architecture model. Content describes component interfaces, data models, and behavior contracts — not architecture decisions (ADR) or code implementation (Code).
@@ -44,4 +55,4 @@ Implementation-ready technical specification for a single software component. De
 | File | Purpose |
 |------|---------|
 | `SPEC-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `SPEC-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
+| `SPEC-00_index.TEMPLATE.md` | SPEC registry template — tracks planned and active SPECs per project |

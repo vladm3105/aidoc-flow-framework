@@ -65,7 +65,7 @@ aidoc-flow-framework/
 │   └── url-shortener/
 │       ├── seed/                    Human input — the acceptance-test seed
 │       ├── chg/                     Human input — change request for Phase 2
-│       ├── docs/                    AI output — produced 8-layer chain (committed)
+│       ├── docs/                    AI output — produced 10-layer chain (committed)
 │       ├── .aidoc/                  AI provenance — audit/review/remediation/validation
 │       │                            reports (committed). See framework/docs/AIDOC.md
 │       └── logs/<TS>/               Tool internals — gitignored, ephemeral

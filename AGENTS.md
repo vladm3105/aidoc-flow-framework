@@ -9,8 +9,8 @@ Where the two disagree, `CLAUDE.md` wins — fix this file.
 
 One engine-agnostic specification (`framework/`) and two independent platforms
 that consume it: **Hermes** (MCP server, `platforms/hermes/`) and the **Claude
-Code plugin** (`platforms/claude-code-plugin/`). The spec defines the 8-layer SDD
-flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code). Both platforms
+Code plugin** (`platforms/claude-code-plugin/`). The spec defines the 10-layer SDD
+flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code). Both platforms
 pass the same shared conformance suite (`tests/conformance/`).
 
 ## Filing gaps — open a GitHub issue

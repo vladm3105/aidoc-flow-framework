@@ -1,0 +1,68 @@
+# EARS Requirements — Layer 3
+
+## Overview
+
+EARS (Easy Approach to Requirements Syntax) formalizes business and product
+requirements into precise, testable statements using WHEN-THE-SHALL-WITHIN syntax.
+
+**Workflow**: BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
+
+## C4 Model Position
+
+EARS is a **refinement step** that formalizes the transition from Context (BRD) to
+Container (PRD). It does not have its own C4 level — it translates requirements
+into atomic, testable logic for downstream BDD scenarios.
+
+```text
+Context (BRD)    — business environment, actors, boundaries
+  └─ EARS/BDD    — formalize Context→Container transition              ← this layer
+Container (PRD)  — product features, functional blocks
+  └─ ADR         — decisions that shape Component architecture
+Component (SPEC) — component interfaces, data models, behavior contracts
+  └─ TDD         — test case definitions validating SPEC contracts
+  └─ IPLAN       — execution plan bridging TDD to Code
+```
+
+## Files
+
+| File | Purpose |
+|------|---------|
+| `EARS-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
+| `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project |
+
+## EARS Syntax Patterns
+
+| Pattern | Trigger | Format |
+|---------|---------|--------|
+| Event-Driven | External event | WHEN [trigger], THE [component] SHALL [action] WITHIN [timing] |
+| State-Driven | System state | WHILE [state], THE [component] SHALL [behavior] WITHIN [context] |
+| Optional | Feature/config present | WHERE [feature enabled], THE [component] SHALL [behavior] |
+| Unwanted | Error condition | IF [error], THE [component] SHALL [recovery] WITHIN [timing] |
+| Ubiquitous | Always applies | THE [component] SHALL [behavior] for [scope] |
+
+Every pattern uses the canonical EARS response clause `THE [component] SHALL …`
+— never a `THEN` connective. `WITHIN [timing]` is a framework extension (not
+stock EARS) supporting quantifiability. A genuinely multi-condition requirement
+*composes* these patterns (e.g. `WHILE [state], WHEN [event], THE … SHALL …`) —
+that is composition, not a sixth pattern.
+
+## Element IDs
+
+Hash-based, content-derived IDs scoped to EARS content:
+> The SHA-256 form is the **canonicalization target**: engines emit stable opaque strings that *should* match it. `rehash --check` verification is shipped for BRD §7 only (PROVISIONAL-IDS-002 Phase 1); extraction for this layer is Phase 2+. See `ID_NAMING_STANDARDS.md`.
+
+```text
+Format: EARS.{doc_id}.{section_id}.{hash}
+Example: EARS.01.03.c4d8
+```
+
+Algorithm: SHA256 of `"{doc_id}:{section_id}:{norm(title)}:{norm(description)}"`, first 4 hex chars (the canonicalization target; not verified until `rehash --check`). `norm()` is the normalization transform, and `governance/ID_NAMING_STANDARDS.md` is its **single source** — along with the byte-exact input assembly. Do not re-specify it here.
+See template `metadata.id_standard` for details.
+
+## Upstream Traceability
+
+Each EARS links to its source PRD via its necessary-upstream tag (BRD is reached transitively through the PRD):
+
+```text
+@prd: PRD.NN.09.xxxx    (required — links to PRD functional requirement)
+```

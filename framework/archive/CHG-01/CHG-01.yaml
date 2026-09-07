@@ -1,0 +1,343 @@
+# =============================================================================
+#  CHG-01: Add document_control to all framework governance documents
+# =============================================================================
+
+id: CHG-01
+title: "Add document_control metadata to all framework governance and reference documents"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-07"
+  framework_version: "0.51.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-01"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-07T00:00:00Z"
+  date_approved: "2026-09-07T00:00:00Z"
+  date_implemented: "2026-09-07T00:00:00Z"
+  supersedes:
+    - "governance/ADAPTATION.md (archive/CHG-01/governance/ADAPTATION.md)"
+    - "governance/AUTHORING_STYLE.md (archive/CHG-01/governance/AUTHORING_STYLE.md)"
+    - "governance/DECISION_WORKFLOW.md (archive/CHG-01/governance/DECISION_WORKFLOW.md)"
+    - "governance/DECISIONS.md (archive/CHG-01/governance/DECISIONS.md)"
+    - "governance/DEFINITION_OF_DONE.md (archive/CHG-01/governance/DEFINITION_OF_DONE.md)"
+    - "governance/DIAGRAM_STANDARDS.md (archive/CHG-01/governance/DIAGRAM_STANDARDS.md)"
+    - "governance/DOC_GOVERNANCE_CORE.md (archive/CHG-01/governance/DOC_GOVERNANCE_CORE.md)"
+    - "governance/FRAMEWORK_FEEDBACK_LOG.md (archive/CHG-01/governance/FRAMEWORK_FEEDBACK_LOG.md)"
+    - "governance/ID_NAMING_STANDARDS.md (archive/CHG-01/governance/ID_NAMING_STANDARDS.md)"
+    - "governance/LINT_RULES.md (archive/CHG-01/governance/LINT_RULES.md)"
+    - "governance/MODULE_LAYOUT.md (archive/CHG-01/governance/MODULE_LAYOUT.md)"
+    - "governance/NOTICES.md (archive/CHG-01/governance/NOTICES.md)"
+    - "governance/README.md (archive/CHG-01/governance/README.md)"
+    - "governance/REVIEW_REMEDIATION_FLOW.md (archive/CHG-01/governance/REVIEW_REMEDIATION_FLOW.md)"
+    - "governance/REVIEW_SAGA.md (archive/CHG-01/governance/REVIEW_SAGA.md)"
+    - "governance/REVIEW_TEAM.md (archive/CHG-01/governance/REVIEW_TEAM.md)"
+    - "governance/SECURITY_REVIEW.md (archive/CHG-01/governance/SECURITY_REVIEW.md)"
+    - "governance/SEED_CONTRACT.md (archive/CHG-01/governance/SEED_CONTRACT.md)"
+    - "governance/SELF_LEARNING.md (archive/CHG-01/governance/SELF_LEARNING.md)"
+    - "governance/TAG_SYNTAX.md (archive/CHG-01/governance/TAG_SYNTAX.md)"
+    - "governance/THRESHOLD_NAMING_RULES.md (archive/CHG-01/governance/THRESHOLD_NAMING_RULES.md)"
+    - "governance/TRACEABILITY.md (archive/CHG-01/governance/TRACEABILITY.md)"
+    - "governance/chg/README.md (archive/CHG-01/governance/chg/README.md)"
+    - "governance/ADAPTATION_SURFACE.yaml (archive/CHG-01/governance/ADAPTATION_SURFACE.yaml)"
+    - "governance/PROFILE-TEMPLATE.yaml (archive/CHG-01/governance/PROFILE-TEMPLATE.yaml)"
+    - "governance/REVIEW_CREWS.yaml (archive/CHG-01/governance/REVIEW_CREWS.yaml)"
+    - "layers/09_CHG/gates/GATE-01_BUSINESS_PRODUCT.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE-06_DESIGN_TEST.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE-08_IPLAN.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE_ERROR_CATALOG.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/gates/GATE_INTERACTION_DIAGRAM.md (archive/CHG-01/layers/09_CHG/gates/)"
+    - "layers/09_CHG/templates/GATE_APPROVAL_FORM.md (archive/CHG-01/layers/09_CHG/templates/)"
+    - "layers/09_CHG/templates/POST_MORTEM-TEMPLATE.md (archive/CHG-01/layers/09_CHG/templates/)"
+    - "layers/01_BRD/README.md (archive/CHG-01/layers/01_BRD/README.md)"
+    - "layers/02_PRD/README.md (archive/CHG-01/layers/02_PRD/README.md)"
+    - "layers/03_EARS/README.md (archive/CHG-01/layers/03_EARS/README.md)"
+    - "layers/04_BDD/README.md (archive/CHG-01/layers/04_BDD/README.md)"
+    - "layers/05_ADR/README.md (archive/CHG-01/layers/05_ADR/README.md)"
+    - "layers/06_SPEC/README.md (archive/CHG-01/layers/06_SPEC/README.md)"
+    - "layers/07_TDD/README.md (archive/CHG-01/layers/07_TDD/README.md)"
+    - "layers/08_IPLAN/README.md (archive/CHG-01/layers/08_IPLAN/README.md)"
+    - "layers/08_IPLAN/PLAN_STANDARD.md (archive/CHG-01/layers/08_IPLAN/PLAN_STANDARD.md)"
+    - "layers/08_IPLAN/IPLAN-ECOSYSTEM.md (archive/CHG-01/layers/08_IPLAN/IPLAN-ECOSYSTEM.md)"
+    - "layers/09_CHG/README.md (archive/CHG-01/layers/09_CHG/README.md)"
+    - "layers/10_EVAL/README.md (archive/CHG-01/layers/10_EVAL/README.md)"
+    - "README.md (archive/CHG-01/root/README.md)"
+    - "AI_ASSISTANT_RULES.md (archive/CHG-01/root/AI_ASSISTANT_RULES.md)"
+    - "SPEC_DRIVEN_DEVELOPMENT_GUIDE.md (archive/CHG-01/root/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)"
+    - "TESTING_STRATEGY_TDD.md (archive/CHG-01/root/TESTING_STRATEGY_TDD.md)"
+    - "QUICK_REFERENCE.md (archive/CHG-01/root/QUICK_REFERENCE.md)"
+    - "registry/LAYER_REGISTRY.yaml (archive/CHG-01/registry/LAYER_REGISTRY.yaml)"
+    - "registry/README.md (archive/CHG-01/registry/README.md)"
+    - "docs/AIDOC.md (archive/CHG-01/docs/AIDOC.md)"
+    - "playbooks/01_BRD/README.md (archive/CHG-01/playbooks/01_BRD/README.md)"
+    - "playbooks/02_PRD/README.md (archive/CHG-01/playbooks/02_PRD/README.md)"
+    - "playbooks/03_EARS/README.md (archive/CHG-01/playbooks/03_EARS/README.md)"
+    - "playbooks/04_BDD/README.md (archive/CHG-01/playbooks/04_BDD/README.md)"
+    - "playbooks/05_ADR/README.md (archive/CHG-01/playbooks/05_ADR/README.md)"
+    - "playbooks/06_SPEC/README.md (archive/CHG-01/playbooks/06_SPEC/README.md)"
+    - "playbooks/07_TDD/README.md (archive/CHG-01/playbooks/07_TDD/README.md)"
+    - "playbooks/08_IPLAN/README.md (archive/CHG-01/playbooks/08_IPLAN/README.md)"
+    - "playbooks/09_CHG/README.md (archive/CHG-01/playbooks/09_CHG/README.md)"
+    - "playbooks/10_IPLAN_VERIFY/README.md (archive/CHG-01/playbooks/10_IPLAN_VERIFY/README.md)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Add `document_control:` blocks (version, status, last_updated, author,
+    framework_version) to all framework governance documents, layer READMEs,
+    root-level reference docs, gate definitions, and YAML files that currently
+    lack them. This brings every framework document under the same document
+    lifecycle tracking that SDD layer templates already use.
+  why: |
+    The framework's own governance docs have no version tracking, status, or
+    authorship metadata. This violates the principle that the framework should
+    model the governance it prescribes. Without document_control, there is no
+    audit trail for when governance rules were last updated, who authored them,
+    or which framework version they were written against.
+  trigger: |
+    Self-governance gap identified during framework review. The 09_CHG rules
+    require document lifecycle management, but governance docs themselves lack
+    the mechanism.
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "Governance"
+      artifacts: ["All 27 governance/*.md files"]
+      impact: "Each file gains YAML frontmatter + document_control block"
+    - layer: "CHG"
+      artifacts: ["8 gate definitions, 2 gate templates, CHG README"]
+      impact: "Gate docs gain document_control in frontmatter"
+    - layer: "Layer READMEs"
+      artifacts: ["12 layer READMEs + 3 layer reference docs"]
+      impact: "README files gain document_control block"
+    - layer: "Root"
+      artifacts: ["5 root-level .md files, 3 YAML files"]
+      impact: "Root docs gain document_control; YAML files gain version tracking"
+    - layer: "Playbooks"
+      artifacts: ["10 playbook READMEs"]
+      impact: "README files gain document_control block"
+
+  cascade_direction: null  # No artifact cascade — framework self-change only
+  risk_level: Low
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive all original files to archive/CHG-01/"
+      artifact: "Governance docs, layer READMEs, root docs, gate docs"
+      status: Completed
+
+    - step: "Add document_control to 22 governance/*.md files"
+      artifact: "Governance documents"
+      status: Completed
+
+    - step: "Add document_control to 8 gate definition .md files"
+      artifact: "Gate definitions in layers/09_CHG/gates/"
+      status: Completed
+
+    - step: "Add document_control to 2 gate template .md files"
+      artifact: "Gate templates in layers/09_CHG/templates/"
+      status: Completed
+
+    - step: "Add document_control to 10 layer README.md files"
+      artifact: "Layer READMEs in layers/NN_XXX/"
+      status: Completed
+
+    - step: "Add document_control to 2 layer reference docs"
+      artifact: "PLAN_STANDARD.md, IPLAN-ECOSYSTEM.md"
+      status: Completed
+
+    - step: "Add document_control to 5 root-level .md files"
+      artifact: "README.md, AI_ASSISTANT_RULES.md, SPEC_DRIVEN_DEVELOPMENT_GUIDE.md, TESTING_STRATEGY_TDD.md, QUICK_REFERENCE.md"
+      status: Completed
+
+    - step: "Add version/last_updated to 4 YAML files"
+      artifact: "LAYER_REGISTRY.yaml, ADAPTATION_SURFACE.yaml, REVIEW_CREWS.yaml, PROFILE-TEMPLATE.yaml"
+      status: Completed
+
+    - step: "Add document_control to 10 playbook README.md files"
+      artifact: "Playbook READMEs in playbooks/NN_XXX/"
+      status: Completed
+
+    - step: "Add document_control to registry/README.md and docs/AIDOC.md"
+      artifact: "registry/README.md, docs/AIDOC.md"
+      status: Completed
+
+    - step: "Update DECISIONS.md with GD-24 entry"
+      artifact: "governance/DECISIONS.md"
+      status: Completed
+
+    - step: "Update core docs with change management description"
+      artifact: "README.md, governance/README.md, governance/DOC_GOVERNANCE_CORE.md, layers/09_CHG/README.md"
+      status: Completed
+
+    - step: "Create CHANGELOG.md"
+      artifact: "framework/CHANGELOG.md"
+      status: Completed
+
+    - step: "Bump framework/VERSION to 0.52.0"
+      artifact: "framework/VERSION"
+      status: Completed
+
+  artifacts_modified:
+    - id: "GOV-DOCS"
+      file: "governance/*.md (22 files) + governance/chg/README.md"
+      change_type: "modified"
+    - id: "GATE-DOCS"
+      file: "layers/09_CHG/gates/*.md (8 files)"
+      change_type: "modified"
+    - id: "GATE-TEMPLATES"
+      file: "layers/09_CHG/templates/*.md (2 files)"
+      change_type: "modified"
+    - id: "LAYER-READMEs"
+      file: "layers/*/README.md (10 files)"
+      change_type: "modified"
+    - id: "LAYER-REFS"
+      file: "layers/08_IPLAN/PLAN_STANDARD.md, layers/08_IPLAN/IPLAN-ECOSYSTEM.md"
+      change_type: "modified"
+    - id: "ROOT-DOCS"
+      file: "*.md (5 files)"
+      change_type: "modified"
+    - id: "YAML-FILES"
+      file: "registry/LAYER_REGISTRY.yaml, governance/ADAPTATION_SURFACE.yaml, governance/REVIEW_CREWS.yaml, governance/PROFILE-TEMPLATE.yaml"
+      change_type: "modified"
+    - id: "PLAYBOOK-READMEs"
+      file: "playbooks/*/README.md (10 files)"
+      change_type: "modified"
+    - id: "EXTRA"
+      file: "registry/README.md, docs/AIDOC.md"
+      change_type: "modified"
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "All modified .md files have exactly one ## Document Control section"
+      result: Pass
+      method: "grep -rc '^## Document Control' --include='*.md' . | grep -v ':0$' | grep -v archive"
+
+    - check: "All YAML files have metadata.last_updated and framework_version"
+      result: Pass
+      method: "grep 'last_updated\|framework_version' registry/LAYER_REGISTRY.yaml governance/*.yaml"
+
+    - check: "framework_version is 0.52.0 in all document_control blocks"
+      result: Pass
+      method: "grep 'Framework Version | 0.52.0' governance/*.md layers/*/README.md *.md | wc -l = 62"
+
+    - check: "PROFILE-TEMPLATE.yaml has single metadata block (no duplicate keys)"
+      result: Pass
+      method: "python3 -c \"import yaml; d=yaml.safe_load(open('governance/PROFILE-TEMPLATE.yaml')); assert 'last_updated' in d.get('metadata',{})\""
+
+    - check: "All 67 originals archived before modification"
+      result: Pass
+      method: "find archive/CHG-01 -type f | wc -l = 67 (66 originals + CHG-01.yaml)"
+
+    - check: "No duplicate Document Control sections in any file"
+      result: Pass
+      method: "grep -rc '^## Document Control' --include='*.md' . | grep -v archive | awk -F: '{if($2>1) print}'"
+
+    - check: "VERSION is 0.52.0"
+      result: Pass
+      method: "cat VERSION = 0.52.0"
+
+    - check: "GD-24 present in DECISIONS.md before GD-23"
+      result: Pass
+      method: "grep -n 'GD-2[34]' governance/DECISIONS.md | head -2"
+
+    - check: "GATE-SPEC-W003: Security review for agent-facing changes"
+      result: Pass
+      method: "Assessment recorded below — no blocking findings"
+
+# =============================================================================
+# Section 5b: Security Assessment (GATE-SPEC-W003)
+# =============================================================================
+
+security_assessment:
+  _guidance: "Required by GATE-SPEC-W003 for agent-facing spec changes."
+  assessment_date: "2026-09-07"
+  reviewer: "Framework Maintainer"
+  threat_review:
+    - threat: "T1 — Secret leakage"
+      finding: "No credentials, tokens, keys, or personal data introduced. Document_control blocks contain only version strings, dates, and role names."
+      result: Pass
+    - threat: "T2 — Injected instruction / prompt injection"
+      finding: "No instruction taken from external/untrusted content. All edits derive from the framework's own governance rules and CHG process documentation."
+      result: Pass
+    - threat: "T3 — Unverified provenance"
+      finding: "All changes trace to CHG-01 and GD-24 in DECISIONS.md. No promoted rules or thresholds lack source attribution."
+      result: Pass
+    - threat: "T4 — Active content"
+      finding: "No executable payloads, scripts, or non-http(s) links introduced. Document_control blocks are plain Markdown tables and YAML metadata."
+      result: Pass
+  conclusion: "No blocking security findings. The change adds informational metadata blocks (version tracking tables and YAML fields) to existing documents. The blast radius is limited to document freshness tracking — no agent instructions, no new external surfaces, no sensitive data paths."
+  blocking_finds: 0
+
+# =============================================================================
+# Section 6: Gate Approval (C3 — self-approved for solo project)
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: "Self (C2 — Framework Maintainer)"
+  approval_date: "2026-09-07T00:00:00Z"
+  conditions: []
+
+# =============================================================================
+# Section 7: Rollback Plan
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "Restore all files from archive/CHG-01/"
+    - "Revert VERSION bump"
+    - "Remove GD-24 entry from DECISIONS.md"
+  estimated_effort: "15 minutes"
+
+# =============================================================================
+# Document Control
+# =============================================================================
+
+document_control:
+  version: "1.0"
+  status: Completed
+  last_updated: "2026-09-07"
+  author: "Framework Maintainer"
+  framework_version: "0.52.0"

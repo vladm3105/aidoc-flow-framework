@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Framework Spec `0.51.0` → `0.53.0`: document_control, 10-layer model, project overrides (2026-09-07)
+
+**GD-24: `document_control` for all framework governance documents.** All governance docs,
+gate definitions, layer READMEs, root-level reference docs, playbook READMEs, and YAML data
+files now carry version tracking metadata. 66 files modified, 67 originals archived to
+`archive/CHG-01/`. (`CHG-01`, GATE-SPEC, C2, minor)
+
+**GD-25: `.aidoc/` redefined as project override layer.** The `.aidoc/` directory now holds
+the project profile and project-specific overrides (`.aidoc/project/`) instead of unused
+AI provenance subdirectories. New discovery rule: `.aidoc/project/` first, fall back to
+framework defaults. (`CHG-02`, GATE-SPEC, C2, minor)
+
+**10-layer model.** CHG promoted from governance overlay to Layer 9; EVAL added as Layer 10.
+All layer templates, READMEs, and the layer registry updated.
+
 ### Changed — Framework Spec `0.50.0` → `0.51.0`: a Draft IPLAN's §5 `session_handoff.sessions` is empty (GD-26, #621) (2026-09-04)
 
 `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying

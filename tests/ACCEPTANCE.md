@@ -268,7 +268,7 @@ clearing for a deterministic re-run.
 
 ### 5.1 Happy-path cascade
 
-For each of the 8 layers (`brd, prd, ears, bdd, adr, spec, tdd, iplan`):
+For each of the 10 layers (`brd, prd, ears, bdd, adr, spec, tdd, iplan, chg, eval`):
 
 1. **`doc-<layer>-autopilot`** with the previous layer's output as
    context. For BRD, context is the seed. Output written to
@@ -289,7 +289,7 @@ Pass criteria for happy-path cascade:
 
 - Every `-autopilot` exit 0.
 - Every final `-audit` reports ≥ 90 score.
-- `sdd_doc_lint` reports no structural findings across all 8 layers.
+- `sdd_doc_lint` reports no structural findings across all 10 layers.
 - Cumulative `@brd…@tdd` traceability tags resolve.
 
 ### 5.2 Negative-fixture validation
@@ -368,15 +368,15 @@ treated as FAIL.
 | `doc-validator` | Cumulative trace closure | All `@brd…@tdd` tags resolve; ≥ `n_layers × 4` resolved tags |
 | `doc-ref` | Cross-reference resolution | All inter-doc references resolve; ≥ 8 references |
 | `doc-naming` | Name compliance check | All IDs match `ID_NAMING_STANDARDS.md`; ≥ 8 IDs |
-| `gate-check` | Aggregate readiness gate | All 8 layers ≥ 90 |
+| `gate-check` | Aggregate readiness gate | All 10 layers ≥ 90 |
 | `quality-advisor` | Improvement suggestions | ≥ 1 actionable suggestion per layer |
 | `security-audit` | Security review | ≥ 1 finding + zero high-severity, OR "no findings" justification ≥ 100 words |
 | `review-team` | Multi-persona review | All configured personas per `profile.yaml` produce non-empty output |
 | `knowledge-extractor` | Domain knowledge graph | ≥ `n_layers × 4` nodes; Mermaid syntax |
 | `charts-flow` | Diagram contract compliance | All required diagrams per `DIAGRAM_STANDARDS.md` |
 | `adr-roadmap` | ADR aggregation | Roadmap references every ADR exactly once |
-| `project-init` | Scaffold (sandboxed) | Produces 8 layer dirs + governance + registry |
-| `project-adopt` | Adopt existing tree | Adoption report enumerates ≥ 8 layers detected |
+| `project-init` | Scaffold (sandboxed) | Produces 10 layer dirs + governance + registry |
+| `project-adopt` | Adopt existing tree | Adoption report enumerates ≥ 10 layers detected |
 | `project-profile` | Profile chain | Reports plugin version + layer count + readiness |
 
 Each utility probe runs independently. One failure logs FAIL but
@@ -457,7 +457,7 @@ This is the only Phase-4 check that runs in `--no-live` mode.
 | Phase | Estimated output tokens | Notes |
 |---:|---:|---|
 | 0 — Bootstrap & preflight | < 5 000 | Manifest validate + lint smoke; mostly deterministic |
-| 1.1 — Happy-path cascade | 250 000 – 350 000 | 8 layers × ~3 skill invocations |
+| 1.1 — Happy-path cascade | 250 000 – 350 000 | 10 layers × ~3 skill invocations |
 | 1.2 — Negative validation | 30 000 – 50 000 | ~6 fixtures × audit invocation |
 | 2 — CHG | 50 000 – 80 000 | 4 skills × moderate output |
 | 3 — Utilities (14) | 150 000 – 200 000 | Includes minimum-coverage probes |

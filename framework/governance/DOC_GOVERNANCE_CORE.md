@@ -67,7 +67,7 @@ Practical effect:
 
 | Governance Area | Standard |
 |----|------|
-| Layer registry | 8-layer registry |
+| Layer registry | 10-layer registry |
 | Lifecycle status field | `status` |
 | Template format | YAML-only templates |
 | Traceability depth | 8-depth chain |

@@ -1,5 +1,16 @@
 # Behavior-Driven Development (BDD) — Layer 4
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
 BDD defines executable acceptance scenarios as structured Given-When-Then YAML,
@@ -58,7 +69,6 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `BDD-TEMPLATE.yaml` | **Default** — full template with embedded `scenarios:` YAML guidance in `_example` fields. Self-documenting for AI agents. |
-| `BDD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `BDD-00_index.TEMPLATE.md` | BDD registry template — tracks planned and active BDD documents per project |
 
 ## Scenario YAML Quick Reference
@@ -115,3 +125,5 @@ spec_trace:
   - "SPEC Section 3 (Interfaces)"
   - "SPEC Section 5 (Behavior)"
 ```
+
+BDD scenarios are also consumed by EVAL (Layer 10) for functional evaluation of scenario coverage.

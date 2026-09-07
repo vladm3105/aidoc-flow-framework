@@ -13,6 +13,8 @@ metadata:
   schema_version: "1.0.0"
   description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
   authority: "framework/governance/ADAPTATION.md"
+  last_updated: "2026-09-07"
+  framework_version: "0.53.0"
 
 # The single input an engine reads at runtime. The user-global file is an
 # authoring-time seed only (merged into the project profile, not read at
@@ -39,7 +41,7 @@ knobs:
     constraint: >
       May disable only layers in layers.skippable; mandatory layers cannot be
       disabled. Disabling a skippable layer applies the cascade_rule.
-    default: "all 8 layers active"
+    default: "all 10 layers active"
 
   - name: section_toggles
     type: "map[layer, map[section, bool]]"

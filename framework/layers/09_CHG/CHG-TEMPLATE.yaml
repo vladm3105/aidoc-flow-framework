@@ -1,0 +1,366 @@
+# =============================================================================
+#  CHG-TEMPLATE.yaml — Unified Change Management Template
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD (single source of truth)
+#  Purpose: Governance overlay for changes to SDD artifacts across all layers
+#  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts
+#  Framework: SDD — 10-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL)
+#
+#  ACTIVE COMPANION FILES (in this layer):
+#    gates/GATE-01_BUSINESS_PRODUCT.md             — business/product gate (L1-L2)
+#    gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md     — requirements & architecture gate (L3-L5)
+#    gates/GATE-06_DESIGN_TEST.md                   — design & test gate (L6-L7)
+#    gates/GATE-08_IPLAN.md                         — implementation plan gate (L8)
+#    gates/GATE-CODE_IMPLEMENTATION.md              — implementation gate (Code)
+#    gates/GATE-SPEC_FRAMEWORK.md                   — framework-spec gate (meta)
+#    templates/GATE_APPROVAL_FORM.md               — gate approval companion
+#    templates/POST_MORTEM-TEMPLATE.md             — emergency post-mortem companion
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+# =============================================================================
+
+document_control:
+  _guidance: |
+    Provide project identification and document tracking information for the CHG record.
+  project_name: "[Project Name]"
+  document_id: "CHG-NN"
+  version: "1.0"
+  status: "Draft"
+  author: "[Author Name]"
+  created_date: "[YYYY-MM-DD]"
+  last_updated: "[YYYY-MM-DD]"
+  framework_version: "0.53.0"
+  revision_history:
+    - version: "1.0"
+      date: "[YYYY-MM-DD]"
+      author: "[Author Name]"
+      description: "Initial CHG record"
+
+id: CHG-NN
+title: "[Change Title]"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance  # NOT a lifecycle artifact — governance overlay
+  last_updated: "2026-04-29"
+
+  change_level:
+    _guidance: |
+      Change classification determines the process:
+
+      | Level     | Scope | Gate Required | Process |
+      |-----------|-------|---------------|---------|
+      | C1        | Typo, formatting, clarification | None — direct commit | Fix → commit → completed |
+      | C2        | Section update, requirement refinement | Peer review | Assess impact → update → verify |
+      | C3        | Cross-layer change, new requirements | Formal gate | Full CHG process |
+      | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document → post-mortem within 48h |
+
+      Note: For change_source: spec (GATE-SPEC), change_level must be >= C2 (never C1 per GATE-SPEC-E003); major semver_impact requires C3.
+
+    value: C2  # C1 | C2 | C3 | Emergency
+
+  change_source:
+    _guidance: |
+      Where the change originates determines the entry gate:
+
+      | Source               | Description | Entry Gate | Affected Layers |
+      |----------------------|-------------|------------|-----------------|
+      | Upstream             | BRD/PRD change cascading down | GATE-01 | PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
+      | Midstream            | EARS/BDD/ADR change affecting neighbors | GATE-03 | EARS↔BDD↔ADR→SPEC→TDD→IPLAN |
+      | Design               | SPEC/TDD change | GATE-06 | SPEC→TDD→IPLAN→Code |
+      | Execution            | IPLAN change | GATE-08 | IPLAN→Code |
+      | External (business)  | Regulatory, compliance, partner demands | GATE-01 | PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code |
+      | External (technical) | Security CVE, dependency update, 3rd-party API | GATE-03 | EARS/BDD/ADR→SPEC→TDD→IPLAN→Code |
+      | Feedback             | Production feedback, user issues | GATE-CODE | Code→IPLAN→TDD→SPEC→ADR/BDD/EARS→PRD/BRD (bubble-up reaches GATE-08/06/03/01; the upstream fix is a separate dependent CHG — see gates/GATE-CODE_IMPLEMENTATION.md §6.2) |
+      | Spec                 | Change to the framework/ spec (templates/governance/registry/VERSION) | GATE-SPEC | Meta — no artifact cascade; both platforms re-sync (see gates/GATE-SPEC_FRAMEWORK.md) |
+
+      Workflow per source:
+        1. Classify change (C1/C2/C3; spec changes are >= C2)
+        2. Route to entry gate based on source (assessing entry criteria against the change request; spec source routes to GATE-SPEC)
+        3. Assess impact on affected layers
+        4. Update affected artifacts
+        5. Verify changes pass gate criteria (including §3 validation checklist)
+        6. Record change in CHG document
+
+    value: null  # upstream | midstream | design | execution | external | feedback | spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-NN"
+  status: Proposed  # Proposed | Approved | In-Progress | Implemented | Completed
+  # Status lifecycle:
+  #   Proposed    — CHG created, not yet approved
+  #   Approved    — CHG authorized to proceed
+  #   In-Progress — Implementation underway
+  #   Implemented — Code merged, SDD docs updated
+  #   Completed   — Verification passed, final status
+  change_level: C2  # C1 | C2 | C3 | Emergency (Note: change_source: spec requires >= C2)
+  change_source: null  # upstream | midstream | design | execution | external | feedback | spec
+  entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC | None (C1 only for non-spec changes)
+  semver_impact: null  # major | minor | patch — REQUIRED for change_source: spec (GATE-SPEC). major => change_level: C3
+  version_action: null  # keep | upgrade — when a CHG touches a document created under an older framework_version: "keep" if schema is compatible, "upgrade" if the document must be rewritten to the current framework_version
+  author: "[Author Name]"
+  date_proposed: "YYYY-MM-DDTHH:MM:SS"
+  date_approved: null
+  date_implemented: null
+  supersedes: []  # List of archived artifacts with full paths, e.g.:
+                   # - "PRD-02 (docs/sdd/09-CHG/archive/CHG-NN/02_PRD/PRD-02.yaml)"
+                   # - "SPEC-02 (docs/sdd/09-CHG/archive/CHG-NN/06_SPEC/SPEC-02.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  _guidance: "What changed, why, and business justification."
+  what: |
+    [Concise description of the change]
+  why: |
+    [Business/technical justification — why this change is needed]
+  trigger: |
+    [What triggered this change — feedback, requirement, incident, etc.]
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  _guidance: |
+    Identify ALL affected layers and artifacts. For C3/Emergency changes,
+    trace the full impact chain through the SDD workflow.
+
+  _antipatterns:
+    - "FAIL: changing SPEC without checking upstream ADR/BDD impact"
+    - "FAIL: changing BRD without cascading to PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code"
+    - "FAIL: missing downstream impact from upstream change"
+    - "FAIL: changing TDD without updating IPLAN references"
+
+  affected_layers:
+    - layer: "[Layer name — e.g., PRD]"
+      artifacts: ["[PRD-01]"]
+      impact: "[What changes in this artifact]"
+
+  cascade_direction: null  # upstream→downstream | downstream→upstream | lateral
+
+  risk_level: Medium  # Low | Medium | High | Critical
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  _guidance: |
+    The CHG is a governance record, NOT an implementation plan. The IPLAN is the
+    execution artifact. The CHG's implementation steps should contain:
+
+    Phase 0 — SDD Document Updates (FIRST, before any code):
+      1. Archive current SDD versions to `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/`
+      2. Rewrite each SDD document as a clean v2 (no appendices, no stale content)
+         — upper layers first: PRD → SPEC → IPLAN
+      3. Update `supersedes` field with archive paths
+      4. Bump `document_control.version` to 2.0 for IPLAN/SPEC/TDD
+
+    Phase 1 — IPLAN Creation/Update:
+      5. Create or update the IPLAN with ALL code implementation steps
+         (file_manifest, execution commands, test cases)
+         — the IPLAN is what drives code implementation
+
+    Code implementation steps belong in the IPLAN, NOT in the CHG.
+    The correct flow: CHG → SDD docs first → IPLAN → implement from IPLAN.
+
+    If the CHG does NOT modify any SDD document (pure code change), list the
+    implementation steps directly but note that they should be captured in an
+    IPLAN for traceability.
+  steps:
+    - step: "[Step 1 — what was modified]"
+      artifact: "[Artifact ID]"
+      status: Completed  # Pending | In Progress | Completed
+
+  artifacts_modified:
+    - id: "[Artifact ID]"
+      file: "[File path]"
+      change_type: "modified"  # created | modified | deleted | superseded
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  _guidance: "How the change was validated. Must cover affected layers."
+  checks:
+    - check: "[Validation performed]"
+      result: Pass  # Pass | Fail | Pending
+      method: "[How verified — test, review, validation tool]"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only)
+# =============================================================================
+
+gate_approval:
+  _guidance: |
+    Required for C3 changes only. Reference the gate definition in gates/ directory.
+    Use templates/GATE_APPROVAL_FORM.md as companion document.
+    C1/C2 changes: set to null.
+
+  gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC
+  approver: null
+  approval_date: null
+  conditions: []  # Any conditions attached to approval
+
+# =============================================================================
+# Section 7: Rollback Plan (C2/C3)
+# =============================================================================
+
+rollback_plan:
+  _guidance: |
+    Required for C2 and C3 changes. How to reverse if the change fails.
+    C1 changes: set to null.
+
+  strategy: null  # revert-commit | restore-backup | manual-fix
+  steps: []
+  estimated_effort: null
+
+# =============================================================================
+# Section 8: Emergency Change (conditional)
+# =============================================================================
+
+emergency_change:
+  _guidance: |
+    CONDITIONAL — only populated when change_level is Emergency.
+    Emergency bypass skips normal gate process for critical production issues.
+
+    Requirements:
+      - Unique ID format: CHG-EMG-{YYYYMMDD-HHMM}
+      - Post-mortem MANDATORY within 48 hours (use templates/POST_MORTEM-TEMPLATE.md)
+      - Post-hoc gate approval required after fix deployed
+      - All normal CHG sections still required (filled retroactively if needed)
+
+  emergency_id: null  # CHG-EMG-YYYYMMDD-HHMM
+  incident_severity: null  # P0 | P1
+  fix_deployed: null  # YYYY-MM-DDTHH:MM:SS
+  post_mortem_due: null  # fix_deployed + 48 hours
+  post_mortem_completed: false
+  post_hoc_gate: null  # Gate approval after the fact
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  terms:
+    - term: CHG
+      definition: "Change Record — governance document for SDD artifact modifications"
+    - term: C1
+      definition: "Trivial change — typo, formatting, clarification (no gate)"
+    - term: C2
+      definition: "Minor change — section update, refinement (peer review)"
+    - term: C3
+      definition: "Major change — cross-layer, new requirements (formal gate)"
+    - term: Emergency
+      definition: "Critical production fix — bypass normal process, post-mortem within 48h"
+    - term: Gate
+      definition: "Approval checkpoint — GATE-01 (business), GATE-03 (requirements/architecture), GATE-06 (design/test), GATE-08 (IPLAN), GATE-CODE (implementation), GATE-SPEC (framework-spec change — meta)"
+    - term: Layer L1-L10
+      definition: "SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL"
+
+# =============================================================================
+# CHG Creation Checklist
+# =============================================================================
+# Before writing any CHG document, complete this checklist.
+# Each item maps to a gap class found in CHG post-creation reviews.
+
+creation_checklist:
+  _guidance: |
+    MANDATORY PROCESS GATE — Required validation BEFORE writing any CHG document.
+    This is a blocking prerequisite, not post-hoc validation. The agent MUST read
+    and complete every item BEFORE writing the CHG. The "write before read" pattern
+    (writing CHG/IPLAN from issue descriptions without consulting this checklist)
+    has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). Items 11-14
+    were added after CHG-04 review found SDD lifecycle and ordering gaps. The
+    checklist exists to prevent these failures — reading it after writing defeats
+    its purpose. Added after CHG-06 violated items 11-14 (the exact items added
+    after CHG-04 to prevent these failures).
+
+  checks:
+    - id: 1
+      check: "Read every file you reference"
+      description: "Open each artifact path in artifacts_modified, verify it exists, note actual filename, read relevant code sections. Never write an implementation step referencing a file you haven't opened."
+      gap_prevented: "Wrong filenames, wrong line numbers, wrong function signatures"
+
+    - id: 2
+      check: "Verify the architectural claim"
+      description: "For each issue, confirm whether problem is client-side, server-side, or both. Check if method/endpoint actually exists."
+      gap_prevented: "Mischaracterized architecture"
+
+    - id: 3
+      check: "Check existing struct/type signatures"
+      description: "If fix requires passing new data, verify existing struct accepts those fields. Add struct extension steps if needed."
+      gap_prevented: "Claims struct has no field when it does"
+
+    - id: 4
+      check: "Check existing INSERT/SELECT queries"
+      description: "If adding columns to a table, verify existing queries that touch that table. Note which need updating."
+      gap_prevented: "Adding columns without updating existing queries"
+
+    - id: 5
+      check: "Cross-reference upstream requirements"
+      description: "Cite specific EARS requirement IDs and BDD scenario IDs that CHG addresses. Note which PRD/SPEC sections change."
+      gap_prevented: "No traceability in CHG"
+
+    - id: 6
+      check: "Check for existing handlers/webhooks"
+      description: "If fix involves user creation or data population, check if webhook handler already exists for that event type."
+      gap_prevented: "Existing handler not considered"
+
+    - id: 7
+      check: "Couple dependent issues"
+      description: "If two issues share a fix, implement them together, not as separate steps."
+      gap_prevented: "Coupled issues implemented separately"
+
+    - id: 8
+      check: "Add automated test specifications"
+      description: "For each implementation step, specify test file, test name, and assertion method. Manual checks alone are insufficient."
+      gap_prevented: "No automated test specs"
+
+    - id: 9
+      check: "Verify the fix location"
+      description: "If error handling needed, check whether error is thrown in function or caller. Put try/catch where call happens."
+      gap_prevented: "Wrong fix location"
+
+    - id: 10
+      check: "Add DB migration + rollback"
+      description: "If adding columns, provide full migration SQL, rollback SQL, backfill strategy, and index additions."
+      gap_prevented: "Migration without rollback"
+
+    - id: 11
+      check: "Plan SDD document versioning"
+      description: "If CHG modifies SDD document, add steps for: (a) archive to 09-CHG/archive/, (b) rewrite as clean v2, (c) update supersedes, (d) bump version."
+      gap_prevented: "No SDD lifecycle steps"
+
+    - id: 12
+      check: "Check traceability to SDD lifecycle rules"
+      description: "Before finalizing, verify this document's §SDD Document Management and §CHG Rules are satisfied."
+      gap_prevented: "Rules not enforced at creation time"
+
+    - id: 13
+      check: "SDD-first implementation order"
+      description: "SDD document updates MUST appear BEFORE any code implementation steps. Correct flow: CHG → SDD docs → IPLAN → code."
+      gap_prevented: "Wrong ordering"
+
+    - id: 14
+      check: "CHG scope: governance, not implementation plan"
+      description: "CHG should contain SDD lifecycle steps + IPLAN creation/update, NOT detailed code steps. IPLAN is execution artifact."
+      gap_prevented: "Detailed code steps in CHG"
+
+# =============================================================================
+# End of CHG-TEMPLATE.yaml
+# =============================================================================

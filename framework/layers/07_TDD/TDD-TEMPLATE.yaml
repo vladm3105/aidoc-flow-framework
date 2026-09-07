@@ -1,12 +1,11 @@
 # TDD-TEMPLATE.yaml — Test-Driven Development Guide
 # SDD Layer 7 — Test case definitions from SPEC component contracts
 # Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5), SPEC (Layer 6)
-# Downstream: IPLAN (Layer 8)
-
-title: "[Test Definition Title]"
+# Downstream: IPLAN (Layer 8), EVAL (Layer 10)
 
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "tdd-document"
   layer: 7
   total_sections: 7
@@ -79,14 +78,123 @@ document_control:
     TDD defines test cases that validate SPEC compliance.
 
 # =============================================================================
-# Section 2: Test Pyramid
+# Section 2: Test Strategy
 # =============================================================================
-test_pyramid:
-  _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
+test_strategy:
+  _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
-    Define distribution of test effort across types.
-    Percentages are targets, not strict quotas.
-  distribution:
+    Comprehensive test strategy defining HOW tests are written, organized,
+    and executed. This section is the bridge between TDD test definitions
+    and IPLAN implementation. IPLANs reference these conventions when
+    generating test files.
+
+    Test strategy must align with SPEC's `language:` and `test_framework:`
+    declarations. Do NOT re-pin a language here — reference SPEC ownership.
+
+  # Test types and their purposes
+  test_types:
+    unit:
+      purpose: "Validate individual functions, methods, and data model constraints"
+      scope: "Single function or method in isolation"
+      dependencies: "Mocked/stubbed external dependencies"
+      execution: "Fast (<1s per test), runs in CI on every commit"
+      file_pattern: "<unit test path, per the @spec language>"
+      naming_convention: "test_<function_name>_<scenario>_<expected>"
+      example:
+        python: "test_authenticate_valid_credentials_returns_token"
+        go: "TestAuthenticate_ValidCredentials_ReturnsToken"
+        typescript: "test_authenticate_validCredentials_returnsToken"
+
+    integration:
+      purpose: "Validate component interactions, state transitions, and error handling"
+      scope: "Multiple components working together"
+      dependencies: "Real dependencies where possible, mocked external services"
+      execution: "Moderate (1-10s per test), runs in CI nightly"
+      file_pattern: "<integration test path, per the @spec language>"
+      naming_convention: "test_<component>_<interaction>_<outcome>"
+      example:
+        python: "test_auth_service_rejects_expired_token"
+        go: "TestAuthService_RejectsExpiredToken"
+        typescript: "test_authService_rejectsExpiredToken"
+
+    e2e:
+      purpose: "Validate full workflows mapped from BDD scenarios"
+      scope: "End-to-end user journeys"
+      dependencies: "Real services or test containers"
+      execution: "Slow (10-60s per test), runs before deploy"
+      file_pattern: "<end-to-end test path, per the @spec language>"
+      naming_convention: "test_<workflow>_<step>_<outcome>"
+      example:
+        python: "test_user_registration_complete_flow"
+        go: "TestUserRegistration_CompleteFlow"
+        typescript: "test_userRegistration_completeFlow"
+
+    security:
+      purpose: "Validate security controls and vulnerability resistance"
+      scope: "Authentication, authorization, input validation"
+      dependencies: "Real or simulated attack vectors"
+      execution: "Runs in CI and before deploy"
+      file_pattern: "<security test path, per the @spec language>"
+      naming_convention: "test_<vulnerability_type>_<defense>_<outcome>"
+      example:
+        python: "test_sql_injection_parameterized_query_blocks"
+        go: "TestSQLInjection_ParameterizedQuery_Blocks"
+        typescript: "test_sqlInjection_parameterizedQuery_blocks"
+
+  # Mock and stub strategy
+  mock_strategy:
+    _guidance: |
+      Define when to use mocks vs stubs vs real dependencies.
+      Mocks verify interactions; stubs provide canned responses.
+    unit_tests:
+      - "Mock all external services (databases, APIs, message queues)"
+      - "Mock time-dependent functions for deterministic tests"
+      - "Use dependency injection for testable design"
+    integration_tests:
+      - "Use real database with test data (SQLite/in-memory for speed)"
+      - "Mock external APIs not under test"
+      - "Use test containers for external services when possible"
+    e2e_tests:
+      - "Use real services or full test containers"
+      - "Only mock services outside the system boundary"
+
+  # Test data management
+  test_data:
+    _guidance: |
+      Define how test data is created, managed, and cleaned up.
+    fixtures:
+      - "Use factory functions for test data creation"
+      - "Each test creates its own data (no shared state)"
+      - "Clean up after each test ( tearDown / defer )"
+    factories:
+      - "Define test data factories for each domain object"
+      - "Factories should produce valid data by default"
+      - "Allow overrides for specific test scenarios"
+    seeds:
+      - "Use database seeds for integration test setup"
+      - "Seeds must be idempotent (safe to run multiple times)"
+      - "Document all seed data in test fixtures"
+
+  # Test execution strategy
+  execution_strategy:
+    _guidance: |
+      Define when and how tests are executed in the development workflow.
+    local_development:
+      - "Run unit tests on every file save (watch mode)"
+      - "Run integration tests before committing"
+      - "Run full suite before pushing"
+    ci_pipeline:
+      - "Unit tests: every commit (fast feedback)"
+      - "Integration tests: every PR (nightly for speed)"
+      - "E2E tests: before merge to main"
+      - "Security tests: weekly + before release"
+    pre_merge:
+      - "All unit tests pass"
+      - "All integration tests pass"
+      - "Code coverage meets threshold"
+      - "No new security vulnerabilities"
+
+  # Test pyramiddistribution:
     unit: 70
     integration: 20
     e2e: 10
@@ -162,8 +270,29 @@ test_cases:
     Do NOT re-pin a language here — write the placeholder in the form the
     project's own toolchain uses.
 
+    IPLAN INTEGRATION: These test cases are referenced by IPLAN file_manifest
+    entries via `tdd_ref` field. When IPLAN generates test files, it uses:
+    - `test_file` path from this section
+    - `test_function` name from this section
+    - Test logic derived from `inputs` and `expected_output` fields
+
   unit_tests:
-    _guidance: "Validate individual functions, methods, and data model constraints from SPEC Sections 3-4."
+    _guidance: |
+      Validate individual functions, methods, and data model constraints from SPEC Sections 3-4.
+
+      UNIT TEST PRINCIPES:
+      - Test ONE thing per test function
+      - Use descriptive names: test_<function>_<scenario>_<expected>
+      - Arrange-Act-Assert (AAA) pattern
+      - Mock external dependencies
+      - Test both happy path and error cases
+      - Each test should be independent (no shared state)
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<unit test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx | @tdd: TDD.NN.04.yyyy"
+      ```
     cases:
       - id: "TDD.NN.04.xxxx"
         name: "[Descriptive test name]"
@@ -183,7 +312,22 @@ test_cases:
             expected: "[expected behavior]"
 
   integration_tests:
-    _guidance: "Validate component interactions, state transitions, and error handling from SPEC Section 5."
+    _guidance: |
+      Validate component interactions, state transitions, and error handling from SPEC Section 5.
+
+      INTEGRATION TEST PRINCIPLES:
+      - Test component boundaries and contracts
+      - Use real database (SQLite/in-memory) where possible
+      - Mock external services not under test
+      - Test error propagation across components
+      - Verify state transitions are correct
+      - Test with realistic data volumes
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<integration test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx"
+      ```
     cases:
       - id: "TDD.NN.04.xxxx"
         name: "[Descriptive test name]"
@@ -202,7 +346,25 @@ test_cases:
             expected_error: "[ErrorType]"
 
   e2e_tests:
-    _guidance: "Validate full workflows mapped from BDD scenarios."
+    _guidance: |
+      Validate full workflows mapped from BDD scenarios.
+
+      E2E TEST PRINCIPLES:
+      - Test complete user journeys from BDD scenarios
+      - Use real services or test containers
+      - Include setup and teardown for each test
+      - Test happy path AND critical error paths
+      - Set appropriate timeouts for slow operations
+      - Clean up test data after each run
+
+      BDD MAPPING: Each e2e test MUST map to a BDD scenario via `bdd_ref` field.
+      This is normative (GD-08) and enforced by lint rule ACC01.
+
+      IPLAN REFERENCE: IPLAN file_manifest entries reference these tests via:
+      ```yaml
+      - path: "<e2e test path>"
+        tdd_ref: "@tdd: TDD.NN.04.xxxx"
+      ```
     cases:
       - id: "TDD.NN.04.xxxx"
         name: "[Descriptive test name]"
@@ -244,31 +406,42 @@ thresholds:
   _size_target: 200  # words; AUTHORING_STYLE.md (AS2)
   _guidance: |
     Quality gates per test type. CI must enforce these.
+
+    IPLAN VERIFICATION: These thresholds are used during IPLAN verification
+    (IPLAN-VERIFY-TEMPLATE). If tests don't meet thresholds, findings are
+    recorded as P0/P1 severity and must be fixed before Verified status.
   unit:
     coverage_target: ">=90%"
     pass_criteria:
       - "All unit tests pass"
       - "No skipped tests"
+      - "No test timeouts"
     fail_action: "Block merge; fix or document exception"
+    verification_note: "IPLAN verification checks all unit tests pass before Completed status"
   integration:
     coverage_target: ">=85%"
     pass_criteria:
       - "All integration tests pass"
       - "Contract validation passes"
+      - "No flaky tests (3 consecutive runs)"
     fail_action: "Block merge"
+    verification_note: "IPLAN verification runs integration tests before Verified status"
   e2e:
     coverage_target: ">=75% of happy paths"
     timeout_budget: "<=300s"
     pass_criteria:
       - "All critical path scenarios pass"
       - "No regression failures"
+      - "No flaky tests"
     fail_action: "Block deploy to staging"
+    verification_note: "Optional for IPLAN verification unless SPEC requires e2e"
   security:
     _note: "Optional — include only if SPEC or ADR mandates security testing"
     coverage_target: "All authentication/authorization paths"
     pass_criteria:
       - "No OWASP Top 10 vulnerabilities detected"
     fail_action: "Block deploy"
+    verification_note: "Run security scans during IPLAN verification if applicable"
 
 # =============================================================================
 # Section 6: TDD Execution Order
@@ -279,6 +452,19 @@ tdd_order:
     Declares the order AI must follow when generating code.
     Test files are generated FIRST, implementation files SECOND.
     This is the enforcement mechanism for test-driven development.
+
+    IPLAN INTEGRATION: IPLAN file_manifest follows this order:
+    - Test files appear BEFORE implementation files in manifest
+    - Each test file has `tdd_ref` linking to test cases above
+    - Status transitions: NOT_STARTED → IN_PROGRESS → DONE → verified
+
+    VERIFICATION WORKFLOW:
+    1. IPLAN generates test files (Phase 1)
+    2. Tests run and fail (Phase 2 - Red)
+    3. IPLAN generates implementation files (Phase 3)
+    4. Tests run and pass (Phase 4 - Green)
+    5. Code refactored, tests stay green (Phase 5)
+    6. IPLAN status: Completed → Verified after validation
   phases:
     - phase: 1
       name: "Write Tests"
@@ -321,6 +507,9 @@ traceability:
     - type: IPLAN
       layer: 8
       description: "Implementation plan — test-first file generation order enforced"
+    - type: EVAL
+      layer: 10
+      description: "Evaluation — unit/smoke test coverage validation"
   cross_links:
     depends:
       - "@depends: TDD-NN"

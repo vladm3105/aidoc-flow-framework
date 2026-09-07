@@ -1,9 +1,23 @@
 # Quick Reference
 
-## 8-Layer Chain
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
+## 10-Layer SDD Framework
 
 ```
 BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
+                                                        ↓
+                                              CHG (governance overlay)
+                                              EVAL (evaluation/QA)
 ```
 
 ## Templates
@@ -18,6 +32,8 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 | L6 SPEC | [SPEC-TEMPLATE.yaml](layers/06_SPEC/SPEC-TEMPLATE.yaml) | @ears @bdd @adr |
 | L7 TDD | [TDD-TEMPLATE.yaml](layers/07_TDD/TDD-TEMPLATE.yaml) | @ears @bdd @adr @spec |
 | L8 IPLAN | [IPLAN-TEMPLATE.yaml](layers/08_IPLAN/IPLAN-TEMPLATE.yaml) | @spec @tdd |
+| L9 CHG | [CHG-TEMPLATE.yaml](layers/09_CHG/CHG-TEMPLATE.yaml) | governance overlay |
+| L10 EVAL | [EVAL-TEMPLATE.yaml](layers/10_EVAL/EVAL-TEMPLATE.yaml) | @ears @bdd @tdd @iplan |
 
 ## Key Files
 

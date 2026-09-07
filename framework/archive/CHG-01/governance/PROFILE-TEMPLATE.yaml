@@ -1,0 +1,75 @@
+# =============================================================================
+#  PROFILE-TEMPLATE.yaml — project profile skeleton (override-only delta)
+# =============================================================================
+#  Authority: framework/governance/ADAPTATION.md (the prose contract).
+#  Closed knob registry: framework/governance/ADAPTATION_SURFACE.yaml.
+#
+#  A project profile carries ONLY the adaptation overrides the project
+#  chooses. Unset keys fall through to framework defaults via the
+#  precedence chain documented in ADAPTATION.md:
+#
+#      framework defaults  <  user-global seed  <  project profile
+#
+#  Engines bootstrap a new project's `.aidoc/profile.yaml` from this
+#  template; populated profiles ship the same shape but with the
+#  override keys uncommented and filled in.
+#
+#  Engines IGNORE any key not declared as a knob in ADAPTATION_SURFACE.yaml.
+#  Per-layer review crews and persona weights live in REVIEW_CREWS.yaml
+#  and are not project-overridable through this surface.
+# =============================================================================
+
+metadata:
+  schema_version: "1.0.0"
+  authority: "framework/governance/ADAPTATION.md"
+  # project_name: "<your project>"
+
+# =============================================================================
+#  Adaptation knobs (5 — see ADAPTATION_SURFACE.yaml for the closed set)
+#  Uncomment and edit any line to override the framework default.
+# =============================================================================
+
+# review_mode determines whether reviews fan out to per-lens subagents.
+#   team        — multi-persona Task subagent fan-out (default at gates)
+#   single_pass — one model context applies every lens (lower cost,
+#                 lower signal-independence)
+# Default: team. Never weakens the deterministic structural gate floor.
+#
+# review_mode: team
+
+# audit_threshold raises the per-layer readiness-score gate floor.
+# Raise-only: a value lower than the framework default is ignored.
+# Framework default: 90 per layer.
+#
+# audit_threshold:
+#   BRD: 92
+#   PRD: 92
+#   EARS: 90
+#   BDD: 90
+#   ADR: 90
+#   SPEC: 90
+#   TDD: 90
+#   IPLAN: 90
+
+# active_layers restricts the cascade to a subset of the 10 layers.
+# Mandatory layers cannot be disabled (see ADAPTATION_SURFACE.yaml
+# `layers.skippable`). Disabling a skippable layer applies the cascade rule.
+# Default: all 10 layers active.
+#
+# active_layers: [BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN]
+
+# section_toggles disables template-declared OPTIONAL sections.
+# Required sections are not toggleable — toggling them is out of surface
+# and ignored. Example: turn off the BRD §2 Executive Summary if the
+# project doesn't need it.
+#
+# section_toggles:
+#   BRD:
+#     executive_summary: false
+
+# glossary applies project-specific terminology to generated prose only.
+# Audits do not enforce terminology in v1.
+#
+# glossary:
+#   "MAU": "Monthly Active Users"
+#   "p95": "95th percentile"

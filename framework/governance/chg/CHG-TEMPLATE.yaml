@@ -4,7 +4,7 @@
 #  Document Authority: PRIMARY STANDARD (single source of truth)
 #  Purpose: Governance overlay for changes to SDD artifacts across all layers
 #  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts
-#  Framework: SDD — 8-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code)
+#  Framework: SDD — 10-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL→Code)
 #
 #  ACTIVE COMPANION FILES (NOT in this template):
 #    gates/GATE-01_BUSINESS_PRODUCT.md             — business/product gate (L1-L2)

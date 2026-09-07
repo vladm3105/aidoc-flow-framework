@@ -1,0 +1,312 @@
+# SDD Layer Registry
+# Single source of truth for all layer definitions.
+# Authoritative machine-readable core — templates, READMEs, and the
+# conformance suite defer to this file.
+
+metadata:
+  framework: "Specification-Driven Development (SDD)"
+  derived_from: "SDD v3.2"
+  total_layers: 10
+  maintainer: "SDD Framework Team"
+  template_policy: unified_yaml
+  # framework_version tracks the version that produced this registry snapshot.
+  # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
+  framework_version: "[X.Y.Z]"  # synced from framework/VERSION
+
+# Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
+# ten layers. Every other spec surface states the value and cross-references this
+# field; none re-specifies it (GD-17, applying GD-09's single-source rule). Markdown
+# is optional and descriptive — a generated rendering of the YAML, or additional
+# explanatory material — and never carries a fact the YAML does not.
+#
+# EFFECTIVE CONDITION: the instance-format mandate takes normative effect per GD-17
+# (`governance/DECISIONS.md`), which states it ONCE. Do not restate it here.
+#
+
+# Each layer's `folder` is a path relative to the `framework/` root;
+# `template` is a filename within that folder.
+#
+# Index templates: each layer ships a `<X>-00_index.TEMPLATE.*` registry doc.
+# Layers 01-07 use Markdown (.md); layer 08 (IPLAN) uses YAML
+# (IPLAN-00_index.TEMPLATE.yaml) because its index is structured plan data.
+# Layer 10 (EVAL) uses Markdown (.md).
+layers:
+  - number: 1
+    artifact: BRD
+    name: "Business Requirements Document"
+    folder: layers/01_BRD/
+    extensions: [.yaml]
+    required_tags: []
+    can_reference: []
+    error_prefix: BRD
+    optional: false
+    description: "Layer 1 — Business-level functional requirements and objectives"
+    template: "BRD-TEMPLATE.yaml"
+    downstream: [PRD]
+
+  - number: 2
+    artifact: PRD
+    name: "Product Requirements Document"
+    folder: layers/02_PRD/
+    extensions: [.yaml]
+    required_tags: [brd]
+    can_reference: [BRD]
+    error_prefix: PRD
+    optional: false
+    description: "Layer 2 — Product features and user stories derived from BRD"
+    template: "PRD-TEMPLATE.yaml"
+    downstream: [EARS]
+
+  - number: 3
+    artifact: EARS
+    name: "Easy Approach to Requirements Syntax"
+    folder: layers/03_EARS/
+    extensions: [.yaml]
+    required_tags: [prd]
+    can_reference: [PRD]
+    error_prefix: EARS
+    optional: false
+    description: "Layer 3 — Formal requirements using WHEN-THE-SHALL-WITHIN syntax"
+    template: "EARS-TEMPLATE.yaml"
+    downstream: [BDD]
+    # CLEANUP-PR-C item 14: EARS authors may optionally emit per-line
+    # `@bdd: BDD-NN` slots as forward-pointer navigation hints. Slots
+    # are non-canonical for trace (the canonical trace is BDD's reverse
+    # @ears: tags); TRACE-RES-001 skips downstream tags so unresolved
+    # slots at author-time don't fail lint. See REVIEW_TEAM.md
+    # §Optional downstream slots.
+    optional_downstream_slots: [BDD]
+
+  - number: 4
+    artifact: BDD
+    name: "Behavior-Driven Development"
+    folder: layers/04_BDD/
+    extensions: [.yaml]
+    required_tags: [ears]
+    can_reference: [EARS]
+    error_prefix: BDD
+    optional: false
+    description: "Layer 4 — Test scenarios using Given-When-Then format with req-to-SPEC trace links"
+    template: "BDD-TEMPLATE.yaml"
+    downstream: [ADR]
+
+  - number: 5
+    artifact: ADR
+    name: "Architecture Decision Record"
+    folder: layers/05_ADR/
+    extensions: [.yaml]
+    required_tags: [ears, bdd]
+    can_reference: [EARS, BDD]
+    error_prefix: ADR
+    optional: false
+    description: "Layer 5 — Architectural decisions with Context-Decision-Consequences"
+    template: "ADR-TEMPLATE.yaml"
+    downstream: [SPEC]
+
+  - number: 6
+    artifact: SPEC
+    name: "Technical Specification"
+    folder: layers/06_SPEC/
+    extensions: [.yaml]
+    required_tags: [ears, bdd, adr]
+    can_reference: [EARS, BDD, ADR]
+    error_prefix: SPEC
+    optional: false
+    description: "Layer 6 — Implementation-ready technical specification: interfaces, data models, behavior contracts"
+    template: "SPEC-TEMPLATE.yaml"
+    downstream: [TDD]
+
+  - number: 7
+    artifact: TDD
+    name: "Test-Driven Development Guide"
+    folder: layers/07_TDD/
+    extensions: [.yaml]
+    required_tags: [ears, bdd, adr, spec]
+    can_reference: [EARS, BDD, ADR, SPEC]
+    error_prefix: TDD
+    optional: false
+    description: "Layer 7 — Test case definitions, BDD-to-test mapping, quality thresholds, TDD execution order — defined from SPEC component contracts"
+    template: "TDD-TEMPLATE.yaml"
+    downstream: [IPLAN]
+
+  - number: 8
+    artifact: IPLAN
+    name: "Implementation Plan"
+    folder: layers/08_IPLAN/
+    extensions: [.yaml]
+    required_tags: [spec, tdd]
+    can_reference: [SPEC, TDD]
+    error_prefix: IPLAN
+    optional: false
+    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in layers/08_IPLAN/tmp/."
+    template: "IPLAN-TEMPLATE.yaml"
+    downstream: [CODE, EVAL]
+
+  - number: 9
+    artifact: CHG
+    name: "Change Record (Governance Overlay)"
+    folder: layers/09_CHG/
+    extensions: [.yaml]
+    required_tags: []
+    can_reference: []
+    error_prefix: CHG
+    optional: false
+    description: "Layer 9 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
+    template: "CHG-TEMPLATE.yaml"
+    downstream: []
+    notes: "Operational namespace, not a sequential lifecycle layer. The 09_CHG prefix is reserved for playbook definitions, example artifacts, and saga review dispatch."
+
+  - number: 10
+    artifact: EVAL
+    name: "Evaluation & QA Governance"
+    folder: layers/10_EVAL/
+    extensions: [.yaml]
+    required_tags: [ears, bdd, tdd, iplan]
+    can_reference: [EARS, BDD, TDD, IPLAN]
+    error_prefix: EVAL
+    optional: false
+    description: "Layer 10 — Testing strategy governance: coverage matrices, quality thresholds, execution plans. Splits into functional (EARS/BDD) and unit/smoke (TDD/IPLAN) tracks."
+    template: "EVAL-TEMPLATE.yaml"
+    downstream: []
+
+layer_groups:
+  business:
+    layers: [1]
+    description: "Business requirements and objectives"
+
+  product:
+    layers: [2, 3, 4]
+    description: "Product features, formal requirements, acceptance criteria"
+
+  architecture:
+    layers: [5, 6]
+    description: "Architecture decisions and technical specification"
+
+  implementation:
+    layers: [7, 8]
+    description: "Test definitions and execution planning"
+
+  evaluation:
+    layers: [10]
+    description: "Evaluation and QA governance"
+
+  governance:
+    layers: [9]
+    description: "Change management overlay — gate definitions, CHG template, approval workflow"
+
+# =============================================================================
+# C4 Architecture Model Mapping
+# =============================================================================
+# Maps the 4 C4 zoom levels to SDD layers.
+#
+# | C4 Level        | SDD Layers | Artifacts     | Diagram Tags                     |
+# |-----------------|------------|---------------|----------------------------------|
+# | L1 Context      | L1         | BRD           | @diagram: c4-l1, @diagram: dfd-l1|
+# | L2 Container    | L2         | PRD           | @diagram: c4-l2, @diagram: dfd-l2|
+# | Decision Bridge | L3-L5      | EARS, BDD, ADR| none (decision sequence for ADR) |
+# | L3 Component    | L6         | SPEC          | @diagram: c4-l3, @diagram: dfd-l3|
+# | Implement Bridge| L7-L8      | TDD, IPLAN    | none (test defs, execution plan) |
+# | L4 Code         | Code       | Source Code   | @diagram: c4-l4                  |
+# | Governance      | L10        | EVAL          | none (testing strategy)          |
+#
+# Bridge layers (L3-L5, L7-L8) are SDD-specific refinements that don't
+# correspond directly to C4 zoom levels. They translate, validate, and
+# connect the C4 levels.
+
+c4_mapping:
+  context:
+    level: c4-l1
+    sdd_layer: 1
+    artifact: BRD
+    diagram_tags: ["@diagram: c4-l1", "@diagram: dfd-l1"]
+    description: "System context — actors, external systems, business boundaries"
+    mandatory_purpose: "Must describe the business environment, not product features"
+
+  container:
+    level: c4-l2
+    sdd_layer: 2
+    artifact: PRD
+    diagram_tags: ["@diagram: c4-l2", "@diagram: dfd-l2", "@diagram: sequence-sync"]
+    description: "Product containers — features, functional blocks, interactions"
+    mandatory_purpose: "Must describe product-level interactions, not system internals"
+
+  decision_bridge:
+    level: bridge
+    sdd_layers: [3, 4, 5]
+    artifacts: [EARS, BDD, ADR]
+    description: "Requirement formalization (EARS) → acceptance scenarios (BDD) → architecture decisions (ADR)"
+    note: "Not a C4 level — bridges the transition from Container (PRD) to Component (SPEC)"
+    diagram_tags: []  # ADR uses decision sequence diagrams only; EARS/BDD none
+
+  component:
+    level: c4-l3
+    sdd_layer: 6
+    artifact: SPEC
+    diagram_tags: ["@diagram: c4-l3", "@diagram: dfd-l3"]
+    description: "Component interfaces, data models, behavior contracts"
+    mandatory_purpose: "Must define component boundaries — not architecture decisions or code"
+
+  implementation_bridge:
+    level: bridge
+    sdd_layers: [7, 8]
+    artifacts: [TDD, IPLAN]
+    description: "Test case definitions (TDD) → execution planning (IPLAN)"
+    note: "Not a C4 level — validates SPEC contracts and executes implementation; feeds into EVAL governance"
+    diagram_tags: []
+
+  code:
+    level: c4-l4
+    artifact: CODE
+    diagram_tags: ["@diagram: c4-l4"]
+    description: "Source code class/package structure — C4-L4 ownership declared in code, referenced by IPLAN"
+    note: "Not an SDD document layer — code is the output target"
+
+  evaluation_governance:
+    level: governance
+    sdd_layer: 10
+    artifact: EVAL
+    diagram_tags: []
+    description: "Testing strategy governance — coverage matrices, quality thresholds, execution plans"
+    note: "Not a C4 level — validates that test strategy covers all upstream requirements and specifications"
+
+id_patterns:
+  document: "^[A-Z]+-\\d{2,}$"
+  element: "^[A-Z]+\\.\\d{2,}\\.\\d{2,}\\.[a-f0-9]{4,8}$"
+  # CLEANUP-PR-C item 12 — threshold keys distinct from element IDs.
+  # Format: TYPE.NN.<lowercase_category>(.<lowercase_subkey>)+ — at
+  # minimum 4 dotted segments, optionally more for nested subkeys
+  # (e.g. PRD.01.perf.redirectp95 = 4 segments; PRD.01.auth.attempts.max
+  # = 5 segments). Lowercase category distinguishes from element IDs
+  # which carry digits in the section_id position.
+  threshold: "^[A-Z]+\\.\\d{2,}\\.[a-z_]+(?:\\.[a-z0-9_]+)+$"
+
+# Element-level backward-coverage map (ELEMENT-COVERAGE-001 / D-0039). For COV02
+# an AUTHORED EARS/BDD element is "realized" when at least one downstream doc in
+# its realizing set cites it element-level (one-hop). ADR is a decision layer and
+# does not realize. This is the normative source; a platform's linter mirrors it
+# (e.g. the `REALIZING_LAYERS` constant in the reference `sdd_doc_lint`). See
+# governance/TRACEABILITY.md §"Element-level coverage".
+realizing_layers:
+  BRD: [PRD]
+  EARS: [BDD, SPEC, TDD]
+  BDD: [SPEC, TDD, EVAL]
+
+# BDD-scenario -> acceptance-test pairing map (SEED-ABSORPTION-001 / GD-08).
+# Additive sibling to realizing_layers, which is NOT changed (mutating it would
+# break the pinned assertion in tests/conformance/test_coverage_engine.py and
+# re-grade every consumer corpus). ACC01 (LINT_RULES.md) reads this block: a BDD
+# scenario is "paired" only when a TDD **test case or mapping entry** names it —
+# a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` field (in a rendered
+# Markdown TDD, the equivalent §3 Test Mapping row or §4 e2e line carrying the
+# test-case id `TDD.NN.04.xxxx`). A scenario cited only in the TDD §7
+# traceability block (bare `@bdd:` list, no carrier field or test-case id) does
+# NOT pair, which is why ACC01 is stricter than COV02 (COV02 treats any
+# element-level TDD citation as realization). This closes the vacuous-pass
+# loophole: appending scenario IDs to a single traceability line cannot pair them.
+#
+# DISAMBIGUATION: `acceptance_layers` / `ACC01` govern BDD-scenario -> TDD-case
+# pairing inside a *project's* SDD chain. They are unrelated to the framework's
+# OWN acceptance harness (tests/acceptance/, tests/ACCEPTANCE.md, the plugin's
+# pre-deployment release-gate methodology).
+acceptance_layers:
+  BDD: [TDD]

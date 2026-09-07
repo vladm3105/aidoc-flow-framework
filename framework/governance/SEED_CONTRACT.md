@@ -1,8 +1,19 @@
 # Seed Contract
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 The normative contract over the `seed/` input tier — the human-authored source
 material a cycle's first BRD is written from. The spec names the seed as an
-input (`README.md` inputs row; `docs/AIDOC.md` tier diagram + table) but
+input (`README.md` inputs row; `governance/aidoc/AIDOC.md` tier diagram + table) but
 defined no obligation over it: nothing required the SDD chain to account for
 what the seed says, and nothing forbade "fixing" the seed when an audit found a
 gap. This document closes that gap. It is engine-agnostic — it constrains the
@@ -81,3 +92,50 @@ This contract; `layers/01_BRD/BRD-TEMPLATE.yaml` (`seed_disposition:` carrier);
 `LINT_RULES.md` (`SEED01`); `playbooks/01_BRD/business_analyst.md` (C8 — author
 the ledger) + `playbooks/01_BRD/auditor.md` (C8 — completeness against the
 seed); `DECISIONS.md` **GD-08**.
+
+---
+
+## Seed Gap Review Gate
+
+### When it fires
+
+**Primary:** After BRD generation, before PRD generation. All BRDs must be
+generated before running the review. This is the earliest point where seed
+coverage can be validated.
+
+**Secondary:** After any seed doc rewrite. A rewrite changes architectural terms
+that propagate through the entire SDD chain. The secondary gate catches stale
+references before they accumulate.
+
+### What it checks
+
+1. Cross-reference every BRD's functional requirements against `seed/architecture/`
+   and `seed/agent-surface/`
+2. Identify any architectural domain with no seed document
+3. Check existing seed docs for uncovered sub-domains
+4. After seed rewrites: grep all SDD files for stale terms
+
+### Decision
+
+| Outcome | Action |
+|---------|--------|
+| **No gaps** | Proceed to PRD generation |
+| **Gaps found (missing dispositions)** | Fix BRD seed_disposition sections |
+| **Gaps found (missing seed docs)** | Start new SDD iteration: create missing seed docs → update module docs → regenerate affected BRDs |
+| **Stale references found** | Grep and fix all affected SDD files |
+
+### Why after BRD, not after IPLAN
+
+- BRDs are the first formal SDD layer — gaps caught here propagate to zero downstream files
+- By IPLAN completion, the full SDD chain has embedded the gaps
+- Fixing after IPLAN requires touching 14+ files; fixing after BRD requires touching 9 files
+
+### Scope of regeneration
+
+When a seed gap review triggers a new SDD iteration:
+- Only affected layers are regenerated, not the entire chain
+- New seed docs are created in `seed/architecture/` or `seed/agent-surface/`
+- Corresponding module docs are created or updated in `modules/`
+- Existing BRDs are updated with new seed_disposition entries
+- Downstream SDD layers are regenerated only if the new seed changes their scope
+- A CHG record is created if existing SDD documents are rewritten

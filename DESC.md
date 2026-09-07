@@ -38,7 +38,7 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 ```
    HUMAN (owner / architect)                  FRAMEWORK + AI                       WORLD
    ─────────────────────────                  ──────────────                       ─────
-   vision · strategy · real-world   ──seed──▶  BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN  ◀─signal─ spikes
+   vision · strategy · real-world   ──seed──▶  BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL  ◀─signal─ spikes
    constraints (pre-framework docs)           (traceable, verifiable, buildable)            prod telemetry
                                                         │                                    canary
                                               PO review at EARS/BDD                          │
@@ -51,7 +51,7 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 1. **Human seeds the intent.** The business owner or architect creates the initial
    project documents (vision, strategy, constraints, prior-art corpus). This is where
    ground truth and real-world assumptions enter — the framework never originates them.
-2. **The chain transforms the seed** into eight cumulative layers, each addressable and
+2. **The chain transforms the seed** into ten cumulative layers (8 SDD + CHG + EVAL), each addressable and
    cross-linked, ending in code-ready implementation plans.
 3. **The product owner (human or AI-as-PO) validates the oracle early** — at the EARS/BDD
    layer, *before* any architecture is committed (see "Why BDD before ADR").
@@ -74,9 +74,10 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 | L6 | **SPEC** — Component Contracts | The buildable interface (C4 Component) |
 | L7 | **TDD** — Test Definitions | The tests that prove it, test-first |
 | L8 | **IPLAN** — Implementation Plan | The exact, resumable build manifest for an agent |
+| L9 | **CHG** — Change Management | Governance gates, adaptive change control with approval + re-gate |
+| L10 | **EVAL** — Evaluation & QA | Test strategy, coverage matrices, quality governance |
 
-Overlays: **CHG** governance gates (adaptive change control with approval + re-gate),
-and markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
+Overlays: markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
 plan-of-record for a single change.
 
 Document numbers are **per-layer counters with no cross-layer alignment**; an upstream
@@ -309,7 +310,7 @@ From Claude Code:
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.41.1`. The Claude Code plugin is a **pre-1.0 preview** — APIs
+framework spec `0.53.0`. The Claude Code plugin is a **pre-1.0 preview** — APIs
 and surfaces may change before 1.0. Platform versions are in the
 [Platforms](#platforms) table above.
 

@@ -1,0 +1,232 @@
+# IPLAN-VERIFY-TEMPLATE.yaml — IPLAN Verification/Validation Plan
+# SDD Layer 8 — Subtype: audit_fix
+#
+# USE CASE 1: IPLAN Validation (Primary)
+#   Upstream: Completed IPLAN
+#   Purpose: Verify IPLAN implementation correctness
+#   Workflow: Run tests → Record findings → Fix issues → Mark Verified
+#
+# USE CASE 2: Audit Fix (Secondary)
+#   Upstream: Audit findings from integration/security review
+#   Purpose: Fix issues found during audits
+#
+# Differs from code_build:
+#   - Upstream is audit findings or Completed IPLAN, not SPEC/TDD
+#   - File entries are severity-ordered (P0→P1→P2), not TDD-ordered
+#   - Adds: audit_findings, severity_classification, cross_iplan_impact
+#   - Removes: tdd_ref (no TDD upstream), implementation_contracts (simplified)
+#
+# Differs from deploy:
+#   - No rollback_procedure, smoke_tests, canary_metrics, observability_hooks
+#   - Focus is verification/fixes, not cutover
+
+title: "[Verification/Validation Title]"
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "iplan-document"
+  layer: 8
+  total_sections: 7
+  last_updated: "YYYY-MM-DD"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - verification
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-NN"
+  subtype: audit_fix  # audit_fix | code_build | deploy | combined
+  source_spec: "Verification of [IPLAN-NN] completion"  # or "Cross-cutting (audit findings from [source])"
+  status: Draft  # Draft | In Progress | Completed | Verified
+  # Status lifecycle:
+  #   Draft     — Verification IPLAN created
+  #   In Progress — Running tests, recording findings
+  #   Completed — All findings fixed, ready to mark original as Verified
+  #   Verified  — Original IPLAN marked as Verified (FINAL/FINITE)
+  version: "1.0"
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[Author]"
+  complexity: 3  # 1=simple fix, 5=cross-cutting architectural fix
+  estimated_files: 0
+  session_count: 0
+  # For IPLAN validation:
+  validating_iplan: "IPLAN-NN"  # Reference to the IPLAN being validated
+  validation_date: "YYYY-MM-DD"
+  # For audit fix:
+  audit_source: "[Description of audit: e.g., '3-subagent integration readiness audit']"
+  audit_date: "YYYY-MM-DD"
+
+# =============================================================================
+# Section 2: Validation Findings / Audit Findings
+# =============================================================================
+validation_findings:
+  _guidance: |
+    Structured record of validation findings or audit issues.
+
+    For IPLAN VALIDATION (primary use case):
+      - Upstream is a Completed IPLAN
+      - Findings are validation failures (test failures, bugs, gaps)
+      - After fixing all P0/P1, mark original IPLAN as Verified
+
+    For AUDIT FIX (secondary use case):
+      - Upstream is audit findings from integration/security review
+      - Findings are issues found during audits
+      - After fixing, mark IPLAN as Completed
+
+    Each finding has an ID, severity, file:line reference, description, and fix.
+  findings:
+    - id: "FINDING-001"
+      severity: P0  # P0=critical, P1=high, P2=medium, P3=low
+      file: "path/to/file.go:line"
+      title: "[Short title]"
+      description: "[What was wrong]"
+      fix: "[What was done to fix it]"
+      verified: true  # true after tests pass
+    - id: "FINDING-002"
+      severity: P1
+      file: "path/to/file.go:line"
+      title: "[Short title]"
+      description: "[What was wrong]"
+      fix: "[What was done to fix it]"
+      verified: true
+
+# =============================================================================
+# Section 3: File Manifest (audit_fix variant)
+# =============================================================================
+file_manifest:
+  _guidance: |
+    Files modified or created, ordered by severity (P0 first, then P1, P2).
+    Unlike code_build, there is no TDD ordering — fixes are applied in
+    severity priority. Each entry tracks what changed and why.
+  files:
+    - path: "path/to/file.go"
+      order: 1
+      status: DONE  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+      session: 1
+      verified: true
+      change_type: modified  # created | modified
+      severity: P0
+      description: "[What was fixed in this file]"
+
+# =============================================================================
+# Section 4: Severity Classification
+# =============================================================================
+severity_classification:
+  _guidance: |
+    Defines what each severity level means for validation/audit findings.
+
+    For IPLAN VALIDATION:
+      P0 = must fix before marking as Verified (test failures, security issues)
+      P1 = should fix before marking as Verified (logic errors, resilience gaps)
+      P2 = can defer to follow-up IPLAN (hardening, edge cases)
+      P3 = no gate (code quality, documentation)
+
+    For AUDIT FIX:
+      P0 = must fix before sandbox testing
+      P1 = should fix before sandbox testing
+      P2 = can defer to post-POC
+      P3 = no gate
+  P0:
+    label: "Critical"
+    description: "Test failure, runtime panic, data corruption, or security breach"
+    gate: "Blocks Verified status"
+  P1:
+    label: "High"
+    description: "Incorrect behavior, resilience gap, or business logic error"
+    gate: "Should fix before Verified status"
+  P2:
+    label: "Medium"
+    description: "Missing feature, incomplete handling, or hardening gap"
+    gate: "Can defer to follow-up IPLAN"
+  P3:
+    label: "Low"
+    description: "Code quality, naming, documentation"
+    gate: "No gate"
+
+# =============================================================================
+# Section 5: Cross-IPLAN Impact
+# =============================================================================
+cross_iplan_impact:
+  _guidance: |
+    Which other IPLANs are affected by these validation fixes. Some fixes
+    modify files that were created by earlier IPLANs — this section tracks that.
+    Also tracks the original IPLAN being validated (for validation use case).
+  # Reference to the original IPLAN being validated (for validation use case)
+  original_iplan: "IPLAN-NN"
+  # Other IPLANs affected by fixes
+  impacts:
+    - iplan: "IPLAN-09"
+      files_affected:
+        - "internal/provider/bridge_client.go"
+        - "internal/provider/sumsub_client.go"
+        - "internal/provider/privy_client.go"
+      nature: "Bug fix (retry logic, body consumption)"
+    - iplan: "IPLAN-01"
+      files_affected:
+        - "internal/platform/webhook_handler.go"
+        - "internal/platform/handlers.go"
+      nature: "Bug fix (Svix verification, balance provider)"
+
+# =============================================================================
+# Section 6: Implementation Commands
+# =============================================================================
+execution_commands:
+  setup:
+    - "go mod download"
+  implementation:
+    - "# Apply fixes in severity order: P0 → P1 → P2"
+  validation:
+    - "go build ./... "
+    - "go vet ./..."
+    - "go test ./internal/... -count=1 -timeout 30s"
+    - "staticcheck ./..."
+    - "golangci-lint run ./..."
+
+# =============================================================================
+# Section 7: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - date: "YYYY-MM-DD"
+      agent: "[AI agent]"
+      files_touched:
+        - path: "path/to/file.go"
+          action: modified
+          status: DONE
+      partial_work: ""
+      blockers: ""
+      next_session_directive: ""
+      validation_results:
+        tests_passing: true
+        coverage: null
+        lint_clean: true
+
+# =============================================================================
+# Section 8: Traceability (simplified for audit_fix)
+# =============================================================================
+traceability:
+  upstream:
+    audit_references:
+      - "@audit: [Source audit name/date]"
+    spec_references: []  # audit_fix may not have SPEC upstream
+  downstream:
+    code_paths:
+      - "@code: path/to/file.go"
+    test_paths:
+      - "@tests: path/to/file_test.go"
+  cross_links:
+    depends:
+      - "@depends: IPLAN-NN"
+    discoverability:
+      - "@discoverability: IPLAN-NN (rationale)"
+  code_inventory:
+    files:
+      - path: "path/to/file.go"
+        status: modified
+        session: 1
+        verified: true

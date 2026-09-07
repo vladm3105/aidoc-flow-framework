@@ -6,16 +6,16 @@
 metadata:
   framework: "Specification-Driven Development (SDD)"
   derived_from: "SDD v3.2"
-  total_layers: 8
+  total_layers: 10
   maintainer: "SDD Framework Team"
   template_policy: unified_yaml
+  last_updated: "2026-09-07"
+  # framework_version tracks the version that produced this registry snapshot.
+  # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
+  framework_version: "0.53.0"  # synced from framework/VERSION
 
-# Each layer's `folder` is a path relative to the `framework/` root;
-# `template` is a filename within that folder.
-#
-#
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
-# eight layers. Every other spec surface states the value and cross-references this
+# ten layers. Every other spec surface states the value and cross-references this
 # field; none re-specifies it (GD-17, applying GD-09's single-source rule). Markdown
 # is optional and descriptive — a generated rendering of the YAML, or additional
 # explanatory material — and never carries a fact the YAML does not.
@@ -23,11 +23,14 @@ metadata:
 # EFFECTIVE CONDITION: the instance-format mandate takes normative effect per GD-17
 # (`governance/DECISIONS.md`), which states it ONCE. Do not restate it here.
 #
+
+# Each layer's `folder` is a path relative to the `framework/` root;
+# `template` is a filename within that folder.
+#
 # Index templates: each layer ships a `<X>-00_index.TEMPLATE.*` registry doc.
 # Layers 01-07 use Markdown (.md); layer 08 (IPLAN) uses YAML
 # (IPLAN-00_index.TEMPLATE.yaml) because its index is structured plan data.
-# This applies to the INDEX docs only — it is not a statement about the layers'
-# instance artifacts, which `extensions` governs above.
+# Layer 10 (EVAL) uses Markdown (.md).
 layers:
   - number: 1
     artifact: BRD
@@ -138,7 +141,34 @@ layers:
     optional: false
     description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in layers/08_IPLAN/tmp/."
     template: "IPLAN-TEMPLATE.yaml"
-    downstream: [CODE]
+    downstream: [CODE, EVAL]
+
+  - number: 9
+    artifact: CHG
+    name: "Change Record (Governance Overlay)"
+    folder: layers/09_CHG/
+    extensions: [.yaml]
+    required_tags: []
+    can_reference: []
+    error_prefix: CHG
+    optional: false
+    description: "Layer 9 — Governance overlay for managing changes to existing SDD artifacts. NOT a lifecycle layer — triggers on-demand when modifying any artifact. Uses gate approval instead of readiness scores. Carries the CHG template, gate definitions, and the 14-point creation checklist."
+    template: "CHG-TEMPLATE.yaml"
+    downstream: []
+    notes: "Operational namespace, not a sequential lifecycle layer. The 09_CHG prefix is reserved for playbook definitions, example artifacts, and saga review dispatch."
+
+  - number: 10
+    artifact: EVAL
+    name: "Evaluation & QA Governance"
+    folder: layers/10_EVAL/
+    extensions: [.yaml]
+    required_tags: [ears, bdd, tdd, iplan]
+    can_reference: [EARS, BDD, TDD, IPLAN]
+    error_prefix: EVAL
+    optional: false
+    description: "Layer 10 — Testing strategy governance: coverage matrices, quality thresholds, execution plans. Splits into functional (EARS/BDD) and unit/smoke (TDD/IPLAN) tracks."
+    template: "EVAL-TEMPLATE.yaml"
+    downstream: []
 
 layer_groups:
   business:
@@ -157,6 +187,14 @@ layer_groups:
     layers: [7, 8]
     description: "Test definitions and execution planning"
 
+  evaluation:
+    layers: [10]
+    description: "Evaluation and QA governance"
+
+  governance:
+    layers: [9]
+    description: "Change management overlay — gate definitions, CHG template, approval workflow"
+
 # =============================================================================
 # C4 Architecture Model Mapping
 # =============================================================================
@@ -170,6 +208,7 @@ layer_groups:
 # | L3 Component    | L6         | SPEC          | @diagram: c4-l3, @diagram: dfd-l3|
 # | Implement Bridge| L7-L8      | TDD, IPLAN    | none (test defs, execution plan) |
 # | L4 Code         | Code       | Source Code   | @diagram: c4-l4                  |
+# | Governance      | L10        | EVAL          | none (testing strategy)          |
 #
 # Bridge layers (L3-L5, L7-L8) are SDD-specific refinements that don't
 # correspond directly to C4 zoom levels. They translate, validate, and
@@ -213,7 +252,7 @@ c4_mapping:
     sdd_layers: [7, 8]
     artifacts: [TDD, IPLAN]
     description: "Test case definitions (TDD) → execution planning (IPLAN)"
-    note: "Not a C4 level — validates SPEC contracts and executes implementation"
+    note: "Not a C4 level — validates SPEC contracts and executes implementation; feeds into EVAL governance"
     diagram_tags: []
 
   code:
@@ -222,6 +261,14 @@ c4_mapping:
     diagram_tags: ["@diagram: c4-l4"]
     description: "Source code class/package structure — C4-L4 ownership declared in code, referenced by IPLAN"
     note: "Not an SDD document layer — code is the output target"
+
+  evaluation_governance:
+    level: governance
+    sdd_layer: 10
+    artifact: EVAL
+    diagram_tags: []
+    description: "Testing strategy governance — coverage matrices, quality thresholds, execution plans"
+    note: "Not a C4 level — validates that test strategy covers all upstream requirements and specifications"
 
 id_patterns:
   document: "^[A-Z]+-\\d{2,}$"
@@ -243,7 +290,7 @@ id_patterns:
 realizing_layers:
   BRD: [PRD]
   EARS: [BDD, SPEC, TDD]
-  BDD: [SPEC, TDD]
+  BDD: [SPEC, TDD, EVAL]
 
 # BDD-scenario -> acceptance-test pairing map (SEED-ABSORPTION-001 / GD-08).
 # Additive sibling to realizing_layers, which is NOT changed (mutating it would

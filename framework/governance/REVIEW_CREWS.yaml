@@ -22,6 +22,8 @@ metadata:
   schema_version: "1.0.0"
   description: "Per-layer review-team crews + scoring weights for the SDD flow"
   authority: "framework/governance/REVIEW_TEAM.md"
+  last_updated: "2026-09-07"
+  framework_version: "0.53.0"
 
 # Default collaboration mode when a crew/operation does not override it.
 default_mode: independent          # independent | sequential | single_pass

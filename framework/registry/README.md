@@ -1,7 +1,18 @@
 # Framework Registry
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 `LAYER_REGISTRY.yaml` is the **authoritative, machine-readable definition** of
-the SDD layer model: the 8 layers and their order, the traceability dependency
+the SDD layer model: the 10 layers and their order, the traceability dependency
 graph (`required_tags`, `can_reference`, `downstream`), the `layer_groups`, the
 C4 mapping, and the document/element `id_patterns`.
 

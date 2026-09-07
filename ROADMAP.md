@@ -30,7 +30,7 @@ permanent asymmetry.
 Near-term, in-flight work.
 
 - **Hermes parity catch-up** — both platforms declare current spec surface
-  (spec `0.41.x`). Hermes has advanced substantially (team-mode + 8-layer playbook
+  (spec `0.41.x`). Hermes has advanced substantially (team-mode + 10-layer playbook
   injection + saga conformance, and now the `audit_threshold` gate + `.aidoc/profile.yaml`
   runtime consumption + the opt-in bounded review→remediate→re-review **quality loop**
   (`hermes/v0.11.0`, HERMES-REVIEW-LOOP-001 Phase 1); the full spec arc is
@@ -331,7 +331,7 @@ Headline capabilities now in the framework (full detail in
 - **Multi-persona review team** — per-layer review crews with deterministic
   weighted/capped scoring, a structural gate as a reproducible floor, and split
   `chaos_engineer` / `security_engineer` lenses.
-- **Layer playbooks — 45 across all 8 layers** — per-layer, per-lens authoring and
+- **Layer playbooks — 65 across all 10 layers** — per-layer, per-lens authoring and
   review guidance wired into team-mode review.
 - **`.aidoc/` provenance tier** — a third committed documentation tier (audit, review,
   remediation, validation, security) that answers *"how was this produced?"* without a

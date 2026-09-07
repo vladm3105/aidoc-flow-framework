@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: integration_lead
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.51.0"
+framework_spec_version: "0.50.0"
 ---
 # integration_lead lens — CHG layer
 
@@ -77,7 +77,7 @@ declared as deferrals. Mismatch (silent expansion or silent shrinkage)
 **C4 — Entry gate matches `change_source`.** The CHG's `change_source`
 (upstream / midstream / design / execution / external / feedback /
 spec) must route to the matching entry gate per the table in
-`framework/governance/chg/README.md`: upstream→GATE-01,
+`framework/layers/09_CHG/README.md`: upstream→GATE-01,
 midstream→GATE-03, design→GATE-06, execution→GATE-08,
 external→GATE-01, feedback→GATE-CODE, spec→GATE-SPEC. A mismatch
 between source and gate either skips a required gate or invokes one

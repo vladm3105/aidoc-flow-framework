@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: auditor
 weight: 10
 agent: traceability-auditor
-framework_spec_version: "0.51.0"
+framework_spec_version: "0.50.0"
 ---
 # auditor lens — CHG layer
 
@@ -74,7 +74,7 @@ skip. Missing → P1 citing C2.
 
 **C3 — Change-level classification matches the actual scope.** The
 declared `change_level` (C1 / C2 / C3 / Emergency) is consistent
-with the propagation scope per `framework/governance/chg/README.md`:
+with the propagation scope per `framework/layers/09_CHG/README.md`:
 C1 is typo / formatting (no propagation); C2 is section update
 (single-layer); C3 is cross-layer (impact_assessment names ≥2
 layers); Emergency is post-hoc with post-mortem. A C3-scope change

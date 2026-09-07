@@ -1,5 +1,16 @@
 # `.aidoc/` — AI working notes, documentation of provenance
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.52.0 |
+
+
 `.aidoc/` is the **third committed tier** of every project that uses the
 framework. It holds the audit, review, remediation, validation,
 security, and quality reports that AI personas produced while authoring
@@ -23,7 +34,7 @@ alongside the artifacts.
 | Tier | What | Lifecycle |
 |---|---|---|
 | Inputs | human-authored seeds + change requests | committed |
-| Outputs | the produced 8-layer chain (BRD → IPLAN) | committed |
+| Outputs | the produced 10-layer chain (BRD → IPLAN + CHG + EVAL) | committed |
 | Provenance (`.aidoc/`) | audit reports, review consensus, remediation logs, validation reports, security reviews, quality suggestions, project profile | committed |
 | Tool internals (`logs/`) | execution metadata, raw engine/CLI stdout, timing, exit codes | gitignored |
 
