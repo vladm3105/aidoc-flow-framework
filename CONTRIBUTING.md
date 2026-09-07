@@ -1,6 +1,6 @@
 # Contributing to AI Doc Flow Framework
 
-Thanks for considering a contribution. This project follows a conformance-gated workflow: every PR must pass the conformance test suite and the relevant platform tests.
+Thanks for considering a contribution. This project follows a conformance-gated workflow: every PR must pass the conformance test suite. The repository is **framework-only** — platform implementations (Hermes MCP server, Claude Code plugin) have been archived; any capable AI agent derives its behavior from the framework spec, templates, and playbooks directly.
 
 ## Quick start
 
@@ -12,10 +12,10 @@ pip install pre-commit && pre-commit install
 
 ## Project layout
 
-See [`docs/REPO_STRUCTURE.md`](docs/REPO_STRUCTURE.md) for the full layout. The two surfaces:
+See [`docs/REPO_STRUCTURE.md`](docs/REPO_STRUCTURE.md) for the full layout. The primary surface:
 
 - `framework/` — engine-agnostic SDD specification (the contract).
-- `platforms/` — platform implementations (Hermes MCP server, Claude Code plugin).
+- ~~`platforms/`~~ — **Archived.** Platform implementations (Hermes MCP server, Claude Code plugin) have been retired; see `docs/REPO_STRUCTURE.md` for historical reference.
 
 ## Before you push
 
@@ -48,7 +48,6 @@ Together they handle: mechanical sync is invisible (just commit; the right files
 | Change category | Mandatory updates (same PR) | Mechanical (auto-synced) | Semantic (you author) |
 |---|---|---|---|
 | **Framework spec** (`framework/**`) | `framework/VERSION` bump if structural; `framework/governance/DECISIONS.md` if a decision is recorded; repo-root `CHANGELOG.md` `[Unreleased]`; `ROADMAP.md` "Recently shipped" if user-visible | CLAUDE.md current-state line; README.md Status block; docs/PARITY.md row | DECISIONS entry; CHANGELOG entry; ROADMAP bullet |
-| **Platform change** (`platforms/<name>/**`) | `platforms/<name>/CHANGELOG.md` `[Unreleased]`; `platforms/<name>/VERSION` if bumping; `docs/PARITY.md` (release only); `docs/TAGGING.md` (release only) | plugin.json; marketplace.json; 52 × SKILL.md frontmatter; READMEs; PARITY current-state | CHANGELOG entry; new TAGGING row (on release) |
 | **User-visible policy/rule** | `CLAUDE.md` §"Durable conventions"; auto-memory entry; `README.md` if status-line affected | — | rule prose; memory note |
 | **Platform follow-on / defect discovered** | Open GitHub issue with label `platform: <name>` | — | issue reproduction, blast radius, fix shape |
 | **Session milestone reached** | `plans/HANDOFF.md` prepend new current-state header | — | handoff narrative (PRs landed, next item) |
@@ -61,8 +60,8 @@ If your change spans categories, do all the updates. The hooks above flag misses
 
 `check-docs-updated` prints a WARNING when:
 
-- Any of `framework/**`, `platforms/**/{skills,agents,scripts,tools}/**`, `platforms/**/VERSION`, `tools/**` is staged
-- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`, `platforms/*/CHANGELOG.md`) is staged
+- Any of `framework/**`, `tools/**` is staged
+- AND no doc-of-record (`CHANGELOG.md`, `README.md`, `ROADMAP.md`, `CLAUDE.md`, `plans/HANDOFF.md`, `docs/PARITY.md`, `docs/TAGGING.md`, `docs/PROJECT.md`, `framework/governance/DECISIONS.md`) is staged
 
 Common false positives (warning is correct to ignore):
 

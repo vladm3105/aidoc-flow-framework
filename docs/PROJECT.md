@@ -9,8 +9,8 @@ specification with two independent platforms:
 
 | Platform | Engine | Source of truth |
 |----------|--------|-----------------|
-| A — Hermes AI | MCP server (`ucx_hermes`) | `platforms/hermes/` |
-| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | `platforms/claude-code-plugin/` |
+| A — Hermes AI | MCP server (`ucx_hermes`) | `archive/platforms/hermes/` |
+| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | `archive/platforms/claude-code-plugin/` |
 
 Both implement the same `framework/` spec; they share no runtime code.
 
