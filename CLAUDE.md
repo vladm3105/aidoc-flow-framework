@@ -220,11 +220,8 @@ surfaces for **this** repo:
 | Decisions log | `plans/DECISIONS.md` |
 | Plans | `plans/` (per-initiative `<NAME>-PLAN.md` files) |
 | Changelog | `CHANGELOG.md` |
-| Roadmap | `ROADMAP.md` |
 | *(repo-specific rows below — same table, optional)* | |
 | Spec governance decisions | `framework/governance/DECISIONS.md` |
-| Hermes per-package changelog | `platforms/hermes/CHANGELOG.md` |
-| Plugin per-package changelog | `platforms/claude-code-plugin/CHANGELOG.md` |
 
 **Never put any of these in `tmp/`** — `tmp/` is for transient working
 files; nothing in it survives a context-clear or new session.
@@ -638,7 +635,7 @@ fresh to have settled, and never repeats one that is already here.
 - **A direct push to `main` bypasses every PR check, so `GATE-SPEC` never evaluates the
   edit.** `2943bf3b` was pushed straight to `main` and changed
   `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml` without re-running
-  `tools/sync-plugin-framework.sh`; the vendored plugin copy drifted and took down
+  `archived (archive/tools/)`; the vendored plugin copy drifted and took down
   conformance, GATE-SPEC's *conformance* step and pre-commit at once (#608 repaired it
   with the generator, one file). The gate's diff-aware `E001`–`E008` never ran at all —
   they are PR-triggered — so **a `framework/**` edit can reach `main` owing a version
@@ -732,7 +729,7 @@ fresh to have settled, and never repeats one that is already here.
 - **`tests/unit/` is executed by no hook and no workflow.**
   `.pre-commit-config.yaml:106` discovers `tests/conformance` only, and the workflows
   run `tests/conformance`, `tests/acceptance/deterministic`,
-  `tools/sdd_doc_lint/tests` and Hermes' own suite; `pre_push_check.sh` invokes no
+  `sdd_doc_lint/tests` and Hermes' own suite; `pre_push_check.sh` invokes no
   `unittest` at all. So ~30 modules under `tests/unit/` (including
   `test_sync_scripts.py`) are **unguarded after merge** — a test placed there proves
   something once, locally, and never again. The registration shim is
@@ -775,15 +772,15 @@ fresh to have settled, and never repeats one that is already here.
 - **`sync-version-refs` reporting "files were modified" is usually a knock-on**, not
   a second defect — it re-stages whatever an earlier autofix touched. Verify by
   running it alone against a clean HEAD.
-- **Editing `tools/sdd_doc_lint/*.py` requires re-copying both vendored platform
+- **Editing `sdd_doc_lint/*.py` requires re-copying both vendored platform
   mirrors by hand.** No script does it, and `ruff-format` may rewrite the file
   *after* you copy — re-copy and re-run until two consecutive `--all-files` runs are
-  clean. The linter's own sync script is `tools/sdd_doc_lint/sync-vendored.sh`,
-  **not** `tools/sync-plugin-framework.sh` (which vendors `framework/` subtrees plus
+  clean. The linter's own sync script is `sdd_doc_lint/sync-vendored.sh`,
+  **not** `archived (archive/tools/)` (which vendors `framework/` subtrees plus
   three named tools files and does not touch `sdd_doc_lint`).
 - **Propagation order for a framework version bump is load-bearing:**
   `framework/VERSION` → `scripts/sync-version-refs.sh` → **then**
-  `tools/sync-plugin-framework.sh`. Reversing it lands 51 drifted bundled playbooks
+  `archived (archive/tools/)`. Reversing it lands 51 drifted bundled playbooks
   and a red bundle guard.
 - **The plugin and Hermes `CLAUDE.md` current-state tokens self-heal; the
   framework-spec token does not.** Since #389, `sync-version-refs.sh` detects the
@@ -886,7 +883,7 @@ at the published artifact — never by a test asserting on the call sequence.
   merged plan declared a founder decision was required over `state: canonical` vs
   `id_state: provisional`. There was no conflict — `id_standard.state` is template
   metadata with no code consumer, and the linter says so at
-  `tools/sdd_doc_lint/__init__.py:558`. An unverified blocker in a merged plan stalls
+  `sdd_doc_lint/__init__.py:558`. An unverified blocker in a merged plan stalls
   work on a decision nobody needs to make.
 - **Write the scan before the census.** A surface count went 9 → 19 → the truth of
   **25**, because both manual passes sampled one file instead of the tree. A

@@ -21,7 +21,7 @@ How to add tests to the suite.
 
 ## Adding a new lint code
 
-1. Implement the check in `framework/tools/sdd_doc_lint/__init__.py`.
+1. Implement the check in `archive/tools/sdd_doc_lint/__init__.py`.
 2. Re-sync (from framework/ submodule root): `bash tools/sdd_doc_lint/sync-vendored.sh`.
 3. Add a fixture under `tests/unit/lint_fixtures/<CODE>/`.
 4. Add to CASES in `test_sdd_doc_lint_checks.py`.
@@ -38,7 +38,7 @@ How to add tests to the suite.
 
 ## Adding a new SKILL.md
 
-1. Add under `framework/platforms/claude-code-plugin/skills/<NAME>/`.
+1. Add under `framework/archive/platforms/claude-code-plugin/skills/<NAME>/`.
 2. Frontmatter must include: `name`, `description`, and `metadata.custom_fields.{version, framework_spec_version, last_updated, skill_category}`.
 3. `framework_spec_version` must match current `framework/VERSION`.
 4. Tier 2 `test_skill_manifests.py` validates; run it before commit.

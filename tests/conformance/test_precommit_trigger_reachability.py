@@ -102,7 +102,7 @@ class PreCommitTriggersAreReachable(unittest.TestCase):
         # repository path, not a credential; the pragma must sit on the flagged line.
         for path in (
             "framework/VERSION",
-            "platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
+            "archive/platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
         ):
             with self.subTest(path=path):
                 self.assertTrue(matcher.search(path), f"{path} is not in the hook's files:")
@@ -123,7 +123,7 @@ class PreCommitTriggersAreReachable(unittest.TestCase):
             "framework/governance/DECISIONS.md",
             "framework/layers/01_BRD/BRD-TEMPLATE.yaml",
             "framework/registry/LAYER_REGISTRY.yaml",
-            "platforms/claude-code-plugin/framework/governance/DECISIONS.md",
+            "archive/platforms/claude-code-plugin/framework/governance/DECISIONS.md",
         ):
             with self.subTest(path=path):
                 self.assertTrue(

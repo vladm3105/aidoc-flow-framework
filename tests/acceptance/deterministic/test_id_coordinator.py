@@ -28,7 +28,7 @@ from _id_coordinator import element_hash, element_id, extract_elements
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "conformance"))
 from _spec import ARTIFACTS
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[3] / "sdd_doc_lint"))
 from sdd_doc_lint import compute_element_hash
 
 #: Inputs chosen so each row exercises at least one step of the normalization

@@ -173,7 +173,7 @@ can read.
 When `--promote` is set (or the script is invoked from `release.yml`
 on a tag push) and **all phases passed**:
 
-1. Resolve plugin version from `platforms/claude-code-plugin/VERSION`.
+1. Resolve plugin version from `archive/platforms/claude-code-plugin/VERSION`.
 2. `git add examples/<NAME>/docs examples/<NAME>/.aidoc` — cascade
    already wrote there directly (no copy step).
 3. If `git diff --cached --quiet` (no staged changes), no-op exit 0.

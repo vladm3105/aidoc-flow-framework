@@ -166,7 +166,7 @@ Each platform carries two version files with distinct meanings:
 
 | File | Meaning |
 |---|---|
-| `platforms/<name>/VERSION` | The platform's own SemVer (independent stream). |
+| `framework/VERSION` | The platform's own SemVer (independent stream). |
 | `platforms/<name>/FRAMEWORK_SPEC_VERSION` | The framework spec version the platform **declares intent to conform to** — NOT necessarily the version it has fully implemented mid-delivery. |
 
 The conformance test `test_FRAMEWORK_SPEC_VERSION_matches_framework_VERSION`

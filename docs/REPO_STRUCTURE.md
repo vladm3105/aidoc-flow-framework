@@ -57,10 +57,15 @@ aidoc-flow-framework/
 │   └── hooks.json                   Hook registration
 │
 ├── tests/
-│   ├── conformance/                 Framework conformance suite
-│   └── chg/                         GATE-SPEC diff-aware guard (spec_gate.py)
+│   ├── unit/                          Framework-level unit tests
+│   ├── conformance/                   Framework conformance suite
+│   ├── acceptance/                    Acceptance harness + fixtures
+│   ├── packaging/                     Bundle/manifest tests
+│   ├── release/                       Release validation tests
+│   ├── review/                        LLM code review
+│   ├── smoke/                         Post-deploy smoke tests
+│   └── chg/                           GATE-SPEC diff-aware guard
 │
-├── scripts/                         IPLAN validation & status lifecycle scripts
 ├── examples/              # url-shortener/ — acceptance-test example
 │   └── url-shortener/
 │       ├── seed/                    Human input — the acceptance-test seed

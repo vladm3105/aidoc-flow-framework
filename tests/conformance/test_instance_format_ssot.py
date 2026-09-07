@@ -25,7 +25,7 @@ Two exemptions, both load-bearing:
    inside a ratified GD-16 measurement. Flagging it would demand rewriting a decision record.
 
 **Scope is the framework spec tree only** (`REPO_ROOT/framework`), NOT a `framework/**` glob:
-`platforms/claude-code-plugin/framework/` is a vendored mirror, and including it doubles every
+`archive/platforms/claude-code-plugin/framework/` is a vendored mirror, and including it doubles every
 figure and reports violations that the vendoring step -- not this guard -- resolves. Platform
 authoring surfaces state their own filenames and are out of scope here; they must add their own
 lock (the same caveat GD-09 recorded for its guard).

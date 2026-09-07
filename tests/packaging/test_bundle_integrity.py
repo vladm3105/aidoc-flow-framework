@@ -1,6 +1,6 @@
 """Packaging: bundle/framework/ files are byte-identical to source.
 
-The sync script (`tools/sync-plugin-framework.sh`) uses an explicit allow-list:
+The sync script (`archived (archive/tools/)`) uses an explicit allow-list:
   SUBTREES=(layers governance registry)
   ROOT_FILES=(SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)
 
@@ -25,7 +25,7 @@ def hash_file(p: Path) -> str:
 
 
 def parse_sync_allowlist() -> tuple[list[str], list[str]]:
-    """Parse `tools/sync-plugin-framework.sh` and return (subtrees, root_files).
+    """Parse `archived (archive/tools/)` and return (subtrees, root_files).
 
     Looks for lines like `SUBTREES=(layers governance registry)` and
     `ROOT_FILES=(SPEC_DRIVEN_DEVELOPMENT_GUIDE.md)`.

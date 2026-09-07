@@ -34,7 +34,7 @@ class DiagramAllowlistComesFromTheRegistry(unittest.TestCase):
         """Guards the guard: with the field gone, every assertion below is vacuous.
 
         PER LAYER, deliberately. An `any(...)` over the whole mapping is satisfied
-        for all eight layers by a single surviving entry, so a `c4_mapping` entry
+        for all ten layers by a single surviving entry, so a `c4_mapping` entry
         that stops naming its layer falls silently back to the in-code literal in
         `_diagram_allowed` — which is exactly the #552 state this module exists to
         prevent, reappearing invisibly to the module. Caught on OPS-0065 round 4.

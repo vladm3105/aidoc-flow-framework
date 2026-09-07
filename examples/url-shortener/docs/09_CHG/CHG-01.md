@@ -87,7 +87,7 @@ weaker standard than the original-URL path.
 
 **Cascade direction:** upstream → downstream — a BRD scope change ripples the
 full chain `BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code`.
-**Risk level:** **High** — new persistence concern + 30-day retention + 8-layer
+**Risk level:** **High** — new persistence concern + 30-day retention + 10-layer
 reach.
 
 | Layer | Affected Artifact(s) | Impact | Cascade |
@@ -169,7 +169,7 @@ is finalized** (§6 condition C1).
 
 | Check | Result | Method |
 |-------|--------|--------|
-| Every affected layer (BRD→Code) enumerated | Pass | Cascade trace vs the 8-layer chain + Code |
+| Every affected layer (BRD→Code) enumerated | Pass | Cascade trace vs the 10-layer chain + Code |
 | New-ADR obligation recorded | Pass | Impact review vs change-request acceptance notes |
 | Out-of-scope boundary recorded | Pass | `change_description.what` scope review |
 | Existing-ADR/SPEC boundary-impact stated (ADR-01, SPEC-01) | Pass | §3 consistency review |

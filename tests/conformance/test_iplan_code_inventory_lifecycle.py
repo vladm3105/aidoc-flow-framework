@@ -307,7 +307,7 @@ class PlatformSurfacesAgree(unittest.TestCase):
             PLUGIN_BUNDLE_TEMPLATE.read_text(encoding="utf-8"),
             IPLAN_TEMPLATE.read_text(encoding="utf-8"),
             "the plugin's vendored IPLAN template drifted from framework/ — run "
-            "`bash tools/sync-plugin-framework.sh`",
+            "`bash archived (archive/tools/)`",
         )
 
     def test_every_iplan_skill_is_scanned(self) -> None:

@@ -1,8 +1,8 @@
 """sdd_doc_lint — deterministic structural check for SDD instance documents.
 
-CANONICAL SOURCE: tools/sdd_doc_lint/__init__.py (edit here).
-Vendored byte-identical mirrors at platforms/claude-code-plugin/sdd_doc_lint/
-and platforms/hermes/sdd_doc_lint/ are produced by
+CANONICAL SOURCE: sdd_doc_lint/__init__.py (edit here).
+Previously vendored to platforms/ (now archived)
+and sdd_doc_lint/ (archived copies at archive/platforms/) are produced by
 tools/sdd_doc_lint/sync-vendored.sh — DO NOT EDIT the vendored copies; any
 direct edit there is overwritten on the next sync run. (CLEANUP-PR-A item 3.)
 
@@ -842,7 +842,7 @@ def _diagram_allowed(artifact: str, registry: Path | None = None) -> set:
     with the executable one last (#552), the same shape as #565's ``extensions``
     and #531's granularity rule.
 
-    Verified equivalent to the previous literal for all eight layers before the
+    Verified equivalent to the previous literal for all ten layers before the
     switch, so this is a consolidation and not a behaviour change. ``PRD``'s
     registry entry additionally lists ``sequence-sync``, which changes nothing:
     ``_DIAGRAM_SEQUENCE`` allows any ``sequence-*`` tag on every layer.

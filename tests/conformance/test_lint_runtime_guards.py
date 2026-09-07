@@ -1,7 +1,7 @@
 """Conformance: the linter diagnoses its own missing prerequisites, and warning
 findings can reach a caller.
 
-Locks the PLUGIN-PREPROD-001 PR 2 fixes for ``tools/sdd_doc_lint/``:
+Locks the PLUGIN-PREPROD-001 PR 2 fixes for ``sdd_doc_lint/``:
 
 * **B4 (linter half)** — PyYAML is an unguarded module-level import. Absent, the
   linter dies with a traceback whose top line names ``yaml`` and whose exit code

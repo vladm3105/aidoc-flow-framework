@@ -76,7 +76,7 @@ tags, never move a release tag, disposable bookmarks).
 
 The `framework/` spec is the contract. A shared suite under
 `tests/conformance/` validates that a platform correctly implements the
-8-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code), schemas,
+10-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL→Code), schemas,
 templates, and traceability rules. Both platforms run the **same** suite —
 this is what keeps two independent engines behaviourally equivalent.
 

@@ -160,7 +160,7 @@ property that makes a carrier migration ID-preserving, and it is why the mapping
 is a mirror rather than a new vocabulary.
 
 **Not yet verified over YAML.** `rehash --check` walks `*.md` only
-(`tools/sdd_doc_lint/rehash.py`), so it cannot see a `.yaml` instance at all.
+(`sdd_doc_lint/rehash.py`), so it cannot see a `.yaml` instance at all.
 This section defines the contract; extending the verifier to the structured
 carrier is later-phase work and is **not** claimed here. Stating it because the
 table above otherwise reads as an enforced guarantee.

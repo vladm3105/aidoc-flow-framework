@@ -10,8 +10,6 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tests" / "conformance"))
-from _spec import plugin_bundle_root
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sdd_doc_lint import _check_style  # noqa: E402

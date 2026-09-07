@@ -18,7 +18,7 @@ Visual representation of the Change Management gate system (5 artifact gates GAT
 
 ```
                       CHANGE MANAGEMENT GATE SYSTEM
-                           8-Layer SDD Framework
+                           10-Layer SDD Framework
 
     CHANGE REQUEST
 

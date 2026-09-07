@@ -66,7 +66,7 @@ def extract_tag_syntax(text: str) -> set:
 
     * *Cell.* The element row's *Why* cell contains the word "document"
       ("functionality is defined in the element, not the document"), so a
-      row-level read yields all eight layers on correct text.
+      row-level read yields all ten layers on correct text.
     * *Table.* The file carries a **second** pipe table — the necessary-upstream
       tags at ``TAG_SYNTAX.md:87-95`` — and an extractor that collects every
       pipe row to EOF reads its rows too. Two of them already carry the string
@@ -675,7 +675,7 @@ class DocumentLevelPermittedParity(unittest.TestCase):
         self.assertEqual(
             declaring | EXPECTED_PERMITTED,
             LAYERS,
-            "element-declaring ∪ document-level-permitted must be all 8 layers",
+            "element-declaring ∪ document-level-permitted must be all 10 layers",
         )
         self.assertEqual(
             declaring & EXPECTED_PERMITTED,
