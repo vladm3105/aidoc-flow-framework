@@ -285,29 +285,17 @@ and keep a system alive — with its responsibilities drawn honestly.*
 
 ## Platforms
 
-The framework spec is engine-agnostic; two independent platforms implement it, each
-versioned independently. Both pass the same shared conformance suite.
+The framework spec is engine-agnostic. Any capable AI agent (Claude Code, Hermes,
+Gemini, Codex, custom) derives its behavior from the spec, templates, and
+playbooks directly — no platform-specific wrapper needed.
 
-| Platform | Engine | Version |
-|----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.12.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.25.0` (`platforms/claude-code-plugin/`) |
+The former platforms (Hermes MCP server, Claude Code plugin) are archived at
+`archive/platforms/`. The repo ships two retained tools:
 
-*Versions are the per-package `VERSION`-file values (namespaced as they would be
-tagged); the git tag itself may not be cut yet — see `docs/TAGGING.md`.*
-
-See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
-"which platform should I use?" guide.
-
-### Install the Claude Code plugin
-
-This repo doubles as a plugin marketplace (`.claude-plugin/marketplace.json`).
-From Claude Code:
-
-```
-/plugin marketplace add vladm3105/aidoc-flow-framework
-/plugin install aidoc-flow@aidoc-flow-framework
-```
+| Tool | Purpose |
+|------|---------|
+| `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against the layer templates |
+| `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 
 ## Status
 

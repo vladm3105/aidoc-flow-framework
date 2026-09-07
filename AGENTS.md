@@ -7,11 +7,12 @@ Where the two disagree, `CLAUDE.md` wins — fix this file.
 
 ## What this repo is
 
-One engine-agnostic specification (`framework/`) and two independent platforms
-that consume it: **Hermes** (MCP server, `platforms/hermes/`) and the **Claude
-Code plugin** (`platforms/claude-code-plugin/`). The spec defines the 10-layer SDD
-flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code). Both platforms
-pass the same shared conformance suite (`tests/conformance/`).
+One engine-agnostic specification (`framework/`) defining the 10-layer SDD
+flow (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → CHG → EVAL → Code).
+Platforms (Hermes MCP server, Claude Code plugin) were archived — any capable AI
+agent derives its behavior from the framework spec, templates, and playbooks
+directly. The repo ships `sdd_doc_lint/` (structural linter) and `hooks/`
+(PostToolUse advisory hook) as the only retained tooling.
 
 ## Filing gaps — open a GitHub issue
 

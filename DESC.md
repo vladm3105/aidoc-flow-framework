@@ -283,40 +283,29 @@ and keep a system alive — with its responsibilities drawn honestly.*
 
 ---
 
-## Platforms
+## Tooling
 
-The framework spec is engine-agnostic; two independent platforms implement it, each
-versioned independently. Both pass the same shared conformance suite.
+The framework is engine-agnostic. Any capable AI agent derives its behavior from
+the spec, templates, and playbooks directly — no platform-specific wrapper needed.
 
-| Platform | Engine | Version |
-|----------|--------|---------|
-| **Hermes AI** | MCP server | `0.12.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `0.25.0` (`platforms/claude-code-plugin/`) |
+| Tool | Purpose |
+|------|---------|
+| `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against layer templates |
+| `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 
-See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
-"which platform should I use?" guide.
-
-### Install the Claude Code plugin
-
-This repo doubles as a plugin marketplace (`.claude-plugin/marketplace.json`).
-From Claude Code:
-
-```
-/plugin marketplace add vladm3105/aidoc-flow-framework
-/plugin install aidoc-flow@aidoc-flow-framework
-```
+The former platforms (Hermes MCP server, Claude Code plugin) are archived at
+`archive/platforms/`.
 
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.53.0`. The Claude Code plugin is a **pre-1.0 preview** — APIs
-and surfaces may change before 1.0. Platform versions are in the
-[Platforms](#platforms) table above.
+framework spec `0.53.0`. Platforms (Hermes, Claude Code plugin) have been archived —
+the framework is now self-sufficient for any AI agent.
 
-> *This overview is a point-in-time snapshot (as of 2026-07-09); it is not
+> *This overview is a point-in-time snapshot (as of 2026-09-07); it is not
 > wired into the version-sync hook. For live version state see the per-package
-> `VERSION` files and [`docs/PARITY.md`](docs/PARITY.md).*
+> `VERSION` files.*
 
 Post-v1.0 development — delivered and planned — is tracked in
 [`ROADMAP.md`](ROADMAP.md) and [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues); per-release detail is in

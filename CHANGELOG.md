@@ -12,6 +12,21 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Changed — Platforms archived, framework becomes self-sufficient (2026-09-07)
+
+**Platforms archived.** Hermes MCP server and Claude Code plugin moved to
+`archive/platforms/`. Any capable AI agent derives its behavior from the
+framework spec, templates, and playbooks directly — no platform-specific
+wrapper needed.
+
+**Tooling retained.** `sdd_doc_lint/` (structural linter) moved to repo root.
+`hooks/sdd-doc-review.sh` (PostToolUse advisory hook) moved to repo root.
+`tools/` directory archived (saga_driver.py, finding_filter.py, etc.).
+
+**Framework is now ~90% self-sufficient.** Agents can author, review, and
+validate artifacts from the spec alone. The linter provides deterministic
+structural checks at scale.
+
 ### Changed — Framework Spec `0.51.0` → `0.53.0`: document_control, 10-layer model, project overrides (2026-09-07)
 
 **GD-24: `document_control` for all framework governance documents.** All governance docs,
