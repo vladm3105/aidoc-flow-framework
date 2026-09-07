@@ -32,7 +32,7 @@ wrapper needed.
 - Stale acceptance live harnesses archived
 - Path references updated throughout
 
-**Docs updated.** AGENTS.md, README.md, DESC.md, CLAUDE.md, CONTRIBUTING.md,
+**Docs updated.** AGENTS.md, README.md, CLAUDE.md, CONTRIBUTING.md,
 SECURITY.md, docs/REPO_STRUCTURE.md all updated to reflect new structure.
 
 **Framework is now ~90% self-sufficient.** Agents can author, review, and
