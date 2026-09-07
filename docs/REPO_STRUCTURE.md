@@ -69,8 +69,8 @@ aidoc-flow-framework/
 │       ├── .aidoc/                  Project overrides — see framework/governance/aidoc/
 │       │                            (committed)
 │       └── logs/<TS>/               Tool internals — gitignored, ephemeral
-├── archive/                         Archived: former platforms (Hermes, plugin), plans, tools
-└── legacy/                          Pre-migration code (preserved on legacy-ucx-v3.2-read-only branch)
+├── archive/                         Archived: platforms, plans, tools, legacy
+└── .github/
 ```
 
 ## Legacy → Target Mapping (historical record)
