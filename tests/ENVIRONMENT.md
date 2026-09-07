@@ -23,7 +23,7 @@ pip install -r framework/tests/conformance/requirements.txt
 ## Disk layout
 
 - The framework is a git submodule under `aidoc-flow/framework/`.
-- The plugin bundle lives at `framework/platforms/claude-code-plugin/`.
+- The plugin bundle lives at `framework/archive/platforms/claude-code-plugin/`.
 - Tests must be run from `framework/` (not parent `aidoc-flow/`).
 
 ## Network

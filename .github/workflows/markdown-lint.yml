@@ -65,14 +65,10 @@ jobs:
         !node_modules
         !vendor
         !.git
-        !legacy
         !framework
-        !platforms/claude-code-plugin/framework
-        !platforms/hermes/agent-skills
-        !platforms/hermes/prompts
-        !platforms/hermes/skills
-        !tools/sdd_doc_lint/fixtures
+        !sdd_doc_lint/fixtures
         !tests/conformance/fixtures/refgran
         !examples/*/.aidoc
+        !archive
       # PRIVATE consumers add this inside the existing `with:` block:
       # runner_labels: '["self-hosted", "ci-runner", "single-use"]'

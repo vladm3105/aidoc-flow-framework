@@ -228,7 +228,7 @@ are chosen, so future rebalances have a stable framework.
 
 ## Playbooks
 
-Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; ~45 files total across the 8 layers).
+Each (layer, lens) pair has a **playbook** — a layer-specific reasoning frame plus a deterministic checklist of evidence checks. Playbooks live at `framework/playbooks/<NN>_<LAYER>/<lens>.md` (one file per lens per layer; ~65 files total across the 10 layers).
 
 ### Why
 
@@ -356,7 +356,7 @@ the framework formalizes them as optional + non-canonical.
   persona-output + report shape above; it declares which trigger points it runs as
   a team vs `single_pass`.
 - The structural contract is checkable: `REVIEW_CREWS.yaml` crews reference only
-  the 8 layers and the defined persona set, and review weights sum to 100.
+  the 10 layers and the defined persona set, and review weights sum to 100.
 - The `review_mode` knob (`ADAPTATION_SURFACE.yaml`) lets a consuming project pick
   `team` or `single_pass`; it never weakens the deterministic gate floor.
 

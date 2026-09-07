@@ -130,7 +130,7 @@ CHG-01 is cleared for GATE-01 (C3 formal gate + human sign-off).
 **Gate-approval preconditions** (from §6 of CHG-01, per auditor verification at iteration 3):
 - C1: Collateral authored before sign-off (IPLAN-02 obligation includes async-write observability signal from §4.1; must be authored and linked before GATE-01 is finalized).
 - C2: No dashboard / owner-authz / retained visit-timestamp surface ships until ADR-02 is approved at ADR altitude; GATE-01 does not substitute.
-- C3: Two-phase timing — collateral precedes GATE-01; the 8-layer cascade re-audits run after GATE-01 approval.
+- C3: Two-phase timing — collateral precedes GATE-01; the 10-layer cascade re-audits run after GATE-01 approval.
 - C4: Each affected layer is re-validated via doc-<layer>-audit after implementation; the change closes only when that passes.
 
 **Recommended next step:** Forward to `gate-check` (GATE-01, C3) for human sign-off. Before the gate run, either (a) dispatch `doc-chg-fixer` for IL-4 (P2) and OP-4 (P3 regression) advisory remediation, or (b) document human acceptance of these two advisories at GATE-01. IPLAN-02 must be authored and linked before the gate is finalized (§6 condition C1).

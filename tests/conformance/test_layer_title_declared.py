@@ -43,7 +43,7 @@ import yaml
 from _spec import ARTIFACTS, FRAMEWORK
 
 # MVP templates are deliberately excluded: they carry `document_control.title`,
-# a different and internally uniform convention across all eight layers.
+# a different and internally uniform convention across all ten layers.
 # Reconciling the two sets is `IPLAN-LAYER-REVIEW-001-DESIGN.md` R9, not this.
 TEMPLATE_GLOB = "*/{artifact}-TEMPLATE.yaml"
 

@@ -1,5 +1,16 @@
 # Architecture Decision Records (ADR) — Layer 5
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
 ADRs document architecture decisions using the Context-Decision-Consequences
@@ -26,7 +37,6 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `ADR-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `ADR-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `ADR-00_index.TEMPLATE.md` | ADR registry template — tracks planned and active ADRs per project |
 
 ## ADR Status Lifecycle

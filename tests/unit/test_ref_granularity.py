@@ -13,10 +13,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tests" / "conformance"))
 from _spec import plugin_bundle_root  # noqa: E402
 
-sys.path.insert(0, str(plugin_bundle_root()))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 from sdd_doc_lint import _check_ref_granularity, lint_path  # noqa: E402
 
 

@@ -34,7 +34,7 @@ same number is why #557 was filed against a template that was correct.
   carrying `_size_target`, minus those marked `_required: false` or `_required_when_subtype:`.
   It therefore also includes required **unnumbered backmatter**.
 
-Measured across all eight layers:
+Measured across all ten layers:
 
 | Layer | `STRUCT01` requires | `total_sections` | why they differ |
 | --- | --- | --- | --- |

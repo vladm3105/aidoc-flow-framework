@@ -23,6 +23,7 @@ title: "[Business Requirements Title]"
 
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "brd-document"
   layer: 1
   lifecycle: mvp-prod-newmvp
@@ -45,7 +46,7 @@ metadata:
         consistency    — cross-document traceability
   c4_level:
     _guidance: |
-      SDD C4 map (8 layers):
+      SDD C4 map (10 layers):
         Context (BRD)    — business environment, actors, boundaries   ← this layer
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition
@@ -522,9 +523,6 @@ functional_requirements:
         applies (`scan_fr_elements`), so the cap counts exactly what the coverage
         gate counts — no second discriminator is introduced.
       - Full template (structured): the entries of `requirements[]` below.
-      - MVP skeleton (`BRD-MVP-TEMPLATE.yaml`): the entries of
-        `functional_requirements[]`, whose `acceptance_criteria` is a FIELD of the
-        requirement and so never counts separately.
 
     Technical implementation belongs in PRD. User stories belong in PRD.
 

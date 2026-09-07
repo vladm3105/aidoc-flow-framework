@@ -24,6 +24,7 @@ title: "[Feature/Component Under Test]"
 
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "bdd-document"
   layer: 4
   lifecycle: mvp-prod-newmvp
@@ -50,7 +51,7 @@ metadata:
       BDD is NOT a C4 level. It is a refinement step that formalizes
       the transition from Context (BRD) to Container (PRD), alongside EARS.
 
-      SDD C4 map (8 layers):
+      SDD C4 map (10 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks
         EARS              — formalize Context→Container transition
@@ -328,6 +329,9 @@ traceability:
     - type: TDD
       layer: 7
       description: "Cross-reference (not a registry downstream): TDD maps BDD scenarios to test cases via SPEC contracts"
+    - type: EVAL
+      layer: 10
+      description: "Functional evaluation validates BDD scenario coverage"
 
   cross_links:
     depends:

@@ -114,10 +114,10 @@ def main(argv: list[str] | None = None) -> int:
     failures = evaluate(files)
     if not failures:
         print(f"GATE-SPEC: framework/ change vs {base} — VERSION + CHANGELOG updated, OK.")
-        if not any(f.startswith("platforms/claude-code-plugin/framework/") for f in files):
+        if not any(f.startswith("archive/platforms/claude-code-plugin/framework/") for f in files):
             print(
                 "  reminder: re-sync the plugin's vendored bundle "
-                "(bash tools/sync-plugin-framework.sh) — the drift guard will fail CI otherwise."
+                "(bash archived (archive/tools/)) — the drift guard will fail CI otherwise."
             )
         return 0
 

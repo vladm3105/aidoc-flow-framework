@@ -7,12 +7,14 @@ plus two platforms). The project, the spec, and each platform are versioned and
 released independently (`docs/PROJECT.md` §2), and each carries its own
 `VERSION` file.
 
+> **Note:** Both platforms (Hermes MCP server, Claude Code plugin) and the
+> shared `tools/` directory have been archived to `archive/platforms/` and
+> `archive/tools/` respectively. The `legacy/` parking area remains archived
+> in place. Archived directories are not actively maintained or released.
+
 Security fixes land on `main` and ship in the next release of each affected
 stream; they are not backported to earlier releases. Report against `main`, or
-against whatever build you are running — including an untagged one. Both
-platforms currently ship ahead of their newest tag, because the tag-cut is a
-known backlog (`docs/TAGGING.md`), so the version you have may have no tag at
-all.
+against whatever build you are running — including an untagged one.
 
 | Component | Supported |
 |-----------|-----------|
@@ -44,12 +46,16 @@ This opens a private advisory visible only to the maintainers.
 
 ## Scope
 
-In scope: the `framework/` spec tooling, the Hermes MCP server
-(`platforms/hermes/`), the Claude Code plugin (`platforms/claude-code-plugin/`),
-the shared tooling in `tools/` (the SDD linter, the saga driver and the sync
-scripts among others), the shared `tests/` tooling, and this repository's own automation
-(`.github/workflows/`, `scripts/`) — workflow definitions and hook scripts
-both execute, and some workflows run on a self-hosted runner pool.
+In scope: the `framework/` spec tooling, the shared `tests/` tooling, and this
+repository's own automation (`.github/workflows/`, `scripts/`) — workflow
+definitions and hook scripts both execute, and some workflows run on a
+self-hosted runner pool.
+
+Archived (in scope only for historical / security-advisory purposes): the
+Hermes MCP server (`archive/platforms/hermes/`), the Claude Code plugin
+(`archive/platforms/claude-code-plugin/`), the shared tooling in
+`archive/tools/` (the SDD linter, the saga driver and the sync scripts among
+others). Archived directories are read-only and not actively released.
 
 Out of scope: `legacy/`, a parking area for plugin skills pulled from the
 shipped surface — nothing under it is discovered or shipped — and the
@@ -92,8 +98,8 @@ finding, and `codeql` has no findings gate at all.
 **Configured in `.pre-commit-config.yaml`**, run on `git commit` and again in
 CI, where `pre-commit.yml` runs the same hooks over the whole tree (see also [`CONTRIBUTING.md`](CONTRIBUTING.md#secret-scanning--where-each-pass-runs)):
 
-- **bandit** — Python security linter, scoped to `platforms/hermes/src/` and
-  `tests/`.
+- **bandit** — Python security linter, scoped to `archive/platforms/hermes/src/`
+  and `tests/`.
 - **detect-secrets** (baselined in `.secrets.baseline`) +
   **detect-private-key** — secret scanning.
 

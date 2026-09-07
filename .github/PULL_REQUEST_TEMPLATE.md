@@ -87,7 +87,6 @@ commit, or an explicit founder OK. Cap at 3 fold cycles per OPS-0066.
 
 - [ ] `pre-commit run --all-files` green (includes the conformance suite)
 - [ ] `python -m pytest tests/conformance/` green
-- [ ] platform tests green (`platforms/hermes/`, plugin)
 - [ ] `python3 -m sdd_doc_lint examples/<name>/docs/` — zero *unexpected* findings
 - [ ] `<domain-specific verification>`
 

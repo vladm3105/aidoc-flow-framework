@@ -170,7 +170,7 @@ revision indicated.)
   promoted to blocking. The record sits one trim away from the blocking line; if
   a future fix adds content, the §3 ADR-02 cell and §4.1 are the next
   split/trim candidates. Size tension is defensible for a C3 cross-layer change
-  touching 8 layers + Code with rollback, gate conditions, operational
+  touching 10 layers + Code with rollback, gate conditions, operational
   readiness, and failure analysis.
 
 ## Fix Queue

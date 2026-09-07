@@ -1,12 +1,23 @@
 # Framework Feedback Log — Governance
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > Codifies the two-tier feedback pipeline introduced by
 > `DOC_GOVERNANCE_CORE.md` Principle 9 (example-driven / project-driven
 > framework improvement).
 
 ## Why this exists
 
-Examples are the system-under-test (see [`AIDOC.md`](../docs/AIDOC.md) — the
+Examples are the system-under-test (see [`AIDOC.md`](aidoc/AIDOC.md) — the
 seed examples double as acceptance tests). Every consumer
 project applying the framework is an additional empirical test of the
 spec. Friction discovered during use — lint-rule misfires, harness

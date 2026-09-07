@@ -87,14 +87,14 @@ STREAMS = (
     ("framework", "framework/VERSION", "CHANGELOG.md", _framework_releases),
     (
         "claude-code-plugin",
-        "platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
-        "platforms/claude-code-plugin/CHANGELOG.md",
+        "archive/platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
+        "archive/platforms/claude-code-plugin/CHANGELOG.md",
         _leading_version_releases,
     ),
     (
         "hermes",
-        "platforms/hermes/VERSION",
-        "platforms/hermes/CHANGELOG.md",
+        "archive/platforms/hermes/VERSION",
+        "archive/platforms/hermes/CHANGELOG.md",
         _leading_version_releases,
     ),
 )
@@ -115,7 +115,7 @@ ACCEPTED_PHANTOMS = {
         "hermes",
         "0.1.1",
     ): "D-0086 (#617) — hermes/v0.1.1 was cut as a release tag on a commit whose "
-    "platforms/hermes/VERSION reads 0.1.0 (not a predates-the-file artifact: the file "
+    "archive/platforms/hermes/VERSION reads 0.1.0 (not a predates-the-file artifact: the file "
     "existed a day earlier holding 0.1.0). Worse than the framework case, because "
     "docs/TAGGING.md makes release tags immutable so it cannot be corrected in place.",
 }

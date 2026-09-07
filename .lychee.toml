@@ -7,7 +7,7 @@
 #     the umbrella, not per-repo CI.
 exclude_path = ["platforms", "examples", "tests"]
 exclude = [
-  "/platforms/", "/examples/", "/tests/",
+  "/archive/platforms/", "/examples/", "/tests/",
   "/business/", "/operations/", "/iplanic/", "/interlog/",
   "/engramory/", "/iplan-standard/", "/aidoc-flow-ci/",
   "/knowledge-rag/", "/web-site/",

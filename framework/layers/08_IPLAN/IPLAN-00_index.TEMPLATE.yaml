@@ -10,6 +10,7 @@
 
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "iplan-registry"
   layer: 8
   total_plans: 0  # Updated as plans are added/removed from registry
@@ -28,7 +29,7 @@ registry:
   #   title: "[Component Implementation]"
   #   source_spec: "@spec: SPEC-NN"
   #   scope: "[One-line scope boundary]"
-  #   status: "Draft"       # BACKLOG | Draft | In Progress | Completed | ABANDONED
+  #   status: "Draft"       # BACKLOG | Draft | Approved | In Progress | Completed | Verified | ABANDONED
   #   status_date: "YYYY-MM-DD"
   #   complexity: 3         # 1=1-file, 5=architectural
   #   session_count: 0
@@ -41,6 +42,10 @@ registry:
   #   blocks: []            # Other IPLAN-NN IDs blocked by this one
   #   parallel_with: []     # Other IPLAN-NN IDs safe to run in parallel
   #   file_path: "IPLAN-NN_[slug].yaml"
+  #   # Validation tracking (for Completed/Verified status):
+  #   validated_by: "IPLAN-NN"  # Reference to validation IPLAN (if applicable)
+  #   validation_date: "YYYY-MM-DD"  # Date when Verified status was set
+  #   findings_resolved: 0  # Number of findings fixed during validation
 
 # =============================================================================
 # Backlog
@@ -77,7 +82,7 @@ execution_path:
   # Template entry:
   # - tier: 1
   #   label: "Foundation"
-  #   status: "COMPLETE"     # NOT_STARTED | IN_PROGRESS | COMPLETE
+  #   status: "Completed"    # NOT_STARTED | IN_PROGRESS | Completed
   #   plans: ["IPLAN-01"]
   # - tier: 2
   #   label: "Core Services"
@@ -143,6 +148,14 @@ status_history: []
   #       to: "In Progress"
   #       date: "YYYY-MM-DD"
   #       reason: "Session 1 started"
+  #     - from: "In Progress"
+  #       to: "Completed"
+  #       date: "YYYY-MM-DD"
+  #       reason: "All file_manifest entries DONE + verified"
+  #     - from: "Completed"
+  #       to: "Verified"
+  #       date: "YYYY-MM-DD"
+  #       reason: "Validation passed, all P0/P1 findings resolved"
 
 # =============================================================================
 # Registry Update Triggers
@@ -159,7 +172,12 @@ update_triggers:
     - "Append to status_history"
   on_plan_completed:
     - "Set status: Completed with date"
-    - "Update metadata.total_plans (count completed vs active)"
+    - "Update metadata.total_plans (count done vs active)"
+  on_plan_verified:
+    - "Set status: Verified with date"
+    - "Record validated_by reference (validation IPLAN)"
+    - "Record findings_resolved count"
+    - "Verified status is IMMUTABLE — no further changes allowed"
   on_plan_abandoned:
     - "Set status: ABANDONED with date"
     - "File preserved — never deleted"

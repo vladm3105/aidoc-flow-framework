@@ -13,12 +13,12 @@ on:
   push:
     paths:
       - 'docs/**'
-      - 'tools/sdd_doc_lint/**'
+      - 'sdd_doc_lint/**'
       - '.github/workflows/doc-review.yml'
   pull_request:
     paths:
       - 'docs/**'
-      - 'tools/sdd_doc_lint/**'
+      - 'sdd_doc_lint/**'
       - '.github/workflows/doc-review.yml'
 
 permissions:
@@ -44,20 +44,15 @@ jobs:
         run: pip install -r tests/conformance/requirements.txt
 
       - name: Unit-test the linter
-        run: PYTHONPATH=tools python -m unittest discover -s tools/sdd_doc_lint/tests -v
+        run: python -m unittest discover -s sdd_doc_lint/tests -v
 
       - name: Smoke — valid fixtures must lint clean
-        run: PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/valid
+        run: python -m sdd_doc_lint sdd_doc_lint/fixtures/valid
 
       - name: Negative — broken fixtures must fail the gate
-        # Require exactly 1 ("error findings"). Any non-zero used to count as
-        # success, which silently accepts the codes that mean the linter never
-        # examined the fixtures: 2 (usage error / registry unavailable) and 3
-        # (missing prerequisite — PyYAML absent, or Python below the floor).
-        # Those report "gate works" while proving nothing about the gate.
         run: |
           set +e
-          PYTHONPATH=tools python -m sdd_doc_lint tools/sdd_doc_lint/fixtures/broken
+          python -m sdd_doc_lint sdd_doc_lint/fixtures/broken
           rc=$?
           set -e
           if [ "$rc" -eq 1 ]; then

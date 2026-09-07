@@ -36,7 +36,7 @@ cross-layer relationships:
   from `BRD-01` *and* `BRD-02` simply lists both upstream tags.
 
 The cascade harness's standard example (`examples/url-shortener/`)
-happens to use 1:1 numbering across all 8 layers (BRD-01 → PRD-01 →
+happens to use 1:1 numbering across all 10 layers (BRD-01 → PRD-01 →
 ... → IPLAN-01). **That alignment is coincidence, not contract.** A
 reader inferring "doc numbers cascade across layers" from the
 example is reading a pattern that isn't there.
@@ -160,7 +160,7 @@ property that makes a carrier migration ID-preserving, and it is why the mapping
 is a mirror rather than a new vocabulary.
 
 **Not yet verified over YAML.** `rehash --check` walks `*.md` only
-(`tools/sdd_doc_lint/rehash.py`), so it cannot see a `.yaml` instance at all.
+(`sdd_doc_lint/rehash.py`), so it cannot see a `.yaml` instance at all.
 This section defines the contract; extending the verifier to the structured
 carrier is later-phase work and is **not** claimed here. Stating it because the
 table above otherwise reads as an enforced guarantee.
@@ -190,7 +190,7 @@ only — provisional elements are still subject to coverage and traceability gat
 
 ### Element-ID exemptions (CLEANUP-PR-C item 13)
 
-Six of the eight layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
+Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry
 element IDs on every distinct content unit per their template's required
 sections. The remaining two layers carry a documented exemption:
 

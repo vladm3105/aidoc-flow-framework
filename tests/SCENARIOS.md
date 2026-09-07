@@ -66,7 +66,7 @@
 | T4.03 | 1-8 | Every layer has required sections | 5.1 |
 | T4.04 | 1-8 | Forward-tag closure | 5.1 |
 | T4.05 | 1-8 | Broken-chain fixture exists + carries marker | 5.1b |
-| T4L.01 | 1-8 | Live autopilot chain produces all 8 layers | 5.2 |
+| T4L.01 | 1-8 | Live autopilot chain produces all 10 layers | 5.2 |
 
 ## Tier 5 — Packaging
 

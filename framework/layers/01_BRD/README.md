@@ -1,5 +1,16 @@
 # Business Requirements Documents (BRD) — Layer 1
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
 BRDs capture business objectives, stakeholder needs, and success criteria as the
@@ -13,7 +24,7 @@ cycle is not limited to a single BRD.
 
 The BRD is the point where the chain first accounts for the `seed/` tier — the
 raw, human-authored source material a cycle starts from
-(`../../README.md` inputs row; `../../docs/AIDOC.md` tier table). The seed is
+(`../../README.md` inputs row; `../../governance/aidoc/AIDOC.md` tier table). The seed is
 governed by [`../../governance/SEED_CONTRACT.md`](../../governance/SEED_CONTRACT.md)
 (GD-08):
 
@@ -51,25 +62,19 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `BRD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance (`_guidance`, `_note`, `_example`, `_antipatterns` fields). Self-documenting for AI agents. |
-| `BRD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form with fill-in-the-blank fields. No embedded guidance. **Do not use standalone:** the authoring agent MUST also read the full template for section-level expectations and authoring conventions. |
 | `BRD-00_index.TEMPLATE.md` | BRD registry template — tracks planned and active BRDs per project |
-
-### Template selection
 
 The full `*-TEMPLATE.yaml` is the **default** for all cycles — it carries the embedded
 guidance an AI agent needs to author a valid document without external reference.
 
-The MVP `*-MVP-TEMPLATE.yaml` skeleton is an optional fast-pass for experienced
 agents already familiar with the full template's conventions. Using it without also
 reading the full template produces incomplete documents with missing context, empty
 required sections, and incorrect element IDs. The agent MUST load both files when
-using the MVP skeleton: the skeleton as the structural form, and the full template
 as the reference for section-level expectations and authoring conventions.
 
 | Cycle | Template | Rationale |
 |-------|----------|-----------|
 | **All cycles** (default) | `*-TEMPLATE.yaml` | Embedded guidance makes it self-documenting. Lower error rate, fewer validation failures. |
-| **MVP** (experienced agents only) | `*-MVP-TEMPLATE.yaml` | Faster authoring if the agent has previously read the full template. Must also load the full template as a reference. |
 
 ## Lifecycle: MVP → PROD → NEW MVP
 

@@ -1,0 +1,255 @@
+# CHG-02 — Redefine .aidoc/ as project override layer (GD-25)
+# Gate: GATE-SPEC, C2, minor
+
+id: CHG-02
+title: "Redefine .aidoc/ as project override layer with .aidoc/project/ for project-specific overrides"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-07"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-02"
+  status: Completed
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "MiMoCode"
+  date_proposed: "2026-09-07T18:00:00"
+  date_approved: "2026-09-07T18:00:00"
+  date_implemented: "2026-09-07T21:00:00"
+  supersedes:
+    - "docs/AIDOC.md (archive/CHG-02/docs/AIDOC.md)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Redefine the `.aidoc/` directory from "AI provenance tier" to "project
+    override layer + profile". The new contract:
+
+    1. `.aidoc/profile.yaml` — adaptation knobs (unchanged)
+    2. `.aidoc/framework/` — symlink to shared framework (canonical path)
+    3. `.aidoc/project/` — project-specific overrides (same structure as framework/)
+    4. Agent discovery: read `.aidoc/project/` first, fall back to `.aidoc/framework/`
+
+    This follows software versioning conventions: projects customize without
+    forking, overrides are project-local, and the framework stays untouched.
+
+    Additional work in this CHG:
+    - Moved docs/AIDOC.md → governance/aidoc/AIDOC.md (same structure as governance/chg/)
+    - Created governance/aidoc/README.md and AIDOC-SCAFFOLD-TEMPLATE.md
+    - Updated governance/PROFILE-TEMPLATE.yaml with framework_path field
+    - Updated governance/ADAPTATION.md §10 to remove old framework/ symlink reference
+  why: |
+    The existing .aidoc/ contract defined it as "AI provenance" with audit/,
+    review/, remediation/, validation/, security/, quality/ subdirectories.
+    In practice, no project uses these subdirectories — they remain empty.
+    Projects need a way to override framework templates, rules, and playbooks
+    without modifying the shared framework. The new .aidoc/project/ provides
+    this mechanism with the same directory structure as framework/, making
+    discovery predictable.
+  trigger: |
+    Projects adopting the framework need project-specific customizations
+    (modified templates, additional governance rules, custom playbooks) but
+    have no mechanism to override framework defaults without forking. The
+    empty audit/review/etc. subdirectories wasted space and confused users.
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "Framework docs"
+      artifacts: ["docs/AIDOC.md"]
+      impact: "Full rewrite — new purpose, new directory structure, discovery rule"
+    - layer: "Framework root"
+      artifacts: ["README.md"]
+      impact: "Update four-tier model (lines 100, 201, 204)"
+    - layer: "Framework governance"
+      artifacts: ["governance/ADAPTATION.md"]
+      impact: "Add §10 — project overrides (.aidoc/project/)"
+    - layer: "Gate definitions"
+      artifacts: ["layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"]
+      impact: "Fix .aidoc/learnings.md reference (line 58)"
+    - layer: "AIDOC governance"
+      artifacts: ["governance/aidoc/"]
+      impact: "New subdirectory — AIDOC.md moved, scaffold template created"
+
+  cascade_direction: lateral
+  risk_level: Low
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive original docs/AIDOC.md"
+      artifact: "docs/AIDOC.md"
+      status: Completed
+
+    - step: "Rewrite docs/AIDOC.md — new purpose, directory structure, discovery rule"
+      artifact: "docs/AIDOC.md"
+      status: Completed
+
+    - step: "Update README.md — four-tier model (lines 100, 201, 204)"
+      artifact: "README.md"
+      status: Completed
+
+    - step: "Add §10 to governance/ADAPTATION.md — project overrides"
+      artifact: "governance/ADAPTATION.md"
+      status: Completed
+
+    - step: "Fix .aidoc/learnings.md reference in GATE-SPEC_FRAMEWORK.md"
+      artifact: "layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+      status: Completed
+
+    - step: "Bump VERSION 0.52.0 → 0.53.0"
+      artifact: "VERSION"
+      status: Completed
+
+    - step: "Add GD-25 entry to governance/DECISIONS.md"
+      artifact: "governance/DECISIONS.md"
+      status: Completed
+
+    - step: "Move docs/AIDOC.md → governance/aidoc/AIDOC.md"
+      artifact: "governance/aidoc/AIDOC.md"
+      status: Completed
+
+    - step: "Create governance/aidoc/README.md"
+      artifact: "governance/aidoc/README.md"
+      status: Completed
+
+    - step: "Create governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      artifact: "governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      status: Completed
+
+    - step: "Update governance/PROFILE-TEMPLATE.yaml — add framework_path"
+      artifact: "governance/PROFILE-TEMPLATE.yaml"
+      status: Completed
+
+    - step: "Update governance/ADAPTATION.md §10 — remove old framework/ symlink ref"
+      artifact: "governance/ADAPTATION.md"
+      status: Completed
+
+    - step: "Update governance/README.md — add aidoc/ section"
+      artifact: "governance/README.md"
+      status: Completed
+
+    - step: "Update all references from docs/AIDOC.md to governance/aidoc/AIDOC.md"
+      artifact: "multiple"
+      status: Completed
+
+    - step: "Remove empty docs/ directory"
+      artifact: "docs/"
+      status: Completed
+
+  artifacts_modified:
+    - id: "AIDOC"
+      file: "governance/aidoc/AIDOC.md"
+      change_type: superseded
+    - id: "AIDOC-README"
+      file: "governance/aidoc/README.md"
+      change_type: created
+    - id: "AIDOC-SCAFFOLD"
+      file: "governance/aidoc/AIDOC-SCAFFOLD-TEMPLATE.md"
+      change_type: created
+    - id: "README"
+      file: "README.md"
+      change_type: modified
+    - id: "ADAPTATION"
+      file: "governance/ADAPTATION.md"
+      change_type: modified
+    - id: "GATE-SPEC"
+      file: "layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+      change_type: modified
+    - id: "VERSION"
+      file: "VERSION"
+      change_type: modified
+    - id: "DECISIONS"
+      file: "governance/DECISIONS.md"
+      change_type: modified
+    - id: "PROFILE-TEMPLATE"
+      file: "governance/PROFILE-TEMPLATE.yaml"
+      change_type: modified
+    - id: "GOV-README"
+      file: "governance/README.md"
+      change_type: modified
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "governance/aidoc/AIDOC.md rewritten with new purpose"
+      result: Pass
+      method: "grep 'Project Override Layer' governance/aidoc/AIDOC.md"
+    - check: "README.md four-tier model updated"
+      result: Pass
+      method: "grep 'Project overrides' README.md"
+    - check: "ADAPTATION.md has §10 project overrides"
+      result: Pass
+      method: "grep '§10\|Project overrides' governance/ADAPTATION.md"
+    - check: "GATE-SPEC_FRAMEWORK.md reference fixed"
+      result: Pass
+      method: "grep -v 'aidoc/learnings.md' layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md"
+    - check: "VERSION bumped to 0.53.0"
+      result: Pass
+      method: "cat VERSION"
+    - check: "CHANGELOG.md updated"
+      result: Pass
+      method: "grep 'CHG-02\|project override' CHANGELOG.md"
+    - check: "governance/aidoc/ has 3 files"
+      result: Pass
+      method: "ls governance/aidoc/ | wc -l"
+    - check: "PROFILE-TEMPLATE.yaml has framework_path"
+      result: Pass
+      method: "grep 'framework_path' governance/PROFILE-TEMPLATE.yaml"
+    - check: "docs/ directory removed"
+      result: Pass
+      method: "ls docs/ 2>&1 | grep 'No such file'"
+    - check: "All docs/AIDOC.md refs updated"
+      result: Pass
+      method: "grep -rn 'docs/AIDOC.md' --include='*.md' --include='*.yaml' | grep -v 'archive/' | grep -v 'CHANGELOG' | wc -l"
+
+# =============================================================================
+# Section 6: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: "Self (C2 — Technical Lead)"
+  approval_date: "2026-09-07"
+  conditions: []
+
+# =============================================================================
+# Section 7: Rollback Plan
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "git revert <commit-hash>"
+  estimated_effort: "< 1 minute"

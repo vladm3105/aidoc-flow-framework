@@ -3,7 +3,7 @@
 WHY THIS FILE EXISTS. `tests/unit/` is executed by no hook and no workflow —
 `.pre-commit-config.yaml` discovers `tests/conformance` only, and the workflows
 run `tests/conformance`, `tests/acceptance/deterministic`,
-`tools/sdd_doc_lint/tests` and Hermes' own suite. `pre_push_check.sh` invokes no
+`sdd_doc_lint/tests` and Hermes' own suite. `pre_push_check.sh` invokes no
 `unittest` at all. So a test placed under `tests/unit/` proves something once,
 locally, and never again after merge.
 

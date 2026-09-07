@@ -4,7 +4,7 @@ Common failures and resolutions.
 
 ## Tier 1: `claude plugin validate --strict` fails
 
-- Check `framework/platforms/claude-code-plugin/.claude-plugin/plugin.json`.
+- Check `framework/archive/platforms/claude-code-plugin/archive/.claude-plugin/plugin.json`.
 - Run `claude plugin validate` (no `--strict`) to see baseline errors.
 
 ## Tier 2: `test_skill_manifests.test_framework_spec_version_matches_bundle` fails
@@ -34,7 +34,7 @@ Common failures and resolutions.
 ## Tier 5: `test_bundle_framework_subtree_matches_source` reports drift
 
 - The sync script wasn't re-run after editing source.
-- Run `bash framework/tools/sync-plugin-framework.sh` and commit.
+- Run `bash archive/tools/sync-plugin-framework.sh` and commit.
 
 ## Tier 7: doc-flow probe fails post-deploy
 

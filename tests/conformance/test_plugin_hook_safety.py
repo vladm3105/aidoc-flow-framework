@@ -1,7 +1,7 @@
 """Conformance: the plugin's PostToolUse review hook is safe on a stranger's machine.
 
 Locks the PLUGIN-PREPROD-001 PR 1 fixes for
-`platforms/claude-code-plugin/hooks/sdd-doc-review.sh`:
+`archive/platforms/claude-code-plugin/hooks/sdd-doc-review.sh`:
 
 * **B1** — no module the project can place gets imported by the linter. Two
   vectors, closed in two stages: a `sdd_doc_lint/` package in the user's working

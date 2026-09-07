@@ -50,7 +50,7 @@ url-shortener/
 │   └── initial-requirements.md
 ├── chg/                          # human input — change request for Phase 2
 │   └── test-change.md
-├── docs/                         # AI outputs — produced 8-layer chain (committed)
+├── docs/                         # AI outputs — produced 10-layer chain (committed)
 │   ├── 01_BRD/BRD-01.md
 │   ├── 02_PRD/PRD-01.md
 │   ├── …
@@ -72,7 +72,7 @@ url-shortener/
 [`chg/test-change.md`](chg/test-change.md) is the change-set Phase 2
 of the acceptance suite applies after the cascade completes. Topic:
 **add visit-rate analytics dashboard**. It was chosen to exercise
-realistic propagation across all 8 layers — the change touches BRD
+realistic propagation across all 10 layers — the change touches BRD
 scope (move "analytics dashboards" from out-of-scope to in-scope),
 PRD non-functional requirements (retention and p95 latency), EARS
 formal requirements, BDD scenarios, a new ADR (storage choice), then
@@ -120,7 +120,7 @@ bash tests/scripts/test-acceptance.sh url-shortener --live --skip-completed
 
 ## What a passing live run demonstrates
 
-- The full **8-layer chain** authored end-to-end from the seed.
+- The full **10-layer chain** authored end-to-end from the seed.
 - **Cumulative traceability**: each downstream layer carries
   `@brd … @tdd` tags referencing real upstream element IDs (4-segment
   `TYPE.NN.SS.xxxx`).

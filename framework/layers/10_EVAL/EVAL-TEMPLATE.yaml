@@ -1,0 +1,444 @@
+# =============================================================================
+#  EVAL-TEMPLATE.yaml — Evaluation & QA Governance (SDD Layer 10)
+# =============================================================================
+#  Document Authority: PRIMARY STANDARD
+#  Purpose: AI-consumable + human-reviewable evaluation strategy template
+#  Lifecycle: MVP → PROD → NEW MVP
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _antipatterns — common mistakes to avoid
+#    _note         — contextual clarification
+#    _example      — sample values for reference
+#
+#  Upstream: EARS (L3), BDD (L4), TDD (L7), IPLAN (L8)
+#  Downstream: Code, CI/CD, deployment gates
+# =============================================================================
+
+id: EVAL-NN
+title: "[Evaluation Strategy Title]"
+
+# =============================================================================
+# Template Metadata
+# =============================================================================
+
+metadata:
+  schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  document_type: "eval-document"
+  layer: 10
+  lifecycle: mvp-prod-newmvp
+  total_sections: 6
+  last_updated: "2026-10-06"
+  validation:
+    _guidance: |
+      Evaluation is performed by the platform's conformance tooling.
+      It covers structural checks, coverage verification, and threshold validation.
+      Evaluation-Ready Score: >=90/100 is the advisory target (auditor-lens computed, never hand-authored).
+
+      Evaluation scoring criteria:
+        Coverage completeness (40%): all upstream sources mapped to test cases
+        Traceability integrity (25%): bidirectional source ↔ test linking
+        Threshold alignment (20%): quality gates match PRD thresholds
+        Execution readiness (15%): CI/staging environments configured
+
+  c4_level:
+    _guidance: |
+      EVAL is NOT a C4 level. It is a governance layer that validates
+      the test strategy covers all upstream requirements and specifications.
+
+      SDD C4 map (10 layers):
+        Context (BRD)     — business environment, actors, boundaries
+        Container (PRD)   — product features, functional blocks
+        EARS               — formalize Context→Container transition
+        BDD                — executable acceptance scenarios
+        ADR                — architecture decisions
+        SPEC               — implementation-ready specifications
+        TDD                — test case definitions from SPEC contracts
+        IPLAN              — execution plan bridging TDD to Code
+        Code               — source code implementation
+        EVAL               — testing strategy governance             ← this layer
+    value: none
+
+  tags:
+    - eval-document
+    - layer-10-artifact
+    - shared-architecture
+
+  deliverable_type:
+    _guidance: |
+      Evaluation documents are process artifacts that govern test quality,
+      not code or implementation.
+    value: process
+
+  id_standard:
+    state: canonical
+    _guidance: |
+      All element IDs use content-derived hashes scoped to EVAL content.
+      Format: {doc_type}.{doc_id}.{section_id}.{hash}
+      Example: EVAL.01.04.a7b3
+      Section segment: test design entries live in Section 4.
+
+    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
+    hash_algorithm: SHA256
+    hash_length: 4
+    max_hash_length: 8
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  _size_target: 100
+  _guidance: |
+    Define the evaluation scope, version, and approval status.
+    Link to upstream sources using the required_tags convention.
+    Necessary-upstream tags: @ears + @bdd + @tdd + @iplan required (Layer 10 required_tags).
+    This document is the governing authority for test strategy in its scope.
+  version: "1.0"
+  status: Draft  # Draft | In Review | Approved
+  date_created: "YYYY-MM-DDTHH:MM:SS"
+  last_updated: "YYYY-MM-DDTHH:MM:SS"
+  author: "[QA Engineer]"
+  priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
+  evaluation_ready_score: "[Score]/100"
+  revision_history:
+    - version: "1.0"
+      date: "YYYY-MM-DDTHH:MM:SS"
+      author: "[Name]"
+      changes: "Initial evaluation strategy"
+
+# =============================================================================
+# Section 2: Evaluation Scope
+# =============================================================================
+
+evaluation_scope:
+  _size_target: 200
+  _guidance: |
+    Define which upstream layers this evaluation covers and the testing
+    strategy classification. Two tracks:
+      - Functional: EARS → BDD → integration/E2E tests
+      - Unit/Smoke: TDD → IPLAN → unit/smoke tests
+
+    Each track has its own scope, environment, and gate criteria.
+
+  _example: |
+    ```yaml
+    evaluation_scope:
+      track: functional  # functional | unit_smoke | combined
+      upstream_sources:
+        - layer: 3
+          type: EARS
+          ids: [EARS-02]
+        - layer: 4
+          type: BDD
+          ids: [BDD-02]
+      coverage_target: 100  # percent of upstream scenarios/requirements
+      environment: staging  # staging | ci | both
+    ```
+
+  track: "[functional | unit_smoke | combined]"
+  _track_guidance: |
+    functional: EARS/BDD-driven integration and E2E testing. Staging only.
+    unit_smoke: TDD/IPLAN-driven unit and smoke testing. CI pipeline.
+    combined: both tracks in a single document (use for small projects only).
+
+  upstream_sources:
+    # _source_guidance: List the specific upstream documents this evaluation covers.
+    # Functional track requires: EARS + BDD.
+    # Unit/smoke track requires: TDD + IPLAN.
+    - layer: 3
+      type: EARS
+      ids: ["EARS-NN"]
+    - layer: 4
+      type: BDD
+      ids: ["BDD-NN"]
+    # For unit/smoke track:
+    # - layer: 7
+    #   type: TDD
+    #   ids: ["TDD-NN"]
+    # - layer: 8
+    #   type: IPLAN
+    #   ids: ["IPLAN-NN"]
+
+  coverage_target: 100  # percent of upstream scenarios/requirements
+
+  environment: "[staging | ci | both]"
+  _environment_guidance: |
+    staging: functional tests run against staging environment (not CI).
+    ci: unit/smoke tests run in CI pipeline on every push/PR.
+    both: evaluation covers both environments.
+
+# =============================================================================
+# Section 3: Test Design
+# =============================================================================
+
+test_design:
+  _size_target: 800
+  _guidance: |
+    For functional track (EVAL-F):
+      Derive test cases from BDD scenarios. Each BDD scenario maps to ≥1
+      integration or E2E test case. Test cases include:
+        - scenario_id: the BDD scenario ID this test validates
+        - test_type: integration | e2e | api_contract
+        - environment: staging
+        - priority: derived from BDD scenario priority
+        - preconditions: from BDD scenario given/when
+        - assertions: from BDD scenario then
+        - performance_threshold: from BDD scenario @threshold references
+
+    For unit/smoke track (EVAL-U):
+      Derive test cases from TDD test case definitions. Each TDD test case
+      maps to ≥1 unit or smoke test. Test cases include:
+        - tdd_id: the TDD test case ID this test implements
+        - test_type: unit | smoke | regression
+        - environment: ci
+        - target: function/module under test
+        - test_file: path to test implementation
+        - coverage_threshold: minimum coverage for this test
+
+  _example: |
+    ```yaml
+    test_design:
+      - id: EVAL.01.04.a7b3
+        name: "Privy login yields access token"
+        scenario_id: "BDD.02.03.6e26"
+        test_type: integration
+        environment: staging
+        priority: p0-critical
+        preconditions:
+          - "User has valid Privy credentials"
+          - "Staging backend is running on port 8084"
+        assertions:
+          - "Response status 200"
+          - "Response body contains access_token"
+          - "Latency p95 < 1000ms"
+        performance_threshold:
+          metric: latency_p95
+          max_ms: 1000
+        implementation:
+          language: go
+          test_file: "internal/auth/auth_integration_test.go"
+          test_function: "TestBDD02_PrivyLoginYieldsAccessToken"
+    ```
+
+  test_cases:
+    - id: "EVAL.NN.04.xxxx"
+      name: "[Test case name]"
+      scenario_id: "[BDD.NN.SS.xxxx or TDD.NN.04.xxxx]"
+      test_type: "[integration | e2e | api_contract | unit | smoke | regression]"
+      environment: "[staging | ci]"
+      priority: "[p0-critical | p1-high | p2-medium | p3-low]"
+      preconditions: ["[Precondition 1]"]
+      assertions: ["[Expected outcome 1]"]
+      performance_threshold:
+        _guidance: "Only include if upstream scenario or TDD test specifies a threshold"
+        metric: "[latency_p95 | throughput | error_rate]"
+        max_ms: 0
+      implementation:
+        _guidance: "Link to the actual test file once implemented"
+        language: "[go | js | python]"
+        test_file: "[path/to/test_file]"
+        test_function: "[TestFunctionName]"
+
+# =============================================================================
+# Section 4: Coverage Matrix
+# =============================================================================
+
+coverage_matrix:
+  _size_target: 200
+  _guidance: |
+    Bidirectional traceability from upstream source to test implementation.
+    For functional track: BDD scenario → test case → test file.
+    For unit/smoke track: TDD test case → test implementation → coverage %.
+
+    Every upstream scenario MUST appear in this matrix. Missing entries
+    trigger EVAL-COV-001 (warning in build, error in gate).
+
+  _example: |
+    ```yaml
+    coverage_matrix:
+      entries:
+        - source_id: "BDD.02.03.6e26"
+          source_type: bdd_scenario
+          test_case_id: "EVAL.01.04.a7b3"
+          test_file: "internal/auth/auth_integration_test.go"
+          status: implemented  # implemented | pending | skipped
+          coverage: 100
+        - source_id: "TDD.01.04.f19c"
+          source_type: tdd_test_case
+          test_case_id: "EVAL.02.04.b2d1"
+          test_file: "internal/platform/port_router_test.go"
+          status: implemented
+          coverage: 100
+    ```
+
+  entries:
+    - source_id: "[BDD.NN.SS.xxxx or TDD.NN.04.xxxx]"
+      source_type: "[bdd_scenario | tdd_test_case | ears_requirement]"
+      test_case_id: "EVAL.NN.04.xxxx"
+      test_file: "[path/to/test_file]"
+      status: "[implemented | pending | skipped]"
+      coverage: 0  # percent
+
+  summary:
+    _guidance: "Computed from entries — total, implemented, pending, skipped, coverage %"
+    total: 0
+    implemented: 0
+    pending: 0
+    skipped: 0
+    coverage_percent: 0
+
+# =============================================================================
+# Section 5: Quality Thresholds
+# =============================================================================
+
+quality_thresholds:
+  _size_target: 200
+  _guidance: |
+    Quality gates derived from PRD thresholds and project standards.
+    These are the pass/fail criteria for evaluation readiness.
+
+    Functional track thresholds:
+      - BDD scenario coverage: 100% of scenarios mapped to tests
+      - Integration test pass rate: 100%
+      - E2E test pass rate: 100%
+      - Performance p95: within PRD-declared thresholds
+
+    Unit/smoke track thresholds:
+      - TDD test case implementation: 100%
+      - Unit test pass rate: 100%
+      - Code coverage: per-component thresholds from TDD
+      - Smoke test pass rate: 100%
+
+  _example: |
+    ```yaml
+    quality_thresholds:
+      coverage:
+        bdd_scenario_coverage:
+          target: 100
+          current: 100
+          gate: error  # error = blocking, warning = advisory
+        tdd_test_case_implementation:
+          target: 100
+          current: 100
+          gate: error
+      execution:
+        unit_test_pass_rate:
+          target: 100
+          current: 100
+          gate: error
+        integration_test_pass_rate:
+          target: 100
+          current: 100
+          gate: error
+      performance:
+        api_latency_p95:
+          target_ms: 200
+          gate: warning
+        auth_latency_p95:
+          target_ms: 1000
+          gate: warning
+    ```
+
+  coverage:
+    bdd_scenario_coverage:
+      target: 100
+      current: 0
+      gate: error  # error | warning
+    tdd_test_case_implementation:
+      target: 100
+      current: 0
+      gate: error
+
+  execution:
+    unit_test_pass_rate:
+      target: 100
+      current: 0
+      gate: error
+    integration_test_pass_rate:
+      target: 100
+      current: 0
+      gate: error
+    smoke_test_pass_rate:
+      target: 100
+      current: 0
+      gate: error
+
+  performance:
+    _guidance: "Performance thresholds inherited from PRD @threshold references"
+    api_latency_p95:
+      target_ms: 200
+      gate: warning
+    auth_latency_p95:
+      target_ms: 1000
+      gate: warning
+
+# =============================================================================
+# Section 6: Execution Plan
+# =============================================================================
+
+execution_plan:
+  _size_target: 200
+  _guidance: |
+    Define how, when, and where tests execute. Include:
+      - CI pipeline integration (for unit/smoke)
+      - Staging verification schedule (for functional)
+      - Deployment gate criteria
+      - Evidence retention and reporting
+
+  _example: |
+    ```yaml
+    execution_plan:
+      ci_pipeline:
+        trigger: "on_push_to_dev_or_staging"
+        runner: "ubuntu-latest"
+        timeout_minutes: 20
+        steps:
+          - "npm ci --ignore-scripts"
+          - "go test ./cmd/... ./internal/... -v -count=1 -race"
+          - "npm run verify:product"
+      staging_verification:
+        trigger: "on_merge_to_staging"
+        environment: "staging-beelocal"
+        schedule: "manual or on_merge"
+        steps:
+          - "docker compose up -d"
+          - "bash scripts/smoke-test.sh"
+          - "npm run test:e2e:product"
+      deployment_gate:
+        criteria:
+          - "All unit tests passing"
+          - "All smoke tests passing"
+          - "No P0/P1 regressions"
+          - "Coverage thresholds met"
+      evidence:
+        retention_days: 30
+        artifacts:
+          - "coverage reports"
+          - "test execution logs"
+          - "performance benchmarks"
+    ```
+
+  ci_pipeline:
+    trigger: "[on_push_to_dev_or_staging | on_pr | manual]"
+    runner: "ubuntu-latest"
+    timeout_minutes: 20
+    steps: ["[Step 1]"]
+
+  staging_verification:
+    trigger: "[on_merge_to_staging | manual]"
+    environment: "[staging-beelocal]"
+    schedule: "[manual | on_merge | cron]"
+    steps: ["[Step 1]"]
+
+  deployment_gate:
+    criteria: ["[Criteria 1]"]
+
+  evidence:
+    retention_days: 30
+    artifacts: ["[Artifact 1]"]
+
+# =============================================================================
+# End of EVAL-TEMPLATE.yaml
+# =============================================================================

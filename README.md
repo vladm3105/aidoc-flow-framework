@@ -38,7 +38,7 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 ```
    HUMAN (owner / architect)                  FRAMEWORK + AI                       WORLD
    ─────────────────────────                  ──────────────                       ─────
-   vision · strategy · real-world   ──seed──▶  BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN  ◀─signal─ spikes
+   vision · strategy · real-world   ──seed──▶  BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL  ◀─signal─ spikes
    constraints (pre-framework docs)           (traceable, verifiable, buildable)            prod telemetry
                                                         │                                    canary
                                               PO review at EARS/BDD                          │
@@ -51,7 +51,7 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 1. **Human seeds the intent.** The business owner or architect creates the initial
    project documents (vision, strategy, constraints, prior-art corpus). This is where
    ground truth and real-world assumptions enter — the framework never originates them.
-2. **The chain transforms the seed** into eight cumulative layers, each addressable and
+2. **The chain transforms the seed** into ten cumulative layers (8 SDD + CHG + EVAL), each addressable and
    cross-linked, ending in code-ready implementation plans.
 3. **The product owner (human or AI-as-PO) validates the oracle early** — at the EARS/BDD
    layer, *before* any architecture is committed (see "Why BDD before ADR").
@@ -74,9 +74,10 @@ sits between a **human seed** and the **agents** that realize and maintain it.
 | L6 | **SPEC** — Component Contracts | The buildable interface (C4 Component) |
 | L7 | **TDD** — Test Definitions | The tests that prove it, test-first |
 | L8 | **IPLAN** — Implementation Plan | The exact, resumable build manifest for an agent |
+| L9 | **CHG** — Change Management | Governance gates, adaptive change control with approval + re-gate |
+| L10 | **EVAL** — Evaluation & QA | Test strategy, coverage matrices, quality governance |
 
-Overlays: **CHG** governance gates (adaptive change control with approval + re-gate),
-and markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
+Overlays: markdown **development/work plans** (`plans/*.md`) — the human-and-agent-readable
 plan-of-record for a single change.
 
 Document numbers are **per-layer counters with no cross-layer alignment**; an upstream
@@ -282,44 +283,33 @@ and keep a system alive — with its responsibilities drawn honestly.*
 
 ---
 
-## Platforms
+## Tooling
 
-The framework spec is engine-agnostic; two independent platforms implement it, each
-versioned independently. Both pass the same shared conformance suite.
+The framework is engine-agnostic. Any capable AI agent derives its behavior from
+the spec, templates, and playbooks directly — no platform-specific wrapper needed.
 
-| Platform | Engine | Version |
-|----------|--------|---------|
-| **Hermes AI** | MCP server | `hermes/v0.12.1` (`platforms/hermes/`) |
-| **Claude Code plugin** | Native Claude Code (skills / agents / commands) | `claude-code-plugin/v0.25.0` (`platforms/claude-code-plugin/`) |
+| Tool | Purpose |
+|------|---------|
+| `sdd_doc_lint/` | Structural linter — 296+ deterministic checks against layer templates |
+| `hooks/sdd-doc-review.sh` | PostToolUse advisory hook — surfaces lint findings on SDD document edits |
 
-*Versions are the per-package `VERSION`-file values (namespaced as they would be
-tagged); the git tag itself may not be cut yet — see `docs/TAGGING.md`.*
-
-See [`docs/PARITY.md`](docs/PARITY.md) for the capability comparison and a
-"which platform should I use?" guide.
-
-### Install the Claude Code plugin
-
-This repo doubles as a plugin marketplace (`.claude-plugin/marketplace.json`).
-From Claude Code:
-
-```
-/plugin marketplace add vladm3105/aidoc-flow-framework
-/plugin install aidoc-flow@aidoc-flow-framework
-```
+The former platforms (Hermes MCP server, Claude Code plugin) are archived at
+`archive/platforms/`.
 
 ## Status
 
 The migration is complete (cutover shipped as `v1.0.0`); the project is now in
 **post-cutover development** (latest project release `v1.1.0`), tracking
-framework spec `0.51.0`. The Claude Code plugin is a **pre-1.0 preview** — APIs
-and surfaces may change before 1.0. Platform release versions are in the
-[Platforms](#platforms) table above.
+framework spec `0.53.0`. Platforms (Hermes, Claude Code plugin) have been archived —
+the framework is now self-sufficient for any AI agent.
 
-Post-v1.0 development — delivered and planned — is tracked in
-[`ROADMAP.md`](ROADMAP.md); per-release detail is in
-[`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
-first, with Hermes follow-on batches tracked in [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues?q=is%3Aopen+label%3A%22platform%3A+hermes%22).
+> *This overview is a point-in-time snapshot (as of 2026-09-07); it is not
+> wired into the version-sync hook. For live version state see the per-package
+> `VERSION` files.*
+
+Post-v1.0 development is tracked in
+[GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
+per-release detail is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
@@ -334,13 +324,11 @@ for the vulnerability-reporting policy.
 
 ## Documentation
 
-- `ROADMAP.md` — delivery plan and post-v1.0 work (migration complete at `v1.0.0`).
 - `CHANGELOG.md` — project-level changelog.
 - `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
-- `docs/PARITY.md` — Hermes ↔ plugin capability comparison.
 - `framework/README.md` — the engine-agnostic SDD specification.
 - [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
 - [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).

@@ -1,5 +1,16 @@
 # 07_TDD — Test-Driven Development Guide
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## C4 Model Position
 
 TDD is part of the **Implementation Bridge** (L7-L8, no C4 level). It defines test cases that validate SPEC (C4-L3 Component) contracts through test execution. C4-L4 (Code) ownership belongs to the source code layer, referenced by IPLAN.
@@ -17,6 +28,7 @@ Defines test cases that validate SPEC component contracts. Each TDD document map
 - **BDD as source of truth** — no new behavior descriptions; maps existing BDD scenarios (with spec_trace links) to test types
 - **Acceptance pairing is normative (GD-08)** — every BDD scenario MUST be paired to a TDD **test case**: named in a `bdd_scenario` mapping entry or an e2e-case `bdd_ref` (in a rendered Markdown TDD, the equivalent §3 mapping row or §4 e2e line carrying the test-case id). A scenario named only in the §7 traceability block is not paired. Enforced by `ACC01` (`../../governance/LINT_RULES.md`): `warning` in `build`, `error` in `gate-code`. Stricter than `COV02` (which a SPEC-only citation satisfies).
 - **One document per SPEC component** — same granularity as SPEC for minimal maintenance
+- **Test strategy defines HOW tests are written** — Section 2 provides conventions for test organization, naming, mocking, and execution that IPLANs follow
 
 ## Element IDs
 
@@ -44,13 +56,45 @@ See template `metadata.id_standard` for details.
 | Position | L7 (after SPEC) |
 | Test case shape | Section 4 test case definitions |
 | Upstream | EARS + BDD + ADR + SPEC |
-| Downstream | IPLAN |
+| Downstream | IPLAN, EVAL |
 | Template model | Single unified template |
 | Core assets | Template + index + README |
+
+## Test Strategy (Section 2)
+
+The Test Strategy section defines HOW tests are written, organized, and executed. It provides conventions that IPLANs follow when generating test files.
+
+### Key Components
+
+| Component | Purpose |
+|-----------|---------|
+| **test_types** | Defines unit, integration, e2e, and security test purposes and scopes |
+| **mock_strategy** | Defines when to use mocks vs stubs vs real dependencies |
+| **test_data** | Defines how test data is created, managed, and cleaned up |
+| **execution_strategy** | Defines when and how tests run in development workflow |
+| **distribution** | Target percentages for test pyramid (70/20/10) |
+
+### IPLAN Integration
+
+IPLANs reference TDD test strategy when generating test files:
+
+1. **Test file paths** come from TDD `test_cases.*.test_file`
+2. **Test function names** come from TDD `test_cases.*.test_function`
+3. **Test logic** is derived from TDD `inputs` and `expected_output`
+4. **Execution order** follows TDD `tdd_order` (tests first, then implementation)
+
+### Verification Workflow
+
+```
+TDD defines tests → IPLAN generates files → Tests run → IPLAN status transitions
+     ↓                    ↓                    ↓                    ↓
+Section 2 (strategy)  file_manifest      tdd_order           Completed → Verified
+Section 4 (cases)     tdd_ref links      Phase 1-5           (after validation)
+```
 
 ## Template
 
 | File | Purpose |
 |------|---------|
 | `TDD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `TDD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
+| `TDD-00_index.TEMPLATE.md` | TDD registry template — tracks planned and active TDDs per project |

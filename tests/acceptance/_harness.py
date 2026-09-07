@@ -11,7 +11,7 @@ import yaml
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
 from _spec import ARTIFACTS, plugin_bundle_root, template_path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 from sdd_doc_lint.trace_graph import ELEM_FORM
 
 FIXTURES_ROOT = Path(__file__).resolve().parent / "fixtures"

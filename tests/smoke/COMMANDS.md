@@ -25,7 +25,7 @@ Multiple `--plugin-dir` flags may be passed.
 
 Source: <https://code.claude.com/docs/en/plugins> (verified 2026-05-31).
 
-This works against any local checkout (e.g. `framework/platforms/claude-code-plugin/`)
+This works against any local checkout (e.g. `framework/archive/platforms/claude-code-plugin/`)
 and requires no marketplace endpoint. It is the path `tests/scripts/test-plugin.sh`
 uses today.
 
@@ -45,7 +45,7 @@ claude plugin marketplace add <path-or-url>
 claude plugin install <plugin>@<marketplace-name>
 ```
 
-For a local directory marketplace containing `.claude-plugin/marketplace.json`:
+For a local directory marketplace containing `archive/.claude-plugin/marketplace.json`:
 
 ```
 claude plugin marketplace add ./my-marketplace

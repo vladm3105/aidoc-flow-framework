@@ -1,5 +1,16 @@
 # Project Adaptation Surface
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 Engine-agnostic specification of **how a consuming project may adapt the SDD
 flow to its own needs without forking the framework**. It defines a *closed*,
 declarative set of preferences ("knobs") that a project declares once; any
@@ -81,7 +92,7 @@ to these roles.
 
 ### 4.1 `active_layers`
 
-Which of the 8 layers are in play for this project. A project may disable only
+Which of the 10 layers are in play for this project. A project may disable only
 layers in the **skippable** set (`ADAPTATION_SURFACE.yaml: layers.skippable`,
 v1 = `BDD`, `ADR`); the **mandatory** layers that anchor the intent → plan
 spine cannot be disabled.
@@ -216,3 +227,54 @@ The suite asserts, against `ADAPTATION_SURFACE.yaml`:
 - `id_format` as a knob — deferred pending an `ID_NAMING_STANDARDS.md` review to
   enumerate genuinely project-selectable conventions; the narrow-surface
   principle favors not inventing options.
+
+## 10. Project overrides (`.aidoc/project/`)
+
+A project may place files in `.aidoc/project/` using the same directory
+structure as `framework/`. When an engine reads a template, rule, or
+playbook, it checks `.aidoc/project/` first. If the file exists, it
+replaces the framework version. If not, the framework version applies.
+
+### Override structure
+
+```
+.aidoc/project/
+├── layers/                    # template overrides
+│   └── 06_SPEC/
+│       └── SPEC-TEMPLATE.yaml
+├── governance/                # rule overrides
+│   ├── GOVERNANCE_RULES.md
+│   └── ...
+└── playbooks/                 # playbook overrides
+    └── 01_BRD/
+        └── auditor.md
+```
+
+### Discovery rule
+
+1. Check `.aidoc/project/{same-path}` first
+2. If the file exists there, use it (project override)
+3. If not, fall back to `.aidoc/framework/{same-path}` (shared framework)
+
+This is the same pattern as software: project-local config overrides
+global defaults (e.g., `.eslintrc` vs `node_modules/.eslintrc`).
+
+### Constraints
+
+- **Project-local only.** Overrides live in the consuming project, never
+  in the shared `framework/` directory.
+- **Same structure.** Override files must mirror the framework's directory
+  structure and filename exactly. An engine matches by path, not by content.
+- **No weakened checks.** A project override may not weaken a blocking
+  quality gate. It may only add sections, tighten thresholds, or customize
+  wording.
+- **Versioned.** Project overrides are committed alongside `profile.yaml`
+  and carry the `framework_version` they were authored against.
+
+### Symlink convention
+
+`.aidoc/framework/` is a symlink to the shared framework directory. The
+canonical path is declared in `profile.yaml` as `framework_path`.
+
+New files use `.aidoc/framework/` as the canonical path. The root `framework/`
+symlink has been removed — all references must use `.aidoc/framework/`.

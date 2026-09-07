@@ -41,35 +41,41 @@ aidoc-flow-framework/
 │
 ├── framework/                       SHARED engine-agnostic specification (the contract)
 │   ├── VERSION                      Framework spec SemVer
-│   ├── layers/                      01_BRD … 08_IPLAN: definitions, templates, schemas
+│   ├── layers/                      01_BRD … 10_EVAL: definitions, templates, schemas
 │   ├── governance/                  Rules; CHG overlay (gates incl. GATE-SPEC);
 │   │                                ADAPTATION surface; DECISIONS.md (GD register)
 │   └── registry/LAYER_REGISTRY.yaml
 │
-├── platforms/
-│   ├── hermes/                      PLATFORM A — Hermes AI (MCP-server engine)
-│   │   ├── FRAMEWORK_SPEC_VERSION   Spec version it conforms to
-│   │   └── VERSION · CHANGELOG.md · README.md · src/ · tests/
-│   │
-│   └── claude-code-plugin/          PLATFORM B — Claude Code plugin (native engine)
-│       ├── .claude-plugin/          plugin.json + marketplace.json
-│       ├── FRAMEWORK_SPEC_VERSION   Spec version it conforms to
-│       └── VERSION · README.md · skills/ · commands/ · agents/
+├── sdd_doc_lint/                    Structural linter — 296+ deterministic checks
+│   ├── __init__.py                  Lint rules engine
+│   ├── rehash.py                    Element-ID rehashing
+│   ├── trace_graph.py               Cross-document trace graph
+│   └── tests/                       Linter self-tests
+│
+├── hooks/                           PostToolUse advisory hook
+│   ├── sdd-doc-review.sh            Surfaces lint findings on SDD document edits
+│   └── hooks.json                   Hook registration
 │
 ├── tests/
-│   ├── conformance/                 Shared suite both platforms must pass
-│   └── chg/                         GATE-SPEC diff-aware guard (spec_gate.py)
+│   ├── unit/                          Framework-level unit tests
+│   ├── conformance/                   Framework conformance suite
+│   ├── acceptance/                    Acceptance harness + fixtures
+│   ├── packaging/                     Bundle/manifest tests
+│   ├── release/                       Release validation tests
+│   ├── review/                        LLM code review
+│   ├── smoke/                         Post-deploy smoke tests
+│   └── chg/                           GATE-SPEC diff-aware guard
 │
-├── tools/                 # sync-plugin-framework.sh, build-plugin-mirror.sh, sdd_doc_lint/
 ├── examples/              # url-shortener/ — acceptance-test example
 │   └── url-shortener/
 │       ├── seed/                    Human input — the acceptance-test seed
 │       ├── chg/                     Human input — change request for Phase 2
-│       ├── docs/                    AI output — produced 8-layer chain (committed)
-│       ├── .aidoc/                  AI provenance — audit/review/remediation/validation
-│       │                            reports (committed). See framework/docs/AIDOC.md
+│       ├── docs/                    AI output — produced 10-layer chain (committed)
+│       ├── .aidoc/                  Project overrides — see framework/governance/aidoc/
+│       │                            (committed)
 │       └── logs/<TS>/               Tool internals — gitignored, ephemeral
-└── plans/                           Migration record: per-task plans, DECISIONS.md, HANDOFF.md, …
+├── archive/                         Archived: platforms, plans, tools, legacy
+└── .github/
 ```
 
 ## Legacy → Target Mapping (historical record)
@@ -84,8 +90,8 @@ working tree (Phase 5 / P5-T2) and preserved intact on the protected
 | `legacy/ucx_flow_v3/01_BRD … 08_IPLAN/`          | `framework/layers/`                      |
 | `legacy/ucx_flow_v3/LAYER_REGISTRY.yaml`         | `framework/registry/`                    |
 | `legacy/ucx_flow_v3/CHG/`, `legacy/governance/`  | `framework/governance/`                  |
-| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `platforms/hermes/`                      |
-| `.claude/` skills (`doc-*`), agents, commands    | `platforms/claude-code-plugin/`          |
+| `legacy/ucx_hermes/`, `legacy/mcp_ucx/`          | `archive/platforms/hermes/` (archived)   |
+| `.claude/` skills (`doc-*`), agents, commands    | `archive/platforms/claude-code-plugin/` (archived) |
 | `legacy/ai_dev_ssd_flow_v2/`                     | dropped (superseded by `framework/`)     |
 | `legacy/roadmap/`, `legacy/changelog/`           | dropped; replaced by root `ROADMAP.md` / `CHANGELOG.md` |
 | `legacy/github-workflows-disabled/`              | rewritten fresh per platform             |

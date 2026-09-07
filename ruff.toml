@@ -1,4 +1,4 @@
-# Ruff — Python linter + formatter. Scope: platforms/hermes + tests (the only Python).
+# Ruff — Python linter + formatter. Scope: sdd_doc_lint + tests.
 line-length = 100
 target-version = "py311"
 

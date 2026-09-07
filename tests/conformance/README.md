@@ -9,7 +9,7 @@ The suite has two halves:
    `framework/` spec is internally coherent: the registry agrees with itself
    and with the files on disk, layer templates match the registry, governance
    files are present, and no engine-specific tokens have leaked in.
-2. **Platform conformance** (`tests/conformance/platforms/`) — checks that a
+2. **Platform conformance** (`tests/conformance/ (platform tests archived)`) — checks that a
    *platform* implementation honours the spec. **Implemented and running**: 16
    modules covering the Claude Code plugin (framework-bundle drift guard,
    `sdd_doc_lint` vendoring identity, version/spec-version declarations, plugin
@@ -57,7 +57,7 @@ A platform (Hermes, the Claude Code plugin) conforms to the framework when:
   `can_reference`, `downstream`);
 - it carries no expectation of the other platform's engine.
 
-The `tests/conformance/platforms/` modules exercise this contract against the
+The `tests/conformance/ (platform tests archived)` modules exercise this contract against the
 Claude Code plugin (see the second suite half above). The plugin ships a
 byte-identical vendored copy of the spec subtrees it consumes (D-0022); a drift
 guard fails CI if the bundle and the canonical spec diverge.

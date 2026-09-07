@@ -9,8 +9,8 @@ specification with two independent platforms:
 
 | Platform | Engine | Source of truth |
 |----------|--------|-----------------|
-| A — Hermes AI | MCP server (`ucx_hermes`) | `platforms/hermes/` |
-| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | `platforms/claude-code-plugin/` |
+| A — Hermes AI | MCP server (`ucx_hermes`) | `archive/platforms/hermes/` |
+| B — Claude Code plugin | Native Claude Code (skills/agents/commands/hooks) | `archive/platforms/claude-code-plugin/` |
 
 Both implement the same `framework/` spec; they share no runtime code.
 
@@ -22,8 +22,8 @@ Semantic Versioning ([semver.org](https://semver.org)). Four independent streams
 |--------|------|---------|
 | Project (migration) | `CHANGELOG.md` / `ROADMAP.md` | Tracks migration milestones only |
 | Framework spec | `framework/VERSION` | The shared contract |
-| Hermes AI | `platforms/hermes/VERSION` | Platform A releases |
-| Claude Code plugin | `platforms/claude-code-plugin/VERSION` | Platform B releases |
+| Hermes AI | `archive/platforms/hermes/VERSION` | Platform A releases |
+| Claude Code plugin | `archive/platforms/claude-code-plugin/VERSION` | Platform B releases |
 
 Each platform declares the `framework_spec_version` it conforms to. A MAJOR
 bump of the framework spec signals a potentially breaking contract change for
@@ -67,7 +67,7 @@ tags, never move a release tag, disposable bookmarks).
 |-----------|-------|-----|--------------------|
 | Planning baseline | 0 | `v0.1.0` | Roadmap, changelog, structure, platform dirs in place |
 | Framework spec | 1 | `v0.2.0` | `framework/` populated; conformance suite defined |
-| Hermes re-homed | 2 | `v0.3.0` | Hermes under `platforms/`; passes conformance |
+| Hermes re-homed | 2 | `v0.3.0` | Hermes under `archive/platforms/`; passes conformance |
 | Plugin built | 3 | `v0.4.0` | Plugin built, Hermes-free; passes conformance |
 | Independence | 4 | `v0.5.0` | Both platforms green; independent changelogs + CI |
 | Cutover | 5 | `v1.0.0` | New project replaces `main`; legacy archived as the `legacy-ucx-v3.2-read-only` branch |
@@ -76,7 +76,7 @@ tags, never move a release tag, disposable bookmarks).
 
 The `framework/` spec is the contract. A shared suite under
 `tests/conformance/` validates that a platform correctly implements the
-8-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→Code), schemas,
+10-layer SDD flow (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL→Code), schemas,
 templates, and traceability rules. Both platforms run the **same** suite —
 this is what keeps two independent engines behaviourally equivalent.
 
@@ -131,8 +131,8 @@ recorded as **GD-01** in `framework/governance/DECISIONS.md`.
 **Spec change → re-sync the plugin's vendored bundle.** The Claude Code plugin
 ships a byte-identical copy of `framework/{layers,governance,registry}` (+ the
 SDD guide) so it installs self-contained (D-0022). A spec change therefore has
-one more obligation: run `bash tools/sync-plugin-framework.sh` to regenerate
-`platforms/claude-code-plugin/framework/` and commit it in the same change. The
+one more obligation: run `bash archive/tools/sync-plugin-framework.sh` to regenerate
+`archive/platforms/claude-code-plugin/framework/` and commit it in the same change. The
 conformance drift-guard (`test_plugin_framework_bundle.py`) fails CI if the
 bundle drifts from canonical — it is the backstop, not a surprise; the bundle is
 a snapshot pinned to the plugin's `FRAMEWORK_SPEC_VERSION`.

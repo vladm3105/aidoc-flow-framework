@@ -7,481 +7,112 @@ only in a migration-time log. Spec-affecting entries from the project's
 migration decision log graduate here once change management governs the spec.
 
 A change to this file is itself a framework-spec change: it passes **GATE-SPEC**
-(`chg/gates/GATE-SPEC_FRAMEWORK.md`) like any other change to the spec.
+(`../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`) like any other change to the spec.
 
 Newest first. Timestamps are ISO 8601 UTC.
 
----
 
-## GD-26 — A Draft IPLAN's §5 `session_handoff.sessions` is EMPTY; the §6 seed is derived, a session seed would be fabricated
+## Document Control
 
-- **Status:** Accepted — 2026-09-04 · **SemVer:** framework `0.50.0 → 0.51.0` (MINOR),
-  change-level **C2**. One motion: the shipped §5 value becomes `sessions: []` and the worked
-  entry moves into `_guidance` as an append example. **No key is added and none is removed**,
-  so an IPLAN already carrying sessions stays valid; `major ⇒ C3` is one-directional per
-  GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human sign-off
-  per GATE-SPEC.
-- **Issues:** #621 (`Origin: review`) · discharges the §5 analogue GD-25 deferred by name
-- **GATE-SPEC-W002 (parity):** both platforms track `0.51.0`, and **both move**. Platform B's
-  `doc-iplan` instructed seeding the handoff at Draft; Platform A's IPLAN creation prompt was
-  already right about the Draft shape, **but its orchestrator skill was not** — under "For
-  IPLAN creation, enforce:" it required carrying *previous session state*, which is this
-  defect on the other engine. Ten surfaces across six files.
-- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 / GD-25 precedent for
-  advisory-W003 agent-instruction text. The change removes an authoring instruction and adds
-  guidance; it grants no capability and names no external resource.
-
-`IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying a date, an agent and
-`action: created` on a file not on disk, while `doc-iplan/SKILL.md` step 9 instructed seeding
-that block **at Draft**. An authoring agent copying the example produced a Draft IPLAN
-recording a session that never ran — GD-25/#601 one section up, on the section a stateless
-executor reads *first*.
-
-**Decision: a Draft IPLAN carries `session_handoff.sessions: []`.** An entry is APPENDED by a
-session as that session ends. No entry is written while authoring.
-
-**Why §6 is seeded and §5 is not — the asymmetry is the load-bearing part.** GD-25 seeded §6
-`code_inventory` at Draft and argued an empty block is the weaker artifact. That argument does
-not transfer, and the template and layer README both state why, because otherwise the next
-reader "repairs" §5 into §6's shape:
-
-1. **§6's seed is DERIVED; a §5 seed would be FABRICATED.** §6 seeds one entry per §2
-   `file_manifest` path — a set already known when the IPLAN is written, which is exactly what
-   makes an empty §6 indistinguishable from an executor that never wrote its entries back.
-   Nobody knows the future *sessions*, so a seeded session has no source.
-2. **It would contradict `document_control.session_count: 0`.** A seeded session-zero makes
-   `len(sessions) == 1` against a count of `0` — a fresh internal contradiction of the class
-   GD-25 was repairing.
-
-The empty list also preserves the reading that matters: `sessions: []` beside an
-all-`NOT_STARTED` §2 is coherent, while `sessions: []` beside a `DONE` §2 is a *detectable*
-executor failure.
-
-**No Draft-level `next_session_directive` key, and that is a decision rather than an
-omission.** #621 offered relocating it to the section level so a Draft keeps a forward
-pointer. Rejected: the first file to build is startup-protocol step 2 (the lowest-`order`
-`NOT_STARTED` entry in §2), environment preconditions belong in §3 `execution_commands.setup`,
-and `next_session_directive` is what ONE session hands the NEXT — a Draft has none to write.
-Relocating it would also mean either two carriers of one string (the sync obligation that is
-the next stale-marker defect) or removing a per-session key, which is breaking and would owe
-the C3 gate.
-
-**`files_touched[].action` is still NOT extended**, per GD-25. Moving the worked entry into
-`_guidance` keeps its `# created | modified` comment, so
-`test_iplan_code_inventory_lifecycle`'s one-match assertion stays green — but **the enum it
-pins now lives only inside a block scalar**, which is the live-value/quoted-shape distinction
-that guard's own `_entry_status_lines` is scoped for. Recorded because the guard's subject
-changed character even though its result did not.
-
-**The "non-empty required section" rule had THREE statements and the repair reached one.**
-Two Platform-B skills and the other engine's IPLAN creation prompt each demand
-every required section be non-empty or "populated" — the last already contradicted its own
-empty-array instruction before this change. With `sessions: []` now the correct Draft value of
-a required section, all three carry the carve-out; without it an auditor fails an IPLAN the
-author was told to write, which is the failure GD-25 explicitly designed against.
-
-**Guard.** `tests/conformance/test_iplan_session_handoff_draft.py` (15 tests). The Draft rule
-reads the **parsed YAML value**, inheriting GD-25's lesson unchanged. Three of its rules exist
-because the first draft got them wrong, and each wrong version would have forced correct prose
-to be mangled for green:
-
-- It flagged the other engine's *correct* retrospective sentence ("populated during implementation
-  sessions"), so an exemption for retrospective attribution is required. That exemption then
-  had to require **adjacency** — allowing 40 characters between the preposition and the noun
-  let step 9 escape through ``per `file_manifest` path (`session: null``, a YAML key rather
-  than a session doing work.
-- It flagged `` `code_inventory` seeded `planned` … (`session: null`) ``, a **correct GD-25
-  instruction**, because the pattern matched §6's singular per-entry key. The carrier is now
-  scoped to plural `sessions` or the section name.
-- Seeding the **empty** list is the ratified rule, so it needs its own exemption — without it
-  the guard forbids the sentence the fix must write, which would push the prohibition wording
-  into `doc-iplan-fixer`'s Fix-Phases table and disarm GD-25 over all ~1,900 characters of it.
-
-**`GD25GuardIsNotDisarmed` pins an invariant, and it caught this change's own edit.**
-GD-25's two negative rules apply `_PROHIBITION` per **sentence**, and its `_normalize`
-collapses a markdown table with no `.`+whitespace into one — `doc-iplan-fixer`'s Fix-Phases
-table is a single ~1,900-character "sentence" carrying `code_inventory` twice. One exemption
-word anywhere in it exempts the whole table, and the suite stays green *because nothing
-happened*. Measured before any edit: **7 `code_inventory`-bearing sentences across the four
-IPLAN skills, 0 exempt.** The first draft of the audit carve-out ended "…the correct Draft
-state, not a missing section" and took that to **1**; the guard failed, the clause was cut,
-and it is back to 0. Every new prohibition clause must be its own sentence.
-
-**Mutation testing rewrote the guard, and its measured limits are stated rather than
-implied.** Forty-two runs over the first draft killed 25 and left 17 alive, and the survivors
-fell into one class: the negative prose rule's exemptions were applied to a whole *sentence*,
-while whitespace normalization collapses a markdown table into one — 1,922 characters for the
-fixer's Fix-Phases table. Seven distinct reintroductions of this defect survived by borrowing
-an exemption token up to 1,500 characters away, and **the worst was self-inflicted**: putting
-`sessions: []` into that table row, as this change did, made the whole table exempt. The
-repair splits table rows and list items into their own scan units before normalizing, so a row
-cannot borrow its neighbour's exemption, and `GD26GuardIsNotDisarmed` pins the number of
-exempted carrier units to a measured **5**. Four further survivors closed with it: a
-section-level key set (asserted as a set, since "no key is added" is an allowlist claim), the
-`derived` assertion being satisfied by GD-26's own *heading*, a `code_inventory`-sentence
-count that was a floor of 4 rather than the measured 7, and the verb set missing
-`initiali[sz]e` — the verb **both** of the other engine's surfaces already use.
-
-**Two limits are stated, not closed.** The negative prose rule still fires on correct
-*descriptive* sentences — "a populated `sessions` array in a Draft is a finding", or a future
-audit rule phrased as detection rather than instruction — because it cannot distinguish an
-instruction from a description. It also cannot see a seed instruction split across two units.
-The structural rules (parsed YAML, the key set, the positive per-surface assertions and the
-disarm baselines) carry the weight; the prose rule is a tripwire, not a proof. Filed rather
-than waved away.
-
-- **Consequences.** IPLANs already carrying sessions stay valid and need no migration. A Draft
-  that still carries a seeded session is now wrong rather than merely odd, but the audit's
-  Tier-1 row accepts `[]` and requires a directive only on *appended* entries, so no
-  previously-passing artifact starts failing. The example corpus is regenerated wholesale
-  after framework changes and is untouched here. `IPLAN-MVP-TEMPLATE.yaml` carries a different
-  `session_handoff` key set entirely and is **not** brought into line — it fabricates no
-  session, so #621 does not reach it; the divergence is evidence on #438, which owns the MVP
-  template class.
-- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§5 `session_handoff`),
-  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an example
-  overrides the prose beside it), **GD-25** (the §6 seed this one deliberately does not
-  mirror), `tests/conformance/test_iplan_session_handoff_draft.py`.
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.52.0 |
 
 ---
 
-## GD-25 — IPLAN `code_inventory` is a three-value lifecycle seeded `planned` at Draft, and every statement of that vocabulary must agree
+## GD-25 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
 
-- **Status:** Accepted — 2026-09-02 · **SemVer:** framework `0.49.0 → 0.50.0` (MINOR),
-  change-level **C2**. Two motions: an additive third enum value with its transition rule,
-  and a Draft-seed rule that replaces an empty block. Neither is breaking — an IPLAN already
-  carrying `created` / `modified` entries stays valid — and `major ⇒ C3` is one-directional
-  per GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human
-  sign-off per GATE-SPEC.
-- **Issues:** #601 (`Origin: real-use`) · answers all **three** questions #609 held open
-  (below) · defers the §5 `session_handoff` analogue to #621
-- **GATE-SPEC-W002 (parity):** both platforms track `0.50.0`. Four plugin skills move with
-  the template (below). **The other engine is left unchanged, and that is a judgement, not
-  an absence.** It carries no `code_inventory` surface of its own — zero occurrences in its
-  tree — and reaches this carrier only through
-  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, which it references by path. So it
-  inherits the rule and regresses on nothing. What it does *not* gain is an authoring
-  instruction: its own IPLAN prompt enumerates the traceability section without naming the
-  block, so the seed reaches one platform's authoring path and not the other's. Tracked with
-  the §5 split in **#621**, on which the two engines already contradict each other.
-- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
-  agent-instruction text. The change adds authoring guidance and a status value; it grants no
-  capability, names no external resource, and introduces no instruction an agent could follow
-  to reach outside the artifact.
-
-`IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
-`2943bf3b` — `created` and `modified` — and demonstrated them with one worked entry reading
-`status: created`, `session: 1`. Both values assert that the file exists. A Draft IPLAN has
-no files, so an authoring agent generating one from the template had no correct value to
-write and copied the example — producing a Draft whose audit trail claims work that has not
-happened.
-
-**The defect is in the example, not only in the enum.** The `_guidance` said "Populated by
-each session", which is the correct retrospective reading and is exactly why the block was
-never meant to be filled at Draft. The example beside it said otherwise, and **an example
-overrides the prose beside it** — GD-24 recorded that lesson one release earlier. This is
-why `2943bf3b`'s repair did not close #601: it appended `planned` to a YAML `#` comment
-that nothing parses, and left the surface agents actually copy unchanged.
-
-**Decision: `planned | created | modified`, and a Draft IPLAN of subtype `code_build` or
-`combined` seeds ONE ENTRY PER §2 `file_manifest` PATH, in manifest order, all `planned`,
-`session: null`, `verified: false`.** Each session sets the entries it touched to `created`
-or `modified`, records its session number, and appends an entry for any file it touches that
-§2 does not declare. `planned` MUST NOT survive a session that touched the file — without
-that clause the new value simply becomes the next permanent stale marker, which is the
-defect one step removed. A `deploy` IPLAN requires no `file_manifest`
-(`document_control._guidance`), so it seeds no entries and records a file here only when a
-cutover step creates or modifies one; without that carve-out the rule is unsatisfiable for a
-whole subtype.
-
-**The empty block is retired, and that is a platform-visible change.** `doc-iplan` and
-`doc-iplan-autopilot` both instructed an authoring agent to ship an *empty*
-`code_inventory`, so Platform B and the spec had already disagreed about what a Draft
-carries. An empty block is also the weaker artifact on its own terms: it is
-indistinguishable from an executor that never wrote its entries back, whereas a fully
-`planned` block states the expected set and makes the gap between plan and reality visible
-to the next stateless session. `doc-iplan-audit`'s advisory row and `doc-iplan-fixer`'s
-phase-5 repair action move with them, so the auditor cannot fail an IPLAN the author was
-told to write, and the fixer seeds the state the template now specifies. The fixer's first
-draft of that action carved out "unless the file is already on disk" — review killed it:
-phase 1 creates stub files at every declared manifest path *before* phase 5 runs, so the
-carve-out always fired, named no alternative status, and left `created` as the agent's only
-reading. The fixer would have written #601 into every Draft it repaired.
-
-**The redundancy with §2 `file_manifest` is accepted.** The two carriers now share a path
-list, and §2's note says explicitly that they are *not* reconciled: §2 is the executor's
-build order over four values (`NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`), §6 is the audit
-trail over three, and each carries its own `verified:` — §6's is the stricter claim
-(tests pass + lint clean), §2's tracks the same file through a different question. Collapsing
-them is a larger redesign of the layer than a `real-use` status-value report warrants, and it
-would change the meaning of every IPLAN already authored. Not adopted here; deliberately left
-as two carriers. **The redundancy creates a detection gap this change does not close:**
-nothing validates the §2 ↔ §6 correspondence on an *authored* artifact — `sdd_doc_lint`
-carries no `code_inventory` rule, and the conformance guard below reaches the template only.
-A Draft whose §6 still holds the template's placeholder paths while §2 carries real ones is
-silently conforming.
-
-**Every in-file statement of the vocabulary must agree, and there are three.** §2's
-explanatory passage restated it as `created | modified`, and after `2943bf3b` it contradicted
-the `status:` key ~140 lines below (`:163` against `:300`) for two days — the second of the
-three questions #609 held open. The third statement is `_guidance`'s own lifecycle list,
-which sits directly above the entries and is the copy a reader meets first; the first draft
-of the guard tied only two of the three together, and mutation testing showed the list could
-lose `planned` while every test stayed green. All three are now held to one value set.
-
-**`session_handoff.sessions[].files_touched[].action` is NOT extended.** It records what a
-session did to a file, and a session that touched a file created or modified it. `planned`
-there would be a contradiction in terms, and the guard now holds that enum to two values so
-the non-decision is not merely stated.
-
-**What #609 asked, and the answers.** #609 held three questions, closed by hand on
-2026-09-01 with no recorded disposition; this entry supplies them. **(1) Did `2943bf3b` owe
-a version bump?** Yes. The vocabulary is normative — it is the only place the carrier's
-allowed values are stated, so the comment *is* the contract by default — which makes the
-edit a `framework/**` spec change owing a bump and a GD entry. It bypassed `GATE-SPEC`
-because a direct push to `main` runs no PR checks. This release pays that debt and this
-entry is that record. **(2) Is `:163` reconciled with `:300`?** Yes, and a third copy nobody
-had counted is reconciled with them. **(3) Is #601 satisfied by a comment-only edit?** No —
-that is the finding above, and it is why this change rewrites the worked entries.
-
-**The §5 analogue is real and is filed, not waved away.** §5 `session_handoff.sessions[]`
-ships a worked example carrying `action: created` and `status: IN_PROGRESS`, and
-`doc-iplan/SKILL.md` instructs seeding it at Draft — the identical defect shape one section
-up, on which the two engines already disagree — one initializes an empty `sessions` array.
-It is **#621**, not silence: a documentation-only closure needs a named owner for the
-mechanism, and scoping this release to the reported carrier is the minimal-and-realistic
-convention, not a judgement that §5 is fine.
-
-**Guard.** `tests/conformance/test_iplan_code_inventory_lifecycle.py` (15 tests). The Draft
-rule reads the **parsed YAML entries**, not the enum comment: a guard checking only the
-comment would have passed `2943bf3b`, the change that shipped the defect. Expected fragments
-are built from the module's `LIFECYCLE` tuple rather than hardcoded, so a meaning-preserving
-reword of the punctuation around them cannot red a required context. Mutation testing over
-the first draft killed four platform-side rules and drove the shape of what replaced them:
-the retired instruction re-entered by **word order** ("leave `code_inventory` empty"), which
-is verbatim the order-directionality bug GD-24's guard records as review-killed; a *correct*
-prohibition ("Reject an empty `code_inventory`") reddened the check, so a negation exemption
-is required rather than optional; a skill could instruct `status: created` in a Draft seed
-and stay green, because the rule banned the previous wrong instruction and not the class; and
-deleting a skill's seed instruction outright stayed green, because a negative can only prove
-a surface stopped saying the old thing. Every claim this entry makes about the four skills
-now has a **positive** assertion behind it. The scan globs `doc-iplan*/**/*.md` rather than
-top-level `SKILL.md`, after `test_no_inprompt_hashing.py`, and normalizes whitespace, because
-the live instruction in `doc-iplan/SKILL.md` was split across a line break. Expected fragments
-carry no pinned punctuation: an earlier draft anchored the em-dashes around §2's vocabulary,
-so rewriting `(a different vocabulary — X —` as `(a different vocabulary: X,` reddened a
-required context for no semantic change.
-
-**Nineteen mutations, eighteen behaving as specified, and the nineteenth is a stated limit.**
-Killed: the original #601 defect; `2943bf3b` exactly; the enum comment alone; §2's passage
-alone; `_guidance`'s list alone; the retired instruction in either word order and in its
-`files: []` form; a `created` Draft seed; deletion of the audit row, the fixer action, or the
-autopilot seed; `action` extended with `planned`; the README's seed sentence; a gutted GD-25;
-a `doc-iplan*/reference.md` and a nested fifth-skill `SKILL.md` carrying the instruction; and
-`verified: 0` for `false`. Deliberately green: a correct prohibition, a meaning-preserving
-reword of the guidance, and the punctuation swap above. **Not killed:** reverting
-`doc-iplan`'s validation-checklist line alone, because step 9 of the same file still states
-the seed — the skill stays correct, so this is a weakening the positive rule tolerates by
-design, not a reintroduction. The vendored-bundle assertion **adds no coverage** —
-`test_plugin_framework_bundle.py` already byte-compares every bundled file and did catch
-`2943bf3b`'s drift; it is kept only so a failure names this carrier.
-
-- **Consequences.** IPLANs already carrying `created` / `modified` entries stay valid and
-  need no migration; `planned` is additive. A Draft IPLAN with an empty `code_inventory` is
-  now incomplete rather than correct — but the template states the seed as a MUST while
-  `doc-iplan-audit` grades it **Tier 2 (advisory)**, so it warns rather than blocks and
-  `doc-iplan-fixer` phase 5 repairs it. That asymmetry is deliberate: a Draft missing the
-  seed is under-specified, not wrong, and blocking on it would fail every IPLAN authored
-  before this release. The example corpus is regenerated wholesale after framework changes
-  and is untouched here.
-- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§2 carrier note,
-  `document_control` subtype table, `traceability.code_inventory`),
-  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an
-  example overrides the prose beside it),
-  `tests/conformance/test_iplan_code_inventory_lifecycle.py`.
-
----
-
-## GD-24 — The ADR `alternatives` block grades a named disqualifying factor; cost and fit are optional dimensions, and an existing survey is cited rather than restated
-
-- **Status:** Accepted — 2026-09-01 · **SemVer:** framework `0.48.0 → 0.49.0` (MINOR),
-  change-level **C2**. Three motions: an additive optional field, a relaxed mandate, and two
-  new advisory `_antipatterns` that tighten what C2 already graded. None is breaking, and
-  `major ⇒ C3` is one-directional per GD-01, so C2 holds. Ratified on merge; a `framework/**`
-  normative change — human sign-off per GATE-SPEC.
-- **Issues:** #602 (`Origin: real-use`) · defers the `@seed:` provenance-tag question to #614
-- **GATE-SPEC-W002 (parity):** both platforms track `0.49.0`. Three plugin skills move with
-  the template (below). The other engine needs no change — its ADR prompt templates require
-  pros/cons and a rejection reason but never a per-option cost or fit, and their cost
-  language is already scope-qualified to significant or infrastructure decisions.
-- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
-  agent-instruction text. The change adds authoring guidance and removes a mandate; it grants
-  no capability, names no external resource, and introduces no instruction an agent could
-  follow to reach outside the artifact.
-
-`ADR-TEMPLATE.yaml`'s `alternatives` block demanded a cost estimate and a fit rating on
-**every** option — `_guidance` ("Each must have pros, cons, estimated cost, and fit
-rating") and, as a hard failure, `_antipatterns` ("FAIL: no cost estimate per
-alternative"). The normative authoring lens demands neither.
-`playbooks/05_ADR/architect.md` check **C2** grades two things: that ≥2 alternatives are
-enumerated, and that each rejected one carries "a one-paragraph rationale naming the
-concrete factor that disqualified it (cost, latency, complexity, vendor lock-in, etc.)" —
-cost is *one example on an open list*, and the lens's failure mode is a stub rationale, not
-a missing dollar figure.
-
-**The template and the lens were grading different things, and the template is what agents
-read.** An ADR deciding a pattern, a process or an interface has no monthly dollar figure,
-so a conforming author either invents one — noise that reads as evidence to every
-downstream reader — or fails an antipattern the audit never actually checks. The mandate
-had also fanned out to three plugin authoring surfaces (`doc-adr`, `doc-adr-autopilot`,
-`doc-adr-audit`), so the audit lens restated it back to the author.
-
-**Decision: `estimated_cost` and `fit` are OPTIONAL per option; the rejection reason must
-name a concrete disqualifying factor; and an analysis that already exists is cited in a new
-optional `prior_analysis` field rather than restated.**
-
-**The optionality is demonstrated, not merely declared.** One example option omits both
-fields, cites `prior_analysis`, and carries a rejection reason — the whole shape in one
-place — because the example block is the schema as far as an authoring agent is concerned.
-Prose calling a field optional beside three examples that all carry it teaches the mandate.
-
-**The `seed/` case is the common one, and it is now supported.** The reporting project's
-flow is the ordinary one: the options were surveyed and approved in the project's `seed/`
-stakeholder documents, and the SDD ADR is the development record that carries the approved
-option forward into SPEC. It did not originate the survey, and the template was telling it
-to reproduce one. `prior_analysis` names `seed/` explicitly as a legitimate target.
-
-**Citing the seed opens no second absorption path.** Seed *claims* are absorbed exactly
-once, at BRD, each with a disposition row (`SEED_CONTRACT.md` rules 2-3 / GD-08 — rule 2 is
-total disposition, rule 3 is BRD-as-absorption-point). Naming a seed document as the place
-an analysis lives asserts no claim and creates no ledger row, so the field is
-contract-compatible; and because C2 still requires the disqualifying factor to be stated
-**in the ADR**, no claim travels solely through the pointer.
-
-**The decision record itself does not move.** No SDD layer above ADR records an architecture
-commitment, so an ADR that cites its way out of stating one — the commitment, the rejection
-factors, the consequences SPEC inherits — has recorded nothing, however good the survey it
-points at. `playbooks/05_ADR/architect.md` **C2** is extended in the same change to say both
-halves: a rationale MAY compress to the named factor plus the citation, and a citation
-naming **no** factor is still the stub rationale C2 has always failed.
-
-**A count defect surfaced in review and ships with the fix.** `options:` includes the
-selected option, so the template's legal minimum — two entries — is one selected plus a
-*single* rival, which C2 explicitly P1s ("a single alternative"). Only the template's
-maximum satisfied the lens, and the antipattern forbade going higher. The count is now
-stated as **2-3 alternatives beside the selected option** (3-4 `options:` entries) in the
-template, the three plugin skills and `ADR-00_index.TEMPLATE.md`, whose two statements said
-"at least 2-3" — a third reading again.
-
-**Consequences §5 moves too, for the identical reason.** `consequences.cost_estimate` was
-unconditional, so an author told to omit `estimated_cost` in §4 was asked for
-`$[X,XXX]/month` one section later, and `doc-adr/SKILL.md` checklisted it. The block is now
-CONDITIONAL — omitted where the decision commits no spend — and the readiness rubric's
-"costs documented" is qualified to match. Leaving it would have discharged only half of a
-`real-use` report while this entry's own rationale indicted it.
-
-Three things the report proposed were **not** adopted, and the reasons are the substance of
-the rest of this entry.
-
-- **The `@seed:` tag FORM, not the seed citation.** What the report wanted — the ADR
-  pointing at the seed survey instead of copying it — ships, as prose. The tag form does
-  not, and **the reason is scope, not principle.** An earlier draft of this entry argued
-  "a tag is lineage"; that is **false**, and `TAG_SYNTAX.md` is the file that refutes it:
-  its "Provenance tag" section registers `@chg: CHG-NN` as explicitly *not* a trace tag,
-  carrying no lineage, for a CHG overlay that is likewise "not one of the 8 registry
-  layers" and "appears in no layer's `required_tags` or `can_reference`". So the registered
-  set is the 8 layer forms **plus** `@chg:`, and an `@seed:` provenance tag would be at
-  least the tenth class, not the ninth. It is also architecturally coherent — which is
-  precisely why it is not being decided here. `@chg:` earns its registration by anchoring
-  to a gated CHG record with a defined form, carrier, placement rule and an enforcing
-  check (C1); the seed has no such anchor, and a new class needs a `TAG_SYNTAX.md` section,
-  a carrier rule, a `REFGRAN01` carve-out and a lint decision. That is a spec change in its
-  own right, filed as **#614**. A prose field meets the reported need today without
-  pre-empting it.
-- **The governance rule cited in the report is not this framework's.**
-  `DECISION_WORKFLOW.md` §3 ("SDD ADR selects, doesn't re-survey") exists in the reporting
-  project, not in this spec or anywhere in the workspace, and its three-tier
-  Seed → Module → SDD model has no framework counterpart. The defect is real regardless —
-  it is the template-vs-C2 contradiction above, which is entirely framework-owned — but it
-  is a narrower defect than the report's premise, and fixing it on that premise would have
-  broken C2 by replacing per-option analysis with a one-line `decision:` field.
-- **`options:` is not renamed to `considered:`.** Before this change nothing keyed on the
-  name — not `sdd_doc_lint`, not the layer registry, not any conformance check; after it,
-  the sole consumer is `tests/conformance/test_adr_alternatives_optionality.py`, added
-  here. So the rename breaks no gate. What it costs is template drift against every ADR
-  already authored, plus a guard update, to buy clearer semantics — churn without a
-  functional gain, out of scope per the minimal-and-realistic convention.
-
-**Guard.** `tests/conformance/test_adr_alternatives_optionality.py` (16 tests). Its
-per-option mandate rule is a **normalized-sentence scan**, not a literal blocklist, and that
-shape was forced by review: the literal version missed the live mandate in
-`doc-adr/SKILL.md` (which read "cost, fit", not "cost/fit"), and one of its literals was a
-substring of the *sanctioned* replacement text, held apart only by a capital letter — so
-lowercasing a correct line would have reddened a required check. The rule normalizes
-whitespace, splits into sentences, and fails a sentence carrying a per-option quantifier and
-an optional dimension in **either order** without an exemption word. Order-directionality
-was itself a bug caught by mutation: written quantifier-first, it missed "cost and fit
-required on each option". Nine mutations are killed, including the live `doc-adr` defect,
-a reflowed mandate, an appended `_guidance` sentence, a reworded antipattern, a gutted C2,
-a mandate in `doc-adr-fixer` (outside the first draft's hardcoded roster), a stub rejection
-placeholder, a filler option gaming the demonstration, and an `@`-tag written into
-`prior_analysis`; lowercasing compliant text stays green.
-
-- **Consequences.** Projects already filling `estimated_cost` keep working — the field is
-  unchanged and still first in the example option — with one exception: an ADR carrying an
-  *invented* figure on a decision with no cost dimension now trips a new advisory
-  antipattern. That is the intended tightening. The three plugin ADR surfaces move in the
-  same change, so the audit lens cannot fail an ADR the template told the author to write.
-  `ADR-MVP-TEMPLATE.yaml` is untouched: it never carried a cost or fit mandate.
-- **Authority:** `layers/05_ADR/ADR-TEMPLATE.yaml` (`alternatives`, `consequences`),
-  `layers/05_ADR/ADR-00_index.TEMPLATE.md`, `playbooks/05_ADR/architect.md` (C2),
-  `governance/TAG_SYNTAX.md` (the `@chg:` provenance precedent),
-  `governance/SEED_CONTRACT.md` + **GD-08** (BRD is the absorption point), **GD-01**
-  (`major ⇒ C3` one-directional), `tests/conformance/test_adr_alternatives_optionality.py`.
-
----
-
-## GD-23 — A layer template MUST declare the document's `title`, at top level, as a scalar
-
-- **Status:** Accepted — 2026-08-31 · **SemVer:** framework `0.47.0 → 0.48.0` (MINOR),
+- **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.52.0 → 0.53.0` (MINOR),
   change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
   GATE-SPEC.
-- **Issues:** #553 · defers the identity half to #588
+- **Context:** Projects adopting the framework need project-specific customizations (modified
+  templates, additional governance rules, custom playbooks) but have no mechanism to override
+  framework defaults without forking. The existing `.aidoc/` contract defined it as "AI
+  provenance" with `audit/`, `review/`, `remediation/`, `validation/`, `security/`, `quality/`
+  subdirectories — none of which were used in practice (empty in every project).
+- **Decision:** Redefine `.aidoc/` as the project override layer. The new contract:
+  1. `.aidoc/profile.yaml` — adaptation knobs (unchanged)
+  2. `.aidoc/framework/` — symlink to shared framework (canonical path)
+  3. `.aidoc/project/` — project-specific overrides (same structure as framework/)
+  4. Agent discovery: read `.aidoc/project/` first, fall back to `.aidoc/framework/`
 
-`SPEC-TEMPLATE.yaml`, `TDD-TEMPLATE.yaml` and `IPLAN-TEMPLATE.yaml` declared no document title.
-Every artifact those templates produce carries one anyway — `examples/url-shortener/docs/`
-authors `title:` on all nine documents, and so does every acceptance golden. The templates were
-silent about a key their own output universally has.
+  This follows software versioning conventions: projects customize without forking, overrides
+  are project-local, and the framework stays untouched. The root `framework/` symlink exists
+  for backward compatibility and will be removed when zero active files reference it.
+- **Consequences.** `framework/VERSION` `0.52.0 → 0.53.0`; `governance/aidoc/AIDOC.md` rewritten;
+  `README.md` four-tier model updated; `ADAPTATION.md` §10 added; `GATE-SPEC_FRAMEWORK.md`
+  reference fixed. The empty provenance subdirectories (`audit/`, `review/`, etc.) are no
+  longer part of the `.aidoc/` contract.
+- **Authority:** `governance/aidoc/AIDOC.md`; `governance/ADAPTATION.md` §10; `README.md` §Project layout.
 
-**Decision: `title` is a top-level scalar key on every full layer template.**
+---
 
-**Placement follows the majority and the authority, not the MVP set.** Five of the eight full
-templates already carried a top-level `title:`; the seven index templates carry one in
-frontmatter; every authored artifact carries one. `metadata.title` — the placement
-`IPLAN-LAYER-REVIEW-001-DESIGN.md` R8 proposed — exists in **no template in the repository**.
+## GD-24 — All framework governance documents carry `document_control` for lifecycle tracking
 
-**R8 is superseded on placement because it contradicts the authority it cites.** R8 defers to
-the OKF D1 contract, and D1 declares *the required **top-level** keys*; D2 settles the sibling
-key the same way, choosing the top-level `artifact_type` the linter reads over a nested one.
-The retirement deliberately does **not** rest on `FRONTMATTER_CONTRACT.md` being unwritten —
-that ground would evaporate the moment it is authored, and this decision feeds it.
+- **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.51.0 → 0.52.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** The framework's 10 SDD layer templates carry `metadata:` and `document_control:`
+  blocks that track version, status, last_updated, author, and framework_version. However, the
+  framework's own governance documents (`governance/*.md`), gate definitions, layer READMEs,
+  root-level reference docs, and playbook READMEs — 64 files total — had no version tracking,
+  no status field, and no authorship metadata. This violates the principle that the framework
+  should model the governance it prescribes: a spec that requires `document_control` on SDD
+  artifacts but omits it from its own governance documents is inconsistent.
+- **Decision:** All framework governance and reference documents gain a `## Document Control`
+  table with: Version, Status, Last Updated, Author, and Framework Version. YAML data files
+  (`LAYER_REGISTRY.yaml`, `ADAPTATION_SURFACE.yaml`, `REVIEW_CREWS.yaml`, `PROFILE-TEMPLATE.yaml`)
+  gain `last_updated` and `framework_version` in their existing `metadata:` blocks. This extends
+  the document lifecycle tracking from SDD layer artifacts to the entire framework specification
+  surface. The format uses a Markdown table (not YAML `document_control:`) because governance
+  docs are prose documents, not SDD layer artifacts, and a table is the natural rendering in
+  Markdown.
+- **Consequences.** `framework/VERSION` `0.51.0 → 0.52.0`; both `FRAMEWORK_SPEC_VERSION` pins
+  re-declare; the vendored plugin bundle is re-synced. All 64 affected files archived to
+  `archive/CHG-01/` before modification. The `document_control` blocks are informational — they
+  do not participate in the SDD lint/conformance chain and are not validated by `sdd_doc_lint`.
+  They are a governance-layer mechanism for tracking document freshness and authorship.
+- **Authority:** `DOC_GOVERNANCE_CORE.md` §Principle 8 (change-of-record discipline);
+  `DEFINITION_OF_DONE.md` §Artifact-level; CHG-01.
+- **Scope limits:**
+  - Playbook role files (`playbooks/*/architect.md`, `playbooks/*/auditor.md`, etc.) are **not**
+    included — they are agent runtime instructions with their own `layer:` / `lens:` frontmatter
+    and serve a different purpose than governance documents.
+  - `LEARNED_LESSONS.md` already has `version` and `last_updated` in its frontmatter; it was
+    left unchanged to avoid conflicting metadata formats.
+  - Scripts (`scripts/*.sh`) are executable code, not governance documents, and are excluded.
 
-**The scalar requirement is normative, not stylistic.** Two derivations read a template's
-top-level keys and they disagree about what a section is: `sdd_doc_lint._load_section_targets`
-requires an integer `_size_target`, while `tests/acceptance/_harness.template_sections` admits
-**every** top-level mapping except `metadata`. A `title:` authored as a mapping therefore leaves
-`STRUCT01` green while reddening every golden for that layer with `missing template sections
-['title']`. Measured, not argued: the mutant was run in both tiers before this shipped.
-`tests/conformance/test_layer_title_declared.py` asserts the type, not merely the key.
+---
 
-**Identity is explicitly out of scope.** Top-level `id:` does not accompany `title:`. It is
-authored by no artifact and read by no code, while `doc_id:` is what artifacts write and what
-the linter reads — four carriers with no normative one. That is #588's, and D1's, to settle.
+## GD-23 — Every SDD document records `framework_version` in metadata, following software versioning conventions
 
-**Consequence.** `file_manifest.files[]` also gains a per-entry `description`, and
-`document_control._guidance` reserves `session_summary` for a status-at-a-glance field so it
-cannot collide with the §5 `session_handoff` section. Both are IPLAN-local and ride this bump
-rather than costing their own.
+- **Status:** Accepted — 2026-01-20 · **SemVer:** framework `0.51.0 → 0.52.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC. **Implementation note:** The `framework/VERSION` bump was deferred at acceptance and
+  executed together with GD-24 in CHG-01 (2026-09-07). Both decisions share the `0.51.0 → 0.52.0`
+  transition; the VERSION file was bumped once for both.
+- **Context:** Projects that adopt the framework may span multiple framework versions — a BRD
+  created under v0.49.0 coexists with a SPEC created under v0.51.0 after an in-flight framework
+  bump. Without per-document version tracking, there is no audit trail for which spec version a
+  document was authored against, and no mechanism to decide whether a document needs rewriting
+  when the framework bumps.
+- **Decision:** Every SDD document template gains `metadata.framework_version: "[X.Y.Z]"` —
+  the `framework/VERSION` at document creation time. This follows the software versioning
+  convention: documents are "built against" a framework version the same way a binary is built
+  against a library version. The CHG template gains `version_action: keep | upgrade` — set only
+  when a CHG touches a document whose `framework_version` is older than the current
+  `framework/VERSION`. The LAYER_REGISTRY gains `metadata.framework_version` as the canonical
+  value platforms re-declare. A new warning check `GATE-SPEC-W004` flags CHGs that touch stale
+  documents without setting `version_action`.
+- **Consequences.** `framework/VERSION` `0.51.0 → 0.52.0`; both `FRAMEWORK_SPEC_VERSION` pins
+  re-declare; the vendored plugin bundle is re-synced. The per-document `framework_version` is an
+  audit trail — conformance stays per-platform (`GATE-SPEC-E006`), not per-document.
+- **Authority:** `DOC_GOVERNANCE_CORE.md` §Version Bumping; `DEFINITION_OF_DONE.md`; all 10
+  layer templates; `LAYER_REGISTRY.yaml` metadata; `GATE-SPEC_FRAMEWORK.md` §3.2.
 
 ---
 
@@ -742,18 +373,17 @@ one entry; they are otherwise unrelated.
 **1. The framework prescribes no test-file layout (#550).** `TDD-TEMPLATE.yaml`
 and `SPEC-TEMPLATE.yaml` hardcoded **ten** Python test paths (`tests/unit/test_[module].py`
 and siblings) and **seven** pytest-shaped function names. Every other surface in
-the chain had already been genericized — `SPEC-TEMPLATE.yaml`'s `language:`,
-both of `IPLAN-TEMPLATE.yaml`'s do-not-re-pin statements, and `TDD-MVP-TEMPLATE.yaml`
-— so the full TDD template was the one place a language survived, and its own MVP
-variant was ahead of it.
+the chain had already been genericized — `SPEC-TEMPLATE.yaml`'s `language:` and
+both of `IPLAN-TEMPLATE.yaml`'s do-not-re-pin statements — so the full TDD template
+was the one place a language survived.
 
 The **decision is not "support more languages"**, which is what the consumer report
 that surfaced this asked for (per-case `language:` and `test_framework:` fields).
 That would re-pin the language one layer down and give the toolchain two owners.
 SPEC owns `language:`; TDD and IPLAN derive from it. Placeholders take
-`TDD-MVP-TEMPLATE.yaml`'s bare angle-bracket form, one form and not two — the
-`# example (Python):` device works in `IPLAN-TEMPLATE.yaml` only because those
-entries are list-of-string commands rather than mapping values.
+the bare angle-bracket form — the `# example (Python):` device works in
+`IPLAN-TEMPLATE.yaml` only because those entries are list-of-string commands
+rather than mapping values.
 
 `framework/TESTING_STRATEGY_TDD.md` was **silent** on the subject, so the template
 change would have pointed at nothing; it now states the derivation and gives
@@ -801,7 +431,7 @@ an existing regression test" trap.
 
 **And EARS was never the outlier.** `total_sections` counts **numbered** sections;
 the derived set is required sections, which includes required *unnumbered*
-backmatter. Measured across all eight layers:
+backmatter. Measured across all ten layers:
 
 | Layer | derived required | `total_sections` |
 | --- | --- | --- |
@@ -878,12 +508,6 @@ filesystem, and a stale entry still lints clean.
     synced while the document explaining *why* they are placeholders is not.
     Platform authoring surfaces are out of scope here and must add their own, per
     the caveat GD-09 and GD-17 record for their guards.
-  - **`IPLAN-MVP-TEMPLATE.yaml` is NOT reconciled and this entry does not decide
-    it.** Its manifest declares `not_started|in_progress|completed|blocked` —
-    different case, `completed` for `DONE`, an extra `blocked`, no `PARTIAL`. That
-    divergence is #438's territory, which GD-16 likewise declined to settle. Item 1
-    praises the MVP set for being *ahead* of the full templates on test paths; item
-    5 must not be read as claiming the same for status.
 
 ---
 
@@ -999,9 +623,7 @@ filesystem, and a stale entry still lints clean.
   4. The carrier is a **field-name token**, so it is serialization-independent — the
      same rule holds wherever the manifest is rendered.
 - **What this does NOT decide.** It does not add the coverage rule (`COV04`), which is a
-  successor change and must be carrier-scoped per the reasoning above; it does not
-  reconcile `IPLAN-MVP-TEMPLATE.yaml`'s bare-list manifest shape with the canonical
-  `files:` shape (issue #438) — the carrier is line-local and attaches to either; and it
+  successor change and must be carrier-scoped per the reasoning above; and it
   does not touch `file_manifest`'s existing status/verified semantics.
 - **Consequences:** **MINOR** — additive template keys and a new governance rule; no
   existing artifact becomes non-conformant, because the field is optional. A prerequisite
@@ -1009,9 +631,9 @@ filesystem, and a stale entry still lints clean.
   discarded from the trace graph because the value capture did not terminate on a quote
   (issue #542) — without that fix the carrier is unusable in the normative format.
 - **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` §2 `file_manifest`,
-  `layers/08_IPLAN/IPLAN-MVP-TEMPLATE.yaml`, `layers/08_IPLAN/README.md`
-  §"TDD-case carrier"; guarded by `tests/conformance/test_iplan_carrier.py`;
-  `plans/IPLAN-TDDREF-001-PLAN.md`; `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`.
+  `layers/08_IPLAN/README.md` §"TDD-case carrier"; guarded by
+  `tests/conformance/test_iplan_carrier.py`; `plans/IPLAN-TDDREF-001-PLAN.md`;
+  `plans/IPLAN-LAYER-REVIEW-001-DESIGN.md`.
 
 ---
 
@@ -1119,16 +741,14 @@ filesystem, and a stale entry still lints clean.
   created purely because the previous one reached the cap is a **sibling** within one
   cycle, not a dependent; record that in the `BRD-00` index and in prose.
 - **Counting rule (normative, because a cap nobody can count cannot be applied).** One
-  requirement, stated per authored shape because the layer has three: in the **authored
-  markdown** form, the element IDs under `## 7. Functional Requirements` and before that
-  section's literal `Acceptance criteria:` line — the boundary already ratified in
-  `BRD-TEMPLATE.yaml` `_authored_form` rule 2 and implemented by `sdd_doc_lint`'s
-  `scan_fr_elements`, so the cap counts exactly what the coverage gate counts; in the
-  **full structured template**, the entries of `requirements[]`; in the **MVP skeleton**,
-  the entries of `functional_requirements[]`, whose `acceptance_criteria` is a field of
-  the requirement. Worked example: `examples/url-shortener`'s BRD-01 carries **8**
-  `BRD.01.07.*` element IDs but **4** requirements — the other four follow its
-  `Acceptance criteria:` line. Compliant, and it would not have been under an
+  requirement, stated per authored shape: in the **authored markdown** form, the element
+  IDs under `## 7. Functional Requirements` and before that section's literal
+  `Acceptance criteria:` line — the boundary already ratified in `BRD-TEMPLATE.yaml`
+  `_authored_form` rule 2 and implemented by `sdd_doc_lint`'s `scan_fr_elements`, so
+  the cap counts exactly what the coverage gate counts; in the **structured template**,
+  the entries of `requirements[]`. Worked example: `examples/url-shortener`'s BRD-01
+  carries **8** `BRD.01.07.*` element IDs but **4** requirements — the other four follow
+  its `Acceptance criteria:` line. Compliant, and it would not have been under an
   ID-counting rule.
 - **Consequences:** **MINOR, not patch.** The prior guidance was not wrong, it was a
   different policy, so this changes what the spec instructs authors to produce rather
@@ -1150,7 +770,7 @@ filesystem, and a stale entry still lints clean.
     [#540](https://github.com/vladm3105/aidoc-flow-framework/issues/540) rather than
     argued away.
 - **Authority:** `layers/01_BRD/BRD-TEMPLATE.yaml` §7 `functional_requirements` and
-  `file_organization`; `layers/01_BRD/README.md`; `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+  `file_organization`; `layers/01_BRD/README.md`; `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`.
 
 ---
 
@@ -1208,7 +828,7 @@ filesystem, and a stale entry still lints clean.
   generate — a downstream detector with regeneration latency, which is how the
   surviving drift in #563 was found.
 - **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity"; GD-03;
-  `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+  `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`.
 
 ---
 
@@ -1223,8 +843,8 @@ filesystem, and a stale entry still lints clean.
   ([#433](https://github.com/vladm3105/aidoc-flow-framework/issues/433),
   [#434](https://github.com/vladm3105/aidoc-flow-framework/issues/434),
   [#445](https://github.com/vladm3105/aidoc-flow-framework/issues/445)) all land on
-  `chg/templates/GATE_APPROVAL_FORM.md`. Each gate's checks are stated in three
-  documents — the gate definition, `chg/gates/GATE_ERROR_CATALOG.md`, and the form —
+  `layers/09_CHG/templates/GATE_APPROVAL_FORM.md`. Each gate's checks are stated in three
+  documents — the gate definition, `layers/09_CHG/gates/GATE_ERROR_CATALOG.md`, and the form —
   and **only the third is filled in**. #434 records the observed cost: a downstream
   project produced two change records from the form alone, concluding "no second CHG
   record is minted", the inverse of what `GATE-CODE_IMPLEMENTATION.md` §6.2 requires.
@@ -1268,17 +888,17 @@ filesystem, and a stale entry still lints clean.
   definition but not the form is a check nobody performs; a code in the form but not
   the definition is a check with no criteria.
 - **What is in the bundle:**
-  1. `chg/templates/GATE_APPROVAL_FORM.md` — adds the `GATE-03-E008` and
+  1. `layers/09_CHG/templates/GATE_APPROVAL_FORM.md` — adds the `GATE-03-E008` and
      `GATE-SPEC-W003` rows; corrects §2.2's tag counts to 1/1/2 naming the actual
      tags; adds a §2 note routing a GATE-CODE-entry change with an upstream root
      cause to `GATE-CODE_IMPLEMENTATION.md` §6.2 rather than onto this form.
-  2. `chg/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md` — E007's resolution template
+  2. `layers/09_CHG/gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md` — E007's resolution template
      states the 2-tag rule, and states what E007 does **not** fail on.
-  3. `chg/gates/GATE_ERROR_CATALOG.md` — the same correction at its §9.1
+  3. `layers/09_CHG/gates/GATE_ERROR_CATALOG.md` — the same correction at its §9.1
      quick-reference row and its §9.2 resolution template (the third carrier).
-  4. `chg/gates/GATE-CODE_IMPLEMENTATION.md` — §6.2 step 2 names the artifact the
+  4. `layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md` — §6.2 step 2 names the artifact the
      new CHG carries, closing the loop the form's new note opens.
-  5. `chg/CHG-TEMPLATE.yaml` — the Feedback routing cell stopped at `SPEC`, which
+  5. `layers/09_CHG/CHG-TEMPLATE.yaml` — the Feedback routing cell stopped at `SPEC`, which
      read as a floor; extended to the reach `GATE-CODE_IMPLEMENTATION.md:151` and
      `GATE_INTERACTION_DIAGRAM.md:109` already state, including ADR, which §6.1
      routes to GATE-03 alongside BDD and EARS.
@@ -1525,7 +1145,7 @@ filesystem, and a stale entry still lints clean.
   (additive: a new `_required: false` carrier + two additive lint rules; no existing
   behavior changes), change-level **C2**.
 - **Context:** The spec named the `seed/` input tier three times, all descriptively
-  (`README.md` inputs row; `docs/AIDOC.md` tier diagram + tier table), but defined no
+  (`README.md` inputs row; `governance/aidoc/AIDOC.md` tier diagram + tier table), but defined no
   contract over it. `layers/01_BRD/README.md` — the doc governing the layer the seed
   feeds — never mentioned it, and BRD carries `required_tags: []`
   (`registry/LAYER_REGISTRY.yaml`), so the layer had no declared upstream of any kind.
@@ -1551,9 +1171,9 @@ filesystem, and a stale entry still lints clean.
 - **Consequences:** new `SEED_CONTRACT.md`, a `governance/README.md` index row,
   and the `test_governance.py` `EXPECTED_FILES` registration; `SEED01` in the
   reference linter plus its `LINT_RULES.md` row; the BRD `seed_disposition:` §16
-  carrier, the BRD-MVP skeleton row, and the `01_BRD/README.md` "Seed input"
-  section; playbook checks C8 (business_analyst and auditor). Additive
-  throughout: SemVer **minor**, change-level **C2**.
+  carrier and the `01_BRD/README.md` "Seed input" section; playbook checks C8
+  (business_analyst and auditor). Additive throughout: SemVer **minor**,
+  change-level **C2**.
 - **Security (GATE-SPEC-W003).** Parts A and C inject agent-facing authoring
   guidance (playbook C8 checks, BRD/TDD template `_guidance`). `SECURITY_REVIEW.md`
   checklist assessment: the added text only instructs an agent to author a
@@ -1564,7 +1184,7 @@ filesystem, and a stale entry still lints clean.
   Trivially safe — the GD-05 precedent for advisory-W003 agent-instruction text.
 - **Authority:** `SEED_CONTRACT.md`; `layers/01_BRD/BRD-TEMPLATE.yaml`
   (`seed_disposition:`); `LINT_RULES.md` (`SEED01`); `playbooks/01_BRD/{business_analyst,auditor}.md`;
-  `SECURITY_REVIEW.md` (W003); `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+  `SECURITY_REVIEW.md` (W003); `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`.
 
 ---
 
@@ -1619,7 +1239,7 @@ filesystem, and a stale entry still lints clean.
   names or runtime code") had leaked engine-specific tokens found in the
   FRWK-REVIEW-002 review: (a) `doc-*`/"SKILL" plugin vocabulary in governance/layer
   docs; (b) a direct Claude Code CLI reference (`claude -p`) and a plugin-skill table
-  in `docs/AIDOC.md`; (c) the playbook `agent:` frontmatter field, which names the
+  in `governance/aidoc/AIDOC.md`; (c) the playbook `agent:` frontmatter field, which names the
   executor and pointed into `platforms/claude-code-plugin/`; (d) a workspace-CI
   section in `REVIEW_REMEDIATION_FLOW.md` pinning `aidoc-flow-ci@ci/vX`; (e)
   repo-root tool paths (`tools/trace_walk.py`, `tools/sdd_coverage.py`) referenced
@@ -1654,7 +1274,7 @@ filesystem, and a stale entry still lints clean.
   extended to allow-list exactly the two sanctioned bindings; until then they are
   covered by this decision. No behavior change; SemVer **patch**, change-level **C1**.
 - **Authority:** this decision; `framework/README.md` (engine-agnostic convention);
-  D-0022 (the vendored-bundle exception precedent); `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+  D-0022 (the vendored-bundle exception precedent); `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`.
 
 ---
 
@@ -1699,7 +1319,7 @@ filesystem, and a stale entry still lints clean.
   safe — it only tells a lens to ignore a numeric self-claim; no capability/tool/
   permission change. Additive standard clarification: SemVer **minor**, change-level
   **C2**. (Per-platform implementation is tracked in the project decision log.)
-- **Authority:** `REVIEW_TEAM.md` §"Strip author self-claim"; `chg/gates/
+- **Authority:** `REVIEW_TEAM.md` §"Strip author self-claim"; `layers/09_CHG/gates/
   GATE-SPEC_FRAMEWORK.md`.
 
 ---
@@ -1741,7 +1361,7 @@ filesystem, and a stale entry still lints clean.
 - **Authority:** `aidoc-flow-iplan-standard` `docs/standards/IPLAN-ASSURANCE.md`
   (§2 L1, §9 R1–R3), `schemas/iplan-document.schema.json`
   (`intake_control.provenance`), `tests/contract/provenance/` (golden vectors);
-  `chg/gates/GATE-SPEC_FRAMEWORK.md`. Tracking: `aidoc-flow-operations`
+  `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`. Tracking: `aidoc-flow-operations`
   `ops/iplans/IPLAN-0028`.
 
 ---
@@ -1778,7 +1398,7 @@ filesystem, and a stale entry still lints clean.
   (fan-out) in CFB-PR-3. This unblocks the element-level `COV01`/`COV02` upgrade.
   Additive standard clarification: SemVer **minor**, change-level **C2**.
 - **Authority:** `ID_NAMING_STANDARDS.md` §"Reference granularity";
-  `chg/gates/GATE-SPEC_FRAMEWORK.md`.
+  `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`.
 
 ---
 
@@ -1813,7 +1433,7 @@ filesystem, and a stale entry still lints clean.
   not part of this spec. The change is **additive**: SemVer **minor**,
   change-level **C2**.
 - **Authority:** `REVIEW_REMEDIATION_FLOW.md`, `DEFINITION_OF_DONE.md`,
-  `chg/gates/GATE-SPEC_FRAMEWORK.md`, GD-01.
+  `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`, GD-01.
 
 ---
 
@@ -1852,9 +1472,9 @@ filesystem, and a stale entry still lints clean.
   a real gate to pass (it had none before). Recording this decision was itself a
   spec change and passed GATE-SPEC (its `VERSION`/`CHANGELOG` bump + green
   conformance are the evidence), the first exercise of the process.
-- **Authority:** `chg/gates/GATE-SPEC_FRAMEWORK.md`,
-  `chg/gates/GATE_ERROR_CATALOG.md` (GATE-SPEC codes), `chg/README.md`,
-  `chg/CHG-TEMPLATE.yaml` (the `spec` change-source + `semver_impact` field),
+- **Authority:** `../layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`,
+  `layers/09_CHG/gates/GATE_ERROR_CATALOG.md` (GATE-SPEC codes), `layers/09_CHG/README.md`,
+  `layers/09_CHG/CHG-TEMPLATE.yaml` (the `spec` change-source + `semver_impact` field),
   `README.md` (CHG overlay).
 
 ---

@@ -1,4 +1,4 @@
-"""Conformance: the 8 layer index/registry templates lint clean of structural errors.
+"""Conformance: the 10 layer index/registry templates lint clean of structural errors.
 
 `sdd_doc_lint` exempts index/registry docs (`<TYPE>-00_index`) from the
 instance-doc structural checks — STRUCT01 (required sections) and the
@@ -30,7 +30,7 @@ _REGISTRY = FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml"
 
 
 def _index_templates():
-    """The 8 layer index/registry templates (`<TYPE>-00_index.TEMPLATE.{md,yaml}`)."""
+    """The 10 layer index/registry templates (`<TYPE>-00_index.TEMPLATE.{md,yaml}`)."""
     found = sorted(FRAMEWORK.glob("layers/0*/[A-Z]*-00_index.TEMPLATE.*"))
     return found
 
@@ -41,7 +41,7 @@ class IndexTemplateLint(unittest.TestCase):
         self.assertEqual(
             len(templates),
             8,
-            f"expected 8 layer index templates, found {[p.name for p in templates]}",
+            f"expected 10 layer index templates, found {[p.name for p in templates]}",
         )
 
     def test_index_templates_emit_no_struct01_or_index_id02(self):

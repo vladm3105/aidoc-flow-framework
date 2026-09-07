@@ -3,10 +3,9 @@
 # Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 # Downstream: TDD (Layer 7)
 
-title: "[Technical Specification Title]"
-
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "spec-document"
   layer: 6
   total_sections: 8
@@ -19,7 +18,7 @@ metadata:
 
   c4_level:
     _guidance: |
-      SDD C4 map:
+      SDD C4 map (10 layers):
         C4-L1 Context   — BRD: business environment, actors, boundaries
         C4-L2 Container — PRD: product features, functional blocks
         Bridge           — EARS→BDD→ADR: formalize, specify acceptance, decide

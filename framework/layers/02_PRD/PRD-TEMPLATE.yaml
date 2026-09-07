@@ -24,6 +24,7 @@ title: "[Product Requirements Title]"
 
 metadata:
   schema_version: "1.0"
+  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
   document_type: "prd-document"
   layer: 2
   lifecycle: mvp-prod-newmvp
@@ -43,7 +44,7 @@ metadata:
 
   c4_level:
     _guidance: |
-      SDD C4 map (8 layers):
+      SDD C4 map (10 layers):
         Context (BRD)    — business environment, actors, boundaries
         Container (PRD)  — product features, functional blocks     ← this layer
         EARS              — formalize Context→Container transition

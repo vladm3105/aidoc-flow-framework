@@ -100,7 +100,7 @@ def newest_entry(changelog: str) -> str:
     Two shapes this has to survive, both of which occur in this workspace:
 
     * **A release cut empties ``## [Unreleased]``** and promotes the entry to
-      its own level-2 section — ``platforms/claude-code-plugin/CHANGELOG.md``
+      its own level-2 section — ``archive/platforms/claude-code-plugin/CHANGELOG.md``
       does this at its cuts. A section with no body is therefore skipped
       rather than returned, because returning it would scan nothing and pass
       vacuously.
@@ -319,7 +319,7 @@ class NewestEntryTests(unittest.TestCase):
         self.assertNotIn("released body", entry)
 
     def test_an_emptied_unreleased_section_is_skipped_not_returned(self):
-        # The post-release-cut shape: platforms/claude-code-plugin/CHANGELOG.md
+        # The post-release-cut shape: archive/platforms/claude-code-plugin/CHANGELOG.md
         # promotes the entry to a level-2 section and leaves [Unreleased] bare.
         # Returning the empty section would scan nothing and pass vacuously.
         cut = "## [Unreleased]\n\n## [0.25.0] — 2026-08-02\n\n### Added — the cut entry\n\n- body\n"

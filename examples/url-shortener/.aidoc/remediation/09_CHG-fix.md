@@ -41,7 +41,7 @@ blocking.
 | **OP-1** | P2 | Async on-redirect write path had no named observability signal — silent writer failure leaves stale/zero dashboards with no alert | Added a 4th observability intent — **error/drop-rate on the async on-redirect write** (owner SPEC-02/IPLAN-02) | §4.1 Observability | auto-assisted |
 | **OP-2** | P2 | Canary abort threshold named but the telemetry **source** the operator watches was not identified at CHG altitude | Named the abort-decision signal sources — metrics error-rate (1), dashboard p95/error-rate (2), async-write drop-rate (4); numeric thresholds defer to IPLAN-02 | §4.1 Deployment posture | auto-assisted |
 | **AU-1** | P2 | §6 did not name the post-implementation **re-gate path** / cross-reference §5's per-layer re-validation | Added §6 condition **C4** — each affected layer re-validated via `doc-<layer>-audit` (§5 final row); the change closes only when that passes (single formal re-gate path) | §6 Gate Approval | auto-assisted |
-| **AU-2** | P2 | §4.1 marked readiness links "before GATE-01" while §5 marked artifacts "after GATE-01" — ambiguous whether they are approval blockers or post-approval intent | Added §6 conditions **C1** (collateral is an approval input, authored before sign-off) + **C3** (two-phase timing: collateral precedes GATE-01; the 8-layer cascade re-audits after) — reconciled | §6 + §4.1 preamble | auto-assisted |
+| **AU-2** | P2 | §4.1 marked readiness links "before GATE-01" while §5 marked artifacts "after GATE-01" — ambiguous whether they are approval blockers or post-approval intent | Added §6 conditions **C1** (collateral is an approval input, authored before sign-off) + **C3** (two-phase timing: collateral precedes GATE-01; the 10-layer cascade re-audits after) — reconciled | §6 + §4.1 preamble | auto-assisted |
 | **SE-1** | P2 | First-authz-boundary deferral to ADR-02 lacked an **explicit** "no surface ships before ADR-02 is approved" gate condition; bound only implied by §4 ordering | Added §6 condition **C2** — no dashboard/owner-authz/retained-data surface ships until **ADR-02 is approved at ADR altitude**; GATE-01 (business gate) does not substitute | §6 Gate Approval | auto-assisted |
 | **IL-3** | P3 | §4 "Artifacts modified/created" table omitted ADR-01 and SPEC-01 (boundary-affected in §3/frontmatter) | Added ADR-01 + SPEC-01 rows marked **boundary-impact (no edit)** with delta-owner note — table now a complete index of affected IDs | §4 artifacts table | auto-safe |
 | **CE-3** | P3 | "RPO = last snapshot" silently excluded timestamps buffered-but-unflushed in the async layer (lost on crash) | Added the exclusion note to the RTO/RPO posture — acceptable-loss class (metric accuracy, not availability), called out so it is not silently excluded | §7.2 RTO/RPO | auto-safe |
@@ -59,7 +59,7 @@ None blocking. Two items surfaced for human awareness (neither blocks gate-readi
    decisions at `../gate-check/SKILL.md` (content-preservation rule). Not filled.
 2. **Size-budget tension (advisory).** Even after compression the record sits at
    ≈ +48.8% over the 1 500-word CHG target — a genuine tension for a **C3
-   cross-layer change touching 8 layers + Code** with rollback, gate conditions,
+   cross-layer change touching 10 layers + Code** with rollback, gate conditions,
    operational readiness, and failure analysis. It is **below** the +50%
    blocking line, so the audit's size check stays advisory; if a future fix adds
    more content, the §3 ADR-02 cell and §4.1 are the next split/manual-required

@@ -1,5 +1,16 @@
 # EARS Requirements — Layer 3
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
 EARS (Easy Approach to Requirements Syntax) formalizes business and product
@@ -28,7 +39,6 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `EARS-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `EARS-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `EARS-00_index.TEMPLATE.md` | EARS registry template — tracks planned and active EARS documents per project |
 
 ## EARS Syntax Patterns

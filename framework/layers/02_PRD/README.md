@@ -1,5 +1,16 @@
 # Product Requirements Documents (PRD) — Layer 2
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 ## Overview
 
 PRDs define product features, user personas, and acceptance criteria as the
@@ -28,7 +39,6 @@ Component (SPEC) — component interfaces, data models, behavior contracts
 | File | Purpose |
 |------|---------|
 | `PRD-TEMPLATE.yaml` | **Default** — full template with embedded authoring guidance. Self-documenting for AI agents. |
-| `PRD-MVP-TEMPLATE.yaml` | Skeleton — stripped-down structural form. Not standalone. See [BRD README](../01_BRD/README.md) for the template selection rule. |
 | `PRD-00_index.TEMPLATE.md` | PRD registry template — tracks planned and active PRDs per project |
 
 ## Element IDs

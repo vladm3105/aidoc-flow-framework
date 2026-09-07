@@ -21,15 +21,20 @@ governance:
           - "CLAUDE.md"
           - "docs/PROJECT.md"
 
-"platform: hermes":
+framework:
   - changed-files:
       - any-glob-to-any-file:
-          - "platforms/hermes/**"
+          - "framework/**"
 
-"platform: claude":
+linter:
   - changed-files:
       - any-glob-to-any-file:
-          - "platforms/claude-code-plugin/**"
+          - "sdd_doc_lint/**"
+
+hooks:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "hooks/**"
 
 conformance:
   - changed-files:
@@ -47,8 +52,3 @@ dependencies:
       - any-glob-to-any-file:
           - "**/requirements*.txt"
           - "**/pyproject.toml"
-
-plans:
-  - changed-files:
-      - any-glob-to-any-file:
-          - "plans/**"

@@ -19,7 +19,7 @@ A small URL-shortener service.
 - User accounts / authentication.
 - Analytics dashboards.
 
-This seed is the input to the 8-layer SDD flow
+This seed is the input to the 10-layer SDD flow
 (BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN); the worked output chain
 lives under `../docs/`, and [`../README.md`](../README.md) is the walkthrough.
 

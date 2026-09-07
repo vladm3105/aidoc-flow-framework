@@ -66,7 +66,7 @@ a modified artifact to the change record that authorized the edit:
   artifacts cite the CHG in their own Document Control origin; deleted
   artifacts obviously carry nothing).
 - **Placement:** in the modified artifact's **traceability section**. One rule,
-  no fallback: all eight layer templates declare that section, so a
+  no fallback: all ten layer templates declare that section, so a
   template-conformant artifact always has the slot. (An earlier wording offered
   a Document Control fallback "where the layer template has no traceability
   section" — unreachable, since none lacks one — and then added "anywhere the

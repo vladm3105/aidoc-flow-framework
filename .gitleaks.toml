@@ -25,7 +25,7 @@
 # `[allowlist]` but no rules scans NOTHING and exits 0 — a green required check
 # that checks nothing. The canary exists to catch exactly that.
 #
-# Do NOT broaden the allowlist to `tests/` or `platforms/**`. Each entry here is
+# Do NOT broaden the allowlist to `tests/`. Each entry here is
 # deliberately pinned to one path or one exact literal.
 
 [extend]
