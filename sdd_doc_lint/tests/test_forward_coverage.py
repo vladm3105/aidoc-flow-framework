@@ -14,10 +14,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
-from _spec import plugin_bundle_root  # noqa: E402
-
-sys.path.insert(0, str(plugin_bundle_root()))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sdd_doc_lint import _check_forward_coverage, lint_path  # noqa: E402
 
 _ORDER = ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"]

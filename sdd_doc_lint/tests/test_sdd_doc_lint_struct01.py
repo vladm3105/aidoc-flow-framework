@@ -8,8 +8,7 @@ import textwrap
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
-from _spec import plugin_bundle_root
+_LINT_ROOT = str(Path(__file__).resolve().parents[1])
 
 
 class Struct01Tests(unittest.TestCase):
@@ -19,7 +18,7 @@ class Struct01Tests(unittest.TestCase):
             f.write_text(body, encoding="utf-8")
             result = subprocess.run(
                 [sys.executable, "-m", "sdd_doc_lint", td, "--format=json"],
-                env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
+                env={"PYTHONPATH": _LINT_ROOT, "PATH": "/usr/bin:/bin"},
                 capture_output=True,
                 text=True,
                 check=False,
@@ -32,7 +31,7 @@ class Struct01Tests(unittest.TestCase):
             f.write_text(body, encoding="utf-8")
             result = subprocess.run(
                 [sys.executable, "-m", "sdd_doc_lint", td, "--format=json"],
-                env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
+                env={"PYTHONPATH": _LINT_ROOT, "PATH": "/usr/bin:/bin"},
                 capture_output=True,
                 text=True,
                 check=False,

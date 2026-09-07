@@ -12,10 +12,7 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
-from _spec import plugin_bundle_root  # noqa: E402
-
-sys.path.insert(0, str(plugin_bundle_root()))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sdd_doc_lint import build_edge_graph  # noqa: E402
 
 

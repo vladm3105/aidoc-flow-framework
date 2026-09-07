@@ -6,9 +6,6 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
-from _spec import plugin_bundle_root
-
 FIXTURES = Path(__file__).resolve().parent / "lint_fixtures"
 
 CASES = [
@@ -29,7 +26,7 @@ CASES = [
 def run_lint_json(fixture_dir: Path) -> list[dict]:
     result = subprocess.run(
         [sys.executable, "-m", "sdd_doc_lint", str(fixture_dir), "--format=json"],
-        env={"PYTHONPATH": str(plugin_bundle_root()), "PATH": "/usr/bin:/bin"},
+        env={"PYTHONPATH": str(Path(__file__).resolve().parents[1]), "PATH": "/usr/bin:/bin"},
         capture_output=True,
         text=True,
         check=False,
