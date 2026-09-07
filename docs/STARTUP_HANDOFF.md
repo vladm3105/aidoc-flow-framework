@@ -1,6 +1,6 @@
 # Startup Handoff — AI Doc Flow Framework (extracted from migration session)
 
-> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../ROADMAP.md`](../ROADMAP.md) and [`../CHANGELOG.md`](../CHANGELOG.md). Plugin state lives in [`../platforms/claude-code-plugin/CHANGELOG.md`](../platforms/claude-code-plugin/CHANGELOG.md).
+> **Historical artifact:** written 2026-05-20 during Phase 3/4. Captures the business/product hypothesis at that point. Current project state lives in [`../ROADMAP.md`](../ROADMAP.md) and [`../CHANGELOG.md`](../CHANGELOG.md). Plugin state lives in [`../archive/platforms/claude-code-plugin/CHANGELOG.md`](../archive/platforms/claude-code-plugin/CHANGELOG.md).
 >
 > **Purpose:** Distill the business / startup ideas that surfaced during a
 > multi-phase technical-migration session into a self-contained brief a
@@ -255,11 +255,11 @@ migration project built explicit infrastructure for ephemeral
 sessions:
 
 - `plans/HANDOFF.md` (continuity record across sessions).
-- `.claude/hooks/pre-compact-snapshot.sh` (snapshot before context
+- `hooks/pre-compact-snapshot.sh` (snapshot before context
   compaction).
-- `.claude/hooks/session-start-handoff.sh` (inject handoff at
+- `hooks/session-start-handoff.sh` (inject handoff at
   session start).
-- `.claude/hooks/plan-review-gate.sh` (non-blocking quality warning
+- `hooks/plan-review-gate.sh` (non-blocking quality warning
   on commit).
 - The two-pass plan review (D-0007) — every plan documents its own
   review history.

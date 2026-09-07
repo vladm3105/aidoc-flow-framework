@@ -307,10 +307,9 @@ the framework is now self-sufficient for any AI agent.
 > wired into the version-sync hook. For live version state see the per-package
 > `VERSION` files.*
 
-Post-v1.0 development — delivered and planned — is tracked in
-[`ROADMAP.md`](ROADMAP.md) and [GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues); per-release detail is in
-[`CHANGELOG.md`](CHANGELOG.md). Development lands on the Claude Code plugin
-first, with Hermes follow-on batches tracked on the issue tracker.
+Post-v1.0 development is tracked in
+[GitHub issues](https://github.com/vladm3105/aidoc-flow-framework/issues);
+per-release detail is in [`CHANGELOG.md`](CHANGELOG.md).
 
 ## Contributing
 
@@ -325,13 +324,11 @@ for the vulnerability-reporting policy.
 
 ## Documentation
 
-- `ROADMAP.md` — delivery plan and post-v1.0 work (migration complete at `v1.0.0`).
 - `CHANGELOG.md` — project-level changelog.
 - `SECURITY.md` — security policy and vulnerability reporting.
 - `docs/REPO_STRUCTURE.md` — repository layout (as-built).
 - `docs/PROJECT.md` — versioning, branching, milestones, conformance, change management.
 - `docs/TAGGING.md` — git-tag policy (release + bookmark tags).
-- `docs/PARITY.md` — Hermes ↔ plugin capability comparison.
 - `framework/README.md` — the engine-agnostic SDD specification.
 - [`framework/docs/AIDOC.md`](framework/docs/AIDOC.md) — the `.aidoc/` provenance tier (third committed documentation tier).
 - [`tests/ACCEPTANCE.md`](tests/ACCEPTANCE.md) — pre-deployment acceptance-test methodology (driver, log layout, schema, `--promote`, phase definitions, partial-execution flags, CI integration).

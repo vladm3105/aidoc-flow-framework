@@ -1,14 +1,12 @@
 # Changelog
 
-All notable changes to the AI Doc Flow Framework (multi-platform project) are
-documented here. Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/);
-this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+All notable changes to the AI Doc Flow Framework are documented here. Format
+based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project
+adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-> Scope: this is the **project-level** changelog tracking the multi-platform
-> migration. Once scaffolded, each platform keeps its own changelog at
-> `platforms/<name>/CHANGELOG.md`, and `framework/` versions independently.
->
-> This file logs both project releases (`v1.x.y`) and framework-spec releases (`Framework Spec 0.x.y`). Per-stream details for the Claude Code plugin live in [`platforms/claude-code-plugin/CHANGELOG.md`](platforms/claude-code-plugin/CHANGELOG.md).
+> Scope: this is the **project-level** changelog. Framework-spec releases
+> (`Framework Spec 0.x.y`) are tracked here. Former platforms (Hermes, Claude
+> Code plugin) are archived at `archive/platforms/`.
 
 ## [Unreleased]
 
@@ -19,9 +17,23 @@ this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 framework spec, templates, and playbooks directly — no platform-specific
 wrapper needed.
 
-**Tooling retained.** `sdd_doc_lint/` (structural linter) moved to repo root.
-`hooks/sdd-doc-review.sh` (PostToolUse advisory hook) moved to repo root.
-`tools/` directory archived (saga_driver.py, finding_filter.py, etc.).
+**Tooling reorganized.**
+- `sdd_doc_lint/` — moved to repo root (structural linter, 296+ checks)
+- `hooks/` — PostToolUse advisory hook + pre-commit/pre-push hooks
+- `tools/` — archived (saga_driver.py, finding_filter.py, etc.)
+- `plans/` — archived (migration plans)
+- `legacy/` — moved to `archive/legacy/`
+- `.claude-plugin/` — archived (plugin marketplace config)
+- `scripts/` — hooks moved to `hooks/`, utilities archived
+
+**Tests cleaned up.**
+- 7 linter-specific tests moved from `tests/unit/` to `sdd_doc_lint/tests/`
+- Platform-specific conformance tests archived to `archive/tests/`
+- Stale acceptance live harnesses archived
+- Path references updated throughout
+
+**Docs updated.** AGENTS.md, README.md, DESC.md, CLAUDE.md, CONTRIBUTING.md,
+SECURITY.md, docs/REPO_STRUCTURE.md all updated to reflect new structure.
 
 **Framework is now ~90% self-sufficient.** Agents can author, review, and
 validate artifacts from the spec alone. The linter provides deterministic

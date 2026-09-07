@@ -30,7 +30,7 @@ Release tags mark a published version. Each of the three SemVer streams
 - **Framework spec** — `framework/vX.Y.Z`. The shared `framework/` contract.
   Version source: `framework/VERSION`.
 - **Platforms** — `<platform>/vX.Y.Z` (`hermes/…`, `claude-code-plugin/…`).
-  Version source: `platforms/<name>/VERSION`.
+  Version source: `archive/platforms/<name>/VERSION`.
 
 Rules:
 
