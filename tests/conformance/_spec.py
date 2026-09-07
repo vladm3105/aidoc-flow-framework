@@ -39,12 +39,20 @@ def framework_files() -> list[Path]:
     return sorted(p for p in FRAMEWORK.rglob("*") if p.is_file())
 
 
-PLATFORMS_ROOT = REPO_ROOT / "platforms"
+PLATFORMS_ROOT = REPO_ROOT / "platforms"  # archived
+
+
+def plugin_bundle_root() -> Path:
+    """Return the sdd_doc_lint/ root (formerly the plugin bundle root)."""
+    return REPO_ROOT / "sdd_doc_lint"
 
 
 def platform_dirs() -> list[Path]:
-    """Return every direct subdirectory of ``platforms/`` (sorted)."""
-    return sorted(p for p in PLATFORMS_ROOT.iterdir() if p.is_dir())
+    """Return every direct subdirectory of ``archive/platforms/`` (sorted)."""
+    archived = REPO_ROOT / "archive" / "platforms"
+    if archived.is_dir():
+        return sorted(p for p in archived.iterdir() if p.is_dir())
+    return []
 
 
 def platform_version_file(platform: Path) -> Path:
@@ -69,6 +77,8 @@ LAYER_DIR_BY_NAME = {
     "SPEC": FRAMEWORK / "layers" / "06_SPEC",
     "TDD": FRAMEWORK / "layers" / "07_TDD",
     "IPLAN": FRAMEWORK / "layers" / "08_IPLAN",
+    "CHG": FRAMEWORK / "layers" / "09_CHG",
+    "EVAL": FRAMEWORK / "layers" / "10_EVAL",
 }
 
 

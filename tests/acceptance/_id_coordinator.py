@@ -21,7 +21,7 @@ import yaml
 # already imported a vendored platforms/*/sdd_doc_lint keeps that one in
 # sys.modules. Harmless: test_doc_lint_vendoring.py holds all three copies
 # byte-identical.)
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 from sdd_doc_lint import _normalise_heading, compute_element_hash
 
 

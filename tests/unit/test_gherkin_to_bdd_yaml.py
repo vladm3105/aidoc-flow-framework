@@ -11,7 +11,7 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 
 import yaml  # noqa: E402
 from gherkin_to_bdd_yaml import (  # noqa: E402

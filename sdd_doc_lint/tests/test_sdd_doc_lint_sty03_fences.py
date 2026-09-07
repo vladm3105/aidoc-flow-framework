@@ -10,10 +10,10 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "conformance"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tests" / "conformance"))
 from _spec import plugin_bundle_root
 
-sys.path.insert(0, str(plugin_bundle_root()))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from sdd_doc_lint import _check_style  # noqa: E402
 
 # BDD STY03 target is 1500 words; blocking at >2250.

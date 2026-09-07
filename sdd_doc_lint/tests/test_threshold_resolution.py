@@ -12,7 +12,7 @@ import unittest
 from pathlib import Path
 
 # Add the framework's tools/ dir to path so sdd_doc_lint resolves to canonical
-sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "sdd_doc_lint"))
 
 from sdd_doc_lint import _check_threshold_resolution  # noqa: E402
 
