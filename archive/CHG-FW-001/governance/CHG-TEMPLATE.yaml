@@ -4,9 +4,9 @@
 #  Document Authority: PRIMARY STANDARD (single source of truth)
 #  Purpose: Governance overlay for changes to SDD artifacts across all layers
 #  Scope: NOT a lifecycle layer — triggers on-demand when modifying existing artifacts
-#  Framework: SDD — 10-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL)
+#  Framework: SDD — 10-layer (BRD→PRD→EARS→BDD→ADR→SPEC→TDD→IPLAN→CHG→EVAL→Code)
 #
-#  ACTIVE COMPANION FILES (in this layer):
+#  ACTIVE COMPANION FILES (NOT in this template):
 #    gates/GATE-01_BUSINESS_PRODUCT.md             — business/product gate (L1-L2)
 #    gates/GATE-03_REQUIREMENTS_ARCHITECTURE.md     — requirements & architecture gate (L3-L5)
 #    gates/GATE-06_DESIGN_TEST.md                   — design & test gate (L6-L7)
@@ -21,25 +21,7 @@
 #    _antipatterns — common mistakes to avoid
 # =============================================================================
 
-document_control:
-  _guidance: |
-    Provide project identification and document tracking information for the CHG record.
-  project_name: "[Project Name]"
-  document_id: "CHG-NN"
-  version: "1.0"
-  status: "Draft"
-  author: "[Author Name]"
-  created_date: "[YYYY-MM-DD]"
-  last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.53.0"
-  revision_history:
-    - version: "1.0"
-      date: "[YYYY-MM-DD]"
-      author: "[Author Name]"
-      description: "Initial CHG record"
-
 id: CHG-NN
-doc_id: CHG-NN
 title: "[Change Title]"
 
 # =============================================================================
@@ -57,7 +39,7 @@ metadata:
 
       | Level     | Scope | Gate Required | Process |
       |-----------|-------|---------------|---------|
-      | C1        | Typo, formatting, clarification | None — direct commit | Fix → commit → completed |
+      | C1        | Typo, formatting, clarification | None — direct commit | Fix → commit → done |
       | C2        | Section update, requirement refinement | Peer review | Assess impact → update → verify |
       | C3        | Cross-layer change, new requirements | Formal gate | Full CHG process |
       | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document → post-mortem within 48h |
@@ -97,25 +79,16 @@ metadata:
 
 change_control:
   chg_id: "CHG-NN"
-  status: Proposed  # Proposed | Approved | In-Progress | Implemented | Completed
-  # Status lifecycle:
-  #   Proposed    — CHG created, not yet approved
-  #   Approved    — CHG authorized to proceed
-  #   In-Progress — Implementation underway
-  #   Implemented — Code merged, SDD docs updated
-  #   Completed   — Verification passed, final status
+  status: Proposed  # Proposed | In Review | Approved | Implemented | Rejected | Rolled Back
   change_level: C2  # C1 | C2 | C3 | Emergency (Note: change_source: spec requires >= C2)
   change_source: null  # upstream | midstream | design | execution | external | feedback | spec
   entry_gate: null  # GATE-01 | GATE-03 | GATE-06 | GATE-08 | GATE-CODE | GATE-SPEC | None (C1 only for non-spec changes)
   semver_impact: null  # major | minor | patch — REQUIRED for change_source: spec (GATE-SPEC). major => change_level: C3
-  version_action: null  # keep | upgrade — when a CHG touches a document created under an older framework_version: "keep" if schema is compatible, "upgrade" if the document must be rewritten to the current framework_version
   author: "[Author Name]"
   date_proposed: "YYYY-MM-DDTHH:MM:SS"
   date_approved: null
   date_implemented: null
-  supersedes: []  # List of archived artifacts with full paths, e.g.:
-                   # - "PRD-02 (docs/sdd/09-CHG/archive/CHG-NN/02_PRD/PRD-02.yaml)"
-                   # - "SPEC-02 (docs/sdd/09-CHG/archive/CHG-NN/06_SPEC/SPEC-02.yaml)"
+  supersedes: []  # List of artifact IDs this change supersedes
 
 # =============================================================================
 # Section 2: Change Description
@@ -159,48 +132,9 @@ impact_assessment:
 # =============================================================================
 
 implementation:
-  _guidance: |
-    **MANDATORY: SDD-First Implementation Order**
-
-    The CHG is a governance record, NOT an implementation plan. The IPLAN is the
-    execution artifact. Every step MUST have a `phase` field. The CHG's
-    implementation steps should contain ONLY phases 0 and 1:
-
-    Phase 0 — sdd_lifecycle (FIRST, MANDATORY, before any code):
-      1. Archive current SDD versions to `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/`
-      2. Rewrite each SDD document as a clean v2 (no appendices, no stale content)
-         — upper layers first: PRD → SPEC → IPLAN
-      3. Update `supersedes` field with archive paths
-      4. Bump `document_control.version` to 2.0 for IPLAN/SPEC/TDD
-
-    Phase 1 — iplan_creation (AFTER SDD docs exist):
-      5. Create or update the IPLAN with ALL code implementation steps
-         (file_manifest, execution commands, test cases)
-         — the IPLAN MUST reference the NEW SDD document versions
-         — the IPLAN is what drives code implementation
-
-    **CRITICAL RULES:**
-    - Every step MUST declare its phase (`sdd_lifecycle` or `iplan_creation`)
-    - Code implementation steps belong in the IPLAN, NOT in the CHG
-    - SDD updates MUST happen BEFORE IPLAN creation (all `sdd_lifecycle` steps before all `iplan_creation` steps)
-    - The IPLAN MUST reference the NEW (updated) SDD versions
-    - If SDD updates are "deferred", the CHG is INCORRECT
-    - NO step with `phase: code_implementation` may appear in a CHG — that phase belongs exclusively in IPLAN
-
-    The correct flow: CHG → SDD docs first → IPLAN (references new SDD) → implement from IPLAN.
-
-    If the CHG does NOT modify any SDD document (pure code change), list the
-    implementation steps with `phase: iplan_creation` and note that they should
-    be captured in an IPLAN for traceability.
-
-  _allowed_phases:
-    sdd_lifecycle: "Phase 0 — Archive, rewrite, supersedes, version bump of SDD documents. MUST appear first."
-    iplan_creation: "Phase 1 — Create or update IPLAN with all code steps. MUST appear after all sdd_lifecycle steps."
-    code_implementation: "FORBIDDEN in CHG. Belongs exclusively in IPLAN. If present, the CHG is non-compliant."
-
+  _guidance: "Steps taken to implement the change. List every artifact modified."
   steps:
     - step: "[Step 1 — what was modified]"
-      phase: "sdd_lifecycle"  # sdd_lifecycle | iplan_creation (code_implementation FORBIDDEN)
       artifact: "[Artifact ID]"
       status: Completed  # Pending | In Progress | Completed
 
@@ -288,106 +222,8 @@ glossary:
       definition: "Critical production fix — bypass normal process, post-mortem within 48h"
     - term: Gate
       definition: "Approval checkpoint — GATE-01 (business), GATE-03 (requirements/architecture), GATE-06 (design/test), GATE-08 (IPLAN), GATE-CODE (implementation), GATE-SPEC (framework-spec change — meta)"
-    - term: Layer L1-L10
-      definition: "SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN, L9=CHG, L10=EVAL"
-
-# =============================================================================
-# CHG Creation Checklist
-# =============================================================================
-# Before writing any CHG document, complete this checklist.
-# Each item maps to a gap class found in CHG post-creation reviews.
-
-creation_checklist:
-  _guidance: |
-    MANDATORY PROCESS GATE — Required validation BEFORE writing any CHG document.
-    This is a blocking prerequisite, not post-hoc validation. The agent MUST read
-    and complete every item BEFORE writing the CHG. The "write before read" pattern
-    (writing CHG/IPLAN from issue descriptions without consulting this checklist)
-    has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs, CHG-08: incorrect flow).
-
-    **CRITICAL: Items 13-14 are the most commonly violated.** They enforce:
-    - Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`)
-    - SDD document updates MUST happen BEFORE IPLAN creation (Phase 0, not deferred)
-    - CHG contains governance + SDD lifecycle, NOT code implementation steps
-    - NO step with `phase: code_implementation` may appear in a CHG
-
-    Items 11-14 were added after CHG-04 review found SDD lifecycle and ordering gaps.
-    The checklist exists to prevent these failures — reading it after writing defeats
-    its purpose. CHG-06 violated items 11-14 (the exact items added after CHG-04 to
-    prevent these failures). CHG-08 also violated items 13-14.
-
-  checks:
-    - id: 1
-      check: "Read every file you reference"
-      description: "Open each artifact path in artifacts_modified, verify it exists, note actual filename, read relevant code sections. Never write an implementation step referencing a file you haven't opened."
-      gap_prevented: "Wrong filenames, wrong line numbers, wrong function signatures"
-
-    - id: 2
-      check: "Verify the architectural claim"
-      description: "For each issue, confirm whether problem is client-side, server-side, or both. Check if method/endpoint actually exists."
-      gap_prevented: "Mischaracterized architecture"
-
-    - id: 3
-      check: "Check existing struct/type signatures"
-      description: "If fix requires passing new data, verify existing struct accepts those fields. Add struct extension steps if needed."
-      gap_prevented: "Claims struct has no field when it does"
-
-    - id: 4
-      check: "Check existing INSERT/SELECT queries"
-      description: "If adding columns to a table, verify existing queries that touch that table. Note which need updating."
-      gap_prevented: "Adding columns without updating existing queries"
-
-    - id: 5
-      check: "Cross-reference upstream requirements"
-      description: "Cite specific EARS requirement IDs and BDD scenario IDs that CHG addresses. Note which PRD/SPEC sections change."
-      gap_prevented: "No traceability in CHG"
-
-    - id: 6
-      check: "Check for existing handlers/webhooks"
-      description: "If fix involves user creation or data population, check if webhook handler already exists for that event type."
-      gap_prevented: "Existing handler not considered"
-
-    - id: 7
-      check: "Couple dependent issues"
-      description: "If two issues share a fix, implement them together, not as separate steps."
-      gap_prevented: "Coupled issues implemented separately"
-
-    - id: 8
-      check: "Add automated test specifications"
-      description: "For each implementation step, specify test file, test name, and assertion method. Manual checks alone are insufficient."
-      gap_prevented: "No automated test specs"
-
-    - id: 9
-      check: "Verify the fix location"
-      description: "If error handling needed, check whether error is thrown in function or caller. Put try/catch where call happens."
-      gap_prevented: "Wrong fix location"
-
-    - id: 10
-      check: "Add DB migration + rollback"
-      description: "If adding columns, provide full migration SQL, rollback SQL, backfill strategy, and index additions."
-      gap_prevented: "Migration without rollback"
-
-    - id: 11
-      check: "Plan SDD document versioning"
-      description: "If CHG modifies SDD document, add steps for: (a) archive to 09-CHG/archive/, (b) rewrite as clean v2, (c) update supersedes, (d) bump version."
-      gap_prevented: "No SDD lifecycle steps"
-
-    - id: 12
-      check: "Check traceability to SDD lifecycle rules"
-      description: "Before finalizing, verify this document's §SDD Document Management and §CHG Rules are satisfied."
-      gap_prevented: "Rules not enforced at creation time"
-
-    - id: 13
-      check: "SDD-first implementation order"
-      description: "Every step MUST have a `phase` field. All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. Correct flow: CHG → SDD docs → IPLAN → code. VIOLATED IN: CHG-04, CHG-06, CHG-08."
-      gap_prevented: "Wrong ordering"
-      _mandatory: true
-
-    - id: 14
-      check: "CHG scope: governance, not implementation plan"
-      description: "CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. VIOLATED IN: CHG-04, CHG-06, CHG-08."
-      gap_prevented: "Detailed code steps in CHG"
-      _mandatory: true
+    - term: Layer L1-L8
+      definition: "SDD layers: L1=BRD, L2=PRD, L3=EARS, L4=BDD, L5=ADR, L6=SPEC, L7=TDD, L8=IPLAN"
 
 # =============================================================================
 # End of CHG-TEMPLATE.yaml

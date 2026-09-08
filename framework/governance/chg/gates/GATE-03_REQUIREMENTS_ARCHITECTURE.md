@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-03: Requirements & Architecture Gate (L3-L5)
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Between upstream changes and Layers 3-5 (EARS, BDD, ADR)
 > **Change Sources**: Midstream, External (technical), Upstream cascade from GATE-01
 > **Purpose**: Validate formal requirements, acceptance scenarios, and architecture decisions before cascading to design
@@ -115,10 +126,10 @@ Before entering GATE-03, the change request must satisfy:
 
 ```
 C1 (Self-approved)
-      
+
        (if requirement/architecture change)
 C2 (TL + Domain)
-      
+
        (if security or architecture pivot)
 C3 (Architect + Security)
 ```
@@ -163,19 +174,19 @@ After passing GATE-03:
 
 ```
                     GATE-03 PASSED
-                           
+
              Does change affect SPEC?
-             
-          
+
+
            Yes                         No
-                                      
-                     
+
+
       GATE-06                   IPLAN-only change?
-                     
-                                         
-                              
+
+
+
                                Yes                 No
-                                                  
+
                            GATE-08           Direct fix
                                                   (C1 only)
 ```

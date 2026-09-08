@@ -6,6 +6,27 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.53.2] — 2026-10-23
+
+### Fixed — CHG template phase enforcement, governance sync, AI_ASSISTANT_RULES fix
+
+**CHG template (CHG-FW-001):**
+- Added mandatory `phase` field to `implementation.steps` — every step MUST declare `sdd_lifecycle` or `iplan_creation`; `code_implementation` is FORBIDDEN in CHG
+- Added `_allowed_phases` reference block to template
+- Updated creation checklist items 13-14 to reference phase field
+- Updated `_guidance` in Section 4 with explicit phase enforcement rules
+- Synced stale `governance/chg/` directory from `layers/09_CHG/` (12 files were out of date)
+- Archived originals to `archive/CHG-FW-001/`
+
+**Lint rules:**
+- Added `GOV-010` — error when CHG steps lack `phase` field or use `code_implementation`
+
+**DOC_GOVERNANCE_CORE.md:**
+- Updated checklist items 13-14 to reference phase field
+
+**AI_ASSISTANT_RULES.md:**
+- Rewrote "What NOT to Reference" section — moved CHG gates out of the "do not reference" list into a dedicated "When to Reference" section (self-learn 2026-10-23 found the original actively undermined governance)
+
 ## [0.53.1] — 2026-09-08
 
 ### Fixed — P0 governance, acceptance fixtures, CI repin, template alignment (#620, #637, #635, #636, #588, #393, #641, #642, #596, #565)

@@ -124,6 +124,7 @@ each layer's derived count so that edit cannot be made silently.
 |----|---------|----------|----------|
 | `GOV-008` | A CHG document was created without completing the creation checklist (§CHG creation checklist). The checklist is a MANDATORY PROCESS GATE — blocking prerequisite, not post-hoc validation. The "write before read" pattern has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). | error | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist MANDATORY PROCESS GATE |
 | `GOV-009` | A CHG document's `traceability.upstream.ears_references` or `bdd_references` is empty when the CHG describes a change that affects authenticated or requirement-traced functionality. Checklist item #5 requires citing specific EARS/BDD IDs. TAG01 covers general traceability but not CHG-specific upstream citation. | warning | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist item #5 |
+| `GOV-010` | A CHG document's `implementation.steps` contains a step without a `phase` field, or a step with `phase: code_implementation`. Every step MUST have `phase: sdd_lifecycle` or `phase: iplan_creation`. Code implementation steps belong exclusively in IPLAN. Added after CHG-04, CHG-06, CHG-08 violated SDD-first ordering. | error | `CHG-TEMPLATE.yaml` §implementation `_allowed_phases` + checklist item #13 |
 
 ## Evaluation (L10)
 

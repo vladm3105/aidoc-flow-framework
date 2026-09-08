@@ -1,5 +1,5 @@
 ---
-title: "CHG-000: CHG Index (TEMPLATE)"
+title: "CHG-00: CHG Index (TEMPLATE)"
 tags:
   - index-document
   - change-management
@@ -55,6 +55,7 @@ custom_fields:
 
 - [gates/GATE_INTERACTION_DIAGRAM.md](./gates/GATE_INTERACTION_DIAGRAM.md): Gate interaction visualization
 - [gates/GATE_ERROR_CATALOG.md](./gates/GATE_ERROR_CATALOG.md): Gate error codes and resolution
+- [DOC_GOVERNANCE_CORE.md](../../governance/DOC_GOVERNANCE_CORE.md): Core governance including CHG rules
 
 ## Documents
 

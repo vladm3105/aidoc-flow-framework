@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-06: Design & Test Gate (L6-L7)
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Between architecture decisions and Layers 6-7 (SPEC, TDD)
 > **Change Sources**: Design, Midstream cascade from GATE-03, implementation feedback
 > **Purpose**: Validate technical specifications and test definitions before execution planning
@@ -100,10 +111,10 @@ All SPEC changes MUST flow through TDD:
 
 ```
 C1 (Self-approved)
-      
+
        (if interface change)
 C2 (Technical Lead)
-      
+
        (if architecture/performance impact)
 C3 (TL + Domain Expert)
 ```
@@ -146,16 +157,16 @@ After passing GATE-06:
 
 ```
                     GATE-06 PASSED
-                           
+
               Ready for execution planning
-                    
+
                      GATE-08
                       IPLAN
-                    
-                         
-          
+
+
+
             Test-first implementation
-                     
+
                      GATE-CODE
 ```
 
