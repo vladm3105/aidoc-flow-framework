@@ -55,6 +55,39 @@ Practical effect:
 - Element IDs must match the 4-segment hash format: `TYPE.NN.SS.xxxx`.
 - Document IDs must match the format: `TYPE-NN`.
 
+## CHG creation checklist
+
+Before writing any CHG document, complete this checklist. Each item maps to a
+gap class found in CHG post-creation reviews. Items 11-12 were added after
+CHG-04 was found missing SDD document lifecycle steps. Items 13-14 were added
+after CHG-04 was found having wrong implementation ordering.
+
+**MANDATORY PROCESS GATE**: This checklist is a **blocking prerequisite**, not
+post-hoc validation. The agent MUST read and complete every item BEFORE writing
+the CHG document. The "write before read" pattern (writing CHG/IPLAN from issue
+descriptions without consulting governance rules) has caused repeated failures
+(CHG-04: 16 gaps, CHG-06: 3 bugs). The checklist exists to prevent these
+failures — reading it after writing defeats its purpose. Added after CHG-06
+violated items 11-14 (the exact items added after CHG-04 to prevent these
+failures).
+
+| # | Check | Gap it prevents |
+|---|-------|-----------------|
+| 1 | **Read every file you reference** — open each artifact path in `artifacts_modified` and verify it exists, note the actual filename, and read the relevant code sections. Never write an implementation step referencing a file you haven't opened. | Wrong filenames, wrong line numbers, wrong function signatures |
+| 2 | **Verify the architectural claim** — for each issue, confirm whether the problem is client-side, server-side, or both. | Mischaracterized architecture |
+| 3 | **Check existing struct/type signatures** — if your fix requires passing new data, verify the existing struct accepts those fields. | Claims struct has no field when it does |
+| 4 | **Check existing INSERT/SELECT queries** — if your fix adds columns to a table, verify existing queries that touch that table. | Adding columns without updating existing queries |
+| 5 | **Cross-reference upstream requirements** — cite specific EARS requirement IDs and BDD scenario IDs that your CHG addresses. | No traceability in CHG |
+| 6 | **Check for existing handlers/webhooks** — if your fix involves user creation or data population, check if a webhook handler already exists for that event type. | Existing handler not considered |
+| 7 | **Couple dependent issues** — if two issues share a fix, implement them together, not as separate steps. | Coupled issues implemented separately |
+| 8 | **Add automated test specifications** — for each implementation step, specify the test file, test name, and assertion method. Manual checks alone are insufficient. | No automated test specs |
+| 9 | **Verify the fix location** — if error handling is needed, check whether the error is thrown in the function or in the caller. | Wrong fix location |
+| 10 | **Add DB migration + rollback** — if adding columns, provide the full migration SQL, rollback SQL, backfill strategy, and indexes. | Migration without rollback |
+| 11 | **Plan SDD document versioning** — if the CHG modifies any SDD document, add steps for archive → rewrite → supersedes → version bump. | No SDD lifecycle steps |
+| 12 | **Check traceability to SDD lifecycle rules** — verify this document's §SDD Document Management and §CHG Rules are satisfied. | Rules not enforced at creation time |
+| 13 | **SDD-first implementation order** — SDD document updates MUST appear BEFORE any code implementation steps. | Wrong ordering |
+| 14 | **CHG scope: governance, not implementation plan** — the CHG authorizes and scopes the change. Code steps belong in the IPLAN. | Detailed code steps in CHG |
+
 ## Security
 
 - Artifacts are agent-authored from inputs the agent does not control. Every

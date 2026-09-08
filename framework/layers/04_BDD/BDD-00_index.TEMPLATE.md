@@ -143,6 +143,7 @@ element-level `@bdd: BDD.NN.SS.xxxx` tags.
 | SPEC | SPEC-NN | Technical specifications implement BDD acceptance criteria |
 | TDD | TDD-NN | Test cases map to BDD scenarios |
 | IPLAN | IPLAN-NN | Execution plans reference BDD scenario coverage |
+| EVAL | EVAL-NN | Evaluation reports verify BDD scenario coverage |
 
 ---
 
@@ -153,6 +154,7 @@ element-level `@bdd: BDD.NN.SS.xxxx` tags.
 - **README**: [README.md](./README.md) — BDD purpose, structure, and best practices
 - **Upstream**: [03_EARS](../03_EARS/) — Formal requirements
 - **Downstream**: [05_ADR](../05_ADR/) — Architecture decisions
+- **Downstream**: [10_EVAL](../10_EVAL/) — Evaluation reports
 
 ---
 

@@ -16,6 +16,7 @@
   },
   "composition": {
     "required": true,
+    "_comment": "required: true governs the JOB's own assertion; call / composition is NOT a branch-protection required context since D-0084, so a failed assertion no longer blocks merges.",
     "carry_forward_on_skip_label": true
   },
   "auto_merge": {

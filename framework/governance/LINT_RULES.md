@@ -117,3 +117,19 @@ each layer's derived count so that edit cannot be made silently.
 |----|---------|----------|----------|
 | `REUSE01` | The document is satisfied by reference (`reuse: referenced`) — it is not re-audited; the reuse target is named. | warning (advisory) | `TRACEABILITY.md` |
 | `REUSE02` | A `reuse:` declaration violates its contract — unknown `reuse.state` (expected `authored`/`referenced`), or a missing / URL / malformed / unresolvable-in-repo `reuse.target`. | error | `TRACEABILITY.md` |
+
+## Governance (CHG)
+
+| ID | Meaning | Severity | Contract |
+|----|---------|----------|----------|
+| `GOV-008` | A CHG document was created without completing the creation checklist (§CHG creation checklist). The checklist is a MANDATORY PROCESS GATE — blocking prerequisite, not post-hoc validation. The "write before read" pattern has caused repeated failures (CHG-04: 16 gaps, CHG-06: 3 bugs). | error | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist MANDATORY PROCESS GATE |
+| `GOV-009` | A CHG document's `traceability.upstream.ears_references` or `bdd_references` is empty when the CHG describes a change that affects authenticated or requirement-traced functionality. Checklist item #5 requires citing specific EARS/BDD IDs. TAG01 covers general traceability but not CHG-specific upstream citation. | warning | `DOC_GOVERNANCE_CORE.md` §CHG creation checklist item #5 |
+
+## Evaluation (L10)
+
+| ID | Meaning | Severity | Contract |
+|----|---------|----------|----------|
+| `EVAL-001` | An EVAL document contains placeholder IDs (`xxxx`) in `scenario_id`, `tdd_id`, or `source_id` fields. All element IDs must be real before commit. | error | `EVAL-TEMPLATE.yaml` §test_design |
+| `EVAL-002` | An EVAL `coverage_matrix.summary` contradicts the `coverage_matrix.entries` (e.g., summary says `implemented: 0` but entries claim `status: implemented`). Summary must be computed from entries. | error | `EVAL-TEMPLATE.yaml` §coverage_matrix |
+| `EVAL-003` | An EVAL `test_design` entry's `test_file` points to a CI workflow YAML (`.github/workflows/*.yml`) without a `_note` field clarifying it is a CI step, not a test file. | warning | `EVAL-TEMPLATE.yaml` §test_design |
+| `EVAL-COV-001` | An EVAL `coverage_matrix` is missing entries for upstream scenarios/TDD test cases that exist in the referenced upstream sources. All upstream scenarios must appear in the coverage matrix. Missing entries trigger warning in build, error in deployment gate. | warning→error | `EVAL-TEMPLATE.yaml` §coverage_matrix |

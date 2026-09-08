@@ -155,6 +155,10 @@ def _version_values(path: str) -> frozenset[str]:
     ``HEAD``, never a branch name: on a PR the checkout is a detached merge ref
     and ``main`` may not exist locally. ``--full-history`` for the reason in the
     module docstring.
+
+    The working tree copy is included so that a staged-but-uncommitted version
+    bump does not produce a false phantom: the new value is in the file on disk
+    but not yet in ``git log HEAD``.
     """
     values: set[str] = set()
     for sha in _git("log", "--full-history", "--format=%H", "HEAD", "--", path).split():
@@ -167,6 +171,11 @@ def _version_values(path: str) -> frozenset[str]:
         )
         if blob.returncode == 0 and blob.stdout.strip():
             values.add(blob.stdout.strip())
+    # Include the working-tree copy (handles staged-but-uncommitted bumps).
+    # Safe: VERSION is immutable within a single test run; cache key is `path`.
+    version_file = REPO_ROOT / path
+    if version_file.is_file():
+        values.add(version_file.read_text("utf-8").strip())
     return frozenset(values)
 
 

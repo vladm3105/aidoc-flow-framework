@@ -45,10 +45,10 @@ permissions:
 
 jobs:
   call:
-    # Skip non-success workflow_run fires — the reusable's state-filter
-    # step 3 would exit clean anyway (mergeStateStatus != CLEAN on a
-    # failed ai-review or composition), but this saves the runner slot
-    # entirely (per OPS-0065 security-auditor recommendation).
+    # Skip non-success workflow_run fires — since D-0084, a failed ai-review
+    # or composition no longer sets mergeStateStatus != CLEAN (they are not
+    # required contexts), but this still saves the runner slot entirely
+    # (per OPS-0065 security-auditor recommendation).
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     uses: vladm3105/aidoc-flow-ci/.github/workflows/auto-merge-ai-prs.yml@ci/v2.16.0
     with:

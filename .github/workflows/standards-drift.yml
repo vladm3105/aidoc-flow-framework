@@ -39,6 +39,8 @@
 # `patterns_allowed: MISSING … vladm3105/*`. Both are warnings, exit 0. Nothing
 # is broken: this repo's live pattern is NARROWER than canon's, so every canon
 # reusable it calls is still admitted. Applying the settings is a founder step.
+# D-0084 added a third: `required_contexts` now lists ai-review and composition
+# as removed from branch protection — also a warning, not a blocker.
 name: standards-drift
 
 on:
