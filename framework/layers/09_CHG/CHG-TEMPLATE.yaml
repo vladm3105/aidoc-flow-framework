@@ -39,6 +39,7 @@ document_control:
       description: "Initial CHG record"
 
 id: CHG-NN
+doc_id: CHG-NN
 title: "[Change Title]"
 
 # =============================================================================

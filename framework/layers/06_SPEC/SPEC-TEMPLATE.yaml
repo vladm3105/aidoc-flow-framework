@@ -3,6 +3,7 @@
 # Upstream: EARS (Layer 3), BDD (Layer 4), ADR (Layer 5)
 # Downstream: TDD (Layer 7)
 
+doc_id: SPEC-NN
 metadata:
   schema_version: "1.0"
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping

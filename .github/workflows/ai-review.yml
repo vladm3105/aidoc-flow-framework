@@ -90,7 +90,7 @@ jobs:
     # denylist with an ALLOWLIST of the two code-changing actions (`synchronize`,
     # `opened`); every other subscribed event fires at the current head and must
     # not cancel. Do not pin back below v2.15.0.
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v3.0.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/ai-review.yml@ci/v4.0.0
     with:
       # Model selection is CONFIG-DRIVEN: the reusable reads `litellm.model`
       # from the trusted .github/ai-review/config.json. Uncomment to override:
@@ -109,7 +109,7 @@ jobs:
       # plus the auto_merge.repos allowlist omission". Composition was never a
       # floor half here (canon hardcodes this repo to a pass — see
       # composition.yml's header), and the floor is actually THREE controls:
-      # canon's GOV_LOCKED hardcode at ai-review.yml@ci/v3.0.0:856, canon's
+      # canon's GOV_LOCKED hardcode at ai-review.yml@ci/v4.0.0:856, canon's
       # enforcer hardcode at auto-merge-ai-prs.yml:301, and the allowlist
       # omission — which lives in aidoc-flow-operations, not here, and is the
       # WEAKEST of the three. Editing the allowlist alone would not enable

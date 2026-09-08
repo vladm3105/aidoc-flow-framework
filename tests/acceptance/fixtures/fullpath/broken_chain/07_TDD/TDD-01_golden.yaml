@@ -4,6 +4,8 @@ metadata:
   document_type: tdd-document
   layer: 7
   deliverable_type: code
+  doc_id: TDD-01
+---
 
 ## Document Control
 document_control:

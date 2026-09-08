@@ -58,7 +58,7 @@ permissions:
 
 jobs:
   drift:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/standards-drift.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/standards-drift.yml@ci/v4.0.0
     with:
       tier: governance
       strict: ${{ github.event.inputs.strict == 'true' }}

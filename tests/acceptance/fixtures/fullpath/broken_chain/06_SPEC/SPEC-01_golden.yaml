@@ -4,6 +4,8 @@ metadata:
   document_type: spec-document
   layer: 6
   deliverable_type: code
+  doc_id: SPEC-01
+---
 
 ## Document Control
 document_control:

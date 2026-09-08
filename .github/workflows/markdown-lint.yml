@@ -43,7 +43,7 @@ concurrency:
           && contains(fromJSON('["opened","synchronize"]'), github.event.action)) }}
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/markdown-lint.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/markdown-lint.yml@ci/v4.0.0
     with:
       # ADVISORY BY DESIGN, not a debt rollout. The BLOCKING markdown gate here is
       # the `markdownlint-cli` hook in .pre-commit-config.yaml, which CI runs via

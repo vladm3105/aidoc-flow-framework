@@ -1,4 +1,4 @@
-# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v2.16.0).
+# Caller for aidoc-flow-ci's reusable docs-sync workflow (@ci/v4.0.0).
 # DRY-RUN rollout: computes proposed mechanical doc-fixes post-merge and
 # comments them on the PR — no push-back, no bot App needed (bot secrets are
 # only referenced by the live-mode Apply step, gated by dry_run != true).
@@ -33,5 +33,5 @@ permissions:
 
 jobs:
   call:
-    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v2.16.0
+    uses: vladm3105/aidoc-flow-ci/.github/workflows/docs-sync.yml@ci/v4.0.0
     secrets: inherit  # pragma: allowlist secret
