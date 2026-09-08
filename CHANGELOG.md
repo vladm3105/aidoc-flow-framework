@@ -6,6 +6,26 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.53.1] — 2026-09-08
+
+### Fixed — P0 governance, acceptance fixtures, CI repin, template alignment (#620, #637, #635, #636, #588, #393, #641, #642, #596, #565)
+
+**Governance & test fixes:**
+- Phantom-release guard now reads working tree VERSION to avoid false phantoms on staged-but-uncommitted bumps (#620)
+- Ported GOV-008/GOV-009 lint rules and MANDATORY PROCESS GATE from archived governance into active DOC_GOVERNANCE_CORE.md and LINT_RULES.md (#641)
+- Ported EVAL-001/002/003/EVAL-COV-001 lint rules into active LINT_RULES.md; added EVAL downstream to BDD-00_index.TEMPLATE.md (#642)
+- Fixed three stale D-0084 comments in auto-merge-ai-prs.yml, ai-review/config.json, and standards-drift.yml (#596)
+
+**Acceptance fixtures:**
+- Renamed BDD.01.04.* → BDD.01.03.* (scenarios in section 3) and BDD.01.04.aaaa → BDD.01.02.aaaa (feature in section 2) across 33 files (#637)
+- Added element declarations to ADR golden fixtures; re-cited doc-level @adr/@tdd as element-level in downstream goldens; removed 5 REFGRAN01 manifest entries (#635)
+- Added closing frontmatter fence and doc_id to 3 broken_chain YAML golden fixtures (#636)
+
+**Infrastructure:**
+- Repinned all 12 stale CI workflow pins from ci/v2.16.0/v3.0.0 to ci/v4.0.0 (#393)
+- Added doc_id: field to all 9 layer templates — the key the linter actually reads (#588)
+- Added conformance test locking extensions to [.yaml] for all layers per GD-15 (#565)
+
 ### Changed — Platforms archived, framework becomes self-sufficient (2026-09-07)
 
 ### Fixed — the acceptance goldens never adopted the normative TDD acceptance-pairing form; 8 pinned findings clear (#478) (2026-09-04)
