@@ -98,6 +98,22 @@ class RegistryFilesystem(unittest.TestCase):
                 template = FRAMEWORK / layer["folder"] / layer["template"]
                 self.assertTrue(template.is_file(), f"missing template: {template}")
 
+    def test_extensions_are_yaml_for_all_layers(self):
+        """GD-15: extensions is the normative instance-format field.
+
+        Every layer declares extensions: [.yaml]. A consumer authoring an
+        all-Markdown corpus gets a fully green gate — which GD-15 declares
+        non-conformant. This test locks the declared value so drift is caught
+        at the registry level even before the linter enforces it per-file.
+        """
+        for layer in LAYERS:
+            with self.subTest(layer=layer["number"], artifact=layer["artifact"]):
+                self.assertEqual(
+                    layer["extensions"],
+                    [".yaml"],
+                    f"{layer['artifact']} extensions should be [.yaml] per GD-15",
+                )
+
 
 class RegistryLayerGroups(unittest.TestCase):
     def test_every_layer_in_exactly_one_group(self):
