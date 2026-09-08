@@ -136,3 +136,98 @@ one more obligation: run `bash archive/tools/sync-plugin-framework.sh` to regene
 conformance drift-guard (`test_plugin_framework_bundle.py`) fails CI if the
 bundle drifts from canonical — it is the backstop, not a surprise; the bundle is
 a snapshot pinned to the plugin's `FRAMEWORK_SPEC_VERSION`.
+
+## 7. Project Integration — Consuming the Framework
+
+Projects consume the framework by cloning it into their `.aidoc/framework/` directory. This section defines the integration contract.
+
+### 7.1 Sparse checkout (recommended)
+
+Projects should clone the framework and keep only the directories needed for project work, excluding framework development files (CI configs, root docs, tooling):
+
+```bash
+# Clone the framework into .aidoc/framework/
+git clone https://github.com/vladm3105/aidoc-flow-framework.git .aidoc/framework
+
+# Remove framework development files (keep only what projects need)
+cd .aidoc/framework
+rm -rf AGENTS.md CHANGELOG.md CLAUDE.md CONTRIBUTING.md GOVERNANCE.md \
+       LICENSE README.md SECURITY.md archive tmp .github .vscode \
+       .pre-commit-config.yaml .secrets.baseline .gitleaks.toml \
+       .lychee.toml .markdownlint.json .markdownlintignore \
+       .yamllint .yamllint.yaml ruff.toml
+```
+
+**Included directories:**
+
+| Directory | Purpose |
+|-----------|---------|
+| `framework/` | Core spec — governance, layers, playbooks, scripts, templates, registry |
+| `docs/` | Framework documentation |
+| `examples/` | Reference examples (url-shortener) |
+| `hooks/` | PostToolUse advisory hooks |
+| `sdd_doc_lint/` | Structural linter (296+ checks) |
+| `tests/` | Conformance and unit tests |
+
+### 7.2 Directory structure contract
+
+Projects maintain a `.aidoc/` directory with this structure:
+
+```
+.aidoc/
+├── profile.yaml             # Project adaptation knobs
+├── framework/               # Cloned framework (version-pinned)
+│   ├── framework/           # Core spec
+│   │   ├── governance/
+│   │   ├── layers/
+│   │   ├── playbooks/
+│   │   ├── scripts/
+│   │   ├── templates/
+│   │   ├── registry/
+│   │   └── VERSION
+│   ├── docs/
+│   ├── examples/
+│   ├── hooks/
+│   ├── sdd_doc_lint/
+│   └── tests/
+├── project/                 # Project-specific overrides
+│   ├── governance/          # Rule overrides
+│   ├── layers/              # Template overrides
+│   ├── playbooks/           # Playbook overrides
+│   ├── scripts/             # Script overrides
+│   ├── templates/           # Template overrides
+│   └── registry/            # Registry overrides
+└── README.md
+```
+
+### 7.3 Discovery rule
+
+When reading a template, rule, or playbook:
+
+1. Check `.aidoc/project/{same-path}` first (project override)
+2. If the file exists there, use it
+3. If not, fall back to `.aidoc/framework/framework/{same-path}` (shared framework)
+
+### 7.4 Version pinning
+
+The project's `.aidoc/profile.yaml` records the pinned framework version:
+
+```yaml
+metadata:
+  framework_source: "https://github.com/vladm3105/aidoc-flow-framework"
+  framework_path: ".aidoc/framework"
+  framework_spec_path: ".aidoc/framework/framework"
+  framework_version: "0.53.1"  # Must match framework/VERSION
+```
+
+### 7.5 Updating the framework
+
+```bash
+cd .aidoc/framework && git pull origin main
+```
+
+After pulling, verify `framework/VERSION` matches the pin in `.aidoc/profile.yaml`. If a newer version has breaking changes, update project overrides in `.aidoc/project/` before adopting.
+
+### 7.6 No symlinks
+
+Projects MUST NOT use symlinks to external framework directories. The framework must be a real cloned copy to support version pinning, local patches, and clean updates.
