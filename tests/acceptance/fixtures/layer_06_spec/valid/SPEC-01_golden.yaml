@@ -21,8 +21,8 @@ component_overview:
     - @brd: BRD.01.07.aaaa
     - @prd: PRD.01.09.aaaa
     - @ears: EARS.01.03.aaaa
-    - @bdd: BDD.01.04.aaaa
-    - @adr: ADR-01
+    - @bdd: BDD.01.02.aaaa
+    - @adr: ADR.01.03.a1b2
 
 ## Interfaces
 interfaces:
@@ -74,5 +74,5 @@ traceability: |
   - @brd: BRD.01.07.aaaa
   - @prd: PRD.01.09.aaaa
   - @ears: EARS.01.03.aaaa
-  - @bdd: BDD.01.04.aaaa
-  - @adr: ADR-01
+  - @bdd: BDD.01.02.aaaa
+  - @adr: ADR.01.03.a1b2

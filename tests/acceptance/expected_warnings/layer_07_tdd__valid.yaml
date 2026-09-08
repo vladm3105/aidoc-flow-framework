@@ -6,26 +6,4 @@
 # tells you to delete its entry here. Do not add an entry without a `reason`
 # stating what would clear it.
 target: layer_07_tdd/valid
-expected_warnings:
-  - code: REFGRAN01
-    file: SPEC-01_golden.yaml
-    ref: "@adr: ADR-01"
-    count: 2
-    reason: >
-      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
-      Re-citing alone cannot clear it: `ADR-01_golden.md` declares no
-      `ADR.01.SS.xxxx` element, so the ADR fixture must be authored first.
-      Tracked on #635, sequenced behind #563 (the plugin skills still instruct
-      the document-level form). Pinned so it cannot mask a new REFGRAN01
-      elsewhere.
-  - code: REFGRAN01
-    file: TDD-01_golden.yaml
-    ref: "@adr: ADR-01"
-    count: 1
-    reason: >
-      Doc-level `@adr: ADR-01` predates GD-03 element granularity (CFB-PR-3).
-      Re-citing alone cannot clear it: `ADR-01_golden.md` declares no
-      `ADR.01.SS.xxxx` element, so the ADR fixture must be authored first.
-      Tracked on #635, sequenced behind #563 (the plugin skills still instruct
-      the document-level form). Pinned so it cannot mask a new REFGRAN01
-      elsewhere.
+expected_warnings: []

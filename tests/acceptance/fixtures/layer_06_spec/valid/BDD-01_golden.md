@@ -21,7 +21,7 @@ The feature under test maps to the upstream EARS login response requirement.
 
 Feature: Authentication acceptance scenarios for the MVP catalog.
 
-### BDD.01.04.aaaa Authenticated session feature
+### BDD.01.02.aaaa Authenticated session feature
 
 The catalog must authenticate registered buyers and return a session token on success.
 
@@ -29,7 +29,7 @@ The catalog must authenticate registered buyers and return a session token on su
 
 Executable Gherkin scenarios covering success, error, and recovery paths.
 
-### BDD.01.04.bbbb Scenario: Valid credentials yield a session token
+### BDD.01.03.bbbb Scenario: Valid credentials yield a session token
 
 Given a registered buyer with email "<buyer@example.com>"
 When the buyer submits valid credentials
@@ -40,7 +40,7 @@ And the response time is at or below the documented threshold
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.aaaa
 
-### BDD.01.04.cccc Scenario: Invalid credentials produce an error response
+### BDD.01.03.cccc Scenario: Invalid credentials produce an error response
 
 Given a registered buyer with email "<buyer@example.com>"
 When the buyer submits an incorrect password
@@ -51,7 +51,7 @@ And the response carries error code "AUTH_INVALID"
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.aaaa
 
-### BDD.01.04.dddd Scenario: Catalog search returns ranked results
+### BDD.01.03.dddd Scenario: Catalog search returns ranked results
 
 Given the catalog service is available
 When a buyer submits a product query
@@ -62,7 +62,7 @@ And the response time is at or below the documented threshold
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.bbbb
 
-### BDD.01.04.eeee Scenario: Cart confirmation persists the order
+### BDD.01.03.eeee Scenario: Cart confirmation persists the order
 
 Given a buyer with a populated cart
 When the buyer confirms the cart

@@ -15,7 +15,7 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 declares normative for GD-08 acceptance pairing. `_check_acceptance_pairing` pairs a BDD
 scenario only when a TDD line carries a real `@bdd:` tag beside a test-case id or a
 `bdd_scenario`/`bdd_ref` carrier, so every scenario read as unpaired — and the fixture also
-wrote `bdd_ref: BDD.01.04.bbbb` without the `@bdd:` prefix the template prescribes.
+wrote `bdd_ref: BDD.01.03.bbbb` without the `@bdd:` prefix the template prescribes.
 Separately `EARS.01.03.cccc` (checkout) was realized by nothing: the BDD covered sign-in and
 catalog search only.
 
@@ -23,7 +23,7 @@ catalog search only.
 positive controls could not pass the framework's own code gate.
 
 Authoring the normative `scenarios:` list clears `ACC01` ×4 and `COV02` ×3; a new
-`BDD.01.04.eeee` checkout scenario citing `@ears: EARS.01.03.cccc` clears the fourth `COV02`.
+`BDD.01.03.eeee` checkout scenario citing `@ears: EARS.01.03.cccc` clears the fourth `COV02`.
 
 ```
 fullpath/golden_chain  {COV02:4, ACC01:4, REFGRAN01:5} -> {REFGRAN01:5}
@@ -34,7 +34,7 @@ layer_06_spec/valid    {COV02:4, REFGRAN01:2}          -> unchanged
 
 Manifests go from **39 entries / 43 warnings to 15 / 19**. `layer_06_spec/valid` is net-zero
 by design, not by omission: it stages a SPEC and no TDD, and `SPEC-01_golden.yaml` cites only
-`@bdd: BDD.01.04.aaaa` element-level, so `BDD.01.04.eeee` takes the departing
+`@bdd: BDD.01.02.aaaa` element-level, so `BDD.01.03.eeee` takes the departing
 `EARS.01.03.cccc` slot for the same structural reason its three siblings were already pinned.
 
 **The remaining five `REFGRAN01` are split out to #635** — they cannot be cleared by re-citing,

@@ -20,7 +20,7 @@ Forces and constraints shaping the architecture choice for the MVP authenticatio
 - @brd: BRD.01.07.aaaa
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.aaaa
-- @bdd: BDD.01.04.aaaa
+- @bdd: BDD.01.02.aaaa
 
 ## Decision
 
@@ -53,7 +53,7 @@ Upstream BRD, PRD, EARS, and BDD references for this ADR.
 - @brd: BRD.01.07.aaaa
 - @prd: PRD.01.09.aaaa
 - @ears: EARS.01.03.aaaa
-- @bdd: BDD.01.04.aaaa
+- @bdd: BDD.01.02.aaaa
 
 ## Related Decisions
 

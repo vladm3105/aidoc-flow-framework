@@ -28,31 +28,31 @@ test_mapping:
       - integration
       - e2e
   scenarios:
-    - bdd_scenario: "@bdd: BDD.01.04.aaaa"
+    - bdd_scenario: "@bdd: BDD.01.02.aaaa"
       description: Authenticated session feature
       tests:
         - type: unit
           file: tests/unit/test_auth.py
           function: test_issue_token_returns_session_token
-    - bdd_scenario: "@bdd: BDD.01.04.bbbb"
+    - bdd_scenario: "@bdd: BDD.01.03.bbbb"
       description: Valid credentials yield a session token
       tests:
         - type: integration
           file: tests/integration/test_auth_kms.py
           function: test_token_signed_with_kms_key
-    - bdd_scenario: "@bdd: BDD.01.04.cccc"
+    - bdd_scenario: "@bdd: BDD.01.03.cccc"
       description: Invalid credentials produce an error response
       tests:
         - type: unit
           file: tests/unit/test_auth.py
           function: test_invalid_credentials_raise_auth_error
-    - bdd_scenario: "@bdd: BDD.01.04.dddd"
+    - bdd_scenario: "@bdd: BDD.01.03.dddd"
       description: Catalog search returns ranked results
       tests:
         - type: e2e
           file: tests/e2e/test_catalog_search.py
           function: test_search_returns_ranked_results
-    - bdd_scenario: "@bdd: BDD.01.04.eeee"
+    - bdd_scenario: "@bdd: BDD.01.03.eeee"
       description: Cart confirmation persists the order
       tests:
         - type: integration
@@ -75,17 +75,17 @@ test_cases:
     - id: TDD.01.04.cccc
       type: e2e
       spec_ref: SPEC-01
-      bdd_ref: "@bdd: BDD.01.04.bbbb"
+      bdd_ref: "@bdd: BDD.01.03.bbbb"
       test_file: tests/e2e/test_auth_flow.py
     - id: TDD.01.04.dddd
       type: e2e
       spec_ref: SPEC-01
-      bdd_ref: "@bdd: BDD.01.04.dddd"
+      bdd_ref: "@bdd: BDD.01.03.dddd"
       test_file: tests/e2e/test_catalog_search.py
     - id: TDD.01.04.eeee
       type: integration
       spec_ref: SPEC-01
-      bdd_ref: "@bdd: BDD.01.04.eeee"
+      bdd_ref: "@bdd: BDD.01.03.eeee"
       test_file: tests/integration/test_orders.py
 
 ## Thresholds
@@ -100,13 +100,13 @@ tdd_order:
     - Write unit test for AuthService.issueToken
     - Implement AuthService.issueToken to pass the unit test
     - Add integration test against KMS adapter
-    - Add e2e test driving BDD.01.04.bbbb scenario
+    - Add e2e test driving BDD.01.03.bbbb scenario
 
 ## Traceability
 traceability: |
   - @brd: BRD.01.07.aaaa
   - @prd: PRD.01.09.aaaa
   - @ears: EARS.01.03.aaaa
-  - @bdd: BDD.01.04.aaaa
+  - @bdd: BDD.01.02.aaaa
   - @adr: ADR-01
   - @spec: SPEC-01

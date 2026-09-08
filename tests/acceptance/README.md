@@ -62,7 +62,7 @@ expected_warnings:
 
 | code | `ref` | why |
 |---|---|---|
-| `ACC01`, `COV02` | the element ID (`BDD.01.04.bbbb`) | taken as the single-quoted token, then validated with `ELEM_FORM` |
+| `ACC01`, `COV02` | the element ID (`BDD.01.03.bbbb`) | taken as the single-quoted token, then validated with `ELEM_FORM` |
 | `REFGRAN01` | the cited tag (`@adr: ADR-01`) | its message carries no element ID, only a literal `TYPE.NN.SS.xxxx` placeholder |
 
 A code exposing neither makes the loader **raise** rather than degrade to

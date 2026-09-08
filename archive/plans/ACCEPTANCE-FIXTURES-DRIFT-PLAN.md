@@ -39,7 +39,7 @@ unrelated to that PR. Now isolated as a dedicated framework-level fixup.
     Requirements section)
 
   Closes the chain `TRACE-RES-001` failures. `EARS.01.03.aaaa` and
-  `BDD.01.04.aaaa` are already declared as section headings in their
+  `BDD.01.02.aaaa` are already declared as section headings in their
   upstream goldens (`EARS-01_golden.md:22`, `BDD-01_golden.md:24`); no
   changes needed there.
 - **Per-layer fixture sibling additions** — for each layer N (2-8), copy
@@ -148,7 +148,7 @@ Downstream goldens cite specific element IDs:
 - `@brd: BRD.01.07.aaaa` — cited by PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN
 - `@prd: PRD.01.09.aaaa` — cited by EARS, BDD, ADR, SPEC, TDD, IPLAN
 - `@ears: EARS.01.03.aaaa` — cited by BDD, SPEC, TDD, IPLAN
-- `@bdd: BDD.01.04.aaaa` — cited by SPEC, TDD, IPLAN
+- `@bdd: BDD.01.02.aaaa` — cited by SPEC, TDD, IPLAN
 
 Element-form references require the cited element ID to appear inside its
 host document (lint code in `tools/sdd_doc_lint/__init__.py`).
@@ -156,7 +156,7 @@ host document (lint code in `tools/sdd_doc_lint/__init__.py`).
 **Investigation result** (refined from initial scope per independent review):
 EARS-01 already declares `EARS.01.03.aaaa` as a section heading
 (`### EARS.01.03.aaaa` at `EARS-01_golden.md:22`); BDD-01 already declares
-`BDD.01.04.aaaa` similarly. Those tags already resolve. The actual
+`BDD.01.02.aaaa` similarly. Those tags already resolve. The actual
 TRACE-RES-001 failures are for `BRD.01.07.aaaa` (not in BRD-01) and
 `PRD.01.09.aaaa` (not in PRD-01). Fix 2 is therefore **2 element-ID
 additions, not 4**:
@@ -409,7 +409,7 @@ wrong assumptions.
   documented as nice-to-have, not necessary.
 - **F2 (critical) — Fix 2 overstates the element-ID scope.** Reviewer
   found that EARS-01 and BDD-01 already declare their element IDs as
-  section headings (`### EARS.01.03.aaaa` at line 22 / `### BDD.01.04.aaaa`
+  section headings (`### EARS.01.03.aaaa` at line 22 / `### BDD.01.02.aaaa`
   at line 24). Only BRD-01 and PRD-01 are missing their cited IDs.
   **Fixed:** Fix 2 scope reduced from "4 element-ID additions" to "2
   element-ID additions" (BRD and PRD only). Approach, Scope, and File
