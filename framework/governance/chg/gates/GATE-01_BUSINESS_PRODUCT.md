@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-01: Business/Product Gate (L1-L2)
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Between the change request and Layers 1-2 (BRD, PRD)
 > **Change Sources**: Upstream, External (business impact)
 > **Purpose**: Validate business/product changes before cascading to requirements
@@ -92,10 +103,10 @@ Before entering GATE-01, the change request must satisfy:
 
 ```
 C1 (Self-approved)
-      
+
        (if scope expands)
 C2 (PO + TL)
-      
+
        (if breaking change detected)
 C3 (Full Board)
 ```
@@ -148,23 +159,23 @@ After passing GATE-01:
 
 ```
                     GATE-01 PASSED
-                           
+
              Does change affect
              L3-L5 (EARS/BDD/ADR)?
-             
-          
+
+
            Yes                         No
-                                      
-                     
+
+
       GATE-03                   SPEC/TDD only?
-                     
-                                         
-                              
+
+
+
                                Yes                 No
-                                                  
-      (no EARS/BDD/ADR)                             
+
+      (no EARS/BDD/ADR)
                            GATE-06           GATE-08
-                                                  
+
                                                (IPLAN)
 ```
 

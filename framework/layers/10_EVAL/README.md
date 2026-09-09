@@ -101,12 +101,15 @@ flowchart LR
 
 Each `EVAL-NN` document contains:
 
-1. **Evaluation Scope** — which upstream layers it covers
-2. **Test Design** — test cases derived from upstream scenarios/requirements
-3. **Coverage Matrix** — traceability from source to test
-4. **Quality Thresholds** — pass/fail criteria, coverage targets
-5. **Execution Plan** — how, when, and where tests run
-6. **Evidence & Reporting** — what artifacts are produced and retained
+1. **Document Control** — version, status, approval, revision history
+2. **Evaluation Scope** — which upstream layers it covers
+3. **Test Design** — test cases derived from upstream scenarios/requirements
+4. **Coverage Matrix** — traceability from source to test
+5. **Quality Thresholds** — pass/fail criteria, coverage targets, verdict criteria
+6. **Execution Plan** — how, when, and where tests run (including phased execution)
+7. **Required Environment** — infrastructure prerequisites for test execution
+8. **Test Data Setup** — SQL/scripts for test data preparation and cleanup
+9. **Coverage Tracking** — operational metrics, endpoint coverage, gap analysis
 
 ## Naming Conventions
 

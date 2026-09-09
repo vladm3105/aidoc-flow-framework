@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-08: IPLAN Gate (L8)
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Between design/test and Layer 8 (IPLAN)
 > **Change Sources**: Design cascade from GATE-06, execution adjustment
 > **Purpose**: Validate implementation plans before code generation — the last documentation gate before source code
@@ -105,10 +116,10 @@ Before code generation begins, IPLAN must demonstrate:
 
 ```
 C1 (Self-approved)
-      
+
        (if execution order change)
 C2 (Technical Lead)
-      
+
        (if session handoff protocol change)
 C3 (TL + Domain Expert)
 ```
@@ -153,16 +164,16 @@ After passing GATE-08:
 
 ```
                     GATE-08 PASSED
-                           
+
               Ready for code generation
-                    
+
                      GATE-CODE
               Implementation + Review
-                    
-                         
-          
+
+
+
      Code        Build Pass   Merge
-     
+
 ```
 
 ### 6.2 Bubble-Up Trigger
@@ -171,16 +182,16 @@ When implementation reveals IPLAN issues:
 
 ```
 Code generation failure
-      
-      
-      
+
+
+
   Where is the gap?
-      
-      
+
+
   Missing file           Wrong order
   → Add to IPLAN         → Reorder IPLAN
   → GATE-08              → GATE-08
-  
+
   Wrong interface         Wrong command
   → Fix SPEC             → Fix IPLAN
   → GATE-06              → GATE-08
@@ -234,4 +245,4 @@ transitively through the chain, not cited locally:
 - [GATE_INTERACTION_DIAGRAM.md](./GATE_INTERACTION_DIAGRAM.md)
 - [GATE_ERROR_CATALOG.md](./GATE_ERROR_CATALOG.md)
 - [../templates/GATE_APPROVAL_FORM.md](../templates/GATE_APPROVAL_FORM.md)
-- [../../../layers/08_IPLAN/](../../../layers/08_IPLAN/)
+- [../../08_IPLAN/](../../08_IPLAN/)

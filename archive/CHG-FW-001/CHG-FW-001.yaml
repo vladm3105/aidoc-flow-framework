@@ -1,0 +1,213 @@
+# =============================================================================
+#  CHG-FW-001 — Enforce SDD-first phase ordering in CHG template
+# =============================================================================
+
+document_control:
+  project_name: "aidoc-flow-framework"
+  document_id: "CHG-FW-001"
+  version: "1.0"
+  status: "Approved"
+  author: "MiMoCode"
+  created_date: "2026-10-23"
+  last_updated: "2026-10-23"
+  framework_version: "0.53.1"
+  revision_history:
+    - version: "1.0"
+      date: "2026-10-23"
+      author: "MiMoCode"
+      description: "Initial CHG record — add phase field to CHG template steps"
+
+id: CHG-FW-001
+doc_id: CHG-FW-001
+title: "Enforce SDD-first phase ordering in CHG template"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-10-23"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-FW-001"
+  status: Implemented
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: patch
+  version_action: keep
+  author: "MiMoCode"
+  date_proposed: "2026-10-23T00:00:00"
+  date_approved: "2026-10-23T00:00:00"
+  date_implemented: "2026-10-23T00:00:00"
+  supersedes:
+    - "CHG-TEMPLATE.yaml (layers) (docs/sdd/09-CHG/archive/CHG-FW-001/layers/CHG-TEMPLATE.yaml)"
+    - "CHG-TEMPLATE.yaml (governance) (docs/sdd/09-CHG/archive/CHG-FW-001/governance/CHG-TEMPLATE.yaml)"
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Add a mandatory `phase` field to the CHG template's `implementation.steps`
+    to structurally enforce SDD-first implementation ordering. The current
+    template has a flat `steps` list with no ordering constraint, allowing
+    agents to put code implementation steps before SDD lifecycle steps.
+
+    Also sync the outdated governance copy of the template with the layer copy,
+    which is missing `document_control`, `creation_checklist`, and SDD-first
+    guidance.
+
+  why: |
+    The CHG template's `_guidance` correctly describes SDD-first ordering, but
+    the schema provides no structural enforcement. The flat `steps` list is the
+    exact pattern that allowed CHG-08 to put 18 code steps first with SDD
+    updates "Deferred" — violating §3.4 checklist items 13-14 for the third
+    time (CHG-04, CHG-06, CHG-08).
+
+    Advisory rules without enforcement get violated. The fix is to add a
+    `phase` field that forces agents to declare which phase each step belongs
+    to, making violations structurally visible rather than just doctrinally
+    prohibited.
+
+  trigger: |
+    Self-learn cycle 2026-10-23 found CHG-08 violated items 13-14 (SDD-first
+    order, CHG scope). Root cause analysis identified the flat steps list as
+    the structural enabler. Audit of the framework template confirmed the gap.
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "CHG Template (Layer)"
+      artifacts:
+        - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      impact: |
+        Add `phase` field to `implementation.steps` with allowed values:
+        `sdd_lifecycle` (Phase 0), `iplan_creation` (Phase 1).
+        Update `_guidance` to explain phase enforcement.
+        Add `_allowed_phases` reference block.
+
+    - layer: "CHG Template (Governance)"
+      artifacts:
+        - "framework/governance/chg/CHG-TEMPLATE.yaml"
+      impact: |
+        Replace entirely with synced version from layer template.
+        The governance copy is stale — missing document_control, creation_checklist,
+        and all SDD-first guidance added after v0.53.0.
+
+    - layer: "CHG README (Layer)"
+      artifacts:
+        - "framework/layers/09_CHG/README.md"
+      impact: |
+        Add phase enforcement note to Implementation Order section.
+
+    - layer: "DOC_GOVERNANCE_CORE"
+      artifacts:
+        - "framework/governance/DOC_GOVERNANCE_CORE.md"
+      impact: |
+        No changes needed — §CHG creation checklist items 13-14 already
+        describe the rule. The template change provides structural enforcement.
+
+  cascade_direction: lateral
+  risk_level: Low
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive original CHG-TEMPLATE.yaml (layer) to archive/CHG-FW-001/layers/"
+      phase: "sdd_lifecycle"
+      artifact: "layers/09_CHG/CHG-TEMPLATE.yaml"
+      status: Completed
+
+    - step: "Archive original CHG-TEMPLATE.yaml (governance) to archive/CHG-FW-001/governance/"
+      phase: "sdd_lifecycle"
+      artifact: "governance/chg/CHG-TEMPLATE.yaml"
+      status: Completed
+
+    - step: "Update layers/09_CHG/CHG-TEMPLATE.yaml — add phase field, update guidance"
+      phase: "sdd_lifecycle"
+      artifact: "layers/09_CHG/CHG-TEMPLATE.yaml"
+      status: Completed
+
+    - step: "Sync governance/chg/CHG-TEMPLATE.yaml from layer template"
+      phase: "sdd_lifecycle"
+      artifact: "governance/chg/CHG-TEMPLATE.yaml"
+      status: Completed
+
+  artifacts_modified:
+    - id: "chg_template_layer"
+      file: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      change_type: modified
+    - id: "chg_template_governance"
+      file: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      change_type: modified
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "Phase field present in template steps"
+      result: Pending
+      method: "grep 'phase:' framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - check: "Governance copy matches layer copy"
+      result: Pending
+      method: "diff framework/layers/09_CHG/CHG-TEMPLATE.yaml framework/governance/chg/CHG-TEMPLATE.yaml"
+    - check: "Originals archived"
+      result: Pending
+      method: "ls archive/CHG-FW-001/layers/CHG-TEMPLATE.yaml archive/CHG-FW-001/governance/CHG-TEMPLATE.yaml"
+
+# =============================================================================
+# Section 6: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: "Self (C3 — Technical Lead)"
+  approval_date: "2026-10-23"
+  conditions:
+    - "Template change is backward-compatible — existing CHGs without phase field are still valid"
+    - "Phase field is required only for new CHGs authored after this change"
+
+# =============================================================================
+# Section 7: Rollback Plan
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "Restore originals from archive/CHG-FW-001/"
+  estimated_effort: "< 2 minutes"
+
+# =============================================================================
+# Glossary
+# =============================================================================
+
+glossary:
+  terms:
+    - term: Phase 0
+      definition: "SDD Document Updates — archive, rewrite, supersedes, version bump. MANDATORY FIRST."
+    - term: Phase 1
+      definition: "IPLAN Creation/Update — all code implementation steps go here, referencing NEW SDD versions."
+    - term: phase field
+      definition: "Required field on each implementation step declaring which phase it belongs to."

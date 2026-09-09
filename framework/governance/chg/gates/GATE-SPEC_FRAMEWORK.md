@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-SPEC: Framework Specification Gate (meta)
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Orthogonal to the artifact cascade — governs the `framework/`
 > spec itself, not a project's artifacts.
 > **Change Sources**: Spec (a change to `framework/` templates, governance,
@@ -55,7 +66,7 @@ PR (`docs/PROJECT.md` §6), and does not enter GATE-SPEC.
 | Criterion | Required | Validation |
 |-----------|----------|------------|
 | Spec target identified | Yes | The change edits `framework/` (template / governance / registry / VERSION) |
-| Justification documented | Yes | `change_description.why` + `.trigger` — a promotion cites the motivating `.aidoc/learnings.md` / profile signal |
+| Justification documented | Yes | `change_description.why` + `.trigger` — a promotion cites the motivating `.aidoc/project/governance/SELF_LEARNING.md` / profile signal |
 | SemVer impact classified | Yes | `change_control.semver_impact` ∈ {major, minor, patch} |
 | Change level proposed | Yes | ≥ C2 (a spec change is never C1 — it reaches ≥2 consumers); `major` ⇒ C3 |
 | Both-platform reach acknowledged | Yes | The change updates both platforms' `FRAMEWORK_SPEC_VERSION` and they re-pass conformance |
@@ -103,6 +114,7 @@ the platform's protected-branch review. The validator never grants approval.
 | GATE-SPEC-W001 | `major` (breaking) change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Change touches only one platform's conformance (parity drift) | Confirm both platforms track the new spec version |
 | GATE-SPEC-W003 | Agent-facing spec change (template/governance guidance) without a recorded `SECURITY_REVIEW.md` assessment | Run the `SECURITY_REVIEW.md` checklist — a spec change reaches every platform, so injected/unsafe guidance has the widest blast radius |
+| GATE-SPEC-W004 | CHG touches documents with `framework_version` older than the new `framework/VERSION` but `version_action` is null | Set `version_action` to `upgrade` or `keep` with justification — stale framework_version is acceptable only when the schema is compatible |
 
 ## 4. Approval Workflow
 
@@ -191,6 +203,7 @@ GATE-SPEC passes:
 | GATE-SPEC-W001 | Migration | Breaking change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Parity | One-platform conformance drift | Confirm both platforms track the new version |
 | GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
+| GATE-SPEC-W004 | Versioning | CHG touches documents with stale `framework_version` without setting `version_action` | Set `version_action: upgrade` or `version_action: keep` with justification |
 
 ### 7.2 Common Resolutions
 

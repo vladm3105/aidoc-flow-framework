@@ -124,4 +124,16 @@ Each AI agent session follows this protocol:
 
 - Non-active layer artifacts in current authoring workflows
 - Legacy subtype taxonomies when generating active artifacts
-- CHG gates — a governance overlay, outside layer authoring (**when authoring a CHG record itself**, `layers/09_CHG/` is the contract: `CHG-TEMPLATE.yaml` is the primary artifact, `templates/GATE_APPROVAL_FORM.md` its companion, and `gates/GATE-*.md` define the checks. See especially `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up.)
+
+## CHG Gates — When to Reference
+
+CHG gates are a governance overlay, outside normal layer authoring. During
+routine layer work (authoring BRD, PRD, EARS, BDD, ADR, SPEC, TDD, IPLAN),
+you do NOT need to reference CHG gates.
+
+**However**, when authoring a CHG record itself, `layers/09_CHG/` IS the
+contract: `CHG-TEMPLATE.yaml` is the primary artifact, `templates/GATE_APPROVAL_FORM.md`
+its companion, and `gates/GATE-*.md` define the checks. See especially
+`gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
+checklist (§3.4 of `GOVERNANCE_RULES.md`) is a MANDATORY PROCESS GATE —
+complete it BEFORE writing any CHG document.
