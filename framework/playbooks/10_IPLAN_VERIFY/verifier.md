@@ -1,195 +1,146 @@
 ---
 name: IPLAN Verifier
-description: Reviews validation results and marks IPLAN as Verified (final/finite status)
+description: Reviews EVAL-RPT verdict, marks IPLAN as Verified
 agent: general
-layer: 08_IPLAN
-trigger: Validation report = "PASS"
+layer: 10_EVAL
+trigger: Latest EVAL-RPT verdict = PASS
 ---
 
 # IPLAN Verifier Playbook
 
 ## Purpose
 
-Review validation results and mark an IPLAN as Verified (final/finite status). This is the final step in the IPLAN lifecycle before immutability.
+Review the latest evaluation report for an IPLAN and mark it as Verified
+(FINAL/FINITE) when all quality gates pass. This is the final step in the
+IPLAN lifecycle before immutability.
 
 ## When to Use
 
-- After validation report shows "PASS"
-- When all P0/P1 findings are resolved
-- Before closing the validation workflow
+- After an EVAL-RPT achieves PASS verdict
+- Before marking an IPLAN as "Verified"
+- When all P0 and P1 findings are resolved
 
 ## Inputs
 
-- **IPLAN file**: The IPLAN to verify
-- **Validation report**: `IPLAN-NN_VALIDATION_REPORT.yaml`
-- **Validation findings**: All findings resolved
+- **Latest EVAL-RPT**: `EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml`
+- **IPLAN file**: `IPLAN-NN_*.yaml`
+- **EVAL document**: `EVAL-{NN}/EVAL-{NN}.yaml`
 
 ## Outputs
 
-- **Updated IPLAN**: Status changed to "Verified"
-- **Validation reference**: validated_by, validation_date, findings_resolved
-- **IPLAN-00 index**: Status history updated
+- **IPLAN status update**: Completed → Verified
+- **Verification record**: Added to IPLAN's verification_history
 
 ## Workflow
 
-### Step 1: Read Validation Report
+### Step 1: Read Latest RPT
 
 ```
-1. Read validation report (IPLAN-NN_VALIDATION_REPORT.yaml)
-2. Check validation_result:
-   - If "PASS": proceed to Step 2
-   - If "FAIL": stop, fix P0 findings first
-   - If "PARTIAL": review P1 findings, decide if acceptable
-3. Verify all findings are resolved:
-   - findings_count == 0 OR all findings.verified == true
+1. Find latest RPT for this EVAL:
+   - List EVAL-{NN}/reports/EVAL-{NN}-RPT-*.yaml
+   - Sort by cycle number
+   - Read the highest cycle number
+2. Extract verdict:
+   - verdict.overall
+   - verdict.reasoning
+   - findings[] (check all statuses)
+3. Verify verdict = PASS
 ```
 
-### Step 2: Verify Immutability Rules
+### Step 2: Verify Quality Gates
 
 ```
-1. Check current IPLAN status:
-   - Must be "Completed" (not "Verified" already)
-   - Cannot be "Draft", "Approved", or "In Progress"
-2. Check validation reference:
-   - validated_by should reference validation IPLAN
-   - validation_date should be set
-   - findings_resolved should be accurate
+Check all gates:
+1. verdict.overall == PASS
+2. No OPEN findings with severity P0
+3. No OPEN findings with severity P1
+4. results.p0_critical.failed == 0
+5. results.p1_high.failed == 0
+
+If any gate fails:
+  → Do NOT mark as Verified
+  → Report which gates failed
+  → Return to eval cycle (fix findings, re-run)
 ```
 
-### Step 3: Update IPLAN Status
+### Step 3: Verify IPLAN Completeness
 
 ```
-1. Update document_control.status:
-   - From: "Completed"
-   - To: "Verified"
-2. Add validation metadata:
-   - validated_by: "IPLAN-XX" (validation IPLAN)
-   - validation_date: "YYYY-MM-DD"
-   - findings_resolved: N
-3. Update last_updated timestamp
+1. Read IPLAN file
+2. Check file_manifest:
+   - All files status = DONE
+   - All files verified = true
+3. Check documentation:
+   - traceability section complete
+   - implementation_contracts documented
+4. Check test coverage:
+   - All test cases in EVAL are implemented
+   - coverage_matrix summary = 100%
 ```
 
-### Step 4: Update IPLAN-00 Index
+### Step 4: Record Verification
 
 ```
-1. Read IPLAN-00_index.yaml
-2. Find IPLAN entry in registry.plans
-3. Update status:
-   - From: "Completed"
-   - To: "Verified"
-4. Add validation fields:
-   - validated_by: "IPLAN-XX"
-   - validation_date: "YYYY-MM-DD"
-   - findings_resolved: N
-5. Append to status_history:
-   - from: "Completed"
-   - to: "Verified"
-   - date: "YYYY-MM-DD"
-   - reason: "Validation passed, all P0/P1 findings resolved"
+Add to IPLAN's verification_history:
+  - verifier: "[agent or person]"
+  - date: "YYYY-MM-DD"
+  - eval_report: "EVAL-{NN}-RPT-{NNN}.yaml"
+  - verdict: PASS
+  - findings_resolved: N
+  - cycles_to_resolve: N
+  - notes: "All P0/P1 findings resolved"
 ```
 
-### Step 5: Close Validation IPLAN
+### Step 5: Update IPLAN Status
 
 ```
-1. Update validation IPLAN status:
-   - From: "Draft" or "In Progress"
-   - To: "Completed"
-2. Add completion notes:
-   - All findings resolved
-   - Original IPLAN verified
-3. Update validation IPLAN's last_updated
+1. Set IPLAN status: "Verified"
+2. Set verification_date: current date
+3. Set verified_by: verifier identity
+
+Note: Verified = IMMUTABLE
+  - No further changes allowed
+  - To modify: create CHG + new IPLAN version
 ```
 
-### Step 6: Notify
+### Step 6: Update EVAL-00 Index
 
 ```
-1. Log verification completion
-2. Update project tracker (if applicable)
-3. Notify stakeholders (if configured)
+1. Update EVAL-00_index.md:
+   - Mark IPLAN as Verified
+   - Record final cycle count
+   - Record resolution metrics
 ```
-
-## Immutability Rules
-
-Once an IPLAN reaches "Verified" status:
-
-- **No fields may be modified**
-- **No files may be added or removed**
-- **Status cannot be changed back**
-
-To modify a Verified IPLAN:
-
-1. Create a CHG record documenting the need for changes
-2. Create a NEW IPLAN (IPLAN-NN+1) that references the original
-3. The original IPLAN remains in "Verified" status as historical record
 
 ## Verification Checklist
 
-- [ ] Validation report shows "PASS"
-- [ ] All P0 findings resolved (count == 0)
-- [ ] All P1 findings resolved (or documented exceptions)
-- [ ] IPLAN status is "Completed" (not already "Verified")
-- [ ] Validation reference exists (validated_by, validation_date)
-- [ ] findings_resolved count is accurate
-- [ ] IPLAN-00 index updated
-- [ ] Validation IPLAN closed as "Completed"
+- [ ] Latest RPT verdict = PASS
+- [ ] No OPEN P0 findings
+- [ ] No OPEN P1 findings
+- [ ] All IPLAN files status = DONE
+- [ ] All IPLAN files verified = true
+- [ ] Coverage matrix = 100%
+- [ ] Verification recorded in IPLAN
+- [ ] IPLAN status = Verified
+- [ ] EVAL-00 index updated
 
-## Example Usage
+## Post-Verification
 
-```bash
-# Verify IPLAN-15 after validation passes
-# (Manual process or via agent)
+Once Verified:
+- IPLAN is immutable
+- EVAL document stays as-is (no new versions unless CHG)
+- RPT files stay as historical record
+- To make changes: create CHG → new IPLAN version → new EVAL version
 
-# 1. Read validation report
-cat docs/sdd/08_IPLAN/IPLAN-15_VALIDATION_REPORT.yaml
-
-# 2. Update IPLAN status to Verified
-# Edit IPLAN-15 file:
-#   status: Verified
-#   validated_by: "IPLAN-16"
-#   validation_date: "2026-09-05"
-#   findings_resolved: 19
-
-# 3. Update IPLAN-00 index
-# Edit IPLAN-00_index.yaml:
-#   status: Verified
-#   validation_date: "2026-09-05"
-
-# 4. Close validation IPLAN
-# Edit IPLAN-16 file:
-#   status: Completed
-```
-
-## Output Example
+## Example Verification Record
 
 ```yaml
-# IPLAN-15 after verification
-document_control:
-  iplan_id: "IPLAN-15"
-  status: Verified  # FINAL/FINITE
-  validated_by: "IPLAN-16"
-  validation_date: "2026-09-05"
-  findings_resolved: 19
-
-# IPLAN-00 index entry
-- id: "IPLAN-15"
-  status: Verified
-  validated_by: "IPLAN-16"
-  validation_date: "2026-09-05"
-  findings_resolved: 19
+verification_history:
+  - verifier: "SDD Framework"
+    date: "2026-10-29"
+    eval_report: "EVAL-01-RPT-003.yaml"
+    verdict: PASS
+    findings_resolved: 4
+    cycles_to_resolve: 3
+    notes: "All P0/P1 findings resolved in 3 cycles"
 ```
-
-## Status Transition
-
-```
-Completed → Verified (FINAL/FINITE)
-              ↑
-              │ Cannot be changed
-              │ Need CHG + new IPLAN
-```
-
-## Key Rules
-
-- **Verified = Immutable**: No changes allowed after Verified
-- **CHG Required**: To modify Verified IPLAN, create CHG + new IPLAN
-- **Validation First**: All P0/P1 findings must be resolved
-- **Historical Record**: Original IPLAN stays in Verified status forever

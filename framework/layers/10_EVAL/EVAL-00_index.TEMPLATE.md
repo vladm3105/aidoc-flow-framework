@@ -1,5 +1,5 @@
 ---
-title: "EVAL-00: Evaluation Strategy Index"
+title: "EVAL-00: Evaluation & QA Governance Index"
 tags:
   - index-document
   - layer-10-artifact
@@ -21,28 +21,25 @@ custom_fields:
 
 ```mermaid
 flowchart LR
+    IPLAN[IPLAN - L8] --> EVAL[EVAL - L10]
     EARS[EARS - L3] --> BDD[BDD - L4]
-    BDD --> EVAL-F[EVAL-F - L10 Functional]
-    TDD[TDD - L7] --> IPLAN[IPLAN - L8]
-    IPLAN --> EVAL-U[EVAL-U - L10 Unit/Smoke]
-    EVAL-F --> CODE[Code / CI]
-    EVAL-U --> CODE
-    style EVAL-F fill:#fff3e0,stroke:#e65100,stroke-width:3px
-    style EVAL-U fill:#fff3e0,stroke:#e65100,stroke-width:3px
+    BDD --> EVAL
+    EVAL --> GATES[CI / Staging / Deploy Gates]
+    CHG[CHG - L9] -->|versions IPLAN| IPLAN
+    CHG -->|versions EVAL| EVAL
+    style EVAL fill:#fff3e0,stroke:#e65100,stroke-width:3px
 ```
 
 **Layer**: 10 (Evaluation & QA Governance)
 **Note**: Layer 9 is CHG (Change Record — governance overlay). EVAL is L10.
-**Upstream (necessary)**: EARS (L3), BDD (L4) for functional track; TDD (L7), IPLAN (L8) for unit/smoke track
+**Upstream (necessary)**: IPLAN (L8) — 1:1 mapping
 **Downstream**: Code, CI/CD pipelines, deployment gates
-**Traceability chain**: EARS → BDD → EVAL-F → Integration/E2E tests
-**Traceability chain**: TDD → IPLAN → EVAL-U → Unit/Smoke tests
+**Traceability chain**: IPLAN → EVAL → RPT → verdict
 
 ### EVAL Purpose
 
-- **Input (Functional)**: EARS formal requirements + BDD acceptance scenarios
-- **Input (Unit/Smoke)**: TDD test case definitions + IPLAN execution plans
-- **Output**: Evaluation strategies with coverage matrices, quality thresholds, and execution plans
+- **Input**: IPLAN execution plan + relevant BDD/TDD sources
+- **Output**: Eval strategy, iterated eval reports (RPT), PASS verdict
 - **Consumer**: QA engineers, CI/CD pipelines, deployment gates
 
 ---
@@ -51,32 +48,36 @@ flowchart LR
 
 EVAL uses **`.yaml` files** (unified YAML template pattern).
 
-**Template**: [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml)
+**Templates**:
+- [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml) — per-IPLAN strategy
+- [EVAL-RPT-TEMPLATE.yaml](./EVAL-RPT-TEMPLATE.yaml) — eval report
 
 ---
 
 ## Allocation Rules
 
-- **Numbering**: Allocate sequentially starting at `01` (e.g., `EVAL-01`, `EVAL-02`)
+- **Numbering**: Sequential starting at `01` — matches owning IPLAN number
+- **1:1 mapping**: EVAL-01 owns IPLAN-01, EVAL-02 owns IPLAN-02, etc.
 - **Keep numbers stable**: Never reuse or renumber
-- **Filename**: `EVAL-NN_{descriptive_slug}.yaml`
-- **One evaluation scope per file**: Each EVAL covers one testing track for a defined set of upstream sources
-- **Upstream trace**: Required — every test case MUST link to its source (BDD scenario or TDD test case)
-- **Evaluation-Ready score**: >=90/100 required before deployment gate activation
+- **Directory**: `EVAL-{NN}/`
+- **Document**: `EVAL-{NN}/EVAL-{NN}.yaml`
+- **Reports**: `EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml`
+- **Upstream trace**: Required — every test case MUST link to its source
+- **Eval cycle**: Iterative until PASS — reports are immutable snapshots
 
 ---
 
 ## Document Registry
 
-| ID | Strategy | Track | Upstream Sources | Status | Last Updated |
-|----|----------|-------|------------------|--------|--------------|
-| - | - | - | - | - | No EVAL documents created yet |
+| ID | Owning IPLAN | Track | IPLAN Version | Latest Verdict | Cycles | Open Findings | Status | Latest Updated |
+|----|-------------|-------|---------------|----------------|--------|---------------|--------|---------------|
+| - | - | - | - | - | - | - | - | No EVAL documents created yet |
 
 ## Planned
 
-| ID | Strategy | Track | Upstream Sources | Priority | Notes |
-|----|----------|-------|------------------|----------|-------|
-| EVAL-XX | … | functional | EARS-YY, BDD-YY | High/Med/Low | … |
+| ID | Owning IPLAN | Track | Priority | Notes |
+|----|-------------|-------|----------|-------|
+| EVAL-NN | IPLAN-NN | unit_smoke | High/Med/Low | ... |
 
 ---
 
@@ -84,39 +85,43 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 ### Creating a New EVAL Document
 
-1. **Generate from template**: Copy `EVAL-TEMPLATE.yaml` into a new `EVAL-NN` file
-2. **Assign sequential ID**: `EVAL-01`, `EVAL-02`, etc.
-3. **Classify the track**: functional (EARS/BDD) or unit/smoke (TDD/IPLAN)
-4. **Define scope**: list specific upstream source documents
-5. **Populate test design**: map each upstream scenario to concrete test cases
-6. **Build coverage matrix**: bidirectional traceability from source to implementation
-7. **Set quality thresholds**: derived from PRD thresholds and project standards
-8. **Define execution plan**: CI pipeline steps, staging verification, deployment gates
-9. **Update this index**: Add entry to the document registry
+1. **Wait for IPLAN Completed**: EVAL is created after IPLAN reaches "Completed" status
+2. **Copy template**: `EVAL-TEMPLATE.yaml` → `EVAL-{NN}/EVAL-{NN}.yaml`
+3. **Set owning_iplan**: Links to the IPLAN (1:1)
+4. **Extract scope**: From IPLAN's scope and relevant BDD/TDD sources
+5. **Map test cases**: Clean IDs — `EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}`
+6. **Build coverage matrix**: Bidirectional traceability
+7. **Set thresholds**: From PRD and project standards
+8. **Update this index**: Add entry to document registry
 
-### Track Selection
+### Running Eval Cycles
 
-| Scenario | Track | Why |
-|----------|-------|-----|
-| Validating user-facing behavior works end-to-end | functional | EARS/BDD define user journeys |
-| Verifying individual functions are correct | unit_smoke | TDD/IPLAN define function contracts |
-| Validating API contracts between services | functional | Cross-component = integration |
-| Checking health endpoints in CI | unit_smoke | Fast, isolated, CI-runnable |
-| Performance benchmarking | functional | Requires full stack in staging |
-| Code coverage enforcement | unit_smoke | Per-function, CI-runnable |
+1. **Initial eval** (cycle 1): Run tests, create RPT, set verdict
+2. **If FAIL**: Fix findings, run again (cycle 2, trigger: bug_fix_verification)
+3. **Repeat**: Until verdict = PASS
+4. **Verify**: Mark IPLAN as Verified when PASS
+
+### IPLAN Versioning
+
+When a CHG bumps an IPLAN version:
+1. **Archive old EVAL**: Move to `09-CHG/archive/{CHG-ID}/10_EVAL/`
+2. **Create new EVAL**: New version, new test cases if scope changed
+3. **Reset cycle counter**: New EVAL starts at cycle 1
+4. **Update this index**: New entry for new EVAL version
 
 ---
 
 ## Validation Checklist
 
-- [ ] All EVAL files follow naming: `EVAL-NN_{slug}.yaml`
+- [ ] All EVAL directories follow naming: `EVAL-{NN}/`
+- [ ] All EVAL documents follow naming: `EVAL-{NN}.yaml`
+- [ ] All RPT files follow naming: `EVAL-{NN}-RPT-{NNN}.yaml`
 - [ ] Every test case has a source_id linking to BDD scenario or TDD test case
-- [ ] Coverage matrix covers 100% of upstream scenarios
+- [ ] Coverage matrix covers 100% of IPLAN-relevant scenarios
 - [ ] Quality thresholds match PRD-declared thresholds
-- [ ] Execution plan specifies CI and/or staging environment
-- [ ] Evidence retention policy defined
-- [ ] This index is up-to-date with all EVAL files
-- [ ] Evaluation-Ready score >=90/100 confirmed
+- [ ] Each EVAL has owning_iplan set (1:1 mapping)
+- [ ] Each RPT is self-contained (no external file deps in findings)
+- [ ] This index is up-to-date with all EVAL files and latest verdicts
 
 ---
 
@@ -126,29 +131,30 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 | Source Type | Document ID | Relationship |
 |-------------|-------------|--------------|
-| EARS | EARS-NN | Formal requirements (functional track) |
-| BDD | BDD-NN | Acceptance scenarios (functional track) |
-| TDD | TDD-NN | Test case definitions (unit/smoke track) |
-| IPLAN | IPLAN-NN | Execution plans (unit/smoke track) |
+| IPLAN | IPLAN-NN | Execution plan (1:1 mapping) |
+| TDD | TDD-NN | Test case definitions (from IPLAN) |
+| BDD | BDD-NN | Acceptance scenarios (from IPLAN scope) |
+| EARS | EARS-NN | Formal requirements (transitive via IPLAN) |
 
 ### Downstream Consumers
 
 | Consumer Type | Document ID | Relationship |
 |---------------|-------------|--------------|
-| CI/CD | github-actions | Pipeline gates enforce evaluation criteria |
-| Deployment | docker-compose | Staging verification runs evaluation strategies |
-| Monitoring | observability | Test evidence retained for audit |
+| EVAL-RPT | EVAL-{NN}-RPT-{NNN} | Eval reports (immutable snapshots) |
+| CI/CD | github-actions | Pipeline gates enforce test criteria |
+| Deployment | docker-compose | Staging verification runs functional tests |
 
 ---
 
 ## Related Documents
 
-- **Template**: [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml)
+- **Template (Strategy)**: [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml)
+- **Template (Report)**: [EVAL-RPT-TEMPLATE.yaml](./EVAL-RPT-TEMPLATE.yaml)
 - **README**: [README.md](./README.md)
-- **Upstream (Functional)**: [03_EARS](../03_EARS/) — Formal requirements
-- **Upstream (Functional)**: [04_BDD](../04_BDD/) — Acceptance scenarios
-- **Upstream (Unit/Smoke)**: [07_TDD](../07_TDD/) — Test case definitions
-- **Upstream (Unit/Smoke)**: [08_IPLAN](../08_IPLAN/) — Execution plans
+- **Upstream (IPLAN)**: [08_IPLAN](../08_IPLAN/) — Execution plans
+- **Upstream (TDD)**: [07_TDD](../07_TDD/) — Test case definitions
+- **Upstream (BDD)**: [04_BDD](../04_BDD/) — Acceptance scenarios
+- **Upstream (EARS)**: [03_EARS](../03_EARS/) — Formal requirements
 
 ---
 

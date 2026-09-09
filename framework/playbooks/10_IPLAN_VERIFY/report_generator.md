@@ -1,221 +1,199 @@
 ---
-name: Report Generator
-description: Generates validation reports using IPLAN-VERIFY-TEMPLATE
+name: RPT Generator
+description: Generates EVAL-RPT reports from test execution output
 agent: general
-layer: 08_IPLAN
-trigger: Validation requested
+layer: 10_EVAL
+trigger: After test execution completes
 ---
 
-# Report Generator Playbook
+# RPT Generator Playbook
 
 ## Purpose
 
-Generate comprehensive validation reports for IPLANs using the IPLAN-VERIFY-TEMPLATE. This playbook documents the validation process, findings, and recommendations.
+Generate self-contained EVAL-RPT reports from test execution output. This playbook
+transforms raw test results into the standardized EVAL-RPT format with all context
+inline.
 
 ## When to Use
 
-- After running validation tests
-- When documenting validation results
-- For audit trail and compliance
+- After running tests for an IPLAN's EVAL document
+- When producing a new eval cycle report
+- When automating RPT generation in CI
 
 ## Inputs
 
-- **IPLAN file**: The IPLAN being validated
-- **Test results**: Unit, integration, lint results
-- **Findings**: Any issues discovered
+- **EVAL document**: `EVAL-{NN}/EVAL-{NN}.yaml`
+- **Test output**: JSON, JUnit XML, or go test -json output
+- **Previous RPT** (if cycle > 1): for regression detection
+- **Cycle metadata**: trigger type, run date
 
 ## Outputs
 
-- **Validation report**: `IPLAN-NN_VALIDATION_REPORT.yaml`
-- **Findings list**: P0-P3 severity findings
-- **Recommendation**: PASS/FAIL/PARTIAL
+- **EVAL-RPT**: `EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml`
 
 ## Workflow
 
-### Step 1: Read IPLAN
+### Step 1: Determine Cycle Number
 
 ```
-1. Read IPLAN file (IPLAN-NN_*.yaml)
-2. Extract metadata:
-   - iplan_id
-   - title
-   - component
-   - status
-   - file_manifest.files
-   - execution_commands.validation
-3. Extract test commands for execution
+1. List existing RPT files in EVAL-{NN}/reports/
+2. Extract cycle numbers from filenames (RPT-NNN)
+3. New cycle = max(existing) + 1
+4. If no existing: cycle = 1
 ```
 
-### Step 2: Run Tests (Optional)
+### Step 2: Parse Test Output
 
 ```
-If --validate flag is set:
-1. Run unit tests from execution_commands.validation
-2. Run integration tests
-3. Run lint checks
-4. Record pass/fail and duration
+For each test in output:
+  1. Match to EVAL test case by:
+     - test function name → test_case_id
+     - or test file + line → test_case_id
+  2. Record result: passed / failed / skipped
+  3. Record duration_ms
+  4. If failed: record error_message
+  5. Match to source_id (BDD/TDD) from EVAL document
 ```
 
-### Step 3: Check File Completion
+### Step 3: Classify by Severity
 
 ```
-1. Read file_manifest.files
-2. For each file:
-   - Check if file exists on disk
-   - Check status (should be DONE)
-   - Check verified (should be true)
-3. Calculate completion rate
+For each test case in EVAL document:
+  - priority p0-critical → severity P0
+  - priority p1-high → severity P1
+  - priority p2-medium → severity P2
+
+Count by severity:
+  p0_critical: { total, passed, failed }
+  p1_high: { total, passed, failed }
+  p2_medium: { total, passed, failed }
 ```
 
-### Step 4: Record Findings
+### Step 4: Detect Regressions (if cycle > 1)
 
 ```
-For each issue found:
-1. Assign finding ID (FINDING-001, FINDING-002, ...)
-2. Classify severity (P0-P3)
-3. Record file:line reference
-4. Describe issue
-5. Document fix (if applied)
-6. Mark verified (if fixed)
+Read previous RPT:
+  For each finding in previous RPT with status = OPEN:
+    If test now passes:
+      → Add to resolved_this_cycle
+    If test still fails:
+      → Add to carried_failures, increment cycles_open
+
+  For each test that was PASS in previous RPT:
+    If test now fails:
+      → Add to findings as new regression
 ```
 
-### Step 5: Generate Report
+### Step 5: Compute Results
 
 ```
-1. Use IPLAN-VERIFY-TEMPLATE.yaml as base
-2. Fill in sections:
-   - metadata
-   - document_control
-   - validation_summary
-   - validation_findings
-   - severity_classification
-   - cross_iplan_impact
-   - file_manifest
-   - validation_commands
-   - session_handoff
-   - recommendations
-3. Save as IPLAN-NN_VALIDATION_REPORT.yaml
+total = count(all test cases)
+passed = count(passed)
+failed = count(failed)
+skipped = count(skipped)
+pass_rate = (passed / (total - skipped)) * 100
+
+by_regression:
+  new_failures = count(new failures)
+  carried_failures = count(carried failures)
+  resolved = count(resolved from previous)
+  never_tested = count(skipped)
 ```
 
-### Step 6: Provide Recommendation
+### Step 6: Set Verdict
 
 ```
-Based on validation results:
-- validation_result = "PASS" if:
-  - All tests pass
-  - All files complete
-  - No P0/P1 findings
-- validation_result = "FAIL" if:
-  - Any test fails
-  - Any P0 finding exists
-- validation_result = "PARTIAL" if:
-  - Some tests fail but P0 == 0
-  - P1 findings exist but documented
-
-status_recommendation:
-- "Verified" if validation_result == "PASS"
-- "Completed" if validation_result == "FAIL" or "PARTIAL"
+If p0_critical.failed > 0:
+  overall = FAIL
+  blockers = [P0 finding IDs]
+Elif p1_high.failed > 0:
+  overall = PASS-WITH-NOTES
+  blockers = []
+Else:
+  overall = PASS
+  blockers = []
 ```
 
-## Report Structure
+### Step 7: Generate RPT YAML
 
-```yaml
-metadata:
-  document_type: "validation-report"
-  validating_iplan: "IPLAN-NN"
-  validation_date: "YYYY-MM-DD"
-
-document_control:
-  iplan_id: "IPLAN-NN_VALIDATION"
-  subtype: audit_fix
-  source_spec: "Validation of IPLAN-NN"
-  status: Completed
-
-validation_summary:
-  original_iplan: "IPLAN-NN"
-  validation_result: "PASS" | "FAIL" | "PARTIAL"
-  files_declared: N
-  files_done: N
-  completion_rate: "X%"
-  findings_count: N
-  p0_count: N
-  p1_count: N
-  p2_count: N
-  p3_count: N
-
-validation_findings:
-  findings: []
-
-severity_classification:
-  P0: { label, description, gate }
-  P1: { label, description, gate }
-  P2: { label, description, gate }
-  P3: { label, description, gate }
-
-cross_iplan_impact:
-  original_iplan: "IPLAN-NN"
-  impacts: []
-
-file_manifest:
-  files: []
-
-validation_commands:
-  unit_tests: { command, result, duration }
-  integration_tests: { command, result, duration }
-  lint: { command, result, duration }
-
-session_handoff:
-  sessions: [...]
-
-recommendations:
-  status_recommendation: "Verified" | "Completed"
-  reasoning: "..."
-  next_steps: [...]
+```
+1. Start from EVAL-RPT-TEMPLATE.yaml
+2. Fill document_control:
+   - eval_id, iplan_id, iplan_version, eval_version
+   - cycle, run_date, trigger, status
+   - baseline_report, previous_cycle_date
+3. Fill iplan_context:
+   - Snapshot from IPLAN file
+4. Fill results:
+   - Computed in Step 5
+5. Fill findings:
+   - One per failed test, with all context
+6. Fill resolved_this_cycle:
+   - From Step 4
+7. Fill coverage:
+   - What was tested vs what exists
+8. Fill quality_thresholds:
+   - Actual vs target with verdict
+9. Fill verdict:
+   - From Step 6
+10. Fill evidence:
+    - CI URLs, artifact paths
+11. Fill linkage:
+    - eval_id, iplan_id, upstream refs
 ```
 
-## Example Usage
+### Step 8: Validate RPT
+
+```
+Before writing:
+1. Check all required fields populated
+2. Check pass_rate computed correctly
+3. Check finding IDs are unique within this RPT
+4. Check no external file references in findings
+5. Check verdict matches findings (no contradictions)
+```
+
+### Step 9: Write RPT
+
+```
+Save as: EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml
+Verify file is valid YAML
+```
+
+## CI Integration
+
+### go test -json output
 
 ```bash
-# Generate validation report for IPLAN-15
-./scripts/generate_validation_report.sh IPLAN-15
+# Run tests and capture JSON output
+go test ./cmd/... ./internal/... -json > test-output.json
 
-# Generate report + fix IPLAN
-./scripts/generate_validation_report.sh IPLAN-15 --fix-found
+# Generate RPT from JSON (when scripts/generate-rpt.sh is implemented)
+# scripts/generate-rpt.sh EVAL-01 test-output.json
 ```
 
-## Output Example
+### JUnit XML output
 
-```yaml
-validation_summary:
-  original_iplan: "IPLAN-15"
-  validation_result: "PASS"
-  files_declared: 22
-  files_done: 22
-  completion_rate: "100%"
-  findings_count: 0
-  p0_count: 0
-  p1_count: 0
+```bash
+# Run tests and capture JUnit XML
+npm run test -- --reporter=junit > test-results.xml
 
-recommendations:
-  status_recommendation: "Verified"
-  reasoning: "All tests pass, lint clean, no findings"
-  next_steps:
-    - "Mark IPLAN-15 as Verified"
-    - "Close validation IPLAN"
+# Generate RPT from JUnit (when scripts/generate-rpt.sh is implemented)
+# scripts/generate-rpt.sh EVAL-02 test-results.xml
 ```
 
-## Severity Reference
+## Example Generation
 
-| Severity | Label | Description | Gate |
-|----------|-------|-------------|------|
-| P0 | Critical | Test failure, security issue, data corruption | Blocks Verified |
-| P1 | High | Logic error, resilience gap | Should fix before Verified |
-| P2 | Medium | Hardening, edge case | Can defer to follow-up |
-| P3 | Low | Code quality, documentation | No gate |
+```bash
+# Manual RPT generation (when scripts/generate-rpt.sh is implemented)
+# scripts/generate-rpt.sh \
+#   --eval EVAL-01 \
+#   --cycle 2 \
+#   --trigger bug_fix_verification \
+#   --input test-output.json \
+#   --output EVAL-01/reports/EVAL-01-RPT-002.yaml
+```
 
-## Key Rules
-
-- **Use IPLAN-VERIFY-TEMPLATE**: Always use the official template
-- **Record all findings**: Even P3 findings should be documented
-- **Provide clear reasoning**: Explain why PASS/FAIL/PARTIAL
-- **Include next steps**: Guide the user on what to do next
+**Note**: `scripts/generate-rpt.sh` is not yet implemented. Currently, RPT files are
+authored manually following the EVAL-RPT-TEMPLATE.yaml structure. The script is planned
+for future implementation to automate RPT generation from CI test output.

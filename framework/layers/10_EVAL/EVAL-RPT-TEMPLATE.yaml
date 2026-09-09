@@ -1,0 +1,216 @@
+# =============================================================================
+#  EVAL-RPT-TEMPLATE.yaml — Self-Contained Evaluation Report (SDD Layer 10)
+# =============================================================================
+#  Document Authority: REPORT STANDARD
+#  Purpose: Record the outcome of a single eval cycle against an IPLAN
+#  Lifecycle: Immutable once written — snapshot of test run
+#
+#  Convention:
+#    _guidance     — authoring instructions, ignored by validators
+#    _note         — contextual clarification
+#
+#  Naming:
+#    File: EVAL-{NN}-RPT-{NNN}.yaml
+#    Where {NN} matches the owning EVAL document number
+#    Where {NNN} is the cycle number (001, 002, 003, ...)
+#
+#  Self-contained rule: All context needed to understand this report is inline.
+#  No external file reads required. Baseline_report field is for traceability only.
+# =============================================================================
+
+id: "EVAL-NN-RPT-NNN"
+title: "Eval Report — EVAL-NN Cycle N"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+
+document_control:
+  report_type: eval_report
+  eval_id: "EVAL-NN"                     # owning EVAL document
+  iplan_id: "IPLAN-NN"                   # owning IPLAN
+  iplan_version: "1.0"                   # IPLAN version at eval time
+  eval_version: "1.0"                    # EVAL version that produced this report
+  eval_track: unit_smoke                 # functional | unit_smoke
+  cycle: 1                               # cycle number (1, 2, 3, ...)
+  run_date: "YYYY-MM-DDTHH:MM:SS"       # when this eval ran
+  trigger: initial_eval                  # see trigger types below
+  status: FAIL                           # PASS | PASS-WITH-NOTES | FAIL | BLOCKED
+  baseline_report: null                  # null if cycle 1, otherwise "EVAL-NN-RPT-NNN.yaml"
+  previous_cycle_date: null              # when the prior eval ran (null if cycle 1)
+  cycles_since_last_eval: null           # null if cycle 1
+
+# Trigger types:
+#   initial_eval            — first time evaluating this IPLAN version
+#   bug_fix_verification    — re-run after code fixes for findings
+#   chg_verification        — re-run after CHG modified IPLAN or code
+#   scheduled               — periodic regression check
+#   pre_deploy              — gate check before branch promotion
+
+# =============================================================================
+# Section 2: IPLAN Context — snapshot at time of eval
+# =============================================================================
+
+iplan_context:
+  _guidance: |
+    Capture the IPLAN state at eval time. This makes the report self-contained.
+    If someone reads this report in 6 months without the IPLAN file, they
+    should still understand what was being tested.
+  iplan_title: "[IPLAN Title]"
+  iplan_status: Completed
+  iplan_files_declared: 0
+  iplan_files_done: 0
+  chgs_since_last_eval: []               # e.g. ["CHG-08"] if re-eval after CHG
+  relevant_bdd: ["BDD-NN"]               # BDD scenarios in scope
+  relevant_tdd: ["TDD-NN"]               # TDD documents in scope
+
+# =============================================================================
+# Section 3: Results
+# =============================================================================
+
+results:
+  _guidance: |
+    The numbers. Every field here is computed from the actual test run.
+    by_regression tells you which failures are new vs carried vs resolved.
+
+  total: 0
+  passed: 0
+  failed: 0
+  skipped: 0
+  pass_rate: 0.0                         # computed: (passed / (total - skipped)) * 100
+
+  by_severity:
+    p0_critical:
+      total: 0
+      passed: 0
+      failed: 0
+    p1_high:
+      total: 0
+      passed: 0
+      failed: 0
+    p2_medium:
+      total: 0
+      passed: 0
+      failed: 0
+
+  by_regression:
+    _guidance: |
+      Only relevant on cycle > 1. On cycle 1, all failures are "new_failures".
+      - new_failures: failed this cycle, passed last cycle (or first run)
+      - carried_failures: failed this cycle AND last cycle
+      - resolved: passed this cycle, failed last cycle
+      - never_tested: no test implemented yet (skipped)
+    new_failures: 0
+    carried_failures: 0
+    resolved: 0
+    never_tested: 0
+
+# =============================================================================
+# Section 4: Findings — one per failure
+# =============================================================================
+
+findings:
+  _guidance: |
+    Every failure gets a finding entry. All context inline — error message,
+    file reference, severity, cycles open. No external deps.
+
+    Status lifecycle: OPEN → RESOLVED | DEFERRED | WONTFIX
+    A finding is only RESOLVED when a subsequent cycle passes that test case.
+
+  - id: "F-001"
+    eval_case_id: "EVAL-NN.BDD-NN.TC-NN.NN"    # test case that failed
+    source_id: "BDD.NN.SS.xxxx"                 # upstream source (BDD scenario ID)
+    name: "[Short description of the failure]"
+    severity: P0                                 # P0 | P1 | P2
+    status: OPEN
+    error_message: "[Actual error or assertion failure]"
+    test_file: "[path/to/test_file.go]"
+    regression: false                            # true if passed last cycle, fails this one
+    cycles_open: 1                               # consecutive cycles this finding is open
+
+# =============================================================================
+# Section 5: Resolved This Cycle
+# =============================================================================
+
+resolved_this_cycle:
+  _guidance: |
+    Only populated on cycle > 1. Lists findings that were OPEN in the
+    previous cycle and are now passing.
+  # - finding_id: "F-001"
+  #   resolved_in_cycle: 2
+  #   fix_commit: "abc1234"
+
+# =============================================================================
+# Section 6: Coverage
+# =============================================================================
+
+coverage:
+  upstream_source: "BDD-NN or TDD-NN"
+  test_cases_mapped: 0                    # how many test cases exist for this IPLAN
+  test_cases_executed: 0                  # how many actually ran
+  coverage_percent: 0.0
+
+# =============================================================================
+# Section 7: Quality Thresholds
+# =============================================================================
+
+quality_thresholds:
+  _guidance: |
+    Compare actual results against targets from the EVAL document.
+    Each metric gets a verdict: PASS or FAIL. Must mirror the EVAL strategy's thresholds.
+  - metric: "p0_critical_pass_rate"
+    target: 100
+    actual: 0
+    gate: error
+    verdict: FAIL
+  - metric: "p1_high_pass_rate"
+    target: 100
+    actual: 0
+    gate: error
+    verdict: FAIL
+  - metric: "coverage_percent"
+    target: 100
+    actual: 0
+    gate: error
+    verdict: FAIL
+
+# =============================================================================
+# Section 8: Verdict
+# =============================================================================
+
+verdict:
+  _guidance: |
+    Overall judgment. Must include reasoning and list blockers.
+
+    PASS: All P0 and P1 pass, P2 may fail
+    PASS-WITH-NOTES: All P0 pass, some P1 fail with documented workaround
+    FAIL: Any P0-critical fails
+    BLOCKED: Infrastructure unavailable, cannot run tests
+  overall: FAIL                           # PASS | PASS-WITH-NOTES | FAIL | BLOCKED
+  reasoning: "[Why this verdict]"
+  blockers: []                            # list of blocking finding IDs
+
+# =============================================================================
+# Section 9: Evidence
+# =============================================================================
+
+evidence:
+  ci_run_url: null                        # link to CI run or test execution
+  test_log_artifact: null                 # path to test log
+  coverage_report_artifact: null          # path to coverage report
+  retention_days: 30
+
+# =============================================================================
+# Section 10: Linkage
+# =============================================================================
+
+linkage:
+  eval_id: "EVAL-NN"
+  iplan_id: "IPLAN-NN"
+  spec_id: "SPEC-NN"
+  tdd_ids: ["TDD-NN"]
+  bdd_ids: ["BDD-NN"]
+
+# =============================================================================
+# End of EVAL-RPT-TEMPLATE.yaml
+# =============================================================================
