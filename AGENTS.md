@@ -58,6 +58,9 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 
 ## Non-negotiables
 
+- **NEVER push directly to `main`.** All changes must go through the `dev` branch
+  via a feature branch + PR. Pushing to `main` bypasses required status checks
+  and review gates.
 - **Never hand-edit example artifacts.** Files under `examples/<name>/docs/` and
   `examples/<name>/.aidoc/` are the system-under-test. Remediate them by
   dispatching the framework's own skills; a class of remediation the skills
@@ -73,6 +76,25 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   original shipped early.
 - **Plans get two review cycles before the plan PR opens** — see `CLAUDE.md`
   → "Development workflow".
+
+### Push Workflow
+
+```bash
+# CORRECT workflow:
+git checkout dev
+git pull origin dev
+git checkout -b feat/my-change
+# ... make changes ...
+git add .
+git commit -m "feat: description"
+git push origin feat/my-change
+# Then open PR: feat/my-change → dev
+
+# WRONG — never do this:
+git push origin main   # ❌ BLOCKED by this rule
+```
+
+Branch promotion: `feature-branch → dev → main`
 
 ## Where state lives (this repo owns its own continuity)
 
