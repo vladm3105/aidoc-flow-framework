@@ -370,3 +370,114 @@ Draft → Approved → In Progress → Completed → Verified
 - Exit 0 = pass
 - Exit 1 = errors
 - Exit 2 = usage error
+
+---
+
+## 10. EVAL Assertion Gaps vs BDD-Derived Testing Scenarios
+
+### The Problem
+
+EVAL test cases derived from BDD scenarios had fewer assertions than the BDD-derived testing
+scenarios document specified. The scenarios doc has richer Assertions + Boundaries columns per
+test case. EVAL captured only 1-2 assertions when the scenarios doc specified 4-6.
+
+### Scope
+
+- b-local-privy EVAL-01: ~80 assertion gaps across 83 test cases, 12 missing test cases entirely.
+
+### Root Cause
+
+1. EVAL authoring focused on the BDD YAML scenarios (which have `then:` clauses) but did not
+   cross-reference against the testing scenarios document (which has detailed assertions).
+2. No template guidance on which source document is authoritative for assertion completeness.
+
+### Recommended Fix (Already Applied)
+
+- **EVAL-TEMPLATE.yaml §test_design**: Added ASSERTION CROSS-REFERENCE mandatory guidance.
+  "Each EVAL assertion list MUST include all items from the scenarios doc."
+- **Lint rule EVAL-COV-002**: Smoke test commands must match CI workflow YAML.
+- **Lint rule EVAL-COV-003**: TDD/BDD IDs must be verified against source documents.
+- **Lint rule EVAL-COV-004**: Coverage summary counts must match parsed YAML.
+
+### Key Rule
+
+> When deriving EVAL assertions from BDD scenarios, always cross-reference against the
+> BDD-derived testing scenarios document (docs/testing/scenarios/). That document has
+> richer Assertions + Boundaries columns. Missing assertions cause shallow test coverage.
+
+### Evidence
+
+- b-local-privy EVAL-01 `bdd02.int01` only asserted "First login creates users row" but
+  TC-02.6 also requires: email_verified_at set, privy_user_id stored, idempotent on second call.
+- b-local-privy EVAL-02 had fabricated TDD ID `TDD.01.04.f19c` (doesn't exist in any TDD file).
+- b-local-privy EVAL-02 smoke tests referenced non-existent scripts (`build_website.sh`).
+
+---
+
+## 11. EVAL Coverage Summary Counts Must Be Computed After Final Write
+
+### The Problem
+
+Coverage summary counts were set before the final YAML was written, resulting in wrong numbers.
+EVAL-01 said "77 test cases" but actual parsed count was 95. EVAL-02 said "105 total" but
+actual was 104.
+
+### Root Cause
+
+The agent writes the coverage summary as part of the initial draft, then adds test cases
+incrementally. The summary is not recomputed after the final write.
+
+### Recommended Fix (Already Applied)
+
+- **EVAL-TEMPLATE.yaml §coverage_matrix.summary**: Added guidance "Computed from entries —
+  total, implemented, pending, skipped, coverage %. Recompute after final YAML write."
+- **Lint rule EVAL-COV-004**: Validates summary.total matches parsed test_design.test_cases count.
+
+### Key Rule
+
+> EVAL coverage summary MUST be recomputed after final YAML write using YAML parser:
+> `python3 -c "import yaml; d=yaml.safe_load(open('file.yaml')); print(len(d['test_design']['test_cases']))"`
+> Never set the summary count before writing all test cases.
+
+### Evidence
+
+- b-local-privy EVAL-01: summary said 77/156 (49%) but actual was 95/156 (61%).
+- b-local-privy EVAL-02: summary said 105 total but parsed count was 104.
+
+---
+
+## 12. Migration Idempotency — IF NOT EXISTS Is Mandatory
+
+### The Problem
+
+Migration `004_add_audit_log.sql` used `CREATE TABLE audit_log (...)` without `IF NOT EXISTS`,
+while all other migrations (001-03) used `IF NOT EXISTS`. The test runner assumes all
+migrations are idempotent. Non-idempotent migrations cause integration test failures with
+`relation already exists` when running against a pre-existing database.
+
+### Scope
+
+- b-local-privy: 12 auth integration tests skipped due to this migration bug.
+
+### Root Cause
+
+The migration author did not follow the established convention (all prior migrations used
+IF NOT EXISTS). No lint rule enforces idempotency.
+
+### Recommended Fix
+
+- **Lint rule**: All migration SQL files MUST use `IF NOT EXISTS` for `CREATE TABLE`,
+  `CREATE INDEX`, and `ALTER TABLE ADD COLUMN` statements.
+- **Verification**: `grep -n "CREATE TABLE\|CREATE INDEX" migrations/*.sql | grep -v "IF NOT EXISTS"`
+
+### Key Rule
+
+> All migration SQL files MUST use IF NOT EXISTS for DDL statements. This ensures:
+> 1. Migrations are idempotent (safe to re-run)
+> 2. Integration tests pass against pre-existing databases
+> 3. No manual intervention needed for schema convergence
+
+### Evidence
+
+- b-local-privy `004_add_audit_log.sql`: `CREATE TABLE audit_log (...)` → error on re-run.
+- Fixed by adding `IF NOT EXISTS` to all CREATE TABLE and CREATE INDEX statements.

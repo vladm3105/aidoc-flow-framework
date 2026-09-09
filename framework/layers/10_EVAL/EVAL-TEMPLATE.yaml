@@ -187,6 +187,14 @@ test_design:
         - assertions: from BDD scenario then
         - performance_threshold: from BDD scenario @threshold references
 
+      ASSERTION CROSS-REFERENCE (mandatory):
+        When deriving assertions from BDD scenarios, cross-reference against
+        the BDD-derived testing scenarios document (docs/testing/scenarios/).
+        That document has richer Assertions + Boundaries columns per TC.
+        Each EVAL assertion list MUST include all items from the scenarios doc.
+        Missing assertions (e.g., side-effect checks, context injection,
+        reconciliation records) cause shallow test coverage.
+
     For unit/smoke track (EVAL-U):
       Derive test cases from TDD test case definitions. Each TDD test case
       maps to ≥1 unit or smoke test. Test cases include:
@@ -196,6 +204,17 @@ test_design:
         - target: function/module under test
         - test_file: path to test implementation
         - coverage_threshold: minimum coverage for this test
+
+      SMOKE TEST VERIFICATION (mandatory):
+        Smoke test commands MUST be verified against actual CI workflow YAML
+        files (.github/workflows/*.yml). Every CI pipeline step should have
+        a corresponding smoke test. Never assume script paths — verify with
+        `ls` or `grep` against the workflow definition.
+
+      ID VERIFICATION (mandatory):
+        Every tdd_id and scenario_id MUST be verified against source YAML
+        files via grep before finalizing. Fabricated IDs (correct format
+        but wrong hash) cause silent traceability breaks.
 
   _example: |
     ```yaml
@@ -241,6 +260,41 @@ test_design:
         test_file: "[path/to/test_file]"
         test_function: "[TestFunctionName]"
       _note: "Optional — use for deferred items, blocked dependencies, or implementation notes"
+
+  # ── Required Environment (functional track) ────────────────────────────
+  required_environment:
+    _guidance: "Environment prerequisites for functional tests. Each entry specifies what must be running and how to verify. Skipped for unit/smoke track."
+    _required_when: "track == functional"
+    postgresql:
+      version: "16"
+      required: true
+      verify: "pg_isready -h localhost -p 5434"
+    privy_env:
+      value: "sandbox"
+      required: true
+      verify: "echo $PRIVY_ENV"
+
+  # ── Test Data Setup (functional track) ─────────────────────────────────
+  test_data_setup:
+    _guidance: "SQL statements for test data lifecycle. Clean state before tests, seed minimal data."
+    _required_when: "track == functional"
+    clean_state_sql: |
+      TRUNCATE TABLE ... CASCADE;
+    seed_minimal: |
+      INSERT INTO users ...;
+
+  # ── Coverage Tracking ──────────────────────────────────────────────────
+  coverage_tracking:
+    _guidance: "Maps upstream scenarios to test cases and tracks gaps. Every upstream scenario must appear here."
+    scenario_to_test_mapping:
+      tracked_in: "[path to tracking document]"
+    coverage_metrics:
+      bdd_scenarios_with_test:
+        target: "100%"
+        current: "N/M (P%)"
+    gap_tracking:
+      _guidance: "Scenarios that cannot be tested because endpoints are not yet implemented"
+      gaps: []
 
 # =============================================================================
 # Section 4: Coverage Matrix
@@ -401,6 +455,11 @@ execution_plan:
       - Deployment gate criteria
       - Evidence retention and reporting
 
+    For functional track with multiple BDD features:
+      Define execution phases that respect the dependency chain.
+      A failure in an upstream phase blocks all downstream phases.
+      Example: Phase 1 (Foundation) failure blocks Phase 2-6.
+
   _example: |
     ```yaml
     execution_plan:
@@ -444,6 +503,13 @@ execution_plan:
     trigger: "[on_merge_to_staging | manual]"
     environment: "[staging-beelocal]"
     schedule: "[manual | on_merge | cron]"
+    execution_phases:
+      _guidance: "Optional. For multi-feature evaluations, define phases with dependency chain. Phase N failure blocks Phase N+1."
+      phases:
+        - phase: 1
+          name: "Foundation"
+          features: ["[feature-1]"]
+          block_downstream: true
     steps: ["[Step 1]"]
     _phases_guidance: |
       For functional track: define execution phases ordered by BDD dependency chain.
