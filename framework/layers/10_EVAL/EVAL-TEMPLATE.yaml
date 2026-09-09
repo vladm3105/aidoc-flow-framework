@@ -28,7 +28,7 @@ metadata:
   document_type: "eval-document"
   layer: 10
   lifecycle: mvp-prod-newmvp
-  total_sections: 6
+  total_sections: 9
   last_updated: "2026-10-06"
   validation:
     _guidance: |
@@ -240,6 +240,7 @@ test_design:
         language: "[go | js | python]"
         test_file: "[path/to/test_file]"
         test_function: "[TestFunctionName]"
+      _note: "Optional — use for deferred items, blocked dependencies, or implementation notes"
 
 # =============================================================================
 # Section 4: Coverage Matrix
@@ -374,6 +375,19 @@ quality_thresholds:
       target_ms: 1000
       gate: warning
 
+  verdict_criteria:
+    _guidance: |
+      Define the possible test run outcomes and their criteria.
+      These are the verdict labels applied to each evaluation run.
+    pass:
+      criteria: "All P0-critical scenarios pass; all P1-high pass; P2 may fail"
+    pass_with_notes:
+      criteria: "All P0 pass; some P1 fail with documented workaround"
+    blocked:
+      criteria: "Infrastructure unavailable (DB, provider, credentials)"
+    fail:
+      criteria: "Any P0-critical scenario fails"
+
 # =============================================================================
 # Section 6: Execution Plan
 # =============================================================================
@@ -431,6 +445,19 @@ execution_plan:
     environment: "[staging-beelocal]"
     schedule: "[manual | on_merge | cron]"
     steps: ["[Step 1]"]
+    _phases_guidance: |
+      For functional track: define execution phases ordered by BDD dependency chain.
+      A failure in an upstream phase blocks all downstream phases.
+      Each phase lists its BDD features and whether its failure blocks downstream.
+    execution_phases:
+      - phase: 1
+        name: "[Phase Name]"
+        bdd_features: ["[BDD-NN]"]
+        block_downstream: true
+      # - phase: 2
+      #   name: "[Phase Name]"
+      #   bdd_features: ["[BDD-NN]"]
+      #   block_downstream: true
 
   deployment_gate:
     criteria: ["[Criteria 1]"]
@@ -440,5 +467,122 @@ execution_plan:
     artifacts: ["[Artifact 1]"]
 
 # =============================================================================
+# Section 7: Required Environment
+# =============================================================================
+# Added in EVAL-01 v2.0 — defines infrastructure prerequisites for test execution.
+
+required_environment:
+  _size_target: 150
+  _guidance: |
+    Define the infrastructure components required to run the tests in this
+    evaluation strategy. Each entry specifies what is needed, whether it is
+    required, and how to verify it is available.
+
+    For functional track: typically PostgreSQL, Docker Compose, provider sandbox
+    credentials, and application-specific prerequisites.
+    For unit/smoke track: typically CI runner, Go/Node toolchain, no external deps.
+
+  _example: |
+    ```yaml
+    required_environment:
+      postgresql:
+        version: "16"
+        required: true
+        verify: "pg_isready -h localhost -p 5434"
+      privy_env:
+        value: "sandbox"
+        required: true
+        verify: "echo $PRIVY_ENV"
+      privy_credentials:
+        required: true
+        vars: ["PRIVY_APP_ID", "PRIVY_APP_SECRET"]
+    ```
+
+  # _environment_entry_guidance: Each key is a component name. Fields:
+  #   version: (optional) required version
+  #   required: true | false | "for specific tests"
+  #   verify: (optional) command or check to verify availability
+  #   vars: (optional) list of required environment variable names
+  #   value: (optional) expected value for an env var
+  #   var: (optional) single env var name
+
+# =============================================================================
+# Section 8: Test Data Setup
+# =============================================================================
+# Added in EVAL-01 v2.0 — SQL or scripts for test data management.
+
+test_data_setup:
+  _size_target: 100
+  _guidance: |
+    Define how test data is prepared and cleaned between test runs.
+    For database-backed tests, provide SQL statements for truncation and seeding.
+    For CI-only tests, this may be a no-op if tests use in-memory mocks.
+
+  _example: |
+    ```yaml
+    test_data_setup:
+      clean_state_sql: |
+        TRUNCATE TABLE users, wallets, transfers, postings CASCADE;
+      seed_minimal: |
+        INSERT INTO users (user_id, privy_user_id, email_verified_at)
+        VALUES ('bl-test-001', 'did:privy:test-001', now());
+    ```
+
+  clean_state_sql: "[SQL to reset database to clean state]"
+  seed_minimal: "[SQL to insert minimal required test data]"
+
+# =============================================================================
+# Section 9: Coverage Tracking
+# =============================================================================
+# Added in EVAL-01 v2.0 — metrics, gap analysis, and upstream traceability.
+
+coverage_tracking:
+  _size_target: 200
+  _guidance: |
+    Track coverage metrics beyond the coverage_matrix summary. This section
+    provides operational metrics (pass rates, endpoint coverage) and gap
+    analysis for scenarios that cannot yet be tested due to missing
+    infrastructure or unimplemented endpoints.
+
+    For functional track: BDD scenario → test case mapping, endpoint coverage,
+    and gap tracking for missing endpoints.
+    For unit/smoke track: TDD test case implementation rates and gap tracking.
+
+  _example: |
+    ```yaml
+    coverage_tracking:
+      scenario_to_test_mapping:
+        tracked_in: "path/to/tracking-document.md"
+      coverage_metrics:
+        bdd_scenarios_with_test:
+          target: "100%"
+          current: "65/156 (42%)"
+        p0_critical_passing:
+          target: "100%"
+          current: "Track per run"
+      gap_tracking:
+        gaps:
+          - scenario: "TC-02.9 Session refresh"
+            missing_endpoint: "auth/refresh"
+            chg: "CHG-08"
+    ```
+
+  scenario_to_test_mapping:
+    _guidance: "Reference to the document that tracks scenario-to-test-case mapping"
+    tracked_in: "[path/to/tracking-document.md]"
+  coverage_metrics:
+    _guidance: "Key coverage metrics with targets and current values"
+    # Add domain-specific metrics as needed
+  gap_tracking:
+    _guidance: "Scenarios blocked by missing infrastructure or unimplemented endpoints"
+    gaps: []
+    # - scenario: "[Scenario ID]"
+    #   missing_endpoint: "[Endpoint path]"
+    #   chg: "[CHG ID that will resolve this gap]"
+
+# =============================================================================
 # End of EVAL-TEMPLATE.yaml
 # =============================================================================
+# Sections: 1-Document Control, 2-Evaluation Scope, 3-Test Design,
+#           4-Coverage Matrix, 5-Quality Thresholds, 6-Execution Plan,
+#           7-Required Environment, 8-Test Data Setup, 9-Coverage Tracking
