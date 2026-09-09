@@ -1,9 +1,9 @@
 # =============================================================================
-#  EVAL-TEMPLATE.yaml — Evaluation & QA Governance (SDD Layer 10)
+#  EVAL-TEMPLATE.yaml — Per-IPLAN Evaluation Strategy (SDD Layer 10)
 # =============================================================================
 #  Document Authority: PRIMARY STANDARD
-#  Purpose: AI-consumable + human-reviewable evaluation strategy template
-#  Lifecycle: MVP → PROD → NEW MVP
+#  Purpose: AI-consumable + human-reviewable evaluation strategy per IPLAN
+#  Lifecycle: 1:1 with IPLAN — versions when IPLAN versions
 #
 #  Convention:
 #    _guidance     — authoring instructions, ignored by validators
@@ -11,78 +11,56 @@
 #    _note         — contextual clarification
 #    _example      — sample values for reference
 #
-#  Upstream: EARS (L3), BDD (L4), TDD (L7), IPLAN (L8)
-#  Downstream: Code, CI/CD, deployment gates
+#  Upstream: IPLAN (L8), TDD (L7), BDD (L4), EARS (L3)
+#  Downstream: EVAL-RPT (evaluation reports), CI/CD, deployment gates
+#
+#  Naming:
+#    Directory:  EVAL-{NN}/
+#    Document:   EVAL-{NN}/EVAL-{NN}.yaml
+#    Reports:    EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml
+#    Test IDs:   EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}  (BDD-sourced)
+#                EVAL-{NN}.TDD-{NN}.{hash}         (TDD-sourced)
 # =============================================================================
 
 id: EVAL-NN
-title: "[Evaluation Strategy Title]"
+title: "Eval — IPLAN-NN [IPLAN Title]"
 
 # =============================================================================
 # Template Metadata
 # =============================================================================
 
 metadata:
-  schema_version: "1.0"
-  framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
+  schema_version: "2.0"
+  framework_version: "[X.Y.Z]"
   document_type: "eval-document"
   layer: 10
-  lifecycle: mvp-prod-newmvp
+  lifecycle: iplan-coupled
   total_sections: 6
-  last_updated: "2026-10-06"
+  last_updated: "2026-10-27"
   validation:
     _guidance: |
       Evaluation is performed by the platform's conformance tooling.
-      It covers structural checks, coverage verification, and threshold validation.
-      Evaluation-Ready Score: >=90/100 is the advisory target (auditor-lens computed, never hand-authored).
+      Evaluation-Ready Score: >=90/100 is the advisory target.
 
       Evaluation scoring criteria:
-        Coverage completeness (40%): all upstream sources mapped to test cases
+        Coverage completeness (40%): all IPLAN-relevant sources mapped to test cases
         Traceability integrity (25%): bidirectional source ↔ test linking
         Threshold alignment (20%): quality gates match PRD thresholds
         Execution readiness (15%): CI/staging environments configured
 
-  c4_level:
-    _guidance: |
-      EVAL is NOT a C4 level. It is a governance layer that validates
-      the test strategy covers all upstream requirements and specifications.
-
-      SDD C4 map (10 layers):
-        Context (BRD)     — business environment, actors, boundaries
-        Container (PRD)   — product features, functional blocks
-        EARS               — formalize Context→Container transition
-        BDD                — executable acceptance scenarios
-        ADR                — architecture decisions
-        SPEC               — implementation-ready specifications
-        TDD                — test case definitions from SPEC contracts
-        IPLAN              — execution plan bridging TDD to Code
-        Code               — source code implementation
-        EVAL               — testing strategy governance             ← this layer
-    value: none
-
   tags:
     - eval-document
     - layer-10-artifact
-    - shared-architecture
-
-  deliverable_type:
-    _guidance: |
-      Evaluation documents are process artifacts that govern test quality,
-      not code or implementation.
-    value: process
+    - iplan-coupled
 
   id_standard:
     state: canonical
     _guidance: |
-      All element IDs use content-derived hashes scoped to EVAL content.
-      Format: {doc_type}.{doc_id}.{section_id}.{hash}
-      Example: EVAL.01.04.a7b3
-      Section segment: test design entries live in Section 4.
-
-    format: "{doc_type}.{doc_id}.{section_id}.{hash}"
-    hash_algorithm: SHA256
-    hash_length: 4
-    max_hash_length: 8
+      Test case IDs are scoped to the owning EVAL document.
+      Format: {eval_id}.{source_type}.{source_id}
+      Examples:
+        EVAL-01.BDD-01.TC-01.3    (BDD-sourced)
+        EVAL-01.TDD-01.4d64       (TDD-sourced)
 
 # =============================================================================
 # Section 1: Document Control
@@ -91,22 +69,35 @@ metadata:
 document_control:
   _size_target: 100
   _guidance: |
-    Define the evaluation scope, version, and approval status.
-    Link to upstream sources using the required_tags convention.
-    Necessary-upstream tags: @ears + @bdd + @tdd + @iplan required (Layer 10 required_tags).
-    This document is the governing authority for test strategy in its scope.
+    This EVAL document is owned by a single IPLAN. When the IPLAN versions
+    (via CHG), the EVAL versions with it. The iplan_version field tracks
+    which IPLAN version this EVAL covers.
+
+    Revision history must record the iplan_version at each EVAL version.
   version: "1.0"
   status: Draft  # Draft | In Review | Approved
+  owning_iplan: "IPLAN-NN"                # 1:1 — this EVAL owns this IPLAN
+  iplan_version: "1.0"                    # IPLAN version at EVAL creation
+  eval_track: unit_smoke                  # functional | unit_smoke
+  # Track naming: "functional" = EVAL-F (EARS/BDD → staging), "unit_smoke" = EVAL-U (TDD/IPLAN → CI)
+  eval_strategy: null                     # optional: reference to cross-cutting strategy doc (deprecated)
   date_created: "YYYY-MM-DDTHH:MM:SS"
   last_updated: "YYYY-MM-DDTHH:MM:SS"
   author: "[QA Engineer]"
-  priority: P1  # P1 (Critical) | P2 (High) | P3 (Medium) | P4 (Low)
+  priority: P1
   evaluation_ready_score: "[Score]/100"
   revision_history:
     - version: "1.0"
       date: "YYYY-MM-DDTHH:MM:SS"
       author: "[Name]"
-      changes: "Initial evaluation strategy"
+      iplan_version: "1.0"
+      changes: "Initial evaluation strategy for IPLAN-NN v1.0"
+    # When IPLAN versions, add:
+    # - version: "2.0"
+    #   date: "..."
+    #   iplan_version: "2.0"
+    #   changes: "Rebased to IPLAN-NN v2.0 after CHG-XX"
+    #   supersedes: "EVAL-NN v1.0"
 
 # =============================================================================
 # Section 2: Evaluation Scope
@@ -115,59 +106,35 @@ document_control:
 evaluation_scope:
   _size_target: 200
   _guidance: |
-    Define which upstream layers this evaluation covers and the testing
-    strategy classification. Two tracks:
-      - Functional: EARS → BDD → integration/E2E tests
-      - Unit/Smoke: TDD → IPLAN → unit/smoke tests
+    Define what this EVAL covers. Scoped to the owning IPLAN's scope —
+    NOT all BDD/TDD in the project, only those relevant to this IPLAN.
 
-    Each track has its own scope, environment, and gate criteria.
+    The owning_iplan field creates the 1:1 link. The iplan_scope field
+    documents which components/files this EVAL covers.
+    The relevant_bdd field lists only BDD scenarios that overlap with
+    the IPLAN's scope.
 
-  _example: |
-    ```yaml
-    evaluation_scope:
-      track: functional  # functional | unit_smoke | combined
-      upstream_sources:
-        - layer: 3
-          type: EARS
-          ids: [EARS-02]
-        - layer: 4
-          type: BDD
-          ids: [BDD-02]
-      coverage_target: 100  # percent of upstream scenarios/requirements
-      environment: staging  # staging | ci | both
-    ```
-
-  track: "[functional | unit_smoke | combined]"
-  _track_guidance: |
-    functional: EARS/BDD-driven integration and E2E testing. Staging only.
-    unit_smoke: TDD/IPLAN-driven unit and smoke testing. CI pipeline.
-    combined: both tracks in a single document (use for small projects only).
+  owning_iplan: "IPLAN-NN"
+  iplan_scope: "[List of components/files from IPLAN's scope]"
+  eval_track: unit_smoke  # functional | unit_smoke
 
   upstream_sources:
-    # _source_guidance: List the specific upstream documents this evaluation covers.
-    # Functional track requires: EARS + BDD.
-    # Unit/smoke track requires: TDD + IPLAN.
-    - layer: 3
-      type: EARS
-      ids: ["EARS-NN"]
-    - layer: 4
-      type: BDD
-      ids: ["BDD-NN"]
-    # For unit/smoke track:
-    # - layer: 7
-    #   type: TDD
-    #   ids: ["TDD-NN"]
-    # - layer: 8
-    #   type: IPLAN
-    #   ids: ["IPLAN-NN"]
+    # Only sources relevant to this IPLAN
+    - layer: 7
+      type: TDD
+      ids: ["TDD-NN"]
+    - layer: 8
+      type: IPLAN
+      ids: ["IPLAN-NN"]
 
-  coverage_target: 100  # percent of upstream scenarios/requirements
+  relevant_bdd:
+    # Only BDD scenarios that overlap with this IPLAN's scope
+    # Use actual BDD scenario IDs (e.g., BDD.01.03.756e)
+    - id: "BDD-NN"
+      scenarios: ["BDD.NN.SS.xxxx", "BDD.NS.SS.xxxx"]
 
-  environment: "[staging | ci | both]"
-  _environment_guidance: |
-    staging: functional tests run against staging environment (not CI).
-    ci: unit/smoke tests run in CI pipeline on every push/PR.
-    both: evaluation covers both environments.
+  coverage_target: 100
+  environment: ci  # staging | ci | both
 
 # =============================================================================
 # Section 3: Test Design
@@ -176,70 +143,41 @@ evaluation_scope:
 test_design:
   _size_target: 800
   _guidance: |
-    For functional track (EVAL-F):
-      Derive test cases from BDD scenarios. Each BDD scenario maps to ≥1
-      integration or E2E test case. Test cases include:
-        - scenario_id: the BDD scenario ID this test validates
-        - test_type: integration | e2e | api_contract
-        - environment: staging
-        - priority: derived from BDD scenario priority
-        - preconditions: from BDD scenario given/when
-        - assertions: from BDD scenario then
-        - performance_threshold: from BDD scenario @threshold references
+    Test cases for THIS IPLAN's scope only. Each test case has a clean ID
+    scoped to this EVAL document.
 
-    For unit/smoke track (EVAL-U):
-      Derive test cases from TDD test case definitions. Each TDD test case
-      maps to ≥1 unit or smoke test. Test cases include:
-        - tdd_id: the TDD test case ID this test implements
-        - test_type: unit | smoke | regression
-        - environment: ci
-        - target: function/module under test
-        - test_file: path to test implementation
-        - coverage_threshold: minimum coverage for this test
+    ID format:
+      BDD-sourced: EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}
+      TDD-sourced: EVAL-{NN}.TDD-{NN}.{hash}
 
-  _example: |
-    ```yaml
-    test_design:
-      - id: EVAL.01.04.a7b3
-        name: "Privy login yields access token"
-        scenario_id: "BDD.02.03.6e26"
-        test_type: integration
-        environment: staging
-        priority: p0-critical
-        preconditions:
-          - "User has valid Privy credentials"
-          - "Staging backend is running on port 8084"
-        assertions:
-          - "Response status 200"
-          - "Response body contains access_token"
-          - "Latency p95 < 1000ms"
-        performance_threshold:
-          metric: latency_p95
-          max_ms: 1000
-        implementation:
-          language: go
-          test_file: "internal/auth/auth_integration_test.go"
-          test_function: "TestBDD02_PrivyLoginYieldsAccessToken"
-    ```
+    The source_type and source_id fields create traceability to upstream.
+    The priority is derived from upstream BDD/TDD priority.
 
   test_cases:
-    - id: "EVAL.NN.04.xxxx"
+    # BDD-sourced test cases
+    - id: "EVAL-NN.BDD-NN.TC-NN.NN"
       name: "[Test case name]"
-      scenario_id: "[BDD.NN.SS.xxxx or TDD.NN.04.xxxx]"
-      test_type: "[integration | e2e | api_contract | unit | smoke | regression]"
-      environment: "[staging | ci]"
-      priority: "[p0-critical | p1-high | p2-medium | p3-low]"
+      source_type: bdd_scenario
+      source_id: "BDD.NN.SS.xxxx"              # actual BDD scenario ID
+      test_type: "[integration | e2e | unit]"
+      priority: "[p0-critical | p1-high | p2-medium]"
       preconditions: ["[Precondition 1]"]
       assertions: ["[Expected outcome 1]"]
-      performance_threshold:
-        _guidance: "Only include if upstream scenario or TDD test specifies a threshold"
-        metric: "[latency_p95 | throughput | error_rate]"
-        max_ms: 0
       implementation:
-        _guidance: "Link to the actual test file once implemented"
-        language: "[go | js | python]"
+        language: "[go | js]"
         test_file: "[path/to/test_file]"
-        test_function: "[TestFunctionName]"
+
+    # TDD-sourced test cases
+    - id: "EVAL-NN.TDD-NN.xxxx"
+      name: "[Test case name]"
+      source_type: tdd_test_case
+      source_id: "TDD.NN.04.xxxx"
+      test_type: unit
+      priority: "[p0-critical | p1-high]"
+      target: "[function/module under test]"
+      implementation:
+        language: "[go | js]"
+        test_file: "[path/to/test_file]"
 
 # =============================================================================
 # Section 4: Coverage Matrix
@@ -249,40 +187,17 @@ coverage_matrix:
   _size_target: 200
   _guidance: |
     Bidirectional traceability from upstream source to test implementation.
-    For functional track: BDD scenario → test case → test file.
-    For unit/smoke track: TDD test case → test implementation → coverage %.
-
-    Every upstream scenario MUST appear in this matrix. Missing entries
-    trigger EVAL-COV-001 (warning in build, error in gate).
-
-  _example: |
-    ```yaml
-    coverage_matrix:
-      entries:
-        - source_id: "BDD.02.03.6e26"
-          source_type: bdd_scenario
-          test_case_id: "EVAL.01.04.a7b3"
-          test_file: "internal/auth/auth_integration_test.go"
-          status: implemented  # implemented | pending | skipped
-          coverage: 100
-        - source_id: "TDD.01.04.f19c"
-          source_type: tdd_test_case
-          test_case_id: "EVAL.02.04.b2d1"
-          test_file: "internal/platform/port_router_test.go"
-          status: implemented
-          coverage: 100
-    ```
+    Every scenario/case in this IPLAN's scope MUST appear in this matrix.
 
   entries:
-    - source_id: "[BDD.NN.SS.xxxx or TDD.NN.04.xxxx]"
-      source_type: "[bdd_scenario | tdd_test_case | ears_requirement]"
-      test_case_id: "EVAL.NN.04.xxxx"
+    - source_id: "BDD.NN.TC-NN.NN"
+      source_type: bdd_scenario
+      test_case_id: "EVAL-NN.BDD-NN.TC-NN.NN"
       test_file: "[path/to/test_file]"
-      status: "[implemented | pending | skipped]"
-      coverage: 0  # percent
+      status: implemented  # implemented | pending | skipped
+      coverage: 100
 
   summary:
-    _guidance: "Computed from entries — total, implemented, pending, skipped, coverage %"
     total: 0
     implemented: 0
     pending: 0
@@ -296,83 +211,18 @@ coverage_matrix:
 quality_thresholds:
   _size_target: 200
   _guidance: |
-    Quality gates derived from PRD thresholds and project standards.
-    These are the pass/fail criteria for evaluation readiness.
+    Quality gates for this IPLAN's eval. P0-critical failures always block.
+    P1-high failures should be fixed before PASS.
 
-    Functional track thresholds:
-      - BDD scenario coverage: 100% of scenarios mapped to tests
-      - Integration test pass rate: 100%
-      - E2E test pass rate: 100%
-      - Performance p95: within PRD-declared thresholds
-
-    Unit/smoke track thresholds:
-      - TDD test case implementation: 100%
-      - Unit test pass rate: 100%
-      - Code coverage: per-component thresholds from TDD
-      - Smoke test pass rate: 100%
-
-  _example: |
-    ```yaml
-    quality_thresholds:
-      coverage:
-        bdd_scenario_coverage:
-          target: 100
-          current: 100
-          gate: error  # error = blocking, warning = advisory
-        tdd_test_case_implementation:
-          target: 100
-          current: 100
-          gate: error
-      execution:
-        unit_test_pass_rate:
-          target: 100
-          current: 100
-          gate: error
-        integration_test_pass_rate:
-          target: 100
-          current: 100
-          gate: error
-      performance:
-        api_latency_p95:
-          target_ms: 200
-          gate: warning
-        auth_latency_p95:
-          target_ms: 1000
-          gate: warning
-    ```
-
-  coverage:
-    bdd_scenario_coverage:
-      target: 100
-      current: 0
-      gate: error  # error | warning
-    tdd_test_case_implementation:
-      target: 100
-      current: 0
-      gate: error
-
-  execution:
-    unit_test_pass_rate:
-      target: 100
-      current: 0
-      gate: error
-    integration_test_pass_rate:
-      target: 100
-      current: 0
-      gate: error
-    smoke_test_pass_rate:
-      target: 100
-      current: 0
-      gate: error
-
-  performance:
-    _guidance: "Performance thresholds inherited from PRD @threshold references"
-    api_latency_p95:
-      target_ms: 200
-      gate: warning
-    auth_latency_p95:
-      target_ms: 1000
-      gate: warning
+  p0_critical_pass_rate:
+    target: 100
+    gate: error
+  p1_high_pass_rate:
+    target: 100
+    gate: error
+  coverage_percent:
+    target: 100
+    gate: error
 
 # =============================================================================
 # Section 6: Execution Plan
@@ -381,63 +231,53 @@ quality_thresholds:
 execution_plan:
   _size_target: 200
   _guidance: |
-    Define how, when, and where tests execute. Include:
-      - CI pipeline integration (for unit/smoke)
-      - Staging verification schedule (for functional)
-      - Deployment gate criteria
-      - Evidence retention and reporting
+    How and when this EVAL runs. The trigger field on each RPT records
+    why a specific cycle ran.
 
-  _example: |
-    ```yaml
-    execution_plan:
-      ci_pipeline:
-        trigger: "on_push_to_dev_or_staging"
-        runner: "ubuntu-latest"
-        timeout_minutes: 20
-        steps:
-          - "npm ci --ignore-scripts"
-          - "go test ./cmd/... ./internal/... -v -count=1 -race"
-          - "npm run verify:product"
-      staging_verification:
-        trigger: "on_merge_to_staging"
-        environment: "staging-beelocal"
-        schedule: "manual or on_merge"
-        steps:
-          - "docker compose up -d"
-          - "bash scripts/smoke-test.sh"
-          - "npm run test:e2e:product"
-      deployment_gate:
-        criteria:
-          - "All unit tests passing"
-          - "All smoke tests passing"
-          - "No P0/P1 regressions"
-          - "Coverage thresholds met"
-      evidence:
-        retention_days: 30
-        artifacts:
-          - "coverage reports"
-          - "test execution logs"
-          - "performance benchmarks"
-    ```
+  trigger: "[on_merge_to_staging | ci_push | manual]"
+  environment: ci  # ci | staging
 
-  ci_pipeline:
-    trigger: "[on_push_to_dev_or_staging | on_pr | manual]"
-    runner: "ubuntu-latest"
-    timeout_minutes: 20
-    steps: ["[Step 1]"]
+  eval_cycle:
+    _guidance: |
+      The eval cycle is iterative:
+        1. Create EVAL when IPLAN reaches Completed
+        2. Run initial_eval (cycle 1)
+        3. If FAIL: fix findings, run bug_fix_verification (cycle 2)
+        4. Repeat until PASS
+        5. IPLAN can then be Verified
 
-  staging_verification:
-    trigger: "[on_merge_to_staging | manual]"
-    environment: "[staging-beelocal]"
-    schedule: "[manual | on_merge | cron]"
-    steps: ["[Step 1]"]
+    initial_eval:
+      trigger: initial_eval
+      when: "IPLAN status = Completed"
+    bug_fix_verification:
+      trigger: bug_fix_verification
+      when: "Code fixes applied for findings from previous cycle"
+    chg_verification:
+      trigger: chg_verification
+      when: "CHG modified this IPLAN or its code"
+    scheduled:
+      trigger: scheduled
+      when: "Periodic regression check"
+    pre_deploy:
+      trigger: pre_deploy
+      when: "Gate check before branch promotion"
 
-  deployment_gate:
-    criteria: ["[Criteria 1]"]
+# =============================================================================
+# Traceability
+# =============================================================================
 
-  evidence:
-    retention_days: 30
-    artifacts: ["[Artifact 1]"]
+traceability:
+  upstream:
+    iplan: "IPLAN-NN"
+    spec: "SPEC-NN"
+    tdd: ["TDD-NN"]
+    bdd: ["BDD-NN"]
+    ears: ["EARS-NN"]
+  downstream:
+    - type: EVAL-RPT
+      description: "Evaluation reports in EVAL-{NN}/reports/"
+    - type: CI
+      description: "Pipeline gates enforce test pass criteria"
 
 # =============================================================================
 # End of EVAL-TEMPLATE.yaml
