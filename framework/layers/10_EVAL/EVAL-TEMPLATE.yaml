@@ -18,8 +18,7 @@
 #    Directory:  EVAL-{NN}/
 #    Document:   EVAL-{NN}/EVAL-{NN}.yaml
 #    Reports:    EVAL-{NN}/reports/EVAL-{NN}-RPT-{NNN}.yaml
-#    Test IDs:   EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}  (BDD-sourced)
-#                EVAL-{NN}.TDD-{NN}.{hash}         (TDD-sourced)
+#    Test IDs:   EVAL.NN.SS.xxxx  (element ID, independent from source)
 # =============================================================================
 
 id: EVAL-NN
@@ -56,11 +55,20 @@ metadata:
   id_standard:
     state: canonical
     _guidance: |
-      Test case IDs are scoped to the owning EVAL document.
-      Format: {eval_id}.{source_type}.{source_id}
+      Test case IDs follow the standard element ID format.
+      The ID is independent from the source — source type and source
+      document are tracked via source_type and source_id fields.
+      Format: EVAL.{NN}.{SS}.{hash}
+        NN — two-digit EVAL document number
+        SS — two-digit section number within the EVAL document
+        hash — 4-char hex content hash (SHA256, per ID_NAMING_STANDARDS.md)
       Examples:
-        EVAL-01.BDD-01.TC-01.3    (BDD-sourced)
-        EVAL-01.TDD-01.4d64       (TDD-sourced)
+        EVAL.01.04.4d64  (section 04, content hash 4d64)
+
+      RULE: One source per test case. Each test case maps to exactly one
+      upstream source (one source_type + one source_id). Never mix BDD,
+      TDD, EARS, or other sources in a single test case. Create as many
+      test cases as needed — one per source element.
 
 # =============================================================================
 # Section 1: Document Control
@@ -146,16 +154,18 @@ test_design:
     Test cases for THIS IPLAN's scope only. Each test case has a clean ID
     scoped to this EVAL document.
 
-    ID format:
-      BDD-sourced: EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}
-      TDD-sourced: EVAL-{NN}.TDD-{NN}.{hash}
+    ID format: EVAL.{NN}.{SS}.{hash}  (standard element ID, independent from source)
+
+    RULE: One source per test case. Each test case must reference exactly
+    one upstream element via source_type + source_id. Never combine
+    multiple sources (BDD + TDD, etc.) in a single test case.
 
     The source_type and source_id fields create traceability to upstream.
     The priority is derived from upstream BDD/TDD priority.
 
   test_cases:
     # BDD-sourced test cases
-    - id: "EVAL-NN.BDD-NN.TC-NN.NN"
+    - id: "EVAL.NN.SS.xxxx"
       name: "[Test case name]"
       source_type: bdd_scenario
       source_id: "BDD.NN.SS.xxxx"              # actual BDD scenario ID
@@ -168,7 +178,7 @@ test_design:
         test_file: "[path/to/test_file]"
 
     # TDD-sourced test cases
-    - id: "EVAL-NN.TDD-NN.xxxx"
+    - id: "EVAL.NN.SS.xxxx"
       name: "[Test case name]"
       source_type: tdd_test_case
       source_id: "TDD.NN.04.xxxx"
@@ -192,7 +202,7 @@ coverage_matrix:
   entries:
     - source_id: "BDD.NN.TC-NN.NN"
       source_type: bdd_scenario
-      test_case_id: "EVAL-NN.BDD-NN.TC-NN.NN"
+      test_case_id: "EVAL.NN.SS.xxxx"
       test_file: "[path/to/test_file]"
       status: implemented  # implemented | pending | skipped
       coverage: 100

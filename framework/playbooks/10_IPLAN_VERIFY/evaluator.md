@@ -227,7 +227,7 @@ results:
 
 findings:
   - id: "F-001"
-    eval_case_id: "EVAL-01.BDD-01.TC-01.4"
+    eval_case_id: "EVAL.01.03.a7f3"
     source_id: "BDD.01.TC-01.4"
     name: "Idempotency replay returns stale data"
     severity: P0

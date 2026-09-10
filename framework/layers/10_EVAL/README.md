@@ -133,14 +133,14 @@ docs/sdd/10_EVAL/
 | EVAL directory | `EVAL-{NN}/` | `EVAL-01/` |
 | EVAL document | `EVAL-{NN}.yaml` | `EVAL-01.yaml` |
 | EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
-| Test case ID (BDD source) | `EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}` | `EVAL-01.BDD-01.TC-01.3` |
-| Test case ID (TDD source) | `EVAL-{NN}.TDD-{NN}.{hash}` | `EVAL-01.TDD-01.4d64` |
+| Test case ID | `EVAL.NN.SS.xxxx` | `EVAL.01.04.4d64` |
 
 **Rules**:
 - `{NN}` is a zero-padded sequential number (01, 02, ... 99)
 - `{hash}` is a 4-character content-derived identifier from the TDD
 - Test case IDs are stable across eval cycles — they identify the test case, not a specific run
 - Report IDs include the cycle number: RPT-001, RPT-002, ...
+- **One source per test case** — each test case maps to exactly one upstream element (one source_type + one source_id). Never mix BDD, TDD, EARS, or other sources in a single test case. Create as many test cases as needed.
 
 ## Version Bumping Rules
 
