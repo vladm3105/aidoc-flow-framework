@@ -164,6 +164,7 @@ Else:
    - document_control (cycle, trigger, status, baseline)
    - iplan_context (snapshot of IPLAN state)
    - results (computed in Step 6)
+   - test_results (one entry per test case from EVAL document)
    - findings (from Step 4)
    - resolved_this_cycle (from Step 5)
    - coverage (from test execution)
