@@ -58,6 +58,9 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 
 ## Non-negotiables
 
+- **NEVER push directly to `main`.** All changes must go through the `dev` branch
+  via a feature branch + PR. Pushing to `main` bypasses required status checks
+  and review gates.
 - **Never hand-edit example artifacts.** Files under `examples/<name>/docs/` and
   `examples/<name>/.aidoc/` are the system-under-test. Remediate them by
   dispatching the framework's own skills; a class of remediation the skills
@@ -73,6 +76,49 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
   original shipped early.
 - **Plans get two review cycles before the plan PR opens** — see `CLAUDE.md`
   → "Development workflow".
+
+## Governance Gate (applies to ALL agents)
+
+Before writing ANY code for a feature, enhancement, or non-bugfix change:
+
+1. Create a CHG document — do NOT write code first
+2. Complete §3.4 checklist BEFORE writing the CHG
+3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
+4. Update EARS/BDD before code (SDD-first)
+5. Create IPLAN with code steps (not in CHG)
+
+If user says "build", "implement", "add feature" → stop, create CHG first.
+The ONLY exception: bug fixes on active IPLANs.
+
+**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+- CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
+- CHG-L002: Gate approval (§3.1) — C3 changes must have approver
+- CHG-L003: CHG scope (§3.4) — no code steps in CHG
+- CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
+- CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
+
+**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
+
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Exception: bug fixes on active IPLANs.
+
+### Push Workflow
+
+```bash
+# CORRECT workflow:
+git checkout dev
+git pull origin dev
+git checkout -b feat/my-change
+# ... make changes ...
+git add .
+git commit -m "feat: description"
+git push origin feat/my-change
+# Then open PR: feat/my-change → dev
+
+# WRONG — never do this:
+git push origin main   # ❌ BLOCKED by this rule
+```
+
+Branch promotion: `feature-branch → dev → main`
 
 ## Where state lives (this repo owns its own continuity)
 

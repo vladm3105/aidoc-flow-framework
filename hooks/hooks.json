@@ -11,6 +11,18 @@
           }
         ]
       }
+    ],
+    "PreCommit": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/hooks/ch-gate-check.sh",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

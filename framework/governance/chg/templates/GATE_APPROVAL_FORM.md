@@ -12,6 +12,17 @@ custom_fields:
 
 # Gate Approval Form
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **CHG Reference**: CHG-XX
 > **Change Title**: {Title}
 > **Date**: {YYYY-MM-DDTHH:MM:SS}
@@ -172,6 +183,7 @@ custom_fields:
 - [ ] GATE-SPEC-W001: `major` change has a per-platform migration note
 - [ ] GATE-SPEC-W002: both platforms track the new spec version (no parity drift)
 - [ ] GATE-SPEC-W003: agent-facing spec change has a recorded `SECURITY_REVIEW.md` assessment
+- [ ] GATE-SPEC-W004: CHG with stale `framework_version` documents has `version_action` set
 
 **GATE-SPEC Result**: [ ] PASS / [ ] PASS WITH WARNINGS / [ ] FAIL
 

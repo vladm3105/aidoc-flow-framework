@@ -12,6 +12,17 @@ custom_fields:
 
 # Gate Error Catalog
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 Complete catalog of all error and warning codes across the Change Management gate system (5 artifact gates + the GATE-SPEC meta gate) for the SDD framework.
 
 ## 1. Error Code Format
@@ -156,6 +167,7 @@ platform's protected-branch review.
 | GATE-SPEC-W001 | Migration | `major` change without a per-platform migration note | Add a migration note for each platform |
 | GATE-SPEC-W002 | Parity | Change touches only one platform's conformance | Confirm both platforms track the new spec version |
 | GATE-SPEC-W003 | Security | Agent-facing spec change without a `SECURITY_REVIEW.md` assessment | Run the security review (injection/abuse surface) for the changed guidance |
+| GATE-SPEC-W004 | Versioning | CHG touches documents with stale `framework_version` without setting `version_action` | Set `version_action: upgrade` or `version_action: keep` with justification |
 
 ## 7. Emergency Bypass Errors
 

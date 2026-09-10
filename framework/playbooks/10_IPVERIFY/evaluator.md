@@ -159,11 +159,12 @@ Else:
 ### Step 8: Generate RPT
 
 ```
-1. Use EVAL-RPT-TEMPLATE.yaml as base
+1. Use EVAL-REPORT-TEMPLATE.yaml as base
 2. Fill all sections:
    - document_control (cycle, trigger, status, baseline)
    - iplan_context (snapshot of IPLAN state)
    - results (computed in Step 6)
+   - test_results (one entry per test case from EVAL document)
    - findings (from Step 4)
    - resolved_this_cycle (from Step 5)
    - coverage (from test execution)
@@ -227,7 +228,7 @@ results:
 
 findings:
   - id: "F-001"
-    eval_case_id: "EVAL-01.BDD-01.TC-01.4"
+    eval_case_id: "EVAL.01.03.a7f3"
     source_id: "BDD.01.TC-01.4"
     name: "Idempotency replay returns stale data"
     severity: P0

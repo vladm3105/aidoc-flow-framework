@@ -4,11 +4,11 @@
 
 | Field | Value |
 |-------|-------|
-| Version | 1.0 |
+| Version | 1.1 |
 | Status | Approved |
-| Last Updated | 2026-09-07 |
+| Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.2 |
 
 
 ## Overview
@@ -29,6 +29,60 @@ CHG is a **governance overlay** for managing changes to existing SDD artifacts. 
 | An approval and audit trail for changes | A lifecycle layer with readiness scores |
 | A record of what changed, why, and the impact | An implementation plan (that's IPLAN's job) |
 | An archive mechanism for superseded SDD versions | A template in the YAML chain |
+
+---
+
+## **MANDATORY: SDD-First Implementation Order**
+
+**This rule is NON-NEGOTIABLE. Violations have caused governance failures in CHG-04 (16 gaps), CHG-06 (3 bugs), and CHG-08 (incorrect flow).**
+
+When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** be SDD document updates. The CHG is a governance record, NOT an implementation plan.
+
+### Required Flow (no exceptions)
+
+```
+CHG (authorize only)
+  ↓
+Phase 0: SDD Document Updates (FIRST — before ANY code work)
+  1. Archive current SDD versions to docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/
+  2. Rewrite each SDD document as clean v2 (upper layers first: PRD → SPEC → IPLAN)
+  3. Update supersedes field with archive paths
+  4. Bump document_control.version to 2.0
+  ↓
+Phase 1: IPLAN Creation/Update (AFTER SDD docs exist)
+  5. Create or update IPLAN with ALL code implementation steps
+     - The IPLAN MUST reference the NEW SDD document versions
+     - The IPLAN is what drives code implementation
+  ↓
+Phase 2: Code Implementation (driven by IPLAN)
+  6. Implement code per IPLAN specifications
+```
+
+### What Goes Where
+
+| Document | Contains | Does NOT Contain |
+|----------|----------|------------------|
+| **CHG** | Authorization, scope, SDD lifecycle steps (archive/rewrite/version bump), IPLAN creation/update | Detailed code implementation steps |
+| **IPLAN** | All code implementation steps, file manifest, execution commands, test cases | SDD document lifecycle (that's CHG's job) |
+| **SDD Documents** | Current requirements, specs, test definitions | Implementation details (that's IPLAN's job) |
+
+### Why This Matters
+
+- **Traceability**: IPLAN references NEW SDD versions, ensuring implementation matches current specs
+- **Audit trail**: CHG records what changed and why; IPLAN records how to implement; SDD records what was built
+- **Resumption**: If work stops, the next agent reads CHG status and knows exactly where to continue
+- **Correctness**: Implementing from old SDD versions causes drift between specs and code
+
+### Common Violations (DO NOT)
+
+| Violation | Why It's Wrong | Correct Approach |
+|-----------|----------------|------------------|
+| Code steps in CHG | CHG is governance, not execution | Put code steps in IPLAN |
+| IPLAN before SDD updates | IPLAN must reference current SDD versions | Update SDD docs first |
+| "SDD updates deferred" | SDD updates are Phase 0, mandatory | Do SDD updates immediately |
+| Implementing without IPLAN | No traceability from spec to code | Create IPLAN first |
+
+---
 
 ## Design Decisions
 
@@ -176,21 +230,24 @@ CHG gates are the approval checkpoints for change management:
 
 ## Implementation Order (CHG → SDD → IPLAN → Code)
 
-The correct flow when a CHG modifies SDD documents:
+The correct flow when a CHG modifies SDD documents. Every step in the CHG MUST
+declare a `phase` field (`sdd_lifecycle` or `iplan_creation`).
 
 ```
 CHG (authorize)
-  → Phase 0: SDD Document Updates (FIRST)
+  → Phase 0: SDD Document Updates (phase: sdd_lifecycle) — FIRST, MANDATORY
     1. Archive current versions to 09-CHG/archive/{CHG-ID}/{layer}/
     2. Rewrite each SDD document as clean v2 (upper layers first: PRD → SPEC → IPLAN)
     3. Update supersedes field with archive paths
     4. Bump document_control.version to 2.0
-  → Phase 1: IPLAN Creation/Update
+  → Phase 1: IPLAN Creation/Update (phase: iplan_creation) — AFTER SDD docs exist
     5. Create or update IPLAN with ALL code implementation steps
-  → Code implementation (from IPLAN)
+  → Code implementation (from IPLAN) — NEVER in CHG
 ```
 
-CHG is a governance record, NOT an implementation plan. Code implementation steps belong in the IPLAN.
+CHG is a governance record, NOT an implementation plan. Code implementation
+steps belong in the IPLAN. The `phase` field makes violations structurally
+visible — any step with `phase: code_implementation` in a CHG is non-compliant.
 
 ## Note on `09_CHG` Namespace
 

@@ -278,3 +278,19 @@ canonical path is declared in `profile.yaml` as `framework_path`.
 
 New files use `.aidoc/framework/` as the canonical path. The root `framework/`
 symlink has been removed — all references must use `.aidoc/framework/`.
+
+## 11. Enforcement adaptation (mandatory for all consuming projects)
+
+When adapting the framework, consuming projects MUST propagate these enforcement mechanisms:
+
+| Step | What | Required |
+|------|------|----------|
+| 1 | Add governance gate to project CLAUDE.md (§3.4 — NON-NEGOTIABLE) | Yes |
+| 2 | Add session-start verification checklist (10 items, before any code work) | Yes |
+| 3 | Add §3.4.1 CHG post-creation validation to project GOVERNANCE_RULES.md | Yes |
+| 4 | Install framework hooks (ch-gate-check.sh in hooks.json PreCommit) | Yes |
+| 5 | Verify enforcement works (test: say "build" → agent stops at gate) | Yes |
+
+These steps ensure defense-in-depth: CLAUDE.md (prompt-level), hooks (tool-level),
+skills (process-level), and GOVERNANCE_RULES.md (documentation-level) all enforce
+the CHG gate independently.

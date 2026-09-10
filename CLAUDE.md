@@ -122,6 +122,52 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 - **Versioning streams are independent** (`docs/PROJECT.md` §2): project,
   framework spec, and each platform version separately.
 
+## MANDATORY: Governance Gate (§3.4 — NON-NEGOTIABLE)
+
+**Every feature, enhancement, or non-bugfix change MUST follow this order. No exceptions.**
+
+1. **Create CHG** — authorize the change (§3.4 checklist: read files, cross-reference EARS/BDD, plan SDD lifecycle)
+2. **Update EARS/BDD** — add requirements and scenarios BEFORE code (SDD-first per §3.1.1)
+3. **Create IPLAN** — code implementation steps (NOT in CHG)
+4. **Implement code** — per IPLAN, all files marked DONE
+
+**Bug fixes on active IPLANs** are the ONLY exception that skips CHG creation.
+
+After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
+
+**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` or `python scripts/chg_lint.py <chg-file.yaml>` to check:
+- CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
+- CHG-L002: Gate approval (§3.1) — C3 changes must have approver
+- CHG-L003: CHG scope (§3.4) — no code steps in CHG
+- CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
+- CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
+
+**When to run the linter:**
+1. **Pre-commit** — After creating/updating a CHG, before `git commit`
+2. **Pre-implementation** — Before writing ANY code for a CHG
+3. **Pre-merge** — Before merging a PR that modifies CHG files
+
+**Exit codes:** `0` = pass, `1` = errors (STOP and fix), `2` = usage error, `3` = missing PyYAML
+
+See `DOC_GOVERNANCE_CORE.md` §3.14 for full usage rules.
+
+## IPLAN Gate (HARD BLOCK — §3.13)
+
+**No code may be written without an IPLAN authorizing the changes.**
+
+Before ANY write/edit call to code files or governance files:
+
+1. An IPLAN exists for this work
+2. The IPLAN status is `In Progress` (not `Draft`, `Approved`, or `Completed`)
+3. The IPLAN references the CHG authorizing this work
+4. The files being modified are listed in the IPLAN's `file_manifest`
+
+**If ANY check fails: STOP. Do not write code. Fix the governance gap first.**
+
+**Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
+
+**Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). Remediated by creating IPLAN-20 retroactively. Enforced by lint rule GOV-013.
+
 ## Development workflow (guidance)
 
 Recommended flow for non-trivial changes — plan → review → implement →

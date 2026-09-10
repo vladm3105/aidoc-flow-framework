@@ -1,4 +1,4 @@
-# 10_IPLAN_VERIFY — IPLAN Verification Playbooks
+# 10_IPVERIFY — IPLAN Verification Playbooks
 
 ## Document Control
 
@@ -46,7 +46,7 @@ IPLAN Completed
 2. Create EVAL document:
    - Extract relevant test cases from IPLAN scope
    - Create EVAL-{NN}/EVAL-NN.yaml
-   - Test case IDs: EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}
+   - Test case IDs: EVAL.NN.SS.xxxx (element ID, independent from source)
    - Register in EVAL-00 index
 ```
 

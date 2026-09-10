@@ -117,7 +117,7 @@ Else:
 ### Step 7: Generate RPT YAML
 
 ```
-1. Start from EVAL-RPT-TEMPLATE.yaml
+1. Start from EVAL-REPORT-TEMPLATE.yaml
 2. Fill document_control:
    - eval_id, iplan_id, iplan_version, eval_version
    - cycle, run_date, trigger, status
@@ -195,5 +195,5 @@ npm run test -- --reporter=junit > test-results.xml
 ```
 
 **Note**: `scripts/generate-rpt.sh` is not yet implemented. Currently, RPT files are
-authored manually following the EVAL-RPT-TEMPLATE.yaml structure. The script is planned
+authored manually following the EVAL-REPORT-TEMPLATE.yaml structure. The script is planned
 for future implementation to automate RPT generation from CI test output.

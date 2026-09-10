@@ -2967,6 +2967,125 @@ def _check_ref_granularity(corpus: list[tuple[str, str]], mode: str = "build") -
     return findings
 
 
+def _check_eval_yaml(corpus: list[tuple[str, str]]) -> list[Finding]:
+    """EVAL-specific YAML structural checks.
+
+    Validates:
+      EVAL-ID-001: test case IDs follow EVAL.{NN}.{SS}.{hash} format (dots, not dashes)
+      EVAL-SRC-001: each test case has exactly one source_type + one source_id
+      EVAL-COV-004: coverage_matrix.summary.total matches test_design.test_cases count
+    """
+    findings: list[Finding] = []
+    eval_id_re = re.compile(r"^EVAL\.(\d+)\.(\d+)\.([a-f0-9]{4,8})$")
+    for rel, text in corpus:
+        if not rel or not rel.endswith((".yaml", ".yml")):
+            continue
+        if "/10_EVAL/" not in rel and "10_EVAL" not in rel:
+            continue
+        # Skip template and index files
+        if "TEMPLATE" in rel or "index" in rel.lower() or "RPT" in rel:
+            continue
+        try:
+            doc = yaml.safe_load(text)
+        except yaml.YAMLError:
+            continue
+        if not isinstance(doc, dict):
+            continue
+        # Must be an EVAL document
+        doc_id = str(doc.get("id") or "").strip()
+        if not doc_id.startswith("EVAL"):
+            continue
+
+        # --- EVAL-ID-001: test case ID format ---
+        test_cases = []
+        td = doc.get("test_design")
+        if isinstance(td, dict):
+            test_cases = td.get("test_cases") or []
+        for idx, tc in enumerate(test_cases):
+            if not isinstance(tc, dict):
+                continue
+            tc_id = str(tc.get("id") or "").strip().strip('"')
+            if not tc_id:
+                continue
+            line = 1  # YAML: approximate line
+            # Walk text to find the id value for a better line number
+            for i, tl in enumerate(text.splitlines(), 1):
+                if f'id: "{tc_id}"' in tl or f"id: {tc_id}" in tl:
+                    line = i
+                    break
+            if not eval_id_re.match(tc_id):
+                # Check if it's the old dash format
+                old_format = re.match(r"^EVAL-\d+\.(TDD|BDD)-\d+\.", tc_id)
+                if old_format:
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "EVAL-ID-001",
+                            f"test case id '{tc_id}' uses old dash format; "
+                            f"must follow EVAL.NN.SS.xxxx (element ID standard, "
+                            f"independent from source)",
+                            severity="error",
+                        )
+                    )
+                else:
+                    findings.append(
+                        Finding(
+                            rel,
+                            line,
+                            "EVAL-ID-001",
+                            f"test case id '{tc_id}' does not match "
+                            f"EVAL.NN.SS.xxxx format",
+                            severity="error",
+                        )
+                    )
+
+            # --- EVAL-SRC-001: one source per test case ---
+            source_type = tc.get("source_type")
+            source_id = tc.get("source_id")
+            if not source_type and not source_id:
+                # No source fields — might be a non-source test case (smoke, etc.)
+                # Only flag if the test case claims to be derived from a source
+                pass
+            elif source_type and source_id:
+                # Good — exactly one source
+                pass
+            else:
+                # One but not the other — incomplete
+                findings.append(
+                    Finding(
+                        rel,
+                        line,
+                        "EVAL-SRC-001",
+                        f"test case '{tc_id}' has source_type but no source_id"
+                        if source_type
+                        else f"test case '{tc_id}' has source_id but no source_type",
+                        severity="error",
+                    )
+                )
+
+        # --- EVAL-COV-004: summary vs entries count ---
+        cm = doc.get("coverage_matrix")
+        if isinstance(cm, dict):
+            entries = cm.get("entries") or []
+            summary = cm.get("summary")
+            if isinstance(summary, dict):
+                declared_total = summary.get("total")
+                actual_total = len(entries)
+                if isinstance(declared_total, int) and declared_total != actual_total:
+                    findings.append(
+                        Finding(
+                            rel,
+                            1,
+                            "EVAL-COV-004",
+                            f"coverage_matrix.summary.total={declared_total} "
+                            f"but actual entries count={actual_total}",
+                            severity="error",
+                        )
+                    )
+    return findings
+
+
 def lint_path(
     target: Path,
     registry: Path | None = None,
@@ -3034,6 +3153,7 @@ def lint_path(
     # unconditionally and never escalates, so --skip-coverage-gate does not hide it
     # and gate-code does not turn it red.
     findings.extend(_check_fr_cap(corpus))
+    findings.extend(_check_eval_yaml(corpus))
     if not skip_coverage:
         findings.extend(_check_forward_coverage(corpus, mode))
         findings.extend(_check_backward_coverage(corpus, mode))

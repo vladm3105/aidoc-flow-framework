@@ -15,6 +15,17 @@ custom_fields:
 
 # GATE-CODE: Implementation Gate
 
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
 > **Position**: Between execution planning and Code (source code implementation)
 > **Change Sources**: Implementation, Feedback (defects), Cascade from GATE-08
 > **Purpose**: Validate implementation changes and ensure proper root cause analysis
@@ -107,10 +118,10 @@ Before entering GATE-CODE, the change request must satisfy:
 
 ```
 C1 (Self + Peer Review)
-      
+
        (if test failure persists)
 C2 (TL + QA)
-      
+
        (if root cause is upstream)
 Bubble Up to GATE-08/06/03/01
 ```
@@ -155,11 +166,11 @@ After passing GATE-CODE:
 
 ```
 Test Failure Analysis:
-      
-      
+
+
   Where is the actual problem?
-      
-      
+
+
   Code bug?               → Fix Code → GATE-CODE
   IPLAN wrong order?      → Fix IPLAN → GATE-08
   TDD missing test?       → Fix TDD → GATE-06

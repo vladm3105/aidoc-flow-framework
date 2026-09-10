@@ -12,13 +12,24 @@ custom_fields:
 
 # Gate Interaction Diagram
 
-Visual representation of the Change Management gate system (5 artifact gates GATE-01/03/06/08/CODE + the GATE-SPEC meta gate) across the 10-layer SDD workflow.
+## Document Control
+
+| Field | Value |
+|-------|-------|
+| Version | 1.0 |
+| Status | Approved |
+| Last Updated | 2026-09-07 |
+| Author | Framework Maintainer |
+| Framework Version | 0.53.0 |
+
+
+Visual representation of the Change Management gate system (5 artifact gates GATE-01/03/06/08/CODE + the GATE-SPEC meta gate) across the SDD workflow.
 
 ## 1. System Overview
 
 ```
                       CHANGE MANAGEMENT GATE SYSTEM
-                           10-Layer SDD Framework
+                           SDD Framework (10 layers)
 
     CHANGE REQUEST
 
