@@ -90,6 +90,17 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 If user says "build", "implement", "add feature" → stop, create CHG first.
 The ONLY exception: bug fixes on active IPLANs.
 
+**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+- CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
+- CHG-L002: Gate approval (§3.1) — C3 changes must have approver
+- CHG-L003: CHG scope (§3.4) — no code steps in CHG
+- CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
+- CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
+
+**When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
+
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Exception: bug fixes on active IPLANs.
+
 ### Push Workflow
 
 ```bash
