@@ -86,7 +86,7 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
 - `EVAL-TEMPLATE.yaml` — per-IPLAN evaluation strategy document
-- `EVAL-RPT-TEMPLATE.yaml` — self-contained evaluation report
+- `EVAL-REPORT-TEMPLATE.yaml` — self-contained evaluation report
 - `EVAL-00_index.TEMPLATE.md` — master index template
 
 ## Layer Position
@@ -228,5 +228,5 @@ documents define *what* to test for their specific IPLAN scope.
 | File | Purpose |
 |------|---------|
 | `EVAL-TEMPLATE.yaml` | Per-IPLAN evaluation strategy template |
-| `EVAL-RPT-TEMPLATE.yaml` | Self-contained evaluation report template |
+| `EVAL-REPORT-TEMPLATE.yaml` | Self-contained evaluation report template |
 | `EVAL-00_index.TEMPLATE.md` | Master index template |

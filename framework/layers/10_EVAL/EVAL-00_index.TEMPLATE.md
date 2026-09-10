@@ -50,7 +50,7 @@ EVAL uses **`.yaml` files** (unified YAML template pattern).
 
 **Templates**:
 - [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml) — per-IPLAN strategy
-- [EVAL-RPT-TEMPLATE.yaml](./EVAL-RPT-TEMPLATE.yaml) — eval report
+- [EVAL-REPORT-TEMPLATE.yaml](./EVAL-REPORT-TEMPLATE.yaml) — eval report
 
 ---
 
@@ -149,7 +149,7 @@ When a CHG bumps an IPLAN version:
 ## Related Documents
 
 - **Template (Strategy)**: [EVAL-TEMPLATE.yaml](./EVAL-TEMPLATE.yaml)
-- **Template (Report)**: [EVAL-RPT-TEMPLATE.yaml](./EVAL-RPT-TEMPLATE.yaml)
+- **Template (Report)**: [EVAL-REPORT-TEMPLATE.yaml](./EVAL-REPORT-TEMPLATE.yaml)
 - **README**: [README.md](./README.md)
 - **Upstream (IPLAN)**: [08_IPLAN](../08_IPLAN/) — Execution plans
 - **Upstream (TDD)**: [07_TDD](../07_TDD/) — Test case definitions

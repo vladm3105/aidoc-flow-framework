@@ -58,7 +58,7 @@ docs/sdd/10_EVAL/
 ## Related
 
 - **Template**: `framework/layers/10_EVAL/EVAL-TEMPLATE.yaml`
-- **Report Template**: `framework/layers/10_EVAL/EVAL-RPT-TEMPLATE.yaml`
+- **Report Template**: `framework/layers/10_EVAL/EVAL-REPORT-TEMPLATE.yaml`
 - **ID Standard**: `framework/governance/ID_NAMING_STANDARDS.md`
 - **Lint Rules**: `framework/governance/LINT_RULES.md` §Evaluation (L10)
 - **Verification Playbooks**: `playbooks/10_IPVERIFY/` (evaluator, verifier, etc.)

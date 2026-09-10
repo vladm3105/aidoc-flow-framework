@@ -1,5 +1,5 @@
 # =============================================================================
-#  EVAL-RPT-TEMPLATE.yaml — Self-Contained Evaluation Report (SDD Layer 10)
+#  EVAL-REPORT-TEMPLATE.yaml — Self-Contained Evaluation Report (SDD Layer 10)
 # =============================================================================
 #  Document Authority: REPORT STANDARD
 #  Purpose: Record the outcome of a single eval cycle against an IPLAN
@@ -106,7 +106,29 @@ results:
     never_tested: 0
 
 # =============================================================================
-# Section 4: Findings — one per failure
+# Section 4: Test Results — one entry per test case
+# =============================================================================
+
+test_results:
+  _guidance: |
+    Every test case from the EVAL document gets an entry here, whether it
+    passed, failed, or was skipped. This is the per-task record of what
+    happened during this eval cycle.
+
+    RULE: One entry per EVAL test case. The eval_case_id must match the
+    test case ID from the EVAL document (EVAL.NN.SS.xxxx format).
+
+  - eval_case_id: "EVAL.NN.SS.xxxx"      # test case ID from EVAL document
+    source_id: "TDD.NN.SS.xxxx"           # upstream source element ID
+    source_type: tdd_test_case             # tdd_test_case | bdd_scenario
+    name: "[Test case name]"
+    status: passed                         # passed | failed | skipped
+    duration_ms: 0                         # execution time in milliseconds
+    test_file: "[path/to/test_file.go]"    # implementation file
+    error_message: null                    # null on pass; assertion failure on fail
+
+# =============================================================================
+# Section 5: Findings — one per failure (derived from test_results where status=failed)
 # =============================================================================
 
 findings:
@@ -118,18 +140,18 @@ findings:
     A finding is only RESOLVED when a subsequent cycle passes that test case.
 
   - id: "F-001"
-    eval_case_id: "EVAL-NN.BDD-NN.TC-NN.NN"    # test case that failed
-    source_id: "BDD.NN.SS.xxxx"                 # upstream source (BDD scenario ID)
+    eval_case_id: "EVAL.NN.SS.xxxx"       # test case that failed
+    source_id: "BDD.NN.SS.xxxx"           # upstream source (BDD scenario ID)
     name: "[Short description of the failure]"
-    severity: P0                                 # P0 | P1 | P2
+    severity: P0                            # P0 | P1 | P2
     status: OPEN
     error_message: "[Actual error or assertion failure]"
     test_file: "[path/to/test_file.go]"
-    regression: false                            # true if passed last cycle, fails this one
-    cycles_open: 1                               # consecutive cycles this finding is open
+    regression: false                       # true if passed last cycle, fails this one
+    cycles_open: 1                          # consecutive cycles this finding is open
 
 # =============================================================================
-# Section 5: Resolved This Cycle
+# Section 6: Resolved This Cycle
 # =============================================================================
 
 resolved_this_cycle:
@@ -141,7 +163,7 @@ resolved_this_cycle:
   #   fix_commit: "abc1234"
 
 # =============================================================================
-# Section 6: Coverage
+# Section 7: Coverage
 # =============================================================================
 
 coverage:
@@ -151,7 +173,7 @@ coverage:
   coverage_percent: 0.0
 
 # =============================================================================
-# Section 7: Quality Thresholds
+# Section 8: Quality Thresholds
 # =============================================================================
 
 quality_thresholds:
@@ -175,7 +197,7 @@ quality_thresholds:
     verdict: FAIL
 
 # =============================================================================
-# Section 8: Verdict
+# Section 9: Verdict
 # =============================================================================
 
 verdict:
@@ -191,7 +213,7 @@ verdict:
   blockers: []                            # list of blocking finding IDs
 
 # =============================================================================
-# Section 9: Evidence
+# Section 10: Evidence
 # =============================================================================
 
 evidence:
@@ -201,7 +223,7 @@ evidence:
   retention_days: 30
 
 # =============================================================================
-# Section 10: Linkage
+# Section 11: Linkage
 # =============================================================================
 
 linkage:
@@ -212,5 +234,5 @@ linkage:
   bdd_ids: ["BDD-NN"]
 
 # =============================================================================
-# End of EVAL-RPT-TEMPLATE.yaml
+# End of EVAL-REPORT-TEMPLATE.yaml
 # =============================================================================

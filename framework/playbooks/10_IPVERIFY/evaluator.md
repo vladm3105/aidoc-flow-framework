@@ -159,7 +159,7 @@ Else:
 ### Step 8: Generate RPT
 
 ```
-1. Use EVAL-RPT-TEMPLATE.yaml as base
+1. Use EVAL-REPORT-TEMPLATE.yaml as base
 2. Fill all sections:
    - document_control (cycle, trigger, status, baseline)
    - iplan_context (snapshot of IPLAN state)
