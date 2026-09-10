@@ -316,6 +316,64 @@ through the IPLAN.
 EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
 ```
 
+## EVAL Layer Governance
+
+### EVAL-IPLAN 1:1 Mapping Rule
+
+Each IPLAN owns exactly one EVAL document. The EVAL-NN number matches the IPLAN-NN
+number (EVAL-01 owns IPLAN-01, EVAL-02 owns IPLAN-02, etc.).
+
+### EVAL Version Coupling
+
+EVAL documents version with their owning IPLAN. When a CHG bumps the IPLAN version,
+the EVAL versions with it. The `document_control.iplan_version` field records which
+IPLAN version the EVAL covers.
+
+| What changes | What happens to EVAL |
+|---|---|
+| IPLAN code changes (same scope) | EVAL stays same version, new RPT cycle |
+| IPLAN scope changes (new files/features) | EVAL bumps version, archive old |
+| BDD/TDD upstream changes | EVAL bumps version if test cases change |
+
+### EVAL-RPT Immutability
+
+Evaluation reports (EVAL-RPT files) are immutable once written. They are snapshots
+of test execution — never modified after creation. If new tests are run, a new RPT
+file is created with an incremented cycle number.
+
+### EVAL Archival
+
+When a CHG bumps an EVAL version, the old EVAL document and its reports are archived
+to the CHG archive directory:
+
+```
+docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
+  EVAL-{NN}/
+    EVAL-{NN}.yaml                    # archived old version
+    reports/
+      EVAL-{NN}-RPT-*.yaml            # archived reports
+```
+
+### EVAL Naming Standards
+
+| Element | Format | Example |
+|---------|--------|---------|
+| EVAL directory | `EVAL-{NN}/` | `EVAL-01/` |
+| EVAL document | `EVAL-{NN}.yaml` | `EVAL-01.yaml` |
+| EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
+| Test case (BDD) | `EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}` | `EVAL-01.BDD-01.TC-01.3` |
+| Test case (TDD) | `EVAL-{NN}.TDD-{NN}.{hash}` | `EVAL-01.TDD-01.4d64` |
+
+### EVAL Traceability
+
+Each EVAL document traces to its owning IPLAN (1:1). The IPLAN traces to SPEC, TDD,
+BDD, and EARS. EVAL does not need to re-trace the full chain — it follows transitively
+through the IPLAN.
+
+```
+EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
+```
+
 ## Security
 
 - Artifacts are agent-authored from inputs the agent does not control. Every
