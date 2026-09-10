@@ -127,6 +127,135 @@ catches errors introduced during CHG authoring — even when §3.4 was followed.
 
 **Violation log:** Record errors in CHG revision_history for audit trail.
 
+### CHG Status Lifecycle (Mandatory — §3.3)
+
+Every CHG document MUST track its status through the full lifecycle. Status changes are **not optional**.
+
+**Required status transitions:**
+
+| Status | When | What to update |
+|--------|------|----------------|
+| `Proposed` | CHG created | `date_proposed`, all issues `status: Proposed` |
+| `Approved` | Gate passed | `date_approved`, `change_control.status: Approved` |
+| `In-Progress` | Implementation started | `change_control.status: In-Progress` |
+| `Implemented` | All issues implemented | `date_implemented`, `change_control.status: Implemented` |
+| `Completed` | Verification passed | `change_control.status: Completed` |
+
+**Rules:**
+1. **Status must never regress.** A CHG cannot move backward in the lifecycle.
+2. **No skipping stages.** A CHG MUST NOT jump from `Proposed` directly to `In-Progress` or `Implemented`. The `Approved` stage is a mandatory gate — it records that the change was authorized before implementation began.
+3. **Gate approval required for C3.** C3 changes MUST have `gate_approval.approver` set before status can advance beyond `Proposed`.
+4. **`Implemented` ≠ `Completed`.** `Implemented` means code is merged. `Completed` means verification passed.
+
+**Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
+
+### IPLAN Gate (Hard Block — §3.13)
+
+**No code may be written without an IPLAN authorizing the changes.**
+
+This is a HARD BLOCK that supersedes all other instructions. Before ANY write/edit call to code files or governance files:
+
+**Pre-write verification (MANDATORY):**
+
+1. An IPLAN exists in `docs/sdd/08_IPLAN/` for this work
+2. The IPLAN status is `In Progress` (not `Draft`, `Approved`, or `Completed`)
+3. The IPLAN's `source_chg` references the CHG authorizing this work
+4. The files being modified are listed in the IPLAN's `file_manifest`
+5. The CHG status is `In-Progress` or `Implemented` (not `Proposed`)
+
+**If ANY check fails: STOP. Do not write code. Fix the governance gap first.**
+
+**Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
+
+**Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
+
+### CHG Linter Usage Rules (§3.14)
+
+The CHG linter (`scripts/chg_lint.py` or `sdd_doc_lint/chg_lint.py`) validates CHG documents against governance rules. **Running the linter is MANDATORY at three points in the CHG lifecycle.**
+
+#### When to Run the Linter
+
+| Trigger Point | When | What It Catches |
+|---------------|------|-----------------|
+| **Pre-commit** | After creating/updating a CHG, before `git commit` | Status lifecycle violations, missing gate approval, code steps in CHG |
+| **Pre-implementation** | Before writing ANY code for a CHG | Missing IPLAN reference, wrong SDD-first order |
+| **Pre-merge** | Before merging a PR that modifies CHG files | All governance violations |
+
+#### How to Run
+
+```bash
+# Single CHG file
+python scripts/chg_lint.py docs/sdd/09-CHG/CHG-10_local_first_user_architecture.yaml
+
+# All CHG files in a directory
+python scripts/chg_lint.py docs/sdd/09-CHG/*.yaml
+
+# From framework directory (for framework repo)
+python sdd_doc_lint/chg_lint.py <chg-file.yaml>
+```
+
+#### Exit Codes
+
+| Code | Meaning | Action Required |
+|------|---------|-----------------|
+| `0` | All checks passed | Proceed with commit/implementation |
+| `1` | Error(s) found | **STOP** — fix all errors before proceeding |
+| `2` | Usage error | Check command arguments |
+| `3` | Missing prerequisite | Install PyYAML: `pip install pyyaml` |
+
+#### What the Linter Checks
+
+| Check ID | Rule | Severity | What It Validates |
+|----------|------|----------|-------------------|
+| CHG-L001 | §3.3 Status Lifecycle | error | Status follows: Proposed → Approved → In-Progress → Implemented → Completed. No skipping stages. |
+| CHG-L002 | §3.1 Gate Approval | error | C3 changes have `gate_approval.approver` set (not null). |
+| CHG-L003 | §3.4 CHG Scope | error | No code implementation steps in CHG. Steps must have `phase: sdd_lifecycle` or `phase: iplan_creation`. |
+| CHG-L004 | §3.1.1 IPLAN Reference | warning | CHG references an IPLAN for code changes. |
+| CHG-L005 | §3.1.1 SDD-First Order | error | SDD lifecycle steps appear before IPLAN creation steps. |
+
+#### Required Workflow
+
+```
+1. Create CHG (status: Proposed)
+   ↓
+2. Run linter: python scripts/chg_lint.py <chg-file.yaml>
+   ↓
+3. If errors → fix CHG, re-run linter
+   ↓
+4. Get gate approval (C3 changes)
+   ↓
+5. Run linter again (verify status + approval)
+   ↓
+6. Commit CHG
+   ↓
+7. Create IPLAN (status: In Progress)
+   ↓
+8. Run linter (verify IPLAN reference)
+   ↓
+9. Implement code per IPLAN
+```
+
+#### Error Resolution
+
+| Error | Fix |
+|-------|-----|
+| CHG-L001: status skipped stages | Update `change_control.status` to follow lifecycle. Add `date_approved` if jumping to `In-Progress`. |
+| CHG-L001: C3 without approver | Set `gate_approval.approver` to named approver (e.g., "Self (C3 — Technical Lead)"). |
+| CHG-L003: code steps in CHG | Move code implementation steps to IPLAN. CHG should only have `sdd_lifecycle` and `iplan_creation` phases. |
+| CHG-L004: no IPLAN reference | Add IPLAN to `sdd_lifecycle` or `artifacts_modified` section. |
+| CHG-L005: wrong order | Reorder steps: all `sdd_lifecycle` steps must come before all `iplan_creation` steps. |
+
+#### Integration with Other Gates
+
+The CHG linter works alongside:
+
+- **§3.4 checklist** (manual) — 14-point checklist before writing CHG
+- **§3.4.1 validation** (manual) — 27-point checklist after writing CHG
+- **Pre-commit hook** (`hooks/ch-gate-check.sh`) — blocks commits without active CHG
+- **IPLAN Gate** (§3.13) — blocks code writes without IPLAN
+
+**Rule:** The linter does NOT replace the manual checklists. Run the linter AND complete the checklists. The linter catches structural violations; the checklists catch content quality.
+
 ## EVAL Layer Governance
 
 ### EVAL-IPLAN 1:1 Mapping Rule
