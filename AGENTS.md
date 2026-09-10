@@ -77,6 +77,19 @@ gh issue view <N> -R vladm3105/aidoc-flow-framework --json body --jq '.body | le
 - **Plans get two review cycles before the plan PR opens** — see `CLAUDE.md`
   → "Development workflow".
 
+## Governance Gate (applies to ALL agents)
+
+Before writing ANY code for a feature, enhancement, or non-bugfix change:
+
+1. Create a CHG document — do NOT write code first
+2. Complete §3.4 checklist BEFORE writing the CHG
+3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
+4. Update EARS/BDD before code (SDD-first)
+5. Create IPLAN with code steps (not in CHG)
+
+If user says "build", "implement", "add feature" → stop, create CHG first.
+The ONLY exception: bug fixes on active IPLANs.
+
 ### Push Workflow
 
 ```bash

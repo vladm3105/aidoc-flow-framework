@@ -122,6 +122,19 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 - **Versioning streams are independent** (`docs/PROJECT.md` §2): project,
   framework spec, and each platform version separately.
 
+## MANDATORY: Governance Gate (§3.4 — NON-NEGOTIABLE)
+
+**Every feature, enhancement, or non-bugfix change MUST follow this order. No exceptions.**
+
+1. **Create CHG** — authorize the change (§3.4 checklist: read files, cross-reference EARS/BDD, plan SDD lifecycle)
+2. **Update EARS/BDD** — add requirements and scenarios BEFORE code (SDD-first per §3.1.1)
+3. **Create IPLAN** — code implementation steps (NOT in CHG)
+4. **Implement code** — per IPLAN, all files marked DONE
+
+**Bug fixes on active IPLANs** are the ONLY exception that skips CHG creation.
+
+After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
+
 ## Development workflow (guidance)
 
 Recommended flow for non-trivial changes — plan → review → implement →

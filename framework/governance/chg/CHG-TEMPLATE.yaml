@@ -390,5 +390,41 @@ creation_checklist:
       _mandatory: true
 
 # =============================================================================
+# Section 7: Post-Creation Validation (§3.4.1)
+# =============================================================================
+# Run this checklist after creating the CHG, before committing.
+# All checks must PASS before the CHG is committed.
+
+validation:
+  _guidance: |
+    This section is a blocking gate. Complete every check before committing.
+    Record any errors found and fixed in revision_history.
+  document_structure:
+    - id_match: "[verify: document_control.document_id matches filename]"
+    - status_proposed: "[verify: document_control.status is 'Proposed']"
+    - chg_id_match: "[verify: change_control.chg_id matches id]"
+    - date_current: "[verify: metadata.last_updated is today]"
+  checklist_completeness:
+    - files_read: "[verify: spot-check 3+ files in artifacts_modified]"
+    - claims_verified: "[verify: architectural claims checked against codebase]"
+    - signatures_checked: "[verify: struct/type signatures verified]"
+    - queries_verified: "[verify: INSERT/SELECT queries verified]"
+    - ears_ids_valid: "[verify: EARS IDs exist in actual EARS documents]"
+    - bdd_ids_valid: "[verify: BDD IDs exist in actual BDD documents]"
+  sdd_lifecycle:
+    - all_docs_listed: "[verify: sdd_lifecycle covers EVERY modified SDD doc]"
+    - entries_complete: "[verify: each entry has layer, document, action, archive_path, new_version, changes]"
+    - archive_format: "[verify: archive paths use CHG-ID format]"
+    - versions_bumped: "[verify: new versions differ from current]"
+    - supersedes_complete: "[verify: supersedes lists ALL archived documents]"
+  traceability:
+    - ears_ids_exist: "[verify: every EARS ID exists in actual document]"
+    - bdd_ids_exist: "[verify: every BDD ID exists in actual document]"
+    - no_seed_as_sdd: "[verify: no architecture seed docs referenced as SDD]"
+  scope:
+    - governance_only: "[verify: CHG contains only SDD lifecycle + IPLAN creation]"
+    - no_code_steps: "[verify: NO code implementation steps in CHG]"
+
+# =============================================================================
 # End of CHG-TEMPLATE.yaml
 # =============================================================================
