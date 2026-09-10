@@ -80,7 +80,7 @@ framework/
                          IPLAN-ECOSYSTEM.md).
   playbooks/             Per-layer review playbooks — the lens-by-lens audit
                          checklists the review-team crews apply. 10 folders: one
-                         per layer (01_BRD through 09_CHG) plus 10_IPLAN_VERIFY.
+                         per layer (01_BRD through 09_CHG) plus 10_IPVERIFY.
                          A vendored artifact class.
   templates/             Doc templates that aren't layer artifacts (e.g.
                          framework-feedback-log.template.md).
