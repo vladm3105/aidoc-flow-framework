@@ -88,6 +88,45 @@ failures).
 | 13 | **SDD-first implementation order** — Every step MUST have a `phase` field (`sdd_lifecycle` or `iplan_creation`). All `sdd_lifecycle` steps MUST appear before all `iplan_creation` steps. NO `code_implementation` phase may appear in a CHG. | Wrong ordering |
 | 14 | **CHG scope: governance, not implementation plan** — CHG should contain only `sdd_lifecycle` and `iplan_creation` phase steps, NOT `code_implementation` steps. IPLAN is execution artifact. | Detailed code steps in CHG |
 
+### 3.4.1 CHG Post-Creation Validation (MANDATORY)
+
+After creating a CHG document, verify EVERY item before committing. This
+catches errors introduced during CHG authoring — even when §3.4 was followed.
+
+| # | Check | Gap it prevents |
+|---|-------|-----------------|
+| A1 | `id` matches filename | Mismatched CHG ID |
+| A2 | `document_control.status` is `Proposed` | Wrong initial status |
+| A3 | `change_control.chg_id` matches `id` | Mismatched IDs |
+| A4 | `metadata.last_updated` matches today | Stale timestamp |
+| B5 | Every file in `artifacts_modified` was read (spot-check 3+) | Phantom file references |
+| B6 | Every architectural claim verified against codebase | Wrong architectural claims |
+| B7 | Every struct/type signature checked | Wrong field names |
+| B8 | Every INSERT/SELECT query verified | Missing query updates |
+| B9 | EARS IDs cited exist in actual EARS documents | Fabricated requirement IDs |
+| B10 | BDD IDs cited exist in actual BDD documents | Fabricated scenario IDs |
+| B11 | Existing handlers/webhooks checked | Existing handler missed |
+| B12 | Issue dependencies analyzed | Coupled issues split |
+| B13 | Test specifications included | No automated tests |
+| B14 | Fix locations verified (caller vs function) | Wrong fix location |
+| B15 | DB migration + rollback included | Migration without rollback |
+| C16 | `sdd_lifecycle` lists EVERY modified SDD document | Incomplete SDD lifecycle |
+| C17 | Each SDD entry has: layer, document, action, archive_path, new_version, changes | Missing SDD metadata |
+| C18 | Archive paths use CHG-ID format, not date-based | Wrong archive convention |
+| C19 | New versions are bumped (not same as current) | Version not bumped |
+| C20 | `supersedes` lists ALL archived documents with full paths | Missing supersedes |
+| D21 | Every EARS ID exists in actual EARS document | Wrong traceability |
+| D22 | Every BDD ID exists in actual BDD document | Wrong traceability |
+| D23 | No architecture seed docs referenced as SDD docs | Wrong document type |
+| D24 | Upstream requirements cited, not architecture descriptions | Wrong reference level |
+| E25 | CHG contains governance steps only (SDD lifecycle + IPLAN creation) | Scope creep |
+| E26 | NO code implementation steps in CHG | Code in wrong document |
+| E27 | `implementation.steps` references IPLAN, not code files | Wrong reference |
+
+**Gate:** ALL checks pass → commit. ANY check fails → fix, re-validate, then commit.
+
+**Violation log:** Record errors in CHG revision_history for audit trail.
+
 ## EVAL Layer Governance
 
 ### EVAL-IPLAN 1:1 Mapping Rule
