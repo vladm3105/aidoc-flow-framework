@@ -149,6 +149,42 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 
 **Violation log:** CHG-10 jumped from `Proposed` to `Implemented` without `Approved` stage (2026-11-06). Remediated by adding §3.13 IPLAN Gate and lint rules GOV-011/GOV-012.
 
+### Backward Propagation / Code-to-Doc Reconciliation Flow (Type-R — §3.1.2)
+
+When code modifications or test suites originate empirically — such as during live sandbox provider integration discovery, live interactive browser test authoring (Playwright E2E suites), critical test flakiness remediation, or emergency operational bugfixes — the codebase state temporarily precedes the written specifications.
+
+To eliminate **code drift vs. documentation** without fabricating a fictional "design-first" chronology, the framework formalizes **Type-R (Reconciliation / Backward Propagation)** change requests:
+
+```
+Verified Working Codebase (All Tests Pass, 0 Secret Findings, Clean Boundaries)
+  ↓
+Phase 0: Codebase Freeze & Manifest Extraction
+  1. Freeze and verify code changes (ensure 100% test pass: unit tests, product verification, E2E).
+  2. Extract exact modified file paths, methods, schemas, configuration keys, and test commands.
+  ↓
+Phase 1: Reverse-Engineered IPLAN Authoring (Ground Truth from Code)
+  3. Author IPLAN reflecting verified code reality, exact file manifests, and test suites.
+  4. IPLAN documents empirical findings and bridges the code-to-SDD gap.
+  ↓
+Phase 2: Upstream SDD Layer Reconciliation (Code → TDD → SPEC → BDD → EARS)
+  5. Update Layer 7 TDD test suites with new assertions, test cases, and coverage standards.
+  6. Update Layer 6 SPEC interface signatures, data models, and constraints.
+  7. Update Layer 4 BDD feature behaviors and scenarios.
+  8. Update Layer 3 EARS requirements.
+  9. Refresh all layer master index ledgers (IPLAN-00, TDD-00, SPEC-00, BDD-00, EARS-00).
+  ↓
+Phase 3: Core Project Documentation Reconciliation
+  10. Update user journey specifications, testing strategy guidance, and agent operational rules.
+  ↓
+Phase 4: Bi-directional Verification Gate
+  11. Execute chg_lint.py, unit tests, E2E journey tests, boundary checks, and secret scans.
+```
+
+**Guardrails for Type-R CHGs:**
+1. `change_source` in CHG metadata must be `reconciliation` (or `backward_propagation`).
+2. Codebase must pass all verification gates BEFORE initiating backward documentation propagation.
+3. No new unverified code may be introduced during the documentation reconciliation phase.
+
 ### IPLAN Gate (Hard Block — §3.13)
 
 **No code may be written without an IPLAN authorizing the changes.**

@@ -32,6 +32,7 @@ classify → archive originals → update → verify → record in CHG. See
 | File | Covers |
 |------|--------|
 | `DOC_GOVERNANCE_CORE.md` | Core governance principles — single source of truth, YAML-first templates, immutability, validation baseline. |
+| `GOVERNANCE_RULES.md` | Comprehensive operational governance rules — SDD lifecycle, clean rewrites, archive conventions, Type-R reconciliation flow, and execution gates. |
 | `ID_NAMING_STANDARDS.md` | Document IDs, element IDs, traceability tags, and file-naming formats. |
 | `TRACEABILITY.md` | The 10-layer traceability chain, necessary-upstream tagging, and readiness gates. |
 | `TAG_SYNTAX.md` | `@`-tag form reference: per-layer punctuation, element-vs-document granularity (GD-03), pipe-delimited cardinality, the self-tag / downstream carve-outs, and the `@chg:` provenance back-reference (a non-trace tag; GD-11). |

@@ -114,7 +114,28 @@ Phase 2: Code Implementation (driven by IPLAN)
 | External (business) | GATE-01 | Regulatory, compliance, partner demands |
 | External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues (bubble-up) |
+| Reconciliation (Backward) | GATE-CODE / GATE-06 | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination) |
 | Spec | GATE-SPEC | Change to the `framework/` spec itself (meta — orthogonal) |
+
+---
+
+## Dual Lifecycle: Forward vs. Backward Propagation
+
+The framework governs changes through two complementary lifecycle flows:
+
+### 1. Forward Flow (Design-First — Traditional)
+```
+BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7) → IPLAN(L8) → Code
+```
+Used for planned features and architecture changes. Requirements originate upstream, specs are updated first, IPLAN defines execution, and code implements the plan.
+
+### 2. Backward Flow (Reconciliation-First — Type-R)
+```
+Verified Codebase (Green Tests) → CHG (Reconciliation) → Reverse-Engineered IPLAN → Upstream SDD Chain (TDD → SPEC → BDD → EARS)
+```
+Used when code modifications or test suites are developed empirically (e.g. live sandbox API integration, browser DOM test authoring, urgent flakiness fixes). To maintain 100% compliance between code and specs without fabricating a fictional chronological history, the verified codebase is treated as ground truth, captured in a reverse-engineered IPLAN, and propagated upward through TDD, SPEC, BDD, and EARS to eliminate drift.
+
+---
 
 ## Cascade Chain
 
