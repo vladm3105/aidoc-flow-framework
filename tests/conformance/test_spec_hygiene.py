@@ -91,12 +91,13 @@ class EngineTokenHygiene(unittest.TestCase):
 
 class VersionStringHygiene(unittest.TestCase):
     def test_no_framework_version_field(self):
-        violations = []
-        for path in framework_files():
-            for lineno, line in _lines(path):
-                if FRAMEWORK_VERSION.search(line):
-                    violations.append(f"{path.relative_to(FRAMEWORK)}:{lineno}")
-        self.assertEqual(violations, [], f"framework_version in framework/: {violations}")
+        """Retired CLEANUP-001: GD-23/GD-24 ratified `framework_version` metadata
+        across the spec (registry, templates, governance docs, playbooks). The
+        D-0006-era ban this asserted is superseded; the live invariant is that
+        every pin equals framework/VERSION, enforced by
+        test_sync_version_refs_counts' successor (hooks/sync-version-refs.sh)
+        and the playbook frontmatter tests."""
+        self.skipTest("superseded by GD-23/GD-24 — framework_version is now the norm")
 
     def test_no_stale_sdd_v3_strings(self):
         violations = []

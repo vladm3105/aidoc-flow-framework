@@ -11,7 +11,7 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.3 |
 
 ---
 

@@ -164,11 +164,23 @@ class AcceptanceLayersRegistry(unittest.TestCase):
         )
 
     def test_realizing_layers_untouched(self):
-        """acceptance_layers is additive — realizing_layers must be unchanged
-        (mutating it would break the pinned COV02 corpus assertion)."""
+        """acceptance_layers is additive — realizing_layers carries the EVAL
+        addition deliberately (BDD → [SPEC, TDD, EVAL]).
+
+        CLEANUP-001: commit 0af49fac extended the normative BDD realizing set
+        with EVAL (EVAL cites BDD scenarios element-level per its
+        bdd_references slot). sdd_doc_lint.REALIZING_LAYERS mirrors it, so
+        this asserts registry + linter stay in sync at the NEW value, and
+        that no OTHER layer drifted."""
         self.assertEqual(
             load_registry().get("realizing_layers"),
-            {"BRD": ["PRD"], "EARS": ["BDD", "SPEC", "TDD"], "BDD": ["SPEC", "TDD"]},
+            {"BRD": ["PRD"], "EARS": ["BDD", "SPEC", "TDD"], "BDD": ["SPEC", "TDD", "EVAL"]},
+        )
+        from sdd_doc_lint import REALIZING_LAYERS
+
+        self.assertEqual(
+            {k: list(v) for k, v in REALIZING_LAYERS.items()},
+            {"BRD": ["PRD"], "EARS": ["BDD", "SPEC", "TDD"], "BDD": ["SPEC", "TDD", "EVAL"]},
         )
 
     def test_acc01_is_catalogued(self):

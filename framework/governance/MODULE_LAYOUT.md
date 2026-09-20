@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.3 |
 
 
 Defines the project module directory structure and naming conventions.
@@ -32,7 +32,7 @@ docs/
 │   ├── MODULE-12_observability/      # Complex module (6+ files)
 │   │   ├── README.md                 # Overview, principles, invariants
 │   │   ├── architecture.svg
-│   │   ├── log_export.md             # Log export plugin interface
+│   │   ├── log_export.md             # Log export extension interface
 │   │   ├── metrics.md                # Business metrics catalog (40+)
 │   │   ├── dashboards_alerts.md      # Dashboards, alerts, SLOs
 │   │   └── agent_surface.md          # Future LLM/agent instrumentation

@@ -20,6 +20,9 @@ ARTIFACTS = ["BRD", "PRD", "EARS", "BDD", "ADR", "SPEC", "TDD", "IPLAN"]
 # Governance overlays — not lifecycle layers, but enumerated in REVIEW_CREWS
 # + playbook coverage + agent weight tables (CHG-RT-001).
 OVERLAYS = ["CHG"]
+# EVAL is the 10th layer (post-IPLAN verification); the registry numbers it 10.
+# Tests that assert the registry shape must read the registry, not this list.
+POST_LAYERS = ["EVAL"]
 ARTIFACTS_AND_OVERLAYS = ARTIFACTS + OVERLAYS
 
 
@@ -35,32 +38,21 @@ def registry_layers() -> list[dict]:
 
 
 def framework_files() -> list[Path]:
-    """Return every file under ``framework/`` (sorted, for stable output)."""
-    return sorted(p for p in FRAMEWORK.rglob("*") if p.is_file())
+    """Return every file under ``framework/`` except the ``archive/`` snapshots (sorted).
 
-
-PLATFORMS_ROOT = REPO_ROOT / "platforms"  # archived
+    ``framework/archive/CHG-01|CHG-02`` are frozen spec-history snapshots, not the
+    live contract — hygiene and structural guards read the live tree only.
+    """
+    return sorted(
+        p
+        for p in FRAMEWORK.rglob("*")
+        if p.is_file() and "archive" not in p.relative_to(FRAMEWORK).parts
+    )
 
 
 def plugin_bundle_root() -> Path:
     """Return the sdd_doc_lint/ root (formerly the plugin bundle root)."""
     return REPO_ROOT / "sdd_doc_lint"
-
-
-def platform_dirs() -> list[Path]:
-    """Return every direct subdirectory of ``archive/platforms/`` (sorted)."""
-    archived = REPO_ROOT / "archive" / "platforms"
-    if archived.is_dir():
-        return sorted(p for p in archived.iterdir() if p.is_dir())
-    return []
-
-
-def platform_version_file(platform: Path) -> Path:
-    return platform / "VERSION"
-
-
-def platform_framework_spec_version_file(platform: Path) -> Path:
-    return platform / "FRAMEWORK_SPEC_VERSION"
 
 
 def framework_version() -> str:
@@ -90,13 +82,3 @@ def layer_root(name: str) -> Path:
 def template_path(name: str) -> Path:
     """Return the canonical TYPE-TEMPLATE.yaml for an artifact name."""
     return layer_root(name) / f"{name}-TEMPLATE.yaml"
-
-
-def plugin_bundle_root() -> Path:
-    """Return the claude-code-plugin bundle root."""
-    return PLATFORMS_ROOT / "claude-code-plugin"
-
-
-def skill_dirs() -> list[Path]:
-    """Return sorted list of every SKILL.md-bearing skill directory in the plugin."""
-    return sorted((plugin_bundle_root() / "skills").iterdir())

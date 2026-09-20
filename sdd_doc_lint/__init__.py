@@ -2428,8 +2428,10 @@ _BACKWARD_REALIZED_LAYERS = ("SPEC", "TDD")
 #: passes (one-hop, no transitive traversal). This constant MIRRORS the
 #: normative `realizing_layers` block in `framework/registry/LAYER_REGISTRY.yaml`
 #: (a conformance guard asserts they stay in sync); keep the two aligned.
+#: CLEANUP-001: BDD's set carries EVAL — EVAL cites BDD scenarios element-level
+#: via its bdd_references slot, so an EVAL-only citation realizes (COV02).
 REALIZING_LAYERS: dict[str, tuple[str, ...]] = {
-    "BDD": _BACKWARD_REALIZED_LAYERS,  # ("SPEC", "TDD")
+    "BDD": _BACKWARD_REALIZED_LAYERS + ("EVAL",),  # ("SPEC", "TDD", "EVAL")
     "EARS": ("BDD",) + _BACKWARD_REALIZED_LAYERS,  # ("BDD", "SPEC", "TDD")
     "BRD": ("PRD",),
 }

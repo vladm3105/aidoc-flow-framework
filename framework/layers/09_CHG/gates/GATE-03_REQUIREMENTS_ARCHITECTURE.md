@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.3 |
 
 
 > **Position**: Between upstream changes and Layers 3-5 (EARS, BDD, ADR)

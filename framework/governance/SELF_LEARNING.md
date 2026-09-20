@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.3 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -162,7 +162,7 @@ updates:
 - `docs/governance/DECISION_WORKFLOW.md` — process changes
 - `docs/governance/notices.md` — known issues and prevention rules
 - `docs/governance/SELF_LEARNING.md` — self-learn process changes
-- `.claude/AGENTS.md` — agent execution rules
+- `AGENTS.md` — agent execution rules
 
 Rules for direct governance updates: only add (never remove safety invariants),
 cite the learning source, keep updates small (one rule per learning), and log

@@ -14,7 +14,7 @@ metadata:
   description: "Closed, declarative set of project-adaptation knobs for the SDD flow"
   authority: "framework/governance/ADAPTATION.md"
   last_updated: "2026-09-07"
-  framework_version: "0.53.0"
+  framework_version: "0.53.3"
 
 # The single input an engine reads at runtime. The user-global file is an
 # authoring-time seed only (merged into the project profile, not read at

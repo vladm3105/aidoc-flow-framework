@@ -31,7 +31,7 @@ document_control:
   author: "[Author Name]"
   created_date: "[YYYY-MM-DD]"
   last_updated: "[YYYY-MM-DD]"
-  framework_version: "0.53.0"
+  framework_version: "0.53.3"
   revision_history:
     - version: "1.0"
       date: "[YYYY-MM-DD]"
@@ -48,6 +48,7 @@ title: "[Change Title]"
 
 metadata:
   document_type: "chg-document"
+  layer: 9
   purpose: governance  # NOT a lifecycle artifact — governance overlay
   last_updated: "2026-04-29"
 

@@ -50,9 +50,11 @@ toplevel="$(git rev-parse --show-toplevel 2>/dev/null)" || {
 cd "$toplevel" || exit 2
 
 # --- changed-files calculation ---
-# base = merge-base with origin/main (fall back to local main, then to
-# the empty tree for a fresh repo).
-BASE="$(git merge-base HEAD origin/main 2>/dev/null \
+# base = merge-base with origin/dev (fall back to origin/main, local dev/main,
+# then to the empty tree for a fresh repo). This repo works feat/* → dev.
+BASE="$(git merge-base HEAD origin/dev 2>/dev/null \
+        || git merge-base HEAD origin/main 2>/dev/null \
+        || git merge-base HEAD dev 2>/dev/null \
         || git merge-base HEAD main 2>/dev/null \
         || git rev-list --max-parents=0 HEAD | tail -1)"
 mapfile -t CHANGED < <(git diff --name-only --diff-filter=ACMR "$BASE"...HEAD 2>/dev/null)
@@ -162,8 +164,8 @@ upstream_ref="$(git rev-parse --abbrev-ref --symbolic-full-name @{upstream} 2>/d
 if [ -n "$upstream_ref" ] && git rev-parse --verify --quiet "$upstream_ref" >/dev/null; then
   commit_range="${upstream_ref}..HEAD"
 else
-  # First push (no upstream yet) — scan since main-divergence.
-  commit_range="origin/main..HEAD"
+  # First push (no upstream yet) — scan since dev-divergence.
+  commit_range="origin/dev..HEAD"
 fi
 push_msgs="$(git log --format=%B "$commit_range" 2>/dev/null || echo '')"
 
