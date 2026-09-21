@@ -23,6 +23,31 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-30 — Formalize Type-R code-to-doc reconciliation flow (CHG-04, 0.55.0 MINOR)
+
+- **Status:** Accepted — 2026-09-21 · **SemVer:** framework `0.54.0 → 0.55.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** PR #654 carried a consumer project's `GOVERNANCE_RULES.md` (575 lines) plus a
+  Type-R (Reconciliation / Backward Propagation) proposal. Triage found exactly one migratable
+  kernel: the framework defined only the forward flow plus Emergency, leaving non-emergency
+  empirical work (integration discovery, browser-authored suites, flakiness remediation) with
+  two dishonest options — backdated design history or doc drift. The project manual itself was
+  rejected as a framework file (engine-agnostic violation, `EXPECTED_FILES` pin).
+- **Decision:** Land Type-R as a bounded exception to SDD-first (§3.1.1 stays the default):
+  `DOC_GOVERNANCE_CORE.md` §3.1.2 (trigger, Phase 0–3 flow, three guardrails, Emergency
+  disambiguation — Emergency-qualifying work never uses Type-R), one closed `change_source`
+  value (`reconciliation`, entry GATE-CODE) in both CHG-TEMPLATE twins, Dual Lifecycle +
+  routing rows in both README twins, GATE-CODE §1.3/§6.3 routing notes in both gate twins.
+  Docs + template enum only — no new lint rules (`change_source` is not enum-validated), no
+  error-catalog codes.
+- **Consequences.** `framework/VERSION` `0.54.0 → 0.55.0`; mechanical pin sweep;
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.55.0]` entries.
+- **Authority:** `plans/TYPE-R-RECONCILIATION-PLAN.md`; `framework/archive/CHG-04/CHG-04.yaml`;
+  `framework/governance/DOC_GOVERNANCE_CORE.md` §3.1.2.
+
+---
+
 ## GD-29 — Port 17 donor-hardening addons into the spec (CHG-03, 0.54.0 MINOR)
 
 - **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.3 → 0.54.0` (MINOR),

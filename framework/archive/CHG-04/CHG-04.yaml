@@ -1,0 +1,212 @@
+# =============================================================================
+#  CHG-04: Framework Type-R reconciliation flow + MINOR bump 0.54.0 → 0.55.0
+# =============================================================================
+#  Plan: plans/TYPE-R-RECONCILIATION-PLAN.md (FINAL, Pass 2 clean)
+#  IPLAN: framework/archive/CHG-04/IPLAN-04.yaml (In Progress, authorizing)
+#  Gate: GATE-SPEC (change_source: spec), C2, minor
+# =============================================================================
+
+id: CHG-04
+title: "Formalize Type-R code-to-doc reconciliation flow + MINOR bump 0.54.0 → 0.55.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-21"
+  framework_version: "0.55.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-04"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-21T00:00:00Z"
+  date_approved: "2026-09-21T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance/chg + layers/09_CHG + DOC_GOVERNANCE_CORE originals v0.54.0 (framework/archive/CHG-04/)"
+    - "framework/VERSION 0.54.0 (framework/archive/CHG-04/VERSION)"
+    - "IPLAN-04 authorizing record (framework/archive/CHG-04/IPLAN-04.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Formalize the Type-R (Reconciliation) change flow as a bounded exception to
+    SDD-first: when a verified working codebase temporarily precedes its
+    specifications, the change propagates backward Code → reverse-authored
+    IPLAN → upstream SDD layers (TDD → SPEC → BDD → EARS), instead of
+    fabricating a fictional design-first chronology. Adds one closed
+    `change_source` enum value (`reconciliation`, entry GATE-CODE), a Dual
+    Lifecycle section, a §3.1.2 core-governance section with preconditions and
+    guardrails (green gates before doc propagation, freeze, no new unverified
+    code mid-reconciliation, Emergency-qualifying work stays on Emergency),
+    GATE-CODE routing notes, GD-30, and the MINOR bump 0.54.0 → 0.55.0 with
+    mechanical fanout. Generalized from PR #654 donor text — no donor
+    literals (no vendor names, tool commands, `docs/sdd/` paths, index
+    ledgers) enter the spec.
+  why: |
+    The framework defines only the forward flow plus Emergency (fix → deploy
+    → document in 48h). Feedback/GATE-CODE bubble-up covers production
+    defects, but no formal path exists for non-emergency empirical work where
+    code leads docs (integration discovery, browser-authored suites, flakiness
+    remediation). Without it, teams either backdate design history (fiction)
+    or let docs drift (rot). Type-R makes the honest path the governed path.
+  trigger: |
+    plans/TYPE-R-RECONCILIATION-PLAN.md reached FINAL (2 passes, Pass 2 clean)
+    and authorizes this scope. Donor material reviewed in PR #654 triage;
+    GOVERNANCE_RULES.md as a framework file rejected (project-only,
+    engine-agnostic violation, EXPECTED_FILES pin).
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "Governance"
+      artifacts: ["DOC_GOVERNANCE_CORE.md", "DECISIONS.md"]
+      impact: "New §3.1.2 section + GD-30 entry; prose only"
+    - layer: "CHG"
+      artifacts: ["chg/README.md + layers/09_CHG/README.md (twins)", "chg/CHG-TEMPLATE.yaml + layers/09_CHG/CHG-TEMPLATE.yaml (twins)", "chg/gates/GATE-CODE_IMPLEMENTATION.md + layers twin"]
+      impact: "Routing row + Dual Lifecycle section + one enum value + gate notes; additive only, no tag/lint semantics"
+    - layer: "08_IPLAN"
+      artifacts: ["IPLAN-04"]
+      impact: "Authorizing IPLAN for this change (IPLAN-04 In Progress, file_manifest covers all targets)"
+
+  cascade_direction: null  # No artifact cascade — framework self-change only
+  risk_level: Low
+
+  traceability:
+    upstream:
+      ears_references: []
+      bdd_references: []
+      note: "GATE-SPEC meta change — no artifact cascade, no EARS/BDD traceability. Governed by GATE-SPEC (E003: level >= C2; E008: changelog)."
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive current chg/README + CHG-TEMPLATE + GATE-CODE twins, DOC_GOVERNANCE_CORE.md, DECISIONS.md, VERSION originals to framework/archive/CHG-04/"
+      phase: "sdd_lifecycle"
+      artifact: "Governance/CHG docs, VERSION"
+      archive_path: "framework/archive/CHG-04/"
+      new_version: "0.55.0"
+      current_version: "0.54.0"
+      status: Completed
+    - step: "Land Type-R prose + template enum + gate notes per plan Steps 1–4 (twins move together, byte-identical hunks)"
+      phase: "sdd_lifecycle"
+      artifact: "Governance/CHG docs and templates"
+      archive_path: "framework/archive/CHG-04/"
+      new_version: "0.55.0"
+      current_version: "0.54.0"
+      status: Completed
+    - step: "Bump framework/VERSION 0.54.0 → 0.55.0 + update sync-version-refs.sh 0.54.0 literals + mechanical fanout + GD-30 + changelogs (plan Steps 5–6)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION"
+      archive_path: "framework/archive/CHG-04/VERSION"
+      new_version: "0.55.0"
+      current_version: "0.54.0"
+      status: Completed
+    - step: "Create IPLAN-04 with all implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-04"
+      status: Completed
+
+  artifacts_modified:
+    - id: "IPLAN-04 (authorizing IPLAN: framework/archive/CHG-04/IPLAN-04.yaml)"
+      file: "framework/archive/CHG-04/IPLAN-04.yaml"
+      change_type: "created"
+    - id: "GOV-CORE"
+      file: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      change_type: "modified"
+    - id: "CHG-READMES"
+      file: "framework/governance/chg/README.md, framework/layers/09_CHG/README.md"
+      change_type: "modified"
+    - id: "CHG-TEMPLATES"
+      file: "framework/governance/chg/CHG-TEMPLATE.yaml, framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      change_type: "modified"
+    - id: "GATE-CODE"
+      file: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md, framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+      change_type: "modified"
+    - id: "DECISIONS"
+      file: "framework/governance/DECISIONS.md"
+      change_type: "modified"
+    - id: "VERSION-FANOUT"
+      file: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md + mechanical pin sweep (playbook frontmatter, yaml metadata, doc-control rows)"
+      change_type: "modified"
+    - id: "SYNC-SCRIPT"
+      file: "hooks/sync-version-refs.sh"
+      change_type: "modified"
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  automated_tests:
+    - test: "chg_lint green on this file"
+      command: "python sdd_doc_lint/chg_lint.py framework/archive/CHG-04/CHG-04.yaml"
+      expected: "exit 0"
+    - test: "conformance suite green"
+      command: "python -m unittest discover -s tests/conformance"
+      expected: "OK"
+    - test: "acceptance deterministic green (no silent golden churn)"
+      command: "python -m unittest discover -s tests/acceptance/deterministic"
+      expected: "OK"
+    - test: "corpus cross-check, zero unexpected findings"
+      command: "python3 -m sdd_doc_lint examples/*/docs/"
+      expected: "no unexpected findings (TH01/TRACE-RES-001/etc.)"
+  manual_checks:
+    - check: "twin hunks byte-identical (governance/chg vs layers/09_CHG)"
+      method: "diff the three twin pairs on the changed hunks"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only)
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  approval_date: null
+  conditions: []
+
+# =============================================================================
+# Section 7: Rollback Plan (C2/C3)
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "Revert the 0.55.0 commit(s) on the feature branch before PR merge"
+    - "Re-run conformance + acceptance to confirm 0.54.0 baseline"
+  estimated_effort: "Low — single-branch revert, no downstream consumers yet"
+
+# =============================================================================
+# Section 8: Emergency Change (conditional)
+# =============================================================================
+
+emergency_change: null

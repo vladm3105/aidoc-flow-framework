@@ -3,7 +3,7 @@ layer: 09_CHG
 lens: integration_lead
 weight: 30
 agent: solutions-architect
-framework_spec_version: "0.54.0"
+framework_spec_version: "0.55.0"
 ---
 # integration_lead lens — CHG layer
 
