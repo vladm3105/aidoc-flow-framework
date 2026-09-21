@@ -50,9 +50,9 @@ file_manifest:
       session: null
       verified: false
     - path: "framework/governance/LINT_RULES.md"
-      description: "CHG-L012 + REG01 + TDD-SYNC A–E + IPLAN01 advisory catalog entries"
+      description: "CHG-L012 + REG01 + TDD-SYNC A–E + IPLAN01 advisory catalog entries + #653 GOV-014..017 rows"
       order: 2
-      status: DONE
+      status: IN_PROGRESS
       session: null
       verified: false
     - path: "framework/governance/NOTICES.md"
@@ -134,9 +134,9 @@ file_manifest:
       session: null
       verified: false
     - path: "sdd_doc_lint/chg_lint.py"
-      description: "New CHG-L012 warning check (completion sync)"
+      description: "New CHG-L012 warning check (completion sync) + #653 traceability port (L011 --sdd-root)"
       order: 16
-      status: DONE
+      status: IN_PROGRESS
       session: null
       verified: false
     - path: "sdd_doc_lint/__main__.py"
@@ -191,6 +191,12 @@ file_manifest:
       description: "Framework ## [0.54.0] entry"
       order: 22
       status: DONE
+      session: null
+      verified: false
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "NEW — CHG-L006..L011 regression tests adapted from #653 (canonical implementation.steps schema)"
+      order: 26
+      status: IN_PROGRESS
       session: null
       verified: false
 

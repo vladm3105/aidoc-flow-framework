@@ -22,8 +22,10 @@ Checks:
   CHG-L010: Supersedes completeness (§3.4.1 C20) — `change_control.supersedes`
     must list every archived document with its full archive path
   CHG-L011: Cited EARS/BDD IDs exist (§3.4.1 D21/D22) — every EARS/BDD ID cited
-    in the CHG must exist in the referenced EARS/BDD document (warning-level:
-    referenced files may live in the consuming project, not this repo)
+    in the CHG must exist in the referenced EARS/BDD document. Exact match
+    (error) when the tree is verifiable via --sdd-root; nearby-heuristic
+    (warning) otherwise — ported from #653, adapted to the canonical
+    implementation.steps schema (see GOV-014..GOV-017 in LINT_RULES.md)
   CHG-L012: SDD sync on IPLAN completion (DOC_GOVERNANCE_CORE.md §IPLAN
     Lifecycle) — when a CHG moves a Completed IPLAN's SPEC/TDD check into the
     same change, the IPLAN's `completion_spec_sync:` field must show the check
