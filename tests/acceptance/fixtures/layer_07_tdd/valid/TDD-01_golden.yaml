@@ -15,8 +15,8 @@ document_control:
   version: 1.0
   component: AuthService
 
-## Test Pyramid
-test_pyramid:
+## Test Strategy
+test_strategy:
   distribution:
     unit: 70
     integration: 20

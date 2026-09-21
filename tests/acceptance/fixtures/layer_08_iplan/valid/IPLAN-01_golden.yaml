@@ -42,6 +42,17 @@ file_manifest:
       status: NOT_STARTED
       verified: false
 
+## TDD Consistency
+tdd_consistency:
+  status: not_started
+  last_verified: null
+  verification_results:
+    function_name_match: null
+    file_ownership_complete: null
+    language_consistent: null
+    index_synchronized: null
+  issues: []
+
 ## Execution Commands
 execution_commands:
   setup:
