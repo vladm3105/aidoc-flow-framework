@@ -24,6 +24,11 @@ Checks:
   CHG-L011: Cited EARS/BDD IDs exist (§3.4.1 D21/D22) — every EARS/BDD ID cited
     in the CHG must exist in the referenced EARS/BDD document (warning-level:
     referenced files may live in the consuming project, not this repo)
+  CHG-L012: SDD sync on IPLAN completion (DOC_GOVERNANCE_CORE.md §IPLAN
+    Lifecycle) — when a CHG moves a Completed IPLAN's SPEC/TDD check into the
+    same change, the IPLAN's `completion_spec_sync:` field must show the check
+    was done (warning-level: the CHG author attests by filling the field; the
+    linter validates the attestation shape, not the codebase)
 
 Usage:
   python -m sdd_doc_lint.chg_lint <chg-file.yaml>
@@ -372,8 +377,7 @@ def check_supersedes_completeness(data: dict[str, Any], errors: list[str], warni
         passes.append(f"CHG-L010: supersedes covers all {len(archived)} archived document(s)")
 
 
-def check_cited_ids_exist(
-    data: dict[str, Any],
+def check_cited_ids_exist(    data: dict[str, Any],
     errors: list[str],
     warnings: list[str],
     passes: list[str],
@@ -412,6 +416,80 @@ def check_cited_ids_exist(
     passes.append(f"CHG-L011: cited-ID existence checked ({checked} verifiable reference(s))")
 
 
+def check_completion_spec_sync(
+    data: dict[str, Any],
+    errors: list[str],
+    warnings: list[str],
+    passes: list[str],
+    file_path: Path,
+) -> None:
+    """CHG-L012: SDD sync on IPLAN completion (DOC_GOVERNANCE_CORE.md §IPLAN Lifecycle).
+
+    Warning-level (Decision C): when the CHG authorizes IPLAN work whose
+    `completion_spec_sync:` block exists on a referenced IPLAN that has reached
+    `Completed`, the block must attest the SPEC/TDD check (spec_checked and
+    tdd_checked true, or diverged true with a named chg_ref). The linter
+    validates the attestation shape on the referenced IPLAN file — it cannot
+    verify the codebase comparison itself. CHGs whose referenced IPLANs carry
+    no such block, or none in `Completed` status, pass silently.
+    """
+    import re
+
+    text = file_path.read_text(encoding="utf-8", errors="replace") if file_path.exists() else ""
+    # Resolve referenced IPLAN files: `file:` values ending in .yaml naming IPLAN-*.yaml.
+    # Paths in a CHG are usually repo-root-relative; fall back to CHG-parent-relative.
+    candidates: list[Path] = []
+    for m in re.finditer(r"file:\s*[\"']?([^\s\"',]*?IPLAN-[^\s\"',]*\.ya?ml)[\"']?", text):
+        raw = m.group(1)
+        hit: Path | None = None
+        for base in (Path.cwd(), file_path.parent):
+            p = (base / raw).resolve() if not Path(raw).is_absolute() else Path(raw)
+            if p.exists():
+                hit = p
+                break
+        if hit is not None and hit not in candidates:
+            candidates.append(hit)
+    if not candidates:
+        passes.append("CHG-L012: no referenced IPLAN file to check")
+        return
+    checked = 0
+    for iplan_path in candidates:
+        try:
+            iplan = yaml.safe_load(iplan_path.read_text(encoding="utf-8"))
+        except yaml.YAMLError:
+            continue
+        if not isinstance(iplan, dict):
+            continue
+        doc_control = iplan.get("document_control", {})
+        if not isinstance(doc_control, dict):
+            continue
+        if str(doc_control.get("status", "")) != "Completed":
+            continue
+        sync = doc_control.get("completion_spec_sync")
+        if not isinstance(sync, dict):
+            continue
+        checked += 1
+        name = iplan_path.name
+        spec_ok = sync.get("spec_checked") is True
+        tdd_ok = sync.get("tdd_checked") is True
+        diverged = sync.get("diverged") is True
+        chg_ref = sync.get("chg_ref")
+        if not spec_ok or not tdd_ok:
+            warnings.append(
+                f"CHG-L012: {name} is Completed but completion_spec_sync "
+                "does not attest the SPEC/TDD check (spec_checked/tdd_checked must be true)"
+            )
+        elif diverged and chg_ref in (None, "null", ""):
+            warnings.append(
+                f"CHG-L012: {name} records diverged=true but names no chg_ref — "
+                "name the follow-up CHG rewriting the SPEC/TDD"
+            )
+    if checked == 0:
+        passes.append("CHG-L012: no Completed IPLAN with a completion_spec_sync block referenced")
+    else:
+        passes.append(f"CHG-L012: completion_spec_sync attestation checked on {checked} Completed IPLAN(s)")
+
+
 def lint_chg(file_path: Path) -> tuple[list[str], list[str], list[str]]:
     """Lint a single CHG file and return (errors, warnings, passes)."""
     errors: list[str] = []
@@ -444,6 +522,7 @@ def lint_chg(file_path: Path) -> tuple[list[str], list[str], list[str]]:
     check_version_bump(data, errors, warnings, passes)
     check_supersedes_completeness(data, errors, warnings, passes)
     check_cited_ids_exist(data, errors, warnings, passes, file_path)
+    check_completion_spec_sync(data, errors, warnings, passes, file_path)
 
     return errors, warnings, passes
 

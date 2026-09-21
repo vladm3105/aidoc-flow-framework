@@ -21,6 +21,11 @@ custom_fields:
 
 Central registry for all TDD documents. Each TDD document defines test cases, maps BDD acceptance scenarios to test implementation, and declares quality thresholds for a SPEC component.
 
+> **Index-sync rule (TDD-SYNC-E):** the IPLAN index is the source of truth
+> for IPLAN statuses. When an IPLAN status changes, both this index and
+> `IPLAN-00_index` must be updated in the same change — never let the two
+> indexes disagree about an IPLAN's status.
+
 ## Position in Document Workflow
 
 ```

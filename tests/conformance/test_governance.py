@@ -41,6 +41,7 @@ EXPECTED_FILES = [
     "MODULE_LAYOUT.md",
     "NOTICES.md",
     "SELF_LEARNING.md",
+    "WORKTREE_FLOW.md",
     "README.md",
     "aidoc/AIDOC.md",
     "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",

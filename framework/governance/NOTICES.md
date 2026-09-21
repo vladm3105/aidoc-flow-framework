@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.54.0 |
 
 
 Tracks issues encountered during SDD document generation, their root causes,
@@ -106,6 +106,19 @@ Actual ADR-09 decision ID: ADR.09.03.a3f1
 without providing the actual IDs. Subagents cannot read files the parent
 hasn't provided.
 
+**Post-delegation grep validation (Rule 1–2 harden):** after a delegated
+document lands, re-run the reference checks against the REAL tag namespaces —
+`@prd:`, `@brd:`, `@adr:` — not just the EARS/BDD tags in Rule 2:
+
+```bash
+# Every cited upstream ID must exist in its source file; each grep must return ≥1 line
+grep -F '<cited-PRD-ID>' <prd-source-file>
+grep -F '<cited-BRD-ID>' <brd-source-file>
+grep -F '<cited-ADR-ID>' <adr-source-file>
+# Duplicate detection across the delegated file
+grep -oP 'id: "\K[^"]+' <file> | sort | uniq -d  # Should return nothing
+```
+
 ### Rule 2: Validate references after delegation (prevents Issue 1)
 
 After a subagent completes an SDD document, run these checks before
@@ -160,9 +173,9 @@ Is this a normal operating state?
 
 Before assigning an SDD ID that may have been used in a prior session:
 
-1. Check if a file with that ID already exists: `ls docs/sdd/07_TDD/TDD-NN_*`
+1. Check if a file with that ID already exists: `ls <project>/sdd/07_TDD/TDD-NN_*`
 2. If it exists and is from a different scope, archive it to
-   `docs/sdd/09-CHG/archive/CHG-SDD09-fix/`
+   `<project>/sdd/09-CHG/archive/<CHG-ID>/`
 3. Only then create the new document with that ID
 
 ### Rule 6: TDD↔IPLAN cross-layer consistency (prevents Issue 5)
@@ -182,8 +195,32 @@ language (Go or Python).
 `IPLAN-00_index.yaml` MUST show consistent statuses. `IPLAN-00_index.yaml`
 is the source of truth.
 
-**Enforcement:** Lint rules `TDD-SYNC-001` through `TDD-SYNC-007` in
-`LINT_RULES.md`.
+**Enforcement:** Lint rules `TDD-SYNC-A` through `TDD-SYNC-E` in
+`LINT_RULES.md` (advisory).
+
+## Concurrency traps
+
+Three traps measured when multiple agents share one working tree. All are
+process rules, not tool checks:
+
+- **Verify-3 on subagent landings.** When a subagent reports completing a
+  file write, verify at least 3 specific changes by reading the file back —
+  agents can report success without modifying the file (phantom success).
+  Re-verify at integration time, not just report time: concurrent siblings
+  can clobber landings between report and check. Scope diffs to owned files
+  (`git diff -- <owned files>`), never whole-tree stat, under concurrency.
+- **No whole-tree git operations with live agents.** `git stash`,
+  `git checkout -- <dirs>`, branch switches, and blanket `git add -A` on a
+  tree shared with running agents destroy their uncommitted work with no
+  recovery path. Use file-scoped commands only while agents run; snapshot
+  irreplaceable work (copy to a scratch dir, patch export) BEFORE any
+  whole-tree operation.
+- **Layer detection before trusting a clean lint.** `sdd_doc_lint` prints
+  "no structural findings" for paths without a layer pattern — the file is
+  SKIPPED, not clean (see the `__main__.py` message). Never trust a clean
+  result without confirming detection; always pass layer-pattern paths.
+  Governed archive snapshots must be explicitly added and verified with
+  `git ls-files` / `git check-ignore -v` (see `.gitignore` scope note).
 
 ## Verification Checklist
 
@@ -203,7 +240,7 @@ After completing any SDD layer, verify:
 ## Cross-References
 
 - `DOC_GOVERNANCE_CORE.md` §6 — SDD Reference Integrity Rules
-- `LINT_RULES.md` — TDD-SYNC-001 through TDD-SYNC-007, EVAL-001 through EVAL-003
+- `LINT_RULES.md` — TDD-SYNC-A through TDD-SYNC-E, EVAL-001 through EVAL-003
 - `TESTING_STRATEGY_TDD.md` §Bidirectional Status Sync
 - `ID_NAMING_STANDARDS.md` — Element ID format verification
 
@@ -231,3 +268,6 @@ entries were added.
 **Prevention:**
 - Rule: `coverage_matrix.summary` must be computed from `coverage_matrix.entries`
 - Lint: EVAL-002 catches this contradiction
+- Grep one-liners (run before landing any EVAL or downstream doc):
+  - Index-count drift: `grep -c '^\s*- id: TDD\.' <tdd-files>` vs the index's stated count — recompute, never copy
+  - Coverage contradiction: entries with `status: implemented, coverage: 100` alongside a zeroed `summary` — recompute `summary` from `entries`

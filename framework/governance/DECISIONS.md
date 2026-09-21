@@ -23,30 +23,57 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
-## GD-28 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
+## GD-29 — Port 17 donor-hardening addons into the spec (CHG-03, 0.54.0 MINOR)
 
-- **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.52.0 → 0.53.0` (MINOR),
+- **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.3 → 0.54.0` (MINOR),
   change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
   GATE-SPEC.
-- **Context:** Projects adopting the framework need project-specific customizations (modified
-  templates, additional governance rules, custom playbooks) but have no mechanism to override
-  framework defaults without forking. The existing `.aidoc/` contract defined it as "AI
-  provenance" with `audit/`, `review/`, `remediation/`, `validation/`, `security/`, `quality/`
-  subdirectories — none of which were used in practice (empty in every project).
-- **Decision:** Redefine `.aidoc/` as the project override layer. The new contract:
-  1. `.aidoc/profile.yaml` — adaptation knobs (unchanged)
-  2. `.aidoc/framework/` — symlink to shared framework (canonical path)
-  3. `.aidoc/project/` — project-specific overrides (same structure as framework/)
-  4. Agent discovery: read `.aidoc/project/` first, fall back to `.aidoc/framework/`
-
-  This follows software versioning conventions: projects customize without forking, overrides
-  are project-local, and the framework stays untouched. The root `framework/` symlink exists
-  for backward compatibility and will be removed when zero active files reference it.
-- **Consequences.** `framework/VERSION` `0.52.0 → 0.53.0`; `governance/aidoc/AIDOC.md` rewritten;
-  `README.md` four-tier model updated; `ADAPTATION.md` §10 added; `GATE-SPEC_FRAMEWORK.md`
-  reference fixed. The empty provenance subdirectories (`audit/`, `review/`, etc.) are no
-  longer part of the `.aidoc/` contract.
-- **Authority:** `governance/aidoc/AIDOC.md`; `governance/ADAPTATION.md` §10; `README.md` §Project layout.
+- **Context:** A sibling project's governed `.aidoc/` directory (frozen to `/tmp/bprivy-gov/`,
+  8 files, 1851 lines — do NOT chase donor HEAD) carried 17 hardening addons the framework
+  spec lacked. Ranked P0–P2 in `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md` (FINAL, Pass 3
+  clean), implemented under `framework/archive/CHG-03/` (CHG-03 + IPLAN-03, subtype `combined`).
+- **Decision:** Land all 17 addons, genericized (no donor literals — Collector/OTel/Go-service
+  tokens, Atlas/Privy names, mimocode paths, `docs/sdd/` layouts stay donor-local):
+  1. `DOC_GOVERNANCE_CORE.md` gains the SDD-first implementation order table (§3.1.1),
+     the §3.13 bootstrap exemption, the IPLAN Lifecycle bundle (status-gate table, failure
+     modes, DONE-must-exist, realtime manifest, CHG-tracks-IPLAN, SDD-sync-on-completion
+     with `completion_spec_sync` + CHG-L012 pointer), `## Status Propagation (§4.1)`, and the
+     `WORKTREE_FLOW.md` pointer — after deduping the twin EVAL blocks (canonical
+     `EVAL.NN.SS.xxxx` survives).
+  2. `IPLAN-TEMPLATE.yaml` gains `completion_gates` + `completion_spec_sync` blocks
+     (`spec_checked`/`tdd_checked`/`diverged`/`chg_ref`), `breaking_change` block, realtime
+     manifest update + DONE-must-exist rules, `audit_fix` as a fourth subtype (`combined`
+     stays the backward-compat default per Decision F), and schema-artifact guidance;
+     `08_IPLAN/README.md` gains `## IPLAN Subtypes`.
+  3. `LAYER_REGISTRY.yaml` + `registry/README.md` gain the new-layer registration checklist;
+     `LINT_RULES.md` gains `REG01` (warning-advisory), `CHG-L012` (completion-sync warning),
+     `IPLAN01` (breaking-change advisory), and `TDD-SYNC-A..E` (bidirectional status sync,
+     all warning-advisory); `tests/conformance/test_registry.py` pins the checklist header.
+  4. `sdd_doc_lint/chg_lint.py` gains CHG-L012 (warns on Completed IPLANs whose
+     `completion_spec_sync` does not attest `spec_checked`/`tdd_checked`, or whose `diverged`
+     lacks `chg_ref`; resolves CHG `file:` paths CWD-first); `sdd_doc_lint/__main__.py`
+     warns that SKIPPED paths were not checked; `.gitignore` gains the scoped
+     governed-archive negation (never broad `!archive/**`).
+  5. `03_EARS/README.md` gains the pattern decision tree (WHILE→WHEN→IF→THE-SHALL→WHERE,
+     first-match-wins); `requirements_specialist.md` gains the pattern-tree lens note;
+     `TDD-00_index.TEMPLATE.md` + `IPLAN-00_index.TEMPLATE.yaml` gain the TDD-SYNC-E
+     index-sync source-of-truth notes.
+  6. `NOTICES.md` gains post-delegation grep validation (Rule 1–2 harden), the genericized
+     Rule 5 (`<project>/sdd/`, `<CHG-ID>`), `## Concurrency traps`, the advisory
+     `TDD-SYNC-A..E` enforcement rename, and Issue 5–6 grep one-liners;
+     `ID_NAMING_STANDARDS.md` gains the manual-authoring red-flag box (appended OUTSIDE the
+     digest-pinned lines — no re-pin); `SELF_LEARNING.md` gains the §7.4 feedback-submit
+     contract (issue-per-scope, read-back verification, full-path
+     `framework/governance/FRAMEWORK_FEEDBACK_LOG.md`); `AI_ASSISTANT_RULES.md` gains the
+     delegation/concurrency pointers + §3.13 restatement.
+  7. NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (generic git/gh halves only; the
+     worktree-remove-before-branch-delete order guard is load-bearing); `TRACEABILITY.md`
+     §4.1 cross-ref appended OUTSIDE the digest-pinned bullet (anchor never edited).
+- **Consequences.** `framework/VERSION` `0.53.3 → 0.54.0`; mechanical pin sweep
+  (`framework_spec_version`, `framework_version`, `| Framework Version |` rows);
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.54.0]` entries.
+- **Authority:** `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md`; `framework/archive/CHG-03/CHG-03.yaml`;
+  `framework/governance/DOC_GOVERNANCE_CORE.md` §3.1.1/§3.13/§4.1.
 
 ---
 
@@ -75,6 +102,33 @@ Newest first. Timestamps are ISO 8601 UTC.
   widened; `DOC_GOVERNANCE_CORE.md` §3.14 documents L006–L011 and the canonical linter path.
 - **Authority:** `framework/governance/DOC_GOVERNANCE_CORE.md` §3.4.1 C16–C20/D21–D22;
   `framework/layers/09_CHG/README.md` CHG Archive Convention.
+
+---
+
+## GD-28 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
+
+- **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.52.0 → 0.53.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** Projects adopting the framework need project-specific customizations (modified
+  templates, additional governance rules, custom playbooks) but have no mechanism to override
+  framework defaults without forking. The existing `.aidoc/` contract defined it as "AI
+  provenance" with `audit/`, `review/`, `remediation/`, `validation/`, `security/`, `quality/`
+  subdirectories — none of which were used in practice (empty in every project).
+- **Decision:** Redefine `.aidoc/` as the project override layer. The new contract:
+  1. `.aidoc/profile.yaml` — adaptation knobs (unchanged)
+  2. `.aidoc/framework/` — symlink to shared framework (canonical path)
+  3. `.aidoc/project/` — project-specific overrides (same structure as framework/)
+  4. Agent discovery: read `.aidoc/project/` first, fall back to `.aidoc/framework/`
+
+  This follows software versioning conventions: projects customize without forking, overrides
+  are project-local, and the framework stays untouched. The root `framework/` symlink exists
+  for backward compatibility and will be removed when zero active files reference it.
+- **Consequences.** `framework/VERSION` `0.52.0 → 0.53.0`; `governance/aidoc/AIDOC.md` rewritten;
+  `README.md` four-tier model updated; `ADAPTATION.md` §10 added; `GATE-SPEC_FRAMEWORK.md`
+  reference fixed. The empty provenance subdirectories (`audit/`, `review/`, etc.) are no
+  longer part of the `.aidoc/` contract.
+- **Authority:** `governance/aidoc/AIDOC.md`; `governance/ADAPTATION.md` §10; `README.md` §Project layout.
 
 ---
 

@@ -55,6 +55,42 @@ Practical effect:
 - Element IDs must match the 4-segment hash format: `TYPE.NN.SS.xxxx`.
 - Document IDs must match the format: `TYPE-NN`.
 
+### SDD-First Implementation Order (§3.1.1)
+
+When a CHG modifies SDD documents, the **FIRST** implementation steps **MUST** be SDD document updates. The correct flow is:
+
+```
+CHG (authorize only)
+  ↓
+Phase 0: SDD Document Updates (FIRST — MANDATORY)
+  1. Archive current versions to the <CHG-ID> archive path (CHG archive convention)
+  2. Rewrite each SDD document as a clean new version (upper layers first: PRD → SPEC → IPLAN)
+  3. Update supersedes field with archive paths
+  4. Bump document_control.version
+  ↓
+Phase 1: IPLAN Creation/Update (AFTER SDD docs exist)
+  5. Create or update IPLAN with ALL code implementation steps
+     - The IPLAN MUST reference the NEW SDD document versions
+  ↓
+Phase 2: Code Implementation (driven by IPLAN)
+  6. Implement code per IPLAN specifications
+```
+
+**CRITICAL RULES:**
+- Code implementation steps belong in IPLAN, NOT in CHG.
+- SDD updates MUST happen BEFORE IPLAN creation (not "deferred").
+- The IPLAN MUST reference the NEW (updated) SDD versions.
+- If SDD updates are "deferred", the CHG is INCORRECT.
+- **No code may be written without an In-Progress IPLAN (IPLAN Gate — see §3.13).**
+
+**What Goes Where:**
+
+| Document | Contains | Does NOT Contain |
+|----------|----------|------------------|
+| **CHG** | Authorization, scope, SDD lifecycle steps (archive/rewrite/version bump), IPLAN creation/update | Detailed code implementation steps |
+| **IPLAN** | All code implementation steps, file manifest, execution commands, test cases | SDD document lifecycle (that's CHG's job) |
+| **SDD Documents** | Current requirements, specs, test definitions | Implementation details (that's IPLAN's job) |
+
 ## CHG creation checklist
 
 Before writing any CHG document, complete this checklist. Each item maps to a
@@ -155,6 +191,8 @@ Every CHG document MUST track its status through the full lifecycle. Status chan
 
 This is a HARD BLOCK that supersedes all other instructions. Before ANY write/edit call to code files or governance files:
 
+**Bootstrap exemption:** Creating or updating the authorizing CHG, SDD, and IPLAN documents themselves on the working branch, in CHG → SDD → IPLAN order, is the exempt path — the gate covers implementation files and non-governance edits.
+
 **Pre-write verification (MANDATORY):**
 
 1. An IPLAN exists in `docs/sdd/08_IPLAN/` for this work
@@ -168,6 +206,27 @@ This is a HARD BLOCK that supersedes all other instructions. Before ANY write/ed
 **Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
+
+### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync)
+
+**Status transitions are mandatory gates.** The IPLAN status lifecycle (`Draft → Approved → In Progress → Completed → Verified`) requires an explicit status update at each phase boundary before work on the next phase begins:
+
+| Transition | Gate | Rule |
+|------------|------|------|
+| `Draft → Approved` | Authorization gate | Must be set before any implementation planning. |
+| `Approved → In Progress` | Implementation gate | MUST be set BEFORE writing any code. |
+| `In Progress → Completed` | Completion gate | Set when all implementation is done and tests pass. |
+| `Completed → Verified` | Validation gate | Set after verification passes. |
+
+**Two failure modes (for reference):** `Draft` does NOT authorize implementation planning — planning on a `Draft` IPLAN skips the authorization gate. `Approved` does NOT authorize code — starting implementation on an `Approved` IPLAN without the `In Progress` transition skips the implementation gate.
+
+**file_manifest accuracy.** When an IPLAN is marked `Completed`, every file in its `file_manifest` with `status: DONE` must actually exist on disk and contain a real implementation (not a stub or mock). Spot-check DONE files for stub markers before flipping status.
+
+**Realtime manifest updates.** After implementing each file, the IPLAN `file_manifest` entry MUST be updated from `PENDING` to `DONE` (or `SKIPPED` with a note) as work progresses — never batch-updated at the end. A manifest that still reads `PENDING` after implementation is complete misstates progress.
+
+**CHG tracks IPLAN completion.** When an IPLAN authorized by a CHG is marked `Completed`, the CHG status MUST also advance to `Completed` (or at least `Implemented`). A CHG stuck at `In-Progress` after all its IPLANs are `Completed` violates the status lifecycle (§3.3).
+
+**SDD sync on IPLAN completion.** When an IPLAN is marked `Completed`, the corresponding SPEC and TDD documents MUST be checked against what was actually built — not what was originally planned. If implementation diverged from the spec, a CHG must be created and the SPEC/TDD rewritten as a new version. The status flip and the SPEC/TDD version check ship in the same change, so the SDD docs stay the current source of truth without requiring codebase comparison. The machine-checkable half of this rule is the `completion_spec_sync:` field on the IPLAN template, validated by CHG-L012 (warning).
 
 ### CHG Linter Usage Rules (§3.14)
 
@@ -256,6 +315,21 @@ The CHG linter works alongside:
 
 **Rule:** The linter does NOT replace the manual checklists. Run the linter AND complete the checklists. The linter catches structural violations; the checklists catch content quality.
 
+## Status Propagation (§4.1)
+
+When a downstream SDD layer document is started, the upstream document's status MUST be updated to `Approved`. Do not start the next layer if its upstream is not approved.
+
+**Propagation chain:**
+- Seed doc status → `Approved` when module doc generation starts.
+- Module doc status → `Approved` when its BRD layer starts.
+- BRD doc status → `Approved` when its PRD layer starts.
+
+This ensures the SDD chain reflects authoring progress — a `Draft` upstream means its downstream has not been started yet.
+
+**ADR convention:** ADRs use `Accepted` (not `Approved`) as their terminal status.
+
+**Worktree-based cascade authoring** follows the ordering invariants in [`WORKTREE_FLOW.md`](WORKTREE_FLOW.md) (worktree removal runs before branch deletion).
+
 ## EVAL Layer Governance
 
 ### EVAL-IPLAN 1:1 Mapping Rule
@@ -303,66 +377,6 @@ docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
 | EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
 | Test case (BDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.03.a7f3` |
 | Test case (TDD) | `EVAL.NN.SS.xxxx` | `EVAL.01.04.4d64` |
-
-**Rule**: One source per test case. Each test case maps to exactly one upstream element via `source_type` + `source_id`. Never mix BDD, TDD, EARS, or other sources in a single test case.
-
-### EVAL Traceability
-
-Each EVAL document traces to its owning IPLAN (1:1). The IPLAN traces to SPEC, TDD,
-BDD, and EARS. EVAL does not need to re-trace the full chain — it follows transitively
-through the IPLAN.
-
-```
-EVAL-{NN} → IPLAN-{NN} → SPEC-{NN} → TDD-{NN} → BDD-{NN} → EARS-{NN}
-```
-
-## EVAL Layer Governance
-
-### EVAL-IPLAN 1:1 Mapping Rule
-
-Each IPLAN owns exactly one EVAL document. The EVAL-NN number matches the IPLAN-NN
-number (EVAL-01 owns IPLAN-01, EVAL-02 owns IPLAN-02, etc.).
-
-### EVAL Version Coupling
-
-EVAL documents version with their owning IPLAN. When a CHG bumps the IPLAN version,
-the EVAL versions with it. The `document_control.iplan_version` field records which
-IPLAN version the EVAL covers.
-
-| What changes | What happens to EVAL |
-|---|---|
-| IPLAN code changes (same scope) | EVAL stays same version, new RPT cycle |
-| IPLAN scope changes (new files/features) | EVAL bumps version, archive old |
-| BDD/TDD upstream changes | EVAL bumps version if test cases change |
-
-### EVAL-RPT Immutability
-
-Evaluation reports (EVAL-RPT files) are immutable once written. They are snapshots
-of test execution — never modified after creation. If new tests are run, a new RPT
-file is created with an incremented cycle number.
-
-### EVAL Archival
-
-When a CHG bumps an EVAL version, the old EVAL document and its reports are archived
-to the CHG archive directory:
-
-```
-docs/sdd/09-CHG/archive/{CHG-ID}/10_EVAL/
-  EVAL-{NN}/
-    EVAL-{NN}.yaml                    # archived old version
-    reports/
-      EVAL-{NN}-RPT-*.yaml            # archived reports
-```
-
-### EVAL Naming Standards
-
-| Element | Format | Example |
-|---------|--------|---------|
-| EVAL directory | `EVAL-{NN}/` | `EVAL-01/` |
-| EVAL document | `EVAL-{NN}.yaml` | `EVAL-01.yaml` |
-| EVAL report | `EVAL-{NN}-RPT-{NNN}.yaml` | `EVAL-01-RPT-001.yaml` |
-| Test case (BDD) | `EVAL-{NN}.BDD-{NN}.TC-{NN}.{NN}` | `EVAL-01.BDD-01.TC-01.3` |
-| Test case (TDD) | `EVAL-{NN}.TDD-{NN}.{hash}` | `EVAL-01.TDD-01.4d64` |
 
 ### EVAL Traceability
 

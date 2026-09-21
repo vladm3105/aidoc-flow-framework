@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.54.0 |
 
 
 ## Overview

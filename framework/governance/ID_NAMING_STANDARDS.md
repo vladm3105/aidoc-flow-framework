@@ -188,6 +188,14 @@ confusing `ID03`). Element-ID uniqueness (`HASH01`) applies regardless of
 `id_state`, so distinct ordinals are required. `id_state` governs ID *stability*
 only — provisional elements are still subject to coverage and traceability gates.
 
+> **ID red-flags (manual-authoring checks).** Sections `00`/`01` never exist
+> in EARS/BDD references — any ID citing them is hallucinated, not mistyped
+> (linter: Rule 2 greps in `NOTICES.md`). When creating documents directly,
+> maintain a running set of assigned IDs and run `sort | uniq -d` before
+> finishing (NOTICES Rule 3). Before reusing an SDD ID from a prior session,
+> archive the old document first — never let two scopes share one ID
+> (NOTICES Rule 5).
+
 ### Element-ID exemptions (CLEANUP-PR-C item 13)
 
 Six of the ten layers (BRD, PRD, EARS, BDD, ADR, TDD) **MUST** carry

@@ -3,7 +3,7 @@ layer: 03_EARS
 lens: requirements_specialist
 weight: 35
 agent: requirements-analyst
-framework_spec_version: "0.53.3"
+framework_spec_version: "0.54.0"
 ---
 # requirements_specialist lens — EARS layer
 
@@ -80,6 +80,12 @@ Lines that introduce obligations not present in any PRD §9 row are
 scope-creep at the requirements layer; lines in the EARS document that
 no PRD §9 row requires are orphans that inflate test scope. Missing →
 P2 finding citing C5.
+
+**Lens note — pattern-tree check.** When a line's pattern choice looks
+wrong (e.g. `IF` guarding a steady state, `WHILE` guarding an error),
+walk the decision tree in the layer README (`03_EARS/README.md` §Pattern
+decision tree) top-down and cite the first-match outcome. A mismatch is a
+P2 finding citing C1; the tree is the evidence, not a sixth pattern.
 
 ## Beyond-checklist
 

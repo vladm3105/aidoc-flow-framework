@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.54.0 |
 
 
 `LAYER_REGISTRY.yaml` is the **authoritative, machine-readable definition** of
@@ -27,3 +27,16 @@ disagree, the registry wins.
 - The spec version is **not** stored here — it lives in `framework/VERSION`.
 - `derived_from` records the legacy lineage (`SDD v3.2`); see `plans/DECISIONS.md`
   D-0006.
+
+## Registering a new layer
+
+Register the layer in `LAYER_REGISTRY.yaml` **before** authoring any of its
+documents. The entry must carry `number`, `artifact`, `name`, `folder`,
+`extensions`, `required_tags`, `can_reference`, `error_prefix`, `optional`,
+`description`, `template`, and `downstream`. Then: bump
+`metadata.total_layers` (numbers stay dense 1..N), add the layer to exactly one
+`layer_groups` entry, extend `realizing_layers` when the layer realizes upstream
+elements, extend `c4_mapping` when applicable, update upstream layers'
+`downstream` fields, and document any new lint rule IDs in
+`governance/LINT_RULES.md`. The header comment in `LAYER_REGISTRY.yaml` is the
+checklist of record (lint rule REG01, advisory).

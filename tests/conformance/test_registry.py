@@ -44,6 +44,29 @@ class RegistryStructure(unittest.TestCase):
                 missing = REQUIRED_LAYER_KEYS - set(layer)
                 self.assertEqual(missing, set(), f"missing keys: {missing}")
 
+    def test_registration_checklist_header_present(self):
+        """REG01 companion: the registry carries its own new-layer checklist.
+
+        The header comment names every mandatory entry key plus the
+        total_layers / layer_groups / realizing_layers / c4_mapping /
+        downstream / LINT_RULES follow-ups, so a layer added without
+        registration has no excuse. Advisory prose — this test pins its
+        presence, not a lint verdict.
+        """
+        text = (FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml").read_text(
+            encoding="utf-8"
+        )
+        for token in (
+            "REGISTRATION CHECKLIST",
+            "total_layers",
+            "layer_groups",
+            "realizing_layers",
+            "c4_mapping",
+            "downstream",
+            "LINT_RULES.md",
+        ):
+            self.assertIn(token, text)
+
     def test_artifacts_in_canonical_order(self):
         self.assertEqual(
             [layer["artifact"] for layer in LAYERS],

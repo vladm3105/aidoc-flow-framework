@@ -2,6 +2,19 @@
 # Single source of truth for all layer definitions.
 # Authoritative machine-readable core — templates, READMEs, and the
 # conformance suite defer to this file.
+#
+# NEW-LAYER REGISTRATION CHECKLIST (mandatory before any document of a new
+# layer is authored). A layer entry MUST carry: number, artifact, name,
+# folder, extensions, required_tags, can_reference, error_prefix, optional,
+# description, template, downstream. Additionally:
+#   - bump metadata.total_layers and keep layer numbers dense 1..N;
+#   - add the layer to layer_groups (exactly one group per layer);
+#   - add to realizing_layers when the layer realizes upstream elements;
+#   - extend c4_mapping when applicable;
+#   - update upstream layers' downstream fields to include the new layer;
+#   - document new lint rule IDs in governance/LINT_RULES.md when the
+#     layer's template references them.
+# (Enforced by REG01, advisory; asserted in tests/conformance/test_registry.py.)
 
 metadata:
   framework: "Specification-Driven Development (SDD)"
@@ -12,7 +25,7 @@ metadata:
   last_updated: "2026-09-07"
   # framework_version tracks the version that produced this registry snapshot.
   # It is the canonical value platforms re-declare in FRAMEWORK_SPEC_VERSION.
-  framework_version: "0.53.3"  # synced from framework/VERSION
+  framework_version: "0.54.0"  # synced from framework/VERSION
 
 # Instance format: `extensions` is THE NORMATIVE AUTHORITY and is `.yaml` for all
 # ten layers. Every other spec surface states the value and cross-references this

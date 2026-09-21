@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.54.0 |
 
 
 ## Overview
@@ -56,6 +56,28 @@ Every pattern uses the canonical EARS response clause `THE [component] SHALL …
 stock EARS) supporting quantifiability. A genuinely multi-condition requirement
 *composes* these patterns (e.g. `WHILE [state], WHEN [event], THE … SHALL …`) —
 that is composition, not a sixth pattern.
+
+## Pattern decision tree
+
+When the pattern is not obvious, walk this tree top-down — first match wins:
+
+```text
+Is this a normal operating state?
+  → YES → WHILE (state-driven)
+  → NO → Is this triggered by a specific event?
+    → YES → WHEN (event-driven)
+    → NO → Is this an error/failure condition?
+      → YES → IF (unwanted behavior)
+      → NO → Is this a universal invariant?
+        → YES → THE-SHALL (ubiquitous)
+        → NO → Is this feature-gated?
+          → YES → WHERE (optional)
+```
+
+Common traps: a liveness check ("the service is healthy") is a normal state →
+`WHILE`, not `IF`; an unreachable dependency is an error → `IF`, not `WHILE`;
+a universal invariant ("all traffic flows through the gateway") → `THE-SHALL`,
+not `WHEN`.
 
 ## Element IDs
 

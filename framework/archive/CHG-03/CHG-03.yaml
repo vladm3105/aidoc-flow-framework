@@ -1,0 +1,203 @@
+# =============================================================================
+#  CHG-03: Framework 0.54.0 donor-hardening addons (b-local-privy → framework)
+# =============================================================================
+#  Plan: plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md (FINAL, Pass 3 clean)
+#  IPLAN: framework/archive/CHG-03/IPLAN-03.yaml (In Progress, authorizing)
+#  Gate: GATE-SPEC (change_source: spec), C2, minor
+# =============================================================================
+
+id: CHG-03
+title: "Port 17 donor-hardening addons (b-local-privy governance) into the spec + MINOR bump 0.53.3 → 0.54.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-20"
+  framework_version: "0.53.3"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-03"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-20T00:00:00Z"
+  date_approved: "2026-09-20T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance/registry/template/tooling originals v0.53.3 (framework/archive/CHG-03/)"
+    - "framework/VERSION 0.53.3 (framework/archive/CHG-03/VERSION)"
+    - "IPLAN-03 authorizing record (framework/archive/CHG-03/IPLAN-03.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Port the operational hardening learned in b-local-privy
+    .aidoc/project/governance/ (8 files, 1851 lines — frozen snapshot, do NOT
+    chase donor HEAD) into the engine-agnostic spec as 17 addons:
+    §3.1.1 What-Goes-Where table, §3.13 bootstrap exemption, SDD-sync on IPLAN
+    Completed (CHG-L012), DONE/status-gates/realtime-manifest bundle,
+    breaking-change block (IPLAN01), layer-registration checklist (REG01),
+    §4.1 upstream status propagation, delegation integrity greps, ID red-flags,
+    EARS pattern tree, TDD-SYNC A–E advisories, concurrency traps + SKIPPED
+    warning + scoped gitignore negation, new WORKTREE_FLOW.md, SELF_LEARNING
+    hardening, notices donor deltas, audit_fix IPLAN subtype, schema-verify
+    guidance. Ship the MINOR bump 0.53.3 → 0.54.0 with mechanical fanout.
+  why: |
+    The donor delta is checklists, gates, concurrency traps, and verification
+    commands that prevent measured rework (CHG-04 16 gaps, SPEC-09 18 fake IDs,
+    CHG-10/CHG-32 clobbers). The framework already owns the concepts; this CHG
+    lands the preventive mechanics.
+  trigger: |
+    plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md reached FINAL (3 passes +
+    OPS-0065 3-agent review folded) and authorizes this scope.
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "Governance"
+      artifacts: ["DOC_GOVERNANCE_CORE.md", "LINT_RULES.md", "NOTICES.md", "SELF_LEARNING.md", "TRACEABILITY.md", "ID_NAMING_STANDARDS.md", "DECISIONS.md", "WORKTREE_FLOW.md (new)"]
+      impact: "New sections/traps/checklists; all prose or advisory lint — no hard errors"
+    - layer: "Registry"
+      artifacts: ["LAYER_REGISTRY.yaml", "registry/README.md"]
+      impact: "Registration checklist comment + REG01 advisory + assertion"
+    - layer: "IPLAN"
+      artifacts: ["IPLAN-TEMPLATE.yaml", "08_IPLAN/README.md"]
+      impact: "New optional fields (completion_spec_sync, completion_gates, breaking_change, audit_fix subtype, schema guidance) — additive only"
+    - layer: "EARS"
+      artifacts: ["03_EARS/README.md", "playbooks/03_EARS/requirements_specialist.md"]
+      impact: "Pattern decision tree appendix + lens note"
+    - layer: "Tooling"
+      artifacts: ["sdd_doc_lint/chg_lint.py", "sdd_doc_lint/__main__.py", ".gitignore"]
+      impact: "CHG-L012 warning + SKIPPED-vs-clean warning + scoped archive negation"
+    - layer: "08_IPLAN"
+      artifacts: ["IPLAN-03"]
+      impact: "Authorizing IPLAN for this change (IPLAN-03 In Progress, file_manifest covers all targets)"
+
+  cascade_direction: null  # No artifact cascade — framework self-change only
+  risk_level: Medium
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive current governance/registry/template/tooling originals to framework/archive/CHG-03/"
+      phase: "sdd_lifecycle"
+      artifact: "Governance docs, registry, IPLAN template, lint tooling"
+      archive_path: "framework/archive/CHG-03/"
+      new_version: "0.54.0"
+      current_version: "0.53.3"
+      status: Completed
+    - step: "Rewrite governance/registry/template/tooling docs per the 17 addons (plan Steps 1–7)"
+      phase: "sdd_lifecycle"
+      artifact: "Governance docs, registry, IPLAN template, lint tooling"
+      archive_path: "framework/archive/CHG-03/"
+      new_version: "0.54.0"
+      current_version: "0.53.3"
+      status: In Progress
+    - step: "Bump framework/VERSION 0.53.3 → 0.54.0 + mechanical fanout + GD-29 + changelogs (plan Step 8)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION"
+      archive_path: "framework/archive/CHG-03/VERSION"
+      new_version: "0.54.0"
+      current_version: "0.53.3"
+      status: Pending
+    - step: "Create IPLAN-03 with all code/tooling implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-03"
+      status: Completed
+
+  artifacts_modified:
+    - id: "IPLAN-03 (authorizing IPLAN: framework/archive/CHG-03/IPLAN-03.yaml)"
+      file: "framework/archive/CHG-03/IPLAN-03.yaml"
+      change_type: "created"
+    - id: "GOV-DOCS"
+      file: "framework/governance/DOC_GOVERNANCE_CORE.md, framework/governance/LINT_RULES.md, framework/governance/NOTICES.md, framework/governance/SELF_LEARNING.md, framework/governance/TRACEABILITY.md, framework/governance/ID_NAMING_STANDARDS.md, framework/governance/DECISIONS.md, framework/AI_ASSISTANT_RULES.md"
+      change_type: "modified"
+    - id: "WORKTREE-FLOW"
+      file: "framework/governance/WORKTREE_FLOW.md"
+      change_type: "created"
+    - id: "REGISTRY"
+      file: "framework/registry/LAYER_REGISTRY.yaml, framework/registry/README.md"
+      change_type: "modified"
+    - id: "IPLAN-TEMPLATE"
+      file: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml, framework/layers/08_IPLAN/README.md"
+      change_type: "modified"
+    - id: "EARS"
+      file: "framework/layers/03_EARS/README.md, framework/playbooks/03_EARS/requirements_specialist.md"
+      change_type: "modified"
+    - id: "TOOLING"
+      file: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/__main__.py, .gitignore"
+      change_type: "modified"
+    - id: "VERSION-FANOUT"
+      file: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md"
+      change_type: "modified"
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint green on this file"
+      result: Pending
+      method: "python sdd_doc_lint/chg_lint.py framework/archive/CHG-03/CHG-03.yaml"
+    - check: "conformance suite green"
+      result: Pending
+      method: "python -m unittest discover -s tests/conformance"
+    - check: "acceptance deterministic green (no silent golden churn)"
+      result: Pending
+      method: "python -m unittest discover -s tests/acceptance/deterministic"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only)
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  approval_date: null
+  conditions: []
+
+# =============================================================================
+# Section 7: Rollback Plan (C2/C3)
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "Revert the 0.54.0 commit(s) on the feature branch before PR merge"
+    - "Re-run conformance + acceptance to confirm 0.53.3 baseline (354 OK skipped=1)"
+  estimated_effort: "Low — single-branch revert, no downstream consumers yet"
+
+# =============================================================================
+# Section 8: Emergency Change (conditional)
+# =============================================================================
+
+emergency_change: null

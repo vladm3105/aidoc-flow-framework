@@ -6,6 +6,30 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [0.54.0] — 2026-09-20
+
+### Added — 17 donor-hardening addons ported into the spec (CHG-03, GD-29, C2 MINOR)
+
+- SDD-first implementation order table (§3.1.1), §3.13 bootstrap exemption, IPLAN Lifecycle
+  bundle (status-gate table, failure modes, DONE-must-exist, realtime manifest, CHG-tracks-IPLAN,
+  SDD-sync-on-completion with `completion_spec_sync` + CHG-L012), `## Status Propagation (§4.1)`,
+  and `WORKTREE_FLOW.md` pointer in `DOC_GOVERNANCE_CORE.md` (twin EVAL blocks deduped first)
+- `completion_gates` + `completion_spec_sync` blocks, `breaking_change` block, `audit_fix`
+  fourth subtype, and realtime-manifest rules in `IPLAN-TEMPLATE.yaml`; `## IPLAN Subtypes`
+  in `08_IPLAN/README.md`
+- New-layer registration checklist in `LAYER_REGISTRY.yaml` + `registry/README.md`;
+  `REG01`, `CHG-L012`, `IPLAN01`, `TDD-SYNC-A..E` catalog rows in `LINT_RULES.md` (all advisory)
+- CHG-L012 warning check in `chg_lint.py`; SKIPPED-vs-clean warning in `__main__.py`;
+  scoped governed-archive negation in `.gitignore`
+- EARS pattern decision tree in `03_EARS/README.md` + lens note in `requirements_specialist.md`;
+  TDD-SYNC-E index-sync notes in `TDD-00_index` + `IPLAN-00_index` templates
+- Delegation grep validation, genericized Rule 5, `## Concurrency traps`, advisory
+  `TDD-SYNC-A..E` rename in `NOTICES.md`; ID red-flag box in `ID_NAMING_STANDARDS.md`;
+  §7.4 feedback-submit contract in `SELF_LEARNING.md`; delegation/concurrency pointers
+  in `AI_ASSISTANT_RULES.md`
+- NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (worktree-remove-before-branch-delete order guard)
+- `framework/VERSION` bumped from `0.53.3` to `0.54.0` with mechanical pin sweep
+
 ## [0.53.2] — 2026-10-23
 
 ### Fixed — CHG template phase enforcement, governance sync, AI_ASSISTANT_RULES fix

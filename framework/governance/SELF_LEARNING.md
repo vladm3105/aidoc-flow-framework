@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.53.2 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
@@ -182,6 +182,25 @@ This ensures governance changes are tracked in issue trackers, not just in
 files. The framework maintainer can see what project-level fixes should be
 upstreamed.
 
+### Feedback-submit contract (§7.4 hardening)
+
+Every learning cycle that modifies a governed document MUST close the loop in
+the same cycle — an unsubmitted governance change is invisible to every
+consumer outside this session:
+
+1. Modified a framework file (`framework/**`)? File a tracking issue on the
+   framework repo carrying the same evidence a cross-repo report needs
+   (reproduction at `file:line`, blast radius run not assumed, suggested fix).
+2. Modified a project governance file? File the audit-trail issue on the
+   project repo.
+3. Read the published artifact back (non-zero body length is the only proof
+   it published) and record the issue number in
+   `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` — full path, never a bare
+   filename — so a future session finds the upstream thread instead of
+   rediscovering the defect as a fresh bug.
+4. Session-start duty: review injected learnings AND the open feedback items
+   in `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` before planning work.
+
 ## Verification Checklist
 
 After running a learning cycle (`/self-learn`), verify:
@@ -279,7 +298,7 @@ Self-learning feeds into notices.md by:
 
 ## Cross-References
 
-- `FRAMEWORK_FEEDBACK_LOG.md` — Framework-level feedback pipeline
+- `framework/governance/FRAMEWORK_FEEDBACK_LOG.md` — Framework-level feedback pipeline (full path — never a bare filename)
 - `DOC_GOVERNANCE_CORE.md` — Governance principles
 - `NOTICES.md` — Issue registry and prevention rules
 - `DECISION_WORKFLOW.md` — Authorship boundaries

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.3 |
+| Framework Version | 0.53.2 |
 
 
 ## C4 Model Position
@@ -51,6 +51,24 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).
 - **Code inventory for audit trail** — one entry per `file_manifest` path, seeded `planned` at Draft, then set to `created` / `modified` with session attribution and verification status.
 - **Verified status is immutable** — once an IPLAN reaches Verified, it cannot be changed. CHG required for modifications.
+
+## IPLAN Subtypes
+
+`document_control.subtype` selects which section set an IPLAN carries
+(`code_build | deploy | combined | audit_fix`; default `combined` for
+pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
+breaking instance-format change; a future `devops` direction (infrastructure +
+cutover under one umbrella) is noted but not adopted.
+
+- **code_build** — new features from SPEC/TDD. File order: TDD test-first.
+- **deploy** — cutover with rollback/smoke/canary/observability.
+- **combined** — both sets (default).
+- **audit_fix** — audit-driven fixes, ordered by severity (P0→P1→P2), not by
+  TDD. Upstream is audit findings, so `source_spec` names the findings
+  reference, `file_manifest[].tdd_ref` is not used, each entry carries
+  `severity: P0/P1/P2/P3`, and `traceability.upstream` cites
+  `audit_references`. Use for integration-readiness, security-review, and
+  code-review findings. Do NOT use for new SPEC features (use `code_build`).
 
 ## IPLAN Baseline
 
