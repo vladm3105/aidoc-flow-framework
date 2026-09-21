@@ -47,6 +47,12 @@ coverage.xml
 # (tools/build-plugin-mirror.sh, PLUGIN-MARKETPLACE P2), never committed here.
 dist/
 
+# Governed CHG archives under framework/archive/CHG-*/ must stay tracked
+# (donor §3.6b trap: a blanket archive/ rule would swallow them — never add one).
+# The negation below is a no-op today (no rule ignores them) and guards the
+# governed scope only — never broaden to !archive/**.
+!framework/archive/CHG-*/
+
 # --- aidoc-flow-ci canon baseline (PLAN-002 §10.1) ---
 .claude/
 .review/

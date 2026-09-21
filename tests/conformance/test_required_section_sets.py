@@ -56,7 +56,7 @@ EXPECTED = {
     "ADR": 12,
     "SPEC": 8,
     "TDD": 7,
-    "IPLAN": 2,
+    "IPLAN": 3,
 }
 
 # The section NAMES, not just how many. The count pin alone cannot see an
@@ -152,12 +152,12 @@ SECTIONS: dict[str, frozenset] = {
             "tdd_order",
             "test_cases",
             "test_mapping",
-            "test_pyramid",
+            "test_strategy",
             "thresholds",
             "traceability",
         ]
     ),
-    "IPLAN": frozenset(["document_control", "traceability"]),
+    "IPLAN": frozenset(["document_control", "tdd_consistency", "traceability"]),
 }
 
 # The DECLARED half — `metadata.total_sections`, the numbered-section count.

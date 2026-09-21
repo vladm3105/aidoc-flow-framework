@@ -1,7 +1,7 @@
 ---
 title: Learned Lessons & Project Knowledge
 version: 1.0
-source: trading project sessions (tradegent_hermes, b-local-privy)
+source: trading project sessions (consumer project A, consumer project B)
 last_updated: 2026-10-06
 ---
 
@@ -23,7 +23,7 @@ no tests implemented.
 
 ### Scope
 
-- All 9 TDDs, 177 test cases across the tradegent_hermes project.
+- All 9 TDDs, 177 test cases across the consumer trading project.
 - 62 status mismatches, 53 missing Go unit tests, 13 missing Python tests.
 
 ### Root Cause

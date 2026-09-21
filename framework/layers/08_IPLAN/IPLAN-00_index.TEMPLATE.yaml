@@ -5,6 +5,10 @@
 # Dynamic registry — updated every time an IPLAN is created, versioned,
 # moved between statuses, deferred, or completed.
 #
+# Index-sync rule (TDD-SYNC-E): this index is the SOURCE OF TRUTH for IPLAN
+# statuses. When an IPLAN status changes, TDD-00_index must be updated in the
+# same change — the two indexes must never disagree about an IPLAN's status.
+#
 # For rules governing this directory (naming, status semantics, update triggers),
 # see 08_IPLAN/README.md — the authoritative rule source.
 

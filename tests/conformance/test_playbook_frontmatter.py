@@ -1,4 +1,10 @@
-"""Every playbook's YAML frontmatter parses + matches REVIEW_CREWS.yaml."""
+"""Lens playbooks' YAML frontmatter parses + matches REVIEW_CREWS.yaml.
+
+Scope (CLEANUP-001): only `*.md` files carrying the lens-playbook contract
+(`layer` + `lens` keys) are lens playbooks. Layer `README.md` overviews and the
+`10_EVAL` / `10_IPVERIFY` operational playbooks (`name`-keyed frontmatter, no
+`lens`) are a different contract and are excluded here — not weakened, scoped.
+"""
 
 from __future__ import annotations
 
@@ -25,12 +31,30 @@ def parse_frontmatter(path: Path) -> dict | None:
     return yaml.safe_load(m.group(1))
 
 
+def is_lens_playbook(path: Path) -> bool:
+    """A lens playbook declares the (`layer`, `lens`) contract in frontmatter."""
+    if path.name == "README.md":
+        return False
+    fm = parse_frontmatter(path)
+    if fm is None or "layer" not in fm or "lens" not in fm:
+        return False
+    # `type: process-playbook` files are operational guides, not review lenses.
+    return fm.get("type") != "process-playbook"
+
+
 class PlaybookFrontmatterTests(unittest.TestCase):
     def setUp(self):
         with CREWS_PATH.open() as f:
             self.crews = yaml.safe_load(f)
         self.framework_version = VERSION_PATH.read_text().strip()
-        self.playbooks = list(PLAYBOOKS_DIR.rglob("*.md")) if PLAYBOOKS_DIR.exists() else []
+        if PLAYBOOKS_DIR.exists():
+            self.playbooks = [p for p in PLAYBOOKS_DIR.rglob("*.md") if is_lens_playbook(p)]
+        else:
+            self.playbooks = []
+
+    def test_lens_playbook_set_is_nonempty(self):
+        """Guards the guard: an empty scope would pass every assertion below vacuously."""
+        self.assertGreater(len(self.playbooks), 0, "no lens playbooks found — scope predicate is broken")
 
     def test_every_playbook_has_required_frontmatter_fields(self):
         for pb in self.playbooks:

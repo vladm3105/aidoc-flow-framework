@@ -335,193 +335,52 @@ class LayerReadmeStatesTheRule(unittest.TestCase):
 
 
 class PlatformSurfacesAgree(unittest.TestCase):
-    """Both engines state the same rule. #621's premise was that they did not."""
+    """Retired with the platforms (CLEANUP-001): both engines are gone.
 
-    def _skill_docs(self):
-        return sorted(PLUGIN_SKILLS.glob(IPLAN_SKILL_GLOB))
+    #621's premise was that the two engines disagreed; with no engines, the
+    template rule in DraftSessionsAreEmpty above is the surviving contract.
+    """
 
-    def test_every_iplan_skill_is_scanned(self) -> None:
-        dirs = sorted(p.name for p in PLUGIN_SKILLS.glob(IPLAN_SKILL_DIRS) if p.is_dir())
-        self.assertEqual(
-            len(dirs),
-            EXPECTED_IPLAN_SKILLS,
-            f"expected {EXPECTED_IPLAN_SKILLS} doc-iplan* skills, found {dirs} — update "
-            "EXPECTED_IPLAN_SKILLS deliberately, so a new skill cannot escape the rules below",
+    def test_platform_surfaces_are_gone(self) -> None:
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the two-engine agreement scan with it",
         )
-        self.assertTrue(self._skill_docs(), "the markdown glob matched nothing")
-
-    def test_no_surface_instructs_seeding_a_session(self) -> None:
-        """The negative. Covers BOTH engines: #621's live disagreement was that
-        Platform B seeded while Platform A did not."""
-        docs = [(d, d.relative_to(PLUGIN_SKILLS)) for d in self._skill_docs()]
-        docs += [(h, h.relative_to(REPO_ROOT)) for h in HERMES_CREATION_SURFACES]
-        for doc, rel in docs:
-            for sentence in _units(doc.read_text(encoding="utf-8")):
-                if "session" not in sentence.lower():
-                    continue
-                match = _SEEDED_SESSION.search(sentence)
-                if not match or _exempt(sentence, match):
-                    continue
-                with self.subTest(doc=str(rel)):
-                    self.fail(
-                        f"{rel} instructs seeding/populating a session at authoring "
-                        f"time: {sentence!r} — a Draft carries `sessions: []` (GD-26/#621)"
-                    )
-
-    def test_every_iplan_skill_states_the_empty_draft(self) -> None:
-        """The positive half. A negative rule proves only that a surface stopped
-        saying the old thing; GD-26 claims all four say the new one."""
-        for skill in sorted(PLUGIN_SKILLS.glob(f"{IPLAN_SKILL_DIRS}/SKILL.md")):
-            with self.subTest(skill=skill.parent.name):
-                body = _normalize(skill.read_text(encoding="utf-8"))
-                self.assertIn(
-                    "`sessions: []`",
-                    body,
-                    f"{skill.parent.name} never states the empty Draft handoff — GD-26 "
-                    f"says all {EXPECTED_IPLAN_SKILLS} IPLAN skills move with the template",
-                )
-
-    def test_hermes_creation_surfaces_state_the_empty_draft(self) -> None:
-        for doc in HERMES_CREATION_SURFACES:
-            with self.subTest(doc=doc.name):
-                body = _normalize(doc.read_text(encoding="utf-8")).lower()
-                self.assertRegex(
-                    body,
-                    r"empty sessions array|`sessions: \[\]`|sessions array \(empty\)",
-                    f"{doc.name} must state the empty-at-Draft handoff; #621's premise "
-                    "was that the two engines disagreed about it",
-                )
 
 
 class NonEmptySectionRuleIsDraftAware(unittest.TestCase):
-    """Three surfaces demand every required section be non-empty/populated. With
-    `sessions: []` now the correct Draft value of one, each needs the carve-out —
-    otherwise an auditor fails an IPLAN the author was told to write, which is the
-    failure GD-25 explicitly designed against. The plan found this repair had
-    reached ONE of the three."""
+    """Retired with the platforms (CLEANUP-001): the three non-empty/populated
+    surfaces were two plugin skills and one Hermes prompt. The Draft carve-out
+    lives in the template guidance itself (EMPTY AT DRAFT)."""
 
-    SURFACES = (
-        (PLUGIN_SKILLS / "doc-iplan-audit" / "SKILL.md", "present and non-empty"),
-        (PLUGIN_SKILLS / "doc-iplan" / "SKILL.md", "present and non-empty"),
-        (
-            HERMES / "prompts" / "templates" / "creation" / "UCC_PROMPT_IPLAN.md",
-            "present and populated",
-        ),
-    )
-
-    def test_each_non_empty_rule_carries_the_draft_carve_out(self) -> None:
-        for path, marker in self.SURFACES:
-            rel = path.relative_to(REPO_ROOT)
-            body = _normalize(path.read_text(encoding="utf-8"))
-            with self.subTest(surface=str(rel)):
-                self.assertIn(
-                    marker,
-                    body,
-                    f"{rel} no longer states '{marker}' — if the rule moved, move this "
-                    "pin with it rather than deleting the coverage",
-                )
-                # Bound to the marker's OWN unit. A 400-character window let an
-                # unrelated checklist bullet 373 characters away ("Session Handoff
-                # present — `sessions: []` at Draft") satisfy this for
-                # `doc-iplan/SKILL.md`, so deleting that file's actual carve-out
-                # stayed green. Every occurrence is checked, not only the first.
-                found = [m.start() for m in re.finditer(re.escape(marker), body)]
-                self.assertTrue(found, f"{rel}: marker vanished")
-                for index in found:
-                    unit = _unit_at(body, index)
-                    self.assertRegex(
-                        unit,
-                        r"`sessions: \[\]`",
-                        f"{rel}'s '{marker}' rule has no Draft carve-out in its own "
-                        "bullet. A Draft's `session_handoff` carrying `sessions: []` "
-                        "satisfies it; without this an auditor fails what the author "
-                        "was told to write",
-                    )
+    def test_platform_surfaces_are_gone(self) -> None:
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the carve-out scan with it",
+        )
 
 
 class GD25GuardIsNotDisarmed(unittest.TestCase):
-    """⚠️ Adding a *correct* prohibition sentence to a doc-iplan skill can silently
-    DISARM ``test_iplan_code_inventory_lifecycle``'s two negative rules.
+    """Retired with the platforms (CLEANUP-001): the scanned skills are gone.
 
-    ``_PROHIBITION`` there is applied per-**sentence**, and its ``_normalize``
-    collapses a markdown table with no ``.``+whitespace into ONE sentence —
-    ``doc-iplan-fixer``'s Fix-Phases table is a single ~1,900-character
-    "sentence" carrying ``code_inventory`` twice. One exemption word anywhere in
-    it exempts the whole table, and the suite stays green *because nothing
-    happened*.
-
-    Measured on ``main`` before GD-26's edits: 7 ``code_inventory``-bearing
-    sentences across the four skills, **0** exempt. This pins that.
+    The disarm hazard (per-sentence prohibition + table collapsing) is recorded
+    in GD-26's Guard paragraph for any future skill tree.
     """
 
-    def test_no_code_inventory_sentence_is_prohibition_exempt(self) -> None:
-        from test_iplan_code_inventory_lifecycle import (  # noqa: PLC0415
-            _PROHIBITION as GD25_PROHIBITION,
-        )
-        from test_iplan_code_inventory_lifecycle import (  # noqa: PLC0415
-            _sentences as gd25_sentences,
-        )
-
-        exempt: list[str] = []
-        total = 0
-        for skill in sorted(PLUGIN_SKILLS.glob(f"{IPLAN_SKILL_DIRS}/SKILL.md")):
-            for sentence in gd25_sentences(skill.read_text(encoding="utf-8")):
-                if "code_inventory" not in sentence:
-                    continue
-                total += 1
-                if GD25_PROHIBITION.search(sentence):
-                    exempt.append(f"{skill.parent.name}: {sentence[:120]}…")
-        self.assertEqual(
-            total,
-            MEASURED_CODE_INVENTORY_SENTENCES,
-            f"expected {MEASURED_CODE_INVENTORY_SENTENCES} `code_inventory`-bearing "
-            f"sentences across the {EXPECTED_IPLAN_SKILLS} IPLAN skills, found {total}. "
-            "A floor of one-per-skill is satisfied by `doc-iplan` alone, so it pins "
-            "nothing; re-measure and update this constant deliberately",
-        )
-        self.assertEqual(
-            exempt,
-            [],
-            "a `code_inventory` sentence is now exempt from GD-25's negative rules "
-            "via its per-sentence `_PROHIBITION` escape, so those rules no longer "
-            "scan it. Give each prohibition clause its own sentence, terminated by "
-            f"`.` + whitespace. Offenders: {exempt}",
+    def test_platform_skills_are_gone(self) -> None:
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the disarm guard with it",
         )
 
 
 class GD26GuardIsNotDisarmed(unittest.TestCase):
-    """This guard installs the SAME hazard it polices for GD-25, so it polices it
-    for itself too.
+    """Retired with the platforms (CLEANUP-001): the scanned surfaces are gone."""
 
-    ``test_no_surface_instructs_seeding_a_session`` skips a match when an
-    exemption fires. `_normalize` collapses ``doc-iplan-fixer``'s Fix-Phases table
-    into ONE 1,922-character "sentence", and THIS change put ``sessions: []`` into
-    that table — which, before `_exempt` was windowed, made the whole table
-    permanently exempt. Mutation testing dropped a full seed-a-session instruction
-    into it and the suite stayed green.
-
-    Windowing fixes that instance. This pins the CLASS: any sentence carrying the
-    §5 carrier whose match is exempt is counted, and the count is a measured
-    constant. A new exemption then has to be made deliberately, not inherited from
-    a token 1,500 characters away.
-    """
-
-    def test_exempt_carrier_sentences_match_the_measured_baseline(self) -> None:
-        exempt: list[str] = []
-        docs = list(PLUGIN_SKILLS.glob(IPLAN_SKILL_GLOB)) + list(HERMES_CREATION_SURFACES)
-        for doc in sorted(docs):
-            for sentence in _units(doc.read_text(encoding="utf-8")):
-                match = _SEEDED_SESSION.search(sentence)
-                if match and _exempt(sentence, match):
-                    exempt.append(
-                        f"{doc.name}: {sentence[max(0, match.start() - 40) : match.end() + 40]}"
-                    )
-        self.assertEqual(
-            len(exempt),
-            MEASURED_EXEMPT_CARRIER_SENTENCES,
-            "the number of exempted seed-carrier sentences moved. Each one is a "
-            "region the negative rule no longer scans, so a rise must be a "
-            "deliberate re-measurement rather than a side effect. Found:\n  " + "\n  ".join(exempt),
+    def test_platform_surfaces_are_gone(self) -> None:
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the exempt-carrier baseline with it",
         )
 
 

@@ -278,11 +278,14 @@ execution_plan:
 
 traceability:
   upstream:
-    iplan: "IPLAN-NN"
-    spec: "SPEC-NN"
-    tdd: ["TDD-NN"]
-    bdd: ["BDD-NN"]
-    ears: ["EARS-NN"]
+    ears_references:
+      - "@ears: EARS.NN.03.xxxx"
+    bdd_references:
+      - "@bdd: BDD.NN.03.xxxx"
+    tdd_references:
+      - "@tdd: TDD.NN.SS.xxxx"  # element-level (GD-03); pipe-delimit several
+    iplan_references:
+      - "@iplan: IPLAN-NN"  # document-level (SPEC/IPLAN exempt, GD-03)
   downstream:
     - type: EVAL-RPT
       description: "Evaluation reports in EVAL-{NN}/reports/"

@@ -13,7 +13,6 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 
 ## Document Control
-
 | Field | Value |
 |-------|-------|
 | Version | 1.0 |
@@ -24,7 +23,89 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
-## GD-25 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
+## GD-29 — Port 17 donor-hardening addons into the spec (CHG-03, 0.54.0 MINOR)
+
+- **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.3 → 0.54.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** A sibling project's governed `.aidoc/` directory (frozen to `/tmp/bprivy-gov/`,
+  8 files, 1851 lines — do NOT chase donor HEAD) carried 17 hardening addons the framework
+  spec lacked. Ranked P0–P2 in `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md` (FINAL, Pass 3
+  clean), implemented under `framework/archive/CHG-03/` (CHG-03 + IPLAN-03, subtype `combined`).
+- **Decision:** Land all 17 addons, genericized (no donor literals — Collector/OTel/Go-service
+  tokens, Atlas/Privy names, mimocode paths, `docs/sdd/` layouts stay donor-local):
+  1. `DOC_GOVERNANCE_CORE.md` gains the SDD-first implementation order table (§3.1.1),
+     the §3.13 bootstrap exemption, the IPLAN Lifecycle bundle (status-gate table, failure
+     modes, DONE-must-exist, realtime manifest, CHG-tracks-IPLAN, SDD-sync-on-completion
+     with `completion_spec_sync` + CHG-L012 pointer), `## Status Propagation (§4.1)`, and the
+     `WORKTREE_FLOW.md` pointer — after deduping the twin EVAL blocks (canonical
+     `EVAL.NN.SS.xxxx` survives).
+  2. `IPLAN-TEMPLATE.yaml` gains `completion_gates` + `completion_spec_sync` blocks
+     (`spec_checked`/`tdd_checked`/`diverged`/`chg_ref`), `breaking_change` block, realtime
+     manifest update + DONE-must-exist rules, `audit_fix` as a fourth subtype (`combined`
+     stays the backward-compat default per Decision F), and schema-artifact guidance;
+     `08_IPLAN/README.md` gains `## IPLAN Subtypes`.
+  3. `LAYER_REGISTRY.yaml` + `registry/README.md` gain the new-layer registration checklist;
+     `LINT_RULES.md` gains `REG01` (warning-advisory), `CHG-L012` (completion-sync warning),
+     `IPLAN01` (breaking-change advisory), and `TDD-SYNC-A..E` (bidirectional status sync,
+     all warning-advisory); `tests/conformance/test_registry.py` pins the checklist header.
+  4. `sdd_doc_lint/chg_lint.py` gains CHG-L012 (warns on Completed IPLANs whose
+     `completion_spec_sync` does not attest `spec_checked`/`tdd_checked`, or whose `diverged`
+     lacks `chg_ref`; resolves CHG `file:` paths CWD-first); `sdd_doc_lint/__main__.py`
+     warns that SKIPPED paths were not checked; `.gitignore` gains the scoped
+     governed-archive negation (never broad `!archive/**`).
+  5. `03_EARS/README.md` gains the pattern decision tree (WHILE→WHEN→IF→THE-SHALL→WHERE,
+     first-match-wins); `requirements_specialist.md` gains the pattern-tree lens note;
+     `TDD-00_index.TEMPLATE.md` + `IPLAN-00_index.TEMPLATE.yaml` gain the TDD-SYNC-E
+     index-sync source-of-truth notes.
+  6. `NOTICES.md` gains post-delegation grep validation (Rule 1–2 harden), the genericized
+     Rule 5 (`<project>/sdd/`, `<CHG-ID>`), `## Concurrency traps`, the advisory
+     `TDD-SYNC-A..E` enforcement rename, and Issue 5–6 grep one-liners;
+     `ID_NAMING_STANDARDS.md` gains the manual-authoring red-flag box (appended OUTSIDE the
+     digest-pinned lines — no re-pin); `SELF_LEARNING.md` gains the §7.4 feedback-submit
+     contract (issue-per-scope, read-back verification, full-path
+     `framework/governance/FRAMEWORK_FEEDBACK_LOG.md`); `AI_ASSISTANT_RULES.md` gains the
+     delegation/concurrency pointers + §3.13 restatement.
+  7. NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (generic git/gh halves only; the
+     worktree-remove-before-branch-delete order guard is load-bearing); `TRACEABILITY.md`
+     §4.1 cross-ref appended OUTSIDE the digest-pinned bullet (anchor never edited).
+- **Consequences.** `framework/VERSION` `0.53.3 → 0.54.0`; mechanical pin sweep
+  (`framework_spec_version`, `framework_version`, `| Framework Version |` rows);
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.54.0]` entries.
+- **Authority:** `plans/FRAMEWORK-0.54.0-DONOR-ADDONS-PLAN.md`; `framework/archive/CHG-03/CHG-03.yaml`;
+  `framework/governance/DOC_GOVERNANCE_CORE.md` §3.1.1/§3.13/§4.1.
+
+---
+
+## GD-27 — CHG archive lifecycle is lint-enforced; archive scope covers every modified SDD layer (#652)
+
+- **Status:** Accepted — 2026-09-20 · **SemVer:** framework `0.53.2 → 0.53.3` (PATCH),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** #652 proved `chg_lint.py` (L001–L005 only) green-lighted a CHG with 20× null
+  `archive_path` / null `new_version`, empty `supersedes`, and no `archive/CHG-XX/` directory.
+  The §3.4.1 C16–C20/D21/D22 rules existed in prose only. Separately, `09_CHG/README.md`
+  limited the archive convention to `06_SPEC` / `07_TDD` / `08_IPLAN`, while real CHGs also
+  modify `03_EARS` / `04_BDD`.
+- **Decision:**
+  1. `sdd_doc_lint/chg_lint.py` gains CHG-L006–L011 (sdd_lifecycle completeness, entry
+     metadata with null-archive rejection on non-IPLAN-create steps, CHG-ID archive-path
+     convention, version-bump check, supersedes completeness, cited EARS/BDD ID existence
+     at warning level). The former `scripts/chg_lint.py` duplicate is removed; the canonical
+     copy is `sdd_doc_lint/chg_lint.py` (`python -m sdd_doc_lint.chg_lint`).
+  2. The archive convention covers every modified SDD layer
+     (`01_BRD`–`08_IPLAN`), not only the downstream design layers.
+  3. Grandfathering: CHGs merged before this decision (e.g. CHG-22/23/24-style docs with null
+     lifecycle metadata) are historical record and are not re-linted; every new CHG must pass
+     L006–L011.
+- **Consequences.** `framework/VERSION` `0.53.2 → 0.53.3`; `09_CHG/README.md` archive scope
+  widened; `DOC_GOVERNANCE_CORE.md` §3.14 documents L006–L011 and the canonical linter path.
+- **Authority:** `framework/governance/DOC_GOVERNANCE_CORE.md` §3.4.1 C16–C20/D21–D22;
+  `framework/layers/09_CHG/README.md` CHG Archive Convention.
+
+---
+
+## GD-28 — `.aidoc/` redefined as project override layer with `.aidoc/project/` for project-specific overrides
 
 - **Status:** Accepted — 2026-09-07 · **SemVer:** framework `0.52.0 → 0.53.0` (MINOR),
   change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
@@ -48,6 +129,295 @@ Newest first. Timestamps are ISO 8601 UTC.
   reference fixed. The empty provenance subdirectories (`audit/`, `review/`, etc.) are no
   longer part of the `.aidoc/` contract.
 - **Authority:** `governance/aidoc/AIDOC.md`; `governance/ADAPTATION.md` §10; `README.md` §Project layout.
+
+---
+
+## GD-26 — A Draft IPLAN's §5 `session_handoff.sessions` is EMPTY; the §6 seed is derived, a session seed would be fabricated
+
+- **Status:** Accepted — 2026-09-04 · **SemVer:** framework `0.50.0 → 0.51.0` (MINOR),
+  change-level **C2**. One motion: the shipped §5 value becomes `sessions: []` and the worked
+  entry moves into `_guidance` as an append example. **No key is added and none is removed**,
+  so an IPLAN already carrying sessions stays valid; `major ⇒ C3` is one-directional per
+  GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human sign-off
+  per GATE-SPEC.
+- **Issues:** #621 (`Origin: review`) · discharges the §5 analogue GD-25 deferred by name
+- **GATE-SPEC-W002 (parity):** both platforms track `0.51.0`, and **both move**. Platform B's
+  `doc-iplan` instructed seeding the handoff at Draft; Platform A's IPLAN creation prompt was
+  already right about the Draft shape, **but its orchestrator skill was not** — under "For
+  IPLAN creation, enforce:" it required carrying *previous session state*, which is this
+  defect on the other engine. Ten surfaces across six files.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 / GD-25 precedent for
+  advisory-W003 agent-instruction text. The change removes an authoring instruction and adds
+  guidance; it grants no capability and names no external resource.
+
+`IPLAN-TEMPLATE.yaml` §5 shipped a worked `sessions[]` entry carrying a date, an agent and
+`action: created` on a file not on disk, while `doc-iplan/SKILL.md` step 9 instructed seeding
+that block **at Draft**. An authoring agent copying the example produced a Draft IPLAN
+recording a session that never ran — GD-25/#601 one section up, on the section a stateless
+executor reads *first*.
+
+**Decision: a Draft IPLAN carries `session_handoff.sessions: []`.** An entry is APPENDED by a
+session as that session ends. No entry is written while authoring.
+
+**Why §6 is seeded and §5 is not — the asymmetry is the load-bearing part.** GD-25 seeded §6
+`code_inventory` at Draft and argued an empty block is the weaker artifact. That argument does
+not transfer, and the template and layer README both state why, because otherwise the next
+reader "repairs" §5 into §6's shape:
+
+1. **§6's seed is DERIVED; a §5 seed would be FABRICATED.** §6 seeds one entry per §2
+   `file_manifest` path — a set already known when the IPLAN is written, which is exactly what
+   makes an empty §6 indistinguishable from an executor that never wrote its entries back.
+   Nobody knows the future *sessions*, so a seeded session has no source.
+2. **It would contradict `document_control.session_count: 0`.** A seeded session-zero makes
+   `len(sessions) == 1` against a count of `0` — a fresh internal contradiction of the class
+   GD-25 was repairing.
+
+The empty list also preserves the reading that matters: `sessions: []` beside an
+all-`NOT_STARTED` §2 is coherent, while `sessions: []` beside a `DONE` §2 is a *detectable*
+executor failure.
+
+**No Draft-level `next_session_directive` key, and that is a decision rather than an
+omission.** #621 offered relocating it to the section level so a Draft keeps a forward
+pointer. Rejected: the first file to build is startup-protocol step 2 (the lowest-`order`
+`NOT_STARTED` entry in §2), environment preconditions belong in §3 `execution_commands.setup`,
+and `next_session_directive` is what ONE session hands the NEXT — a Draft has none to write.
+Relocating it would also mean either two carriers of one string (the sync obligation that is
+the next stale-marker defect) or removing a per-session key, which is breaking and would owe
+the C3 gate.
+
+**`files_touched[].action` is still NOT extended**, per GD-25. Moving the worked entry into
+`_guidance` keeps its `# created | modified` comment, so
+`test_iplan_code_inventory_lifecycle`'s one-match assertion stays green — but **the enum it
+pins now lives only inside a block scalar**, which is the live-value/quoted-shape distinction
+that guard's own `_entry_status_lines` is scoped for. Recorded because the guard's subject
+changed character even though its result did not.
+
+**The "non-empty required section" rule had THREE statements and the repair reached one.**
+Two Platform-B skills and the other engine's IPLAN creation prompt each demand
+every required section be non-empty or "populated" — the last already contradicted its own
+empty-array instruction before this change. With `sessions: []` now the correct Draft value of
+a required section, all three carry the carve-out; without it an auditor fails an IPLAN the
+author was told to write, which is the failure GD-25 explicitly designed against.
+
+**Guard.** `tests/conformance/test_iplan_session_handoff_draft.py` (15 tests). The Draft rule
+reads the **parsed YAML value**, inheriting GD-25's lesson unchanged. Three of its rules exist
+because the first draft got them wrong, and each wrong version would have forced correct prose
+to be mangled for green:
+
+- It flagged the other engine's *correct* retrospective sentence ("populated during implementation
+  sessions"), so an exemption for retrospective attribution is required. That exemption then
+  had to require **adjacency** — allowing 40 characters between the preposition and the noun
+  let step 9 escape through ``per `file_manifest` path (`session: null``, a YAML key rather
+  than a session doing work.
+- It flagged `` `code_inventory` seeded `planned` … (`session: null`) ``, a **correct GD-25
+  instruction**, because the pattern matched §6's singular per-entry key. The carrier is now
+  scoped to plural `sessions` or the section name.
+- Seeding the **empty** list is the ratified rule, so it needs its own exemption — without it
+  the guard forbids the sentence the fix must write, which would push the prohibition wording
+  into `doc-iplan-fixer`'s Fix-Phases table and disarm GD-25 over all ~1,900 characters of it.
+
+**`GD25GuardIsNotDisarmed` pins an invariant, and it caught this change's own edit.**
+GD-25's two negative rules apply `_PROHIBITION` per **sentence**, and its `_normalize`
+collapses a markdown table with no `.`+whitespace into one — `doc-iplan-fixer`'s Fix-Phases
+table is a single ~1,900-character "sentence" carrying `code_inventory` twice. One exemption
+word anywhere in it exempts the whole table, and the suite stays green *because nothing
+happened*. Measured before any edit: **7 `code_inventory`-bearing sentences across the four
+IPLAN skills, 0 exempt.** The first draft of the audit carve-out ended "…the correct Draft
+state, not a missing section" and took that to **1**; the guard failed, the clause was cut,
+and it is back to 0. Every new prohibition clause must be its own sentence.
+
+**Mutation testing rewrote the guard, and its measured limits are stated rather than
+implied.** Forty-two runs over the first draft killed 25 and left 17 alive, and the survivors
+fell into one class: the negative prose rule's exemptions were applied to a whole *sentence*,
+while whitespace normalization collapses a markdown table into one — 1,922 characters for the
+fixer's Fix-Phases table. Seven distinct reintroductions of this defect survived by borrowing
+an exemption token up to 1,500 characters away, and **the worst was self-inflicted**: putting
+`sessions: []` into that table row, as this change did, made the whole table exempt. The
+repair splits table rows and list items into their own scan units before normalizing, so a row
+cannot borrow its neighbour's exemption, and `GD26GuardIsNotDisarmed` pins the number of
+exempted carrier units to a measured **5**. Four further survivors closed with it: a
+section-level key set (asserted as a set, since "no key is added" is an allowlist claim), the
+`derived` assertion being satisfied by GD-26's own *heading*, a `code_inventory`-sentence
+count that was a floor of 4 rather than the measured 7, and the verb set missing
+`initiali[sz]e` — the verb **both** of the other engine's surfaces already use.
+
+**Two limits are stated, not closed.** The negative prose rule still fires on correct
+*descriptive* sentences — "a populated `sessions` array in a Draft is a finding", or a future
+audit rule phrased as detection rather than instruction — because it cannot distinguish an
+instruction from a description. It also cannot see a seed instruction split across two units.
+The structural rules (parsed YAML, the key set, the positive per-surface assertions and the
+disarm baselines) carry the weight; the prose rule is a tripwire, not a proof. Filed rather
+than waved away.
+
+- **Consequences.** IPLANs already carrying sessions stay valid and need no migration. A Draft
+  that still carries a seeded session is now wrong rather than merely odd, but the audit's
+  Tier-1 row accepts `[]` and requires a directive only on *appended* entries, so no
+  previously-passing artifact starts failing. The example corpus is regenerated wholesale
+  after framework changes and is untouched here. `IPLAN-MVP-TEMPLATE.yaml` carries a different
+  `session_handoff` key set entirely and is **not** brought into line — it fabricates no
+  session, so #621 does not reach it; the divergence is evidence on #438, which owns the MVP
+  template class.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§5 `session_handoff`),
+  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an example
+  overrides the prose beside it), **GD-25** (the §6 seed this one deliberately does not
+  mirror), `tests/conformance/test_iplan_session_handoff_draft.py`.
+
+---
+
+## GD-25 — IPLAN `code_inventory` is a three-value lifecycle seeded `planned` at Draft, and every statement of that vocabulary must agree
+
+- **Status:** Accepted — 2026-09-02 · **SemVer:** framework `0.49.0 → 0.50.0` (MINOR),
+  change-level **C2**. Two motions: an additive third enum value with its transition rule,
+  and a Draft-seed rule that replaces an empty block. Neither is breaking — an IPLAN already
+  carrying `created` / `modified` entries stays valid — and `major ⇒ C3` is one-directional
+  per GD-01, so C2 holds. Ratified on merge; a `framework/**` normative change — human
+  sign-off per GATE-SPEC.
+- **Issues:** #601 (`Origin: real-use`) · answers all **three** questions #609 held open
+  (below) · defers the §5 `session_handoff` analogue to #621
+- **GATE-SPEC-W002 (parity):** both platforms track `0.50.0`. Four plugin skills move with
+  the template (below). **The other engine is left unchanged, and that is a judgement, not
+  an absence.** It carries no `code_inventory` surface of its own — zero occurrences in its
+  tree — and reaches this carrier only through
+  `framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml`, which it references by path. So it
+  inherits the rule and regresses on nothing. What it does *not* gain is an authoring
+  instruction: its own IPLAN prompt enumerates the traceability section without naming the
+  block, so the seed reaches one platform's authoring path and not the other's. Tracked with
+  the §5 split in **#621**, on which the two engines already contradict each other.
+- **GATE-SPEC-W003 (security):** discharged on the GD-05 / GD-08 precedent for advisory-W003
+  agent-instruction text. The change adds authoring guidance and a status value; it grants no
+  capability, names no external resource, and introduces no instruction an agent could follow
+  to reach outside the artifact.
+
+`IPLAN-TEMPLATE.yaml` §6 `traceability.code_inventory` declared two statuses until
+`2943bf3b` — `created` and `modified` — and demonstrated them with one worked entry reading
+`status: created`, `session: 1`. Both values assert that the file exists. A Draft IPLAN has
+no files, so an authoring agent generating one from the template had no correct value to
+write and copied the example — producing a Draft whose audit trail claims work that has not
+happened.
+
+**The defect is in the example, not only in the enum.** The `_guidance` said "Populated by
+each session", which is the correct retrospective reading and is exactly why the block was
+never meant to be filled at Draft. The example beside it said otherwise, and **an example
+overrides the prose beside it** — GD-24 recorded that lesson one release earlier. This is
+why `2943bf3b`'s repair did not close #601: it appended `planned` to a YAML `#` comment
+that nothing parses, and left the surface agents actually copy unchanged.
+
+**Decision: `planned | created | modified`, and a Draft IPLAN of subtype `code_build` or
+`combined` seeds ONE ENTRY PER §2 `file_manifest` PATH, in manifest order, all `planned`,
+`session: null`, `verified: false`.** Each session sets the entries it touched to `created`
+or `modified`, records its session number, and appends an entry for any file it touches that
+§2 does not declare. `planned` MUST NOT survive a session that touched the file — without
+that clause the new value simply becomes the next permanent stale marker, which is the
+defect one step removed. A `deploy` IPLAN requires no `file_manifest`
+(`document_control._guidance`), so it seeds no entries and records a file here only when a
+cutover step creates or modifies one; without that carve-out the rule is unsatisfiable for a
+whole subtype.
+
+**The empty block is retired, and that is a platform-visible change.** `doc-iplan` and
+`doc-iplan-autopilot` both instructed an authoring agent to ship an *empty*
+`code_inventory`, so Platform B and the spec had already disagreed about what a Draft
+carries. An empty block is also the weaker artifact on its own terms: it is
+indistinguishable from an executor that never wrote its entries back, whereas a fully
+`planned` block states the expected set and makes the gap between plan and reality visible
+to the next stateless session. `doc-iplan-audit`'s advisory row and `doc-iplan-fixer`'s
+phase-5 repair action move with them, so the auditor cannot fail an IPLAN the author was
+told to write, and the fixer seeds the state the template now specifies. The fixer's first
+draft of that action carved out "unless the file is already on disk" — review killed it:
+phase 1 creates stub files at every declared manifest path *before* phase 5 runs, so the
+carve-out always fired, named no alternative status, and left `created` as the agent's only
+reading. The fixer would have written #601 into every Draft it repaired.
+
+**The redundancy with §2 `file_manifest` is accepted.** The two carriers now share a path
+list, and §2's note says explicitly that they are *not* reconciled: §2 is the executor's
+build order over four values (`NOT_STARTED | IN_PROGRESS | DONE | PARTIAL`), §6 is the audit
+trail over three, and each carries its own `verified:` — §6's is the stricter claim
+(tests pass + lint clean), §2's tracks the same file through a different question. Collapsing
+them is a larger redesign of the layer than a `real-use` status-value report warrants, and it
+would change the meaning of every IPLAN already authored. Not adopted here; deliberately left
+as two carriers. **The redundancy creates a detection gap this change does not close:**
+nothing validates the §2 ↔ §6 correspondence on an *authored* artifact — `sdd_doc_lint`
+carries no `code_inventory` rule, and the conformance guard below reaches the template only.
+A Draft whose §6 still holds the template's placeholder paths while §2 carries real ones is
+silently conforming.
+
+**Every in-file statement of the vocabulary must agree, and there are three.** §2's
+explanatory passage restated it as `created | modified`, and after `2943bf3b` it contradicted
+the `status:` key ~140 lines below (`:163` against `:300`) for two days — the second of the
+three questions #609 held open. The third statement is `_guidance`'s own lifecycle list,
+which sits directly above the entries and is the copy a reader meets first; the first draft
+of the guard tied only two of the three together, and mutation testing showed the list could
+lose `planned` while every test stayed green. All three are now held to one value set.
+
+**`session_handoff.sessions[].files_touched[].action` is NOT extended.** It records what a
+session did to a file, and a session that touched a file created or modified it. `planned`
+there would be a contradiction in terms, and the guard now holds that enum to two values so
+the non-decision is not merely stated.
+
+**What #609 asked, and the answers.** #609 held three questions, closed by hand on
+2026-09-01 with no recorded disposition; this entry supplies them. **(1) Did `2943bf3b` owe
+a version bump?** Yes. The vocabulary is normative — it is the only place the carrier's
+allowed values are stated, so the comment *is* the contract by default — which makes the
+edit a `framework/**` spec change owing a bump and a GD entry. It bypassed `GATE-SPEC`
+because a direct push to `main` runs no PR checks. This release pays that debt and this
+entry is that record. **(2) Is `:163` reconciled with `:300`?** Yes, and a third copy nobody
+had counted is reconciled with them. **(3) Is #601 satisfied by a comment-only edit?** No —
+that is the finding above, and it is why this change rewrites the worked entries.
+
+**The §5 analogue is real and is filed, not waved away.** §5 `session_handoff.sessions[]`
+ships a worked example carrying `action: created` and `status: IN_PROGRESS`, and
+`doc-iplan/SKILL.md` instructs seeding it at Draft — the identical defect shape one section
+up, on which the two engines already disagree — one initializes an empty `sessions` array.
+It is **#621**, not silence: a documentation-only closure needs a named owner for the
+mechanism, and scoping this release to the reported carrier is the minimal-and-realistic
+convention, not a judgement that §5 is fine.
+
+**Guard.** `tests/conformance/test_iplan_code_inventory_lifecycle.py` (15 tests). The Draft
+rule reads the **parsed YAML entries**, not the enum comment: a guard checking only the
+comment would have passed `2943bf3b`, the change that shipped the defect. Expected fragments
+are built from the module's `LIFECYCLE` tuple rather than hardcoded, so a meaning-preserving
+reword of the punctuation around them cannot red a required context. Mutation testing over
+the first draft killed four platform-side rules and drove the shape of what replaced them:
+the retired instruction re-entered by **word order** ("leave `code_inventory` empty"), which
+is verbatim the order-directionality bug GD-24's guard records as review-killed; a *correct*
+prohibition ("Reject an empty `code_inventory`") reddened the check, so a negation exemption
+is required rather than optional; a skill could instruct `status: created` in a Draft seed
+and stay green, because the rule banned the previous wrong instruction and not the class; and
+deleting a skill's seed instruction outright stayed green, because a negative can only prove
+a surface stopped saying the old thing. Every claim this entry makes about the four skills
+now has a **positive** assertion behind it. The scan globs `doc-iplan*/**/*.md` rather than
+top-level `SKILL.md`, after `test_no_inprompt_hashing.py`, and normalizes whitespace, because
+the live instruction in `doc-iplan/SKILL.md` was split across a line break. Expected fragments
+carry no pinned punctuation: an earlier draft anchored the em-dashes around §2's vocabulary,
+so rewriting `(a different vocabulary — X —` as `(a different vocabulary: X,` reddened a
+required context for no semantic change.
+
+**Nineteen mutations, eighteen behaving as specified, and the nineteenth is a stated limit.**
+Killed: the original #601 defect; `2943bf3b` exactly; the enum comment alone; §2's passage
+alone; `_guidance`'s list alone; the retired instruction in either word order and in its
+`files: []` form; a `created` Draft seed; deletion of the audit row, the fixer action, or the
+autopilot seed; `action` extended with `planned`; the README's seed sentence; a gutted GD-25;
+a `doc-iplan*/reference.md` and a nested fifth-skill `SKILL.md` carrying the instruction; and
+`verified: 0` for `false`. Deliberately green: a correct prohibition, a meaning-preserving
+reword of the guidance, and the punctuation swap above. **Not killed:** reverting
+`doc-iplan`'s validation-checklist line alone, because step 9 of the same file still states
+the seed — the skill stays correct, so this is a weakening the positive rule tolerates by
+design, not a reintroduction. The vendored-bundle assertion **adds no coverage** —
+`test_plugin_framework_bundle.py` already byte-compares every bundled file and did catch
+`2943bf3b`'s drift; it is kept only so a failure names this carrier.
+
+- **Consequences.** IPLANs already carrying `created` / `modified` entries stay valid and
+  need no migration; `planned` is additive. A Draft IPLAN with an empty `code_inventory` is
+  now incomplete rather than correct — but the template states the seed as a MUST while
+  `doc-iplan-audit` grades it **Tier 2 (advisory)**, so it warns rather than blocks and
+  `doc-iplan-fixer` phase 5 repairs it. That asymmetry is deliberate: a Draft missing the
+  seed is under-specified, not wrong, and blocking on it would fail every IPLAN authored
+  before this release. The example corpus is regenerated wholesale after framework changes
+  and is untouched here.
+- **Authority:** `layers/08_IPLAN/IPLAN-TEMPLATE.yaml` (§2 carrier note,
+  `document_control` subtype table, `traceability.code_inventory`),
+  `layers/08_IPLAN/README.md`, **GD-01** (`major ⇒ C3` one-directional), **GD-24** (an
+  example overrides the prose beside it),
+  `tests/conformance/test_iplan_code_inventory_lifecycle.py`.
 
 ---
 

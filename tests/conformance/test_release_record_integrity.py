@@ -49,31 +49,31 @@ import subprocess
 import unittest
 
 import yaml
-from _spec import REPO_ROOT, platform_dirs
+from _spec import REPO_ROOT
 
 _SEMVER = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+")
 _HEADING = re.compile(r"^\#{2,3} .*$", re.MULTILINE)
 
 
 def _framework_releases(text: str) -> set[str]:
-    """Every version named on a ``Framework Spec`` heading, both sides of a transition.
+    """Every version named on a release heading.
 
-    Taking *every* SemVer in the segment rather than one capture group covers all
-    three historical heading forms at once, and closes the case where a version
-    appears only as the ``from`` side of a transition it never reached.
-
-    **Scoped to the ``Framework Spec`` segment, because 14 of the 55 headings are
-    combined** — ``… Framework Spec 0.15.0 → 0.15.1 + Plugin 0.10.2 → 0.11.0``.
-    Reading the whole line attributes the *plugin's* versions to the framework
-    stream; that produced a false phantom (``0.10.2``) on correct history, and the
-    other 13 were hidden only by the coincidence that those plugin versions
-    happen to also be real framework values. Streams are separated by ``+``.
+    Two heading forms exist across the two changelogs this has read over its
+    life: the project CHANGELOG's ``Framework Spec X → Y`` transition headings
+    (scoped to the ``Framework Spec`` ``+``-segment so combined
+    ``… + Plugin a → b`` headings don't attribute plugin versions to the
+    framework stream — that produced a false phantom ``0.10.2`` once), and the
+    spec's own ``framework/CHANGELOG.md`` ``## [X.Y.Z]`` release headings.
+    Both are read: a version documented in either form must have existed.
     """
     releases: set[str] = set()
     for line in _HEADING.findall(text):
         for segment in line.split("+"):
             if "Framework Spec" in segment:
                 releases.update(_SEMVER.findall(segment))
+        m = re.match(r"^#{2,3} \[([0-9]+\.[0-9]+\.[0-9]+)\]", line)
+        if m:
+            releases.add(m.group(1))
     return releases
 
 
@@ -82,21 +82,12 @@ def _leading_version_releases(text: str) -> set[str]:
     return set(re.findall(r"^\#\# \[?([0-9]+\.[0-9]+\.[0-9]+)", text, re.MULTILINE))
 
 
-#: (stream, VERSION path, CHANGELOG path, extractor).
+#: (stream, VERSION path, CHANGELOG path, extractor). Framework-only repo
+#: (CLEANUP-001): the platform streams are gone with archive/platforms/. The
+#: framework stream reads framework/CHANGELOG.md — the spec's own changelog —
+#: not the project CHANGELOG.md (project milestones, different stream).
 STREAMS = (
-    ("framework", "framework/VERSION", "CHANGELOG.md", _framework_releases),
-    (
-        "claude-code-plugin",
-        "archive/platforms/claude-code-plugin/VERSION",  # pragma: allowlist secret
-        "archive/platforms/claude-code-plugin/CHANGELOG.md",
-        _leading_version_releases,
-    ),
-    (
-        "hermes",
-        "archive/platforms/hermes/VERSION",
-        "archive/platforms/hermes/CHANGELOG.md",
-        _leading_version_releases,
-    ),
+    ("framework", "framework/VERSION", "framework/CHANGELOG.md", _framework_releases),
 )
 
 #: Phantoms that already shipped and are permanent by decision. Each entry needs
@@ -112,12 +103,13 @@ ACCEPTED_PHANTOMS = {
     "but VERSION jumped 0.41.3 → 0.43.0. The founder chose to correct forward in the "
     "next real release rather than rewrite a published CHANGELOG entry.",
     (
-        "hermes",
-        "0.1.1",
-    ): "D-0086 (#617) — hermes/v0.1.1 was cut as a release tag on a commit whose "
-    "archive/platforms/hermes/VERSION reads 0.1.0 (not a predates-the-file artifact: the file "
-    "existed a day earlier holding 0.1.0). Worse than the framework case, because "
-    "docs/TAGGING.md makes release tags immutable so it cannot be corrected in place.",
+        "framework",
+        "0.52.0",
+    ): "CLEANUP-001 — GD-23 and GD-24 both claim the 0.51.0 → 0.52.0 transition "
+    "(GD-23's bump was deferred and executed together with GD-24), but VERSION never "
+    "held 0.52.0: the tree jumps 0.51.0 → 0.53.0. Same class as D-0078 (#558), found "
+    "by repointing this guard at framework/CHANGELOG.md. Correct forward; do not "
+    "rewrite the published record.",
 }
 
 
@@ -236,16 +228,13 @@ class DeepCheckoutIsConfigured(unittest.TestCase):
 
 
 class StreamCoverage(unittest.TestCase):
-    """A stream removed from ``STREAMS`` is a silent narrowing, not a failure."""
+    """The framework stream is covered; platform streams are gone by design."""
 
-    def test_every_platform_is_covered(self):
-        covered = {s[0] for s in STREAMS} - {"framework"}
-        on_disk = {p.name for p in platform_dirs()}
+    def test_only_the_framework_stream_remains(self):
         self.assertEqual(
-            covered,
-            on_disk,
-            f"STREAMS covers {sorted(covered)} but platforms/ holds {sorted(on_disk)} — an "
-            "uncovered stream can ship a phantom release with the suite green",
+            [s[0] for s in STREAMS],
+            ["framework"],
+            "a stream was added back without a VERSION file + CHANGELOG to back it",
         )
 
     def test_framework_headings_all_yield_a_version(self):
@@ -257,7 +246,7 @@ class StreamCoverage(unittest.TestCase):
         form fails the moment it is introduced, rather than opening a green
         corridor for a phantom written in it.
         """
-        text = (REPO_ROOT / "CHANGELOG.md").read_text("utf-8")
+        text = (REPO_ROOT / "framework" / "CHANGELOG.md").read_text("utf-8")
         for line in _HEADING.findall(text):
             if "Framework Spec" in line:
                 with self.subTest(heading=line[:70]):

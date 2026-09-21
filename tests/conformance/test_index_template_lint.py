@@ -22,7 +22,7 @@ import unittest
 
 from _spec import FRAMEWORK, REPO_ROOT
 
-sys.path.insert(0, str(REPO_ROOT / "tools"))
+sys.path.insert(0, str(REPO_ROOT))
 
 from sdd_doc_lint import find_registry, lint_path  # noqa: E402
 
@@ -31,16 +31,18 @@ _REGISTRY = FRAMEWORK / "registry" / "LAYER_REGISTRY.yaml"
 
 def _index_templates():
     """The 10 layer index/registry templates (`<TYPE>-00_index.TEMPLATE.{md,yaml}`)."""
-    found = sorted(FRAMEWORK.glob("layers/0*/[A-Z]*-00_index.TEMPLATE.*"))
+    found = sorted(FRAMEWORK.glob("layers/*/EVAL-00_index.TEMPLATE.*")) + sorted(
+        FRAMEWORK.glob("layers/0*/[A-Z]*-00_index.TEMPLATE.*")
+    )
     return found
 
 
 class IndexTemplateLint(unittest.TestCase):
-    def test_all_eight_index_templates_present(self):
+    def test_all_ten_index_templates_present(self):
         templates = _index_templates()
         self.assertEqual(
             len(templates),
-            8,
+            10,
             f"expected 10 layer index templates, found {[p.name for p in templates]}",
         )
 

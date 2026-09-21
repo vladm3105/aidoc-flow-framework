@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.2 |
+| Framework Version | 0.54.0 |
 
 
 ## Overview
@@ -173,7 +173,7 @@ When an SDD document needs updating, the CHG record owns the version lifecycle:
 
 ### CHG Archive Convention
 
-Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `06_SPEC`, `07_TDD`, `08_IPLAN`. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
+Archive path is always `docs/sdd/09-CHG/archive/{CHG-ID}/{layer}/` where layer is one of `01_BRD`, `02_PRD`, `03_EARS`, `04_BDD`, `05_ADR`, `06_SPEC`, `07_TDD`, `08_IPLAN` — any SDD layer the CHG modifies, not only the downstream design layers. The CHG's `supersedes` field lists each archived document with its full archive path. Never use date-based archive paths.
 
 ### No Stale Context in SDD Docs
 

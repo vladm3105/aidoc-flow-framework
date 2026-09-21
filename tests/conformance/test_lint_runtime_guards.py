@@ -42,9 +42,8 @@ import unittest
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_TOOLS = _REPO_ROOT / "tools"
-_LINT_INIT = _TOOLS / "sdd_doc_lint" / "__init__.py"
-_HOOK = _REPO_ROOT / "platforms" / "claude-code-plugin" / "hooks" / "sdd-doc-review.sh"
+_LINT_INIT = _REPO_ROOT / "sdd_doc_lint" / "__init__.py"
+_HOOK = _REPO_ROOT / "hooks" / "sdd-doc-review.sh"
 _VALID_BRD = (
     _REPO_ROOT / "tests" / "acceptance" / "fixtures" / "layer_01_brd" / "valid" / "BRD-01_golden.md"
 )
@@ -68,7 +67,7 @@ def _scratch(case: unittest.TestCase) -> Path:
 def _run_lint(*args: str, env: dict | None = None, cwd: Path | None = None):
     """Invoke the canonical linter exactly as a consumer does."""
     environ = dict(os.environ)
-    environ["PYTHONPATH"] = str(_TOOLS)
+    environ["PYTHONPATH"] = str(_REPO_ROOT)
     if env:
         for key, value in env.items():
             if value is None:
@@ -193,7 +192,7 @@ class MissingPyYAMLIsDiagnosed(LintGuardHarness):
         target = root / "BRD-01.md"
         target.write_text(_VALID_BRD.read_text(encoding="utf-8"), encoding="utf-8")
 
-        proc = _run_lint(str(target), env={"PYTHONPATH": f"{blocker}{os.pathsep}{_TOOLS}"})
+        proc = _run_lint(str(target), env={"PYTHONPATH": f"{blocker}{os.pathsep}{_REPO_ROOT}"})
 
         self.assertEqual(
             proc.returncode,
@@ -216,7 +215,7 @@ class MissingPyYAMLIsDiagnosed(LintGuardHarness):
         target = root / "BRD-01.md"
         target.write_text(_VALID_BRD.read_text(encoding="utf-8"), encoding="utf-8")
 
-        proc = _run_lint(str(target), env={"PYTHONPATH": f"{broken}{os.pathsep}{_TOOLS}"})
+        proc = _run_lint(str(target), env={"PYTHONPATH": f"{broken}{os.pathsep}{_REPO_ROOT}"})
 
         self.assertEqual(
             proc.returncode,
@@ -238,7 +237,7 @@ class MissingPyYAMLIsDiagnosed(LintGuardHarness):
         target = root / "BRD-01.md"
         target.write_text(_VALID_BRD.read_text(encoding="utf-8"), encoding="utf-8")
 
-        proc = _run_lint(str(target), env={"PYTHONPATH": f"{blocker}{os.pathsep}{_TOOLS}"})
+        proc = _run_lint(str(target), env={"PYTHONPATH": f"{blocker}{os.pathsep}{_REPO_ROOT}"})
 
         self.assertEqual(len(proc.stderr.strip().splitlines()), 1, proc.stderr)
 
@@ -265,8 +264,8 @@ class InterpreterFloorIsDiagnosed(LintGuardHarness):
     """The Python floor is stated and checked before the import that needs it."""
 
     def _module(self):
-        sys.path.insert(0, str(_TOOLS))
-        self.addCleanup(lambda: sys.path.remove(str(_TOOLS)))
+        sys.path.insert(0, str(_REPO_ROOT))
+        self.addCleanup(lambda: sys.path.remove(str(_REPO_ROOT)))
         import sdd_doc_lint
 
         return sdd_doc_lint
@@ -381,7 +380,7 @@ class InterpreterFloorIsDiagnosed(LintGuardHarness):
         target = root / "BRD-01.md"
         target.write_text(_VALID_BRD.read_text(encoding="utf-8"), encoding="utf-8")
 
-        proc = _run_lint(str(target), env={"PYTHONPATH": f"{fake}{os.pathsep}{_TOOLS}"})
+        proc = _run_lint(str(target), env={"PYTHONPATH": f"{fake}{os.pathsep}{_REPO_ROOT}"})
 
         self.assertEqual(
             proc.returncode,

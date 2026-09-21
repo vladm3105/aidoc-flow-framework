@@ -11,7 +11,33 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.54.0 |
+
+---
+
+## [0.54.0] — 2026-09-20
+
+### Added — GD-29: 17 donor-hardening addons (CHG-03, C2 MINOR)
+
+- `DOC_GOVERNANCE_CORE.md`: SDD-first implementation order (§3.1.1), §3.13 bootstrap
+  exemption, IPLAN Lifecycle bundle, `## Status Propagation (§4.1)`, `WORKTREE_FLOW.md`
+  pointer (twin EVAL blocks deduped; canonical `EVAL.NN.SS.xxxx` survives).
+- `IPLAN-TEMPLATE.yaml`: `completion_gates` + `completion_spec_sync` blocks,
+  `breaking_change` block, `audit_fix` fourth subtype, realtime-manifest + DONE-must-exist
+  rules; `08_IPLAN/README.md`: `## IPLAN Subtypes`.
+- `LAYER_REGISTRY.yaml` + `registry/README.md`: new-layer registration checklist;
+  `LINT_RULES.md`: `REG01`, `CHG-L012`, `IPLAN01`, `TDD-SYNC-A..E` (all advisory).
+- `sdd_doc_lint/chg_lint.py`: CHG-L012 completion-sync warning;
+  `sdd_doc_lint/__main__.py`: SKIPPED-vs-clean warning; `.gitignore`: scoped
+  governed-archive negation.
+- `03_EARS/README.md`: pattern decision tree; `requirements_specialist.md`: lens note;
+  `TDD-00_index` + `IPLAN-00_index` templates: TDD-SYNC-E source-of-truth notes.
+- `NOTICES.md`: delegation greps, genericized Rule 5, `## Concurrency traps`, advisory
+  `TDD-SYNC-A..E`; `ID_NAMING_STANDARDS.md`: red-flag box (outside digest-pinned lines);
+  `SELF_LEARNING.md`: §7.4 feedback-submit contract; `AI_ASSISTANT_RULES.md`:
+  delegation/concurrency pointers.
+- NEW `framework/governance/WORKTREE_FLOW.md` v1.0 (generic git/gh; order guard load-bearing).
+- `framework/VERSION` bumped from `0.53.3` to `0.54.0` with mechanical pin sweep.
 
 ---
 

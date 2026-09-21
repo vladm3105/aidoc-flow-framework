@@ -36,9 +36,9 @@ import unittest
 from pathlib import Path
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
-_PLUGIN = _REPO_ROOT / "platforms" / "claude-code-plugin"
-_HOOK = _PLUGIN / "hooks" / "sdd-doc-review.sh"
-_HOOKS_JSON = _PLUGIN / "hooks" / "hooks.json"
+_HOOKS_DIR = _REPO_ROOT / "hooks"
+_HOOK = _HOOKS_DIR / "sdd-doc-review.sh"
+_HOOKS_JSON = _HOOKS_DIR / "hooks.json"
 _BROKEN_BRD = (
     _REPO_ROOT / "tests" / "acceptance" / "fixtures" / "negative" / "brd-broken-sections.md"
 )

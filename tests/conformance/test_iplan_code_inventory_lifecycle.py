@@ -293,82 +293,17 @@ class CodeInventoryLifecycle(unittest.TestCase):
 
 
 class PlatformSurfacesAgree(unittest.TestCase):
-    """Every ``doc-iplan*`` surface states the seed, and none re-teaches the empty
-    block or a built status at Draft."""
+    """Retired with the platforms (CLEANUP-001): no doc-iplan* skills exist.
 
-    def _skill_docs(self):
-        return sorted(PLUGIN_SKILLS.glob(IPLAN_SKILL_GLOB))
+    The template-side contract lives in CodeInventoryLifecycle above; the
+    layer-README assertion moves there with it (test_the_layer_readme_describes_the_seed).
+    """
 
-    def test_the_vendored_bundle_matches_the_spec(self) -> None:
-        """Restates ``test_plugin_framework_bundle.py``'s byte-identity coverage for
-        this one file, so a drift failure names the carrier rather than a path. It
-        adds no coverage: the bundle guard already caught ``2943bf3b``'s drift."""
-        self.assertEqual(
-            PLUGIN_BUNDLE_TEMPLATE.read_text(encoding="utf-8"),
-            IPLAN_TEMPLATE.read_text(encoding="utf-8"),
-            "the plugin's vendored IPLAN template drifted from framework/ — run "
-            "`bash archived (archive/tools/)`",
+    def test_platform_skills_are_gone(self) -> None:
+        self.assertFalse(
+            (REPO_ROOT / "platforms").exists(),
+            "platforms/ is back — resurrect the skill-surface scan with it",
         )
-
-    def test_every_iplan_skill_is_scanned(self) -> None:
-        dirs = sorted(p.name for p in PLUGIN_SKILLS.glob(IPLAN_SKILL_DIRS) if p.is_dir())
-        self.assertEqual(
-            len(dirs),
-            EXPECTED_IPLAN_SKILLS,
-            f"expected {EXPECTED_IPLAN_SKILLS} doc-iplan* skills, found {dirs} — update "
-            "EXPECTED_IPLAN_SKILLS deliberately, so a new skill cannot escape the rules "
-            "below silently",
-        )
-        self.assertTrue(self._skill_docs(), "the markdown glob matched nothing")
-
-    def test_no_skill_instructs_an_empty_code_inventory(self) -> None:
-        for doc in self._skill_docs():
-            rel = doc.relative_to(PLUGIN_SKILLS)
-            for sentence in _sentences(doc.read_text(encoding="utf-8")):
-                match = _EMPTY_INVENTORY.search(sentence)
-                if not match or _PROHIBITION.search(sentence):
-                    continue
-                with self.subTest(doc=str(rel)):
-                    self.fail(
-                        f"{rel} instructs an empty code_inventory: {sentence!r} — "
-                        "GD-25 seeds it `planned` instead"
-                    )
-
-    def test_no_skill_ties_a_built_status_to_a_draft_seed(self) -> None:
-        """The template can be correct while the skill overrides it — which is the
-        surface an authoring agent actually reads."""
-        for doc in self._skill_docs():
-            rel = doc.relative_to(PLUGIN_SKILLS)
-            for sentence in _sentences(doc.read_text(encoding="utf-8")):
-                if "code_inventory" not in sentence:
-                    continue
-                match = _DRAFT_BUILT_STATUS.search(sentence)
-                if not match or _PROHIBITION.search(sentence):
-                    continue
-                with self.subTest(doc=str(rel)):
-                    self.fail(
-                        f"{rel} seeds a Draft code_inventory with a built status: "
-                        f"{sentence!r} — a Draft carries `planned` (GD-25/#601)"
-                    )
-
-    def test_every_iplan_skill_states_the_planned_seed(self) -> None:
-        """The positive half. A negative rule proves only that a surface stopped
-        saying the old thing; GD-25 claims all four say the new one."""
-        for skill in sorted(PLUGIN_SKILLS.glob(f"{IPLAN_SKILL_DIRS}/SKILL.md")):
-            with self.subTest(skill=skill.parent.name):
-                body = _normalize(skill.read_text(encoding="utf-8"))
-                self.assertRegex(
-                    body,
-                    r"`?planned`?",
-                    f"{skill.parent.name} never mentions `planned` — GD-25 says all "
-                    f"{EXPECTED_IPLAN_SKILLS} IPLAN skills move with the template",
-                )
-                self.assertRegex(
-                    body,
-                    r"code_inventory[^.]{0,120}?planned|planned[^.]{0,120}?code_inventory",
-                    f"{skill.parent.name} mentions `planned` but not in connection with "
-                    "`code_inventory` — the seed instruction is what GD-25 claims shipped",
-                )
 
     def test_the_layer_readme_describes_the_seed(self) -> None:
         readme = _normalize(IPLAN_README.read_text(encoding="utf-8")).lower()

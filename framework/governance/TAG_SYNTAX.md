@@ -93,3 +93,4 @@ the element form when the target is element-declaring:
 | SPEC | `@ears @bdd @adr` | `@adr: ADR.01.03.e5b1` |
 | TDD | `@ears @bdd @adr @spec` | `@spec: SPEC-01` (doc-level — SPEC exempt) |
 | IPLAN | `@spec @tdd` | `@tdd: TDD.01.04.a3c1`; `@spec: SPEC-01` (doc-level) |
+| EVAL | `@ears @bdd @tdd @iplan` | `@iplan: IPLAN-01` (doc-level — IPLAN exempt) |

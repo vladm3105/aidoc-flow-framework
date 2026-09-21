@@ -8,6 +8,7 @@
 # IPLAN is the Layer 8 execution bridge from SPEC/TDD to code.
 
 doc_id: IPLAN-NN
+title: "[Implementation Plan Title]"
 metadata:
   schema_version: "1.0"
   framework_version: "[X.Y.Z]"  # framework/VERSION at document creation; see §Version Bumping
@@ -54,7 +55,7 @@ document_control:
     IPLAN-Ready >=90/100.
 
     `subtype` selects which sections this IPLAN must carry. Values
-    (CLEANUP-PR-E):
+    (CLEANUP-PR-E; `audit_fix` added 0.54.0):
       - code_build: file_manifest, execution_commands,
         implementation_contracts, session_handoff, traceability
         required; rollback/smoke/canary/observability NOT required.
@@ -62,6 +63,18 @@ document_control:
         observability_hooks, runbook_reference, traceability
         required; file_manifest + execution_commands NOT required.
       - combined (default): both sets required.
+      - audit_fix: fixes audit findings ordered by severity (P0→P1→P2),
+        not SPEC components. `source_spec` names the audit findings
+        reference; `file_manifest[].tdd_ref` is not used; each entry
+        carries a `severity:` (P0/P1/P2/P3) instead. Upstream is the
+        audit, so `traceability.upstream` cites `audit_references`
+        rather than `spec_references`/`tdd_references`.
+
+    A future `devops` direction (infrastructure + cutover under one
+    umbrella) is noted but NOT adopted — `deploy` stays, and `combined`
+    stays the backward-compat default (pre-0.19.1 IPLANs carry no
+    subtype). Removing `combined` would be a breaking instance-format
+    change, out of scope for a hardening release.
 
     `_required_when_subtype:` markers on individual sections below
     declare which subtype set the section belongs to. The
@@ -69,15 +82,39 @@ document_control:
     `document_control` and selects the section set. Missing subtype
     defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"
-  subtype: combined  # code_build | deploy | combined
-  source_spec: "@spec: SPEC-NN"
+  subtype: combined  # code_build | deploy | combined | audit_fix
+  source_spec: "@spec: SPEC-NN"  # audit_fix: audit findings reference instead
   status: Draft  # Draft | Approved | In Progress | Completed | Verified
-  # Status lifecycle:
-  #   Draft       — IPLAN created, not yet approved
-  #   Approved    — IPLAN authorized to proceed
+  # Status lifecycle (each transition is a blocking gate — never start work on
+  # the next phase without first updating status to that phase):
+  #   Draft       — IPLAN created, not yet approved (planning NOT authorized)
+  #   Approved    — IPLAN authorized to proceed (code NOT authorized)
   #   In Progress — Implementation underway
   #   Completed   — Implementation done, awaiting validation
   #   Verified    — Validation passed, FINAL/FINITE status (immutable)
+  #
+  # Two failure modes (for reference): planning on a Draft IPLAN skips the
+  # authorization gate; implementing on an Approved IPLAN without the
+  # In Progress transition skips the implementation gate.
+  completion_gates:
+    _guidance: |
+      Checked BEFORE flipping document_control.status to Completed. Every gate
+      MUST pass; a gate that cannot pass blocks the flip, not the work.
+      Advisory (lint rule: none yet — auditor-lens prose until a check exists).
+    spec_tdd_sync_checked: false  # SPEC/TDD version check ran in the same change
+    manifest_all_done: false  # every file_manifest entry DONE or SKIPPED+note
+    chg_tracks_completion: false  # authorizing CHG advanced to Implemented/Completed
+  completion_spec_sync:
+    _guidance: |
+      Machine-checkable half of the SDD-sync-on-completion rule
+      (DOC_GOVERNANCE_CORE.md §IPLAN Lifecycle): when this IPLAN flips to
+      Completed, the corresponding SPEC and TDD MUST be checked against what
+      was actually built. If implementation diverged, a CHG rewrites them as a
+      new version in the same change. Validated by CHG-L012 (warning).
+    spec_checked: false
+    tdd_checked: false
+    diverged: false  # true → name the follow-up CHG in chg_ref
+    chg_ref: null
   #
   # Verified IPLANs CANNOT be changed. To modify a Verified IPLAN:
   #   1. Create a CHG record documenting the need for changes
@@ -126,7 +163,13 @@ file_manifest:
     `NOT_STARTED` is a defect in the executor, not a documentation lag: this
     manifest is what a later stateless session reads to decide what to do next
     (§5 `session_handoff`, "Session startup protocol"), so a stale entry causes
-    repeated or skipped work.
+    repeated or skipped work. Update each entry from `NOT_STARTED` as work
+    progresses — never batch-update at the end; an entry left `NOT_STARTED`
+    after its file is built misstates progress.
+
+    A `DONE` entry MUST name a file that exists on disk and contains a real
+    implementation — not a stub or mock. Spot-check DONE files for stub markers
+    before flipping document_control.status to Completed.
 
     Transitions, using the four values declared on the `status:` key below:
     `NOT_STARTED` -> `IN_PROGRESS` when work begins; `PARTIAL` when the file
@@ -167,11 +210,21 @@ file_manifest:
     showing `files_done == files_declared` over stale per-file entries hides the
     drift rather than surfacing it.
 
-    ⚠️ Two further carriers restate per-file status and are NOT reconciled here:
-    §5 `session_handoff.sessions[].files_touched[].status` and §8
+    ⚠️ THREE further carriers restate per-file state and are NOT reconciled here.
+    §5 `session_handoff.sessions[].files_touched[].status` takes the same four
+    values as this manifest. §5 `...files_touched[].action` takes
+    `created | modified` and is deliberately NOT extended with `planned` — a
+    session that touched a file created or modified it. §6
     `traceability.code_inventory.files[].status` (a different vocabulary —
-    `created | modified` — with its own `verified:`). This manifest is the one an
-    executor writes as it goes; the other two are audit trails written per session.
+    `planned | created | modified` — with its own `verified:`) is seeded `planned`
+    at Draft and then written per session. This manifest is the one an executor
+    writes as it goes; §5 is a per-session audit trail.
+
+    §6's vocabulary appears in THREE places in this file — its `status:` key, its
+    `_guidance` lifecycle list, and this passage. All three MUST name the same
+    values; `tests/conformance/test_iplan_code_inventory_lifecycle.py` holds them
+    together, and the contradiction it exists to prevent has already shipped once.
+    (GD-25; regressed and restored by CLEANUP-001.)
   files:
     - path: "<unit test for the component, per the @spec language>"
       description: "<what this file is for, in one line>"
@@ -247,6 +300,23 @@ execution_commands:
   implementation:
     - "# Author each file in @spec-language order — test first (TDD), then implementation"
     - "# example (Python): create tests/unit/test_auth.py first, then src/auth/service.py"
+  breaking_change:
+    _guidance: |
+      Optional. REQUIRED on any step that modifies an exported function or
+      constructor signature. Document all four: (1) the current signature,
+      (2) the new signature, (3) that it is a breaking change, and (4) which
+      callers must be updated. Omitting this causes compilation failures
+      during implementation. Advisory (lint rule: IPLAN01, advisory).
+      Verify declared queries against the upstream-declared schema artifact
+      before marking steps ready — plausible but nonexistent column names
+      fail at runtime, not at authoring time.
+    steps: []
+    # - step: "[Step description]"
+    #   current_signature: "[Current exported signature]"
+    #   new_signature: "[New exported signature]"
+    #   breaking: true
+    #   callers_to_update:
+    #     - "[Caller path + symbol]"
   validation:
     - "# Run the @spec toolchain's test + type-check + lint gates"
     - "# example (Python): python -m pytest tests/ -v --cov && python -m mypy --strict && python -m ruff check"
@@ -295,27 +365,32 @@ session_handoff:
       IN_PROGRESS — session actively working on this file
       DONE — file complete and verified (tests pass)
       PARTIAL — session ended mid-file (resume from partial_work)
-  sessions:
-    - date: "YYYY-MM-DD"
-      agent: "[AI agent / session identifier]"
-      files_touched:
-        - path: "<implementation file, per the @spec language>"
-          action: created  # created | modified
-          status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
-      partial_work: "[Exactly what's incomplete if session ended mid-step]"
-      blockers: "[Any blockers preventing next session]"
-      next_session_directive: "[What the next session should do first — cite file + step]"
-      validation_results:
-        _guidance: |
-          REQUIRED fields. Must be true before IPLAN can be marked Completed (§3.7).
-          These are the completion gate checks — agents MUST run tests and lint
-          before setting these to true.
 
-          After Completed, run validation using IPLAN-VERIFY-TEMPLATE.
-          If validation passes, mark IPLAN as Verified (FINAL status).
-        tests_passing: false  # REQUIRED: true after pytest passes
-        coverage: null  # percentage or null
-        lint_clean: false  # REQUIRED: true after ruff + mypy pass
+    EMPTY AT DRAFT. `sessions:` is a RETROSPECTIVE audit trail: an entry is
+    APPENDED by a session as that session ends. A Draft IPLAN has had no
+    session, so it carries `sessions: []`. Do NOT write a session entry while
+    authoring — one naming a date, an agent and `action: created` asserts work
+    that has not happened. (GD-26; regressed and restored by CLEANUP-001.)
+
+    THIS IS NOT §6's RULE, AND THE DIFFERENCE IS THE REASON FOR IT. §6
+    `traceability.code_inventory` IS seeded at Draft — one `planned` entry per
+    §2 `file_manifest` path — because that seed is DERIVED from a set already
+    known when the IPLAN is written. A session seed has no such source: nobody
+    knows the future sessions, so seeding one FABRICATES rather than derives.
+    Without this reason, a later reader "repairs" §5 into §6's seeded shape
+    and reintroduces #601.
+
+    SHAPE A SESSION APPENDS — an example of the append, NEVER a Draft value:
+      - date: "YYYY-MM-DD"
+        agent: "[AI agent / session identifier]"
+        files_touched:
+          - path: "<implementation file, per the @spec language>"
+            action: created  # created | modified
+            status: IN_PROGRESS  # NOT_STARTED | IN_PROGRESS | DONE | PARTIAL
+        partial_work: "[Exactly what's incomplete if session ended mid-step]"
+        blockers: "[Any blockers preventing next session]"
+        next_session_directive: "[What the next session should do first — cite file + step]"
+  sessions: []
 
 # =============================================================================
 # Section 6: Traceability
@@ -343,20 +418,45 @@ traceability:
       - "@chg: CHG-NN"
   code_inventory:
     _guidance: |
-      Audit trail: every file planned/created/modified during implementation.
-      Verified = tests pass + lint clean. Populated by each session.
+      Audit trail: every file planned, created or modified during implementation.
 
-      Status lifecycle:
-        planned  — file declared in manifest, not yet created (Draft IPLANs)
-        created  — file created during a session
-        modified — existing file changed during a session
+      Status lifecycle (this list, the `status:` key below and §2's carrier note
+      MUST name the same three values):
+        planned  — declared in §2 `file_manifest`, not yet on disk
+        created  — brought into existence during `session:`
+        modified — already existed, changed during `session:`
 
-      At Draft status, all files start as `planned`. During implementation,
-      each session updates status to `created` or `modified` and sets the
-      session number.
+      SEEDED AT DRAFT. A Draft IPLAN of subtype `code_build` or `combined`
+      carries one entry per §2 `file_manifest` path, in manifest order, every one
+      of them `status: planned`, `session: null`, `verified: false` — so a
+      stateless executor reading this block alone sees that nothing has been
+      built. An empty `code_inventory` is NOT the Draft state: it is
+      indistinguishable from an IPLAN whose executor never wrote its entries
+      back. A `deploy` IPLAN carries no `file_manifest` (see
+      `document_control.subtype`) and so seeds no entries; it records a file here
+      only when a cutover step creates or modifies one. (GD-25; regressed and
+      restored by CLEANUP-001.)
+
+      WRITTEN PER SESSION. Each session sets the entries it touched to `created`
+      or `modified` and records its own session number, and APPENDS an entry for
+      any file it creates or modifies that §2 does not declare. `planned` MUST
+      NOT survive a session that touched the file. Copying a `created` example
+      verbatim into a Draft claims a file exists that does not — the defect this
+      lifecycle exists to prevent.
+
+      Set `verified: true` only after tests pass and lint is clean for that file.
+      `created` does not imply it.
     files:
-      - path: "<implementation file, per the @spec language>"
+      - path: "<unit test for the component, per the @spec language>"
         status: planned  # planned | created | modified
+        session: null
+        verified: false  # true after tests pass + lint clean
+      - path: "<implementation file, per the @spec language>"
+        status: planned
+        session: null
+        verified: false  # true after tests pass + lint clean
+      - path: "<integration test for the component, per the @spec language>"
+        status: planned
         session: null
         verified: false  # true after tests pass + lint clean
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.54.0 |
 
 
 ## Template Usage
@@ -137,3 +137,17 @@ its companion, and `gates/GATE-*.md` define the checks. See especially
 `gates/GATE-CODE_IMPLEMENTATION.md` §6.2 for a bubble-up. The CHG creation
 checklist (§3.4 of `GOVERNANCE_RULES.md`) is a MANDATORY PROCESS GATE —
 complete it BEFORE writing any CHG document.
+
+## Delegation and concurrency pointers
+
+- **Delegation integrity** (`NOTICES.md` Rule 1–2 harden): pass real upstream
+  IDs in delegation prompts; after landing, re-validate every cited ID with a
+  `grep -F` against its source file plus a `sort | uniq -d` duplicate check.
+- **Concurrency traps** (`NOTICES.md` §Concurrency traps): verify-3 on
+  subagent landings, no whole-tree git operations with live agents, confirm
+  layer detection before trusting a clean lint, force-verify governed
+  archives with `git ls-files` / `git check-ignore -v`.
+- **§3.13 gate restatement:** the IPLAN Gate requires an `In Progress` IPLAN
+  (referencing the authorizing CHG, files listed in its manifest) BEFORE any
+  code file is written. The only exempt path is CHG→SDD→IPLAN bootstrap
+  authoring itself — creating the governance records is not "code".

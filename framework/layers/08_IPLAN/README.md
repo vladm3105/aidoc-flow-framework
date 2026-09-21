@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.0 |
+| Framework Version | 0.53.2 |
 
 
 ## C4 Model Position
@@ -49,8 +49,26 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 - **Test-first file order** — file_manifest declares test files before implementation files (TDD principle inherited from L7).
 - **Session handoff protocol** — solves the stateless executor problem: each session reads the previous session's state, identifies the next incomplete step, and continues without regenerating completed work.
 - **Implementation contracts embedded** — Type interfaces, exception hierarchies, and state machines live in the IPLAN (no separate contract files).
-- **Code inventory for audit trail** — every file created/modified is recorded with session attribution and verification status.
+- **Code inventory for audit trail** — one entry per `file_manifest` path, seeded `planned` at Draft, then set to `created` / `modified` with session attribution and verification status.
 - **Verified status is immutable** — once an IPLAN reaches Verified, it cannot be changed. CHG required for modifications.
+
+## IPLAN Subtypes
+
+`document_control.subtype` selects which section set an IPLAN carries
+(`code_build | deploy | combined | audit_fix`; default `combined` for
+pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
+breaking instance-format change; a future `devops` direction (infrastructure +
+cutover under one umbrella) is noted but not adopted.
+
+- **code_build** — new features from SPEC/TDD. File order: TDD test-first.
+- **deploy** — cutover with rollback/smoke/canary/observability.
+- **combined** — both sets (default).
+- **audit_fix** — audit-driven fixes, ordered by severity (P0→P1→P2), not by
+  TDD. Upstream is audit findings, so `source_spec` names the findings
+  reference, `file_manifest[].tdd_ref` is not used, each entry carries
+  `severity: P0/P1/P2/P3`, and `traceability.upstream` cites
+  `audit_references`. Use for integration-readiness, security-review, and
+  code-review findings. Do NOT use for new SPEC features (use `code_build`).
 
 ## IPLAN Baseline
 
@@ -99,6 +117,14 @@ Each AI agent session reads the IPLAN in this order:
 4. **Continue from that point** — do NOT regenerate completed work
 5. **Update file status** after completion or session end
 6. **Append to session_handoff.sessions** with next_session_directive
+
+**A Draft IPLAN carries `sessions: []`** — the trail is retrospective, appended by
+each session as it ends, so at Draft there is nothing to record and step 1 falls
+straight through to step 2. Writing a session entry while authoring asserts work
+that has not happened. This is deliberately *unlike* the code inventory above,
+which **is** seeded at Draft: that seed is derived from a set already known (one
+entry per `file_manifest` path), whereas nobody knows the future sessions.
+(GD-26; regressed and restored by CLEANUP-001.)
 
 ## IPLAN Status Lifecycle
 
