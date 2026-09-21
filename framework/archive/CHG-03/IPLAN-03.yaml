@@ -52,9 +52,9 @@ file_manifest:
     - path: "framework/governance/LINT_RULES.md"
       description: "CHG-L012 + REG01 + TDD-SYNC A–E + IPLAN01 advisory catalog entries + #653 GOV-014..017 rows"
       order: 2
-      status: IN_PROGRESS
+      status: DONE
       session: null
-      verified: false
+      verified: true
     - path: "framework/governance/NOTICES.md"
       description: "Delegation greps + ID red-flags + concurrency traps + donor deltas"
       order: 3
@@ -136,9 +136,9 @@ file_manifest:
     - path: "sdd_doc_lint/chg_lint.py"
       description: "New CHG-L012 warning check (completion sync) + #653 traceability port (L011 --sdd-root)"
       order: 16
-      status: IN_PROGRESS
+      status: DONE
       session: null
-      verified: false
+      verified: true
     - path: "sdd_doc_lint/__main__.py"
       description: "SKIPPED-vs-clean warning"
       order: 17
@@ -196,9 +196,9 @@ file_manifest:
     - path: "sdd_doc_lint/tests/test_chg_lint.py"
       description: "NEW — CHG-L006..L011 regression tests adapted from #653 (canonical implementation.steps schema)"
       order: 26
-      status: IN_PROGRESS
+      status: DONE
       session: null
-      verified: false
+      verified: true
 
 # =============================================================================
 # Section 2b: TDD↔IPLAN Consistency Tracking

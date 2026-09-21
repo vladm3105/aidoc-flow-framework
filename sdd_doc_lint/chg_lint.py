@@ -33,12 +33,17 @@ Checks:
     linter validates the attestation shape, not the codebase)
 
 Usage:
-  python -m sdd_doc_lint.chg_lint <chg-file.yaml>
-  python sdd_doc_lint/chg_lint.py <chg-file.yaml>
+  python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
+  python sdd_doc_lint/chg_lint.py [--sdd-root <dir>] <chg-file.yaml>
+
+  --sdd-root points at the SDD tree root holding 03_EARS/04_BDD/... and
+  switches CHG-L011 to exact-match (error) verification; without it L011
+  falls back to the nearby-heuristic (warning).
 """
 
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 from typing import Any
@@ -379,43 +384,194 @@ def check_supersedes_completeness(data: dict[str, Any], errors: list[str], warni
         passes.append(f"CHG-L010: supersedes covers all {len(archived)} archived document(s)")
 
 
+# Layers whose documents carry versioned element IDs citable for D21/D22.
+TRACEABLE_LAYERS = frozenset({"03_EARS", "04_BDD"})
+
+# Element ID form shared with the structural linter's id_patterns.element
+# (framework/registry/LAYER_REGISTRY.yaml). Full form TYPE.NN.NN.<hash 4-8>;
+# legacy short form TYPE-NN.<suffix> is accepted for D21/D22 existence checks
+# only — malformed IDs remain the structural linter's (ID03) job.
+ELEMENT_ID_FULL = re.compile(r"^[A-Z]+\.\d{2,}\.\d{2,}\.[A-Za-z0-9]{4,8}$")
+ELEMENT_ID_SHORT = re.compile(r"^[A-Z]+-\d{2,}$|^[A-Z]+\.\d{2,}\.[A-Za-z0-9][A-Za-z0-9_.-]*$")
+
+
+def _element_ids_in_text(text: str) -> set[str]:
+    """Candidate EARS/BDD element IDs cited in free text (descriptions, what/why)."""
+    ids: set[str] = set()
+    for m in re.finditer(r"\b(EARS|BDD)\.\d{2,}\.\d{2,}\.[A-Za-z0-9]{4,8}\b", text):
+        ids.add(m.group(0))
+    return ids
+
+
+def _element_ids_in_doc(doc: Any) -> set[str]:
+    """All element IDs declared anywhere in a parsed SDD document."""
+    ids: set[str] = set()
+
+    def walk(node: Any) -> None:
+        if isinstance(node, dict):
+            for key, value in node.items():
+                if key == "id" and isinstance(value, str) and ELEMENT_ID_SHORT.match(value):
+                    ids.add(value)
+                walk(value)
+        elif isinstance(node, list):
+            for value in node:
+                walk(value)
+        elif isinstance(node, str):
+            for m in re.finditer(r"\b(EARS|BDD)\.\d{2,}\.\d{2,}\.[A-Za-z0-9]{4,8}\b", node):
+                ids.add(m.group(0))
+
+    walk(doc)
+    return ids
+
+
+def _resolve_sdd_file(sdd_root: Path | None, layer: str, doc_name: str) -> Path | None:
+    if sdd_root is None:
+        return None
+    stem = doc_name if doc_name.endswith((".yaml", ".yml", ".md")) else doc_name + ".yaml"
+    candidate = sdd_root / layer / stem
+    if candidate.exists():
+        return candidate
+    alt = sdd_root / layer / (doc_name + ".yml")
+    if alt.exists():
+        return alt
+    return None
+
+
+def _traceable_docs_from_steps(data: dict[str, Any]) -> tuple[list[tuple[str, str]], set[str]]:
+    """Derive (layer, doc) pairs from canonical `implementation.steps`.
+
+    The canonical schema carries free-text `artifact` fields rather than
+    structured layer/document entries, so layer codes (03_EARS/04_BDD) and
+    EARS-/BDD- document stems are recovered by scanning step text. Steps that
+    name a traceable layer but no document stem pool the whole layer
+    directory. Returns (doc_pairs, whole_layers).
+    """
+    pairs: list[tuple[str, str]] = []
+    whole: set[str] = set()
+    for step in _sdd_lifecycle_steps(data):
+        blob = " ".join(str(step.get(k, "")) for k in ("artifact", "step", "archive_path", "file"))
+        layers = {layer for layer in TRACEABLE_LAYERS if layer in blob}
+        docs = sorted(set(re.findall(r"\b((?:EARS|BDD)-\d+[A-Za-z0-9_]*)", blob)))
+        for layer in sorted(layers):
+            if docs:
+                pairs.extend((layer, doc) for doc in docs)
+            else:
+                whole.add(layer)
+    return pairs, whole
+
+
 def check_cited_ids_exist(    data: dict[str, Any],
     errors: list[str],
     warnings: list[str],
     passes: list[str],
     file_path: Path,
+    sdd_root: Path | None = None,
 ) -> None:
     """CHG-L011: cited EARS/BDD IDs exist in the referenced documents (§3.4.1 D21/D22).
 
-    Warning-level: in the framework-only repo the referenced EARS/BDD documents
-    usually live in the consuming project, not beside the CHG, so absence is
-    unverifiable rather than a proven fabrication.
+    Exact match (error) when the tree is verifiable via --sdd-root; the
+    nearby-heuristic (warning) otherwise: in the framework-only repo the
+    referenced EARS/BDD documents usually live in the consuming project, not
+    beside the CHG, so absence without a tree is unverifiable rather than a
+    proven fabrication. Ported from #653, adapted to the canonical
+    implementation.steps schema (see GOV-014..GOV-017 in LINT_RULES.md).
     """
-    import re
+    texts: list[str] = []
 
-    text = file_path.read_text(encoding="utf-8", errors="replace") if file_path.exists() else ""
-    cited_ears = set(re.findall(r"\bEARS-[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*", text))
-    cited_bdd = set(re.findall(r"\bBDD-[A-Za-z0-9]+(?:\.[A-Za-z0-9]+)*", text))
-    if not cited_ears and not cited_bdd:
+    def collect(node: Any) -> None:
+        if isinstance(node, dict):
+            for value in node.values():
+                collect(value)
+        elif isinstance(node, list):
+            for value in node:
+                collect(value)
+        elif isinstance(node, str):
+            texts.append(node)
+
+    for section in (
+        "change_description",
+        "implementation",
+        "issues",
+        "impact_assessment",
+        "verification",
+        "sdd_lifecycle",
+    ):
+        collect(data.get(section))
+
+    cited: set[str] = set()
+    for text in texts:
+        cited |= _element_ids_in_text(text)
+
+    if not cited:
         passes.append("CHG-L011: no EARS/BDD IDs cited")
         return
-    root = file_path.parent
-    checked = 0
-    for doc_id in sorted(cited_ears | cited_bdd):
-        # Heuristic: a same-directory or nearby file carrying the doc's base ID.
-        base = doc_id.split(".")[0]
-        candidates = list(root.rglob(f"{base}.*")) if root.exists() else []
-        if not candidates:
-            warnings.append(
-                f"CHG-L011: cited '{doc_id}' but no {base}.* document found near "
-                f"{file_path.name} — verify it exists in the consuming project"
-            )
+
+    if sdd_root is None:
+        # Nearby-heuristic fallback (warning-level): no tree to verify against.
+        root = file_path.parent
+        checked = 0
+        for doc_id in sorted(cited):
+            # Heuristic: a same-directory or nearby file carrying the doc's base ID.
+            base = doc_id.split(".")[0]
+            candidates = list(root.rglob(f"{base}.*")) if root.exists() else []
+            if not candidates:
+                warnings.append(
+                    f"CHG-L011: cited '{doc_id}' but no {base}.* document found near "
+                    f"{file_path.name} — verify it exists in the consuming project"
+                )
+                continue
+            checked += 1
+            haystack = " ".join(p.read_text(encoding="utf-8", errors="replace") for p in candidates[:5])
+            if doc_id not in haystack:
+                warnings.append(f"CHG-L011: cited '{doc_id}' not found in {base}.* near {file_path.name}")
+        passes.append(f"CHG-L011: cited-ID existence checked ({checked} verifiable reference(s))")
+        return
+
+    # Exact-match path: pool every element ID declared in the lifecycle's
+    # EARS/BDD documents under --sdd-root.
+    declared: set[str] = set()
+    missing_files: list[str] = []
+    pairs, whole_layers = _traceable_docs_from_steps(data)
+    for layer, name in pairs:
+        path = _resolve_sdd_file(sdd_root, layer, name)
+        if path is None:
+            missing_files.append(f"{layer}/{name}")
             continue
-        checked += 1
-        haystack = " ".join(p.read_text(encoding="utf-8", errors="replace") for p in candidates[:5])
-        if doc_id not in haystack:
-            warnings.append(f"CHG-L011: cited '{doc_id}' not found in {base}.* near {file_path.name}")
-    passes.append(f"CHG-L011: cited-ID existence checked ({checked} verifiable reference(s))")
+        try:
+            with open(path) as f:
+                declared |= _element_ids_in_doc(yaml.safe_load(f))
+        except yaml.YAMLError as e:
+            warnings.append(f"CHG-L011: cannot parse {path}: {e}")
+    for layer in sorted(whole_layers):
+        layer_dir = sdd_root / layer
+        if not layer_dir.is_dir():
+            missing_files.append(f"{layer}/")
+            continue
+        for path in sorted(layer_dir.glob("*.yaml")) + sorted(layer_dir.glob("*.yml")):
+            try:
+                with open(path) as f:
+                    declared |= _element_ids_in_doc(yaml.safe_load(f))
+            except yaml.YAMLError as e:
+                warnings.append(f"CHG-L011: cannot parse {path}: {e}")
+
+    if missing_files:
+        warnings.append(
+            "CHG-L011: lifecycle SDD files not found under --sdd-root, traceability unchecked for: "
+            + ", ".join(sorted(set(missing_files)))
+        )
+        return
+
+    # Exact match only. A cited full-form ID resolves iff the identical string
+    # is declared in-tree; a shared TYPE.NN.NN stem is NOT sufficient (a wrong
+    # hash with a right stem is exactly the fabrication D21/D22 exist to catch).
+    unknown = sorted(c for c in cited if c not in declared)
+    if unknown:
+        errors.append(
+            "CHG-L011: cited EARS/BDD IDs not found in lifecycle SDD documents (§3.4.1 D21-D22): "
+            + ", ".join(unknown)
+        )
+    else:
+        passes.append(f"CHG-L011: all {len(cited)} cited EARS/BDD IDs resolve in-tree")
 
 
 def check_completion_spec_sync(
@@ -492,7 +648,7 @@ def check_completion_spec_sync(
         passes.append(f"CHG-L012: completion_spec_sync attestation checked on {checked} Completed IPLAN(s)")
 
 
-def lint_chg(file_path: Path) -> tuple[list[str], list[str], list[str]]:
+def lint_chg(file_path: Path, sdd_root: Path | None = None) -> tuple[list[str], list[str], list[str]]:
     """Lint a single CHG file and return (errors, warnings, passes)."""
     errors: list[str] = []
     warnings: list[str] = []
@@ -523,7 +679,7 @@ def lint_chg(file_path: Path) -> tuple[list[str], list[str], list[str]]:
     check_archive_path_convention(data, errors, warnings, passes)
     check_version_bump(data, errors, warnings, passes)
     check_supersedes_completeness(data, errors, warnings, passes)
-    check_cited_ids_exist(data, errors, warnings, passes, file_path)
+    check_cited_ids_exist(data, errors, warnings, passes, file_path, sdd_root)
     check_completion_spec_sync(data, errors, warnings, passes, file_path)
 
     return errors, warnings, passes
@@ -533,21 +689,38 @@ def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
 
-    if not argv:
-        print("Usage: chg_lint.py <chg-file.yaml> [chg-file2.yaml ...]", file=sys.stderr)
+    sdd_root: Path | None = None
+    files: list[str] = []
+    i = 0
+    while i < len(argv):
+        if argv[i] == "--sdd-root":
+            if i + 1 >= len(argv):
+                print("❌ --sdd-root requires a directory argument", file=sys.stderr)
+                return 2
+            sdd_root = Path(argv[i + 1])
+            if not sdd_root.is_dir():
+                print(f"❌ --sdd-root not a directory: {sdd_root}", file=sys.stderr)
+                return 2
+            i += 2
+        else:
+            files.append(argv[i])
+            i += 1
+
+    if not files:
+        print("Usage: chg_lint.py [--sdd-root <dir>] <chg-file.yaml> [chg-file2.yaml ...]", file=sys.stderr)
         return 2
 
     total_errors = 0
     total_warnings = 0
 
-    for arg in argv:
+    for arg in files:
         path = Path(arg)
         if not path.exists():
             print(f"❌ File not found: {path}", file=sys.stderr)
             total_errors += 1
             continue
 
-        errors, warnings, passes = lint_chg(path)
+        errors, warnings, passes = lint_chg(path, sdd_root)
         total_errors += len(errors)
         total_warnings += len(warnings)
 
