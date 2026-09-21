@@ -11,9 +11,19 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.54.0 |
+| Framework Version | 0.55.0 |
 
 ---
+
+## [0.55.0] — 2026-09-21
+
+### Added — GD-30: Type-R code-to-doc reconciliation flow (CHG-04, C2 MINOR)
+
+- `DOC_GOVERNANCE_CORE.md`: §3.1.2 Type-R section (trigger, Phase 0–3 flow, guardrails
+  incl. Emergency disambiguation — Emergency-qualifying work never uses Type-R).
+- CHG twins (`governance/chg/` + `layers/09_CHG/`): `reconciliation` change_source value
+  (entry GATE-CODE), Dual Lifecycle section + routing rows in READMEs, §1.3/§6.3 notes in
+  `GATE-CODE_IMPLEMENTATION.md`. Docs + template enum only — no new lint rules.
 
 ## [0.54.0] — 2026-09-20
 

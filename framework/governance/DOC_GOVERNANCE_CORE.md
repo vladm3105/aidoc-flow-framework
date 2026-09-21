@@ -91,6 +91,53 @@ Phase 2: Code Implementation (driven by IPLAN)
 | **IPLAN** | All code implementation steps, file manifest, execution commands, test cases | SDD document lifecycle (that's CHG's job) |
 | **SDD Documents** | Current requirements, specs, test definitions | Implementation details (that's IPLAN's job) |
 
+### Backward Propagation / Code-to-Doc Reconciliation Flow (Type-R — §3.1.2)
+
+When a verified working codebase temporarily precedes its specifications —
+empirical integration discovery against a live third-party sandbox,
+interactively authored browser test suites, severe test-flakiness
+remediation — the SDD-first order (§3.1.1) cannot be followed honestly:
+writing the change up as design-first would fabricate chronology, while
+leaving the docs stale rots the source of truth. The framework governs this
+case as **Type-R (Reconciliation)**: the verified codebase is treated as
+ground truth and propagated backward through a reverse-authored IPLAN into
+the upstream SDD layers.
+
+**Not Emergency.** A critical production issue uses the Emergency level
+(fix → deploy → document + post-mortem within 48h), never Type-R. Type-R
+covers non-emergency empirical work where the codebase is green and stable
+enough to serve as ground truth. The Type-R CHG records a one-line
+Emergency-exclusion rationale (why the work does not qualify as Emergency)
+in its change description, so the triage is auditable.
+
+```
+Verified Working Codebase (verification gates green, no secret findings, clean layer boundaries)
+  ↓
+Phase 0: Codebase Freeze & Manifest Extraction
+  1. Freeze the change set; verify all gates pass (unit, integration, and E2E suites; secret scan; boundary checks).
+  2. Extract the exact manifest: modified file paths, interface signatures, data-model deltas, configuration keys, test commands.
+  ↓
+Phase 1: Reverse-Authored IPLAN (ground truth from code)
+  3. Author the IPLAN from the frozen codebase: exact file manifest, empirical findings, test suites run.
+  4. The IPLAN bridges code to SDD — it records what was found, not what was planned.
+  ↓
+Phase 2: Upstream SDD Reconciliation (Code → TDD → SPEC → BDD → EARS)
+  5. Update TDD test suites (new assertions, cases, coverage standards).
+  6. Update SPEC interface signatures, data models, and constraints.
+  7. Update BDD feature behaviors and scenarios.
+  8. Update EARS requirements.
+  9. Refresh the layer index ledgers so they name the new versions.
+  ↓
+Phase 3: Bi-directional Verification Gate
+  10. Re-run the full battery — CHG lint, test suites, boundary checks, secret scan — against the reconciled docs.
+```
+
+**Guardrails for Type-R CHGs:**
+1. `change_source` is `reconciliation` (entry GATE-CODE); where the cascade requires it, the upstream doc fix ships as a dependent CHG (see GATE-CODE §6.2).
+2. Verification gates must be green BEFORE documentation propagation starts.
+3. The freeze holds through reconciliation: no new unverified code mid-phase. A discovery made during reconciliation restarts at Phase 0.
+4. **IPLAN Gate (§3.13) relationship.** The pre-existing verified code is the governed exception, not new implementation: from Phase 1 onward the reverse-authored IPLAN (status `In Progress`, `source_chg` naming the Type-R CHG, manifest covering every file the reconciliation touches) is the authorizing IPLAN for all doc edits and any follow-up code. The §3.13 pre-write verification applies to everything written after the freeze — including the reconciliation edits themselves. GOV-013 remains a forward-flow check; a Type-R CHG carrying `change_source: reconciliation` with a frozen manifest is its documented carve-out, not a violation.
+
 ## CHG creation checklist
 
 Before writing any CHG document, complete this checklist. Each item maps to a

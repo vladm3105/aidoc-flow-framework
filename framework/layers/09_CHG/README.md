@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.54.0 |
+| Framework Version | 0.55.0 |
 
 
 ## Overview
@@ -114,7 +114,39 @@ Phase 2: Code Implementation (driven by IPLAN)
 | External (business) | GATE-01 | Regulatory, compliance, partner demands |
 | External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues (bubble-up) |
+| Reconciliation (Backward) | GATE-CODE | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination, Type-R §3.1.2) |
 | Spec | GATE-SPEC | Change to the `framework/` spec itself (meta — orthogonal) |
+
+---
+
+## Dual Lifecycle: Forward vs. Backward Propagation
+
+The framework governs changes through two complementary lifecycle flows.
+SDD-first (§3.1.1) is the default; Type-R (§3.1.2) is the bounded exception
+for code that verifiably leads docs — never a routine alternative, and never
+a path for Emergency-qualifying work (which keeps its post-mortem).
+
+### 1. Forward Flow (Design-First — Traditional)
+
+```
+BRD(L1) → PRD(L2) → EARS(L3) → BDD(L4) → ADR(L5) → SPEC(L6) → TDD(L7) → IPLAN(L8) → Code
+```
+
+Planned features and architecture changes. Requirements originate upstream,
+specs update first, the IPLAN defines execution, code implements the plan.
+
+### 2. Backward Flow (Reconciliation-First — Type-R)
+
+```
+Verified Codebase (gates green) → CHG (reconciliation) → Reverse-Authored IPLAN → Upstream SDD Chain (TDD → SPEC → BDD → EARS)
+```
+
+Non-emergency empirical work (integration discovery, browser-authored suites,
+flakiness remediation). The frozen codebase is ground truth; the
+reverse-authored IPLAN bridges it to the SDD chain; guardrails (freeze, green
+gates first, no new unverified code mid-reconciliation) hold throughout.
+
+---
 
 ## Cascade Chain
 
