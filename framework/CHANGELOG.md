@@ -11,9 +11,23 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.56.0 |
+| Framework Version | 0.57.0 |
 
 ---
+
+## [0.57.0] — 2026-09-22
+
+### Added — GD-32: CHG request flows router (CHG-06, C2 MINOR)
+
+- New `governance/CHG_REQUEST_FLOWS.md` (canonical): F1 greenfield, F2 direct, F3 brownfield,
+  F4 bugfix vehicle, Emergency/Type-R yields, C1/IPLAN-gate ruling, GOV-018 guard.
+- `DOC_GOVERNANCE_CORE.md`: §3.1.3 router kernel + §3.13 F2.2 sentence (code-touching C1
+  requires C1 CHG + scoped IPLAN with covering tests).
+- `LINT_RULES.md`: GOV-018 row. CHG twins: `direct` source row (GATE-CODE) + C1 bound +
+  enum comments (identical — #667 fork untouched).
+- `sdd_doc_lint/chg_lint.py`: CHG-L013 misclassification check + fixtures; new
+  `tests/conformance/test_chg_flows_router.py` agreement test; 09_CHG READMEs gain
+  the selector table; `hooks/sync-version-refs.sh` gains 0.56.0 sweep lines.
 
 ## [0.56.0] — 2026-09-22
 

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-10-23 |
 | Author | Framework Maintainer |
-| Framework Version | 0.56.0 |
+| Framework Version | 0.57.0 |
 
 
 ## Overview
@@ -96,7 +96,7 @@ Phase 2: Code Implementation (driven by IPLAN)
 
 | Level | Scope | Gate Required | Process |
 |-------|-------|---------------|---------|
-| C1 | Typo, formatting, clarification | None — direct commit | Fix → commit → completed |
+| C1 | Typo, formatting, clarification (docs-only: direct commit; code-touching: C1 CHG + scoped IPLAN per F2.2) | None (docs-only) / GATE-CODE | Fix → commit / Fix → IPLAN → commit |
 | C2 | Section update, requirement refinement | Peer review | Assess impact → update → verify |
 | C3 | Cross-layer change, new requirements | Formal gate | Full CHG process |
 | Emergency | Critical production issue | Post-hoc approval + post-mortem | Fix → deploy → document within 48h |
@@ -115,7 +115,13 @@ Phase 2: Code Implementation (driven by IPLAN)
 | External (technical) | GATE-03 | Security CVE, dependency update, 3rd-party API |
 | Feedback | GATE-CODE | Production feedback, user issues (bubble-up) |
 | Reconciliation (Backward) | GATE-CODE | Verified codebase propagating backward to IPLAN and SDD layers (drift elimination, Type-R §3.1.2) |
+| Direct | GATE-CODE | Human/AI-agent request, no behavior change (F2 — no SDD cascade) |
 | Spec | GATE-SPEC | Change to the `framework/` spec itself (meta — orthogonal) |
+
+## Request Flows
+
+Classify-then-route detail (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix; Emergency and Type-R yield
+paths): `../governance/CHG_REQUEST_FLOWS.md` (canonical). Router order: Emergency → Type-R → F4 → F3 → F2 → F1.
 
 ---
 

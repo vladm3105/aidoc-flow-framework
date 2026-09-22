@@ -31,6 +31,10 @@ Checks:
     same change, the IPLAN's `completion_spec_sync:` field must show the check
     was done (warning-level: the CHG author attests by filling the field; the
     linter validates the attestation shape, not the codebase)
+  CHG-L013: Flow misclassification guard (§3.1.3 router, GOV-018) — a code/script
+    manifest with an empty SDD lifecycle but no `direct` source, no IPLAN
+    reference, or no `parent_iplan` where F4 applies, is an error naming the
+    suspected flow (F2/F3/F4)
 
 Usage:
   python -m sdd_doc_lint.chg_lint [--sdd-root <dir>] <chg-file.yaml>
@@ -681,8 +685,84 @@ def lint_chg(file_path: Path, sdd_root: Path | None = None) -> tuple[list[str], 
     check_supersedes_completeness(data, errors, warnings, passes)
     check_cited_ids_exist(data, errors, warnings, passes, file_path, sdd_root)
     check_completion_spec_sync(data, errors, warnings, passes, file_path)
+    check_flow_misclassification(data, errors, warnings, passes)
 
     return errors, warnings, passes
+
+
+def _is_code_path(file: object) -> bool:
+    """True when an artifacts_modified file entry is executable code (not an SDD doc)."""
+    if not isinstance(file, str) or not file:
+        return False
+    return (
+        file.endswith((".py", ".sh"))
+        or file.startswith("hooks/")
+        or ".github/workflows" in file
+    )
+
+
+def check_flow_misclassification(
+    data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]
+) -> None:
+    """CHG-L013: Flow misclassification guard (§3.1.3 router, GOV-018).
+
+    Syntactic only (see CHG_REQUEST_FLOWS.md F2.4): a code/script manifest with
+    an empty SDD lifecycle errors unless the shape matches F2 (source `direct`
+    + IPLAN reference) or an SDD cascade / bugfix vehicle is present. A
+    well-formed wrong-flow filing still lints green — semantic review owns that.
+    """
+    control = data.get("change_control", {})
+    if not isinstance(control, dict):
+        control = {}
+    source = control.get("change_source")
+    if source in (None, "null", ""):
+        meta = data.get("metadata", {})
+        if isinstance(meta, dict):
+            fallback = meta.get("change_source")
+            if isinstance(fallback, dict):
+                fallback = fallback.get("value", source)
+            if fallback not in (None, "null", ""):
+                source = fallback
+
+    impl = data.get("implementation", {})
+    steps: list[dict[str, Any]] = []
+    artifacts: list[dict[str, Any]] = []
+    if isinstance(impl, dict):
+        raw_steps = impl.get("steps", [])
+        if isinstance(raw_steps, list):
+            steps = [s for s in raw_steps if isinstance(s, dict)]
+        raw_artifacts = impl.get("artifacts_modified", [])
+        if isinstance(raw_artifacts, list):
+            artifacts = [a for a in raw_artifacts if isinstance(a, dict)]
+
+    code_files = [a.get("file", "") for a in artifacts if _is_code_path(a.get("file", ""))]
+    has_sdd_steps = any(s.get("phase") == "sdd_lifecycle" for s in steps)
+    has_iplan_ref = any(s.get("phase") == "iplan_creation" for s in steps) or any(
+        "IPLAN" in str(a.get("id", "")) for a in artifacts
+    )
+
+    if not code_files:
+        passes.append("CHG-L013: no code/script manifest — flow guard not applicable")
+        return
+    if has_sdd_steps:
+        passes.append("CHG-L013: SDD cascade present — not a direct/bugfix-only shape")
+        return
+    if source == "direct" and has_iplan_ref:
+        passes.append("CHG-L013: C1-direct shape (source direct + IPLAN ref, empty lifecycle)")
+        return
+    if source == "feedback" and not has_iplan_ref:
+        errors.append(
+            "CHG-L013: code/script manifest with source feedback but no IPLAN reference — "
+            "post-completion repairs require a bugfix-subtype IPLAN (parent_iplan + source_chg, F4); "
+            "pre-completion fixes belong on the active IPLAN itself"
+        )
+        return
+    errors.append(
+        "CHG-L013: code/script manifest with empty SDD lifecycle but change_source is not "
+        f"'direct' and no IPLAN reference (source={source}) — suspected misclassified flow: "
+        "F2 needs source direct + scoped IPLAN, F3 needs the SDD cascade, "
+        "F4 needs a bugfix-subtype IPLAN with parent_iplan"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:

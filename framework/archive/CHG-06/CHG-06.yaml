@@ -1,0 +1,199 @@
+# =============================================================================
+#  CHG-06: CHG request flows (F1–F4 + Emergency/Type-R router) + MINOR 0.56.0 → 0.57.0
+# =============================================================================
+#  Flow: F3/spec (framework self-change, GATE-SPEC), C2, minor
+#  IPLAN: framework/archive/CHG-06/IPLAN-06.yaml (In Progress, authorizing)
+#  Issues: #673 (Flow-2 machinery: mint direct + C1 ruling + GOV-018)
+#  §3.4 checklist: completed before authoring; app-oriented items N/A with
+#  reason — framework doc/tooling self-change, no runtime code (mirrors CHG-05):
+#  EARS/BDD IDs vacuous (upstream is issue #673 + flows doc; no element IDs
+#  cited, so D21/D22 vacuous). SECURITY_REVIEW (GATE-SPEC-W003): assessed —
+#  prose + enum-value change only, no executable content, no prompt-injection
+#  surface (requester citation is carried data, never instruction).
+# =============================================================================
+
+id: CHG-06
+title: "CHG request flows router (F1–F4, Emergency/Type-R yields, F2 direct) + MINOR bump 0.56.0 → 0.57.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-22"
+  framework_version: "0.56.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-06"
+  status: In-Progress
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-22T00:00:00Z"
+  date_approved: "2026-09-22T00:00:00Z"
+  date_implemented: null
+  supersedes:
+    - "governance routing docs v0.56.0 (framework/archive/CHG-06/)"
+    - "CHG template v0.56.0 (framework/archive/CHG-06/)"
+    - "lint tooling v0.56.0 (framework/archive/CHG-06/)"
+    - "framework/VERSION 0.56.0 (framework/archive/CHG-06/VERSION)"
+    - "IPLAN-06 authorizing record (framework/archive/CHG-06/IPLAN-06.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  summary: "Name and route the four change-request flows (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix) with Emergency/Type-R yields; resolve the C1/§3.13 contradiction for code-touching C1; mint change_source direct; guard misclassification with GOV-018."
+  why: "Small code changes have no legal shape (C1 direct-commit violates §3.13; External mandates phantom cascades). Authors guess; the STALE review (#662–#672) shows drift follows unrouted change."
+  trigger: "Issue #673 (Flow-2 machinery) + flows ratification request."
+  scope:
+    in:
+      - "governance/CHG_REQUEST_FLOWS.md ratification flip (PROPOSED → ratified)"
+      - "DOC_GOVERNANCE_CORE.md §3.1.3 insert + §3.13 F2.2 sentence"
+      - "LINT_RULES.md GOV-018 row"
+      - "CHG-TEMPLATE.yaml both copies: direct row + C1 bound + enum comment (identical — no fork widening, #667)"
+      - "chg_lint.py GOV-018 check + green/red fixtures + router-agreement conformance test"
+      - "09_CHG + chg README selector tables (identical)"
+      - "MINOR bump 0.56.0 → 0.57.0: VERSION + changelogs + machine-pin fanout (53 playbook + 6 yaml + 57 doc-control)"
+    out:
+      - "CHG template canon decision (#667 — this change edits both copies identically)"
+      - "STALE P1/P2 remediation (#662–#672 except the 0.56.0 sweep lines the bump requires)"
+      - "New SDD layers, registry shape changes"
+
+# =============================================================================
+# Section 3: SDD Lifecycle
+# =============================================================================
+
+sdd_lifecycle:
+  - layer: "09_CHG"
+    document: "framework/governance/CHG_REQUEST_FLOWS.md"
+    action: amend
+    archive_path: null
+    new_version: "1.0"
+    changes: "Status PROPOSED → ratified; enforcement warning retired; §8 pass-2 verdicts already in"
+  - layer: "09_CHG"
+    document: "framework/governance/DOC_GOVERNANCE_CORE.md"
+    action: amend
+    archive_path: "framework/archive/CHG-06/DOC_GOVERNANCE_CORE.md"
+    new_version: "0.57.0"
+    changes: "Insert §3.1.3 (flows router); §3.13 appends F2.2 IPLAN-Gate sentence"
+  - layer: "09_CHG"
+    document: "framework/governance/LINT_RULES.md"
+    action: amend
+    archive_path: "framework/archive/CHG-06/LINT_RULES.md"
+    new_version: "0.57.0"
+    changes: "Add GOV-018 row (F2.4 misclassification guard)"
+  - layer: "09_CHG"
+    document: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-06/CHG-TEMPLATE.layer.yaml"
+    new_version: "0.57.0"
+    changes: "direct source row + C1 bound + enum comment (identical to governance copy)"
+  - layer: "09_CHG"
+    document: "framework/governance/chg/CHG-TEMPLATE.yaml"
+    action: amend
+    archive_path: "framework/archive/CHG-06/CHG-TEMPLATE.gov.yaml"
+    new_version: "0.57.0"
+    changes: "direct source row + C1 bound + enum comment (identical to layer copy)"
+  - layer: "08_IPLAN"
+    document: "framework/archive/CHG-06/IPLAN-06.yaml"
+    action: create
+    archive_path: null
+    new_version: "1.0"
+    changes: "Authorizing IPLAN for this change (nothing to archive)"
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Snapshot pre-change governance/template/linter originals to framework/archive/CHG-06/"
+      phase: "sdd_lifecycle"
+      artifact: "governance docs, both CHG templates, LINT_RULES.md, chg_lint.py"
+      archive_path: "framework/archive/CHG-06/"
+      new_version: "0.57.0"
+      current_version: "0.56.0"
+      status: Completed
+    - step: "Amend governance + template docs per lifecycle above (router kernel, F2.2, direct row, GOV-018)"
+      phase: "sdd_lifecycle"
+      artifact: "DOC_GOVERNANCE_CORE.md, LINT_RULES.md, DECISIONS.md, both CHG-TEMPLATE.yaml, READMEs, CHG_REQUEST_FLOWS.md"
+      archive_path: "framework/archive/CHG-06/"
+      new_version: "0.57.0"
+      current_version: "0.56.0"
+      status: In-Progress
+    - step: "Extend lint tooling + fixtures + conformance test + MINOR fanout per IPLAN-06 manifest"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py, tests/conformance/test_chg_flows_router.py, framework/VERSION, framework/CHANGELOG.md"
+      archive_path: "framework/archive/CHG-06/"
+      new_version: "0.57.0"
+      current_version: "0.56.0"
+      status: In-Progress
+    - step: "Create IPLAN-06 with all tooling and test implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-06"
+      status: Completed
+  files_modified:
+    - "framework/governance/CHG_REQUEST_FLOWS.md"
+    - "framework/governance/DOC_GOVERNANCE_CORE.md"
+    - "framework/governance/LINT_RULES.md"
+    - "framework/governance/DECISIONS.md"
+    - "framework/governance/README.md"
+    - "framework/README.md"
+    - "framework/SPEC_DRIVEN_DEVELOPMENT_GUIDE.md"
+    - "README.md"
+    - "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+    - "framework/governance/chg/CHG-TEMPLATE.yaml"
+    - "framework/layers/09_CHG/README.md"
+    - "framework/governance/chg/README.md"
+    - "sdd_doc_lint/chg_lint.py"
+    - "sdd_doc_lint/tests/test_chg_lint.py"
+    - "tests/conformance/test_chg_flows_router.py"
+    - "hooks/sync-version-refs.sh"
+    - "framework/VERSION"
+    - "framework/CHANGELOG.md"
+
+artifacts_modified:
+  - id: "CHG-06"
+    changes: "Authorizing record for flows ratification (this file)"
+  - id: "IPLAN-06"
+    changes: "Authorizing IPLAN (framework/archive/CHG-06/IPLAN-06.yaml)"
+
+# =============================================================================
+# Section 5: Gate Approval
+# =============================================================================
+
+gate_approval:
+  gate: GATE-SPEC
+  approver: null
+  date: null
+  # C2 spec change: peer review (maintainer). Approver recorded before Implemented.
+
+# =============================================================================
+# Section 6: Verification
+# =============================================================================
+
+verification:
+  gates:
+    - "GATE-SPEC E001–E004 (record-level: tests/chg/spec_gate.py)"
+    - "chg_lint.py over CHG-06 (0 errors; L004 warning acceptable pre-IPLAN-link)"
+    - "sdd_doc_lint/tests green (incl. new GOV-018 fixtures)"
+    - "conformance: frontmatter + spec_hygiene + router-agreement green"
+    - "D2 dead-path sweep: no new live-path refs introduced"

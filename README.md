@@ -163,7 +163,10 @@ framework's contract completes the model rather than exposing a weakness.
 5. **Validate the oracle** at EARS/BDD with a PO before building.
 6. **Build test-first** from the IPLANs; sessions hand off via the IPLAN session-handoff.
 7. **Observe reality**, then **adapt** via CHG — the chain is a control loop, not a
-   blueprint.
+   blueprint. Which flow an adaptation takes — F1 greenfield, F2 direct request,
+   F3 brownfield restart, F4 bugfix on an implemented IPLAN, or the Emergency /
+   Type-R yield paths — is routed by
+   `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0, CHG-06).
 
 ---
 

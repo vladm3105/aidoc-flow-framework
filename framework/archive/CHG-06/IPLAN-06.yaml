@@ -1,0 +1,179 @@
+# =============================================================================
+#  IPLAN-06: Implement CHG request flows ratification + MINOR bump 0.56.0 → 0.57.0
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-06/CHG-06.yaml (F3/spec, C2, In-Progress)
+#  Source: issue #673 + framework/governance/CHG_REQUEST_FLOWS.md (REVIEWED 2/2)
+# =============================================================================
+
+doc_id: IPLAN-06
+title: "Implement CHG request flows ratification + MINOR bump 0.56.0 → 0.57.0"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-22"
+  framework_version: "0.56.0"
+  source_chg: "CHG-06"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-06"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-06; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-22T00:00:00Z"
+  last_updated: "2026-09-22T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 4
+  estimated_files: 130
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "framework/governance/CHG_REQUEST_FLOWS.md"
+      description: "Flip PROPOSED → ratified; retire enforcement warning; point §7 items at landed state"
+      order: 1
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "Insert §3.1.3 (selector + F1–F4 + router, condensed with pointer); §3.13 F2.2 sentence"
+      order: 2
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/LINT_RULES.md"
+      description: "GOV-018 row (misclassification guard, error)"
+      order: 3
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD entry: flows ratification (GATE-CODE routing, direct mint, GOV-018 number, version slot)"
+      order: 4
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/layers/09_CHG/CHG-TEMPLATE.yaml"
+      description: "direct source row (GATE-CODE) + C1 bound + :110 enum comment"
+      order: 5
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/chg/CHG-TEMPLATE.yaml"
+      description: "IDENTICAL to layer copy (no fork widening, #667)"
+      order: 6
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "GOV-018 check: code manifest + empty lifecycle + source!=direct + no parent_iplan → error naming suspected flow"
+      order: 7
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "GOV-018 fixtures: C1-direct golden (green) + misclassified golden (red)"
+      order: 8
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "tests/conformance/test_chg_flows_router.py"
+      description: "NEW router-agreement test: F1–F4 × source × gate × cascade matrix + Emergency/Type-R yields"
+      order: 9
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/layers/09_CHG/README.md"
+      description: "Selector table (identical to governance copy)"
+      order: 10
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/governance/chg/README.md"
+      description: "Selector table (identical to layer copy)"
+      order: 11
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "Add 0.56.0 sweep lines (bump-required subset of #663)"
+      order: 12
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/VERSION"
+      description: "0.56.0 → 0.57.0"
+      order: 13
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "0.57.0 entry (flows ratification + GOV-018 + direct)"
+      order: 14
+      status: PLANNED
+      session: 1
+      verified: false
+    - path: "PIN FANOUT (53 playbook + 6 yaml + 57 doc-control)"
+      description: "Mechanical 0.56.0 → 0.57.0 on machine-pin forms only (archive/CHANGELOG prose untouched)"
+      order: 15
+      status: PLANNED
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "Test-first where the suite exists: GOV-018 fixtures + router-agreement test authored against the ratified shapes; linter GOTO green before fanout; conformance suite is the EVAL equivalent (no product code → no EVAL cycles, per F3/spec vehicle precedent CHG-05)."
+  cases:
+    - "GOV-018 green: C1-direct CHG (empty lifecycle, source direct, scoped IPLAN ref) passes"
+    - "GOV-018 red: code manifest, empty lifecycle, no direct source, no parent_iplan → error naming flow"
+    - "Router matrix: (F1,upstream,GATE-01,cascade) (F2,direct,GATE-CODE,none) (F3,design,GATE-06,cascade) (F4,feedback,GATE-CODE,none) + Emergency/Type-R yields"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-06/CHG-06.yaml"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_chg_flows_router.py'"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_playbook_frontmatter.py'"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_spec_hygiene.py'"
+    - "bash hooks/sync-version-refs.sh"
+  test:
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Both CHG-TEMPLATE.yaml copies edited IDENTICALLY (diff -q clean except the known :51/:392-427 fork, #667)"
+  - "No normative text duplicated outside CHG_REQUEST_FLOWS.md (pointers only)"
+  - "PROPOSED markers flipped ONLY where §7 landed (flows doc + 4 pointers + READMEs)"
+  - "Archive/CHANGELOG prose history untouched by fanout (machine-pin forms only)"
+  - "Conformance stays a contract on framework/: no weakened checks"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "All 15 manifest orders (vehicle + deltas + fanout + verify + land)"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-06"
+  upstream: ["#673", "framework/governance/CHG_REQUEST_FLOWS.md", "plans/CHG-REQUEST-FLOWS-CORE-DRAFT.md"]
+  downstream: ["Code (sdd_doc_lint + tests)", "framework/VERSION 0.57.0"]

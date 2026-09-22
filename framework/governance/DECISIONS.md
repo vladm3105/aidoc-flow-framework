@@ -23,6 +23,23 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-32 — CHG request flows ratified: F1–F4 router + F2 direct + GOV-018 (CHG-06, 0.57.0 MINOR)
+
+- **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.56.0 → 0.57.0` (MINOR),
+  change-level **C2** (F3/spec). Vehicle: CHG-06 + IPLAN-06 (`framework/archive/CHG-06/`).
+- **Context:** Small code changes had no legal shape (C1 direct-commit violates §3.13; `External`
+  mandates phantom cascades) — issue #673. Pass-1 review (G1–G10) added Emergency/Type-R yields,
+  rerouted F2 to GATE-CODE, resolved the GOV-017 collision; pass 2 confirmed all §8 verdicts.
+- **Decision:** Four named flows (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix vehicle) with an
+  ordered router (Emergency → Type-R → F4 → F3 → F2 → F1); mint `change_source: direct` (GATE-CODE);
+  bound C1 (docs-only direct-commit; code-touching C1 CHG + scoped IPLAN with covering tests);
+  GOV-018 misclassification guard (syntactic — semantic cases rely on review, documented in F2.4).
+  Structural choice: `DOC_GOVERNANCE_CORE.md` §3.1.3 carries the router kernel + pointer (not a full
+  fold — avoids a second normative source); `governance/CHG_REQUEST_FLOWS.md` is canonical.
+- **Consequence:** `direct` is valid from 0.57.0; F2.2 sentence governs §3.13; 116 machine pins swept.
+
+---
+
 ## GD-31 — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, 0.56.0 MINOR)
 
 - **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.55.0 → 0.56.0` (MINOR),

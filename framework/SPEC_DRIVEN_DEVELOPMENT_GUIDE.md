@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.56.0 |
+| Framework Version | 0.57.0 |
 
 
 ## Overview
@@ -35,6 +35,12 @@ BRD (L1) → PRD (L2) → EARS (L3) → BDD (L4) → ADR (L5) → SPEC (L6) → 
 | L8 | IPLAN | Execution plan: file manifest, bash commands, session handoff | SPEC, TDD | Code |
 | L9 | CHG | Change management overlay — gates, versioning, audit trail | Any | — |
 | L10 | EVAL | Evaluation & QA governance — test strategy, coverage matrices | EARS, BDD, TDD, IPLAN | CI/CD |
+
+The forward chain above is the **F1 greenfield** flow. Subsequent changes do not all repeat it: behavior changes
+restart the chain from the lowest affected layer (**F3** brownfield, SDD-first), defects in completed work repair
+through the scoped bugfix vehicle (**F4**, parent immutable), and small direct requests skip the SDD cascade
+(**F2**). Which flow a change takes is routed by
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
 
 ## Necessary-upstream traceability
 
