@@ -50,6 +50,11 @@ registry:
   #   validated_by: "IPLAN-NN"  # Reference to validation IPLAN (if applicable)
   #   validation_date: "YYYY-MM-DD"  # Date when Verified status was set
   #   findings_resolved: 0  # Number of findings fixed during validation
+  #   # A Completed plan merged before VERIFY keeps validated_by: "pending"
+  #   # until the validation IPLAN lands — an open VERIFY obligation, not a
+  #   # clean bill of health. Bugfix IPLANs additionally record their closed
+  #   # parent here:
+  #   parent_iplan: null  # bugfix only: "IPLAN-NN" of the closed plan under repair
 
 # =============================================================================
 # Backlog

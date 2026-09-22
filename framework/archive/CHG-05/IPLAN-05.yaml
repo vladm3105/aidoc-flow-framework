@@ -46,32 +46,32 @@ file_manifest:
     - path: "tests/conformance/test_iplan_bugfix_lifecycle.py"
       description: "NEW — test-first: subtype/lifecycle/naming/parent/scope/rollback invariants + CHG-L catalog-agreement guard (fails before Task 2)"
       order: 1
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
       description: "bugfix subtype: parent_iplan/source_chg homes, bugfix checklist, step-order + rollback-marker guidance"
       order: 2
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/08_IPLAN/README.md"
       description: "Completed-vs-Verified semantics; post-completion repair pattern; active-definition pointer; TMP/VERIFY routing"
       order: 3
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
       description: "Migration dry-run requirement; validating_iplan/original_iplan usage for post-merge VERIFY window"
       order: 4
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
       description: "Pending-validated_by state for merged-at-Completed plans; bugfix-parent linkage fields"
       order: 5
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
       description: "§3.13 active definition + bugfix authorisation; §IPLAN Lifecycle post-completion pattern; migration VERIFY rule"

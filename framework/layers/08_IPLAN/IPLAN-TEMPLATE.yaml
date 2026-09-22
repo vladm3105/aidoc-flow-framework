@@ -55,7 +55,7 @@ document_control:
     IPLAN-Ready >=90/100.
 
     `subtype` selects which sections this IPLAN must carry. Values
-    (CLEANUP-PR-E; `audit_fix` added 0.54.0):
+    (CLEANUP-PR-E; `audit_fix` added 0.54.0; `bugfix` added 0.56.0):
       - code_build: file_manifest, execution_commands,
         implementation_contracts, session_handoff, traceability
         required; rollback/smoke/canary/observability NOT required.
@@ -69,6 +69,24 @@ document_control:
         carries a `severity:` (P0/P1/P2/P3) instead. Upstream is the
         audit, so `traceability.upstream` cites `audit_references`
         rather than `spec_references`/`tdd_references`.
+      - bugfix: post-completion defect repair parented on a closed
+        (Completed, merged-at-Completed with VERIFY pending, or Verified)
+        IPLAN. `parent_iplan` names the closed plan — it MUST be an
+        original, never another bugfix (no fix-on-fix: a failed attempt
+        runs rollback, then a new sibling cites `prior_attempts`).
+        `source_chg` names the authorizing CHG (C1 allowed, entry_gate
+        None for non-spec repairs); `source_spec` names the defect's
+        issue/tracker reference. `file_manifest` is scope-limited to
+        repair files. Normative step order: fix → regression test →
+        rollback readiness → parent revision entry last. Acceptance is
+        source-state (fixed + live-verified code); a merged annotation
+        with an unverified fix is failure. `rollback_procedure` is
+        REQUIRED, with resolution markers PENDING→DONE/SKIPPED in the
+        resolution note. The parent plan is never touched — recording
+        lands in this IPLAN + the authorizing CHG + the index.
+        Naming: `IPLAN-{NEW_ID}_bugfix_{FIXED_ID}_{slug}.yaml`; the
+        NEW_ID minter is max+1 from the directory listing, never
+        counters; DAG edges run backward-only (child → parent).
 
     A future `devops` direction (infrastructure + cutover under one
     umbrella) is noted but NOT adopted — `deploy` stays, and `combined`
@@ -82,8 +100,14 @@ document_control:
     `document_control` and selects the section set. Missing subtype
     defaults to `combined` (backward compat for pre-0.19.1 IPLANs).
   iplan_id: "IPLAN-NN"
-  subtype: combined  # code_build | deploy | combined | audit_fix
+  subtype: combined  # code_build | deploy | combined | audit_fix | bugfix
   source_spec: "@spec: SPEC-NN"  # audit_fix: audit findings reference instead
+                                 # bugfix: defect issue/tracker reference instead
+  parent_iplan: null  # bugfix only: "IPLAN-NN" of the closed plan under repair
+                      # (must be an original terminal plan — never another bugfix)
+  source_chg: null  # bugfix only: "CHG-NN" authorizing the repair
+                    # (satisfies the §3.13 pre-write check: an In Progress IPLAN
+                    # whose source_chg names the authorizing CHG, repair scope only)
   status: Draft  # Draft | Approved | In Progress | Completed | Verified
   # Status lifecycle (each transition is a blocking gate — never start work on
   # the next phase without first updating status to that phase):
@@ -133,7 +157,7 @@ document_control:
 # =============================================================================
 file_manifest:
   _size_target: 400  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
+  _required_when_subtype: [code_build, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
   _guidance: |
     Declared file creation order. Tests first (TDD principle).
     Each file tracked with status marker for session handoff.
@@ -283,7 +307,7 @@ tdd_consistency:
 # =============================================================================
 execution_commands:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
+  _required_when_subtype: [code_build, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
   _guidance: |
     Runnable commands. The actual bridge from specification to code.
     Three categories matching the implementation workflow (keys are a validated
@@ -349,7 +373,7 @@ implementation_contracts:
 # =============================================================================
 session_handoff:
   _size_target: 300  # words; AUTHORING_STYLE.md (AS2)
-  _required_when_subtype: [code_build, combined]  # CLEANUP-PR-E item 17
+  _required_when_subtype: [code_build, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
   _guidance: |
     Critical for stateless executor calls. Each AI agent session is
     independent — no memory across invocations. This section is the bridge.
@@ -466,7 +490,7 @@ traceability:
 # =============================================================================
 rollback_procedure:
   _size_target: 300  # words
-  _required_when_subtype: [deploy, combined]  # CLEANUP-PR-E item 17
+  _required_when_subtype: [deploy, combined, bugfix]  # CLEANUP-PR-E item 17; bugfix added 0.56.0
   _guidance: |
     Step-by-step rollback for the cutover this IPLAN executes. Each
     step has a documented reversal: what was applied, the inverse
