@@ -8,7 +8,7 @@ manifest is repair-scoped, and the parent is never touched.
 Checks (catalog: framework/governance/LINT_RULES.md):
   BGF-01: Filename matches IPLAN-{NEW}_bugfix_{FIXED}_{slug}.yaml
   BGF-02: NEW_ID is max+1 from the directory listing (never counters)
-  BGF-03: iplan_id/document_id matches the filename stem (§3.4.1 A1/A3)
+  BGF-03: iplan_id/doc_id matches the filename stem (§3.4.1 A1/A3)
   BGF-04: Step order fix → regression → rollback → revision entry last
           (order of present keywords, not presence — presence is reviewer's job)
   BGF-05: rollback_procedure present; resolution markers all DONE/SKIPPED
@@ -37,21 +37,47 @@ except ImportError:
     sys.exit(3)
 
 
-NAME_PAT = re.compile(r"^IPLAN-(\d+)_bugfix_(\d+)_(.+)\.ya?ml$")
-SIBLING_PAT = re.compile(r"^IPLAN-(\d+)[_.].*\.ya?ml$")
-TERMINAL_STATUSES = frozenset({"Completed", "Verified"})
-ACTIVE_STATUSES = frozenset({"Draft", "Approved", "In Progress"})
+NAME_PAT = re.compile(r"^IPLAN-(\d+)_bugfix_(\d+)_(.+)\.ya?ml$", re.IGNORECASE)
+SIBLING_PAT = re.compile(r"^IPLAN-(\d+)(?:[_.].*)?\.ya?ml$", re.IGNORECASE)
+TERMINAL_STATUSES = frozenset({"completed", "verified"})
+ACTIVE_STATUSES = frozenset({"draft", "approved", "in progress"})
 
-# BGF-04: first-occurrence order of present keywords only.
-ORDER_KEYWORDS = ("fix", "regress", "rollback", "revision")
+# BGF-04: step-order scan over present keywords only (presence is reviewer's job).
+# Word boundaries defeat substring false positives ("fixture", "prefix", "hotfix").
+ORDER_PATTERNS = (
+    ("fix", re.compile(r"\bfix\b")),
+    ("regress", re.compile(r"\bregress\w*\b")),
+    ("rollback", re.compile(r"\brollback\b")),
+    ("revision", re.compile(r"\brevision\b")),
+)
+
+# BGF-05: closed vocabulary — anything else (missing, typo, "DON") fails.
+RESOLVED_MARKERS = frozenset({"DONE", "SKIPPED"})
 
 
-def _load(path: Path) -> dict[str, Any] | None:
+def _load(path: Path) -> Any:
+    """Read + parse; never raises. Returns the raw document (None for empty),
+    a non-dict as-is, or a dict carrying __io_error__/__parse_error__."""
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        text = path.read_text(encoding="utf-8")
+    except OSError as e:
+        return {"__io_error__": str(e)}
+    try:
+        return yaml.safe_load(text)
     except yaml.YAMLError as e:
         return {"__parse_error__": str(e)}
-    return data if isinstance(data, dict) else {}
+
+
+def _repo_root(start: Path) -> Path | None:
+    """Nearest ancestor holding .git (max 6 up); None outside a checkout."""
+    node = start.resolve()
+    for _ in range(6):
+        if (node / ".git").exists():
+            return node
+        if node.parent == node:
+            return None
+        node = node.parent
+    return None
 
 
 def _doc_control(data: dict[str, Any]) -> dict[str, Any]:
@@ -73,10 +99,15 @@ def check_naming(path: Path, errors: list[str], warnings: list[str], passes: lis
 
 def check_minter(path: Path, m: re.Match, errors: list[str], warnings: list[str], passes: list[str]) -> None:
     """BGF-02: NEW_ID is max+1 from the directory listing."""
+    try:
+        entries = list(path.parent.iterdir())
+    except OSError as e:
+        warnings.append(f"BGF-02: cannot list {path.parent} ({e}) — minter unchecked")
+        return
     ids = sorted(
         {
             int(s.group(1))
-            for f in path.parent.iterdir()
+            for f in entries
             if f.name != path.name and (s := SIBLING_PAT.match(f.name))
         }
     )
@@ -99,39 +130,59 @@ def check_id_match(
     """BGF-03: declared IDs match the filename stem."""
     dc = _doc_control(data)
     want = f"IPLAN-{int(m.group(1)):02d}"
+    seen = 0
     bad = 0
     for key, holder in (("iplan_id", dc), ("doc_id", data)):
-        if key in holder and holder[key] not in (None, "") and str(holder[key]) != want:
+        if key not in holder or holder[key] in (None, ""):
+            continue
+        seen += 1
+        if str(holder[key]) != want:
             errors.append(f"BGF-03: {key} '{holder[key]}' does not match filename stem ({want})")
             bad += 1
-    if bad == 0:
+    if seen == 0:
+        warnings.append("BGF-03: neither iplan_id nor doc_id declared — add one matching the stem")
+    elif bad == 0:
         passes.append(f"BGF-03: declared IDs match filename stem ({want})")
 
 
 def check_step_order(data: dict[str, Any], errors: list[str], warnings: list[str], passes: list[str]) -> None:
-    """BGF-04: order of present keywords, never presence."""
-    impl: list[str] = []
+    """BGF-04: keyword order across steps in step order, never presence."""
+    steps: list[str] = []
     exec_cmds = data.get("execution_commands", {})
     if isinstance(exec_cmds, dict):
-        for step in exec_cmds.get("implementation", []) or []:
-            impl.append(str(step))
+        raw_impl = exec_cmds.get("implementation", []) or []
+        if not isinstance(raw_impl, list):
+            warnings.append("BGF-04: execution_commands.implementation is not a list — order unchecked")
+            return
+        steps.extend(str(s) for s in raw_impl)
+    # NOTE: rollback_procedure steps are deliberately NOT scanned — rollback
+    # prose naturally mentions "fix" ("revert the fix"), which is not the FIX
+    # phase. Rollback presence/order is owned by BGF-05.
     manifest = data.get("file_manifest", {})
     if isinstance(manifest, dict):
-        for entry in manifest.get("files", []) or []:
+        files = manifest.get("files", []) or []
+        if not isinstance(files, list):
+            warnings.append("BGF-04: file_manifest.files is not a list — order unchecked")
+            return
+        for entry in files:
             if isinstance(entry, dict):
-                impl.append(str(entry.get("description", "")))
-    blob = "\n".join(impl).lower()
-    positions = [(kw, blob.find(kw)) for kw in ORDER_KEYWORDS]
-    present = [(kw, pos) for kw, pos in positions if pos >= 0]
-    if len(present) < 2:
+                steps.append(str(entry.get("description", "")))
+    # (step_index, keyword_index) in step order; the keyword indexes must be
+    # non-decreasing for the normative order to hold.
+    seq: list[tuple[int, int]] = []
+    for i, text in enumerate(steps):
+        lowered = text.lower()
+        for k, (_, pat) in enumerate(ORDER_PATTERNS):
+            if pat.search(lowered):
+                seq.append((i, k))
+    if len({k for _, k in seq}) < 2:
         passes.append("BGF-04: fewer than two order keywords present — order unchecked")
         return
-    ordered = sorted(present, key=lambda kv: kv[1])
-    want_sorted = sorted(present, key=lambda kv: ORDER_KEYWORDS.index(kv[0]))
-    if [kw for kw, _ in ordered] != [kw for kw, _ in want_sorted]:
+    keys = [k for _, k in seq]
+    if keys != sorted(keys):
         errors.append(
             "BGF-04: step order violated (want fix → regression → rollback → revision entry last): "
-            + " → ".join(kw for kw, _ in ordered)
+            + " → ".join(ORDER_PATTERNS[k][0] for k in keys)
         )
     else:
         passes.append("BGF-04: present keywords follow fix → regression → rollback → revision")
@@ -144,16 +195,19 @@ def check_rollback(data: dict[str, Any], errors: list[str], warnings: list[str],
         errors.append("BGF-05: rollback_procedure with steps is REQUIRED for bugfix IPLANs")
         return
     resolution = rb.get("resolution", []) or []
-    if not resolution:
+    if not isinstance(resolution, list) or not resolution:
         errors.append("BGF-05: rollback resolution note missing — record PENDING→DONE/SKIPPED markers")
         return
-    pending = [
-        str(r.get("item", "?"))
+    bad = [
+        str(r.get("item", "?")) if isinstance(r, dict) else repr(r)
         for r in resolution
-        if isinstance(r, dict) and str(r.get("marker", "")).upper() == "PENDING"
+        if not isinstance(r, dict) or str(r.get("marker", "")).upper() not in RESOLVED_MARKERS
     ]
-    if pending:
-        errors.append(f"BGF-05: unresolved PENDING rollback marker(s): {', '.join(pending)}")
+    if bad:
+        errors.append(
+            "BGF-05: rollback marker(s) not DONE/SKIPPED (missing, PENDING, or typo): "
+            + ", ".join(bad)
+        )
     else:
         passes.append("BGF-05: rollback present, all resolution markers DONE/SKIPPED")
 
@@ -163,20 +217,31 @@ def check_manifest(
 ) -> None:
     """BGF-06: DONE entries exist on disk (machine half of manifest accuracy)."""
     manifest = data.get("file_manifest", {})
-    files = manifest.get("files", []) if isinstance(manifest, dict) else []
+    if not isinstance(manifest, dict):
+        warnings.append("BGF-06: file_manifest is not a mapping — nothing to verify on disk")
+        return
+    files = manifest.get("files", []) or []
+    if not isinstance(files, list):
+        errors.append("BGF-06: file_manifest.files is not a list")
+        return
     if not files:
         warnings.append("BGF-06: empty file_manifest — nothing to verify on disk")
         return
+    roots = [path.parent]
+    repo = _repo_root(path.parent)
+    if repo is not None and repo != path.parent:
+        roots.append(repo)
     missing = []
     for entry in files:
         if not isinstance(entry, dict):
             continue
-        if str(entry.get("status", "")).upper() != "DONE":
+        if str(entry.get("status", "")).strip().upper() != "DONE":
             continue
-        rel = str(entry.get("path", ""))
+        rel = str(entry.get("path", "") or "").strip()
         if not rel:
+            errors.append("BGF-06: DONE manifest entry without a path")
             continue
-        if not (Path.cwd() / rel).exists() and not (path.parent / rel).exists():
+        if not any((root / rel).exists() for root in roots):
             missing.append(rel)
     if missing:
         errors.append(f"BGF-06: DONE manifest entrie(s) missing on disk: {', '.join(missing)}")
@@ -198,11 +263,21 @@ def check_parent(
     if not num:
         errors.append(f"BGF-07: parent reference '{target}' is not an IPLAN-NN id")
         return
-    candidates = sorted(path.parent.glob(f"IPLAN-{int(num.group(1)):02d}_*.yaml"))
-    candidates += sorted(path.parent.glob(f"IPLAN-{int(num.group(1)):02d}_*.yml"))
-    if not candidates:
+    nn = f"{int(num.group(1)):02d}"
+    exact = [path.parent / f"IPLAN-{nn}.yaml", path.parent / f"IPLAN-{nn}.yml"]
+    suffixed = list(path.parent.glob(f"IPLAN-{nn}_*.yaml")) + list(path.parent.glob(f"IPLAN-{nn}_*.yml"))
+    if not any(p.exists() for p in exact) and not suffixed:
         warnings.append(f"BGF-07: parent file for {target} not found beside the bugfix — originality unchecked")
         return
+    originals = [p for p in exact if p.exists()]
+    originals += sorted(p for p in suffixed if "_bugfix_" not in p.name)
+    if not originals:
+        errors.append(
+            f"BGF-07: every same-number file for {target} is itself a bugfix — "
+            "no fix-on-fix (mint a sibling)"
+        )
+        return
+    candidates = originals
     try:
         parent_doc = yaml.safe_load(candidates[0].read_text(encoding="utf-8"))
     except yaml.YAMLError:
@@ -212,14 +287,15 @@ def check_parent(
         warnings.append(f"BGF-07: parent file {candidates[0].name} is not a mapping — unchecked")
         return
     pdc = _doc_control(parent_doc)
+    pstatus = str(pdc.get("status", "") or "").strip().casefold()
     if str(pdc.get("subtype", "")).lower() == "bugfix":
         errors.append(f"BGF-07: parent {target} is itself a bugfix — no fix-on-fix (mint a sibling)")
-    elif str(pdc.get("status", "")) in ACTIVE_STATUSES:
+    elif pstatus in ACTIVE_STATUSES:
         errors.append(
             f"BGF-07: parent {target} is still active ({pdc.get('status')}) — "
             "bugfix parents must be terminal (Completed/Verified)"
         )
-    elif str(pdc.get("status", "")) not in TERMINAL_STATUSES:
+    elif pstatus not in TERMINAL_STATUSES:
         warnings.append(
             f"BGF-07: parent {target} status '{pdc.get('status')}' is not a known "
             "terminal status — verify it is closed"
@@ -235,11 +311,17 @@ def lint_bugfix(path: Path) -> tuple[list[str], list[str], list[str]]:
     passes: list[str] = []
 
     data = _load(path)
-    if data is None:
-        errors.append(f"File not found or empty: {path}")
+    if isinstance(data, dict) and "__io_error__" in data:
+        errors.append(f"Cannot read {path}: {data['__io_error__']}")
         return errors, warnings, passes
-    if "__parse_error__" in data:
+    if isinstance(data, dict) and "__parse_error__" in data:
         errors.append(f"YAML parse error: {data['__parse_error__']}")
+        return errors, warnings, passes
+    if data is None:
+        errors.append(f"BGF-00: {path.name} is empty — a bugfix IPLAN must declare its repair")
+        return errors, warnings, passes
+    if not isinstance(data, dict):
+        errors.append(f"BGF-00: {path.name} is not a YAML mapping — a bugfix IPLAN must be one")
         return errors, warnings, passes
 
     dc = _doc_control(data)
@@ -266,9 +348,19 @@ def lint_bugfix(path: Path) -> tuple[list[str], list[str], list[str]]:
 def main(argv: list[str] | None = None) -> int:
     if argv is None:
         argv = sys.argv[1:]
-    files = [a for a in argv if not a.startswith("-")]
-    if not files or any(a in ("-h", "--help") for a in argv):
-        print("Usage: bugfix_lint.py <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+    if any(a in ("-h", "--help") for a in argv):
+        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+        return 2
+    if "--" in argv:
+        argv = argv[argv.index("--") + 1 :]
+    unknown = [a for a in argv if a.startswith("-")]
+    if unknown:
+        print(f"Unknown option(s): {' '.join(unknown)}", file=sys.stderr)
+        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
+        return 2
+    files = argv
+    if not files:
+        print("Usage: bugfix_lint.py [--] <bugfix-iplan.yaml> [bugfix-iplan2.yaml ...]", file=sys.stderr)
         return 2
 
     total_errors = 0

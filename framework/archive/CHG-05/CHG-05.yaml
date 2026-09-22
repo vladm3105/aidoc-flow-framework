@@ -103,8 +103,8 @@ impact_assessment:
       artifacts: ["LAYER_REGISTRY.yaml"]
       impact: "tmp/ sentence resolved one way or the other; otherwise untouched (no new layer, no shape change)"
     - layer: "Tooling"
-      artifacts: ["sdd_doc_lint/chg_lint.py", "sdd_doc_lint/tests/test_chg_lint.py (+ fixtures)"]
-      impact: "New bugfix checks (naming, parent originality, scope, rollback, manifest); GOV-013 carve-out is prose-side"
+      artifacts: ["sdd_doc_lint/bugfix_lint.py (new)", "sdd_doc_lint/tests/test_bugfix_lint.py (new)", "hooks/sync-version-refs.sh (+0.55.0 sweep lines)"]
+      impact: "Greenfield BGF-01..07 linter + unit tests; chg_lint.py untouched by design; GOV-013 carve-out is prose-side"
     - layer: "Tests"
       artifacts: ["tests/conformance/test_iplan_bugfix_lifecycle.py (new)"]
       impact: "Subtype/lifecycle/naming/parent/scope/rollback invariants + BGF catalog-agreement guard; goldens updated explicitly if churned"
@@ -180,13 +180,18 @@ implementation:
     - id: "REGISTRY"
       file: "framework/registry/LAYER_REGISTRY.yaml"
       change_type: "modified"
-    - id: "TOOLING"
-      file: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py, hooks/sync-version-refs.sh"
+    - id: "TOOLING-NEW"
+      file: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py"
       change_type: "created"
+    - id: "TOOLING-MOD"
+      file: "hooks/sync-version-refs.sh"
       change_type: "modified"
     - id: "TESTS"
       file: "tests/conformance/test_iplan_bugfix_lifecycle.py"
       change_type: "created"
+    - id: "PIN-FANOUT"
+      file: "107 version-pin files (enumerated by git diff --name-only dev...HEAD minus the 23 semantic/record files above; pins-only, no history rewritten)"
+      change_type: "modified"
     - id: "VERSION-FANOUT"
       file: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md, plans/DECISIONS.md"
       change_type: "modified"

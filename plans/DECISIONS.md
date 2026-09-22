@@ -29,8 +29,9 @@ this file records repo-process choices that do not belong in the spec.
 - **Version confirm: MINOR `0.55.0 → 0.56.0`.**
   Additive template fields + governance prose + new lint checks; no removals, no
   registry shape change. Fanout via `hooks/sync-version-refs.sh` (+0.55.0 sweep
-  lines); 116 files, pins only (verified: every changed version literal is a pin
-  form; `framework/VERSION` itself is the one exception).
+  lines); 107 pin-only files (every changed version literal verified as a pin
+  form; `framework/VERSION` itself is the one exception). Branch total is 130
+  files = 107 pins + 23 semantic/record files.
 - **Corpus cross-check vacuous.**
   `examples/` was deleted by CLEANUP-001, so the `sdd_doc_lint examples/` check has
   no corpus. Coverage comes from `tests/acceptance/deterministic` (64 green, no

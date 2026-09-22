@@ -306,6 +306,27 @@ session_handoff:
       partial_work: "365+124+64 suites green post-sweep; sweep pins-only verified; twins identical"
       blockers: "None"
       next_session_directive: "Pre-merge: re-lint CHG-05, final diff review, open impl PR (needs user approval)"
+    - date: "2026-09-22"
+      agent: "implementing session (independent-review fixes: 12 linter findings + 4 record findings)"
+      files_touched:
+        - path: "sdd_doc_lint/bugfix_lint.py"
+          action: modified
+          status: DONE
+        - path: "sdd_doc_lint/tests/test_bugfix_lint.py"
+          action: modified
+          status: DONE
+        - path: "framework/governance/LINT_RULES.md"
+          action: modified
+          status: DONE
+        - path: "framework/archive/CHG-05/CHG-05.yaml"
+          action: modified
+          status: DONE
+        - path: "plans/DECISIONS.md"
+          action: modified
+          status: DONE
+      partial_work: "BGF-00 catalogued (guard caught it pre-commit); BGF-02/04/05/06/07 hardened; tests 25/25; suites 139+64+365 green"
+      blockers: "None"
+      next_session_directive: "Pre-merge: final diff review, open impl PR (needs user approval)"
 
 # =============================================================================
 # Section 6: Traceability
