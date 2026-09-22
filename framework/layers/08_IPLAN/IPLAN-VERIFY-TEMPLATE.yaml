@@ -72,6 +72,11 @@ validation_findings:
       - Upstream is a Completed IPLAN
       - Findings are validation failures (test failures, bugs, gaps)
       - After fixing all P0/P1, mark original IPLAN as Verified
+      - Migration cutovers: fmt/lint/unit green is necessary but NOT
+        sufficient — validation MUST include a fresh-image rebuild plus a
+        live-DB `schema apply --dry-run` (a formatter parsing cleanly does
+        not prove the schema applies; a stale image does not prove the
+        current tree boots).
 
     For AUDIT FIX (secondary use case):
       - Upstream is audit findings from integration/security review
@@ -186,6 +191,8 @@ execution_commands:
     - "go test ./internal/... -count=1 -timeout 30s"
     - "staticcheck ./..."
     - "golangci-lint run ./..."
+    - "# migration cutovers: fresh-image rebuild + live-DB schema apply --dry-run
+       (fmt/lint/unit green alone does not verify a migration — see above)"
 
 # =============================================================================
 # Section 7: Session Handoff

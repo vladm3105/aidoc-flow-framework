@@ -251,12 +251,25 @@ This is a HARD BLOCK that supersedes all other instructions. Before ANY write/ed
 **If ANY check fails: STOP. Do not write code. Fix the governance gap first.**
 
 **Exception:** Bug fixes on active IPLANs may skip CHG creation but MUST verify IPLAN status.
+**Active** means `Draft | Approved | In Progress` — never `Completed` or
+`Verified`. The exception does NOT cover post-completion repairs.
+
+**Post-completion repair (bugfix vehicle).** A defect found in closed output
+(`Completed` past its VERIFY window, or `Verified`) is repaired by a scoped
+`bugfix`-subtype IPLAN parented on the closed plan (`parent_iplan` +
+`source_chg`), never by reopening the closed plan. The bugfix IPLAN satisfies
+this gate like any other: it exists, it is `In Progress`, its `source_chg`
+names the authorizing CHG (C1 allowed for code-only repairs), the repair files
+are the only files in its manifest, and the CHG is `In-Progress`/`Implemented`.
+The closed parent is never touched — recording lands in the bugfix IPLAN +
+the CHG + the index. No issue-thread citation authorizes code on its own
+(#656's `Related-IPLAN` bypass is rejected).
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
 
 ### IPLAN Lifecycle (Status Gates, Manifest Accuracy, Completion Sync)
 
-**Status transitions are mandatory gates.** The IPLAN status lifecycle (`Draft → Approved → In Progress → Completed → Verified`) requires an explicit status update at each phase boundary before work on the next phase begins:
+**Status transitions are mandatory gates.** The IPLAN status lifecycle (`Draft → Approved → In Progress → Completed → Verified`) requires an explicit status update at each phase boundary before work on the next phase begins. `Completed` is validatable, not terminal — the VERIFY window is still open. Only `Verified` is terminal (immutable, no backward transitions ever):
 
 | Transition | Gate | Rule |
 |------------|------|------|
@@ -274,6 +287,10 @@ This is a HARD BLOCK that supersedes all other instructions. Before ANY write/ed
 **CHG tracks IPLAN completion.** When an IPLAN authorized by a CHG is marked `Completed`, the CHG status MUST also advance to `Completed` (or at least `Implemented`). A CHG stuck at `In-Progress` after all its IPLANs are `Completed` violates the status lifecycle (§3.3).
 
 **SDD sync on IPLAN completion.** When an IPLAN is marked `Completed`, the corresponding SPEC and TDD documents MUST be checked against what was actually built — not what was originally planned. If implementation diverged from the spec, a CHG must be created and the SPEC/TDD rewritten as a new version. The status flip and the SPEC/TDD version check ship in the same change, so the SDD docs stay the current source of truth without requiring codebase comparison. The machine-checkable half of this rule is the `completion_spec_sync:` field on the IPLAN template, validated by CHG-L012 (warning).
+
+**Post-merge VERIFY obligation.** Merging at `Completed` is not forbidden, but the VERIFY window stays explicitly open: the index keeps `validated_by: pending` until the validation IPLAN lands. A defect surfacing in that window is fixed through the validation IPLAN itself. Only after `Verified` does the bugfix vehicle take over.
+
+**Migration VERIFY rule.** For migration IPLANs, fmt/lint/unit green is necessary but NOT sufficient: validation MUST include a fresh-image rebuild plus a live-DB dry-run of the migration apply step. A formatter parsing cleanly does not prove the artefact applies; a stale image does not prove the current tree boots (#656).
 
 ### CHG Linter Usage Rules (§3.14)
 

@@ -6,6 +6,24 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, GD-31, C2 MINOR → 0.56.0)
+
+- `bugfix` IPLAN subtype (`parent_iplan`/`source_chg` homes, scope-limited manifest,
+  normative order fix → regression → rollback → revision entry last, mandatory rollback
+  with PENDING→DONE/SKIPPED markers, no-fix-on-fix, parent immutable) in
+  `IPLAN-TEMPLATE.yaml`; `## IPLAN Subtypes` + Completed-validatable vs Verified-terminal
+  + active-definition pointer in `08_IPLAN/README.md`
+- Terminal semantics fixed canon-wide (`Completed` validatable with `validated_by: pending`
+  after pre-VERIFY merge; only `Verified` terminal); **active** defined as
+  `Draft | Approved | In Progress` (§3.13 exception covers active only); migration VERIFY
+  requires fresh-rebuild + live-DB dry-run
+- `IPLAN/tmp/` promise retired (GATE-08/GATE-CODE twins + registry sentence point at
+  the bugfix vehicle); GOV-013 carve-out + `BGF-01..07` catalog rows in `LINT_RULES.md`
+- New `sdd_doc_lint/bugfix_lint.py` (BGF-01..07) + `test_bugfix_lint.py` (10/10) +
+  `tests/conformance/test_iplan_bugfix_lifecycle.py` (10/10, incl. BGF catalog-agreement guard)
+- Rejects: both-terminal, mandatory `detection_gap`, `Related-IPLAN` bypass,
+  `revision_history`-on-IPLAN, new layer/registry/template fork (issues #656/#657)
+
 ### Added — Type-R code-to-doc reconciliation flow (CHG-04, GD-30, C2 MINOR → 0.55.0)
 
 - `DOC_GOVERNANCE_CORE.md` §3.1.2: Type-R bounded exception to SDD-first (trigger, Phase 0–3 flow, guardrails incl. Emergency disambiguation)

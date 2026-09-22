@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.55.0 |
+| Framework Version | 0.56.0 |
 
 
 > **Position**: Between design/test and Layer 8 (IPLAN)
@@ -67,7 +67,7 @@ Before entering GATE-08, the change request must satisfy:
 - [ ] Test files listed before implementation files
 - [ ] Bash commands are exact and executable
 - [ ] Session handoff protocol described
-- [ ] Temporary plan location (IPLAN/tmp/) for bugfixes
+- [ ] Post-completion repairs use a scoped bugfix IPLAN (parent_iplan + source_chg) — IPLAN/tmp/ retired in 0.56.0
 ```
 
 ## 3. Validation Checklist
@@ -108,7 +108,7 @@ Before code generation begins, IPLAN must demonstrate:
 2. Test files listed before implementation files
 3. Bash commands are exact and reproducible
 4. Session handoff protocol describes all state
-5. Temporary plans isolated to IPLAN/tmp/
+5. Post-completion repairs isolated to a scoped bugfix IPLAN (IPLAN/tmp/ retired in 0.56.0)
 6. Each file references its owning SPEC component
 ```
 

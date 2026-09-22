@@ -55,7 +55,7 @@ A development plan is a *design-and-review record* read by a reviewer to approve
 ## IPLAN Subtypes
 
 `document_control.subtype` selects which section set an IPLAN carries
-(`code_build | deploy | combined | audit_fix`; default `combined` for
+(`code_build | deploy | combined | audit_fix | bugfix`; default `combined` for
 pre-0.19.1 IPLANs). `combined` stays the default — removing it would be a
 breaking instance-format change; a future `devops` direction (infrastructure +
 cutover under one umbrella) is noted but not adopted.
@@ -68,7 +68,14 @@ cutover under one umbrella) is noted but not adopted.
   reference, `file_manifest[].tdd_ref` is not used, each entry carries
   `severity: P0/P1/P2/P3`, and `traceability.upstream` cites
   `audit_references`. Use for integration-readiness, security-review, and
-  code-review findings. Do NOT use for new SPEC features (use `code_build`).
+  code-review findings. Do NOT use for new SPEC features (use `code_build`),
+  and do NOT use for post-completion field defects (use `bugfix`).
+- **bugfix** — post-completion defect repair parented on a closed IPLAN
+  (Completed, merged-at-Completed with VERIFY pending, or Verified) via
+  `parent_iplan` + `source_chg`. The manifest is scope-limited to repair
+  files; the parent plan is never touched. See `IPLAN-TEMPLATE.yaml`
+  `document_control` guidance for the normative step order, rollback markers,
+  naming pattern, and no-fix-on-fix rule.
 
 ## IPLAN Baseline
 
@@ -142,8 +149,17 @@ Draft → Approved → In Progress → Completed → Verified
 | `Draft` | IPLAN created, not yet approved | → Approved |
 | `Approved` | IPLAN authorized to proceed | → In Progress |
 | `In Progress` | Implementation underway | → Completed |
-| `Completed` | Implementation done, awaiting validation | → Verified |
+| `Completed` | Implementation done, awaiting validation (validatable, NOT terminal) | → Verified |
 | `Verified` | Validation passed, **FINAL/FINITE** status | **None** (immutable) |
+
+`Completed` is validatable, not terminal: the VERIFY window is still open (see
+Validation Workflow below). A `Completed` plan merged before VERIFY keeps an
+explicit open VERIFY obligation (index `validated_by` pending). Only `Verified`
+is terminal. **Active** plans are `Draft | Approved | In Progress` — the §3.13
+bug-fix exception covers active plans only. A defect found in closed output
+(`Completed` past its window, or `Verified`) is repaired by a scoped `bugfix`
+IPLAN parented on the closed plan (never by reopening it); recording lands in
+the bugfix IPLAN + the authorizing CHG + the index.
 
 ## Validation Workflow (Completed → Verified)
 
