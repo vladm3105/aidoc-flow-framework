@@ -1,0 +1,92 @@
+# =============================================================================
+#  IPLAN-07: Implement AGENTS.md freshness post-0.57.0 (scoped, F2 direct)
+# =============================================================================
+#  Authorizing CHG: framework/archive/CHG-07/CHG-07.yaml (F2 direct, C1, In-Progress)
+#  Source: issue #675 (7 items) — normative-text C1, AGENTS.md only (no code).
+# =============================================================================
+
+doc_id: IPLAN-07
+title: "Implement AGENTS.md freshness post-0.57.0 (7 edits, no version impact)"
+metadata:
+  document_type: "iplan-document"
+  purpose: implementation
+  last_updated: "2026-09-22"
+  framework_version: "0.57.0"
+  source_chg: "CHG-07"
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-07"
+  subtype: combined
+  source_spec: "@spec: N/A (repo-root working-agreement fix under CHG-07; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-22T00:00:00Z"
+  last_updated: "2026-09-22T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 1
+  estimated_files: 1
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "AGENTS.md"
+      description: "7 edits per #675 items 1–7 (HANDOFF/ROADMAP rows, gate exceptions, SDD-first scope, python3, L013 line, router pointer)"
+      order: 1
+      status: PLANNED
+      session: 1
+      verified: false
+
+# =============================================================================
+# Section 3: TDD Consistency
+# =============================================================================
+tdd_consistency:
+  strategy: "No code files touched — covering tests N/A with reason (F2.3). Verification commands below are the check battery (mirrors CHG-06 vehicle precedent for doc-side verification)."
+  cases:
+    - "chg_lint.py over CHG-07: 0 errors (L004 warn-only acceptable)"
+    - "grep battery: HANDOFF mandate gone, ROADMAP gone, python3 present, CHG-L013 line present, router pointer present, ONLY-exception gone"
+    - "sdd_doc_lint/tests green; conformance test_governance + test_spec_hygiene green"
+
+# =============================================================================
+# Section 4: Execution Commands
+# =============================================================================
+execution_commands:
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-07/CHG-07.yaml"
+    - "grep -n 'HANDOFF.md\\|ROADMAP.md' AGENTS.md (expect only the tombstone note, no live mandate)"
+    - "grep -n 'python3 sdd_doc_lint/chg_lint.py\\|CHG-L013\\|CHG_REQUEST_FLOWS' AGENTS.md"
+  test:
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_governance.py'"
+    - "python3 -m unittest discover -s tests/conformance -p 'test_spec_hygiene.py'"
+
+# =============================================================================
+# Section 5: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  - "Authority-flip lines untouched (another session's change — non-overlapping edits only)"
+  - "42-vs-41 census untouched (stays with #670)"
+  - "No normative duplication: pointers to CHG_REQUEST_FLOWS.md / LINT_RULES.md, not restated rules"
+  - "No version impact (version_action keep; no pins touched)"
+
+# =============================================================================
+# Section 6: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - session: 1
+      status: In Progress
+      scope: "AGENTS.md 7 edits + verify + land"
+
+# =============================================================================
+# Section 7: Traceability
+# =============================================================================
+traceability:
+  source_chg: "CHG-07"
+  upstream: ["#675"]
+  downstream: ["AGENTS.md (repo-root working agreement)"]

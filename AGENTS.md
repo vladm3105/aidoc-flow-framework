@@ -84,22 +84,28 @@ Before writing ANY code for a feature, enhancement, or non-bugfix change:
 1. Create a CHG document — do NOT write code first
 2. Complete §3.4 checklist BEFORE writing the CHG
 3. Run §3.4.1 validation AFTER writing the CHG, BEFORE committing
-4. Update EARS/BDD before code (SDD-first)
+4. Update EARS/BDD before code (SDD-first — F1/F3 only; F2 carries an empty lifecycle, F4 leaves the parent SDD standing)
 5. Create IPLAN with code steps (not in CHG)
 
-If user says "build", "implement", "add feature" → stop, create CHG first.
-The ONLY exception: bug fixes on active IPLANs.
+Classify first: Emergency → Type-R → F4 → F3 → F2 → F1 — see `framework/governance/CHG_REQUEST_FLOWS.md` (ratified 0.57.0).
 
-**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
+If user says "build", "implement", "add feature" → stop, create CHG first.
+Exceptions (not one): (i) bug fixes on active IPLANs (no CHG); (ii) docs-only non-normative C1 (direct commit);
+(iii) post-completion repairs via the bugfix vehicle (C1 CHG + bugfix IPLAN, parent immutable);
+(iv) F2 C1-direct (C1 CHG + scoped IPLAN). §3.13 + `CHG_REQUEST_FLOWS.md` govern.
+
+**Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
 - CHG-L004: IPLAN reference (§3.1.1) — must reference an IPLAN
 - CHG-L005: SDD-first order (§3.1.1) — SDD lifecycle before IPLAN
+- CHG-L013: Flow misfit (§3.1.3) — code manifest + empty lifecycle + wrong source (GOV-018; names F2/F3/F4)
+- Full catalog (L006–L012, BGF-01..07): `framework/governance/LINT_RULES.md`
 
 **When to run:** Pre-commit (after CHG creation), pre-implementation (before code), pre-merge (before PR merge). Exit code 0=pass, 1=errors (STOP).
 
-**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Exception: bug fixes on active IPLANs.
+**IPLAN Gate (§3.13):** No code may be written without an IPLAN. The IPLAN must be `In Progress` and reference the authorizing CHG. Governed paths without a full CHG cascade: bug fixes on active IPLANs; post-completion repairs via the bugfix vehicle; F2 C1-direct (scoped IPLAN). Docs-only non-normative C1 needs neither CHG nor IPLAN.
 
 ### Push Workflow
 
@@ -124,11 +130,11 @@ Branch promotion: `feature-branch → dev → main`
 
 | Surface | Path |
 |---|---|
-| Live handoff | `plans/HANDOFF.md` — read it first, every session |
+| Live handoff | GitHub issues (open vehicles) + `plans/<NAME>-PLAN.md` — no `plans/HANDOFF.md` exists; do not invent one |
 | TODO / backlog | **GitHub issues** — `plans/FRAMEWORK-TODO.md` is a retired tombstone |
 | Decisions | `plans/DECISIONS.md`; spec governance in `framework/governance/DECISIONS.md` |
 | Plans | `plans/<NAME>-PLAN.md` |
-| Changelog / roadmap | `CHANGELOG.md`, `ROADMAP.md` |
+| Changelog | `CHANGELOG.md` (root) + `framework/CHANGELOG.md` — no `ROADMAP.md` exists |
 
 Never put any of these in `tmp/`, and never centralize them in the `aidoc-flow`
 umbrella — the umbrella holds no development of its own.
