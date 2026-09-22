@@ -222,6 +222,27 @@ session_handoff:
       partial_work: "IPLAN-05 authoring in progress; plan Task 2 (template edits) not yet started"
       blockers: "None"
       next_session_directive: "Commit IPLAN-05, flip CHG-05 to In-Progress, then test-first conformance test (manifest order 1)"
+    - date: "2026-09-22"
+      agent: "implementing session (test-first contract + Task 2 template/index edits)"
+      files_touched:
+        - path: "tests/conformance/test_iplan_bugfix_lifecycle.py"
+          action: created
+          status: DONE
+        - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+          action: modified
+          status: DONE
+        - path: "framework/layers/08_IPLAN/README.md"
+          action: modified
+          status: DONE
+        - path: "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
+          action: modified
+          status: DONE
+        - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+          action: modified
+          status: DONE
+      partial_work: "Contract 8/10 green; remaining 2 fail on T7 scope (LINT_RULES carve-out, bugfix_lint.py)"
+      blockers: "None"
+      next_session_directive: "Task 3 governance prose (manifest orders 6-13): DOC_GOVERNANCE_CORE, LINT_RULES prose, DECISIONS GD entry, GATE twins, registry sentence"
 
 # =============================================================================
 # Section 6: Traceability
@@ -250,7 +271,27 @@ traceability:
         session: 1
         verified: false
       - path: "framework/archive/CHG-05/IPLAN-05.yaml"
+        status: modified
+        session: 1
+        verified: false
+      - path: "tests/conformance/test_iplan_bugfix_lifecycle.py"
         status: created
+        session: 1
+        verified: false
+      - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/layers/08_IPLAN/README.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+        status: modified
         session: 1
         verified: false
 
