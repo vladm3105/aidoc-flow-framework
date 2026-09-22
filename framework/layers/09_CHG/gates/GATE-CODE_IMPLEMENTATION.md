@@ -76,6 +76,8 @@ Before entering GATE-CODE, the change request must satisfy:
 - [ ] If defect: linked to issue tracker
 - [ ] If cascade: upstream gates confirmed
 - [ ] If hotfix: emergency flag set
+- [ ] If migration: fresh-rebuild + live-DB apply dry-run scoped (fmt/lint alone insufficient)
+- [ ] If post-completion defect: scoped bugfix IPLAN parents the repair (never IPLAN/tmp/)
 ```
 
 ## 3. Validation Checklist
@@ -253,6 +255,7 @@ decision (not just transcription), mint the dependent CHG per §6.2.
 | BDD doesn't match EARS | Requirements issue | GATE-03 |
 | Business rule is wrong | Business issue | GATE-01 |
 | IPLAN order is wrong | Execution issue | GATE-08 |
+| Closed IPLAN output is defective | Repair vehicle (C1) | Scoped bugfix IPLAN → GATE-08 |
 
 ### 8.2 Performance Fix Checklist
 

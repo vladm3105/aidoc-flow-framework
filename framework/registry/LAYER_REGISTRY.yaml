@@ -152,7 +152,7 @@ layers:
     can_reference: [SPEC, TDD]
     error_prefix: IPLAN
     optional: false
-    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Temporary plans for bugfixes/corrections live in layers/08_IPLAN/tmp/."
+    description: "Layer 8 — Mandatory execution bridge: file manifest, bash commands, session handoff, code audit trail. One IPLAN per SPEC component. Post-completion repairs use the bugfix subtype (parent_iplan + source_chg); layers/08_IPLAN/tmp/ was retired in 0.56.0."
     template: "IPLAN-TEMPLATE.yaml"
     downstream: [CODE, EVAL]
 

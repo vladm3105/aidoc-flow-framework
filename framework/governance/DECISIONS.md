@@ -23,6 +23,37 @@ Newest first. Timestamps are ISO 8601 UTC.
 
 ---
 
+## GD-31 — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, 0.56.0 MINOR)
+
+- **Status:** Accepted — 2026-09-22 · **SemVer:** framework `0.55.0 → 0.56.0` (MINOR),
+  change-level **C2**. Ratified on merge; a `framework/**` normative change — human sign-off per
+  GATE-SPEC.
+- **Context:** #656 reported a real-but-narrow gap: a code-only repair to closed IPLAN output
+  had no proportionate ceremony (full CHG cascade vs. edit-without-authorisation), the
+  `LAYER_REGISTRY`/`GATE-08` promise of temporary `IPLAN/tmp/` bugfix plans pointed at
+  nothing on disk, and migration VERIFY could go green on a broken artefact (`fmt` clean,
+  `apply` failing, stale image masking). #657 proposed the vehicle; maintainer direction
+  (new `bugfix` subtype, fields-in-existing-template, directory-listing minter, IPLAN-side
+  linter) was posted on #657 and the triage verdict on #656 before implementation.
+- **Decision:** Land the `bugfix` subtype (option A over extending `audit_fix`, which stays
+  audit-scoped): `parent_iplan` + `source_chg` homes, scope-limited manifest, normative
+  order fix → regression test → rollback → parent revision entry last, mandatory rollback
+  with PENDING→DONE/SKIPPED markers, no-fix-on-fix (sibling + `prior_attempts`), parent
+  never touched. Terminal semantics fixed canon-wide: `Completed` is validatable (VERIFY
+  window open, `validated_by: pending` after a pre-VERIFY merge), only `Verified` is
+  terminal. **Active** is defined as `Draft | Approved | In Progress`; the §3.13 bug-fix
+  exception covers active plans only. Migration VERIFY requires fresh-rebuild + live-DB
+  dry-run. Rejected: both-terminal, mandatory `detection_gap`, `Related-IPLAN` bypass,
+  `revision_history`-on-IPLAN, blame-chain prescription, new layer/registry/template fork.
+- **Consequences.** `framework/VERSION` `0.55.0 → 0.56.0`; mechanical pin sweep;
+  `CHANGELOG.md` + `framework/CHANGELOG.md` `## [0.56.0]` entries; GOV-013 carve-out +
+  `BGF-01..07` catalog rows; `sdd_doc_lint/bugfix_lint.py` + `test_iplan_bugfix_lifecycle.py`
+  (incl. BGF catalog-agreement guard).
+- **Authority:** `plans/IPLAN-TERMINAL-DEFECT-PLAN.md`; `framework/archive/CHG-05/CHG-05.yaml`;
+  `framework/archive/CHG-05/IPLAN-05.yaml`; issues #656/#657.
+
+---
+
 ## GD-30 — Formalize Type-R code-to-doc reconciliation flow (CHG-04, 0.55.0 MINOR)
 
 - **Status:** Accepted — 2026-09-21 · **SemVer:** framework `0.54.0 → 0.55.0` (MINOR),

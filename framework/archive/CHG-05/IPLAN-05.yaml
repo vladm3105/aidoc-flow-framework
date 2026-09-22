@@ -76,50 +76,50 @@ file_manifest:
     - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
       description: "§3.13 active definition + bugfix authorisation; §IPLAN Lifecycle post-completion pattern; migration VERIFY rule"
       order: 6
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/governance/LINT_RULES.md"
       description: "GOV-013 carve-out text + new bugfix check catalog rows"
       order: 7
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/governance/DECISIONS.md"
       description: "GD entry: terminal semantics, active definition, merge-window rule"
       order: 8
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
       description: "TMP-promise repair (mirror twin edited in lockstep)"
       order: 9
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
       description: "TMP-promise repair (mirror twin edited in lockstep)"
       order: 10
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
       description: "Migration smoke dry-run note; feedback-defect routing to bugfix vehicle (mirror twin in lockstep)"
       order: 11
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
       description: "Migration smoke dry-run note; feedback-defect routing to bugfix vehicle (mirror twin in lockstep)"
       order: 12
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/registry/LAYER_REGISTRY.yaml"
       description: "tmp/ sentence resolved (build the contract or remove the promise); otherwise untouched"
       order: 13
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "sdd_doc_lint/chg_lint.py"
       description: "New bugfix checks (naming, parent originality, scope, rollback, manifest accuracy)"
