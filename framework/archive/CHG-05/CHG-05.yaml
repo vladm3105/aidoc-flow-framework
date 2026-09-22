@@ -38,7 +38,7 @@ metadata:
 
 change_control:
   chg_id: "CHG-05"
-  status: Proposed
+  status: In-Progress
   change_level: C2
   change_source: spec
   entry_gate: GATE-SPEC
@@ -46,7 +46,7 @@ change_control:
   version_action: upgrade
   author: "Framework Maintainer"
   date_proposed: "2026-09-22T00:00:00Z"
-  date_approved: null
+  date_approved: "2026-09-22T00:00:00Z"
   date_implemented: null
   supersedes:
     - "IPLAN layer docs v0.55.0 (framework/archive/CHG-05/)"
@@ -162,7 +162,7 @@ implementation:
     - step: "Create IPLAN-05 with all tooling and test implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-05"
-      status: Pending
+      status: Completed
 
   artifacts_modified:
     - id: "IPLAN-05 (authorizing IPLAN: framework/archive/CHG-05/IPLAN-05.yaml)"

@@ -1,0 +1,313 @@
+# IPLAN-05 — Implement CHG-05 post-completion defect repair vehicle + 0.56.0
+# Authorizing CHG: framework/archive/CHG-05/CHG-05.yaml
+# Plan: plans/IPLAN-TERMINAL-DEFECT-PLAN.md (FINAL, Pass 2 zero-gap)
+
+doc_id: IPLAN-05
+title: "Implement scoped bugfix IPLAN vehicle + MINOR bump 0.55.0 → 0.56.0"
+metadata:
+  schema_version: "1.0"
+  framework_version: "0.55.0"
+  document_type: "iplan-document"
+  layer: 8
+  total_sections: 6
+  last_updated: "2026-09-22"
+  tags:
+    - iplan-document
+    - layer-8-artifact
+    - shared-architecture
+
+  c4_level:
+    value: none
+
+  id_standard:
+    state: canonical
+
+# =============================================================================
+# Section 1: Document Control
+# =============================================================================
+document_control:
+  iplan_id: "IPLAN-05"
+  subtype: combined
+  source_spec: "@spec: N/A (framework self-change under CHG-05; no SPEC component)"
+  status: In Progress
+  version: "1.0"
+  date_created: "2026-09-22T00:00:00Z"
+  last_updated: "2026-09-22T00:00:00Z"
+  author: "Framework Maintainer"
+  complexity: 4
+  estimated_files: 19
+  session_count: 1
+
+# =============================================================================
+# Section 2: File Manifest
+# =============================================================================
+file_manifest:
+  files:
+    - path: "tests/conformance/test_iplan_bugfix_lifecycle.py"
+      description: "NEW — test-first: subtype/lifecycle/naming/parent/scope/rollback invariants + CHG-L catalog-agreement guard (fails before Task 2)"
+      order: 1
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml"
+      description: "bugfix subtype: parent_iplan/source_chg homes, bugfix checklist, step-order + rollback-marker guidance"
+      order: 2
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/README.md"
+      description: "Completed-vs-Verified semantics; post-completion repair pattern; active-definition pointer; TMP/VERIFY routing"
+      order: 3
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml"
+      description: "Migration dry-run requirement; validating_iplan/original_iplan usage for post-merge VERIFY window"
+      order: 4
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+      description: "Pending-validated_by state for merged-at-Completed plans; bugfix-parent linkage fields"
+      order: 5
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+      description: "§3.13 active definition + bugfix authorisation; §IPLAN Lifecycle post-completion pattern; migration VERIFY rule"
+      order: 6
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/governance/LINT_RULES.md"
+      description: "GOV-013 carve-out text + new bugfix check catalog rows"
+      order: 7
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/governance/DECISIONS.md"
+      description: "GD entry: terminal semantics, active definition, merge-window rule"
+      order: 8
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+      description: "TMP-promise repair (mirror twin edited in lockstep)"
+      order: 9
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+      description: "TMP-promise repair (mirror twin edited in lockstep)"
+      order: 10
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Migration smoke dry-run note; feedback-defect routing to bugfix vehicle (mirror twin in lockstep)"
+      order: 11
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+      description: "Migration smoke dry-run note; feedback-defect routing to bugfix vehicle (mirror twin in lockstep)"
+      order: 12
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/registry/LAYER_REGISTRY.yaml"
+      description: "tmp/ sentence resolved (build the contract or remove the promise); otherwise untouched"
+      order: 13
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "sdd_doc_lint/chg_lint.py"
+      description: "New bugfix checks (naming, parent originality, scope, rollback, manifest accuracy)"
+      order: 14
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "sdd_doc_lint/tests/test_chg_lint.py"
+      description: "Red-first fixture tests per new check (+ fixtures under sdd_doc_lint/tests/lint_fixtures/)"
+      order: 15
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/VERSION"
+      description: "Bump 0.55.0 → 0.56.0"
+      order: 16
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "CHANGELOG.md"
+      description: "Root Unreleased → 0.56.0 entry"
+      order: 17
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/CHANGELOG.md"
+      description: "Framework 0.56.0 entry (head format read before editing)"
+      order: 18
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "plans/DECISIONS.md"
+      description: "NEW — ISO-stamped record (vehicle choice A, hook-vs-CI, version confirm)"
+      order: 19
+      status: NOT_STARTED
+      session: null
+      verified: false
+    - path: "framework/archive/CHG-05/CHG-05.yaml"
+      description: "CHG status Approved → In-Progress at implementation start; → Implemented at merge; → Completed at verification"
+      order: 20
+      status: NOT_STARTED
+      session: null
+      verified: false
+
+# =============================================================================
+# Section 2b: TDD↔IPLAN Consistency Tracking
+# =============================================================================
+tdd_consistency:
+  status: not_started
+  last_verified: null
+  verification_results:
+    function_name_match: null
+    file_ownership_complete: null
+    language_consistent: null
+    index_synchronized: null
+  issues: []
+
+# =============================================================================
+# Section 3: Execution Commands
+# =============================================================================
+execution_commands:
+  setup:
+    - "git checkout feat/chg-05-iplan-bugfix-vehicle && git pull --ff-only origin feat/chg-05-iplan-bugfix-vehicle"
+  implementation:
+    - "Test-first: write tests/conformance/test_iplan_bugfix_lifecycle.py + sdd_doc_lint fixture tests RED (order 1, 15), then Task 2 template/index edits (orders 2-5), then Task 3 governance/gates/registry prose (orders 6-13), then Task 4 linter checks (order 14), then Task 7 version/changelogs (orders 16-19)"
+    - "Read each file's full relevant section before editing (checklist item 1); mirror twins (GATE-08, GATE-CODE) edited in lockstep with byte-identity verified by diff"
+    - "Run hooks/sync-version-refs.sh equivalent fanout after the VERSION bump (plan Task 7)"
+  breaking_change:
+    steps: []
+  validation:
+    - "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-05/CHG-05.yaml"
+    - "python3 -m unittest discover -s tests/conformance"
+    - "python3 -m unittest discover -s sdd_doc_lint/tests"
+    - "python3 -m unittest discover -s tests/acceptance/deterministic"
+    - "grep -riE 'hermes|mcp|\\.claude/|Atlas|Privy|mimocode' framework/ on every touched file — expect empty (engine-agnostic)"
+
+# =============================================================================
+# Section 4: Implementation Contracts
+# =============================================================================
+implementation_contracts:
+  provided:
+    contracts: []
+  consumed:
+    dependencies: []
+
+# =============================================================================
+# Section 5: Session Handoff
+# =============================================================================
+session_handoff:
+  sessions:
+    - date: "2026-09-22"
+      agent: "implementing session (CHG-05 + IPLAN-05 authoring)"
+      files_touched:
+        - path: "framework/archive/CHG-05/CHG-05.yaml"
+          action: created
+          status: DONE
+        - path: "framework/archive/CHG-05/IPLAN-05.yaml"
+          action: created
+          status: IN_PROGRESS
+      partial_work: "IPLAN-05 authoring in progress; plan Task 2 (template edits) not yet started"
+      blockers: "None"
+      next_session_directive: "Commit IPLAN-05, flip CHG-05 to In-Progress, then test-first conformance test (manifest order 1)"
+
+# =============================================================================
+# Section 6: Traceability
+# =============================================================================
+traceability:
+  upstream:
+    spec_references:
+      - "@spec: N/A (framework self-change; authorizing plan is plans/IPLAN-TERMINAL-DEFECT-PLAN.md)"
+    tdd_references: []
+  downstream:
+    code_paths:
+      - "@code: sdd_doc_lint/chg_lint.py"
+    test_paths:
+      - "@tests: tests/conformance/test_iplan_bugfix_lifecycle.py, sdd_doc_lint/tests/test_chg_lint.py, tests/acceptance/deterministic"
+    eval_references: []
+  cross_links:
+    depends: []
+    discoverability:
+      - "@discoverability: IPLAN-05 (authorizes the CHG-05 bugfix-vehicle bundle)"
+    chg:
+      - "@chg: CHG-05"
+  code_inventory:
+    files:
+      - path: "framework/archive/CHG-05/CHG-05.yaml"
+        status: created
+        session: 1
+        verified: false
+      - path: "framework/archive/CHG-05/IPLAN-05.yaml"
+        status: created
+        session: 1
+        verified: false
+
+# =============================================================================
+# Section 8: Rollback Procedure
+# =============================================================================
+rollback_procedure:
+  steps:
+    - step: "Revert the 0.56.0 commit(s) on the feature branch before PR merge"
+      forward_action: "Commits land on feat/chg-05-iplan-bugfix-vehicle"
+      reverse_action: "git revert in reverse order"
+      verification: "git status clean; conformance suite at 0.55.0 baseline"
+      reversible: true
+
+# =============================================================================
+# Section 9: Smoke Tests
+# =============================================================================
+smoke_tests:
+  tests:
+    - name: "conformance suite green"
+      runs_after: "all template/governance/linter edits"
+      pass_criterion: "all tests OK, zero weakened guards"
+      timeout_seconds: 300
+    - name: "chg_lint green on CHG-05"
+      runs_after: "CHG authoring + every CHG status flip"
+      pass_criterion: "exit 0, zero errors"
+      timeout_seconds: 60
+
+# =============================================================================
+# Section 10: Canary Metrics
+# =============================================================================
+canary_metrics:
+  metrics:
+    - name: "acceptance deterministic pass rate"
+      threshold: "100% (no silent golden churn)"
+      window_minutes: 10
+      action_on_breach: "Alert"
+
+# =============================================================================
+# Section 11: Observability Hooks
+# =============================================================================
+observability_hooks:
+  hooks:
+    - event: "0.56.0 bugfix-vehicle implementation complete"
+      signal_type: log
+      signal_name: "conformance + acceptance suite results"
+      dashboard_url: "N/A (local run)"
+
+# =============================================================================
+# Section 12: Runbook Reference
+# =============================================================================
+runbook_reference:
+  runbook_url: "plans/IPLAN-TERMINAL-DEFECT-PLAN.md"
+  new_failure_modes:
+    - mode: "Golden churn from bugfix-subtype addition"
+      detection: "acceptance deterministic failures in fullpath/iplan fixtures"
+      response: "Update goldens explicitly in the impl PR (no silent regeneration)"
+    - mode: "Mirror drift between GATE twins"
+      detection: "diff of the two GATE-08 / two GATE-CODE copies non-empty"
+      response: "Re-apply the edit to the lagging twin before commit"
