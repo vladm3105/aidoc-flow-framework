@@ -1,0 +1,243 @@
+# =============================================================================
+#  CHG-05: IPLAN post-completion defect repair vehicle (#656 via #657) + MINOR 0.55.0 → 0.56.0
+# =============================================================================
+#  Plan: plans/IPLAN-TERMINAL-DEFECT-PLAN.md (FINAL, Pass 2 zero-gap)
+#  IPLAN: framework/archive/CHG-05/IPLAN-05.yaml (In Progress, authorizing — created Task 1.6)
+#  Gate: GATE-SPEC (change_source: spec), C2, minor
+#  Issues: #656 (gap, real-but-narrow) + #657 (vehicle; maintainer direction posted)
+#  §3.4 checklist: completed before authoring (see task progress); app-oriented
+#  items N/A with reason — framework doc/tooling self-change, no runtime code:
+#  #2 client/server, #3 structs, #4 queries, #6 handlers, #9 fix-location,
+#  #10 DB migration (rollback = revert-commit), #5 EARS/BDD IDs (upstream is
+#  issues #656/#657 + authorizing plan, per CHG-03 precedent — no EARS/BDD
+#  element IDs cited, so D21/D22 vacuous). #7 coupled (#656+#657 together).
+# =============================================================================
+
+id: CHG-05
+title: "Scoped bugfix IPLAN vehicle for post-completion defects + MINOR bump 0.55.0 → 0.56.0"
+
+# =============================================================================
+# Metadata
+# =============================================================================
+
+metadata:
+  document_type: "chg-document"
+  purpose: governance
+  last_updated: "2026-09-22"
+  framework_version: "0.55.0"
+
+  change_level:
+    value: C2
+
+  change_source:
+    value: spec
+
+# =============================================================================
+# Section 1: Change Control
+# =============================================================================
+
+change_control:
+  chg_id: "CHG-05"
+  status: Proposed
+  change_level: C2
+  change_source: spec
+  entry_gate: GATE-SPEC
+  semver_impact: minor
+  version_action: upgrade
+  author: "Framework Maintainer"
+  date_proposed: "2026-09-22T00:00:00Z"
+  date_approved: null
+  date_implemented: null
+  supersedes:
+    - "IPLAN layer docs v0.55.0 (framework/archive/CHG-05/)"
+    - "governance + gate docs v0.55.0 (framework/archive/CHG-05/)"
+    - "lint tooling v0.55.0 (framework/archive/CHG-05/)"
+    - "framework/VERSION 0.55.0 (framework/archive/CHG-05/VERSION)"
+    - "IPLAN-05 authorizing record (framework/archive/CHG-05/IPLAN-05.yaml)"
+  # NOTE: each entry carries the full archive_path so CHG-L010 resolves.
+
+# =============================================================================
+# Section 2: Change Description
+# =============================================================================
+
+change_description:
+  what: |
+    Implement plans/IPLAN-TERMINAL-DEFECT-PLAN.md: a scoped bugfix IPLAN
+    subtype for post-completion defects (parented on the closed plan, parent
+    immutable); Completed-vs-Verified terminal semantics; "active IPLAN"
+    definition for the §3.13 exception; post-merge VERIFY-obligation rule;
+    TMP-promise repair (real tmp/ contract or reference removal); migration
+    VERIFY fresh-rebuild + live-DB dry-run requirement; GOV-013 carve-out +
+    new bugfix lint checks with LINT_RULES catalog rows; new conformance test
+    test_iplan_bugfix_lifecycle.py. Ship the MINOR bump 0.55.0 → 0.56.0 with
+    mechanical fanout. Rejects from #656's shape: both-terminal, mandatory
+    detection_gap, Related-IPLAN bypass, revision_history-on-IPLAN.
+  why: |
+    #656 is a real-but-narrow gap (lifecycle-completeness + broken tmp/
+    reference + validation-completeness): a code-only repair to closed output
+    has no proportionate ceremony, so consumers invent off-framework
+    paperwork. #657's vehicle (maintainer direction posted) is the adopted
+    fix; the annotation-only shape is superseded by its own author's
+    concession.
+  trigger: |
+    plans/IPLAN-TERMINAL-DEFECT-PLAN.md reached FINAL (Pass 2 zero-gap) and
+    merged via PR #660; maintainer direction posted on #657; triage posted
+    on #656.
+
+# =============================================================================
+# Section 3: Impact Assessment
+# =============================================================================
+
+impact_assessment:
+  affected_layers:
+    - layer: "IPLAN"
+      artifacts: ["IPLAN-TEMPLATE.yaml", "08_IPLAN/README.md", "IPLAN-VERIFY-TEMPLATE.yaml", "IPLAN-00_index.TEMPLATE.yaml"]
+      impact: "New bugfix subtype fields (parent_iplan/source_chg homes, checklist, order/rollback guidance); lifecycle prose; VERIFY dry-run + pending-validated_by; index parent linkage — additive only"
+    - layer: "Governance"
+      artifacts: ["DOC_GOVERNANCE_CORE.md", "LINT_RULES.md", "DECISIONS.md"]
+      impact: "§3.13 active definition + bugfix authorisation; lifecycle post-completion pattern; migration VERIFY rule; GOV-013 carve-out + new check rows; GD entry"
+    - layer: "Gates"
+      artifacts: ["GATE-08_IPLAN.md (both mirrors)", "GATE-CODE_IMPLEMENTATION.md (both mirrors)"]
+      impact: "TMP-promise repair (both byte-identical mirrors edited in lockstep); migration smoke dry-run note + bugfix routing"
+    - layer: "Registry"
+      artifacts: ["LAYER_REGISTRY.yaml"]
+      impact: "tmp/ sentence resolved one way or the other; otherwise untouched (no new layer, no shape change)"
+    - layer: "Tooling"
+      artifacts: ["sdd_doc_lint/chg_lint.py", "sdd_doc_lint/tests/test_chg_lint.py (+ fixtures)"]
+      impact: "New bugfix checks (naming, parent originality, scope, rollback, manifest); GOV-013 carve-out is prose-side"
+    - layer: "Tests"
+      artifacts: ["tests/conformance/test_iplan_bugfix_lifecycle.py (new)"]
+      impact: "Subtype/lifecycle/naming/parent/scope/rollback invariants + CHG-L catalog-agreement guard; goldens updated explicitly if churned"
+    - layer: "08_IPLAN"
+      artifacts: ["IPLAN-05"]
+      impact: "Authorizing IPLAN for this change (IPLAN-05 In Progress, file_manifest covers all targets)"
+    - layer: "Version"
+      artifacts: ["framework/VERSION", "CHANGELOG.md", "framework/CHANGELOG.md", "plans/DECISIONS.md (new)"]
+      impact: "MINOR bump 0.55.0 → 0.56.0 with fanout + changelog entries + decision record"
+
+  cascade_direction: null  # No artifact cascade — framework self-change only
+  risk_level: Medium
+
+# =============================================================================
+# Section 4: Implementation
+# =============================================================================
+
+implementation:
+  steps:
+    - step: "Archive current IPLAN-layer, governance, gate, and tooling originals to framework/archive/CHG-05/"
+      phase: "sdd_lifecycle"
+      artifact: "IPLAN layer docs, governance docs, gate mirrors, registry, lint tooling"
+      archive_path: "framework/archive/CHG-05/"
+      new_version: "0.56.0"
+      current_version: "0.55.0"
+      status: Pending
+    - step: "Rewrite IPLAN layer docs per plan Task 2 (bugfix subtype fields, lifecycle prose, VERIFY dry-run, index linkage)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/layers/08_IPLAN/ (IPLAN-TEMPLATE.yaml, README.md, IPLAN-VERIFY-TEMPLATE.yaml, IPLAN-00_index.TEMPLATE.yaml)"
+      archive_path: "framework/archive/CHG-05/"
+      new_version: "0.56.0"
+      current_version: "0.55.0"
+      status: Pending
+    - step: "Rewrite governance and gate docs per plan Task 3 (active definition, post-completion pattern, TMP repair, smoke note, GD entry)"
+      phase: "sdd_lifecycle"
+      artifact: "Governance docs, gate mirrors, registry sentence"
+      archive_path: "framework/archive/CHG-05/"
+      new_version: "0.56.0"
+      current_version: "0.55.0"
+      status: Pending
+    - step: "Extend lint tooling and fixtures per plan Task 4 (bugfix checks + catalog rows in LINT_RULES.md)"
+      phase: "sdd_lifecycle"
+      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py, framework/governance/LINT_RULES.md"
+      archive_path: "framework/archive/CHG-05/"
+      new_version: "0.56.0"
+      current_version: "0.55.0"
+      status: Pending
+    - step: "Bump framework/VERSION 0.55.0 → 0.56.0 + mechanical fanout + changelogs + plans/DECISIONS.md (plan Task 7) with conformance test file (plan Task 5)"
+      phase: "sdd_lifecycle"
+      artifact: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md, plans/DECISIONS.md, tests/conformance/test_iplan_bugfix_lifecycle.py"
+      archive_path: "framework/archive/CHG-05/VERSION"
+      new_version: "0.56.0"
+      current_version: "0.55.0"
+      status: Pending
+    - step: "Create IPLAN-05 with all tooling and test implementation steps (file_manifest covers all targets)"
+      phase: "iplan_creation"
+      artifact: "IPLAN-05"
+      status: Pending
+
+  artifacts_modified:
+    - id: "IPLAN-05 (authorizing IPLAN: framework/archive/CHG-05/IPLAN-05.yaml)"
+      file: "framework/archive/CHG-05/IPLAN-05.yaml"
+      change_type: "created"
+    - id: "IPLAN-LAYER"
+      file: "framework/layers/08_IPLAN/IPLAN-TEMPLATE.yaml, framework/layers/08_IPLAN/README.md, framework/layers/08_IPLAN/IPLAN-VERIFY-TEMPLATE.yaml, framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
+      change_type: "modified"
+    - id: "GOV-DOCS"
+      file: "framework/governance/DOC_GOVERNANCE_CORE.md, framework/governance/LINT_RULES.md, framework/governance/DECISIONS.md"
+      change_type: "modified"
+    - id: "GATES"
+      file: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md, framework/governance/chg/gates/GATE-08_IPLAN.md, framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md, framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+      change_type: "modified"
+    - id: "REGISTRY"
+      file: "framework/registry/LAYER_REGISTRY.yaml"
+      change_type: "modified"
+    - id: "TOOLING"
+      file: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py"
+      change_type: "modified"
+    - id: "TESTS"
+      file: "tests/conformance/test_iplan_bugfix_lifecycle.py"
+      change_type: "created"
+    - id: "VERSION-FANOUT"
+      file: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md, plans/DECISIONS.md"
+      change_type: "modified"
+
+# =============================================================================
+# Section 5: Verification
+# =============================================================================
+
+verification:
+  checks:
+    - check: "chg_lint green on this file (pre-commit / pre-implementation / pre-merge)"
+      result: Pending
+      method: "python sdd_doc_lint/chg_lint.py framework/archive/CHG-05/CHG-05.yaml"
+    - check: "§3.4.1 post-creation validation (A1-A4, B5-B15, C16-C20, D21-D24, E25-E27)"
+      result: Pending
+      method: "Manual gate recorded in task progress; ALL pass → commit"
+    - check: "conformance suite green (no weakened guards)"
+      result: Pending
+      method: "python -m unittest discover -s tests/conformance"
+    - check: "sdd_doc_lint self-tests green"
+      result: Pending
+      method: "python -m unittest discover -s sdd_doc_lint/tests"
+    - check: "acceptance deterministic green (no silent golden churn)"
+      result: Pending
+      method: "python -m unittest discover -s tests/acceptance/deterministic"
+    - check: "corpus cross-check zero unexpected findings"
+      result: Pending
+      method: "python3 -m sdd_doc_lint examples/<NAME>/docs/ (lint-rule change trigger)"
+
+# =============================================================================
+# Section 6: Gate Approval (C3 only)
+# =============================================================================
+
+gate_approval:
+  gate: null
+  approver: null
+  approval_date: null
+  conditions: []
+
+# =============================================================================
+# Section 7: Rollback Plan (C2/C3)
+# =============================================================================
+
+rollback_plan:
+  strategy: revert-commit
+  steps:
+    - "Revert the 0.56.0 commit(s) on the feature branch before PR merge"
+    - "Re-run conformance + acceptance to confirm 0.55.0 baseline"
+  estimated_effort: "Low — single-branch revert, no downstream consumers yet"
+
+# =============================================================================
+# Section 8: Emergency Change (conditional)
+# =============================================================================
+
+emergency_change: null
