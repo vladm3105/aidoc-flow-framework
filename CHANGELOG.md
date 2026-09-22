@@ -6,6 +6,18 @@ adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added — CHG request flows router (CHG-06, GD-32, C2 MINOR → 0.57.0)
+
+- New `framework/governance/CHG_REQUEST_FLOWS.md` (canonical, ratified): F1 greenfield,
+  F2 direct, F3 brownfield, F4 bugfix vehicle, Emergency/Type-R yields, C1/IPLAN-gate
+  ruling (code-touching C1 requires C1 CHG + scoped IPLAN), GOV-018 guard
+- `DOC_GOVERNANCE_CORE.md`: §3.1.3 router kernel + §3.13 F2.2 sentence; `LINT_RULES.md`:
+  GOV-018 row; CHG twins: `direct` source row (GATE-CODE) + C1 bound + enum comments
+- `sdd_doc_lint/chg_lint.py`: CHG-L013 misclassification check + fixtures; new
+  `tests/conformance/test_chg_flows_router.py` agreement test; 09_CHG READMEs gain
+  the selector table; `hooks/sync-version-refs.sh` gains 0.56.0 sweep lines
+- `framework/VERSION` bumped from `0.56.0` to `0.57.0` with mechanical pin sweep
+
 ### Added — Scoped bugfix IPLAN vehicle for post-completion defects (CHG-05, GD-31, C2 MINOR → 0.56.0)
 
 - `bugfix` IPLAN subtype (`parent_iplan`/`source_chg` homes, scope-limited manifest,
