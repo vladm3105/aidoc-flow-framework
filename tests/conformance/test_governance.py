@@ -43,6 +43,7 @@ EXPECTED_FILES = [
     "SELF_LEARNING.md",
     "WORKTREE_FLOW.md",
     "README.md",
+    "CHG_REQUEST_FLOWS.md",
     "aidoc/AIDOC.md",
     "aidoc/AIDOC-SCAFFOLD-TEMPLATE.md",
     "aidoc/README.md",

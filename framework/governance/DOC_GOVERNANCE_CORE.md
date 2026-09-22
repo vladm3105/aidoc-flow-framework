@@ -138,6 +138,27 @@ Phase 3: Bi-directional Verification Gate
 3. The freeze holds through reconciliation: no new unverified code mid-phase. A discovery made during reconciliation restarts at Phase 0.
 4. **IPLAN Gate (§3.13) relationship.** The pre-existing verified code is the governed exception, not new implementation: from Phase 1 onward the reverse-authored IPLAN (status `In Progress`, `source_chg` naming the Type-R CHG, manifest covering every file the reconciliation touches) is the authorizing IPLAN for all doc edits and any follow-up code. The §3.13 pre-write verification applies to everything written after the freeze — including the reconciliation edits themselves. GOV-013 remains a forward-flow check; a Type-R CHG carrying `change_source: reconciliation` with a frozen manifest is its documented carve-out, not a violation.
 
+### CHG Request Flows (§3.1.3)
+
+Every artifact change is classified into exactly one flow — or into a governed non-flow path that yields to its
+own section — before its CHG is authored. First match wins, in this order:
+
+| # | Flow | `change_source` | `change_level` | Entry gate | SDD cascade? |
+|---|---|---|---|---|---|
+| F1 | Greenfield development (new chain, §3.1.1 end to end) | `upstream` | C3 | GATE-01 | Yes — full |
+| F2 | Direct request (human/AI ask, no behavior change, no prior IPLAN) | `direct` | C1 (docs-only: no CHG/IPLAN; code-touching: C1 CHG + scoped IPLAN) | GATE-CODE | No (`sdd_lifecycle: []`) |
+| F3 | Brownfield behavior change (restart at lowest affected layer) | `upstream` / `midstream` / `design` | C2 / C3 | GATE-01 / 03 / 06 | Yes — affected layers down |
+| F4 | Bugfix on implemented IPLAN (CHG-05 vehicle, parent immutable) | `feedback` | C1 CHG | GATE-CODE | No |
+| — | Emergency (critical production issue) | `Emergency` level | Emergency | Post-hoc (+ post-mortem 48h) | Document after |
+| — | Type-R reconciliation (verified code precedes specs) | `reconciliation` | C2 typical | GATE-CODE | Reverse (§3.1.2) |
+
+Router: Emergency → Type-R → F4 (defect in closed IPLAN?) → F3 (behavior/contract change?) → F2 (no prior IPLAN,
+no SDD contract?) → F1 (default). Misfiled flows are defects: F1/F3 MUST NOT file as F2/F4 to dodge the cascade;
+F3 MUST NOT file as F4 (F4 repairs output to standing SDD; F3 changes the promise).
+Full definitions, the C1/IPLAN-gate ruling (code-touching C1 requires a scoped IPLAN; docs-only C1 stays
+direct-commit), the misclassification guard (GOV-018), and verification expectations:
+`governance/CHG_REQUEST_FLOWS.md` (canonical — this section is the kernel, not a second source).
+
 ## CHG creation checklist
 
 Before writing any CHG document, complete this checklist. Each item maps to a
@@ -264,6 +285,11 @@ are the only files in its manifest, and the CHG is `In-Progress`/`Implemented`.
 The closed parent is never touched — recording lands in the bugfix IPLAN +
 the CHG + the index. No issue-thread citation authorizes code on its own
 (#656's `Related-IPLAN` bypass is rejected).
+
+**Direct-request C1 (F2.2).** Docs-only, non-normative C1 stays direct-commit (no CHG, no IPLAN). Code- or
+script-touching C1 requires a C1 CHG + scoped IPLAN (`In Progress`, `source_chg` naming the CHG, manifest
+covering every touched file, covering test cases) — "small diff" is not an exemption. See
+`governance/CHG_REQUEST_FLOWS.md` §3 (F2).
 
 **Violation log:** CHG-10 had code implemented before IPLAN existed (2026-11-06). IPLAN-20 was created retroactively. This gate prevents recurrence. Enforced by lint rule GOV-013.
 

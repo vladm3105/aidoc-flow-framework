@@ -88,6 +88,7 @@ while IFS= read -r f; do
   sweep "$rel" 'framework_spec_version: "0.53.2"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
   sweep "$rel" 'framework_spec_version: "0.54.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
   sweep "$rel" 'framework_spec_version: "0.55.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
+  sweep "$rel" 'framework_spec_version: "0.56.0"' "framework_spec_version: \"$FRAMEWORK_VERSION\"" 1 || true
 done < <(grep -rl 'framework_spec_version: "0\.' "$REPO_ROOT/framework/playbooks/" 2>/dev/null || true)
 
 # --- framework metadata + document-control rows (archive excluded — see above) ---
@@ -99,7 +100,9 @@ while IFS= read -r f; do
   sweep "$rel" '| Framework Version | 0.54.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
   sweep "$rel" 'framework_version: "0.55.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
   sweep "$rel" '| Framework Version | 0.55.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
-done < <(grep -rl 'framework_version: "0.53.0"\|| Framework Version | 0.53.0 |\|framework_version: "0.54.0"\|| Framework Version | 0.54.0 |\|framework_version: "0.55.0"\|| Framework Version | 0.55.0 |' "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
+  sweep "$rel" 'framework_version: "0.56.0"' "framework_version: \"$FRAMEWORK_VERSION\"" 5 || true
+  sweep "$rel" '| Framework Version | 0.56.0 |' "| Framework Version | $FRAMEWORK_VERSION |" 5 || true
+done < <(grep -rl 'framework_version: "0.53.0"\|| Framework Version | 0.53.0 |\|framework_version: "0.54.0"\|| Framework Version | 0.54.0 |\|framework_version: "0.55.0"\|| Framework Version | 0.55.0 |\|framework_version: "0.56.0"\|| Framework Version | 0.56.0 |' "$REPO_ROOT/framework/" 2>/dev/null | grep -v "$ARCHIVE_EXCL" || true)
 
 if [ "$rc" -ne 0 ]; then
   echo "sync-version-refs: one or more files refused (see above)" >&2

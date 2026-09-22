@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.56.0 |
+| Framework Version | 0.57.0 |
 
 
 Engine-agnostic governance standards for the SDD framework. These documents
@@ -26,6 +26,9 @@ Changes to any governance document follow the CHG overlay — specifically
 **GATE-SPEC** for changes to `framework/` itself. The process:
 classify → archive originals → update → verify → record in CHG. See
 [`layers/09_CHG/`](../layers/09_CHG/) for the full change management layer.
+Which flow a change takes — F1 greenfield, F2 direct, F3 brownfield, F4 bugfix,
+or the Emergency / Type-R yield paths — is routed by
+[`CHG_REQUEST_FLOWS.md`](CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06).
 
 ## Documents
 
@@ -56,6 +59,7 @@ classify → archive originals → update → verify → record in CHG. See
 | `MODULE_LAYOUT.md` | The module structure and organization conventions for the framework. |
 | `NOTICES.md` | Important notices, deprecations, and breaking changes across framework versions. |
 | `SELF_LEARNING.md` | Self-learning governance loop — how the framework captures and applies lessons learned. |
+| `CHG_REQUEST_FLOWS.md` | Ratified 0.57.0 (CHG-06) — the classify→route table for change requests (F1 greenfield, F2 direct, F3 brownfield, F4 bugfix) plus Emergency and Type-R yield paths, and the C1/IPLAN-gate ruling. |
 
 ## CHG Overlay (`chg/`)
 

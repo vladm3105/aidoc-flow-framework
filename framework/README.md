@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.56.0 |
+| Framework Version | 0.57.0 |
 
 
 The **engine-agnostic specification** of the document-flow framework: the
@@ -164,6 +164,15 @@ enforces: provenance justification, SemVer classification (≥ C2, never C1),
 conformance suite green, and `CHANGELOG.md` update. See
 [`layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md`](layers/09_CHG/gates/GATE-SPEC_FRAMEWORK.md)
 for the full gate definition.
+
+### Request flows
+
+Classify-then-route detail for the diagram above lives in
+[`governance/CHG_REQUEST_FLOWS.md`](governance/CHG_REQUEST_FLOWS.md) (ratified 0.57.0, CHG-06): **F1** greenfield
+(full chain), **F2** direct request (no SDD cascade), **F3** brownfield behavior change (SDD-first restart),
+**F4** bugfix on an implemented IPLAN (CHG-05 vehicle), plus Emergency and Type-R yield paths.
+C1 note (F2.2, ratified): docs-only C1 stays direct-commit; code- or script-touching C1 requires
+a C1 CHG + scoped IPLAN.
 
 ### Document lifecycle tracking
 

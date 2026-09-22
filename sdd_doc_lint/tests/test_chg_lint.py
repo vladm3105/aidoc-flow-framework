@@ -235,5 +235,55 @@ class TraceabilityTests(unittest.TestCase):
             self.assertTrue(any("CHG-L011" in w for w in warnings), warnings)
 
 
+class FlowMisclassificationTests(unittest.TestCase):
+    """CHG-L013 (GOV-018): C1-direct shape passes; unscoped code manifests error."""
+
+    def _direct_chg(self):
+        chg = _base_chg()
+        chg["change_control"]["change_source"] = "direct"
+        chg["change_control"]["change_level"] = "C1"
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "HOOK", "file": "hooks/sync-version-refs.sh"}
+        ]
+        return chg
+
+    def _unscoped_chg(self):
+        chg = _base_chg()
+        chg["implementation"]["steps"] = []
+        chg["implementation"]["artifacts_modified"] = [
+            {"id": "HOOK", "file": "hooks/sync-version-refs.sh"}
+        ]
+        return chg
+
+    def test_c1_direct_shape_passes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._direct_chg())
+            )
+            errors, _, passes = chg_lint.lint_chg(path)
+            self.assertEqual([e for e in errors if "CHG-L013" in e], [])
+            self.assertTrue(any("CHG-L013" in p for p in passes), passes)
+
+    def test_unscoped_code_manifest_is_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = _write(
+                Path(tmp) / "CHG-99.yaml", yaml.safe_dump(self._unscoped_chg())
+            )
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(
+                any("CHG-L013" in e and "F2" in e for e in errors), errors
+            )
+
+    def test_feedback_without_iplan_names_bugfix_vehicle(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            chg = self._unscoped_chg()
+            chg["change_control"]["change_source"] = "feedback"
+            path = _write(Path(tmp) / "CHG-99.yaml", yaml.safe_dump(chg))
+            errors, _, _ = chg_lint.lint_chg(path)
+            self.assertTrue(
+                any("CHG-L013" in e and "F4" in e for e in errors), errors
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
