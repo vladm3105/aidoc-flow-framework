@@ -35,7 +35,7 @@ document_control:
   last_updated: "2026-09-22T00:00:00Z"
   author: "Framework Maintainer"
   complexity: 4
-  estimated_files: 19
+  estimated_files: 21
   session_count: 1
 
 # =============================================================================
@@ -136,32 +136,38 @@ file_manifest:
     - path: "framework/VERSION"
       description: "Bump 0.55.0 → 0.56.0"
       order: 16
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "CHANGELOG.md"
       description: "Root Unreleased → 0.56.0 entry"
       order: 17
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/CHANGELOG.md"
       description: "Framework 0.56.0 entry (head format read before editing)"
       order: 18
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "plans/DECISIONS.md"
       description: "NEW — ISO-stamped record (vehicle choice A, hook-vs-CI, version confirm)"
       order: 19
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/archive/CHG-05/CHG-05.yaml"
       description: "CHG status Approved → In-Progress at implementation start; → Implemented at merge; → Completed at verification"
       order: 20
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
+      verified: false
+    - path: "hooks/sync-version-refs.sh"
+      description: "Added 0.55.0 sweep lines (playbook pins + metadata rows) for the 0.56.0 fanout"
+      order: 21
+      status: DONE
+      session: 1
       verified: false
 
 # =============================================================================
@@ -279,6 +285,27 @@ session_handoff:
       partial_work: "Contract 10/10 green; BGF unit 10/10 green; CLI fixture-pair proven (clean 0, violating BGF-02/04/05/06)"
       blockers: "None"
       next_session_directive: "Task 5/6: full conformance + sdd tests + acceptance deterministic + corpus cross-check; then Task 7 version/changelogs"
+    - date: "2026-09-22"
+      agent: "implementing session (Tasks 5-7: full verification + version fanout + changelogs)"
+      files_touched:
+        - path: "framework/VERSION"
+          action: modified
+          status: DONE
+        - path: "hooks/sync-version-refs.sh"
+          action: modified
+          status: DONE
+        - path: "CHANGELOG.md"
+          action: modified
+          status: DONE
+        - path: "framework/CHANGELOG.md"
+          action: modified
+          status: DONE
+        - path: "plans/DECISIONS.md"
+          action: created
+          status: DONE
+      partial_work: "365+124+64 suites green post-sweep; sweep pins-only verified; twins identical"
+      blockers: "None"
+      next_session_directive: "Pre-merge: re-lint CHG-05, final diff review, open impl PR (needs user approval)"
 
 # =============================================================================
 # Section 6: Traceability
@@ -368,6 +395,26 @@ traceability:
         verified: false
       - path: "sdd_doc_lint/tests/test_bugfix_lint.py"
         status: created
+        session: 1
+        verified: false
+      - path: "framework/VERSION"
+        status: modified
+        session: 1
+        verified: false
+      - path: "CHANGELOG.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/CHANGELOG.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "plans/DECISIONS.md"
+        status: created
+        session: 1
+        verified: false
+      - path: "hooks/sync-version-refs.sh"
+        status: modified
         session: 1
         verified: false
 

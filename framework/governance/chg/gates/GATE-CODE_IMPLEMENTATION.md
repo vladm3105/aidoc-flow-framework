@@ -23,7 +23,7 @@ custom_fields:
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.55.0 |
+| Framework Version | 0.56.0 |
 
 
 > **Position**: Between execution planning and Code (source code implementation)

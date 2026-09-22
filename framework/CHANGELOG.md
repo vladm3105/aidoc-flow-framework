@@ -11,9 +11,25 @@ This file is the project's document-of-record for spec changes (GATE-SPEC-E008).
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.55.0 |
+| Framework Version | 0.56.0 |
 
 ---
+
+## [0.56.0] — 2026-09-22
+
+### Added — GD-31: scoped bugfix IPLAN vehicle (CHG-05, C2 MINOR)
+
+- `IPLAN-TEMPLATE.yaml`: `bugfix` subtype (parented repair, step order, rollback markers,
+  naming + minter, no-fix-on-fix); `parent_iplan`/`source_chg` homes; bugfix section set
+  (manifest, commands, handoff, traceability, rollback).
+- `08_IPLAN/README.md`, `IPLAN-VERIFY-TEMPLATE.yaml`, `IPLAN-00_index.TEMPLATE.yaml`:
+  terminal semantics, migration dry-run requirement, pending-`validated_by`, parent linkage.
+- `DOC_GOVERNANCE_CORE.md`: §3.13 active definition + bugfix authorisation, post-completion
+  pattern, post-merge VERIFY obligation, migration VERIFY rule.
+- `LINT_RULES.md`: GOV-013 carve-out + `BGF-01..07` rows. `DECISIONS.md`: GD-31.
+- GATE-08/GATE-CODE twins: `IPLAN/tmp/` retired, bugfix routing, migration smoke note.
+  `LAYER_REGISTRY.yaml`: `tmp/` sentence resolved (no new layer, no shape change).
+- New `sdd_doc_lint/bugfix_lint.py` + `test_bugfix_lint.py` + conformance contract test.
 
 ## [0.55.0] — 2026-09-21
 

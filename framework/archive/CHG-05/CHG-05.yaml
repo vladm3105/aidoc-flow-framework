@@ -158,7 +158,7 @@ implementation:
       archive_path: "framework/archive/CHG-05/VERSION"
       new_version: "0.56.0"
       current_version: "0.55.0"
-      status: Pending
+      status: Completed
     - step: "Create IPLAN-05 with all tooling and test implementation steps (file_manifest covers all targets)"
       phase: "iplan_creation"
       artifact: "IPLAN-05"
@@ -181,7 +181,7 @@ implementation:
       file: "framework/registry/LAYER_REGISTRY.yaml"
       change_type: "modified"
     - id: "TOOLING"
-      file: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py"
+      file: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py, hooks/sync-version-refs.sh"
       change_type: "created"
       change_type: "modified"
     - id: "TESTS"
@@ -198,23 +198,23 @@ implementation:
 verification:
   checks:
     - check: "chg_lint green on this file (pre-commit / pre-implementation / pre-merge)"
-      result: Pending
-      method: "python sdd_doc_lint/chg_lint.py framework/archive/CHG-05/CHG-05.yaml"
+      result: Pass
+      method: "python3 sdd_doc_lint/chg_lint.py framework/archive/CHG-05/CHG-05.yaml → exit 0, 0 errors (1 known L004 structural warning, same as CHG-03)"
     - check: "§3.4.1 post-creation validation (A1-A4, B5-B15, C16-C20, D21-D24, E25-E27)"
-      result: Pending
-      method: "Manual gate recorded in task progress; ALL pass → commit"
+      result: Pass
+      method: "Manual gate recorded in task progress; app-oriented items N/A with reason in CHG header; EARS/BDD vacuous (no IDs cited)"
     - check: "conformance suite green (no weakened guards)"
-      result: Pending
-      method: "python -m unittest discover -s tests/conformance"
+      result: Pass
+      method: "python3 -m unittest discover -s tests/conformance → 365 tests OK (skipped=1)"
     - check: "sdd_doc_lint self-tests green"
-      result: Pending
-      method: "python -m unittest discover -s sdd_doc_lint/tests"
+      result: Pass
+      method: "python3 -m unittest discover -s sdd_doc_lint/tests → 124 tests OK (incl. 10 new BGF unit)"
     - check: "acceptance deterministic green (no silent golden churn)"
-      result: Pending
-      method: "python -m unittest discover -s tests/acceptance/deterministic"
+      result: Pass
+      method: "python3 -m unittest discover -s tests/acceptance/deterministic → 64 tests OK, goldens untouched"
     - check: "corpus cross-check zero unexpected findings"
-      result: Pending
-      method: "python3 -m sdd_doc_lint examples/<NAME>/docs/ (lint-rule change trigger)"
+      result: Pass (vacuous, recorded)
+      method: "examples/ deleted by CLEANUP-001 — no corpus; covered by acceptance deterministic; recorded in plans/DECISIONS.md"
 
 # =============================================================================
 # Section 6: Gate Approval (C3 only)
