@@ -107,7 +107,7 @@ impact_assessment:
       impact: "New bugfix checks (naming, parent originality, scope, rollback, manifest); GOV-013 carve-out is prose-side"
     - layer: "Tests"
       artifacts: ["tests/conformance/test_iplan_bugfix_lifecycle.py (new)"]
-      impact: "Subtype/lifecycle/naming/parent/scope/rollback invariants + CHG-L catalog-agreement guard; goldens updated explicitly if churned"
+      impact: "Subtype/lifecycle/naming/parent/scope/rollback invariants + BGF catalog-agreement guard; goldens updated explicitly if churned"
     - layer: "08_IPLAN"
       artifacts: ["IPLAN-05"]
       impact: "Authorizing IPLAN for this change (IPLAN-05 In Progress, file_manifest covers all targets)"
@@ -130,28 +130,28 @@ implementation:
       archive_path: "framework/archive/CHG-05/"
       new_version: "0.56.0"
       current_version: "0.55.0"
-      status: Pending
+      status: Completed
     - step: "Rewrite IPLAN layer docs per plan Task 2 (bugfix subtype fields, lifecycle prose, VERIFY dry-run, index linkage)"
       phase: "sdd_lifecycle"
       artifact: "framework/layers/08_IPLAN/ (IPLAN-TEMPLATE.yaml, README.md, IPLAN-VERIFY-TEMPLATE.yaml, IPLAN-00_index.TEMPLATE.yaml)"
       archive_path: "framework/archive/CHG-05/"
       new_version: "0.56.0"
       current_version: "0.55.0"
-      status: Pending
+      status: Completed
     - step: "Rewrite governance and gate docs per plan Task 3 (active definition, post-completion pattern, TMP repair, smoke note, GD entry)"
       phase: "sdd_lifecycle"
       artifact: "Governance docs, gate mirrors, registry sentence"
       archive_path: "framework/archive/CHG-05/"
       new_version: "0.56.0"
       current_version: "0.55.0"
-      status: Pending
-    - step: "Extend lint tooling and fixtures per plan Task 4 (bugfix checks + catalog rows in LINT_RULES.md)"
+      status: Completed
+    - step: "Extend lint tooling and fixtures per plan Task 4 (greenfield bugfix_lint.py BGF-01..07 + catalog rows in LINT_RULES.md; chg_lint.py untouched by design)"
       phase: "sdd_lifecycle"
-      artifact: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py, framework/governance/LINT_RULES.md"
+      artifact: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py, framework/governance/LINT_RULES.md"
       archive_path: "framework/archive/CHG-05/"
       new_version: "0.56.0"
       current_version: "0.55.0"
-      status: Pending
+      status: Completed
     - step: "Bump framework/VERSION 0.55.0 → 0.56.0 + mechanical fanout + changelogs + plans/DECISIONS.md (plan Task 7) with conformance test file (plan Task 5)"
       phase: "sdd_lifecycle"
       artifact: "framework/VERSION, CHANGELOG.md, framework/CHANGELOG.md, plans/DECISIONS.md, tests/conformance/test_iplan_bugfix_lifecycle.py"
@@ -181,7 +181,8 @@ implementation:
       file: "framework/registry/LAYER_REGISTRY.yaml"
       change_type: "modified"
     - id: "TOOLING"
-      file: "sdd_doc_lint/chg_lint.py, sdd_doc_lint/tests/test_chg_lint.py"
+      file: "sdd_doc_lint/bugfix_lint.py, sdd_doc_lint/tests/test_bugfix_lint.py"
+      change_type: "created"
       change_type: "modified"
     - id: "TESTS"
       file: "tests/conformance/test_iplan_bugfix_lifecycle.py"

@@ -121,17 +121,17 @@ file_manifest:
       status: DONE
       session: 1
       verified: false
-    - path: "sdd_doc_lint/chg_lint.py"
-      description: "New bugfix checks (naming, parent originality, scope, rollback, manifest accuracy)"
+    - path: "sdd_doc_lint/bugfix_lint.py"
+      description: "NEW greenfield linter BGF-01..07 (unit-tested, fixture-pair proven); chg_lint.py untouched by design"
       order: 14
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
-    - path: "sdd_doc_lint/tests/test_chg_lint.py"
-      description: "Red-first fixture tests per new check (+ fixtures under sdd_doc_lint/tests/lint_fixtures/)"
+    - path: "sdd_doc_lint/tests/test_bugfix_lint.py"
+      description: "NEW red-first unit tests (10/10 green); inline temp-dir fixtures, no fixture files needed"
       order: 15
-      status: NOT_STARTED
-      session: null
+      status: DONE
+      session: 1
       verified: false
     - path: "framework/VERSION"
       description: "Bump 0.55.0 → 0.56.0"
@@ -243,6 +243,42 @@ session_handoff:
       partial_work: "Contract 8/10 green; remaining 2 fail on T7 scope (LINT_RULES carve-out, bugfix_lint.py)"
       blockers: "None"
       next_session_directive: "Task 3 governance prose (manifest orders 6-13): DOC_GOVERNANCE_CORE, LINT_RULES prose, DECISIONS GD entry, GATE twins, registry sentence"
+    - date: "2026-09-22"
+      agent: "implementing session (Tasks 3-4: governance prose + BGF linter + unit tests)"
+      files_touched:
+        - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+          action: modified
+          status: DONE
+        - path: "framework/governance/LINT_RULES.md"
+          action: modified
+          status: DONE
+        - path: "framework/governance/DECISIONS.md"
+          action: modified
+          status: DONE
+        - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+          action: modified
+          status: DONE
+        - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+          action: modified
+          status: DONE
+        - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+          action: modified
+          status: DONE
+        - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+          action: modified
+          status: DONE
+        - path: "framework/registry/LAYER_REGISTRY.yaml"
+          action: modified
+          status: DONE
+        - path: "sdd_doc_lint/bugfix_lint.py"
+          action: created
+          status: DONE
+        - path: "sdd_doc_lint/tests/test_bugfix_lint.py"
+          action: created
+          status: DONE
+      partial_work: "Contract 10/10 green; BGF unit 10/10 green; CLI fixture-pair proven (clean 0, violating BGF-02/04/05/06)"
+      blockers: "None"
+      next_session_directive: "Task 5/6: full conformance + sdd tests + acceptance deterministic + corpus cross-check; then Task 7 version/changelogs"
 
 # =============================================================================
 # Section 6: Traceability
@@ -292,6 +328,46 @@ traceability:
         verified: false
       - path: "framework/layers/08_IPLAN/IPLAN-00_index.TEMPLATE.yaml"
         status: modified
+        session: 1
+        verified: false
+      - path: "framework/governance/DOC_GOVERNANCE_CORE.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/governance/LINT_RULES.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/governance/DECISIONS.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/layers/09_CHG/gates/GATE-08_IPLAN.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/governance/chg/gates/GATE-08_IPLAN.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/layers/09_CHG/gates/GATE-CODE_IMPLEMENTATION.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/governance/chg/gates/GATE-CODE_IMPLEMENTATION.md"
+        status: modified
+        session: 1
+        verified: false
+      - path: "framework/registry/LAYER_REGISTRY.yaml"
+        status: modified
+        session: 1
+        verified: false
+      - path: "sdd_doc_lint/bugfix_lint.py"
+        status: created
+        session: 1
+        verified: false
+      - path: "sdd_doc_lint/tests/test_bugfix_lint.py"
+        status: created
         session: 1
         verified: false
 

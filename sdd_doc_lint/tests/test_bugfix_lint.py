@@ -67,7 +67,13 @@ def _bugfix_doc(**overrides):
 
 def _lint(tmp: Path, name: str, doc: dict, siblings: dict | None = None):
     if siblings is None:
-        siblings = {"IPLAN-03_slug.yaml": _parent_doc()}
+        fourth = _parent_doc()
+        fourth["doc_id"] = "IPLAN-04"
+        fourth["document_control"]["iplan_id"] = "IPLAN-04"
+        siblings = {
+            "IPLAN-03_slug.yaml": _parent_doc(),
+            "IPLAN-04_other.yaml": fourth,
+        }
     for sname, sdoc in siblings.items():
         _write(tmp / sname, yaml.safe_dump(sdoc))
     target = _write(tmp / name, yaml.safe_dump(doc))
