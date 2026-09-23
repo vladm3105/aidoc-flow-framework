@@ -135,7 +135,7 @@ SPEC → TDD → IPLAN → CHG → EVAL → Code) is defined entirely in `framew
 
 After creating a CHG, run §3.4.1 validation before committing (see DOC_GOVERNANCE_CORE.md).
 
-**Automated CHG validation:** Run `python sdd_doc_lint/chg_lint.py <chg-file.yaml>` or `python scripts/chg_lint.py <chg-file.yaml>` to check:
+**Automated CHG validation:** Run `python3 sdd_doc_lint/chg_lint.py <chg-file.yaml>` to check:
 - CHG-L001: Status lifecycle (§3.3) — must follow Proposed → Approved → In-Progress → Implemented → Completed
 - CHG-L002: Gate approval (§3.1) — C3 changes must have approver
 - CHG-L003: CHG scope (§3.4) — no code steps in CHG
@@ -627,7 +627,7 @@ The `aidoc-flow-ci/sync/check-drift.sh` script (run as a pre-commit
 hook or periodic GitHub Action) compares each workflow file against
 the canonical template at the pinned `ci/vX.Y.Z` tag and reports any
 diff as a warning. **Never blocks the commit or the PR.** Same shape
-as the existing `scripts/check-docs-updated.sh` doc-currency
+as the existing `hooks/check-docs-updated.sh` doc-currency
 reminder — see "## Durable conventions" item 3 above. Contributor
 decides: bring back to canonical, intentionally keep, or push the
 divergence upstream as a new shared default.

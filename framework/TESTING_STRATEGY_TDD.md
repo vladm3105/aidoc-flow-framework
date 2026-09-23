@@ -26,7 +26,7 @@ BRD → PRD → EARS → BDD → ADR → SPEC → TDD → IPLAN → Code
 ```
 
 The 10-layer framework adds two additional layers:
-- **CHG (L9)** — Change management overlay: gates, versioning, audit trail (governance overlay, outside layer numbering)
+- **CHG (L9)** — Change management overlay: gates, versioning, audit trail (governance overlay, operational namespace 09 — outside the sequential lifecycle, not outside the numbering)
 - **EVAL (L10)** — Evaluation & QA governance: test strategy, coverage matrices
 
 ## Language-Agnostic Test Path Philosophy

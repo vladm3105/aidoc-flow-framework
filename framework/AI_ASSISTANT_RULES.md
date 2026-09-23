@@ -35,7 +35,7 @@
 6.  SPEC — component interfaces, data models, behavior contracts (from EARS + BDD + ADR)
 7.  TDD  — test case definitions with inputs/outputs/edge cases (from EARS + BDD + ADR + SPEC)
 8.  IPLAN — file manifest, bash commands, session handoff (from SPEC + TDD)
-9.  CHG  — change management overlay: gates, versioning, audit trail (governance overlay, outside layer numbering)
+9.  CHG  — change management overlay: gates, versioning, audit trail (governance overlay, operational namespace 09 — outside the sequential lifecycle, not outside the numbering)
 10. EVAL — evaluation & QA governance: test strategy, coverage matrices (from EARS + BDD + TDD + IPLAN)
 11. Code — implementation from IPLAN
 ```

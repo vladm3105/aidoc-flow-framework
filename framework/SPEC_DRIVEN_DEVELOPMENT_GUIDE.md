@@ -83,7 +83,7 @@ BRD → PRD-Ready (>=90) → PRD → EARS-Ready (>=90) → EARS → BDD-Ready (>
 | Interface and behavior contracts | SPEC (L6) | Component-level interfaces, data models, behavior contracts |
 | Test definitions | TDD (L7) | Embedded test cases, thresholds, and BDD mapping |
 | Execution planning | IPLAN (L8) | File manifest, commands, session handoff |
-| Governance workflow | CHG overlay (L9) | Project-level control outside layer numbering |
+| Governance workflow | CHG overlay (L9) | Project-level control outside the sequential lifecycle (operational namespace 09) |
 
 ## Development vs Deployment Separation
 
