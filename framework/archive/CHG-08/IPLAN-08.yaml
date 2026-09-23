@@ -62,21 +62,21 @@ file_manifest:
     - path: "sdd_doc_lint/chg_lint.py"
       description: "T2 #668: Proposed early-pass; drop L001 dup; missing-phase error + drop heuristic; L004 scan steps with correct rule; fold/delete L005; drop inner import re"
       order: 5
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "sdd_doc_lint/tests/test_chg_lint.py"
       description: "T2 #668: L001–L005 + CHG-04 reconciliation + CHG-05 bugfix fixtures"
       order: 6
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "hooks/ + .pre-commit-config.yaml"
       description: "T3 #663: *.sh watch; TEMPLATE skip; commit-message read-or-delete; pre-commit wiring-or-split; docs-list resync; sync regex + test; pre_push + review repoint"
       order: 7
-      status: PLANNED
+      status: DONE
       session: 1
-      verified: false
+      verified: true
     - path: "framework/layers/10_EVAL/ + playbook outputs"
       description: "P1-1 #664: REPORT canon + RPT tombstone + test_results pin + old-ID ban + conformance pins"
       order: 8

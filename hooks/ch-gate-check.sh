@@ -3,11 +3,9 @@
 # Warns on commits that modify code files without an active CHG.
 # Exempts: bug fixes on active IPLANs, docs, configs, tests, migrations.
 #
-# Warn-only (CLEANUP-001): the framework-only repo carries the CHG *template*
-# (framework/layers/09_CHG/) but no CHG instance directory by design — there is
-# no docs/sdd/09-CHG/ tree to scan. A failing gate here could never pass, so it
-# advises instead of blocking until the CHG workflow lands. See
-# framework/governance/DOC_GOVERNANCE_CORE.md §3.4.
+# Warn-only: every path exits 0 — the gate advises, never blocks. Wired into
+# .pre-commit-config.yaml (local warn-only hook) and hooks/hooks.json (Claude
+# path). See framework/governance/DOC_GOVERNANCE_CORE.md §3.4.
 
 set -uo pipefail
 
@@ -22,7 +20,7 @@ STAGED=$(git diff --cached --name-only --diff-filter=ACM 2>/dev/null)
 CODE_FILES=""
 for f in $STAGED; do
   case "$f" in
-    *.go|*.js|*.ts|*.tsx|*.jsx|*.py)
+    *.go|*.js|*.ts|*.tsx|*.jsx|*.py|*.sh)
       # Exclude test files, docs, configs, migrations
       case "$f" in
         *_test.go|*_test.*|test_*|tests/*|docs/*|.mimocode/*|migrations/*) ;;
@@ -50,7 +48,7 @@ if [ -z "$CHG_DIR" ]; then
   echo "::warning::GOVERNANCE GATE: No CHG instance directory found ($CHG_DIRS)."
   echo "Code files being committed: $CODE_FILES"
   echo "Create a CHG document before committing code changes."
-  echo "See CLAUDE.md → MANDATORY: Governance Gate"
+  echo "See AGENTS.md → MANDATORY: Governance Gate"
   exit 0
 fi
 
@@ -58,6 +56,11 @@ fi
 ACTIVE_CHG=""
 for chg in "$CHG_DIR"/CHG-*.yaml; do
   [ -f "$chg" ] || continue
+  # Templates are not instances — a future status-value edit on a template
+  # must never arm the gate (#663).
+  case "$chg" in
+    *TEMPLATE*) continue ;;
+  esac
   status=$(grep -E '^\s*status:' "$chg" 2>/dev/null | head -1 | sed 's/.*status:\s*//' | tr -d '"' | tr -d "'")
   case "$status" in
     In-Progress|Approved)
@@ -77,8 +80,12 @@ if [ -z "$ACTIVE_CHG" ]; then
   echo "  3. Complete §3.4 checklist"
   echo "  4. Run §3.4.1 validation"
   echo ""
-  echo "See CLAUDE.md → MANDATORY: Governance Gate"
-  echo "Exception: bug fixes on active IPLANs (add 'Bug fix on IPLAN-XX' to commit message)"
+  echo "See AGENTS.md → MANDATORY: Governance Gate"
+  if git log -1 --format=%B 2>/dev/null | grep -q "Bug fix on IPLAN-"; then
+    echo "Note: HEAD commit message claims a bug fix on an active IPLAN — verify it names the right plan."
+  else
+    echo "Exception: bug fixes on active IPLANs (add 'Bug fix on IPLAN-XX' to commit message)"
+  fi
   exit 0
 fi
 

@@ -128,7 +128,7 @@ repos:
       # new version string into all the docs-of-record that quote it.
       # Re-stages on its own; idempotent.
       - id: sync-version-refs
-        name: auto-sync version references (CLAUDE.md / README / ...)
+        name: auto-sync version references (AGENTS.md / README / ...)
         entry: bash hooks/sync-version-refs.sh
         language: system
         pass_filenames: false
@@ -136,14 +136,21 @@ repos:
         verbose: true
 
       # Warning hook: when a commit changes code/spec/skills but does NOT
-      # touch any of the documents-of-record (CHANGELOG, ROADMAP, README,
-      # HANDOFF, …), print a checklist of likely-stale docs.
+      # touch any of the documents-of-record (CHANGELOG, README, AGENTS.md,
+      # framework changelogs, DECISIONS), print a checklist of likely-stale docs.
       # Does NOT fail the commit; informational only. False-positive friendly.
       # The mechanical sync above handles version-references; this hook
       # handles the semantic content that can't be auto-generated.
       - id: check-docs-updated
-        name: docs-of-record reminder (CHANGELOG / HANDOFF / ...)
+        name: docs-of-record reminder (CHANGELOG / AGENTS.md / ...)
         entry: bash hooks/check-docs-updated.sh
+        language: system
+        pass_filenames: false
+        always_run: true
+        verbose: true
+      - id: chg-gate-check
+        name: CHG governance gate (warn-only)
+        entry: bash hooks/ch-gate-check.sh
         language: system
         pass_filenames: false
         always_run: true
@@ -152,7 +159,7 @@ repos:
     hooks:
       - id: aidoc-flow-pre-push
         name: aidoc-flow canon pre-push validation
-        entry: hooks/pre_push_check.sh
+        entry: bash hooks/pre_push_check.sh
         language: script
         stages:
           - pre-push

@@ -8,7 +8,7 @@
 | Status | Approved |
 | Last Updated | 2026-09-07 |
 | Author | Framework Maintainer |
-| Framework Version | 0.53.2 |
+| Framework Version | 0.57.1 |
 
 
 Defines the self-learning loop for agents operating in this project: what gets
